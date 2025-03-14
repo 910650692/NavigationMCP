@@ -1,0 +1,467 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="naviControl"
+            type="com.fy.navi.scene.api.navi.ISceneNaviControl" />
+    </data>
+
+    <com.fy.navi.ui.view.SkinConstraintLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:visibility="@{naviControl.getControlField()?View.VISIBLE:View.GONE}">
+
+        <androidx.constraintlayout.widget.Group
+            android:id="@+id/group_one"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="@{naviControl.getGroupOneField()?View.VISIBLE:View.GONE}"
+            app:constraint_referenced_ids="sv_exit,scl_settings,
+                                           sv_exit_navi,siv_exit_navi,stv_exit_navi"
+            tools:visibility="gone" />
+        <!--android:background="@drawable/bg_navi_btn_select"-->
+        <com.fy.navi.ui.view.SkinView
+            android:id="@+id/sv_exit"
+            android:layout_width="@dimen/dp_204"
+            android:layout_height="@dimen/dp_160"
+            android:background="@drawable/bg_navi_control" />
+
+        <com.fy.navi.ui.view.SkinImageView
+            android:id="@+id/siv_exit_navi"
+            style="@style/style_navi_control_iv_com"
+            android:background="@drawable/img_navi_exit"
+            app:layout_constraintEnd_toEndOf="@id/sv_exit"
+            app:layout_constraintStart_toStartOf="@id/sv_exit"
+            app:layout_constraintTop_toTopOf="@id/sv_exit" />
+
+        <com.fy.navi.ui.view.SkinTextView
+            android:id="@+id/stv_exit_navi"
+            style="@style/style_navi_control_tv_com"
+            android:text="@string/navi_btn_exit"
+            app:layout_constraintEnd_toEndOf="@id/sv_exit"
+            app:layout_constraintStart_toStartOf="@id/sv_exit"
+            app:layout_constraintTop_toBottomOf="@id/siv_exit_navi" />
+
+        <com.fy.navi.ui.view.SkinConstraintLayout
+            android:id="@+id/scl_settings"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/dp_160"
+            android:layout_marginStart="@dimen/dp_20"
+            android:background="@drawable/bg_navi_control"
+            android:paddingHorizontal="@dimen/dp_40"
+            app:layout_constraintBottom_toBottomOf="@id/sv_exit"
+            app:layout_constraintStart_toEndOf="@id/sv_exit"
+            app:layout_constraintTop_toTopOf="@id/sv_exit"
+            tools:background="@color/navi_red_text">
+            <!--看全览-->
+            <com.fy.navi.ui.view.SkinView
+                android:id="@+id/sv_overview_switch"
+                style="@style/style_navi_control_sv_bg_com"
+                clickCommand="@{naviControl.switchOverview}"
+                android:contentDescription="@string/navi_overview_switch" />
+            <!--播报模式切换/固定全览-->
+            <com.fy.navi.ui.view.SkinView
+                android:id="@+id/sv_variation"
+                style="@style/style_navi_control_sv_bg_com"
+                clickCommand="@{naviControl.onVariation}"
+                android:layout_marginStart="@dimen/dp_40"
+                android:contentDescription="@string/navi_mute"
+                app:layout_constraintStart_toEndOf="@id/sv_overview_switch" />
+
+            <androidx.constraintlayout.widget.Group
+                android:id="@+id/group_more_setup"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="@{naviControl.getGroupMoreSetupField()?View.VISIBLE:View.GONE}"
+                app:constraint_referenced_ids="sv_more_setup,siv_more_setup,stv_more_setup"
+                tools:visibility="visible" />
+            <!--更多-->
+            <com.fy.navi.ui.view.SkinView
+                android:id="@+id/sv_more_setup"
+                style="@style/style_navi_control_sv_bg_com"
+                clickCommand="@{naviControl.moreSetup}"
+                android:layout_marginStart="@dimen/dp_40"
+                android:contentDescription="@string/navi_more_setup"
+                app:layout_constraintStart_toEndOf="@id/sv_variation" />
+
+            <com.fy.navi.ui.view.SkinImageView
+                android:id="@+id/siv_overview_switch"
+                style="@style/style_navi_control_iv_com"
+                android:background="@drawable/img_navi_look_through"
+                app:layout_constraintEnd_toEndOf="@id/sv_overview_switch"
+                app:layout_constraintStart_toStartOf="@id/sv_overview_switch"
+                app:layout_constraintTop_toTopOf="@id/sv_overview_switch" />
+
+            <com.fy.navi.ui.view.SkinTextView
+                android:id="@+id/stv_overview_switch"
+                style="@style/style_navi_control_tv_com"
+                android:text="@string/navi_overview_switch"
+                app:layout_constraintEnd_toEndOf="@id/sv_overview_switch"
+                app:layout_constraintStart_toStartOf="@id/sv_overview_switch"
+                app:layout_constraintTop_toBottomOf="@id/siv_overview_switch" />
+
+            <com.fy.navi.ui.view.SkinImageView
+                android:id="@+id/siv_variation"
+                style="@style/style_navi_control_iv_com"
+                android:background="@drawable/img_navi_mute"
+                app:layout_constraintEnd_toEndOf="@id/sv_variation"
+                app:layout_constraintStart_toStartOf="@id/sv_variation"
+                app:layout_constraintTop_toTopOf="@id/sv_variation" />
+
+            <com.fy.navi.ui.view.SkinTextView
+                android:id="@+id/stv_variation"
+                style="@style/style_navi_control_tv_com"
+                android:text="@string/navi_mute"
+                app:layout_constraintEnd_toEndOf="@id/sv_variation"
+                app:layout_constraintStart_toStartOf="@id/sv_variation"
+                app:layout_constraintTop_toBottomOf="@id/siv_variation" />
+
+            <com.fy.navi.ui.view.SkinImageView
+                android:id="@+id/siv_more_setup"
+                style="@style/style_navi_control_iv_com"
+                android:background="@drawable/img_navi_more"
+                app:layout_constraintEnd_toEndOf="@id/sv_more_setup"
+                app:layout_constraintStart_toStartOf="@id/sv_more_setup"
+                app:layout_constraintTop_toTopOf="@id/sv_more_setup" />
+
+            <com.fy.navi.ui.view.SkinTextView
+                android:id="@+id/stv_more_setup"
+                style="@style/style_navi_control_tv_com"
+                android:text="@string/navi_more_setup"
+                app:layout_constraintEnd_toEndOf="@id/sv_more_setup"
+                app:layout_constraintStart_toStartOf="@id/sv_more_setup"
+                app:layout_constraintTop_toBottomOf="@id/siv_more_setup" />
+        </com.fy.navi.ui.view.SkinConstraintLayout>
+        <!--退出导航-->
+        <com.fy.navi.ui.view.SkinView
+            android:id="@+id/sv_exit_navi"
+            clickCommand="@{naviControl.closeNavi}"
+            android:layout_width="@dimen/dp_160"
+            android:layout_height="@dimen/dp_160"
+            android:background="@drawable/custom_status_bar_bg_selector_day"
+            android:contentDescription="@string/navi_btn_exit"
+            app:layout_constraintBottom_toBottomOf="@id/sv_exit"
+            app:layout_constraintEnd_toEndOf="@id/sv_exit"
+            app:layout_constraintStart_toStartOf="@id/sv_exit"
+            app:layout_constraintTop_toTopOf="@id/sv_exit" />
+
+        <com.fy.navi.ui.view.SkinTextView
+            android:id="@+id/stv_navi_continue"
+            clickCommand="@{naviControl.naviContinue}"
+            android:layout_width="@dimen/dp_300"
+            android:layout_height="@dimen/dp_160"
+            android:layout_marginStart="@dimen/dp_1724"
+            android:background="@drawable/bg_navi_continue"
+            android:gravity="center"
+            android:text="@string/navi_continue_navi"
+            android:textColor="@color/white"
+            android:textSize="@dimen/sp_38"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <androidx.constraintlayout.widget.Group
+            android:id="@+id/group_two"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="@{naviControl.getGroupTwoField()?View.VISIBLE:View.GONE}"
+            app:constraint_referenced_ids="sv_tools,sv_line,
+                                           sv_refresh,siv_refresh,stv_refresh,
+                                           sv_preference,siv_preference,stv_preference,
+                                           sv_car_head,siv_car_head,stv_car_head,
+                                           sv_navi_setting,siv_navi_setting,stv_navi_setting,
+                                           sv_oil,siv_oil,stv_oil,
+                                           sv_charge,siv_charge,stv_charge,
+                                           sv_broadcast,siv_broadcast,stv_broadcast,
+                                           sv_lavatory,siv_lavatory,stv_lavatory,
+                                           sv_service,siv_service,stv_service,
+                                           sv_along_search,siv_along_search,stv_along_search"
+            tools:visibility="visible" />
+
+        <com.fy.navi.ui.view.SkinView
+            android:id="@+id/sv_tools"
+            android:layout_width="@dimen/dp_820"
+            android:layout_height="@dimen/dp_366"
+            android:background="@drawable/bg_navi_control"
+            tools:background="@color/navi_red_text" />
+        <!--刷新-->
+        <com.fy.navi.ui.view.SkinView
+            android:id="@+id/sv_refresh"
+            style="@style/style_navi_control_sv2_bg_com"
+            clickCommand="@{naviControl.refreshRoute}"
+            android:layout_marginStart="@dimen/dp_14"
+            android:layout_marginTop="@dimen/dp_30"
+            android:contentDescription="@string/navi_refresh"
+            app:layout_constraintStart_toStartOf="@id/sv_tools"
+            app:layout_constraintTop_toTopOf="@id/sv_tools" />
+        <!--导航播报-->
+        <com.fy.navi.ui.view.SkinView
+            android:id="@+id/sv_broadcast"
+            style="@style/style_navi_control_sv2_bg_com"
+            clickCommand="@{naviControl.naviBroadcast}"
+            android:layout_marginStart="@dimen/dp_13"
+            android:contentDescription="@string/navi_setting"
+            app:layout_constraintBottom_toBottomOf="@id/sv_refresh"
+            app:layout_constraintStart_toEndOf="@id/sv_refresh"
+            app:layout_constraintTop_toTopOf="@id/sv_refresh" />
+        <!--路线偏好-->
+        <com.fy.navi.ui.view.SkinView
+            android:id="@+id/sv_preference"
+            style="@style/style_navi_control_sv2_bg_com"
+            clickCommand="@{naviControl.routePreference}"
+            android:layout_marginStart="@dimen/dp_13"
+            android:contentDescription="@string/route_preference"
+            app:layout_constraintBottom_toBottomOf="@id/sv_broadcast"
+            app:layout_constraintStart_toEndOf="@id/sv_broadcast"
+            app:layout_constraintTop_toTopOf="@id/sv_broadcast" />
+        <!--车头设置-->
+        <com.fy.navi.ui.view.SkinView
+            android:id="@+id/sv_car_head"
+            style="@style/style_navi_control_sv2_bg_com"
+            clickCommand="@{naviControl.carHead}"
+            android:layout_marginStart="@dimen/dp_13"
+            android:contentDescription="@string/navi_up_3d"
+            app:layout_constraintBottom_toBottomOf="@id/sv_refresh"
+            app:layout_constraintStart_toEndOf="@id/sv_preference"
+            app:layout_constraintTop_toTopOf="@id/sv_refresh" />
+        <!--导航设置-->
+        <com.fy.navi.ui.view.SkinView
+            android:id="@+id/sv_navi_setting"
+            style="@style/style_navi_control_sv2_bg_com"
+            clickCommand="@{naviControl.naviSetting}"
+            android:layout_marginStart="@dimen/dp_13"
+            android:contentDescription="@string/navi_setting"
+            app:layout_constraintBottom_toBottomOf="@id/sv_refresh"
+            app:layout_constraintStart_toEndOf="@id/sv_car_head"
+            app:layout_constraintTop_toTopOf="@id/sv_refresh" />
+
+        <!--加油站-->
+        <com.fy.navi.ui.view.SkinView
+            android:id="@+id/sv_oil"
+            style="@style/style_navi_control_sv2_bg_com"
+            clickCommand="@{() -> naviControl.alongSearch(@string/st_quick_search_station)}"
+            android:layout_marginBottom="@dimen/dp_30"
+            android:contentDescription="@string/st_quick_search_station"
+            app:layout_constraintBottom_toBottomOf="@id/sv_tools"
+            app:layout_constraintStart_toStartOf="@id/sv_refresh" />
+
+        <!--充电站-->
+        <com.fy.navi.ui.view.SkinView
+            android:id="@+id/sv_charge"
+            style="@style/style_navi_control_sv2_bg_com"
+            clickCommand="@{() -> naviControl.alongSearch(@string/st_quick_search_food)}"
+            android:layout_marginStart="@dimen/dp_13"
+            android:contentDescription="@string/st_quick_search_charge"
+            app:layout_constraintBottom_toBottomOf="@id/sv_oil"
+            app:layout_constraintStart_toEndOf="@id/sv_oil"
+            app:layout_constraintTop_toTopOf="@id/sv_oil" />
+        <!--卫生间-->
+        <com.fy.navi.ui.view.SkinView
+            android:id="@+id/sv_lavatory"
+            style="@style/style_navi_control_sv2_bg_com"
+            clickCommand="@{() -> naviControl.alongSearch(@string/st_quick_search_lavatory)}"
+            android:layout_marginStart="@dimen/dp_13"
+            android:contentDescription="@string/st_quick_search_food"
+            app:layout_constraintBottom_toBottomOf="@id/sv_oil"
+            app:layout_constraintStart_toEndOf="@id/sv_charge"
+            app:layout_constraintTop_toTopOf="@id/sv_oil" />
+        <!--停车场-->
+        <com.fy.navi.ui.view.SkinView
+            android:id="@+id/sv_service"
+            style="@style/style_navi_control_sv2_bg_com"
+            clickCommand="@{() -> naviControl.alongSearch(@string/navi_along_parking)}"
+            android:layout_marginStart="@dimen/dp_13"
+            android:contentDescription="@string/navi_along_service"
+            app:layout_constraintBottom_toBottomOf="@id/sv_oil"
+            app:layout_constraintStart_toEndOf="@id/sv_lavatory"
+            app:layout_constraintTop_toTopOf="@id/sv_oil" />
+        <!--沿途搜-->
+        <com.fy.navi.ui.view.SkinView
+            android:id="@+id/sv_along_search"
+            style="@style/style_navi_control_sv2_bg_com"
+            clickCommand="@{() -> naviControl.alongSearch(@string/navi_along_search)}"
+            android:layout_marginStart="@dimen/dp_13"
+            android:contentDescription="@string/navi_along_search"
+            app:layout_constraintBottom_toBottomOf="@id/sv_oil"
+            app:layout_constraintStart_toEndOf="@id/sv_service"
+            app:layout_constraintTop_toTopOf="@id/sv_oil" />
+
+        <com.fy.navi.ui.view.SkinImageView
+            android:id="@+id/siv_refresh"
+            style="@style/style_navi_control_iv2_com"
+            android:background="@drawable/img_navi_refresh"
+            app:layout_constraintEnd_toEndOf="@id/sv_refresh"
+            app:layout_constraintStart_toStartOf="@id/sv_refresh"
+            app:layout_constraintTop_toTopOf="@id/sv_refresh" />
+
+        <com.fy.navi.ui.view.SkinTextView
+            android:id="@+id/stv_refresh"
+            style="@style/style_navi_control_tv_com"
+            android:text="@string/navi_refresh"
+            app:layout_constraintEnd_toEndOf="@id/sv_refresh"
+            app:layout_constraintStart_toStartOf="@id/sv_refresh"
+            app:layout_constraintTop_toBottomOf="@id/siv_refresh" />
+
+        <com.fy.navi.ui.view.SkinImageView
+            android:id="@+id/siv_broadcast"
+            style="@style/style_navi_control_iv2_com"
+            android:background="@drawable/img_navi_broadcast_minimalism"
+            app:layout_constraintEnd_toEndOf="@id/sv_broadcast"
+            app:layout_constraintStart_toStartOf="@id/sv_broadcast"
+            app:layout_constraintTop_toTopOf="@id/sv_broadcast" />
+
+        <com.fy.navi.ui.view.SkinTextView
+            android:id="@+id/stv_broadcast"
+            style="@style/style_navi_control_tv_com"
+            android:text="@string/navi_broadcast_minimalism"
+            app:layout_constraintEnd_toEndOf="@id/sv_broadcast"
+            app:layout_constraintStart_toStartOf="@id/sv_broadcast"
+            app:layout_constraintTop_toBottomOf="@id/siv_broadcast" />
+
+        <com.fy.navi.ui.view.SkinImageView
+            android:id="@+id/siv_preference"
+            style="@style/style_navi_control_iv2_com"
+            android:background="@drawable/img_navi_preference"
+            app:layout_constraintEnd_toEndOf="@id/sv_preference"
+            app:layout_constraintStart_toStartOf="@id/sv_preference"
+            app:layout_constraintTop_toTopOf="@id/sv_preference" />
+
+        <com.fy.navi.ui.view.SkinTextView
+            android:id="@+id/stv_preference"
+            style="@style/style_navi_control_tv_com"
+            android:text="@string/route_preference"
+            app:layout_constraintEnd_toEndOf="@id/sv_preference"
+            app:layout_constraintStart_toStartOf="@id/sv_preference"
+            app:layout_constraintTop_toBottomOf="@id/siv_preference" />
+
+        <com.fy.navi.ui.view.SkinImageView
+            android:id="@+id/siv_car_head"
+            style="@style/style_navi_control_iv2_com"
+            android:background="@drawable/img_navi_2d_up"
+            app:layout_constraintEnd_toEndOf="@id/sv_car_head"
+            app:layout_constraintStart_toStartOf="@id/sv_car_head"
+            app:layout_constraintTop_toTopOf="@id/sv_car_head" />
+
+        <com.fy.navi.ui.view.SkinTextView
+            android:id="@+id/stv_car_head"
+            style="@style/style_navi_control_tv_com"
+            android:text="@string/navi_up_2d"
+            app:layout_constraintEnd_toEndOf="@id/sv_car_head"
+            app:layout_constraintStart_toStartOf="@id/sv_car_head"
+            app:layout_constraintTop_toBottomOf="@id/siv_car_head" />
+
+        <com.fy.navi.ui.view.SkinImageView
+            android:id="@+id/siv_navi_setting"
+            style="@style/style_navi_control_iv2_com"
+            android:background="@drawable/img_navi_setting"
+            app:layout_constraintEnd_toEndOf="@id/sv_navi_setting"
+            app:layout_constraintStart_toStartOf="@id/sv_navi_setting"
+            app:layout_constraintTop_toTopOf="@id/sv_navi_setting" />
+
+        <com.fy.navi.ui.view.SkinTextView
+            android:id="@+id/stv_navi_setting"
+            style="@style/style_navi_control_tv_com"
+            android:text="@string/navi_setting"
+            app:layout_constraintEnd_toEndOf="@id/sv_navi_setting"
+            app:layout_constraintStart_toStartOf="@id/sv_navi_setting"
+            app:layout_constraintTop_toBottomOf="@id/siv_navi_setting" />
+
+        <com.fy.navi.ui.view.SkinImageView
+            android:id="@+id/siv_oil"
+            style="@style/style_navi_control_iv2_com"
+            android:background="@drawable/img_navi_oil"
+            app:layout_constraintEnd_toEndOf="@id/sv_oil"
+            app:layout_constraintStart_toStartOf="@id/sv_oil"
+            app:layout_constraintTop_toTopOf="@id/sv_oil" />
+
+        <com.fy.navi.ui.view.SkinTextView
+            android:id="@+id/stv_oil"
+            style="@style/style_navi_control_tv_com"
+            android:text="@string/st_quick_search_station"
+            app:layout_constraintEnd_toEndOf="@id/sv_oil"
+            app:layout_constraintStart_toStartOf="@id/sv_oil"
+            app:layout_constraintTop_toBottomOf="@id/siv_oil" />
+
+        <com.fy.navi.ui.view.SkinImageView
+            android:id="@+id/siv_charge"
+            style="@style/style_navi_control_iv2_com"
+            android:background="@drawable/img_navi_charge"
+            app:layout_constraintEnd_toEndOf="@id/sv_charge"
+            app:layout_constraintStart_toStartOf="@id/sv_charge"
+            app:layout_constraintTop_toTopOf="@id/sv_charge" />
+
+        <com.fy.navi.ui.view.SkinTextView
+            android:id="@+id/stv_charge"
+            style="@style/style_navi_control_tv_com"
+            android:text="@string/st_quick_search_charge"
+            app:layout_constraintEnd_toEndOf="@id/sv_charge"
+            app:layout_constraintStart_toStartOf="@id/sv_charge"
+            app:layout_constraintTop_toBottomOf="@id/siv_charge" />
+
+        <com.fy.navi.ui.view.SkinImageView
+            android:id="@+id/siv_lavatory"
+            style="@style/style_navi_control_iv2_com"
+            android:background="@drawable/img_navi_lavatory"
+            app:layout_constraintEnd_toEndOf="@id/sv_lavatory"
+            app:layout_constraintStart_toStartOf="@id/sv_lavatory"
+            app:layout_constraintTop_toTopOf="@id/sv_lavatory" />
+
+        <com.fy.navi.ui.view.SkinTextView
+            android:id="@+id/stv_lavatory"
+            style="@style/style_navi_control_tv_com"
+            android:text="@string/st_quick_search_lavatory"
+            app:layout_constraintEnd_toEndOf="@id/sv_lavatory"
+            app:layout_constraintStart_toStartOf="@id/sv_lavatory"
+            app:layout_constraintTop_toBottomOf="@id/siv_lavatory" />
+
+        <com.fy.navi.ui.view.SkinImageView
+            android:id="@+id/siv_service"
+            style="@style/style_navi_control_iv2_com"
+            android:background="@drawable/img_navi_parking"
+            app:layout_constraintEnd_toEndOf="@id/sv_service"
+            app:layout_constraintStart_toStartOf="@id/sv_service"
+            app:layout_constraintTop_toTopOf="@id/sv_service" />
+
+        <com.fy.navi.ui.view.SkinTextView
+            android:id="@+id/stv_service"
+            style="@style/style_navi_control_tv_com"
+            android:text="@string/navi_along_parking"
+            app:layout_constraintEnd_toEndOf="@id/sv_service"
+            app:layout_constraintStart_toStartOf="@id/sv_service"
+            app:layout_constraintTop_toBottomOf="@id/siv_service" />
+
+        <com.fy.navi.ui.view.SkinImageView
+            android:id="@+id/siv_along_search"
+            style="@style/style_navi_control_iv2_com"
+            android:background="@drawable/img_navi_along_search"
+            app:layout_constraintEnd_toEndOf="@id/sv_along_search"
+            app:layout_constraintStart_toStartOf="@id/sv_along_search"
+            app:layout_constraintTop_toTopOf="@id/sv_along_search" />
+
+        <com.fy.navi.ui.view.SkinTextView
+            android:id="@+id/stv_along_search"
+            style="@style/style_navi_control_tv_com"
+            android:text="@string/navi_along_search"
+            app:layout_constraintEnd_toEndOf="@id/sv_along_search"
+            app:layout_constraintStart_toStartOf="@id/sv_along_search"
+            app:layout_constraintTop_toBottomOf="@id/siv_along_search" />
+
+        <com.fy.navi.ui.view.SkinView
+            android:id="@+id/sv_line"
+            android:layout_width="@dimen/dp_0"
+            android:layout_height="@dimen/dp_1"
+            android:layout_marginHorizontal="@dimen/dp_40"
+            android:background="@color/navi_img_color_ten"
+            app:layout_constraintBottom_toBottomOf="@id/sv_tools"
+            app:layout_constraintEnd_toEndOf="@id/sv_tools"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/sv_tools" />
+
+    </com.fy.navi.ui.view.SkinConstraintLayout>
+</layout>

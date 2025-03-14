@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="ViewModel"
+            type="com.fy.navi.hmi.map.BaseMapViewModel" />
+    </data>
+
+    <com.fy.navi.ui.view.SkinLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <com.fy.navi.scene.ui.navi.SceneNaviLanesView
+            android:id="@+id/cruise_lanes_view"
+            android:layout_width="match_parent"
+            android:clickable="true"
+            android:layout_height="@dimen/dp_110"
+            android:background="@drawable/bg_navi_tbt_middle"
+            android:visibility="visible" />
+
+        <com.fy.navi.ui.view.SkinImageView
+            android:id="@+id/iv_voice"
+            clickCommand="@{ViewModel.muteOrUnMute}"
+            android:layout_width="@dimen/dp_204"
+            android:layout_height="@dimen/dp_160"
+            android:layout_marginTop="@dimen/dp_282"
+            android:background="@drawable/bg_search_main_tab"
+            android:scaleType="centerInside"
+            android:src="@drawable/cruise_broad_image_select"
+            app:layout_constraintStart_toStartOf="@id/cruise_lanes_view"
+            app:layout_constraintTop_toBottomOf="@id/cruise_lanes_view" />
+
+    </com.fy.navi.ui.view.SkinLinearLayout>
+
+</layout>

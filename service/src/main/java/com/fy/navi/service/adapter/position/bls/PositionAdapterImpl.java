@@ -1,0 +1,168 @@
+package com.fy.navi.service.adapter.position.bls;
+
+import com.android.utils.log.Logger;
+import com.fy.navi.service.AppContext;
+import com.fy.navi.service.MapDefaultFinalTag;
+import com.fy.navi.service.adapter.position.IPositionAdapterCallback;
+import com.fy.navi.service.adapter.position.IPositionApi;
+import com.fy.navi.service.adapter.position.PositionConstant;
+import com.fy.navi.service.adapter.position.VehicleSpeedController;
+import com.fy.navi.service.adapter.position.bls.manager.LocSigFusionManager;
+import com.fy.navi.service.define.bean.GeoPoint;
+import com.fy.navi.service.define.position.ISpeedCallback;
+import com.fy.navi.service.define.position.LocInfoBean;
+import com.fy.navi.service.define.position.LocMode;
+import com.fy.navi.service.define.position.PositionConfig;
+
+import java.math.BigInteger;
+
+/**
+ * @Description LocationManager类
+ * @Author lvww
+ * @date 2024/11/24
+ */
+public class PositionAdapterImpl implements IPositionApi, ISpeedCallback {
+    private static final String TAG = MapDefaultFinalTag.POSITION_SERVICE_TAG;
+    private PositionBlsStrategy positionStrategy;
+    private LocSigFusionManager mLocSigFusionManager;
+    private LocMode mLocMode = LocMode.DrBack;
+    private boolean mDrBackFusionEnable = true;
+    private boolean mDrRecordEnable;
+    private VehicleSpeedController mVehicleSpeedController;
+
+    public PositionAdapterImpl() {
+        positionStrategy = new PositionBlsStrategy(AppContext.mContext);
+    }
+
+    @Override
+    public void registerCallback(IPositionAdapterCallback callback) {
+        positionStrategy.registerCallback(callback);
+    }
+
+    @Override
+    public void unInitPositionService() {
+        positionStrategy.unregisterCallback();
+    }
+
+    @Override
+    public void init() {
+        // TODO: 2025/2/25 此处定位模式需要在存储中配置,临时使用constant配置  GNSS/后端融合切换
+        mLocMode = PositionConstant.isDrBack ? LocMode.DrBack : LocMode.GNSS;
+        if (mLocMode == LocMode.DrBack) {
+            mVehicleSpeedController = new VehicleSpeedController(AppContext.mContext, this);
+            mVehicleSpeedController.registerCallback();
+        }
+        boolean initResult = positionStrategy.initLocEngine(mLocMode, new PositionConfig());
+        Logger.i(TAG, "initLocEngine: " + initResult + ",mLocMode：" + mLocMode);
+    }
+
+    @Override
+    public LocInfoBean getLastCarLocation() {
+        return positionStrategy.getLastCarLocation();
+    }
+
+    @Override
+    public void startPosition() {
+        init(mLocMode);
+    }
+
+    @Override
+    public void stopPosition() {
+        positionStrategy.doStopLocate();
+        unInit();
+    }
+
+    @Override
+    public void saveLocStorage() {
+        positionStrategy.saveLocStorage();
+    }
+
+    @Override
+    public void switchParallelRoad(int switchRoadType, BigInteger roadId) {
+        positionStrategy.switchParallelRoad(switchRoadType, roadId);
+    }
+
+    @Override
+    public GeoPoint wgs84ToGcj02(GeoPoint geoPoint) {
+        return positionStrategy.wgs84ToGcj02(geoPoint);
+    }
+
+    @Override
+    public void setDrBackFusionEnable(boolean enable) {
+        Logger.i(TAG, "enable：" + enable);
+        if (!enable) {
+            positionStrategy.updateSdkLocStatus(false);
+        }
+        mDrBackFusionEnable = enable;
+        if (mLocSigFusionManager != null) {
+            mLocSigFusionManager.setDrBackFusionEnable(enable);
+        }
+    }
+
+    @Override
+    public void setRecordEnable(boolean enable) {
+        Logger.i(TAG, "enable：" + enable);
+        mDrRecordEnable = enable;
+        if (mLocSigFusionManager != null) {
+            mLocSigFusionManager.setRecordEnable(enable);
+        }
+    }
+
+    /***初始化定位模块***/
+    public void init(LocMode locMode) {
+        mLocSigFusionManager = new LocSigFusionManager(AppContext.mApplication.getApplicationContext(),
+                locMode, positionStrategy);
+        mLocSigFusionManager.setDrBackFusionEnable(mDrBackFusionEnable);
+        mLocSigFusionManager.init();
+    }
+
+    public void unInit() {
+        if (mLocSigFusionManager != null) {
+            mLocSigFusionManager.unInit();
+        }
+        if (positionStrategy != null) {
+            positionStrategy.uninitLocEngine();
+        }
+        if (mVehicleSpeedController != null) {
+            mVehicleSpeedController.unregisterCallback();
+        }
+    }
+
+    @Override
+    public void onSpeedChanged(float speed) {
+        if (mLocSigFusionManager != null) {
+            mLocSigFusionManager.onSpeedChanged(speed);
+        }
+    }
+
+    @Override
+    public void onGearChanged(int gear) {
+        if (mLocSigFusionManager != null) {
+            mLocSigFusionManager.onGearChanged(gear);
+        }
+        if (positionStrategy != null) {
+            positionStrategy.onGearChanged(gear);
+        }
+    }
+
+    @Override
+    public void setDrEnable(boolean enable) {
+        if (mLocSigFusionManager != null) {
+            mLocSigFusionManager.setDrEnable(enable);
+        }
+    }
+
+    @Override
+    public void setCustomPOI(double lon, double lat) {
+        if (mLocSigFusionManager != null) {
+            mLocSigFusionManager.setCustomPOI(lon, lat);
+        }
+    }
+
+    @Override
+    public void locationLogSwitch(boolean isOpen) {
+        if (positionStrategy != null) {
+            positionStrategy.locationLogSwitch(isOpen);
+        }
+    }
+}

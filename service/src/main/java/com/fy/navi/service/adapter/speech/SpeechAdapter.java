@@ -1,0 +1,69 @@
+package com.fy.navi.service.adapter.speech;
+
+import com.fy.navi.service.AdapterConfig;
+
+import java.util.Objects;
+
+/**
+ * @Author: baipeng0904
+ * @Description: 类作用描述
+ * @CreateDate: $ $
+ */
+public class SpeechAdapter {
+
+    private ISpeechApi mSpeechApi;
+
+    private static class SpeechAdapterHolder {
+        private static final SpeechAdapter mInstance = new SpeechAdapter();
+    }
+
+    public static SpeechAdapter getInstance() {
+        return SpeechAdapterHolder.mInstance;
+    }
+
+    private SpeechAdapter() {
+        mSpeechApi = (ISpeechApi) AdapterConfig.getObject(Objects.requireNonNull(this.getClass().getPackage()).getName(), "SpeechAdapterImpl");
+    }
+
+    public void init() {
+        if (mSpeechApi != null) {
+            mSpeechApi.init();
+        }
+    }
+
+    public void unInit() {
+        if (mSpeechApi != null) {
+            mSpeechApi.unInit();
+        }
+    }
+
+    public void registerCallback(ISpeechAdapterCallback callback) {
+        if (mSpeechApi != null) {
+            mSpeechApi.registerCallback(callback);
+        }
+    }
+
+    public void unregisterCallback(ISpeechAdapterCallback callback) {
+        if (mSpeechApi != null) {
+            mSpeechApi.unregisterCallback(callback);
+        }
+    }
+
+    public void setVoice(String irfPath) {
+        if (mSpeechApi != null) {
+            mSpeechApi.setVoice(irfPath);
+        }
+    }
+
+    public void synthesize(String text) {
+        if (mSpeechApi != null) {
+            mSpeechApi.synthesize(text);
+        }
+    }
+
+    public void stop() {
+        if (mSpeechApi != null) {
+            mSpeechApi.stop();
+        }
+    }
+}

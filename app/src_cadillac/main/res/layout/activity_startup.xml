@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="ViewModel"
+            type="com.fy.navi.hmi.startup.StartupViewModel" />
+    </data>
+
+    <com.fy.navi.ui.view.SkinConstraintLayout
+        android:id="@+id/main"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/black"
+        tools:context=".startup.StartupActivity">
+
+        <com.fy.navi.ui.view.SkinImageView
+            android:layout_width="@dimen/dp_3000"
+            android:layout_height="@dimen/dp_1000"
+            android:scaleType="fitXY"
+            android:src="@drawable/starting_bg"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </com.fy.navi.ui.view.SkinConstraintLayout>
+</layout>

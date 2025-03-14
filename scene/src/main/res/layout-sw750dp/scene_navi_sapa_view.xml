@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="naviSapa"
+            type="com.fy.navi.scene.impl.navi.SceneNaviSapaImpl" />
+    </data>
+
+    <com.fy.navi.ui.view.SkinConstraintLayout
+        android:id="@+id/scl_sapa"
+        android:layout_width="@dimen/dp_640"
+        android:layout_height="@dimen/dp_157"
+        tools:ignore="MissingDefaultResource">
+
+        <include android:id="@+id/navi_apa_first_service"
+            android:visibility="@{naviSapa.viewVisible == 2 ? View.VISIBLE : View.GONE}"
+            layout="@layout/sapa_first_service" />
+
+        <include android:id="@+id/navi_sapa_first_toll"
+            android:visibility="@{naviSapa.viewVisible == 3 ? View.VISIBLE : View.GONE}"
+            layout="@layout/sapa_first_toll" />
+
+        <include android:id="@+id/navi_sapa_only_service"
+            android:visibility="@{naviSapa.viewVisible == 0 ? View.VISIBLE : View.GONE}"
+            layout="@layout/sapa_only_service" />
+
+        <include android:id="@+id/navi_sapa_only_toll"
+            android:visibility="@{naviSapa.viewVisible == 1 ? View.VISIBLE : View.GONE}"
+            layout="@layout/sapa_only_toll" />
+
+    </com.fy.navi.ui.view.SkinConstraintLayout>
+</layout>
+
+
+
+
+
+
+
+

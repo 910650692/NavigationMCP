@@ -1,0 +1,43 @@
+plugins {
+    alias(libs.plugins.android.library)
+}
+
+android {
+    namespace 'com.fy.navi.vrbridge'
+    compileSdk Integer.parseInt(libs.versions.compileSdk.get())
+
+    defaultConfig {
+        minSdk Integer.parseInt(libs.versions.minSdk.get())
+        versionCode 1
+        versionName "1.0"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
+    lintOptions {
+        checkReleaseBuilds false
+        abortOnError false
+    }
+
+}
+
+dependencies {
+
+    implementation libs.appcompat
+    implementation libs.calibration
+    implementation fileTree(dir: "libs", include: ["*.jar"])
+    implementation project(':engine:vrbridge')
+    implementation project(':engine:vrbridgeprotocol')
+    implementation project(":service")
+    implementation project(":utils")
+}

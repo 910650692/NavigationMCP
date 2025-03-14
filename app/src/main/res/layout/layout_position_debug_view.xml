@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.fy.navi.ui.view.SkinLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_location_view_bg_test"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    android:padding="@dimen/dp_16">
+
+    <com.fy.navi.ui.view.SkinLinearLayout
+        android:id="@+id/replay_ll"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:visibility="visible"
+        tools:visibility="visible">
+
+        <com.fy.navi.ui.view.SkinButton
+            android:id="@+id/start_btn"
+            android:layout_width="@dimen/dp_200"
+            android:layout_height="@dimen/dp_80"
+            android:background="@drawable/bg_navi_btn_common"
+            android:gravity="center"
+            android:text="开始"
+            android:textColor="#000000"
+            android:textSize="@dimen/sp_36" />
+
+        <com.fy.navi.ui.view.SkinButton
+            android:id="@+id/pause_btn"
+            android:layout_width="@dimen/dp_200"
+            android:layout_height="@dimen/dp_80"
+            android:layout_marginStart="@dimen/dp_50"
+            android:background="@drawable/bg_navi_btn_common"
+            android:gravity="center"
+            android:text="暂停"
+            android:textColor="#000000"
+            android:textSize="@dimen/sp_36" />
+
+        <com.fy.navi.ui.view.SkinButton
+            android:id="@+id/resume_btn"
+            android:layout_width="@dimen/dp_200"
+            android:layout_height="@dimen/dp_80"
+            android:layout_marginStart="@dimen/dp_50"
+            android:background="@drawable/bg_navi_btn_common"
+            android:gravity="center"
+            android:text="恢复"
+            android:textColor="#000000"
+            android:textSize="@dimen/sp_36" />
+
+        <com.fy.navi.ui.view.SkinButton
+            android:id="@+id/stop_btn"
+            android:layout_width="@dimen/dp_200"
+            android:layout_height="@dimen/dp_80"
+            android:layout_marginStart="@dimen/dp_50"
+            android:background="@drawable/bg_navi_btn_common"
+            android:gravity="center"
+            android:text="停止"
+            android:textColor="#000000"
+            android:textSize="@dimen/sp_36" />
+    </com.fy.navi.ui.view.SkinLinearLayout>
+
+    <com.fy.navi.ui.view.SkinLinearLayout
+        android:id="@+id/dr_ll"
+        android:layout_width="@dimen/dp_400"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="visible"
+        tools:visibility="visible">
+
+        <com.fy.navi.ui.view.SkinTextView
+            android:id="@+id/sensor_tv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_16"
+            android:text="555555555555555555"
+            android:textColor="@color/navi_red_text"
+            android:textSize="@dimen/sp_24" />
+
+        <com.fy.navi.ui.view.SkinTextView
+            android:id="@+id/loss_rate_tv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_16"
+            android:text="555555555555555555"
+            android:textColor="@color/navi_red_text"
+            android:textSize="@dimen/sp_24" />
+    </com.fy.navi.ui.view.SkinLinearLayout>
+
+    <com.fy.navi.ui.view.SkinTextView
+        android:id="@+id/log_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_16"
+        android:textColor="@color/navi_red_text"
+        android:textSize="@dimen/sp_36" />
+</com.fy.navi.ui.view.SkinLinearLayout>

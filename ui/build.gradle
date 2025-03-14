@@ -1,0 +1,45 @@
+plugins {
+    alias(libs.plugins.android.library)
+    alias(libs.plugins.kotlin.plugin)
+    id 'kotlin-kapt'
+}
+
+android {
+    namespace 'com.fy.navi.ui'
+    compileSdk Integer.parseInt(libs.versions.compileSdk.get())
+
+    defaultConfig {
+        minSdk Integer.parseInt(libs.versions.minSdk.get())
+        consumerProguardFiles "consumer-rules.pro"
+    }
+
+    buildFeatures {
+        dataBinding = true
+        viewBinding true
+    }
+
+    kotlinOptions {
+        jvmTarget = '17'
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+}
+
+dependencies {
+    implementation libs.bundles.module.library
+    implementation libs.core.ktx
+    implementation libs.rxbinding
+    implementation libs.glide
+    kapt libs.compiler.glide
+    implementation project(":utils")
+}

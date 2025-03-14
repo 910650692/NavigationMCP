@@ -1,0 +1,170 @@
+plugins {
+    id 'com.android.library'
+}
+
+apply plugin: 'maven-publish'
+apply plugin: 'checkstyle'
+check.dependsOn 'checkstyle'
+
+android {
+    namespace 'com.iauto.vtserver'
+    compileSdkVersion 30
+    buildToolsVersion "30.0.3"
+//    ndkVersion "21.3.6528147"
+
+    defaultConfig {
+        minSdkVersion 21
+        targetSdkVersion 30
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles "consumer-rules.pro"
+        externalNativeBuild {
+            cmake {
+                cppFlags '-std=c++11'
+                abiFilters "arm64-v8a", "armeabi-v7a"
+                arguments "-DANDROID_STL=c++_shared"
+            }
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    externalNativeBuild {
+        cmake {
+            path file('src/main/cpp/CMakeLists.txt')
+            version '3.10.2'
+        }
+    }
+}
+
+dependencies {
+
+    implementation 'androidx.appcompat:appcompat:1.3.1'
+    implementation 'com.google.android.material:material:1.4.0'
+    testImplementation 'junit:junit:4.+'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.3'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
+}
+
+checkstyle {
+    toolVersion = '8.16'
+}
+task checkstyle(type: Checkstyle) {
+    configFile file("checkstyle/checkstyle.xml")
+    source 'src'
+    include '**/*.java'
+    exclude '**/generated/**'
+    exclude '**/test/**'
+    exclude '**/androidTest/**'
+    exclude '**/R.java'
+    exclude '**/BuildConfig.java'
+    classpath = files()
+}
+
+task clearJar {
+    def libName = "build/outputs/lib/com.iauto.vtserver.jar"
+    delete libName
+}
+
+task makeJar(type: Jar) {
+    archiveBaseName = "com.iauto.vtserver"
+    archiveExtension = "jar"
+    from('build/intermediates/javac/debug/classes/')
+    exclude('BuildConfig.class')
+    destinationDirectory = file('build/outputs/lib/')
+}
+
+task copyJniLibs(type: Copy) {
+    from fileTree(dir: file('build/intermediates/library_jni/debug/'), include: '**/*.so')
+    into file('build/outputs/lib/')
+}
+
+publishing {
+    repositories {
+        maven {
+            name 'iAutoSnapshot'
+            credentials {
+                username project.maven_iauto_username
+                password project.maven_iauto_password
+            }
+            url project.maven_iauto_url_snapshot
+        }
+        maven {
+            name 'iAutoRelease'
+            credentials {
+                username project.maven_iauto_username
+                password project.maven_iauto_password
+            }
+            url project.maven_iauto_url_release
+        }
+        maven {
+            name 'patacSnapshot'
+            credentials {
+                username project.maven_patac_username
+                password project.maven_patac_password
+            }
+            url project.maven_patac_url_snapshot
+        }
+        maven {
+            name 'patacRelease'
+            credentials {
+                username project.maven_patac_username
+                password project.maven_patac_password
+            }
+            url project.maven_patac_url_release
+        }
+    }
+    publications {
+        iAutoSnapshot(MavenPublication) {
+            groupId project.maven_groupId
+            artifactId project.maven_artifactId
+            version project.maven_version+'-SNAPSHOT'
+            artifact 'build/outputs/aar/vtserver-release.aar'
+        }
+        iAutoRelease(MavenPublication) {
+            groupId project.maven_groupId
+            artifactId project.maven_artifactId
+            version project.maven_version
+            artifact 'build/outputs/aar/vtserver-release.aar'
+        }
+        patacSnapshot(MavenPublication) {
+            groupId project.maven_groupId
+            artifactId project.maven_artifactId
+            version project.maven_version+'-SNAPSHOT'
+            artifact 'build/outputs/aar/vtserver-release.aar'
+        }
+        patacRelease(MavenPublication) {
+            groupId project.maven_groupId
+            artifactId project.maven_artifactId
+            version project.maven_version
+            artifact 'build/outputs/aar/vtserver-release.aar'
+        }
+    }
+}
+
+task publishIautoSnapshot() {
+    dependsOn(clean, build, publishIAutoSnapshotPublicationToIAutoSnapshotRepository)
+}
+task publishIautoRelease() {
+    dependsOn(clean, build, publishIAutoReleasePublicationToIAutoReleaseRepository)
+}
+task publishPatacSnapshot() {
+    dependsOn(clean, build, publishPatacSnapshotPublicationToPatacSnapshotRepository)
+}
+task publishPatacRelease() {
+    dependsOn(clean, build, publishPatacReleasePublicationToPatacReleaseRepository)
+}
+
+makeJar.dependsOn(clearJar)
+makeJar.dependsOn(build)
+copyJniLibs.dependsOn(makeJar)

@@ -1,0 +1,36 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="@dimen/dp_60"
+    android:height="@dimen/dp_60"
+    android:viewportWidth="60"
+    android:viewportHeight="60">
+  <path
+      android:pathData="M19.672,6.224L10.176,20.262C9.867,20.719 9.986,21.341 10.444,21.65C10.634,21.779 10.862,21.838 11.091,21.818L20.413,21.008C20.471,21.003 20.529,21.003 20.587,21.008L29.909,21.818C30.459,21.866 30.944,21.459 30.992,20.909C31.012,20.68 30.953,20.452 30.824,20.262L21.328,6.224C21.019,5.767 20.397,5.647 19.94,5.956C19.834,6.028 19.743,6.119 19.672,6.224Z"
+      android:strokeWidth="1"
+      android:fillColor="@color/svg_color_C9CBCE"
+      android:fillType="evenOdd"
+      android:strokeColor="@color/svg_color_000000"/>
+  <path
+      android:pathData="M24,21.309L20.529,21L17,21.309L17,54.5C17,54.776 17.224,55 17.5,55L23.5,55C23.776,55 24,54.776 24,54.5L24,21.309L24,21.309Z"
+      android:strokeWidth="1"
+      android:fillColor="@color/svg_color_C9CBCE"
+      android:fillType="evenOdd"
+      android:strokeColor="@color/svg_color_000000"/>
+  <path
+      android:pathData="M49.976,34.709L40.957,27.739C40.738,27.57 40.424,27.611 40.255,27.829C40.174,27.934 40.138,28.067 40.155,28.199L41.1,35.5L41.1,35.5L40.155,42.801C40.12,43.075 40.313,43.325 40.587,43.361C40.719,43.378 40.852,43.342 40.957,43.261L49.976,36.291C50.413,35.954 50.494,35.326 50.156,34.889C50.104,34.821 50.043,34.761 49.976,34.709Z"
+      android:strokeWidth="1"
+      android:fillColor="@color/svg_color_4B535D"
+      android:fillType="evenOdd"
+      android:strokeColor="@color/svg_color_000000"/>
+  <path
+      android:pathData="M42.87,35.5L22.5,35.5C21.395,35.5 20.5,36.395 20.5,37.5L20.5,54.012L20.5,54.012"
+      android:strokeWidth="7"
+      android:fillColor="@color/svg_color_000000"
+      android:strokeColor="@color/svg_color_4B535D"
+      android:fillType="evenOdd"/>
+  <path
+      android:pathData="M24,53L17,53L17,54.5C17,54.776 17.224,55 17.5,55L23.5,55C23.776,55 24,54.776 24,54.5L24,53L24,53Z"
+      android:strokeWidth="1"
+      android:fillColor="@color/svg_color_4B535D"
+      android:fillType="evenOdd"
+      android:strokeColor="@color/svg_color_000000"/>
+</vector>

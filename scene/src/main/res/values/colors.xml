@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="transparent">#00000000</color>
+
+    <!-- 搜索相关 -->
+    <color name="search_edit_color_bg">#0F2D3D50</color>
+    <color name="search_deep_text_day">#2D3D50</color>
+    <color name="search_shallow_text_day">#99383839</color>
+    <color name="bg_button_start_navigation">#60A5FA</color>
+    <color name="quick_search_tab_text_color">#2D3D50</color>
+    <color name="search_gray_color_day">#0F2D3D50</color>
+    <color name="sub_tab_line">#80CBCBCB</color>
+    <color name="search_main_tab_bg_fff">#FFFFFFFF</color>
+    <color name="search_main_tab_bg_408c889b">#408C889B</color>
+    <color name="search_top_line_view_99383839">#99383839</color>
+    <color name="search_quick_tab_view_color">#B3000000</color>
+    <color name="search_item_title_color_ff383839">#FF383839</color>
+    <color name="search_loading_bg_80">#80000000</color>
+    <color name="poi_details_bottom_icon">#99000000</color>
+    <color name="poi_details_bottom_ff_00">#FF000000</color>
+    <color name="setting_text_gray">#66000000</color>
+    <color name="parking_recommended_item_15">#26B2AFC2</color>
+    <color name="parking_recommended_item_42386DF0">#42386DF0</color>
+
+    <!--算路相关-->
+    <color name="bg_route_root_bg">#F8F8FA</color>
+    <color name="route_back_icon_bg">#00000000</color>
+    <color name="route_back_icon_color">#383839</color>
+    <color name="route_cricle_dot_gerrn_color">#4ABA59</color>
+    <color name="route_cricle_dot_orange_color">#E67A2E</color>
+    <color name="route_cricle_dot_red_color">#C73333</color>
+
+    <color name="text_route_defult">#99000000</color>
+    <color name="text_route_title">#66000000</color>
+
+    <color name="bg_route_big_window_select">#2461EA</color>
+    <color name="bg_route_big_window_unselect">#338E97B9</color>
+
+    <color name="tab_list_route_tab_list_select">#2461EA</color>
+    <color name="tab_list_route_tab_list_unselect">#383839</color>
+
+    <color name="bg_route_item_select">#42386DF0</color>
+    <color name="bg_route_item_unselect">#F8F8FA</color>
+
+    <color name="color_f8f8fa">#F8F8FA</color>
+    <color name="bg_route_shadow_list">#33000000</color>
+    <color name="bg_route_item_label">#44000000</color>
+    <color name="text_color_recommend">#2D3D50</color>
+    <color name="text_color_route_item_no_select">#BB000000</color>
+    <color name="text_color_route_item_select">#000000</color>
+    <color name="route_select_color_nom">#26313336</color>
+    <color name="route_select_color_sel">#000000</color>
+    <color name="floating_search_item_night">#000000</color>
+
+
+    <!--引导-->
+    <color name="public_guidance_speed_limit_distance_color">#FF50AEFC</color>
+    <color name="public_guidance_speed_limit_unit_color">#8F000000</color>
+    <color name="navi_red_text">#FFFF595F</color>
+    <color name="navi_blue_text">#FF006CFF</color>
+    <color name="tmc_drive_past_color">#0F313336</color>
+    <color name="navi_tbt_div_info_color">#000000</color>
+    <color name="navi_tbt_remaining_info_color">#000000</color>
+    <color name="navi_tbt_bottom_view_color">#26B2AFC2</color>
+    <color name="navi_tbt_arrived_color">#99000000</color>
+    <color name="navi_control_tv_color">#B3000000</color>
+    <color name="color_F8F8FA_100">#FFF8F8FA</color>
+    <color name="navi_common_bg_press_color">#1A5187ff</color>
+    <color name="navi_toll_bg_color">#FF2461EA</color>
+    <color name="navi_toll_bg2_color">#FF50AEFC</color>
+    <color name="navi_highway_service_bg_color">#FF4ABA59</color>
+    <color name="navi_highway_service_bg2_color">#08601E</color>
+    <color name="color_000000_70">#B3000000</color>
+
+    <color name="navi_color_FFFFFF_100">#FFFFFF</color>
+    <color name="navi_tv_cc_write_color">#CCFFFFFF</color>
+    <color name="navi_tv_etc_bg_color">#F1B341</color>
+    <color name="navi_add_via_bg_color">#338E97B9</color>
+    <color name="navi_img_color_one">#00000000</color>
+    <color name="navi_img_color_two">#383839</color>
+    <color name="color_000000_100">#FF000000</color>
+    <color name="navi_img_color_four">#1969696B</color>
+    <color name="navi_img_color_five">#4C383839</color>
+    <color name="navi_img_color_seven">#FFFFFF</color>
+    <color name="navi_img_color_eight">#CCFFFFFF</color>
+    <color name="navi_img_color_nine">#FFF1B341</color>
+    <color name="navi_img_color_ten">#66000000</color>
+    <color name="navi_img_color_eleven">#3D60B4</color>
+    <color name="navi_img_color_twelve">#4F93FF</color>
+    <color name="navi_list_item_stroke_select">#2461EA</color>
+    <color name="color_B2AFC2_15">#26B2AFC2</color>
+    <color name="navi_list_item_bg_select">#1A2461EA</color>
+    <color name="navi_list_item_bg_tag">#26B2AFC2</color>
+    <color name="navi_list_item_tv_one">#FFC73333</color>
+    <color name="navi_last_mile_tv_one">#99383839</color>
+    <color name="navi_line_color_4D818199">#4D818199</color>
+    <color name="navi_text_color_FF3377FF">#FF3377FF</color>
+    <color name="color_4B535D_70">#B34B535D</color>
+    <color name="color_000000_40">#66000000</color>
+    <color name="color_000000_50">#80000000</color>
+    <color name="svg_color_000000">#00000000</color>
+    <color name="svg_color_4B535D">#4B535D</color>
+    <color name="svg_color_383839">#383839</color>
+    <color name="svg_color_C73333">#C73333</color>
+    <color name="svg_color_FFFFFF">#FFFFFF</color>
+    <color name="svg_color_323232">#323232</color>
+    <color name="svg_color_B7BABE">#B7BABE</color>
+    <color name="svg_color_C9CBCE">#C9CBCE</color>
+    <color name="svg_color_FFC407">#FFC407</color>
+    <color name="svg_color_2461EA">#2461EA</color>
+    <color name="svg_color_3D60B4">#3D60B4</color>
+    <color name="svg_color_FF4062D4">#FF4062D4</color>
+    <color name="svg_color_FF5880E0">#FF5880E0</color>
+    <color name="svg_color_4ABA59">#4ABA59</color>
+    <color name="svg_color_1A5187ff">#1A5187ff</color>
+    <color name="svg_color_FFF0F2F8">#FFF0F2F8</color>
+    <color name="svg_color_FFE1E5EA">#FFE1E5EA</color>
+
+    <!--柱状图-->
+    <color name="auto_color_727577">#727476</color>
+    <color name="auto_color_5e5f61">#5e5f61</color>
+    <color name="auto_color_1d8cf5">#1d8cf5</color>
+    <color name="auto_color_0a80fb">#0a80fb</color>
+    <color name="auto_color_42b986">#00d346</color>
+    <color name="auto_color_0ca763">#00b964</color>
+    <color name="auto_color_f4cf4b">#f3df00</color>
+    <color name="auto_color_bfa92e">#c3b733</color>
+    <color name="auto_color_e85466">#ee2e20</color>
+    <color name="auto_color_bf714d">#ba1c1c</color>
+    <color name="auto_color_c04361">#bf025b</color>
+    <color name="auto_color_81132b">#8b0c26</color>
+    <color name="auto_color_0f313336">#0f313336</color>
+    <color name="auto_color_ca6d">#00ca6d</color>
+    <color name="auto_color_5187ff">#5187ff</color>
+    <color name="auto_color_379e4f">#379e4f</color>
+    <color name="auto_color_212226">#212226</color>
+    <color name="auto_color_ffffff">#ffffff</color>
+    <color name="auto_color_393d40_cc">#45484a</color>
+    <color name="auto_color_ffffff_4c">#7fffffff</color>
+    <color name="auto_color_393d40_fa">#fa393d40</color>
+    <color name="auto_color_ffffff_59">#59ffffff</color>
+    <color name="auto_color_3c404f">#3c404f</color>
+
+    <!--巡航-->
+    <color name="ccx_cruise_lane_day">#5187ff</color>
+
+    <!--设置相关-->
+    <color name="setting_others_bg">#2D65B1</color>
+    <color name="account_blue_text">#FF006CFF</color>
+    <color name="map_add_reduce_icon_color">#383839</color>
+    <color name="setting_bg_gray">#338E97B9</color>
+    <color name="setting_des_text_gray">#B3000000</color>
+    <color name="setting_preference_text_gray">#B3000000</color>
+    <color name="setting_preference_select">#2461EA</color>
+    <color name="main_map_limit_loading">#B3000000</color>
+    <!--透明度-->
+    <!--60%透明-->
+    <color name="opacity_99">#66000000</color>
+
+    <color name="poi_gas_type_bg_color">#E5E3EA</color>
+
+    <!-- dialog -->
+    <color name="dialog_msg_top_bg">#F8F8FA</color>
+    <color name="dialog_msg_top_line">#B34B535D</color>
+    <color name="child_sub_title_color">#992461EA</color>
+    <color name="divider_color">#4D818199</color>
+    <color name="confirm_color">#3377FF</color>
+</resources>

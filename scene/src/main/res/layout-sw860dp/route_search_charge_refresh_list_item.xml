@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="android.view.View" />
+        <variable
+            name="model"
+            type="com.fy.navi.service.define.route.RouteLineInfo" />
+
+        <variable
+            name="holder"
+            type="com.fy.navi.scene.ui.adapter.RouteSearchChargeRefreshAdapter.Holder" />
+    </data>
+
+    <com.fy.navi.ui.view.SkinConstraintLayout
+        android:layout_width="@dimen/dp_640"
+        android:layout_height="wrap_content">
+        <com.fy.navi.ui.view.SkinConstraintLayout
+            android:id="@+id/item_root_view_charge"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_202"
+            android:paddingStart="@dimen/dp_20"
+            android:paddingEnd="@dimen/dp_46"
+            tools:visibility="visible">
+
+            <com.fy.navi.ui.view.SkinTextView
+                android:id="@+id/route_item_charge_num"
+                android:layout_width="@dimen/dp_35"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:textColor="@color/text_route_title"
+                android:textSize="@dimen/sp_30"
+                android:text="10"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                />
+
+            <com.fy.navi.ui.view.SkinTextView
+                android:id="@+id/route_item_charge_name"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/dp_52"
+                android:layout_marginTop="@dimen/dp_18"
+                android:layout_marginStart="@dimen/dp_60"
+                android:textColor="@color/black"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:maxWidth="@dimen/dp_380"
+                android:textSize="@dimen/sp_34"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="临港服务区" />
+
+            <com.fy.navi.ui.view.SkinTextView
+                android:id="@+id/route_item_charge_description"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/text_route_defult"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:maxWidth="@dimen/dp_390"
+                android:textSize="@dimen/sp_30"
+                android:layout_marginTop="@dimen/dp_8"
+                app:layout_constraintTop_toBottomOf="@+id/route_item_charge_name"
+                app:layout_constraintStart_toStartOf="@+id/route_item_charge_name"
+                tools:text="198km | 22分钟" />
+
+            <com.fy.navi.ui.view.SkinView
+                android:id="@+id/route_item_charge_add_bg"
+                android:layout_width="@dimen/dp_86"
+                android:layout_height="@dimen/dp_106"
+                android:layout_marginTop="@dimen/dp_16"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                />
+            <com.fy.navi.ui.view.SkinImageView
+                android:id="@+id/route_item_charge_add_img"
+                android:layout_width="@dimen/dp_58"
+                android:layout_height="@dimen/dp_58"
+                android:src="@drawable/img_route_search_add"
+                app:layout_constraintStart_toStartOf="@+id/route_item_charge_add_bg"
+                app:layout_constraintEnd_toEndOf="@+id/route_item_charge_add_bg"
+                app:layout_constraintTop_toTopOf="@+id/route_item_charge_add_bg"/>
+
+            <com.fy.navi.ui.view.SkinTextView
+                android:id="@+id/route_item_charge_add_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/text_route_defult"
+                android:textSize="@dimen/sp_30"
+                android:layout_marginTop="@dimen/dp_4"
+                app:layout_constraintStart_toStartOf="@+id/route_item_charge_add_bg"
+                app:layout_constraintEnd_toEndOf="@+id/route_item_charge_add_bg"
+                app:layout_constraintTop_toBottomOf="@+id/route_item_charge_add_img"
+                tools:text="添加" />
+            <com.fy.navi.ui.view.SkinConstraintLayout
+                android:id="@+id/route_item_charge_fast_root"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/dp_46"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/route_item_charge_name"
+                android:layout_marginBottom="@dimen/dp_26"
+                android:paddingRight="@dimen/dp_10"
+                android:background="@drawable/bg_fast_charge">
+                <com.fy.navi.ui.view.SkinTextView
+                    android:id="@+id/route_item_charge_fast_name"
+                    android:layout_width="@dimen/dp_46"
+                    android:layout_height="@dimen/dp_46"
+                    android:text="快"
+                    android:gravity="center"
+                    android:textColor="@color/route_cricle_dot_gerrn_color"
+                    android:textSize="@dimen/sp_28"
+                    android:background="@drawable/bg_fast_charge_item"/>
+                <com.fy.navi.ui.view.SkinTextView
+                    android:id="@+id/route_item_charge_fast_num_one"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/dp_46"
+                    android:layout_marginStart="@dimen/dp_11"
+                    android:text="@string/route_invalid"
+                    android:gravity="center"
+                    android:textSize="@dimen/sp_28"
+                    android:textColor="@color/black"
+                    app:layout_constraintStart_toEndOf="@+id/route_item_charge_fast_name"/>
+
+                <com.fy.navi.ui.view.SkinTextView
+                    android:id="@+id/route_item_charge_fast_num_two"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/dp_46"
+                    android:text="@string/route_invalid"
+                    android:gravity="center"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/sp_28"
+                    app:layout_constraintStart_toEndOf="@+id/route_item_charge_fast_num_one"/>
+            </com.fy.navi.ui.view.SkinConstraintLayout>
+
+            <com.fy.navi.ui.view.SkinConstraintLayout
+                android:id="@+id/route_item_charge_low_root"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/dp_46"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_marginStart="@dimen/dp_10"
+                android:paddingRight="@dimen/dp_10"
+                app:layout_constraintStart_toEndOf="@+id/route_item_charge_fast_root"
+                android:layout_marginBottom="@dimen/dp_26"
+                android:background="@drawable/bg_fast_charge">
+                <com.fy.navi.ui.view.SkinTextView
+                    android:id="@+id/route_item_charge_low_name"
+                    android:layout_width="@dimen/dp_46"
+                    android:layout_height="@dimen/dp_46"
+                    android:text="慢"
+                    android:textSize="@dimen/sp_28"
+                    android:gravity="center"
+                    android:textColor="@color/route_cricle_dot_orange_color"
+                    android:background="@drawable/bg_fast_charge_item"/>
+                <com.fy.navi.ui.view.SkinTextView
+                    android:id="@+id/route_item_charge_low_num_one"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/dp_46"
+                    android:layout_marginStart="@dimen/dp_11"
+                    android:text="@string/route_invalid"
+                    android:gravity="center"
+                    android:textSize="@dimen/sp_28"
+                    android:textColor="@color/black"
+                    app:layout_constraintStart_toEndOf="@+id/route_item_charge_low_name"/>
+
+                <com.fy.navi.ui.view.SkinTextView
+                    android:id="@+id/route_item_charge_low_num_two"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/dp_46"
+                    android:text="@string/route_invalid"
+                    android:gravity="center"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/sp_28"
+                    app:layout_constraintStart_toEndOf="@+id/route_item_charge_low_num_one"/>
+            </com.fy.navi.ui.view.SkinConstraintLayout>
+
+            <com.fy.navi.ui.view.SkinConstraintLayout
+                android:id="@+id/route_item_charge_price_root"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/dp_46"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_marginStart="@dimen/dp_10"
+                app:layout_constraintStart_toEndOf="@+id/route_item_charge_low_root"
+                android:layout_marginBottom="@dimen/dp_26"
+                >
+                <com.fy.navi.ui.view.SkinImageView
+                    android:id="@+id/route_item_charge_price_name"
+                    android:layout_width="@dimen/dp_36"
+                    android:layout_height="@dimen/dp_36"
+                    android:src="@drawable/img_route_money"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    android:layout_marginBottom="@dimen/dp_5"
+                    />
+                <com.fy.navi.ui.view.SkinTextView
+                    android:id="@+id/route_item_charge_price_num"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/dp_46"
+                    android:text="@string/route_invalid"
+                    android:gravity="center"
+                    android:textSize="@dimen/sp_30"
+                    android:textColor="@color/black"
+                    app:layout_constraintStart_toEndOf="@+id/route_item_charge_price_name"/>
+
+            </com.fy.navi.ui.view.SkinConstraintLayout>
+
+        </com.fy.navi.ui.view.SkinConstraintLayout>
+
+    </com.fy.navi.ui.view.SkinConstraintLayout>
+
+</layout>

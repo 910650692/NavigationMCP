@@ -1,0 +1,32 @@
+plugins {
+    alias(libs.plugins.android.library)
+    alias(libs.plugins.kotlin.plugin)
+}
+
+android {
+    namespace 'com.android.utils'
+    compileSdk Integer.parseInt(libs.versions.compileSdk.get())
+
+    defaultConfig {
+        minSdk Integer.parseInt(libs.versions.minSdk.get())
+        consumerProguardFiles "consumer-rules.pro"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+}
+
+dependencies {
+    implementation libs.bundles.module.library
+    implementation libs.gson
+    implementation libs.okhttp
+}

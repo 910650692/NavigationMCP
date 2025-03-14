@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <style name="style_navi_control_iv_com">
+        <item name="android:layout_width">@dimen/dp_58</item>
+        <item name="android:layout_height">@dimen/dp_58</item>
+        <item name="android:layout_marginTop">@dimen/dp_19</item>
+    </style>
+
+    <style name="style_navi_control_iv2_com">
+        <item name="android:layout_width">@dimen/dp_58</item>
+        <item name="android:layout_height">@dimen/dp_58</item>
+        <item name="android:layout_marginTop">@dimen/dp_5</item>
+    </style>
+
+    <style name="style_navi_control_tv_com">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">@dimen/dp_4</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">@color/navi_control_tv_color</item>
+        <item name="android:textSize">@dimen/sp_30</item>
+    </style>
+
+    <style name="style_navi_control_sv_bg_com">
+        <item name="android:layout_width">@dimen/dp_150</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:background">@drawable/custom_status_bar_bg_selector_day</item>
+    </style>
+
+    <style name="style_navi_control_sv2_bg_com">
+        <item name="android:layout_width">@dimen/dp_148</item>
+        <item name="android:layout_height">@dimen/dp_128</item>
+        <item name="android:background">@drawable/custom_status_bar_bg_selector_day</item>
+    </style>
+
+    <style name="style_navi_tmc_tv_com">
+        <item name="android:layout_width">@dimen/dp_40</item>
+        <item name="android:layout_height">@dimen/dp_40</item>
+        <item name="android:background">@drawable/img_tmc_via</item>
+        <item name="android:text">@string/navi_via_item_pass</item>
+        <item name="android:gravity">center</item>
+        <item name="android:visibility">gone</item>
+        <item name="android:textColor">@color/navi_img_color_seven</item>
+        <item name="android:textSize">@dimen/sp_26</item>
+    </style>
+
+    <declare-styleable name="MaxHeightScrollView">
+        <attr name="maxHeight" format="dimension" />
+    </declare-styleable>
+</resources>

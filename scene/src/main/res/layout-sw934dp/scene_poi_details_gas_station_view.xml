@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="ScenePoiDetailContentView"
+            type="com.fy.navi.scene.impl.poi.ScenePoiDetailContentViewImpl" />
+    </data>
+
+    <com.fy.navi.ui.view.SkinConstraintLayout
+        android:id="@+id/poi_gas_root"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/dp_12"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <com.fy.navi.ui.view.SkinRecyclerView
+            android:id="@+id/poi_gas_oil_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+        <View
+            android:id="@+id/poi_details_sub_line"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_1"
+            android:layout_marginTop="@dimen/dp_30"
+            android:background="@color/setting_text_gray"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/poi_gas_oil_list" />
+
+
+        <com.fy.navi.ui.view.SkinTextView
+            android:id="@+id/poi_gas_business_hours"
+            android:layout_width="@dimen/dp_0"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_38"
+            android:layout_marginEnd="@dimen/dp_10"
+            android:textColor="@color/poi_details_bottom_icon"
+            android:textSize="@dimen/sp_36"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/poi_details_sub_line"
+            tools:text="营业时间: 09:00 -- 21:00" />
+
+        <com.fy.navi.ui.view.SkinTextView
+            android:id="@+id/poi_gas_phone"
+            android:layout_width="@dimen/dp_0"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_14"
+            android:layout_marginBottom="@dimen/dp_30"
+            android:layout_marginEnd="@dimen/dp_10"
+            android:maxLines="1"
+            android:textColor="@color/poi_details_bottom_icon"
+            android:textSize="@dimen/sp_36"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/poi_gas_business_hours"
+            app:layout_constraintBottom_toBottomOf="parent"
+            tools:text="电        话: 021-888888" />
+    </com.fy.navi.ui.view.SkinConstraintLayout>
+</layout>

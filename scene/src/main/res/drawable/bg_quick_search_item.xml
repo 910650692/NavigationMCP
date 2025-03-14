@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="oval">
+
+    <!-- 圆形的背景颜色 -->
+    <solid android:color="#26B2AFC2" />
+
+    <!-- 圆形的边框 -->
+    <stroke
+        android:width="@dimen/dp_1"
+        android:color="#26B2AFC2" />
+
+    <!-- 内部的填充边距（可选） -->
+    <padding
+        android:bottom="@dimen/dp_5"
+        android:left="@dimen/dp_5"
+        android:right="@dimen/dp_5"
+        android:top="@dimen/dp_5" />
+</shape>

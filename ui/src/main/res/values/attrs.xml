@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="SkinTextView">
+        <attr name="select_text_color" format="color"/>
+        <attr name="select_background_color" format="reference"/>
+        <attr name="enable_foreground" format="boolean"/>
+        <attr name="marquee" format="boolean"/>
+    </declare-styleable>
+    <declare-styleable name="SkinConstraintLayout">
+        <attr name="click_color_change" format="boolean" />
+    </declare-styleable>
+</resources>

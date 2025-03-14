@@ -1,0 +1,286 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="ScenePoiDetailContentView"
+            type="com.fy.navi.scene.impl.poi.ScenePoiDetailContentViewImpl" />
+    </data>
+
+    <com.fy.navi.ui.view.SkinConstraintLayout
+        android:id="@+id/poi_charge_root"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <com.fy.navi.ui.view.SkinConstraintLayout
+            android:id="@+id/poi_charge_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <com.fy.navi.ui.view.SkinConstraintLayout
+                android:id="@+id/poi_charge_fast_layout"
+                android:layout_width="@dimen/dp_288"
+                android:layout_height="@dimen/dp_104"
+                android:layout_marginTop="@dimen/dp_4"
+                android:background="@drawable/bg_charge_item_fast"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <com.fy.navi.ui.view.SkinTextView
+                    android:id="@+id/poi_charge_fast_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dp_36"
+                    android:text="@string/charge_title_fast"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/sp_42"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <com.fy.navi.ui.view.SkinTextView
+                    android:id="@+id/poi_charge_fast_occupied"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dp_36"
+                    android:layout_marginTop="@dimen/dp_7"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/sp_42"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toEndOf="@+id/poi_charge_fast_title"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:text="18" />
+
+                <com.fy.navi.ui.view.SkinTextView
+                    android:id="@+id/poi_charge_fast_total"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_7"
+                    android:textColor="@color/navi_tv_cc_write_color"
+                    android:textSize="@dimen/sp_24"
+                    app:layout_constraintBaseline_toBaselineOf="@+id/poi_charge_fast_occupied"
+                    app:layout_constraintBottom_toBottomOf="@+id/poi_charge_fast_occupied"
+                    app:layout_constraintStart_toEndOf="@+id/poi_charge_fast_occupied"
+                    tools:text="/36" />
+
+                <com.fy.navi.ui.view.SkinTextView
+                    android:id="@+id/poi_charge_fast_current_and_vlot"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/sp_24"
+                    app:layout_constraintStart_toStartOf="@+id/poi_charge_fast_occupied"
+                    app:layout_constraintTop_toBottomOf="@+id/poi_charge_fast_occupied"
+                    tools:text="21kw.800v" />
+            </com.fy.navi.ui.view.SkinConstraintLayout>
+
+            <com.fy.navi.ui.view.SkinConstraintLayout
+                android:id="@+id/poi_charge_slow_layout"
+                android:layout_width="@dimen/dp_288"
+                android:layout_height="@dimen/dp_104"
+                android:layout_marginStart="@dimen/dp_24"
+                android:layout_marginTop="@dimen/dp_4"
+                android:background="@drawable/bg_charge_item_slow"
+                app:layout_constraintStart_toEndOf="@+id/poi_charge_fast_layout"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <com.fy.navi.ui.view.SkinTextView
+                    android:id="@+id/poi_charge_slow_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dp_36"
+                    android:text="@string/charge_title_slow"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/sp_42"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <com.fy.navi.ui.view.SkinTextView
+                    android:id="@+id/poi_charge_slow_occupied"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dp_36"
+                    android:layout_marginTop="@dimen/dp_7"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/sp_42"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toEndOf="@+id/poi_charge_slow_title"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:text="18" />
+
+                <com.fy.navi.ui.view.SkinTextView
+                    android:id="@+id/poi_charge_slow_total"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_7"
+                    android:textColor="@color/navi_tv_cc_write_color"
+                    android:textSize="@dimen/sp_24"
+                    app:layout_constraintBaseline_toBaselineOf="@+id/poi_charge_slow_occupied"
+                    app:layout_constraintBottom_toBottomOf="@+id/poi_charge_slow_occupied"
+                    app:layout_constraintStart_toEndOf="@+id/poi_charge_slow_occupied"
+                    tools:text="/36" />
+
+                <com.fy.navi.ui.view.SkinTextView
+                    android:id="@+id/poi_charge_slow_current_and_vlot"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/sp_24"
+                    app:layout_constraintStart_toStartOf="@+id/poi_charge_slow_occupied"
+                    app:layout_constraintTop_toBottomOf="@+id/poi_charge_slow_occupied"
+                    tools:text="21kw.800v" />
+            </com.fy.navi.ui.view.SkinConstraintLayout>
+        </com.fy.navi.ui.view.SkinConstraintLayout>
+
+        <com.fy.navi.ui.view.SkinTextView
+            android:id="@+id/poi_charge_appointment"
+            android:layout_width="@dimen/dp_88"
+            android:layout_height="@dimen/dp_46"
+            android:background="@drawable/bg_charge_appointment"
+            android:gravity="center"
+            android:maxLines="1"
+            android:text="@string/charge_appointment"
+            android:textColor="@color/bg_route_big_window_select"
+            android:textSize="@dimen/sp_30"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/poi_charge_price" />
+
+        <com.fy.navi.ui.view.SkinTextView
+            android:id="@+id/poi_charge_price"
+            android:layout_width="@dimen/dp_0"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_12"
+            android:layout_marginEnd="@dimen/dp_10"
+            android:maxLines="1"
+            android:text="充电费用: 1.2元/度"
+            android:textColor="@color/poi_details_bottom_icon"
+            android:textSize="@dimen/sp_30"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/poi_charge_layout"
+            tools:text="充电费用: 1.2元/度" />
+
+        <com.fy.navi.ui.view.SkinTextView
+            android:id="@+id/poi_charge_price_allday"
+            android:layout_width="@dimen/dp_0"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_24"
+            android:layout_marginTop="@dimen/dp_12"
+            android:layout_marginEnd="@dimen/dp_10"
+            android:maxLines="1"
+            android:text="@string/charge_title_price"
+            android:textColor="@color/bg_route_big_window_select"
+            android:textSize="@dimen/sp_30"
+            android:textStyle="bold"
+            app:layout_constraintStart_toEndOf="@+id/poi_charge_price"
+            app:layout_constraintTop_toBottomOf="@+id/poi_charge_layout" />
+
+        <com.fy.navi.ui.view.SkinTextView
+            android:id="@+id/poi_charge_park_price"
+            android:layout_width="@dimen/dp_0"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_12"
+            android:layout_marginEnd="@dimen/dp_10"
+            android:maxLines="1"
+            android:text="停车费   : 会员免费"
+            android:textColor="@color/poi_details_bottom_icon"
+            android:textSize="@dimen/sp_30"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/poi_charge_price"
+            tools:text="停车费   : 会员免费" />
+
+        <com.fy.navi.ui.view.SkinTextView
+            android:id="@+id/poi_chareg_business_hours"
+            android:layout_width="@dimen/dp_0"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_12"
+            android:layout_marginEnd="@dimen/dp_10"
+            android:maxLines="1"
+            android:text="营业时间: 09:00 -- 21:00"
+            android:textColor="@color/poi_details_bottom_icon"
+            android:textSize="@dimen/sp_30"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/poi_charge_park_price"
+            tools:text="营业时间: 09:00 -- 21:00" />
+
+        <com.fy.navi.ui.view.SkinTextView
+            android:id="@+id/poi_charge_area_phone"
+            android:layout_width="@dimen/dp_0"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_14"
+            android:layout_marginBottom="@dimen/dp_30"
+            android:layout_marginEnd="@dimen/dp_10"
+            android:maxLines="1"
+            android:textColor="@color/poi_details_bottom_icon"
+            android:textSize="@dimen/sp_30"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/poi_chareg_business_hours"
+            tools:text="电        话: 021-888888" />
+
+        <com.fy.navi.ui.view.SkinConstraintLayout
+            android:id="@+id/poi_charge_img_layout"
+            android:layout_width="@dimen/dp_600"
+            android:layout_height="@dimen/dp_352"
+            android:layout_marginTop="@dimen/dp_24"
+            android:background="@drawable/bg_charge_imageview"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/poi_charge_area_phone">
+
+            <com.fy.navi.ui.view.SkinTextView
+                android:id="@+id/poi_charge_img_title"
+                android:layout_width="@dimen/dp_0"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_24"
+                android:layout_marginTop="@dimen/dp_24"
+                android:maxLines="1"
+                android:text="@string/charge_img"
+                android:textColor="@color/poi_details_bottom_icon"
+                android:textSize="@dimen/sp_30"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.fy.navi.ui.view.SkinTextView
+                android:id="@+id/poi_charge_img_confirm"
+                android:layout_width="@dimen/dp_0"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/dp_24"
+                android:maxLines="1"
+                android:text="@string/charge_img_confirm"
+                android:textColor="@color/bg_route_big_window_select"
+                android:textSize="@dimen/sp_30"
+                android:textStyle="bold"
+                app:layout_constraintBaseline_toBaselineOf="@+id/poi_charge_img_title"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/poi_charge_img_card"
+                android:layout_width="@dimen/dp_592"
+                android:layout_height="@dimen/dp_228"
+                android:layout_marginTop="@dimen/dp_29"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/poi_charge_img_title">
+
+                <com.fy.navi.ui.view.SkinImageView
+                    android:id="@+id/poi_charge_img"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop"
+                    tools:src="@mipmap/ic_launcher" />
+            </androidx.cardview.widget.CardView>
+        </com.fy.navi.ui.view.SkinConstraintLayout>
+
+    </com.fy.navi.ui.view.SkinConstraintLayout>
+</layout>

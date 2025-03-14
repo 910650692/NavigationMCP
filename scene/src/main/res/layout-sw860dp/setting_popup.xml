@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.fy.navi.ui.view.SkinLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="@drawable/bg_fragment_common_day">
+
+    <com.fy.navi.ui.view.SkinLinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <com.fy.navi.ui.view.SkinImageView
+            android:id="@+id/setting_close"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/icon_fork" />
+
+        <com.fy.navi.ui.view.SkinTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginStart="@dimen/dp_125"
+            android:layout_marginBottom="@dimen/dp_16"
+            android:text="清理缓存"
+            android:textColor="@color/black"
+            android:textSize="@dimen/sp_18"
+            android:textStyle="bold" />
+
+    </com.fy.navi.ui.view.SkinLinearLayout>
+
+    <com.fy.navi.ui.view.SkinTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="确定要清理缓存吗？"
+        android:textColor="@color/black"
+        android:textSize="@dimen/sp_14"
+        android:layout_gravity="center_horizontal"/>
+
+    <com.fy.navi.ui.view.SkinLinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="@dimen/dp_16">
+
+        <com.fy.navi.ui.view.SkinButton
+            android:id="@+id/button_confirm"
+            android:layout_width="@dimen/dp_0"
+            android:layout_height="@dimen/dp_40"
+            android:text="确认"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:textColor="@color/white"
+            android:layout_marginStart="@dimen/dp_30"
+            android:background="@drawable/bg_setting_confirm"/>
+
+        <com.fy.navi.ui.view.SkinButton
+            android:id="@+id/button_cancel"
+            android:layout_width="@dimen/dp_0"
+            android:layout_height="@dimen/dp_40"
+            android:text="取消"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:layout_marginStart="@dimen/dp_30"
+            android:layout_marginEnd="@dimen/dp_30"
+            android:background="@drawable/bg_setting_cancel"/>
+    </com.fy.navi.ui.view.SkinLinearLayout>
+
+</com.fy.navi.ui.view.SkinLinearLayout>

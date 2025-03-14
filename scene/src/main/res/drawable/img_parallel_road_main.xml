@@ -1,0 +1,51 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="@dimen/dp_68"
+    android:height="@dimen/dp_68"
+    android:viewportWidth="68"
+    android:viewportHeight="68">
+    <path
+        android:fillColor="@color/navi_img_color_one"
+        android:fillType="evenOdd"
+        android:pathData="M16.5,50.92L16.316,16.882"
+        android:strokeWidth="4"
+        android:strokeColor="@color/navi_img_color_two"
+        android:strokeLineCap="round" />
+    <path
+        android:fillColor="@color/navi_img_color_one"
+        android:fillType="evenOdd"
+        android:pathData="M52.5,50.92L52.316,16.882"
+        android:strokeWidth="4"
+        android:strokeColor="@color/navi_img_color_two"
+        android:strokeLineCap="round" />
+    <path
+        android:fillAlpha="0.5987164"
+        android:fillColor="@color/navi_img_color_one"
+        android:fillType="evenOdd"
+        android:pathData="M41.75,48.935L41.75,36.925"
+        android:strokeWidth="6"
+        android:strokeAlpha="0.5987164"
+        android:strokeColor="@color/navi_img_color_two"
+        android:strokeLineCap="round" />
+    <path
+        android:fillAlpha="0.5987164"
+        android:fillColor="@color/navi_img_color_one"
+        android:fillType="evenOdd"
+        android:pathData="M41.75,29.935L41.75,17.925"
+        android:strokeWidth="6"
+        android:strokeAlpha="0.5987164"
+        android:strokeColor="@color/navi_img_color_two"
+        android:strokeLineCap="round" />
+    <path
+        android:fillColor="@color/navi_img_color_two"
+        android:fillType="evenOdd"
+        android:pathData="M31.365,29.21L28.656,33.382C28.355,33.845 27.736,33.977 27.272,33.676C27.095,33.561 26.959,33.393 26.884,33.197L22.081,20.719C21.883,20.204 22.14,19.625 22.655,19.427C22.749,19.391 22.849,19.369 22.949,19.362L36.423,18.488C36.974,18.452 37.45,18.87 37.485,19.421C37.499,19.636 37.444,19.85 37.326,20.03L34.69,24.09L34.69,24.09L31.365,29.21Z"
+        android:strokeWidth="1"
+        android:strokeColor="@color/navi_img_color_one" />
+    <path
+        android:fillColor="@color/navi_img_color_one"
+        android:fillType="evenOdd"
+        android:pathData="M33.185,26.78L41.216,32.662C41.73,33.039 42.034,33.638 42.034,34.276L42.034,49.78L42.034,49.78"
+        android:strokeWidth="5"
+        android:strokeColor="@color/navi_img_color_two"
+        android:strokeLineCap="round" />
+</vector>

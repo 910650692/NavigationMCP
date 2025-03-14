@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="naviViaList"
+            type="com.fy.navi.scene.api.navi.ISceneNaviViaList" />
+    </data>
+
+    <com.fy.navi.ui.view.SkinConstraintLayout
+        android:id="@+id/scl_add_via"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:maxHeight="@dimen/dp_586"
+        tools:background="@color/navi_red_text"
+        tools:layout_height="@dimen/dp_918"
+        tools:layout_width="@dimen/dp_820">
+
+        <com.fy.navi.ui.view.SkinLinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingHorizontal="@dimen/dp_40"
+            android:paddingBottom="@dimen/dp_40">
+
+            <com.fy.navi.ui.view.SkinRecyclerView
+                android:id="@+id/srv_add_via"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+
+            <com.fy.navi.ui.view.SkinLinearLayout
+                android:id="@+id/sll_add_via"
+                clickCommand="@{naviViaList.skipAlongWayFragment}"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_108"
+                android:background="@drawable/bg_navi_btn_add_via"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <com.fy.navi.ui.view.SkinImageView
+                    android:id="@+id/siv_add_via"
+                    android:layout_width="@dimen/dp_68"
+                    android:layout_height="@dimen/dp_68"
+                    android:background="@drawable/img_via_add" />
+
+                <com.fy.navi.ui.view.SkinTextView
+                    android:id="@+id/stv_add_via"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dp_24"
+                    android:gravity="center"
+                    android:text="@string/navi_add_via"
+                    android:textColor="@color/navi_tbt_arrived_color"
+                    android:textSize="@dimen/sp_40" />
+            </com.fy.navi.ui.view.SkinLinearLayout>
+
+        </com.fy.navi.ui.view.SkinLinearLayout>
+    </com.fy.navi.ui.view.SkinConstraintLayout>
+</layout>
+
+
+
+
+

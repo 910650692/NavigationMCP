@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <variable
+            name="ViewModel"
+            type="com.fy.navi.hmi.setting.SettingViewModel" />
+    </data>
+
+    <com.fy.navi.ui.view.SkinConstraintLayout
+        android:layout_width="@dimen/dp_1224"
+        android:layout_height="@dimen/dp_714"
+        android:clickable="true"
+        android:background="@drawable/bg_setting_fragment">
+
+        <com.fy.navi.ui.view.SkinImageView
+            android:id="@+id/setting_close"
+            clickCommand="@{ViewModel.finshSetting}"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_26"
+            android:layout_marginTop="@dimen/dp_38"
+            android:src="@drawable/img_setting_close"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.fy.navi.ui.view.SkinLinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <com.fy.navi.scene.ui.setting.SceneVerticalTabLayout
+                android:id="@+id/tabLayout"
+                android:layout_width="@dimen/dp_223"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_101"
+                android:layout_marginStart="@dimen/dp_40"
+                android:background="@null"
+                app:tabBackground="@drawable/bg_setting_tab"
+                app:tabGravity="fill"
+                app:tabMode="fixed"
+                app:tabIndicatorHeight="0dp"
+                app:tabRippleColor="@null" />
+
+            <com.fy.navi.ui.view.SkinView
+                android:layout_width="@dimen/dp_1"
+                android:layout_height="match_parent"
+                android:background="@color/setting_line"
+                android:layout_marginTop="@dimen/dp_101"
+                android:layout_marginBottom="@dimen/dp_40"
+                android:layout_marginStart="@dimen/dp_30"/>
+
+            <androidx.viewpager2.widget.ViewPager2
+                android:id="@+id/viewPager"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginTop="@dimen/dp_40"
+                android:layout_marginBottom="@dimen/dp_40"
+                android:layout_marginStart="@dimen/dp_30"
+                android:layout_weight="1" />
+
+        </com.fy.navi.ui.view.SkinLinearLayout>
+    </com.fy.navi.ui.view.SkinConstraintLayout>
+</layout>

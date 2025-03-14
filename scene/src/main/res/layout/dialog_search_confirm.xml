@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <com.fy.navi.ui.view.SkinConstraintLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <com.fy.navi.ui.view.SkinConstraintLayout
+            android:layout_width="@dimen/dp_1100"
+            android:layout_height="@dimen/dp_500"
+            android:background="@drawable/shape_bg_dialog"
+            android:paddingHorizontal="@dimen/dp_100"
+            android:paddingVertical="@dimen/dp_80"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <com.fy.navi.ui.view.SkinTextView
+                android:id="@+id/confirm_title"
+                android:layout_width="@dimen/dp_1200"
+                android:layout_height="@dimen/dp_68"
+                android:gravity="center_vertical"
+                android:textColor="#FF181818"
+                android:textSize="@dimen/sp_52"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="提示" />
+
+            <com.fy.navi.ui.view.SkinTextView
+                android:id="@+id/confirm_content"
+                android:layout_width="@dimen/dp_1400"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_32"
+                android:textColor="#B3181818"
+                android:textSize="@dimen/sp_46"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/confirm_title"
+                tools:text="确认吗" />
+
+            <com.fy.navi.ui.view.SkinButton
+                android:id="@+id/dialog_confirm"
+                android:layout_width="@dimen/dp_420"
+                android:layout_height="@dimen/dp_100"
+                android:background="@drawable/bg_shape_commit_button"
+                android:text="@string/dsc_confirm"
+                android:textColor="@color/dialog_commit_text_white"
+                android:textSize="@dimen/sp_42"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <com.fy.navi.ui.view.SkinButton
+                android:id="@+id/dialog_cancel"
+                android:layout_width="@dimen/dp_420"
+                android:layout_height="@dimen/dp_100"
+                android:background="@drawable/bg_shape_cancel_button"
+                android:text="@string/dsc_cancel"
+                android:textColor="@color/dialog_cancel_text_b3181818"
+                android:textSize="@dimen/sp_42"
+                android:layout_marginStart="@dimen/dp_40"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/dialog_confirm" />
+        </com.fy.navi.ui.view.SkinConstraintLayout>
+    </com.fy.navi.ui.view.SkinConstraintLayout>
+</layout>

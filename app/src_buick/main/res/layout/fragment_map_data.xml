@@ -1,0 +1,360 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="ViewModel"
+            type="com.fy.navi.hmi.mapdata.MapDataViewModel" />
+    </data>
+
+    <com.fy.navi.ui.view.SkinLinearLayout
+        android:layout_width="@dimen/dp_1224"
+        android:layout_height="@dimen/dp_714"
+        android:orientation="vertical"
+        android:background="@drawable/bg_setting_fragment">
+
+        <!--离线搜索标题-->
+        <com.fy.navi.ui.view.SkinLinearLayout
+            android:id="@+id/rl_offline_top"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_112"
+            android:layout_marginStart="@dimen/dp_40"
+            android:layout_marginEnd="@dimen/dp_40"
+            android:layout_marginTop="@dimen/dp_40"
+            android:gravity="center_vertical"
+            android:background="@drawable/shape_bg_map_data">
+
+            <com.fy.navi.ui.view.SkinImageView
+                android:id="@+id/iv_offline_map_back"
+                clickCommand="@{ViewModel.finishMapDataView}"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:src="@drawable/img_back_58" />
+
+            <com.fy.navi.ui.view.SkinTextView
+                clickCommand="@{ViewModel.searchMapDataView}"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_4"
+                android:text="@string/offline_search_tip"
+                android:textColor="@color/color_50_000000"
+                android:textSize="@dimen/sp_34" />
+
+        </com.fy.navi.ui.view.SkinLinearLayout>
+
+        <com.fy.navi.ui.view.SkinScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dp_24"
+            android:fillViewport="true">
+
+            <com.fy.navi.ui.view.SkinConstraintLayout
+                android:layout_width="@dimen/dp_1224"
+                android:layout_height="@dimen/dp_714"
+                android:orientation="vertical">
+
+                <!--下载管理入口-->
+                <com.fy.navi.ui.view.SkinConstraintLayout
+                    android:id="@+id/manager_data_view"
+                    clickCommand="@{ViewModel.toManagerMapDataView}"
+                    android:layout_width="match_parent"
+                    android:visibility="visible"
+                    android:layout_height="@dimen/dp_140"
+                    android:layout_marginTop="@dimen/dp_40"
+                    android:layout_marginStart="@dimen/dp_40"
+                    android:layout_marginEnd="@dimen/dp_40"
+                    android:layout_marginBottom="@dimen/dp_40"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:background="@drawable/shape_bg_map_item_data">
+
+                    <com.fy.navi.ui.view.SkinTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/dp_30"
+                        android:text="@string/offline_manager_map_title"
+                        android:textColor="@color/offline_black"
+                        android:textSize="@dimen/sp_34"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <com.fy.navi.ui.view.SkinTextView
+                        android:id="@+id/manager_city_view"
+                        android:layout_width="wrap_content"
+                        android:layout_height="fill_parent"
+                        android:gravity="center_vertical"
+                        android:drawableRight="@drawable/img_right"
+                        android:layout_marginEnd="@dimen/dp_40"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        android:text="@string/offline_manager_map_content"
+                        android:textColor="@color/color_70_000000"
+                        android:textSize="@dimen/sp_30" />
+
+                </com.fy.navi.ui.view.SkinConstraintLayout>
+
+                <!--当前城市包-->
+                <com.fy.navi.ui.view.SkinConstraintLayout
+                    android:id="@+id/view_current_data"
+                    android:layout_width="@dimen/dp_552"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_40"
+                    android:layout_marginStart="@dimen/dp_40"
+                    app:layout_constraintTop_toBottomOf="@+id/manager_data_view"
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:background="@drawable/shape_bg_map_item_data">
+
+                    <com.fy.navi.ui.view.SkinTextView
+                        android:id="@+id/current_city_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/dp_32"
+                        android:layout_marginTop="@dimen/dp_26"
+                        android:text="@string/offline_current_map_title"
+                        android:textColor="@color/offline_black"
+                        android:textSize="@dimen/sp_34"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <com.fy.navi.ui.view.SkinTextView
+                        android:id="@+id/current_city_data"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/dp_8"
+                        android:layout_marginStart="@dimen/dp_32"
+                        android:paddingBottom="@dimen/dp_26"
+                        android:text="@string/offline_current_map_tip"
+                        android:textColor="@color/color_50_000000"
+                        android:textSize="@dimen/sp_30"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/current_city_name" />
+
+                    <!--按钮下载状态-->
+                    <com.fy.navi.ui.view.SkinLinearLayout
+                        android:id="@+id/download_view"
+                        clickCommand="@{ViewModel.toDownloadCurrentCity}"
+                        android:layout_width="@dimen/dp_180"
+                        android:layout_height="@dimen/dp_76"
+                        android:layout_marginEnd="@dimen/dp_24"
+                        android:orientation="horizontal"
+                        android:gravity="center"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        android:background="@drawable/shape_bg_download_data">
+
+                        <com.fy.navi.ui.view.SkinImageView
+                            android:id="@+id/current_city_status"
+                            android:layout_width="@dimen/dp_42"
+                            android:layout_height="@dimen/dp_42"
+                            android:layout_marginEnd="@dimen/dp_8"
+                            android:src="@drawable/img_untop_bwhite_42" />
+
+                        <com.fy.navi.ui.view.SkinTextView
+                            android:id="@+id/current_city_status_tip"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/offline_item_city_status"
+                            android:textColor="@color/white"
+                            android:textSize="@dimen/sp_30" />
+
+                    </com.fy.navi.ui.view.SkinLinearLayout>
+
+                </com.fy.navi.ui.view.SkinConstraintLayout>
+
+                <!--附近推荐城市-->
+                <com.fy.navi.ui.view.SkinConstraintLayout
+                    android:id="@+id/view_near_data"
+                    android:layout_width="@dimen/dp_552"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_40"
+                    android:layout_marginStart="@dimen/dp_40"
+                    android:layout_marginEnd="@dimen/dp_40"
+                    app:layout_constraintTop_toBottomOf="@+id/manager_data_view"
+                    app:layout_constraintLeft_toRightOf="@+id/view_current_data"
+                    android:background="@drawable/shape_bg_map_item_data">
+
+                    <com.fy.navi.ui.view.SkinTextView
+                        clickCommand="@{ViewModel.toNearMapDataView}"
+                        android:id="@+id/tv_near_offline_data"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:layout_marginStart="@dimen/dp_32"
+                        android:layout_marginTop="@dimen/dp_26"
+                        android:drawableRight="@drawable/img_right"
+                        android:text="@string/offline_near_offline_data"
+                        android:textColor="@color/offline_black"
+                        android:textSize="@dimen/sp_34"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <com.fy.navi.ui.view.SkinTextView
+                        android:id="@+id/tv_near_data_count"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/dp_32"
+                        android:layout_marginTop="@dimen/dp_8"
+                        android:gravity="center"
+                        android:paddingBottom="@dimen/dp_20"
+                        android:text="@string/offline_near_data_count"
+                        android:textColor="@color/color_50_000000"
+                        android:textSize="@dimen/sp_30"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/tv_near_offline_data" />
+
+                    <com.fy.navi.ui.view.SkinTextView
+                        android:id="@+id/btn_download_near_data"
+                        android:layout_width="@dimen/dp_180"
+                        android:layout_height="@dimen/dp_76"
+                        android:layout_marginEnd="@dimen/dp_24"
+                        android:gravity="center"
+                        android:background="@drawable/shape_bg_download_data"
+                        android:text="@string/offline_all_net_city_start_download"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/sp_30"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                </com.fy.navi.ui.view.SkinConstraintLayout>
+
+                <!--全部城市-->
+                <com.fy.navi.ui.view.SkinTextView
+                    android:id="@+id/tv_offline_data_tip"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_30"
+                    android:layout_marginStart="@dimen/dp_40"
+                    android:text="@string/offline_text_all_data"
+                    android:textColor="@color/color_50_000000"
+                    android:textSize="@dimen/sp_34"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/view_current_data" />
+
+                <!--基础功能包-->
+                <com.fy.navi.ui.view.SkinConstraintLayout
+                    android:id="@+id/view_country_data"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dp_40"
+                    android:layout_marginTop="@dimen/dp_30"
+                    android:layout_marginEnd="@dimen/dp_40"
+                    android:background="@drawable/shape_bg_map_item_data"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_offline_data_tip">
+
+                    <com.fy.navi.ui.view.SkinTextView
+                        android:id="@+id/country_city_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/dp_20"
+                        android:layout_marginTop="@dimen/dp_20"
+                        android:gravity="center"
+                        android:text="@string/offline_item_city_title"
+                        android:textColor="@color/offline_black"
+                        android:textSize="@dimen/sp_34"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <com.fy.navi.ui.view.SkinTextView
+                        android:layout_width="@dimen/dp_128"
+                        android:layout_height="@dimen/dp_46"
+                        android:layout_marginStart="@dimen/dp_24"
+                        android:layout_marginTop="@dimen/dp_24"
+                        android:gravity="center"
+                        android:background="@color/setting_bg_gray"
+                        android:src="@drawable/img_setting_download_white"
+                        android:text="@string/offline_recommend_map"
+                        android:textColor="@color/color_50_000000"
+                        android:textSize="@dimen/sp_26"
+                        app:layout_constraintLeft_toRightOf="@+id/country_city_name"
+                        app:layout_constraintTop_toTopOf="parent"  />
+
+                    <com.fy.navi.ui.view.SkinTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/dp_20"
+                        android:layout_marginTop="@dimen/dp_8"
+                        android:gravity="center"
+                        android:paddingBottom="@dimen/dp_24"
+                        android:text="@string/offline_base_map_tip"
+                        android:textColor="@color/color_70_000000"
+                        android:textSize="@dimen/sp_30"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/country_city_name" />
+
+                    <!--按钮下载状态-->
+                    <com.fy.navi.ui.view.SkinLinearLayout
+                        clickCommand="@{ViewModel.startDownload}"
+                        android:id="@+id/download_status"
+                        android:layout_width="@dimen/dp_180"
+                        android:layout_height="@dimen/dp_76"
+                        android:layout_marginEnd="@dimen/dp_30"
+                        android:orientation="horizontal"
+                        android:gravity="center"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        android:background="@drawable/shape_bg_download_data">
+
+                        <com.fy.navi.ui.view.SkinImageView
+                            android:id="@+id/country_status"
+                            android:layout_width="@dimen/dp_42"
+                            android:layout_height="@dimen/dp_42"
+                            android:layout_marginEnd="@dimen/dp_8"
+                            android:src="@drawable/img_untop_bwhite_42" />
+
+                        <com.fy.navi.ui.view.SkinTextView
+                            android:id="@+id/country_status_tip"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/offline_item_city_status"
+                            android:textColor="@color/white"
+                            android:textSize="@dimen/sp_30" />
+
+                    </com.fy.navi.ui.view.SkinLinearLayout>
+
+                    <!--数据包大小-->
+                    <com.fy.navi.ui.view.SkinTextView
+                        android:id="@+id/country_data_count"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="@dimen/dp_20"
+                        android:gravity="center"
+                        android:textColor="@color/color_70_000000"
+                        android:textSize="@dimen/sp_30"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintRight_toLeftOf="@+id/download_status"
+                        app:layout_constraintBottom_toBottomOf="parent" />
+
+                </com.fy.navi.ui.view.SkinConstraintLayout>
+
+                <!--全部城市地图数据-->
+                <com.fy.navi.ui.view.SkinRecyclerView
+                    android:id="@+id/rv_offline"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dp_40"
+                    android:layout_marginTop="@dimen/dp_30"
+                    android:layout_marginEnd="@dimen/dp_40"
+                    android:layout_marginBottom="@dimen/dp_40"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/view_country_data" />
+
+            </com.fy.navi.ui.view.SkinConstraintLayout>
+
+        </com.fy.navi.ui.view.SkinScrollView>
+
+    </com.fy.navi.ui.view.SkinLinearLayout>
+
+</layout>

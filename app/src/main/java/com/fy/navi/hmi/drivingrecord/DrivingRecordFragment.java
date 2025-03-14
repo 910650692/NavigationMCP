@@ -1,0 +1,183 @@
+package com.fy.navi.hmi.drivingrecord;
+
+import android.view.Window;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+
+import androidx.recyclerview.widget.LinearLayoutManager;
+
+import com.android.utils.ResourceUtils;
+import com.android.utils.log.Logger;
+import com.android.utils.thread.ThreadManager;
+import com.fy.navi.hmi.BR;
+import com.fy.navi.hmi.R;
+import com.fy.navi.hmi.databinding.FragmentDrivingRecordBinding;
+import com.fy.navi.hmi.drivingrecord.adapter.DrivingRecordAdapter;
+import com.fy.navi.hmi.setting.SettingCheckDialog;
+import com.fy.navi.service.define.user.usertrack.DrivingRecordDataBean;
+import com.fy.navi.ui.base.BaseFragment;
+import com.fy.navi.ui.dialog.IBaseDialogClickListener;
+
+import java.util.ArrayList;
+
+/**
+ * @Description 用户行驶里程
+ * @Author fh
+ * @date 2024/12/24
+ */
+public class DrivingRecordFragment  extends BaseFragment<FragmentDrivingRecordBinding, DrivingRecordViewModel> {
+    private DrivingRecordAdapter drivingRecordAdapter;
+    private SettingCheckDialog deleteDivingRecordDialog;
+    private RecordLoadingDialog recordLoadingDialog;
+    private int currectIndex = 0;
+
+    private ArrayList<DrivingRecordDataBean> dataList = new ArrayList<>();
+
+    @Override
+    public int onLayoutId() {
+        return R.layout.fragment_driving_record;
+    }
+
+    @Override
+    public int onInitVariableId() {
+        return BR.ViewModel;
+    }
+
+    @Override
+    public void onInitView() {
+        initDrivingRecordList();
+        initDeleteDialog();
+        initLoadingDialog();
+    }
+
+    @Override
+    public void onInitData() {
+        ThreadManager.getInstance().postDelay(() -> {
+            mViewModel.isLogin(); // 判断用户当前登录状态
+            mViewModel.getDrivingRecordData(); // 从云端同步数据到本地
+            mViewModel.getDrivingRecordDataList(); // 从本地获取导航行程历史数据
+        },0);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+    }
+
+    @Override
+    public void onInitObserver() {
+        super.onInitObserver();
+    }
+
+    private void initDrivingRecordList() {
+        drivingRecordAdapter = new DrivingRecordAdapter();
+        drivingRecordAdapter.setItemClickListener(new DrivingRecordAdapter.OnItemClickListener() {
+
+            @Override
+            public void onItemClick(int index) {
+                // 跳转到行程详情页
+                recordLoadingDialog.show();
+
+                ThreadManager.getInstance().postDelay(() -> {
+                    mViewModel.goDetailsFragment(dataList.get(index));
+                    recordLoadingDialog.cancel();
+                },3000);
+
+            }
+
+            @Override
+            public void onItemDeleteClick(int index) {
+                currectIndex = index;
+                deleteDivingRecordDialog.show();
+            }
+        });
+        LinearLayoutManager manager = new LinearLayoutManager(getActivity());
+        manager.setOrientation(LinearLayoutManager.VERTICAL);
+        mBinding.rvDrivingRecordList.setLayoutManager(manager);
+        mBinding.rvDrivingRecordList.setAdapter(drivingRecordAdapter);
+
+        mBinding.drivingRecordTab1.setChecked(true);
+        // 监听选择变化（可选）
+        mBinding.drivingRecordTabGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup radioGroup, int i) {
+                // 获取被选中的RadioButton
+                RadioButton checkedRadioButton = getActivity().findViewById(i);
+                // 执行你想要的操作，例如获取被选中的文本
+                String selectedText = checkedRadioButton.getText().toString();
+                // 打印或处理选中的文本
+                Logger.d("RadioGroup", "选中的文本: " + selectedText);
+                if (selectedText.equals("导航历史")) {
+                    mBinding.drivingRecordTab1.setTextColor(getResources().getColor(R.color.white));
+                    mBinding.drivingRecordTab2.setTextColor(getResources().getColor(R.color.main_map_limit_loading));
+                    mViewModel.getDrivingRecordDataList();
+                } else if (selectedText.equals("巡航历史")) {
+                    mBinding.drivingRecordTab1.setTextColor(getResources().getColor(R.color.main_map_limit_loading));
+                    mBinding.drivingRecordTab2.setTextColor(getResources().getColor(R.color.white));
+                    mViewModel.getDrivingRecordCruiseDataList();
+                }
+
+            }
+        });
+    }
+
+    // 更新历史行程数据列表
+    public void updateDrivingRecordView(ArrayList<DrivingRecordDataBean> dataList) {
+        ThreadManager.getInstance().postUi(() -> {
+            this.dataList = dataList;
+            drivingRecordAdapter.setDrivingRecordList(dataList);
+        });
+    }
+
+    // 刷新数据
+    public void getDrivingRecord() {
+        ThreadManager.getInstance().postDelay(() -> {
+            mViewModel.getDrivingRecordData(); // 从云端同步数据到本地
+            mViewModel.getDrivingRecordDataList(); // 从本地获取导航行程历史数据
+        },0);
+    }
+
+    /**
+     * 删除单条记录
+     */
+    public void initDeleteDialog() {
+        deleteDivingRecordDialog = new SettingCheckDialog.Build(getContext())
+                .setTitle(ResourceUtils.Companion.getInstance().getString(R.string.driving_item_delete_title))
+                .setContent(ResourceUtils.Companion.getInstance().getString(R.string.driving_item_delete_message))
+                .setConfirmText(ResourceUtils.Companion.getInstance().getString(R.string.driving_item_delete))
+                .setDialogObserver(new IBaseDialogClickListener() {
+                    @Override
+                    public void onCommitClick() {
+                        mViewModel.delBehaviorData(dataList.get(currectIndex).getId());
+                    }
+
+                    @Override
+                    public void onCancelClick() {
+
+                    }
+                }).build();
+        clearBackground(deleteDivingRecordDialog.getWindow());
+    }
+
+    /**
+     * 加载行程历史详情dialog
+     */
+    public void initLoadingDialog() {
+        recordLoadingDialog = new RecordLoadingDialog.Build(getContext())
+                .setContent(ResourceUtils.Companion.getInstance().getString(R.string.driving_item_loading_message))
+                .setDialogObserver(new IBaseDialogClickListener() {
+                    @Override
+                    public void onCancelClick() {
+
+                    }
+                }).build();
+        clearBackground(recordLoadingDialog.getWindow());
+    }
+
+    private void clearBackground(Window window) {
+        if (window != null) {
+            window.setDimAmount(0f);
+        }
+    }
+
+}

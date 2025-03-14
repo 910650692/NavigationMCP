@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <uses-feature
+        android:name="android.hardware.telephony"
+        android:required="false" />
+
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.CALL_PHONE" />
+    <!--车速-->
+    <uses-permission android:name="android.car.permission.CAR_SPEED" />
+    <uses-permission android:name="android.car.permission.CAR_INFO" />
+    <!--传感器权限-->
+    <uses-permission android:name="android.permission.BODY_SENSORS" />
+    <uses-permission android:name="android.permission.BODY_SENSORS_BACKGROUND" />
+    <!--使用TextToSpeech所需权限，待系统tts包集成后再决定是否删除-->
+    <uses-permission android:name="android.permission.ACCESSIBILITY_SERVICE" />
+    <!--媒体投影权限-->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PROJECTION" />
+
+    <queries>
+        <intent>
+            <action android:name="android.intent.action.TTS_SERVICE" />
+        </intent>
+        <package android:name="com.patac.hmi.settings" />
+    </queries>
+
+    <application
+        android:name="com.fy.navi.NaviApplication"
+        android:allowBackup="true"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:extractNativeLibs="true"
+        android:fullBackupContent="@xml/backup_rules"
+        android:icon="${logo}"
+        android:label="${appName}"
+        android:roundIcon="${roundLogo}"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.NaviApp"
+        android:usesCleartextTraffic="true"
+        tools:targetApi="31">
+
+        <meta-data
+            android:name="CAR_TYPE"
+            android:value="${CAR_TYPE_VALUE}" />
+
+        <activity
+            android:name=".startup.StartupActivity"
+            android:configChanges="uiMode|mcc|mnc|keyboardHidden|keyboard|fontScale|screenLayout|screenSize|locale|colorMode|layoutDirection"
+            android:exported="true"
+            android:launchMode="singleTop"
+            android:screenOrientation="landscape"
+            tools:ignore="DiscouragedApi">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".map.MapActivity"
+            android:configChanges="uiMode|mcc|mnc|keyboardHidden|keyboard|fontScale|screenLayout|screenSize|locale|colorMode|layoutDirection"
+            android:exported="false"
+            android:launchMode="singleTask"
+            android:screenOrientation="landscape"
+            tools:ignore="DiscouragedApi" />
+
+        <activity
+            android:name=".launcher.MapLauncherDeskActivity"
+            android:exported="true"
+            android:launchMode="singleInstance"
+            android:screenOrientation="landscape"
+            tools:ignore="DiscouragedApi" />
+
+        <activity
+            android:name=".launcher.MapLauncherSmallCardActivity"
+            android:exported="true"
+            android:launchMode="singleInstance"
+            android:screenOrientation="landscape"
+            tools:ignore="DiscouragedApi" />
+
+        <service
+            android:name="com.fy.navi.exportservice.MapService"
+            android:defaultToDeviceProtectedStorage="true"
+            android:exported="true"
+            android:foregroundServiceType="specialUse" />
+
+        <service
+            android:name="com.fy.navi.NaviService"
+            android:defaultToDeviceProtectedStorage="true"
+            android:exported="true"
+            android:foregroundServiceType="shortService" />
+
+        <service
+            android:name="com.fy.navi.exportservice.ScreenRecorder"
+            android:enabled="true"
+            android:foregroundServiceType="mediaProjection" />
+
+    </application>
+
+</manifest>

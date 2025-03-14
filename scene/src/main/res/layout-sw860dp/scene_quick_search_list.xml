@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="QuickSearchView"
+            type="com.fy.navi.scene.api.search.ISceneQuickSearchView" />
+    </data>
+
+    <com.fy.navi.ui.view.SkinLinearLayout
+        android:layout_width="@dimen/dp_820"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <include
+            android:id="@+id/search_text_bar_view"
+            layout="@layout/search_text_bar_view"
+            android:layout_width="@dimen/dp_820"
+            android:layout_height="@dimen/dp_102" />
+
+        <com.fy.navi.ui.view.SkinRecyclerView
+            android:id="@+id/sk_rcv_quick"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="@dimen/dp_24"
+            android:background="@drawable/bg_search_main_tab"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </com.fy.navi.ui.view.SkinLinearLayout>
+</layout>

@@ -1,0 +1,16 @@
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@android:id/background">
+        <shape>
+            <solid android:color="@color/white"
+                android:height="@dimen/dp_5"/>
+        </shape>
+    </item>
+    <item android:id="@android:id/progress">
+        <clip >
+
+            <shape >
+                <gradient  android:angle="45" android:startColor="@color/black" android:endColor="@color/black" android:height="@dimen/dp_5"/>
+            </shape>
+        </clip>
+    </item>
+</layer-list>

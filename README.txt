@@ -1,0 +1,2 @@
+1、MapDevice，为AutoSDK抽象出来的地图设备的概念，用于和surfaceview进行绑定。一个surfaceview同一时刻只能绑定一个MapDevice。
+2、MapView，为AutoSDK抽象出来的地图视图的概念，用于和MapDevice进行绑定。一个MapDevice可绑定2个MapView。一个为主图，一个为鹰眼。

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+
+        <variable
+            name="SceneCollectViewImpl"
+            type="com.fy.navi.scene.impl.favorite.SceneCollectViewImpl" />
+    </data>
+
+    <com.fy.navi.ui.view.SkinLinearLayout
+        android:id="@+id/scl_search_top_view"
+        android:layout_width="@dimen/dp_820"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <include
+            android:id="@+id/collect_title_bar_view"
+            layout="@layout/collect_title_bar_view"
+            android:layout_width="@dimen/dp_820"
+            android:layout_height="@dimen/dp_102" />
+
+        <com.fy.navi.ui.view.SkinConstraintLayout
+            android:layout_width="@dimen/dp_820"
+            android:layout_height="@dimen/dp_610"
+            android:layout_marginTop="@dimen/dp_24"
+            android:background="@drawable/bg_search_main_tab">
+
+            <com.fy.navi.ui.view.SkinRecyclerView
+                android:id="@+id/rcv_collect"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="@dimen/dp_20" />
+        </com.fy.navi.ui.view.SkinConstraintLayout>
+    </com.fy.navi.ui.view.SkinLinearLayout>
+</layout>

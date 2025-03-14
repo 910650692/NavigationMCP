@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <variable
+            name="model"
+            type="com.fy.navi.service.define.user.usertrack.DrivingRecordDataBean" />
+        <variable
+            name="holder"
+            type="com.fy.navi.hmi.drivingrecord.adapter.DrivingRecordAdapter.Holder" />
+    </data>
+
+    <com.fy.navi.ui.view.SkinConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.fy.navi.ui.view.SwipeMenuLayout
+            android:id="@+id/swipe_menu_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_40"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:orientation="horizontal">
+
+            <com.fy.navi.ui.view.SkinConstraintLayout
+                android:id="@+id/item_view"
+                android:clickable="true"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_150">
+
+                <com.fy.navi.ui.view.SkinView
+                    android:id="@+id/item_driving_start_img"
+                    android:layout_width="@dimen/dp_16"
+                    android:layout_height="@dimen/dp_16"
+                    android:background="@drawable/bg_start_point"
+                    app:layout_constraintBottom_toBottomOf="@id/item_driving_start_name"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/item_driving_start_name" />
+
+                <com.fy.navi.ui.view.SkinTextView
+                    android:id="@+id/item_driving_start_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dp_24"
+                    android:layout_marginTop="@dimen/dp_25"
+                    android:textSize="@dimen/sp_30"
+                    android:textColor="@color/color_70_000000"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/item_driving_start_img" />
+
+                <com.fy.navi.ui.view.SkinTextView
+                    android:id="@+id/item_driving_date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_6"
+                    android:layout_marginEnd="@dimen/dp_40"
+                    android:textSize="@dimen/sp_32"
+                    android:textColor="@color/color_70_000000"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/item_driving_start_name"
+                    app:layout_constraintBottom_toBottomOf="@+id/item_driving_start_name"/>
+
+                <com.fy.navi.ui.view.SkinView
+                    android:id="@+id/item_driving_end_img"
+                    android:layout_width="@dimen/dp_16"
+                    android:layout_height="@dimen/dp_16"
+                    android:background="@drawable/bg_end_point"
+                    app:layout_constraintBottom_toBottomOf="@id/item_driving_end_name"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/item_driving_end_name" />
+
+                <com.fy.navi.ui.view.SkinTextView
+                    android:id="@+id/item_driving_end_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dp_24"
+                    android:layout_marginTop="@dimen/dp_14"
+                    android:layout_marginBottom="@dimen/dp_25"
+                    android:textSize="@dimen/sp_30"
+                    android:textColor="@color/color_70_000000"
+                    app:layout_constraintStart_toEndOf="@+id/item_driving_end_img"
+                    app:layout_constraintBottom_toBottomOf="parent" />
+
+                <com.fy.navi.ui.view.SkinTextView
+                    android:id="@+id/item_driving_distance"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_10"
+                    android:layout_marginEnd="@dimen/dp_40"
+                    android:textSize="@dimen/sp_32"
+                    android:textColor="@color/color_70_000000"
+                    app:layout_constraintTop_toTopOf="@id/item_driving_end_name"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintBottom_toBottomOf="@id/item_driving_end_name"/>
+
+            </com.fy.navi.ui.view.SkinConstraintLayout>
+
+            <com.fy.navi.ui.view.SkinTextView
+                android:id="@+id/item_driving_delete"
+                android:layout_width="@dimen/dp_170"
+                android:layout_height="@dimen/dp_158"
+                android:drawableTop="@drawable/img_delete_58"
+                android:background="@drawable/bg_driving_item_delete"
+                android:text="@string/driving_item_delete"
+                android:textSize="@dimen/sp_30"
+                android:textColor="@color/color_80_ffffff"
+                android:gravity="center" />
+
+        </com.fy.navi.ui.view.SwipeMenuLayout>
+
+        <com.fy.navi.ui.view.SkinView
+            android:id="@+id/view_line"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_1"
+            android:background="@color/color_70_000000"
+            app:layout_constraintTop_toBottomOf="@id/swipe_menu_layout"
+            app:layout_constraintStart_toStartOf="parent" />
+
+    </com.fy.navi.ui.view.SkinConstraintLayout>
+
+</layout>

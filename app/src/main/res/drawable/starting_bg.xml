@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape>
+             <gradient
+              android:startColor="#040c1d"
+              android:endColor="#010613"
+              android:type="linear"
+              android:angle="90"
+             />
+        </shape>
+    </item>
+    <item>
+        <bitmap android:src="@mipmap/earth" android:gravity="center_horizontal|bottom"/>
+    </item>
+    <item android:bottom="@dimen/dp_210"><!-- 地球大概高度 -->
+        <bitmap android:src="@mipmap/slogan" android:gravity="center"/>
+    </item>
+    <item android:left="@dimen/dp_32" android:bottom="@dimen/dp_16">
+        <bitmap android:src="@mipmap/amap_logo" android:gravity="left|bottom"/>
+    </item>
+    <item android:right="@dimen/dp_27" android:bottom="@dimen/dp_20">
+        <bitmap android:src="@mipmap/copyright" android:gravity="right|bottom"/>
+    </item>
+</layer-list>

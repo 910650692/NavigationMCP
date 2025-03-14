@@ -1,0 +1,30 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="@dimen/dp_58"
+    android:height="@dimen/dp_58"
+    android:viewportWidth="58"
+    android:viewportHeight="58">
+    <path
+        android:fillColor="@color/navi_img_color_one"
+        android:fillType="evenOdd"
+        android:pathData="M34.01,13l20.99,0l-0,42l-21,0"
+        android:strokeWidth="4"
+        android:strokeColor="@color/navi_list_item_tv_one"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round" />
+    <path
+        android:fillColor="@color/navi_img_color_one"
+        android:fillType="evenOdd"
+        android:pathData="M23.5,44.5l-10.5,-10.5l10.5,-10.5"
+        android:strokeWidth="4"
+        android:strokeColor="@color/navi_list_item_tv_one"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round" />
+    <path
+        android:fillColor="@color/navi_img_color_one"
+        android:fillType="evenOdd"
+        android:pathData="M43.333,33.99L13,33.99"
+        android:strokeWidth="4"
+        android:strokeColor="@color/navi_list_item_tv_one"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round" />
+</vector>

@@ -1,0 +1,213 @@
+<resources>
+    <string name="app_name">NaviApp</string>
+    <!-- 搜索相关 -->
+    <string name="main_search_hint">搜索目的地</string>
+    <string name="offline_search_hint">输入省份或城市名称进行搜索</string>
+    <string name="no_search_history">暂无历史记录</string>
+    <string name="st_search_loading">加载中…</string>
+    <!--引导-->
+    <string name="km">公里</string>
+    <string name="meter">米</string>
+    <item name="highway_type" type="id" />
+    <string name="rg_sg_after_meters"><Data><![CDATA[%1$s]]></Data></string>
+    <string name="navi_btn_exit">退出导航</string>
+    <string name="navi_bridge_up">在桥上</string>
+    <string name="navi_bridge_down">在桥下</string>
+    <string name="navi_road_auxiliary">在辅路</string>
+    <string name="navi_road_main">在主路</string>
+    <string name="navi_switch_to_bridge_up">已切换至桥上</string>
+    <string name="navi_switch_to_bridge_down">已切换至桥下</string>
+    <string name="navi_switch_to_road_main">已切换至主路</string>
+    <string name="navi_switch_to_road_auxiliary">已切换至辅路</string>
+    <string name="navi_send_to_phone">已发送至手机</string>
+    <string name="navi_overview_switch">看全览</string>
+    <string name="navi_overview_out">退出全览</string>
+    <string name="navi_overview_fixed">固定全览</string>
+    <string name="navi_refresh">刷新</string>
+    <string name="navi_broadcast_minimalism">极简播报</string>
+    <string name="navi_broadcast_detail">详细播报</string>
+    <string name="navi_broadcast_concise">简洁播报</string>
+    <string name="navi_setting">设置</string>
+    <string name="navi_up_3d">3D车头</string>
+    <string name="navi_up_2d">2D车头</string>
+    <string name="navi_north_2d">2D正北</string>
+    <string name="navi_along_service">服务区</string>
+    <string name="navi_along_parking">停车场</string>
+    <string name="navi_along_search">沿途</string>
+    <string name="navi_voice">静音</string>
+    <string name="navi_mute">已静音</string>
+    <string name="navi_broadcast">播报中</string>
+    <string name="navi_more_setup">更多</string>
+    <string name="navi_excepted">预计余</string>
+    <string name="navi_energy_power">到达余</string>
+    <string name="auto_current_route">当前道路</string>
+    <string name="auto_navi_text_residue_diving">•</string>
+    <string name="arrival_add">+</string>
+    <string name="navi_normal_tip">随后</string>
+    <string name="navi_city_name_postfix">市</string>
+    <string name="navi_town_name_postfix">区</string>
+    <string name="st_quick_search_station">加油站</string>
+    <string name="st_quick_search_charge">充电站</string>
+    <string name="st_quick_search_food">美食</string>
+    <string name="st_quick_search_lavatory">卫生间</string>
+    <string name="st_quick_search_parking">停车场</string>
+    <string name="st_quick_search_car_washing">洗车</string>
+    <string name="st_quick_search_more">更多</string>
+    <string name="navi_arrived">已到达</string>
+    <string name="navi_via_count">等%d个途经点</string>
+    <string name="navi_continue_navi">继续导航</string>
+    <string name="navi_speed_suggest">建议车速</string>
+    <string name="navi_remaining_green_lights">剩余绿灯</string>
+    <string name="navi_remaining_distance">剩余距离</string>
+    <string name="navi_speed_overall">区间限速</string>
+    <string name="navi_add_via">途径点</string>
+    <string name="navi_del">删除</string>
+    <string name="navi_recommend">推荐</string>
+    <string name="navi_via_item_pass">经</string>
+    <string name="navi_via_item_charge">充</string>
+    <string name="navi_via_item_end">终</string>
+    <string name="navi_recommend_parking_tight">紧张</string>
+    <string name="navi_recommend_parking_adequate">充足</string>
+    <string name="navi_recommend_parking_end">当前终点</string>
+    <string name="navi_via_num">"%s 等%d个途径点"</string>
+
+    <string name="navi_send">发送</string>
+    <string name="navi_send_request_info">是否需要发送目的地到手机继续导航？</string>
+    <string name="navi_arrive_destination">即将达到目的地</string>
+    <string name="navi_tel">电话</string>
+
+    <!--算路相关-->
+    <string name="route_search_loading">路线规划中…</string>
+    <string name="route_along_search">沿途搜索</string>
+    <string name="route_change_preference">偏好设置</string>
+    <string name="route_preference">路线偏好</string>
+    <string name="route_gas_station">充电</string>
+    <string name="route_weather">天气</string>
+    <string name="route_along_service">服务区</string>
+    <string name="route_charge_gas_along">沿途</string>
+    <string name="route_charge_gas_end">终点</string>
+    <string name="route_charge_gas_around">周边</string>
+    <string name="route_preference_recommend">推荐路线</string>
+    <string name="route_preference_avoiding_congestion">躲避拥堵</string>
+    <string name="route_preference_less_charge">少收费</string>
+    <string name="route_preference_not_highway">不走高速</string>
+    <string name="route_preference_first_highway">高速优先</string>
+    <string name="route_preference_first_main_road">大路优先</string>
+    <string name="route_preference_fastest_speed">时间优先</string>
+    <string name="route_preference_avoiding_congestion_and_less_charge">躲避拥堵+少收费</string>
+    <string name="route_preference_avoiding_congestion_and_not_highway">躲避拥堵+不走高速</string>
+    <string name="route_preference_avoiding_congestion_and_first_highway">躲避拥堵+高速优先</string>
+    <string name="route_preference_less_charge_and_not_highway">少收费+不走高速</string>
+    <string name="route_preference_avoiding_congestion_and_less_charge_not_highway">躲避拥堵+少收费+不走高速</string>
+    <string name="route_preference_avoiding_congestion_and_first_main_road">躲避拥堵+大路优先</string>
+    <string name="route_preference_avoiding_congestion_and_fastest_speed">躲避拥堵+时间优先</string>
+    <string name="route_details_list_header">起点：我的位置</string>
+    <string name="route_details_list_footer">终点：</string>
+    <string name="route_details_light_count">红绿灯</string>
+    <string name="route_details_light_count_unit">个</string>
+    <string name="route_details_after_to_arrive">后进入</string>
+    <string name="go_home">回家</string>
+    <string name="route_service_list_item_add">添加</string>
+    <string name="route_service_list_item_added">已添加</string>
+    <string name="route_service_details_add_via">添加途经点</string>
+    <string name="route_service_details_remove_via">删除途经点</string>
+    <string name="route_service_details_add_via_charge">添加</string>
+    <string name="route_service_details_remove_via_charge">移除</string>
+    <string name="route_invalid">-</string>
+    <string name="confirm">是的</string>
+    <string name="cancel">取消</string>
+    <string name="is_arrived">是否已抵达%s？</string>
+
+    <!--设置相关 -->
+    <string name="lane_level_navigation">鹰眼图</string>
+    <string name="lane_level_navigation_description">自动切换至高清车道级导航</string>
+    <string name="shc_map_point">地图选点</string>
+    <string name="shc_favorite">收藏夹</string>
+    <string name="shc_get_point">收到的点</string>
+    <string name="shc_my_point">我的位置</string>
+    <string name="shc_add_home">家</string>
+    <string name="shc_add_company">公司</string>
+    <string name="st_collect">收藏夹</string>
+    <string name="st_go_here">去这里</string>
+    <string name="st_add_home">设置为家</string>
+    <string name="st_add_company">设置为公司</string>
+    <string name="st_collect_add">添加</string>
+    <string name="st_poi_details_bottom_around">周边</string>
+    <string name="st_poi_details_favorite">收藏</string>
+    <string name="st_poi_details_bottom_phone">电话</string>
+    <string name="st_along_way_point">途经点</string>
+    <string name="mps_set_home">设置家</string>
+    <string name="mps_set_home_success">设置家成功</string>
+    <string name="mps_set_company">设置公司</string>
+    <string name="mps_set_company_success">设置公司成功</string>
+    <string name="mps_set_add">添加</string>
+    <string name="favorite_item_top">置顶</string>
+    <string name="oil_type_92">92#</string>
+    <string name="oil_type_95">95#</string>
+    <string name="oil_type_98">98#</string>
+    <string name="oil_price">%s/升</string>
+    <string name="catering_price">¥%d</string>
+    <string name="parking_lot_total">共%d</string>
+    <string name="parking_lot_status">%d/%d</string>
+    <string name="st_home">家</string>
+    <string name="st_company">公司</string>
+
+    <!--充电站详情页-->
+    <string name="charge_title_fast">快</string>
+    <string name="charge_title_slow">慢</string>
+    <string name="charge_title_price">全天时段费用</string>
+    <string name="charge_appointment">预约</string>
+    <string name="charge_img">看图找站</string>
+    <string name="charge_img_confirm">点击查看</string>
+    <string name="shv_clear_record">清空记录</string>
+    <string name="dsc_confirm">确定</string>
+    <string name="dsc_cancel">取消</string>
+    <string name="dsc_reset">重置</string>
+    <string name="shv_common_address">常去地址</string>
+    <string name="charge_price">充电费用: %s元/度</string>
+    <string name="charge_park_price">停车费   : %s</string>
+    <string name="scenic_ratio">%d%%选择</string>
+    <string name="business_hour">营业时间：%s</string>
+    <string name="business_hour_title">营业时间：</string>
+    <string name="poi_phone">电话 :%s</string>
+    <string name="sha_no_data">暂无数据</string>
+    <string name="sha_cancel">取消</string>
+    <string name="sha_favorite">收藏</string>
+    <string name="sha_cancel_favorite">取消收藏</string>
+    <string name="sha_has_favorite">已收藏</string>
+    <string name="sha_deleted">已删除</string>
+    <string name="ssh_cleared_history_record">已清空历史记录</string>
+    <string name="smp_set_success">设置成功</string>
+    <string name="scv_not_have_favorite">暂无收藏地址</string>
+    <string name="dialog_content_clear_record">确定清空历史记录？</string>
+    <string name="dialog_title_tip">提示</string>
+    <string name="catering_avg_price">(人均)</string>
+    <string name="filter_text">筛选</string>
+    <string name="filter_result">%s(%d)</string>
+    <string name="search_result_no_data">很抱歉，未找到结果\n您可以换个词试试</string>
+    <string name="search_offline_hint">网络异常，已切换至离线，当前搜索城市：%s</string>
+    <string name="search_offline_no_city_hint">无网络连接，请检查网络后重试</string>
+    <string name="search_offline_no_result_hint">没有找到”%s“相关城市</string>
+    <string name="st_parking_item_recommended">推荐</string>
+    <string name="st_distance_to_finish">距离终点%1$s</string>
+    <string name="text_dial">拨打</string>
+    <string name="text_dial_phone_content">是否拨打电话%s</string>
+
+
+    <!--搜索主页快捷搜-->
+    <string-array name="main_search_categories_name">
+        <item>加油站</item>
+        <item>停车场</item>
+        <item>美食</item>
+        <item>洗车</item>
+        <item>更多</item>
+    </string-array>
+
+    <!--沿途搜索主页快捷搜-->
+    <string-array name="main_along_way_search_categories_name">
+        <item>收藏夹</item>
+        <item>收到的点</item>
+        <item>地图选点</item>
+        <item>沿途</item>
+    </string-array>
+</resources>

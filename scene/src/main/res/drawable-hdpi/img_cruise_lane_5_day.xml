@@ -1,0 +1,12 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="@dimen/dp_36"
+    android:height="@dimen/dp_48"
+    android:viewportWidth="36"
+    android:viewportHeight="48">
+    <path
+        android:fillAlpha="1"
+        android:fillColor="@color/ccx_cruise_lane_day"
+        android:fillType="evenOdd"
+        android:pathData="M20,4.5C15.306,4.5 11.5,8.306 11.5,13V22L3.557,22C3.351,22 3.248,22.248 3.394,22.394L13.837,32.837C13.927,32.927 14.073,32.927 14.163,32.837L24.606,22.394C24.752,22.249 24.649,22 24.443,22L16.5,22V13C16.5,11.067 18.067,9.5 20,9.5H23C24.933,9.5 26.5,11.067 26.5,13V44H31.5V13C31.5,8.306 27.694,4.5 23,4.5H20Z"
+        android:strokeAlpha="1" />
+</vector>

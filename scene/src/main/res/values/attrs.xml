@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="SceneSearchPoiList">
+        <attr name="layoutType" />
+    </declare-styleable>
+
+    <declare-styleable name="SceneSearchBarView">
+        <attr name="layoutType" />
+    </declare-styleable>
+
+    <declare-styleable name="CommonLayoutType">
+        <attr name="layoutType" format="enum">
+            <enum name="scene_sug_search_fragment" value="0" />
+            <enum name="scene_search_result_fragment" value="1" />
+        </attr>
+    </declare-styleable>
+
+
+    <declare-styleable name="SceneVerticalTabLayout">
+        <attr name="isMarginBottom" format="boolean" />
+    </declare-styleable>
+</resources>

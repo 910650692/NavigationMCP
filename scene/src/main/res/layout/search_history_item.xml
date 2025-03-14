@@ -1,0 +1,206 @@
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="com.fy.navi.service.greendao.history.History" />
+
+        <variable
+            name="poiBean"
+            type="com.fy.navi.service.greendao.history.History" />
+
+        <variable
+            name="holder"
+            type="com.fy.navi.scene.ui.adapter.SearchHistoryAdapter.ResultHolder" />
+
+        <variable
+            name="layoutPosition"
+            type="String" />
+    </data>
+
+    <com.fy.navi.ui.view.SwipeMenuLayout
+        android:id="@+id/swipe_menu_layout"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_158"
+        android:orientation="horizontal">
+
+        <com.fy.navi.ui.view.SkinConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingStart="@dimen/dp_52"
+            android:paddingEnd="@dimen/dp_46">
+
+            <com.fy.navi.ui.view.SkinTextView
+                android:id="@+id/poi_num"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:minWidth="@dimen/dp_30"
+                android:text="@{layoutPosition}"
+                android:textColor="@color/search_quick_tab_view_color"
+                android:textSize="@dimen/sp_38"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="1" />
+
+            <com.fy.navi.ui.view.SkinImageView
+                android:id="@+id/poi_icon"
+                android:layout_width="@dimen/dp_40"
+                android:layout_height="@dimen/dp_40"
+                android:src="@drawable/search_poi_icon"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.fy.navi.ui.view.SkinLinearLayout
+                android:id="@+id/crl_poi_des"
+                android:layout_width="@dimen/dp_0"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_50"
+                android:orientation="vertical"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/poi_to_navi"
+                app:layout_constraintStart_toEndOf="@id/poi_icon"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <com.fy.navi.ui.view.SkinTextView
+                    android:id="@+id/poi_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:text="@{poiBean.keyWord}"
+                    android:textColor="@color/search_item_title_color_ff383839"
+                    android:textSize="@dimen/sp_40"
+                    tools:text="德国慕尼黑" />
+
+                <com.fy.navi.ui.view.SkinLinearLayout
+                    android:id="@+id/sk_info_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <com.fy.navi.ui.view.SkinTextView
+                        android:id="@+id/poi_distance"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:ellipsize="end"
+                        android:maxWidth="@dimen/dp_120"
+                        android:maxLines="1"
+                        android:text="100m"
+                        android:textColor="@color/search_quick_tab_view_color"
+                        android:textSize="@dimen/sp_36"
+                        tools:text="100Km" />
+
+                    <View
+                        android:id="@+id/sub_line_view"
+                        android:layout_width="@dimen/dp_1"
+                        android:layout_height="@dimen/dp_40"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginStart="@dimen/dp_10"
+                        android:layout_marginEnd="@dimen/dp_10"
+                        android:background="@color/search_quick_tab_view_color" />
+
+                    <com.fy.navi.ui.view.SkinTextView
+                        android:id="@+id/poi_address"
+                        android:layout_width="@dimen/dp_0"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:ellipsize="end"
+                        android:maxLines="1"
+                        android:text="@{poiBean.endPoiName}"
+                        android:textColor="@color/search_quick_tab_view_color"
+                        android:textSize="@dimen/sp_36"
+                        tools:text="德国慕尼黑啤酒节柏林节柏林披萨慕尼" />
+                </com.fy.navi.ui.view.SkinLinearLayout>
+            </com.fy.navi.ui.view.SkinLinearLayout>
+
+            <com.fy.navi.ui.view.SkinLinearLayout
+                android:id="@+id/poi_to_navi"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <com.fy.navi.ui.view.SkinImageView
+                    android:id="@+id/iv_navi_icon"
+                    android:layout_width="@dimen/dp_68"
+                    android:layout_height="@dimen/dp_68"
+                    android:src="@drawable/img_basic_ic_navi" />
+
+                <com.fy.navi.ui.view.SkinTextView
+                    android:id="@+id/text_navi"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/st_go_here"
+                    android:textColor="@color/search_quick_tab_view_color"
+                    android:textSize="@dimen/sp_36" />
+            </com.fy.navi.ui.view.SkinLinearLayout>
+
+        </com.fy.navi.ui.view.SkinConstraintLayout>
+
+        <com.fy.navi.ui.view.SkinLinearLayout
+            android:id="@+id/ll_action_container"
+            android:layout_width="@dimen/dp_252"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <com.fy.navi.ui.view.SkinLinearLayout
+                android:id="@+id/sll_collect"
+                android:layout_width="@dimen/dp_126"
+                android:layout_height="match_parent"
+                android:background="#E2E4ED"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <com.fy.navi.ui.view.SkinImageView
+                    android:id="@+id/iv_collect"
+                    android:layout_width="@dimen/dp_68"
+                    android:layout_height="@dimen/dp_68"
+                    android:src="@drawable/icon_basic_ic_star_default" />
+
+                <com.fy.navi.ui.view.SkinTextView
+                    android:id="@+id/stv_collect"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_3"
+                    android:gravity="center"
+                    android:text="收藏"
+                    android:textColor="@color/search_quick_tab_view_color"
+                    android:textSize="@dimen/sp_36" />
+
+            </com.fy.navi.ui.view.SkinLinearLayout>
+
+            <com.fy.navi.ui.view.SkinLinearLayout
+                android:id="@+id/sll_delete"
+                android:layout_width="@dimen/dp_126"
+                android:layout_height="match_parent"
+                android:background="#C73333"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <com.fy.navi.ui.view.SkinImageView
+                    android:layout_width="@dimen/dp_68"
+                    android:layout_height="@dimen/dp_68"
+                    android:src="@drawable/img_basic_ic_delete_white" />
+
+                <com.fy.navi.ui.view.SkinTextView
+                    android:id="@+id/stv_delete"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="删除"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/sp_36" />
+
+            </com.fy.navi.ui.view.SkinLinearLayout>
+        </com.fy.navi.ui.view.SkinLinearLayout>
+    </com.fy.navi.ui.view.SwipeMenuLayout>
+</layout>

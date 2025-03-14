@@ -1,0 +1,178 @@
+{
+  "search_result_layer": {
+    "search_result_parent_point": {
+      "search_result_parent_point_1": {
+        "point_layer_item_style": {
+          "normal_style": {
+            "poi_marker_id": "search_parent_point_1",
+            "poi_marker_info": "search_poi_x_y"
+          },
+          "focus_style": {
+            "poi_marker_id": "img_navi_poi_parking_one_select",
+            "poi_marker_info": "search_poi_x_y"
+          }
+        }
+      },
+      "search_result_parent_point_2": {
+        "point_layer_item_style": {
+          "normal_style": {
+            "poi_marker_id": "search_parent_point_2",
+            "poi_marker_info": "search_poi_x_y"
+          }
+        }
+      },
+      "search_result_parent_point_3": {
+        "point_layer_item_style": {
+          "normal_style": {
+            "poi_marker_id": "search_parent_point_3",
+            "poi_marker_info": "search_poi_x_y"
+          }
+        }
+      },
+      "search_result_parent_point_4": {
+        "point_layer_item_style": {
+          "normal_style": {
+            "poi_marker_id": "search_parent_point_4",
+            "poi_marker_info": "search_poi_x_y"
+          }
+        }
+      },
+      "search_result_parent_point_5": {
+        "point_layer_item_style": {
+          "normal_style": {
+            "poi_marker_id": "search_parent_point_5",
+            "poi_marker_info": "search_poi_x_y"
+          }
+        }
+      },
+      "search_result_parent_point_6": {
+        "point_layer_item_style": {
+          "normal_style": {
+            "poi_marker_id": "search_parent_point_6",
+            "poi_marker_info": "search_poi_x_y"
+          }
+        }
+      },
+      "search_result_parent_point_7": {
+        "point_layer_item_style": {
+          "normal_style": {
+            "poi_marker_id": "search_parent_point_7",
+            "poi_marker_info": "search_poi_x_y"
+          }
+        }
+      },
+      "search_result_parent_point_8": {
+        "point_layer_item_style": {
+          "normal_style": {
+            "poi_marker_id": "search_parent_point_8",
+            "poi_marker_info": "search_poi_x_y"
+          }
+        }
+      },
+      "search_result_parent_point_9": {
+        "point_layer_item_style": {
+          "normal_style": {
+            "poi_marker_id": "search_parent_point_9",
+            "poi_marker_info": "search_poi_x_y"
+          }
+        }
+      },
+      "search_result_parent_point_10": {
+        "point_layer_item_style": {
+          "normal_style": {
+            "poi_marker_id": "search_parent_point_10",
+            "poi_marker_info": "search_poi_x_y"
+          }
+        }
+      },
+      "search_result_parent_point_gas": {
+        "point_layer_item_style": {
+          "normal_style": {
+            "poi_marker_id": "search_result_parent_point_gas",
+            "poi_marker_info": "search_poi_x_y"
+          }
+        }
+      },
+      "search_result_parent_point_charge": {
+        "point_layer_item_style": {
+          "normal_style": {
+            "poi_marker_id": "search_result_parent_point_charge",
+            "poi_marker_info": "search_poi_x_y"
+          }
+        }
+      },
+      "search_result_parent_point_car_washing": {
+        "point_layer_item_style": {
+          "normal_style": {
+            "poi_marker_id": "search_result_parent_point_car_washing",
+            "poi_marker_info": "search_poi_x_y"
+          }
+        }
+      },
+      "search_result_parent_point_food": {
+        "point_layer_item_style": {
+          "normal_style": {
+            "poi_marker_id": "search_result_parent_point_food",
+            "poi_marker_info": "search_poi_x_y"
+          }
+        }
+      },
+      "search_result_parent_point_parking": {
+        "point_layer_item_style": {
+          "normal_style": {
+            "poi_marker_id": "search_result_parent_point_parking",
+            "poi_marker_info": "search_poi_x_y"
+          }
+        }
+      },
+      "search_result_parent_point_scenic": {
+        "point_layer_item_style": {
+          "normal_style": {
+            "poi_marker_id": "search_result_parent_point_scenic",
+            "poi_marker_info": "search_poi_x_y"
+          }
+        }
+      },
+      "search_result_parent_point_service_zone": {
+        "point_layer_item_style": {
+          "normal_style": {
+            "poi_marker_id": "search_result_parent_point_service_zone",
+            "poi_marker_info": "search_poi_x_y"
+          }
+        }
+      }
+    },
+    "search_result_parking_point": {
+      "point_search_parking_0": {
+        "point_layer_item_style": {
+          "normal_style": {
+            "poi_marker_id": "img_navi_poi_parking_one_nor"
+          },
+          "focus_style": {
+            "poi_marker_id": "img_navi_poi_parking_one_select"
+          }
+        }
+      },
+      "point_search_parking_1": {
+        "point_layer_item_style": {
+          "normal_style": {
+            "poi_marker_id": "img_navi_poi_parking_two_nor"
+          },
+          "focus_style": {
+            "poi_marker_id": "img_navi_poi_parking_two_select"
+          }
+        }
+      },
+      "point_search_parking_2": {
+        "point_layer_item_style": {
+          "normal_style": {
+            "poi_marker_id": "img_navi_poi_parking_three_nor"
+          },
+          "focus_style": {
+            "poi_marker_id": "img_navi_poi_parking_three_select"
+          }
+        }
+      }
+    }
+  }
+}

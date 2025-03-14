@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="ScenePoiDetailContentView"
+            type="com.fy.navi.scene.impl.poi.ScenePoiDetailContentViewImpl" />
+    </data>
+
+    <com.fy.navi.ui.view.SkinConstraintLayout
+        android:layout_width="@dimen/dp_640"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_poi_main_tab"
+        android:maxHeight="@dimen/dp_714">
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/start_guideline"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            app:layout_constraintGuide_begin="@dimen/dp_40" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/end_guideline"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintGuide_end="@dimen/dp_40" />
+
+        <com.fy.navi.ui.view.SkinTextView
+            android:id="@+id/poi_offline_hint"
+            android:layout_width="@dimen/dp_0"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_24"
+            android:textColor="@color/poi_details_bottom_ff_00"
+            android:background="@drawable/bg_offline"
+            android:textSize="@dimen/sp_34"
+            android:visibility="gone"
+            app:layout_constraintEnd_toStartOf="@+id/end_guideline"
+            app:layout_constraintStart_toStartOf="@+id/start_guideline"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="@string/search_offline_hint"
+            tools:visibility="gone" />
+
+        <com.fy.navi.ui.view.SkinTextView
+            android:id="@+id/sk_poi_name"
+            android:layout_width="@dimen/dp_0"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_40"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textColor="@color/poi_details_bottom_ff_00"
+            android:textSize="@dimen/sp_42"
+            app:layout_constraintEnd_toStartOf="@+id/poi_type_icon"
+            app:layout_constraintStart_toStartOf="@+id/start_guideline"
+            app:layout_constraintTop_toBottomOf="@+id/poi_offline_hint"
+            app:layout_goneMarginTop="@dimen/dp_40"
+            tools:text="东方明珠东方明珠东方明珠东方明珠东方明珠东方明珠" />
+
+        <com.fy.navi.ui.view.SkinImageView
+            android:id="@+id/poi_type_icon"
+            clickCommand="@{ScenePoiDetailContentView.closeFragment}"
+            android:layout_width="@dimen/dp_68"
+            android:layout_height="@dimen/dp_68"
+            android:layout_marginTop="@dimen/dp_22"
+            android:src="@drawable/icon_poi_details_close"
+            app:layout_constraintEnd_toEndOf="@+id/end_guideline"
+            app:layout_constraintTop_toBottomOf="@+id/poi_offline_hint"
+            app:layout_goneMarginTop="@dimen/dp_40" />
+
+        <com.fy.navi.scene.ui.search.MaxHeightScrollView
+            android:id="@+id/poi_details_scroll"
+            android:layout_width="@dimen/dp_0"
+            android:layout_height="wrap_content"
+            app:maxHeight="@dimen/dp_420"
+            android:layout_marginTop="@dimen/dp_30"
+            android:layout_marginBottom="@dimen/dp_40"
+            app:layout_constraintEnd_toEndOf="@+id/end_guideline"
+            app:layout_constraintStart_toStartOf="@+id/start_guideline"
+            app:layout_constraintTop_toBottomOf="@+id/sk_poi_name"
+            app:layout_constraintBottom_toTopOf="@+id/scene_poi_details_bottom_view">
+
+            <com.fy.navi.ui.view.SkinConstraintLayout
+                android:id="@+id/poi_base_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                >
+
+                <com.fy.navi.ui.view.SkinTextView
+                    android:id="@+id/poi_second_address"
+                    android:layout_width="@dimen/dp_0"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_40"
+                    android:layout_marginEnd="@dimen/dp_10"
+                    android:maxLines="2"
+                    android:textColor="@color/search_top_line_view_99383839"
+                    android:textSize="@dimen/sp_36"
+                    app:layout_constraintEnd_toEndOf="@+id/end_guideline"
+                    app:layout_constraintStart_toStartOf="@+id/start_guideline"
+                    app:layout_constraintTop_toBottomOf="@+id/sk_poi_name"
+                    tools:text="世纪大道1号" />
+
+                <com.fy.navi.ui.view.SkinTextView
+                    android:id="@+id/poi_distance_time"
+                    android:layout_width="@dimen/dp_0"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_16"
+                    android:layout_marginEnd="@dimen/dp_10"
+                    android:maxLines="2"
+                    android:text="5.2公里   30分钟"
+                    android:textColor="@color/poi_details_bottom_ff_00"
+                    android:textSize="@dimen/sp_38"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/poi_second_address"
+                    tools:text="5.2公里   30分钟" />
+
+                <com.fy.navi.ui.view.SkinImageView
+                    android:id="@+id/siv_arrival_capacity"
+                    android:layout_width="@dimen/dp_48"
+                    android:layout_height="@dimen/dp_48"
+                    android:src="@drawable/img_electricity_medium_48"
+                    app:layout_constraintBottom_toBottomOf="@+id/poi_arrival_capacity"
+                    app:layout_constraintEnd_toStartOf="@+id/poi_arrival_capacity"
+                    app:layout_constraintTop_toBottomOf="@+id/poi_second_address"
+                    app:layout_constraintTop_toTopOf="@+id/poi_arrival_capacity" />
+
+                <com.fy.navi.ui.view.SkinTextView
+                    android:id="@+id/poi_arrival_capacity"
+                    android:layout_width="@dimen/dp_0"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_16"
+                    android:layout_marginEnd="@dimen/dp_10"
+                    android:maxLines="1"
+                    android:text="15%到达"
+                    android:textColor="@color/poi_details_bottom_ff_00"
+                    android:textSize="@dimen/sp_38"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/poi_second_address"
+                    tools:text="15%到达" />
+
+                <View
+                    android:id="@+id/poi_details_sub_line"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp_1"
+                    android:layout_marginTop="@dimen/dp_20"
+                    app:layout_constraintTop_toBottomOf="@+id/poi_distance_time" />
+
+                <com.fy.navi.ui.view.SkinConstraintLayout
+                    android:id="@+id/poi_content_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/poi_details_sub_line">
+
+                    <include
+                        android:id="@+id/scene_poi_details_gas_station_view"
+                        layout="@layout/scene_poi_details_gas_station_view"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:visibility="visible"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:visibility="gone" />
+
+                    <include
+                        android:id="@+id/scene_poi_details_charging_station_view"
+                        layout="@layout/scene_poi_details_charging_station_view"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:visibility="visible"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:visibility="gone" />
+
+                    <include
+                        android:id="@+id/scene_poi_details_wash_car_view"
+                        layout="@layout/scene_poi_details_wash_car_view"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:visibility="visible"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:visibility="gone" />
+
+                    <include
+                        android:id="@+id/scene_poi_details_catering_view"
+                        layout="@layout/scene_poi_details_catering_view"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:visibility="visible"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:visibility="gone" />
+
+                    <include
+                        android:id="@+id/scene_poi_details_parking_lot_view"
+                        layout="@layout/scene_poi_details_parking_lot_view"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:visibility="visible"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:visibility="gone" />
+
+                    <include
+                        android:id="@+id/scene_poi_details_service_area_view"
+                        layout="@layout/scene_poi_details_service_area_view"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:visibility="visible"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:visibility="gone" />
+
+                    <include
+                        android:id="@+id/scene_poi_details_scenic_spot_view"
+                        layout="@layout/scene_poi_details_scenic_spot_view"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:visibility="visible"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:visibility="gone" />
+
+                    <include
+                        android:id="@+id/scene_poi_details_normal_view"
+                        layout="@layout/scene_poi_details_normal_view"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:visibility="visible"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                </com.fy.navi.ui.view.SkinConstraintLayout>
+
+                <!-- </com.fy.navi.ui.view.SkinScrollView>-->
+
+            </com.fy.navi.ui.view.SkinConstraintLayout>
+
+        </com.fy.navi.scene.ui.search.MaxHeightScrollView>
+
+        <include
+            android:id="@+id/scene_poi_details_bottom_view"
+            layout="@layout/scene_poi_details_bottom_view"
+            android:layout_width="@dimen/dp_0"
+            android:layout_height="@dimen/dp_108"
+            android:layout_marginStart="@dimen/dp_40"
+            android:layout_marginBottom="@dimen/dp_40"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+             />
+
+    </com.fy.navi.ui.view.SkinConstraintLayout>
+</layout>

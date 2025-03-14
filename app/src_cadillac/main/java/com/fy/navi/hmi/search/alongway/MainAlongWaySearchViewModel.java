@@ -1,0 +1,11 @@
+package com.fy.navi.hmi.search.alongway;
+
+import android.app.Application;
+
+import androidx.annotation.NonNull;
+
+public class MainAlongWaySearchViewModel extends BaseMainAlongWaySearchViewModel {
+    public MainAlongWaySearchViewModel(@NonNull Application application) {
+        super(application);
+    }
+}

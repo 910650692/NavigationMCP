@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="transparent">#00000000</color>
+    <color name="black_transparent_33">#33000000</color>
+
+    <!-- 全局默认色值 -->
+    <color  name="default_select_text">#228B22</color >
+    <color  name="default_select_text_off">#000000</color >
+
+    <!-- 通用组件背景色 -->
+    <color name="shape_bg_blue_button_4760ff">#4760FF</color>
+    <color name="shape_bg_grey_button_b2afc2">#4DB2AFC2</color>
+    <color  name="dialog_commit_text_white">#FFFFFFFF</color >
+    <color  name="dialog_cancel_text_b3181818">#B3181818</color >
+</resources>

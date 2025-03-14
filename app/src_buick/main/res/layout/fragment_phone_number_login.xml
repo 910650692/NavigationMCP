@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <variable
+            name="ViewModel"
+            type="com.fy.navi.hmi.account.AccountPhoneNumberLoginViewModel" />
+    </data>
+
+    <com.fy.navi.ui.view.SkinConstraintLayout
+        android:layout_width="@dimen/dp_1224"
+        android:layout_height="@dimen/dp_714"
+        android:clickable="true"
+        android:background="@drawable/bg_setting_fragment">
+
+        <com.fy.navi.ui.view.SkinLinearLayout
+            android:id="@+id/phone_number_login_title"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_120"
+            android:orientation="horizontal"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" >
+
+            <com.fy.navi.ui.view.SkinImageView
+                clickCommand="@{ViewModel.accountBack}"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginStart="@dimen/dp_20"
+                android:src="@drawable/img_basic_ic_back" />
+
+            <com.fy.navi.ui.view.SkinTextView
+                android:id="@+id/account_phone_number_login"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginStart="@dimen/dp_600"
+                android:text="@string/account_phone_number_login"
+                android:textSize="@dimen/sp_46"
+                android:textColor="@color/black" />
+        </com.fy.navi.ui.view.SkinLinearLayout>
+
+        <com.fy.navi.ui.view.SkinView
+            android:id="@+id/line_view"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_1"
+            android:layout_marginTop="@dimen/dp_20"
+            app:layout_constraintTop_toBottomOf="@+id/phone_number_login_title"
+            android:background="@color/sub_tab_line" />
+
+        <com.fy.navi.ui.view.SkinEditText
+            android:id="@+id/phone_number_edit_text"
+            android:layout_width="@dimen/dp_500"
+            android:layout_height="@dimen/dp_100"
+            android:hint="@string/account_phone_number_input"
+            android:inputType="phone"
+            android:singleLine="true"
+            android:background="@color/account_gray"
+            android:textSize="@dimen/sp_36"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/line_view"
+            android:paddingStart="@dimen/dp_10"
+            android:paddingEnd="@dimen/dp_10"
+            android:layout_marginTop="@dimen/dp_50" />
+
+        <com.fy.navi.ui.view.SkinEditText
+            android:id="@+id/verification_code_edit_text"
+            android:layout_width="@dimen/dp_500"
+            android:layout_height="@dimen/dp_100"
+            android:layout_weight="1"
+            android:textSize="@dimen/sp_36"
+            android:background="@color/account_gray"
+            android:hint="@string/account_verification_code_input"
+            android:inputType="number"
+            android:singleLine="true"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/phone_number_edit_text"
+            android:paddingStart="@dimen/dp_10"
+            android:paddingEnd="@dimen/dp_10"
+            android:layout_marginTop="@dimen/dp_20" />
+
+        <com.fy.navi.ui.view.SkinButton
+            clickCommand="@{ViewModel.getVerificationCode}"
+            android:id="@+id/get_verification_code_button"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/dp_80"
+            android:text="@string/account_get_verification_code"
+            android:textSize="@dimen/sp_28"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/phone_number_edit_text"
+            android:layout_marginTop="@dimen/dp_30"
+            android:layout_marginStart="@dimen/dp_290"/>
+
+        <com.fy.navi.ui.view.SkinButton
+            clickCommand="@{ViewModel.clickLogin}"
+            android:id="@+id/account_login"
+            android:layout_width="@dimen/dp_150"
+            android:layout_height="@dimen/dp_80"
+            android:text="@string/account_login"
+            android:textSize="@dimen/sp_28"
+            android:layout_marginTop="@dimen/dp_50"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/verification_code_edit_text"/>
+
+        <com.fy.navi.ui.view.SkinTextView
+            clickCommand="@{ViewModel.clickQRCodeLogin}"
+            android:id="@+id/account_login_switch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_10"
+            android:layout_marginEnd="@dimen/dp_10"
+            android:layout_marginTop="@dimen/dp_20"
+            android:layout_marginBottom="@dimen/dp_10"
+            android:gravity="center"
+            android:text="@string/account_QRCode_login"
+            android:textSize="@dimen/sp_28"
+            android:textColor="@color/account_blue_text"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/account_login" />
+
+    </com.fy.navi.ui.view.SkinConstraintLayout>
+
+</layout>

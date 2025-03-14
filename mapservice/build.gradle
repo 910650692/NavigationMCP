@@ -1,0 +1,78 @@
+plugins {
+    id 'com.android.library'
+    id 'maven-publish'
+}
+
+def lib_version = "0.1.36";
+
+android {
+    namespace 'com.fy.navi.mapservice'
+    compileSdk Integer.parseInt(libs.versions.compileSdk.get())
+
+    defaultConfig {
+        minSdk Integer.parseInt(libs.versions.minSdk.get())
+        consumerProguardFiles "consumer-rules.pro"
+    }
+
+    buildFeatures {
+        aidl = true
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
+    lintOptions {
+        checkReleaseBuilds false
+        abortOnError false
+    }
+
+    publishing {
+        singleVariant('release') // 指定要发布的构建变体
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: "libs", include: ["*.jar"])
+    implementation project(":utils")
+    implementation libs.gson
+}
+
+publishing {
+    publications {
+        release(MavenPublication) {
+
+            groupId "com.fy.navi.mapservice"
+            artifactId "mapservice"
+            version "$lib_version"
+            description = "泛亚高德750地图提供的三方应用调用地图能力接口"
+
+            afterEvaluate {
+                //指定artifact
+                artifact("$buildDir/outputs/aar/mapservice-release.aar")
+            }
+        }
+    }
+
+    //定义仓库
+    repositories {
+        maven {
+            //指定要上传的maven私服仓库
+            url = "https://info-maven.apps.saic-gm.com/repository/PATAC_info4_HMI/"
+            allowInsecureProtocol = true
+            //认证用户和密码
+            credentials {
+                username "mavenupload"
+                password "Cmbjx#123"
+            }
+        }
+    }
+}

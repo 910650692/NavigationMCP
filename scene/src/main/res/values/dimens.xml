@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="collect_item_subscript_text_size">@dimen/dp_40</dimen>
+
+    <dimen name="collect_item_height">@dimen/dp_174</dimen>
+    <dimen name="collect_item_subscript_margin_start">@dimen/dp_22</dimen>
+    <dimen name="collect_item_subscript_text_width">@dimen/dp_68</dimen>
+    <dimen name="collect_item_subscript_text_height">@dimen/dp_68</dimen>
+    <dimen name="collect_item_subscript_text_minWidth">@dimen/dp_30</dimen>
+</resources>

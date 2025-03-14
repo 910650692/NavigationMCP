@@ -1,0 +1,567 @@
+<resources>
+    <string name="app_name">NaviApp</string>
+    <!--启动界面-->
+    <string name="permission_quest_fail">权限申请失败</string>
+    <string name="permission_quest_dialog_commit">确定</string>
+    <string name="permission_quest_dialog_cancel">取消</string>
+
+    <!-- 隐私条款和协议 -->
+    <string name="reminder_use_agreement">用户条款和个人信息保护政策</string>
+    <string name="reminder_click_to_view">点击查看</string>
+    <string name="reminder_page_service">《高德服务条款》</string>
+    <string name="reminder_page_privacy">《高德隐私权政策》</string>
+    <string name="reminder_page_service_title">高德服务条款</string>
+    <string name="reminder_page_privacy_title">高德隐私权政策</string>
+    <string name="reminder_user_terms_personal_info">高德地图使用提示\n
+        1.欢迎您使用高德地图！请在使用本软件前认真阅读和充分理解《高德服务条款》和《高德隐私权政策》，您开始使用即表示您已同意前述文件。\n
+        2.请您不要在驾驶车辆的同时操作或注视本软件，务必在确保安全的前提下使用本软件，以防发生交通事故或其他危险情况。\n
+        3.本软件提供的地点查询、路线规划、出行导航、交通路况等功能和服务仅供您参考，请不要以此作为您行驶或出行的唯一依据。请您以实际的交通和道路状况为准，并严格遵守交通法律法规和交通规则。\n
+        4.我们建议您在使用本软件前下载离线地图数据，以确保您在车辆断网的情况下可以继续使用本软件的离线地图服务。如您的车机内未安装离线地图数据，则本软件的全部功能需联网后才可使用，软件功能和服务的质量将严重依赖于车机的网络状态；若因为网络原因导致本软件全部或者部分功能不可用，请您向您的电信服务商或者车辆生产商寻求帮助。\n
+        5.本软件的部分功能需联网后才可使用。您使用在线导航、交通路况、数据下载等联网的功能时会消耗网络流量，因此产生的流量费由您的电信服务商收取，具体收费标准请向其咨询。</string>
+    <string name="reminder_dialog_commit">确定</string>
+    <string name="reminder_dialog_cancel">取消</string>
+    <string name="reminder_page_service_content">
+        1.1在使用高德提供的软件、网站、服务(统称为"高德产品或服务",包括但不限于适用于电脑、移动智能终端、车载导航仪、智能后视镜、行车记录仪的产品及服务、高德地图开放平台产品及服务)之前,请您多必认真阅读并充分理解《高德服务条款》、《高德隐私权政策》以及开通或使用某项服务的附加条款(统称为"高德服务协议"),特别是关于特别提示、个人信息保护、接收邮件及消息、担保与保保证、免责及责任限制、争议解决等条款,该类条款可能以粗体下划线方式进行标识请您注意重点阅读。
+        \n1.2如果您对本条款有疑问,请您通过高德客服渠道进行询问,高德将向您解释本条款内容。一旦您开始使用高德产品或服务,即表示您已经理解并同意相关协议,该协议即构成对您具有法律约束力的法律文件
+        \n1.3您声明您有充分的权力、能力和权限来同意和履行本条款。如果您代表您的雇主或客户同意本条款,您声明您有充分的法律律授权使您的雇主或客户受到本条款的约束。如果您没有充分的法律授权,请您确保由您的雇主或客户的授权人士来同意本条款。
+        \n1.4高德重视未成年人的安全及个人信息保护,如您为未成年人,请您多务必在您的监护人仔细阅读高德服务协议并同意的前提下使用我们的产品或服务或向我们提供信息;如您违反法律法规或高德服务协议内容使用膻德产品或服务,造成的一切后果由您及您的监护人承担。
+    </string>
+    <string name="reminder_page_privacy_content">
+        欢迎您使用我们的产品和服务！我们深知个人信息对您的重要性，您的信赖对我们非常重要，我们将严格遵守法律法规要求采取相应的安全保护措施，致力于保护您的个人信息安全可控。基于此，高德（或简称“我们”）制定本《高德隐私权政策》（下称“本政策”/“本隐私政策”），帮助您充分了解在您使用我们产品和服务的过程中，我们会如何收集、使用、共享、存储和保护您的个人信息以及您可以如何管理您的个人信息，以便您更好地作出适当的选择。
+        在您开始使用我们的产品和服务前，请您务必先仔细阅读和理解本政策，特别应重点阅读我们以粗体/粗体下划线标识的条款，确保您充分理解和同意之后再开始使用。除本政策外，在特定场景下，我们还会通过即时告知（含消息、公告等）、功能更新说明等方式，向您说明对应的信息收集目的、范围及使用方式，这些即时告知及功能更新说明等构成本政策的一部分，并与本政策具有同等效力。本政策中涉及的专业词汇，我们尽量以简明通俗的表述向您解释，以便于您理解。如对本政策内容有任何疑问、意见或建议，您可通过本政策文末的联系方式与我们联系。
+        根据《常见类型移动互联网应用程序必要个人信息范围规定》，高德地图为地图导航类应用，基本功能为定位和导航，为实现基本功能所需要处理的必要个人信息为位置信息、出发地、到达地。如您同意本隐私政策，仅代表同意使用基本功能时处理相关个人信息，如您使用高德地图其他扩展功能，我们会在您使用具体扩展功能时另行征求您的同意。
+    </string>
+
+    <!-- 引擎初始化 -->
+    <string name="engine_init_fail">引擎初始化失败</string>
+    <!-- 工程面板入口 -->
+    <string name="engineering_panel_entrance">工程面板入口</string>
+    <!-- 工程面板相关 -->
+    <string name="test_mapcenter">自车位</string>
+    <string name="test_route">发起算路</string>
+    <string name="test_sim_navi">选路第一条</string>
+    <string name="test_start_navi">开始导航</string>
+    <string name="test_offline_data">离线数据初始化</string>
+    <string name="test_list_city_data">获取所有城市信息</string>
+    <string name="test_current_city_data">查询当前城市数据</string>
+    <string name="test_key_city_data">查询“海”城市数据</string>
+    <string name="test_insert_city_data">插入数据</string>
+    <string name="test_query_city_data">查询数据</string>
+    <string name="test_delete_city_data">删除数据</string>
+    <string name="test_stop_navi">结束导航</string>
+    <string name="test_start_debug">打开调试</string>
+    <string name="test_stop_debug">关闭调试</string>
+    <string name="test_setting">设置</string>
+    <string name="test_account">账户</string>
+    <string name="test_calibration">标定</string>
+    <string name="test_signal">can信号</string>
+
+    <!-- 搜索相关 -->
+    <string name="main_search_hint">搜索目的地</string>
+    <string name="no_search_history">暂无历史记录</string>
+    <string name="along_way_search_title">沿途搜</string>
+    <string name="around_search_title">在%s附近搜索</string>
+    <string name="around_search_title_current_location">当前位置</string>
+
+    <!-- 离线数据相关 -->
+    <string name="offline_title">离线地图</string>
+    <string name="offline_search_tip">请输入简体中文、拼音或首字母</string>
+    <string name="offline_recommend_map">推荐下载</string>
+    <string name="offline_text_all_data">全部城市</string>
+    <string name="offline_near_offline_data">附近城市推荐</string>
+    <string name="offline_text_administration">下载管理</string>
+    <string name="offline_item_province_title">省份</string>
+    <string name="offline_item_city_title">基础功能包</string>
+    <string name="offline_item_city_data">0MB</string>
+    <string name="offline_item_city_status">下载</string>
+    <string name="offline_base_map_tip">跨区域导航必备</string>
+    <string name="offline_current_map_tip">上海市  0MB</string>
+    <string name="offline_near_data_count">x个城市  共xMB</string>
+    <string name="offline_current_map_title">当前城市</string>
+    <string name="offline_city_downloading">下载中</string>
+    <string name="offline_city_downloaded">已下载</string>
+    <string name="offline_all_net_city_start_download">全部下载</string>
+    <string name="offline_all_city_start_download">全部开始</string>
+    <string name="offline_all_city_suspend_download">全部暂停</string>
+    <string name="offline_delete_city_data">删除</string>
+    <string name="offline_empty_tip">暂无数据</string>
+    <string name="offline_no_search_hint">没有找到相关城市</string>
+    <string name="offline_manager_map_title">下载管理</string>
+    <string name="offline_manager_map_content">1个城市下载更新中...</string>
+    <string name="offline_manager_map_downloading">正在下载</string>
+
+    <!--算路相关-->
+    <string name="route_along_search">途径点</string>
+    <string name="route_energy_replenishment_planning">补能规划</string>
+    <string name="route_gas_station">充电</string>
+    <string name="route_weather">天气</string>
+    <string name="route_along_service">服务区</string>
+    <string name="route_reatirction_limittipstypenoplate">设置车牌， 避开限行</string>
+    <string name="route_reatirction_limittipstypenotopen">打开避开限行功能， 避开限行区域</string>
+    <string name="route_reatirction_limittipstypeavoidsuccess">已为您避开限行区域</string>
+    <string name="route_reatirction_limittipstyperegionstart">起点在限行区域内，请合理安排出行时间</string>
+    <string name="route_reatirction_limittipstyperegionend">终点在限行区域内，请合理安排出行时间</string>
+    <string name="route_reatirction_limittipstyperegionvia">途经点在限行区域内，请合理安排出行时间</string>
+    <string name="route_reatirction_limittipstyperegioncross">无法避开限行区域，请合理安排出行时间</string>
+    <string name="route_reatirction_limittipstypenetwork">当前网络不佳，无法避开限行，请尝试刷新</string>
+    <string name="route_avoid_road">避开路段</string>
+    <string name="route_sim_navi">模拟导航</string>
+    <string name="route_avoid">避开</string>
+    <string name="route_refresh">刷新</string>
+    <string name="route_change_preference">偏好设置</string>
+    <string name="route_preference">路线偏好</string>
+    <string name="route_preference_recommend">推荐路线</string>
+    <string name="route_preference_avoiding_congestion">躲避拥堵</string>
+    <string name="route_preference_less_charge">少收费</string>
+    <string name="route_preference_not_highway">不走高速</string>
+    <string name="route_preference_first_highway">高速优先</string>
+    <string name="route_preference_first_main_road">大路优先</string>
+    <string name="route_preference_fastest_speed">时间优先</string>
+    <string name="route_preference_avoiding_congestion_and_less_charge">躲避拥堵+少收费</string>
+    <string name="route_preference_avoiding_congestion_and_not_highway">躲避拥堵+不走高速</string>
+    <string name="route_preference_avoiding_congestion_and_first_highway">躲避拥堵+高速优先</string>
+    <string name="route_preference_less_charge_and_not_highway">少收费+不走高速</string>
+    <string name="route_preference_avoiding_congestion_and_less_charge_not_highway">躲避拥堵+少收费+不走高速</string>
+    <string name="route_preference_avoiding_congestion_and_first_main_road">躲避拥堵+大路优先</string>
+    <string name="route_preference_avoiding_congestion_and_fastest_speed">躲避拥堵+时间优先</string>
+    <string name="route_start_navi">开始导航</string>
+    <string name="route_start_route_fail">算路失败</string>
+    <string name="route_my_location">我的位置</string>
+    <string name="route_service_list_refresh">筛选</string>
+    <string name="route_service_text">服务区</string>
+    <string name="route_poi_details_phone">电        话:</string>
+    <string name="route_poi_details_bussTime">营业时间:</string>
+    <string name="route_no_function">暂未添加</string>
+    <string name="route_error_add_start_end">无法移除起点和终点</string>
+    <string name="route_error_via_max">超出最大途经点限制</string>
+    <string name="route_error_wearher">无法获取天气信息</string>
+    <string name="route_trip_title">立即打开</string>
+    <string name="route_trip_elec_not_arrive">电量预计不可达，是否打开补能规划？</string>
+    <string name="route_trip_elec_small">抵达终点后剩余电量低，是否打开补能规划？</string>
+    <string name="route_status_issue">状态异常</string>
+    <string name="route_via_head">途径</string>
+    <string name="route_via_palce">地：</string>
+    <string name="route_weather_update_head">高德交通： 更新于</string>
+    <string name="route_weather_update_end">前</string>
+    <string name="route_search_keyword_charge">充电站</string>
+    <string name="route_search_keyword_charge_sure">确定</string>
+    <string name="route_search_keyword_charge_cancel">取消</string>
+    <string name="route_search_keyword_service">服务区</string>
+    <string name="route_details_building">建设中</string>
+    <string name="route_details_not_find">未调查</string>
+    <string name="route_details_starting">装修中</string>
+    <string name="route_details_stoped">暂停营业</string>
+    <string name="route_details_jg">/</string>
+    <string name="route_details_charge_free">充电费用: </string>
+    <string name="route_details_charge_free_unit">元/度</string>
+    <string name="route_details_charge_park_free">停车费   :</string>
+    <string name="route_alter_charge_station_title">替换补能点</string>
+    <string name="route_selected_charge_station">当前站点</string>
+    <string name="route_alter_charge_stations">以下充电站可供替换</string>
+    <string name="route_alter">替换</string>
+    <string name="route_charge_stations_cost">￥ %s/%s</string>
+    <string name="route_charge_stations_fast">快 %s/%s</string>
+    <string name="route_charge_stations_slow">慢 %s/%s</string>
+    <string name="route_expected_battery_depletion">预计电量耗尽</string>
+    <string name="route_total_mileage">总里程</string>
+    <string name="route_invalid">-</string>
+    <string name="format_one_point_num">%.1f</string>
+    <string name="kilometer">公里</string>
+    <string name="meter">米</string>
+
+    <!-- 账号相关 -->
+    <string name="account_title">账号中心</string>
+    <string name="account_user_name">高德用户名</string>
+    <string name="account_not_login">未登录</string>
+    <string name="account_login">登录</string>
+    <string name="account_key_login">一键登录</string>
+    <string name="account_login_out">退出登录</string>
+    <string name="account_phone_number_login">手机号登陆</string>
+    <string name="account_phone_number_input">请输入手机号</string>
+    <string name="account_verification_code_input">请输入验证码</string>
+    <string name="account_get_verification_code">获取验证码</string>
+    <string name="account_QRCode_login">扫码登陆</string>
+    <string name="account_QRCode_login_tip">使用手机高德扫码登录</string>
+    <string name="account_hand_car_connect">手车互联</string>
+    <string name="account_car_connect_tip">导航路线自动投射至车机大屏，手机则变为遥控器</string>
+    <string name="account_chat_connect">绑定高德微信账号</string>
+    <string name="account_favorite">收藏夹</string>
+    <string name="account_travel_record">出行记录</string>
+    <string name="favorite_title">收藏夹</string>
+    <string name="favorite_sync_tip">同步更新于：</string>
+    <string name="favorite_sync">同步</string>
+    <string name="favorite_setting">去设置</string>
+    <string name="favorite_home">家</string>
+    <string name="favorite_company">公司</string>
+    <string name="favorite_frequent_address">常去地址</string>
+    <string name="favorite_frequent_address_title">人民广场</string>
+    <string name="favorite_tip">暂无收藏地址</string>
+    <string name="favorite_item_name">东方万国</string>
+    <string name="favorite_item_address">浦东新区金桥路1599号</string>
+    <string name="favorite_item_navi">去这里</string>
+    <string name="favorite_item_top">置顶</string>
+    <string name="favorite_item_cancel_top">取消</string>
+    <string name="favorite_item_delete">删除</string>
+    <string name="favorite_item_done">完成</string>
+    <string name="favorite_item_rename">重命名</string>
+    <string name="favorite_item_edit">编辑</string>
+    <string name="favorite_add">添加</string>
+    <string name="favorite_top_back">返回顶部</string>
+    <string name="favorite_favorite_switch">开启后，在地图上显示通勤地址位置及形成信息</string>
+    <string name="favorite_switch_common">常用收藏夹</string>
+    <string name="favorite_switch_charge">专属充电站</string>
+    <string name="favorite_no_charging">暂无数据</string>
+    <string name="favorite_no_charging_tip">请先登录SGM账号后再试试</string>
+    <string name="favorite_no_charging_data">暂未收藏专属充电站</string>
+    <string name="favorite_charging_request_fail">数据获取失败，请刷新</string>
+    <string name="favorite_charging_offline">无网络链接，请检查网络后重试</string>
+    <string name="favorite_top">返回顶部</string>
+
+    <string name="car_connect_title">手车互联</string>
+    <string name="car_connect_unLogin_function_1">手机遥控车机</string>
+    <string name="car_connect_unLogin_function_2">无感互联</string>
+    <string name="car_connect_unLogin_function_3">收查看爱车位置</string>
+    <string name="car_connect_unLogin_function_4">同步双端历史&amp;收藏</string>
+    <string name="car_connect_unLogin_function_tip">上车后，手机开启导航时，导航路线自动投射至车机大屏，手机则变为遥控器</string>
+    <string name="car_connect_unLogin_function_prompt">发现可连接设备，点击下方按钮去扫码连接吧</string>
+    <string name="car_connect_unLogin_function_no_device">当前没有发现可用设备</string>
+    <string name="car_connect_btn_login">链接手机</string>
+    <string name="car_connect_login_user_name">登录高德账号</string>
+    <string name="car_connect_login_already_connected">手车已互联</string>
+    <string name="car_connect_login_not_connected">登录高德账号即手车互联</string>
+    <string name="car_connect_login_function_1">遥控导航</string>
+    <string name="car_connect_login_function_2">无感互联</string>
+    <string name="car_connect_login_function_3">手机找车</string>
+    <string name="car_connect_login_function_4">数据同步</string>
+    <string name="car_connect_login_function_1_des">手机导航投射车机</string>
+    <string name="car_connect_login_function_2_des">地点/路线自动同步</string>
+    <string name="car_connect_login_function_3_des">手机查看爱车位置</string>
+    <string name="car_connect_login_function_4_des">自动同步历史&amp;收藏</string>
+    <string name="car_connect_login_function_last_distance">最后1公里发送目的地至高德APP</string>
+    <string name="car_connect_login_toast">手机车机链接成功</string>
+    <string name="chat_connect_title">微信互联</string>
+    <string name="chat_connect_tip">绑定微信后,微信位置可发送至车机,快速发起导航</string>
+    <string name="chat_connect_login_tip">使用微信扫码绑定</string>
+    <string name="chat_connect_send_to_car">发送位置至车机</string>
+    <string name="chat_connect_bind">已绑定微信</string>
+    <string name="chat_connect_no_bind">如何解绑？</string>
+    <string name="chat_connect_step_one">步骤一</string>
+    <string name="chat_connect_step_one_tip">长按微信位置卡片，弹出菜单中选择“打开”</string>
+    <string name="chat_connect_step_two">步骤二</string>
+    <string name="chat_connect_step_two_tip">“我的设备”中，选择“其他设备”，发送至“高德地图车机版”</string>
+    <string name="chat_connect_login">绑定微信</string>
+    <string name="chat_connect_logout">解除绑定</string>
+    <string name="chat_connect_unbind_title">在手机微信“微信APP-设置-设备”中解绑</string>
+    <string name="chat_connect_unbind_tip">解绑后将无法使用微信互联</string>
+    <string name="chat_connect_unbind_confirm">我知道了</string>
+
+    <!--行程记录相关-->
+    <string name="driving_record_title">行程历史</string>
+    <string name="driving_record_tab_1">导航历史</string>
+    <string name="driving_record_tab_2">巡航历史</string>
+    <string name="driving_record_no_history">暂无行程记录</string>
+    <string name="driving_record_login_tip">登录高德账号，可同步更多行程历史</string>
+    <string name="driving_record_login_details_tip">扫码登录，同步里程数据</string>
+    <string name="driving_record_login">去登录</string>
+    <string name="driving_item_distance">888.3公里</string>
+    <string name="driving_item_date">2024/06/21 18:00</string>
+    <string name="driving_item_start_name">黄浦区瑞金一路142号</string>
+    <string name="driving_item_delete">删除</string>
+    <string name="driving_item_delete_title">确定删除该条行程？</string>
+    <string name="driving_item_delete_message">行程记录清除后不可恢复</string>
+    <string name="driving_item_loading_message">正在下载行程文件</string>
+    <string name="driving_record_auto">自动记录行程</string>
+    <string name="driving_record_auto_tip">开启后，将为您记录行程</string>
+    <string name="driving_record_clear">清除行程历史</string>
+    <string name="driving_record_clear_tip">行程历史清除后不可恢复，请谨慎操作</string>
+    <string name="driving_record_clear_toast">立即清除</string>
+    <string name="driving_record_setting">行程设置</string>
+    <string name="driving_record_setting_dialog_title">确定清除全部行程历史</string>
+    <string name="driving_record_setting_dialog_content">行程记录清除后不可恢复(足迹信息不受影响)</string>
+    <string name="driving_record_setting_dialog_confirm">清除</string>
+    <string name="driving_record_details_title">行程详情</string>
+    <string name="driving_record_details_cost">10月2日  16:35</string>
+    <string name="driving_record_details_level">巡航</string>
+    <string name="driving_record_details_start">外高桥保税区</string>
+    <string name="driving_record_details_end">中山公园</string>
+    <string name="driving_record_details_count">99.1</string>
+    <string name="driving_record_details_unit">km</string>
+    <string name="driving_record_details_content">导航里程</string>
+    <string name="driving_record_details_time">1:08:09</string>
+    <string name="driving_record_details_time_unit">驾驶时长</string>
+    <string name="driving_record_details_speed">106</string>
+    <string name="driving_record_details_speed_unit">km/h</string>
+    <string name="driving_record_details_speed_content">平均速度</string>
+    <string name="driving_record_details_fast_speed">126</string>
+    <string name="driving_record_details_fast_speed_unit">km/h</string>
+    <string name="driving_record_details_fast_speed_content">最快速度</string>
+
+    <!-- 设置相关 -->
+    <string name="setting_guide_route_preference">路线偏好</string>
+    <string name="setting_guide_avoid_limit">避开限行</string>
+    <string name="setting_guide_charging_plan">补能规划</string>
+    <string name="setting_guide_charging_plan_des">到达目的地有电量风险时，将自动规划含充电站的路线</string>
+    <string name="setting_guide_car_number">沪AFY120</string>
+    <string name="setting_guide_plate_number_my">我的爱车</string>
+    <string name="setting_guide_plate_number_finish">完成</string>
+    <string name="setting_guide_plate_number_text">车牌号码</string>
+    <string name="setting_guide_plate_number_car_type">动力类型</string>
+    <string name="setting_guide_plate_number_car_type_oil">燃油车</string>
+    <string name="setting_guide_plate_number_car_type_ev">电动车</string>
+    <string name="setting_guide_plate_number_clear">是否要删除车辆</string>
+    <string name="setting_guide_plate_number_clear_tip">删除后无法使用限行提醒等功能</string>
+    <string name="setting_guide_plate_number_default">京</string>
+    <string name="setting_guide_plate_number_input">输入车牌</string>
+    <string name="setting_guide_plate_number_tip">输入车牌号后,将为您避开城市限行路段</string>
+    <string name="setting_guide_avoid_limit_tip">输入车牌后可启用功能</string>
+    <string name="setting_guide_map_display">地图显示</string>
+    <string name="setting_guide_road_condition">实时路况</string>
+    <string name="setting_guide_favorite_point">收藏点</string>
+    <string name="setting_guide_charging_station">充电桩</string>
+    <string name="setting_guide_font_size">地图文字大小</string>
+    <string name="setting_guide_font_size_small">小字号</string>
+    <string name="setting_guide_font_size_standard">标准字号</string>
+    <string name="setting_guide_font_size_large">大字号</string>
+    <string name="setting_guide_mode">导航视角</string>
+    <string name="setting_guide_mode_HeadUp">车头向上</string>
+    <string name="setting_guide_mode_NorthUp">北向上</string>
+    <string name="setting_guide_mode_3D_HeadUp">3D车头向上</string>
+    <string name="setting_guide_car_logo">个性化车标</string>
+    <string name="setting_guide_car_logo_default">默认</string>
+    <string name="setting_guide_car_logo_brand">品牌</string>
+    <string name="setting_guide_car_logo_speed">车速</string>
+    <string name="setting_guide_auto_scale">自动比例尺</string>
+    <string name="setting_guide_auto_scale_des">比例尺智能缩放</string>
+    <string name="setting_guide_auto_road_condition">实时路况</string>
+    <string name="setting_guide_vehicle_guide">车道级导航</string>
+    <string name="setting_guide_vehicle_guide_tip">自动切换至高清车道级导航</string>
+    <string name="setting_guide_offline_map">离线地图</string>
+    <string name="setting_guide_offline_map_detail">离线地图管理</string>
+    <string name="setting_tab_guide">出行</string>
+    <string name="setting_tab_broadcast">播报</string>
+    <string name="setting_tab_favorite">收藏</string>
+    <string name="setting_tab_others">其他</string>
+    <string name="setting_broadcast_navi">导航播报</string>
+    <string name="setting_broadcast_navi_detail">详细</string>
+    <string name="setting_broadcast_navi_concise">简洁</string>
+    <string name="setting_broadcast_navi_clear">极简</string>
+    <string name="setting_broadcast_cruise">巡航播报</string>
+    <string name="setting_broadcast_cruise_road_condition">前方路况</string>
+    <string name="setting_broadcast_cruise_camera">电子眼播报</string>
+    <string name="setting_broadcast_cruise_safe">安全提醒</string>
+    <string name="setting_broadcast_voice">播报语音</string>
+    <string name="setting_broadcast_voice_name">语音主播名称</string>
+    <string name="setting_broadcast_voice_head">导航语音</string>
+    <string name="setting_broadcast_voice_current_name">标准女音</string>
+    <string name="setting_broadcast_voice_current_use">正在使用</string>
+    <string name="setting_broadcast_voice_current_size">系统默认语音</string>
+    <string name="setting_broadcast_voice_current_status">已下载</string>
+    <string name="setting_broadcast_voice_operate_use">使用</string>
+    <string name="setting_broadcast_voice_default">系统语音</string>
+    <string name="setting_broadcast_voice_recommend">高德标准语音</string>
+    <string name="setting_broadcast_voice_has_update">有更新</string>
+    <string name="setting_others_account">绑定高德账号</string>
+    <string name="setting_others_account_detail">收藏夹/历史账号同步至车</string>
+    <string name="setting_others_account_logout">退出绑定后需要重新扫码登录</string>
+    <string name="setting_others_account_logout_detail">将无法使用微信互联、手车互联</string>
+    <string name="setting_others_account_logout_confirm">确认退出</string>
+    <string name="setting_others_track_history">行程历史</string>
+    <string name="setting_others_privacy_permission">隐私权限</string>
+    <string name="setting_others_privacy">隐私授权</string>
+    <string name="setting_others_privacy_location">位置</string>
+    <string name="setting_others_privacy_one_year">一年</string>
+    <string name="setting_others_privacy_never">永不</string>
+    <string name="setting_others_privacy_end_date">授权到期：</string>
+    <string name="setting_others_privacy_location_description">保障“精确定位与导航巡航”、“路线规划”等功能正常使用</string>
+    <string name="setting_others_privacy_permission_no">未授权</string>
+    <string name="setting_others_privacy_permission_yes">已授权</string>
+    <string name="setting_others_privacy_protocol_center">协议中心</string>
+    <string name="setting_others_privacy_term">高德隐私条款</string>
+    <string name="setting_others_privacy_policy">高德隐私权政策</string>
+    <string name="setting_others_privacy_protocol">高德隐私协议</string>
+    <string name="setting_others_reset_setting">恢复默认设置</string>
+    <string name="setting_others_reset_setting_check">需重启应用，才能生效</string>
+    <string name="setting_others_reset_setting_immediate">立即重启</string>
+    <string name="setting_others_about">关于</string>
+    <string name="setting_others_about_title">高德地图车机版</string>
+    <string name="setting_others_about_name">amap auto</string>
+    <string name="setting_others_about_version_des">V2.0.0.800088</string>
+    <string name="setting_others_about_channel">渠道号:</string>
+    <string name="setting_others_about_data_version">数据版本号:</string>
+    <string name="setting_others_about_draw">互联网审图号:GS(2024)3947号|GS(2023)551号</string>
+    <string name="setting_others_about_licenses_info">证照信息</string>
+    <string name="setting_others_about_help">帮助</string>
+    <string name="setting_others_about_help_remote_navi_title">遥控导航</string>
+    <string name="setting_others_about_help_remote_navi">
+        1. 连接后，在车内使用手机导航，车机可自动同步路线并导航；\n
+        2. 可通过手机操控车机，退出导航或更改目的地。
+    </string>
+    <string name="setting_others_about_help_seamless_interconnection_title">发地点/路线</string>
+    <string name="setting_others_about_help_seamless_interconnection">
+        1. 点击按钮可将手机高德上找到的地点或路线发送给车机；\n
+        2. 打开手机高德，将自动规划路线。
+    </string>
+    <string name="setting_others_about_help_find_car_title">手机找车</string>
+    <string name="setting_others_about_help_find_car">
+        1. 手车登记同一车牌号下，到达目的地后将自动记录爱车位置；\n
+        2. 可在手机主图看到车辆，点击可导航前往。
+    </string>
+    <string name="setting_others_about_help_data_sync_title">数据同步</string>
+    <string name="setting_others_about_help_data_sync">
+        1. 手机与车机上的搜索历史、收藏夹可自动同步；\n
+        2. 可在搜索页面中查看。
+    </string>
+    <string name="setting_others_help_tab_question">热门问题</string>
+    <string name="setting_others_help_tab_display">图面显示</string>
+    <string name="setting_others_help_tab_route">路线规划</string>
+    <string name="setting_others_help_tab_search">搜索功能</string>
+    <string name="setting_others_help_tab_broadcast">语音播报</string>
+    <string name="setting_others_help_tab_data">地图数据</string>
+
+    <string name="setting_others_help_tab_question_one">1、公众版和适配版有什么区别,应该按照哪个版本?</string>
+    <string name="setting_others_help_tab_question_one_answer">适配版是软件与车厂进行过匹配,并在出厂时内置在车机的软件,跟原车更加\n
+        兼容且稳定性更好。公版版面向大部分按照4.0以上的车机,适用多种车机。</string>
+    <string name="setting_others_help_tab_question_two">2、如何升级数据和软件?</string>
+    <string name="setting_others_help_tab_question_two_answer">如想升级请通过车机应用中心或更新车机系统版本可下截并更新至最新适配\n
+        版导航地图。
+    </string>
+    <string name="setting_others_help_tab_question_three">3、如何注册、登录账号?</string>
+    <string name="setting_others_help_tab_question_three_answer">车机联网后,可点击设置页面的未登录按钮,登录高德账号。高德账号可通过\n
+        手机扫二维码直接注册获取高德账号。</string>
+
+    <string name="setting_others_about_help_no_data">暂未有数据</string>
+    <string name="setting_others_about_help_remote_navi_tab">遥控导航</string>
+    <string name="setting_others_about_help_seamless_interconnection_tab">发送信息</string>
+    <string name="setting_others_about_help_find_car_tab">手机找车</string>
+    <string name="setting_others_about_help_data_sync_tab">数据同步</string>
+    <string name="setting_others_about_contact">联系方式</string>
+    <string name="setting_others_about_web">官方网站/论坛</string>
+    <string name="setting_others_about_url">www.amapauto.com</string>
+    <string name="setting_others_about_tel">客服电话</string>
+    <string name="setting_others_about_tel_number">400-810-0080</string>
+    <string name="setting_others_about_wechat">官方微信</string>
+    <string name="setting_others_about_qq">官方QQ群</string>
+    <string name="setting_others_about_qq_number">974623252</string>
+    <string name="setting_others_about_licenses_icp">ICP备案号：京ICP备07017245号-17A</string>
+    <string name="setting_others_about_licenses_company">公司名称：高德软件有限公司</string>
+    <string name="setting_others_about_licenses_qr">手机扫码前往工业和信息化部政务服务平台查询</string>
+    <string name="setting_others_about_licenses_qr_desc">(http://beian.miit.gov.cn/)</string>
+    <string name="setting_others_about_licenses_safe">请在确保驾驶安全的情况下使用</string>
+    <string name="setting_others_about_version">当前版本</string>
+    <string name="setting_others_clear_memory">清除缓存</string>
+    <string name="setting_others_clear_memory_check">确定要清除缓存？</string>
+    <string name="setting_others_memory">约999.0M</string>
+
+
+    <!--主图相关-->
+    <string name="map_format_scale">%sm</string>
+    <string name="limit_drive">区域限行</string>
+    <string name="limit_today_drive">今日限行</string>
+    <string name="limit_default_license">高A0000</string>
+    <string name="limit_driver_time_desc">政策限行时间：</string>
+    <string name="limit_driver_ruler_desc">限行规则：</string>
+    <string name="limit_policy">限行政策</string>
+    <string name="limit_policy_format">政策%d</string>
+    <string name="hcm_set_success">设置成功</string>
+    <string name="limit_city_selection">请输入省份或城市名称进行搜索</string>
+    <string name="limit_selected_city">当前选择城市</string>
+    <string name="limit_no_restrictions">当前城市无限行</string>
+    <string name="limit_retry">点击重试</string>
+    <string name="limit_loading">加载中</string>
+    <string name="limit_load_fail">加载失败</string>
+    <string name="traffic_increase_format">存在 (%s)</string>
+    <string name="traffic_decrease_format">不存在 (%s)</string>
+    <string name="traffic_distance_format">%.1f 公里</string>
+    <string name="pic_number_for">%d/%d</string>
+    <string name="traffic_crowd">交通管制</string>
+    <string name="traffic_stop">封路</string>
+    <string name="traffic_collision">事故</string>
+    <string name="traffic_repair">施工</string>
+    <string name="step_into_cruise">已切换至巡航模式</string>
+    <string name="step_exit_cruise">已退出巡航模式</string>
+    <string name="self_parking_space">回车位</string>
+    <!--引导相关-->
+
+    <!--周边搜索标签 -->
+    <string-array name="around_categories_name">
+        <item>充电桩</item>
+        <item>停车场</item>
+        <item>美食</item>
+        <item>卫生间</item>
+        <item>洗车</item>
+        <item>维修</item>
+        <item>购物</item>
+        <item>酒店</item>
+    </string-array>
+
+    <!--主图更多搜索标签 油车-->
+    <string-array name="main_search_more_categories_gas_name">
+        <item>加油站</item>
+        <item>卫生间</item>
+        <item>停车场</item>
+        <item>服务区</item>
+        <item>美食</item>
+        <item>洗车</item>
+        <item>维修</item>
+        <item>购物</item>
+        <item>酒店</item>
+    </string-array>
+
+    <!--主图更多搜索标签 电车-->
+    <string-array name="main_search_more_categories_charging_name">
+        <item>充电桩</item>
+        <item>卫生间</item>
+        <item>停车场</item>
+        <item>服务区</item>
+        <item>美食</item>
+        <item>洗车</item>
+        <item>维修</item>
+        <item>购物</item>
+        <item>酒店</item>
+    </string-array>
+
+    <!--沿途搜索标签 油车-->
+    <string-array name="along_way_categories_gas_name">
+        <item>加油站</item>
+        <item>卫生间</item>
+        <item>停车场</item>
+        <item>服务区</item>
+        <item>美食</item>
+        <item>洗车</item>
+        <item>维修</item>
+        <item>购物</item>
+        <item>酒店</item>
+    </string-array>
+
+    <!--沿途搜索标签 电车-->
+    <string-array name="along_way_categories_charging_name">
+        <item>充电桩</item>
+        <item>卫生间</item>
+        <item>停车场</item>
+        <item>服务区</item>
+        <item>美食</item>
+        <item>洗车</item>
+        <item>维修</item>
+        <item>购物</item>
+        <item>酒店</item>
+    </string-array>
+
+
+    <!--搜索主页快捷搜-->
+    <string-array name="main_search_categories_name_gas">
+        <item>加油站</item>
+        <item>停车场</item>
+        <item>美食</item>
+        <item>洗车</item>
+        <item>更多</item>
+    </string-array>
+
+    <!--搜索主页快捷搜-->
+    <string-array name="main_search_categories_name_charging">
+        <item>充电桩</item>
+        <item>停车场</item>
+        <item>美食</item>
+        <item>洗车</item>
+        <item>更多</item>
+    </string-array>
+</resources>

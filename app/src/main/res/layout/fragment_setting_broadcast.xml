@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <import type="android.view.View"/>
+        <variable
+            name="viewModel"
+            type="com.fy.navi.hmi.setting.broadcast.SettingBroadcastViewModel" />
+    </data>
+
+    <com.fy.navi.ui.view.SkinScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+
+        <com.fy.navi.ui.view.SkinLinearLayout
+            android:layout_width="@dimen/dp_1214"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:showDividers="none">
+
+            <com.fy.navi.ui.view.SkinTextView
+                android:id="@+id/navi_broadcast_voice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/setting_broadcast_voice"
+                android:textSize="@dimen/sp_46"
+                android:textColor="@color/black" />
+
+            <com.fy.navi.ui.view.SkinConstraintLayout
+                clickCommand="@{viewModel.openBroadcastVoiceListPage}"
+                android:id="@+id/broadcast_entry"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_180"
+                android:layout_marginTop="@dimen/dp_24"
+                android:background="@drawable/bg_setting_voice">
+
+               <com.fy.navi.ui.view.SkinImageView
+                   android:id="@+id/navi_broadcast_voice_current"
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content"
+                   android:layout_marginTop="@dimen/dp_20"
+                   android:layout_marginStart="@dimen/dp_48"
+                   android:src="@mipmap/icon_setting_voice_current"
+                   app:layout_constraintStart_toStartOf="parent"
+                   app:layout_constraintTop_toTopOf="parent" />
+
+                <com.fy.navi.ui.view.SkinTextView
+                    android:id="@+id/navi_broadcast_voice_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dp_32"
+                    android:layout_marginTop="@dimen/dp_60"
+                    android:text="@string/setting_broadcast_voice_current_name"
+                    android:textSize="@dimen/sp_38"
+                    android:textColor="@color/black"
+                    app:layout_constraintStart_toEndOf="@+id/navi_broadcast_voice_current"
+                    app:layout_constraintTop_toTopOf="parent"/>
+
+                <com.fy.navi.ui.view.SkinImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dp_500"
+                    android:layout_marginTop="@dimen/dp_57"
+                    android:src="@mipmap/icon_setting_voice_others"
+                    app:layout_constraintStart_toEndOf="@+id/navi_broadcast_voice_name"
+                    app:layout_constraintTop_toTopOf="parent"/>
+
+                <com.fy.navi.ui.view.SkinImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dp_548"
+                    android:layout_marginTop="@dimen/dp_57"
+                    android:src="@mipmap/icon_setting_voice_others"
+                    app:layout_constraintStart_toEndOf="@+id/navi_broadcast_voice_name"
+                    app:layout_constraintTop_toTopOf="parent"/>
+
+                <com.fy.navi.ui.view.SkinImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dp_596"
+                    android:layout_marginTop="@dimen/dp_57"
+                    android:src="@mipmap/icon_setting_voice_others"
+                    app:layout_constraintStart_toEndOf="@+id/navi_broadcast_voice_name"
+                    app:layout_constraintTop_toTopOf="parent"/>
+
+                <com.fy.navi.ui.view.SkinImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dp_644"
+                    android:layout_marginTop="@dimen/dp_57"
+                    android:src="@mipmap/icon_setting_voice_others"
+                    app:layout_constraintStart_toEndOf="@+id/navi_broadcast_voice_name"
+                    app:layout_constraintTop_toTopOf="parent"/>
+
+                <com.fy.navi.ui.view.SkinImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_110"
+                    android:src="@drawable/img_setting_corner"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"/>
+
+            </com.fy.navi.ui.view.SkinConstraintLayout>
+
+            <com.fy.navi.ui.view.SkinTextView
+                android:id="@+id/navi_broadcast_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_40"
+                android:text="@string/setting_broadcast_navi"
+                android:textSize="@dimen/sp_46"
+                android:textColor="@color/black" />
+
+            <com.fy.navi.ui.view.SkinRadioGroup
+                android:id="@+id/navi_broadcast"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_108"
+                android:orientation="horizontal"
+                android:gravity="center_horizontal"
+                android:background="@drawable/bg_setting_checkbox"
+                android:layout_marginTop="@dimen/dp_29">
+
+                <com.fy.navi.ui.view.SkinRadioButton
+                    clickCommand="@{viewModel.switchNaviBroadcastDetailClick}"
+                    android:id="@+id/navi_broadcast_detailed"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="@string/setting_broadcast_navi_detail"
+                    android:textSize="@dimen/sp_38"
+                    android:checked="@{viewModel.isNaviBroadcastDetail}"
+                    android:background="@drawable/bg_setting_checkbox_selector"
+                    android:button="@null"
+                    android:gravity="center"
+                    android:textColor="@color/black"/>
+
+                <com.fy.navi.ui.view.SkinRadioButton
+                    clickCommand="@{viewModel.switchNaviBroadcastConciseClick}"
+                    android:id="@+id/navi_broadcast_concise"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="@string/setting_broadcast_navi_concise"
+                    android:textSize="@dimen/sp_38"
+                    android:checked="@{viewModel.isNaviBroadcastConcise}"
+                    android:background="@drawable/bg_setting_checkbox_selector"
+                    android:button="@null"
+                    android:gravity="center"
+                    android:textColor="@color/black"/>
+
+                <com.fy.navi.ui.view.SkinRadioButton
+                    clickCommand="@{viewModel.switchNaviBroadcastSimpleClick}"
+                    android:id="@+id/navi_broadcast_simple"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="@string/setting_broadcast_navi_clear"
+                    android:textSize="@dimen/sp_38"
+                    android:checked="@{viewModel.isNaviBroadcastSimple}"
+                    android:background="@drawable/bg_setting_checkbox_selector"
+                    android:button="@null"
+                    android:gravity="center"
+                    android:textColor="@color/black"/>
+            </com.fy.navi.ui.view.SkinRadioGroup>
+
+            <com.fy.navi.ui.view.SkinLinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_108"
+                android:orientation="horizontal"
+                android:layout_marginTop="@dimen/dp_30">
+
+                <com.fy.navi.ui.view.SkinCheckBox
+                    clickCommand="@{viewModel.switchCruiseBroadcastClick}"
+                    android:id="@+id/switch_eagle_eye_map"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:checked="@{viewModel.isCruiseBroadcast}"
+                    android:background="@android:color/transparent"
+                    android:button="@drawable/custom_thumb" />
+
+                <com.fy.navi.ui.view.SkinTextView
+                    android:id="@+id/cruise_broadcast_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="@dimen/dp_20"
+                    android:text="@string/setting_broadcast_cruise"
+                    android:textSize="@dimen/sp_46"
+                    android:textColor="@color/black"/>
+
+            </com.fy.navi.ui.view.SkinLinearLayout>
+
+
+            <com.fy.navi.ui.view.SkinLinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_horizontal">
+
+                <com.fy.navi.ui.view.SkinCheckBox
+                    clickCommand="@{viewModel.switchCruiseBroadcastRoadConditionClick}"
+                    android:id="@+id/cruise_broadcast_road_condition"
+                    android:layout_width="@dimen/dp_382"
+                    android:layout_height="@dimen/dp_108"
+                    android:layout_marginTop="@dimen/dp_34"
+                    android:button="@null"
+                    android:checked="@{viewModel.isCruiseBroadcastRoadCondition}"
+                    android:background="@drawable/bg_setting_broadcast"
+                    android:gravity="center"
+                    android:text="@string/setting_broadcast_cruise_road_condition"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/sp_42" />
+
+                <com.fy.navi.ui.view.SkinCheckBox
+                    clickCommand="@{viewModel.switchCruiseBroadcastCameraClick}"
+                    android:id="@+id/cruise_broadcast_camera"
+                    android:layout_width="@dimen/dp_382"
+                    android:layout_height="@dimen/dp_108"
+                    android:layout_marginTop="@dimen/dp_34"
+                    android:button="@null"
+                    android:checked="@{viewModel.isCruiseBroadcastCamera}"
+                    android:background="@drawable/bg_setting_broadcast"
+                    android:gravity="center"
+                    android:layout_marginStart="@dimen/dp_34"
+                    android:text="@string/setting_broadcast_cruise_camera"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/sp_42" />
+
+                <com.fy.navi.ui.view.SkinCheckBox
+                    clickCommand="@{viewModel.switchCruiseBroadcastSafeClick}"
+                    android:id="@+id/cruise_broadcast_safe"
+                    android:layout_width="@dimen/dp_382"
+                    android:layout_height="@dimen/dp_108"
+                    android:layout_marginTop="@dimen/dp_34"
+                    android:button="@null"
+                    android:checked="@{viewModel.isCruiseBroadcastSafe}"
+                    android:background="@drawable/bg_setting_broadcast"
+                    android:gravity="center"
+                    android:layout_marginStart="@dimen/dp_34"
+                    android:text="@string/setting_broadcast_cruise_safe"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/sp_42" />
+            </com.fy.navi.ui.view.SkinLinearLayout>
+        </com.fy.navi.ui.view.SkinLinearLayout>
+    </com.fy.navi.ui.view.SkinScrollView>
+</layout>

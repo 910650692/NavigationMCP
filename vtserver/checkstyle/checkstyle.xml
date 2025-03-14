@@ -1,0 +1,126 @@
+<?xml version="1.0"?><!DOCTYPE module PUBLIC
+    "-//Puppy Crawl//DTD Check Configuration 1.3//EN"
+    "http://www.puppycrawl.com/dtds/configuration_1_3.dtd"><!--
+背景：
+本文档用于HMI开发时的CheckStyle代码规范检测，意在规范代码格式，提升代码可读性。
+具体参数说明可参考：http://api.dpml.net/checkstyle/3.5/index.html
+版本管理：
+V0.0.1 MOXIUHAO 2019.11.28 文档初始化32条规则
+V0.0.2 MOXIUHAO 2020.03.10 修改StaticVariableName注释信息，添加API文档地址
+-->
+<module name="Checker">
+    <!--编码格式限制为UTF-8-->
+    <property name="charset" value="UTF-8" />
+    <!-- 文件长度不超过1500行 -->
+    <module name="FileLength">
+        <property name="severity" value="warning" />
+        <property name="max" value="1500" />
+    </module>
+    <!-- 每个java文件一个语法树 -->
+    <module name="TreeWalker">
+        <!-- 检查所选语句是否不是换行的，不允许import和package换行
+             import com.android.internal
+                .util.Predicate;
+             这种写法会报错 -->
+        <module name="NoLineWrap" />
+
+        <!-- import检查-->
+        <!-- import中避免星号"*" -->
+        <module name="AvoidStarImport" />
+        <!-- 检查是否导入了多余的包，例如：引入java.lang.String会报错 -->
+        <module name="RedundantImport" />
+        <!-- 没用的import检查，例如：1.没有被用到2.重复的3.import 与该类在同一个package的 -->
+        <module name="UnusedImports" />
+        <!-- 检查重载方法必须组合在一起 -->
+        <module name="OverloadMethodsDeclarationOrder" />
+        <!-- 检查{ 和左边的代码是否在同行 -->
+        <module name="LeftCurly" />
+        <!-- 检查代码块是否缺失{} -->
+        <module name="NeedBraces" />
+        <!-- 检查if else for循环内的 } 括号的位置 -->
+        <module name="RightCurly">
+            <!-- try catch finally if else do 右括号在行末-->
+            <property name="id" value="RightCurlySame" />
+            <property name="tokens" value="LITERAL_TRY, LITERAL_CATCH, LITERAL_FINALLY, LITERAL_IF, LITERAL_ELSE,
+                    LITERAL_DO" />
+        </module>
+        <!-- 操作符换行策略检查 -->
+        <module name="OperatorWrap">
+            <!-- 运算符若要换行必须在新的一行-->
+            <property name="option" value="NL" />
+            <property name="tokens" value="BAND, BOR, BSR, BXOR, DIV, EQUAL, GE, GT, LAND, LE, LITERAL_INSTANCEOF, LOR,
+                LT, MINUS, MOD, NOT_EQUAL, PLUS, QUESTION, SL, SR, STAR, METHOD_REF " />
+        </module>
+        <!-- 空格检查-->
+        <!-- 方法名后跟左圆括号"(" -->
+        <module name="MethodParamPad" />
+        <!-- 在类型转换时，不允许左圆括号右边有空格，也不允许与右圆括号左边有空格 -->
+        <module name="TypecastParenPad" />
+        <!-- 检查在某个特定分隔符之后应保留空格，例如：for循环里语句;后要留空格 -->
+        <module name="NoWhitespaceAfter" />
+        <!-- 检查在某个特定分隔符之前应保留空格，例如：;前不能有空格 -->
+        <module name="NoWhitespaceBefore" />
+        <!-- 检查分隔符是否在空白之后，例如：“”前要留空格> -->
+        <module name="WhitespaceAfter" />
+        <!-- 检查分隔符周围是否有空白，例如：<等符号前后要留空格 -->
+        <module name="WhitespaceAround" />
+        <!-- 同一行不能有多个声明（检查一次声明多个变量时，变量是否在同一行或者在同一个语句中）-->
+        <module name="MultipleVariableDeclarations" />
+        <!-- 定义检查 -->
+
+        <!-- 检查数组类型定义的样式，采用java风格还是c风格，
+			例如：int[] num是java风格，int num[]是c风格。默认是java风格 -->
+        <module name="ArrayTypeStyle" />
+        <!-- 检查switch语句是否有default -->
+        <module name="MissingSwitchDefault" />
+        <!-- 检查switch中case后是否加入了跳出语句，
+			例如：return、break、throw。（多case至少有一处跳出语句） -->
+        <module name="FallThrough" />
+
+        <!-- 命名检查 -->
+        <!-- 检查局部的final变量，包括catch中的参数，要符合驼峰命名，不要有下划线等特殊字符，
+			例如：final String MNAME = "Picher"; 会报错，需要写为final String mName = "Picher";-->
+        <module name="LocalFinalVariableName" />
+        <!-- 检查局部的非final型的变量，包括catch中的参数，要符合驼峰命名，不要有下划线等特殊字符，
+			例如：String mName = "Picher";会报错，需要写为final String mName = "Picher";-->
+        <module name="LocalVariableName" />
+        <!-- 包名的检查（只允许小写字母），默认^[a-z]+(\.[a-zA-Z_][a-zA-Z_0-9_]*)*$ -->
+        <module name="PackageName">
+            <property name="format" value="^[a-z]+(\.[a-z][a-z0-9]*)*$" />
+            <message key="name.invalidPattern" value="包名要符合格式." />
+        </module>
+        <!-- 检查static型的变量命名，static final，变量名需要大写，单static需要首字母小写。
+			例如：static String MNAME = "Picher";会报错，需要写为 static final String MNAME = "Picher" 或者 static String name = "Picher" -->
+        <module name="StaticVariableName" />
+        <!-- Class或Interface名检查，首字母大写，默认^[A-Z][a-zA-Z0-9]*$-->
+        <module name="TypeName">
+            <property name="severity" value="warning" />
+            <message key="name.invalidPattern" value="名称 ''{0}'' 要符合 ''{1}''格式." />
+        </module>
+        <!-- 非static型变量的检查，要符合驼峰命名，不要有下划线等特殊字符
+			例如：String MNAME = "Picher";会报错，需要写为String mName = "Picher";-->
+        <module name="MemberName" />
+        <!-- 方法名的检查，要符合驼峰命名，不要有下划线等特殊字符，
+			例如：public void get_UserAccount()会报错，需要写为public void getUserAccount() -->
+        <module name="MethodName" />
+        <!-- 方法的参数名，要符合驼峰命名，不要有下划线等特殊字符 -->
+        <module name="ParameterName " />
+        <!-- 常量名的检查（只允许大写），默认^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$ -->
+        <module name="ConstantName" />
+
+        <!-- 其他检查 -->
+        <!-- 验证类中必须没有定义finalize()方法，会造成2次GC浪费性能。
+			更对请参考：https://www.cnblogs.com/softwareofjava/p/7290725.html -->
+        <module name="NoFinalizer" />
+        <!-- 单个方法行数不超过200行 -->
+        <module name="MethodLength">
+            <property name="severity" value="warning" />
+            <property name="tokens" value="METHOD_DEF" />
+            <property name="max" value="200" />
+        </module>
+    </module>
+    <!--忽略配置-->
+    <!-- <module name="SuppressionFilter">
+        <property name="file" value="./config/suppressions.xml" />
+    </module> -->
+</module>

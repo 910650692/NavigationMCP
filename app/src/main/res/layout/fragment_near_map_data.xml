@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <variable
+            name="ViewModel"
+            type="com.fy.navi.hmi.mapdata.near.NearMapDataViewModel" />
+    </data>
+
+    <com.fy.navi.ui.view.SkinConstraintLayout
+        android:layout_width="@dimen/dp_1224"
+        android:layout_height="@dimen/dp_714"
+        android:background="@drawable/bg_setting_fragment">
+
+        <com.fy.navi.ui.view.SkinLinearLayout
+            android:id="@+id/near_offline_map_title"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_134"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <com.fy.navi.ui.view.SkinImageView
+                android:id="@+id/iv_offline_map_back"
+                clickCommand="@{ViewModel.closeNearMapDataView}"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginStart="@dimen/dp_26"
+                android:src="@drawable/img_setting_back"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.fy.navi.ui.view.SkinTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="@string/offline_near_offline_data"
+                android:layout_gravity="center"
+                android:layout_marginStart="@dimen/dp_414"
+                android:textColor="@color/black"
+                android:textSize="@dimen/sp_38"
+                app:layout_constraintStart_toEndOf="@+id/iv_offline_map_back"
+                app:layout_constraintTop_toTopOf="parent"/>
+
+
+        </com.fy.navi.ui.view.SkinLinearLayout>
+
+        <!--附件城市地图数据-->
+        <com.fy.navi.ui.view.SkinRecyclerView
+            android:id="@+id/rv_near_offline"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginStart="@dimen/dp_40"
+            android:layout_marginEnd="@dimen/dp_40"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/near_offline_map_title" />
+
+    </com.fy.navi.ui.view.SkinConstraintLayout>
+
+</layout>

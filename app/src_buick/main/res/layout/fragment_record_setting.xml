@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <import type="android.view.View" />
+
+        <variable
+            name="ViewModel"
+            type="com.fy.navi.hmi.drivingrecord.recordsetting.RecordSettingViewModel" />
+    </data>
+    <com.fy.navi.ui.view.SkinConstraintLayout
+        android:layout_width="@dimen/dp_1224"
+        android:layout_height="@dimen/dp_714"
+        android:clickable="true"
+        android:background="@drawable/bg_setting_fragment"
+        android:orientation="vertical">
+
+        <com.fy.navi.ui.view.SkinConstraintLayout
+            android:id="@+id/record_setting_title"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_138">
+
+            <com.fy.navi.ui.view.SkinImageView
+                clickCommand="@{ViewModel.closeRecordSetting}"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/img_setting_back"
+                android:layout_marginStart="@dimen/dp_26"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"/>
+
+            <com.fy.navi.ui.view.SkinTextView
+                android:id="@+id/driving_record_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/driving_record_setting"
+                android:textColor="@color/black"
+                android:textSize="@dimen/sp_38"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"/>
+
+        </com.fy.navi.ui.view.SkinConstraintLayout>
+
+        <com.fy.navi.ui.view.SkinView
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_1"
+            android:background="@color/setting_line"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/record_setting_title" />
+
+        <com.fy.navi.ui.view.SkinCheckBox
+            clickCommand="@{ViewModel.switchRecordSetting}"
+            android:id="@+id/record_setting_auto_check"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_79"
+            android:layout_marginStart="@dimen/dp_40"
+            android:checked="@{ViewModel.isAutoRecord}"
+            android:button="@drawable/custom_thumb"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/record_setting_title"/>
+
+        <com.fy.navi.ui.view.SkinTextView
+            android:id="@+id/record_setting_auto_check_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_51"
+            android:layout_marginStart="@dimen/dp_35"
+            android:text="@string/driving_record_auto"
+            android:textColor="@color/black"
+            android:textSize="@dimen/sp_34"
+            app:layout_constraintTop_toBottomOf="@+id/record_setting_title"
+            app:layout_constraintStart_toEndOf="@+id/record_setting_auto_check"/>
+
+        <com.fy.navi.ui.view.SkinTextView
+            android:id="@+id/record_setting_auto_check_des"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_8"
+            android:text="@string/driving_record_auto_tip"
+            android:textColor="@color/setting_text_preference"
+            android:textSize="@dimen/sp_30"
+            app:layout_constraintTop_toBottomOf="@+id/record_setting_auto_check_text"
+            app:layout_constraintStart_toStartOf="@+id/record_setting_auto_check_text"/>
+
+        <com.fy.navi.ui.view.SkinView
+            android:id="@+id/record_setting_line"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_1"
+            android:background="@color/setting_line"
+            android:layout_marginTop="@dimen/dp_28"
+            android:layout_marginEnd="@dimen/dp_40"
+            android:layout_marginStart="@dimen/dp_40"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/record_setting_auto_check_des" />
+
+        <com.fy.navi.ui.view.SkinTextView
+            android:id="@+id/record_setting_clear"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_36"
+            android:text="@string/driving_record_clear"
+            android:textColor="@color/black"
+            android:textSize="@dimen/sp_34"
+            app:layout_constraintTop_toBottomOf="@+id/record_setting_line"
+            app:layout_constraintStart_toStartOf="@+id/record_setting_auto_check"/>
+
+        <com.fy.navi.ui.view.SkinTextView
+            android:id="@+id/record_setting_clear_des"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_8"
+            android:text="@string/driving_record_clear_tip"
+            android:textColor="@color/setting_text_preference"
+            android:textSize="@dimen/sp_30"
+            app:layout_constraintTop_toBottomOf="@+id/record_setting_clear"
+            app:layout_constraintStart_toStartOf="@+id/record_setting_clear"/>
+
+        <com.fy.navi.ui.view.SkinButton
+            clickCommand="@{ViewModel.clearDivingRecord}"
+            android:layout_width="@dimen/dp_160"
+            android:layout_height="@dimen/dp_52"
+            android:layout_marginTop="@dimen/dp_56"
+            android:layout_marginEnd="@dimen/dp_40"
+            android:background="@drawable/bg_record_setting"
+            android:text="@string/driving_record_clear_toast"
+            android:textColor="@color/setting_switch_selected"
+            android:textSize="@dimen/sp_30"
+            app:layout_constraintTop_toTopOf="@+id/record_setting_line"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+        <com.fy.navi.ui.view.SkinView
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_1"
+            android:background="@color/setting_line"
+            android:layout_marginTop="@dimen/dp_28"
+            android:layout_marginEnd="@dimen/dp_40"
+            android:layout_marginStart="@dimen/dp_40"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/record_setting_clear_des" />
+    </com.fy.navi.ui.view.SkinConstraintLayout>
+</layout>

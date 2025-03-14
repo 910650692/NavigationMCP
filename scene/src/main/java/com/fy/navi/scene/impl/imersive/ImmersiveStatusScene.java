@@ -1,0 +1,60 @@
+package com.fy.navi.scene.impl.imersive;
+
+
+import com.android.utils.ConvertUtils;
+import com.android.utils.thread.ThreadManager;
+import com.fy.navi.service.define.map.MapTypeId;
+import com.fy.navi.service.logicpaket.navi.NaviPackage;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
+
+public class ImmersiveStatusScene {
+
+    private Map<MapTypeId, ImersiveStatus> imersiveStatusMap;
+    private ConcurrentHashMap<String, IImmersiveStatusCallBack> immersiveStatusCallBacks;
+
+    private ImmersiveStatusScene() {
+        imersiveStatusMap = new HashMap<>();
+        immersiveStatusCallBacks = new ConcurrentHashMap<>();
+    }
+
+    public void registerCallback(String key, IImmersiveStatusCallBack immersiveStatusCallBack) {
+        immersiveStatusCallBacks.put(key, immersiveStatusCallBack);
+    }
+
+    public void setImmersiveStatus(MapTypeId mapTypeId, ImersiveStatus imersiveStatus) {
+        synchronized (ImmersiveStatusScene.class) {
+            imersiveStatusMap.put(mapTypeId, imersiveStatus);
+            ThreadManager.getInstance().postDelay(()->{
+                if (ConvertUtils.isEmpty(immersiveStatusCallBacks)) return;;
+                for (IImmersiveStatusCallBack callback : immersiveStatusCallBacks.values()) {
+                    if (!ConvertUtils.isEmpty(callback)) {
+                        callback.onImmersiveStatusChange(mapTypeId, imersiveStatus);
+                    }
+                }
+            },0);
+        }
+    }
+
+    public ImersiveStatus getCurrentImersiveStatus(MapTypeId mapTypeId) {
+        if (imersiveStatusMap.containsKey(mapTypeId)){
+            return imersiveStatusMap.get(mapTypeId);
+        }
+        return ImersiveStatus.IMERSIVE;
+    }
+
+    public static ImmersiveStatusScene getInstance() {
+        return Helper.ra;
+    }
+
+    private static final class Helper {
+        private static final ImmersiveStatusScene ra = new ImmersiveStatusScene();
+    }
+
+    public interface IImmersiveStatusCallBack {
+        void onImmersiveStatusChange(MapTypeId mapTypeId, ImersiveStatus lastImersiveStatus);
+    }
+}

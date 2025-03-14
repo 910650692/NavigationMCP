@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="Fragment"
+            type="com.fy.navi.hmi.traffic.BigPicDetailFragment" />
+    </data>
+
+    <com.fy.navi.ui.view.SkinConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.fy.navi.ui.view.SkinImageView
+            android:id="@+id/iv_pic"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:scaleType="centerCrop"
+            tools:background="@android:color/darker_gray"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.fy.navi.ui.view.SkinImageView
+            android:id="@+id/iv_loading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/icon_limit_loading"
+            app:layout_constraintBottom_toTopOf="@id/tv_loading"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_chainStyle="packed" />
+
+        <com.fy.navi.ui.view.SkinTextView
+            android:id="@+id/tv_loading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_30"
+            android:gravity="center"
+            android:text="@string/limit_loading"
+            android:textColor="@color/main_map_limit_loading"
+            android:textSize="@dimen/sp_30"
+            app:layout_constraintBottom_toTopOf="@+id/tv_retry"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/iv_loading" />
+
+        <com.fy.navi.ui.view.SkinTextView
+            android:id="@+id/tv_retry"
+            android:layout_width="@dimen/dp_264"
+            android:layout_height="@dimen/dp_76"
+            android:layout_marginTop="@dimen/dp_30"
+            android:background="@drawable/bg_item_limit_retry"
+            android:gravity="center"
+            android:text="@string/limit_retry"
+            android:textColor="@color/white"
+            android:textSize="@dimen/sp_30"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_loading" />
+
+    </com.fy.navi.ui.view.SkinConstraintLayout>
+</layout>

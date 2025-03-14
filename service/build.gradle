@@ -1,0 +1,69 @@
+plugins {
+    alias(libs.plugins.android.library)
+}
+apply plugin: 'org.greenrobot.greendao'
+
+android {
+    namespace 'com.fy.navi.service'
+    compileSdk Integer.parseInt(libs.versions.compileSdk.get())
+
+    defaultConfig {
+        minSdk Integer.parseInt(libs.versions.minSdk.get())
+        consumerProguardFiles "consumer-rules.pro"
+        buildConfigField("String", "MAP_SDK", "$MAP_SDK")
+        ndk {
+            //noinspection ChromeOsAbiSupport
+            abiFilters 'arm64-v8a'
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
+    buildFeatures {
+        buildConfig = true
+    }
+
+    //greendao配置
+    greendao {
+        schemaVersion 9 // 数据库 schema 的版本号，用于数据库升级
+//        daoPackage 'com.fy.navi.service.greendao' // 生成 DAO 类的包名
+//        targetGenDir 'src/main/java' // 生成文件的目录（通常建议放在 build/generated/source/greendao 下，以避免与源代码混淆）
+    }
+
+    sourceSets {
+        main {
+            jniLibs.srcDirs = ['libs', '/jni']
+        }
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar', '*.aar'])
+    implementation libs.bundles.module.library
+    implementation libs.work.runtime
+    implementation libs.greendao
+    implementation libs.lombok
+    annotationProcessor libs.lombok
+    implementation project(":engine:bls")
+    implementation project(":utils")
+    implementation project(":ui")
+    implementation libs.calibration
+    implementation libs.signal
+    implementation libs.androidcar
+
+    implementation libs.adapter.rxjava
+    implementation libs.converter.gson
+    implementation libs.converter.scalars
+    implementation libs.logging.interceptor
+    implementation libs.rxandroid
+}

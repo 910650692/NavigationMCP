@@ -1,0 +1,22 @@
+<resources>
+    <string name="rg_along">沿</string>
+    <string name="rg_direct">顺行</string>
+    <string name="rg_come_in">进入</string>
+    <string name="rg_arrive_word">到达</string>
+    <string name="rg_driver">行驶</string>
+    <string name="rg_wee_hours">凌晨</string>
+    <string name="rg_tomorrow">明天</string>
+    <string name="rg_the_day_after_tomorrow">后天</string>
+    <string name="rg_arrive_time">%1$s到达</string>
+    <string name="rg_arrive_time_at_wee">凌晨%1$s到达</string>
+    <string name="rg_arrive_time_after_day">%1$s天后到达</string>
+    <string name="km">公里</string>
+    <string name="meter">米</string>
+    <string name="tbt_time_hour_unit">小时</string>
+    <string name="tbt_time_minute_unit">分钟</string>
+    <string name="navi_parking_tight">紧张</string>
+    <string name="navi_parking_adequate">充足</string>
+    <string name="navi_open_loc_log">开启定位日志</string>
+    <string name="navi_close_loc_log">关闭定位日志</string>
+    <string name="navi_loc_filed">卫星信号弱,位置信息更新可能延迟</string>
+</resources>

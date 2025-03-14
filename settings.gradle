@@ -1,0 +1,56 @@
+pluginManagement {
+    repositories {
+        google {
+            content {
+                includeGroupByRegex("com\\.android.*")
+                includeGroupByRegex("com\\.google.*")
+                includeGroupByRegex("androidx.*")
+            }
+        }
+        maven { url 'https://maven.aliyun.com/repository/google' }
+        maven { url 'https://maven.aliyun.com/repository/central' }
+        maven { url 'https://maven.aliyun.com/repository/gradle-plugin' }
+        maven {
+            url 'https://info-maven.apps.saic-gm.com/repository/maven-public/'
+            allowInsecureProtocol = true
+        }
+        maven {
+            url "https://info-maven.apps.saic-gm.com/repository/PATAC_info4_HMI/"
+            allowInsecureProtocol = true
+        }
+        google()
+        mavenCentral()
+        gradlePluginPortal()
+    }
+}
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        maven {
+            url 'https://info-maven.apps.saic-gm.com/repository/maven-public/'
+            allowInsecureProtocol = true
+        }
+        maven {
+            url "https://info-maven.apps.saic-gm.com/repository/PATAC_info4_HMI/"
+            allowInsecureProtocol = true
+        }
+        google()
+        mavenCentral()
+    }
+}
+
+rootProject.name = "NaviApp"
+include ':app'
+include ':ui'
+include ':service'
+include ':utils'
+include ':engine', 'engine:bls'
+include ':engine', 'engine:adas'
+include ':mapservice'
+include ':scene'
+include ':burypoint'
+include ':fsa'
+include ':vtserver'
+include ':engine:vrbridge'
+include ':engine:vrbridgeprotocol'
+include ':vrbridge'

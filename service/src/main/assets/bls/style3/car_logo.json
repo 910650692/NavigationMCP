@@ -1,0 +1,191 @@
+{
+  "car_marker_info_3d": {
+    "3dmodel_layer_item_style": {
+      "model_id": "carLogo"
+    }
+  },
+  "car_normal_logo_2d": {
+    "car_layer_style": {
+      "car_marker": {
+        "compass_marker_id": "img_car_compass_default",
+        "compass_indicator_marker_id": "-1",
+        "track_arc_marker_id": "img_car_arc_default",
+        "track_marker_id": "img_car_2d_default",
+        "shine_marker_id": "img_car_shine_default"
+      },
+      "compass_marker_info": {
+        "east_marker_id": "img_car_compass_east",
+        "south_marker_id": "img_car_compass_south",
+        "west_marker_id": "img_car_compass_west",
+        "north_marker_id": "img_car_compass_north",
+        "relative_distance": 90
+      },
+      "car_animation_style": {
+        "car_style": 1,
+        "no_net": {
+          "animation_duration": 2000,
+          "from_zoom": 0.7,
+          "end_zoom": 1,
+          "from_lpha": 1,
+          "end_lpha": 0
+        },
+        "net": {
+          "animation_duration": 2000,
+          "from_zoom": 0.7,
+          "end_zoom": 1,
+          "from_lpha": 1,
+          "end_lpha": 0
+        }
+      }
+    }
+  },
+  "car_cruise_logo_2d": {
+    "car_layer_style": {
+      "car_marker": {
+        "compass_marker_id": "img_car_compass_default",
+        "track_arc_marker_id": "-1",
+        "track_marker_id": "img_car_2d_default",
+        "compass_indicator_marker_id": "-1",
+        "shine_marker_id": "-1"
+      },
+      "compass_marker_info": {
+        "east_marker_id": "img_car_compass_east",
+        "south_marker_id": "img_car_compass_south",
+        "west_marker_id": "img_car_compass_west",
+        "north_marker_id": "img_car_compass_north",
+        "relative_distance": 90
+      }
+    }
+  },
+  "car_guidance_logo_2d": {
+    "car_layer_style": {
+      "car_marker": {
+        "compass_marker_id": "img_car_compass_default",
+        "track_arc_marker_id": "-1",
+        "track_marker_id": "img_car_2d_default",
+        "compass_indicator_marker_id": "-1",
+        "shine_marker_id": "-1"
+      },
+      "compass_marker_info": {
+        "east_marker_id": "img_car_compass_east",
+        "south_marker_id": "img_car_compass_south",
+        "west_marker_id": "img_car_compass_west",
+        "north_marker_id": "img_car_compass_north",
+        "relative_distance": 90
+      }
+    }
+  },
+  "car_normal_logo_3d": {
+    "car_layer_style": {
+      "car_marker": {
+        "compass_marker_id": "img_car_compass_default",
+        "compass_indicator_marker_id": "-1",
+        "track_arc_marker_id": "img_car_arc_default",
+        "shine_marker_id": "img_car_shine_default",
+        "track_marker_id": "-1"
+      },
+      "compass_marker_info": {
+        "east_marker_id": "img_car_compass_east",
+        "south_marker_id": "img_car_compass_south",
+        "west_marker_id": "img_car_compass_west",
+        "north_marker_id": "img_car_compass_north",
+        "relative_distance": 90
+      },
+      "car_animation_style": {
+        "car_style": 1,
+        "no_net": {
+          "animation_duration": 2000,
+          "from_zoom": 0.7,
+          "end_zoom": 1,
+          "from_lpha": 1,
+          "end_lpha": 0
+        }
+      }
+    }
+  },
+  "car_guidance_logo_3d": {
+    "car_layer_style": {
+      "car_marker": {
+        "compass_marker_id": "img_car_3d_compass_default",
+        "compass_indicator_marker_id": "-1",
+        "track_arc_marker_id": "img_car_arc_default",
+        "shine_marker_id": "img_car_shine_default",
+        "track_marker_id": "-1"
+      },
+      "compass_marker_info": {
+        "east_marker_id": "img_car_3d_compass_east",
+        "south_marker_id": "img_car_3d_compass_south",
+        "west_marker_id": "img_car_3d_compass_west",
+        "north_marker_id": "img_car_3d_compass_north",
+        "relative_distance": 90
+      },
+      "car_animation_style": {
+        "car_style": 1,
+        "no_net": {
+          "animation_duration": 2000,
+          "from_zoom": 0.7,
+          "end_zoom": 1,
+          "from_lpha": 1,
+          "end_lpha": 0
+        }
+      }
+    }
+  },
+  "car_normal_logo_skeleton": {
+    "car_layer_style": {
+      "car_marker": {
+        "compass_marker_id": "img_car_compass_default",
+        "compass_indicator_marker_id": "-1",
+        "track_arc_marker_id": "img_car_arc_default",
+        "shine_marker_id": "img_car_shine_default",
+        "track_marker_id": "-1"
+      },
+      "compass_marker_info": {
+        "east_marker_id": "img_car_compass_east",
+        "south_marker_id": "img_car_compass_south",
+        "west_marker_id": "img_car_compass_west",
+        "north_marker_id": "img_car_compass_north",
+        "relative_distance": 90
+      },
+      "car_animation_style": {
+        "car_style": 1,
+        "no_net": {
+          "animation_duration": 2000,
+          "from_zoom": 0.7,
+          "end_zoom": 1,
+          "from_lpha": 1,
+          "end_lpha": 0
+        },
+        "net": {
+          "animation_duration": 2000,
+          "from_zoom": 0.7,
+          "end_zoom": 1,
+          "from_lpha": 1,
+          "end_lpha": 0
+        }
+      }
+    }
+  },
+  "car_normal_logo_speed": {
+    "car_layer_style": {
+      "car_marker": {
+        "compass_marker_id": "-1",
+        "compass_indicator_marker_id": "-1",
+        "track_arc_marker_id": "img_car_arc_default",
+        "shine_marker_id": "img_car_shine_default",
+        "track_marker_id": "-1"
+      }
+    }
+  },
+  "car_eagle_eyes_logo": {
+    "car_layer_style": {
+      "car_marker": {
+        "compass_marker_id": "-1",
+        "track_arc_marker_id": "-1",
+        "track_marker_id": "img_car_2d_default",
+        "compass_indicator_marker_id": "-1",
+        "shine_marker_id": "-1"
+      }
+    }
+  }
+}

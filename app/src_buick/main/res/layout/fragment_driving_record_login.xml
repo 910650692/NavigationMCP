@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="ViewModel"
+            type="com.fy.navi.hmi.drivingrecord.recordlogin.DrivingRecordLoginViewModel" />
+    </data>
+
+    <com.fy.navi.ui.view.SkinLinearLayout
+        android:layout_width="@dimen/dp_1224"
+        android:layout_height="@dimen/dp_714"
+        android:background="@drawable/bg_setting_fragment"
+        android:clickable="true"
+        android:orientation="vertical">
+
+        <!--未登录有数据view-->
+        <com.fy.navi.ui.view.SkinLinearLayout
+            android:id="@+id/data_login_view"
+            android:visibility="visible"
+            android:layout_width="match_parent"
+            android:layout_height="fill_parent"
+            android:orientation="vertical">
+
+            <com.fy.navi.ui.view.SkinImageView
+                clickCommand="@{ViewModel.toClose}"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/dp_32"
+                android:layout_marginTop="@dimen/dp_32"
+                android:src="@drawable/img_basic_close"
+                android:layout_gravity="right" />
+
+            <!--登录二维码-->
+            <com.fy.navi.ui.view.SkinImageView
+                android:id="@+id/code_img"
+                android:layout_width="@dimen/dp_350"
+                android:layout_height="@dimen/dp_350"
+                android:src="@mipmap/bg_car_connect"
+                android:layout_gravity="center"/>
+
+            <com.fy.navi.ui.view.SkinTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_30"
+                android:layout_gravity="center"
+                android:text="@string/account_QRCode_login_tip"
+                android:textColor="@color/black"
+                android:textSize="@dimen/sp_26" />
+
+        </com.fy.navi.ui.view.SkinLinearLayout>
+
+        <!--未登录无数据view-->
+        <com.fy.navi.ui.view.SkinLinearLayout
+            android:id="@+id/no_data_login_view"
+            android:layout_width="match_parent"
+            android:layout_height="fill_parent"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <!--标题-->
+            <com.fy.navi.ui.view.SkinConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_134">
+
+                <com.fy.navi.ui.view.SkinImageView
+                    clickCommand="@{ViewModel.drivingRecordBack}"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dp_26"
+                    android:src="@drawable/img_back"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <com.fy.navi.ui.view.SkinTextView
+                    android:id="@+id/driving_record_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/driving_record_title"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/sp_38"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <com.fy.navi.ui.view.SkinImageView
+                    android:id="@+id/driving_record_more"
+                    clickCommand="@{ViewModel.toRecordSetting}"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/dp_32"
+                    android:src="@drawable/img_settings_92"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            </com.fy.navi.ui.view.SkinConstraintLayout>
+
+            <!--登录提示页面-->
+            <com.fy.navi.ui.view.SkinRelativeLayout
+                android:id="@+id/empty_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <com.fy.navi.ui.view.SkinView
+                    android:id="@+id/view_line"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp_1"
+                    android:layout_alignParentTop="true"
+                    android:background="@color/color_70_000000" />
+
+                <!--登录二维码-->
+                <com.fy.navi.ui.view.SkinLinearLayout
+                    android:id="@+id/login_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/view_line"
+                    android:layout_marginStart="@dimen/dp_80"
+                    android:layout_marginTop="@dimen/dp_40"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <com.fy.navi.ui.view.SkinImageView
+                        android:id="@+id/qrcode_img"
+                        android:layout_width="@dimen/dp_350"
+                        android:layout_height="@dimen/dp_350"
+                        android:src="@mipmap/bg_car_connect" />
+
+                    <com.fy.navi.ui.view.SkinTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/dp_30"
+                        android:gravity="center"
+                        android:text="@string/account_QRCode_login_tip"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/sp_26" />
+
+                </com.fy.navi.ui.view.SkinLinearLayout>
+
+                <!--暂无记录提示-->
+                <com.fy.navi.ui.view.SkinLinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/view_line"
+                    android:layout_marginStart="@dimen/dp_260"
+                    android:layout_marginTop="@dimen/dp_170"
+                    android:layout_toRightOf="@+id/login_view"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <com.fy.navi.ui.view.SkinTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="@string/driving_record_no_history"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/sp_30" />
+
+                    <com.fy.navi.ui.view.SkinTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/dp_16"
+                        android:gravity="center"
+                        android:text="@string/driving_record_login_details_tip"
+                        android:textColor="@color/color_50_000000"
+                        android:textSize="@dimen/sp_26" />
+
+                </com.fy.navi.ui.view.SkinLinearLayout>
+
+            </com.fy.navi.ui.view.SkinRelativeLayout>
+
+        </com.fy.navi.ui.view.SkinLinearLayout>
+
+
+    </com.fy.navi.ui.view.SkinLinearLayout>
+
+</layout>

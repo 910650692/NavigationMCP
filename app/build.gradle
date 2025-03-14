@@ -1,0 +1,161 @@
+plugins {
+    alias(libs.plugins.android.application)
+}
+
+String aveFlavorType = "type"
+
+android {
+    namespace 'com.fy.navi.hmi'
+    compileSdk Integer.parseInt(libs.versions.compileSdk.get())
+
+    defaultConfig {
+        applicationId "com.fy.navi.hmi"
+        minSdk Integer.parseInt(libs.versions.minSdk.get())
+        targetSdk Integer.parseInt(libs.versions.targetSdk.get())
+        versionCode 1
+        versionName "1.0"
+        buildConfigField("String", "MAP_SDK", "$MAP_SDK")
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        // 添加 javaCompileOptions 和 annotationProcessorOptions
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = [AROUTER_MODULE_NAME: project.getName()]
+            }
+        }
+    }
+
+    buildFeatures {
+        buildConfig = true
+        dataBinding = true
+        viewBinding true
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
+    getFlavorDimensionList().add(aveFlavorType)
+
+    productFlavors {
+        Default {
+            dimension aveFlavorType
+            isDefault = true
+            manifestPlaceholders = [CAR_TYPE_VALUE: "Default",
+                                    logo          : "@mipmap/ic_launcher",
+                                    roundLogo     : "@mipmap/ic_launcher_round",
+                                    appName       : 'NaviApp']
+            println("默认车型/Pad渠道配置")
+        }
+        Buick {
+            dimension aveFlavorType
+            manifestPlaceholders = [
+                    CAR_TYPE_VALUE: "Buick",
+                    logo          : "@mipmap/ic_launcher",
+                    roundLogo     : "@mipmap/ic_launcher_round",
+                    appName       : "BkNaviApp"
+            ]
+            println("别克车型渠道配置")
+        }
+        Cadillac {
+            dimension aveFlavorType
+            manifestPlaceholders = [
+                    CAR_TYPE_VALUE: "Cadillac",
+                    logo          : "@mipmap/ic_launcher",
+                    roundLogo     : "@mipmap/ic_launcher_round",
+                    appName       : "CdNaviApp"
+            ]
+            println("凯迪车型渠道配置")
+        }
+    }
+
+    signingConfigs {
+        debug {
+            storeFile new File(rootDir, "/platform.keystore")
+            storePassword 'android'
+            keyAlias 'platformkey'
+            keyPassword 'android'
+        }
+        release {
+            storeFile new File(rootDir, "/platform.keystore")
+            storePassword 'android'
+            keyAlias 'platformkey'
+            keyPassword 'android'
+        }
+    }
+    buildTypes {
+        debug {
+            signingConfig signingConfigs.debug
+        }
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
+        }
+    }
+
+    sourceSets {
+        Default {
+            java.srcDirs = ['src_default/main/java']
+            res.srcDirs = ['src_default/main/res']
+            println("打包Default车型资源")
+        }
+        Buick {
+            java.srcDirs = ['src_buick/main/java']
+            res.srcDirs = ['src_buick/main/res']
+            println("打包别克车型资源")
+        }
+        Cadillac {
+            java.srcDirs = ['src_cadillac/main/java']
+            res.srcDirs = ['src_cadillac/main/res']
+            println("打包凯迪车型资源")
+        }
+    }
+
+    applicationVariants.configureEach { variant ->
+        variant.outputs.each { output ->
+            def flavors = getProductFlavorList(variant)
+            println "当前的 Product Flavors 是: ${flavors.join(', ')}"
+        }
+    }
+}
+
+dependencies {
+    implementation libs.bundles.android.library
+    testImplementation libs.bundles.test.junit
+    androidTestImplementation libs.bundles.android.junit
+    implementation libs.work.runtime
+    implementation project(":ui")
+    implementation project(":scene")
+    implementation project(":service")
+    implementation project(":utils")
+    implementation project(":mapservice")
+    implementation project(":fsa")
+    implementation project(':vtserver')
+    implementation project(':vrbridge')
+    implementation libs.arouter.api
+    annotationProcessor libs.arouter.compiler
+}
+
+static def getProductFlavorList(variant) {
+    return variant.productFlavors.collect { it.name }
+}
+
+tasks.register('makeChannelList') {
+    def outputFile = file('flavor_list.txt')
+    def productFlavors = android.productFlavors.collect { it.name }
+    doLast {
+        outputFile.withWriter('utf-8') { writer ->
+            productFlavors.each { flavor ->
+                writer.println(flavor)
+            }
+        }
+    }
+    outputs.file outputFile
+}
+
+tasks.configureEach { task ->
+    if (task.name.startsWith("assemble")) {
+        task.dependsOn makeChannelList
+    }
+}

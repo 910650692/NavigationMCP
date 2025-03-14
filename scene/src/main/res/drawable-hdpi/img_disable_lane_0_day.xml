@@ -1,0 +1,26 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="@dimen/dp_60"
+    android:height="@dimen/dp_60"
+    android:viewportWidth="60"
+    android:viewportHeight="60">
+  <path
+      android:pathData="M0,0h60v60h-60z"
+      android:strokeAlpha="0"
+      android:strokeWidth="1"
+      android:fillColor="@color/svg_color_323232"
+      android:fillType="evenOdd"
+      android:strokeColor="@color/svg_color_000000"
+      android:fillAlpha="0"/>
+  <path
+      android:pathData="M26.978,13L26.978,54.5C26.978,54.776 27.202,55 27.478,55L33.478,55C33.754,55 33.978,54.776 33.978,54.5L33.978,13L33.978,13L26.978,13Z"
+      android:strokeWidth="1"
+      android:fillColor="@color/svg_color_B7BABE"
+      android:fillType="nonZero"
+      android:strokeColor="@color/svg_color_000000"/>
+  <path
+      android:pathData="M31.291,6.024L38.273,15.059C38.441,15.277 38.401,15.591 38.183,15.76C38.079,15.84 37.948,15.876 37.819,15.861L30.5,15L30.5,15L23.181,15.861C22.907,15.893 22.659,15.697 22.626,15.423C22.611,15.293 22.647,15.162 22.727,15.059L29.709,6.024C30.046,5.587 30.674,5.506 31.111,5.844C31.179,5.896 31.239,5.957 31.291,6.024Z"
+      android:strokeWidth="1"
+      android:fillColor="@color/svg_color_B7BABE"
+      android:fillType="evenOdd"
+      android:strokeColor="@color/svg_color_000000"/>
+</vector>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="arrival_time">预计到达耗时%s</string>
+    <string name="st_maximum_added_common_address">最多只能添加3个常用地址</string>
+    <string name="traffic_control">交通管制</string>
+    <string name="traffic_stop">封路</string>
+    <string name="traffic_collision">事故</string>
+    <string name="traffic_repair">施工</string>
+    <string name="traffic_crowd">拥堵</string>
+</resources>

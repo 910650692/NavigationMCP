@@ -1,0 +1,19 @@
+<com.fy.navi.ui.view.SkinLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="@dimen/dp_223"
+    android:layout_height="@dimen/dp_90"
+    android:orientation="horizontal"
+    android:gravity="center">
+
+    <com.fy.navi.ui.view.SkinTextView
+        android:id="@+id/tabText"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:text="@string/setting_tab_guide"
+        android:paddingLeft="@dimen/dp_43"
+        android:paddingRight="@dimen/dp_43"
+        android:paddingTop="@dimen/dp_23"
+        android:paddingBottom="@dimen/dp_23"
+        android:textSize="@dimen/sp_34"
+        android:textColor="@color/black"/>
+</com.fy.navi.ui.view.SkinLinearLayout>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Shadow -->
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="#2E4A5733" />
+            <corners android:radius="@dimen/dp_24" />
+            <!-- The padding creates the shadow effect by offsetting the background from the shadow -->
+            <padding android:left="@dimen/dp_2" android:top="@dimen/dp_2" android:right="@dimen/dp_2" android:bottom="@dimen/dp_2"/>
+        </shape>
+    </item>
+
+    <!-- Background -->
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="#FFFFFF" />
+            <corners android:radius="@dimen/dp_24" />
+        </shape>
+    </item>
+
+</layer-list>

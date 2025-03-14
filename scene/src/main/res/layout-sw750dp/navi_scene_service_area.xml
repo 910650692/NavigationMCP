@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="naviEagleEye"
+            type="com.fy.navi.scene.impl.navi.SceneNaviDetailImpl" />
+    </data>
+
+    <com.fy.navi.ui.view.SkinConstraintLayout
+        android:layout_width="@dimen/dp_128"
+        android:layout_height="@dimen/dp_128"
+        android:clickable="true">
+
+        <!--服务区/收费站-->
+        <!--途径点-->
+        <!--交通事件-->
+
+        <com.fy.navi.ui.view.SkinImageView
+            android:id="@+id/siv_eagle"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/img_trip_eagle" />
+
+        <com.fy.navi.ui.view.SkinImageView
+            android:id="@+id/siv_north"
+            android:layout_width="@dimen/dp_28"
+            android:layout_height="@dimen/dp_28"
+            android:layout_marginTop="@dimen/dp_6"
+            android:background="@drawable/img_trip_north"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.fy.navi.ui.view.SkinImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/img_hawkeye_picture_frame" />
+
+    </com.fy.navi.ui.view.SkinConstraintLayout>
+</layout>
