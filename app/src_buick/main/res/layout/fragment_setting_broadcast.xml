@@ -29,7 +29,7 @@
                 android:textColor="@color/black" />
 
             <com.fy.navi.ui.view.SkinConstraintLayout
-                clickCommand="@{viewModel.openBroadcastVoiceListPage}"
+                clickCommand="@{viewModel.mOpenBroadcastVoiceListPage}"
                 android:id="@+id/broadcast_entry"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_140"
@@ -124,42 +124,42 @@
                 android:layout_marginTop="@dimen/dp_16">
 
                 <com.fy.navi.ui.view.SkinRadioButton
-                    clickCommand="@{viewModel.switchNaviBroadcastDetailClick}"
+                    clickCommand="@{viewModel.mSwitchNaviBroadcastDetailClick}"
                     android:id="@+id/navi_broadcast_detailed"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:text="@string/setting_broadcast_navi_detail"
                     android:textSize="@dimen/sp_34"
-                    android:checked="@{viewModel.isNaviBroadcastDetail}"
+                    android:checked="@{viewModel.mIsNaviBroadcastDetail}"
                     android:background="@drawable/bg_setting_checkbox_selector"
                     android:button="@null"
                     android:gravity="center"
                     android:textColor="@color/setting_text_preference"/>
 
                 <com.fy.navi.ui.view.SkinRadioButton
-                    clickCommand="@{viewModel.switchNaviBroadcastConciseClick}"
+                    clickCommand="@{viewModel.mSwitchNaviBroadcastConciseClick}"
                     android:id="@+id/navi_broadcast_concise"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:text="@string/setting_broadcast_navi_concise"
                     android:textSize="@dimen/sp_34"
-                    android:checked="@{viewModel.isNaviBroadcastConcise}"
+                    android:checked="@{viewModel.mIsNaviBroadcastConcise}"
                     android:background="@drawable/bg_setting_checkbox_selector"
                     android:button="@null"
                     android:gravity="center"
                     android:textColor="@color/setting_text_preference"/>
 
                 <com.fy.navi.ui.view.SkinRadioButton
-                    clickCommand="@{viewModel.switchNaviBroadcastSimpleClick}"
+                    clickCommand="@{viewModel.mSwitchNaviBroadcastSimpleClick}"
                     android:id="@+id/navi_broadcast_simple"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:text="@string/setting_broadcast_navi_clear"
                     android:textSize="@dimen/sp_34"
-                    android:checked="@{viewModel.isNaviBroadcastSimple}"
+                    android:checked="@{viewModel.mIsNaviBroadcastSimple}"
                     android:background="@drawable/bg_setting_checkbox_selector"
                     android:button="@null"
                     android:gravity="center"
@@ -173,12 +173,12 @@
                 android:layout_marginTop="@dimen/dp_60">
 
                 <com.fy.navi.ui.view.SkinCheckBox
-                    clickCommand="@{viewModel.switchCruiseBroadcastClick}"
+                    clickCommand="@{viewModel.mSwitchCruiseBroadcastClick}"
                     android:id="@+id/switch_eagle_eye_map"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:checked="@{viewModel.isCruiseBroadcast}"
+                    android:checked="@{viewModel.mIsCruiseBroadcast}"
                     android:background="@android:color/transparent"
                     android:button="@drawable/custom_thumb" />
 
@@ -203,13 +203,13 @@
                 android:gravity="center_horizontal">
 
                 <com.fy.navi.ui.view.SkinCheckBox
-                    clickCommand="@{viewModel.switchCruiseBroadcastRoadConditionClick}"
+                    clickCommand="@{viewModel.mSwitchCruiseBroadcastRoadConditionClick}"
                     android:id="@+id/cruise_broadcast_road_condition"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:button="@null"
-                    android:checked="@{viewModel.isCruiseBroadcastRoadCondition}"
+                    android:checked="@{viewModel.mIsCruiseBroadcastRoadCondition}"
                     android:background="@drawable/bg_setting_broadcast"
                     android:gravity="center"
                     android:text="@string/setting_broadcast_cruise_road_condition"
@@ -217,13 +217,13 @@
                     android:textSize="@dimen/sp_34" />
 
                 <com.fy.navi.ui.view.SkinCheckBox
-                    clickCommand="@{viewModel.switchCruiseBroadcastCameraClick}"
+                    clickCommand="@{viewModel.mSwitchCruiseBroadcastCameraClick}"
                     android:id="@+id/cruise_broadcast_camera"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:button="@null"
-                    android:checked="@{viewModel.isCruiseBroadcastCamera}"
+                    android:checked="@{viewModel.mIsCruiseBroadcastCamera}"
                     android:background="@drawable/bg_setting_broadcast"
                     android:gravity="center"
                     android:layout_marginStart="@dimen/dp_34"
@@ -232,13 +232,13 @@
                     android:textSize="@dimen/sp_34" />
 
                 <com.fy.navi.ui.view.SkinCheckBox
-                    clickCommand="@{viewModel.switchCruiseBroadcastSafeClick}"
+                    clickCommand="@{viewModel.mSwitchCruiseBroadcastSafeClick}"
                     android:id="@+id/cruise_broadcast_safe"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:button="@null"
-                    android:checked="@{viewModel.isCruiseBroadcastSafe}"
+                    android:checked="@{viewModel.mIsCruiseBroadcastSafe}"
                     android:background="@drawable/bg_setting_broadcast"
                     android:gravity="center"
                     android:layout_marginStart="@dimen/dp_34"

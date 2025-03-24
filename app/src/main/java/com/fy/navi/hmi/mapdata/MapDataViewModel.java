@@ -3,6 +3,7 @@ package com.fy.navi.hmi.mapdata;
 import android.app.Application;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.MutableLiveData;
 
 import com.android.utils.thread.ThreadManager;
 import com.fy.navi.hmi.mapdata.manager.ManagerMapDataFragment;
@@ -10,22 +11,17 @@ import com.fy.navi.hmi.mapdata.near.NearMapDataFragment;
 import com.fy.navi.hmi.mapdata.search.SearchMapDataFragment;
 import com.fy.navi.service.define.code.UserDataCode;
 import com.fy.navi.service.define.mapdata.CityDataInfo;
+import com.fy.navi.service.define.mapdata.CityDownLoadInfo;
 import com.fy.navi.service.define.mapdata.ProvDataInfo;
 import com.fy.navi.ui.action.Action;
 import com.fy.navi.ui.base.BaseViewModel;
 
 import java.util.ArrayList;
 
-/**
- * @Description TODO
- * @Author fh
- * @date 2024/12/09
- */
 public class MapDataViewModel extends BaseViewModel<MapDataFragment, MapDataModel> {
-    private static final String TAG = MapDataViewModel.class.getName();
-    public int managerType;
+    public MutableLiveData<String> mAllDownloadingDataSize = new MutableLiveData<>("0");
 
-    public MapDataViewModel(@NonNull Application application) {
+    public MapDataViewModel(@NonNull final Application application) {
         super(application);
     }
 
@@ -36,11 +32,13 @@ public class MapDataViewModel extends BaseViewModel<MapDataFragment, MapDataMode
 
     /**
      * 获取全部省份+城市数据
+     * @param ischeck
      */
-    public void getAllProvinceData() {
+    public void getAllProvinceData(final boolean ischeck) {
         ThreadManager.getInstance().postDelay(new Runnable() {
             @Override
             public void run() {
+                mAllDownloadingDataSize.setValue(String.valueOf(mModel.getWorkingList().size()));
                 //获取全部地图初始化数据
                 mView.updateMapDataView(mModel.getMapDataList());
                 // 获取当前城市数据
@@ -48,88 +46,113 @@ public class MapDataViewModel extends BaseViewModel<MapDataFragment, MapDataMode
                 // 获取基础功能包数据
                 mView.updateCountryDataView(mModel.getCountryData());
                 // 获取下载中、更新中状态下的所有城市adCode列表数据
-                mView.updateWorkingView(mModel.getWorkingList());
-                // 获取已下载状态下的所有城市adCode列表数据
-                mView.updateWorkedView(mModel.getWorkedList());
+                mView.updateWorkingView(mModel.getWorkingList(), mModel.getWorkedList());
                 // 获取附近推荐城市信息
                 mView.updateNearDataView(mModel.getNearAdCodeList(310000));
+                // 发起云端数据列表检测
+                mModel.requestDataListCheck(ischeck);
+
             }
         }, 0);
     }
 
-    public Action finishMapDataView = () -> closeFragment(true);
+    public Action mFinishMapDataView = () -> closeFragment(true);
 
     /**
      * 搜索地图数据
      */
-    public Action searchMapDataView = () -> {
+    public Action mSearchMapDataView = () -> {
         addFragment(new SearchMapDataFragment(), null);
     };
 
     /**
      * 跳转到附近城市推荐页面
      */
-    public Action toNearMapDataView = () -> {
+    public Action mToNearMapDataView = () -> {
         addFragment(new NearMapDataFragment(), null);
     };
 
     /**
      * 跳转到下载管理页面
      */
-    public Action toManagerMapDataView = () -> {
+    public Action mToManagerMapDataView = () -> {
         addFragment(new ManagerMapDataFragment(), null);
     };
 
     /**
      * 下载基础包
      */
-    public Action startDownload = () -> {
-        CityDataInfo info = mModel.getCountryData();
-        ArrayList<Integer> cityAdcodes = new ArrayList<>();
-        cityAdcodes.add(info.adcode);
-        startAllTask(cityAdcodes);
+    public Action mStartDownload = () -> {
+        final CityDataInfo info = mModel.getCountryData();
+        final ArrayList<Integer> cityAdcodes = new ArrayList<>();
+        cityAdcodes.add(info.getAdcode());
+        final CityDownLoadInfo downloadItem = info.getDownLoadInfo();
+        if (downloadItem != null) {
+            if (downloadItem.getTaskState() == UserDataCode.TASK_STATUS_CODE_DOING ||
+                    downloadItem.getTaskState() == UserDataCode.TASK_STATUS_CODE_DONE ||
+                    downloadItem.getTaskState() == UserDataCode.TASK_STATUS_CODE_WAITING) {
+                pauseAllTask(cityAdcodes);
+            } else if (downloadItem.getTaskState() == UserDataCode.TASK_STATUS_CODE_PAUSE ||
+                    downloadItem.getTaskState() == UserDataCode.TASK_STATUS_CODE_READY ||
+                    downloadItem.getTaskState() == UserDataCode.TASK_STATUS_CODE_ERR ||
+                    downloadItem.getTaskState() == UserDataCode.TASK_STATUS_CODE_MAX) {
+                startAllTask(cityAdcodes);
+            }
+        }
+    };
+
+    /**
+     * 删除基础包
+     */
+    public Action mToDeleteCountryCity = () -> {
+        final CityDataInfo info = mModel.getCountryData();
+        final ArrayList<Integer> cityAdcodes = new ArrayList<>();
+        cityAdcodes.add(info.getAdcode());
+        deleteAllTask(cityAdcodes);
     };
 
     /**
      * 下载当前城市
      */
-    public Action toDownloadCurrentCity = () -> {
-        CityDataInfo info = mModel.getCurrentCityInfo(310000);
-        ArrayList<Integer> cityAdcodes = new ArrayList<>();
-        cityAdcodes.add(info.adcode);
-        startAllTask(cityAdcodes);
+    public Action mToDownloadCurrentCity = () -> {
+       /* if (mModel.countryDataVisible()) {
+            mView.showCountryMapDataDialog();
+        }*/
+        final CityDataInfo info = mModel.getCurrentCityInfo(310000);
+        final ArrayList<Integer> cityAdcodes = new ArrayList<>();
+        cityAdcodes.add(info.getAdcode());
+        final CityDownLoadInfo downloadItem = info.getDownLoadInfo();
+        if (downloadItem != null) {
+            if (downloadItem.getTaskState() == UserDataCode.TASK_STATUS_CODE_DOING ||
+                    downloadItem.getTaskState() == UserDataCode.TASK_STATUS_CODE_DONE ||
+                    downloadItem.getTaskState() == UserDataCode.TASK_STATUS_CODE_WAITING) {
+                pauseAllTask(cityAdcodes);
+            } else if (downloadItem.getTaskState() == UserDataCode.TASK_STATUS_CODE_PAUSE ||
+                    downloadItem.getTaskState() == UserDataCode.TASK_STATUS_CODE_READY ||
+                    downloadItem.getTaskState() == UserDataCode.TASK_STATUS_CODE_ERR ||
+                    downloadItem.getTaskState() == UserDataCode.TASK_STATUS_CODE_MAX) {
+                startAllTask(cityAdcodes);
+            }
+        }
     };
 
-
     /**
-     * 全部地图
+     * 附近城市-全部下载
      */
-    public Action allDataClickView = () -> {
-//        mView.updateMapDataTab(1);
-    };
-
-    /**
-     * 下载管理
-     */
-    public Action administrationClickView = () -> {
-//        mView.updateMapDataTab(2);
-    };
-
-    /**
-     * 全部开始
-     */
-    public Action allDataDownload = () -> {
+    public Action mToDownloadNearData = () -> {
+        /*if (mModel.countryDataVisible()) {
+            mView.showCountryMapDataDialog();
+        }*/
         ThreadManager.getInstance().postDelay(new Runnable() {
             @Override
             public void run() {
-                managerType = 0;
-                ArrayList<CityDataInfo> list = mModel.getWorkingList();
-                ArrayList<Integer> cityAdcodes = new ArrayList<>();
+                final ArrayList<CityDataInfo> list = mModel.getNearAdCodeList(310000);
+                final ArrayList<Integer> cityAdcodes = new ArrayList<>();
                 for(CityDataInfo info :list) {
-                    if (info.downLoadInfo.taskState == UserDataCode.TASK_STATUS_CODE_WAITING  // 等待中
-                            || info.downLoadInfo.taskState == UserDataCode.TASK_STATUS_CODE_DOING
-                            || info.downLoadInfo.taskState == UserDataCode.TASK_STATUS_CODE_DONE) { // 下载中
-                        cityAdcodes.add(info.adcode);
+                    if (info.getDownLoadInfo().getTaskState() == UserDataCode.TASK_STATUS_CODE_WAITING  // 等待中
+                            || info.getDownLoadInfo().getTaskState() == UserDataCode.TASK_STATUS_CODE_DOING
+                            || info.getDownLoadInfo().getTaskState() == UserDataCode.TASK_STATUS_CODE_DONE) { // 下载中
+                        cityAdcodes.add(info.getAdcode());
                     }
                 }
                 startAllTask(cityAdcodes);
@@ -138,31 +161,9 @@ public class MapDataViewModel extends BaseViewModel<MapDataFragment, MapDataMode
     };
 
     /**
-     * 全部暂停
-     */
-    public Action allDataSuspend = () -> {
-        ThreadManager.getInstance().postDelay(new Runnable() {
-            @Override
-            public void run() {
-                managerType = 0;
-                ArrayList<CityDataInfo> list = mModel.getWorkingList();
-                ArrayList<Integer> cityAdcodes = new ArrayList<>();
-                for(CityDataInfo info :list) {
-                    if (info.downLoadInfo.taskState == UserDataCode.TASK_STATUS_CODE_PAUSE) { // 暂停
-                        cityAdcodes.add(info.adcode);
-                    }
-                }
-                pauseAllTask(cityAdcodes);
-            }
-        }, 0);
-    };
-
-
-
-    /**
      * @param adCodeList 省份、城市ID列表
      */
-    public void startAllTask(ArrayList<Integer> adCodeList) {
+    public void startAllTask(final ArrayList<Integer> adCodeList) {
         mModel.startAllTask(adCodeList);
     }
 
@@ -170,11 +171,15 @@ public class MapDataViewModel extends BaseViewModel<MapDataFragment, MapDataMode
      * 暂停正在下载的城市数据
      * @param adCodeList 省份、城市ID列表
      */
-    public void pauseAllTask(ArrayList<Integer> adCodeList) {
+    public void pauseAllTask(final ArrayList<Integer> adCodeList) {
         mModel.pauseAllTask(adCodeList);
     }
 
-    public void cancelAllTask(ArrayList<Integer> adCodeList) {
+    /**
+     * 取消下载
+     * @param adCodeList
+     */
+    public void cancelAllTask(final ArrayList<Integer> adCodeList) {
         mModel.cancelAllTask(adCodeList);
     }
 
@@ -182,34 +187,25 @@ public class MapDataViewModel extends BaseViewModel<MapDataFragment, MapDataMode
      * 删除已下载的城市数据
      * @param adCodeList 省份、城市ID列表
      */
-    public void deleteAllTask(int type, ArrayList<Integer> adCodeList) {
-        managerType = type;
+    public void deleteAllTask(final ArrayList<Integer> adCodeList) {
         mModel.deleteAllTask(adCodeList);
     }
 
-    public void onPercent(ProvDataInfo info) {
-        mView.notifyMapDataChangeView(info);
-               /* if () {
-                    // 刷新基础包
-                    mView.updateCountryDataView(info.cityInfoList.get(0));
-                } else if () {
-                    mView.updateCurrentCityView(info.cityInfoList.get(0));
-                }*/
+    /**
+     * 实时更新下载状态
+     * @param provDataInfo
+     */
+    public void onDownLoadStatus(final ProvDataInfo provDataInfo) {
+        mView.notifyMapDataChangeView(provDataInfo);
+        mView.notifyCurrentCityView(provDataInfo.getCityInfoList().get(0));
+        mView.updateCountryDataView(provDataInfo.getCityInfoList().get(0));
     }
 
-    public void onDownLoadStatus(ProvDataInfo provDataInfo) {
-        ThreadManager.getInstance().postUi(() -> {
-            if (managerType == 0) {
-            } else if (managerType == 1) {
-//                mView.updateMapDataView(mModel.getMapDataList());
-            } else {
-//                mView.notifyMapDataChangeView(provDataInfo);
-            }
-
-            mView.updateWorkingView(mModel.getWorkingList());
-            mView.updateWorkedView(mModel.getWorkedList());
-
-        });
+    public CityDataInfo getCurrentCityInfo() {
+        return  mModel.getCurrentCityInfo(310000);
     }
 
+    public CityDataInfo getCountryData() {
+        return  mModel.getCountryData();
+    }
 }

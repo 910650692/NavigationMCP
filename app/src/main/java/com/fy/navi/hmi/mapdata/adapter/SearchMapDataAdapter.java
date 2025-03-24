@@ -1,5 +1,6 @@
 package com.fy.navi.hmi.mapdata.adapter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,6 +9,9 @@ import android.view.ViewGroup;
 import com.android.utils.log.Logger;
 import com.fy.navi.hmi.R;
 import com.fy.navi.hmi.utils.StringUtils;
+import com.fy.navi.scene.ui.setting.DownloadBtnView;
+import com.fy.navi.service.define.code.UserDataCode;
+import com.fy.navi.service.define.mapdata.CityDataInfo;
 import com.fy.navi.service.define.mapdata.CityDownLoadInfo;
 import com.fy.navi.service.define.mapdata.ProvDataInfo;
 
@@ -18,152 +22,178 @@ public class SearchMapDataAdapter extends BaseSearchMapDataAdapter<
         SearchMapDataAdapter.GroupItemViewHolder, SearchMapDataAdapter.SubItemViewHolder> {
 
     private static final String TAG = SearchMapDataAdapter.class.getSimpleName();
-    private Context context;
-    private OfflineItemListener offlineItemListener;
-    private List<DataTree<ProvDataInfo, String>> dts = new ArrayList<>();
+    private Context mContext;
+    private OfflineItemListener mOfflineItemListener;
+    private List<DataTree<ProvDataInfo, String>> mDts = new ArrayList<>();
+    private DownloadBtnView mGroupDownloadBtnView;
+    private DownloadBtnView mSubDownloadBtnView;
 
-    public SearchMapDataAdapter(Context context) {
-        this.context = context;
+
+    public SearchMapDataAdapter(final Context context) {
+        this.mContext = context;
     }
 
-    public void setData(List datas) {
-        dts = datas;
-        notifyNewData(dts);
+    /**
+     * 设置数据
+     * @param datas
+     */
+    public void setData(final List datas) {
+        mDts = datas;
+        notifyNewData(mDts);
     }
 
-    public void setOfflineItemListener(OfflineItemListener listener) {
-        offlineItemListener = listener;
+    public void setOfflineItemListener(final OfflineItemListener listener) {
+        mOfflineItemListener = listener;
     }
 
     @Override
-    public BaseRecyclerHolder groupItemViewHolder(ViewGroup parent) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_province, parent, false);
+    public BaseRecyclerHolder groupItemViewHolder(final ViewGroup parent) {
+        final View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_province, parent, false);
         return new GroupItemViewHolder(view);
     }
 
     @Override
-    public BaseRecyclerHolder subItemViewHolder(ViewGroup parent) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_city_data, parent, false);
+    public BaseRecyclerHolder subItemViewHolder(final ViewGroup parent) {
+        final View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_city_data, parent, false);
         return new SubItemViewHolder(view);
     }
 
+    @SuppressLint("UseCompatLoadingForDrawables")
     @Override
-    public void onGroupItemBindViewHolder(BaseRecyclerHolder holder, int groupItemIndex) {
-        if (dts != null && !dts.isEmpty()) {
-            String groupName = dts.get(groupItemIndex).getGroupItem().name;
+    public void onGroupItemBindViewHolder(final BaseRecyclerHolder holder, final int groupItemIndex) {
+        if (mDts != null && !mDts.isEmpty()) {
+            final String groupName = mDts.get(groupItemIndex).getGroupItem().getName();
             holder.setText(R.id.item_province_name, groupName); //省份名称
-            int areaType = dts.get(groupItemIndex).getGroupItem().areaType;
+            final int areaType = mDts.get(groupItemIndex).getGroupItem().getAreaType();
             // item 若为城市，则显示城市下载状态；若为省份，则显示展开/关闭按钮
             if (areaType == 2 || areaType == 3) {
                 holder.setVisible(R.id.item_download_status, true);
-                holder.setVisible(R.id.item_province_data, true);
                 holder.setVisible(R.id.item_province_expand, false);
-
-                CityDownLoadInfo downloadItem = dts.get(groupItemIndex).getGroupItem().downLoadInfo;
-                String sizeString = StringUtils.formatSize(downloadItem.nFullZipSize);
-                holder.setText(R.id.item_province_data, sizeString); //城市数据包大小
-
+                holder.setVisible(R.id.item_province_data, true);
+                //城市数据包大小
+                final CityDownLoadInfo downloadItem = mDts.get(groupItemIndex).getGroupItem().getDownLoadInfo();
+                final String sizeString = StringUtils.formatSize(downloadItem.getFullZipSize());
+                holder.setText(R.id.item_province_data, sizeString);
+                // 下载按钮状态
+                mGroupDownloadBtnView = holder.getView(R.id.item_download_status);
+                mGroupDownloadBtnView.parseDownloadStatusInfo(downloadItem);
             } else {
                 holder.setVisible(R.id.item_download_status, false);
-                holder.setVisible(R.id.item_province_data, false);
                 holder.setVisible(R.id.item_province_expand, true);
+                holder.setVisible(R.id.item_province_data, false);
             }
         }
     }
 
     @Override
-    public void onSubItemBindViewHolder(BaseRecyclerHolder holder, int groupItemIndex, int subItemIndex) {
-        if (dts != null && !dts.isEmpty()) {
+    public void onSubItemBindViewHolder(final BaseRecyclerHolder holder, final int groupItemIndex, final int subItemIndex) {
+        if (mDts != null && !mDts.isEmpty()) {
             //城市名称
-            String cityName = dts.get(groupItemIndex).getSubItems().get(subItemIndex).name;
+            final String cityName = mDts.get(groupItemIndex).getSubItems().get(subItemIndex).getName();
             holder.setText(R.id.item_city_name, cityName);
             //城市下载状态
-            CityDownLoadInfo downloadItem = dts.get(groupItemIndex).getSubItems().get(subItemIndex).downLoadInfo;
-            holder.setText(R.id.item_status_tip, downloadItem.statusTip);
+            final CityDownLoadInfo downloadItem = mDts.get(groupItemIndex).getSubItems().get(subItemIndex).getDownLoadInfo();
             //城市数据包大小
-            String sizeString = StringUtils.formatSize(downloadItem.nFullZipSize);
+            final String sizeString = StringUtils.formatSize(downloadItem.getFullZipSize());
             holder.setText(R.id.item_city_data, sizeString);
+            // 下载按钮状态
+            mSubDownloadBtnView = holder.getView(R.id.item_download_status);
+            mSubDownloadBtnView.parseDownloadStatusInfo(downloadItem);
         }
     }
 
     @Override
-    public void onGroupItemClick(Boolean isExpand, GroupItemViewHolder holder, int groupItemIndex) {
+    public void onGroupItemClick(final Boolean isExpand, final GroupItemViewHolder holder, final int groupItemIndex) {
         Logger.d(TAG, "group item " + groupItemIndex + " is expand " + isExpand);
-
-        int areaType = dts.get(groupItemIndex).getGroupItem().areaType;
-        // item 若为城市，则显示城市下载状态；若为省份，则显示展开/关闭按钮
-        if (areaType == 2 || areaType == 3) {
-            // TODO: 2025/2/17
+        if (isExpand) {
+            holder.setImageResource(R.id.item_province_expand,R.drawable.img_under_the_58);
         } else {
-
-            if (isExpand) {
-                holder.setImageResource(R.id.item_province_expand,R.drawable.img_under_the_58);
-            } else {
-                holder.setImageResource(R.id.item_province_expand, R.drawable.img_up_58);
-            }
-
+            holder.setImageResource(R.id.item_province_expand, R.drawable.img_up_58);
         }
     }
 
     @Override
-    public void onSubItemClick(SubItemViewHolder holder, int groupItemIndex, int subItemIndex) {
+    public void onGroupItemClick(final GroupItemViewHolder holder, final int groupItemIndex) {
+        Logger.d(TAG, "group item " + groupItemIndex);
+        if (mDts != null && !mDts.isEmpty()) {
+            final int taskState = mDts.get(groupItemIndex).getGroupItem().getDownLoadInfo().getTaskState();
+            final int adCode = mDts.get(groupItemIndex).getGroupItem().getAdcode();
+            final ArrayList<Integer> adCodeList = new ArrayList<>();
+            adCodeList.add(adCode);
+            if (mOfflineItemListener != null) {
+                switch (taskState) {
+                    case UserDataCode.TASK_STATUS_CODE_READY: // 待更新 or 待下载
+                    case UserDataCode.TASK_STATUS_CODE_PAUSE: // 暂停
+                    case UserDataCode.TASK_STATUS_CODE_ERR: // 重试
+                    case UserDataCode.TASK_STATUS_CODE_MAX: // 重试
+                        mOfflineItemListener.startAllTask(adCodeList);
+                        break;
+                    case UserDataCode.TASK_STATUS_CODE_WAITING: // 等待中
+                    case UserDataCode.TASK_STATUS_CODE_DOING: // 下载中 or 更新中
+                    case UserDataCode.TASK_STATUS_CODE_DONE: // 下载中 or 更新中
+                        mOfflineItemListener.pauseAllTask(adCodeList);
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+    }
+
+    @Override
+    public void onSubItemClick(final SubItemViewHolder holder, final int groupItemIndex, final int subItemIndex) {
         Logger.d(TAG, "sub item " + subItemIndex + " in group item " + groupItemIndex);
 
-      /*  CityInfo item = dts.get(groupItemIndex).getSubItems().get(subItemIndex);
-        if (offlineItemListener != null) {
-            if (mDownloadBtnView.getIsCanDelete()) {
-                offlineItemListener.delete(item.getId(), item.getName());
-                return;
-            }
-            switch (item.getStatus()) {
-                case DownloadStatus.NOT_DOWNLOADED:
-                case DownloadStatus.NEED_UPDATE:
-                case DownloadStatus.SUSPEND:
-                case DownloadStatus.ERROR:
-                case DownloadStatus.ERROR_UPDATE:
-                    long size = item.getTotalSize();
-                    if (item.getStatus() == DownloadStatus.NEED_UPDATE
-                            || item.getStatus() == DownloadStatus.ERROR_UPDATE) {
-                        size = item.getUpdateSize();
-                    } else if (item.getStatus() == DownloadStatus.SUSPEND) {
-                        if (item.getUpdateSize() != 0) {
-                            size = item.getUpdateSize() - item.getDownloadUpdateSize();
-                        } else {
-                            size = item.getTotalSize() - item.getDownloadSize();
-                        }
-                    }
-                    offlineItemListener.download(item.getId(), size);
+        final CityDataInfo item = mDts.get(groupItemIndex).getSubItems().get(subItemIndex);
+        final int adCode = item.getAdcode();
+        final ArrayList<Integer> adCodeList = new ArrayList<>();
+        adCodeList.add(adCode);
+
+        final CityDownLoadInfo downloadItem = mDts.get(groupItemIndex).getSubItems().get(subItemIndex).getDownLoadInfo();
+        if (mOfflineItemListener != null) {
+            switch (downloadItem.getTaskState()) {
+                case UserDataCode.TASK_STATUS_CODE_READY: // 待更新 or 待下载
+                case UserDataCode.TASK_STATUS_CODE_PAUSE: // 暂停
+                case UserDataCode.TASK_STATUS_CODE_ERR: // 重试
+                case UserDataCode.TASK_STATUS_CODE_MAX: // 重试
+                    mOfflineItemListener.startAllTask(adCodeList);
                     break;
-                case DownloadStatus.DOWNLOADING:
-                case DownloadStatus.UPDATING:
-                case DownloadStatus.WAITING:
-                case DownloadStatus.WAITING_UPDATE:
-                    offlineItemListener.suspend(item.getId());
+                case UserDataCode.TASK_STATUS_CODE_WAITING: // 等待中
+                case UserDataCode.TASK_STATUS_CODE_DOING: // 下载中 or 更新中
+                case UserDataCode.TASK_STATUS_CODE_DONE: // 下载中 or 更新中
+                    mOfflineItemListener.pauseAllTask(adCodeList);
                     break;
                 default:
                     break;
             }
-        }*/
-
+        }
     }
 
     public static class GroupItemViewHolder extends BaseRecyclerHolder {
-        public GroupItemViewHolder(View itemView) {
+        public GroupItemViewHolder(final View itemView) {
             super(itemView);
         }
     }
 
     public static class SubItemViewHolder extends BaseRecyclerHolder {
-        public SubItemViewHolder(View itemView) {
+        public SubItemViewHolder(final View itemView) {
             super(itemView);
         }
     }
 
     public interface OfflineItemListener {
-        void startAllTask(int downloadMode);
-        void pauseAllTask(int downloadMode);
-        void cancelAllTask(int downloadMode);
 
+        /**
+         * 开始下载
+         * @param adCodeList
+         */
+        void startAllTask(final ArrayList<Integer> adCodeList);
+
+        /**
+         * 暂停下载
+         * @param adCodeList
+         */
+        void pauseAllTask(final ArrayList<Integer> adCodeList);
     }
 
 }

@@ -1,19 +1,19 @@
 package com.fy.navi.hmi.search.searchresult;
 
-import static com.fy.navi.service.MapDefaultFinalTag.SEARCH_HMI_TAG;
 
 import android.app.Application;
 
 import androidx.annotation.NonNull;
 
 import com.android.utils.log.Logger;
+import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.define.search.SearchResultEntity;
 import com.fy.navi.ui.action.Action;
 import com.fy.navi.ui.base.BaseViewModel;
 
 
 public class BaseSearchResultViewModel extends BaseViewModel<SearchResultFragment, SearchResultModel> {
-    public BaseSearchResultViewModel(@NonNull Application application) {
+    public BaseSearchResultViewModel(@NonNull final Application application) {
         super(application);
     }
 
@@ -22,15 +22,27 @@ public class BaseSearchResultViewModel extends BaseViewModel<SearchResultFragmen
         return new SearchResultModel();
     }
 
-    public Action rootClick = () -> {
-        Logger.d(SEARCH_HMI_TAG, "rootClick: ");
+    private final Action mRootClick = () -> {
+        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "rootClick: ");
     };
 
-    public void notifySearchResult(SearchResultEntity searchResultEntity) {
+    public Action getRootClick() {
+        return mRootClick;
+    }
+
+    /**
+     * 搜索结果
+     * @param searchResultEntity 搜索结果实体类
+     */
+    public void notifySearchResult(final SearchResultEntity searchResultEntity) {
         mView.notifySearchResult(searchResultEntity);
     }
 
-    public void notifySilentSearchResult(SearchResultEntity searchResultEntity) {
+    /**
+     * 静默搜索回调
+     * @param searchResultEntity 搜索结果实体类
+     */
+    public void notifySilentSearchResult(final SearchResultEntity searchResultEntity) {
         mView.notifySilentSearchResult(searchResultEntity);
     }
 }

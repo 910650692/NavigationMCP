@@ -31,7 +31,7 @@
             android:id="@+id/group_next"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:visibility="@{naviEta.groupNextVisible?View.VISIBLE:View.GONE}"
+            android:visibility="@{naviEta.mGroupNextVisible?View.VISIBLE:View.GONE}"
             app:constraint_referenced_ids="siv_hud_sou31,stv_text_next"
             tools:visibility="visible" />
 
@@ -43,17 +43,16 @@
             android:gravity="center"
             android:singleLine="true"
             android:textColor="@color/navi_tbt_remaining_info_color"
-            android:textSize="@dimen/sp_34"
+            android:textSize="@dimen/sp_40"
             app:layout_constraintBottom_toBottomOf="@id/gl_arrive"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@id/gl_arrive"
             tools:text="随后" />
 
-        <!--下一个转向动作-->
         <com.fy.navi.ui.view.SkinImageView
             android:id="@+id/siv_hud_sou31"
-            android:layout_width="@dimen/dp_40"
-            android:layout_height="@dimen/dp_40"
+            android:layout_width="@dimen/dp_50"
+            android:layout_height="@dimen/dp_50"
             android:layout_marginLeft="@dimen/dp_12"
             android:alpha="0.6"
             android:background="@drawable/img_tbt_hud_sou3_day"
@@ -67,8 +66,8 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:textColor="@color/navi_tbt_remaining_info_color"
-            android:textSize="@dimen/sp_34"
-            android:visibility="@{naviEta.distanceTimeVisible?View.VISIBLE:View.GONE}"
+            android:textSize="@dimen/sp_40"
+            android:visibility="@{naviEta.mDistanceTimeVisible?View.VISIBLE:View.GONE}"
             app:layout_constraintBottom_toBottomOf="@id/gl_arrive"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@id/gl_arrive"
@@ -83,7 +82,7 @@
             android:paddingStart="@dimen/dp_20"
             android:text="@string/rg_arrive_word"
             android:textColor="@color/navi_tbt_remaining_info_color"
-            android:textSize="@dimen/sp_34"
+            android:textSize="@dimen/sp_40"
             app:layout_constraintBottom_toBottomOf="@id/gl_arrive"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/gl_arrive" />
@@ -94,7 +93,7 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:textColor="@color/navi_tbt_remaining_info_color"
-            android:textSize="@dimen/sp_34"
+            android:textSize="@dimen/sp_40"
             app:layout_constraintBottom_toBottomOf="@id/gl_arrive"
             app:layout_constraintEnd_toStartOf="@id/stv_arrive_default"
             app:layout_constraintTop_toTopOf="@id/gl_arrive"

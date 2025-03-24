@@ -46,12 +46,12 @@ public class SystemSpeechSynthesizeController extends UtteranceProgressListener 
 
     public void init() {
         Logger.d(TAG, "init() start");
-        mTextToSpeech = new TextToSpeech(AppContext.mApplication.getApplicationContext(), this);
+        mTextToSpeech = new TextToSpeech(AppContext.getInstance().getMApplication().getApplicationContext(), this);
         List<TextToSpeech.EngineInfo> engines = mTextToSpeech.getEngines();
         for (TextToSpeech.EngineInfo engineInfo : engines) {
             Logger.i(TAG, "engineInfo " + engineInfo);
         }
-        mAudioManager = (AudioManager) AppContext.mApplication.getApplicationContext().getSystemService(Context.AUDIO_SERVICE);
+        mAudioManager = (AudioManager) AppContext.getInstance().getMApplication().getApplicationContext().getSystemService(Context.AUDIO_SERVICE);
         mNaviPlaybackAttributes = new AudioAttributes.Builder()
                 .setUsage(AudioAttributes.USAGE_ASSISTANCE_NAVIGATION_GUIDANCE)
                 .setContentType(AudioAttributes.CONTENT_TYPE_SPEECH)

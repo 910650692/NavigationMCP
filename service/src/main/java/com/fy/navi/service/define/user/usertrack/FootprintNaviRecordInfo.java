@@ -1,210 +1,206 @@
 package com.fy.navi.service.define.user.usertrack;
 
-/**
- * @Description
- * @Author fh
- * @date 2024/12/27
- */
+
 public class FootprintNaviRecordInfo {
-    public boolean arrived;
-    public int monthActTimes;
-    public int monthDistance;
-    public String month;
-    public String origin;
-    public String destination;
-    public String actualDest;
-    public String naviId;
+    private boolean mArrived;
+    private int mMonthActTimes;
+    private int mMonthDistance;
+    private String mMonth;
+    private String mOrigin;
+    private String mDestination;
+    private String mActualDest;
+    private String mNaviId;
 
-    public int duration;
-    public int distance;
-    public int avgSpeed;
-    public int maxSpeed;
-    public String avgSpeedDesc;
-    public String avgSpeedUnit;
-    public String maxSpeedDesc;
-    public String maxSpeedUnit;
+    private int mDuration;
+    private int mDistance;
+    private int mAvgSpeed;
+    private int mMaxSpeed;
+    private String mAvgSpeedDesc;
+    private String mAvgSpeedUnit;
+    private String mMaxSpeedDesc;
+    private String mMaxSpeedUnit;
 
-    public int maxCount;
-    public int minNaviDist;
-    public int maxNaviDist;
-    public String naviTime;
-    public String srcAdcode;
-    public String dstAdcode;
+    private int mMaxCount;
+    private int mMinNaviDist;
+    private int mMaxNaviDist;
+    private String mNaviTime;
+    private String mSrcAdcode;
+    private String mDstAdcode;
 
     public int getMaxCount() {
-        return maxCount;
+        return mMaxCount;
     }
 
-    public void setMaxCount(int maxCount) {
-        this.maxCount = maxCount;
+    public void setMaxCount(final int maxCount) {
+        this.mMaxCount = maxCount;
     }
 
     public int getMinNaviDist() {
-        return minNaviDist;
+        return mMinNaviDist;
     }
 
-    public void setMinNaviDist(int minNaviDist) {
-        this.minNaviDist = minNaviDist;
+    public void setMinNaviDist(final int minNaviDist) {
+        this.mMinNaviDist = minNaviDist;
     }
 
     public int getMaxNaviDist() {
-        return maxNaviDist;
+        return mMaxNaviDist;
     }
 
-    public void setMaxNaviDist(int maxNaviDist) {
-        this.maxNaviDist = maxNaviDist;
+    public void setMaxNaviDist(final int maxNaviDist) {
+        this.mMaxNaviDist = maxNaviDist;
     }
 
     public String getNaviTime() {
-        return naviTime;
+        return mNaviTime;
     }
 
-    public void setNaviTime(String naviTime) {
-        this.naviTime = naviTime;
+    public void setNaviTime(final String naviTime) {
+        this.mNaviTime = naviTime;
     }
 
     public String getSrcAdcode() {
-        return srcAdcode;
+        return mSrcAdcode;
     }
 
-    public void setSrcAdcode(String srcAdcode) {
-        this.srcAdcode = srcAdcode;
+    public void setSrcAdcode(final String srcAdcode) {
+        this.mSrcAdcode = srcAdcode;
     }
 
     public String getDstAdcode() {
-        return dstAdcode;
+        return mDstAdcode;
     }
 
-    public void setDstAdcode(String dstAdcode) {
-        this.dstAdcode = dstAdcode;
+    public void setDstAdcode(final String dstAdcode) {
+        this.mDstAdcode = dstAdcode;
     }
 
     public boolean isArrived() {
-        return arrived;
+        return mArrived;
     }
 
-    public void setArrived(boolean arrived) {
-        this.arrived = arrived;
+    public void setArrived(final boolean arrived) {
+        this.mArrived = arrived;
     }
 
     public int getMonthActTimes() {
-        return monthActTimes;
+        return mMonthActTimes;
     }
 
-    public void setMonthActTimes(int monthActTimes) {
-        this.monthActTimes = monthActTimes;
+    public void setMonthActTimes(final int monthActTimes) {
+        this.mMonthActTimes = monthActTimes;
     }
 
     public int getMonthDistance() {
-        return monthDistance;
+        return mMonthDistance;
     }
 
-    public void setMonthDistance(int monthDistance) {
-        this.monthDistance = monthDistance;
+    public void setMonthDistance(final int monthDistance) {
+        this.mMonthDistance = monthDistance;
     }
 
     public String getMonth() {
-        return month;
+        return mMonth;
     }
 
-    public void setMonth(String month) {
-        this.month = month;
+    public void setMonth(final String month) {
+        this.mMonth = month;
     }
 
     public String getOrigin() {
-        return origin;
+        return mOrigin;
     }
 
-    public void setOrigin(String origin) {
-        this.origin = origin;
+    public void setOrigin(final String origin) {
+        this.mOrigin = origin;
     }
 
     public String getDestination() {
-        return destination;
+        return mDestination;
     }
 
-    public void setDestination(String destination) {
-        this.destination = destination;
+    public void setDestination(final String destination) {
+        this.mDestination = destination;
     }
 
     public String getActualDest() {
-        return actualDest;
+        return mActualDest;
     }
 
-    public void setActualDest(String actualDest) {
-        this.actualDest = actualDest;
+    public void setActualDest(final String actualDest) {
+        this.mActualDest = actualDest;
     }
 
     public String getNaviId() {
-        return naviId;
+        return mNaviId;
     }
 
-    public void setNaviId(String naviId) {
-        this.naviId = naviId;
+    public void setNaviId(final String naviId) {
+        this.mNaviId = naviId;
     }
 
 
     public int getDuration() {
-        return duration;
+        return mDuration;
     }
 
-    public void setDuration(int duration) {
-        this.duration = duration;
+    public void setDuration(final int duration) {
+        this.mDuration = duration;
     }
 
     public int getDistance() {
-        return distance;
+        return mDistance;
     }
 
-    public void setDistance(int distance) {
-        this.distance = distance;
+    public void setDistance(final int distance) {
+        this.mDistance = distance;
     }
 
     public int getAvgSpeed() {
-        return avgSpeed;
+        return mAvgSpeed;
     }
 
-    public void setAvgSpeed(int avgSpeed) {
-        this.avgSpeed = avgSpeed;
+    public void setAvgSpeed(final int avgSpeed) {
+        this.mAvgSpeed = avgSpeed;
     }
 
     public int getMaxSpeed() {
-        return maxSpeed;
+        return mMaxSpeed;
     }
 
-    public void setMaxSpeed(int maxSpeed) {
-        this.maxSpeed = maxSpeed;
+    public void setMaxSpeed(final int maxSpeed) {
+        this.mMaxSpeed = maxSpeed;
     }
 
     public String getAvgSpeedDesc() {
-        return avgSpeedDesc;
+        return mAvgSpeedDesc;
     }
 
-    public void setAvgSpeedDesc(String avgSpeedDesc) {
-        this.avgSpeedDesc = avgSpeedDesc;
+    public void setAvgSpeedDesc(final String avgSpeedDesc) {
+        this.mAvgSpeedDesc = avgSpeedDesc;
     }
 
     public String getAvgSpeedUnit() {
-        return avgSpeedUnit;
+        return mAvgSpeedUnit;
     }
 
-    public void setAvgSpeedUnit(String avgSpeedUnit) {
-        this.avgSpeedUnit = avgSpeedUnit;
+    public void setAvgSpeedUnit(final String avgSpeedUnit) {
+        this.mAvgSpeedUnit = avgSpeedUnit;
     }
 
     public String getMaxSpeedDesc() {
-        return maxSpeedDesc;
+        return mMaxSpeedDesc;
     }
 
-    public void setMaxSpeedDesc(String maxSpeedDesc) {
-        this.maxSpeedDesc = maxSpeedDesc;
+    public void setMaxSpeedDesc(final String maxSpeedDesc) {
+        this.mMaxSpeedDesc = maxSpeedDesc;
     }
 
     public String getMaxSpeedUnit() {
-        return maxSpeedUnit;
+        return mMaxSpeedUnit;
     }
 
-    public void setMaxSpeedUnit(String maxSpeedUnit) {
-        this.maxSpeedUnit = maxSpeedUnit;
+    public void setMaxSpeedUnit(final String maxSpeedUnit) {
+        this.mMaxSpeedUnit = maxSpeedUnit;
     }
 }

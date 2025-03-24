@@ -6,68 +6,68 @@ import java.util.ArrayList;
 
 public class ForecastArrivedDataInfo {
 
-    public int nLevel;
-    public String adCode;
-    public String userId;
-    public GeoPoint userLoc;
+    private int mLevel;
+    private String mAdCode;
+    private String mUserId;
+    private GeoPoint mUserLoc;
 
-    public OftenArrivedItemInfo home;
-    public OftenArrivedItemInfo company;
-    public ArrayList<OftenArrivedItemInfo> others;
+    private OftenArrivedItemInfo mHome;
+    private OftenArrivedItemInfo mCompany;
+    private ArrayList<OftenArrivedItemInfo> mOthers;
 
-    public int getnLevel() {
-        return nLevel;
+    public int getLevel() {
+        return mLevel;
     }
 
-    public void setnLevel(int nLevel) {
-        this.nLevel = nLevel;
+    public void setLevel(final int level) {
+        this.mLevel = level;
     }
 
     public String getAdCode() {
-        return adCode;
+        return mAdCode;
     }
 
-    public void setAdCode(String adCode) {
-        this.adCode = adCode;
+    public void setAdCode(final String adCode) {
+        this.mAdCode = adCode;
     }
 
     public String getUserId() {
-        return userId;
+        return mUserId;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public void setUserId(final String userId) {
+        this.mUserId = userId;
     }
 
     public GeoPoint getUserLoc() {
-        return userLoc;
+        return mUserLoc;
     }
 
-    public void setUserLoc(GeoPoint userLoc) {
-        this.userLoc = userLoc;
+    public void setUserLoc(final GeoPoint userLoc) {
+        this.mUserLoc = userLoc;
     }
 
     public OftenArrivedItemInfo getHome() {
-        return home;
+        return mHome;
     }
 
-    public void setHome(OftenArrivedItemInfo home) {
-        this.home = home;
+    public void setHome(final OftenArrivedItemInfo home) {
+        this.mHome = home;
     }
 
     public OftenArrivedItemInfo getCompany() {
-        return company;
+        return mCompany;
     }
 
-    public void setCompany(OftenArrivedItemInfo company) {
-        this.company = company;
+    public void setCompany(final OftenArrivedItemInfo company) {
+        this.mCompany = company;
     }
 
     public ArrayList<OftenArrivedItemInfo> getOthers() {
-        return others;
+        return mOthers;
     }
 
-    public void setOthers(ArrayList<OftenArrivedItemInfo> others) {
-        this.others = others;
+    public void setOthers(final ArrayList<OftenArrivedItemInfo> others) {
+        this.mOthers = others;
     }
 }

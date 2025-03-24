@@ -1,6 +1,5 @@
 package com.fy.navi.hmi.search.searchresult;
 
-import static com.fy.navi.service.MapDefaultFinalTag.SEARCH_HMI_TAG;
 
 import android.os.Bundle;
 
@@ -12,6 +11,7 @@ import com.fy.navi.hmi.R;
 import com.fy.navi.hmi.databinding.FragmentSearchResultBinding;
 import com.fy.navi.scene.RoutePath;
 import com.fy.navi.service.AutoMapConstant;
+import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.define.map.MapTypeId;
 import com.fy.navi.service.define.search.PoiInfoEntity;
 import com.fy.navi.service.define.search.SearchResultEntity;
@@ -19,10 +19,10 @@ import com.fy.navi.ui.base.BaseFragment;
 
 @Route(path = RoutePath.Search.SEARCH_RESULT_FRAGMENT)
 public class SearchResultFragment extends BaseFragment<FragmentSearchResultBinding, SearchResultViewModel> {
-    private String sourceFragmentTag;
+    private String mSourceFragmentTag;
     @Override
     public int onLayoutId() {
-        Logger.d(SEARCH_HMI_TAG, "onLayoutId");
+        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "onLayoutId");
         return R.layout.fragment_search_result;
     }
 
@@ -33,48 +33,59 @@ public class SearchResultFragment extends BaseFragment<FragmentSearchResultBindi
 
     @Override
     public void onInitView() {
-        Logger.d(SEARCH_HMI_TAG, "onInitView");
+        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "onInitView");
         mBinding.scenePoiList.setScreenId(MapTypeId.valueOf(mScreenId));
     }
 
     @Override
     public void onInitData() {
-        Logger.d(SEARCH_HMI_TAG, "onInitData");
+        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "onInitData");
         getBundleData();
     }
 
+    /**
+     * 获取bundle数据
+     */
     private void getBundleData() {
-        Bundle parsedArgs = getArguments();
+        final Bundle parsedArgs = getArguments();
         if (parsedArgs == null) {
-            Logger.d(SEARCH_HMI_TAG, "No valid arguments found.");
+            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "No valid arguments found.");
             return;
         }
 
-        sourceFragmentTag = parsedArgs.getString(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SOURCE_FRAGMENT);
-        int searchType = parsedArgs.getInt(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_TYPE);
-        String keyword = parsedArgs.getString(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_KEYWORD);
-        PoiInfoEntity entity = parsedArgs.getParcelable(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_POI_LIST);
+        mSourceFragmentTag = parsedArgs.getString(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SOURCE_FRAGMENT);
+        final int searchType = parsedArgs.getInt(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_TYPE);
+        final String keyword = parsedArgs.getString(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_KEYWORD);
+        final PoiInfoEntity entity = parsedArgs.getParcelable(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_POI_LIST);
         mBinding.scenePoiList.setPoiInfoEntity(entity);
         mBinding.scenePoiList.setEditText(searchType, keyword);
-        Logger.d(SEARCH_HMI_TAG, "sourceFragmentTag : " + sourceFragmentTag);
+        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "sourceFragmentTag : " + mSourceFragmentTag);
     }
 
-    public void notifySearchResult(SearchResultEntity searchResultEntity) {
+    /**
+     * 搜索结果回调
+     * @param searchResultEntity 搜索结果实体类
+     */
+    public void notifySearchResult(final SearchResultEntity searchResultEntity) {
         int homeCompanyType = -1;
-        if (ConvertUtils.equals(sourceFragmentTag, AutoMapConstant.SourceFragment.FRAGMENT_HOME)) {
+        if (ConvertUtils.equals(mSourceFragmentTag, AutoMapConstant.SourceFragment.FRAGMENT_HOME)) {
             homeCompanyType = AutoMapConstant.HomeCompanyType.HOME;
-        } else if (ConvertUtils.equals(sourceFragmentTag, AutoMapConstant.SourceFragment.FRAGMENT_COMPANY)) {
+        } else if (ConvertUtils.equals(mSourceFragmentTag, AutoMapConstant.SourceFragment.FRAGMENT_COMPANY)) {
             homeCompanyType = AutoMapConstant.HomeCompanyType.COMPANY;
-        } else if (ConvertUtils.equals(sourceFragmentTag, AutoMapConstant.SourceFragment.FRAGMENT_COLLECTION)) {
+        } else if (ConvertUtils.equals(mSourceFragmentTag, AutoMapConstant.SourceFragment.FRAGMENT_COLLECTION)) {
             homeCompanyType = AutoMapConstant.HomeCompanyType.COLLECTION;
-        } else if (ConvertUtils.equals(sourceFragmentTag, AutoMapConstant.SourceFragment.FRAGMENT_COMMON)) {
+        } else if (ConvertUtils.equals(mSourceFragmentTag, AutoMapConstant.SourceFragment.FRAGMENT_COMMON)) {
             homeCompanyType = AutoMapConstant.HomeCompanyType.COMMON;
         }
         mBinding.scenePoiList.setHomeCompanyState(homeCompanyType);
         mBinding.scenePoiList.notifySearchResult(searchResultEntity);
     }
 
-    public void notifySilentSearchResult(SearchResultEntity searchResultEntity) {
+    /**
+     * 静默搜索回调
+     * @param searchResultEntity 搜索回调实体类
+     */
+    public void notifySilentSearchResult(final SearchResultEntity searchResultEntity) {
         mBinding.scenePoiList.notifySilentSearchResult(searchResultEntity);
     }
 

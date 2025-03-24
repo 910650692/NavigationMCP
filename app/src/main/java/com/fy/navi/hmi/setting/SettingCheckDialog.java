@@ -11,10 +11,10 @@ import com.fy.navi.ui.dialog.IBaseDialogClickListener;
 
 public class SettingCheckDialog extends BaseFullScreenDialog<DialogSettingCheckBinding> {
 
-    private final String title;
-    private final String content;
-    private final String confirmText;
-    private final boolean isShowCancel;
+    private final String mTitle;
+    private final String mContent;
+    private final String mConfirmText;
+    private final boolean mIsShowCancel;
 
     @Override
     protected DialogSettingCheckBinding initLayout() {
@@ -22,86 +22,123 @@ public class SettingCheckDialog extends BaseFullScreenDialog<DialogSettingCheckB
     }
 
 
-    protected SettingCheckDialog(Context context, String title, String content, String confirmText, boolean isShowCancel, IBaseDialogClickListener observer) {
+    protected SettingCheckDialog(final Context context, final String title, final String content, final String confirmText,
+                                 final boolean isShowCancel, final IBaseDialogClickListener observer) {
         super(context);
-        this.title = title;
-        this.content = content;
-        this.confirmText = confirmText;
-        this.isShowCancel = isShowCancel;
+        this.mTitle = title;
+        this.mContent = content;
+        this.mConfirmText = confirmText;
+        this.mIsShowCancel = isShowCancel;
         mDialogClickListener = observer;
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (content.isEmpty()) {
-            mViewBinding.clearContent.setText(title);
+        if (mContent.isEmpty()) {
+            mViewBinding.clearContent.setText(mTitle);
             mViewBinding.clearContent.setPadding(0,70,0,0);
             mViewBinding.clearTitle.setVisibility(View.GONE);
         } else {
-            mViewBinding.clearTitle.setText(title);
-            mViewBinding.clearContent.setText(content);
+            mViewBinding.clearTitle.setText(mTitle);
+            mViewBinding.clearContent.setText(mContent);
         }
-        if (!isShowCancel) {
+        if (!mIsShowCancel) {
             mViewBinding.dialogLine.setVisibility(View.GONE);
             mViewBinding.dialogCancel.setVisibility(View.GONE);
         }
-        mViewBinding.dialogCommit.setText(confirmText);
+        mViewBinding.dialogCommit.setText(mConfirmText);
         onClick();
     }
 
+    /**
+     * 初始化监听
+     */
     public void onClick() {
         mViewBinding.dialogCancel.setOnClickListener(v -> {
             dismiss();
-            if (null != mDialogClickListener) mDialogClickListener.onCancelClick();
+            if (null != mDialogClickListener) {
+                mDialogClickListener.onCancelClick();
+            }
         });
         mViewBinding.dialogCommit.setOnClickListener(v -> {
             dismiss();
-            if (null != mDialogClickListener) mDialogClickListener.onCommitClick();
+            if (null != mDialogClickListener) {
+                mDialogClickListener.onCommitClick();
+            }
         });
     }
 
 
     public static class Build {
 
-        private final Context context;
-        private String title;
-        private String content;
-        private String confirmText;
-        private boolean isShowCancel = true;
-        private IBaseDialogClickListener dialogObserver;
+        private final Context mContext;
+        private String mTitle;
+        private String mContent;
+        private String mConfirmText;
+        private boolean mIsShowCancel = true;
+        private IBaseDialogClickListener mDialogObserver;
 
-        public Build(Context context) {
-            this.context = context;
+        public Build(final Context context) {
+            this.mContext = context;
         }
 
-        public Build setTitle(String title) {
-            this.title = title;
+        /**
+         * 设置标题
+         * @param title 标题
+         * @return Build
+         */
+        public Build setTitle(final String title) {
+            this.mTitle = title;
             return this;
         }
 
-        public Build setContent(String content) {
-            this.content = content;
+        /**
+         * 设置内容
+         * @param content 内容
+         * @return Build
+         */
+        public Build setContent(final String content) {
+            this.mContent = content;
             return this;
         }
 
-        public Build setConfirmText(String confirmText) {
-            this.confirmText = confirmText;
+        /**
+         * 设置确认按钮文案
+         * @param confirmText 确认按钮文案
+         * @return Build
+         */
+        public Build setConfirmText(final String confirmText) {
+            this.mConfirmText = confirmText;
             return this;
         }
 
-        public Build setShowCancel(boolean isShowCancel) {
-            this.isShowCancel = isShowCancel;
+        /**
+         * 设置是否显示取消按钮
+         * @param isShowCancel 是否显示取消按钮
+         * @return Build
+         */
+        public Build setShowCancel(final boolean isShowCancel) {
+            this.mIsShowCancel = isShowCancel;
             return this;
         }
 
-        public Build setDialogObserver(IBaseDialogClickListener dialogObserver) {
-            this.dialogObserver = dialogObserver;
+        /**
+         * 设置监听
+         * @param dialogObserver 监听
+         * @return Build
+         */
+        public Build setDialogObserver(final IBaseDialogClickListener dialogObserver) {
+            this.mDialogObserver = dialogObserver;
             return this;
         }
 
+        /**
+         * 创建对话框
+         * @return 对话框
+         */
         public SettingCheckDialog build() {
-            return new SettingCheckDialog(context, title, content, confirmText, isShowCancel, dialogObserver);
+            return new SettingCheckDialog(mContext, mTitle, mContent, mConfirmText, mIsShowCancel, mDialogObserver);
         }
     }
 }

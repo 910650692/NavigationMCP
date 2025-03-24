@@ -1,6 +1,6 @@
 package com.fy.navi.service.define.route;
 
-public class RoutePriorityType {
+public interface RoutePriorityType {
     //1 普通算路
     public static final int ROUTE_TYPE_COMMON = 1;
     //2 偏航重算

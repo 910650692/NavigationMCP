@@ -2,12 +2,7 @@ package com.fy.navi.service;
 
 import java.io.File;
 
-/**
- * @Description TODO
- * @Author lvww
- * @date 2024/11/24
- */
-public class GBLCacheFilePath implements AutoMapConstant {
+public interface GBLCacheFilePath extends AutoMapConstant {
     /*** AutoMap/libs/ **/
     public static final String DEBUG_LIBS_DIR = GBL_MAP + "libs" + File.separator;
 
@@ -26,8 +21,10 @@ public class GBLCacheFilePath implements AutoMapConstant {
     public static final String BLS_COOKIES_PATH = GBL_MAP + "cookie";
     /*** AutoSDK资源文件的原始目录 **/
     public static final String BLS_ASSETS_PATH = "/android_assets/blRes/";
-    /*** AutoSDK图层资源文件目录 **/
+    /*** AutoSDK图层默认资源文件目录 **/
     public static final String BLS_ASSETS_LAYER_PATH = BLS_ASSETS_PATH + "LayerAsset/";
+    /*** AutoSDK图层自定义资源文件目录 **/
+    public static final String BLS_ASSETS_CUSTOM_LAYER_PATH = BLS_ASSETS_PATH + "CustomLayerAsset/";
     /*** 复制Assets文件根目录 **/
     public static final String COPY_ASSETS_DIR = GBL_MAP + "assets" + File.separator;
     /*** 用户数据目录，保存用户生成数据 **/

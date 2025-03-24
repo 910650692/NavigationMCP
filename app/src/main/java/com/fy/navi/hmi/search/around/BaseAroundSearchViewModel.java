@@ -8,7 +8,7 @@ import com.fy.navi.ui.action.Action;
 import com.fy.navi.ui.base.BaseViewModel;
 
 public class BaseAroundSearchViewModel extends BaseViewModel<AroundSearchFragment, AroundSearchModel> {
-    public BaseAroundSearchViewModel(@NonNull Application application) {
+    public BaseAroundSearchViewModel(@NonNull final Application application) {
         super(application);
     }
 
@@ -17,7 +17,11 @@ public class BaseAroundSearchViewModel extends BaseViewModel<AroundSearchFragmen
         return new AroundSearchModel();
     }
 
-    public Action rootClick = () -> {
+    public Action getRootClick() {
+        return mRootClick;
+    }
+
+    private final Action mRootClick = () -> {
     };
 
     /**
@@ -26,6 +30,7 @@ public class BaseAroundSearchViewModel extends BaseViewModel<AroundSearchFragmen
      * 0 汽油车
      * 1 纯电动车
      * 2 插电式混动汽车
+     * @return 车辆动力类型
      */
     public int powerType() {
         return mModel.powerType();

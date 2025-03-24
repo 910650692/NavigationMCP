@@ -1,8 +1,10 @@
 package com.fy.navi.scene.impl.navi;
 
+import android.annotation.SuppressLint;
 import androidx.databinding.ObservableField;
 
 import com.android.utils.ConvertUtils;
+import com.android.utils.NetWorkUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
 import com.fy.navi.scene.BaseSceneModel;
@@ -15,10 +17,9 @@ import com.fy.navi.scene.ui.navi.SceneNaviControlView;
 import com.fy.navi.scene.ui.navi.manager.NaviSceneId;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.adapter.navi.NaviConstant;
-import com.fy.navi.service.adapter.navi.bls.NaviDataFormatHelper;
 import com.fy.navi.service.define.map.MapMode;
 import com.fy.navi.service.define.map.MapTypeId;
-import com.fy.navi.service.define.route.RouteParam;
+import com.fy.navi.service.define.route.RouteRequestParam;
 import com.fy.navi.service.define.route.RouteWayID;
 import com.fy.navi.service.define.utils.NumberUtils;
 import com.fy.navi.service.logicpaket.layer.LayerPackage;
@@ -28,10 +29,10 @@ import com.fy.navi.service.logicpaket.route.RoutePackage;
 import com.fy.navi.service.logicpaket.search.SearchPackage;
 import com.fy.navi.service.logicpaket.setting.SettingPackage;
 
-import java.util.List;
 import java.util.concurrent.ScheduledFuture;
 
-public class SceneNaviControlImpl extends BaseSceneModel<SceneNaviControlView> implements ISceneNaviControl {
+public class SceneNaviControlImpl extends BaseSceneModel<SceneNaviControlView> implements
+        ISceneNaviControl, NetWorkUtils.NetworkObserver {
     private static final String TAG = MapDefaultFinalTag.NAVI_HMI_TAG;
     private final NaviPackage mNaviPackage;
     private LayerPackage mLayerPackage;
@@ -39,31 +40,38 @@ public class SceneNaviControlImpl extends BaseSceneModel<SceneNaviControlView> i
     private RoutePackage mRoutePackage;
     private SearchPackage mSearchPackage;
     private SettingPackage mSettingPackage;
-    private ScheduledFuture scheduledFuture;
-    private int times = NumberUtils.NUM_8;
-    public ObservableField<Boolean> controlVisible;
-    public ObservableField<Boolean> groupOneVisible;
-    public ObservableField<Boolean> groupTwoVisible;
-    public ObservableField<Boolean> groupMoreSetupVisible;
+    private ScheduledFuture mScheduledFuture;
+    private int mTimes = NumberUtils.NUM_8;
+    public ObservableField<Boolean> mControlVisible;
+    public ObservableField<Boolean> mGroupOneVisible;
+    public ObservableField<Boolean> mGroupTwoVisible;
+    public ObservableField<Boolean> mGroupMoreSetupVisible;
     private ISceneCallback mISceneCallback;
     // true:退出全览 false:看全览
-    private boolean isPreViewShowing = false;
-    private boolean isFixedOverview = false;//是否是固定全览状态
+    private boolean mIsPreViewShowing = false;
+    private boolean mIsFixedOverview = false;//是否是固定全览状态
     private boolean mIsMute;
 
-    public SceneNaviControlImpl(SceneNaviControlView mScreenView) {
-        super(mScreenView);
+    public SceneNaviControlImpl(final SceneNaviControlView screenView) {
+        super(screenView);
         mNaviPackage = NaviPackage.getInstance();
         mRoutePackage = RoutePackage.getInstance();
         mLayerPackage = LayerPackage.getInstance();
         mSearchPackage = SearchPackage.getInstance();
         mMapPackage = MapPackage.getInstance();
         mSettingPackage = SettingPackage.getInstance();
-        controlVisible = new ObservableField<>(false);
-        groupOneVisible = new ObservableField<>(true);
-        groupTwoVisible = new ObservableField<>(false);
-        groupMoreSetupVisible = new ObservableField<>(true);
-        controlVisible.set(false);
+        mControlVisible = new ObservableField<>(false);
+        mGroupOneVisible = new ObservableField<>(true);
+        mGroupTwoVisible = new ObservableField<>(false);
+        mGroupMoreSetupVisible = new ObservableField<>(true);
+        mControlVisible.set(false);
+    }
+
+    @SuppressLint("WrongConstant")
+    @Override
+    protected void onCreate() {
+        super.onCreate();
+        NetWorkUtils.Companion.getInstance().registerNetworkObserver(this);
     }
 
     @Override
@@ -72,19 +80,22 @@ public class SceneNaviControlImpl extends BaseSceneModel<SceneNaviControlView> i
         mRoutePackage.clearRouteLine(mMapTypeId);
         mNaviPackage.stopNavigation();
         cancelTimer();
+        mNaviPackage.setPreviewStatus(false);
     }
 
     @Override
     public void naviContinue() {
-        Logger.i(TAG, "naviContinue");
-        controlVisible.set(false);
+        Logger.i(TAG, "naviContinue", "showPreview status : " + mIsFixedOverview);
+        // 隐藏控制页面
+        mControlVisible.set(false);
         ImmersiveStatusScene.getInstance().setImmersiveStatus(mMapTypeId, ImersiveStatus.IMERSIVE);
-        if (!isFixedOverview) {
+        if (!mIsFixedOverview) {
             // 更新全览状态
             mLayerPackage.setFollowMode(mMapTypeId, true);
             mMapPackage.setZoomLevel(mMapTypeId, 17);
-            isPreViewShowing = false;
+            mIsPreViewShowing = false;
             mMapPackage.goToCarPosition(mMapTypeId, false, false);
+            mNaviPackage.setPreviewStatus(false);
         }
         cancelTimer();
         if (mISceneCallback != null) {
@@ -96,31 +107,44 @@ public class SceneNaviControlImpl extends BaseSceneModel<SceneNaviControlView> i
     public void moreSetup() {
         Logger.i(TAG, "moreSetup");
         initTimer();
-        groupOneVisible.set(false);
-        groupTwoVisible.set(true);
+        mGroupOneVisible.set(false);
+        mGroupTwoVisible.set(true);
+    }
+
+    /**
+     * @param type 0:退出全览 1:切换全览
+     */
+    public void naviPreviewSwitch(final int type) {
+        Logger.i(TAG, "naviPreviewSwitch type:" + type);
+        if (type == 0) {
+            exitPreview();
+            if (mIsFixedOverview) {
+                mIsFixedOverview = false;
+            }
+        } else {
+            enterPreview();
+        }
     }
 
     @Override
     public void switchOverview() {
         initTimer();
-        Logger.i(TAG, "switchOverview isFixedOverview：" + isFixedOverview +
-                ",isPreViewShowing：" + isPreViewShowing);
+        Logger.i(TAG, "switchOverview isFixedOverview：" + mIsFixedOverview +
+                ",isPreViewShowing：" + mIsPreViewShowing);
         // 固定全览状态下退出全览
-        if (isFixedOverview) {
+        if (mIsFixedOverview) {
             //退出固定全览
-            isFixedOverview = false;
+            mIsFixedOverview = false;
             exitPreview();
         } else { // 非固定全览下退出全览
-            if (isPreViewShowing) {
+            if (mIsPreViewShowing) {
                 isShowMoreSetup(true);
                 exitPreview();
             } else {
                 //触发全览
                 isShowMoreSetup(false);
-                isPreViewShowing = true;
-                mRoutePackage.naviShowPreview(mMapTypeId);
-                mLayerPackage.openDynamicLevel(MapTypeId.MAIN_SCREEN_MAIN_MAP, false);
-                mLayerPackage.setFollowMode(mMapTypeId, false);
+                mIsPreViewShowing = true;
+                enterPreview();
                 mScreenView.updateOverview(NaviConstant.OverviewType.OVERVIEW_SELECT);
                 // 显示固定全览
                 mScreenView.updateVariation(NaviConstant.VariationType.VARIATION_SELECT);
@@ -128,42 +152,15 @@ public class SceneNaviControlImpl extends BaseSceneModel<SceneNaviControlView> i
         }
     }
 
-    /**
-     * @param isShow 是否显示设置按钮
-     */
-    private void isShowMoreSetup(boolean isShow) {
-        // 显示或隐藏设置按钮
-        groupMoreSetupVisible.set(isShow);
-        mScreenView.changeOverViewControlLength(isShow);
-    }
-
-    /**
-     * 退出全览
-     */
-    private void exitPreview() {
-        Logger.i(TAG, "exitPreview");
-        // 退出全览
-        mMapPackage.exitPreview(mMapTypeId);
-        // 更新ui显示为“看全览”
-        mScreenView.updateOverview(NaviConstant.OverviewType.OVERVIEW_DEFAULT);
-        // 回到当前位置
-        mMapPackage.goToCarPosition(mMapTypeId, false, false);
-        // 更新全览状态flag
-        isPreViewShowing = false;
-        mLayerPackage.setFollowMode(mMapTypeId, true);
-        mLayerPackage.openDynamicLevel(MapTypeId.MAIN_SCREEN_MAIN_MAP, SettingPackage.getInstance().getAutoScale());
-        updateVariationVoice();
-    }
-
     @Override
     public void onVariation() {
         initTimer();
-        Logger.i(TAG, "onVariation isPreViewShowing：" + isPreViewShowing);
-        if (isPreViewShowing && !isFixedOverview) {//固定全览
+        Logger.i(TAG, "onVariation isPreViewShowing：" + mIsPreViewShowing);
+        if (mIsPreViewShowing && !mIsFixedOverview) {//固定全览
             isShowMoreSetup(true);
             mScreenView.changeOverViewControlLength(true);
             updateVariationVoice();
-            isFixedOverview = true;
+            mIsFixedOverview = true;
             cancelTimer();//固定全览时退出全览倒计时
             ImmersiveStatusScene.getInstance().setImmersiveStatus(mMapTypeId, ImersiveStatus.IMERSIVE);
         } else {
@@ -173,16 +170,55 @@ public class SceneNaviControlImpl extends BaseSceneModel<SceneNaviControlView> i
         }
     }
 
+    /**
+     * @param isShow 是否显示设置按钮
+     */
+    private void isShowMoreSetup(final boolean isShow) {
+        // 显示或隐藏设置按钮
+        mGroupMoreSetupVisible.set(isShow);
+        mScreenView.changeOverViewControlLength(isShow);
+    }
+
+    /**
+     * 退出全览
+     */
+    private void exitPreview() {
+        Logger.i(TAG, "exitPreview");
+        mNaviPackage.setPreviewStatus(false);
+        // 退出全览
+        mMapPackage.exitPreview(mMapTypeId);
+        // 更新ui显示为“看全览”
+        mScreenView.updateOverview(NaviConstant.OverviewType.OVERVIEW_DEFAULT);
+        // 回到当前位置
+        mMapPackage.goToCarPosition(mMapTypeId, false, false);
+        // 更新全览状态flag
+        mIsPreViewShowing = false;
+        mLayerPackage.setFollowMode(mMapTypeId, true);
+        mLayerPackage.openDynamicLevel(MapTypeId.MAIN_SCREEN_MAIN_MAP, SettingPackage.getInstance().
+                getAutoScale());
+        updateVariationVoice();
+    }
+
+    /**
+     * 进入全览
+     */
+    private void enterPreview() {
+        mNaviPackage.setPreviewStatus(true);
+        mRoutePackage.naviShowPreview(mMapTypeId);
+        mLayerPackage.openDynamicLevel(MapTypeId.MAIN_SCREEN_MAIN_MAP, false);
+        mLayerPackage.setFollowMode(mMapTypeId, false);
+    }
+
 
     @Override
     public void refreshRoute() {
         Logger.i(TAG, "refreshRoute");
         initTimer();
-        List<RouteParam> allPoiParamList = mRoutePackage.getAllPoiParamList(mMapTypeId);
-        if (!ConvertUtils.isEmpty(allPoiParamList)) {
-            RouteParam routeParam = allPoiParamList.get(allPoiParamList.size() - 1);
-            mRoutePackage.requestRoute(mMapTypeId, NaviDataFormatHelper.getPoiInfoEntity(routeParam), routeParam.getPoiType(), true, RouteWayID.ROUTE_WAY_REFRESH);
-        }
+        final RouteRequestParam param = new RouteRequestParam();
+        param.setMMapTypeId(mMapTypeId);
+        param.setMRouteWay(RouteWayID.ROUTE_WAY_CHANGE_PREFERENCE);
+        // 算路那边在线刷新失败后会自动调用离线刷新，所以这边就调用一个接口就好
+        mRoutePackage.requestRoute(param);
     }
 
     @Override
@@ -234,7 +270,7 @@ public class SceneNaviControlImpl extends BaseSceneModel<SceneNaviControlView> i
     }
 
     @Override
-    public void alongSearch(String key) {
+    public void alongSearch(final String key) {
         Logger.d(TAG, "alongSearch key：" + key);
         if (ConvertUtils.isEmpty(key)) {
             return;
@@ -250,30 +286,35 @@ public class SceneNaviControlImpl extends BaseSceneModel<SceneNaviControlView> i
 
     @Override
     public ObservableField<Boolean> getControlField() {
-        return controlVisible;
+        return mControlVisible;
     }
 
     @Override
     public ObservableField<Boolean> getGroupOneField() {
-        return groupOneVisible;
+        return mGroupOneVisible;
     }
 
     @Override
     public ObservableField<Boolean> getGroupTwoField() {
-        return groupTwoVisible;
+        return mGroupTwoVisible;
     }
 
     @Override
     public ObservableField<Boolean> getGroupMoreSetupField() {
-        return groupMoreSetupVisible;
+        return mGroupMoreSetupVisible;
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        NetWorkUtils.Companion.getInstance().unRegisterNetworkObserver(this);
+        mNaviPackage.setPreviewStatus(false);
     }
 
-    public void onImmersiveStatusChange(ImersiveStatus currentImersiveStatus) {
+    /**
+     * @param currentImersiveStatus ImmersiveStatus
+     */
+    public void onImmersiveStatusChange(final ImersiveStatus currentImersiveStatus) {
         Logger.i(TAG, "onImmersiveStatusChange currentImersiveStatus：" +
                 currentImersiveStatus);
         if (currentImersiveStatus == ImersiveStatus.TOUCH) {
@@ -285,38 +326,47 @@ public class SceneNaviControlImpl extends BaseSceneModel<SceneNaviControlView> i
         }
     }
 
+    /**
+     * 开始倒计时
+     */
     public void initTimer() {
         Logger.i(TAG, "initTimer");
         cancelTimer();
-        times = NumberUtils.NUM_8;
-        scheduledFuture = ThreadManager.getInstance().asyncAtFixDelay(() -> {
-            if (times == NumberUtils.NUM_0) {
+        mTimes = NumberUtils.NUM_8;
+        mScheduledFuture = ThreadManager.getInstance().asyncAtFixDelay(() -> {
+            if (mTimes == NumberUtils.NUM_0) {
                 ThreadManager.getInstance().postUi(this::naviContinue);
             }
-            times--;
+            mTimes--;
         }, NumberUtils.NUM_0, NumberUtils.NUM_1);
     }
 
+    /**
+     * 初始化控制状态
+     */
     private void initControlState() {
-        controlVisible.set(true);
-        groupOneVisible.set(true);
-        groupTwoVisible.set(false);
-        mScreenView.updateOverview(isFixedOverview ? NaviConstant.OverviewType.OVERVIEW_FIXED : NaviConstant.OverviewType.OVERVIEW_DEFAULT);
+        mControlVisible.set(true);
+        mGroupOneVisible.set(true);
+        mGroupTwoVisible.set(false);
+        mScreenView.updateOverview(mIsFixedOverview ? NaviConstant.OverviewType.OVERVIEW_FIXED : NaviConstant.OverviewType.OVERVIEW_DEFAULT);
         updateVariationVoice();
         isShowMoreSetup(true);
-        int broadcastMode = mSettingPackage.getConfigKeyBroadcastMode();
+        final int broadcastMode = mSettingPackage.getConfigKeyBroadcastMode();
         mScreenView.updateBroadcast(broadcastMode);
-        MapMode currentMapMode = mMapPackage.getCurrentMapMode(mMapTypeId);
+        final MapMode currentMapMode = mMapPackage.getCurrentMapMode(mMapTypeId);
         mScreenView.updateCarModel(currentMapMode);
-        Logger.i(TAG, " initControlState isFixedOverview：" + isFixedOverview + ",isPreViewShowing：" + isPreViewShowing +
+        Logger.i(TAG, " initControlState isFixedOverview：" + mIsFixedOverview + ",isPreViewShowing：" + mIsPreViewShowing +
                 ",broadcastMode：" + broadcastMode + ",MapMode：" + currentMapMode);
     }
 
+    /**
+     * 取消倒计时
+     */
     public void cancelTimer() {
         Logger.i(TAG, "cancelTimer");
-        if (!ConvertUtils.isEmpty(scheduledFuture)) {
-            ThreadManager.getInstance().cancelDelayRun(scheduledFuture);
-            scheduledFuture = null;
+        if (!ConvertUtils.isEmpty(mScheduledFuture)) {
+            ThreadManager.getInstance().cancelDelayRun(mScheduledFuture);
+            mScheduledFuture = null;
         }
     }
 
@@ -330,7 +380,40 @@ public class SceneNaviControlImpl extends BaseSceneModel<SceneNaviControlView> i
                 NaviConstant.VariationType.VARIATION_BROADCAST));
     }
 
-    public void addSceneCallback(ISceneCallback sceneCallback) {
+    /**
+     * @param sceneCallback 添加场景回调
+     */
+    public void addSceneCallback(final ISceneCallback sceneCallback) {
         mISceneCallback = sceneCallback;
+    }
+
+    @Override
+    public void onNetConnectSuccess() {
+        refreshRoute();
+    }
+
+    @Override
+    public void onNetUnavailable() {
+        refreshRoute();
+    }
+
+    @Override
+    public void onNetBlockedStatusChanged() {
+        refreshRoute();
+    }
+
+    @Override
+    public void onNetLosing() {
+        refreshRoute();
+    }
+
+    @Override
+    public void onNetLinkPropertiesChanged() {
+        refreshRoute();
+    }
+
+    @Override
+    public void onNetDisConnect() {
+        refreshRoute();
     }
 }

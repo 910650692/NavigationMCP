@@ -22,10 +22,11 @@ import com.fy.navi.ui.base.BaseViewModel;
 
 public class BaseSettingOthersViewModel extends BaseViewModel<SettingOthersFragment, SettingOthersModel> {
 
-    public MutableLiveData<String> sdkVersion = new MutableLiveData<>("");
+    public MutableLiveData<String> mSdkVersion = new MutableLiveData<>("");
+    public MutableLiveData<String> mTotalSize = new MutableLiveData<>("0KB");
 
 
-    public BaseSettingOthersViewModel(@NonNull Application application) {
+    public BaseSettingOthersViewModel(@NonNull final Application application) {
         super(application);
     }
 
@@ -45,7 +46,7 @@ public class BaseSettingOthersViewModel extends BaseViewModel<SettingOthersFragm
     }
 
     // 跳转到行程历史页
-    public Action openDivingRecord = () -> {
+    public Action mOpenDivingRecord = () -> {
         if (mModel.getIsLogin()) { // 是否已登录高德账号
             addFragment(new DrivingRecordFragment(), null);
         } else {
@@ -58,9 +59,9 @@ public class BaseSettingOthersViewModel extends BaseViewModel<SettingOthersFragm
         }
     };
 
-    public Action openCarConnect = () -> {
+    public Action mOpenCarConnect = () -> {
         if (mModel.getIsLogin()) {
-            Bundle bundle = new Bundle();
+            final Bundle bundle = new Bundle();
             bundle.putString("userName", mView.getUserName());
             bundle.putString("userIcon", mView.getUserIcon());
             addFragment(new CarConnectFragment(), bundle);
@@ -69,7 +70,7 @@ public class BaseSettingOthersViewModel extends BaseViewModel<SettingOthersFragm
         }
     };
 
-    public Action openWeChat= () -> {
+    public Action mOpenWeChat = () -> {
         if (mModel.getIsLogin()) {
             addFragment(new WeChatFragment(), null);
         } else {
@@ -77,7 +78,7 @@ public class BaseSettingOthersViewModel extends BaseViewModel<SettingOthersFragm
         }
     };
 
-    public Action openAccount = () -> {
+    public Action mOpenAccount = () -> {
         if (!mModel.getIsLogin()) {
             addFragment(new AccountQRCodeLoginFragment(), null);
         } else {
@@ -85,57 +86,121 @@ public class BaseSettingOthersViewModel extends BaseViewModel<SettingOthersFragm
         }
     };
 
-    public Action openAbout = () -> {
+    public Action mOpenAbout = () -> {
         addFragment(new SettingOthersAboutFragment(), null);
     };
 
-    public Action openPrivacy = () -> {
+    public Action mOpenPrivacy = () -> {
         addFragment(new SettingOthersPrivacyFragment(), null);
     };
 
-    public Action clearMemory = () -> {
+    public Action mClearMemory = () -> {
         mView.showClearMemoryDialog();
     };
 
-    public Action resetSetting = () -> {
+    public Action mResetSetting = () -> {
         mView.showResetSettingDialog();
     };
 
-    public void updatePrivacyStatus(boolean status) {
+    /**
+     * 更新隐私协议状态
+     * @param status true:已授权，false:未授权
+     */
+    public void updatePrivacyStatus(final boolean status) {
         Logger.d("updatePrivacyStatus status = " + status);
         mView.updatePrivacyStatus(status);
     }
 
+    /**
+     * 初始化视图
+     */
     public void initView() {
         mModel.initView();
     }
 
-    public void updateUserInfo(String userName, String url) {
+    /**
+     * 更新用户信息
+     * @param userName 用户名
+     * @param url 用户头像地址
+     */
+    public void updateUserInfo(final String userName, final String url) {
         mView.updateUserInfo(userName, url);
     }
 
+    /**
+     * 清除用户信息
+     */
     public void clearUserInfo() {
         mView.clearUserInfo();
     }
 
+    /**
+     * 退出登录
+     */
     public void logoutAccount() {
         mModel.logoutAccount();
     }
 
-    public void setWeChatStatus(boolean status) {
+    /**
+     * 设置微信状态
+     * @param status true 已绑定，false 未绑定
+     */
+    public void setWeChatStatus(final boolean status) {
         mView.setWeChatStatus(status);
     }
 
+    /**
+     * 获取是否登录状态
+     * @return true 已登录，false 未登录
+     */
     public boolean getIsLogin() {
         return mModel.getIsLogin();
     }
 
+    /**
+     * 获取微信绑定状态
+     * @return  true 已绑定，false 未绑定
+     */
     public boolean getWechatStatus() {
         return mModel.getWechatStatus();
     }
 
-    public void setSdkVersion(String sdkVersion) {
-        String defaultString = ResourceUtils.Companion.getInstance().getString(R.string.setting_others_about_version);
-        this.sdkVersion.setValue(defaultString + sdkVersion);
+    /**
+     * 设置SDK版本
+     * @param sdkVersion SDK版本号
+     */
+    public void setSdkVersion(final String sdkVersion) {
+        final String defaultString = ResourceUtils.Companion.getInstance().getString(R.string.setting_others_about_version);
+        this.mSdkVersion.setValue(defaultString + sdkVersion);
+    }
+
+    /**
+     * 清除数据库中所有设置相关记录
+     */
+    public void clearAll() {
+        mModel.clearAll();
+    }
+
+    /**
+     * 删除指定文件夹列表下的所有文件和子文件夹
+     */
+    public void deleteFilesInDirectories() {
+        mModel.deleteFilesInDirectories();
+    }
+
+    /**
+     * 设置指定文件夹列表下的所有文件和子文件夹的总大小
+     * @param totalSize 总大小
+     */
+    public void setTotalSizeOfDirectories(final String totalSize) {
+        mTotalSize.setValue(totalSize);
+    }
+
+    /**
+     * 获取指定文件夹列表下的所有文件的总大小
+     * @return 文件夹总大小（字节）
+     */
+    public String getTotalSizeOfDirectories() {
+        return mModel.getTotalSizeOfDirectories();
     }
 }

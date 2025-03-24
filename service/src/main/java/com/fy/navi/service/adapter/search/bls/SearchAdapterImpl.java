@@ -1,6 +1,5 @@
 package com.fy.navi.service.adapter.search.bls;
 
-import static com.fy.navi.service.MapDefaultFinalTag.SEARCH_SERVICE_TAG;
 
 import android.util.Pair;
 
@@ -10,8 +9,6 @@ import com.android.utils.log.Logger;
 import com.autonavi.gbl.aosclient.BLAosService;
 import com.autonavi.gbl.aosclient.model.GNavigationEtaqueryReqStartPoints;
 import com.autonavi.gbl.aosclient.model.GNavigationEtaqueryRequestParam;
-import com.autonavi.gbl.aosclient.model.GNavigationEtaqueryResponseParam;
-import com.autonavi.gbl.aosclient.observer.ICallBackNavigationEtaquery;
 import com.autonavi.gbl.common.path.option.PathInfo;
 import com.autonavi.gbl.search.model.AggregateSearchResult;
 import com.autonavi.gbl.search.model.KeywordSearchIdqParam;
@@ -37,6 +34,7 @@ import com.autonavi.gbl.search.model.SearchSuggestionParam;
 import com.autonavi.gbl.search.model.SuggestionSearchResult;
 import com.autonavi.gbl.util.model.TaskResult;
 import com.fy.navi.service.AppContext;
+import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.adapter.search.ISearchApi;
 import com.fy.navi.service.adapter.search.ISearchResultCallback;
 import com.fy.navi.service.adapter.search.cloud.http.ApiClient;
@@ -44,6 +42,7 @@ import com.fy.navi.service.adapter.search.cloud.http.RxRetrofitClient;
 import com.fy.navi.service.define.search.ETAInfo;
 import com.fy.navi.service.define.search.PoiInfoEntity;
 import com.fy.navi.service.define.search.SearchRequestParameter;
+import com.fy.navi.service.define.utils.BevPowerCarUtils;
 
 import java.util.HashMap;
 import java.util.List;
@@ -61,12 +60,16 @@ import rx.schedulers.Schedulers;
 
 
 /**
- * 搜索适配器实现类，用于处理各种搜索请求并管理回调。
+ * @author baipeng0904
+ * @version \$Revision1.0\$
+ * @Description: 搜索适配器实现类，用于处理各种搜索请求并管理回调。
+ * @CreateDate: $ $
  */
 public class SearchAdapterImpl extends SearchServiceV2Manager implements ISearchApi {
+    private final String mErrorLog = "Search operation failed due to exception:";
 
     // 任务ID计数器，确保每个搜索任务都有唯一的ID
-    private final AtomicInteger taskId = new AtomicInteger(0);
+    private final AtomicInteger mTaskId = new AtomicInteger(0);
 
     // 存储搜索结果回调接口的线程安全列表
     private final List<ISearchResultCallback> mSearchResponseCallbackList = new CopyOnWriteArrayList<>();
@@ -75,7 +78,7 @@ public class SearchAdapterImpl extends SearchServiceV2Manager implements ISearch
     private SearchObserversHelper mSearchObserversHelper;
 
     // 搜索结果通知类，用于分发搜索结果给注册的回调
-    private SearchResultCallbackHelper searchNotificationHelper;
+    private SearchResultCallbackHelper mSearchNotificationHelper;
 
     private BLAosService mBLAosService;
 
@@ -87,13 +90,13 @@ public class SearchAdapterImpl extends SearchServiceV2Manager implements ISearch
         mBLAosService = new BLAosService();
         initService();
         mSearchObserversHelper = SearchObserversHelper.getInstance();
-        searchNotificationHelper = new SearchResultCallbackHelper(mSearchResponseCallbackList);
+        mSearchNotificationHelper = new SearchResultCallbackHelper(mSearchResponseCallbackList);
     }
 
     @Override
     public void unInitSearchApi() {
         mSearchObserversHelper.unInit();
-        searchNotificationHelper.unInit();
+        mSearchNotificationHelper.unInit();
         unInit();
     }
 
@@ -103,7 +106,7 @@ public class SearchAdapterImpl extends SearchServiceV2Manager implements ISearch
      * @param callback 搜索结果回调接口
      */
     @Override
-    public void registerSearchObserver(ISearchResultCallback callback) {
+    public void registerSearchObserver(final ISearchResultCallback callback) {
         if (callback != null && !mSearchResponseCallbackList.contains(callback)) {
             mSearchResponseCallbackList.add(callback);
         }
@@ -115,7 +118,7 @@ public class SearchAdapterImpl extends SearchServiceV2Manager implements ISearch
      * @param callback 搜索结果回调接口
      */
     @Override
-    public void unRegisterSearchObserver(ISearchResultCallback callback) {
+    public void unRegisterSearchObserver(final ISearchResultCallback callback) {
         if (callback != null) {
             mSearchResponseCallbackList.remove(callback);
         }
@@ -128,23 +131,19 @@ public class SearchAdapterImpl extends SearchServiceV2Manager implements ISearch
      * @return 任务ID
      */
     @Override
-    public int suggestionSearch(SearchRequestParameter requestParameterBuilder) {
-        Logger.d(SEARCH_SERVICE_TAG, "suggestionSearch");
-        SearchCallbackWrapper<SuggestionSearchResult> callbackWrapper = createCallbackWrapper(
+    public int suggestionSearch(final SearchRequestParameter requestParameterBuilder) {
+        Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "suggestionSearch");
+        final SearchCallbackWrapper<SuggestionSearchResult> callbackWrapper = createCallbackWrapper(
                 SuggestionSearchResult.class,
-                result -> notifySearchSuccess(taskId.get(), requestParameterBuilder, result),
-                (errCode, result) -> notifySearchSuccess(taskId.get(), requestParameterBuilder, result)
+                result -> notifySearchSuccess(mTaskId.get(), requestParameterBuilder, result),
+                (errCode, result) -> notifySearchSuccess(mTaskId.get(), requestParameterBuilder, result)
         );
 
         mSearchObserversHelper.registerCallback(SuggestionSearchResult.class, callbackWrapper);
-        try {
-            SearchSuggestionParam param = SearchRequestParamV2.getInstance().convertToSearchSuggestionParamV2(requestParameterBuilder);
-            SearchResult searchResult = getSearchServiceV2().search(param, mSearchObserversHelper);
-            taskId.set(searchResult.taskId);
-        } catch (Exception e) {
-            Logger.e(SEARCH_SERVICE_TAG, "Search operation failed due to exception: " + e.getMessage());
-        }
-        return taskId.get();
+        final SearchSuggestionParam param = SearchRequestParamV2.getInstance().convertToSearchSuggestionParamV2(requestParameterBuilder);
+        final SearchResult searchResult = getSearchServiceV2().search(param, mSearchObserversHelper);
+        mTaskId.set(searchResult.taskId);
+        return mTaskId.get();
     }
 
     /**
@@ -154,21 +153,18 @@ public class SearchAdapterImpl extends SearchServiceV2Manager implements ISearch
      * @return 任务ID
      */
     @Override
-    public int keyWordSearch(SearchRequestParameter requestParameterBuilder) {
-        Logger.d(SEARCH_SERVICE_TAG, "keyWordSearch");
-        SearchCallbackWrapper<KeywordSearchResultV2> callbackWrapper = createCallbackWrapper(
+    public int keyWordSearch(final SearchRequestParameter requestParameterBuilder) {
+        Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "keyWordSearch");
+        final SearchCallbackWrapper<KeywordSearchResultV2> callbackWrapper = createCallbackWrapper(
                 KeywordSearchResultV2.class,
-                result -> notifySearchSuccess(taskId.get(), requestParameterBuilder, result),
-                (errCode, result) -> notifySearchSuccess(taskId.get(), requestParameterBuilder, result)
+                result -> notifySearchSuccess(mTaskId.get(), requestParameterBuilder, result),
+                (errCode, result) -> notifySearchSuccess(mTaskId.get(), requestParameterBuilder, result)
         );
         mSearchObserversHelper.registerCallback(KeywordSearchResultV2.class, callbackWrapper);
-        try {
-            KeywordSearchTQueryParam param = SearchRequestParamV2.getInstance().convertToSearchKeywordParamV2(requestParameterBuilder);
-            getSearchServiceV2().keyWordSearchTQuery(param, mSearchObserversHelper, SearchMode.SEARCH_MODE_ONLINE_ADVANCED, taskId.incrementAndGet());
-        } catch (Exception e) {
-            Logger.e(SEARCH_SERVICE_TAG, "Search operation failed due to exception: " + e.getMessage());
-        }
-        return taskId.get();
+        final KeywordSearchTQueryParam param = SearchRequestParamV2.getInstance().convertToSearchKeywordParamV2(requestParameterBuilder);
+        getSearchServiceV2().keyWordSearchTQuery(param, mSearchObserversHelper,
+                SearchMode.SEARCH_MODE_ONLINE_ADVANCED, mTaskId.incrementAndGet());
+        return mTaskId.get();
     }
 
     /**
@@ -178,22 +174,18 @@ public class SearchAdapterImpl extends SearchServiceV2Manager implements ISearch
      * @return 任务ID
      */
     @Override
-    public int aggregateSearch(SearchRequestParameter searchRequestParameter) {
-        Logger.d(SEARCH_SERVICE_TAG, "aggregateSearch");
-        SearchCallbackWrapper<AggregateSearchResult> callbackWrapper = createCallbackWrapper(
+    public int aggregateSearch(final SearchRequestParameter searchRequestParameter) {
+        Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "aggregateSearch");
+        final SearchCallbackWrapper<AggregateSearchResult> callbackWrapper = createCallbackWrapper(
                 AggregateSearchResult.class,
-                result -> notifySearchSuccess(taskId.get(), searchRequestParameter, result),
-                (errCode, result) -> notifySearchSuccess(taskId.get(), searchRequestParameter, result)
+                result -> notifySearchSuccess(mTaskId.get(), searchRequestParameter, result),
+                (errCode, result) -> notifySearchSuccess(mTaskId.get(), searchRequestParameter, result)
         );
         mSearchObserversHelper.registerCallback(AggregateSearchResult.class, callbackWrapper);
-        try {
-            SearchAggregateParam param = SearchRequestParamV2.getInstance().convertToSearchAggregateParamV2(searchRequestParameter);
-            SearchResult searchResult = getSearchServiceV2().search(param, mSearchObserversHelper);
-            taskId.set(searchResult.taskId);
-        } catch (Exception e) {
-            Logger.e(SEARCH_SERVICE_TAG, "Search operation failed due to exception: " + e.getMessage());
-        }
-        return taskId.get();
+        final SearchAggregateParam param = SearchRequestParamV2.getInstance().convertToSearchAggregateParamV2(searchRequestParameter);
+        final SearchResult searchResult = getSearchServiceV2().search(param, mSearchObserversHelper);
+        mTaskId.set(searchResult.taskId);
+        return mTaskId.get();
     }
 
     /**
@@ -203,24 +195,20 @@ public class SearchAdapterImpl extends SearchServiceV2Manager implements ISearch
      * @return 任务ID
      */
     @Override
-    public int enRouteKeywordSearch(SearchRequestParameter searchRequestParameter) {
-        Logger.d(SEARCH_SERVICE_TAG, "enRouteKeywordSearch");
-        SearchCallbackWrapper<SearchEnrouteResult> callbackWrapper = createCallbackWrapper(
+    public int enRouteKeywordSearch(final SearchRequestParameter searchRequestParameter) {
+        Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "enRouteKeywordSearch");
+        final SearchCallbackWrapper<SearchEnrouteResult> callbackWrapper = createCallbackWrapper(
                 SearchEnrouteResult.class,
-                result -> notifySearchSuccess(taskId.get(), searchRequestParameter, result),
-                (errCode, result) -> notifySearchSuccess(taskId.get(), searchRequestParameter, result)
+                result -> notifySearchSuccess(mTaskId.get(), searchRequestParameter, result),
+                (errCode, result) -> notifySearchSuccess(mTaskId.get(), searchRequestParameter, result)
         );
         mSearchObserversHelper.registerCallback(SearchEnrouteResult.class, callbackWrapper);
-        try {
-            PathInfo pathInfo = (PathInfo) searchRequestParameter.getPathInfo();
-            Logger.d(SEARCH_SERVICE_TAG, "enRouteKeywordSearch pathInfo: " + pathInfo);
-            SearchEnrouteKeywordParam param = SearchRequestParamV2.getInstance().convertToSearchEnRouteKeywordParamV2(searchRequestParameter);
-            TaskResult searchResult = getSearchServiceV2().search(pathInfo, param, mSearchObserversHelper);
-            taskId.set((int) searchResult.taskId);
-        } catch (Exception e) {
-            Logger.e(SEARCH_SERVICE_TAG, "Search operation failed due to exception: " + e.getMessage());
-        }
-        return taskId.get();
+        final PathInfo pathInfo = (PathInfo) searchRequestParameter.getPathInfo();
+        Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "enRouteKeywordSearch pathInfo: " + pathInfo);
+        final SearchEnrouteKeywordParam param = SearchRequestParamV2.getInstance().convertToSearchEnRouteKeywordParamV2(searchRequestParameter);
+        final TaskResult searchResult = getSearchServiceV2().search(pathInfo, param, mSearchObserversHelper);
+        mTaskId.set((int) searchResult.taskId);
+        return mTaskId.get();
     }
 
     /**
@@ -230,21 +218,17 @@ public class SearchAdapterImpl extends SearchServiceV2Manager implements ISearch
      * @return 任务ID
      */
     @Override
-    public int aroundSearch(SearchRequestParameter requestParameterBuilder) {
-        Logger.d(SEARCH_SERVICE_TAG, "aroundSearch");
-        SearchCallbackWrapper<KeywordSearchResultV2> callbackWrapper = createCallbackWrapper(
+    public int aroundSearch(final SearchRequestParameter requestParameterBuilder) {
+        Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "aroundSearch");
+        final SearchCallbackWrapper<KeywordSearchResultV2> callbackWrapper = createCallbackWrapper(
                 KeywordSearchResultV2.class,
-                result -> notifySearchSuccess(taskId.get(), requestParameterBuilder, result),
-                (errCode, result) -> notifySearchSuccess(taskId.get(), requestParameterBuilder, result)
+                result -> notifySearchSuccess(mTaskId.get(), requestParameterBuilder, result),
+                (errCode, result) -> notifySearchSuccess(mTaskId.get(), requestParameterBuilder, result)
         );
         mSearchObserversHelper.registerCallback(KeywordSearchResultV2.class, callbackWrapper);
-        try {
-            KeywordSearchRqbxyParam param = SearchRequestParamV2.getInstance().convertToAroundSearchParam(requestParameterBuilder);
-            getSearchServiceV2().keyWordSearchRqbxy(param, mSearchObserversHelper, SearchMode.SEARCH_MODE_ONLINE_ADVANCED, taskId.incrementAndGet());
-        } catch (Exception e) {
-            Logger.e(SEARCH_SERVICE_TAG, "Search operation failed due to exception: " + e.getMessage());
-        }
-        return taskId.get();
+        final KeywordSearchRqbxyParam param = SearchRequestParamV2.getInstance().convertToAroundSearchParam(requestParameterBuilder);
+        getSearchServiceV2().keyWordSearchRqbxy(param, mSearchObserversHelper, SearchMode.SEARCH_MODE_ONLINE_ADVANCED, mTaskId.incrementAndGet());
+        return mTaskId.get();
     }
 
     /**
@@ -258,8 +242,8 @@ public class SearchAdapterImpl extends SearchServiceV2Manager implements ISearch
      * @return task id
      */
     @Override
-    public int queryStationNewResult(SearchRequestParameter searchRequestParameter) {
-        Map<String, String> parameters = new HashMap<>();
+    public int queryStationNewResult(final SearchRequestParameter searchRequestParameter) {
+        final Map<String, String> parameters = new HashMap<>();
         parameters.put("areaCode", ""); // 城市 （stationList为空必传
         parameters.put("lat", ""); // 纬度 例:32.489931
         parameters.put("lng", ""); // 经度 例:119.862440
@@ -281,33 +265,43 @@ public class SearchAdapterImpl extends SearchServiceV2Manager implements ISearch
         parameters.put("internalUse", ""); // 是否内部站 1：是 不传或传空 默认不查询内部站
         parameters.put("stationTypeFlag", ""); // 场站类型： 商场、写字楼、文体、机场、火车站、景区高速服务区
         parameters.put("parkType", ""); // 车位情况：侧桩、后桩、混
-        Observable<PoiInfoEntity> poiInfoEntityObservable = RxRetrofitClient.create(ApiClient.class).queryStationNewResult(parameters);
-        queryStationNewResult(taskId.incrementAndGet(), searchRequestParameter, poiInfoEntityObservable);
-        return taskId.get();
+        final Observable<PoiInfoEntity> poiInfoEntityObservable = RxRetrofitClient.getInstance().
+                create(ApiClient.class).queryStationNewResult(parameters);
+        queryStationNewResult(mTaskId.incrementAndGet(), searchRequestParameter, poiInfoEntityObservable);
+        return mTaskId.get();
     }
 
-    private void queryStationNewResult(int taskId, SearchRequestParameter source, Observable<PoiInfoEntity> observable) {
+    /**
+     * 查询云端充电桩结果
+     *
+     * @param taskId     任务id
+     * @param source     请求参数
+     * @param observable 回调监听
+     */
+    private void queryStationNewResult(final int taskId, final SearchRequestParameter source, final Observable<PoiInfoEntity> observable) {
         observable.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<PoiInfoEntity>() {
                     @Override
                     public void onStart() {
-                        Logger.d(SEARCH_SERVICE_TAG, "---onStart......");
+                        Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "---onStart......");
                     }
 
                     @Override
                     public void onCompleted() {
-                        Logger.d(SEARCH_SERVICE_TAG, "---onCompleted......");
+                        Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "---onCompleted......");
                     }
 
                     @Override
-                    public void onError(Throwable e) {
-                        Logger.d(SEARCH_SERVICE_TAG, "---onError......" + e.getMessage());
+                    public void onError(final Throwable e) {
+                        Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "---onError......" + e.getMessage());
                     }
 
                     @Override
-                    public void onNext(PoiInfoEntity cloudPoiResultBean) {
-                        Logger.d(SEARCH_SERVICE_TAG, Thread.currentThread().getName() + "---onNext......" + cloudPoiResultBean.toString());
+                    public void onNext(final PoiInfoEntity cloudPoiResultBean) {
+                        Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG,
+                                Thread.currentThread().getName() + "---onNext......"
+                                        + cloudPoiResultBean.toString());
 
                     }
                 });
@@ -320,22 +314,18 @@ public class SearchAdapterImpl extends SearchServiceV2Manager implements ISearch
      * @return 任务ID
      */
     @Override
-    public int poiDetailSearch(SearchRequestParameter requestParameterBuilder) {
-        Logger.d(SEARCH_SERVICE_TAG, "poiDetailSearch");
-        SearchCallbackWrapper<PoiDetailSearchResult> callbackWrapper = createCallbackWrapper(
+    public int poiDetailSearch(final SearchRequestParameter requestParameterBuilder) {
+        Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "poiDetailSearch");
+        final SearchCallbackWrapper<PoiDetailSearchResult> callbackWrapper = createCallbackWrapper(
                 PoiDetailSearchResult.class,
-                result -> notifySearchSuccess(taskId.get(), requestParameterBuilder, result),
-                (errCode, result) -> notifySearchSuccess(taskId.get(), requestParameterBuilder, result)
+                result -> notifySearchSuccess(mTaskId.get(), requestParameterBuilder, result),
+                (errCode, result) -> notifySearchSuccess(mTaskId.get(), requestParameterBuilder, result)
         );
 
         mSearchObserversHelper.registerCallback(PoiDetailSearchResult.class, callbackWrapper);
-        try {
-            SearchPoiDetailParam param = SearchRequestParamV2.getInstance().convertToSearchPoiDetailParamV2(requestParameterBuilder);
-            getSearchServiceV2().poiDetailSearch(param, mSearchObserversHelper, SearchMode.SEARCH_MODE_ONLINE_ONLY, taskId.incrementAndGet());
-        } catch (Exception e) {
-            Logger.e(SEARCH_SERVICE_TAG, "Search operation failed due to exception: " + e.getMessage());
-        }
-        return taskId.get();
+        final SearchPoiDetailParam param = SearchRequestParamV2.getInstance().convertToSearchPoiDetailParamV2(requestParameterBuilder);
+        getSearchServiceV2().poiDetailSearch(param, mSearchObserversHelper, SearchMode.SEARCH_MODE_ONLINE_ONLY, mTaskId.incrementAndGet());
+        return mTaskId.get();
     }
 
     /**
@@ -345,22 +335,18 @@ public class SearchAdapterImpl extends SearchServiceV2Manager implements ISearch
      * @return 任务ID
      */
     @Override
-    public int poiIdSearch(SearchRequestParameter searchRequestParameterBuilder) {
-        Logger.d(SEARCH_SERVICE_TAG, "poiIdSearch");
-        SearchCallbackWrapper<KeywordSearchResultV2> callbackWrapper = createCallbackWrapper(
+    public int poiIdSearch(final SearchRequestParameter searchRequestParameterBuilder) {
+        Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "poiIdSearch");
+        final SearchCallbackWrapper<KeywordSearchResultV2> callbackWrapper = createCallbackWrapper(
                 KeywordSearchResultV2.class,
-                result -> notifySearchSuccess(taskId.get(), searchRequestParameterBuilder, result),
-                (errCode, result) -> notifySearchSuccess(taskId.get(), searchRequestParameterBuilder, result)
+                result -> notifySearchSuccess(mTaskId.get(), searchRequestParameterBuilder, result),
+                (errCode, result) -> notifySearchSuccess(mTaskId.get(), searchRequestParameterBuilder, result)
         );
 
         mSearchObserversHelper.registerCallback(KeywordSearchResultV2.class, callbackWrapper);
-        try {
-            KeywordSearchIdqParam param = SearchRequestParamV2.getInstance().convertToKeywordSearchIdqParam(searchRequestParameterBuilder);
-            getSearchServiceV2().keyWordSearchIdq(param, mSearchObserversHelper, SearchMode.SEARCH_MODE_ONLINE_ONLY, taskId.incrementAndGet());
-        } catch (Exception e) {
-            Logger.e(SEARCH_SERVICE_TAG, "Search operation failed due to exception: " + e.getMessage());
-        }
-        return taskId.get();
+        final KeywordSearchIdqParam param = SearchRequestParamV2.getInstance().convertToKeywordSearchIdqParam(searchRequestParameterBuilder);
+        getSearchServiceV2().keyWordSearchIdq(param, mSearchObserversHelper, SearchMode.SEARCH_MODE_ONLINE_ONLY, mTaskId.incrementAndGet());
+        return mTaskId.get();
     }
 
     /**
@@ -370,25 +356,21 @@ public class SearchAdapterImpl extends SearchServiceV2Manager implements ISearch
      * @return taskId
      */
     @Override
-    public int geoSearch(SearchRequestParameter searchRequestParameterBuilder) {
-        Logger.d(SEARCH_SERVICE_TAG, "geoSearch");
-        SearchCallbackWrapper<SearchNearestResult> callbackWrapper = createCallbackWrapper(
+    public int geoSearch(final SearchRequestParameter searchRequestParameterBuilder) {
+        Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "geoSearch");
+        final SearchCallbackWrapper<SearchNearestResult> callbackWrapper = createCallbackWrapper(
                 SearchNearestResult.class,
-                result -> notifySearchSuccess(taskId.get(), searchRequestParameterBuilder, result),
-                (errCode, result) -> notifySearchSuccess(taskId.get(), searchRequestParameterBuilder, result)
+                result -> notifySearchSuccess(mTaskId.get(), searchRequestParameterBuilder, result),
+                (errCode, result) -> notifySearchSuccess(mTaskId.get(), searchRequestParameterBuilder, result)
         );
 
         mSearchObserversHelper.registerCallback(SearchNearestResult.class, callbackWrapper);
 
-        try {
-            SearchNearestParam nearestParam = new SearchNearestParam();
-            nearestParam.poi_loc.lon = searchRequestParameterBuilder.getPoiLoc().getLon();
-            nearestParam.poi_loc.lat = searchRequestParameterBuilder.getPoiLoc().getLat();
-            getSearchServiceV1().nearestSearch(nearestParam, mSearchObserversHelper, SearchMode.SEARCH_MODE_ONLINE_ONLY, taskId.incrementAndGet());
-        } catch (Exception e) {
-            Logger.e(SEARCH_SERVICE_TAG, "Search operation failed due to exception: " + e.getMessage());
-        }
-        return taskId.get();
+        final SearchNearestParam nearestParam = new SearchNearestParam();
+        nearestParam.poi_loc.lon = searchRequestParameterBuilder.getPoiLoc().getLon();
+        nearestParam.poi_loc.lat = searchRequestParameterBuilder.getPoiLoc().getLat();
+        getSearchServiceV1().nearestSearch(nearestParam, mSearchObserversHelper, SearchMode.SEARCH_MODE_ONLINE_ONLY, mTaskId.incrementAndGet());
+        return mTaskId.get();
     }
 
     /**
@@ -398,26 +380,22 @@ public class SearchAdapterImpl extends SearchServiceV2Manager implements ISearch
      * @return taskId
      */
     @Override
-    public int deppInfoSearch(SearchRequestParameter parameter) {
-        Logger.d(SEARCH_SERVICE_TAG, "deppInfoSearch");
-        SearchCallbackWrapper<SearchDeepInfoResult> callbackWrapper = createCallbackWrapper(
+    public int deppInfoSearch(final SearchRequestParameter parameter) {
+        Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "deppInfoSearch");
+        final SearchCallbackWrapper<SearchDeepInfoResult> callbackWrapper = createCallbackWrapper(
                 SearchDeepInfoResult.class,
-                result -> notifySearchSuccess(taskId.get(), parameter, result),
-                (errCode, result) -> notifySearchSuccess(taskId.get(), parameter, result)
+                result -> notifySearchSuccess(mTaskId.get(), parameter, result),
+                (errCode, result) -> notifySearchSuccess(mTaskId.get(), parameter, result)
         );
 
         mSearchObserversHelper.registerCallback(SearchDeepInfoResult.class, callbackWrapper);
 
-        try {
-            SearchDeepInfoParam param = new SearchDeepInfoParam();
-            param.poiid = parameter.getPoiId();
-            param.poi_loc.lat = parameter.getPoiLoc().lat;
-            param.poi_loc.lon = parameter.getPoiLoc().lat;
-            getSearchServiceV1().deepInfoSearch(param, mSearchObserversHelper, SearchMode.SEARCH_MODE_ONLINE_ONLY, taskId.incrementAndGet());
-        } catch (Exception e) {
-            Logger.e(SEARCH_SERVICE_TAG, "Search operation failed due to exception: " + e.getMessage());
-        }
-        return taskId.get();
+        final SearchDeepInfoParam param = new SearchDeepInfoParam();
+        param.poiid = parameter.getPoiId();
+        param.poi_loc.lat = parameter.getPoiLoc().getLat();
+        param.poi_loc.lon = parameter.getPoiLoc().getLon();
+        getSearchServiceV1().deepInfoSearch(param, mSearchObserversHelper, SearchMode.SEARCH_MODE_ONLINE_ONLY, mTaskId.incrementAndGet());
+        return mTaskId.get();
     }
 
     /**
@@ -427,25 +405,22 @@ public class SearchAdapterImpl extends SearchServiceV2Manager implements ISearch
      * @return taskId
      */
     @Override
-    public int doLineDeepInfoSearch(SearchRequestParameter parameter) {
-        Logger.d(SEARCH_SERVICE_TAG, "deppInfoSearch");
-        SearchCallbackWrapper<SearchLineDeepInfoResult> callbackWrapper = createCallbackWrapper(
+    public int doLineDeepInfoSearch(final SearchRequestParameter parameter) {
+        Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "deppInfoSearch");
+        final SearchCallbackWrapper<SearchLineDeepInfoResult> callbackWrapper = createCallbackWrapper(
                 SearchLineDeepInfoResult.class,
-                result -> notifySearchSuccess(taskId.get(), parameter, result),
-                (errCode, result) -> notifySearchSuccess(taskId.get(), parameter, result)
+                result -> notifySearchSuccess(mTaskId.get(), parameter, result),
+                (errCode, result) -> notifySearchSuccess(mTaskId.get(), parameter, result)
         );
 
         mSearchObserversHelper.registerCallback(SearchLineDeepInfoResult.class, callbackWrapper);
 
-        try {
-            SearchLineDeepInfoParam searchLineDeepInfoParam = new SearchLineDeepInfoParam();
-            searchLineDeepInfoParam.poiIds = (java.util.ArrayList<String>) parameter.getPoiIdList();
-            searchLineDeepInfoParam.queryType = Integer.parseInt(parameter.getQueryType());
-            getSearchServiceV1().lineDeepInfoSearch(searchLineDeepInfoParam, mSearchObserversHelper, SearchMode.SEARCH_MODE_ONLINE_ONLY, taskId.incrementAndGet());
-        } catch (Exception e) {
-            Logger.e(SEARCH_SERVICE_TAG, "Search operation failed due to exception: " + e.getMessage());
-        }
-        return taskId.get();
+        final SearchLineDeepInfoParam searchLineDeepInfoParam = new SearchLineDeepInfoParam();
+        searchLineDeepInfoParam.poiIds = (java.util.ArrayList<String>) parameter.getPoiIdList();
+        searchLineDeepInfoParam.queryType = Integer.parseInt(parameter.getQueryType());
+        getSearchServiceV1().lineDeepInfoSearch(searchLineDeepInfoParam, mSearchObserversHelper,
+                SearchMode.SEARCH_MODE_ONLINE_ONLY, mTaskId.incrementAndGet());
+        return mTaskId.get();
     }
 
     /**
@@ -455,22 +430,18 @@ public class SearchAdapterImpl extends SearchServiceV2Manager implements ISearch
      * @return taskId
      */
     @Override
-    public int alongWaySearch(SearchRequestParameter searchRequestParameterBuilder) {
-        Logger.d(SEARCH_SERVICE_TAG, "alongWaySearch");
-        SearchCallbackWrapper<SearchAlongWayResult> callbackWrapper = createCallbackWrapper(
+    public int alongWaySearch(final SearchRequestParameter searchRequestParameterBuilder) {
+        Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "alongWaySearch");
+        final SearchCallbackWrapper<SearchAlongWayResult> callbackWrapper = createCallbackWrapper(
                 SearchAlongWayResult.class,
-                result -> notifySearchSuccess(taskId.get(), searchRequestParameterBuilder, result),
-                (errCode, result) -> notifySearchSuccess(taskId.get(), searchRequestParameterBuilder, result)
+                result -> notifySearchSuccess(mTaskId.get(), searchRequestParameterBuilder, result),
+                (errCode, result) -> notifySearchSuccess(mTaskId.get(), searchRequestParameterBuilder, result)
         );
 
         mSearchObserversHelper.registerCallback(SearchAlongWayResult.class, callbackWrapper);
-        try {
-            SearchAlongWayParam param = SearchRequestParamV2.getInstance().convertToAlongWaySearchIdqParam(searchRequestParameterBuilder);
-            getSearchServiceV1().alongWaySearch(param, mSearchObserversHelper, SearchMode.SEARCH_MODE_ONLINE_ADVANCED, taskId.incrementAndGet());
-        } catch (Exception e) {
-            Logger.e(SEARCH_SERVICE_TAG, "Search operation failed due to exception: " + e.getMessage());
-        }
-        return taskId.get();
+        final SearchAlongWayParam param = SearchRequestParamV2.getInstance().convertToAlongWaySearchIdqParam(searchRequestParameterBuilder);
+        getSearchServiceV1().alongWaySearch(param, mSearchObserversHelper, SearchMode.SEARCH_MODE_ONLINE_ADVANCED, mTaskId.incrementAndGet());
+        return mTaskId.get();
     }
 
     /**
@@ -485,7 +456,7 @@ public class SearchAdapterImpl extends SearchServiceV2Manager implements ISearch
      * 中止单个正在进行的搜索任务。
      */
     @Override
-    public void abortSearch(int taskId) {
+    public void abortSearch(final int taskId) {
         getSearchServiceV2().abort(taskId);
     }
 
@@ -497,21 +468,28 @@ public class SearchAdapterImpl extends SearchServiceV2Manager implements ISearch
      * @return distance ，travelTime
      */
     @Override
-    public CompletableFuture<Pair<String, String>> getTravelTimeFuture(SearchRequestParameter searchRequestParameterBuilder) {
+    public CompletableFuture<Pair<String, String>> getTravelTimeFuture(final SearchRequestParameter searchRequestParameterBuilder) {
 
-        // TODO 后面需要对接真是的能耗模型参数
-        //GNavigationEtaqueryRequestParam requestParam = SearchRequestParamV2.getInstance().convertToGNavigationEtaqueryRequestParam(searchRequestParameterBuilder);
-        GNavigationEtaqueryRequestParam requestParam = new GNavigationEtaqueryRequestParam();
-        requestParam.start.points.add(new GNavigationEtaqueryReqStartPoints(13, 2, searchRequestParameterBuilder.getUserLoc().lon, searchRequestParameterBuilder.getUserLoc().lat));
-        requestParam.end.points.add(new GNavigationEtaqueryReqStartPoints(143, 2, searchRequestParameterBuilder.getPoiLoc().lon, searchRequestParameterBuilder.getPoiLoc().lat));
+        // TODO 后面需要对接真实的能耗模型参数
+        //final GNavigationEtaqueryRequestParam requestParam =
+        // SearchRequestParamV2.getInstance().convertToGNavigationEtaqueryRequestParam(searchRequestParameterBuilder);
+        final GNavigationEtaqueryRequestParam requestParam = new GNavigationEtaqueryRequestParam();
+        requestParam.start.points.add(new GNavigationEtaqueryReqStartPoints(13, 2,
+                searchRequestParameterBuilder.getUserLoc().getLon(), searchRequestParameterBuilder.getUserLoc().getLat()));
+        requestParam.end.points.add(new GNavigationEtaqueryReqStartPoints(143, 2,
+                searchRequestParameterBuilder.getPoiLoc().getLon(), searchRequestParameterBuilder.getPoiLoc().getLat()));
 
-        CompletableFuture<Pair<String, String>> future = new CompletableFuture<>();
+        final CompletableFuture<Pair<String, String>> future = new CompletableFuture<>();
         mBLAosService.sendReqNavigationEtaquery(requestParam, response -> {
-            if (response.route_list != null && !response.route_list.isEmpty() && response.route_list.get(0).path != null && !response.route_list.get(0).path.isEmpty()) {
-                String distance = formatDistanceArrayInternal(response.route_list.get(0).path.get(0).distance);
-                String travelTime = TimeUtils.switchHourAndMimuteFromSecond(AppContext.mContext, (int) response.route_list.get(0).path.get(0).travel_time);
+            if (response.route_list != null && !response.route_list.isEmpty()
+                    && response.route_list.get(0).path != null && !response.route_list.get(0).path.isEmpty()) {
+                final String distance = formatDistanceArrayInternal(response.route_list.get(0).path.get(0).distance);
+                final String travelTime = TimeUtils.switchHourAndMimuteFromSecond(AppContext.getInstance().getMContext(),
+                        (int) response.route_list.get(0).path.get(0).travel_time);
+                final int chargeLeft = response.route_list.get(0).path.get(0).charge_left;
                 future.complete(new Pair<>(distance, travelTime));
-                Logger.d(SEARCH_SERVICE_TAG, "distance:" + distance + " travelTime:" + travelTime);
+                Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "distance:" + distance + " travelTime:" + travelTime
+                        + " chargeLeft:" + chargeLeft);
             } else {
                 future.completeExceptionally(new Exception("No valid route data found"));
             }
@@ -526,25 +504,39 @@ public class SearchAdapterImpl extends SearchServiceV2Manager implements ISearch
      * @return distance ，travelTime
      */
     @Override
-    public CompletableFuture<ETAInfo> getTravelTimeFutureIncludeChargeLeft(SearchRequestParameter searchRequestParameterBuilder) {
+    public CompletableFuture<ETAInfo> getTravelTimeFutureIncludeChargeLeft(
+            final SearchRequestParameter searchRequestParameterBuilder) {
+        Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "getTravelTimeFutureIncludeChargeLeft remainCharge: "
+                + BevPowerCarUtils.getInstance().initlialHVBattenergy);
+        // TODO 后面需要对接真实的能耗模型参数
+        final GNavigationEtaqueryRequestParam requestParam = SearchRequestParamV2.getInstance().
+                convertToGNavigationEtaqueryRequestParam(searchRequestParameterBuilder);
+//        final GNavigationEtaqueryRequestParam requestParam = new GNavigationEtaqueryRequestParam();
+        requestParam.start.points.add(new GNavigationEtaqueryReqStartPoints(13,
+                2, searchRequestParameterBuilder.getUserLoc().getLon(),
+                searchRequestParameterBuilder.getUserLoc().getLat()));
+        requestParam.end.points.add(new GNavigationEtaqueryReqStartPoints(143,
+                2, searchRequestParameterBuilder.getPoiLoc().getLon(),
+                searchRequestParameterBuilder.getPoiLoc().getLat()));
 
-        // TODO 后面需要对接真是的能耗模型参数
-        //GNavigationEtaqueryRequestParam requestParam = SearchRequestParamV2.getInstance().convertToGNavigationEtaqueryRequestParam(searchRequestParameterBuilder);
-        GNavigationEtaqueryRequestParam requestParam = new GNavigationEtaqueryRequestParam();
-        requestParam.start.points.add(new GNavigationEtaqueryReqStartPoints(13, 2, searchRequestParameterBuilder.getUserLoc().lon, searchRequestParameterBuilder.getUserLoc().lat));
-        requestParam.end.points.add(new GNavigationEtaqueryReqStartPoints(143, 2, searchRequestParameterBuilder.getPoiLoc().lon, searchRequestParameterBuilder.getPoiLoc().lat));
-
-        CompletableFuture<ETAInfo> future = new CompletableFuture<>();
+        final CompletableFuture<ETAInfo> future = new CompletableFuture<>();
         mBLAosService.sendReqNavigationEtaquery(requestParam, response -> {
-            if (response.route_list != null && !response.route_list.isEmpty() && response.route_list.get(0).path != null && !response.route_list.get(0).path.isEmpty()) {
-                ETAInfo etaInfo = new ETAInfo()
+            if (response.route_list != null && !response.route_list.isEmpty()
+                    && response.route_list.get(0).path != null
+                    && !response.route_list.get(0).path.isEmpty()) {
+                final float chargeLeft = (response.route_list.get(0).path.get(0).charge_left
+                        / 100000f)
+                        / BevPowerCarUtils.getInstance().maxBattenergy;
+                final int chargeLeftPercent = (int) (chargeLeft * 100);
+                final ETAInfo etaInfo = new ETAInfo()
                         .setDistance(response.route_list.get(0).path.get(0).distance)
-                        .setTravelTime(TimeUtils.switchHourAndMimuteFromSecond(AppContext.mContext, (int) response.route_list.get(0).path.get(0).travel_time))
-                        .setLeftCharge(response.route_list.get(0).path.get(0).charge_left);
-//                String distance = formatDistanceArrayInternal(response.route_list.get(0).path.get(0).distance);
-//                String travelTime = TimeUtils.switchHourAndMimuteFromSecond(AppContext.mContext, (int) response.route_list.get(0).path.get(0).travel_time);
+                        .setTravelTime(TimeUtils.switchHourAndMimuteFromSecond(AppContext.getInstance().getMContext(),
+                                (int) response.route_list.get(0).path.get(0).travel_time))
+                        .setLeftCharge(chargeLeftPercent);
                 future.complete(etaInfo);
-//                Logger.d(SEARCH_SERVICE_TAG, "distance:" + distance + " travelTime:" + travelTime);
+                Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "distance:" + etaInfo.getDistance() + " travelTime:"
+                        + etaInfo.getTravelTime()
+                        + " chargeLeft:" + chargeLeftPercent);
             } else {
                 future.completeExceptionally(new Exception("No valid route data found"));
             }
@@ -552,8 +544,14 @@ public class SearchAdapterImpl extends SearchServiceV2Manager implements ISearch
         return future;
     }
 
-    private String formatDistanceArrayInternal(int distance) {
-        String[] distanceArray = ConvertUtils.formatDistanceArray(AppContext.mContext, distance);
+    /**
+     * 格式化距离数组
+     *
+     * @param distance 原始距离数据
+     * @return 格式化后的距离文本
+     */
+    private String formatDistanceArrayInternal(final int distance) {
+        final String[] distanceArray = ConvertUtils.formatDistanceArray(AppContext.getInstance().getMContext(), distance);
         return distanceArray[0] + distanceArray[1];
     }
 
@@ -563,9 +561,10 @@ public class SearchAdapterImpl extends SearchServiceV2Manager implements ISearch
      * @param requestParameterBuilder 搜索参数构建器
      * @param result                  搜索结果
      * @param <T>                     泛型类型
+     * @param taskId                  任务ID
      */
-    private <T> void notifySearchSuccess(int taskId, SearchRequestParameter requestParameterBuilder, T result) {
-        searchNotificationHelper.notifySearchSuccess(taskId, requestParameterBuilder, result);
+    private <T> void notifySearchSuccess(final int taskId, final SearchRequestParameter requestParameterBuilder, final T result) {
+        mSearchNotificationHelper.notifySearchSuccess(taskId, requestParameterBuilder, result);
     }
 
     /**
@@ -578,10 +577,10 @@ public class SearchAdapterImpl extends SearchServiceV2Manager implements ISearch
      * @return 搜索回调包装器
      */
     private <T> SearchCallbackWrapper<T> createCallbackWrapper(
-            Class<T> resultType,
-            Consumer<T> onSuccess,
-            BiConsumer<Integer, T> onFailure) {
-        return searchNotificationHelper.createCallbackWrapper(resultType, onSuccess, onFailure);
+            final Class<T> resultType,
+            final Consumer<T> onSuccess,
+            final BiConsumer<Integer, T> onFailure) {
+        return mSearchNotificationHelper.createCallbackWrapper(resultType, onSuccess, onFailure);
     }
 
 }

@@ -23,19 +23,10 @@ import com.fy.navi.service.define.search.FavoriteInfo;
 import com.fy.navi.service.define.search.PoiInfoEntity;
 
 import java.util.ArrayList;
-import java.util.Objects;
 
-/**
- * 高德数据收藏服务 and 云同步服务.
- * 云同步服务为收藏夹、配置项、搜索历史、历史路线、用户行程记录等功能提供云同步能力，相关接口调用应在云同步服务初始化之后
- *
- * @Description Impl类只做SDK的原子能力封装，不做对象及数据转换
- * @Author fh
- * @date 2024/12/26
- */
 public class BehaviorAdapterImpl implements IBehaviorApi {
     private static final String TAG = MapDefaultFinalTag.FAVORITE_SERVICE_TAG;
-    private BehaviorAdapterImplHelper adapterImplHelper;
+    private BehaviorAdapterImplHelper mAdapterImplHelper;
     private BehaviorService mBehaviorService;
     private SyncSdkService mSyncSdkService;
 
@@ -43,28 +34,28 @@ public class BehaviorAdapterImpl implements IBehaviorApi {
         mBehaviorService = (BehaviorService) ServiceMgr.getServiceMgrInstance()
                 .getBLService(SingleServiceID.BehaviorSingleServiceID);
         mSyncSdkService = (SyncSdkService) ServiceMgr.getServiceMgrInstance().getBLService(SingleServiceID.SyncSdkSingleServiceID);
-        adapterImplHelper = new BehaviorAdapterImplHelper(mBehaviorService, mSyncSdkService);
+        mAdapterImplHelper = new BehaviorAdapterImplHelper(mBehaviorService, mSyncSdkService);
     }
 
     @Override
     public void initBehaviorService() {
-        adapterImplHelper.initBehaviorService();
+        mAdapterImplHelper.initBehaviorService();
     }
 
     @Override
-    public void registerCallBack(String key, BehaviorAdapterCallBack callBack) {
-        adapterImplHelper.registerCallBack(key, callBack);
+    public void registerCallBack(final String key, final BehaviorAdapterCallBack callBack) {
+        mAdapterImplHelper.registerCallBack(key, callBack);
     }
 
     @Override
-    public void unRegisterCallback(String key) {
-        adapterImplHelper.unRegisterCallBack(key);
+    public void unRegisterCallback(final String key) {
+        mAdapterImplHelper.unRegisterCallBack(key);
     }
 
     @Override
     public void unInitBehaviorService() {
         if (mBehaviorService != null) {
-            adapterImplHelper.removeCallback();
+            mAdapterImplHelper.removeCallback();
             if (ServiceInitStatus.ServiceInitDone != mBehaviorService.isInit()) {
                 mBehaviorService.unInit();
             }
@@ -76,7 +67,9 @@ public class BehaviorAdapterImpl implements IBehaviorApi {
      */
     @Override
     public int[] getSimpleFavoriteIds() {
-        if (mBehaviorService == null) return null;
+        if (mBehaviorService == null) {
+            return null;
+        }
         return mBehaviorService.getSimpleFavoriteIds();
         //HMI进行业务处理
     }
@@ -87,8 +80,10 @@ public class BehaviorAdapterImpl implements IBehaviorApi {
      */
     @Override
     public PoiInfoEntity getHomeFavoriteInfo() {
-        if (mBehaviorService == null) return null;
-        ArrayList<SimpleFavoriteItem> simpleFavoriteList =
+        if (mBehaviorService == null) {
+            return null;
+        }
+        final ArrayList<SimpleFavoriteItem> simpleFavoriteList =
                 mBehaviorService.getSimpleFavoriteList(FavoriteType.FavoriteTypeHome, true);
         return getPoiInfoEntity(simpleFavoriteList);
     }
@@ -99,18 +94,25 @@ public class BehaviorAdapterImpl implements IBehaviorApi {
      */
     @Override
     public PoiInfoEntity getCompanyFavoriteInfo() {
-        if (mBehaviorService == null) return null;
-        ArrayList<SimpleFavoriteItem> simpleFavoriteList =
+        if (mBehaviorService == null) {
+            return null;
+        }
+        final ArrayList<SimpleFavoriteItem> simpleFavoriteList =
                 mBehaviorService.getSimpleFavoriteList(FavoriteType.FavoriteTypeCompany, true);
         return getPoiInfoEntity(simpleFavoriteList);
     }
 
-    public PoiInfoEntity getPoiInfoEntity(ArrayList<SimpleFavoriteItem> simpleFavoriteList) {
+    /**
+     * getPoiInfoEntity
+     * @param simpleFavoriteList
+     * @return PoiInfoEntity
+     */
+    public PoiInfoEntity getPoiInfoEntity(final ArrayList<SimpleFavoriteItem> simpleFavoriteList) {
         //HMI进行业务处理
         PoiInfoEntity poiInfoEntity = new PoiInfoEntity();
         if (simpleFavoriteList != null && !simpleFavoriteList.isEmpty()) {
-            SimpleFavoriteItem item = simpleFavoriteList.get(0);
-            FavoriteInfo info = new FavoriteInfo()
+            final SimpleFavoriteItem item = simpleFavoriteList.get(0);
+            final FavoriteInfo info = new FavoriteInfo()
                     .setItemId(item.item_id)
                     .setCommonName(item.common_name)
                     .setTag(item.tag)
@@ -120,7 +122,7 @@ public class BehaviorAdapterImpl implements IBehaviorApi {
                     .setClassification(item.classification)
                     .setTop_time(item.top_time);
 
-            PoiInfoEntity simpleFavoriteInfo = new PoiInfoEntity()
+            final PoiInfoEntity simpleFavoriteInfo = new PoiInfoEntity()
                     .setPid(String.valueOf(item.id))
                     .setAdCode(ConvertUtils.str2Int(item.city_code))
                     .setAddress(item.address)
@@ -138,14 +140,16 @@ public class BehaviorAdapterImpl implements IBehaviorApi {
      */
     @Override
     public ArrayList<PoiInfoEntity> getSimpleFavoriteList() {
-        if (mBehaviorService == null) return null;
-        ArrayList<SimpleFavoriteItem> simpleFavoriteList =
+        if (mBehaviorService == null) {
+            return null;
+        }
+        final ArrayList<SimpleFavoriteItem> simpleFavoriteList =
                 mBehaviorService.getSimpleFavoriteList(FavoriteType.FavoriteTypePoi, true);
         //HMI进行业务处理
-        ArrayList<PoiInfoEntity> dataList = new ArrayList<>();
+        final ArrayList<PoiInfoEntity> dataList = new ArrayList<>();
         if (simpleFavoriteList != null) {
             for (SimpleFavoriteItem item : simpleFavoriteList) {
-                FavoriteInfo info = new FavoriteInfo()
+                final FavoriteInfo info = new FavoriteInfo()
                         .setItemId(item.item_id)
                         .setCommonName(item.common_name)
                         .setTag(item.tag)
@@ -155,7 +159,7 @@ public class BehaviorAdapterImpl implements IBehaviorApi {
                         .setClassification(item.classification)
                         .setTop_time(item.top_time);
 
-                PoiInfoEntity simpleFavoriteInfo = new PoiInfoEntity()
+                final PoiInfoEntity simpleFavoriteInfo = new PoiInfoEntity()
                         .setPid(String.valueOf(item.id))
                         .setAdCode(ConvertUtils.str2Int(item.city_code))
                         .setAddress(item.address)
@@ -172,8 +176,10 @@ public class BehaviorAdapterImpl implements IBehaviorApi {
      * 获取精简收藏点列表（异步方式）
      */
     @Override
-    public int getFavoriteListAsync(int type, boolean sorted) {
-        if (mBehaviorService == null) return -1;
+    public int getFavoriteListAsync(final int type, final boolean sorted) {
+        if (mBehaviorService == null) {
+            return -1;
+        }
         return mBehaviorService.getFavoriteListAsync(FavoriteType.FavoriteTypePoi, true);
     }
 
@@ -181,18 +187,20 @@ public class BehaviorAdapterImpl implements IBehaviorApi {
      * 获取收藏点详细信息
      */
     @Override
-    public PoiInfoEntity getFavorite(PoiInfoEntity baseInfo) {
-        if (mBehaviorService == null) return null;
-        FavoriteBaseItem baseItem = new FavoriteBaseItem();
+    public PoiInfoEntity getFavorite(final PoiInfoEntity baseInfo) {
+        if (mBehaviorService == null) {
+            return null;
+        }
+        final FavoriteBaseItem baseItem = new FavoriteBaseItem();
         baseItem.item_id = baseInfo.getFavoriteInfo().getItemId();
         baseItem.poiid = baseInfo.getPid();
-        baseItem.point_x = (int) baseInfo.getPoint().lon;
-        baseItem.point_y = (int) baseInfo.getPoint().lat;
+        baseItem.point_x = (int) baseInfo.getPoint().getLon();
+        baseItem.point_y = (int) baseInfo.getPoint().getLat();
         baseItem.name = baseInfo.getName();
 
-        FavoriteItem favoriteItem = mBehaviorService.getFavorite(baseItem);
+        final FavoriteItem favoriteItem = mBehaviorService.getFavorite(baseItem);
         //HMI进行业务处理
-        FavoriteInfo favoriteInfo = new FavoriteInfo()
+        final FavoriteInfo favoriteInfo = new FavoriteInfo()
                 .setItemId(favoriteItem.item_id)
                 .setCommonName(favoriteItem.common_name)
                 .setTag(favoriteItem.tag)
@@ -201,7 +209,7 @@ public class BehaviorAdapterImpl implements IBehaviorApi {
                 .setCustom_name(favoriteItem.custom_name)
                 .setClassification(favoriteItem.classification)
                 .setTop_time(favoriteItem.top_time);
-        PoiInfoEntity info = new PoiInfoEntity()
+        final PoiInfoEntity info = new PoiInfoEntity()
                 .setPid(String.valueOf(favoriteItem.poiid))
                 .setAdCode(ConvertUtils.str2Int(favoriteItem.city_code))
                 .setAddress(favoriteItem.address)
@@ -216,18 +224,20 @@ public class BehaviorAdapterImpl implements IBehaviorApi {
      */
     @SuppressLint("WrongConstant")
     @Override
-    public String addFavorite(PoiInfoEntity poiInfo) {
-        if (mBehaviorService == null) return "";
-        FavoriteItem item = new FavoriteItem();
+    public String addFavorite(final PoiInfoEntity poiInfo) {
+        if (mBehaviorService == null) {
+            return "";
+        }
+        final FavoriteItem item = new FavoriteItem();
         item.item_id = poiInfo.getFavoriteInfo().getItemId();
         item.poiid = poiInfo.getPid();
         item.address = poiInfo.getAddress();
         item.common_name = poiInfo.getFavoriteInfo().getCommonName();
         item.name = poiInfo.getName();
-        item.point_x = (int) poiInfo.getPoint().lon;
-        item.point_y = (int) poiInfo.getPoint().lat;
+        item.point_x = (int) poiInfo.getPoint().getLon();
+        item.point_y = (int) poiInfo.getPoint().getLat();
         // 添加成功返回 FavoriteItem 对应的存档ID
-        String result = mBehaviorService.addFavorite(item, SyncMode.SyncModeNow);
+        final String result = mBehaviorService.addFavorite(item, SyncMode.SyncModeNow);
         Logger.d(TAG, "addFavorite result = ", result);
         return result;
     }
@@ -236,17 +246,19 @@ public class BehaviorAdapterImpl implements IBehaviorApi {
      * 删除收藏点
      */
     @Override
-    public String removeFavorite(PoiInfoEntity poiInfo) {
-        if (mBehaviorService == null) return "";
-        FavoriteBaseItem delItem = new FavoriteBaseItem();
+    public String removeFavorite(final PoiInfoEntity poiInfo) {
+        if (mBehaviorService == null) {
+            return "";
+        }
+        final FavoriteBaseItem delItem = new FavoriteBaseItem();
         delItem.item_id = poiInfo.getFavoriteInfo().getItemId();
         delItem.poiid = poiInfo.getPid();
-        delItem.point_x = (int) poiInfo.getPoint().lon;
-        delItem.point_y = (int) poiInfo.getPoint().lat;
+        delItem.point_x = (int) poiInfo.getPoint().getLon();
+        delItem.point_y = (int) poiInfo.getPoint().getLat();
         delItem.name = poiInfo.getName();
         Logger.d(TAG, "delFavorite", GsonUtils.toJson(delItem));
         // 删除成功返回 FavoriteBaseItem对应的存档ID
-        String result = mBehaviorService.delFavorite(delItem, SyncMode.SyncModeNow);
+        final String result = mBehaviorService.delFavorite(delItem, SyncMode.SyncModeNow);
         Logger.d(TAG, "removeFavorite ret = ", result);
         return result;
     }
@@ -257,15 +269,17 @@ public class BehaviorAdapterImpl implements IBehaviorApi {
      * FavoriteBaseItem.item_id来判断是否收藏，避免通过转换精度丢失导致判断出错问题
      */
     @Override
-    public String isFavorite(PoiInfoEntity poiInfo) {
-        if (mBehaviorService == null) return "";
-        FavoriteBaseItem favoriteInfo = new FavoriteBaseItem();
+    public String isFavorite(final PoiInfoEntity poiInfo) {
+        if (mBehaviorService == null) {
+            return "";
+        }
+        final FavoriteBaseItem favoriteInfo = new FavoriteBaseItem();
         favoriteInfo.poiid = poiInfo.getPid();
-        favoriteInfo.point_x = (int) poiInfo.getPoint().lon;
-        favoriteInfo.point_y = (int) poiInfo.getPoint().lat;
+        favoriteInfo.point_x = (int) poiInfo.getPoint().getLon();
+        favoriteInfo.point_y = (int) poiInfo.getPoint().getLat();
         favoriteInfo.name = poiInfo.getName();
         // 返回 收藏点存档ID 表示已收藏
-        String result = mBehaviorService.isFavorited(favoriteInfo);
+        final String result = mBehaviorService.isFavorited(favoriteInfo);
         Logger.d(TAG, "isFavorited result = ", result);
         return result;
     }
@@ -274,18 +288,20 @@ public class BehaviorAdapterImpl implements IBehaviorApi {
      * 收藏点置顶/取消置顶
      *
      * @param info    置顶item信息
-     * @param bSetTop 是否置顶 true 置顶；false 取消置顶
+     * @param isSetTop 是否置顶 true 置顶；false 取消置顶
      */
     @Override
-    public String topFavorite(PoiInfoEntity info, boolean bSetTop) {
-        if (mBehaviorService == null) return "";
-        FavoriteBaseItem baseItem = new FavoriteBaseItem();
+    public String topFavorite(final PoiInfoEntity info, final boolean isSetTop) {
+        if (mBehaviorService == null) {
+            return "";
+        }
+        final FavoriteBaseItem baseItem = new FavoriteBaseItem();
         baseItem.item_id = info.getFavoriteInfo().getItemId();
         baseItem.poiid = info.getPid();
-        baseItem.point_x = (int) info.getPoint().lon;
-        baseItem.point_y = (int) info.getPoint().lat;
+        baseItem.point_x = (int) info.getPoint().getLon();
+        baseItem.point_y = (int) info.getPoint().getLat();
         baseItem.name = info.getName();
-        String ret = mBehaviorService.topFavorite(baseItem, bSetTop, SyncMode.SyncModeNow);
+        final String ret = mBehaviorService.topFavorite(baseItem, isSetTop, SyncMode.SyncModeNow);
         Logger.d(TAG, "topFavorite ret = ", ret);
         return ret;
     }
@@ -294,27 +310,29 @@ public class BehaviorAdapterImpl implements IBehaviorApi {
      * 收藏点重命名
      */
     @Override
-    public String modifyFavorite(PoiInfoEntity detailInfo, String customName) {
-        if (mBehaviorService == null) return "";
+    public String modifyFavorite(final PoiInfoEntity detailInfo, final String customName) {
+        if (mBehaviorService == null)  {
+            return "";
+        }
         // 1 获取收藏点详细数据
-        FavoriteBaseItem baseItem = new FavoriteBaseItem();
+        final FavoriteBaseItem baseItem = new FavoriteBaseItem();
         baseItem.item_id = detailInfo.getFavoriteInfo().getItemId();
         baseItem.poiid = detailInfo.getPid();
-        baseItem.point_x = (int) detailInfo.getPoint().lon;
-        baseItem.point_y = (int) detailInfo.getPoint().lat;
+        baseItem.point_x = (int) detailInfo.getPoint().getLon();
+        baseItem.point_y = (int) detailInfo.getPoint().getLat();
         baseItem.name = detailInfo.getName();
-        FavoriteItem detailItem = mBehaviorService.getFavorite(baseItem);
+        final FavoriteItem detailItem = mBehaviorService.getFavorite(baseItem);
         // 2 重命名
         detailItem.custom_name = customName; // "重命名";
-        int mode = SyncMode.SyncModeNow; // SyncModeLater 稍后同步
+        final int mode = SyncMode.SyncModeNow; // SyncModeLater 稍后同步
         Logger.d(TAG, "updateFavorite", GsonUtils.toJson(detailInfo));
-        String ret = mBehaviorService.updateFavorite(detailItem, mode);
+        final String ret = mBehaviorService.updateFavorite(detailItem, mode);
         Logger.d(TAG, "updateFavorite ret = ", ret);
         return ret;
     }
 
     @Override
-    public String addFrequentAddress(PoiInfoEntity poiInfo) {
+    public String addFrequentAddress(final PoiInfoEntity poiInfo) {
         return "";
     }
 
@@ -328,7 +346,7 @@ public class BehaviorAdapterImpl implements IBehaviorApi {
         }
 
         // 同步常去地点（家、公司）数据
-        adapterImplHelper.syncFrequentData();
+        mAdapterImplHelper.syncFrequentData();
     }
 
 }

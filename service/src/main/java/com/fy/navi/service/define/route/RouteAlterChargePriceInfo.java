@@ -2,17 +2,22 @@ package com.fy.navi.service.define.route;
 
 import java.io.Serializable;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 public class RouteAlterChargePriceInfo implements Serializable {
-    public String lowestPriceValue;
-    public String lowestPriceUnit;
+    private String mLowestPriceValue;
+    private String mLowestPriceUnit;
 
     public RouteAlterChargePriceInfo() {
-        this.lowestPriceValue = "";
-        this.lowestPriceUnit = "";
+        this.mLowestPriceValue = "";
+        this.mLowestPriceUnit = "";
     }
 
-    public RouteAlterChargePriceInfo(String lowestPriceValueLiteObj, String lowestPriceUnitLiteObj) {
-        this.lowestPriceValue = lowestPriceValueLiteObj;
-        this.lowestPriceUnit = lowestPriceUnitLiteObj;
+    public RouteAlterChargePriceInfo(final String lowestPriceValueLiteObj, final String lowestPriceUnitLiteObj) {
+        this.mLowestPriceValue = lowestPriceValueLiteObj;
+        this.mLowestPriceUnit = lowestPriceUnitLiteObj;
     }
 }

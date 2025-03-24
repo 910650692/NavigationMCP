@@ -11,30 +11,30 @@ import androidx.annotation.Nullable;
 import com.fy.navi.scene.BaseSceneView;
 import com.fy.navi.scene.databinding.ScenePoiDetailsTitleBarBinding;
 import com.fy.navi.scene.impl.poi.ScenePoiDetailTitleImpl;
-import com.fy.navi.service.AutoMapConstant;
 import com.fy.navi.service.define.search.PoiInfoEntity;
 
 /**
- * @Author: baipeng0904
+ * @author baipeng0904
+ * @version \$Revision1.0\$
  * @Description: 类作用描述
  * @CreateDate: $ $
  */
 public class ScenePoiDetailTitleView extends BaseSceneView<ScenePoiDetailsTitleBarBinding, ScenePoiDetailTitleImpl> {
-    public ScenePoiDetailTitleView(@NonNull Context context) {
+    public ScenePoiDetailTitleView(@NonNull final Context context) {
         super(context);
     }
 
-    public ScenePoiDetailTitleView(@NonNull Context context, @Nullable AttributeSet attrs) {
+    public ScenePoiDetailTitleView(@NonNull final Context context, @Nullable final AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public ScenePoiDetailTitleView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public ScenePoiDetailTitleView(@NonNull final Context context, @Nullable final AttributeSet attrs, final int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 
 
     @Override
-    protected ScenePoiDetailsTitleBarBinding createViewBinding(LayoutInflater inflater, ViewGroup viewGroup) {
+    protected ScenePoiDetailsTitleBarBinding createViewBinding(final LayoutInflater inflater, final ViewGroup viewGroup) {
         return ScenePoiDetailsTitleBarBinding.inflate(inflater, viewGroup, true);
     }
 
@@ -54,7 +54,11 @@ public class ScenePoiDetailTitleView extends BaseSceneView<ScenePoiDetailsTitleB
 
     }
 
-    public void doSearch(PoiInfoEntity poiInfo) {
+    /**
+     * 开始搜索
+     * @param poiInfo poi信息实体类
+     */
+    public void doSearch(final PoiInfoEntity poiInfo) {
         mScreenViewModel.doSearch(poiInfo);
     }
 }

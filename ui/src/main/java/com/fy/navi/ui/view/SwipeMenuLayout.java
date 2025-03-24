@@ -10,8 +10,9 @@ import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.widget.Scroller;
 
-public class SwipeMenuLayout extends ViewGroup {
+import com.android.utils.log.Logger;
 
+public class SwipeMenuLayout extends ViewGroup {
     private int mTouchSlop;
     private int mHeight;
     private int mMenuViewWidth;
@@ -19,20 +20,20 @@ public class SwipeMenuLayout extends ViewGroup {
     private VelocityTracker mVelocityTracker;
     private final PointF mFirstP = new PointF();
     private static SwipeMenuLayout mViewCache;
-    private boolean isExpandFromOutSide = false;
+    private boolean mExpandFromOutSide = false;
     private float mLastX;
     // 最小滑动速度
     private static final int SNAP_VELOCITY = 600;
 
-    public SwipeMenuLayout(Context context) {
+    public SwipeMenuLayout(final Context context) {
         this(context, null);
     }
 
-    public SwipeMenuLayout(Context context, AttributeSet attrs) {
+    public SwipeMenuLayout(final Context context, final AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public SwipeMenuLayout(Context context, AttributeSet attrs, int defStyleAttr) {
+    public SwipeMenuLayout(final Context context, final AttributeSet attrs, final int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init(context);
     }
@@ -41,30 +42,35 @@ public class SwipeMenuLayout extends ViewGroup {
         return mViewCache;
     }
 
-    private void init(Context context) {
+    /**
+     * 初始化
+     *
+     * @param context 上下文
+     */
+    private void init(final Context context) {
         mTouchSlop = ViewConfiguration.get(context).getScaledTouchSlop();
         mScroller = new Scroller(context);
     }
 
     @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+    protected void onMeasure(final int widthMeasureSpec, final int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         mMenuViewWidth = 0;
         mHeight = 0;
         int contentWidth = 0;
-        int childCount = getChildCount();
+        final int childCount = getChildCount();
 
         for (int i = 0; i < childCount; i++) {
-            View childView = getChildAt(i);
+            final View childView = getChildAt(i);
             if (childView.getVisibility() != GONE) {
                 if (i == 0) {
                     measureChildWithMargins(childView, widthMeasureSpec, 0, heightMeasureSpec, 0);
                     contentWidth = childView.getMeasuredWidth();
                     mHeight = Math.max(mHeight, childView.getMeasuredHeight());
                 } else {
-                    LayoutParams layoutParams = childView.getLayoutParams();
-                    int widthSpec = MeasureSpec.makeMeasureSpec(layoutParams.width, MeasureSpec.EXACTLY);
-                    int heightSpec = MeasureSpec.makeMeasureSpec(mHeight, MeasureSpec.EXACTLY);
+                    final LayoutParams layoutParams = childView.getLayoutParams();
+                    final int widthSpec = MeasureSpec.makeMeasureSpec(layoutParams.width, MeasureSpec.EXACTLY);
+                    final int heightSpec = MeasureSpec.makeMeasureSpec(mHeight, MeasureSpec.EXACTLY);
                     childView.measure(widthSpec, heightSpec);
                     mMenuViewWidth += childView.getMeasuredWidth();
                 }
@@ -75,11 +81,11 @@ public class SwipeMenuLayout extends ViewGroup {
     }
 
     @Override
-    protected void onLayout(boolean changed, int l, int t, int r, int b) {
-        int childCount = getChildCount();
+    protected void onLayout(final boolean changed, final int l, final int t, final int r, final int b) {
+        final int childCount = getChildCount();
         int left = getPaddingLeft();
         for (int i = 0; i < childCount; i++) {
-            View childView = getChildAt(i);
+            final View childView = getChildAt(i);
             if (childView.getVisibility() != GONE) {
                 childView.layout(left, getPaddingTop(), left + childView.getMeasuredWidth(), getPaddingTop() + childView.getMeasuredHeight());
                 left = left + childView.getMeasuredWidth();
@@ -88,7 +94,7 @@ public class SwipeMenuLayout extends ViewGroup {
     }
 
     @Override
-    public boolean onInterceptTouchEvent(MotionEvent ev) {
+    public boolean onInterceptTouchEvent(final MotionEvent ev) {
         obtainVelocity(ev);
         switch (ev.getAction()) {
             case MotionEvent.ACTION_DOWN:
@@ -108,11 +114,12 @@ public class SwipeMenuLayout extends ViewGroup {
             case MotionEvent.ACTION_MOVE:
                 getParent().requestDisallowInterceptTouchEvent(true);
                 mVelocityTracker.computeCurrentVelocity(1000);
-                float xVelocity = mVelocityTracker.getXVelocity();
-                float yVelocity = mVelocityTracker.getYVelocity();
-                float x = ev.getX();
-                float y = ev.getY();
-                if (Math.abs(xVelocity) > SNAP_VELOCITY && Math.abs(xVelocity) > Math.abs(yVelocity) || Math.abs(x - mFirstP.x) >= mTouchSlop && Math.abs(x - mFirstP.x) > Math.abs(y - mFirstP.y)) {
+                final float xVelocity = mVelocityTracker.getXVelocity();
+                final float yVelocity = mVelocityTracker.getYVelocity();
+                final float x = ev.getX();
+                final float y = ev.getY();
+                if (Math.abs(xVelocity) > SNAP_VELOCITY && Math.abs(xVelocity) > Math.abs(yVelocity)
+                        || Math.abs(x - mFirstP.x) >= mTouchSlop && Math.abs(x - mFirstP.x) > Math.abs(y - mFirstP.y)) {
                     return true;
                 } else {
                     getParent().requestDisallowInterceptTouchEvent(false);
@@ -121,25 +128,28 @@ public class SwipeMenuLayout extends ViewGroup {
                 break;
             case MotionEvent.ACTION_CANCEL:
             case MotionEvent.ACTION_UP:
-                if (this == mViewCache && !isExpandFromOutSide) {
+                if (this == mViewCache && !mExpandFromOutSide) {
                     if (ev.getX() < getWidth() - getScrollX()) {
                         smoothClose();
                         return true;
                     }
                 }
-                isExpandFromOutSide = false;
+                mExpandFromOutSide = false;
+                break;
+            default:
+                Logger.d("onInterceptTouchEvent");
                 break;
         }
         return super.onInterceptTouchEvent(ev);
     }
 
     @Override
-    public boolean onTouchEvent(MotionEvent ev) {
-        float x = ev.getX();
+    public boolean onTouchEvent(final MotionEvent ev) {
+        final float x = ev.getX();
         obtainVelocity(ev);
         switch (ev.getAction()) {
             case MotionEvent.ACTION_MOVE:
-                float dx = mLastX - x;
+                final float dx = mLastX - x;
                 if (getScrollX() + dx > 0 && getScrollX() + dx < mMenuViewWidth) {
                     scrollBy((int) dx, 0);
                 }
@@ -148,10 +158,10 @@ public class SwipeMenuLayout extends ViewGroup {
             case MotionEvent.ACTION_CANCEL:
             case MotionEvent.ACTION_UP:
                 mVelocityTracker.computeCurrentVelocity(1000);
-                int scrollX = getScrollX();
+                final int scrollX = getScrollX();
                 if (mVelocityTracker.getXVelocity() < -SNAP_VELOCITY) {
-                    int delt = Math.abs(mMenuViewWidth - scrollX);
-                    int t = (int) (delt / mVelocityTracker.getXVelocity() * 1000);
+                    final int delt = Math.abs(mMenuViewWidth - scrollX);
+                    final int t = (int) (delt / mVelocityTracker.getXVelocity() * 1000);
                     smoothExpand(t);
                 } else if (mVelocityTracker.getXVelocity() >= SNAP_VELOCITY) {
                     smoothClose();
@@ -161,6 +171,9 @@ public class SwipeMenuLayout extends ViewGroup {
                     smoothClose();
                 }
                 releaseVelocity();
+                break;
+            default:
+                Logger.d("onTouchEvent");
                 break;
         }
         return super.onTouchEvent(ev);
@@ -180,7 +193,7 @@ public class SwipeMenuLayout extends ViewGroup {
      * @see VelocityTracker#obtain()
      * @see VelocityTracker#addMovement(MotionEvent)
      */
-    private void obtainVelocity(MotionEvent event) {
+    private void obtainVelocity(final MotionEvent event) {
         if (null == mVelocityTracker) {
             mVelocityTracker = VelocityTracker.obtain();
         }
@@ -213,7 +226,7 @@ public class SwipeMenuLayout extends ViewGroup {
     }
 
     @Override
-    public LayoutParams generateLayoutParams(AttributeSet attrs) {
+    public LayoutParams generateLayoutParams(final AttributeSet attrs) {
         return new MarginLayoutParams(getContext(), attrs);
     }
 
@@ -230,15 +243,24 @@ public class SwipeMenuLayout extends ViewGroup {
         }
     }
 
-
-    public void smoothExpand(int time) {
+    /**
+     * 平滑展开
+     *
+     * @param time 滚动时间
+     */
+    public void smoothExpand(final int time) {
         mViewCache = SwipeMenuLayout.this;
         mScroller.startScroll(getScrollX(), 0, mMenuViewWidth - getScrollX(), 0, time);
         invalidate();
     }
 
-    public void smoothExpandFromOutSide(int time) {
-        isExpandFromOutSide = true;
+    /**
+     * 平滑展开
+     *
+     * @param time 滚动时间
+     */
+    public void smoothExpandFromOutSide(final int time) {
+        mExpandFromOutSide = true;
         mViewCache = SwipeMenuLayout.this;
         mScroller.startScroll(getScrollX(), 0, mMenuViewWidth - getScrollX(), 0, time);
         invalidate();

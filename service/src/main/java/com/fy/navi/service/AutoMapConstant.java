@@ -7,11 +7,6 @@ import com.android.utils.file.FileUtils;
 
 import java.io.File;
 
-/**
- * @Description TODO
- * @Author lvww
- * @date 2024/11/24
- */
 public interface AutoMapConstant {
     /*** 沙箱位置 **/
     String SD_PATH = FileUtils.SD_APP_PATH;
@@ -187,12 +182,14 @@ public interface AutoMapConstant {
     @IntDef({HomeCompanyType.COLLECTION,
             HomeCompanyType.HOME,
             HomeCompanyType.COMMON,
-            HomeCompanyType.COMPANY})
+            HomeCompanyType.COMPANY,
+            HomeCompanyType.ALONG_WAY})
     @interface HomeCompanyType {
         int COLLECTION = 0; // 收藏
         int HOME = 1; // 家
         int COMPANY = 2; // 公司
         int COMMON = 3; //常用地址
+        int ALONG_WAY = 4; // 途径点
 
     }
 
@@ -298,5 +295,9 @@ public interface AutoMapConstant {
         String FRAGMENT_HOME = "scene_fragment_home";
         String FRAGMENT_COMPANY = "scene_fragment_company";
         String FRAGMENT_COMMON = "scene_fragment_common";
+    }
+
+    @interface VoiceKeyWord {
+        String BUNDLE_VOICE_KEY_WORD = "bundle_voice_key_word";
     }
 }

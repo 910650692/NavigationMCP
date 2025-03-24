@@ -24,7 +24,7 @@
             app:layout_constraintTop_toTopOf="parent" >
 
             <com.fy.navi.ui.view.SkinImageView
-                clickCommand="@{viewModel.finishAbout}"
+                clickCommand="@{viewModel.mFinishAbout}"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -61,7 +61,7 @@
                 android:id="@+id/setting_others_about_version"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@{viewModel.sdkVersion}"
+                android:text="@{viewModel.mSdkVersion}"
                 android:textColor="@color/setting_text_preference"
                 android:textSize="@dimen/sp_30"
                 android:layout_marginTop="@dimen/dp_60"
@@ -71,7 +71,7 @@
 
 
         <com.fy.navi.ui.view.SkinLinearLayout
-            android:layout_width="@dimen/dp_377"
+            android:layout_width="@dimen/dp_450"
             android:layout_height="@dimen/dp_150"
             android:orientation="vertical"
             android:layout_marginStart="@dimen/dp_30"
@@ -95,7 +95,7 @@
                 <com.fy.navi.ui.view.SkinTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@{viewModel.channelID}"
+                    android:text="@{viewModel.mChannelID}"
                     android:textColor="@color/setting_text_preference"
                     android:textSize="@dimen/sp_26"
                     android:layout_marginStart="@dimen/dp_10"/>
@@ -117,7 +117,7 @@
                 <com.fy.navi.ui.view.SkinTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@{viewModel.mapDataVersion}"
+                    android:text="@{viewModel.mMapDataVersion}"
                     android:textColor="@color/setting_text_preference"
                     android:textSize="@dimen/sp_26"
                     android:layout_marginStart="@dimen/dp_10" />
@@ -144,7 +144,7 @@
             app:layout_constraintTop_toBottomOf="@+id/setting_others_about_layout" />
 
         <com.fy.navi.ui.view.SkinConstraintLayout
-            clickCommand="@{viewModel.openProtocolCenter}"
+            clickCommand="@{viewModel.mOpenProtocolCenter}"
             android:id="@+id/setting_others_about_protocol_center"
             android:layout_width="@dimen/dp_597"
             android:layout_height="@dimen/dp_90"
@@ -177,7 +177,7 @@
 
 
         <com.fy.navi.ui.view.SkinConstraintLayout
-            clickCommand="@{viewModel.openLicensesInfo}"
+            clickCommand="@{viewModel.mOpenLicensesInfo}"
             android:id="@+id/setting_others_about_licenses_info"
             android:layout_width="@dimen/dp_597"
             android:layout_height="@dimen/dp_90"
@@ -211,7 +211,7 @@
 
 
         <com.fy.navi.ui.view.SkinConstraintLayout
-            clickCommand="@{viewModel.openHelp}"
+            clickCommand="@{viewModel.mOpenHelp}"
             android:id="@+id/setting_others_about_help"
             android:layout_width="@dimen/dp_597"
             android:layout_height="@dimen/dp_90"

@@ -4,18 +4,16 @@ import android.app.Application;
 
 import androidx.annotation.NonNull;
 
-import com.fy.navi.hmi.search.suggestion.SuggestionResultModel;
 import com.fy.navi.service.define.search.SearchResultEntity;
 import com.fy.navi.ui.action.Action;
 import com.fy.navi.ui.base.BaseViewModel;
 
 /**
- * @Description TODO
- * @Author lww
- * @date 2025/1/25
+ * @author lww
+ * @version \$Revision1.0\$
  */
 public class BaseOfflineSearchResultVm extends BaseViewModel<OfflineSearchFragment, OfflineSearchResultModel> {
-    public BaseOfflineSearchResultVm(@NonNull Application application) {
+    public BaseOfflineSearchResultVm(@NonNull final Application application) {
         super(application);
     }
 
@@ -24,13 +22,21 @@ public class BaseOfflineSearchResultVm extends BaseViewModel<OfflineSearchFragme
         return new OfflineSearchResultModel();
     }
 
-    public Action rootClick = new Action() {
+    private final Action mRootClick = new Action() {
         @Override
         public void call() {
         }
     };
 
-    public void notifySearchResult(SearchResultEntity searchResultEntity) {
+    public Action getRootClick() {
+        return mRootClick;
+    }
+
+    /**
+     * 搜索结果回调
+     * @param searchResultEntity 搜索结果实体类
+     */
+    public void notifySearchResult(final SearchResultEntity searchResultEntity) {
         mView.notifySearchResult(searchResultEntity);
     }
 }

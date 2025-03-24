@@ -1,14 +1,13 @@
 package com.fy.navi.scene.impl.poi;
 
-import static com.fy.navi.service.MapDefaultFinalTag.SEARCH_HMI_TAG;
 
 import android.text.TextUtils;
-import android.util.Pair;
 
 import com.android.utils.log.Logger;
 import com.fy.navi.scene.BaseSceneModel;
 import com.fy.navi.scene.api.poi.IScenePoiDetailContentView;
 import com.fy.navi.scene.ui.poi.ScenePoiDetailContentView;
+import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.define.bean.GeoPoint;
 import com.fy.navi.service.define.mapdata.CityDataInfo;
 import com.fy.navi.service.define.search.ETAInfo;
@@ -21,20 +20,21 @@ import com.fy.navi.ui.base.StackManager;
 import java.util.concurrent.CompletableFuture;
 
 /**
- * @Author: baipeng0904
+ * @author baipeng0904
+ * @version \$Revision1.0\$
  * @Description: 类作用描述
  * @CreateDate: $ $
  */
 public class ScenePoiDetailContentViewImpl extends BaseSceneModel<ScenePoiDetailContentView> implements IScenePoiDetailContentView {
     private final SearchPackage mSearchPackage;
-    private final BehaviorPackage behaviorPackage;
+    private final BehaviorPackage mBehaviorPackage;
     private final MapDataPackage mapDataPackage;
 
 
-    public ScenePoiDetailContentViewImpl(ScenePoiDetailContentView mScreenView) {
-        super(mScreenView);
+    public ScenePoiDetailContentViewImpl(final ScenePoiDetailContentView screenView) {
+        super(screenView);
         mSearchPackage = SearchPackage.getInstance();
-        behaviorPackage = BehaviorPackage.getInstance();
+        mBehaviorPackage = BehaviorPackage.getInstance();
         this.mapDataPackage = MapDataPackage.getInstance();
     }
 
@@ -45,7 +45,12 @@ public class ScenePoiDetailContentViewImpl extends BaseSceneModel<ScenePoiDetail
         mSearchPackage.clearLabelMark();
     }
 
-    public CityDataInfo getCityInfo(int acCode) {
+    /**
+     * 获取城市信息
+     * @param acCode 城市编码
+     * @return CityDataInfo
+     */
+    public CityDataInfo getCityInfo(final int acCode) {
         return mapDataPackage.getCityInfo(acCode);
     }
 
@@ -55,9 +60,9 @@ public class ScenePoiDetailContentViewImpl extends BaseSceneModel<ScenePoiDetail
 
 
     @Override
-    public void doSearch(PoiInfoEntity poiInfoEntity) {
+    public void doSearch(final PoiInfoEntity poiInfoEntity) {
         if (null == poiInfoEntity) {
-            Logger.d(SEARCH_HMI_TAG, "doSearch: poiInfoEntity is null");
+            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "doSearch: poiInfoEntity is null");
             return;
         }
         // 这里只有两种搜索类型：POI搜索和Geo搜索
@@ -80,8 +85,8 @@ public class ScenePoiDetailContentViewImpl extends BaseSceneModel<ScenePoiDetail
      * @param poiInfo PoiInfoEntity
      * @return true：已收藏，false：未收藏
      */
-    public String isFavorite(PoiInfoEntity poiInfo) {
-        return behaviorPackage.isFavorite(poiInfo);
+    public String isFavorite(final PoiInfoEntity poiInfo) {
+        return mBehaviorPackage.isFavorite(poiInfo);
     }
 
     /**
@@ -90,8 +95,8 @@ public class ScenePoiDetailContentViewImpl extends BaseSceneModel<ScenePoiDetail
      * @param poiInfo PoiInfoEntity
      * @return id：成功，null：失败
      */
-    public String addFavorite(PoiInfoEntity poiInfo) {
-        return behaviorPackage.addFavorite(poiInfo);
+    public String addFavorite(final PoiInfoEntity poiInfo) {
+        return mBehaviorPackage.addFavorite(poiInfo);
     }
 
     /**
@@ -100,18 +105,18 @@ public class ScenePoiDetailContentViewImpl extends BaseSceneModel<ScenePoiDetail
      * @param poiInfo PoiInfoEntity
      * @return id：成功，null：失败
      */
-    public String removeFavorite(PoiInfoEntity poiInfo) {
-        return behaviorPackage.removeFavorite(poiInfo);
+    public String removeFavorite(final PoiInfoEntity poiInfo) {
+        return mBehaviorPackage.removeFavorite(poiInfo);
     }
 
     /**
      * 添加收藏夹信息到本地数据库
      *
-     * @param entity
+     * @param entity 收藏点信息
      * @param favoriteType 收藏点类型（1家，2公司，3常去地址，0普通收藏点）
      */
-    public void addFavoriteData(PoiInfoEntity entity, int favoriteType) {
-        behaviorPackage.addFavoriteData(entity, favoriteType);
+    public void addFavoriteData(final PoiInfoEntity entity, final int favoriteType) {
+        mBehaviorPackage.addFavoriteData(entity, favoriteType);
     }
 
     /**
@@ -119,8 +124,8 @@ public class ScenePoiDetailContentViewImpl extends BaseSceneModel<ScenePoiDetail
      *
      * @param itemId 收藏点唯一码
      */
-    public void deleteFavoriteData(String itemId) {
-        behaviorPackage.deleteFavoriteData(itemId);
+    public void deleteFavoriteData(final String itemId) {
+        mBehaviorPackage.deleteFavoriteData(itemId);
     }
 
     /**
@@ -129,15 +134,20 @@ public class ScenePoiDetailContentViewImpl extends BaseSceneModel<ScenePoiDetail
      * @param itemId 收藏点唯一码
      * @return true 已收藏，false 未收藏
      */
-    public boolean isFavoriteData(String itemId) {
-        return behaviorPackage.isFavorite(itemId);
+    public boolean isFavoriteData(final String itemId) {
+        return mBehaviorPackage.isFavorite(itemId);
     }
 
     public boolean isAlongWaySearch() {
         return mSearchPackage.isAlongWaySearch();
     }
 
-    public int getPointTypeCode(String typeCode) {
+    /**
+     * 获取POI点类型编码
+     * @param typeCode POI的typeCode
+     * @return 对应类型
+     */
+    public int getPointTypeCode(final String typeCode) {
         return mSearchPackage.getPointTypeCode(typeCode);
     }
 
@@ -147,7 +157,7 @@ public class ScenePoiDetailContentViewImpl extends BaseSceneModel<ScenePoiDetail
      * @param geoPoint 目标点经纬度
      * @return distance ，travelTime
      */
-    public CompletableFuture<ETAInfo> getTravelTimeFuture(GeoPoint geoPoint) {
+    public CompletableFuture<ETAInfo> getTravelTimeFuture(final GeoPoint geoPoint) {
         return mSearchPackage.getTravelTimeFutureIncludeChargeLeft(geoPoint);
     }
 }

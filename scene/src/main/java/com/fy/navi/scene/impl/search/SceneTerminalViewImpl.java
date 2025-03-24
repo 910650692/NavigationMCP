@@ -1,11 +1,11 @@
 package com.fy.navi.scene.impl.search;
 
-import static com.fy.navi.service.MapDefaultFinalTag.SEARCH_HMI_TAG;
 
 import com.android.utils.log.Logger;
 import com.fy.navi.scene.BaseSceneModel;
 import com.fy.navi.scene.api.search.ISceneTerminalParking;
 import com.fy.navi.scene.ui.search.SceneTerminalParkingListView;
+import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.define.bean.GeoPoint;
 import com.fy.navi.service.define.map.MapTypeId;
 import com.fy.navi.service.define.search.PoiInfoEntity;
@@ -14,36 +14,52 @@ import com.fy.navi.service.logicpaket.search.SearchPackage;
 import com.fy.navi.ui.base.StackManager;
 
 public class SceneTerminalViewImpl extends BaseSceneModel<SceneTerminalParkingListView> implements ISceneTerminalParking {
-    private final SearchPackage searchPackage;
-    private final RoutePackage routePackage;
-    private int taskId;
+    private final SearchPackage mSearchPackage;
+    private final RoutePackage mRoutePackage;
+    private int mTaskId;
 
-    public SceneTerminalViewImpl(SceneTerminalParkingListView sceneTerminalParking) {
+    public SceneTerminalViewImpl(final SceneTerminalParkingListView sceneTerminalParking) {
         super(sceneTerminalParking);
-        this.searchPackage = SearchPackage.getInstance();
-        this.routePackage = RoutePackage.getInstance();
+        this.mSearchPackage = SearchPackage.getInstance();
+        this.mRoutePackage = RoutePackage.getInstance();
     }
 
     @Override
     public void closeSearch() {
         StackManager.getInstance().getCurrentFragment(mMapTypeId.name()).closeFragment(true);
-        searchPackage.clearLabelMark();
+        mSearchPackage.clearLabelMark();
     }
 
-    public void aroundSearch(String keyword, GeoPoint geoPoint) {
-        Logger.d(SEARCH_HMI_TAG, " aroundSearch: aroundSearch");
-        taskId = searchPackage.aroundSearch(1, keyword, geoPoint);
+    /**
+     * 周边搜索
+     * @param keyword 关键字
+     * @param geoPoint 坐标
+     */
+    public void aroundSearch(final String keyword, final GeoPoint geoPoint) {
+        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, " aroundSearch: aroundSearch");
+        mTaskId = mSearchPackage.aroundSearch(1, keyword, geoPoint);
     }
 
+    /**
+     * 中止搜索
+     */
     public void abortSearch() {
-        searchPackage.abortSearch();
+        mSearchPackage.abortSearch();
     }
 
-    public void abortSearch(int taskId) {
-        searchPackage.abortSearch(taskId);
+    /**
+     * 中止搜索
+     * @param taskId 任务id
+     */
+    public void abortSearch(final int taskId) {
+        mSearchPackage.abortSearch(taskId);
     }
 
-    public void startRoute(PoiInfoEntity poiInfoEntity) {
-        routePackage.requestChangeEnd(MapTypeId.MAIN_SCREEN_MAIN_MAP, poiInfoEntity);
+    /**
+     * 开始路线规划
+     * @param poiInfoEntity poi信息实体
+     */
+    public void startRoute(final PoiInfoEntity poiInfoEntity) {
+        mRoutePackage.requestChangeEnd(MapTypeId.MAIN_SCREEN_MAIN_MAP, poiInfoEntity);
     }
 }

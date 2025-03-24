@@ -4,17 +4,17 @@ import com.fy.navi.service.adapter.calibration.CalibrationAdapter;
 
 import java.util.Map;
 
-public class CalibrationPackage {
+public final class CalibrationPackage {
     public static final String TAG = CalibrationPackage.class.getSimpleName();
 
     private final CalibrationAdapter mCalibrationAdapter;
 
     public static CalibrationPackage getInstance() {
-        return SInstanceHolder.sInstance;
+        return SInstanceHolder.INSTANCE;
     }
 
     private static final class SInstanceHolder {
-        static final CalibrationPackage sInstance = new CalibrationPackage();
+        static final CalibrationPackage INSTANCE = new CalibrationPackage();
     }
 
     private CalibrationPackage() {
@@ -27,6 +27,7 @@ public class CalibrationPackage {
      * 0 汽油车
      * 1 纯电动车
      * 2 插电式混动汽车
+     * @return int
      */
     public int powerType() {
         return mCalibrationAdapter.powerType();
@@ -37,6 +38,7 @@ public class CalibrationPackage {
      * 1 Buick
      * 2 Cadillac
      * 3 Chevrolet
+     * @return int
      */
     public int brand() {
         return mCalibrationAdapter.brand();
@@ -44,6 +46,7 @@ public class CalibrationPackage {
 
     /**
      * 品牌名
+     * @return String
      */
     public String brandName() {
         return switch (brand()) {
@@ -58,6 +61,7 @@ public class CalibrationPackage {
      * 车型标定
      * 11 L234
      * 27 B233
+     * @return int
      */
     public int model() {
         return mCalibrationAdapter.model();
@@ -65,6 +69,7 @@ public class CalibrationPackage {
 
     /**
      * 车型名
+     * @return String
      */
     public String modelName() {
         return switch (model()) {
@@ -78,6 +83,7 @@ public class CalibrationPackage {
      * LBS应用使能标定
      * false 车机系统需要在主界面和后台关闭LBS应用
      * true 车机系统需要在主界面和后台使能LBS应用
+     * @return boolean
      */
     public boolean enableApplicationNavigation() {
         return mCalibrationAdapter.enableApplicationNavigation();
@@ -87,6 +93,7 @@ public class CalibrationPackage {
      * 车道级导航使能标定
      * false LBS系统不支持车道级导航功能
      * true LBS系统支持车道级导航功能
+     * @return boolean
      */
     public boolean laneLevelNavigatioFuncEnable() {
         return mCalibrationAdapter.laneLevelNavigatioFuncEnable();
@@ -96,9 +103,10 @@ public class CalibrationPackage {
      * V2X超视距提示可视化标定
      * false LBS系统不支持V2X超视距提示可视化功能
      * true LBS系统支持V2X超视距提示可视化功能
+     * @return boolean
      */
-    public boolean V2XMapDisplayFuncEnable() {
-        return mCalibrationAdapter.V2XMapDisplayFuncEnable();
+    public boolean v2xMapDisplayFuncEnable() {
+        return mCalibrationAdapter.v2xMapDisplayFuncEnable();
     }
 
     /**
@@ -107,6 +115,7 @@ public class CalibrationPackage {
      * 1 限速信息来自于导航和ADAS Map
      * 2 限速信息来自于导航和V2X
      * 3 限速信息来自于导航、V2X和ADAS Map
+     * @return int
      */
     public int speedLimitInformationSource() {
         return mCalibrationAdapter.speedLimitInformationSource();
@@ -115,24 +124,27 @@ public class CalibrationPackage {
     /**
      * ADAS功能配置
      * [0x0] None, [0x1] FCM, [0x2] IDCM
+     * @return int
      */
-    public int ADASConfigurationInfomation() {
-        return mCalibrationAdapter.ADASConfigurationInfomation();
+    public int adasConfigurationInfomation() {
+        return mCalibrationAdapter.adasConfigurationInfomation();
     }
 
     /**
      * ADAS配置情况
      * 0 该车型未配置ADAS相关功能
      * 8 该车型配置ADCU相关功能
+     * @return int
      */
-    public int ADASConfigurationType() {
-        return mCalibrationAdapter.ADASConfigurationType();
+    public int adasConfigurationType() {
+        return mCalibrationAdapter.adasConfigurationType();
     }
 
     /**
      * RSTP配置情况（扶手屏）
      * false 该车型未配置RSTP
      * true 该车型配置RSTP
+     * @return boolean
      */
     public boolean rearSeatTouchPanelFuncEnable() {
         return mCalibrationAdapter.rearSeatTouchPanelFuncEnable();
@@ -142,15 +154,17 @@ public class CalibrationPackage {
      * HUD配置情况
      * 0 需要关闭HUD相关功能
      * 1 需要打开HUD相关功能
+     * @return int
      */
-    public int HUDFuncEnable() {
-        return mCalibrationAdapter.HUDFuncEnable();
+    public int hudFuncEnable() {
+        return mCalibrationAdapter.hudFuncEnable();
     }
 
     /**
      * 偏转插件使能标定
      * false 地图不需要使能偏转插件，输入的GPS为GCJ02坐标系的数据
      * true 地图需要使能偏转插件，输入的GPS为WGS84坐标系的数据
+     * @return boolean
      */
     public boolean navigationDeflectionEnable() {
         return mCalibrationAdapter.navigationDeflectionEnable();
@@ -160,6 +174,7 @@ public class CalibrationPackage {
      * 架构类型区分标定
      * 0 该车型的架构为CLEA（VCU上U458车型为CLEA架构）
      * 1 该车型的架构为GB（VCU上除U458外其他车型为GB架构）
+     * @return int
      */
     public int architecture() {
         return mCalibrationAdapter.architecture();
@@ -169,6 +184,7 @@ public class CalibrationPackage {
      * 电池预加热数据发送开关标定
      * false 导航需要取消电池预加热的数据发送
      * true 导航需要支持电池预加热的数据发送
+     * @return boolean
      */
     public boolean navigationPreConditionDataProvideEnable() {
         return mCalibrationAdapter.navigationPreConditionDataProvideEnable();
@@ -178,6 +194,7 @@ public class CalibrationPackage {
      * 地图供应商区分
      * 0 导航地图为百度地图
      * 1 导航地图为高德地图
+     * @return int
      */
     public int navigaitonSupplier() {
         return mCalibrationAdapter.navigaitonSupplier();
@@ -185,6 +202,7 @@ public class CalibrationPackage {
 
     /**
      * 电车总的续航里程
+     * @return int
      */
     public int highVoltageBatteryPropulsionTotalRangeNavi() {
         return mCalibrationAdapter.highVoltageBatteryPropulsionTotalRangeNavi();
@@ -192,13 +210,15 @@ public class CalibrationPackage {
 
     /**
      * POI搜索功能标定
+     * @return boolean
      */
-    public boolean POISearchFuncEnable() {
-        return mCalibrationAdapter.POISearchFuncEnable();
+    public boolean poiSearchFuncEnable() {
+        return mCalibrationAdapter.poiSearchFuncEnable();
     }
 
     /**
      * 情景引擎功能标定
+     * @return boolean
      */
     public boolean scenarioEngineFuncEnable() {
         return mCalibrationAdapter.scenarioEngineFuncEnable();
@@ -206,6 +226,7 @@ public class CalibrationPackage {
 
     /**
      * 全局搜索功能标定
+     * @return boolean
      */
     public boolean globalSearchFuncEnable() {
         return mCalibrationAdapter.globalSearchFuncEnable();
@@ -213,6 +234,7 @@ public class CalibrationPackage {
 
     /**
      * 团队旅行功能标定
+     * @return boolean
      */
     public boolean teamTravelFuncEnable() {
         return mCalibrationAdapter.teamTravelFuncEnable();
@@ -220,6 +242,7 @@ public class CalibrationPackage {
 
     /**
      * 开机动画替换功能标定
+     * @return boolean
      */
     public boolean bootAnimationReplacementFuncEnable() {
         return mCalibrationAdapter.bootAnimationReplacementFuncEnable();
@@ -227,13 +250,15 @@ public class CalibrationPackage {
 
     /**
      * IME功能标定
+     * @return boolean
      */
-    public boolean IMEFuncEnable() {
-        return mCalibrationAdapter.IMEFuncEnable();
+    public boolean imeFuncEnable() {
+        return mCalibrationAdapter.imeFuncEnable();
     }
 
     /**
      * 壁纸和主题功能标定
+     * @return boolean
      */
     public boolean wallpaperThemeFuncEnable() {
         return mCalibrationAdapter.wallpaperThemeFuncEnable();
@@ -242,6 +267,7 @@ public class CalibrationPackage {
     /**
      * 选择默认主题值
      * 0 "EV"; 1 "Normal";2 "Avenir";3"Reversed1"; 4 "Reversed2";5 "Reversed3";
+     * @return int
      */
     public int themeDefaultValue() {
         return mCalibrationAdapter.themeDefaultValue();
@@ -252,6 +278,7 @@ public class CalibrationPackage {
      * 道路坡度上升变化对每个道路段的能量转换率
      * 车辆驾驶模式：0, 1, 2, 3, 4, 5, 6, 7
      * 能量转换率：范围从0到0.999，精度为0.001
+     * @return float[]
      */
     public float[] slopeUpCostlist() {
         return mCalibrationAdapter.slopeUpCostlist();
@@ -262,6 +289,7 @@ public class CalibrationPackage {
      * 道路坡度下降变化对每个道路段的能量转换率
      * 车辆驾驶模式：0, 1, 2, 3, 4, 5, 6, 7
      * 能量转换率：范围从0到0.999，精度为0.001
+     * @return float[]
      */
     public float[] slopeDownCostlist() {
         return mCalibrationAdapter.slopeDownCostlist();
@@ -272,6 +300,7 @@ public class CalibrationPackage {
      * Trans Access变化对每个道路段的能量转换率
      * 车辆驾驶模式：0, 1, 2, 3, 4, 5, 6, 7
      * 能量转换率：范围从0到0.999，精度为0.001
+     * @return float[]
      */
     public float[] transAccessCostlist() {
         return mCalibrationAdapter.transAccessCostlist();
@@ -282,6 +311,7 @@ public class CalibrationPackage {
      * Trans Decess变化对每个道路段的能量转换率
      * 再生制动模式：0, 1, 2, 3, 4, 5, 6, 7
      * 能量转换率：范围从0到0.999，精度为0.001
+     * @return float[]
      */
     public float[] transDecessCostlist() {
         return mCalibrationAdapter.transDecessCostlist();
@@ -293,6 +323,7 @@ public class CalibrationPackage {
      * 车辆驾驶模式 0, 1, 2, 3, 4, 5, 6, 7
      * 车辆速度 0, 5, 10, 15, ~ 180, 185, 190, 200 km/h
      * 能量消耗 范围从0到1000.000000，精度为0.000001瓦时/公里（watt-hour/km）
+     * @return Map
      */
     public Map<Integer, Float> speedCostlist() {
         return mCalibrationAdapter.speedCostlist();
@@ -334,6 +365,7 @@ public class CalibrationPackage {
      * 29 - reserved（保留）
      * value
      * 额外能量消耗：范围从0到10.000000，精度为0.000001瓦时/秒（watt-hour/second）
+     * @return float[]
      */
     public float[] auxCostlist() {
         return mCalibrationAdapter.auxCostlist();
@@ -341,6 +373,7 @@ public class CalibrationPackage {
 
     /**
      * 车辆基准重量标定
+     * @return int
      */
     public int vehicleWeight() {
         return mCalibrationAdapter.vehicleWeight();

@@ -101,6 +101,7 @@
             android:gravity="center_horizontal"
             android:orientation="horizontal"
             android:background="@drawable/bg_selecting_bar"
+            android:layout_marginTop="@dimen/dp_24"
             android:layout_marginStart="@dimen/dp_40"
             android:layout_marginEnd="@dimen/dp_40"
             android:padding="@dimen/dp_8">

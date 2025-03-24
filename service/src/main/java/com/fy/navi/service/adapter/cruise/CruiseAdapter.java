@@ -98,7 +98,7 @@ public class CruiseAdapter {
             mode = 7;
         }
         CruiseParamEntity cruiseParamEntity = new CruiseParamEntity()
-                .setType(NaviConstant.GuideParamType.GuideParamCruise)
+                .setType(NaviConstant.GuideParamType.GUIDE_PARAM_CRUISE)
                 .setCameraNum(3L)
                 .setMode(mode);
         mNaviAdapter.setCruiseParam(cruiseParamEntity);
@@ -107,7 +107,7 @@ public class CruiseAdapter {
     /***设置TrParam***/
     public void setTrParam() {
         CruiseParamEntity trParamEntity = new CruiseParamEntity()
-                .setType(NaviConstant.GuideParamType.GuideParamTR)
+                .setType(NaviConstant.GuideParamType.GUIDE_PARAM_TR)
                 .setTrEnable(true);
         mNaviAdapter.setCruiseParam(trParamEntity);
     }
@@ -115,13 +115,13 @@ public class CruiseAdapter {
     /***反初始化巡航参数***/
     public void unInitCruiseParam() {
         CruiseParamEntity cruiseParamEntity = new CruiseParamEntity()
-                .setType(NaviConstant.GuideParamType.GuideParamCruise)
+                .setType(NaviConstant.GuideParamType.GUIDE_PARAM_CRUISE)
                 .setCameraNum(3L)
                 .setMode(0);
         mNaviAdapter.setCruiseParam(cruiseParamEntity);
 
         CruiseParamEntity trParamEntity = new CruiseParamEntity()
-                .setType(NaviConstant.GuideParamType.GuideParamTR)
+                .setType(NaviConstant.GuideParamType.GUIDE_PARAM_TR)
                 .setTrEnable(false);
         mNaviAdapter.setCruiseParam(trParamEntity);
     }

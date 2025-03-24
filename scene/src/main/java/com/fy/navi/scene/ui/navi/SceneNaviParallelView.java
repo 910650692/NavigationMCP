@@ -1,6 +1,5 @@
 package com.fy.navi.scene.ui.navi;
 
-import static com.fy.navi.scene.ui.navi.manager.NaviSceneId.NAVI_SCENE_PARALLEL;
 
 import android.content.Context;
 import android.util.AttributeSet;
@@ -23,25 +22,32 @@ import com.fy.navi.scene.ui.navi.manager.NaviSceneManager;
 import com.fy.navi.service.AppContext;
 import com.fy.navi.service.MapDefaultFinalTag;
 
-/***主辅路、桥上桥下***/
+/**
+ * 主辅路、桥上桥下
+ * @author fy
+ * @version $Revision.*$
+ */
 public class SceneNaviParallelView extends NaviSceneBase<SceneNaviParallelViewBinding, SceneNaviParallelImpl> {
     private static final String TAG = MapDefaultFinalTag.NAVI_HMI_TAG;
+    private ISceneCallback mISceneCallback;
 
-    public SceneNaviParallelView(@NonNull Context context) {
+    public SceneNaviParallelView(@NonNull final Context context) {
         super(context);
     }
 
-    public SceneNaviParallelView(@NonNull Context context, @Nullable AttributeSet attrs) {
+    public SceneNaviParallelView(@NonNull final Context context,
+                                 @Nullable final AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public SceneNaviParallelView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public SceneNaviParallelView(@NonNull final Context context, @Nullable final AttributeSet attrs,
+                                 final int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 
     @Override
     protected NaviSceneId getSceneId() {
-        return NAVI_SCENE_PARALLEL;
+        return NaviSceneId.NAVI_SCENE_PARALLEL;
     }
 
     @Override
@@ -50,14 +56,15 @@ public class SceneNaviParallelView extends NaviSceneBase<SceneNaviParallelViewBi
     }
 
     protected void init() {
-        NaviSceneManager.getInstance().addNaviScene(NAVI_SCENE_PARALLEL, this);
+        NaviSceneManager.getInstance().addNaviScene(
+                NaviSceneId.NAVI_SCENE_PARALLEL, this);
     }
 
     @Override
     public void show() {
         super.show();
         if (mISceneCallback != null) {
-            mISceneCallback.updateSceneVisible(NAVI_SCENE_PARALLEL, true);
+            mISceneCallback.updateSceneVisible(NaviSceneId.NAVI_SCENE_PARALLEL, true);
         }
     }
 
@@ -65,12 +72,13 @@ public class SceneNaviParallelView extends NaviSceneBase<SceneNaviParallelViewBi
     public void hide() {
         super.hide();
         if (mISceneCallback != null) {
-            mISceneCallback.updateSceneVisible(NAVI_SCENE_PARALLEL, true);
+            mISceneCallback.updateSceneVisible(NaviSceneId.NAVI_SCENE_PARALLEL, true);
         }
     }
 
     @Override
-    protected SceneNaviParallelViewBinding createViewBinding(LayoutInflater inflater, ViewGroup viewGroup) {
+    protected SceneNaviParallelViewBinding createViewBinding(final LayoutInflater inflater,
+                                                             final ViewGroup viewGroup) {
         return SceneNaviParallelViewBinding.inflate(inflater, viewGroup, true);
     }
 
@@ -91,12 +99,12 @@ public class SceneNaviParallelView extends NaviSceneBase<SceneNaviParallelViewBi
     }
 
     @Override
-    public boolean onTouchEvent(MotionEvent event) {
+    public boolean onTouchEvent(final MotionEvent event) {
         return true;
     }
 
     @Override
-    public void addSceneCallback(ISceneCallback sceneCallback) {
+    public void addSceneCallback(final ISceneCallback sceneCallback) {
         if (mScreenViewModel != null) {
             mScreenViewModel.addSceneCallback(sceneCallback);
         }
@@ -128,21 +136,30 @@ public class SceneNaviParallelView extends NaviSceneBase<SceneNaviParallelViewBi
 
     /***Toast：已为您切换至辅路***/
     public void showToastRoadMainToSide() {
-        ToastUtils.Companion.getInstance().showCustomToastView(AppContext.mContext.getText(R.string.navi_switch_to_road_auxiliary));
+        ToastUtils.Companion.getInstance().showCustomToastView(
+                AppContext.getInstance().getMContext().
+                        getText(R.string.navi_switch_to_road_auxiliary));
     }
 
     /***Toast：已为您切换至主路***/
     public void showToastRoadSideToMain() {
-        ToastUtils.Companion.getInstance().showCustomToastView(AppContext.mContext.getText(R.string.navi_switch_to_road_main));
+        ToastUtils.Companion.getInstance().showCustomToastView(AppContext.getInstance().getMContext().getText(R.string.navi_switch_to_road_main));
     }
 
     /***Toast：已为您切换至主高架下***/
     public void showToastBridgeUpToDown() {
-        ToastUtils.Companion.getInstance().showCustomToastView(AppContext.mContext.getText(R.string.navi_switch_to_bridge_down));
+        ToastUtils.Companion.getInstance().showCustomToastView(AppContext.getInstance().getMContext().getText(R.string.navi_switch_to_bridge_down));
     }
 
     /***Toast：已为您切换至主高架上***/
     public void showToastBridgeDownToUp() {
-        ToastUtils.Companion.getInstance().showCustomToastView(AppContext.mContext.getText(R.string.navi_switch_to_bridge_up));
+        ToastUtils.Companion.getInstance().showCustomToastView(AppContext.getInstance().getMContext().getText(R.string.navi_switch_to_bridge_up));
+    }
+
+    /**
+     * @param type 平行路切换类型 0:主辅路切换 1:桥上下切换
+     */
+    public void naviParallelSwitch(final int type) {
+        mScreenViewModel.naviParallelSwitch(type);
     }
 }

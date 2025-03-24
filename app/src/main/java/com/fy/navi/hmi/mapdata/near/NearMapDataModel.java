@@ -1,7 +1,5 @@
 package com.fy.navi.hmi.mapdata.near;
 
-import static com.fy.navi.service.MapDefaultFinalTag.OFFLINE_HMI_TAG;
-
 import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
@@ -13,25 +11,21 @@ import com.fy.navi.service.logicpaket.mapdata.MapDataCallBack;
 import com.fy.navi.service.logicpaket.mapdata.MapDataPackage;
 import com.fy.navi.service.logicpaket.position.PositionPackage;
 import com.fy.navi.ui.base.BaseModel;
+import com.fy.navi.service.MapDefaultFinalTag;
 
 import java.util.ArrayList;
 
-/**
- * @Description
- * @Author fh
- * @date 2025/03/13
- */
 public class NearMapDataModel extends BaseModel<NearMapDataViewModel> implements MapDataCallBack {
-    private final MapDataPackage mapDataPackage;
+    private final MapDataPackage mMapDataPackage;
 
     public NearMapDataModel() {
-        mapDataPackage = MapDataPackage.getInstance();
+        mMapDataPackage = MapDataPackage.getInstance();
     }
 
     @Override
     public void onCreate() {
         super.onCreate();
-        mapDataPackage.registerCallBack("NearMapDataModel",this);
+        mMapDataPackage.registerCallBack("NearMapDataModel",this);
     }
 
     @Override
@@ -39,57 +33,66 @@ public class NearMapDataModel extends BaseModel<NearMapDataViewModel> implements
         super.onDestroy();
     }
 
+    /**
+     * 初始化view
+     */
     public void initData() {
-        LocInfoBean locationInfo = PositionPackage.getInstance().getLastCarLocation();
-        int adCode = mapDataPackage.getAdCodeByLonLat(locationInfo.getLongitude(), locationInfo.getLatitude());
+        final LocInfoBean locationInfo = PositionPackage.getInstance().getLastCarLocation();
+        final int adCode = mMapDataPackage.getAdCodeByLonLat(locationInfo.getLongitude(), locationInfo.getLatitude());
         mViewModel.setNearCityInfo(getNearAdCodeList(adCode));
     }
 
     /**
-     * 通过搜索关键字获取行政区域adcode列表
-     * @param strKey
-     * @return
+     * 通过code获取附件推荐城市
+     * @param adCode
+     * @return 返回推荐城市信息
      */
-    public ArrayList<ProvDataInfo> searchAdCode(String strKey) {
-        return mapDataPackage.searchAdCode(strKey);
+    public ArrayList<CityDataInfo> getNearAdCodeList(final int adCode) {
+        return mMapDataPackage.getNearAdCodeList(adCode);
     }
 
-    public ArrayList<CityDataInfo> getNearAdCodeList(int adCode) {
-        return mapDataPackage.getNearAdCodeList(adCode);
+    /**
+     * 删除数据包
+     * @param adCodeList
+     */
+    public void deleteAllTask(final ArrayList<Integer> adCodeList) {
+        mMapDataPackage.deleteAllTask(adCodeList);
     }
 
-    public void deleteAllTask(ArrayList<Integer> adCodeList) {
-        mapDataPackage.deleteAllTask(adCodeList);
-    }
-    public void startAllTask(ArrayList<Integer> adCodeList) {
-        mapDataPackage.startAllTask(adCodeList);
-    }
-
-    public void pauseAllTask(ArrayList<Integer> adCodeList) {
-        mapDataPackage.pauseAllTask(adCodeList);
+    /**
+     * 下载数据包
+     * @param adCodeList
+     */
+    public void startAllTask(final ArrayList<Integer> adCodeList) {
+        mMapDataPackage.startAllTask(adCodeList);
     }
 
-    public void cancelAllTask(ArrayList<Integer> adCodeList) {
-        mapDataPackage.cancelAllTask(adCodeList);
+    /**
+     * 暂停下载数据包
+     * @param adCodeList
+     */
+    public void pauseAllTask(final ArrayList<Integer> adCodeList) {
+        mMapDataPackage.pauseAllTask(adCodeList);
+    }
+
+    /**
+     * 取消下载数据包
+     * @param adCodeList
+     */
+    public void cancelAllTask(final ArrayList<Integer> adCodeList) {
+        mMapDataPackage.cancelAllTask(adCodeList);
     }
 
     @Override
-    public void onDownLoadStatus(ProvDataInfo provDataInfo) {
-        if (provDataInfo != null) {
-            Logger.d(OFFLINE_HMI_TAG, "onDownLoadStatus: provDataInfo = "  + GsonUtils.toJson(provDataInfo));
-        }
-    }
-
-    @Override
-    public void onPercent(ProvDataInfo info) {
-        Logger.d(OFFLINE_HMI_TAG, "onPercent: ProvDataInfo = " + GsonUtils.toJson(info));
-        if (info != null && info.cityInfoList != null && !info.cityInfoList.isEmpty()) {
-            LocInfoBean locationInfo = PositionPackage.getInstance().getLastCarLocation();
-            int adCode = mapDataPackage.getAdCodeByLonLat(locationInfo.getLongitude(), locationInfo.getLatitude());
-            ArrayList<CityDataInfo> cityDataInfos = getNearAdCodeList(adCode);
+    public void onDownLoadStatus(final ProvDataInfo provDataInfo) {
+        Logger.d(MapDefaultFinalTag.OFFLINE_HMI_TAG, "onDownLoadStatus: provDataInfo = " + GsonUtils.toJson(provDataInfo));
+        if (provDataInfo != null && provDataInfo.getCityInfoList() != null && !provDataInfo.getCityInfoList().isEmpty()) {
+            final LocInfoBean locationInfo = PositionPackage.getInstance().getLastCarLocation();
+            final int adCode = mMapDataPackage.getAdCodeByLonLat(locationInfo.getLongitude(), locationInfo.getLatitude());
+            final ArrayList<CityDataInfo> cityDataInfos = getNearAdCodeList(adCode);
             for (CityDataInfo cityDataInfo : cityDataInfos) {
-                if (cityDataInfo.adcode == info.cityInfoList.get(0).adcode) {
-                    cityDataInfo.downLoadInfo = info.cityInfoList.get(0).downLoadInfo;
+                if (cityDataInfo.getAdcode() == provDataInfo.getCityInfoList().get(0).getAdcode()) {
+                    cityDataInfo.setDownLoadInfo(provDataInfo.getCityInfoList().get(0).getDownLoadInfo());
                 }
             }
             mViewModel.setNearCityInfo(cityDataInfos);
@@ -97,24 +100,29 @@ public class NearMapDataModel extends BaseModel<NearMapDataViewModel> implements
     }
 
     @Override
-    public void onMergedStatusInfo(MergedStatusBean mergedStatusInfo) {
-        Logger.d(OFFLINE_HMI_TAG, "onMergedStatusInfo: " + GsonUtils.toJson(mergedStatusInfo));
+    public void onMergedStatusInfo(final MergedStatusBean mergedStatusInfo) {
+        Logger.d(MapDefaultFinalTag.OFFLINE_HMI_TAG, "onMergedStatusInfo: " + GsonUtils.toJson(mergedStatusInfo));
     }
 
     @Override
-    public void onErrorNotify(int downLoadMode, int dataType, int id, int errType, String errMsg) {
+    public void onErrorNotify(final int downLoadMode, final int dataType, final int id, final int errType, final String errMsg) {
         ThreadManager.getInstance().postUi(() -> {
-            Logger.d(OFFLINE_HMI_TAG, "onErrorNotify: downLoadMode = "  + downLoadMode +
+            Logger.d(MapDefaultFinalTag.OFFLINE_HMI_TAG, "onErrorNotify: downLoadMode = "  + downLoadMode +
                     " dataType = " + dataType + " errType = " + errType + " errMsg = " + errMsg);
             // 删除异常城市数据
-            mapDataPackage.deleteErrorData(id);
+            mMapDataPackage.deleteErrorData(id);
         });
     }
 
     @Override
-    public void onDeleteErrorData(int downLoadMode, int dataType, int id, int opCode) {
-        Logger.d(OFFLINE_HMI_TAG, "onDeleteErrorData: downLoadMode = "  + downLoadMode +
+    public void onDeleteErrorData(final int downLoadMode, final int dataType, final int id, final int opCode) {
+        Logger.d(MapDefaultFinalTag.OFFLINE_HMI_TAG, "onDeleteErrorData: downLoadMode = "  + downLoadMode +
                 " dataType = " + dataType + " opCode = " + opCode);
+    }
+
+    @Override
+    public void onRequestCheckSuccess(final int downLoadMode, final int dataType, final int opCode) {
+
     }
 
 }

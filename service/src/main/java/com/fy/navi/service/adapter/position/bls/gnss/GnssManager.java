@@ -53,8 +53,8 @@ public class GnssManager implements LocationListener, IUsedSatelliteNumCallback 
     public void init() {
         try {
             Logger.i(TAG, "mIsInited " + mIsInited + ",mLocMode：" + mLocMode);
-            if (ActivityCompat.checkSelfPermission(AppContext.mContext, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                    && ActivityCompat.checkSelfPermission(AppContext.mContext, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.checkSelfPermission(AppContext.getInstance().getMContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                    && ActivityCompat.checkSelfPermission(AppContext.getInstance().getMContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 Logger.e(TAG, "Location permissions are not granted");
                 return;
             }
@@ -97,7 +97,7 @@ public class GnssManager implements LocationListener, IUsedSatelliteNumCallback 
 
     @Override
     public void onLocationChanged(@NonNull Location location) {
-        Logger.i(TAG, " onLocationChanged ");
+
         // 输出位置信息
         final StringBuilder sb = new StringBuilder();
         sb.append("当前位置信息:")
@@ -107,7 +107,7 @@ public class GnssManager implements LocationListener, IUsedSatelliteNumCallback 
                 .append("\n速度:").append(location.getSpeed())
                 .append("\n方向:").append(location.getBearing())
                 .append("\n定位精度:").append(location.getAccuracy());
-
+        Logger.d(TAG, "原生 onLocationChanged ：" +sb.toString());
         mLocationListener.onLocationChanged(LocationUtil.getLocGnssByLocation(location, mUsedSatellite));
     }
 

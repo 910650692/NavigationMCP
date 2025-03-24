@@ -15,6 +15,8 @@ import java.lang.reflect.Method;
  */
 public class AdapterConfig {
 
+    private static final String TAG = MapDefaultFinalTag.SERVICE_TAG;
+
     private static String getSdk() {
         return BuildConfig.MAP_SDK;
     }
@@ -26,9 +28,9 @@ public class AdapterConfig {
      * @param className  tClass SimpleName
      */
     public static Object getObject(String pakateName, String className) {
-        Logger.i("AdapterConfig", "getObject");
+        Logger.i(TAG, "getObject");
         String objName = pakateName + "." + AdapterConfig.getSdk() + "." + className;
-        Logger.i("AdapterConfig", objName);
+        Logger.i(TAG, objName);
         try {
             return Class.forName(objName).newInstance();
         } catch (IllegalAccessException | InstantiationException | ClassNotFoundException error) {

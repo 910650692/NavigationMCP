@@ -2,86 +2,82 @@ package com.fy.navi.service.define.user.usertrack;
 
 import java.util.ArrayList;
 
-/**
- * @Description
- * @Author fh
- * @date 2024/12/27
- */
+
 public class FootprintResultInfo {
 
-    public int code;
-    public String message;
+    private int mCode;
+    private String mMessage;
 
-    public int curSwitch = 2;
+    private int mCurSwitch = 2;
 
-    public boolean isLogin;
-    public SummaryModuleCardInfo city;
-    public SummaryModuleCardInfo driver;
-    public SummaryModuleCardInfo point;
+    private boolean mIsLogin;
+    private SummaryModuleCardInfo mCity;
+    private SummaryModuleCardInfo mDriver;
+    private SummaryModuleCardInfo mPoint;
 
-    public ArrayList<FootprintNaviRecordInfo> record;
+    private ArrayList<FootprintNaviRecordInfo> mRecord;
 
     public boolean isLogin() {
-        return isLogin;
+        return mIsLogin;
     }
 
-    public void setLogin(boolean login) {
-        isLogin = login;
+    public void setLogin(final boolean login) {
+        mIsLogin = login;
     }
 
     public int getCurSwitch() {
-        return curSwitch;
+        return mCurSwitch;
     }
 
-    public void setCurSwitch(int curSwitch) {
-        this.curSwitch = curSwitch;
+    public void setCurSwitch(final int curSwitch) {
+        this.mCurSwitch = curSwitch;
     }
 
     public int getCode() {
-        return code;
+        return mCode;
     }
 
-    public void setCode(int code) {
-        this.code = code;
+    public void setCode(final int code) {
+        this.mCode = code;
     }
 
     public String getMessage() {
-        return message;
+        return mMessage;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
+    public void setMessage(final String message) {
+        this.mMessage = message;
     }
 
     public SummaryModuleCardInfo getCity() {
-        return city;
+        return mCity;
     }
 
-    public void setCity(SummaryModuleCardInfo city) {
-        this.city = city;
+    public void setCity(final SummaryModuleCardInfo city) {
+        this.mCity = city;
     }
 
     public SummaryModuleCardInfo getDriver() {
-        return driver;
+        return mDriver;
     }
 
-    public void setDriver(SummaryModuleCardInfo driver) {
-        this.driver = driver;
+    public void setDriver(final SummaryModuleCardInfo driver) {
+        this.mDriver = driver;
     }
 
     public SummaryModuleCardInfo getPoint() {
-        return point;
+        return mPoint;
     }
 
-    public void setPoint(SummaryModuleCardInfo point) {
-        this.point = point;
+    public void setPoint(final SummaryModuleCardInfo point) {
+        this.mPoint = point;
     }
 
     public ArrayList<FootprintNaviRecordInfo> getRecord() {
-        return record;
+        return mRecord;
     }
 
-    public void setRecord(ArrayList<FootprintNaviRecordInfo> record) {
-        this.record = record;
+    public void setRecord(final ArrayList<FootprintNaviRecordInfo> record) {
+        this.mRecord = record;
     }
 }

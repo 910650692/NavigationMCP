@@ -2,9 +2,17 @@ package com.fy.navi.scene.impl.navi.common;
 
 import com.fy.navi.scene.R;
 
-public class SceneEnumRes {
+public final class SceneEnumRes {
 
-    public static AutoUIDrawable getDrawableEnumName(SceneCommonStruct.TbtIconAction value) {
+    private SceneEnumRes() {
+
+    }
+
+    /**
+     * @param value value
+     * @return AutoUIDrawable
+     */
+    public static AutoUIDrawable getDrawableEnumName(final SceneCommonStruct.TbtIconAction value) {
         return switch (value) {
             case ManeuverIconTurnLeft -> new AutoUIDrawable(R.drawable.img_tbt_hud_sou2_day);
             case ManeuverIconTurnRight -> new AutoUIDrawable(R.drawable.img_tbt_hud_sou3_day);
@@ -65,7 +73,12 @@ public class SceneEnumRes {
         };
     }
 
-    public static AutoUIDrawable getDrawableEnumName(SceneCommonStruct.TbtExitIconAction value) {
+    /**
+     * @param value value
+     * @return drawable
+     */
+    public static AutoUIDrawable getDrawableEnumName(
+            final SceneCommonStruct.TbtExitIconAction value) {
         return switch (value) {
             case ManeuverIconTurnLeft -> new AutoUIDrawable(R.drawable.img_tbt_exit_hud_sou2);
             case ManeuverIconTurnRight -> new AutoUIDrawable(
@@ -168,8 +181,13 @@ public class SceneEnumRes {
         };
     }
 
+    /**
+     * @param value value
+     * @return drawable
+     */
     // 默认分时图标
-    public static AutoUIDrawable getDrawableTimeLaneType(SceneCommonStruct.TimeLaneBottomAction value) {
+    public static AutoUIDrawable getDrawableTimeLaneType(
+            final SceneCommonStruct.TimeLaneBottomAction value) {
         return switch (value) {
             case BackLaneBusWorkable -> new AutoUIDrawable(
                     R.drawable.img_optimal_lane_21_day);
@@ -191,8 +209,13 @@ public class SceneEnumRes {
         };
     }
 
+    /**
+     * @param value value
+     * @return drawable
+     */
     // 推荐车道
-    public static AutoUIDrawable getDrawableRecommendLane(SceneCommonStruct.LaneAction value) {
+    public static AutoUIDrawable getDrawableRecommendLane(
+            final SceneCommonStruct.LaneAction value) {
         return switch (value) {
             case LaneActionAheadAndNUll -> new AutoUIDrawable(
                     R.drawable.img_optimal_lane_0_0_day);
@@ -272,8 +295,12 @@ public class SceneEnumRes {
         };
     }
 
+    /**
+     * @param value value
+     * @return drawable
+     */
     // 分时车道
-    public static AutoUIDrawable getDrawableTimeLane(SceneCommonStruct.LaneAction value) {
+    public static AutoUIDrawable getDrawableTimeLane(final SceneCommonStruct.LaneAction value) {
         switch (value) {
             case LaneActionAheadAndNUll:
                 return new AutoUIDrawable(
@@ -469,8 +496,13 @@ public class SceneEnumRes {
         }
     }
 
+    /**
+     * @param value value
+     * @return AutoUIDrawable
+     */
     // 推荐分时
-    public static AutoUIDrawable getDrawableRecommendTimeLane(SceneCommonStruct.LaneAction value) {
+    public static AutoUIDrawable getDrawableRecommendTimeLane(
+            final SceneCommonStruct.LaneAction value) {
         return switch (value) {
             case LaneActionAheadAndNUll -> new AutoUIDrawable(
                     R.drawable.img_optimal_lane_0_0_day);
@@ -550,8 +582,13 @@ public class SceneEnumRes {
         };
     }
 
+    /**
+     * @param value value
+     * @return drawable
+     */
     // 推荐分时图标
-    public static AutoUIDrawable getDrawableRecommendTimeLane(SceneCommonStruct.TimeLaneBottomAction value) {
+    public static AutoUIDrawable getDrawableRecommendTimeLane(
+            final SceneCommonStruct.TimeLaneBottomAction value) {
         return switch (value) {
             case BackLaneBusWorkable -> new AutoUIDrawable(
                     R.drawable.img_optimal_lane_21_day);
@@ -565,8 +602,12 @@ public class SceneEnumRes {
         };
     }
 
+    /**
+     * @param value value
+     * @return drawable
+     */
     // 巡航车道图标
-    public static AutoUIDrawable getDrawableCruiseLane(SceneCommonStruct.LaneAction value) {
+    public static AutoUIDrawable getDrawableCruiseLane(final SceneCommonStruct.LaneAction value) {
         switch (value) {
             case LaneActionAheadAndNUll:
                 return new AutoUIDrawable(
@@ -672,8 +713,12 @@ public class SceneEnumRes {
         }
     }
 
+    /**
+     * @param value value
+     * @return drawable
+     */
     // 默认车道图标
-    public static AutoUIDrawable getDrawableDefaultLane(SceneCommonStruct.LaneAction value) {
+    public static AutoUIDrawable getDrawableDefaultLane(final SceneCommonStruct.LaneAction value) {
         switch (value) {
             case LaneActionAheadAndNUll:
                 return new AutoUIDrawable(
@@ -875,7 +920,12 @@ public class SceneEnumRes {
         }
     }
 
-    public static AutoUIDrawable getDrawableEnumName0(SceneCommonStruct.TmcViaPointType value) {
+    /**
+     * @param value value
+     * @return drawable
+     */
+    public static AutoUIDrawable getDrawableEnumName0(
+            final SceneCommonStruct.TmcViaPointType value) {
         switch (value) {
             case ViaPointType:
                 return new AutoUIDrawable(

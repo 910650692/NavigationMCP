@@ -3,6 +3,7 @@ package com.fy.navi.service.greendao;
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
+import org.greenrobot.greendao.annotation.Keep;
 import org.greenrobot.greendao.annotation.Property;
 import org.greenrobot.greendao.annotation.Unique;
 
@@ -12,59 +13,59 @@ import java.util.Date;
 public class CommonSetting {
 
     @Id(autoincrement = true)
-    public Long id;
+    private Long mId;
 
     @Unique
     @Property(nameInDb = "name")
-    private String name;
+    private String mName;
 
     @Property(nameInDb = "value")
-    private String value;
+    private String mValue;
 
     @Property(nameInDb = "updateTime")
-    private Date updateTime;
+    private Date mUpdateTime;
 
-    @Generated(hash = 1751380901)
-    public CommonSetting(Long id, String name, String value, Date updateTime) {
-        this.id = id;
-        this.name = name;
-        this.value = value;
-        this.updateTime = updateTime;
+    @Keep
+    public CommonSetting(final Long id, final String name, final String value, final Date updateTime) {
+        this.mId = id;
+        this.mName = name;
+        this.mValue = value;
+        this.mUpdateTime = updateTime;
     }
 
     @Generated(hash = 2144871971)
     public CommonSetting() {
     }
 
-    public String getName() {
-        return name;
+    public Long getMId() {
+        return this.mId;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setMId(final Long id) {
+        this.mId = id;
     }
 
-    public Date getUpdateTime() {
-        return updateTime;
+    public String getMName() {
+        return this.mName;
     }
 
-    public void setUpdateTime(Date updateTime) {
-        this.updateTime = updateTime;
+    public void setMName(final String name) {
+        this.mName = name;
     }
 
-    public Long getId() {
-        return id;
+    public String getMValue() {
+        return this.mValue;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setMValue(final String value) {
+        this.mValue = value;
     }
 
-    public String getValue() {
-        return value;
+    public Date getMUpdateTime() {
+        return this.mUpdateTime;
     }
 
-    public void setValue(String value) {
-        this.value = value;
+    public void setMUpdateTime(final Date updateTime) {
+        this.mUpdateTime = updateTime;
     }
 }

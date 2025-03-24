@@ -6,11 +6,15 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 /**
- * @Author: baipeng0904
+ * @author baipeng0904
+ * @version \$Revision1.0\$
  * @Description: 搜索错误码定义接口，包含错误码的枚举值及其定义，用于约束使用范围
  * @CreateDate: $ $
  */
-public class SearchErrorCode {
+public final class SearchErrorCode {
+    private SearchErrorCode() {
+
+    }
 
     // 通用错误码
     public static final int ERROR_UNKNOWN = Integer.MIN_VALUE; // 未知错误

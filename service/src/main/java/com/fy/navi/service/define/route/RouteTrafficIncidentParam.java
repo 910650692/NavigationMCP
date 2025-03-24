@@ -4,43 +4,16 @@ import com.fy.navi.service.define.map.MapTypeId;
 
 import java.util.List;
 
+import lombok.Getter;
+import lombok.Setter;
+@Getter
+@Setter
 public class RouteTrafficIncidentParam {
     /*** 请求Id **/
-    private long requestId;
+    private long mRequestId;
     /*** 屏幕Id **/
-    private MapTypeId mapTypeId;
-    private boolean isOnlineRoute = true;
+    private MapTypeId mMapTypeId;
+    private boolean mIsOnlineRoute = true;
     /*** 详情数据 **/
-    private List<RouteTrafficIncidentInfo> routeTrafficIncidentInfos;
-
-    public void setRequestId(long requestId) {
-        this.requestId = requestId;
-    }
-
-    public long getRequestId() {
-        return requestId;
-    }
-
-    public void setMapTypeId(MapTypeId mapTypeId) {
-        this.mapTypeId = mapTypeId;
-    }
-
-    public MapTypeId getMapTypeId() {
-        return mapTypeId;
-    }
-
-    public List<RouteTrafficIncidentInfo> getRouteTrafficIncidentInfos() {
-        return routeTrafficIncidentInfos;
-    }
-
-    public void setRouteTrafficIncidentInfos(List<RouteTrafficIncidentInfo> routeTrafficIncidentInfos) {
-        this.routeTrafficIncidentInfos = routeTrafficIncidentInfos;
-    }
-    public void setOnlineRoute(boolean onlineRoute) {
-        isOnlineRoute = onlineRoute;
-    }
-
-    public boolean isOnlineRoute() {
-        return isOnlineRoute;
-    }
+    private List<RouteTrafficIncidentInfo> mRouteTrafficIncidentInfos;
 }

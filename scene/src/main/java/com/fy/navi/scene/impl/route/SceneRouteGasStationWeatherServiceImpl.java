@@ -3,58 +3,74 @@ package com.fy.navi.scene.impl.route;
 import com.fy.navi.scene.BaseSceneModel;
 import com.fy.navi.scene.api.route.ISceneRouteGasStationWeatherService;
 import com.fy.navi.scene.ui.route.SceneRouteGasStationWeatherServiceView;
-import com.fy.navi.service.define.map.MapTypeId;
-import com.fy.navi.service.logicpaket.route.RoutePackage;
 
-/**
- * @Description TODO
- * @Author lvww
- * @date 2024/12/2
- */
-public class SceneRouteGasStationWeatherServiceImpl extends BaseSceneModel<SceneRouteGasStationWeatherServiceView> implements ISceneRouteGasStationWeatherService {
+public class SceneRouteGasStationWeatherServiceImpl extends BaseSceneModel<SceneRouteGasStationWeatherServiceView>
+        implements ISceneRouteGasStationWeatherService {
 
-    private final RoutePackage mRoutePackage;
-    public boolean isGasStationSelect = false;
-    public boolean isWeatherSelect = false;
-    public boolean isServiceSelect = false;
+    public boolean isGasStationSelect() {
+        return mIsGasStationSelect;
+    }
 
-    public SceneRouteGasStationWeatherServiceImpl(SceneRouteGasStationWeatherServiceView mScreenView) {
-        super(mScreenView);
-        mRoutePackage = RoutePackage.getInstance();
+    public void setGasStationSelect(final boolean isGasStationSelect) {
+        this.mIsGasStationSelect = isGasStationSelect;
+    }
+
+    public boolean isWeatherSelect() {
+        return mIsWeatherSelect;
+    }
+
+    public void setWeatherSelect(final boolean isWeatherSelect) {
+        this.mIsWeatherSelect = isWeatherSelect;
+    }
+
+    public boolean isServiceSelect() {
+        return mIsServiceSelect;
+    }
+
+    public void setServiceSelect(final boolean isServiceSelect) {
+        this.mIsServiceSelect = isServiceSelect;
+    }
+
+    private boolean mIsGasStationSelect = false;
+    private boolean mIsWeatherSelect = false;
+    private boolean mIsServiceSelect = false;
+
+    public SceneRouteGasStationWeatherServiceImpl(final SceneRouteGasStationWeatherServiceView serviceView) {
+        super(serviceView);
     }
     @Override
     public void clickGasStation() {
-        isGasStationSelect = !isGasStationSelect;
-        isWeatherSelect = false;
-        isServiceSelect = false;
+        mIsGasStationSelect = !mIsGasStationSelect;
+        mIsWeatherSelect = false;
+        mIsServiceSelect = false;
         mScreenView.updateUi();
 
-        mScreenView.clickTab(1, isWeatherSelect);
-        mScreenView.clickTab(2, isServiceSelect);
-        mScreenView.clickTab(0, isGasStationSelect);
+        mScreenView.clickTab(1, mIsWeatherSelect);
+        mScreenView.clickTab(2, mIsServiceSelect);
+        mScreenView.clickTab(0, mIsGasStationSelect);
     }
 
     @Override
     public void clickWeather() {
-        isWeatherSelect = !isWeatherSelect;
-        isGasStationSelect = false;
-        isServiceSelect = false;
+        mIsWeatherSelect = !mIsWeatherSelect;
+        mIsGasStationSelect = false;
+        mIsServiceSelect = false;
         mScreenView.updateUi();
 
-        mScreenView.clickTab(0, isGasStationSelect);
-        mScreenView.clickTab(2, isServiceSelect);
-        mScreenView.clickTab(1, isWeatherSelect);
+        mScreenView.clickTab(0, mIsGasStationSelect);
+        mScreenView.clickTab(2, mIsServiceSelect);
+        mScreenView.clickTab(1, mIsWeatherSelect);
     }
 
     @Override
     public void clickService() {
-        isServiceSelect = !isServiceSelect;
-        isGasStationSelect = false;
-        isWeatherSelect = false;
+        mIsServiceSelect = !mIsServiceSelect;
+        mIsGasStationSelect = false;
+        mIsWeatherSelect = false;
         mScreenView.updateUi();
 
-        mScreenView.clickTab(0, isGasStationSelect);
-        mScreenView.clickTab(1, isWeatherSelect);
-        mScreenView.clickTab(2, isServiceSelect);
+        mScreenView.clickTab(0, mIsGasStationSelect);
+        mScreenView.clickTab(1, mIsWeatherSelect);
+        mScreenView.clickTab(2, mIsServiceSelect);
     }
 }

@@ -56,6 +56,10 @@ public class EngineAdapter {
         return mIEngineApi.eagleEyeEngineID(mapId);
     }
 
+    public String styleBlPath(MapTypeId mapTypeId) {
+        return mIEngineApi.styleBlPath(mapTypeId);
+    }
+
     private static final class Helper {
         private static final EngineAdapter ea = new EngineAdapter();
     }

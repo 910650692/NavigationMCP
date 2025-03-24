@@ -1,6 +1,7 @@
 package com.fy.navi.mapservice.apimanager;
 
 import android.content.Context;
+import android.os.IBinder;
 import android.os.RemoteException;
 import android.util.Log;
 
@@ -22,36 +23,72 @@ import com.fy.navi.mapservice.callback.OnTurnInfoChangeListener;
 import com.fy.navi.mapservice.common.INaviAutoApiBinder;
 import com.fy.navi.mapservice.common.INaviAutoApiCallback;
 
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
-public class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
+public final class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
 
     private static final String TAG = NaviAutoAPIManager.class.getSimpleName();
-    private WeakReference<Context> mContextReference;
+    private INaviAutoApiBinder mBinder;
     private String mPkgName = "default";
     private boolean mInitStatus = false;
 
-    private List<OnInitStateChangeListener> mInitStateListenerList = new ArrayList<>();
-    private List<OnLocationChangeListener> mLocationListenerList = new ArrayList<>();
-    private List<OnDistrictInfoChangeListener> mDistrictInfoList = new ArrayList<>();
-    private List<OnNaviStatusChangeListener> mNaviStatusListenerList = new ArrayList<>();
-    private List<OnSearchResultListener> mSearchResultListenerList = new ArrayList<>();
-    private List<OnRoutePlanResultListener> mRoutePlanListenerList = new ArrayList<>();
-    private List<OnGuidePanelDataListener> mGuidePanelDataListenerList = new ArrayList<>();
-    private List<OnSpeedLimitChangeListener> mSpeedLimitListenerList = new ArrayList<>();
-    private List<OnTurnInfoChangeListener> mTurnInfoListenerList = new ArrayList<>();
+    private final List<OnInitStateChangeListener> mInitStateListenerList = new ArrayList<>();
+    private final List<OnLocationChangeListener> mLocationListenerList = new ArrayList<>();
+    private final List<OnDistrictInfoChangeListener> mDistrictInfoList = new ArrayList<>();
+    private final List<OnNaviStatusChangeListener> mNaviStatusListenerList = new ArrayList<>();
+    private final List<OnSearchResultListener> mSearchResultListenerList = new ArrayList<>();
+    private final List<OnRoutePlanResultListener> mRoutePlanListenerList = new ArrayList<>();
+    private final List<OnGuidePanelDataListener> mGuidePanelDataListenerList = new ArrayList<>();
+    private final List<OnSpeedLimitChangeListener> mSpeedLimitListenerList = new ArrayList<>();
+    private final List<OnTurnInfoChangeListener> mTurnInfoListenerList = new ArrayList<>();
 
     public static NaviAutoAPIManager getInstance() {
-        return SingleHolder.mInstance;
+        return SingleHolder.INSTANCE;
     }
 
-    private static class SingleHolder {
-        private static final NaviAutoAPIManager mInstance = new NaviAutoAPIManager();
+    private static final class SingleHolder {
+        private static final NaviAutoAPIManager INSTANCE = new NaviAutoAPIManager();
     }
 
-    private NaviAutoAPIManager() {}
+    private NaviAutoAPIManager() {
+
+    }
+
+    private final IEngineStatusCallback mEngineStatusCallback = new IEngineStatusCallback() {
+        @Override
+        public void onInitSuccess() {
+            try {
+                mBinder = updateBinder();
+                mBinder.asBinder().linkToDeath(mDeathRecipient, 0);
+                unRegisterBinderResultCallback();
+                registerBinderResultCallback();
+                onEngineInit(true);
+            } catch (RemoteException e) {
+                Log.e(TAG, "onUpdateBinderCallback remoteException: " + e.getMessage());
+            }
+        }
+
+        @Override
+        public void onInitFailed() {
+            if (null != mBinder) {
+                mBinder.asBinder().unlinkToDeath(mDeathRecipient, 0);
+                mBinder = null;
+            }
+            onEngineInit(false);
+        }
+    };
+
+    private final IBinder.DeathRecipient mDeathRecipient = new IBinder.DeathRecipient() {
+        @Override
+        public void binderDied() {
+            if (mBinder == null) {
+                return;
+            }
+            mBinder.asBinder().unlinkToDeath(this, 0);
+            mBinder = null;
+        }
+    };
 
     @Override
     protected INaviAutoApiBinder updateBinder() {
@@ -59,7 +96,12 @@ public class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
     }
 
     @Override
-    protected void onEngineInit(boolean success) {
+    protected boolean checkBinder() {
+        return null != mBinder && mBinder.asBinder().pingBinder();
+    }
+
+    @Override
+    protected void onEngineInit(final boolean success) {
         Log.d(TAG, "onEngineInit: " + success);
         for (OnInitStateChangeListener initStateChangeListener : mInitStateListenerList) {
             if (null != initStateChangeListener) {
@@ -71,7 +113,7 @@ public class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
                         mInitStatus = false;
                         initStateChangeListener.onFailure();
                     }
-                } catch (Exception exception) {
+                } catch (NullPointerException exception) {
                     Log.d(TAG, "dispatch initSuccess: " + exception.getMessage());
                 }
             }
@@ -83,7 +125,7 @@ public class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
         if (checkBinder()) {
             try {
                 mBinder.addNaviAutoApiCallback(mPkgName, mNaviAutoCallback);
-            } catch (Exception exception) {
+            } catch (RemoteException exception) {
                 Log.e(TAG, "registerNaviAutoApiCallback error: " + exception.getMessage());
             }
         }
@@ -94,7 +136,7 @@ public class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
         if (checkBinder()) {
             try {
                 mBinder.removeNaviAutoApiCallback(mPkgName, mNaviAutoCallback);
-            } catch (Exception exception) {
+            } catch (RemoteException exception) {
                 Log.e(TAG, "unRegisterNaviAutoApiCallback error: " + exception.getMessage());
             }
         }
@@ -103,12 +145,13 @@ public class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
     private final INaviAutoApiCallback.Stub mNaviAutoCallback = new INaviAutoApiCallback.Stub() {
 
         @Override
-        public void onNaviStatusChange(String naviStatus) {
+        public void onNaviStatusChange(final String naviStatus) {
+            Log.d(TAG, "onNaviStatusChange: " + naviStatus);
             for (OnNaviStatusChangeListener listener : mNaviStatusListenerList) {
                 if (null != listener) {
                     try {
                         listener.onNaviStatusChange(naviStatus);
-                    } catch (Exception exception) {
+                    } catch (NullPointerException exception) {
                         Log.e(TAG, "dispatch naviStatus error: " + exception.getMessage());
                     }
                 }
@@ -116,12 +159,13 @@ public class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
         }
 
         @Override
-        public void onLocationInfoChange(String locationInfo) {
+        public void onLocationInfoChange(final String locationInfo) {
+            Log.d(TAG, "onLocationInfoChange: " + locationInfo);
             for (OnLocationChangeListener listener : mLocationListenerList) {
                 if (null != listener) {
                     try {
                         listener.onLocationChange(locationInfo);
-                    } catch (Exception exception) {
+                    } catch (NullPointerException exception) {
                         Log.e(TAG, "dispatch locationInfo error: " + exception.getMessage());
                     }
                 }
@@ -129,12 +173,13 @@ public class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
         }
 
         @Override
-        public void onDistrictInfoChange(String districtInfo) {
+        public void onDistrictInfoChange(final String districtInfo) {
+            Log.d(TAG, "onDistrictInfoChange: " + districtInfo);
             for (OnDistrictInfoChangeListener listener : mDistrictInfoList) {
                 if (null != listener) {
                     try {
                         listener.onDistrictInfoChange(districtInfo);
-                    } catch (Exception exception) {
+                    } catch (NullPointerException exception) {
                         Log.e(TAG, "dispatch districtInfo error: " + exception.getMessage());
                     }
                 }
@@ -142,12 +187,13 @@ public class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
         }
 
         @Override
-        public void onSearchFailed(boolean silent, int errorCode) {
+        public void onSearchFailed(final boolean silent, final int errorCode) {
+            Log.d(TAG, "onSearchFailed: silent = " + silent + "; errorCode = " + errorCode);
             for (OnSearchResultListener listener : mSearchResultListenerList) {
                 if (null != listener) {
                     try {
                         listener.onSearchError(silent, errorCode);
-                    } catch (Exception exception) {
+                    } catch (NullPointerException exception) {
                         Log.e(TAG, "dispatch searchFailed error: " + exception.getMessage());
                     }
                 }
@@ -155,12 +201,13 @@ public class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
         }
 
         @Override
-        public void onSearchResult(boolean silent, String searchResult) {
+        public void onSearchResult(final boolean silent, final String searchResult) {
+            Log.d(TAG, "onSearchResult: silent = " + silent);
             for (OnSearchResultListener listener : mSearchResultListenerList) {
                 if (null != listener) {
                     try {
                         listener.onSearchResult(silent, searchResult);
-                    } catch (Exception exception) {
+                    } catch (NullPointerException exception) {
                         Log.e(TAG, "dispatch searchResult error: " + exception.getMessage());
                     }
                 }
@@ -168,12 +215,13 @@ public class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
         }
 
         @Override
-        public void onReverseGeoSearchResult(int taskId, String reverseResult) {
+        public void onReverseGeoSearchResult(final int taskId, final String reverseResult) {
+            Log.d(TAG, "onReverseGeoSearchResult: taskId = " + taskId + "; reverseResult = " + reverseResult);
             for (OnSearchResultListener listener : mSearchResultListenerList) {
                 if (null != listener) {
                     try {
                         listener.onReverseGeoSearchResult(taskId, reverseResult);
-                    } catch (Exception exception) {
+                    } catch (NullPointerException exception) {
                         Log.e(TAG, "dispatch searchResult error: " + exception.getMessage());
                     }
                 }
@@ -181,12 +229,13 @@ public class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
         }
 
         @Override
-        public void onRoutePlanFailed(int code, String errorMsg) {
+        public void onRoutePlanFailed(final int code, final String errorMsg) {
+            Log.d(TAG, "onRoutePlanFailed: code = " + code);
             for (OnRoutePlanResultListener listener : mRoutePlanListenerList) {
                 if (null != listener) {
                     try {
                         listener.onRoutePlanError(code, errorMsg);
-                    } catch (Exception exception) {
+                    } catch (NullPointerException exception) {
                         Log.e(TAG, "dispatch routePlanFailed error: " + exception.getMessage());
                     }
                 }
@@ -194,12 +243,13 @@ public class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
         }
 
         @Override
-        public void onRoutePlanResult(String routeResult) {
+        public void onRoutePlanResult(final String routeResult) {
+            Log.d(TAG, "onRoutePlanResult: " + routeResult);
             for (OnRoutePlanResultListener listener : mRoutePlanListenerList) {
                 if (null != listener) {
                     try {
                         listener.onRoutePlanResult(routeResult);
-                    } catch (Exception exception) {
+                    } catch (NullPointerException exception) {
                         Log.e(TAG, "dispatch routePlanResult error: " + exception.getMessage());
                     }
                 }
@@ -207,12 +257,13 @@ public class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
         }
 
         @Override
-        public void onPanelData(int panelDataStatus) {
+        public void onPanelData(final int panelDataStatus) {
+            Log.d(TAG, "onPanelData: " + panelDataStatus);
             for (OnGuidePanelDataListener listener : mGuidePanelDataListenerList) {
                 if (null != listener) {
                     try {
                         listener.onPanelData(panelDataStatus);
-                    } catch (Exception exception) {
+                    } catch (NullPointerException exception) {
                         Log.e(TAG, "dispatch onPanelData error: " + exception.getMessage());
                     }
                 }
@@ -220,12 +271,12 @@ public class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
         }
 
         @Override
-        public void onSpeedLimitChange(int curSpeed, int limitSpeed) {
+        public void onSpeedLimitChange(final int curSpeed, final int limitSpeed) {
             for (OnSpeedLimitChangeListener listener : mSpeedLimitListenerList) {
                 if (null != listener) {
                     try {
                         listener.onSpeedLimitChange(curSpeed, limitSpeed);
-                    } catch (Exception exception) {
+                    } catch (NullPointerException exception) {
                         Log.e(TAG, "dispatch speedLimitChange error: " + exception.getMessage());
                     }
                 }
@@ -233,12 +284,12 @@ public class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
         }
 
         @Override
-        public void onTurnInfoChange(String turnInfo) {
+        public void onTurnInfoChange(final String turnInfo) {
             for (OnTurnInfoChangeListener listener : mTurnInfoListenerList) {
                 if (null != listener) {
                     try {
                         listener.onTurnInfoUpdated(turnInfo);
-                    } catch (Exception exception) {
+                    } catch (NullPointerException exception) {
                         Log.e(TAG, "dispatch turnInfo error: " + exception.getMessage());
                     }
                 }
@@ -251,7 +302,7 @@ public class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
      *
      * @param context Context.
      */
-    public void init(Context context) {
+    public void init(final Context context) {
         init(context, context.getPackageName());
     }
 
@@ -261,7 +312,7 @@ public class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
      * @param context Context.
      * @param pkgName String，client package name.
      */
-    public void init(Context context, String pkgName) {
+    public void init(final Context context, final String pkgName) {
         init(context, pkgName, "");
     }
 
@@ -270,12 +321,11 @@ public class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
      *
      * @param context Context.
      * @param pkgName String，客户端包名.
-     * @param params String，参考高德地图SDK开发应用接口依赖中Onstar调用示例添加
-     *               具体作用未知.
+     * @param params String，参考高德地图SDK开发应用接口依赖中Onstar调用示例添加,具体作用未知.
      */
-    public void init(Context context, String pkgName, String params) {
+    public void init(final Context context, final String pkgName, final String params) {
         synchronized (NaviAutoAPIManager.class) {
-            mContextReference = new WeakReference<>(context);
+            Log.d(TAG, "initClient: " + pkgName + ", params: " + params);
             mPkgName = pkgName;
             BinderManager.getInstance().addEngineInitCallback(mEngineStatusCallback);
             MapSdk.getInstance().startConnect(context);
@@ -304,7 +354,7 @@ public class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
      *
      * @param initStateChangeListener OnInitStateChangeListener.
      */
-    public void setOnInitStateChangeListener(OnInitStateChangeListener initStateChangeListener) {
+    public void setOnInitStateChangeListener(final OnInitStateChangeListener initStateChangeListener) {
         if (!mInitStateListenerList.contains(initStateChangeListener)) {
             mInitStateListenerList.add(initStateChangeListener);
         }
@@ -315,7 +365,7 @@ public class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
      *
      * @param locationChangeListener OnLocationChangeListener.
      */
-    public void setOnLocationChangeListener(OnLocationChangeListener locationChangeListener) {
+    public void setOnLocationChangeListener(final OnLocationChangeListener locationChangeListener) {
         if (mInitStatus &&  !mLocationListenerList.contains(locationChangeListener)) {
             mLocationListenerList.add(locationChangeListener);
         }
@@ -326,7 +376,7 @@ public class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
      *
      * @param locationChangeListener OnLocationChangeListener.
      */
-    public void removeOnLocationChangeListener(OnLocationChangeListener locationChangeListener) {
+    public void removeOnLocationChangeListener(final OnLocationChangeListener locationChangeListener) {
         if (mInitStatus) {
             mLocationListenerList.remove(locationChangeListener);
         }
@@ -337,7 +387,7 @@ public class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
      *
      * @param districtInfoChangeListener OnDistrictInfoChangeListener.
      */
-    public void setOnDistrictInfoChangeListener(OnDistrictInfoChangeListener districtInfoChangeListener) {
+    public void setOnDistrictInfoChangeListener(final OnDistrictInfoChangeListener districtInfoChangeListener) {
         if (mInitStatus && !mDistrictInfoList.contains(districtInfoChangeListener)) {
             mDistrictInfoList.add(districtInfoChangeListener);
         }
@@ -348,7 +398,7 @@ public class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
      *
      * @param districtInfoChangeListener OnDistrictInfoChangeListener.
      */
-    public void removeOnDistrictInfoChangeListener(OnDistrictInfoChangeListener districtInfoChangeListener) {
+    public void removeOnDistrictInfoChangeListener(final OnDistrictInfoChangeListener districtInfoChangeListener) {
         if (mInitStatus) {
             mDistrictInfoList.remove(districtInfoChangeListener);
         }
@@ -359,7 +409,7 @@ public class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
      *
      * @param naviStatusChangeListener OnNaviStatusChangeListener.
      */
-    public void setOnNaviStatusChangeListener(OnNaviStatusChangeListener naviStatusChangeListener) {
+    public void setOnNaviStatusChangeListener(final OnNaviStatusChangeListener naviStatusChangeListener) {
         if (mInitStatus && !mNaviStatusListenerList.contains(naviStatusChangeListener)) {
             mNaviStatusListenerList.add(naviStatusChangeListener);
         }
@@ -370,7 +420,7 @@ public class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
      *
      * @param naviStatusChangeListener OnNaviStatusChangeListener.
      */
-    public void removeOnNaviStatusChangeListener(OnNaviStatusChangeListener naviStatusChangeListener) {
+    public void removeOnNaviStatusChangeListener(final OnNaviStatusChangeListener naviStatusChangeListener) {
         if (mInitStatus) {
             mNaviStatusListenerList.remove(naviStatusChangeListener);
         }
@@ -381,9 +431,9 @@ public class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
      *
      * @param searchResultListener OnSearchResultListener.
      */
-    public void setOnSearchResultListener(OnSearchResultListener searchResultListener) {
+    public void setOnSearchResultListener(final OnSearchResultListener searchResultListener) {
         if (mInitStatus && !mSearchResultListenerList.contains(searchResultListener)) {
-            mSearchResultListenerList.add(searchResultListener);;
+            mSearchResultListenerList.add(searchResultListener);
         }
     }
 
@@ -392,7 +442,7 @@ public class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
      *
      * @param searchResultListener OnSearchResultListener.
      */
-    public void removeOnSearchResultListener(OnSearchResultListener searchResultListener) {
+    public void removeOnSearchResultListener(final OnSearchResultListener searchResultListener) {
         if (mInitStatus) {
             mSearchResultListenerList.remove(searchResultListener);
         }
@@ -403,7 +453,7 @@ public class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
      *
      * @param routePlanResultListener OnRoutePlanResultListener.
      */
-    public void addRoutePlanResultListener(OnRoutePlanResultListener routePlanResultListener) {
+    public void addRoutePlanResultListener(final OnRoutePlanResultListener routePlanResultListener) {
         if (mInitStatus && !mRoutePlanListenerList.contains(routePlanResultListener)) {
             mRoutePlanListenerList.add(routePlanResultListener);
         }
@@ -414,7 +464,7 @@ public class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
      *
      * @param routePlanResultListener OnRoutePlanResultListener.
      */
-    public void removeRoutePlanResultListener(OnRoutePlanResultListener routePlanResultListener) {
+    public void removeRoutePlanResultListener(final OnRoutePlanResultListener routePlanResultListener) {
         if (mInitStatus) {
             mRoutePlanListenerList.remove(routePlanResultListener);
         }
@@ -425,9 +475,9 @@ public class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
      *
      * @param guidePanelDataListener OnGuidePanelDataListener.
      */
-    public void setGuidePanelDataChangeListener(OnGuidePanelDataListener guidePanelDataListener) {
+    public void setGuidePanelDataChangeListener(final OnGuidePanelDataListener guidePanelDataListener) {
         if (mInitStatus && !mGuidePanelDataListenerList.contains(guidePanelDataListener)) {
-            mGuidePanelDataListenerList.add(guidePanelDataListener);;
+            mGuidePanelDataListenerList.add(guidePanelDataListener);
         }
     }
 
@@ -436,7 +486,7 @@ public class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
      *
      * @param guidePanelDataListener OnGuidePanelDataListener.
      */
-    public void removeGuidePanelDataChangeListener(OnGuidePanelDataListener guidePanelDataListener) {
+    public void removeGuidePanelDataChangeListener(final OnGuidePanelDataListener guidePanelDataListener) {
         if (mInitStatus) {
             mGuidePanelDataListenerList.remove(guidePanelDataListener);
         }
@@ -447,7 +497,7 @@ public class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
      *
      * @param speedLimitChangeListener OnSpeedLimitChangeListener.
      */
-    public void setOnSpeedLimitChangeListener(OnSpeedLimitChangeListener speedLimitChangeListener) {
+    public void setOnSpeedLimitChangeListener(final OnSpeedLimitChangeListener speedLimitChangeListener) {
         if (mInitStatus && !mSpeedLimitListenerList.contains(speedLimitChangeListener)) {
             mSpeedLimitListenerList.add(speedLimitChangeListener);
         }
@@ -458,7 +508,7 @@ public class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
      *
      * @param speedLimitChangeListener OnSpeedLimitChangeListener.
      */
-    public void removeOnSpeedLimitChangeListener(OnSpeedLimitChangeListener speedLimitChangeListener) {
+    public void removeOnSpeedLimitChangeListener(final OnSpeedLimitChangeListener speedLimitChangeListener) {
         if (mInitStatus) {
             mSpeedLimitListenerList.remove(speedLimitChangeListener);
         }
@@ -469,7 +519,7 @@ public class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
      *
      * @param turnInfoChangeListener OnTurnInfoChangeListener.
      */
-    public void addOnTurnInfoChangeListener(OnTurnInfoChangeListener turnInfoChangeListener) {
+    public void addOnTurnInfoChangeListener(final OnTurnInfoChangeListener turnInfoChangeListener) {
         if (mInitStatus && !mTurnInfoListenerList.contains(turnInfoChangeListener)) {
             mTurnInfoListenerList.add(turnInfoChangeListener);
         }
@@ -480,7 +530,7 @@ public class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
      *
      * @param turnInfoChangeListener OnTurnInfoChangeListener.
      */
-    public void removeOnTurnInfoChangeListener(OnTurnInfoChangeListener turnInfoChangeListener) {
+    public void removeOnTurnInfoChangeListener(final OnTurnInfoChangeListener turnInfoChangeListener) {
         if (mInitStatus) {
             mTurnInfoListenerList.remove(turnInfoChangeListener);
         }
@@ -492,8 +542,9 @@ public class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
     public void openMap() {
         if (mInitStatus && checkBinder()) {
             try {
+                Log.d(TAG, "openMap: ");
                 mBinder.openMap(mPkgName);
-            } catch (Exception exception) {
+            } catch (RemoteException exception) {
                 Log.e(TAG, "openMap error: " + exception.getMessage());
             }
         }
@@ -508,8 +559,9 @@ public class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
         String locationInfo = "";
         if (mInitStatus && checkBinder()) {
             try {
+                Log.d(TAG, "getCurrentLocation: ");
                 locationInfo = mBinder.getCurrentLocation(mPkgName);
-            } catch (Exception exception) {
+            } catch (RemoteException exception) {
                 Log.e(TAG, "getCurrentLocation error: " + exception.getMessage());
             }
         }
@@ -526,8 +578,9 @@ public class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
         String districtInfo = "";
         if (mInitStatus && checkBinder()) {
             try {
+                Log.d(TAG, "getDistrictDetailInfo: ");
                 districtInfo = mBinder.getDistrictDetailInfo(mPkgName);
-            } catch (Exception exception) {
+            } catch (RemoteException exception) {
                 Log.e(TAG, "getDistrictDetailInfo error: " + exception.getMessage());
             }
         }
@@ -540,20 +593,17 @@ public class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
      *
      * @param keyword String 搜索关键字.
      */
-    public void jumpToSearchPage(String keyword) {
-        if (!mInitStatus) {
-            Log.w(TAG, "not initStatus");
-            return;
-        }
+    public void jumpToSearchPage(final String keyword) {
         if (null == keyword || keyword.isEmpty()) {
             Log.w(TAG, "empty keyword");
             return;
         }
 
-        if (checkBinder()) {
+        if (mInitStatus && checkBinder()) {
             try {
+                Log.d(TAG, "jumpToSearchPage: " + keyword);
                 mBinder.jumpToSearchPage(mPkgName, keyword);
-            } catch (Exception exception) {
+            } catch (RemoteException exception) {
                 Log.e(TAG, "jumpToSearchPage error: " + exception.getMessage());
             }
         }
@@ -561,22 +611,21 @@ public class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
 
     /**
      * 通过输入的基础地址执行逆地理搜索.
-     * @param geoPoint
+     *
+     * @param geoPoint BaseGeoPoint, 地址经纬度.
+     * @return int，搜索taskId.
      */
-    public int requestReverseGeoSearch(BaseGeoPoint geoPoint) {
-        if (!mInitStatus) {
-            Log.w(TAG, "not initStatus");
-            return -1;
-        }
+    public int requestReverseGeoSearch(final BaseGeoPoint geoPoint) {
         if (null == geoPoint) {
             Log.w(TAG, "empty GeoPoint");
             return -1;
         }
 
-        if (checkBinder()) {
+        if (mInitStatus && checkBinder()) {
             try {
+                Log.d(TAG, "requestReverseGeoSearch: " + geoPoint);
                 return mBinder.requestReverseGeoSearch(mPkgName, geoPoint);
-            } catch (Exception exception) {
+            } catch (RemoteException exception) {
                 Log.e(TAG, "requestReverseGeoSearch error: " + exception.getMessage());
             }
         }
@@ -589,20 +638,17 @@ public class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
      *
      * @param address String，地址信息，越精准，搜索结果越准确.
      */
-    public void searchAndNavi(String address) {
-        if (!mInitStatus) {
-            Log.w(TAG, "not initStatus");
-            return;
-        }
+    public void searchAndNavi(final String address) {
         if (null == address || address.isEmpty()) {
             Log.w(TAG, "empty address");
             return;
         }
 
-        if (checkBinder()) {
+        if (mInitStatus && checkBinder()) {
             try {
+                Log.d(TAG, "searchAndNavi: " + address);
                 mBinder.searchAndNavi(mPkgName, address);
-            } catch (Exception exception) {
+            } catch (RemoteException exception) {
                 Log.e(TAG, "searchAndNavi error: " + exception.getMessage());
             }
         }
@@ -612,14 +658,11 @@ public class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
      * 取消所有搜索请求.
      */
     public void cancelAllSearchRequest() {
-        if (!mInitStatus) {
-            Log.w(TAG, "not initStatus");
-            return;
-        }
-        if (checkBinder()) {
+        if (mInitStatus && checkBinder()) {
             try {
+                Log.d(TAG, "cancelAllSearchRequest: ");
                 mBinder.cancelAllSearchRequest(mPkgName);
-            } catch (Exception exception) {
+            } catch (RemoteException exception) {
                 Log.e(TAG, "cancelAllSearchRequest error: " + exception.getMessage());
             }
         }
@@ -630,15 +673,12 @@ public class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
      *
      * @param destination BaseSearchPoi，目的地，单个Poi信息.
      */
-    public void routePlan(BaseSearchPoi destination) {
-        if (!mInitStatus) {
-            Log.w(TAG, "not initStatus");
-            return;
-        }
-        if (checkBinder()) {
+    public void routePlan(final BaseSearchPoi destination) {
+        if (mInitStatus && checkBinder()) {
             try {
+                Log.d(TAG, "routePlan: " + destination);
                 mBinder.routePlan(mPkgName, destination);
-            } catch (Exception exception) {
+            } catch (RemoteException exception) {
                 Log.e(TAG, "routePlan error: " + exception.getMessage());
             }
         }
@@ -648,14 +688,11 @@ public class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
      * 开始导航.
      */
     public void startNavi() {
-        if (!mInitStatus) {
-            Log.w(TAG, "not initStatus");
-            return;
-        }
-        if (checkBinder()) {
+        if (mInitStatus && checkBinder()) {
             try {
+                Log.d(TAG, "startNavi: ");
                 mBinder.startNavi(mPkgName);
-            } catch (Exception exception) {
+            } catch (RemoteException exception) {
                 Log.e(TAG, "routePlan error: " + exception.getMessage());
             }
         }
@@ -669,8 +706,9 @@ public class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
         boolean result = false;
         if (mInitStatus && checkBinder()) {
             try {
+                Log.d(TAG, "isNaviStatus: ");
                 result = mBinder.isNaviStatus(mPkgName);
-            } catch (Exception exception) {
+            } catch (RemoteException exception) {
                 Log.e(TAG, "startNavi error: " + exception.getMessage());
             }
         }
@@ -688,8 +726,9 @@ public class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
 
         if (mInitStatus && checkBinder()) {
             try {
+                Log.d(TAG, "getGuidePanelStatus: ");
                 result = mBinder.getGuidePanelStatus(mPkgName);
-            } catch (Exception exception) {
+            } catch (RemoteException exception) {
                 Log.e(TAG, "startNavi error: " + exception.getMessage());
             }
         }
@@ -699,11 +738,14 @@ public class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
 
     /**
      * 获取导航类型.
+     *
+     * @return String，当前底图状态值.
      */
     public String getNaviType() {
         String type = INaviConstant.NaviStatusType.NO_STATUS;
         if (mInitStatus && checkBinder()) {
             try {
+                Log.d(TAG, "getNaviType: ");
                 type = mBinder.getNaviType(mPkgName);
             } catch (RemoteException exception) {
                 Log.e(TAG, "getNaviType error: " + exception.getMessage());
@@ -721,6 +763,7 @@ public class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
         String tbtInfo = "";
         if (mInitStatus && checkBinder()) {
             try {
+                Log.d(TAG, "getTBTInfo: ");
                 tbtInfo = mBinder.getTBTInfo(mPkgName);
             } catch (RemoteException exception) {
                 Log.e(TAG, "getTBTInfo error: " + exception.getMessage());

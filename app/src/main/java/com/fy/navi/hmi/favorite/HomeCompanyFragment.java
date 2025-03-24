@@ -1,10 +1,10 @@
 package com.fy.navi.hmi.favorite;
 
-import static com.fy.navi.service.MapDefaultFinalTag.SEARCH_HMI_TAG;
 
 import android.os.Bundle;
 
 import com.alibaba.android.arouter.facade.annotation.Route;
+import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
 import com.fy.navi.hmi.BR;
 import com.fy.navi.hmi.R;
@@ -12,16 +12,15 @@ import com.fy.navi.hmi.databinding.FragmentHomeCompanyBinding;
 import com.fy.navi.scene.RoutePath;
 import com.fy.navi.scene.api.search.IOnHomeCompanyClickListener;
 import com.fy.navi.service.AutoMapConstant;
+import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.define.map.MapTypeId;
 import com.fy.navi.service.define.search.SearchResultEntity;
 import com.fy.navi.ui.base.BaseFragment;
 
-/**
- * 家、公司、常用地址、收藏
- */
 @Route(path = RoutePath.Search.HOME_COMPANY_FRAGMENT)
 public class HomeCompanyFragment extends BaseFragment<FragmentHomeCompanyBinding, HomeCompanyViewModel> {
-    private int homeCompany = -1;
+    private int mHomeCompany = -1;
+    private String mKeyword = "";
     @Override
     public int onLayoutId() {
         return R.layout.fragment_home_company;
@@ -42,7 +41,7 @@ public class HomeCompanyFragment extends BaseFragment<FragmentHomeCompanyBinding
         defaultDataProcessing();
         mBinding.homeCompanyView.setScreenId(MapTypeId.valueOf(mScreenId));
         mBinding.sceneNestedScrollView.setScreenId(MapTypeId.valueOf(mScreenId));
-        mBinding.sceneNestedScrollView.setHomeCompanyState(homeCompany);
+        mBinding.sceneNestedScrollView.setHomeCompanyState(mHomeCompany);
         mBinding.homeCompanyView.setClickListener(new IOnHomeCompanyClickListener() {
             @Override
             public void onEditClearClicked() {
@@ -51,46 +50,65 @@ public class HomeCompanyFragment extends BaseFragment<FragmentHomeCompanyBinding
             }
 
             @Override
-            public void setHomeCompanyType(int type) {
+            public void setHomeCompanyType(final int type) {
                 FavoriteHelper.getInstance().setHomeCompanyType(type);
             }
         });
     }
 
+    /**
+     * 处理Bundle传递的数据
+     */
     private void defaultDataProcessing() {
-        Bundle parsedArgs = getArguments();
+        final Bundle parsedArgs = getArguments();
         if (parsedArgs == null) {
-            Logger.d(SEARCH_HMI_TAG, "No valid arguments found.");
+            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "No valid arguments found.");
             return;
         }
-        String sourceFragmentTag = parsedArgs.getString(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SOURCE_FRAGMENT);
-        int searchType = parsedArgs.getInt(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_TYPE, 0);
+        final String sourceFragmentTag = parsedArgs.getString(
+                AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SOURCE_FRAGMENT);
+        mKeyword = parsedArgs.getString(AutoMapConstant.VoiceKeyWord.BUNDLE_VOICE_KEY_WORD);
+        final int searchType = parsedArgs.getInt(
+                AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_TYPE, 0);
         // 1:家 2:公司 3:常用地址 0:收藏夹
-        homeCompany = parsedArgs.getInt(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_OPEN_HOME_COMPANY, -1);
-        Logger.d(SEARCH_HMI_TAG, "searchType:" + searchType + "homCompany:" + homeCompany);
-        mBinding.homeCompanyView.setViewVisibility(homeCompany);
-        mViewModel.setHomeCompanyType(homeCompany);
+        mHomeCompany = parsedArgs.getInt(
+            AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_OPEN_HOME_COMPANY, -1);
+        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "searchType:" + searchType + "homCompany:" +
+            mHomeCompany + "sourceFragmentTag:" + sourceFragmentTag + "keyword:" + mKeyword);
+        mBinding.homeCompanyView.setViewVisibility(mHomeCompany);
+        if (!ConvertUtils.isEmpty(mKeyword)) {
+            mBinding.homeCompanyView.doKeyWordSearch(mKeyword);
+        }
+        mViewModel.setHomeCompanyType(mHomeCompany);
     }
 
-    public void notifySearchResult(SearchResultEntity searchResultEntity) {
+    /**
+     * 高德SDK数据回调
+     * @param searchResultEntity 封装的数据实体类
+     */
+    public void notifySearchResult(final SearchResultEntity searchResultEntity) {
         if (searchResultEntity != null) {
-            Logger.d(SEARCH_HMI_TAG, "searchType:" + searchResultEntity.getSearchType());
+            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "searchType:" + searchResultEntity.getSearchType());
             if (searchResultEntity.getSearchType() == AutoMapConstant.SearchType.GEO_SEARCH) {
                 mBinding.homeCompanyView.notifySearchResult(searchResultEntity);
             } else {
-                mBinding.sceneNestedScrollView.setHomeCompanyState(homeCompany);
+                mBinding.sceneNestedScrollView.setHomeCompanyState(mHomeCompany);
                 mBinding.sceneNestedScrollView.notifySearchResult(searchResultEntity);
             }
         }
 
     }
 
-    public void notifySilentSearchResult(SearchResultEntity searchResultEntity) {
+    /**
+     * notifySilentSearchResult
+     * @param searchResultEntity
+     */
+    public void notifySilentSearchResult(final SearchResultEntity searchResultEntity) {
         mBinding.sceneNestedScrollView.notifySilentSearchResult(searchResultEntity);
     }
 
     @Override
-    public void onHiddenChanged(boolean hidden) {
+    public void onHiddenChanged(final boolean hidden) {
         super.onHiddenChanged(hidden);
         if (!hidden) {
             mBinding.sceneNestedScrollView.getSearchKeywordRecord();

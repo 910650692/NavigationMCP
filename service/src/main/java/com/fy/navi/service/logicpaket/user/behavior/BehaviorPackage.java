@@ -22,47 +22,57 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
-/**
- * @Description 数据收藏package管理
- * @Author fh
- * @date 2024/12/26
- */
-public class BehaviorPackage implements BehaviorAdapterCallBack {
+final public class BehaviorPackage implements BehaviorAdapterCallBack {
     private final BehaviorAdapter mBehaviorAdapter;
-    private final List<BehaviorCallBack> callBacks = new ArrayList<>();
+    private final List<BehaviorCallBack> mCallBacks = new ArrayList<>();
     private final FavoriteManager mManager;
     private final MapAdapter mapAdapter;
-    private final LayerAdapter layerAdapter;
+    private final LayerAdapter mLayerAdapter;
 
     private BehaviorPackage() {
         mBehaviorAdapter = BehaviorAdapter.getInstance();
         mManager = FavoriteManager.getInstance();
         mapAdapter = MapAdapter.getInstance();
-        layerAdapter = LayerAdapter.getInstance();
+        mLayerAdapter = LayerAdapter.getInstance();
         mManager.init();
     }
 
+    /**
+     * initBehaviorService
+     */
     public void initBehaviorService() {
         mBehaviorAdapter.initBehaviorService();
         mBehaviorAdapter.registerCallBack("BehaviorPackage", this);
     }
 
-    public synchronized void registerCallBack(BehaviorCallBack callback) {
-        if (callback != null && !callBacks.contains(callback)) {
-            callBacks.add(callback);
+    /**
+     * registerCallBack
+     * @param callback
+     */
+    public synchronized void registerCallBack(final BehaviorCallBack callback) {
+        if (callback != null && !mCallBacks.contains(callback)) {
+            mCallBacks.add(callback);
         }
     }
 
+    /**
+     * unInitBehaviorService
+     */
     public void unInitBehaviorService() {
         mBehaviorAdapter.unInitBehaviorService();
     }
 
+    /**
+     * getSimpleFavoriteIds
+     * @return int[]
+     */
     public int[] getSimpleFavoriteIds() {
         return mBehaviorAdapter.getSimpleFavoriteIds();
     }
 
     /**
      * 获取家的数据
+     * @return entity
      */
     public PoiInfoEntity getHomeFavoriteInfo() {
         return mBehaviorAdapter.getHomeFavoriteInfo();
@@ -70,6 +80,7 @@ public class BehaviorPackage implements BehaviorAdapterCallBack {
 
     /**
      * 获取公司的数据
+     * @return  entity
      */
     public PoiInfoEntity getCompanyFavoriteInfo() {
         return mBehaviorAdapter.getCompanyFavoriteInfo();
@@ -77,12 +88,18 @@ public class BehaviorPackage implements BehaviorAdapterCallBack {
 
     /**
      * 获取普通收藏点的数据
+     * @return list
      */
     public ArrayList<PoiInfoEntity> getSimpleFavoriteList() {
         return mBehaviorAdapter.getSimpleFavoriteList();
     }
 
-    public PoiInfoEntity getFavorite(PoiInfoEntity baseInfo) {
+    /**
+     * getFavorite
+     * @param baseInfo
+     * @return entity
+     */
+    public PoiInfoEntity getFavorite(final PoiInfoEntity baseInfo) {
         return mBehaviorAdapter.getFavorite(baseInfo);
     }
 
@@ -91,9 +108,9 @@ public class BehaviorPackage implements BehaviorAdapterCallBack {
      * 注意区分收藏点类型  common_name：1，家  2，公司  0，普通收藏点
      *
      * @param poiInfo
-     * @return
+     * @return string
      */
-    public String addFavorite(PoiInfoEntity poiInfo) {
+    public String addFavorite(final PoiInfoEntity poiInfo) {
         return mBehaviorAdapter.addFavorite(poiInfo);
     }
 
@@ -101,9 +118,9 @@ public class BehaviorPackage implements BehaviorAdapterCallBack {
      * 移除收藏点
      *
      * @param poiInfo
-     * @return
+     * @return string
      */
-    public String removeFavorite(PoiInfoEntity poiInfo) {
+    public String removeFavorite(final PoiInfoEntity poiInfo) {
         return mBehaviorAdapter.removeFavorite(poiInfo);
     }
 
@@ -111,31 +128,52 @@ public class BehaviorPackage implements BehaviorAdapterCallBack {
      * 是否已收藏
      *
      * @param poiInfo
-     * @return
+     * @return string
      */
-    public String isFavorite(PoiInfoEntity poiInfo) {
+    public String isFavorite(final PoiInfoEntity poiInfo) {
         return mBehaviorAdapter.isFavorite(poiInfo);
     }
 
-    public int getFavoriteListAsync(int type, boolean sorted) {
+    /**
+     * getFavoriteListAsync
+     * @param type
+     * @param sorted
+     * @return int
+     */
+    public int getFavoriteListAsync(final int type, final boolean sorted) {
         return mBehaviorAdapter.getFavoriteListAsync(type, sorted);
     }
 
-    public String topFavorite(PoiInfoEntity baseInfo, boolean bSetTop) {
-        return mBehaviorAdapter.topFavorite(baseInfo, bSetTop);
+    /**
+     * topFavorite
+     * @param baseInfo
+     * @param isSetTop
+     * @return string
+     */
+    public String topFavorite(final PoiInfoEntity baseInfo, final boolean isSetTop) {
+        return mBehaviorAdapter.topFavorite(baseInfo, isSetTop);
     }
 
-    public String modifyFavorite(PoiInfoEntity detailInfo, String customName) {
+    /**
+     * modifyFavorite
+     * @param detailInfo
+     * @param customName
+     * @return string
+     */
+    public String modifyFavorite(final PoiInfoEntity detailInfo, final String customName) {
         return mBehaviorAdapter.modifyFavorite(detailInfo, customName);
     }
 
+    /**
+     * startSync
+     */
     public void startSync() {
         mBehaviorAdapter.startSync();
     }
 
     @Override
-    public void notifyFavorite(int eventType, int exCode) {
-        for (BehaviorCallBack observer : callBacks) {
+    public void notifyFavorite(final int eventType, final int exCode) {
+        for (BehaviorCallBack observer : mCallBacks) {
             observer.notifyFavorite(eventType, exCode);
         }
     }
@@ -148,8 +186,8 @@ public class BehaviorPackage implements BehaviorAdapterCallBack {
      * @param sorted 是否排序
      */
     @Override
-    public void notifyFavoriteAsync(int type, ArrayList<PoiInfoEntity> data, boolean sorted) {
-        for (BehaviorCallBack observer : callBacks) {
+    public void notifyFavoriteAsync(final int type, final ArrayList<PoiInfoEntity> data, final boolean sorted) {
+        for (BehaviorCallBack observer : mCallBacks) {
             observer.notifyFavoriteAsync(type, data, sorted);
         }
     }
@@ -159,33 +197,33 @@ public class BehaviorPackage implements BehaviorAdapterCallBack {
      *
      * @param entity
      * @param favoriteType 收藏点类型（1家，2公司，3常去地址，0普通收藏点）
-     * @return
      */
-    public void addFavoriteData(PoiInfoEntity entity, int favoriteType) {
+    public void addFavoriteData(final PoiInfoEntity entity, final int favoriteType) {
         if (favoriteType == 3) {
-            ArrayList<PoiInfoEntity> commonList = getFavoritePoiData(3);
+            final ArrayList<PoiInfoEntity> commonList = getFavoritePoiData(3);
             if (commonList.size() >= 3) {
-                ToastUtils.Companion.getInstance().showCustomToastView(AppContext.mContext.getString(R.string.st_maximum_added_common_address));
+                ToastUtils.Companion.getInstance().showCustomToastView(
+                        AppContext.getInstance().getMContext().getString(R.string.st_maximum_added_common_address));
                 return;
             }
         }
-        
-        Favorite favorite = new Favorite();
-        favorite.itemId = entity.getFavoriteInfo().getItemId();
-        favorite.commonName = favoriteType;
-        favorite.customName = entity.getFavoriteInfo().getCustom_name();
-        favorite.pid = entity.getPid();
-        favorite.name = entity.getName();
-        favorite.phone = entity.getPhone();
-        favorite.distance = formatDistance(entity.getDistance());
+
+        final Favorite favorite = new Favorite();
+        favorite.setMItemId(entity.getFavoriteInfo().getItemId());
+        favorite.setMCommonName(favoriteType);
+        favorite.setMCustomName(entity.getFavoriteInfo().getCustom_name());
+        favorite.setMPid(entity.getPid());
+        favorite.setMName(entity.getName());
+        favorite.setMPhone(entity.getPhone());
+        favorite.setMDistance(formatDistance(entity.getDistance()));
 //        favorite.cityName = entity.getCityInfo().getCityName();
 //        favorite.cityCode = String.valueOf(entity.getCityInfo().getCityCode());
-        favorite.address = entity.getAddress();
-        favorite.point_x = entity.getPoint().lon;
-        favorite.point_y = entity.getPoint().lat;
+        favorite.setMAddress(entity.getAddress());
+        favorite.setMPointX(entity.getPoint().getLon());
+        favorite.setMPointY(entity.getPoint().getLat());
 //        favorite.point_x_arrive = entity.arrivePoint;
 //        favorite.point_y_arrive = entity.arrivePoint;
-        favorite.updateTime = new Date();
+        favorite.setMUpdateTime(new Date());
         //家和公司只有一个地址，添加前先清除之前的数据再添加
         if (favoriteType == 1 || favoriteType == 2) {
             deleteFavoriteDataByType(favoriteType);
@@ -199,7 +237,7 @@ public class BehaviorPackage implements BehaviorAdapterCallBack {
      * @param distance 距离
      * @return 转换后的距离
      */
-    private String formatDistance(String distance) {
+    private String formatDistance(final String distance) {
         String dis = "";
         if (distance == null || TextUtils.isEmpty(distance)) {
             return dis;
@@ -216,10 +254,10 @@ public class BehaviorPackage implements BehaviorAdapterCallBack {
      * 在本地获取家/公司的信息
      *
      * @param favoriteType 收藏点类型（1家，2公司，3常去地址，0普通收藏点）
-     * @return
+     * @return entity
      */
-    public PoiInfoEntity getFavoriteHomeData(int favoriteType) {
-        List<Favorite> favoriteList = mManager.getValueByCommonName(favoriteType);
+    public PoiInfoEntity getFavoriteHomeData(final int favoriteType) {
+        final List<Favorite> favoriteList = mManager.getValueByCommonName(favoriteType);
         if (null != favoriteList && !favoriteList.isEmpty()) {
             return getPoiInfoEntity(favoriteList.get(0));
         }
@@ -230,33 +268,34 @@ public class BehaviorPackage implements BehaviorAdapterCallBack {
      * 在本地获取常去地址/普通收藏点的信息
      *
      * @param favoriteType 收藏点类型（1家，2公司，3常去地址，0普通收藏点）
-     * @return
+     * @return list
      */
-    public ArrayList<PoiInfoEntity> getFavoritePoiData(int favoriteType) {
-        List<Favorite> favoriteList = mManager.getValueByCommonName(favoriteType);
+    public ArrayList<PoiInfoEntity> getFavoritePoiData(final int favoriteType) {
+        final List<Favorite> favoriteList = mManager.getValueByCommonName(favoriteType);
         //HMI进行业务处理
-        ArrayList<PoiInfoEntity> dataList = new ArrayList<>();
+        final ArrayList<PoiInfoEntity> dataList = new ArrayList<>();
         if (favoriteList != null && !favoriteList.isEmpty()) {
             for (Favorite item : favoriteList) {
-                PoiInfoEntity simpleFavoriteInfo = getPoiInfoEntity(item);
+                final PoiInfoEntity simpleFavoriteInfo = getPoiInfoEntity(item);
                 dataList.add(simpleFavoriteInfo);
             }
         }
 
         dataList.sort((poiInfoEntity1, poiInfoEntity2) -> {
-            boolean aIsTop = poiInfoEntity1.getFavoriteInfo().getTop_time() != 0;
-            boolean bIsTop = poiInfoEntity2.getFavoriteInfo().getTop_time() != 0;
+            final boolean isTopFirst = poiInfoEntity1.getFavoriteInfo().getTop_time() != 0;
+            final boolean isTopSecond = poiInfoEntity2.getFavoriteInfo().getTop_time() != 0;
 
             // 第一优先级：置顶状态
-            if (aIsTop != bIsTop) {
-                return aIsTop ? -1 : 1; // 置顶项始终在前
+            if (isTopFirst != isTopSecond) {
+                return isTopFirst ? -1 : 1; // 置顶项始终在前
             }
 
             // 第二优先级（仅当两者都置顶时）：top_time倒序
-            if (aIsTop) {
-                long topDiff = poiInfoEntity2.getFavoriteInfo().getTop_time() - poiInfoEntity1.getFavoriteInfo().getTop_time();
-                if (topDiff != 0)
+            if (isTopFirst) {
+                final long topDiff = poiInfoEntity2.getFavoriteInfo().getTop_time() - poiInfoEntity1.getFavoriteInfo().getTop_time();
+                if (topDiff != 0) {
                     return Long.compare(poiInfoEntity2.getFavoriteInfo().getTop_time(), poiInfoEntity1.getFavoriteInfo().getTop_time());
+                }
             }
 
             // 第三优先级：updateTime倒序
@@ -271,11 +310,11 @@ public class BehaviorPackage implements BehaviorAdapterCallBack {
      * @return 未置顶列表
      */
     public ArrayList<PoiInfoEntity> getFavoriteNotTop() {
-        List<Favorite> favoriteList = mManager.getFavoriteNotTop();
-        ArrayList<PoiInfoEntity> dataList = new ArrayList<>();
+        final List<Favorite> favoriteList = mManager.getFavoriteNotTop();
+        final ArrayList<PoiInfoEntity> dataList = new ArrayList<>();
         if (favoriteList != null && !favoriteList.isEmpty()) {
             for (Favorite item : favoriteList) {
-                PoiInfoEntity simpleFavoriteInfo = getPoiInfoEntity(item);
+                final PoiInfoEntity simpleFavoriteInfo = getPoiInfoEntity(item);
                 dataList.add(simpleFavoriteInfo);
             }
         }
@@ -289,44 +328,48 @@ public class BehaviorPackage implements BehaviorAdapterCallBack {
      * @return 已置顶列表
      */
     public ArrayList<PoiInfoEntity> getValueByTopTime() {
-        List<Favorite> favoriteList = mManager.getValueByTopTime();
-        ArrayList<PoiInfoEntity> dataList = new ArrayList<>();
+        final List<Favorite> favoriteList = mManager.getValueByTopTime();
+        final ArrayList<PoiInfoEntity> dataList = new ArrayList<>();
         if (favoriteList != null && !favoriteList.isEmpty()) {
             for (Favorite item : favoriteList) {
-                PoiInfoEntity simpleFavoriteInfo = getPoiInfoEntity(item);
+                final PoiInfoEntity simpleFavoriteInfo = getPoiInfoEntity(item);
                 dataList.add(simpleFavoriteInfo);
             }
         }
         dataList.sort((poiInfoEntity1, poiInfoEntity2) -> {
-
-            long topDiff = poiInfoEntity2.getFavoriteInfo().getTop_time() - poiInfoEntity1.getFavoriteInfo().getTop_time();
-            if (topDiff != 0)
+            final long topDiff = poiInfoEntity2.getFavoriteInfo().getTop_time() - poiInfoEntity1.getFavoriteInfo().getTop_time();
+            if (topDiff != 0) {
                 return Long.compare(poiInfoEntity2.getFavoriteInfo().getTop_time(), poiInfoEntity1.getFavoriteInfo().getTop_time());
-
+            }
             return Long.compare(poiInfoEntity2.getFavoriteInfo().getUpdateTime(), poiInfoEntity1.getFavoriteInfo().getUpdateTime());
         });
         return dataList;
     }
 
-    public PoiInfoEntity getPoiInfoEntity(Favorite item) {
-        FavoriteInfo info = new FavoriteInfo()
-                .setItemId(item.itemId)
-                .setCommonName(item.commonName)
-                .setTag(item.tag)
-                .setType(item.type)
-                .setNewType(item.newType)
-                .setCustom_name(item.customName)
-                .setClassification(item.classification)
-                .setUpdateTime(item.updateTime.getTime())
-                .setTop_time(item.topTime);
+    /**
+     * getPoiInfoEntity
+     * @param item item
+     * @return entity
+     */
+    public PoiInfoEntity getPoiInfoEntity(final Favorite item) {
+        final FavoriteInfo info = new FavoriteInfo()
+                .setItemId(item.getMItemId())
+                .setCommonName(item.getMCommonName())
+                .setTag(item.getMTag())
+                .setType(item.getMType())
+                .setNewType(item.getMNewType())
+                .setCustom_name(item.getMCustomName())
+                .setClassification(item.getMClassification())
+                .setUpdateTime(item.getMUpdateTime().getTime())
+                .setTop_time(item.getMTopTime());
 
-        PoiInfoEntity simpleFavoriteInfo = new PoiInfoEntity()
-                .setPid(String.valueOf(item.pid))
-                .setAddress(item.address)
-                .setName(item.name)
-                .setPhone(item.phone)
-                .setDistance(item.distance)
-                .setPoint(new GeoPoint(item.point_x, item.point_y))
+        final PoiInfoEntity simpleFavoriteInfo = new PoiInfoEntity()
+                .setPid(String.valueOf(item.getMPid()))
+                .setAddress(item.getMAddress())
+                .setName(item.getMName())
+                .setPhone(item.getMPhone())
+                .setDistance(item.getMDistance())
+                .setPoint(new GeoPoint(item.getMPointX(), item.getMPointY()))
                 .setFavoriteInfo(info);
         return simpleFavoriteInfo;
     }
@@ -337,7 +380,7 @@ public class BehaviorPackage implements BehaviorAdapterCallBack {
      * @param itemId     收藏点唯一码
      * @param customName 自定义名称 重命名时编辑的字段
      */
-    public void modifyFavoriteData(String itemId, String customName) {
+    public void modifyFavoriteData(final String itemId, final String customName) {
         mManager.updateCustomName(itemId, customName);
     }
 
@@ -347,7 +390,7 @@ public class BehaviorPackage implements BehaviorAdapterCallBack {
      * @param itemId  收藏点唯一码
      * @param topTime 置顶时间
      */
-    public void updateFavoriteTopTime(String itemId, long topTime) {
+    public void updateFavoriteTopTime(final String itemId, final long topTime) {
         mManager.updateTopTime(itemId, topTime);
     }
 
@@ -356,7 +399,7 @@ public class BehaviorPackage implements BehaviorAdapterCallBack {
      *
      * @param itemId 收藏点唯一码
      */
-    public void deleteFavoriteData(String itemId) {
+    public void deleteFavoriteData(final String itemId) {
         mManager.deleteValue(itemId);
         updateFavoriteMain();
     }
@@ -366,7 +409,7 @@ public class BehaviorPackage implements BehaviorAdapterCallBack {
      *
      * @param favoriteType 收藏点类型（1家，2公司，3常去地址，0普通收藏点）
      */
-    public void deleteFavoriteDataByType(int favoriteType) {
+    public void deleteFavoriteDataByType(final int favoriteType) {
         mManager.deleteByFavoriteType(favoriteType);
         updateFavoriteMain();
     }
@@ -378,30 +421,32 @@ public class BehaviorPackage implements BehaviorAdapterCallBack {
      * @param itemId 收藏点唯一码
      * @return true 已收藏，false 未收藏
      */
-    public boolean isFavorite(String itemId) {
+    public boolean isFavorite(final String itemId) {
         return mManager.isFavorite(itemId);
     }
 
     public static BehaviorPackage getInstance() {
-        return Helper.ep;
+        return Helper.EP;
     }
 
     private static final class Helper {
-        private static final BehaviorPackage ep = new BehaviorPackage();
+        private static final BehaviorPackage EP = new BehaviorPackage();
     }
 
-    //显示收藏夹图层，主图查看模式
+    /**
+     *  显示收藏夹图层，主图查看模式
+     */
     private void updateFavoriteMain() {
         // 通知主图更新收藏点
-        List<Favorite> tmpList = FavoriteManager.getInstance().getFavoriteNotTop();
-        ArrayList<GmBizUserFavoritePoint> list = new ArrayList<>();
+        final List<Favorite> tmpList = FavoriteManager.getInstance().getFavoriteNotTop();
+        final ArrayList<GmBizUserFavoritePoint> list = new ArrayList<>();
         tmpList.forEach((rectFav -> {
-            GmBizUserFavoritePoint point = new GmBizUserFavoritePoint();
-            point.favoriteType = rectFav.commonName;
-            point.lon = rectFav.point_x;
-            point.lat = rectFav.point_y;
+            final GmBizUserFavoritePoint point = new GmBizUserFavoritePoint();
+            point.favoriteType = rectFav.getMCommonName();
+            point.lon = rectFav.getMPointX();
+            point.lat = rectFav.getMPointY();
             list.add(point);
         }));
-        layerAdapter.updateFavoriteMain(MapTypeId.MAIN_SCREEN_MAIN_MAP, list);
+        mLayerAdapter.updateFavoriteMain(MapTypeId.MAIN_SCREEN_MAIN_MAP, list);
     }
 }

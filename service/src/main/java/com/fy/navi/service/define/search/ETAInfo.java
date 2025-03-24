@@ -10,33 +10,74 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
 /**
- * @Author: baipeng0904
- * @Description: ETAInfo:到达目的地信息
- * @CreateDate: 2025/2/12 13:33
+ * @author baipeng0904
+ * @version \$Revision1.0\$
  */
 
 @Data
 @NoArgsConstructor
 @Accessors(chain = true)
 public class ETAInfo implements Parcelable {
-    private int distance; //距离终点距离
-    private String travelTime; //预计行程时间
-    private int leftCharge; //剩余电量
+    private int mDistance; //距离终点距离
+    private String mTravelTime; //预计行程时间
+    private int mLeftCharge; //剩余电量
 
-    protected ETAInfo(Parcel in) {
-       distance = in.readInt();
-        travelTime = in.readString();
-        leftCharge = in.readInt();
+    public int getDistance() {
+        return mDistance;
+    }
+
+    /**
+     * 设置距离
+     * @param distance 距离
+     * @return ETAInfo
+     */
+    public ETAInfo setDistance(final int distance) {
+        this.mDistance = distance;
+        return this;
+    }
+
+    public String getTravelTime() {
+        return mTravelTime;
+    }
+
+    /**
+     * 设置旅行时间
+     * @param travelTime 旅行时间
+     * @return ETAInfo
+     */
+    public ETAInfo setTravelTime(final String travelTime) {
+        this.mTravelTime = travelTime;
+        return this;
+    }
+
+    public int getLeftCharge() {
+        return mLeftCharge;
+    }
+
+    /**
+     * 设置剩余电量
+     * @param leftCharge 剩余电量
+     * @return ETAInfo
+     */
+    public ETAInfo setLeftCharge(final int leftCharge) {
+        this.mLeftCharge = leftCharge;
+        return this;
+    }
+
+    protected ETAInfo(final Parcel in) {
+       mDistance = in.readInt();
+        mTravelTime = in.readString();
+        mLeftCharge = in.readInt();
     }
 
     public static final Creator<ETAInfo> CREATOR = new Creator<ETAInfo>() {
         @Override
-        public ETAInfo createFromParcel(Parcel in) {
+        public ETAInfo createFromParcel(final Parcel in) {
             return new ETAInfo(in);
         }
 
         @Override
-        public ETAInfo[] newArray(int size) {
+        public ETAInfo[] newArray(final int size) {
             return new ETAInfo[size];
         }
     };
@@ -47,9 +88,9 @@ public class ETAInfo implements Parcelable {
     }
 
     @Override
-    public void writeToParcel(@NonNull Parcel parcel, int i) {
-        parcel.writeInt(distance);
-        parcel.writeString(travelTime);
-        parcel.writeInt(leftCharge);
+    public void writeToParcel(@NonNull final Parcel parcel, final int i) {
+        parcel.writeInt(mDistance);
+        parcel.writeString(mTravelTime);
+        parcel.writeInt(mLeftCharge);
     }
 }

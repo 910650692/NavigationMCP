@@ -37,20 +37,20 @@ public class SdkSoLoadUtils {
             System.load(debugSoPath);
         } catch (Throwable e) {
             ThreadManager.getInstance().postUi(() ->
-                    Toast.makeText(AppContext.mContext, "libs加载外部so库崩溃", Toast.LENGTH_LONG));
+                    Toast.makeText(AppContext.getInstance().getMContext(), "libs加载外部so库崩溃", Toast.LENGTH_LONG));
             isException = true;
         } finally {
             if (!isException) {
                 final String message = "加载外部so库-" + libName;
                 ThreadManager.getInstance().postUi(() ->
-                        Toast.makeText(AppContext.mContext, message, Toast.LENGTH_LONG));
+                        Toast.makeText(AppContext.getInstance().getMContext(), message, Toast.LENGTH_LONG));
             }
         }
         return isException;
     }
 
     private static String getLibsCopyPath() {
-        return "/data/data/" + AppContext.mApplication.getPackageName() + "/sdkLibs";
+        return "/data/data/" + AppContext.getInstance().getMApplication().getPackageName() + "/sdkLibs";
     }
 
     public static void loadLibrary() {

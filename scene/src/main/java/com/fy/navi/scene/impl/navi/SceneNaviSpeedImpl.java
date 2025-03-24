@@ -28,11 +28,14 @@ public class SceneNaviSpeedImpl extends BaseSceneModel<SceneNaviSpeedView> {
     private int mCurCameraLimitSpeed = 0;
     private ISceneCallback mISceneCallback;
 
-    public SceneNaviSpeedImpl(SceneNaviSpeedView mScreenView) {
-        super(mScreenView);
+    public SceneNaviSpeedImpl(final SceneNaviSpeedView screenView) {
+        super(screenView);
     }
 
-    public void onNaviSpeedCameraInfo(SpeedOverallEntity speedCameraInfo) {
+    /**
+     * @param speedCameraInfo 限速信息
+     */
+    public void onNaviSpeedCameraInfo(final SpeedOverallEntity speedCameraInfo) {
         if (mISceneCallback == null) {
             return;
         }
@@ -40,7 +43,7 @@ public class SceneNaviSpeedImpl extends BaseSceneModel<SceneNaviSpeedView> {
             updateSceneVisible(false);
             return;
         }
-        int speedType = speedCameraInfo.getSpeedType();
+        final int speedType = speedCameraInfo.getSpeedType();
         Logger.i(TAG, "speedType " + speedType);
         if (speedType == NaviConstant.SpeedType.SPEED_OVERALL) {
             getLimitSpeed(speedCameraInfo.getLimitSpeedList());
@@ -70,7 +73,11 @@ public class SceneNaviSpeedImpl extends BaseSceneModel<SceneNaviSpeedView> {
         }
     }
 
-    private int getLimitSpeed(ArrayList<Short> speeds) {
+    /**
+     * @param speeds 限速值
+     * @return 限速值
+     */
+    private int getLimitSpeed(final ArrayList<Short> speeds) {
         if (!ConvertUtils.isEmpty(speeds)) {
             for (int speed : speeds) {
                 if (isValidSpeed(speed) && speed > mLimitSpeed) {
@@ -83,15 +90,25 @@ public class SceneNaviSpeedImpl extends BaseSceneModel<SceneNaviSpeedView> {
         return mLimitSpeed;
     }
 
-    private boolean isValidSpeed(int speed) {
+    /**
+     * @param speed 速度值
+     * @return 是否有效
+     */
+    private boolean isValidSpeed(final int speed) {
         return 0 < speed && speed < 0xff;
     }
 
-    public void addSceneCallback(ISceneCallback sceneCallback) {
+    /**
+     * @param sceneCallback 回调
+     */
+    public void addSceneCallback(final ISceneCallback sceneCallback) {
         mISceneCallback = sceneCallback;
     }
 
-    private void updateSceneVisible(boolean isVisible) {
+    /**
+     * @param isVisible 是否可见
+     */
+    private void updateSceneVisible(final boolean isVisible) {
         mScreenView.getNaviSceneEvent().notifySceneStateChange((isVisible ? INaviSceneEvent.SceneStateChangeType.SceneShowState :
                 INaviSceneEvent.SceneStateChangeType.SceneHideState), NaviSceneId.NAVI_SCENE_SPEED);
     }

@@ -19,26 +19,30 @@ import java.util.List;
 public class FavoriteDataAdapter extends RecyclerView.Adapter<FavoriteDataAdapter.Holder> {
 
     private static final String TAG = FavoriteDataAdapter.class.getSimpleName();
-    private List<PoiInfoEntity> favoriteInfoList;
-    private OnItemClickListener itemClickListener;
+    private List<PoiInfoEntity> mFavoriteInfoList;
+    private OnItemClickListener mItemClickListener;
 
     public FavoriteDataAdapter() {
-        this.favoriteInfoList = new ArrayList<>();
+        this.mFavoriteInfoList = new ArrayList<>();
     }
 
-    public void setData(List<PoiInfoEntity> list) {
-        favoriteInfoList = list;
+    /**
+     * setData
+     * @param list list
+     */
+    public void setData(final List<PoiInfoEntity> list) {
+        mFavoriteInfoList = list;
         notifyDataSetChanged();
     }
 
-    public void setItemClickListener(OnItemClickListener itemClickListener) {
-        this.itemClickListener = itemClickListener;
+    public void setItemClickListener(final OnItemClickListener itemClickListener) {
+        this.mItemClickListener = itemClickListener;
     }
 
     @NonNull
     @Override
-    public Holder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        ItemFavoriteBinding routeItemBinding =
+    public Holder onCreateViewHolder(final @NonNull ViewGroup parent,  final int viewType) {
+        final ItemFavoriteBinding routeItemBinding =
                 DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()),
                         R.layout.item_favorite, parent, false);
         return new Holder(routeItemBinding);
@@ -46,83 +50,104 @@ public class FavoriteDataAdapter extends RecyclerView.Adapter<FavoriteDataAdapte
 
     @Override
     public int getItemCount() {
-        if (favoriteInfoList == null) {
+        if (mFavoriteInfoList == null) {
             return 0;
         }
-        return favoriteInfoList.size();
+        return mFavoriteInfoList.size();
     }
 
     @Override
-    public void onBindViewHolder(@NonNull Holder holder, int position) {
-        holder.favoriteBinding.setModel(favoriteInfoList.get(position));
-        holder.favoriteBinding.setLayoutPosition(String.valueOf(position + 1));
-        if (favoriteInfoList.get(position).getFavoriteInfo().getTop_time() != 0) {
-            holder.favoriteBinding.swipeMenuLayout.setBackground(ResourceUtils.Companion.getInstance().getDrawable(R.color.setting_bg_top));
-            holder.favoriteBinding.itemFavoriteTopText.setText("取消");
-            holder.favoriteBinding.itemFavoriteDistance.setVisibility(View.VISIBLE);
-            holder.favoriteBinding.itemFavoriteLine.setVisibility(View.VISIBLE);
-            holder.favoriteBinding.itemFavoriteTopTag.setVisibility(View.VISIBLE);
+    public void onBindViewHolder(final @NonNull Holder holder, final int position) {
+        holder.mFavoriteBinding.setModel(mFavoriteInfoList.get(position));
+        holder.mFavoriteBinding.setLayoutPosition(String.valueOf(position + 1));
+        if (mFavoriteInfoList.get(position).getFavoriteInfo().getTop_time() != 0) {
+            holder.mFavoriteBinding.swipeMenuLayout.setBackground(ResourceUtils.Companion.getInstance().getDrawable(R.color.setting_bg_top));
+            holder.mFavoriteBinding.itemFavoriteTopText.setText("取消");
+            holder.mFavoriteBinding.itemFavoriteDistance.setVisibility(View.VISIBLE);
+            holder.mFavoriteBinding.itemFavoriteLine.setVisibility(View.VISIBLE);
+            holder.mFavoriteBinding.itemFavoriteTopTag.setVisibility(View.VISIBLE);
         } else {
-            holder.favoriteBinding.swipeMenuLayout.setBackground(ResourceUtils.Companion.getInstance().getDrawable(R.color.transparent));
-            holder.favoriteBinding.itemFavoriteTopText.setText("置顶");
-            holder.favoriteBinding.itemFavoriteDistance.setVisibility(View.GONE);
-            holder.favoriteBinding.itemFavoriteLine.setVisibility(View.GONE);
-            holder.favoriteBinding.itemFavoriteTopTag.setVisibility(View.GONE);
+            holder.mFavoriteBinding.swipeMenuLayout.setBackground(ResourceUtils.Companion.getInstance().getDrawable(R.color.transparent));
+            holder.mFavoriteBinding.itemFavoriteTopText.setText("置顶");
+            holder.mFavoriteBinding.itemFavoriteDistance.setVisibility(View.GONE);
+            holder.mFavoriteBinding.itemFavoriteLine.setVisibility(View.GONE);
+            holder.mFavoriteBinding.itemFavoriteTopTag.setVisibility(View.GONE);
         }
         //查看POI详情
-        holder.favoriteBinding.contentLayout.setOnClickListener(v -> {
-            if (itemClickListener != null) {
-                itemClickListener.onItemDetailClick(position);
+        holder.mFavoriteBinding.contentLayout.setOnClickListener(v -> {
+            if (mItemClickListener != null) {
+                mItemClickListener.onItemDetailClick(position);
             }
         });
 
         // 导航到这里
-        holder.favoriteBinding.itemFavoriteNavi.setOnClickListener(v -> {
-            if (itemClickListener != null) {
-                itemClickListener.onItemNaviClick(position);
+        holder.mFavoriteBinding.itemFavoriteNavi.setOnClickListener(v -> {
+            if (mItemClickListener != null) {
+                mItemClickListener.onItemNaviClick(position);
             }
         });
 
-        holder.favoriteBinding.itemFavoriteTop.setOnClickListener(v -> {
+        holder.mFavoriteBinding.itemFavoriteTop.setOnClickListener(v -> {
 
-             if (favoriteInfoList.get(position).getFavoriteInfo().getTop_time() != 0) {
-                if (itemClickListener != null) {
-                    itemClickListener.onItemCancelTopClick(position);
+             if (mFavoriteInfoList.get(position).getFavoriteInfo().getTop_time() != 0) {
+                if (mItemClickListener != null) {
+                    mItemClickListener.onItemCancelTopClick(position);
                 }
-            } else if (itemClickListener != null) {
-                itemClickListener.onItemTopClick(position);
+            } else if (mItemClickListener != null) {
+                mItemClickListener.onItemTopClick(position);
             }
-            holder.favoriteBinding.swipeMenuLayout.smoothClose();
+            holder.mFavoriteBinding.swipeMenuLayout.smoothClose();
         });
 
-        holder.favoriteBinding.itemFavoriteDelete.setOnClickListener(v -> {
-            holder.favoriteBinding.swipeMenuLayout.smoothClose();
-            if (itemClickListener != null) {
-                itemClickListener.onItemDeleteClick(position);
+        holder.mFavoriteBinding.itemFavoriteDelete.setOnClickListener(v -> {
+            holder.mFavoriteBinding.swipeMenuLayout.smoothClose();
+            if (mItemClickListener != null) {
+                mItemClickListener.onItemDeleteClick(position);
             }
         });
 
     }
 
     public static class Holder extends RecyclerView.ViewHolder {
-        public ItemFavoriteBinding favoriteBinding;
+        private ItemFavoriteBinding mFavoriteBinding;
 
-        public Holder(ItemFavoriteBinding favoriteBinding) {
+        public Holder(final ItemFavoriteBinding favoriteBinding) {
             super(favoriteBinding.getRoot());
-            this.favoriteBinding = favoriteBinding;
-            favoriteBinding.setHolder(this);
+            this.mFavoriteBinding = favoriteBinding;
+            mFavoriteBinding.setHolder(this);
         }
     }
 
     public interface OnItemClickListener {
+
+        /**
+         * onItemDetailClick
+         * @param index
+         */
         void onItemDetailClick(int index);
 
+        /**
+         * onItemNaviClick
+         * @param index
+         */
         void onItemNaviClick(int index);
 
+        /**
+         * onItemTopClick
+         * @param index
+         */
         void onItemTopClick(int index);
 
+        /**
+         * onItemCancelTopClick
+         * @param index
+         */
         void onItemCancelTopClick(int index);
 
+        /**
+         * onItemDeleteClick
+         * @param index
+         */
         void onItemDeleteClick(int index);
     }
 }

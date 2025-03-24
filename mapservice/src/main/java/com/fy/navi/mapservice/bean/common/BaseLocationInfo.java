@@ -41,9 +41,11 @@ public class BaseLocationInfo implements Parcelable {
         }
     };
 
-    public BaseLocationInfo() {}
+    public BaseLocationInfo() {
 
-    public BaseLocationInfo(Parcel in) {
+    }
+
+    public BaseLocationInfo(final Parcel in) {
         latitude = in.readDouble();
         longitude = in.readDouble();
         altitude = in.readDouble();
@@ -61,7 +63,7 @@ public class BaseLocationInfo implements Parcelable {
     }
 
     @Override
-    public void writeToParcel(Parcel dest, int flags) {
+    public void writeToParcel(final Parcel dest, final int flags) {
         dest.writeDouble(latitude);
         dest.writeDouble(longitude);
         dest.writeDouble(altitude);

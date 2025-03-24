@@ -5,7 +5,6 @@ import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -13,28 +12,20 @@ import android.view.WindowManager;
 import androidx.annotation.Nullable;
 import androidx.databinding.ViewDataBinding;
 
-import com.android.utils.ResourceUtils;
-import com.android.utils.ScreenUtils;
-
 import java.util.Objects;
 
-/**
- * @Description 公用组件Dialog父类，后续Dialog需要集成BaseFullScreenDialog进行扩展
- * @Author lvww
- * @date 2024/12/31
- */
 public abstract class BaseFullScreenDialog<V extends ViewDataBinding> extends AlertDialog {
     private static final String TAG = BaseFullScreenDialog.class.getSimpleName();
     protected V mViewBinding;
     @Nullable
     protected IBaseDialogClickListener mDialogClickListener;
 
-    protected BaseFullScreenDialog(Context context) {
+    protected BaseFullScreenDialog(final Context context) {
         super(context);
         mViewBinding = initLayout();
     }
 
-    protected void setDialogClickListener(IBaseDialogClickListener dialogClickListener) {
+    protected void setDialogClickListener(final IBaseDialogClickListener dialogClickListener) {
         this.mDialogClickListener = dialogClickListener;
     }
 
@@ -42,7 +33,7 @@ public abstract class BaseFullScreenDialog<V extends ViewDataBinding> extends Al
 
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Objects.requireNonNull(getWindow()).setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
 //        setView(mViewBinding.getRoot());
@@ -70,10 +61,12 @@ public abstract class BaseFullScreenDialog<V extends ViewDataBinding> extends Al
         super.cancel();
     }
 
-    // 设置全屏模式，且状态栏处于沉浸式
+    /**
+     * 设置 Dialog 的宽度和高度，使其全屏显示
+     */
     private void setLayoutParameterFullScreen() {
-        Window window = getWindow();
-        if (window!= null) {
+        final Window window = getWindow();
+        if (window != null) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 // 清除可能存在的透明状态栏和导航栏标志
                 window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS |

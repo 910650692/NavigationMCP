@@ -1,91 +1,94 @@
 package com.fy.navi.service.define.mapdata;
 
-/**
- * @Description
- * @Author fh
- * @date 2024/12/1
- */
 public class MergedStatusBean {
 
-    public boolean bMergedSate;
-    public int adcode;
-    public String cityName;
-    public String packageType;
-    public String errType;
-    public String updateType;
-    public String url;
-    public String errTypeDetill;
-    public String costMergeTime;
+    private boolean mMergedSate;
+    private int mAdCode;
+    private String mCityName;
+    private String mPackageType;
+    private String mErrType;
+    private String mUpdateType;
+    private String mUrl;
+    private String mErrTypeDetill;
+    private String mCostMergeTime;
 
-    public boolean isbMergedSate() {
-        return bMergedSate;
+    /**
+     * 设置参数
+     * @return 返回 boolean型数据
+     */
+    public boolean isMergedSate() {
+        return mMergedSate;
     }
 
-    public void setbMergedSate(boolean bMergedSate) {
-        this.bMergedSate = bMergedSate;
+    /**
+     * 获取参数
+     * @param mergedSate
+     */
+    public void setMergedSate(final boolean mergedSate) {
+        this.mMergedSate = mergedSate;
     }
 
     public int getAdcode() {
-        return adcode;
+        return mAdCode;
     }
 
-    public void setAdcode(int adcode) {
-        this.adcode = adcode;
+    public void setAdcode(final int adcode) {
+        this.mAdCode = adcode;
     }
 
     public String getCityName() {
-        return cityName;
+        return mCityName;
     }
 
-    public void setCityName(String cityName) {
-        this.cityName = cityName;
+    public void setCityName(final String cityName) {
+        this.mCityName = cityName;
     }
 
     public String getPackageType() {
-        return packageType;
+        return mPackageType;
     }
 
-    public void setPackageType(String packageType) {
-        this.packageType = packageType;
+    public void setPackageType(final String packageType) {
+        this.mPackageType = packageType;
     }
 
     public String getErrType() {
-        return errType;
+        return mErrType;
     }
 
-    public void setErrType(String errType) {
-        this.errType = errType;
+    public void setErrType(final String errType) {
+        this.mErrType = errType;
     }
 
     public String getUpdateType() {
-        return updateType;
+        return mUpdateType;
     }
 
-    public void setUpdateType(String updateType) {
-        this.updateType = updateType;
+    public void setUpdateType(final String updateType) {
+        this.mUpdateType = updateType;
     }
 
     public String getUrl() {
-        return url;
+        return mUrl;
     }
 
-    public void setUrl(String url) {
-        this.url = url;
+    public void setUrl(final String url) {
+        this.mUrl = url;
     }
 
     public String getErrTypeDetill() {
-        return errTypeDetill;
+        return mErrTypeDetill;
     }
 
-    public void setErrTypeDetill(String errTypeDetill) {
-        this.errTypeDetill = errTypeDetill;
+    public void setErrTypeDetill(final String errTypeDetill) {
+        this.mErrTypeDetill = errTypeDetill;
     }
 
     public String getCostMergeTime() {
-        return costMergeTime;
+        return mCostMergeTime;
     }
 
-    public void setCostMergeTime(String costMergeTime) {
-        this.costMergeTime = costMergeTime;
+    public void setCostMergeTime(final String costMergeTime) {
+        this.mCostMergeTime = costMergeTime;
     }
 }

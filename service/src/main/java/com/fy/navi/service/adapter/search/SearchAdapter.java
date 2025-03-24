@@ -3,18 +3,21 @@ package com.fy.navi.service.adapter.search;
 import android.util.Pair;
 
 import com.fy.navi.service.AdapterConfig;
-import com.fy.navi.service.define.bean.GeoPoint;
 import com.fy.navi.service.define.search.ETAInfo;
 import com.fy.navi.service.define.search.SearchRequestParameter;
+import com.fy.navi.service.define.utils.BevPowerCarUtils;
+import com.fy.navi.service.logicpaket.signal.SignalPackage;
 
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 
 /**
+ * @author baipeng0904
  * SearchAdapter类提供了一种方式来执行各种搜索操作和管理搜索回调.
  * 封装了对具体搜索API的调用.
+ * @version \$Revision1.0\$
  */
-public class SearchAdapter {
+final public class SearchAdapter {
     // 搜索API包名，用于动态加载实现类
     private static final String SEARCH_API_PKG = Objects.requireNonNull(SearchAdapter.class.getPackage()).getName();
     // 搜索API类名，用于动态加载实现类
@@ -22,20 +25,23 @@ public class SearchAdapter {
     // ISearchApi接口的实现，用于执行搜索操作
     private final ISearchApi mSearchApi;
 
+    private SignalPackage mSignalPackage;
+
     /**
      * 私有构造方法，防止外部实例化.
      * 初始化mSearchApi，通过AdapterConfig动态加载指定的搜索API实现类.
      */
     private SearchAdapter() {
         mSearchApi = (ISearchApi) AdapterConfig.getObject(SEARCH_API_PKG, SEARCH_API_CLS);
+        mSignalPackage = SignalPackage.getInstance();
     }
 
     /**
      * SearchAdapterHolder内部类用于实现单例模式的懒加载.
      */
-    private static class SearchAdapterHolder {
+    final private static class SearchAdapterHolder {
         // 单例实例
-        private static final SearchAdapter mInstance = new SearchAdapter();
+        private static final SearchAdapter INSTANCE = new SearchAdapter();
     }
 
     /**
@@ -44,7 +50,7 @@ public class SearchAdapter {
      * @return SearchAdapter的实例
      */
     public static SearchAdapter getInstance() {
-        return SearchAdapterHolder.mInstance;
+        return SearchAdapterHolder.INSTANCE;
     }
 
     /**
@@ -52,7 +58,7 @@ public class SearchAdapter {
      *
      * @param callback 搜索结果回调接口实现
      */
-    public void registerCallBack(ISearchResultCallback callback) {
+    public void registerCallBack(final ISearchResultCallback callback) {
         mSearchApi.registerSearchObserver(callback);
     }
 
@@ -61,7 +67,7 @@ public class SearchAdapter {
      *
      * @param callback 搜索结果回调接口实现
      */
-    public void unRegisterSearchObserver(ISearchResultCallback callback) {
+    public void unRegisterSearchObserver(final ISearchResultCallback callback) {
         mSearchApi.unRegisterSearchObserver(callback);
     }
 
@@ -72,6 +78,9 @@ public class SearchAdapter {
         mSearchApi.init();
     }
 
+    /**
+     * 解注册搜索API.
+     */
     public void unInit() {
         mSearchApi.unInitSearchApi();
     }
@@ -82,7 +91,7 @@ public class SearchAdapter {
      * @param parameterBuilder 参数{@link SearchRequestParameter}
      * @return taskID
      */
-    public int suggestionSearch(SearchRequestParameter parameterBuilder) {
+    public int suggestionSearch(final SearchRequestParameter parameterBuilder) {
         return mSearchApi.suggestionSearch(parameterBuilder);
     }
 
@@ -92,7 +101,7 @@ public class SearchAdapter {
      * @param parameterBuilder 参数{@link SearchRequestParameter}
      * @return taskID
      */
-    public int poiDetailSearch(SearchRequestParameter parameterBuilder) {
+    public int poiDetailSearch(final SearchRequestParameter parameterBuilder) {
         return mSearchApi.poiDetailSearch(parameterBuilder);
     }
 
@@ -102,7 +111,7 @@ public class SearchAdapter {
      * @param parameterBuilder 参数{@link SearchRequestParameter}
      * @return taskID
      */
-    public int poiIdSearch(SearchRequestParameter parameterBuilder) {
+    public int poiIdSearch(final SearchRequestParameter parameterBuilder) {
         return mSearchApi.poiIdSearch(parameterBuilder);
     }
 
@@ -112,7 +121,7 @@ public class SearchAdapter {
      * @param parameterBuilder 参数{@link SearchRequestParameter}
      * @return taskID
      */
-    public int geoSearch(SearchRequestParameter parameterBuilder) {
+    public int geoSearch(final SearchRequestParameter parameterBuilder) {
         return mSearchApi.geoSearch(parameterBuilder);
     }
 
@@ -122,7 +131,7 @@ public class SearchAdapter {
      * @param parameter 参数{@link SearchRequestParameter}
      * @return taskID
      */
-    public int deppInfoSearch(SearchRequestParameter parameter) {
+    public int deppInfoSearch(final SearchRequestParameter parameter) {
         return mSearchApi.deppInfoSearch(parameter);
     }
 
@@ -132,7 +141,7 @@ public class SearchAdapter {
      * @param requestParameter 参数{@link SearchRequestParameter}
      * @return taskID
      */
-    public int doLineDeepInfoSearch(SearchRequestParameter requestParameter) {
+    public int doLineDeepInfoSearch(final SearchRequestParameter requestParameter) {
         return mSearchApi.doLineDeepInfoSearch(requestParameter);
     }
 
@@ -142,7 +151,7 @@ public class SearchAdapter {
      * @param parameterBuilder 参数{@link SearchRequestParameter}
      * @return taskID
      */
-    public int keywordSearch(SearchRequestParameter parameterBuilder) {
+    public int keywordSearch(final SearchRequestParameter parameterBuilder) {
         return mSearchApi.keyWordSearch(parameterBuilder);
     }
 
@@ -152,7 +161,7 @@ public class SearchAdapter {
      * @param parameterBuilder 参数{@link SearchRequestParameter}
      * @return taskId
      */
-    public int alongWaySearch(SearchRequestParameter parameterBuilder) {
+    public int alongWaySearch(final SearchRequestParameter parameterBuilder) {
         return mSearchApi.alongWaySearch(parameterBuilder);
     }
 
@@ -162,7 +171,7 @@ public class SearchAdapter {
      * @param parameterBuilder 参数{@link SearchRequestParameter}
      * @return taskId
      */
-    public int aroundSearch(SearchRequestParameter parameterBuilder) {
+    public int aroundSearch(final SearchRequestParameter parameterBuilder) {
         return mSearchApi.aroundSearch(parameterBuilder);
     }
 
@@ -172,7 +181,7 @@ public class SearchAdapter {
      * @param searchRequestParameter 参数{@link SearchRequestParameter}
      * @return taskId
      */
-    public int aggregateSearch(SearchRequestParameter searchRequestParameter) {
+    public int aggregateSearch(final SearchRequestParameter searchRequestParameter) {
         return mSearchApi.aggregateSearch(searchRequestParameter);
     }
 
@@ -182,7 +191,7 @@ public class SearchAdapter {
      * @param searchRequestParameter 参数{@link SearchRequestParameter}
      * @return taskId
      */
-    public int enRouteKeywordSearch(SearchRequestParameter searchRequestParameter) {
+    public int enRouteKeywordSearch(final SearchRequestParameter searchRequestParameter) {
         return mSearchApi.enRouteKeywordSearch(searchRequestParameter);
     }
 
@@ -198,7 +207,7 @@ public class SearchAdapter {
      *
      * @param taskId taskID
      */
-    public void abortSearch(int taskId) {
+    public void abortSearch(final int taskId) {
         mSearchApi.abortSearch(taskId);
     }
 
@@ -208,7 +217,7 @@ public class SearchAdapter {
      * @param searchRequestParameter SearchRequestParameter
      * @return distance ，travelTime
      */
-    public CompletableFuture<Pair<String, String>> getTravelTimeFuture(SearchRequestParameter searchRequestParameter) {
+    public CompletableFuture<Pair<String, String>> getTravelTimeFuture(final SearchRequestParameter searchRequestParameter) {
         return mSearchApi.getTravelTimeFuture(searchRequestParameter);
     }
 
@@ -218,7 +227,13 @@ public class SearchAdapter {
      * @param searchRequestParameter SearchRequestParameter
      * @return ETAInfo
      */
-    public CompletableFuture<ETAInfo> getTravelTimeFutureIncludeChargeLeft(SearchRequestParameter searchRequestParameter) {
+    public CompletableFuture<ETAInfo> getTravelTimeFutureIncludeChargeLeft(final SearchRequestParameter searchRequestParameter) {
+        if (mSignalPackage.getBatteryEnergy() >= 0) {
+            BevPowerCarUtils.getInstance().initlialHVBattenergy = mSignalPackage.getBatteryEnergy();
+        }
+        if (mSignalPackage.getMaxBatteryEnergy() > 0) {
+            BevPowerCarUtils.getInstance().maxBattenergy = mSignalPackage.getMaxBatteryEnergy();
+        }
         return mSearchApi.getTravelTimeFutureIncludeChargeLeft(searchRequestParameter);
     }
 }

@@ -7,14 +7,9 @@ import com.fy.navi.service.greendao.DaoMaster;
 
 import org.greenrobot.greendao.database.Database;
 
-import java.util.Date;
 import java.util.List;
 
-/**
- * @Author: fenghong0322
- * @Description: 收藏数据库管理
- * @CreateDate: 2025-02-13
- */
+
 public class FavoriteManager {
     private static final String TAG = FavoriteManager.class.getSimpleName();
     private static final String DB_NAME = "favorite.db";
@@ -23,6 +18,7 @@ public class FavoriteManager {
 
     /**
      * Get instance.
+     * @return instance
      */
     public static FavoriteManager getInstance() {
         if (mManager == null) {
@@ -41,27 +37,27 @@ public class FavoriteManager {
      */
     public void init() {
         // 数据库对象
-        DaoMaster.DevOpenHelper helper = new DaoMaster.DevOpenHelper(AppContext.mContext, DB_NAME);
-        Database db = helper.getWritableDb();
-        DaoMaster daoMaster = new DaoMaster(db);
+        final DaoMaster.DevOpenHelper helper = new DaoMaster.DevOpenHelper(AppContext.getInstance().getMContext(), DB_NAME);
+        final Database db = helper.getWritableDb();
+        final DaoMaster daoMaster = new DaoMaster(db);
         mFavoriteDao = daoMaster.newSession().getFavoriteDao();
     }
 
     /**
      * Use key and value for data favorite.
+     * @param info 收藏点信息
      */
-    public void insertValue(Favorite info) {
+    public void insertValue(final Favorite info) {
         Logger.d(TAG, "insertOrReplace");
         insertOrReplace(info);
     }
 
     /**
      * 修改或者更新数据
-     *
      * @param info 收藏点信息
      */
-    public void insertOrReplace(Favorite info) {
-        Favorite favorite = GsonUtils.convertToT(info, Favorite.class);
+    public void insertOrReplace(final Favorite info) {
+        final Favorite favorite = GsonUtils.convertToT(info, Favorite.class);
         mFavoriteDao.insertOrReplace(favorite);
     }
 
@@ -70,11 +66,14 @@ public class FavoriteManager {
      * @param itemId  收藏点唯一码
      * @param customName  自定义名称 重命名时编辑的字段
      */
-    public void updateCustomName(String itemId, String customName) {
-        Favorite unique = mFavoriteDao.queryBuilder()
-                .where(FavoriteDao.Properties.ItemId.eq(itemId))
+    public void updateCustomName(final String itemId, final String customName) {
+        final Favorite unique = mFavoriteDao.queryBuilder()
+                .where(FavoriteDao.Properties.MItemId.eq(itemId))
                 .unique();
-        unique.customName = customName;
+        if (unique == null) {
+            return;
+        }
+        unique.setMCustomName(customName);
         mFavoriteDao.update(unique);
     }
 
@@ -83,11 +82,14 @@ public class FavoriteManager {
      * @param itemId  收藏点唯一码
      * @param topTime  置顶时间
      */
-    public void updateTopTime(String itemId, long topTime) {
-        Favorite unique = mFavoriteDao.queryBuilder()
-                .where(FavoriteDao.Properties.ItemId.eq(itemId))
+    public void updateTopTime(final String itemId, final long topTime) {
+        final Favorite unique = mFavoriteDao.queryBuilder()
+                .where(FavoriteDao.Properties.MItemId.eq(itemId))
                 .unique();
-        unique.topTime = topTime;
+        if (unique == null) {
+            return;
+        }
+        unique.setMTopTime(topTime);
         mFavoriteDao.update(unique);
     }
 
@@ -96,9 +98,9 @@ public class FavoriteManager {
      *
      * @param itemId  收藏点唯一码
      */
-    public void deleteValue(String itemId) {
+    public void deleteValue(final String itemId) {
         mFavoriteDao.queryBuilder()
-                .where(FavoriteDao.Properties.ItemId.eq(itemId))
+                .where(FavoriteDao.Properties.MItemId.eq(itemId))
                 .buildDelete()
                 .executeDeleteWithoutDetachingEntities();
     }
@@ -112,13 +114,12 @@ public class FavoriteManager {
 
     /**
      * 通过itemId查找其对应info
-     *
      * @param itemId 收藏点唯一码
-     * @return
+     * @return Favorite
      */
-    public Favorite getValueByKey(String itemId) {
+    public Favorite getValueByKey(final String itemId) {
         return mFavoriteDao.queryBuilder()
-                .where(FavoriteDao.Properties.ItemId.eq(itemId))
+                .where(FavoriteDao.Properties.MItemId.eq(itemId))
                 .unique();
     }
 
@@ -127,9 +128,9 @@ public class FavoriteManager {
      * @param itemId 收藏点唯一码
      * @return true 已收藏，false 未收藏
      */
-    public boolean isFavorite(String itemId) {
-        Favorite favorite = mFavoriteDao.queryBuilder()
-                .where(FavoriteDao.Properties.ItemId.eq(itemId))
+    public boolean isFavorite(final String itemId) {
+        final Favorite favorite = mFavoriteDao.queryBuilder()
+                .where(FavoriteDao.Properties.MItemId.eq(itemId))
                 .unique();
         return favorite != null;
     }
@@ -137,11 +138,11 @@ public class FavoriteManager {
     /**
      * 通过commonName查找其对应 list
      * @param commonName 收藏点类型（1家，2公司，3常去地址，0普通收藏点）
-     * @return
+     * @return Favorite
      */
-    public List<Favorite> getValueByCommonName(int commonName) {
-        List<Favorite> saveData = mFavoriteDao.queryBuilder()
-                .where(FavoriteDao.Properties.CommonName.eq(commonName))
+    public List<Favorite> getValueByCommonName(final int commonName) {
+        final List<Favorite> saveData = mFavoriteDao.queryBuilder()
+                .where(FavoriteDao.Properties.MCommonName.eq(commonName))
                 .list();
         return saveData;
     }
@@ -152,8 +153,8 @@ public class FavoriteManager {
      */
     public List<Favorite> getFavoriteNotTop() {
         return mFavoriteDao.queryBuilder()
-                .where(FavoriteDao.Properties.CommonName.eq(0),
-                        FavoriteDao.Properties.TopTime.eq(0))
+                .where(FavoriteDao.Properties.MCommonName.eq(0),
+                        FavoriteDao.Properties.MTopTime.eq(0))
                 .list();
     }
 
@@ -163,25 +164,24 @@ public class FavoriteManager {
      */
     public List<Favorite> getValueByTopTime() {
         return mFavoriteDao.queryBuilder()
-                .where(FavoriteDao.Properties.CommonName.eq(0),
-                        FavoriteDao.Properties.TopTime.notEq(0))
+                .where(FavoriteDao.Properties.MCommonName.eq(0),
+                        FavoriteDao.Properties.MTopTime.notEq(0))
                 .list();
     }
 
     /**
      * 本地删除指定的类型全部数据
-     * @param favoriteType
+     * @param favoriteType 收藏点类型（1家，2公司，3常去地址，0普通收藏点）
      */
-    public void deleteByFavoriteType(int favoriteType){
+    public void deleteByFavoriteType(final int favoriteType){
         mFavoriteDao.queryBuilder()
-                .where(FavoriteDao.Properties.CommonName.eq(favoriteType))
+                .where(FavoriteDao.Properties.MCommonName.eq(favoriteType))
                 .buildDelete()
                 .executeDeleteWithoutDetachingEntities();
     }
 
     /**
      * 获取全部(原始)数据
-     *
      * @return all data list,String
      */
     public List<Favorite> loadAll() {

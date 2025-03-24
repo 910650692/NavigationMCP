@@ -6,7 +6,6 @@ import android.os.Parcelable;
 
 import androidx.annotation.NonNull;
 
-import com.autonavi.gbl.search.model.SearchRetainParam;
 import com.fy.navi.service.define.bean.GeoPoint;
 
 import java.util.List;
@@ -16,7 +15,8 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
 /**
- * @Author: baipeng0904
+ * @author baipeng0904
+ * @version \$Revision1.0\$
  * @Description: 使用 Lombok 自动生成样板代码：
  * •@Data：自动生成 Getter、Setter、toString、equals 和 hashCode。
  * •@NoArgsConstructor：生成无参构造方法。
@@ -26,95 +26,557 @@ import lombok.experimental.Accessors;
 @NoArgsConstructor
 @Accessors(chain = true)
 public class PoiInfoEntity implements Parcelable {
-    private int poiType;           // poi 类型
-    private String pid;            // 父POI的Id
-    private String name;           // 名称
-    private String phone;          // 电话
-    private String address;        // 地址
-    private String category;       // 分类，筛选使用
-    private int adCode;            // 城市代码
-    private String distance;       // 距离，默认带单位
-    private String typeCode;       // POI搜索类型
-    private String poiTag;         // POI标签
-    private String shortName;      // 简称
-    private String businessTime;    // 营业时间
-    private double ratio;          // 选择率
-    private String openStatus;     // 营业状态
-    private int hisMark;           // 个性化标签（美食、洗车）
-    private String scenicMark;     // 个性化标签（景区）
-    private int averageCost;       // 人均消费
-    private String rating;         // 星级评分
-    private String imageUrl;       // 图片信息
-    private GeoPoint point;        // 经纬度
-    private String pointTypeCode;  // POI类型（扎标专用）
-    private String industry;       // 行业类型
+    private int mPoiType;           // poi 类型
+    private String mPid;            // 父POI的Id
+    private String mName;           // 名称
+    private String mPhone;          // 电话
+    private String mAddress;        // 地址
+    private String mCategory;       // 分类，筛选使用
+    private int mAdCode;            // 城市代码
+    private String mDistance;       // 距离，默认带单位
+    private String mTypeCode;       // POI搜索类型
+    private String mPoiTag;         // POI标签
+    private String mShortName;      // 简称
+    private String mBusinessTime;    // 营业时间
+    private double mRatio;          // 选择率
+    private String mOpenStatus;     // 营业状态
+    private int mHisMark;           // 个性化标签（美食、洗车）
+    private String mScenicMark;     // 个性化标签（景区）
+    private int mAverageCost;       // 人均消费
+    private String mRating;         // 星级评分
+    private String mImageUrl;       // 图片信息
+    private GeoPoint mPoint;        // 经纬度
+    private String mPointTypeCode;  // POI类型（扎标专用）
+    private String mIndustry;       // 行业类型
 
     // -----------语音排序使用------------
-    private int sort_distance;     // 距离，语音使用
-    private int sort_rate;        // 评价，语音使用
-    private int sort_price;      // 价格，语音使用
+    private int mSortDistance;     // 距离，语音使用
+    private int mSortRate;        // 评价，语音使用
+    private int mSortPrice;      // 价格，语音使用
 
     //-----------
-    private CityInfo cityInfo;
+    private CityInfo mCityInfo;
     // 收藏相关
-    private FavoriteInfo favoriteInfo;
+    private FavoriteInfo mFavoriteInfo;
     //回传参数，POI详情搜索必传，来自于关键字搜索结果
-    private SearchRetainParamInfo retainParam;
+    private SearchRetainParamInfo mRetainParam;
     // 服务列表区信息
-    private List<ServiceAreaInfo> serviceAreaInfoList;
+    private List<ServiceAreaInfo> mServiceAreaInfoList;
     // 停车场列表信息
-    private List<ParkingInfo> parkingInfoList;
+    private List<ParkingInfo> mParkingInfoList;
     // 充电列表站信息
-    private List<ChargeInfo> chargeInfoList;
+    private List<ChargeInfo> mChargeInfoList;
     // 加油站列表信息
-    private List<GasStationInfo> stationList;
+    private List<GasStationInfo> mStationList;
     // 子POI列表信息
-    private List<ChildInfo> childInfoList;
+    private List<ChildInfo> mChildInfoList;
 
-    protected PoiInfoEntity(Parcel in) {
-        poiType = in.readInt();
-        pid = in.readString();
-        name = in.readString();
-        phone = in.readString();
-        address = in.readString();
-        category = in.readString();
-        adCode = in.readInt();
-        distance = in.readString();
-        typeCode = in.readString();
-        poiTag = in.readString();
-        shortName = in.readString();
-        businessTime = in.readString();
-        ratio = in.readDouble();
-        openStatus = in.readString();
-        hisMark = in.readInt();
-        scenicMark = in.readString();
-        averageCost = in.readInt();
-        rating = in.readString();
-        imageUrl = in.readString();
-        point = in.readParcelable(GeoPoint.class.getClassLoader());
-        pointTypeCode = in.readString();
-        industry = in.readString();
-        sort_distance = in.readInt();
-        sort_rate = in.readInt();
-        sort_price = in.readInt();
-        cityInfo = in.readParcelable(CityInfo.class.getClassLoader());
-        favoriteInfo = in.readParcelable(FavoriteInfo.class.getClassLoader());
-        retainParam = in.readParcelable(SearchRetainParamInfo.class.getClassLoader());
-        serviceAreaInfoList = in.createTypedArrayList(ServiceAreaInfo.CREATOR);
-        parkingInfoList = in.createTypedArrayList(ParkingInfo.CREATOR);
-        chargeInfoList = in.createTypedArrayList(ChargeInfo.CREATOR);
-        stationList = in.createTypedArrayList(GasStationInfo.CREATOR);
-        childInfoList = in.createTypedArrayList(ChildInfo.CREATOR);
+    public int getPoiType() {
+        return mPoiType;
+    }
+
+    /**
+     * 设置poi类型
+     * @param poiType poi类型
+     * @return PoiInfoEntity
+     */
+    public PoiInfoEntity setPoiType(final int poiType) {
+        this.mPoiType = poiType;
+        return this;
+    }
+
+    public String getPid() {
+        return mPid;
+    }
+
+    /**
+     * 设置poi的id
+     * @param pid poi的id
+     * @return PoiInfoEntity
+     */
+    public PoiInfoEntity setPid(final String pid) {
+        this.mPid = pid;
+        return this;
+    }
+
+    public String getName() {
+        return mName;
+    }
+
+    /**
+     * 设置poi的名称
+     * @param name poi的名称
+     * @return PoiInfoEntity
+     */
+    public PoiInfoEntity setName(final String name) {
+        this.mName = name;
+        return this;
+    }
+
+    public String getPhone() {
+        return mPhone;
+    }
+
+    /**
+     * 设置poi的电话
+     * @param phone poi的电话
+     * @return PoiInfoEntity
+     */
+    public PoiInfoEntity setPhone(final String phone) {
+        this.mPhone = phone;
+        return this;
+    }
+
+    public String getAddress() {
+        return mAddress;
+    }
+
+    /**
+     * 设置poi的地址
+     * @param address poi的地址
+     * @return PoiInfoEntity
+     */
+    public PoiInfoEntity setAddress(final String address) {
+        this.mAddress = address;
+        return this;
+    }
+
+    public String getCategory() {
+        return mCategory;
+    }
+
+    /**
+     * 设置poi的类别
+     * @param category poi的类别
+     * @return PoiInfoEntity
+     */
+    public PoiInfoEntity setCategory(final String category) {
+        this.mCategory = category;
+        return this;
+    }
+
+    public int getAdCode() {
+        return mAdCode;
+    }
+
+    /**
+     * 设置poi的adcode
+     * @param adCode poi的adcode
+     * @return PoiInfoEntity
+     */
+    public PoiInfoEntity setAdCode(final int adCode) {
+        this.mAdCode = adCode;
+        return this;
+    }
+
+    public String getDistance() {
+        return mDistance;
+    }
+
+    /**
+     * 设置poi的距离
+     * @param distance poi的距离
+     * @return PoiInfoEntity
+     */
+    public PoiInfoEntity setDistance(final String distance) {
+        this.mDistance = distance;
+        return this;
+    }
+
+    public String getTypeCode() {
+        return mTypeCode;
+    }
+
+    /**
+     * 设置poi的typeCode
+     * @param typeCode poi的typeCode
+     * @return PoiInfoEntity
+     */
+    public PoiInfoEntity setTypeCode(final String typeCode) {
+        this.mTypeCode = typeCode;
+        return this;
+    }
+
+    public String getPoiTag() {
+        return mPoiTag;
+    }
+
+    /**
+     * 设置poi的tag
+     * @param poiTag poi的tag
+     * @return PoiInfoEntity
+     */
+    public PoiInfoEntity setPoiTag(final String poiTag) {
+        this.mPoiTag = poiTag;
+        return this;
+    }
+
+    public String getShortName() {
+        return mShortName;
+    }
+
+    /**
+     * 设置poi的shortName
+     * @param shortName poi的shortName
+     * @return PoiInfoEntity
+     */
+    public PoiInfoEntity setShortName(final String shortName) {
+        this.mShortName = shortName;
+        return this;
+    }
+
+    public String getBusinessTime() {
+        return mBusinessTime;
+    }
+
+    /**
+     * 设置poi的营业时间
+     * @param businessTime  poi的营业时间
+     * @return PoiInfoEntity
+     */
+    public PoiInfoEntity setBusinessTime(final String businessTime) {
+        this.mBusinessTime = businessTime;
+        return this;
+    }
+
+    public double getRatio() {
+        return mRatio;
+    }
+
+    /**
+     * 设置poi的选择率
+     * @param ratio poi的选择率
+     * @return PoiInfoEntity
+     */
+    public PoiInfoEntity setRatio(final double ratio) {
+        this.mRatio = ratio;
+        return this;
+    }
+
+    public String getOpenStatus() {
+        return mOpenStatus;
+    }
+
+    /**
+     * 设置poi的营业状态
+     * @param openStatus poi的营业状态
+     * @return PoiInfoEntity
+     */
+    public PoiInfoEntity setOpenStatus(final String openStatus) {
+        this.mOpenStatus = openStatus;
+        return this;
+    }
+
+    public String getScenicMark() {
+        return mScenicMark;
+    }
+
+    /**
+     * 设置个性化标签（景区）
+     * @param scenicMark 个性化标签（景区）
+     * @return PoiInfoEntity
+     */
+    public PoiInfoEntity setScenicMark(final String scenicMark) {
+        this.mScenicMark = scenicMark;
+        return this;
+    }
+
+    public int getHisMark() {
+        return mHisMark;
+    }
+
+    /**
+     * 设置历史标签
+     * @param hisMark 历史标签
+     * @return PoiInfoEntity
+     */
+    public PoiInfoEntity setHisMark(final int hisMark) {
+        this.mHisMark = hisMark;
+        return this;
+    }
+
+    public int getAverageCost() {
+        return mAverageCost;
+    }
+
+    /**
+     * 设置平均消费
+     * @param averageCost 平均消费
+     * @return PoiInfoEntity
+     */
+    public PoiInfoEntity setAverageCost(final int averageCost) {
+        this.mAverageCost = averageCost;
+        return this;
+    }
+
+    public String getImageUrl() {
+        return mImageUrl;
+    }
+
+    /**
+     * 设置poi的图片url
+     * @param imageUrl poi的图片url
+     * @return PoiInfoEntity
+     */
+    public PoiInfoEntity setImageUrl(final String imageUrl) {
+        this.mImageUrl = imageUrl;
+        return this;
+    }
+
+    public String getRating() {
+        return mRating;
+    }
+
+    /**
+     * 设置poi的评分
+     * @param rating poi的评分
+     * @return PoiInfoEntity
+     */
+    public PoiInfoEntity setRating(final String rating) {
+        this.mRating = rating;
+        return this;
+    }
+
+    public GeoPoint getPoint() {
+        return mPoint;
+    }
+
+    /**
+     * 设置poi的地理位置
+     * @param point poi的地理位置
+     * @return PoiInfoEntity
+     */
+    public PoiInfoEntity setPoint(final GeoPoint point) {
+        this.mPoint = point;
+        return this;
+    }
+
+    public String getPointTypeCode() {
+        return mPointTypeCode;
+    }
+
+    /**
+     * 设置poi的pointTypeCode
+     * @param pointTypeCode poi的pointTypeCode
+     * @return PoiInfoEntity
+     */
+    public PoiInfoEntity setPointTypeCode(final String pointTypeCode) {
+        this.mPointTypeCode = pointTypeCode;
+        return this;
+    }
+
+    public String getIndustry() {
+        return mIndustry;
+    }
+
+    /**
+     * 设置POI的行业类型
+     * @param industry POI的行业类型
+     * @return PoiInfoEntity
+     */
+    public PoiInfoEntity setIndustry(final String industry) {
+        this.mIndustry = industry;
+        return this;
+    }
+
+    public int getSort_distance() {
+        return mSortDistance;
+    }
+
+    /**
+     * 设置排序距离
+     * @param sortDistance 排序距离
+     * @return PoiInfoEntity
+     */
+    public PoiInfoEntity setSort_distance(final int sortDistance) {
+        this.mSortDistance = sortDistance;
+        return this;
+    }
+
+    public int getSort_rate() {
+        return mSortRate;
+    }
+
+    /**
+     * 设置评价
+     * @param sortRate 评价
+     * @return PoiInfoEntity
+     */
+    public PoiInfoEntity setSort_rate(final int sortRate) {
+        this.mSortRate = sortRate;
+        return this;
+    }
+
+    public int getSort_price() {
+        return mSortPrice;
+    }
+
+    /**
+     * 设置价格
+     * @param sortPrice 价格
+     * @return PoiInfoEntity
+     */
+    public PoiInfoEntity setSort_price(final int sortPrice) {
+        this.mSortPrice = sortPrice;
+        return this;
+    }
+
+    public CityInfo getCityInfo() {
+        return mCityInfo;
+    }
+
+    /**
+     * 设置城市信息
+     * @param cityInfo 城市信息
+     * @return PoiInfoEntity
+     */
+    public PoiInfoEntity setCityInfo(final CityInfo cityInfo) {
+        this.mCityInfo = cityInfo;
+        return this;
+    }
+
+    public FavoriteInfo getFavoriteInfo() {
+        return mFavoriteInfo;
+    }
+
+    /**
+     * 设置收藏信息
+     * @param favoriteInfo 收藏信息
+     * @return PoiInfoEntity
+     */
+    public PoiInfoEntity setFavoriteInfo(final FavoriteInfo favoriteInfo) {
+        this.mFavoriteInfo = favoriteInfo;
+        return this;
+    }
+
+    public SearchRetainParamInfo getRetainParam() {
+        return mRetainParam;
+    }
+
+    /**
+     * 设置回传参数，POI详情搜索必传，来自于关键字搜索结果
+     * @param retainParam 回传参数，POI详情搜索必传，来自于关键字搜索结果
+     * @return PoiInfoEntity
+     */
+    public PoiInfoEntity setRetainParam(final SearchRetainParamInfo retainParam) {
+        this.mRetainParam = retainParam;
+        return this;
+    }
+
+    public List<ChargeInfo> getChargeInfoList() {
+        return mChargeInfoList;
+    }
+
+    /**
+     * 设置充电站信息列表
+     * @param chargeInfoList 充电站信息列表
+     * @return PoiInfoEntity
+     */
+    public PoiInfoEntity setChargeInfoList(final List<ChargeInfo> chargeInfoList) {
+        this.mChargeInfoList = chargeInfoList;
+        return this;
+    }
+
+    public List<ServiceAreaInfo> getServiceAreaInfoList() {
+        return mServiceAreaInfoList;
+    }
+
+    /**
+     * 设置服务区域信息列表
+     * @param serviceAreaInfoList 服务区域信息列表
+     * @return PoiInfoEntity
+     */
+    public PoiInfoEntity setServiceAreaInfoList(final List<ServiceAreaInfo> serviceAreaInfoList) {
+        this.mServiceAreaInfoList = serviceAreaInfoList;
+        return this;
+    }
+
+    public List<ParkingInfo> getParkingInfoList() {
+        return mParkingInfoList;
+    }
+
+    /**
+     * 设置停车信息列表
+     * @param parkingInfoList 停车信息列表
+     * @return PoiInfoEntity
+     */
+    public PoiInfoEntity setParkingInfoList(final List<ParkingInfo> parkingInfoList) {
+        this.mParkingInfoList = parkingInfoList;
+        return this;
+    }
+
+    public List<GasStationInfo> getStationList() {
+        return mStationList;
+    }
+
+    /**
+     * 设置加油站信息列表
+     * @param stationList 加油站信息列表
+     * @return PoiInfoEntity
+     */
+    public PoiInfoEntity setStationList(final List<GasStationInfo> stationList) {
+        this.mStationList = stationList;
+        return this;
+    }
+
+    public List<ChildInfo> getChildInfoList() {
+        return mChildInfoList;
+    }
+
+    /**
+     * 设置子节点信息列表
+     * @param childInfoList 子节点信息列表
+     * @return PoiInfoEntity
+     */
+    public PoiInfoEntity setChildInfoList(final List<ChildInfo> childInfoList) {
+        this.mChildInfoList = childInfoList;
+        return this;
+    }
+
+    protected PoiInfoEntity(final Parcel in) {
+        mPoiType = in.readInt();
+        mPid = in.readString();
+        mName = in.readString();
+        mPhone = in.readString();
+        mAddress = in.readString();
+        mCategory = in.readString();
+        mAdCode = in.readInt();
+        mDistance = in.readString();
+        mTypeCode = in.readString();
+        mPoiTag = in.readString();
+        mShortName = in.readString();
+        mBusinessTime = in.readString();
+        mRatio = in.readDouble();
+        mOpenStatus = in.readString();
+        mHisMark = in.readInt();
+        mScenicMark = in.readString();
+        mAverageCost = in.readInt();
+        mRating = in.readString();
+        mImageUrl = in.readString();
+        mPoint = in.readParcelable(GeoPoint.class.getClassLoader());
+        mPointTypeCode = in.readString();
+        mIndustry = in.readString();
+        mSortDistance = in.readInt();
+        mSortRate = in.readInt();
+        mSortPrice = in.readInt();
+        mCityInfo = in.readParcelable(CityInfo.class.getClassLoader());
+        mFavoriteInfo = in.readParcelable(FavoriteInfo.class.getClassLoader());
+        mRetainParam = in.readParcelable(SearchRetainParamInfo.class.getClassLoader());
+        mServiceAreaInfoList = in.createTypedArrayList(ServiceAreaInfo.CREATOR);
+        mParkingInfoList = in.createTypedArrayList(ParkingInfo.CREATOR);
+        mChargeInfoList = in.createTypedArrayList(ChargeInfo.CREATOR);
+        mStationList = in.createTypedArrayList(GasStationInfo.CREATOR);
+        mChildInfoList = in.createTypedArrayList(ChildInfo.CREATOR);
     }
 
     public static final Creator<PoiInfoEntity> CREATOR = new Creator<PoiInfoEntity>() {
         @Override
-        public PoiInfoEntity createFromParcel(Parcel in) {
+        public PoiInfoEntity createFromParcel(final Parcel in) {
             return new PoiInfoEntity(in);
         }
 
         @Override
-        public PoiInfoEntity[] newArray(int size) {
+        public PoiInfoEntity[] newArray(final int size) {
             return new PoiInfoEntity[size];
         }
     };
@@ -125,39 +587,39 @@ public class PoiInfoEntity implements Parcelable {
     }
 
     @Override
-    public void writeToParcel(@NonNull Parcel parcel, int i) {
-        parcel.writeInt(poiType);
-        parcel.writeString(pid);
-        parcel.writeString(name);
-        parcel.writeString(phone);
-        parcel.writeString(address);
-        parcel.writeString(category);
-        parcel.writeInt(adCode);
-        parcel.writeString(distance);
-        parcel.writeString(typeCode);
-        parcel.writeString(poiTag);
-        parcel.writeString(shortName);
-        parcel.writeString(businessTime);
-        parcel.writeDouble(ratio);
-        parcel.writeString(openStatus);
-        parcel.writeInt(hisMark);
-        parcel.writeString(scenicMark);
-        parcel.writeInt(averageCost);
-        parcel.writeString(rating);
-        parcel.writeString(imageUrl);
-        parcel.writeParcelable(point, i);
-        parcel.writeString(pointTypeCode);
-        parcel.writeString(industry);
-        parcel.writeInt(sort_distance);
-        parcel.writeInt(sort_rate);
-        parcel.writeInt(sort_price);
-        parcel.writeParcelable(cityInfo, i);
-        parcel.writeParcelable(favoriteInfo, i);
-        parcel.writeParcelable(retainParam, i);
-        parcel.writeTypedList(serviceAreaInfoList);
-        parcel.writeTypedList(parkingInfoList);
-        parcel.writeTypedList(chargeInfoList);
-        parcel.writeTypedList(stationList);
-        parcel.writeTypedList(childInfoList);
+    public void writeToParcel(@NonNull final Parcel parcel, final int i) {
+        parcel.writeInt(mPoiType);
+        parcel.writeString(mPid);
+        parcel.writeString(mName);
+        parcel.writeString(mPhone);
+        parcel.writeString(mAddress);
+        parcel.writeString(mCategory);
+        parcel.writeInt(mAdCode);
+        parcel.writeString(mDistance);
+        parcel.writeString(mTypeCode);
+        parcel.writeString(mPoiTag);
+        parcel.writeString(mShortName);
+        parcel.writeString(mBusinessTime);
+        parcel.writeDouble(mRatio);
+        parcel.writeString(mOpenStatus);
+        parcel.writeInt(mHisMark);
+        parcel.writeString(mScenicMark);
+        parcel.writeInt(mAverageCost);
+        parcel.writeString(mRating);
+        parcel.writeString(mImageUrl);
+        parcel.writeParcelable(mPoint, i);
+        parcel.writeString(mPointTypeCode);
+        parcel.writeString(mIndustry);
+        parcel.writeInt(mSortDistance);
+        parcel.writeInt(mSortRate);
+        parcel.writeInt(mSortPrice);
+        parcel.writeParcelable(mCityInfo, i);
+        parcel.writeParcelable(mFavoriteInfo, i);
+        parcel.writeParcelable(mRetainParam, i);
+        parcel.writeTypedList(mServiceAreaInfoList);
+        parcel.writeTypedList(mParkingInfoList);
+        parcel.writeTypedList(mChargeInfoList);
+        parcel.writeTypedList(mStationList);
+        parcel.writeTypedList(mChildInfoList);
     }
 }

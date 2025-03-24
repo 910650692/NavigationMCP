@@ -2,6 +2,7 @@ package com.fy.navi.service.greendao.history;
 
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
+import org.greenrobot.greendao.annotation.Keep;
 import org.greenrobot.greendao.annotation.Property;
 import org.greenrobot.greendao.annotation.Unique;
 
@@ -12,214 +13,207 @@ import org.greenrobot.greendao.annotation.Generated;
 public class History {
 
     @Id(autoincrement = true)
-    public Long id;
+    private Long mId;
 
     @Unique
     @Property(nameInDb = "keyWord")
-    public String keyWord;
+    private String mKeyWord;
 
     @Property(nameInDb = "poiId")
-    public String poiId;
+    private String mPoiId;
 
     @Property(nameInDb = "startPoint")
-    public String startPoint;
+    private String mStartPoint;
 
     @Property(nameInDb = "endPoint")
-    public String endPoint;
+    private String mEndPoint;
 
     @Property(nameInDb = "startPoiName")
-    public String startPoiName;
+    private String mStartPoiName;
 
     @Property(nameInDb = "endPoiName")
-    public String endPoiName;
+    private String mEndPoiName;
 
     @Property(nameInDb = "type")
-    public int type;
+    private int mType;
 
     @Property(nameInDb = "updateTime")
-    public Date updateTime;
+    private Date mUpdateTime;
 
     @Property(nameInDb = "isCompleted")
-    public boolean isCompleted; // 是否存在继续导航信息
+    private boolean mIsCompleted; // 是否存在继续导航信息
 
     @Property(nameInDb = "rideRunType")
-    public int rideRunType = -1; //行程类型（导航/巡航）
+    private int mRideRunType = -1; //行程类型（导航/巡航）
 
     @Property(nameInDb = "timeInterval")
-    public int timeInterval; // 时长  单位:秒
+    private int mTimeInterval; // 时长  单位:秒
 
     @Property(nameInDb = "runDistance")
-    public int runDistance; // 距离  单位:米
+    private int mRunDistance; // 距离  单位:米
 
     @Property(nameInDb = "maxSpeed")
-    public int maxSpeed; // 最快速度  单位:公里/小时
+    private int mMaxSpeed; // 最快速度  单位:公里/小时
 
     @Property(nameInDb = "endTime")
-    public String endTime; // 该行程完成时间
+    private String mEndTime; // 该行程完成时间
 
     @Property(nameInDb = "averageSpeed")
-    public int averageSpeed; // 平均速度  单位:米/秒
+    private int mAverageSpeed; // 平均速度  单位:米/秒
 
-    @Generated(hash = 1355772610)
-    public History(Long id, String keyWord, String poiId, String startPoint,
-            String endPoint, String startPoiName, String endPoiName, int type,
-            Date updateTime, boolean isCompleted, int rideRunType, int timeInterval,
-            int runDistance, int maxSpeed, String endTime, int averageSpeed) {
-        this.id = id;
-        this.keyWord = keyWord;
-        this.poiId = poiId;
-        this.startPoint = startPoint;
-        this.endPoint = endPoint;
-        this.startPoiName = startPoiName;
-        this.endPoiName = endPoiName;
-        this.type = type;
-        this.updateTime = updateTime;
-        this.isCompleted = isCompleted;
-        this.rideRunType = rideRunType;
-        this.timeInterval = timeInterval;
-        this.runDistance = runDistance;
-        this.maxSpeed = maxSpeed;
-        this.endTime = endTime;
-        this.averageSpeed = averageSpeed;
+    @Keep
+    public History(final Long id, final String keyWord, final String poiId, final String startPoint,
+            final String endPoint, final String startPoiName, final String endPoiName, final int type,
+            final Date updateTime, final boolean isCompleted, final int rideRunType, final int timeInterval,
+            final int runDistance, final int maxSpeed, final String endTime, final int averageSpeed) {
+        this.mId = id;
+        this.mKeyWord = keyWord;
+        this.mPoiId = poiId;
+        this.mStartPoint = startPoint;
+        this.mEndPoint = endPoint;
+        this.mStartPoiName = startPoiName;
+        this.mEndPoiName = endPoiName;
+        this.mType = type;
+        this.mUpdateTime = updateTime;
+        this.mIsCompleted = isCompleted;
+        this.mRideRunType = rideRunType;
+        this.mTimeInterval = timeInterval;
+        this.mRunDistance = runDistance;
+        this.mMaxSpeed = maxSpeed;
+        this.mEndTime = endTime;
+        this.mAverageSpeed = averageSpeed;
     }
 
     @Generated(hash = 869423138)
     public History() {
     }
 
-    public Long getId() {
-        return id;
+
+    public Long getMId() {
+        return this.mId;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setMId(final Long id) {
+        this.mId = id;
     }
 
-    public String getKeyWord() {
-        return keyWord;
+    public String getMKeyWord() {
+        return this.mKeyWord;
     }
 
-    public void setKeyWord(String keyWord) {
-        this.keyWord = keyWord;
+    public void setMKeyWord(final String keyWord) {
+        this.mKeyWord = keyWord;
     }
 
-    public String getPoiId() {
-        return poiId;
+    public String getMPoiId() {
+        return this.mPoiId;
     }
 
-    public void setPoiId(String poiId) {
-        this.poiId = poiId;
+    public void setMPoiId(final String poiId) {
+        this.mPoiId = poiId;
     }
 
-    public String getStartPoint() {
-        return startPoint;
+    public String getMStartPoint() {
+        return this.mStartPoint;
     }
 
-    public void setStartPoint(String startPoint) {
-        this.startPoint = startPoint;
+    public void setMStartPoint(final String startPoint) {
+        this.mStartPoint = startPoint;
     }
 
-    public String getEndPoint() {
-        return endPoint;
+    public String getMEndPoint() {
+        return this.mEndPoint;
     }
 
-    public void setEndPoint(String endPoint) {
-        this.endPoint = endPoint;
+    public void setMEndPoint(final String endPoint) {
+        this.mEndPoint = endPoint;
     }
 
-    public String getStartPoiName() {
-        return startPoiName;
+    public String getMStartPoiName() {
+        return this.mStartPoiName;
     }
 
-    public void setStartPoiName(String startPoiName) {
-        this.startPoiName = startPoiName;
+    public void setMStartPoiName(final String startPoiName) {
+        this.mStartPoiName = startPoiName;
     }
 
-    public String getEndPoiName() {
-        return endPoiName;
+    public String getMEndPoiName() {
+        return this.mEndPoiName;
     }
 
-    public void setEndPoiName(String endPoiName) {
-        this.endPoiName = endPoiName;
+    public void setMEndPoiName(final String endPoiName) {
+        this.mEndPoiName = endPoiName;
     }
 
-    public int getType() {
-        return type;
+    public int getMType() {
+        return this.mType;
     }
 
-    public void setType(int type) {
-        this.type = type;
+    public void setMType(final int type) {
+        this.mType = type;
     }
 
-    public Date getUpdateTime() {
-        return updateTime;
+    public Date getMUpdateTime() {
+        return this.mUpdateTime;
     }
 
-    public void setUpdateTime(Date updateTime) {
-        this.updateTime = updateTime;
+    public void setMUpdateTime(final Date updateTime) {
+        this.mUpdateTime = updateTime;
     }
 
-    public boolean isCompleted() {
-        return isCompleted;
+    public boolean getMIsCompleted() {
+        return this.mIsCompleted;
     }
 
-    public void setCompleted(boolean completed) {
-        isCompleted = completed;
+    public void setMIsCompleted(final boolean isCompleted) {
+        this.mIsCompleted = isCompleted;
     }
 
-    public boolean getIsCompleted() {
-        return this.isCompleted;
+    public int getMRideRunType() {
+        return this.mRideRunType;
     }
 
-    public void setIsCompleted(boolean isCompleted) {
-        this.isCompleted = isCompleted;
+    public void setMRideRunType(final int rideRunType) {
+        this.mRideRunType = rideRunType;
     }
 
-    public int getRideRunType() {
-        return rideRunType;
+    public int getMTimeInterval() {
+        return this.mTimeInterval;
     }
 
-    public void setRideRunType(int rideRunType) {
-        this.rideRunType = rideRunType;
+    public void setMTimeInterval(final int timeInterval) {
+        this.mTimeInterval = timeInterval;
     }
 
-    public int getTimeInterval() {
-        return timeInterval;
+    public int getMRunDistance() {
+        return this.mRunDistance;
     }
 
-    public void setTimeInterval(int timeInterval) {
-        this.timeInterval = timeInterval;
+    public void setMRunDistance(final int runDistance) {
+        this.mRunDistance = runDistance;
     }
 
-    public int getRunDistance() {
-        return runDistance;
+    public int getMMaxSpeed() {
+        return this.mMaxSpeed;
     }
 
-    public void setRunDistance(int runDistance) {
-        this.runDistance = runDistance;
+    public void setMMaxSpeed(final int maxSpeed) {
+        this.mMaxSpeed = maxSpeed;
     }
 
-    public int getMaxSpeed() {
-        return maxSpeed;
+    public String getMEndTime() {
+        return this.mEndTime;
     }
 
-    public void setMaxSpeed(int maxSpeed) {
-        this.maxSpeed = maxSpeed;
+    public void setMEndTime(final String endTime) {
+        this.mEndTime = endTime;
     }
 
-    public String getEndTime() {
-        return endTime;
+    public int getMAverageSpeed() {
+        return this.mAverageSpeed;
     }
 
-    public void setEndTime(String endTime) {
-        this.endTime = endTime;
-    }
-
-    public int getAverageSpeed() {
-        return averageSpeed;
-    }
-
-    public void setAverageSpeed(int averageSpeed) {
-        this.averageSpeed = averageSpeed;
+    public void setMAverageSpeed(final int averageSpeed) {
+        this.mAverageSpeed = averageSpeed;
     }
 }

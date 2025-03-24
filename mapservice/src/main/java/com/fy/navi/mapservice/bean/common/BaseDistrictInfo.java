@@ -5,44 +5,46 @@ import android.os.Parcelable;
 
 public class BaseDistrictInfo implements Parcelable {
 
-    private String province;
-    private int provinceId;
-    private String city;
-    private int cityId;
-    private String district;
-    private int districtId;
+    private String mProvince;
+    private int mProvinceId;
+    private String mCity;
+    private int mCityId;
+    private String mDistrict;
+    private int mDistrictId;
 
-    public BaseDistrictInfo() {}
+    public BaseDistrictInfo() {
+
+    }
 
     public static final Creator<BaseDistrictInfo> CREATOR = new Creator<BaseDistrictInfo>() {
         @Override
-        public BaseDistrictInfo createFromParcel(Parcel source) {
+        public BaseDistrictInfo createFromParcel(final Parcel source) {
             return new BaseDistrictInfo(source);
         }
 
         @Override
-        public BaseDistrictInfo[] newArray(int size) {
+        public BaseDistrictInfo[] newArray(final int size) {
             return new BaseDistrictInfo[size];
         }
     };
 
-    public BaseDistrictInfo(Parcel in) {
-        province = in.readString();
-        provinceId = in.readInt();
-        city = in.readString();
-        cityId = in.readInt();
-        district = in.readString();
-        districtId = in.readInt();
+    public BaseDistrictInfo(final Parcel in) {
+        mProvince = in.readString();
+        mProvinceId = in.readInt();
+        mCity = in.readString();
+        mCityId = in.readInt();
+        mDistrict = in.readString();
+        mDistrictId = in.readInt();
     }
 
     @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(province);
-        dest.writeInt(provinceId);
-        dest.writeString(city);
-        dest.writeInt(cityId);
-        dest.writeString(district);
-        dest.writeInt(districtId);
+    public void writeToParcel(final Parcel dest, final int flags) {
+        dest.writeString(mProvince);
+        dest.writeInt(mProvinceId);
+        dest.writeString(mCity);
+        dest.writeInt(mCityId);
+        dest.writeString(mDistrict);
+        dest.writeInt(mDistrictId);
     }
 
     @Override
@@ -51,51 +53,51 @@ public class BaseDistrictInfo implements Parcelable {
     }
 
     public String getProvince() {
-        return province;
+        return mProvince;
     }
 
-    public void setProvince(String province) {
-        this.province = province;
+    public void setProvince(final String province) {
+        mProvince = province;
     }
 
     public int getProvinceId() {
-        return provinceId;
+        return mProvinceId;
     }
 
-    public void setProvinceId(int provinceId) {
-        this.provinceId = provinceId;
+    public void setProvinceId(final int provinceId) {
+        mProvinceId = provinceId;
     }
 
     public String getCity() {
-        return city;
+        return mCity;
     }
 
-    public void setCity(String city) {
-        this.city = city;
+    public void setCity(final String city) {
+        mCity = city;
     }
 
     public int getCityId() {
-        return cityId;
+        return mCityId;
     }
 
-    public void setCityId(int cityId) {
-        this.cityId = cityId;
+    public void setCityId(final int cityId) {
+        mCityId = cityId;
     }
 
     public String getDistrict() {
-        return district;
+        return mDistrict;
     }
 
-    public void setDistrict(String district) {
-        this.district = district;
+    public void setDistrict(final String district) {
+        mDistrict = district;
     }
 
     public int getDistrictId() {
-        return districtId;
+        return mDistrictId;
     }
 
-    public void setDistrictId(int districtId) {
-        this.districtId = districtId;
+    public void setDistrictId(final int districtId) {
+        mDistrictId = districtId;
     }
 
 }

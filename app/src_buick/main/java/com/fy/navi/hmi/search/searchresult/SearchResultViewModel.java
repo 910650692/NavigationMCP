@@ -5,12 +5,11 @@ import android.app.Application;
 import androidx.annotation.NonNull;
 
 /**
- * @Description TODO
- * @Author lww
- * @date 2025/1/25
+ * @author lvww
+ * @version \$Revision1.0\$
  */
 public class SearchResultViewModel extends BaseSearchResultViewModel {
-    public SearchResultViewModel(@NonNull Application application) {
+    public SearchResultViewModel(@NonNull final Application application) {
         super(application);
     }
 }

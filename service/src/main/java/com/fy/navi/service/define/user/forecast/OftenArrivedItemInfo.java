@@ -8,140 +8,140 @@ import java.util.ArrayList;
 
 public class OftenArrivedItemInfo {
 
-    public String wstrPoiID;
-    public String wstrPoiName;
-    public String wstrPoiType;
-    public String wstrAddress;
-    public GeoPoint stDisplayCoord;
-    public GeoPoint stNaviCoord;
-    public String parent;
-    public String towardsAngle;
-    public String floorNo;
-    public int childType;
-    public int endPoiExtension;
-    public long topTime;
-    public ArrayList<Long> uTimeList;
+    private String mWstrPoiID;
+    private String mWstrPoiName;
+    private String mWstrPoiType;
+    private String mWstrAddress;
+    private GeoPoint mStDisplayCoord;
+    private GeoPoint mStNaviCoord;
+    private String mParent;
+    private String mTowardsAngle;
+    private String mFloorNo;
+    private int mChildType;
+    private int mEndPoiExtension;
+    private long mTopTime;
+    private ArrayList<Long> mTimeList;
 
-    public Date date;
-    public Time time;
+    private Date mDate;
+    private Time mTime;
 
     public String getWstrPoiID() {
-        return wstrPoiID;
+        return mWstrPoiID;
     }
 
-    public void setWstrPoiID(String wstrPoiID) {
-        this.wstrPoiID = wstrPoiID;
+    public void setWstrPoiID(final String wstrPoiID) {
+        this.mWstrPoiID = wstrPoiID;
     }
 
     public String getWstrPoiName() {
-        return wstrPoiName;
+        return mWstrPoiName;
     }
 
-    public void setWstrPoiName(String wstrPoiName) {
-        this.wstrPoiName = wstrPoiName;
+    public void setWstrPoiName(final String wstrPoiName) {
+        this.mWstrPoiName = wstrPoiName;
     }
 
     public String getWstrPoiType() {
-        return wstrPoiType;
+        return mWstrPoiType;
     }
 
-    public void setWstrPoiType(String wstrPoiType) {
-        this.wstrPoiType = wstrPoiType;
+    public void setWstrPoiType(final String wstrPoiType) {
+        this.mWstrPoiType = wstrPoiType;
     }
 
     public String getWstrAddress() {
-        return wstrAddress;
+        return mWstrAddress;
     }
 
-    public void setWstrAddress(String wstrAddress) {
-        this.wstrAddress = wstrAddress;
+    public void setWstrAddress(final String wstrAddress) {
+        this.mWstrAddress = wstrAddress;
     }
 
     public GeoPoint getStDisplayCoord() {
-        return stDisplayCoord;
+        return mStDisplayCoord;
     }
 
-    public void setStDisplayCoord(GeoPoint stDisplayCoord) {
-        this.stDisplayCoord = stDisplayCoord;
+    public void setStDisplayCoord(final GeoPoint stDisplayCoord) {
+        this.mStDisplayCoord = stDisplayCoord;
     }
 
     public GeoPoint getStNaviCoord() {
-        return stNaviCoord;
+        return mStNaviCoord;
     }
 
-    public void setStNaviCoord(GeoPoint stNaviCoord) {
-        this.stNaviCoord = stNaviCoord;
+    public void setStNaviCoord(final GeoPoint stNaviCoord) {
+        this.mStNaviCoord = stNaviCoord;
     }
 
     public String getParent() {
-        return parent;
+        return mParent;
     }
 
-    public void setParent(String parent) {
-        this.parent = parent;
+    public void setParent(final String parent) {
+        this.mParent = parent;
     }
 
     public String getTowardsAngle() {
-        return towardsAngle;
+        return mTowardsAngle;
     }
 
-    public void setTowardsAngle(String towardsAngle) {
-        this.towardsAngle = towardsAngle;
+    public void setTowardsAngle(final String towardsAngle) {
+        this.mTowardsAngle = towardsAngle;
     }
 
     public String getFloorNo() {
-        return floorNo;
+        return mFloorNo;
     }
 
-    public void setFloorNo(String floorNo) {
-        this.floorNo = floorNo;
+    public void setFloorNo(final String floorNo) {
+        this.mFloorNo = floorNo;
     }
 
     public int getChildType() {
-        return childType;
+        return mChildType;
     }
 
-    public void setChildType(int childType) {
-        this.childType = childType;
+    public void setChildType(final int childType) {
+        this.mChildType = childType;
     }
 
     public int getEndPoiExtension() {
-        return endPoiExtension;
+        return mEndPoiExtension;
     }
 
-    public void setEndPoiExtension(int endPoiExtension) {
-        this.endPoiExtension = endPoiExtension;
+    public void setEndPoiExtension(final int endPoiExtension) {
+        this.mEndPoiExtension = endPoiExtension;
     }
 
     public long getTopTime() {
-        return topTime;
+        return mTopTime;
     }
 
-    public void setTopTime(long topTime) {
-        this.topTime = topTime;
+    public void setTopTime(final long topTime) {
+        this.mTopTime = topTime;
     }
 
-    public ArrayList<Long> getuTimeList() {
-        return uTimeList;
+    public ArrayList<Long> getTimeList() {
+        return mTimeList;
     }
 
-    public void setuTimeList(ArrayList<Long> uTimeList) {
-        this.uTimeList = uTimeList;
+    public void setTimeList(final ArrayList<Long> timeList) {
+        this.mTimeList = timeList;
     }
 
     public Date getDate() {
-        return date;
+        return mDate;
     }
 
-    public void setDate(Date date) {
-        this.date = date;
+    public void setDate(final Date date) {
+        this.mDate = date;
     }
 
     public Time getTime() {
-        return time;
+        return mTime;
     }
 
-    public void setTime(Time time) {
-        this.time = time;
+    public void setTime(final Time time) {
+        this.mTime = time;
     }
 }

@@ -1,7 +1,5 @@
 package com.fy.navi.scene.ui.navi;
 
-import static com.fy.navi.scene.ui.navi.manager.NaviSceneId.NAVI_SCENE_VIA_POINT_UNFOLD;
-
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -27,33 +25,40 @@ import com.fy.navi.scene.ui.navi.manager.NaviSceneBase;
 import com.fy.navi.scene.ui.navi.manager.NaviSceneId;
 import com.fy.navi.scene.ui.navi.manager.NaviSceneManager;
 import com.fy.navi.service.AutoMapConstant;
-import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.define.navi.NaviViaEntity;
 import com.fy.navi.service.define.search.PoiInfoEntity;
 import com.fy.navi.ui.base.BaseFragment;
 
 import java.util.List;
 
-/***终点、途径点列表***/
+/**
+ * 终点、途径点列表
+ * @author fy
+ * @version $Revision.*$
+ */
 public class SceneNaviViaListView extends NaviSceneBase<SceneNaviViaListViewBinding, SceneNaviViaListImpl> {
     private static final String TAG = "SceneNaviViaListView";
     private NaviViaListAdapter mNaviViaListAdapter;
 
-    public SceneNaviViaListView(@NonNull Context context) {
+    private ISceneCallback mISceneCallback;
+
+    public SceneNaviViaListView(@NonNull final Context context) {
         super(context);
     }
 
-    public SceneNaviViaListView(@NonNull Context context, @Nullable AttributeSet attrs) {
+    public SceneNaviViaListView(@NonNull final Context context,
+                                @Nullable final AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public SceneNaviViaListView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public SceneNaviViaListView(@NonNull final Context context, @Nullable final AttributeSet attrs,
+                                final int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 
     @Override
     protected NaviSceneId getSceneId() {
-        return NAVI_SCENE_VIA_POINT_UNFOLD;
+        return NaviSceneId.NAVI_SCENE_VIA_POINT_UNFOLD;
     }
 
     @Override
@@ -62,7 +67,7 @@ public class SceneNaviViaListView extends NaviSceneBase<SceneNaviViaListViewBind
     }
 
     protected void init() {
-        NaviSceneManager.getInstance().addNaviScene(NAVI_SCENE_VIA_POINT_UNFOLD, this);
+        NaviSceneManager.getInstance().addNaviScene(NaviSceneId.NAVI_SCENE_VIA_POINT_UNFOLD, this);
     }
 
     @Override
@@ -77,7 +82,7 @@ public class SceneNaviViaListView extends NaviSceneBase<SceneNaviViaListViewBind
     public void show() {
         super.show();
         if (mISceneCallback != null) {
-            mISceneCallback.updateSceneVisible(NAVI_SCENE_VIA_POINT_UNFOLD, true);
+            mISceneCallback.updateSceneVisible(NaviSceneId.NAVI_SCENE_VIA_POINT_UNFOLD, true);
         }
     }
 
@@ -89,11 +94,14 @@ public class SceneNaviViaListView extends NaviSceneBase<SceneNaviViaListViewBind
         }
     }
 
-    public void updateViaListState(boolean isExpand) {
-        isViaListExpand = isExpand;
-        INaviSceneEvent.SceneStateChangeType type;
-        NaviSceneId sceneId;
-        if (isViaListExpand) {
+    /**
+     * @param isExpand 是否展开
+     */
+    public void updateViaListState(final boolean isExpand) {
+        setIsViaListExpand(isExpand);
+        final INaviSceneEvent.SceneStateChangeType type;
+        final NaviSceneId sceneId;
+        if (isIsViaListExpand()) {
             type = INaviSceneEvent.SceneStateChangeType.SceneShowState;
             sceneId = NaviSceneId.NAVI_SCENE_VIA_POINT_UNFOLD;
         } else {
@@ -105,7 +113,8 @@ public class SceneNaviViaListView extends NaviSceneBase<SceneNaviViaListViewBind
     }
 
     @Override
-    protected SceneNaviViaListViewBinding createViewBinding(LayoutInflater inflater, ViewGroup viewGroup) {
+    protected SceneNaviViaListViewBinding createViewBinding(final LayoutInflater inflater,
+                                                            final ViewGroup viewGroup) {
         return SceneNaviViaListViewBinding.inflate(inflater, viewGroup, true);
     }
 
@@ -122,7 +131,7 @@ public class SceneNaviViaListView extends NaviSceneBase<SceneNaviViaListViewBind
     @Override
     protected void initObserver() {
         Logger.d(TAG, "SceneNaviListView initObserver");
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+        final LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         mViewBinding.srvAddVia.setLayoutManager(layoutManager);
 
@@ -130,23 +139,29 @@ public class SceneNaviViaListView extends NaviSceneBase<SceneNaviViaListViewBind
         mViewBinding.srvAddVia.setAdapter(mNaviViaListAdapter);
         mNaviViaListAdapter.setOnItemClickListener(new INaviViaItemClickListener() {
             @Override
-            public void onItemClick(int position, NaviViaEntity entity) {
+            public void onItemClick(final int position, final NaviViaEntity entity) {
                 Logger.i(TAG, "onItemClick:" + position);
-                if (mNaviViaListAdapter.getData().size() <= 1) return;
+                if (mNaviViaListAdapter.getData().size() <= 1) {
+                    return;
+                }
                 if (mISceneCallback != null) {
-                    Fragment fragment = (Fragment) ARouter.getInstance()
+                    final Fragment fragment = (Fragment) ARouter.getInstance()
                             .build(RoutePath.Search.POI_DETAILS_FRAGMENT)
                             .navigation();
-                    PoiInfoEntity poiInfo = new PoiInfoEntity();
+                    final PoiInfoEntity poiInfo = new PoiInfoEntity();
                     poiInfo.setPid(entity.getPid());
                     poiInfo.setPoint(entity.getRealPos());
-                    addFragment((BaseFragment) fragment, SearchFragmentFactory.createPoiDetailsFragment(AutoMapConstant.SourceFragment.MAIN_SEARCH_FRAGMENT, AutoMapConstant.PoiType.POI_MAP_CLICK, poiInfo));
+                    addFragment((BaseFragment) fragment, SearchFragmentFactory.
+                            createPoiDetailsFragment(
+                                    AutoMapConstant.SourceFragment.MAIN_SEARCH_FRAGMENT,
+                                    AutoMapConstant.PoiType.POI_MAP_CLICK, poiInfo));
                 }
             }
 
             @Override
-            public void onDelClick(int position, NaviViaEntity entity) {
-                Logger.i(TAG, "onDelClick", "position:" + position, "callBack is null :" + (mISceneCallback == null));
+            public void onDelClick(final int position, final NaviViaEntity entity) {
+                Logger.i(TAG, "onDelClick", "position:" + position, "callBack is null :" +
+                        (mISceneCallback == null));
                 if (mISceneCallback != null) {
                     Logger.i(TAG, "onDelClick:" + position);
                     mISceneCallback.deleteViaPoint(entity);
@@ -156,12 +171,15 @@ public class SceneNaviViaListView extends NaviSceneBase<SceneNaviViaListViewBind
     }
 
     @Override
-    public void addSceneCallback(ISceneCallback sceneCallback) {
+    public void addSceneCallback(final ISceneCallback sceneCallback) {
         mISceneCallback = sceneCallback;
         mScreenViewModel.addSceneCallback(sceneCallback);
     }
 
-    public void showNaviViaList(List<NaviViaEntity> list) {
+    /**
+     * @param list 途经点列表
+     */
+    public void showNaviViaList(final List<NaviViaEntity> list) {
         if (mScreenViewModel == null) {
             Logger.e(TAG, "mScreenViewModel == null：");
             return;
@@ -175,7 +193,11 @@ public class SceneNaviViaListView extends NaviSceneBase<SceneNaviViaListViewBind
         mScreenViewModel.initTimer();
     }
 
-    public void notifyDeleteViaPointResult(boolean result, NaviViaEntity entity) {
+    /**
+     * @param result 删除途经点提醒
+     * @param entity entity
+     */
+    public void notifyDeleteViaPointResult(final boolean result, final NaviViaEntity entity) {
         Logger.i(TAG, "notifyDeleteViaPointResult:" + result);
         if (result) {
             mNaviViaListAdapter.removeData(entity);

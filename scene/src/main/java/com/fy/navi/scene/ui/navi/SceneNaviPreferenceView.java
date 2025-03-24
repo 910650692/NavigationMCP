@@ -1,5 +1,4 @@
 package com.fy.navi.scene.ui.navi;
-import static com.fy.navi.scene.ui.navi.manager.NaviSceneId.NAVI_SCENE_PREFERENCE;
 
 import android.content.Context;
 import android.util.AttributeSet;
@@ -25,29 +24,34 @@ import com.fy.navi.service.define.route.RoutePreferenceID;
 import java.util.Hashtable;
 
 /**
- * @Description TODO
- * @Author lvww
- * @date 2024/12/2
+ * 路线偏好
+ * @author fy
+ * @version $Revision.*$
  */
-public class SceneNaviPreferenceView extends NaviSceneBase<SceneNaviPreferenceViewBinding, SceneRoutePreferenceImpl> implements SceneRoutePreferenceImpl.IRoutePreferenceChangeListener {
+public class SceneNaviPreferenceView extends NaviSceneBase
+        <SceneNaviPreferenceViewBinding, SceneRoutePreferenceImpl> implements
+        SceneRoutePreferenceImpl.IRoutePreferenceChangeListener {
 
-    private Hashtable<String, ISceneRoutePreferenceCallBack> sceneRoutePreferenceCallBackMap;
+    private ISceneCallback mISceneCallback;
+    private Hashtable<String, ISceneRoutePreferenceCallBack> mSceneRoutePreferenceCallBackMap;
 
-    public SceneNaviPreferenceView(@NonNull Context context) {
+    public SceneNaviPreferenceView(@NonNull final Context context) {
         super(context);
     }
 
-    public SceneNaviPreferenceView(@NonNull Context context, @Nullable AttributeSet attrs) {
+    public SceneNaviPreferenceView(@NonNull final Context context,
+                                   @Nullable final AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public SceneNaviPreferenceView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public SceneNaviPreferenceView(@NonNull final Context context,
+                                   @Nullable final AttributeSet attrs, final int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 
     @Override
     protected NaviSceneId getSceneId() {
-        return NAVI_SCENE_PREFERENCE;
+        return NaviSceneId.NAVI_SCENE_PREFERENCE;
     }
 
     @Override
@@ -56,11 +60,11 @@ public class SceneNaviPreferenceView extends NaviSceneBase<SceneNaviPreferenceVi
     }
 
     protected void init() {
-        NaviSceneManager.getInstance().addNaviScene(NAVI_SCENE_PREFERENCE, this);
+        NaviSceneManager.getInstance().addNaviScene(NaviSceneId.NAVI_SCENE_PREFERENCE, this);
     }
 
     @Override
-    public void addSceneCallback(ISceneCallback sceneCallback) {
+    public void addSceneCallback(final ISceneCallback sceneCallback) {
         mISceneCallback = sceneCallback;
     }
 
@@ -68,7 +72,7 @@ public class SceneNaviPreferenceView extends NaviSceneBase<SceneNaviPreferenceVi
     public void show() {
         super.show();
         if (mISceneCallback != null) {
-            mISceneCallback.updateSceneVisible(NAVI_SCENE_PREFERENCE, true);
+            mISceneCallback.updateSceneVisible(NaviSceneId.NAVI_SCENE_PREFERENCE, true);
         }
     }
 
@@ -76,23 +80,29 @@ public class SceneNaviPreferenceView extends NaviSceneBase<SceneNaviPreferenceVi
     public void hide() {
         super.hide();
         if (mISceneCallback != null) {
-            mISceneCallback.updateSceneVisible(NAVI_SCENE_PREFERENCE, true);
+            mISceneCallback.updateSceneVisible(NaviSceneId.NAVI_SCENE_PREFERENCE, true);
         }
     }
 
     @Override
-    protected SceneNaviPreferenceViewBinding createViewBinding(LayoutInflater inflater, ViewGroup viewGroup) {
+    protected SceneNaviPreferenceViewBinding createViewBinding(final LayoutInflater inflater,
+                                                               final ViewGroup viewGroup) {
         return SceneNaviPreferenceViewBinding.inflate(inflater, viewGroup, true);
     }
 
     @Override
     protected SceneRoutePreferenceImpl initSceneImpl() {
-        sceneRoutePreferenceCallBackMap = new Hashtable<>();
+        mSceneRoutePreferenceCallBackMap = new Hashtable<>();
         return new SceneRoutePreferenceImpl(this);
     }
 
-    public void registerRoutePreferenceObserver(String key, ISceneRoutePreferenceCallBack callBack) {
-        sceneRoutePreferenceCallBackMap.put(key, callBack);
+    /**
+     * @param key ket
+     * @param callBack 回调
+     */
+    public void registerRoutePreferenceObserver(final String key,
+                                                final ISceneRoutePreferenceCallBack callBack) {
+        mSceneRoutePreferenceCallBackMap.put(key, callBack);
     }
 
 
@@ -109,7 +119,11 @@ public class SceneNaviPreferenceView extends NaviSceneBase<SceneNaviPreferenceVi
         }
     }
 
-    private String getPreferText(RoutePreferenceID routePreferenceID) {
+    /**
+     * @param routePreferenceID preferenceId
+     * @return 推荐文言
+     */
+    private String getPreferText(final RoutePreferenceID routePreferenceID) {
         String preferText = "";
         switch (routePreferenceID) {
             case PREFERENCE_RECOMMEND:
@@ -146,7 +160,9 @@ public class SceneNaviPreferenceView extends NaviSceneBase<SceneNaviPreferenceVi
                 preferText = ResourceUtils.Companion.getInstance().getString(R.string.route_preference_less_charge_and_not_highway);
                 return preferText;
             case PREFERENCE_AVOIDCONGESTION_AND_LESSCHARGE_AND_NOTHIGHWAY:
-                preferText = ResourceUtils.Companion.getInstance().getString(R.string.route_preference_avoiding_congestion_and_less_charge_not_highway);
+                preferText = ResourceUtils.Companion.getInstance().
+                        getString(
+                                R.string.route_preference_avoiding_congestion_and_less_charge_not_highway);
                 return preferText;
             case PREFERENCE_AVOIDCONGESTION_AND_FIRSTMAINROAD:
                 preferText = ResourceUtils.Companion.getInstance().getString(R.string.route_preference_avoiding_congestion_and_first_main_road);
@@ -161,17 +177,20 @@ public class SceneNaviPreferenceView extends NaviSceneBase<SceneNaviPreferenceVi
     }
 
     @Override
-    public void onPreferenceChange(RoutePreferenceID routePreference, boolean isFirstChange) {
-        mViewBinding.preferenceRecommend.setSelected(mScreenViewModel.ISRECOMMENDSELECT);
-        mViewBinding.preferenceAvoidCongestion.setSelected(mScreenViewModel.ISAVOIDCONGESTIONSELECT);
-        mViewBinding.preferenceLessCharge.setSelected(mScreenViewModel.ISLESSCHARGESELECT);
-        mViewBinding.preferenceNotHighway.setSelected(mScreenViewModel.ISNOTHIGHWAYSELECT);
-        mViewBinding.preferenceFirstHighway.setSelected(mScreenViewModel.ISFIRSTHIGHWAYSELECT);
-        mViewBinding.preferenceFirstMainRoad.setSelected(mScreenViewModel.ISFIRSTMAINROADSELECT);
-        mViewBinding.preferenceFastestSpeed.setSelected(mScreenViewModel.ISFASTESTSPEEDSELECT);
+    public void onPreferenceChange(final RoutePreferenceID routePreference,
+                                   final boolean isFirstChange) {
+        mViewBinding.preferenceRecommend.setSelected(mScreenViewModel.isISRECOMMENDSELECT());
+        mViewBinding.preferenceAvoidCongestion.setSelected(mScreenViewModel.isISAVOIDCONGESTIONSELECT());
+        mViewBinding.preferenceLessCharge.setSelected(mScreenViewModel.isISLESSCHARGESELECT());
+        mViewBinding.preferenceNotHighway.setSelected(mScreenViewModel.isISNOTHIGHWAYSELECT());
+        mViewBinding.preferenceFirstHighway.setSelected(mScreenViewModel.isISFIRSTHIGHWAYSELECT());
+        mViewBinding.preferenceFirstMainRoad.setSelected(mScreenViewModel.isISFIRSTMAINROADSELECT());
+        mViewBinding.preferenceFastestSpeed.setSelected(mScreenViewModel.isISFASTESTSPEEDSELECT());
 
-        for (ISceneRoutePreferenceCallBack callBack : sceneRoutePreferenceCallBackMap.values()) {
-            if (ConvertUtils.isEmpty(callBack)) continue;
+        for (ISceneRoutePreferenceCallBack callBack : mSceneRoutePreferenceCallBackMap.values()) {
+            if (ConvertUtils.isEmpty(callBack)) {
+                continue;
+            }
             callBack.onRoutePreferenceChange(getPreferText(routePreference), isFirstChange);
         }
     }

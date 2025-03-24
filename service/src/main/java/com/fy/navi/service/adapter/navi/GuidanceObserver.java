@@ -5,6 +5,7 @@ import com.fy.navi.service.define.navi.CameraInfoEntity;
 import com.fy.navi.service.define.navi.CrossImageEntity;
 import com.fy.navi.service.define.navi.FyElecVehicleETAInfo;
 import com.fy.navi.service.define.navi.LaneInfoEntity;
+import com.fy.navi.service.define.navi.NaviDriveReportEntity;
 import com.fy.navi.service.define.navi.NaviEtaInfo;
 import com.fy.navi.service.define.navi.NaviManeuverInfo;
 import com.fy.navi.service.define.navi.NaviMixForkInfo;
@@ -15,65 +16,147 @@ import com.fy.navi.service.define.navi.SpeedOverallEntity;
 import java.util.List;
 
 /**
- * @Description TODO
- * @Author lvww
- * @date 2024/12/5
+ * 导航相关监听
+ * @author fy
+ * @version $Revision.*$
  */
 public interface GuidanceObserver extends BaseNaviObserver {
-    /*传出当前导航信息*/
-    default void onNaviInfo(NaviEtaInfo naviETAInfo){
-        
+    /**
+     * 传出当前导航信息
+     * @param naviETAInfo naviETAInfo
+     */
+    default void onNaviInfo(NaviEtaInfo naviETAInfo) {
+
     }
 
-    /*车道线信息*/
-    default void onLaneInfo(boolean isShowLane, LaneInfoEntity laneInfoEntity){
-        
+    /**
+     * 车道线信息
+     * @param isShowLane isShowLane
+     * @param laneInfoEntity laneInfoEntity
+     */
+    default void onLaneInfo(boolean isShowLane, LaneInfoEntity laneInfoEntity) {
+
     }
 
-    /*路口大图信息*/
-    default void onCrossImageInfo(boolean isShowImage, CrossImageEntity naviImageInfo){
-        
+    /**
+     * 路口大图信息
+     * @param isShowImage isShowImage
+     * @param naviImageInfo naviImageInfo
+     */
+    default void onCrossImageInfo(boolean isShowImage, CrossImageEntity naviImageInfo) {
+
     }
 
-    /*导航到达目的地*/
-    default void onNaviArrive(long traceId, int naviType){}
+    /**
+     * 导航到达目的地
+     * @param traceId traceId
+     * @param naviType naviType
+     */
+    default void onNaviArrive(long traceId, int naviType) {
+    }
 
-    /*转向图标信息、以及传出出入口信息*/
-    default void onManeuverInfo(NaviManeuverInfo respData){}
+    /**
+     * 转向图标信息、以及传出出入口信息
+     * @param respData respData
+     */
+    default void onManeuverInfo(NaviManeuverInfo respData) {
+    }
 
-    /*路况条信息*/
-    default  void onUpdateTMCLightBar(NaviTmcInfo naviTmcInfo){}
+    /**
+     * 路况条信息
+     * @param naviTmcInfo naviTmcInfo
+     */
+    default void onUpdateTMCLightBar(NaviTmcInfo naviTmcInfo) {
+    }
 
-    /*区间车速、绿波车速*/
-    default void onNaviSpeedOverallInfo(SpeedOverallEntity speedEntity){}
+    /**
+     * 区间车速、绿波车速
+     * @param speedEntity speedEntity
+     */
+    default void onNaviSpeedOverallInfo(SpeedOverallEntity speedEntity) {
+    }
 
-    /*电子眼信息*/
-    default void onNaviCameraInfo(CameraInfoEntity cameraInfo){}
+    /**
+     * 电子眼信息
+     * @param cameraInfo cameraInfo
+     */
+    default void onNaviCameraInfo(CameraInfoEntity cameraInfo) {
+    }
 
-    /*服务区、收费站信息、收费口车道类型信息*/
-    default void onNaviSAPAInfo(SapaInfoEntity sapaInfoEntity){}
+    /**
+     * 服务区、收费站信息、收费口车道类型信息
+     * @param sapaInfoEntity sapaInfoEntity
+     */
+    default void onNaviSAPAInfo(SapaInfoEntity sapaInfoEntity) {
+    }
 
-    /*经过途径点*/
-    default  void onUpdateViaPass(long viaIndex){}
+    /**
+     * 经过途径点
+     * @param viaIndex 途经点索引
+     */
+    default void onUpdateViaPass(long viaIndex) {
+    }
 
-    /*通知用户切换主导航路线状态，客户端主动SelectMainPathID切换的回调状态*/
-    default  void onSelectMainPathStatus(long pathID, int result){}
+    /**
+     * 通知用户切换主导航路线状态，客户端主动SelectMainPathID切换的回调状态
+     * @param pathID pathID
+     * @param result result
+     */
+    default void onSelectMainPathStatus(long pathID, int result) {
+    }
 
-    /*更新播报模式*/
-    default  void updateBroadcastParam(int broadcastType, boolean isDay){}
+    /**
+     * 更新播报模式
+     * @param broadcastType broadcastType
+     * @param isDay isDay
+     */
+    default void updateBroadcastParam(int broadcastType, boolean isDay) {
+    }
 
-    /*当前道路限速设施的限速 0: 隐藏/不显示限速  !=0: 显示当前道路限速设施的限速*/
-    default void onCurrentRoadSpeed(int speed){}
+    /**
+     * 当前道路限速设施的限速 0: 隐藏/不显示限速  !=0: 显示当前道路限速设施的限速
+     * @param speed 车速
+     */
+    default void onCurrentRoadSpeed(int speed) {
+    }
 
     /***
      * 透出电动车ETA信息
      * 透出电动车ETA信息，仅在线支持。一分钟回调一次
+     * @param infos infos
      */
-    default void onUpdateElecVehicleETAInfo(List<FyElecVehicleETAInfo> infos){}
+    default void onUpdateElecVehicleETAInfo(List<FyElecVehicleETAInfo> infos) {
+    }
 
-    default void onLaneInfoReceived(LaneInfoEntity laneInfoEntity){}
+    /**
+     * 下一条道路的车道线信息.
+     *
+     * @param laneInfoEntity 车道线实体
+     */
+    default void onLaneInfoReceived(LaneInfoEntity laneInfoEntity) {
+    }
 
-    default void onUpdateTrafficLightCountdown(int isHaveTrafficLight, GeoPoint geoPoint){}
+    /**
+     * 下个路口的红绿灯信息.
+     *
+     * @param isHaveTrafficLight 红绿灯实体
+     * @param geoPoint           红绿灯的位置
+     */
+    default void onUpdateTrafficLightCountdown(int isHaveTrafficLight, GeoPoint geoPoint) {
+    }
 
-    default void onShowSameDirectionMixForkInfo(List<NaviMixForkInfo> list){}
+    /**
+     * 剩余道路的混淆路口信息.
+     *
+     * @param list 混淆路口集合
+     */
+    default void onShowSameDirectionMixForkInfo(List<NaviMixForkInfo> list) {
+    }
+
+    /**
+     * @param report 驾驶信息
+     */
+    default void onDriveReport(NaviDriveReportEntity report){
+
+    }
 }

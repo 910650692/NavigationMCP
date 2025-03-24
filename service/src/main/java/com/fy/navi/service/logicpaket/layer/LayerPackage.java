@@ -11,12 +11,13 @@ import com.fy.navi.service.define.layer.SearchResultLayer;
 import com.fy.navi.service.define.layer.bls.CarLocation;
 import com.fy.navi.service.define.layer.GemBaseLayer;
 import com.fy.navi.service.define.layer.GemLayerItem;
+import com.fy.navi.service.define.layer.refix.LayerItemSearchChild;
+import com.fy.navi.service.define.layer.refix.LayerItemSearchParent;
 import com.fy.navi.service.define.map.GmBizUserFavoritePoint;
 import com.fy.navi.service.define.map.MapTypeId;
 import com.fy.navi.service.define.navi.CrossImageEntity;
 import com.fy.navi.service.define.navi.NaviLayerTexture;
 import com.fy.navi.service.define.navi.NaviParkingEntity;
-import com.fy.navi.service.define.search.PoiInfoEntity;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
@@ -31,16 +32,24 @@ public class LayerPackage implements ILayerAdapterCallBack {
     private LayerAdapter mLayerAdapter;
     private final Hashtable<MapTypeId, List<ILayerPackageCallBack>> mLayerPackageCallBacks = new Hashtable<>();
 
+    private static final class Helper {
+        private static final LayerPackage lPackage = new LayerPackage();
+    }
+
     private LayerPackage() {
         mLayerAdapter = LayerAdapter.getInstance();
     }
 
-    public void initLayerService() {
-        mLayerAdapter.initLayerService();
+    public static LayerPackage getInstance() {
+        return Helper.lPackage;
     }
 
-    public void initInnerStyle() {
-        mLayerAdapter.initInnerStyle();
+    public boolean initLayerService() {
+        return initLayerService(MapTypeId.MAIN_SCREEN_MAIN_MAP);
+    }
+
+    public boolean initLayerService(MapTypeId mapTypeId) {
+        return mLayerAdapter.initLayerService(mapTypeId);
     }
 
     public void registerCallBack(MapTypeId mapTypeId, ILayerPackageCallBack callBack, @LayerType.LayerId int layerId) {
@@ -63,21 +72,10 @@ public class LayerPackage implements ILayerAdapterCallBack {
         mLayerAdapter.unRegisterLayerClickObserver(mapTypeId, layerId, this);
     }
 
-    public void setCustomLayerStyle() {
-        mLayerAdapter.setCustomLayerStyle();
-    }
-
     public void setDefaultCarMode(MapTypeId mapTypeId) {
         mLayerAdapter.setDefaultCarMode(mapTypeId);
     }
 
-    public void setCarModeVisible(MapTypeId mapTypeId, boolean isVisible) {
-        mLayerAdapter.setCarModeVisible(mapTypeId, isVisible);
-    }
-
-    public void setCarModeClickable(MapTypeId mapTypeId, boolean bClickable) {
-        mLayerAdapter.setCarModeClickable(mapTypeId, bClickable);
-    }
 
     public void setCarMode(MapTypeId mapTypeId, @CarModeType.CarModelTypeId int carMode) {
         mLayerAdapter.setCarMode(mapTypeId, carMode);
@@ -127,9 +125,9 @@ public class LayerPackage implements ILayerAdapterCallBack {
         return mLayerAdapter.getPathResultBound(mapTypeId, pathResult);
     }
 
-    public void drawRouteLine(RouteLineLayerParam routeLineLayer) {
-        if (!routeLineLayer.isDrawLineLayer()) return;
-        mLayerAdapter.drawRouteLine(routeLineLayer);
+    public void drawRouteLine(MapTypeId mapTypeId, RouteLineLayerParam routeLineLayer) {
+        if (!routeLineLayer.isMIsDrawLineLayer()) return;
+        mLayerAdapter.drawRouteLine(mapTypeId, routeLineLayer);
     }
 
     public boolean showCross(MapTypeId mapTypeId, CrossImageEntity crossInfo) {
@@ -158,10 +156,6 @@ public class LayerPackage implements ILayerAdapterCallBack {
 
     public void unInitLayerService() {
         mLayerAdapter.unInitLayerService();
-    }
-
-    public static LayerPackage getInstance() {
-        return Helper.lPackage;
     }
 
     public void setSelectedPathIndex(MapTypeId mapTypeId, int routeIndex) {
@@ -233,8 +227,9 @@ public class LayerPackage implements ILayerAdapterCallBack {
 
     /**
      * 计算两点之间的直线距离.
+     *
      * @param startPoint 起点.
-     * @param endPoint 终点.
+     * @param endPoint   终点.
      * @return 距离.
      */
     public double calcStraightDistance(GeoPoint startPoint, GeoPoint endPoint) {
@@ -269,7 +264,5 @@ public class LayerPackage implements ILayerAdapterCallBack {
         return mLayerAdapter.openDynamicCenter(mapTypeId, changeCenter);
     }
 
-    private static final class Helper {
-        private static final LayerPackage lPackage = new LayerPackage();
-    }
+
 }

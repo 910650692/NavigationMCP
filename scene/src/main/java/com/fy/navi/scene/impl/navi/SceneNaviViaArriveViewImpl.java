@@ -10,12 +10,15 @@ import com.fy.navi.scene.ui.navi.manager.NaviSceneId;
 public class SceneNaviViaArriveViewImpl extends BaseSceneModel<SceneNaviViaArriveView> {
     public static final String TAG = "SceneNaviViaArriveViewImpl";
     private ISceneCallback mISceneCallback;
-    public SceneNaviViaArriveViewImpl(SceneNaviViaArriveView mScreenView) {
-        super(mScreenView);
+    public SceneNaviViaArriveViewImpl(final SceneNaviViaArriveView screenView) {
+        super(screenView);
     }
 
-    public void addISceneCallback(ISceneCallback mISceneCallback) {
-        this.mISceneCallback = mISceneCallback;
+    /**
+     * @param sceneCallback the mISceneCallback to set
+     */
+    public void addISceneCallback(final ISceneCallback sceneCallback) {
+        this.mISceneCallback = sceneCallback;
     }
 
     /**
@@ -25,7 +28,10 @@ public class SceneNaviViaArriveViewImpl extends BaseSceneModel<SceneNaviViaArriv
         mISceneCallback.onUpdateViaPass();
     }
 
-    public void updateSceneVisible(boolean isVisible) {
+    /**
+     * @param isVisible the isVisible to set
+     */
+    public void updateSceneVisible(final boolean isVisible) {
         Logger.i(TAG, "updateSceneVisible isVisible = " + isVisible);
         mScreenView.getNaviSceneEvent().notifySceneStateChange((isVisible ?
                 INaviSceneEvent.SceneStateChangeType.SceneShowState :

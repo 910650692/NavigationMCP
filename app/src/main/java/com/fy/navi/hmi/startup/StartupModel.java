@@ -61,7 +61,7 @@ public class StartupModel extends BaseModel<BaseStartupViewModel>
         if (NaviService.isMapInited) {
             mViewModel.startMapActivity();
         } else {
-            Intent intent = new Intent(AppContext.mContext, NaviService.class);
+            Intent intent = new Intent(AppContext.getInstance().getMContext(), NaviService.class);
             intent.putExtra(NaviService.START_APPLICATION_KEY, true);
             int intentPage = mViewModel.getIntentPage();
             if (intentPage != INaviConstant.OpenIntentPage.NONE) {
@@ -76,7 +76,7 @@ public class StartupModel extends BaseModel<BaseStartupViewModel>
                     intent.putExtra(INaviConstant.ROUTE_END_POI, endPoint);
                 }
             }
-            ActivityCompat.startForegroundService(AppContext.mContext, intent);
+            ActivityCompat.startForegroundService(AppContext.getInstance().getMContext(), intent);
         }
     }
 

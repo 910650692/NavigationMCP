@@ -7,21 +7,16 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SwitchCompat;
 
-/**
- * @Description TODO
- * @Author lvww
- * @date 2024/12/17
- */
 public class SkinSwitchCompat extends SwitchCompat {
-    public SkinSwitchCompat(@NonNull Context context) {
+    public SkinSwitchCompat(@NonNull final Context context) {
         this(context, null);
     }
 
-    public SkinSwitchCompat(@NonNull Context context, @Nullable AttributeSet attrs) {
+    public SkinSwitchCompat(@NonNull final Context context, @Nullable final AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public SkinSwitchCompat(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public SkinSwitchCompat(@NonNull final Context context, @Nullable final AttributeSet attrs, final int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 }

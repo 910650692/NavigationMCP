@@ -1,5 +1,6 @@
 package com.android.utils.file;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.AssetManager;
 import android.os.Environment;
@@ -181,6 +182,112 @@ public class FileUtils {
     public boolean deleteFile(File path) {
         if (!checkFile(path)) return true;
         return path.delete();
+    }
+
+    /**
+     * 删除指定文件夹下的所有文件和子文件夹
+     * @param dir 文件夹路径
+     * @return 是否删除成功
+     */
+    public static boolean deleteFilesInDirectory(final File dir) {
+        if (dir.exists() && dir.isDirectory()) {
+            final File[] files = dir.listFiles();
+            if (files != null) {
+                for (File file : files) {
+                    if (file.isDirectory()) {
+                        deleteFilesInDirectory(file); // 递归删除子文件夹
+                    } else {
+                        file.delete(); // 删除文件
+                    }
+                }
+            }
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * 删除多个文件夹下的所有文件和子文件夹
+     * @param dirs 文件夹路径数组
+     * @return 是否删除成功
+     */
+    public static boolean deleteFilesInDirectories(final File[] dirs) {
+        if (dirs == null || dirs.length == 0) return false;
+
+        for (File dir : dirs) {
+            if (dir.exists() && dir.isDirectory()) {
+                if (!deleteFilesInDirectory(dir)) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    /**
+     * 获取指定文件夹下的所有文件的总大小
+     * @param dir 文件夹路径
+     * @return 文件夹大小（字节）
+     */
+    public static long getDirectorySize(final File dir) {
+        long size = 0;
+        if (dir.exists() && dir.isDirectory()) {
+            final File[] files = dir.listFiles();
+            if (files != null) {
+                for (File file : files) {
+                    if (file.isDirectory()) {
+                        size += getDirectorySize(file); // 递归获取子文件夹大小
+                    } else {
+                        size += file.length(); // 累加文件大小
+                    }
+                }
+            }
+        }
+        return size;
+    }
+
+    /**
+     * 获取多个文件夹下的所有文件的总大小
+     * @param dirs 文件夹路径数组
+     * @return 文件夹总大小（字节）
+     */
+    public static long getTotalSizeOfDirectories(final File[] dirs) {
+        if (dirs == null || dirs.length == 0) return 0;
+
+        long totalSize = 0;
+        for (File dir : dirs) {
+            if (dir.exists() && dir.isDirectory()) {
+                totalSize += getDirectorySize(dir);
+            }
+        }
+        return totalSize;
+    }
+
+
+    /**
+     * 格式化文件大小为指定格式
+     * @param size 文件大小（字节）
+     * @return 格式化后的字符串
+     */
+    @SuppressLint("DefaultLocale")
+    public static String formatFileSize(final long size) {
+        if (size <= 0) {
+            return "0KB";
+        }
+
+        final double KB = 1024;
+        final double MB = KB * 1024;
+        final double GB = MB * 1024;
+
+        if (size < KB) {
+            return size + "B";
+        } else if (size < MB) {
+            return String.format("%.0fKB", size / KB);
+        } else if (size < GB) {
+            return String.format("%.1fM", size / MB);
+        } else {
+            return String.format("%.2fG", size / GB);
+        }
     }
 
     /**

@@ -18,14 +18,16 @@ public final class BinderManager {
     private volatile IBinderPool mBinderPool;
 
     public static BinderManager getInstance() {
-        return SingletonHolder.mInstance;
+        return SingletonHolder.INSTANCE;
     }
 
-    private static class SingletonHolder {
-        private static final BinderManager mInstance = new BinderManager();
+    private static final class SingletonHolder {
+        private static final BinderManager INSTANCE = new BinderManager();
     }
 
-    private BinderManager() {}
+    private BinderManager() {
+
+    }
 
 
     private final IBinderPoolCallback.Stub mBinderPoolCallback = new IBinderPoolCallback.Stub() {
@@ -33,11 +35,7 @@ public final class BinderManager {
         public void onEngineInitSuccess() {
             for (IEngineStatusCallback callback : mEngineStatusCallbackList) {
                 if (null != callback) {
-                    try {
-                        callback.onInitSuccess();
-                    } catch (Exception exception) {
-                        Log.e(TAG, "dispatch initSuccess error: " + exception.getMessage());
-                    }
+                    callback.onInitSuccess();
                 }
             }
         }
@@ -53,7 +51,12 @@ public final class BinderManager {
     };
 
 
-    public synchronized void updateBinderPool(IBinderPool binderPool) {
+    /**
+     * 绑定service成功后，更新BinderPool.
+     *
+     * @param binderPool IBinderPool, Service返回的IBinder.
+     */
+    public synchronized void updateBinderPool(final IBinderPool binderPool) {
         if (binderPool == null) {
             Log.e(TAG, "updateBinderPool: binderPool null");
             return;
@@ -62,11 +65,19 @@ public final class BinderManager {
         judgeEngineStatus();
     }
 
+    /**
+     * 移除IBinder.
+     */
     public synchronized void removeBinderPool() {
         mBinderPool = null;
     }
 
-    public synchronized void addEngineInitCallback(IEngineStatusCallback callback) {
+    /**
+     * 添加SDK引擎初始化状态监听接口.
+     *
+     * @param callback IEngineStatusCallback.
+     */
+    public synchronized void addEngineInitCallback(final IEngineStatusCallback callback) {
         if (null == callback) {
             return;
         }
@@ -77,12 +88,14 @@ public final class BinderManager {
         judgeEngineStatus();
     }
 
-    //绑定成功后根据engine初始化状态执行分发或初始化引擎
+    /**
+     * 绑定成功后根据engine初始化状态执行分发或初始化引擎.
+     */
     private void judgeEngineStatus() {
         Log.d(TAG, "BinderManager judgeEngine");
         if (isBonded()) {
             try {
-                boolean engineInit = mBinderPool.getEngineInitStatus(MapSdk.getInstance().getPackageName());
+                final boolean engineInit = mBinderPool.getEngineInitStatus(MapSdk.getInstance().getPackageName());
                 if (engineInit) {
                     for (IEngineStatusCallback callback : mEngineStatusCallbackList) {
                         if (null != callback) {
@@ -91,7 +104,7 @@ public final class BinderManager {
                     }
                 } else {
                     Log.d(TAG, "BinderManager start initEngine");
-                    String pkgName = MapSdk.getInstance().getPackageName();
+                    final String pkgName = MapSdk.getInstance().getPackageName();
                     mBinderPool.addBindPoolCallback(pkgName, mBinderPoolCallback);
                     mBinderPool.startInitEngine(pkgName);
                 }
@@ -106,7 +119,11 @@ public final class BinderManager {
     }
 
 
-    //获取NaviAutoApi接口实现类
+    /**
+     * 获取NaviAutoApi接口实现类.
+     *
+     * @return INaviAutoApiBinder.
+     */
     public INaviAutoApiBinder getNaviAutoBinder() {
         INaviAutoApiBinder naviAutoApiBinder = null;
         if (isBonded()) {

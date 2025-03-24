@@ -2,26 +2,41 @@ package com.fy.navi.scene.impl.route;
 
 import com.fy.navi.scene.BaseSceneModel;
 import com.fy.navi.scene.api.route.ISceneRouteGasStationChargeService;
-import com.fy.navi.scene.api.route.ISceneRouteGasStationWeatherService;
 import com.fy.navi.scene.ui.route.SceneRouteGasStationChargeServiceView;
-import com.fy.navi.scene.ui.route.SceneRouteGasStationWeatherServiceView;
-import com.fy.navi.service.logicpaket.route.RoutePackage;
 
-/**
- * @Description TODO
- * @Author lvww
- * @date 2024/12/2
- */
-public class SceneRouteGasStationChargeServiceImpl extends BaseSceneModel<SceneRouteGasStationChargeServiceView> implements ISceneRouteGasStationChargeService {
+public class SceneRouteGasStationChargeServiceImpl extends BaseSceneModel<SceneRouteGasStationChargeServiceView>
+        implements ISceneRouteGasStationChargeService {
 
-    private final RoutePackage mRoutePackage;
-    public boolean isGasStationSelect = false;
-    public boolean isWeatherSelect = false;
-    public boolean isServiceSelect = false;
+    public boolean isGasStationSelect() {
+        return isGasStationSelect;
+    }
+
+    public boolean isWeatherSelect() {
+        return isWeatherSelect;
+    }
+
+    public boolean isServiceSelect() {
+        return isServiceSelect;
+    }
+
+    public void setGasStationSelect(boolean gasStationSelect) {
+        isGasStationSelect = gasStationSelect;
+    }
+
+    public void setWeatherSelect(boolean weatherSelect) {
+        isWeatherSelect = weatherSelect;
+    }
+
+    public void setServiceSelect(boolean serviceSelect) {
+        isServiceSelect = serviceSelect;
+    }
+
+    private boolean isGasStationSelect = false;
+    private boolean isWeatherSelect = false;
+    private boolean isServiceSelect = false;
 
     public SceneRouteGasStationChargeServiceImpl(SceneRouteGasStationChargeServiceView mScreenView) {
         super(mScreenView);
-        mRoutePackage = RoutePackage.getInstance();
     }
     @Override
     public void clickAlone() {

@@ -5,21 +5,16 @@ import android.util.AttributeSet;
 
 import androidx.appcompat.widget.AppCompatButton;
 
-/**
- * @Description TODO
- * @Author lvww
- * @date 2024/12/2
- */
 public class SkinButton extends AppCompatButton {
-    public SkinButton(Context context) {
+    public SkinButton(final Context context) {
         super(context);
     }
 
-    public SkinButton(Context context, AttributeSet attrs) {
+    public SkinButton(final Context context, final AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public SkinButton(Context context, AttributeSet attrs, int defStyleAttr) {
+    public SkinButton(final Context context, final AttributeSet attrs, final int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 }

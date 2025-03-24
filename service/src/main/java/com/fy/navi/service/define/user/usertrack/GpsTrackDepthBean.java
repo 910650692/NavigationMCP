@@ -2,73 +2,70 @@ package com.fy.navi.service.define.user.usertrack;
 
 import java.util.ArrayList;
 
-/**
- * @Description
- * @Author fh
- * @date 2024/12/27
- */
+
 public class GpsTrackDepthBean {
-    public String filePath;
-    public String fileName;
-    public int fastestIndex;
-    public ArrayList<GpsTrackPointBean> trackPoints;
-    public long duration;
-    public long distance;
-    public float averageSpeed;
+
+    private String mFilePath;
+    private String mFileName;
+    private int mFastestIndex;
+    private ArrayList<GpsTrackPointBean> mTrackPoints;
+    private long mDuration;
+    private long mDistance;
+    private float mAverageSpeed;
 
     public String getFilePath() {
-        return filePath;
+        return mFilePath;
     }
 
-    public void setFilePath(String filePath) {
-        this.filePath = filePath;
+    public void setFilePath(final String filePath) {
+        this.mFilePath = filePath;
     }
 
     public String getFileName() {
-        return fileName;
+        return mFileName;
     }
 
-    public void setFileName(String fileName) {
-        this.fileName = fileName;
+    public void setFileName(final String fileName) {
+        this.mFileName = fileName;
     }
 
     public int getFastestIndex() {
-        return fastestIndex;
+        return mFastestIndex;
     }
 
-    public void setFastestIndex(int fastestIndex) {
-        this.fastestIndex = fastestIndex;
+    public void setFastestIndex(final int fastestIndex) {
+        this.mFastestIndex = fastestIndex;
     }
 
     public ArrayList<GpsTrackPointBean> getTrackPoints() {
-        return trackPoints;
+        return mTrackPoints;
     }
 
-    public void setTrackPoints(ArrayList<GpsTrackPointBean> trackPoints) {
-        this.trackPoints = trackPoints;
+    public void setTrackPoints(final ArrayList<GpsTrackPointBean> trackPoints) {
+        this.mTrackPoints = trackPoints;
     }
 
     public long getDuration() {
-        return duration;
+        return mDuration;
     }
 
-    public void setDuration(long duration) {
-        this.duration = duration;
+    public void setDuration(final long duration) {
+        this.mDuration = duration;
     }
 
     public long getDistance() {
-        return distance;
+        return mDistance;
     }
 
-    public void setDistance(long distance) {
-        this.distance = distance;
+    public void setDistance(final long distance) {
+        this.mDistance = distance;
     }
 
     public float getAverageSpeed() {
-        return averageSpeed;
+        return mAverageSpeed;
     }
 
-    public void setAverageSpeed(float averageSpeed) {
-        this.averageSpeed = averageSpeed;
+    public void setAverageSpeed(final float averageSpeed) {
+        this.mAverageSpeed = averageSpeed;
     }
 }

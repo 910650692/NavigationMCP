@@ -1,24 +1,19 @@
 package com.fy.navi.hmi.favorite;
 
-import static com.fy.navi.service.MapDefaultFinalTag.SEARCH_HMI_TAG;
-
 import android.os.Bundle;
 
 import com.android.utils.log.Logger;
 import com.fy.navi.hmi.BR;
 import com.fy.navi.hmi.R;
-import com.fy.navi.hmi.databinding.FragmentHomeCompanyBinding;
 import com.fy.navi.hmi.databinding.FragmentMapPointSearchBinding;
-import com.fy.navi.scene.ui.favorite.SceneMapPointSearchView;
 import com.fy.navi.service.AutoMapConstant;
+import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.define.map.MapTypeId;
 import com.fy.navi.service.define.search.PoiInfoEntity;
 import com.fy.navi.service.define.search.SearchResultEntity;
 import com.fy.navi.ui.base.BaseFragment;
 
-/**
- * 地图选点
- */
+
 public class MapPointSearchFragment extends BaseFragment<FragmentMapPointSearchBinding, MapPointSearchViewModel> {
 
 
@@ -45,32 +40,43 @@ public class MapPointSearchFragment extends BaseFragment<FragmentMapPointSearchB
 //        mBinding.homeCompanyView.setActivity(mActivity);
     }
 
+    /**
+     * getSearchPoiInfo
+     */
     private void getSearchPoiInfo() {
-        Bundle parsedArgs = getArguments();
+        final Bundle parsedArgs = getArguments();
         if (parsedArgs == null) {
-            Logger.d(SEARCH_HMI_TAG, "No valid arguments found.");
+            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "No valid arguments found.");
             return;
         }
-        PoiInfoEntity poiInfoEntity = parsedArgs.getParcelable(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_OPEN_DETAIL);
-        int poiType = parsedArgs.getInt(AutoMapConstant.PoiBundleKey.BUNDLE_KEY_START_POI_TYPE,-1);
+        final PoiInfoEntity poiInfoEntity = parsedArgs.getParcelable(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_OPEN_DETAIL);
+        final int poiType = parsedArgs.getInt(AutoMapConstant.PoiBundleKey.BUNDLE_KEY_START_POI_TYPE,-1);
         doSearch(poiInfoEntity);
         mBinding.mapPointSearchView.refreshPoiView(poiType);
     }
 
     @Override
-    public void onHiddenChanged(boolean hidden) {
+    public void onHiddenChanged(final boolean hidden) {
         super.onHiddenChanged(hidden);
         if (!hidden) {
 //            mBinding.homeCompanyView.requestFocusAndShowKeyboard();
         }
     }
 
-    public void notifySearchResult(SearchResultEntity searchResultEntity) {
+    /**
+     * notifySearchResult
+     * @param searchResultEntity
+     */
+    public void notifySearchResult(final SearchResultEntity searchResultEntity) {
         mBinding.mapPointSearchView.onSearchResult(searchResultEntity);
 //        mViewModel.notifySearchResult(searchResultEntity);
     }
 
-    public void doSearch(PoiInfoEntity poiInfoEntity) {
+    /**
+     * doSearch
+     * @param poiInfoEntity
+     */
+    public void doSearch(final PoiInfoEntity poiInfoEntity) {
         mBinding.mapPointSearchView.doSearch(poiInfoEntity);
     }
 
@@ -86,8 +92,14 @@ public class MapPointSearchFragment extends BaseFragment<FragmentMapPointSearchB
     }
 
 
-    public static Bundle getBundle(int poiType,PoiInfoEntity poiInfoEntity){
-        Bundle bundle = new Bundle();
+    /**
+     * getBundle
+     * @param poiType
+     * @param poiInfoEntity
+     * @return bundle
+     */
+    public static Bundle getBundle(final int poiType, final PoiInfoEntity poiInfoEntity){
+        final Bundle bundle = new Bundle();
         bundle.putInt(AutoMapConstant.PoiBundleKey.BUNDLE_KEY_START_POI_TYPE,poiType);
         bundle.putParcelable(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_OPEN_DETAIL,poiInfoEntity);
         return bundle;

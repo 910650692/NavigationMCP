@@ -22,7 +22,7 @@
 
             <com.fy.navi.ui.view.SkinImageView
                 android:id="@+id/iv_offline_map_back"
-                clickCommand="@{ViewModel.closeNearMapDataView}"
+                clickCommand="@{ViewModel.mCloseNearMapDataView}"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"

@@ -1,23 +1,32 @@
 package com.fy.navi.scene.api.route;
 
-/**
- * @Description TODO
- * @Author lvww
- * @date 2024/12/2
- */
 public interface ISceneRoutePreference {
-
+    /**
+     * 推荐
+     * */
     void preferenceRecommend();
-
+    /**
+     * 躲避拥堵
+     * */
     void preferenceAvoidCongestion();
-
+    /**
+     * 少收费
+     * */
     void preferenceLessCharge();
-
+    /**
+     * 不走高速
+     * */
     void preferenceNotHighway();
-
+    /**
+     * 高速优先
+     * */
     void preferenceFirstHighway();
-
+    /**
+     * 大路有限
+     * */
     void preferenceFirstMainRoad();
-
+    /**
+     * 时间最短
+     * */
     void preferenceFastestSpeed();
 }

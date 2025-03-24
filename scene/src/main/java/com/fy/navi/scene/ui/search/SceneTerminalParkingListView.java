@@ -19,27 +19,28 @@ import com.fy.navi.service.define.search.PoiInfoEntity;
 import com.fy.navi.service.define.search.SearchResultEntity;
 
 /**
- * @Author: baipeng0904
+ * @author baipeng0904
+ * @version \$Revision1.0\$
  * @Description: SceneTerminalParkingListView
  * @CreateDate: 2025/3/5 16:32
  */
 public class SceneTerminalParkingListView extends BaseSceneView<TerminalParkingResultViewBinding, SceneTerminalViewImpl> {
     private TerminalParkingResultAdapter mAdapter;
 
-    public SceneTerminalParkingListView(@NonNull Context context) {
+    public SceneTerminalParkingListView(@NonNull final Context context) {
         super(context);
     }
 
-    public SceneTerminalParkingListView(@NonNull Context context, @Nullable AttributeSet attrs) {
+    public SceneTerminalParkingListView(@NonNull final Context context, @Nullable final AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public SceneTerminalParkingListView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public SceneTerminalParkingListView(@NonNull final Context context, @Nullable final AttributeSet attrs, final int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 
     @Override
-    protected TerminalParkingResultViewBinding createViewBinding(LayoutInflater inflater, ViewGroup viewGroup) {
+    protected TerminalParkingResultViewBinding createViewBinding(final LayoutInflater inflater, final ViewGroup viewGroup) {
         return TerminalParkingResultViewBinding.inflate(inflater, viewGroup, true);
     }
 
@@ -60,7 +61,11 @@ public class SceneTerminalParkingListView extends BaseSceneView<TerminalParkingR
 
     }
 
-    public void aroundSearch(GeoPoint geoPoint) {
+    /**
+     * 周边搜索
+     * @param geoPoint 目标POI坐标点 经纬度
+     */
+    public void aroundSearch(final GeoPoint geoPoint) {
         mScreenViewModel.aroundSearch("停车场", geoPoint);
     }
 
@@ -68,7 +73,7 @@ public class SceneTerminalParkingListView extends BaseSceneView<TerminalParkingR
      * 初始化 RecyclerView
      */
     private void setupRecyclerView() {
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+        final LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         mViewBinding.recyclerSearchResult.setLayoutManager(layoutManager);
 
@@ -76,13 +81,13 @@ public class SceneTerminalParkingListView extends BaseSceneView<TerminalParkingR
         mViewBinding.recyclerSearchResult.setAdapter(mAdapter);
         mAdapter.setOnItemClickListener(new TerminalParkingResultAdapter.OnItemClickListener() {
             @Override
-            public void onItemClick(int position, PoiInfoEntity poiInfoEntity) {
+            public void onItemClick(final int position, final PoiInfoEntity poiInfoEntity) {
                 // TODO 终点停车场事件
                 mScreenViewModel.startRoute(poiInfoEntity);
             }
 
             @Override
-            public void onNaviClick(int position, PoiInfoEntity poiInfoEntity) {
+            public void onNaviClick(final int position, final PoiInfoEntity poiInfoEntity) {
                 // TODO 终点停车场事件
                 mScreenViewModel.startRoute(poiInfoEntity);
             }
@@ -98,8 +103,9 @@ public class SceneTerminalParkingListView extends BaseSceneView<TerminalParkingR
 
     /**
      * 更新搜索结果
+     * @param searchResultEntity 搜索结果实体类
      */
-    public void notifySearchResult(SearchResultEntity searchResultEntity) {
+    public void notifySearchResult(final SearchResultEntity searchResultEntity) {
         if (searchResultEntity == null || searchResultEntity.getPoiList().isEmpty()) {
             ToastUtils.Companion.getInstance().showCustomToastView("暂无数据");
             return;

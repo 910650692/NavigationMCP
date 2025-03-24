@@ -16,6 +16,8 @@ public class RoutePath {
         public static final String COLLECT_FRAGMENT = "/app/src/main/java/com/fy/navi/hmi/favorite/CollectFragment";
         public static final String HOME_COMPANY_FRAGMENT = "/app/src/main/java/com/fy/navi/hmi/favorite/HomeCompanyFragment";
         public static final String POI_DETAILS_FRAGMENT = "/app/src/main/java/com/fy/navi/hmi/poi/PoiDetailsFragment";
+        public static final String POI_AROUND_DETAILS_FRAGMENT = "/app/src/main/java/com/fy/navi/hmi/poi/AroundPoiDetailsFragment";
+        public static final String POI_ALONG_WAY_DETAILS_FRAGMENT = "/app/src/main/java/com/fy/navi/hmi/poi/AlongWayPoiDetailsFragment";
         public static final String MAIN_ALONG_WAY_SEARCH_FRAGMENT = "/app/src/main/java/com/fy/navi/hmi/search/alongway/MainAlongWaySearchFragment";
     }
 

@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.android.utils.file.FileUtils;
 import com.android.utils.log.Logger;
+
 import com.android.utils.thread.ThreadManager;
 
 /**

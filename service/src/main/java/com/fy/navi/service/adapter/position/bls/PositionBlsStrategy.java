@@ -25,15 +25,10 @@ import com.autonavi.gbl.pos.model.LocDataType;
 import com.autonavi.gbl.pos.model.LocFeedbackNode;
 import com.autonavi.gbl.pos.model.LocGnss;
 import com.autonavi.gbl.pos.model.LocInfo;
-import com.autonavi.gbl.pos.model.LocLogConf;
 import com.autonavi.gbl.pos.model.LocMMFeedbackInfo;
 import com.autonavi.gbl.pos.model.LocMatchInfo;
 import com.autonavi.gbl.pos.model.LocModeType;
-import com.autonavi.gbl.pos.model.LocMountAngle;
-import com.autonavi.gbl.pos.model.LocSensorOption;
 import com.autonavi.gbl.pos.model.LocSignData;
-import com.autonavi.gbl.pos.model.LocType;
-import com.autonavi.gbl.pos.model.PlatformType;
 import com.autonavi.gbl.pos.model.PosWorkPath;
 import com.autonavi.gbl.pos.observer.IPosDrInfoObserver;
 import com.autonavi.gbl.pos.observer.IPosGraspRoadResultObserver;
@@ -45,7 +40,6 @@ import com.autonavi.gbl.util.model.SingleServiceID;
 import com.fy.navi.service.AppContext;
 import com.fy.navi.service.GBLCacheFilePath;
 import com.fy.navi.service.MapDefaultFinalTag;
-import com.fy.navi.service.R;
 import com.fy.navi.service.adapter.position.IPositionAdapterCallback;
 import com.fy.navi.service.adapter.position.PositionConstant;
 import com.fy.navi.service.adapter.position.bls.comm.GpsStatusChecker;
@@ -230,9 +224,9 @@ public class PositionBlsStrategy implements IPosLocInfoObserver, IPosMapMatchFee
      */
     @Override
     public void onDrInfoUpdate(DrInfo drInfo) {
-        this.drInfo.drRawPos.lat = drInfo.drRawPos.lat;
-        this.drInfo.drRawPos.lon = drInfo.drRawPos.lon;
-        this.drInfo.drRawPos.z = drInfo.drRawPos.z;
+        this.drInfo.drRawPos.setLat(drInfo.drRawPos.lat);
+        this.drInfo.drRawPos.setLon(drInfo.drRawPos.lon);
+        this.drInfo.drRawPos.setZ(drInfo.drRawPos.z);
         this.drInfo.aziAcc = drInfo.aziAcc;
         this.drInfo.drMatchAzi = drInfo.drMatchAzi;
         this.drInfo.tickTime = drInfo.tickTime;
@@ -253,9 +247,9 @@ public class PositionBlsStrategy implements IPosLocInfoObserver, IPosMapMatchFee
         this.drInfo.moveDist = drInfo.moveDist;
         this.drInfo.bMountAngleReady = drInfo.bMountAngleReady;
         this.drInfo.matchStatus = drInfo.matchStatus;
-        this.drInfo.drMatchPos.z = drInfo.drMatchPos.z;
-        this.drInfo.drMatchPos.lon = drInfo.drMatchPos.lon;
-        this.drInfo.drMatchPos.lat = drInfo.drMatchPos.lat;
+        this.drInfo.drMatchPos.setZ(drInfo.drMatchPos.z);
+        this.drInfo.drMatchPos.setLon(drInfo.drMatchPos.lon);
+        this.drInfo.drMatchPos.setLat(drInfo.drMatchPos.lat);
         if (mH.hasMessages(MSG_SEND_DR)) {
             mH.removeMessages(MSG_SEND_DR);
         }
@@ -368,7 +362,7 @@ public class PositionBlsStrategy implements IPosLocInfoObserver, IPosMapMatchFee
     }
 
     public GeoPoint wgs84ToGcj02(GeoPoint coordinate) {
-        Coord3DDouble coord3DDouble = new Coord3DDouble(coordinate.lon, coordinate.lat, coordinate.z);
+        Coord3DDouble coord3DDouble = new Coord3DDouble(coordinate.getLon(), coordinate.getLat(), coordinate.getZ());
         Coord3DDouble gcjCoordinate = PosService.encryptLonLat(coord3DDouble);
         GeoPoint gcj02Point = new GeoPoint(gcjCoordinate.lon, gcjCoordinate.lat, gcjCoordinate.z);
         return gcj02Point;
@@ -446,7 +440,7 @@ public class PositionBlsStrategy implements IPosLocInfoObserver, IPosMapMatchFee
                     callback.onGpsSatellitesChanged(mIsLocSuccess);
                 }
                 if (!mIsLocSuccess) {
-                    ToastUtils.Companion.getInstance().showCustomToastView(AppContext.mContext.getString(com.android.utils.R.string.navi_loc_filed));
+                    ToastUtils.Companion.getInstance().showCustomToastView(AppContext.getInstance().getMContext().getString(com.android.utils.R.string.navi_loc_filed));
                 }
             }
             break;
@@ -532,6 +526,7 @@ public class PositionBlsStrategy implements IPosLocInfoObserver, IPosMapMatchFee
                     location.setVaccuracy(locInfo.altAcc);
                     location.setType(locInfo.sourType);
                     location.setRoadId(locInfo.roadId);
+                    location.setLinkType(locInfo.matchInfo.get(0).linkType);
                 }
             }
         }
@@ -564,8 +559,8 @@ public class PositionBlsStrategy implements IPosLocInfoObserver, IPosMapMatchFee
             if (mPosService != null) {
                 Logger.d(TAG, "locationLogSwitch：" + isOpen);
                 ToastUtils.Companion.getInstance().showCustomToastView(isOpen ?
-                        AppContext.mContext.getString(com.android.utils.R.string.navi_open_loc_log) :
-                        AppContext.mContext.getString(com.android.utils.R.string.navi_close_loc_log));
+                        AppContext.getInstance().getMContext().getString(com.android.utils.R.string.navi_open_loc_log) :
+                        AppContext.getInstance().getMContext().getString(com.android.utils.R.string.navi_close_loc_log));
                 mPosService.signalRecordSwitch(isOpen, LocationFuncSwitch.getLocLogConf());
             }
         }

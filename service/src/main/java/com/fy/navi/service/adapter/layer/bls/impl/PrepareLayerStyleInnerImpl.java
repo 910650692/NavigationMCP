@@ -231,10 +231,10 @@ public class PrepareLayerStyleInnerImpl extends PrepareLayerStyleInner {
         View view = null;
         switch (businessType) {
             case BizRouteType.BizRouteTypeEndPoint:
-                LayoutInflater inflater = LayoutInflater.from(AppContext.mContext);
+                LayoutInflater inflater = LayoutInflater.from(AppContext.getInstance().getMContext());
                 view = inflater.inflate(R.layout.route_type_end, null);
                 SkinTextView textView = view.findViewById(R.id.tv_route_end);
-                textView.setText(AppContext.mContext.getString(R.string.arrival_time, mLayerAdapter.getCurrentRouteTime(mapTypeId)));
+                textView.setText(AppContext.getInstance().getMContext().getString(R.string.arrival_time, mLayerAdapter.getCurrentRouteTime(mapTypeId)));
                 markerId = getDynamicsMarkerId(ROUTE_END_POINT_TEXTURE);
                 break;
             default:
@@ -291,7 +291,7 @@ public class PrepareLayerStyleInnerImpl extends PrepareLayerStyleInner {
             Logger.d(TAG, "addStaticMarker : " + pLayer.getName() + ", 资源图片缺失 :" + imageName);
             return markerId;
         }
-        Bitmap bitmap = BitmapFactory.decodeResource(AppContext.mContext.getResources(), resID, options);
+        Bitmap bitmap = BitmapFactory.decodeResource(AppContext.getInstance().getMContext().getResources(), resID, options);
         if (bitmap == null) {
             Logger.d(TAG, "addStaticMarker : " + pLayer.getName() + " , 创建新图片纹理失败 :" + imageName);
             return markerId;
@@ -391,7 +391,7 @@ public class PrepareLayerStyleInnerImpl extends PrepareLayerStyleInner {
         if (markerId > 0) {
             return markerId;
         }
-        int resId = AppContext.mContext.getResources().getIdentifier(strMarkerId, "drawable", AppContext.mContext.getApplicationInfo().packageName);
+        int resId = AppContext.getInstance().getMContext().getResources().getIdentifier(strMarkerId, "drawable", AppContext.getInstance().getMContext().getApplicationInfo().packageName);
         return addStaticMarker(pLayer, strMarkerInfo, strMarkerId, resId);
     }
 
@@ -411,7 +411,7 @@ public class PrepareLayerStyleInnerImpl extends PrepareLayerStyleInner {
     }
 
     private LayerTexture CreateLayerTexture(int resId) {
-        Bitmap bitmap = BitmapFactory.decodeResource(AppContext.mContext.getResources(), resId, staticMarkerOption);
+        Bitmap bitmap = BitmapFactory.decodeResource(AppContext.getInstance().getMContext().getResources(), resId, staticMarkerOption);
         if (bitmap == null) {
             Logger.d(TAG, "CreateLayerTexture failed. res id: " + resId);
             return null;

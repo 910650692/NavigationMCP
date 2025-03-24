@@ -4,12 +4,20 @@ import android.content.Context;
 
 import com.fy.navi.ui.BaseApplication;
 
-/**
- * @Description TODO
- * @Author lvww
- * @date 2024/11/24
- */
+import lombok.Getter;
+import lombok.Setter;
+
+@Setter
+@Getter
 public class AppContext {
-    public static BaseApplication mApplication;
-    public static Context mContext;
+    private BaseApplication mApplication;
+    private Context mContext;
+
+    public static AppContext getInstance() {
+        return AppContext.Helper.RA;
+    }
+
+    private static final class Helper {
+        private static final AppContext RA = new AppContext();
+    }
 }

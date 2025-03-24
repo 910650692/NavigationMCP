@@ -4,81 +4,81 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 public class DrivingRecordDataBean implements Parcelable {
-    private String id; // 数据ID
-    private int type; // 数据类型  固定 403
-    private int rideRunType = -1; //
-    private int timeInterval; // 时长  单位:秒
-    private int runDistance; // 距离  单位:米
-    private int maxSpeed; // 最快速度  单位:公里/小时
-    private String startTime; //
-    private String endTime; //
-    private String trackFileName; // 轨迹文件名  必传
-    private String startPoiName; //
-    private String endPoiName; //
-    private String startLocation; // 起点位置 Json串  "startLocation":"{\"x\":\"118.184593\",\"y\":\"24.48529\"}"
-    private String endLocation; // 终点位置 Json串
-    private String maxSpeedTime;
-    private String maxSpeedLocation; // 起点位置 Json串  "maxSpeedLocation":"{\"x\":\"118.184593\",\"y\":\"24.48529\"}"
-    private String maxSpeedPoiName; // 起点位置 Json串  "maxSpeedLocation":"{\"x\":\"118.184593\",\"y\":\"24.48529\"}"
-    private int updateTime; // 数据更新时间  时间戳 单位:秒
-    private String trackPointsURL; // 轨迹文件url  SDK内部赋值
-    private int averageSpeed; // 平均速度  单位:米/秒
-    private String trackFileMd5; // 轨迹文件Md5  SDK内部赋值
-    private String data; // 自定义数据 Json串
-    private String filePath;
+    private String mId; // 数据ID
+    private int mType; // 数据类型  固定 403
+    private int mRideRunType = -1; //
+    private int mTimeInterval; // 时长  单位:秒
+    private int mRunDistance; // 距离  单位:米
+    private int mMaxSpeed; // 最快速度  单位:公里/小时
+    private String mStartTime; //
+    private String mEndTime; //
+    private String mTrackFileName; // 轨迹文件名  必传
+    private String mStartPoiName; //
+    private String mEndPoiName; //
+    private String mStartLocation; // 起点位置 Json串  "startLocation":"{\"x\":\"118.184593\",\"y\":\"24.48529\"}"
+    private String mEndLocation; // 终点位置 Json串
+    private String mMaxSpeedTime;
+    private String mMaxSpeedLocation; // 起点位置 Json串  "maxSpeedLocation":"{\"x\":\"118.184593\",\"y\":\"24.48529\"}"
+    private String mMaxSpeedPoiName; // 起点位置 Json串  "maxSpeedLocation":"{\"x\":\"118.184593\",\"y\":\"24.48529\"}"
+    private int mUpdateTime; // 数据更新时间  时间戳 单位:秒
+    private String mTrackPointsURL; // 轨迹文件url  SDK内部赋值
+    private int mAverageSpeed; // 平均速度  单位:米/秒
+    private String mTrackFileMd5; // 轨迹文件Md5  SDK内部赋值
+    private String mData; // 自定义数据 Json串
+    private String mFilePath;
 
     public DrivingRecordDataBean() {
     }
 
-    protected DrivingRecordDataBean(Parcel in) {
-        id = in.readString();
-        type = in.readInt();
-        rideRunType = in.readInt();
-        timeInterval = in.readInt();
-        runDistance = in.readInt();
-        maxSpeed = in.readInt();
-        startTime = in.readString();
-        endTime = in.readString();
-        trackFileName = in.readString();
-        startPoiName = in.readString();
-        endPoiName = in.readString();
-        startLocation = in.readString();
-        endLocation = in.readString();
-        maxSpeedTime = in.readString();
-        maxSpeedLocation = in.readString();
-        maxSpeedPoiName = in.readString();
-        updateTime = in.readInt();
-        trackPointsURL = in.readString();
-        averageSpeed = in.readInt();
-        trackFileMd5 = in.readString();
-        data = in.readString();
-        filePath = in.readString();
+    protected DrivingRecordDataBean(final Parcel in) {
+        mId = in.readString();
+        mType = in.readInt();
+        mRideRunType = in.readInt();
+        mTimeInterval = in.readInt();
+        mRunDistance = in.readInt();
+        mMaxSpeed = in.readInt();
+        mStartTime = in.readString();
+        mEndTime = in.readString();
+        mTrackFileName = in.readString();
+        mStartPoiName = in.readString();
+        mEndPoiName = in.readString();
+        mStartLocation = in.readString();
+        mEndLocation = in.readString();
+        mMaxSpeedTime = in.readString();
+        mMaxSpeedLocation = in.readString();
+        mMaxSpeedPoiName = in.readString();
+        mUpdateTime = in.readInt();
+        mTrackPointsURL = in.readString();
+        mAverageSpeed = in.readInt();
+        mTrackFileMd5 = in.readString();
+        mData = in.readString();
+        mFilePath = in.readString();
     }
 
     @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(id);
-        dest.writeInt(type);
-        dest.writeInt(rideRunType);
-        dest.writeInt(timeInterval);
-        dest.writeInt(runDistance);
-        dest.writeInt(maxSpeed);
-        dest.writeString(startTime);
-        dest.writeString(endTime);
-        dest.writeString(trackFileName);
-        dest.writeString(startPoiName);
-        dest.writeString(endPoiName);
-        dest.writeString(startLocation);
-        dest.writeString(endLocation);
-        dest.writeString(maxSpeedTime);
-        dest.writeString(maxSpeedLocation);
-        dest.writeString(maxSpeedPoiName);
-        dest.writeInt(updateTime);
-        dest.writeString(trackPointsURL);
-        dest.writeInt(averageSpeed);
-        dest.writeString(trackFileMd5);
-        dest.writeString(data);
-        dest.writeString(filePath);
+    public void writeToParcel(final Parcel dest, final int flags) {
+        dest.writeString(mId);
+        dest.writeInt(mType);
+        dest.writeInt(mRideRunType);
+        dest.writeInt(mTimeInterval);
+        dest.writeInt(mRunDistance);
+        dest.writeInt(mMaxSpeed);
+        dest.writeString(mStartTime);
+        dest.writeString(mEndTime);
+        dest.writeString(mTrackFileName);
+        dest.writeString(mStartPoiName);
+        dest.writeString(mEndPoiName);
+        dest.writeString(mStartLocation);
+        dest.writeString(mEndLocation);
+        dest.writeString(mMaxSpeedTime);
+        dest.writeString(mMaxSpeedLocation);
+        dest.writeString(mMaxSpeedPoiName);
+        dest.writeInt(mUpdateTime);
+        dest.writeString(mTrackPointsURL);
+        dest.writeInt(mAverageSpeed);
+        dest.writeString(mTrackFileMd5);
+        dest.writeString(mData);
+        dest.writeString(mFilePath);
     }
 
     @Override
@@ -88,190 +88,190 @@ public class DrivingRecordDataBean implements Parcelable {
 
     public static final Creator<DrivingRecordDataBean> CREATOR = new Creator<DrivingRecordDataBean>() {
         @Override
-        public DrivingRecordDataBean createFromParcel(Parcel in) {
+        public DrivingRecordDataBean createFromParcel(final Parcel in) {
             return new DrivingRecordDataBean(in);
         }
 
         @Override
-        public DrivingRecordDataBean[] newArray(int size) {
+        public DrivingRecordDataBean[] newArray(final int size) {
             return new DrivingRecordDataBean[size];
         }
     };
 
     public String getId() {
-        return id;
+        return mId;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setId(final String id) {
+        this.mId = id;
     }
 
     public int getType() {
-        return type;
+        return mType;
     }
 
-    public void setType(int type) {
-        this.type = type;
+    public void setType(final int type) {
+        this.mType = type;
     }
 
     public int getRideRunType() {
-        return rideRunType;
+        return mRideRunType;
     }
 
-    public void setRideRunType(int rideRunType) {
-        this.rideRunType = rideRunType;
+    public void setRideRunType(final int rideRunType) {
+        this.mRideRunType = rideRunType;
     }
 
     public int getTimeInterval() {
-        return timeInterval;
+        return mTimeInterval;
     }
 
     public String getStartTime() {
-        return startTime;
+        return mStartTime;
     }
 
-    public void setStartTime(String startTime) {
-        this.startTime = startTime;
+    public void setStartTime(final String startTime) {
+        this.mStartTime = startTime;
     }
 
     public String getEndTime() {
-        return endTime;
+        return mEndTime;
     }
 
-    public void setEndTime(String endTime) {
-        this.endTime = endTime;
+    public void setEndTime(final String endTime) {
+        this.mEndTime = endTime;
     }
 
     public String getTrackFileName() {
-        return trackFileName;
+        return mTrackFileName;
     }
 
-    public void setTrackFileName(String trackFileName) {
-        this.trackFileName = trackFileName;
+    public void setTrackFileName(final String trackFileName) {
+        this.mTrackFileName = trackFileName;
     }
 
     public String getStartPoiName() {
-        return startPoiName;
+        return mStartPoiName;
     }
 
-    public void setStartPoiName(String startPoiName) {
-        this.startPoiName = startPoiName;
+    public void setStartPoiName(final String startPoiName) {
+        this.mStartPoiName = startPoiName;
     }
 
     public String getEndPoiName() {
-        return endPoiName;
+        return mEndPoiName;
     }
 
-    public void setEndPoiName(String endPoiName) {
-        this.endPoiName = endPoiName;
+    public void setEndPoiName(final String endPoiName) {
+        this.mEndPoiName = endPoiName;
     }
 
     public String getStartLocation() {
-        return startLocation;
+        return mStartLocation;
     }
 
-    public void setStartLocation(String startLocation) {
-        this.startLocation = startLocation;
+    public void setStartLocation(final String startLocation) {
+        this.mStartLocation = startLocation;
     }
 
     public String getEndLocation() {
-        return endLocation;
+        return mEndLocation;
     }
 
-    public void setEndLocation(String endLocation) {
-        this.endLocation = endLocation;
+    public void setEndLocation(final String endLocation) {
+        this.mEndLocation = endLocation;
     }
 
     public String getMaxSpeedTime() {
-        return maxSpeedTime;
+        return mMaxSpeedTime;
     }
 
-    public void setMaxSpeedTime(String maxSpeedTime) {
-        this.maxSpeedTime = maxSpeedTime;
+    public void setMaxSpeedTime(final String maxSpeedTime) {
+        this.mMaxSpeedTime = maxSpeedTime;
     }
 
     public String getMaxSpeedLocation() {
-        return maxSpeedLocation;
+        return mMaxSpeedLocation;
     }
 
-    public void setMaxSpeedLocation(String maxSpeedLocation) {
-        this.maxSpeedLocation = maxSpeedLocation;
+    public void setMaxSpeedLocation(final String maxSpeedLocation) {
+        this.mMaxSpeedLocation = maxSpeedLocation;
     }
 
     public String getMaxSpeedPoiName() {
-        return maxSpeedPoiName;
+        return mMaxSpeedPoiName;
     }
 
-    public void setMaxSpeedPoiName(String maxSpeedPoiName) {
-        this.maxSpeedPoiName = maxSpeedPoiName;
+    public void setMaxSpeedPoiName(final String maxSpeedPoiName) {
+        this.mMaxSpeedPoiName = maxSpeedPoiName;
     }
 
     public int getUpdateTime() {
-        return updateTime;
+        return mUpdateTime;
     }
 
-    public void setUpdateTime(int updateTime) {
-        this.updateTime = updateTime;
+    public void setUpdateTime(final int updateTime) {
+        this.mUpdateTime = updateTime;
     }
 
     public String getTrackPointsURL() {
-        return trackPointsURL;
+        return mTrackPointsURL;
     }
 
-    public void setTrackPointsURL(String trackPointsURL) {
-        this.trackPointsURL = trackPointsURL;
+    public void setTrackPointsURL(final String trackPointsURL) {
+        this.mTrackPointsURL = trackPointsURL;
     }
 
     public int getAverageSpeed() {
-        return averageSpeed;
+        return mAverageSpeed;
     }
 
     public String getData() {
-        return data;
+        return mData;
     }
 
-    public void setData(String data) {
-        this.data = data;
+    public void setData(final String data) {
+        this.mData = data;
     }
 
-    public void setTimeInterval(int timeInterval) {
-        this.timeInterval = timeInterval;
+    public void setTimeInterval(final int timeInterval) {
+        this.mTimeInterval = timeInterval;
     }
 
     public int getRunDistance() {
-        return runDistance;
+        return mRunDistance;
     }
 
-    public void setRunDistance(int runDistance) {
-        this.runDistance = runDistance;
+    public void setRunDistance(final int runDistance) {
+        this.mRunDistance = runDistance;
     }
 
     public int getMaxSpeed() {
-        return maxSpeed;
+        return mMaxSpeed;
     }
 
-    public void setMaxSpeed(int maxSpeed) {
-        this.maxSpeed = maxSpeed;
+    public void setMaxSpeed(final int maxSpeed) {
+        this.mMaxSpeed = maxSpeed;
     }
 
-    public void setAverageSpeed(int averageSpeed) {
-        this.averageSpeed = averageSpeed;
+    public void setAverageSpeed(final int averageSpeed) {
+        this.mAverageSpeed = averageSpeed;
     }
 
     public String getTrackFileMd5() {
-        return trackFileMd5;
+        return mTrackFileMd5;
     }
 
-    public void setTrackFileMd5(String trackFileMd5) {
-        this.trackFileMd5 = trackFileMd5;
+    public void setTrackFileMd5(final String trackFileMd5) {
+        this.mTrackFileMd5 = trackFileMd5;
     }
 
     public String getFilePath() {
-        return filePath;
+        return mFilePath;
     }
 
-    public void setFilePath(String filePath) {
-        this.filePath = filePath;
+    public void setFilePath(final String filePath) {
+        this.mFilePath = filePath;
     }
 }
 

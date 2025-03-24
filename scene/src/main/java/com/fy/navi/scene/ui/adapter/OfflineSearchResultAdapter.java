@@ -47,12 +47,12 @@ public class OfflineSearchResultAdapter extends RecyclerView.Adapter<OfflineSear
 
     @Override
     public void onBindViewHolder(@NonNull LimitCitiesViewHolder holder, int position) {
-        holder.tvTitle.setText(data.get(position).name);
+        holder.tvTitle.setText(data.get(position).getName());
         holder.tvTitle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (mListener != null) {
-                    mListener.onClick(data.get(position).adcode);
+                    mListener.onClick(data.get(position).getAdcode());
                 }
             }
         });

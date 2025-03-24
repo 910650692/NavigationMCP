@@ -17,35 +17,42 @@ import com.fy.navi.ui.view.SkinConstraintLayout;
 public class SubcomponentLanes extends SkinConstraintLayout {
     private SubcomponentLanesBinding mBinding;
 
-    public SubcomponentLanes(@NonNull Context context) {
+    public SubcomponentLanes(@NonNull final Context context) {
         super(context);
         initView(context);
     }
 
-    public SubcomponentLanes(@NonNull Context context, @Nullable AttributeSet attrs) {
+    public SubcomponentLanes(@NonNull final Context context, @Nullable final AttributeSet attrs) {
         super(context, attrs);
         initView(context);
     }
 
-    public SubcomponentLanes(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public SubcomponentLanes(@NonNull final Context context, @Nullable final AttributeSet attrs,
+                             final int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         initView(context);
     }
 
-    private void initView(Context context) {
-        mBinding = SubcomponentLanesBinding.inflate(LayoutInflater.from(context), this, true);
+    /**
+     * @param context context
+     */
+    private void initView(final Context context) {
+        mBinding = SubcomponentLanesBinding.inflate(
+                LayoutInflater.from(context), this, true);
     }
 
     /**
      * 设置是否高亮
+     * @param isVisible isVisible
      */
-    public void setVisibleHighlight(boolean isVisible) {
+    public void setVisibleHighlight(final boolean isVisible) {
     }
 
     /**
      * 设置车道线箭头
+     * @param laneAction laneAction
      */
-    public void setBackgroundLanesDriveDefaultArrow(SceneCommonStruct.LaneAction laneAction) {
+    public void setBackgroundLanesDriveDefaultArrow(final SceneCommonStruct.LaneAction laneAction) {
         if (mBinding != null) {
             mBinding.sivDriveWayArrow.setBackgroundResource(SceneEnumRes.getDrawableDefaultLane(laneAction).getDayDrawableId());
         }
@@ -53,17 +60,22 @@ public class SubcomponentLanes extends SkinConstraintLayout {
 
     /**
      * 设置车道线底部公交专用等提示
+     * @param laneBottomAction laneBottomAction
      */
-    public void setBackgroundLanesDriveDefaultBottom(SceneCommonStruct.TimeLaneBottomAction laneBottomAction) {
+    public void setBackgroundLanesDriveDefaultBottom(
+            final SceneCommonStruct.TimeLaneBottomAction laneBottomAction) {
         if (mBinding != null) {
-            mBinding.sivDriveWayArrow.setBackgroundResource(SceneEnumRes.getDrawableTimeLaneType(laneBottomAction).getDayDrawableId());
+            mBinding.sivDriveWayArrow.setBackgroundResource(
+                    SceneEnumRes.getDrawableTimeLaneType(laneBottomAction).getDayDrawableId());
         }
     }
 
     /**
      * 设置推荐车道线箭头
+     * @param laneAction laneAction
      */
-    public void setBackgroundLanesDriveRecommendArrow(SceneCommonStruct.LaneAction laneAction) {
+    public void setBackgroundLanesDriveRecommendArrow(
+            final SceneCommonStruct.LaneAction laneAction) {
         if (mBinding != null) {
             mBinding.sivDriveWayArrow.setBackgroundResource(SceneEnumRes.getDrawableRecommendLane(laneAction).getDayDrawableId());
         }
@@ -71,8 +83,9 @@ public class SubcomponentLanes extends SkinConstraintLayout {
 
     /**
      * 设置分时车道线箭头
+     * @param laneAction laneAction
      */
-    public void setBackgroundLanesDriveTimeArrow(SceneCommonStruct.LaneAction laneAction) {
+    public void setBackgroundLanesDriveTimeArrow(final SceneCommonStruct.LaneAction laneAction) {
         if (mBinding != null) {
             mBinding.sivDriveWayArrow.setBackgroundResource(SceneEnumRes.getDrawableTimeLane(laneAction).getDayDrawableId());
         }
@@ -80,8 +93,10 @@ public class SubcomponentLanes extends SkinConstraintLayout {
 
     /**
      * 设置分时推荐车道线箭头
+     * @param laneAction laneAction
      */
-    public void setBackgroundLanesDriveRecommendTimeArrow(SceneCommonStruct.LaneAction laneAction) {
+    public void setBackgroundLanesDriveRecommendTimeArrow(
+            final SceneCommonStruct.LaneAction laneAction) {
         if (mBinding != null) {
             mBinding.sivDriveWayArrow.setBackgroundResource(SceneEnumRes.getDrawableRecommendTimeLane(laneAction).getDayDrawableId());
         }
@@ -89,8 +104,10 @@ public class SubcomponentLanes extends SkinConstraintLayout {
 
     /**
      * 设置推荐分时车道线底部公交专用等提示
+     * @param laneBottomAction laneBottomAction
      */
-    public void setBackgroundLanesDriveRecommendBottom(SceneCommonStruct.TimeLaneBottomAction laneBottomAction) {
+    public void setBackgroundLanesDriveRecommendBottom(
+            final SceneCommonStruct.TimeLaneBottomAction laneBottomAction) {
         if (mBinding != null) {
             mBinding.sivDriveWayArrow.setBackgroundResource(SceneEnumRes.getDrawableRecommendTimeLane(laneBottomAction).getDayDrawableId());
         }

@@ -1,24 +1,29 @@
 package com.fy.navi.service.define.route;
 
 
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
+@Setter
 public class RouteRestTollGateDetailsInfo {
-    public long remainDist;
-    public long remainTime;
-    public String TollGateName;
-    public Coord2DDouble pos;
+    private long mRemainDist;
+    private long mRemainTime;
+    private String mTollGateName;
+    private Coord2DDouble mPos;
 
     public RouteRestTollGateDetailsInfo() {
-        this.remainDist = 0L;
-        this.remainTime = 0L;
-        this.TollGateName = "";
-        this.pos = new Coord2DDouble();
+        this.mRemainDist = 0L;
+        this.mRemainTime = 0L;
+        this.mTollGateName = "";
+        this.mPos = new Coord2DDouble();
     }
 
-    public RouteRestTollGateDetailsInfo(long remainDistLiteObj, long remainTimeLiteObj, String TollGateNameLiteObj, Coord2DDouble posLiteObj) {
-        this.remainDist = remainDistLiteObj;
-        this.remainTime = remainTimeLiteObj;
-        this.TollGateName = TollGateNameLiteObj;
-        this.pos = posLiteObj;
+    public RouteRestTollGateDetailsInfo(final long remainDistLiteObj, final long remainTimeLiteObj
+            , final String tollGateNameLiteObj, final Coord2DDouble posLiteObj) {
+        this.mRemainDist = remainDistLiteObj;
+        this.mRemainTime = remainTimeLiteObj;
+        this.mTollGateName = tollGateNameLiteObj;
+        this.mPos = posLiteObj;
     }
 }

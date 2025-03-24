@@ -16,56 +16,64 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Author: QiuYaWei
+ * @author QiuYaWei
+ * @version  \$Revision.1.0\$
  * Date: 2025/2/7
  * Description: [在这里描述文件功能]
  */
 public class LimitDriverAdapter extends RecyclerView.Adapter<LimitDriverAdapter.LimitDriverViewHolder> {
-    private ArrayList<RestrictedAreaDetail> data = new ArrayList<>();
-    private Context mContext;
+    private final ArrayList<RestrictedAreaDetail> mDate = new ArrayList<>();
+    private final Context mContext;
 
-    public LimitDriverAdapter(Context context, List<RestrictedAreaDetail> list) {
+    public LimitDriverAdapter(final Context context, final List<RestrictedAreaDetail> list) {
         this.mContext = context;
-        this.data.clear();
-        this.data.addAll(list);
+        this.mDate.addAll(list);
     }
 
-    public void setData(List<RestrictedAreaDetail> list) {
-        this.data.clear();
-        this.data.addAll(list);
-        notifyDataSetChanged();
+    /**
+     * 设置数据
+     * @param list 设置参数
+     */
+    public void setData(final List<RestrictedAreaDetail> list) {
+        this.mDate.clear();
+        this.mDate.addAll(list);
+        notifyItemRangeChanged(0, mDate.size());
     }
 
     @NonNull
     @Override
-    public LimitDriverViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(mContext).inflate(R.layout.item_limit_policy, parent, false);
+    public LimitDriverViewHolder onCreateViewHolder(final @NonNull ViewGroup parent, final int viewType) {
+        final View view = LayoutInflater.from(mContext).inflate(R.layout.item_limit_policy, parent, false);
         return new LimitDriverViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull LimitDriverViewHolder holder, int position) {
-        RestrictedAreaDetail bean = data.get(position);
-        holder.tvTitle.setText(String.format(mContext.getString(R.string.limit_policy_format), position + 1));
-        holder.tvState.setVisibility(bean.effect == 1 ? View.VISIBLE : View.INVISIBLE);
-        holder.tvTime.setText(bean.time);
-        holder.tvDesc.setText(bean.summary + "\n" + bean.desc);
+    public void onBindViewHolder(final @NonNull LimitDriverViewHolder holder, final int position) {
+        final RestrictedAreaDetail bean = mDate.get(position);
+        holder.mTvTitle.setText(String.format(mContext.getString(R.string.limit_policy_format), position + 1));
+        holder.mTvState.setVisibility(bean.getMEffect() == 1 ? View.VISIBLE : View.INVISIBLE);
+        holder.mTvTime.setText(bean.getMTime());
+        final String descText = bean.getMSummary() + "\n" + bean.getMDesc();
+        holder.mTvDesc.setText(descText);
     }
 
     @Override
     public int getItemCount() {
-        return data.size();
+        return mDate.size();
     }
 
     public static class LimitDriverViewHolder extends RecyclerView.ViewHolder {
-        AppCompatTextView tvTitle, tvState, tvTime, tvDesc;
+        private final AppCompatTextView mTvTitle;
+        private final AppCompatTextView mTvState;
+        private final AppCompatTextView mTvTime;
+        private final AppCompatTextView mTvDesc;
 
-        public LimitDriverViewHolder(@NonNull View itemView) {
+        public LimitDriverViewHolder(final @NonNull View itemView) {
             super(itemView);
-            tvTitle = itemView.findViewById(R.id.tv_title);
-            tvState = itemView.findViewById(R.id.tv_state);
-            tvTime = itemView.findViewById(R.id.tv_time);
-            tvDesc = itemView.findViewById(R.id.tv_desc);
+            mTvTitle = itemView.findViewById(R.id.tv_title);
+            mTvState = itemView.findViewById(R.id.tv_state);
+            mTvTime = itemView.findViewById(R.id.tv_time);
+            mTvDesc = itemView.findViewById(R.id.tv_desc);
         }
     }
 }

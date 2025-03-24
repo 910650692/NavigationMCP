@@ -9,6 +9,7 @@ import com.fy.navi.scene.impl.navi.inter.ISceneCallback;
 import com.fy.navi.service.define.map.MapTypeId;
 import com.fy.navi.service.define.navi.CrossImageEntity;
 import com.fy.navi.service.define.navi.LaneInfoEntity;
+import com.fy.navi.service.define.navi.NaviDriveReportEntity;
 import com.fy.navi.service.define.navi.NaviEtaInfo;
 import com.fy.navi.service.define.navi.NaviManeuverInfo;
 import com.fy.navi.service.define.navi.NaviTmcInfo;
@@ -44,7 +45,7 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
         mBinding.sceneNaviViaInfo.setScreenId(MapTypeId.valueOf(mScreenId));
         mBinding.sceneNaviParkingList.setScreenId(MapTypeId.valueOf(mScreenId));
         mBinding.sceneNaviViaArrive.setScreenId(MapTypeId.valueOf(mScreenId));
-
+        mBinding.sceneNaviSapaDetail.setScreenId(MapTypeId.valueOf(mScreenId));
         mBinding.sceneNaviPreference.registerRoutePreferenceObserver("navi fragment", mViewModel);
     }
 
@@ -54,16 +55,28 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
         mViewModel.startNavigation(getArguments());
     }
 
-    public void onNaviSpeedCameraInfo(SpeedOverallEntity speedCameraInfo) {
+    /**
+     * 区间车速、绿波车速
+     * @param speedCameraInfo speed camera info
+     */
+    public void onNaviSpeedCameraInfo(final SpeedOverallEntity speedCameraInfo) {
         mBinding.sceneNaviSpeed.onNaviSpeedCameraInfo(speedCameraInfo);
     }
 
-    public void onNaviSAPAInfo(SapaInfoEntity sapaInfoEntity) {
+    /**
+     * 服务区信息
+     * @param sapaInfoEntity sapa info entity
+     */
+    public void onNaviSAPAInfo(final SapaInfoEntity sapaInfoEntity) {
         mBinding.sceneNaviSapa.onNaviSAPAInfo(sapaInfoEntity);
         mBinding.sceneNaviLanes.onShowTollGateLane(sapaInfoEntity);
     }
 
-    public void onNaviInfo(NaviEtaInfo naviEtaInfo) {
+    /**
+     * 导航信息
+     * @param naviEtaInfo navi eta info
+     */
+    public void onNaviInfo(final NaviEtaInfo naviEtaInfo) {
         mBinding.sceneNaviTbt.onNaviInfo(naviEtaInfo);
         mBinding.sceneNaviEta.onNaviInfo(naviEtaInfo);
         mBinding.sceneNaviTmc.onNaviInfo(naviEtaInfo);
@@ -73,40 +86,79 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
         mBinding.sceneNaviCrossImage.onNaviInfo(naviEtaInfo);
     }
 
-    public void updateRouteName(String routeName) {
+    /**
+     * 更新路线名称
+     * @param routeName 路线名称
+     */
+    public void updateRouteName(final String routeName) {
         mBinding.stvNaviRouteName.setText(routeName);
     }
 
+    /**
+     * 导航停止
+     */
     public void onNaviStop() {
         mBinding.sceneNaviCrossImage.onNaviStop();
     }
 
-    public void onCrossImageInfo(boolean isShowImage, CrossImageEntity naviImageInfo) {
+    /**
+     * 路口大图
+     * @param isShowImage 是否显示图片
+     * @param naviImageInfo 导航图片信息
+     */
+    public void onCrossImageInfo(final boolean isShowImage, final CrossImageEntity naviImageInfo) {
         mBinding.sceneNaviCrossImage.onCrossImageInfo(isShowImage, naviImageInfo);
     }
 
-    public void onUpdateTMCLightBar(NaviTmcInfo naviTmcInfo) {
+    /**
+     * 更新TMC灯光条（路况信息）
+     * @param naviTmcInfo navi tmc info
+     */
+    public void onUpdateTMCLightBar(final NaviTmcInfo naviTmcInfo) {
         mBinding.sceneNaviTmc.onUpdateTMCLightBar(naviTmcInfo);
     }
 
-    public void onManeuverInfo(NaviManeuverInfo info) {
+    /**
+     * 转向图标信息、以及传出出入口信息
+     * @param info maneuver info
+     */
+    public void onManeuverInfo(final NaviManeuverInfo info) {
         mBinding.sceneNaviTbt.onManeuverInfo(info);
         mBinding.sceneNaviEta.onManeuverInfo(info);
     }
 
-    public void onNaviArrive(long traceId, int naviType) {
+    /**
+     * 导航到达目的地
+     * @param traceId trace id
+     * @param naviType navi type
+     */
+    public void onNaviArrive(final long traceId, final int naviType) {
         mBinding.sceneNaviTbt.onNaviArrive(traceId, naviType);
     }
 
-    public void onLaneInfo(boolean isShowLane, LaneInfoEntity laneInfo) {
+    /**
+     * 车道线信息
+     * @param isShowLane 是否显示车道线
+     * @param laneInfo lane info
+     */
+    public void onLaneInfo(final boolean isShowLane, final LaneInfoEntity laneInfo) {
         mBinding.sceneNaviLanes.onLaneInfo(isShowLane, laneInfo);
     }
 
-    public void onImmersiveStatusChange(ImersiveStatus currentImersiveStatus) {
+    /**
+     * 沉浸态状态改变回调
+     * @param currentImersiveStatus current immersive status
+     */
+    public void onImmersiveStatusChange(final ImersiveStatus currentImersiveStatus) {
         mBinding.sceneNaviControl.onImmersiveStatusChange(currentImersiveStatus);
+        mBinding.sceneNaviCrossImage.onImmersiveStatusChange(currentImersiveStatus);
     }
 
-    public void addSceneCallback(ISceneCallback sceneCallback) {
+    /**
+     * 添加场景回调
+     * @param sceneCallback scene callback
+     */
+    public void addSceneCallback(final ISceneCallback sceneCallback) {
         mBinding.sceneNaviControl.addSceneCallback(sceneCallback);
         mBinding.sceneNaviViaList.addSceneCallback(sceneCallback);
         mBinding.sceneNaviParkingList.addSceneCallback(sceneCallback);
@@ -122,27 +174,87 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
         mBinding.sceneNaviTbt.addSceneCallback(sceneCallback);
         mBinding.sceneNaviTmc.addSceneCallback(sceneCallback);
         mBinding.sceneNaviViaArrive.addSceneCallback(sceneCallback);
+        mBinding.sceneNaviSapaDetail.addSceneCallback(sceneCallback);
+        mBinding.sceneDriveReport.addSceneCallback(sceneCallback);
     }
 
-    public void updateViaListState(boolean isExpand) {
+    /**
+     * 更新via列表状态
+     * @param isExpand 是否展开
+     */
+    public void updateViaListState(final boolean isExpand) {
         mBinding.sceneNaviViaList.updateViaListState(isExpand);
     }
 
-    public void showNaviViaList(List<NaviViaEntity> list) {
+    /**
+     * 显示途经点列表
+     * @param list list
+     */
+    public void showNaviViaList(final List<NaviViaEntity> list) {
         mBinding.sceneNaviViaList.showNaviViaList(list);
     }
 
-    public void onUpdateViaPass(long viaIndex) {
+    /**
+     * 途经点通过回调
+     * @param viaIndex via index
+     */
+    public void onUpdateViaPass(final long viaIndex) {
         mBinding.sceneNaviViaInfo.onUpdateViaPass(viaIndex);
         mBinding.sceneNaviViaArrive.onUpdateViaPass(viaIndex);
     }
 
+    /**
+     * 开始导航
+     */
     public void startNavigation() {
         mBinding.sceneNaviViaArrive.startNavigation();
         mBinding.sceneNaviViaInfo.startNavigation();
     }
 
-    public void notifyDeleteViaPointResult(boolean result, NaviViaEntity entity) {
+    /**
+     * 删除途经点结果回调
+     * @param result result
+     * @param entity entity
+     */
+    public void notifyDeleteViaPointResult(final boolean result, final NaviViaEntity entity) {
         mBinding.sceneNaviViaList.notifyDeleteViaPointResult(result, entity);
+    }
+
+    /**
+     * 跳转服务区详情页方法
+     * @param type           type
+     * @param sapaInfoEntity sapa info entity
+     */
+    public void skipNaviSapaDetailScene(final int type, final SapaInfoEntity sapaInfoEntity) {
+        mBinding.sceneNaviSapaDetail.skipNaviSapaDetailScene(type, sapaInfoEntity);
+    }
+
+    /**
+     * 行程报告回调
+     * @param entity entity
+     */
+    public void onDriveReport(final NaviDriveReportEntity entity) {
+        mBinding.sceneDriveReport.onDriveReport(entity);
+    }
+
+    /**
+     * 导航继续
+     */
+    public void naviContinue() {
+        mBinding.sceneNaviControl.naviContinue();
+    }
+
+    /**
+     * @param type 平行路切换类型 0:主辅路切换 1:桥上下切换
+     */
+    public void naviParallelSwitch(final int type) {
+        mBinding.sceneNaviParallel.naviParallelSwitch(type);
+    }
+
+    /**
+     * @param type 0:退出全览 1:切换全览
+     */
+    public void naviPreviewSwitch(final int type) {
+        mBinding.sceneNaviControl.naviPreviewSwitch(type);
     }
 }

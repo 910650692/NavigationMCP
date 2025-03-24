@@ -16,11 +16,11 @@ import java.util.concurrent.ScheduledFuture;
 public class SceneNaviViaListImpl extends BaseSceneModel<SceneNaviViaListView> implements ISceneNaviViaList {
     private static final String TAG = MapDefaultFinalTag.NAVI_HMI_TAG;
     private ISceneCallback mISceneCallback;
-    private ScheduledFuture scheduledFuture;
-    private int times = NumberUtils.NUM_8;
+    private ScheduledFuture mScheduledFuture;
+    private int mTimes = NumberUtils.NUM_8;
 
-    public SceneNaviViaListImpl(SceneNaviViaListView mScreenView) {
-        super(mScreenView);
+    public SceneNaviViaListImpl(final SceneNaviViaListView screenView) {
+        super(screenView);
     }
 
     @Override
@@ -30,32 +30,44 @@ public class SceneNaviViaListImpl extends BaseSceneModel<SceneNaviViaListView> i
         }
     }
 
-    public void addSceneCallback(ISceneCallback sceneCallback) {
+    /**
+     * @param sceneCallback callback
+     */
+    public void addSceneCallback(final ISceneCallback sceneCallback) {
         mISceneCallback = sceneCallback;
     }
 
+    /**
+     * init timer
+     */
     public void initTimer() {
         cancelTimer();
-        times = NumberUtils.NUM_8;
-        scheduledFuture = ThreadManager.getInstance().asyncAtFixDelay(() -> {
-            if (times == NumberUtils.NUM_0) {
+        mTimes = NumberUtils.NUM_8;
+        mScheduledFuture = ThreadManager.getInstance().asyncAtFixDelay(() -> {
+            if (mTimes == NumberUtils.NUM_0) {
                 ThreadManager.getInstance().postUi(() -> {
                     updateSceneVisible(false);
                     cancelTimer();
                 });
             }
-            times--;
+            mTimes--;
         }, NumberUtils.NUM_0, NumberUtils.NUM_1);
     }
 
+    /**
+     * cancel timer
+     */
     public void cancelTimer() {
-        if (!ConvertUtils.isEmpty(scheduledFuture)) {
-            ThreadManager.getInstance().cancelDelayRun(scheduledFuture);
-            scheduledFuture = null;
+        if (!ConvertUtils.isEmpty(mScheduledFuture)) {
+            ThreadManager.getInstance().cancelDelayRun(mScheduledFuture);
+            mScheduledFuture = null;
         }
     }
 
-    private void updateSceneVisible(boolean isVisible) {
+    /**
+     * @param isVisible visible
+     */
+    private void updateSceneVisible(final boolean isVisible) {
         mScreenView.getNaviSceneEvent().notifySceneStateChange((isVisible ? INaviSceneEvent.SceneStateChangeType.SceneShowState :
                 INaviSceneEvent.SceneStateChangeType.SceneHideState), NaviSceneId.NAVI_SCENE_VIA_POINT_UNFOLD);
     }

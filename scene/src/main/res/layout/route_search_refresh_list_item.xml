@@ -29,7 +29,7 @@
 
             <com.fy.navi.ui.view.SkinTextView
                 android:id="@+id/route_item_service_num"
-                android:layout_width="@dimen/dp_35"
+                android:layout_width="@dimen/dp_45"
                 android:layout_height="match_parent"
                 android:gravity="center"
                 android:textColor="@color/text_route_title"
@@ -45,7 +45,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/dp_52"
                 android:layout_marginTop="@dimen/dp_18"
-                android:layout_marginStart="@dimen/dp_60"
+                android:layout_marginStart="@dimen/dp_70"
                 android:textColor="@color/black"
                 android:textSize="@dimen/sp_34"
                 android:ellipsize="end"

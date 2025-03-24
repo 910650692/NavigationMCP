@@ -3,20 +3,15 @@ package com.fy.navi.scene.ui.adapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
-import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.android.utils.ConvertUtils;
 import com.android.utils.ResourceUtils;
-import com.android.utils.gson.GsonUtils;
-import com.android.utils.log.Logger;
 import com.fy.navi.scene.R;
 import com.fy.navi.scene.databinding.RouteSearchChargeRefreshListItemBinding;
-import com.fy.navi.scene.databinding.RouteSearchRefreshListItemBinding;
 import com.fy.navi.service.define.map.MapTypeId;
 import com.fy.navi.service.define.route.RouteParam;
+import com.fy.navi.service.define.search.ChargeInfo;
 import com.fy.navi.service.define.search.PoiInfoEntity;
 import com.fy.navi.service.define.utils.NumberUtils;
 import com.fy.navi.service.logicpaket.route.RoutePackage;
@@ -28,13 +23,18 @@ public class RouteSearchChargeRefreshAdapter extends RecyclerView.Adapter<RouteS
     private List<PoiInfoEntity> mRouteBeanList;
     private List<RouteParam> mLoaclSaveEntity;
     private int mSearchType;
-    OnItemClickListener itemClickListener;
+    private OnItemClickListener mItemClickListener;
     public RouteSearchChargeRefreshAdapter() {
         mRouteBeanList = new ArrayList<>();
         mLoaclSaveEntity = new ArrayList<>();
     }
-
-    public void setRouteBeanList(List<PoiInfoEntity> routeBeanList, List<RouteParam> loaclSaveEntity, int searchType) {
+    /***
+     * 展示充电站列表
+     * @param routeBeanList 搜索数据
+     * @param loaclSaveEntity 本地已添加数据
+     * @param searchType 搜索方式 0-沿途搜索
+     */
+    public void setRouteBeanList(final List<PoiInfoEntity> routeBeanList, final List<RouteParam> loaclSaveEntity, final int searchType) {
         if (null == routeBeanList) {
             return;
         }
@@ -45,14 +45,17 @@ public class RouteSearchChargeRefreshAdapter extends RecyclerView.Adapter<RouteS
         mSearchType = searchType;
         notifyDataSetChanged();
     }
-
-    public void setItemClickListener(OnItemClickListener itemClickListener) {
-        this.itemClickListener = itemClickListener;
+    /**
+     * 设置监听
+     * @param itemClickListener 监听
+     * */
+    public void setmItemClickListener(final OnItemClickListener itemClickListener) {
+        this.mItemClickListener = itemClickListener;
     }
 
     @Override
-    public Holder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        RouteSearchChargeRefreshListItemBinding routeItemBinding =
+    public Holder onCreateViewHolder(final ViewGroup parent, final int viewType) {
+        final RouteSearchChargeRefreshListItemBinding routeItemBinding =
                 DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()),
                         R.layout.route_search_charge_refresh_list_item, parent, false);
         return new Holder(routeItemBinding);
@@ -67,57 +70,82 @@ public class RouteSearchChargeRefreshAdapter extends RecyclerView.Adapter<RouteS
     }
 
     @Override
-    public void onBindViewHolder(@NonNull Holder holder, int position) {
-        holder.routeSearchChargeRefreshListItemBinding.itemRootViewCharge.setVisibility(ViewGroup.VISIBLE);
-        holder.routeSearchChargeRefreshListItemBinding.routeItemChargeNum.setText("" + (position + NumberUtils.NUM_1));
-        holder.routeSearchChargeRefreshListItemBinding.routeItemChargeName.setText(mRouteBeanList.get(position).getName());
-        holder.routeSearchChargeRefreshListItemBinding.routeItemChargeDescription.setText(mRouteBeanList.get(position).getDistance() + " | " + mRouteBeanList.get(position).getAddress());
-        boolean belongRouteParam;
+    public void onBindViewHolder(final Holder holder, final int position) {
+        holder.mRouteSearchChargeRefreshListItemBinding.itemRootViewCharge.setVisibility(ViewGroup.VISIBLE);
+        holder.mRouteSearchChargeRefreshListItemBinding.routeItemChargeNum.setText("" + (position + NumberUtils.NUM_1));
+        holder.mRouteSearchChargeRefreshListItemBinding.routeItemChargeName.setText(mRouteBeanList.get(position).getName());
+        holder.mRouteSearchChargeRefreshListItemBinding.routeItemChargeDescription.setText(
+                mRouteBeanList.get(position).getDistance() + " | " + mRouteBeanList.get(position).getAddress());
+        final boolean belongRouteParam;
         if (mSearchType == 0) {
             belongRouteParam = isBelongSamePoi(mLoaclSaveEntity, mRouteBeanList.get(position));
         } else {
             belongRouteParam = RoutePackage.getInstance().isBelongRouteParam(MapTypeId.MAIN_SCREEN_MAIN_MAP, mRouteBeanList.get(position));
         }
-        holder.routeSearchChargeRefreshListItemBinding.routeItemChargeAddText.setText(belongRouteParam ? ResourceUtils.Companion.getInstance().getText(R.string.route_service_list_item_added) : ResourceUtils.Companion.getInstance().getText(R.string.route_service_list_item_add));
-        holder.routeSearchChargeRefreshListItemBinding.routeItemChargeAddImg.setImageDrawable(belongRouteParam ? ResourceUtils.Companion.getInstance().getDrawable(R.drawable.img_route_search_added) : ResourceUtils.Companion.getInstance().getDrawable(R.drawable.img_route_search_add));
-        holder.routeSearchChargeRefreshListItemBinding.routeItemChargeFastNumOne.setText(mRouteBeanList.get(position).getChargeInfoList().get(0).getFast_free() + "");
+        holder.mRouteSearchChargeRefreshListItemBinding.routeItemChargeAddText.setText(belongRouteParam
+                ? ResourceUtils.Companion.getInstance().getText(R.string.route_service_list_item_added)
+                : ResourceUtils.Companion.getInstance().getText(R.string.route_service_list_item_add));
+        holder.mRouteSearchChargeRefreshListItemBinding.routeItemChargeAddImg.setImageDrawable(
+                belongRouteParam ? ResourceUtils.Companion.getInstance().getDrawable(R.drawable.img_route_search_added)
+                        : ResourceUtils.Companion.getInstance().getDrawable(R.drawable.img_route_search_add));
         if (mRouteBeanList.get(position).getChargeInfoList() != null && mRouteBeanList.get(position).getChargeInfoList().size() != 0) {
-            holder.routeSearchChargeRefreshListItemBinding.routeItemChargeFastNumTwo.setText("/" + mRouteBeanList.get(position).getChargeInfoList().get(0).getFast_total() + "");
-            holder.routeSearchChargeRefreshListItemBinding.routeItemChargeLowNumOne.setText(mRouteBeanList.get(position).getChargeInfoList().get(0).getSlow_free() + "");
-            holder.routeSearchChargeRefreshListItemBinding.routeItemChargeLowNumTwo.setText("/" + mRouteBeanList.get(position).getChargeInfoList().get(0).getSlow_total() + "");
-            if (!ConvertUtils.isEmpty(mRouteBeanList.get(position).getChargeInfoList().get(0).getCurrentElePrice())) {
-                holder.routeSearchChargeRefreshListItemBinding.routeItemChargePriceName.setVisibility(View.VISIBLE);
-                holder.routeSearchChargeRefreshListItemBinding.routeItemChargePriceNum.setVisibility(View.VISIBLE);
-                holder.routeSearchChargeRefreshListItemBinding.routeItemChargePriceNum.setText(mRouteBeanList.get(position).getChargeInfoList().get(0).getCurrentElePrice() + "/度");
+            final ChargeInfo chargeInfo = mRouteBeanList.get(position).getChargeInfoList().get(0);
+            final String fastFree = chargeInfo.getFast_free() == 0 ? "--" : chargeInfo.getFast_free() + "";
+            final String fastTotal = chargeInfo.getFast_total() == 0 ? "" : "/" + chargeInfo.getFast_total();
+            holder.mRouteSearchChargeRefreshListItemBinding.routeItemChargeFastNumOne.setText(fastFree);
+            if (!ConvertUtils.isEmpty(fastTotal)) {
+                holder.mRouteSearchChargeRefreshListItemBinding.routeItemChargeFastNumTwo.setText(fastTotal);
             } else {
-                holder.routeSearchChargeRefreshListItemBinding.routeItemChargePriceNum.setVisibility(View.GONE);
-                holder.routeSearchChargeRefreshListItemBinding.routeItemChargePriceName.setVisibility(View.GONE);
+                holder.mRouteSearchChargeRefreshListItemBinding.routeItemChargeFastNumTwo.setVisibility(View.GONE);
+            }
+
+            final String slowFree = chargeInfo.getSlow_free() == 0 ? "--" : chargeInfo.getSlow_free() + "";
+            final String slowTotal = chargeInfo.getSlow_total() == 0 ? "" : "/" + chargeInfo.getSlow_total();
+            holder.mRouteSearchChargeRefreshListItemBinding.routeItemChargeLowNumOne.setText(slowFree);
+            if (!ConvertUtils.isEmpty(slowTotal)) {
+                holder.mRouteSearchChargeRefreshListItemBinding.routeItemChargeLowNumTwo.setText(fastTotal);
+            } else {
+                holder.mRouteSearchChargeRefreshListItemBinding.routeItemChargeLowNumTwo.setVisibility(View.GONE);
+            }
+            if (!ConvertUtils.isEmpty(mRouteBeanList.get(position).getChargeInfoList().get(0).getCurrentElePrice())) {
+                holder.mRouteSearchChargeRefreshListItemBinding.routeItemChargePriceName.setVisibility(View.VISIBLE);
+                holder.mRouteSearchChargeRefreshListItemBinding.routeItemChargePriceNum.setVisibility(View.VISIBLE);
+                holder.mRouteSearchChargeRefreshListItemBinding.routeItemChargePriceNum.setText(
+                        chargeInfo.getCurrentElePrice() + "/度");
+            } else {
+                holder.mRouteSearchChargeRefreshListItemBinding.routeItemChargePriceNum.setVisibility(View.GONE);
+                holder.mRouteSearchChargeRefreshListItemBinding.routeItemChargePriceName.setVisibility(View.GONE);
             }
         }
-        holder.routeSearchChargeRefreshListItemBinding.itemRootViewCharge.setOnClickListener(v -> {
-            if (itemClickListener != null) {
-                itemClickListener.onItemClick(mRouteBeanList.get(position));
+        holder.mRouteSearchChargeRefreshListItemBinding.itemRootViewCharge.setOnClickListener(v -> {
+            if (mItemClickListener != null) {
+                mItemClickListener.onItemClick(mRouteBeanList.get(position));
             }
         });
 
-        boolean finalBelongRouteParam = belongRouteParam;
-        holder.routeSearchChargeRefreshListItemBinding.routeItemChargeAddBg.setOnClickListener(v -> {
-            if (itemClickListener != null) {
+        final boolean finalBelongRouteParam = belongRouteParam;
+        holder.mRouteSearchChargeRefreshListItemBinding.routeItemChargeAddBg.setOnClickListener(v -> {
+            if (mItemClickListener != null) {
                 if (finalBelongRouteParam) {
-                    itemClickListener.onItermRemoveClick(mRouteBeanList.get(position));
+                    mItemClickListener.onItermRemoveClick(mRouteBeanList.get(position));
                 } else {
-                    itemClickListener.onItermAddClick(mRouteBeanList.get(position));
+                    mItemClickListener.onItermAddClick(mRouteBeanList.get(position));
                 }
 
             }
         });
     }
-
-    private boolean isBelongSamePoi(List<RouteParam> mLoaclSaveEntity, PoiInfoEntity poiInfoEntity) {
-        if (mLoaclSaveEntity.isEmpty()) {
+    /**
+     * 是否在路线上
+     * @param loaclSaveEntity 路线上的点
+     * @param poiInfoEntity 当前点
+     * @return  itemClickListener 监听
+     * */
+    private boolean isBelongSamePoi(final List<RouteParam> loaclSaveEntity, final PoiInfoEntity poiInfoEntity) {
+        if (loaclSaveEntity.isEmpty()) {
             return false;
         }
-        for (RouteParam param: mLoaclSaveEntity) {
+        for (RouteParam param: loaclSaveEntity) {
             if (RoutePackage.getInstance().isTheSamePoi(param, poiInfoEntity)) {
                 return true;
             }
@@ -126,18 +154,30 @@ public class RouteSearchChargeRefreshAdapter extends RecyclerView.Adapter<RouteS
     }
 
     public class Holder extends RecyclerView.ViewHolder {
-        public RouteSearchChargeRefreshListItemBinding routeSearchChargeRefreshListItemBinding;
+        private RouteSearchChargeRefreshListItemBinding mRouteSearchChargeRefreshListItemBinding;
 
-        public Holder(RouteSearchChargeRefreshListItemBinding routeSearchChargeRefreshListItemBinding) {
+        public Holder(final RouteSearchChargeRefreshListItemBinding routeSearchChargeRefreshListItemBinding) {
             super(routeSearchChargeRefreshListItemBinding.getRoot());
-            this.routeSearchChargeRefreshListItemBinding = routeSearchChargeRefreshListItemBinding;
+            this.mRouteSearchChargeRefreshListItemBinding = routeSearchChargeRefreshListItemBinding;
             routeSearchChargeRefreshListItemBinding.setHolder(this);
         }
     }
 
     public interface OnItemClickListener {
-        void onItemClick(PoiInfoEntity poiInfoEntity);
-        void onItermRemoveClick(PoiInfoEntity poiInfoEntity);
-        void onItermAddClick(PoiInfoEntity poiInfoEntity);
+        /**
+         * item点击
+         * @param poiInfoEntity 当前点
+         * */
+        void onItemClick(final PoiInfoEntity poiInfoEntity);
+        /**
+         * 移除点
+         * @param poiInfoEntity 当前点
+         * */
+        void onItermRemoveClick(final PoiInfoEntity poiInfoEntity);
+        /**
+         * 添加点
+         * @param poiInfoEntity 当前点
+         * */
+        void onItermAddClick(final PoiInfoEntity poiInfoEntity);
     }
 }

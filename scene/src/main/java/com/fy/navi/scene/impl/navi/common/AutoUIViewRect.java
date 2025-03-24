@@ -10,7 +10,7 @@ public class AutoUIViewRect {
     private Rect mOnAppRect = new Rect();
     private Rect mInParentRect = new Rect();
 
-    public AutoUIViewRect(Rect onScreenRect, Rect onAppRect, Rect inParentRect) {
+    public AutoUIViewRect(final Rect onScreenRect, final Rect onAppRect, final Rect inParentRect) {
         this.mOnScreenRect = onScreenRect;
         this.mOnAppRect = onAppRect;
         this.mInParentRect = inParentRect;
@@ -18,6 +18,7 @@ public class AutoUIViewRect {
 
     /**
      * 获取基于屏幕的控件矩形区域位置
+     * @return rect
      */
     public Rect getLocationOnScreen() {
         return mOnScreenRect;
@@ -25,6 +26,7 @@ public class AutoUIViewRect {
 
     /**
      * 获取基于应用显示区域的控件矩形区域位置
+     * @return rect
      */
     public Rect getLocationOnApplication() {
         return mOnAppRect;
@@ -32,12 +34,18 @@ public class AutoUIViewRect {
 
     /**
      * 获取基于父控件的矩形区域位置
+     * @return rect
      */
     public Rect getLocationInParent() {
         return mInParentRect;
     }
 
-    public boolean equals(AutoUIViewRect rect) {
+    /**
+     * 是否与指定的矩形区域相等
+     * @param rect rect
+     * @return boolean
+     */
+    public boolean equals(final AutoUIViewRect rect) {
         return mOnScreenRect.equals(rect.mOnScreenRect)
                 && mOnAppRect.equals(rect.mOnAppRect)
                 && mInParentRect.equals(rect.mInParentRect);

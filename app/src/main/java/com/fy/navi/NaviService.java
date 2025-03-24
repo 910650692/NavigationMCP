@@ -31,6 +31,7 @@ import com.fy.navi.adas.AdasClient;
 import com.fy.navi.fsa.MyFsaService;
 import com.fy.navi.hmi.BuildConfig;
 import com.fy.navi.service.AppContext;
+import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.define.code.CodeManager;
 import com.fy.navi.service.define.code.ErrorCode;
 import com.fy.navi.service.define.map.MapTypeId;
@@ -38,6 +39,7 @@ import com.fy.navi.service.define.setting.SettingConstant;
 import com.fy.navi.service.greendao.CommonManager;
 import com.fy.navi.service.greendao.setting.SettingManager;
 import com.fy.navi.service.logicpaket.aos.AosRestrictedPackage;
+import com.fy.navi.service.logicpaket.hotupdate.HotUpdatePackage;
 import com.fy.navi.service.logicpaket.signal.SignalPackage;
 import com.fy.navi.service.logicpaket.cruise.CruisePackage;
 import com.fy.navi.service.logicpaket.engine.EnginePackage;
@@ -60,7 +62,6 @@ import com.fy.navi.service.logicpaket.user.msgpush.MsgPushPackage;
 import com.fy.navi.service.logicpaket.user.usertrack.UserTrackPackage;
 import com.fy.navi.service.logicpaket.voice.VoicePackage;
 import com.fy.navi.service.tts.NaviAudioPlayer;
-import com.fy.navi.supercruise.SuperCruiseManager;
 import com.fy.navi.ui.base.StackManager;
 import com.fy.navi.vrbridge.VrBridgeManager;
 
@@ -79,7 +80,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * @date 2024/12/1
  */
 public class NaviService extends Service {
-    private static final String TAG = "NaviService";
+    private static final String TAG = MapDefaultFinalTag.INIT_SERVICE_TAG;
     private static final String NOTIFICATION_ID = "102";
     private static final String NOTIFICATION_NAME = "NaviService";
     private static final int FOREGROUND_SERVICE_ID = 0x02;
@@ -203,7 +204,7 @@ public class NaviService extends Service {
             VrBridgeInitWorker.addEngineObserver(vrBridgeWorkRequest.getId());
         }
 
-        WorkManager.getInstance(AppContext.mContext)
+        WorkManager.getInstance(AppContext.getInstance().getMContext())
                 .beginWith(parseJsonWorkRequest)
                 .then(engineWorkRequest)
                 .then(positionWorkRequest)
@@ -241,7 +242,7 @@ public class NaviService extends Service {
         }
 
         private static void addParseJsonObserver(UUID uuid) {
-            WorkManager.getInstance(AppContext.mContext).getWorkInfoByIdLiveData(uuid)
+            WorkManager.getInstance(AppContext.getInstance().getMContext()).getWorkInfoByIdLiveData(uuid)
                     .observe(StackManager.getInstance().getFirstActivity(), workInfo -> {
                         WorkInfo.State state = workInfo.getState();
                         switch (state) {
@@ -249,7 +250,7 @@ public class NaviService extends Service {
                             case RUNNING -> Logger.i(TAG, "parse json running");
                             case BLOCKED -> Logger.i(TAG, "parse json block");
                             case CANCELLED -> Logger.i(TAG, "parse json cancel");
-                            case FAILED -> Logger.i(TAG, "parse json fail");
+                            case FAILED -> Logger.e(TAG, "parse json fail");
                             case SUCCEEDED -> Logger.i(TAG, "parse json success");
                         }
                     });
@@ -312,16 +313,16 @@ public class NaviService extends Service {
         }
 
         private static void addEngineObserver(UUID id) {
-            WorkManager.getInstance(AppContext.mContext).getWorkInfoByIdLiveData(id)
+            WorkManager.getInstance(AppContext.getInstance().getMContext()).getWorkInfoByIdLiveData(id)
                     .observe(StackManager.getInstance().getFirstActivity(), workInfo -> {
                         WorkInfo.State state = workInfo.getState();
                         switch (state) {
                             case ENQUEUED -> Logger.i(TAG, "Engine init enqueued");
                             case RUNNING -> Logger.i(TAG, "Engine init running");
-                            case BLOCKED -> Logger.i(TAG, "Engine init block");
+                            case BLOCKED -> Logger.d(TAG, "Engine init block");
                             case FAILED -> {
                                 Data data = workInfo.getOutputData();
-                                Logger.i(TAG, "Engine init fail", data.getKeyValueMap());
+                                Logger.e(TAG, "Engine init fail", data.getKeyValueMap());
                             }
                             case CANCELLED -> Logger.i(TAG, "Engine init cancel");
                             case SUCCEEDED -> Logger.i(TAG, "Engine init success");
@@ -344,14 +345,14 @@ public class NaviService extends Service {
         }
 
         public static void addPositionObserver(UUID uuid) {
-            WorkManager.getInstance(AppContext.mContext).getWorkInfoByIdLiveData(uuid)
+            WorkManager.getInstance(AppContext.getInstance().getMContext()).getWorkInfoByIdLiveData(uuid)
                     .observe(StackManager.getInstance().getFirstActivity(), workInfo -> {
                         WorkInfo.State state = workInfo.getState();
                         switch (state) {
                             case ENQUEUED -> Logger.i(TAG, "Position init enqueued");
                             case RUNNING -> Logger.i(TAG, "Position running");
                             case BLOCKED -> Logger.i(TAG, "Position block");
-                            case FAILED -> Logger.i(TAG, "Position init fail");
+                            case FAILED -> Logger.e(TAG, "Position init fail");
                             case CANCELLED -> Logger.i(TAG, "Position cancel");
                             case SUCCEEDED -> {
                                 Logger.i(TAG, "Position init success");
@@ -379,14 +380,14 @@ public class NaviService extends Service {
         }
 
         private static void addMapInitObserver(UUID uuid) {
-            WorkManager.getInstance(AppContext.mContext).getWorkInfoByIdLiveData(uuid)
+            WorkManager.getInstance(AppContext.getInstance().getMContext()).getWorkInfoByIdLiveData(uuid)
                     .observe(StackManager.getInstance().getFirstActivity(), workInfo -> {
                         WorkInfo.State state = workInfo.getState();
                         switch (state) {
                             case ENQUEUED -> Logger.i(TAG, "Map init enqueued");
                             case RUNNING -> Logger.i(TAG, "Map init running");
                             case BLOCKED -> Logger.i(TAG, "Map init block");
-                            case FAILED -> Logger.i(TAG, "Map init fail");
+                            case FAILED -> Logger.e(TAG, "Map init fail");
                             case CANCELLED -> Logger.i(TAG, "Map init cancel");
                             case SUCCEEDED -> Logger.i(TAG, "Map init success");
                         }
@@ -404,23 +405,18 @@ public class NaviService extends Service {
         public Result doWork() {
             Logger.d(TAG, "LayerInit doWork");
             LayerPackage.getInstance().initLayerService();
-            if (SettingConstant.isInnerLayerStyle) {
-                LayerPackage.getInstance().initInnerStyle();
-            } else {
-                LayerPackage.getInstance().setCustomLayerStyle();
-            }
             return Result.success();
         }
 
         private static void addLayerInitObserver(UUID uuid) {
-            WorkManager.getInstance(AppContext.mContext).getWorkInfoByIdLiveData(uuid)
+            WorkManager.getInstance(AppContext.getInstance().getMContext()).getWorkInfoByIdLiveData(uuid)
                     .observe(StackManager.getInstance().getFirstActivity(), workInfo -> {
                         WorkInfo.State state = workInfo.getState();
                         switch (state) {
                             case ENQUEUED -> Logger.i(TAG, "NaviApp_Layer init enqueued");
                             case RUNNING -> Logger.i(TAG, "NaviApp_Layer init running");
                             case BLOCKED -> Logger.i(TAG, "NaviApp_Layer init block");
-                            case FAILED -> Logger.i(TAG, "NaviApp_Layer init fail");
+                            case FAILED -> Logger.e(TAG, "NaviApp_Layer init fail");
                             case CANCELLED -> Logger.i(TAG, "NaviApp_Layer init cancel");
                             case SUCCEEDED -> Logger.i(TAG, "NaviApp_Layer init success");
                         }
@@ -453,14 +449,15 @@ public class NaviService extends Service {
             MsgPushPackage.getInstance().initService();
             AosRestrictedPackage.getInstance().initAosService();
             VoicePackage.getInstance().init();
-            SignalPackage.getInstance().init(AppContext.mContext);
+            SignalPackage.getInstance().init(AppContext.getInstance().getMContext());
             SpeechPackage.getInstance().init();
             NaviAudioPlayer.getInstance().init();
+            HotUpdatePackage.getInstance().initService();
             return Result.success();
         }
 
         private static void addSdkServiceInitObserver(UUID uuid, boolean isStart) {
-            WorkManager.getInstance(AppContext.mContext).getWorkInfoByIdLiveData(uuid)
+            WorkManager.getInstance(AppContext.getInstance().getMContext()).getWorkInfoByIdLiveData(uuid)
                     .observe(StackManager.getInstance().getFirstActivity(), workInfo -> {
                         WorkInfo.State state = workInfo.getState();
                         switch (state) {
@@ -468,7 +465,7 @@ public class NaviService extends Service {
                             case RUNNING -> Logger.i(TAG, "NaviApp_SdkService init running");
                             case BLOCKED -> Logger.i(TAG, "NaviApp_SdkService init block");
                             case FAILED -> {
-                                Logger.i(TAG, "NaviApp_SdkService init fail");
+                                Logger.e(TAG, "NaviApp_SdkService init fail");
                                 notifyAppInitFinished(false);
                             }
                             case CANCELLED -> {
@@ -505,11 +502,11 @@ public class NaviService extends Service {
         }
 
         private static void addEngineObserver(UUID uuid) {
-            WorkManager.getInstance(AppContext.mContext).getWorkInfoByIdLiveData(uuid)
+            WorkManager.getInstance(AppContext.getInstance().getMContext()).getWorkInfoByIdLiveData(uuid)
                     .observe(StackManager.getInstance().getFirstActivity(), workInfo -> {
                         WorkInfo.State state = workInfo.getState();
                         switch (state) {
-                            case FAILED -> Logger.i(TAG, "Engine unInit fail");
+                            case FAILED -> Logger.e(TAG, "Engine unInit fail");
                             case SUCCEEDED -> Logger.i(TAG, "Engine unInit success");
                         }
                     });
@@ -529,18 +526,17 @@ public class NaviService extends Service {
         @Override
         public Result doWork() {
             MyFsaService.getInstance().init();
-            AdasClient.getInstance().start(AppContext.mContext);
-            SuperCruiseManager.getInstance().init();
+            AdasClient.getInstance().start(AppContext.getInstance().getMContext());
             return Result.success();
         }
 
         private static void addEngineObserver(UUID uuid) {
-            WorkManager.getInstance(AppContext.mContext).getWorkInfoByIdLiveData(uuid)
+            WorkManager.getInstance(AppContext.getInstance().getMContext()).getWorkInfoByIdLiveData(uuid)
                     .observe(StackManager.getInstance().getFirstActivity(), workInfo -> {
                         WorkInfo.State state = workInfo.getState();
                         switch (state) {
                             case BLOCKED -> Logger.i(TAG, "Fsa init block");
-                            case FAILED -> Logger.i(TAG, "Fsa init fail");
+                            case FAILED -> Logger.e(TAG, "Fsa init fail");
                             case SUCCEEDED -> Logger.i(TAG, "Fsa init success");
                         }
                     });
@@ -564,12 +560,12 @@ public class NaviService extends Service {
         }
 
         private static void addEngineObserver(UUID uuid) {
-            WorkManager.getInstance(AppContext.mContext).getWorkInfoByIdLiveData(uuid)
+            WorkManager.getInstance(AppContext.getInstance().getMContext()).getWorkInfoByIdLiveData(uuid)
                     .observe(StackManager.getInstance().getFirstActivity(), workInfo -> {
                         WorkInfo.State state = workInfo.getState();
                         switch (state) {
                             case BLOCKED -> Logger.i(TAG, "VrBridge init block");
-                            case FAILED -> Logger.i(TAG, "VrBridge init fail");
+                            case FAILED -> Logger.e(TAG, "VrBridge init fail");
                             case SUCCEEDED -> Logger.i(TAG, "VrBridge init success");
                         }
                     });

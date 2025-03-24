@@ -85,7 +85,7 @@ public class SearchHistoryAdapter extends RecyclerView.Adapter<SearchHistoryAdap
     public void onBindViewHolder(@NonNull ResultHolder holder, int position) {
         holder.resultItemBinding.setPoiBean(poiEntities.get(position));
         holder.resultItemBinding.setLayoutPosition(String.valueOf(position + 1));
-        if (AutoMapConstant.SearchKeywordRecordKey.SEARCH_KEYWORD_RECORD_KEY == poiEntities.get(position).getType()) {
+        if (AutoMapConstant.SearchKeywordRecordKey.SEARCH_KEYWORD_RECORD_KEY == poiEntities.get(position).getMType()) {
             holder.resultItemBinding.skInfoLayout.setVisibility(View.GONE);
             holder.resultItemBinding.poiToNavi.setVisibility(View.GONE);
             holder.resultItemBinding.llActionContainer.setVisibility(View.GONE);
@@ -93,6 +93,7 @@ public class SearchHistoryAdapter extends RecyclerView.Adapter<SearchHistoryAdap
             holder.resultItemBinding.skInfoLayout.setVisibility(View.VISIBLE);
             holder.resultItemBinding.poiToNavi.setVisibility(View.VISIBLE);
             holder.resultItemBinding.llActionContainer.setVisibility(View.VISIBLE);
+            holder.resultItemBinding.poiDistance.setText(SearchPackage.getInstance().calcStraightDistance(parseGeoPoint(poiEntities.get(position).getMEndPoint())));
         }
 
         if (searchPackage.isAlongWaySearch()) {
@@ -159,7 +160,7 @@ public class SearchHistoryAdapter extends RecyclerView.Adapter<SearchHistoryAdap
         holder.resultItemBinding.sllDelete.setOnClickListener(v -> {
             holder.resultItemBinding.swipeMenuLayout.smoothClose();
             Logger.d(SEARCH_HMI_TAG, "poi click 删除");
-            searchPackage.clearSearchKeywordRecord(poiEntities.get(position).getId());
+            searchPackage.clearSearchKeywordRecord(poiEntities.get(position).getMId());
             if (position >= 0 && position < poiEntities.size()) {
                 poiEntities.remove(position);
                 notifyItemRemoved(position);
@@ -176,7 +177,7 @@ public class SearchHistoryAdapter extends RecyclerView.Adapter<SearchHistoryAdap
     private PoiInfoEntity getFavoriteInfo(History history) {
         List<PoiInfoEntity> list = behaviorPackage.getFavoritePoiData(0);
         return list.stream()
-                .filter(item -> item.getPid().equals(history.getPoiId()))
+                .filter(item -> item.getPid().equals(history.getMPoiId()))
                 .findFirst().orElse(null);
     }
 
@@ -186,11 +187,11 @@ public class SearchHistoryAdapter extends RecyclerView.Adapter<SearchHistoryAdap
      * @param history
      */
     private void addFavoriteInfo(History history) {
-        GeoPoint historyPoint = parseGeoPoint(history.endPoint);
+        GeoPoint historyPoint = parseGeoPoint(history.getMEndPoint());
         PoiInfoEntity poiInfoEntity = new PoiInfoEntity()
-                .setName(history.endPoiName)
-                .setAddress(history.endPoiName)
-                .setPid(history.poiId)
+                .setName(history.getMEndPoiName())
+                .setAddress(history.getMEndPoiName())
+                .setPid(history.getMPoiId())
                 .setPoint(historyPoint);
         FavoriteInfo info = new FavoriteInfo().setCommonName(0)
                 .setItemId(poiInfoEntity.getPid() + "_" + poiInfoEntity.getName() + "_" + poiInfoEntity.getPoint().getLon() + "_" + poiInfoEntity.getPoint().getLat());

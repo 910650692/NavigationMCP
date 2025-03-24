@@ -11,24 +11,27 @@ import com.fy.navi.ui.view.SkinImageView;
 
 /**
  * 实现点击效果的ImageView
+ * @author fy
+ * @version $Revision.*$
  */
 public class ButtonImageView extends SkinImageView {
 
-    public ButtonImageView(Context context) {
+    public ButtonImageView(final Context context) {
         super(context);
     }
 
-    public ButtonImageView(Context context, @Nullable AttributeSet attrs) {
+    public ButtonImageView(final Context context, @Nullable final AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public ButtonImageView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public ButtonImageView(final Context context,
+                           @Nullable final AttributeSet attrs, final int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
-    public boolean onTouchEvent(MotionEvent event) {
+    public boolean onTouchEvent(final MotionEvent event) {
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
             setAlpha(0.6f);
             return true;

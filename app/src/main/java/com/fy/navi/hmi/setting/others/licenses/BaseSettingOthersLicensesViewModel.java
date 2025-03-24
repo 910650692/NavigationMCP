@@ -9,7 +9,7 @@ import com.fy.navi.ui.base.BaseViewModel;
 
 public class BaseSettingOthersLicensesViewModel extends BaseViewModel<SettingOthersLicensesFragment, SettingOthersLicensesModel> {
 
-    public BaseSettingOthersLicensesViewModel(@NonNull Application application) {
+    public BaseSettingOthersLicensesViewModel(@NonNull final Application application) {
         super(application);
     }
 
@@ -18,5 +18,5 @@ public class BaseSettingOthersLicensesViewModel extends BaseViewModel<SettingOth
         return new SettingOthersLicensesModel();
     }
 
-    public Action finishLicenses = () -> closeFragment(true);
+    public Action mFinishLicenses = () -> closeFragment(true);
 }

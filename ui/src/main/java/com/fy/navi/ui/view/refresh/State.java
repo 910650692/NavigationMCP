@@ -7,11 +7,11 @@ import java.lang.annotation.RetentionPolicy;
 
 public class State {
 
-    @IntDef({REFRESH_STATE.REFRESH,
-            REFRESH_STATE.LOADMORE
+    @IntDef({RefreshState.REFRESH,
+            RefreshState.LOADMORE
     })
     @Retention(RetentionPolicy.SOURCE)
-    public @interface REFRESH_STATE {
+    public @interface RefreshState {
         int REFRESH = 10;
         int LOADMORE = 11;
     }

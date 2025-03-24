@@ -2,7 +2,6 @@ package com.fy.navi.scene.impl.navi.common;
 
 import android.graphics.Rect;
 import android.view.View;
-import android.view.ViewParent;
 import android.view.ViewTreeObserver;
 
 import com.fy.navi.scene.impl.navi.inter.RectChangeListener;
@@ -10,13 +9,15 @@ import com.fy.navi.scene.impl.navi.inter.RectChangeListener;
 /**
  * 监听控件的宽高位置变化，其中位置变化考虑相对于屏幕、应用、父控件有变化时都通知。
  * 目前监听了View.addOnLayoutChangeListener、ViewTreeObserver.addOnGlobalLayoutListener
+ * @author fy
+ * @version $Revision.*$
  */
 public class ViewRectChangeWatcher implements ViewTreeObserver.OnGlobalLayoutListener, View.OnLayoutChangeListener {
     private final View mView;
     private RectChangeListener mListener;
     private AutoUIViewRect mCurrentRect;
 
-    public ViewRectChangeWatcher(View view, RectChangeListener rectChangeListener) {
+    public ViewRectChangeWatcher(final View view, final RectChangeListener rectChangeListener) {
         mView = view;
         mListener = rectChangeListener;
         mView.addOnLayoutChangeListener(this);
@@ -24,11 +25,15 @@ public class ViewRectChangeWatcher implements ViewTreeObserver.OnGlobalLayoutLis
     }
 
     @Override
-    public void onLayoutChange(View v, int left, int top, int right, int bottom,
-                               int oldLeft, int oldTop, int oldRight, int oldBottom) {
+    public void onLayoutChange(final View v, final int left, final int top, final int right,
+                               final int bottom, final int oldLeft, final int oldTop,
+                               final int oldRight, final int oldBottom) {
         onRectChanged();
     }
 
+    /**
+     * 销毁
+     */
     public void destroy() {
         // TODO 待执行监听移除动作
         mView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
@@ -45,7 +50,7 @@ public class ViewRectChangeWatcher implements ViewTreeObserver.OnGlobalLayoutLis
      * 位置大小变化
      */
     private void onRectChanged() {
-        AutoUIViewRect newRect = NaviUiUtil.getAutoUIViewRect(mView);
+        final AutoUIViewRect newRect = NaviUiUtil.getAutoUIViewRect(mView);
         /**
          * 初始化或者位置大小有发生变化时才通知
          */

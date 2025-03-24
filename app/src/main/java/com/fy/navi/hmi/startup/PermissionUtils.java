@@ -61,7 +61,7 @@ public class PermissionUtils {
         for (String permission : permissionArray) {
             if (!checkoutPermission(permission)) permissionList.add(permission);
         }
-        if(DeviceUtils.isCar(AppContext.mApplication)){
+        if(DeviceUtils.isCar(AppContext.getInstance().getMApplication())){
             Logger.i(TAG, "current device type is car");
             if (!checkoutPermission(SPEED_PERMISSION)) permissionList.add(SPEED_PERMISSION);
         }else {
@@ -76,12 +76,12 @@ public class PermissionUtils {
             return Environment.isExternalStorageManager();
         }
         if (ConvertUtils.equals(permission, Settings.ACTION_MANAGE_OVERLAY_PERMISSION)) {
-            return Settings.canDrawOverlays(AppContext.mContext);
+            return Settings.canDrawOverlays(AppContext.getInstance().getMContext());
         }
         if (ConvertUtils.equals(permission, Context.MEDIA_PROJECTION_SERVICE)) {
             return isMediaProjectionPermission;
         }
-        return AppContext.mApplication.checkSelfPermission(permission) == PackageManager.PERMISSION_GRANTED;
+        return AppContext.getInstance().getMApplication().checkSelfPermission(permission) == PackageManager.PERMISSION_GRANTED;
     }
 
     public void requestPermission() {
@@ -161,7 +161,7 @@ public class PermissionUtils {
                     @Override
                     public void onCommitClick() {
                         Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
-                                Uri.parse("package:" + AppContext.mContext.getPackageName()));
+                                Uri.parse("package:" + AppContext.getInstance().getMContext().getPackageName()));
                         ActivityCompat.startActivityForResult(context, intent, REQUEST_PERMISSION_OVERLAY_CODE, null);
                     }
                 })

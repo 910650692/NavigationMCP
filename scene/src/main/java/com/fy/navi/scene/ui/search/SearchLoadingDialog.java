@@ -10,15 +10,16 @@ import com.fy.navi.scene.databinding.LayoutSearchLoadingBinding;
 import com.fy.navi.ui.dialog.BaseFullScreenDialog;
 
 /**
- * @Author: pengbai
+ * @author pengbai
+ * @version \$Revision1.0\$
  * @Description: 搜索加载框
  * @CreateDate: $ $
  */
 public class SearchLoadingDialog extends BaseFullScreenDialog<LayoutSearchLoadingBinding> {
-    private ValueAnimator animator;
-    private float angelTemp = 0;
+    private ValueAnimator mAnimator;
+    private float mAngelTemp = 0;
 
-    public SearchLoadingDialog(Context context) {
+    public SearchLoadingDialog(final Context context) {
         super(context);
     }
 
@@ -28,7 +29,7 @@ public class SearchLoadingDialog extends BaseFullScreenDialog<LayoutSearchLoadin
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initLoadAnim(mViewBinding.ivLoading);
         mViewBinding.ivClose.setOnClickListener(v -> {
@@ -36,23 +37,27 @@ public class SearchLoadingDialog extends BaseFullScreenDialog<LayoutSearchLoadin
         });
     }
 
-    private void initLoadAnim(View sivLoading) {
+    /**
+     * 初始化加载动画
+     * @param sivLoading 加载动画视图
+     */
+    private void initLoadAnim(final View sivLoading) {
         // 如果动画已存在并正在运行，则取消并清理
-        if (animator != null) {
-            if (animator.isRunning()) {
-                animator.cancel();
+        if (mAnimator != null) {
+            if (mAnimator.isRunning()) {
+                mAnimator.cancel();
             }
-            animator = null;
+            mAnimator = null;
         }
 
         // 创建属性动画，从 0 到 360 度循环旋转
-        animator = ValueAnimator.ofFloat(0f, 360f);
-        animator.setDuration(2000); // 动画持续时间
-        animator.setRepeatCount(ValueAnimator.INFINITE); // 无限重复
-        animator.setInterpolator(new LinearInterpolator()); // 线性插值器
+        mAnimator = ValueAnimator.ofFloat(0f, 360f);
+        mAnimator.setDuration(2000); // 动画持续时间
+        mAnimator.setRepeatCount(ValueAnimator.INFINITE); // 无限重复
+        mAnimator.setInterpolator(new LinearInterpolator()); // 线性插值器
         // 添加动画更新监听器
-        animator.addUpdateListener(animation -> {
-            float angle = (float) animation.getAnimatedValue();
+        mAnimator.addUpdateListener(animation -> {
+            final float angle = (float) animation.getAnimatedValue();
             if (shouldSkipUpdate(angle)) {
                 return;
             }
@@ -60,32 +65,39 @@ public class SearchLoadingDialog extends BaseFullScreenDialog<LayoutSearchLoadin
         });
     }
 
-    // 用于控制角度变化频率的辅助方法
-    private boolean shouldSkipUpdate(float angle) {
-        float changeAngle = angle - angelTemp;
-        float angle_step = 10;
-        if (changeAngle > 0f && changeAngle <= angle_step) {
+    /**
+     *用于控制角度变化频率的辅助方法
+     *@param angle 当前角度
+     *@return 是否跳过更新
+     */
+    private boolean shouldSkipUpdate(final float angle) {
+        final float changeAngle = angle - mAngelTemp;
+        final float angleStep = 10;
+        if (changeAngle > 0f && changeAngle <= angleStep) {
             return true; // 跳过更新，避免高频调用浪费资源
         }
-        angelTemp = angle; // 更新临时角度值
+        mAngelTemp = angle; // 更新临时角度值
         return false;
     }
 
+    /**
+     * 停止动画
+     */
     private void stopAnimator() {
-        if (animator == null) {
+        if (mAnimator == null) {
             return;
         }
-        if (animator.isRunning()) {
-            animator.cancel();
+        if (mAnimator.isRunning()) {
+            mAnimator.cancel();
         }
-        animator = null;
+        mAnimator = null;
     }
 
     @Override
     public void show() {
         super.show();
-        if (animator != null && !animator.isRunning()) {
-            animator.start();
+        if (mAnimator != null && !mAnimator.isRunning()) {
+            mAnimator.start();
         }
     }
 

@@ -1,6 +1,8 @@
 package com.fy.navi.service.define.navi;
 
 
+import androidx.annotation.NonNull;
+
 import com.fy.navi.service.adapter.navi.NaviConstant;
 import com.fy.navi.service.define.bean.GeoPoint;
 
@@ -155,5 +157,17 @@ public class SapaInfoEntity {
                     ", buildingStatus=" + buildingStatus +
                     '}';
         }
+    }
+
+    @Override
+    public String toString() {
+        return "SapaInfoEntity{" +
+                "type=" + type +
+                ", list=" + list +
+                ", remainServiceAreaNum=" + remainServiceAreaNum +
+                ", remainFreewayDistance=" + remainFreewayDistance +
+                ", remainFreewayTime=" + remainFreewayTime +
+                ", laneTypes=" + laneTypes +
+                '}';
     }
 }

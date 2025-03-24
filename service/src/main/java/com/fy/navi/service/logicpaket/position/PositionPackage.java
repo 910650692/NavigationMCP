@@ -94,8 +94,8 @@ public class PositionPackage implements IPositionAdapterCallback, SignalAdapterC
     public void onLocationInfo(LocInfoBean locationInfo) {
         Logger.d(TAG, "onLocationInfo: " + locationInfo.toString());
         GeoPoint point = new GeoPoint();
-        point.lon = locationInfo.getLongitude();
-        point.lat = locationInfo.getLatitude();
+        point.setLon(locationInfo.getLongitude());
+        point.setLat(locationInfo.getLatitude());
         currentGeo = point;
         if (!ConvertUtils.isEmpty(mIPositionCallback)) {
             for (IPositionPackageCallback callback : mIPositionCallback) {

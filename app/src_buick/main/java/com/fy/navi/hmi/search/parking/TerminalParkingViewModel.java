@@ -4,15 +4,13 @@ import android.app.Application;
 
 import androidx.annotation.NonNull;
 
-import com.fy.navi.hmi.search.searchresult.BaseSearchResultViewModel;
 
 /**
- * @Description TODO
- * @Author lww
- * @date 2025/1/25
+ * @author lvww
+ * @version \$Revision1.0\$
  */
 public class TerminalParkingViewModel extends BaseTerminalParkingViewModelViewModel {
-    public TerminalParkingViewModel(@NonNull Application application) {
+    public TerminalParkingViewModel(@NonNull final Application application) {
         super(application);
     }
 }

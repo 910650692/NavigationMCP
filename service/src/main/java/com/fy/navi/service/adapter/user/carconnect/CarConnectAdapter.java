@@ -17,32 +17,62 @@ public class CarConnectAdapter {
         mCarConnectApi = (ICarConnectApi) AdapterConfig.getObject(CLASS_API_PKG, CLASS_API_NAME);
     }
 
+    /**
+     * initService
+     */
     public void initService() {
         mCarConnectApi.initService();
     }
 
-    public void registerCallBack(String key, CarConnectAdapterCallback callBack) {
+    /**
+     * registerCallBack
+     * @param key
+     * @param callBack
+     */
+    public void registerCallBack(final String key, final CarConnectAdapterCallback callBack) {
         mCarConnectApi.registerCallBack(key, callBack);
     }
 
-    public TaskResultBean requestMobileLinkable(GeoPoint geoPoint) {
+    /**
+     * requestMobileLinkable
+     * @param geoPoint
+     * @return TaskResultBean
+     */
+    public TaskResultBean requestMobileLinkable(final GeoPoint geoPoint) {
         return mCarConnectApi.requestMobileLinkable(geoPoint);
     }
 
-    public TaskResultBean requestMobileLink(long deviceId) {
+    /**
+     * requestMobileLink
+     * @param deviceId
+     * @return TaskResultBean
+     */
+    public TaskResultBean requestMobileLink(final long deviceId) {
         return mCarConnectApi.requestMobileLink(deviceId);
     }
 
+    /**
+     * abort
+     */
     public void abort() {
         mCarConnectApi.abort();
     }
 
-    public void abort(long taskId) {
+    /**
+     * abort
+     * @param taskId
+     */
+    public void abort(final long taskId) {
         mCarConnectApi.abort(taskId);
     }
 
-    public long sendReqWsTserviceInternalLinkAutoReport(CarConnectRequestBaseBean pAosRequest) {
-        return mCarConnectApi.sendReqWsTserviceInternalLinkAutoReport(pAosRequest);
+    /**
+     * sendReqWsTserviceInternalLinkAutoReport
+     * @param aosRequest
+     * @return long
+     */
+    public long sendReqWsTserviceInternalLinkAutoReport(final CarConnectRequestBaseBean aosRequest) {
+        return mCarConnectApi.sendReqWsTserviceInternalLinkAutoReport(aosRequest);
     }
 
     public static CarConnectAdapter getInstance() {

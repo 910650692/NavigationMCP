@@ -1,11 +1,15 @@
 package com.fy.navi.ui.action;
 
-/**
- * Author: QiuYaWei
- * Date: 2025/3/1
- * Description: [在这里描述文件功能]
- */
 public interface OnImageLoadListener {
+    /**
+     * 加载完成
+     *
+     * @param isSuccess true：加载成功  false：加载失败
+     */
     void onLoadCompleted(boolean isSuccess);
+
+    /**
+     * 开始加载
+     */
     void onLoadStart();
 }

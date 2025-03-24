@@ -9,6 +9,8 @@ import com.fy.navi.service.define.layer.LayerType;
 import com.fy.navi.service.define.layer.RouteLineLayerParam;
 import com.fy.navi.service.define.layer.SearchResultLayer;
 import com.fy.navi.service.define.layer.bls.CarLocation;
+import com.fy.navi.service.define.layer.refix.LayerItemSearchChild;
+import com.fy.navi.service.define.layer.refix.LayerItemSearchParent;
 import com.fy.navi.service.define.map.GmBizUserFavoritePoint;
 import com.fy.navi.service.define.map.MapTypeId;
 import com.fy.navi.service.define.navi.CrossImageEntity;
@@ -29,12 +31,20 @@ public class LayerAdapter {
 
     private ILayerApi mLayerApi;
 
+    public static LayerAdapter getInstance() {
+        return Helper.ra;
+    }
+
+    private static final class Helper {
+        private static final LayerAdapter ra = new LayerAdapter();
+    }
+
     private LayerAdapter() {
         mLayerApi = (ILayerApi) AdapterConfig.getObject(LAYER_PKG_NAME, LAYER_CLS_NAME);
     }
 
-    public void initLayerService() {
-        mLayerApi.initLayerService();
+    public boolean initLayerService(MapTypeId mapTypeId) {
+        return mLayerApi.initLayerService(mapTypeId);
     }
 
     public void initInnerStyle() {
@@ -105,8 +115,8 @@ public class LayerAdapter {
         return mLayerApi.getPathResultBound(mapTypeId, pathResult);
     }
 
-    public void drawRouteLine(RouteLineLayerParam routeLineLayer) {
-        mLayerApi.drawRouteLine(routeLineLayer);
+    public void drawRouteLine(MapTypeId mapTypeId, RouteLineLayerParam routeLineLayer) {
+        mLayerApi.drawRouteLine(mapTypeId, routeLineLayer);
     }
 
     public boolean showCross(MapTypeId mapTypeId, CrossImageEntity crossInfo) {
@@ -153,9 +163,6 @@ public class LayerAdapter {
         mLayerApi.unInitLayerService();
     }
 
-    public static LayerAdapter getInstance() {
-        return Helper.ra;
-    }
 
     public void setSelectedPathIndex(MapTypeId mapTypeId, int routeIndex) {
         mLayerApi.setSelectedPathIndex(mapTypeId, routeIndex);
@@ -226,7 +233,7 @@ public class LayerAdapter {
     }
 
     public void setSearchSelect(MapTypeId mapTypeId, GemLayerClickBusinessType type, String strID, boolean bFocus) {
-        mLayerApi.selectSearchPoi(mapTypeId,type, strID, bFocus);
+        mLayerApi.selectSearchPoi(mapTypeId, type, strID, bFocus);
     }
 
     public void updateFavoriteMain(MapTypeId mapTypeId, List<GmBizUserFavoritePoint> list) {
@@ -257,7 +264,4 @@ public class LayerAdapter {
         return mLayerApi.openDynamicCenter(mapTypeId, changeCenter);
     }
 
-    private static final class Helper {
-        private static final LayerAdapter ra = new LayerAdapter();
-    }
 }

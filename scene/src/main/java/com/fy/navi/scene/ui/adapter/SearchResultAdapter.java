@@ -122,7 +122,7 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
         }
 
         if (searchResultEntity.getSearchType() == AutoMapConstant.SearchType.SEARCH_SUGGESTION) {
-            holder.resultItemBinding.poiName.setText(matcherSearchTitle(AppContext.mContext.getResources().getColor(R.color.navi_blue_text), poiEntities.get(position).getName(), searchResultEntity.getKeyword()));
+            holder.resultItemBinding.poiName.setText(matcherSearchTitle(AppContext.getInstance().getMContext().getResources().getColor(R.color.navi_blue_text), poiEntities.get(position).getName(), searchResultEntity.getKeyword()));
 
         }
 

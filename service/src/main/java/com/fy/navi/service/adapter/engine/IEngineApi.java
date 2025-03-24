@@ -29,4 +29,6 @@ public interface IEngineApi {
     String getSdkVersion();
 
     String getEngineVersion();
+
+    String styleBlPath(MapTypeId mapTypeId);
 }

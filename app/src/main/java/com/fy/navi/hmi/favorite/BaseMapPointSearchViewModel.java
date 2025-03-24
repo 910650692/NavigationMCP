@@ -4,13 +4,12 @@ import android.app.Application;
 
 import androidx.annotation.NonNull;
 
-import com.fy.navi.service.define.search.PoiInfoEntity;
 import com.fy.navi.service.define.search.SearchResultEntity;
 import com.fy.navi.ui.action.Action;
 import com.fy.navi.ui.base.BaseViewModel;
 
 public class BaseMapPointSearchViewModel extends BaseViewModel<MapPointSearchFragment, MapPointSearchModel>  {
-    public BaseMapPointSearchViewModel(@NonNull Application application) {
+    public BaseMapPointSearchViewModel(final @NonNull Application application) {
         super(application);
     }
 
@@ -19,7 +18,7 @@ public class BaseMapPointSearchViewModel extends BaseViewModel<MapPointSearchFra
         return new MapPointSearchModel();
     }
 
-    public Action rootClick = () -> {
+    public Action mRootClick = () -> {
     };
 
    /* *//**
@@ -29,7 +28,11 @@ public class BaseMapPointSearchViewModel extends BaseViewModel<MapPointSearchFra
     public void skipFragment(int searchType, String keyword, PoiInfoEntity entity) {
     }*/
 
-    public void notifySearchResult(SearchResultEntity searchResultEntity) {
+    /**
+     * notifySearchResult
+     * @param searchResultEntity
+     */
+    public void notifySearchResult(final SearchResultEntity searchResultEntity) {
         mView.notifySearchResult(searchResultEntity);
     }
 

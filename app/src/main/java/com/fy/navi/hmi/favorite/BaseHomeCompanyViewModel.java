@@ -10,29 +10,40 @@ import com.fy.navi.ui.base.BaseViewModel;
 
 public class BaseHomeCompanyViewModel extends BaseViewModel<HomeCompanyFragment, HomeCompanyModel>  {
 
-    public BaseHomeCompanyViewModel(@NonNull Application application) {
+    public BaseHomeCompanyViewModel(final @NonNull Application application) {
         super(application);
     }
-    private int homeCompanyType;
+    private int mHomeCompanyType;
 
     @Override
     protected HomeCompanyModel initModel() {
         return new HomeCompanyModel();
     }
 
-    public Action rootClick = () -> {
+    public Action mRootClick = () -> {
     };
 
-    public void setHomeCompanyType(int homeCompanyType) {
-        // 1:家 2:公司 3:常用地址 0:收藏夹
-        this.homeCompanyType = homeCompanyType;
+    /**
+     * setHomeCompanyType
+     * @param homeCompanyType 1:家 2:公司 3:常用地址 0:收藏夹
+     */
+    public void setHomeCompanyType(final int homeCompanyType) {
+        this.mHomeCompanyType = homeCompanyType;
     }
 
-    public void notifySearchResult(SearchResultEntity searchResultEntity) {
+    /**
+     * notifySearchResult
+     * @param searchResultEntity
+     */
+    public void notifySearchResult(final SearchResultEntity searchResultEntity) {
         mView.notifySearchResult(searchResultEntity);
     }
 
-    public void notifySilentSearchResult(SearchResultEntity searchResultEntity) {
+    /**
+     * notifySilentSearchResult
+     * @param searchResultEntity
+     */
+    public void notifySilentSearchResult(final SearchResultEntity searchResultEntity) {
         mView.notifySilentSearchResult(searchResultEntity);
     }
 
@@ -64,7 +75,8 @@ public class BaseHomeCompanyViewModel extends BaseViewModel<HomeCompanyFragment,
         int commonName = mViewModel.getFavoriteCommonNameByHomeCompany();
         FavoriteInfo favoriteInfo = new FavoriteInfo();
         favoriteInfo.setCommonName(commonName)
-                .setItemId(poiInfoEntity.getPid() + "_" + poiInfoEntity.getName() + "_" + poiInfoEntity.getPoint().getLon() + "_" + poiInfoEntity.getPoint().getLat())
+                .setItemId(poiInfoEntity.getPid() + "_" + poiInfoEntity.getName() + "_" + poiInfoEntity.getPoint().getLon() + "_"
+                + poiInfoEntity.getPoint().getLat())
                 .setUpdateTime(new Date().getTime());
         poiInfoEntity.setFavoriteInfo(favoriteInfo);
         BehaviorPackage.getInstance().addFavoriteData(poiInfoEntity, commonName);

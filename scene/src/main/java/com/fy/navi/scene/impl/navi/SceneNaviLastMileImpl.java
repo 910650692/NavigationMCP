@@ -2,22 +2,24 @@ package com.fy.navi.scene.impl.navi;
 
 
 import com.android.utils.ConvertUtils;
+import com.android.utils.NetWorkUtils;
 import com.android.utils.ToastUtils;
 import com.android.utils.log.Logger;
 import com.fy.navi.scene.BaseSceneModel;
 import com.fy.navi.scene.R;
 import com.fy.navi.scene.api.navi.ISceneNaviLastMile;
-import com.fy.navi.scene.impl.navi.inter.ISceneCallback;
 import com.fy.navi.scene.ui.navi.SceneNaviLastMileView;
 import com.fy.navi.service.AppContext;
 import com.fy.navi.scene.ui.navi.manager.INaviSceneEvent;
 import com.fy.navi.scene.ui.navi.manager.NaviSceneId;
 import com.fy.navi.service.MapDefaultFinalTag;
-import com.fy.navi.service.adapter.navi.NaviConstant;
 import com.fy.navi.service.define.navi.NaviEtaInfo;
 import com.fy.navi.service.define.route.RouteParam;
+import com.fy.navi.service.define.setting.SettingController;
 import com.fy.navi.service.define.user.msgpush.MsgPushRequestInfo;
+import com.fy.navi.service.greendao.setting.SettingManager;
 import com.fy.navi.service.logicpaket.route.RoutePackage;
+import com.fy.navi.service.logicpaket.user.account.AccountPackage;
 import com.fy.navi.service.logicpaket.user.msgpush.MsgPushPackage;
 
 import java.util.List;
@@ -27,10 +29,10 @@ public class SceneNaviLastMileImpl extends BaseSceneModel<SceneNaviLastMileView>
     private static final String TAG = MapDefaultFinalTag.NAVI_HMI_TAG;
     private MsgPushPackage mMsgPushPackage;
     private RoutePackage mRoutePackage;
-    private boolean isDisplayedLastMile = false;
+    private boolean mIsDisplayedLastMile = false;
 
-    public SceneNaviLastMileImpl(SceneNaviLastMileView mScreenView) {
-        super(mScreenView);
+    public SceneNaviLastMileImpl(final SceneNaviLastMileView screenView) {
+        super(screenView);
         mMsgPushPackage = MsgPushPackage.getInstance();
         mRoutePackage = RoutePackage.getInstance();
     }
@@ -38,24 +40,40 @@ public class SceneNaviLastMileImpl extends BaseSceneModel<SceneNaviLastMileView>
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        isDisplayedLastMile = false;
+        mIsDisplayedLastMile = false;
     }
 
     @Override
     public void onSend() {
         Logger.d(TAG, "SceneNaviSendPhoneImpl click send");
-        // TODO: 2025/1/27 此处需要判断账号是否登录，网络是否连接
-        List<RouteParam> allPoiParamList = mRoutePackage.getAllPoiParamList(mMapTypeId);
+        // 账号未登录不发送
+        if (!AccountPackage.getInstance().isLogin()) {
+            Logger.i(TAG, "SceneNaviSendPhoneImpl account is not login");
+            return;
+        }
+        // 网络未连接不发送
+        if (Boolean.FALSE.equals(NetWorkUtils.Companion.getInstance().checkNetwork())) {
+            Logger.i(TAG, "SceneNaviSendPhoneImpl network is not connected");
+            return;
+        }
+        final String value = SettingManager.getInstance().getValueByKey(
+                SettingController.KEY_SETTING_IS_SEND_DESTINATION_LAST_MILE);
+        // 功能未设置不发送
+        if (!"1".equals(value)) {
+            Logger.i(TAG, "SceneNaviSendPhoneImpl is not send destination last mile not set");
+            return;
+        }
+        final List<RouteParam> allPoiParamList = mRoutePackage.getAllPoiParamList(mMapTypeId);
         if (!ConvertUtils.isEmpty(allPoiParamList)) {
-            RouteParam routeParam = allPoiParamList.get(allPoiParamList.size() - 1);
-            MsgPushRequestInfo msgPushRequestInfo = new MsgPushRequestInfo();
+            final RouteParam routeParam = allPoiParamList.get(allPoiParamList.size() - 1);
+            final MsgPushRequestInfo msgPushRequestInfo = new MsgPushRequestInfo();
             msgPushRequestInfo.setAddress(routeParam.getAddress());
             msgPushRequestInfo.setName(routeParam.getName());
             msgPushRequestInfo.setLat(routeParam.getRealPos().getLat());
             msgPushRequestInfo.setLon(routeParam.getRealPos().getLon());
-            long resultCode = mMsgPushPackage.sendReqSendToPhone(msgPushRequestInfo);
+            final long resultCode = mMsgPushPackage.sendReqSendToPhone(msgPushRequestInfo);
             if (resultCode == 1) {
-                ToastUtils.Companion.getInstance().showCustomToastView(AppContext.mContext.getText(R.string.navi_send_to_phone));
+                ToastUtils.Companion.getInstance().showCustomToastView(AppContext.getInstance().getMContext().getText(R.string.navi_send_to_phone));
             }
             Logger.d(TAG, "SceneNaviSendPhoneImpl send result：" + resultCode + ",address：" + routeParam.getAddress());
         } else {
@@ -70,19 +88,25 @@ public class SceneNaviLastMileImpl extends BaseSceneModel<SceneNaviLastMileView>
         updateSceneVisible(false);
     }
 
-    /***最后一公里***/
-    public void checkLastMile(NaviEtaInfo naviEtaInfo) {
+    /**
+     * 最后一公里
+     * @param naviEtaInfo etainfo
+     **/
+    public void checkLastMile(final NaviEtaInfo naviEtaInfo) {
 //        Logger.i(TAG, "NaviGuidanceViewModel isDisplayed：" + isDisplayed + ",naviSendPhoneVisibility：" + naviSendPhoneVisibility.get());
-        if (isDisplayedLastMile) {
+        if (mIsDisplayedLastMile) {
             return;
         }
-        if (naviEtaInfo.allDist <= 1000) {
-            isDisplayedLastMile = true;
+        if (naviEtaInfo.getAllDist() <= 1000) {
+            mIsDisplayedLastMile = true;
             updateSceneVisible(true);
         }
     }
 
-    private void updateSceneVisible(boolean isVisible) {
+    /**
+     * @param isVisible 是否可见
+     */
+    private void updateSceneVisible(final boolean isVisible) {
         mScreenView.getNaviSceneEvent().notifySceneStateChange((isVisible ? INaviSceneEvent.SceneStateChangeType.SceneShowState :
                 INaviSceneEvent.SceneStateChangeType.SceneHideState), NaviSceneId.NAVI_SCENE_LAST_MILE);
     }

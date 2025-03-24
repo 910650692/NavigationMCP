@@ -12,6 +12,8 @@ import com.fy.navi.service.define.map.MapTypeId;
 import com.fy.navi.ui.base.BaseFragment;
 
 /**
+ * @author baipeng0904
+ * @version \$Revision1.0\$
  * 沿途搜索页面
  */
 @Route(path = RoutePath.Search.ALONG_WAY_SEARCH_FRAGMENT)
@@ -38,10 +40,13 @@ public class AlongWaySearchFragment extends BaseFragment<FragmentAlongWayBinding
     }
 
 
+    /**
+     * 默认数据处理
+     */
     private void defaultDataProcessing() {
-        int powerType = mViewModel.powerType();
-        String[] categories;
-        TypedArray iconArray;
+        final int powerType = mViewModel.powerType();
+        final String[] categories;
+        final TypedArray iconArray;
         // 油车
         if (powerType == 0) {
             categories = getResources().getStringArray(R.array.along_way_categories_gas_name);

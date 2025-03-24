@@ -10,25 +10,26 @@ import androidx.lifecycle.LifecycleOwner;
 
 import com.android.utils.log.Logger;
 
-/**
- * @Description TODO
- * @Author lvww
- * @date 2024/11/22
- */
 public abstract class BaseViewModel<V extends IBaseView, M extends IBaseModel> extends AndroidViewModel implements IBaseViewModel {
     protected V mView;
     protected M mModel;
     protected Application mApplication;
     public String mScreenId;
 
-    public BaseViewModel(@NonNull Application application) {
+    public BaseViewModel(final @NonNull Application application) {
         super(application);
         Logger.i(getClass().getSimpleName(), "Constructor");
         this.mApplication = application;
         mModel = initModel();
     }
 
-    public void attachView(V baseView, String screenId) {
+    /**
+     * 绑定View
+     *
+     * @param baseView View
+     * @param screenId 页面标识
+     */
+    public void attachView(final V baseView, final String screenId) {
         Logger.i(getClass().getSimpleName(), "attachView");
         mView = baseView;
         mModel.onAttachViewModel(this);
@@ -36,7 +37,7 @@ public abstract class BaseViewModel<V extends IBaseView, M extends IBaseModel> e
     }
 
     @Override
-    public void onAny(LifecycleOwner owner, Lifecycle.Event event) {
+    public void onAny(final LifecycleOwner owner, final Lifecycle.Event event) {
         Logger.i(getClass().getSimpleName(), "onAny" + event.name());
     }
 
@@ -75,12 +76,17 @@ public abstract class BaseViewModel<V extends IBaseView, M extends IBaseModel> e
     }
 
     @Override
-    public void addFragment(BaseFragment fragment, Bundle bundle){
-       mView.addFragment(fragment, bundle);
+    public void addFragment(final BaseFragment fragment, final Bundle bundle) {
+        mView.addFragment(fragment, bundle);
     }
 
     @Override
-    public void closeFragment(boolean nextShow){
+    public void addPoiDetailsFragment(BaseFragment fragment, Bundle bundle) {
+        mView.addPoiDetailsFragment(fragment, bundle);
+    }
+
+    @Override
+    public void closeFragment(final boolean nextShow) {
         mView.closeFragment(nextShow);
     }
 
@@ -95,7 +101,7 @@ public abstract class BaseViewModel<V extends IBaseView, M extends IBaseModel> e
     }
 
     @Override
-    public void closeAllFragmentsUntilTargetFragment(String className) {
+    public void closeAllFragmentsUntilTargetFragment(final String className) {
         mView.closeAllFragmentsUntilTargetFragment(className);
     }
 

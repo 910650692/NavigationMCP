@@ -5,101 +5,97 @@ import com.fy.navi.service.define.bean.GeoPoint;
 import java.util.ArrayList;
 
 
-/**
- * @Description
- * @Author fh
- * @date 2024/12/27
- */
-public class HistoryRouteItemBean {
-    public String itemId;
-    public GeoPoint startLoc;
-    public GeoPoint endLoc;
-    public int method;
-    public HistoryPoiItemBean fromPoi;
-    public HistoryPoiItemBean toPoi;
-    public ArrayList<HistoryPoiItemBean> midPoi;
-    public long updateTime;
 
-    public int type;
-    public String id;
+public class HistoryRouteItemBean {
+    private String mItemId;
+    private GeoPoint mStartLoc;
+    private GeoPoint mEndLoc;
+    private int mMethod;
+    private HistoryPoiItemBean mFromPoi;
+    private HistoryPoiItemBean mToPoi;
+    private ArrayList<HistoryPoiItemBean> mMidPoi;
+    private long mUpdateTime;
+
+    private int mType;
+    private String mId;
 
     public String getItemId() {
-        return itemId;
+        return mItemId;
     }
 
-    public void setItemId(String itemId) {
-        this.itemId = itemId;
+    public void setItemId(final String itemId) {
+        this.mItemId = itemId;
     }
 
     public GeoPoint getStartLoc() {
-        return startLoc;
+        return mStartLoc;
     }
 
-    public void setStartLoc(GeoPoint startLoc) {
-        this.startLoc = startLoc;
+    public void setStartLoc(final GeoPoint startLoc) {
+        this.mStartLoc = startLoc;
     }
 
     public GeoPoint getEndLoc() {
-        return endLoc;
+        return mEndLoc;
     }
 
-    public void setEndLoc(GeoPoint endLoc) {
-        this.endLoc = endLoc;
+    public void setEndLoc(final GeoPoint endLoc) {
+        this.mEndLoc = endLoc;
     }
 
     public int getMethod() {
-        return method;
+        return mMethod;
     }
 
-    public void setMethod(int method) {
-        this.method = method;
+    public void setMethod(final int method) {
+        this.mMethod = method;
     }
 
     public HistoryPoiItemBean getFromPoi() {
-        return fromPoi;
+        return mFromPoi;
     }
 
-    public void setFromPoi(HistoryPoiItemBean fromPoi) {
-        this.fromPoi = fromPoi;
+    public void setFromPoi(final HistoryPoiItemBean fromPoi) {
+        this.mFromPoi = fromPoi;
     }
 
     public HistoryPoiItemBean getToPoi() {
-        return toPoi;
+        return mToPoi;
     }
 
-    public void setToPoi(HistoryPoiItemBean toPoi) {
-        this.toPoi = toPoi;
+    public void setToPoi(final HistoryPoiItemBean toPoi) {
+        this.mToPoi = toPoi;
     }
 
     public ArrayList<HistoryPoiItemBean> getMidPoi() {
-        return midPoi;
+        return mMidPoi;
     }
 
-    public void setMidPoi(ArrayList<HistoryPoiItemBean> midPoi) {
-        this.midPoi = midPoi;
+    public void setMidPoi(final ArrayList<HistoryPoiItemBean> midPoi) {
+        this.mMidPoi = midPoi;
     }
 
     public long getUpdateTime() {
-        return updateTime;
+        return mUpdateTime;
     }
 
-    public void setUpdateTime(long updateTime) {
-        this.updateTime = updateTime;
+    public void setUpdateTime(final long updateTime) {
+        this.mUpdateTime = updateTime;
     }
 
     public int getType() {
-        return type;
+        return mType;
     }
 
-    public void setType(int type) {
-        this.type = type;
+    public void setType(final int type) {
+        this.mType = type;
     }
 
     public String getId() {
-        return id;
+        return mId;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setId(final String id) {
+        this.mId = id;
     }
 }

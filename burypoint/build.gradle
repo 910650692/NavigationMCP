@@ -5,6 +5,7 @@ plugins {
 android {
     namespace 'com.fy.navi.burypoint'
     compileSdk Integer.parseInt(libs.versions.compileSdk.get())
+    buildToolsVersion libs.versions.buildSdk.get()
 
     defaultConfig {
         minSdk Integer.parseInt(libs.versions.minSdk.get())
@@ -23,9 +24,15 @@ android {
         sourceCompatibility JavaVersion.VERSION_17
         targetCompatibility JavaVersion.VERSION_17
     }
+    packagingOptions {
+        pickFirst 'META-INF/DEPENDENCIES'
+    }
 }
 
 dependencies {
     implementation libs.appcompat
     implementation libs.material
+    implementation fileTree(include: ['*.jar', '*.aar'], dir: 'libs')
+    implementation project(":utils")
+    implementation project(":engine:oas")
 }

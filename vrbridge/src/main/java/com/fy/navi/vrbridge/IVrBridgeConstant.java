@@ -72,7 +72,6 @@ public interface IVrBridgeConstant {
         int SHOW_POI_DETAIL = 6; //查询当前位置，展示POI详情
         int ADD_FAVORITE = 7; //收藏搜到的结果
         int TIME_AND_DIST = 8; //根据搜索结果获取到目的地的距离与时间
-
     }
 
     String CURRENT_LOCATION = "CURRENT_LOCATION";
@@ -87,6 +86,8 @@ public interface IVrBridgeConstant {
         int FAVORITE_PAGE = 6; //收藏夹
         int START_NAVIGATION = 7; //发起引导
         int POI_DETAIL = 8; //展示Poi详情
+        int HOME_COMPANY_SET = 9; //设置家-公司地址
+        int SELECT_ROUTE = 10; //切换选中的路线
     }
 
     interface VoiceIntentParams {
@@ -95,6 +96,8 @@ public interface IVrBridgeConstant {
         String AROUND_POINT = "center_point";
         String ROUTE_REQUEST = "speech_open_route";
         String POI_DETAIL_INFO = "poi_info";
+        String HOME_COMPANY_TYPE = "home_company";
+        String ROUTE_INDEX = "route_index";
     }
 
 
@@ -125,5 +128,18 @@ public interface IVrBridgeConstant {
         String ON = "ON";
         String UNDER = "UNDER";
     }
+
+    interface ThemeMode {
+        int AUTO = 16;
+        int DAY = 17;
+        int NIGHT = 18;
+    }
+
+    interface MapToggleAction {
+        String OPEN = "OPEN";
+        String CLOSE = "CLOSE";
+    }
+
+    String ROAD_CONDITION = "路况";
 
 }

@@ -11,144 +11,160 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GroupPackage implements GroupAdapterCallback {
-    private final GroupAdapter groupAdapter;
-    private final List<GroupCallBack> callBacks = new ArrayList<>();
+    private final GroupAdapter mGroupAdapter;
+    private final List<GroupCallBack> mCallBacks = new ArrayList<>();
 
     public GroupPackage() {
-        groupAdapter = GroupAdapter.getInstance();
+        mGroupAdapter = GroupAdapter.getInstance();
     }
 
     public static GroupPackage getInstance() {
-        return SInstanceHolder.sInstance;
+        return SInstanceHolder.SINSTANCE;
     }
 
     private static final class SInstanceHolder {
-        static final GroupPackage sInstance = new GroupPackage();
+        static final GroupPackage SINSTANCE = new GroupPackage();
     }
 
     @Override
     public void initService() {
-        groupAdapter.initService();
-        groupAdapter.registerCallBack("GroupPackage", this);
+        mGroupAdapter.initService();
+        mGroupAdapter.registerCallBack("GroupPackage", this);
     }
 
-    public void registerCallBack(String key, GroupCallBack callBack) {
-        callBacks.add(callBack);
+    /**
+     * 注册回调
+     * @param key
+     * @param callBack
+     */
+    public void registerCallBack(final String key, final GroupCallBack callBack) {
+        mCallBacks.add(callBack);
     }
 
-    public int executeRequest(int requestType, GroupRequestBean request) {
-        return groupAdapter.executeRequest(requestType, request);
+    /**
+     * 发送请求指令
+     * @param requestType
+     * @param request
+     * @return 返回int型
+     */
+    public int executeRequest(final int requestType, final GroupRequestBean request) {
+        return mGroupAdapter.executeRequest(requestType, request);
     }
 
-    public int publishTeamInfo(TeamUploadMsgBean uploadMsg) {
-        return groupAdapter.publishTeamInfo(uploadMsg);
+    /**
+     * 上报当前组队信息
+     * @param uploadMsg
+     * @return 返回int型
+     */
+    public int publishTeamInfo(final TeamUploadMsgBean uploadMsg) {
+        return mGroupAdapter.publishTeamInfo(uploadMsg);
     }
 
     public ArrayList<MsgPushItemBean> getTeamPushMsgMessages() {
-        return groupAdapter.getTeamPushMsgMessages();
+        return mGroupAdapter.getTeamPushMsgMessages();
     }
 
     @Override
-    public void onNotifyStatus(int errCode, long taskId, GroupResponseBean result) {
-        for (GroupCallBack callBack : callBacks) {
+    public void onNotifyStatus(final int errCode, final long taskId, final GroupResponseBean result) {
+        for (GroupCallBack callBack : mCallBacks) {
             callBack.onNotifyStatus(errCode, taskId, result);
         }
     }
 
     @Override
-    public void onNotifyDissolve(int errCode, long taskId, GroupResponseBean result) {
-        for (GroupCallBack callBack : callBacks) {
+    public void onNotifyDissolve(final int errCode, final long taskId, final GroupResponseBean result) {
+        for (GroupCallBack callBack : mCallBacks) {
             callBack.onNotifyDissolve(errCode, taskId, result);
         }
     }
 
     @Override
-    public void onNotifyCreateTeam(int errCode, long taskId, GroupResponseBean result) {
-        for (GroupCallBack callBack : callBacks) {
+    public void onNotifyCreateTeam(final int errCode, final long taskId, final GroupResponseBean result) {
+        for (GroupCallBack callBack : mCallBacks) {
             callBack.onNotifyCreateTeam(errCode, taskId, result);
         }
     }
 
     @Override
-    public void onNotifyJoinTeam(int errCode, long taskId, GroupResponseBean result) {
-        for (GroupCallBack callBack : callBacks) {
+    public void onNotifyJoinTeam(final int errCode, final long taskId, final GroupResponseBean result) {
+        for (GroupCallBack callBack : mCallBacks) {
             callBack.onNotifyJoinTeam(errCode, taskId, result);
         }
     }
 
     @Override
-    public void onNotifyQuitTeam(int errCode, long taskId, GroupResponseBean result) {
-        for (GroupCallBack callBack : callBacks) {
+    public void onNotifyQuitTeam(final int errCode, final long taskId, final GroupResponseBean result) {
+        for (GroupCallBack callBack : mCallBacks) {
             callBack.onNotifyQuitTeam(errCode, taskId, result);
         }
     }
 
     @Override
-    public void onNotifyKick(int errCode, long taskId, GroupResponseBean result) {
-        for (GroupCallBack callBack : callBacks) {
+    public void onNotifyKick(final int errCode, final long taskId, final GroupResponseBean result) {
+        for (GroupCallBack callBack : mCallBacks) {
             callBack.onNotifyKick(errCode, taskId, result);
         }
     }
 
     @Override
-    public void onNotifyInfo(int errCode, long taskId, GroupResponseBean result) {
-        for (GroupCallBack callBack : callBacks) {
+    public void onNotifyInfo(final int errCode, final long taskId, final GroupResponseBean result) {
+        for (GroupCallBack callBack : mCallBacks) {
             callBack.onNotifyInfo(errCode, taskId, result);
         }
     }
 
     @Override
-    public void onNotifyUpdate(int errCode, long taskId, GroupResponseBean result) {
-        for (GroupCallBack callBack : callBacks) {
+    public void onNotifyUpdate(final int errCode, final long taskId, final GroupResponseBean result) {
+        for (GroupCallBack callBack : mCallBacks) {
             callBack.onNotifyUpdate(errCode, taskId, result);
         }
     }
 
     @Override
-    public void onNotifyInvite(int errCode, long taskId, GroupResponseBean result) {
-        for (GroupCallBack callBack : callBacks) {
+    public void onNotifyInvite(final int errCode, final long taskId, final GroupResponseBean result) {
+        for (GroupCallBack callBack : mCallBacks) {
             callBack.onNotifyInvite(errCode, taskId, result);
         }
     }
 
     @Override
-    public void onNotifySetNickName(int errCode, long taskId, GroupResponseBean result) {
-        for (GroupCallBack callBack : callBacks) {
+    public void onNotifySetNickName(final int errCode, final long taskId, final GroupResponseBean result) {
+        for (GroupCallBack callBack : mCallBacks) {
             callBack.onNotifySetNickName(errCode, taskId, result);
         }
     }
 
     @Override
-    public void onNotifyFriendList(int errCode, long taskId, GroupResponseBean result) {
-        for (GroupCallBack callBack : callBacks) {
+    public void onNotifyFriendList(final int errCode, final long taskId, final GroupResponseBean result) {
+        for (GroupCallBack callBack : mCallBacks) {
             callBack.onNotifyFriendList(errCode, taskId, result);
         }
     }
 
     @Override
-    public void onNotifyInviteQRUrl(int errCode, long taskId, GroupResponseBean result) {
-        for (GroupCallBack callBack : callBacks) {
+    public void onNotifyInviteQRUrl(final int errCode, final long taskId, final GroupResponseBean result) {
+        for (GroupCallBack callBack : mCallBacks) {
             callBack.onNotifyInviteQRUrl(errCode, taskId, result);
         }
     }
 
     @Override
-    public void onNotifyUrlTranslate(int errCode, long taskId, GroupResponseBean result) {
-        for (GroupCallBack callBack : callBacks) {
+    public void onNotifyUrlTranslate(final int errCode, final long taskId, final GroupResponseBean result) {
+        for (GroupCallBack callBack : mCallBacks) {
             callBack.onNotifyUrlTranslate(errCode, taskId, result);
         }
     }
 
     @Override
-    public void notifyTeamUploadResponseMessage(MsgPushItemBean msg) {
-        for (GroupCallBack callBack : callBacks) {
+    public void notifyTeamUploadResponseMessage(final MsgPushItemBean msg) {
+        for (GroupCallBack callBack : mCallBacks) {
             callBack.notifyTeamPushMessage(msg);
         }
     }
 
     @Override
-    public void notifyTeamUploadResponseMessage(GroupResponseBean msg) {
-        for (GroupCallBack callBack : callBacks) {
+    public void notifyTeamUploadResponseMessage(final GroupResponseBean msg) {
+        for (GroupCallBack callBack : mCallBacks) {
             callBack.notifyTeamUploadResponseMessage(msg);
         }
     }

@@ -2,6 +2,8 @@ package com.fy.navi.scene.ui.navi.manager;
 
 /**
  * 导航Scene类型定义
+ * @author fy
+ * @version $Revision.*$
  */
 public enum NaviSceneId {
     NAVI_SCENE_2D_CROSS(0),// 2D路口大图
@@ -23,9 +25,11 @@ public enum NaviSceneId {
     NAVI_SCENE_SPEED(16),//区间测速
     NAVI_SCENE_TMC(17),//路况条信息
     NAVI_SCENE_CUR_ROAD(18),//当前道路名
-    NAVI_VIA_ARRIVED_POP(19);//途经点到达弹窗
+    NAVI_VIA_ARRIVED_POP(19),//途经点到达弹窗
+    NAVI_SAPA_DETAIL_INFO(20),//服务区/收费站详情页面
+    NAVI_DRIVE_REPORT(21);//行车报告
 
-    NaviSceneId(int i) {
+    NaviSceneId(final int i) {
 
     }
 }

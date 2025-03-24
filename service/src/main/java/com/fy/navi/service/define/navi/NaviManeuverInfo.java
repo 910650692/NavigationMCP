@@ -20,6 +20,14 @@ public class NaviManeuverInfo {
     private ArrayList<String> exitNameInfo;//出口编号名字数组
     private ArrayList<String> directionInfo;//路牌方向名字数组
     private String entranceExit;//出口入口信息 [出口,入口]
+    /**
+     * 距离当前自车位置距离（单位米）
+     */
+    public int disToCurrentPos;
+    /**
+     * 预计需要的到达时间（单位秒）
+     */
+    public int remainTime;
 
     public int getDateType() {
         return dateType;
@@ -99,6 +107,22 @@ public class NaviManeuverInfo {
 
     public void setEntranceExit(String entranceExit) {
         this.entranceExit = entranceExit;
+    }
+
+    public int getDisToCurrentPos() {
+        return disToCurrentPos;
+    }
+
+    public void setDisToCurrentPos(int disToCurrentPos) {
+        this.disToCurrentPos = disToCurrentPos;
+    }
+
+    public int getRemainTime() {
+        return remainTime;
+    }
+
+    public void setRemainTime(int remainTime) {
+        this.remainTime = remainTime;
     }
 
     public static class NaviManeuverConfig {

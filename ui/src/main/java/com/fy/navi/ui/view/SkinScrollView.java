@@ -5,15 +5,15 @@ import android.util.AttributeSet;
 import android.widget.ScrollView;
 
 public class SkinScrollView extends ScrollView {
-    public SkinScrollView(Context context) {
+    public SkinScrollView(final Context context) {
         super(context);
     }
 
-    public SkinScrollView(Context context, AttributeSet attrs) {
+    public SkinScrollView(final Context context, final AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public SkinScrollView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public SkinScrollView(final Context context, final AttributeSet attrs, final int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 }

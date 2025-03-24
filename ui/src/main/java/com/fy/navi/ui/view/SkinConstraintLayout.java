@@ -10,14 +10,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
-import com.android.utils.log.Logger;
 import com.fy.navi.ui.R;
 
-/**
- * @Description TODO
- * @Author lvww
- * @date 2024/12/2
- */
 public class SkinConstraintLayout extends ConstraintLayout {
 
     /**
@@ -25,22 +19,28 @@ public class SkinConstraintLayout extends ConstraintLayout {
      */
     private boolean mIsClickChangeColor = false;
 
-    public SkinConstraintLayout(@NonNull Context context) {
+    public SkinConstraintLayout(final @NonNull Context context) {
         this(context, null);
     }
 
-    public SkinConstraintLayout(@NonNull Context context, @Nullable AttributeSet attrs) {
+    public SkinConstraintLayout(final @NonNull Context context, final @Nullable AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public SkinConstraintLayout(@NonNull Context context, @Nullable AttributeSet attrs,
-                                int defStyleAttr) {
+    public SkinConstraintLayout(final @NonNull Context context, final @Nullable AttributeSet attrs,
+                                final int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         initAttributes(context, attrs);
     }
 
-    private void initAttributes(Context context, AttributeSet attrs) {
-        @SuppressLint("Recycle") TypedArray typedArray = context.obtainStyledAttributes(attrs,
+    /**
+     * 初始化属性
+     *
+     * @param context 上下文
+     * @param attrs   属性
+     */
+    private void initAttributes(final Context context, final AttributeSet attrs) {
+        final TypedArray typedArray = context.obtainStyledAttributes(attrs,
                 R.styleable.SkinConstraintLayout);
         mIsClickChangeColor = typedArray.getBoolean(
                 R.styleable.SkinConstraintLayout_click_color_change, false);
@@ -48,7 +48,7 @@ public class SkinConstraintLayout extends ConstraintLayout {
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
-    public boolean onTouchEvent(MotionEvent event) {
+    public boolean onTouchEvent(final MotionEvent event) {
         if (event.getAction() == MotionEvent.ACTION_DOWN && mIsClickChangeColor) {
             setAlpha(0.6f);
             return true;

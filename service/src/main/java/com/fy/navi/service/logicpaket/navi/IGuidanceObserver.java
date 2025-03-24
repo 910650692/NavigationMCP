@@ -4,6 +4,7 @@ import com.fy.navi.service.define.map.MapTypeId;
 import com.fy.navi.service.define.navi.CameraInfoEntity;
 import com.fy.navi.service.define.navi.CrossImageEntity;
 import com.fy.navi.service.define.navi.LaneInfoEntity;
+import com.fy.navi.service.define.navi.NaviDriveReportEntity;
 import com.fy.navi.service.define.navi.NaviEtaInfo;
 import com.fy.navi.service.define.navi.NaviManeuverInfo;
 import com.fy.navi.service.define.navi.NaviTmcInfo;
@@ -60,4 +61,9 @@ public interface IGuidanceObserver {
 
     /*语音切换主辅路、高架上下*/
     default void onVoiceParallelOption(MapTypeId mapTypeId, String parallelOption) {}
+
+    /*语音继续导航*/
+    default void onVoiceContinueNavigation(MapTypeId mapTypeId) {}
+
+    default void onDriveReport(NaviDriveReportEntity naviDriveReportEntity) {}
 }

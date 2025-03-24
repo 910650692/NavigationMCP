@@ -8,9 +8,7 @@ import com.fy.navi.hmi.databinding.MainFragmentSearchBinding;
 import com.fy.navi.service.define.map.MapTypeId;
 import com.fy.navi.ui.base.BaseFragment;
 
-/**
- * 搜索主页面
- */
+
 public class MainSearchFragment extends BaseFragment<MainFragmentSearchBinding, MainSearchViewModel> {
 
     @Override
@@ -32,9 +30,9 @@ public class MainSearchFragment extends BaseFragment<MainFragmentSearchBinding, 
 
     @Override
     public void onInitData() {
-        int powerType = mViewModel.powerType();
-        String[] categories;
-        TypedArray iconArray;
+        final int powerType = mViewModel.powerType();
+        final String[] categories;
+        final TypedArray iconArray;
         // 油车
         if (powerType == 0){
             categories = getResources().getStringArray(R.array.main_search_categories_name_gas);
@@ -47,7 +45,7 @@ public class MainSearchFragment extends BaseFragment<MainFragmentSearchBinding, 
     }
 
     @Override
-    public void onHiddenChanged(boolean hidden) {
+    public void onHiddenChanged(final boolean hidden) {
         super.onHiddenChanged(hidden);
         if (!hidden) {
             mBinding.sceneNestedScrollView.getSearchKeywordRecord();

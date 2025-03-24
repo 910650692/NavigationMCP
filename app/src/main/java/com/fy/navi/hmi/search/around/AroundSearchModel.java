@@ -16,6 +16,7 @@ public class AroundSearchModel extends BaseModel<AroundSearchViewModel> {
      * 0 汽油车
      * 1 纯电动车
      * 2 插电式混动汽车
+     * @return 车辆动力类型
      */
     public int powerType() {
         return mCalibrationPackage.powerType();

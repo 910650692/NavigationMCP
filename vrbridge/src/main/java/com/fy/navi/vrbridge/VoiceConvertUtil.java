@@ -1,6 +1,5 @@
 package com.fy.navi.vrbridge;
 
-import android.content.Context;
 import android.text.TextUtils;
 
 import com.baidu.oneos.protocol.bean.PoiBean;
@@ -15,15 +14,22 @@ import java.util.List;
 
 /**
  * 将Package回调的结果转换为语音内部定义的类.
+ * @author tssh.
+ * @version $Revision.1.0.0$
  */
-public class VoiceConvertUtil {
+public final class VoiceConvertUtil {
+
+    private VoiceConvertUtil() {
+
+    }
 
     /**
      * 转换搜索结果，回调给百度语音.
-     * @return
+     * @param  poiInfoEntityList poiInfoEntityList
+     * @return list of PoiBean
      */
-    public static final List<PoiBean> convertSearchResult(List<PoiInfoEntity> poiInfoEntityList) {
-        List<PoiBean> poiBeanList = new ArrayList<>();
+    public static List<PoiBean> convertSearchResult(final List<PoiInfoEntity> poiInfoEntityList) {
+        final List<PoiBean> poiBeanList = new ArrayList<>();
         if (null == poiInfoEntityList || poiInfoEntityList.isEmpty()) {
             return poiBeanList;
         }
@@ -33,7 +39,7 @@ public class VoiceConvertUtil {
                 continue;
             }
 
-            PoiBean poiBean = new PoiBean();
+            final PoiBean poiBean = new PoiBean();
             poiBean.setName(poiInfo.getName());
             poiBean.setAddress(poiInfo.getAddress());
             poiBean.setDistance(poiInfo.getDistance());
@@ -45,11 +51,11 @@ public class VoiceConvertUtil {
 
     /**
      * 将语音传入的
-     * @param routeType
-     * @return
+     * @param routeType routeType
+     * @return RoutePreferenceID
      */
-    public static final RoutePreferenceID convertToAMapPrefer(String routeType) {
-        RoutePreferenceID routePreferenceID;
+    public static RoutePreferenceID convertToAMapPrefer(final String routeType) {
+        final RoutePreferenceID routePreferenceID;
         switch (routeType) {
             case IVrBridgeConstant.RouteType.AVOID_JAM:
                 routePreferenceID = RoutePreferenceID.PREFERENCE_AVOIDCONGESTION;
@@ -81,28 +87,28 @@ public class VoiceConvertUtil {
      * @param item Favorite，收藏点信息.
      * @return PoiInfoEntity，对应搜索的poi信息.
      */
-    public static PoiInfoEntity getPoiInfoByFavorite(Favorite item) {
+    public static PoiInfoEntity getPoiInfoByFavorite(final Favorite item) {
         if (null == item) {
             return null;
         }
 
-        FavoriteInfo info = new FavoriteInfo()
-                .setItemId(item.itemId)
-                .setCommonName(item.commonName)
-                .setTag(item.tag)
-                .setType(item.type)
-                .setNewType(item.newType)
-                .setCustom_name(item.customName)
-                .setClassification(item.classification)
-                .setUpdateTime(item.updateTime.getTime())
-                .setTop_time(item.topTime);
+        final FavoriteInfo info = new FavoriteInfo()
+                .setItemId(item.getMItemId())
+                .setCommonName(item.getMCommonName())
+                .setTag(item.getMTag())
+                .setType(item.getMType())
+                .setNewType(item.getMNewType())
+                .setCustom_name(item.getMCustomName())
+                .setClassification(item.getMClassification())
+                .setUpdateTime(item.getMUpdateTime().getTime())
+                .setTop_time(item.getMTopTime());
 
-        PoiInfoEntity poiInfoEntity = new PoiInfoEntity()
-                .setPid(String.valueOf(item.pid))
-                .setAddress(item.address)
-                .setName(item.name)
-                .setPhone(item.phone)
-                .setPoint(new GeoPoint(item.point_x, item.point_y))
+        final PoiInfoEntity poiInfoEntity = new PoiInfoEntity()
+                .setPid(String.valueOf(item.getMPid()))
+                .setAddress(item.getMAddress())
+                .setName(item.getMName())
+                .setPhone(item.getMPhone())
+                .setPoint(new GeoPoint(item.getMPointX(), item.getMPointY()))
                 .setFavoriteInfo(info);
         return poiInfoEntity;
     }
@@ -116,21 +122,22 @@ public class VoiceConvertUtil {
      * @param distance 距离，单位米
      * @return 转换后的距离 距离的Value + 距离的单位
      */
-    public static String formatDistance(int distance) {
-        if (distance >= 10000) {
+    public static String formatDistance(final int distance) {
+        int dist = distance;
+        if (dist >= 10000) {
             //10公里级
-            distance = (distance / 1000) * 1000;
-        } else if (distance >= 1000) {
+            dist = (dist / 1000) * 1000;
+        } else if (dist >= 1000) {
             //1公里级，精确到小数点后一位
-            distance = ((distance + 50) / 100) * 100;
+            dist = ((dist + 50) / 100) * 100;
         }
 
-        if (distance >= 1000) {
-            int kiloMeter = distance / 1000;
-            int leftMeter = distance % 1000;
+        if (dist >= 1000) {
+            final int kiloMeter = dist / 1000;
+            int leftMeter = dist % 1000;
             leftMeter = leftMeter / 100;
 
-            StringBuffer sb = new StringBuffer();
+            final StringBuffer sb = new StringBuffer();
 
             if (leftMeter > 0) {
                 sb.append(kiloMeter);
@@ -142,24 +149,25 @@ public class VoiceConvertUtil {
             sb.append("千米");
             return sb.toString();
         } else {
-            return distance + "米";
+            return dist + "米";
         }
     }
 
     /**
      * 格式化时间.
      *
+     * @param second 时间
      * @return xx小时xx分钟
      */
-    public static String formatTime(int second) {
+    public static String formatTime(final int second) {
         int minute = second / 60;
         if (minute <= 1) {
             return "1分钟";
         } else if (minute < 60) {
             return minute + "分钟";
         } else {
-            StringBuilder builder = new StringBuilder();
-            int hour = minute / 60;
+            final StringBuilder builder = new StringBuilder();
+            final int hour = minute / 60;
             builder.append(hour).append("小时");
             minute = minute % 60;
             if (minute > 0) {

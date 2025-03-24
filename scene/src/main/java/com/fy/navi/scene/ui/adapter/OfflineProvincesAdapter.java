@@ -53,13 +53,13 @@ public class OfflineProvincesAdapter extends RecyclerView.Adapter<OfflineProvinc
 
     @Override
     public void onBindViewHolder(@NonNull LimitProvincesViewHolder holder, int position) {
-        holder.tvTitle.setText(data.get(position).getProvince().name);
-        List<CityDataInfo> cities = data.get(position).getProvince().cityInfoList;
+        holder.tvTitle.setText(data.get(position).getProvince().getName());
+        List<CityDataInfo> cities = data.get(position).getProvince().getCityInfoList();
         OfflineCitiesAdapter offlineCitiesAdapter = new OfflineCitiesAdapter(mContext, new ArrayList<>());
         if (cities == null || cities.isEmpty()) {
             CityDataInfo cityDataInfo = new CityDataInfo();
-            cityDataInfo.name = data.get(position).getProvince().name;
-            cityDataInfo.adcode = data.get(position).getProvince().adcode;
+            cityDataInfo.setName(data.get(position).getProvince().getName());
+            cityDataInfo.setAdcode(data.get(position).getProvince().getAdcode());
             cities = new ArrayList<>();
             cities.add(cityDataInfo);
         }

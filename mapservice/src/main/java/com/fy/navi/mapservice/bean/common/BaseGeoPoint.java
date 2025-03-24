@@ -3,49 +3,53 @@ package com.fy.navi.mapservice.bean.common;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.google.gson.annotations.SerializedName;
-
 public class BaseGeoPoint implements Parcelable {
 
-    private double lon;
-    private double lat;
-    private double z;
+    private double mLon;
+    private double mLat;
+    private double mZ;
 
     public static final Creator<BaseGeoPoint> CREATOR = new Creator<BaseGeoPoint>() {
         @Override
-        public BaseGeoPoint createFromParcel(Parcel source) {
+        public BaseGeoPoint createFromParcel(final Parcel source) {
             return new BaseGeoPoint(source);
         }
 
         @Override
-        public BaseGeoPoint[] newArray(int size) {
+        public BaseGeoPoint[] newArray(final int size) {
             return new BaseGeoPoint[size];
         }
     };
 
-    public BaseGeoPoint(Parcel in) {
-        lon = in.readDouble();
-        lat = in.readDouble();
-        z = in.readDouble();
+    public BaseGeoPoint(final Parcel in) {
+        mLon = in.readDouble();
+        mLat = in.readDouble();
+        mZ = in.readDouble();
     }
 
     public BaseGeoPoint() {
-        lat = 0.0;
-        lon = 0.0;
-        z = 0.0;
+        mLon = 0.0;
+        mLat = 0.0;
+        mZ = 0.0;
     }
 
-    public BaseGeoPoint(double lon, double lat) {
-        this.lon = lon;
-        this.lat = lat;
-        z = 0.0;
+    public BaseGeoPoint(final double lon, final double lat) {
+        mLon = lon;
+        mLat = lat;
+        mZ = 0.0;
+    }
+
+    public BaseGeoPoint(final double lon, final double lat, final double z) {
+        mLon = lon;
+        mLat = lat;
+        mZ = z;
     }
 
     @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeDouble(lon);
-        dest.writeDouble(lat);
-        dest.writeDouble(z);
+    public void writeToParcel(final Parcel dest, final int flags) {
+        dest.writeDouble(mLon);
+        dest.writeDouble(mLat);
+        dest.writeDouble(mZ);
     }
 
     @Override
@@ -56,32 +60,32 @@ public class BaseGeoPoint implements Parcelable {
     @Override
     public String toString() {
         return "GeoPoint{" +
-                "lon=" + lon +
-                ", lat=" + lat +
+                "lon=" + mLon +
+                ", lat=" + mLat +
                 '}';
     }
 
     public double getLon() {
-        return lon;
+        return mLon;
     }
 
-    public void setLon(double lon) {
-        this.lon = lon;
+    public void setLon(final double lon) {
+        mLon = lon;
     }
 
     public double getLat() {
-        return lat;
+        return mLat;
     }
 
-    public void setLat(double lat) {
-        this.lat = lat;
+    public void setLat(final double lat) {
+        mLat = lat;
     }
 
     public double getZ() {
-        return z;
+        return mZ;
     }
 
-    public void setZ(double z) {
-        this.z = z;
+    public void setZ(final double z) {
+        mZ = z;
     }
 }

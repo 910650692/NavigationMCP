@@ -1,13 +1,4 @@
 package com.fy.navi.scene.impl.navi;
-
-
-import static com.fy.navi.service.adapter.navi.NaviConstant.LocSwitchRoadType.LocSwitchDownBridgeToUpBridge;
-import static com.fy.navi.service.adapter.navi.NaviConstant.LocSwitchRoadType.LocSwitchMainToSide;
-import static com.fy.navi.service.adapter.navi.NaviConstant.LocSwitchRoadType.LocSwitchNull;
-import static com.fy.navi.service.adapter.navi.NaviConstant.LocSwitchRoadType.LocSwitchSideToMain;
-import static com.fy.navi.service.adapter.navi.NaviConstant.LocSwitchRoadType.LocSwitchUpBridgeToDownBridge;
-import static com.fy.navi.service.adapter.navi.NaviConstant.LocSwitchRoadType.AUTO_UNKNOWN_ERROR;
-
 import androidx.databinding.ObservableField;
 
 import com.android.utils.ConvertUtils;
@@ -20,6 +11,7 @@ import com.fy.navi.scene.ui.navi.SceneNaviParallelView;
 import com.fy.navi.scene.ui.navi.manager.INaviSceneEvent;
 import com.fy.navi.scene.ui.navi.manager.NaviSceneId;
 import com.fy.navi.service.MapDefaultFinalTag;
+import com.fy.navi.service.adapter.navi.NaviConstant;
 import com.fy.navi.service.define.position.LocParallelInfoEntity;
 import com.fy.navi.service.define.position.LocalParallelRoadEntity;
 import com.fy.navi.service.logicpaket.position.IPositionPackageCallback;
@@ -38,36 +30,42 @@ public class SceneNaviParallelImpl extends BaseSceneModel<SceneNaviParallelView>
     /***按钮点击动作类型***/
     private int mSwitchRoadType;
     private int mSwitchBridgeType;
-    private int mSwitchActionType = LocSwitchNull;
+    private int mSwitchActionType = NaviConstant.LocSwitchRoadType.LOC_SWITCH_NULL;
     private boolean mIsSwitchParallelEnabled = true;
     public static final int PARALLELROAD_FLAG_MAIN = 1;
     public static final int PARALLELROAD_FLAG_SIDE = 2;
     public static final int HW_FLAG_UP = 1;
     public static final int HW_FLAG_DOWN = 2;
     // 上下桥切换按钮是否可见
-    public ObservableField<Boolean> bridgeUpDownVisible;
+    public ObservableField<Boolean> mBridgeUpDownVisible;
     // 主辅路切换按钮是否可见
-    public ObservableField<Boolean> roadMainAuxiliaryVisible;
+    public ObservableField<Boolean> mRoadMainAuxiliaryVisible;
 
-    public SceneNaviParallelImpl(SceneNaviParallelView mScreenView) {
-        super(mScreenView);
+    /**
+     * @param screenView screenView
+     */
+    public SceneNaviParallelImpl(final SceneNaviParallelView screenView) {
+        super(screenView);
         mPositionPackage = PositionPackage.getInstance();
-        mPositionPackage.registerCallBack(iPositionPackageCallback);
-        bridgeUpDownVisible = new ObservableField<>(false);
-        roadMainAuxiliaryVisible = new ObservableField<>(false);
+        mPositionPackage.registerCallBack(mIPositionPackageCallback);
+        mBridgeUpDownVisible = new ObservableField<>(false);
+        mRoadMainAuxiliaryVisible = new ObservableField<>(false);
     }
 
-    public void addSceneCallback(ISceneCallback sceneCallback) {
+    /**
+     * @param sceneCallback sceneCallback
+     */
+    public void addSceneCallback(final ISceneCallback sceneCallback) {
         mISceneCallback = sceneCallback;
     }
 
-    public Action clickBridgeUpDown = () -> {
+    public Action mClickBridgeUpDown = () -> {
         Logger.i(TAG, "clickBridgeUpDown ");
         mSwitchActionType = mSwitchBridgeType;
         requestSwitchParallelRoad();
     };
 
-    public Action clickMainAuxiliary = () -> {
+    public Action mClickMainAuxiliary = () -> {
         Logger.i(TAG, "clickMainAuxiliary ");
         mSwitchActionType = mSwitchRoadType;
         requestSwitchParallelRoad();
@@ -75,25 +73,30 @@ public class SceneNaviParallelImpl extends BaseSceneModel<SceneNaviParallelView>
 
     @Override
     protected void onDestroy() {
-        mPositionPackage.unregisterCallBack(iPositionPackageCallback);
+        mPositionPackage.unregisterCallBack(mIPositionPackageCallback);
         super.onDestroy();
     }
 
+    /**
+     * @param routeSuccess routeSuccess
+     */
     // TODO:理解直接触发算路就行了后续应该不用处理
-    public void notifySwitchParallelRouteResult(boolean routeSuccess) {
+    public void notifySwitchParallelRouteResult(final boolean routeSuccess) {
         Logger.i("notifySwitchParallelRouteResult " + routeSuccess);
         // 收到平行算路结果，表示切换动作全部完成
         mIsSwitchParallelEnabled = true;
-        if (mSwitchActionType == LocSwitchMainToSide) {
+        if (mSwitchActionType == NaviConstant.LocSwitchRoadType.LOC_SWITCH_MAIN_TO_SIDE) {
             mScreenView.showToastRoadMainToSide();
-        } else if (mSwitchActionType == LocSwitchSideToMain) {
+        } else if (mSwitchActionType == NaviConstant.LocSwitchRoadType.LOC_SWITCH_SIDE_TO_MAIN) {
             mScreenView.showToastRoadSideToMain();
-        } else if (mSwitchActionType == LocSwitchUpBridgeToDownBridge) {
+        } else if (mSwitchActionType ==
+                NaviConstant.LocSwitchRoadType.LOC_SWITCH_UP_BRIDGE_TO_DOWN_BRIDGE) {
             mScreenView.showToastBridgeUpToDown();
-        } else if (mSwitchActionType == LocSwitchDownBridgeToUpBridge) {
+        } else if (mSwitchActionType ==
+                NaviConstant.LocSwitchRoadType.LOC_SWITCH_DOWN_BRIDGE_TO_UP_BRIDGE) {
             mScreenView.showToastBridgeDownToUp();
         }
-        mSwitchActionType = LocSwitchNull;
+        mSwitchActionType = NaviConstant.LocSwitchRoadType.LOC_SWITCH_NULL;
     }
 
     /**
@@ -110,7 +113,15 @@ public class SceneNaviParallelImpl extends BaseSceneModel<SceneNaviParallelView>
             mPositionPackage.switchParallelRoad(mSwitchActionType, BigInteger.ZERO);
         } else {
             Logger.i(TAG, "网络异常，进行离线平行路切换");
-            BigInteger parallelRoadId = getOffLineParallelRoadId(mSwitchActionType);
+            // 离线不支持平行路的桥梁切换，这里加判断容错
+            if (mSwitchActionType ==
+                    NaviConstant.LocSwitchRoadType.LOC_SWITCH_DOWN_BRIDGE_TO_UP_BRIDGE ||
+                    mSwitchActionType ==
+                            NaviConstant.LocSwitchRoadType.LOC_SWITCH_UP_BRIDGE_TO_DOWN_BRIDGE) {
+                Logger.i(TAG, "offline can not switch bridge");
+                return;
+            }
+            final BigInteger parallelRoadId = getOffLineParallelRoadId(mSwitchActionType);
             mPositionPackage.switchParallelRoad(mSwitchActionType, parallelRoadId);
         }
         mIsSwitchParallelEnabled = false;
@@ -121,10 +132,10 @@ public class SceneNaviParallelImpl extends BaseSceneModel<SceneNaviParallelView>
      * @param switchActionType 平行路切换类型 -1：不切换 0：主路切换到辅路 1：辅路切换到主路
      * @return 离线切换的平行路道路ID
      */
-    private BigInteger getOffLineParallelRoadId(int switchActionType) {
+    private BigInteger getOffLineParallelRoadId(final int switchActionType) {
         return switch (switchActionType) {
-            case LocSwitchMainToSide -> getOffLineSideRoadId();
-            case LocSwitchSideToMain -> getOffLineMainRoadId();
+            case NaviConstant.LocSwitchRoadType.LOC_SWITCH_MAIN_TO_SIDE -> getOffLineSideRoadId();
+            case NaviConstant.LocSwitchRoadType.LOC_SWITCH_SIDE_TO_MAIN -> getOffLineMainRoadId();
             default -> BigInteger.ZERO;
         };
     }
@@ -135,7 +146,7 @@ public class SceneNaviParallelImpl extends BaseSceneModel<SceneNaviParallelView>
      */
     private BigInteger getOffLineSideRoadId() {
         if (mCurrentParallelRoadInfo != null) {
-            ArrayList<LocalParallelRoadEntity> list = mCurrentParallelRoadInfo.
+            final ArrayList<LocalParallelRoadEntity> list = mCurrentParallelRoadInfo.
                     getLocalParallelRoadArrayList();
             if (list != null && !list.isEmpty()) {
                 for (LocalParallelRoadEntity entity : list) {
@@ -154,7 +165,7 @@ public class SceneNaviParallelImpl extends BaseSceneModel<SceneNaviParallelView>
      */
     private BigInteger getOffLineMainRoadId() {
         if (mCurrentParallelRoadInfo != null) {
-            ArrayList<LocalParallelRoadEntity> list = mCurrentParallelRoadInfo.
+            final ArrayList<LocalParallelRoadEntity> list = mCurrentParallelRoadInfo.
                     getLocalParallelRoadArrayList();
             if (list != null && !list.isEmpty()) {
                 for (LocalParallelRoadEntity entity : list) {
@@ -167,20 +178,26 @@ public class SceneNaviParallelImpl extends BaseSceneModel<SceneNaviParallelView>
         return BigInteger.ZERO;
     }
 
-    public int switchParallelRoadAndBridge(int actionType) {
-        if (actionType == LocSwitchMainToSide || actionType == LocSwitchSideToMain) {
-            if (mSwitchRoadType == LocSwitchNull) {
-                return LocSwitchNull;
+    /**
+     * @param actionType actionType
+     * @return int
+     */
+    public int switchPxarallelRoadAndBridge(final int actionType) {
+        if (actionType == NaviConstant.LocSwitchRoadType.LOC_SWITCH_MAIN_TO_SIDE ||
+                actionType == NaviConstant.LocSwitchRoadType.LOC_SWITCH_SIDE_TO_MAIN) {
+            if (mSwitchRoadType == NaviConstant.LocSwitchRoadType.LOC_SWITCH_NULL) {
+                return NaviConstant.LocSwitchRoadType.LOC_SWITCH_NULL;
             }
             if (mSwitchRoadType != actionType) {
-                return AUTO_UNKNOWN_ERROR;
+                return NaviConstant.LocSwitchRoadType.AUTO_UNKNOWN_ERROR;
             }
-        } else if (actionType == LocSwitchDownBridgeToUpBridge || actionType == LocSwitchUpBridgeToDownBridge) {
-            if (mSwitchBridgeType == LocSwitchNull) {
-                return LocSwitchNull;
+        } else if (actionType == NaviConstant.LocSwitchRoadType.LOC_SWITCH_DOWN_BRIDGE_TO_UP_BRIDGE ||
+                actionType == NaviConstant.LocSwitchRoadType.LOC_SWITCH_UP_BRIDGE_TO_DOWN_BRIDGE) {
+            if (mSwitchBridgeType == NaviConstant.LocSwitchRoadType.LOC_SWITCH_NULL) {
+                return NaviConstant.LocSwitchRoadType.LOC_SWITCH_NULL;
             }
             if (mSwitchBridgeType != actionType) {
-                return AUTO_UNKNOWN_ERROR;
+                return NaviConstant.LocSwitchRoadType.AUTO_UNKNOWN_ERROR;
             }
         }
         mSwitchActionType = mSwitchBridgeType;
@@ -188,7 +205,7 @@ public class SceneNaviParallelImpl extends BaseSceneModel<SceneNaviParallelView>
         return mSwitchBridgeType;
     }
 
-    private IPositionPackageCallback iPositionPackageCallback = new IPositionPackageCallback() {
+    private IPositionPackageCallback mIPositionPackageCallback = new IPositionPackageCallback() {
         @Override
         public void onSwitchParallelRoadFinished() {
             Logger.i(TAG, "onSwitchParallelRoadFinished ");
@@ -209,7 +226,7 @@ public class SceneNaviParallelImpl extends BaseSceneModel<SceneNaviParallelView>
          *  2：车标在高架下（车标所在道路有对应高架上）
          */
         @Override
-        public void onParallelRoadUpdate(LocParallelInfoEntity entity) {
+        public void onParallelRoadUpdate(final LocParallelInfoEntity entity) {
             Logger.i(TAG, "onParallelRoadUpdate " + entity.toString());
             ThreadManager.getInstance().postUi(new Runnable() {
                 @Override
@@ -233,13 +250,16 @@ public class SceneNaviParallelImpl extends BaseSceneModel<SceneNaviParallelView>
      * 隐藏平行路切换UI
      */
     private void hideSwitchParallelRoadUi() {
-        mSwitchRoadType = LocSwitchNull;
-        mSwitchBridgeType = LocSwitchNull;
-        roadMainAuxiliaryVisible.set(false);
-        bridgeUpDownVisible.set(false);
+        mSwitchRoadType = NaviConstant.LocSwitchRoadType.LOC_SWITCH_NULL;
+        mSwitchBridgeType = NaviConstant.LocSwitchRoadType.LOC_SWITCH_NULL;
+        mRoadMainAuxiliaryVisible.set(false);
+        mBridgeUpDownVisible.set(false);
         updateSceneVisible(false);
     }
 
+    /**
+     * 刷新主辅路和高架上下UI
+     */
     private void refreshRoadBridgeUi() {
         Logger.i(TAG, "refreshRoadBridgeUi ");
         if (mISceneCallback == null) {
@@ -248,8 +268,8 @@ public class SceneNaviParallelImpl extends BaseSceneModel<SceneNaviParallelView>
         Logger.i(TAG, "mCurrentParallelRoadInfo：" + mCurrentParallelRoadInfo.toString());
         // 平行路切换功能隐藏
         if (mCurrentParallelRoadInfo == null) {
-            roadMainAuxiliaryVisible.set(false);
-            bridgeUpDownVisible.set(false);
+            mRoadMainAuxiliaryVisible.set(false);
+            mBridgeUpDownVisible.set(false);
             updateSceneVisible(false);
             return;
         }
@@ -276,39 +296,58 @@ public class SceneNaviParallelImpl extends BaseSceneModel<SceneNaviParallelView>
         // 显示切换到辅路的按钮
         if (mCurrentParallelRoadInfo.getFlag() == PARALLELROAD_FLAG_MAIN) {
             mScreenView.sceneRoadSide();
-            mSwitchRoadType = LocSwitchMainToSide;
-            roadMainAuxiliaryVisible.set(true);
+            mSwitchRoadType = NaviConstant.LocSwitchRoadType.LOC_SWITCH_MAIN_TO_SIDE;
+            mRoadMainAuxiliaryVisible.set(true);
             updateSceneVisible(true);
             //显示切换到主路的按钮
         } else if (mCurrentParallelRoadInfo.getFlag() == PARALLELROAD_FLAG_SIDE) {
             mScreenView.sceneRoadMain();
-            mSwitchRoadType = LocSwitchSideToMain;
-            roadMainAuxiliaryVisible.set(true);
+            mSwitchRoadType = NaviConstant.LocSwitchRoadType.LOC_SWITCH_SIDE_TO_MAIN;
+            mRoadMainAuxiliaryVisible.set(true);
             updateSceneVisible(true);
         }
         // 显示切换到桥下的按钮
         if (mCurrentParallelRoadInfo.getHwFlag() == HW_FLAG_UP) {
             mScreenView.sceneBridgeDown();
-            mSwitchBridgeType = LocSwitchUpBridgeToDownBridge;
+            mSwitchBridgeType = NaviConstant.LocSwitchRoadType.LOC_SWITCH_UP_BRIDGE_TO_DOWN_BRIDGE;
             updateSceneVisible(true);
             // 如果网络正常，才显示桥上下按钮
             if (Boolean.TRUE.equals(NetWorkUtils.Companion.getInstance().checkNetwork())) {
-                bridgeUpDownVisible.set(true);
+                mBridgeUpDownVisible.set(true);
             }
             // 显示切换到桥上的按钮
         } else if (mCurrentParallelRoadInfo.getHwFlag() == HW_FLAG_DOWN) {
             mScreenView.sceneBridgeUp();
-            mSwitchBridgeType = LocSwitchDownBridgeToUpBridge;
+            mSwitchBridgeType = NaviConstant.LocSwitchRoadType.LOC_SWITCH_DOWN_BRIDGE_TO_UP_BRIDGE;
             updateSceneVisible(true);
             if (Boolean.TRUE.equals(NetWorkUtils.Companion.getInstance().checkNetwork())) {
-                bridgeUpDownVisible.set(true);
+                mBridgeUpDownVisible.set(true);
             }
         }
     }
 
-    private void updateSceneVisible(boolean isVisible) {
+    /**
+     * @param isVisible isVisible
+     */
+    private void updateSceneVisible(final boolean isVisible) {
         Logger.i(TAG, "updateSceneVisible isVisible:" + isVisible);
-        mScreenView.getNaviSceneEvent().notifySceneStateChange((isVisible ? INaviSceneEvent.SceneStateChangeType.SceneShowState :
-                INaviSceneEvent.SceneStateChangeType.SceneHideState), NaviSceneId.NAVI_SCENE_PARALLEL);
+        mScreenView.getNaviSceneEvent().notifySceneStateChange((isVisible ?
+                INaviSceneEvent.SceneStateChangeType.SceneShowState :
+                INaviSceneEvent.SceneStateChangeType.SceneHideState),
+                NaviSceneId.NAVI_SCENE_PARALLEL);
+    }
+
+    /**
+     * @param type 平行路切换类型 0:主辅路切换 1:桥上下切换
+     */
+    public void naviParallelSwitch(final int type) {
+        Logger.i(TAG, "naviParallelSwitch type:" + type);
+        if (type == 0) {
+            mSwitchActionType = mSwitchRoadType;
+            requestSwitchParallelRoad();
+        } else {
+            mSwitchActionType = mSwitchBridgeType;
+            requestSwitchParallelRoad();
+        }
     }
 }

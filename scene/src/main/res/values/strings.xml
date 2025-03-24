@@ -110,6 +110,7 @@
     <string name="route_service_list_item_add">添加</string>
     <string name="route_service_list_item_added">已添加</string>
     <string name="route_service_details_add_via">添加途经点</string>
+    <string name="route_service_details_add_via_success">途径点添加成功</string>
     <string name="route_service_details_remove_via">删除途经点</string>
     <string name="route_service_details_add_via_charge">添加</string>
     <string name="route_service_details_remove_via_charge">移除</string>
@@ -117,8 +118,12 @@
     <string name="confirm">是的</string>
     <string name="cancel">取消</string>
     <string name="is_arrived">是否已抵达%s？</string>
+    <string name="navi_via">途经点</string>
+    <string name="navi_gas_station">加油站</string>
+    <string name="charge_remain_arrive">15%到达</string>
 
     <!--设置相关 -->
+    <string name="navi_setting_offline_toast">该功能需要联网后使用</string>
     <string name="lane_level_navigation">鹰眼图</string>
     <string name="lane_level_navigation_description">自动切换至高清车道级导航</string>
     <string name="shc_map_point">地图选点</string>
@@ -192,6 +197,9 @@
     <string name="st_distance_to_finish">距离终点%1$s</string>
     <string name="text_dial">拨打</string>
     <string name="text_dial_phone_content">是否拨打电话%s</string>
+    <string name="remain_charge">%d%%到达</string>
+    <string name="load_failed">加载失败</string>
+    <string name="reload">点击重试</string>
 
 
     <!--搜索主页快捷搜-->
@@ -210,4 +218,8 @@
         <item>地图选点</item>
         <item>沿途</item>
     </string-array>
+
+    <!--离线相关-->
+    <string name="offline_item_city_status">下载</string>
+
 </resources>

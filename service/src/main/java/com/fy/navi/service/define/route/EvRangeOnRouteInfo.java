@@ -2,50 +2,23 @@ package com.fy.navi.service.define.route;
 
 import com.fy.navi.service.define.bean.GeoPoint;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 public class EvRangeOnRouteInfo {
-    private boolean canArrived;
-    private GeoPoint pos;
-    private long remainRangeDistance;
-
-    public EvRangeOnRouteInfo() {
-    }
-
-    public EvRangeOnRouteInfo(int remainRangeDistance, GeoPoint pos, boolean canArrived) {
-        this.remainRangeDistance = remainRangeDistance;
-        this.pos = pos;
-        this.canArrived = canArrived;
-    }
-
-    public boolean isCanArrived() {
-        return canArrived;
-    }
-
-    public void setCanArrived(boolean canArrived) {
-        this.canArrived = canArrived;
-    }
-
-    public GeoPoint getPos() {
-        return pos;
-    }
-
-    public void setPos(GeoPoint pos) {
-        this.pos = pos;
-    }
-
-    public long getRemainRangeDistance() {
-        return remainRangeDistance;
-    }
-
-    public void setRemainRangeDistance(long remainRangeDistance) {
-        this.remainRangeDistance = remainRangeDistance;
-    }
+    private boolean mCanArrived;//能否到达
+    private GeoPoint mPos;//能量耗尽点距离，如能达到为终点坐标
+    private long mRemainRangeDistance;//能耗点距终点距离
+    private int mRemainCapacity;//剩余电量，-1表示不能到达
 
     @Override
     public String toString() {
         return "RouteRange{" +
-                "canArrived=" + canArrived +
-                ", pos=" + pos +
-                ", remainRangeDistance=" + remainRangeDistance +
+                "canArrived=" + mCanArrived +
+                ", pos=" + mPos +
+                ", remainRangeDistance=" + mRemainRangeDistance +
                 '}';
     }
 }

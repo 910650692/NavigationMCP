@@ -1,6 +1,8 @@
 package com.fy.navi.service.adapter.search.cloud.http;
 
 /**
+ * @version \$Revision1.0\$
+ * @author baipeng0904
  * 充电桩接口地址信息
  */
 public interface ApiService {

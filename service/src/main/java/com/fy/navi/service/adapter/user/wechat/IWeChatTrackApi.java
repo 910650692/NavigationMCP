@@ -1,20 +1,35 @@
 package com.fy.navi.service.adapter.user.wechat;
 
-/**
- * @Description
- * @Author fh
- * @date 2024/12/30
- */
 public interface IWeChatTrackApi {
 
+    /**
+     * 初始化微信服务
+     */
     void initWeChatService();
 
+    /**
+     * 注册微信服务
+     * @param key 回调key
+     * @param callBack  回调
+     */
     void registerCallBack(String key, WeChatAdapterCallBack callBack);
 
+    /**
+     * 注销微信回调
+     * @param key 回调key
+     */
     void unRegisterCallback(String key);
 
+    /**
+     * 注销微信服务
+     */
     void unInitWeChatService();
 
+
+    /**
+     * 查询微信服务是否初始化
+     * @return 0 未初始化，1 已初始化，2 初始化失败
+     */
     int isInit();
 
     /**
@@ -26,15 +41,4 @@ public interface IWeChatTrackApi {
      * 获取微信互联二维码
      */
     void sendReqWsPpAutoWeixinQrcode();
-
-    /**
-     * 轮询微信是否扫码绑定，该接口需要上层
-     */
-    void sendReqQRCodeConfirm(String QRCodeId);
-
-    /**
-     * 解除微信互联
-     */
-    void sendReqWsPpAutoWeixinUnbind();
-
 }

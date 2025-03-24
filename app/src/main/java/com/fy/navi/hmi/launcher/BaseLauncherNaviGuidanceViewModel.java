@@ -8,8 +8,6 @@ import androidx.annotation.NonNull;
 import androidx.databinding.ObservableField;
 
 import com.android.utils.log.Logger;
-import com.fy.navi.hmi.navi.NaviGuidanceFragment;
-import com.fy.navi.hmi.navi.NaviGuidanceModel;
 import com.fy.navi.scene.api.route.ISceneRoutePreferenceCallBack;
 import com.fy.navi.scene.impl.imersive.ImersiveStatus;
 import com.fy.navi.scene.impl.navi.inter.ISceneCallback;
@@ -111,7 +109,7 @@ public class BaseLauncherNaviGuidanceViewModel extends BaseViewModel<LauncherCar
             case NaviConstant.NaviSceneType.SCENE_PARK_LIST:
                 naviParkingListVisibility.set(isVisible);
                 break;
-            case NaviConstant.NaviSceneType.Scene_VIA_INFO:
+            case NaviConstant.NaviSceneType.SCENE_VIA_INFO:
                 naviViaInfoVisibility.set(isVisible);
                 break;
             case NaviConstant.NaviSceneType.SCENE_LAST_MILE:
@@ -163,8 +161,8 @@ public class BaseLauncherNaviGuidanceViewModel extends BaseViewModel<LauncherCar
     }
 
     private void updateRouteName(NaviEtaInfo naviEtaInfo) {
-        if (!TextUtils.isEmpty(naviEtaInfo.curRouteName)) {
-            mView.updateRouteName(naviEtaInfo.curRouteName);
+        if (!TextUtils.isEmpty(naviEtaInfo.getCurRouteName())) {
+            mView.updateRouteName(naviEtaInfo.getCurRouteName());
         }
     }
 

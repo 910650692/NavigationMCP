@@ -141,7 +141,7 @@ public class CruisePackage implements CruiseObserver {
     }
 
     @Override
-    public void onPlayTTS(SoundInfoEntity pInfo) {
+    public void onPlayTTS(SoundInfoEntity info) {
 
     }
 

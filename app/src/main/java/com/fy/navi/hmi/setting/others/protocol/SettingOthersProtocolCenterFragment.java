@@ -36,7 +36,11 @@ public class SettingOthersProtocolCenterFragment extends BaseFragment<FragmentPr
 
     }
 
-    public void showProtocolCenter(ProtocolCenterType type) {
+    /**
+     * 展示协议中心
+     * @param type 协议中心类型
+     */
+    public void showProtocolCenter(final ProtocolCenterType type) {
         mBinding.llProtocolCenter.setVisibility(View.GONE);
 
         switch (type){
@@ -48,13 +52,16 @@ public class SettingOthersProtocolCenterFragment extends BaseFragment<FragmentPr
                 mBinding.protocolCenterTitle.setText(R.string.reminder_page_privacy_title);
                 mBinding.protocolCenterContent.setText(R.string.reminder_page_privacy_content);
                 break;
-            case PROTOCOL_PROTOCOL:
+            default:
                 break;
         }
 
         mBinding.protocolCenterPolicy.setVisibility(View.VISIBLE);
     }
 
+    /**
+     * 关闭协议中心
+     */
     public void closeProtocolCenter() {
         mBinding.llProtocolCenter.setVisibility(View.VISIBLE);
         mBinding.protocolCenterPolicy.setVisibility(View.GONE);

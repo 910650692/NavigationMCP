@@ -10,38 +10,40 @@ import com.fy.navi.service.define.mapdata.CityDataInfo;
 import com.fy.navi.service.define.mapdata.MergedStatusBean;
 import com.fy.navi.service.define.mapdata.ProvDataInfo;
 import com.fy.navi.service.define.voice.OperationType;
-import com.fy.navi.service.logicpaket.setting.SettingPackage;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
-import java.util.List;
 
-/**
- * @Description
- * @Author fh
- * @date 2024/12/09
- */
-public class MapDataPackage implements MapDataAdapterCallBack {
+public final class MapDataPackage implements MapDataAdapterCallBack {
     private MapDataAdapter mMapDataAdapter;
-    private final Hashtable<String, MapDataCallBack> callBacks;
+    private final Hashtable<String, MapDataCallBack> mCallBacks;
     private MapDataPackage() {
-        callBacks = new Hashtable<>();
+        mCallBacks = new Hashtable<>();
         mMapDataAdapter = MapDataAdapter.getInstance();
     }
 
+    /**
+     * 离线数据功能初始化
+     */
     public void initMapDataService() {
         mMapDataAdapter.initMapDataService();
         mMapDataAdapter.registerCallBack("MapDataPackage", this);
     }
 
-    public synchronized void registerCallBack(String key, MapDataCallBack callback) {
-        if (callback != null && !callBacks.contains(callback)) {
-            callBacks.put(key, callback);
+    /**
+     * 注册数据监听
+     * @param key
+     * @param callback
+     */
+    public synchronized void registerCallBack(final String key, final MapDataCallBack callback) {
+        if (callback != null && !mCallBacks.contains(callback)) {
+            mCallBacks.put(key, callback);
         }
     }
 
     /**
      * 获取全部省份+城市数据
+     * @return 返回离全部线数据列表
      */
     public ArrayList<ProvDataInfo> getMapDataList() {
         return mMapDataAdapter.getMapDataList();
@@ -49,6 +51,7 @@ public class MapDataPackage implements MapDataAdapterCallBack {
 
     /**
      * 获取基础功能包数据
+     * @return 返回基础包信息
      */
     public CityDataInfo getCountryData() {
         return mMapDataAdapter.getCountryData();
@@ -57,23 +60,36 @@ public class MapDataPackage implements MapDataAdapterCallBack {
     /**
      * 根据行政编码获取城市离线地图各个数据文件版本号
      * @param adCode
-     * @return
+     * @return 返回数据版本信息
      */
-    public String getDataFileVersion(int adCode) {
+    public String getDataFileVersion(final int adCode) {
         return mMapDataAdapter.getDataFileVersion(adCode);
     }
 
     /**
      * 获取下载中、更新中状态下的所有城市adCode列表
-     * @return
+     * @return 返回下载中/更新中的数据信息
      */
     public ArrayList<CityDataInfo> getWorkingList() {
         return mMapDataAdapter.getWorkingList();
     }
 
     /**
+     * 获取所有下载中的数据列表
+     * @param cityDataInfos
+     * @return 返回所有下载中的数据列表
+     */
+    public ArrayList<Integer> getAllWorkingAdCodeList(final ArrayList<CityDataInfo> cityDataInfos) {
+        final ArrayList<Integer> adCodeList = new ArrayList<>();
+        for (CityDataInfo cityDataInfo : cityDataInfos) {
+            adCodeList.add(cityDataInfo.getAdcode());
+        }
+        return adCodeList;
+    }
+
+    /**
      * 获取已下载状态下的所有城市adCode列表
-     * @return
+     * @return 返回已下载的数据信息
      */
     public ArrayList<CityDataInfo> getWorkedList() {
         return mMapDataAdapter.getWorkedList();
@@ -82,16 +98,16 @@ public class MapDataPackage implements MapDataAdapterCallBack {
     /**
      * 通过adCode获取附近推荐城市信息
      * @param adCode
-     * @return
+     * @return 返回附近推荐城市信息
      */
-    public ArrayList<CityDataInfo> getNearAdCodeList(int adCode) {
+    public ArrayList<CityDataInfo> getNearAdCodeList(final int adCode) {
         return mMapDataAdapter.getNearAdCodeList(adCode);
     }
 
     /**
      * 获取 已下载的 省份+城市 结构 信息
      * 该方法对外提供
-     * @return
+     * @return 返回已下载数据信息
      */
     public ArrayList<ProvDataInfo> getAllDownLoadedList() {
         return mMapDataAdapter.getAllDownLoadedList();
@@ -100,9 +116,9 @@ public class MapDataPackage implements MapDataAdapterCallBack {
     /**
      * 通过搜索关键字获取行政区域adcode列表
      * @param strKey
-     * @return
+     * @return 返回根据关键字获取到数据列表
      */
-    public ArrayList<ProvDataInfo> searchAdCode(String strKey) {
+    public ArrayList<ProvDataInfo> searchAdCode(final String strKey) {
         return mMapDataAdapter.searchAdCode(strKey);
     }
 
@@ -111,18 +127,18 @@ public class MapDataPackage implements MapDataAdapterCallBack {
      * 该方法对外提供使用
      *
      * @param strKey
-     * @return
+     * @return 返回根据关键字获取到已下载数据列表
      */
-    public ArrayList<ProvDataInfo> searchDownLoaded(String strKey) {
+    public ArrayList<ProvDataInfo> searchDownLoaded(final String strKey) {
         return mMapDataAdapter.searchDownLoaded(strKey);
     }
 
     /**
      * 通过搜索城市关键字获取行政区域adcode列表
      * @param strKey
-     * @return
+     * @return 返回城市code
      */
-    public int searchCityAdCode(String strKey) {
+    public int searchCityAdCode(final String strKey) {
         return mMapDataAdapter.searchCityAdCode(strKey);
     }
 
@@ -130,34 +146,35 @@ public class MapDataPackage implements MapDataAdapterCallBack {
      * 通过经纬对获取城市adcode行政编码
      * @param lon
      * @param lat
-     * @return
+     * @return 返回行政编码
      */
-    public int getAdCodeByLonLat(double lon, double lat) {
+    public int getAdCodeByLonLat(final double lon, final double lat) {
         return mMapDataAdapter.getAdCodeByLonLat(lon, lat);
     }
 
     /**
      * 通过adcode获取城市信息
      * @param adCode
-     * @return
+     * @return 返回城市信息
      */
-    public CityDataInfo getCityInfo(int adCode) {
+    public CityDataInfo getCityInfo(final int adCode) {
         return mMapDataAdapter.getCityInfo(adCode);
     }
 
-    public AreaExtraInfoBean getAreaExtraInfo(AdminCodeBean adminCode) {
+    /**
+     * 根据code获取区域信息
+     * @param adminCode
+     * @return 返回区域信息
+     */
+    public AreaExtraInfoBean getAreaExtraInfo(final AdminCodeBean adminCode) {
         return mMapDataAdapter.getAreaExtraInfo(adminCode);
-    }
-
-    public ArrayList<Integer> getAdCodeList(int downLoadMode, String strKey) {
-        return mMapDataAdapter.getAdCodeList(downLoadMode, strKey);
     }
 
     /**
      *   删除异常城市数据
      * @param id
      */
-    public void deleteErrorData(int id) {
+    public void deleteErrorData(final int id) {
         mMapDataAdapter.deleteErrorData(id);
     }
 
@@ -167,10 +184,7 @@ public class MapDataPackage implements MapDataAdapterCallBack {
      *
      * @param adCodeList 要取消下载的adCode列表,若为null,则会取消所有未完成的task
      */
-    public void cancelAllTask(ArrayList<Integer> adCodeList) {
-        if (adCodeList == null || adCodeList.isEmpty()) {
-            adCodeList = mMapDataAdapter.getWorkingQueueAdCodeList();
-        }
+    public void cancelAllTask(final ArrayList<Integer> adCodeList) {
         mMapDataAdapter.operate(OperationType.OPERATION_TYPE_CANCEL.ordinal(), adCodeList);
     }
 
@@ -179,7 +193,7 @@ public class MapDataPackage implements MapDataAdapterCallBack {
      *
      * @param adCodeList 要删除已经下载的adCode列表
      */
-    public void deleteAllTask(ArrayList<Integer> adCodeList) {
+    public void deleteAllTask(final ArrayList<Integer> adCodeList) {
         mMapDataAdapter.operate(OperationType.OPERATION_TYPE_DELETE.ordinal(), adCodeList);
     }
 
@@ -188,10 +202,7 @@ public class MapDataPackage implements MapDataAdapterCallBack {
      *
      * @param adCodeList 暂停下载操作 ， adcodeList为空时暂停当前进行中的adCodeList
      */
-    public void pauseAllTask(ArrayList<Integer> adCodeList) {
-        if (adCodeList == null || adCodeList.isEmpty()) {
-            adCodeList = mMapDataAdapter.getWorkingQueueAdCodeList();
-        }
+    public void pauseAllTask(final ArrayList<Integer> adCodeList) {
         mMapDataAdapter.operate(OperationType.OPERATION_TYPE_PAUSE.ordinal(), adCodeList);
     }
 
@@ -200,68 +211,71 @@ public class MapDataPackage implements MapDataAdapterCallBack {
      *
      * @param adCodeList 继续下载操作 ， adCodeList为空时继续当前暂停中待继续的adCodeList
      */
-    public void startAllTask(ArrayList<Integer> adCodeList) {
-        if (adCodeList == null || adCodeList.isEmpty()) {
-            adCodeList = mMapDataAdapter.getWorkingQueueAdCodeList();
-        }
+    public void startAllTask(final ArrayList<Integer> adCodeList) {
         mMapDataAdapter.operate(OperationType.OPERATION_TYPE_START.ordinal(), adCodeList);
     }
 
-    public void unInitMapDataService() {
-        mMapDataAdapter.unInitMapDataService();
+    /**
+     * 发起云端数据列表检测
+     */
+    public void requestDataListCheck() {
+        mMapDataAdapter.requestDataListCheck();
     }
 
     public static MapDataPackage getInstance() {
-        return Helper.ep;
+        return Helper.EP;
     }
 
     @Override
-    public void onDownLoadStatus(ProvDataInfo provDataInfo) {
-        if (null != callBacks) {
-            for (MapDataCallBack observer : callBacks.values()) {
+    public void onDownLoadStatus(final ProvDataInfo provDataInfo) {
+        Logger.d("MapDataPackage","onDownLoadStatus -> provDataInfo: " + GsonUtils.toJson(provDataInfo));
+
+        if (null != mCallBacks) {
+            for (MapDataCallBack observer : mCallBacks.values()) {
                 observer.onDownLoadStatus(provDataInfo);
             }
         }
     }
 
     @Override
-    public void onPercent(ProvDataInfo info) {
-        if (null != callBacks) {
-            for (MapDataCallBack observer : callBacks.values()) {
-                observer.onPercent(info);
-            }
-        }
-    }
-
-    @Override
-    public void onMergedStatusInfo(MergedStatusBean mergedStatusInfo) {
-        if (null != callBacks) {
-            for (MapDataCallBack observer : callBacks.values()) {
+    public void onMergedStatusInfo(final MergedStatusBean mergedStatusInfo) {
+        if (null != mCallBacks) {
+            for (MapDataCallBack observer : mCallBacks.values()) {
                 observer.onMergedStatusInfo(mergedStatusInfo);
             }
         }
     }
 
     @Override
-    public void onErrorNotify(int downLoadMode, int dataType, int id, int errType, String errMsg) {
-        if (null != callBacks) {
-            for (MapDataCallBack observer : callBacks.values()) {
+    public void onErrorNotify(final int downLoadMode, final int dataType, final int id,
+                              final int errType, final String errMsg) {
+        if (null != mCallBacks) {
+            for (MapDataCallBack observer : mCallBacks.values()) {
                 observer.onErrorNotify(downLoadMode, dataType, id, errType, errMsg);
             }
         }
     }
 
     @Override
-    public void onDeleteErrorData(int downLoadMode, int dataType, int id, int opCode) {
-        if (null != callBacks) {
-            for (MapDataCallBack observer : callBacks.values()) {
+    public void onDeleteErrorData(final int downLoadMode, final int dataType, final int id, final int opCode) {
+        if (null != mCallBacks) {
+            for (MapDataCallBack observer : mCallBacks.values()) {
                 observer.onDeleteErrorData(downLoadMode, dataType, id, opCode);
             }
         }
     }
 
+    @Override
+    public void onRequestCheckSuccess(final int downLoadMode, final int dataType, final int opCode) {
+        if (null != mCallBacks) {
+            for (MapDataCallBack observer : mCallBacks.values()) {
+                observer.onRequestCheckSuccess(downLoadMode, dataType, opCode);
+            }
+        }
+    }
+
     private static final class Helper {
-        private static final MapDataPackage ep = new MapDataPackage();
+        private static final MapDataPackage EP = new MapDataPackage();
     }
 
 }

@@ -4,11 +4,6 @@ import android.os.Bundle;
 
 import com.android.utils.log.Logger;
 
-/**
- * @Description TODO
- * @Author lvww
- * @date 2024/11/22
- */
 public abstract class BaseModel<VM extends IBaseViewModel> implements IBaseModel<VM> {
     protected VM mViewModel;
 
@@ -17,7 +12,7 @@ public abstract class BaseModel<VM extends IBaseViewModel> implements IBaseModel
     }
 
     @Override
-    public void onAttachViewModel(VM baseViewModel) {
+    public void onAttachViewModel(final VM baseViewModel) {
         Logger.i(getClass().getSimpleName(), "onAttachViewModel");
         mViewModel = baseViewModel;
     }
@@ -42,19 +37,42 @@ public abstract class BaseModel<VM extends IBaseViewModel> implements IBaseModel
         Logger.i(getClass().getSimpleName(), "onDestroy");
     }
 
-    public void addFragment(BaseFragment fragment, Bundle bundle) {
+    /**
+     * 添加Fragment
+     *
+     * @param fragment BaseFragment
+     * @param bundle   Bundle
+     */
+    public void addFragment(final BaseFragment fragment, final Bundle bundle) {
         mViewModel.addFragment(fragment, bundle);
     }
 
+    public void addPoiDetailsFragment(final BaseFragment fragment, final Bundle bundle) {
+        mViewModel.addPoiDetailsFragment(fragment, bundle);
+    }
+
+    /**
+     * 关闭所有Fragment
+     */
     public void closeAllFragmentUpRoute() {
         mViewModel.closeAllFragmentUpRoute();
     }
 
-    public void closeAllFragmentsUntilTargetFragment(String className) {
+    /**
+     * 关闭所有Fragment
+     *
+     * @param className 目标Fragment的类名
+     */
+    public void closeAllFragmentsUntilTargetFragment(final String className) {
         mViewModel.closeAllFragmentsUntilTargetFragment(className);
     }
 
-    public void closeFragment(boolean nextShow) {
+    /**
+     * 关闭Fragment
+     *
+     * @param nextShow 下一个Fragment是否显示
+     */
+    public void closeFragment(final boolean nextShow) {
         mViewModel.closeFragment(nextShow);
     }
 }

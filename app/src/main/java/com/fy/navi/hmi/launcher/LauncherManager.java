@@ -37,8 +37,8 @@ public class LauncherManager {
 
     public void startInitService() {
         Logger.i(TAG, "startInitEngine");
-        Intent intent = new Intent(AppContext.mContext, NaviService.class);
-        ActivityCompat.startForegroundService(AppContext.mContext, intent);
+        Intent intent = new Intent(AppContext.getInstance().getMContext(), NaviService.class);
+        ActivityCompat.startForegroundService(AppContext.getInstance().getMContext(), intent);
     }
 
     /***
@@ -46,10 +46,10 @@ public class LauncherManager {
      */
     public void startMapActivity(int pageCode) {
         Logger.i(TAG, "startMapActivity:" + pageCode);
-        Intent intent = new Intent(AppContext.mContext, MapActivity.class);
+        Intent intent = new Intent(AppContext.getInstance().getMContext(), MapActivity.class);
         intent.putExtra(INaviConstant.PAGE_EXTRA, pageCode);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        AppContext.mContext.startActivity(intent);
+        AppContext.getInstance().getMContext().startActivity(intent);
     }
 
     /***
@@ -57,7 +57,7 @@ public class LauncherManager {
      */
     public void startMapActivity(int pageCode, @Nullable PoiInfoEntity poiInfo) {
         Logger.i(TAG, "startMapActivity:" + pageCode);
-        Intent intent = new Intent(AppContext.mContext, MapActivity.class);
+        Intent intent = new Intent(AppContext.getInstance().getMContext(), MapActivity.class);
         Bundle bundle = new Bundle();
         bundle.putInt(INaviConstant.PAGE_EXTRA, pageCode);
         if (poiInfo != null) {
@@ -65,6 +65,6 @@ public class LauncherManager {
         }
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.putExtras(bundle);
-        AppContext.mContext.startActivity(intent);
+        AppContext.getInstance().getMContext().startActivity(intent);
     }
 }

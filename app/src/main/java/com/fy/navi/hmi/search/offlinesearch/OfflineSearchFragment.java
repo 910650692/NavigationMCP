@@ -1,6 +1,5 @@
 package com.fy.navi.hmi.search.offlinesearch;
 
-import static com.fy.navi.service.MapDefaultFinalTag.SEARCH_HMI_TAG;
 
 import android.os.Bundle;
 
@@ -11,6 +10,7 @@ import com.fy.navi.hmi.R;
 import com.fy.navi.hmi.databinding.OfflineSearchFragmentLayoutBinding;
 import com.fy.navi.scene.RoutePath;
 import com.fy.navi.service.AutoMapConstant;
+import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.define.map.MapTypeId;
 import com.fy.navi.service.define.search.SearchResultEntity;
 import com.fy.navi.ui.base.BaseFragment;
@@ -20,7 +20,7 @@ public class OfflineSearchFragment extends BaseFragment<OfflineSearchFragmentLay
 
     @Override
     public int onLayoutId() {
-        Logger.d(SEARCH_HMI_TAG, "onLayoutId");
+        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "onLayoutId");
         return R.layout.offline_search_fragment_layout;
     }
 
@@ -31,13 +31,13 @@ public class OfflineSearchFragment extends BaseFragment<OfflineSearchFragmentLay
 
     @Override
     public void onInitView() {
-        Logger.d(SEARCH_HMI_TAG, "onInitView");
+        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "onInitView");
         mBinding.offlineCityList.setScreenId(MapTypeId.valueOf(mScreenId));
     }
 
     @Override
     public void onInitData() {
-        Logger.d(SEARCH_HMI_TAG, "onInitData");
+        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "onInitData");
         getBundleData();
     }
 
@@ -48,26 +48,33 @@ public class OfflineSearchFragment extends BaseFragment<OfflineSearchFragmentLay
     }
 
     @Override
-    public void onHiddenChanged(boolean hidden) {
+    public void onHiddenChanged(final boolean hidden) {
         super.onHiddenChanged(hidden);
 //        if (!hidden) {
 //            mBinding.offlineCityList.requestFocusAndShowKeyboard();
 //        }
     }
 
-    public void notifySearchResult(SearchResultEntity searchResultEntity) {
+    /**
+     * 搜索结果回调
+     * @param searchResultEntity 搜索结果实体类
+     */
+    public void notifySearchResult(final SearchResultEntity searchResultEntity) {
 //        if (searchResultEntity.getSearchType() == AutoMapConstant.SearchType.SEARCH_SUGGESTION) {
             mBinding.offlineCityList.notifySearchResult(searchResultEntity);
 //        }
     }
 
+    /**
+     * 获取bundle携带的数据
+     */
     private void getBundleData() {
-        Bundle parsedArgs = getArguments();
+        final Bundle parsedArgs = getArguments();
         if (parsedArgs == null) {
-            Logger.d(SEARCH_HMI_TAG, "No valid arguments found.");
+            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "No valid arguments found.");
             return;
         }
-        String keyword = parsedArgs.getString(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_KEYWORD);
+        final String keyword = parsedArgs.getString(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_KEYWORD);
         mBinding.offlineCityList.setSearchText(keyword);
     }
 }

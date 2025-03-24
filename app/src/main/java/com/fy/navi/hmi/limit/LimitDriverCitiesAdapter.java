@@ -15,56 +15,60 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Author: LiuChang
+ * @author LiuChang
+ * @version  \$Revision.1.0\$
  * Date: 2025/2/26
  * Description: [限行主页城市选择适配器]
  */
 public class LimitDriverCitiesAdapter extends RecyclerView.Adapter<LimitDriverCitiesAdapter.LimitDriverCitiesViewHolder> {
-    private List<String> data = new ArrayList<>();
+    private List<String> mData = new ArrayList<>();
     private ItemClickListener mListener;
-    private int selectedPosition = -1;
-    private Context mContext;
+    private int mSelectedPosition = -1;
+    private final Context mContext;
 
-    public LimitDriverCitiesAdapter(Context context, List<String> data) {
+    public LimitDriverCitiesAdapter(final Context context, final List<String> data) {
         this.mContext = context;
-        this.data.clear();
-        this.data = data;
-        if(this.data != null && !this.data.isEmpty()) {
-            selectedPosition = 0;
+        this.mData = data;
+        if(this.mData != null && !this.mData.isEmpty()) {
+            mSelectedPosition = 0;
         }
     }
 
-    public void setData(List<String> data) {
-        this.data.clear();
-        this.data = data;
-        if(this.data != null && !this.data.isEmpty()) {
-            selectedPosition = 0;
+    /**
+     * 设置数据
+     * @param data 设置参数
+     */
+    public void setData(final List<String> data) {
+        this.mData.clear();
+        this.mData = data;
+        if(this.mData != null && !this.mData.isEmpty()) {
+            mSelectedPosition = 0;
+            notifyItemRangeChanged(0, mData.size());
         }
-        notifyDataSetChanged();
     }
 
     @NonNull
     @Override
-    public LimitDriverCitiesViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(mContext).inflate(R.layout.item_limit_driver_cities, parent, false);
+    public LimitDriverCitiesViewHolder onCreateViewHolder(final @NonNull ViewGroup parent, final int viewType) {
+        final View view = LayoutInflater.from(mContext).inflate(R.layout.item_limit_driver_cities, parent, false);
         return new LimitDriverCitiesViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull LimitDriverCitiesViewHolder holder, int position) {
-        holder.tvTitle.setText(data.get(position));
-        if (position == selectedPosition) {
-            holder.tvTitle.setTextColor(mContext.getColor(R.color.dialog_use_reminder_terms_service_color)); // 选中态为蓝色
+    public void onBindViewHolder(final @NonNull LimitDriverCitiesViewHolder holder, final int position) {
+        holder.mTvTitle.setText(mData.get(position));
+        if (position == mSelectedPosition) {
+            holder.mTvTitle.setTextColor(mContext.getColor(R.color.dialog_use_reminder_terms_service_color)); // 选中态为蓝色
         } else {
-            holder.tvTitle.setTextColor(mContext.getColor(R.color.main_map_limit_current_city)); // 未选中态为黑色或其他默认颜色
+            holder.mTvTitle.setTextColor(mContext.getColor(R.color.main_map_limit_current_city)); // 未选中态为黑色或其他默认颜色
         }
-        holder.tvTitle.setOnClickListener(new View.OnClickListener() {
+        holder.mTvTitle.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                if (selectedPosition != -1) {
-                    notifyItemChanged(selectedPosition);
+            public void onClick(final View v) {
+                if (mSelectedPosition != -1) {
+                    notifyItemChanged(mSelectedPosition);
                 }
-                selectedPosition = position;
+                mSelectedPosition = position;
                 notifyItemChanged(position);
                 if (mListener != null) {
                     mListener.onClick(position);
@@ -75,23 +79,27 @@ public class LimitDriverCitiesAdapter extends RecyclerView.Adapter<LimitDriverCi
 
     @Override
     public int getItemCount() {
-        return data.size();
+        return mData.size();
     }
 
     public static class LimitDriverCitiesViewHolder extends RecyclerView.ViewHolder {
-        AppCompatTextView tvTitle;
+        private final AppCompatTextView mTvTitle;
 
-        public LimitDriverCitiesViewHolder(@NonNull View itemView) {
+        public LimitDriverCitiesViewHolder(final @NonNull View itemView) {
             super(itemView);
-            tvTitle = itemView.findViewById(R.id.tv_title);
+            mTvTitle = itemView.findViewById(R.id.tv_title);
         }
     }
 
-    public void setListener(ItemClickListener listener) {
+    public void setListener(final ItemClickListener listener) {
         mListener = listener;
     }
 
     public interface ItemClickListener {
+        /**
+         * 点击事件
+         * @param position 点击位置下标
+         */
         void onClick(int position);
     }
 }

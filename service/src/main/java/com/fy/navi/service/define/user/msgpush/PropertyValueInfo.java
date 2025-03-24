@@ -2,22 +2,22 @@ package com.fy.navi.service.define.user.msgpush;
 
 public class PropertyValueInfo {
 
-    public String mStrKey;
-    public String mStrValue;
+    private String mStrKey;
+    private String mStrValue;
 
-    public String getmStrKey() {
+    public String getStrKey() {
         return mStrKey;
     }
 
-    public void setmStrKey(String mStrKey) {
-        this.mStrKey = mStrKey;
+    public void setStrKey(final String strKey) {
+        this.mStrKey = strKey;
     }
 
-    public String getmStrValue() {
+    public String getStrValue() {
         return mStrValue;
     }
 
-    public void setmStrValue(String mStrValue) {
-        this.mStrValue = mStrValue;
+    public void setStrValue(final String strValue) {
+        this.mStrValue = strValue;
     }
 }

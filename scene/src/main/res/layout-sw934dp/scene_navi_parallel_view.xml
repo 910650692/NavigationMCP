@@ -22,91 +22,87 @@
             android:id="@+id/group_bridge_up_down"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:visibility="@{naviParallel.mBridgeUpDownVisible?View.VISIBLE:View.GONE}"
             app:constraint_referenced_ids="sv_bridge_up_down,siv_bridge_up_down,stv_bridge_up_down"
             tools:visibility="visible" />
 
-        <com.fy.navi.ui.view.SkinConstraintLayout
+        <com.fy.navi.ui.view.SkinView
             android:id="@+id/sv_bridge_up_down"
-            clickCommand="@{naviParallel.clickBridgeUpDown}"
-            android:layout_width="@dimen/dp_150"
-            android:layout_height="@dimen/dp_148"
+            clickCommand="@{naviParallel.mClickBridgeUpDown}"
+            android:layout_width="@dimen/dp_204"
+            android:layout_height="@dimen/dp_160"
             android:background="@drawable/bg_navi_btn_common"
-            android:visibility="@{naviParallel.bridgeUpDownVisible?View.VISIBLE:View.GONE}"
             android:contentDescription="@string/navi_bridge_down"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:background="@color/navi_red_text" >
+            tools:background="@color/navi_red_text" />
 
-            <com.fy.navi.ui.view.SkinImageView
-                android:id="@+id/siv_bridge_up_down"
-                android:layout_width="@dimen/dp_58"
-                android:layout_height="@dimen/dp_58"
-                android:layout_marginTop="@dimen/dp_19"
-                android:background="@drawable/img_under_the_bridge_black_58"
-                app:layout_constraintEnd_toEndOf="@id/sv_bridge_up_down"
-                app:layout_constraintStart_toStartOf="@id/sv_bridge_up_down"
-                app:layout_constraintTop_toTopOf="@id/sv_bridge_up_down" />
+        <com.fy.navi.ui.view.SkinImageView
+            android:id="@+id/siv_bridge_up_down"
+            android:layout_width="@dimen/dp_68"
+            android:layout_height="@dimen/dp_68"
+            android:layout_marginTop="@dimen/dp_16"
+            android:background="@drawable/img_parallel_bridge_down"
+            app:layout_constraintEnd_toEndOf="@id/sv_bridge_up_down"
+            app:layout_constraintStart_toStartOf="@id/sv_bridge_up_down"
+            app:layout_constraintTop_toTopOf="@id/sv_bridge_up_down" />
 
-            <com.fy.navi.ui.view.SkinTextView
-                android:id="@+id/stv_bridge_up_down"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_4"
-                android:gravity="center"
-                android:text="@string/navi_bridge_down"
-                android:textColor="@color/navi_control_tv_color"
-                android:textSize="@dimen/sp_30"
-                app:layout_constraintEnd_toEndOf="@id/sv_bridge_up_down"
-                app:layout_constraintStart_toStartOf="@id/sv_bridge_up_down"
-                app:layout_constraintTop_toBottomOf="@id/siv_bridge_up_down" />
-
-        </com.fy.navi.ui.view.SkinConstraintLayout>
+        <com.fy.navi.ui.view.SkinTextView
+            android:id="@+id/stv_bridge_up_down"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_3"
+            android:gravity="center"
+            android:text="@string/navi_bridge_down"
+            android:textColor="@color/navi_tbt_arrived_color"
+            android:textSize="@dimen/sp_36"
+            app:layout_constraintEnd_toEndOf="@id/sv_bridge_up_down"
+            app:layout_constraintStart_toStartOf="@id/sv_bridge_up_down"
+            app:layout_constraintTop_toBottomOf="@id/siv_bridge_up_down" />
 
         <androidx.constraintlayout.widget.Group
             android:id="@+id/group_main_auxiliary"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:visibility="@{naviParallel.mRoadMainAuxiliaryVisible?View.VISIBLE:View.GONE}"
             app:constraint_referenced_ids="sv_main_auxiliary,siv_main_auxiliary,stv_main_auxiliary"
             tools:visibility="visible" />
 
-        <com.fy.navi.ui.view.SkinConstraintLayout
+        <com.fy.navi.ui.view.SkinView
             android:id="@+id/sv_main_auxiliary"
-            clickCommand="@{naviParallel.clickMainAuxiliary}"
-            android:layout_width="@dimen/dp_150"
-            android:layout_height="@dimen/dp_148"
+            clickCommand="@{naviParallel.mClickMainAuxiliary}"
+            android:layout_width="@dimen/dp_204"
+            android:layout_height="@dimen/dp_160"
             android:layout_marginStart="@dimen/dp_20"
             android:background="@drawable/bg_navi_btn_common"
             android:contentDescription="@string/navi_road_main"
-            android:visibility="@{naviParallel.roadMainAuxiliaryVisible?View.VISIBLE:View.GONE}"
             app:layout_constraintStart_toEndOf="@id/sv_bridge_up_down"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_goneMarginStart="@dimen/dp_0"
-            tools:background="@color/navi_red_text" >
+            tools:background="@color/navi_red_text" />
 
-            <com.fy.navi.ui.view.SkinImageView
-                android:id="@+id/siv_main_auxiliary"
-                android:layout_width="@dimen/dp_58"
-                android:layout_height="@dimen/dp_58"
-                android:layout_marginTop="@dimen/dp_19"
-                android:background="@drawable/img_in_the_side_black_58"
-                app:layout_constraintEnd_toEndOf="@id/sv_main_auxiliary"
-                app:layout_constraintStart_toStartOf="@id/sv_main_auxiliary"
-                app:layout_constraintTop_toTopOf="@id/sv_main_auxiliary" />
+        <com.fy.navi.ui.view.SkinImageView
+            android:id="@+id/siv_main_auxiliary"
+            android:layout_width="@dimen/dp_68"
+            android:layout_height="@dimen/dp_68"
+            android:layout_marginTop="@dimen/dp_16"
+            android:background="@drawable/img_parallel_road_auxiliary"
+            app:layout_constraintEnd_toEndOf="@id/sv_main_auxiliary"
+            app:layout_constraintStart_toStartOf="@id/sv_main_auxiliary"
+            app:layout_constraintTop_toTopOf="@id/sv_main_auxiliary" />
 
-            <com.fy.navi.ui.view.SkinTextView
-                android:id="@+id/stv_main_auxiliary"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_4"
-                android:gravity="center"
-                android:text="@string/navi_road_auxiliary"
-                android:textColor="@color/navi_control_tv_color"
-                android:textSize="@dimen/sp_30"
-                app:layout_constraintEnd_toEndOf="@id/sv_main_auxiliary"
-                app:layout_constraintStart_toStartOf="@id/sv_main_auxiliary"
-                app:layout_constraintTop_toBottomOf="@id/siv_main_auxiliary" />
-
-        </com.fy.navi.ui.view.SkinConstraintLayout>
+        <com.fy.navi.ui.view.SkinTextView
+            android:id="@+id/stv_main_auxiliary"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_3"
+            android:gravity="center"
+            android:text="@string/navi_road_auxiliary"
+            android:textColor="@color/navi_tbt_arrived_color"
+            android:textSize="@dimen/sp_36"
+            app:layout_constraintEnd_toEndOf="@id/sv_main_auxiliary"
+            app:layout_constraintStart_toStartOf="@id/sv_main_auxiliary"
+            app:layout_constraintTop_toBottomOf="@id/siv_main_auxiliary" />
 
     </com.fy.navi.ui.view.SkinConstraintLayout>
 </layout>

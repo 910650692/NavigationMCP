@@ -6,7 +6,9 @@ import android.text.TextUtils;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 
-import com.android.utils.log.Logger;
+import com.android.utils.NetWorkUtils;
+import com.android.utils.ResourceUtils;
+import com.android.utils.ToastUtils;
 import com.fy.navi.hmi.mapdata.MapDataFragment;
 import com.fy.navi.hmi.setting.guide.platenumber.SettingPlateNumberFragment;
 import com.fy.navi.service.MapDefaultFinalTag;
@@ -23,35 +25,30 @@ import com.fy.navi.ui.base.BaseViewModel;
 import java.util.ArrayList;
 import java.util.Objects;
 
-/**
- * @Description
- * @Author fh
- * @date 2024/12/11
- */
 public class BaseSettingGuideViewModel extends BaseViewModel<SettingNaviFragment, SettingGuideModel> {
     private static final String TAG = MapDefaultFinalTag.SETTING_HMI_TAG;
 
-    public MutableLiveData<Boolean> isAvoidLimit = new MutableLiveData<>(false);
-    public MutableLiveData<Boolean> isPlateNumber = new MutableLiveData<>(false);
-    public MutableLiveData<Boolean> isVehicleGuide = new MutableLiveData<>(true);
-    public MutableLiveData<Boolean> isChargingPlan = new MutableLiveData<>(true);
-    public MutableLiveData<Boolean> isMapModel3DUp = new MutableLiveData<>(false);
-    public MutableLiveData<Boolean> isMapModel2DUp = new MutableLiveData<>(true);
-    public MutableLiveData<Boolean> isMapModelNorthUp = new MutableLiveData<>(false);
-    public MutableLiveData<Boolean> isRoadCondition = new MutableLiveData<>(true);
-    public MutableLiveData<Boolean> isFavoritePoint = new MutableLiveData<>(true);
-    public MutableLiveData<Boolean> isChargingStation = new MutableLiveData<>(true);
-    public MutableLiveData<Boolean> isAutoScale = new MutableLiveData<>(true);
-    public MutableLiveData<Boolean> isMapTextSizeStandard = new MutableLiveData<>(true);
-    public MutableLiveData<Boolean> isMapTextSizeLarge = new MutableLiveData<>(false);
-    public MutableLiveData<Boolean> isCarLogoDefault = new MutableLiveData<>(true);
-    public MutableLiveData<Boolean> isCarLogoBrand = new MutableLiveData<>(false);
-    public MutableLiveData<Boolean> isCarLogoSpeed = new MutableLiveData<>(false);
-    public MutableLiveData<Boolean> isEVCar = new MutableLiveData<>(false);
+    public MutableLiveData<Boolean> mIsAvoidLimit = new MutableLiveData<>(false);
+    public MutableLiveData<Boolean> mIsPlateNumber = new MutableLiveData<>(false);
+    public MutableLiveData<Boolean> mIsVehicleGuide = new MutableLiveData<>(true);
+    public MutableLiveData<Boolean> mIsChargingPlan = new MutableLiveData<>(true);
+    public MutableLiveData<Boolean> mIsMapModel3DUp = new MutableLiveData<>(false);
+    public MutableLiveData<Boolean> mIsMapModel2DUp = new MutableLiveData<>(true);
+    public MutableLiveData<Boolean> mIsMapModelNorthUp = new MutableLiveData<>(false);
+    public MutableLiveData<Boolean> mIsRoadCondition = new MutableLiveData<>(true);
+    public MutableLiveData<Boolean> mIsFavoritePoint = new MutableLiveData<>(true);
+    public MutableLiveData<Boolean> mIsChargingStation = new MutableLiveData<>(true);
+    public MutableLiveData<Boolean> mIsAutoScale = new MutableLiveData<>(true);
+    public MutableLiveData<Boolean> mIsMapTextSizeStandard = new MutableLiveData<>(true);
+    public MutableLiveData<Boolean> mIsMapTextSizeLarge = new MutableLiveData<>(false);
+    public MutableLiveData<Boolean> mIsCarLogoDefault = new MutableLiveData<>(true);
+    public MutableLiveData<Boolean> mIsCarLogoBrand = new MutableLiveData<>(false);
+    public MutableLiveData<Boolean> mIsCarLogoSpeed = new MutableLiveData<>(false);
+    public MutableLiveData<Boolean> mIsEVCar = new MutableLiveData<>(false);
 
 
 
-    public BaseSettingGuideViewModel(@NonNull Application application) {
+    public BaseSettingGuideViewModel(@NonNull final Application application) {
         super(application);
     }
 
@@ -70,47 +67,63 @@ public class BaseSettingGuideViewModel extends BaseViewModel<SettingNaviFragment
         super.onDestroy();
     }
 
+    /**
+     * 初始化界面
+     */
     public void initView() {
         mModel.initView();
     }
 
     // 避开限行
-    public Action avoidLimitClick = () -> {
-        if (Boolean.FALSE.equals(isAvoidLimit.getValue()) &&
+    public Action mAvoidLimitClick = () -> {
+        if (Boolean.FALSE.equals(NetWorkUtils.Companion.getInstance().checkNetwork())
+                && Boolean.FALSE.equals(mIsAvoidLimit.getValue())) {
+            ToastUtils.Companion.getInstance().showCustomToastView(
+                    ResourceUtils.Companion.getInstance().getString(com.fy.navi.scene.R.string.navi_setting_offline_toast));
+            mIsAvoidLimit.setValue(false);
+            return;
+        }
+        if (Boolean.FALSE.equals(mIsAvoidLimit.getValue()) &&
                 TextUtils.isEmpty(mModel.getConfigKeyPlateNumber())) {
-            isAvoidLimit.setValue(false);
+            mIsAvoidLimit.setValue(false);
             addFragment(new SettingPlateNumberFragment(), null);
         } else if (!TextUtils.isEmpty(mModel.getConfigKeyPlateNumber())) {
-            boolean value = Boolean.FALSE.equals(isAvoidLimit.getValue());
-            isAvoidLimit.setValue(value);
-            mModel.setConfigKeyAvoidLimit(value);
+            final boolean value = Boolean.FALSE.equals(mIsAvoidLimit.getValue());
+            if (mModel.setConfigKeyAvoidLimit(value) == 0) {
+                mIsAvoidLimit.setValue(value);
+            }
         }
     };
 
     // 车道级导航
-    public Action vehicleGuide = () -> {
-        boolean value = Boolean.FALSE.equals(isVehicleGuide.getValue());
-        isVehicleGuide.setValue(value);
+    public Action mVehicleGuide = () -> {
+        final boolean value = Boolean.FALSE.equals(mIsVehicleGuide.getValue());
+        mIsVehicleGuide.setValue(value);
         mModel.setGuideVehicle(value);
     };
 
     // 补能计划
-    public Action chargingPlan = () -> {
-        boolean value = Boolean.FALSE.equals(isChargingPlan.getValue());
+    public Action mChargingPlan = () -> {
+        final boolean value = Boolean.FALSE.equals(mIsChargingPlan.getValue());
         SettingUpdateObservable.getInstance().notifySettingChanged(SettingController.KEY_SETTING_GUIDE_CHARGING_PLAN, value);
-        isChargingPlan.setValue(value);
+        mIsChargingPlan.setValue(value);
         mModel.setChargingPlan(value);
     };
 
     // 自动比例尺
-    public Action autoScale = () -> {
-        boolean value = Boolean.FALSE.equals(isAutoScale.getValue());
+    public Action mAutoScale = () -> {
+        final boolean value = Boolean.FALSE.equals(mIsAutoScale.getValue());
         LayerPackage.getInstance().openDynamicLevel(MapTypeId.MAIN_SCREEN_MAIN_MAP, value);
-        isAutoScale.setValue(value);
+        mIsAutoScale.setValue(value);
         mModel.setAutoScale(value);
     };
 
-    public Action modifyPlateNumber = () -> {
+    public Action mModifyPlateNumber = () -> {
+        if (Boolean.FALSE.equals(NetWorkUtils.Companion.getInstance().checkNetwork())) {
+            ToastUtils.Companion.getInstance().showCustomToastView(
+                    ResourceUtils.Companion.getInstance().getString(com.fy.navi.scene.R.string.navi_setting_offline_toast));
+            return;
+        }
         addFragment(new SettingPlateNumberFragment(), null);
     };
 
@@ -119,85 +132,85 @@ public class BaseSettingGuideViewModel extends BaseViewModel<SettingNaviFragment
      * @param key    control key
      * @param isTrue is true
      */
-    public void dualChoiceControl(String key, boolean isTrue) {
+    public void dualChoiceControl(final String key, final boolean isTrue) {
         switch (key) {
             case SettingController.KEY_SETTING_IS_EV_CAR:
-                isEVCar.setValue(isTrue);
+                mIsEVCar.setValue(isTrue);
                 break;
             case SettingController.KEY_SETTING_GUIDE_AVOID_LIMIT:
-                isAvoidLimit.setValue(isTrue);
+                mIsAvoidLimit.setValue(isTrue);
                 break;
             case SettingController.KEY_SETTING_GUIDE_CHARGING_PLAN:
-                isChargingPlan.setValue(isTrue);
+                mIsChargingPlan.setValue(isTrue);
                 break;
             case SettingController.KEY_SETTING_ROAD_CONDITION:
-                isRoadCondition.setValue(isTrue);
+                mIsRoadCondition.setValue(isTrue);
                 break;
             case SettingController.KEY_SETTING_FAVORITE_POINT:
-                isFavoritePoint.setValue(isTrue);
+                mIsFavoritePoint.setValue(isTrue);
                 break;
             case SettingController.KEY_SETTING_CHARGING_STATION:
-                isChargingStation.setValue(isTrue);
+                mIsChargingStation.setValue(isTrue);
                 break;
             case SettingController.KEY_SETTING_GUIDE_VEHICLE_GUIDE:
-                isVehicleGuide.setValue(isTrue);
+                mIsVehicleGuide.setValue(isTrue);
                 break;
             case SettingController.KEY_SETTING_AUTO_SCALE:
-                isAutoScale.setValue(isTrue);
+                mIsAutoScale.setValue(isTrue);
                 break;
             default:
                 break;
         }
     }
 
-    public Action openOfflineData = () -> {
+    public Action mOpenOfflineData = () -> {
         addFragment(new MapDataFragment(), null);
     };
 
 
     // 实时路况
-    public Action roadConditionClick = () -> {
-        boolean value = Boolean.FALSE.equals(isRoadCondition.getValue());
+    public Action mRoadConditionClick = () -> {
+        final boolean value = Boolean.FALSE.equals(mIsRoadCondition.getValue());
         MapPackage.getInstance().setTrafficStates(MapTypeId.MAIN_SCREEN_MAIN_MAP, value);
-        isRoadCondition.setValue(value);
+        mIsRoadCondition.setValue(value);
         mModel.setConfigKeyRoadEvent(value);
     };
 
     // 收藏点
-    public Action favoritePointClick = () -> {
-        boolean value = Boolean.FALSE.equals(isFavoritePoint.getValue());
-        isFavoritePoint.setValue(value);
+    public Action mFavoritePointClick = () -> {
+        final boolean value = Boolean.FALSE.equals(mIsFavoritePoint.getValue());
+        mIsFavoritePoint.setValue(value);
         mModel.hideOrShowFavoriteOnMainMap(value);
         mModel.setFavoritePoint(value);
     };
 
     // 充电站
-    public Action chargingStationClick = () -> {
-        boolean value = Boolean.FALSE.equals(isChargingStation.getValue());
-        ArrayList<Integer> typeList = new ArrayList<>();
-        typeList.add(20);
+    public Action mChargingStationClick = () -> {
+        final boolean value = Boolean.FALSE.equals(mIsChargingStation.getValue());
+        final ArrayList<Integer> typeList = new ArrayList<>();
+        typeList.add(25);
         MapPackage.getInstance().setCustomLabelTypeVisible(MapTypeId.MAIN_SCREEN_MAIN_MAP, typeList, value);
-        isChargingStation.setValue(value);
+        mIsChargingStation.setValue(value);
         mModel.setChargingStation(value);
     };
 
     // 3D车头向上
-    public Action switchMapModel3DUpClick = () -> {
+    public Action mSwitchMapModel3DUpClick = () -> {
         MapPackage.getInstance().switchMapMode(MapTypeId.MAIN_SCREEN_MAIN_MAP, MapMode.UP_3D);
     };
 
     // 2D北向上
-    public Action switchMapModel2DNorthClick = () -> {
+    public Action mSwitchMapModel2DNorthClick = () -> {
         MapPackage.getInstance().switchMapMode(MapTypeId.MAIN_SCREEN_MAIN_MAP, MapMode.NORTH_2D);
     };
 
     // 2D车头向上
-    public Action switchMapModel2DUpClick = () -> {
+    public Action mSwitchMapModel2DUpClick = () -> {
         MapPackage.getInstance().switchMapMode(MapTypeId.MAIN_SCREEN_MAIN_MAP, MapMode.UP_2D);
     };
 
     // 默认车标
-    public Action switchMapLogoDefaultClick = () -> {
+    public Action mSwitchMapLogoDefaultClick = () -> {
         if (mModel.getCarMode() == 1) {
             LayerPackage.getInstance().setCarMode(MapTypeId.MAIN_SCREEN_MAIN_MAP, CarModeType.CAR_MODEL_TYPE_2D);
             mModel.setCarMode(CarModeType.CAR_MODEL_TYPE_2D);
@@ -208,64 +221,93 @@ public class BaseSettingGuideViewModel extends BaseViewModel<SettingNaviFragment
     };
 
     // 品牌车标
-    public Action switchMapLogoBrandClick = () -> {
+    public Action mSwitchMapLogoBrandClick = () -> {
         LayerPackage.getInstance().setCarMode(MapTypeId.MAIN_SCREEN_MAIN_MAP, CarModeType.CAR_MODEL_TYPE_SKELETON);
         mModel.setCarMode(CarModeType.CAR_MODEL_TYPE_SKELETON);
     };
 
     // 车速车标
-    public Action switchMapLogoSpeedClick = () -> {
+    public Action mSwitchMapLogoSpeedClick = () -> {
         LayerPackage.getInstance().setCarMode(MapTypeId.MAIN_SCREEN_MAIN_MAP, CarModeType.CAR_MODEL_TYPE_SPEED);
         mModel.setCarMode(CarModeType.CAR_MODEL_TYPE_SPEED);
     };
 
     // 标准字号
-    public Action naviTextSizeStandardClick = () -> {
+    public Action mNaviTextSizeStandardClick = () -> {
         MapPackage.getInstance().setMapViewTextSize(MapTypeId.MAIN_SCREEN_MAIN_MAP, 1f);
         mModel.setMapViewTextSize(true);
     };
 
     // 大字号
-    public Action naviTextSizeLargeClick = () -> {
+    public Action mNaviTextSizeLargeClick = () -> {
         MapPackage.getInstance().setMapViewTextSize(MapTypeId.MAIN_SCREEN_MAIN_MAP, 1.8f);
         mModel.setMapViewTextSize(false);
     };
 
-    public void onPlateNumberChanged(String plateNumber) {
-        boolean isPlateNumberEmpty = Objects.equals(plateNumber, "");
+    /**
+     * 更新车牌号
+     * @param plateNumber 车牌号
+     */
+    public void onPlateNumberChanged(final String plateNumber) {
+        final boolean isPlateNumberEmpty = Objects.equals(plateNumber, "");
         if (!isPlateNumberEmpty)  {
-            mView.onPlateNumberChanged(plateNumber);
-            isAvoidLimit.setValue(true);
-            isPlateNumber.setValue(true);
-            mModel.setConfigKeyAvoidLimit(true);
+            if (mModel.setConfigKeyAvoidLimit(true) == 0) {
+                mIsAvoidLimit.setValue(true);
+                mView.onPlateNumberChanged(plateNumber);
+                mIsPlateNumber.setValue(true);
+                mModel.setConfigKeyPlateNumber(plateNumber);
+            }
         } else {
-            isAvoidLimit.setValue(false);
-            setPlateNumber(plateNumber);
-            isPlateNumber.setValue(false);
-            mModel.setConfigKeyAvoidLimit(false);
+            if (mModel.setConfigKeyAvoidLimit(false) == 0) {
+                mIsAvoidLimit.setValue(false);
+                setPlateNumber(plateNumber);
+                mIsPlateNumber.setValue(false);
+                mModel.setConfigKeyPlateNumber("");
+            }
         }
     }
 
-    public void setPlateNumber(String plateNumber) {
-        boolean isPlateNumberEmpty = !Objects.equals(plateNumber, "");
-        isPlateNumber.setValue(isPlateNumberEmpty);
+    /**
+     * 设置车牌号
+     * @param plateNumber 车牌号
+     */
+    public void setPlateNumber(final String plateNumber) {
+        final boolean isPlateNumberEmpty = !Objects.equals(plateNumber, "");
+        mIsPlateNumber.setValue(isPlateNumberEmpty);
         mView.setPlateNumber(plateNumber);
     }
 
-    public void onMapModeChanged(boolean is3D, boolean isNorth, boolean isUp) {
-        isMapModel2DUp.setValue(isUp);
-        isMapModel3DUp.setValue(is3D);
-        isMapModelNorthUp.setValue(isNorth);
+    /**
+     * 视角变化
+     * @param is3D  是否3D车头向上
+     * @param isNorth 是否北向上
+     * @param isUp 是否车头向上
+     */
+    public void onMapModeChanged(final boolean is3D, final boolean isNorth, final boolean isUp) {
+        mIsMapModel2DUp.setValue(isUp);
+        mIsMapModel3DUp.setValue(is3D);
+        mIsMapModelNorthUp.setValue(isNorth);
     }
 
-    public void onMapViewTextSizeChanged(boolean isStandard, boolean isLarge) {
-        isMapTextSizeStandard.setValue(isStandard);
-        isMapTextSizeLarge.setValue(isLarge);
+    /**
+     * 地图字号变化
+     * @param isStandard true 标准字号
+     * @param isLarge true 大字号
+     */
+    public void onMapViewTextSizeChanged(final boolean isStandard, final boolean isLarge) {
+        mIsMapTextSizeStandard.setValue(isStandard);
+        mIsMapTextSizeLarge.setValue(isLarge);
     }
 
-    public void onCarModeChanged(boolean isDefault, boolean isBrand, boolean isSpeed) {
-        isCarLogoDefault.setValue(isDefault);
-        isCarLogoBrand.setValue(isBrand);
-        isCarLogoSpeed.setValue(isSpeed);
+    /**
+     * 车标变化
+     * @param isDefault 默认车标
+     * @param isBrand 品牌车标
+     * @param isSpeed 车速车标
+     */
+    public void onCarModeChanged(final boolean isDefault, final boolean isBrand, final boolean isSpeed) {
+        mIsCarLogoDefault.setValue(isDefault);
+        mIsCarLogoBrand.setValue(isBrand);
+        mIsCarLogoSpeed.setValue(isSpeed);
     }
 }

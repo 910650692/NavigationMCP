@@ -16,11 +16,20 @@ import com.fy.navi.service.define.utils.NumberUtils;
 
 import java.util.concurrent.ScheduledFuture;
 
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * 导航卡片抽象类
  * 定义卡片id、状态及实现倒计时关闭功能
+ * @author fy
+ * @version $Revision.*$
+ * @param <VB>
+ * @param <VM>
  */
-public abstract class NaviSceneBase<VB extends ViewDataBinding, VM extends BaseSceneModel> extends BaseSceneView<VB, VM> {
+@Getter
+@Setter
+public abstract class NaviSceneBase <VB extends ViewDataBinding, VM extends BaseSceneModel> extends BaseSceneView<VB, VM> {
     private static final String TAG = "NaviCardBase";
     public static final int SCENE_STATE_INIT = 0x00;
     public static final int SCENE_STATE_SHOW = 0x01;
@@ -31,51 +40,64 @@ public abstract class NaviSceneBase<VB extends ViewDataBinding, VM extends BaseS
     protected static final int CLOSE_COUNTDOWN_5 = 5;
     protected static final int CLOSE_COUNTDOWN_15 = 15;
     protected static final int CLOSE_COUNTDOWN_60 = 60;
-    protected boolean isViaListExpand = false;//途径点列表是否展开
-
-    protected NaviSceneId mSceneId = getSceneId();
-
+    protected boolean mIsViaListExpand = false;//途径点列表是否展开
     protected int mSceneState = SCENE_STATE_INIT;
+    private int mCountdown = 0;
+    private ScheduledFuture mScheduledFuture;
+    private ISceneCallback mISceneCallback;
+    private NaviSceneId mSceneId;
 
-    protected int mCountdown = 0;
-    private ScheduledFuture scheduledFuture;
-    protected ISceneCallback mISceneCallback;
+    private INaviSceneEvent mEvent = getNaviSceneEvent();
 
-    protected INaviSceneEvent mEvent = getNaviSceneEvent();
-
-    public NaviSceneBase(@NonNull Context context) {
+    public NaviSceneBase(@NonNull final Context context) {
         super(context);
     }
 
-    public NaviSceneBase(@NonNull Context context, @Nullable AttributeSet attrs) {
+    public NaviSceneBase(@NonNull final Context context, @Nullable final AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public NaviSceneBase(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public NaviSceneBase(@NonNull final Context context, @Nullable final AttributeSet attrs,
+                         final int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+    }
+
+    public boolean isIsViaListExpand() {
+        return mIsViaListExpand;
+    }
+
+    public void setIsViaListExpand(boolean mIsViaListExpand) {
+        this.mIsViaListExpand = mIsViaListExpand;
     }
 
     @Override
     public void onCreate() {
         super.onCreate();
+        mSceneId = getSceneId();
         init();
     }
 
     protected abstract NaviSceneId getSceneId();
 
+    /**
+     * @return INaviSceneEvent
+     */
     public abstract INaviSceneEvent getNaviSceneEvent();
 
     protected abstract void init();
 
+    /**
+     * @param sceneCallback sceneCallback
+     */
     public abstract void addSceneCallback(ISceneCallback sceneCallback);
 
     protected void unInit() {
         mISceneCallback = null;
     }
 
-    protected void updateCountdown(int num) {
-    }
-
+    /**
+     * 显示卡片，倒计时开始
+     */
     public void show() {
         // 新卡片显示需要重置倒计时，隐藏卡片显示使用选线剩余倒计时
         if (mSceneState != SCENE_STATE_HIDE) {
@@ -91,6 +113,9 @@ public abstract class NaviSceneBase<VB extends ViewDataBinding, VM extends BaseS
         return true;
     }
 
+    /**
+     * 隐藏卡片，但是倒计时还在
+     */
     public void hide() {
         // 新卡片如果一开始就是隐藏(有高优卡片显示时新卡创建并隐藏)，显示需要重置倒计时
         if (mSceneState == SCENE_STATE_CLOSE || mSceneState == SCENE_STATE_INIT) {
@@ -100,6 +125,9 @@ public abstract class NaviSceneBase<VB extends ViewDataBinding, VM extends BaseS
         mSceneState = SCENE_STATE_HIDE;
     }
 
+    /**
+     * 关闭卡片，不再响应任何事件
+     */
     public void close() {
         mCountdown = 0;
         cancelCountdown();
@@ -127,10 +155,10 @@ public abstract class NaviSceneBase<VB extends ViewDataBinding, VM extends BaseS
     }
 
     protected void startCountdown() {
-        if (mCountdown == 0 || scheduledFuture != null) {
+        if (mCountdown == 0 || mScheduledFuture != null) {
             return;
         }
-        scheduledFuture = ThreadManager.getInstance().asyncAtFixDelay(() -> {
+        mScheduledFuture = ThreadManager.getInstance().asyncAtFixDelay(() -> {
             if (mCountdown == NumberUtils.NUM_0) {
                 if (mEvent != null) {
                     if (mSceneId == NaviSceneId.NAVI_SCENE_VIA_POINT_FOLD) {
@@ -147,10 +175,10 @@ public abstract class NaviSceneBase<VB extends ViewDataBinding, VM extends BaseS
     }
 
     protected void cancelCountdown() {
-        if (scheduledFuture != null) {
-            if (!ConvertUtils.isEmpty(scheduledFuture)) {
-                ThreadManager.getInstance().cancelDelayRun(scheduledFuture);
-                scheduledFuture = null;
+        if (mScheduledFuture != null) {
+            if (!ConvertUtils.isEmpty(mScheduledFuture)) {
+                ThreadManager.getInstance().cancelDelayRun(mScheduledFuture);
+                mScheduledFuture = null;
             }
         }
     }

@@ -11,89 +11,90 @@ import com.fy.navi.ui.view.SkinFrameLayout;
 import com.fy.navi.ui.view.SkinImageView;
 import com.fy.navi.ui.view.SkinTextView;
 
-
-/**
- * 下拉刷新
- */
 public class HeadRefreshView extends SkinFrameLayout implements HeadView {
 
-    private SkinTextView tv;
-    private SkinImageView arrow;
-    private ProgressBar progressBar;
+    private SkinTextView mSkinTextView;
+    private SkinImageView mSkinImageView;
+    private ProgressBar mProgressBar;
     private String mTips = "下拉刷新";
-    private boolean isRefresh = true;
+    private boolean mRefresh = true;
 
-    public HeadRefreshView(Context context) {
+    public HeadRefreshView(final Context context) {
         this(context, null);
     }
 
-    public HeadRefreshView(Context context, AttributeSet attrs) {
+    public HeadRefreshView(final Context context, final AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public HeadRefreshView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public HeadRefreshView(final Context context, final AttributeSet attrs, final int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init(context);
     }
 
-    private void init(Context context) {
-        View view = LayoutInflater.from(context).inflate(R.layout.layout_header, null);
+    /**
+     * 初始化
+     *
+     * @param context 上下文
+     */
+    private void init(final Context context) {
+        final View view = LayoutInflater.from(context).inflate(R.layout.layout_header, null);
         addView(view);
-        tv = view.findViewById(R.id.header_tv);
-        arrow = view.findViewById(R.id.header_arrow);
-        progressBar = view.findViewById(R.id.header_progress);
+        mSkinTextView = view.findViewById(R.id.header_tv);
+        mSkinImageView = view.findViewById(R.id.header_arrow);
+        mProgressBar = view.findViewById(R.id.header_progress);
     }
 
     @Override
     public void begin() {
-        arrow.setVisibility(VISIBLE);
-        progressBar.setVisibility(GONE);
-        tv.setText(mTips);
+        mSkinImageView.setVisibility(VISIBLE);
+        mProgressBar.setVisibility(GONE);
+        mSkinTextView.setText(mTips);
     }
 
     @Override
-    public void progress(float progress, float all) {
-        float s = progress / all;
-        if (s >= 0.9f) {
-            if (isRefresh) {
-                arrow.setRotation(180);
+    public void progress(final float progress, final float all) {
+        final float time = progress / all;
+        if (time >= 0.9f) {
+            if (mRefresh) {
+                mSkinImageView.setRotation(180);
             }
         } else {
-            arrow.setRotation(0);
+            mSkinImageView.setRotation(0);
         }
         if (progress >= all - 10) {
-            if (isRefresh) {
-                tv.setText("回到上一页");
+            if (mRefresh) {
+                mSkinTextView.setText("回到上一页");
             }
         } else {
-            tv.setText(mTips);
+            mSkinTextView.setText(mTips);
         }
     }
 
     @Override
-    public void finishing(float progress, float all) {
+    public void finishing(final float progress, final float all) {
 
     }
 
     @Override
     public void loading() {
-        arrow.setVisibility(GONE);
-        progressBar.setVisibility(VISIBLE);
-        if (isRefresh) {
-            tv.setText("刷新中...");
+        mSkinImageView.setVisibility(GONE);
+        mProgressBar.setVisibility(VISIBLE);
+        if (mRefresh) {
+            mSkinTextView.setText("刷新中...");
         }
     }
 
     @Override
     public void normal() {
-        arrow.setVisibility(VISIBLE);
-        progressBar.setVisibility(GONE);
-        tv.setText(mTips);
+        mSkinImageView.setVisibility(VISIBLE);
+        mProgressBar.setVisibility(GONE);
+        mSkinTextView.setText(mTips);
     }
 
     @Override
-    public void setRefresh(boolean isRefresh) {
-        this.isRefresh = isRefresh;
+    public void setRefresh(final boolean isRefresh) {
+        this.mRefresh = isRefresh;
     }
 
     @Override
@@ -102,7 +103,7 @@ public class HeadRefreshView extends SkinFrameLayout implements HeadView {
     }
 
     @Override
-    public void setRefreshTips(String tips) {
+    public void setRefreshTips(final String tips) {
         mTips = tips;
     }
 }

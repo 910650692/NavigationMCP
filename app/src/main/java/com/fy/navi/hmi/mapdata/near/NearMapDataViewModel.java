@@ -10,14 +10,9 @@ import com.fy.navi.ui.base.BaseViewModel;
 
 import java.util.ArrayList;
 
-/**
- * @Description
- * @Author fh
- * @date 2025/03/13
- */
 public class NearMapDataViewModel extends BaseViewModel<NearMapDataFragment, NearMapDataModel> {
 
-    public NearMapDataViewModel(@NonNull Application application) {
+    public NearMapDataViewModel(@NonNull final Application application) {
         super(application);
     }
 
@@ -26,18 +21,25 @@ public class NearMapDataViewModel extends BaseViewModel<NearMapDataFragment, Nea
         return new NearMapDataModel();
     }
 
-
+    /**
+     * 初始化页面数据
+     */
     public void initData() {
         mModel.initData();
     }
 
-    public void setNearCityInfo(ArrayList<CityDataInfo> cityDataInfos) {
+    /**
+     * 更新附近推荐城市view
+     * @param cityDataInfos
+     */
+    public void setNearCityInfo(final ArrayList<CityDataInfo> cityDataInfos) {
         mView.updateNearView(cityDataInfos);
     }
+
     /**
      * 返回上一页
      */
-    public Action closeNearMapDataView = () -> {
+    public Action mCloseNearMapDataView = () -> {
         closeFragment(true);
     };
 
@@ -45,22 +47,23 @@ public class NearMapDataViewModel extends BaseViewModel<NearMapDataFragment, Nea
     /**
      * @param adCodeList 省份、城市ID列表
      */
-    public void startAllTask(ArrayList<Integer> adCodeList) {
+    public void startAllTask(final ArrayList<Integer> adCodeList) {
         mModel.startAllTask(adCodeList);
+    }
+
+    /**
+     * @param adCodeList 省份、城市ID列表
+     */
+    public void deleteAllTask(final ArrayList<Integer> adCodeList) {
+        mModel.deleteAllTask(adCodeList);
     }
 
     /**
      * 暂停正在下载的城市数据
      * @param adCodeList 省份、城市ID列表
      */
-    public void pauseAllTask(ArrayList<Integer> adCodeList) {
+    public void pauseAllTask(final ArrayList<Integer> adCodeList) {
         mModel.pauseAllTask(adCodeList);
     }
-
-    public void cancelAllTask(ArrayList<Integer> adCodeList) {
-        mModel.cancelAllTask(adCodeList);
-    }
-
-
 
 }

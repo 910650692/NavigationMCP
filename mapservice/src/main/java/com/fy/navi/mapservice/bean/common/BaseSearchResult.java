@@ -7,11 +7,13 @@ import java.util.ArrayList;
 
 public class BaseSearchResult implements Parcelable {
 
-    private int code;
+    private int mCode;
     private int maxPageNum;
-    private ArrayList<BaseSearchPoi> poiList = new ArrayList<>();
+    private ArrayList<BaseSearchPoi> mPoiList = new ArrayList<>();
 
-    public BaseSearchResult() {}
+    public BaseSearchResult() {
+
+    }
 
     public static final Creator<BaseSearchResult> CREATOR = new Creator<BaseSearchResult>() {
         @Override
@@ -26,16 +28,16 @@ public class BaseSearchResult implements Parcelable {
     };
 
     public BaseSearchResult(Parcel in) {
-        code = in.readInt();
+        mCode = in.readInt();
         maxPageNum = in.readInt();
-        poiList = in.createTypedArrayList(BaseSearchPoi.CREATOR);
+        mPoiList = in.createTypedArrayList(BaseSearchPoi.CREATOR);
     }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(code);
+        dest.writeInt(mCode);
         dest.writeInt(maxPageNum);
-        dest.writeTypedList(poiList);
+        dest.writeTypedList(mPoiList);
     }
 
     @Override
@@ -44,11 +46,11 @@ public class BaseSearchResult implements Parcelable {
     }
 
     public int getCode() {
-        return code;
+        return mCode;
     }
 
     public void setCode(int code) {
-        this.code = code;
+        this.mCode = code;
     }
 
     public int getMaxPageNum() {
@@ -60,10 +62,10 @@ public class BaseSearchResult implements Parcelable {
     }
 
     public ArrayList<BaseSearchPoi> getPoiList() {
-        return poiList;
+        return mPoiList;
     }
 
     public void setPoiList(ArrayList<BaseSearchPoi> poiList) {
-        this.poiList = poiList;
+        this.mPoiList = poiList;
     }
 }

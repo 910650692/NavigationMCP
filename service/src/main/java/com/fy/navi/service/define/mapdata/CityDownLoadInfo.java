@@ -2,131 +2,236 @@ package com.fy.navi.service.define.mapdata;
 
 import java.math.BigInteger;
 
-/**
- * @Description
- * @Author fh
- * @date 2024/12/12
- */
 public class CityDownLoadInfo {
-    public int adcode;
+    private int mAdCode;
     // 是否有效下载项
-    public boolean bValidItem;
+    private boolean mValidItem;
     // 下载任务执行的状态
-    public int taskState;
-    public String statusTip;
+    private int mTaskState;
+    private String mStatusTip;
     // 操作错误码
-    public int errCode;
+    private int mErrCode;
     // 下载进度
-    public float percent;
+    private float mPercent;
     // 是否有数据更新
-    public boolean bUpdate;
+    private boolean mUpdate;
     // 是否有在用数据
-    public boolean bIsDataUsed;
+    private boolean mIsDataUsed;
     // 是否发现完整高版本数据
-    public boolean IsCompltelyHighVer;
+    private boolean mIsCompletelyHighVer;
     //  全量zip包解压后大小，单位byte
-    public BigInteger nFullUnpackSize;
+    private BigInteger mFullUnpackSize;
     // 增量包解压后大小，单位Byte
-    public BigInteger nUnpackSize;
+    private BigInteger mUnpackSize;
     // 全量zip包大小，单位byte
-    public BigInteger nFullZipSize;
+    private BigInteger mFullZipSize;
     // 增量zip包大小，单位Byte
-    public BigInteger nZipSize;
+    private BigInteger mZipSize;
 
-    public int getAdCode() {
-        return adcode;
+    /**
+     * 获取参数
+     * @return 返回 int 数据
+     */
+    public int getAdcode() {
+        return mAdCode;
     }
 
-    public void setAdCode(int adCode) {
-        this.adcode = adCode;
+    public void setAdcode(final int adcode) {
+        this.mAdCode = adcode;
     }
 
-    public boolean isbValidItem() {
-        return bValidItem;
+    /**
+     * 获取参数
+     * @return 返回boolean 数据
+     */
+    public boolean isValidItem() {
+        return mValidItem;
     }
 
-    public void setbValidItem(boolean bValidItem) {
-        this.bValidItem = bValidItem;
+    /**
+     * * 设置参数
+     * @param validItem
+     */
+    public void setValidItem(final boolean validItem) {
+        this.mValidItem = validItem;
     }
 
+    /**
+     * 获取参数
+     * @return 返回 int 数据
+     */
     public int getTaskState() {
-        return taskState;
+        return mTaskState;
     }
 
-    public void setTaskState(int taskState) {
-        this.taskState = taskState;
+    /**
+     * * 设置参数
+     * @param taskState
+     */
+    public void setTaskState(final int taskState) {
+        this.mTaskState = taskState;
     }
 
+    /**
+     * 获取参数
+     * @return 返回 String 数据
+     */
+    public String getStatusTip() {
+        return mStatusTip;
+    }
+
+    /**
+     * * 设置参数
+     * @param statusTip
+     */
+    public void setStatusTip(final String statusTip) {
+        this.mStatusTip = statusTip;
+    }
+
+    /**
+     * 获取参数
+     * @return 返回 int 数据
+     */
     public int getErrCode() {
-        return errCode;
+        return mErrCode;
     }
 
-    public void setErrCode(int errCode) {
-        this.errCode = errCode;
+    /**
+     * * 设置参数
+     * @param errCode
+     */
+    public void setErrCode(final int errCode) {
+        this.mErrCode = errCode;
     }
 
+    /**
+     * 获取参数
+     * @return 返回 float 数据
+     */
     public float getPercent() {
-        return percent;
+        return mPercent;
     }
 
-    public void setPercent(float percent) {
-        this.percent = percent;
+    /**
+     * * 设置参数
+     * @param percent
+     */
+    public void setPercent(final float percent) {
+        this.mPercent = percent;
     }
 
-    public boolean isbUpdate() {
-        return bUpdate;
+    /**
+     * 获取参数
+     * @return 返回 boolean 数据
+     */
+    public boolean isUpdate() {
+        return mUpdate;
     }
 
-    public void setbUpdate(boolean bUpdate) {
-        this.bUpdate = bUpdate;
+    /**
+     * * 设置参数
+     * @param update
+     */
+    public void setUpdate(final boolean update) {
+        this.mUpdate = update;
     }
 
-    public boolean isbIsDataUsed() {
-        return bIsDataUsed;
+    /**
+     * 获取参数
+     * @return 返回 boolean 数据
+     */
+    public boolean isIsDataUsed() {
+        return mIsDataUsed;
     }
 
-    public void setbIsDataUsed(boolean bIsDataUsed) {
-        this.bIsDataUsed = bIsDataUsed;
+    /**
+     * * 设置参数
+     * @param isDataUsed
+     */
+    public void setIsDataUsed(final boolean isDataUsed) {
+        this.mIsDataUsed = isDataUsed;
     }
 
+    /**
+     * 获取参数
+     * @return 返回 boolean 数据
+     */
     public boolean isCompletelyHighVer() {
-        return IsCompltelyHighVer;
+        return mIsCompletelyHighVer;
     }
 
-    public void setCompletelyHighVer(boolean completelyHighVer) {
-        IsCompltelyHighVer = completelyHighVer;
+    /**
+     * * 设置参数
+     * @param completelyHighVer
+     */
+    public void setCompletelyHighVer(final boolean completelyHighVer) {
+        mIsCompletelyHighVer = completelyHighVer;
     }
 
-    public BigInteger getnFullUnpackSize() {
-        return nFullUnpackSize;
+    /**
+     * 获取参数
+     * @return 返回 BigInteger 数据
+     */
+    public BigInteger getFullUnpackSize() {
+        return mFullUnpackSize;
     }
 
-    public void setnFullUnpackSize(BigInteger nFullUnpackSize) {
-        this.nFullUnpackSize = nFullUnpackSize;
+    /**
+     * * 设置参数
+     * @param fullUnpackSize
+     */
+    public void setFullUnpackSize(final BigInteger fullUnpackSize) {
+        this.mFullUnpackSize = fullUnpackSize;
     }
 
-    public BigInteger getnFullZipSize() {
-        return nFullZipSize;
+
+    /**
+     * 获取参数
+     * @return 返回 BigInteger 数据
+     */
+    public BigInteger getUnpackSize() {
+        return mUnpackSize;
     }
 
-    public void setnFullZipSize(BigInteger nFullZipSize) {
-        this.nFullZipSize = nFullZipSize;
+    /**
+     * * 设置参数
+     * @param unPackSize
+     */
+    public void setUnpackSize(final BigInteger unPackSize) {
+        this.mUnpackSize = unPackSize;
     }
 
-    public BigInteger getnUnpackSize() {
-        return nUnpackSize;
+
+    /**
+     * 获取参数
+     * @return 返回 BigInteger 数据
+     */
+    public BigInteger getFullZipSize() {
+        return mFullZipSize;
     }
 
-    public void setnUnpackSize(BigInteger nUnpackSize) {
-        this.nUnpackSize = nUnpackSize;
+    /**
+     * * 设置参数
+     * @param fullZipSize
+     */
+    public void setFullZipSize(final BigInteger fullZipSize) {
+        this.mFullZipSize = fullZipSize;
     }
 
-    public BigInteger getnZipSize() {
-        return nZipSize;
+
+    /**
+     * 获取参数
+     * @return 返回 BigInteger 数据
+     */
+    public BigInteger getZipSize() {
+        return mZipSize;
     }
 
-    public void setnZipSize(BigInteger nZipSize) {
-        this.nZipSize = nZipSize;
+    /**
+     * * 设置参数
+     * @param zipSize
+     */
+    public void setZipSize(final BigInteger zipSize) {
+        this.mZipSize = zipSize;
     }
-
 }

@@ -4,22 +4,19 @@ import androidx.annotation.IntDef;
 
 import com.android.utils.ScreenUtils;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-
 public interface NaviConstant {
-    boolean isSystemAudio = true;
+    boolean IS_SYSTEM_AUDIO = true;
     long NAVI_ID = 0;//真实导航ID
     long NAVI_SIM_ID = 1;//模拟导航ID
     long NAVI_CRUISE_ID = 2;//巡航ID
     String KEY_NAVI_MODEL = "NaviGuidanceModel";
     // 导航转向图标宽度信息
-    int turnIconSize = ScreenUtils.Companion.getInstance().dp2px(155);
-    int nextTurnIconSize = ScreenUtils.Companion.getInstance().dp2px(100);
+    int TURN_ICON_SIZE = ScreenUtils.Companion.getInstance().dp2px(155);
+    int NEXT_TURN_ICON_SIZE = ScreenUtils.Companion.getInstance().dp2px(100);
     //离线转向图标，本地图片名
-    String hudResPrefix = "global_image_hud_";
-    String iconResName = "sou";
-    String night = "_night";
+    String HUD_RES_PREFIX = "global_image_hud_";
+    String ICON_RES_NAME = "sou";
+    String NIGHT = "_night";
     // 1000公里
     int THOUSANDKILOMETRE = 1000 * 1000;
     /**
@@ -39,12 +36,12 @@ public interface NaviConstant {
      */
     byte CROSS_NAV_TUNNEL_OUT = 2;
     int AUTO_UNKNOWN_ERROR = Integer.MIN_VALUE;
-    int LaneTypeNULL = 255;
-    int LaneTypeNormal = 0;
-    int LaneTypeBus = 1;
-    int LaneTypeOther = 2;
-    int LaneTypeTidal = 3;
-    int LaneTypeVariable = 4;
+    int LANE_TYPE_NULL = 255;
+    int LANE_TYPE_NORMAL = 0;
+    int LANE_TYPE_BUS = 1;
+    int LANE_TYPE_OTHER = 2;
+    int LANE_TYPE_TIDAL = 3;
+    int LANE_TYPE_VARIABLE = 4;
 
     // 小号车道线最多条数
     int LANE_SMALL_MAX = 8;
@@ -58,28 +55,28 @@ public interface NaviConstant {
     long START_SEARCH_PARK_DISTANCE = 1500;
 
     interface ManeuverDataType {
-        int Maneuver = 1; //转向图标图片数据
-        int ManeuverIcon = 2;    //转向图标信息
-        int ExitDirection = 3;  //导航过程中传出出入口的编号、方向信息
+        int MANEUVER = 1; //转向图标图片数据
+        int MANEUVER_ICON = 2;    //转向图标信息
+        int EXIT_DIRECTION = 3;  //导航过程中传出出入口的编号、方向信息
     }
 
     interface BizRouteType {
-        int BizRouteTypeArrow = 6017;
+        int BIZ_ROUTE_TYPE_ARROW = 6017;
     }
 
     interface ChangeNaviPathResult {
         /**
          * 切换成功
          */
-        int ChangeNaviPathResultSuccess = 1;
+        int CHANGE_NAVI_PATH_RESULT_SUCCESS = 1;
         /**
          * PathID无效切换失败
          */
-        int ChangeNaviPathResultErrorPathIDInvalid = 2;
+        int CHANGE_NAVI_PATH_RESULT_ERROR_PATH_ID_INVALID = 2;
         /**
          * 与主路线PathID切换失败
          */
-        int ChangeNaviPathResultErrorSamePathID = 3;
+        int CHANGE_NAVI_PATH_RESULT_ERROR_SAME_PATH_ID = 3;
     }
 
     @IntDef({SapaItemsType.AUTO_UNKNOWN_ERROR, SapaItemsType.SPAS_LIST,
@@ -113,7 +110,7 @@ public interface NaviConstant {
     }
 
     @IntDef({NaviSceneType.SCENE_TBT, NaviSceneType.SCENE_LANES, NaviSceneType.SCENE_VIA_LIST,
-            NaviSceneType.SCENE_PARK_LIST, NaviSceneType.Scene_VIA_INFO, NaviSceneType.SCENE_LAST_MILE,
+            NaviSceneType.SCENE_PARK_LIST, NaviSceneType.SCENE_VIA_INFO, NaviSceneType.SCENE_LAST_MILE,
             NaviSceneType.SCENE_PARALLEL, NaviSceneType.SCENE_PREFERENCE, NaviSceneType.SCENE_SPEED,
             NaviSceneType.SCENE_SAPA, NaviSceneType.SCENE_CROSS_IMAGE, NaviSceneType.SCENE_CONTROL})
     @interface NaviSceneType {
@@ -121,7 +118,7 @@ public interface NaviConstant {
         int SCENE_LANES = 1;
         int SCENE_VIA_LIST = 2;
         int SCENE_PARK_LIST = 3;
-        int Scene_VIA_INFO = 4;
+        int SCENE_VIA_INFO = 4;
         int SCENE_LAST_MILE = 5;
         int SCENE_PARALLEL = 6;
         int SCENE_PREFERENCE = 7;
@@ -131,12 +128,12 @@ public interface NaviConstant {
         int SCENE_CONTROL = 11;
     }
 
-    @IntDef({CrossType.CrossTypeGrid, CrossType.CrossTypeVector,
-            CrossType.CrossType3D})
+    @IntDef({CrossType.CROSS_TYPE_GRID, CrossType.CROSS_TYPE_VECTOR,
+            CrossType.CROSS_TYPE_3_D})
     @interface CrossType {
-        int CrossTypeGrid = 1;//栅格图, 背景为JPG，箭头为PNG
-        int CrossTypeVector = 3;//矢量大图
-        int CrossType3D = 4;//三维放大图
+        int CROSS_TYPE_GRID = 1;//栅格图, 背景为JPG，箭头为PNG
+        int CROSS_TYPE_VECTOR = 3;//矢量大图
+        int CROSS_TYPE_3_D = 4;//三维放大图
     }
 
     @IntDef({SpeedType.SPEED_OVERALL, SpeedType.SPEED_GREEN_WAVE, SpeedType.SPEED_CAMERA,
@@ -150,278 +147,408 @@ public interface NaviConstant {
 
     interface LocSwitchRoadType {
         int AUTO_UNKNOWN_ERROR = Integer.MIN_VALUE;
-        int LocSwitchNull = -1;
-        int LocSwitchMainToSide = 1;
-        int LocSwitchSideToMain = 0;
-        int LocSwitchUpBridgeToDownBridge = 3;
-        int LocSwitchDownBridgeToUpBridge = 2;
+        int LOC_SWITCH_NULL = -1;
+        int LOC_SWITCH_MAIN_TO_SIDE = 1;
+        int LOC_SWITCH_SIDE_TO_MAIN = 0;
+        int LOC_SWITCH_UP_BRIDGE_TO_DOWN_BRIDGE = 3;
+        int LOC_SWITCH_DOWN_BRIDGE_TO_UP_BRIDGE = 2;
     }
 
     interface TMCTrafficStatus {
         int AUTO_UNKNOWN_ERROR = Integer.MIN_VALUE;
-        int TrafficStatusUnkonw = 0;
-        int TrafficStatusOpen = 1;
-        int TrafficStatusSlow = 2;
-        int TrafficStatusJam = 3;
-        int TrafficStatusCongested = 4;
-        int TrafficStatusExtremelyOpen = 5;
+        int TRAFFIC_STATUS_UNKONW = 0;
+        int TRAFFIC_STATUS_OPEN = 1;
+        int TRAFFIC_STATUS_SLOW = 2;
+        int TRAFFIC_STATUS_JAM = 3;
+        int TRAFFIC_STATUS_CONGESTED = 4;
+        int TRAFFIC_STATUS_EXTREMELY_OPEN = 5;
     }
 
     interface VectorCrossImageType {
-        int VectorCrossImageTypeInvalid = -1;//非法值
-        int VectorCrossImageTypeCommon = 0;//普通矢量路口大图
-        int VectorCrossImageTypeRoundabout = 1;//环岛矢量路口大图
-        int VectorCrossImageTypeConfusion = 2;//混淆矢量路口大图
-        int VectorCrossImageTypeNear = 3;//近接矢量路口大图
-        int VectorCrossImageTypeDoubleLight = 4;//跨红绿灯矢量路口大图
-        int VectorCrossImageTypeSolidLine = 6;//长实线大图
-        int VectorCrossImageTypeSolidNear = 7;//长实线近接大图
-        int VectorCrossImageTypeMixReverse = 10;//混淆型逆行大图
+        int VECTOR_CROSS_IMAGE_TYPE_INVALID = -1;//非法值
+        int VECTOR_CROSS_IMAGE_TYPE_COMMON = 0;//普通矢量路口大图
+        int VECTOR_CROSS_IMAGE_TYPE_ROUNDABOUT = 1;//环岛矢量路口大图
+        int VECTOR_CROSS_IMAGE_TYPE_CONFUSION = 2;//混淆矢量路口大图
+        int VECTOR_CROSS_IMAGE_TYPE_NEAR = 3;//近接矢量路口大图
+        int VECTOR_CROSS_IMAGE_TYPE_DOUBLE_LIGHT = 4;//跨红绿灯矢量路口大图
+        int VECTOR_CROSS_IMAGE_TYPE_SOLID_LINE = 6;//长实线大图
+        int VECTOR_CROSS_IMAGE_TYPE_SOLID_NEAR = 7;//长实线近接大图
+        int VECTOR_CROSS_IMAGE_TYPE_MIX_REVERSE = 10;//混淆型逆行大图
     }
 
     interface GuideParamType {
         int AUTO_UNKNOWN_ERROR = Integer.MIN_VALUE;
-        int GuideParamInvalid = 0;
-        int GuideParamCommon = 1;
-        int GuideParamTMC = 2;
-        int GuideParamTR = 3;
-        int GuideParamSAPA = 4;
-        int GuideParamLane = 5;
-        int GuideParamCruise = 6;
-        int GuideParamNavi = 7;
-        int GuideParamCamera = 8;
-        int GuideParamExit = 9;
-        int GuideParamCrossing = 10;
-        int GuideParamTTSPlay = 11;
-        int GuideParamVehicle = 12;
-        int GuideParamNetwork = 13;
-        int GuideParamEasy3d = 14;
-        int GuideParamEmulator = 15;
-        int GuideParamJiliAuto = 16;
-        int GuideParamNaviWeather = 17;
+        int GUIDE_PARAM_INVALID = 0;
+        int GUIDE_PARAM_COMMON = 1;
+        int GUIDE_PARAM_TMC = 2;
+        int GUIDE_PARAM_TR = 3;
+        int GUIDE_PARAM_SAPA = 4;
+        int GUIDE_PARAM_LANE = 5;
+        int GUIDE_PARAM_CRUISE = 6;
+        int GUIDE_PARAM_NAVI = 7;
+        int GUIDE_PARAM_CAMERA = 8;
+        int GUIDE_PARAM_EXIT = 9;
+        int GUIDE_PARAM_CROSSING = 10;
+        int GUIDE_PARAM_TTS_PLAY = 11;
+        int GUIDE_PARAM_VEHICLE = 12;
+        int GUIDE_PARAM_NETWORK = 13;
+        int GUIDE_PARAM_EASY_3_D = 14;
+        int GUIDE_PARAM_EMULATOR = 15;
+        int GUIDE_PARAM_JILI_AUTO = 16;
+        int GUIDE_PARAM_NAVI_WEATHER = 17;
     }
 
     interface TMCViaIndex {
-        int Via0 = 0;
-        int Via1 = 1;
-        int Via2 = 2;
-        int Via3 = 3;
-        int Via4 = 4;
-        int Via5 = 5;
-        int Via6 = 6;
-        int Via7 = 7;
-        int Via8 = 8;
-        int Via9 = 9;
-        int Via10 = 10;
-        int Via11 = 11;
-        int Via12 = 12;
-        int Via13 = 13;
-        int Via14 = 14;
-        int Via15 = 15;
-        int Via16 = 16;
-        int Via17 = 17;
-        int Via18 = 18;
-        int Via19 = 19;
+        int VIA_0 = 0;
+        int VIA_1 = 1;
+        int VIA_2 = 2;
+        int VIA_3 = 3;
+        int VIA_4 = 4;
+        int VIA_5 = 5;
+        int VIA_6 = 6;
+        int VIA_7 = 7;
+        int VIA_8 = 8;
+        int VIA_9 = 9;
+        int VIA_10 = 10;
+        int VIA_11 = 11;
+        int VIA_12 = 12;
+        int VIA_13 = 13;
+        int VIA_14 = 14;
+        int VIA_15 = 15;
+        int VIA_16 = 16;
+        int VIA_17 = 17;
+        int VIA_18 = 18;
+        int VIA_19 = 19;
     }
 
     //车道线
     interface LaneActionConstants {
-        int LaneActionAheadAndNUll = 0;
-        int LaneActionAheadAndNUllNoAction = 1;
-        int LaneActionLeftAndNUll = 2;
-        int LaneActionLeftAndNUllNoAction = 3;
-        int LaneActionAheadLeftAndAhead = 4;
-        int LaneActionAheadLeftAndLeft = 5;
-        int LaneActionAheadLeftNoAction = 6;
-        int LaneActionRightAndNUll = 7;
-        int LaneActionRightAndNUllNoAction = 8;
-        int LaneActionAheadRightAndAhead = 9;
-        int LaneActionAheadRightAndRight = 10;
-        int LaneActionAheadRightNoAction = 11;
-        int LaneActionLUTurnAndNUll = 12;
-        int LaneActionLUTurnAndNUllNoAction = 13;
-        int LaneActionLeftRightAndLeft = 14;
-        int LaneActionLeftRightAndRight = 15;
-        int LaneActionLeftRightNoAction = 16;
-        int LaneActionAheadLeftRightAndAhead = 17;
-        int LaneActionAheadLeftRightAndLeft = 18;
-        int LaneActionAheadLeftRightAndRight = 19;
-        int LaneActionAheadLeftRightNoAction = 20;
-        int LaneActionRUTurnAndNUll = 21;
-        int LaneActionRUTurnAndNUllNoAction = 22;
-        int LaneActionAheadLUTurnAndAhead = 23;
-        int LaneActionAheadLUTurnAndLUTurn = 24;
-        int LaneActionAheadLUTurnNoAction = 25;
-        int LaneActionAheadRUTurnAndAhead = 26;
-        int LaneActionAheadRUTurnAndRUTurn = 27;
-        int LaneActionAheadRUTurnNoAction = 28;
-        int LaneActionLeftLUTurnAndLeft = 29;
-        int LaneActionLeftLUTurnAndLUTurn = 30;
-        int LaneActionLeftLUTurnNoAction = 31;
-        int LaneActionRightRUTurnAndRight = 32;
-        int LaneActionRightRUTurnAndRUTurn = 33;
-        int LaneActionRightRUTurnNoAction = 34;
-        int LaneActionLeftInAheadAndNUll = 35;
-        int LaneActionLeftInAheadAndNUllNoAction = 36;
-        int LaneActionAheadLeftLUTurnAndAhead = 37;
-        int LaneActionAheadLeftLUTurnAndLeft = 38;
-        int LaneActionAheadLeftLUTurnAndLUTrun = 39;
-        int LaneActionAheadLeftLUTurnNoAction = 40;
-        int LaneActionRightLUTurnAndRight = 41;
-        int LaneActionRightLUTurnAndLUTurn = 42;
-        int LaneActionRightLUTurnNoAction = 43;
-        int LaneActionLeftRightLUTurnAndLeft = 44;
-        int LaneActionLeftRightLUTurnAndRight = 45;
-        int LaneActionLeftRightLUTurnAndLUTurn = 46;
-        int LaneActionLeftRightLUTurnNoAction = 47;
-        int LaneActionAheadRightLUTurnAndAhead = 48;
-        int LaneActionAheadRightLUTurnAndRight = 49;
-        int LaneActionAheadRightLUTurnAndLUTurn = 50;
-        int LaneActionAheadRightLUTurnNoAction = 51;
-        int LaneActionLeftRUTurnAndLeft = 52;
-        int LaneActionLeftRUTurnAndRUTurn = 53;
-        int LaneActionLeftRUTurnNoAction = 54;
-        int LaneActionBusAndBus = 55;
-        int LaneActionBusNoAction = 56;
-        int LaneActionVariableAndVariable = 57;
-        int LaneActionVariableNoAction = 58;
-        int LaneActionDedicated = 149;
-        int LaneActionTidal = 150;
-        int LaneActionEmptyNoAction = 151;
-        int LaneActionEmpty = 152;
+        int LANE_ACTION_AHEAD_AND_N_ULL = 0;
+        int LANE_ACTION_AHEAD_AND_N_ULL_NO_ACTION = 1;
+        int LANE_ACTION_LEFT_AND_N_ULL = 2;
+        int LANE_ACTION_LEFT_AND_N_ULL_NO_ACTION = 3;
+        int LANE_ACTION_AHEAD_LEFT_AND_AHEAD = 4;
+        int LANE_ACTION_AHEAD_LEFT_AND_LEFT = 5;
+        int LANE_ACTION_AHEAD_LEFT_NO_ACTION = 6;
+        int LANE_ACTION_RIGHT_AND_N_ULL = 7;
+        int LANE_ACTION_RIGHT_AND_N_ULL_NO_ACTION = 8;
+        int LANE_ACTION_AHEAD_RIGHT_AND_AHEAD = 9;
+        int LANE_ACTION_AHEAD_RIGHT_AND_RIGHT = 10;
+        int LANE_ACTION_AHEAD_RIGHT_NO_ACTION = 11;
+        int LANE_ACTION_LU_TURN_AND_N_ULL = 12;
+        int LANE_ACTION_LU_TURN_AND_N_ULL_NO_ACTION = 13;
+        int LANE_ACTION_LEFT_RIGHT_AND_LEFT = 14;
+        int LANE_ACTION_LEFT_RIGHT_AND_RIGHT = 15;
+        int LANE_ACTION_LEFT_RIGHT_NO_ACTION = 16;
+        int LANE_ACTION_AHEAD_LEFT_RIGHT_AND_AHEAD = 17;
+        int LANE_ACTION_AHEAD_LEFT_RIGHT_AND_LEFT = 18;
+        int LANE_ACTION_AHEAD_LEFT_RIGHT_AND_RIGHT = 19;
+        int LANE_ACTION_AHEAD_LEFT_RIGHT_NO_ACTION = 20;
+        int LANE_ACTION_RU_TURN_AND_N_ULL = 21;
+        int LANE_ACTION_RU_TURN_AND_N_ULL_NO_ACTION = 22;
+        int LANE_ACTION_AHEAD_LU_TURN_AND_AHEAD = 23;
+        int LANE_ACTION_AHEAD_LU_TURN_AND_LU_TURN = 24;
+        int LANE_ACTION_AHEAD_LU_TURN_NO_ACTION = 25;
+        int LANE_ACTION_AHEAD_RU_TURN_AND_AHEAD = 26;
+        int LANE_ACTION_AHEAD_RU_TURN_AND_RU_TURN = 27;
+        int LANE_ACTION_AHEAD_RU_TURN_NO_ACTION = 28;
+        int LANE_ACTION_LEFT_LU_TURN_AND_LEFT = 29;
+        int LANE_ACTION_LEFT_LU_TURN_AND_LU_TURN = 30;
+        int LANE_ACTION_LEFT_LU_TURN_NO_ACTION = 31;
+        int LANE_ACTION_RIGHT_RU_TURN_AND_RIGHT = 32;
+        int LANE_ACTION_RIGHT_RU_TURN_AND_RU_TURN = 33;
+        int LANE_ACTION_RIGHT_RU_TURN_NO_ACTION = 34;
+        int LANE_ACTION_LEFT_IN_AHEAD_AND_N_ULL = 35;
+        int LANE_ACTION_LEFT_IN_AHEAD_AND_N_ULL_NO_ACTION = 36;
+        int LANE_ACTION_AHEAD_LEFT_LU_TURN_AND_AHEAD = 37;
+        int LANE_ACTION_AHEAD_LEFT_LU_TURN_AND_LEFT = 38;
+        int LANE_ACTION_AHEAD_LEFT_LU_TURN_AND_LU_TRUN = 39;
+        int LANE_ACTION_AHEAD_LEFT_LU_TURN_NO_ACTION = 40;
+        int LANE_ACTION_RIGHT_LU_TURN_AND_RIGHT = 41;
+        int LANE_ACTION_RIGHT_LU_TURN_AND_LU_TURN = 42;
+        int LANE_ACTION_RIGHT_LU_TURN_NO_ACTION = 43;
+        int LANE_ACTION_LEFT_RIGHT_LU_TURN_AND_LEFT = 44;
+        int LANE_ACTION_LEFT_RIGHT_LU_TURN_AND_RIGHT = 45;
+        int LANE_ACTION_LEFT_RIGHT_LU_TURN_AND_LU_TURN = 46;
+        int LANE_ACTION_LEFT_RIGHT_LU_TURN_NO_ACTION = 47;
+        int LANE_ACTION_AHEAD_RIGHT_LU_TURN_AND_AHEAD = 48;
+        int LANE_ACTION_AHEAD_RIGHT_LU_TURN_AND_RIGHT = 49;
+        int LANE_ACTION_AHEAD_RIGHT_LU_TURN_AND_LU_TURN = 50;
+        int LANE_ACTION_AHEAD_RIGHT_LU_TURN_NO_ACTION = 51;
+        int LANE_ACTION_LEFT_RU_TURN_AND_LEFT = 52;
+        int LANE_ACTION_LEFT_RU_TURN_AND_RU_TURN = 53;
+        int LANE_ACTION_LEFT_RU_TURN_NO_ACTION = 54;
+        int LANE_ACTION_BUS_AND_BUS = 55;
+        int LANE_ACTION_BUS_NO_ACTION = 56;
+        int LANE_ACTION_VARIABLE_AND_VARIABLE = 57;
+        int LANE_ACTION_VARIABLE_NO_ACTION = 58;
+        int LANE_ACTION_DEDICATED = 149;
+        int LANE_ACTION_TIDAL = 150;
+        int LANE_ACTION_EMPTY_NO_ACTION = 151;
+        int LANE_ACTION_EMPTY = 152;
 
 
         // 分时车道底部公交/专用/潮汐/可变图标
 //    private enum TimeLaneBottomAction
-        int BackLaneBusWorkable = 1;
-        int BackLaneSpecialWorkable = 2;
-        int BackLaneTidalWorkable = 3;
-        int BackLaneReversibleWorkable = 4;
-        int BackLaneBusNoWorkable = 5;
-        int BackLaneSpecialNoWorkable = 6;
-        int BackLaneTidalNoWorkable = 7;
-        int BackLaneReversibleNoWorkable = 8;
+        int BACK_LANE_BUS_WORKABLE = 1;
+        int BACK_LANE_SPECIAL_WORKABLE = 2;
+        int BACK_LANE_TIDAL_WORKABLE = 3;
+        int BACK_LANE_REVERSIBLE_WORKABLE = 4;
+        int BACK_LANE_BUS_NO_WORKABLE = 5;
+        int BACK_LANE_SPECIAL_NO_WORKABLE = 6;
+        int BACK_LANE_TIDAL_NO_WORKABLE = 7;
+        int BACK_LANE_REVERSIBLE_NO_WORKABLE = 8;
 
-        int[][] naviLaneMap = {
-                {NaviConstant.LaneAction.LaneActionAhead, NaviConstant.LaneAction.LaneActionNULL, LaneActionConstants.LaneActionAheadAndNUllNoAction},// 直行
-                {NaviConstant.LaneAction.LaneActionAhead, NaviConstant.LaneAction.LaneActionAhead, LaneActionConstants.LaneActionAheadAndNUll},
+        int[][] NAVI_LANE_MAP = {
+                {NaviConstant.LaneAction.LANE_ACTION_AHEAD,
+                        NaviConstant.LaneAction.LANE_ACTION_NULL,
+                        LaneActionConstants.LANE_ACTION_AHEAD_AND_N_ULL_NO_ACTION},// 直行
+                {NaviConstant.LaneAction.LANE_ACTION_AHEAD,
+                        NaviConstant.LaneAction.LANE_ACTION_AHEAD,
+                        LaneActionConstants.LANE_ACTION_AHEAD_AND_N_ULL},
 
-                {NaviConstant.LaneAction.LaneActionLeft, NaviConstant.LaneAction.LaneActionNULL, LaneActionConstants.LaneActionLeftAndNUllNoAction},// 左转
-                {NaviConstant.LaneAction.LaneActionLeft, NaviConstant.LaneAction.LaneActionLeft, LaneActionConstants.LaneActionLeftAndNUll},
+                {NaviConstant.LaneAction.LANE_ACTION_LEFT,
+                        NaviConstant.LaneAction.LANE_ACTION_NULL,
+                        LaneActionConstants.LANE_ACTION_LEFT_AND_N_ULL_NO_ACTION},// 左转
+                {NaviConstant.LaneAction.LANE_ACTION_LEFT,
+                        NaviConstant.LaneAction.LANE_ACTION_LEFT,
+                        LaneActionConstants.LANE_ACTION_LEFT_AND_N_ULL},
 
-                {NaviConstant.LaneAction.LaneActionRight, NaviConstant.LaneAction.LaneActionNULL, LaneActionConstants.LaneActionRightAndNUllNoAction},// 右转
-                {NaviConstant.LaneAction.LaneActionRight, NaviConstant.LaneAction.LaneActionRight, LaneActionConstants.LaneActionRightAndNUll},
+                {NaviConstant.LaneAction.LANE_ACTION_RIGHT,
+                        NaviConstant.LaneAction.LANE_ACTION_NULL,
+                        LaneActionConstants.LANE_ACTION_RIGHT_AND_N_ULL_NO_ACTION},// 右转
+                {NaviConstant.LaneAction.LANE_ACTION_RIGHT,
+                        NaviConstant.LaneAction.LANE_ACTION_RIGHT,
+                        LaneActionConstants.LANE_ACTION_RIGHT_AND_N_ULL},
 
-                {NaviConstant.LaneAction.LaneActionLUTurn, NaviConstant.LaneAction.LaneActionLUTurn, LaneActionConstants.LaneActionLUTurnAndNUll},// 左U-Turn
-                {NaviConstant.LaneAction.LaneActionLUTurn, NaviConstant.LaneAction.LaneActionNULL, LaneActionConstants.LaneActionLUTurnAndNUllNoAction},
+                {NaviConstant.LaneAction.LANE_ACTION_LU_TURN,
+                        NaviConstant.LaneAction.LANE_ACTION_LU_TURN,
+                        LaneActionConstants.LANE_ACTION_LU_TURN_AND_N_ULL},// 左U-Turn
+                {NaviConstant.LaneAction.LANE_ACTION_LU_TURN,
+                        NaviConstant.LaneAction.LANE_ACTION_NULL,
+                        LaneActionConstants.LANE_ACTION_LU_TURN_AND_N_ULL_NO_ACTION},
 
-                {NaviConstant.LaneAction.LaneActionRUTurn, NaviConstant.LaneAction.LaneActionNULL, LaneActionConstants.LaneActionRUTurnAndNUllNoAction},// 右U-Turn
-                {NaviConstant.LaneAction.LaneActionRUTurn, NaviConstant.LaneAction.LaneActionRUTurn, LaneActionConstants.LaneActionRUTurnAndNUll},
+                {NaviConstant.LaneAction.LANE_ACTION_RU_TURN,
+                        NaviConstant.LaneAction.LANE_ACTION_NULL,
+                        LaneActionConstants.LANE_ACTION_RU_TURN_AND_N_ULL_NO_ACTION},// 右U-Turn
+                {NaviConstant.LaneAction.LANE_ACTION_RU_TURN,
+                        NaviConstant.LaneAction.LANE_ACTION_RU_TURN,
+                        LaneActionConstants.LANE_ACTION_RU_TURN_AND_N_ULL},
 
-                {NaviConstant.LaneAction.LaneActionLeftInAhead, NaviConstant.LaneAction.LaneActionNULL, LaneActionConstants.LaneActionLeftInAheadAndNUllNoAction},// 左侧扩展车道 直行
-                {NaviConstant.LaneAction.LaneActionLeftInAhead, NaviConstant.LaneAction.LaneActionLeftInAhead, LaneActionConstants.LaneActionLeftInAheadAndNUll},
+                {NaviConstant.LaneAction.LANE_ACTION_LEFT_IN_AHEAD,
+                        NaviConstant.LaneAction.LANE_ACTION_NULL,
+                        LaneActionConstants.LANE_ACTION_LEFT_IN_AHEAD_AND_N_ULL_NO_ACTION},// 左侧扩展车道 直行
+                {NaviConstant.LaneAction.LANE_ACTION_LEFT_IN_AHEAD,
+                        NaviConstant.LaneAction.LANE_ACTION_LEFT_IN_AHEAD,
+                        LaneActionConstants.LANE_ACTION_LEFT_IN_AHEAD_AND_N_ULL},
 
-                {NaviConstant.LaneAction.LaneActionAheadLeft, NaviConstant.LaneAction.LaneActionNULL, LaneActionConstants.LaneActionAheadLeftNoAction},// 左转+直行
-                {NaviConstant.LaneAction.LaneActionAheadLeft, NaviConstant.LaneAction.LaneActionAhead, LaneActionConstants.LaneActionAheadLeftAndAhead},
-                {NaviConstant.LaneAction.LaneActionAheadLeft, NaviConstant.LaneAction.LaneActionLeft, LaneActionConstants.LaneActionAheadLeftAndLeft},
+                {NaviConstant.LaneAction.LANE_ACTION_AHEAD_LEFT,
+                        NaviConstant.LaneAction.LANE_ACTION_NULL,
+                        LaneActionConstants.LANE_ACTION_AHEAD_LEFT_NO_ACTION},// 左转+直行
+                {NaviConstant.LaneAction.LANE_ACTION_AHEAD_LEFT,
+                        NaviConstant.LaneAction.LANE_ACTION_AHEAD,
+                        LaneActionConstants.LANE_ACTION_AHEAD_LEFT_AND_AHEAD},
+                {NaviConstant.LaneAction.LANE_ACTION_AHEAD_LEFT,
+                        NaviConstant.LaneAction.LANE_ACTION_LEFT,
+                        LaneActionConstants.LANE_ACTION_AHEAD_LEFT_AND_LEFT},
 
-                {NaviConstant.LaneAction.LaneActionAheadRight, NaviConstant.LaneAction.LaneActionNULL, LaneActionConstants.LaneActionAheadRightNoAction},// 右转+直行
-                {NaviConstant.LaneAction.LaneActionAheadRight, NaviConstant.LaneAction.LaneActionAhead, LaneActionConstants.LaneActionAheadRightAndAhead},
-                {NaviConstant.LaneAction.LaneActionAheadRight, NaviConstant.LaneAction.LaneActionRight, LaneActionConstants.LaneActionAheadRightAndRight},
+                {NaviConstant.LaneAction.LANE_ACTION_AHEAD_RIGHT,
+                        NaviConstant.LaneAction.LANE_ACTION_NULL,
+                        LaneActionConstants.LANE_ACTION_AHEAD_RIGHT_NO_ACTION},// 右转+直行
+                {NaviConstant.LaneAction.LANE_ACTION_AHEAD_RIGHT,
+                        NaviConstant.LaneAction.LANE_ACTION_AHEAD,
+                        LaneActionConstants.LANE_ACTION_AHEAD_RIGHT_AND_AHEAD},
+                {NaviConstant.LaneAction.LANE_ACTION_AHEAD_RIGHT,
+                        NaviConstant.LaneAction.LANE_ACTION_RIGHT,
+                        LaneActionConstants.LANE_ACTION_AHEAD_RIGHT_AND_RIGHT},
 
-                {NaviConstant.LaneAction.LaneActionLeftRight, NaviConstant.LaneAction.LaneActionNULL, LaneActionConstants.LaneActionLeftRightNoAction},// 左转+右转
-                {NaviConstant.LaneAction.LaneActionLeftRight, NaviConstant.LaneAction.LaneActionLeft, LaneActionConstants.LaneActionLeftRightAndLeft},
-                {NaviConstant.LaneAction.LaneActionLeftRight, NaviConstant.LaneAction.LaneActionRight, LaneActionConstants.LaneActionLeftRightAndRight},
+                {NaviConstant.LaneAction.LANE_ACTION_LEFT_RIGHT,
+                        NaviConstant.LaneAction.LANE_ACTION_NULL,
+                        LaneActionConstants.LANE_ACTION_LEFT_RIGHT_NO_ACTION},// 左转+右转
+                {NaviConstant.LaneAction.LANE_ACTION_LEFT_RIGHT,
+                        NaviConstant.LaneAction.LANE_ACTION_LEFT,
+                        LaneActionConstants.LANE_ACTION_LEFT_RIGHT_AND_LEFT},
+                {NaviConstant.LaneAction.LANE_ACTION_LEFT_RIGHT,
+                        NaviConstant.LaneAction.LANE_ACTION_RIGHT,
+                        LaneActionConstants.LANE_ACTION_LEFT_RIGHT_AND_RIGHT},
 
-                {NaviConstant.LaneAction.LaneActionAheadLeftRight, NaviConstant.LaneAction.LaneActionNULL, LaneActionConstants.LaneActionAheadLeftRightNoAction},// 左转+直行+右转
-                {NaviConstant.LaneAction.LaneActionAheadLeftRight, NaviConstant.LaneAction.LaneActionAhead, LaneActionConstants.LaneActionAheadLeftRightAndAhead},
-                {NaviConstant.LaneAction.LaneActionAheadLeftRight, NaviConstant.LaneAction.LaneActionLeft, LaneActionConstants.LaneActionAheadLeftRightAndLeft},
-                {NaviConstant.LaneAction.LaneActionAheadLeftRight, NaviConstant.LaneAction.LaneActionRight, LaneActionConstants.LaneActionAheadLeftRightAndRight},
+                {NaviConstant.LaneAction.LANE_ACTION_AHEAD_LEFT_RIGHT,
+                        NaviConstant.LaneAction.LANE_ACTION_NULL,
+                        LaneActionConstants.LANE_ACTION_AHEAD_LEFT_RIGHT_NO_ACTION},// 左转+直行+右转
+                {NaviConstant.LaneAction.LANE_ACTION_AHEAD_LEFT_RIGHT,
+                        NaviConstant.LaneAction.LANE_ACTION_AHEAD,
+                        LaneActionConstants.LANE_ACTION_AHEAD_LEFT_RIGHT_AND_AHEAD},
+                {NaviConstant.LaneAction.LANE_ACTION_AHEAD_LEFT_RIGHT,
+                        NaviConstant.LaneAction.LANE_ACTION_LEFT,
+                        LaneActionConstants.LANE_ACTION_AHEAD_LEFT_RIGHT_AND_LEFT},
+                {NaviConstant.LaneAction.LANE_ACTION_AHEAD_LEFT_RIGHT,
+                        NaviConstant.LaneAction.LANE_ACTION_RIGHT,
+                        LaneActionConstants.LANE_ACTION_AHEAD_LEFT_RIGHT_AND_RIGHT},
 
-                {NaviConstant.LaneAction.LaneActionAheadLUTurn, NaviConstant.LaneAction.LaneActionNULL, LaneActionConstants.LaneActionAheadLUTurnNoAction},// 左U-Turn + 直行
-                {NaviConstant.LaneAction.LaneActionAheadLUTurn, NaviConstant.LaneAction.LaneActionAhead, LaneActionConstants.LaneActionAheadLUTurnAndAhead},
-                {NaviConstant.LaneAction.LaneActionAheadLUTurn, NaviConstant.LaneAction.LaneActionLUTurn, LaneActionConstants.LaneActionAheadLUTurnAndLUTurn},
+                {NaviConstant.LaneAction.LANE_ACTION_AHEAD_LU_TURN,
+                        NaviConstant.LaneAction.LANE_ACTION_NULL,
+                        LaneActionConstants.LANE_ACTION_AHEAD_LU_TURN_NO_ACTION},// 左U-Turn + 直行
+                {NaviConstant.LaneAction.LANE_ACTION_AHEAD_LU_TURN,
+                        NaviConstant.LaneAction.LANE_ACTION_AHEAD,
+                        LaneActionConstants.LANE_ACTION_AHEAD_LU_TURN_AND_AHEAD},
+                {NaviConstant.LaneAction.LANE_ACTION_AHEAD_LU_TURN,
+                        NaviConstant.LaneAction.LANE_ACTION_LU_TURN,
+                        LaneActionConstants.LANE_ACTION_AHEAD_LU_TURN_AND_LU_TURN},
 
-                {NaviConstant.LaneAction.LaneActionAheadRUTurn, NaviConstant.LaneAction.LaneActionNULL, LaneActionConstants.LaneActionAheadRUTurnNoAction},// 右U-Turn + 直行
-                {NaviConstant.LaneAction.LaneActionAheadRUTurn, NaviConstant.LaneAction.LaneActionAhead, LaneActionConstants.LaneActionAheadRUTurnAndAhead},
-                {NaviConstant.LaneAction.LaneActionAheadRUTurn, NaviConstant.LaneAction.LaneActionRUTurn, LaneActionConstants.LaneActionAheadRUTurnAndRUTurn},
+                {NaviConstant.LaneAction.LANE_ACTION_AHEAD_RU_TURN,
+                        NaviConstant.LaneAction.LANE_ACTION_NULL,
+                        LaneActionConstants.LANE_ACTION_AHEAD_RU_TURN_NO_ACTION},// 右U-Turn + 直行
+                {NaviConstant.LaneAction.LANE_ACTION_AHEAD_RU_TURN,
+                        NaviConstant.LaneAction.LANE_ACTION_AHEAD,
+                        LaneActionConstants.LANE_ACTION_AHEAD_RU_TURN_AND_AHEAD},
+                {NaviConstant.LaneAction.LANE_ACTION_AHEAD_RU_TURN,
+                        NaviConstant.LaneAction.LANE_ACTION_RU_TURN,
+                        LaneActionConstants.LANE_ACTION_AHEAD_RU_TURN_AND_RU_TURN},
 
-                {NaviConstant.LaneAction.LaneActionLeftLUTurn, NaviConstant.LaneAction.LaneActionNULL, LaneActionConstants.LaneActionLeftLUTurnNoAction},// 左U-Turn + 左转
-                {NaviConstant.LaneAction.LaneActionLeftLUTurn, NaviConstant.LaneAction.LaneActionLeft, LaneActionConstants.LaneActionLeftLUTurnAndLeft},
-                {NaviConstant.LaneAction.LaneActionLeftLUTurn, NaviConstant.LaneAction.LaneActionLUTurn, LaneActionConstants.LaneActionLeftLUTurnAndLUTurn},
+                {NaviConstant.LaneAction.LANE_ACTION_LEFT_LU_TURN,
+                        NaviConstant.LaneAction.LANE_ACTION_NULL,
+                        LaneActionConstants.LANE_ACTION_LEFT_LU_TURN_NO_ACTION},// 左U-Turn + 左转
+                {NaviConstant.LaneAction.LANE_ACTION_LEFT_LU_TURN,
+                        NaviConstant.LaneAction.LANE_ACTION_LEFT,
+                        LaneActionConstants.LANE_ACTION_LEFT_LU_TURN_AND_LEFT},
+                {NaviConstant.LaneAction.LANE_ACTION_LEFT_LU_TURN,
+                        NaviConstant.LaneAction.LANE_ACTION_LU_TURN,
+                        LaneActionConstants.LANE_ACTION_LEFT_LU_TURN_AND_LU_TURN},
 
-                {NaviConstant.LaneAction.LaneActionRightRUTurn, NaviConstant.LaneAction.LaneActionNULL, LaneActionConstants.LaneActionRightRUTurnNoAction},// 右U-Turn + 右转
-                {NaviConstant.LaneAction.LaneActionRightRUTurn, NaviConstant.LaneAction.LaneActionRight, LaneActionConstants.LaneActionRightRUTurnAndRight},
-                {NaviConstant.LaneAction.LaneActionRightRUTurn, NaviConstant.LaneAction.LaneActionRUTurn, LaneActionConstants.LaneActionRightRUTurnAndRUTurn},
+                {NaviConstant.LaneAction.LANE_ACTION_RIGHT_RU_TURN,
+                        NaviConstant.LaneAction.LANE_ACTION_NULL,
+                        LaneActionConstants.LANE_ACTION_RIGHT_RU_TURN_NO_ACTION},// 右U-Turn + 右转
+                {NaviConstant.LaneAction.LANE_ACTION_RIGHT_RU_TURN,
+                        NaviConstant.LaneAction.LANE_ACTION_RIGHT,
+                        LaneActionConstants.LANE_ACTION_RIGHT_RU_TURN_AND_RIGHT},
+                {NaviConstant.LaneAction.LANE_ACTION_RIGHT_RU_TURN,
+                        NaviConstant.LaneAction.LANE_ACTION_RU_TURN,
+                        LaneActionConstants.LANE_ACTION_RIGHT_RU_TURN_AND_RU_TURN},
 
-                {NaviConstant.LaneAction.LaneActionAheadLeftLUTurn, NaviConstant.LaneAction.LaneActionNULL, LaneActionConstants.LaneActionAheadLeftLUTurnNoAction},// 左U-Turn + 左转 + 直行
-                {NaviConstant.LaneAction.LaneActionAheadLeftLUTurn, NaviConstant.LaneAction.LaneActionAhead, LaneActionConstants.LaneActionAheadLeftLUTurnAndAhead},
-                {NaviConstant.LaneAction.LaneActionAheadLeftLUTurn, NaviConstant.LaneAction.LaneActionLeft, LaneActionConstants.LaneActionAheadLeftLUTurnAndLeft},
-                {NaviConstant.LaneAction.LaneActionAheadLeftLUTurn, NaviConstant.LaneAction.LaneActionLUTurn, LaneActionConstants.LaneActionAheadLeftLUTurnAndLUTrun},
+                {NaviConstant.LaneAction.LANE_ACTION_AHEAD_LEFT_LU_TURN,
+                        NaviConstant.LaneAction.LANE_ACTION_NULL,
+                        LaneActionConstants.LANE_ACTION_AHEAD_LEFT_LU_TURN_NO_ACTION},// 左U-Turn + 左转 + 直行
+                {NaviConstant.LaneAction.LANE_ACTION_AHEAD_LEFT_LU_TURN,
+                        NaviConstant.LaneAction.LANE_ACTION_AHEAD,
+                        LaneActionConstants.LANE_ACTION_AHEAD_LEFT_LU_TURN_AND_AHEAD},
+                {NaviConstant.LaneAction.LANE_ACTION_AHEAD_LEFT_LU_TURN,
+                        NaviConstant.LaneAction.LANE_ACTION_LEFT,
+                        LaneActionConstants.LANE_ACTION_AHEAD_LEFT_LU_TURN_AND_LEFT},
+                {NaviConstant.LaneAction.LANE_ACTION_AHEAD_LEFT_LU_TURN,
+                        NaviConstant.LaneAction.LANE_ACTION_LU_TURN,
+                        LaneActionConstants.LANE_ACTION_AHEAD_LEFT_LU_TURN_AND_LU_TRUN},
 
-                {NaviConstant.LaneAction.LaneActionRightLUTurn, NaviConstant.LaneAction.LaneActionNULL, LaneActionConstants.LaneActionRightLUTurnNoAction},// 左U-Turn + 右转
-                {NaviConstant.LaneAction.LaneActionRightLUTurn, NaviConstant.LaneAction.LaneActionRight, LaneActionConstants.LaneActionRightLUTurnAndRight},
-                {NaviConstant.LaneAction.LaneActionRightLUTurn, NaviConstant.LaneAction.LaneActionLUTurn, LaneActionConstants.LaneActionRightLUTurnAndLUTurn},
+                {NaviConstant.LaneAction.LANE_ACTION_RIGHT_LU_TURN,
+                        NaviConstant.LaneAction.LANE_ACTION_NULL,
+                        LaneActionConstants.LANE_ACTION_RIGHT_LU_TURN_NO_ACTION},// 左U-Turn + 右转
+                {NaviConstant.LaneAction.LANE_ACTION_RIGHT_LU_TURN,
+                        NaviConstant.LaneAction.LANE_ACTION_RIGHT,
+                        LaneActionConstants.LANE_ACTION_RIGHT_LU_TURN_AND_RIGHT},
+                {NaviConstant.LaneAction.LANE_ACTION_RIGHT_LU_TURN,
+                        NaviConstant.LaneAction.LANE_ACTION_LU_TURN,
+                        LaneActionConstants.LANE_ACTION_RIGHT_LU_TURN_AND_LU_TURN},
 
-                {NaviConstant.LaneAction.LaneActionLeftRightLUTurn, NaviConstant.LaneAction.LaneActionNULL, LaneActionConstants.LaneActionLeftRightLUTurnNoAction},// 左U-Turn + 左转 + 右转
-                {NaviConstant.LaneAction.LaneActionLeftRightLUTurn, NaviConstant.LaneAction.LaneActionLeft, LaneActionConstants.LaneActionLeftRightLUTurnAndLeft},
-                {NaviConstant.LaneAction.LaneActionLeftRightLUTurn, NaviConstant.LaneAction.LaneActionRight, LaneActionConstants.LaneActionLeftRightLUTurnAndRight},
-                {NaviConstant.LaneAction.LaneActionLeftRightLUTurn, NaviConstant.LaneAction.LaneActionLUTurn, LaneActionConstants.LaneActionLeftRightLUTurnAndLUTurn},
+                {NaviConstant.LaneAction.LANE_ACTION_LEFT_RIGHT_LU_TURN,
+                        NaviConstant.LaneAction.LANE_ACTION_NULL,
+                        LaneActionConstants.LANE_ACTION_LEFT_RIGHT_LU_TURN_NO_ACTION},// 左U-Turn + 左转 + 右转
+                {NaviConstant.LaneAction.LANE_ACTION_LEFT_RIGHT_LU_TURN,
+                        NaviConstant.LaneAction.LANE_ACTION_LEFT,
+                        LaneActionConstants.LANE_ACTION_LEFT_RIGHT_LU_TURN_AND_LEFT},
+                {NaviConstant.LaneAction.LANE_ACTION_LEFT_RIGHT_LU_TURN,
+                        NaviConstant.LaneAction.LANE_ACTION_RIGHT,
+                        LaneActionConstants.LANE_ACTION_LEFT_RIGHT_LU_TURN_AND_RIGHT},
+                {NaviConstant.LaneAction.LANE_ACTION_LEFT_RIGHT_LU_TURN,
+                        NaviConstant.LaneAction.LANE_ACTION_LU_TURN,
+                        LaneActionConstants.LANE_ACTION_LEFT_RIGHT_LU_TURN_AND_LU_TURN},
 
-                {NaviConstant.LaneAction.LaneActionAheadRightLUTurn, NaviConstant.LaneAction.LaneActionNULL, LaneActionConstants.LaneActionAheadRightLUTurnNoAction},// 左U-Turn + 直行 + 右转
-                {NaviConstant.LaneAction.LaneActionAheadRightLUTurn, NaviConstant.LaneAction.LaneActionAhead, LaneActionConstants.LaneActionAheadRightLUTurnAndAhead},
-                {NaviConstant.LaneAction.LaneActionAheadRightLUTurn, NaviConstant.LaneAction.LaneActionRight, LaneActionConstants.LaneActionAheadRightLUTurnAndRight},
-                {NaviConstant.LaneAction.LaneActionAheadRightLUTurn, NaviConstant.LaneAction.LaneActionLUTurn, LaneActionConstants.LaneActionAheadRightLUTurnAndLUTurn},
+                {NaviConstant.LaneAction.LANE_ACTION_AHEAD_RIGHT_LU_TURN,
+                        NaviConstant.LaneAction.LANE_ACTION_NULL,
+                        LaneActionConstants.LANE_ACTION_AHEAD_RIGHT_LU_TURN_NO_ACTION},// 左U-Turn + 直行 + 右转
+                {NaviConstant.LaneAction.LANE_ACTION_AHEAD_RIGHT_LU_TURN,
+                        NaviConstant.LaneAction.LANE_ACTION_AHEAD,
+                        LaneActionConstants.LANE_ACTION_AHEAD_RIGHT_LU_TURN_AND_AHEAD},
+                {NaviConstant.LaneAction.LANE_ACTION_AHEAD_RIGHT_LU_TURN,
+                        NaviConstant.LaneAction.LANE_ACTION_RIGHT,
+                        LaneActionConstants.LANE_ACTION_AHEAD_RIGHT_LU_TURN_AND_RIGHT},
+                {NaviConstant.LaneAction.LANE_ACTION_AHEAD_RIGHT_LU_TURN,
+                        NaviConstant.LaneAction.LANE_ACTION_LU_TURN,
+                        LaneActionConstants.LANE_ACTION_AHEAD_RIGHT_LU_TURN_AND_LU_TURN},
 
-                {NaviConstant.LaneAction.LaneActionLeftRUTurn, NaviConstant.LaneAction.LaneActionNULL, LaneActionConstants.LaneActionLeftRUTurnNoAction},// 左转 + 右U-Turn
-                {NaviConstant.LaneAction.LaneActionLeftRUTurn, NaviConstant.LaneAction.LaneActionLeft, LaneActionConstants.LaneActionLeftRUTurnAndLeft},
-                {NaviConstant.LaneAction.LaneActionLeftRUTurn, NaviConstant.LaneAction.LaneActionRUTurn, LaneActionConstants.LaneActionLeftRUTurnAndRUTurn},
+                {NaviConstant.LaneAction.LANE_ACTION_LEFT_RU_TURN,
+                        NaviConstant.LaneAction.LANE_ACTION_NULL,
+                        LaneActionConstants.LANE_ACTION_LEFT_RU_TURN_NO_ACTION},// 左转 + 右U-Turn
+                {NaviConstant.LaneAction.LANE_ACTION_LEFT_RU_TURN,
+                        NaviConstant.LaneAction.LANE_ACTION_LEFT,
+                        LaneActionConstants.LANE_ACTION_LEFT_RU_TURN_AND_LEFT},
+                {NaviConstant.LaneAction.LANE_ACTION_LEFT_RU_TURN,
+                        NaviConstant.LaneAction.LANE_ACTION_RU_TURN,
+                        LaneActionConstants.LANE_ACTION_LEFT_RU_TURN_AND_RU_TURN},
 
-                {NaviConstant.LaneAction.LaneActionBus, NaviConstant.LaneAction.LaneActionNULL, LaneActionConstants.LaneActionBusNoAction},// 公交车道
-                {NaviConstant.LaneAction.LaneActionBus, NaviConstant.LaneAction.LaneActionBus, LaneActionConstants.LaneActionBusAndBus},
+                {NaviConstant.LaneAction.LANE_ACTION_BUS,
+                        NaviConstant.LaneAction.LANE_ACTION_NULL,
+                        LaneActionConstants.LANE_ACTION_BUS_NO_ACTION},// 公交车道
+                {NaviConstant.LaneAction.LANE_ACTION_BUS,
+                        NaviConstant.LaneAction.LANE_ACTION_BUS,
+                        LaneActionConstants.LANE_ACTION_BUS_AND_BUS},
 
-                {NaviConstant.LaneAction.LaneActionVariable, NaviConstant.LaneAction.LaneActionNULL, LaneActionConstants.LaneActionVariableNoAction},// 可变车道
-                {NaviConstant.LaneAction.LaneActionVariable, NaviConstant.LaneAction.LaneActionVariable, LaneActionConstants.LaneActionVariableAndVariable},
+                {NaviConstant.LaneAction.LANE_ACTION_VARIABLE,
+                        NaviConstant.LaneAction.LANE_ACTION_NULL,
+                        LaneActionConstants.LANE_ACTION_VARIABLE_NO_ACTION},// 可变车道
+                {NaviConstant.LaneAction.LANE_ACTION_VARIABLE,
+                        NaviConstant.LaneAction.LANE_ACTION_VARIABLE,
+                        LaneActionConstants.LANE_ACTION_VARIABLE_AND_VARIABLE},
 
-                {NaviConstant.LaneAction.LaneActionDedicated, NaviConstant.LaneAction.LaneActionNULL, LaneActionConstants.LaneActionDedicated},// 专用车道
-                {NaviConstant.LaneAction.LaneActionDedicated, NaviConstant.LaneAction.LaneActionDedicated, LaneActionConstants.LaneActionDedicated},
+                {NaviConstant.LaneAction.LANE_ACTION_DEDICATED,
+                        NaviConstant.LaneAction.LANE_ACTION_NULL,
+                        LaneActionConstants.LANE_ACTION_DEDICATED},// 专用车道
+                {NaviConstant.LaneAction.LANE_ACTION_DEDICATED,
+                        NaviConstant.LaneAction.LANE_ACTION_DEDICATED,
+                        LaneActionConstants.LANE_ACTION_DEDICATED},
 
-                {NaviConstant.LaneAction.LaneActionTidal, NaviConstant.LaneAction.LaneActionNULL, LaneActionConstants.LaneActionTidal},// 潮汐车道
-                {NaviConstant.LaneAction.LaneActionTidal, NaviConstant.LaneAction.LaneActionTidal, LaneActionConstants.LaneActionTidal},
+                {NaviConstant.LaneAction.LANE_ACTION_TIDAL,
+                        NaviConstant.LaneAction.LANE_ACTION_NULL,
+                        LaneActionConstants.LANE_ACTION_TIDAL},// 潮汐车道
+                {NaviConstant.LaneAction.LANE_ACTION_TIDAL,
+                        NaviConstant.LaneAction.LANE_ACTION_TIDAL,
+                        LaneActionConstants.LANE_ACTION_TIDAL},
 
-                {NaviConstant.LaneAction.LaneActionEmpty, NaviConstant.LaneAction.LaneActionNULL, LaneActionConstants.LaneActionEmptyNoAction}, // 空车道
-                {NaviConstant.LaneAction.LaneActionEmpty, NaviConstant.LaneAction.LaneActionEmpty, LaneActionConstants.LaneActionEmpty},// 可行空车道
+                {NaviConstant.LaneAction.LANE_ACTION_EMPTY,
+                        NaviConstant.LaneAction.LANE_ACTION_NULL,
+                        LaneActionConstants.LANE_ACTION_EMPTY_NO_ACTION}, // 空车道
+                {NaviConstant.LaneAction.LANE_ACTION_EMPTY,
+                        NaviConstant.LaneAction.LANE_ACTION_EMPTY,
+                        LaneActionConstants.LANE_ACTION_EMPTY},// 可行空车道
         };
     }
 
     interface LaneAction {
         int AUTO_UNKNOWN_ERROR = Integer.MIN_VALUE;
-        int LaneActionNULL = 255;
-        int LaneActionAhead = 0;
-        int LaneActionLeft = 1;
-        int LaneActionAheadLeft = 2;
-        int LaneActionRight = 3;
-        int LaneActionAheadRight = 4;
-        int LaneActionLUTurn = 5;
-        int LaneActionLeftRight = 6;
-        int LaneActionAheadLeftRight = 7;
-        int LaneActionRUTurn = 8;
-        int LaneActionAheadLUTurn = 9;
-        int LaneActionAheadRUTurn = 10;
-        int LaneActionLeftLUTurn = 11;
-        int LaneActionRightRUTurn = 12;
-        int LaneActionLeftInAhead = 13;
-        int LaneActionLeftLUturn = 14;
-        int LaneActionReserved = 15;
-        int LaneActionAheadLeftLUTurn = 16;
-        int LaneActionRightLUTurn = 17;
-        int LaneActionLeftRightLUTurn = 18;
-        int LaneActionAheadRightLUTurn = 19;
-        int LaneActionLeftRUTurn = 20;
-        int LaneActionBus = 21;
-        int LaneActionEmpty = 22;
-        int LaneActionVariable = 23;
-        int LaneActionDedicated = 24;
-        int LaneActionTidal = 25;
+        int LANE_ACTION_NULL = 255;
+        int LANE_ACTION_AHEAD = 0;
+        int LANE_ACTION_LEFT = 1;
+        int LANE_ACTION_AHEAD_LEFT = 2;
+        int LANE_ACTION_RIGHT = 3;
+        int LANE_ACTION_AHEAD_RIGHT = 4;
+        int LANE_ACTION_LU_TURN = 5;
+        int LANE_ACTION_LEFT_RIGHT = 6;
+        int LANE_ACTION_AHEAD_LEFT_RIGHT = 7;
+        int LANE_ACTION_RU_TURN = 8;
+        int LANE_ACTION_AHEAD_LU_TURN = 9;
+        int LANE_ACTION_AHEAD_RU_TURN = 10;
+        int LANE_ACTION_LEFT_LU_TURN = 11;
+        int LANE_ACTION_RIGHT_RU_TURN = 12;
+        int LANE_ACTION_LEFT_IN_AHEAD = 13;
+        int LANE_ACTION_LEFT_L_UTURN = 14;
+        int LANE_ACTION_RESERVED = 15;
+        int LANE_ACTION_AHEAD_LEFT_LU_TURN = 16;
+        int LANE_ACTION_RIGHT_LU_TURN = 17;
+        int LANE_ACTION_LEFT_RIGHT_LU_TURN = 18;
+        int LANE_ACTION_AHEAD_RIGHT_LU_TURN = 19;
+        int LANE_ACTION_LEFT_RU_TURN = 20;
+        int LANE_ACTION_BUS = 21;
+        int LANE_ACTION_EMPTY = 22;
+        int LANE_ACTION_VARIABLE = 23;
+        int LANE_ACTION_DEDICATED = 24;
+        int LANE_ACTION_TIDAL = 25;
     }
 }

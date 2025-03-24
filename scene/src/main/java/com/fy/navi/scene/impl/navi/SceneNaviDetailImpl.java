@@ -14,8 +14,8 @@ public class SceneNaviDetailImpl extends BaseSceneModel<SceneNaviServiceArea>  {
     private final MapDataPackage mMapDataPackage;
     private LayerAdapter mLayerAdapter;
 
-    public SceneNaviDetailImpl(SceneNaviServiceArea mScreenView) {
-        super(mScreenView);
+    public SceneNaviDetailImpl(final SceneNaviServiceArea screenView) {
+        super(screenView);
         mPositionPackage = PositionPackage.getInstance();
         mMapDataPackage = MapDataPackage.getInstance();
         mNaviPackage = NaviPackage.getInstance();

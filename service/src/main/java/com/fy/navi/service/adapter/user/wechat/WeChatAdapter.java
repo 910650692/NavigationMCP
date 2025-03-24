@@ -4,12 +4,8 @@ import com.fy.navi.service.AdapterConfig;
 
 import java.util.Objects;
 
-/**
- * @Description
- * @Author fh
- * @date 2024/12/31
- */
-public class WeChatAdapter {
+
+public final class WeChatAdapter {
     private static final String CLASS_API_PKG = Objects.requireNonNull(WeChatAdapter.class.getPackage()).getName();
     private static final String CLASS_API_NAME = "WeChatImpl";
     private IWeChatTrackApi mWeChatApi;
@@ -18,39 +14,50 @@ public class WeChatAdapter {
         mWeChatApi = (IWeChatTrackApi) AdapterConfig.getObject(CLASS_API_PKG, CLASS_API_NAME);
     }
 
+    /**
+     * 初始化微信服务
+     */
     public void initWeChatService() {
         mWeChatApi.initWeChatService();
     }
 
-    public void registerCallBack(String key, WeChatAdapterCallBack callBack) {
+
+    /**
+     * 注册微信服务
+     * @param key 回调key
+     * @param callBack  回调
+     */
+    public void registerCallBack(final String key, final WeChatAdapterCallBack callBack) {
         mWeChatApi.registerCallBack(key, callBack);
     }
 
+
+    /**
+     * 注销微信服务
+     */
     public void unInitWeChatService() {
         mWeChatApi.unInitWeChatService();
     }
 
+    /**
+     * 查询是否已经关联微信
+     */
     public void sendReqWsPpAutoWeixinStatus() {
         mWeChatApi.sendReqWsPpAutoWeixinStatus();
     }
 
+    /**
+     * 获取微信互联二维码
+     */
     public void sendReqWsPpAutoWeixinQrcode() {
         mWeChatApi.sendReqWsPpAutoWeixinQrcode();
     }
 
-    public void sendReqQRCodeConfirm(String QRCodeId) {
-        mWeChatApi.sendReqQRCodeConfirm(QRCodeId);
-    }
-
-    public void sendReqWsPpAutoWeixinUnbind() {
-        mWeChatApi.sendReqWsPpAutoWeixinUnbind();
-    }
-
     public static WeChatAdapter getInstance() {
-        return Helper.ra;
+        return Helper.RA;
     }
 
     private static final class Helper {
-        private static final WeChatAdapter ra = new WeChatAdapter();
+        private static final WeChatAdapter RA = new WeChatAdapter();
     }
 }

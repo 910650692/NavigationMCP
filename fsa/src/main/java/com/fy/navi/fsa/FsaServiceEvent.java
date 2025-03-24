@@ -5,9 +5,9 @@ import android.util.Log;
 import com.gm.fsa.service.catalog.FSACatalog;
 import com.gm.fsa.service.catalog.FSAEvent;
 
-public class FsaServiceEvent extends FSAEvent {
+public final class FsaServiceEvent extends FSAEvent {
 
-    public FsaServiceEvent(int functionId) {
+    public FsaServiceEvent(final int functionId) {
         super(functionId, true, FSACatalog.TransportPath.TCP, true);
     }
 
@@ -22,10 +22,17 @@ public class FsaServiceEvent extends FSAEvent {
     }
 
     @Override
-    public void onSubscriberChanged(String ip, boolean isSubscriber) {
-        Log.d("FsaServiceEvent", "onSubscriberChanged: ip = " + ip + ", functionId = " + getFunctionID() + ", isSubscriber = " + isSubscriber);
-        if (isSubscriber && getFunctionID() == FsaConstant.FSA_FUNCTION.ID_WHOLE_SPEED_LIMIT) {
-            MyFsaService.getInstance().sendEventToMap(FsaConstant.FSA_FUNCTION.ID_WHOLE_SPEED_LIMIT, "");
+    public void onSubscriberChanged(final String ip, final boolean isSubscriber) {
+        Log.d("FsaServiceEvent", "onSubscriberChanged: ip = " + ip
+                + ", functionId = " + getFunctionID() + "-" + FsaIdString.function2String(getFunctionID())
+                + ", isSubscriber = " + isSubscriber);
+        if (isSubscriber) {
+            MyFsaService.getInstance().subscribeEvent(getFunctionID(), ip);
+        } else {
+            MyFsaService.getInstance().unsubscribeEvent(getFunctionID(), ip);
+        }
+        if (isSubscriber && getFunctionID() == FsaConstant.FsaFunction.ID_WHOLE_SPEED_LIMIT) {
+            MyFsaService.getInstance().sendEventToMap(FsaConstant.FsaFunction.ID_WHOLE_SPEED_LIMIT, "");
         }
     }
 

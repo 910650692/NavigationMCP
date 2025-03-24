@@ -11,16 +11,16 @@ import java.time.format.DateTimeFormatter;
 
 public class SettingOthersPrivacyModel extends BaseModel<SettingOthersPrivacyViewModel> implements SettingCallback{
 
-    private final SettingPackage settingPackage;
+    private final SettingPackage mSettingPackage;
 
     public SettingOthersPrivacyModel() {
-        settingPackage = SettingPackage.getInstance();
+        mSettingPackage = SettingPackage.getInstance();
     }
 
     @Override
     public void onCreate() {
         super.onCreate();
-        settingPackage.registerCallBack("SettingOthersPrivacyModel",this);
+        mSettingPackage.registerCallBack("SettingOthersPrivacyModel",this);
     }
 
     /**
@@ -31,42 +31,64 @@ public class SettingOthersPrivacyModel extends BaseModel<SettingOthersPrivacyVie
         setEndDate();
     }
 
+    /**
+     * 设置隐私状态
+     */
     private void setPrivacyStatus() {
-        boolean isOneYearPrivacy = settingPackage.getPrivacyStatus();
+        final boolean isOneYearPrivacy = mSettingPackage.getPrivacyStatus();
         mViewModel.dualChoiceControl(SettingController.KEY_SETTING_PRIVACY_STATUS, isOneYearPrivacy);
     }
 
-    public void setPrivacyStatus(boolean isOneYearPrivacy) {
-        settingPackage.setPrivacyStatus(isOneYearPrivacy);
+    /**
+     * 设置隐私状态
+     * @param isOneYearPrivacy true:已授权一年，false:未授权
+     */
+    public void setPrivacyStatus(final boolean isOneYearPrivacy) {
+        mSettingPackage.setPrivacyStatus(isOneYearPrivacy);
     }
 
 
+    /**
+     * 设置隐私到期时间
+     */
     public void setEndDate() {
-        mViewModel.setEndDate(settingPackage.getEndDate());
+        mViewModel.setEndDate(mSettingPackage.getEndDate());
     }
 
-    public void setEndDate(String endDateTime) {
-       settingPackage.setEndDate(endDateTime);
+    /**
+     * 设置隐私到期时间
+     * @param endDateTime 到期时间
+     */
+    public void setEndDate(final String endDateTime) {
+       mSettingPackage.setEndDate(endDateTime);
     }
 
+    /**
+     * 获取隐私到期时间
+     * @return 到期时间
+     */
     public String getEndDate() {
-        return settingPackage.getEndDate();
+        return mSettingPackage.getEndDate();
     }
 
 
+    /**
+     * 格式化日期
+     * @return 格式化后的日期
+     */
     public String getFormattedDate() {
         // 获取当前日期
-        LocalDate currentDate = LocalDate.now();
+        final LocalDate currentDate = LocalDate.now();
         // 获取一年后的日期
-        LocalDate oneYearLater = currentDate.plusYears(1);
+        final LocalDate oneYearLater = currentDate.plusYears(1);
         // 定义日期格式
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy年M月d日");
+        final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy年M月d日");
 
         return oneYearLater.format(formatter);
     }
 
     @Override
-    public void notify(int eventType, int exCode) {
+    public void notify(final int eventType, final int exCode) {
 
     }
 }

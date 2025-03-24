@@ -3,47 +3,41 @@ package com.fy.navi.service.adapter.user.wechat.bls;
 import com.fy.navi.service.adapter.user.wechat.IWeChatTrackApi;
 import com.fy.navi.service.adapter.user.wechat.WeChatAdapterCallBack;
 
-/**
- * 高德 车主服务 - 微信互联.
- *
- * @Description Impl类只做SDK的原子能力封装，不做对象及数据转换
- * @Author fh
- * @date 2024/12/26
- */
 public class WeChatImpl implements IWeChatTrackApi {
-    private WeChatImplHelper adapterImplHelper;
+
+    private WeChatImplHelper mAdapterImplHelper;
 
     public WeChatImpl() {
-        adapterImplHelper = new WeChatImplHelper();
+        mAdapterImplHelper = new WeChatImplHelper();
     }
 
     @Override
     public void initWeChatService() {
-        adapterImplHelper.initBLAosService();
+        mAdapterImplHelper.initBLAosService();
     }
 
     @Override
-    public void registerCallBack(String key, WeChatAdapterCallBack callBack) {
-        adapterImplHelper.registerCallBack(key, callBack);
+    public void registerCallBack(final String key, final WeChatAdapterCallBack callBack) {
+        mAdapterImplHelper.registerCallBack(key, callBack);
     }
 
     @Override
-    public void unRegisterCallback(String key) {
-        adapterImplHelper.unRegisterCallBack(key);
+    public void unRegisterCallback(final String key) {
+        mAdapterImplHelper.unRegisterCallBack(key);
     }
 
     @Override
     public void unInitWeChatService() {
-        adapterImplHelper.unInitWeChatService();
+        mAdapterImplHelper.unInitWeChatService();
     }
 
     /**
      * 获取初始化状态
-     * @return
+     * @return 0：未初始化；1：初始化中；2：初始化成功；3：初始化失败
      */
     @Override
     public int isInit() {
-       return adapterImplHelper.isInit();
+       return mAdapterImplHelper.isInit();
     }
 
     /**
@@ -51,7 +45,7 @@ public class WeChatImpl implements IWeChatTrackApi {
      */
     @Override
     public void sendReqWsPpAutoWeixinStatus() {
-        adapterImplHelper.sendReqWsPpAutoWeixinStatus();
+        mAdapterImplHelper.sendReqWsPpAutoWeixinStatus();
     }
 
     /**
@@ -59,23 +53,6 @@ public class WeChatImpl implements IWeChatTrackApi {
      */
     @Override
     public void sendReqWsPpAutoWeixinQrcode() {
-        adapterImplHelper.sendReqWsPpAutoWeixinQrcode();
+        mAdapterImplHelper.sendReqWsPpAutoWeixinQrcode();
     }
-
-    /**
-     * 轮询微信是否扫码绑定，该接口需要上层
-     */
-    @Override
-    public void sendReqQRCodeConfirm(String QRCodeId) {
-        adapterImplHelper.sendReqQRCodeConfirm(QRCodeId);
-    }
-
-    /**
-     * 解除微信互联
-     */
-    @Override
-    public void sendReqWsPpAutoWeixinUnbind() {
-        adapterImplHelper.sendReqWsPpAutoWeixinUnbind();
-    }
-
 }

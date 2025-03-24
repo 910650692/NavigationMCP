@@ -15,6 +15,7 @@ import com.fy.navi.scene.ui.navi.manager.NaviSceneId;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.define.navi.CrossImageEntity;
 import com.fy.navi.service.define.navi.LaneInfoEntity;
+import com.fy.navi.service.define.navi.NaviDriveReportEntity;
 import com.fy.navi.service.define.navi.NaviEtaInfo;
 import com.fy.navi.service.define.navi.NaviManeuverInfo;
 import com.fy.navi.service.define.navi.NaviTmcInfo;
@@ -28,44 +29,52 @@ import java.util.List;
 
 
 /**
+ * @author fy
+ * @version $Revision.*$
  * description 导航Fragment视图模型
  */
-public class BaseNaviGuidanceViewModel extends BaseViewModel<NaviGuidanceFragment, NaviGuidanceModel> implements ISceneRoutePreferenceCallBack {
+public class BaseNaviGuidanceViewModel extends
+        BaseViewModel<NaviGuidanceFragment, NaviGuidanceModel> implements
+        ISceneRoutePreferenceCallBack, NaviGuidanceModel.OnNetStatusChangeListener {
     private static final String TAG = MapDefaultFinalTag.NAVI_HMI_TAG;
-    public ObservableField<Boolean> naviLanesVisibility;//车道线
-    public ObservableField<Boolean> naviViaListVisibility;//途径点列表
-    public ObservableField<Boolean> naviParkingListVisibility;//停车场列表
-    public ObservableField<Boolean> naviViaInfoVisibility;//显示途径点信息
-    public ObservableField<Boolean> naviLastMileVisibility;//最后一公里
-    public ObservableField<Boolean> naviRouteNameVisibility;//当前路名
-    public ObservableField<Boolean> naviParallelVisibility;//平行路
-    public ObservableField<Boolean> naviPreferenceVisibility;//路线偏好
-    public ObservableField<Boolean> naviTmcVisibility;//tmc
-    public ObservableField<Boolean> naviEtaVisibility;//eta
-    public ObservableField<Boolean> naviSpeedVisibility;//限速
-    public ObservableField<Boolean> naviSapaVisibility;//Sapa
-    public ObservableField<Boolean> naviCrossImageVisibility;//路口大图
-    public ObservableField<Boolean> naviControlVisibility;//control
-    public ObservableField<Boolean> naviViaArrivedPopVisibility;//途经点到达确认弹窗
+    public ObservableField<Boolean> mNaviLanesVisibility;//车道线
+    public ObservableField<Boolean> mNaviViaListVisibility;//途径点列表
+    public ObservableField<Boolean> mNaviParkingListVisibility;//停车场列表
+    public ObservableField<Boolean> mNaviViaInfoVisibility;//显示途径点信息
+    public ObservableField<Boolean> mNaviLastMileVisibility;//最后一公里
+    public ObservableField<Boolean> mNaviRouteNameVisibility;//当前路名
+    public ObservableField<Boolean> mNaviParallelVisibility;//平行路
+    public ObservableField<Boolean> mNaviPreferenceVisibility;//路线偏好
+    public ObservableField<Boolean> mNaviTmcVisibility;//tmc
+    public ObservableField<Boolean> mNaviEtaVisibility;//eta
+    public ObservableField<Boolean> mNaviSpeedVisibility;//限速
+    public ObservableField<Boolean> mNaviSapaVisibility;//Sapa
+    public ObservableField<Boolean> mNaviCrossImageVisibility;//路口大图
+    public ObservableField<Boolean> mNaviControlVisibility;//control
+    public ObservableField<Boolean> mNaviViaArrivedPopVisibility;//途经点到达确认弹窗
+    public ObservableField<Boolean> mNaviSapaDetailVisibility;//服务区/收费站详情页面
+    public ObservableField<Boolean> mNaviDriveReportVisibility;//行程报告页面
     private boolean mIsShowLane = false;
 
-    public BaseNaviGuidanceViewModel(@NonNull Application application) {
+    public BaseNaviGuidanceViewModel(@NonNull final Application application) {
         super(application);
-        naviViaInfoVisibility = new ObservableField<>(false);
-        naviLastMileVisibility = new ObservableField<>(false);
-        naviRouteNameVisibility = new ObservableField<>(true);
-        naviParallelVisibility = new ObservableField<>(false);
-        naviLanesVisibility = new ObservableField<>(false);
-        naviViaListVisibility = new ObservableField<>(false);
-        naviParkingListVisibility = new ObservableField<>(false);
-        naviPreferenceVisibility = new ObservableField<>(false);
-        naviTmcVisibility = new ObservableField<>(true);
-        naviEtaVisibility = new ObservableField<>(true);
-        naviSpeedVisibility = new ObservableField<>(false);
-        naviSapaVisibility = new ObservableField<>(false);
-        naviCrossImageVisibility = new ObservableField<>(false);
-        naviControlVisibility = new ObservableField<>(false);
-        naviViaArrivedPopVisibility = new ObservableField<>(false);
+        mNaviViaInfoVisibility = new ObservableField<>(false);
+        mNaviLastMileVisibility = new ObservableField<>(false);
+        mNaviRouteNameVisibility = new ObservableField<>(true);
+        mNaviParallelVisibility = new ObservableField<>(false);
+        mNaviLanesVisibility = new ObservableField<>(false);
+        mNaviViaListVisibility = new ObservableField<>(false);
+        mNaviParkingListVisibility = new ObservableField<>(false);
+        mNaviPreferenceVisibility = new ObservableField<>(false);
+        mNaviTmcVisibility = new ObservableField<>(true);
+        mNaviEtaVisibility = new ObservableField<>(true);
+        mNaviSpeedVisibility = new ObservableField<>(false);
+        mNaviSapaVisibility = new ObservableField<>(false);
+        mNaviCrossImageVisibility = new ObservableField<>(false);
+        mNaviControlVisibility = new ObservableField<>(false);
+        mNaviViaArrivedPopVisibility = new ObservableField<>(false);
+        mNaviSapaDetailVisibility = new ObservableField<>(false);
+        mNaviDriveReportVisibility = new ObservableField<>(false);
     }
 
     @Override
@@ -74,46 +83,45 @@ public class BaseNaviGuidanceViewModel extends BaseViewModel<NaviGuidanceFragmen
     }
 
     @Override
+    public void onCreate() {
+        super.onCreate();
+        mModel.addOnNetStatusChangeListener(this);
+    }
+
+    @Override
     public void onDestroy() {
         super.onDestroy();
+        mModel.removeOnNetStatusChangeListener(this);
     }
 
     //显示/隐藏 添加途径点页面
-    public Action naviAddVia = this::onSwitchViaList;
+    public final Action mNaviAddVia = this::onSwitchViaList;
 
+    /**
+     * 显示/隐藏 途径点列表
+     */
     public void onSwitchViaList() {
-        Boolean b = naviViaListVisibility.get();
+        final Boolean b = mNaviViaListVisibility.get();
         Logger.i("lvww", "b -> " + b);
-        boolean aa = Boolean.FALSE.equals(b);
+        final boolean aa = Boolean.FALSE.equals(b);
         Logger.i("lvww", "aa -> " + aa);
         updateViaListState(aa);
-//        naviViaListVisibility.set(Boolean.FALSE.equals(b));
-//
-//        Boolean lanes = naviLanesVisibility.get();
-//        if (Boolean.TRUE.equals(lanes)) {
-//            naviLanesVisibility.set(false);
-//        } else if (Boolean.FALSE.equals(lanes) && mIsShowLane) {
-//            naviLanesVisibility.set(true);
-//        }
-        List<NaviViaEntity> viaList = mModel.getViaList();
-//        Boolean viaInfo = naviViaInfoVisibility.get();
-//        if (Boolean.TRUE.equals(viaInfo)) {
-//            naviViaInfoVisibility.set(false);
-//        } else if (Boolean.FALSE.equals(viaInfo) && viaList.size() > 1) {
-//            naviViaInfoVisibility.set(true);
-//        }
-//        naviTmcVisibility.set(b);
-//        naviEtaVisibility.set(b);
+        final List<NaviViaEntity> viaList = mModel.getViaList();
         mView.showNaviViaList(Boolean.FALSE.equals(b) ? viaList : null);
     }
 
-    public void updateSceneVisible(NaviSceneId sceneType, boolean isVisible) {
+    /**
+     * 更新场景可见性
+     * @param sceneType scene type
+     * @param isVisible is visible
+     */
+    public void updateSceneVisible(final NaviSceneId sceneType, final boolean isVisible) {
         Logger.i(TAG, "sceneType:" + sceneType + ",isVisible:" + isVisible);
         switch (sceneType) {
             case NAVI_SCENE_3D_CROSS:
                 break;
             case NAVI_SCENE_2D_CROSS:
-                naviCrossImageVisibility.set(isVisible);
+                mNaviCrossImageVisibility.set(isVisible);
                 break;
             case NAVI_SCENE_ETA:
                 break;
@@ -123,125 +131,251 @@ public class BaseNaviGuidanceViewModel extends BaseViewModel<NaviGuidanceFragmen
                 break;
             case NAVI_SCENE_VIA_POINT_FOLD:
             case NAVI_SCENE_VIA_POINT_UNFOLD:
-                naviViaListVisibility.set(isVisible);
+                mNaviViaListVisibility.set(isVisible);
                 break;
             case NAVI_SCENE_SERVICE_AREA:
-                naviSapaVisibility.set(isVisible);
+                mNaviSapaVisibility.set(isVisible);
                 break;
             case CARD_CONTINUE_NAVI_BTN:
                 break;
             case NAVI_SCENE_PARALLEL:
-                naviParallelVisibility.set(isVisible);
+                mNaviParallelVisibility.set(isVisible);
                 break;
             case NAVI_SCENE_PARK_LIST:
-                naviParkingListVisibility.set(isVisible);
+                mNaviParkingListVisibility.set(isVisible);
                 break;
             case NAVI_SCENE_CONTROL:
-                naviControlVisibility.set(isVisible);
+                mNaviControlVisibility.set(isVisible);
                 break;
             case NAVI_SCENE_LAST_MILE:
-                naviLastMileVisibility.set(isVisible);
+                mNaviLastMileVisibility.set(isVisible);
                 break;
             case NAVI_SCENE_PREFERENCE:
-                naviPreferenceVisibility.set(isVisible);
+                mNaviPreferenceVisibility.set(isVisible);
                 break;
             case NAVI_SCENE_SPEED:
-                naviSpeedVisibility.set(isVisible);
+                mNaviSpeedVisibility.set(isVisible);
                 break;
             case NAVI_SCENE_TMC:
                 break;
             case NAVI_SCENE_VIA_DETAIL_INFO:
-                naviViaInfoVisibility.set(isVisible);
+                mNaviViaInfoVisibility.set(isVisible);
                 break;
             case NAVI_VIA_ARRIVED_POP:
-                naviViaArrivedPopVisibility.set(isVisible);
+                mNaviViaArrivedPopVisibility.set(isVisible);
+                break;
+            case NAVI_SAPA_DETAIL_INFO:
+                mNaviSapaDetailVisibility.set(isVisible);
+                break;
+            case NAVI_DRIVE_REPORT:
+                mNaviDriveReportVisibility.set(isVisible);
+                break;
             default:
                 break;
         }
     }
 
-    public void startNavigation(Bundle bundle) {
+    /**
+     * 开始导航
+     * @param bundle bundle
+     */
+    public void startNavigation(final Bundle bundle) {
         mModel.startNavigation(bundle);
         mView.startNavigation();
     }
 
-    public void onNaviSpeedCameraInfo(SpeedOverallEntity speedCameraInfo) {
+    /**
+     * 区间车速、绿波车速
+     * @param speedCameraInfo speed camera info
+     */
+    public void onNaviSpeedCameraInfo(final SpeedOverallEntity speedCameraInfo) {
         mView.onNaviSpeedCameraInfo(speedCameraInfo);
     }
 
-    public void onNaviSAPAInfo(SapaInfoEntity sapaInfoEntity) {
+    /**
+     * 服务区信息
+     * @param sapaInfoEntity sapa info entity
+     */
+    public void onNaviSAPAInfo(final SapaInfoEntity sapaInfoEntity) {
         mView.onNaviSAPAInfo(sapaInfoEntity);
     }
 
-    public void onNaviInfo(NaviEtaInfo naviEtaInfo) {
+    /**
+     * 导航信息
+     * @param naviEtaInfo navi eta info
+     */
+    public void onNaviInfo(final NaviEtaInfo naviEtaInfo) {
         updateRouteName(naviEtaInfo);
         mView.onNaviInfo(naviEtaInfo);
     }
 
-    private void updateRouteName(NaviEtaInfo naviEtaInfo) {
-        if (!TextUtils.isEmpty(naviEtaInfo.curRouteName)) {
-            mView.updateRouteName(naviEtaInfo.curRouteName);
+    /**
+     * 更新路线名称
+     * @param naviEtaInfo navi eta info
+     */
+    private void updateRouteName(final NaviEtaInfo naviEtaInfo) {
+        if (!TextUtils.isEmpty(naviEtaInfo.getCurRouteName())) {
+            mView.updateRouteName(naviEtaInfo.getCurRouteName());
         }
     }
 
+    /**
+     * 导航停止
+     */
     public void onNaviStop() {
         mView.onNaviStop();
         closeAllFragment();
     }
 
-    public void onCrossImageInfo(boolean isShowImage, CrossImageEntity naviImageInfo) {
+    /**
+     * 路口大图
+     * @param isShowImage 是否显示图片
+     * @param naviImageInfo 导航图片信息
+     */
+    public void onCrossImageInfo(final boolean isShowImage, final CrossImageEntity naviImageInfo) {
         mView.onCrossImageInfo(isShowImage, naviImageInfo);
     }
 
-    public void onUpdateTMCLightBar(NaviTmcInfo naviTmcInfo) {
+    /**
+     * 更新TMC灯光条（路况信息）
+     * @param naviTmcInfo navi tmc info
+     */
+    public void onUpdateTMCLightBar(final NaviTmcInfo naviTmcInfo) {
         mView.onUpdateTMCLightBar(naviTmcInfo);
     }
 
-    public void onManeuverInfo(NaviManeuverInfo info) {
+    /**
+     * 转向图标信息、以及传出出入口信息
+     * @param info maneuver info
+     */
+    public void onManeuverInfo(final NaviManeuverInfo info) {
         mView.onManeuverInfo(info);
     }
 
-    public void onNaviArrive(long traceId, int naviType) {
+    /**
+     * 导航到达目的地
+     * @param traceId trace id
+     * @param naviType navi type
+     */
+    public void onNaviArrive(final long traceId, final int naviType) {
         mView.onNaviArrive(traceId, naviType);
     }
 
-    public void onLaneInfo(boolean isShowLane, LaneInfoEntity laneInfo) {
+    /**
+     * 车道线信息
+     * @param isShowLane 是否显示车道线
+     * @param laneInfo lane info
+     */
+    public void onLaneInfo(final boolean isShowLane, final LaneInfoEntity laneInfo) {
         mIsShowLane = isShowLane;
-        naviLanesVisibility.set(isShowLane);
+        mNaviLanesVisibility.set(isShowLane);
         mView.onLaneInfo(isShowLane, laneInfo);
     }
 
-    public void onImmersiveStatusChange(ImersiveStatus currentImersiveStatus) {
-        naviRouteNameVisibility.set(currentImersiveStatus == ImersiveStatus.IMERSIVE);
+    /**
+     * 沉浸态状态改变回调
+     * @param currentImersiveStatus current immersive status
+     */
+    public void onImmersiveStatusChange(final ImersiveStatus currentImersiveStatus) {
+        mNaviRouteNameVisibility.set(currentImersiveStatus == ImersiveStatus.IMERSIVE);
         mView.onImmersiveStatusChange(currentImersiveStatus);
     }
 
-    public void addSceneCallback(ISceneCallback sceneCallback) {
+    /**
+     * 添加场景回调
+     * @param sceneCallback scene callback
+     */
+    public void addSceneCallback(final ISceneCallback sceneCallback) {
         mView.addSceneCallback(sceneCallback);
     }
 
-    public void updateViaListState(boolean isExpand) {
+    /**
+     * 更新via列表状态
+     * @param isExpand 是否展开
+     */
+    public void updateViaListState(final boolean isExpand) {
         mView.updateViaListState(isExpand);
     }
 
+    /**
+     * 显示导航偏好页面
+     */
     public void showNaviPreferenceScene() {
-        naviPreferenceVisibility.set(true);
+        mNaviPreferenceVisibility.set(true);
     }
 
+    /**
+     * 路由偏好改变回调
+     * @param text text
+     * @param isFirstChange 是否是第一次改变
+     */
     @Override
-    public void onRoutePreferenceChange(String text, boolean isFirstChange) {
+    public void onRoutePreferenceChange(final String text, final boolean isFirstChange) {
         Logger.d(TAG, "text：" + text + ",isFirstChange：" + isFirstChange);
         if (!isFirstChange) {
-            naviPreferenceVisibility.set(false);
+            mNaviPreferenceVisibility.set(false);
             mModel.onRoutePreferenceChange();
         }
     }
 
-    public void onUpdateViaPass(long viaIndex) {
+    /**
+     * 途经点通过回调
+     * @param viaIndex via index
+     */
+    public void onUpdateViaPass(final long viaIndex) {
         mView.onUpdateViaPass(viaIndex);
     }
 
-    public void notifyDeleteViaPointResult(boolean result, NaviViaEntity entity) {
+    /**
+     * 删除途经点结果回调
+     * @param result result
+     * @param entity entity
+     */
+    public void notifyDeleteViaPointResult(final boolean result,final NaviViaEntity entity) {
         mView.notifyDeleteViaPointResult(result, entity);
+    }
+
+    /**
+     * 跳转服务区详情页方法
+     * @param type           type
+     * @param sapaInfoEntity sapa info entity
+     */
+    public void skipNaviSapaDetailScene(final int type, final SapaInfoEntity sapaInfoEntity) {
+        mView.skipNaviSapaDetailScene(type, sapaInfoEntity);
+    }
+
+    /**
+     * 行程报告回调
+     * @param entity entity
+     */
+    public void onDriveReport(final NaviDriveReportEntity entity) {
+        mView.onDriveReport(entity);
+    }
+
+    /**
+     * 导航继续
+     */
+    public void naviContinue() {
+        mView.naviContinue();
+    }
+
+    /**
+     * @param type 平行路切换类型 0:主辅路切换 1:桥上下切换
+     */
+    public void naviParallelSwitch(final int type) {
+        mView.naviParallelSwitch(type);
+    }
+
+    /**
+     * @param type 0:退出全览 1:切换全览
+     */
+    public void naviPreviewSwitch(final int type) {
+        mView.naviPreviewSwitch(type);
+    }
+
+    @Override
+    public void onNetStatusChange(boolean isConnected) {
+        // 离线隐藏光柱图，在线显示
+        mNaviTmcVisibility.set(isConnected);
     }
 }

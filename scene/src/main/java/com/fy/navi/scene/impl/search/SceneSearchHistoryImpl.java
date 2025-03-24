@@ -11,7 +11,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @Author: baipeng0904
+ * @author baipeng0904
+ * @version \$Revision1.0\$
  * @Description: 搜索历史记录
  * @CreateDate: $ $
  */
@@ -19,21 +20,21 @@ public class SceneSearchHistoryImpl extends BaseSceneModel<SceneMainSearchBottom
     private final SearchPackage mSearchPackage;
     private final BehaviorPackage mBehaviorPackage;
 
-    public SceneSearchHistoryImpl(SceneMainSearchBottomPartView mScreenView) {
-        super(mScreenView);
+    public SceneSearchHistoryImpl(final SceneMainSearchBottomPartView screenView) {
+        super(screenView);
         mSearchPackage = SearchPackage.getInstance();
         mBehaviorPackage = BehaviorPackage.getInstance();
     }
 
     /**
      * 常用地址选择
-     * @param position
+     * @param position 点击下标
      */
-    public void commonAdd(int position){
+    public void commonAdd(final int position){
         //判断是否有常用地址
         //有常用地址打开详情页
-        ArrayList<PoiInfoEntity> list = mBehaviorPackage.getFavoritePoiData(3);
-        int size = list.size();
+        final ArrayList<PoiInfoEntity> list = mBehaviorPackage.getFavoritePoiData(3);
+        final int size = list.size();
         if (size > 0 && position < size) {
             mScreenView.jumpToPoiFragment(list.get(position));
         } else {
@@ -52,7 +53,7 @@ public class SceneSearchHistoryImpl extends BaseSceneModel<SceneMainSearchBottom
 
     @Override
     public void getSearchKeywordRecord() {
-        List<History> historyList = mSearchPackage.getSearchKeywordRecord();
+        final List<History> historyList = mSearchPackage.getSearchKeywordRecord();
         mScreenView.notifyKeywordRecord(historyList);
     }
 

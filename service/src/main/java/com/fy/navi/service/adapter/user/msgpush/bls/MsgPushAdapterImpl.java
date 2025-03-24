@@ -56,20 +56,21 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Objects;
 
-public class MsgPushAdapterImpl implements IMsgPushApi, IMsgPushServiceObserver, ICallBackSendToPhone, ICallBackWsTserviceInternalLinkAutoReport, IMobileLinkObserver{
+public class MsgPushAdapterImpl implements IMsgPushApi, IMsgPushServiceObserver, ICallBackSendToPhone,
+    ICallBackWsTserviceInternalLinkAutoReport, IMobileLinkObserver{
 
     private static final String TAG = MapDefaultFinalTag.MSG_PUSH_SERVICE_TAG;
 
     private MsgPushService msgPushService;
     private BLAosService mBLAosService;
-    private final Hashtable<String, MsgPushAdapterCallback> callBacks;
+    private final Hashtable<String, MsgPushAdapterCallback> mCallBacks;
 
     public MsgPushAdapterImpl() {
-        callBacks = new Hashtable<>();
+        mCallBacks = new Hashtable<>();
     }
     @Override
-    public void registerCallBack(String key, MsgPushAdapterCallback callBack) {
-        callBacks.put(key, callBack);
+    public void registerCallBack(final String key, final MsgPushAdapterCallback callBack) {
+        mCallBacks.put(key, callBack);
     }
 
     @Override
@@ -78,7 +79,7 @@ public class MsgPushAdapterImpl implements IMsgPushApi, IMsgPushServiceObserver,
         // 获取消息推送服务
         msgPushService = (MsgPushService) ServiceMgr.getServiceMgrInstance().getBLService(SingleServiceID.MsgPushSingleServiceID);
         msgPushService.addObserver(this);
-        MsgPushInitParam msgPushParam = new MsgPushInitParam();
+        final MsgPushInitParam msgPushParam = new MsgPushInitParam();
         msgPushParam.dataPath = GBLCacheFilePath.MSG_FROM_PHONE_PATH; // 消息存储数据库路径，设置目录要有文件创建、读写权限
         msgPushService.init(msgPushParam);
         mBLAosService  = new BLAosService();
@@ -90,8 +91,8 @@ public class MsgPushAdapterImpl implements IMsgPushApi, IMsgPushServiceObserver,
      * @param userId 消息盒子开启入参，目前只有UserID
      */
     @Override
-    public void startListen(String userId) {
-        UserLoginInfo userLoginInfo= new UserLoginInfo();
+    public void startListen(final String userId) {
+        final UserLoginInfo userLoginInfo= new UserLoginInfo();
         userLoginInfo.userId = userId;
         if (msgPushService != null) {
             msgPushService.startListen(userLoginInfo);
@@ -116,10 +117,12 @@ public class MsgPushAdapterImpl implements IMsgPushApi, IMsgPushServiceObserver,
 
     /**
      * 获取推送消息继承的基类的所有数据
+     * @param msgPushItem
+     * @return MsgPushInfo
      */
-    public MsgPushInfo getMsgPushInfo(MsgPushItem msgPushItem) {
+    public MsgPushInfo getMsgPushInfo(final MsgPushItem msgPushItem) {
 
-        MsgPushInfo msgPushInfo = new MsgPushInfo();
+        final MsgPushInfo msgPushInfo = new MsgPushInfo();
         msgPushInfo.setMessageId(msgPushItem.messageId);
         msgPushInfo.setMessageType(msgPushItem.messageType);
         msgPushInfo.setStatus(msgPushItem.status);
@@ -153,14 +156,14 @@ public class MsgPushAdapterImpl implements IMsgPushApi, IMsgPushServiceObserver,
     @Override
     public ArrayList<MsgPushInfo> getAutoPushMessages() {
         ArrayList<AutoPushMsg> autoPushMsgList = new ArrayList<>();
-        ArrayList<MsgPushInfo> autoPushMsgInfoList = new ArrayList<>();
+        final ArrayList<MsgPushInfo> autoPushMsgInfoList = new ArrayList<>();
         if (msgPushService != null) {
             autoPushMsgList = msgPushService.getAutoPushMessages();
         }
         for (AutoPushMsg autoPushMsg : autoPushMsgList) {
             MsgPushInfo autoPushMsgInfo = getMsgPushInfo(autoPushMsg);
 
-            AutoPushInfo autoPushInfo = autoPushMsg.content;
+            final AutoPushInfo autoPushInfo = autoPushMsg.content;
             autoPushMsgInfo = GsonUtils.convertToT(autoPushInfo, MsgPushInfo.class);
 
             autoPushMsgInfoList.add(autoPushMsgInfo);
@@ -183,95 +186,111 @@ public class MsgPushAdapterImpl implements IMsgPushApi, IMsgPushServiceObserver,
     @Override
     public ArrayList<MsgPushInfo> getAimPoiPushMessages() {
 
-        ArrayList<AimPoiPushMsg> mAimPoiPushMsgList = new ArrayList<>();
-        ArrayList<MsgPushInfo> mAimPoiPushMsgInfoList = new ArrayList<>();
+        ArrayList<AimPoiPushMsg> aimPoiPushMsgList = new ArrayList<>();
+        final ArrayList<MsgPushInfo> aimPoiPushMsgInfoList = new ArrayList<>();
         if (msgPushService != null) {
-            mAimPoiPushMsgList = msgPushService.getAimPoiPushMessages();
+            aimPoiPushMsgList = msgPushService.getAimPoiPushMessages();
         }
 
-        for (AimPoiPushMsg mAimPoiPushMsg : mAimPoiPushMsgList) {
+        for (AimPoiPushMsg aimPoiPushMsg : aimPoiPushMsgList) {
 
-            MsgPushInfo mAimPoiPushMsgInfo = getMsgPushInfo(mAimPoiPushMsg);
+            MsgPushInfo aimPoiPushMsgInfo = getMsgPushInfo(aimPoiPushMsg);
 
-            AimPoiInfo aimPoiInfo = mAimPoiPushMsg.content;
+            final AimPoiInfo aimPoiInfo = aimPoiPushMsg.content;
 
-            mAimPoiPushMsgInfo = GsonUtils.convertToT(aimPoiInfo, MsgPushInfo.class);
+            aimPoiPushMsgInfo = GsonUtils.convertToT(aimPoiInfo, MsgPushInfo.class);
 
-            mAimPoiPushMsgInfoList.add(mAimPoiPushMsgInfo);
+            aimPoiPushMsgInfoList.add(aimPoiPushMsgInfo);
         }
 
-        if (!mAimPoiPushMsgInfoList.isEmpty()) {
+        if (!aimPoiPushMsgInfoList.isEmpty()) {
 
-            Logger.d(TAG,"mAimPoiPushMsgInfoList = " + mAimPoiPushMsgInfoList.toString());
-            return mAimPoiPushMsgInfoList;
+            Logger.d(TAG,"mAimPoiPushMsgInfoList = " + aimPoiPushMsgInfoList.toString());
+            return aimPoiPushMsgInfoList;
         } else {
             Logger.d(TAG,"Get AimPoiPushMsgInfoList failed.");
             return new ArrayList<>();
         }
     }
 
-    private MobileRouteParamInfo getMobileRouteParamBaseInfo(MobileRouteParam routeParam) {
+    /**
+     * getMobileRouteParamBaseInfo
+     * @param routeParam
+     * @return MobileRouteParamInfo
+     */
+    private MobileRouteParamInfo getMobileRouteParamBaseInfo(final MobileRouteParam routeParam) {
 
         MobileRouteParamInfo routeParamInfo;
 
         routeParamInfo = GsonUtils.convertToT(routeParam, MobileRouteParamInfo.class);
         routeParamInfo.setDestinationType(routeParam.destination.type);
-        MobileDestination destination = routeParam.destination;
+        final MobileDestination destination = routeParam.destination;
         routeParamInfo = GsonUtils.convertToT(destination, MobileRouteParamInfo.class);
 
         return routeParamInfo;
     }
 
-    private ArrayList<RoutePathProjectPoints> getRoutePathPoints(AimRoutePushMsg mAimRoutePushMsg, String type) {
-        ArrayList<RoutePathProjectPoints> routePathPointsList = new ArrayList<>();
+    /**
+     * getRoutePathPoints
+     * @param aimRoutePushMsg
+     * @param type
+     * @return list
+     */
+    private ArrayList<RoutePathProjectPoints> getRoutePathPoints(final AimRoutePushMsg aimRoutePushMsg, final String type) {
+        final ArrayList<RoutePathProjectPoints> routePathPointsList = new ArrayList<>();
         ArrayList<RoutepathrestorationPointInfo>  routePathPointsInfoList = new ArrayList<>();
         if (Objects.equals(type, "ViaPoints")) {
-            routePathPointsInfoList = mAimRoutePushMsg.content.routeParam.viaPoints;
+            routePathPointsInfoList = aimRoutePushMsg.content.routeParam.viaPoints;
         } else if (Objects.equals(type, "EndPoints")) {
-            routePathPointsInfoList = mAimRoutePushMsg.content.routeParam.endPoints;
+            routePathPointsInfoList = aimRoutePushMsg.content.routeParam.endPoints;
         } else if (Objects.equals(type, "StartPoints")) {
-            routePathPointsInfoList = mAimRoutePushMsg.content.routeParam.startPoints;
+            routePathPointsInfoList = aimRoutePushMsg.content.routeParam.startPoints;
         }
         for (RoutepathrestorationPointInfo viaPoint :routePathPointsInfoList) {
-            RoutePathProjectPoints viaPointInfo = new RoutePathProjectPoints();
+            final RoutePathProjectPoints viaPointInfo = new RoutePathProjectPoints();
             GsonUtils.copyBean(viaPoint, viaPointInfo);
             routePathPointsList.add(viaPointInfo);
         }
         return routePathPointsList;
     }
 
-    private MsgPushInfo getAimRoutePushData(AimRoutePushMsg mAimRoutePushMsg) {
-        MsgPushInfo mAimRoutePushMsgInfo = getMsgPushInfo(mAimRoutePushMsg);
+    /**
+     * getAimRoutePushData
+     * @param aimRoutePushMsg
+     * @return MsgPushInfo
+     */
+    private MsgPushInfo getAimRoutePushData(final AimRoutePushMsg aimRoutePushMsg) {
+        MsgPushInfo aimRoutePushMsgInfo = getMsgPushInfo(aimRoutePushMsg);
 
-        AimRoutePushInfo aimRoutePushInfo = mAimRoutePushMsg.content;
-        mAimRoutePushMsgInfo = GsonUtils.convertToT(aimRoutePushInfo, MsgPushInfo.class);
+        final AimRoutePushInfo aimRoutePushInfo = aimRoutePushMsg.content;
+        aimRoutePushMsgInfo = GsonUtils.convertToT(aimRoutePushInfo, MsgPushInfo.class);
 
-        mAimRoutePushMsgInfo.setRouteParam(getMobileRouteParamBaseInfo(mAimRoutePushMsg.content.routeParam));
+        aimRoutePushMsgInfo.setRouteParam(getMobileRouteParamBaseInfo(aimRoutePushMsg.content.routeParam));
 
-        MobileVehicleInfo vehicle = new MobileVehicleInfo();
-        GsonUtils.copyBean(mAimRoutePushMsg.content.routeParam.vehicle, vehicle);
-        mAimRoutePushMsgInfo.getRouteParam().setVehicle(vehicle);
+        final MobileVehicleInfo vehicle = new MobileVehicleInfo();
+        GsonUtils.copyBean(aimRoutePushMsg.content.routeParam.vehicle, vehicle);
+        aimRoutePushMsgInfo.getRouteParam().setVehicle(vehicle);
 
-        MobileLocation mLocation = new MobileLocation();
-        GsonUtils.copyBean(mAimRoutePushMsg.content.routeParam.location, mLocation);
-        mAimRoutePushMsgInfo.getRouteParam().setLocation(mLocation);
+        final MobileLocation location = new MobileLocation();
+        GsonUtils.copyBean(aimRoutePushMsg.content.routeParam.location, location);
+        aimRoutePushMsgInfo.getRouteParam().setLocation(location);
 
 
-        ArrayList<MobileRouteViaPointInfo> aimRouteViaPoints = new ArrayList<>();
-        for (MobileRouteViaPoint viaPoint : mAimRoutePushMsg.content.routeParam.routeViaPoints) {
-            MobileRouteViaPointInfo mobileRouteViaPointInfo = new MobileRouteViaPointInfo();
+        final ArrayList<MobileRouteViaPointInfo> aimRouteViaPoints = new ArrayList<>();
+        for (MobileRouteViaPoint viaPoint : aimRoutePushMsg.content.routeParam.routeViaPoints) {
+            final MobileRouteViaPointInfo mobileRouteViaPointInfo = new MobileRouteViaPointInfo();
             GsonUtils.copyBean(viaPoint, mobileRouteViaPointInfo);
             aimRouteViaPoints.add(mobileRouteViaPointInfo);
         }
-        mAimRoutePushMsgInfo.routeParam.routeViaPoints = aimRouteViaPoints;
+        aimRoutePushMsgInfo.routeParam.routeViaPoints = aimRouteViaPoints;
 
-        mAimRoutePushMsgInfo.routeParam.startPoints = getRoutePathPoints(mAimRoutePushMsg, "StartPoints");
+        aimRoutePushMsgInfo.routeParam.startPoints = getRoutePathPoints(aimRoutePushMsg, "StartPoints");
 
-        mAimRoutePushMsgInfo.routeParam.viaPoints = getRoutePathPoints(mAimRoutePushMsg, "ViaPoints");
+        aimRoutePushMsgInfo.routeParam.viaPoints = getRoutePathPoints(aimRoutePushMsg, "ViaPoints");
 
-        mAimRoutePushMsgInfo.routeParam.endPoints = getRoutePathPoints(mAimRoutePushMsg, "EndPoints");
+        aimRoutePushMsgInfo.routeParam.endPoints = getRoutePathPoints(aimRoutePushMsg, "EndPoints");
 
-        return mAimRoutePushMsgInfo;
+        return aimRoutePushMsgInfo;
     }
 
 
@@ -282,21 +301,21 @@ public class MsgPushAdapterImpl implements IMsgPushApi, IMsgPushServiceObserver,
     @Override
     public ArrayList<MsgPushInfo> getAimRoutePushMessages() {
 
-        ArrayList<AimRoutePushMsg> mAimRoutePushMsgList = new ArrayList<>();
-        ArrayList<MsgPushInfo> mAimRoutePushMsgInfoList = new ArrayList<>();
+        ArrayList<AimRoutePushMsg> aimRoutePushMsgList = new ArrayList<>();
+        final ArrayList<MsgPushInfo> aimRoutePushMsgInfoList = new ArrayList<>();
         if (msgPushService != null) {
-            mAimRoutePushMsgList = msgPushService.getAimRoutePushMessages();
+            aimRoutePushMsgList = msgPushService.getAimRoutePushMessages();
         }
-        Logger.d(TAG,"mAimRoutePushMsgList = " + mAimRoutePushMsgList);
-        for (AimRoutePushMsg mAimRoutePushMsg : mAimRoutePushMsgList) {
-            mAimRoutePushMsgInfoList.add(getAimRoutePushData(mAimRoutePushMsg));
+        Logger.d(TAG,"mAimRoutePushMsgList = " + aimRoutePushMsgList);
+        for (AimRoutePushMsg aimRoutePushMsg : aimRoutePushMsgList) {
+            aimRoutePushMsgInfoList.add(getAimRoutePushData(aimRoutePushMsg));
         }
 
-        if (!mAimRoutePushMsgInfoList.isEmpty()) {
+        if (!aimRoutePushMsgInfoList.isEmpty()) {
 
-            Logger.d(TAG,"mAimRoutePushMsgInfoList = " + mAimRoutePushMsgInfoList);
+            Logger.d(TAG,"mAimRoutePushMsgInfoList = " + aimRoutePushMsgInfoList);
 
-            return mAimRoutePushMsgInfoList;
+            return aimRoutePushMsgInfoList;
         } else {
             Logger.d(TAG,"Get AimRoutePushMsgInfoList failed.");
             return new ArrayList<>();
@@ -309,34 +328,32 @@ public class MsgPushAdapterImpl implements IMsgPushApi, IMsgPushServiceObserver,
      * @param msgName 路线终点名称
      */
     @Override
-    public void updateAimRouteEndPoiName(long msgId, String msgName) {
+    public void updateAimRouteEndPoiName(final long msgId, final String msgName) {
         if (msgPushService != null) {
             msgPushService.updateAimRouteEndPoiName(msgId, msgName);
             Logger.d(TAG,"AimRoute end POI name updated.");
         } else {
-            Logger.d(TAG,"MsgPush service is not initialized.");
+            Logger.d(TAG,"updateAimRouteEndPoiName: MsgPush service is not initialized.");
         }
     }
 
     /**
      * 执行一个网络请求,send2phone服务接口
-     * @param pAosRequest 网络请求,内存由HMI管理,ts,车机端send2phone服务接口
+     * @param aosRequest 网络请求,内存由HMI管理,ts,车机端send2phone服务接口
      * @return 整数 >0:网络请求的标识用于AbortRequest() ; =0:网络请求未发起，无回调。
      */
     @Override
-    public long sendReqSendToPhone(MsgPushRequestInfo pAosRequest) {
-        GSendToPhoneRequestParam gSendToPhoneRequestParam = new GSendToPhoneRequestParam();
-        GsonUtils.copyBean(pAosRequest, gSendToPhoneRequestParam);
-        GAimpoiMsg aimpoiMsg;
-        aimpoiMsg = GsonUtils.convertToT(pAosRequest, GAimpoiMsg.class);
-        gSendToPhoneRequestParam.aimpoiMsg = aimpoiMsg;
+    public long sendReqSendToPhone(final MsgPushRequestInfo aosRequest) {
+        final GSendToPhoneRequestParam sendToPhoneRequestParam = new GSendToPhoneRequestParam();
+        GsonUtils.copyBean(aosRequest, sendToPhoneRequestParam);
+        sendToPhoneRequestParam.aimpoiMsg = GsonUtils.convertToT(aosRequest, GAimpoiMsg.class);
 
         // TODO
         if (mBLAosService != null) {
             Logger.d(TAG,"SendToPhone request sent.");
-            return mBLAosService.sendReqSendToPhone(gSendToPhoneRequestParam, this);
+            return mBLAosService.sendReqSendToPhone(sendToPhoneRequestParam, this);
         } else {
-            Logger.d(TAG,"MsgPush service is not initialized.");
+            Logger.d(TAG,"sendReqSendToPhone:MsgPush service is not initialized.");
             return -1;
         }
     }
@@ -347,17 +364,17 @@ public class MsgPushAdapterImpl implements IMsgPushApi, IMsgPushServiceObserver,
      * @return 请求返回值
      */
     @Override
-    public MsgPushResponseInfo request(long deviceId, GeoPoint userLocation) {
-        MobileLinkRequest request = new MobileLinkRequest();
+    public MsgPushResponseInfo request(final long deviceId, final GeoPoint userLocation) {
+        final MobileLinkRequest request = new MobileLinkRequest();
         request.deviceId = deviceId;
-        MsgPushResponseInfo result = new MsgPushResponseInfo();
-        TaskResult result1;
+        final MsgPushResponseInfo result = new MsgPushResponseInfo();
+        final TaskResult result1;
         if (msgPushService != null) {
             result1 = msgPushService.request(request, this);
             GsonUtils.copyBean(result1, result);
             return  result;
         }else {
-            Logger.d(TAG,"MsgPush service is not initialized.");
+            Logger.d(TAG,"request:MsgPush service is not initialized.");
             return new MsgPushResponseInfo();
         }
     }
@@ -371,7 +388,7 @@ public class MsgPushAdapterImpl implements IMsgPushApi, IMsgPushServiceObserver,
             msgPushService.abort();
             Logger.d(TAG,"All requests aborted.");
         } else {
-            Logger.d(TAG,"MsgPush service is not initialized.");
+            Logger.d(TAG,"abort:MsgPush service is not initialized.");
         }
     }
 
@@ -380,30 +397,30 @@ public class MsgPushAdapterImpl implements IMsgPushApi, IMsgPushServiceObserver,
      * @param taskId task id
      */
     @Override
-    public void abort(long taskId) {
+    public void abort(final long taskId) {
         if (msgPushService != null) {
             msgPushService.abort(taskId);
             Logger.d(TAG,"Request with taskId " + taskId + " aborted.");
         } else {
-            Logger.d(TAG,"MsgPush service is not initialized.");
+            Logger.d(TAG,"abort task id: MsgPush service is not initialized.");
         }
     }
 
     /**
      * 执行一个网络请求,车机互联的通用上报接口(除去导航上报)
-     * @param pAosRequest 	网络请求, 内存由HMI管理 ,车机互联的通用上报接口(除去导航上报)
+     * @param aosRequest 网络请求, 内存由HMI管理 ,车机互联的通用上报接口(除去导航上报)
      * @return 整数 >0:网络请求的标识用于AbortRequest() ; =0:网络请求未发起，无回调。
      */
     @Override
-    public long sendReqWsTserviceInternalLinkAutoReport(MsgPushRequestInfo pAosRequest) {
+    public long sendReqWsTserviceInternalLinkAutoReport(final MsgPushRequestInfo aosRequest) {
 
-        GWsTserviceInternalLinkAutoReportRequestParam gWsTserviceInternalLinkAutoReportRequestParam = new GWsTserviceInternalLinkAutoReportRequestParam();
-        gWsTserviceInternalLinkAutoReportRequestParam = GsonUtils.convertToT(pAosRequest, GWsTserviceInternalLinkAutoReportRequestParam.class);
+        final GWsTserviceInternalLinkAutoReportRequestParam gwsTserviceInternalLinkAutoReportRequestParam =
+            GsonUtils.convertToT(aosRequest, GWsTserviceInternalLinkAutoReportRequestParam.class);
 
         if (mBLAosService != null) {
-            return mBLAosService.sendReqWsTserviceInternalLinkAutoReport(gWsTserviceInternalLinkAutoReportRequestParam, this);
+            return mBLAosService.sendReqWsTserviceInternalLinkAutoReport(gwsTserviceInternalLinkAutoReportRequestParam, this);
         } else {
-            Logger.d(TAG,"MsgPush service is not initialized.");
+            Logger.d(TAG,"sendReqWsTserviceInternalLinkAutoReport:MsgPush service is not initialized.");
         }
         return -1;
     }
@@ -413,17 +430,17 @@ public class MsgPushAdapterImpl implements IMsgPushApi, IMsgPushServiceObserver,
      * @param msg 运营推送消息
      */
     // @Override
-    public void notifyMessage(AutoPushMsg msg) {
+    public void notifyMessage(final AutoPushMsg msg) {
 
         MsgPushInfo autoPushMsgInfo = getMsgPushInfo(msg);
 
-        AutoPushInfo autoPushInfo = msg.content;
+        final AutoPushInfo autoPushInfo = msg.content;
 
         autoPushMsgInfo = GsonUtils.convertToT(autoPushInfo, MsgPushInfo.class);
 
         Logger.d(TAG,"AutoPushMsgInfo: " + autoPushMsgInfo.toString());
 
-        for (MsgPushAdapterCallback callBack : callBacks.values()) {
+        for (MsgPushAdapterCallback callBack : mCallBacks.values()) {
             callBack.notifyAutoPushMessage(autoPushMsgInfo);
         }
     }
@@ -433,15 +450,15 @@ public class MsgPushAdapterImpl implements IMsgPushApi, IMsgPushServiceObserver,
      * @param msg AIMPOI(send2car)推送消息
      */
     @Override
-    public void notifyMessage(AimPoiPushMsg msg) {
+    public void notifyMessage(final AimPoiPushMsg msg) {
         MsgPushInfo aimPoiPushMsgInfo = getMsgPushInfo(msg);
 
-        AimPoiInfo aimPoiInfo = msg.content;
+        final AimPoiInfo aimPoiInfo = msg.content;
         aimPoiPushMsgInfo = GsonUtils.convertToT(aimPoiInfo, MsgPushInfo.class);
 
         Logger.d(TAG,"AimPoiPushMsgInfo: " + aimPoiPushMsgInfo.toString());
 
-        for (MsgPushAdapterCallback callBack : callBacks.values()) {
+        for (MsgPushAdapterCallback callBack : mCallBacks.values()) {
             callBack.notifyAimPoiPushMessage(aimPoiPushMsgInfo);
         }
     }
@@ -451,73 +468,73 @@ public class MsgPushAdapterImpl implements IMsgPushApi, IMsgPushServiceObserver,
      * @param msg 手机发送路线推送消息
      */
     @Override
-    public void notifyMessage(AimRoutePushMsg msg) {
+    public void notifyMessage(final AimRoutePushMsg msg) {
         Logger.d(TAG,"notifyMessage: " + GsonUtils.toJson(msg.content));
 
-        RouteMsgPushInfo routeMsgPushInfo = new RouteMsgPushInfo();
-        routeMsgPushInfo.setMsgPushInfo(msg);
-        PoiInfoEntity poiInfoEntity = new PoiInfoEntity();
+        final RouteMsgPushInfo routeMsgPushInfo = new RouteMsgPushInfo();
+        routeMsgPushInfo.setMMsgPushInfo(msg);
+        final PoiInfoEntity poiInfoEntity = new PoiInfoEntity();
         poiInfoEntity.setName(msg.content.routeParam.destination.name);
         poiInfoEntity.setPid(msg.content.routeParam.destination.poiId);
-        GeoPoint geoPoint = new GeoPoint();
-        geoPoint.lat = Double.parseDouble(msg.content.routeParam.endPoints.get(0).lat);
-        geoPoint.lon = Double.parseDouble(msg.content.routeParam.endPoints.get(0).lon);
+        final GeoPoint geoPoint = new GeoPoint();
+        geoPoint.setLat(Double.parseDouble(msg.content.routeParam.endPoints.get(0).lat));
+        geoPoint.setLon(Double.parseDouble(msg.content.routeParam.endPoints.get(0).lon));
         poiInfoEntity.setPoint(geoPoint);
-        routeMsgPushInfo.setPoiInfoEntity(poiInfoEntity);
+        routeMsgPushInfo.setMPoiInfoEntity(poiInfoEntity);
 
-        RoutePoint startPoint = new RoutePoint();
-        startPoint.setIsDraw(true);
-        startPoint.setType(0);
-        startPoint.setPathId(0);
-        GeoPoint startGeoPoint = new GeoPoint();
-        startGeoPoint.lon = Double.parseDouble(msg.content.path.startPoints.points.get(0).lon);
-        startGeoPoint.lat = Double.parseDouble(msg.content.path.startPoints.points.get(0).lat);
-        startGeoPoint.z = 0;
-        startPoint.setPos(startGeoPoint);
-        routeMsgPushInfo.setStartPoint(startPoint);
+        final RoutePoint startPoint = new RoutePoint();
+        startPoint.setMIsDraw(true);
+        startPoint.setMType(0);
+        startPoint.setMPathId(0);
+        final GeoPoint startGeoPoint = new GeoPoint();
+        startGeoPoint.setLon(Double.parseDouble(msg.content.path.startPoints.points.get(0).lon));
+        startGeoPoint.setLat(Double.parseDouble(msg.content.path.startPoints.points.get(0).lat));
+        startGeoPoint.setZ( 0);
+        startPoint.setMPos(startGeoPoint);
+        routeMsgPushInfo.setMStartPoint(startPoint);
 
-        RoutePoint endPoint = new RoutePoint();
-        endPoint.setIsDraw(true);
-        endPoint.setType(1);
-        endPoint.setPathId(0);
-        GeoPoint endGeoPoint = new GeoPoint();
-        endGeoPoint.lon = Double.parseDouble(msg.content.path.endPoints.points.get(0).lon);
-        endGeoPoint.lat = Double.parseDouble(msg.content.path.endPoints.points.get(0).lat);
-        endGeoPoint.z = 0;
-        endPoint.setPos(endGeoPoint);
-        routeMsgPushInfo.setEndPoint(endPoint);
+        final RoutePoint endPoint = new RoutePoint();
+        endPoint.setMIsDraw(true);
+        endPoint.setMType(1);
+        endPoint.setMPathId(0);
+        final GeoPoint endGeoPoint = new GeoPoint();
+        endGeoPoint.setLon(Double.parseDouble(msg.content.path.endPoints.points.get(0).lon));
+        endGeoPoint.setLat(Double.parseDouble(msg.content.path.endPoints.points.get(0).lat));
+        endGeoPoint.setZ(0);
+        endPoint.setMPos(endGeoPoint);
+        routeMsgPushInfo.setMEndPoint(endPoint);
 
-        ArrayList<RoutePoint> viaPoints = new ArrayList<>();
-        ArrayList<PoiInfoEntity> viaPoiInfoEntitys = new ArrayList<>();
+        final ArrayList<RoutePoint> viaPoints = new ArrayList<>();
+        final ArrayList<PoiInfoEntity> viaPoiInfoEntitys = new ArrayList<>();
         if (msg.content.path.routeViaPoints.display_points != null
                 && !msg.content.path.routeViaPoints.display_points.isEmpty()) {
             for (RouteDisplayPoints displayPoint : msg.content.path.routeViaPoints.display_points) {
-                RoutePoint viaPoint = new RoutePoint();
-                viaPoint.setIsDraw(true);
-                viaPoint.setType(2);
-                viaPoint.setPathId(0);
-                GeoPoint viaGeoPoint = new GeoPoint();
-                viaGeoPoint.lon = Double.parseDouble(displayPoint.lon);
-                viaGeoPoint.lat = Double.parseDouble(displayPoint.lat);
-                viaGeoPoint.z = 0;
-                viaPoint.setPos(viaGeoPoint);
+                final RoutePoint viaPoint = new RoutePoint();
+                viaPoint.setMIsDraw(true);
+                viaPoint.setMType(2);
+                viaPoint.setMPathId(0);
+                final GeoPoint viaGeoPoint = new GeoPoint();
+                viaGeoPoint.setLon(Double.parseDouble(displayPoint.lon));
+                viaGeoPoint.setLat(Double.parseDouble(displayPoint.lat));
+                viaGeoPoint.setZ(0);
+                viaPoint.setMPos(viaGeoPoint);
                 viaPoints.add(viaPoint);
 
-                PoiInfoEntity viaPoiInfoEntity = new PoiInfoEntity();
+                final PoiInfoEntity viaPoiInfoEntity = new PoiInfoEntity();
                 viaPoiInfoEntity.setName(displayPoint.poiName);
                 viaPoiInfoEntity.setPid(displayPoint.poiID);
                 viaPoiInfoEntity.setPoint(viaGeoPoint);
                 viaPoiInfoEntitys.add(viaPoiInfoEntity);
             }
         }
-        routeMsgPushInfo.setViaPoints(viaPoints);
-        routeMsgPushInfo.setViaPoiInfoEntity(viaPoiInfoEntitys);
+        routeMsgPushInfo.setMViaPoints(viaPoints);
+        routeMsgPushInfo.setMViaPoiInfoEntity(viaPoiInfoEntitys);
 
         if (msg.content.routeParam.destination != null) {
-            routeMsgPushInfo.setName(msg.content.routeParam.destination.name);
+            routeMsgPushInfo.setMName(msg.content.routeParam.destination.name);
         }
 
-        for (MsgPushAdapterCallback callBack : callBacks.values()) {
+        for (MsgPushAdapterCallback callBack : mCallBacks.values()) {
             callBack.notifyAimRoutePushMessage(routeMsgPushInfo);
         }
     }
@@ -527,28 +544,30 @@ public class MsgPushAdapterImpl implements IMsgPushApi, IMsgPushServiceObserver,
      * @param msg 消息数据
      */
     @Override
-    public void notifyMessage(MobileLinkPushMsg msg) {
+    public void notifyMessage(final MobileLinkPushMsg msg) {
 
-        MsgPushInfo mobileLinkPushMsgInfo = getMsgPushInfo(msg);
+        final MsgPushInfo mobileLinkPushMsgInfo = getMsgPushInfo(msg);
 
         Logger.d(TAG,"MobileLinkPushMsgInfo: " + mobileLinkPushMsgInfo.toString());
 
-        for (MsgPushAdapterCallback callBack : callBacks.values()) {
+        for (MsgPushAdapterCallback callBack : mCallBacks.values()) {
             callBack.notifyMobileLinkPushMessage(mobileLinkPushMsgInfo);
         }
     }
 
-    private MsgPushResponseInfo getResponseBase(BLResponseBase info) {
-        MsgPushResponseInfo msgPushResponseInfo;
-
-        msgPushResponseInfo = GsonUtils.convertToT(info, MsgPushResponseInfo.class);
-
-        ArrayList<PropertyValueInfo> blKeyValues = new ArrayList<>();
+    /**
+     * getResponseBase
+     * @param info
+     * @return MsgPushResponseInfo
+     */
+    private MsgPushResponseInfo getResponseBase(final BLResponseBase info) {
+        final MsgPushResponseInfo msgPushResponseInfo = GsonUtils.convertToT(info, MsgPushResponseInfo.class);
+        final ArrayList<PropertyValueInfo> blKeyValues = new ArrayList<>();
 
         for (BLKeyValue blKeyValue : info.headers.property) {
-            PropertyValueInfo blKeyValueInfo = new PropertyValueInfo();
-            blKeyValueInfo.setmStrKey(blKeyValue.m_strKey);
-            blKeyValueInfo.setmStrValue(blKeyValue.m_strValue);
+            final PropertyValueInfo blKeyValueInfo = new PropertyValueInfo();
+            blKeyValueInfo.setStrKey(blKeyValue.m_strKey);
+            blKeyValueInfo.setStrValue(blKeyValue.m_strValue);
             blKeyValues.add(blKeyValueInfo);
         }
         msgPushResponseInfo.property = blKeyValues;
@@ -558,34 +577,34 @@ public class MsgPushAdapterImpl implements IMsgPushApi, IMsgPushServiceObserver,
 
     /**
      * 网络库线程中回调业务应答类
-     * @param gSendToPhoneResponseParam send2phone服务接口
+     * @param sendToPhoneResponseParam send2phone服务接口
      */
     @Override
-    public void onRecvAck(GSendToPhoneResponseParam gSendToPhoneResponseParam) {
-        MsgPushResponseInfo msgPushResponseInfo = getResponseBase(gSendToPhoneResponseParam);
+    public void onRecvAck(final GSendToPhoneResponseParam sendToPhoneResponseParam) {
+        final MsgPushResponseInfo msgPushResponseInfo = getResponseBase(sendToPhoneResponseParam);
         msgPushResponseInfo.setmEAosRequestType(1100001);
 
         Logger.d(TAG,"GSendToPhoneResponseParamInfo: " + msgPushResponseInfo.toString());
 
-        for (MsgPushAdapterCallback callBack : callBacks.values()) {
-            callBack.onRecvAckGSendToPhoneResponse(getResponseBase(gSendToPhoneResponseParam));
+        for (MsgPushAdapterCallback callBack : mCallBacks.values()) {
+            callBack.onRecvAckGSendToPhoneResponse(getResponseBase(sendToPhoneResponseParam));
         }
     }
 
     /**
      * 网络库线程中回调业务应答类
-     * @param gWsTserviceInternalLinkAutoReportResponseParam 车机互联的通用上报接口(除去导航上报)，应答类
+     * @param gwsTserviceInternalLinkAutoReportResponseParam 车机互联的通用上报接口(除去导航上报)，应答类
      */
     @Override
-    public void onRecvAck(GWsTserviceInternalLinkAutoReportResponseParam gWsTserviceInternalLinkAutoReportResponseParam) {
+    public void onRecvAck(final GWsTserviceInternalLinkAutoReportResponseParam gwsTserviceInternalLinkAutoReportResponseParam) {
 
-        MsgPushResponseInfo msgPushResponseInfo = getResponseBase(gWsTserviceInternalLinkAutoReportResponseParam);
+        final MsgPushResponseInfo msgPushResponseInfo = getResponseBase(gwsTserviceInternalLinkAutoReportResponseParam);
         msgPushResponseInfo.setmEAosRequestType(1600041);
         msgPushResponseInfo.setmNetworkStatus(0);
 
         Logger.d(TAG,"GWsTserviceInternalLinkAutoReportResponseParamInfo: " + msgPushResponseInfo.toString());
 
-        for (MsgPushAdapterCallback callBack : callBacks.values()) {
+        for (MsgPushAdapterCallback callBack : mCallBacks.values()) {
             callBack.onRecvAckGWsTserviceInternalLinkAutoReportResponse(msgPushResponseInfo);
         }
     }

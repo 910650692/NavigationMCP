@@ -9,18 +9,18 @@ import com.fy.navi.service.adapter.signal.SignalAdapterCallback;
 
 import java.util.Hashtable;
 
-public class SignalPackage implements SignalAdapterCallback {
+public final class SignalPackage implements SignalAdapterCallback {
     public static final String TAG = SignalPackage.class.getSimpleName();
 
     private final SignalAdapter mSignalAdapter;
     private Hashtable<String, SignalCallback> mSignalCallbacks;
 
     public static SignalPackage getInstance() {
-        return SInstanceHolder.sInstance;
+        return SInstanceHolder.INSTANCE;
     }
 
     private static final class SInstanceHolder {
-        static final SignalPackage sInstance = new SignalPackage();
+        static final SignalPackage INSTANCE = new SignalPackage();
     }
 
     private SignalPackage() {
@@ -28,27 +28,34 @@ public class SignalPackage implements SignalAdapterCallback {
         mSignalAdapter = SignalAdapter.getInstance();
     }
 
-    public void init(Context context) {
+    /**
+     * 初始化
+     * @param context
+     */
+    public void init(final Context context) {
         mSignalAdapter.initSignal(context);
         mSignalAdapter.registerCallback(TAG, this);
     }
 
     /**
      * 注册回调
+     * @param key 回调key
+     * @param signalCallback 回调
      */
-    public void registerObserver(String key, SignalCallback signalCallback) {
+    public void registerObserver(final String key, final SignalCallback signalCallback) {
         mSignalCallbacks.put(key, signalCallback);
     }
 
     /**
      * 取消回调
+     * @param key 回调key
      */
-    public void unregisterObserver(String key) {
+    public void unregisterObserver(final String key) {
         mSignalCallbacks.remove(key);
     }
 
     @Override
-    public void onSpeedChanged(float speed) {
+    public void onSpeedChanged(final float speed) {
         ThreadManager.getInstance().postUi(() -> {
             if (!ConvertUtils.isEmpty(mSignalCallbacks)) {
                 for (SignalCallback signalCallback : mSignalCallbacks.values()) {
@@ -61,7 +68,7 @@ public class SignalPackage implements SignalAdapterCallback {
     }
 
     @Override
-    public void onGearChanged(int gear) {
+    public void onGearChanged(final int gear) {
         ThreadManager.getInstance().postUi(() -> {
             if (!ConvertUtils.isEmpty(mSignalCallbacks)) {
                 for (SignalCallback signalCallback : mSignalCallbacks.values()) {
@@ -74,7 +81,7 @@ public class SignalPackage implements SignalAdapterCallback {
     }
 
     @Override
-    public void onSystemStateChanged(int state) {
+    public void onSystemStateChanged(final int state) {
         ThreadManager.getInstance().postUi(() -> {
             if (!ConvertUtils.isEmpty(mSignalCallbacks)) {
                 for (SignalCallback signalCallback : mSignalCallbacks.values()) {

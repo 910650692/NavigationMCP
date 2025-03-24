@@ -1,13 +1,11 @@
 package com.fy.navi.service.adapter.setting.bls;
 
-import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
 import com.autonavi.gbl.servicemanager.ServiceMgr;
 import com.autonavi.gbl.user.behavior.BehaviorService;
 import com.autonavi.gbl.user.behavior.model.BehaviorServiceParam;
 import com.autonavi.gbl.user.behavior.model.ConfigKey;
 import com.autonavi.gbl.user.behavior.model.ConfigValue;
-import com.autonavi.gbl.user.behavior.model.SimpleFavoriteItem;
 import com.autonavi.gbl.user.behavior.observer.IBehaviorServiceObserver;
 import com.autonavi.gbl.user.syncsdk.model.SyncMode;
 import com.autonavi.gbl.util.model.SingleServiceID;
@@ -15,38 +13,30 @@ import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.adapter.setting.SettingAdapterCallback;
 import com.fy.navi.service.adapter.setting.SettingApi;
 import com.fy.navi.service.define.route.RoutePreferenceID;
-import com.fy.navi.service.define.setting.SettingConstant;
-import com.fy.navi.service.define.setting.SimpleFavoriteItemBean;
 
-import java.util.ArrayList;
 import java.util.Hashtable;
 
-/**
- * Setting数据服务.
- * @Description Impl类只做SDK的原子能力封装，不做对象及数据转换
- * @Author fh
- * @date 2024/02/19
- */
+
 public class SettingAdapterImpl implements SettingApi, IBehaviorServiceObserver {
     private static final String TAG = MapDefaultFinalTag.SETTING_SERVICE_TAG;
-    private final Hashtable<String, SettingAdapterCallback> settingHashtable;
+    private final Hashtable<String, SettingAdapterCallback> mSettingHashtable;
     private final BehaviorService mBehaviorService;
 
     public SettingAdapterImpl() {
-        settingHashtable = new Hashtable<>();
+        mSettingHashtable = new Hashtable<>();
         mBehaviorService = (BehaviorService) ServiceMgr.getServiceMgrInstance().getBLService(SingleServiceID.BehaviorSingleServiceID);
     }
 
     @Override
     public void initSetting() {
-        BehaviorServiceParam behaviorServiceParam = new BehaviorServiceParam();
+        final BehaviorServiceParam behaviorServiceParam = new BehaviorServiceParam();
         mBehaviorService.init(behaviorServiceParam);
         mBehaviorService.addObserver(this);
     }
 
     @Override
-    public void registerCallback(String key, SettingAdapterCallback resultCallback) {
-        settingHashtable.put(key, resultCallback);
+    public void registerCallback(final String key, final SettingAdapterCallback resultCallback) {
+        mSettingHashtable.put(key, resultCallback);
     }
 
     /**
@@ -55,7 +45,7 @@ public class SettingAdapterImpl implements SettingApi, IBehaviorServiceObserver 
      */
     @Override
     public RoutePreferenceID getConfigKeyPlanPref() {
-        ConfigValue mConfigValue = mBehaviorService.getConfig(ConfigKey.ConfigKeyPlanPref);
+        final ConfigValue mConfigValue = mBehaviorService.getConfig(ConfigKey.ConfigKeyPlanPref);
         if (mConfigValue == null || "".equals(mConfigValue.strValue)) {
             return RoutePreferenceID.PREFERENCE_RECOMMEND;
         }
@@ -63,7 +53,12 @@ public class SettingAdapterImpl implements SettingApi, IBehaviorServiceObserver 
         return getConfigKeyPlanPref(mConfigValue.strValue);
     }
 
-    private RoutePreferenceID getConfigKeyPlanPref(String planPref) {
+    /**
+     * 路线偏好转换
+     * @param planPref 路线偏好
+     * @return 路线偏好ID
+     */
+    private RoutePreferenceID getConfigKeyPlanPref(final String planPref) {
         return switch (planPref) {
             case "2" -> RoutePreferenceID.PREFERENCE_AVOIDCONGESTION;
             case "4" -> RoutePreferenceID.PREFERENCE_LESSCHARGE;
@@ -88,14 +83,19 @@ public class SettingAdapterImpl implements SettingApi, IBehaviorServiceObserver 
      * @return 0:成功 其他：失败
      */
     @Override
-    public int setConfigKeyPlanPref(RoutePreferenceID routePreferenceID) {
-        ConfigValue castSimple = new ConfigValue();
+    public int setConfigKeyPlanPref(final RoutePreferenceID routePreferenceID) {
+        final ConfigValue castSimple = new ConfigValue();
         castSimple.strValue = getRoutePreference(routePreferenceID);
         Logger.d(TAG, "setConfigKeyPlanPref planPrefString: " + routePreferenceID);
         return mBehaviorService.setConfig(ConfigKey.ConfigKeyPlanPref, castSimple, SyncMode.SyncModeNow);
     }
 
-    private String getRoutePreference(RoutePreferenceID routePreferenceID) {
+    /**
+     * 路线偏好转换
+     * @param routePreferenceID 路线偏好ID
+     * @return 路线偏好
+     */
+    private String getRoutePreference(final RoutePreferenceID routePreferenceID) {
         return switch (routePreferenceID) {
             case PREFERENCE_AVOIDCONGESTION -> "2";
             case PREFERENCE_LESSCHARGE -> "4";
@@ -119,11 +119,11 @@ public class SettingAdapterImpl implements SettingApi, IBehaviorServiceObserver 
      * return 0:成功 其他：失败
      */
     @Override
-    public int setConfigKeyAvoidLimit(boolean avoidLimit) {
+    public int setConfigKeyAvoidLimit(final boolean avoidLimit) {
 
         Logger.d(TAG, "setConfigKeyAvoidLimit avoidLimit: " + avoidLimit);
 
-        ConfigValue castSimple = new ConfigValue();
+        final ConfigValue castSimple = new ConfigValue();
         castSimple.intValue = avoidLimit ? 1 : 0;
 
         return mBehaviorService.setConfig(ConfigKey.ConfigKeyAvoidLimit, castSimple, SyncMode.SyncModeNow);
@@ -134,7 +134,7 @@ public class SettingAdapterImpl implements SettingApi, IBehaviorServiceObserver 
      */
     @Override
     public boolean getConfigKeyAvoidLimit() {
-        ConfigValue configKeyAvoidLimit = mBehaviorService.getConfig(ConfigKey.ConfigKeyAvoidLimit);
+        final ConfigValue configKeyAvoidLimit = mBehaviorService.getConfig(ConfigKey.ConfigKeyAvoidLimit);
         if (configKeyAvoidLimit == null) {
             return true;
         } else {
@@ -145,10 +145,11 @@ public class SettingAdapterImpl implements SettingApi, IBehaviorServiceObserver 
 
     /**
      * 获取车牌号
+     * @return 车牌号
      */
     public String getConfigKeyPlateNumber() {
         //车牌号
-        ConfigValue configKeyPlateNumber = mBehaviorService.getConfig(ConfigKey.ConfigKeyPlateNumber);
+        final ConfigValue configKeyPlateNumber = mBehaviorService.getConfig(ConfigKey.ConfigKeyPlateNumber);
         if (configKeyPlateNumber == null) {
             return null;
         }
@@ -161,8 +162,8 @@ public class SettingAdapterImpl implements SettingApi, IBehaviorServiceObserver 
      * @return 0:成功 其他：失败
      */
     @Override
-    public int setConfigKeyPlateNumber(String carNumber) {
-        ConfigValue castSimple = new ConfigValue();
+    public int setConfigKeyPlateNumber(final String carNumber) {
+        final ConfigValue castSimple = new ConfigValue();
         castSimple.strValue = carNumber;
         Logger.d(TAG, "setConfigKeyPlateNumber carNumber: " + carNumber);
         return mBehaviorService.setConfig(ConfigKey.ConfigKeyPlateNumber, castSimple, SyncMode.SyncModeNow);
@@ -173,7 +174,7 @@ public class SettingAdapterImpl implements SettingApi, IBehaviorServiceObserver 
      */
     @Override
     public boolean getConfigKeyOftenArrived() {
-        ConfigValue configKeyOftenArrived = mBehaviorService.getConfig(ConfigKey.ConfigKeyOftenArrived);
+        final ConfigValue configKeyOftenArrived = mBehaviorService.getConfig(ConfigKey.ConfigKeyOftenArrived);
         if (configKeyOftenArrived == null) {
             return false;
         } else {
@@ -187,9 +188,9 @@ public class SettingAdapterImpl implements SettingApi, IBehaviorServiceObserver 
      * @return 0:成功 其他：失败
      */
     @Override
-    public int setConfigKeyOftenArrived(boolean oftenArrived) {
+    public int setConfigKeyOftenArrived(final boolean oftenArrived) {
 
-        ConfigValue castSimple = new ConfigValue();
+        final ConfigValue castSimple = new ConfigValue();
         castSimple.intValue = oftenArrived ? 1 : 0;
 
         Logger.d(TAG, "setConfigKeyOftenArrived oftenArrived: " + oftenArrived);
@@ -201,7 +202,7 @@ public class SettingAdapterImpl implements SettingApi, IBehaviorServiceObserver 
      */
     @Override
     public boolean getConfigKeyAutoExitPreview() {
-        ConfigValue configKeyAutoExitPreview = mBehaviorService.getConfig(ConfigKey.ConfigKeyAutoExitPreview);
+        final ConfigValue configKeyAutoExitPreview = mBehaviorService.getConfig(ConfigKey.ConfigKeyAutoExitPreview);
         if (configKeyAutoExitPreview == null) {
             return true;
         } else {
@@ -215,9 +216,9 @@ public class SettingAdapterImpl implements SettingApi, IBehaviorServiceObserver 
      * @return 0:成功 其他：失败
      */
     @Override
-    public int setConfigKeyAutoExitPreview(boolean autoExitPreview) {
+    public int setConfigKeyAutoExitPreview(final boolean autoExitPreview) {
 
-        ConfigValue castSimple = new ConfigValue();
+        final ConfigValue castSimple = new ConfigValue();
         castSimple.intValue = autoExitPreview ? 1 : 0;
 
         Logger.d(TAG, "setConfigKeyAutoExitPreview autoExitPreview: " + autoExitPreview);
@@ -229,7 +230,7 @@ public class SettingAdapterImpl implements SettingApi, IBehaviorServiceObserver 
      */
     @Override
     public int getConfigKeyBroadcastVolume() {
-        ConfigValue configKeyBroadcastVolume = mBehaviorService.getConfig(ConfigKey.ConfigKeyBroadcastVolume);
+        final ConfigValue configKeyBroadcastVolume = mBehaviorService.getConfig(ConfigKey.ConfigKeyBroadcastVolume);
         if (configKeyBroadcastVolume == null) {
             return 0;
         }
@@ -242,8 +243,8 @@ public class SettingAdapterImpl implements SettingApi, IBehaviorServiceObserver 
      * @return 0:成功 其他：失败
      */
     @Override
-    public int setConfigKeyBroadcastVolume(int broadcastVolume) {
-        ConfigValue castSimple = new ConfigValue();
+    public int setConfigKeyBroadcastVolume(final int broadcastVolume) {
+        final ConfigValue castSimple = new ConfigValue();
         castSimple.intValue = broadcastVolume;
         Logger.d(TAG, "setConfigKeyBroadcastVolume broadcastVolume: " + broadcastVolume);
         return mBehaviorService.setConfig(ConfigKey.ConfigKeyBroadcastVolume, castSimple, SyncMode.SyncModeNow);
@@ -255,23 +256,23 @@ public class SettingAdapterImpl implements SettingApi, IBehaviorServiceObserver 
      */
     @Override
     public int getConfigKeyBroadcastMode() {
-        ConfigValue configKeyBroadcastMode = mBehaviorService.getConfig(ConfigKey.ConfigKeyBroadcastMode);
+        final ConfigValue configKeyBroadcastMode = mBehaviorService.getConfig(ConfigKey.ConfigKeyBroadcastMode);
         if (configKeyBroadcastMode == null) {
-            return SettingConstant.BROADCAST_DETAIL;
+            return 2;
         }
         Logger.d(TAG, "getConfigKeyBroadcastMode intValue: " + configKeyBroadcastMode.intValue);
-        return configKeyBroadcastMode.intValue == 0 ? SettingConstant.BROADCAST_DETAIL : configKeyBroadcastMode.intValue;
+        return configKeyBroadcastMode.intValue == 0 ? 2 : configKeyBroadcastMode.intValue;
     }
 
     /**
      * 设置导航播报模式  1：经典简洁播报； 2：新手详细播报，默认态； 3：极简播报 ；默认值2
      */
     @Override
-    public int setConfigKeyBroadcastMode(int broadcastMode) {
-        ConfigValue castSimple = new ConfigValue();
+    public int setConfigKeyBroadcastMode(final int broadcastMode) {
+        final ConfigValue castSimple = new ConfigValue();
         castSimple.intValue = broadcastMode;
         Logger.d(TAG, "setConfigKeyBroadcastMode broadcastMode: " + broadcastMode);
-        int res = mBehaviorService.setConfig(ConfigKey.ConfigKeyBroadcastMode, castSimple, SyncMode.SyncModeNow);
+        final int res = mBehaviorService.setConfig(ConfigKey.ConfigKeyBroadcastMode, castSimple, SyncMode.SyncModeNow);
         return res;
     }
 
@@ -280,7 +281,7 @@ public class SettingAdapterImpl implements SettingApi, IBehaviorServiceObserver 
      */
     @Override
     public boolean getConfigKeyRoadWarn() {
-        ConfigValue configKeyRoadWarn = mBehaviorService.getConfig(ConfigKey.ConfigKeyRoadWarn);
+        final ConfigValue configKeyRoadWarn = mBehaviorService.getConfig(ConfigKey.ConfigKeyRoadWarn);
         if (configKeyRoadWarn == null) {
             return true;
         } else {
@@ -294,9 +295,9 @@ public class SettingAdapterImpl implements SettingApi, IBehaviorServiceObserver 
      * @return 0:成功 其他：失败
      */
     @Override
-    public int setConfigKeyRoadWarn(boolean roadWarn) {
+    public int setConfigKeyRoadWarn(final boolean roadWarn) {
 
-        ConfigValue castSimple = new ConfigValue();
+        final ConfigValue castSimple = new ConfigValue();
         castSimple.intValue = roadWarn ? 1 : 0;
 
         Logger.d(TAG, "setConfigKeyRoadWarn roadWarn: " + roadWarn);
@@ -308,7 +309,7 @@ public class SettingAdapterImpl implements SettingApi, IBehaviorServiceObserver 
      */
     @Override
     public boolean getConfigKeySafeBroadcast() {
-        ConfigValue configKeySafeBroadcast = mBehaviorService.getConfig(ConfigKey.ConfigKeySafeBroadcast);
+        final ConfigValue configKeySafeBroadcast = mBehaviorService.getConfig(ConfigKey.ConfigKeySafeBroadcast);
         if (configKeySafeBroadcast == null) {
             return true;
         } else {
@@ -322,9 +323,9 @@ public class SettingAdapterImpl implements SettingApi, IBehaviorServiceObserver 
      * @return 0:成功 其他：失败
      */
     @Override
-    public int setConfigKeySafeBroadcast(boolean safeBroadcast) {
+    public int setConfigKeySafeBroadcast(final boolean safeBroadcast) {
 
-        ConfigValue castSimple = new ConfigValue();
+        final ConfigValue castSimple = new ConfigValue();
         castSimple.intValue = safeBroadcast ? 1 : 0;
 
         Logger.d(TAG, "setConfigKeySafeBroadcast safeBroadcast: " + safeBroadcast);
@@ -336,7 +337,7 @@ public class SettingAdapterImpl implements SettingApi, IBehaviorServiceObserver 
      */
     @Override
     public boolean getConfigKeyDriveWarn() {
-        ConfigValue configKeyDriveWarn = mBehaviorService.getConfig(ConfigKey.ConfigKeyDriveWarn);
+        final ConfigValue configKeyDriveWarn = mBehaviorService.getConfig(ConfigKey.ConfigKeyDriveWarn);
         if (configKeyDriveWarn == null) {
             return true;
         } else {
@@ -350,9 +351,9 @@ public class SettingAdapterImpl implements SettingApi, IBehaviorServiceObserver 
      * @return 0:成功 其他：失败
      */
     @Override
-    public int setConfigKeyDriveWarn(boolean driveWarn) {
+    public int setConfigKeyDriveWarn(final boolean driveWarn) {
 
-        ConfigValue castSimple = new ConfigValue();
+        final ConfigValue castSimple = new ConfigValue();
         castSimple.intValue = driveWarn ? 1 : 0;
 
         Logger.d(TAG, "setConfigKeyDriveWarn driveWarn: " + driveWarn);
@@ -364,7 +365,7 @@ public class SettingAdapterImpl implements SettingApi, IBehaviorServiceObserver 
      */
     @Override
     public int getConfigKeyMapviewMode() {
-        ConfigValue configMapviewModeValue = mBehaviorService.getConfig(ConfigKey.ConfigKeyMapviewMode);
+        final ConfigValue configMapviewModeValue = mBehaviorService.getConfig(ConfigKey.ConfigKeyMapviewMode);
         if (configMapviewModeValue == null) {
             return 0;
         }
@@ -377,8 +378,8 @@ public class SettingAdapterImpl implements SettingApi, IBehaviorServiceObserver 
      * @return 0:成功 其他：失败
      */
     @Override
-    public int setConfigKeyMapviewMode(int mapViewMode) {
-        ConfigValue castSimple = new ConfigValue();
+    public int setConfigKeyMapviewMode(final int mapViewMode) {
+        final ConfigValue castSimple = new ConfigValue();
         castSimple.intValue = mapViewMode;
         Logger.d(TAG, "setConfigKeyMapviewMode mapViewMode: " + mapViewMode);
         return mBehaviorService.setConfig(ConfigKey.ConfigKeyMapviewMode, castSimple, SyncMode.SyncModeNow);
@@ -389,7 +390,7 @@ public class SettingAdapterImpl implements SettingApi, IBehaviorServiceObserver 
      */
     @Override
     public boolean getConfigKeyRoadEvent() {
-        ConfigValue configKeyRoadEvent = mBehaviorService.getConfig(ConfigKey.ConfigKeyRoadEvent);
+        final ConfigValue configKeyRoadEvent = mBehaviorService.getConfig(ConfigKey.ConfigKeyRoadEvent);
         if (configKeyRoadEvent == null) {
             return true;
         } else {
@@ -403,27 +404,13 @@ public class SettingAdapterImpl implements SettingApi, IBehaviorServiceObserver 
      * @return 0:成功 其他：失败
      */
     @Override
-    public int setConfigKeyRoadEvent(boolean roadEvent) {
+    public int setConfigKeyRoadEvent(final boolean roadEvent) {
 
-        ConfigValue configValue = new ConfigValue();
+        final ConfigValue configValue = new ConfigValue();
         configValue.intValue = roadEvent ? 1 : 0;
 
         Logger.d(TAG, "setConfigKeyRoadEvent roadEvent: " + roadEvent);
         return mBehaviorService.setConfig(ConfigKey.ConfigKeyRoadEvent, configValue, SyncMode.SyncModeNow);
-    }
-
-    /**
-     * 获取收藏点列表
-     * @param type 收藏类别
-     * @param sorted 是否排序
-     * @return 收藏点列表
-     */
-    @Override
-    public ArrayList<SimpleFavoriteItemBean> getSimpleFavoriteList(int type, boolean sorted) {
-        if (mBehaviorService != null) {
-            return formatSimpleFavoriteList(mBehaviorService.getSimpleFavoriteList(type, sorted));
-        }
-        return null;
     }
 
     /**
@@ -432,7 +419,7 @@ public class SettingAdapterImpl implements SettingApi, IBehaviorServiceObserver 
      */
     @Override
     public int getConfigKeyPowerType() {
-        ConfigValue configKeyRoadEvent = mBehaviorService.getConfig(ConfigKey.ConfigKeyPowerType);
+        final ConfigValue configKeyRoadEvent = mBehaviorService.getConfig(ConfigKey.ConfigKeyPowerType);
         if (configKeyRoadEvent == null) {
             return 1;
         } else {
@@ -447,7 +434,7 @@ public class SettingAdapterImpl implements SettingApi, IBehaviorServiceObserver 
      */
     @Override
     public int getConfigKeyAudioMixMode() {
-        ConfigValue configKeyRoadEvent = mBehaviorService.getConfig(ConfigKey.ConfigKeyAudioMixMode);
+        final ConfigValue configKeyRoadEvent = mBehaviorService.getConfig(ConfigKey.ConfigKeyAudioMixMode);
         if (configKeyRoadEvent == null) {
             return 1;
         } else {
@@ -462,8 +449,8 @@ public class SettingAdapterImpl implements SettingApi, IBehaviorServiceObserver 
      * @return 0:成功 其他：失败
      */
     @Override
-    public int setConfigKeyAudioMixMode(int audioMixMode) {
-        ConfigValue castSimple = new ConfigValue();
+    public int setConfigKeyAudioMixMode(final int audioMixMode) {
+        final ConfigValue castSimple = new ConfigValue();
         castSimple.intValue = audioMixMode;
         Logger.d(TAG, "setConfigKeyAudioMixMode audioMixMode: " + audioMixMode);
         return mBehaviorService.setConfig(ConfigKey.ConfigKeyAudioMixMode, castSimple, SyncMode.SyncModeNow);
@@ -475,8 +462,8 @@ public class SettingAdapterImpl implements SettingApi, IBehaviorServiceObserver 
      * @return 返回错误码
      */
     @Override
-    public int setConfigKeyMute(int mute) {
-        ConfigValue castSimple = new ConfigValue();
+    public int setConfigKeyMute(final int mute) {
+        final ConfigValue castSimple = new ConfigValue();
         castSimple.intValue = mute;
         Logger.d(TAG, "setConfigKeyMute mute: " + mute);
         return mBehaviorService.setConfig(ConfigKey.ConfigKeyMute, castSimple, SyncMode.SyncModeNow);
@@ -488,7 +475,7 @@ public class SettingAdapterImpl implements SettingApi, IBehaviorServiceObserver 
      */
     @Override
     public int getConfigKeyMute() {
-        ConfigValue configKeyMute = mBehaviorService.getConfig(ConfigKey.ConfigKeyMute);
+        final ConfigValue configKeyMute = mBehaviorService.getConfig(ConfigKey.ConfigKeyMute);
         if (configKeyMute == null) {
             return 0;
         } else {
@@ -503,8 +490,8 @@ public class SettingAdapterImpl implements SettingApi, IBehaviorServiceObserver 
      * @return 返回错误码
      */
     @Override
-    public int setConfigKeyDayNightMode(int dayNightMode) {
-        ConfigValue castSimple = new ConfigValue();
+    public int setConfigKeyDayNightMode(final int dayNightMode) {
+        final ConfigValue castSimple = new ConfigValue();
         castSimple.intValue = dayNightMode;
         Logger.d(TAG, "setConfigKeyDayNightMode dayNightMode: " + dayNightMode);
         return mBehaviorService.setConfig(ConfigKey.ConfigKeyDayNightMode, castSimple, SyncMode.SyncModeNow);
@@ -516,7 +503,7 @@ public class SettingAdapterImpl implements SettingApi, IBehaviorServiceObserver 
      */
     @Override
     public int getConfigKeyDayNightMode() {
-        ConfigValue configKeyMute = mBehaviorService.getConfig(ConfigKey.ConfigKeyDayNightMode);
+        final ConfigValue configKeyMute = mBehaviorService.getConfig(ConfigKey.ConfigKeyDayNightMode);
         if (configKeyMute == null) {
             return 0;
         } else {
@@ -531,47 +518,10 @@ public class SettingAdapterImpl implements SettingApi, IBehaviorServiceObserver 
      * @param exCode 同步SDK返回值
      */
     @Override
-    public void notify(int eventType, int exCode) {
+    public void notify(final int eventType, final int exCode) {
         Logger.d(TAG, "notify eventType: " + eventType + " exCode: " + exCode);
-        for (SettingAdapterCallback resultCallback : settingHashtable.values()) {
+        for (SettingAdapterCallback resultCallback : mSettingHashtable.values()) {
             resultCallback.notify(eventType, exCode);
         }
-    }
-
-    private boolean checkSettingService(){
-        int serviceInitResult = mBehaviorService.isInit();
-        if(ConvertUtils.equals(serviceInitResult, 0) && ConvertUtils.equals(serviceInitResult, 1)){
-           return true;
-        }
-        return false;
-    }
-
-    private ArrayList<SimpleFavoriteItemBean> formatSimpleFavoriteList(ArrayList<SimpleFavoriteItem> list) {
-        ArrayList<SimpleFavoriteItemBean> simpleFavoriteList = new ArrayList<>();
-        if (!ConvertUtils.isEmpty(list)) {
-            for (SimpleFavoriteItem item : list) {
-                SimpleFavoriteItemBean simpleFavoriteItemBean = new SimpleFavoriteItemBean();
-                simpleFavoriteItemBean.id = item.id;
-                simpleFavoriteItemBean.item_id = item.item_id;
-                simpleFavoriteItemBean.name = item.name;
-                simpleFavoriteItemBean.common_name = item.common_name;
-                simpleFavoriteItemBean.point_x = item.point_x;
-                simpleFavoriteItemBean.point_y = item.point_y;
-                simpleFavoriteItemBean.point_x_arrive = item.point_x_arrive;
-                simpleFavoriteItemBean.point_y_arrive = item.point_y_arrive;
-                simpleFavoriteItemBean.city_name = item.city_name;
-                simpleFavoriteItemBean.city_code = item.city_code;
-                simpleFavoriteItemBean.phone_numbers = item.phone_numbers;
-                simpleFavoriteItemBean.tag = item.tag;
-                simpleFavoriteItemBean.type = item.type;
-                simpleFavoriteItemBean.newType = item.newType;
-                simpleFavoriteItemBean.custom_name = item.custom_name;
-                simpleFavoriteItemBean.address = item.address;
-                simpleFavoriteItemBean.classification = item.classification;
-                simpleFavoriteItemBean.top_time = item.top_time;
-                simpleFavoriteList.add(simpleFavoriteItemBean);
-            }
-        }
-        return simpleFavoriteList;
     }
 }

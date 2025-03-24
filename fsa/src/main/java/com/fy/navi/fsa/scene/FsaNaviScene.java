@@ -3,7 +3,6 @@ package com.fy.navi.fsa.scene;
 
 import android.util.Log;
 
-import com.android.utils.ConvertUtils;
 import com.android.utils.gson.GsonUtils;
 import com.fy.navi.fsa.FsaConstant;
 import com.fy.navi.fsa.MyFsaService;
@@ -57,15 +56,11 @@ import com.fy.navi.service.define.search.SearchResultEntity;
 import com.fy.navi.service.logicpaket.route.RoutePackage;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Base64;
 import java.util.Hashtable;
 import java.util.List;
 
-/**
- * FSA中处理导航数据数据.
- */
-public class FsaNaviScene {
+public final class FsaNaviScene {
 
     private final Hashtable<Integer, String> mFsaDataMap = new Hashtable<>();
 
@@ -83,85 +78,89 @@ public class FsaNaviScene {
         private static final FsaNaviScene INSTANCE = new FsaNaviScene();
     }
 
-    private FsaNaviScene() {}
+    private FsaNaviScene() {
+
+    }
 
     /**
-     * 根据导航回调的TBT信息发送对应的FsaEvent给客户端.
+     * 处理TBT信息，发送TBT数据.
      *
-     * @param naviETAInfo NaviETAInfo.
+     * @param fsaService  MyFsaService.
+     * @param naviETAInfo NaviEtaInfo.
      */
-    public void updateTbtInfo(MyFsaService fsaService, NaviEtaInfo naviETAInfo) {
+    public void updateTbtInfo(final MyFsaService fsaService, final NaviEtaInfo naviETAInfo) {
         if (null == naviETAInfo) {
             Log.e(FsaConstant.FSA_TAG, "tbtInfo is null");
             return;
         }
         mNaviEtaInfo = naviETAInfo;
         //根据已行驶里程和剩余距离计算已行驶百分比
-        int totalDistance = naviETAInfo.allDist + naviETAInfo.driveDist;
-        float drivePercent = (naviETAInfo.driveDist / (float) totalDistance) * 100;
+        final int totalDistance = naviETAInfo.getAllDist() + naviETAInfo.driveDist;
+        final float drivePercent = (naviETAInfo.driveDist / (float) totalDistance) * 100;
         mDrivePercent = drivePercent;
-        fsaService.sendEvent(FsaConstant.FSA_FUNCTION.ID_PASSED_PERCENT, String.valueOf(drivePercent));
+        fsaService.sendEvent(FsaConstant.FsaFunction.ID_PASSED_PERCENT, String.valueOf(drivePercent));
 
         //当前道路名称
-        if (!(null == naviETAInfo.curRouteName || naviETAInfo.curRouteName.isEmpty())) {
-            fsaService.sendEvent(FsaConstant.FSA_FUNCTION.ID_CURRENT_ROAD, naviETAInfo.curRouteName);
+        if (!(null == naviETAInfo.getCurRouteName() || naviETAInfo.getCurRouteName().isEmpty())) {
+            fsaService.sendEvent(FsaConstant.FsaFunction.ID_CURRENT_ROAD, naviETAInfo.getCurRouteName());
         }
 
         //TBT信息
-        ArrayList<TurnInfo> laneInfoList = new ArrayList<>();
-        TurnInfo turnInfo = new TurnInfo();
-        turnInfo.setRoadName(naviETAInfo.curRouteName);
-        turnInfo.setNextRoadName(naviETAInfo.nextRouteName);
-        turnInfo.setDistanceToNextTurn(naviETAInfo.nextDist);
-        turnInfo.setTurnKind(naviETAInfo.curManeuverID);
-        turnInfo.setStraight(naviETAInfo.curManeuverID == FsaConstant.FSA_TURN_KIND.IconContinue);
+        final ArrayList<TurnInfo> laneInfoList = new ArrayList<>();
+        final TurnInfo turnInfo = new TurnInfo();
+        turnInfo.setRoadName(naviETAInfo.getCurRouteName());
+        turnInfo.setPosition(new GeoPoint(121.48998888888889, 31.379458888888887));
+        turnInfo.setNextRoadName(naviETAInfo.getNextRouteName());
+        turnInfo.setDistanceToNextTurn(naviETAInfo.getNextDist());
+        turnInfo.setTurnKind(naviETAInfo.getCurManeuverID());
+        turnInfo.setStraight(naviETAInfo.getCurManeuverID() == FsaConstant.FsaTurnKind.ICON_CONTINUE);
         turnInfo.setRoadLevel(naviETAInfo.curRoadClass);
         if (null != naviETAInfo.NaviInfoData && naviETAInfo.NaviInfoData.size() > naviETAInfo.NaviInfoFlag) {
-            NaviEtaInfo.NaviInfoPanel naviInfoPanel = naviETAInfo.NaviInfoData.get(naviETAInfo.NaviInfoFlag);
+            final NaviEtaInfo.NaviInfoPanel naviInfoPanel = naviETAInfo.NaviInfoData.get(naviETAInfo.NaviInfoFlag);
             turnInfo.setRemainDistance(naviInfoPanel.segmentRemain.dist);
             turnInfo.setDirectionName(naviInfoPanel.nextRouteName);
         }
         laneInfoList.add(turnInfo);
-        fsaService.sendEvent(FsaConstant.FSA_FUNCTION.ID_TBT_INFO, GsonUtils.toJson(laneInfoList));
+        fsaService.sendEvent(FsaConstant.FsaFunction.ID_TBT_INFO, GsonUtils.toJson(laneInfoList));
 
         //剩余时间和距离
-        RemainInfo remainInfo = new RemainInfo();
-        remainInfo.setRemainTime(naviETAInfo.allTime);
-        remainInfo.setRemainDistance(naviETAInfo.allDist);
-        fsaService.sendEvent(FsaConstant.FSA_FUNCTION.ID_REMAIN_TIME_DISTANCE, GsonUtils.toJson(remainInfo));
+        final RemainInfo remainInfo = new RemainInfo();
+        remainInfo.setRemainTime(naviETAInfo.getAllTime());
+        remainInfo.setRemainDistance(naviETAInfo.getAllDist());
+        fsaService.sendEvent(FsaConstant.FsaFunction.ID_REMAIN_TIME_DISTANCE, GsonUtils.toJson(remainInfo));
     }
 
 
     /**
      * 处理TMC信息，发送路况数据.
      *
-     * @param fsaService MyFsaService.
+     * @param fsaService  MyFsaService.
      * @param naviTmcInfo NaviTmcInfo.
      */
-    public void updateTmcInfo(MyFsaService fsaService, NaviTmcInfo naviTmcInfo) {
+    public void updateTmcInfo(final MyFsaService fsaService, final NaviTmcInfo naviTmcInfo) {
         if (null == fsaService) {
             Log.e(FsaConstant.FSA_TAG, "FSA service is null");
             return;
         }
-        if (null == naviTmcInfo || null == naviTmcInfo.lightBarDetail || null == naviTmcInfo.lightBarDetail.tmcInfoData
-                || naviTmcInfo.lightBarDetail.tmcInfoData.isEmpty()) {
+        if (null == naviTmcInfo || null == naviTmcInfo.getLightBarDetail() || null == naviTmcInfo.getLightBarDetail().getTmcInfoData()
+                || naviTmcInfo.getLightBarDetail().getTmcInfoData().isEmpty()) {
             Log.e(FsaConstant.FSA_TAG, "naviTmcInfo is null");
         }
 
-        ArrayList<RoadCondition> roadConditionList = new ArrayList<>();
-        for (NaviTmcInfo.NaviTmcInfoData tmcInfoData : naviTmcInfo.lightBarDetail.tmcInfoData) {
+        final ArrayList<RoadCondition> roadConditionList = new ArrayList<>();
+        for (NaviTmcInfo.NaviTmcInfoData tmcInfoData : naviTmcInfo.getLightBarDetail().getTmcInfoData()) {
             if (null == tmcInfoData) {
                 continue;
             }
-            RoadCondition roadCondition = new RoadCondition();
-            roadCondition.setRoadConditionType(tmcInfoData.status);
-            roadCondition.setTravelTime(tmcInfoData.travelTime);
-            roadCondition.setDistance(tmcInfoData.distance);
+            final RoadCondition roadCondition = new RoadCondition();
+            roadCondition.setRoadConditionType(tmcInfoData.getStatus());
+            roadCondition.setTravelTime(tmcInfoData.getTravelTime());
+            roadCondition.setDistance(tmcInfoData.getDistance());
 
             roadConditionList.add(roadCondition);
         }
 
-        fsaService.sendEvent(FsaConstant.FSA_FUNCTION.ID_ROAD_CONDITION_INFO, GsonUtils.toJson(roadConditionList));
+        fsaService.sendEvent(FsaConstant.FsaFunction.ID_ROAD_CONDITION_INFO, GsonUtils.toJson(roadConditionList));
     }
 
     /**
@@ -170,84 +169,84 @@ public class FsaNaviScene {
      * @param fsaService MyFsaService.
      * @param cameraInfo CameraInfoEntity.
      */
-    public void updateNavigationCameraInfo(MyFsaService fsaService, CameraInfoEntity cameraInfo) {
+    public void updateNavigationCameraInfo(final MyFsaService fsaService, final CameraInfoEntity cameraInfo) {
         if (null == fsaService || null == cameraInfo) {
             Log.e(FsaConstant.FSA_TAG, "navigation camera is null");
             return;
         }
 
-        int subType = cameraInfo.getSubType();
-        if (FsaConstant.FSA_CAMERA_TYPE.IntervalVelocityStart == subType
-                || FsaConstant.FSA_CAMERA_TYPE.IntervalVelocityEnd == subType
-                || FsaConstant.FSA_CAMERA_TYPE.IntervalVelocityStartEnd == subType) {
+        final int subType = cameraInfo.getSubType();
+        if (FsaConstant.FsaCameraType.INTERVAL_VELOCITY_START == subType
+                || FsaConstant.FsaCameraType.INTERVAL_VELOCITY_END == subType
+                || FsaConstant.FsaCameraType.INTERVAL_VELOCITY_START_END == subType) {
             Log.d(FsaConstant.FSA_TAG, "updateNavigationCameraInfo: cameraId = "
                     + cameraInfo.getCameraId() + ", subCameraId = " + cameraInfo.getSubCameraId()
                     + ", type = " + cameraInfo.getSubType()
                     + ", remainDistance = " + cameraInfo.getDistance()
                     + ", speedLimit = " + cameraInfo.getSpeed());
             //区间测速的电子眼
-            NaviIntervalSpeedInfo naviIntervalSpeedInfo = new NaviIntervalSpeedInfo();
-            if (FsaConstant.FSA_CAMERA_TYPE.IntervalVelocityStart == subType) {
-                naviIntervalSpeedInfo.setStatus(FsaConstant.FSA_VALUE.ZERO);
-                naviIntervalSpeedInfo.setShowType(FsaConstant.FSA_VALUE.ZERO);
+            final NaviIntervalSpeedInfo naviIntervalSpeedInfo = new NaviIntervalSpeedInfo();
+            if (FsaConstant.FsaCameraType.INTERVAL_VELOCITY_START == subType) {
+                naviIntervalSpeedInfo.setStatus(FsaConstant.FsaValue.ZERO);
+                naviIntervalSpeedInfo.setShowType(FsaConstant.FsaValue.ZERO);
                 naviIntervalSpeedInfo.setCurrentSpeed((int) mCurrentSpeed);
                 naviIntervalSpeedInfo.setOverSpeed(mCurrentSpeed > cameraInfo.getSpeed());
             } else {
-                naviIntervalSpeedInfo.setStatus(FsaConstant.FSA_VALUE.ONE);
-                naviIntervalSpeedInfo.setShowType(FsaConstant.FSA_VALUE.TWO);
+                naviIntervalSpeedInfo.setStatus(FsaConstant.FsaValue.ONE);
+                naviIntervalSpeedInfo.setShowType(FsaConstant.FsaValue.TWO);
                 naviIntervalSpeedInfo.setCurrentSpeed((int) mCurrentSpeed);
                 naviIntervalSpeedInfo.setOverSpeed(mCurrentSpeed > cameraInfo.getSpeed());
             }
-            CameraInfo cameraInfo1 = new CameraInfo();
-            cameraInfo1.setId((int)cameraInfo.getSubCameraId());
+            final CameraInfo cameraInfo1 = new CameraInfo();
+            cameraInfo1.setId((int) cameraInfo.getSubCameraId());
             cameraInfo1.setRemainDistance(cameraInfo.getDistance());
             cameraInfo1.setSpeedLimit(cameraInfo.getSpeed());
             if (mNaviIntervalSpeedInfo != null) {
                 cameraInfo1.setAverageSpeed(mNaviIntervalSpeedInfo.getCameraInfo().getAverageSpeed());
             }
             naviIntervalSpeedInfo.setCameraInfo(cameraInfo1);
-            fsaService.sendEvent(FsaConstant.FSA_FUNCTION.ID_INTERVAL_SPEED_INFO, GsonUtils.toJson(naviIntervalSpeedInfo));
+            fsaService.sendEvent(FsaConstant.FsaFunction.ID_INTERVAL_SPEED_INFO, GsonUtils.toJson(naviIntervalSpeedInfo));
             mNaviIntervalSpeedInfo = naviIntervalSpeedInfo;
         } else {
             //其他电子眼
-            ForwardCameraInfo forwardCameraInfo = new ForwardCameraInfo();
+            final ForwardCameraInfo forwardCameraInfo = new ForwardCameraInfo();
             forwardCameraInfo.setType(subType);
             forwardCameraInfo.setRemainDistance(cameraInfo.getDistance());
             forwardCameraInfo.setSpeedLimit(cameraInfo.getSpeed());
             forwardCameraInfo.setOverSpeed(mCurrentSpeed > cameraInfo.getSpeed());
-            com.fy.navi.service.define.bean.GeoPoint geoPoint = cameraInfo.getCoord2D();
+            final com.fy.navi.service.define.bean.GeoPoint geoPoint = cameraInfo.getCoord2D();
             if (null != geoPoint) {
-                GeoPoint point = new GeoPoint(geoPoint.lon, geoPoint.lat);
+                final GeoPoint point = new GeoPoint(geoPoint.getLon(), geoPoint.getLat());
                 forwardCameraInfo.setPosition(point);
             }
-            ArrayList<ForwardCameraInfo> cameraList = new ArrayList<>();
+            final ArrayList<ForwardCameraInfo> cameraList = new ArrayList<>();
             cameraList.add(forwardCameraInfo);
-            fsaService.sendEvent(FsaConstant.FSA_FUNCTION.ID_FORWARD_CAMERA, GsonUtils.toJson(cameraList));
+            fsaService.sendEvent(FsaConstant.FsaFunction.ID_FORWARD_CAMERA, GsonUtils.toJson(cameraList));
         }
 
-        SpeedLimitSignData speedLimitSignData = new SpeedLimitSignData();
+        final SpeedLimitSignData speedLimitSignData = new SpeedLimitSignData();
         speedLimitSignData.setSpeedLimit(cameraInfo.getSpeed());
         speedLimitSignData.setAssured(true);
         speedLimitSignData.setMapMatch(cameraInfo.isMatch());
-        fsaService.sendEvent(FsaConstant.FSA_FUNCTION.ID_WHOLE_SPEED_LIMIT, GsonUtils.toJson(speedLimitSignData));
+        fsaService.sendEvent(FsaConstant.FsaFunction.ID_WHOLE_SPEED_LIMIT, GsonUtils.toJson(speedLimitSignData));
     }
 
     /**
      * 更新引导态区间测速信息.
      *
-     * @param fsaService MyFsaService.
+     * @param fsaService      MyFsaService.
      * @param speedCameraInfo SpeedOverallEntity.
      */
-    public void updateIntervalCameraInfo(MyFsaService fsaService, SpeedOverallEntity speedCameraInfo) {
+    public void updateIntervalCameraInfo(final MyFsaService fsaService, final SpeedOverallEntity speedCameraInfo) {
         if (null == fsaService || null == speedCameraInfo) {
             Log.e(FsaConstant.FSA_TAG, "interval camera is null");
             return;
         }
-        ArrayList<Short> limitSpeedList = speedCameraInfo.getLimitSpeedList();
+        final ArrayList<Short> limitSpeedList = speedCameraInfo.getLimitSpeedList();
         short limitSpeed = 0;
         if (limitSpeedList != null) {
             for (int i = 0; i < limitSpeedList.size(); i++) {
-                Short speed = limitSpeedList.get(i);
+                final Short speed = limitSpeedList.get(i);
                 if (speed != null && speed != 0 && speed != 0xFF) {
                     limitSpeed = speed;
                     break;
@@ -259,10 +258,10 @@ public class FsaNaviScene {
                 + ", remainDistance = " + speedCameraInfo.getRemainDistance()
                 + ", speedLimit = " + limitSpeed
                 + ", averageSpeed = " + speedCameraInfo.getAverageSpeed());
-        NaviIntervalSpeedInfo naviIntervalSpeedInfo = new NaviIntervalSpeedInfo();
-        naviIntervalSpeedInfo.setStatus(FsaConstant.FSA_VALUE.ZERO);
-        naviIntervalSpeedInfo.setShowType(FsaConstant.FSA_VALUE.ONE);
-        CameraInfo cameraInfo = new CameraInfo();
+        final NaviIntervalSpeedInfo naviIntervalSpeedInfo = new NaviIntervalSpeedInfo();
+        naviIntervalSpeedInfo.setStatus(FsaConstant.FsaValue.ZERO);
+        naviIntervalSpeedInfo.setShowType(FsaConstant.FsaValue.ONE);
+        final CameraInfo cameraInfo = new CameraInfo();
         cameraInfo.setId(speedCameraInfo.getId());
         cameraInfo.setType(speedCameraInfo.getType());
         cameraInfo.setRemainDistance(speedCameraInfo.getRemainDistance());
@@ -271,142 +270,155 @@ public class FsaNaviScene {
         naviIntervalSpeedInfo.setCameraInfo(cameraInfo);
         naviIntervalSpeedInfo.setCurrentSpeed((int) mCurrentSpeed);
         naviIntervalSpeedInfo.setOverSpeed(mCurrentSpeed > limitSpeed);
-        fsaService.sendEvent(FsaConstant.FSA_FUNCTION.ID_INTERVAL_SPEED_INFO, GsonUtils.toJson(naviIntervalSpeedInfo));
+        fsaService.sendEvent(FsaConstant.FsaFunction.ID_INTERVAL_SPEED_INFO, GsonUtils.toJson(naviIntervalSpeedInfo));
         mNaviIntervalSpeedInfo = naviIntervalSpeedInfo;
     }
 
     /**
      * 更新车道线信息.
      *
-     * @param fsaService MyFsaService.
+     * @param fsaService     MyFsaService.
      * @param laneInfoEntity LaneInfoEntity.
+     * @param isShowLane     是否显示车道线
      */
-    public void updateLaneLineInfo(MyFsaService fsaService, boolean isShowLane, LaneInfoEntity laneInfoEntity) {
+    public void updateLaneLineInfo(final MyFsaService fsaService, final boolean isShowLane, final LaneInfoEntity laneInfoEntity) {
         if (null == fsaService || null == laneInfoEntity) {
             Log.e(FsaConstant.FSA_TAG, "laneInfoEntity is null");
             return;
         }
 
-        LaneLineInfo laneLineInfo = new LaneLineInfo();
-        laneLineInfo.setShowType(isShowLane ? FsaConstant.FSA_VALUE.ZERO : FsaConstant.FSA_VALUE.TWO);
-        LaneInfo laneInfo = new LaneInfo();
+        final LaneLineInfo laneLineInfo = new LaneLineInfo();
+        laneLineInfo.setShowType(isShowLane ? FsaConstant.FsaValue.ZERO : FsaConstant.FsaValue.TWO);
+        final LaneInfo laneInfo = new LaneInfo();
         laneInfo.setPosition(new GeoPoint(laneInfoEntity.getPoint().getLon(), laneInfoEntity.getPoint().getLat()));
         laneLineInfo.setLaneInfo(laneInfo);
-        ArrayList<LaneItem> laneItemList = new ArrayList<>();
+        final ArrayList<LaneItem> laneItemList = new ArrayList<>();
         laneInfo.setItemList(laneItemList);
         for (int i = 0; i < laneInfoEntity.getBackLane().size(); i++) {
-            Integer laneType = laneInfoEntity.getBackLane().get(i);
+            final Integer laneType = laneInfoEntity.getBackLane().get(i);
             if (laneType == 0xFF) {
                 continue;
             }
-            LaneItem laneItem = new LaneItem();
-            LaneTypeInfo laneTypeInfo = new LaneTypeInfo();
+            final LaneItem laneItem = new LaneItem();
+            final LaneTypeInfo laneTypeInfo = new LaneTypeInfo();
             laneTypeInfo.setLaneType(amapLane2fsa(laneType));
-            Integer optimalLane = laneInfoEntity.getOptimalLane().get(i);
+            final Integer optimalLane = laneInfoEntity.getOptimalLane().get(i);
             if (optimalLane != 0xFF) {
                 laneTypeInfo.setBright(true);
             }
             laneItem.setLaneTypeInfo(laneTypeInfo);
-            ArrayList<LaneDirection> directionList = new ArrayList<>();
+            final ArrayList<LaneDirection> directionList = new ArrayList<>();
             amapLaneDirection2fsa(laneType, directionList);
             laneItem.setDirectionList(directionList);
             laneItemList.add(laneItem);
         }
-        fsaService.sendEvent(FsaConstant.FSA_FUNCTION.ID_LANE_INFO, GsonUtils.toJson(laneLineInfo));
+        fsaService.sendEvent(FsaConstant.FsaFunction.ID_LANE_INFO, GsonUtils.toJson(laneLineInfo));
     }
 
-    private int amapLane2fsa(int type) {
+    /**
+     * 车道线类型转换.
+     *
+     * @param type int.
+     * @return int.
+     */
+    private int amapLane2fsa(final int type) {
         switch (type) {
             case 21:
-                return FsaConstant.FSA_LANE_TYPE.TEXT_BUS_LANE; // 2 or 3 ?
+                return FsaConstant.FsaLaneType.TEXT_BUS_LANE; // 2 or 3 ?
             case 22:
-                return FsaConstant.FSA_LANE_TYPE.INVALID_VALUE; // ?
+                return FsaConstant.FsaLaneType.INVALID_VALUE; // ?
             case 23:
-                return FsaConstant.FSA_LANE_TYPE.VARIABLE_LANE;
+                return FsaConstant.FsaLaneType.VARIABLE_LANE;
             case 24:
-                return FsaConstant.FSA_LANE_TYPE.INVALID_VALUE; // ?
+                return FsaConstant.FsaLaneType.INVALID_VALUE; // ?
             case 25:
-                return FsaConstant.FSA_LANE_TYPE.TEXT_TIDAL_LANE;
+                return FsaConstant.FsaLaneType.TEXT_TIDAL_LANE;
             default:
-                return FsaConstant.FSA_LANE_TYPE.NORMAL;
+                return FsaConstant.FsaLaneType.NORMAL;
         }
     }
 
-    private void amapLaneDirection2fsa(int type, ArrayList<LaneDirection> directionList) {
+    /**
+     * 车道线方向转换.
+     *
+     * @param type          int.
+     * @param directionList ArrayList.
+     */
+    private void amapLaneDirection2fsa(final int type, final ArrayList<LaneDirection> directionList) {
         switch (type) {
             case 0:
-                directionList.add(new LaneDirection(FsaConstant.FSA_LANE_DIRECTION.GO_STRAIGHT, 0));
+                directionList.add(new LaneDirection(FsaConstant.FsaLaneDirection.GO_STRAIGHT, 0));
                 break;
             case 1:
-                directionList.add(new LaneDirection(FsaConstant.FSA_LANE_DIRECTION.TURN_LEFT, 0));
+                directionList.add(new LaneDirection(FsaConstant.FsaLaneDirection.TURN_LEFT, 0));
                 break;
             case 2:
-                directionList.add(new LaneDirection(FsaConstant.FSA_LANE_DIRECTION.GO_STRAIGHT, 0));
-                directionList.add(new LaneDirection(FsaConstant.FSA_LANE_DIRECTION.TURN_LEFT, 0));
+                directionList.add(new LaneDirection(FsaConstant.FsaLaneDirection.GO_STRAIGHT, 0));
+                directionList.add(new LaneDirection(FsaConstant.FsaLaneDirection.TURN_LEFT, 0));
                 break;
             case 3:
-                directionList.add(new LaneDirection(FsaConstant.FSA_LANE_DIRECTION.TURN_RIGHT, 0));
+                directionList.add(new LaneDirection(FsaConstant.FsaLaneDirection.TURN_RIGHT, 0));
                 break;
             case 4:
-                directionList.add(new LaneDirection(FsaConstant.FSA_LANE_DIRECTION.GO_STRAIGHT, 0));
-                directionList.add(new LaneDirection(FsaConstant.FSA_LANE_DIRECTION.TURN_RIGHT, 0));
+                directionList.add(new LaneDirection(FsaConstant.FsaLaneDirection.GO_STRAIGHT, 0));
+                directionList.add(new LaneDirection(FsaConstant.FsaLaneDirection.TURN_RIGHT, 0));
                 break;
             case 5:
-                directionList.add(new LaneDirection(FsaConstant.FSA_LANE_DIRECTION.TURN_AROUND, 0));
+                directionList.add(new LaneDirection(FsaConstant.FsaLaneDirection.TURN_AROUND, 0));
                 break;
             case 6:
-                directionList.add(new LaneDirection(FsaConstant.FSA_LANE_DIRECTION.TURN_LEFT, 0));
-                directionList.add(new LaneDirection(FsaConstant.FSA_LANE_DIRECTION.TURN_RIGHT, 0));
+                directionList.add(new LaneDirection(FsaConstant.FsaLaneDirection.TURN_LEFT, 0));
+                directionList.add(new LaneDirection(FsaConstant.FsaLaneDirection.TURN_RIGHT, 0));
                 break;
             case 7:
-                directionList.add(new LaneDirection(FsaConstant.FSA_LANE_DIRECTION.GO_STRAIGHT, 0));
-                directionList.add(new LaneDirection(FsaConstant.FSA_LANE_DIRECTION.TURN_LEFT, 0));
-                directionList.add(new LaneDirection(FsaConstant.FSA_LANE_DIRECTION.TURN_RIGHT, 0));
+                directionList.add(new LaneDirection(FsaConstant.FsaLaneDirection.GO_STRAIGHT, 0));
+                directionList.add(new LaneDirection(FsaConstant.FsaLaneDirection.TURN_LEFT, 0));
+                directionList.add(new LaneDirection(FsaConstant.FsaLaneDirection.TURN_RIGHT, 0));
                 break;
             case 8:
-                directionList.add(new LaneDirection(FsaConstant.FSA_LANE_DIRECTION.TURN_AROUND, 0));
+                directionList.add(new LaneDirection(FsaConstant.FsaLaneDirection.TURN_AROUND, 0));
                 break;
             case 9:
-                directionList.add(new LaneDirection(FsaConstant.FSA_LANE_DIRECTION.GO_STRAIGHT, 0));
-                directionList.add(new LaneDirection(FsaConstant.FSA_LANE_DIRECTION.TURN_AROUND, 0));
+                directionList.add(new LaneDirection(FsaConstant.FsaLaneDirection.GO_STRAIGHT, 0));
+                directionList.add(new LaneDirection(FsaConstant.FsaLaneDirection.TURN_AROUND, 0));
                 break;
             case 10:
-                directionList.add(new LaneDirection(FsaConstant.FSA_LANE_DIRECTION.GO_STRAIGHT, 0));
-                directionList.add(new LaneDirection(FsaConstant.FSA_LANE_DIRECTION.TURN_AROUND, 0));
+                directionList.add(new LaneDirection(FsaConstant.FsaLaneDirection.GO_STRAIGHT, 0));
+                directionList.add(new LaneDirection(FsaConstant.FsaLaneDirection.TURN_AROUND, 0));
                 break;
             case 11:
-                directionList.add(new LaneDirection(FsaConstant.FSA_LANE_DIRECTION.TURN_LEFT, 0));
-                directionList.add(new LaneDirection(FsaConstant.FSA_LANE_DIRECTION.TURN_AROUND, 0));
+                directionList.add(new LaneDirection(FsaConstant.FsaLaneDirection.TURN_LEFT, 0));
+                directionList.add(new LaneDirection(FsaConstant.FsaLaneDirection.TURN_AROUND, 0));
                 break;
             case 12:
-                directionList.add(new LaneDirection(FsaConstant.FSA_LANE_DIRECTION.TURN_RIGHT, 0));
-                directionList.add(new LaneDirection(FsaConstant.FSA_LANE_DIRECTION.TURN_AROUND, 0));
+                directionList.add(new LaneDirection(FsaConstant.FsaLaneDirection.TURN_RIGHT, 0));
+                directionList.add(new LaneDirection(FsaConstant.FsaLaneDirection.TURN_AROUND, 0));
                 break;
             case 16:
-                directionList.add(new LaneDirection(FsaConstant.FSA_LANE_DIRECTION.GO_STRAIGHT, 0));
-                directionList.add(new LaneDirection(FsaConstant.FSA_LANE_DIRECTION.TURN_LEFT, 0));
-                directionList.add(new LaneDirection(FsaConstant.FSA_LANE_DIRECTION.TURN_AROUND, 0));
+                directionList.add(new LaneDirection(FsaConstant.FsaLaneDirection.GO_STRAIGHT, 0));
+                directionList.add(new LaneDirection(FsaConstant.FsaLaneDirection.TURN_LEFT, 0));
+                directionList.add(new LaneDirection(FsaConstant.FsaLaneDirection.TURN_AROUND, 0));
                 break;
             case 17:
-                directionList.add(new LaneDirection(FsaConstant.FSA_LANE_DIRECTION.TURN_RIGHT, 0));
-                directionList.add(new LaneDirection(FsaConstant.FSA_LANE_DIRECTION.TURN_AROUND, 0));
+                directionList.add(new LaneDirection(FsaConstant.FsaLaneDirection.TURN_RIGHT, 0));
+                directionList.add(new LaneDirection(FsaConstant.FsaLaneDirection.TURN_AROUND, 0));
                 break;
             case 18:
-                directionList.add(new LaneDirection(FsaConstant.FSA_LANE_DIRECTION.TURN_LEFT, 0));
-                directionList.add(new LaneDirection(FsaConstant.FSA_LANE_DIRECTION.TURN_RIGHT, 0));
-                directionList.add(new LaneDirection(FsaConstant.FSA_LANE_DIRECTION.TURN_AROUND, 0));
+                directionList.add(new LaneDirection(FsaConstant.FsaLaneDirection.TURN_LEFT, 0));
+                directionList.add(new LaneDirection(FsaConstant.FsaLaneDirection.TURN_RIGHT, 0));
+                directionList.add(new LaneDirection(FsaConstant.FsaLaneDirection.TURN_AROUND, 0));
                 break;
             case 19:
-                directionList.add(new LaneDirection(FsaConstant.FSA_LANE_DIRECTION.GO_STRAIGHT, 0));
-                directionList.add(new LaneDirection(FsaConstant.FSA_LANE_DIRECTION.TURN_RIGHT, 0));
-                directionList.add(new LaneDirection(FsaConstant.FSA_LANE_DIRECTION.TURN_AROUND, 0));
+                directionList.add(new LaneDirection(FsaConstant.FsaLaneDirection.GO_STRAIGHT, 0));
+                directionList.add(new LaneDirection(FsaConstant.FsaLaneDirection.TURN_RIGHT, 0));
+                directionList.add(new LaneDirection(FsaConstant.FsaLaneDirection.TURN_AROUND, 0));
                 break;
             case 20:
-                directionList.add(new LaneDirection(FsaConstant.FSA_LANE_DIRECTION.TURN_LEFT, 0));
-                directionList.add(new LaneDirection(FsaConstant.FSA_LANE_DIRECTION.TURN_AROUND, 0));
+                directionList.add(new LaneDirection(FsaConstant.FsaLaneDirection.TURN_LEFT, 0));
+                directionList.add(new LaneDirection(FsaConstant.FsaLaneDirection.TURN_AROUND, 0));
                 break;
             default:
-                directionList.add(new LaneDirection(FsaConstant.FSA_LANE_DIRECTION.INVALID_VALUE, 0));
+                directionList.add(new LaneDirection(FsaConstant.FsaLaneDirection.INVALID_VALUE, 0));
                 break;
         }
     }
@@ -414,33 +426,33 @@ public class FsaNaviScene {
     /**
      * 更新巡航态前方限速信息信息.
      *
-     * @param fsaService MyFsaService.
+     * @param fsaService       MyFsaService.
      * @param cruiseInfoEntity CruiseInfoEntity.
      */
-    public void updateCruiseInfoEntity(MyFsaService fsaService, CruiseInfoEntity cruiseInfoEntity) {
+    public void updateCruiseInfoEntity(final MyFsaService fsaService, final CruiseInfoEntity cruiseInfoEntity) {
         if (null == fsaService || null == cruiseInfoEntity) {
             Log.e(FsaConstant.FSA_TAG, "cruiseInfoEntity is null");
             return;
         }
 
-        SpeedLimitCruiseInfo speedLimitCruiseInfo = new SpeedLimitCruiseInfo();
-        ArrayList<Short> speedList = cruiseInfoEntity.getSpeed();
+        final SpeedLimitCruiseInfo speedLimitCruiseInfo = new SpeedLimitCruiseInfo();
+        final ArrayList<Short> speedList = cruiseInfoEntity.getSpeed();
         if (speedList != null) {
             if (!speedList.isEmpty()) {
-                speedLimitCruiseInfo.setShowType(FsaConstant.FSA_VALUE.ZERO);
+                speedLimitCruiseInfo.setShowType(FsaConstant.FsaValue.ZERO);
             } else {
-                speedLimitCruiseInfo.setShowType(FsaConstant.FSA_VALUE.TWO);
+                speedLimitCruiseInfo.setShowType(FsaConstant.FsaValue.TWO);
             }
         } else {
-            speedLimitCruiseInfo.setShowType(FsaConstant.FSA_VALUE.TWO);
+            speedLimitCruiseInfo.setShowType(FsaConstant.FsaValue.TWO);
         }
-        CameraInfo cameraInfo = new CameraInfo();
+        final CameraInfo cameraInfo = new CameraInfo();
 //        cameraInfo.setId();
 //        cameraInfo.setType();
 //        cameraInfo.setRemainDistance();
         if (speedList != null) {
             for (int i = 0; i < cruiseInfoEntity.getSpeed().size(); i++) {
-                Short speed = cruiseInfoEntity.getSpeed().get(i);
+                final Short speed = cruiseInfoEntity.getSpeed().get(i);
                 if (speed != null && speed != 0 && speed != 0xFF) {
                     cameraInfo.setSpeedLimit(speed);
                     break;
@@ -450,40 +462,41 @@ public class FsaNaviScene {
         speedLimitCruiseInfo.setCameraInfo(cameraInfo);
         speedLimitCruiseInfo.setCurrentSpeed((int) mCurrentSpeed);
         speedLimitCruiseInfo.setOverSpeed(mCurrentSpeed > cameraInfo.getSpeedLimit());
-        fsaService.sendEvent(FsaConstant.FSA_FUNCTION.ID_CRUISE_SPEED_LIMIT, GsonUtils.toJson(speedLimitCruiseInfo));
+        fsaService.sendEvent(FsaConstant.FsaFunction.ID_CRUISE_SPEED_LIMIT, GsonUtils.toJson(speedLimitCruiseInfo));
 
-        SpeedLimitSignData speedLimitSignData = new SpeedLimitSignData();
+        final SpeedLimitSignData speedLimitSignData = new SpeedLimitSignData();
         speedLimitSignData.setSpeedLimit(cameraInfo.getSpeedLimit());
         speedLimitSignData.setAssured(true);
         speedLimitSignData.setMapMatch(true);
-        fsaService.sendEvent(FsaConstant.FSA_FUNCTION.ID_WHOLE_SPEED_LIMIT, GsonUtils.toJson(speedLimitSignData));
+        fsaService.sendEvent(FsaConstant.FsaFunction.ID_WHOLE_SPEED_LIMIT, GsonUtils.toJson(speedLimitSignData));
     }
 
     /**
      * 更新放大图信息.
      *
-     * @param fsaService MyFsaService.
+     * @param fsaService    MyFsaService.
      * @param naviImageInfo CrossImageEntity.
+     * @param isShowImage   boolean.
      */
-    public void updateEnlargeMap(MyFsaService fsaService, boolean isShowImage, CrossImageEntity naviImageInfo) {
+    public void updateEnlargeMap(final MyFsaService fsaService, final boolean isShowImage, final CrossImageEntity naviImageInfo) {
         if (null == fsaService || null == naviImageInfo) {
             Log.e(FsaConstant.FSA_TAG, "naviImageInfo is null");
             return;
         }
 
-        EnlargeMap enlargeMap = new EnlargeMap();
-        if (naviImageInfo.getType() == NaviConstant.CrossType.CrossTypeGrid) {
+        final EnlargeMap enlargeMap = new EnlargeMap();
+        if (naviImageInfo.getType() == NaviConstant.CrossType.CROSS_TYPE_GRID) {
             enlargeMap.setType(0);
-            ILSImageViewInfo ilsImageViewInfo = new ILSImageViewInfo();
+            final ILSImageViewInfo ilsImageViewInfo = new ILSImageViewInfo();
             ilsImageViewInfo.setType(0);
             ilsImageViewInfo.setWidth(500);
             ilsImageViewInfo.setWidth(320);
-            ilsImageViewInfo.setRemainDistance((int)naviImageInfo.getDistance());
+            ilsImageViewInfo.setRemainDistance((int) naviImageInfo.getDistance());
             ilsImageViewInfo.setProgressRatio((int) mDrivePercent);
 //            ilsImageViewInfo.setArrowMapName("");
 //            ilsImageViewInfo.setBackgroundMapName("");
             if (mNaviEtaInfo != null) {
-                ilsImageViewInfo.setNextRoadName(mNaviEtaInfo.nextRouteName);
+                ilsImageViewInfo.setNextRoadName(mNaviEtaInfo.getNextRouteName());
             }
             ilsImageViewInfo.setBackgroundMimeType("image/jpeg");
             if (naviImageInfo.getDataBuf() != null) {
@@ -494,60 +507,87 @@ public class FsaNaviScene {
                 ilsImageViewInfo.setArrowMapBytes(Base64.getEncoder().encodeToString(naviImageInfo.getArrowDataBuf()));
             }
             enlargeMap.setIlsImageViewInfo(ilsImageViewInfo);
-        } else if (naviImageInfo.getType() == NaviConstant.CrossType.CrossTypeVector) {
+        } else if (naviImageInfo.getType() == NaviConstant.CrossType.CROSS_TYPE_VECTOR) {
             enlargeMap.setType(1);
-            JunctionViewInfo junctionViewInfo = new JunctionViewInfo();
-            junctionViewInfo.setRemainDistance((int)naviImageInfo.getDistance());
+            final JunctionViewInfo junctionViewInfo = new JunctionViewInfo();
+            junctionViewInfo.setRemainDistance((int) naviImageInfo.getDistance());
             junctionViewInfo.setProgressRatio((int) mDrivePercent);
             if (mNaviEtaInfo != null) {
-                junctionViewInfo.setNextRoadName(mNaviEtaInfo.nextRouteName);
+                junctionViewInfo.setNextRoadName(mNaviEtaInfo.getNextRouteName());
             }
             junctionViewInfo.setImageMimeType("image/jpeg");
             if (naviImageInfo.getDataBuf() != null) {
                 junctionViewInfo.setImageBytes(Base64.getEncoder().encodeToString(naviImageInfo.getDataBuf()));
-                enlargeMap.setStatus(FsaConstant.FSA_VALUE.ZERO);
+                enlargeMap.setStatus(FsaConstant.FsaValue.ZERO);
             } else {
-                enlargeMap.setStatus(FsaConstant.FSA_VALUE.TWO);
+                enlargeMap.setStatus(FsaConstant.FsaValue.TWO);
             }
             enlargeMap.setJunctionViewInfo(junctionViewInfo);
         }
         Log.d(FsaConstant.FSA_TAG, "updateEnlargeMap: " + enlargeMap);
-        fsaService.sendEvent(FsaConstant.FSA_FUNCTION.ID_ENLARGE_ICON, GsonUtils.toJson(enlargeMap));
-        fsaService.sendEvent(FsaConstant.FSA_FUNCTION.ID_HUD_ENLARGE_MAP, GsonUtils.toJson(enlargeMap));
+        fsaService.sendEvent(FsaConstant.FsaFunction.ID_ENLARGE_ICON, GsonUtils.toJson(enlargeMap));
+        fsaService.sendEvent(FsaConstant.FsaFunction.ID_HUD_ENLARGE_MAP, GsonUtils.toJson(enlargeMap));
     }
 
     /**
      * 更新高速服务区信息.
      *
-     * @param fsaService MyFsaService.
+     * @param fsaService     MyFsaService.
      * @param sapaInfoEntity SapaInfoEntity.
      */
-    public void updateHighwayService(MyFsaService fsaService, SapaInfoEntity sapaInfoEntity) {
+    public void updateHighwayService(final MyFsaService fsaService, final SapaInfoEntity sapaInfoEntity) {
         if (null == fsaService || null == sapaInfoEntity) {
             Log.e(FsaConstant.FSA_TAG, "sapaInfoEntity is null");
             return;
         }
-
-        HighwayService highwayService = new HighwayService();
-        highwayService.setType(0);
-        ArrayList<HighwaySubscribeInfo> highWaySubscribeInfos = new ArrayList<>();
-        ArrayList<SapaInfoEntity.SAPAItem> list = sapaInfoEntity.getList();
+        sendHighWaySubscribeInfos(fsaService, sapaInfoEntity);
+        sendHighwayTotalInfo(fsaService, sapaInfoEntity);
+        final ArrayList<SapaInfoEntity.SAPAItem> list = sapaInfoEntity.getList();
+        final ArrayList<ServiceAreaInfo> serviceAreaInfos = new ArrayList<>();
         if (list != null) {
             for (int i = 0; i < sapaInfoEntity.getList().size(); i++) {
-                SapaInfoEntity.SAPAItem sapaItem =  sapaInfoEntity.getList().get(i);
-                HighwaySubscribeInfo highwaySubscribeInfo = new HighwaySubscribeInfo();
+                final SapaInfoEntity.SAPAItem sapaItem = sapaInfoEntity.getList().get(i);
+                if (i == 5) {
+                    return;
+                }
+                if (sapaItem.getType() == 0) { // 服务区
+                    final ServiceAreaInfo serviceAreaInfo = new ServiceAreaInfo();
+                    serviceAreaInfo.setLocation(new GeoPoint(sapaItem.getPos().getLon(), sapaItem.getPos().getLat()));
+                    serviceAreaInfo.setName(sapaItem.getName());
+                    serviceAreaInfos.add(serviceAreaInfo);
+                }
+            }
+        }
+        fsaService.sendEvent(FsaConstant.FsaFunction.ID_SERVICE_POI, GsonUtils.toJson(serviceAreaInfos));
+    }
+
+    /**
+     * 更新服务区信息.
+     *
+     * @param fsaService     MyFsaService.
+     * @param sapaInfoEntity SapaInfoEntity.
+     */
+    private void sendHighWaySubscribeInfos(final MyFsaService fsaService, final SapaInfoEntity sapaInfoEntity) {
+        final HighwayService highwayService = new HighwayService();
+        highwayService.setType(0);
+        final ArrayList<HighwaySubscribeInfo> highWaySubscribeInfos = new ArrayList<>();
+        final ArrayList<SapaInfoEntity.SAPAItem> list = sapaInfoEntity.getList();
+        if (list != null) {
+            for (int i = 0; i < sapaInfoEntity.getList().size(); i++) {
+                final SapaInfoEntity.SAPAItem sapaItem = sapaInfoEntity.getList().get(i);
+                final HighwaySubscribeInfo highwaySubscribeInfo = new HighwaySubscribeInfo();
                 if (sapaItem.getType() == 0) { // 服务区
                     highwaySubscribeInfo.setType(4);
-                    HighWayServiceAreaInfo serviceAreaInfo = new HighWayServiceAreaInfo();
+                    final HighWayServiceAreaInfo serviceAreaInfo = new HighWayServiceAreaInfo();
                     serviceAreaInfo.setName(sapaItem.getName());
-                    serviceAreaInfo.setDuration((int)sapaItem.getRemainTime());
+                    serviceAreaInfo.setDuration((int) sapaItem.getRemainTime());
                     serviceAreaInfo.setDistance(sapaItem.getRemainDist());
                     serviceAreaInfo.setPosition(new GeoPoint(sapaItem.getPos().getLon(), sapaItem.getPos().getLat()));
-                    serviceAreaInfo.setServiceTypes((int)sapaItem.getSapaDetail()); // TODO 未转换
+                    serviceAreaInfo.setServiceTypes((int) sapaItem.getSapaDetail()); // TODO 未转换
                     highwaySubscribeInfo.setServiceAreaInfo(serviceAreaInfo);
                 } else if (sapaItem.getType() == 1) { // 收费站
                     highwaySubscribeInfo.setType(1);
-                    TollStation tollStation = new TollStation();
+                    final TollStation tollStation = new TollStation();
                     tollStation.setName(sapaItem.getName());
                     tollStation.setDistance(sapaItem.getRemainDist());
                     highwaySubscribeInfo.setTollStation(tollStation);
@@ -558,9 +598,9 @@ public class FsaNaviScene {
             }
         }
         if (mNaviManeuverInfo != null) {
-            HighwaySubscribeInfo highwaySubscribeInfo = new HighwaySubscribeInfo();
+            final HighwaySubscribeInfo highwaySubscribeInfo = new HighwaySubscribeInfo();
             highwaySubscribeInfo.setType(3);
-            HighWayExitInfo highwayExitInfo = new HighWayExitInfo();
+            final HighWayExitInfo highwayExitInfo = new HighWayExitInfo();
             if (mNaviManeuverInfo.getExitNameInfo() != null && !mNaviManeuverInfo.getExitNameInfo().isEmpty()) {
                 highwayExitInfo.setExitRoadName(mNaviManeuverInfo.getExitNameInfo().get(0));
             }
@@ -573,9 +613,9 @@ public class FsaNaviScene {
             highwaySubscribeInfo.setHighWayExitInfo(highwayExitInfo);
             highWaySubscribeInfos.add(highwaySubscribeInfo);
 
-            HighwaySubscribeInfo highwaySubscribeInfo1 = new HighwaySubscribeInfo();
+            final HighwaySubscribeInfo highwaySubscribeInfo1 = new HighwaySubscribeInfo();
             highwaySubscribeInfo.setType(2);
-            HighWayEntranceInfo highWayEntranceInfo = new HighWayEntranceInfo();
+            final HighWayEntranceInfo highWayEntranceInfo = new HighWayEntranceInfo();
             if (mNaviManeuverInfo.getEntranceExit() != null) {
                 highWayEntranceInfo.setRoadName(mNaviManeuverInfo.getEntranceExit());
             }
@@ -583,32 +623,38 @@ public class FsaNaviScene {
             highWaySubscribeInfos.add(highwaySubscribeInfo1);
         }
         highwayService.setHighWaySubscribeInfos(highWaySubscribeInfos);
-        fsaService.sendEvent(FsaConstant.FSA_FUNCTION.ID_SERVICE_AREA, GsonUtils.toJson(highwayService));
+        fsaService.sendEvent(FsaConstant.FsaFunction.ID_SERVICE_AREA, GsonUtils.toJson(highwayService));
+    }
 
-        HighwayService highwayService1 = new HighwayService();
+    /**
+     * 更新服务区信息.
+     *
+     * @param fsaService     MyFsaService.
+     * @param sapaInfoEntity SapaInfoEntity.
+     */
+    private void sendHighwayTotalInfo(final MyFsaService fsaService, final SapaInfoEntity sapaInfoEntity) {
+        final HighwayService highwayService = new HighwayService();
+        final ArrayList<SapaInfoEntity.SAPAItem> list = sapaInfoEntity.getList();
+        final ArrayList<HighwaySubscribeInfo> highWaySubscribeInfos = new ArrayList<>();
         highwayService.setType(1);
-        HighwayTotalInfo highwayTotalInfo = new HighwayTotalInfo();
+        final HighwayTotalInfo highwayTotalInfo = new HighwayTotalInfo();
         highwayTotalInfo.setShowType(0);
-        HighwayInfo highwayInfo = new HighwayInfo();
-        highwayInfo.setCurHighwayRoadName(mNaviEtaInfo.curRouteName);
+        final HighwayInfo highwayInfo = new HighwayInfo();
+        highwayInfo.setCurHighwayRoadName(mNaviEtaInfo.getCurRouteName());
         if (mNaviManeuverInfo != null) {
-            if (mNaviManeuverInfo.getExitNameInfo() != null) {
+            if (mNaviManeuverInfo.getExitNameInfo() != null && !mNaviManeuverInfo.getExitNameInfo().isEmpty()) {
                 highwayInfo.setExitHighwayID(mNaviManeuverInfo.getExitNameInfo().get(0));
             }
-            if (mNaviManeuverInfo.getDirectionInfo() != null) {
+            if (mNaviManeuverInfo.getDirectionInfo() != null && !mNaviManeuverInfo.getDirectionInfo().isEmpty()) {
                 highwayInfo.setExitHighwayDirectName(mNaviManeuverInfo.getDirectionInfo().get(0));
             }
         }
-//        highwayInfo.setExitRemainDist();
-//        highwayInfo.setExitHighwayNextRoadName();
-//        highwayInfo.setNextGPRemainDist();
         int tollGateRemainDist = -1;
         int serviceAreaRemainDist = -1;
-        int nextServiceAreaRemainDist = -1;
         if (list != null) {
             for (int i = 0; i < sapaInfoEntity.getList().size(); i++) {
-                SapaInfoEntity.SAPAItem sapaItem = sapaInfoEntity.getList().get(i);
-                HighwaySubscribeInfo highwaySubscribeInfo = new HighwaySubscribeInfo();
+                final SapaInfoEntity.SAPAItem sapaItem = sapaInfoEntity.getList().get(i);
+                final HighwaySubscribeInfo highwaySubscribeInfo = new HighwaySubscribeInfo();
                 if (sapaItem.getType() == 0) { // 服务区
                     if (serviceAreaRemainDist == -1) {
                         serviceAreaRemainDist = sapaItem.getRemainDist();
@@ -638,37 +684,20 @@ public class FsaNaviScene {
             }
         }
 
-        highwayService1.setHighwayTotalInfo(highwayTotalInfo);
-        fsaService.sendEvent(FsaConstant.FSA_FUNCTION.ID_SERVICE_AREA, GsonUtils.toJson(highwayService1));
-
-        ArrayList<ServiceAreaInfo> serviceAreaInfos = new ArrayList<>();
-        if (list != null) {
-            for (int i = 0; i < sapaInfoEntity.getList().size(); i++) {
-                SapaInfoEntity.SAPAItem sapaItem =  sapaInfoEntity.getList().get(i);
-                if (i == 5) {
-                    return;
-                }
-                if (sapaItem.getType() == 0) { // 服务区
-                    ServiceAreaInfo serviceAreaInfo = new ServiceAreaInfo();
-                    serviceAreaInfo.setLocation(new GeoPoint(sapaItem.getPos().getLon(), sapaItem.getPos().getLat()));
-                    serviceAreaInfo.setName(sapaItem.getName());
-                    serviceAreaInfos.add(serviceAreaInfo);
-                }
-            }
-        }
-        fsaService.sendEvent(FsaConstant.FSA_FUNCTION.ID_SERVICE_POI, GsonUtils.toJson(serviceAreaInfos));
+        highwayService.setHighwayTotalInfo(highwayTotalInfo);
+        fsaService.sendEvent(FsaConstant.FsaFunction.ID_SERVICE_AREA, GsonUtils.toJson(highwayService));
     }
 
     /**
      * 更新自车位置.
      *
-     * @param fsaService MyFsaService.
+     * @param fsaService   MyFsaService.
      * @param locationInfo LocInfoBean.
      */
-    public void updateCurrentCarLocation(MyFsaService fsaService, LocInfoBean locationInfo) {
-        CurrentCarLocation currentCarLocation = new CurrentCarLocation();
+    public void updateCurrentCarLocation(final MyFsaService fsaService, final LocInfoBean locationInfo) {
+        final CurrentCarLocation currentCarLocation = new CurrentCarLocation();
         currentCarLocation.setLocation(new GeoPoint(locationInfo.getLongitude(), locationInfo.getLatitude()));
-        fsaService.sendEvent(FsaConstant.FSA_FUNCTION.ID_SELF_DRIVING_POSITION, GsonUtils.toJson(currentCarLocation));
+        fsaService.sendEvent(FsaConstant.FsaFunction.ID_SELF_DRIVING_POSITION, GsonUtils.toJson(currentCarLocation));
     }
 
     /**
@@ -676,65 +705,65 @@ public class FsaNaviScene {
      *
      * @param fsaService MyFsaService.
      */
-    public void updateHudVideInfo(MyFsaService fsaService) {
-        HudVideInfo hudVideInfo = new HudVideInfo();
+    public void updateHudVideInfo(final MyFsaService fsaService) {
+        final HudVideInfo hudVideInfo = new HudVideInfo();
         hudVideInfo.setWidth(328);
         hudVideInfo.setHeight(172);
         hudVideInfo.setFormat(1);
-        fsaService.sendEvent(FsaConstant.FSA_FUNCTION.ID_HUD_SERVICE_INIT, GsonUtils.toJson(hudVideInfo));
+        fsaService.sendEvent(FsaConstant.FsaFunction.ID_HUD_SERVICE_INIT, GsonUtils.toJson(hudVideInfo));
     }
 
     /**
      * 更新续航里程
      *
-     * @param fsaService MyFsaService.
-     * @param evRangeOnRouteInfos ArrayList<EvRangeOnRouteInfo>.
+     * @param fsaService          MyFsaService.
+     * @param evRangeOnRouteInfos EvRangeOn
      */
-    public void updateEvRangeOnRouteInfo(MyFsaService fsaService, ArrayList<EvRangeOnRouteInfo> evRangeOnRouteInfos) {
-        fsaService.sendEvent(FsaConstant.FSA_FUNCTION.ID_RANGE_ON_ROUTE, GsonUtils.toJson(evRangeOnRouteInfos));
+    public void updateEvRangeOnRouteInfo(final MyFsaService fsaService, final ArrayList<EvRangeOnRouteInfo> evRangeOnRouteInfos) {
+        fsaService.sendEvent(FsaConstant.FsaFunction.ID_RANGE_ON_ROUTE, GsonUtils.toJson(evRangeOnRouteInfos));
     }
 
     /**
      * 周边充电站POI透出
      *
-     * @param fsaService MyFsaService.
+     * @param fsaService         MyFsaService.
      * @param searchResultEntity SearchResultEntity
      */
-    public void updateChargingStationInfo(MyFsaService fsaService, SearchResultEntity searchResultEntity) {
-        List<PoiInfoEntity> poiList = searchResultEntity.getPoiList();
+    public void updateChargingStationInfo(final MyFsaService fsaService, final SearchResultEntity searchResultEntity) {
+        final List<PoiInfoEntity> poiList = searchResultEntity.getPoiList();
         if (poiList != null) {
-            ArrayList<ChargingStationInfo> chargingStationInfos = new ArrayList<>();
+            final ArrayList<ChargingStationInfo> chargingStationInfos = new ArrayList<>();
             for (int i = 0; i < poiList.size(); i++) {
                 if (i == 5) {
                     return;
                 }
-                PoiInfoEntity poiInfoEntity =  poiList.get(i);
-                ChargingStationInfo chargingStationInfo = new ChargingStationInfo();
+                final PoiInfoEntity poiInfoEntity = poiList.get(i);
+                final ChargingStationInfo chargingStationInfo = new ChargingStationInfo();
                 chargingStationInfo.setLocation(new GeoPoint(poiInfoEntity.getPoint().getLon(), poiInfoEntity.getPoint().getLat()));
                 chargingStationInfo.setName(poiInfoEntity.getName());
                 chargingStationInfos.add(chargingStationInfo);
             }
-            fsaService.sendEvent(FsaConstant.FSA_FUNCTION.ID_CHARGING_STATIONS_POI, GsonUtils.toJson(chargingStationInfos));
+            fsaService.sendEvent(FsaConstant.FsaFunction.ID_CHARGING_STATIONS_POI, GsonUtils.toJson(chargingStationInfos));
         }
     }
 
     /**
      * 更新导航中目的地变更信息
      *
-     * @param fsaService MyFsaService.
+     * @param fsaService         MyFsaService.
      * @param requestRouteResult RequestRouteResult
      */
-    public void updateDestInfo(MyFsaService fsaService, RequestRouteResult requestRouteResult) {
-        RouteParam routeParam = RoutePackage.getInstance().getEndPoint(MapTypeId.MAIN_SCREEN_MAIN_MAP);
+    public void updateDestInfo(final MyFsaService fsaService, final RequestRouteResult requestRouteResult) {
+        final RouteParam routeParam = RoutePackage.getInstance().getEndPoint(MapTypeId.MAIN_SCREEN_MAIN_MAP);
         if (null != routeParam) {
-            DestInfo destInfo = new DestInfo();
-            destInfo.setName(routeParam.name);
-            destInfo.setAddress(routeParam.address);
+            final DestInfo destInfo = new DestInfo();
+            destInfo.setName(routeParam.getName());
+            destInfo.setAddress(routeParam.getAddress());
             if (null != routeParam.getRealPos()) {
-                GeoPoint location = new GeoPoint(routeParam.getRealPos().lat, routeParam.getRealPos().lon);
+                final GeoPoint location = new GeoPoint(routeParam.getRealPos().getLon(), routeParam.getRealPos().getLat());
                 destInfo.setLocation(location);
             }
-            fsaService.sendEvent(FsaConstant.FSA_FUNCTION.ID_CHANGE_DESTINATION, GsonUtils.toJson(destInfo));
+            fsaService.sendEvent(FsaConstant.FsaFunction.ID_CHANGE_DESTINATION, GsonUtils.toJson(destInfo));
         }
     }
 
@@ -742,29 +771,52 @@ public class FsaNaviScene {
      * 更新导航中目的地变更信息
      *
      * @param fsaService MyFsaService.
-     * @param speed int
+     * @param speed      int
      */
-    public void updateSpeedLimitSignData(MyFsaService fsaService, int speed) {
-        SpeedLimitSignData speedLimitSignData = new SpeedLimitSignData();
+    public void updateSpeedLimitSignData(final MyFsaService fsaService, final int speed) {
+        final SpeedLimitSignData speedLimitSignData = new SpeedLimitSignData();
         speedLimitSignData.setSpeedLimit(speed);
         speedLimitSignData.setAssured(true);
         speedLimitSignData.setMapMatch(false);
-        fsaService.sendEvent(FsaConstant.FSA_FUNCTION.ID_WHOLE_SPEED_LIMIT, GsonUtils.toJson(speedLimitSignData));
+        fsaService.sendEvent(FsaConstant.FsaFunction.ID_WHOLE_SPEED_LIMIT, GsonUtils.toJson(speedLimitSignData));
     }
 
-    public void  updateCurrentSpeed(float speed) {
+    /**
+     * 更新当前车速
+     *
+     * @param speed float
+     */
+    public void updateCurrentSpeed(final float speed) {
         mCurrentSpeed = speed;
     }
 
-    public void updateNaviManeuverInfo(NaviManeuverInfo respData) {
+    /**
+     * 更新导航 maneuver 信息
+     *
+     * @param respData NaviManeuverInfo
+     */
+    public void updateNaviManeuverInfo(final NaviManeuverInfo respData) {
         mNaviManeuverInfo = respData;
     }
 
-    public void saveData(int functionId, String info) {
+    /**
+     * 保存数据
+     *
+     * @param functionId int
+     * @param info       String
+     */
+    public void saveData(final int functionId, final String info) {
         mFsaDataMap.put(functionId, info);
     }
 
-    public String getData(int functionId, String defaultValue) {
+    /**
+     * 获取数据
+     *
+     * @param functionId   int
+     * @param defaultValue String
+     * @return String
+     */
+    public String getData(final int functionId, final String defaultValue) {
         return mFsaDataMap.getOrDefault(functionId, defaultValue);
     }
 }

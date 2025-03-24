@@ -18,6 +18,7 @@ import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.adapter.user.usertrack.UserTrackAdapterCallBack;
 import com.fy.navi.service.define.user.usertrack.DrivingRecordDataBean;
 import com.fy.navi.service.define.user.usertrack.GpsTrackDepthBean;
+import com.fy.navi.service.define.user.usertrack.GpsTrackPointBean;
 import com.fy.navi.service.define.user.usertrack.SearchHistoryItemBean;
 import com.fy.navi.service.greendao.history.History;
 import com.fy.navi.service.greendao.history.HistoryManager;
@@ -27,38 +28,45 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
-/**
- * UserTrackService 辅助类.
- *
- * @Description Helper类只做对象及数据转换，不做原子能力调用
- * @Author fh
- * @date 2024/12/26
- */
+
 public class UserTrackImplHelper implements IUserTrackObserver, IGpsInfoGetter {
     private static final String TAG = MapDefaultFinalTag.USER_TRACK_SERVICE_TAG;
-    private final Hashtable<String, UserTrackAdapterCallBack> userTrackResultHashtable;
-    private UserTrackService mUserTrackService;
-    private HistoryManager historyManager;
-    private ArrayList<DrivingRecordDataBean> guideDataBeans = new ArrayList<>();
-    private ArrayList<DrivingRecordDataBean> cruiseDataBeans = new ArrayList<>();
+    private final Hashtable<String, UserTrackAdapterCallBack> mUserTrackResultHashtable;
+    private final UserTrackService mUserTrackService;
+    private final HistoryManager mHistoryManager;
+    private final ArrayList<DrivingRecordDataBean> mGuideDataBeans = new ArrayList<>();
+    private final ArrayList<DrivingRecordDataBean> mCruiseDataBeans = new ArrayList<>();
+    private static final String MODEL_NAME = "行程历史";
 
-    protected UserTrackImplHelper(UserTrackService userTrackService) {
-        userTrackResultHashtable = new Hashtable<>();
+    protected UserTrackImplHelper(final UserTrackService userTrackService) {
+        mUserTrackResultHashtable = new Hashtable<>();
         mUserTrackService = userTrackService;
-        historyManager = HistoryManager.getInstance();
-        historyManager.init();
+        mHistoryManager = HistoryManager.getInstance();
+        mHistoryManager.init();
     }
 
-    public void registerCallBack(String key, UserTrackAdapterCallBack callBack) {
-        userTrackResultHashtable.put(key, callBack);
+    /**
+     * 注册回调
+     * @param key 回调key
+     * @param callBack 回调
+     */
+    public void registerCallBack(final String key, final UserTrackAdapterCallBack callBack) {
+        mUserTrackResultHashtable.put(key, callBack);
     }
 
-    public void unRegisterCallBack(String key) {
-        userTrackResultHashtable.remove(key);
+    /**
+     * 移除回调
+     * @param key 回调key
+     */
+    public void unRegisterCallBack(final String key) {
+        mUserTrackResultHashtable.remove(key);
     }
 
+    /**
+     * 移除所有回调
+     */
     public void removeCallback() {
-        userTrackResultHashtable.clear();
+        mUserTrackResultHashtable.clear();
     }
 
     /**
@@ -66,92 +74,196 @@ public class UserTrackImplHelper implements IUserTrackObserver, IGpsInfoGetter {
      */
     public void initUserTrackService() {
         //初始化参数待配置
-        int userTrack = mUserTrackService.init(this);
+        mUserTrackService.init(this);
         // 添加轨迹服务观察者
         mUserTrackService.addObserver(this);
     }
 
     /**
      * 获取搜索历史记录列表
-     * @return
+     * @return 搜索历史记录列表
      */
     public ArrayList<SearchHistoryItemBean> getSearchHistory() {
-        if (mUserTrackService == null) return null;
-        if (mUserTrackService.getSearchHistory() == null) return null;
-        ArrayList<SearchHistoryItemBean> historyItems = new ArrayList<>();
+        if (mUserTrackService == null) {
+            return null;
+        }
+        if (mUserTrackService.getSearchHistory() == null) {
+            return null;
+        }
+        final ArrayList<SearchHistoryItemBean> historyItems = new ArrayList<>();
         for (SearchHistoryItem item : mUserTrackService.getSearchHistory()) {
-            SearchHistoryItemBean bean = new SearchHistoryItemBean();
-            GsonUtils.copyBean(item, bean);
+            final SearchHistoryItemBean bean = getSearchHistoryItem(item);
             historyItems.add(bean);
         }
         return historyItems;
     }
 
     /**
-     * 添加搜索历史记录
-     * @return
+     * 转换历史记录数据
+     * @param item 搜索历史记录
+     * @return 搜索历史记录bean
      */
-    public int addSearchHistory(SearchHistoryItemBean bean) {
-        SearchHistoryItem item = new SearchHistoryItem();
-        GsonUtils.copyBean(bean, item);
-        if (mUserTrackService == null) return -1;
+    private SearchHistoryItemBean getSearchHistoryItem(final SearchHistoryItem item) {
+        final SearchHistoryItemBean bean = new SearchHistoryItemBean();
+        bean.setName(item.name);
+        bean.setPoiid(item.poiid);
+        bean.setId(item.id);
+        bean.setType(item.type);
+        bean.setDatatype(item.datatype);
+        bean.setX(item.x);
+        bean.setY(item.y);
+        bean.setXentr(item.x_entr);
+        bean.setYentr(item.y_entr);
+        bean.setUpdateTime(item.update_time);
+        bean.setHistoryType(item.history_type);
+        bean.setIconinfo(item.iconinfo);
+        bean.setAdcode(item.adcode);
+        bean.setDistrict(item.district);
+        bean.setAddress(item.address);
+        bean.setPoiTag(item.poi_tag);
+        bean.setFuncText(item.func_text);
+        bean.setShortName(item.short_name);
+        bean.setDisplayInfo(item.display_info);
+        bean.setSearchQuery(item.search_query);
+        bean.setTerminals(item.terminals);
+        bean.setIgnoreDistrict(item.ignore_district);
+        bean.setSearchTag(item.search_tag);
+        bean.setSearchQuerySet(item.search_query_set);
+        bean.setRichRating(item.rich_rating);
+        bean.setNumReview(item.num_review);
+        bean.setCategory(item.category);
+        bean.setSuperAddress(item.super_address);
+        bean.setDatatypeSpec(item.datatype_spec);
+        bean.setPoi(item.poi);
+        bean.setCitycode(item.citycode);
+        bean.setVersion(item.version);
+        bean.setParent(item.parent);
+        bean.setChildType(item.childType);
+        bean.setTowardsAngle(item.towardsAngle);
+        bean.setFloorNo(item.floorNo);
+        bean.setEndPoiExtension(item.endPoiExtension);
+        return bean;
+    }
+
+    /**
+     * 添加搜索历史记录
+     * @param bean 搜索历史记录
+     * @return 添加结果
+     */
+    public int addSearchHistory(final SearchHistoryItemBean bean) {
+        final SearchHistoryItem item = getSearchHistoryItem(bean);
+        if (mUserTrackService == null) {
+            return -1;
+        }
         return mUserTrackService.addSearchHistory(item, SyncMode.SyncModeNow);
     }
 
     /**
-     * 删除搜索历史记录
-     * @param name
-     * @return
+     * 转换历史记录数据
+     * @param bean 搜索历史记录bean
+     * @return 搜索历史记录
      */
-    public int delSearchHistory(String name) {
-        SearchHistoryItem item = new SearchHistoryItem();
+    private SearchHistoryItem getSearchHistoryItem(final SearchHistoryItemBean bean) {
+        final SearchHistoryItem item = new SearchHistoryItem();
+        item.name = bean.getName();
+        item.poiid = bean.getPoiid();
+        item.id = bean.getId();
+        item.type = bean.getType();
+        item.datatype = bean.getDatatype();
+        item.x = bean.getX();
+        item.y = bean.getY();
+        item.x_entr = bean.getXentr();
+        item.y_entr = bean.getYentr();
+        item.update_time = bean.getUpdateTime();
+        item.history_type = bean.getHistoryType();
+        item.iconinfo = bean.getIconinfo();
+        item.adcode = bean.getAdcode();
+        item.district = bean.getDistrict();
+        item.address = bean.getAddress();
+        item.poi_tag = bean.getPoiTag();
+        item.func_text = bean.getFuncText();
+        item.short_name = bean.getShortName();
+        item.display_info = bean.getDisplayInfo();
+        item.search_query = bean.getSearchQuery();
+        item.terminals = bean.getTerminals();
+        item.ignore_district = bean.getIgnoreDistrict();
+        item.search_tag = bean.getSearchTag();
+        item.search_query_set = bean.getSearchQuerySet();
+        item.rich_rating = bean.getRichRating();
+        item.num_review = bean.getNumReview();
+        item.category = bean.getCategory();
+        item.super_address = bean.getSuperAddress();
+        item.datatype_spec = bean.getDatatypeSpec();
+        item.poi = bean.getPoi();
+        item.citycode = bean.getCitycode();
+        item.version = bean.getVersion();
+        item.parent = bean.getParent();
+        item.childType = bean.getChildType();
+        item.towardsAngle = bean.getTowardsAngle();
+        item.floorNo = bean.getFloorNo();
+        item.endPoiExtension = bean.getEndPoiExtension();
+        return item;
+    }
+
+    /**
+     * 删除搜索历史记录
+     * @param name 搜索历史记录名称
+     * @return 删除结果
+     */
+    public int delSearchHistory(final String name) {
+        final SearchHistoryItem item = new SearchHistoryItem();
         item.name = name; //  "肯德基";  删除只需要赋值名字字段
-        if (mUserTrackService == null) return -1;
-        int ret = mUserTrackService.delSearchHistory(item, SyncMode.SyncModeNow);
+        if (mUserTrackService == null) {
+            return -1;
+        }
+        final int ret = mUserTrackService.delSearchHistory(item, SyncMode.SyncModeNow);
         Logger.i(TAG, "delSearchHistory ret = " + ret );
         return ret;
     }
 
     /**
      * 从sdk获取行程数据列表（同步数据到本地数据库）
-     * @return
      */
     public void getDrivingRecordData() {
-        if (mUserTrackService == null) return ;
+        if (mUserTrackService == null) {
+            return ;
+        }
         // 403  车机版只有 驾车轨迹(403) 生效
-        int type = BehaviorDataType.BehaviorTypeTrailDriveForAuto;
+        final int type = BehaviorDataType.BehaviorTypeTrailDriveForAuto;
         // 获取行程ID列表（已完结记录）
-        int[] behaviorDataIds = mUserTrackService.getBehaviorDataIds(type);
-        if (behaviorDataIds == null) return ;
+        final int[] behaviorDataIds = mUserTrackService.getBehaviorDataIds(type);
+        if (behaviorDataIds == null) {
+            return ;
+        }
         Logger.i(TAG, "behaviorDataIds -> " + GsonUtils.toJson(behaviorDataIds));
 
         // 通过id获取行为数据
         for (int num : behaviorDataIds) {
             // 通过id获取行程数据Json串
-            String behaviorData = mUserTrackService.getBehaviorDataById(type, num);
+            final String behaviorData = mUserTrackService.getBehaviorDataById(type, num);
             Logger.i(TAG, "behaviorData -> " + behaviorData);
-            DrivingRecordDataBean dataBean = new Gson().fromJson(behaviorData, DrivingRecordDataBean.class);
+            final DrivingRecordDataBean dataBean = new Gson().fromJson(behaviorData, DrivingRecordDataBean.class);
             // 获取同步库轨迹文件
-            String id = dataBean.getId();
-            String filePath = mUserTrackService.getFilePath(type, id, BehaviorFileType.BehaviorFileTrail);// 车机版只有 轨迹文件(2) 生效
+            final String id = dataBean.getId();
+            final String filePath = mUserTrackService.getFilePath(type, id, BehaviorFileType.BehaviorFileTrail);// 车机版只有 轨迹文件(2) 生效
             dataBean.setFilePath(filePath);
 
             if (dataBean != null) {
-                History history = new History();
-                history.keyWord = "行程历史";
-                history.poiId = dataBean.getId();// 数据ID
-                history.startPoiName = dataBean.getStartPoiName(); // 设置起点
-                history.endPoiName = dataBean.getEndPoiName(); // 设置终点
-                history.startPoint = dataBean.getStartLocation();
-                history.endPoint = dataBean.getEndLocation();
-                history.runDistance = dataBean.getRunDistance();// 该行程行驶距离
-                history.endTime = dataBean.getEndTime();  // 该行程完成时间
-                history.rideRunType = dataBean.getRideRunType(); // 行程类型（导航/巡航）
-                history.timeInterval = dataBean.getTimeInterval(); // 驾驶时长
-                history.averageSpeed = dataBean.getAverageSpeed();// 平均速度
-                history.maxSpeed = dataBean.getMaxSpeed();// 最快速度
-                history.type = AutoMapConstant.SearchKeywordRecordKey.DRIVING_HISTORY_RECORD_KEY; // 该条记录类型
-                historyManager.insertOrReplace(history);
+                final History history = new History();
+                history.setMKeyWord(MODEL_NAME);
+                history.setMPoiId(dataBean.getId()); // 数据ID
+                history.setMStartPoiName(dataBean.getStartPoiName()); // 设置起点
+                history.setMEndPoiName(dataBean.getEndPoiName());// 设置终点
+                history.setMStartPoint(dataBean.getStartLocation());;
+                history.setMEndPoint(dataBean.getEndLocation());
+                history.setMRunDistance(dataBean.getRunDistance());// 该行程行驶距离
+                history.setMEndTime(dataBean.getEndTime()); // 该行程完成时间
+                history.setMRideRunType(dataBean.getRideRunType()); // 行程类型（导航/巡航）
+                history.setMTimeInterval(dataBean.getTimeInterval()); // 驾驶时长
+                history.setMAverageSpeed(dataBean.getAverageSpeed()); // 平均速度
+                history.setMMaxSpeed(dataBean.getMaxSpeed()); // 最快速度
+                history.setMType(AutoMapConstant.SearchKeywordRecordKey.DRIVING_HISTORY_RECORD_KEY); // 该条记录类型
+                mHistoryManager.insertOrReplace(history);
             }
         }
 
@@ -159,75 +271,79 @@ public class UserTrackImplHelper implements IUserTrackObserver, IGpsInfoGetter {
 
     /**
      * 获取导航行程历史数据
-     * @return
+     * @return 导航行程历史数据
      */
     public ArrayList<DrivingRecordDataBean> getDrivingRecordDataList() {
-        guideDataBeans.clear();
-        List<History> list = historyManager.getValueByType("行程历史");
+        mGuideDataBeans.clear();
+        final List<History> list = mHistoryManager.getValueByType(MODEL_NAME);
         if (list != null && !list.isEmpty()) {
             for (History history : list) {
-                DrivingRecordDataBean dataBean = new DrivingRecordDataBean();
-                dataBean.setId(history.getPoiId()) ;// 数据ID
-                dataBean.setStartPoiName(history.getStartPoiName()); ;// 设置起点
-                dataBean.setEndPoiName(history.getEndPoiName()); ;// 设置终点
-                dataBean.setStartLocation(history.getStartPoint()); ;// 数据ID
-                dataBean.setEndLocation(history.getEndPoint()); ;// 数据ID
-                dataBean.setRunDistance(history.getRunDistance()); ;// 该行程行驶距离
-                dataBean.setEndTime(history.getEndTime()); ;// 该行程完成时间
-                dataBean.setRideRunType(history.getRideRunType()); ;// 行程类型（导航/巡航）
-                dataBean.setTimeInterval(history.getTimeInterval()); ;// 驾驶时长
-                dataBean.setTimeInterval(history.getAverageSpeed()); ;// 平均速度
-                dataBean.setMaxSpeed(history.getMaxSpeed()); ;// 最快速度
-                if(history.getRideRunType() == 1) {
-                    guideDataBeans.add(dataBean);
+                final DrivingRecordDataBean dataBean = new DrivingRecordDataBean();
+                dataBean.setId(history.getMPoiId()) ;// 数据ID
+                dataBean.setStartPoiName(history.getMStartPoiName()); ;// 设置起点
+                dataBean.setEndPoiName(history.getMEndPoiName()); ;// 设置终点
+                dataBean.setStartLocation(history.getMStartPoint()); ;// 数据ID
+                dataBean.setEndLocation(history.getMEndPoint()); ;// 数据ID
+                dataBean.setRunDistance(history.getMRunDistance()); ;// 该行程行驶距离
+                dataBean.setEndTime(history.getMEndTime()); ;// 该行程完成时间
+                dataBean.setRideRunType(history.getMRideRunType()); ;// 行程类型（导航/巡航）
+                dataBean.setTimeInterval(history.getMTimeInterval()); ;// 驾驶时长
+                dataBean.setTimeInterval(history.getMAverageSpeed()); ;// 平均速度
+                dataBean.setMaxSpeed(history.getMMaxSpeed()); ;// 最快速度
+                if(history.getMRideRunType() == 1) {
+                    mGuideDataBeans.add(dataBean);
                 }
             }
-            Logger.i(TAG, "guideDataBeans -> " + GsonUtils.toJson(guideDataBeans));
+            Logger.i(TAG, "guideDataBeans -> " + GsonUtils.toJson(mGuideDataBeans));
         }
-        return guideDataBeans;
+        return mGuideDataBeans;
     }
 
     /**
      * 获取巡航行程历史数据
-     * @return
+     * @return 巡航行程历史数据
      */
     public ArrayList<DrivingRecordDataBean> getDrivingRecordCruiseDataList() {
-        cruiseDataBeans.clear();
-        List<History> list = historyManager.getValueByType("行程历史");
+        mCruiseDataBeans.clear();
+        final List<History> list = mHistoryManager.getValueByType(MODEL_NAME);
         if (list != null && !list.isEmpty()) {
             for (History history : list) {
-                DrivingRecordDataBean dataBean = new DrivingRecordDataBean();
-                dataBean.setId(history.getPoiId()) ;// 数据ID
-                dataBean.setStartPoiName(history.getStartPoiName()); ;// 设置起点
-                dataBean.setEndPoiName(history.getEndPoiName()); ;// 设置终点
-                dataBean.setStartLocation(history.getStartPoint()); ;// 数据ID
-                dataBean.setEndLocation(history.getEndPoint()); ;// 数据ID
-                dataBean.setRunDistance(history.getRunDistance()); ;// 该行程行驶距离
-                dataBean.setEndTime(history.getEndTime()); ;// 该行程完成时间
-                dataBean.setRideRunType(history.getRideRunType()); ;// 行程类型（导航/巡航）
-                dataBean.setTimeInterval(history.getTimeInterval()); ;// 驾驶时长
-                dataBean.setTimeInterval(history.getAverageSpeed()); ;// 平均速度
-                dataBean.setMaxSpeed(history.getMaxSpeed()); ;// 最快速度
-                if(history.getRideRunType() == 0) {
-                    cruiseDataBeans.add(dataBean);
+                final DrivingRecordDataBean dataBean = new DrivingRecordDataBean();
+                dataBean.setId(history.getMPoiId()) ;// 数据ID
+                dataBean.setStartPoiName(history.getMStartPoiName()); ;// 设置起点
+                dataBean.setEndPoiName(history.getMEndPoiName()); ;// 设置终点
+                dataBean.setStartLocation(history.getMStartPoint()); ;// 数据ID
+                dataBean.setEndLocation(history.getMEndPoint()); ;// 数据ID
+                dataBean.setRunDistance(history.getMRunDistance()); ;// 该行程行驶距离
+                dataBean.setEndTime(history.getMEndTime()); ;// 该行程完成时间
+                dataBean.setRideRunType(history.getMRideRunType()); ;// 行程类型（导航/巡航）
+                dataBean.setTimeInterval(history.getMTimeInterval()); ;// 驾驶时长
+                dataBean.setTimeInterval(history.getMAverageSpeed()); ;// 平均速度
+                dataBean.setMaxSpeed(history.getMMaxSpeed()); ;// 最快速度
+                if(history.getMRideRunType() == 0) {
+                    mCruiseDataBeans.add(dataBean);
                 }
             }
-            Logger.i(TAG, "cruiseDataBeans -> " + GsonUtils.toJson(cruiseDataBeans));
+            Logger.i(TAG, "cruiseDataBeans -> " + GsonUtils.toJson(mCruiseDataBeans));
         }
-        return cruiseDataBeans;
+        return mCruiseDataBeans;
     }
 
     /**
-     * IUserTrackObserver回调触发的同步事件
-     * @param eventType
-     * @param exCode
+     * 获取轨迹数据同步回调通知
+     * @param eventType 同步SDK回调事件类型
+     * @param exCode 同步SDK返回值
      */
     @Override
-    public void notify(int eventType, int exCode) {
+    public void notify(final int eventType, final int exCode) {
         Logger.i(TAG, "notify -> eventType = " + eventType + "; exCode = " + exCode);
-        if (ConvertUtils.isEmpty(userTrackResultHashtable)) return;
-        for (UserTrackAdapterCallBack callBack : userTrackResultHashtable.values()) {
-            if (callBack == null) continue;
+        if (ConvertUtils.isEmpty(mUserTrackResultHashtable)) {
+            return;
+        }
+        for (UserTrackAdapterCallBack callBack : mUserTrackResultHashtable.values()) {
+            if (callBack == null) {
+                continue;
+            }
             callBack.notify(eventType, exCode);
         }
     }
@@ -244,53 +360,112 @@ public class UserTrackImplHelper implements IUserTrackObserver, IGpsInfoGetter {
     }
 
     /**
-     * 启动Gps打点，生成轨迹文件, 对应异步回调  通知开始结果
-     * @param n32SuccessTag
-     * @param psSavePath
-     * @param psFileName
+     * 开启Gps轨迹生成的回调通知
+     * @param psSavePath GPS轨迹文件保存路径
+     * @param psFileName GPS轨迹文件名
+     * @param n32SuccessTag 状态
+     * -1 失败
+     * 0 成功：新建轨迹文件进行打点
+     * 1 成功：在已存在的轨迹文件继续追加打点
      */
     @Override
-    public void onStartGpsTrack(int n32SuccessTag, String psSavePath, String psFileName) {
-        if (ConvertUtils.isEmpty(userTrackResultHashtable)) return;
-        for (UserTrackAdapterCallBack callBack : userTrackResultHashtable.values()) {
-            if (callBack == null) continue;
+    public void onStartGpsTrack(final int n32SuccessTag, final String psSavePath, final String psFileName) {
+        if (ConvertUtils.isEmpty(mUserTrackResultHashtable)) {
+            return;
+        }
+        for (UserTrackAdapterCallBack callBack : mUserTrackResultHashtable.values()) {
+            if (callBack == null) {
+                continue;
+            }
             callBack.onStartGpsTrack(n32SuccessTag, psSavePath, psFileName);
         }
     }
 
     /**
-     * 关闭Gps打点，异步回调返回深度信息。
-     * 对应异步回调 onCloseGpsTrack 通知开始结果
-     * @param n32SuccessTag
-     * @param psSavePath
-     * @param psFileName
-     * @param depInfo
+     * 关闭Gps轨迹生成的回调通知
+     * @param n32SuccessTag 状态
+     * -1 失败
+     * 0 成功：新建轨迹文件进行打点
+     * 1 成功：在已存在的轨迹文件继续追加打点
+     * @param psSavePath GPS轨迹文件保存路径
+     * @param psFileName GPS轨迹文件名
+     * @param depInfo 轨迹文件信息
      */
     @Override
-    public void onCloseGpsTrack(int n32SuccessTag, String psSavePath, String psFileName, GpsTrackDepthInfo depInfo) {
-        if (ConvertUtils.isEmpty(userTrackResultHashtable)) return;
-        for (UserTrackAdapterCallBack callBack : userTrackResultHashtable.values()) {
-            if (callBack == null) continue;
-            GpsTrackDepthBean info = new GpsTrackDepthBean();
-            GsonUtils.copyBean(depInfo, info);
+    public void onCloseGpsTrack(final int n32SuccessTag, final String psSavePath, final String psFileName, final GpsTrackDepthInfo depInfo) {
+        if (ConvertUtils.isEmpty(mUserTrackResultHashtable)) {
+            return;
+        }
+        for (UserTrackAdapterCallBack callBack : mUserTrackResultHashtable.values()) {
+            if (callBack == null) {
+                continue;
+            }
+            final GpsTrackDepthBean info = getGpsTrackDepthBean(depInfo);
             callBack.onCloseGpsTrack(n32SuccessTag, psSavePath, psFileName, info);
         }
     }
 
     /**
-     * 对应异步回调 轨迹信息 onGpsTrackDepInfo 通知开始结果
-     * @param n32SuccessTag
-     * @param psSavePath
-     * @param psFileName
-     * @param depInfo
+     * 数据转换深度信息
+     * @param depInfo 深度信息
+     * @return 深度信息
+     */
+    private GpsTrackDepthBean getGpsTrackDepthBean(final GpsTrackDepthInfo depInfo) {
+        final GpsTrackDepthBean info = new GpsTrackDepthBean();
+        info.setFileName(depInfo.fileName);
+        info.setFilePath(depInfo.filePath);
+        info.setFastestIndex(depInfo.fastestIndex);
+        info.setDistance(depInfo.distance);
+        info.setDuration(depInfo.duration);
+        info.setAverageSpeed(depInfo.averageSpeed);
+
+        final ArrayList<GpsTrackPointBean> getGpsTrackPointBean = new ArrayList<>();
+        for (GpsTrackPoint point : depInfo.trackPoints) {
+            getGpsTrackPointBean.add(getGpsTrackPointBean(point));
+        }
+        info.setTrackPoints(getGpsTrackPointBean);
+        return info;
+    }
+
+    /**
+     * 数据转换Gps轨迹点信息
+     * @param point Gps轨迹点信息
+     * @return Gps轨迹点信息
+     */
+    private GpsTrackPointBean getGpsTrackPointBean(final GpsTrackPoint point) {
+        final GpsTrackPointBean pointBean = new GpsTrackPointBean();
+        pointBean.setF64Latitude(point.f64Latitude);
+        pointBean.setF64Longitude(point.f64Longitude);
+        pointBean.setF64Altitude(point.f64Altitude);
+        pointBean.setF32Accuracy(point.f32Accuracy);
+        pointBean.setF32Speed(point.f32Speed);
+        pointBean.setF32Course(point.f32Course);
+        pointBean.setN64TickTime(point.n64TickTime);
+        pointBean.setN32SateliteTotal(point.n32SateliteTotal);
+        pointBean.setSectionId(point.nSectionId);
+        return pointBean;
+    }
+
+    /**
+     * 获取Gps轨迹文件深度信息的回调通知
+     * @param n32SuccessTag 状态
+     * -1 失败
+     * 0 成功：新建轨迹文件进行打点
+     * 1 成功：在已存在的轨迹文件继续追加打点
+     * @param psSavePath GPS轨迹文件保存路径
+     * @param psFileName GPS轨迹文件名
+     * @param depInfo 轨迹文件信息
      */
     @Override
-    public void onGpsTrackDepInfo(int n32SuccessTag, String psSavePath, String psFileName, GpsTrackDepthInfo depInfo) {
-        if (ConvertUtils.isEmpty(userTrackResultHashtable)) return;
-        for (UserTrackAdapterCallBack callBack : userTrackResultHashtable.values()) {
-            if (callBack == null) continue;
-            GpsTrackDepthBean info = new GpsTrackDepthBean();
-            GsonUtils.copyBean(depInfo, info);
+    public void onGpsTrackDepInfo(final int n32SuccessTag, final String psSavePath, final String psFileName, final GpsTrackDepthInfo depInfo) {
+        if (ConvertUtils.isEmpty(mUserTrackResultHashtable)) {
+            return;
+        }
+        for (UserTrackAdapterCallBack callBack : mUserTrackResultHashtable.values()) {
+            if (callBack == null) {
+                continue;
+            }
+            final GpsTrackDepthBean info = getGpsTrackDepthBean(depInfo);
             callBack.onGpsTrackDepInfo(n32SuccessTag, psSavePath, psFileName, info);
         }
     }

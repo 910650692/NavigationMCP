@@ -6,42 +6,44 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ProgressBar;
 
+import com.android.utils.log.Logger;
 import com.fy.navi.ui.R;
 import com.fy.navi.ui.view.SkinFrameLayout;
 import com.fy.navi.ui.view.SkinImageView;
 import com.fy.navi.ui.view.SkinTextView;
 
-
-/**
- * 上拉加载view
- */
 public class LoadMoreView extends SkinFrameLayout implements FooterView {
 
-    private SkinTextView tv;
-    private SkinImageView arrow;
-    private ProgressBar progressBar;
+    private SkinTextView mSkinTextView;
+    private SkinImageView mSkinImageView;
+    private ProgressBar mProgressBar;
     private String mTips = "上拉加载";
-    private boolean canLoadMore = true;
+    private boolean mCanLoadMore = true;
 
-    public LoadMoreView(Context context) {
+    public LoadMoreView(final Context context) {
         this(context, null);
     }
 
-    public LoadMoreView(Context context, AttributeSet attrs) {
+    public LoadMoreView(final Context context, final AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public LoadMoreView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public LoadMoreView(final Context context, final AttributeSet attrs, final int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init(context);
     }
 
-    private void init(Context context) {
-        View view = LayoutInflater.from(context).inflate(R.layout.layout_header, null);
+    /**
+     * 初始化
+     *
+     * @param context Context
+     */
+    private void init(final Context context) {
+        final View view = LayoutInflater.from(context).inflate(R.layout.layout_header, null);
         addView(view);
-        tv = view.findViewById(R.id.header_tv);
-        arrow = view.findViewById(R.id.header_arrow);
-        progressBar = view.findViewById(R.id.header_progress);
+        mSkinTextView = view.findViewById(R.id.header_tv);
+        mSkinImageView = view.findViewById(R.id.header_arrow);
+        mProgressBar = view.findViewById(R.id.header_progress);
     }
 
     @Override
@@ -50,27 +52,28 @@ public class LoadMoreView extends SkinFrameLayout implements FooterView {
     }
 
     @Override
-    public void progress(float progress, float all) {
-        float s = progress / all;
+    public void progress(final float progress, final float all) {
+        final float s = progress / all;
         if (s >= 0.9f) {
-            arrow.setRotation(0);
+            mSkinImageView.setRotation(0);
         } else {
-            arrow.setRotation(180);
+            mSkinImageView.setRotation(180);
         }
         if (progress >= all - 10) {
-            if (canLoadMore) {
+            if (mCanLoadMore) {
                 if (mTips.contains("没有下一页了")) {
+                    Logger.d("已经没有下一页了");
                 } else {
-                    tv.setText("加载更多");
+                    mSkinTextView.setText("加载更多");
                 }
             }
         } else {
-            tv.setText(mTips);
+            mSkinTextView.setText(mTips);
         }
     }
 
     @Override
-    public void finishing(float progress, float all) {
+    public void finishing(final float progress, final float all) {
 
     }
 
@@ -79,16 +82,16 @@ public class LoadMoreView extends SkinFrameLayout implements FooterView {
         if (mTips.contains("没有下一页了")) {
             return;
         }
-        arrow.setVisibility(GONE);
-        progressBar.setVisibility(VISIBLE);
-        tv.setText("加载中...");
+        mSkinImageView.setVisibility(GONE);
+        mProgressBar.setVisibility(VISIBLE);
+        mSkinTextView.setText("加载中...");
     }
 
     @Override
     public void normal() {
-        arrow.setVisibility(VISIBLE);
-        progressBar.setVisibility(GONE);
-        tv.setText(mTips);
+        mSkinImageView.setVisibility(VISIBLE);
+        mProgressBar.setVisibility(GONE);
+        mSkinTextView.setText(mTips);
     }
 
     @Override
@@ -97,12 +100,12 @@ public class LoadMoreView extends SkinFrameLayout implements FooterView {
     }
 
     @Override
-    public void setLoadMoreTips(String tips) {
+    public void setLoadMoreTips(final String tips) {
         mTips = tips;
     }
 
     @Override
-    public void canLoadMore(boolean canLoadMore) {
-        this.canLoadMore = canLoadMore;
+    public void canLoadMore(final boolean canLoadMore) {
+        this.mCanLoadMore = canLoadMore;
     }
 }

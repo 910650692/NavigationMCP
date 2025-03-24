@@ -8,15 +8,15 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatCheckBox;
 
 public class SkinCheckBox extends AppCompatCheckBox {
-    public SkinCheckBox(@NonNull Context context) {
+    public SkinCheckBox(final @NonNull Context context) {
         super(context);
     }
 
-    public SkinCheckBox(@NonNull Context context, @Nullable AttributeSet attrs) {
+    public SkinCheckBox(final @NonNull Context context, final @Nullable AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public SkinCheckBox(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public SkinCheckBox(final @NonNull Context context, final @Nullable AttributeSet attrs, final int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 }

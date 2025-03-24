@@ -13,6 +13,7 @@ import com.alibaba.android.arouter.launcher.ARouter;
 import com.fy.navi.scene.BaseSceneView;
 import com.fy.navi.scene.R;
 import com.fy.navi.scene.RoutePath;
+import com.fy.navi.scene.api.search.IOnHomeCompanyClickListener;
 import com.fy.navi.scene.databinding.SceneMainAlongWaySearchBarBinding;
 import com.fy.navi.scene.impl.search.SceneMainAlongWaySearchViewImpl;
 import com.fy.navi.scene.impl.search.SearchFragmentFactory;
@@ -21,26 +22,32 @@ import com.fy.navi.ui.base.BaseFragment;
 import com.fy.navi.ui.view.SkinTextView;
 
 /**
- * @Author: baipeng0904
+ * @author baipeng0904
+ * @version \$Revision1.0\$
  * @Description: 沿途搜主页面 scene
  * @Date: 2020/4/16 11:08 AM
  * @CreateDate: $ $
  */
 public class SceneMainAlongWaySearchView extends BaseSceneView<SceneMainAlongWaySearchBarBinding, SceneMainAlongWaySearchViewImpl> {
-    public SceneMainAlongWaySearchView(@NonNull Context context) {
+    private IOnHomeCompanyClickListener mClickListener;
+    public SceneMainAlongWaySearchView(@NonNull final Context context) {
         super(context);
     }
 
-    public SceneMainAlongWaySearchView(@NonNull Context context, @Nullable AttributeSet attrs) {
+    public SceneMainAlongWaySearchView(@NonNull final Context context, @Nullable final AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public SceneMainAlongWaySearchView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public SceneMainAlongWaySearchView(@NonNull final Context context, @Nullable final AttributeSet attrs, final int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 
+    public void setClickListener(final IOnHomeCompanyClickListener clickListener) {
+        mClickListener = clickListener;
+    }
+
     @Override
-    protected SceneMainAlongWaySearchBarBinding createViewBinding(LayoutInflater inflater, ViewGroup viewGroup) {
+    protected SceneMainAlongWaySearchBarBinding createViewBinding(final LayoutInflater inflater, final ViewGroup viewGroup) {
         return SceneMainAlongWaySearchBarBinding.inflate(inflater, viewGroup, true);
     }
 
@@ -58,27 +65,55 @@ public class SceneMainAlongWaySearchView extends BaseSceneView<SceneMainAlongWay
     protected void initObserver() {
         setSkinTextViews();
         mViewBinding.searchBarTextView.setOnClickListener(v -> {
-            Fragment fragment = (Fragment) ARouter.getInstance()
+            final Fragment fragment = (Fragment) ARouter.getInstance()
                     .build(RoutePath.Search.SUGGESTION_FRAGMENT)
                     .navigation();
-            addFragment((BaseFragment) fragment, SearchFragmentFactory.createSugFragment(AutoMapConstant.SourceFragment.FRAGMENT_MAIN_ALONG_WAY, AutoMapConstant.SearchType.ALONG_WAY_SEARCH));
+            addFragment((BaseFragment) fragment, SearchFragmentFactory.createSugFragment(
+                    AutoMapConstant.SourceFragment.FRAGMENT_MAIN_ALONG_WAY, AutoMapConstant.SearchType.ALONG_WAY_SEARCH));
         });
     }
 
-    public void onClickQuickSearch(int position) {
+    /**
+     * 点击快速搜索
+     * @param position 点击下标
+     */
+    public void onClickQuickSearch(final int position) {
         // 收藏
-        if (position == 0) {
-            Fragment fragment = (Fragment) ARouter.getInstance()
-                    .build(RoutePath.Search.COLLECT_FRAGMENT)
-                    .navigation();
-            addFragment((BaseFragment) fragment, SearchFragmentFactory.createCollectFragment(AutoMapConstant.SourceFragment.FRAGMENT_MAIN_ALONG_WAY, AutoMapConstant.CollectionType.COLLECTION, AutoMapConstant.HomeCompanyType.COLLECTION));
-            // 沿途类型搜索
-        } else if (position == 3) {
-            Fragment fragment = (Fragment) ARouter.getInstance()
-                    .build(RoutePath.Search.ALONG_WAY_SEARCH_FRAGMENT)
-                    .navigation();
-            addFragment((BaseFragment) fragment, null);
-
+        final Fragment fragment;
+        switch (position) {
+            case 0:
+                fragment = (Fragment) ARouter.getInstance()
+                        .build(RoutePath.Search.COLLECT_FRAGMENT)
+                        .navigation();
+                addFragment((BaseFragment) fragment, SearchFragmentFactory.createCollectFragment(
+                        AutoMapConstant.SourceFragment.FRAGMENT_MAIN_ALONG_WAY,
+                        AutoMapConstant.CollectionType.COLLECTION, AutoMapConstant.HomeCompanyType.COLLECTION));
+                break;
+            case 1:
+                fragment = (Fragment) ARouter.getInstance()
+                        .build(RoutePath.Search.COLLECT_FRAGMENT)
+                        .navigation();
+                if (fragment != null) {
+                    addFragment((BaseFragment) fragment,
+                            SearchFragmentFactory.createCollectFragment(
+                                    AutoMapConstant.SourceFragment.FRAGMENT_HOME_COMPANY,
+                                    AutoMapConstant.CollectionType.GET_POINT, AutoMapConstant.HomeCompanyType.ALONG_WAY));
+                }
+                break;
+            case 2:
+                //跳转地图选点页面，隐藏所有view
+                if (null != mClickListener) {
+                    mClickListener.setHomeCompanyType(AutoMapConstant.HomeCompanyType.ALONG_WAY);
+                }
+                break;
+            case 3:
+                fragment = (Fragment) ARouter.getInstance()
+                        .build(RoutePath.Search.ALONG_WAY_SEARCH_FRAGMENT)
+                        .navigation();
+                addFragment((BaseFragment) fragment, null);
+                break;
+            default:
+                break;
         }
     }
 
@@ -87,12 +122,12 @@ public class SceneMainAlongWaySearchView extends BaseSceneView<SceneMainAlongWay
      */
     private void setSkinTextViews() {
         if (mViewBinding != null) {
-            String[] categories = getResources().getStringArray(R.array.main_along_way_search_categories_name);
-            SkinTextView[] skinTextViews = {
+            final String[] categories = getResources().getStringArray(R.array.main_along_way_search_categories_name);
+            final SkinTextView[] skinTextViews = {
                     mViewBinding.tvGasStation,
                     mViewBinding.tvPullUp,
                     mViewBinding.tvGourmet,
-                    mViewBinding.tvCarWashing,
+                    mViewBinding.tvCarWashing
             };
             for (int i = 0; i < skinTextViews.length && i < categories.length; i++) {
                 skinTextViews[i].setText(categories[i]);

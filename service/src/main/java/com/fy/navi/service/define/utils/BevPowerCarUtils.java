@@ -13,7 +13,7 @@ public class BevPowerCarUtils {
 
     public String engineVersion = "1.0";
     public String sdkVersion = "750";
-    public double batterToDistance = 42000;
+    public double batterToDistance = 4200;//每1%的电行驶多少公里
     public boolean isElecPlanRoute = true; //是否自动续航-路线添加充电站 ---接口获取
     public String carType = "2"; //车辆类型：0客车，1货车, 2电动客车，3电动货车，4插电式混动客车，5插电式混动货车---接口获取
     public boolean bevCarElicOpen = true; //电车设置能耗模型
@@ -40,6 +40,8 @@ public class BevPowerCarUtils {
     public ElecCommonParameter trans = new ElecCommonParameter(1800000.0f, 3200000.0f);//代价模型_转向---写死
     public ElecCommonParameter curve = new ElecCommonParameter(1800000.0f, 3200000.0f);//代价模型_弯道---写死
     public ElecCommonParameter slope = new ElecCommonParameter(1200000.0f, 3200000.0f); //代价模型_坡度---写死
+
+    public boolean isLongRoute = false;
 
     public static BevPowerCarUtils getInstance() {
         return Helper.carU;

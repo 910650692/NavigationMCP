@@ -16,31 +16,66 @@ import com.fy.navi.ui.base.BaseViewModel;
 import com.fy.navi.ui.base.StackManager;
 
 import java.text.MessageFormat;
-import java.util.List;
 
 public class BaseAlterChargeViewModel extends BaseViewModel<AlterChargeFragment, AlterChargeModel> {
     private static final String TAG = "BaseAlterChargeViewModel";
-    public ObservableField<Boolean> showAlterCharge;
+    private ObservableField<Boolean> mShowAlterCharge;
     /**POI详情页面**/
-    public ObservableField<Boolean> routeSearchStatusVisibility;
-    public ObservableField<String> routeSearchStatus;
-    public ObservableField<String> routeSearchName;
-    public ObservableField<String> routeSearchAddress;
-    public ObservableField<String> routeSearchTimeAndDistance;
-    public ObservableField<String> routeSearchElec;
-    public ObservableField<Integer> routeSearchTypeVisibility;
-    public ObservableField<String> routeSearchDeailsAddRemoveVia;
+    private ObservableField<Boolean> mRouteSearchStatusVisibility;
+    private ObservableField<String> mRouteSearchStatus;
+    private ObservableField<String> mRouteSearchName;
+    private ObservableField<String> mRouteSearchAddress;
+    private ObservableField<String> mRouteSearchTimeAndDistance;
+    private ObservableField<String> mRouteSearchElec;
+    private ObservableField<Integer> mRouteSearchTypeVisibility;
+    private ObservableField<String> mRouteSearchDetailAddRemoveVia;
 
-    public BaseAlterChargeViewModel(@NonNull Application application) {
+    public ObservableField<Boolean> getShowAlterCharge() {
+        return mShowAlterCharge;
+    }
+
+    public ObservableField<Boolean> getRouteSearchStatusVisibility() {
+        return mRouteSearchStatusVisibility;
+    }
+
+    public ObservableField<String> getRouteSearchStatus() {
+        return mRouteSearchStatus;
+    }
+
+    public ObservableField<String> getRouteSearchName() {
+        return mRouteSearchName;
+    }
+
+    public ObservableField<String> getRouteSearchAddress() {
+        return mRouteSearchAddress;
+    }
+
+    public ObservableField<String> getRouteSearchTimeAndDistance() {
+        return mRouteSearchTimeAndDistance;
+    }
+
+    public ObservableField<String> getRouteSearchElec() {
+        return mRouteSearchElec;
+    }
+
+    public ObservableField<Integer> getRouteSearchTypeVisibility() {
+        return mRouteSearchTypeVisibility;
+    }
+
+    public ObservableField<String> getRouteSearchDetailAddRemoveVia() {
+        return mRouteSearchDetailAddRemoveVia;
+    }
+
+    public BaseAlterChargeViewModel(final @NonNull Application application) {
         super(application);
-        showAlterCharge = new ObservableField<>(true);
-        routeSearchStatus = new ObservableField<>("");
-        routeSearchName = new ObservableField<>("");
-        routeSearchAddress = new ObservableField<>("");
-        routeSearchTimeAndDistance = new ObservableField<>("");
-        routeSearchElec = new ObservableField<>("");
-        routeSearchTypeVisibility = new ObservableField<>(0);
-        routeSearchDeailsAddRemoveVia = new ObservableField<>("");
+        mShowAlterCharge = new ObservableField<>(true);
+        mRouteSearchStatus = new ObservableField<>("");
+        mRouteSearchName = new ObservableField<>("");
+        mRouteSearchAddress = new ObservableField<>("");
+        mRouteSearchTimeAndDistance = new ObservableField<>("");
+        mRouteSearchElec = new ObservableField<>("");
+        mRouteSearchTypeVisibility = new ObservableField<>(0);
+        mRouteSearchDetailAddRemoveVia = new ObservableField<>("");
     }
 
     @Override
@@ -48,48 +83,84 @@ public class BaseAlterChargeViewModel extends BaseViewModel<AlterChargeFragment,
         return new AlterChargeModel();
     }
 
-    public void requestAlterChargeStation(String poiID) {
-        mModel.requestAlterChargeStation(poiID);
+    /**
+     * 请求替换充电站信息
+     * @param poiId poiId
+     */
+    public void requestAlterChargeStation(final String poiId) {
+        mModel.requestAlterChargeStation(poiId);
     }
 
-    public void showAlterChargeStationInfo(RouteAlterChargeStationParam routeAlterChargeStationParam) {
+    /**
+     * 显示充电站列表信息
+     * @param routeAlterChargeStationParam 替换充电站搜索信息
+     */
+    public void showAlterChargeStationInfo(final RouteAlterChargeStationParam routeAlterChargeStationParam) {
         mView.showAlterChargeStationInfo(routeAlterChargeStationParam);
     }
 
-    public void getSearchDetailsMode(String poiID) {
-        mModel.getSearchDetailsMode(poiID);
+    /**
+     * 请求充电站详情信息
+     * @param poiId poiID
+     */
+    public void getSearchDetailsMode(final String poiId) {
+        mModel.getSearchDetailsMode(poiId);
     }
 
-    public void addViaList(RouteAlterChargeStationInfo info) {
+    /**
+     * 添加途径点
+     * @param info 替换充电站信息
+     */
+    public void addViaList(final RouteAlterChargeStationInfo info) {
         mModel.addViaList(info);
     }
 
-    public void addViaList(PoiInfoEntity poiInfoEntities) {
+    /**
+     * 添加途径点
+     * @param poiInfoEntities 点信息
+     */
+    public void addViaList(final PoiInfoEntity poiInfoEntities) {
         mModel.addViaList(poiInfoEntities);
     }
 
-    public void showChargeStationDetail(PoiInfoEntity poiInfoEntities) {
-        mModel.getTravelTimeFuture(new GeoPoint(poiInfoEntities.getPoint().lon,poiInfoEntities.getPoint().lat))
+    /**
+     * 显示替换充电站详情界面
+     * @param poiInfoEntities 点参数
+     */
+    public void showChargeStationDetail(final PoiInfoEntity poiInfoEntities) {
+        mModel.getTravelTimeFuture(new GeoPoint(poiInfoEntities.getPoint().getLon(),poiInfoEntities.getPoint().getLat()))
                 .thenAccept(pair -> {
-                    routeSearchTimeAndDistance.set(MessageFormat.format("{0}  {1}", pair.first, pair.second));
+                    mRouteSearchTimeAndDistance.set(MessageFormat.format("{0}  {1}", pair.first, pair.second));
                 })
                 .exceptionally(error -> {
                     Logger.d(TAG, "getTravelTimeFuture error:" + error);
                     return null;
                 });
-        routeSearchElec.set("20%");
+        mRouteSearchElec.set("20%");
         mView.showChargeStationDetail(poiInfoEntities);
     }
 
     // 防止点击穿透
-    public Action rootClick = () -> {
+    private final Action mRootClick = () -> {
     };
 
-    public Action closePage = () -> {
+    public Action getRootClick() {
+        return mRootClick;
+    }
+
+    private final Action mClosePage = () -> {
         StackManager.getInstance().getCurrentFragment(MapTypeId.MAIN_SCREEN_MAIN_MAP.name()).closeFragment(true);
     };
 
-    public Action closeDetail = () -> {
-        showAlterCharge.set(true);
+    public Action getClosePage() {
+        return mClosePage;
+    }
+
+    private final Action mCloseDetail = () -> {
+        mShowAlterCharge.set(true);
     };
+
+    public Action getCloseDetail() {
+        return mCloseDetail;
+    }
 }

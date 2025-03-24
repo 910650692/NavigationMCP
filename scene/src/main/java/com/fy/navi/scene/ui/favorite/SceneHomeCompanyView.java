@@ -1,6 +1,5 @@
 package com.fy.navi.scene.ui.favorite;
 
-import static com.fy.navi.service.MapDefaultFinalTag.SEARCH_HMI_TAG;
 
 import android.content.Context;
 import android.text.Editable;
@@ -27,6 +26,7 @@ import com.fy.navi.scene.databinding.SceneHomeCompanyViewBinding;
 import com.fy.navi.scene.impl.favorite.SceneHomeCompanyViewImpl;
 import com.fy.navi.scene.impl.search.SearchFragmentFactory;
 import com.fy.navi.service.AutoMapConstant;
+import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.define.search.FavoriteInfo;
 import com.fy.navi.service.define.search.PoiInfoEntity;
 import com.fy.navi.service.define.search.SearchResultEntity;
@@ -38,32 +38,34 @@ import com.fy.navi.ui.base.BaseFragment;
 import java.util.Date;
 
 /**
- * @Author: baipeng0904
+ * @author baipeng0904
+ * @version \$Revision1.0\$
  * @Description: 家、公司、常用地址、收藏地址
  * @CreateDate: $ $
  */
 public class SceneHomeCompanyView extends BaseSceneView<SceneHomeCompanyViewBinding, SceneHomeCompanyViewImpl> {
-    private int homeCompanyType;
-    private IOnHomeCompanyClickListener clickListener;
-    private PoiInfoEntity userPoiInfoEntity;
-    public void setClickListener(IOnHomeCompanyClickListener clickListener) {
-        this.clickListener = clickListener;
+    private static final String DIVIDER = "_";
+    private int mHomeCompanyType;
+    private IOnHomeCompanyClickListener mClickListener;
+    private PoiInfoEntity mUserPoiInfoEntity;
+    public void setClickListener(final IOnHomeCompanyClickListener clickListener) {
+        this.mClickListener = clickListener;
     }
 
-    public SceneHomeCompanyView(@NonNull Context context) {
+    public SceneHomeCompanyView(@NonNull final Context context) {
         super(context);
     }
 
-    public SceneHomeCompanyView(@NonNull Context context, @Nullable AttributeSet attrs) {
+    public SceneHomeCompanyView(@NonNull final Context context, @Nullable final AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public SceneHomeCompanyView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public SceneHomeCompanyView(@NonNull final Context context, @Nullable final AttributeSet attrs, final int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 
     @Override
-    protected SceneHomeCompanyViewBinding createViewBinding(LayoutInflater inflater, ViewGroup viewGroup) {
+    protected SceneHomeCompanyViewBinding createViewBinding(final LayoutInflater inflater, final ViewGroup viewGroup) {
         return SceneHomeCompanyViewBinding.inflate(inflater, viewGroup, true);
     }
 
@@ -83,20 +85,23 @@ public class SceneHomeCompanyView extends BaseSceneView<SceneHomeCompanyViewBind
         setupSearchActions();
     }
 
+    /**
+     * 初始化搜索框相关事件
+     */
     private void setupSearchActions() {
         mViewBinding.searchBarTextView.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            public void beforeTextChanged(final CharSequence s, final int start, final int count, final int after) {
 
             }
 
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            public void onTextChanged(final CharSequence s, final int start, final int before, final int count) {
 
             }
 
             @Override
-            public void afterTextChanged(Editable editable) {
+            public void afterTextChanged(final Editable editable) {
                 if (!editable.toString().trim().isEmpty()) {
                     mViewBinding.ivEditClear.setVisibility(VISIBLE);
                     suggestionSearch(editable.toString().trim());
@@ -107,24 +112,16 @@ public class SceneHomeCompanyView extends BaseSceneView<SceneHomeCompanyViewBind
         });
 
         mViewBinding.searchBarTextView.setOnEditorActionListener((v, actionId, event) -> {
-            Logger.d(SEARCH_HMI_TAG, "onEditorActionListener actionId: " + actionId);
+            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "onEditorActionListener actionId: " + actionId);
             // 预搜索界面逻辑处理，跳转到搜索结果页面
-            Fragment fragment = (Fragment) ARouter.getInstance()
+            final Fragment fragment = (Fragment) ARouter.getInstance()
                     .build(RoutePath.Search.SEARCH_RESULT_FRAGMENT)
                     .navigation();
-            String sourceFragment;
-            if (homeCompanyType == AutoMapConstant.HomeCompanyType.HOME) {
-                sourceFragment = AutoMapConstant.SourceFragment.FRAGMENT_HOME;
-            } else if (homeCompanyType == AutoMapConstant.HomeCompanyType.COMPANY) {
-                sourceFragment = AutoMapConstant.SourceFragment.FRAGMENT_COMPANY;
-            } else if (homeCompanyType == AutoMapConstant.HomeCompanyType.COMMON) {
-                sourceFragment = AutoMapConstant.SourceFragment.FRAGMENT_COMMON;
-            } else if (homeCompanyType == AutoMapConstant.HomeCompanyType.COLLECTION) {
-                sourceFragment = AutoMapConstant.SourceFragment.FRAGMENT_COLLECTION;
-            } else {
-                sourceFragment = AutoMapConstant.SourceFragment.SUG_SEARCH_FRAGMENT;
-            }
-            addFragment((BaseFragment) fragment, SearchFragmentFactory.createKeywordFragment(sourceFragment, AutoMapConstant.SearchType.SEARCH_KEYWORD, getEditText(), null));
+            final String sourceFragment = getSourceFragment();
+            addFragment((BaseFragment) fragment,
+                    SearchFragmentFactory.createKeywordFragment(
+                            sourceFragment, AutoMapConstant.SearchType.SEARCH_KEYWORD,
+                            getEditText(), null));
             hideInput();
             return true;
         });
@@ -134,10 +131,31 @@ public class SceneHomeCompanyView extends BaseSceneView<SceneHomeCompanyViewBind
     }
 
     /**
-     * 设置页面
+     * 获取来源页面
+     * @return 来源页面
      */
-    public void setViewVisibility(int formType) {
-        homeCompanyType = formType;
+    private String getSourceFragment() {
+        final String sourceFragment;
+        if (mHomeCompanyType == AutoMapConstant.HomeCompanyType.HOME) {
+            sourceFragment = AutoMapConstant.SourceFragment.FRAGMENT_HOME;
+        } else if (mHomeCompanyType == AutoMapConstant.HomeCompanyType.COMPANY) {
+            sourceFragment = AutoMapConstant.SourceFragment.FRAGMENT_COMPANY;
+        } else if (mHomeCompanyType == AutoMapConstant.HomeCompanyType.COMMON) {
+            sourceFragment = AutoMapConstant.SourceFragment.FRAGMENT_COMMON;
+        } else if (mHomeCompanyType == AutoMapConstant.HomeCompanyType.COLLECTION) {
+            sourceFragment = AutoMapConstant.SourceFragment.FRAGMENT_COLLECTION;
+        } else {
+            sourceFragment = AutoMapConstant.SourceFragment.SUG_SEARCH_FRAGMENT;
+        }
+        return sourceFragment;
+    }
+
+    /**
+     * 设置页面
+     * @param formType 页面类型
+     */
+    public void setViewVisibility(final int formType) {
+        mHomeCompanyType = formType;
         switch (formType) {
             //家和公司: 显示地图选点、我的位置
             case AutoMapConstant.HomeCompanyType.HOME:
@@ -180,7 +198,26 @@ public class SceneHomeCompanyView extends BaseSceneView<SceneHomeCompanyViewBind
                     mViewBinding.sclGasStation.setVisibility(View.GONE);
                 }
                 break;
+            default:
+                break;
         }
+    }
+
+    /**
+     * 执行关键字搜索
+     * @param keyword 关键字
+     */
+    public void doKeyWordSearch(final String keyword) {
+        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "doKeyWordSearch: " + keyword);
+        // 语音传入关键字参数时，直接跳转到搜索结果页面
+        final Fragment fragment = (Fragment) ARouter.getInstance()
+                .build(RoutePath.Search.SEARCH_RESULT_FRAGMENT)
+                .navigation();
+        final String sourceFragment = getSourceFragment();
+        addFragment((BaseFragment) fragment, SearchFragmentFactory.createKeywordFragment(
+                sourceFragment, AutoMapConstant.SearchType.SEARCH_KEYWORD,
+                keyword, null));
+
     }
 
     /**
@@ -189,9 +226,13 @@ public class SceneHomeCompanyView extends BaseSceneView<SceneHomeCompanyViewBind
      * @return 输入框内容
      */
     private String getEditText() {
-        return mViewBinding.searchBarTextView.getText() != null ? mViewBinding.searchBarTextView.getText().toString().trim() : "";
+        return mViewBinding.searchBarTextView.getText() != null ?
+                mViewBinding.searchBarTextView.getText().toString().trim() : "";
     }
 
+    /**
+     * 点击文本框弹出键盘
+     */
     public void onClickEditText() {
         mViewBinding.searchBarTextView.post(() -> {
             mViewBinding.searchBarTextView.requestFocus();
@@ -203,7 +244,8 @@ public class SceneHomeCompanyView extends BaseSceneView<SceneHomeCompanyViewBind
      * 显示软键盘
      */
     private void showKeyboard() {
-        InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+        final InputMethodManager imm = (InputMethodManager) getContext().getSystemService(
+                Context.INPUT_METHOD_SERVICE);
         if (imm != null) {
             imm.showSoftInput(mViewBinding.searchBarTextView, InputMethodManager.SHOW_IMPLICIT);
         }
@@ -213,7 +255,8 @@ public class SceneHomeCompanyView extends BaseSceneView<SceneHomeCompanyViewBind
      * 隐藏软键盘
      */
     public void hideInput() {
-        InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+        final InputMethodManager imm = (InputMethodManager) getContext().getSystemService(
+                Context.INPUT_METHOD_SERVICE);
         if (imm != null) {
             imm.hideSoftInputFromWindow(getWindowToken(), 0);
         }
@@ -224,16 +267,17 @@ public class SceneHomeCompanyView extends BaseSceneView<SceneHomeCompanyViewBind
      */
     public void clearEditText() {
         mViewBinding.searchBarTextView.setText("");
-        if (null != clickListener) {
-            clickListener.onEditClearClicked();
+        if (null != mClickListener) {
+            mClickListener.onEditClearClicked();
         }
     }
 
     /**
      * 执行预搜索
+     * @param keyword 关键字
      */
-    public void suggestionSearch(String keyword) {
-        Logger.d(SEARCH_HMI_TAG, "sugSearch search: " + ", Keyword: " + keyword);
+    public void suggestionSearch(final String keyword) {
+        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "sugSearch search: " + ", Keyword: " + keyword);
         mScreenViewModel.suggestionSearch(keyword);
     }
 
@@ -242,9 +286,9 @@ public class SceneHomeCompanyView extends BaseSceneView<SceneHomeCompanyViewBind
      *
      * @param position 0收藏夹 1收到的点 3地图选点 4我的位置
      */
-    public void onClickQuickSearch(int position) {
-        Logger.d(SEARCH_HMI_TAG, "homeCompany onClickQuickSearch: position: " + position);
-        Fragment fragment;
+    public void onClickQuickSearch(final int position) {
+        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "homeCompany onClickQuickSearch: position: " + position);
+        final Fragment fragment;
         switch (position) {
             case 0: //收藏夹
                 //跳转收藏页面
@@ -252,7 +296,10 @@ public class SceneHomeCompanyView extends BaseSceneView<SceneHomeCompanyViewBind
                         .build(RoutePath.Search.COLLECT_FRAGMENT)
                         .navigation();
                 if (fragment != null) {
-                    addFragment((BaseFragment) fragment, SearchFragmentFactory.createCollectFragment(AutoMapConstant.SourceFragment.FRAGMENT_HOME_COMPANY, AutoMapConstant.CollectionType.COMMON, homeCompanyType));
+                    addFragment((BaseFragment) fragment,
+                            SearchFragmentFactory.createCollectFragment(
+                                    AutoMapConstant.SourceFragment.FRAGMENT_HOME_COMPANY,
+                                    AutoMapConstant.CollectionType.COMMON, mHomeCompanyType));
                 }
                 break;
             case 1: //收到的点
@@ -260,39 +307,54 @@ public class SceneHomeCompanyView extends BaseSceneView<SceneHomeCompanyViewBind
                         .build(RoutePath.Search.COLLECT_FRAGMENT)
                         .navigation();
                 if (fragment != null) {
-                    addFragment((BaseFragment) fragment, SearchFragmentFactory.createCollectFragment(AutoMapConstant.SourceFragment.FRAGMENT_HOME_COMPANY, AutoMapConstant.CollectionType.GET_POINT, homeCompanyType));
+                    addFragment((BaseFragment) fragment,
+                            SearchFragmentFactory.createCollectFragment(
+                                    AutoMapConstant.SourceFragment.FRAGMENT_HOME_COMPANY,
+                                    AutoMapConstant.CollectionType.GET_POINT, mHomeCompanyType));
                 }
                 break;
             case 2: //地图选点
                 //跳转地图选点页面，隐藏所有view
-                if (null != clickListener) {
-                    clickListener.setHomeCompanyType(homeCompanyType);
+                if (null != mClickListener) {
+                    mClickListener.setHomeCompanyType(mHomeCompanyType);
                 }
                 closeAllFragmentAndSearchView();
                 break;
             case 3: //我的位置
-                Logger.d(SEARCH_HMI_TAG, "homeCompany onClickQuickSearch: userPoiInfoEntity: " + userPoiInfoEntity);
+                Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "homeCompany onClickQuickSearch: userPoiInfoEntity: "
+                        + mUserPoiInfoEntity);
                 SearchPackage.getInstance().currentLocationSearch();
+                break;
+            default:
                 break;
         }
     }
-    public void notifySearchResult(SearchResultEntity searchResultEntity) {
+
+    /**
+     * 搜索结果回调
+     * @param searchResultEntity 搜索结果实体
+     */
+    public void notifySearchResult(final SearchResultEntity searchResultEntity) {
         if (searchResultEntity != null
                 && searchResultEntity.getPoiList() != null
                 && searchResultEntity.getPoiList().size() > 0) {
-            userPoiInfoEntity = searchResultEntity.getPoiList().get(0);
-            int commonName = homeCompanyType;
-            if (homeCompanyType == AutoMapConstant.HomeCompanyType.HOME) {
-                ToastUtils.Companion.getInstance().showCustomToastView(ResourceUtils.Companion.getInstance().getString(R.string.mps_set_home_success), 0);
+            mUserPoiInfoEntity = searchResultEntity.getPoiList().get(0);
+            final int commonName = mHomeCompanyType;
+            if (mHomeCompanyType == AutoMapConstant.HomeCompanyType.HOME) {
+                ToastUtils.Companion.getInstance().showCustomToastView(
+                        ResourceUtils.Companion.getInstance().getString(R.string.mps_set_home_success), 0);
             } else {
-                ToastUtils.Companion.getInstance().showCustomToastView(ResourceUtils.Companion.getInstance().getString(R.string.mps_set_company_success), 0);
+                ToastUtils.Companion.getInstance().showCustomToastView(
+                        ResourceUtils.Companion.getInstance().getString(R.string.mps_set_company_success), 0);
             }
-            FavoriteInfo favoriteInfo = new FavoriteInfo();
+            final FavoriteInfo favoriteInfo = new FavoriteInfo();
             favoriteInfo.setCommonName(commonName)
-                    .setItemId(userPoiInfoEntity.getPid() + "_" + userPoiInfoEntity.getName() + "_" + userPoiInfoEntity.getPoint().getLon() + "_" + userPoiInfoEntity.getPoint().getLat())
+                    .setItemId(mUserPoiInfoEntity.getPid() + DIVIDER + mUserPoiInfoEntity.getName() + DIVIDER
+                            + mUserPoiInfoEntity.getPoint().getLon() + DIVIDER
+                            + mUserPoiInfoEntity.getPoint().getLat())
                     .setUpdateTime(new Date().getTime());
-            userPoiInfoEntity.setFavoriteInfo(favoriteInfo);
-            BehaviorPackage.getInstance().addFavoriteData(userPoiInfoEntity, commonName);
+            mUserPoiInfoEntity.setFavoriteInfo(favoriteInfo);
+            BehaviorPackage.getInstance().addFavoriteData(mUserPoiInfoEntity, commonName);
             SettingUpdateObservable.getInstance().onUpdateSyncTime();
             closeAllFragment();
         }

@@ -11,9 +11,8 @@ import com.android.utils.ResourceUtils;
 import com.android.utils.TimeUtils;
 import com.fy.navi.scene.R;
 import com.fy.navi.scene.databinding.RouteSearchRefreshListItemBinding;
-import com.fy.navi.service.AppContext;
+import com.fy.navi.service.define.bean.GeoPoint;
 import com.fy.navi.service.define.map.MapTypeId;
-import com.fy.navi.service.define.route.RouteLineInfo;
 import com.fy.navi.service.define.route.RouteRestAreaDetailsInfo;
 import com.fy.navi.service.define.search.PoiInfoEntity;
 import com.fy.navi.service.define.utils.NumberUtils;
@@ -23,13 +22,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class RouteSearchRefreshAdapter extends RecyclerView.Adapter<RouteSearchRefreshAdapter.Holder> {
-    private List<PoiInfoEntity> mRouteBeanList;
+    private List<RouteRestAreaDetailsInfo> mRouteBeanList;
     OnItemClickListener itemClickListener;
     public RouteSearchRefreshAdapter() {
         mRouteBeanList = new ArrayList<>();
     }
 
-    public void setRouteBeanList(List<PoiInfoEntity> routeBeanList) {
+    public void setRouteBeanList(List<RouteRestAreaDetailsInfo> routeBeanList) {
         if (null == routeBeanList) {
             return;
         }
@@ -61,22 +60,34 @@ public class RouteSearchRefreshAdapter extends RecyclerView.Adapter<RouteSearchR
     @Override
     public void onBindViewHolder(@NonNull Holder holder, int position) {
         holder.routeSearchRefreshListItemBinding.routeItemServiceNum.setText("" + (position + NumberUtils.NUM_1));
-        holder.routeSearchRefreshListItemBinding.routeItemServiceName.setText(mRouteBeanList.get(position).getName());
-        holder.routeSearchRefreshListItemBinding.routeItemServiceDescription.setText(mRouteBeanList.get(position).getDistance() + " | " + mRouteBeanList.get(position).getAddress());
-        boolean belongRouteParam = RoutePackage.getInstance().isBelongRouteParam(MapTypeId.MAIN_SCREEN_MAIN_MAP, mRouteBeanList.get(position));
+        holder.routeSearchRefreshListItemBinding.routeItemServiceName.setText(mRouteBeanList.get(position).getMServiceName());
+        holder.routeSearchRefreshListItemBinding.routeItemServiceDescription.setText(TimeUtils.getInstance().getDistanceString(mRouteBeanList.get(position).getMRemainDist()));
+        boolean belongRouteParam = RoutePackage.getInstance().isBelongRouteParam(MapTypeId.MAIN_SCREEN_MAIN_MAP, getPoiEntry(mRouteBeanList.get(position)));
         holder.routeSearchRefreshListItemBinding.routeItemServiceAddText.setText(belongRouteParam ? ResourceUtils.Companion.getInstance().getText(R.string.route_service_list_item_added) : ResourceUtils.Companion.getInstance().getText(R.string.route_service_list_item_add));
         holder.routeSearchRefreshListItemBinding.routeItemServiceAddImg.setImageDrawable(belongRouteParam ? ResourceUtils.Companion.getInstance().getDrawable(R.drawable.img_route_search_added) : ResourceUtils.Companion.getInstance().getDrawable(R.drawable.img_route_search_add));
         holder.routeSearchRefreshListItemBinding.itemRootViewService.setOnClickListener(v -> {
             if (itemClickListener != null) {
-                itemClickListener.onItemClick(mRouteBeanList.get(position));
+                itemClickListener.onItemClick(getPoiEntry(mRouteBeanList.get(position)));
             }
         });
 
         holder.routeSearchRefreshListItemBinding.routeItemServiceAddBg.setOnClickListener(v -> {
             if (itemClickListener != null) {
-                itemClickListener.onItermAddClick(mRouteBeanList.get(position));
+                itemClickListener.onItermAddClick(getPoiEntry(mRouteBeanList.get(position)));
             }
         });
+    }
+
+    private PoiInfoEntity getPoiEntry(RouteRestAreaDetailsInfo info) {
+        PoiInfoEntity poiInfoEntity = new PoiInfoEntity();
+        poiInfoEntity.setName(info.getMServiceName());
+        poiInfoEntity.setPid(info.getMServicePOIID());
+        poiInfoEntity.setPoint(new GeoPoint(info.getMPos().getLon(), info.getMPos().getLat()));
+        poiInfoEntity.setPointTypeCode("1083");
+        poiInfoEntity.setPoiTag("服务区");
+        poiInfoEntity.setDistance(TimeUtils.getInstance().getDistanceMsg(info.getMRemainDist()));
+        poiInfoEntity.setPoint(new GeoPoint(info.getMPos().getLon(), info.getMPos().getLat()));
+        return poiInfoEntity;
     }
 
     public class Holder extends RecyclerView.ViewHolder {

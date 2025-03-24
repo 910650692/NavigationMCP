@@ -3,10 +3,14 @@ package com.fy.navi.scene.impl.route.common;
 import com.fy.navi.scene.R;
 import com.fy.navi.scene.impl.navi.common.AutoUIDrawable;
 
-public class SceneRouteDetailEnumRes {
+public interface SceneRouteDetailEnumRes {
 
-
-    public static AutoUIDrawable getDrawableEnumName(SceneRouteCommonStruct.RouteDetailsMainAction value) {
+    /**
+     * 获取转向图片
+     * @param value 图片值
+     * @return icon 图片
+     * */
+    public static AutoUIDrawable getDrawableEnumName(final SceneRouteCommonStruct.RouteDetailsMainAction value) {
 
         switch (value) {
             case MainActionTurnLeft:

@@ -4,6 +4,8 @@ import com.fy.navi.service.define.search.SearchErrorCode;
 import com.fy.navi.service.define.search.SearchResultEntity;
 
 /**
+ * @version \$Revision1.0\$
+ * @author baipeng0904
  * 搜索结果回调接口
  * 定义了两种搜索结果的回调方法：正常搜索结果回调和静默搜索结果回调
  */
@@ -15,6 +17,7 @@ public interface ISearchResultCallback {
      * @param errorCode          错误码，表示搜索操作的结果状态{@link SearchErrorCode.ErrorCode}
      * @param message            错误消息，描述搜索操作的结果信息
      * @param searchResultEntity 搜索结果 {@link SearchResultEntity}，包含具体的搜索结果数据
+     * @param taskId             任务ID
      */
     void onSearchResult(int taskId, @SearchErrorCode.ErrorCode int errorCode, String message, SearchResultEntity searchResultEntity);
 
@@ -25,6 +28,7 @@ public interface ISearchResultCallback {
      * @param errorCode          错误码，表示搜索操作的结果状态{@link SearchErrorCode.ErrorCode}
      * @param message            错误消息，描述搜索操作的结果信息
      * @param searchResultEntity 搜索结果 {@link SearchResultEntity}，包含具体的搜索结果数据
+     * @param taskId             任务ID
      */
     void onSilentSearchResult(int taskId, @SearchErrorCode.ErrorCode int errorCode, String message, SearchResultEntity searchResultEntity);
 }

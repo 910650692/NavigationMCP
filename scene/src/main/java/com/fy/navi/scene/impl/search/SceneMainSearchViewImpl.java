@@ -6,8 +6,8 @@ import com.fy.navi.scene.ui.search.SceneMainSearchTopPartView;
 import com.fy.navi.ui.base.StackManager;
 
 public class SceneMainSearchViewImpl extends BaseSceneModel<SceneMainSearchTopPartView> implements ISceneMainSearchView {
-    public SceneMainSearchViewImpl(SceneMainSearchTopPartView mScreenView) {
-        super(mScreenView);
+    public SceneMainSearchViewImpl(final SceneMainSearchTopPartView screenView) {
+        super(screenView);
     }
 
     @Override
@@ -16,7 +16,7 @@ public class SceneMainSearchViewImpl extends BaseSceneModel<SceneMainSearchTopPa
     }
 
     @Override
-    public void onClickQuickSearch(int position) {
+    public void onClickQuickSearch(final int position) {
         mScreenView.onClickQuickSearch(position);
     }
 }

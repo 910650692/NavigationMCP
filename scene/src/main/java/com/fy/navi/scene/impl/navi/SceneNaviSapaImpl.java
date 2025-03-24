@@ -1,15 +1,14 @@
 package com.fy.navi.scene.impl.navi;
 
-import static com.fy.navi.service.adapter.navi.NaviConstant.SapaItemsType.SPAS_LIST;
-
-import android.annotation.SuppressLint;
+import android.text.TextUtils;
 
 import androidx.databinding.ObservableField;
 
 import com.android.utils.ConvertUtils;
+import com.android.utils.NetWorkUtils;
 import com.android.utils.log.Logger;
 import com.fy.navi.scene.BaseSceneModel;
-import com.fy.navi.scene.R;
+import com.fy.navi.scene.impl.navi.inter.ISceneCallback;
 import com.fy.navi.scene.ui.navi.SceneNaviSapaView;
 import com.fy.navi.scene.ui.navi.component.ComponentHighwayService;
 import com.fy.navi.scene.ui.navi.component.ComponentTollStation;
@@ -20,7 +19,6 @@ import com.fy.navi.service.adapter.navi.NaviConstant;
 import com.fy.navi.service.define.navi.SapaInfoEntity;
 import com.fy.navi.service.define.route.RouteParam;
 import com.fy.navi.service.logicpaket.route.RoutePackage;
-import com.fy.navi.ui.BaseApplication;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,97 +27,99 @@ import java.util.Objects;
 public class SceneNaviSapaImpl extends BaseSceneModel<SceneNaviSapaView> {
     private static final String TAG = MapDefaultFinalTag.NAVI_HMI_TAG;
     //布局可见性 0:只有服务区 1:只有收费站 2:第一个是服务区 3：第一个是收费站
-    public ObservableField<Integer> viewVisible;
+    public ObservableField<Integer> mViewVisible;
     // 只有服务区的名称
-    public ObservableField<String> onlyServiceName;
+    public ObservableField<String> mOnlyServiceName;
     // 只有服务区的时候加油站的可见性
-    public ObservableField<Boolean> onlyServiceGasStationVisible;
+    public ObservableField<Boolean> mOnlyServiceGasStationVisible;
     // 只有服务区的时候餐饮的可见性
-    public ObservableField<Boolean> onlyServiceCanteenVisible;
+    public ObservableField<Boolean> mOnlyServiceCanteenVisible;
     // 只有服务区的时候卫生间的可见性
-    public ObservableField<Boolean> onlyServiceLavatoryVisible;
+    public ObservableField<Boolean> mOnlyServiceLavatoryVisible;
     // 只有服务区的时候汽修的可见性
-    public ObservableField<Boolean> onlyServiceMaintenanceVisible;
+    public ObservableField<Boolean> mOnlyServiceMaintenanceVisible;
     // 只有服务区的时候购物的可见性
-    public ObservableField<Boolean> onlyServiceBuyVisible;
+    public ObservableField<Boolean> mOnlyServiceBuyVisible;
     // 只有服务区的时候住宿的可见性
-    public ObservableField<Boolean> onlyServiceHotelVisible;
+    public ObservableField<Boolean> mOnlyServiceHotelVisible;
     // 只有服务区的时候充电站的可见性
-    public ObservableField<Boolean> onlyServiceChargeStationVisible;
+    public ObservableField<Boolean> mOnlyServiceChargeStationVisible;
     // 只有服务区的时候角标的显示名称
-    public ObservableField<String> onlyServiceTag;
+    public ObservableField<String> mOnlyServiceTag;
     // 只有服务区的时候剩余距离
-    public ObservableField<String> onlyServiceDistance;
+    public ObservableField<String> mOnlyServiceDistance;
     // 只有收费站的名称
-    public ObservableField<String> onlyTollName;
+    public ObservableField<String> mOnlyTollName;
     // 只有收费站的etc可见性
-    public ObservableField<Boolean> onlyTollEtcVisible;
+    public ObservableField<Boolean> mOnlyTollEtcVisible;
     // 只有收费站的支付宝可见性
-    public ObservableField<Boolean> onlyTollAlipayVisible;
+    public ObservableField<Boolean> mOnlyTollAlipayVisible;
     //只有收费站的时候角标的显示名称
-    public ObservableField<String> onlyTollTag;
+    public ObservableField<String> mOnlyTollTag;
     // 只有收费站的时候剩余距离
-    public ObservableField<String> onlyTollDistance;
+    public ObservableField<String> mOnlyTollDistance;
     // 第一个是服务区时服务区的名称
-    public ObservableField<String> firstServiceName;
+    public ObservableField<String> mFirstServiceName;
     // 第一个是服务区的时候加油站的可见性
-    public ObservableField<Boolean> firstServiceGasStationVisible;
+    public ObservableField<Boolean> mFirstServiceGasStationVisible;
     // 第一个是服务区的时候餐饮的可见性
-    public ObservableField<Boolean> firstServiceCanteenVisible;
+    public ObservableField<Boolean> mFirstServiceCanteenVisible;
     // 第一个是服务区的时候卫生间的可见性
-    public ObservableField<Boolean> firstServiceLavatoryVisible;
+    public ObservableField<Boolean> mFirstServiceLavatoryVisible;
     // 第一个是服务区的时候汽修的可见性
-    public ObservableField<Boolean> firstServiceMaintenanceVisible;
+    public ObservableField<Boolean> mFirstServiceMaintenanceVisible;
     // 第一个是服务区的时候购物的可见性
-    public ObservableField<Boolean> firstServiceBuyVisible;
+    public ObservableField<Boolean> mFirstServiceBuyVisible;
     // 第一个是服务区的时候住宿的可见性
-    public ObservableField<Boolean> firstServiceHotelVisible;
+    public ObservableField<Boolean> mFirstServiceHotelVisible;
     // 第一个是服务区的时候充电站的可见性
-    public ObservableField<Boolean> firstServiceChargeStationVisible;
+    public ObservableField<Boolean> mFirstServiceChargeStationVisible;
     // 第一个是服务区的时候角标的显示名称
-    public ObservableField<String> firstServiceTag;
+    public ObservableField<String> mFirstServiceTag;
     // 第一个是服务区的时候剩余距离
-    public ObservableField<String> firstServiceDistance;
+    public ObservableField<String> mFirstServiceDistance;
     // 第一个是服务区的时候收费站的名称
-    public ObservableField<String> firstServiceTollName;
+    public ObservableField<String> mFirstServiceTollName;
     // 第一个是服务区的时候收费站的etc可见性
-    public ObservableField<Boolean> firstServiceTollEtcVisible;
+    public ObservableField<Boolean> mFirstServiceTollEtcVisible;
     // 第一个是服务区的时候收费站的支付宝可见性
-    public ObservableField<Boolean> firstServiceTollAlipayVisible;
+    public ObservableField<Boolean> mFirstServiceTollAlipayVisible;
     //第一个是服务区的时候收费站角标显示的名称
-    public ObservableField<String> firstServiceTollTag;
+    public ObservableField<String> mFirstServiceTollTag;
     //第一个是服务区时收费站的剩余距离
-    public ObservableField<String> firstServiceTollDistance;
+    public ObservableField<String> mFirstServiceTollDistance;
     // 第一个是收费站时服务区的名称
-    public ObservableField<String> firstTollServiceName;
+    public ObservableField<String> mFirstTollServiceName;
     // 第一个是收费站时的时候加油站的可见性
-    public ObservableField<Boolean> firstTollServiceGasStationVisible;
+    public ObservableField<Boolean> mFirstTollServiceGasStationVisible;
     // 第一个是收费站的时候餐饮的可见性
-    public ObservableField<Boolean> firstTollServiceCanteenVisible;
+    public ObservableField<Boolean> mFirstTollServiceCanteenVisible;
     // 第一个是收费站的时候卫生间的可见性
-    public ObservableField<Boolean> firstTollServiceLavatoryVisible;
+    public ObservableField<Boolean> mFirstTollServiceLavatoryVisible;
     // 第一个是收费站的时候汽修的可见性
-    public ObservableField<Boolean> firstTollServiceMaintenanceVisible;
+    public ObservableField<Boolean> mFirstTollServiceMaintenanceVisible;
     // 第一个是收费站的时候购物的可见性
-    public ObservableField<Boolean> firstTollServiceBuyVisible;
+    public ObservableField<Boolean> mFirstTollServiceBuyVisible;
     // 第一个是收费站的时候住宿的可见性
-    public ObservableField<Boolean> firstTollServiceHotelVisible;
+    public ObservableField<Boolean> mFirstTollServiceHotelVisible;
     // 第一个是收费站的时候充电站的可见性
-    public ObservableField<Boolean> firstTollServiceChargeStationVisible;
+    public ObservableField<Boolean> mFirstTollServiceChargeStationVisible;
     // 第一个是收费站的时候服务区角标的显示名称
-    public ObservableField<String> firstTollServiceTag;
+    public ObservableField<String> mFirstTollServiceTag;
     // 第一个是收费站时服务区剩余距离
-    public ObservableField<String> firstTollServiceDistance;
+    public ObservableField<String> mFirstTollServiceDistance;
     // 第一个是收费站的名称
-    public ObservableField<String> firstTollName;
+    public ObservableField<String> mFirstTollName;
     // 第一个收费站的etc可见性
-    public ObservableField<Boolean> firstTollEtcVisible;
+    public ObservableField<Boolean> mFirstTollEtcVisible;
     // 第一个是收费站的支付宝可见性
-    public ObservableField<Boolean> firstTollAlipayVisible;
+    public ObservableField<Boolean> mFirstTollAlipayVisible;
     //第一个是收费站角标显示的名称
-    public ObservableField<String> firstTollTag;
+    public ObservableField<String> mFirstTollTag;
     // 第一个是收费站时的剩余距离
-    public ObservableField<String> firstTollDistance;
+    public ObservableField<String> mFirstTollDistance;
+    // 保存当前的sapainfo
+    private SapaInfoEntity mSapaInfoEntity;
     private int mFirstSflWidth = 480;
     public static final String VIA = "经";
     public static final String UN_BUILDING = "非建设中";
@@ -127,8 +127,10 @@ public class SceneNaviSapaImpl extends BaseSceneModel<SceneNaviSapaView> {
     public static final String UN_INVESTIGATION = "未调查";
     public static final String REMODELING = "装修中";
     public static final String TEMPORARILY_CLOSED = "暂停营业";
-    private ComponentTollStation mTollStationFirst, mTollStationSecond;
-    private ComponentHighwayService mHighwayServiceFirst, mHighwayServiceSecond;
+    private ComponentTollStation mTollStationFirst;
+    private ComponentTollStation mTollStationSecond;
+    private ComponentHighwayService mHighwayServiceSecond;
+    private ComponentHighwayService mHighwayServiceFirst;
     public static final String TYPE_ONE_HIGHWAY = "one_highway";
     public static final String TYPE_ONE_TOLL = "one_toll";
     public static final String TYPE_ALL_HIGHWAY = "all_highway";
@@ -137,57 +139,95 @@ public class SceneNaviSapaImpl extends BaseSceneModel<SceneNaviSapaView> {
     public static final String TYPE_FIRST_TOLL = "first_toll";
     public static final String TYPE_NONE = "";
     private String mCurrentType = TYPE_NONE;
+    private ISceneCallback mSceneCallback;
 
-    public SceneNaviSapaImpl(SceneNaviSapaView mScreenView) {
-        super(mScreenView);
-        viewVisible = new ObservableField<>(0);
-        onlyServiceName = new ObservableField<>("");
-        onlyServiceGasStationVisible = new ObservableField<>(false);
-        onlyServiceCanteenVisible = new ObservableField<>(false);
-        onlyServiceLavatoryVisible = new ObservableField<>(false);
-        onlyServiceMaintenanceVisible = new ObservableField<>(false);
-        onlyServiceBuyVisible = new ObservableField<>(false);
-        onlyServiceHotelVisible = new ObservableField<>(false);
-        onlyServiceChargeStationVisible = new ObservableField<>(false);
-        onlyServiceTag = new ObservableField<>("");
-        onlyTollName = new ObservableField<>("");
-        onlyTollEtcVisible = new ObservableField<>(false);
-        onlyTollAlipayVisible = new ObservableField<>(false);
-        onlyTollTag = new ObservableField<>("");
+    public SceneNaviSapaImpl(final SceneNaviSapaView screenView) {
+        super(screenView);
+        mViewVisible = new ObservableField<>(0);
+        mOnlyServiceName = new ObservableField<>("");
+        mOnlyServiceGasStationVisible = new ObservableField<>(false);
+        mOnlyServiceCanteenVisible = new ObservableField<>(false);
+        mOnlyServiceLavatoryVisible = new ObservableField<>(false);
+        mOnlyServiceMaintenanceVisible = new ObservableField<>(false);
+        mOnlyServiceBuyVisible = new ObservableField<>(false);
+        mOnlyServiceHotelVisible = new ObservableField<>(false);
+        mOnlyServiceChargeStationVisible = new ObservableField<>(false);
+        mOnlyServiceTag = new ObservableField<>("");
+        mOnlyServiceDistance = new ObservableField<>("");
+        mOnlyTollName = new ObservableField<>("");
+        mOnlyTollEtcVisible = new ObservableField<>(false);
+        mOnlyTollAlipayVisible = new ObservableField<>(false);
+        mOnlyTollTag = new ObservableField<>("");
+        mOnlyTollDistance = new ObservableField<>("");
+        mFirstServiceName = new ObservableField<>("");
+        mFirstServiceGasStationVisible = new ObservableField<>(false);
+        mFirstServiceCanteenVisible = new ObservableField<>(false);
+        mFirstServiceLavatoryVisible = new ObservableField<>(false);
+        mFirstServiceMaintenanceVisible = new ObservableField<>(false);
+        mFirstServiceBuyVisible = new ObservableField<>(false);
+        mFirstServiceHotelVisible = new ObservableField<>(false);
+        mFirstServiceChargeStationVisible = new ObservableField<>(false);
+        mFirstServiceTag = new ObservableField<>("");
+        mFirstServiceDistance = new ObservableField<>("");
+        mFirstServiceTollName = new ObservableField<>("");
+        mFirstServiceTollEtcVisible = new ObservableField<>(false);
+        mFirstServiceTollAlipayVisible = new ObservableField<>(false);
+        mFirstServiceTollTag = new ObservableField<>("");
+        mFirstServiceTollDistance = new ObservableField<>("");
+        mFirstTollName = new ObservableField<>("");
+        mFirstTollEtcVisible = new ObservableField<>(false);
+        mFirstTollAlipayVisible = new ObservableField<>(false);
+        mFirstTollTag = new ObservableField<>("");
+        mFirstTollDistance = new ObservableField<>("");
+        mFirstTollServiceName = new ObservableField<>("");
+        mFirstTollServiceGasStationVisible = new ObservableField<>(false);
+        mFirstTollServiceCanteenVisible = new ObservableField<>(false);
+        mFirstTollServiceLavatoryVisible = new ObservableField<>(false);
+        mFirstTollServiceMaintenanceVisible = new ObservableField<>(false);
+        mFirstTollServiceBuyVisible = new ObservableField<>(false);
+        mFirstTollServiceHotelVisible = new ObservableField<>(false);
+        mFirstTollServiceChargeStationVisible = new ObservableField<>(false);
+        mFirstTollServiceTag = new ObservableField<>("");
+        mFirstTollServiceDistance = new ObservableField<>("");
     }
 
-    public void onNaviSAPAInfo(SapaInfoEntity sapaInfoEntity) {
-        Logger.i(TAG, "SceneNaviSAPAImpl onNaviSAPAInfo type: " + sapaInfoEntity.getType() +
-                ",mCurrentType：" + mCurrentType);
+    /**
+     * @param sapaInfoEntity SAPA信息
+     */
+    public void onNaviSAPAInfo(final SapaInfoEntity sapaInfoEntity) {
+        Logger.i(TAG, "SceneNaviSAPAImpl onNaviSAPAInfo type: " + sapaInfoEntity.toString());
+        mSapaInfoEntity = sapaInfoEntity;
         switch (sapaInfoEntity.getType()) {
-            case SPAS_LIST://服务区
+            // 服务区/收费站为0
+            case NaviConstant.SapaItemsType.AUTO_UNKNOWN_ERROR:
+                updateSceneVisible(false);
+                break;
+            case NaviConstant.SapaItemsType.SPAS_LIST://服务区
                 if (!ConvertUtils.isEmpty(sapaInfoEntity.getList())) {
                     // 显示只有服务区的布局
-                    viewVisible.set(0);
+                    mViewVisible.set(0);
                     updateOnlyServiceData(sapaInfoEntity.getList().get(0));
-                    updateSceneVisible(true);
                 }
                 break;
             case NaviConstant.SapaItemsType.TOLL_STATION_LIST://收费站
                 if (!ConvertUtils.isEmpty(sapaInfoEntity.getList())) {
                     // 显示只有收费站的布局
-                    viewVisible.set(1);
+                    mViewVisible.set(1);
                     updateOnlyTollData(sapaInfoEntity.getList().get(0),
                             sapaInfoEntity.getLaneTypes());
-                    updateSceneVisible(true);
                 }
                 break;
             case NaviConstant.SapaItemsType.TOLL_STATION_AND_SPAS://一个服务区，一个收费站
                 if (!ConvertUtils.isEmpty(sapaInfoEntity.getList())) {
-                    SapaInfoEntity.SAPAItem sapaItem = sapaInfoEntity.getList().get(0);
-                    if (sapaItem.getType() == SPAS_LIST) {//第一个是服务区，第二个是收费站
+                    mViewVisible.set(2);
+                    final SapaInfoEntity.SAPAItem sapaItem = sapaInfoEntity.getList().get(0);
+                    if (sapaItem.getType() == NaviConstant.SapaItemsType.SPAS_LIST) {//第一个是服务区，第二个是收费站
                         updateFirstServiceData(sapaItem, sapaInfoEntity.getList().get(1),
                                 sapaInfoEntity.getLaneTypes());
-                        updateSceneVisible(true);
                     } else {//第一个是收费站，第二个是服务区
+                        mViewVisible.set(3);
                         updateFirstTollData(sapaItem, sapaInfoEntity.getList().get(1),
                                 sapaInfoEntity.getLaneTypes());
-                        updateSceneVisible(true);
                     }
                 }
                 break;
@@ -203,93 +243,140 @@ public class SceneNaviSapaImpl extends BaseSceneModel<SceneNaviSapaView> {
         super.onDestroy();
     }
 
+    /**
+     * 重置sapa
+     */
     private void resetSapa() {
-//        if (sapaVisible != null) {
-//            sapaVisible.set(false);
-//        }
-        mCurrentType = TYPE_NONE;
-        mTollStationFirst = null;
-        mTollStationSecond = null;
-        mHighwayServiceFirst = null;
-        mHighwayServiceSecond = null;
+        updateSceneVisible(false);
     }
 
-    public void addSceneCallback() {
-
+    /**
+     * @param sceneCallback 回调接口
+     */
+    public void addSceneCallback(final ISceneCallback sceneCallback) {
+        mSceneCallback = sceneCallback;
     }
-    private void updateSceneVisible(boolean isVisible){
-        mScreenView.getNaviSceneEvent().notifySceneStateChange((isVisible ? INaviSceneEvent.SceneStateChangeType.SceneShowState :
-                INaviSceneEvent.SceneStateChangeType.SceneHideState), NaviSceneId.NAVI_SCENE_SERVICE_AREA);
+
+    /**
+     * @param isVisible 是否显示
+     */
+    private void updateSceneVisible(final boolean isVisible){
+        Logger.i(TAG, "SceneNaviSAPAImpl updateSceneVisible isVisible: " + isVisible);
+        mScreenView.getNaviSceneEvent().notifySceneStateChange((isVisible ?
+                INaviSceneEvent.SceneStateChangeType.SceneShowState :
+                INaviSceneEvent.SceneStateChangeType.SceneHideState),
+                NaviSceneId.NAVI_SCENE_SERVICE_AREA);
     }
 
     /**
      * @param sapItem 服务区更新需要的数据
      * @param sapItemSecond 收费站更新需要的数据
+     * @param laneTypes     收费站的车道类型
      */
-    public void updateFirstServiceData(SapaInfoEntity.SAPAItem sapItem,
-                                       SapaInfoEntity.SAPAItem sapItemSecond,
-                                       ArrayList<Integer> laneTypes) {
+    public void updateFirstServiceData(final SapaInfoEntity.SAPAItem sapItem,
+                                       final SapaInfoEntity.SAPAItem sapItemSecond,
+                                       final ArrayList<Integer> laneTypes) {
+        if (TextUtils.isEmpty(sapItem.getName())) {
+            // 信息是空的可以sdk返回的是空数据，隐藏页面显示
+            updateSceneVisible(false);
+            return;
+        }
         //服务区名称
-        firstServiceName.set(sapItem.getName());
-        updateServiceDetails(sapItem, firstServiceGasStationVisible, firstServiceCanteenVisible,
-                firstServiceLavatoryVisible, firstServiceMaintenanceVisible, firstServiceBuyVisible,
-                firstServiceHotelVisible);
-        tagUpdate(firstServiceTag, sapItem);
-        updateDistance(sapItem, firstServiceDistance);
+        mFirstServiceName.set(sapItem.getName());
+        updateServiceDetails(sapItem, mFirstServiceGasStationVisible, mFirstServiceCanteenVisible,
+                mFirstServiceLavatoryVisible, mFirstServiceMaintenanceVisible, mFirstServiceBuyVisible,
+                mFirstServiceHotelVisible);
+        tagUpdate(mFirstServiceTag, sapItem);
+        updateDistance(sapItem, mFirstServiceDistance);
         //收费站名称
-        firstServiceTollName.set(sapItemSecond.getName());
-        updateTollDetail(laneTypes, firstServiceTollEtcVisible, firstServiceTollAlipayVisible);
-        tagUpdate(firstServiceTollTag, sapItemSecond);
-        updateDistance(sapItemSecond, firstServiceTollDistance);
+        mFirstServiceTollName.set(sapItemSecond.getName());
+        updateTollDetail(laneTypes, mFirstServiceTollEtcVisible, mFirstServiceTollAlipayVisible);
+        tagUpdate(mFirstServiceTollTag, sapItemSecond);
+        updateDistance(sapItemSecond, mFirstServiceTollDistance);
+        updateSceneVisible(true);
     }
 
-    public void updateFirstTollData(SapaInfoEntity.SAPAItem sapItem,
-                                    SapaInfoEntity.SAPAItem sapItemSecond,
-                                    ArrayList<Integer> laneTypes) {
+    /**
+     * @param sapItem 收费站更新需要的数据
+     * @param sapItemSecond 服务区更新需要的数据
+     * @param laneTypes      收费站的车道类型
+     */
+    public void updateFirstTollData(final SapaInfoEntity.SAPAItem sapItem,
+                                    final SapaInfoEntity.SAPAItem sapItemSecond,
+                                    final ArrayList<Integer> laneTypes) {
+        if (TextUtils.isEmpty(sapItem.getName())) {
+            // 信息是空的可以sdk返回的是空数据，隐藏页面显示
+            updateSceneVisible(false);
+            return;
+        }
         //收费站名称
-        firstTollName.set(sapItem.getName());
-        updateTollDetail(laneTypes, firstTollEtcVisible, firstTollAlipayVisible);
-        tagUpdate(firstTollTag, sapItem);
-        updateDistance(sapItem, firstTollDistance);
+        mFirstTollName.set(sapItem.getName());
+        updateTollDetail(laneTypes, mFirstTollEtcVisible, mFirstTollAlipayVisible);
+        tagUpdate(mFirstTollTag, sapItem);
+        updateDistance(sapItem, mFirstTollDistance);
         //服务区名称
-        firstTollServiceName.set(sapItemSecond.getName());
-        updateServiceDetails(sapItemSecond, firstTollServiceGasStationVisible, firstTollServiceCanteenVisible,
-                firstTollServiceLavatoryVisible, firstTollServiceMaintenanceVisible, firstTollServiceBuyVisible,
-                firstTollServiceHotelVisible);
-        tagUpdate(firstTollServiceTag, sapItemSecond);
-        updateDistance(sapItemSecond, firstTollServiceDistance);
+        mFirstTollServiceName.set(sapItemSecond.getName());
+        updateServiceDetails(sapItemSecond, mFirstTollServiceGasStationVisible, mFirstTollServiceCanteenVisible,
+                mFirstTollServiceLavatoryVisible, mFirstTollServiceMaintenanceVisible, mFirstTollServiceBuyVisible,
+                mFirstTollServiceHotelVisible);
+        tagUpdate(mFirstTollServiceTag, sapItemSecond);
+        updateDistance(sapItemSecond, mFirstTollServiceDistance);
+        updateSceneVisible(true);
     }
 
     /**
      * @param sapItem 更新只有服务区的数据
      */
-    public void updateOnlyServiceData(SapaInfoEntity.SAPAItem sapItem) {
+    public void updateOnlyServiceData(final SapaInfoEntity.SAPAItem sapItem) {
+        if (TextUtils.isEmpty(sapItem.getName())) {
+            // 信息是空的可以sdk返回的是空数据，隐藏页面显示
+            updateSceneVisible(false);
+            return;
+        }
         //服务区名称
-        onlyServiceName.set(sapItem.getName());
-        updateServiceDetails(sapItem, onlyServiceGasStationVisible, onlyServiceCanteenVisible,
-                onlyServiceLavatoryVisible, onlyServiceMaintenanceVisible, onlyServiceBuyVisible,
-                onlyServiceHotelVisible);
-        tagUpdate(onlyServiceTag, sapItem);
-        updateDistance(sapItem, onlyServiceDistance);
+        mOnlyServiceName.set(sapItem.getName());
+        updateServiceDetails(sapItem, mOnlyServiceGasStationVisible, mOnlyServiceCanteenVisible,
+                mOnlyServiceLavatoryVisible, mOnlyServiceMaintenanceVisible, mOnlyServiceBuyVisible,
+                mOnlyServiceHotelVisible);
+        tagUpdate(mOnlyServiceTag, sapItem);
+        updateDistance(sapItem, mOnlyServiceDistance);
+        updateSceneVisible(true);
     }
 
     /**
      * 更新只有收费站的数据
+     * @param sapItem   sapa
+     * @param laneTypes laneTypes
      */
-    public void updateOnlyTollData(SapaInfoEntity.SAPAItem sapItem, ArrayList<Integer> laneTypes) {
-        onlyTollName.set(sapItem.getName());
-        updateTollDetail(laneTypes, onlyTollEtcVisible, onlyTollAlipayVisible);
-        tagUpdate(onlyTollTag, sapItem);
-        updateDistance(sapItem, onlyTollDistance);
+    public void updateOnlyTollData(final SapaInfoEntity.SAPAItem sapItem,
+                                   final ArrayList<Integer> laneTypes) {
+        if (TextUtils.isEmpty(sapItem.getName())) {
+            // 信息是空的可以sdk返回的是空数据，隐藏页面显示
+            updateSceneVisible(false);
+            return;
+        }
+        mOnlyTollName.set(sapItem.getName());
+        updateTollDetail(laneTypes, mOnlyTollEtcVisible, mOnlyTollAlipayVisible);
+        tagUpdate(mOnlyTollTag, sapItem);
+        updateDistance(sapItem, mOnlyTollDistance);
+        updateSceneVisible(true);
     }
 
     /**
      * 更新可收费类型详情
+     * @param laneTypes 车道收费类型
+     * @param etc etc标识
+     * @param alipay 支付宝标识
      */
-    private void updateTollDetail(ArrayList<Integer> laneTypes, ObservableField<Boolean> etc,
-                                  ObservableField<Boolean> alipay) {
+    private void updateTollDetail(final ArrayList<Integer> laneTypes,
+                                  final ObservableField<Boolean> etc,
+                                  final ObservableField<Boolean> alipay) {
         etc.set(false);
         alipay.set(false);
+        //Crash
+        if (ConvertUtils.isEmpty(laneTypes)) {
+            return;
+        }
         for (Integer integer : laneTypes) {
             // TollLaneTypeETC等于2可以显示etc标识
             if (integer == 2) {
@@ -304,41 +391,38 @@ public class SceneNaviSapaImpl extends BaseSceneModel<SceneNaviSapaView> {
 
     /**
      * 更新剩余距离信息
+     * @param sapItem    sapItem
+     * @param observable observable
      */
-    private void updateDistance(SapaInfoEntity.SAPAItem sapItem,
-                                ObservableField<String> observable) {
-        int distance = sapItem.getRemainDist();
-        observable.set(convertMetersToKilometers(distance));
+    private void updateDistance(final SapaInfoEntity.SAPAItem sapItem,
+                                final ObservableField<String> observable) {
+        final int distance = sapItem.getRemainDist();
+        observable.set(DataHelper.convertMetersToKilometers(distance));
     }
 
-    @SuppressLint("DefaultLocale")
-    public String convertMetersToKilometers(int meters) {
-        double kilometers = meters / 1000.0;
-        if (kilometers < 100) {
-            // 保留小数点后一位
-            return String.format("%.1f" + mScreenView.getContext().getString(R.string.km),
-                    kilometers);
-        } else {
-            // 保留整数部分
-            return String.format("%d" + mScreenView.getContext().getString(R.string.km),
-                    (int) kilometers);
-        }
-    }
+
 
     /**
      * 更新服务区详情
+     * @param sapItem     sapItem
+     * @param gasStation gasStation
+     * @param canteen    canteen
+     * @param lavatory   lavatory
+     * @param maintenance maintenance
+     * @param buy        buy
+     * @param hotel       hotel
      */
-    private void updateServiceDetails(SapaInfoEntity.SAPAItem sapItem,
-                                      ObservableField<Boolean> gasStation,
-                                      ObservableField<Boolean> canteen,
-                                      ObservableField<Boolean> lavatory,
-                                      ObservableField<Boolean> maintenance,
-                                      ObservableField<Boolean> buy,
-                                      ObservableField<Boolean> hotel) {
+    private void updateServiceDetails(final SapaInfoEntity.SAPAItem sapItem,
+                                      final ObservableField<Boolean> gasStation,
+                                      final ObservableField<Boolean> canteen,
+                                      final ObservableField<Boolean> lavatory,
+                                      final ObservableField<Boolean> maintenance,
+                                      final ObservableField<Boolean> buy,
+                                      final ObservableField<Boolean> hotel) {
         // 服务区详情
-        long sapaDetail = sapItem.getSapaDetail();
+        final long sapaDetail = sapItem.getSapaDetail();
         for (int i = 0; i < 6; i++) {
-            int nthBit = getNthBit(sapaDetail, i);
+            final int nthBit = DataHelper.getNthBit(sapaDetail, i);
             switch (i) {
                 case 0:
                     gasStation.set(nthBit == 1);
@@ -366,20 +450,23 @@ public class SceneNaviSapaImpl extends BaseSceneModel<SceneNaviSapaView> {
 
     /**
      * 更新标签
+     * @param tag     tag
+     * @param sapItem sapItem
      */
-    private void tagUpdate(ObservableField<String> tag, SapaInfoEntity.SAPAItem sapItem) {
+    private void tagUpdate(final ObservableField<String> tag,
+                           final SapaInfoEntity.SAPAItem sapItem) {
         // 角标显示 途经点>维护/关闭类>其他
         // 判断是否是途经点
-        List<RouteParam> allPoiParamList = RoutePackage.getInstance().
+        final List<RouteParam> allPoiParamList = RoutePackage.getInstance().
                 getAllPoiParamList(mMapTypeId);
         for (RouteParam routeParam : allPoiParamList) {
-            if (Objects.equals(routeParam.poiID, sapItem.getServicePOIID())) {
+            if (Objects.equals(routeParam.getPoiID(), sapItem.getServicePOIID())) {
                 tag.set(VIA);
                 return;
             }
         }
         //服务区状态:0 非建设中（默认值），1 建设中，2 未调查 3 装修中 4 暂停营业
-        int buildingStatus = sapItem.getBuildingStatus();
+        final int buildingStatus = sapItem.getBuildingStatus();
         switch (buildingStatus) {
             case 0:
                 tag.set(UN_BUILDING);
@@ -399,8 +486,20 @@ public class SceneNaviSapaImpl extends BaseSceneModel<SceneNaviSapaView> {
         }
     }
 
-    public static int getNthBit(long number, int n) {
-        // 使用位运算右移n位，然后与1进行与运算，得到第n位的值
-        return (int)((number >> n) & 1);
+    /**
+     * @param type type
+     */
+    public void onClick(final int type) {
+        Logger.d(TAG, "onClick: type = " + type);
+        if (mSapaInfoEntity == null) {
+            Logger.e(TAG, "onClick: mSapaInfoEntity is null");
+            return;
+        }
+        if (SceneNaviSapaDetailImpl.SERVICE_DETAIL_PAGE == type) {
+            mSceneCallback.skipNaviSapaDetailScene(SceneNaviSapaDetailImpl.SERVICE_DETAIL_PAGE, mSapaInfoEntity);
+        } else {
+            mSceneCallback.skipNaviSapaDetailScene(SceneNaviSapaDetailImpl.TOLL_DETAIL_PAGE, mSapaInfoEntity);
+        }
     }
+
 }

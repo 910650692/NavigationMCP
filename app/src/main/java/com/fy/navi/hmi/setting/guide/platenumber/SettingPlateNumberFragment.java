@@ -21,14 +21,16 @@ import java.util.Objects;
 
 public class SettingPlateNumberFragment extends BaseFragment<FragmentSettingPlateNumberBinding, SettingPlateNumberViewModel> {
 
-    private SettingCheckDialog deletePlateNumberDialog;
+    private SettingCheckDialog mDeletePlateNumberDialog;
 
-    public boolean isClearPlateNumber = false;
+    private boolean mIsClearPlateNumber = false;
 
-    public String plateNumber = "";
+    private String mPlateNumber = "";
 
-    public static final String CARMATCH = "^[京津沪渝冀豫云辽黑湘皖鲁新苏浙赣鄂桂甘晋蒙陕吉闽赣贵粤青藏川宁琼使领][A-Z][A-Z0-9]{4}[A-Z0-9挂学警港澳]$";
-    public static final String EVCARMATCH = "^[京津沪渝冀豫云辽黑湘皖鲁新苏浙赣鄂桂甘晋蒙陕吉闽贵粤青藏川宁琼使领A-Z]{1}[A-Z]{1}(([0-9]{5}[A-HJ-K]$)|([A-HJ-K][A-HJ-NP-Z0-9][0-9]{4}$))";
+    public static final String CARMATCH =
+            "^[京津沪渝冀豫云辽黑湘皖鲁新苏浙赣鄂桂甘晋蒙陕吉闽赣贵粤青藏川宁琼使领][A-Z][A-Z0-9]{4}[A-Z0-9挂学警港澳]$";
+    public static final String EVCARMATCH =
+            "^[京津沪渝冀豫云辽黑湘皖鲁新苏浙赣鄂桂甘晋蒙陕吉闽赣贵粤青藏川宁琼使领A-Z]{1}[A-Z]{1}(([0-9]{5}[A-HJ-K]$)|([A-HJ-K][A-HJ-NP-Z0-9][0-9]{4}$))";
     @Override
     public int onLayoutId() {
         return R.layout.fragment_setting_plate_number;
@@ -41,91 +43,94 @@ public class SettingPlateNumberFragment extends BaseFragment<FragmentSettingPlat
 
     @Override
     public void onInitView() {
-
         mBinding.settingPlateNumberNumber.setShowSoftInputOnFocus(false);
         mBinding.settingPlateNumberFinish.setEnabled(false);
-
         mBinding.settingPlateNumberNumber.setOnFocusChangeListener((v, hasFocus) -> {
             if (hasFocus) {
                 showPlateNumberKeyboard();
                 mViewModel.setIsFocus(true);
             }
         });
-
         mBinding.settingProvinceKeyboard.setOnProvinceSelectedListener(province -> {
             mBinding.settingPlateNumberProvince.setText(province);
         });
-
         mBinding.settingPlateNumberKeyboard.setOnKeyPressListener(new PlateNumberKeyboardView.OnKeyPressListener() {
-
             @Override
-            public void onKeyPress(String key) {
-                int start = mBinding.settingPlateNumberNumber.getSelectionStart();
-                String text = mBinding.settingPlateNumberNumber.getText().toString();
-
+            public void onKeyPress(final String key) {
+                final int start = mBinding.settingPlateNumberNumber.getSelectionStart();
+                final String text = mBinding.settingPlateNumberNumber.getText().toString();
                 if (!isEVCar() && text.length() >= 5) {
                     mBinding.settingPlateNumberFinish.setEnabled(true);
-                    mBinding.settingPlateNumberFinish.setTextColor(ResourceUtils.Companion.getInstance().getColor(R.color.white));
-                    mBinding.settingPlateNumberFinish.setBackground(ResourceUtils.Companion.getInstance().getDrawable(com.fy.navi.scene.R.drawable.bg_setting_preference_select));
+                    mBinding.settingPlateNumberFinish.setTextColor(
+                            ResourceUtils.Companion.getInstance().getColor(R.color.white));
+                    mBinding.settingPlateNumberFinish.setBackground(
+                            ResourceUtils.Companion.getInstance().getDrawable(com.fy.navi.scene.R.drawable.bg_setting_preference_select));
                 } else if (isEVCar() && text.length() >= 6){
                     mBinding.settingPlateNumberFinish.setEnabled(true);
-                    mBinding.settingPlateNumberFinish.setTextColor(ResourceUtils.Companion.getInstance().getColor(R.color.white));
-                    mBinding.settingPlateNumberFinish.setBackground(ResourceUtils.Companion.getInstance().getDrawable(com.fy.navi.scene.R.drawable.bg_setting_preference_select));
+                    mBinding.settingPlateNumberFinish.setTextColor(
+                            ResourceUtils.Companion.getInstance().getColor(R.color.white));
+                    mBinding.settingPlateNumberFinish.setBackground(
+                            ResourceUtils.Companion.getInstance().getDrawable(com.fy.navi.scene.R.drawable.bg_setting_preference_select));
                 } else {
                     mBinding.settingPlateNumberFinish.setEnabled(false);
-                    mBinding.settingPlateNumberFinish.setTextColor(ResourceUtils.Companion.getInstance().getColor(R.color.setting_text_gray));
-                    mBinding.settingPlateNumberFinish.setBackground(ResourceUtils.Companion.getInstance().getDrawable(com.fy.navi.scene.R.drawable.bg_setting_preference_normal));
+                    mBinding.settingPlateNumberFinish.setTextColor(
+                            ResourceUtils.Companion.getInstance().getColor(R.color.setting_text_disable));
+                    mBinding.settingPlateNumberFinish.setBackground(
+                            ResourceUtils.Companion.getInstance().getDrawable(R.drawable.bg_setting_finish_disable));
                 }
-
                 // 第一位只能输入字母
                 if (text.isEmpty()) {
                     if (key.matches("[A-Z]")) {  // 只允许输入字母
                         mBinding.settingPlateNumberNumber.getText().insert(start, key);
+                    } else if (key.matches("[0-9]")) {  // 只允许输入数字
+                        ToastUtils.Companion.getInstance().showCustomToastView(
+                                ResourceUtils.Companion.getInstance().getString(R.string.setting_guide_plate_number_first_tip));
                     }
                     return;
                 }
-
-                // 其他位置的输入限制
                 // 限制最大输入长度
                 if (!isEVCar() && text.length() < 6) {
                     mBinding.settingPlateNumberNumber.getText().insert(start, key);
                 } else if (isEVCar() && text.length() < 7) {
                     mBinding.settingPlateNumberNumber.getText().insert(start, key);
                 }
-
             }
-
             @Override
             public void onDelete() {
-                int start = mBinding.settingPlateNumberNumber.getSelectionStart();
-                int end = mBinding.settingPlateNumberNumber.getSelectionEnd();
-
+                final int start = mBinding.settingPlateNumberNumber.getSelectionStart();
+                final int end = mBinding.settingPlateNumberNumber.getSelectionEnd();
                 if (start == end && start > 0) {
-                    // 没有选中文本，删除光标前一个字符
-                    mBinding.settingPlateNumberNumber.getText().delete(start - 1, start);
+                    mBinding.settingPlateNumberNumber.getText().delete(start - 1, start);  // 没有选中文本，删除光标前一个字符
                 } else if (start < end) {
                     // 删除选中的文本
                     mBinding.settingPlateNumberNumber.getText().delete(start, end);
                 }
-                String text = mBinding.settingPlateNumberNumber.getText().toString();
+                final String text = mBinding.settingPlateNumberNumber.getText().toString();
                 if (!isEVCar() && text.length() >= 6) {
                     mBinding.settingPlateNumberFinish.setEnabled(true);
                     mBinding.settingPlateNumberFinish.setTextColor(ResourceUtils.Companion.getInstance().getColor(R.color.white));
-                    mBinding.settingPlateNumberFinish.setBackground(ResourceUtils.Companion.getInstance().getDrawable(com.fy.navi.scene.R.drawable.bg_setting_preference_select));
+                    mBinding.settingPlateNumberFinish.setBackground(
+                            ResourceUtils.Companion.getInstance().getDrawable(com.fy.navi.scene.R.drawable.bg_setting_preference_select));
                 } else if (isEVCar() && text.length() >= 7){
                     mBinding.settingPlateNumberFinish.setEnabled(true);
-                    mBinding.settingPlateNumberFinish.setTextColor(ResourceUtils.Companion.getInstance().getColor(R.color.white));
-                    mBinding.settingPlateNumberFinish.setBackground(ResourceUtils.Companion.getInstance().getDrawable(com.fy.navi.scene.R.drawable.bg_setting_preference_select));
+                    mBinding.settingPlateNumberFinish.setTextColor(
+                            ResourceUtils.Companion.getInstance().getColor(R.color.white));
+                    mBinding.settingPlateNumberFinish.setBackground(
+                            ResourceUtils.Companion.getInstance().getDrawable(com.fy.navi.scene.R.drawable.bg_setting_preference_select));
                 } else {
                     mBinding.settingPlateNumberFinish.setEnabled(false);
-                    mBinding.settingPlateNumberFinish.setTextColor(ResourceUtils.Companion.getInstance().getColor(R.color.setting_text_gray));
-                    mBinding.settingPlateNumberFinish.setBackground(ResourceUtils.Companion.getInstance().getDrawable(com.fy.navi.scene.R.drawable.bg_setting_preference_normal));
+                    mBinding.settingPlateNumberFinish.setTextColor(
+                            ResourceUtils.Companion.getInstance().getColor(R.color.setting_text_disable));
+                    mBinding.settingPlateNumberFinish.setBackground(
+                            ResourceUtils.Companion.getInstance().getDrawable(R.drawable.bg_setting_finish_disable));
                 }
-                if (text.isEmpty() && !Objects.equals(plateNumber, "")) {
-                    isClearPlateNumber = true;
+                if (text.isEmpty() && !Objects.equals(mPlateNumber, "")) {
+                    mIsClearPlateNumber = true;
                     mBinding.settingPlateNumberFinish.setEnabled(true);
-                    mBinding.settingPlateNumberFinish.setTextColor(ResourceUtils.Companion.getInstance().getColor(R.color.white));
-                    mBinding.settingPlateNumberFinish.setBackground(ResourceUtils.Companion.getInstance().getDrawable(com.fy.navi.scene.R.drawable.bg_setting_preference_select));
+                    mBinding.settingPlateNumberFinish.setTextColor(
+                            ResourceUtils.Companion.getInstance().getColor(R.color.white));
+                    mBinding.settingPlateNumberFinish.setBackground(
+                            ResourceUtils.Companion.getInstance().getDrawable(com.fy.navi.scene.R.drawable.bg_setting_preference_select));
                 }
             }
         });
@@ -143,49 +148,70 @@ public class SettingPlateNumberFragment extends BaseFragment<FragmentSettingPlat
 
     }
 
+    /**
+     * 初始化删除车牌号码对话框
+     */
     public void initDialog() {
-        deletePlateNumberDialog = new SettingCheckDialog.Build(getContext())
+        mDeletePlateNumberDialog = new SettingCheckDialog.Build(getContext())
                 .setTitle(ResourceUtils.Companion.getInstance().getString(R.string.setting_guide_plate_number_clear))
                 .setContent(ResourceUtils.Companion.getInstance().getString(R.string.setting_guide_plate_number_clear_tip))
                 .setConfirmText(ResourceUtils.Companion.getInstance().getString(R.string.favorite_item_delete))
                 .setDialogObserver(new IBaseDialogClickListener() {
                     @Override
                     public void onCommitClick() {
-                        isClearPlateNumber = false;
+                        mIsClearPlateNumber = false;
                         SettingUpdateObservable.getInstance().setPlateNumber("");
                         closeFragment(true);
                     }
 
                 }).build();
 
-        clearBackground(deletePlateNumberDialog.getWindow());
+        clearBackground(mDeletePlateNumberDialog.getWindow());
     }
 
-    private void clearBackground(Window window) {
+    /**
+     * 清除背景色
+     * @param window 窗口
+     */
+    private void clearBackground(final Window window) {
         if (window != null) {
             window.setDimAmount(0f);
         }
     }
 
+    /**
+     * 显示省份键盘
+     */
     public void showProvinceKeyboard(){
         mBinding.settingPlateNumberKeyboard.setVisibility(View.GONE);
         mBinding.settingPlateNumberKeyboardLayout.setVisibility(View.VISIBLE);
         mBinding.settingProvinceKeyboard.setVisibility(View.VISIBLE);
     }
 
+    /**
+     * 显示车牌号码键盘
+     */
     public void showPlateNumberKeyboard() {
         mBinding.settingProvinceKeyboard.setVisibility(View.GONE);
         mBinding.settingPlateNumberKeyboardLayout.setVisibility(View.VISIBLE);
         mBinding.settingPlateNumberKeyboard.setVisibility(View.VISIBLE);
     }
 
+    /**
+     * 隐藏键盘
+     */
     public void hideKeyboard(){
         mBinding.settingPlateNumberKeyboardLayout.setVisibility(View.GONE);
         mBinding.settingProvinceKeyboard.setVisibility(View.GONE);
         mBinding.settingPlateNumberKeyboard.setVisibility(View.GONE);
     }
 
-    private boolean isCar(String carNumber) {
+    /**
+     * 校验车牌号
+     * @param carNumber 车牌号
+     * @return 是否为车牌号
+     */
+    private boolean isCar(final String carNumber) {
         if (TextUtils.isEmpty(carNumber)) {
             return false;
         } else if (isEVCar()){
@@ -195,43 +221,62 @@ public class SettingPlateNumberFragment extends BaseFragment<FragmentSettingPlat
         }
     }
 
+    /**
+     * 处理完成按钮点击结果
+     */
     public void plateNumberInputFinish() {
 
         Logger.d("plateNumberInputFinish");
 
-        String plateNumber = mBinding.settingPlateNumberProvince.getText().toString() + mBinding.settingPlateNumberNumber.getText().toString();
+        final String plateNumber = mBinding.settingPlateNumberProvince.getText().toString() + mBinding.settingPlateNumberNumber.getText().toString();
         if (isCar(plateNumber)) {
             SettingUpdateObservable.getInstance().setPlateNumber(plateNumber);
             closeFragment(true);
-        } else if (isClearPlateNumber){
-            deletePlateNumberDialog.show();
+        } else if (mIsClearPlateNumber){
+            mDeletePlateNumberDialog.show();
         } else {
-            ToastUtils.Companion.getInstance().showCustomToastView("车牌校验未通过");
+            ToastUtils.Companion.getInstance().showCustomToastView(
+                    ResourceUtils.Companion.getInstance().getString(R.string.setting_guide_plate_number_check_not_available));
         }
     }
 
+    /**
+     * 设置车牌号
+     */
     private void setPlateNumber(){
-        String plateNumber = mViewModel.getPlateNumber();
-        this.plateNumber = plateNumber;
+        final String plateNumber = mViewModel.getPlateNumber();
+        this.mPlateNumber = plateNumber;
         if (plateNumber.isEmpty()) {
+            mBinding.settingProvinceKeyboard.setSelectedProvince(
+                    ResourceUtils.Companion.getInstance().getString(R.string.setting_guide_plate_number_default));
             return;
         }
         mBinding.settingPlateNumberFinish.setEnabled(true);
         mBinding.settingPlateNumberFinish.setTextColor(ResourceUtils.Companion.getInstance().getColor(R.color.white));
-        mBinding.settingPlateNumberFinish.setBackground(ResourceUtils.Companion.getInstance().getDrawable(com.fy.navi.scene.R.drawable.bg_setting_preference_select));
+        mBinding.settingPlateNumberFinish.setBackground(
+                ResourceUtils.Companion.getInstance().getDrawable(com.fy.navi.scene.R.drawable.bg_setting_preference_select));
         mBinding.settingPlateNumberProvince.setText(plateNumber.substring(0, 1));
+        mBinding.settingProvinceKeyboard.setSelectedProvince(plateNumber.substring(0, 1));
         mBinding.settingPlateNumberNumber.setText(plateNumber.substring(1));
     }
+
+    /**
+     * 清除车牌号
+     */
     public void clearPlateNumber(){
-        if (!Objects.equals(plateNumber, "")) {
-            isClearPlateNumber = true;
+        if (!Objects.equals(mPlateNumber, "")) {
+            mIsClearPlateNumber = true;
         }
         mBinding.settingPlateNumberProvince.setText(ResourceUtils.Companion.getInstance().getText(R.string.setting_guide_plate_number_default));
         mBinding.settingPlateNumberNumber.setText("");
     }
 
+    /**
+     * 判断是否为新能源汽车
+     * @return 是否为新能源汽车
+     */
     public boolean isEVCar() {
-        int carMode = CalibrationPackage.getInstance().powerType();
+        final int carMode = CalibrationPackage.getInstance().powerType();
         return carMode == 1;
     }
 }

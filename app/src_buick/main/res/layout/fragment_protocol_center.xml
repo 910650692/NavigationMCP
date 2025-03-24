@@ -30,7 +30,7 @@
                 android:layout_height="@dimen/dp_138">
 
                 <com.fy.navi.ui.view.SkinImageView
-                    clickCommand="@{viewModel.protocolCenterBack}"
+                    clickCommand="@{viewModel.mProtocolCenterBack}"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:src="@drawable/img_setting_back"
@@ -52,15 +52,10 @@
 
             </com.fy.navi.ui.view.SkinConstraintLayout>
 
-            <com.fy.navi.ui.view.SkinView
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_1"
-                android:background="@color/setting_line"/>
-
             <com.fy.navi.ui.view.SkinConstraintLayout
-                clickCommand="@{viewModel.openProtocolCenterTerm}"
+                clickCommand="@{viewModel.mOpenProtocolCenterTerm}"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_100">
+                android:layout_height="@dimen/dp_81">
 
                 <com.fy.navi.ui.view.SkinTextView
                     android:layout_width="wrap_content"
@@ -90,9 +85,10 @@
                 android:background="@color/setting_line"/>
 
             <com.fy.navi.ui.view.SkinConstraintLayout
-                clickCommand="@{viewModel.openProtocolCenterPrivacy}"
+                clickCommand="@{viewModel.mOpenProtocolCenterPrivacy}"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_100">
+                android:layout_height="@dimen/dp_81"
+                android:layout_marginTop="@dimen/dp_24">
 
                 <com.fy.navi.ui.view.SkinTextView
                     android:layout_width="wrap_content"
@@ -138,7 +134,7 @@
                 android:layout_height="@dimen/dp_132">
 
                 <com.fy.navi.ui.view.SkinImageView
-                    clickCommand="@{viewModel.closeProtocolCenter}"
+                    clickCommand="@{viewModel.mCloseProtocolCenter}"
                     android:id="@+id/protocol_center_back"
                     android:layout_width="@dimen/dp_68"
                     android:layout_height="@dimen/dp_68"

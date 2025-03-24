@@ -11,11 +11,11 @@
 
     <com.fy.navi.ui.view.SkinLinearLayout
         android:id="@+id/ll_protocol_center_root"
-        android:layout_width="@dimen/dp_1660"
-        android:layout_height="@dimen/dp_1060"
+        android:layout_width="@dimen/dp_1224"
+        android:layout_height="@dimen/dp_714"
         android:clickable="true"
         android:orientation="vertical">
-    
+
         <com.fy.navi.ui.view.SkinLinearLayout
             android:id="@+id/ll_protocol_center"
             android:layout_width="match_parent"
@@ -27,13 +27,13 @@
 
             <com.fy.navi.ui.view.SkinConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_132">
+                android:layout_height="@dimen/dp_138">
 
                 <com.fy.navi.ui.view.SkinImageView
-                    clickCommand="@{viewModel.protocolCenterBack}"
-                    android:layout_width="@dimen/dp_68"
-                    android:layout_height="@dimen/dp_68"
-                    android:src="@drawable/img_back"
+                    clickCommand="@{viewModel.mProtocolCenterBack}"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/img_setting_back"
                     android:layout_marginStart="@dimen/dp_30"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -43,9 +43,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/setting_others_privacy_protocol_center"
-                    android:textSize="@dimen/sp_40"
+                    android:textSize="@dimen/sp_38"
                     android:textColor="@color/black"
-                    android:layout_marginStart="@dimen/dp_40"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -54,15 +53,15 @@
             </com.fy.navi.ui.view.SkinConstraintLayout>
 
             <com.fy.navi.ui.view.SkinConstraintLayout
-                clickCommand="@{viewModel.openProtocolCenterTerm}"
+                clickCommand="@{viewModel.mOpenProtocolCenterTerm}"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_100">
+                android:layout_height="@dimen/dp_81">
 
                 <com.fy.navi.ui.view.SkinTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/setting_others_privacy_term"
-                    android:textSize="@dimen/sp_36"
+                    android:textSize="@dimen/sp_30"
                     android:textColor="@color/black"
                     android:layout_marginStart="@dimen/dp_40"
                     app:layout_constraintTop_toTopOf="parent"
@@ -70,26 +69,32 @@
                     app:layout_constraintStart_toStartOf="parent"/>
 
                 <com.fy.navi.ui.view.SkinImageView
-                    android:layout_width="@dimen/dp_68"
-                    android:layout_height="@dimen/dp_68"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:src="@drawable/img_right"
-                    android:layout_marginEnd="@dimen/dp_30"
+                    android:layout_marginEnd="@dimen/dp_40"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"/>
 
             </com.fy.navi.ui.view.SkinConstraintLayout>
 
-            <com.fy.navi.ui.view.SkinConstraintLayout
-                clickCommand="@{viewModel.openProtocolCenterPrivacy}"
+            <com.fy.navi.ui.view.SkinView
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_100">
+                android:layout_height="@dimen/dp_1"
+                android:background="@color/setting_line"/>
+
+            <com.fy.navi.ui.view.SkinConstraintLayout
+                clickCommand="@{viewModel.mOpenProtocolCenterPrivacy}"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_81"
+                android:layout_marginTop="@dimen/dp_20">
 
                 <com.fy.navi.ui.view.SkinTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/setting_others_privacy_policy"
-                    android:textSize="@dimen/sp_36"
+                    android:textSize="@dimen/sp_30"
                     android:textColor="@color/black"
                     android:layout_marginStart="@dimen/dp_40"
                     app:layout_constraintTop_toTopOf="parent"
@@ -97,15 +102,20 @@
                     app:layout_constraintStart_toStartOf="parent"/>
 
                 <com.fy.navi.ui.view.SkinImageView
-                    android:layout_width="@dimen/dp_68"
-                    android:layout_height="@dimen/dp_68"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:src="@drawable/img_right"
-                    android:layout_marginEnd="@dimen/dp_30"
+                    android:layout_marginEnd="@dimen/dp_40"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"/>
 
             </com.fy.navi.ui.view.SkinConstraintLayout>
+
+            <com.fy.navi.ui.view.SkinView
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_1"
+                android:background="@color/setting_line"/>
 
         </com.fy.navi.ui.view.SkinLinearLayout>
 
@@ -124,7 +134,7 @@
                 android:layout_height="@dimen/dp_132">
 
                 <com.fy.navi.ui.view.SkinImageView
-                    clickCommand="@{viewModel.closeProtocolCenter}"
+                    clickCommand="@{viewModel.mCloseProtocolCenter}"
                     android:id="@+id/protocol_center_back"
                     android:layout_width="@dimen/dp_68"
                     android:layout_height="@dimen/dp_68"

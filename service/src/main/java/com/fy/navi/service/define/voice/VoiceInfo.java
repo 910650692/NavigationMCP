@@ -254,17 +254,17 @@ public class VoiceInfo {
         switch (taskState) {
             case OperationStatus.TASK_STATUS_CODE_READY:
                 if (isDataExist){
-                    drawable = AppContext.mApplication.getDrawable(R.drawable.ic_update);
+                    drawable = AppContext.getInstance().getMApplication().getDrawable(R.drawable.ic_update);
                 }else{
-                    drawable = AppContext.mApplication.getDrawable(R.drawable.ic_down);
+                    drawable = AppContext.getInstance().getMApplication().getDrawable(R.drawable.ic_down);
                 }
                 break;
             case OperationStatus.TASK_STATUS_CODE_PAUSE:
-                drawable = AppContext.mApplication.getDrawable(R.drawable.ic_continue);
+                drawable = AppContext.getInstance().getMApplication().getDrawable(R.drawable.ic_continue);
                 break;
             case OperationStatus.TASK_STATUS_CODE_DOING:
             case OperationStatus.TASK_STATUS_CODE_DONE:
-                drawable = AppContext.mApplication.getDrawable(R.drawable.ic_down_blue);
+                drawable = AppContext.getInstance().getMApplication().getDrawable(R.drawable.ic_down_blue);
                 break;
             default:
                 break;

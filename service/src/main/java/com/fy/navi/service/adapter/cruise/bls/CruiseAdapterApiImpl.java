@@ -23,7 +23,7 @@ public class CruiseAdapterApiImpl extends BaseGuideAdapterApiImpl implements ICr
 
     public CruiseAdapterApiImpl() {
         super();
-        cruiseApiImplHelper = new CruiseApiImplHelper(mGuideService);
+        cruiseApiImplHelper = new CruiseApiImplHelper(getGuideService());
     }
 
     @Override
@@ -40,12 +40,12 @@ public class CruiseAdapterApiImpl extends BaseGuideAdapterApiImpl implements ICr
     @Override
     public boolean startCruise() {
         mNaviId = NaviConstant.NAVI_CRUISE_ID;
-        return mGuideService.startNavi(mNaviId, NaviType.NaviTypeCruise);
+        return getGuideService().startNavi(mNaviId, NaviType.NaviTypeCruise);
     }
 
     @Override
     public boolean stopCruise() {
-        boolean b = mGuideService.stopNavi(mNaviId);
+        boolean b = getGuideService().stopNavi(mNaviId);
         Logger.i(TAG, "CruiseAdapterApiImpl stopNavigation: " + mNaviId + ",stopNavi：" + b);
         return b;
     }

@@ -4,157 +4,154 @@ import com.fy.navi.service.define.bean.GeoPoint;
 
 import java.util.ArrayList;
 
-/**
- * @Description
- * @Author fh
- * @date 2024/12/27
- */
+
 public class HistoryPoiItemBean {
-    public String itemId;
-    public String poiId;
-    public String typeCode;
-    public String name;
-    public String address;
-    public GeoPoint poiLoc;
-    public GeoPoint navLoc;
-    public String parent;
-    public int childType;
-    public String towardsAngle;
-    public String floorNo;
-    public int endPoiExtension;
-    public long updateTime;
 
-    public int cityCode;
-    public String cityName;
+    private String mItemId;
+    private String mPoiId;
+    private String mTypeCode;
+    private String mName;
+    private String mAddress;
+    private GeoPoint mPoiLoc;
+    private GeoPoint mNavLoc;
+    private String mParent;
+    private int mChildType;
+    private String mTowardsAngle;
+    private String mFloorNo;
+    private int mEndPoiExtension;
+    private long mUpdateTime;
 
-    public ArrayList<GeoPoint> entranceList;
+    private int mCityCode;
+    private String mCityName;
+
+    private ArrayList<GeoPoint> mEntranceList;
 
 
     public String getItemId() {
-        return itemId;
+        return mItemId;
     }
 
-    public void setItemId(String itemId) {
-        this.itemId = itemId;
+    public void setItemId(final String itemId) {
+        this.mItemId = itemId;
     }
 
     public String getPoiId() {
-        return poiId;
+        return mPoiId;
     }
 
-    public void setPoiId(String poiId) {
-        this.poiId = poiId;
+    public void setPoiId(final String poiId) {
+        this.mPoiId = poiId;
     }
 
     public String getTypeCode() {
-        return typeCode;
+        return mTypeCode;
     }
 
-    public void setTypeCode(String typeCode) {
-        this.typeCode = typeCode;
+    public void setTypeCode(final String typeCode) {
+        this.mTypeCode = typeCode;
     }
 
     public String getName() {
-        return name;
+        return mName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setName(final String name) {
+        this.mName = name;
     }
 
     public String getAddress() {
-        return address;
+        return mAddress;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
+    public void setAddress(final String address) {
+        this.mAddress = address;
     }
 
     public GeoPoint getPoiLoc() {
-        return poiLoc;
+        return mPoiLoc;
     }
 
-    public void setPoiLoc(GeoPoint poiLoc) {
-        this.poiLoc = poiLoc;
+    public void setPoiLoc(final GeoPoint poiLoc) {
+        this.mPoiLoc = poiLoc;
     }
 
     public GeoPoint getNavLoc() {
-        return navLoc;
+        return mNavLoc;
     }
 
-    public void setNavLoc(GeoPoint navLoc) {
-        this.navLoc = navLoc;
+    public void setNavLoc(final GeoPoint navLoc) {
+        this.mNavLoc = navLoc;
     }
 
     public String getParent() {
-        return parent;
+        return mParent;
     }
 
-    public void setParent(String parent) {
-        this.parent = parent;
+    public void setParent(final String parent) {
+        this.mParent = parent;
     }
 
     public int getChildType() {
-        return childType;
+        return mChildType;
     }
 
-    public void setChildType(int childType) {
-        this.childType = childType;
+    public void setChildType(final int childType) {
+        this.mChildType = childType;
     }
 
     public String getTowardsAngle() {
-        return towardsAngle;
+        return mTowardsAngle;
     }
 
-    public void setTowardsAngle(String towardsAngle) {
-        this.towardsAngle = towardsAngle;
+    public void setTowardsAngle(final String towardsAngle) {
+        this.mTowardsAngle = towardsAngle;
     }
 
     public String getFloorNo() {
-        return floorNo;
+        return mFloorNo;
     }
 
-    public void setFloorNo(String floorNo) {
-        this.floorNo = floorNo;
+    public void setFloorNo(final String floorNo) {
+        this.mFloorNo = floorNo;
     }
 
     public int getEndPoiExtension() {
-        return endPoiExtension;
+        return mEndPoiExtension;
     }
 
-    public void setEndPoiExtension(int endPoiExtension) {
-        this.endPoiExtension = endPoiExtension;
+    public void setEndPoiExtension(final int endPoiExtension) {
+        this.mEndPoiExtension = endPoiExtension;
     }
 
     public long getUpdateTime() {
-        return updateTime;
+        return mUpdateTime;
     }
 
-    public void setUpdateTime(long updateTime) {
-        this.updateTime = updateTime;
+    public void setUpdateTime(final long updateTime) {
+        this.mUpdateTime = updateTime;
     }
 
     public int getCityCode() {
-        return cityCode;
+        return mCityCode;
     }
 
-    public void setCityCode(int cityCode) {
-        this.cityCode = cityCode;
+    public void setCityCode(final int cityCode) {
+        this.mCityCode = cityCode;
     }
 
     public String getCityName() {
-        return cityName;
+        return mCityName;
     }
 
-    public void setCityName(String cityName) {
-        this.cityName = cityName;
+    public void setCityName(final String cityName) {
+        this.mCityName = cityName;
     }
 
     public ArrayList<GeoPoint> getEntranceList() {
-        return entranceList;
+        return mEntranceList;
     }
 
-    public void setEntranceList(ArrayList<GeoPoint> entranceList) {
-        this.entranceList = entranceList;
+    public void setEntranceList(final ArrayList<GeoPoint> entranceList) {
+        this.mEntranceList = entranceList;
     }
 }

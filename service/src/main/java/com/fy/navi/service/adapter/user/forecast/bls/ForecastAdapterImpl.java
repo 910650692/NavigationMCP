@@ -18,44 +18,42 @@ import com.fy.navi.service.GBLCacheFilePath;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.adapter.user.forecast.ForecastAdapterCallback;
 import com.fy.navi.service.adapter.user.forecast.IForecastApi;
+import com.fy.navi.service.define.bean.GeoPoint;
 import com.fy.navi.service.define.user.forecast.ForecastArrivedDataInfo;
 import com.fy.navi.service.define.user.forecast.OftenArrivedItemInfo;
 
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * 高德 用户 - 预测服务 .
- * 对于联网同时登陆了高德账号的用户提供在线预测常去目的地的接口。
- */
+
 public class ForecastAdapterImpl implements IForecastApi, IForcastServiceObserver {
     private static final String TAG = MapDefaultFinalTag.FORECAST_SERVICE_TAG;
-    private ForcastService forecastService;
-    private final List<ForecastAdapterCallback> callBacks = new ArrayList<>();
+    private final ForcastService mForecastService;
+    private final List<ForecastAdapterCallback> mCallBacks = new ArrayList<>();
 
     public ForecastAdapterImpl() {
-        forecastService = (ForcastService) ServiceMgr.getServiceMgrInstance().
+        mForecastService = (ForcastService) ServiceMgr.getServiceMgrInstance().
                 getBLService(SingleServiceID.ForcastSingleServiceID);
     }
 
     @Override
     public void initService() {
         Logger.d("initService start.");
-        ForcastInitParam param = new ForcastInitParam();
+        final ForcastInitParam param = new ForcastInitParam();
         param.stCurTime = TimeUtil.getLocalTime2(); // 当前时间 com.autonavi.gbl.util.model.DateTime
         param.dbPath = GBLCacheFilePath.FORECAST_PATH;// 预测数据库文件保存目录路径
         // 保证传入目录存在
         FileUtils.getInstance().createDir(param.dbPath);
         param.nMaxEnergyMileage = 50; // 能源消耗保存最大公里数单位(KM)
         param.nTopArrivedMaxCnt = 8; // 常去地点列表最大个数, 也决定了获取常去地点接口返回的最大数据量
-        forecastService.addObserver(this);
-        int res = forecastService.init(param);
+        mForecastService.addObserver(this);
+        final int res = mForecastService.init(param);
         Logger.d("initService res = " + res);
     }
 
     @Override
-    public void registerCallBack(String key, ForecastAdapterCallback callBack) {
-        callBacks.add(callBack);
+    public void registerCallBack(final String key, final ForecastAdapterCallback callBack) {
+        mCallBacks.add(callBack);
     }
 
     /**
@@ -64,14 +62,14 @@ public class ForecastAdapterImpl implements IForecastApi, IForcastServiceObserve
      * @return
      */
     @Override
-    public int addLocalArrivedData(OftenArrivedItemInfo info) {
+    public int addLocalArrivedData(final OftenArrivedItemInfo info) {
         Logger.d(TAG,"addLocalArrivedData info = " + GsonUtils.toJson(info));
-        OftenArrivedItem oftenArrivedItem = new OftenArrivedItem();
+        final OftenArrivedItem oftenArrivedItem = new OftenArrivedItem();
         GsonUtils.copyBean(info, oftenArrivedItem);
         oftenArrivedItem.dateTime.date = info.getDate();
         oftenArrivedItem.dateTime.time = info.getTime();
-        if (forecastService != null) {
-            int ret = forecastService.addLocalArrivedData(ArrivedType.ForcastLocal, oftenArrivedItem);
+        if (mForecastService != null) {
+            final int ret = mForecastService.addLocalArrivedData(ArrivedType.ForcastLocal, oftenArrivedItem);
             Logger.d(TAG,"addLocalArrivedData  ret = " + ret);
             return ret;
         }
@@ -84,10 +82,10 @@ public class ForecastAdapterImpl implements IForecastApi, IForcastServiceObserve
      * @return ErrorCodeOK: 成功，
      */
     @Override
-    public int deleteLocalArrivedData(String name) {
+    public int deleteLocalArrivedData(final String name) {
         Logger.d(TAG,"delLocalArrivedData name = " + name);
-        if (forecastService != null) {
-            int ret =  forecastService.delLocalArrivedData(ArrivedType.ForcastLocal, name);
+        if (mForecastService != null) {
+            final int ret =  mForecastService.delLocalArrivedData(ArrivedType.ForcastLocal, name);
             Logger.d(TAG,"delLocalArrivedData  ret = " + ret);
             return ret;
         }
@@ -100,11 +98,11 @@ public class ForecastAdapterImpl implements IForecastApi, IForcastServiceObserve
      */
     @Override
     public ArrayList<OftenArrivedItemInfo> getArrivedDataList() {
-        if (forecastService != null) {
-            ArrayList<OftenArrivedItem> dataList = forecastService.getArrivedDataList(ArrivedType.ForcastLocal);
-            ArrayList<OftenArrivedItemInfo> infos = new ArrayList<>();
+        if (mForecastService != null) {
+            final ArrayList<OftenArrivedItem> dataList = mForecastService.getArrivedDataList(ArrivedType.ForcastLocal);
+            final ArrayList<OftenArrivedItemInfo> infos = new ArrayList<>();
             for (OftenArrivedItem oftenArrivedItem : dataList) {
-                OftenArrivedItemInfo itemInfo = GsonUtils.convertToT(oftenArrivedItem, OftenArrivedItemInfo.class);
+                final OftenArrivedItemInfo itemInfo = getOftenArrivedItemInfo(oftenArrivedItem);
                 infos.add(itemInfo);
             }
             Logger.d(TAG,"getArrivedDataList  infos = " + GsonUtils.toJson(infos));
@@ -119,10 +117,10 @@ public class ForecastAdapterImpl implements IForecastApi, IForcastServiceObserve
      * @return 返回错误码
      */
     @Override
-    public int topArrivedData(String name) {
+    public int topArrivedData(final String name) {
         Logger.d(TAG,"topArrivedData  name = " + name);
-        if (forecastService != null) {
-            int ret = forecastService.topArrivedData(name);
+        if (mForecastService != null) {
+            final int ret = mForecastService.topArrivedData(name);
             Logger.d(TAG,"topArrivedData  ret = " + ret);
             return ret;
         }
@@ -135,12 +133,16 @@ public class ForecastAdapterImpl implements IForecastApi, IForcastServiceObserve
      * @return 返回错误码
      */
     @Override
-    public int getOnlineForecastArrivedData(ForecastArrivedDataInfo param) {
+    public int getOnlineForecastArrivedData(final ForecastArrivedDataInfo param) {
         Logger.d(TAG,"getOnlineForecastArrivedData  param = " + param.toString());
-        ForcastArrivedParam forecastArrivedParam = new ForcastArrivedParam();
-        GsonUtils.copyBean(param, forecastArrivedParam);
-        if (forecastService != null) {
-            return forecastService.getOnlineForcastArrivedData(forecastArrivedParam);
+        final ForcastArrivedParam forecastArrivedParam = new ForcastArrivedParam();
+        forecastArrivedParam.nLevel = param.getLevel();
+        forecastArrivedParam.adCode = param.getAdCode();
+        forecastArrivedParam.userId = param.getUserId();
+        forecastArrivedParam.userLoc.lon = param.getUserLoc().getLon();
+        forecastArrivedParam.userLoc.lat = param.getUserLoc().getLat();
+        if (mForecastService != null) {
+            return mForecastService.getOnlineForcastArrivedData(forecastArrivedParam);
         }
         return 0;
     }
@@ -150,9 +152,9 @@ public class ForecastAdapterImpl implements IForecastApi, IForcastServiceObserve
      * @param result 初始化结果处理
      */
     @Override
-    public void onInit(int result) {
+    public void onInit(final int result) {
         Logger.d(TAG,"onInit  result = " + result);
-        for (ForecastAdapterCallback callBack : callBacks) {
+        for (ForecastAdapterCallback callBack : mCallBacks) {
             callBack.onInit(result);
         }
     }
@@ -162,9 +164,9 @@ public class ForecastAdapterImpl implements IForecastApi, IForcastServiceObserve
      * @param result 数据加载结果
      */
     @Override
-    public void onSetLoginInfo(int result) {
+    public void onSetLoginInfo(final int result) {
         Logger.d(TAG,"onSetLoginInfo  result = " + result);
-        for (ForecastAdapterCallback callBack : callBacks) {
+        for (ForecastAdapterCallback callBack : mCallBacks) {
             callBack.onSetLoginInfo(result);
         }
     }
@@ -174,11 +176,11 @@ public class ForecastAdapterImpl implements IForecastApi, IForcastServiceObserve
      * @param data 服务端预测数据
      */
     @Override
-    public void onForcastArrivedData(ForcastArrivedData data) {
-        ForecastArrivedDataInfo forecastArrivedDataInfo;
-        forecastArrivedDataInfo = GsonUtils.convertToT(data, ForecastArrivedDataInfo.class);
+    public void onForcastArrivedData(final ForcastArrivedData data) {
+        final ForecastArrivedDataInfo forecastArrivedDataInfo;
+        forecastArrivedDataInfo = getForecastArrivedDataInfo(data);
         Logger.d(TAG,"onForecastArrivedData  forecastArrivedDataInfo = " + forecastArrivedDataInfo);
-        for (ForecastAdapterCallback callBack : callBacks) {
+        for (ForecastAdapterCallback callBack : mCallBacks) {
             callBack.onForecastArrivedData(forecastArrivedDataInfo);
         }
     }
@@ -187,11 +189,55 @@ public class ForecastAdapterImpl implements IForecastApi, IForcastServiceObserve
      * 服务反初始化
      */
     public void unInitForecastService() {
-        if (forecastService != null) {
-            if (ServiceInitStatus.ServiceInitDone != forecastService.isInit()) {
-                forecastService.removeObserver(this);
-                forecastService.unInit();
+        if (mForecastService != null) {
+            if (ServiceInitStatus.ServiceInitDone != mForecastService.isInit()) {
+                mForecastService.removeObserver(this);
+                mForecastService.unInit();
             }
         }
     }
+
+    /**
+     * 数据转换
+     * @param oftenArrivedItem 常去地点
+     * @return 常去地点信息
+     */
+    public OftenArrivedItemInfo getOftenArrivedItemInfo(final OftenArrivedItem oftenArrivedItem) {
+        final OftenArrivedItemInfo oftenArrivedItemInfo = new OftenArrivedItemInfo();
+        oftenArrivedItemInfo.setWstrPoiID(oftenArrivedItem.wstrPoiID);
+        oftenArrivedItemInfo.setWstrPoiName(oftenArrivedItem.wstrPoiName);
+        oftenArrivedItemInfo.setWstrPoiType(oftenArrivedItem.wstrPoiType);
+        oftenArrivedItemInfo.setWstrAddress(oftenArrivedItem.wstrAddress);
+        oftenArrivedItemInfo.setStDisplayCoord(new GeoPoint(oftenArrivedItem.stDisplayCoord.lon, oftenArrivedItem.stDisplayCoord.lat));
+        oftenArrivedItemInfo.setStNaviCoord(new GeoPoint(oftenArrivedItem.stNaviCoord.lon, oftenArrivedItem.stNaviCoord.lat));
+        oftenArrivedItemInfo.setParent(oftenArrivedItem.parent);
+        oftenArrivedItemInfo.setTowardsAngle(oftenArrivedItem.towardsAngle);
+        oftenArrivedItemInfo.setFloorNo(oftenArrivedItem.floorNo);
+        oftenArrivedItemInfo.setChildType(oftenArrivedItem.childType);
+        oftenArrivedItemInfo.setEndPoiExtension(oftenArrivedItem.endPoiExtension);
+        oftenArrivedItemInfo.setTopTime(oftenArrivedItem.topTime);
+        oftenArrivedItemInfo.setTimeList(oftenArrivedItem.uTimeList);
+        oftenArrivedItemInfo.setDate(oftenArrivedItem.dateTime.date);
+        oftenArrivedItemInfo.setTime(oftenArrivedItem.dateTime.time);
+        return oftenArrivedItemInfo;
+    }
+
+    /**
+     * 数据转换
+     * @param param 服务端预测数据
+     * @return 预测数据
+     */
+    public ForecastArrivedDataInfo getForecastArrivedDataInfo(final ForcastArrivedData param) {
+        final ForecastArrivedDataInfo forecastArrivedDataInfo = new ForecastArrivedDataInfo();
+        forecastArrivedDataInfo.setHome(getOftenArrivedItemInfo(param.home));
+        forecastArrivedDataInfo.setCompany(getOftenArrivedItemInfo(param.company));
+        final ArrayList<OftenArrivedItemInfo> getOftenArrivedItemInfos = new ArrayList<>();
+        for (OftenArrivedItem oftenArrivedItem : param.others) {
+            final OftenArrivedItemInfo oftenArrivedItemInfo = getOftenArrivedItemInfo(oftenArrivedItem);
+            getOftenArrivedItemInfos.add(oftenArrivedItemInfo);
+        }
+        forecastArrivedDataInfo.setOthers(getOftenArrivedItemInfos);
+        return forecastArrivedDataInfo;
+    }
+
 }

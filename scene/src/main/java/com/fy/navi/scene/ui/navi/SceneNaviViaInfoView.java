@@ -1,7 +1,5 @@
 package com.fy.navi.scene.ui.navi;
 
-import static com.fy.navi.scene.ui.navi.manager.NaviSceneId.NAVI_SCENE_VIA_DETAIL_INFO;
-
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -22,29 +20,36 @@ import com.fy.navi.scene.ui.navi.manager.NaviSceneManager;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.define.navi.NaviEtaInfo;
 
-/***显示途径点信息、达到状态***/
+/**
+ * 显示途径点信息、达到状态
+ * @author fy
+ * @version $Revision.*$
+ */
 public class SceneNaviViaInfoView extends NaviSceneBase<SceneNaviViaInfoViewBinding, SceneNaviViaInfoImpl> {
     private static final String TAG = MapDefaultFinalTag.NAVI_HMI_TAG;
+    private ISceneCallback mISceneCallback;
 
     public static final int ONLY_NAME = 0;
     public static final int WITH_ARRIVED_TAG = 1;
     public static final int WITH_COUNT_TAG = 2;
 
-    public SceneNaviViaInfoView(@NonNull Context context) {
+    public SceneNaviViaInfoView(@NonNull final Context context) {
         super(context);
     }
 
-    public SceneNaviViaInfoView(@NonNull Context context, @Nullable AttributeSet attrs) {
+    public SceneNaviViaInfoView(@NonNull final Context context,
+                                @Nullable final AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public SceneNaviViaInfoView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public SceneNaviViaInfoView(@NonNull final Context context, @Nullable final AttributeSet attrs,
+                                final int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 
     @Override
     protected NaviSceneId getSceneId() {
-        return NAVI_SCENE_VIA_DETAIL_INFO;
+        return NaviSceneId.NAVI_SCENE_VIA_DETAIL_INFO;
     }
 
     @Override
@@ -53,7 +58,7 @@ public class SceneNaviViaInfoView extends NaviSceneBase<SceneNaviViaInfoViewBind
     }
 
     protected void init() {
-        NaviSceneManager.getInstance().addNaviScene(NAVI_SCENE_VIA_DETAIL_INFO, this);
+        NaviSceneManager.getInstance().addNaviScene(NaviSceneId.NAVI_SCENE_VIA_DETAIL_INFO, this);
     }
 
     @Override
@@ -61,7 +66,7 @@ public class SceneNaviViaInfoView extends NaviSceneBase<SceneNaviViaInfoViewBind
         super.show();
         Logger.i(TAG, "show() called");
         if (mISceneCallback != null) {
-            mISceneCallback.updateSceneVisible(NAVI_SCENE_VIA_DETAIL_INFO, true);
+            mISceneCallback.updateSceneVisible(NaviSceneId.NAVI_SCENE_VIA_DETAIL_INFO, true);
         }
     }
 
@@ -69,7 +74,7 @@ public class SceneNaviViaInfoView extends NaviSceneBase<SceneNaviViaInfoViewBind
     public void hide() {
         super.hide();
         if (mISceneCallback != null) {
-            mISceneCallback.updateSceneVisible(NAVI_SCENE_VIA_DETAIL_INFO, false);
+            mISceneCallback.updateSceneVisible(NaviSceneId.NAVI_SCENE_VIA_DETAIL_INFO, false);
         }
     }
 
@@ -77,12 +82,13 @@ public class SceneNaviViaInfoView extends NaviSceneBase<SceneNaviViaInfoViewBind
     public void close() {
         super.close();
         if (mISceneCallback != null) {
-            mISceneCallback.updateSceneVisible(NAVI_SCENE_VIA_DETAIL_INFO, false);
+            mISceneCallback.updateSceneVisible(NaviSceneId.NAVI_SCENE_VIA_DETAIL_INFO, false);
         }
     }
 
     @Override
-    protected SceneNaviViaInfoViewBinding createViewBinding(LayoutInflater inflater, ViewGroup viewGroup) {
+    protected SceneNaviViaInfoViewBinding createViewBinding(final LayoutInflater inflater,
+                                                            final ViewGroup viewGroup) {
         return SceneNaviViaInfoViewBinding.inflate(inflater, viewGroup, true);
     }
 
@@ -101,14 +107,17 @@ public class SceneNaviViaInfoView extends NaviSceneBase<SceneNaviViaInfoViewBind
 
     }
 
-    public void onNaviInfo(NaviEtaInfo naviEtaInfo) {
+    /**
+     * @param naviEtaInfo 导航信息
+     */
+    public void onNaviInfo(final NaviEtaInfo naviEtaInfo) {
         if (mScreenViewModel != null) {
             mScreenViewModel.onNaviInfo(naviEtaInfo);
         }
     }
 
     @Override
-    public void addSceneCallback(ISceneCallback sceneCallback) {
+    public void addSceneCallback(final ISceneCallback sceneCallback) {
         mISceneCallback = sceneCallback;
         if (mScreenViewModel != null) {
             mScreenViewModel.addSceneCallback(sceneCallback);
@@ -120,7 +129,7 @@ public class SceneNaviViaInfoView extends NaviSceneBase<SceneNaviViaInfoViewBind
      * @param str 途经点名称
      * @param listSize 0
      */
-    public void onArriveVia(String str, int listSize) {
+    public void onArriveVia(final String str, final int listSize) {
         Logger.i(TAG, "onArriveVia: " + str);
         mViewBinding.stvWay.setText(str);
         mViewBinding.stvWayArrive.setVisibility(VISIBLE);
@@ -133,7 +142,7 @@ public class SceneNaviViaInfoView extends NaviSceneBase<SceneNaviViaInfoViewBind
      * @param viaName 途经点名称
      * @param totalSize 途经点总数量
      */
-    public void updateViaInfo(String viaName, int totalSize) {
+    public void updateViaInfo(final String viaName, final int totalSize) {
         Logger.i(TAG, "updateViaInfo: " + viaName);
         mViewBinding.stvWayArrive.setVisibility(INVISIBLE);
         mViewBinding.stvWay.setText(viaName);
@@ -155,9 +164,9 @@ public class SceneNaviViaInfoView extends NaviSceneBase<SceneNaviViaInfoViewBind
      * 其他情况显示为534
      * @param type 显示类型
      */
-    private void modifyStvWayWidth(int type) {
+    private void modifyStvWayWidth(final int type) {
         Logger.i(TAG, "modifyStvWayWidth: " + type);
-        LayoutParams params = (LayoutParams)mViewBinding.
+        final LayoutParams params = (LayoutParams)mViewBinding.
                 stvWay.getLayoutParams();
         params.matchConstraintMaxWidth = switch (type) {
             case WITH_ARRIVED_TAG ->
@@ -170,12 +179,18 @@ public class SceneNaviViaInfoView extends NaviSceneBase<SceneNaviViaInfoViewBind
     }
 
 
-    public void onUpdateViaPass(long viaIndex) {
+    /**
+     * @param viaIndex 途经点索引
+     */
+    public void onUpdateViaPass(final long viaIndex) {
         if (mScreenViewModel != null) {
             mScreenViewModel.onUpdateViaPass(viaIndex);
         }
     }
 
+    /**
+     * 开始导航
+     */
     public void startNavigation() {
         mScreenViewModel.startNavigation();
     }

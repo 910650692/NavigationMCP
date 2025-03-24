@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+        <import type="android.view.View" />
+
+        <variable
+            name="sapaDetail"
+            type="com.fy.navi.scene.impl.navi.SceneNaviSapaDetailImpl" />
+    </data>
+
+    <com.fy.navi.ui.view.SkinConstraintLayout
+        android:layout_width="@dimen/dp_640"
+        android:layout_height="@dimen/dp_711">
+
+        <include android:id="@+id/sapa_service_detail"
+            android:visibility="@{sapaDetail.mViewType == 0 ? View.VISIBLE : View.GONE}"
+            layout="@layout/sapa_service_details" />
+
+        <include android:id="@+id/sapa_toll_detail"
+            android:visibility="@{sapaDetail.mViewType == 1 ? View.VISIBLE : View.GONE}"
+            layout="@layout/sapa_toll_details" />
+
+
+    </com.fy.navi.ui.view.SkinConstraintLayout>
+</layout>

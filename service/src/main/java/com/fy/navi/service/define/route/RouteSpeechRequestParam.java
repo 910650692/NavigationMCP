@@ -9,9 +9,9 @@ import lombok.Setter;
 @Getter
 @Setter
 public class RouteSpeechRequestParam implements Serializable {
-    private MapTypeId mapTypeId; //必要参数
-    private PoiInfoEntity startPoiInfoEntity;
-    private PoiInfoEntity endPoiInfoEntity;//必要参数
-    private List<PoiInfoEntity> viaPoiInfoEntityList;
-    private RoutePreferenceID preferenceID;
+    private MapTypeId mMapTypeId; //必要参数
+    private PoiInfoEntity mStartPoiInfoEntity;
+    private PoiInfoEntity mEndPoiInfoEntity;//必要参数
+    private List<PoiInfoEntity> mViaPoiInfoEntityList;
+    private RoutePreferenceID mPreferenceID;
 }

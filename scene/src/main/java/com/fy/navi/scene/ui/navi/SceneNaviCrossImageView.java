@@ -1,7 +1,4 @@
 package com.fy.navi.scene.ui.navi;
-
-import static com.fy.navi.scene.ui.navi.manager.NaviSceneId.NAVI_SCENE_2D_CROSS;
-
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -12,6 +9,7 @@ import androidx.annotation.Nullable;
 
 import com.android.utils.log.Logger;
 import com.fy.navi.scene.databinding.SceneNaviCrossImageViewBinding;
+import com.fy.navi.scene.impl.imersive.ImersiveStatus;
 import com.fy.navi.scene.impl.navi.SceneNaviCrossImageImpl;
 import com.fy.navi.scene.impl.navi.common.ViewRectChangeWatcher;
 import com.fy.navi.scene.impl.navi.inter.ISceneCallback;
@@ -21,33 +19,36 @@ import com.fy.navi.scene.ui.navi.manager.NaviSceneBase;
 import com.fy.navi.scene.ui.navi.manager.NaviSceneId;
 import com.fy.navi.scene.ui.navi.manager.NaviSceneManager;
 import com.fy.navi.service.MapDefaultFinalTag;
-import com.fy.navi.service.adapter.navi.NaviConstant;
 import com.fy.navi.service.define.navi.CrossImageEntity;
 import com.fy.navi.service.define.navi.NaviEtaInfo;
 
 /**
  * 路口大图scene
+ * @author yf
+ * @version $Revision.*$
  */
 public class SceneNaviCrossImageView extends NaviSceneBase<SceneNaviCrossImageViewBinding, SceneNaviCrossImageImpl> {
     private static final String TAG = MapDefaultFinalTag.NAVI_HMI_TAG;
     private ViewRectChangeWatcher mViewRectChangeWatcher;
     private ISceneCallback mISceneCallback;
 
-    public SceneNaviCrossImageView(@NonNull Context context) {
+    public SceneNaviCrossImageView(@NonNull final Context context) {
         super(context);
     }
 
-    public SceneNaviCrossImageView(@NonNull Context context, @Nullable AttributeSet attrs) {
+    public SceneNaviCrossImageView(@NonNull final Context context,
+                                   @Nullable final AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public SceneNaviCrossImageView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public SceneNaviCrossImageView(@NonNull final Context context,
+                                   @Nullable final AttributeSet attrs, final int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 
     @Override
     protected NaviSceneId getSceneId() {
-        return NAVI_SCENE_2D_CROSS;
+        return NaviSceneId.NAVI_SCENE_2D_CROSS;
     }
 
     @Override
@@ -57,14 +58,15 @@ public class SceneNaviCrossImageView extends NaviSceneBase<SceneNaviCrossImageVi
 
     @Override
     protected void init() {
-        NaviSceneManager.getInstance().addNaviScene(NAVI_SCENE_2D_CROSS, this);
+        NaviSceneManager.getInstance().addNaviScene(
+                NaviSceneId.NAVI_SCENE_2D_CROSS, this);
     }
 
     @Override
     public void show() {
         super.show();
         if (mISceneCallback != null) {
-            mISceneCallback.updateSceneVisible(NAVI_SCENE_2D_CROSS, true);
+            mISceneCallback.updateSceneVisible(NaviSceneId.NAVI_SCENE_2D_CROSS, true);
         }
     }
 
@@ -72,12 +74,13 @@ public class SceneNaviCrossImageView extends NaviSceneBase<SceneNaviCrossImageVi
     public void hide() {
         super.hide();
         if (mISceneCallback != null) {
-            mISceneCallback.updateSceneVisible(NAVI_SCENE_2D_CROSS, false);
+            mISceneCallback.updateSceneVisible(NaviSceneId.NAVI_SCENE_2D_CROSS, false);
         }
     }
 
     @Override
-    protected SceneNaviCrossImageViewBinding createViewBinding(LayoutInflater inflater, ViewGroup viewGroup) {
+    protected SceneNaviCrossImageViewBinding createViewBinding(final LayoutInflater inflater,
+                                                               final ViewGroup viewGroup) {
         return SceneNaviCrossImageViewBinding.inflate(inflater, viewGroup, true);
     }
 
@@ -96,19 +99,30 @@ public class SceneNaviCrossImageView extends NaviSceneBase<SceneNaviCrossImageVi
         mScreenViewModel.registerObserver();
     }
 
-    public void onNaviInfo(NaviEtaInfo naviETAInfo) {
+    /**
+     * @param naviETAInfo 导航eta信息
+     */
+    public void onNaviInfo(final NaviEtaInfo naviETAInfo) {
         if (mScreenViewModel != null) {
             mScreenViewModel.onNaviInfo(naviETAInfo);
         }
     }
 
+    /**
+     * 导航停止
+     */
     public void onNaviStop() {
         if (mScreenViewModel != null) {
             mScreenViewModel.onNaviStop();
         }
     }
 
-    public void onCrossImageInfo(boolean isShowImage, CrossImageEntity naviImageInfo) {
+    /**
+     * @param isShowImage 是否显示图片
+     * @param naviImageInfo 路口大图信息
+     */
+    public void onCrossImageInfo(final boolean isShowImage,
+                                 final CrossImageEntity naviImageInfo) {
         mScreenViewModel.onCrossImageInfo(isShowImage, naviImageInfo);
     }
 
@@ -125,8 +139,9 @@ public class SceneNaviCrossImageView extends NaviSceneBase<SceneNaviCrossImageVi
 
     /**
      * 设置2D路口大图位置大小变化事件监听
+     * @param rectChangedListener 监听
      */
-    public void setRectChange2DRoadCross(RectChangeListener rectChangedListener) {
+    public void setRectChange2DRoadCross(final RectChangeListener rectChangedListener) {
         if (mViewRectChangeWatcher != null) {
             mViewRectChangeWatcher.destroy();
         }
@@ -137,19 +152,27 @@ public class SceneNaviCrossImageView extends NaviSceneBase<SceneNaviCrossImageVi
 
     /**
      * 设置2D路口大图进度
+     * @param progress 进度
      */
-    public void setProgress2DRoadCross(int progress) {
+    public void setProgress2DRoadCross(final int progress) {
         Logger.i(TAG, "SceneNaviCrossImageView progress：" + progress);
     }
 
     /**
      * 设置路口大图区域点击事件监听
+     * @param listener 监听
      */
-    public void setOnClickRoadCross(OnClickListener listener) {
+    public void setOnClickRoadCross(final OnClickListener listener) {
     }
 
     @Override
-    public void addSceneCallback(ISceneCallback sceneCallback) {
+    public void addSceneCallback(final ISceneCallback sceneCallback) {
         mISceneCallback = sceneCallback;
+    }
+
+    public void onImmersiveStatusChange(final ImersiveStatus currentImersiveStatus) {
+        if (mScreenViewModel != null) {
+            mScreenViewModel.onImmersiveStatusChange(currentImersiveStatus);
+        }
     }
 }

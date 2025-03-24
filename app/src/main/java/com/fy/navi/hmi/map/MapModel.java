@@ -14,10 +14,15 @@ import androidx.fragment.app.Fragment;
 
 import com.alibaba.android.arouter.launcher.ARouter;
 import com.android.utils.ConvertUtils;
+import com.android.utils.NetWorkUtils;
+import com.android.utils.TimeUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
 import com.fy.navi.hmi.R;
+import com.fy.navi.hmi.message.MessageCenterHelper;
+import com.fy.navi.hmi.navi.AuthorizationRequestDialog;
 import com.fy.navi.hmi.navi.ContinueNaviDialog;
+import com.fy.navi.hmi.navi.PhoneAddressDialog;
 import com.fy.navi.scene.RoutePath;
 import com.fy.navi.scene.impl.imersive.ImersiveStatus;
 import com.fy.navi.scene.impl.imersive.ImmersiveStatusScene;
@@ -34,6 +39,8 @@ import com.fy.navi.service.define.map.IBaseScreenMapView;
 import com.fy.navi.service.define.map.MapMode;
 import com.fy.navi.service.define.map.MapSurfaceViewSizeParams;
 import com.fy.navi.service.define.map.MapTypeId;
+import com.fy.navi.service.define.message.MessageCenterInfo;
+import com.fy.navi.service.define.message.MessageCenterType;
 import com.fy.navi.service.define.navi.LaneInfoEntity;
 import com.fy.navi.service.define.navi.NaviEtaInfo;
 import com.fy.navi.service.define.navistatus.NaviStatus;
@@ -44,20 +51,25 @@ import com.fy.navi.service.define.route.RouteSpeechRequestParam;
 import com.fy.navi.service.define.search.PoiInfoEntity;
 import com.fy.navi.service.define.setting.SettingController;
 import com.fy.navi.service.define.user.account.AccountProfileInfo;
+import com.fy.navi.service.define.user.msgpush.MsgPushInfo;
 import com.fy.navi.service.greendao.CommonManager;
 import com.fy.navi.service.greendao.history.History;
 import com.fy.navi.service.greendao.history.HistoryManager;
 import com.fy.navi.service.greendao.setting.SettingManager;
 import com.fy.navi.service.logicpaket.aos.AosRestrictedPackage;
 import com.fy.navi.service.logicpaket.aos.IAosRestrictedObserver;
+import com.fy.navi.service.logicpaket.calibration.CalibrationPackage;
 import com.fy.navi.service.logicpaket.cruise.CruisePackage;
 import com.fy.navi.service.logicpaket.cruise.ICruiseObserver;
 import com.fy.navi.service.logicpaket.layer.LayerPackage;
 import com.fy.navi.service.logicpaket.map.IMapPackageCallback;
 import com.fy.navi.service.logicpaket.map.MapPackage;
 import com.fy.navi.service.logicpaket.mapdata.MapDataPackage;
+import com.fy.navi.service.logicpaket.message.MessageCenterCallBack;
+import com.fy.navi.service.logicpaket.message.MessageCenterPackage;
 import com.fy.navi.service.logicpaket.navi.IGuidanceObserver;
 import com.fy.navi.service.logicpaket.navi.NaviPackage;
+import com.fy.navi.service.logicpaket.navistatus.NaviStatusPackage;
 import com.fy.navi.service.logicpaket.position.IPositionPackageCallback;
 import com.fy.navi.service.logicpaket.position.PositionPackage;
 import com.fy.navi.service.logicpaket.route.RoutePackage;
@@ -68,11 +80,18 @@ import com.fy.navi.service.logicpaket.user.msgpush.MsgPushCallBack;
 import com.fy.navi.service.logicpaket.user.msgpush.MsgPushPackage;
 import com.fy.navi.ui.base.BaseFragment;
 import com.fy.navi.ui.base.BaseModel;
+import com.fy.navi.ui.base.StackManager;
 import com.fy.navi.ui.dialog.IBaseDialogClickListener;
 import com.fy.navi.vrbridge.IVrBridgeConstant;
 
 import java.io.Serializable;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Locale;
 import java.util.Objects;
 
 /**
@@ -83,7 +102,7 @@ import java.util.Objects;
 public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCallback,
         ImmersiveStatusScene.IImmersiveStatusCallBack, IAosRestrictedObserver, IPositionPackageCallback,
         SignalCallback, SpeedMonitor.CallBack, ICruiseObserver, SettingPackage.SettingChangeCallback,
-        MsgPushCallBack, IGuidanceObserver {
+        MsgPushCallBack, IGuidanceObserver , MessageCenterCallBack {
     private final MapPackage mapPackage;
     private final LayerPackage layerPackage;
     private final PositionPackage positionPackage;
@@ -104,6 +123,10 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
     private SpeedMonitor speedMonitor;
     private NaviPackage naviPackage;
     private MapModelHelp mapModelHelp;
+    private MessageCenterPackage messageCenterPackage;
+    private MessageCenterHelper messageCenterHelper;
+    private final CalibrationPackage mCalibrationPackage;
+    private final SettingPackage mSettingPackage;
 
     public MapModel() {
         mapPackage = MapPackage.getInstance();
@@ -125,7 +148,13 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         speedMonitor.registerCallBack(this);
         msgPushPackage.registerCallBack(TAG, this);
         naviPackage = NaviPackage.getInstance();
+        mCalibrationPackage = CalibrationPackage.getInstance();
         mapModelHelp = new MapModelHelp(MapTypeId.MAIN_SCREEN_MAIN_MAP);
+        messageCenterPackage = MessageCenterPackage.getInstance();
+        messageCenterPackage.initMessageCenter();
+        messageCenterPackage.registerCallBack(MessageCenterPackage.MESSAGECENTERKEY,this);
+        messageCenterHelper = new MessageCenterHelper();
+        mSettingPackage = SettingPackage.getInstance();
     }
 
     @Override
@@ -334,7 +363,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
     public void queryLimitResult(RouteRestrictionParam param) {
         Logger.d(TAG, "queryLimitResult success!", "isMainThread:" + (Looper.getMainLooper() == Looper.myLooper()));
         // 限行信息查询成功后更新UI
-        if (limitQueryTaskId == param.getRestrictedArea().getRequestId()) {
+        if (limitQueryTaskId == param.getMRestrictedArea().getMRequestId()) {
             mViewModel.updateLimitInfo(param);
         }
     }
@@ -399,9 +428,25 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
                     mViewModel.startNaviForRouteOver();
                     break;
                 case IVrBridgeConstant.VoiceIntentPage.POI_DETAIL:
+                    //打开poi详情
                     PoiInfoEntity poiInfo = bundle.getParcelable(IVrBridgeConstant.VoiceIntentParams.POI_DETAIL_INFO);
                     if (null != poiInfo) {
                         mViewModel.toPoiDetailFragment(poiInfo);
+                    }
+                    break;
+                case IVrBridgeConstant.VoiceIntentPage.HOME_COMPANY_SET:
+                    //设置家和公司，传入语音搜索关键字，直接发起搜索
+                    int type = bundle.getInt(IVrBridgeConstant.VoiceIntentParams.HOME_COMPANY_TYPE);
+                    String homeCompanyKeyword = bundle.getString(IVrBridgeConstant.VoiceIntentParams.KEYWORD);
+                    if (!TextUtils.isEmpty(homeCompanyKeyword)) {
+                        mViewModel.toHomeCompanyFragment(type, homeCompanyKeyword);
+                    }
+                    break;
+                case IVrBridgeConstant.VoiceIntentPage.SELECT_ROUTE:
+                    if (NaviStatusPackage.getInstance().getCurrentNaviStatus().equals(NaviStatus.NaviStatusType.SELECT_ROUTE)
+                    || NaviStatusPackage.getInstance().getCurrentNaviStatus().equals(NaviStatus.NaviStatusType.NAVING)) {
+                        final int routeIndex = bundle.getInt(IVrBridgeConstant.VoiceIntentParams.ROUTE_INDEX, 0);
+                        RoutePackage.getInstance().selectRoute(MapTypeId.MAIN_SCREEN_MAIN_MAP, routeIndex);
                     }
                     break;
                 default:
@@ -432,24 +477,24 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
                 History uncompletedNavi = mHistoryManager.getUncompletedNavi();
                 Logger.i(TAG, "uncompletedNavi " + uncompletedNavi);
                 if (uncompletedNavi == null) return;
-                if (TextUtils.isEmpty(uncompletedNavi.startPoint)) return;
-                if (TextUtils.isEmpty(uncompletedNavi.endPoint)) return;
-                if (TextUtils.isEmpty(uncompletedNavi.endPoiName)) return;
+                if (TextUtils.isEmpty(uncompletedNavi.getMStartPoint())) return;
+                if (TextUtils.isEmpty(uncompletedNavi.getMEndPoint())) return;
+                if (TextUtils.isEmpty(uncompletedNavi.getMEndPoiName())) return;
 
                 mContinueNaviDialog = new ContinueNaviDialog.Build(context)
-                        .setContent(uncompletedNavi.endPoiName)
+                        .setContent(uncompletedNavi.getMEndPoiName())
                         .setDialogObserver(new IBaseDialogClickListener() {
                             @Override
                             public void onCommitClick() {
                                 dismissContinueNaviDialog();
-                                uncompletedNavi.isCompleted = true;
+                                uncompletedNavi.setMIsCompleted(true);
                                 mHistoryManager.insertOrReplace(uncompletedNavi);
                                 mViewModel.startRoute(getPoiInfoEntity(uncompletedNavi));
                             }
 
                             @Override
                             public void onCancelClick() {
-                                uncompletedNavi.isCompleted = true;
+                                uncompletedNavi.setMIsCompleted(true);
                                 mHistoryManager.insertOrReplace(uncompletedNavi);
                                 dismissContinueNaviDialog();
                             }
@@ -467,11 +512,11 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
 
     private PoiInfoEntity getPoiInfoEntity(History history) {
         PoiInfoEntity poiInfoEntity = new PoiInfoEntity();
-        poiInfoEntity.setName(history.endPoiName);
-        poiInfoEntity.setAddress(history.endPoiName);
+        poiInfoEntity.setName(history.getMEndPoiName());
+        poiInfoEntity.setAddress(history.getMEndPoiName());
         poiInfoEntity.setPoiType(RoutePoiType.ROUTE_POI_TYPE_END);
-        poiInfoEntity.setPid(history.poiId);
-        GeoPoint historyPoint = mapModelHelp.parseGeoPoint(history.endPoint);
+        poiInfoEntity.setPid(history.getMPoiId());
+        GeoPoint historyPoint = mapModelHelp.parseGeoPoint(history.getMEndPoint());
         GeoPoint geoPoint = new GeoPoint();
         geoPoint.setLon(historyPoint.getLon());
         geoPoint.setLat(historyPoint.getLat());
@@ -580,9 +625,29 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
     }
 
     @Override
+    public void notifyAimPoiPushMessage(final MsgPushInfo msg) {
+        if (msg == null){
+            return;
+        }
+        ThreadManager.getInstance().postUi(() -> {
+            Logger.i(TAG, "notifyAimPoiPushMessage " + msg.getName());
+            final PhoneAddressDialog phoneAddressDialog = new PhoneAddressDialog(
+                StackManager.getInstance().getCurrentActivity(MapTypeId.MAIN_SCREEN_MAIN_MAP.name()));
+            phoneAddressDialog.setTitle(msg.getName());
+            phoneAddressDialog.setDialogClickListener(new IBaseDialogClickListener() {
+                @Override
+                public void onCommitClick() {
+                    mViewModel.startRoute(getPoiInfoEntityFromPushMessage(msg));
+                }
+            });
+            phoneAddressDialog.showDialog();
+        });
+    }
+
+    @Override
     public void notifyAimRoutePushMessage(RouteMsgPushInfo routeMsgPushInfo) {
         ThreadManager.getInstance().postUi(() -> {
-            Logger.i(TAG, "notifyAimRoutePushMessage " + routeMsgPushInfo.getName());
+            Logger.i(TAG, "notifyAimRoutePushMessage " + routeMsgPushInfo.getMName());
             switch (getNaviStatus()) {
                 case NaviStatus.NaviStatusType.SELECT_ROUTE,
                      NaviStatus.NaviStatusType.ROUTING,
@@ -603,7 +668,153 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         });
     }
 
+    /**
+     * 手机推送地址转化成PoiInfo
+     * @param msg
+     * @return entity
+     */
+    private PoiInfoEntity getPoiInfoEntityFromPushMessage(final MsgPushInfo msg) {
+        final PoiInfoEntity poiInfoEntity = new PoiInfoEntity();
+        poiInfoEntity.setName(msg.getName());
+        poiInfoEntity.setAddress(msg.getAddress());
+        poiInfoEntity.setPoiType(RoutePoiType.ROUTE_POI_TYPE_END);
+        poiInfoEntity.setPid(msg.getPoiId());
+        GeoPoint geoPoint = new GeoPoint();
+        geoPoint.setLon(msg.getLon());
+        geoPoint.setLat(msg.getLat());
+        poiInfoEntity.setPoint(geoPoint);
+        return poiInfoEntity;
+    }
+
     public void switchMapMode() {
         mapPackage.switchMapMode(mapModelHelp.getMapTypeId());
     }
+
+
+    /**
+     * 地图是否15天未更新
+     */
+    public boolean offlineMap15Day(){
+        final String time = commonManager.getValueByKey(UserDataCode.SETTING_MESSAGE_MAP_CHECK);
+        if(!TextUtils.isEmpty(time)){
+            //超过15天
+            final boolean after15Day = messageCenterHelper.isNotConnectedFor15Days(Long.parseLong(time));
+            if(after15Day) {
+                commonManager.insertOrReplace(UserDataCode.SETTING_MESSAGE_MAP_CHECK,String.valueOf(System.currentTimeMillis()));
+                Logger.i("offlineMap15Day","+++");
+                return true;
+            }
+        }else {
+            commonManager.insertOrReplace(UserDataCode.SETTING_MESSAGE_MAP_CHECK,String.valueOf(System.currentTimeMillis()));
+            Logger.i("offlineMap15Day","----");
+        }
+        return false;
+    }
+
+    /**
+     * 离线地图是否45天未更新
+     */
+    public boolean offlineMap45Day(){
+        if(Boolean.TRUE.equals(NetWorkUtils.Companion.getInstance().checkNetwork())){
+            messageCenterHelper.saveLast45ConnectedTime();
+            return false;
+        }else {
+            //45天未联网
+            return messageCenterHelper.isNotConnectedFor45Days();
+        }
+    }
+
+    /**
+     * 是否显示限行
+     */
+    public boolean showSameDayLimit(){
+      final String limitTime = commonManager.getValueByKey(UserDataCode.SETTING_MESSAGE_LIMIT_TIME);
+      if(!TextUtils.isEmpty(limitTime)){
+            //在判断是否是同一天  同一天的也不显示
+            final String currentDay = TimeUtils.convertYMD();
+            if(!currentDay.equals(limitTime)){
+                commonManager.insertOrReplace(UserDataCode.SETTING_MESSAGE_LIMIT_TIME, currentDay);
+                return true;
+            }
+      }else {
+            commonManager.insertOrReplace(UserDataCode.SETTING_MESSAGE_LIMIT_TIME, TimeUtils.convertYMD());
+            return true;
+      }
+      return false;
+    }
+
+
+    /**
+     * 推送消息
+     * @param messageCenterType 类型
+     * @param title 显示的title
+     */
+    public void managerMessage(final MessageCenterType messageCenterType,final String title){
+        final MessageCenterInfo messageCenterInfo = messageCenterHelper.manageMessage(messageCenterType,title);
+        if(messageCenterInfo!=null){
+            ThreadManager.getInstance().postUi(() -> {
+                messageCenterPackage.pushMessage(messageCenterInfo);
+            });
+        }
+    }
+
+    @Override
+    public void onMessageInfoNotifyCallback(final MessageCenterInfo messageCenterInfo) {
+        mViewModel.onMessageInfoNotifyCallback(messageCenterInfo);
+    }
+
+    @Override
+    public void onMessageInfoRemoveCallback() {
+        mViewModel.onMessageInfoRemoveCallback();
+    }
+
+    /**
+     * 动力类型标定
+     * -1 无效值
+     * 0 汽油车
+     * 1 纯电动车
+     * 2 插电式混动汽车
+     * @return 动力类型
+     */
+    public int powerType() {
+        return mCalibrationPackage.powerType();
+    }
+
+    /**
+     * 检查高德地图权限是否申请或过期
+     */
+    public void checkAuthorizationExpired() {
+        final String endDate = mSettingPackage.getEndDate();
+        boolean isShowDialog = false;
+        if (!TextUtils.isEmpty(endDate)) {
+            final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy年M月d日", Locale.getDefault());
+            try {
+                final Date date = dateFormat.parse(endDate);
+                if (date != null) {
+                    isShowDialog = date.getTime() < System.currentTimeMillis();
+                }
+            } catch (ParseException e) {
+                throw new RuntimeException(e);
+            }
+        } else {
+            isShowDialog = true;
+        }
+        if (!isShowDialog) {
+            return;
+        }
+        final AuthorizationRequestDialog authorizationRequestDialog = new AuthorizationRequestDialog(
+            StackManager.getInstance().getCurrentActivity(MapTypeId.MAIN_SCREEN_MAIN_MAP.name()));
+        authorizationRequestDialog.setEndDate(endDate);
+        authorizationRequestDialog.setDialogClickListener(new IBaseDialogClickListener() {
+            @Override
+            public void onCommitClick() {
+                final LocalDate currentDate = LocalDate.now();
+                final LocalDate oneYearLater = currentDate.plusYears(1);
+                final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy年M月d日");
+                mSettingPackage.setEndDate(oneYearLater.format(formatter));
+            }
+        });
+        authorizationRequestDialog.show();
+    }
+
 }

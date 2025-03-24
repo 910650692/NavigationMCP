@@ -1,7 +1,5 @@
 package com.fy.navi.scene.ui.navi;
 
-import static com.fy.navi.scene.ui.navi.manager.NaviSceneId.NAVI_SCENE_CONTROL;
-
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -26,25 +24,29 @@ import com.fy.navi.service.define.map.MapMode;
 
 /**
  * 底部控制scene
+ * @author fy
+ * @version $Revision.*$
  */
 public class SceneNaviControlView extends NaviSceneBase<SceneNaviControlViewBinding, SceneNaviControlImpl> {
     private static final String TAG = MapDefaultFinalTag.NAVI_HMI_TAG;
+    private ISceneCallback mISceneCallback;
 
-    public SceneNaviControlView(@NonNull Context context) {
+    public SceneNaviControlView(@NonNull final Context context) {
         super(context);
     }
 
-    public SceneNaviControlView(@NonNull Context context, @Nullable AttributeSet attrs) {
+    public SceneNaviControlView(@NonNull final Context context, @Nullable final AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public SceneNaviControlView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public SceneNaviControlView(@NonNull final Context context, @Nullable final AttributeSet attrs,
+                                final int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 
     @Override
     protected NaviSceneId getSceneId() {
-        return NAVI_SCENE_CONTROL;
+        return NaviSceneId.NAVI_SCENE_CONTROL;
     }
 
     @Override
@@ -54,14 +56,14 @@ public class SceneNaviControlView extends NaviSceneBase<SceneNaviControlViewBind
 
     @Override
     protected void init() {
-        NaviSceneManager.getInstance().addNaviScene(NAVI_SCENE_CONTROL, this);
+        NaviSceneManager.getInstance().addNaviScene(NaviSceneId.NAVI_SCENE_CONTROL, this);
     }
 
     @Override
     public void show() {
         super.show();
         if (mISceneCallback != null) {
-            mISceneCallback.updateSceneVisible(NAVI_SCENE_CONTROL, true);
+            mISceneCallback.updateSceneVisible(NaviSceneId.NAVI_SCENE_CONTROL, true);
         }
     }
 
@@ -69,12 +71,13 @@ public class SceneNaviControlView extends NaviSceneBase<SceneNaviControlViewBind
     public void hide() {
         super.hide();
         if (mISceneCallback != null) {
-            mISceneCallback.updateSceneVisible(NAVI_SCENE_CONTROL, false);
+            mISceneCallback.updateSceneVisible(NaviSceneId.NAVI_SCENE_CONTROL, false);
         }
     }
 
     @Override
-    protected SceneNaviControlViewBinding createViewBinding(LayoutInflater inflater, ViewGroup viewGroup) {
+    protected SceneNaviControlViewBinding createViewBinding(final LayoutInflater inflater,
+                                                            final ViewGroup viewGroup) {
         return SceneNaviControlViewBinding.inflate(inflater, viewGroup, true);
     }
 
@@ -92,19 +95,25 @@ public class SceneNaviControlView extends NaviSceneBase<SceneNaviControlViewBind
     protected void initObserver() {
     }
 
-    public void onImmersiveStatusChange(ImersiveStatus currentImersiveStatus) {
+    /**
+     * @param currentImersiveStatus status
+     */
+    public void onImmersiveStatusChange(final ImersiveStatus currentImersiveStatus) {
         if (mScreenViewModel != null) {
             mScreenViewModel.onImmersiveStatusChange(currentImersiveStatus);
         }
     }
 
     @Override
-    public void addSceneCallback(ISceneCallback sceneCallback) {
+    public void addSceneCallback(final ISceneCallback sceneCallback) {
         mISceneCallback = sceneCallback;
         mScreenViewModel.addSceneCallback(sceneCallback);
     }
 
-    public void updateOverview(@NaviConstant.OverviewType int overviewType) {
+    /**
+     * @param overviewType type
+     */
+    public void updateOverview(@NaviConstant.OverviewType final int overviewType) {
         switch (overviewType) {
             case NaviConstant.OverviewType.OVERVIEW_DEFAULT:
                 mViewBinding.stvOverviewSwitch.setText(R.string.navi_overview_switch);
@@ -113,6 +122,8 @@ public class SceneNaviControlView extends NaviSceneBase<SceneNaviControlViewBind
             case NaviConstant.OverviewType.OVERVIEW_FIXED:
                 mViewBinding.stvOverviewSwitch.setText(R.string.navi_overview_out);
                 break;
+            default:
+                break;
         }
     }
 
@@ -120,10 +131,10 @@ public class SceneNaviControlView extends NaviSceneBase<SceneNaviControlViewBind
      * 全览页面控制页面会缩短，这边动态调整
      * @param isShowMoreSet 是否显示更多设置
      */
-    public void changeOverViewControlLength(boolean isShowMoreSet) {
-        Context context = getContext();
-        int dpPixels;
-        ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams)
+    public void changeOverViewControlLength(final boolean isShowMoreSet) {
+        final Context context = getContext();
+        final int dpPixels;
+        final ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams)
                 mViewBinding.sclSettings.getLayoutParams();
         if (isShowMoreSet) {
             dpPixels = context.getResources().getDimensionPixelSize(com.fy.navi.ui.R.dimen.dp_455);
@@ -135,7 +146,10 @@ public class SceneNaviControlView extends NaviSceneBase<SceneNaviControlViewBind
         invalidate();
     }
 
-    public void updateVariation(@NaviConstant.VariationType int type) {
+    /**
+     * @param type type
+     */
+    public void updateVariation(@NaviConstant.VariationType final int type) {
         switch (type) {
             case NaviConstant.VariationType.VARIATION_MUTE:
                 mViewBinding.stvVariation.setText(R.string.navi_mute);
@@ -152,11 +166,16 @@ public class SceneNaviControlView extends NaviSceneBase<SceneNaviControlViewBind
                 mViewBinding.sivVariation.setBackgroundResource(
                         R.drawable.img_off_look_through_black_58);
                 break;
+            default:
+                break;
 
         }
     }
 
-    public void updateBroadcast(@NaviConstant.BroadcastType int type) {
+    /**
+     * @param type type
+     */
+    public void updateBroadcast(@NaviConstant.BroadcastType final int type) {
         switch (type) {
             case NaviConstant.BroadcastType.BROADCAST_CONCISE:
                 mViewBinding.stvBroadcast.setText(R.string.navi_broadcast_concise);
@@ -170,11 +189,16 @@ public class SceneNaviControlView extends NaviSceneBase<SceneNaviControlViewBind
                 mViewBinding.stvBroadcast.setText(R.string.navi_broadcast_minimalism);
                 mViewBinding.sivBroadcast.setBackgroundResource(R.drawable.img_broadcast_brief_58);
                 break;
+            default:
+                break;
 
         }
     }
 
-    public void updateCarModel(MapMode mode) {
+    /**
+     * @param mode 车头朝向类型
+     */
+    public void updateCarModel(final MapMode mode) {
         switch (mode) {
             case NORTH_2D:
                 mViewBinding.stvCarHead.setText(R.string.navi_north_2d);
@@ -188,7 +212,22 @@ public class SceneNaviControlView extends NaviSceneBase<SceneNaviControlViewBind
                 mViewBinding.stvCarHead.setText(R.string.navi_up_3d);
                 mViewBinding.sivCarHead.setBackgroundResource(R.drawable.img_navigation_3d_58);
                 break;
-
+            default:
+                break;
         }
+    }
+
+    /**
+     * 导航继续
+     */
+    public void naviContinue() {
+        mScreenViewModel.naviContinue();
+    }
+
+    /**
+     * @param type 0:退出全览 1:切换全览
+     */
+    public void naviPreviewSwitch(final int type) {
+        mScreenViewModel.naviPreviewSwitch(type);
     }
 }

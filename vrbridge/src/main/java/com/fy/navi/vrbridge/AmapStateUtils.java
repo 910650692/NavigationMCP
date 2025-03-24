@@ -4,6 +4,7 @@ import android.util.Log;
 
 import java.util.HashMap;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.android.utils.gson.GsonUtils;
@@ -13,17 +14,20 @@ import com.baidu.oneos.protocol.SystemStateCons.NaviStateCons;
 import com.fy.navi.vrbridge.bean.MapLocation;
 import com.fy.navi.vrbridge.bean.MapState;
 
-import androidx.annotation.NonNull;
+final public class AmapStateUtils {
 
-public class AmapStateUtils {
+    private AmapStateUtils() {
+
+    }
 
     private static final double X_PI = 3.14159265358979324 * 3000.0 / 180.0;
 
     /**
      * 将高德的视图模式 转换成 语音状态的视图模式
      * @param mode 高德的视图模式(0-2D正北向上，1-2D车头向上，2-3D车头向上)
+     * @return mapViewMode
      */
-    public static int convertMapViewMode(int mode) {
+    public static int convertMapViewMode(final int mode) {
         switch (mode) {
             case 0:
                 return 1;
@@ -39,8 +43,9 @@ public class AmapStateUtils {
     /**
       * 将高德的播报模式 转换成 语音状态的播报模式
       * @param mode 高德的播报模式(2-详细； 4-简洁 6-极简)
+     *  @return 播报模式
       */
-    public static int convertBroadcastMode(int mode) {
+    public static int convertBroadcastMode(final int mode) {
         switch (mode) {
             case 2:
                 return 0;
@@ -56,8 +61,9 @@ public class AmapStateUtils {
     /**
      * 将高德的路线偏好 转换成 语音状态的路线偏好
      * @param preference 高德的路线偏好(0 高德推荐 2：躲避拥堵； 4：避免收费； 8：不走高速； 16：高速优先 32：速度最快  64：大路优先)
+     * @return 道路偏好
      */
-    public static int convertRoadPreference(int preference) {
+    public static int convertRoadPreference(final int preference) {
         switch (preference) {
             case 0:
                 return 1;
@@ -78,108 +84,79 @@ public class AmapStateUtils {
         }
     }
 
-    public static void saveMapState(MapState mapState) {
+    /**
+     * 传端状态
+     * @param mapState 端状态
+     */
+    public static void saveMapState(final MapState mapState) {
         if (null == mapState) {
             return;
         }
 
         JSONObject data = null;
         try {
-            String mapStateStr = GsonUtils.toJson(mapState);
+            final String mapStateStr = GsonUtils.toJson(mapState);
             data = new JSONObject(mapStateStr);
-        } catch (Exception exception) {
+        } catch (JSONException exception) {
             Log.e(IVrBridgeConstant.TAG, "parse mapState error");
         }
         if (null == data) {
             return;
         }
-        HashMap<String, Object> map = new HashMap<>();
+        final HashMap<String, Object> map = new HashMap<>();
         map.put(NaviStateCons.KEY_CURRENT_MAP_TYPE, "A_MAP");
-        if (data.has("openStatus")) {
-            map.put(NaviStateCons.KEY_NAVI_APP_OPENED, data.optBoolean("openStatus"));
-        }
-        if (data.has("isFront")) {
-            map.put(NaviStateCons.KEY_NAVI_APP_FOREGROUND, data.optBoolean("isFront"));
-        }
-        if (data.has("isGPSNavi")) {
-            map.put(NaviStateCons.KEY_IN_NAVIGATION, data.optBoolean("isGPSNavi"));
-        }
-        if (data.has("isCruiseNavi")) {
-            map.put(NaviStateCons.KEY_IN_CRUISE, data.optBoolean("isCruiseNavi"));
-        }
-        if (data.has("currMapMode")) {
-            map.put(NaviStateCons.KEY_PERSPECTIVE_MODE, data.optInt("currMapMode"));
+
+        if (data.has("mCurrMapMode")) {
+            map.put(NaviStateCons.KEY_PERSPECTIVE_MODE, data.optInt("mCurrMapMode"));
         }
 
         boolean isMute = false;
-        if (data.has("isMute")) {
-            isMute = data.optBoolean("isMute");
+        if (data.has("mIsMute")) {
+            isMute = data.optBoolean("mIsMute");
             if (isMute) {
                 map.put(NaviStateCons.KEY_BROADCAST_MODE, 2);
             }
         }
-        if (data.has("broadcastMode")) {
+        if (data.has("mBroadcastMode")) {
             map.put(NaviStateCons.KEY_BROADCAST_MODE, isMute ? 2
-                    : data.optInt("broadcastMode"));
+                    : data.optInt("mBroadcastMode"));
+        }
+        saveMapStateBoolean(map, data);
+        if (data.has("mPathCount")) {
+            map.put(NaviStateCons.KEY_PLANE_ROUTE_NUM, data.optInt("mPathCount"));
+        }
+        if (data.has("mViaPointsCount")) {
+            map.put(NaviStateCons.KEY_PASSING_POINT_NUM, data.optInt("mViaPointsCount"));
+        }
+        if (data.has("mViaPointsMaxCount")) {
+            map.put(NaviStateCons.KEY_PASSING_POINT_MAX_COUNT,
+                    data.optInt("mViaPointsMaxCount"));
         }
 
-        if (data.has("isRoutePage")) {
-            map.put(NaviStateCons.KEY_HAS_PLANE_ROUTE, data.optBoolean("isRoutePage"));
+        if (data.has("mIsParallelFlagMain")) {
+            map.put(NaviStateCons.KEY_ON_MAIN_ROAD, data.optInt("mIsParallelFlagMain"));
         }
-        if (data.has("pathCount")) {
-            map.put(NaviStateCons.KEY_PLANE_ROUTE_NUM, data.optInt("pathCount"));
+
+        if (data.has("mIsParallelBridge")) {
+            map.put(NaviStateCons.KEY_ON_BRIDGE, data.optInt("mIsParallelBridge"));
         }
-        if (data.has("viaPointsCount")) {
-            map.put(NaviStateCons.KEY_PASSING_POINT_NUM, data.optInt("viaPointsCount"));
-        }
-        if (data.has("viaPointsMaxCount")) {
-            map.put(NaviStateCons.KEY_PASSING_POINT_MAX_COUNT,
-                    data.optInt("viaPointsMaxCount"));
-        }
-        if (data.has("isSetHome")) {
-            map.put(NaviStateCons.KEY_SETTED_HOME_ADDRESS, data.optBoolean("isSetHome"));
-        }
-        if (data.has("isSetCompany")) {
-            map.put(NaviStateCons.KEY_SETTED_WORK_ADDRESS, data.optBoolean("isSetCompany"));
-        }
-        if (data.has("isRoadEvent")) {
-            map.put(NaviStateCons.KEY_TRAFFIC_CONDITION_OPENED, data.optBoolean("isRoadEvent"));
-        }
-        if (data.has("isOverView")) {
-            map.put(NaviStateCons.KEY_FULL_VIEW_OPENED, data.optBoolean("isOverView"));
-        }
-        if (data.has("isParallelFlagMain")) {
-            map.put(NaviStateCons.KEY_ON_MAIN_ROAD, data.optInt("isParallelFlagMain"));
-        }
-        if (data.has("switchParallelFlag")) {
-            map.put(NaviStateCons.KEY_MAIN_ROAD_TOGGLEABLE,
-                    data.optBoolean("switchParallelFlag"));
-        }
-        if (data.has("isParallelBridge")) {
-            map.put(NaviStateCons.KEY_ON_BRIDGE, data.optInt("isParallelBridge"));
-        }
-        if (data.has("switchParallelBridge")) {
-            map.put(NaviStateCons.KEY_BRIDGE_TOGGLEABLE, data.optBoolean("switchParallelBridge"));
-        }
-        if (data.has("isListPage")) {
-            map.put(NaviStateCons.KEY_IS_POI_LIST_SHOW, data.optBoolean("isListPage"));
-        }
-        if (data.has("currPlanPref")) {
-            map.put(NaviStateCons.KEY_ROAD_PREFERENCE, data.optInt("currPlanPref"));
+
+        if (data.has("mCurrPlanPref")) {
+            map.put(NaviStateCons.KEY_ROAD_PREFERENCE, data.optInt("mCurrPlanPref"));
         }
         int maxMapSize = -1;
-        if (data.has("maxZoomLevel")) {
-            maxMapSize = data.optInt("maxZoomLevel");
+        if (data.has("mMaxZoomLevel")) {
+            maxMapSize = data.optInt("mMaxZoomLevel");
             map.put(NaviStateCons.KEY_MAX_MAP_SIZE, maxMapSize);
         }
         int minMapSize = -1;
-        if (data.has("minZoomLevel")) {
-            minMapSize = data.optInt("minZoomLevel");
+        if (data.has("mMinZoomLevel")) {
+            minMapSize = data.optInt("mMinZoomLevel");
             map.put(NaviStateCons.KEY_MIN_MAP_SIZE, minMapSize);
         }
         int currMapSize = -1;
-        if (data.has("currZoomLevel")) {
-            currMapSize = data.optInt("currZoomLevel");
+        if (data.has("mCurrZoomLevel")) {
+            currMapSize = data.optInt("mCurrZoomLevel");
             map.put(NaviStateCons.KEY_CURRENT_MAP_SIZE, currMapSize);
         }
         if (currMapSize != -1) {
@@ -190,42 +167,87 @@ public class AmapStateUtils {
                 map.put(NaviStateCons.KEY_MIN_MAP, currMapSize == minMapSize);
             }
         }
-        if (data.has("endPoiName")) {
-            map.put(NaviStateCons.KEY_DEST_NAME, data.optString("endPoiName"));
+        if (data.has("mEndPoiName")) {
+            map.put(NaviStateCons.KEY_DEST_NAME, data.optString("mEndPoiName"));
         }
-        if (data.has("endPoiCity")) {
-            map.put(NaviStateCons.KEY_DEST_CITY, data.optString("endPoiCity"));
+        if (data.has("mEndPoiCity")) {
+            map.put(NaviStateCons.KEY_DEST_CITY, data.optString("mEndPoiCity"));
         }
-        if (data.has("isDayWithMapStyle")) {
-            map.put(NaviStateCons.KEY_DAY_MODE, data.optBoolean("isDayWithMapStyle"));
+
+        if (data.has("mMaxVolumeLevel")) {
+            map.put(NaviStateCons.KEY_MAX_VOLUME, data.optInt("mMaxVolumeLevel"));
         }
-        if (data.has("hasPrivacyPermission")) {
-            map.put(NaviStateCons.KEY_PRIVACY_ACCEPTED,
-                    data.optBoolean("hasPrivacyPermission"));
+        if (data.has("mCurrentVolumeLevel")) {
+            map.put(NaviStateCons.KEY_CURRENT_VOLUME, data.optInt("mCurrentVolumeLevel"));
         }
-        if (data.has("maxVolumeLevel")) {
-            map.put(NaviStateCons.KEY_MAX_VOLUME, data.optInt("maxVolumeLevel"));
-        }
-        if (data.has("currentVolumeLevel")) {
-            map.put(NaviStateCons.KEY_CURRENT_VOLUME, data.optInt("currentVolumeLevel"));
-        }
-        if (data.has("isLogin")) {
-            map.put(NaviStateCons.KEY_IS_LOGIN, data.optBoolean("isLogin"));
-        }
-        if (data.has("isAgreeTeamAgreement")) {
-            map.put(NaviStateCons.KEY_ACCEPTED_TEAM_AGREEMENT, data.optBoolean("isAgreeTeamAgreement"));
-        }
-        if (data.has("isInTeam")) {
-            map.put(NaviStateCons.KEY_IN_TEAM, data.optBoolean("isInTeam"));
-        }
-        if (data.has("isTeamLeader")) {
-            map.put(NaviStateCons.KEY_TEAM_LEADER, data.optBoolean("isTeamLeader"));
-        }
+
         map.put(NaviStateCons.KEY_CURRENT_MAP_TYPE, "A_MAP");
         try {
             BridgeSdk.getInstance().getRemote(IStateManager.class).updateNaviState(map);
-        } catch (Exception e) {
+        } catch (ClassCastException e) {
             Log.e(IVrBridgeConstant.TAG, "updateNaviState: " + Log.getStackTraceString(e));
+        }
+    }
+
+    /**
+     * saveMapStateBoolean
+     * @param map map
+     * @param data data
+     */
+    private static void saveMapStateBoolean(final HashMap<String, Object> map, final JSONObject data) {
+        if (data.has("mOpenStatus")) {
+            map.put(NaviStateCons.KEY_NAVI_APP_OPENED, data.optBoolean("mOpenStatus"));
+        }
+        if (data.has("mIsFront")) {
+            map.put(NaviStateCons.KEY_NAVI_APP_FOREGROUND, data.optBoolean("mIsFront"));
+        }
+        if (data.has("mIsGPSNavi")) {
+            map.put(NaviStateCons.KEY_IN_NAVIGATION, data.optBoolean("mIsGPSNavi"));
+        }
+        if (data.has("mIsCruiseNavi")) {
+            map.put(NaviStateCons.KEY_IN_CRUISE, data.optBoolean("mIsCruiseNavi"));
+        }
+        if (data.has("mIsRoutePage")) {
+            map.put(NaviStateCons.KEY_HAS_PLANE_ROUTE, data.optBoolean("mIsRoutePage"));
+        }
+        if (data.has("mIsSetHome")) {
+            map.put(NaviStateCons.KEY_SETTED_HOME_ADDRESS, data.optBoolean("mIsSetHome"));
+        }
+        if (data.has("mIsSetCompany")) {
+            map.put(NaviStateCons.KEY_SETTED_WORK_ADDRESS, data.optBoolean("mIsSetCompany"));
+        }
+        if (data.has("mIsRoadEvent")) {
+            map.put(NaviStateCons.KEY_TRAFFIC_CONDITION_OPENED, data.optBoolean("mIsRoadEvent"));
+        }
+        if (data.has("mIsOverView")) {
+            map.put(NaviStateCons.KEY_FULL_VIEW_OPENED, data.optBoolean("mIsOverView"));
+        }
+        if (data.has("mSwitchParallelFlag")) {
+            map.put(NaviStateCons.KEY_MAIN_ROAD_TOGGLEABLE, data.optBoolean("mSwitchParallelFlag"));
+        }
+        if (data.has("mSwitchParallelBridge")) {
+            map.put(NaviStateCons.KEY_BRIDGE_TOGGLEABLE, data.optBoolean("mSwitchParallelBridge"));
+        }
+        if (data.has("mIsListPage")) {
+            map.put(NaviStateCons.KEY_IS_POI_LIST_SHOW, data.optBoolean("mIsListPage"));
+        }
+        if (data.has("mIsLogin")) {
+            map.put(NaviStateCons.KEY_IS_LOGIN, data.optBoolean("mIsLogin"));
+        }
+        if (data.has("mIsAgreeTeamAgreement")) {
+            map.put(NaviStateCons.KEY_ACCEPTED_TEAM_AGREEMENT, data.optBoolean("mIsAgreeTeamAgreement"));
+        }
+        if (data.has("mIsInTeam")) {
+            map.put(NaviStateCons.KEY_IN_TEAM, data.optBoolean("mIsInTeam"));
+        }
+        if (data.has("mIsTeamLeader")) {
+            map.put(NaviStateCons.KEY_TEAM_LEADER, data.optBoolean("mIsTeamLeader"));
+        }
+        if (data.has("mIsDayWithMapStyle")) {
+            map.put(NaviStateCons.KEY_DAY_MODE, data.optBoolean("mIsDayWithMapStyle"));
+        }
+        if (data.has("mHasPrivacyPermission")) {
+            map.put(NaviStateCons.KEY_PRIVACY_ACCEPTED, data.optBoolean("mHasPrivacyPermission"));
         }
     }
 
@@ -236,44 +258,50 @@ public class AmapStateUtils {
      *             "bearing":0,"resultCode":10000,"accuracy":0,"lon":116.39747,"type":0,"sourceFlag":1,
      *             "speed":0,"lat":39.9088229}
      */
-    public static void saveMapLocation(MapLocation mapLocation) {
+    public static void saveMapLocation(final MapLocation mapLocation) {
         if (null == mapLocation) {
             return;
         }
 
         JSONObject data = null;
         try {
-            String mapLocationStr = GsonUtils.toJson(mapLocation);
+            final String mapLocationStr = GsonUtils.toJson(mapLocation);
             data = new JSONObject(mapLocationStr);
-        } catch (Exception exception) {
+        } catch (JSONException exception) {
             Log.e(IVrBridgeConstant.TAG, "parse mapLocation error");
         }
         if (null == data) {
             return;
         }
-        HashMap<String, Object> map = new HashMap<>();
+        final HashMap<String, Object> map = new HashMap<>();
         map.put("provider", data.optString("provider"));
         map.put("speed", data.optInt("speed"));
         map.put("bearing", data.optInt("bearing"));
-        double lon = data.optDouble("lon"); // 经度
-        double lat = data.optDouble("lat"); // 纬度
-        double[] doubles = gcj02ToBd09(lat, lon);
+        final double lon = data.optDouble("lon"); // 经度
+        final double lat = data.optDouble("lat"); // 纬度
+        final double[] doubles = gcj02ToBd09(lat, lon);
         map.put("lon", doubles[1]); // 返回Bd09坐标系的经纬度
         map.put("lat", doubles[0]);
         try {
             BridgeSdk.getInstance().getRemote(IStateManager.class).updateNaviLocation(map);
-        } catch (Exception e) {
+        } catch (ClassCastException e) {
             Log.e(IVrBridgeConstant.TAG, "updateNaviLocation: " + Log.getStackTraceString(e));
         }
     }
 
-    private static double[] gcj02ToBd09(double lat, double lon) {
-        double x = lon;
-        double y = lat;
-        double z = Math.sqrt(x * x + y * y) + 0.00002 * Math.sin(y * X_PI);
-        double theta = Math.atan2(y, x) + 0.000003 * Math.cos(x * X_PI);
-        double tempLon = z * Math.cos(theta) + 0.0065;
-        double tempLat = z * Math.sin(theta) + 0.006;
+    /**
+     * gcj02ToBd09
+     * @param lat 纬度
+     * @param lon 经度
+     * @return double
+     */
+    private static double[] gcj02ToBd09(final double lat, final double lon) {
+        final double x = lon;
+        final double y = lat;
+        final double z = Math.sqrt(x * x + y * y) + 0.00002 * Math.sin(y * X_PI);
+        final double theta = Math.atan2(y, x) + 0.000003 * Math.cos(x * X_PI);
+        final double tempLon = z * Math.cos(theta) + 0.0065;
+        final double tempLat = z * Math.sin(theta) + 0.006;
         return new double[]{tempLat, tempLon};
     }
 }

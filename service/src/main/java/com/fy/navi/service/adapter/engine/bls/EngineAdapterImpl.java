@@ -134,6 +134,11 @@ public class EngineAdapterImpl implements IEngineApi {
         return MapEngineID.MapEngineIdInvalid;
     }
 
+    @Override
+    public String styleBlPath(MapTypeId mapId) {
+        return GBLCacheFilePath.BLS_ASSETS_LAYER_PATH + "style_bl.json";
+    }
+
     private ListenableWorker.Result startInitEngine() {
         if (isActive) return ListenableWorker.Result.success();
         int overDue = isOverdue();
@@ -210,7 +215,7 @@ public class EngineAdapterImpl implements IEngineApi {
 
         FileUtils.getInstance().createDir(baseInitParam.logPath);
         Logger.i(TAG, "create log file path", baseInitParam.logPath);
-        int result = ServiceMgr.getServiceMgrInstance().initBaseLibs(baseInitParam, AppContext.mApplication);
+        int result = ServiceMgr.getServiceMgrInstance().initBaseLibs(baseInitParam, AppContext.getInstance().getMApplication());
         Logger.i(TAG, "initEngineParam result", result);
         return result;
     }
@@ -236,7 +241,7 @@ public class EngineAdapterImpl implements IEngineApi {
 
         FileUtils.getInstance().createDir(blInitParam.dataPath.onlinePath);
         Logger.i(TAG, "create online file path", blInitParam.dataPath.onlinePath);
-        int result = ServiceMgr.getServiceMgrInstance().initBL(blInitParam, AppContext.mApplication);
+        int result = ServiceMgr.getServiceMgrInstance().initBL(blInitParam, AppContext.getInstance().getMApplication());
         Logger.i(TAG, "initSDKParam", result);
         return result;
     }
@@ -304,7 +309,7 @@ public class EngineAdapterImpl implements IEngineApi {
 
             @SuppressLint("HardwareIds")
             String androidId = Settings.Secure.getString(
-                    AppContext.mContext.getContentResolver(),
+                    AppContext.getInstance().getMContext().getContentResolver(),
                     Settings.Secure.ANDROID_ID
             );
             /**< diu 设备唯一号,android--imei, ios--IDFV必须设置,从系统获取，若不足32位用零补齐 */

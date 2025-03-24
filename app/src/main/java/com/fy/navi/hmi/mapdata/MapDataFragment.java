@@ -1,7 +1,9 @@
 package com.fy.navi.hmi.mapdata;
 
 import android.annotation.SuppressLint;
+import android.os.Bundle;
 import android.view.View;
+import android.view.Window;
 
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -14,29 +16,24 @@ import com.fy.navi.hmi.R;
 import com.fy.navi.hmi.databinding.FragmentMapDataBinding;
 import com.fy.navi.hmi.mapdata.adapter.MapDataAdapter;
 import com.fy.navi.hmi.mapdata.adapter.MuliteRecycleAdapter;
-import com.fy.navi.hmi.mapdata.adapter.WorkedQueueAdapter;
-import com.fy.navi.hmi.mapdata.adapter.WorkingQueueAdapter;
 import com.fy.navi.hmi.utils.StringUtils;
 import com.fy.navi.service.define.code.UserDataCode;
 import com.fy.navi.service.define.mapdata.CityDataInfo;
 import com.fy.navi.service.define.mapdata.ProvDataInfo;
 import com.fy.navi.ui.base.BaseFragment;
+import com.fy.navi.ui.dialog.IBaseDialogClickListener;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * @Description 离线数据页面
- * @Author fh
- * @date 2024/12/09
- */
 public class MapDataFragment extends BaseFragment<FragmentMapDataBinding, MapDataViewModel> {
     private static final String TAG = MapDataFragment.class.getName();
+    private GridLayoutManager manager;
     private MapDataAdapter mapDataAdapter;
-    private List<MuliteRecycleAdapter.DataTree<String, String>> dataList = new ArrayList<>();
-    private WorkingQueueAdapter workingQueueAdapter;
-    private WorkedQueueAdapter workedQueueAdapter;
+    private final List<MuliteRecycleAdapter.DataTree<String, String>> mDataList = new ArrayList<>();
+    private DownloadCountryDialog mDownloadCountryDialog;
+    private boolean mIsCheck = false;
 
     @Override
     public int onLayoutId() {
@@ -52,29 +49,36 @@ public class MapDataFragment extends BaseFragment<FragmentMapDataBinding, MapDat
     public void onInitView() {
         // 初始化全部地图列表
         initMapDataView();
-        // 初始化下载管理列表
-//        initWorkingQueueView();
     }
 
     @Override
     public void onInitData() {
+        final Bundle bundle = getArguments();
+        if(bundle != null){
+            mIsCheck = bundle.getBoolean("isCheck", false);
+        } else {
+            Logger.e("bundle is null");
+        }
         if (mViewModel != null) {
-            mViewModel.getAllProvinceData();
+            mViewModel.getAllProvinceData(mIsCheck);
         }
     }
 
+    /**
+     * 初始化离线view
+     */
     private void initMapDataView() {
         mapDataAdapter = new MapDataAdapter(getActivity());
         mBinding.rvOffline.setLayoutManager(new LinearLayoutManager(getActivity()));
         mBinding.rvOffline.setItemAnimator(null);
-        mapDataAdapter.setData(dataList);
+        mapDataAdapter.setData(mDataList);
         mBinding.rvOffline.setAdapter(mapDataAdapter);
 
         //以下是对布局进行控制，让省份占一行，城市占两列，效果相当于一个listView嵌套gridView的效果
-        GridLayoutManager manager = new GridLayoutManager(getActivity(),1);
+         manager = new GridLayoutManager(getActivity(),1);
         manager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override
-            public int getSpanSize(int position) {
+            public int getSpanSize(final int position) {
                 return 1;
                 /*return mapDataAdapter.getItemViewType(position)
                         == MuliteRecycleAdapter.ItemStatus.VIEW_TYPE_GROUP_ITEM ? 2 : 1;*/
@@ -84,18 +88,27 @@ public class MapDataFragment extends BaseFragment<FragmentMapDataBinding, MapDat
 
         mapDataAdapter.setOfflineItemListener(new MapDataAdapter.OfflineItemListener() {
             @Override
-            public void startAllTask(ArrayList<Integer> cityAdCodes) {
+            public void startAllTask(final ArrayList<Integer> cityAdCodes) {
                 Logger.d(TAG, "startAllTask");
+
                 if (mViewModel != null) {
                     mViewModel.startAllTask(cityAdCodes);
                 }
             }
 
             @Override
-            public void pauseAllTask(ArrayList<Integer> cityAdCodes) {
+            public void pauseAllTask(final ArrayList<Integer> cityAdCodes) {
                 Logger.d(TAG, "pauseAllTask");
                 if (mViewModel != null) {
                     mViewModel.pauseAllTask(cityAdCodes);
+                }
+            }
+
+            @Override
+            public void deleteAllTask(final ArrayList<Integer> cityAdCodes) {
+                Logger.d(TAG, "deleteAllTask");
+                if (mViewModel != null) {
+                    mViewModel.deleteAllTask(cityAdCodes);
                 }
             }
 
@@ -110,65 +123,35 @@ public class MapDataFragment extends BaseFragment<FragmentMapDataBinding, MapDat
 
     }
 
-   /* private void initWorkingQueueView() {
-        //下载/更新中列表
-        workingQueueAdapter = new WorkingQueueAdapter();
-        workingQueueAdapter.setItemClickListener(new WorkingQueueAdapter.OnItemClickListener() {
-
-            @Override
-            public void onItemSuspendClick(int index) {
-
-            }
-
-        });
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
-        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        mBinding.rvDownloadingOffline.setLayoutManager(layoutManager);
-        mBinding.rvDownloadingOffline.setAdapter(workingQueueAdapter);
-
-        //已下载列表
-        workedQueueAdapter = new WorkedQueueAdapter();
-        workedQueueAdapter.setItemClickListener(new WorkedQueueAdapter.OnItemClickListener() {
-
-            @Override
-            public void onItemDeleteClick(ArrayList<Integer> cityAdCodes) {
-                Logger.d(TAG, "deleteAllTask");
-                // 删除对应的已下载数据
-                if (mViewModel != null) {
-                    mViewModel.deleteAllTask(1, cityAdCodes);
-                }
-            }
-
-        });
-        LinearLayoutManager layoutManager1 = new LinearLayoutManager(getActivity());
-        layoutManager1.setOrientation(LinearLayoutManager.VERTICAL);
-        mBinding.rvDownloadedOffline.setLayoutManager(layoutManager1);
-        mBinding.rvDownloadedOffline.setAdapter(workedQueueAdapter);
-    }*/
-
-    // 显示全部省份+城市信息
-    public void updateMapDataView(List<ProvDataInfo> provinceBeans) {
+    /**
+     * 显示全部省份+城市信息
+     * @param provinceBeans
+     */
+    public void updateMapDataView(final List<ProvDataInfo> provinceBeans) {
         ThreadManager.getInstance().postUi(() -> {
-            dataList.clear();
+            mDataList.clear();
             if (provinceBeans != null && !provinceBeans.isEmpty()) {
                 for (int i = 0; i < provinceBeans.size(); i++) {
-                    List<CityDataInfo> city = provinceBeans.get(i).cityInfoList;
-                    dataList.add(new MuliteRecycleAdapter.DataTree<>(provinceBeans.get(i).name, city));
+                    final List<CityDataInfo> city = provinceBeans.get(i).getCityInfoList();
+                    mDataList.add(new MuliteRecycleAdapter.DataTree<>(provinceBeans.get(i).getName(), city));
                 }
-                mapDataAdapter.notifyNewData(dataList);
+                mapDataAdapter.notifyNewData(mDataList);
             }
         });
     }
 
-    //更新数据列表下载进度&状态
-    public void notifyMapDataChangeView(ProvDataInfo info) {
+    /**
+     * 更新数据列表下载进度&状态
+     * @param info
+     */
+    public void notifyMapDataChangeView(final ProvDataInfo info) {
         ThreadManager.getInstance().postUi(() -> {
-            CityDataInfo cityDataInfo = info.cityInfoList.get(0);
+           final CityDataInfo cityDataInfo = info.getCityInfoList().get(0);
             Logger.d(TAG, "notifyMapDataChangeView  cityDataInfo = " + GsonUtils.toJson(cityDataInfo));
             for (int i = 0; i < mapDataAdapter.getData().size(); i++) {
                 for (int j = 0; j < mapDataAdapter.getSubItem(i).size(); j++) {
-                    if (mapDataAdapter.getSubItem(i).get(j).adcode == cityDataInfo.adcode) {
-                        Logger.d(TAG, "notifyMapDataPercent  cityDataInfo.adcode = " + cityDataInfo.adcode);
+                    if (mapDataAdapter.getSubItem(i).get(j).getAdcode() == cityDataInfo.getAdcode()) {
+                        Logger.d(TAG, "notifyMapDataPercent  cityDataInfo.adcode = " + cityDataInfo.getAdcode());
                         mapDataAdapter.getSubItem(i).set(j, cityDataInfo);
                         mapDataAdapter.notifyDataSetChanged();
                         break;
@@ -178,112 +161,125 @@ public class MapDataFragment extends BaseFragment<FragmentMapDataBinding, MapDat
         });
     }
 
-    // 显示当前城市信息
-    public void updateCurrentCityView(CityDataInfo info) {
-        ThreadManager.getInstance().postUi(() -> {
-            if (info != null && info.downLoadInfo != null) {
-                String sizeString = StringUtils.formatSize(info.downLoadInfo.nFullZipSize);
-                mBinding.currentCityData.setText(info.name + "   " + sizeString);
-                mBinding.currentCityStatusTip.setText(info.downLoadInfo.statusTip);
-
-                //已下载状态显示
-                if (info.downLoadInfo.taskState == UserDataCode.TASK_STATUS_CODE_SUCCESS) {
-                    mBinding.downloadView.setAlpha(0.3f);
-                    mBinding.downloadView.setEnabled(false);
-                    mBinding.currentCityStatus.setVisibility(View.GONE);
-                } else {
-                    mBinding.downloadView.setAlpha(1.0f);
-                    mBinding.downloadView.setEnabled(true);
-                    mBinding.currentCityStatus.setVisibility(View.VISIBLE);
-                }
-
-            }
-        });
-    }
-
-    // 显示基础功能包信息
-    public void updateCountryDataView(CityDataInfo info) {
-        ThreadManager.getInstance().postUi(() -> {
-            if (info != null && info.downLoadInfo != null) {
-                mBinding.countryCityName.setText(info.name);
-                String sizeString = StringUtils.formatSize(info.downLoadInfo.nFullZipSize);
-                mBinding.countryDataCount.setText(sizeString);
-                if (info.downLoadInfo.statusTip.equals("下载中")) {
-                    mBinding.countryStatusTip.setText(info.downLoadInfo.statusTip + info.downLoadInfo.percent);
-                } else {
-                    mBinding.countryStatusTip.setText(info.downLoadInfo.statusTip);
-                }
-
-                //已下载状态显示
-                if (info.downLoadInfo.taskState == UserDataCode.TASK_STATUS_CODE_SUCCESS) {
-                    mBinding.downloadStatus.setAlpha(0.3f);
-                    mBinding.downloadStatus.setEnabled(false);
-                    mBinding.countryStatus.setVisibility(View.GONE);
-                } else {
-                    mBinding.downloadStatus.setAlpha(1.0f);
-                    mBinding.downloadStatus.setEnabled(true);
-                    mBinding.countryStatus.setVisibility(View.VISIBLE);
-                }
-
-            }
-        });
-    }
-
-    // 显示下载中/更新中/暂停等状态信息
-    public void updateWorkingView(ArrayList<CityDataInfo> downloadingList) {
-        ThreadManager.getInstance().postUi(() -> {
-           /* if (downloadingList != null) {
-                workingQueueAdapter.setData(downloadingList);
-            } else {
-                // TODO: 2025/2/27
-            }*/
-        });
-    }
-
-    // 显示已下载信息
-    public void updateWorkedView(ArrayList<CityDataInfo> downloadedList) {
-        ThreadManager.getInstance().postUi(() -> {
-           /* if (downloadedList != null) {
-                workedQueueAdapter.setData(downloadedList);
-            } else {
-                // TODO: 2025/2/27
-            }*/
-        });
-    }
-
-    // 显示附近城市推荐信息
+    /**
+     * 显示当前城市信息
+     * @param info
+     */
     @SuppressLint("SetTextI18n")
-    public void updateNearDataView(ArrayList<CityDataInfo> nearList) {
+    public void updateCurrentCityView(final CityDataInfo info) {
+        ThreadManager.getInstance().postUi(() -> {
+            if (info != null && info.getDownLoadInfo() != null) {
+                final String sizeString = StringUtils.formatSize(info.getDownLoadInfo().getFullZipSize());
+                mBinding.currentCityData.setText(info.getName() + "   " + sizeString);
+                mBinding.downloadView.parseDownloadStatusInfo(info.getDownLoadInfo());
+            }
+        });
+    }
+
+    /**
+     * 更新当前城市下载按钮状态
+     * @param info
+     */
+    public void notifyCurrentCityView(final CityDataInfo info) {
+        ThreadManager.getInstance().postUi(() -> {
+            final CityDataInfo currentInfo = mViewModel.getCurrentCityInfo();
+            if (info.getAdcode() == currentInfo.getAdcode()) {
+                mBinding.downloadView.parseDownloadStatusInfo(info.getDownLoadInfo());
+            }
+        });
+    }
+
+    /**
+     * 显示基础功能包信息
+     * @param info
+     */
+    public void updateCountryDataView(final CityDataInfo info) {
+        ThreadManager.getInstance().postUi(() -> {
+            final CityDataInfo countryInfo = mViewModel.getCountryData();
+            if (info.getAdcode() == countryInfo.getAdcode()) {
+                if (info.getDownLoadInfo() != null) {
+                    //城市下载状态
+                    //非已下载状态，禁止侧滑删除
+                    if (info.getDownLoadInfo().getTaskState() == UserDataCode.TASK_STATUS_CODE_SUCCESS) {
+                        mBinding.swipeMenuLayout.setSwipeEnabled(true);
+                    } else {
+                        mBinding.swipeMenuLayout.setSwipeEnabled(false);
+                        mBinding.swipeMenuLayout.smoothClose();
+                    }
+
+                    mBinding.countryCityName.setText(info.getName());
+                    //城市数据包大小
+                    final String sizeString = StringUtils.formatSize(info.getDownLoadInfo().getFullZipSize());
+                    mBinding.countryDataCount.setText(sizeString);
+                    // 下载按钮状态
+                    mBinding.countryDownloadView.parseDownloadStatusInfo(info.getDownLoadInfo());
+                }
+            }
+        });
+    }
+
+    /**
+     * 是否显示下载管理view
+     * @param downloadingList
+     */
+    public void updateWorkingView(final ArrayList<CityDataInfo> downloadingList,
+                                  final ArrayList<CityDataInfo> downloadedList) {
+        ThreadManager.getInstance().postUi(() -> {
+            if ((downloadingList != null && !downloadingList.isEmpty())
+                    || (downloadedList!= null &&!downloadedList.isEmpty())) {
+                mBinding.managerDataView.setVisibility(View.VISIBLE);
+            } else {
+                mBinding.managerDataView.setVisibility(View.GONE);
+            }
+        });
+    }
+
+    /**
+     * 显示附近城市推荐信息
+     * @param nearList
+     */
+    @SuppressLint("SetTextI18n")
+    public void updateNearDataView(final ArrayList<CityDataInfo> nearList) {
         ThreadManager.getInstance().postUi(() -> {
             int count = 0;
             BigInteger sum  = BigInteger.ZERO;
             if (nearList != null && !nearList.isEmpty()) {
                 count = nearList.size();
                 for (CityDataInfo info : nearList) {
-                    sum =  sum.add(info.downLoadInfo.nFullZipSize);
+                    sum =  sum.add(info.getDownLoadInfo().getFullZipSize());
                 }
             }
-            String sizeString = StringUtils.formatSize(sum);
-            mBinding.tvNearDataCount.setText(count + "个城市  共" + sizeString);
+            mBinding.tvNearDataCount.setText(count + "个城市  共" + StringUtils.formatSize(sum));
         });
     }
 
-    /*public void updateMapDataTab(int type) {
-        if (type == 1) { //全部地图
-            mBinding.tvOfflineAllData.setTextColor(getResources().getColor(R.color.offline_black));
-            mBinding.offlineAllDataLine.setVisibility(View.VISIBLE);
-            mBinding.tvOfflineDownloadAdministration.setTextColor(getResources().getColor(R.color.setting_tab_gray));
-            mBinding.downloadAdministrationLine.setVisibility(View.INVISIBLE);
-            mBinding.viewAllData.setVisibility(View.VISIBLE);
-            mBinding.viewAdministration.setVisibility(View.GONE);
-        } else if (type == 2) { // 下载管理
-            mBinding.tvOfflineAllData.setTextColor(getResources().getColor(R.color.setting_tab_gray));
-            mBinding.offlineAllDataLine.setVisibility(View.INVISIBLE);
-            mBinding.tvOfflineDownloadAdministration.setTextColor(getResources().getColor(R.color.offline_black));
-            mBinding.downloadAdministrationLine.setVisibility(View.VISIBLE);
-            mBinding.viewAllData.setVisibility(View.GONE);
-            mBinding.viewAdministration.setVisibility(View.VISIBLE);
-        }
-    }*/
+    /**
+     * 是否首次下载基础功能包提示
+     */
+    public void showCountryMapDataDialog() {
+        mDownloadCountryDialog = new DownloadCountryDialog.Build(getContext())
+                .setDialogObserver(new IBaseDialogClickListener() {
+                    @Override
+                    public void onCommitClick() {
 
+                    }
+
+                    @Override
+                    public void onCancelClick() {
+
+                    }
+                }).build();
+        clearBackground(mDownloadCountryDialog.getWindow());
+        mDownloadCountryDialog.show();
+    }
+
+    /**
+     * 清除弹窗背景
+     * @param window
+     */
+    private void clearBackground(final Window window) {
+        if (window != null) {
+            window.setDimAmount(0f);
+        }
+    }
 }

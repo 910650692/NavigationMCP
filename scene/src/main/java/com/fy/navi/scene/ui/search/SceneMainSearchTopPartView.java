@@ -12,7 +12,6 @@ import androidx.fragment.app.Fragment;
 
 import com.alibaba.android.arouter.launcher.ARouter;
 import com.fy.navi.scene.BaseSceneView;
-import com.fy.navi.scene.R;
 import com.fy.navi.scene.RoutePath;
 import com.fy.navi.scene.databinding.SceneMainSearchBarBinding;
 import com.fy.navi.scene.impl.search.SceneMainSearchViewImpl;
@@ -23,27 +22,28 @@ import com.fy.navi.ui.view.SkinImageView;
 import com.fy.navi.ui.view.SkinTextView;
 
 /**
- * @Author: baipeng0904
+ * @author baipeng0904
+ * @version \$Revision1.0\$
  * @Description: 搜索主页面 scene
  * @CreateDate: $ $
  */
 public class SceneMainSearchTopPartView extends BaseSceneView<SceneMainSearchBarBinding, SceneMainSearchViewImpl> {
-    private String[] categories;
+    private String[] mCategories;
 
-    public SceneMainSearchTopPartView(@NonNull Context context) {
+    public SceneMainSearchTopPartView(@NonNull final Context context) {
         super(context);
     }
 
-    public SceneMainSearchTopPartView(@NonNull Context context, @Nullable AttributeSet attrs) {
+    public SceneMainSearchTopPartView(@NonNull final Context context, @Nullable final AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public SceneMainSearchTopPartView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public SceneMainSearchTopPartView(@NonNull final Context context, @Nullable final AttributeSet attrs, final int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 
     @Override
-    protected SceneMainSearchBarBinding createViewBinding(LayoutInflater inflater, ViewGroup viewGroup) {
+    protected SceneMainSearchBarBinding createViewBinding(final LayoutInflater inflater, final ViewGroup viewGroup) {
         return SceneMainSearchBarBinding.inflate(inflater, viewGroup, true);
     }
 
@@ -60,35 +60,43 @@ public class SceneMainSearchTopPartView extends BaseSceneView<SceneMainSearchBar
     @Override
     protected void initObserver() {
         mViewBinding.searchBarTextView.setOnClickListener(v -> {
-            Fragment fragment = (Fragment) ARouter.getInstance()
+            final Fragment fragment = (Fragment) ARouter.getInstance()
                     .build(RoutePath.Search.SUGGESTION_FRAGMENT)
                     .navigation();
-            addFragment((BaseFragment) fragment, SearchFragmentFactory.createSugFragment(AutoMapConstant.SourceFragment.MAIN_SEARCH_FRAGMENT, AutoMapConstant.SearchType.SEARCH_SUGGESTION));
+            addFragment((BaseFragment) fragment, SearchFragmentFactory.createSugFragment(
+                    AutoMapConstant.SourceFragment.MAIN_SEARCH_FRAGMENT, AutoMapConstant.SearchType.SEARCH_SUGGESTION));
         });
     }
 
-    public void onClickQuickSearch(int position) {
-        int searchType = (position == 4) ? AutoMapConstant.SearchType.AROUND_SEARCH : AutoMapConstant.SearchType.SEARCH_KEYWORD;
+    /**
+     * 设置快捷点击事件
+     * @param position 点击位置下标
+     */
+    public void onClickQuickSearch(final int position) {
+        final int searchType = (position == 4) ? AutoMapConstant.SearchType.AROUND_SEARCH : AutoMapConstant.SearchType.SEARCH_KEYWORD;
         if (position == 4) {
-            Fragment fragment = (Fragment) ARouter.getInstance()
+            final Fragment fragment = (Fragment) ARouter.getInstance()
                     .build(RoutePath.Search.AROUND_SEARCH_FRAGMENT)
                     .navigation();
             addFragment((BaseFragment) fragment, SearchFragmentFactory.createAroundFragment(null));
         } else {
-            Fragment fragment = (Fragment) ARouter.getInstance()
+            final Fragment fragment = (Fragment) ARouter.getInstance()
                     .build(RoutePath.Search.SEARCH_RESULT_FRAGMENT)
                     .navigation();
-            addFragment((BaseFragment) fragment, SearchFragmentFactory.createKeywordFragment(AutoMapConstant.SourceFragment.MAIN_SEARCH_FRAGMENT, searchType, categories[position], null));
+            addFragment((BaseFragment) fragment, SearchFragmentFactory.createKeywordFragment(
+                    AutoMapConstant.SourceFragment.MAIN_SEARCH_FRAGMENT, searchType, mCategories[position], null));
         }
     }
 
     /**
      * 设置 SkinTextView 的内容
+     * @param categories 类别数组
+     * @param iconArray 图标数组
      */
-    public void setSkinTextViews(String[] categories, TypedArray iconArray) {
-        this.categories = categories;
+    public void setSkinTextViews(final String[] categories, final TypedArray iconArray) {
+        this.mCategories = categories;
         if (mViewBinding != null) {
-            SkinTextView[] skinTextViews = {
+            final SkinTextView[] skinTextViews = {
                     mViewBinding.tvGasStation,
                     mViewBinding.tvPullUp,
                     mViewBinding.tvGourmet,
@@ -99,7 +107,7 @@ public class SceneMainSearchTopPartView extends BaseSceneView<SceneMainSearchBar
                 skinTextViews[i].setText(categories[i]);
             }
 
-            SkinImageView[] skinImgViews = {
+            final SkinImageView[] skinImgViews = {
                     mViewBinding.ivGasStation,
                     mViewBinding.ivPullUp,
                     mViewBinding.ivGourmet,
@@ -107,7 +115,7 @@ public class SceneMainSearchTopPartView extends BaseSceneView<SceneMainSearchBar
                     mViewBinding.ivMore
             };
             for (int i = 0; i < skinImgViews.length && i < categories.length; i++) {
-                int resourceId = iconArray.getResourceId(i, 0);
+                final int resourceId = iconArray.getResourceId(i, 0);
                 if (resourceId != 0) {
                     skinImgViews[i].setImageResource(resourceId);
                 }

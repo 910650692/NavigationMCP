@@ -1,7 +1,3 @@
-/*
- * Copyright © 2020 SAIC MOTOR Z-ONE SOFTWARE COMPANY. All rights reserved.
- */
-
 package com.fy.navi.hmi.mapdata.adapter;
 
 import android.graphics.Bitmap;
@@ -18,6 +14,8 @@ import androidx.annotation.IdRes;
 import androidx.annotation.StringRes;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.fy.navi.ui.view.CustomSwipeMenuLayout;
+
 public class BaseRecyclerHolder extends RecyclerView.ViewHolder {
     private SparseArray<View> mViews;
     private View mConvertView;
@@ -32,7 +30,9 @@ public class BaseRecyclerHolder extends RecyclerView.ViewHolder {
     }
 
     /**
+     * @deprecated
      * Use itemView instead.
+     * @return 返回view
      */
     @Deprecated
     public View getConvertView() {
@@ -40,155 +40,221 @@ public class BaseRecyclerHolder extends RecyclerView.ViewHolder {
     }
 
     /**
-     * Will set the text of a TextView.
+     * Will set the enabled of a SwipeMenuLayout.
+     * @param viewId
+     * @param isExpand
+     * @return 设置菜单侧滑功能是否可用
      */
-    public BaseRecyclerHolder setText(@IdRes int viewId, CharSequence value) {
-        TextView view = getView(viewId);
+    public BaseRecyclerHolder setSwipeEnabled(@IdRes final int viewId, final boolean isExpand) {
+        final CustomSwipeMenuLayout view = getView(viewId);
+        view.setSwipeEnabled(isExpand);
+        return this;
+    }
+
+    /**
+     * Will set the text of a TextView.
+     * @param viewId
+     * @param value
+     * @return 返回对应的视图
+     */
+    public BaseRecyclerHolder setText(@IdRes final int viewId, final CharSequence value) {
+        final TextView view = getView(viewId);
         view.setText(value);
         return this;
     }
 
     /**
      * Will set the text of a TextView.
+     * @param viewId
+     * @param strId
+     * @return 返回对应的视图
      */
-    public BaseRecyclerHolder setText(@IdRes int viewId, @StringRes int strId) {
-        TextView view = getView(viewId);
+    public BaseRecyclerHolder setText(@IdRes final int viewId, @StringRes final int strId) {
+        final TextView view = getView(viewId);
         view.setText(strId);
         return this;
     }
 
     /**
      * Will get the text of a TextView.
+     * @param viewId
+     * @return 返回对应的视图
      */
-    public String getText(@IdRes int viewId) {
-        TextView view = getView(viewId);
+    public String getText(@IdRes final int viewId) {
+        final TextView view = getView(viewId);
         return view.getText().toString();
     }
 
     /**
-     * Will set the image of an ImageView from a resource id.
+     *  Will set the image of an ImageView from a resource id.
+     * @param viewId
+     * @param imageResId
+     * @return 返回对应的视图
      */
-    public BaseRecyclerHolder setImageResource(@IdRes int viewId, @DrawableRes int imageResId) {
-        ImageView view = getView(viewId);
+    public BaseRecyclerHolder setImageResource(@IdRes final int viewId, @DrawableRes final int imageResId) {
+        final ImageView view = getView(viewId);
         view.setImageResource(imageResId);
         return this;
     }
 
     /**
      * Will set background color of a view.
+     * @param viewId
+     * @param color
+     * @return 返回对应的视图
      */
-    public BaseRecyclerHolder setBackgroundColor(@IdRes int viewId, @ColorInt int color) {
-        View view = getView(viewId);
+    public BaseRecyclerHolder setBackgroundColor(@IdRes final int viewId, @ColorInt final int color) {
+        final View view = getView(viewId);
         view.setBackgroundColor(color);
         return this;
     }
 
     /**
      * Will set background of a view.
+     * @param viewId
+     * @param backgroundRes
+     * @return 返回对应的视图
      */
-    public BaseRecyclerHolder setBackgroundRes(@IdRes int viewId, @DrawableRes int backgroundRes) {
-        View view = getView(viewId);
+    public BaseRecyclerHolder setBackgroundRes(@IdRes final int viewId, @DrawableRes final int backgroundRes) {
+        final View view = getView(viewId);
         view.setBackgroundResource(backgroundRes);
         return this;
     }
 
     /**
-     * Will set background of a view.
+     * * Will set background of a view.
+     * @param viewId
+     * @param backgroundRes
+     * @return 返回对应的视图
      */
-    public BaseRecyclerHolder setBackgroundRes(@IdRes int viewId, Drawable backgroundRes) {
-        View view = getView(viewId);
+    public BaseRecyclerHolder setBackgroundRes(@IdRes final int viewId, final Drawable backgroundRes) {
+        final View view = getView(viewId);
         view.setBackground(backgroundRes);
         return this;
     }
 
     /**
      * Will set text color of a TextView.
+     * @param viewId
+     * @param textColor
+     * @return 返回对应的视图
      */
-    public BaseRecyclerHolder setTextColor(@IdRes int viewId, @ColorInt int textColor) {
-        TextView view = getView(viewId);
+    public BaseRecyclerHolder setTextColor(@IdRes final int viewId, @ColorInt final int textColor) {
+        final TextView view = getView(viewId);
         view.setTextColor(textColor);
         return this;
     }
 
     /**
      * Will set the image of an ImageView from a drawable.
+     * @param viewId
+     * @param drawable
+     * @return 返回对应的视图
      */
-    public BaseRecyclerHolder setImageDrawable(@IdRes int viewId, Drawable drawable) {
-        ImageView view = getView(viewId);
+    public BaseRecyclerHolder setImageDrawable(@IdRes final int viewId, final Drawable drawable) {
+        final ImageView view = getView(viewId);
         view.setImageDrawable(drawable);
         return this;
     }
 
     /**
      * Add an action to set the image of an image view. Can be called multiple times.
+     * @param viewId
+     * @param bitmap
+     * @return 返回对应的视图
      */
-    public BaseRecyclerHolder setImageBitmap(@IdRes int viewId, Bitmap bitmap) {
-        ImageView view = getView(viewId);
+    public BaseRecyclerHolder setImageBitmap(@IdRes final int viewId, final Bitmap bitmap) {
+        final ImageView view = getView(viewId);
         view.setImageBitmap(bitmap);
         return this;
     }
 
     /**
      * Set a view visibility to VISIBLE (true) or GONE (false).
+     * @param viewId
+     * @param visible
+     * @return 返回对应的视图
      */
-    public BaseRecyclerHolder setGone(@IdRes int viewId, boolean visible) {
-        View view = getView(viewId);
+    public BaseRecyclerHolder setGone(@IdRes final int viewId, final boolean visible) {
+        final View view = getView(viewId);
         view.setVisibility(visible ? View.VISIBLE : View.GONE);
         return this;
     }
 
     /**
      * Set a view visibility to VISIBLE (true) or INVISIBLE (false).
+     * @param viewId
+     * @param visible
+     * @return 返回对应的视图
      */
-    public BaseRecyclerHolder setVisible(@IdRes int viewId, boolean visible) {
-        View view = getView(viewId);
+    public BaseRecyclerHolder setVisible(@IdRes final int viewId, final boolean visible) {
+        final View view = getView(viewId);
         view.setVisibility(visible ? View.VISIBLE : View.GONE); // INVISIBLE
         return this;
     }
 
     /**
+     * @deprecated
+     *
      * Sets the on click listener of the view.
+     * @param viewId
+     * @param listener
+     * @return 返回对应的视图
      */
     @Deprecated
-    public BaseRecyclerHolder setOnClickListener(@IdRes int viewId, View.OnClickListener listener) {
-        View view = getView(viewId);
+    public BaseRecyclerHolder setOnClickListener(@IdRes final int viewId, final View.OnClickListener listener) {
+        final View view = getView(viewId);
         view.setOnClickListener(listener);
         return this;
     }
 
     /**
+     * @deprecated
+     *
      * Sets the listview  item click listener of the view.
+     * @param viewId
+     * @param listener
+     * @return 返回对应的视图
      */
     @Deprecated
-    public BaseRecyclerHolder setOnItemClickListener(@IdRes int viewId,
-                                                     AdapterView.OnItemClickListener listener) {
-        AdapterView view = getView(viewId);
+    public BaseRecyclerHolder setOnItemClickListener(@IdRes final int viewId, final AdapterView.OnItemClickListener listener) {
+        final AdapterView view = getView(viewId);
         view.setOnItemClickListener(listener);
         return this;
     }
 
     /**
      * Sets the tag of the view.
+     * @param viewId
+     * @param tag
+     * @return 返回对应的视图
      */
-    public BaseRecyclerHolder setTag(@IdRes int viewId, Object tag) {
-        View view = getView(viewId);
+    public BaseRecyclerHolder setTag(@IdRes final int viewId, final Object tag) {
+        final  View view = getView(viewId);
         view.setTag(tag);
         return this;
     }
 
     /**
      * Sets the tag of the view.
+     * @param viewId
+     * @param key
+     * @param tag
+     * @return 返回对应的视图
      */
-    public BaseRecyclerHolder setTag(@IdRes int viewId, int key, Object tag) {
-        View view = getView(viewId);
+    public BaseRecyclerHolder setTag(@IdRes final int viewId, final int key, final Object tag) {
+        final View view = getView(viewId);
         view.setTag(key, tag);
         return this;
     }
 
     /**
      * Get the tag of the view.
+     * @param viewId
+     * @param <T>
+     * @return 返回view
      */
-    public <T extends View> T getView(@IdRes int viewId) {
+    public <T extends View> T getView(@IdRes final int viewId) {
         View view = mViews.get(viewId);
         if (view == null) {
             view = itemView.findViewById(viewId);

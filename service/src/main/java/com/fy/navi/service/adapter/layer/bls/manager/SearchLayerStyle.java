@@ -70,8 +70,8 @@ public class SearchLayerStyle extends BaseLayerStyle {
             BizSearchParentPoint parent = new BizSearchParentPoint();
             parent.id = point.id;
             parent.poiName = point.poiName;
-            parent.mPos3D.lat = point.mPos3D.lat;
-            parent.mPos3D.lon = point.mPos3D.lon;
+            parent.mPos3D.lat = point.mPos3D.getLat();
+            parent.mPos3D.lon = point.mPos3D.getLon();
             parent.index = point.index;
             parent.typeCode = point.typeCode;
             parent.poiType = point.poiType;

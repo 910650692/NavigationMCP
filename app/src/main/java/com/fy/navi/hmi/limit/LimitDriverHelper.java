@@ -3,35 +3,36 @@ package com.fy.navi.hmi.limit;
 import com.fy.navi.service.define.route.RouteRestrictionParam;
 
 /**
- * Author: LiuChang
+ * @author LiuChang
+ * @version  \$Revision.1.0\$
  * Date: 2025/2/27
  * Description: [限行政策界面数据缓存]
  */
 public class LimitDriverHelper {
-    private boolean needClearRestriction = true;
-    private RouteRestrictionParam roundParam;
+    private boolean mNeedClearRestriction = true;
+    private RouteRestrictionParam mRoundParam;
 
     public boolean isNeedClearRestriction() {
-        return needClearRestriction;
+        return mNeedClearRestriction;
     }
 
-    public void setNeedClearRestriction(boolean needClearRestriction) {
-        this.needClearRestriction = needClearRestriction;
+    public void setNeedClearRestriction(final boolean needClearRestriction) {
+        this.mNeedClearRestriction = needClearRestriction;
     }
 
     public RouteRestrictionParam getRoundParam() {
-        return roundParam;
+        return mRoundParam;
     }
 
-    public void setRoundParam(RouteRestrictionParam roundParam) {
-        this.roundParam = roundParam;
+    public void setRoundParam(final RouteRestrictionParam roundParam) {
+        this.mRoundParam = roundParam;
     }
 
     public static LimitDriverHelper getInstance() {
-        return LimitDriverHelper.Helper.lh;
+        return LimitDriverHelper.Helper.LH;
     }
 
     private static final class Helper {
-        private static final LimitDriverHelper lh = new LimitDriverHelper();
+        private static final LimitDriverHelper LH = new LimitDriverHelper();
     }
 }

@@ -1,11 +1,8 @@
 package com.fy.navi.service.adapter.route.bls;
 
-import static com.autonavi.gbl.util.errorcode.common.Service.ErrorCodeOK;
-
 import com.android.utils.ConvertUtils;
 import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
-import com.android.utils.thread.ThreadManager;
 import com.autonavi.gbl.aosclient.BLAosService;
 import com.autonavi.gbl.common.model.ElecCommonParameter;
 import com.autonavi.gbl.common.model.ElecCostList;
@@ -18,7 +15,6 @@ import com.autonavi.gbl.route.RouteService;
 import com.autonavi.gbl.route.model.RouteAlternativeChargeStationParam;
 import com.autonavi.gbl.route.model.RouteChargingPreference;
 import com.autonavi.gbl.route.model.RouteControlKey;
-import com.autonavi.gbl.route.model.RouteInitParam;
 import com.autonavi.gbl.route.model.RouteRestorationOption;
 import com.autonavi.gbl.scene.SceneModuleService;
 import com.autonavi.gbl.scene.model.InitSceneModuleParam;
@@ -40,6 +36,7 @@ import com.fy.navi.service.define.route.RouteAvoidInfo;
 import com.fy.navi.service.define.route.RouteMsgPushInfo;
 import com.fy.navi.service.define.route.RouteParam;
 import com.fy.navi.service.define.route.RoutePreferenceID;
+import com.fy.navi.service.define.route.RouteRequestParam;
 import com.fy.navi.service.define.route.RouteWayID;
 import com.fy.navi.service.define.search.PoiInfoEntity;
 import com.fy.navi.service.define.utils.BevPowerCarUtils;
@@ -50,129 +47,145 @@ import java.util.List;
 
 /**
  * 算路服务.
- * @Description Impl类只做SDK的原子能力封装，不做对象及数据转换
- * @Author lvww
- * @date 2024/12/5
+ * @author lvww
+ * @version  \$Revision.1.0\$
+ * description Impl类只做SDK的原子能力封装，不做对象及数据转换
+ * date 2024/12/5
  */
 public class RouteAdapterImpl implements IRouteApi {
     private static final String TAG = MapDefaultFinalTag.ROUTE_SERVICE_TAG;
+    private static final String NUM_ONE = "1";
     private RouteService mRouteService;
-    private RouteAdapterImplHelper adapterImplHelper;
+    private RouteAdapterImplHelper mAdapterImplHelper;
 
     public RouteAdapterImpl() {
         mRouteService = (RouteService) ServiceMgr.getServiceMgrInstance()
                 .getBLService(SingleServiceID.RouteSingleServiceID);
-        SceneModuleService mSceneModuleService = (SceneModuleService) ServiceMgr.getServiceMgrInstance().getBLService(SingleServiceID.SceneModuleSingleServiceID);
+        final SceneModuleService sceneModuleService = (SceneModuleService) ServiceMgr
+                .getServiceMgrInstance().getBLService(SingleServiceID.SceneModuleSingleServiceID);
         // 统一初始化场景组件服务
-        InitSceneModuleParam param = new InitSceneModuleParam();
+        final InitSceneModuleParam param = new InitSceneModuleParam();
         param.bEnableDynamicCloudShowInfoModule = true; // 开启动态运营组件
-        mSceneModuleService.init(param);
-        adapterImplHelper = new RouteAdapterImplHelper(mRouteService, new BLAosService());
+        sceneModuleService.init(param);
+        mAdapterImplHelper = new RouteAdapterImplHelper(mRouteService, new BLAosService());
     }
 
     @Override
     public void initRouteService() {
-        adapterImplHelper.initRouteService();
+        mAdapterImplHelper.initRouteService();
     }
 
     @Override
-    public void registerRouteObserver(String key, RouteResultObserver routeResultObserver) {
-        adapterImplHelper.registerRouteObserver(key, routeResultObserver);
+    public void registerRouteObserver(final String key, final RouteResultObserver routeResultObserver) {
+        mAdapterImplHelper.registerRouteObserver(key, routeResultObserver);
     }
 
     @Override
-    public void setRoutePreference(RoutePreferenceID routePreferenceID) {
-        adapterImplHelper.setRoutePreference(routePreferenceID);
+    public void setRoutePreference(final RoutePreferenceID routePreferenceID) {
+
     }
 
     @Override
-    public long requestRoute(MapTypeId mapTypeId, List<RouteParam> paramList, boolean fastNavi, int routeWay, boolean isOnline, int routeType) {
-        adapterImplHelper.checkoutRouteServer();
-        RequestRouteResult requestRouteResult = new RequestRouteResult();
-        requestRouteResult.setMapTypeId(mapTypeId);
-        requestRouteResult.setFastNavi(fastNavi);
-        requestRouteResult.setRouteWay(routeWay);
-        requestRouteResult.setOnlineRoute(isOnline);
-        requestRouteResult.setRouteType(routeType);
-        RouteOption routeOption = adapterImplHelper.getRequestParam(requestRouteResult, paramList);
+    public long requestRoute(final RouteRequestParam param, final List<RouteParam> paramList) {
+        mAdapterImplHelper.checkoutRouteServer();
+        final RequestRouteResult requestRouteResult = new RequestRouteResult();
+        requestRouteResult.setMMapTypeId(param.getMMapTypeId());
+        requestRouteResult.setMFastNavi(param.isMFastNavi());
+        requestRouteResult.setMRouteWay(param.getMRouteWay());
+        requestRouteResult.setMIsOnlineRoute(param.isMIsOnline());
+        requestRouteResult.setMRouteType(param.getMRoutePriorityType());
+        final RouteOption routeOption = mAdapterImplHelper.getRequestParam(requestRouteResult, paramList);
         //设置共性参数 比如在线优先 ....
         //记录请求ID和屏幕ID以供返回结果使用
-        long requestId = mRouteService.requestRoute(routeOption);
-        Hashtable<Long, RequestRouteResult> routeResultHashtable =  adapterImplHelper.getRouteResultDataHashtable();
+        final long requestId = mRouteService.requestRoute(routeOption);
+        final Hashtable<Long, RequestRouteResult> routeResultHashtable =  mAdapterImplHelper.getRouteResultDataHashtable();
         routeResultHashtable.put(requestId, requestRouteResult);
         Logger.i(TAG, "route plane request id " + requestId);
-
         return requestId;
     }
 
     @Override
-    public long requestRouteWeather(RouteLineLayerParam routeLineLayerParam, int index) {
-        if (ConvertUtils.isEmpty(mRouteService)) return -1;
-        return mRouteService.requestPathWeather((PathInfo) routeLineLayerParam.getPathInfoList().get(index));
+    public long requestRouteWeather(final RouteLineLayerParam routeLineLayerParam, final int index) {
+        if (ConvertUtils.isEmpty(mRouteService)) {
+            return -1;
+        }
+        return mRouteService.requestPathWeather((PathInfo) routeLineLayerParam.getMPathInfoList().get(index));
     }
 
     @Override
-    public long requestRouteAlternativeChargeStation(Object pathInfo,  String poiId) {
-        if (ConvertUtils.isEmpty(mRouteService)) return -1;
-        RouteAlternativeChargeStationParam param = new RouteAlternativeChargeStationParam();
+    public long requestRouteAlternativeChargeStation(final Object pathInfo, final String poiId) {
+        if (ConvertUtils.isEmpty(mRouteService)) {
+            return -1;
+        }
+        final RouteAlternativeChargeStationParam param = new RouteAlternativeChargeStationParam();
         param.poiId = poiId;
-        TaskResult taskResult = mRouteService.request((PathInfo) pathInfo, param, adapterImplHelper.getRouteAlternativeChargeStationObserver());
+        final TaskResult taskResult = mRouteService.request((PathInfo) pathInfo, param,
+                mAdapterImplHelper.getRouteAlternativeChargeStationObserver());
         Logger.d("requestRouteAlternativeChargeStation" + taskResult.errorCode);
-        if (taskResult.errorCode != ErrorCodeOK) {
+        if (taskResult.errorCode != 0) {
             return -1;
         }
         return taskResult.taskId;
     }
 
     @Override
-    public boolean cancelRoute(long requestId) {
+    public boolean cancelRoute(final long requestId) {
         return mRouteService.abortRequest(requestId);
     }
 
     @Override
-    public void removeRouteObserver(String key) {
-        adapterImplHelper.removeRouteObserver(key);
+    public void removeRouteObserver(final String key) {
+        mAdapterImplHelper.removeRouteObserver(key);
     }
 
     @Override
     public void unInitRouteService() {
-        adapterImplHelper.removeAllObserver();
+        mAdapterImplHelper.removeAllObserver();
         if (ServiceInitStatus.ServiceInitDone != mRouteService.isInit()) {
             mRouteService.unInit();
         }
     }
 
     @Override
-    public void setRoutePlan(boolean isNaviActive) {
-        mRouteService.control(RouteControlKey.RouteControlKeySetInvoker, isNaviActive ? "navi" : "plan");
+    public void setRoutePlan(final boolean isNaviActive) {
+
     }
 
 
     @Override
-    public void setFamiliarRoute(boolean isFamiliarRoute) {
-        mRouteService.control(RouteControlKey.RouteControlKeyPrivacy, isFamiliarRoute? "1" : "0");
+    public void setFamiliarRoute(final boolean isFamiliarRoute) {
+
     }
 
     @Override
-    public void setAvoidRoad(RouteAvoidInfo routeAvoidInfo) {
-        adapterImplHelper.setAvoidRoad(routeAvoidInfo);
+    public void setAvoidRoad(final RouteAvoidInfo routeAvoidInfo) {
+        mAdapterImplHelper.setAvoidRoad(routeAvoidInfo);
     }
 
     //设置限行+车牌开关
     @Override
-    public void setRestriction(String plateNumber, boolean isTrafficRestrictionOpen) {
-        mRouteService.control(RouteControlKey.RouteControlKeyVehicleID, plateNumber );
-        //设置eta请求的躲避车辆限行,0表示关闭eta限行请求，1 表示打开eta限行请求
-        mRouteService.control(RouteControlKey.RouteControlKeyETARestriction, isTrafficRestrictionOpen ? "1" : "0");
-        mRouteService.control(RouteControlKey.RouteControlKeySetTotalTime, "15000");
+    public void setRestriction(final String plateNumber, final boolean isTrafficRestrictionOpen) {
     }
 
     @Override
-    public void setCarElecPlantion(boolean isCarElecPlanOpen) {
+    public void setRequestControl(final RoutePreferenceID id, final String num, final boolean restriction, final boolean routePlan) {
+        mAdapterImplHelper.setRoutePreference(id);
+
+        mRouteService.control(RouteControlKey.RouteControlKeySetInvoker, routePlan ? "navi" : "plan");
+
+        mRouteService.control(RouteControlKey.RouteControlKeyVehicleID, num);
+        //设置eta请求的躲避车辆限行,0表示关闭eta限行请求，1 表示打开eta限行请求
+        mRouteService.control(RouteControlKey.RouteControlKeyETARestriction, restriction ? NUM_ONE : "0");
+        mRouteService.control(RouteControlKey.RouteControlKeySetTotalTime, "15000");
+
+        mRouteService.control(RouteControlKey.RouteControlConfigSetTipsInfo, NUM_ONE);
+        mRouteService.control(RouteControlKey.RouteControlKeyPrivacy, NUM_ONE);
+
+
         mRouteService.control(RouteControlKey.RouteControlKeyVehicleType, BevPowerCarUtils.getInstance().carType);
-        mRouteService.control(RouteControlKey.RouteControlKeepChargingStation, isCarElecPlanOpen ? "1" : "0");
-        if (isCarElecPlanOpen) {
-            RouteChargingPreference chargingPreference = new RouteChargingPreference();
+        mRouteService.control(RouteControlKey.RouteControlKeepChargingStation, BevPowerCarUtils.getInstance().bevCarElicOpen ? NUM_ONE : "0");
+        if (BevPowerCarUtils.getInstance().bevCarElicOpen) {
+            final RouteChargingPreference chargingPreference = new RouteChargingPreference();
             chargingPreference.brands.addAll(mRouteService.getSupportedChargingPreference().brands);
             mRouteService.setChargingPreference(chargingPreference);
             mRouteService.setElecInfoConfig(getElecInfoConfig());
@@ -181,36 +194,41 @@ public class RouteAdapterImpl implements IRouteApi {
     }
 
     @Override
-    public void setTrafficTrip(boolean isOpenTraffic) {
-        mRouteService.control(RouteControlKey.RouteControlConfigSetTipsInfo, isOpenTraffic ? "1" : "0");
+    public void setCarElecPlantion(final boolean isCarElecPlanOpen) {
+
     }
 
     @Override
-    public void sendEndEntity(PoiInfoEntity poiInfoEntity) {
-        adapterImplHelper.sendEndEntity(poiInfoEntity);
+    public void setTrafficTrip(final boolean isOpenTraffic) {
+
     }
 
     @Override
-    public void requestRouteRestoration(RouteMsgPushInfo routeMsgPushInfo, MapTypeId mapTypeId) {
-        adapterImplHelper.checkoutRouteServer();
+    public void sendEndEntity(final PoiInfoEntity poiInfoEntity) {
+        mAdapterImplHelper.sendEndEntity(poiInfoEntity);
+    }
+
+    @Override
+    public void requestRouteRestoration(final RouteMsgPushInfo routeMsgPushInfo, final MapTypeId mapTypeId) {
+        mAdapterImplHelper.checkoutRouteServer();
         // 路线还原
         Logger.i(TAG, "requestRouteRestoration");
-        AimRoutePushMsg aimRoutePushMsg = (AimRoutePushMsg) routeMsgPushInfo.getMsgPushInfo();
-        RouteRestorationOption routeRestorationOption = new RouteRestorationOption();
-        RoutepathrestorationPathInfo path = aimRoutePushMsg.content.path;
+        final AimRoutePushMsg aimRoutePushMsg = (AimRoutePushMsg) routeMsgPushInfo.getMMsgPushInfo();
+        final RouteRestorationOption routeRestorationOption = new RouteRestorationOption();
+        final RoutepathrestorationPathInfo path = aimRoutePushMsg.content.path;
         routeRestorationOption.setPaths(path.paths);
         routeRestorationOption.setStartPoints(path.startPoints.points);
         routeRestorationOption.setViaPoints(path.routeViaPoints.display_points, path.routeViaPoints.path_project_points);
         routeRestorationOption.setEndPoints(path.endPoints.points);
 
-        MobileRouteParam routeParam = aimRoutePushMsg.content.routeParam;
+        final MobileRouteParam routeParam = aimRoutePushMsg.content.routeParam;
         routeRestorationOption.setEndName(routeParam.destination.name);
         routeRestorationOption.setContentOption(routeParam.contentOption);
 
         routeRestorationOption.setRouteVer(RouteService.getRouteVersion());
         routeRestorationOption.setSdkVer(RouteService.getEngineVersion());
 
-        MobileVehicleInfo vehicle = routeParam.vehicle;
+        final MobileVehicleInfo vehicle = routeParam.vehicle;
         routeRestorationOption.setCarType(vehicle.type);
         routeRestorationOption.setCarSize(vehicle.size);
         routeRestorationOption.setCarHeight(vehicle.height);
@@ -221,25 +239,35 @@ public class RouteAdapterImpl implements IRouteApi {
         routeRestorationOption.setCarPlate(vehicle.plate);
         routeRestorationOption.setNaviId(aimRoutePushMsg.content.naviId);
 
-        RequestRouteResult requestRouteResult = new RequestRouteResult();
-        requestRouteResult.setMapTypeId(mapTypeId);
-        requestRouteResult.setFastNavi(false);
-        requestRouteResult.setOnlineRoute(true);
-        requestRouteResult.setRouteWay(RouteWayID.ROUTE_WAY_DEFAULT);
-        RouteLineLayerParam routeLineLayerParam = new RouteLineLayerParam();
-        routeLineLayerParam.getRouteLinePoints().getEndPoints().add(routeMsgPushInfo.getEndPoint());
-        routeLineLayerParam.getRouteLinePoints().getStartPoints().add(routeMsgPushInfo.getStartPoint());
-        routeLineLayerParam.getRouteLinePoints().setViaPoints(routeMsgPushInfo.getViaPoints());
-        requestRouteResult.setLineLayerParam(routeLineLayerParam);
-        long requestId =  mRouteService.requestRouteRestoration(routeRestorationOption);
-        Hashtable<Long, RequestRouteResult> routeResultHashtable =  adapterImplHelper.getRouteResultDataHashtable();
+        final RequestRouteResult requestRouteResult = new RequestRouteResult();
+        requestRouteResult.setMMapTypeId(mapTypeId);
+        requestRouteResult.setMFastNavi(false);
+        requestRouteResult.setMIsOnlineRoute(true);
+        requestRouteResult.setMRouteWay(RouteWayID.ROUTE_WAY_DEFAULT);
+        final RouteLineLayerParam routeLineLayerParam = new RouteLineLayerParam();
+        routeLineLayerParam.getMRouteLinePoints().getMEndPoints().add(routeMsgPushInfo.getMEndPoint());
+        routeLineLayerParam.getMRouteLinePoints().getMStartPoints().add(routeMsgPushInfo.getMStartPoint());
+        routeLineLayerParam.getMRouteLinePoints().setMViaPoints(routeMsgPushInfo.getMViaPoints());
+        requestRouteResult.setMLineLayerParam(routeLineLayerParam);
+        final long requestId =  mRouteService.requestRouteRestoration(routeRestorationOption);
+        final Hashtable<Long, RequestRouteResult> routeResultHashtable =  mAdapterImplHelper.getRouteResultDataHashtable();
         routeResultHashtable.put(requestId, requestRouteResult);
         Logger.i(TAG, "route plane request id " + requestId);
     }
 
+    @Override
+    public void abortRequest(final long requestId) {
+        final boolean success = mRouteService.abortRequest(requestId);
+        Logger.i(TAG, "abortRequest: " + success);
+    }
+
+    /**
+     * 获取电动车能耗参数
+     * @return 电动车能耗参数
+     */
     private ElecInfoConfig getElecInfoConfig() {
         //设置电动车能耗参数
-        ElecInfoConfig elecConfig = new ElecInfoConfig();
+        final ElecInfoConfig elecConfig = new ElecInfoConfig();
         elecConfig.orgaName = BevPowerCarUtils.getInstance().extraBrand; //车厂名称，高德商业产品定义分配
         elecConfig.vehicleConfiguration = BevPowerCarUtils.getInstance().vehicleType; //车型，应具备可读性，代表一款车型，保证一款车型只使用一个代号
         elecConfig.fesMode = BevPowerCarUtils.getInstance().curDriveMode; //驾驶模式，设置为舒适模式
@@ -256,26 +284,31 @@ public class RouteAdapterImpl implements IRouteApi {
         elecConfig.chargingPower = BevPowerCarUtils.getInstance().chargingPower; //功率
 
         //设置代价模型的权值
-        ElecCostList costList = new ElecCostList();
+        final ElecCostList costList = new ElecCostList();
         costList.auxValue = BevPowerCarUtils.getInstance().airConditioningOpen ? 1.0f : 0.5f; //空调...
         costList.ferryRate = BevPowerCarUtils.getInstance().ferryRate;
-        ArrayList<ElecSpeedCostList> elecSpeedCostLists = new ArrayList<>();
+        final ArrayList<ElecSpeedCostList> elecSpeedCostLists = new ArrayList<>();
         for (int t = 0; t < BevPowerCarUtils.getInstance().elecSpeedCostLists.size(); t++) {
-            ElecSpeedCostList elecSpeedCostList = GsonUtils.convertToT(BevPowerCarUtils.getInstance().elecSpeedCostLists.get(t),ElecSpeedCostList.class);
+            final ElecSpeedCostList elecSpeedCostList = GsonUtils.convertToT(BevPowerCarUtils.getInstance()
+                    .elecSpeedCostLists.get(t),ElecSpeedCostList.class);
             elecSpeedCostLists.add(elecSpeedCostList);
         }
         costList.speedCost = elecSpeedCostLists;
-        ArrayList<PowertrainLoss> powertrainLossList = new ArrayList<>();
+        final ArrayList<PowertrainLoss> powertrainLossList = new ArrayList<>();
         for (int t = 0; t < BevPowerCarUtils.getInstance().powertrainLoss.size(); t++) {
-            PowertrainLoss powertrainLoss = GsonUtils.convertToT(BevPowerCarUtils.getInstance().powertrainLoss.get(t),PowertrainLoss.class);
+            final PowertrainLoss powertrainLoss = GsonUtils.convertToT(BevPowerCarUtils.getInstance()
+                    .powertrainLoss.get(t),PowertrainLoss.class);
             powertrainLossList.add(powertrainLoss);
         }
         costList.powertrainLoss = powertrainLossList;
-        ElecCommonParameter trans = new ElecCommonParameter(BevPowerCarUtils.getInstance().trans.access, BevPowerCarUtils.getInstance().trans.decess);
+        final ElecCommonParameter trans = new ElecCommonParameter(BevPowerCarUtils.getInstance()
+                .trans.access, BevPowerCarUtils.getInstance().trans.decess);
         costList.trans = trans;
-        ElecCommonParameter curve = new ElecCommonParameter(BevPowerCarUtils.getInstance().curve.access, BevPowerCarUtils.getInstance().curve.decess);
+        final ElecCommonParameter curve = new ElecCommonParameter(BevPowerCarUtils.getInstance()
+                .curve.access, BevPowerCarUtils.getInstance().curve.decess);
         costList.curve = curve;
-        ElecCommonParameter slope = new ElecCommonParameter(BevPowerCarUtils.getInstance().slope.access, BevPowerCarUtils.getInstance().slope.decess);
+        final ElecCommonParameter slope = new ElecCommonParameter(BevPowerCarUtils.getInstance()
+                .slope.access, BevPowerCarUtils.getInstance().slope.decess);
         costList.slope = slope;
         elecConfig.costList.add(costList);
         return elecConfig;

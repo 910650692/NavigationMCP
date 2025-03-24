@@ -1,10 +1,11 @@
 package com.fy.navi.service.adapter.layer.bls.manager;
 
 import com.android.utils.ConvertUtils;
-import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
+import com.autonavi.gbl.common.model.Coord3DDouble;
 import com.autonavi.gbl.common.model.RectDouble;
 import com.autonavi.gbl.common.path.model.RestAreaInfo;
+import com.autonavi.gbl.common.path.model.RoutePoint;
 import com.autonavi.gbl.common.path.model.RoutePoints;
 import com.autonavi.gbl.common.path.option.PathInfo;
 import com.autonavi.gbl.layer.BizControlService;
@@ -18,16 +19,11 @@ import com.autonavi.gbl.layer.model.BizRouteWeatherInfo;
 import com.autonavi.gbl.layer.model.DynamicLevelParam;
 import com.autonavi.gbl.layer.model.RouteDrawStyle;
 import com.autonavi.gbl.map.MapView;
-import com.autonavi.gbl.map.layer.BaseLayer;
-import com.autonavi.gbl.map.layer.LayerItem;
-import com.autonavi.gbl.map.layer.model.ClickViewIdInfo;
 import com.autonavi.gbl.map.layer.model.RouteLayerScene;
-import com.autonavi.gbl.map.layer.observer.ILayerClickObserver;
 import com.autonavi.gbl.route.model.WeatherLabelItem;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.define.bean.PreviewParams;
 import com.fy.navi.service.define.layer.RouteLineLayerParam;
-import com.fy.navi.service.define.map.MapTypeId;
 import com.fy.navi.service.define.route.RouteLinePoints;
 
 import java.util.ArrayList;
@@ -62,20 +58,22 @@ public class RouteLayerStyle extends BaseLayerStyle {
         PreviewParams previewParams = new PreviewParams();
         previewParams.setRouteLine(true);
         previewParams.setbUseRect(true);
-        previewParams.setMapBound(new PreviewParams.RectDouble(rectDouble.left, rectDouble.right, rectDouble.top, rectDouble.bottom));
+        if (!ConvertUtils.isEmpty(rectDouble)) {
+            previewParams.setMapBound(new PreviewParams.RectDouble(rectDouble.left, rectDouble.right, rectDouble.top, rectDouble.bottom));
+        }
         return previewParams;
     }
 
     public void drawRoute(RouteLineLayerParam routeLineLayer) {
         ConvertUtils.isNullRequire(routeLineLayer, "路线绘制参数为空，无法进行路线渲染");
         mBziRouteControl.getRouteLayer(BizRouteType.BizRouteTypeTrafficEventTip).enableCollision(true);
-        setPassGreyMode(routeLineLayer.isPassGrey());
+        setPassGreyMode(routeLineLayer.isMPassGrey());
         setMainMapPathDrawStyle();
-        setPathPoints(routeLineLayer.getRouteLinePoints());
+        setPathPoints(routeLineLayer.getMRouteLinePoints());
         mBziRouteControl.setVisible(BizRouteType.BizRouteTypeEnergyRemainPoint, true);
-        setPathInfos(routeLineLayer.getPathInfoList(), routeLineLayer.getSelectIndex());
-        if (routeLineLayer.getEstimatedTimeOfArrival() != null) {
-            mEstimatedTimeOfArrival = routeLineLayer.getEstimatedTimeOfArrival();
+        setPathInfos(routeLineLayer.getMPathInfoList(), routeLineLayer.getMSelectIndex());
+        if (routeLineLayer.getMEstimatedTimeOfArrival() != null) {
+            mEstimatedTimeOfArrival = routeLineLayer.getMEstimatedTimeOfArrival();
         }
         updatePaths();
     }
@@ -165,8 +163,55 @@ public class RouteLayerStyle extends BaseLayerStyle {
      */
     private void setPathPoints(RouteLinePoints routeLinePoints) {
         Logger.i(TAG, "设置路线行程点的信息 -> " + routeLinePoints);
-        RoutePoints pathPoints = GsonUtils.convertToT(routeLinePoints, RoutePoints.class);
+        RoutePoints pathPoints = getRoutePoints(routeLinePoints);
         mBziRouteControl.setPathPoints(pathPoints);
+    }
+
+    private RoutePoints getRoutePoints(RouteLinePoints info) {
+        RoutePoints infos = new RoutePoints();
+        ArrayList<RoutePoint> start = new ArrayList<>();
+        ArrayList<RoutePoint> end = new ArrayList<>();
+        ArrayList<RoutePoint> via = new ArrayList<>();
+        if (!ConvertUtils.isEmpty(info.getMStartPoints())) {
+            for (int t = 0; t < info.getMStartPoints().size(); t++) {
+                RoutePoint point = new RoutePoint();
+                point.mIsDraw = info.getMStartPoints().get(t).isMIsDraw();
+                point.mPathId = info.getMStartPoints().get(t).getMPathId();
+                point.mType = info.getMStartPoints().get(t).getMType();
+                point.mPos = new Coord3DDouble(info.getMStartPoints().get(t).getMPos().getLon()
+                        , info.getMStartPoints().get(t).getMPos().getLat()
+                        , info.getMStartPoints().get(t).getMPos().getZ());
+                start.add(point);
+            }
+        }
+        if (!ConvertUtils.isEmpty(info.getMViaPoints())) {
+            for (int t = 0; t < info.getMViaPoints().size(); t++) {
+                RoutePoint point = new RoutePoint();
+                point.mIsDraw = info.getMViaPoints().get(t).isMIsDraw();
+                point.mPathId = info.getMViaPoints().get(t).getMPathId();
+                point.mType = info.getMViaPoints().get(t).getMType();
+                point.mPos = new Coord3DDouble(info.getMViaPoints().get(t).getMPos().getLon()
+                        , info.getMViaPoints().get(t).getMPos().getLat()
+                        , info.getMViaPoints().get(t).getMPos().getZ());
+                via.add(point);
+            }
+        }
+        if (!ConvertUtils.isEmpty(info.getMEndPoints())) {
+            for (int t = 0; t < info.getMEndPoints().size(); t++) {
+                RoutePoint point = new RoutePoint();
+                point.mIsDraw = info.getMEndPoints().get(t).isMIsDraw();
+                point.mPathId = info.getMEndPoints().get(t).getMPathId();
+                point.mType = info.getMEndPoints().get(t).getMType();
+                point.mPos = new Coord3DDouble(info.getMEndPoints().get(t).getMPos().getLon()
+                        , info.getMEndPoints().get(t).getMPos().getLat()
+                        , info.getMEndPoints().get(t).getMPos().getZ());
+                end.add(point);
+            }
+        }
+        infos.mStartPoints = start;
+        infos.mViaPoints = via;
+        infos.mEndPoints = end;
+        return infos;
     }
 
     /**
@@ -194,14 +239,16 @@ public class RouteLayerStyle extends BaseLayerStyle {
             bizPathInfoAttrs.add(bizPath);
         }
         Logger.i(TAG, "设置路线 更新引导路线数据 -> " + bizPathInfoAttrs, "默认选中路线 -> " + selectIndex);
-        mBziRouteControl.setPathInfos(bizPathInfoAttrs, selectIndex);
+        int reuslt =  mBziRouteControl.setPathInfos(bizPathInfoAttrs, selectIndex);
+        Logger.d(TAG,"设置路线 reulst : "+reuslt);
     }
 
     /**
      * 绘制路线以及路线上的元素.
      */
     private void updatePaths() {
-        mBziRouteControl.updatePaths();
+        int reuslt =  mBziRouteControl.updatePaths();
+        Logger.d(TAG,"updatePaths reulst : "+reuslt);
         mBziRouteControl.updatePathArrow();
     }
 

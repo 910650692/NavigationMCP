@@ -21,23 +21,22 @@ import com.fy.navi.service.define.route.RouteAlterChargeStationParam;
 import com.fy.navi.service.define.route.RouteChargeStationDetailInfo;
 import com.fy.navi.service.define.search.ChargeInfo;
 import com.fy.navi.service.define.search.PoiInfoEntity;
-import com.fy.navi.service.define.search.ServiceAreaInfo;
 import com.fy.navi.ui.action.ViewAdapterKt;
 import com.fy.navi.ui.base.BaseFragment;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
- * Author: LiuChang
+ * @author  LiuChang
+ * @version  \$Revision.1.0\$
  * Date: 2025/3/6
  * Description: [替换补充能点界面]
  */
 @Route(path = RoutePath.Route.ALTER_CHARGE_FRAGMENT)
 public class AlterChargeFragment extends BaseFragment<FragmentAlterChargeBinding, AlterChargeViewModel> {
     private static final String TAG = "AlterChargeFragment";
-    private AlterChargeStationAdapter adapter;
-    private PoiInfoEntity detailPoiInfoEntity;
+    private AlterChargeStationAdapter mAdapter;
+    private PoiInfoEntity mDetailPoiInfoEntity;
 
 
     @Override
@@ -52,120 +51,151 @@ public class AlterChargeFragment extends BaseFragment<FragmentAlterChargeBinding
 
     @Override
     public void onInitView() {
-        adapter = new AlterChargeStationAdapter(requireContext(), new ArrayList<>());
+        mAdapter = new AlterChargeStationAdapter(requireContext(), new ArrayList<>());
         mBinding.recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
-        mBinding.recyclerView.setAdapter(adapter);
+        mBinding.recyclerView.setAdapter(mAdapter);
     }
 
     @Override
     public void onInitData() {
-        Bundle bundle = getArguments();
+        final Bundle bundle = getArguments();
+        onInitClick();
+        if (bundle == null) {
+            return;
+        }
         //City selection
-        RouteChargeStationDetailInfo routeChargeStationDetailInfo = (RouteChargeStationDetailInfo)
+        final RouteChargeStationDetailInfo routeChargeStationDetailInfo = (RouteChargeStationDetailInfo)
                 bundle.getSerializable(AutoMapConstant.RouteBundleKey.BUNDLE_KEY_ALTER_CHARGE_STATION);
         showAlterChargeStation(routeChargeStationDetailInfo);
-        onInitClick();
+
     }
 
     @Override
-    protected void onNewIntent(Bundle bundle) {
+    protected void onNewIntent(final Bundle bundle) {
         super.onNewIntent(bundle);
-        RouteChargeStationDetailInfo routeChargeStationDetailInfo = (RouteChargeStationDetailInfo)
+        final RouteChargeStationDetailInfo routeChargeStationDetailInfo = (RouteChargeStationDetailInfo)
                 bundle.getSerializable(AutoMapConstant.RouteBundleKey.BUNDLE_KEY_ALTER_CHARGE_STATION);
         showAlterChargeStation(routeChargeStationDetailInfo);
 
     }
 
-    private void showAlterChargeStation(RouteChargeStationDetailInfo routeChargeStationDetailInfo) {
+    /**
+     * 设置备选充电站数据
+     * @param routeChargeStationDetailInfo 参数
+     */
+    private void showAlterChargeStation(final RouteChargeStationDetailInfo routeChargeStationDetailInfo) {
         if (routeChargeStationDetailInfo == null) {
             Logger.d(TAG, "routeChargeStationDetailInfo is null");
             return;
         }
-        mViewModel.showAlterCharge.set(true);
-        mBinding.tvSelectedChargeStation.setText(routeChargeStationDetailInfo.name);
-        mViewModel.requestAlterChargeStation(routeChargeStationDetailInfo.poiID);
+        mViewModel.getShowAlterCharge().set(true);
+        mBinding.tvSelectedChargeStation.setText(routeChargeStationDetailInfo.getMName());
+        mViewModel.requestAlterChargeStation(routeChargeStationDetailInfo.getMPoiID());
     }
 
+    /**
+     * 点击事件初始话
+     */
     public void onInitClick() {
-        adapter.setListener(new AlterChargeStationAdapter.ItemClickListener() {
+        mAdapter.setListener(new AlterChargeStationAdapter.ItemClickListener() {
             @Override
-            public void onItemClick(String poiID) {
+            public void onItemClick(final String poiID) {
                 mViewModel.getSearchDetailsMode(poiID);
             }
 
             @Override
-            public void onAlterClick(RouteAlterChargeStationInfo info) {
+            public void onAlterClick(final RouteAlterChargeStationInfo info) {
                 mViewModel.addViaList(info);
             }
         });
 
         mBinding.stlAlter.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                if (detailPoiInfoEntity != null) {
-                    mViewModel.addViaList(detailPoiInfoEntity);
+            public void onClick(final View view) {
+                if (mDetailPoiInfoEntity != null) {
+                    mViewModel.addViaList(mDetailPoiInfoEntity);
                 }
             }
         });
     }
 
-    public void showAlterChargeStationInfo(RouteAlterChargeStationParam routeAlterChargeStationParam) {
+    /**
+     * 显示充电站列表信息
+     * @param routeAlterChargeStationParam 替换充电站搜索信息
+     */
+    public void showAlterChargeStationInfo(final RouteAlterChargeStationParam routeAlterChargeStationParam) {
         if (routeAlterChargeStationParam == null) {
             Logger.d(TAG, "routeAlterChargeStationParam is null");
             return;
         }
         ThreadManager.getInstance().postUi(() -> {
-            adapter.setData(routeAlterChargeStationParam.getRouteAlternativeChargeStationInfos());
+            mAdapter.setData(routeAlterChargeStationParam.getMRouteAlterChargeStationInfos());
         });
 
     }
 
-    public void showChargeStationDetail(PoiInfoEntity poiInfoEntities) {
+    /**
+     * 显示替换充电站详情界面
+     * @param poiInfoEntities 点参数
+     */
+    public void showChargeStationDetail(final PoiInfoEntity poiInfoEntities) {
         if (poiInfoEntities == null) {
             Logger.d(TAG, "poiInfoEntities is null");
             return;
         }
-        detailPoiInfoEntity = poiInfoEntities;
+        mDetailPoiInfoEntity = poiInfoEntities;
         ThreadManager.getInstance().postUi(() -> {
-            mViewModel.showAlterCharge.set(false);
-            mViewModel.routeSearchName.set(poiInfoEntities.getName());
-            mViewModel.routeSearchAddress.set(poiInfoEntities.getAddress());
-            ViewAdapterKt.loadImageUrl(mBinding.scenePoiDetailsChargingStationView.poiChargeImg, poiInfoEntities.getImageUrl(), com.fy.navi.scene.R.drawable.test_pic, com.fy.navi.scene.R.drawable.test_pic);
-            if (!ConvertUtils.isEmpty(poiInfoEntities.getServiceAreaInfoList()) && !poiInfoEntities.getServiceAreaInfoList().isEmpty() && !ConvertUtils.isEmpty(poiInfoEntities.getServiceAreaInfoList().get(0))) {
-                List<ServiceAreaInfo.ServiceAreaChild> serviceAreaChildList = poiInfoEntities.getServiceAreaInfoList().get(0).getServiceAreaChildList();
-                int building = poiInfoEntities.getServiceAreaInfoList().get(0).getBuilding();
-                mViewModel.routeSearchStatusVisibility.set(true);
+            mViewModel.getShowAlterCharge().set(false);
+            mViewModel.getRouteSearchName().set(poiInfoEntities.getName());
+            mViewModel.getRouteSearchAddress().set(poiInfoEntities.getAddress());
+            ViewAdapterKt.loadImageUrl(mBinding.scenePoiDetailsChargingStationView.poiChargeImg,
+                    poiInfoEntities.getImageUrl(), com.fy.navi.scene.R.drawable.test_pic, com.fy.navi.scene.R.drawable.test_pic);
+            if (!ConvertUtils.isEmpty(poiInfoEntities.getServiceAreaInfoList())
+                    && !poiInfoEntities.getServiceAreaInfoList().isEmpty()
+                    && !ConvertUtils.isEmpty(poiInfoEntities.getServiceAreaInfoList().get(0))) {
+                final int building = poiInfoEntities.getServiceAreaInfoList().get(0).getBuilding();
+                mViewModel.getRouteSearchStatusVisibility().set(true);
                 switch (building) {
                     case 0:
-                        mViewModel.routeSearchStatusVisibility.set(false);
+                        mViewModel.getRouteSearchStatusVisibility().set(false);
                         break;
                     case 1:
-                        mViewModel.routeSearchStatus.set(ResourceUtils.Companion.getInstance().getString(R.string.route_details_building));
+                        mViewModel.getRouteSearchStatus().set(ResourceUtils.Companion.getInstance().getString(R.string.route_details_building));
                         break;
                     case 2:
-                        mViewModel.routeSearchStatus.set(ResourceUtils.Companion.getInstance().getString(R.string.route_details_not_find));
+                        mViewModel.getRouteSearchStatus().set(ResourceUtils.Companion.getInstance().getString(R.string.route_details_not_find));
                         break;
                     case 3:
-                        mViewModel.routeSearchStatus.set(ResourceUtils.Companion.getInstance().getString(R.string.route_details_starting));
+                        mViewModel.getRouteSearchStatus().set(ResourceUtils.Companion.getInstance().getString(R.string.route_details_starting));
                         break;
                     case 4:
-                        mViewModel.routeSearchStatus.set(ResourceUtils.Companion.getInstance().getString(R.string.route_details_stoped));
+                        mViewModel.getRouteSearchStatus().set(ResourceUtils.Companion.getInstance().getString(R.string.route_details_stoped));
+                        break;
+                    default:
                         break;
                 }
             }
             if (!ConvertUtils.isEmpty(poiInfoEntities.getChargeInfoList()) && !poiInfoEntities.getChargeInfoList().isEmpty()) {
-                ChargeInfo chargeInfo = poiInfoEntities.getChargeInfoList().get(0);
-                mViewModel.routeSearchTypeVisibility.set(2);
-                mBinding.scenePoiDetailsChargingStationView.poiChargeFastOccupied.setText(chargeInfo.getFast_free() + "");
-                mBinding.scenePoiDetailsChargingStationView.poiChargeFastTotal.setText(ResourceUtils.Companion.getInstance().getString(R.string.route_details_jg) + chargeInfo.getFast_free());
-                mBinding.scenePoiDetailsChargingStationView.poiChargeFastCurrentAndVlot.setText(chargeInfo.getFastPower() + "kw." + chargeInfo.getFastVolt() +"v");
+                final ChargeInfo chargeInfo = poiInfoEntities.getChargeInfoList().get(0);
+                mViewModel.getRouteSearchTypeVisibility().set(2);
+                mBinding.scenePoiDetailsChargingStationView.poiChargeFastOccupied.setText(String.valueOf(chargeInfo.getFast_free()));
+                mBinding.scenePoiDetailsChargingStationView.poiChargeFastTotal.setText(ResourceUtils.Companion.getInstance()
+                        .getString(R.string.route_details_jg) + chargeInfo.getFast_free());
+                mBinding.scenePoiDetailsChargingStationView.poiChargeFastCurrentAndVlot.setText(getString(R.string.route_charge_info_format
+                        , chargeInfo.getFastPower() , chargeInfo.getFastVolt()));
+                mBinding.scenePoiDetailsChargingStationView.poiChargeSlowOccupied.setText(String.valueOf(chargeInfo.getSlow_free()));
+                mBinding.scenePoiDetailsChargingStationView.poiChargeSlowTotal.setText(ResourceUtils.Companion.getInstance()
+                        .getString(R.string.route_details_jg) + chargeInfo.getSlow_total());
+                mBinding.scenePoiDetailsChargingStationView.poiChargeSlowCurrentAndVlot
+                        .setText(getString(R.string.route_charge_info_format, chargeInfo.getSlowPower(), chargeInfo.getSlowVolt()));
 
-                mBinding.scenePoiDetailsChargingStationView.poiChargeSlowOccupied.setText(chargeInfo.getSlow_free() + "");
-                mBinding.scenePoiDetailsChargingStationView.poiChargeSlowTotal.setText(ResourceUtils.Companion.getInstance().getString(R.string.route_details_jg) + chargeInfo.getSlow_total());
-                mBinding.scenePoiDetailsChargingStationView.poiChargeSlowCurrentAndVlot.setText(chargeInfo.getSlowPower() + "kw." + chargeInfo.getSlowVolt() +"v");
-
-                mBinding.scenePoiDetailsChargingStationView.poiChargePrice.setText(ResourceUtils.Companion.getInstance().getString(R.string.route_details_charge_free) +chargeInfo.getCurrentElePrice() + ResourceUtils.Companion.getInstance().getString(R.string.route_details_charge_free_unit));
-                mBinding.scenePoiDetailsChargingStationView.poiChargeParkPrice.setText(ResourceUtils.Companion.getInstance().getString(R.string.route_details_charge_park_free) +chargeInfo.getCurrentServicePrice());
+                mBinding.scenePoiDetailsChargingStationView.poiChargePrice
+                        .setText(ResourceUtils.Companion.getInstance().getString(R.string.route_details_charge_free)
+                                +chargeInfo.getCurrentElePrice()
+                                + ResourceUtils.Companion.getInstance().getString(R.string.route_details_charge_free_unit));
+                mBinding.scenePoiDetailsChargingStationView.poiChargeParkPrice
+                        .setText(ResourceUtils.Companion.getInstance().getString(R.string.route_details_charge_park_free)
+                                +chargeInfo.getCurrentServicePrice());
             }
 
         });

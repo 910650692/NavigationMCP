@@ -1,49 +1,49 @@
 package com.fy.navi.vrbridge.bean;
 
 public class MapLocation {
-    private String provider;
-    private int speed;
-    private int bearing;
-    private double lon;
-    private double lat;
+    private String mProvider;
+    private int mSpeed;
+    private int mBearing;
+    private double mLon;
+    private double mLat;
 
     public String getProvider() {
-        return provider;
+        return mProvider;
     }
 
-    public void setProvider(String provider) {
-        this.provider = provider;
+    public void setProvider(final String provider) {
+        this.mProvider = provider;
     }
 
     public int getSpeed() {
-        return speed;
+        return mSpeed;
     }
 
-    public void setSpeed(int speed) {
-        this.speed = speed;
+    public void setSpeed(final int speed) {
+        this.mSpeed = speed;
     }
 
     public int getBearing() {
-        return bearing;
+        return mBearing;
     }
 
-    public void setBearing(int bearing) {
-        this.bearing = bearing;
+    public void setBearing(final int bearing) {
+        this.mBearing = bearing;
     }
 
     public double getLon() {
-        return lon;
+        return mLon;
     }
 
-    public void setLon(double lon) {
-        this.lon = lon;
+    public void setLon(final double lon) {
+        this.mLon = lon;
     }
 
     public double getLat() {
-        return lat;
+        return mLat;
     }
 
-    public void setLat(double lat) {
-        this.lat = lat;
+    public void setLat(final double lat) {
+        this.mLat = lat;
     }
 }

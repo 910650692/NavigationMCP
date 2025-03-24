@@ -5,101 +5,105 @@ import com.google.gson.annotations.SerializedName;
 import java.util.List;
 
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @NoArgsConstructor
 @Data
+@Getter
+@Setter
 public class RouteL2Data {
 
     @SerializedName("sdkVersion")
-    public String sdkVersion;
+    private String mSdkVersion;
     @SerializedName("engineVersion")
-    public String engineVersion;
+    private String mEngineVersion;
     @SerializedName("guideGroups")
-    public List<GuideGroupsDTO> guideGroups;
+    private List<GuideGroupsDTO> mGuideGroups;
     @SerializedName("linkCnt")
-    public Integer linkCnt;
+    private Integer mLinkCnt;
     @SerializedName("links")
-    public List<LinksDTO> links;
+    private List<LinksDTO> mLinks;
     @SerializedName("pathID")
-    public Integer pathID;
+    private Integer mPathID;
     @SerializedName("pntCnt")
-    public Integer pntCnt;
+    private Integer mPntCnt;
     @SerializedName("pnts")
-    public List<PntsDTO> pnts;
+    private List<PntsDTO> mPnts;
     @SerializedName("restTollGateInfos")
-    public List<RestTollGateInfosDTO> restTollGateInfos;
+    private List<RestTollGateInfosDTO> mRestTollGateInfos;
     @SerializedName("trafficLights")
-    public List<TrafficLightsDTO> trafficLights;
+    private List<TrafficLightsDTO> mTrafficLights;
     @SerializedName("viaRoads")
-    public List<ViaRoadsDTO> viaRoads;
+    private List<ViaRoadsDTO> mViaRoads;
     @SerializedName("endPoi")
-    public EndPoiDTO endPoi;
+    private EndPoiDTO mEndPoi;
 
     @NoArgsConstructor
     @Data
     public static class EndPoiDTO {
         @SerializedName("id")
-        public String id;
+        private String mId;
         @SerializedName("Name")
-        public String name;
+        private String mName;
         @SerializedName("Type")
-        public Integer type;
+        private Integer mType;
         @SerializedName("EntranceList")
-        public List<EntranceListDTO> entranceList;
+        private List<EntranceListDTO> mEntranceList;
         @SerializedName("ExitList")
-        public List<ExitListDTO> exitList;
+        private List<ExitListDTO> mExitList;
         @SerializedName("ParkingInfoList")
-        public List<ParkingInfoListDTO> parkingInfoList;
+        private List<ParkingInfoListDTO> mParkingInfoList;
 
         @NoArgsConstructor
         @Data
         public static class EntranceListDTO {
             @SerializedName("x")
-            public Double x;
+            private Double mX;
             @SerializedName("y")
-            public Double y;
+            private Double mY;
         }
 
         @NoArgsConstructor
         @Data
         public static class ExitListDTO {
             @SerializedName("x")
-            public Double x;
+            private Double mX;
             @SerializedName("y")
-            public Double y;
+            private Double mY;
         }
 
         @NoArgsConstructor
         @Data
         public static class ParkingInfoListDTO {
             @SerializedName("id")
-            public String id;
+            private String mId;
             @SerializedName("Name")
-            public String name;
+            private String mName;
             @SerializedName("Type")
-            public Integer type;
+            private Integer mType;
             @SerializedName("EntranceList")
-            public List<EntranceListDTO> entranceList;
+            private List<EntranceListDTO> mEntranceList;
             @SerializedName("ExitList")
-            public List<ExitListDTO> exitList;
+            private List<ExitListDTO> mExitList;
 
             @NoArgsConstructor
             @Data
             public static class EntranceListDTO {
                 @SerializedName("x")
-                public Double x;
+                private Double mX;
                 @SerializedName("y")
-                public Double y;
+                private Double mY;
             }
 
             @NoArgsConstructor
             @Data
             public static class ExitListDTO {
                 @SerializedName("x")
-                public Double x;
+                private Double mX;
                 @SerializedName("y")
-                public Double y;
+                private Double mY;
             }
         }
     }
@@ -108,33 +112,33 @@ public class RouteL2Data {
     @Data
     public static class GuideGroupsDTO {
         @SerializedName("groupEnterCoord")
-        public GroupEnterCoordDTO groupEnterCoord;
+        private GroupEnterCoordDTO mGroupEnterCoord;
         @SerializedName("groupIconType")
-        public Integer groupIconType;
+        private Integer mGroupIconType;
         @SerializedName("groupLen")
-        public Integer groupLen;
+        private Integer mGroupLen;
         @SerializedName("groupName")
-        public String groupName;
+        private String mGroupName;
         @SerializedName("groupTime")
-        public Integer groupTime;
+        private Integer mGroupTime;
         @SerializedName("groupTrafficLightsCount")
-        public Integer groupTrafficLightsCount;
+        private Integer mGroupTrafficLightsCount;
         @SerializedName("segments")
-        public List<SegmentsDTO> segments;
+        private List<SegmentsDTO> mSegments;
 
         @NoArgsConstructor
         @Data
         public static class GroupEnterCoordDTO {
             @SerializedName("map")
-            public MapDTO map;
+            private MapDTO mMap;
 
             @NoArgsConstructor
             @Data
             public static class MapDTO {
                 @SerializedName("x")
-                public Double x;
+                private Double mX;
                 @SerializedName("y")
-                public Double y;
+                private Double mY;
             }
         }
 
@@ -142,25 +146,25 @@ public class RouteL2Data {
         @Data
         public static class SegmentsDTO {
             @SerializedName("crntSegmLinkCnt")
-            public Integer crntSegmLinkCnt;
+            private Integer mCrntSegmLinkCnt;
             @SerializedName("description")
-            public String description;
+            private String mDescription;
             @SerializedName("isArriveWayPoint")
-            public Boolean isArriveWayPoint;
+            private Boolean mIsArriveWayPoint;
             @SerializedName("linkBegIdx")
-            public Integer linkBegIdx;
+            private Integer mLinkBegIdx;
             @SerializedName("navigationAssistAction")
-            public Integer navigationAssistAction;
+            private Integer mNavigationAssistAction;
             @SerializedName("navigationLen")
-            public Integer navigationLen;
+            private Integer mNavigationLen;
             @SerializedName("navigationMainAction")
-            public Integer navigationMainAction;
+            private Integer mNavigationMainAction;
             @SerializedName("navigationNextRoadName")
-            public String navigationNextRoadName;
+            private String mNavigationNextRoadName;
             @SerializedName("trafficLightNum")
-            public Integer trafficLightNum;
+            private Integer mTrafficLightNum;
             @SerializedName("travelTime")
-            public Integer travelTime;
+            private Integer mTravelTime;
         }
     }
 
@@ -168,71 +172,71 @@ public class RouteL2Data {
     @Data
     public static class LinksDTO {
         @SerializedName("formway")
-        public Integer formway;
+        private Integer mFormway;
         @SerializedName("isToll")
-        public Boolean isToll;
+        private Boolean mIsToll;
         @SerializedName("len")
-        public Integer len;
+        private Integer mLen;
         @SerializedName("linkID")
-        public Integer linkID;
+        private Integer mLinkID;
         @SerializedName("linktype")
-        public Integer linktype;
+        private Integer mLinktype;
         @SerializedName("pntBegIdx")
-        public Integer pntBegIdx;
+        private Integer mPntBegIdx;
         @SerializedName("pntCnt")
-        public Integer pntCnt;
+        private Integer mPntCnt;
         @SerializedName("roadclass")
-        public Integer roadclass;
+        private Integer mRoadclass;
         @SerializedName("roadname")
-        public String roadname;
+        private String mRoadname;
         @SerializedName("urid")
-        public Integer urid;
+        private Integer mUrid;
         @SerializedName("adminCode")
-        public Integer adminCode;
+        private Integer mAdminCode;
         @SerializedName("HasMixFork")
-        public Boolean HasMixFork;
+        private Boolean mHasMixFork;
         @SerializedName("HasTrafficLight")
-        public Boolean HasTrafficLight;
+        private Boolean mHasTrafficLight;
         @SerializedName("HasMultiOut")
-        public Boolean HasMultiOut;
+        private Boolean mHasMultiOut;
         @SerializedName("mainAction")
-        public Integer mainAction;
+        private Integer mMainAction;
         @SerializedName("assistantAction")
-        public Integer assistantAction;
+        private Integer mAssistantAction;
         @SerializedName("hasParallel")
-        public Boolean hasParallel;
+        private Boolean mHasParallel;
         @SerializedName("direction")
-        public Integer direction;
+        private Integer mDirection;
     }
 
     @NoArgsConstructor
     @Data
     public static class PntsDTO {
         @SerializedName("x")
-        public Double x;
+        private Double mX;
         @SerializedName("y")
-        public Double y;
+        private Double mY;
     }
 
     @NoArgsConstructor
     @Data
     public static class RestTollGateInfosDTO {
         @SerializedName("pos")
-        public PosDTO pos;
+        private PosDTO mPos;
         @SerializedName("remainDist")
-        public Integer remainDist;
+        private Integer mRemainDist;
         @SerializedName("remainTime")
-        public Integer remainTime;
+        private Integer mRemainTime;
         @SerializedName("tollGateName")
-        public String tollGateName;
+        private String mTollGateName;
 
         @NoArgsConstructor
         @Data
         public static class PosDTO {
             @SerializedName("x")
-            public Double x;
+            private Double mX;
             @SerializedName("y")
-            public Double y;
+            private Double mY;
         }
     }
 
@@ -240,38 +244,38 @@ public class RouteL2Data {
     @Data
     public static class TrafficLightsDTO {
         @SerializedName("x")
-        public Double x;
+        private Double mX;
         @SerializedName("y")
-        public Double y;
+        private Double mY;
     }
 
     @NoArgsConstructor
     @Data
     public static class ViaRoadsDTO {
         @SerializedName("roadName")
-        public String roadName;
+        private String mRoadName;
         @SerializedName("minLaneNum")
-        public Integer minLaneNum;
+        private Integer mMinLaneNum;
         @SerializedName("maxLaneNum")
-        public Integer maxLaneNum;
+        private Integer mMaxLaneNum;
         @SerializedName("minSpeedLimit")
-        public Integer minSpeedLimit;
+        private Integer mMinSpeedLimit;
         @SerializedName("maxSpeedLimit")
-        public Integer maxSpeedLimit;
+        private Integer mMaxSpeedLimit;
         @SerializedName("length")
-        public Integer length;
+        private Integer mLength;
         @SerializedName("roadClass")
-        public Integer roadClass;
+        private Integer mRoadClass;
         @SerializedName("coordinate")
-        public CoordinateDTO coordinate;
+        private CoordinateDTO mCoordinate;
 
         @NoArgsConstructor
         @Data
         public static class CoordinateDTO {
             @SerializedName("x")
-            public Double x;
+            private Double mX;
             @SerializedName("y")
-            public Double y;
+            private Double mY;
         }
     }
 }

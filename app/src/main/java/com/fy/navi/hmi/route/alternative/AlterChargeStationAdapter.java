@@ -1,5 +1,6 @@
 package com.fy.navi.hmi.route.alternative;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,7 +11,6 @@ import androidx.appcompat.widget.AppCompatTextView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.fy.navi.hmi.R;
-import com.fy.navi.service.define.mapdata.CityDataInfo;
 import com.fy.navi.service.define.route.RouteAlterChargeStationInfo;
 import com.fy.navi.ui.view.SkinConstraintLayout;
 
@@ -18,69 +18,76 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Author: LiuChang
+ * @author  LiuChang
+ * @version  \$Revision.1.0\$
  * Date: 2025/3/6
  * Description: [替换充电站适配器]
  */
 public class AlterChargeStationAdapter extends RecyclerView.Adapter<AlterChargeStationAdapter.AlterChargeStationViewHolder> {
-    private List<RouteAlterChargeStationInfo> data = new ArrayList<>();
+    private List<RouteAlterChargeStationInfo> mData = new ArrayList<>();
     private ItemClickListener mListener;
     private Context mContext;
 
-    public AlterChargeStationAdapter(Context context, List<RouteAlterChargeStationInfo> data) {
+    public AlterChargeStationAdapter(final Context context, final List<RouteAlterChargeStationInfo> data) {
         this.mContext = context;
-        this.data.clear();
-        this.data = data;
+        this.mData = data;
     }
 
-    public void setData(List<RouteAlterChargeStationInfo> data) {
-        this.data.clear();
-        this.data = data;
-        notifyDataSetChanged();
+    /**
+     * 设置数据
+     *
+     * @param data 数据
+     */
+    public void setData(final List<RouteAlterChargeStationInfo> data) {
+        this.mData.clear();
+        this.mData = data;
+        notifyItemRangeChanged(0, mData.size());
     }
 
     @NonNull
     @Override
-    public AlterChargeStationViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(mContext).inflate(R.layout.item_alter_charge_stations, parent, false);
+    public AlterChargeStationViewHolder onCreateViewHolder(final @NonNull ViewGroup parent, final int viewType) {
+        final View view = LayoutInflater.from(mContext).inflate(R.layout.item_alter_charge_stations, parent, false);
         return new AlterChargeStationViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull AlterChargeStationViewHolder holder, int position) {
-        holder.tvName.setText(data.get(position).name);
-        holder.tvCost.setText(mContext.getString(R.string.route_charge_stations_cost,
-                 data.get(position).priceInfo.lowestPriceValue, data.get(position).priceInfo.lowestPriceUnit));
+    public void onBindViewHolder(final @NonNull AlterChargeStationViewHolder holder, @SuppressLint("RecyclerView") final int position) {
+        holder.mTvName.setText(mData.get(position).getMName());
+        holder.mTvNumber.setText(String.valueOf(position + 1));
+        holder.mTvCost.setText(mContext.getString(R.string.route_charge_stations_cost,
+                mData.get(position).getMPriceInfo().getMLowestPriceValue(), mData.get(position).getMPriceInfo().getMLowestPriceUnit()));
 
-        String fastTotalNumber = data.get(position).fastPlugInfo.totalNumber;
-        if (fastTotalNumber.equals("")) {
+        String fastTotalNumber = mData.get(position).getMFastPlugInfo().getMTotalNumber();
+        if (fastTotalNumber.isEmpty()) {
             fastTotalNumber = mContext.getString(R.string.route_invalid);
         }
-        holder.tvFast.setText(mContext.getString(R.string.route_charge_stations_fast, "-"
-                , fastTotalNumber));
+        holder.mTvFastNumber.setText(mContext.getString(R.string.route_invalid));
+        holder.mTvFastTotalNumber.setText(mContext.getString(R.string.route_charge_stations_total_number, fastTotalNumber));
 
-        String slowTotalNumber = data.get(position).slowPlugInfo.totalNumber;
-        if (slowTotalNumber.equals("")) {
+        String slowTotalNumber = mData.get(position).getMSlowPlugInfo().getMTotalNumber();
+        if (slowTotalNumber.isEmpty()) {
             slowTotalNumber = mContext.getString(R.string.route_invalid);
         }
-        holder.tvSlow.setText(mContext.getString(R.string.route_charge_stations_slow, "-"
-                , slowTotalNumber));
-        holder.tvDistance.setText(mContext.getString(R.string.route_invalid));
+        holder.mTvSlowNumber.setText(mContext.getString(R.string.route_invalid));
+        holder.mTvSlowTotalNumber.setText(mContext.getString(R.string.route_charge_stations_total_number, slowTotalNumber));
 
-        holder.layoutChargeStation.setOnClickListener(new View.OnClickListener() {
+        holder.mTvDistance.setText(mContext.getString(R.string.route_invalid));
+
+        holder.mLayoutChargeStation.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(final View view) {
                 if (mListener != null) {
-                    mListener.onItemClick(data.get(position).poiId);
+                    mListener.onItemClick(mData.get(position).getMPoiId());
                 }
             }
         });
 
-        holder.buttonAlter.setOnClickListener(new View.OnClickListener() {
+        holder.mButtonAlter.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(final View view) {
                 if (mListener != null) {
-                    mListener.onAlterClick(data.get(position));
+                    mListener.onAlterClick(mData.get(position));
                 }
             }
         });
@@ -88,37 +95,52 @@ public class AlterChargeStationAdapter extends RecyclerView.Adapter<AlterChargeS
 
     @Override
     public int getItemCount() {
-        return data.size();
+        return mData.size();
     }
 
     public static class AlterChargeStationViewHolder extends RecyclerView.ViewHolder {
-        AppCompatTextView tvName;
-        AppCompatTextView tvDistance;
-        AppCompatTextView tvFast;
-        AppCompatTextView tvSlow;
-        AppCompatTextView tvCost;
-        AppCompatTextView buttonAlter;
-        SkinConstraintLayout layoutChargeStation;
+        private final AppCompatTextView mTvName;
+        private final AppCompatTextView mTvNumber;
+        private final AppCompatTextView mTvDistance;
+        private final AppCompatTextView mTvFastNumber;
+        private final AppCompatTextView mTvFastTotalNumber;
+        private final AppCompatTextView mTvSlowNumber;
+        private final AppCompatTextView mTvSlowTotalNumber;
+        private final AppCompatTextView mTvCost;
+        private final AppCompatTextView mButtonAlter;
+        private final SkinConstraintLayout mLayoutChargeStation;
 
 
-        public AlterChargeStationViewHolder(@NonNull View itemView) {
+        public AlterChargeStationViewHolder(final @NonNull View itemView) {
             super(itemView);
-            tvName = itemView.findViewById(R.id.tv_charge_station_name);
-            tvDistance = itemView.findViewById(R.id.tv_charge_station_distance);
-            tvFast = itemView.findViewById(R.id.tv_charge_station_fast);
-            tvSlow = itemView.findViewById(R.id.tv_charge_station_slow);
-            tvCost = itemView.findViewById(R.id.tv_charge_station_cost);
-            buttonAlter = itemView.findViewById(R.id.button_alter);
-            layoutChargeStation = itemView.findViewById(R.id.layout_charge_station);
+            mTvNumber = itemView.findViewById(R.id.tv_charge_station_number);
+            mTvName = itemView.findViewById(R.id.tv_charge_station_name);
+            mTvDistance = itemView.findViewById(R.id.tv_charge_station_distance);
+            mTvFastNumber = itemView.findViewById(R.id.tv_charge_fast_number);
+            mTvFastTotalNumber = itemView.findViewById(R.id.tv_charge_fast_total_number);
+            mTvSlowNumber = itemView.findViewById(R.id.tv_charge_slow_number);
+            mTvSlowTotalNumber = itemView.findViewById(R.id.tv_charge_slow_total_number);
+            mTvCost = itemView.findViewById(R.id.tv_charge_station_cost);
+            mButtonAlter = itemView.findViewById(R.id.button_alter);
+            mLayoutChargeStation = itemView.findViewById(R.id.layout_charge_station);
         }
     }
 
-    public void setListener(ItemClickListener listener) {
+    public void setListener(final ItemClickListener listener) {
         mListener = listener;
     }
 
     public interface ItemClickListener {
-        void onItemClick(String poiID);
-        void onAlterClick(RouteAlterChargeStationInfo info);
+        /**
+         * 详情点击
+         * @param poiID poiID
+         */
+        void onItemClick(final String poiID);
+
+        /**
+         * 替换按钮点击
+         *  @param info 替换点信息
+         */
+        void onAlterClick(final RouteAlterChargeStationInfo info);
     }
 }

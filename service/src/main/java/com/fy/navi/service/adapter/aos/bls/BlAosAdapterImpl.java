@@ -111,8 +111,8 @@ public class BlAosAdapterImpl implements IBlAosApi, ICallBackReStrictedArea, ICa
         restrictedAreaDetailMap.get(taskId);
         Logger.d(TAG, "start callBack to hmi:" + (restrictedObserver.size()));
         RouteRestrictionParam param = new RouteRestrictionParam();
-        param.setRestrictedArea(getRestrictedAreaDetail(gReStrictedAreaResponseParam, taskId));
-        param.setGReStrictedAreaResponseParam(gReStrictedAreaResponseParam);
+        param.setMRestrictedArea(getRestrictedAreaDetail(gReStrictedAreaResponseParam, taskId));
+        param.setMReStrictedAreaResponseParam(gReStrictedAreaResponseParam);
         for (QueryRestrictedObserver resultObserver : restrictedObserver.values()) {
             if (resultObserver == null) continue;
             resultObserver.onDrawRestrictionAndDetails(param);
@@ -154,7 +154,7 @@ public class BlAosAdapterImpl implements IBlAosApi, ICallBackReStrictedArea, ICa
         ArrayList<Integer> cityPositions = new ArrayList<>();
         ArrayList<ArrayList<RestrictedAreaDetail>> restrictedAreaDetailsList = new ArrayList<>();
         GReStrictedAreaDataRes gReStrictedAreaDataRes = param.data;
-        restrictedArea.setRequestId(taskId);
+        restrictedArea.setMRequestId(taskId);
         ArrayList<GRestrictCity> typelist = new ArrayList<>();
         if (gReStrictedAreaDataRes.mType == 7) {
             typelist.addAll(gReStrictedAreaDataRes.mCityAllRule.typelist);
@@ -172,11 +172,11 @@ public class BlAosAdapterImpl implements IBlAosApi, ICallBackReStrictedArea, ICa
                         for (GRestrictRule restrictRule : restrictRules) {
                             int index = restrictRules.indexOf(restrictRule) + 1;
                             RestrictedAreaDetail restrictedAreaDetail = new RestrictedAreaDetail();
-                            restrictedAreaDetail.setTitle("政策" + index);
-                            restrictedAreaDetail.time = restrictRule.time;
-                            restrictedAreaDetail.desc = restrictRule.desc;
-                            restrictedAreaDetail.summary = restrictRule.summary;
-                            restrictedAreaDetail.effect = restrictRule.effect;
+                            restrictedAreaDetail.setMTitle("政策" + index);
+                            restrictedAreaDetail.setMTime(restrictRule.time);
+                            restrictedAreaDetail.setMDesc(restrictRule.desc);
+                            restrictedAreaDetail.setMSummary(restrictRule.summary);
+                            restrictedAreaDetail.setMEffect(restrictRule.effect);
                             restrictedAreaDetails.add(restrictedAreaDetail);
                         }
                     }
@@ -184,9 +184,9 @@ public class BlAosAdapterImpl implements IBlAosApi, ICallBackReStrictedArea, ICa
                 }
             }
             Logger.d(TAG, "getRestrictedAreaDetail:" + cityNames);
-            restrictedArea.setCityNames(cityNames);
-            restrictedArea.setCityPosition(cityPositions);
-            restrictedArea.setRestrictedAreaDetails(restrictedAreaDetailsList);
+            restrictedArea.setMCityNames(cityNames);
+            restrictedArea.setMCityPosition(cityPositions);
+            restrictedArea.setMRestrictedAreaDetails(restrictedAreaDetailsList);
         }
         return restrictedArea;
     }

@@ -8,7 +8,7 @@ import com.fy.navi.ui.action.Action;
 import com.fy.navi.ui.base.BaseViewModel;
 
 public class BaseSettingOthersProtocolCenterViewModel extends BaseViewModel<SettingOthersProtocolCenterFragment, SettingOthersProtocolCenterModel> {
-    public BaseSettingOthersProtocolCenterViewModel(@NonNull Application application) {
+    public BaseSettingOthersProtocolCenterViewModel(@NonNull final Application application) {
         super(application);
     }
 
@@ -27,19 +27,19 @@ public class BaseSettingOthersProtocolCenterViewModel extends BaseViewModel<Sett
         super.onDestroy();
     }
 
-    public Action protocolCenterBack = () -> {
+    public Action mProtocolCenterBack = () -> {
         closeFragment(true);
     };
 
-    public Action openProtocolCenterTerm = () -> {
+    public Action mOpenProtocolCenterTerm = () -> {
         mView.showProtocolCenter(SettingOthersProtocolCenterFragment.ProtocolCenterType.PROTOCOL_TERM);
     };
 
-    public Action openProtocolCenterPrivacy = () -> {
+    public Action mOpenProtocolCenterPrivacy = () -> {
         mView.showProtocolCenter(SettingOthersProtocolCenterFragment.ProtocolCenterType.PROTOCOL_PRIVACY);
     };
 
-    public Action closeProtocolCenter = () -> {
+    public Action mCloseProtocolCenter = () -> {
         mView.closeProtocolCenter();
     };
 }

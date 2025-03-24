@@ -49,6 +49,8 @@
     <string name="test_query_city_data">查询数据</string>
     <string name="test_delete_city_data">删除数据</string>
     <string name="test_stop_navi">结束导航</string>
+    <string name="test_open_cluster_activity">仪表上屏</string>
+    <string name="test_close_cluster_activity">仪表下屏</string>
     <string name="test_start_debug">打开调试</string>
     <string name="test_stop_debug">关闭调试</string>
     <string name="test_setting">设置</string>
@@ -87,8 +89,14 @@
     <string name="offline_empty_tip">暂无数据</string>
     <string name="offline_no_search_hint">没有找到相关城市</string>
     <string name="offline_manager_map_title">下载管理</string>
-    <string name="offline_manager_map_content">1个城市下载更新中...</string>
+    <string name="offline_manager_map_content">个城市下载更新中…</string>
     <string name="offline_manager_map_downloading">正在下载</string>
+    <string name="offline_manager_map_no_downloaded">"无已下载城市</string>
+    <string name="offline_manager_map_no_downloading">无下载任务</string>
+    <string name="offline_manager_map_downloading_size_start">以下</string>
+    <string name="offline_manager_map_downloading_size_end">个城市下载成功</string>
+    <string name="offline_item_delete_message">基础功能包为离线跨城导航必备数据，推荐下载</string>
+    <string name="offline_item_cancel_delete">暂不下载</string>
 
     <!--算路相关-->
     <string name="route_along_search">途径点</string>
@@ -157,17 +165,21 @@
     <string name="route_details_charge_park_free">停车费   :</string>
     <string name="route_alter_charge_station_title">替换补能点</string>
     <string name="route_selected_charge_station">当前站点</string>
-    <string name="route_alter_charge_stations">以下充电站可供替换</string>
+    <string name="route_alter_charge_stations">以下充电站可供替换：</string>
     <string name="route_alter">替换</string>
-    <string name="route_charge_stations_cost">￥ %s/%s</string>
-    <string name="route_charge_stations_fast">快 %s/%s</string>
-    <string name="route_charge_stations_slow">慢 %s/%s</string>
+    <string name="route_charge_stations_cost">￥%s/%s</string>
+    <string name="route_charge_stations_total_number">/%s</string>
     <string name="route_expected_battery_depletion">预计电量耗尽</string>
     <string name="route_total_mileage">总里程</string>
     <string name="route_invalid">-</string>
+    <string name="route_charge_info_format">%skw.%sv</string>
     <string name="format_one_point_num">%.1f</string>
     <string name="kilometer">公里</string>
     <string name="meter">米</string>
+    <string name="route_service_details_add_via">添加途经点</string>
+    <string name="route_service_details_remove_via">删除途经点</string>
+    <string name="route_service_details_add_via_charge">添加</string>
+    <string name="route_service_details_remove_via_charge">移除</string>
 
     <!-- 账号相关 -->
     <string name="account_title">账号中心</string>
@@ -220,8 +232,11 @@
     <string name="car_connect_title">手车互联</string>
     <string name="car_connect_unLogin_function_1">手机遥控车机</string>
     <string name="car_connect_unLogin_function_2">无感互联</string>
+    <string name="car_connect_unLogin_function_2_tip">您最后浏览的地点和路线将会自动同步到车机</string>
     <string name="car_connect_unLogin_function_3">收查看爱车位置</string>
+    <string name="car_connect_unLogin_function_3_tip">手机高德自动显示爱车位置,找车方便不费心</string>
     <string name="car_connect_unLogin_function_4">同步双端历史&amp;收藏</string>
+    <string name="car_connect_unLogin_function_4_tip">您的收藏和历史地点会自动同步和存储,查看更方便</string>
     <string name="car_connect_unLogin_function_tip">上车后，手机开启导航时，导航路线自动投射至车机大屏，手机则变为遥控器</string>
     <string name="car_connect_unLogin_function_prompt">发现可连接设备，点击下方按钮去扫码连接吧</string>
     <string name="car_connect_unLogin_function_no_device">当前没有发现可用设备</string>
@@ -302,6 +317,8 @@
     <string name="setting_guide_charging_plan">补能规划</string>
     <string name="setting_guide_charging_plan_des">到达目的地有电量风险时，将自动规划含充电站的路线</string>
     <string name="setting_guide_car_number">沪AFY120</string>
+    <string name="setting_guide_plate_number_first_tip">第一位只能输入字母</string>
+    <string name="setting_guide_plate_number_check_not_available">车牌校验未通过</string>
     <string name="setting_guide_plate_number_my">我的爱车</string>
     <string name="setting_guide_plate_number_finish">完成</string>
     <string name="setting_guide_plate_number_text">车牌号码</string>
@@ -481,6 +498,22 @@
     <string name="step_exit_cruise">已退出巡航模式</string>
     <string name="self_parking_space">回车位</string>
     <!--引导相关-->
+
+    <!--主图消息中心相关-->
+    <string name="message_center_check">查看</string>
+    <string name="message_center_limit">部分道路限行中</string>
+
+    <string name="message_center_update">更新</string>
+    <string name="message_center_need_update">地图数据更新</string>
+    <string name="message_center_netless">45天未联网</string>
+    <string name="message_center_recommend_update">地图数据推荐更新</string>
+
+    <!--  权限申请  -->
+    <string name="authorization_request_title">\"高德地图\"权限申请</string>
+    <string name="authorization_request_content_first">保障\"精确定位与导航巡航\"、\"路线规划\"等功能正常使用,应用需要以下权限</string>
+    <string name="authorization_request_content_renew">您对\"高德地图\"的授权已于%s到期。请重新授权以下权限，保障\"精确定位与导航巡航\"、\"路线规划\"等功能正常使用：</string>
+    <string name="authorization_request_agree">同意一年</string>
+    <string name="authorization_request_cancel">不同意</string>
 
     <!--周边搜索标签 -->
     <string-array name="around_categories_name">

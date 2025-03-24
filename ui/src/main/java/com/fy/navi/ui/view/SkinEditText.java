@@ -5,21 +5,17 @@ import android.util.AttributeSet;
 
 import androidx.appcompat.widget.AppCompatEditText;
 
-/**
- * @Description TODO
- * @Author lvww
- * @date 2024/12/2
- */
+
 public class SkinEditText extends AppCompatEditText {
-    public SkinEditText(Context context) {
+    public SkinEditText(final Context context) {
         super(context);
     }
 
-    public SkinEditText(Context context, AttributeSet attrs) {
+    public SkinEditText(final Context context, final AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public SkinEditText(Context context, AttributeSet attrs, int defStyleAttr) {
+    public SkinEditText(final Context context, final AttributeSet attrs, final int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 }

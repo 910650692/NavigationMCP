@@ -9,18 +9,19 @@ import com.fy.navi.ui.dialog.BaseFullScreenDialog;
 import com.fy.navi.ui.dialog.IBaseDialogClickListener;
 
 /**
- * @Description TODO
- * @Author lvww
- * @date 2024/12/2
+ * 继续导航的弹窗
+ * @author fy
+ * @version $Revision.*$
  */
 public class ContinueNaviDialog extends BaseFullScreenDialog<DialogContinueNaviBinding> {
-    private String title;
-    private String content;
+    private String mTitle;
+    private String mContent;
 
-    protected ContinueNaviDialog(Context context, String title, String content, IBaseDialogClickListener observer) {
+    protected ContinueNaviDialog(final Context context, final String title, final String content,
+                                 final IBaseDialogClickListener observer) {
         super(context);
-        this.title = title;
-        this.content = content;
+        this.mTitle = title;
+        this.mContent = content;
         mDialogClickListener = observer;
     }
 
@@ -30,58 +31,84 @@ public class ContinueNaviDialog extends BaseFullScreenDialog<DialogContinueNaviB
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mViewBinding.stvContinueContent.setText(content);
+        mViewBinding.stvContinueContent.setText(mContent);
         onClick();
     }
 
+    /**
+     * 初始化点击事件
+     */
     public void onClick() {
         mViewBinding.dialogCancel.setOnClickListener(v -> {
             dismiss();
-            if (null != mDialogClickListener) mDialogClickListener.onCancelClick();
+            if (null != mDialogClickListener) {
+                mDialogClickListener.onCancelClick();
+            }
         });
         mViewBinding.dialogCommit.setOnClickListener(v -> {
             dismiss();
-            if (null != mDialogClickListener) mDialogClickListener.onCommitClick();
+            if (null != mDialogClickListener) {
+                mDialogClickListener.onCommitClick();
+            }
         });
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setTitle(final String title) {
+        this.mTitle = title;
     }
 
-    public void setContent(String content) {
-        this.content = content;
+    public void setContent(final String content) {
+        this.mContent = content;
     }
 
     public static class Build {
-        private final Context context;
-        private String title;
-        private String content;
-        private IBaseDialogClickListener dialogObserver;
+        private final Context mContext;
+        private String mTitle;
+        private String mContent;
+        private IBaseDialogClickListener mDialogObserver;
 
-        public Build(Context context) {
-            this.context = context;
+        public Build(final Context context) {
+            this.mContext = context;
         }
 
-        public Build setTitle(String title) {
-            this.title = title;
+        /**
+         * 设置标题
+         * @param title title
+         * @return build
+         */
+        public Build setTitle(final String title) {
+            this.mTitle = title;
             return this;
         }
 
-        public Build setContent(String content) {
-            this.content = content;
+        /**
+         * 设置内容
+         * @param content content
+         * @return build
+         */
+        public Build setContent(final String content) {
+            this.mContent = content;
             return this;
         }
 
-        public Build setDialogObserver(IBaseDialogClickListener dialogObserver) {
-            this.dialogObserver = dialogObserver;
+        /**
+         * 设置dialogObserver
+         * @param dialogObserver dialogObserver
+         * @return build
+         */
+        public Build setDialogObserver(final IBaseDialogClickListener dialogObserver) {
+            this.mDialogObserver = dialogObserver;
             return this;
         }
 
+        /**
+         * 创建
+         * @return ContinueNaviDialog
+         */
         public ContinueNaviDialog build() {
-            return new ContinueNaviDialog(context, title, content, dialogObserver);
+            return new ContinueNaviDialog(mContext, mTitle, mContent, mDialogObserver);
         }
     }
 }

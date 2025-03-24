@@ -4,148 +4,144 @@ import com.fy.navi.service.define.user.msgpush.PropertyValueInfo;
 
 import java.util.ArrayList;
 
-/**
- * @Description
- * @Author fh
- * @date 2024/12/31
- */
+
 public class BLResponseBean {
 
-    public int mEAosRequestType; // 请求类型
-    public int mNetErrorCode; //网络错误码
-    public int mNetworkStatus; //网络请求的状态
-    public long mReqHandle;
-    public int mHttpAckCode;
-    public int code; // 错误码 1,表示成功，其他值为异常值
-    public String timestamp;
-    public String message; // 错误描述
-    public String version;
-    public String result; // true/false,是否成功
-    public ArrayList<PropertyValueInfo> headers;
+    private int mEAosRequestType; // 请求类型
+    private int mNetErrorCode; //网络错误码
+    private int mNetworkStatus; //网络请求的状态
+    private long mReqHandle;
+    private int mHttpAckCode;
+    private int mCode; // 错误码 1,表示成功，其他值为异常值
+    private String mTimestamp;
+    private String mMessage; // 错误描述
+    private String mVersion;
+    private String mResult; // true/false,是否成功
+    private ArrayList<PropertyValueInfo> mHeaders;
 
-    public String avatar; // 微信头像
-    public String nickname; // 微信昵称
+    private String mAvatar; // 微信头像
+    private String mNickname; // 微信昵称
 
-    public String imgStr; //  base 64的二维码字符串
-    public String qrcodeId; // 二维码id
+    private String mImgStr; //  base 64的二维码字符串
+    private String mQRcodeId; // 二维码id
 
-    public int getmEAosRequestType() {
+    public int getEAosRequestType() {
         return mEAosRequestType;
     }
 
-    public void setmEAosRequestType(int mEAosRequestType) {
-        this.mEAosRequestType = mEAosRequestType;
+    public void setEAosRequestType(final int eaosRequestType) {
+        this.mEAosRequestType = eaosRequestType;
     }
 
-    public int getmNetErrorCode() {
+    public int getNetErrorCode() {
         return mNetErrorCode;
     }
 
-    public void setmNetErrorCode(int mNetErrorCode) {
-        this.mNetErrorCode = mNetErrorCode;
+    public void setNetErrorCode(final int netErrorCode) {
+        this.mNetErrorCode = netErrorCode;
     }
 
-    public int getmNetworkStatus() {
+    public int getNetworkStatus() {
         return mNetworkStatus;
     }
 
-    public void setmNetworkStatus(int mNetworkStatus) {
-        this.mNetworkStatus = mNetworkStatus;
+    public void setNetworkStatus(final int networkStatus) {
+        this.mNetworkStatus = networkStatus;
     }
 
-    public long getmReqHandle() {
+    public long getReqHandle() {
         return mReqHandle;
     }
 
-    public void setmReqHandle(long mReqHandle) {
-        this.mReqHandle = mReqHandle;
+    public void setReqHandle(final long reqHandle) {
+        this.mReqHandle = reqHandle;
     }
 
-    public int getmHttpAckCode() {
+    public int getHttpAckCode() {
         return mHttpAckCode;
     }
 
-    public void setmHttpAckCode(int mHttpAckCode) {
-        this.mHttpAckCode = mHttpAckCode;
+    public void setHttpAckCode(final int httpAckCode) {
+        this.mHttpAckCode = httpAckCode;
     }
 
     public int getCode() {
-        return code;
+        return mCode;
     }
 
-    public void setCode(int code) {
-        this.code = code;
+    public void setCode(final int code) {
+        this.mCode = code;
     }
 
     public String getTimestamp() {
-        return timestamp;
+        return mTimestamp;
     }
 
-    public void setTimestamp(String timestamp) {
-        this.timestamp = timestamp;
+    public void setTimestamp(final String timestamp) {
+        this.mTimestamp = timestamp;
     }
 
     public String getMessage() {
-        return message;
+        return mMessage;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
+    public void setMessage(final String message) {
+        this.mMessage = message;
     }
 
     public String getVersion() {
-        return version;
+        return mVersion;
     }
 
-    public void setVersion(String version) {
-        this.version = version;
+    public void setVersion(final String version) {
+        this.mVersion = version;
     }
 
     public String getResult() {
-        return result;
+        return mResult;
     }
 
-    public void setResult(String result) {
-        this.result = result;
+    public void setResult(final String result) {
+        this.mResult = result;
     }
 
     public ArrayList<PropertyValueInfo> getHeaders() {
-        return headers;
+        return mHeaders;
     }
 
-    public void setHeaders(ArrayList<PropertyValueInfo> headers) {
-        this.headers = headers;
+    public void setHeaders(final ArrayList<PropertyValueInfo> headers) {
+        this.mHeaders = headers;
     }
 
     public String getAvatar() {
-        return avatar;
+        return mAvatar;
     }
 
-    public void setAvatar(String avatar) {
-        this.avatar = avatar;
+    public void setAvatar(final String avatar) {
+        this.mAvatar = avatar;
     }
 
     public String getNickname() {
-        return nickname;
+        return mNickname;
     }
 
-    public void setNickname(String nickname) {
-        this.nickname = nickname;
+    public void setNickname(final String nickname) {
+        this.mNickname = nickname;
     }
 
     public String getImgStr() {
-        return imgStr;
+        return mImgStr;
     }
 
-    public void setImgStr(String imgStr) {
-        this.imgStr = imgStr;
+    public void setImgStr(final String imgStr) {
+        this.mImgStr = imgStr;
     }
 
     public String getQrcodeId() {
-        return qrcodeId;
+        return mQRcodeId;
     }
 
-    public void setQrcodeId(String qrcodeId) {
-        this.qrcodeId = qrcodeId;
+    public void setQrcodeId(final String qrcodeId) {
+        this.mQRcodeId = qrcodeId;
     }
 }

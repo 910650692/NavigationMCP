@@ -2,344 +2,340 @@ package com.fy.navi.service.define.user.usertrack;
 
 import java.util.ArrayList;
 
-/**
- * @Description
- * @Author fh
- * @date 2024/12/27
- */
+
 public class SearchHistoryItemBean {
 
-    public String name; // 记录搜索POI名字或者搜索词
-    public String poiid; // POI唯一ID
-    public String id;
-    public int type;
-    public int datatype;
-    public double x;
-    public double y;
-    public double x_entr;
-    public double y_entr;
-    public long update_time; // 数据更新时间，单位秒
-    public int history_type;
-    public int iconinfo;
-    public String adcode;
-    public String district;
-    public String address;
-    public String poi_tag;
-    public String func_text;
-    public String short_name;
-    public String display_info;
-    public String search_query;
-    public String terminals;
-    public String ignore_district;
-    public ArrayList<String> search_tag;
-    public ArrayList<String> search_query_set;
-    public String rich_rating;
-    public String num_review;
-    public String category;
-    public String super_address;
-    public String datatype_spec; // 记录对应记录类型，具体Icon资源需要上层关联
-    public String poi;
-    public String citycode;
-    public String version;
-    public String parent;
-    public int childType;
-    public String towardsAngle;
-    public String floorNo;
-    public int endPoiExtension;
+    private String mName; // 记录搜索POI名字或者搜索词
+    private String mPoiid; // POI唯一ID
+    private String mId;
+    private int mType;
+    private int mDatatype;
+    private double mX;
+    private double mY;
+    private double mXentr;
+    private double mYentr;
+    private long mUpdateTime; // 数据更新时间，单位秒
+    private int mHistoryType;
+    private int mIconinfo;
+    private String mAdcode;
+    private String mDistrict;
+    private String mAddress;
+    private String mPoiTag;
+    private String mFuncText;
+    private String mShortName;
+    private String mDisplayInfo;
+    private String mSearchQuery;
+    private String mTerminals;
+    private String mIgnoreDistrict;
+    private ArrayList<String> mSearchTag;
+    private ArrayList<String> mSearchQuerySet;
+    private String mRichRating;
+    private String mNumReview;
+    private String mCategory;
+    private String mSuperAddress;
+    private String mDatatypeSpec; // 记录对应记录类型，具体Icon资源需要上层关联
+    private String mPoi;
+    private String mCitycode;
+    private String mVersion;
+    private String mParent;
+    private int mChildType;
+    private String mTowardsAngle;
+    private String mFloorNo;
+    private int mEndPoiExtension;
 
     public String getName() {
-        return name;
+        return mName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setName(final String name) {
+        this.mName = name;
     }
 
     public String getPoiid() {
-        return poiid;
+        return mPoiid;
     }
 
-    public void setPoiid(String poiid) {
-        this.poiid = poiid;
+    public void setPoiid(final String poiid) {
+        this.mPoiid = poiid;
     }
 
     public String getId() {
-        return id;
+        return mId;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setId(final String id) {
+        this.mId = id;
     }
 
     public int getType() {
-        return type;
+        return mType;
     }
 
-    public void setType(int type) {
-        this.type = type;
+    public void setType(final int type) {
+        this.mType = type;
     }
 
     public int getDatatype() {
-        return datatype;
+        return mDatatype;
     }
 
-    public void setDatatype(int datatype) {
-        this.datatype = datatype;
+    public void setDatatype(final int datatype) {
+        this.mDatatype = datatype;
     }
 
     public double getX() {
-        return x;
+        return mX;
     }
 
-    public void setX(double x) {
-        this.x = x;
+    public void setX(final double x) {
+        this.mX = x;
     }
 
     public double getY() {
-        return y;
+        return mY;
     }
 
-    public void setY(double y) {
-        this.y = y;
+    public void setY(final double y) {
+        this.mY = y;
     }
 
-    public double getX_entr() {
-        return x_entr;
+    public double getXentr() {
+        return mXentr;
     }
 
-    public void setX_entr(double x_entr) {
-        this.x_entr = x_entr;
+    public void setXentr(final double xentr) {
+        this.mXentr = xentr;
     }
 
-    public double getY_entr() {
-        return y_entr;
+    public double getYentr() {
+        return mYentr;
     }
 
-    public void setY_entr(double y_entr) {
-        this.y_entr = y_entr;
+    public void setYentr(final double yentr) {
+        this.mYentr = yentr;
     }
 
-    public long getUpdate_time() {
-        return update_time;
+    public long getUpdateTime() {
+        return mUpdateTime;
     }
 
-    public void setUpdate_time(long update_time) {
-        this.update_time = update_time;
+    public void setUpdateTime(final long updateTime) {
+        this.mUpdateTime = updateTime;
     }
 
-    public int getHistory_type() {
-        return history_type;
+    public int getHistoryType() {
+        return mHistoryType;
     }
 
-    public void setHistory_type(int history_type) {
-        this.history_type = history_type;
+    public void setHistoryType(final int historyType) {
+        this.mHistoryType = historyType;
     }
 
     public int getIconinfo() {
-        return iconinfo;
+        return mIconinfo;
     }
 
-    public void setIconinfo(int iconinfo) {
-        this.iconinfo = iconinfo;
+    public void setIconinfo(final int iconinfo) {
+        this.mIconinfo = iconinfo;
     }
 
     public String getAdcode() {
-        return adcode;
+        return mAdcode;
     }
 
-    public void setAdcode(String adcode) {
-        this.adcode = adcode;
+    public void setAdcode(final String adcode) {
+        this.mAdcode = adcode;
     }
 
     public String getDistrict() {
-        return district;
+        return mDistrict;
     }
 
-    public void setDistrict(String district) {
-        this.district = district;
+    public void setDistrict(final String district) {
+        this.mDistrict = district;
     }
 
     public String getAddress() {
-        return address;
+        return mAddress;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
+    public void setAddress(final String address) {
+        this.mAddress = address;
     }
 
-    public String getPoi_tag() {
-        return poi_tag;
+    public String getPoiTag() {
+        return mPoiTag;
     }
 
-    public void setPoi_tag(String poi_tag) {
-        this.poi_tag = poi_tag;
+    public void setPoiTag(final String poiTag) {
+        this.mPoiTag = poiTag;
     }
 
-    public String getFunc_text() {
-        return func_text;
+    public String getFuncText() {
+        return mFuncText;
     }
 
-    public void setFunc_text(String func_text) {
-        this.func_text = func_text;
+    public void setFuncText(final String funcText) {
+        this.mFuncText = funcText;
     }
 
-    public String getShort_name() {
-        return short_name;
+    public String getShortName() {
+        return mShortName;
     }
 
-    public void setShort_name(String short_name) {
-        this.short_name = short_name;
+    public void setShortName(final String shortName) {
+        this.mShortName = shortName;
     }
 
-    public String getDisplay_info() {
-        return display_info;
+    public String getDisplayInfo() {
+        return mDisplayInfo;
     }
 
-    public void setDisplay_info(String display_info) {
-        this.display_info = display_info;
+    public void setDisplayInfo(final String displayInfo) {
+        this.mDisplayInfo = displayInfo;
     }
 
-    public String getSearch_query() {
-        return search_query;
+    public String getSearchQuery() {
+        return mSearchQuery;
     }
 
-    public void setSearch_query(String search_query) {
-        this.search_query = search_query;
+    public void setSearchQuery(final String searchQuery) {
+        this.mSearchQuery = searchQuery;
     }
 
     public String getTerminals() {
-        return terminals;
+        return mTerminals;
     }
 
-    public void setTerminals(String terminals) {
-        this.terminals = terminals;
+    public void setTerminals(final String terminals) {
+        this.mTerminals = terminals;
     }
 
-    public String getIgnore_district() {
-        return ignore_district;
+    public String getIgnoreDistrict() {
+        return mIgnoreDistrict;
     }
 
-    public void setIgnore_district(String ignore_district) {
-        this.ignore_district = ignore_district;
+    public void setIgnoreDistrict(final String ignoreDistrict) {
+        this.mIgnoreDistrict = ignoreDistrict;
     }
 
-    public ArrayList<String> getSearch_tag() {
-        return search_tag;
+    public ArrayList<String> getSearchTag() {
+        return mSearchTag;
     }
 
-    public void setSearch_tag(ArrayList<String> search_tag) {
-        this.search_tag = search_tag;
+    public void setSearchTag(final ArrayList<String> searchTag) {
+        this.mSearchTag = searchTag;
     }
 
-    public ArrayList<String> getSearch_query_set() {
-        return search_query_set;
+    public ArrayList<String> getSearchQuerySet() {
+        return mSearchQuerySet;
     }
 
-    public void setSearch_query_set(ArrayList<String> search_query_set) {
-        this.search_query_set = search_query_set;
+    public void setSearchQuerySet(final ArrayList<String> searchQuerySet) {
+        this.mSearchQuerySet = searchQuerySet;
     }
 
-    public String getRich_rating() {
-        return rich_rating;
+    public String getRichRating() {
+        return mRichRating;
     }
 
-    public void setRich_rating(String rich_rating) {
-        this.rich_rating = rich_rating;
+    public void setRichRating(final String richRating) {
+        this.mRichRating = richRating;
     }
 
-    public String getNum_review() {
-        return num_review;
+    public String getNumReview() {
+        return mNumReview;
     }
 
-    public void setNum_review(String num_review) {
-        this.num_review = num_review;
+    public void setNumReview(final String numReview) {
+        this.mNumReview = numReview;
     }
 
     public String getCategory() {
-        return category;
+        return mCategory;
     }
 
-    public void setCategory(String category) {
-        this.category = category;
+    public void setCategory(final String category) {
+        this.mCategory = category;
     }
 
-    public String getSuper_address() {
-        return super_address;
+    public String getSuperAddress() {
+        return mSuperAddress;
     }
 
-    public void setSuper_address(String super_address) {
-        this.super_address = super_address;
+    public void setSuperAddress(final String superAddress) {
+        this.mSuperAddress = superAddress;
     }
 
-    public String getDatatype_spec() {
-        return datatype_spec;
+    public String getDatatypeSpec() {
+        return mDatatypeSpec;
     }
 
-    public void setDatatype_spec(String datatype_spec) {
-        this.datatype_spec = datatype_spec;
+    public void setDatatypeSpec(final String datatypeSpec) {
+        this.mDatatypeSpec = datatypeSpec;
     }
 
     public String getPoi() {
-        return poi;
+        return mPoi;
     }
 
-    public void setPoi(String poi) {
-        this.poi = poi;
+    public void setPoi(final String poi) {
+        this.mPoi = poi;
     }
 
     public String getCitycode() {
-        return citycode;
+        return mCitycode;
     }
 
-    public void setCitycode(String citycode) {
-        this.citycode = citycode;
+    public void setCitycode(final String citycode) {
+        this.mCitycode = citycode;
     }
 
     public String getVersion() {
-        return version;
+        return mVersion;
     }
 
-    public void setVersion(String version) {
-        this.version = version;
+    public void setVersion(final String version) {
+        this.mVersion = version;
     }
 
     public String getParent() {
-        return parent;
+        return mParent;
     }
 
-    public void setParent(String parent) {
-        this.parent = parent;
+    public void setParent(final String parent) {
+        this.mParent = parent;
     }
 
     public int getChildType() {
-        return childType;
+        return mChildType;
     }
 
-    public void setChildType(int childType) {
-        this.childType = childType;
+    public void setChildType(final int childType) {
+        this.mChildType = childType;
     }
 
     public String getTowardsAngle() {
-        return towardsAngle;
+        return mTowardsAngle;
     }
 
-    public void setTowardsAngle(String towardsAngle) {
-        this.towardsAngle = towardsAngle;
+    public void setTowardsAngle(final String towardsAngle) {
+        this.mTowardsAngle = towardsAngle;
     }
 
     public String getFloorNo() {
-        return floorNo;
+        return mFloorNo;
     }
 
-    public void setFloorNo(String floorNo) {
-        this.floorNo = floorNo;
+    public void setFloorNo(final String floorNo) {
+        this.mFloorNo = floorNo;
     }
 
     public int getEndPoiExtension() {
-        return endPoiExtension;
+        return mEndPoiExtension;
     }
 
-    public void setEndPoiExtension(int endPoiExtension) {
-        this.endPoiExtension = endPoiExtension;
+    public void setEndPoiExtension(final int endPoiExtension) {
+        this.mEndPoiExtension = endPoiExtension;
     }
 }

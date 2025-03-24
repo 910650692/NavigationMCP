@@ -11,24 +11,27 @@ import com.fy.navi.ui.view.SkinTextView;
 
 /**
  * 实现按钮的点击效果的textview
+ * @author fy
+ * @version $Revision.*$
  */
 public class ButtonText extends SkinTextView {
 
-    public ButtonText(Context context) {
+    public ButtonText(final Context context) {
         super(context);
     }
 
-    public ButtonText(Context context, @Nullable AttributeSet attrs) {
+    public ButtonText(final Context context, @Nullable final AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public ButtonText(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public ButtonText(final Context context, @Nullable final AttributeSet attrs,
+                      final int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
-    public boolean onTouchEvent(MotionEvent event) {
+    public boolean onTouchEvent(final MotionEvent event) {
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
             setAlpha(0.6f);
             return true;

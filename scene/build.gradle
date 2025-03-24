@@ -5,6 +5,7 @@ plugins {
 android {
     namespace 'com.fy.navi.scene'
     compileSdk Integer.parseInt(libs.versions.compileSdk.get())
+    buildToolsVersion libs.versions.buildSdk.get()
 
     defaultConfig {
         minSdk Integer.parseInt(libs.versions.minSdk.get())
@@ -43,5 +44,6 @@ dependencies {
     implementation project(":service")
     implementation project(":utils")
     implementation libs.arouter.api
+    implementation libs.projectlombok.lombok
     annotationProcessor libs.arouter.compiler
 }

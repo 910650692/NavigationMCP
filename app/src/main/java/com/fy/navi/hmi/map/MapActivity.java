@@ -16,6 +16,7 @@ import com.fy.navi.hmi.test.TestWindow;
 import com.fy.navi.mapservice.bean.INaviConstant;
 import com.fy.navi.service.define.map.IBaseScreenMapView;
 import com.fy.navi.service.define.map.MapTypeId;
+import com.fy.navi.service.define.message.MessageCenterType;
 import com.fy.navi.service.define.navi.LaneInfoEntity;
 import com.fy.navi.service.define.search.PoiInfoEntity;
 import com.fy.navi.ui.base.BaseActivity;
@@ -55,8 +56,18 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
         // 给限行设置点击事件
         mBinding.includeLimit.setViewModel(mViewModel);
         mBinding.cruiseLayout.setViewModel(mViewModel);
+        final int powerType = mViewModel.powerType();
+        // 油车
+        if (powerType == 0) {
+            mBinding.skIvBasicRouting.setImageResource(R.drawable.img_home_gas_station);
+        } else {
+            mBinding.skIvBasicRouting.setImageResource(R.drawable.img_basic_ic_gas_charging);
+        }
+        mBinding.includeMessageCenter.setViewModel(mViewModel);
         initTestWindow();
         mViewModel.startListenMsg();
+        mViewModel.offlineMap15Day();
+        mViewModel.offlineMap45Day();
     }
 
     @Override

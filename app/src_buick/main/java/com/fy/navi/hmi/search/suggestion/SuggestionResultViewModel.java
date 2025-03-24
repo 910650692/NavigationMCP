@@ -7,7 +7,7 @@ import androidx.annotation.NonNull;
 
 public class SuggestionResultViewModel extends BaseSuggestionResultVm {
 
-    public SuggestionResultViewModel(@NonNull Application application) {
+    public SuggestionResultViewModel(@NonNull final Application application) {
         super(application);
     }
 }

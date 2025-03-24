@@ -189,7 +189,7 @@ public class CarConnectAdapterImpl implements ICarConnectApi, IMobileLinkObserve
      */
     @Override
     public void onRecvAck(GWsTserviceInternalLinkAutoReportResponseParam gWsTserviceInternalLinkAutoReportResponseParam) {
-        CarConnectResponseBaseBean responseBaseBean = new CarConnectResponseBaseBean();
+        final CarConnectResponseBaseBean responseBaseBean = new CarConnectResponseBaseBean();
         GsonUtils.copyBean(gWsTserviceInternalLinkAutoReportResponseParam, responseBaseBean);
 
         Logger.d("responseBaseBean: " + responseBaseBean.toString());

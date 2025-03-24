@@ -103,6 +103,7 @@
             android:background="@drawable/bg_selecting_bar"
             android:layout_marginStart="@dimen/dp_40"
             android:layout_marginEnd="@dimen/dp_40"
+            android:layout_marginTop="@dimen/dp_24"
             android:padding="@dimen/dp_8">
 
             <com.fy.navi.ui.view.SkinRadioButton

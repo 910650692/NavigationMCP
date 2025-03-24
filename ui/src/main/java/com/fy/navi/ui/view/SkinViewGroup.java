@@ -7,36 +7,31 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 
-/**
- * @Description TODO
- * @Author lvww
- * @date 2024/12/2
- */
 public class SkinViewGroup extends ViewGroup {
-    public SkinViewGroup(Context context) {
+    public SkinViewGroup(final Context context) {
         super(context);
     }
 
-    public SkinViewGroup(Context context, AttributeSet attrs) {
+    public SkinViewGroup(final Context context, final AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public SkinViewGroup(Context context, AttributeSet attrs, int defStyleAttr) {
+    public SkinViewGroup(final Context context, final AttributeSet attrs, final int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 
     @Override
-    protected void onLayout(boolean changed, int l, int t, int r, int b) {
+    protected void onLayout(final boolean changed, final int l, final int t, final int r, final int b) {
 
     }
 
     @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+    protected void onMeasure(final int widthMeasureSpec, final int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
 
     @Override
-    protected void onDraw(@NonNull Canvas canvas) {
+    protected void onDraw(@NonNull final Canvas canvas) {
         super.onDraw(canvas);
     }
 }

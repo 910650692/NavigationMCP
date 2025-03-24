@@ -14,41 +14,16 @@ import lombok.Setter;
 @Setter
 public class RouteRestrictionParam implements Serializable{
     /*** 请求Id **/
-    private long requestId;
+    private long mRequestId;
     /*** 屏幕Id **/
-    private MapTypeId mapTypeId;
-    private boolean isOnlineRoute = true;
+    private MapTypeId mMapTypeId;
+    private boolean mIsOnlineRoute = true;
     /*** 详情数据 **/
-    private List<RouteRestrictionInfo> routeRestrictionInfo = new ArrayList<>();
+    private List<RouteRestrictionInfo> mRouteRestrictionInfo = new ArrayList<>();
 
-    private List<String> ruleIds = new ArrayList<>();
+    private List<String> mRuleIds = new ArrayList<>();
 
-    private Object gReStrictedAreaResponseParam;
+    private Object mReStrictedAreaResponseParam;
 
-    private RestrictedArea restrictedArea;
-
-    public RouteRestrictionParam() {}
-
-    // Copy constructor
-    public RouteRestrictionParam(RouteRestrictionParam other) {
-        this.requestId = other.getRequestId();
-        this.mapTypeId = other.getMapTypeId();
-        this.routeRestrictionInfo = other.getRouteRestrictionInfo();
-        this.ruleIds = other.getRuleIds();
-        this.gReStrictedAreaResponseParam = other.getGReStrictedAreaResponseParam();
-        this.restrictedArea = other.getRestrictedArea();
-    }
-
-    // Copy method
-    public RouteRestrictionParam copy() {
-        return new RouteRestrictionParam(this);
-    }
-
-    public void setOnlineRoute(boolean onlineRoute) {
-        isOnlineRoute = onlineRoute;
-    }
-
-    public boolean isOnlineRoute() {
-        return isOnlineRoute;
-    }
+    private RestrictedArea mRestrictedArea;
 }

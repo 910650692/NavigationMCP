@@ -649,7 +649,7 @@ public class ConvertUtils {
      * @return 增加后的集合
      */
     public static <K, V> Map<K, V> push(Map<K, V> map, K k, V v) {
-        if (isEmpty(map)) map = new HashMap<>();
+        if (isNull(map)) map = new HashMap<>();
         map.put(k, v);
         return map;
     }
@@ -665,7 +665,7 @@ public class ConvertUtils {
      * @return 增加后的集合
      */
     public static <K, V> Hashtable<K, V> push(Hashtable<K, V> hashtable, K k, V v) {
-        if (isEmpty(hashtable)) hashtable = new Hashtable<>();
+        if (isNull(hashtable)) hashtable = new Hashtable<>();
         hashtable.put(k, v);
         return hashtable;
     }
@@ -793,9 +793,11 @@ public class ConvertUtils {
      */
     public static <T> T pop(List<T> list) {
         if (isEmpty(list)) return null;
-        if (Build.VERSION.SDK_INT >= 35) {
-            return list.removeLast();
-        } else {
+        // TODO: 2025/3/25 甲方不支持35的API，仓库编译会报错
+//        if (Build.VERSION.SDK_INT >= 35) {
+//            return list.removeLast();
+//        } else
+        {
             T t = list.get(list.size() - 1);
             list.remove(t);
             return t;
@@ -1203,5 +1205,15 @@ public class ConvertUtils {
             }
         }
         return spanStr;
+    }
+
+    /**
+     * 城市信息经纬度转换
+     * @param input 城市信息输入
+     * @return 返回转换后信息
+     */
+    public static double transCityLatAndLon(final double input) {
+        final double scaleFactor = 1000000.0;
+        return input / scaleFactor;
     }
 }

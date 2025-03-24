@@ -44,7 +44,7 @@
             android:layout_marginStart="@dimen/dp_30"
             android:textColor="@color/black"
             android:textSize="@dimen/sp_34"
-            android:text="@{model.travelTime}"
+            android:text="@{model.MTravelTime}"
             app:layout_constraintStart_toEndOf="@+id/route_item_num"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="xx小时xx分钟" />
@@ -57,7 +57,7 @@
             android:layout_marginTop="@dimen/dp_23"
             android:textSize="@dimen/sp_32"
             android:padding="@dimen/dp_5"
-            android:text="@{model.label}"
+            android:text="@{model.MLabel}"
             android:background="@drawable/bg_route_details_defult_label"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -70,7 +70,7 @@
             android:textColor="@color/black"
             android:textSize="@dimen/sp_30"
             android:layout_marginBottom="@dimen/dp_23"
-            android:text="@{model.length}"
+            android:text="@{model.MLength}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="@+id/route_item_time"
             tools:text="xx公里" />
@@ -93,7 +93,7 @@
             android:textColor="@color/text_color_route_item_no_select"
             android:textSize="@dimen/sp_30"
             android:layout_marginBottom="@dimen/dp_20"
-            android:text="@{model.tollCost}"
+            android:text="@{model.MTollCost}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/route_item_traffic_light"
             tools:text="88" />
@@ -116,7 +116,7 @@
             android:textColor="@color/text_color_route_item_no_select"
             android:textSize="@dimen/sp_30"
             android:layout_marginBottom="@dimen/dp_20"
-            android:text="@{model.trafficLightCount}"
+            android:text="@{model.MTrafficLightCount}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/route_item_traffic_price"
             tools:text="3" />
@@ -127,7 +127,7 @@
             android:layout_height="@dimen/dp_36"
             android:layout_marginStart="@dimen/dp_30"
             android:layout_marginBottom="@dimen/dp_23"
-            android:visibility="@{model.elecRoute ? View.VISIBLE : View.GONE}"
+            android:visibility="@{model.MElecRouteBool ? View.VISIBLE : View.GONE}"
             android:src="@drawable/img_route_electricity"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/route_item_price" />
@@ -140,8 +140,8 @@
             android:textColor="@color/text_color_route_item_no_select"
             android:textSize="@dimen/sp_30"
             android:layout_marginBottom="@dimen/dp_20"
-            android:visibility="@{model.elecRoute ? View.VISIBLE : View.GONE}"
-            android:text="@{model.elecRouteLabel}"
+            android:visibility="@{model.MElecRouteBool ? View.VISIBLE : View.GONE}"
+            android:text="@{model.MElecRouteLabel}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/route_item_electricity_img"
             tools:text="60%到达" />

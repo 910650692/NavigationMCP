@@ -49,8 +49,8 @@ public class CarConnectHelpFragment extends BaseFragment<FragmentCarConnectHelpB
 
     private final TabLayout.OnTabSelectedListener mOnTabSelectedListener = new TabLayout.OnTabSelectedListener() {
         @Override
-        public void onTabSelected(TabLayout.Tab tab) {
-            View tabView = tab.getCustomView();
+        public void onTabSelected(final TabLayout.Tab tab) {
+            final View tabView = tab.getCustomView();
             if (tabView instanceof SkinLinearLayout) {
                 tabView.setSelected(true);
                 ((TextView) tabView.findViewById(R.id.tabText)).setTextColor(getResources().getColor(R.color.black));
@@ -59,8 +59,8 @@ public class CarConnectHelpFragment extends BaseFragment<FragmentCarConnectHelpB
         }
 
         @Override
-        public void onTabUnselected(TabLayout.Tab tab) {
-            View tabView = tab.getCustomView();
+        public void onTabUnselected(final TabLayout.Tab tab) {
+            final View tabView = tab.getCustomView();
             if (tabView instanceof SkinLinearLayout) {
                 tabView.setSelected(false);
                 ((TextView) tabView.findViewById(R.id.tabText)).setTextColor(getResources().getColor(R.color.setting_car_connected_help_tab_default));
@@ -68,24 +68,30 @@ public class CarConnectHelpFragment extends BaseFragment<FragmentCarConnectHelpB
         }
 
         @Override
-        public void onTabReselected(TabLayout.Tab tab) {
+        public void onTabReselected(final TabLayout.Tab tab) {
 
         }
     };
 
+    /**
+     * initView
+     */
     private void initView(){
         for(int i = 0; i < 4; i++){
-            TabLayout.Tab tab = mBinding.helpTable.newTab();
-            View view = getLayoutInflater().inflate(R.layout.item_setting_help_tab, null);
-            TextView tabText = view.findViewById(R.id.tabText);
+            final TabLayout.Tab tab = mBinding.helpTable.newTab();
+            final View view = getLayoutInflater().inflate(R.layout.item_setting_help_tab, null);
+            final TextView tabText = view.findViewById(R.id.tabText);
             tabText.setText(mTabIds[i]);
             tab.setCustomView(view);
             mBinding.helpTable.addTab(tab, false);
         }
     }
 
+    /**
+     * initData
+     */
     private void initData(){
-        Bundle bundle = getArguments();
+        final Bundle bundle = getArguments();
         if(bundle != null){
             Objects.requireNonNull(mBinding.helpTable.getTabAt(bundle.getInt("position"))).select();
         } else {

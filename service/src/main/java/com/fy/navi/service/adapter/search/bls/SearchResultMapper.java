@@ -1,6 +1,5 @@
 package com.fy.navi.service.adapter.search.bls;
 
-import static com.fy.navi.service.MapDefaultFinalTag.SEARCH_SERVICE_TAG;
 
 import android.text.TextUtils;
 
@@ -35,6 +34,7 @@ import com.autonavi.gbl.search.model.SearchTipsCityInfo;
 import com.autonavi.gbl.search.model.SuggestionSearchResult;
 import com.fy.navi.service.AppContext;
 import com.fy.navi.service.AutoMapConstant;
+import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.define.bean.GeoPoint;
 import com.fy.navi.service.define.search.ChargeInfo;
 import com.fy.navi.service.define.search.ChildInfo;
@@ -61,11 +61,14 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
+ * @author baipeg0904
+ * @version \$Revision1.0\$
  * SearchResultMapper类负责将搜索结果映射到特定的数据结构。
  */
-public class SearchResultMapper {
-
-    private static class Holder {
+public final class SearchResultMapper {
+    private static final String NUMBER_FORMAT_EXCEPTION = "NumberFormatException :";
+    private static final String PARKINGERROR = "parkings is null";
+    private final static class Holder {
         private static final SearchResultMapper INSTANCE = new SearchResultMapper();
     }
 
@@ -78,10 +81,15 @@ public class SearchResultMapper {
 
     /**
      * 将预搜索结果 SuggestionSearchResult 转换为 SearchResultEntity
+     *
+     * @param requestParameterBuilder 搜索请求参数
+     * @param result                  预搜索结果
+     * @return SearchResultEntity
      */
-    public SearchResultEntity mapFromSuggestionSearchResult(SearchRequestParameter requestParameterBuilder, SuggestionSearchResult result) {
-        SearchResultEntity searchResultEntity = createBaseResultEntity(requestParameterBuilder, result.code, result.message);
-        List<PoiInfoEntity> poiList = Optional.ofNullable(result.tipList)
+    public SearchResultEntity mapFromSuggestionSearchResult(final SearchRequestParameter requestParameterBuilder,
+                                                            final SuggestionSearchResult result) {
+        final SearchResultEntity searchResultEntity = createBaseResultEntity(requestParameterBuilder, result.code, result.message);
+        final List<PoiInfoEntity> poiList = Optional.ofNullable(result.tipList)
                 .orElse(new ArrayList<>())
                 .stream()
                 .map(this::mapSuggestionPoiTip)
@@ -92,9 +100,11 @@ public class SearchResultMapper {
 
     /**
      * 映射 SearchSuggestionPoiTip 到 PoiInfoEntity
+     * @param suggestionPoiTip 搜索建议 POI 提示
+     * @return PoiInfoEntity
      */
-    private PoiInfoEntity mapSuggestionPoiTip(SearchSuggestionPoiTip suggestionPoiTip) {
-        GeoPoint point = new GeoPoint();
+    private PoiInfoEntity mapSuggestionPoiTip(final SearchSuggestionPoiTip suggestionPoiTip) {
+        final GeoPoint point = new GeoPoint();
         point.setLat(suggestionPoiTip.basicInfo.location.lat);
         point.setLon(suggestionPoiTip.basicInfo.location.lon);
         return new PoiInfoEntity()
@@ -108,10 +118,14 @@ public class SearchResultMapper {
 
     /**
      * 将关键字搜索结果 KeywordSearchResultV2 转换为 SearchResultEntity
+     *
+     * @param requestParameterBuilder 请求参数构建器
+     * @param result                  搜索结果
+     * @return SearchResultEntity
      */
-    public SearchResultEntity mapFromKeywordSearchResultV2(SearchRequestParameter requestParameterBuilder, KeywordSearchResultV2 result) {
-        SearchResultEntity searchResultEntity = createBaseResultEntity(requestParameterBuilder, result.code, result.message);
-        List<PoiInfoEntity> poiList = Optional.ofNullable(result.poiList)
+    public SearchResultEntity mapFromKeywordSearchResultV2(final SearchRequestParameter requestParameterBuilder, final KeywordSearchResultV2 result) {
+        final SearchResultEntity searchResultEntity = createBaseResultEntity(requestParameterBuilder, result.code, result.message);
+        final List<PoiInfoEntity> poiList = Optional.ofNullable(result.poiList)
                 .orElse(new ArrayList<>())
                 .stream()
                 .map(this::mapSearchPoiInfo)
@@ -123,16 +137,16 @@ public class SearchResultMapper {
         //获取筛选分类数据
         if (result.classify != null) {
             searchResultEntity.setRetain(result.classify.retainState);//筛选搜索需要的信息
-            Logger.d(SEARCH_SERVICE_TAG, "mapFromKeywordSearchResultV2 retainState: " + result.classify.retainState);
+            Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "mapFromKeywordSearchResultV2 retainState: " + result.classify.retainState);
             if (result.classify.classifyItemInfo != null) {
-                List<SearchCategoryLocalInfo> categoryLocalInfoList = Optional.ofNullable(result.classify.classifyItemInfo.categoryInfoList)
+                final List<SearchCategoryLocalInfo> categoryLocalInfoList = Optional.ofNullable(result.classify.classifyItemInfo.categoryInfoList)
                         .orElse(new ArrayList<>())
                         .stream()
                         .map(this::mapSearchCategoryInfo)
                         .collect(Collectors.toList());
                 if (!categoryLocalInfoList.isEmpty()) {
                     for (int i = 0; i < categoryLocalInfoList.size(); i++) {
-                        List<SearchChildCategoryLocalInfo> level1Infos = Optional.ofNullable(result.classify.classifyItemInfo.categoryInfoList.
+                        final List<SearchChildCategoryLocalInfo> level1Infos = Optional.ofNullable(result.classify.classifyItemInfo.categoryInfoList.
                                         get(i).childCategoryInfo)
                                 .orElse(new ArrayList<>())
                                 .stream()
@@ -142,7 +156,8 @@ public class SearchResultMapper {
                         categoryLocalInfoList.get(i).setCategoryLocalInfos(level1Infos);
                         if (!level1Infos.isEmpty()) {
                             for (int j = 0; j < level1Infos.size(); j++) {
-                                List<SearchChildCategoryLocalInfo> level1ChildInfos = Optional.ofNullable(result.classify.classifyItemInfo.categoryInfoList.
+                                final List<SearchChildCategoryLocalInfo> level1ChildInfos = Optional.ofNullable(
+                                        result.classify.classifyItemInfo.categoryInfoList.
                                                 get(i).childCategoryInfo.
                                                 get(j).childCategoryInfoList)
                                         .orElse(new ArrayList<>())
@@ -157,14 +172,16 @@ public class SearchResultMapper {
                 }
                 //测试log，测试时放开
 //                for (SearchCategoryLocalInfo searchCategoryLocalInfo : categoryLocalInfoList) {
-//                    Logger.d(SEARCH_SERVICE_TAG, "mapFromKeywordSearchResultV2 name: " + searchCategoryLocalInfo.getName()
+//                    Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "mapFromKeywordSearchResultV2 name: " + searchCategoryLocalInfo.getName()
 //                            + " checked: " + searchCategoryLocalInfo.getChecked());
 //                    for (SearchChildCategoryLocalInfo searchChildCategoryLocalInfo : searchCategoryLocalInfo.getCategoryLocalInfos()) {
-//                        Logger.d(SEARCH_SERVICE_TAG, "mapFromKeywordSearchResultV2 level name: " + searchChildCategoryLocalInfo.getName()
+//                        Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "mapFromKeywordSearchResultV2 level name: "
+//                        + searchChildCategoryLocalInfo.getName()
 //                                + " checked: " + searchChildCategoryLocalInfo.getChecked()
 //                                + " value: " + searchChildCategoryLocalInfo.getValue());
 //                        for (SearchChildCategoryLocalInfo searchChildCategoryLocalInfo1 : searchChildCategoryLocalInfo.getCategoryLocalInfos()) {
-//                            Logger.d(SEARCH_SERVICE_TAG, "mapFromKeywordSearchResultV2 level child name: " + searchChildCategoryLocalInfo1.getName()
+//                            Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "mapFromKeywordSearchResultV2 level child name: "
+//                            + searchChildCategoryLocalInfo1.getName()
 //                                    + " checked: " + searchChildCategoryLocalInfo1.getChecked()
 //                                    + " value: " + searchChildCategoryLocalInfo1.getValue());
 //                        }
@@ -176,12 +193,12 @@ public class SearchResultMapper {
 
         //回传参数，POI详情搜索必传，来自于关键字搜索结果,存储后用于之后POI详情搜索
         if (result.lqii != null && result.lqii.tipsInfo != null) {
-            List<SearchTipsCityLocalInfo> cityLocalInfoList = Optional.ofNullable(result.lqii.tipsInfo.optionalCityList)
+            final List<SearchTipsCityLocalInfo> cityLocalInfoList = Optional.ofNullable(result.lqii.tipsInfo.optionalCityList)
                     .orElse(new ArrayList<>())
                     .stream()
                     .map(this::mapSearchTipsCityInfo)
                     .collect(Collectors.toList());
-            SearchTipsLocalInfo searchTipsLocalInfo = new SearchTipsLocalInfo()
+            final SearchTipsLocalInfo searchTipsLocalInfo = new SearchTipsLocalInfo()
                     .setSceneType(result.lqii.tipsInfo.sceneType)
                     .setCityName(result.lqii.tipsInfo.cityName)
                     .setKeyword(result.lqii.tipsInfo.keyword)
@@ -189,7 +206,7 @@ public class SearchResultMapper {
                     .setRetainState(result.lqii.tipsInfo.retainState)
                     .setOptionalCityList(cityLocalInfoList);
 
-            SearchRetainParamInfo searchRetainParamInfo = new SearchRetainParamInfo()
+            final SearchRetainParamInfo searchRetainParamInfo = new SearchRetainParamInfo()
                     .setKeywordBizType(result.retainParam.keywordBizType)
                     .setSearchTipsLocalInfo(searchTipsLocalInfo);
             for (PoiInfoEntity infoEntity : poiList) {
@@ -199,14 +216,21 @@ public class SearchResultMapper {
         return searchResultEntity;
     }
 
-    private boolean shouldIncludeInResult(SearchChildCategoryLocalInfo localInfo) {
+    /**
+     * 是否需要被过滤
+     * @param localInfo SearchChildCategoryLocalInfo
+     * @return ture or false
+     */
+    private boolean shouldIncludeInResult(final SearchChildCategoryLocalInfo localInfo) {
         return !ConvertUtils.isEmpty(localInfo.getName()) && !ConvertUtils.isEmpty(localInfo.getValue());
     }
 
     /**
      * 映射 SearchCategoryInfo 到 SearchCategoryLocalInfo
+     * @param searchCategoryInfo SearchCategoryInfo
+     * @return SearchCategoryLocalInfo
      */
-    private SearchCategoryLocalInfo mapSearchCategoryInfo(SearchCategoryInfo searchCategoryInfo) {
+    private SearchCategoryLocalInfo mapSearchCategoryInfo(final SearchCategoryInfo searchCategoryInfo) {
         return new SearchCategoryLocalInfo()
                 .setName(searchCategoryInfo.baseInfo.name)
                 .setChecked(searchCategoryInfo.baseInfo.checked);
@@ -214,8 +238,10 @@ public class SearchResultMapper {
 
     /**
      * 映射 SearchChildCategoryInfo 到 SearchChildCategoryLocalInfo
+     * @param searchChildCategoryInfo SearchChildCategoryInfo
+     * @return SearchChildCategoryLocalInfo
      */
-    private SearchChildCategoryLocalInfo mapSearchChildCategoryInfo(SearchChildCategoryInfo searchChildCategoryInfo) {
+    private SearchChildCategoryLocalInfo mapSearchChildCategoryInfo(final SearchChildCategoryInfo searchChildCategoryInfo) {
         return new SearchChildCategoryLocalInfo()
                 .setName(searchChildCategoryInfo.baseInfo.name)
                 .setValue(searchChildCategoryInfo.baseInfo.value)
@@ -224,8 +250,10 @@ public class SearchResultMapper {
 
     /**
      * 映射 SearchTipsCityInfo 到 SearchTipsCityLocalInfo
+     * @param searchTipsCityInfo SearchTipsCityInfo
+     * @return SearchTipsCityLocalInfo
      */
-    private SearchTipsCityLocalInfo mapSearchTipsCityInfo(SearchTipsCityInfo searchTipsCityInfo) {
+    private SearchTipsCityLocalInfo mapSearchTipsCityInfo(final SearchTipsCityInfo searchTipsCityInfo) {
         return new SearchTipsCityLocalInfo()
                 .setAdcode(searchTipsCityInfo.adcode)
                 .setIndex(searchTipsCityInfo.index)
@@ -234,8 +262,10 @@ public class SearchResultMapper {
 
     /**
      * 映射 SearchPoiChildInfo 到 ChildInfo
+     * @param searchPoiChildInfo SearchPoiChildInfo
+     * @return ChildInfo
      */
-    private ChildInfo mapSearchPoiChildInfo(SearchPoiChildInfo searchPoiChildInfo) {
+    private ChildInfo mapSearchPoiChildInfo(final SearchPoiChildInfo searchPoiChildInfo) {
         return new ChildInfo()
                 .setName(searchPoiChildInfo.name)
                 .setShortName(searchPoiChildInfo.shortName)
@@ -248,39 +278,39 @@ public class SearchResultMapper {
 
     /**
      * 映射 SearchPoiInfo 到 PoiInfoEntity
+     * @param searchPoiInfo SearchPoiInfo
+     * @return PoiInfoEntity
      */
-    private PoiInfoEntity mapSearchPoiInfo(SearchPoiInfo searchPoiInfo) {
-        GeoPoint point = new GeoPoint();
+    private PoiInfoEntity mapSearchPoiInfo(final SearchPoiInfo searchPoiInfo) {
+        final GeoPoint point = new GeoPoint();
         point.setLat(searchPoiInfo.basicInfo.location.lat);
         point.setLon(searchPoiInfo.basicInfo.location.lon);
         //加油站信息
-        List<GasStationInfo> gasStationInfos = new ArrayList<>();
+        final List<GasStationInfo> gasStationInfos = new ArrayList<>();
         for (int i = 0; i < searchPoiInfo.gasInfo.typeList.size(); i++) {
             gasStationInfos.add(new GasStationInfo()
                     .setType(searchPoiInfo.gasInfo.typeList.get(i))
                     .setPrice(searchPoiInfo.gasInfo.priceList.get(i)));
-            Logger.d(SEARCH_SERVICE_TAG, "gas type is: " + searchPoiInfo.gasInfo.typeList.get(i)
+            Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "gas type is: " + searchPoiInfo.gasInfo.typeList.get(i)
                     + "gas price is: " + searchPoiInfo.gasInfo.priceList.get(i));
         }
         //充电站信息
-        List<ChargeInfo> chargeInfos = new ArrayList<>();
-        int slowFree = TextUtils.isEmpty(searchPoiInfo.chargingStationInfo.slow_free) ? 0 : Integer.parseInt(searchPoiInfo.chargingStationInfo.slow_free);
-        int slowTotal = TextUtils.isEmpty(searchPoiInfo.chargingStationInfo.slow_total) ? 0 : Integer.parseInt(searchPoiInfo.chargingStationInfo.slow_total);
-        int fastFree = TextUtils.isEmpty(searchPoiInfo.chargingStationInfo.fast_free) ? 0 : Integer.parseInt(searchPoiInfo.chargingStationInfo.fast_free);
-        int fastTotal = TextUtils.isEmpty(searchPoiInfo.chargingStationInfo.fast_total) ? 0 : Integer.parseInt(searchPoiInfo.chargingStationInfo.fast_total);
-        ChargeInfo chargeInfo = new ChargeInfo()
+        final List<ChargeInfo> chargeInfos = new ArrayList<>();
+        final int slowFree = TextUtils.isEmpty(searchPoiInfo.chargingStationInfo.slow_free) ?
+                0 : Integer.parseInt(searchPoiInfo.chargingStationInfo.slow_free);
+        final int slowTotal = TextUtils.isEmpty(searchPoiInfo.chargingStationInfo.slow_total) ?
+                0 : Integer.parseInt(searchPoiInfo.chargingStationInfo.slow_total);
+        final int fastFree = TextUtils.isEmpty(searchPoiInfo.chargingStationInfo.fast_free) ?
+                0 : Integer.parseInt(searchPoiInfo.chargingStationInfo.fast_free);
+        final int fastTotal = TextUtils.isEmpty(searchPoiInfo.chargingStationInfo.fast_total) ?
+                0 : Integer.parseInt(searchPoiInfo.chargingStationInfo.fast_total);
+        final ChargeInfo chargeInfo = new ChargeInfo()
                 .setSlow_free(slowFree)
                 .setSlow_total(slowTotal)
                 .setFast_free(fastFree)
                 .setFast_total(fastTotal)
                 .setCurrentElePrice(searchPoiInfo.chargingStationInfo.current_ele_price)
                 .setCurrentServicePrice(searchPoiInfo.chargingStationInfo.parkPrice);
-        Logger.d(SEARCH_SERVICE_TAG, "slow free: " + searchPoiInfo.chargingStationInfo.slow_free
-                + " slow total: " + searchPoiInfo.chargingStationInfo.slow_total
-                + " fast free: " + searchPoiInfo.chargingStationInfo.fast_free
-                + " fast total: " + searchPoiInfo.chargingStationInfo.fast_total
-                + " current_ele_price: " + searchPoiInfo.chargingStationInfo.current_ele_price
-                + " parkPrice: " + searchPoiInfo.chargingStationInfo.parkPrice);
         for (ChargingPlugInfo chargingPlugInfo : searchPoiInfo.chargingStationInfo.plugsInfo) {
             if (chargingPlugInfo.plugType == AutoMapConstant.PLUG_TYPE_SLOW) {
                 chargeInfo.setSlowVolt(chargingPlugInfo.slowVoltage)
@@ -290,30 +320,18 @@ public class SearchResultMapper {
                 chargeInfo.setFastVolt(chargingPlugInfo.fastVoltage)
                         .setFastPower(chargingPlugInfo.fastPower);
             }
-            Logger.d(SEARCH_SERVICE_TAG, "fast volt: " + chargeInfo.getFastVolt()
-                    + " fast power: " + chargeInfo.getFastPower()
-                    + " slow volt: " + chargeInfo.getSlowVolt()
-                    + " slow power: " + chargeInfo.getSlowPower()
-                    + " plugType: " + chargingPlugInfo.plugType);
         }
         chargeInfos.add(chargeInfo);
-
         //子节点信息
-        List<ChildInfo> childInfoList = Optional.ofNullable(searchPoiInfo.childInfoList)
+        final List<ChildInfo> childInfoList = Optional.ofNullable(searchPoiInfo.childInfoList)
                 .orElse(new ArrayList<>())
                 .stream()
                 .map(this::mapSearchPoiChildInfo)
                 .collect(Collectors.toList());
-        for (ChildInfo childInfo : childInfoList) {
-            Logger.d(SEARCH_SERVICE_TAG, "childInfo.name is: " + childInfo.name +
-                    " childInfo.poiId is: " + childInfo.poiId + " childInfo.address is: "
-                    + childInfo.address + " childInfo.ratio is: " + childInfo.ratio
-                    + " childInfo.shortName is: " + childInfo.shortName);
-        }
         //停车场信息
-        List<ParkingInfo> parkingInfoList = new ArrayList<>();
+        final List<ParkingInfo> parkingInfoList = new ArrayList<>();
         // 停车场出入口信息
-        List<SearchParkInOutInfo> searchParkInOutInfos = searchPoiInfo.parkingInfo.inoutInfoList
+        final List<SearchParkInOutInfo> searchParkInOutInfos = searchPoiInfo.parkingInfo.inoutInfoList
                 .stream()
                 .map(inoutInfo -> new SearchParkInOutInfo()
                         .setEntExitId(inoutInfo.entExitId)
@@ -322,7 +340,7 @@ public class SearchResultMapper {
                         .setY(inoutInfo.y))
                 .collect(Collectors.toList());
 
-        ParkingInfo parkingInfo = new ParkingInfo()
+        final ParkingInfo parkingInfo = new ParkingInfo()
                 .setSpaceTotal(searchPoiInfo.parkingInfo.dynamicParking.spaceTotal)
                 .setSpaceFree(searchPoiInfo.parkingInfo.dynamicParking.spaceFree)
                 .setBusyStatus(searchPoiInfo.parkingInfo.dynamicParking.busyStatus)
@@ -336,9 +354,8 @@ public class SearchResultMapper {
                 .setParkingSrcType(searchPoiInfo.parkingInfo.parkingSrcType)
                 .setSearchParkInOutInfos(searchParkInOutInfos);
         parkingInfoList.add(parkingInfo);
-        Logger.e(SEARCH_SERVICE_TAG, "typeCode is: " + searchPoiInfo.basicInfo.typeCode
+        Logger.e(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "typeCode is: " + searchPoiInfo.basicInfo.typeCode
                 + " ;name is: " + searchPoiInfo.basicInfo.name
-                + "  ;searchPoiInfo.basicInfo.distance:" + searchPoiInfo.basicInfo.distance
                 + " ;searchPoiInfo.basicInfo.pid:" + searchPoiInfo.basicInfo.poiId);
         return new PoiInfoEntity()
                 .setPointTypeCode(searchPoiInfo.basicInfo.typeCode)
@@ -367,10 +384,15 @@ public class SearchResultMapper {
 
     /**
      * 将Poi id搜索结果 KeywordSearchResultV2 转换为 SearchResultEntity
+     *
+     * @param requestParameterBuilder SearchRequestParameter
+     * @param result                   搜索结果
+     * @return SearchResultEntity
      */
-    public SearchResultEntity mapFromPoiDetailsSearchResult(SearchRequestParameter requestParameterBuilder, KeywordSearchResultV2 result) {
-        SearchResultEntity searchResultEntity = createBaseResultEntity(requestParameterBuilder, result.code, result.message);
-        List<PoiInfoEntity> poiList = Optional.ofNullable(result.poiList)
+    public SearchResultEntity mapFromPoiDetailsSearchResult(final SearchRequestParameter requestParameterBuilder,
+                                                            final KeywordSearchResultV2 result) {
+        final SearchResultEntity searchResultEntity = createBaseResultEntity(requestParameterBuilder, result.code, result.message);
+        final List<PoiInfoEntity> poiList = Optional.ofNullable(result.poiList)
                 .orElse(new ArrayList<>())
                 .stream()
                 .map(this::mapSearchPoiInfo)
@@ -382,33 +404,43 @@ public class SearchResultMapper {
 
     /**
      * 将Geo 搜索结果 SearchNearestResult 转换为 SearchResultEntity
+     *
+     * @param requestParameterBuilder SearchRequestParameter
+     * @param result                   搜索结果
+     * @return SearchResultEntity
      */
-    public SearchResultEntity mapFromGeoSearchResult(SearchRequestParameter requestParameterBuilder, SearchNearestResult result) {
-        SearchResultEntity searchResultEntity = createBaseResultEntity(requestParameterBuilder, result.code, result.message);
+    public SearchResultEntity mapFromGeoSearchResult(final SearchRequestParameter requestParameterBuilder, final SearchNearestResult result) {
+        final SearchResultEntity searchResultEntity = createBaseResultEntity(requestParameterBuilder, result.code, result.message);
 
         if (result.poi_list == null || result.poi_list.isEmpty()) {
-            Logger.e(SEARCH_SERVICE_TAG, "GeoSearchResult poi_list is empty.");
+            Logger.e(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "GeoSearchResult poi_list is empty.");
             searchResultEntity.setPoiList(Collections.emptyList());
             searchResultEntity.setSearchType(AutoMapConstant.SearchType.GEO_SEARCH);
             return searchResultEntity;
         }
         searchResultEntity.setPoiType(result.iPoiType);
         // 获取第一个 POI 信息
-        NearestPoi poiItem = result.poi_list.get(0);
-        GeoPoint poiPoint = new GeoPoint(poiItem.point.lon, poiItem.point.lat);
+        final NearestPoi poiItem = result.poi_list.get(0);
+        final GeoPoint poiPoint = new GeoPoint(poiItem.point.lon, poiItem.point.lat);
 
         // 构建 CityInfo
-        CityInfo cityInfo = buildCityInfo(result, poiPoint);
+        final CityInfo cityInfo = buildCityInfo(result, poiPoint);
 
         // 构建 PoiInfoEntity
-        PoiInfoEntity poiInfoEntity = buildPoiInfoEntity(poiItem, poiPoint, cityInfo);
+        final PoiInfoEntity poiInfoEntity = buildPoiInfoEntity(poiItem, poiPoint, cityInfo);
 
         // 设置 POI 列表并返回结果
         searchResultEntity.setPoiList(Collections.singletonList(poiInfoEntity));
         return searchResultEntity;
     }
 
-    private CityInfo buildCityInfo(SearchNearestResult result, GeoPoint poiPoint) {
+    /**
+     * 构建 CityInfo
+     * @param result SearchNearestResult
+     * @param poiPoint GeoPoint
+     * @return CityInfo
+     */
+    private CityInfo buildCityInfo(final SearchNearestResult result, final GeoPoint poiPoint) {
         return new CityInfo()
                 .setCityName(result.city)
                 .setCityCode(result.cityadcode)
@@ -423,7 +455,14 @@ public class SearchResultMapper {
                 .setCityPoint(poiPoint);
     }
 
-    private PoiInfoEntity buildPoiInfoEntity(NearestPoi poiItem, GeoPoint poiPoint, CityInfo cityInfo) {
+    /**
+     * 构建 PoiInfoEntity
+     * @param poiItem NearestPoi
+     * @param poiPoint GeoPoint
+     * @param cityInfo  CityInfo
+     * @return PoiInfoEntity
+     */
+    private PoiInfoEntity buildPoiInfoEntity(final NearestPoi poiItem, final GeoPoint poiPoint, final CityInfo cityInfo) {
         return new PoiInfoEntity()
                 .setPointTypeCode(poiItem.typecode)
                 .setPid(poiItem.poiid)
@@ -441,10 +480,14 @@ public class SearchResultMapper {
 
     /**
      * 将沿途搜索结果 SearchAlongWayResult 转换为 SearchResultEntity
+     *
+     * @param requestParameterBuilder SearchRequestParameter
+     * @param result                   搜索结果
+     * @return SearchResultEntity
      */
-    public SearchResultEntity mapFromAlongWayResult(SearchRequestParameter requestParameterBuilder, SearchAlongWayResult result) {
-        SearchResultEntity searchResultEntity = createBaseResultEntity(requestParameterBuilder, result.code, result.message);
-        List<PoiInfoEntity> poiList = Optional.ofNullable(result.pois)
+    public SearchResultEntity mapFromAlongWayResult(final SearchRequestParameter requestParameterBuilder, final SearchAlongWayResult result) {
+        final SearchResultEntity searchResultEntity = createBaseResultEntity(requestParameterBuilder, result.code, result.message);
+        final List<PoiInfoEntity> poiList = Optional.ofNullable(result.pois)
                 .orElse(new ArrayList<>())
                 .stream()
                 .map(this::mapSearchPoiInfo)
@@ -454,8 +497,13 @@ public class SearchResultMapper {
     }
 
 
-    private PoiInfoEntity mapSearchPoiInfo(AlongWayPoi nearestPoi) {
-        GeoPoint point = new GeoPoint();
+    /**
+     * 将沿途搜索结果 NearestPoi 转换为 PoiInfoEntity
+     * @param nearestPoi 搜索结果
+     * @return PoiInfoEntity
+     */
+    private PoiInfoEntity mapSearchPoiInfo(final AlongWayPoi nearestPoi) {
+        final GeoPoint point = new GeoPoint();
         point.setLat(nearestPoi.point.lat);
         point.setLon(nearestPoi.point.lon);
         return new PoiInfoEntity()
@@ -469,83 +517,115 @@ public class SearchResultMapper {
     }
 
     /**
-     * 将聚合搜索 AggregateSearchResult 转换为 SearchResultEntity
+     * 将聚合搜索结果 AggregateDiningResult 转换为 PoiInfoEntity
+     * @param result 搜索结果
+     * @param poiList poi列表
      */
-    public SearchResultEntity mapFromAggregateSearchResult(SearchRequestParameter requestParameterBuilder, AggregateSearchResult result) {
-        SearchResultEntity searchResultEntity = createBaseResultEntity(requestParameterBuilder, result.code, result.message);
-        List<PoiInfoEntity> poiList = new ArrayList<>();
+    private void mapFromAggregateDiningResult(final AggregateSearchResult result, final List<PoiInfoEntity> poiList) {
+        if (result.dinings != null) {
+            result.dinings.stream()
+                    .filter(aggregateDiningResult -> aggregateDiningResult.poiInfo != null)
+                    .forEach(aggregateDiningResult -> {
+                        try {
+                            final int distance = ConvertUtils.str2Int(aggregateDiningResult.poiInfo.distance);
+                            final PoiInfoEntity poiInfoEntity = new PoiInfoEntity()
+                                    .setPid(aggregateDiningResult.poiInfo.poiId)
+                                    .setName(aggregateDiningResult.poiInfo.name)
+                                    .setAddress(aggregateDiningResult.poiInfo.address)
+                                    .setDistance(formatDistanceArrayInternal(distance))
+                                    .setSort_distance(distance)
+                                    .setPoint(new GeoPoint(aggregateDiningResult.poiInfo.location.lon, aggregateDiningResult.poiInfo.location.lat))
+                                    .setAdCode(aggregateDiningResult.poiInfo.adcode);
+                            poiList.add(poiInfoEntity);
+                        } catch (NumberFormatException e) {
+                            Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, NUMBER_FORMAT_EXCEPTION + e.getMessage());
+                        }
+                    });
+        } else {
+            Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, PARKINGERROR);
+        }
+    }
+
+    /**
+     * 将聚合搜索结果 AggregateScenicResult 转换为 PoiInfoEntity
+     * @param result 搜索结果
+     * @param poiList poi列表
+     */
+    private void mapFromAggregateScenicResult(final AggregateSearchResult result, final List<PoiInfoEntity> poiList) {
+        if (result.scenics != null) {
+            result.scenics.stream()
+                    .filter(aggregateDiningResult -> aggregateDiningResult.poiInfo != null)
+                    .forEach(aggregateDiningResult -> {
+                        try {
+                            final int distance = ConvertUtils.str2Int(aggregateDiningResult.poiInfo.distance);
+                            final PoiInfoEntity poiInfoEntity = new PoiInfoEntity()
+                                    .setPid(aggregateDiningResult.poiInfo.poiId)
+                                    .setName(aggregateDiningResult.poiInfo.name)
+                                    .setAddress(aggregateDiningResult.poiInfo.address)
+                                    .setDistance(formatDistanceArrayInternal(distance))
+                                    .setSort_distance(distance)
+                                    .setPoint(new GeoPoint(aggregateDiningResult.poiInfo.location.lon,
+                                            aggregateDiningResult.poiInfo.location.lat))
+                                    .setAdCode(aggregateDiningResult.poiInfo.adcode);
+                            poiList.add(poiInfoEntity);
+                        } catch (NumberFormatException e) {
+                            Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, NUMBER_FORMAT_EXCEPTION + e.getMessage());
+                        }
+                    });
+        } else {
+            Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, PARKINGERROR);
+        }
+    }
+
+    /**
+     * 将聚合搜索结果 AggregateMallResult 转换为 PoiInfoEntity
+     * @param result 搜索结果
+     * @param poiList poi列表
+     */
+    private void mapFromAggregateMallResult(final AggregateSearchResult result, final List<PoiInfoEntity> poiList) {
+        if (result.malls != null) {
+            result.malls.stream()
+                    .filter(aggregateDiningResult -> aggregateDiningResult.poiInfo != null)
+                    .forEach(aggregateDiningResult -> {
+                        try {
+                            final int distance = ConvertUtils.str2Int(aggregateDiningResult.poiInfo.distance);
+                            final PoiInfoEntity poiInfoEntity = new PoiInfoEntity()
+                                    .setPid(aggregateDiningResult.poiInfo.poiId)
+                                    .setName(aggregateDiningResult.poiInfo.name)
+                                    .setAddress(aggregateDiningResult.poiInfo.address)
+                                    .setDistance(formatDistanceArrayInternal(distance))
+                                    .setSort_distance(distance)
+                                    .setPoint(new GeoPoint(aggregateDiningResult.poiInfo.location.lon,
+                                            aggregateDiningResult.poiInfo.location.lat))
+                                    .setAdCode(aggregateDiningResult.poiInfo.adcode);
+                            poiList.add(poiInfoEntity);
+                        } catch (NumberFormatException e) {
+                            Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, NUMBER_FORMAT_EXCEPTION + e.getMessage());
+                        }
+                    });
+        } else {
+            Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, PARKINGERROR);
+        }
+    }
+
+    /**
+     * 将聚合搜索 AggregateSearchResult 转换为 SearchResultEntity
+     * @param requestParameterBuilder SearchRequestParameter
+     * @param result                   搜索结果
+     * @return SearchResultEntity
+     */
+    public SearchResultEntity mapFromAggregateSearchResult(final SearchRequestParameter requestParameterBuilder, final AggregateSearchResult result) {
+        final SearchResultEntity searchResultEntity = createBaseResultEntity(requestParameterBuilder, result.code, result.message);
+        final List<PoiInfoEntity> poiList = new ArrayList<>();
         switch (requestParameterBuilder.getType()) {
             case AutoMapConstant.AggregateKeywordType.DINING:
-                if (result.dinings != null) {
-                    result.dinings.stream()
-                            .filter(aggregateDiningResult -> aggregateDiningResult.poiInfo != null)
-                            .forEach(aggregateDiningResult -> {
-                                try {
-                                    int distance = ConvertUtils.str2Int(aggregateDiningResult.poiInfo.distance);
-                                    PoiInfoEntity poiInfoEntity = new PoiInfoEntity()
-                                            .setPid(aggregateDiningResult.poiInfo.poiId)
-                                            .setName(aggregateDiningResult.poiInfo.name)
-                                            .setAddress(aggregateDiningResult.poiInfo.address)
-                                            .setDistance(formatDistanceArrayInternal(distance))
-                                            .setSort_distance(distance)
-                                            .setPoint(new GeoPoint(aggregateDiningResult.poiInfo.location.lon, aggregateDiningResult.poiInfo.location.lat))
-                                            .setAdCode(aggregateDiningResult.poiInfo.adcode);
-                                    poiList.add(poiInfoEntity);
-                                } catch (NumberFormatException e) {
-                                    Logger.d(SEARCH_SERVICE_TAG, "NumberFormatException :" + e.getMessage());
-                                }
-                            });
-                } else {
-                    Logger.d(SEARCH_SERVICE_TAG, "parkings is null");
-                }
+                mapFromAggregateDiningResult(result, poiList);
                 break;
             case AutoMapConstant.AggregateKeywordType.SCENIC:
-                if (result.scenics != null) {
-                    result.scenics.stream()
-                            .filter(aggregateDiningResult -> aggregateDiningResult.poiInfo != null)
-                            .forEach(aggregateDiningResult -> {
-                                try {
-                                    int distance = ConvertUtils.str2Int(aggregateDiningResult.poiInfo.distance);
-                                    PoiInfoEntity poiInfoEntity = new PoiInfoEntity()
-                                            .setPid(aggregateDiningResult.poiInfo.poiId)
-                                            .setName(aggregateDiningResult.poiInfo.name)
-                                            .setAddress(aggregateDiningResult.poiInfo.address)
-                                            .setDistance(formatDistanceArrayInternal(distance))
-                                            .setSort_distance(distance)
-                                            .setPoint(new GeoPoint(aggregateDiningResult.poiInfo.location.lon, aggregateDiningResult.poiInfo.location.lat))
-                                            .setAdCode(aggregateDiningResult.poiInfo.adcode);
-                                    poiList.add(poiInfoEntity);
-                                } catch (NumberFormatException e) {
-                                    Logger.d(SEARCH_SERVICE_TAG, "NumberFormatException :" + e.getMessage());
-                                }
-                            });
-                } else {
-                    Logger.d(SEARCH_SERVICE_TAG, "parkings is null");
-                }
+                mapFromAggregateScenicResult(result, poiList);
                 break;
             case AutoMapConstant.AggregateKeywordType.MALL:
-                if (result.malls != null) {
-                    result.malls.stream()
-                            .filter(aggregateDiningResult -> aggregateDiningResult.poiInfo != null)
-                            .forEach(aggregateDiningResult -> {
-                                try {
-                                    int distance = ConvertUtils.str2Int(aggregateDiningResult.poiInfo.distance);
-                                    PoiInfoEntity poiInfoEntity = new PoiInfoEntity()
-                                            .setPid(aggregateDiningResult.poiInfo.poiId)
-                                            .setName(aggregateDiningResult.poiInfo.name)
-                                            .setAddress(aggregateDiningResult.poiInfo.address)
-                                            .setDistance(formatDistanceArrayInternal(distance))
-                                            .setSort_distance(distance)
-                                            .setPoint(new GeoPoint(aggregateDiningResult.poiInfo.location.lon, aggregateDiningResult.poiInfo.location.lat))
-                                            .setAdCode(aggregateDiningResult.poiInfo.adcode);
-                                    poiList.add(poiInfoEntity);
-                                } catch (NumberFormatException e) {
-                                    Logger.d(SEARCH_SERVICE_TAG, "NumberFormatException :" + e.getMessage());
-                                }
-                            });
-                } else {
-                    Logger.d(SEARCH_SERVICE_TAG, "parkings is null");
-                }
+                mapFromAggregateMallResult(result, poiList);
                 break;
             case AutoMapConstant.AggregateKeywordType.CHARGING:
                 if (result.chargings != null) {
@@ -553,22 +633,23 @@ public class SearchResultMapper {
                             .filter(aggregateDiningResult -> aggregateDiningResult.poiInfo != null)
                             .forEach(aggregateDiningResult -> {
                                 try {
-                                    int distance = ConvertUtils.str2Int(aggregateDiningResult.poiInfo.distance);
-                                    PoiInfoEntity poiInfoEntity = new PoiInfoEntity()
+                                    final int distance = ConvertUtils.str2Int(aggregateDiningResult.poiInfo.distance);
+                                    final PoiInfoEntity poiInfoEntity = new PoiInfoEntity()
                                             .setPid(aggregateDiningResult.poiInfo.poiId)
                                             .setName(aggregateDiningResult.poiInfo.name)
                                             .setAddress(aggregateDiningResult.poiInfo.address)
                                             .setDistance(formatDistanceArrayInternal(distance))
                                             .setSort_distance(distance)
-                                            .setPoint(new GeoPoint(aggregateDiningResult.poiInfo.location.lon, aggregateDiningResult.poiInfo.location.lat))
+                                            .setPoint(new GeoPoint(aggregateDiningResult.poiInfo.location.lon,
+                                                    aggregateDiningResult.poiInfo.location.lat))
                                             .setAdCode(aggregateDiningResult.poiInfo.adcode);
                                     poiList.add(poiInfoEntity);
                                 } catch (NumberFormatException e) {
-                                    Logger.d(SEARCH_SERVICE_TAG, "NumberFormatException :" + e.getMessage());
+                                    Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, NUMBER_FORMAT_EXCEPTION + e.getMessage());
                                 }
                             });
                 } else {
-                    Logger.d(SEARCH_SERVICE_TAG, "parkings is null");
+                    Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, PARKINGERROR);
                 }
                 break;
             case AutoMapConstant.AggregateKeywordType.PARKING:
@@ -577,22 +658,23 @@ public class SearchResultMapper {
                             .filter(aggregateDiningResult -> aggregateDiningResult.poiInfo != null)
                             .forEach(aggregateDiningResult -> {
                                 try {
-                                    int distance = ConvertUtils.str2Int(aggregateDiningResult.poiInfo.distance);
-                                    PoiInfoEntity poiInfoEntity = new PoiInfoEntity()
+                                    final int distance = ConvertUtils.str2Int(aggregateDiningResult.poiInfo.distance);
+                                    final PoiInfoEntity poiInfoEntity = new PoiInfoEntity()
                                             .setPid(aggregateDiningResult.poiInfo.poiId)
                                             .setName(aggregateDiningResult.poiInfo.name)
                                             .setAddress(aggregateDiningResult.poiInfo.address)
                                             .setDistance(formatDistanceArrayInternal(distance))
                                             .setSort_distance(distance)
-                                            .setPoint(new GeoPoint(aggregateDiningResult.poiInfo.location.lon, aggregateDiningResult.poiInfo.location.lat))
+                                            .setPoint(new GeoPoint(aggregateDiningResult.poiInfo.location.lon,
+                                                    aggregateDiningResult.poiInfo.location.lat))
                                             .setAdCode(aggregateDiningResult.poiInfo.adcode);
                                     poiList.add(poiInfoEntity);
                                 } catch (NumberFormatException e) {
-                                    Logger.d(SEARCH_SERVICE_TAG, "NumberFormatException :" + e.getMessage());
+                                    Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, NUMBER_FORMAT_EXCEPTION + e.getMessage());
                                 }
                             });
                 } else {
-                    Logger.d(SEARCH_SERVICE_TAG, "parkings is null");
+                    Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, PARKINGERROR);
                 }
                 break;
             case AutoMapConstant.AggregateKeywordType.BATHROOM:
@@ -601,26 +683,29 @@ public class SearchResultMapper {
                             .filter(aggregateDiningResult -> aggregateDiningResult.bathroom != null)
                             .forEach(aggregateDiningResult -> {
                                 try {
-                                    int distance = ConvertUtils.str2Int(aggregateDiningResult.bathroom.distance);
-                                    PoiInfoEntity poiInfoEntity = new PoiInfoEntity()
+                                    final int distance = ConvertUtils.str2Int(aggregateDiningResult.bathroom.distance);
+                                    final PoiInfoEntity poiInfoEntity = new PoiInfoEntity()
                                             .setPid(aggregateDiningResult.bathroom.poiId)
                                             .setName(aggregateDiningResult.bathroom.name)
                                             .setAddress(aggregateDiningResult.bathroom.address)
                                             .setDistance(formatDistanceArrayInternal(distance))
                                             .setSort_distance(distance)
-                                            .setPoint(new GeoPoint(aggregateDiningResult.bathroom.location.lon, aggregateDiningResult.bathroom.location.lat))
+                                            .setPoint(new GeoPoint(aggregateDiningResult.bathroom.location.lon,
+                                                    aggregateDiningResult.bathroom.location.lat))
                                             .setAdCode(aggregateDiningResult.bathroom.adcode);
                                     poiList.add(poiInfoEntity);
                                 } catch (NumberFormatException e) {
-                                    Logger.d(SEARCH_SERVICE_TAG, "NumberFormatException :" + e.getMessage());
+                                    Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, NUMBER_FORMAT_EXCEPTION + e.getMessage());
                                 }
                             });
                 } else {
-                    Logger.d(SEARCH_SERVICE_TAG, "others is null");
+                    Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "others is null");
                 }
                 break;
             case AutoMapConstant.AggregateKeywordType.UNKNOWN:
-                Logger.d(SEARCH_SERVICE_TAG, "AggregateKeywordType.UNKNOWN");
+                Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "AggregateKeywordType.UNKNOWN");
+                break;
+            default:
                 break;
         }
         searchResultEntity.setPoiList(poiList);
@@ -629,10 +714,13 @@ public class SearchResultMapper {
 
     /**
      * 将顺路关键字搜索结果 SearchEnRouteResult 转换为 SearchResultEntity
+     * @param requestParameterBuilder 请求参数
+     * @param result 搜索结果
+     * @return SearchResultEntity
      */
-    public SearchResultEntity mapFromSearchEnRouteResult(SearchRequestParameter requestParameterBuilder, SearchEnrouteResult result) {
-        SearchResultEntity searchResultEntity = createBaseResultEntity(requestParameterBuilder, result.errorCode, result.errorMessage);
-        List<PoiInfoEntity> poiList = Optional.ofNullable(result.poiInfos)
+    public SearchResultEntity mapFromSearchEnRouteResult(final SearchRequestParameter requestParameterBuilder, final SearchEnrouteResult result) {
+        final SearchResultEntity searchResultEntity = createBaseResultEntity(requestParameterBuilder, result.errorCode, result.errorMessage);
+        final List<PoiInfoEntity> poiList = Optional.ofNullable(result.poiInfos)
                 .orElse(new ArrayList<>())
                 .stream()
                 .map(this::convertToPoiInfoEntity)
@@ -645,14 +733,18 @@ public class SearchResultMapper {
 
     /**
      * 将POI详情搜索结果 PoiDetailSearchResult 转换为 SearchResultEntity
+     * @param requestParameterBuilder 请求参数
+     * @param result 搜索结果
+     * @return SearchResultEntity
      */
-    public SearchResultEntity mapFromSearchPoiDetailSearchResult(SearchRequestParameter requestParameterBuilder, PoiDetailSearchResult result) {
-        SearchResultEntity searchResultEntity = createBaseResultEntity(requestParameterBuilder, 0, "");
-        Logger.d(SEARCH_SERVICE_TAG, "name :" + result.baseInfo.poiInfo.poiInfoBase.name
+    public SearchResultEntity mapFromSearchPoiDetailSearchResult(final SearchRequestParameter requestParameterBuilder,
+                                                                 final PoiDetailSearchResult result) {
+        final SearchResultEntity searchResultEntity = createBaseResultEntity(requestParameterBuilder, 0, "");
+        Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "name :" + result.baseInfo.poiInfo.poiInfoBase.name
                 + "address :" + result.baseInfo.poiInfo.poiInfoBase.address);
         for (PoiDetailShelfInfo buyInfoList : result.groupBuyInfoList) {
             for (PoiDetailProductInfo productInfo : buyInfoList.productInfoList) {
-                Logger.d(SEARCH_SERVICE_TAG, "productName :" + productInfo.spuName
+                Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "productName :" + productInfo.spuName
                         + "productCurrentPrice :" + productInfo.currentPrice
                         + "productOriginalPrice :" + productInfo.originalPrice);
             }
@@ -660,30 +752,39 @@ public class SearchResultMapper {
         return searchResultEntity;
     }
 
-    private PoiInfoEntity convertToPoiInfoEntity(SearchEnroutePoiInfo poiInfo) {
+    /**
+     * 将搜索结果转换为PoiInfoEntity
+     * @param poiInfo 搜索结果
+     * @return PoiInfoEntity
+     */
+    private PoiInfoEntity convertToPoiInfoEntity(final SearchEnroutePoiInfo poiInfo) {
         //加油站信息
-        List<GasStationInfo> gasStationInfos = new ArrayList<>();
+        final List<GasStationInfo> gasStationInfos = new ArrayList<>();
         for (int i = 0; i < poiInfo.gasStationInfo.types.size(); i++) {
             gasStationInfos.add(new GasStationInfo()
                     .setType(poiInfo.gasStationInfo.types.get(i))
                     .setPrice(poiInfo.gasStationInfo.prices.get(i)));
-            Logger.d(SEARCH_SERVICE_TAG, "gas type is: " + poiInfo.gasStationInfo.types.get(i)
+            Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "gas type is: " + poiInfo.gasStationInfo.types.get(i)
                     + "gas price is: " + poiInfo.gasStationInfo.prices.get(i));
         }
         //充电站信息
-        List<ChargeInfo> chargeInfos = new ArrayList<>();
-        int slowFree = TextUtils.isEmpty(poiInfo.chargingStationInfo.slow_free) ? 0 : Integer.parseInt(poiInfo.chargingStationInfo.slow_free);
-        int slowTotal = TextUtils.isEmpty(poiInfo.chargingStationInfo.slow_total) ? 0 : Integer.parseInt(poiInfo.chargingStationInfo.slow_total);
-        int fastFree = TextUtils.isEmpty(poiInfo.chargingStationInfo.fast_free) ? 0 : Integer.parseInt(poiInfo.chargingStationInfo.fast_free);
-        int fastTotal = TextUtils.isEmpty(poiInfo.chargingStationInfo.fast_total) ? 0 : Integer.parseInt(poiInfo.chargingStationInfo.fast_total);
-        ChargeInfo chargeInfo = new ChargeInfo()
+        final List<ChargeInfo> chargeInfos = new ArrayList<>();
+        final int slowFree = TextUtils.isEmpty(poiInfo.chargingStationInfo.slow_free) ?
+                0 : Integer.parseInt(poiInfo.chargingStationInfo.slow_free);
+        final int slowTotal = TextUtils.isEmpty(poiInfo.chargingStationInfo.slow_total) ?
+                0 : Integer.parseInt(poiInfo.chargingStationInfo.slow_total);
+        final int fastFree = TextUtils.isEmpty(poiInfo.chargingStationInfo.fast_free) ?
+                0 : Integer.parseInt(poiInfo.chargingStationInfo.fast_free);
+        final int fastTotal = TextUtils.isEmpty(poiInfo.chargingStationInfo.fast_total) ?
+                0 : Integer.parseInt(poiInfo.chargingStationInfo.fast_total);
+        final ChargeInfo chargeInfo = new ChargeInfo()
                 .setSlow_free(slowFree)
                 .setSlow_total(slowTotal)
                 .setFast_free(fastFree)
                 .setFast_total(fastTotal)
                 .setCurrentElePrice(poiInfo.chargingStationInfo.current_ele_price)
                 .setCurrentServicePrice(poiInfo.chargingStationInfo.parkPrice);
-        Logger.d(SEARCH_SERVICE_TAG, "slow free: " + poiInfo.chargingStationInfo.slow_free
+        Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "slow free: " + poiInfo.chargingStationInfo.slow_free
                 + " slow total: " + poiInfo.chargingStationInfo.slow_total
                 + " fast free: " + poiInfo.chargingStationInfo.fast_free
                 + " fast total: " + poiInfo.chargingStationInfo.fast_total
@@ -698,7 +799,7 @@ public class SearchResultMapper {
                 chargeInfo.setFastVolt(chargingPlugInfo.fastVoltage)
                         .setFastPower(chargingPlugInfo.fastPower);
             }
-            Logger.d(SEARCH_SERVICE_TAG, "fast volt: " + chargeInfo.getFastVolt()
+            Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "fast volt: " + chargeInfo.getFastVolt()
                     + " fast power: " + chargeInfo.getFastPower()
                     + " slow volt: " + chargeInfo.getSlowVolt()
                     + " slow power: " + chargeInfo.getSlowPower()
@@ -707,12 +808,12 @@ public class SearchResultMapper {
         chargeInfos.add(chargeInfo);
 
         //停车场信息,对象中不包含，赋默认值
-        List<ParkingInfo> parkingInfoList = new ArrayList<>();
-        ParkingInfo parkingInfo = new ParkingInfo()
+        final List<ParkingInfo> parkingInfoList = new ArrayList<>();
+        final ParkingInfo parkingInfo = new ParkingInfo()
                 .setSpaceTotal(0)
                 .setSpaceFree(0);
         parkingInfoList.add(parkingInfo);
-        Logger.e(SEARCH_SERVICE_TAG, "typeCode is: " + poiInfo.basicInfo.typeCode
+        Logger.e(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "typeCode is: " + poiInfo.basicInfo.typeCode
                 + " ;name is: " + poiInfo.basicInfo.name
                 + "  ;searchPoiInfo.basicInfo.distance:" + poiInfo.basicInfo.distance
                 + " ;searchPoiInfo.basicInfo.tag:" + poiInfo.basicInfo.tag);
@@ -741,12 +842,15 @@ public class SearchResultMapper {
 
     /**
      * 将深度信息 搜索结果 SearchDeepInfoResult 转换为 SearchResultEntity
+     * @param requestParameterBuilder 请求参数
+     * @param result 搜索结果
+     * @return SearchResultEntity
      */
-    public SearchResultEntity mapFromDeepInfoSearchResult(SearchRequestParameter requestParameterBuilder, SearchDeepInfoResult result) {
-        SearchResultEntity searchResultEntity = createBaseResultEntity(requestParameterBuilder, result.code, result.message);
-        List<PoiInfoEntity> poiList = Optional.ofNullable(result.deepinfoPoi)
+    public SearchResultEntity mapFromDeepInfoSearchResult(final SearchRequestParameter requestParameterBuilder, final SearchDeepInfoResult result) {
+        final SearchResultEntity searchResultEntity = createBaseResultEntity(requestParameterBuilder, result.code, result.message);
+        final List<PoiInfoEntity> poiList = Optional.ofNullable(result.deepinfoPoi)
                 .map(deepinfoPoi -> {
-                    PoiInfoEntity poiInfoEntity = new PoiInfoEntity()
+                    final PoiInfoEntity poiInfoEntity = new PoiInfoEntity()
                             .setPid(deepinfoPoi.poiid)
                             .setName(deepinfoPoi.name)
                             .setAddress(deepinfoPoi.address)
@@ -755,7 +859,7 @@ public class SearchResultMapper {
                             .setPhone(deepinfoPoi.tel)
                             .setBusinessTime(deepinfoPoi.opentime);
 
-                    List<GasStationInfo> stationList = Optional.ofNullable(deepinfoPoi.gasinfoList)
+                    final List<GasStationInfo> stationList = Optional.ofNullable(deepinfoPoi.gasinfoList)
                             .map(gasinfoList -> gasinfoList.stream()
                                     .map(gasInfo -> new GasStationInfo()
                                             .setType(gasInfo.type)
@@ -774,14 +878,18 @@ public class SearchResultMapper {
 
     /**
      * 将批量沿途搜索结果 SearchLineDeepInfoResult 转换为 SearchResultEntity
+     * @param requestParameterBuilder 请求参数
+     * @param result 搜索结果
+     * @return SearchResultEntity
      */
-    public SearchResultEntity mapFromLineDeepInfoSearchResult(SearchRequestParameter requestParameterBuilder, SearchLineDeepInfoResult result) {
-        SearchResultEntity searchResultEntity = createBaseResultEntity(requestParameterBuilder, result.code, result.message);
+    public SearchResultEntity mapFromLineDeepInfoSearchResult(final SearchRequestParameter requestParameterBuilder,
+                                                              final SearchLineDeepInfoResult result) {
+        final SearchResultEntity searchResultEntity = createBaseResultEntity(requestParameterBuilder, result.code, result.message);
 
-        List<ServiceAreaInfo> serviceAreaInfoList = new ArrayList<>();
-        List<ParkingInfo> parkingInfoList = new ArrayList<>();
-        List<ChargeInfo> chargeInfoList = new ArrayList<>();
-        List<GasStationInfo> stationList = new ArrayList<>();
+        final List<ServiceAreaInfo> serviceAreaInfoList = new ArrayList<>();
+        final List<ParkingInfo> parkingInfoList = new ArrayList<>();
+        final List<ChargeInfo> chargeInfoList = new ArrayList<>();
+        final List<GasStationInfo> stationList = new ArrayList<>();
 
         Optional.ofNullable(result.data).orElse(new ArrayList<>()).forEach(linePoiBase -> {
             switch (linePoiBase.queryType) {
@@ -798,15 +906,15 @@ public class SearchResultMapper {
                     parkingInfoList.add(mapParkingInfo((LinePoiParkRecommendInfo) linePoiBase));
                     break;
                 case LineDeepQueryType.AUTO_UNKNOWN_ERROR:
-                    Logger.d(SEARCH_SERVICE_TAG, "未知错误类型");
+                    Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "未知错误类型");
                     break;
                 default:
-                    Logger.d(SEARCH_SERVICE_TAG, "未处理的类型: " + linePoiBase.queryType);
+                    Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "未处理的类型: " + linePoiBase.queryType);
                     break;
             }
         });
 
-        PoiInfoEntity poiInfoEntity = new PoiInfoEntity()
+        final PoiInfoEntity poiInfoEntity = new PoiInfoEntity()
                 .setServiceAreaInfoList(serviceAreaInfoList)
                 .setChargeInfoList(chargeInfoList)
                 .setStationList(stationList)
@@ -816,8 +924,13 @@ public class SearchResultMapper {
         return searchResultEntity;
     }
 
-    private ServiceAreaInfo mapServiceAreaInfo(LinePoiServiceAreaInfo linePoiServiceAreaInfo) {
-        List<ServiceAreaInfo.ServiceAreaChild> serviceAreaChildList = linePoiServiceAreaInfo.children.stream()
+    /**
+     * 将沿途搜索服务区结果LinePoiServiceAreaInfo转换为ServiceAreaInfo
+     * @param linePoiServiceAreaInfo 沿途搜索服务区结果
+     * @return ServiceAreaInfo
+     */
+    private ServiceAreaInfo mapServiceAreaInfo(final LinePoiServiceAreaInfo linePoiServiceAreaInfo) {
+        final List<ServiceAreaInfo.ServiceAreaChild> serviceAreaChildList = linePoiServiceAreaInfo.children.stream()
                 .map(this::mapServiceAreaChild)
                 .collect(Collectors.toList());
 
@@ -833,7 +946,12 @@ public class SearchResultMapper {
                 .setServiceAreaChildList(serviceAreaChildList);
     }
 
-    private ServiceAreaInfo.ServiceAreaChild mapServiceAreaChild(LinePoiServiceAreaChild linePoiServiceAreaChild) {
+    /**
+     * 将沿途搜索服务区子节点LinePoiServiceAreaChild转换为ServiceAreaChild
+     * @param linePoiServiceAreaChild 沿途搜索服务区子节点
+     * @return ServiceAreaChild
+     */
+    private ServiceAreaInfo.ServiceAreaChild mapServiceAreaChild(final LinePoiServiceAreaChild linePoiServiceAreaChild) {
         return new ServiceAreaInfo.ServiceAreaChild()
                 .setId(linePoiServiceAreaChild.childBase.id)
                 .setName(linePoiServiceAreaChild.childBase.name)
@@ -846,7 +964,12 @@ public class SearchResultMapper {
                 .setGasType(linePoiServiceAreaChild.gasType);
     }
 
-    private ChargeInfo mapChargeInfo(LinePoiChargeInfo linePoiChargeInfo) {
+    /**
+     * 将沿途搜索计费信息LinePoiChargeInfo转换为ChargeInfo
+     * @param linePoiChargeInfo 沿途搜索计费信息
+     * @return ChargeInfo
+     */
+    private ChargeInfo mapChargeInfo(final LinePoiChargeInfo linePoiChargeInfo) {
         return new ChargeInfo()
                 .setQueryType(linePoiChargeInfo.queryType)
                 .setPoiId(linePoiChargeInfo.poiId)
@@ -860,7 +983,12 @@ public class SearchResultMapper {
                 .setSuperTotal(linePoiChargeInfo.superTotal);
     }
 
-    private GasStationInfo mapGasStationInfo(LinePoiGasStationInfo linePoiGasStationInfo) {
+    /**
+     * 将沿途搜索加油站信息LinePoiGasStationInfo转换为GasStationInfo
+     * @param linePoiGasStationInfo 沿途搜索加油站信息
+     * @return GasStationInfo
+     */
+    private GasStationInfo mapGasStationInfo(final LinePoiGasStationInfo linePoiGasStationInfo) {
         return new GasStationInfo()
                 .setQueryType(linePoiGasStationInfo.queryType)
                 .setPoiId(linePoiGasStationInfo.poiId)
@@ -870,7 +998,12 @@ public class SearchResultMapper {
                 .setDiscount(linePoiGasStationInfo.discount);
     }
 
-    private ParkingInfo mapParkingInfo(LinePoiParkRecommendInfo linePoiParkRecommendInfo) {
+    /**
+     * 将沿途搜索停车场信息LinePoiParkRecommendInfo转换为ParkingInfo
+     * @param linePoiParkRecommendInfo 沿途搜索停车场信息
+     * @return ParkingInfo
+     */
+    private ParkingInfo mapParkingInfo(final LinePoiParkRecommendInfo linePoiParkRecommendInfo) {
         return new ParkingInfo()
                 .setQueryType(linePoiParkRecommendInfo.queryType)
                 .setPoiId(linePoiParkRecommendInfo.poiId)
@@ -882,8 +1015,13 @@ public class SearchResultMapper {
 
     /**
      * 创建基础的 SearchResultEntity
+     *
+     * @param requestParameterBuilder 请求参数构建器
+     * @param code 错误码
+     * @param message 消息
+     * @return SearchResultEntity
      */
-    private SearchResultEntity createBaseResultEntity(SearchRequestParameter requestParameterBuilder, int code, String message) {
+    private SearchResultEntity createBaseResultEntity(final SearchRequestParameter requestParameterBuilder, final int code, final String message) {
         return new SearchResultEntity()
                 .setCode(code)
                 .setMessage(message)
@@ -892,12 +1030,22 @@ public class SearchResultMapper {
                 .setSearchType(requestParameterBuilder.getSearchType());
     }
 
-    private String formatDistanceArrayInternal(int distance) {
-        String[] distanceArray = ConvertUtils.formatDistanceArray(AppContext.mContext, distance);
+    /**
+     * 格式化距离数组
+     * @param distance 距离
+     * @return String
+     */
+    private String formatDistanceArrayInternal(final int distance) {
+        final String[] distanceArray = ConvertUtils.formatDistanceArray(AppContext.getInstance().getMContext(), distance);
         return distanceArray[0] + distanceArray[1];
     }
 
-    private boolean isParking(String typeCode) {
+    /**
+     * 判断是否是停车场
+     * @param typeCode 类型编码
+     * @return boolean
+     */
+    private boolean isParking(final String typeCode) {
         /* 停车场类型
          * 150903
          * 150904
@@ -907,7 +1055,7 @@ public class SearchResultMapper {
          * 150908
          * 150909
          */
-        String regex = "^150900|15090[3-9]$";
+        final String regex = "^150900|15090[3-9]$";
         return Pattern.matches(regex, typeCode);
     }
 }

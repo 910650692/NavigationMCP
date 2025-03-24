@@ -24,21 +24,31 @@ public class SettingVoiceBroadcastAdapter extends RecyclerView.Adapter<SettingVo
     private List<VoiceInfo> mVoiceInfoList;
     private OnItemClickListener mOnItemClickListener;
 
-
+    /**
+     * 列表刷新数据
+     * @param voiceInfoList
+     */
     @SuppressLint("NotifyDataSetChanged")
-    public void setData(HashMap<Integer, VoiceInfo> voiceInfoList) {
+    public void setData(final HashMap<Integer, VoiceInfo> voiceInfoList) {
         mVoiceInfoList = new ArrayList<>(voiceInfoList.values());
         notifyDataSetChanged();
     }
 
+    /**
+     * 单选设置
+     * @param index
+     */
     @SuppressLint("NotifyDataSetChanged")
-    public void setSingleChoice(int index) {
+    public void setSingleChoice(final int index) {
         for (int i = 0; i < mVoiceInfoList.size(); i++) {
             mVoiceInfoList.get(i).setUsed(i == index);
         }
         notifyDataSetChanged();
     }
 
+    /**
+     * 设置数据列表为Fale
+     */
     @SuppressLint("NotifyDataSetChanged")
     public void unSelectAllVoices() {
         for (int i = 0; i < mVoiceInfoList.size(); i++) {
@@ -47,23 +57,25 @@ public class SettingVoiceBroadcastAdapter extends RecyclerView.Adapter<SettingVo
         notifyDataSetChanged();
     }
 
-    public void setItemClickListener(OnItemClickListener mOnItemClickListener) {
-        this.mOnItemClickListener = mOnItemClickListener;
+    public void setItemClickListener(final OnItemClickListener onItemClickListener) {
+        this.mOnItemClickListener = onItemClickListener;
     }
 
     @NonNull
     @Override
-    public SettingVoiceBroadcastAdapter.Holder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        ItemRecommenedVoiceBinding itemRecommenedVoiceBinding = DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()), R.layout.item_recommened_voice, parent, false);
+    public SettingVoiceBroadcastAdapter.Holder onCreateViewHolder(final @NonNull ViewGroup parent, final int viewType) {
+        final ItemRecommenedVoiceBinding itemRecommenedVoiceBinding = DataBindingUtil.inflate(
+                LayoutInflater.from(parent.getContext()), R.layout.item_recommened_voice, parent, false);
         return new Holder(itemRecommenedVoiceBinding);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull SettingVoiceBroadcastAdapter.Holder holder, int position) {
-        holder.voiceBroadcastBinding.recommendVoiceProgress.setProgressDrawable(AppContext.mApplication.getDrawable(R.drawable.progress_bar_style));
-        holder.voiceBroadcastBinding.setModel(mVoiceInfoList.get(position));
+    public void onBindViewHolder(final @NonNull SettingVoiceBroadcastAdapter.Holder holder, final int position) {
+        holder.mVoiceBroadcastBinding.recommendVoiceProgress.setProgressDrawable(
+                AppContext.getInstance().getMApplication().getDrawable(R.drawable.progress_bar_style));
+        holder.mVoiceBroadcastBinding.setModel(mVoiceInfoList.get(position));
 
-        holder.voiceBroadcastBinding.recommendVoiceOperate.setOnClickListener(v -> {
+        holder.mVoiceBroadcastBinding.recommendVoiceOperate.setOnClickListener(v -> {
             if (mOnItemClickListener != null) {
                 mOnItemClickListener.onOperation(position);
             }
@@ -79,15 +91,19 @@ public class SettingVoiceBroadcastAdapter extends RecyclerView.Adapter<SettingVo
     }
 
     public static class Holder extends RecyclerView.ViewHolder{
-        public ItemRecommenedVoiceBinding voiceBroadcastBinding;
-        public Holder(ItemRecommenedVoiceBinding voiceBroadcastBinding) {
+        public ItemRecommenedVoiceBinding mVoiceBroadcastBinding;
+        public Holder(final ItemRecommenedVoiceBinding voiceBroadcastBinding) {
             super(voiceBroadcastBinding.getRoot());
-            this.voiceBroadcastBinding = voiceBroadcastBinding;
+            this.mVoiceBroadcastBinding = voiceBroadcastBinding;
             voiceBroadcastBinding.setHolder(this);
         }
     }
 
     public interface OnItemClickListener{
+        /**
+         * 操作
+         * @param index
+         */
         void onOperation(int index);
     }
 }

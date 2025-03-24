@@ -1,7 +1,5 @@
 package com.fy.navi.hmi.mapdata.search;
 
-import static com.fy.navi.service.MapDefaultFinalTag.OFFLINE_HMI_TAG;
-
 import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
@@ -13,12 +11,8 @@ import com.fy.navi.ui.base.BaseModel;
 
 import java.util.ArrayList;
 
-/**
- * @Description
- * @Author fh
- * @date 2024/02/17
- */
 public class SearchMapDataModel extends BaseModel<SearchMapDataViewModel> implements MapDataCallBack {
+    private static final String TAG = SearchMapDataModel.class.getSimpleName();
     private final MapDataPackage mapDataPackage;
 
     public SearchMapDataModel() {
@@ -39,48 +33,53 @@ public class SearchMapDataModel extends BaseModel<SearchMapDataViewModel> implem
     /**
      * 通过搜索关键字获取行政区域adcode列表
      * @param strKey
-     * @return
+     * @return 返回行政区域数据
      */
-    public ArrayList<ProvDataInfo> searchAdCode(String strKey) {
+    public ArrayList<ProvDataInfo> searchAdCode(final String strKey) {
         return mapDataPackage.searchAdCode(strKey);
     }
 
-    public void startAllTask(ArrayList<Integer> adCodeList) {
+    /**
+     * 开始下载
+     * @param adCodeList
+     */
+    public void startAllTask(final ArrayList<Integer> adCodeList) {
         mapDataPackage.startAllTask(adCodeList);
     }
 
-    public void pauseAllTask(ArrayList<Integer> adCodeList) {
+    /**
+     * 暂停下载
+     * @param adCodeList
+     */
+    public void pauseAllTask(final ArrayList<Integer> adCodeList) {
         mapDataPackage.pauseAllTask(adCodeList);
     }
 
-    public void cancelAllTask(ArrayList<Integer> adCodeList) {
+    /**
+     * 取消下载
+     * @param adCodeList
+     */
+    public void cancelAllTask(final ArrayList<Integer> adCodeList) {
         mapDataPackage.cancelAllTask(adCodeList);
     }
 
     @Override
-    public void onDownLoadStatus(ProvDataInfo provDataInfo) {
+    public void onDownLoadStatus(final ProvDataInfo provDataInfo) {
         if (provDataInfo != null) {
-            Logger.d(OFFLINE_HMI_TAG, "onDownLoadStatus: provDataInfo = "  + GsonUtils.toJson(provDataInfo));
+            Logger.d(TAG, "onDownLoadStatus: provDataInfo = "  + GsonUtils.toJson(provDataInfo));
+            mViewModel.onDownLoadStatus(provDataInfo);
         }
     }
 
     @Override
-    public void onPercent(ProvDataInfo info) {
-        if (info != null && info.downLoadInfo != null) {
-            Logger.d(OFFLINE_HMI_TAG," percent = " + info.downLoadInfo.percent);
-            mViewModel.onPercent(info);
-        }
+    public void onMergedStatusInfo(final MergedStatusBean mergedStatusInfo) {
+        Logger.d(TAG, "onMergedStatusInfo: " + GsonUtils.toJson(mergedStatusInfo));
     }
 
     @Override
-    public void onMergedStatusInfo(MergedStatusBean mergedStatusInfo) {
-        Logger.d(OFFLINE_HMI_TAG, "onMergedStatusInfo: " + GsonUtils.toJson(mergedStatusInfo));
-    }
-
-    @Override
-    public void onErrorNotify(int downLoadMode, int dataType, int id, int errType, String errMsg) {
+    public void onErrorNotify(final int downLoadMode, final int dataType, final int id, final int errType, final String errMsg) {
         ThreadManager.getInstance().postUi(() -> {
-            Logger.d(OFFLINE_HMI_TAG, "onErrorNotify: downLoadMode = "  + downLoadMode +
+            Logger.d(TAG, "onErrorNotify: downLoadMode = "  + downLoadMode +
                     " dataType = " + dataType + " errType = " + errType + " errMsg = " + errMsg);
             // 删除异常城市数据
             mapDataPackage.deleteErrorData(id);
@@ -88,9 +87,14 @@ public class SearchMapDataModel extends BaseModel<SearchMapDataViewModel> implem
     }
 
     @Override
-    public void onDeleteErrorData(int downLoadMode, int dataType, int id, int opCode) {
-        Logger.d(OFFLINE_HMI_TAG, "onDeleteErrorData: downLoadMode = "  + downLoadMode +
+    public void onDeleteErrorData(final int downLoadMode, final int dataType, final int id, final int opCode) {
+        Logger.d(TAG, "onDeleteErrorData: downLoadMode = "  + downLoadMode +
                 " dataType = " + dataType + " opCode = " + opCode);
+    }
+
+    @Override
+    public void onRequestCheckSuccess(final int downLoadMode, final int dataType, final int opCode) {
+
     }
 
 }

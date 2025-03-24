@@ -5,7 +5,6 @@ import android.os.Parcelable;
 
 import androidx.annotation.NonNull;
 
-import com.fy.navi.service.define.bean.GeoPoint;
 
 import java.util.List;
 
@@ -18,26 +17,68 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 public class SearchCategoryLocalInfo implements Parcelable {
     //选中状态
-    public int checked;
+    private int mChecked;
     //名称
-    public String name;
+    private String mName;
     //子类目信息
-    public List<SearchChildCategoryLocalInfo> categoryLocalInfos;
+    private List<SearchChildCategoryLocalInfo> mCategoryLocalInfos;
 
-    protected SearchCategoryLocalInfo(Parcel in) {
-        checked = in.readInt();
-        name = in.readString();
-        categoryLocalInfos = in.createTypedArrayList(SearchChildCategoryLocalInfo.CREATOR);
+    public int getChecked() {
+        return mChecked;
+    }
+
+    /**
+     * 设置选中状态
+     * @param checked 选中状态
+     * @return SearchCategoryLocalInfo
+     */
+    public SearchCategoryLocalInfo setChecked(final int checked) {
+        this.mChecked = checked;
+        return this;
+    }
+
+    public String getName() {
+        return mName;
+    }
+
+    /**
+     * 设置名称
+     * @param name 名称
+     * @return SearchCategoryLocalInfo
+     */
+    public SearchCategoryLocalInfo setName(final String name) {
+        this.mName = name;
+        return this;
+    }
+
+    public List<SearchChildCategoryLocalInfo> getCategoryLocalInfos() {
+        return mCategoryLocalInfos;
+    }
+
+    /**
+     * 设置子类目信息
+     * @param categoryLocalInfos 子类目信息
+     * @return SearchCategoryLocalInfo
+     */
+    public SearchCategoryLocalInfo setCategoryLocalInfos(final List<SearchChildCategoryLocalInfo> categoryLocalInfos) {
+        this.mCategoryLocalInfos = categoryLocalInfos;
+        return this;
+    }
+
+    protected SearchCategoryLocalInfo(final Parcel in) {
+        mChecked = in.readInt();
+        mName = in.readString();
+        mCategoryLocalInfos = in.createTypedArrayList(SearchChildCategoryLocalInfo.CREATOR);
     }
 
     public static final Creator<SearchCategoryLocalInfo> CREATOR = new Creator<SearchCategoryLocalInfo>() {
         @Override
-        public SearchCategoryLocalInfo createFromParcel(Parcel in) {
+        public SearchCategoryLocalInfo createFromParcel(final Parcel in) {
             return new SearchCategoryLocalInfo(in);
         }
 
         @Override
-        public SearchCategoryLocalInfo[] newArray(int size) {
+        public SearchCategoryLocalInfo[] newArray(final int size) {
             return new SearchCategoryLocalInfo[size];
         }
     };
@@ -48,9 +89,9 @@ public class SearchCategoryLocalInfo implements Parcelable {
     }
 
     @Override
-    public void writeToParcel(@NonNull Parcel parcel, int i) {
-        checked = parcel.readInt();
-        name = parcel.readString();
-        categoryLocalInfos = parcel.createTypedArrayList(SearchChildCategoryLocalInfo.CREATOR);
+    public void writeToParcel(@NonNull final Parcel parcel, final int i) {
+        mChecked = parcel.readInt();
+        mName = parcel.readString();
+        mCategoryLocalInfos = parcel.createTypedArrayList(SearchChildCategoryLocalInfo.CREATOR);
     }
 }

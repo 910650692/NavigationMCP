@@ -54,11 +54,11 @@ public class AccountQRCodeLoginFragment extends BaseFragment<FragmentQrcodeLogin
         slideItems.add(new SlideItem(R.mipmap.icon_account_car_connect, ResourceUtils.Companion.getInstance().getString(R.string.car_connect_unLogin_function_1),
                 ResourceUtils.Companion.getInstance().getString(R.string.car_connect_unLogin_function_tip)));
         slideItems.add(new SlideItem(R.mipmap.icon_account_car_connect, ResourceUtils.Companion.getInstance().getString(R.string.car_connect_unLogin_function_2),
-                ResourceUtils.Companion.getInstance().getString(R.string.car_connect_unLogin_function_tip)));
+                ResourceUtils.Companion.getInstance().getString(R.string.car_connect_unLogin_function_2_tip)));
         slideItems.add(new SlideItem(R.mipmap.icon_account_car_connect, ResourceUtils.Companion.getInstance().getString(R.string.car_connect_unLogin_function_3),
-                ResourceUtils.Companion.getInstance().getString(R.string.car_connect_unLogin_function_tip)));
+                ResourceUtils.Companion.getInstance().getString(R.string.car_connect_unLogin_function_3_tip)));
         slideItems.add(new SlideItem(R.mipmap.icon_account_car_connect, ResourceUtils.Companion.getInstance().getString(R.string.car_connect_unLogin_function_4),
-                ResourceUtils.Companion.getInstance().getString(R.string.car_connect_unLogin_function_tip)));
+                ResourceUtils.Companion.getInstance().getString(R.string.car_connect_unLogin_function_4_tip)));
 
         SlideAdapter adapter = new SlideAdapter(slideItems);
         mBinding.accountQrcodeViewpager.setAdapter(adapter);

@@ -3,11 +3,12 @@ plugins {
     id 'maven-publish'
 }
 
-def lib_version = "0.1.36";
+def lib_version = "0.2.2"
 
 android {
     namespace 'com.fy.navi.mapservice'
     compileSdk Integer.parseInt(libs.versions.compileSdk.get())
+    buildToolsVersion libs.versions.buildSdk.get()
 
     defaultConfig {
         minSdk Integer.parseInt(libs.versions.minSdk.get())

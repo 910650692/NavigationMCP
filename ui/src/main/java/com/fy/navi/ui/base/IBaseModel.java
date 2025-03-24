@@ -1,18 +1,30 @@
 package com.fy.navi.ui.base;
 
-/**
- * @Description TODO
- * @Author lvww
- * @date 2024/11/22
- */
-public interface IBaseModel<VM extends  IBaseViewModel> {
+public interface IBaseModel<VM extends IBaseViewModel> {
+    /**
+     * 绑定ViewModel
+     *
+     * @param baseViewModel IBaseViewModel
+     */
     void onAttachViewModel(VM baseViewModel);
 
+    /**
+     * onCreate
+     */
     void onCreate();
 
+    /**
+     * onStart
+     */
     void onStart();
 
+    /**
+     * onStop
+     */
     void onStop();
 
+    /**
+     * onDestroy
+     */
     void onDestroy();
 }

@@ -5,7 +5,7 @@ import android.app.Application;
 import androidx.annotation.NonNull;
 
 public class AroundSearchViewModel extends BaseAroundSearchViewModel {
-    public AroundSearchViewModel(@NonNull Application application) {
+    public AroundSearchViewModel(@NonNull final Application application) {
         super(application);
     }
 }

@@ -9,11 +9,16 @@ import com.fy.navi.service.define.route.RoutePoiType;
 import com.fy.navi.service.define.search.PoiInfoEntity;
 
 /**
- * @Author: baipeng0904
+ * @author baipeng0904
+ * @version \$Revision1.0\$
  * @Description: SearchFragmentFactory
  * @CreateDate: 2025/2/27 17:18
  */
-public class SearchFragmentFactory {
+public final class SearchFragmentFactory {
+
+    private SearchFragmentFactory() {
+
+    }
 
     /**
      * 创建预搜索参数
@@ -22,8 +27,9 @@ public class SearchFragmentFactory {
      * @param searchType     搜索类型
      * @return Bundle
      */
-    public static Bundle createSugFragment(@AutoMapConstant.SourceFragment String sourceFragment, @AutoMapConstant.SearchType int searchType) {
-        Bundle args = new Bundle();
+    public static Bundle createSugFragment(@AutoMapConstant.SourceFragment final String sourceFragment,
+                                           @AutoMapConstant.SearchType final int searchType) {
+        final Bundle args = new Bundle();
         args.putInt(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_TYPE, searchType);
         args.putString(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SOURCE_FRAGMENT, sourceFragment);
         return args;
@@ -38,8 +44,10 @@ public class SearchFragmentFactory {
      * @param poiInfoEntity  搜索位置信息
      * @return Bundle
      */
-    public static Bundle createKeywordFragment(@AutoMapConstant.SourceFragment String sourceFragment, @AutoMapConstant.SearchType int searchType, String keyword, @Nullable PoiInfoEntity poiInfoEntity) {
-        Bundle args = new Bundle();
+    public static Bundle createKeywordFragment(@AutoMapConstant.SourceFragment final String sourceFragment,
+                                               @AutoMapConstant.SearchType final int searchType,
+                                               final String keyword, @Nullable final PoiInfoEntity poiInfoEntity) {
+        final Bundle args = new Bundle();
         args.putString(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SOURCE_FRAGMENT, sourceFragment);
         args.putInt(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_TYPE, searchType);
         args.putString(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_KEYWORD, keyword);
@@ -53,8 +61,8 @@ public class SearchFragmentFactory {
      * @param keyword        搜索关键词
      * @return Bundle
      */
-    public static Bundle createOfflineFragment(String keyword) {
-        Bundle args = new Bundle();
+    public static Bundle createOfflineFragment(final String keyword) {
+        final Bundle args = new Bundle();
         args.putString(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_KEYWORD, keyword);
         return args;
     }
@@ -65,8 +73,8 @@ public class SearchFragmentFactory {
      * @param poiInfoEntity PoiInfoEntity
      * @return Bundle
      */
-    public static Bundle createAroundFragment(@Nullable PoiInfoEntity poiInfoEntity) {
-        Bundle args = new Bundle();
+    public static Bundle createAroundFragment(@Nullable final PoiInfoEntity poiInfoEntity) {
+        final Bundle args = new Bundle();
         args.putParcelable(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_OPEN_AROUND, poiInfoEntity);
         return args;
     }
@@ -76,10 +84,12 @@ public class SearchFragmentFactory {
      *
      * @param sourceFragment 当前页面
      * @param searchType     搜索类型
+     * @param homeCompany 家/公司类型
      * @return Bundle
      */
-    public static Bundle createCollectFragment(@AutoMapConstant.SourceFragment String sourceFragment, int searchType, int homeCompany) {
-        Bundle args = new Bundle();
+    public static Bundle createCollectFragment(@AutoMapConstant.SourceFragment final String sourceFragment,
+                                               final int searchType, final int homeCompany) {
+        final Bundle args = new Bundle();
         args.putString(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SOURCE_FRAGMENT, sourceFragment);
         args.putInt(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_OPEN_COLLECTION, searchType);
         args.putInt(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_OPEN_HOME_COMPANY, homeCompany);
@@ -94,8 +104,9 @@ public class SearchFragmentFactory {
      * @param searchType     搜索类型
      * @return Bundle
      */
-    public static Bundle createHomeCompanyFragment(@AutoMapConstant.SourceFragment String sourceFragment, int homeType, @AutoMapConstant.HomeCompanyType int searchType) {
-        Bundle args = new Bundle();
+    public static Bundle createHomeCompanyFragment(@AutoMapConstant.SourceFragment final String sourceFragment,
+                                                   final int homeType, @AutoMapConstant.HomeCompanyType final int searchType) {
+        final Bundle args = new Bundle();
         args.putString(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SOURCE_FRAGMENT, sourceFragment);
         args.putInt(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_TYPE, homeType);
         args.putInt(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_OPEN_HOME_COMPANY, searchType);
@@ -110,8 +121,9 @@ public class SearchFragmentFactory {
      * @param poiInfoEntity  poi信息
      * @return Bundle
      */
-    public static Bundle createPoiDetailsFragment(@AutoMapConstant.SourceFragment String sourceFragment, @AutoMapConstant.PoiType int poiType, PoiInfoEntity poiInfoEntity) {
-        Bundle args = new Bundle();
+    public static Bundle createPoiDetailsFragment(@AutoMapConstant.SourceFragment final String sourceFragment,
+                                                  @AutoMapConstant.PoiType final int poiType, final PoiInfoEntity poiInfoEntity) {
+        final Bundle args = new Bundle();
         args.putString(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SOURCE_FRAGMENT, sourceFragment);
         args.putInt(AutoMapConstant.PoiBundleKey.BUNDLE_KEY_START_POI_TYPE, poiType);
         args.putParcelable(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_OPEN_DETAIL, poiInfoEntity);
@@ -124,8 +136,8 @@ public class SearchFragmentFactory {
      * @param poiInfoEntity poi信息
      * @return Bundle
      */
-    public static Bundle createRouteFragment(PoiInfoEntity poiInfoEntity) {
-        Bundle args = new Bundle();
+    public static Bundle createRouteFragment(final PoiInfoEntity poiInfoEntity) {
+        final Bundle args = new Bundle();
         args.putInt(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_OPEN_ROUTE_TYPE, RoutePoiType.ROUTE_POI_TYPE_END);
         args.putParcelable(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_OPEN_ROUTE, poiInfoEntity);
         return args;

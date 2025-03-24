@@ -2,18 +2,18 @@ package com.fy.navi.ui.view;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.widget.SeekBar;
+
 
 public class SkinSeekBar extends androidx.appcompat.widget.AppCompatSeekBar {
-    public SkinSeekBar(Context context) {
+    public SkinSeekBar(final Context context) {
         super(context);
     }
 
-    public SkinSeekBar(Context context, AttributeSet attrs) {
+    public SkinSeekBar(final Context context, final AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public SkinSeekBar(Context context, AttributeSet attrs, int defStyleAttr) {
+    public SkinSeekBar(final Context context, final AttributeSet attrs, final int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 }

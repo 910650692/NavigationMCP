@@ -19,19 +19,23 @@ import com.fy.navi.service.MapDefaultFinalTag;
 
 /**
  * 服务区、交通事件、收费站Scene
+ * @author fy
+ * @version $Revision.*$
  */
 public class SceneNaviServiceArea extends NaviSceneBase<NaviSceneServiceAreaBinding, SceneNaviDetailImpl> {
     private static final String TAG = MapDefaultFinalTag.NAVI_HMI_TAG;
 
-    public SceneNaviServiceArea(@NonNull Context context) {
+    public SceneNaviServiceArea(@NonNull final Context context) {
         super(context);
     }
 
-    public SceneNaviServiceArea(@NonNull Context context, @Nullable AttributeSet attrs) {
+    public SceneNaviServiceArea(@NonNull final Context context,
+                                @Nullable final AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public SceneNaviServiceArea(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public SceneNaviServiceArea(@NonNull final Context context, @Nullable final AttributeSet attrs,
+                                final int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 
@@ -50,12 +54,13 @@ public class SceneNaviServiceArea extends NaviSceneBase<NaviSceneServiceAreaBind
     }
 
     @Override
-    public void addSceneCallback(ISceneCallback sceneCallback) {
+    public void addSceneCallback(final ISceneCallback sceneCallback) {
 
     }
 
     @Override
-    protected NaviSceneServiceAreaBinding createViewBinding(LayoutInflater inflater, ViewGroup viewGroup) {
+    protected NaviSceneServiceAreaBinding createViewBinding(final LayoutInflater inflater,
+                                                            final ViewGroup viewGroup) {
         return NaviSceneServiceAreaBinding.inflate(inflater, viewGroup, true);
     }
 

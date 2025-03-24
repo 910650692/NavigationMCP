@@ -3,40 +3,42 @@ package com.fy.navi.service.adapter.search.bls;
 import androidx.annotation.Nullable;
 
 /**
- * @Author: baipeng0904
+ * @author baipeng0904
  * @Description: 类作用描述
  * @CreateDate: $ $
+ * @version \$Revision1.0\$
+ * @param <T> 回调数据泛型
  */
 public class SearchCallbackWrapper<T> implements IBLSearchCallback<T> {
     @Nullable
-    private final IBLSearchCallback<T> bllSearchCallback;
+    private final IBLSearchCallback<T> mBllSearchCallback;
 
-    public SearchCallbackWrapper(@Nullable IBLSearchCallback<T> oriCallback) {
-        this.bllSearchCallback = oriCallback;
+    public SearchCallbackWrapper(@Nullable final IBLSearchCallback<T> oriCallback) {
+        this.mBllSearchCallback = oriCallback;
     }
 
     @Override
-    public void onSuccess(T data) {
-        if (bllSearchCallback == null) {
+    public void onSuccess(final T data) {
+        if (mBllSearchCallback == null) {
             return;
         }
-        bllSearchCallback.onSuccess(data);
+        mBllSearchCallback.onSuccess(data);
     }
 
     @Override
-    public void onFailure(int errCode, T data) {
-        if (bllSearchCallback == null) {
+    public void onFailure(final int errCode, final T data) {
+        if (mBllSearchCallback == null) {
             return;
         }
-        bllSearchCallback.onFailure(errCode, data);
+        mBllSearchCallback.onFailure(errCode, data);
     }
 
     @Override
     public void onComplete() {
-        if (bllSearchCallback == null) {
+        if (mBllSearchCallback == null) {
             return;
         }
-        bllSearchCallback.onComplete();
+        mBllSearchCallback.onComplete();
     }
 }
 

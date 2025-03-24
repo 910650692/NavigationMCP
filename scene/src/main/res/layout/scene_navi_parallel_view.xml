@@ -22,13 +22,13 @@
             android:id="@+id/group_bridge_up_down"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:visibility="@{naviParallel.bridgeUpDownVisible?View.VISIBLE:View.GONE}"
+            android:visibility="@{naviParallel.mBridgeUpDownVisible?View.VISIBLE:View.GONE}"
             app:constraint_referenced_ids="sv_bridge_up_down,siv_bridge_up_down,stv_bridge_up_down"
             tools:visibility="visible" />
 
         <com.fy.navi.ui.view.SkinView
             android:id="@+id/sv_bridge_up_down"
-            clickCommand="@{naviParallel.clickBridgeUpDown}"
+            clickCommand="@{naviParallel.mClickBridgeUpDown}"
             android:layout_width="@dimen/dp_204"
             android:layout_height="@dimen/dp_160"
             android:background="@drawable/bg_navi_btn_common"
@@ -64,13 +64,13 @@
             android:id="@+id/group_main_auxiliary"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:visibility="@{naviParallel.roadMainAuxiliaryVisible?View.VISIBLE:View.GONE}"
+            android:visibility="@{naviParallel.mRoadMainAuxiliaryVisible?View.VISIBLE:View.GONE}"
             app:constraint_referenced_ids="sv_main_auxiliary,siv_main_auxiliary,stv_main_auxiliary"
             tools:visibility="visible" />
 
         <com.fy.navi.ui.view.SkinView
             android:id="@+id/sv_main_auxiliary"
-            clickCommand="@{naviParallel.clickMainAuxiliary}"
+            clickCommand="@{naviParallel.mClickMainAuxiliary}"
             android:layout_width="@dimen/dp_204"
             android:layout_height="@dimen/dp_160"
             android:layout_marginStart="@dimen/dp_20"

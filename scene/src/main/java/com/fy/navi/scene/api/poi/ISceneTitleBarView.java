@@ -3,11 +3,20 @@ package com.fy.navi.scene.api.poi;
 import com.fy.navi.service.define.search.PoiInfoEntity;
 
 /**
- * @Author: baipeng0904
+ * @author baipeng0904
+ * @version \$Revision1.0\$
  * @Description: 类作用描述
  * @CreateDate: $ $
  */
 public interface ISceneTitleBarView {
+    /**
+     * 关闭当前Fragment
+     */
     void closeFragment();
+
+    /**
+     * 搜索
+     * @param poiInfoEntity poi信息实体
+     */
     void doSearch(PoiInfoEntity poiInfoEntity);
 }

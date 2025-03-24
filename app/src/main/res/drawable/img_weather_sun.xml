@@ -1,0 +1,23 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android" android:height="64dp" android:viewportHeight="48" android:viewportWidth="48" android:width="64dp">
+      
+    <path android:fillColor="@color/route_weather_bg" android:fillType="evenOdd" android:pathData="M0,0h48v48h-48z" android:strokeColor="#00000000" android:strokeWidth="1"/>
+      
+    <path android:fillColor="@color/route_weather_sun" android:fillType="nonZero" android:pathData="M24,24m-10.714,0a10.714,10.714 0,1 1,21.429 0a10.714,10.714 0,1 1,-21.429 0" android:strokeColor="#00000000" android:strokeWidth="1"/>
+      
+    <path android:fillColor="@color/route_weather_sun" android:fillType="nonZero" android:pathData="M24,4C24.592,4 25.071,4.48 25.071,5.071L25.071,10.071C25.071,10.663 24.592,11.143 24,11.143C23.408,11.143 22.929,10.663 22.929,10.071L22.929,5.071C22.929,4.48 23.408,4 24,4" android:strokeColor="#00000000" android:strokeWidth="1"/>
+      
+    <path android:fillColor="@color/route_weather_sun" android:fillType="nonZero" android:pathData="M38.142,9.858C38.561,10.276 38.561,10.955 38.142,11.373L34.607,14.909C34.188,15.327 33.51,15.327 33.091,14.909C32.673,14.49 32.673,13.812 33.091,13.393L36.627,9.858C37.045,9.439 37.724,9.439 38.142,9.858" android:strokeColor="#00000000" android:strokeWidth="1"/>
+      
+    <path android:fillColor="@color/route_weather_sun" android:fillType="nonZero" android:pathData="M44,24C44,24.592 43.52,25.071 42.929,25.071L37.929,25.071C37.337,25.071 36.857,24.592 36.857,24C36.857,23.408 37.337,22.929 37.929,22.929L42.929,22.929C43.52,22.929 44,23.408 44,24" android:strokeColor="#00000000" android:strokeWidth="1"/>
+      
+    <path android:fillColor="@color/route_weather_sun" android:fillType="nonZero" android:pathData="M38.142,38.142C37.724,38.561 37.045,38.561 36.627,38.142L33.092,34.607C32.673,34.188 32.673,33.51 33.092,33.091C33.51,32.673 34.188,32.673 34.607,33.091L38.142,36.627C38.561,37.045 38.561,37.724 38.142,38.142" android:strokeColor="#00000000" android:strokeWidth="1"/>
+      
+    <path android:fillColor="@color/route_weather_sun" android:fillType="nonZero" android:pathData="M24,44C23.408,44 22.929,43.52 22.929,42.929L22.929,37.929C22.929,37.337 23.408,36.857 24,36.857C24.592,36.857 25.071,37.337 25.071,37.929L25.071,42.929C25.071,43.52 24.592,44 24,44" android:strokeColor="#00000000" android:strokeWidth="1"/>
+      
+    <path android:fillColor="@color/route_weather_sun" android:fillType="nonZero" android:pathData="M9.858,38.142C9.439,37.724 9.439,37.045 9.858,36.627L13.393,33.091C13.812,32.673 14.49,32.673 14.909,33.091C15.327,33.51 15.327,34.188 14.909,34.607L11.373,38.142C10.955,38.561 10.276,38.561 9.858,38.142" android:strokeColor="#00000000" android:strokeWidth="1"/>
+      
+    <path android:fillColor="@color/route_weather_sun" android:fillType="nonZero" android:pathData="M4,24C4,23.408 4.48,22.929 5.071,22.929L10.071,22.929C10.663,22.929 11.143,23.408 11.143,24C11.143,24.592 10.663,25.071 10.071,25.071L5.071,25.071C4.48,25.071 4,24.592 4,24" android:strokeColor="#00000000" android:strokeWidth="1"/>
+      
+    <path android:fillColor="@color/route_weather_sun" android:fillType="nonZero" android:pathData="M9.858,9.858C10.276,9.439 10.955,9.439 11.373,9.858L14.909,13.393C15.327,13.812 15.327,14.49 14.909,14.909C14.49,15.327 13.812,15.327 13.393,14.909L9.858,11.373C9.439,10.955 9.439,10.276 9.858,9.858" android:strokeColor="#00000000" android:strokeWidth="1"/>
+    
+</vector>

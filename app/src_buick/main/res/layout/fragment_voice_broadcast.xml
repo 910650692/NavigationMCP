@@ -22,7 +22,7 @@
             android:layout_height="@dimen/dp_132">
 
             <com.fy.navi.ui.view.SkinImageView
-                clickCommand="@{viewModel.switchVoiceBroadcastClick}"
+                clickCommand="@{viewModel.mSwitchVoiceBroadcastClick}"
                 android:layout_width="@dimen/dp_58"
                 android:layout_height="@dimen/dp_58"
                 android:src="@drawable/img_back"
@@ -152,15 +152,15 @@
                         app:layout_constraintStart_toEndOf="@+id/default_voice_header"/>
 
                     <com.fy.navi.ui.view.SkinTextView
-                        clickCommand="@{viewModel.switchDefaultVoice}"
+                        clickCommand="@{viewModel.mSwitchDefaultVoice}"
                         android:background="@drawable/bg_voice_operate_selector"
-                        android:enabled="@{!viewModel.isDefaultVoiceUsed}"
+                        android:enabled="@{!viewModel.mIsDefaultVoiceUsed}"
                         android:id="@+id/default_voice_status"
                         android:gravity="center"
                         android:layout_width="@dimen/dp_200"
                         android:layout_height="@dimen/dp_76"
-                        android:text="@{viewModel.isDefaultVoiceUsed ? @string/setting_broadcast_voice_current_size : @string/setting_broadcast_voice_operate_use}"
-                        android:textColor="@{viewModel.isDefaultVoiceUsed ? @color/black : @color/white}"
+                        android:text="@{viewModel.mIsDefaultVoiceUsed ? @string/setting_broadcast_voice_current_size : @string/setting_broadcast_voice_operate_use}"
+                        android:textColor="@{viewModel.mIsDefaultVoiceUsed ? @color/black : @color/white}"
                         android:textSize="@dimen/sp_26"
                         android:layout_marginEnd="@dimen/dp_30"
                         app:layout_constraintTop_toTopOf="parent"

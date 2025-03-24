@@ -7,14 +7,14 @@ public class HttpConstants {
      * 发布环境(对应车型或服务类型)
      */
     @StringDef({
-            AppKey_Prod.APP_KEY,
-            AppKey_Prod.APP_SECRET,
-            AppKey_Prod.BASE_CLOUD_URL,
-            AppKey_Prod.SERVER_ENV
+            AppKeyProd.APP_KEY,
+            AppKeyProd.APP_SECRET,
+            AppKeyProd.BASE_CLOUD_URL,
+            AppKeyProd.SERVER_ENV
     })
-    public @interface AppKey_Prod {
+    public @interface AppKeyProd {
         String SERVER_ENV = "";
-        String BASE_CLOUD_URL = "";
+        String BASE_CLOUD_URL = "http://baiducp.vapps.sgmlink.com/baiducp/";
         String APP_KEY = "";
         String APP_SECRET = "";
     }

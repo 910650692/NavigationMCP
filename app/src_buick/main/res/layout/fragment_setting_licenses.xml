@@ -24,7 +24,7 @@
             app:layout_constraintTop_toTopOf="parent" >
 
             <com.fy.navi.ui.view.SkinImageView
-                clickCommand="@{viewModel.finishLicenses}"
+                clickCommand="@{viewModel.mFinishLicenses}"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -35,28 +35,21 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginStart="@dimen/dp_452"
+                android:layout_marginStart="@dimen/dp_460"
                 android:text="@string/setting_others_about_licenses_info"
-                android:textSize="@dimen/sp_38"
+                android:textSize="@dimen/sp_34"
                 android:textColor="@color/black" />
         </com.fy.navi.ui.view.SkinLinearLayout>
-
-        <com.fy.navi.ui.view.SkinView
-            android:id="@+id/line_view"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_1"
-            app:layout_constraintTop_toBottomOf="@+id/setting_others_licenses_layout"
-            android:background="@color/setting_line"/>
 
         <com.fy.navi.ui.view.SkinTextView
             android:id="@+id/setting_others_about_licenses_icp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_40"
-            android:textColor="@color/black"
-            android:textSize="@dimen/sp_25"
+            android:layout_marginTop="@dimen/dp_20"
+            android:textColor="@color/setting_text_preference"
+            android:textSize="@dimen/sp_26"
             android:text="@string/setting_others_about_licenses_icp"
-            app:layout_constraintTop_toBottomOf="@+id/line_view"
+            app:layout_constraintTop_toBottomOf="@+id/setting_others_licenses_layout"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"/>
 
@@ -65,8 +58,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_10"
-            android:textColor="@color/black"
-            android:textSize="@dimen/sp_25"
+            android:textColor="@color/setting_text_preference"
+            android:textSize="@dimen/sp_26"
             android:text="@string/setting_others_about_licenses_company"
             app:layout_constraintTop_toBottomOf="@+id/setting_others_about_licenses_icp"
             app:layout_constraintStart_toStartOf="parent"
@@ -74,10 +67,12 @@
 
         <com.fy.navi.ui.view.SkinImageView
             android:id="@+id/setting_others_about_licenses_qr_img"
-            android:layout_width="@dimen/dp_200"
-            android:layout_height="@dimen/dp_200"
+            android:layout_width="@dimen/dp_146"
+            android:layout_height="@dimen/dp_146"
             android:src="@mipmap/bg_car_connect"
             android:layout_marginTop="@dimen/dp_40"
+            android:padding="@dimen/dp_7"
+            android:background="@drawable/bg_we_chat"
             app:layout_constraintTop_toBottomOf="@+id/setting_others_about_licenses_company"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"/>
@@ -88,8 +83,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_40"
             android:text="@string/setting_others_about_licenses_qr"
-            android:textColor="@color/setting_text_gray"
-            android:textSize="@dimen/sp_25"
+            android:textColor="@color/setting_text_preference"
+            android:textSize="@dimen/sp_26"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/setting_others_about_licenses_qr_img" />
@@ -98,10 +93,9 @@
             android:id="@+id/setting_others_about_licenses_qr_desc"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_10"
             android:text="@string/setting_others_about_licenses_qr_desc"
-            android:textColor="@color/setting_text_gray"
-            android:textSize="@dimen/sp_25"
+            android:textColor="@color/setting_text_preference"
+            android:textSize="@dimen/sp_26"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/setting_others_about_licenses_qr"/>
@@ -112,8 +106,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_20"
             android:text="@string/setting_others_about_licenses_safe"
-            android:textColor="@color/setting_text_gray"
-            android:textSize="@dimen/sp_25"
+            android:textColor="@color/setting_text_preference"
+            android:textSize="@dimen/sp_26"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/setting_others_about_licenses_qr_desc"/>

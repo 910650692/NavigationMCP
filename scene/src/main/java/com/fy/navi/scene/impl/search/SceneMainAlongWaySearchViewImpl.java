@@ -6,6 +6,8 @@ import com.fy.navi.scene.ui.search.SceneMainAlongWaySearchView;
 import com.fy.navi.ui.base.StackManager;
 
 /**
+ * @author baipeng0904
+ * @version \$Revision1.0\$
  * 继承自BaseSceneModel，并封装了与搜索相关的操作，如关闭搜索页面、中止搜索等。
  */
 public class SceneMainAlongWaySearchViewImpl extends BaseSceneModel<SceneMainAlongWaySearchView> implements ISceneMainSearchView {
@@ -13,10 +15,10 @@ public class SceneMainAlongWaySearchViewImpl extends BaseSceneModel<SceneMainAlo
     /**
      * 构造方法，初始化父类和SearchPackage实例。
      *
-     * @param mScreenView 搜索编辑栏视图对象
+     * @param screenView 搜索编辑栏视图对象
      */
-    public SceneMainAlongWaySearchViewImpl(SceneMainAlongWaySearchView mScreenView) {
-        super(mScreenView);
+    public SceneMainAlongWaySearchViewImpl(final SceneMainAlongWaySearchView screenView) {
+        super(screenView);
     }
 
     /**
@@ -28,7 +30,7 @@ public class SceneMainAlongWaySearchViewImpl extends BaseSceneModel<SceneMainAlo
     }
 
     @Override
-    public void onClickQuickSearch(int position) {
+    public void onClickQuickSearch(final int position) {
         mScreenView.onClickQuickSearch(position);
     }
 }

@@ -9,7 +9,7 @@ import com.fy.navi.service.define.user.group.TeamUploadMsgBean;
 import java.util.ArrayList;
 import java.util.Objects;
 
-public class GroupAdapter {
+ public final class GroupAdapter {
 
     private static final String CLASS_API_PKG = Objects.requireNonNull(GroupAdapter.class.getPackage()).getName();
     private static final String CLASS_API_NAME = "GroupAdapterImpl";
@@ -23,22 +23,42 @@ public class GroupAdapter {
         return GroupAdapterHolder.INSTANCE;
     }
 
-    private static class GroupAdapterHolder {
+   private final static class GroupAdapterHolder {
         private static final GroupAdapter INSTANCE = new GroupAdapter();
     }
+
+     /**
+      * 初始化服务
+      */
     public void  initService() {
         mGroupApi.initService();
     }
 
-    public void registerCallBack(String key, GroupAdapterCallback callBack) {
+     /**
+      * 注册回调
+      * @param key
+      * @param callBack
+      */
+    public void registerCallBack(final String key, final GroupAdapterCallback callBack) {
         mGroupApi.registerCallBack(key, callBack);
     }
 
-    public int executeRequest(int requestType, GroupRequestBean request) {
+     /**
+      * 发送请求指令
+      * @param requestType
+      * @param request
+      * @return 返回Int型
+      */
+    public int executeRequest(final int requestType, final GroupRequestBean request) {
         return mGroupApi.executeRequest(requestType, request);
     }
 
-    public int publishTeamInfo(TeamUploadMsgBean uploadMsg) {
+     /**
+      * 上报当前组队信息
+      * @param uploadMsg
+      * @return 返回Int型
+      */
+    public int publishTeamInfo(final TeamUploadMsgBean uploadMsg) {
         return mGroupApi.publishTeamInfo(uploadMsg);
     }
 

@@ -86,6 +86,11 @@ public abstract class BaseSceneView<VB extends ViewDataBinding, VM extends BaseS
         activity.addFragment(fragment, bundle);
     }
 
+    protected void addPoiDetailsFragment(BaseFragment fragment, Bundle bundle) {
+        BaseActivity activity = mStackManager.getCurrentActivity(mMapTypeId.name());
+        activity.addPoiDetailsFragment(fragment, bundle);
+    }
+
     protected void closeAllFragmentsUntilTargetFragment(String className) {
         BaseActivity activity = mStackManager.getCurrentActivity(mMapTypeId.name());
         activity.closeAllFragmentsUntilTargetFragment(className);

@@ -8,39 +8,50 @@ import com.fy.navi.service.define.user.wechat.BLResponseBean;
 
 import java.util.Hashtable;
 
-/**
- * @Description
- * @Author fh
- * @date 2024/12/31
- */
-public class WeChatPackage implements WeChatAdapterCallBack {
+
+public final class WeChatPackage implements WeChatAdapterCallBack {
     private static final String TAG = MapDefaultFinalTag.USER_TRACK_SERVICE_TAG;
     private final WeChatAdapter mWeChatAdapter;
-    private final Hashtable<String, WeChatCallBack> callBacks;
+    private final Hashtable<String, WeChatCallBack> mCallBacks;
 
     private WeChatPackage() {
-        callBacks = new Hashtable<>();
+        mCallBacks = new Hashtable<>();
         mWeChatAdapter = WeChatAdapter.getInstance();
     }
 
+    /**
+     * 初始化微信服务
+     */
     public void initWeChatService() {
         mWeChatAdapter.initWeChatService();
         mWeChatAdapter.registerCallBack("WeChatPackage", this);
     }
 
-    public synchronized void registerCallBack(String key, WeChatCallBack callback) {
-        if (callback != null && !callBacks.contains(callback)) {
-            callBacks.put(key, callback);
+    /**
+     * 注册微信回调
+     * @param key 回调key
+     * @param callback 回调
+     */
+    public synchronized void registerCallBack(final String key, final WeChatCallBack callback) {
+        if (callback != null && !mCallBacks.contains(callback)) {
+            mCallBacks.put(key, callback);
         }
     }
 
-    public void unRegisterCallBack(String callback) {
+    /**
+     * 注销微信回调
+     * @param callback 回调
+     */
+    public void unRegisterCallBack(final String callback) {
         if (callback == null) {
             return;
         }
-        callBacks.remove(callback);
+        mCallBacks.remove(callback);
     }
 
+    /**
+     * 注销微信服务
+     */
     public void unInitWeChatService() {
         mWeChatAdapter.unInitWeChatService();
     }
@@ -59,23 +70,8 @@ public class WeChatPackage implements WeChatAdapterCallBack {
         mWeChatAdapter.sendReqWsPpAutoWeixinQrcode();
     }
 
-    /**
-     * 轮询微信是否扫码绑定，该接口需要上层
-     */
-    public void sendReqQRCodeConfirm(String QRCodeId) {
-        mWeChatAdapter.sendReqQRCodeConfirm(QRCodeId);
-    }
-
-    /**
-     * 解除微信互联
-     */
-    public void sendReqWsPpAutoWeixinUnbind() {
-        mWeChatAdapter.sendReqWsPpAutoWeixinUnbind();
-    }
-
-
     public static WeChatPackage getInstance() {
-        return Helper.ep;
+        return Helper.EP;
     }
 
     /**
@@ -83,8 +79,8 @@ public class WeChatPackage implements WeChatAdapterCallBack {
      * @param result 回调数据
      */
     @Override
-    public void notifyGQRCodeConfirm(BLResponseBean result) {
-        for (WeChatCallBack observer : callBacks.values()) {
+    public void notifyGQRCodeConfirm(final BLResponseBean result) {
+        for (WeChatCallBack observer : mCallBacks.values()) {
             observer.notifyGQRCodeConfirm(result);
         }
     }
@@ -94,8 +90,8 @@ public class WeChatPackage implements WeChatAdapterCallBack {
      * @param result 回调数据
      */
     @Override
-    public void notifyWeixinQrcode(BLResponseBean result) {
-        for (WeChatCallBack observer : callBacks.values()) {
+    public void notifyWeixinQrcode(final BLResponseBean result) {
+        for (WeChatCallBack observer : mCallBacks.values()) {
             observer.notifyWeixinQrcode(result);
         }
     }
@@ -105,14 +101,14 @@ public class WeChatPackage implements WeChatAdapterCallBack {
      * @param result 回调数据
      */
     @Override
-    public void notifyWeixinStatus(BLResponseBean result) {
-        for (WeChatCallBack observer : callBacks.values()) {
+    public void notifyWeixinStatus(final BLResponseBean result) {
+        for (WeChatCallBack observer : mCallBacks.values()) {
             observer.notifyWeixinStatus(result);
         }
     }
 
     private static final class Helper {
-        private static final WeChatPackage ep = new WeChatPackage();
+        private static final WeChatPackage EP = new WeChatPackage();
     }
 
 }

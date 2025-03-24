@@ -45,7 +45,7 @@
             <!--同步按钮-->
             <com.fy.navi.ui.view.SkinButton
                 android:id="@+id/favorite_sync"
-                clickCommand="@{ViewModel.favoriteSync}"
+                clickCommand="@{ViewModel.mFavoriteSync}"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/dp_40"
@@ -73,7 +73,7 @@
                 <!--设置家-->
                 <com.fy.navi.ui.view.SkinRelativeLayout
                     android:id="@+id/rl_favorite_home"
-                    clickCommand="@{ViewModel.goSettingHome}"
+                    clickCommand="@{ViewModel.mGoSettingHome}"
                     android:layout_width="@dimen/dp_417"
                     android:layout_height="@dimen/dp_130"
                     android:background="@drawable/bg_setting_voice"
@@ -109,7 +109,7 @@
                         android:textSize="@dimen/sp_30" />
 
                     <com.fy.navi.ui.view.SkinImageView
-                        clickCommand="@{ViewModel.moreHome}"
+                        clickCommand="@{ViewModel.mMoreHome}"
                         android:id="@+id/more_Home"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -122,7 +122,7 @@
                 <!--设置公司-->
                 <com.fy.navi.ui.view.SkinRelativeLayout
                     android:id="@+id/rl_favorite_company"
-                    clickCommand="@{ViewModel.goSettingCompany}"
+                    clickCommand="@{ViewModel.mGoSettingCompany}"
                     android:layout_width="@dimen/dp_417"
                     android:layout_height="@dimen/dp_130"
                     android:background="@drawable/bg_setting_voice"
@@ -159,7 +159,7 @@
                         android:textSize="@dimen/sp_30" />
 
                     <com.fy.navi.ui.view.SkinImageView
-                        clickCommand="@{ViewModel.moreCompany}"
+                        clickCommand="@{ViewModel.mMoreCompany}"
                         android:id="@+id/more_company"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -170,12 +170,12 @@
                 </com.fy.navi.ui.view.SkinRelativeLayout>
 
                 <com.fy.navi.ui.view.SkinCheckBox
-                    clickCommand="@{ViewModel.showHomeCompanyDisplayed}"
+                    clickCommand="@{ViewModel.mShowHomeCompanyDisplayed}"
                     android:id="@+id/switch_favorite"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:checked="@{ViewModel.isHomeCompanyDisplayed}"
+                    android:checked="@{ViewModel.mIsHomeCompanyDisplayed}"
                     android:layout_marginTop="@dimen/dp_41"
                     android:background="@android:color/transparent"
                     android:button="@drawable/custom_thumb"
@@ -239,10 +239,10 @@
                     app:layout_constraintTop_toBottomOf="@+id/frequent_address_container" />
 
                 <com.fy.navi.ui.view.SkinLinearLayout
-                    clickCommand="@{ViewModel.addFavorite}"
+                    clickCommand="@{ViewModel.mAddFavorite}"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:visibility="@{ViewModel.addVisibility ? View.VISIBLE : View.GONE}"
+                    android:visibility="@{ViewModel.mAddVisibility ? View.VISIBLE : View.GONE}"
                     android:layout_marginEnd="@dimen/dp_41"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="@+id/tv_favorite_title" >
@@ -266,12 +266,12 @@
 
                 <com.fy.navi.ui.view.SkinLinearLayout
                     android:id="@+id/tv_favorite_switch"
-                    android:layout_width="@dimen/dp_700"
-                    android:layout_height="@dimen/dp_120"
+                    android:layout_width="@dimen/dp_579"
+                    android:layout_height="@dimen/dp_90"
                     android:gravity="center_horizontal"
-                    android:layout_marginTop="@dimen/dp_29"
+                    android:layout_marginTop="@dimen/dp_40"
                     android:orientation="horizontal"
-                    android:visibility="@{ViewModel.isEVCar ? View.VISIBLE : View.GONE}"
+                    android:visibility="@{ViewModel.mIsEVCar ? View.VISIBLE : View.GONE}"
                     android:background="@drawable/bg_setting_checkbox"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -285,7 +285,7 @@
                         android:orientation="horizontal">
 
                         <com.fy.navi.ui.view.SkinRadioButton
-                            clickCommand="@{ViewModel.favoriteInfoClick}"
+                            clickCommand="@{ViewModel.mFavoriteInfoClick}"
                             android:id="@+id/navi_broadcast_standard"
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
@@ -294,12 +294,12 @@
                             android:checked="true"
                             android:background="@drawable/bg_setting_checkbox_selector"
                             android:gravity="center"
-                            android:textSize="@dimen/sp_38"
-                            android:textColor="@color/black"
+                            android:textSize="@dimen/sp_34"
+                            android:textColor="@color/white"
                             android:text="@string/favorite_switch_common" />
 
                         <com.fy.navi.ui.view.SkinRadioButton
-                            clickCommand="@{ViewModel.chargingInfoClick}"
+                            clickCommand="@{ViewModel.mChargingInfoClick}"
                             android:id="@+id/navi_broadcast_large"
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
@@ -307,8 +307,8 @@
                             android:button="@null"
                             android:background="@drawable/bg_setting_checkbox_selector"
                             android:gravity="center"
-                            android:textSize="@dimen/sp_38"
-                            android:textColor="@color/black"
+                            android:textSize="@dimen/sp_34"
+                            android:textColor="@color/color_black_70"
                             android:text="@string/favorite_switch_charge" />
                     </com.fy.navi.ui.view.SkinRadioGroup>
 
@@ -319,7 +319,7 @@
                     android:id="@+id/rv_favorite_list"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:visibility="@{ViewModel.dataVisibility ? View.VISIBLE : View.GONE}"
+                    android:visibility="@{ViewModel.mDataVisibility ? View.VISIBLE : View.GONE}"
                     android:layout_marginTop="@dimen/dp_24"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -332,7 +332,7 @@
                     android:orientation="vertical"
                     android:gravity="center"
                     android:layout_marginTop="@dimen/dp_150"
-                    android:visibility="@{ViewModel.tipVisibility ? View.VISIBLE : View.GONE}"
+                    android:visibility="@{ViewModel.mTipVisibility ? View.VISIBLE : View.GONE}"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/tv_favorite_title"  >
@@ -351,7 +351,7 @@
                         android:layout_marginTop="@dimen/dp_20" />
 
                     <com.fy.navi.ui.view.SkinTextView
-                        clickCommand="@{ViewModel.addFavorite}"
+                        clickCommand="@{ViewModel.mAddFavorite}"
                         android:layout_width="@dimen/dp_250"
                         android:layout_height="@dimen/dp_108"
                         android:gravity="center"
@@ -364,131 +364,110 @@
 
                 <com.fy.navi.ui.view.SkinLinearLayout
                     android:layout_width="wrap_content"
-                    android:layout_height="@dimen/dp_400"
+                    android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:gravity="center"
-                    android:visibility="@{ViewModel.chargingVisibility ? View.VISIBLE : View.GONE}"
+                    android:visibility="@{ViewModel.mChargingVisibility ? View.VISIBLE : View.GONE}"
                     android:layout_marginTop="@dimen/dp_180"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/tv_favorite_title"  >
 
-                    <com.fy.navi.ui.view.SkinImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/icon_basic_ic_star_default"/>
-
                     <com.fy.navi.ui.view.SkinTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/favorite_no_charging"
-                        android:textColor="@color/black"
-                        android:textSize="@dimen/sp_42"
+                        android:textColor="@color/color_black_70"
+                        android:textSize="@dimen/sp_30"
                         android:layout_marginTop="@dimen/dp_20" />
 
                     <com.fy.navi.ui.view.SkinTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/favorite_no_charging_tip"
-                        android:textColor="@color/black"
-                        android:textSize="@dimen/sp_42"
+                        android:textColor="@color/color_black_70"
+                        android:textSize="@dimen/sp_30"
                         android:layout_marginTop="@dimen/dp_10" />
 
                     <com.fy.navi.ui.view.SkinTextView
-                        android:layout_width="@dimen/dp_250"
-                        android:layout_height="@dimen/dp_108"
+                        android:layout_width="@dimen/dp_264"
+                        android:layout_height="@dimen/dp_80"
                         android:gravity="center"
                         android:text="@string/account_login"
-                        android:textSize="@dimen/sp_42"
+                        android:textSize="@dimen/sp_30"
                         android:textColor="@color/white"
-                        android:layout_marginTop="@dimen/dp_20"
-                        android:background="@drawable/bg_details_bottom_go_here"/>
+                        android:layout_marginTop="@dimen/dp_28"
+                        android:background="@drawable/bg_setting_preference_select"/>
                 </com.fy.navi.ui.view.SkinLinearLayout>
 
                 <com.fy.navi.ui.view.SkinLinearLayout
                     android:layout_width="wrap_content"
-                    android:layout_height="@dimen/dp_400"
+                    android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:gravity="center"
-                    android:visibility="@{ViewModel.chargingNoDataVisibility ? View.VISIBLE : View.GONE}"
-                    android:layout_marginTop="@dimen/dp_150"
+                    android:visibility="@{ViewModel.mChargingNoDataVisibility ? View.VISIBLE : View.GONE}"
+                    android:layout_marginTop="@dimen/dp_200"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/tv_favorite_title"  >
-
-                    <com.fy.navi.ui.view.SkinImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/icon_basic_ic_star_default"/>
 
                     <com.fy.navi.ui.view.SkinTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/favorite_no_charging_data"
-                        android:textColor="@color/black"
-                        android:textSize="@dimen/sp_42"
-                        android:layout_marginTop="@dimen/dp_20" />
+                        android:textColor="@color/color_black_70"
+                        android:textSize="@dimen/sp_30"
+                        android:layout_marginBottom="@dimen/dp_200"/>
                 </com.fy.navi.ui.view.SkinLinearLayout>
 
                 <com.fy.navi.ui.view.SkinLinearLayout
                     android:layout_width="wrap_content"
-                    android:layout_height="@dimen/dp_400"
+                    android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:gravity="center"
-                    android:visibility="@{ViewModel.chargingRequestFailedVisibility ? View.VISIBLE : View.GONE}"
+                    android:visibility="@{ViewModel.mChargingRequestFailedVisibility ? View.VISIBLE : View.GONE}"
                     android:layout_marginTop="@dimen/dp_180"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/tv_favorite_title"  >
 
-                    <com.fy.navi.ui.view.SkinImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/icon_basic_ic_star_default"/>
-
                     <com.fy.navi.ui.view.SkinTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/favorite_charging_request_fail"
-                        android:textColor="@color/black"
-                        android:textSize="@dimen/sp_42"
-                        android:layout_marginTop="@dimen/dp_20" />
+                        android:textColor="@color/color_black_70"
+                        android:textSize="@dimen/sp_30" />
 
 
                     <com.fy.navi.ui.view.SkinTextView
                         android:layout_width="@dimen/dp_250"
-                        android:layout_height="@dimen/dp_108"
+                        android:layout_height="@dimen/dp_83"
                         android:gravity="center"
                         android:text="@string/route_refresh"
-                        android:textSize="@dimen/sp_42"
+                        android:textSize="@dimen/sp_30"
                         android:textColor="@color/white"
-                        android:layout_marginTop="@dimen/dp_20"
-                        android:background="@drawable/bg_details_bottom_go_here"/>
+                        android:layout_marginTop="@dimen/dp_28"
+                        android:background="@drawable/bg_setting_preference_select"/>
                 </com.fy.navi.ui.view.SkinLinearLayout>
 
                 <com.fy.navi.ui.view.SkinLinearLayout
                     android:layout_width="wrap_content"
-                    android:layout_height="@dimen/dp_400"
+                    android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:gravity="center"
-                    android:visibility="@{ViewModel.chargingOfflineVisibility ? View.VISIBLE : View.GONE}"
-                    android:layout_marginTop="@dimen/dp_150"
+                    android:visibility="@{ViewModel.mChargingOfflineVisibility ? View.VISIBLE : View.GONE}"
+                    android:layout_marginTop="@dimen/dp_250"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/tv_favorite_title"  >
-
-                    <com.fy.navi.ui.view.SkinImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/icon_basic_ic_star_default"/>
 
                     <com.fy.navi.ui.view.SkinTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/favorite_charging_offline"
-                        android:textColor="@color/black"
-                        android:textSize="@dimen/sp_42"
-                        android:layout_marginTop="@dimen/dp_20" />
+                        android:textColor="@color/color_black_70"
+                        android:textSize="@dimen/sp_30"
+                        android:layout_marginBottom="@dimen/dp_250" />
                 </com.fy.navi.ui.view.SkinLinearLayout>
 
             </com.fy.navi.ui.view.SkinConstraintLayout>

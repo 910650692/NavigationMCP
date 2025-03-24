@@ -26,15 +26,19 @@ public class SceneRouteCommonStruct {
 
 
 
-        private final Object value;
+        private final Object mValue;
 
-        RouteDetailsMainAction(Object value) {
-            this.value = value;
+        RouteDetailsMainAction(final Object value) {
+            this.mValue = value;
         }
-
-        public static RouteDetailsMainAction get(Object value) {
+        /**
+         * 获取图片
+         * @param value 值
+         * @return icon
+         * */
+        public static RouteDetailsMainAction get(final Object value) {
             for (RouteDetailsMainAction obj : values()) {
-                if (obj.value.equals(value)) {
+                if (obj.mValue.equals(value)) {
                     return obj;
                 }
             }

@@ -52,6 +52,22 @@ public class ParseJsonUtils {
      * @param jsonFilePath 必须是asset目录下
      * @return 对象实体
      */
+    public static JSONObject parseJsonObject(String jsonFilePath) {
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject = new JSONObject(parseJsonFile(jsonFilePath));
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+        return jsonObject;
+    }
+
+    /**
+     * 解析该路径下的文件为对象.
+     *
+     * @param jsonFilePath 必须是asset目录下
+     * @return 对象实体
+     */
     public static <T> T parseJsonFile(String jsonFilePath, Class<T> clz) {
         byte[] result = FileUtils.getInstance().getAssetFileContent(jsonFilePath);
         String json = new String(result, StandardCharsets.UTF_8);
@@ -71,6 +87,7 @@ public class ParseJsonUtils {
             jsonBeanBuild.append(jsonObject.get(key));
         } catch (JSONException e) {
             Logger.e(TAG, "解析出错, key:" + key, e);
+            return "EMPTY";
         }
         return jsonBeanBuild.toString();
     }

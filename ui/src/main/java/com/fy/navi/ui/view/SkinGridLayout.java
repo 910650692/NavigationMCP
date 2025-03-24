@@ -5,15 +5,15 @@ import android.util.AttributeSet;
 import android.widget.GridLayout;
 
 public class SkinGridLayout extends GridLayout {
-    public SkinGridLayout(Context context) {
+    public SkinGridLayout(final Context context) {
         super(context);
     }
 
-    public SkinGridLayout(Context context, AttributeSet attrs) {
+    public SkinGridLayout(final Context context, final AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public SkinGridLayout(Context context, AttributeSet attrs, int defStyleAttr) {
+    public SkinGridLayout(final Context context, final AttributeSet attrs, final int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 }

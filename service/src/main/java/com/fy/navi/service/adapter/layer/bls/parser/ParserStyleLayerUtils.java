@@ -12,6 +12,7 @@ import com.autonavi.gbl.layer.model.TrafficLightCountDownStatus;
 import com.autonavi.gbl.map.layer.LayerItem;
 import com.autonavi.gbl.map.layer.model.QuadrantType;
 import com.fy.navi.service.MapDefaultFinalTag;
+import com.fy.navi.service.adapter.layer.bls.refix.LayerTextureMarkerInfo;
 import com.fy.navi.service.adapter.navi.NaviAdapter;
 import com.fy.navi.service.define.layer.bls.MarkerInfoBean;
 import com.fy.navi.service.define.layer.bls.RasterImageBean;

@@ -3,50 +3,58 @@ package com.fy.navi.service.define.route;
 
 import java.io.Serializable;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 public class RouteChargeStationDetailInfo implements Serializable {
-    public int segmentIdx;
-    public short direction;
-    public Coord2DDouble show;
-    public Coord2DDouble projective;
-    public String poiID;
-    public String name;
-    public String brandName;
-    public int maxPower;
-    public short chargePercent;
-    public int chargeTime;
-    public int remainingCapacity;
-    public double remainingPercent;
-    public int index;
+    private int mSegmentIdx;
+    private short mDirection;
+    private Coord2DDouble mShow;
+    private Coord2DDouble mProjective;
+    private String mPoiID;
+    private String mName;
+    private String mBrandName;
+    private int mMaxPower;
+    private short mChargePercent;
+    private int mChargeTime;
+    private int mRemainingCapacity;
+    private double mRemainingPercent;
+    private int mIndex;
 
     public RouteChargeStationDetailInfo() {
-        this.segmentIdx = 0;
-        this.direction = 0;
-        this.show = new Coord2DDouble();
-        this.projective = new Coord2DDouble();
-        this.poiID = "";
-        this.name = "";
-        this.brandName = "";
-        this.maxPower = 0;
-        this.chargePercent = 0;
-        this.chargeTime = 0;
-        this.remainingCapacity = 0;
-        this.remainingPercent = 0.0;
-        this.index = -1;
+        this.mSegmentIdx = 0;
+        this.mDirection = 0;
+        this.mShow = new Coord2DDouble();
+        this.mProjective = new Coord2DDouble();
+        this.mPoiID = "";
+        this.mName = "";
+        this.mBrandName = "";
+        this.mMaxPower = 0;
+        this.mChargePercent = 0;
+        this.mChargeTime = 0;
+        this.mRemainingCapacity = 0;
+        this.mRemainingPercent = 0.0;
+        this.mIndex = -1;
     }
 
-    public RouteChargeStationDetailInfo(int segmentIdxLiteObj, short directionLiteObj, Coord2DDouble showLiteObj, Coord2DDouble projectiveLiteObj, String poiIDLiteObj, String nameLiteObj, String brandNameLiteObj, int maxPowerLiteObj, short chargePercentLiteObj, int chargeTimeLiteObj, int remainingCapacityLiteObj, double remainingPercentLiteObj, int indexLiteObj) {
-        this.segmentIdx = segmentIdxLiteObj;
-        this.direction = directionLiteObj;
-        this.show = showLiteObj;
-        this.projective = projectiveLiteObj;
-        this.poiID = poiIDLiteObj;
-        this.name = nameLiteObj;
-        this.brandName = brandNameLiteObj;
-        this.maxPower = maxPowerLiteObj;
-        this.chargePercent = chargePercentLiteObj;
-        this.chargeTime = chargeTimeLiteObj;
-        this.remainingCapacity = remainingCapacityLiteObj;
-        this.remainingPercent = remainingPercentLiteObj;
-        this.index = indexLiteObj;
+    public RouteChargeStationDetailInfo(final int segmentIdxLiteObj, final short directionLiteObj, final Coord2DDouble showLiteObj
+            , final Coord2DDouble projectiveLiteObj, final String poiIDLiteObj, final String nameLiteObj, final String brandNameLiteObj
+            , final int maxPowerLiteObj, final short chargePercentLiteObj, final int chargeTimeLiteObj, final int remainingCapacityLiteObj
+            , final double remainingPercentLiteObj, final int indexLiteObj) {
+        this.mSegmentIdx = segmentIdxLiteObj;
+        this.mDirection = directionLiteObj;
+        this.mShow = showLiteObj;
+        this.mProjective = projectiveLiteObj;
+        this.mPoiID = poiIDLiteObj;
+        this.mName = nameLiteObj;
+        this.mBrandName = brandNameLiteObj;
+        this.mMaxPower = maxPowerLiteObj;
+        this.mChargePercent = chargePercentLiteObj;
+        this.mChargeTime = chargeTimeLiteObj;
+        this.mRemainingCapacity = remainingCapacityLiteObj;
+        this.mRemainingPercent = remainingPercentLiteObj;
+        this.mIndex = indexLiteObj;
     }
 }

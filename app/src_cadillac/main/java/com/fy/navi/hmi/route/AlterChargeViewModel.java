@@ -8,7 +8,7 @@ import com.fy.navi.hmi.route.alternative.BaseAlterChargeViewModel;
 
 public class AlterChargeViewModel extends BaseAlterChargeViewModel {
 
-    public AlterChargeViewModel(@NonNull Application application) {
+    public AlterChargeViewModel(final @NonNull Application application) {
         super(application);
     }
 }

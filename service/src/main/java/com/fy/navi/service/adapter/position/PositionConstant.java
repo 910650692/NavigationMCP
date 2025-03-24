@@ -8,7 +8,7 @@ import com.fy.navi.service.AppContext;
 
 public interface PositionConstant {
     /*** 是否为后端融合 **/
-    boolean isDrBack = DeviceUtils.isCar(AppContext.mApplication);
+    boolean isDrBack = DeviceUtils.isCar(AppContext.getInstance().getMApplication());
 
     interface GearType {
         int GEAR_NEUTRAL = 1;//空挡

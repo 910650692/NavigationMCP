@@ -6,12 +6,7 @@ import com.fy.navi.service.define.search.PoiInfoEntity;
 import java.util.ArrayList;
 import java.util.Objects;
 
-/**
- * @Description
- * @Author fh
- * @date 2024/12/26
- */
-public class BehaviorAdapter {
+final public class BehaviorAdapter {
     private static final String CLASS_API_PKG = Objects.requireNonNull(BehaviorAdapter.class.getPackage()).getName();
     private static final String CLASS_API_NAME = "BehaviorAdapterImpl";
     private IBehaviorApi mBehaviorApi;
@@ -20,75 +15,147 @@ public class BehaviorAdapter {
         mBehaviorApi = (IBehaviorApi) AdapterConfig.getObject(CLASS_API_PKG, CLASS_API_NAME);
     }
 
+    /**
+     * initBehaviorService
+     */
     public void initBehaviorService() {
         mBehaviorApi.initBehaviorService();
     }
 
-    public void registerCallBack(String key, BehaviorAdapterCallBack callBack) {
+    /**
+     * registerCallBack
+     * @param key
+     * @param callBack
+     */
+    public void registerCallBack(final String key, final BehaviorAdapterCallBack callBack) {
         mBehaviorApi.registerCallBack(key, callBack);
     }
 
-    public void removeCallBack(String key) {
+    /**
+     * removeCallBack
+     * @param key
+     */
+    public void removeCallBack(final String key) {
         mBehaviorApi.unRegisterCallback(key);
     }
 
+    /**
+     * unInitBehaviorService
+     */
     public void unInitBehaviorService() {
         mBehaviorApi.unInitBehaviorService();
     }
 
+    /**
+     * getSimpleFavoriteIds
+     * @return int[]
+     */
     public int[] getSimpleFavoriteIds() {
         return mBehaviorApi.getSimpleFavoriteIds();
     }
 
+    /**
+     * getHomeFavoriteInfo
+     * @return entity
+     */
     public PoiInfoEntity getHomeFavoriteInfo() {
         return mBehaviorApi.getHomeFavoriteInfo();
     }
 
+    /**
+     * getCompanyFavoriteInfo
+     * @return entity
+     */
     public PoiInfoEntity getCompanyFavoriteInfo() {
         return mBehaviorApi.getCompanyFavoriteInfo();
     }
 
+    /**
+     * getSimpleFavoriteList
+     * @return list
+     */
     public  ArrayList<PoiInfoEntity> getSimpleFavoriteList() {
         return mBehaviorApi.getSimpleFavoriteList();
     }
 
-    public PoiInfoEntity getFavorite(PoiInfoEntity baseInfo) {
+    /**
+     * getFavorite
+     * @param baseInfo
+     * @return entity
+     */
+    public PoiInfoEntity getFavorite(final PoiInfoEntity baseInfo) {
        return mBehaviorApi.getFavorite(baseInfo);
     }
 
-    public String addFavorite(PoiInfoEntity poiInfo) {
+    /**
+     * addFavorite
+     * @param poiInfo
+     * @return string
+     */
+    public String addFavorite(final PoiInfoEntity poiInfo) {
         return mBehaviorApi.addFavorite(poiInfo);
     }
 
-    public int getFavoriteListAsync(int type, boolean sorted) {
+    /**
+     * getFavoriteListAsync
+     * @param type
+     * @param sorted
+     * @return string
+     */
+    public int getFavoriteListAsync(final int type, final boolean sorted) {
        return mBehaviorApi.getFavoriteListAsync(type, sorted);
     }
 
-    public String removeFavorite(PoiInfoEntity poiInfo) {
+    /**
+     * removeFavorite
+     * @param poiInfo
+     * @return string
+     */
+    public String removeFavorite(final PoiInfoEntity poiInfo) {
        return mBehaviorApi.removeFavorite(poiInfo);
     }
 
-    public String isFavorite(PoiInfoEntity poiInfo) {
+    /**
+     * isFavorite
+     * @param poiInfo
+     * @return string
+     */
+    public String isFavorite(final PoiInfoEntity poiInfo) {
        return mBehaviorApi.isFavorite(poiInfo);
     }
 
-    public String topFavorite(PoiInfoEntity baseInfo, boolean bSetTop) {
-        return mBehaviorApi.topFavorite(baseInfo, bSetTop);
+    /**
+     * topFavorite
+     * @param baseInfo
+     * @param isSetTop
+     * @return string
+     */
+    public String topFavorite(final PoiInfoEntity baseInfo, final boolean isSetTop) {
+        return mBehaviorApi.topFavorite(baseInfo, isSetTop);
     }
 
-    public String modifyFavorite(PoiInfoEntity detailInfo, String customName) {
+    /**
+     * modifyFavorite
+     * @param detailInfo
+     * @param customName
+     * @return string
+     */
+    public String modifyFavorite(final PoiInfoEntity detailInfo, final String customName) {
        return mBehaviorApi.modifyFavorite(detailInfo, customName);
     }
 
+    /**
+     * startSync
+     */
     public void startSync() {
         mBehaviorApi.startSync();
     }
 
     public static BehaviorAdapter getInstance() {
-        return Helper.ra;
+        return Helper.BA;
     }
 
     private static final class Helper {
-        private static final BehaviorAdapter ra = new BehaviorAdapter();
+        private static final BehaviorAdapter BA = new BehaviorAdapter();
     }
 }

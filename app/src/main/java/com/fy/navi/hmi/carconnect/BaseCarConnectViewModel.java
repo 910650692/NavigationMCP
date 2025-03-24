@@ -10,16 +10,11 @@ import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.ui.action.Action;
 import com.fy.navi.ui.base.BaseViewModel;
 
-/**
- * @Description TODO
- * @Author fh
- * @date 2024/12/24
- */
 public class BaseCarConnectViewModel extends BaseViewModel<CarConnectFragment, CarConnectModel> {
 
     private static final String TAG = MapDefaultFinalTag.ACCOUNT_HMI_TAG;
 
-    public BaseCarConnectViewModel(@NonNull Application application) {
+    public BaseCarConnectViewModel(final @NonNull Application application) {
         super(application);
     }
 
@@ -29,34 +24,44 @@ public class BaseCarConnectViewModel extends BaseViewModel<CarConnectFragment, C
     }
 
     //返回上一页
-    public Action carConnectBack = this::closeCurrentFragment;
+    public Action mCarConnectBack = this::closeCurrentFragment;
 
-    public Action openHelpFirst = () -> {
+    public Action mOpenHelpFirst = () -> {
         openCommonHelp(0);
     };
 
-    public Action openHelpSecond = () -> {
+    public Action mOpenHelpSecond = () -> {
         openCommonHelp(1);
     };
 
-    public Action openHelpThird = () -> {
+    public Action mOpenHelpThird = () -> {
         openCommonHelp(2);
     };
 
-    public Action openHelpForth = () -> {
+    public Action mOpenHelpForth = () -> {
         openCommonHelp(3);
     };
 
-    public void openCommonHelp(int position){
-        Bundle bundle = new Bundle();
+    /**
+     * open common help
+     * @param position
+     */
+    public void openCommonHelp(final int position){
+        final Bundle bundle = new Bundle();
         bundle.putInt("position", position);
         addFragment(new CarConnectHelpFragment(), bundle);
     }
 
+    /**
+     * clear use info
+     */
     public void clearUserInfo(){
         mView.clearUserInfo();
     }
 
+    /**
+     * close current fragment
+     */
     public void closeCurrentFragment(){
         closeFragment(true);
     }

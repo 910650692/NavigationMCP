@@ -2,17 +2,18 @@ package com.fy.navi.scene.impl.favorite;
 
 import com.fy.navi.scene.BaseSceneModel;
 import com.fy.navi.scene.api.favorite.ISceneCollectView;
-import com.fy.navi.scene.api.search.ISceneQuickSearchView;
 import com.fy.navi.scene.ui.favorite.SceneCollectView;
 import com.fy.navi.ui.base.StackManager;
 
 /**
+ * @author baipeng0904
+ * @version \$Revision1.0\$
  * 继承自BaseSceneModel，并封装了与搜索相关的操作，如关闭搜索页面、中止搜索等。
  */
 public class SceneCollectViewImpl extends BaseSceneModel<SceneCollectView> implements ISceneCollectView {
 
-    public SceneCollectViewImpl(SceneCollectView mScreenView) {
-        super(mScreenView);
+    public SceneCollectViewImpl(final SceneCollectView screenView) {
+        super(screenView);
     }
 
     @Override

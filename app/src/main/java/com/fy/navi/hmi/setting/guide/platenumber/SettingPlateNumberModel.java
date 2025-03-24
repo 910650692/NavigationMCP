@@ -6,16 +6,16 @@ import com.fy.navi.ui.base.BaseModel;
 
 public class SettingPlateNumberModel extends BaseModel<SettingPlateNumberViewModel> implements SettingCallback {
 
-    private final SettingPackage settingPackage;
+    private final SettingPackage mSettingPackage;
 
 
     public SettingPlateNumberModel() {
-        settingPackage = SettingPackage.getInstance();
+        mSettingPackage = SettingPackage.getInstance();
     }
     @Override
     public void onCreate() {
         super.onCreate();
-        settingPackage.registerCallBack("SettingPlateNumberModel",this);
+        mSettingPackage.registerCallBack("SettingPlateNumberModel",this);
     }
 
     @Override
@@ -24,11 +24,11 @@ public class SettingPlateNumberModel extends BaseModel<SettingPlateNumberViewMod
     }
 
     @Override
-    public void notify(int eventType, int exCode) {
+    public void notify(final int eventType, final int exCode) {
 
     }
 
     public String getPlateNumber() {
-        return settingPackage.getConfigKeyPlateNumber();
+        return mSettingPackage.getConfigKeyPlateNumber();
     }
 }

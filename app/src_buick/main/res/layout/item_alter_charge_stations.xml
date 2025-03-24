@@ -11,75 +11,167 @@
     <com.fy.navi.ui.view.SkinConstraintLayout
         android:id="@+id/layout_charge_station"
         android:layout_width="@dimen/dp_640"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_20"
-        android:background="@drawable/bg_limit_city_button">
+        android:layout_height="@dimen/dp_154">
+
+        <com.fy.navi.ui.view.SkinTextView
+            android:id="@+id/tv_charge_station_number"
+            android:textColor="@color/black"
+            android:textSize="@dimen/sp_30"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:singleLine="true"
+            android:ellipsize="end"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.05"
+            tool:text="1"/>
 
         <com.fy.navi.ui.view.SkinTextView
             android:id="@+id/tv_charge_station_name"
             android:textColor="@color/black"
-            android:textSize="@dimen/sp_24"
-            android:layout_width="@dimen/dp_400"
+            android:textSize="@dimen/sp_34"
+            android:layout_width="@dimen/dp_230"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_20"
+            android:layout_marginStart="@dimen/dp_72"
+            android:layout_marginTop="@dimen/dp_18"
             android:singleLine="true"
             android:ellipsize="end"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             android:text="@string/route_selected_charge_station"/>
 
+        <com.fy.navi.ui.view.SkinConstraintLayout
+            android:id="@+id/ly_charge_fast"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/dp_46"
+            android:layout_marginTop="@dimen/dp_82"
+            android:layout_marginStart="@dimen/dp_72"
+            android:background="@color/color_80_ffffff"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <com.fy.navi.ui.view.SkinTextView
+                android:id="@+id/tv_charge_fast"
+                android:layout_width="@dimen/dp_46"
+                android:layout_height="@dimen/dp_46"
+                android:textColor="@color/route_cricle_dot_gerrn_color"
+                android:textSize="@dimen/sp_26"
+                android:text="@string/charge_title_fast"
+                android:background="@color/color_15_b2afc2"
+                android:gravity="center"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.fy.navi.ui.view.SkinTextView
+                android:id="@+id/tv_charge_fast_number"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:textSize="@dimen/sp_26"
+                android:layout_marginTop="@dimen/dp_6"
+                android:layout_marginStart="@dimen/dp_50"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                tool:text="66"/>
+
+            <com.fy.navi.ui.view.SkinTextView
+                android:id="@+id/tv_charge_fast_total_number"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/color_50_000000"
+                android:textSize="@dimen/sp_26"
+                android:layout_marginStart="@dimen/dp_6"
+                app:layout_constraintTop_toTopOf="@+id/tv_charge_fast_number"
+                app:layout_constraintStart_toEndOf="@+id/tv_charge_fast_number"
+                tool:text="/88"/>
+
+        </com.fy.navi.ui.view.SkinConstraintLayout>
+
+        <com.fy.navi.ui.view.SkinConstraintLayout
+            android:id="@+id/ly_charge_slow"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/dp_46"
+            android:layout_marginTop="@dimen/dp_82"
+            android:layout_marginStart="@dimen/dp_16"
+            android:background="@color/color_80_ffffff"
+            app:layout_constraintStart_toEndOf="@+id/ly_charge_fast"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <com.fy.navi.ui.view.SkinTextView
+                android:id="@+id/tv_charge_slow"
+                android:layout_width="@dimen/dp_46"
+                android:layout_height="@dimen/dp_46"
+                android:textColor="@color/route_charge_orange_color"
+                android:textSize="@dimen/sp_26"
+                android:text="@string/charge_title_slow"
+                android:background="@color/color_15_b2afc2"
+                android:gravity="center"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.fy.navi.ui.view.SkinTextView
+                android:id="@+id/tv_charge_slow_number"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:textSize="@dimen/sp_26"
+                android:layout_marginTop="@dimen/dp_6"
+                android:layout_marginStart="@dimen/dp_50"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                tool:text="66"/>
+
+            <com.fy.navi.ui.view.SkinTextView
+                android:id="@+id/tv_charge_slow_total_number"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/color_50_000000"
+                android:textSize="@dimen/sp_26"
+                android:layout_marginStart="@dimen/dp_6"
+                app:layout_constraintTop_toTopOf="@+id/tv_charge_slow_number"
+                app:layout_constraintStart_toEndOf="@+id/tv_charge_slow_number"
+                tool:text="/88"/>
+
+        </com.fy.navi.ui.view.SkinConstraintLayout>
+
         <com.fy.navi.ui.view.SkinTextView
             android:id="@+id/tv_charge_station_distance"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/black"
-            android:textSize="@dimen/sp_20"
-            app:layout_constraintStart_toStartOf="@+id/tv_charge_station_name"
-            app:layout_constraintTop_toBottomOf="@+id/tv_charge_station_name"
-            tool:text="--公里"/>
-
-        <com.fy.navi.ui.view.SkinTextView
-            android:id="@+id/tv_charge_station_fast"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/black"
-            android:textSize="@dimen/sp_20"
-            android:layout_marginStart="@dimen/dp_20"
-            app:layout_constraintStart_toEndOf="@+id/tv_charge_station_distance"
-            app:layout_constraintTop_toTopOf="@+id/tv_charge_station_distance"
-            tool:text="快 -/20"/>
-
-        <com.fy.navi.ui.view.SkinTextView
-            android:id="@+id/tv_charge_station_slow"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/black"
-            android:textSize="@dimen/sp_20"
-            android:layout_marginStart="@dimen/dp_20"
-            app:layout_constraintStart_toEndOf="@+id/tv_charge_station_fast"
-            app:layout_constraintTop_toTopOf="@+id/tv_charge_station_fast"
-            tool:text="慢 -/20"/>
+            android:textColor="@color/color_70_000000"
+            android:textSize="@dimen/sp_30"
+            android:layout_marginTop="@dimen/dp_86"
+            android:layout_marginStart="@dimen/dp_12"
+            app:layout_constraintStart_toEndOf="@+id/ly_charge_slow"
+            app:layout_constraintTop_toTopOf="parent"
+            tool:text="12 公里"/>
 
         <com.fy.navi.ui.view.SkinTextView
             android:id="@+id/tv_charge_station_cost"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/black"
-            android:textSize="@dimen/sp_20"
+            android:textColor="@color/color_70_000000"
+            android:textSize="@dimen/sp_30"
+            android:layout_marginTop="@dimen/dp_24"
             android:layout_marginEnd="@dimen/dp_20"
-            app:layout_constraintTop_toTopOf="@+id/tv_charge_station_name"
-            app:layout_constraintEnd_toEndOf="parent"
-            tool:text="￥ 1.65/度"/>
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/button_alter"
+            tool:text="￥1.65/度"/>
 
         <com.fy.navi.ui.view.SkinTextView
             android:id="@+id/button_alter"
-            android:textColor="@color/black"
+            android:textColor="@color/white"
             android:textSize="@dimen/sp_30"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/dp_20"
+            android:layout_width="@dimen/dp_158"
+            android:layout_height="@dimen/dp_52"
+            android:gravity="center"
+            android:layout_marginTop="@dimen/dp_18"
+            android:layout_marginEnd="@dimen/dp_30"
             android:text="@string/route_alter"
-            app:layout_constraintTop_toBottomOf="@+id/tv_charge_station_cost"
+            android:background="@drawable/bg_route_replace"
+            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 
 

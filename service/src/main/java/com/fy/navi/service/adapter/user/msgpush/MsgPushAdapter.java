@@ -9,7 +9,7 @@ import com.fy.navi.service.define.user.msgpush.MsgPushInfo;
 import java.util.ArrayList;
 import java.util.Objects;
 
-public class MsgPushAdapter {
+final public class MsgPushAdapter {
 
     private static final String CLASS_API_PKG = Objects.requireNonNull(MsgPushAdapter.class.getPackage()).getName();
     private static final String CLASS_API_NAME = "MsgPushAdapterImpl";
@@ -19,18 +19,33 @@ public class MsgPushAdapter {
         mMsgPushApi = (IMsgPushApi) AdapterConfig.getObject(CLASS_API_PKG, CLASS_API_NAME);
     }
 
+    /**
+     * initService
+     */
     public void initService() {
         mMsgPushApi.initService();
     }
 
-    public void registerCallBack(String key, MsgPushAdapterCallback callBack) {
+    /**
+     * registerCallBack
+     * @param key
+     * @param callBack
+     */
+    public void registerCallBack(final String key, final MsgPushAdapterCallback callBack) {
         mMsgPushApi.registerCallBack(key, callBack);
     }
 
-    public void startListen(String userId) {
+    /**
+     * startListen
+     * @param userId
+     */
+    public void startListen(final String userId) {
         mMsgPushApi.startListen(userId);
     }
 
+    /**
+     * stopListen
+     */
     public void stopListen() {
         mMsgPushApi.stopListen();
     }
@@ -47,35 +62,63 @@ public class MsgPushAdapter {
         return mMsgPushApi.getAimRoutePushMessages();
     }
 
-    public void updateAimRouteEndPoiName(long msgId, String msgName) {
+    /**
+     * updateAimRouteEndPoiName
+     * @param msgId
+     * @param msgName
+     */
+    public void updateAimRouteEndPoiName(final long msgId, final String msgName) {
         mMsgPushApi.updateAimRouteEndPoiName(msgId, msgName);
     }
 
-    public long sendReqSendToPhone(MsgPushRequestInfo pAosRequest) {
-        return mMsgPushApi.sendReqSendToPhone(pAosRequest);
+    /**
+     * sendReqSendToPhone
+     * @param aosRequest
+     * @return long
+     */
+    public long sendReqSendToPhone(final MsgPushRequestInfo aosRequest) {
+        return mMsgPushApi.sendReqSendToPhone(aosRequest);
     }
 
-    public MsgPushResponseInfo request(long deviceId, GeoPoint userLocation) {
+    /**
+     * request
+     * @param deviceId
+     * @param userLocation
+     * @return MsgPushResponseInfo
+     */
+    public MsgPushResponseInfo request(final long deviceId, final GeoPoint userLocation) {
         return mMsgPushApi.request(deviceId,userLocation);
     }
 
+    /**
+     * abort
+     */
     public void abort() {
         mMsgPushApi.abort();
     }
 
-    public void abort(long taskId) {
+    /**
+     * abort
+     * @param taskId
+     */
+    public void abort(final long taskId) {
         mMsgPushApi.abort(taskId);
     }
 
     public static MsgPushAdapter getInstance() {
-        return Helper.mpa;
+        return Helper.MPA;
     }
 
-    public long sendReqWsTserviceInternalLinkAutoReport (MsgPushRequestInfo pAosRequest) {
-        return mMsgPushApi.sendReqWsTserviceInternalLinkAutoReport(pAosRequest);
+    /**
+     * sendReqWsTserviceInternalLinkAutoReport
+     * @param aosRequest
+     * @return long
+     */
+    public long sendReqWsTserviceInternalLinkAutoReport(final MsgPushRequestInfo aosRequest) {
+        return mMsgPushApi.sendReqWsTserviceInternalLinkAutoReport(aosRequest);
     }
 
     private static final class Helper {
-        private static final MsgPushAdapter mpa = new MsgPushAdapter();
+        private static final MsgPushAdapter MPA = new MsgPushAdapter();
     }
 }

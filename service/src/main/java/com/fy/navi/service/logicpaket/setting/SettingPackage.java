@@ -3,74 +3,92 @@ package com.fy.navi.service.logicpaket.setting;
 
 import android.text.TextUtils;
 
+import com.android.utils.ResourceUtils;
+import com.android.utils.ToastUtils;
 import com.android.utils.log.Logger;
+import com.fy.navi.service.R;
 import com.fy.navi.service.adapter.setting.SettingAdapter;
 import com.fy.navi.service.adapter.setting.SettingAdapterCallback;
 import com.fy.navi.service.define.layer.CarModeType;
 import com.fy.navi.service.define.map.GmBizUserFavoritePoint;
+import com.fy.navi.service.define.map.MapMode;
 import com.fy.navi.service.define.map.MapTypeId;
 import com.fy.navi.service.define.route.RoutePreferenceID;
 import com.fy.navi.service.define.setting.SettingController;
-import com.fy.navi.service.define.setting.SimpleFavoriteItemBean;
 import com.fy.navi.service.greendao.favorite.Favorite;
 import com.fy.navi.service.greendao.favorite.FavoriteManager;
 import com.fy.navi.service.greendao.setting.SettingManager;
 import com.fy.navi.service.logicpaket.layer.LayerPackage;
+import com.fy.navi.service.logicpaket.map.MapPackage;
+import com.fy.navi.service.logicpaket.navi.NaviPackage;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
-public class SettingPackage implements SettingAdapterCallback {
+public final class SettingPackage implements SettingAdapterCallback {
     public static final String TAG = SettingPackage.class.getSimpleName();
 
-    private final SettingAdapter settingAdapter;
-    private final Hashtable<String, SettingCallback> callbackList;
-    private final SettingManager settingManager;
-    private final Hashtable<String, SettingChangeCallback> changeCallbackList;
-    private final LayerPackage layerPackage;
+    private final SettingAdapter mSettingAdapter;
+    private final Hashtable<String, SettingCallback> mCallbackList;
+    private final SettingManager mSettingManager;
+    private final Hashtable<String, SettingChangeCallback> mChangeCallbackList;
+    private final LayerPackage mLayerPackage;
+    private final FavoriteManager mFavoriteManager;
 
     public static SettingPackage getInstance() {
-        return SInstanceHolder.sInstance;
+        return SInstanceHolder.INSTANCE;
     }
 
     private static final class SInstanceHolder {
-        static final SettingPackage sInstance = new SettingPackage();
+        static final SettingPackage INSTANCE = new SettingPackage();
     }
 
     private SettingPackage() {
-        callbackList = new Hashtable<>();
-        changeCallbackList = new Hashtable<>();
-        settingAdapter = SettingAdapter.getInstance();
-        settingManager = new SettingManager();
-        settingManager.init();
-        layerPackage = LayerPackage.getInstance();
+        mCallbackList = new Hashtable<>();
+        mChangeCallbackList = new Hashtable<>();
+        mSettingAdapter = SettingAdapter.getInstance();
+        mSettingManager = new SettingManager();
+        mSettingManager.init();
+        mFavoriteManager = FavoriteManager.getInstance();
+        mFavoriteManager.init();
+        mLayerPackage = LayerPackage.getInstance();
     }
 
-    public synchronized void registerCallBack(String key, SettingCallback callback) {
-        if (callback != null && !callbackList.contains(callback)) {
-            callbackList.put(key, callback);
+    /**
+     * 注册回调
+     * @param key 回调key
+     * @param callback 回调
+     */
+    public synchronized void registerCallBack(final String key, final SettingCallback callback) {
+        if (callback != null && !mCallbackList.contains(callback)) {
+            mCallbackList.put(key, callback);
         }
     }
 
     /**
      * 监听设置项实时变化
+     * @param key 回调key
+     * @param callback 回调
      */
-    public synchronized void setSettingChangeCallback(String key, SettingChangeCallback callback) {
-        if (callback != null && !changeCallbackList.contains(callback)) {
-            changeCallbackList.put(key, callback);
+    public synchronized void setSettingChangeCallback(final String key, final SettingChangeCallback callback) {
+        if (callback != null && !mChangeCallbackList.contains(callback)) {
+            mChangeCallbackList.put(key, callback);
         }
     }
 
 
+    /**
+     * 设置初始化
+     */
     public void init() {
-        settingAdapter.initSetting();
-        settingAdapter.registerCallback("SettingPackage", this);
+        mSettingAdapter.initSetting();
+        mSettingAdapter.registerCallback("SettingPackage", this);
     }
 
     @Override
-    public void notify(int eventType, int exCode) {
-        for (SettingCallback callback : callbackList.values()) {
+    public void notify(final int eventType, final int exCode) {
+        for (SettingCallback callback : mCallbackList.values()) {
             callback.notify(eventType, exCode);
         }
     }
@@ -78,26 +96,21 @@ public class SettingPackage implements SettingAdapterCallback {
 
     /**
      * 从数据库获取数据
+     * @param key 数据库key
+     * @return 数据库value
      */
-    public String getValueFromDB(String key) {
-        return settingManager.getValueByKey(key);
+    public String getValueFromDB(final String key) {
+        return mSettingManager.getValueByKey(key);
     }
-
-    /**
-     * 设置数据到数据库
-     */
-    public void setValueByKey(String key, String value) {
-        settingManager.insertOrReplace(key, value);
-    }
-
 
     /**
      * 设置算路偏好
+     * @param routePreferenceID 算路偏好
      */
-    public void setRoutePreference(RoutePreferenceID routePreferenceID) {
-        if (settingAdapter.setConfigKeyPlanPref(routePreferenceID) == 0) {
-            settingManager.insertOrReplace(SettingController.KEY_SETTING_GUIDE_ROUTE_PREFERENCE, formatPreferenceToDB(routePreferenceID));
-            for (SettingChangeCallback callback : changeCallbackList.values()) {
+    public void setRoutePreference(final RoutePreferenceID routePreferenceID) {
+        if (mSettingAdapter.setConfigKeyPlanPref(routePreferenceID) == 0) {
+            mSettingManager.insertOrReplace(SettingController.KEY_SETTING_GUIDE_ROUTE_PREFERENCE, formatPreferenceToDB(routePreferenceID));
+            for (SettingChangeCallback callback : mChangeCallbackList.values()) {
                 callback.onSettingChanged(SettingController.KEY_SETTING_GUIDE_ROUTE_PREFERENCE, formatPreferenceToDB(routePreferenceID));
             }
         }
@@ -108,7 +121,7 @@ public class SettingPackage implements SettingAdapterCallback {
      * @param routePreference 算路偏好
      * @return 数据库对应的算路偏好
      */
-    public String formatPreferenceToDB(RoutePreferenceID routePreference) {
+    public String formatPreferenceToDB(final RoutePreferenceID routePreference) {
         return switch (routePreference) {
             case PREFERENCE_RECOMMEND -> SettingController.VALUE_ROUTE_PREFERENCE_RECOMMEND;
             case PREFERENCE_AVOIDCONGESTION -> SettingController.VALUE_ROUTE_PREFERENCE_AVOID_CONGESTION;
@@ -121,7 +134,8 @@ public class SettingPackage implements SettingAdapterCallback {
             case PREFERENCE_AVOIDCONGESTION_AND_NOTHIGHWAY -> SettingController.VALUE_ROUTE_PREFERENCE_AVOID_CONGESTION_AND_NOT_HIGHWAY;
             case PREFERENCE_AVOIDCONGESTION_AND_FIRSTHIGHWAY -> SettingController.VALUE_ROUTE_PREFERENCE_AVOID_CONGESTION_AND_FIRST_HIGHWAY;
             case PREFERENCE_LESSCHARGE_AND_NOTHIGHWAY -> SettingController.VALUE_ROUTE_PREFERENCE_LESS_CHARGE_AND_NOT_HIGHWAY;
-            case PREFERENCE_AVOIDCONGESTION_AND_LESSCHARGE_AND_NOTHIGHWAY -> SettingController.VALUE_ROUTE_PREFERENCE_AVOID_CONGESTION_AND_LESS_CHARGE_AND_NOT_HIGHWAY;
+            case PREFERENCE_AVOIDCONGESTION_AND_LESSCHARGE_AND_NOTHIGHWAY ->
+                    SettingController.VALUE_ROUTE_PREFERENCE_AVOID_CONGESTION_AND_LESS_CHARGE_AND_NOT_HIGHWAY;
             case PREFERENCE_AVOIDCONGESTION_AND_FIRSTMAINROAD -> SettingController.VALUE_ROUTE_PREFERENCE_AVOID_CONGESTION_AND_FIRST_MAIN_ROAD;
             case PREFERENCE_AVOIDCONGESTION_AND_FASTESTSPEED -> SettingController.VALUE_ROUTE_PREFERENCE_AVOID_CONGESTION_AND_FASTEST_SPEED;
         };
@@ -133,13 +147,14 @@ public class SettingPackage implements SettingAdapterCallback {
      * @return 算路偏好
      */
     public RoutePreferenceID getRoutePreference() {
-        RoutePreferenceID routePreferenceID;
-        String data  = settingManager.getValueByKey(SettingController.KEY_SETTING_GUIDE_ROUTE_PREFERENCE);
+        final RoutePreferenceID routePreferenceID;
+        final String data  = mSettingManager.getValueByKey(SettingController.KEY_SETTING_GUIDE_ROUTE_PREFERENCE);
         if (!data.isEmpty()) {
             routePreferenceID = getRoutePreferenceFromDB();
         } else {
-            routePreferenceID = settingAdapter.getConfigKeyPlanPref();
-            settingManager.insertOrReplace(SettingController.KEY_SETTING_GUIDE_ROUTE_PREFERENCE, formatPreferenceToDB(routePreferenceID));
+            mSettingAdapter.setConfigKeyPlanPref(RoutePreferenceID.PREFERENCE_RECOMMEND);
+            routePreferenceID = mSettingAdapter.getConfigKeyPlanPref();
+            mSettingManager.insertOrReplace(SettingController.KEY_SETTING_GUIDE_ROUTE_PREFERENCE, formatPreferenceToDB(routePreferenceID));
         }
         return routePreferenceID;
     }
@@ -149,7 +164,7 @@ public class SettingPackage implements SettingAdapterCallback {
      * @return 算路偏好
      */
     private RoutePreferenceID getRoutePreferenceFromDB() {
-        String routePreference = settingManager.getValueByKey(SettingController.KEY_SETTING_GUIDE_ROUTE_PREFERENCE);
+        final String routePreference = mSettingManager.getValueByKey(SettingController.KEY_SETTING_GUIDE_ROUTE_PREFERENCE);
         return switch (routePreference) {
             case SettingController.VALUE_ROUTE_PREFERENCE_AVOID_CONGESTION ->
                     RoutePreferenceID.PREFERENCE_AVOIDCONGESTION;
@@ -183,15 +198,27 @@ public class SettingPackage implements SettingAdapterCallback {
 
     /**
      * 设置避开限行状态  false 关闭 true 打开
+     * @param avoidLimit false 关闭 true 打开
+     * @return code 0 成功 其他 失败
      */
-    public void setConfigKeyAvoidLimit(boolean avoidLimit) {
-        int code = settingAdapter.setConfigKeyAvoidLimit(avoidLimit);
+    public int setConfigKeyAvoidLimit(final boolean avoidLimit) {
+        final int code = mSettingAdapter.setConfigKeyAvoidLimit(avoidLimit);
         if (code == 0) {
-            settingManager.insertOrReplace(SettingController.KEY_SETTING_GUIDE_AVOID_LIMIT, String.valueOf(avoidLimit));
-            for (SettingChangeCallback callback : changeCallbackList.values()) {
+            if (avoidLimit) {
+                ToastUtils.Companion.getInstance().showCustomToastView(
+                        ResourceUtils.Companion.getInstance().getString(R.string.avoid_limit_open_success));
+            }
+            mSettingManager.insertOrReplace(SettingController.KEY_SETTING_GUIDE_AVOID_LIMIT, String.valueOf(avoidLimit));
+            for (SettingChangeCallback callback : mChangeCallbackList.values()) {
                 callback.onSettingChanged(SettingController.KEY_SETTING_GUIDE_AVOID_LIMIT, String.valueOf(avoidLimit));
             }
+        } else {
+            if (avoidLimit) {
+                ToastUtils.Companion.getInstance().showCustomToastView(
+                        ResourceUtils.Companion.getInstance().getString(R.string.avoid_limit_open_failed));
+            }
         }
+        return code;
     }
 
     /**
@@ -199,26 +226,26 @@ public class SettingPackage implements SettingAdapterCallback {
      * @return false 关闭 true 打开
      */
     public boolean getConfigKeyAvoidLimit() {
-        boolean avoidLimit;
-        String value = settingManager.getValueByKey(SettingController.KEY_SETTING_GUIDE_AVOID_LIMIT);
+        boolean avoidLimit = false;
+        final String value = mSettingManager.getValueByKey(SettingController.KEY_SETTING_GUIDE_AVOID_LIMIT);
 
         if (!TextUtils.isEmpty(value)) {
             avoidLimit = Boolean.parseBoolean(value);
         } else {
-            avoidLimit = settingAdapter.getConfigKeyAvoidLimit();
-            settingManager.insertOrReplace(SettingController.KEY_SETTING_GUIDE_AVOID_LIMIT, String.valueOf(avoidLimit));
+            setConfigKeyAvoidLimit(avoidLimit);
         }
         return avoidLimit;
     }
 
     /**
      * 设置车牌号
+     * @param carNumber 车牌号
      */
-    public void setConfigKeyPlateNumber(String carNumber) {
-        int code = settingAdapter.setConfigKeyPlateNumber(carNumber);
+    public void setConfigKeyPlateNumber(final String carNumber) {
+        final int code = mSettingAdapter.setConfigKeyPlateNumber(carNumber);
         if (code == 0) {
-            settingManager.insertOrReplace(SettingController.KEY_SETTING_GUIDE_VEHICLE_NUMBER, carNumber);
-            for (SettingChangeCallback callback : changeCallbackList.values()) {
+            mSettingManager.insertOrReplace(SettingController.KEY_SETTING_GUIDE_VEHICLE_NUMBER, carNumber);
+            for (SettingChangeCallback callback : mChangeCallbackList.values()) {
                 callback.onSettingChanged(SettingController.KEY_SETTING_GUIDE_VEHICLE_NUMBER,carNumber);
             }
         }
@@ -229,13 +256,12 @@ public class SettingPackage implements SettingAdapterCallback {
      * @return 车牌号
      */
     public String getConfigKeyPlateNumber() {
-        String carNumber;
-        String value = settingManager.getValueByKey(SettingController.KEY_SETTING_GUIDE_VEHICLE_NUMBER);
+        String carNumber = "";
+        final String value = mSettingManager.getValueByKey(SettingController.KEY_SETTING_GUIDE_VEHICLE_NUMBER);
         if (!TextUtils.isEmpty(value)) {
             carNumber = value;
         } else {
-            carNumber = settingAdapter.getConfigKeyPlateNumber();
-            settingManager.insertOrReplace(SettingController.KEY_SETTING_GUIDE_VEHICLE_NUMBER, carNumber);
+            setConfigKeyPlateNumber(carNumber);
         }
         return carNumber;
     }
@@ -244,9 +270,9 @@ public class SettingPackage implements SettingAdapterCallback {
      * 打开或者关闭自动比例尺
      * @param isOpen true 打开 false 关闭
      */
-    public void setAutoScale(boolean isOpen) {
-        settingManager.insertOrReplace(SettingController.KEY_SETTING_AUTO_SCALE, String.valueOf(isOpen));
-        for (SettingChangeCallback callback : changeCallbackList.values()) {
+    public void setAutoScale(final boolean isOpen) {
+        mSettingManager.insertOrReplace(SettingController.KEY_SETTING_AUTO_SCALE, String.valueOf(isOpen));
+        for (SettingChangeCallback callback : mChangeCallbackList.values()) {
             callback.onSettingChanged(SettingController.KEY_SETTING_AUTO_SCALE, String.valueOf(isOpen));
         }
     }
@@ -256,9 +282,11 @@ public class SettingPackage implements SettingAdapterCallback {
      * @return true 打开 false 关闭
      */
     public boolean getAutoScale() {
-        String value = settingManager.getValueByKey(SettingController.KEY_SETTING_AUTO_SCALE);
+        String value = mSettingManager.getValueByKey(SettingController.KEY_SETTING_AUTO_SCALE);
         if (TextUtils.isEmpty(value)) {
+            LayerPackage.getInstance().openDynamicLevel(MapTypeId.MAIN_SCREEN_MAIN_MAP, true);
             value = SettingController.VALUE_GENERIC_TRUE;
+            setAutoScale(true);
         }
         return Boolean.parseBoolean(value);
     }
@@ -267,21 +295,22 @@ public class SettingPackage implements SettingAdapterCallback {
      * 设置是否开启车道级导航
      * @param isGuideVehicle true 打开 false 关闭
      */
-    public void setGuideVehicle(boolean isGuideVehicle) {
-        settingManager.insertOrReplace(SettingController.KEY_SETTING_GUIDE_VEHICLE_GUIDE, String.valueOf(isGuideVehicle));
-        for (SettingChangeCallback callback : changeCallbackList.values()) {
+    public void setGuideVehicle(final boolean isGuideVehicle) {
+        mSettingManager.insertOrReplace(SettingController.KEY_SETTING_GUIDE_VEHICLE_GUIDE, String.valueOf(isGuideVehicle));
+        for (SettingChangeCallback callback : mChangeCallbackList.values()) {
             callback.onSettingChanged(SettingController.KEY_SETTING_GUIDE_VEHICLE_GUIDE, String.valueOf(isGuideVehicle));
         }
     }
 
     /**
      * 设置是否开启车道级导航
-     * @reture  true 打开 false 关闭
+     * @return true 打开 false 关闭
      */
     public boolean getGuideVehicle() {
         String value = getValueFromDB(SettingController.KEY_SETTING_GUIDE_VEHICLE_GUIDE);
         if (TextUtils.isEmpty(value)) {
-            value = SettingController.VALUE_GENERIC_FALSE;
+            value = SettingController.VALUE_GENERIC_TRUE;
+            setGuideVehicle(true);
         }
         return Boolean.parseBoolean(value);
     }
@@ -290,21 +319,22 @@ public class SettingPackage implements SettingAdapterCallback {
      * 设置是否开启补能计划
      * @param isChargingPlan true 打开 false 关闭
      */
-    public void setChargingPlan(boolean isChargingPlan) {
-        settingManager.insertOrReplace(SettingController.KEY_SETTING_GUIDE_CHARGING_PLAN, String.valueOf(isChargingPlan));
-        for (SettingChangeCallback callback : changeCallbackList.values()) {
+    public void setChargingPlan(final boolean isChargingPlan) {
+        mSettingManager.insertOrReplace(SettingController.KEY_SETTING_GUIDE_CHARGING_PLAN, String.valueOf(isChargingPlan));
+        for (SettingChangeCallback callback : mChangeCallbackList.values()) {
             callback.onSettingChanged(SettingController.KEY_SETTING_GUIDE_CHARGING_PLAN, String.valueOf(isChargingPlan));
         }
     }
 
     /**
      * 设置是否开启补能计划
-     * @reture  true 打开 false 关闭
+     * @return true 打开 false 关闭
      */
     public boolean getChargingPlan() {
         String value = getValueFromDB(SettingController.KEY_SETTING_GUIDE_CHARGING_PLAN);
         if (TextUtils.isEmpty(value)) {
-            value = SettingController.VALUE_GENERIC_FALSE;
+            value = SettingController.VALUE_GENERIC_TRUE;
+            setChargingPlan(true);
         }
         return Boolean.parseBoolean(value);
     }
@@ -313,34 +343,41 @@ public class SettingPackage implements SettingAdapterCallback {
      * 设置显示收藏点
      * @param isFavoritePoint true 打开 false 关闭
      */
-    public void setFavoritePoint(boolean isFavoritePoint) {
-        settingManager.insertOrReplace(SettingController.KEY_SETTING_FAVORITE_POINT, String.valueOf(isFavoritePoint));
-        for (SettingChangeCallback callback : changeCallbackList.values()) {
+    public void setFavoritePoint(final boolean isFavoritePoint) {
+        mSettingManager.insertOrReplace(SettingController.KEY_SETTING_FAVORITE_POINT, String.valueOf(isFavoritePoint));
+        for (SettingChangeCallback callback : mChangeCallbackList.values()) {
             callback.onSettingChanged(SettingController.KEY_SETTING_FAVORITE_POINT, String.valueOf(isFavoritePoint));
         }
     }
 
-    public void hideOrShowFavoriteOnMainMap(boolean isFavoritePoint) {
+    /**
+     * 设置显示收藏点
+     * @param isFavoritePoint true 打开 false 关闭
+     */
+    public void hideOrShowFavoriteOnMainMap(final boolean isFavoritePoint) {
         if (isFavoritePoint) {
-            List<Favorite> tmpList = FavoriteManager.getInstance().getFavoriteNotTop();
+            final List<Favorite> tmpList = mFavoriteManager.getValueByCommonName(0);
             Logger.i(TAG,"hideOrShowFavoriteOnMainMap:" + tmpList.size());
-            ArrayList<GmBizUserFavoritePoint> list = new ArrayList<>();
+            final ArrayList<GmBizUserFavoritePoint> list = new ArrayList<>();
             tmpList.forEach((favorite -> {
-                GmBizUserFavoritePoint point = new GmBizUserFavoritePoint();
-                point.favoriteType = favorite.commonName;
-                point.lon = favorite.point_x;
-                point.lat = favorite.point_y;
+                final GmBizUserFavoritePoint point = new GmBizUserFavoritePoint();
+                point.favoriteType = favorite.getMCommonName();
+                point.lon = favorite.getMPointX();
+                point.lat = favorite.getMPointY();
                 list.add(point);
             }));
-            layerPackage.updateFavoriteMain(MapTypeId.MAIN_SCREEN_MAIN_MAP, list);
+            mLayerPackage.updateFavoriteMain(MapTypeId.MAIN_SCREEN_MAIN_MAP, list);
         } else {
-            layerPackage.clearFavoriteMain(MapTypeId.MAIN_SCREEN_MAIN_MAP);
+            mLayerPackage.clearFavoriteMain(MapTypeId.MAIN_SCREEN_MAIN_MAP);
         }
     }
 
+    /**
+     * 设置显隐收藏点
+     */
     public void hideOrShowFavoriteOnMainMap() {
-        String isFavoritePointStr = settingManager.getValueByKey(SettingController.KEY_SETTING_FAVORITE_POINT);
-        boolean isFavoritePoint = TextUtils.equals(isFavoritePointStr, "true");
+        final String isFavoritePointStr = mSettingManager.getValueByKey(SettingController.KEY_SETTING_FAVORITE_POINT);
+        final boolean isFavoritePoint = TextUtils.equals(isFavoritePointStr, "true");
         hideOrShowFavoriteOnMainMap(isFavoritePoint);
     }
 
@@ -352,7 +389,8 @@ public class SettingPackage implements SettingAdapterCallback {
     public boolean getFavoritePoint() {
         String value = getValueFromDB(SettingController.KEY_SETTING_FAVORITE_POINT);
         if (TextUtils.isEmpty(value)) {
-            value = SettingController.VALUE_GENERIC_FALSE;
+            value = SettingController.VALUE_GENERIC_TRUE;
+            setFavoritePoint(true);
         }
         return Boolean.parseBoolean(value);
     }
@@ -361,9 +399,9 @@ public class SettingPackage implements SettingAdapterCallback {
      * 设置显示充电桩
      * @param isChargingStation true 打开 false 关闭
      */
-    public void setChargingStation(boolean isChargingStation) {
-        settingManager.insertOrReplace(SettingController.KEY_SETTING_CHARGING_STATION, String.valueOf(isChargingStation));
-        for (SettingChangeCallback callback : changeCallbackList.values()) {
+    public void setChargingStation(final boolean isChargingStation) {
+        mSettingManager.insertOrReplace(SettingController.KEY_SETTING_CHARGING_STATION, String.valueOf(isChargingStation));
+        for (SettingChangeCallback callback : mChangeCallbackList.values()) {
             callback.onSettingChanged(SettingController.KEY_SETTING_CHARGING_STATION, String.valueOf(isChargingStation));
         }
     }
@@ -375,7 +413,8 @@ public class SettingPackage implements SettingAdapterCallback {
     public boolean getChargingStation() {
         String value = getValueFromDB(SettingController.KEY_SETTING_CHARGING_STATION);
         if (TextUtils.isEmpty(value)) {
-            value = SettingController.VALUE_GENERIC_FALSE;
+            value = SettingController.VALUE_GENERIC_TRUE;
+            setChargingStation(true);
         }
         return Boolean.parseBoolean(value);
     }
@@ -384,26 +423,28 @@ public class SettingPackage implements SettingAdapterCallback {
      * 设置车标模式
      * @param carMode 车标模式 0: 2D默认车标  1: 3D默认车标 2: 3D骨骼车标  3: 3D车速车标
      */
-    public void setCarMode(int carMode) {
+    public void setCarMode(final int carMode) {
         switch (carMode) {
             case CarModeType.CAR_MODEL_TYPE_2D :
             case CarModeType.CAR_MODEL_TYPE_3D :
-                settingManager.insertOrReplace(SettingController.KEY_SETTING_CAR_LOGO, SettingController.VALUE_NAVI_CAR_LOGO_DEFAULT);
-                for (SettingChangeCallback callback : changeCallbackList.values()) {
+                mSettingManager.insertOrReplace(SettingController.KEY_SETTING_CAR_LOGO, SettingController.VALUE_NAVI_CAR_LOGO_DEFAULT);
+                for (SettingChangeCallback callback : mChangeCallbackList.values()) {
                     callback.onSettingChanged(SettingController.KEY_SETTING_CAR_LOGO, SettingController.VALUE_NAVI_CAR_LOGO_DEFAULT);
                 }
                 break;
             case CarModeType.CAR_MODEL_TYPE_SKELETON :
-                settingManager.insertOrReplace(SettingController.KEY_SETTING_CAR_LOGO, SettingController.VALUE_NAVI_CAR_LOGO_BRAND);
-                for (SettingChangeCallback callback : changeCallbackList.values()) {
+                mSettingManager.insertOrReplace(SettingController.KEY_SETTING_CAR_LOGO, SettingController.VALUE_NAVI_CAR_LOGO_BRAND);
+                for (SettingChangeCallback callback : mChangeCallbackList.values()) {
                     callback.onSettingChanged(SettingController.KEY_SETTING_CAR_LOGO, SettingController.VALUE_NAVI_CAR_LOGO_BRAND);
                 }
                 break;
             case CarModeType.CAR_MODEL_TYPE_SPEED :
-                settingManager.insertOrReplace(SettingController.KEY_SETTING_CAR_LOGO, SettingController.VALUE_NAVI_CAR_LOGO_SPEED);
-                for (SettingChangeCallback callback : changeCallbackList.values()) {
+                mSettingManager.insertOrReplace(SettingController.KEY_SETTING_CAR_LOGO, SettingController.VALUE_NAVI_CAR_LOGO_SPEED);
+                for (SettingChangeCallback callback : mChangeCallbackList.values()) {
                     callback.onSettingChanged(SettingController.KEY_SETTING_CAR_LOGO, SettingController.VALUE_NAVI_CAR_LOGO_SPEED);
                 }
+                break;
+            default:
                 break;
         }
 
@@ -415,7 +456,7 @@ public class SettingPackage implements SettingAdapterCallback {
      */
     public int getCarMode() {
         int carMode = 0;
-        String data = getValueFromDB(SettingController.KEY_SETTING_CAR_LOGO);
+        final String data = getValueFromDB(SettingController.KEY_SETTING_CAR_LOGO);
         if (!TextUtils.isEmpty(data)) {
             switch (data) {
                 case SettingController.VALUE_NAVI_CAR_LOGO_DEFAULT :
@@ -426,21 +467,12 @@ public class SettingPackage implements SettingAdapterCallback {
                 case SettingController.VALUE_NAVI_CAR_LOGO_SPEED :
                     carMode = CarModeType.CAR_MODEL_TYPE_SPEED;
                     break;
+                default:
+                    break;
             }
         } else {
-            carMode = layerPackage.getCarMode(MapTypeId.MAIN_SCREEN_MAIN_MAP);
-            switch (carMode) {
-                case CarModeType.CAR_MODEL_TYPE_2D :
-                case CarModeType.CAR_MODEL_TYPE_3D :
-                    settingManager.insertOrReplace(SettingController.KEY_SETTING_CAR_LOGO, SettingController.VALUE_NAVI_CAR_LOGO_DEFAULT);
-                    break;
-                case CarModeType.CAR_MODEL_TYPE_SKELETON :
-                    settingManager.insertOrReplace(SettingController.KEY_SETTING_CAR_LOGO, SettingController.VALUE_NAVI_CAR_LOGO_BRAND);
-                    break;
-                case CarModeType.CAR_MODEL_TYPE_SPEED :
-                    settingManager.insertOrReplace(SettingController.KEY_SETTING_CAR_LOGO, SettingController.VALUE_NAVI_CAR_LOGO_SPEED);
-                    break;
-            }
+            LayerPackage.getInstance().setCarMode(MapTypeId.MAIN_SCREEN_MAIN_MAP, CarModeType.CAR_MODEL_TYPE_2D);
+            setCarMode(CarModeType.CAR_MODEL_TYPE_2D);
         }
         return carMode;
     }
@@ -449,15 +481,15 @@ public class SettingPackage implements SettingAdapterCallback {
      * 设置地图文字大小
      * @param isStandard true 标准字号 false 大号字
      */
-    public void setMapViewTextSize(boolean isStandard) {
+    public void setMapViewTextSize(final boolean isStandard) {
         if (isStandard) {
-            settingManager.insertOrReplace(SettingController.KEY_SETTING_TEXT_SIZE, SettingController.VALUE_NAVI_TEXT_SIZE_STANDARD);
-            for (SettingChangeCallback callback : changeCallbackList.values()) {
+            mSettingManager.insertOrReplace(SettingController.KEY_SETTING_TEXT_SIZE, SettingController.VALUE_NAVI_TEXT_SIZE_STANDARD);
+            for (SettingChangeCallback callback : mChangeCallbackList.values()) {
                 callback.onSettingChanged(SettingController.KEY_SETTING_TEXT_SIZE, SettingController.VALUE_NAVI_TEXT_SIZE_STANDARD);
             }
         } else {
-            settingManager.insertOrReplace(SettingController.KEY_SETTING_TEXT_SIZE, SettingController.VALUE_NAVI_TEXT_SIZE_LARGE);
-            for (SettingChangeCallback callback : changeCallbackList.values()) {
+            mSettingManager.insertOrReplace(SettingController.KEY_SETTING_TEXT_SIZE, SettingController.VALUE_NAVI_TEXT_SIZE_LARGE);
+            for (SettingChangeCallback callback : mChangeCallbackList.values()) {
                 callback.onSettingChanged(SettingController.KEY_SETTING_TEXT_SIZE, SettingController.VALUE_NAVI_TEXT_SIZE_LARGE);
             }
         }
@@ -470,7 +502,9 @@ public class SettingPackage implements SettingAdapterCallback {
     public boolean getMapViewTextSize() {
         String value = getValueFromDB(SettingController.KEY_SETTING_TEXT_SIZE);
         if (TextUtils.isEmpty(value)) {
+            MapPackage.getInstance().setMapViewTextSize(MapTypeId.MAIN_SCREEN_MAIN_MAP, 1f);
             value = SettingController.VALUE_NAVI_TEXT_SIZE_STANDARD;
+            setMapViewTextSize(true);
         }
         return switch (value) {
             case SettingController.VALUE_NAVI_TEXT_SIZE_STANDARD -> true;
@@ -483,28 +517,30 @@ public class SettingPackage implements SettingAdapterCallback {
      * 设置导航播报模式
      * @param broadcastMode 导航播报模式 1：经典简洁播报； 2：新手详细播报，默认态； 3：极简播报 ；默认值2
      */
-    public void setConfigKeyBroadcastMode(int broadcastMode) {
-        int code = settingAdapter.setConfigKeyBroadcastMode(broadcastMode);
+    public void setConfigKeyBroadcastMode(final int broadcastMode) {
+        final int code = mSettingAdapter.setConfigKeyBroadcastMode(broadcastMode);
         if (code == 0) {
             switch (broadcastMode) {
                 case 1 :
-                        settingManager.insertOrReplace(SettingController.KEY_SETTING_NAVI_BROADCAST, SettingController.VALUE_NAVI_BROADCAST_CONCISE);
-                        for (SettingChangeCallback callback : changeCallbackList.values()) {
+                        mSettingManager.insertOrReplace(SettingController.KEY_SETTING_NAVI_BROADCAST, SettingController.VALUE_NAVI_BROADCAST_CONCISE);
+                        for (SettingChangeCallback callback : mChangeCallbackList.values()) {
                             callback.onSettingChanged(SettingController.KEY_SETTING_NAVI_BROADCAST, SettingController.VALUE_NAVI_BROADCAST_CONCISE);
                         }
                         break;
                 case 2 :
-                        settingManager.insertOrReplace(SettingController.KEY_SETTING_NAVI_BROADCAST, SettingController.VALUE_NAVI_BROADCAST_DETAIL);
-                        for (SettingChangeCallback callback : changeCallbackList.values()) {
+                        mSettingManager.insertOrReplace(SettingController.KEY_SETTING_NAVI_BROADCAST, SettingController.VALUE_NAVI_BROADCAST_DETAIL);
+                        for (SettingChangeCallback callback : mChangeCallbackList.values()) {
                             callback.onSettingChanged(SettingController.KEY_SETTING_NAVI_BROADCAST, SettingController.VALUE_NAVI_BROADCAST_DETAIL);
                         }
                         break;
                 case 3 :
-                        settingManager.insertOrReplace(SettingController.KEY_SETTING_NAVI_BROADCAST, SettingController.VALUE_NAVI_BROADCAST_SIMPLE);
-                        for (SettingChangeCallback callback : changeCallbackList.values()) {
+                        mSettingManager.insertOrReplace(SettingController.KEY_SETTING_NAVI_BROADCAST, SettingController.VALUE_NAVI_BROADCAST_SIMPLE);
+                        for (SettingChangeCallback callback : mChangeCallbackList.values()) {
                             callback.onSettingChanged(SettingController.KEY_SETTING_NAVI_BROADCAST, SettingController.VALUE_NAVI_BROADCAST_SIMPLE);
                         }
                         break;
+                default:
+                    break;
             }
         }
     }
@@ -515,7 +551,7 @@ public class SettingPackage implements SettingAdapterCallback {
      */
     public int getConfigKeyBroadcastMode() {
         int broadcastMode = 2;
-        String data = getValueFromDB(SettingController.KEY_SETTING_NAVI_BROADCAST);
+        final String data = getValueFromDB(SettingController.KEY_SETTING_NAVI_BROADCAST);
         if (!TextUtils.isEmpty(data)) {
             broadcastMode = switch (data) {
                 case SettingController.VALUE_NAVI_BROADCAST_CONCISE -> 1;
@@ -524,18 +560,8 @@ public class SettingPackage implements SettingAdapterCallback {
                 default -> broadcastMode;
             };
         } else {
-            broadcastMode = settingAdapter.getConfigKeyBroadcastMode();
-            switch (broadcastMode) {
-                case 1 :
-                    settingManager.insertOrReplace(SettingController.KEY_SETTING_NAVI_BROADCAST, SettingController.VALUE_NAVI_BROADCAST_CONCISE);
-                    break;
-                case 2 :
-                    settingManager.insertOrReplace(SettingController.KEY_SETTING_NAVI_BROADCAST, SettingController.VALUE_NAVI_BROADCAST_DETAIL);
-                    break;
-                case 3 :
-                    settingManager.insertOrReplace(SettingController.KEY_SETTING_NAVI_BROADCAST, SettingController.VALUE_NAVI_BROADCAST_SIMPLE);
-                    break;
-            }
+            NaviPackage.getInstance().updateBroadcastParam(broadcastMode, true);
+            setConfigKeyBroadcastMode(broadcastMode);
         }
         return broadcastMode;
     }
@@ -544,11 +570,11 @@ public class SettingPackage implements SettingAdapterCallback {
      * 设置巡航播报前方路况
      * @param roadWarn 巡航播报前方路况 true：开启 false：关闭
      */
-    public void setConfigKeyRoadWarn(boolean roadWarn) {
-        int code = settingAdapter.setConfigKeyRoadWarn(roadWarn);
+    public void setConfigKeyRoadWarn(final boolean roadWarn) {
+        final int code = mSettingAdapter.setConfigKeyRoadWarn(roadWarn);
         if (code == 0 && getCruiseBroadcastOpen()) {
-            settingManager.insertOrReplace(SettingController.KEY_SETTING_BROADCAST_ROAD_CONDITIONS, String.valueOf(roadWarn));
-            for (SettingChangeCallback callback : changeCallbackList.values()) {
+            mSettingManager.insertOrReplace(SettingController.KEY_SETTING_BROADCAST_ROAD_CONDITIONS, String.valueOf(roadWarn));
+            for (SettingChangeCallback callback : mChangeCallbackList.values()) {
                 callback.onSettingChanged(SettingController.KEY_SETTING_BROADCAST_ROAD_CONDITIONS, String.valueOf(roadWarn));
             }
         }
@@ -559,13 +585,13 @@ public class SettingPackage implements SettingAdapterCallback {
      * @return 巡航播报前方路况 true：开启 false：关闭
      */
     public boolean getConfigKeyRoadWarn() {
-        boolean roadWarn;
-        String value = settingManager.getValueByKey(SettingController.KEY_SETTING_BROADCAST_ROAD_CONDITIONS);
+        final boolean roadWarn;
+        final String value = mSettingManager.getValueByKey(SettingController.KEY_SETTING_BROADCAST_ROAD_CONDITIONS);
         if (!TextUtils.isEmpty(value)) {
             roadWarn = Boolean.parseBoolean(value);
         } else {
-            roadWarn = settingAdapter.getConfigKeyRoadWarn();
-            settingManager.insertOrReplace(SettingController.KEY_SETTING_BROADCAST_ROAD_CONDITIONS, String.valueOf(roadWarn));
+            roadWarn = getCruiseBroadcastOpen();
+            setConfigKeyRoadWarn(roadWarn);
         }
         return roadWarn;
     }
@@ -574,9 +600,9 @@ public class SettingPackage implements SettingAdapterCallback {
      * 设置巡航播报开关
      * @param isOpen true：开启 false：关闭
      */
-    public void setCruiseBroadcastOpen(boolean isOpen) {
-        settingManager.insertOrReplace(SettingController.KEY_SETTING_CRUISE_BROADCAST, String.valueOf(isOpen));
-        for (SettingChangeCallback callback : changeCallbackList.values()) {
+    public void setCruiseBroadcastOpen(final boolean isOpen) {
+        mSettingManager.insertOrReplace(SettingController.KEY_SETTING_CRUISE_BROADCAST, String.valueOf(isOpen));
+        for (SettingChangeCallback callback : mChangeCallbackList.values()) {
             callback.onSettingChanged(SettingController.KEY_SETTING_CRUISE_BROADCAST, String.valueOf(isOpen));
         }
     }
@@ -586,9 +612,10 @@ public class SettingPackage implements SettingAdapterCallback {
      * @return true：开启 false：关闭
      */
     public boolean getCruiseBroadcastOpen() {
-        String value = settingManager.getValueByKey(SettingController.KEY_SETTING_CRUISE_BROADCAST);
+        String value = mSettingManager.getValueByKey(SettingController.KEY_SETTING_CRUISE_BROADCAST);
         if (TextUtils.isEmpty(value)) {
             value = SettingController.VALUE_GENERIC_TRUE;
+            setCruiseBroadcastOpen(true);
         }
         return Boolean.parseBoolean(value);
     }
@@ -597,11 +624,11 @@ public class SettingPackage implements SettingAdapterCallback {
      * 设置巡航播报电子眼播报
      * @param safeBroadcast 巡航播报电子眼播报 true：开启 false：关闭
      */
-    public void setConfigKeySafeBroadcast(boolean safeBroadcast) {
-        int code = settingAdapter.setConfigKeySafeBroadcast(safeBroadcast);
+    public void setConfigKeySafeBroadcast(final boolean safeBroadcast) {
+        final int code = mSettingAdapter.setConfigKeySafeBroadcast(safeBroadcast);
         if (code == 0 && getCruiseBroadcastOpen()) {
-            settingManager.insertOrReplace(SettingController.KEY_SETTING_BROADCAST_ELECTRONIC_EYE, String.valueOf(safeBroadcast));
-            for (SettingChangeCallback callback : changeCallbackList.values()) {
+            mSettingManager.insertOrReplace(SettingController.KEY_SETTING_BROADCAST_ELECTRONIC_EYE, String.valueOf(safeBroadcast));
+            for (SettingChangeCallback callback : mChangeCallbackList.values()) {
                 callback.onSettingChanged(SettingController.KEY_SETTING_BROADCAST_ELECTRONIC_EYE, String.valueOf(safeBroadcast));
             }
         }
@@ -612,13 +639,13 @@ public class SettingPackage implements SettingAdapterCallback {
      * @return 巡航播报电子眼播报 true：开启 false：关闭
      */
     public boolean getConfigKeySafeBroadcast() {
-        boolean safeBroadcast;
-        String value = settingManager.getValueByKey(SettingController.KEY_SETTING_BROADCAST_ELECTRONIC_EYE);
+        final boolean safeBroadcast;
+        final String value = mSettingManager.getValueByKey(SettingController.KEY_SETTING_BROADCAST_ELECTRONIC_EYE);
         if (!TextUtils.isEmpty(value)) {
             safeBroadcast = Boolean.parseBoolean(value);
         } else {
-            safeBroadcast = settingAdapter.getConfigKeySafeBroadcast();
-            settingManager.insertOrReplace(SettingController.KEY_SETTING_BROADCAST_ELECTRONIC_EYE, String.valueOf(safeBroadcast));
+            safeBroadcast = getCruiseBroadcastOpen();
+            setConfigKeySafeBroadcast(safeBroadcast);
         }
         return safeBroadcast;
     }
@@ -627,11 +654,11 @@ public class SettingPackage implements SettingAdapterCallback {
      * 设置巡航播报安全提醒
      * @param driveWarn 巡航播报安全提醒 true：开启 false：关闭
      */
-    public void setConfigKeyDriveWarn(boolean driveWarn) {
-        int code = settingAdapter.setConfigKeyDriveWarn(driveWarn);
+    public void setConfigKeyDriveWarn(final boolean driveWarn) {
+        final int code = mSettingAdapter.setConfigKeyDriveWarn(driveWarn);
         if (code == 0 && getCruiseBroadcastOpen()) {
-            settingManager.insertOrReplace(SettingController.KEY_SETTING_BROADCAST_SAFE_REMINDER, String.valueOf(driveWarn));
-            for (SettingChangeCallback callback : changeCallbackList.values()) {
+            mSettingManager.insertOrReplace(SettingController.KEY_SETTING_BROADCAST_SAFE_REMINDER, String.valueOf(driveWarn));
+            for (SettingChangeCallback callback : mChangeCallbackList.values()) {
                 callback.onSettingChanged(SettingController.KEY_SETTING_BROADCAST_SAFE_REMINDER, String.valueOf(driveWarn));
             }
         }
@@ -642,13 +669,13 @@ public class SettingPackage implements SettingAdapterCallback {
      * @return 巡航播报安全提醒 true：开启 false：关闭
      */
     public boolean getConfigKeyDriveWarn() {
-        boolean driveWarn;
-        String value = settingManager.getValueByKey(SettingController.KEY_SETTING_BROADCAST_SAFE_REMINDER);
+        final boolean driveWarn;
+        final String value = mSettingManager.getValueByKey(SettingController.KEY_SETTING_BROADCAST_SAFE_REMINDER);
         if (!TextUtils.isEmpty(value)) {
             driveWarn = Boolean.parseBoolean(value);
         } else {
-            driveWarn = settingAdapter.getConfigKeyDriveWarn();
-            settingManager.insertOrReplace(SettingController.KEY_SETTING_BROADCAST_SAFE_REMINDER, String.valueOf(driveWarn));
+            driveWarn = getCruiseBroadcastOpen();
+            setConfigKeyDriveWarn(driveWarn);
         }
         return driveWarn;
     }
@@ -657,27 +684,29 @@ public class SettingPackage implements SettingAdapterCallback {
      * 设置地图视角
      * @param mapViewMode 地图视角 0: 2D车首上，默认态; 1: 2D北上; 2: 3D车首上
      */
-    public void setConfigKeyMapviewMode(int mapViewMode) {
-        int code = settingAdapter.setConfigKeyMapviewMode(mapViewMode);
+    public void setConfigKeyMapviewMode(final int mapViewMode) {
+        final int code = mSettingAdapter.setConfigKeyMapviewMode(mapViewMode);
         if (code == 0) {
             switch (mapViewMode) {
                 case 0:
-                    settingManager.insertOrReplace(SettingController.SETTING_GUIDE_MAP_MODE, SettingController.VALUE_MAP_MODE_CAR_2D);
-                    for (SettingChangeCallback callback : changeCallbackList.values()) {
+                    mSettingManager.insertOrReplace(SettingController.SETTING_GUIDE_MAP_MODE, SettingController.VALUE_MAP_MODE_CAR_2D);
+                    for (SettingChangeCallback callback : mChangeCallbackList.values()) {
                         callback.onSettingChanged(SettingController.SETTING_GUIDE_MAP_MODE, SettingController.VALUE_MAP_MODE_CAR_2D);
                     }
                     break;
                 case 1:
-                    settingManager.insertOrReplace(SettingController.SETTING_GUIDE_MAP_MODE, SettingController.VALUE_MAP_MODE_NORTH_2D);
-                    for (SettingChangeCallback callback : changeCallbackList.values()) {
+                    mSettingManager.insertOrReplace(SettingController.SETTING_GUIDE_MAP_MODE, SettingController.VALUE_MAP_MODE_NORTH_2D);
+                    for (SettingChangeCallback callback : mChangeCallbackList.values()) {
                         callback.onSettingChanged(SettingController.SETTING_GUIDE_MAP_MODE, SettingController.VALUE_MAP_MODE_NORTH_2D);
                     }
                     break;
                 case 2:
-                    settingManager.insertOrReplace(SettingController.SETTING_GUIDE_MAP_MODE, SettingController.VALUE_MAP_MODE_CAR_3D);
-                    for (SettingChangeCallback callback : changeCallbackList.values()) {
+                    mSettingManager.insertOrReplace(SettingController.SETTING_GUIDE_MAP_MODE, SettingController.VALUE_MAP_MODE_CAR_3D);
+                    for (SettingChangeCallback callback : mChangeCallbackList.values()) {
                         callback.onSettingChanged(SettingController.SETTING_GUIDE_MAP_MODE, SettingController.VALUE_MAP_MODE_CAR_3D);
                     }
+                    break;
+                default:
                     break;
             }
         }
@@ -689,11 +718,10 @@ public class SettingPackage implements SettingAdapterCallback {
      */
     public int getConfigKeyMapviewMode() {
         int mapViewMode = 0;
-        String data = getValueFromDB(SettingController.SETTING_GUIDE_MAP_MODE);
+        final String data = getValueFromDB(SettingController.SETTING_GUIDE_MAP_MODE);
         if (!TextUtils.isEmpty(data)) {
             switch (data) {
                 case SettingController.VALUE_MAP_MODE_CAR_2D:
-                    mapViewMode = 0;
                     break;
                 case SettingController.VALUE_MAP_MODE_NORTH_2D:
                     mapViewMode = 1;
@@ -701,20 +729,12 @@ public class SettingPackage implements SettingAdapterCallback {
                 case SettingController.VALUE_MAP_MODE_CAR_3D:
                     mapViewMode = 2;
                     break;
+                default:
+                    break;
             }
         } else {
-            mapViewMode = settingAdapter.getConfigKeyMapviewMode();
-            switch (mapViewMode) {
-                case 0:
-                    settingManager.insertOrReplace(SettingController.SETTING_GUIDE_MAP_MODE, SettingController.VALUE_MAP_MODE_CAR_2D);
-                    break;
-                case 1:
-                    settingManager.insertOrReplace(SettingController.SETTING_GUIDE_MAP_MODE, SettingController.VALUE_MAP_MODE_NORTH_2D);
-                    break;
-                case 2:
-                    settingManager.insertOrReplace(SettingController.SETTING_GUIDE_MAP_MODE, SettingController.VALUE_MAP_MODE_CAR_3D);
-                    break;
-            }
+            MapPackage.getInstance().switchMapMode(MapTypeId.MAIN_SCREEN_MAIN_MAP, MapMode.UP_2D);
+            setConfigKeyMapviewMode(mapViewMode);
         }
         return mapViewMode;
     }
@@ -724,11 +744,11 @@ public class SettingPackage implements SettingAdapterCallback {
      *
      * @param roadEvent 路况开关 true：开启 false：关闭
      */
-    public void setConfigKeyRoadEvent(boolean roadEvent) {
-        int code = settingAdapter.setConfigKeyRoadEvent(roadEvent);
+    public void setConfigKeyRoadEvent(final boolean roadEvent) {
+        final int code = mSettingAdapter.setConfigKeyRoadEvent(roadEvent);
         if (code == 0) {
-            settingManager.insertOrReplace(SettingController.KEY_SETTING_ROAD_CONDITION, String.valueOf(roadEvent));
-            for (SettingChangeCallback callback : changeCallbackList.values()) {
+            mSettingManager.insertOrReplace(SettingController.KEY_SETTING_ROAD_CONDITION, String.valueOf(roadEvent));
+            for (SettingChangeCallback callback : mChangeCallbackList.values()) {
                 callback.onSettingChanged(SettingController.KEY_SETTING_ROAD_CONDITION, String.valueOf(roadEvent));
             }
         }
@@ -739,13 +759,13 @@ public class SettingPackage implements SettingAdapterCallback {
      * @return 路况开关 true：开启 false：关闭
      */
     public boolean getConfigKeyRoadEvent() {
-        boolean roadEvent;
-        String value = settingManager.getValueByKey(SettingController.KEY_SETTING_ROAD_CONDITION);
+        boolean roadEvent = true;
+        final String value = mSettingManager.getValueByKey(SettingController.KEY_SETTING_ROAD_CONDITION);
         if (!TextUtils.isEmpty(value)) {
             roadEvent = Boolean.parseBoolean(value);
         } else {
-            roadEvent = settingAdapter.getConfigKeyRoadEvent();
-            settingManager.insertOrReplace(SettingController.KEY_SETTING_ROAD_CONDITION, String.valueOf(roadEvent));
+            MapPackage.getInstance().setTrafficStates(MapTypeId.MAIN_SCREEN_MAIN_MAP, true);
+            setConfigKeyRoadEvent(roadEvent);
         }
         return roadEvent;
     }
@@ -754,21 +774,23 @@ public class SettingPackage implements SettingAdapterCallback {
      * 设置静音状态
      * @param mute 静音状态 0：不静音，默认态； 1：静音
      */
-    public void setConfigKeyMute(int mute) {
-        int code = settingAdapter.setConfigKeyMute(mute);
+    public void setConfigKeyMute(final int mute) {
+        final int code = mSettingAdapter.setConfigKeyMute(mute);
         if (code == 0) {
-            settingManager.insertOrReplace(SettingController.KEY_SETTING_VOICE_MUTE, String.valueOf(mute));
+            mSettingManager.insertOrReplace(SettingController.KEY_SETTING_VOICE_MUTE, String.valueOf(mute));
             switch (mute) {
                 case 0:
-                    for (SettingChangeCallback callback : changeCallbackList.values()) {
+                    for (SettingChangeCallback callback : mChangeCallbackList.values()) {
                         callback.onSettingChanged(SettingController.KEY_SETTING_VOICE_MUTE, SettingController.VALUE_VOICE_MUTE_OFF);
                     }
                     break;
                 case 1:
-                    for (SettingChangeCallback callback : changeCallbackList.values()) {
+                    for (SettingChangeCallback callback : mChangeCallbackList.values()) {
                         callback.onSettingChanged(SettingController.KEY_SETTING_VOICE_MUTE, SettingController.VALUE_VOICE_MUTE_ON);
                     }
                    break;
+                default:
+                    break;
             }
         }
     }
@@ -779,7 +801,7 @@ public class SettingPackage implements SettingAdapterCallback {
      */
     public int getConfigKeyMute() {
         int mute = 0;
-        String data = getValueFromDB(SettingController.KEY_SETTING_VOICE_MUTE);
+        final String data = getValueFromDB(SettingController.KEY_SETTING_VOICE_MUTE);
         if (!TextUtils.isEmpty(data)) {
             switch (data) {
                 case SettingController.VALUE_VOICE_MUTE_OFF:
@@ -787,38 +809,44 @@ public class SettingPackage implements SettingAdapterCallback {
                 case SettingController.VALUE_VOICE_MUTE_ON:
                     mute = 1;
                     break;
+                default:
+                    break;
             }
         } else {
-            mute = settingAdapter.getConfigKeyMute();
-            settingManager.insertOrReplace(SettingController.KEY_SETTING_VOICE_MUTE, String.valueOf(mute));
+            mute = mSettingAdapter.getConfigKeyMute();
+            mSettingManager.insertOrReplace(SettingController.KEY_SETTING_VOICE_MUTE, String.valueOf(mute));
         }
         return mute;
     }
 
     /**
      * 设置白天黑夜 16：自动模式，默认态； 17：日间模式； 18：夜间模式
+     * @param dayNightMode 白天黑夜 16：自动模式，默认态； 17：日间模式； 18：夜间模式
      */
-    public void setConfigKeyDayNightMode(int dayNightMode) {
-        int code = settingAdapter.setConfigKeyDayNightMode(dayNightMode);
+    public void setConfigKeyDayNightMode(final int dayNightMode) {
+        final int code = mSettingAdapter.setConfigKeyDayNightMode(dayNightMode);
         if (code == 0) {
             switch (dayNightMode) {
                 case 16:
-                    settingManager.insertOrReplace(SettingController.KEY_SETTING_DISPLAY_MODE, SettingController.VALUE_DISPLAY_MODE_AUTO);
-                    for (SettingChangeCallback callback : changeCallbackList.values()) {
+                    mSettingManager.insertOrReplace(SettingController.KEY_SETTING_DISPLAY_MODE, SettingController.VALUE_DISPLAY_MODE_AUTO);
+                    for (SettingChangeCallback callback : mChangeCallbackList.values()) {
                         callback.onSettingChanged(SettingController.KEY_SETTING_DISPLAY_MODE, SettingController.VALUE_DISPLAY_MODE_AUTO);
                     }
                     break;
                 case 17:
-                    settingManager.insertOrReplace(SettingController.KEY_SETTING_DISPLAY_MODE, SettingController.VALUE_DISPLAY_MODE_DAYTIME);
-                    for (SettingChangeCallback callback : changeCallbackList.values()) {
+                    mSettingManager.insertOrReplace(SettingController.KEY_SETTING_DISPLAY_MODE, SettingController.VALUE_DISPLAY_MODE_DAYTIME);
+                    for (SettingChangeCallback callback : mChangeCallbackList.values()) {
                         callback.onSettingChanged(SettingController.KEY_SETTING_DISPLAY_MODE, SettingController.VALUE_DISPLAY_MODE_DAYTIME);
                     }
                     break;
                 case 18:
-                    settingManager.insertOrReplace(SettingController.KEY_SETTING_DISPLAY_MODE, SettingController.VALUE_DISPLAY_MODE_NIGHT);
-                    for (SettingChangeCallback callback : changeCallbackList.values()) {
+                    mSettingManager.insertOrReplace(SettingController.KEY_SETTING_DISPLAY_MODE, SettingController.VALUE_DISPLAY_MODE_NIGHT);
+                    for (SettingChangeCallback callback : mChangeCallbackList.values()) {
                         callback.onSettingChanged(SettingController.KEY_SETTING_DISPLAY_MODE, SettingController.VALUE_DISPLAY_MODE_NIGHT);
                     }
+                    break;
+                default:
+                    break;
             }
         }
     }
@@ -828,8 +856,8 @@ public class SettingPackage implements SettingAdapterCallback {
      * @return 白天黑夜 16：自动模式，默认态； 17：日间模式； 18：夜间模式
      */
     public int getConfigKeyDayNightMode() {
-        int dayNightMode;
-        String data = getValueFromDB(SettingController.KEY_SETTING_DISPLAY_MODE);
+        final int dayNightMode;
+        final String data = getValueFromDB(SettingController.KEY_SETTING_DISPLAY_MODE);
         if (!TextUtils.isEmpty(data)) {
             dayNightMode = switch (data) {
                 case SettingController.VALUE_DISPLAY_MODE_DAYTIME -> 17;
@@ -837,16 +865,19 @@ public class SettingPackage implements SettingAdapterCallback {
                 default -> 16;
             };
         } else {
-            dayNightMode = settingAdapter.getConfigKeyDayNightMode();
+            dayNightMode = mSettingAdapter.getConfigKeyDayNightMode();
             switch (dayNightMode) {
                 case 16:
-                    settingManager.insertOrReplace(SettingController.KEY_SETTING_DISPLAY_MODE, SettingController.VALUE_DISPLAY_MODE_AUTO);
+                    mSettingManager.insertOrReplace(SettingController.KEY_SETTING_DISPLAY_MODE, SettingController.VALUE_DISPLAY_MODE_AUTO);
                     break;
                 case 17:
-                    settingManager.insertOrReplace(SettingController.KEY_SETTING_DISPLAY_MODE, SettingController.VALUE_DISPLAY_MODE_DAYTIME);
+                    mSettingManager.insertOrReplace(SettingController.KEY_SETTING_DISPLAY_MODE, SettingController.VALUE_DISPLAY_MODE_DAYTIME);
                     break;
                 case 18:
-                    settingManager.insertOrReplace(SettingController.KEY_SETTING_DISPLAY_MODE, SettingController.VALUE_DISPLAY_MODE_NIGHT);
+                    mSettingManager.insertOrReplace(SettingController.KEY_SETTING_DISPLAY_MODE, SettingController.VALUE_DISPLAY_MODE_NIGHT);
+                    break;
+                default:
+                    break;
             }
         }
         return dayNightMode;
@@ -856,11 +887,11 @@ public class SettingPackage implements SettingAdapterCallback {
      * 设置授权状态
      * @param isOneYearPrivacy true：授权一年 false：永不授权
      */
-    public void setPrivacyStatus(boolean isOneYearPrivacy) {
+    public void setPrivacyStatus(final boolean isOneYearPrivacy) {
         if (isOneYearPrivacy) {
-            settingManager.insertOrReplace(SettingController.KEY_SETTING_PRIVACY_STATUS, SettingController.VALUE_PRIVACY_ONE_YEAR);
+            mSettingManager.insertOrReplace(SettingController.KEY_SETTING_PRIVACY_STATUS, SettingController.VALUE_PRIVACY_ONE_YEAR);
         } else {
-            settingManager.insertOrReplace(SettingController.KEY_SETTING_PRIVACY_STATUS, SettingController.VALUE_PRIVACY_NEVER);
+            mSettingManager.insertOrReplace(SettingController.KEY_SETTING_PRIVACY_STATUS, SettingController.VALUE_PRIVACY_NEVER);
         }
     }
 
@@ -880,8 +911,8 @@ public class SettingPackage implements SettingAdapterCallback {
      * 设置授权到期时间
      * @param endDateTime 到期时间
      */
-    public void setEndDate(String endDateTime) {
-        settingManager.insertOrReplace(SettingController.KEY_SETTING_PRIVACY_END_DATE, endDateTime);
+    public void setEndDate(final String endDateTime) {
+        mSettingManager.insertOrReplace(SettingController.KEY_SETTING_PRIVACY_END_DATE, endDateTime);
     }
 
     /**
@@ -896,9 +927,6 @@ public class SettingPackage implements SettingAdapterCallback {
         return endDateTime;
     }
 
-    public ArrayList<SimpleFavoriteItemBean> getSimpleFavoriteList(int type, boolean sorted) {
-        return settingAdapter.getSimpleFavoriteList(type, sorted);
-    }
 
     public interface SettingChangeCallback {
         /**

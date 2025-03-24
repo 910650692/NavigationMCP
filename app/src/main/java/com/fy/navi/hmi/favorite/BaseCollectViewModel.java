@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BaseCollectViewModel extends BaseViewModel<CollectFragment, CollectModel>  {
-    public BaseCollectViewModel(@NonNull Application application) {
+    public BaseCollectViewModel(final @NonNull Application application) {
         super(application);
     }
     @Override
@@ -23,6 +23,9 @@ public class BaseCollectViewModel extends BaseViewModel<CollectFragment, Collect
     public Action rootClick = () -> {
     };
 
+    /**
+     * setCollectData
+     */
     public void setCollectData() {
         mView.setAdapterData();
     }

@@ -10,9 +10,9 @@ import com.fy.navi.ui.base.BaseViewModel;
 
 public class BaseCarConnectHelpViewModel extends BaseViewModel<CarConnectHelpFragment, CarConnectHelpModel> {
 
-    public MutableLiveData<Integer> selectPosition = new MutableLiveData<>(0);
+    public MutableLiveData<Integer> mSelectPosition = new MutableLiveData<>(0);
 
-    public BaseCarConnectHelpViewModel(@NonNull Application application) {
+    public BaseCarConnectHelpViewModel(final @NonNull Application application) {
         super(application);
     }
 
@@ -21,11 +21,15 @@ public class BaseCarConnectHelpViewModel extends BaseViewModel<CarConnectHelpFra
         return new CarConnectHelpModel();
     }
 
-    public void setSelectPosition(int position) {
-        selectPosition.setValue(position);
+    /**
+     * setSelectPosition
+     * @param position
+     */
+    public void setSelectPosition(final int position) {
+        mSelectPosition.setValue(position);
     }
 
-    public Action clickBack = () -> {
+    public Action mClickBack = () -> {
         closeFragment(true);
     };
 }

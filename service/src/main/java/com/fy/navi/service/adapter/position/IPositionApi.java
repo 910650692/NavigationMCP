@@ -16,6 +16,8 @@ public interface IPositionApi {
 
     void registerCallback(IPositionAdapterCallback callback);
 
+    void unregisterCallback(IPositionAdapterCallback callback);
+
     void unInitPositionService();
 
     /*定位服务初始化*/

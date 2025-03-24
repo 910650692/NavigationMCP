@@ -4,10 +4,6 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
 import com.android.utils.ConvertUtils;
 import com.fy.navi.scene.BaseSceneView;
 import com.fy.navi.scene.R;
@@ -24,46 +20,46 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
-/**
- * @Description TODO
- * @Author lvww
- * @date 2024/12/2
- */
+
 public class SceneRouteDetailsResultListView extends BaseSceneView<SceneRouteDetailsResultListViewBinding, SceneRouteDetailsResultListImpl> {
 
     private RouteDetailsResultAdapter mRouteDetailsResultAdapter;
     private List<RouteLineSegmentInfo> mRouteLineSegmentInfos;
-    private boolean isAvoid = false;
+    private boolean mIsAvoid = false;
     private RouteAvoidInfo mRouteAvoidInfo;
-    private Hashtable<String, ISceneRouteDetailsSelectCallBack> sceneRouteDetailsSelectCallBackHashtable;
+    private Hashtable<String, ISceneRouteDetailsSelectCallBack> mSceneRouteDetailsSelectCallBackHashtable;
 
-    public SceneRouteDetailsResultListView(@NonNull Context context) {
+    public SceneRouteDetailsResultListView(final Context context) {
         super(context);
     }
 
-    public SceneRouteDetailsResultListView(@NonNull Context context, @Nullable AttributeSet attrs) {
+    public SceneRouteDetailsResultListView(final Context context, final AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public SceneRouteDetailsResultListView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public SceneRouteDetailsResultListView(final Context context, final AttributeSet attrs, final int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 
     @Override
-    protected SceneRouteDetailsResultListViewBinding createViewBinding(LayoutInflater inflater, ViewGroup viewGroup) {
+    protected SceneRouteDetailsResultListViewBinding createViewBinding(final LayoutInflater inflater, final ViewGroup viewGroup) {
         return SceneRouteDetailsResultListViewBinding.inflate(inflater, viewGroup, true);
     }
 
     @Override
     protected SceneRouteDetailsResultListImpl initSceneImpl() {
         mRouteLineSegmentInfos = new ArrayList<>();
-        sceneRouteDetailsSelectCallBackHashtable = new Hashtable<>();
+        mSceneRouteDetailsSelectCallBackHashtable = new Hashtable<>();
         mRouteAvoidInfo = new RouteAvoidInfo();
         return new SceneRouteDetailsResultListImpl(this);
     }
-
-    public void registerRouteDeatailsCheckedObserver(String key, ISceneRouteDetailsSelectCallBack callBack) {
-        sceneRouteDetailsSelectCallBackHashtable.put(key, callBack);
+    /**
+     * fragment注册监听
+     * @param key 关键字
+     * @param callBack 回调
+     * */
+    public void registerRouteDeatailsCheckedObserver(final String key, final ISceneRouteDetailsSelectCallBack callBack) {
+        mSceneRouteDetailsSelectCallBackHashtable.put(key, callBack);
     }
 
     @Override
@@ -79,24 +75,33 @@ public class SceneRouteDetailsResultListView extends BaseSceneView<SceneRouteDet
     protected void initObserver() {
         setupRecyclerView();
     }
-
+    /**
+     * 初始化列表
+     * */
     private void setupRecyclerView() {
         mRouteDetailsResultAdapter = new RouteDetailsResultAdapter();
         mRouteDetailsResultAdapter.setOnItemCheckedChangeListener(routeAvoidInfo -> {
             mRouteAvoidInfo = routeAvoidInfo;
-            for (ISceneRouteDetailsSelectCallBack callBack : sceneRouteDetailsSelectCallBackHashtable.values()) {
-                callBack.onRouteDetailsChecked(routeAvoidInfo.getCheckedLeastOne());
+            for (ISceneRouteDetailsSelectCallBack callBack : mSceneRouteDetailsSelectCallBackHashtable.values()) {
+                callBack.onRouteDetailsChecked(routeAvoidInfo.isMCheckedLeastOne());
             }
         });
         mViewBinding.routeDetailResultList.setAdapter(mRouteDetailsResultAdapter);
     }
-
-    public void notifyRouteDetailsResultList(List<RouteLineSegmentInfo> routeLineSegmentInfos) {
-        if (ConvertUtils.isEmpty(routeLineSegmentInfos)) return;
+    /**
+     * 初始化列表
+     * @param routeLineSegmentInfos 列表数据
+     * */
+    public void notifyRouteDetailsResultList(final List<RouteLineSegmentInfo> routeLineSegmentInfos) {
+        if (ConvertUtils.isEmpty(routeLineSegmentInfos)) {
+            return;
+        }
         mRouteLineSegmentInfos = routeLineSegmentInfos;
-        mRouteDetailsResultAdapter.setAdapterResult(routeLineSegmentInfos, isAvoid);
+        mRouteDetailsResultAdapter.setAdapterResult(routeLineSegmentInfos, mIsAvoid);
     }
-
+    /**
+     * 关闭列表
+     * */
     private void closeAllItem() {
         if (mViewBinding.routeDetailResultList.getCount() <= NumberUtils.NUM_0) {
             return;
@@ -107,18 +112,28 @@ public class SceneRouteDetailsResultListView extends BaseSceneView<SceneRouteDet
             }
         }
     }
-
-    public void setAvoidStatus(boolean isAvoid) {
-        this.isAvoid = isAvoid;
-        if (ConvertUtils.isEmpty(mRouteLineSegmentInfos)) return;
+    /**
+     * 设置避开状态
+     * @param isAvoid 避开状态
+     * */
+    public void setAvoidStatus(final boolean isAvoid) {
+        this.mIsAvoid = isAvoid;
+        if (ConvertUtils.isEmpty(mRouteLineSegmentInfos)) {
+            return;
+        }
         closeAllItem();
         mRouteDetailsResultAdapter.setAdapterResult(mRouteLineSegmentInfos, isAvoid);
     }
-
-    public void setEndPoint(String name) {
-        mViewBinding.routeDetailsListTvFooter.setText(AppContext.mContext.getResources().getString(R.string.route_details_list_footer) + name);
+    /**
+     * 设置终点名称
+     * @param name 终点名称
+     * */
+    public void setEndPoint(final String name) {
+        mViewBinding.routeDetailsListTvFooter.setText(AppContext.getInstance().getMContext().getResources().getString(R.string.route_details_list_footer) + name);
     }
-
+    /**
+     * 避开道路
+     * */
     public void startAvoidRoad() {
         mScreenViewModel.startAvoidRoad(mRouteAvoidInfo);
     }

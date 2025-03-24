@@ -10,23 +10,18 @@ import com.fy.navi.service.logicpaket.user.carconnect.CarConnectCallBack;
 import com.fy.navi.service.logicpaket.user.carconnect.CarConnectPackage;
 import com.fy.navi.ui.base.BaseModel;
 
-/**
- * @Description TODO
- * @Author fh
- * @date 2024/12/24
- */
 public class CarConnectModel extends BaseModel<CarConnectViewModel> implements AccountCallBack, CarConnectCallBack {
 
     private static final String TAG = MapDefaultFinalTag.ACCOUNT_HMI_TAG;
 
-    private final AccountPackage accountPackage;
-    private final CarConnectPackage carConnectPackage;
+    private final AccountPackage mAccountPackage;
+    private final CarConnectPackage mCarConnectPackage;
 
     public CarConnectModel() {
-        accountPackage = AccountPackage.getInstance();
-        carConnectPackage = CarConnectPackage.getInstance();
-        accountPackage.registerCallBack("CarConnectModel", this);
-        carConnectPackage.registerCallBack(this);
+        mAccountPackage = AccountPackage.getInstance();
+        mCarConnectPackage = CarConnectPackage.getInstance();
+        mAccountPackage.registerCallBack("CarConnectModel", this);
+        mCarConnectPackage.registerCallBack(this);
     }
 
     @Override
@@ -40,7 +35,7 @@ public class CarConnectModel extends BaseModel<CarConnectViewModel> implements A
     }
 
     @Override
-    public void notifyAccountLogout(int errCode, int taskId, AccountUserInfo result) {
+    public void notifyAccountLogout(final int errCode, final int taskId, final AccountUserInfo result) {
         Logger.i(TAG, "notifyAccountLogout: " + result);
         ThreadManager.getInstance().postUi(() -> {
             if (result != null && result.code == 1) {

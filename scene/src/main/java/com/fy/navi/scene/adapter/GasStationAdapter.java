@@ -3,11 +3,8 @@ package com.fy.navi.scene.adapter;
 import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
-
-import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.android.utils.ConvertUtils;
 import com.fy.navi.scene.R;
 import com.fy.navi.scene.databinding.GasStationItemBinding;
@@ -24,7 +21,11 @@ public class GasStationAdapter extends RecyclerView.Adapter<GasStationAdapter.Ho
         mGasStationInfos = new ArrayList<>();
     }
 
-    public void setGasStationList(List<GasStationInfo> gasInfos) {
+    /**
+     * 更新列表
+     * @param gasInfos 列表数据
+     * */
+    public void setGasStationList(final List<GasStationInfo> gasInfos) {
         if (ConvertUtils.isEmpty(gasInfos)) {
             return;
         }
@@ -34,8 +35,8 @@ public class GasStationAdapter extends RecyclerView.Adapter<GasStationAdapter.Ho
     }
 
     @Override
-    public Holder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        GasStationItemBinding gasStationItemBinding =
+    public Holder onCreateViewHolder(final ViewGroup parent, final int viewType) {
+        final GasStationItemBinding gasStationItemBinding =
                 DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()),
                         R.layout.gas_station_item, parent, false);
         return new Holder(gasStationItemBinding);
@@ -50,17 +51,17 @@ public class GasStationAdapter extends RecyclerView.Adapter<GasStationAdapter.Ho
     }
 
     @Override
-    public void onBindViewHolder(@NonNull Holder holder, @SuppressLint("RecyclerView") int position) {
-        holder.gasStationItemBinding.poiGasOilType.setText(mGasStationInfos.get(position).getType());
-        holder.gasStationItemBinding.poiGasOilPrice.setText(mGasStationInfos.get(position).getPrice());
+    public void onBindViewHolder(final Holder holder, @SuppressLint("RecyclerView")final int position) {
+        holder.mGasStationItemBinding.poiGasOilType.setText(mGasStationInfos.get(position).getType());
+        holder.mGasStationItemBinding.poiGasOilPrice.setText(mGasStationInfos.get(position).getPrice());
     }
 
     public class Holder extends RecyclerView.ViewHolder {
-        public GasStationItemBinding gasStationItemBinding;
+        private GasStationItemBinding mGasStationItemBinding;
 
-        public Holder(GasStationItemBinding gasStationItemBinding) {
+        public Holder(final GasStationItemBinding gasStationItemBinding) {
             super(gasStationItemBinding.getRoot());
-            this.gasStationItemBinding = gasStationItemBinding;
+            this.mGasStationItemBinding = gasStationItemBinding;
             gasStationItemBinding.setHolder(this);
         }
     }

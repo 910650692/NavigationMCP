@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <com.fy.navi.ui.view.SkinConstraintLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <com.fy.navi.ui.view.SkinConstraintLayout
+            android:layout_width="@dimen/dp_1300"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_confirm_dialog"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <com.fy.navi.ui.view.SkinTextView
+                android:id="@+id/dialog_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/sp_42"
+                android:textStyle="bold"
+                android:textColor="@color/black"
+                android:text="@string/authorization_request_title"
+                android:layout_marginTop="@dimen/dp_70"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.fy.navi.ui.view.SkinTextView
+                android:id="@+id/dialog_content"
+                android:layout_width="@dimen/dp_1100"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/sp_36"
+                android:textColor="@color/color_black_80"
+                android:layout_marginTop="@dimen/dp_30"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/dialog_title" />
+
+            <com.fy.navi.ui.view.SkinLinearLayout
+                android:id="@+id/dialog_location"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/dp_54"
+                android:layout_marginTop="@dimen/dp_20"
+                android:orientation="horizontal"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/dialog_content">
+
+                <com.fy.navi.ui.view.SkinImageView
+                    android:layout_width="@dimen/dp_12"
+                    android:layout_height="@dimen/dp_12"
+                    android:layout_marginTop="@dimen/dp_28"
+                    android:layout_marginStart="@dimen/dp_140"
+                    android:background="@drawable/shape_round_black"/>
+
+                <com.fy.navi.ui.view.SkinTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/sp_36"
+                    android:textColor="@color/color_black_80"
+                    android:layout_marginStart="@dimen/dp_20"
+                    android:text="@string/setting_others_privacy_location"
+                    android:layout_gravity="center_vertical"/>
+
+            </com.fy.navi.ui.view.SkinLinearLayout>
+            <View
+                android:id="@+id/line"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_2"
+                android:layout_marginTop="@dimen/dp_50"
+                android:layout_marginStart="@dimen/dp_48"
+                android:layout_marginEnd="@dimen/dp_48"
+                android:background="#4D818199"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/dialog_location"/>
+            
+            <com.fy.navi.ui.view.SkinLinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_128"
+                android:orientation="horizontal"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@id/line">
+
+                <com.fy.navi.ui.view.SkinTextView
+                    android:id="@+id/dialog_confirm"
+                    android:layout_width="@dimen/dp_0"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:textColor="#3377FF"
+                    android:textSize="@dimen/sp_36"
+                    android:text="@string/authorization_request_agree"/>
+
+                <View
+                    android:layout_width="@dimen/dp_2"
+                    android:layout_height="match_parent"
+                    android:background="#4D818199"/>
+
+                <com.fy.navi.ui.view.SkinTextView
+                    android:id="@+id/dialog_cancel"
+                    android:layout_width="@dimen/dp_0"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/sp_36"
+                    android:text="@string/authorization_request_cancel"/>
+
+            </com.fy.navi.ui.view.SkinLinearLayout>
+
+        </com.fy.navi.ui.view.SkinConstraintLayout>
+    </com.fy.navi.ui.view.SkinConstraintLayout>
+</layout>

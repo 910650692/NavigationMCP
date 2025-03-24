@@ -45,6 +45,8 @@ public class LocInfoBean {
     private long roadId;
     private int ownership;
 
+    private int linkType;
+
     public long getTimeStamp() {
         return timeStamp;
     }
@@ -181,6 +183,14 @@ public class LocInfoBean {
         this.ownership = ownership;
     }
 
+    public int getLinkType() {
+        return linkType;
+    }
+
+    public void setLinkType(int linkType) {
+        this.linkType = linkType;
+    }
+
     @Override
     public String toString() {
         return "LocationInfo{" +
@@ -189,6 +199,7 @@ public class LocInfoBean {
                 ", altitude=" + altitude +
                 ", address='" + address + '\'' +
                 ", ownership='" + ownership + '\'' +
+                ", linkType='" + linkType + '\'' +
                 '}';
     }
 

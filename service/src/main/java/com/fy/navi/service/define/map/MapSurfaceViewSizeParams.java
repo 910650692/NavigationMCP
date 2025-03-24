@@ -16,11 +16,11 @@ public class MapSurfaceViewSizeParams {
     public MapSurfaceViewSizeParams() {
         this.x = 0;
         this.y = 0;
-        this.width = AppContext.mContext.getResources().getDisplayMetrics().widthPixels;
-        this.height = AppContext.mContext.getResources().getDisplayMetrics().heightPixels;
-        this.screenWidth = AppContext.mContext.getResources().getDisplayMetrics().widthPixels;
-        this.screenHeight = AppContext.mContext.getResources().getDisplayMetrics().heightPixels;
-        this.densityDpi = AppContext.mContext.getResources().getDisplayMetrics().densityDpi;
+        this.width = AppContext.getInstance().getMContext().getResources().getDisplayMetrics().widthPixels;
+        this.height = AppContext.getInstance().getMContext().getResources().getDisplayMetrics().heightPixels;
+        this.screenWidth = AppContext.getInstance().getMContext().getResources().getDisplayMetrics().widthPixels;
+        this.screenHeight = AppContext.getInstance().getMContext().getResources().getDisplayMetrics().heightPixels;
+        this.densityDpi = AppContext.getInstance().getMContext().getResources().getDisplayMetrics().densityDpi;
     }
 
     public MapSurfaceViewSizeParams(long x, long y, long width, long height, long screenWidth, long screenHeight, int densityDpi) {

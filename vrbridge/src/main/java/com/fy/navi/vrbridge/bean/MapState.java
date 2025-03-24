@@ -1,529 +1,672 @@
 package com.fy.navi.vrbridge.bean;
 
-public class MapState {
-
-
+public final class MapState {
 
     public static MapState getInstance() {
-        return mapState;
+        return MAP_STATE;
     }
 
-    private static final MapState mapState = new MapState();
+    private static final MapState MAP_STATE = new MapState();
 
     private MapState() {
-        openStatus = false;
-        isFront = false;
-        isGPSNavi = false;
-        isCruiseNavi = false;
-        currMapMode = -1;
-        isMute = false;
-        broadcastMode = -1;
-        isRoutePage = false;
-        pathCount = -1;
-        viaPointsCount = 0;
-        viaPointsMaxCount = 5;
-        isSetHome = false;
-        isSetCompany = false;
-        isRoadEvent = false;
-        isOverView = false;
-        isParallelFlagMain = -1;
-        switchParallelFlag = false;
-        isParallelBridge = -1;
-        switchParallelBridge = false;
-        isListPage = false;
-        currPlanPref = -1;
-        maxZoomLevel = 19;
-        minZoomLevel = 2;
-        isDayWithMapStyle = true;
-        hasPrivacyPermission = false;
-        maxVolumeLevel = 100;
-        isLogin = false;
-        isAgreeTeamAgreement = false;
-        isInTeam = false;
-        isTeamLeader = false;
+        mOpenStatus = false;
+        mIsFront = false;
+        mIsGPSNavi = false;
+        mIsCruiseNavi = false;
+        mCurrMapMode = -1;
+        mIsMute = false;
+        mBroadcastMode = -1;
+        mIsRoutePage = false;
+        mPathCount = -1;
+        mViaPointsCount = 0;
+        mViaPointsMaxCount = 5;
+        mIsSetHome = false;
+        mIsSetCompany = false;
+        mIsRoadEvent = false;
+        mIsOverView = false;
+        mIsParallelFlagMain = -1;
+        mSwitchParallelFlag = false;
+        mIsParallelBridge = -1;
+        mSwitchParallelBridge = false;
+        mIsListPage = false;
+        mCurrPlanPref = -1;
+        mMaxZoomLevel = 19;
+        mMinZoomLevel = 2;
+        mIsDayWithMapStyle = true;
+        mHasPrivacyPermission = false;
+        mMaxVolumeLevel = 100;
+        mIsLogin = false;
+        mIsAgreeTeamAgreement = false;
+        mIsInTeam = false;
+        mIsTeamLeader = false;
     }
 
-    private boolean openStatus; //导航app是否打开，boolean值 - true:是 - false:否（默认）
-    private boolean isFront; //是否是最上层app，boolean值 - true:是 - false:否（默认）
-    private boolean isGPSNavi; //是否在导航中，boolean值 - true:是 - false:否（默认）
-    private boolean isCruiseNavi; //是否在巡航中，boolean值 - true:是 - false:否（默认）
-    private int currMapMode; //地图视角，0:车头向上 - 1:正北向上 - 2:3D车头向上 - -1（默认）
-    private boolean isMute; //播报是否静音，-true:是  -false:否（默认）
-    private int broadcastMode; //- 0:标准/详细 - 1:简洁 - 2:静音 - 3:提示音 - 4:不播报模式 - 5:极简 - -1（默认）
-    private boolean isRoutePage; //是否处于规划路线状态，boolean值 - true:是 - false:否（默认）
-    private int pathCount; //规划路线数量
-    private int viaPointsCount; //已添加的途经点数量
-    private int viaPointsMaxCount; //可以添加途经点的最大数量
-    private boolean isSetHome; //是否设置家的地址，boolean值 - true:是 - false:否（默认）
-    private boolean isSetCompany; //是否设置工作的地址，boolean值 - true:是 - false:否（默认）
-    private boolean isRoadEvent; //路况状态是否开启，boolean值 - true:是 - false:否（默认）
-    private boolean isOverView; //全览模式是否开启，boolean值 - true:是 - false:否（默认）
-    private int isParallelFlagMain; //是否在主路，int值 - 0:主路 - 1:辅路 - -1（默认）
-    private boolean switchParallelFlag; //是否可以切换主辅路，boolean值 - true:是 - false:否（默认）
-    private int isParallelBridge; //是否在桥上，int值 - 0:桥上 - 1:桥下 - -1（默认）
-    private boolean switchParallelBridge; //是否可以切换桥上桥下，boolean值 - true:是 - false:否（默认）
-    private boolean isListPage; //当前列表是否显示中 - true:是 - false:否（默认）
-    private int currPlanPref;  //当前选择的路线偏好，int值 - 1:智能推荐 - 4:不走高速 - 8:少收费 - 16:躲避拥堵 - 256:时间优先 - 512:高速优先 - 1024:大路优先 - -1（默认）
-    private int maxZoomLevel; //地图视图最大值
-    private int minZoomLevel; //地图视图最小值
-    private int currZoomLevel; //当前地图视图大小，int值 - -1（默认）
-    private String endPoiName; //导航目的地名字
-    private String endPoiCity; //导航目的地所在城市
-    private boolean isDayWithMapStyle; //白天黑夜模式，-true:白天（默认）  - false:黑夜
-    private boolean hasPrivacyPermission; //是否同意隐私协议，- true:是 - false:否（默认）
-    private int maxVolumeLevel; //最大导航音量
-    private int currentVolumeLevel; //当前导航音量
-    private boolean isLogin; //是否已登录
-    private boolean isAgreeTeamAgreement; //是否已同意组队协议条款，暂不支持组队，false
-    private boolean isInTeam;  //是否已在组队队伍，同上
-    private boolean isTeamLeader; //是否组队队伍的队长，同上
+    private boolean mOpenStatus; //导航app是否打开，boolean值 - true:是 - false:否（默认）
+    private boolean mIsFront; //是否是最上层app，boolean值 - true:是 - false:否（默认）
+    private boolean mIsGPSNavi; //是否在导航中，boolean值 - true:是 - false:否（默认）
+    private boolean mIsCruiseNavi; //是否在巡航中，boolean值 - true:是 - false:否（默认）
+    private int mCurrMapMode; //地图视角，0:车头向上 - 1:正北向上 - 2:3D车头向上 - -1（默认）
+    private boolean mIsMute; //播报是否静音，-true:是  -false:否（默认）
+    private int mBroadcastMode; //- 0:标准/详细 - 1:简洁 - 2:静音 - 3:提示音 - 4:不播报模式 - 5:极简 - -1（默认）
+    private boolean mIsRoutePage; //是否处于规划路线状态，boolean值 - true:是 - false:否（默认）
+    private int mPathCount; //规划路线数量
+    private int mViaPointsCount; //已添加的途经点数量
+    private int mViaPointsMaxCount; //可以添加途经点的最大数量
+    private boolean mIsSetHome; //是否设置家的地址，boolean值 - true:是 - false:否（默认）
+    private boolean mIsSetCompany; //是否设置工作的地址，boolean值 - true:是 - false:否（默认）
+    private boolean mIsRoadEvent; //路况状态是否开启，boolean值 - true:是 - false:否（默认）
+    private boolean mIsOverView; //全览模式是否开启，boolean值 - true:是 - false:否（默认）
+    private int mIsParallelFlagMain; //是否在主路，int值 - 0:主路 - 1:辅路 - -1（默认）
+    private boolean mSwitchParallelFlag; //是否可以切换主辅路，boolean值 - true:是 - false:否（默认）
+    private int mIsParallelBridge; //是否在桥上，int值 - 0:桥上 - 1:桥下 - -1（默认）
+    private boolean mSwitchParallelBridge; //是否可以切换桥上桥下，boolean值 - true:是 - false:否（默认）
+    private boolean mIsListPage; //当前列表是否显示中 - true:是 - false:否（默认）
+    private int mCurrPlanPref;  //当前选择的路线偏好，int值 - 1:智能推荐 - 4:不走高速 - 8:少收费 - 16:躲避拥堵 - 256:时间优先 - 512:高速优先 - 1024:大路优先 - -1（默认）
+    private int mMaxZoomLevel; //地图视图最大值
+    private int mMinZoomLevel; //地图视图最小值
+    private int mCurrZoomLevel; //当前地图视图大小，int值 - -1（默认）
+    private String mEndPoiName; //导航目的地名字
+    private String mEndPoiCity; //导航目的地所在城市
+    private boolean mIsDayWithMapStyle; //白天黑夜模式，-true:白天（默认）  - false:黑夜
+    private boolean mHasPrivacyPermission; //是否同意隐私协议，- true:是 - false:否（默认）
+    private int mMaxVolumeLevel; //最大导航音量
+    private int mCurrentVolumeLevel; //当前导航音量
+    private boolean mIsLogin; //是否已登录
+    private boolean mIsAgreeTeamAgreement; //是否已同意组队协议条款，暂不支持组队，false
+    private boolean mIsInTeam;  //是否已在组队队伍，同上
+    private boolean mIsTeamLeader; //是否组队队伍的队长，同上
 
 
     public boolean isOpenStatus() {
-        return openStatus;
+        return mOpenStatus;
     }
 
-    public void setOpenStatus(boolean openStatus) {
-        this.openStatus = openStatus;
+    public void setOpenStatus(final boolean openStatus) {
+        this.mOpenStatus = openStatus;
     }
 
     public boolean isFront() {
-        return isFront;
+        return mIsFront;
     }
 
-    public void setFront(boolean front) {
-        isFront = front;
+    public void setFront(final boolean front) {
+        mIsFront = front;
     }
 
     public boolean isGPSNavi() {
-        return isGPSNavi;
+        return mIsGPSNavi;
     }
 
-    public void setGPSNavi(boolean GPSNavi) {
-        isGPSNavi = GPSNavi;
+    public void setGPSNavi(final boolean gpsNavi) {
+        mIsGPSNavi = gpsNavi;
     }
 
     public boolean isCruiseNavi() {
-        return isCruiseNavi;
+        return mIsCruiseNavi;
     }
 
-    public void setCruiseNavi(boolean cruiseNavi) {
-        isCruiseNavi = cruiseNavi;
+    public void setCruiseNavi(final boolean cruiseNavi) {
+        mIsCruiseNavi = cruiseNavi;
     }
 
     public int getCurrMapMode() {
-        return currMapMode;
+        return mCurrMapMode;
     }
 
-    public void setCurrMapMode(int currMapMode) {
-        this.currMapMode = currMapMode;
+    public void setCurrMapMode(final int currMapMode) {
+        this.mCurrMapMode = currMapMode;
     }
 
     public boolean isMute() {
-        return isMute;
+        return mIsMute;
     }
 
-    public void setMute(boolean mute) {
-        isMute = mute;
+    public void setMute(final boolean mute) {
+        mIsMute = mute;
     }
 
     public int getBroadcastMode() {
-        return broadcastMode;
+        return mBroadcastMode;
     }
 
-    public void setBroadcastMode(int broadcastMode) {
-        this.broadcastMode = broadcastMode;
+    public void setBroadcastMode(final int broadcastMode) {
+        this.mBroadcastMode = broadcastMode;
     }
 
     public boolean isRoutePage() {
-        return isRoutePage;
+        return mIsRoutePage;
     }
 
-    public void setRoutePage(boolean routePage) {
-        isRoutePage = routePage;
+    public void setRoutePage(final boolean routePage) {
+        mIsRoutePage = routePage;
     }
 
     public int getPathCount() {
-        return pathCount;
+        return mPathCount;
     }
 
-    public void setPathCount(int pathCount) {
-        this.pathCount = pathCount;
+    public void setPathCount(final int pathCount) {
+        this.mPathCount = pathCount;
     }
 
     public int getViaPointsCount() {
-        return viaPointsCount;
+        return mViaPointsCount;
     }
 
-    public void setViaPointsCount(int viaPointsCount) {
-        this.viaPointsCount = viaPointsCount;
+    public void setViaPointsCount(final int viaPointsCount) {
+        this.mViaPointsCount = viaPointsCount;
     }
 
     public int getViaPointsMaxCount() {
-        return viaPointsMaxCount;
+        return mViaPointsMaxCount;
     }
 
-    public void setViaPointsMaxCount(int viaPointsMaxCount) {
-        this.viaPointsMaxCount = viaPointsMaxCount;
+    public void setViaPointsMaxCount(final int viaPointsMaxCount) {
+        this.mViaPointsMaxCount = viaPointsMaxCount;
     }
 
     public boolean isSetHome() {
-        return isSetHome;
+        return mIsSetHome;
     }
 
-    public void setSetHome(boolean setHome) {
-        isSetHome = setHome;
+    public void setSetHome(final boolean setHome) {
+        mIsSetHome = setHome;
     }
 
     public boolean isSetCompany() {
-        return isSetCompany;
+        return mIsSetCompany;
     }
 
-    public void setSetCompany(boolean setCompany) {
-        isSetCompany = setCompany;
+    public void setSetCompany(final boolean setCompany) {
+        mIsSetCompany = setCompany;
     }
 
     public boolean isRoadEvent() {
-        return isRoadEvent;
+        return mIsRoadEvent;
     }
 
-    public void setRoadEvent(boolean roadEvent) {
-        isRoadEvent = roadEvent;
+    public void setRoadEvent(final boolean roadEvent) {
+        mIsRoadEvent = roadEvent;
     }
 
     public boolean isOverView() {
-        return isOverView;
+        return mIsOverView;
     }
 
-    public void setOverView(boolean overView) {
-        isOverView = overView;
+    public void setOverView(final boolean overView) {
+        mIsOverView = overView;
     }
 
     public int isParallelFlagMain() {
-        return isParallelFlagMain;
+        return mIsParallelFlagMain;
     }
 
-    public void setParallelFlagMain(int parallelFlagMain) {
-        isParallelFlagMain = parallelFlagMain;
+    public void setParallelFlagMain(final int parallelFlagMain) {
+        mIsParallelFlagMain = parallelFlagMain;
     }
 
     public boolean isSwitchParallelFlag() {
-        return switchParallelFlag;
+        return mSwitchParallelFlag;
     }
 
-    public void setSwitchParallelFlag(boolean switchParallelFlag) {
-        this.switchParallelFlag = switchParallelFlag;
+    public void setSwitchParallelFlag(final boolean switchParallelFlag) {
+        this.mSwitchParallelFlag = switchParallelFlag;
     }
 
     public int isParallelBridge() {
-        return isParallelBridge;
+        return mIsParallelBridge;
     }
 
-    public void setParallelBridge(int parallelBridge) {
-        isParallelBridge = parallelBridge;
+    public void setParallelBridge(final int parallelBridge) {
+        mIsParallelBridge = parallelBridge;
     }
 
     public boolean isSwitchParallelBridge() {
-        return switchParallelBridge;
+        return mSwitchParallelBridge;
     }
 
-    public void setSwitchParallelBridge(boolean switchParallelBridge) {
-        this.switchParallelBridge = switchParallelBridge;
+    public void setSwitchParallelBridge(final boolean switchParallelBridge) {
+        this.mSwitchParallelBridge = switchParallelBridge;
     }
 
     public boolean isListPage() {
-        return isListPage;
+        return mIsListPage;
     }
 
-    public void setListPage(boolean listPage) {
-        isListPage = listPage;
+    public void setListPage(final boolean listPage) {
+        mIsListPage = listPage;
     }
 
     public int getCurrPlanPref() {
-        return currPlanPref;
+        return mCurrPlanPref;
     }
 
-    public void setCurrPlanPref(int currPlanPref) {
-        this.currPlanPref = currPlanPref;
+    public void setCurrPlanPref(final int currPlanPref) {
+        this.mCurrPlanPref = currPlanPref;
     }
 
     public int getMaxZoomLevel() {
-        return maxZoomLevel;
+        return mMaxZoomLevel;
     }
 
-    public void setMaxZoomLevel(int maxZoomLevel) {
-        this.maxZoomLevel = maxZoomLevel;
+    public void setMaxZoomLevel(final int maxZoomLevel) {
+        this.mMaxZoomLevel = maxZoomLevel;
     }
 
     public int getMinZoomLevel() {
-        return minZoomLevel;
+        return mMinZoomLevel;
     }
 
-    public void setMinZoomLevel(int minZoomLevel) {
-        this.minZoomLevel = minZoomLevel;
+    public void setMinZoomLevel(final int minZoomLevel) {
+        this.mMinZoomLevel = minZoomLevel;
     }
 
     public int getCurrZoomLevel() {
-        return currZoomLevel;
+        return mCurrZoomLevel;
     }
 
-    public void setCurrZoomLevel(int currZoomLevel) {
-        this.currZoomLevel = currZoomLevel;
+    public void setCurrZoomLevel(final int currZoomLevel) {
+        this.mCurrZoomLevel = currZoomLevel;
     }
 
     public String getEndPoiName() {
-        return endPoiName;
+        return mEndPoiName;
     }
 
-    public void setEndPoiName(String endPoiName) {
-        this.endPoiName = endPoiName;
+    public void setEndPoiName(final String endPoiName) {
+        this.mEndPoiName = endPoiName;
     }
 
     public String getEndPoiCity() {
-        return endPoiCity;
+        return mEndPoiCity;
     }
 
-    public void setEndPoiCity(String endPoiCity) {
-        this.endPoiCity = endPoiCity;
+    public void setEndPoiCity(final String endPoiCity) {
+        this.mEndPoiCity = endPoiCity;
     }
 
     public boolean isDayWithMapStyle() {
-        return isDayWithMapStyle;
+        return mIsDayWithMapStyle;
     }
 
-    public void setDayWithMapStyle(boolean dayWithMapStyle) {
-        isDayWithMapStyle = dayWithMapStyle;
+    public void setDayWithMapStyle(final boolean dayWithMapStyle) {
+        mIsDayWithMapStyle = dayWithMapStyle;
     }
 
     public boolean isHasPrivacyPermission() {
-        return hasPrivacyPermission;
+        return mHasPrivacyPermission;
     }
 
-    public void setHasPrivacyPermission(boolean hasPrivacyPermission) {
-        this.hasPrivacyPermission = hasPrivacyPermission;
+    public void setHasPrivacyPermission(final boolean hasPrivacyPermission) {
+        this.mHasPrivacyPermission = hasPrivacyPermission;
     }
 
     public int getMaxVolumeLevel() {
-        return maxVolumeLevel;
+        return mMaxVolumeLevel;
     }
 
-    public void setMaxVolumeLevel(int maxVolumeLevel) {
-        this.maxVolumeLevel = maxVolumeLevel;
+    public void setMaxVolumeLevel(final int maxVolumeLevel) {
+        this.mMaxVolumeLevel = maxVolumeLevel;
     }
 
     public int getCurrentVolumeLevel() {
-        return currentVolumeLevel;
+        return mCurrentVolumeLevel;
     }
 
-    public void setCurrentVolumeLevel(int currentVolumeLevel) {
-        this.currentVolumeLevel = currentVolumeLevel;
+    public void setCurrentVolumeLevel(final int currentVolumeLevel) {
+        this.mCurrentVolumeLevel = currentVolumeLevel;
     }
 
     public boolean isLogin() {
-        return isLogin;
+        return mIsLogin;
     }
 
-    public void setLogin(boolean login) {
-        isLogin = login;
+    public void setLogin(final boolean login) {
+        mIsLogin = login;
     }
 
     public boolean isAgreeTeamAgreement() {
-        return isAgreeTeamAgreement;
+        return mIsAgreeTeamAgreement;
     }
 
-    public void setAgreeTeamAgreement(boolean agreeTeamAgreement) {
-        isAgreeTeamAgreement = agreeTeamAgreement;
+    public void setAgreeTeamAgreement(final boolean agreeTeamAgreement) {
+        mIsAgreeTeamAgreement = agreeTeamAgreement;
     }
 
     public boolean isInTeam() {
-        return isInTeam;
+        return mIsInTeam;
     }
 
-    public void setInTeam(boolean inTeam) {
-        isInTeam = inTeam;
+    public void setInTeam(final boolean inTeam) {
+        mIsInTeam = inTeam;
     }
 
     public boolean isTeamLeader() {
-        return isTeamLeader;
+        return mIsTeamLeader;
     }
 
-    public void setTeamLeader(boolean teamLeader) {
-        isTeamLeader = teamLeader;
+    public void setTeamLeader(final boolean teamLeader) {
+        mIsTeamLeader = teamLeader;
     }
 
     public static class Builder {
         private final MapState mapState = getInstance();
 
-        public Builder setOpenStatus(boolean openStatus) {
+        /**
+         * setOpenStatus
+         * @param openStatus openStatus
+         * @return Builder
+         */
+        public Builder setOpenStatus(final boolean openStatus) {
             mapState.setOpenStatus(openStatus);
             return this;
         }
 
-        public Builder setFront(boolean front) {
+        /**
+         * setFront
+         * @param front front
+         * @return Builder
+         */
+        public Builder setFront(final boolean front) {
             mapState.setFront(front);
             return this;
         }
 
-        public Builder setGPSNavi(boolean GPSNavi) {
-            mapState.setGPSNavi(GPSNavi);
+        /**
+         * setGPSNavi
+         * @param gpsNavi gpsNavi
+         * @return Builder
+         */
+        public Builder setGPSNavi(final boolean gpsNavi) {
+            mapState.setGPSNavi(gpsNavi);
             return this;
         }
 
-        public Builder setCruiseNavi(boolean cruiseNavi) {
+        /**
+         * setCruiseNavi
+         * @param cruiseNavi cruiseNavi
+         * @return Builder
+         */
+        public Builder setCruiseNavi(final boolean cruiseNavi) {
             mapState.setCruiseNavi(cruiseNavi);
             return this;
         }
 
-        public Builder setCurrMapMode(int currMapMode) {
+        /**
+         * setCurrMapMode
+         * @param currMapMode currMapMode
+         * @return Builder
+         */
+        public Builder setCurrMapMode(final int currMapMode) {
             mapState.setCurrMapMode(currMapMode);
             return this;
         }
 
-        public Builder setMute(boolean mute) {
+        /**
+         * setMute
+         * @param mute mute
+         * @return Builder
+         */
+        public Builder setMute(final boolean mute) {
             mapState.setMute(mute);
             return this;
         }
-
-        public Builder setBroadcastMode(int broadcastMode) {
+        /**
+         * setBroadcastMode
+         * @param broadcastMode broadcastMode
+         * @return Builder
+         */
+        public Builder setBroadcastMode(final int broadcastMode) {
             mapState.setBroadcastMode(broadcastMode);
             return this;
         }
-
-        public Builder setRoutePage(boolean routePage) {
+        /**
+         * setRoutePage
+         * @param routePage routePage
+         * @return Builder
+         */
+        public Builder setRoutePage(final boolean routePage) {
             mapState.setRoutePage(routePage);
             return this;
         }
-
-        public Builder setPathCount(int pathCount) {
+        /**
+         * setPathCount
+         * @param pathCount pathCount
+         * @return Builder
+         */
+        public Builder setPathCount(final int pathCount) {
             mapState.setPathCount(pathCount);
             return this;
         }
-
-        public Builder setViaPointsCount(int viaPointsCount) {
+        /**
+         * setViaPointsCount
+         * @param viaPointsCount viaPointsCount
+         * @return Builder
+         */
+        public Builder setViaPointsCount(final int viaPointsCount) {
             mapState.setViaPointsCount(viaPointsCount);
             return this;
         }
-
-        public Builder setViaPointsMaxCount(int viaPointsMaxCount) {
+        /**
+         * setViaPointsMaxCount
+         * @param viaPointsMaxCount viaPointsMaxCount
+         * @return Builder
+         */
+        public Builder setViaPointsMaxCount(final int viaPointsMaxCount) {
             mapState.setViaPointsMaxCount(viaPointsMaxCount);
             return this;
         }
-
-        public Builder setSetHome(boolean setHome) {
+        /**
+         * setSetHome
+         * @param setHome setHome
+         * @return Builder
+         */
+        public Builder setSetHome(final boolean setHome) {
             mapState.setSetHome(setHome);
             return this;
         }
-
-        public Builder setSetCompany(boolean setCompany) {
+        /**
+         * setSetCompany
+         * @param setCompany setCompany
+         * @return Builder
+         */
+        public Builder setSetCompany(final boolean setCompany) {
             mapState.setSetCompany(setCompany);
             return this;
         }
-
-        public Builder setRoadEvent(boolean roadEvent) {
+        /**
+         * setRoadEvent
+         * @param roadEvent roadEvent
+         * @return Builder
+         */
+        public Builder setRoadEvent(final boolean roadEvent) {
             mapState.setRoadEvent(roadEvent);
             return this;
         }
-
-        public Builder setOverView(boolean overView) {
+        /**
+         * setOverView
+         * @param overView overView
+         * @return Builder
+         */
+        public Builder setOverView(final boolean overView) {
             mapState.setOverView(overView);
             return this;
         }
-
-        public Builder setParallelFlagMain(int parallelFlagMain) {
+        /**
+         * setParallelFlagMain
+         * @param parallelFlagMain parallelFlagMain
+         * @return Builder
+         */
+        public Builder setParallelFlagMain(final int parallelFlagMain) {
             mapState.setParallelFlagMain(parallelFlagMain);
             return this;
         }
-
-        public Builder setSwitchParallelFlag(boolean switchParallelFlag) {
+        /**
+         * setSwitchParallelFlag
+         * @param switchParallelFlag switchParallelFlag
+         * @return Builder
+         */
+        public Builder setSwitchParallelFlag(final boolean switchParallelFlag) {
             mapState.setSwitchParallelFlag(switchParallelFlag);
             return this;
         }
-
-        public Builder setParallelBridge(int parallelBridge) {
+        /**
+         * setParallelBridge
+         * @param parallelBridge parallelBridge
+         * @return Builder
+         */
+        public Builder setParallelBridge(final int parallelBridge) {
             mapState.setParallelBridge(parallelBridge);
             return this;
         }
-
-        public Builder setSwitchParallelBridge(boolean switchParallelBridge) {
+        /**
+         * setSwitchParallelBridge
+         * @param switchParallelBridge switchParallelBridge
+         * @return Builder
+         */
+        public Builder setSwitchParallelBridge(final boolean switchParallelBridge) {
             mapState.setSwitchParallelBridge(switchParallelBridge);
             return this;
         }
-
-        public Builder setListPage(boolean listPage) {
+        /**
+         * setListPage
+         * @param listPage listPage
+         * @return Builder
+         */
+        public Builder setListPage(final boolean listPage) {
             mapState.setListPage(listPage);
             return this;
         }
-
-        public Builder setCurrPlanPref(int currPlanPref) {
+        /**
+         * setCurrPlanPref
+         * @param currPlanPref currPlanPref
+         * @return Builder
+         */
+        public Builder setCurrPlanPref(final int currPlanPref) {
             mapState.setCurrPlanPref(currPlanPref);
             return this;
         }
-
-        public Builder setMaxZoomLevel(int maxZoomLevel) {
+        /**
+         * setMaxZoomLevel
+         * @param maxZoomLevel maxZoomLevel
+         * @return Builder
+         */
+        public Builder setMaxZoomLevel(final int maxZoomLevel) {
             mapState.setMaxZoomLevel(maxZoomLevel);
             return this;
         }
-
-        public Builder setMinZoomLevel(int minZoomLevel) {
+        /**
+         * setMinZoomLevel
+         * @param minZoomLevel minZoomLevel
+         * @return Builder
+         */
+        public Builder setMinZoomLevel(final int minZoomLevel) {
             mapState.setMinZoomLevel(minZoomLevel);
             return this;
         }
-
-        public Builder setCurrZoomLevel(int currZoomLevel) {
+        /**
+         * setCurrZoomLevel
+         * @param currZoomLevel currZoomLevel
+         * @return Builder
+         */
+        public Builder setCurrZoomLevel(final int currZoomLevel) {
             mapState.setCurrZoomLevel(currZoomLevel);
             return this;
         }
-
-        public Builder setEndPoiName(String endPoiName) {
+        /**
+         * setEndPoiName
+         * @param endPoiName endPoiName
+         * @return Builder
+         */
+        public Builder setEndPoiName(final String endPoiName) {
             mapState.setEndPoiName(endPoiName);
             return this;
         }
-
-        public Builder setEndPoiCity(String endPoiCity) {
+        /**
+         * setEndPoiCity
+         * @param endPoiCity endPoiCity
+         * @return Builder
+         */
+        public Builder setEndPoiCity(final String endPoiCity) {
             mapState.setEndPoiCity(endPoiCity);
             return this;
         }
-
-        public Builder setDayWithMapStyle(boolean dayWithMapStyle) {
+        /**
+         * setDayWithMapStyle
+         * @param dayWithMapStyle dayWithMapStyle
+         * @return Builder
+         */
+        public Builder setDayWithMapStyle(final boolean dayWithMapStyle) {
             mapState.setDayWithMapStyle(dayWithMapStyle);
             return this;
         }
-
-        public Builder setHasPrivacyPermission(boolean hasPrivacyPermission) {
+        /**
+         * setHasPrivacyPermission
+         * @param hasPrivacyPermission hasPrivacyPermission
+         * @return Builder
+         */
+        public Builder setHasPrivacyPermission(final boolean hasPrivacyPermission) {
             mapState.setHasPrivacyPermission(hasPrivacyPermission);
             return this;
         }
-
-        public Builder setMaxVolumeLevel(int maxVolumeLevel) {
+        /**
+         * setMaxVolumeLevel
+         * @param maxVolumeLevel maxVolumeLevel
+         * @return Builder
+         */
+        public Builder setMaxVolumeLevel(final int maxVolumeLevel) {
             mapState.setMaxVolumeLevel(maxVolumeLevel);
             return this;
         }
-
-        public Builder setCurrentVolumeLevel(int currentVolumeLevel) {
+        /**
+         * setCurrentVolumeLevel
+         * @param currentVolumeLevel currentVolumeLevel
+         * @return Builder
+         */
+        public Builder setCurrentVolumeLevel(final int currentVolumeLevel) {
             mapState.setCurrentVolumeLevel(currentVolumeLevel);
             return this;
         }
-
-        public Builder setLogin(boolean login) {
+        /**
+         * setLogin
+         * @param login login
+         * @return Builder
+         */
+        public Builder setLogin(final boolean login) {
             mapState.setLogin(login);
             return this;
         }
-
-        public Builder setAgreeTeamAgreement(boolean agreeTeamAgreement) {
+        /**
+         * setAgreeTeamAgreement
+         * @param agreeTeamAgreement agreeTeamAgreement
+         * @return Builder
+         */
+        public Builder setAgreeTeamAgreement(final boolean agreeTeamAgreement) {
             mapState.setAgreeTeamAgreement(agreeTeamAgreement);
             return this;
         }
-
-        public Builder setInTeam(boolean inTeam) {
+        /**
+         * setInTeam
+         * @param inTeam inTeam
+         * @return Builder
+         */
+        public Builder setInTeam(final boolean inTeam) {
             mapState.setInTeam(inTeam);
             return this;
         }
-
-        public Builder setTeamLeader(boolean teamLeader) {
+        /**
+         * setTeamLeader
+         * @param teamLeader teamLeader
+         * @return Builder
+         */
+        public Builder setTeamLeader(final boolean teamLeader) {
             mapState.setTeamLeader(teamLeader);
             return this;
         }
-
+        /**
+         * build
+         * @return MapState
+         */
         public MapState build() {
             return mapState;
         }

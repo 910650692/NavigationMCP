@@ -5,6 +5,7 @@ plugins {
 android {
     namespace 'com.fy.navi.vrbridge'
     compileSdk Integer.parseInt(libs.versions.compileSdk.get())
+    buildToolsVersion libs.versions.buildSdk.get()
 
     defaultConfig {
         minSdk Integer.parseInt(libs.versions.minSdk.get())

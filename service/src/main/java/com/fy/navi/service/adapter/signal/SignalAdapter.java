@@ -6,29 +6,38 @@ import com.fy.navi.service.AdapterConfig;
 
 import java.util.Objects;
 
-public class SignalAdapter {
+public final class SignalAdapter {
     private static final String SIGNAL_API_PKG = Objects.requireNonNull(SignalAdapter.class.getPackage()).getName();
     private static final String SIGNAL_API_CLS = "SignalAdapterImpl";
     private final SignalApi mSignalApi;
 
     private static final class SInstanceHolder {
-        static final SignalAdapter sInstance = new SignalAdapter();
+        static final SignalAdapter INSTANCE = new SignalAdapter();
     }
 
     private SignalAdapter() {
         mSignalApi = (SignalApi) AdapterConfig.getObject(SIGNAL_API_PKG, SIGNAL_API_CLS);
     }
 
-    public void initSignal(Context context) {
+    /**
+     * 初始化信号
+     * @param context
+     */
+    public void initSignal(final Context context) {
         mSignalApi.initSignal(context);
     }
 
-    public void registerCallback(String key, SignalAdapterCallback resultCallback) {
+    /**
+     * 注册回调
+     * @param key
+     * @param resultCallback
+     */
+    public void registerCallback(final String key, final SignalAdapterCallback resultCallback) {
         mSignalApi.registerCallback(key, resultCallback);
     }
 
     public static SignalAdapter getInstance() {
-        return SignalAdapter.SInstanceHolder.sInstance;
+        return SignalAdapter.SInstanceHolder.INSTANCE;
     }
 
     public int getChargeSystemStatus() {

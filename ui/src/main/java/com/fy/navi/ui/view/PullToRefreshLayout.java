@@ -9,7 +9,6 @@ import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 
-import androidx.annotation.NonNull;
 import androidx.core.view.ViewCompat;
 
 import com.android.utils.ScreenUtils;
@@ -21,10 +20,6 @@ import com.fy.navi.ui.view.refresh.LoadMoreView;
 import com.fy.navi.ui.view.refresh.RefreshListener;
 import com.fy.navi.ui.view.refresh.State;
 
-
-/**
- * 上拉加载下拉刷新
- */
 public class PullToRefreshLayout extends SkinFrameLayout {
 
     private static final long ANIM_TIME = 250;
@@ -40,33 +35,41 @@ public class PullToRefreshLayout extends SkinFrameLayout {
     private float mTouchY;
     private float mCurrentY;
 
-    private boolean canLoadMore = true;
-    private boolean canRefresh = true;
-    private boolean isRefresh;
-    private boolean isLoadMore;
+    private boolean mCanLoadMore = true;
+    private boolean mCanRefresh = true;
+    private boolean mRefresh;
+    private boolean mLoadMore;
 
     //滑动的最小距离
     private int mTouchSlope;
 
-    private RefreshListener refreshListener;
+    private RefreshListener mRefreshListener;
 
-    public PullToRefreshLayout(Context context) {
+    public PullToRefreshLayout(final Context context) {
         this(context, null);
     }
 
-    public PullToRefreshLayout(Context context, AttributeSet attrs) {
+    public PullToRefreshLayout(final Context context, final AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public PullToRefreshLayout(Context context, AttributeSet attrs, int defStyleAttr) {
+    public PullToRefreshLayout(final Context context, final AttributeSet attrs, final int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init();
     }
 
-    public void setRefreshListener(RefreshListener refreshListener) {
-        this.refreshListener = refreshListener;
+    /**
+     * 设置刷新监听
+     *
+     * @param refreshListener RefreshListener
+     */
+    public void setRefreshListener(final RefreshListener refreshListener) {
+        this.mRefreshListener = refreshListener;
     }
 
+    /**
+     * 计算高度
+     */
     private void cal() {
         head_height = ScreenUtils.Companion.getInstance().dp2px(HEAD_HEIGHT);
         foot_height = ScreenUtils.Companion.getInstance().dp2px(FOOT_HEIGHT);
@@ -75,9 +78,12 @@ public class PullToRefreshLayout extends SkinFrameLayout {
         mTouchSlope = ViewConfiguration.get(getContext()).getScaledTouchSlop();
     }
 
+    /**
+     * 初始化
+     */
     private void init() {
         cal();
-        int count = getChildCount();
+        final int count = getChildCount();
         Logger.d("SEARCH_HMI_TAG", "count:" + count);
     }
 
@@ -89,11 +95,14 @@ public class PullToRefreshLayout extends SkinFrameLayout {
         addFooterView();
     }
 
+    /**
+     * 添加头布局
+     */
     private void addHeadView() {
         if (mHeaderView == null) {
             mHeaderView = new HeadRefreshView(getContext());
         }
-        LayoutParams layoutParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0);
+        final LayoutParams layoutParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0);
         mHeaderView.getView().setLayoutParams(layoutParams);
         if (mHeaderView.getView().getParent() != null) {
             ((ViewGroup) mHeaderView.getView().getParent()).removeAllViews();
@@ -101,11 +110,14 @@ public class PullToRefreshLayout extends SkinFrameLayout {
         addView(mHeaderView.getView(), 0);
     }
 
+    /**
+     * 添加底部布局
+     */
     private void addFooterView() {
         if (mFooterView == null) {
             mFooterView = new LoadMoreView(getContext());
         }
-        LayoutParams layoutParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0);
+        final LayoutParams layoutParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0);
         layoutParams.gravity = Gravity.BOTTOM;
         mFooterView.getView().setLayoutParams(layoutParams);
         if (mFooterView.getView().getParent() != null) {
@@ -115,11 +127,11 @@ public class PullToRefreshLayout extends SkinFrameLayout {
     }
 
     @Override
-    public boolean onInterceptTouchEvent(MotionEvent ev) {
-        if (!canLoadMore && !canRefresh) {
+    public boolean onInterceptTouchEvent(final MotionEvent ev) {
+        if (!mCanLoadMore && !mCanRefresh) {
             return super.onInterceptTouchEvent(ev);
         }
-        if (isRefresh || isLoadMore) {
+        if (mRefresh || mLoadMore) {
             return true;
         }
         switch (ev.getAction()) {
@@ -128,38 +140,40 @@ public class PullToRefreshLayout extends SkinFrameLayout {
                 mCurrentY = mTouchY;
                 break;
             case MotionEvent.ACTION_MOVE:
-                float currentY = ev.getY();
-                float dy = currentY - mCurrentY;
-                if (canRefresh) {
-                    boolean canChildScrollUp = canChildScrollUp();
+                final float currentY = ev.getY();
+                final float dy = currentY - mCurrentY;
+                if (mCanRefresh) {
+                    final boolean canChildScrollUp = canChildScrollUp();
                     if (dy > mTouchSlope && !canChildScrollUp) {
                         mHeaderView.begin();
                         return true;
                     }
                 }
-                if (canLoadMore) {
-                    boolean canChildScrollDown = canChildScrollDown();
+                if (mCanLoadMore) {
+                    final boolean canChildScrollDown = canChildScrollDown();
                     if (dy < -mTouchSlope && !canChildScrollDown) {
                         mFooterView.begin();
                         return true;
                     }
                 }
+                break;
             default:
+                Logger.d("SEARCH_HMI_TAG", "onInterceptTouchEvent");
                 break;
         }
         return super.onInterceptTouchEvent(ev);
     }
 
     @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        if (isRefresh || isLoadMore) {
+    public boolean onTouchEvent(final MotionEvent event) {
+        if (mRefresh || mLoadMore) {
             return true;
         }
         switch (event.getAction()) {
             case MotionEvent.ACTION_MOVE:
                 mCurrentY = event.getY();
                 float dura = (mCurrentY - mTouchY) / 3.0f;
-                if (dura > 0 && canRefresh) {
+                if (dura > 0 && mCanRefresh) {
                     dura = Math.min(head_height_2, dura);
                     dura = Math.max(0, dura);
                     mHeaderView.getView().getLayoutParams().height = (int) dura;
@@ -172,53 +186,55 @@ public class PullToRefreshLayout extends SkinFrameLayout {
                     mFooterView.getView().getLayoutParams().height = (int) dura;
                     ViewCompat.setTranslationY(mChildView, -dura);
                     requestLayout();
-                    if (canLoadMore) {
+                    if (mCanLoadMore) {
                         mFooterView.progress(dura, foot_height);
                     }
                 }
                 return true;
             case MotionEvent.ACTION_UP:
             case MotionEvent.ACTION_CANCEL:
-                float currentY = event.getY();
+                final float currentY = event.getY();
                 final int dy1 = (int) (currentY - mTouchY) / 3;
-                if (dy1 > 0 && canRefresh) {
+                if (dy1 > 0 && mCanRefresh) {
                     if (dy1 >= head_height) {
-                        createAnimatorTranslationY(State.REFRESH_STATE.REFRESH,
+                        createAnimatorTranslationY(State.RefreshState.REFRESH,
                                 dy1 > head_height_2 ? head_height_2 : dy1, head_height,
                                 new CallBack() {
                                     @Override
                                     public void onSuccess() {
-                                        isRefresh = true;
-                                        if (refreshListener != null) {
-                                            refreshListener.refresh();
+                                        mRefresh = true;
+                                        if (mRefreshListener != null) {
+                                            mRefreshListener.refresh();
                                         }
                                         mHeaderView.loading();
                                     }
                                 });
                     } else if (dy1 > 0 && dy1 < head_height) {
-                        setFinish(dy1, State.REFRESH_STATE.REFRESH);
+                        setFinish(dy1, State.RefreshState.REFRESH);
                         mHeaderView.normal();
                     }
                 } else {
                     if (Math.abs(dy1) >= foot_height) {
-                        createAnimatorTranslationY(State.REFRESH_STATE.LOADMORE, Math.abs(dy1) > foot_height_2 ? foot_height_2 : Math.abs(dy1), foot_height,
+                        createAnimatorTranslationY(State.RefreshState.LOADMORE,
+                                Math.abs(dy1) > foot_height_2 ? foot_height_2 : Math.abs(dy1),
+                                foot_height,
                                 new CallBack() {
                                     @Override
                                     public void onSuccess() {
-                                        if (canLoadMore) {
-                                            isLoadMore = true;
-                                            if (refreshListener != null) {
-                                                refreshListener.loadMore();
+                                        if (mCanLoadMore) {
+                                            mLoadMore = true;
+                                            if (mRefreshListener != null) {
+                                                mRefreshListener.loadMore();
                                             }
                                             mFooterView.loading();
                                         } else {
-                                            setFinish(Math.abs(dy1), State.REFRESH_STATE.LOADMORE);
+                                            setFinish(Math.abs(dy1), State.RefreshState.LOADMORE);
                                             mFooterView.normal();
                                         }
                                     }
                                 });
                     } else {
-                        setFinish(Math.abs(dy1), State.REFRESH_STATE.LOADMORE);
+                        setFinish(Math.abs(dy1), State.RefreshState.LOADMORE);
                         mFooterView.normal();
                     }
                 }
@@ -229,6 +245,11 @@ public class PullToRefreshLayout extends SkinFrameLayout {
         return super.onTouchEvent(event);
     }
 
+    /**
+     * 是否可以滑动
+     *
+     * @return true 可以滑动
+     */
     private boolean canChildScrollDown() {
         if (mChildView == null) {
             return false;
@@ -237,6 +258,11 @@ public class PullToRefreshLayout extends SkinFrameLayout {
         return ViewCompat.canScrollVertically(mChildView, 1);
     }
 
+    /**
+     * 是否可以滑动
+     *
+     * @return true 可以滑动
+     */
     private boolean canChildScrollUp() {
         if (mChildView == null) {
             return false;
@@ -246,15 +272,20 @@ public class PullToRefreshLayout extends SkinFrameLayout {
 
     /**
      * 创建动画
+     *
+     * @param state    RefreshState
+     * @param start    开始时间
+     * @param purpose  结束时间
+     * @param callBack CallBack
      */
-    public void createAnimatorTranslationY(@State.REFRESH_STATE final int state, final int start, final int purpose, final CallBack callBack) {
+    public void createAnimatorTranslationY(@State.RefreshState final int state, final int start, final int purpose, final CallBack callBack) {
         final ValueAnimator anim;
         anim = ValueAnimator.ofInt(start, purpose);
         anim.setDuration(ANIM_TIME);
         anim.addUpdateListener(valueAnimator -> {
             if (valueAnimator.getAnimatedValue() != null) {
-                int value = (int) valueAnimator.getAnimatedValue();
-                if (state == State.REFRESH_STATE.REFRESH) {
+                final int value = (int) valueAnimator.getAnimatedValue();
+                if (state == State.RefreshState.REFRESH) {
                     mHeaderView.getView().getLayoutParams().height = value;
                     ViewCompat.setTranslationY(mChildView, value);
                     if (purpose == 0) { //代表结束加载
@@ -285,39 +316,57 @@ public class PullToRefreshLayout extends SkinFrameLayout {
 
     /**
      * 结束下拉刷新
+     *
+     * @param height 刷新高度
+     * @param state  刷新状态
      */
-    private void setFinish(int height, @State.REFRESH_STATE final int state) {
+    private void setFinish(final int height, @State.RefreshState final int state) {
         createAnimatorTranslationY(state, height, 0, () -> {
-            if (state == State.REFRESH_STATE.REFRESH) {
-                isRefresh = false;
+            if (state == State.RefreshState.REFRESH) {
+                mRefresh = false;
                 mHeaderView.normal();
 
             } else {
-                isLoadMore = false;
+                mLoadMore = false;
                 mFooterView.normal();
             }
         });
     }
 
-    private void setFinish(@State.REFRESH_STATE int state) {
-        if (state == State.REFRESH_STATE.REFRESH) {
-            if (mHeaderView != null && mHeaderView.getView().getLayoutParams().height > 0 && isRefresh) {
+    /**
+     * 结束下拉刷新
+     *
+     * @param state 刷新状态
+     */
+    private void setFinish(@State.RefreshState final int state) {
+        if (state == State.RefreshState.REFRESH) {
+            if (mHeaderView != null && mHeaderView.getView().getLayoutParams().height > 0 && mRefresh) {
                 setFinish(head_height, state);
             }
         } else {
-            if (mFooterView != null && mFooterView.getView().getLayoutParams().height > 0 && isLoadMore) {
+            if (mFooterView != null && mFooterView.getView().getLayoutParams().height > 0 && mLoadMore) {
                 setFinish(foot_height, state);
             }
         }
     }
 
-    public void setRefreshTips(String tips) {
+    /**
+     * 设置下拉刷新提示语
+     *
+     * @param tips 提示语
+     */
+    public void setRefreshTips(final String tips) {
         if (mHeaderView != null) {
             mHeaderView.setRefreshTips(tips);
         }
     }
 
-    public void setLoadMoreTips(String tips) {
+    /**
+     * 设置加载更多提示语
+     *
+     * @param tips 提示语
+     */
+    public void setLoadMoreTips(final String tips) {
         if (mFooterView != null) {
             mFooterView.setLoadMoreTips(tips);
         }
@@ -327,31 +376,40 @@ public class PullToRefreshLayout extends SkinFrameLayout {
      * 结束刷新
      */
     public void finishRefresh() {
-        setFinish(State.REFRESH_STATE.REFRESH);
+        setFinish(State.RefreshState.REFRESH);
     }
 
     /**
      * 结束加载更多
      */
     public void finishLoadMore() {
-        setFinish(State.REFRESH_STATE.LOADMORE);
+        setFinish(State.RefreshState.LOADMORE);
     }
 
     /**
      * 设置是否启用加载更多
+     *
+     * @param canLoadMore true 启用 false 不启用
      */
-    public void setCanLoadMore(boolean canLoadMore) {
-        this.canLoadMore = canLoadMore;
+    public void setCanLoadMore(final boolean canLoadMore) {
+        this.mCanLoadMore = canLoadMore;
     }
 
     /**
      * 设置是否启用刷新
+     *
+     * @param canRefresh true 启用 false 不启用
      */
-    public void setCanRefresh(boolean canRefresh) {
-        this.canRefresh = canRefresh;
+    public void setCanRefresh(final boolean canRefresh) {
+        this.mCanRefresh = canRefresh;
     }
 
-    public void setRefresh(boolean isRefresh) {
+    /**
+     * 设置是否正在刷新
+     *
+     * @param isRefresh true 正在刷新 false 不在刷新
+     */
+    public void setRefresh(final boolean isRefresh) {
         if (mHeaderView != null) {
             mHeaderView.setRefresh(isRefresh);
         }
@@ -360,19 +418,19 @@ public class PullToRefreshLayout extends SkinFrameLayout {
     /**
      * 设置是下拉刷新头部
      *
-     * @param mHeaderView 需实现 HeadView 接口
+     * @param headerView 需实现 HeadView 接口
      */
-    public void setHeaderView(HeadView mHeaderView) {
-        this.mHeaderView = mHeaderView;
+    public void setHeaderView(final HeadView headerView) {
+        this.mHeaderView = headerView;
     }
 
     /**
      * 设置是下拉刷新尾部
      *
-     * @param mFooterView 需实现 FooterView 接口
+     * @param footerView 需实现 FooterView 接口
      */
-    public void setFooterView(FooterView mFooterView) {
-        this.mFooterView = mFooterView;
+    public void setFooterView(final FooterView footerView) {
+        this.mFooterView = footerView;
     }
 
     /**
@@ -380,7 +438,7 @@ public class PullToRefreshLayout extends SkinFrameLayout {
      *
      * @param dp 单位为dp
      */
-    public void setHeadHeight(int dp) {
+    public void setHeadHeight(final int dp) {
         head_height = ScreenUtils.Companion.getInstance().dp2px(dp);
     }
 
@@ -389,7 +447,7 @@ public class PullToRefreshLayout extends SkinFrameLayout {
      *
      * @param dp 单位为dp
      */
-    public void setFootHeight(int dp) {
+    public void setFootHeight(final int dp) {
         foot_height = ScreenUtils.Companion.getInstance().dp2px(dp);
     }
 
@@ -398,7 +456,7 @@ public class PullToRefreshLayout extends SkinFrameLayout {
      *
      * @param dp 单位为dp
      */
-    public void setAllHeight(int dp) {
+    public void setAllHeight(final int dp) {
         head_height = ScreenUtils.Companion.getInstance().dp2px(dp);
         foot_height = ScreenUtils.Companion.getInstance().dp2px(dp);
     }
@@ -409,7 +467,7 @@ public class PullToRefreshLayout extends SkinFrameLayout {
      * @param refresh  刷新控件的高度 单位为dp
      * @param loadMore 加载控件的高度 单位为dp
      */
-    public void setAllHeight(int refresh, int loadMore) {
+    public void setAllHeight(final int refresh, final int loadMore) {
         head_height = ScreenUtils.Companion.getInstance().dp2px(refresh);
         foot_height = ScreenUtils.Companion.getInstance().dp2px(loadMore);
     }
@@ -419,7 +477,7 @@ public class PullToRefreshLayout extends SkinFrameLayout {
      *
      * @param dp 单位为dp
      */
-    public void setMaxHeadHeight(int dp) {
+    public void setMaxHeadHeight(final int dp) {
         if (head_height >= ScreenUtils.Companion.getInstance().dp2px(dp)) {
             return;
         }
@@ -431,7 +489,7 @@ public class PullToRefreshLayout extends SkinFrameLayout {
      *
      * @param dp 单位为dp
      */
-    public void setMaxFootHeight(int dp) {
+    public void setMaxFootHeight(final int dp) {
         if (foot_height >= ScreenUtils.Companion.getInstance().dp2px(dp)) {
             return;
         }
@@ -443,7 +501,7 @@ public class PullToRefreshLayout extends SkinFrameLayout {
      *
      * @param dp 单位为dp
      */
-    public void setAllMaxHeight(int dp) {
+    public void setAllMaxHeight(final int dp) {
         if (head_height >= ScreenUtils.Companion.getInstance().dp2px(dp)) {
             return;
         }
@@ -460,7 +518,7 @@ public class PullToRefreshLayout extends SkinFrameLayout {
      * @param refresh  刷新控件下拉的最大高度 单位为dp
      * @param loadMore 加载控件上拉的最大高度 单位为dp
      */
-    public void setAllMaxHeight(int refresh, int loadMore) {
+    public void setAllMaxHeight(final int refresh, final int loadMore) {
         if (head_height >= ScreenUtils.Companion.getInstance().dp2px(refresh)) {
             return;
         }
@@ -472,6 +530,9 @@ public class PullToRefreshLayout extends SkinFrameLayout {
     }
 
     public interface CallBack {
+        /**
+         * 动画执行完毕
+         */
         void onSuccess();
     }
 }

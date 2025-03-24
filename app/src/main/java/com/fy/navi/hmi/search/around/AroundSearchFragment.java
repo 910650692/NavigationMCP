@@ -1,6 +1,5 @@
 package com.fy.navi.hmi.search.around;
 
-import static com.fy.navi.service.MapDefaultFinalTag.SEARCH_HMI_TAG;
 
 import android.content.res.TypedArray;
 import android.os.Bundle;
@@ -12,11 +11,14 @@ import com.fy.navi.hmi.R;
 import com.fy.navi.hmi.databinding.FragmentAroundBinding;
 import com.fy.navi.scene.RoutePath;
 import com.fy.navi.service.AutoMapConstant;
+import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.define.map.MapTypeId;
 import com.fy.navi.service.define.search.PoiInfoEntity;
 import com.fy.navi.ui.base.BaseFragment;
 
 /**
+ * @author baipeng0904
+ * @version \$Revision1.0\$
  * 周边搜索页面
  */
 @Route(path = RoutePath.Search.AROUND_SEARCH_FRAGMENT)
@@ -42,21 +44,24 @@ public class AroundSearchFragment extends BaseFragment<FragmentAroundBinding, Ar
         defaultDataProcessing();
     }
 
+    /**
+     * 默认数据处理
+     */
     private void defaultDataProcessing() {
-        Bundle parsedArgs = getArguments();
+        final Bundle parsedArgs = getArguments();
         if (parsedArgs == null) {
-            Logger.d(SEARCH_HMI_TAG, "No valid arguments found.");
+            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "No valid arguments found.");
             return;
         }
 
-        PoiInfoEntity poiInfoEntity = parsedArgs.getParcelable(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_OPEN_AROUND);
+        final PoiInfoEntity poiInfoEntity = parsedArgs.getParcelable(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_OPEN_AROUND);
         mBinding.sceneQuickSearchView.setSearchType(AutoMapConstant.SearchType.AROUND_SEARCH);
         mBinding.sceneQuickSearchView.setPoiInfoEntity(poiInfoEntity);
 
-        String[] categories;
-        TypedArray iconArray;
-        String title;
-        int powerType = mViewModel.powerType();
+        final String[] categories;
+        final TypedArray iconArray;
+        final String title;
+        final int powerType = mViewModel.powerType();
 
         if (poiInfoEntity != null) {
             String poiName = poiInfoEntity.getName();

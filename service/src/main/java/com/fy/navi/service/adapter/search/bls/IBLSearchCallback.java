@@ -1,9 +1,11 @@
 package com.fy.navi.service.adapter.search.bls;
 
 /**
- * @Author: baipeng0904
+ * @author baipeng0904
  * @Description: 类作用描述
  * @CreateDate: $ $
+ * @version \$Revision1.0\$
+ * @param <T> 回调数据泛型
  */
 public interface IBLSearchCallback<T> {
     /**
@@ -15,6 +17,8 @@ public interface IBLSearchCallback<T> {
 
     /**
      * 请求失败
+     * @param errCode 错误码
+     * @param data 请求到的数据
      */
     void onFailure(int errCode, T data);
 

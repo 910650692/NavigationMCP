@@ -10,8 +10,8 @@ import java.util.List;
 
 public class RecorderPackage implements RecorderAdapterCallback {
 
-    private RecorderAdapter mRecorderAdapter;
-    private final List<RecorderCallBack> callBacks = new ArrayList<>();
+    private final RecorderAdapter mRecorderAdapter;
+    private final List<RecorderCallBack> mCallBacks = new ArrayList<>();
 
 
     public RecorderPackage() {
@@ -19,7 +19,7 @@ public class RecorderPackage implements RecorderAdapterCallback {
     }
 
     public static RecorderPackage getInstance() {
-        return RecorderPackage.SInstanceHolder.sInstance;
+        return RecorderPackage.SInstanceHolder.INSTANCE;
     }
 
     @Override
@@ -28,39 +28,53 @@ public class RecorderPackage implements RecorderAdapterCallback {
         mRecorderAdapter.registerCallBack("RecorderPackage", this);
     }
 
+    /**
+     * 开始记录
+     */
     public void startRecorder() {
         mRecorderAdapter.startRecorder();
     }
 
+    /**
+     * 停止记录
+     */
     public void stopRecorder() {
         mRecorderAdapter.stopRecorder();
     }
 
+    /**
+     * 开始回放
+     */
     public void startPlayback() {
         mRecorderAdapter.startPlayback();
     }
 
+    /**
+     * 停止回放
+     */
     public void stopPlayback() {
         mRecorderAdapter.stopPlayback();
     }
 
-    public synchronized void registerCallBack(RecorderCallBack callback) {
-        if (callback != null && !callBacks.contains(callback)) {
-            callBacks.add(callback);
+    /**
+     * 注册回调
+     * @param callback 回调
+     */
+    public synchronized void registerCallBack(final RecorderCallBack callback) {
+        if (callback != null && !mCallBacks.contains(callback)) {
+            mCallBacks.add(callback);
         }
     }
 
     @Override
-    public void notifyPlayProgress(PlayProgressInfo playProgressInfo) {
-        if (null != callBacks) {
-            for (RecorderCallBack observer : callBacks) {
-                observer.notifyPlayProgress(playProgressInfo);
-            }
+    public void notifyPlayProgress(final PlayProgressInfo playProgressInfo) {
+        for (RecorderCallBack observer : mCallBacks) {
+            observer.notifyPlayProgress(playProgressInfo);
         }
     }
 
     private static final class SInstanceHolder {
-        static final RecorderPackage sInstance = new RecorderPackage();
+        static final RecorderPackage INSTANCE = new RecorderPackage();
     }
 
 }

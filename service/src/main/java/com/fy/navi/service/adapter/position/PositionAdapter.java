@@ -42,6 +42,10 @@ public class PositionAdapter {
         mPositionApi.registerCallback(callback);
     }
 
+    public void unregisterCallback(IPositionAdapterCallback callback){
+        mPositionApi.unregisterCallback(callback);
+    }
+
     public void unInitPositionService() {
         mPositionApi.unInitPositionService();
     }

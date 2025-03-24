@@ -1,113 +1,114 @@
 package com.fy.navi.service.define.navi;
 
-import com.autonavi.gbl.common.model.Coord2DDouble;
 import com.fy.navi.service.define.bean.GeoPoint;
 
 import java.util.ArrayList;
 
 /**
  * 车道线实体类
+ * @author fy
+ * @version $Revision.*$
  */
 public class LaneInfoEntity {
     //背景车道，巡航、导航都有效 LaneAction
-    private ArrayList<Integer> backLane;
+    private ArrayList<Integer> mBackLane;
     //背景扩展车道信息，巡航、导航都有效 ExtenLaneAction
-    private ArrayList<Integer> backExtenLane;
+    private ArrayList<Integer> mBackExtenLane;
     //车道坐标点，仅巡航有效
-    private GeoPoint point;
+    private GeoPoint mPoint;
 
     //前景车道，仅导航有效 LaneAction
-    private ArrayList<Integer> frontLane;
+    private ArrayList<Integer> mFrontLane;
     //建议车道，仅在线导航有效 LaneAction
-    private ArrayList<Integer> optimalLane;
+    private ArrayList<Integer> mOptimalLane;
 
 
     //扩展车道信息，仅在线导航有效 ExtenLaneAction
-    private ArrayList<Integer> extensionLane;
+    private ArrayList<Integer> mExtensionLane;
     //前景分时车道类型，仅在线导航有效 LaneCategoryType
-    private ArrayList<Integer> frontLaneType;
+    private ArrayList<Integer> mFrontLaneType;
     //背景分时车道类型，仅在线导航有效 LaneCategoryType
-    private ArrayList<Integer> backLaneType;
-    public int segmentIdx;
-    public int linkIdx;
+    private ArrayList<Integer> mBackLaneType;
+    private int mSegmentIdx;
+    private int mLinkIdx;
 
     public ArrayList<Integer> getBackLane() {
-        return backLane;
+        return mBackLane;
     }
 
-    public void setBackLane(ArrayList<Integer> backLane) {
-        this.backLane = backLane;
+    public void setBackLane(final ArrayList<Integer> backLane) {
+        this.mBackLane = backLane;
     }
 
     public ArrayList<Integer> getBackExtenLane() {
-        return backExtenLane;
+        return mBackExtenLane;
     }
 
-    public void setBackExtenLane(ArrayList<Integer> backExtenLane) {
-        this.backExtenLane = backExtenLane;
+    public void setBackExtenLane(final ArrayList<Integer> backExtenLane) {
+        this.mBackExtenLane = backExtenLane;
     }
 
     public GeoPoint getPoint() {
-        return point;
+        return mPoint;
     }
 
-    public void setPoint(GeoPoint point) {
-        this.point = point;
+    public void setPoint(final GeoPoint point) {
+        this.mPoint = point;
     }
 
     public ArrayList<Integer> getFrontLane() {
-        return frontLane;
+        return mFrontLane;
     }
 
-    public void setFrontLane(ArrayList<Integer> frontLane) {
-        this.frontLane = frontLane;
+    public void setFrontLane(final ArrayList<Integer> frontLane) {
+        this.mFrontLane = frontLane;
     }
 
     public ArrayList<Integer> getOptimalLane() {
-        return optimalLane;
+        return mOptimalLane;
     }
 
-    public void setOptimalLane(ArrayList<Integer> optimalLane) {
-        this.optimalLane = optimalLane;
+    public void setOptimalLane(final ArrayList<Integer> optimalLane) {
+        this.mOptimalLane = optimalLane;
     }
 
     public ArrayList<Integer> getExtensionLane() {
-        return extensionLane;
+        return mExtensionLane;
     }
 
-    public void setExtensionLane(ArrayList<Integer> extensionLane) {
-        this.extensionLane = extensionLane;
+    public void setExtensionLane(final ArrayList<Integer> extensionLane) {
+        this.mExtensionLane = extensionLane;
     }
 
     public ArrayList<Integer> getFrontLaneType() {
-        return frontLaneType;
+        return mFrontLaneType;
     }
 
-    public void setFrontLaneType(ArrayList<Integer> frontLaneType) {
-        this.frontLaneType = frontLaneType;
+    public void setFrontLaneType(final ArrayList<Integer> frontLaneType) {
+        this.mFrontLaneType = frontLaneType;
     }
 
     public ArrayList<Integer> getBackLaneType() {
-        return backLaneType;
+        return mBackLaneType;
     }
 
-    public void setBackLaneType(ArrayList<Integer> backLaneType) {
-        this.backLaneType = backLaneType;
+    public void setBackLaneType(final ArrayList<Integer> backLaneType) {
+        this.mBackLaneType = backLaneType;
     }
 
     public int getSegmentIdx() {
-        return segmentIdx;
+        return mSegmentIdx;
     }
 
-    public void setSegmentIdx(int segmentIdx) {
-        this.segmentIdx = segmentIdx;
+    public void setSegmentIdx(final int segmentIdx) {
+        this.mSegmentIdx = segmentIdx;
     }
 
     public int getLinkIdx() {
-        return linkIdx;
+        return mLinkIdx;
     }
 
-    public void setLinkIdx(int linkIdx) {
-        this.linkIdx = linkIdx;
+    public void setLinkIdx(final int linkIdx) {
+        this.mLinkIdx = linkIdx;
     }
 }

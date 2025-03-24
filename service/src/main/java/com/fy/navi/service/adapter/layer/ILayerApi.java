@@ -9,6 +9,18 @@ import com.fy.navi.service.define.layer.LayerType;
 import com.fy.navi.service.define.layer.RouteLineLayerParam;
 import com.fy.navi.service.define.layer.SearchResultLayer;
 import com.fy.navi.service.define.layer.bls.CarLocation;
+import com.fy.navi.service.define.layer.refix.LayerItemSearchAlongWay;
+import com.fy.navi.service.define.layer.refix.LayerItemSearchAlongWayPop;
+import com.fy.navi.service.define.layer.refix.LayerItemSearchBegin;
+import com.fy.navi.service.define.layer.refix.LayerItemSearchChargeStation;
+import com.fy.navi.service.define.layer.refix.LayerItemSearchEnd;
+import com.fy.navi.service.define.layer.refix.LayerItemSearchEntrance;
+import com.fy.navi.service.define.layer.refix.LayerItemSearchExit;
+import com.fy.navi.service.define.layer.refix.LayerItemSearchLabel;
+import com.fy.navi.service.define.layer.refix.LayerItemSearchPark;
+import com.fy.navi.service.define.layer.refix.LayerItemSearchVia;
+import com.fy.navi.service.define.layer.refix.LayerItemSearchChild;
+import com.fy.navi.service.define.layer.refix.LayerItemSearchParent;
 import com.fy.navi.service.define.map.GmBizUserFavoritePoint;
 import com.fy.navi.service.define.map.MapTypeId;
 import com.fy.navi.service.define.navi.CrossImageEntity;
@@ -26,7 +38,7 @@ import java.util.List;
 public interface ILayerApi {
 
     /* 初始化业务图层优先级配置及内聚功能配置 */
-    void initLayerService();
+    boolean initLayerService(MapTypeId mapTypeId);
 
     /* 初始化业务图层的内部图层样式纹理，如果使用自定义图层样式，则无需调用该接口 */
     void initInnerStyle();
@@ -89,7 +101,7 @@ public interface ILayerApi {
     PreviewParams getPathResultBound(MapTypeId mapTypeId, ArrayList<?> pathResult);
 
     /* 绘制路线 */
-    void drawRouteLine(RouteLineLayerParam routeLineLayer);
+    void drawRouteLine(MapTypeId mapTypeId, RouteLineLayerParam routeLineLayer);
 
     /* 选择路线 */
     void setSelectedPathIndex(MapTypeId mapTypeId, int routeIndex);
@@ -187,9 +199,10 @@ public interface ILayerApi {
     void clearFavoriteMain(MapTypeId mapTypeId);
 
     /**
-     *设置动态比例尺是否锁住
-     *
+     * 设置动态比例尺是否锁住
+     * <p>
      * 对动态比例尺加锁或者解锁
+     *
      * @param mapTypeId
      * @param isLock
      * @param type
@@ -207,7 +220,7 @@ public interface ILayerApi {
 
     /**
      * 重置缓存的状态, 算路成功后调用此方法
-     *
+     * <p>
      * 重置动态比例尺状态
      * 默认值type=DynamicLevelGuide
      */
@@ -226,5 +239,68 @@ public interface ILayerApi {
      * @param type
      * @return
      */
-    float getDynamicLevelMapHeadDegree (MapTypeId mapTypeId, @GemDynamicLevel.GemDynamicLevelType int type);
+    float getDynamicLevelMapHeadDegree(MapTypeId mapTypeId, @GemDynamicLevel.GemDynamicLevelType int type);
+
+
+    /**
+     * 父点+子点+中心点+出入口
+     *
+     * @param mapTypeId
+     * @param parentPoints
+     * @param childPoints
+     * @param exitPoints
+     * @param entrancePoints
+     * @return
+     */
+    boolean addLayerItemOfSearchResult(MapTypeId mapTypeId, ArrayList<LayerItemSearchParent> parentPoints, ArrayList<LayerItemSearchChild> childPoints, ArrayList<LayerItemSearchExit> exitPoints, ArrayList<LayerItemSearchEntrance> entrancePoints, boolean clearOtherLayerItem);
+
+    /**
+     * 搜索起点、途经点、终点
+     *
+     * @param mapTypeId
+     * @param beginPoint
+     * @param viaPoints
+     * @param endPoint
+     * @return
+     */
+    boolean addLayerItemOfBeginEnd(MapTypeId mapTypeId, LayerItemSearchBegin beginPoint, ArrayList<LayerItemSearchVia> viaPoints, LayerItemSearchEnd endPoint, boolean clearOtherLayerItem);
+
+    /**
+     * 沿途搜点 + 气泡
+     *
+     * @param mapTypeId
+     * @param alongWayPoints
+     * @param alongWayPops
+     * @return
+     */
+    boolean addLayerItemOfAlongRoute(MapTypeId mapTypeId, ArrayList<LayerItemSearchAlongWay> alongWayPoints, ArrayList<LayerItemSearchAlongWayPop> alongWayPops, boolean clearOtherLayerItem);
+
+    /**
+     * 充电桩
+     *
+     * @param mapTypeId
+     * @param points
+     * @return
+     */
+    boolean addLayerItemOfChargeStation(MapTypeId mapTypeId, ArrayList<LayerItemSearchChargeStation> points, boolean clearOtherLayerItem);
+
+    /**
+     * 停车场
+     *
+     * @param mapTypeId
+     * @param points
+     * @param clearOtherLayerItem
+     * @return
+     */
+    boolean addLayerItemOfPark(MapTypeId mapTypeId, ArrayList<LayerItemSearchPark> points, boolean clearOtherLayerItem);
+
+    /**
+     * 扎标
+     *
+     * @param mapTypeId
+     * @param label
+     * @param clearOtherLayerItem
+     * @return
+     */
+    boolean addLayerItemOfLabel(MapTypeId mapTypeId, LayerItemSearchLabel label, boolean clearOtherLayerItem);
 }

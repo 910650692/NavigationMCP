@@ -2,9 +2,6 @@ package com.fy.navi.ui.view.refresh;
 
 import android.view.View;
 
-/**
- * foot view
- */
 public interface FooterView {
 
     /**
@@ -20,6 +17,12 @@ public interface FooterView {
      */
     void progress(float progress, float all);
 
+    /**
+     * 结束下拉
+     *
+     * @param progress 当前高度
+     * @param all      总高度   为默认高度的2倍
+     */
     void finishing(float progress, float all);
 
     /**
@@ -33,11 +36,23 @@ public interface FooterView {
     void normal();
 
     /**
-     * 返回当前视图
+     * 获取View
+     *
+     * @return View
      */
     View getView();
 
+    /**
+     * 设置加载更多提示
+     *
+     * @param tips 提示
+     */
     void setLoadMoreTips(String tips);
 
+    /**
+     * 设置是否可以加载更多
+     *
+     * @param canLoadMore 是否可以加载更多
+     */
     void canLoadMore(boolean canLoadMore);
 }

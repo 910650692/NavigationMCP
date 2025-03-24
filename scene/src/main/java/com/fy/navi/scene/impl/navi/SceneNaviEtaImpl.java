@@ -35,7 +35,7 @@ public class SceneNaviEtaImpl extends BaseSceneModel<SceneNaviEtaView> {
     // 当前引导数据
     private NaviEtaInfo mCurNaviInfo;
     // 导航信息转向图标bitmap 缓存
-    protected Bitmap nextThumDirectionCache;
+    private Bitmap mNextThumDirectionCache;
     // 环岛数
     private int mRoundNum = 0;
     //近阶动作数
@@ -54,32 +54,36 @@ public class SceneNaviEtaImpl extends BaseSceneModel<SceneNaviEtaView> {
     private String mRemainInfo = "";
     //  上一次显示的剩余信息
     private String mLastRemainInfo = "";
-    public ObservableField<Boolean> distanceTimeVisible;
-    public ObservableField<Boolean> groupNextVisible;
+    public ObservableField<Boolean> mDistanceTimeVisible;
+    public ObservableField<Boolean> mGroupNextVisible;
 
-    public SceneNaviEtaImpl(SceneNaviEtaView mScreenView) {
-        super(mScreenView);
-        distanceTimeVisible = new ObservableField(false);
-        groupNextVisible = new ObservableField(true);
+    public SceneNaviEtaImpl(final SceneNaviEtaView screenView) {
+        super(screenView);
+        mDistanceTimeVisible = new ObservableField(false);
+        mGroupNextVisible = new ObservableField(true);
     }
 
-    public void onManeuverInfo(NaviManeuverInfo info) {
-        if (info.getDateType() == NaviConstant.ManeuverDataType.Maneuver) {
+    /**
+     * @param info 回调 通知更新转向图标信息
+     */
+    public void onManeuverInfo(final NaviManeuverInfo info) {
+        if (info.getDateType() == NaviConstant.ManeuverDataType.MANEUVER) {
             onShowNaviManeuver(info);
-        } else if (info.getDateType() == NaviConstant.ManeuverDataType.ManeuverIcon) {
+        } else if (info.getDateType() == NaviConstant.ManeuverDataType.MANEUVER_ICON) {
             onObtainManeuverIconData(info);
         }
     }
 
     /**
      * bl回调 通知更新TBT数据
+     * @param naviInfoBean TBT数据
      */
-    public void onNaviInfo(NaviEtaInfo naviInfoBean) {
+    public void onNaviInfo(final NaviEtaInfo naviInfoBean) {
         mCurNaviInfo = naviInfoBean;
-        mRoundNum = mCurNaviInfo.ringOutCnt;
+        mRoundNum = mCurNaviInfo.getRingOutCnt();
         // 显示近接动作信息
         if (hasNextThumTip(mCurNaviInfo)) {
-            NaviEtaInfo.NaviCrossNaviInfo nextCrossInfo = mCurNaviInfo.nextCrossInfo.get(0);
+            final NaviEtaInfo.NaviCrossNaviInfo nextCrossInfo = mCurNaviInfo.nextCrossInfo.get(0);
             mNextThumRoundNum = nextCrossInfo.outCnt;
             mNextThumManeuverInfo.setManeuverID(nextCrossInfo.crossManeuverID);
             mNextThumManeuverInfo.setSegmentIndex(nextCrossInfo.segIdx);
@@ -122,17 +126,18 @@ public class SceneNaviEtaImpl extends BaseSceneModel<SceneNaviEtaView> {
 
     /**
      * 转向图标回调
+     * @param maneuverIconResponseData 转向图标数据
      */
     public void onObtainManeuverIconData(final NaviManeuverInfo maneuverIconResponseData) {
         if (maneuverIconResponseData == null || maneuverIconResponseData.getRequestConfig() == null) {
             Logger.e(TAG, " onObtainManeuverIconData error");
             return;
         }
-        NaviManeuverInfo.NaviManeuverConfig config = maneuverIconResponseData.getRequestConfig();
+        final NaviManeuverInfo.NaviManeuverConfig config = maneuverIconResponseData.getRequestConfig();
         // 离线或者在线请求异常，使用本地数据
         if (maneuverIconResponseData.getData() == null || maneuverIconResponseData.getData().length == 0) {
             // 下一路口转向图标
-            if (null != config && config.getWidth() == NaviConstant.nextTurnIconSize && config.getHeight() == NaviConstant.nextTurnIconSize) {
+            if (null != config && config.getWidth() == NaviConstant.NEXT_TURN_ICON_SIZE && config.getHeight() == NaviConstant.NEXT_TURN_ICON_SIZE) {
                 showOfflineNextTurnIcon();
             }
         } else {
@@ -140,7 +145,7 @@ public class SceneNaviEtaImpl extends BaseSceneModel<SceneNaviEtaView> {
             ThreadManager.getInstance().postUi(new Runnable() {
                 @Override
                 public void run() {
-                    if (null != config && config.getWidth() == NaviConstant.nextTurnIconSize && config.getHeight() == NaviConstant.nextTurnIconSize) {
+                    if (null != config && config.getWidth() == NaviConstant.NEXT_TURN_ICON_SIZE && config.getHeight() == NaviConstant.NEXT_TURN_ICON_SIZE) {
                         updateNextThumTurnIcon(maneuverIconResponseData.getData(), config, mNextThumRoundNum);
                     }
                 }
@@ -154,30 +159,38 @@ public class SceneNaviEtaImpl extends BaseSceneModel<SceneNaviEtaView> {
      */
     private void showOfflineNextTurnIcon() {
         setVisibleNaviNext(true);
-        int resId = NaviUiUtil.GetOfflineManeuverIconId(mCurNaviInfo.nextCrossInfo.get(0).maneuverID, mCurNaviInfo.nextCrossInfo.get(0).outCnt);
+        final int resId = NaviUiUtil.getOfflineManeuverIconId(mCurNaviInfo.nextCrossInfo.get(0).
+                maneuverID, mCurNaviInfo.nextCrossInfo.get(0).outCnt);
         Logger.i(TAG, " showOfflineNextTurnIcon resId:" + resId);
         mScreenView.setBackgroundNaviOfflineNextTurnIcon(SceneCommonStruct.TbtIconAction.get(resId));
     }
 
     /**
      * 更新近接动作转向图标
+     * @param bytes bytes
+     * @param config config
+     * @param aroundNum aroundNum
      */
-    public void updateNextThumTurnIcon(byte[] bytes, NaviManeuverInfo.NaviManeuverConfig config, int aroundNum) {
+    public void updateNextThumTurnIcon(final byte[] bytes,
+                                       final NaviManeuverInfo.NaviManeuverConfig config,
+                                       final int aroundNum) {
         Logger.i(TAG, " updateNextThumTurnIcon maneuverID:" + config.getManeuverID() + " aroundNum:" + aroundNum + " pathID:" + config.getPathID());
-        final int size = NaviConstant.nextTurnIconSize;
-        nextThumDirectionCache = NaviUiUtil.getRoadSignBitmap(bytes, size, size, (int) config.getManeuverID(),
-                aroundNum, NaviConstant.hudResPrefix, NaviConstant.iconResName, NaviConstant.night);
-        if (nextThumDirectionCache != null && !nextThumDirectionCache.isRecycled()) {
+        final int size = NaviConstant.NEXT_TURN_ICON_SIZE;
+        mNextThumDirectionCache = NaviUiUtil.getRoadSignBitmap(bytes, size, size, (int) config.getManeuverID(),
+                aroundNum, NaviConstant.HUD_RES_PREFIX, NaviConstant.ICON_RES_NAME, NaviConstant.NIGHT);
+        if (mNextThumDirectionCache != null && !mNextThumDirectionCache.isRecycled()) {
             Logger.i(TAG, " updateNextThumTurnIcon show nextThumInfo");
             setVisibleNaviNext(true);
-            mScreenView.setBackgroundNaviNextTurnIcon(new AutoUIDrawable(nextThumDirectionCache));
+            mScreenView.setBackgroundNaviNextTurnIcon(new AutoUIDrawable(mNextThumDirectionCache));
         }
     }
 
     /**
      * 是否存在近阶动作信息
+     * @param naviInfo naviInfo
+     * @return boolean
      */
-    public static boolean hasNextThumTip(NaviEtaInfo naviInfo) {
+    public static boolean hasNextThumTip(final NaviEtaInfo naviInfo) {
         if (null == naviInfo || ConvertUtils.isEmpty(naviInfo.nextCrossInfo)) {
             return false;
         }
@@ -189,8 +202,12 @@ public class SceneNaviEtaImpl extends BaseSceneModel<SceneNaviEtaView> {
 
     /**
      * 是否有进阶路口信息
+     * @param previousManeuverInfo previousManeuverInfo
+     * @param maneuverInfo maneuverInfo
+     * @return boolean
      */
-    public static boolean isSameNextThumManeuverInfo(NaviManeuverInfo previousManeuverInfo, NaviManeuverInfo maneuverInfo) {
+    public static boolean isSameNextThumManeuverInfo(final NaviManeuverInfo previousManeuverInfo,
+                                                     final NaviManeuverInfo maneuverInfo) {
         if (null == previousManeuverInfo || null == maneuverInfo) {
             return false;
         }
@@ -202,16 +219,18 @@ public class SceneNaviEtaImpl extends BaseSceneModel<SceneNaviEtaView> {
 
     /**
      * 更新引导信息及转向图标
+     * @param isNeedUpdateDirection isNeedUpdateDirection
      */
-    public void updateNaviInfoAndDirection(boolean isNeedUpdateDirection) {
+    public void updateNaviInfoAndDirection(final boolean isNeedUpdateDirection) {
         Logger.i(TAG, " updateNaviInfoAndDirection isNeedUpdateDirection: " + isNeedUpdateDirection);
         innerUpdateNaviInfo();
         // 三维实景的转向图标是黑夜模式，所以进入三维场景时需要重新请求图标，故不需要在此处更新转向图标
         if (isNeedUpdateDirection) {
             // 设置离线转向图片
             if (mOfflineManeuverIcon) {
+                // TODO
             } else {
-                mScreenView.setBackgroundNaviNextTurnIcon(new AutoUIDrawable(nextThumDirectionCache));
+                mScreenView.setBackgroundNaviNextTurnIcon(new AutoUIDrawable(mNextThumDirectionCache));
             }
         }
     }
@@ -224,25 +243,26 @@ public class SceneNaviEtaImpl extends BaseSceneModel<SceneNaviEtaView> {
             return;
         }
         //更新ETA信息
-        updateEta(mCurNaviInfo.allDist, mCurNaviInfo.allTime);
+        updateEta(mCurNaviInfo.getAllDist(), mCurNaviInfo.getAllTime());
         updataNextThumInfo(mCurNaviInfo);
     }
 
     /**
      * 根据新需求，不需要显示距离，只需显示随后及转向图片
      * 更新二级诱导图
+     * @param naviInfo naviInfo
      */
-    public void updataNextThumInfo(NaviEtaInfo naviInfo) {
-        boolean isNextThumTip = isNeedNextThumTip(naviInfo);
+    public void updataNextThumInfo(final NaviEtaInfo naviInfo) {
+        final boolean isNextThumTip = isNeedNextThumTip(naviInfo);
         Logger.i(TAG, " updataNextThumInfo isNextThumTip:" + isNextThumTip);
         //清空进阶动作信息
         setVisibleNaviNext(isNextThumTip);
         String txtNextThumText = mScreenView.getContext().getString(R.string.navi_normal_tip);
         if (naviInfo.nextCrossInfo != null && !naviInfo.nextCrossInfo.isEmpty()) {
-            NaviEtaInfo.NaviCrossNaviInfo crossNaviInfo = naviInfo.nextCrossInfo.get(0);
-            int crossDist = crossNaviInfo.curToSegmentDist;
-            String[] distance = ConvertUtils.formatDistanceArray(mScreenView.getContext(), crossDist);
-            AutoUIString autoUIString = new AutoUIString(distance[0] + distance[1]);
+            final NaviEtaInfo.NaviCrossNaviInfo crossNaviInfo = naviInfo.nextCrossInfo.get(0);
+            final int crossDist = crossNaviInfo.curToSegmentDist;
+            final String[] distance = ConvertUtils.formatDistanceArray(mScreenView.getContext(), crossDist);
+            final AutoUIString autoUIString = new AutoUIString(distance[0] + distance[1]);
             //是否为隧道内外分叉
             switch (crossNaviInfo.tunnelFlag) {
                 // TODO: 2024/8/22 UE UI上没有明确要求要区分隧道内外
@@ -262,8 +282,10 @@ public class SceneNaviEtaImpl extends BaseSceneModel<SceneNaviEtaView> {
 
     /**
      * 根据道路等级检查是否需要近阶动作提醒
+     * @param naviInfo naviInfo
+     * @return boolean
      */
-    public static boolean isNeedNextThumTip(NaviEtaInfo naviInfo) {
+    public static boolean isNeedNextThumTip(final NaviEtaInfo naviInfo) {
         if (null == naviInfo.nextCrossInfo || naviInfo.nextCrossInfo.isEmpty()) {
             return false;
         }
@@ -293,7 +315,7 @@ public class SceneNaviEtaImpl extends BaseSceneModel<SceneNaviEtaView> {
      * @param distance
      * @param time
      */
-    private void updateEta(int distance, int time) {
+    private void updateEta(final int distance, final int time) {
         if (distance <= 0 && time <= 0) {
             return;
         }
@@ -323,8 +345,10 @@ public class SceneNaviEtaImpl extends BaseSceneModel<SceneNaviEtaView> {
 
     /**
      * 检查NaviInfoPanel是否合法
+     * @param naviinfo naviinfo
+     * @return boolean
      */
-    public static boolean checkNaviInfoPanelLegal(NaviEtaInfo naviinfo) {
+    public static boolean checkNaviInfoPanelLegal(final NaviEtaInfo naviinfo) {
         if (naviinfo == null) {
             Logger.d(TAG, "checkNaviInfoPanelLegal naviInfo null");
             return false;
@@ -344,14 +368,20 @@ public class SceneNaviEtaImpl extends BaseSceneModel<SceneNaviEtaView> {
         return true;
     }
 
+    /**
+     * @param isVisible isVisible
+     */
     //设置近接动作可见
-    private void setVisibleNaviNext(boolean isVisible) {
+    private void setVisibleNaviNext(final boolean isVisible) {
         Logger.d(TAG, "setVisibleNaviNext：isVisible：" + isVisible);
-        groupNextVisible.set(isVisible);
-        distanceTimeVisible.set(!isVisible);
+        mGroupNextVisible.set(isVisible);
+        mDistanceTimeVisible.set(!isVisible);
     }
 
-    private void notifySceneStateChange(boolean isVisible) {
+    /**
+     * @param isVisible isVisible
+     */
+    private void notifxySceneStateChange(final boolean isVisible) {
         mScreenView.getNaviSceneEvent().notifySceneStateChange((isVisible ? INaviSceneEvent.SceneStateChangeType.SceneShowState :
                 INaviSceneEvent.SceneStateChangeType.SceneHideState), NaviSceneId.NAVI_SCENE_ETA);
     }

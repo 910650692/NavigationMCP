@@ -1,7 +1,6 @@
 package com.fy.navi.scene.ui.navi;
 
 
-import static com.fy.navi.scene.ui.navi.manager.NaviSceneId.NAVI_SCENE_SERVICE_AREA;
 
 import android.content.Context;
 import android.util.AttributeSet;
@@ -23,25 +22,29 @@ import com.fy.navi.ui.view.SkinConstraintLayout;
 
 /**
  * 收费站/服务区scene 显示在tbt下方的一个bar条
+ * @author fy
+ * @version $Revision.*$
  */
 public class SceneNaviSapaView extends NaviSceneBase<SceneNaviSapaViewBinding, SceneNaviSapaImpl> {
     private static final String TAG = MapDefaultFinalTag.NAVI_HMI_TAG;
+    private ISceneCallback mISceneCallback;
 
-    public SceneNaviSapaView(Context context) {
+    public SceneNaviSapaView(final Context context) {
         super(context);
     }
 
-    public SceneNaviSapaView(Context context, @Nullable AttributeSet attrs) {
+    public SceneNaviSapaView(final Context context, @Nullable final AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public SceneNaviSapaView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public SceneNaviSapaView(final Context context, @Nullable final AttributeSet attrs,
+                             final int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 
     @Override
     protected NaviSceneId getSceneId() {
-        return NAVI_SCENE_SERVICE_AREA;
+        return NaviSceneId.NAVI_SCENE_SERVICE_AREA;
     }
 
     @Override
@@ -51,14 +54,15 @@ public class SceneNaviSapaView extends NaviSceneBase<SceneNaviSapaViewBinding, S
 
 
     protected void init() {
-        NaviSceneManager.getInstance().addNaviScene(NAVI_SCENE_SERVICE_AREA, this);
+        NaviSceneManager.getInstance().addNaviScene(NaviSceneId.NAVI_SCENE_SERVICE_AREA,
+                this);
     }
 
     @Override
     public void show() {
         super.show();
         if (mISceneCallback != null) {
-            mISceneCallback.updateSceneVisible(NAVI_SCENE_SERVICE_AREA, true);
+            mISceneCallback.updateSceneVisible(NaviSceneId.NAVI_SCENE_SERVICE_AREA, true);
         }
     }
 
@@ -66,7 +70,7 @@ public class SceneNaviSapaView extends NaviSceneBase<SceneNaviSapaViewBinding, S
     public void hide() {
         super.hide();
         if (mISceneCallback != null) {
-            mISceneCallback.updateSceneVisible(NAVI_SCENE_SERVICE_AREA, false);
+            mISceneCallback.updateSceneVisible(NaviSceneId.NAVI_SCENE_SERVICE_AREA, false);
         }
     }
 
@@ -74,12 +78,13 @@ public class SceneNaviSapaView extends NaviSceneBase<SceneNaviSapaViewBinding, S
     public void close() {
         super.close();
         if (mISceneCallback != null) {
-            mISceneCallback.updateSceneVisible(NAVI_SCENE_SERVICE_AREA, false);
+            mISceneCallback.updateSceneVisible(NaviSceneId.NAVI_SCENE_SERVICE_AREA, false);
         }
     }
 
     @Override
-    protected SceneNaviSapaViewBinding createViewBinding(LayoutInflater inflater, ViewGroup viewGroup) {
+    protected SceneNaviSapaViewBinding createViewBinding(final LayoutInflater inflater,
+                                                         final ViewGroup viewGroup) {
         return SceneNaviSapaViewBinding.inflate(inflater, viewGroup, true);
     }
 
@@ -91,6 +96,10 @@ public class SceneNaviSapaView extends NaviSceneBase<SceneNaviSapaViewBinding, S
     @Override
     protected void setInitVariableId() {
         mViewBinding.setNaviSapa(mScreenViewModel);
+        mViewBinding.naviSapaOnlyToll.setNaviSapa(mScreenViewModel);
+        mViewBinding.naviSapaOnlyService.setNaviSapa(mScreenViewModel);
+        mViewBinding.naviSapaFirstToll.setNaviSapa(mScreenViewModel);
+        mViewBinding.naviSapaFirstService.setNaviSapa(mScreenViewModel);
     }
 
     @Override
@@ -100,8 +109,10 @@ public class SceneNaviSapaView extends NaviSceneBase<SceneNaviSapaViewBinding, S
 
     /**
      * 设置第一个容器的宽度
-     **/
-    public void setFirstSflParams(int width) {
+     *
+     * @param width 宽度
+     * */
+    public void setFirstSflParams(final int width) {
 //        ViewGroup.LayoutParams layoutParams = mViewBinding.sflFirst.getLayoutParams();
 //        layoutParams.width = width;
 //        mViewBinding.sflFirst.setLayoutParams(layoutParams);
@@ -109,8 +120,11 @@ public class SceneNaviSapaView extends NaviSceneBase<SceneNaviSapaViewBinding, S
 
     /**
      * 设置first容器背景
-     **/
-    public void updateSflFirst(int resID, SkinConstraintLayout view) {
+     *
+     * @param resID 资源id
+     * @param view view
+     * */
+    public void updateSflFirst(final int resID, final SkinConstraintLayout view) {
 //        mViewBinding.sflFirst.removeAllViews();
 //        mViewBinding.sflFirst.setBackgroundResource(resID);
 //        mViewBinding.sflFirst.addView(view);
@@ -118,8 +132,11 @@ public class SceneNaviSapaView extends NaviSceneBase<SceneNaviSapaViewBinding, S
 
     /**
      * 设置second容器背景
-     **/
-    public void updateSflSecond(int resID, SkinConstraintLayout view) {
+     *
+     * @param resID 资源id
+     * @param view view
+     * */
+    public void updateSflSecond(final int resID, final SkinConstraintLayout view) {
 //        mViewBinding.sflSecond.removeAllViews();
 //        mViewBinding.sflSecond.setBackgroundResource(resID);
 //        mViewBinding.sflSecond.addView(view);
@@ -130,17 +147,19 @@ public class SceneNaviSapaView extends NaviSceneBase<SceneNaviSapaViewBinding, S
         super.onDestroy();
     }
 
-    public void onNaviSAPAInfo(SapaInfoEntity sapaInfoEntity) {
+    /**
+     * @param sapaInfoEntity 服务区信息
+     */
+    public void onNaviSAPAInfo(final SapaInfoEntity sapaInfoEntity) {
         if (mScreenViewModel != null) {
             mScreenViewModel.onNaviSAPAInfo(sapaInfoEntity);
         }
     }
 
     @Override
-    public void addSceneCallback(ISceneCallback sceneCallback) {
-        if (mScreenViewModel != null) {
-            mScreenViewModel.addSceneCallback();
-        }
+    public void addSceneCallback(final ISceneCallback sceneCallback) {
+        mISceneCallback = sceneCallback;
+        mScreenViewModel.addSceneCallback(sceneCallback);
     }
 
 }

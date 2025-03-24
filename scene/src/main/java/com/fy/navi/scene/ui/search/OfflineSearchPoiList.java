@@ -1,6 +1,5 @@
 package com.fy.navi.scene.ui.search;
 
-import static com.fy.navi.service.MapDefaultFinalTag.SEARCH_HMI_TAG;
 
 import android.content.Context;
 import android.text.Editable;
@@ -13,7 +12,6 @@ import android.view.inputmethod.InputMethodManager;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
@@ -28,6 +26,7 @@ import com.fy.navi.scene.impl.search.OfflineSearchPoiListImpl;
 import com.fy.navi.scene.ui.adapter.OfflineCitiesAdapter;
 import com.fy.navi.scene.ui.adapter.OfflineProvincesAdapter;
 import com.fy.navi.scene.ui.adapter.OfflineSearchResultAdapter;
+import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.define.mapdata.CityDataInfo;
 import com.fy.navi.service.define.mapdata.ProvDataInfo;
 import com.fy.navi.service.define.search.SearchResultEntity;
@@ -37,7 +36,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @Author: baipeng0904
+ * @author baipeng0904
+ * @version \$Revision1.0\$
  * @Description: 联想搜索结果列表 scene
  * @Date: 2020/4/16 11:05 AM
  * @CreateDate: $ $
@@ -45,27 +45,27 @@ import java.util.List;
 public class OfflineSearchPoiList extends BaseSceneView<OfflineSearchResultViewBinding, OfflineSearchPoiListImpl> {
     private OfflineProvincesAdapter mAdapter;
     private OfflineSearchResultAdapter mSearchAdapter;
-    private String searchText;
-    private int spanCount = 3;
-    private int spacing = 24;
-    private List<CityDataInfo> searchResultList = new ArrayList<>();
+    private String mSearchText;
+    private final int mSpanCount = 3;
+    private final int mSpacing = 24;
+    private List<CityDataInfo> mSearchResultList = new ArrayList<>();
 
-    public OfflineSearchPoiList(@NonNull Context context) {
+    public OfflineSearchPoiList(@NonNull final Context context) {
         super(context);
     }
 
-    public OfflineSearchPoiList(@NonNull Context context, @Nullable AttributeSet attrs) {
+    public OfflineSearchPoiList(@NonNull final Context context, @Nullable final AttributeSet attrs) {
         super(context, attrs);
 
     }
 
-    public OfflineSearchPoiList(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public OfflineSearchPoiList(@NonNull final Context context, @Nullable final AttributeSet attrs, final int defStyleAttr) {
         super(context, attrs, defStyleAttr);
 
     }
 
     @Override
-    protected OfflineSearchResultViewBinding createViewBinding(LayoutInflater inflater, ViewGroup viewGroup) {
+    protected OfflineSearchResultViewBinding createViewBinding(final LayoutInflater inflater, final ViewGroup viewGroup) {
         return OfflineSearchResultViewBinding.inflate(inflater, viewGroup, true);
     }
 
@@ -85,14 +85,14 @@ public class OfflineSearchPoiList extends BaseSceneView<OfflineSearchResultViewB
         setupSearchActions();
         requestFocusAndShowKeyboard();
     }
-    public void setSearchText(String searchText) {
-        this.searchText = searchText;
+    public void setSearchText(final String searchText) {
+        this.mSearchText = searchText;
     }
     /**
      * 初始化 RecyclerView
      */
     private void setupRecyclerView() {
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+        final LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         mViewBinding.offlineRecyclerSearchResult.setLayoutManager(layoutManager);
 
@@ -106,21 +106,22 @@ public class OfflineSearchPoiList extends BaseSceneView<OfflineSearchResultViewB
         }
         mAdapter.setListener(new OfflineCitiesAdapter.ItemClickListener() {
             @Override
-            public void onClick(int cityCode) {
-                mScreenViewModel.keywordSearch(1, searchText, cityCode);
+            public void onClick(final int cityCode) {
+                mScreenViewModel.keywordSearch(1, mSearchText, cityCode);
             }
         });
 
-        GridLayoutManager searchLinearLayoutManager = new GridLayoutManager(getContext(), spanCount);
+        final GridLayoutManager searchLinearLayoutManager = new GridLayoutManager(getContext(), mSpanCount);
         mSearchAdapter = new OfflineSearchResultAdapter(getContext(), new ArrayList<>());
         mViewBinding.offlineRecyclerSearchKeywordResult.setLayoutManager(searchLinearLayoutManager);
-        mViewBinding.offlineRecyclerSearchKeywordResult.addItemDecoration(new GridSpacingItemDecoration(getContext(), spanCount, spacing, spacing, false));
+        mViewBinding.offlineRecyclerSearchKeywordResult.addItemDecoration(new GridSpacingItemDecoration(
+                getContext(), mSpanCount, mSpacing, mSpacing, false));
 
         mViewBinding.offlineRecyclerSearchKeywordResult.setAdapter(mSearchAdapter);
         mSearchAdapter.setListener(new OfflineSearchResultAdapter.ItemClickListener() {
             @Override
-            public void onClick(int cityCode) {
-                mScreenViewModel.keywordSearch(1, searchText, cityCode);
+            public void onClick(final int cityCode) {
+                mScreenViewModel.keywordSearch(1, mSearchText, cityCode);
             }
         });
         mViewBinding.offlineRecyclerSearchKeywordResult.setVisibility(View.GONE);
@@ -134,24 +135,27 @@ public class OfflineSearchPoiList extends BaseSceneView<OfflineSearchResultViewB
 
         mViewBinding.offlineSearchTopView.searchBarEditView.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            public void beforeTextChanged(final CharSequence s, final int start, final int count, final int after) {
 
             }
 
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            public void onTextChanged(final CharSequence s, final int start, final int before, final int count) {
 
             }
 
             @Override
-            public void afterTextChanged(Editable editable) {
+            public void afterTextChanged(final Editable editable) {
                 if (!editable.toString().trim().isEmpty()) {
                     mViewBinding.offlineSearchTopView.ivEditClear.setVisibility(VISIBLE);
-                    searchResultList = convertSearchResultList(MapDataPackage.getInstance().searchDownLoaded(editable.toString().trim()), editable.toString().trim());
-                    mSearchAdapter.setData(searchResultList);
+                    mSearchResultList = convertSearchResultList(MapDataPackage.getInstance().searchDownLoaded(
+                            editable.toString().trim()), editable.toString().trim());
+                    mSearchAdapter.setData(mSearchResultList);
                     mSearchAdapter.notifyDataSetChanged();
-                    if (ConvertUtils.isEmpty(searchResultList)) {
-                        mViewBinding.searchNoResultHint.setText(getContext().getString(R.string.search_offline_no_result_hint, editable.toString().trim()));
+                    if (ConvertUtils.isEmpty(mSearchResultList)) {
+                        mViewBinding.searchNoResultHint.setText(getContext().getString(
+                                R.string.search_offline_no_result_hint, editable.toString().trim()));
+                        mViewBinding.searchNoCityHint.setVisibility(View.GONE);
                     } else {
                         mViewBinding.searchNoResultHint.setText("");
                     }
@@ -167,12 +171,13 @@ public class OfflineSearchPoiList extends BaseSceneView<OfflineSearchResultViewB
         });
 
         mViewBinding.offlineSearchTopView.searchBarEditView.setOnEditorActionListener((v, actionId, event) -> {
-            Logger.d(SEARCH_HMI_TAG, "onEditorActionListener actionId: " + actionId);
-            searchResultList = convertSearchResultList(MapDataPackage.getInstance().searchDownLoaded(getEditText()), getEditText());
-            mSearchAdapter.setData(searchResultList);
+            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "onEditorActionListener actionId: " + actionId);
+            mSearchResultList = convertSearchResultList(MapDataPackage.getInstance().searchDownLoaded(getEditText()), getEditText());
+            mSearchAdapter.setData(mSearchResultList);
             mSearchAdapter.notifyDataSetChanged();
-            if (ConvertUtils.isEmpty(searchResultList)) {
+            if (ConvertUtils.isEmpty(mSearchResultList)) {
                 mViewBinding.searchNoResultHint.setText(getContext().getString(R.string.search_offline_no_result_hint, getEditText()));
+                mViewBinding.searchNoCityHint.setVisibility(View.GONE);
             } else {
                 mViewBinding.searchNoResultHint.setText("");
             }
@@ -185,40 +190,48 @@ public class OfflineSearchPoiList extends BaseSceneView<OfflineSearchResultViewB
         mViewBinding.offlineSearchTopView.ivEditClear.setOnClickListener(view -> clearEditText());
     }
 
-    private List<CityDataInfo> convertSearchResultList(List<ProvDataInfo> originList, String keyword) {
-        List<CityDataInfo> searchResultList = new ArrayList<>();
+    /**
+     * 把ProvDataInfo List转换成CityDataInfo List
+     * @param originList 原始数据列表
+     * @param keyword 目标搜索关键字
+     * @return 转换后的结果列表
+     */
+    private List<CityDataInfo> convertSearchResultList(final List<ProvDataInfo> originList, final String keyword) {
+        final List<CityDataInfo> searchResultList = new ArrayList<>();
         for (ProvDataInfo provDataInfo : originList) {
-            if (provDataInfo.name.contains(keyword)) {
-                CityDataInfo cityDataInfo = new CityDataInfo();
-                cityDataInfo.name = provDataInfo.name;
-                cityDataInfo.adcode = provDataInfo.adcode;
+            if (provDataInfo.getName().contains(keyword)) {
+                final CityDataInfo cityDataInfo = new CityDataInfo();
+                cityDataInfo.setName(provDataInfo.getName());
+                cityDataInfo.setAdcode(provDataInfo.getAdcode());
                 searchResultList.add(cityDataInfo);
             }
-            if (!ConvertUtils.isEmpty(provDataInfo.cityInfoList)) {
-                for (CityDataInfo cityDataInfo : provDataInfo.cityInfoList) {
-                    if (cityDataInfo.name.contains(keyword)) {
+            if (!ConvertUtils.isEmpty(provDataInfo.getCityInfoList())) {
+                for (CityDataInfo cityDataInfo : provDataInfo.getCityInfoList()) {
+                    if (cityDataInfo.getName().contains(keyword)) {
                         searchResultList.add(cityDataInfo);
                     }
                 }
             }
         }
-        Logger.d(SEARCH_HMI_TAG, "convertSearchResultList keyword: " + keyword
+        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "convertSearchResultList keyword: " + keyword
                 + ", searchResultList size: " + searchResultList.size());
         return searchResultList;
     }
 
     /**
      * 执行预搜索
+     * @param keyword 搜索关键字
      */
-    public void suggestionSearch(String keyword) {
-        Logger.d(SEARCH_HMI_TAG, "sugSearch search: " + ", Keyword: " + keyword);
+    public void suggestionSearch(final String keyword) {
+        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "sugSearch search: " + ", Keyword: " + keyword);
         mScreenViewModel.suggestionSearch(keyword);
     }
 
     /**
      * 更新搜索结果
+     * @param searchResultEntity 搜索结果实体
      */
-    public void notifySearchResult(SearchResultEntity searchResultEntity) {
+    public void notifySearchResult(final SearchResultEntity searchResultEntity) {
         if (searchResultEntity == null || searchResultEntity.getPoiList().isEmpty()) {
             //若未搜索到数据，弹出提示
             ToastUtils.Companion.getInstance().showCustomToastView("抱歉，未找到结果");
@@ -232,7 +245,7 @@ public class OfflineSearchPoiList extends BaseSceneView<OfflineSearchResultViewB
      * 隐藏软键盘
      */
     public void hideInput() {
-        InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+        final InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
         if (imm != null) {
             imm.hideSoftInputFromWindow(getWindowToken(), 0);
         }
@@ -244,7 +257,8 @@ public class OfflineSearchPoiList extends BaseSceneView<OfflineSearchResultViewB
      * @return 输入框内容
      */
     private String getEditText() {
-        return mViewBinding.offlineSearchTopView.searchBarEditView.getText() != null ? mViewBinding.offlineSearchTopView.searchBarEditView.getText().toString().trim() : "";
+        return mViewBinding.offlineSearchTopView.searchBarEditView.getText() != null ?
+                mViewBinding.offlineSearchTopView.searchBarEditView.getText().toString().trim() : "";
     }
 
     /**
@@ -280,7 +294,7 @@ public class OfflineSearchPoiList extends BaseSceneView<OfflineSearchResultViewB
      * 显示软键盘
      */
     private void showKeyboard() {
-        InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+        final InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
         if (imm != null) {
             imm.showSoftInput(mViewBinding.offlineSearchTopView.searchBarEditView, InputMethodManager.SHOW_IMPLICIT);
         }

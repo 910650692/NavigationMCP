@@ -18,15 +18,19 @@ public class SceneCommonStruct {
         SetCompany(12),
         Favorite(13);
 
-        private final Object value;
+        private final Object mValue;
 
-        QuickSearch(Object value) {
-            this.value = value;
+        QuickSearch(final Object value) {
+            this.mValue = value;
         }
 
-        public static QuickSearch get(Object value) {
+        /**
+         * @param value value
+         * @return QuickSearch
+         */
+        public static QuickSearch get(final Object value) {
             for (QuickSearch obj : values()) {
-                if (obj.value.equals(value)) {
+                if (obj.mValue.equals(value)) {
                     return obj;
                 }
             }
@@ -45,15 +49,19 @@ public class SceneCommonStruct {
         SERVICE_AREA(7),
         OFFICE(8);
 
-        private final Object value;
+        private final Object mValue;
 
-        NearbyRecommend(Object value) {
-            this.value = value;
+        NearbyRecommend(final Object value) {
+            this.mValue = value;
         }
 
-        public static NearbyRecommend get(Object value) {
+        /**
+         * @param value value
+         * @return NearbyRecommend
+         */
+        public static NearbyRecommend get(final Object value) {
             for (NearbyRecommend obj : values()) {
-                if (obj.value.equals(value)) {
+                if (obj.mValue.equals(value)) {
                     return obj;
                 }
             }
@@ -74,19 +82,23 @@ public class SceneCommonStruct {
         SearchResultIconTenth(9),
         SearchResultIconEleventh(10);
 
-        private final Object value;
+        private final Object mValue;
 
-        SearchResultListIcon(Object value) {
-            this.value = value;
+        SearchResultListIcon(final Object value) {
+            this.mValue = value;
         }
 
         public int getItemValue() {
-            return (int) value + 1;
+            return (int) mValue + 1;
         }
 
-        public static SearchResultListIcon get(Object value) {
+        /**
+         * @param value value
+         * @return SearchResultListIcon
+         */
+        public static SearchResultListIcon get(final Object value) {
             for (SearchResultListIcon obj : values()) {
-                if (obj.value.equals(value)) {
+                if (obj.mValue.equals(value)) {
                     return obj;
                 }
             }
@@ -97,15 +109,19 @@ public class SceneCommonStruct {
     public enum GusSearchHistoryIcon {
         UsusllyCardSearch(0), UsusllyCardLocation(1), OftenCardLocation(2);
 
-        private final Object value;
+        private final Object mValue;
 
-        GusSearchHistoryIcon(Object value) {
-            this.value = value;
+        GusSearchHistoryIcon(final Object value) {
+            this.mValue = value;
         }
 
-        public static GusSearchHistoryIcon get(Object value) {
+        /**
+         * @param value value
+         * @return GusSearchHistoryIcon
+         */
+        public static GusSearchHistoryIcon get(final Object value) {
             for (GusSearchHistoryIcon obj : values()) {
-                if (obj.value.equals(value)) {
+                if (obj.mValue.equals(value)) {
                     return obj;
                 }
             }
@@ -121,15 +137,19 @@ public class SceneCommonStruct {
         CommuteCardPOI(4),
         CommuteCardRoute(5);
 
-        private final Object value;
+        private final Object mValue;
 
-        EnumCommuteCard(Object value) {
-            this.value = value;
+        EnumCommuteCard(final Object value) {
+            this.mValue = value;
         }
 
-        public static EnumCommuteCard get(Object value) {
+        /**
+         * @param value value
+         * @return EnumCommuteCard
+         */
+        public static EnumCommuteCard get(final Object value) {
             for (EnumCommuteCard obj : values()) {
-                if (obj.value.equals(value)) {
+                if (obj.mValue.equals(value)) {
                     return obj;
                 }
             }
@@ -153,15 +173,19 @@ public class SceneCommonStruct {
         MAP_FullScreen_CONTRACT(12),
         MAP_Setting(13);
 
-        private final Object value;
+        private final Object mValue;
 
-        MapModeIcon(Object value) {
-            this.value = value;
+        MapModeIcon(final Object value) {
+            this.mValue = value;
         }
 
-        public static MapModeIcon get(Object value) {
+        /**
+         * @param value value
+         * @return MapModeIcon
+         */
+        public static MapModeIcon get(final Object value) {
             for (MapModeIcon obj : values()) {
-                if (obj.value.equals(value)) {
+                if (obj.mValue.equals(value)) {
                     return obj;
                 }
             }
@@ -177,15 +201,19 @@ public class SceneCommonStruct {
         LabelFastest(4),
         LabelClosest(5);
 
-        private final Object value;
+        private final Object mValue;
 
-        SearchPoiLabel(Object value) {
-            this.value = value;
+        SearchPoiLabel(final Object value) {
+            this.mValue = value;
         }
 
-        public static SearchPoiLabel get(Object value) {
+        /**
+         * @param value value
+         * @return SearchPoiLabel
+         */
+        public static SearchPoiLabel get(final Object value) {
             for (SearchPoiLabel obj : values()) {
-                if (obj.value.equals(value)) {
+                if (obj.mValue.equals(value)) {
                     return obj;
                 }
             }
@@ -201,15 +229,19 @@ public class SceneCommonStruct {
         LableTypeProduct(4),
         LableTypeRecommend(5);
 
-        private final Object value;
+        private final Object mValue;
 
-        SearchListItemLabelType(Object value) {
-            this.value = value;
+        SearchListItemLabelType(final Object value) {
+            this.mValue = value;
         }
 
-        public static SearchListItemLabelType get(Object value) {
+        /**
+         * @param value value
+         * @return SearchListItemLabelType
+         */
+        public static SearchListItemLabelType get(final Object value) {
             for (SearchListItemLabelType obj : values()) {
-                if (obj.value.equals(value)) {
+                if (obj.mValue.equals(value)) {
                     return obj;
                 }
             }
@@ -225,15 +257,19 @@ public class SceneCommonStruct {
         DefaultIconTypeCarService(4),
         DefaultIconTypeFood(5);
 
-        private final Object value;
+        private final Object mValue;
 
-        DefaultIconType(Object value) {
-            this.value = value;
+        DefaultIconType(final Object value) {
+            this.mValue = value;
         }
 
-        public static DefaultIconType get(Object value) {
+        /**
+         * @param value value
+         * @return DefaultIconType
+         */
+        public static DefaultIconType get(final Object value) {
             for (DefaultIconType obj : values()) {
-                if (obj.value.equals(value)) {
+                if (obj.mValue.equals(value)) {
                     return obj;
                 }
             }
@@ -255,15 +291,19 @@ public class SceneCommonStruct {
         ZhouHeiya(10),
         DQ(11);
 
-        private final Object value;
+        private final Object mValue;
 
-        ExpresswayBrand(Object value) {
-            this.value = value;
+        ExpresswayBrand(final Object value) {
+            this.mValue = value;
         }
 
-        public static ExpresswayBrand get(Object value) {
+        /**
+         * @param value value
+         * @return ExpresswayBrand
+         */
+        public static ExpresswayBrand get(final Object value) {
             for (ExpresswayBrand obj : values()) {
-                if (obj.value.equals(value)) {
+                if (obj.mValue.equals(value)) {
                     return obj;
                 }
             }
@@ -278,15 +318,19 @@ public class SceneCommonStruct {
         MeiFu(3),
         Unknow(4);
 
-        private final Object value;
+        private final Object mValue;
 
-        ExpresswayOil(Object value) {
-            this.value = value;
+        ExpresswayOil(final Object value) {
+            this.mValue = value;
         }
 
-        public static ExpresswayOil get(Object value) {
+        /**
+         * @param value value
+         * @return ExpresswayOil
+         */
+        public static ExpresswayOil get(final Object value) {
             for (ExpresswayOil obj : values()) {
-                if (obj.value.equals(value)) {
+                if (obj.mValue.equals(value)) {
                     return obj;
                 }
             }
@@ -378,15 +422,19 @@ public class SceneCommonStruct {
         WEATHER_FIRE_WANING(26),
         WEATHER_DEFAULT(0);
 
-        private final Object value;
+        private final Object mValue;
 
-        RouteWeatherType(Object value) {
-            this.value = value;
+        RouteWeatherType(final Object value) {
+            this.mValue = value;
         }
 
-        public static RouteWeatherType get(Object value) {
+        /**
+         * @param value value
+         * @return RouteWeatherType
+         */
+        public static RouteWeatherType get(final Object value) {
             for (RouteWeatherType obj : values()) {
-                if (obj.value.equals(value)) {
+                if (obj.mValue.equals(value)) {
                     return obj;
                 }
             }
@@ -403,15 +451,19 @@ public class SceneCommonStruct {
         DefaultIconTypeFood(5),
         DefaultIconTypeShopping(6);
 
-        private final Object value;
+        private final Object mValue;
 
-        DefaultIconRectangleShapeType(Object value) {
-            this.value = value;
+        DefaultIconRectangleShapeType(final Object value) {
+            this.mValue = value;
         }
 
-        public static DefaultIconRectangleShapeType get(Object value) {
+        /**
+         * @param value value
+         * @return DefaultIconRectangleShapeType
+         */
+        public static DefaultIconRectangleShapeType get(final Object value) {
             for (DefaultIconRectangleShapeType obj : values()) {
-                if (obj.value.equals(value)) {
+                if (obj.mValue.equals(value)) {
                     return obj;
                 }
             }
@@ -434,15 +486,19 @@ public class SceneCommonStruct {
         GAS_STATION(11),
         CHARGE_STATION(12);
 
-        private final Object value;
+        private final Object mValue;
 
-        DestinationGuidePicture(Object value) {
-            this.value = value;
+        DestinationGuidePicture(final Object value) {
+            this.mValue = value;
         }
 
-        public static DestinationGuidePicture get(Object value) {
+        /**
+         * @param value value
+         * @return DestinationGuidePicture
+         */
+        public static DestinationGuidePicture get(final Object value) {
             for (DestinationGuidePicture obj : values()) {
-                if (obj.value.equals(value)) {
+                if (obj.mValue.equals(value)) {
                     return obj;
                 }
             }
@@ -465,15 +521,19 @@ public class SceneCommonStruct {
         NaviBtnBridgeUp(11),
         NaviBtnBridgeDown(12);
 
-        private final Object value;
+        private final Object mValue;
 
-        NaviButton(Object value) {
-            this.value = value;
+        NaviButton(final Object value) {
+            this.mValue = value;
         }
 
-        public static NaviButton get(Object value) {
+        /**
+         * @param value value
+         * @return NaviButton
+         */
+        public static NaviButton get(final Object value) {
             for (NaviButton obj : values()) {
-                if (obj.value.equals(value)) {
+                if (obj.mValue.equals(value)) {
                     return obj;
                 }
             }
@@ -489,15 +549,19 @@ public class SceneCommonStruct {
         Maintenance(4),
         Food(5);
 
-        private final Object value;
+        private final Object mValue;
 
-        AlongQuickSearch(Object value) {
-            this.value = value;
+        AlongQuickSearch(final Object value) {
+            this.mValue = value;
         }
 
-        public static AlongQuickSearch get(Object value) {
+        /**
+         * @param value value
+         * @return AlongQuickSearch
+         */
+        public static AlongQuickSearch get(final Object value) {
             for (AlongQuickSearch obj : values()) {
-                if (obj.value.equals(value)) {
+                if (obj.mValue.equals(value)) {
                     return obj;
                 }
             }
@@ -572,15 +636,19 @@ public class SceneCommonStruct {
         LaneEtc(153),
         LaneLabor(154);
 
-        private final Object value;
+        private final Object mValue;
 
-        LaneAction(Object value) {
-            this.value = value;
+        LaneAction(final Object value) {
+            this.mValue = value;
         }
 
-        public static LaneAction get(Object value) {
+        /**
+         * @param value value
+         * @return enum type for value
+         */
+        public static LaneAction get(final Object value) {
             for (LaneAction obj : values()) {
-                if (obj.value.equals(value)) {
+                if (obj.mValue.equals(value)) {
                     return obj;
                 }
             }
@@ -597,15 +665,19 @@ public class SceneCommonStruct {
         TollLaneTypeWechatPay(0x10),
         TollLaneTypeITC(0x20);
 
-        private final Object value;
+        private final Object mValue;
 
-        TollGateLaneAction(Object value) {
-            this.value = value;
+        TollGateLaneAction(final Object value) {
+            this.mValue = value;
         }
 
-        public static TollGateLaneAction get(Object value) {
+        /**
+         * @param value value
+         * @return enum type for value
+         */
+        public static TollGateLaneAction get(final Object value) {
             for (TollGateLaneAction obj : values()) {
-                if (obj.value.equals(value)) {
+                if (obj.mValue.equals(value)) {
                     return obj;
                 }
             }
@@ -623,15 +695,19 @@ public class SceneCommonStruct {
         BackLaneTidalNoWorkable(7),
         BackLaneReversibleNoWorkable(8);
 
-        private final Object value;
+        private final Object mValue;
 
-        TimeLaneBottomAction(Object value) {
-            this.value = value;
+        TimeLaneBottomAction(final Object value) {
+            this.mValue = value;
         }
 
-        public static TimeLaneBottomAction get(Object value) {
+        /**
+         * @param value value
+         * @return enum type for value
+         */
+        public static TimeLaneBottomAction get(final Object value) {
             for (TimeLaneBottomAction obj : values()) {
-                if (obj.value.equals(value)) {
+                if (obj.mValue.equals(value)) {
                     return obj;
                 }
             }
@@ -647,15 +723,19 @@ public class SceneCommonStruct {
         Accidents(4),
         Congestion(5);
 
-        private final Object value;
+        private final Object mValue;
 
-        NaviCardTrafficEvent(Object value) {
-            this.value = value;
+        NaviCardTrafficEvent(final Object value) {
+            this.mValue = value;
         }
 
-        public static NaviCardTrafficEvent get(Object value) {
+        /**
+         * @param value value
+         * @return enum type for value
+         */
+        public static NaviCardTrafficEvent get(final Object value) {
             for (NaviCardTrafficEvent obj : values()) {
-                if (obj.value.equals(value)) {
+                if (obj.mValue.equals(value)) {
                     return obj;
                 }
             }
@@ -726,15 +806,19 @@ public class SceneCommonStruct {
         ManeuverIconMergeLeft(65),
         ManeuverIconMergeRight(66);
 
-        private final Object value;
+        private final Object mValue;
 
-        TbtIconAction(Object value) {
-            this.value = value;
+        TbtIconAction(final Object value) {
+            this.mValue = value;
         }
 
-        public static TbtIconAction get(Object value) {
+        /**
+         * @param value value
+         * @return TbtIconAction
+         */
+        public static TbtIconAction get(final Object value) {
             for (TbtIconAction obj : values()) {
-                if (obj.value.equals(value)) {
+                if (obj.mValue.equals(value)) {
                     return obj;
                 }
             }
@@ -748,15 +832,19 @@ public class SceneCommonStruct {
         GasStation(2),
         EndPoint(3);
 
-        private final Object value;
+        private final Object mValue;
 
-        ViaPointType(Object value) {
-            this.value = value;
+        ViaPointType(final Object value) {
+            this.mValue = value;
         }
 
-        public static ViaPointType get(Object value) {
+        /**
+         * @param value value
+         * @return ViaPointType
+         */
+        public static ViaPointType get(final Object value) {
             for (ViaPointType obj : values()) {
-                if (obj.value.equals(value)) {
+                if (obj.mValue.equals(value)) {
                     return obj;
                 }
             }
@@ -769,15 +857,19 @@ public class SceneCommonStruct {
         ViaChargeType(1),
         ViaStarBucksType(2);
 
-        private final Object value;
+        private final Object mValue;
 
-        TmcViaPointType(Object value) {
-            this.value = value;
+        TmcViaPointType(final Object value) {
+            this.mValue = value;
         }
 
-        public static TmcViaPointType get(Object value) {
+        /**
+         * @param value value
+         * @return TmcViaPointType
+         */
+        public static TmcViaPointType get(final Object value) {
             for (TmcViaPointType obj : values()) {
-                if (obj.value.equals(value)) {
+                if (obj.mValue.equals(value)) {
                     return obj;
                 }
             }
@@ -795,15 +887,19 @@ public class SceneCommonStruct {
         West(6),
         Northwest(7);
 
-        private final Object value;
+        private final Object mValue;
 
-        CarDirectionType(Object value) {
-            this.value = value;
+        CarDirectionType(final Object value) {
+            this.mValue = value;
         }
 
-        public static CarDirectionType get(Object value) {
+        /**
+         * @param value value
+         * @return CarDirectionType
+         */
+        public static CarDirectionType get(final Object value) {
             for (CarDirectionType obj : values()) {
-                if (obj.value.equals(value)) {
+                if (obj.mValue.equals(value)) {
                     return obj;
                 }
             }
@@ -864,15 +960,19 @@ public class SceneCommonStruct {
         ManeuverIconMergeLeft(65),
         ManeuverIconMergeRight(66);
 
-        private final Object value;
+        private final Object mValue;
 
-        TbtExitIconAction(Object value) {
-            this.value = value;
+        TbtExitIconAction(final Object value) {
+            this.mValue = value;
         }
 
-        public static TbtExitIconAction get(Object value) {
+        /**
+         * @param value value
+         * @return Enum
+         */
+        public static TbtExitIconAction get(final Object value) {
             for (TbtExitIconAction obj : values()) {
-                if (obj.value.equals(value)) {
+                if (obj.mValue.equals(value)) {
                     return obj;
                 }
             }
@@ -886,15 +986,19 @@ public class SceneCommonStruct {
         SettingDrawRoadBar(2),
         SettingDrawNaviEagle(3);
 
-        private final Object value;
+        private final Object mValue;
 
-        EnumSettingDraw(Object value) {
-            this.value = value;
+        EnumSettingDraw(final Object value) {
+            this.mValue = value;
         }
 
-        public static EnumSettingDraw get(Object value) {
+        /**
+         * @param value value
+         * @return Enum
+         */
+        public static EnumSettingDraw get(final Object value) {
             for (EnumSettingDraw obj : values()) {
-                if (obj.value.equals(value)) {
+                if (obj.mValue.equals(value)) {
                     return obj;
                 }
             }

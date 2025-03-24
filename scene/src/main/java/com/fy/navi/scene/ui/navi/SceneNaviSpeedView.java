@@ -1,7 +1,5 @@
 package com.fy.navi.scene.ui.navi;
 
-import static com.fy.navi.scene.ui.navi.manager.NaviSceneId.NAVI_SCENE_SPEED;
-
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.AttributeSet;
@@ -22,25 +20,30 @@ import com.fy.navi.service.define.navi.SpeedOverallEntity;
 
 /**
  * 速度scene
+ * @author fy
+ * @version $Revision.*$
  */
-public class SceneNaviSpeedView extends NaviSceneBase<SceneNaviSpeedViewBinding, SceneNaviSpeedImpl> {
+public class SceneNaviSpeedView extends NaviSceneBase<SceneNaviSpeedViewBinding,
+        SceneNaviSpeedImpl> {
     private static final String TAG = MapDefaultFinalTag.NAVI_HMI_TAG;
+    private ISceneCallback mISceneCallback;
 
-    public SceneNaviSpeedView(Context context) {
+    public SceneNaviSpeedView(final Context context) {
         super(context);
     }
 
-    public SceneNaviSpeedView(Context context, AttributeSet attrs) {
+    public SceneNaviSpeedView(final Context context, final AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public SceneNaviSpeedView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public SceneNaviSpeedView(final Context context, final AttributeSet attrs,
+                              final int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 
     @Override
     protected NaviSceneId getSceneId() {
-        return NAVI_SCENE_SPEED;
+        return NaviSceneId.NAVI_SCENE_SPEED;
     }
 
     @Override
@@ -50,14 +53,14 @@ public class SceneNaviSpeedView extends NaviSceneBase<SceneNaviSpeedViewBinding,
 
 
     protected void init() {
-        NaviSceneManager.getInstance().addNaviScene(NAVI_SCENE_SPEED, this);
+        NaviSceneManager.getInstance().addNaviScene(NaviSceneId.NAVI_SCENE_SPEED, this);
     }
 
     @Override
     public void show() {
         super.show();
         if (mISceneCallback != null) {
-            mISceneCallback.updateSceneVisible(NAVI_SCENE_SPEED, true);
+            mISceneCallback.updateSceneVisible(NaviSceneId.NAVI_SCENE_SPEED, true);
         }
     }
 
@@ -65,12 +68,13 @@ public class SceneNaviSpeedView extends NaviSceneBase<SceneNaviSpeedViewBinding,
     public void hide() {
         super.hide();
         if (mISceneCallback != null) {
-            mISceneCallback.updateSceneVisible(NAVI_SCENE_SPEED, true);
+            mISceneCallback.updateSceneVisible(NaviSceneId.NAVI_SCENE_SPEED, true);
         }
     }
 
     @Override
-    protected SceneNaviSpeedViewBinding createViewBinding(LayoutInflater inflater, ViewGroup viewGroup) {
+    protected SceneNaviSpeedViewBinding createViewBinding(final LayoutInflater inflater,
+                                                          final ViewGroup viewGroup) {
         return SceneNaviSpeedViewBinding.inflate(inflater, viewGroup, true);
     }
 
@@ -94,34 +98,49 @@ public class SceneNaviSpeedView extends NaviSceneBase<SceneNaviSpeedViewBinding,
     }
 
     @Override
-    public boolean onTouchEvent(MotionEvent event) {
+    public boolean onTouchEvent(final MotionEvent event) {
         return true;
     }
 
+    /**
+     * @param speedLimit 限制速度
+     * @param averageSpeed 平均速度
+     * @param remain 剩余距离
+     */
     @SuppressLint("UseCompatLoadingForDrawables")
-    public void updateOverallInfo(int speedLimit, int averageSpeed, int remain) {
+    public void updateOverallInfo(final int speedLimit, final int averageSpeed, final int remain) {
         mViewBinding.stvCurrentSpeed.setText(String.valueOf(averageSpeed));
         mViewBinding.stvSpeedLimit.setText(String.valueOf(speedLimit));
         mViewBinding.stvSpeedLimitKey.setText(getContext().getText(R.string.navi_speed_overall));
         // 超速时更换背景
-        mViewBinding.stvCurrentSpeed.setTextColor(getContext().getColor(averageSpeed > speedLimit ? R.color.navi_list_item_tv_one : R.color.navi_toll_bg_color));
-        mViewBinding.stvCurrentSpeedKey.setTextColor(getContext().getColor(averageSpeed > speedLimit ? R.color.navi_list_item_tv_one : R.color.navi_toll_bg_color));
-        mViewBinding.svCurrentSpeed.setBackground(getContext().getDrawable(averageSpeed > speedLimit ? R.drawable.guide_car_speed_stroke : R.drawable.guide_car_speed));
-        if (remain > 1000) {
-            float remainKm = remain / 100f;
+        mViewBinding.stvCurrentSpeed.setTextColor(getContext().getColor(averageSpeed > speedLimit ?
+                R.color.navi_list_item_tv_one : R.color.navi_toll_bg_color));
+        mViewBinding.stvCurrentSpeedKey.setTextColor(
+                getContext().getColor(averageSpeed > speedLimit ? R.color.navi_list_item_tv_one :
+                        R.color.navi_toll_bg_color));
+        mViewBinding.svCurrentSpeed.setBackground(
+                getContext().getDrawable(averageSpeed > speedLimit ?
+                        R.drawable.guide_car_speed_stroke : R.drawable.guide_car_speed));
+        int remainDistance = remain;
+        if (remainDistance > 1000) {
+            float remainKm = remainDistance / 100f;
             remainKm = Math.round(remainKm) / (float) 10;
             mViewBinding.stvDistance.setText(String.valueOf(remainKm));
         } else {
-            if (remain < 0) {
-                remain = 0;
+            if (remainDistance < 0) {
+                remainDistance = 0;
             }
-            mViewBinding.stvDistance.setText(String.valueOf(remain));
+            mViewBinding.stvDistance.setText(String.valueOf(remainDistance));
             mViewBinding.stvDistanceKey.setText(getContext().getText(R.string.navi_remaining_distance));
         }
     }
 
+    /**
+     * @param entity entity
+     * @param currentSpeed 当前的车速
+     */
     @SuppressLint("SetTextI18n")
-    public void updateGreenWaveInfo(SpeedOverallEntity entity, int currentSpeed) {
+    public void updateGreenWaveInfo(final SpeedOverallEntity entity, final int currentSpeed) {
         mViewBinding.stvCurrentSpeed.setText(String.valueOf(currentSpeed));
         mViewBinding.stvSpeedLimit.setText(entity.getMinSpeed() + "-" + entity.getMaxSpeed());
         mViewBinding.stvSpeedLimitKey.setText(getContext().getText(R.string.navi_speed_suggest));
@@ -129,14 +148,18 @@ public class SceneNaviSpeedView extends NaviSceneBase<SceneNaviSpeedViewBinding,
         mViewBinding.stvDistanceKey.setText(getContext().getText(R.string.navi_remaining_green_lights));
     }
 
-    public void onNaviSpeedCameraInfo(SpeedOverallEntity speedCameraInfo) {
+    /**
+     * @param speedCameraInfo 区间车速、绿波车速信息
+     */
+    public void onNaviSpeedCameraInfo(final SpeedOverallEntity speedCameraInfo) {
         if (mScreenViewModel != null) {
             mScreenViewModel.onNaviSpeedCameraInfo(speedCameraInfo);
         }
     }
 
     @Override
-    public void addSceneCallback(ISceneCallback sceneCallback) {
+    public void addSceneCallback(final ISceneCallback sceneCallback) {
+        mISceneCallback = sceneCallback;
         if (mScreenViewModel != null) {
             mScreenViewModel.addSceneCallback(sceneCallback);
         }

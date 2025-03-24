@@ -1,7 +1,6 @@
 package com.fy.navi.hmi.search.mainsearch;
 
 import com.fy.navi.service.logicpaket.calibration.CalibrationPackage;
-import com.fy.navi.service.logicpaket.search.SearchPackage;
 import com.fy.navi.ui.base.BaseModel;
 
 public class MainSearchModel extends BaseModel<MainSearchViewModel> {
@@ -18,6 +17,7 @@ public class MainSearchModel extends BaseModel<MainSearchViewModel> {
      * 0 汽油车
      * 1 纯电动车
      * 2 插电式混动汽车
+     * @return 动力类型
      */
     public int powerType() {
         return mCalibrationPackage.powerType();

@@ -1,17 +1,20 @@
 package com.fy.navi.service.adapter.setting;
 
 import com.fy.navi.service.define.route.RoutePreferenceID;
-import com.fy.navi.service.define.setting.SimpleFavoriteItemBean;
 
-import java.util.ArrayList;
 
-/**
- *
- */
 public interface SettingApi {
 
+    /**
+     * 初始化设置
+     */
     void initSetting();
 
+    /**
+     * 注册回调
+     * @param key 设置项
+     * @param resultCallback 回调
+     */
     void registerCallback(String key, SettingAdapterCallback resultCallback);
 
     /**
@@ -30,6 +33,7 @@ public interface SettingApi {
     /**
      * 设置避开限行状态
      * @param avoidLimit 限行状态 true：开启限行 false：关闭限行
+     * @return 0:成功 其他：失败
      */
     int setConfigKeyAvoidLimit(boolean avoidLimit);
 
@@ -60,7 +64,6 @@ public interface SettingApi {
 
     /**
      * 设置常去地点
-     *
      * @param oftenArrived 设置常去地点状态 true：开启 false：关闭
      * @return 返回错误码
      */
@@ -74,7 +77,6 @@ public interface SettingApi {
 
     /**
      * 设置自动退出全览
-     *
      * @param autoExitPreview 自动退出全览状态 true：开启 false：关闭
      * @return 返回错误码
      */
@@ -88,7 +90,6 @@ public interface SettingApi {
 
     /**
      * 设置导航播报音量
-     *
      * @param broadcastVolume 导航播报音量
      * @return 返回错误码
      */
@@ -103,6 +104,7 @@ public interface SettingApi {
     /**
      * 设置导航播报模式
      * @param broadcastMode 导航播报模式 1：经典简洁播报； 2：新手详细播报，默认态； 3：极简播报 ；默认值2
+     * @return 0:成功 其他：失败
      */
     int setConfigKeyBroadcastMode(int broadcastMode);
 
@@ -114,7 +116,6 @@ public interface SettingApi {
 
     /**
      * 设置巡航播报前方路况
-     *
      * @param roadWarn 巡航播报前方路况 true：开启 false：关闭
      * @return 返回错误码
      */
@@ -128,7 +129,6 @@ public interface SettingApi {
 
     /**
      * 设置巡航播报电子眼播报
-     *
      * @param safeBroadcast 巡航播报电子眼播报 true：开启 false：关闭
      * @return 返回错误码
      */
@@ -142,7 +142,6 @@ public interface SettingApi {
 
     /**
      * 设置巡航播报安全提醒
-     *
      * @param driveWarn 巡航播报安全提醒 true：开启 false：关闭
      * @return 返回错误码
      */
@@ -156,7 +155,6 @@ public interface SettingApi {
 
     /**
      * 设置地图视角
-     *
      * @param mapViewMode 地图视角 0: 2D车首上，默认态; 1: 2D北上; 2: 3D车首上
      * @return 返回错误码
      */
@@ -170,20 +168,10 @@ public interface SettingApi {
 
     /**
      * 设置路况开关
-     *
      * @param roadEvent 路况开关 true：开启 false：关闭
      * @return 返回错误码
      */
     int setConfigKeyRoadEvent(boolean roadEvent);
-
-    /**
-     * 获取收藏点列表
-     * @param type 收藏类别
-     * @param sorted 是否排序
-     * @return 收藏点列表
-     */
-    ArrayList<SimpleFavoriteItemBean> getSimpleFavoriteList(int type, boolean sorted);
-
 
     /**
      * 获取车辆动力类型
@@ -219,6 +207,7 @@ public interface SettingApi {
 
     /**
      * 设置白天黑夜 16：自动模式，默认态； 17：日间模式； 18：夜间模式
+     * @param dayNightMode 白天黑夜 16：自动模式，默认态； 17：日间模式； 18：夜间模式
      * @return 返回错误码
      */
     int setConfigKeyDayNightMode(int dayNightMode);

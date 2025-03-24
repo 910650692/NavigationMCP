@@ -5,54 +5,48 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
 import com.android.utils.ConvertUtils;
 import com.fy.navi.scene.BaseSceneView;
 import com.fy.navi.scene.api.route.ISceneRouteGasStationChargeSelectCallBack;
-import com.fy.navi.scene.api.route.ISceneRouteGasStationWeatherServiceSelectCallBack;
 import com.fy.navi.scene.databinding.SceneRouteStationChargeServiceBinding;
-import com.fy.navi.scene.databinding.SceneRouteStationWeatherServiceBinding;
 import com.fy.navi.scene.impl.route.SceneRouteGasStationChargeServiceImpl;
-import com.fy.navi.scene.impl.route.SceneRouteGasStationWeatherServiceImpl;
 
 import java.util.Hashtable;
 
-/**
- * @Description TODO
- * @Author lvww
- * @date 2024/12/2
- */
-public class SceneRouteGasStationChargeServiceView extends BaseSceneView<SceneRouteStationChargeServiceBinding, SceneRouteGasStationChargeServiceImpl> {
+public class SceneRouteGasStationChargeServiceView
+        extends BaseSceneView<SceneRouteStationChargeServiceBinding, SceneRouteGasStationChargeServiceImpl> {
 
-    private Hashtable<String, ISceneRouteGasStationChargeSelectCallBack> sceneRouteGasStationWeatherServiceSelectCallBack;
+    private Hashtable<String, ISceneRouteGasStationChargeSelectCallBack> mSceneRouteGasStationWeatherServiceSelectCallBack;
 
-    public SceneRouteGasStationChargeServiceView(@NonNull Context context) {
+    public SceneRouteGasStationChargeServiceView(final Context context) {
         super(context);
     }
 
-    public SceneRouteGasStationChargeServiceView(@NonNull Context context, @Nullable AttributeSet attrs) {
+    public SceneRouteGasStationChargeServiceView(final Context context, final AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public SceneRouteGasStationChargeServiceView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public SceneRouteGasStationChargeServiceView(final Context context, final AttributeSet attrs, final int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 
     @Override
-    protected SceneRouteStationChargeServiceBinding createViewBinding(LayoutInflater inflater, ViewGroup viewGroup) {
+    protected SceneRouteStationChargeServiceBinding createViewBinding(final LayoutInflater inflater, final ViewGroup viewGroup) {
         return SceneRouteStationChargeServiceBinding.inflate(inflater, viewGroup, true);
     }
 
     @Override
     protected SceneRouteGasStationChargeServiceImpl initSceneImpl() {
-        sceneRouteGasStationWeatherServiceSelectCallBack = new Hashtable<>();
+        mSceneRouteGasStationWeatherServiceSelectCallBack = new Hashtable<>();
         return new SceneRouteGasStationChargeServiceImpl(this);
     }
-
-    public void registerRouteSelectObserver(String key, ISceneRouteGasStationChargeSelectCallBack callBack) {
-        sceneRouteGasStationWeatherServiceSelectCallBack.put(key, callBack);
+    /**
+     * fragment注册监听
+     * @param key 关键字
+     * @param callBack 回调
+     * */
+    public void registerRouteSelectObserver(final String key, final ISceneRouteGasStationChargeSelectCallBack callBack) {
+        mSceneRouteGasStationWeatherServiceSelectCallBack.put(key, callBack);
     }
 
     @Override
@@ -63,27 +57,39 @@ public class SceneRouteGasStationChargeServiceView extends BaseSceneView<SceneRo
     @Override
     protected void initObserver() {
     }
+    /**
+     * 更新UI
+     * */
     public void updateUi() {
-        if (ConvertUtils.isEmpty(mViewBinding) || ConvertUtils.isEmpty(mScreenViewModel)) return;
-        mViewBinding.routeRightTabListTvGasStation.setSelected(mScreenViewModel.isGasStationSelect);
-        mViewBinding.routeRightTabListIvGasStation.setSelected(mScreenViewModel.isGasStationSelect);
-        mViewBinding.routeRightTabListTvWeather.setSelected(mScreenViewModel.isWeatherSelect);
-        mViewBinding.routeRightTabListIvWeather.setSelected(mScreenViewModel.isWeatherSelect);
-        mViewBinding.routeRightTabListTvService.setSelected(mScreenViewModel.isServiceSelect);
-        mViewBinding.routeRightTabListIvService.setSelected(mScreenViewModel.isServiceSelect);
+        if (ConvertUtils.isEmpty(mViewBinding) || ConvertUtils.isEmpty(mScreenViewModel)) {
+            return;
+        }
+        mViewBinding.routeRightTabListTvGasStation.setSelected(mScreenViewModel.isGasStationSelect());
+        mViewBinding.routeRightTabListIvGasStation.setSelected(mScreenViewModel.isGasStationSelect());
+        mViewBinding.routeRightTabListTvWeather.setSelected(mScreenViewModel.isWeatherSelect());
+        mViewBinding.routeRightTabListIvWeather.setSelected(mScreenViewModel.isWeatherSelect());
+        mViewBinding.routeRightTabListTvService.setSelected(mScreenViewModel.isServiceSelect());
+        mViewBinding.routeRightTabListIvService.setSelected(mScreenViewModel.isServiceSelect());
     }
-
-    public void clickTab(int tabIndex) {
-        for (ISceneRouteGasStationChargeSelectCallBack callBack : sceneRouteGasStationWeatherServiceSelectCallBack.values()) {
-            if (ConvertUtils.isEmpty(callBack)) continue;
+    /**
+     * 点击Tab
+     * @param tabIndex 索引
+     * */
+    public void clickTab(final int tabIndex) {
+        for (ISceneRouteGasStationChargeSelectCallBack callBack : mSceneRouteGasStationWeatherServiceSelectCallBack.values()) {
+            if (ConvertUtils.isEmpty(callBack)) {
+                continue;
+            }
             callBack.onTabListGasChargeClick(tabIndex);
         }
     }
-
+    /**
+     * 高亮沿途
+     * */
     public void highlightAlongTab() {
-        mScreenViewModel.isGasStationSelect = true;
-        mScreenViewModel.isWeatherSelect = false;
-        mScreenViewModel.isServiceSelect = false;
+        mScreenViewModel.setGasStationSelect(true);
+        mScreenViewModel.setWeatherSelect(false);
+        mScreenViewModel.setServiceSelect(false);
         updateUi();
     }
 }

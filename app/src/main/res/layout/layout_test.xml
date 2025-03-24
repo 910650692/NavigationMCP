@@ -204,6 +204,30 @@
         app:layout_constraintTop_toBottomOf="@+id/test_all_city_data" />
 
     <com.fy.navi.ui.view.SkinTextView
+        android:id="@+id/test_open_cluster_activity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="@dimen/dp_20"
+        android:text="@string/test_open_cluster_activity"
+        android:textColor="@color/black"
+        android:textSize="12sp"
+        app:layout_constraintStart_toEndOf="@+id/test_stop_navi"
+        app:layout_constraintTop_toBottomOf="@+id/test_all_city_data" />
+
+    <com.fy.navi.ui.view.SkinTextView
+        android:id="@+id/test_close_cluster_activity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="@dimen/dp_20"
+        android:text="@string/test_close_cluster_activity"
+        android:textColor="@color/black"
+        android:textSize="12sp"
+        app:layout_constraintStart_toEndOf="@+id/test_open_cluster_activity"
+        app:layout_constraintTop_toBottomOf="@+id/test_all_city_data" />
+
+    <com.fy.navi.ui.view.SkinTextView
         android:id="@+id/test_select_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

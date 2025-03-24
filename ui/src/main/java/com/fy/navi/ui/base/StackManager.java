@@ -10,178 +10,225 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Stack;
 
-/**
- * @Description TODO
- * @Author lvww
- * @date 2024/11/22
- */
-public class StackManager {
-    private Map<String, Stack<BaseActivity>> baseActivityStack;
-    private Map<String, Stack<BaseFragment>> baseFragmentStack;
-//    private final Stack<BaseActivity> baseActivityStack;
-//    private final Stack<BaseFragment> baseFragmentStack;
+public final class StackManager {
+    private Map<String, Stack<BaseActivity>> mBaseActivityStack;
+    private Map<String, Stack<BaseFragment>> mBaseFragmentStack;
 
     private StackManager() {
-//        baseActivityStack = new Stack<>();
-//        baseFragmentStack = new Stack<>();
-        baseActivityStack = new HashMap<>();
-        baseFragmentStack = new HashMap<>();
+        mBaseActivityStack = new HashMap<>();
+        mBaseFragmentStack = new HashMap<>();
     }
 
-    public boolean isActivityStackNull(String screenId) {
-        Stack<BaseActivity> baseActivities = ConvertUtils.containToValue(baseActivityStack, screenId);
+    /**
+     * 判断栈是否为空.
+     *
+     * @param screenId 屏幕ID
+     * @return true为空
+     */
+    public boolean isActivityStackNull(final String screenId) {
+        final Stack<BaseActivity> baseActivities = ConvertUtils.containToValue(mBaseActivityStack, screenId);
         return ConvertUtils.isEmpty(baseActivities);
     }
 
-    public boolean isFragmentStackNull(String screenId) {
-        Stack<BaseFragment> fragmentStack = ConvertUtils.containToValue(baseFragmentStack, screenId);
+    /**
+     * 判断栈是否为空.
+     *
+     * @param screenId 屏幕ID
+     * @return true为空
+     */
+    public boolean isFragmentStackNull(final String screenId) {
+        final Stack<BaseFragment> fragmentStack = ConvertUtils.containToValue(mBaseFragmentStack, screenId);
         return ConvertUtils.isEmpty(fragmentStack);
-    }
-
-    public Stack<BaseActivity> getBaseActivityStack(String screenId) {
-        return ConvertUtils.containToValue(baseActivityStack, screenId);
-    }
-
-    public Stack<BaseFragment> getBaseFragmentStack(String screenId) {
-        return ConvertUtils.containToValue(baseFragmentStack, screenId);
     }
 
     /**
      * 压栈处理.
+     *
+     * @param screenId 屏幕ID
+     * @return 栈顶元素
+     */
+    public Stack<BaseActivity> getBaseActivityStack(final String screenId) {
+        return ConvertUtils.containToValue(mBaseActivityStack, screenId);
+    }
+
+    /**
+     * 压栈处理.
+     *
+     * @param screenId 屏幕ID
+     * @return 栈顶元素
+     */
+    public Stack<BaseFragment> getBaseFragmentStack(final String screenId) {
+        return ConvertUtils.containToValue(mBaseFragmentStack, screenId);
+    }
+
+    /**
+     * 压栈处理.
+     *
      * @param screenId 屏幕ID
      * @param baseView 被压栈的视图
      */
-    public void push(String screenId, IBaseView baseView) {
+    public void push(final String screenId, final IBaseView baseView) {
         if (ConvertUtils.isNullRequire(baseView) instanceof BaseActivity) {
-            Stack<BaseActivity> activities =  ConvertUtils.containToValue(baseActivityStack, screenId);
+            Stack<BaseActivity> activities = ConvertUtils.containToValue(mBaseActivityStack, screenId);
             activities = ConvertUtils.push(activities, (BaseActivity) baseView);
-            baseActivityStack.put(screenId, activities);
+            mBaseActivityStack.put(screenId, activities);
         } else if (ConvertUtils.isNullRequire(baseView) instanceof BaseFragment) {
-            Stack<BaseFragment> fragmentStack = ConvertUtils.containToValue(baseFragmentStack, screenId);
+            Stack<BaseFragment> fragmentStack = ConvertUtils.containToValue(mBaseFragmentStack, screenId);
             fragmentStack = ConvertUtils.push(fragmentStack, (BaseFragment) baseView);
-            baseFragmentStack.put(screenId, fragmentStack);
+            mBaseFragmentStack.put(screenId, fragmentStack);
         }
     }
 
+    /**
+     * 获取正在显示的视图.
+     *
+     * @return 视图实例
+     */
     @Nullable
     public BaseActivity getFirstActivity() {
-        if (ConvertUtils.isEmpty(baseActivityStack)) return null;
-        String firstKey = baseActivityStack.keySet().stream().findFirst().get();
-        if (TextUtils.isEmpty(firstKey)) return null;
+        if (ConvertUtils.isEmpty(mBaseActivityStack)) {
+            return null;
+        }
+        final String firstKey = mBaseActivityStack.keySet().stream().findFirst().get();
+        if (TextUtils.isEmpty(firstKey)) {
+            return null;
+        }
         return getCurrentActivity(firstKey);
     }
 
     /**
      * 获取正在显示的视图.
+     *
      * @return 视图实例
      */
     public BaseActivity getMainCurrentActivity() {
-        Stack<BaseActivity> activities =  ConvertUtils.containToValue(baseActivityStack, "MAIN_SCREEN_MAIN_MAP");
+        final Stack<BaseActivity> activities = ConvertUtils.containToValue(mBaseActivityStack, "MAIN_SCREEN_MAIN_MAP");
         return ConvertUtils.peek(activities);
     }
 
     /**
      * 获取正在显示的视图.
+     *
      * @param screenId 屏幕UD
      * @return 视图实例
      */
-    public BaseActivity getCurrentActivity(String screenId) {
-        Stack<BaseActivity> activities =  ConvertUtils.containToValue(baseActivityStack, screenId);
+    public BaseActivity getCurrentActivity(final String screenId) {
+        final Stack<BaseActivity> activities = ConvertUtils.containToValue(mBaseActivityStack, screenId);
         return ConvertUtils.peek(activities);
     }
 
     /**
      * 获取正在显示的视图.
+     *
      * @param screenId 屏幕UD
      * @return 视图实例
      */
-    public BaseFragment getCurrentFragment(String screenId) {
-        Stack<BaseFragment> fragmentStack =  ConvertUtils.containToValue(baseFragmentStack, screenId);
+    public BaseFragment getCurrentFragment(final String screenId) {
+        final Stack<BaseFragment> fragmentStack = ConvertUtils.containToValue(mBaseFragmentStack, screenId);
         return ConvertUtils.peek(fragmentStack);
     }
 
     /**
      * 出栈最后一个视图.
+     *
      * @param screenId 屏幕UD
      * @return 出栈视图的实例
      */
-    public BaseActivity popActivity(String screenId) {
-        if (ConvertUtils.isEmpty(baseActivityStack)) return null;
-        Stack<BaseActivity> activityStack = ConvertUtils.containToValue(baseActivityStack, screenId);
+    public BaseActivity popActivity(final String screenId) {
+        if (ConvertUtils.isEmpty(mBaseActivityStack)) {
+            return null;
+        }
+        final Stack<BaseActivity> activityStack = ConvertUtils.containToValue(mBaseActivityStack, screenId);
         return ConvertUtils.pop(activityStack);
     }
 
     /**
      * 出栈最后一个视图.
+     *
      * @param screenId 屏幕UD
      * @return 出栈视图的实例
      */
-    public BaseFragment popFragment(String screenId) {
-        if (ConvertUtils.isEmpty(baseFragmentStack)) return null;
-        Stack<BaseFragment> fragmentStack = ConvertUtils.containToValue(baseFragmentStack, screenId);
+    public BaseFragment popFragment(final String screenId) {
+        if (ConvertUtils.isEmpty(mBaseFragmentStack)) {
+            return null;
+        }
+        final Stack<BaseFragment> fragmentStack = ConvertUtils.containToValue(mBaseFragmentStack, screenId);
         return ConvertUtils.pop(fragmentStack);
     }
 
     /**
      * 指定视图最后一次出现的位置.
+     *
      * @param screenId 屏幕ID
      * @param activity 指定元素
      * @return 元素所在位置
      */
-    public int getActivityIndex(String screenId, BaseActivity activity) {
-        if (ConvertUtils.isEmpty(baseActivityStack)) return -1;
-        Stack<BaseActivity> activityStack = ConvertUtils.containToValue(baseActivityStack, screenId);
+    public int getActivityIndex(final String screenId, final BaseActivity activity) {
+        if (ConvertUtils.isEmpty(mBaseActivityStack)) {
+            return -1;
+        }
+        final Stack<BaseActivity> activityStack = ConvertUtils.containToValue(mBaseActivityStack, screenId);
         return ConvertUtils.lastIndexOf(activityStack, activity);
     }
 
     /**
      * 指定视图最后一次出现的位置.
+     *
      * @param screenId 屏幕ID
      * @param fragment 指定元素
      * @return 元素所在位置
      */
-    public int getFragmentIndex(String screenId, BaseFragment fragment) {
-        if (ConvertUtils.isEmpty(baseFragmentStack)) return -1;
-        Stack<BaseFragment> fragmentStack = ConvertUtils.containToValue(baseFragmentStack, screenId);
+    public int getFragmentIndex(final String screenId, final BaseFragment fragment) {
+        if (ConvertUtils.isEmpty(mBaseFragmentStack)) {
+            return -1;
+        }
+        final Stack<BaseFragment> fragmentStack = ConvertUtils.containToValue(mBaseFragmentStack, screenId);
         return ConvertUtils.lastIndexOf(fragmentStack, fragment);
     }
 
     /**
      * 获取指定位置的视图.
+     *
      * @param screenId 屏幕ID
-     * @param index 指定位置
+     * @param index    指定位置
      * @return 指定位置的元素
      */
-    public BaseActivity getIndexActivity(String screenId, int index) {
-        if (ConvertUtils.isEmpty(baseActivityStack)) return null;
-        Stack<BaseActivity> activityStack = ConvertUtils.containToValue(baseActivityStack, screenId);
+    public BaseActivity getIndexActivity(final String screenId, final int index) {
+        if (ConvertUtils.isEmpty(mBaseActivityStack)) {
+            return null;
+        }
+        final Stack<BaseActivity> activityStack = ConvertUtils.containToValue(mBaseActivityStack, screenId);
         return ConvertUtils.get(activityStack, index);
     }
 
     /**
      * 获取指定位置的视图.
+     *
      * @param screenId 屏幕ID
-     * @param index 指定位置
+     * @param index    指定位置
      * @return 指定位置的元素
      */
-    public BaseFragment getIndexFragment(String screenId, int index) {
-        if (ConvertUtils.isEmpty(baseFragmentStack)) return null;
-        Stack<BaseFragment> fragmentStack = ConvertUtils.containToValue(baseFragmentStack, screenId);
+    public BaseFragment getIndexFragment(final String screenId, final int index) {
+        if (ConvertUtils.isEmpty(mBaseFragmentStack)) {
+            return null;
+        }
+        final Stack<BaseFragment> fragmentStack = ConvertUtils.containToValue(mBaseFragmentStack, screenId);
         return ConvertUtils.get(fragmentStack, index);
     }
 
     /**
      * 是否包含指定视图
+     *
      * @param screenId 屏幕ID
      * @param baseView 指定视图
      * @return true/false
      */
-    public boolean isContain(String screenId, IBaseView baseView) {
+    public boolean isContain(final String screenId, final IBaseView baseView) {
         if (baseView instanceof BaseActivity<?, ?>) {
-            Stack<BaseActivity> activityStack = ConvertUtils.containToValue(baseActivityStack, screenId);
+            final Stack<BaseActivity> activityStack = ConvertUtils.containToValue(mBaseActivityStack, screenId);
             return ConvertUtils.isContain(activityStack, (BaseActivity) baseView);
         } else if (baseView instanceof BaseFragment<?, ?>) {
-            Stack<BaseFragment> fragmentStack = ConvertUtils.containToValue(baseFragmentStack, screenId);
+            final Stack<BaseFragment> fragmentStack = ConvertUtils.containToValue(mBaseFragmentStack, screenId);
             return ConvertUtils.isContain(fragmentStack, (BaseFragment) baseView);
         }
         return false;
@@ -189,78 +236,116 @@ public class StackManager {
 
     /**
      * 是否包含指定视图
+     *
      * @param screenId 屏幕ID
      * @param fragment 指定视图
-     * @return true/false
+     * @return BaseFragment
      */
-    public BaseFragment isContainFragment(String screenId, BaseFragment fragment) {
-        if (ConvertUtils.isEmpty(baseFragmentStack)) return null;
-        Stack<BaseFragment> fragmentStack = ConvertUtils.containToValue(baseFragmentStack, screenId);
-        if (ConvertUtils.isContain(fragmentStack, fragment))
+    public BaseFragment isContainFragment(final String screenId, final BaseFragment fragment) {
+        if (ConvertUtils.isEmpty(mBaseFragmentStack)) {
+            return null;
+        }
+        final Stack<BaseFragment> fragmentStack = ConvertUtils.containToValue(mBaseFragmentStack, screenId);
+        if (ConvertUtils.isContain(fragmentStack, fragment)) {
             return getIndexFragment(screenId, getFragmentIndex(screenId, fragment));
+        }
         return null;
     }
 
     /**
      * 移除指定视图
+     *
      * @param screenId 屏幕ID
      * @param baseView 指定视图
-     * @return true/false
      */
-    public void removeBaseView(String screenId, IBaseView baseView) {
+    public void removeBaseView(final String screenId, final IBaseView baseView) {
         if (baseView instanceof BaseActivity<?, ?>) {
-            Stack<BaseActivity> activityStack = ConvertUtils.containToValue(baseActivityStack, screenId);
-            ConvertUtils.remove(activityStack, (BaseActivity)baseView);
+            final Stack<BaseActivity> activityStack = ConvertUtils.containToValue(mBaseActivityStack, screenId);
+            ConvertUtils.remove(activityStack, (BaseActivity) baseView);
         } else if (baseView instanceof BaseFragment<?, ?>) {
-            Stack<BaseFragment> fragmentStack = ConvertUtils.containToValue(baseFragmentStack, screenId);
+            final Stack<BaseFragment> fragmentStack = ConvertUtils.containToValue(mBaseFragmentStack, screenId);
             ConvertUtils.remove(fragmentStack, (BaseFragment) baseView);
         }
     }
 
-    public void removeIndexActivity(String screenId, int index) {
-        Stack<BaseActivity> activityStack = ConvertUtils.containToValue(baseActivityStack, screenId);
+    /**
+     * 移除指定视图
+     *
+     * @param screenId 屏幕ID
+     * @param index    指定位置
+     */
+    public void removeIndexActivity(final String screenId, final int index) {
+        final Stack<BaseActivity> activityStack = ConvertUtils.containToValue(mBaseActivityStack, screenId);
         ConvertUtils.remove(activityStack, index);
     }
 
-    public void removeIndexFragment(String screenId, int index) {
-        Stack<BaseFragment> fragmentStack = ConvertUtils.containToValue(baseFragmentStack, screenId);
+    /**
+     * 移除指定视图
+     *
+     * @param screenId 屏幕ID
+     * @param index    指定位置
+     */
+    public void removeIndexFragment(final String screenId, final int index) {
+        final Stack<BaseFragment> fragmentStack = ConvertUtils.containToValue(mBaseFragmentStack, screenId);
         ConvertUtils.remove(fragmentStack, index);
     }
 
-    public void removeAllActivity(String screenId) {
-        Stack<BaseActivity> activityStack = ConvertUtils.containToValue(baseActivityStack, screenId);
+    /**
+     * 移除所有视图
+     *
+     * @param screenId 屏幕ID
+     */
+    public void removeAllActivity(final String screenId) {
+        final Stack<BaseActivity> activityStack = ConvertUtils.containToValue(mBaseActivityStack, screenId);
         ConvertUtils.clear(activityStack);
     }
 
-    public void removeAllFragment(String screenId) {
-        Stack<BaseFragment> fragmentStack = ConvertUtils.containToValue(baseFragmentStack, screenId);
+    /**
+     * 移除所有视图
+     *
+     * @param screenId 屏幕ID
+     */
+    public void removeAllFragment(final String screenId) {
+        final Stack<BaseFragment> fragmentStack = ConvertUtils.containToValue(mBaseFragmentStack, screenId);
         ConvertUtils.clear(fragmentStack);
     }
 
+    /**
+     * 移除所有视图
+     */
     public void removeAllActivity() {
-        ConvertUtils.clear(baseActivityStack);
-        baseActivityStack = null;
+        ConvertUtils.clear(mBaseActivityStack);
+        mBaseActivityStack = null;
     }
 
+    /**
+     * 移除所有视图
+     */
     public void removeAllFragment() {
-        ConvertUtils.clear(baseFragmentStack);
-        baseFragmentStack = null;
+        ConvertUtils.clear(mBaseFragmentStack);
+        mBaseFragmentStack = null;
     }
 
+    /**
+     * 销毁栈
+     */
     public void destroy() {
         removeAllActivity();
         removeAllFragment();
     }
 
-    public void exitApp(){
+    /**
+     * 退出应用
+     */
+    public void exitApp() {
         System.exit(0);
     }
 
     public static StackManager getInstance() {
-        return Helper.stm;
+        return Helper.STACK_MANAGER;
     }
 
     private static final class Helper {
-        private static final StackManager stm = new StackManager();
+        private static final StackManager STACK_MANAGER = new StackManager();
     }
 }

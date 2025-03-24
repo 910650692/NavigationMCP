@@ -53,7 +53,7 @@
             android:id="@+id/group_exit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:visibility="@{naviTbt.exitInfoVisible?View.VISIBLE:View.GONE}"
+            android:visibility="@{naviTbt.mExitInfoVisible?View.VISIBLE:View.GONE}"
             app:constraint_referenced_ids="sv_exit,siv_hud_sou33,stv_exit_num"
             tools:visibility="visible" />
 
@@ -92,7 +92,7 @@
             android:id="@+id/siv_hud_sou3"
             android:layout_width="@dimen/dp_100"
             android:layout_height="@dimen/dp_100"
-            android:visibility="@{naviTbt.turnInfoVisible?View.VISIBLE:View.GONE}"
+            android:visibility="@{naviTbt.mTurnInfoVisible?View.VISIBLE:View.GONE}"
             app:layout_constraintBottom_toBottomOf="@id/gl_div"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@id/gl_div"
@@ -103,7 +103,7 @@
             android:id="@+id/group_div"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:visibility="@{naviTbt.groupDivVisible?View.VISIBLE:View.GONE}"
+            android:visibility="@{naviTbt.mGroupDivVisible?View.VISIBLE:View.GONE}"
             app:constraint_referenced_ids="stv_div_distance,stv_div_unit"
             tools:visibility="visible" />
 

@@ -3,16 +3,11 @@ package com.fy.navi.scene.ui.route;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
-import android.view.View;
 import android.view.ViewGroup;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.android.utils.ConvertUtils;
-import com.android.utils.thread.ThreadManager;
 import com.fy.navi.scene.BaseSceneView;
 import com.fy.navi.scene.api.route.ISceneRouteSelectCallBack;
 import com.fy.navi.scene.databinding.SceneRouteResultListViewBinding;
@@ -23,44 +18,41 @@ import com.fy.navi.service.define.route.RouteLineInfo;
 import java.util.Hashtable;
 import java.util.List;
 
-/**
- * @Description TODO
- * @Author lvww
- * @date 2024/12/2
- */
 public class SceneRouteResultListView extends BaseSceneView<SceneRouteResultListViewBinding, SceneRouteResultListImpl> {
 
     private RouteResultAdapter mAdapter;
-    private Hashtable<String, ISceneRouteSelectCallBack> sceneRouteSelectCallBackHashtable;
+    private Hashtable<String, ISceneRouteSelectCallBack> mSceneRouteSelectCallBackHashtable;
 
-    public SceneRouteResultListView(@NonNull Context context) {
+    public SceneRouteResultListView(final Context context) {
         super(context);
     }
 
-    public SceneRouteResultListView(@NonNull Context context, @Nullable AttributeSet attrs) {
+    public SceneRouteResultListView(final Context context, final AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public SceneRouteResultListView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public SceneRouteResultListView(final Context context, final AttributeSet attrs, final int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 
     @Override
-    protected SceneRouteResultListViewBinding createViewBinding(LayoutInflater inflater, ViewGroup viewGroup) {
+    protected SceneRouteResultListViewBinding createViewBinding(final LayoutInflater inflater, final ViewGroup viewGroup) {
         return SceneRouteResultListViewBinding.inflate(inflater, viewGroup, true);
     }
 
     @Override
     protected SceneRouteResultListImpl initSceneImpl() {
-        sceneRouteSelectCallBackHashtable = new Hashtable<>();
+        mSceneRouteSelectCallBackHashtable = new Hashtable<>();
         return new SceneRouteResultListImpl(this);
     }
-
-    public void registerRouteSelectObserver(String key, ISceneRouteSelectCallBack callBack) {
-        sceneRouteSelectCallBackHashtable.put(key, callBack);
+    /**
+     * fragment注册监听
+     * @param key 关键字
+     * @param callBack 回调
+     * */
+    public void registerRouteSelectObserver(final String key, final ISceneRouteSelectCallBack callBack) {
+        mSceneRouteSelectCallBackHashtable.put(key, callBack);
     }
-
-
 
     @Override
     protected void setInitVariableId() {
@@ -75,49 +67,55 @@ public class SceneRouteResultListView extends BaseSceneView<SceneRouteResultList
     protected void initObserver() {
         setupRecyclerView();
     }
-
+    /**
+     * 初始化列表
+     * */
     private void setupRecyclerView() {
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+        final LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         mViewBinding.routeResult.setLayoutManager(layoutManager);
 
         mAdapter = new RouteResultAdapter();
-        mAdapter.setItemClickListener((index, isSelectIndex) -> {
+        mAdapter.setmItemClickListener((index, isSelectIndex) -> {
             if (!isSelectIndex) {
                 mScreenViewModel.selectRoute(index);
             }
-            for (ISceneRouteSelectCallBack callBack : sceneRouteSelectCallBackHashtable.values()) {
-                if (ConvertUtils.isEmpty(callBack)) continue;
+            for (ISceneRouteSelectCallBack callBack : mSceneRouteSelectCallBackHashtable.values()) {
+                if (ConvertUtils.isEmpty(callBack)) {
+                    continue;
+                }
                 callBack.onRouteSelect(isSelectIndex, index);
             }
         });
         mViewBinding.routeResult.setAdapter(mAdapter);
         mViewBinding.routeResult.setOnTouchListener((view, motionEvent) -> {
-            for (ISceneRouteSelectCallBack callBack : sceneRouteSelectCallBackHashtable.values()) {
-                if (ConvertUtils.isEmpty(callBack)) continue;
+            for (ISceneRouteSelectCallBack callBack : mSceneRouteSelectCallBackHashtable.values()) {
+                if (ConvertUtils.isEmpty(callBack)) {
+                    continue;
+                }
                 callBack.onListTouch();
             }
             return false;
         });
     }
-
-    public void notifyResultList(List<RouteLineInfo> routeLineInfos) {
+    /**
+     * 刷新列表
+     * @param routeLineInfos 列表数据
+     * */
+    public void notifyResultList(final List<RouteLineInfo> routeLineInfos) {
         mAdapter.setRouteBeanList(routeLineInfos);
-        for (ISceneRouteSelectCallBack callBack : sceneRouteSelectCallBackHashtable.values()) {
-            if (ConvertUtils.isEmpty(callBack)) continue;
+        for (ISceneRouteSelectCallBack callBack : mSceneRouteSelectCallBackHashtable.values()) {
+            if (ConvertUtils.isEmpty(callBack)) {
+                continue;
+            }
             callBack.onResultListUpdate();
         }
     }
-
-    public void updateSelectRouteUI(int routeIndex) {
+    /**
+     * 更新列表选中item
+     * @param routeIndex 路线索引
+     * */
+    public void updateSelectRouteUI(final int routeIndex) {
         mAdapter.setSelectIndex(routeIndex);
-    }
-
-    public RouteLineInfo getSelectLineInfo() {
-        return mAdapter.getSelectLineInfo();
-    }
-
-    public int getCurrentIndex() {
-        return mAdapter.getCurrentIndex();
     }
 }

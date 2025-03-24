@@ -36,12 +36,22 @@ public class SettingBroadcastFragment extends BaseFragment<FragmentSettingBroadc
         // 初始化数据
     }
 
-    public void updateCruiseBroadcastEnable(boolean isDisable) {
+    /**
+     * 更新巡航播报设置
+     * @param isDisable true:关闭，false:开启
+     */
+    public void updateCruiseBroadcastEnable(final boolean isDisable) {
         mBinding.cruiseBroadcastRoadCondition.setEnabled(isDisable);
         mBinding.cruiseBroadcastCamera.setEnabled(isDisable);
         mBinding.cruiseBroadcastSafe.setEnabled(isDisable);
+        mBinding.cruiseBroadcastRoadCondition.setAlpha(isDisable ? 1.0f : 0.5f);
+        mBinding.cruiseBroadcastCamera.setAlpha(isDisable ? 1.0f : 0.5f);
+        mBinding.cruiseBroadcastSafe.setAlpha(isDisable ? 1.0f : 0.5f);
     }
 
+    /**
+     * 更新CheckBox字体颜色
+     */
     public void updateCheckBoxTextColor() {
         mBinding.naviBroadcastDetailed.setOnCheckedChangeListener(this::updateCheckBoxTextColor);
         mBinding.naviBroadcastSimple.setOnCheckedChangeListener(this::updateCheckBoxTextColor);
@@ -51,7 +61,12 @@ public class SettingBroadcastFragment extends BaseFragment<FragmentSettingBroadc
         mBinding.cruiseBroadcastSafe.setOnCheckedChangeListener(this::updateCheckBoxTextColor);
     }
 
-    public void updateCheckBoxTextColor(CompoundButton compoundButton, boolean isSelected) {
+    /**
+     * 更新CheckBox字体颜色
+     * @param compoundButton
+     * @param isSelected
+     */
+    public void updateCheckBoxTextColor(final CompoundButton compoundButton, final boolean isSelected) {
         if (isSelected) {
             compoundButton.setTextColor(getResources().getColor(com.fy.navi.scene.R.color.white));
         } else {
@@ -59,10 +74,13 @@ public class SettingBroadcastFragment extends BaseFragment<FragmentSettingBroadc
         }
     }
 
+    /**
+     * 设置当前声音
+     */
     public void setCurrentVoice() {
-        String selectedVoice = SettingManager.getInstance().getValueByKey(SettingController.KEY_SETTING_VOICE_PACKAGE);
-        String name = SettingManager.getInstance().getValueByKey(SettingController.KEY_SETTING_VOICE_NAME);
-        String icon = SettingManager.getInstance().getValueByKey(SettingController.KEY_SETTING_VOICE_ICON);
+        final String selectedVoice = SettingManager.getInstance().getValueByKey(SettingController.KEY_SETTING_VOICE_PACKAGE);
+        final String name = SettingManager.getInstance().getValueByKey(SettingController.KEY_SETTING_VOICE_NAME);
+        final String icon = SettingManager.getInstance().getValueByKey(SettingController.KEY_SETTING_VOICE_ICON);
         if(selectedVoice != null && !selectedVoice.isEmpty()){
             if(Objects.equals(selectedVoice, "default")){
                 mBinding.naviBroadcastVoiceName.setText(R.string.setting_broadcast_voice_current_name);

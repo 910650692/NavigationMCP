@@ -29,7 +29,10 @@
          0% - 00    -->
 
     <color name="color_50_000000">#80000000</color>
+    <color name="color_60_000000">#99000000</color>
     <color name="color_70_000000">#B3000000</color>
+    <color name="color_black_80">#CC000000</color>
+    <color name="color_black_70">#B3000000</color>
     <color name="color_80_ffffff">#CCFFFFFF</color>
     <color name="color_15_b2afc2">#26B2AFC2</color>
     <color name="color_2461ea">#FF2461EA</color>
@@ -65,6 +68,7 @@
     <color name="route_back_icon_color">#383839</color>
     <color name="route_cricle_dot_gerrn_color">#4ABA59</color>
     <color name="route_cricle_dot_orange_color">#E67A2E</color>
+    <color name="route_charge_orange_color">#FFFF8500</color>
     <color name="route_cricle_dot_red_color">#C73333</color>
     <color name="route_title_line_bg">#338E97B9</color>
 
@@ -86,7 +90,10 @@
     <color name="text_color_route_item_select">#000000</color>
     <color name="route_select_color_nom">#26313336</color>
     <color name="route_select_color_sel">#000000</color>
+    <color name="route_weather_bg">#769FFB</color>
+    <color name="route_weather_sun">#FFE081</color>
     <color name="floating_search_item_night">#000000</color>
+
 
     <!-- 离线数据相关 -->
     <color name="offline_black">#FF000000</color>
@@ -99,10 +106,13 @@
     <!-- 设置相关 -->
     <color name="setting_bg_gray">#338E97B9</color>
     <color name="setting_text_gray">#66000000</color>
+    <color name="setting_text_disable">#80FFFFFF</color>
     <color name="setting_text_preference">#B3000000</color>
+    <color name="setting_text_preference_disable">#59000000</color>
     <color name="setting_tab_gray">#99000000</color>
     <color name="setting_delete_red">#C73333</color>
     <color name="setting_others_connect_text_fail">#B3383839</color>
+    <color name="setting_others_connect_disable">#26E67A2E</color>
     <color name="setting_others_driving_record_bg">#338E97B9</color>
     <color name="setting_others_driving_start_point_bg">#FFF1B341</color>
     <color name="setting_others_driving_end_point_bg">#FF4ABA59</color>
@@ -123,7 +133,7 @@
     <color name="setting_bg_top">#42386DF0</color>
     <color name="setting_voice_has_update_color">#FF2461EA</color>
     <color name="setting_voice_size_color">#B3000000</color>
-
+    <color name="setting_button_disable">#802461EA</color>
     <color name="main_map_limit_bg_color">#338E97B9</color>
     <color name="main_map_limit_number_color">#FFF8F8FA</color>
     <color name="main_map_limit_hint_color">#80000000</color>

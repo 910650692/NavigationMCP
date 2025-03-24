@@ -4,65 +4,189 @@ import java.util.Map;
 
 public interface CalibrationApi {
 
+    /**
+     * powerType
+     * @return int
+     */
     int powerType();
 
+    /**
+     * brand
+     * @return int
+     */
     int brand();
 
+    /**
+     * model
+     * @return int
+     */
     int model();
 
+    /**
+     * enableApplicationNavigation
+     * @return boolean
+     */
     boolean enableApplicationNavigation();
 
+    /**
+     * laneLevelNavigatioFuncEnable
+     * @return boolean
+     */
     boolean laneLevelNavigatioFuncEnable();
 
-    boolean V2XMapDisplayFuncEnable();
+    /**
+     * v2xMapDisplayFuncEnable
+     * @return boolean
+     */
+    boolean v2xMapDisplayFuncEnable();
 
+    /**
+     * speedLimitInformationSource
+     * @return int
+     */
     int speedLimitInformationSource();
 
-    int ADASConfigurationInfomation();
+    /**
+     * adasConfigurationInfomation
+     * @return int
+     */
+    int adasConfigurationInfomation();
 
-    int ADASConfigurationType();
+    /**
+     * adasConfigurationType
+     * @return int
+     */
+    int adasConfigurationType();
 
+    /**
+     * rearSeatTouchPanelFuncEnable
+     * @return boolean
+     */
     boolean rearSeatTouchPanelFuncEnable();
 
-    int HUDFuncEnable();
+    /**
+     * hudFuncEnable
+     * @return hudFuncEnable
+     */
+    int hudFuncEnable();
 
+    /**
+     * navigationDeflectionEnable
+     * @return boolean
+     */
     boolean navigationDeflectionEnable();
 
+    /**
+     * architecture
+     * @return int
+     */
     int architecture();
 
+    /**
+     * navigationPreConditionDataProvideEnable
+     * @return boolean
+     */
     boolean navigationPreConditionDataProvideEnable();
 
+    /**
+     * navigaitonSupplier
+     * @return int
+     */
     int navigaitonSupplier();
 
+    /**
+     * highVoltageBatteryPropulsionTotalRangeNavi
+     * @return int
+     */
     int highVoltageBatteryPropulsionTotalRangeNavi();
 
-    boolean POISearchFuncEnable();
+    /**
+     * poiSearchFuncEnable
+     * @return boolean
+     */
+    boolean poiSearchFuncEnable();
 
+    /**
+     * scenarioEngineFuncEnable
+     * @return boolean
+     */
     boolean scenarioEngineFuncEnable();
 
+    /**
+     * globalSearchFuncEnable
+     * @return boolean
+     */
     boolean globalSearchFuncEnable();
 
+    /**
+     * teamTravelFuncEnable
+     * @return boolean
+     */
     boolean teamTravelFuncEnable();
 
+    /**
+     * bootAnimationReplacementFuncEnable
+     * @return boolean
+     */
     boolean bootAnimationReplacementFuncEnable();
 
-    boolean IMEFuncEnable();
+    /**
+     * imeFuncEnable
+     * @return boolean
+     */
+    boolean imeFuncEnable();
 
+    /**
+     * wallpaperThemeFuncEnable
+     * @return boolean
+     */
     boolean wallpaperThemeFuncEnable();
 
+    /**
+     * themeDefaultValue
+     * @return int
+     */
     int themeDefaultValue();
 
+    /**
+     * slopeUpCostlist
+     * @return float[]
+     */
     float[] slopeUpCostlist();
 
+    /**
+     * slopeDownCostlist
+     * @return float[]
+     */
     float[] slopeDownCostlist();
 
+    /**
+     * transAccessCostlist
+     * @return float[]
+     */
     float[] transAccessCostlist();
 
+    /**
+     * transDecessCostlist
+     * @return float[]
+     */
     float[] transDecessCostlist();
 
+    /**
+     * speedCostlist
+     * @return Map
+     */
     Map<Integer, Float> speedCostlist();
 
+    /**
+     * auxCostlist
+     * @return float[]
+     */
     float[] auxCostlist();
 
+    /**
+     * vehicleWeight
+     * @return int
+     */
     int vehicleWeight();
 }

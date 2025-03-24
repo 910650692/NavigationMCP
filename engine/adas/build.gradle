@@ -1,2 +1,2 @@
 configurations.maybeCreate("default")
-artifacts.add("default", file('adas.aar'))
+artifacts.add("default", file('adas-sdk-1.5.1.aar'))

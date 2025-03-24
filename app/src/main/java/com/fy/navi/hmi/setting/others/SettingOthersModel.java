@@ -1,8 +1,7 @@
 package com.fy.navi.hmi.setting.others;
 
-import com.android.utils.gson.GsonUtils;
-import com.android.utils.log.Logger;
-import com.fy.navi.service.AutoMapConstant;
+import com.android.utils.file.FileUtils;
+import com.fy.navi.service.GBLCacheFilePath;
 import com.fy.navi.service.define.setting.SettingController;
 import com.fy.navi.service.define.user.account.AccountUserInfo;
 import com.fy.navi.service.define.user.wechat.BLResponseBean;
@@ -18,63 +17,77 @@ import com.fy.navi.service.logicpaket.user.wechat.WeChatCallBack;
 import com.fy.navi.service.logicpaket.user.wechat.WeChatPackage;
 import com.fy.navi.ui.base.BaseModel;
 
+import java.io.File;
 import java.util.List;
 
-public class SettingOthersModel extends BaseModel<SettingOthersViewModel> implements SettingUpdateObservable.SettingUpdateObserver, AccountCallBack, WeChatCallBack {
+public class SettingOthersModel extends BaseModel<SettingOthersViewModel> 
+        implements SettingUpdateObservable.SettingUpdateObserver, AccountCallBack, WeChatCallBack {
 
-    private final AccountPackage accountPackage;
-    private final SettingPackage settingPackage;
-    private final WeChatPackage weChatPackage;
-    private final SettingManager settingManager;
-    private final HistoryManager historyManager;
+    private final AccountPackage mAccountPackage;
+    private final SettingPackage mSettingPackage;
+    private final WeChatPackage mWeChatPackage;
+    private final SettingManager mSettingManager;
+    private final HistoryManager mHistoryManager;
+    private static final String MODEL_NAME = "SettingOthersModel";
+
+    private final String[] mDirPaths = {
+            GBLCacheFilePath.BLS_LOG
+    };
 
     public SettingOthersModel() {
-        accountPackage = AccountPackage.getInstance();
-        settingPackage = SettingPackage.getInstance();
-        weChatPackage = WeChatPackage.getInstance();
-        settingManager = SettingManager.getInstance();
-        settingManager.init();
-        historyManager = HistoryManager.getInstance();
-        historyManager.init();
+        mAccountPackage = AccountPackage.getInstance();
+        mSettingPackage = SettingPackage.getInstance();
+        mWeChatPackage = WeChatPackage.getInstance();
+        mSettingManager = SettingManager.getInstance();
+        mSettingManager.init();
+        mHistoryManager = HistoryManager.getInstance();
+        mHistoryManager.init();
     }
     @Override
     public void onCreate() {
         super.onCreate();
-        SettingUpdateObservable.getInstance().addObserver("SettingOthersModel", this);
-        accountPackage.registerCallBack("SettingOthersModel",this);
-        weChatPackage.registerCallBack("SettingOthersModel", this);
+        SettingUpdateObservable.getInstance().addObserver(MODEL_NAME, this);
+        mAccountPackage.registerCallBack(MODEL_NAME,this);
+        mWeChatPackage.registerCallBack(MODEL_NAME, this);
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        weChatPackage.unRegisterCallBack("SettingOthersModel");
+        mWeChatPackage.unRegisterCallBack(MODEL_NAME);
     }
 
+    /**
+     * 初始化视图
+     */
     public void initView() {
-        mViewModel.updatePrivacyStatus(settingPackage.getPrivacyStatus());
-        mViewModel.updateUserInfo(accountPackage.getUserInfo().nickname, accountPackage.getUserInfo().avatar);
-        String weChatStatus = settingManager.getValueByKey(SettingController.KEY_SETTING_IS_WE_CHAT_BIND);
+        mViewModel.updatePrivacyStatus(mSettingPackage.getPrivacyStatus());
+        mViewModel.updateUserInfo(mAccountPackage.getUserInfo().nickname, mAccountPackage.getUserInfo().avatar);
+        final String weChatStatus = mSettingManager.getValueByKey(SettingController.KEY_SETTING_IS_WE_CHAT_BIND);
         mViewModel.setWeChatStatus(weChatStatus.equals(SettingController.VALUE_GENERIC_TRUE));
         getSdkVersion();
+        mViewModel.setTotalSizeOfDirectories(getTotalSizeOfDirectories());
     }
 
     @Override
-    public void onUpdateSetting(String key, boolean value) {
+    public void onUpdateSetting(final String key, final boolean value) {
         if (key.equals(SettingController.KEY_SETTING_PRIVACY_STATUS)) {
             mViewModel.updatePrivacyStatus(value);
         }
     }
 
+    /**
+     * 退出登录
+     */
     public void logoutAccount() {
-        accountPackage.accountLogoutRequest();
+        mAccountPackage.accountLogoutRequest();
     }
 
     /**
      * 退出登录后，刷新UI
      */
     @Override
-    public void notifyAccountLogout(int errCode, int taskId, AccountUserInfo result) {
+    public void notifyAccountLogout(final int errCode, final int taskId, final AccountUserInfo result) {
         if (result != null && result.code == 1) {
             mViewModel.clearUserInfo();
         }
@@ -84,7 +97,7 @@ public class SettingOthersModel extends BaseModel<SettingOthersViewModel> implem
      * 手机号登录成功，刷新UI
      */
     @Override
-    public void notifyMobileLogin(int errCode, int taskId, AccountUserInfo result) {
+    public void notifyMobileLogin(final int errCode, final int taskId, final AccountUserInfo result) {
         if (result != null && result.code == 1) {
             if (result.profileInfo != null) {
                 mViewModel.updateUserInfo(result.profileInfo.nickname, result.profileInfo.avatar);
@@ -93,7 +106,7 @@ public class SettingOthersModel extends BaseModel<SettingOthersViewModel> implem
     }
 
     @Override
-    public void notifyQRCodeLoginConfirm(int errCode, int taskId, AccountUserInfo result) {
+    public void notifyQRCodeLoginConfirm(final int errCode, final int taskId, final AccountUserInfo result) {
         if (result != null && result.code == 1) {
             if (result.profileInfo != null) {
                 mViewModel.updateUserInfo(result.profileInfo.nickname, result.profileInfo.avatar);
@@ -102,11 +115,11 @@ public class SettingOthersModel extends BaseModel<SettingOthersViewModel> implem
     }
 
     public boolean getIsLogin() {
-        return accountPackage.isLogin();
+        return mAccountPackage.isLogin();
     }
 
     @Override
-    public void notifyWeixinStatus(BLResponseBean result) {
+    public void notifyWeixinStatus(final BLResponseBean result) {
         if (result != null) {
             if (result.getCode() == 1) {
                 mViewModel.setWeChatStatus(true);
@@ -120,7 +133,7 @@ public class SettingOthersModel extends BaseModel<SettingOthersViewModel> implem
      * @param result 回调数据
      */
     @Override
-    public void notifyGQRCodeConfirm(BLResponseBean result) {
+    public void notifyGQRCodeConfirm(final BLResponseBean result) {
         if (result != null && result.getCode() == 1) {
             mViewModel.setWeChatStatus(true);
         } else {
@@ -130,24 +143,61 @@ public class SettingOthersModel extends BaseModel<SettingOthersViewModel> implem
 
     /**
      * 通过type查找其对应行程历史信息
-     * @return
+     * @return size
      */
     public int getValueByType() {
         int size = 0;
-        List<History> list = historyManager.getValueByType("行程历史");
+        final List<History> list = mHistoryManager.getValueByType("行程历史");
         if (list != null && !list.isEmpty()) {
             size = list.size();
         }
         return size;
     }
 
-    public void getSdkVersion(){
-        String sdkVersion = EnginePackage.getInstance().getSdkVersion();
+
+    /**
+     * 获取SDK版本
+     */
+    public void getSdkVersion() {
+        final String sdkVersion = EnginePackage.getInstance().getSdkVersion();
         mViewModel.setSdkVersion(sdkVersion);
     }
 
+    /**
+     * 清除数据库中所有设置相关记录
+     */
+    public void clearAll() {
+        mSettingManager.deleteAll();
+    }
+
+    /**
+     * @return 获取微信绑定状态
+     */
     public boolean getWechatStatus() {
-        String isBind = settingManager.getValueByKey(SettingController.KEY_SETTING_IS_WE_CHAT_BIND);
+        final String isBind = mSettingManager.getValueByKey(SettingController.KEY_SETTING_IS_WE_CHAT_BIND);
         return isBind.equals(SettingController.VALUE_GENERIC_TRUE);
+    }
+
+    /**
+     * 删除指定文件夹列表下的所有文件和子文件夹
+     */
+    public void deleteFilesInDirectories() {
+        final File[] dirs = new File[mDirPaths.length];
+        for (int i = 0; i < mDirPaths.length; i++) {
+            dirs[i] = new File(mDirPaths[i]);
+        }
+        FileUtils.deleteFilesInDirectories(dirs);
+    }
+
+    /**
+     * 获取指定文件夹列表下的所有文件的总大小
+     * @return 文件夹总大小（字节）
+     */
+    public String getTotalSizeOfDirectories() {
+        final File[] dirs = new File[mDirPaths.length];
+        for (int i = 0; i < mDirPaths.length; i++) {
+            dirs[i] = new File(mDirPaths[i]);
+        }
+        return FileUtils.formatFileSize(FileUtils.getTotalSizeOfDirectories(dirs));
     }
 }

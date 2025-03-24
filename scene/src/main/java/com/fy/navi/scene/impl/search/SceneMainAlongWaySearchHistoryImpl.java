@@ -8,16 +8,12 @@ import com.fy.navi.service.logicpaket.search.SearchPackage;
 
 import java.util.List;
 
-/**
- * @Author: baipeng0904
- * @Description: 搜索历史记录
- * @CreateDate: $ $
- */
+
 public class SceneMainAlongWaySearchHistoryImpl extends BaseSceneModel<SceneSearchHistoryView> implements ISceneSearchHistory {
     private final SearchPackage mSearchPackage;
 
-    public SceneMainAlongWaySearchHistoryImpl(SceneSearchHistoryView mScreenView) {
-        super(mScreenView);
+    public SceneMainAlongWaySearchHistoryImpl(final SceneSearchHistoryView screenView) {
+        super(screenView);
         mSearchPackage = SearchPackage.getInstance();
     }
 
@@ -28,7 +24,7 @@ public class SceneMainAlongWaySearchHistoryImpl extends BaseSceneModel<SceneSear
 
     @Override
     public void getSearchKeywordRecord() {
-        List<History> historyList = mSearchPackage.getSearchKeywordRecord();
+        final List<History> historyList = mSearchPackage.getSearchKeywordRecord();
         mScreenView.notifyKeywordRecord(historyList);
     }
 

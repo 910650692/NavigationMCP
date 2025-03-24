@@ -21,10 +21,10 @@
 
         <com.fy.navi.ui.view.SkinImageView
             android:id="@+id/siv_gps"
-            android:layout_width="@dimen/dp_42"
-            android:layout_height="@dimen/dp_42"
+            android:layout_width="@dimen/dp_68"
+            android:layout_height="@dimen/dp_60"
             android:layout_marginTop="@dimen/dp_24"
-            android:background="@drawable/img_satellite_42"
+            android:background="@drawable/img_navi_tbt_gps"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
         <!--转向图标基线-->
@@ -53,7 +53,7 @@
             android:id="@+id/group_exit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:visibility="@{naviTbt.exitInfoVisible?View.VISIBLE:View.GONE}"
+            android:visibility="@{naviTbt.mExitInfoVisible?View.VISIBLE:View.GONE}"
             app:constraint_referenced_ids="sv_exit,siv_hud_sou33,stv_exit_num"
             tools:visibility="visible" />
 
@@ -67,8 +67,8 @@
 
         <com.fy.navi.ui.view.SkinImageView
             android:id="@+id/siv_hud_sou33"
-            android:layout_width="@dimen/dp_80"
-            android:layout_height="@dimen/dp_80"
+            android:layout_width="@dimen/dp_70"
+            android:layout_height="@dimen/dp_70"
             android:background="@drawable/img_tbt_hud_sou3_day"
             app:layout_constraintEnd_toEndOf="@id/sv_exit"
             app:layout_constraintStart_toStartOf="@id/sv_exit"
@@ -92,7 +92,7 @@
             android:id="@+id/siv_hud_sou3"
             android:layout_width="@dimen/dp_100"
             android:layout_height="@dimen/dp_100"
-            android:visibility="@{naviTbt.turnInfoVisible?View.VISIBLE:View.GONE}"
+            android:visibility="@{naviTbt.mTurnInfoVisible?View.VISIBLE:View.GONE}"
             app:layout_constraintBottom_toBottomOf="@id/gl_div"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@id/gl_div"
@@ -103,7 +103,7 @@
             android:id="@+id/group_div"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:visibility="@{naviTbt.groupDivVisible?View.VISIBLE:View.GONE}"
+            android:visibility="@{naviTbt.mGroupDivVisible?View.VISIBLE:View.GONE}"
             app:constraint_referenced_ids="stv_div_distance,stv_div_unit"
             tools:visibility="visible" />
 
@@ -114,7 +114,7 @@
             android:layout_marginLeft="@dimen/dp_24"
             android:gravity="bottom"
             android:textColor="@color/navi_tbt_div_info_color"
-            android:textSize="@dimen/sp_86"
+            android:textSize="@dimen/sp_80"
             app:layout_constraintBottom_toBottomOf="@id/gl_dis"
             app:layout_constraintStart_toEndOf="@id/siv_hud_sou3"
             app:layout_constraintTop_toTopOf="@id/gl_dis"
@@ -128,7 +128,7 @@
             android:layout_marginLeft="@dimen/dp_17"
             android:gravity="center"
             android:textColor="@color/navi_tbt_div_info_color"
-            android:textSize="@dimen/sp_44"
+            android:textSize="@dimen/sp_42"
             app:layout_constraintBottom_toBottomOf="@id/gl_route_name"
             app:layout_constraintStart_toEndOf="@id/stv_div_distance"
             app:layout_constraintTop_toTopOf="@id/gl_route_name"
@@ -143,7 +143,7 @@
             android:gravity="center"
             android:singleLine="true"
             android:textColor="@color/navi_tbt_div_info_color"
-            android:textSize="@dimen/sp_44"
+            android:textSize="@dimen/sp_42"
             app:layout_constraintBottom_toBottomOf="@id/gl_route_name"
             app:layout_constraintStart_toEndOf="@id/stv_div_unit"
             app:layout_constraintTop_toTopOf="@id/gl_route_name"

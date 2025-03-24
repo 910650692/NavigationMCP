@@ -1,29 +1,31 @@
 package com.fy.navi.hmi.mapdata;
 
+import android.text.TextUtils;
+
 import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
+import com.fy.navi.service.define.code.UserDataCode;
 import com.fy.navi.service.define.mapdata.CityDataInfo;
 import com.fy.navi.service.define.mapdata.MergedStatusBean;
 import com.fy.navi.service.define.mapdata.ProvDataInfo;
+import com.fy.navi.service.greendao.CommonManager;
 import com.fy.navi.service.logicpaket.mapdata.MapDataCallBack;
 import com.fy.navi.service.logicpaket.mapdata.MapDataPackage;
 import com.fy.navi.ui.base.BaseModel;
 
 import java.util.ArrayList;
 
-/**
- * @Description
- * @Author fh
- * @date 2024/12/09
- */
 public class MapDataModel extends BaseModel<MapDataViewModel> implements MapDataCallBack {
 
     private static final String TAG = MapDataModel.class.getName();
     private final MapDataPackage mapDataPackage;
+    private CommonManager mCommonManager;
 
     public MapDataModel() {
         mapDataPackage = MapDataPackage.getInstance();
+        mCommonManager = CommonManager.getInstance();
+        mCommonManager.init();
     }
 
     @Override
@@ -41,22 +43,41 @@ public class MapDataModel extends BaseModel<MapDataViewModel> implements MapData
         return mapDataPackage.getMapDataList();
     }
 
+    /**
+     * 获取基础包信息
+     * @return 返回基础包信息
+     */
     public CityDataInfo getCountryData() {
-        return mapDataPackage.getCountryData();
+        final CityDataInfo countryInfo = mapDataPackage.getCountryData();
+        if (countryInfo.getDownLoadInfo() != null) {
+            if (countryInfo.getDownLoadInfo().getTaskState() == UserDataCode.TASK_STATUS_CODE_SUCCESS) {
+                mCommonManager.insertOrReplace(UserDataCode.SETTING_DOWNLOAD_COUNTRY, "已下载");
+            }
+        }
+        return countryInfo;
+    }
+
+    /**
+     * 是否显示 下载基础功能包推荐弹窗
+     * @return false 不显示； true 显示
+     */
+    public boolean countryDataVisible() {
+        final String value = mCommonManager.getValueByKey(UserDataCode.SETTING_DOWNLOAD_COUNTRY);
+        return TextUtils.isEmpty(value);
     }
 
     /**
      * 获取当前城市信息
      * @param adCode
-     * @return
+     * @return 返回当前城市信息
      */
-    public CityDataInfo getCurrentCityInfo(int adCode) {
+    public CityDataInfo getCurrentCityInfo(final int adCode) {
         return mapDataPackage.getCityInfo(adCode);
     }
 
     /**
      * 获取下载中、更新中状态下的所有城市adCode列表
-     * @return
+     * @return 返回处于下载中、更新中的数据列表
      */
     public ArrayList<CityDataInfo> getWorkingList() {
         return mapDataPackage.getWorkingList();
@@ -64,7 +85,7 @@ public class MapDataModel extends BaseModel<MapDataViewModel> implements MapData
 
     /**
      * 获取已下载状态下的所有城市adCode列表
-     * @return
+     * @return 返回处于已下载的数据列表
      */
     public ArrayList<CityDataInfo> getWorkedList() {
         return mapDataPackage.getWorkedList();
@@ -72,7 +93,7 @@ public class MapDataModel extends BaseModel<MapDataViewModel> implements MapData
 
     /**
      * 获取 已下载状态的 省份+城市 结构 信息
-     * @return
+     * @return 获取已经下载的数据列表
      */
     public ArrayList<ProvDataInfo> getAllDownLoadedList() {
         return mapDataPackage.getAllDownLoadedList();
@@ -81,45 +102,72 @@ public class MapDataModel extends BaseModel<MapDataViewModel> implements MapData
     /**
      * 通过adCode获取附近推荐城市信息
      * @param adCode
-     * @return
+     * @return 返回附近城市的数据列表
      */
-    public ArrayList<CityDataInfo> getNearAdCodeList(int adCode) {
+    public ArrayList<CityDataInfo> getNearAdCodeList(final int adCode) {
         return mapDataPackage.getNearAdCodeList(adCode);
     }
 
-    public void startAllTask(ArrayList<Integer> adCodeList) {
+    /**
+     * 的数据包开始下载
+     * @param adCodeList
+     */
+    public void startAllTask(final ArrayList<Integer> adCodeList) {
         mapDataPackage.startAllTask(adCodeList);
     }
 
-    public void pauseAllTask(ArrayList<Integer> adCodeList) {
+    /**
+     * 暂停正在下载的数据包
+     * @param adCodeList
+     */
+    public void pauseAllTask(final ArrayList<Integer> adCodeList) {
         mapDataPackage.pauseAllTask(adCodeList);
     }
 
-    public void cancelAllTask(ArrayList<Integer> adCodeList) {
+    /**
+     * 取消正在下载的数据包
+     * @param adCodeList
+     */
+    public void cancelAllTask(final ArrayList<Integer> adCodeList) {
         mapDataPackage.cancelAllTask(adCodeList);
     }
 
-    public void deleteAllTask(ArrayList<Integer> adCodeList) {
+    /**
+     * 删除已下载的数据包
+     * @param adCodeList
+     */
+    public void deleteAllTask(final ArrayList<Integer> adCodeList) {
         mapDataPackage.deleteAllTask(adCodeList);
     }
 
+    /**
+     * 发起云端数据列表检测
+     * @param ischeck
+     */
+    public void requestDataListCheck(final boolean ischeck) {
+        final String value = mCommonManager.getValueByKey(UserDataCode.SETTING_MESSAGE_CHECK_MAP_DATA_TIME);
+        if (TextUtils.isEmpty(value)) { // 首次检测
+            mapDataPackage.requestDataListCheck();
+        } else {
+            if (ischeck) { // 每15/45日检测一次
+                mapDataPackage.requestDataListCheck();
+            }
+        }
+    }
+
     @Override
-    public void onDownLoadStatus(ProvDataInfo provDataInfo) {
+    public void onDownLoadStatus(final ProvDataInfo provDataInfo) {
         mViewModel.onDownLoadStatus(provDataInfo);
     }
 
     @Override
-    public void onPercent(ProvDataInfo info) {
-        mViewModel.onPercent(info);
-    }
-
-    @Override
-    public void onMergedStatusInfo(MergedStatusBean mergedStatusInfo) {
+    public void onMergedStatusInfo(final MergedStatusBean mergedStatusInfo) {
         Logger.d(TAG, "onMergedStatusInfo: " + GsonUtils.toJson(mergedStatusInfo));
     }
 
     @Override
-    public void onErrorNotify(int downLoadMode, int dataType, int id, int errType, String errMsg) {
+    public void onErrorNotify(final int downLoadMode, final int dataType, final int id,
+                              final int errType, final String errMsg) {
         ThreadManager.getInstance().postDelay(new Runnable() {
             @Override
             public void run() {
@@ -133,8 +181,14 @@ public class MapDataModel extends BaseModel<MapDataViewModel> implements MapData
     }
 
     @Override
-    public void onDeleteErrorData(int downLoadMode, int dataType, int id, int opCode) {
+    public void onDeleteErrorData(final int downLoadMode, final int dataType,
+                                  final int id, final int opCode) {
         Logger.d(TAG, "onDeleteErrorData: downLoadMode = "  + downLoadMode +  " dataType = "
                 + dataType + " opCode = " + opCode);
+    }
+
+    @Override
+    public void onRequestCheckSuccess(final int downLoadMode, final int dataType, final int opCode) {
+
     }
 }

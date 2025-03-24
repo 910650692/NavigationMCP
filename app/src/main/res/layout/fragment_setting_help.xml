@@ -24,7 +24,7 @@
             <com.fy.navi.ui.view.SkinImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                clickCommand="@{viewModel.clickBack}"
+                clickCommand="@{viewModel.mClickBack}"
                 android:layout_marginStart="@dimen/dp_26"
                 android:src="@drawable/img_setting_back"
                 app:layout_goneMarginStart="@dimen/dp_40"
@@ -94,7 +94,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="vertical"
-                    android:visibility="@{viewModel.selectPosition == 0 ? View.VISIBLE : View.GONE}"
+                    android:visibility="@{viewModel.mSelectPosition == 0 ? View.VISIBLE : View.GONE}"
                     android:layout_marginTop="@dimen/dp_30">
 
                     <com.fy.navi.ui.view.SkinTextView
@@ -150,7 +150,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:gravity="center"
-                    android:visibility="@{viewModel.selectPosition == 1 ? View.VISIBLE : View.GONE}"
+                    android:visibility="@{viewModel.mSelectPosition == 1 ? View.VISIBLE : View.GONE}"
                     android:layout_marginTop="@dimen/dp_30">
 
                     <com.fy.navi.ui.view.SkinTextView
@@ -166,7 +166,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:gravity="center"
-                    android:visibility="@{viewModel.selectPosition == 2 ? View.VISIBLE : View.GONE}"
+                    android:visibility="@{viewModel.mSelectPosition == 2 ? View.VISIBLE : View.GONE}"
                     android:layout_marginTop="@dimen/dp_30">
 
                     <com.fy.navi.ui.view.SkinTextView
@@ -182,7 +182,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:gravity="center"
-                    android:visibility="@{viewModel.selectPosition == 3 ? View.VISIBLE : View.GONE}"
+                    android:visibility="@{viewModel.mSelectPosition == 3 ? View.VISIBLE : View.GONE}"
                     android:layout_marginTop="@dimen/dp_30">
 
                     <com.fy.navi.ui.view.SkinTextView
@@ -198,7 +198,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:gravity="center"
-                    android:visibility="@{viewModel.selectPosition == 4 ? View.VISIBLE : View.GONE}"
+                    android:visibility="@{viewModel.mSelectPosition == 4 ? View.VISIBLE : View.GONE}"
                     android:layout_marginTop="@dimen/dp_30">
 
                     <com.fy.navi.ui.view.SkinTextView
@@ -214,7 +214,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:gravity="center"
-                    android:visibility="@{viewModel.selectPosition == 5 ? View.VISIBLE : View.GONE}"
+                    android:visibility="@{viewModel.mSelectPosition == 5 ? View.VISIBLE : View.GONE}"
                     android:layout_marginTop="@dimen/dp_30">
 
                     <com.fy.navi.ui.view.SkinTextView

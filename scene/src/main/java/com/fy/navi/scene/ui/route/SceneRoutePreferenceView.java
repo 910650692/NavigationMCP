@@ -4,10 +4,6 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
 import com.android.utils.ConvertUtils;
 import com.android.utils.ResourceUtils;
 import com.fy.navi.scene.BaseSceneView;
@@ -19,40 +15,41 @@ import com.fy.navi.service.define.route.RoutePreferenceID;
 
 import java.util.Hashtable;
 
-/**
- * @Description TODO
- * @Author lvww
- * @date 2024/12/2
- */
-public class SceneRoutePreferenceView extends BaseSceneView<SceneRoutePreferenceViewBinding, SceneRoutePreferenceImpl> implements SceneRoutePreferenceImpl.IRoutePreferenceChangeListener {
 
-    private Hashtable<String, ISceneRoutePreferenceCallBack> sceneRoutePreferenceCallBackMap;
+public class SceneRoutePreferenceView extends BaseSceneView<SceneRoutePreferenceViewBinding, SceneRoutePreferenceImpl>
+        implements SceneRoutePreferenceImpl.IRoutePreferenceChangeListener {
 
-    public SceneRoutePreferenceView(@NonNull Context context) {
+    private Hashtable<String, ISceneRoutePreferenceCallBack> mSceneRoutePreferenceCallBackMap;
+
+    public SceneRoutePreferenceView(final Context context) {
         super(context);
     }
 
-    public SceneRoutePreferenceView(@NonNull Context context, @Nullable AttributeSet attrs) {
+    public SceneRoutePreferenceView(final Context context, final AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public SceneRoutePreferenceView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public SceneRoutePreferenceView(final Context context, final AttributeSet attrs, final int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 
     @Override
-    protected SceneRoutePreferenceViewBinding createViewBinding(LayoutInflater inflater, ViewGroup viewGroup) {
+    protected SceneRoutePreferenceViewBinding createViewBinding(final LayoutInflater inflater, final ViewGroup viewGroup) {
         return SceneRoutePreferenceViewBinding.inflate(inflater, viewGroup, true);
     }
 
     @Override
     protected SceneRoutePreferenceImpl initSceneImpl() {
-        sceneRoutePreferenceCallBackMap = new Hashtable<>();
+        mSceneRoutePreferenceCallBackMap = new Hashtable<>();
         return new SceneRoutePreferenceImpl(this);
     }
-
-    public void registerRoutePreferenceObserver(String key, ISceneRoutePreferenceCallBack callBack) {
-        sceneRoutePreferenceCallBackMap.put(key, callBack);
+    /**
+     * fragment注册监听
+     * @param key 关键字
+     * @param callBack 回调
+     * */
+    public void registerRoutePreferenceObserver(final String key, final ISceneRoutePreferenceCallBack callBack) {
+        mSceneRoutePreferenceCallBackMap.put(key, callBack);
     }
 
 
@@ -66,13 +63,19 @@ public class SceneRoutePreferenceView extends BaseSceneView<SceneRoutePreference
         mScreenViewModel.setOnPreferenceChangeListener("route fragment",this);
         mScreenViewModel.setDefaultPreference();
     }
-
+    /**
+     * 重置偏好
+     * */
     public void resetPreference() {
         mScreenViewModel.clearPreference();
         mScreenViewModel.setDefaultPreference();
     }
-
-    private String getPreferText(RoutePreferenceID routePreferenceID) {
+    /**
+     * 偏好转文本
+     * @param routePreferenceID 偏好ID
+     * @return 文本
+     * */
+    private String getPreferText(final RoutePreferenceID routePreferenceID) {
         String preferText = "";
         switch (routePreferenceID) {
             case PREFERENCE_RECOMMEND:
@@ -109,7 +112,8 @@ public class SceneRoutePreferenceView extends BaseSceneView<SceneRoutePreference
                 preferText = ResourceUtils.Companion.getInstance().getString(R.string.route_preference_less_charge_and_not_highway);
                 return preferText;
             case PREFERENCE_AVOIDCONGESTION_AND_LESSCHARGE_AND_NOTHIGHWAY:
-                preferText = ResourceUtils.Companion.getInstance().getString(R.string.route_preference_avoiding_congestion_and_less_charge_not_highway);
+                preferText = ResourceUtils.Companion.getInstance()
+                        .getString(R.string.route_preference_avoiding_congestion_and_less_charge_not_highway);
                 return preferText;
             case PREFERENCE_AVOIDCONGESTION_AND_FIRSTMAINROAD:
                 preferText = ResourceUtils.Companion.getInstance().getString(R.string.route_preference_avoiding_congestion_and_first_main_road);
@@ -124,17 +128,19 @@ public class SceneRoutePreferenceView extends BaseSceneView<SceneRoutePreference
     }
 
     @Override
-    public void onPreferenceChange(RoutePreferenceID routePreference, boolean isFirstChange) {
-        mViewBinding.preferenceRecommend.setSelected(mScreenViewModel.ISRECOMMENDSELECT);
-        mViewBinding.preferenceAvoidCongestion.setSelected(mScreenViewModel.ISAVOIDCONGESTIONSELECT);
-        mViewBinding.preferenceLessCharge.setSelected(mScreenViewModel.ISLESSCHARGESELECT);
-        mViewBinding.preferenceNotHighway.setSelected(mScreenViewModel.ISNOTHIGHWAYSELECT);
-        mViewBinding.preferenceFirstHighway.setSelected(mScreenViewModel.ISFIRSTHIGHWAYSELECT);
-        mViewBinding.preferenceFirstMainRoad.setSelected(mScreenViewModel.ISFIRSTMAINROADSELECT);
-        mViewBinding.preferenceFastestSpeed.setSelected(mScreenViewModel.ISFASTESTSPEEDSELECT);
+    public void onPreferenceChange(final RoutePreferenceID routePreference, final boolean isFirstChange) {
+        mViewBinding.preferenceRecommend.setSelected(mScreenViewModel.isISRECOMMENDSELECT());
+        mViewBinding.preferenceAvoidCongestion.setSelected(mScreenViewModel.isISAVOIDCONGESTIONSELECT());
+        mViewBinding.preferenceLessCharge.setSelected(mScreenViewModel.isISLESSCHARGESELECT());
+        mViewBinding.preferenceNotHighway.setSelected(mScreenViewModel.isISNOTHIGHWAYSELECT());
+        mViewBinding.preferenceFirstHighway.setSelected(mScreenViewModel.isISFIRSTHIGHWAYSELECT());
+        mViewBinding.preferenceFirstMainRoad.setSelected(mScreenViewModel.isISFIRSTMAINROADSELECT());
+        mViewBinding.preferenceFastestSpeed.setSelected(mScreenViewModel.isISFASTESTSPEEDSELECT());
 
-        for (ISceneRoutePreferenceCallBack callBack : sceneRoutePreferenceCallBackMap.values()) {
-            if (ConvertUtils.isEmpty(callBack)) continue;
+        for (ISceneRoutePreferenceCallBack callBack : mSceneRoutePreferenceCallBackMap.values()) {
+            if (ConvertUtils.isEmpty(callBack)) {
+                continue;
+            }
             callBack.onRoutePreferenceChange(getPreferText(routePreference), isFirstChange);
         }
     }

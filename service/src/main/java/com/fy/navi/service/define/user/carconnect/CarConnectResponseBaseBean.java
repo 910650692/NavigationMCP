@@ -16,103 +16,143 @@ public class CarConnectResponseBaseBean {
     // http ack code;如 HTTP 200 OK
     private int mHttpAckCode;
     // :"错误码", code ：1,表示成功，其他值为异常值，无法穷举，每个业务有自己的定义。
-    private int code;
+    private int mCode;
     // 服务器时间戳
-    private String timestamp;
+    private String mTimestamp;
     // 错误描述
     private String message;
     // 服务版本
-    private String version;
+    private String mVersion;
     // "true/false,是否成功
-    private String result;
+    private String mResult;
     // http header
-    public ArrayList<PropertyValueInfo> headers;
+    private ArrayList<PropertyValueInfo> mHeaders;
 
+    /**
+     * getmEAosRequestType
+     * @return int
+     */
     public int getmEAosRequestType() {
         return mEAosRequestType;
     }
 
-    public void setmEAosRequestType(int mEAosRequestType) {
-        this.mEAosRequestType = mEAosRequestType;
+    /**
+     * setmEAosRequestType
+     * @param eaosRequestType
+     */
+    public void setmEAosRequestType(final int eaosRequestType) {
+        this.mEAosRequestType = eaosRequestType;
     }
 
+    /**
+     * getmNetErrorCode
+     * @return int
+     */
     public int getmNetErrorCode() {
         return mNetErrorCode;
     }
 
-    public void setmNetErrorCode(int mNetErrorCode) {
-        this.mNetErrorCode = mNetErrorCode;
+    /**
+     * setmNetErrorCode
+     * @param netErrorCode
+     */
+    public void setmNetErrorCode(final int netErrorCode) {
+        this.mNetErrorCode = netErrorCode;
     }
 
+    /**
+     * getmNetworkStatus
+     * @return int
+     */
     public int getmNetworkStatus() {
         return mNetworkStatus;
     }
 
-    public void setmNetworkStatus(int mNetworkStatus) {
-        this.mNetworkStatus = mNetworkStatus;
+    /**
+     * setmNetworkStatus
+     * @param networkStatus
+     */
+    public void setmNetworkStatus(final int networkStatus) {
+        this.mNetworkStatus = networkStatus;
     }
 
+    /**
+     * getmReqHandle
+     * @return longg
+     */
     public long getmReqHandle() {
         return mReqHandle;
     }
 
-    public void setmReqHandle(long mReqHandle) {
-        this.mReqHandle = mReqHandle;
+    /**
+     * setmReqHandle
+     * @param reqHandle
+     */
+    public void setmReqHandle(final long reqHandle) {
+        this.mReqHandle = reqHandle;
     }
 
+    /**
+     * getmHttpAckCode
+     * @return int
+     */
     public int getmHttpAckCode() {
         return mHttpAckCode;
     }
 
-    public void setmHttpAckCode(int mHttpAckCode) {
-        this.mHttpAckCode = mHttpAckCode;
+    /**
+     * setmHttpAckCode
+     * @param httpAckCode
+     */
+    public void setmHttpAckCode(final int httpAckCode) {
+        this.mHttpAckCode = httpAckCode;
     }
 
     public int getCode() {
-        return code;
+        return mCode;
     }
 
-    public void setCode(int code) {
-        this.code = code;
+    public void setCode(final int code) {
+        this.mCode = code;
     }
 
     public String getTimestamp() {
-        return timestamp;
+        return mTimestamp;
     }
 
-    public void setTimestamp(String timestamp) {
-        this.timestamp = timestamp;
+    public void setTimestamp(final String timestamp) {
+        this.mTimestamp = timestamp;
     }
 
     public String getMessage() {
         return message;
     }
 
-    public void setMessage(String message) {
+    public void setMessage(final String message) {
         this.message = message;
     }
 
     public String getVersion() {
-        return version;
+        return mVersion;
     }
 
-    public void setVersion(String version) {
-        this.version = version;
+    public void setVersion(final String version) {
+        this.mVersion = version;
     }
 
     public String getResult() {
-        return result;
+        return mResult;
     }
 
-    public void setResult(String result) {
-        this.result = result;
+    public void setResult(final String result) {
+        this.mResult = result;
     }
 
     public ArrayList<PropertyValueInfo> getHeaders() {
-        return headers;
+        return mHeaders;
     }
 
-    public void setHeaders(ArrayList<PropertyValueInfo> headers) {
-        this.headers = headers;
+    public void setHeaders(final ArrayList<PropertyValueInfo> headers) {
+        this.mHeaders = headers;
     }
 }

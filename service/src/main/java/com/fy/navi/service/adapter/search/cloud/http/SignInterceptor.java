@@ -13,18 +13,17 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 /**
- * @Author: baipeng0904
- * @Description: JsonInterceptor
- * @CreateDate: 2025/2/18 17:25
+ * @version \$Revision1.0\$
+ * @author baipeng0904
  */
 public class SignInterceptor implements Interceptor {
     private static final String TAG = SignInterceptor.class.getSimpleName();
 
     @NonNull
     @Override
-    public Response intercept(Chain chain) throws IOException {
+    public Response intercept(final Chain chain) throws IOException {
         Request request = chain.request();
-        Request.Builder requestBuilder = request.newBuilder();
+        final Request.Builder requestBuilder = request.newBuilder();
         try {
             // 添加 Header
             requestBuilder.addHeader(HttpConstants.SignHelperKey.CLIENT_ID, "");
@@ -32,7 +31,7 @@ public class SignInterceptor implements Interceptor {
             requestBuilder.addHeader(HttpConstants.SignHelperKey.IDP_USER_ID, "");
             request = requestBuilder.build();
             return chain.proceed(request);
-        } catch (Exception e) {
+        } catch (IOException e) {
             Logger.d(TAG, Log.getStackTraceString(e));
         }
         return chain.proceed(request);

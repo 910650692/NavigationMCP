@@ -4,78 +4,72 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import androidx.annotation.NonNull;
-
-/**
- * @Description TODO
- * @Author lvww
- * @date 2024/12/8
- */
 public class GeoPoint implements Parcelable {
-    public double lon;
-    public double lat;
-    public double z;
+    private double mLon;
+    private double mLat;
+    private double mZ;
 
     public GeoPoint() {
     }
 
-    public GeoPoint(double lon, double lat) {
-        this.lon = lon;
-        this.lat = lat;
+    public GeoPoint(final double lon, final double lat) {
+        this.mLon = lon;
+        this.mLat = lat;
     }
 
-    public GeoPoint(double lon, double lat, double z) {
-        this.lon = lon;
-        this.lat = lat;
-        this.z = z;
+    public GeoPoint(final double lon, final double lat, final double z) {
+        this.mLon = lon;
+        this.mLat = lat;
+        this.mZ = z;
     }
 
-    protected GeoPoint(Parcel in) {
-        lon = in.readDouble();
-        lat = in.readDouble();
-        z = in.readDouble();
+    protected GeoPoint(final Parcel in) {
+        mLon = in.readDouble();
+        mLat = in.readDouble();
+        mZ = in.readDouble();
     }
 
     public static final Creator<GeoPoint> CREATOR = new Creator<GeoPoint>() {
         @Override
-        public GeoPoint createFromParcel(Parcel in) {
+        public GeoPoint createFromParcel(final Parcel in) {
             return new GeoPoint(in);
         }
 
         @Override
-        public GeoPoint[] newArray(int size) {
+        public GeoPoint[] newArray(final int size) {
             return new GeoPoint[size];
         }
     };
 
     public double getLon() {
-        return lon;
+        return mLon;
     }
 
-    public void setLon(double lon) {
-        this.lon = lon;
+    public void setLon(final double lon) {
+        this.mLon = lon;
     }
 
     public double getLat() {
-        return lat;
+        return mLat;
     }
 
-    public void setLat(double lat) {
-        this.lat = lat;
+    public void setLat(final double lat) {
+        this.mLat = lat;
     }
 
     public double getZ() {
-        return z;
+        return mZ;
     }
 
-    public void setZ(double z) {
-        this.z = z;
+    public void setZ(final double z) {
+        this.mZ = z;
     }
 
     @Override
     public String toString() {
         return "GeoPoint{" +
-                "lon=" + lon +
-                ", lat=" + lat +
+                "lon=" + mLon +
+                ", lat=" + mLat +
                 '}';
     }
 
@@ -85,9 +79,9 @@ public class GeoPoint implements Parcelable {
     }
 
     @Override
-    public void writeToParcel(@NonNull Parcel parcel, int i) {
-        parcel.writeDouble(lon);
-        parcel.writeDouble(lat);
-        parcel.writeDouble(z);
+    public void writeToParcel(final @NonNull Parcel parcel, final int i) {
+        parcel.writeDouble(mLon);
+        parcel.writeDouble(mLat);
+        parcel.writeDouble(mZ);
     }
 }

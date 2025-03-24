@@ -23,57 +23,66 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 
 /**
- * @Description TODO
- * @Author lvww
- * @date 2024/12/5
+ * impl辅助类
+ * @author fy
+ * @version $Revision.*$
  */
 public class NaviApiImplHelper {
     private static final String TAG = MapDefaultFinalTag.NAVI_SERVICE_TAG;
     private final GuideService mGuideService;
     private RouteLineLayerParam mRouteLineLayerParam = new RouteLineLayerParam();
     private int mainIndex;
-    private final INaviObserver naviObserver;
-    private final ISoundPlayObserver soundPlayObserver;
+    private final INaviObserver mNaviObserver;
+    private final ISoundPlayObserver mSoundPlayObserver;
     private final Hashtable<String, GuidanceObserver> mGuidanceObservers;
     private boolean mIsSimpleNavigation = false;
 
-    protected NaviApiImplHelper(GuideService guideService) {
+    protected NaviApiImplHelper(final GuideService guideService) {
         this.mGuideService = guideService;
         mGuidanceObservers = new Hashtable<>();
-        naviObserver = new GuidanceCallback(mGuidanceObservers);
-        soundPlayObserver = new GuidanceCallback(mGuidanceObservers);
+        mNaviObserver = new GuidanceCallback(mGuidanceObservers);
+        mSoundPlayObserver = new GuidanceCallback(mGuidanceObservers);
     }
 
     protected void initNaviService() {
         mGuideService.init();
-        mGuideService.addNaviObserver(naviObserver);
-        mGuideService.addSoundPlayObserver(soundPlayObserver);
+        mGuideService.addNaviObserver(mNaviObserver);
+        mGuideService.addSoundPlayObserver(mSoundPlayObserver);
 
     }
 
-    protected void playTRManualExt(int requestId) {
+    protected void playTRManualExt(final int requestId) {
         mGuideService.playTRManualExt(requestId);
     }
 
-    protected void registerObserver(String key, GuidanceObserver guidanceObserver) {
+    protected void registerObserver(final String key, final GuidanceObserver guidanceObserver) {
         mGuidanceObservers.put(key, guidanceObserver);
     }
 
-    public void unregisterObserver(String key) {
+    /**
+     * @param key key
+     */
+    public void unregisterObserver(final String key) {
         mGuidanceObservers.remove(key);
     }
 
     protected void unit() {
-        mGuideService.removeSoundPlayObserver(soundPlayObserver);
-        mGuideService.removeNaviObserver(naviObserver);
+        mGuideService.removeSoundPlayObserver(mSoundPlayObserver);
+        mGuideService.removeNaviObserver(mNaviObserver);
         mGuidanceObservers.clear();
     }
 
-    protected long obtainSAPAInfo(boolean isFindRemainPath) {
+    /**
+     * @param isFindRemainPath true：查询剩余路线上的sapa数据 f
+     *                         alse：查询当前车辆所在高速路段上的sapa（车辆必须在高速上）
+     * @return 返回和请求的唯一ID，与回调中的requestId保持一致，获取异常返回0
+     * TODO：此方法目前没有被调用过
+     */
+    protected long obtainSAPAInfo(final boolean isFindRemainPath) {
         return mGuideService.obtainSAPAInfo(isFindRemainPath);
     }
 
-    protected void selectMainPathID(long pathID) {
+    protected void selectMainPathID(final long pathID) {
         mGuideService.selectMainPathID(pathID);
     }
 
@@ -84,31 +93,34 @@ public class NaviApiImplHelper {
     }
 
     //设置开启导航路线
-    protected void setNaviPathParam(int routeIndex, RouteLineLayerParam routeLineLayerParam) {
+    protected void setNaviPathParam(final int routeIndex,
+                                    final RouteLineLayerParam routeLineLayerParam) {
         mRouteLineLayerParam = routeLineLayerParam;
         mainIndex = routeIndex;
     }
 
     //获取开启导航关键参数
     protected NaviPath getNaviPathParam() {
-        NaviPath mNaviPath = new NaviPath();
-        mNaviPath.vecPaths = (ArrayList<PathInfo>) mRouteLineLayerParam.getPathInfoList(); // 设置完整路线信息 算路时会返回
-        mNaviPath.mainIdx = mainIndex; // 设置主路线索引
-        mNaviPath.type = RouteType.RouteTypeCommon; // 设置算路类型
-        //mNaviPath.point = poiForRequest; // 用于GuideService偏航时组织行程点信息, 不影响路线绘制
-        mNaviPath.strategy = 0x08 | 0x10; // 设置算路策略
-        return mNaviPath;
+        final NaviPath naviPath = new NaviPath();
+        // 设置完整路线信息 算路时会返回
+        naviPath.vecPaths = (ArrayList<PathInfo>) mRouteLineLayerParam.getMPathInfoList();
+        naviPath.mainIdx = mainIndex; // 设置主路线索引
+        naviPath.type = RouteType.RouteTypeCommon; // 设置算路类型
+        //naviPath.point = poiForRequest; // 用于GuideService偏航时组织行程点信息, 不影响路线绘制
+        naviPath.strategy = 0x08 | 0x10; // 设置算路策略
+        return naviPath;
     }
 
     /**
      * 初始化引导导航参数
      */
     public void initGuideParam() {
-        Param param = new Param();
+        final Param param = new Param();
         param.type = Type.GuideParamNavi;//引导参数配置
         param.navi.v2x.enableCurveMeet = true; // 弯道会车预警(用户登录&&真实导航 生效)
         param.navi.v2x.enableCrossMeet = true; // 无灯路口会车预警(用户登录&&真实导航 生效)
         param.navi.naviScene = 0; //普通导航
+        param.emulator.speed = 480;//模拟导航车速
 //        param.navi.model = 1; // 多路线导航（备选路重算需要开启） 此处需要触发条件
         mGuideService.setParam(param);
 
@@ -119,7 +131,7 @@ public class NaviApiImplHelper {
 
     /***配置路口大图***/
     public void setCrossParam() {
-        Param crossParam = new Param();
+        final Param crossParam = new Param();
         crossParam.type = Type.GuideParamCrossing;//放大图配置参数配置
         crossParam.crossing.enable3D = true; //  三维总开关
         crossParam.crossing.enableVectorImage = true; // 矢量图显示开
@@ -131,9 +143,9 @@ public class NaviApiImplHelper {
 
     /***配置摄像头参数配置***/
     public void setCameraParameters() {
-        Param camera = new Param();
+        final Param camera = new Param();
         camera.type = Type.GuideParamCamera;//摄像头配置参数
-        CameraParam cameraParam = camera.camera;
+        final CameraParam cameraParam = camera.camera;
         cameraParam.enable = true;       /* 打开摄像头显示 */
         cameraParam.maxCount = 5;        /* 摄像头显示个数为5个 */
         cameraParam.checkDistance = new int[]{1000, 1000, 500};
@@ -146,25 +158,28 @@ public class NaviApiImplHelper {
     /***配置公共参数配置***/
     public void setCommonParameters() {
         // 配置导航播报开关
-        CommonParam mCommonParam = new CommonParam();
-        mCommonParam.enableAuto = true;
-        Param param2 = new Param();
-        param2.common = mCommonParam;
+        final CommonParam commonParam = new CommonParam();
+        commonParam.enableAuto = true;
+        final Param param2 = new Param();
+        param2.common = commonParam;
         mGuideService.setParam(param2);
     }
 
 
     //设置是否是轻导航
-    protected void setSimpleNavigation(boolean isSimpleNavigaion) {
+    protected void setSimpleNavigation(final boolean isSimpleNavigaion) {
         mIsSimpleNavigation = isSimpleNavigaion;
     }
 
-    /***配置导航播报开关***/
-    public void updateGuideParam(NaviParamEntity naviParamEntity) {
+    /**
+     * 配置导航播报开关
+     * @param naviParamEntity entity
+     **/
+    public void updateGuideParam(final NaviParamEntity naviParamEntity) {
         if (!ConvertUtils.isEmpty(naviParamEntity)) {
-            Param param = new Param();
+            final Param param = new Param();
             param.type = naviParamEntity.getType();
-            if (naviParamEntity.getType() == NaviConstant.GuideParamType.GuideParamTTSPlay) {
+            if (naviParamEntity.getType() == NaviConstant.GuideParamType.GUIDE_PARAM_TTS_PLAY) {
                 param.tts.style = naviParamEntity.getStyle();
                 //打开区域播报
                 param.tts.enableADCode = naviParamEntity.isEnableADCode();
@@ -176,14 +191,17 @@ public class NaviApiImplHelper {
         }
     }
 
-    public void setCruiseParam(CruiseParamEntity cruiseParamEntity) {
+    /**
+     * @param cruiseParamEntity entity
+     */
+    public void setCruiseParam(final CruiseParamEntity cruiseParamEntity) {
         if (!ConvertUtils.isEmpty(cruiseParamEntity)) {
-            Param param = new Param();
+            final Param param = new Param();
             param.type = cruiseParamEntity.getType();
-            if (cruiseParamEntity.getType() == NaviConstant.GuideParamType.GuideParamCruise) {
+            if (cruiseParamEntity.getType() == NaviConstant.GuideParamType.GUIDE_PARAM_CRUISE) {
                 param.cruise.cameraNum = cruiseParamEntity.getCameraNum();
                 param.cruise.mode = cruiseParamEntity.getMode();
-            } else if (cruiseParamEntity.getType() == NaviConstant.GuideParamType.GuideParamTR) {
+            } else if (cruiseParamEntity.getType() == NaviConstant.GuideParamType.GUIDE_PARAM_TR) {
                 param.tr.enable = cruiseParamEntity.isTrEnable();
             }
             mGuideService.setParam(param);

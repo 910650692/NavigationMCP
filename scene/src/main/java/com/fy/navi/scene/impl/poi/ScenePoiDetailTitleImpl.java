@@ -1,26 +1,26 @@
 package com.fy.navi.scene.impl.poi;
 
-import static com.fy.navi.service.MapDefaultFinalTag.SEARCH_HMI_TAG;
 
 import com.android.utils.log.Logger;
 import com.fy.navi.scene.BaseSceneModel;
 import com.fy.navi.scene.api.poi.ISceneTitleBarView;
 import com.fy.navi.scene.ui.poi.ScenePoiDetailTitleView;
 import com.fy.navi.service.AutoMapConstant;
+import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.define.search.PoiInfoEntity;
 import com.fy.navi.service.logicpaket.search.SearchPackage;
 import com.fy.navi.ui.base.StackManager;
 
 /**
- * @Author: baipeng0904
- * @Description: 类作用描述
- * @CreateDate: $ $
+ * @author baipeng0904
+ * @version \$Revision1.0\$
+ *
  */
 public class ScenePoiDetailTitleImpl extends BaseSceneModel<ScenePoiDetailTitleView> implements ISceneTitleBarView {
     private final SearchPackage mSearchPackage;
 
-    public ScenePoiDetailTitleImpl(ScenePoiDetailTitleView mScreenView) {
-        super(mScreenView);
+    public ScenePoiDetailTitleImpl(final ScenePoiDetailTitleView screenView) {
+        super(screenView);
         mSearchPackage = SearchPackage.getInstance();
     }
 
@@ -32,9 +32,9 @@ public class ScenePoiDetailTitleImpl extends BaseSceneModel<ScenePoiDetailTitleV
     }
 
     @Override
-    public void doSearch(PoiInfoEntity poiInfoEntity) {
+    public void doSearch(final PoiInfoEntity poiInfoEntity) {
         if (null == poiInfoEntity) {
-            Logger.d(SEARCH_HMI_TAG, "doSearch: poiInfoEntity is null");
+            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "doSearch: poiInfoEntity is null");
             return;
         }
         // 这里只有两种搜索类型：POI搜索和Geo搜索

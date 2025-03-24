@@ -12,37 +12,42 @@ public class MaxHeightScrollView extends SkinScrollView {
 
     private int maxHeight;
 
-    public MaxHeightScrollView(Context context) {
+    public MaxHeightScrollView(final Context context) {
         super(context);
     }
 
-    public MaxHeightScrollView(Context context, AttributeSet attrs) {
+    public MaxHeightScrollView(final Context context, final AttributeSet attrs) {
         super(context, attrs);
         initialize(context, attrs);
     }
 
-    public MaxHeightScrollView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public MaxHeightScrollView(final Context context, final AttributeSet attrs, final int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         initialize(context, attrs);
     }
 
-    private void initialize(Context context, AttributeSet attrs) {
-        TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.MaxHeightScrollView);
+    /**
+     * 初始化
+     * @param context context对象
+     * @param attrs xml属性集合
+     */
+    private void initialize(final Context context, final AttributeSet attrs) {
+        final TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.MaxHeightScrollView);
         maxHeight = typedArray.getDimensionPixelSize(R.styleable.MaxHeightScrollView_maxHeight, getMaxDefaultHeight());
         typedArray.recycle();
     }
 
     @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+    protected void onMeasure(final int widthMeasureSpec, final int heightMeasureSpec) {
         int mode = MeasureSpec.getMode(heightMeasureSpec);
         int size = MeasureSpec.getSize(heightMeasureSpec);
-
+        int heightMeasure = heightMeasureSpec;
         // 测量子视图以获取其期望的大小
         int childHeight = getChildAt(0).getMeasuredHeight();
         if (childHeight == 0) { // 如果还没有测量过子视图，则先测量一次
-            int childWidthMeasureSpec = MeasureSpec.makeMeasureSpec(
+            final int childWidthMeasureSpec = MeasureSpec.makeMeasureSpec(
                     MeasureSpec.getSize(widthMeasureSpec), MeasureSpec.AT_MOST);
-            int childHeightMeasureSpec = MeasureSpec.makeMeasureSpec(
+            final int childHeightMeasureSpec = MeasureSpec.makeMeasureSpec(
                     Integer.MAX_VALUE >> 2, MeasureSpec.AT_MOST);
             getChildAt(0).measure(childWidthMeasureSpec, childHeightMeasureSpec);
             childHeight = getChildAt(0).getMeasuredHeight();
@@ -62,9 +67,9 @@ public class MaxHeightScrollView extends SkinScrollView {
         }
 
         // 使用修改后的尺寸重新计算
-        heightMeasureSpec = MeasureSpec.makeMeasureSpec(size, mode);
+        heightMeasure = MeasureSpec.makeMeasureSpec(size, mode);
 
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        super.onMeasure(widthMeasureSpec, heightMeasure);
     }
 
     private int getMaxDefaultHeight() {

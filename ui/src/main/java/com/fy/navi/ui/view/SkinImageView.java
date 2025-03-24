@@ -6,21 +6,16 @@ import android.util.AttributeSet;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatImageView;
 
-/**
- * @Description TODO
- * @Author lvww
- * @date 2024/12/2
- */
 public class SkinImageView extends AppCompatImageView {
-    public SkinImageView(Context context) {
+    public SkinImageView(final Context context) {
         super(context);
     }
 
-    public SkinImageView(Context context, @Nullable AttributeSet attrs) {
+    public SkinImageView(final Context context, @Nullable final AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public SkinImageView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public SkinImageView(final Context context, @Nullable final AttributeSet attrs, final int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 }

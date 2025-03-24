@@ -9,7 +9,7 @@
 
         <variable
             name="ViewModel"
-            type="com.fy.navi.hmi.navi.NaviGuidanceViewModel" />
+            type="com.fy.navi.hmi.launcher.LauncherNaviGuidanceViewModel" />
     </data>
 
     <com.fy.navi.ui.view.SkinConstraintLayout

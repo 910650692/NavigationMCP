@@ -2,6 +2,7 @@ package com.fy.navi.mapservice.bean;
 
 public interface INaviConstant {
 
+    String NAVI_COMMON_TAG = "NaviAutoApi";
     String PAGE_EXTRA = "targetPage";
     String SEARCH_KEYWORD_EXTRA = "keyword";
     String POI_INFO_EXTRA = "poi_info_entity";
@@ -10,48 +11,47 @@ public interface INaviConstant {
     //底图类型
     interface MapType {
         int UNKNOWN = 0;
-        int Main = 1; //主图
-        int LauncherDesk = 2; //桌面底图
-        int LauncherWidget = 3; //桌面卡片
+        int MAIN = 1; //主图
+        int LAUNCHER_DESK = 2; //桌面底图
+        int LAUNCHER_WIDGET = 3; //桌面卡片
     }
 
     //用于定义BaseRouteLine里的type.
     interface PathType {
         int AUTO_UNKNOWN_ERROR = Integer.MIN_VALUE;
-        int PathTypeNULL = 0;
-        int PathTypeDrive = 1;
-        int PathTypeRide = 2;
-        int PathTypeWalk = 3;
-        int PathTypeCustom = 255;
+        int NULL = 0;
+        int DRIVE = 1;
+        int RIDE = 2;
+        int WALK = 3;
+        int CUSTOM = 255;
     }
 
     //用于定义BaseTurnInfo里的type.
     interface NaviType {
         int UNKNOWN_ERROR = Integer.MIN_VALUE;
-        int NaviTypeGPS = 0;
-        int NaviTypeSimulation = 1;
-        int NaviTypeCruise = 2;
-        int NaviTypeHealthRun = 3;
-        int NaviTypeHealthRide = 4;
-        int NaviTypeHealthShareBike = 5;
+        int GPS = 0;
+        int SIMULATION = 1;
+        int CRUISE = 2;
+        int HEALTH_RUN = 3;
+        int HEALTH_RIDE = 4;
+        int HEALTH_SHARE_BIKE = 5;
     }
 
     //用于定义BaseTurnInfo里的curRoadClass.
     interface RoadClass {
         int AUTO_UNKNOWN_ERROR = Integer.MIN_VALUE;
-        int RoadClassNULL = -1;
-        int RoadClassFreeway = 0;
-        int RoadClassNationalRoad = 1;
-        int RoadClassProvinceRoad = 2;
-        int RoadClassCountyRoad = 3;
-        int RoadClassRuralRoad = 4;
-        int RoadClassInCountyRoad = 5;
-        int RoadClassCitySpeedway = 6;
-        int RoadClassMainRoad = 7;
-        int RoadClassSecondaryRoad = 8;
-        int RoadClassCommonRoad = 9;
-        int RoadClassNonNaviRoad = 10;
-        int RoadClassCount = 11;
+        int NULL = -1;
+        int FREE_WAY = 0; //高速公路
+        int NATIONAL_ROAD = 1; //国道
+        int PROVINCE_ROAD = 2; //省道
+        int COUNTY_ROAD = 3; //县道
+        int RURAL_ROAD = 4; //乡道
+        int IN_COUNTY_ROAD = 5; //县乡村内部道路
+        int CITY_SPEED_WAY = 6; //城市快速路
+        int MAIN_ROAD = 7; //主要道路
+        int SECONDARY_ROAD = 8; //次要道路
+        int COMMON_ROAD = 9; //普通道路
+        int NON_NAVI_ROAD = 10; //非导航道路
     }
 
     //地图状态

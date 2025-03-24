@@ -23,6 +23,7 @@ import com.fy.navi.hmi.favorite.FavoriteHelper;
 import com.fy.navi.hmi.favorite.HomeCompanyFragment;
 import com.fy.navi.hmi.favorite.MapPointSearchFragment;
 import com.fy.navi.hmi.limit.LimitDriveFragment;
+import com.fy.navi.hmi.mapdata.MapDataFragment;
 import com.fy.navi.hmi.navi.NaviGuidanceFragment;
 import com.fy.navi.hmi.poi.PoiDetailsFragment;
 import com.fy.navi.hmi.route.RouteFragment;
@@ -38,14 +39,14 @@ import com.fy.navi.service.define.aos.RestrictedArea;
 import com.fy.navi.service.define.aos.RestrictedAreaDetail;
 import com.fy.navi.service.define.map.IBaseScreenMapView;
 import com.fy.navi.service.define.map.MapTypeId;
+import com.fy.navi.service.define.message.MessageCenterInfo;
+import com.fy.navi.service.define.message.MessageCenterType;
 import com.fy.navi.service.define.navi.LaneInfoEntity;
 import com.fy.navi.service.define.navistatus.NaviStatus;
 import com.fy.navi.service.define.route.RoutePoiType;
 import com.fy.navi.service.define.route.RouteRestrictionParam;
 import com.fy.navi.service.define.route.RouteSpeechRequestParam;
 import com.fy.navi.service.define.search.PoiInfoEntity;
-import com.fy.navi.service.define.setting.SettingController;
-import com.fy.navi.service.logicpaket.map.MapPackage;
 import com.fy.navi.service.logicpaket.navistatus.NaviStatusPackage;
 import com.fy.navi.service.logicpaket.search.SearchPackage;
 import com.fy.navi.service.logicpaket.user.behavior.BehaviorPackage;
@@ -65,6 +66,12 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
     public ObservableBoolean mainBTNVisibility;
     public ObservableBoolean bottomNaviVisibility;
     public ObservableBoolean backToParkingVisibility;
+    public ObservableBoolean messageCenterVisible;
+    public ObservableField<MessageCenterInfo> messageCenterEntity;
+    public ObservableField<String> messageCenterOperate;
+    public ObservableField<String> messageCenterTitle;
+    public ObservableField<String> messageCenterContent;
+    public ObservableBoolean messageCenterContentVisibility;
     public ObservableField<Boolean> naviHomeVisibility;
     public ObservableInt carModeImgId;
     @Nullable
@@ -75,6 +82,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
     public ObservableField<String> limitDriverTitle;
     public ObservableField<Boolean> cruiseVisibility;
     public ObservableField<Boolean> muteVisibility;
+
 
     public BaseMapViewModel(@NonNull Application application) {
         super(application);
@@ -88,6 +96,12 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         muteVisibility = new ObservableField<>(true);
         bottomNaviVisibility = new ObservableBoolean(true);
         backToParkingVisibility = new ObservableBoolean(false);
+        messageCenterVisible = new ObservableBoolean(false);
+        messageCenterEntity = new ObservableField<>();
+        messageCenterOperate = new ObservableField<>("");
+        messageCenterTitle = new ObservableField<>("");
+        messageCenterContent = new ObservableField<>("");
+        messageCenterContentVisibility = new ObservableBoolean(false);
     }
 
     @Override
@@ -99,6 +113,12 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
     public void onCreate() {
         super.onCreate();
         mModel.checkContinueNavi(mView);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mModel.checkAuthorizationExpired();
     }
 
     @Override
@@ -166,9 +186,15 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
 
     public Action searchForChargeStation = () -> {
         try {
-            Bundle bundle = new Bundle();
+            final Bundle bundle = new Bundle();
             bundle.putInt(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_TYPE, AutoMapConstant.SearchType.SEARCH_KEYWORD);
-            bundle.putString(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_KEYWORD, "充电站");
+            final int powerType = powerType();
+            // 油车
+            if (powerType == 0) {
+                bundle.putString(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_KEYWORD, "加油站");
+            } else {
+                bundle.putString(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_KEYWORD, "充电站");
+            }
             bundle.putParcelable(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_POI_LIST, null);
             addFragment(new SearchResultFragment(), bundle);
 
@@ -191,10 +217,17 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
     }
 
 
-    public Action openSettingFragment = () -> addFragment(new SettingFragment(), null);
+    public Action openSettingFragment = () -> {
+        messageCenterVisible.set(false);
+        addFragment(new SettingFragment(), null);
+    };
 
     public Action carHeader = () -> {
         mModel.switchMapMode();
+    };
+
+    public Action messageCenterGone = () -> {
+        messageCenterVisible.set(false);
     };
 
     public Action openLimitDetailFragment = () -> {
@@ -203,6 +236,22 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         bundle.putSerializable(AutoMapConstant.CommonBundleKey.BUNDLE_KEY_LIMIT_DRIVER, routeRestrictionParam);
         addFragment(new LimitDriveFragment(), bundle);
     };
+
+    public Action messageCenterOperateClick = () -> {
+         messageCenterGone.call();
+         final MessageCenterInfo messageCenterInfo = messageCenterEntity.get();
+         if(messageCenterInfo!=null){
+             if(messageCenterInfo.getMsgType() == MessageCenterType.ROAD_LIMIT){
+                 openLimitDetailFragment.call();
+             }else if(messageCenterInfo.getMsgType() == MessageCenterType.MAP_UPDATE_15 ||
+                     messageCenterInfo.getMsgType() == MessageCenterType.MAP_UPDATE_45){
+                 final Bundle bundle = new Bundle();
+                 bundle.putBoolean("isCheck",true);
+                 addFragment(new MapDataFragment(), bundle);
+             }
+         }
+    };
+
 
     public void loadMapView(IBaseScreenMapView mapSurfaceView) {
         mModel.loadMapView(mapSurfaceView);
@@ -256,7 +305,9 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
     }
 
     public void toPoiDetailFragment(PoiInfoEntity entity) {
-        if (needInterceptor()) return;
+        if (needInterceptor() && FavoriteHelper.getInstance().getHomeCompanyType() != 4) {
+            return;
+        }
         if (FavoriteHelper.getInstance().getHomeCompanyType() != -1) {
             //如果正在执行地图选点流程，点击item后拉起MapPointSearchFragment进行搜索
 //            Fragment fragment = StackManager.getInstance().getCurrentFragment(mScreenId);
@@ -270,7 +321,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         bundle.putParcelable(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_OPEN_DETAIL, entity);
         bundle.putInt(AutoMapConstant.PoiBundleKey.BUNDLE_KEY_START_POI_TYPE, PoiType.POI_MAP_CLICK);
         PoiDetailsFragment fragment = new PoiDetailsFragment();
-        addFragment(fragment, bundle);
+        addPoiDetailsFragment(fragment, bundle);
     }
 
     public void toSearchResultFragment(String keyword) {
@@ -293,7 +344,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
 
     public void toRouteFragment(RouteSpeechRequestParam param) {
         Bundle args = new Bundle();
-        args.putSerializable("speeh_open_route", param);
+        args.putSerializable("speech_open_route", param);
         addFragment(new RouteFragment(), args);
     }
 
@@ -310,6 +361,23 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
             trafficEventFragment = new TrafficEventFragment();
             addFragment(trafficEventFragment, bundle);
         }
+    }
+
+    /**
+     * 跳转到设置公司-家界面.
+     *
+     * @param type int，1-HOME，2-COMPANY.
+     * @param keyword 搜索关键字.
+     */
+    public void toHomeCompanyFragment(int type, String keyword) {
+        Bundle args = new Bundle();
+        args.putString(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SOURCE_FRAGMENT,
+                AutoMapConstant.SourceFragment.MAIN_SEARCH_FRAGMENT);
+        args.putInt(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_TYPE,
+                AutoMapConstant.SearchType.SEARCH_KEYWORD);
+        args.putString(AutoMapConstant.VoiceKeyWord.BUNDLE_VOICE_KEY_WORD, keyword);
+        args.putInt(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_OPEN_HOME_COMPANY, type);
+        addFragment(new HomeCompanyFragment(), args);
     }
 
     public void updateUiStyle(MapTypeId mapTypeId, int uiMode) {
@@ -335,14 +403,14 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
             return;
         }
         this.routeRestrictionParam = param;
-        this.restrictedArea = param.getRestrictedArea();
+        this.restrictedArea = param.getMRestrictedArea();
         // 导航中或者算路中不显示
         boolean statusVis = mModel.getNaviStatus() == NaviStatus.NaviStatusType.NO_STATUS || mModel.getNaviStatus() == NaviStatus.NaviStatusType.CRUISE;
         Logger.d(TAG, "statusVis:" + statusVis, "restrictedArea:" + (restrictedArea != null));
 
         boolean flag = false;
-        for (RestrictedAreaDetail restrictedAreaDetail : this.restrictedArea.restrictedAreaDetails.get(0)) {
-            if (restrictedAreaDetail.effect == 1) {
+        for (RestrictedAreaDetail restrictedAreaDetail : this.restrictedArea.getMRestrictedAreaDetails().get(0)) {
+            if (restrictedAreaDetail.getMEffect() == 1) {
                 flag = true;
                 break;
             }
@@ -353,6 +421,58 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
             limitDriverTitle.set(getApplication().getString(R.string.limit_drive));
         }
         limitDriverVisibility.set(restrictedArea != null && statusVis);
+
+        if(restrictedArea != null && statusVis){
+            //首页消息的显示逻辑  发送package消息
+            final boolean showSameDayLimit = mModel.showSameDayLimit();
+            if(showSameDayLimit){
+                Logger.i("showSameDayLimit","showSameDayLimit"+statusVis);
+                mModel.managerMessage(MessageCenterType.ROAD_LIMIT,"");
+            }
+        }
+    }
+
+    /**
+     * 离线地图是否15天未更新
+     */
+    public void offlineMap15Day(){
+        if(mModel.offlineMap15Day()){
+            mModel.managerMessage(MessageCenterType.MAP_UPDATE_15,"");
+        }
+    }
+
+    /**
+     * 离线地图是否45天未更新
+     */
+    public void offlineMap45Day(){
+        if(mModel.offlineMap45Day()){
+            mModel.managerMessage(MessageCenterType.MAP_UPDATE_45,"");
+        }
+    }
+
+    /**
+     * @param messageCenterInfo 数据
+     */
+    public void onMessageInfoNotifyCallback(final MessageCenterInfo messageCenterInfo){
+        messageCenterEntity.set(messageCenterInfo);
+        messageCenterVisible.set(true);
+        messageCenterOperate.set(messageCenterInfo.getMsgOperate());
+        messageCenterTitle.set(messageCenterInfo.getMsgTitle());
+        messageCenterContent.set(messageCenterInfo.getMsgContent());
+        if(messageCenterInfo.getMsgType() == MessageCenterType.ROAD_LIMIT){
+            messageCenterContentVisibility.set(false);
+        }else if(messageCenterInfo.getMsgType() == MessageCenterType.MAP_UPDATE_15){
+            messageCenterContentVisibility.set(false);
+        }else if(messageCenterInfo.getMsgType() == MessageCenterType.MAP_UPDATE_45){
+            messageCenterContentVisibility.set(true);
+        }
+    }
+
+    /**
+     * 移除消息
+     */
+    public void onMessageInfoRemoveCallback(){
+        messageCenterVisible.set(false);
     }
 
     // 如果处于特定状态不允许POI响应点击事件, 现在有两种“巡航”和“无状态”
@@ -454,5 +574,17 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
 
     public void openCollectFragment() {
         addFragment(new SettingFragment(), null);
+    }
+
+    /**
+     * 动力类型标定
+     * -1 无效值
+     * 0 汽油车
+     * 1 纯电动车
+     * 2 插电式混动汽车
+     * @return 动力类型
+     */
+    public int powerType() {
+        return mModel.powerType();
     }
 }

@@ -1,6 +1,5 @@
 package com.fy.navi.ui.view;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
@@ -14,68 +13,82 @@ import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
 import com.fy.navi.ui.R;
 
-/**
- * @Description TODO
- * @Author lvww
- * @date 2024/12/2
- */
 public class SkinTextView extends AppCompatTextView {
     private final Context mContext;
-    private int defaultTextColor = 0;
-    private int selectTextColor = 0;
-    private Drawable defaultBgColor;
-    private Drawable selectBgColor;
+    private int mDefaultTextColor = 0;
+    private int mSelectTextColor = 0;
+    private Drawable mDefaultBgColor;
+    private Drawable mSelectBgColor;
     /* 是否开启水波动效 */
-    private boolean isForeground = false;
-    private boolean isStartMarquee = false;
+    private boolean mForeground = false;
+    private boolean mStartMarquee = false;
 
-    public SkinTextView(Context context) {
+    public SkinTextView(final Context context) {
         this(context, null);
     }
 
-    public SkinTextView(Context context, @Nullable AttributeSet attrs) {
+    public SkinTextView(final Context context, @Nullable final AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public SkinTextView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public SkinTextView(final Context context, @Nullable final AttributeSet attrs, final int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         this.mContext = context;
         loadTextAttrs(context, attrs);
     }
 
-    private void loadTextAttrs(Context context, @Nullable AttributeSet attrs) {
-        TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.SkinTextView);
-        selectTextColor = typedArray.getColor(R.styleable.SkinTextView_select_text_color, getCurrentTextColor());
-        selectBgColor = typedArray.getDrawable(R.styleable.SkinTextView_select_background_color);
-        isForeground = typedArray.getBoolean(R.styleable.SkinTextView_enable_foreground, false);
-        isStartMarquee = typedArray.getBoolean(R.styleable.SkinTextView_marquee, false);
-        defaultTextColor = getCurrentTextColor();
-        defaultBgColor = getBackground();
+    /**
+     * 加载属性
+     *
+     * @param context 上下文
+     * @param attrs   属性
+     */
+    private void loadTextAttrs(final Context context, @Nullable final AttributeSet attrs) {
+        final TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.SkinTextView);
+        mSelectTextColor = typedArray.getColor(R.styleable.SkinTextView_select_text_color, getCurrentTextColor());
+        mSelectBgColor = typedArray.getDrawable(R.styleable.SkinTextView_select_background_color);
+        mForeground = typedArray.getBoolean(R.styleable.SkinTextView_enable_foreground, false);
+        mStartMarquee = typedArray.getBoolean(R.styleable.SkinTextView_marquee, false);
+        mDefaultTextColor = getCurrentTextColor();
+        mDefaultBgColor = getBackground();
         typedArray.recycle();
         initView();
     }
 
-    @SuppressLint({"UseCompatLoadingForDrawables", "ResourceType"})
+    /**
+     * 初始化View
+     */
     private void initView() {
-        TypedArray typedArray = mContext.getTheme().obtainStyledAttributes(new int[]{android.R.attr.selectableItemBackground});
-        int attr = typedArray.getResourceId(0, 0);
+        final TypedArray typedArray = mContext.getTheme().obtainStyledAttributes(new int[]{android.R.attr.selectableItemBackground});
+        final int attr = typedArray.getResourceId(0, 0);
         typedArray.recycle();
-        if (isForeground) setForeground(mContext.getDrawable(attr));
-        if (isStartMarquee) startTextViewMarquee();
-    }
-
-    @Override
-    public void setSelected(boolean selected) {
-        super.setSelected(selected);
-        if (selected) {
-            if (selectTextColor != defaultTextColor) setTextColor(selectTextColor);
-            if (!ConvertUtils.isEmpty(selectBgColor)) setBackground(selectBgColor);
-        } else {
-            setTextColor(defaultTextColor);
-            setBackground(defaultBgColor);
+        if (mForeground) {
+            setForeground(mContext.getDrawable(attr));
+        }
+        if (mStartMarquee) {
+            startTextViewMarquee();
         }
     }
 
+    @Override
+    public void setSelected(final boolean selected) {
+        super.setSelected(selected);
+        if (selected) {
+            if (mSelectTextColor != mDefaultTextColor) {
+                setTextColor(mSelectTextColor);
+            }
+            if (!ConvertUtils.isEmpty(mSelectBgColor)) {
+                setBackground(mSelectBgColor);
+            }
+        } else {
+            setTextColor(mDefaultTextColor);
+            setBackground(mDefaultBgColor);
+        }
+    }
+
+    /**
+     * 开启跑马灯效果
+     */
     public void startTextViewMarquee() {
         Logger.d("lvww", "开启跑马灯效果");
         setSelected(true);

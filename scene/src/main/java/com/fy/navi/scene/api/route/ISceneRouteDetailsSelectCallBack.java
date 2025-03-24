@@ -1,12 +1,10 @@
 package com.fy.navi.scene.api.route;
 
-/**
- * @Description TODO
- * @Author lvww
- * @date 2024/12/2
- */
 public interface ISceneRouteDetailsSelectCallBack {
-
+    /**
+     * 避开道路回调
+     * @param routeAvoidInfo 是否避开状态
+     * */
     void onRouteDetailsChecked(boolean routeAvoidInfo);
 
 }

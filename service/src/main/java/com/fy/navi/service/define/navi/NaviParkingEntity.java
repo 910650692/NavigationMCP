@@ -31,4 +31,7 @@ public class NaviParkingEntity {
 
     public int spaceTotal;        //总车位数
     public int spaceFree;         //空闲车位数
+
+    private GeoPoint enterPoint;
+    private GeoPoint exitPoint;
 }

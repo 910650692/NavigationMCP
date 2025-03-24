@@ -3,59 +3,59 @@ package com.fy.navi.service.define.recorder;
 
 public class PlayProgressInfo {
 
-    private long fileIndex;
-    private long fileTotalCount;
-    private String playName;
-    private long currentMessageIndex;
-    private long totalMessageCount;
-    private long unixTimestamp;
+    private long mFileIndex;
+    private long mFileTotalCount;
+    private String mPlayName;
+    private long mCurrentMessageIndex;
+    private long mTotalMessageCount;
+    private long mUnixTimestamp;
 
     public String getPlayName() {
-        return playName;
+        return mPlayName;
     }
 
-    public void setPlayName(String playName) {
-        this.playName = playName;
+    public void setPlayName(final String playName) {
+        this.mPlayName = playName;
     }
 
     public long getFileIndex() {
-        return fileIndex;
+        return mFileIndex;
     }
 
-    public void setFileIndex(long fileIndex) {
-        this.fileIndex = fileIndex;
+    public void setFileIndex(final long fileIndex) {
+        this.mFileIndex = fileIndex;
     }
 
     public long getFileTotalCount() {
-        return fileTotalCount;
+        return mFileTotalCount;
     }
 
-    public void setFileTotalCount(long fileTotalCount) {
-        this.fileTotalCount = fileTotalCount;
+    public void setFileTotalCount(final long fileTotalCount) {
+        this.mFileTotalCount = fileTotalCount;
     }
 
     public long getCurrentMessageIndex() {
-        return currentMessageIndex;
+        return mCurrentMessageIndex;
     }
 
-    public void setCurrentMessageIndex(long currentMessageIndex) {
-        this.currentMessageIndex = currentMessageIndex;
+    public void setCurrentMessageIndex(final long currentMessageIndex) {
+        this.mCurrentMessageIndex = currentMessageIndex;
     }
 
     public long getTotalMessageCount() {
-        return totalMessageCount;
+        return mTotalMessageCount;
     }
 
-    public void setTotalMessageCount(long totalMessageCount) {
-        this.totalMessageCount = totalMessageCount;
+    public void setTotalMessageCount(final long totalMessageCount) {
+        this.mTotalMessageCount = totalMessageCount;
     }
 
     public long getUnixTimestamp() {
-        return unixTimestamp;
+        return mUnixTimestamp;
     }
 
-    public void setUnixTimestamp(long unixTimestamp) {
-        this.unixTimestamp = unixTimestamp;
+    public void setUnixTimestamp(final long unixTimestamp) {
+        this.mUnixTimestamp = unixTimestamp;
     }
 
 

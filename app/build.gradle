@@ -7,6 +7,7 @@ String aveFlavorType = "type"
 android {
     namespace 'com.fy.navi.hmi'
     compileSdk Integer.parseInt(libs.versions.compileSdk.get())
+    buildToolsVersion libs.versions.buildSdk.get()
 
     defaultConfig {
         applicationId "com.fy.navi.hmi"
@@ -118,6 +119,10 @@ android {
             println "当前的 Product Flavors 是: ${flavors.join(', ')}"
         }
     }
+
+    packagingOptions {
+        exclude 'META-INF/DEPENDENCIES'
+    }
 }
 
 dependencies {
@@ -131,8 +136,10 @@ dependencies {
     implementation project(":utils")
     implementation project(":mapservice")
     implementation project(":fsa")
-    implementation project(':vtserver')
+    implementation project(":engine:vtserver")
     implementation project(':vrbridge')
+    implementation libs.guava
+    implementation project(":burypoint")
     implementation libs.arouter.api
     annotationProcessor libs.arouter.compiler
 }

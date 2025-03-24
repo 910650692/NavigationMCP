@@ -5,7 +5,7 @@ import android.app.Application;
 import androidx.annotation.NonNull;
 
 public class HomeCompanyViewModel extends BaseHomeCompanyViewModel {
-    public HomeCompanyViewModel(@NonNull Application application) {
+    public HomeCompanyViewModel(final @NonNull Application application) {
         super(application);
     }
 }

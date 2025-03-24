@@ -1,9 +1,4 @@
 package com.fy.navi.scene.ui.navi;
-
-import static com.fy.navi.scene.ui.navi.manager.NaviSceneId.NAVI_SCENE_CONTROL;
-import static com.fy.navi.scene.ui.navi.manager.NaviSceneId.NAVI_SCENE_PARALLEL;
-import static com.fy.navi.scene.ui.navi.manager.NaviSceneId.NAVI_SCENE_PARK_LIST;
-
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -26,34 +21,36 @@ import com.fy.navi.scene.ui.navi.manager.NaviSceneManager;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.define.navi.NaviEtaInfo;
 import com.fy.navi.service.define.navi.NaviParkingEntity;
-import com.fy.navi.service.define.search.PoiInfoEntity;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
  * 列表scene 停车场列表
+ * @author fy
+ * @version $Revision.*$
  */
 public class SceneNaviParkListView extends NaviSceneBase<SceneNaviParkListViewBinding, SceneNaviParkListImpl> {
     private static final String TAG = MapDefaultFinalTag.NAVI_HMI_TAG;
     private NaviParkListAdapter mNaviParkListAdapter;
+    private ISceneCallback mISceneCallback;
 
-    public SceneNaviParkListView(@NonNull Context context) {
+    public SceneNaviParkListView(@NonNull final Context context) {
         super(context);
     }
 
-    public SceneNaviParkListView(@NonNull Context context, @Nullable AttributeSet attrs) {
+    public SceneNaviParkListView(@NonNull final Context context,
+                                 @Nullable final AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public SceneNaviParkListView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public SceneNaviParkListView(@NonNull final Context context, @Nullable final AttributeSet attrs,
+                                 final int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 
     @Override
     protected NaviSceneId getSceneId() {
-        return NAVI_SCENE_PARK_LIST;
+        return NaviSceneId.NAVI_SCENE_PARK_LIST;
     }
 
     @Override
@@ -62,14 +59,15 @@ public class SceneNaviParkListView extends NaviSceneBase<SceneNaviParkListViewBi
     }
 
     protected void init() {
-        NaviSceneManager.getInstance().addNaviScene(NAVI_SCENE_PARK_LIST, this);
+        NaviSceneManager.getInstance().addNaviScene(
+                NaviSceneId.NAVI_SCENE_PARK_LIST, this);
     }
 
     @Override
     public void show() {
         super.show();
         if (mISceneCallback != null) {
-            mISceneCallback.updateSceneVisible(NAVI_SCENE_PARK_LIST, true);
+            mISceneCallback.updateSceneVisible(NaviSceneId.NAVI_SCENE_PARK_LIST, true);
         }
     }
 
@@ -77,12 +75,13 @@ public class SceneNaviParkListView extends NaviSceneBase<SceneNaviParkListViewBi
     public void hide() {
         super.hide();
         if (mISceneCallback != null) {
-            mISceneCallback.updateSceneVisible(NAVI_SCENE_PARK_LIST, true);
+            mISceneCallback.updateSceneVisible(NaviSceneId.NAVI_SCENE_PARK_LIST, true);
         }
     }
 
     @Override
-    protected SceneNaviParkListViewBinding createViewBinding(LayoutInflater inflater, ViewGroup viewGroup) {
+    protected SceneNaviParkListViewBinding createViewBinding(final LayoutInflater inflater,
+                                                             final ViewGroup viewGroup) {
         return SceneNaviParkListViewBinding.inflate(inflater, viewGroup, true);
     }
 
@@ -99,7 +98,7 @@ public class SceneNaviParkListView extends NaviSceneBase<SceneNaviParkListViewBi
     @Override
     protected void initObserver() {
         Logger.d(TAG, "SceneNaviListView initObserver");
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+        final LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         mViewBinding.srvAddVia.setLayoutManager(layoutManager);
 
@@ -108,13 +107,20 @@ public class SceneNaviParkListView extends NaviSceneBase<SceneNaviParkListViewBi
     }
 
     @Override
-    public void addSceneCallback(ISceneCallback sceneCallback) {
+    public void addSceneCallback(final ISceneCallback sceneCallback) {
+        mISceneCallback = sceneCallback;
         if (mScreenViewModel != null) {
             mScreenViewModel.addSceneCallback(sceneCallback);
         }
     }
 
-    public void showNaviParkList(List<NaviParkingEntity> list, boolean isCheck, int select) {
+    /**
+     * @param list list
+     * @param isCheck isCheck
+     * @param select 是否选择
+     */
+    public void showNaviParkList(final List<NaviParkingEntity> list, final boolean isCheck,
+                                 final int select) {
         if (ConvertUtils.isEmpty(list)) {
             return;
         }
@@ -122,7 +128,7 @@ public class SceneNaviParkListView extends NaviSceneBase<SceneNaviParkListViewBi
         mScreenViewModel.showParkingMark(select);
         if (isCheck) {
             for (int i = 0; i < list.size(); i++) {
-                NaviParkingEntity naviParkingEntity = list.get(i);
+                final NaviParkingEntity naviParkingEntity = list.get(i);
                 if (naviParkingEntity.isEndPoi) {
                     notifyList(List.of(naviParkingEntity), select);
                     return;
@@ -133,11 +139,18 @@ public class SceneNaviParkListView extends NaviSceneBase<SceneNaviParkListViewBi
         notifyList(list, select);
     }
 
-    public void notifyList(List<NaviParkingEntity> list, int select) {
+    /**
+     * @param list list
+     * @param select select
+     */
+    public void notifyList(final List<NaviParkingEntity> list, final int select) {
         mNaviParkListAdapter.notifyList(list, select);
     }
 
-    public void onNaviInfo(NaviEtaInfo naviEtaInfo) {
+    /**
+     * @param naviEtaInfo 导航信息
+     */
+    public void onNaviInfo(final NaviEtaInfo naviEtaInfo) {
         if (mScreenViewModel != null) {
             mScreenViewModel.checkParking(naviEtaInfo);
         }

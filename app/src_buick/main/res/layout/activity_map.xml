@@ -157,7 +157,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="@dimen/sp_34"
-                android:layout_marginLeft="12dp"
+                android:layout_marginStart="12dp"
                 android:textColor="@color/poi_details_bottom_ff_00"
                 android:text="@string/self_parking_space">
 
@@ -194,6 +194,16 @@
             android:text="@string/engineering_panel_entrance"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
+
+        <include
+            android:id="@+id/include_message_center"
+            layout="@layout/item_map_message_center"
+            android:layout_width="@dimen/dp_948"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_70"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginStart="@dimen/dp_1126"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <include
             android:id="@+id/include_limit"

@@ -7,243 +7,243 @@ import androidx.annotation.NonNull;
 
 import com.fy.navi.service.define.bean.GeoPoint;
 
-/**
- * @Description TODO
- * @Author lvww
- * @date 2024/12/5
- */
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 public class RouteParam implements Parcelable {
-    private @RoutePoiType.RoutePoiTypeId int poiType; // poi点位类型(必选)
-    private GeoPoint realPos; // 实际位置坐标(必选)
-    private GeoPoint naviPos; // 导航位置坐标
-    private int type;// 行程点类型: 0默认 当前gps位置, 1 手动选择, 2 poi方式(必选) 如果是POI搜索结果，这里一定要填2
-    public float sigshelter; // 终端判断的GPS卫星信号强度，浮点型，取值为(0默认,1)，负数表示无效(可选)
-    public long roadID; // 道路ID(可选)
-    public String poiID; // POI ID(可选)
-    public String name; // POI名称(可选)
-    public String typeCode; // POI类别编码（如果是POI搜索结果，这里建议填）
-    public short fromJump; // 是否第三方跳转行程点 0非跳转；1跳转的
-    public short overhead; // 高架标识, 0默认，1高架上，2高架下,
-    public float overheadBackAltDiff; // 高架回传高度差（单位是m，默认值-10001.1）
-    public int floor; // 建筑楼层ID
-    public String extendInfoFlag; // 扩展标识 用于导航服务请求poi信息使用
-    public String srcApp; // 第三方应用名称
-    public String address; // 地址
-    public ChargingInfo chargeInfo; // 充电桩信息
-    public String retainParam; // 回传参数
-    public int adCode; // 回传参数
+    private @RoutePoiType.RoutePoiTypeId int mPoiType; // poi点位类型(必选)
+    private GeoPoint mRealPos; // 实际位置坐标(必选)
+    private GeoPoint mNaviPos; // 导航位置坐标
+    private int mType;// 行程点类型: 0默认 当前gps位置, 1 手动选择, 2 poi方式(必选) 如果是POI搜索结果，这里一定要填2
+    private float mSigshelter; // 终端判断的GPS卫星信号强度，浮点型，取值为(0默认,1)，负数表示无效(可选)
+    private long mRoadID; // 道路ID(可选)
+    private String mPoiID; // POI ID(可选)
+    private String mName; // POI名称(可选)
+    private String mTypeCode; // POI类别编码（如果是POI搜索结果，这里建议填）
+    private short mFromJump; // 是否第三方跳转行程点 0非跳转；1跳转的
+    private short mOverhead; // 高架标识, 0默认，1高架上，2高架下,
+    private float mOverheadBackAltDiff; // 高架回传高度差（单位是m，默认值-10001.1）
+    private int mFloor; // 建筑楼层ID
+    private String mExtendInfoFlag; // 扩展标识 用于导航服务请求poi信息使用
+    private String mSrcApp; // 第三方应用名称
+    private String mAddress; // 地址
+    private ChargingInfo mChargeInfo; // 充电桩信息
+    private String mRetainParam; // 回传参数
+    private int mAdCode; // 回传参数
 
     public RouteParam() {
 
     }
 
-    public RouteParam(Parcel in) {
-        poiType = in.readInt();
-        realPos = in.readParcelable(GeoPoint.class.getClassLoader());
-        naviPos = in.readParcelable(GeoPoint.class.getClassLoader());
-        type = in.readInt();
-        sigshelter = in.readFloat();
-        roadID = in.readLong();
-        poiID = in.readString();
-        name = in.readString();
-        typeCode = in.readString();
-        fromJump = (short) in.readInt();
-        overhead = (short) in.readInt();
-        overheadBackAltDiff = in.readFloat();
-        floor = in.readInt();
-        extendInfoFlag = in.readString();
-        srcApp = in.readString();
-        address = in.readString();
-        retainParam = in.readString();
-        adCode = in.readInt();
+    public RouteParam(final Parcel in) {
+        mPoiType = in.readInt();
+        mRealPos = in.readParcelable(GeoPoint.class.getClassLoader());
+        mNaviPos = in.readParcelable(GeoPoint.class.getClassLoader());
+        mType = in.readInt();
+        mSigshelter = in.readFloat();
+        mRoadID = in.readLong();
+        mPoiID = in.readString();
+        mName = in.readString();
+        mTypeCode = in.readString();
+        mFromJump = (short) in.readInt();
+        mOverhead = (short) in.readInt();
+        mOverheadBackAltDiff = in.readFloat();
+        mFloor = in.readInt();
+        mExtendInfoFlag = in.readString();
+        mSrcApp = in.readString();
+        mAddress = in.readString();
+        mRetainParam = in.readString();
+        mAdCode = in.readInt();
     }
 
     public static final Creator<RouteParam> CREATOR = new Creator<RouteParam>() {
         @Override
-        public RouteParam createFromParcel(Parcel in) {
+        public RouteParam createFromParcel(final Parcel in) {
             return new RouteParam(in);
         }
 
         @Override
-        public RouteParam[] newArray(int size) {
+        public RouteParam[] newArray(final int size) {
             return new RouteParam[size];
         }
     };
 
     public int getPoiType() {
-        return poiType;
+        return mPoiType;
     }
 
-    public void setPoiType(int poiType) {
-        this.poiType = poiType;
+    public void setPoiType(final int poiType) {
+        this.mPoiType = poiType;
     }
 
     public GeoPoint getRealPos() {
-        return realPos;
+        return mRealPos;
     }
 
-    public void setRealPos(GeoPoint realPos) {
-        this.realPos = realPos;
+    public void setRealPos(final GeoPoint realPos) {
+        this.mRealPos = realPos;
     }
 
     public GeoPoint getNaviPos() {
-        return naviPos;
+        return mNaviPos;
     }
 
-    public void setNaviPos(GeoPoint naviPos) {
-        this.naviPos = naviPos;
+    public void setNaviPos(final GeoPoint naviPos) {
+        this.mNaviPos = naviPos;
     }
 
     public int getType() {
-        return type;
+        return mType;
     }
 
-    public void setType(int type) {
-        this.type = type;
+    public void setType(final int type) {
+        this.mType = type;
     }
 
     public float getSigshelter() {
-        return sigshelter;
+        return mSigshelter;
     }
 
-    public void setSigshelter(float sigshelter) {
-        this.sigshelter = sigshelter;
+    public void setSigshelter(final float sigshelter) {
+        this.mSigshelter = sigshelter;
     }
 
     public long getRoadID() {
-        return roadID;
+        return mRoadID;
     }
 
-    public void setRoadID(long roadID) {
-        this.roadID = roadID;
+    public void setRoadID(final long roadID) {
+        this.mRoadID = roadID;
     }
 
     public String getPoiID() {
-        return poiID;
+        return mPoiID;
     }
 
-    public void setPoiID(String poiID) {
-        this.poiID = poiID;
+    public void setPoiID(final String poiID) {
+        this.mPoiID = poiID;
     }
 
     public String getName() {
-        return name;
+        return mName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setName(final String name) {
+        this.mName = name;
     }
 
     public String getTypeCode() {
-        return typeCode;
+        return mTypeCode;
     }
 
-    public void setTypeCode(String typeCode) {
-        this.typeCode = typeCode;
+    public void setTypeCode(final String typeCode) {
+        this.mTypeCode = typeCode;
     }
 
     public short getFromJump() {
-        return fromJump;
+        return mFromJump;
     }
 
-    public void setFromJump(short fromJump) {
-        this.fromJump = fromJump;
+    public void setFromJump(final short fromJump) {
+        this.mFromJump = fromJump;
     }
 
     public short getOverhead() {
-        return overhead;
+        return mOverhead;
     }
 
-    public void setOverhead(short overhead) {
-        this.overhead = overhead;
+    public void setOverhead(final short overhead) {
+        this.mOverhead = overhead;
     }
 
     public float getOverheadBackAltDiff() {
-        return overheadBackAltDiff;
+        return mOverheadBackAltDiff;
     }
 
-    public void setOverheadBackAltDiff(float overheadBackAltDiff) {
-        this.overheadBackAltDiff = overheadBackAltDiff;
+    public void setOverheadBackAltDiff(final float overheadBackAltDiff) {
+        this.mOverheadBackAltDiff = overheadBackAltDiff;
     }
 
     public int getFloor() {
-        return floor;
+        return mFloor;
     }
 
-    public void setFloor(int floor) {
-        this.floor = floor;
+    public void setFloor(final int floor) {
+        this.mFloor = floor;
     }
 
     public String getExtendInfoFlag() {
-        return extendInfoFlag;
+        return mExtendInfoFlag;
     }
 
-    public void setExtendInfoFlag(String extendInfoFlag) {
-        this.extendInfoFlag = extendInfoFlag;
+    public void setExtendInfoFlag(final String extendInfoFlag) {
+        this.mExtendInfoFlag = extendInfoFlag;
     }
 
     public String getSrcApp() {
-        return srcApp;
+        return mSrcApp;
     }
 
-    public void setSrcApp(String srcApp) {
-        this.srcApp = srcApp;
+    public void setSrcApp(final String srcApp) {
+        this.mSrcApp = srcApp;
     }
 
     public String getAddress() {
-        return address;
+        return mAddress;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
+    public void setAddress(final String address) {
+        this.mAddress = address;
     }
 
     public ChargingInfo getChargeInfo() {
-        return chargeInfo;
+        return mChargeInfo;
     }
 
-    public void setChargeInfo(ChargingInfo chargeInfo) {
-        this.chargeInfo = chargeInfo;
+    public void setChargeInfo(final ChargingInfo chargeInfo) {
+        this.mChargeInfo = chargeInfo;
     }
 
     public String getRetainParam() {
-        return retainParam;
+        return mRetainParam;
     }
 
-    public void setRetainParam(String retainParam) {
-        this.retainParam = retainParam;
+    public void setRetainParam(final String retainParam) {
+        this.mRetainParam = retainParam;
     }
 
     public int getAdCode() {
-        return adCode;
+        return mAdCode;
     }
 
-    public void setAdCode(int adCode) {
-        this.adCode = adCode;
+    public void setAdCode(final int adCode) {
+        this.mAdCode = adCode;
     }
 
     @Override
     public String toString() {
         return "RouteParam{" +
-                "poiType=" + poiType +
-                "realPos=" + realPos +
-                ", naviPos=" + naviPos +
-                ", type=" + type +
-                ", sigshelter=" + sigshelter +
-                ", roadID=" + roadID +
-                ", poiID='" + poiID + '\'' +
-                ", name='" + name + '\'' +
-                ", typeCode='" + typeCode + '\'' +
-                ", fromJump=" + fromJump +
-                ", overhead=" + overhead +
-                ", overheadBackAltDiff=" + overheadBackAltDiff +
-                ", floor=" + floor +
-                ", extendInfoFlag='" + extendInfoFlag + '\'' +
-                ", srcApp='" + srcApp + '\'' +
-                ", address='" + address + '\'' +
-                ", chargeInfo=" + chargeInfo +
-                ", retainParam='" + retainParam + '\'' +
-                ", adCode='" + adCode + '\'' +
+                "poiType=" + mPoiType +
+                "realPos=" + mRealPos +
+                ", naviPos=" + mNaviPos +
+                ", type=" + mType +
+                ", sigshelter=" + mSigshelter +
+                ", roadID=" + mRoadID +
+                ", poiID='" + mPoiID + '\'' +
+                ", name='" + mName + '\'' +
+                ", typeCode='" + mTypeCode + '\'' +
+                ", fromJump=" + mFromJump +
+                ", overhead=" + mOverhead +
+                ", overheadBackAltDiff=" + mOverheadBackAltDiff +
+                ", floor=" + mFloor +
+                ", extendInfoFlag='" + mExtendInfoFlag + '\'' +
+                ", srcApp='" + mSrcApp + '\'' +
+                ", address='" + mAddress + '\'' +
+                ", chargeInfo=" + mChargeInfo +
+                ", retainParam='" + mRetainParam + '\'' +
+                ", adCode='" + mAdCode + '\'' +
                 '}';
     }
 
@@ -253,24 +253,24 @@ public class RouteParam implements Parcelable {
     }
 
     @Override
-    public void writeToParcel(@NonNull Parcel parcel, int i) {
-        parcel.writeInt(poiType);
-        parcel.writeParcelable(realPos, i);
-        parcel.writeParcelable(naviPos, i);
-        parcel.writeInt(type);
-        parcel.writeFloat(sigshelter);
-        parcel.writeLong(roadID);
-        parcel.writeString(poiID);
-        parcel.writeString(name);
-        parcel.writeString(typeCode);
-        parcel.writeInt((int) fromJump);
-        parcel.writeInt((int) overhead);
-        parcel.writeFloat(overheadBackAltDiff);
-        parcel.writeInt(floor);
-        parcel.writeString(extendInfoFlag);
-        parcel.writeString(srcApp);
-        parcel.writeString(address);
-        parcel.writeString(retainParam);
-        parcel.writeInt(adCode);
+    public void writeToParcel(final @NonNull Parcel parcel, final int i) {
+        parcel.writeInt(mPoiType);
+        parcel.writeParcelable(mRealPos, i);
+        parcel.writeParcelable(mNaviPos, i);
+        parcel.writeInt(mType);
+        parcel.writeFloat(mSigshelter);
+        parcel.writeLong(mRoadID);
+        parcel.writeString(mPoiID);
+        parcel.writeString(mName);
+        parcel.writeString(mTypeCode);
+        parcel.writeInt((int) mFromJump);
+        parcel.writeInt((int) mOverhead);
+        parcel.writeFloat(mOverheadBackAltDiff);
+        parcel.writeInt(mFloor);
+        parcel.writeString(mExtendInfoFlag);
+        parcel.writeString(mSrcApp);
+        parcel.writeString(mAddress);
+        parcel.writeString(mRetainParam);
+        parcel.writeInt(mAdCode);
     }
 }

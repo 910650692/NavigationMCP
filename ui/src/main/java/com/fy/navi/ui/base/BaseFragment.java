@@ -19,14 +19,9 @@ import com.android.utils.log.Logger;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
-/**
- * @Description TODO
- * @Author lvww
- * @date 2024/11/22
- */
 public abstract class BaseFragment<V extends ViewDataBinding, VM extends BaseViewModel>
         extends Fragment implements IBaseView {
-    private final String TAG = getClass().getSimpleName();
+    private final static String TAG = BaseFragment.class.getSimpleName();
     protected V mBinding;
     protected VM mViewModel;
     protected BaseActivity mActivity;
@@ -38,14 +33,14 @@ public abstract class BaseFragment<V extends ViewDataBinding, VM extends BaseVie
     }
 
     @Override
-    public void onAttach(@NonNull Context context) {
+    public void onAttach(final @NonNull Context context) {
         super.onAttach(context);
         mActivity = (BaseActivity) context;
         mScreenId = mActivity.mScreenId;
     }
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
+    public void onCreate(final @Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Logger.i(TAG, "onCreate start");
         createViewModel();
@@ -54,18 +49,18 @@ public abstract class BaseFragment<V extends ViewDataBinding, VM extends BaseVie
 
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(final @NonNull LayoutInflater inflater, final @Nullable ViewGroup container, final @Nullable Bundle savedInstanceState) {
         Logger.i(TAG, "onCreateView start");
         mBinding = DataBindingUtil.inflate(inflater, onLayoutId(), container, false);
         bindViewModel();
         onInitView();
-        View rootView = mBinding.getRoot();
+        final View rootView = mBinding.getRoot();
         Logger.i(TAG, "onCreateView end");
         return rootView;
     }
 
     @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+    public void onViewCreated(final @NonNull View view, final @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         Logger.i(TAG, "onViewCreated start");
         onInitObserver();
@@ -116,12 +111,17 @@ public abstract class BaseFragment<V extends ViewDataBinding, VM extends BaseVie
     }
 
     @Override
-    public void addFragment(BaseFragment fragment, Bundle bundle){
+    public void addFragment(final BaseFragment fragment, final Bundle bundle) {
         mActivity.addFragment(fragment, bundle);
     }
 
     @Override
-    public void closeFragment(boolean nextShow){
+    public void addPoiDetailsFragment(BaseFragment fragment, Bundle bundle) {
+        mActivity.addPoiDetailsFragment(fragment, bundle);
+    }
+
+    @Override
+    public void closeFragment(final boolean nextShow) {
         mActivity.closeFragment(nextShow);
 
     }
@@ -137,14 +137,15 @@ public abstract class BaseFragment<V extends ViewDataBinding, VM extends BaseVie
     }
 
     @Override
-    public void closeAllFragmentsUntilTargetFragment(String targetFragmentClassName) {
+    public void closeAllFragmentsUntilTargetFragment(final String targetFragmentClassName) {
         mActivity.closeAllFragmentsUntilTargetFragment(targetFragmentClassName);
     }
+
     @Override
     public void closeAllFragmentAndSearchView() {
     }
 
-    protected void onNewIntent(Bundle bundle){
+    protected void onNewIntent(final Bundle bundle) {
 
     }
 
@@ -153,11 +154,14 @@ public abstract class BaseFragment<V extends ViewDataBinding, VM extends BaseVie
         return null;
     }
 
+    /**
+     * 创建ViewModel
+     */
     private void createViewModel() {
         mViewModel = initViewModel();
         if (mViewModel == null) {
-            Class modelClass;
-            Type type = getClass().getGenericSuperclass();
+            final Class modelClass;
+            final Type type = getClass().getGenericSuperclass();
             if (type instanceof ParameterizedType) {
                 // 获取直接继承的父类(也就是BaseActivity本身)的第二个泛型参数Class
                 modelClass = (Class) ((ParameterizedType) type).getActualTypeArguments()[1];
@@ -169,11 +173,21 @@ public abstract class BaseFragment<V extends ViewDataBinding, VM extends BaseVie
         }
     }
 
-    private <T extends AndroidViewModel> T createViewModel(Class<T> cls) {
+    /**
+     * 创建ViewModel
+     *
+     * @param cls ViewModel
+     * @param <T> AndroidViewModel
+     * @return AndroidViewModel
+     */
+    private <T extends AndroidViewModel> T createViewModel(final Class<T> cls) {
         // TODO: 2023/8/17 2.5.0的viewModule暂时先采用这种方式加载
         return new ViewModelProvider(this).get(cls);
     }
 
+    /**
+     * 绑定ViewModel
+     */
     private void bindViewModel() {
         mBinding.setVariable(onInitVariableId(), mViewModel);
         getLifecycle().addObserver(mViewModel);

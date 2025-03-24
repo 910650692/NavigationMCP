@@ -1,83 +1,79 @@
 package com.fy.navi.service.define.user.usertrack;
 
-/**
- * @Description
- * @Author fh
- * @date 2024/12/27
- */
+
 public class SummaryModuleCardInfo {
-    public int measure;
-    public String name;
-    public String title;
-    public String unit;
+    private int mMeasure;
+    private String mName;
+    private String mTitle;
+    private String mUnit;
 
-    public int unreadCityNum = 0;
+    private int mUnreadCityNum = 0;
 
-    public String text;
-    public String color;
-    public String bgColor;
+    private String mText;
+    private String mColor;
+    private String mBgColor;
 
     public String getText() {
-        return text;
+        return mText;
     }
 
-    public void setText(String text) {
-        this.text = text;
+    public void setText(final String text) {
+        this.mText = text;
     }
 
     public String getColor() {
-        return color;
+        return mColor;
     }
 
-    public void setColor(String color) {
-        this.color = color;
+    public void setColor(final String color) {
+        this.mColor = color;
     }
 
     public String getBgColor() {
-        return bgColor;
+        return mBgColor;
     }
 
-    public void setBgColor(String bgColor) {
-        this.bgColor = bgColor;
+    public void setBgColor(final String bgColor) {
+        this.mBgColor = bgColor;
     }
 
     public int getUnreadCityNum() {
-        return unreadCityNum;
+        return mUnreadCityNum;
     }
 
-    public void setUnreadCityNum(int unreadCityNum) {
-        this.unreadCityNum = unreadCityNum;
+    public void setUnreadCityNum(final int unreadCityNum) {
+        this.mUnreadCityNum = unreadCityNum;
     }
 
     public int getMeasure() {
-        return measure;
+        return mMeasure;
     }
 
-    public void setMeasure(int measure) {
-        this.measure = measure;
+    public void setMeasure(final int measure) {
+        this.mMeasure = measure;
     }
 
     public String getName() {
-        return name;
+        return mName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setName(final String name) {
+        this.mName = name;
     }
 
     public String getTitle() {
-        return title;
+        return mTitle;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setTitle(final String title) {
+        this.mTitle = title;
     }
 
     public String getUnit() {
-        return unit;
+        return mUnit;
     }
 
-    public void setUnit(String unit) {
-        this.unit = unit;
+    public void setUnit(final String unit) {
+        this.mUnit = unit;
     }
 }

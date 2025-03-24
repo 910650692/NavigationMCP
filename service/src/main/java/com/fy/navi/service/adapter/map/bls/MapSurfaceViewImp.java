@@ -242,7 +242,7 @@ public class MapSurfaceViewImp extends MapSurfaceView implements IMapviewObserve
     }
 
     public void setMapCenter(GeoPoint geoPoint) {
-        mMapview.getOperatorPosture().setMapCenter(geoPoint.lon, geoPoint.lat, 0, true, true);
+        mMapview.getOperatorPosture().setMapCenter(geoPoint.getLon(), geoPoint.getLat(), 0, true, true);
     }
 
     public GeoPoint mapToLonLat(double mapX, double mapY) {

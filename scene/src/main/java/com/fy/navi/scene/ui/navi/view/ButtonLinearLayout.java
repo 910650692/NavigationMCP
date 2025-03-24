@@ -11,24 +11,27 @@ import com.fy.navi.ui.view.SkinLinearLayout;
 
 /**
  * 实现点击效果的LinearLayout
+ * @author fy
+ * @version $Revision.*$
  */
 public class ButtonLinearLayout extends SkinLinearLayout {
 
-    public ButtonLinearLayout(Context context) {
+    public ButtonLinearLayout(final Context context) {
         super(context);
     }
 
-    public ButtonLinearLayout(Context context, @Nullable AttributeSet attrs) {
+    public ButtonLinearLayout(final Context context, @Nullable final AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public ButtonLinearLayout(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public ButtonLinearLayout(final Context context, @Nullable final  AttributeSet attrs,
+                              final int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
-    public boolean onTouchEvent(MotionEvent event) {
+    public boolean onTouchEvent(final MotionEvent event) {
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
             setAlpha(0.6f);
             return true;

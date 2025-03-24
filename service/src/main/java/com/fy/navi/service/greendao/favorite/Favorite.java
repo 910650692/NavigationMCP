@@ -13,267 +13,267 @@ import java.util.Date;
 public class Favorite {
 
     @Id(autoincrement = true)
-    public Long id;
+    private Long mId;
 
     @Unique
     @Property(nameInDb = "itemId")
-    public String itemId; // 收藏点唯一码, 由AutoSDK内部生成
+    private String mItemId; // 收藏点唯一码, 由AutoSDK内部生成
 
     @Property(nameInDb = "commonName")
-    public int commonName;   // 收藏点类型（1家，2公司，3常去地址，0普通收藏点）
+    private int mCommonName;   // 收藏点类型（1家，2公司，3常去地址，0普通收藏点）
 
     @Property(nameInDb = "tag")
-    public String tag; // 附加标签
+    private String mTag; // 附加标签
 
     @Property(nameInDb = "type")
-    public String type;  // 类型
+    private String mType;  // 类型
 
     @Property(nameInDb = "newType")
-    public String newType; //  新类型，预留
+    private String mNewType; //  新类型，预留
 
     @Property(nameInDb = "customName")   // 自定义名称 重命名时编辑的字段
-    public String customName;
+    private String mCustomName;
 
     @Property(nameInDb = "classification")
-    public String classification; //  类别
+    private String mClassification; //  类别
 
     @Property(nameInDb = "topTime")
-    public long topTime; // 置顶操作内部更新时间
+    private long mTopTime; // 置顶操作内部更新时间
 
     @Property(nameInDb = "pid")
-    public String pid; // 父POI的Id
+    private String mPid; // 父POI的Id
 
     @Property(nameInDb = "distance")
-    public String distance;
+    private String mDistance;
 
     @Property(nameInDb = "name")
-    public String name;       //  名称
+    private String mName;       //  名称
 
     @Property(nameInDb = "phone")
-    public String phone;       // 电话
+    private String mPhone;       // 电话
 
     @Property(nameInDb = "cityName")
-    public String cityName;   // 城市区号
+    private String mCityName;   // 城市区号
 
     @Property(nameInDb = "cityCode")
-    public String cityCode;   // 城市区号
+    private String mCityCode;   // 城市区号
 
     @Property(nameInDb = "address")
-    public String address;   // 地址
+    private String mAddress;   // 地址
 
     @Property(nameInDb = "point_x")
-    public double point_x;     // 经纬度坐标
+    private double mPointX;     // 经纬度坐标
 
     @Property(nameInDb = "point_y")
-    public double point_y;     // 经纬度坐标
+    private double mPointY;     // 经纬度坐标
 
     @Property(nameInDb = "point_x_arrive")
-    public double point_x_arrive;     // 导航经纬度坐标
+    private double mPointXArrive;     // 导航经纬度坐标
 
     @Property(nameInDb = "point_y_arrive")
-    public double point_y_arrive;     // 导航经纬度坐标
+    private double mPointYArrive;     // 导航经纬度坐标
 
     @Property(nameInDb = "updateTime")
-    public Date updateTime;   // 数据更新时间
+    private Date mUpdateTime;   // 数据更新时间
 
-    @Generated(hash = 1401461682)
-    public Favorite(Long id, String itemId, int commonName, String tag, String type,
-            String newType, String customName, String classification, long topTime,
-            String pid, String distance, String name, String phone, String cityName,
-            String cityCode, String address, double point_x, double point_y,
-            double point_x_arrive, double point_y_arrive, Date updateTime) {
-        this.id = id;
-        this.itemId = itemId;
-        this.commonName = commonName;
-        this.tag = tag;
-        this.type = type;
-        this.newType = newType;
-        this.customName = customName;
-        this.classification = classification;
-        this.topTime = topTime;
-        this.pid = pid;
-        this.distance = distance;
-        this.name = name;
-        this.phone = phone;
-        this.cityName = cityName;
-        this.cityCode = cityCode;
-        this.address = address;
-        this.point_x = point_x;
-        this.point_y = point_y;
-        this.point_x_arrive = point_x_arrive;
-        this.point_y_arrive = point_y_arrive;
-        this.updateTime = updateTime;
+    @Keep
+    public Favorite(final Long id, final String itemId, final int commonName, final String tag, final String type,
+            final String newType, final String customName, final String classification, final long topTime,
+            final String pid, final String distance, final String name, final String phone, final String cityName,
+            final String cityCode, final String address, final double pointX, final double pointY,
+            final double pointXArrive, final double pointYArrive, final Date updateTime) {
+        this.mId = id;
+        this.mItemId = itemId;
+        this.mCommonName = commonName;
+        this.mTag = tag;
+        this.mType = type;
+        this.mNewType = newType;
+        this.mCustomName = customName;
+        this.mClassification = classification;
+        this.mTopTime = topTime;
+        this.mPid = pid;
+        this.mDistance = distance;
+        this.mName = name;
+        this.mPhone = phone;
+        this.mCityName = cityName;
+        this.mCityCode = cityCode;
+        this.mAddress = address;
+        this.mPointX = pointX;
+        this.mPointY = pointY;
+        this.mPointXArrive = pointXArrive;
+        this.mPointYArrive = pointYArrive;
+        this.mUpdateTime = updateTime;
     }
 
     @Generated(hash = 459811785)
     public Favorite() {
     }
 
-    public Long getId() {
-        return id;
+    public Long getMId() {
+        return this.mId;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setMId(final Long id) {
+        this.mId = id;
     }
 
-    public String getItemId() {
-        return itemId;
+    public String getMItemId() {
+        return this.mItemId;
     }
 
-    public void setItemId(String itemId) {
-        this.itemId = itemId;
+    public void setMItemId(final String itemId) {
+        this.mItemId = itemId;
     }
 
-    public int getCommonName() {
-        return commonName;
+    public int getMCommonName() {
+        return this.mCommonName;
     }
 
-    public void setCommonName(int commonName) {
-        this.commonName = commonName;
+    public void setMCommonName(final int commonName) {
+        this.mCommonName = commonName;
     }
 
-    public String getTag() {
-        return tag;
+    public String getMTag() {
+        return this.mTag;
     }
 
-    public void setTag(String tag) {
-        this.tag = tag;
+    public void setMTag(final String tag) {
+        this.mTag = tag;
     }
 
-    public String getType() {
-        return type;
+    public String getMType() {
+        return this.mType;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void setMType(final String type) {
+        this.mType = type;
     }
 
-    public String getNewType() {
-        return newType;
+    public String getMNewType() {
+        return this.mNewType;
     }
 
-    public void setNewType(String newType) {
-        this.newType = newType;
+    public void setMNewType(final String newType) {
+        this.mNewType = newType;
     }
 
-    public String getCustomName() {
-        return customName;
+    public String getMCustomName() {
+        return this.mCustomName;
     }
 
-    public void setCustomName(String customName) {
-        this.customName = customName;
+    public void setMCustomName(final String customName) {
+        this.mCustomName = customName;
     }
 
-    public String getClassification() {
-        return classification;
+    public String getMClassification() {
+        return this.mClassification;
     }
 
-    public void setClassification(String classification) {
-        this.classification = classification;
+    public void setMClassification(final String classification) {
+        this.mClassification = classification;
     }
 
-    public long getTopTime() {
-        return topTime;
+    public long getMTopTime() {
+        return this.mTopTime;
     }
 
-    public void setTopTime(long topTime) {
-        this.topTime = topTime;
+    public void setMTopTime(final long topTime) {
+        this.mTopTime = topTime;
     }
 
-    public String getPid() {
-        return pid;
+    public String getMPid() {
+        return this.mPid;
     }
 
-    public void setPid(String pid) {
-        this.pid = pid;
+    public void setMPid(final String pid) {
+        this.mPid = pid;
     }
 
-    public String getName() {
-        return name;
+    public String getMDistance() {
+        return this.mDistance;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setMDistance(final String distance) {
+        this.mDistance = distance;
     }
 
-    public String getPhone() {
-        return phone;
+    public String getMName() {
+        return this.mName;
     }
 
-    public void setPhone(String phone) {
-        this.phone = phone;
+    public void setMName(final String name) {
+        this.mName = name;
     }
 
-    public String getCityCode() {
-        return cityCode;
+    public String getMPhone() {
+        return this.mPhone;
     }
 
-    public void setCityCode(String cityCode) {
-        this.cityCode = cityCode;
+    public void setMPhone(final String phone) {
+        this.mPhone = phone;
     }
 
-    public String getAddress() {
-        return address;
+    public String getMCityName() {
+        return this.mCityName;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
+    public void setMCityName(final String cityName) {
+        this.mCityName = cityName;
     }
 
-    public String getCityName() {
-        return cityName;
+    public String getMCityCode() {
+        return this.mCityCode;
     }
 
-    public void setCityName(String cityName) {
-        this.cityName = cityName;
+    public void setMCityCode(final String cityCode) {
+        this.mCityCode = cityCode;
     }
 
-    public double getPoint_x() {
-        return point_x;
+    public String getMAddress() {
+        return this.mAddress;
     }
 
-    public void setPoint_x(double point_x) {
-        this.point_x = point_x;
+    public void setMAddress(final String address) {
+        this.mAddress = address;
     }
 
-    public double getPoint_y() {
-        return point_y;
+    public double getMPointX() {
+        return this.mPointX;
     }
 
-    public void setPoint_y(double point_y) {
-        this.point_y = point_y;
+    public void setMPointX(final double pointX) {
+        this.mPointX = pointX;
     }
 
-    public double getPoint_x_arrive() {
-        return point_x_arrive;
+    public double getMPointY() {
+        return this.mPointY;
     }
 
-    public void setPoint_x_arrive(double point_x_arrive) {
-        this.point_x_arrive = point_x_arrive;
+    public void setMPointY(final double pointY) {
+        this.mPointY = pointY;
     }
 
-    public double getPoint_y_arrive() {
-        return point_y_arrive;
+    public double getMPointXArrive() {
+        return this.mPointXArrive;
     }
 
-    public void setPoint_y_arrive(double point_y_arrive) {
-        this.point_y_arrive = point_y_arrive;
+    public void setMPointXArrive(final double pointXArrive) {
+        this.mPointXArrive = pointXArrive;
     }
 
-    public Date getUpdateTime() {
-        return updateTime;
+    public double getMPointYArrive() {
+        return this.mPointYArrive;
     }
 
-    public void setUpdateTime(Date updateTime) {
-        this.updateTime = updateTime;
+    public void setMPointYArrive(final double pointYArrive) {
+        this.mPointYArrive = pointYArrive;
     }
 
-    public String getDistance() {
-        return this.distance;
+    public Date getMUpdateTime() {
+        return this.mUpdateTime;
     }
 
-    public void setDistance(String distance) {
-        this.distance = distance;
+    public void setMUpdateTime(final Date updateTime) {
+        this.mUpdateTime = updateTime;
     }
 }

@@ -14,11 +14,11 @@ import com.fy.navi.ui.base.BaseViewModel;
 
 public class BaseSettingOthersAboutViewModel extends BaseViewModel<SettingOthersAboutFragment, SettingOthersAboutModel> {
 
-    public MutableLiveData<String> channelID = new MutableLiveData<>("");
-    public MutableLiveData<String> mapDataVersion = new MutableLiveData<>("");
-    public MutableLiveData<String> sdkVersion = new MutableLiveData<>("");
+    public MutableLiveData<String> mChannelID = new MutableLiveData<>("");
+    public MutableLiveData<String> mMapDataVersion = new MutableLiveData<>("");
+    public MutableLiveData<String> mSdkVersion = new MutableLiveData<>("");
 
-    public BaseSettingOthersAboutViewModel(@NonNull Application application) {
+    public BaseSettingOthersAboutViewModel(@NonNull final Application application) {
         super(application);
     }
 
@@ -37,37 +37,52 @@ public class BaseSettingOthersAboutViewModel extends BaseViewModel<SettingOthers
         super.onDestroy();
     }
 
+    /**
+     * 初始化视图
+     */
     public void initView() {
         mModel.initView();
     }
 
-    public Action finishAbout = () -> {
+    public Action mFinishAbout = () -> {
         closeFragment(true);
     };
 
-    public Action openProtocolCenter = () -> {
+    public Action mOpenProtocolCenter = () -> {
         addFragment(new SettingOthersProtocolCenterFragment(), null);
     };
 
-    public Action openLicensesInfo = () -> {
+    public Action mOpenLicensesInfo = () -> {
         addFragment(new SettingOthersLicensesFragment(), null);
     };
 
-    public Action openHelp = () -> {
-        Bundle bundle = new Bundle();
+    public Action mOpenHelp = () -> {
+        final Bundle bundle = new Bundle();
         bundle.putInt("HelpIndex", 0);
         addFragment(new SettingHelpFragment(), bundle);
     };
 
-    public void setChannelID(String channelID) {
-        this.channelID.setValue(channelID);
+    /**
+     * 设置渠道ID
+     * @param channelID 渠道ID
+     */
+    public void setChannelID(final String channelID) {
+        this.mChannelID.setValue(channelID);
     }
 
-    public void setMapDataVersion(String mapDataVersion) {
-        this.mapDataVersion.setValue(mapDataVersion);
+    /**
+     * 设置地图数据版本
+     * @param mapDataVersion 地图数据版本号
+     */
+    public void setMapDataVersion(final String mapDataVersion) {
+        this.mMapDataVersion.setValue(mapDataVersion);
     }
 
-    public void setSdkVersion(String sdkVersion) {
-        this.sdkVersion.setValue(sdkVersion);
+    /**
+     * 设置SDK版本
+     * @param sdkVersion SDK版本号
+     */
+    public void setSdkVersion(final String sdkVersion) {
+        this.mSdkVersion.setValue(sdkVersion);
     }
 }

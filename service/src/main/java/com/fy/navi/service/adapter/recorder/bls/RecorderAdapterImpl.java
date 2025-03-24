@@ -1,6 +1,5 @@
 package com.fy.navi.service.adapter.recorder.bls;
 
-import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
 import com.autonavi.gbl.recorder.Player;
 import com.autonavi.gbl.recorder.Recorder;
@@ -18,23 +17,23 @@ import java.util.List;
 
 public class RecorderAdapterImpl implements IRecorderApi ,IPlayerObserver{
 
-    private RecorderService recorderSrv;
-    private Recorder recorder;
-    private Player player;
-    private PlayProgressInfo playProgressInfo;
-    private final List<RecorderAdapterCallback> callBacks = new ArrayList<>();
+    private RecorderService mRecorderSrv;
+    private Recorder mRecorder;
+    private Player mPlayer;
+    private PlayProgressInfo mPlayProgressInfo;
+    private final List<RecorderAdapterCallback> mCallBacks = new ArrayList<>();
 
     @Override
     public void initService() {
         Logger.d("Recording init start.");
         // 获取录制回放服务（一级服务）
-        recorderSrv = (RecorderService) ServiceMgr.getServiceMgrInstance().getBLService(SingleServiceID.RecorderSingleServiceID);
+        mRecorderSrv = (RecorderService) ServiceMgr.getServiceMgrInstance().getBLService(SingleServiceID.RecorderSingleServiceID);
 
         // 获取录制服务
-        recorder = recorderSrv.getRecorder();
-        player = recorderSrv.getPlayer();
+        mRecorder = mRecorderSrv.getRecorder();
+        mPlayer = mRecorderSrv.getPlayer();
 
-        playProgressInfo = new PlayProgressInfo();
+        mPlayProgressInfo = new PlayProgressInfo();
         Logger.d("Recording init success.");
     }
 
@@ -43,8 +42,8 @@ public class RecorderAdapterImpl implements IRecorderApi ,IPlayerObserver{
      */
     @Override
     public void startRecorder() {
-        if (recorder != null) {
-            recorder.start();
+        if (mRecorder != null) {
+            mRecorder.start();
             Logger.d("Recording started.");
         } else {
             Logger.d("Recorder is not initialized.");
@@ -56,20 +55,21 @@ public class RecorderAdapterImpl implements IRecorderApi ,IPlayerObserver{
      */
     @Override
     public void stopRecorder() {
-        if (recorder != null) {
-            recorder.stop();
+        if (mRecorder != null) {
+            mRecorder.stop();
             Logger.d("Recording stopped.");
         } else {
             Logger.d("Recorder is not initialized.");
-        }    }
+        }
+    }
 
     /**
      * 开始回放
      */
     @Override
     public void startPlayback() {
-        if (player != null) {
-            player.start();
+        if (mPlayer != null) {
+            mPlayer.start();
             Logger.d("Playback started.");
         } else {
             Logger.d("Recorder service is not initialized.");
@@ -81,9 +81,9 @@ public class RecorderAdapterImpl implements IRecorderApi ,IPlayerObserver{
      */
     @Override
     public void stopPlayback() {
-        if (player != null) {
-            player.stop();
-            player.removeObserver(this);
+        if (mPlayer != null) {
+            mPlayer.stop();
+            mPlayer.removeObserver(this);
             Logger.d("Playback stopped.");
         } else {
             Logger.d("Recorder service is not initialized.");
@@ -91,8 +91,8 @@ public class RecorderAdapterImpl implements IRecorderApi ,IPlayerObserver{
     }
 
     @Override
-    public void registerCallBack(String key, RecorderAdapterCallback callBack) {
-        callBacks.add(callBack);
+    public void registerCallBack(final String key, final RecorderAdapterCallback callBack) {
+        mCallBacks.add(callBack);
     }
 
     /**
@@ -100,14 +100,27 @@ public class RecorderAdapterImpl implements IRecorderApi ,IPlayerObserver{
      * @param playProgress 进知通知信息
      */
     @Override
-    public void onPlayProgress(PlayProgress playProgress) {
+    public void onPlayProgress(final PlayProgress playProgress) {
 
-        GsonUtils.copyBean(playProgress, playProgressInfo);
+        setPlayProgressInfo(playProgress);
 
         Logger.d("Playback progress: " + playProgress.currentMessageIndex + "/" + playProgress.totalMessageCount);
 
-        for (RecorderAdapterCallback observer : callBacks) {
-            observer.notifyPlayProgress(playProgressInfo);
+        for (RecorderAdapterCallback observer : mCallBacks) {
+            observer.notifyPlayProgress(mPlayProgressInfo);
         }
+    }
+
+    /**
+     * 设置回放进度信息
+     * @param playProgress 回放进度信息
+     */
+    private void setPlayProgressInfo(final PlayProgress playProgress) {
+        mPlayProgressInfo.setFileIndex(playProgress.fileIndex);
+        mPlayProgressInfo.setFileTotalCount(playProgress.fileTotalCount);
+        mPlayProgressInfo.setPlayName(playProgress.playName);
+        mPlayProgressInfo.setCurrentMessageIndex(playProgress.currentMessageIndex);
+        mPlayProgressInfo.setTotalMessageCount(playProgress.totalMessageCount);
+        mPlayProgressInfo.setUnixTimestamp(playProgress.unixTimestamp);
     }
 }

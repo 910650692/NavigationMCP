@@ -1,21 +1,19 @@
 package com.fy.navi.fsa;
 
 public interface FsaConstant {
+    String FSA_TAG = "FsaService";
 
-    public static final String FSA_TAG = "FsaService";
-
-
-    interface INET_CONFIG {
+    interface InetConfig {
         int SERVICE_PORT = 9903;
         int SERVICE_ID = 3003;
         String SERVICE_IP = "172.16.4.100";
     }
 
-    interface FSA_METHOD {
+    interface FsaMethod {
         int ID_REQUEST_MSG = 9201;
     }
 
-    interface FSA_EVENT_PAYLOAD {
+    interface FsaEventPayload {
         //是否有有效路网数据
         String ROAD_NETWORK_MODE = "0";
         //获取TBT信息
@@ -88,7 +86,7 @@ public interface FsaConstant {
         String NOP_NEXT_ROAD = "34";
     }
 
-    interface FSA_FUNCTION {
+    interface FsaFunction {
         //是否有有效路网数据
         int ID_ROAD_NETWORK_MODE = 9250;
         //获取TBT信息
@@ -159,7 +157,7 @@ public interface FsaConstant {
         int ID_SERVICE_POI = 9284;
     }
 
-    interface FSA_VALUE {
+    interface FsaValue {
         String STRING_ZERO = "0";
         String STRING_ONE = "1";
         String TRUE = "ture";
@@ -169,92 +167,20 @@ public interface FsaConstant {
         int TWO = 2;
     }
 
-    //定位类型
-    interface FSA_LOCATION_TYPE {
-        int INVALID = -1; //无效值
-        int GPS = 0; //卫星定位
-        int WIFI = 1; //基于WIFI网络定位
-        int CELL = 2; //基于基站的定位
-        int BLUETOOTH = 3; //基于蓝牙的定位
-        int MAGNETIC_FIELD = 4; //基于地磁的定位
-        int UNKNOWN = 5; //未知
-    }
-
-    //定位来源
-    interface FSA_LOCATION_SOURCE {
-        int INVALID = 0;
-        int GPS = 1;
-        int BDS = 2;
-        int GLONASS = 4;
-        int GALILEO = 8;
-        int DR = 16;
-        int WIFI_CORRECTED = 32;
-        int BASE_STATION_CORRECTED = 64;
-    }
-
-    //道路等级
-    interface FSA_ROAD_LEVEL {
-        int UNKNOWN_ERROR = Integer.MIN_VALUE; //非法操作错误
-        int RoadClassNULL = -1; //无效值
-        int RoadClassFreeway = 0; //高速公路
-        int RoadClassNationalRoad = 1;//国道
-        int RoadClassProvinceRoad = 2;//省道
-        int RoadClassCountyRoad = 3;//县道
-        int RoadClassRuralRoad = 4;//乡公路
-        int RoadClassInCountyRoad = 5;//县乡村内部道路
-        int RoadClassCitySpeedway = 6;//主要大街、城市快速道
-        int RoadClassMainRoad = 7;//主要道路
-        int RoadClassSecondaryRoad = 8;//次要道路
-        int RoadClassCommonRoad = 9;//普通道路
-        int RoadClassNonNaviRoad = 10;//非导航道路
-    }
-
     //turnKind转向类型
-    interface FSA_TURN_KIND {
-        int IconContinue = 9; //直行对应的iconId
+    interface FsaTurnKind {
+        int ICON_CONTINUE = 9; //直行对应的iconId
     }
 
 
     //Camera type
-    interface FSA_CAMERA_TYPE {
-        int NULL = 0;
-        int IllegalUseLight = 1; //违规用灯
-        int IllegalUseSafetyBelt = 2; //不系安全带
-        int DoNotFollowLane = 3; //违规占车道
-        int IllegalPassCross = 4; //违规过路口
-        int DialPhoneWhenDriving = 5; //开车用手机
-        int LaneLimitSpeed = 6; //分车道限速
-        int UltrahighSpeed = 7; //超高速
-        int VeryLowSpeed = 8; //超低速
-        int VariableSpeed = 9; //可变限速
-        int TrafficLight = 10; //闯红灯
-        int EndNumberLimit = 11; //尾号限行
-        int EnvironmentalLimit = 12; //环保限行
-        int BreachProhibitionSign = 13; //违反禁令标志
-        int ViolateProhibitedMarkings = 14; //违反禁止标线
-        int CourtesyCrossing = 15; //礼让行人
-        int ReverseDriving = 16; //逆向行驶
-        int IllegalParking = 17; //违章停车
-        int BicycleLane = 18; //占用非机动车道
-        int BusWay = 19; //公交专用车道
-        int EmergencyLane = 20; //占用应急车道
-        int Honk = 21; //禁止鸣笛
-        int FlowSpeed = 22; //流动测速
-        int CourtesyCarCrossing = 23; //路口不让行
-        int RailwayCrossing = 24; //违规过铁路
-        int IntervalVelocityStart = 25; //区间测速起点
-        int IntervalVelocityEnd = 26; //区间测速终点
-        int IntervalVelocityStartEnd = 27; //区间测速起终点
-        int CarSpacing = 28; //车间距抓拍
-        int HOVLane = 29; //HOV车道
-        int OccupiedLine = 30; //压线抓拍
-        int ETC = 99; //ETC拍照
-        int BreakRule = 100; //无细类违章
-        int Surveillance = 101; //视频监控
-        int Consequent = 255; //后备
+    interface FsaCameraType {
+        int INTERVAL_VELOCITY_START = 25; //区间测速起点
+        int INTERVAL_VELOCITY_END = 26; //区间测速终点
+        int INTERVAL_VELOCITY_START_END = 27; //区间测速起终点
     }
 
-    interface FSA_LANE_TYPE {
+    interface FsaLaneType {
         int INVALID_VALUE = 0;
         int NORMAL = 1;
         int BUS_LANE = 2;
@@ -266,7 +192,7 @@ public interface FsaConstant {
         int CROSS_MARKED_VARIABLE_LANE = 8;
     }
 
-    interface FSA_LANE_DIRECTION {
+    interface FsaLaneDirection {
         int INVALID_VALUE = 0;
         int GO_STRAIGHT = 1;
         int TURN_LEFT = 2;

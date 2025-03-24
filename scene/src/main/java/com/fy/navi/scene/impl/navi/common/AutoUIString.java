@@ -9,6 +9,8 @@ import androidx.annotation.StringRes;
 /**
  * 统一的文案接收入口
  * 可用于承载多语言翻译、其他特殊的文案处理述求。
+ * @author fy
+ * @version $Revision.*$
  */
 public class AutoUIString {
     private String mStr;
@@ -16,32 +18,42 @@ public class AutoUIString {
     private @StringRes int mStrId = 0;
     private Object[] mFormatArgs;
 
-    public AutoUIString(String str) {
+    public AutoUIString(final String str) {
         this.mStr = str;
     }
 
-    public AutoUIString(@StringRes int strId) {
+    public AutoUIString(@StringRes final int strId) {
         this.mStrId = strId;
     }
 
-    public AutoUIString(CharSequence charSequence) {
+    public AutoUIString(final CharSequence charSequence) {
         this.mCharSequence = charSequence;
     }
 
-    public AutoUIString(@StringRes int strId, Object... formatArgs) {
+    public AutoUIString(@StringRes final int strId, final Object... formatArgs) {
         this.mStrId = strId;
         this.mFormatArgs = formatArgs;
     }
 
-    public String getString(Context context) {
-        CharSequence charSequence = getCharSequence(context);
+    /**
+     * 获取字符串
+     * @param context 上下文
+     * @return String
+     */
+    public String getString(final Context context) {
+        final CharSequence charSequence = getCharSequence(context);
         if (null == charSequence) {
             return null;
         }
         return charSequence.toString();
     }
 
-    public CharSequence getCharSequence(Context context) {
+    /**
+     * 获取字符序列
+     * @param context 上下文
+     * @return CharSequence
+     */
+    public CharSequence getCharSequence(final Context context) {
         if (mStr != null) {
             return mStr;
         }
@@ -58,7 +70,11 @@ public class AutoUIString {
         return null;
     }
 
-    public void setText(TextView textView) {
+    /**
+     * 设置文本
+     * @param textView textView
+     */
+    public void setText(final TextView textView) {
         if (mStrId != 0) {
             if (mFormatArgs != null) {
                 textView.setText(textView.getContext().getString(mStrId, mFormatArgs));
@@ -70,7 +86,11 @@ public class AutoUIString {
         }
     }
 
-    public void setHint(TextView textView) {
+    /**
+     * 设置提示
+     * @param textView textView
+     */
+    public void setHint(final TextView textView) {
         if (mStrId != 0) {
             if (mFormatArgs != null) {
                 textView.setHint(textView.getContext().getString(mStrId, mFormatArgs));
@@ -89,7 +109,7 @@ public class AutoUIString {
         private String mStr;
         private @StringRes int mStrId = 0;
 
-        public AutoGetStr(AutoUIString autoUIString) {
+        public AutoGetStr(final AutoUIString autoUIString) {
             // 将来如果需要动态实时翻译时，formatArgs里面的字符串也应该使用AutoUIString来表示
         }
     }

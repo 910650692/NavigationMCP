@@ -10,9 +10,9 @@ import com.fy.navi.ui.base.BaseViewModel;
 
 public class BaseSettingPlateNumberViewModel extends BaseViewModel<SettingPlateNumberFragment, SettingPlateNumberModel> {
 
-    public MutableLiveData<Boolean> isFocus = new MutableLiveData<>(false);
+    public MutableLiveData<Boolean> mIsFocus = new MutableLiveData<>(false);
 
-    public BaseSettingPlateNumberViewModel(@NonNull Application application) {
+    public BaseSettingPlateNumberViewModel(@NonNull final Application application) {
         super(application);
     }
 
@@ -21,35 +21,42 @@ public class BaseSettingPlateNumberViewModel extends BaseViewModel<SettingPlateN
         return new SettingPlateNumberModel();
     }
 
-    public Action showProvinceKeyboard = () -> {
+    public Action mShowProvinceKeyboard = () -> {
         mView.showProvinceKeyboard();
-        isFocus.setValue(true);
+        mIsFocus.setValue(true);
     };
 
-    public Action hideKeyboard = () -> {
+    public Action mHideKeyboard = () -> {
         mView.hideKeyboard();
     };
 
-    public Action closePlateNumber = () -> {
+    public Action mClosePlateNumber = () -> {
         closeFragment(true);
     };
 
-    public Action showPlateNumberKeyboard = () -> {
+    public Action mShowPlateNumberKeyboard = () -> {
         mView.showPlateNumberKeyboard();
     };
-     public Action plateNumberInputFinish = () -> {
+     public Action mPlateNumberInputFinish = () -> {
         mView.plateNumberInputFinish();
     };
 
-     public Action clearPlateNumber = () -> {
+     public Action mClearPlateNumber = () -> {
         mView.clearPlateNumber();
     };
 
+    /**
+     * 获取车牌
+     * @return 车牌
+     */
      public String getPlateNumber() {
         return mModel.getPlateNumber();
     }
 
-    public void setIsFocus(boolean isFocus) {
-        this.isFocus.setValue(isFocus);
+    /**
+     * @param isFocus 是否获取焦点
+     */
+    public void setIsFocus(final boolean isFocus) {
+        this.mIsFocus.setValue(isFocus);
     }
 }

@@ -8,7 +8,11 @@ import com.fy.navi.service.define.navi.L2NaviBean;
  * @date 2025/3/12
  */
 public interface L2DriveObserver {
-    void onNaviStatus(L2NaviBean l2NaviBean);
+    void onNaviStatus(String naviStatus);
 
-    void onSelectRouteIndex(L2NaviBean l2NaviBean);
+    void onSelectRouteIndex(String routeId);
+
+    void onParkingInfo(String parkInfo);
+
+    void onNaviInfo(String l2NaviBean);
 }

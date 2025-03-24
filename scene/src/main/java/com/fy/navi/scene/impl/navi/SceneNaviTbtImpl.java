@@ -26,21 +26,20 @@ import com.fy.navi.service.define.bean.GeoPoint;
 import com.fy.navi.service.define.map.MapTypeId;
 import com.fy.navi.service.define.navi.NaviEtaInfo;
 import com.fy.navi.service.define.navi.NaviManeuverInfo;
-import com.fy.navi.service.define.setting.SimpleFavoriteItemBean;
+import com.fy.navi.service.define.search.PoiInfoEntity;
 import com.fy.navi.scene.impl.navi.common.NaviUiUtil;
 import com.fy.navi.service.logicpaket.map.MapPackage;
 import com.fy.navi.service.logicpaket.mapdata.MapDataPackage;
 import com.fy.navi.service.logicpaket.navi.NaviPackage;
-import com.fy.navi.service.logicpaket.setting.SettingPackage;
+import com.fy.navi.service.logicpaket.user.behavior.BehaviorPackage;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class SceneNaviTbtImpl extends BaseSceneModel<SceneNaviTbtView> {
     private static final String TAG = MapDefaultFinalTag.NAVI_HMI_TAG;
     private final NaviPackage mNaviPackage;
     private final MapDataPackage mMapDataPackage;
-    private final SettingPackage mSettingPackage;
+    private final BehaviorPackage mBehaviorPackage;
     private final MapPackage mMapPackage;
     private LayerAdapter mLayerAdapter;
     // 转向图标信息
@@ -52,7 +51,7 @@ public class SceneNaviTbtImpl extends BaseSceneModel<SceneNaviTbtView> {
     // 当前引导数据
     private NaviEtaInfo mCurNaviInfo;
     // 导航信息转向图标bitmap 缓存
-    protected Bitmap directionCache;
+    private Bitmap mDirectionCache;
     // 环岛数
     private int mRoundNum = 0;
     //近阶动作数
@@ -62,32 +61,35 @@ public class SceneNaviTbtImpl extends BaseSceneModel<SceneNaviTbtView> {
     // 上一次进阶动作
     private NaviManeuverInfo mPreviousNextThumManeuverInfo = new NaviManeuverInfo();
     // 下一道路距离
-    private int nDistanceNextRoad;
+    private int mDistanceNextRoad;
     private int mCurRoadclass;
     //下一条道路名称
     private String mTvNextRoadNameStr;
     //格式化距离数组
     private String[] mDistanceStrArray;
-    public ObservableField<Boolean> exitInfoVisible;
-    public ObservableField<Boolean> turnInfoVisible;
-    public ObservableField<Boolean> groupDivVisible;
+    public ObservableField<Boolean> mExitInfoVisible;
+    public ObservableField<Boolean> mTurnInfoVisible;
+    public ObservableField<Boolean> mGroupDivVisible;
 
-    public SceneNaviTbtImpl(SceneNaviTbtView mScreenView) {
-        super(mScreenView);
+    public SceneNaviTbtImpl(final SceneNaviTbtView screenView) {
+        super(screenView);
         mMapDataPackage = MapDataPackage.getInstance();
         mNaviPackage = NaviPackage.getInstance();
-        mSettingPackage = SettingPackage.getInstance();
+        mBehaviorPackage = BehaviorPackage.getInstance();
         mMapPackage = MapPackage.getInstance();
         mLayerAdapter = LayerAdapter.getInstance();
-        groupDivVisible = new ObservableField(true);
-        turnInfoVisible = new ObservableField(true);
-        exitInfoVisible = new ObservableField(false);
+        mGroupDivVisible = new ObservableField(true);
+        mTurnInfoVisible = new ObservableField(true);
+        mExitInfoVisible = new ObservableField(false);
     }
 
-    public void onManeuverInfo(NaviManeuverInfo info) {
-        if (info.getDateType() == NaviConstant.ManeuverDataType.Maneuver) {
+    /**
+     * @param info 回调 通知更新转向图标信息
+     */
+    public void onManeuverInfo(final NaviManeuverInfo info) {
+        if (info.getDateType() == NaviConstant.ManeuverDataType.MANEUVER) {
             onShowNaviManeuver(info);
-        } else if (info.getDateType() == NaviConstant.ManeuverDataType.ManeuverIcon) {
+        } else if (info.getDateType() == NaviConstant.ManeuverDataType.MANEUVER_ICON) {
             onObtainManeuverIconData(info);
         } else {
             onUpdateExitDirectionInfo(info);
@@ -96,13 +98,14 @@ public class SceneNaviTbtImpl extends BaseSceneModel<SceneNaviTbtView> {
 
     /**
      * bl回调 通知更新TBT数据
+     * @param naviInfoBean TBT数据
      */
-    public void onNaviInfo(NaviEtaInfo naviInfoBean) {
+    public void onNaviInfo(final NaviEtaInfo naviInfoBean) {
         mCurNaviInfo = naviInfoBean;
-        mRoundNum = mCurNaviInfo.ringOutCnt;
+        mRoundNum = mCurNaviInfo.getRingOutCnt();
         // 显示近接动作信息
         if (hasNextThumTip(mCurNaviInfo)) {
-            NaviEtaInfo.NaviCrossNaviInfo nextCrossInfo = mCurNaviInfo.nextCrossInfo.get(0);
+            final NaviEtaInfo.NaviCrossNaviInfo nextCrossInfo = mCurNaviInfo.nextCrossInfo.get(0);
             mNextThumRoundNum = nextCrossInfo.outCnt;
             mNextThumManeuverInfo.setManeuverID(nextCrossInfo.crossManeuverID);
             mNextThumManeuverInfo.setSegmentIndex(nextCrossInfo.segIdx);
@@ -154,17 +157,20 @@ public class SceneNaviTbtImpl extends BaseSceneModel<SceneNaviTbtView> {
 
     /**
      * 转向图标回调
+     * @param maneuverIconResponseData 转向图标数据
      */
     public void onObtainManeuverIconData(final NaviManeuverInfo maneuverIconResponseData) {
         if (maneuverIconResponseData == null || maneuverIconResponseData.getRequestConfig() == null) {
             Logger.e(TAG, "SceneNaviTbtImpl onObtainManeuverIconData error");
             return;
         }
-        NaviManeuverInfo.NaviManeuverConfig config = maneuverIconResponseData.getRequestConfig();
+        final NaviManeuverInfo.NaviManeuverConfig config = maneuverIconResponseData.getRequestConfig();
         // 离线或者在线请求异常，使用本地数据
         if (maneuverIconResponseData.getData() == null || maneuverIconResponseData.getData().length == 0) {
             // 下一路口转向图标
-            if (null != config && config.getWidth() == NaviConstant.nextTurnIconSize && config.getHeight() == NaviConstant.nextTurnIconSize) {
+            if (null != config && config.getWidth() == NaviConstant.NEXT_TURN_ICON_SIZE &&
+                    config.getHeight() == NaviConstant.NEXT_TURN_ICON_SIZE) {
+                // TODO
             } else {
                 showOfflineTurnIcon();
             }
@@ -173,7 +179,9 @@ public class SceneNaviTbtImpl extends BaseSceneModel<SceneNaviTbtView> {
             ThreadManager.getInstance().postUi(new Runnable() {
                 @Override
                 public void run() {
-                    if (null != config && config.getWidth() == NaviConstant.nextTurnIconSize && config.getHeight() == NaviConstant.nextTurnIconSize) {
+                    if (null != config && config.getWidth() == NaviConstant.NEXT_TURN_ICON_SIZE &&
+                            config.getHeight() == NaviConstant.NEXT_TURN_ICON_SIZE) {
+                        // TODO
                     } else {
                         updateTurnIcon(maneuverIconResponseData.getData(), config, mRoundNum);
                     }
@@ -186,12 +194,9 @@ public class SceneNaviTbtImpl extends BaseSceneModel<SceneNaviTbtView> {
     /**
      * 传出出口编号和出口方向信息
      *
-     * @details 导航过程中传出出口编号和出口方向信息
-     * @param[in] boardInfo        当前导航信息数组
-     * @remark 自车在高速和城市快速路并满足一定距离的情况下回调
-     * @note thread mutil
+     * @param exitDirectionInfo 出口编号和出口方向信息
      */
-    public void onUpdateExitDirectionInfo(NaviManeuverInfo exitDirectionInfo) {
+    public void onUpdateExitDirectionInfo(final NaviManeuverInfo exitDirectionInfo) {
         Logger.i(TAG, "onUpdateExitDirectionInfo");
         if (null == exitDirectionInfo
                 || exitDirectionInfo.getDirectionInfo() == null
@@ -204,7 +209,11 @@ public class SceneNaviTbtImpl extends BaseSceneModel<SceneNaviTbtView> {
     }
 
 
-    public void onNaviArrive(long traceId, int naviType) {
+    /**
+     * @param traceId traceId
+     * @param naviType 导航类型
+     */
+    public void onNaviArrive(final long traceId, final int naviType) {
         mLayerAdapter.clearRouteLine(MapTypeId.MAIN_SCREEN_MAIN_MAP);
         mNaviPackage.stopNavigation();
 //        StackManager.getInstance().getCurrentFragment(mMapTypeId.name()).closeFragment(true);
@@ -212,8 +221,9 @@ public class SceneNaviTbtImpl extends BaseSceneModel<SceneNaviTbtView> {
 
     /**
      * 更新出口信息
+     * @param guideBoardInfo 导航信息
      */
-    public void updateExitDirectionInfo(NaviManeuverInfo guideBoardInfo) {
+    public void updateExitDirectionInfo(final NaviManeuverInfo guideBoardInfo) {
         Logger.i(TAG, "updateExitDirectionInfo");
         if (mCurNaviInfo == null
                 || mCurNaviInfo.NaviInfoData == null
@@ -224,22 +234,23 @@ public class SceneNaviTbtImpl extends BaseSceneModel<SceneNaviTbtView> {
             return;
         }
         // 距离出口大于2000米不提示
-        int dist = mCurNaviInfo.NaviInfoData.get(mCurNaviInfo.NaviInfoFlag).segmentRemain.dist;
+        final int dist = mCurNaviInfo.NaviInfoData.get(mCurNaviInfo.NaviInfoFlag).segmentRemain.dist;
         if (guideBoardInfo != null
                 && guideBoardInfo.getDirectionInfo() != null
                 && !guideBoardInfo.getDirectionInfo().isEmpty()
                 && !TextUtils.isEmpty(guideBoardInfo.getEntranceExit())
                 && dist < NaviConstant.MIN_EXIT_DIST) {
-            exitInfoVisible.set(true);
-            turnInfoVisible.set(false);
-            String directString = guideBoardInfo.getEntranceExit();
-            String tvExitNum;
+            mExitInfoVisible.set(true);
+            mTurnInfoVisible.set(false);
+            final String directString = guideBoardInfo.getEntranceExit();
+            final String tvExitNum;
             // 编号个数
             int eixtNum = 0;
             if (guideBoardInfo.getExitNameInfo() != null && !guideBoardInfo.getExitNameInfo().isEmpty()) {
                 eixtNum = guideBoardInfo.getExitNameInfo().size();
-                List<String> exitInfos = guideBoardInfo.getExitNameInfo();
-                if (eixtNum == 1 && exitInfos.size() > 0 && exitInfos.get(0).length() <= NaviConstant.EXIT_STRING_MAX_NUMBER) {
+                final List<String> exitInfos = guideBoardInfo.getExitNameInfo();
+                if (eixtNum == 1 && !exitInfos.isEmpty() && exitInfos.get(0).length() <=
+                        NaviConstant.EXIT_STRING_MAX_NUMBER) {
                     // 有出入口编号时，展示”出口“+出口信息或”入口“加入口信息
                     Logger.i(TAG, "SceneNaviTbtImpl updateExitDirectionInfo updateExitInfo: ：出入口编号={?}", exitInfos.get(0));
                     tvExitNum = directString + exitInfos.get(0);
@@ -253,9 +264,9 @@ public class SceneNaviTbtImpl extends BaseSceneModel<SceneNaviTbtView> {
                 tvExitNum = directString;
             }
             // 方向
-            List<String> directionInfos = guideBoardInfo.getDirectionInfo();
-            if (directionInfos != null && directionInfos.size() > 0) {
-                StringBuilder contentBuilder = new StringBuilder();
+            final List<String> directionInfos = guideBoardInfo.getDirectionInfo();
+            if (directionInfos != null && !directionInfos.isEmpty()) {
+                final StringBuilder contentBuilder = new StringBuilder();
                 for (int i = 0; i < directionInfos.size(); i++) {
                     if (!TextUtils.isEmpty(directionInfos.get(i).trim())) {
                         //此处空格不能删掉，显示效果需要;
@@ -266,8 +277,8 @@ public class SceneNaviTbtImpl extends BaseSceneModel<SceneNaviTbtView> {
             mScreenView.setTextNaviExit(new AutoUIString(tvExitNum));
             Logger.i(TAG, "SceneNaviTbtImpl updateExitDirectionInfo directString={?},eixtNum={?},tvExitNum={?}", directString, eixtNum, tvExitNum);
         } else {
-            exitInfoVisible.set(false);
-            turnInfoVisible.set(true);
+            mExitInfoVisible.set(false);
+            mTurnInfoVisible.set(true);
             Logger.i(TAG, "SceneNaviTbtImpl updateExitDirectionInfo 隐藏出入口信息");
         }
     }
@@ -279,7 +290,9 @@ public class SceneNaviTbtImpl extends BaseSceneModel<SceneNaviTbtView> {
     private void showOfflineTurnIcon() {
         if (mCurNaviInfo != null && mCurNaviInfo.NaviInfoData != null) {
             // 当前路口转向图标
-            int resId = NaviUiUtil.GetOfflineManeuverIconId(mCurNaviInfo.NaviInfoData.get(mCurNaviInfo.NaviInfoFlag).maneuverID, mCurNaviInfo.ringOutCnt);
+            final int resId = NaviUiUtil.getOfflineManeuverIconId(
+                    mCurNaviInfo.NaviInfoData.get(mCurNaviInfo.NaviInfoFlag).maneuverID,
+                    mCurNaviInfo.getRingOutCnt());
             Logger.i(TAG, "SceneNaviTbtImpl showOfflineTurnIcon resId:" + resId);
             mScreenView.setBackgroundNaviOfflineCommonTurnIcon(SceneCommonStruct.TbtIconAction.get(resId));
             mScreenView.setBackgroundNaviOfflineExitTurnIcon(SceneCommonStruct.TbtExitIconAction.get(resId));
@@ -290,6 +303,9 @@ public class SceneNaviTbtImpl extends BaseSceneModel<SceneNaviTbtView> {
 
     /**
      * 更新路口转向图标
+     * @param bytes    bytes
+     * @param config  config
+     * @param aroundNum  aroundNum
      */
     public void updateTurnIcon(final byte[] bytes, final NaviManeuverInfo.NaviManeuverConfig config, final int aroundNum) {
         if (config == null) {
@@ -297,18 +313,22 @@ public class SceneNaviTbtImpl extends BaseSceneModel<SceneNaviTbtView> {
         }
         Logger.i(TAG, "SceneNaviTbtImpl updateTurnIcon config.width={?},config.height={?},config.maneuverID={?},aroundNum={?},config.pathID={?}",
                 config.getWidth(), config.getHeight(), config.getManeuverID(), aroundNum, config.getPathID());
-        directionCache = NaviUiUtil.getRoadSignBitmap(bytes, config.getWidth(), config.getHeight(), (int) config.getManeuverID(), aroundNum, NaviConstant.hudResPrefix, NaviConstant.iconResName, NaviConstant.night);
-        if (directionCache != null && !directionCache.isRecycled()) {
+        mDirectionCache = NaviUiUtil.getRoadSignBitmap(bytes, config.getWidth(), config.getHeight(),
+                (int) config.getManeuverID(), aroundNum, NaviConstant.HUD_RES_PREFIX,
+                NaviConstant.ICON_RES_NAME, NaviConstant.NIGHT);
+        if (mDirectionCache != null && !mDirectionCache.isRecycled()) {
             Logger.i(TAG, "SceneNaviTbtImpl updateTurnIcon directionCache isRecycled false");
-            mScreenView.setBackgroundNaviCommonTurnIcon(new AutoUIDrawable(directionCache));
-            mScreenView.setBackgroundNaviExitTurnIcon(new AutoUIDrawable(directionCache));
+            mScreenView.setBackgroundNaviCommonTurnIcon(new AutoUIDrawable(mDirectionCache));
+            mScreenView.setBackgroundNaviExitTurnIcon(new AutoUIDrawable(mDirectionCache));
         }
     }
 
     /**
      * 是否存在近阶动作信息
+     * @param naviInfo naviInfo
+     * @return boolean
      */
-    public static boolean hasNextThumTip(NaviEtaInfo naviInfo) {
+    public static boolean hasNextThumTip(final NaviEtaInfo naviInfo) {
         if (null == naviInfo || ConvertUtils.isEmpty(naviInfo.nextCrossInfo)) {
             return false;
         }
@@ -320,8 +340,12 @@ public class SceneNaviTbtImpl extends BaseSceneModel<SceneNaviTbtView> {
 
     /**
      * 是否有进阶路口信息
+     * @param previousManeuverInfo previousManeuverInfo
+     * @param maneuverInfo maneuverInfo
+     * @return boolean
      */
-    public static boolean isSameNextThumManeuverInfo(NaviManeuverInfo previousManeuverInfo, NaviManeuverInfo maneuverInfo) {
+    public static boolean isSameNextThumManeuverInfo(final NaviManeuverInfo previousManeuverInfo,
+                                                     final NaviManeuverInfo maneuverInfo) {
         if (null == previousManeuverInfo || null == maneuverInfo) {
             return false;
         }
@@ -333,8 +357,9 @@ public class SceneNaviTbtImpl extends BaseSceneModel<SceneNaviTbtView> {
 
     /**
      * 更新引导信息及转向图标
+     * @param isNeedUpdateDirection isNeedUpdateDirection
      */
-    public void updateNaviInfoAndDirection(boolean isNeedUpdateDirection) {
+    public void updateNaviInfoAndDirection(final boolean isNeedUpdateDirection) {
         Logger.i(TAG, "SceneNaviTbtImpl updateNaviInfoAndDirection isNeedUpdateDirection: " + isNeedUpdateDirection);
         innerUpdateNaviInfo();
         updateExitDirectionInfo(mExitDirectionInfo);
@@ -344,8 +369,8 @@ public class SceneNaviTbtImpl extends BaseSceneModel<SceneNaviTbtView> {
             if (mOfflineManeuverIcon) {
                 showOfflineTurnIcon();
             } else {
-                mScreenView.setBackgroundNaviCommonTurnIcon(new AutoUIDrawable(directionCache));
-                mScreenView.setBackgroundNaviExitTurnIcon(new AutoUIDrawable(directionCache));
+                mScreenView.setBackgroundNaviCommonTurnIcon(new AutoUIDrawable(mDirectionCache));
+                mScreenView.setBackgroundNaviExitTurnIcon(new AutoUIDrawable(mDirectionCache));
             }
         }
     }
@@ -358,28 +383,28 @@ public class SceneNaviTbtImpl extends BaseSceneModel<SceneNaviTbtView> {
             return;
         }
         // 显示当前道路
-        AdminCodeBean adminCode = new AdminCodeBean();
+        final AdminCodeBean adminCode = new AdminCodeBean();
         adminCode.nAdCode = mCurNaviInfo.cityCode;
         // 二、三级道路名称
-        AreaExtraInfoBean areaExtraInfo = mMapDataPackage.getAreaExtraInfo(adminCode);
-        ArrayList<SimpleFavoriteItemBean> home = mSettingPackage.getSimpleFavoriteList(
-                1, false);
+        final AreaExtraInfoBean areaExtraInfo = mMapDataPackage.getAreaExtraInfo(adminCode);
+        final PoiInfoEntity home = mBehaviorPackage.getHomeFavoriteInfo();
+        Logger.i(TAG, "SceneNaviTbtImpl innerUpdateNaviInfo home.getPoint().getLon()=" + home);
         String extraRoadName = "";
         int adCode = -1;
         // 异地城市加上行政区域名称（和家所在城市对比）
-        if (home != null && !home.isEmpty()) {
-            GeoPoint homeCoord = mMapPackage.mapToLonLat(MapTypeId.MAIN_SCREEN_MAIN_MAP, home.get(0).point_x, home.get(0).point_y);
-            adCode = mMapDataPackage.getAdCodeByLonLat(homeCoord.lon, homeCoord.lat);
+        if (home != null && home.getPoint() != null) {
+            final GeoPoint homeCoord = home.getPoint();
+            adCode = mMapDataPackage.getAdCodeByLonLat(homeCoord.getLon(), homeCoord.getLat());
         }
         if (areaExtraInfo != null && adCode > 0 && areaExtraInfo.stAdCode != null && areaExtraInfo.stAdCode.nCityAdCode != adCode) {
             Logger.i(TAG, "SceneNaviTbtImpl innerUpdateNaviInfo cityName= " + areaExtraInfo.cityName + ",townName=" + areaExtraInfo.townName);
             if (!TextUtils.isEmpty(areaExtraInfo.cityName)) {
-                String tempCityName = areaExtraInfo.cityName.endsWith(mScreenView.getContext().getString(R.string.navi_city_name_postfix))
+                final String tempCityName = areaExtraInfo.cityName.endsWith(mScreenView.getContext().getString(R.string.navi_city_name_postfix))
                         ? areaExtraInfo.cityName.substring(0, areaExtraInfo.cityName.length() - 1) : areaExtraInfo.cityName;
                 extraRoadName += tempCityName;
             }
             if (!TextUtils.isEmpty(areaExtraInfo.townName)) {
-                String tempTownName = areaExtraInfo.townName.endsWith(mScreenView.getContext().getString(R.string.navi_town_name_postfix))
+                final String tempTownName = areaExtraInfo.townName.endsWith(mScreenView.getContext().getString(R.string.navi_town_name_postfix))
                         ? areaExtraInfo.townName.substring(0, areaExtraInfo.townName.length() - 1) : areaExtraInfo.townName;
                 if (!TextUtils.isEmpty(extraRoadName)) {
                     extraRoadName = extraRoadName + mScreenView.getContext().getString(R.string.auto_navi_text_residue_diving) + tempTownName;
@@ -390,27 +415,28 @@ public class SceneNaviTbtImpl extends BaseSceneModel<SceneNaviTbtView> {
             // 添加一个空格作为间隔
             extraRoadName = " " + extraRoadName;
         }
-        Logger.i(TAG, "SceneNaviTbtImpl innerUpdateNaviInfo adCode0={?},NaviTbtCurrentRoadName={?} ", adCode, mCurNaviInfo.curRouteName);
+        Logger.i(TAG, "SceneNaviTbtImpl innerUpdateNaviInfo adCode0={?},NaviTbtCurrentRoadName={?} ", adCode, mCurNaviInfo.getCurRouteName());
         if (mCurNaviInfo == null || !checkNaviInfoPanelLegal(mCurNaviInfo)) {
             return;
         }
         // 到下一道路距离
-        nDistanceNextRoad = mCurNaviInfo.NaviInfoData.get(mCurNaviInfo.NaviInfoFlag).segmentRemain.dist;
+        mDistanceNextRoad = mCurNaviInfo.NaviInfoData.get(mCurNaviInfo.NaviInfoFlag).segmentRemain.dist;
         mCurRoadclass = mCurNaviInfo.curRoadClass;
-        if (nDistanceNextRoad >= 0) {
+        if (mDistanceNextRoad >= 0) {
             updateNextRoadDistance();
         }
         // 下一条道路名称
         mTvNextRoadNameStr = mCurNaviInfo.NaviInfoData.get(mCurNaviInfo.NaviInfoFlag).nextRouteName;
-        Logger.i(TAG, "SceneNaviTbtImpl innerUpdateNaviInfo nDistanceNextRoad={?},mCurRoadclass={?},mTVNextRoadNameStr={?}", nDistanceNextRoad,
+        Logger.i(TAG, "SceneNaviTbtImpl innerUpdateNaviInfo nDistanceNextRoad={?},mCurRoadclass={?},mTVNextRoadNameStr={?}", mDistanceNextRoad,
                 mCurRoadclass, mTvNextRoadNameStr);
         updateNextRoadNameView(mTvNextRoadNameStr);
     }
 
     /**
      * 更新下一道路名称view
+     * @param tvNextRoadNameStr 名称
      */
-    public void updateNextRoadNameView(String tvNextRoadNameStr) {
+    public void updateNextRoadNameView(final String tvNextRoadNameStr) {
         if (!TextUtils.isEmpty(tvNextRoadNameStr)) {
             mScreenView.setTextNaviInfoDistanceNextRoadName(new AutoUIString(tvNextRoadNameStr));
         }
@@ -418,8 +444,10 @@ public class SceneNaviTbtImpl extends BaseSceneModel<SceneNaviTbtView> {
 
     /**
      * 检查NaviInfoPanel是否合法
+     * @param naviinfo naviInfo
+     * @return boolean
      */
-    public static boolean checkNaviInfoPanelLegal(NaviEtaInfo naviinfo) {
+    public static boolean checkNaviInfoPanelLegal(final NaviEtaInfo naviinfo) {
         if (naviinfo == null) {
             Logger.d(TAG, "checkNaviInfoPanelLegal naviInfo null");
             return false;
@@ -443,20 +471,24 @@ public class SceneNaviTbtImpl extends BaseSceneModel<SceneNaviTbtView> {
      * 更新到下个道路信息
      */
     public void updateNextRoadDistance() {
-        mDistanceStrArray = ConvertUtils.formatDistanceArray(mScreenView.getContext(), nDistanceNextRoad);
+        mDistanceStrArray = ConvertUtils.formatDistanceArray(mScreenView.getContext(), mDistanceNextRoad);
         // 距路口小于10，显示现在
-        if (nDistanceNextRoad <= 10) {
+        if (mDistanceNextRoad <= 10) {
             Logger.d(TAG, "sceneNowNextRoad：");
-            groupDivVisible.set(false);
+            mGroupDivVisible.set(false);
         } else {
             // 显示距离路口实际距离和单位
             Logger.d(TAG, "sceneDistanceNextRoad：");
-            groupDivVisible.set(true);
+            mGroupDivVisible.set(true);
             mScreenView.setTextNaviInfoDistanceNextRoad(new AutoUIString(mDistanceStrArray[0] + ""));
             mScreenView.setTextNaviInfoDistanceNextRoadUnit(new AutoUIString(mDistanceStrArray[1] + ""));
         }
     }
-    private void updateSceneVisible(boolean isVisible){
+
+    /**
+     * @param isVisible 是否可见
+     */
+    private void updateSceneVisible(final boolean isVisible){
         mScreenView.getNaviSceneEvent().notifySceneStateChange((isVisible ? INaviSceneEvent.SceneStateChangeType.SceneShowState :
                 INaviSceneEvent.SceneStateChangeType.SceneHideState), NaviSceneId.NAVI_SCENE_TBT);
     }

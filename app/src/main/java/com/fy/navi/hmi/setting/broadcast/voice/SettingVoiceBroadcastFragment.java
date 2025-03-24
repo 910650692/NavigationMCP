@@ -18,7 +18,8 @@ import com.fy.navi.ui.base.BaseFragment;
 import java.util.HashMap;
 import java.util.Objects;
 
-public class SettingVoiceBroadcastFragment extends BaseFragment<FragmentVoiceBroadcastBinding, SettingVoiceBroadcastViewModel> implements SettingVoiceBroadcastAdapter.OnItemClickListener{
+public class SettingVoiceBroadcastFragment extends BaseFragment<FragmentVoiceBroadcastBinding,
+        SettingVoiceBroadcastViewModel> implements SettingVoiceBroadcastAdapter.OnItemClickListener{
 
     private static final String TAG = SettingVoiceBroadcastFragment.class.getSimpleName();
 
@@ -49,31 +50,40 @@ public class SettingVoiceBroadcastFragment extends BaseFragment<FragmentVoiceBro
         initData();
     }
 
+    /**
+     * 初始化
+     */
     private void initView() {
         mSettingVoiceBroadcastAdapter = new SettingVoiceBroadcastAdapter();
         mSettingVoiceBroadcastAdapter.setItemClickListener(this);
-        LinearLayoutManager manager = new LinearLayoutManager(getActivity());
+        final LinearLayoutManager manager = new LinearLayoutManager(getActivity());
         manager.setOrientation(LinearLayoutManager.VERTICAL);
         mBinding.recommendVoiceList.setNestedScrollingEnabled(true);
         mBinding.recommendVoiceList.setLayoutManager(manager);
         mBinding.recommendVoiceList.setAdapter(mSettingVoiceBroadcastAdapter);
     }
 
+    /**
+     * 初始化数据
+     */
     private void initData() {
         setCurrentVoice();
         if(mViewModel.isInitService() == VoiceServiceInitStatus.ServiceInitDone.ordinal()) {
             mViewModel.requestDataListCheck(DownLoadMode.DOWNLOAD_MODE_NET.ordinal(), "");
         }
     }
-
-    public void setData(HashMap<Integer, VoiceInfo> voiceInfoList) {
-        String selectedVoice = SettingManager.getInstance().getValueByKey(SettingController.KEY_SETTING_VOICE_PACKAGE);
+    /**
+     * 设置数据
+     * @param voiceInfoList
+     */
+    public void setData(final HashMap<Integer, VoiceInfo> voiceInfoList) {
+        final String selectedVoice = SettingManager.getInstance().getValueByKey(SettingController.KEY_SETTING_VOICE_PACKAGE);
         if(selectedVoice != null && !selectedVoice.isEmpty()){
             if(Objects.equals(selectedVoice, "default")){
-                mViewModel.isDefaultVoiceUsed.setValue(true);
+                mViewModel.mIsDefaultVoiceUsed.setValue(true);
             } else {
-                mViewModel.isDefaultVoiceUsed.setValue(false);
-                int voiceId = Integer.parseInt(selectedVoice);
+                mViewModel.mIsDefaultVoiceUsed.setValue(false);
+                final int voiceId = Integer.parseInt(selectedVoice);
                 for(VoiceInfo voiceInfo : voiceInfoList.values()){
                     if(Objects.equals(voiceInfo.getId(), voiceId)){
                         voiceInfo.setUsed(true);
@@ -86,28 +96,42 @@ public class SettingVoiceBroadcastFragment extends BaseFragment<FragmentVoiceBro
         mSettingVoiceBroadcastAdapter.setData(voiceInfoList);
     }
 
-    public void updateData(HashMap<Integer, VoiceInfo> voiceInfoList) {
+    /**
+     * 更新数据
+     * @param voiceInfoList
+     */
+    public void updateData(final HashMap<Integer, VoiceInfo> voiceInfoList) {
         mSettingVoiceBroadcastAdapter.setData(voiceInfoList);
     }
 
-    public void setSingleChoice(int index) {
+    /**
+     * 单选设置
+     * @param index
+     */
+    public void setSingleChoice(final int index) {
         mSettingVoiceBroadcastAdapter.setSingleChoice(index);
     }
 
+    /**
+     * 设置数据列表为Fale
+     */
     public void unSelectAllVoices() {
         mSettingVoiceBroadcastAdapter.unSelectAllVoices();
     }
 
     @Override
-    public void onOperation(int index) {
+    public void onOperation(final int index) {
         Logger.d("SettingVoiceBroadcastModel", "onOperationStart index: " + index);
         mViewModel.toOperate(index);
     }
 
+    /**
+     * 设置当前声音
+     */
     public void setCurrentVoice() {
-        String selectedVoice = SettingManager.getInstance().getValueByKey(SettingController.KEY_SETTING_VOICE_PACKAGE);
-        String name = SettingManager.getInstance().getValueByKey(SettingController.KEY_SETTING_VOICE_NAME);
-        String icon = SettingManager.getInstance().getValueByKey(SettingController.KEY_SETTING_VOICE_ICON);
+        final String selectedVoice = SettingManager.getInstance().getValueByKey(SettingController.KEY_SETTING_VOICE_PACKAGE);
+        final String name = SettingManager.getInstance().getValueByKey(SettingController.KEY_SETTING_VOICE_NAME);
+        final String icon = SettingManager.getInstance().getValueByKey(SettingController.KEY_SETTING_VOICE_ICON);
         if(selectedVoice != null && !selectedVoice.isEmpty()){
             if(Objects.equals(selectedVoice, "default")){
                 mBinding.currentVoiceBroadcastCurrentName.setText(R.string.setting_broadcast_voice_current_name);

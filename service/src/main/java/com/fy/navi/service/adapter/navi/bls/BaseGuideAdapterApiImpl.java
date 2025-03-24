@@ -5,7 +5,15 @@ import com.autonavi.gbl.servicemanager.ServiceMgr;
 import com.autonavi.gbl.util.model.SingleServiceID;
 
 public class BaseGuideAdapterApiImpl {
-    protected GuideService mGuideService;
+    private GuideService mGuideService;
+
+    public GuideService getGuideService() {
+        return mGuideService;
+    }
+
+    public void setGuideService(final GuideService guideService) {
+        this.mGuideService = guideService;
+    }
 
     protected BaseGuideAdapterApiImpl() {
         mGuideService = (GuideService) ServiceMgr.getServiceMgrInstance()

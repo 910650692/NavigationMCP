@@ -9,15 +9,15 @@ import androidx.annotation.Nullable;
 import com.google.android.material.tabs.TabLayout;
 
 public class SkinTabLayout extends TabLayout {
-    public SkinTabLayout(@NonNull Context context) {
+    public SkinTabLayout(@NonNull final Context context) {
         super(context);
     }
 
-    public SkinTabLayout(@NonNull Context context, @Nullable AttributeSet attrs) {
+    public SkinTabLayout(@NonNull final Context context, @Nullable final AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public SkinTabLayout(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public SkinTabLayout(@NonNull final Context context, @Nullable final AttributeSet attrs, final int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 }

@@ -29,7 +29,7 @@ public class MapSurfaceViewManager {
 
     public boolean init(MapService mapService, MapTypeId mapTypeId) {
         Logger.d(TAG, "MapSurfaceViewManager init :" + mapTypeId.toString());
-        createMapSurfaceView(AppContext.mContext, mapService, mapTypeId, new MapSurfaceViewSizeParams());
+        createMapSurfaceView(AppContext.getInstance().getMContext(), mapService, mapTypeId, new MapSurfaceViewSizeParams());
         return true;
     }
 

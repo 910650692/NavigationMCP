@@ -106,7 +106,7 @@ public class TerminalParkingResultAdapter extends RecyclerView.Adapter<TerminalP
         holder.terminalParkingItemBinding.sktvParkingItemSufficientNum.setText(getBusStatusString(position));
 
         // 当前位置显示
-        holder.terminalParkingItemBinding.sktvParkingItemDistance.setText(AppContext.mContext.getString(R.string.st_distance_to_finish, poiEntity.getDistance()));
+        holder.terminalParkingItemBinding.sktvParkingItemDistance.setText(AppContext.getInstance().getMContext().getString(R.string.st_distance_to_finish, poiEntity.getDistance()));
 
         // 处理 item 点击事件（选中状态更新）
         holder.itemView.setOnClickListener(v -> updateSelectedPosition(holder.getAdapterPosition()));
@@ -126,8 +126,8 @@ public class TerminalParkingResultAdapter extends RecyclerView.Adapter<TerminalP
     private SpannableString getColoredParkingInfo(String totalSpace, String freeSpace) {
         String text = totalSpace + " / " + freeSpace;
         SpannableString spannableString = new SpannableString(text);
-        int colorDark = ContextCompat.getColor(AppContext.mContext, R.color.black);
-        int colorLight = ContextCompat.getColor(AppContext.mContext, R.color.search_loading_bg_80);
+        int colorDark = ContextCompat.getColor(AppContext.getInstance().getMContext(), R.color.black);
+        int colorLight = ContextCompat.getColor(AppContext.getInstance().getMContext(), R.color.search_loading_bg_80);
         spannableString.setSpan(new ForegroundColorSpan(colorDark), 0, totalSpace.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         spannableString.setSpan(new ForegroundColorSpan(colorLight), text.length() - freeSpace.length(), text.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         return spannableString;

@@ -1,6 +1,5 @@
 package com.fy.navi.hmi.search.searchresult;
 
-import static com.fy.navi.service.MapDefaultFinalTag.SEARCH_HMI_TAG;
 
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -11,6 +10,7 @@ import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
 import com.fy.navi.hmi.poi.PoiDetailsFragment;
 import com.fy.navi.service.AutoMapConstant;
+import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.define.layer.GemBaseLayer;
 import com.fy.navi.service.define.layer.GemLayerItem;
 import com.fy.navi.service.define.layer.LayerType;
@@ -27,26 +27,25 @@ import com.fy.navi.ui.base.BaseModel;
 import java.util.UUID;
 
 /**
- * @Description TODO
- * @Author lvww
- * @date 2024/11/24
+ * @author lvww
+ * @version \$Revision1.0\$
  */
 public class SearchResultModel extends BaseModel<SearchResultViewModel> implements SearchResultCallback, ILayerPackageCallBack {
     private static final String TAG = "SearchResultModel";
     private final SearchPackage mSearchPackage;
     private final LayerPackage mLayerPackage;
-    private final String callbackId;
+    private final String mCallbackId;
 
     public SearchResultModel() {
-        callbackId = UUID.randomUUID().toString();
+        mCallbackId = UUID.randomUUID().toString();
         mSearchPackage = SearchPackage.getInstance();
         mLayerPackage = LayerPackage.getInstance();
-        mSearchPackage.registerCallBack(callbackId, this);
+        mSearchPackage.registerCallBack(mCallbackId, this);
     }
 
     @Override
-    public void onSearchResult(int taskId, int errorCode, String message, SearchResultEntity searchResultEntity) {
-        if (callbackId.equals(mSearchPackage.getCurrentCallbackId())) {
+    public void onSearchResult(final int taskId, final int errorCode, final String message, final SearchResultEntity searchResultEntity) {
+        if (mCallbackId.equals(mSearchPackage.getCurrentCallbackId())) {
 
 
             if (searchResultEntity.getSearchType() == AutoMapConstant.SearchType.POI_SEARCH
@@ -63,8 +62,8 @@ public class SearchResultModel extends BaseModel<SearchResultViewModel> implemen
     }
 
     @Override
-    public void onSilentSearchResult(int taskId, int errorCode, String message, SearchResultEntity searchResultEntity) {
-        if (callbackId.equals(mSearchPackage.getCurrentCallbackId())) {
+    public void onSilentSearchResult(final int taskId, final int errorCode, final String message, final SearchResultEntity searchResultEntity) {
+        if (mCallbackId.equals(mSearchPackage.getCurrentCallbackId())) {
             if (searchResultEntity.getSearchType() == AutoMapConstant.SearchType.POI_SEARCH
                     || searchResultEntity.getSearchType() == AutoMapConstant.SearchType.GEO_SEARCH) {
                 return;
@@ -91,7 +90,7 @@ public class SearchResultModel extends BaseModel<SearchResultViewModel> implemen
     public void onDestroy() {
         super.onDestroy();
         if (mSearchPackage != null) {
-            mSearchPackage.unRegisterCallBack(callbackId);
+            mSearchPackage.unRegisterCallBack(mCallbackId);
         }
         if (mLayerPackage != null) {
             Logger.d(TAG, "unRegisterCallBack");
@@ -100,29 +99,43 @@ public class SearchResultModel extends BaseModel<SearchResultViewModel> implemen
     }
 
     @Override
-    public void onMarkClickCallBack(PoiInfoEntity poiInfoEntity) {
+    public void onMarkClickCallBack(final PoiInfoEntity poiInfoEntity) {
         SearchResultCallback.super.onMarkClickCallBack(poiInfoEntity);
         if (ConvertUtils.isEmpty(poiInfoEntity)) {
-            Logger.d(SEARCH_HMI_TAG, "onMarkClickCallBack: poiInfoEntity is null");
+            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "onMarkClickCallBack: poiInfoEntity is null");
             return;
         }
 
-        Bundle bundle = new Bundle();
+        final Bundle bundle = new Bundle();
         bundle.putParcelable(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_OPEN_DETAIL, poiInfoEntity);
         bundle.putInt(AutoMapConstant.PoiBundleKey.BUNDLE_KEY_START_POI_TYPE, AutoMapConstant.PoiType.POI_KEYWORD);
-        addFragment(new PoiDetailsFragment(), bundle);
+        addPoiDetailsFragment(new PoiDetailsFragment(), bundle);
     }
 
+    /**
+     * 清除扎标
+     */
     public void clearLabelMark() {
         mSearchPackage.clearLabelMark();
     }
 
+    /**
+     * 是否处于算路阶段
+     *
+     * @return true 是 false 否
+     */
     public boolean isAlongWaySearch() {
         return mSearchPackage.isAlongWaySearch();
     }
 
+    /**
+     * 获取地图类型id
+     *
+     * @param name 地图类型名称
+     * @return 地图类型
+     */
     // TODO 后期需要优化
-    private MapTypeId getIdFromName(@Nullable String name) {
+    private MapTypeId getIdFromName(@Nullable final String name) {
         MapTypeId mapTypeId = MapTypeId.MAIN_SCREEN_MAIN_MAP;
         if (TextUtils.equals(name, MapTypeId.MAIN_SCREEN_MAIN_MAP.name())) {
             mapTypeId = MapTypeId.MAIN_SCREEN_MAIN_MAP;
@@ -131,18 +144,18 @@ public class SearchResultModel extends BaseModel<SearchResultViewModel> implemen
     }
 
     @Override
-    public void onBeforeNotifyClick(MapTypeId mapTypeId, GemBaseLayer layer, GemLayerItem pItem) {
+    public void onBeforeNotifyClick(final MapTypeId mapTypeId, final GemBaseLayer layer, final GemLayerItem item) {
         // TODO
     }
 
     @Override
-    public void onNotifyClick(MapTypeId mapTypeId, GemBaseLayer layer, GemLayerItem pItem) {
+    public void onNotifyClick(final MapTypeId mapTypeId, final GemBaseLayer layer, final GemLayerItem item) {
         // TODO 图层点击事件
         Logger.d(TAG, "onNotifyClick");
     }
 
     @Override
-    public void onAfterNotifyClick(MapTypeId mapTypeId, GemBaseLayer layer, GemLayerItem pItem) {
+    public void onAfterNotifyClick(final MapTypeId mapTypeId, final GemBaseLayer layer, final GemLayerItem item) {
         // TODO
     }
 }

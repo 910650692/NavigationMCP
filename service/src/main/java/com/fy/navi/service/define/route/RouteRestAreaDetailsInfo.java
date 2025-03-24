@@ -3,33 +3,39 @@ package com.fy.navi.service.define.route;
 
 import java.io.Serializable;
 
-public class RouteRestAreaDetailsInfo  implements Serializable {
-    public long remainDist;
-    public long remainTime;
-    public String serviceName;
-    public String servicePOIID;
-    public Coord2DDouble pos;
-    public long sapaDetail;
+import lombok.Getter;
+import lombok.Setter;
 
-    public boolean isAdded;
+@Getter
+@Setter
+public class RouteRestAreaDetailsInfo  implements Serializable {
+    private long mRemainDist;
+    private long mRemainTime;
+    private String mServiceName;
+    private String mServicePOIID;
+    private Coord2DDouble mPos;
+    private long mSapaDetail;
+    private boolean mIsAdded;
 
     public RouteRestAreaDetailsInfo() {
-        this.remainDist = 0L;
-        this.remainTime = 0L;
-        this.serviceName = "";
-        this.servicePOIID = "";
-        this.pos = new Coord2DDouble();
-        this.sapaDetail = 0L;
-        this.isAdded = false;
+        this.mRemainDist = 0L;
+        this.mRemainTime = 0L;
+        this.mServiceName = "";
+        this.mServicePOIID = "";
+        this.mPos = new Coord2DDouble();
+        this.mSapaDetail = 0L;
+        this.mIsAdded = false;
     }
 
-    public RouteRestAreaDetailsInfo(long remainDistLiteObj, long remainTimeLiteObj, String serviceNameLiteObj, String servicePOIIDLiteObj, Coord2DDouble posLiteObj, long sapaDetailLiteObj, boolean isAddedObj) {
-        this.remainDist = remainDistLiteObj;
-        this.remainTime = remainTimeLiteObj;
-        this.serviceName = serviceNameLiteObj;
-        this.servicePOIID = servicePOIIDLiteObj;
-        this.pos = posLiteObj;
-        this.sapaDetail = sapaDetailLiteObj;
-        this.isAdded = isAddedObj;
+    public RouteRestAreaDetailsInfo(final long remainDistLiteObj, final long remainTimeLiteObj, final String serviceNameLiteObj
+            , final String servicePOIIDLiteObj, final Coord2DDouble posLiteObj, final long sapaDetailLiteObj
+            , final boolean isAddedObj) {
+        this.mRemainDist = remainDistLiteObj;
+        this.mRemainTime = remainTimeLiteObj;
+        this.mServiceName = serviceNameLiteObj;
+        this.mServicePOIID = servicePOIIDLiteObj;
+        this.mPos = posLiteObj;
+        this.mSapaDetail = sapaDetailLiteObj;
+        this.mIsAdded = isAddedObj;
     }
 }

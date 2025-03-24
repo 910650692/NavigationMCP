@@ -19,67 +19,75 @@ import com.fy.navi.ui.view.SkinImageView;
 
 public class SceneCircleImageView extends SkinImageView {
 
-    private Paint paint;
-    private BitmapShader shader;
-    private int radius;
+    private Paint mPaint;
+    private BitmapShader mShader;
+    private int mRadius;
     private float mScale;
-    private Matrix matrix;
+    private Matrix mMatrix;
 
-    public SceneCircleImageView(Context context) {
+    public SceneCircleImageView(final Context context) {
         super(context);
         init();
     }
 
-    public SceneCircleImageView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public SceneCircleImageView(final Context context, @Nullable final AttributeSet attrs, final int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init();
     }
 
-    public SceneCircleImageView(Context context, @Nullable AttributeSet attrs) {
+    public SceneCircleImageView(final Context context, @Nullable final AttributeSet attrs) {
         super(context, attrs);
         init();
     }
 
+    /**
+     * 初始化
+     */
     private void init(){
-        paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        matrix = new Matrix();
-        paint.setAntiAlias(true);
+        mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        mMatrix = new Matrix();
+        mPaint.setAntiAlias(true);
     }
 
     @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+    protected void onMeasure(final int widthMeasureSpec, final int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 
-        int minTarget = Math.min(getMeasuredWidth(), getMeasuredHeight());
-        radius = minTarget / 2;
+        final int minTarget = Math.min(getMeasuredWidth(), getMeasuredHeight());
+        mRadius = minTarget / 2;
         setMeasuredDimension(minTarget, minTarget);
     }
 
     @Override
-    protected void onDraw(Canvas canvas) {
+    protected void onDraw(final Canvas canvas) {
         Bitmap bitmap = drawable2Bitmap(getDrawable());
         if(bitmap == null){
             bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.default_user_icon);
         }
 
-        shader = new BitmapShader(bitmap, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);
-        mScale = (radius * 2.0f) / Math.min(bitmap.getWidth(), bitmap.getHeight());
+        mShader = new BitmapShader(bitmap, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);
+        mScale = (mRadius * 2.0f) / Math.min(bitmap.getWidth(), bitmap.getHeight());
 
-        matrix.setScale(mScale, mScale);
-        shader.setLocalMatrix(matrix);
+        mMatrix.setScale(mScale, mScale);
+        mShader.setLocalMatrix(mMatrix);
 
-        paint.setShader(shader);
-        canvas.drawCircle(radius, radius, radius, paint);
+        mPaint.setShader(mShader);
+        canvas.drawCircle(mRadius, mRadius, mRadius, mPaint);
     }
 
-    private Bitmap drawable2Bitmap(Drawable drawable){
+    /**
+     * Drawable转Bitmap
+     * @param drawable Drawable
+     * @return Bitmap
+     */
+    private Bitmap drawable2Bitmap(final Drawable drawable){
         if (drawable instanceof BitmapDrawable bd) {
             return bd.getBitmap();
         }
-        int w = drawable.getIntrinsicWidth();
-        int h = drawable.getIntrinsicHeight();
-        Bitmap bitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(bitmap);
+        final int w = drawable.getIntrinsicWidth();
+        final int h = drawable.getIntrinsicHeight();
+        final Bitmap bitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
+        final Canvas canvas = new Canvas(bitmap);
         drawable.setBounds(0, 0, w, h);
         drawable.draw(canvas);
         return bitmap;

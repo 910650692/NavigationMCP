@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
 
+import com.fy.navi.fsa.MyFsaService;
 import com.fy.navi.hmi.databinding.LayoutTestBinding;
 import com.fy.navi.service.define.setting.SettingConstant;
 import com.fy.navi.service.greendao.setting.SettingManager;
@@ -112,7 +113,7 @@ public class TestWindow {
     private void initAction() {
         mBinding.close.setOnClickListener(v -> removeViewFromWindow());
 
-        mBinding.testStartNavi.setOnClickListener(v -> NaviPackage.getInstance().startNavigation(SettingConstant.isSimulateMode));
+        mBinding.testStartNavi.setOnClickListener(v -> NaviPackage.getInstance().startNavigation(SettingConstant.ISSIMULATEMODE));
         mBinding.testStopNavi.setOnClickListener(v -> NaviPackage.getInstance().stopNavigation());
 
         mBinding.testCurrentCityData.setOnClickListener(v -> MapDataPackage.getInstance().getCityInfo(310000));
@@ -125,23 +126,23 @@ public class TestWindow {
             calibration.model();
             calibration.enableApplicationNavigation();
             calibration.laneLevelNavigatioFuncEnable();
-            calibration.V2XMapDisplayFuncEnable();
+            calibration.v2xMapDisplayFuncEnable();
             calibration.speedLimitInformationSource();
-            calibration.ADASConfigurationInfomation();
-            calibration.ADASConfigurationType();
+            calibration.adasConfigurationInfomation();
+            calibration.adasConfigurationType();
             calibration.rearSeatTouchPanelFuncEnable();
-            calibration.HUDFuncEnable();
+            calibration.hudFuncEnable();
             calibration.navigationDeflectionEnable();
             calibration.architecture();
             calibration.navigationPreConditionDataProvideEnable();
             calibration.navigaitonSupplier();
             calibration.highVoltageBatteryPropulsionTotalRangeNavi();
-            calibration.POISearchFuncEnable();
+            calibration.poiSearchFuncEnable();
             calibration.scenarioEngineFuncEnable();
             calibration.globalSearchFuncEnable();
             calibration.teamTravelFuncEnable();
             calibration.bootAnimationReplacementFuncEnable();
-            calibration.IMEFuncEnable();
+            calibration.imeFuncEnable();
             calibration.wallpaperThemeFuncEnable();
             calibration.themeDefaultValue();
             calibration.slopeUpCostlist();
@@ -163,6 +164,14 @@ public class TestWindow {
             signal.getSpeedOfVehicle();
             signal.getAcSwitchState();
             signal.getSystemState();
+        });
+
+        mBinding.testOpenClusterActivity.setOnClickListener(v -> {
+            MyFsaService.getInstance().onReceiveRequest(9201, "23");
+        });
+
+        mBinding.testCloseClusterActivity.setOnClickListener(v -> {
+            MyFsaService.getInstance().onReceiveRequest(9201, "24");
         });
 
         mBinding.testInsertData.setOnClickListener(v -> {

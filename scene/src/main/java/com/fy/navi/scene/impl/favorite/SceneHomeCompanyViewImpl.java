@@ -1,22 +1,23 @@
 package com.fy.navi.scene.impl.favorite;
 
-import static com.fy.navi.service.MapDefaultFinalTag.SEARCH_HMI_TAG;
 
 import com.android.utils.log.Logger;
 import com.fy.navi.scene.BaseSceneModel;
 import com.fy.navi.scene.api.favorite.ISceneHomeCompanyView;
 import com.fy.navi.scene.ui.favorite.SceneHomeCompanyView;
+import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.logicpaket.search.SearchPackage;
 import com.fy.navi.ui.base.StackManager;
 
 /**
- * @Author: qlzou
+ * @author qlzou
+ * @version \$Revision1.0\$
  * @Description: 家和公司
  * @CreateDate: $ $
  */
 public class SceneHomeCompanyViewImpl extends BaseSceneModel<SceneHomeCompanyView> implements ISceneHomeCompanyView {
     private final SearchPackage mSearchPackage;
-    public SceneHomeCompanyViewImpl(SceneHomeCompanyView scrollView) {
+    public SceneHomeCompanyViewImpl(final SceneHomeCompanyView scrollView) {
         super(scrollView);
         mSearchPackage = SearchPackage.getInstance();
     }
@@ -27,7 +28,7 @@ public class SceneHomeCompanyViewImpl extends BaseSceneModel<SceneHomeCompanyVie
     }
 
     @Override
-    public void onClickQuickSearch(int position) {
+    public void onClickQuickSearch(final int position) {
         mScreenView.onClickQuickSearch(position);
     }
 
@@ -36,9 +37,13 @@ public class SceneHomeCompanyViewImpl extends BaseSceneModel<SceneHomeCompanyVie
         mScreenView.onClickEditText();
     }
 
-    public void suggestionSearch(String key) {
-        Logger.d(SEARCH_HMI_TAG, "suggestionSearch  key:" + key);
-        int taskId = mSearchPackage.suggestionSearch(key);
+    /**
+     * 预搜索
+     * @param key 关键字
+     */
+    public void suggestionSearch(final String key) {
+        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "suggestionSearch  key:" + key);
+        mSearchPackage.suggestionSearch(key);
     }
 
 }

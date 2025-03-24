@@ -9,12 +9,11 @@ import com.fy.navi.ui.action.Action;
 import com.fy.navi.ui.base.BaseViewModel;
 
 /**
- * @Description TODO
- * @Author lvww
- * @date 2024/11/24
+ * @author lvww
+ * @version \$Revision1.0\$
  */
 public class BasePoiDetailsViewModel extends BaseViewModel<PoiDetailsFragment, PoiDetailsModel> {
-    public BasePoiDetailsViewModel(@NonNull Application application) {
+    public BasePoiDetailsViewModel(@NonNull final Application application) {
         super(application);
     }
 
@@ -23,10 +22,19 @@ public class BasePoiDetailsViewModel extends BaseViewModel<PoiDetailsFragment, P
         return new PoiDetailsModel();
     }
 
-    public void onSearchResult(SearchResultEntity searchResultEntity) {
+    /**
+     * 搜索结果回调
+     * @param searchResultEntity 搜索结果实体类
+     */
+    public void onSearchResult(final SearchResultEntity searchResultEntity) {
         mView.onSearchResult(searchResultEntity);
     }
 
-    public Action rootClick = () -> {
+    public Action getRootClick() {
+        return mRootClick;
+    }
+
+    private final Action mRootClick = () -> {
     };
+
 }

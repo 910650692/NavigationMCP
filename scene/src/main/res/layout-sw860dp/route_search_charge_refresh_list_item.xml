@@ -28,12 +28,12 @@
 
             <com.fy.navi.ui.view.SkinTextView
                 android:id="@+id/route_item_charge_num"
-                android:layout_width="@dimen/dp_35"
+                android:layout_width="@dimen/dp_45"
                 android:layout_height="match_parent"
                 android:gravity="center"
                 android:textColor="@color/text_route_title"
                 android:textSize="@dimen/sp_30"
-                android:text="10"
+                android:text="20"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -44,7 +44,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/dp_52"
                 android:layout_marginTop="@dimen/dp_18"
-                android:layout_marginStart="@dimen/dp_60"
+                android:layout_marginStart="@dimen/dp_70"
                 android:textColor="@color/black"
                 android:ellipsize="end"
                 android:maxLines="1"

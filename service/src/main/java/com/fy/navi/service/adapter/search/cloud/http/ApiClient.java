@@ -12,19 +12,18 @@ import retrofit2.http.POST;
 
 
 /**
- * <pre>
- *     author : BaiPengMac
- *     e-mail : xxx@xx
- *     time   : 2022/04/13
- *     desc   :
- *     version: xx
- * </pre>
+ * @author BaiPengMac
+ * e-mail : xxx@xx
+ * time   : 2022/04/13
+ * desc   :
+ * @version \$Revision1.0\$
  */
 public interface ApiClient {
 
     /**
      * Post 请求  充电站列表查询
-     * 多个参数使用： @FieldMap Map<String, String> params
+     * @param params 多个参数使用
+     * @return Observable<PoiInfoEntity></PoiInfoEntity>
      */
     @FormUrlEncoded
     @POST(ApiService.CLOUD_QUERY_STATION_NEW)
@@ -32,7 +31,8 @@ public interface ApiClient {
 
     /**
      * Post 请求  查询地锁信息列表
-     * 多个参数使用： @FieldMap Map<String, String> params
+     * @param params 多个参数使用
+     * @return Observable<PoiInfoEntity></PoiInfoEntity>
      */
     @FormUrlEncoded
     @POST(ApiService.CLOUD_QUERY_LOCK_INFO)
@@ -40,7 +40,8 @@ public interface ApiClient {
 
     /**
      * Post 请求  开启地锁
-     * 多个参数使用： @FieldMap Map<String, String> params
+     * @param params 多个参数使用
+     * @return Observable<PoiInfoEntity></PoiInfoEntity>
      */
     @FormUrlEncoded
     @POST(ApiService.CLOUD_QUERY_UNLOCK)
@@ -48,7 +49,8 @@ public interface ApiClient {
 
     /**
      * Post 请求  查询开锁结果
-     * 多个参数使用： @FieldMap Map<String, String> params
+     * @param params 多个参数使用
+     * @return Observable<PoiInfoEntity></PoiInfoEntity>
      */
     @FormUrlEncoded
     @POST(ApiService.CLOUD_QUERY_UNLOCK_RESULT)

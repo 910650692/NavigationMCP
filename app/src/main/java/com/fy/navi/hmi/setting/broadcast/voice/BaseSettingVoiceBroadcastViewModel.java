@@ -28,9 +28,9 @@ public class BaseSettingVoiceBroadcastViewModel extends BaseViewModel<SettingVoi
     private static final String TAG = BaseSettingVoiceBroadcastViewModel.class.getSimpleName();
 
     HashMap<Integer, VoiceInfo> recommendVoiceList = new HashMap<>();
-    public MutableLiveData<Boolean> isDefaultVoiceUsed = new MutableLiveData<>(true);
+    public MutableLiveData<Boolean> mIsDefaultVoiceUsed = new MutableLiveData<>(true);
 
-    public BaseSettingVoiceBroadcastViewModel(@NonNull Application application) {
+    public BaseSettingVoiceBroadcastViewModel(final @NonNull Application application) {
         super(application);
     }
 
@@ -49,35 +49,57 @@ public class BaseSettingVoiceBroadcastViewModel extends BaseViewModel<SettingVoi
         super.onDestroy();
     }
 
-    public Action switchVoiceBroadcastClick = () -> {
+    public Action mSwitchVoiceBroadcastClick = () -> {
         closeFragment(true);
     };
 
-    public Action switchDefaultVoice = () -> {
-        if(Boolean.FALSE.equals(isDefaultVoiceUsed.getValue())){
-            isDefaultVoiceUsed.setValue(true);
+    public Action mSwitchDefaultVoice = () -> {
+        if(Boolean.FALSE.equals(mIsDefaultVoiceUsed.getValue())){
+            mIsDefaultVoiceUsed.setValue(true);
             mModel.setVoice(GBLCacheFilePath.DEFAULT_VOICE_PATH);
             SettingManager.getInstance().insertOrReplace(SettingController.KEY_SETTING_VOICE_PACKAGE, "default");
             SettingManager.getInstance().insertOrReplace(SettingController.KEY_SETTING_VOICE_ICON, "default");
-            SettingManager.getInstance().insertOrReplace(SettingController.KEY_SETTING_VOICE_NAME, ResourceUtils.Companion.getInstance().getString(R.string.setting_broadcast_voice_current_name));
+            SettingManager.getInstance().insertOrReplace(SettingController.KEY_SETTING_VOICE_NAME,
+                    ResourceUtils.Companion.getInstance().getString(R.string.setting_broadcast_voice_current_name));
             mView.setCurrentVoice();
             mView.unSelectAllVoices();
         }
     };
-
-    public void onRequestDataListCheck(int downLoadMode, int dataType, int opCode){
+    /**
+     * 数据列表检查
+     * @param downLoadMode
+     * @param dataType
+     * @param opCode
+     */
+    public void onRequestDataListCheck(final int downLoadMode, final int dataType, final int opCode){
         if(opCode == 0){
             recommendVoiceList = mModel.getRecommendVoiceList();
             mView.setData(recommendVoiceList);
         }
     }
 
-    public void onDownLoadStatus(int downLoadMode, int dataType, int id, int taskCode, int opCode) {
+    /**
+     * 下载状态回调
+     * @param downLoadMode
+     * @param dataType
+     * @param id
+     * @param taskCode
+     * @param opCode
+     */
+    public void onDownLoadStatus(final int downLoadMode, final int dataType, final int id, final int taskCode, final int opCode) {
         replaceVoiceInfo(id, taskCode, 0);
     }
 
-    public void onPercent(int downLoadMode, int dataType, int id, int percentType, float percent){
-        int taskCode = (percentType == 0) ? OperationStatus.TASK_STATUS_CODE_DOING : OperationStatus.TASK_STATUS_CODE_UNZIPPING;
+    /**
+     * 下载进度回调
+     * @param downLoadMode
+     * @param dataType
+     * @param id
+     * @param percentType
+     * @param percent
+     */
+    public void onPercent(final int downLoadMode, final int dataType, final int id, final int percentType, final float percent){
+        final int taskCode = (percentType == 0) ? OperationStatus.TASK_STATUS_CODE_DOING : OperationStatus.TASK_STATUS_CODE_UNZIPPING;
         replaceVoiceInfo(id, taskCode, percent);
     }
 
@@ -85,15 +107,24 @@ public class BaseSettingVoiceBroadcastViewModel extends BaseViewModel<SettingVoi
         return mModel.isInitService();
     }
 
-    public void requestDataListCheck(int downLoadMode, String path){
+    /**
+     * 检查数据列表
+     * @param downLoadMode
+     * @param path
+     */
+    public void requestDataListCheck(final int downLoadMode, final String path){
         mModel.requestDataListCheck(downLoadMode, path);
     }
 
-    public void toOperate(int index){
+    /**
+     * 操作
+     * @param index
+     */
+    public void toOperate(final int index){
         Logger.d("SettingVoiceBroadcastModel", "switchTaskStatusToOperate: " + index);
-        ArrayList<VoiceInfo> voiceInfoList = new ArrayList<>(recommendVoiceList.values());
-        VoiceInfo voiceInfo = voiceInfoList.get(index);
-        ArrayList<Integer> operatedIdList = new ArrayList<>();
+        final ArrayList<VoiceInfo> voiceInfoList = new ArrayList<>(recommendVoiceList.values());
+        final VoiceInfo voiceInfo = voiceInfoList.get(index);
+        final ArrayList<Integer> operatedIdList = new ArrayList<>();
         operatedIdList.add(voiceInfo.getId());
 
         Logger.d("SettingVoiceBroadcastModel", "switchTaskStatusToOperate: " + operatedIdList);
@@ -112,9 +143,10 @@ public class BaseSettingVoiceBroadcastViewModel extends BaseViewModel<SettingVoi
                 ToastUtils.Companion.getInstance().showCustomToastView("解压完成");
                 break;
             case OperationStatus.TASK_STATUS_CODE_SUCCESS:
-                isDefaultVoiceUsed.setValue(false);
+                mIsDefaultVoiceUsed.setValue(false);
                 mModel.setVoice(Objects.requireNonNull(voiceInfoList.get(index)).getFilePath());
-                SettingManager.getInstance().insertOrReplace(SettingController.KEY_SETTING_VOICE_PACKAGE, String.valueOf(Objects.requireNonNull(voiceInfoList.get(index)).getId()));
+                SettingManager.getInstance().insertOrReplace(SettingController.KEY_SETTING_VOICE_PACKAGE,
+                        String.valueOf(Objects.requireNonNull(voiceInfoList.get(index)).getId()));
                 SettingManager.getInstance().insertOrReplace(SettingController.KEY_SETTING_VOICE_ICON, voiceInfoList.get(index).getImageUrl());
                 SettingManager.getInstance().insertOrReplace(SettingController.KEY_SETTING_VOICE_NAME, voiceInfoList.get(index).getName());
                 mView.setCurrentVoice();
@@ -132,8 +164,14 @@ public class BaseSettingVoiceBroadcastViewModel extends BaseViewModel<SettingVoi
         }
     }
 
-    public void replaceVoiceInfo(int id, int taskCode, float percent){
-        VoiceInfo voiceInfo = recommendVoiceList.get(id);
+    /**
+     * 设置语音信息
+     * @param id
+     * @param taskCode
+     * @param percent
+     */
+    public void replaceVoiceInfo(final int id, final int taskCode, final float percent){
+        final VoiceInfo voiceInfo = recommendVoiceList.get(id);
         if(voiceInfo != null){
             voiceInfo.setTaskState(taskCode);
             voiceInfo.setPercent(percent);

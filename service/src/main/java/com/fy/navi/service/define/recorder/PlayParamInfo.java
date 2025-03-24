@@ -5,25 +5,25 @@ public class PlayParamInfo {
     /**
      * 是否循环播放
      */
-    private boolean isLooping;
+    private boolean mIsLooping;
     /**
      * 回放文件路径(目录或文件)
      */
-    private String playPath;
+    private String mPlayPath;
 
     public boolean isLooping() {
-        return isLooping;
+        return mIsLooping;
     }
 
-    public void setLooping(boolean looping) {
-        isLooping = looping;
+    public void setLooping(final boolean looping) {
+        mIsLooping = looping;
     }
 
     public String getPlayPath() {
-        return playPath;
+        return mPlayPath;
     }
 
-    public void setPlayPath(String playPath) {
-        this.playPath = playPath;
+    public void setPlayPath(final String playPath) {
+        this.mPlayPath = playPath;
     }
 }

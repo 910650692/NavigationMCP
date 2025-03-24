@@ -103,7 +103,7 @@ public class NaviAudioPlayer {
 
     public void init() {
         if (null == mAudioManager) {
-            mAudioManager = (AudioManager) AppContext.mContext.getSystemService(Context.AUDIO_SERVICE);
+            mAudioManager = (AudioManager) AppContext.getInstance().getMContext().getSystemService(Context.AUDIO_SERVICE);
             //监听录音配置变化
             mAudioManager.registerAudioRecordingCallback(new AudioManager.AudioRecordingCallback() {
 
@@ -273,7 +273,7 @@ public class NaviAudioPlayer {
         mAudioPlayer = new MediaPlayer();
         AssetFileDescriptor file = null;
         try {
-            file = AppContext.mContext.getApplicationContext().getResources().openRawResourceFd(resId);
+            file = AppContext.getInstance().getMContext().getApplicationContext().getResources().openRawResourceFd(resId);
             mAudioPlayer.setAudioAttributes(mNaviPlaybackAttributes);
             mAudioPlayer.setDataSource(file.getFileDescriptor(),
                     file.getStartOffset(), file.getLength());

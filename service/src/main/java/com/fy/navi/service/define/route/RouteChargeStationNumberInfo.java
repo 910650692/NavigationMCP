@@ -2,20 +2,25 @@ package com.fy.navi.service.define.route;
 
 import java.io.Serializable;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 public class RouteChargeStationNumberInfo implements Serializable {
-    public String totalNumber;
-    public String minPower;
-    public String maxPower;
+    private String mTotalNumber;
+    private String mMinPower;
+    private String mMaxPower;
 
     public RouteChargeStationNumberInfo() {
-        this.totalNumber = "";
-        this.minPower = "";
-        this.maxPower = "";
+        this.mTotalNumber = "";
+        this.mMinPower = "";
+        this.mMaxPower = "";
     }
 
-    public RouteChargeStationNumberInfo(String totalNumberLiteObj, String minPowerLiteObj, String maxPowerLiteObj) {
-        this.totalNumber = totalNumberLiteObj;
-        this.minPower = minPowerLiteObj;
-        this.maxPower = maxPowerLiteObj;
+    public RouteChargeStationNumberInfo(final String totalNumberLiteObj, final String minPowerLiteObj, final String maxPowerLiteObj) {
+        this.mTotalNumber = totalNumberLiteObj;
+        this.mMinPower = minPowerLiteObj;
+        this.mMaxPower = maxPowerLiteObj;
     }
 }

@@ -5,7 +5,9 @@ public interface SignalCallback {
      * 车速变化(频率500ms)
      * @param speed 单位m/s
      */
-    default void onSpeedChanged(float speed) {}
+    default void onSpeedChanged(float speed) {
+
+    }
 
     /**
      * 挡位变化
@@ -16,7 +18,9 @@ public interface SignalCallback {
      * REVERSE = 3;倒车
      * INVALID = 4;无效
      */
-    default void onGearChanged(int gear) {}
+    default void onGearChanged(int gear) {
+
+    }
 
     /**
      * 系统状态
@@ -27,5 +31,7 @@ public interface SignalCallback {
      * CRANK(START) = 3
      * SLEEP = 4
      */
-    default void onSystemStateChanged(int state) {}
+    default void onSystemStateChanged(int state) {
+
+    }
 }

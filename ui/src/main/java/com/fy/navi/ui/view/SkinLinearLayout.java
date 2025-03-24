@@ -7,36 +7,31 @@ import android.util.AttributeSet;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.LinearLayoutCompat;
 
-/**
- * @Description TODO
- * @Author lvww
- * @date 2024/12/2
- */
 public class SkinLinearLayout extends LinearLayoutCompat {
-    public SkinLinearLayout(Context context) {
+    public SkinLinearLayout(final Context context) {
         super(context);
     }
 
-    public SkinLinearLayout(Context context, @Nullable AttributeSet attrs) {
+    public SkinLinearLayout(final Context context, final @Nullable AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public SkinLinearLayout(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public SkinLinearLayout(final Context context, final @Nullable AttributeSet attrs, final int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 
     @Override
-    protected void onLayout(boolean changed, int l, int t, int r, int b) {
+    protected void onLayout(final boolean changed, final int l, final int t, final int r, final int b) {
         super.onLayout(changed, l, t, r, b);
     }
 
     @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+    protected void onMeasure(final int widthMeasureSpec, final int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
 
     @Override
-    protected void onDraw(Canvas canvas) {
+    protected void onDraw(final Canvas canvas) {
         super.onDraw(canvas);
     }
 }

@@ -31,7 +31,7 @@ public class PositionAdapterImpl implements IPositionApi, ISpeedCallback {
     private VehicleSpeedController mVehicleSpeedController;
 
     public PositionAdapterImpl() {
-        positionStrategy = new PositionBlsStrategy(AppContext.mContext);
+        positionStrategy = new PositionBlsStrategy(AppContext.getInstance().getMContext());
     }
 
     @Override
@@ -40,8 +40,13 @@ public class PositionAdapterImpl implements IPositionApi, ISpeedCallback {
     }
 
     @Override
-    public void unInitPositionService() {
+    public void unregisterCallback(IPositionAdapterCallback callback) {
         positionStrategy.unregisterCallback();
+    }
+
+    @Override
+    public void unInitPositionService() {
+
     }
 
     @Override
@@ -49,7 +54,7 @@ public class PositionAdapterImpl implements IPositionApi, ISpeedCallback {
         // TODO: 2025/2/25 此处定位模式需要在存储中配置,临时使用constant配置  GNSS/后端融合切换
         mLocMode = PositionConstant.isDrBack ? LocMode.DrBack : LocMode.GNSS;
         if (mLocMode == LocMode.DrBack) {
-            mVehicleSpeedController = new VehicleSpeedController(AppContext.mContext, this);
+            mVehicleSpeedController = new VehicleSpeedController(AppContext.getInstance().getMContext(), this);
             mVehicleSpeedController.registerCallback();
         }
         boolean initResult = positionStrategy.initLocEngine(mLocMode, new PositionConfig());
@@ -110,7 +115,7 @@ public class PositionAdapterImpl implements IPositionApi, ISpeedCallback {
 
     /***初始化定位模块***/
     public void init(LocMode locMode) {
-        mLocSigFusionManager = new LocSigFusionManager(AppContext.mApplication.getApplicationContext(),
+        mLocSigFusionManager = new LocSigFusionManager(AppContext.getInstance().getMApplication().getApplicationContext(),
                 locMode, positionStrategy);
         mLocSigFusionManager.setDrBackFusionEnable(mDrBackFusionEnable);
         mLocSigFusionManager.init();

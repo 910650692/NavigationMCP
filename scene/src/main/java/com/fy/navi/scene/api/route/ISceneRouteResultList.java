@@ -1,11 +1,9 @@
 package com.fy.navi.scene.api.route;
 
-/**
- * @Description TODO
- * @Author lvww
- * @date 2024/12/2
- */
 public interface ISceneRouteResultList {
-
+    /**
+     * 选择路线
+     * @param index  索引
+     * */
     void selectRoute(int index);
 }

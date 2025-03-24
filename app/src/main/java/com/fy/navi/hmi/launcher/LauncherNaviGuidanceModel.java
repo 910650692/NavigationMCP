@@ -5,7 +5,6 @@ import android.os.Bundle;
 
 import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
-import com.fy.navi.hmi.navi.NaviGuidanceViewModel;
 import com.fy.navi.hmi.search.alongway.MainAlongWaySearchFragment;
 import com.fy.navi.hmi.setting.SettingFragment;
 import com.fy.navi.scene.impl.imersive.ImersiveStatus;
@@ -27,7 +26,6 @@ import com.fy.navi.service.define.navi.SapaInfoEntity;
 import com.fy.navi.service.define.navi.SpeedOverallEntity;
 import com.fy.navi.service.define.route.RequestRouteResult;
 import com.fy.navi.service.define.route.RouteParam;
-import com.fy.navi.service.define.route.RouteWayID;
 import com.fy.navi.service.logicpaket.layer.LayerPackage;
 import com.fy.navi.service.logicpaket.map.MapPackage;
 import com.fy.navi.service.logicpaket.navi.IGuidanceObserver;
@@ -136,7 +134,7 @@ public class LauncherNaviGuidanceModel extends BaseModel<LauncherNaviGuidanceVie
 
     @Override
     public void onSelectMainPathStatus(long pathID, int result) {
-        if (result == NaviConstant.ChangeNaviPathResult.ChangeNaviPathResultSuccess) {
+        if (result == NaviConstant.ChangeNaviPathResult.CHANGE_NAVI_PATH_RESULT_SUCCESS) {
             //此处选中路线索引需要从onNotifyClick获取 BizRouteType.BizRouteTypePath/BizRouteType.BizRouteTypeGuideLabel
 //            mLayerPackage.switchSelectedPath(MapTypeId.MAIN_SCREEN_MAIN_MAP, pathID);
             //清除引导路线上的转向图标图层
@@ -239,10 +237,6 @@ public class LauncherNaviGuidanceModel extends BaseModel<LauncherNaviGuidanceVie
     }
 
     public void onRoutePreferenceChange() {
-        List<RouteParam> allPoiParamList = mRoutePackage.getAllPoiParamList(MapTypeManager.getInstance().getMapTypeIdByName(mViewModel.mScreenId));
-        if (!ConvertUtils.isEmpty(allPoiParamList)) {
-            RouteParam routeParam = allPoiParamList.get(allPoiParamList.size() - 1);
-            mRoutePackage.requestRoute(MapTypeManager.getInstance().getMapTypeIdByName(mViewModel.mScreenId), NaviDataFormatHelper.getPoiInfoEntity(routeParam), routeParam.getPoiType(), true, RouteWayID.ROUTE_WAY_DEFAULT);
-        }
+        //todo
     }
 }

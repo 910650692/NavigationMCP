@@ -22,44 +22,44 @@ import java.util.Hashtable;
 import java.util.List;
 
 public class RouteDetailsResultAdapter extends BaseExpandableListAdapter {
-    private List<RouteLineSegmentInfo> routeLineSegmentInfos; //
-    private boolean isAvoid;
-    private ItemCheckedChangeListener listener;
-    private Hashtable<Integer, Boolean> hashtable;
+    private List<RouteLineSegmentInfo> mRouteLineSegmentInfos; //
+    private boolean mIsAvoid;
+    private ItemCheckedChangeListener mListener;
+    private Hashtable<Integer, Boolean> mHashtable;
 
     public RouteDetailsResultAdapter() {
-        routeLineSegmentInfos = new ArrayList<>();
-        isAvoid = false;
-        hashtable = new Hashtable<>();
+        mRouteLineSegmentInfos = new ArrayList<>();
+        mIsAvoid = false;
+        mHashtable = new Hashtable<>();
     }
 
     @Override
     public int getGroupCount() {
-        return routeLineSegmentInfos.size();
+        return mRouteLineSegmentInfos.size();
     }
 
     @Override
-    public int getChildrenCount(int groupPosition) {
-        return routeLineSegmentInfos.get(groupPosition).getRouteLineSegmentInfos().size();
+    public int getChildrenCount(final int groupPosition) {
+        return mRouteLineSegmentInfos.get(groupPosition).getMRouteLineSegmentInfos().size();
     }
 
     @Override
-    public RouteLineSegmentInfo getGroup(int groupPosition) {
-        return routeLineSegmentInfos.get(groupPosition);
+    public RouteLineSegmentInfo getGroup(final int groupPosition) {
+        return mRouteLineSegmentInfos.get(groupPosition);
     }
 
     @Override
-    public RouteLineSegmentInfo getChild(int groupPosition, int childPosition) {
-        return routeLineSegmentInfos.get(groupPosition).getRouteLineSegmentInfos().get(childPosition);
+    public RouteLineSegmentInfo getChild(final int groupPosition, final int childPosition) {
+        return mRouteLineSegmentInfos.get(groupPosition).getMRouteLineSegmentInfos().get(childPosition);
     }
 
     @Override
-    public long getGroupId(int groupPosition) {
+    public long getGroupId(final int groupPosition) {
         return groupPosition;
     }
 
     @Override
-    public long getChildId(int groupPosition, int childPosition) {
+    public long getChildId(final int groupPosition, final int childPosition) {
         return childPosition;
     }
 
@@ -69,21 +69,26 @@ public class RouteDetailsResultAdapter extends BaseExpandableListAdapter {
     }
 
     @Override
-    public boolean isChildSelectable(int groupPosition, int childPosition) {
+    public boolean isChildSelectable(final int groupPosition, final int childPosition) {
         return true;
     }
-
-    public void setAdapterResult(List<RouteLineSegmentInfo> routeLineSegmentInfos, boolean isAvoid) {
-        this.routeLineSegmentInfos = routeLineSegmentInfos;
-        this.isAvoid = isAvoid;
+    /**
+     * 初始化列表
+     * @param routeLineSegmentInfos 列表数据
+     * @param isAvoid 避开
+     * */
+    public void setAdapterResult(final List<RouteLineSegmentInfo> routeLineSegmentInfos, final boolean isAvoid) {
+        this.mRouteLineSegmentInfos = routeLineSegmentInfos;
+        this.mIsAvoid = isAvoid;
         notifyDataSetChanged();
     }
 
     @Override
-    public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
-        GroupViewHolder holder;
+    public View getGroupView(final int groupPosition, final boolean isExpanded, final View convertViews, final ViewGroup parent) {
+        final GroupViewHolder holder;
+        View convertView = convertViews;
         if (convertView == null) {
-            convertView = LayoutInflater.from(AppContext.mContext).inflate(R.layout.route_details_info_result_parent_item, parent, false);
+            convertView = LayoutInflater.from(AppContext.getInstance().getMContext()).inflate(R.layout.route_details_info_result_parent_item, parent, false);
             holder = new GroupViewHolder(convertView);
             convertView.setTag(holder);
         } else {
@@ -91,92 +96,115 @@ public class RouteDetailsResultAdapter extends BaseExpandableListAdapter {
         }
 
         setFrontIcon(holder, groupPosition);
-        holder.parentRoadName.setText(getGroup(groupPosition).getLoadName());
-        holder.parentDescription.setText(getGroup(groupPosition).getDistance() + " " + AppContext.mContext.getResources().getString(R.string.route_details_light_count) + getGroup(groupPosition).getLightCount() + AppContext.mContext.getResources().getString(R.string.route_details_light_count_unit));
-        holder.parentUpDowmIcon.setImageResource(isExpanded ? R.drawable.img_route_up : R.drawable.img_route_down);
+        holder.mParentRoadName.setText(getGroup(groupPosition).getMLoadName());
+        holder.mParentDescription.setText(getGroup(groupPosition).getMDistance() + " "
+                + AppContext.getInstance().getMContext().getResources().getString(R.string.route_details_light_count)
+                + getGroup(groupPosition).getMLightCount() + AppContext.getInstance().getMContext().getResources().getString(R.string.route_details_light_count_unit));
+        holder.mParentUpDowmIcon.setImageResource(isExpanded ? R.drawable.img_route_up : R.drawable.img_route_down);
         return convertView;
     }
-
-    private void setFrontIcon(GroupViewHolder holder, int groupPosition) {
-        if (isAvoid) {
-            holder.parentTurnIcon.setVisibility(View.GONE);
-            holder.parentCheckBox.setVisibility(View.VISIBLE);
-            holder.parentCheckBox.setChecked(false);
-            hashtable.put(groupPosition, false);
-            holder.parentCheckBox.setOnCheckedChangeListener((CompoundButton compoundButton, boolean isChecked) -> {
-                if (ConvertUtils.isEmpty(listener)) return;
-                listener.OnItemCheckedChange(getRouteAvoidInfo(groupPosition, isChecked));
+    /**
+     * 初始化列表
+     * @param holder view
+     * @param groupPosition 列表索引
+     * */
+    private void setFrontIcon(final GroupViewHolder holder, final int groupPosition) {
+        if (mIsAvoid) {
+            holder.mParentTurnIcon.setVisibility(View.GONE);
+            holder.mParentCheckBox.setVisibility(View.VISIBLE);
+            holder.mParentCheckBox.setChecked(false);
+            mHashtable.put(groupPosition, false);
+            holder.mParentCheckBox.setOnCheckedChangeListener((CompoundButton compoundButton, boolean isChecked) -> {
+                if (ConvertUtils.isEmpty(mListener)) {
+                    return;
+                }
+                mListener.onItemCheckedChange(getRouteAvoidInfo(groupPosition, isChecked));
             });
         } else {
-            holder.parentCheckBox.setVisibility(View.GONE);
-            holder.parentTurnIcon.setVisibility(View.VISIBLE);
-            holder.parentTurnIcon.setImageResource(SceneRouteDetailEnumRes.getDrawableEnumName(SceneRouteCommonStruct.RouteDetailsMainAction.get(getGroup(groupPosition).getIconType())).getDayDrawableId());
+            holder.mParentCheckBox.setVisibility(View.GONE);
+            holder.mParentTurnIcon.setVisibility(View.VISIBLE);
+            holder.mParentTurnIcon.setImageResource(SceneRouteDetailEnumRes.getDrawableEnumName(
+                    SceneRouteCommonStruct.RouteDetailsMainAction.get(getGroup(groupPosition).getMIconType())).getDayDrawableId());
         }
     }
 
     @Override
-    public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
-        ChildViewHolder holder;
+    public View getChildView(final int groupPosition, final int childPosition, final boolean isLastChild
+            , final View convertViews, final ViewGroup parent) {
+        final ChildViewHolder holder;
+        View convertView = convertViews;
         if (convertView == null) {
-            convertView = LayoutInflater.from(AppContext.mContext).inflate(R.layout.route_details_info_result_child_item, parent, false);
+            convertView = LayoutInflater.from(AppContext.getInstance().getMContext()).inflate(R.layout.route_details_info_result_child_item, parent, false);
             holder = new ChildViewHolder(convertView);
             convertView.setTag(holder);
         } else {
             holder = (ChildViewHolder) convertView.getTag();
         }
 
-        holder.childTurnIcon.setImageResource(SceneRouteDetailEnumRes.getDrawableEnumName(SceneRouteCommonStruct.RouteDetailsMainAction.get(getChild(groupPosition, childPosition).getIconType())).getDayDrawableId());
-        holder.childDescription.setText(getChild(groupPosition, childPosition).getDistance() + " " + AppContext.mContext.getResources().getString(R.string.route_details_after_to_arrive) + getChild(groupPosition, childPosition).getLoadName());
+        holder.mChildTurnIcon.setImageResource(SceneRouteDetailEnumRes.getDrawableEnumName(
+                SceneRouteCommonStruct.RouteDetailsMainAction.get(getChild(groupPosition, childPosition).getMIconType())).getDayDrawableId());
+        holder.mChildDescription.setText(getChild(groupPosition, childPosition).getMDistance() + " "
+                + AppContext.getInstance().getMContext().getResources().getString(R.string.route_details_after_to_arrive)
+                + getChild(groupPosition, childPosition).getMLoadName());
         return convertView;
     }
-
-    private RouteAvoidInfo getRouteAvoidInfo(int groupPosition, boolean isChecked) {
-        hashtable.put(groupPosition, isChecked);
-        RouteAvoidInfo info = new RouteAvoidInfo();
+    /**
+     * 获取避开道路数据
+     * @param groupPosition 索引
+     * @param isChecked 是否勾选
+     * @return  道路数据
+     * */
+    private RouteAvoidInfo getRouteAvoidInfo(final int groupPosition, final boolean isChecked) {
+        mHashtable.put(groupPosition, isChecked);
+        final RouteAvoidInfo info = new RouteAvoidInfo();
         boolean checkedLeastOne = false;
-        ArrayList<Long> avoidList = new ArrayList<>();
-        for (boolean isCheck : hashtable.values()) {
+        final ArrayList<Long> avoidList = new ArrayList<>();
+        for (boolean isCheck : mHashtable.values()) {
             checkedLeastOne |= isCheck;
             if (isCheck) {
-                avoidList.addAll(getGroup(groupPosition).getAvoidList());
+                avoidList.addAll(getGroup(groupPosition).getMAvoidList());
             }
         }
-        info.setCheckedLeastOne(checkedLeastOne);
-        info.setAvoidList(avoidList);
+        info.setMCheckedLeastOne(checkedLeastOne);
+        info.setMAvoidList(avoidList);
         return info;
     }
 
-    public void setOnItemCheckedChangeListener(ItemCheckedChangeListener listener) {
-        this.listener = listener;
+    public void setOnItemCheckedChangeListener(final ItemCheckedChangeListener listener) {
+        this.mListener = listener;
     }
 
     static class GroupViewHolder {
-        SkinImageView parentTurnIcon;
-        SkinTextView parentRoadName;
-        SkinTextView parentDescription;
-        SkinImageView parentUpDowmIcon;
-        CheckBox parentCheckBox;
+        private SkinImageView mParentTurnIcon;
+        private SkinTextView mParentRoadName;
+        private SkinTextView mParentDescription;
+        private SkinImageView mParentUpDowmIcon;
+        private CheckBox mParentCheckBox;
 
-        GroupViewHolder(View view) {
-            parentTurnIcon = view.findViewById(R.id.route_detail_info_item_img);
-            parentRoadName = view.findViewById(R.id.route_detail_info_item_road_name);
-            parentDescription = view.findViewById(R.id.route_detail_info_item_description);
-            parentUpDowmIcon = view.findViewById(R.id.route_detail_info_item_img_updown);
-            parentCheckBox = view.findViewById(R.id.route_detail_info_item_cbx);
+        GroupViewHolder(final View view) {
+            mParentTurnIcon = view.findViewById(R.id.route_detail_info_item_img);
+            mParentRoadName = view.findViewById(R.id.route_detail_info_item_road_name);
+            mParentDescription = view.findViewById(R.id.route_detail_info_item_description);
+            mParentUpDowmIcon = view.findViewById(R.id.route_detail_info_item_img_updown);
+            mParentCheckBox = view.findViewById(R.id.route_detail_info_item_cbx);
         }
     }
 
     static class ChildViewHolder {
-        SkinImageView childTurnIcon;
-        SkinTextView childDescription;
+        private SkinImageView mChildTurnIcon;
+        private SkinTextView mChildDescription;
 
-        ChildViewHolder(View view) {
-            childTurnIcon = view.findViewById(R.id.route_detail_info_item_child_img);
-            childDescription = view.findViewById(R.id.route_detail_info_item_child_description);
+        ChildViewHolder(final View view) {
+            mChildTurnIcon = view.findViewById(R.id.route_detail_info_item_child_img);
+            mChildDescription = view.findViewById(R.id.route_detail_info_item_child_description);
         }
     }
 
     public interface ItemCheckedChangeListener {
-        void OnItemCheckedChange(RouteAvoidInfo routeAvoidInfo);
+        /**
+         * item 勾选回调
+         * @param routeAvoidInfo 勾选数据
+         * */
+        void onItemCheckedChange(final RouteAvoidInfo routeAvoidInfo);
     }
 }

@@ -11,22 +11,19 @@ import org.greenrobot.greendao.database.Database;
 import java.util.Date;
 import java.util.List;
 
-/**
- * @Author: fenghong0322
- * @Description: 公用项数据库管理
- * @CreateDate: 2025-01-08
- */
-public class CommonManager {
+
+public final class CommonManager {
     private static final String TAG = CommonManager.class.getSimpleName();
     private static final String DB_NAME = "common.db";
     private static CommonManager mCommonManager;
     private CommonSettingDao mCommonSettingDao;
-    private boolean isInit = false;
+    private boolean mIsInit = false;
     private CommonManager() {
 
     }
     /**
      * Get instance.
+     * @return SettingManager
      */
     public static CommonManager getInstance() {
         if (mCommonManager == null) {
@@ -44,13 +41,13 @@ public class CommonManager {
      * Init database and cloud data.
      */
     public void init() {
-        if (!isInit) {
+        if (!mIsInit) {
             // 数据库对象
-            DaoMaster.DevOpenHelper helper = new DaoMaster.DevOpenHelper(AppContext.mContext, DB_NAME);
-            Database db = helper.getWritableDb();
-            DaoMaster daoMaster = new DaoMaster(db);
+            final DaoMaster.DevOpenHelper helper = new DaoMaster.DevOpenHelper(AppContext.getInstance().getMContext(), DB_NAME);
+            final Database db = helper.getWritableDb();
+            final DaoMaster daoMaster = new DaoMaster(db);
             mCommonSettingDao = daoMaster.newSession().getCommonSettingDao();
-            isInit = true;
+            mIsInit = true;
             Logger.i(TAG, "Database init success!");
         } else {
             Logger.i(TAG, "Database had Initialized!");
@@ -62,7 +59,7 @@ public class CommonManager {
      * @param key save key
      * @param value save value
      */
-    public void insertValue(String key, String value) {
+    public void insertValue(final String key, final String value) {
         Logger.d(TAG, "key = " + key + "  value = " + value);
         if (searchFromDb(key)) {
             Logger.d(TAG, "update");
@@ -73,38 +70,45 @@ public class CommonManager {
         }
     }
 
-    private boolean searchFromDb(String key) {
-        List<CommonSetting> saveData = mCommonSettingDao.queryBuilder()
-                .where(CommonSettingDao.Properties.Name.eq(key))
+    /**
+     * 查询数据库中是否有该key的数据
+     * @param key search key
+     * @return true if exist,false if not exist
+     */
+    private boolean searchFromDb(final String key) {
+        final List<CommonSetting> saveData = mCommonSettingDao.queryBuilder()
+                .where(CommonSettingDao.Properties.MName.eq(key))
                 .list();
         return !saveData.isEmpty();
     }
 
     /**
      * 修改或者更新设置项数据
-     * @param key
-     * @param value
+     * @param key 对应key值
+     * @param value 对应值
      */
     @WorkerThread
-    public void insertOrReplace(String key, String value) {
+    public void insertOrReplace(final String key, final String value) {
         ThreadManager.getInstance().asyncDelay(() -> {
-            CommonSetting setting = new CommonSetting();
-            setting.setName(key);
-            setting.setValue(value);
-            setting.setUpdateTime(new Date());
+            final CommonSetting setting = new CommonSetting();
+            setting.setMName(key);
+            setting.setMValue(value);
+            setting.setMUpdateTime(new Date());
             mCommonSettingDao.insertOrReplace(setting);
         },0);
     }
 
     /**
      * 通过key查找其对应value
+     * @param key 唯一值
+     * @return value
      */
-    public String getValueByKey(String key) {
-        CommonSetting commonSetting = mCommonSettingDao.queryBuilder()
-                .where(CommonSettingDao.Properties.Name.eq(key))
+    public String getValueByKey(final String key) {
+        final CommonSetting commonSetting = mCommonSettingDao.queryBuilder()
+                .where(CommonSettingDao.Properties.MName.eq(key))
                 .unique();
         if (commonSetting != null) {
-            return commonSetting.getValue();
+            return commonSetting.getMValue();
         } else {
             return "";
         }
@@ -112,21 +116,24 @@ public class CommonManager {
 
     /**
      * 更新数据
+     * @param key 对应key值
+     * @param value 对应值
      */
-    private void update(String key, String value) {
-        CommonSetting unique = mCommonSettingDao.queryBuilder()
-                .where(CommonSettingDao.Properties.Name.eq(key))
+    private void update(final String key, final String value) {
+        final CommonSetting unique = mCommonSettingDao.queryBuilder()
+                .where(CommonSettingDao.Properties.MName.eq(key))
                 .unique();
-        unique.setValue(value);
+        unique.setMValue(value);
         mCommonSettingDao.update(unique);
     }
 
     /**
      * 删除某个数据
+     * @param key 对应key值
      */
-    public void deleteValue(String key) {
+    public void deleteValue(final String key) {
         mCommonSettingDao.queryBuilder()
-                .where(CommonSettingDao.Properties.Name.eq(key))
+                .where(CommonSettingDao.Properties.MName.eq(key))
                 .buildDelete()
                 .executeDeleteWithoutDetachingEntities();
     }

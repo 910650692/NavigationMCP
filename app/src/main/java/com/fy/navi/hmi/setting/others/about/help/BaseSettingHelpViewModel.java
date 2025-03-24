@@ -10,9 +10,9 @@ import com.fy.navi.ui.base.BaseViewModel;
 
 public class BaseSettingHelpViewModel extends BaseViewModel<SettingHelpFragment, SettingHelpModel> {
 
-    public MutableLiveData<Integer> selectPosition = new MutableLiveData<>(0);
+    public MutableLiveData<Integer> mSelectPosition = new MutableLiveData<>(0);
 
-    public BaseSettingHelpViewModel(@NonNull Application application) {
+    public BaseSettingHelpViewModel(@NonNull final Application application) {
         super(application);
     }
 
@@ -21,11 +21,15 @@ public class BaseSettingHelpViewModel extends BaseViewModel<SettingHelpFragment,
         return new SettingHelpModel();
     }
 
-    public void setSelectPosition(int position) {
-        selectPosition.setValue(position);
+    /**
+     * 设置选中位置
+     * @param position 选中位置
+     */
+    public void setSelectPosition(final int position) {
+        mSelectPosition.setValue(position);
     }
 
-    public Action clickBack = () -> {
+    public Action mClickBack = () -> {
         closeFragment(true);
     };
 

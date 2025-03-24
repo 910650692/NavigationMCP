@@ -98,7 +98,7 @@ public class BaseStartupViewModel extends BaseViewModel<StartupActivity, Startup
     }
 
     public void startMapActivity() {
-        Intent intent = new Intent(AppContext.mContext, MapActivity.class);
+        Intent intent = new Intent(AppContext.getInstance().getMContext(), MapActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         if (mIntentPage != INaviConstant.OpenIntentPage.NONE) {
             intent.putExtra(INaviConstant.PAGE_EXTRA ,mIntentPage);
@@ -110,7 +110,7 @@ public class BaseStartupViewModel extends BaseViewModel<StartupActivity, Startup
                 intent.putExtra(INaviConstant.ROUTE_END_POI, mEndPoint);
             }
         }
-        AppContext.mContext.startActivity(intent);
+        AppContext.getInstance().getMContext().startActivity(intent);
         mView.finish();
     }
 

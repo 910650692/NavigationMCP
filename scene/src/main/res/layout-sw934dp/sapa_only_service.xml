@@ -14,6 +14,7 @@
     <com.fy.navi.ui.view.SkinConstraintLayout
         android:layout_width="@dimen/dp_640"
         android:layout_height="@dimen/dp_157"
+        clickCommand="@{()->naviSapa.onClick(0)}"
         android:background="@drawable/bg_navi_highway_service_first">
 
         <com.fy.navi.ui.view.SkinLinearLayout
@@ -31,7 +32,7 @@
                 android:layout_height="@dimen/dp_42"
                 android:layout_marginEnd="@dimen/dp_4"
                 android:background="@drawable/img_refuel_42"
-                android:visibility="@{naviSapa.onlyServiceGasStationVisible ? View.VISIBLE : View.GONE}" />
+                android:visibility="@{naviSapa.mOnlyServiceGasStationVisible ? View.VISIBLE : View.GONE}" />
 
             <com.fy.navi.ui.view.SkinImageView
                 android:id="@+id/siv_only_service_service_canteen"
@@ -39,7 +40,7 @@
                 android:layout_height="@dimen/dp_42"
                 android:layout_marginEnd="@dimen/dp_4"
                 android:background="@drawable/img_gourmet_42"
-                android:visibility="@{naviSapa.onlyServiceCanteenVisible ? View.VISIBLE : View.GONE}" />
+                android:visibility="@{naviSapa.mOnlyServiceCanteenVisible ? View.VISIBLE : View.GONE}" />
 
             <com.fy.navi.ui.view.SkinImageView
                 android:id="@+id/siv_only_toll_service_lavatory"
@@ -47,7 +48,7 @@
                 android:layout_height="@dimen/dp_42"
                 android:layout_marginEnd="@dimen/dp_4"
                 android:background="@drawable/img_lavatory_42"
-                android:visibility="@{naviSapa.onlyServiceLavatoryVisible ? View.VISIBLE : View.GONE}" />
+                android:visibility="@{naviSapa.mOnlyServiceLavatoryVisible ? View.VISIBLE : View.GONE}" />
 
             <com.fy.navi.ui.view.SkinImageView
                 android:id="@+id/siv_only_service_service_maintenance"
@@ -55,7 +56,7 @@
                 android:layout_height="@dimen/dp_42"
                 android:layout_marginEnd="@dimen/dp_4"
                 android:background="@drawable/img_maintenance_white_42"
-                android:visibility="@{naviSapa.onlyServiceMaintenanceVisible ? View.VISIBLE : View.GONE}" />
+                android:visibility="@{naviSapa.mOnlyServiceMaintenanceVisible ? View.VISIBLE : View.GONE}" />
 
             <com.fy.navi.ui.view.SkinImageView
                 android:id="@+id/siv_only_service_service_buy"
@@ -63,7 +64,7 @@
                 android:layout_height="@dimen/dp_42"
                 android:layout_marginEnd="@dimen/dp_4"
                 android:background="@drawable/img_buy_42"
-                android:visibility="@{naviSapa.onlyServiceBuyVisible ? View.VISIBLE : View.GONE}" />
+                android:visibility="@{naviSapa.mOnlyServiceBuyVisible ? View.VISIBLE : View.GONE}" />
 
             <com.fy.navi.ui.view.SkinImageView
                 android:id="@+id/siv_only_service_service_hotel"
@@ -71,7 +72,7 @@
                 android:layout_height="@dimen/dp_42"
                 android:layout_marginEnd="@dimen/dp_4"
                 android:background="@drawable/img_groggery_42"
-                android:visibility="@{naviSapa.onlyServiceHotelVisible ? View.VISIBLE : View.GONE}" />
+                android:visibility="@{naviSapa.mOnlyServiceHotelVisible ? View.VISIBLE : View.GONE}" />
 
 
         </com.fy.navi.ui.view.SkinLinearLayout>
@@ -82,7 +83,10 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_30"
             android:layout_marginBottom="@dimen/dp_24"
-            android:text="@{naviSapa.onlyServiceName}"
+            android:maxLines="1"
+            android:maxWidth="@dimen/dp_400"
+            android:ellipsize="end"
+            android:text="@{naviSapa.mOnlyServiceName}"
             android:textColor="@color/navi_color_FFFFFF_100"
             android:textSize="@dimen/sp_34"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -95,11 +99,14 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_27"
             android:layout_marginEnd="@dimen/dp_30"
+            android:maxLines="1"
+            android:maxWidth="@dimen/dp_200"
+            android:ellipsize="end"
             android:background="@drawable/img_navi_via_item_btn_pass"
             android:gravity="center"
             android:paddingHorizontal="@dimen/dp_5"
             android:paddingVertical="@dimen/dp_1"
-            android:text="@{naviSapa.onlyServiceTag}"
+            android:text="@{naviSapa.mOnlyServiceTag}"
             android:textColor="@color/navi_color_FFFFFF_100"
             android:textSize="@dimen/sp_26"
             app:layout_constraintEnd_toEndOf="parent"
@@ -112,7 +119,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/dp_24"
             android:layout_marginBottom="@dimen/dp_26"
-            android:text="@{naviSapa.onlyServiceDistance}"
+            android:text="@{naviSapa.mOnlyServiceDistance}"
             android:textColor="@color/navi_tv_cc_write_color"
             android:textSize="@dimen/sp_30"
             app:layout_constraintBottom_toBottomOf="parent"

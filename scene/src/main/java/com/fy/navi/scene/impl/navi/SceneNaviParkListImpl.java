@@ -1,6 +1,5 @@
 package com.fy.navi.scene.impl.navi;
 
-
 import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
 import com.fy.navi.scene.BaseSceneModel;
@@ -13,7 +12,6 @@ import com.fy.navi.scene.ui.navi.manager.NaviSceneId;
 import com.fy.navi.service.AppContext;
 import com.fy.navi.service.AutoMapConstant;
 import com.fy.navi.service.MapDefaultFinalTag;
-import com.fy.navi.service.adapter.navi.NaviConstant;
 import com.fy.navi.service.adapter.navi.bls.NaviDataFormatHelper;
 import com.fy.navi.service.define.bean.PreviewParams;
 import com.fy.navi.service.define.layer.GemBaseLayer;
@@ -23,7 +21,6 @@ import com.fy.navi.service.define.map.MapTypeId;
 import com.fy.navi.service.define.navi.NaviEtaInfo;
 import com.fy.navi.service.define.navi.NaviParkingEntity;
 import com.fy.navi.service.define.route.RouteParam;
-import com.fy.navi.service.define.route.RouteWayID;
 import com.fy.navi.service.define.search.PoiInfoEntity;
 import com.fy.navi.service.define.search.SearchResultEntity;
 import com.fy.navi.service.logicpaket.layer.ILayerPackageCallBack;
@@ -36,10 +33,10 @@ import com.fy.navi.service.logicpaket.search.SearchResultCallback;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.UUID;
 
 
-public class SceneNaviParkListImpl extends BaseSceneModel<SceneNaviParkListView> implements ISceneNaviParkList, SearchResultCallback, INaviParkItemClickListener, ILayerPackageCallBack {
+public class SceneNaviParkListImpl extends BaseSceneModel<SceneNaviParkListView> implements
+        ISceneNaviParkList, SearchResultCallback, INaviParkItemClickListener, ILayerPackageCallBack {
     private static final String TAG = MapDefaultFinalTag.NAVI_HMI_TAG;
     private ISceneCallback mISceneCallback;
     private ArrayList<NaviParkingEntity> mParkingList = new ArrayList<>();
@@ -49,12 +46,12 @@ public class SceneNaviParkListImpl extends BaseSceneModel<SceneNaviParkListView>
     private SearchPackage mSearchPackage;
     private RoutePackage mRoutePackage;
     private RouteParam mRouteParam;
-    private boolean isRequesting = false;//是否在请求停车场信息
-    private boolean isNeedShowParking = false;//是否需要展示停车场信息，只有在两公里处展示
-    private boolean isDisplayed = false;
+    private boolean mIsRequesting = false;//是否在请求停车场信息
+    private boolean mIsNeedShowParking = false;//是否需要展示停车场信息，只有在两公里处展示
+    private boolean mIsDisplayed = false;
 
-    public SceneNaviParkListImpl(SceneNaviParkListView mScreenView) {
-        super(mScreenView);
+    public SceneNaviParkListImpl(final SceneNaviParkListView screenView) {
+        super(screenView);
         resetState();
         mMapPackage = MapPackage.getInstance();
         mLayerPackage = LayerPackage.getInstance();
@@ -68,7 +65,10 @@ public class SceneNaviParkListImpl extends BaseSceneModel<SceneNaviParkListView>
         mLayerPackage.registerCallBack(mMapTypeId, this, LayerType.SEARCH_LAYER);
     }
 
-    public void addSceneCallback(ISceneCallback sceneCallback) {
+    /**
+     * @param sceneCallback addSceneCallback
+     */
+    public void addSceneCallback(final ISceneCallback sceneCallback) {
         mISceneCallback = sceneCallback;
     }
 
@@ -87,19 +87,22 @@ public class SceneNaviParkListImpl extends BaseSceneModel<SceneNaviParkListView>
         mLayerPackage.clearSearchParkPoi(MapTypeId.MAIN_SCREEN_MAIN_MAP);
     }
 
-    /***校验停车场信息***/
-    public void checkParking(NaviEtaInfo naviEtaInfo) {
+    /**
+     * 校验停车场信息
+     * @param naviEtaInfo
+     **/
+    public void checkParking(final NaviEtaInfo naviEtaInfo) {
         if (ConvertUtils.isEmpty(naviEtaInfo)) {
             return;
         }
-        Logger.i(TAG, "isDisplayed：" + isDisplayed + ",allDist：" + naviEtaInfo.allDist + ",mParkingList " + mParkingList.size());
-        if (isDisplayed) {
+        Logger.i(TAG, "isDisplayed：" + mIsDisplayed + ",allDist：" + naviEtaInfo.getAllDist() + ",mParkingList " + mParkingList.size());
+        if (mIsDisplayed) {
             return;
         }
-        if (isEligible(naviEtaInfo.allDist, 3000) && ConvertUtils.isEmpty(mParkingList)) {//三公里时请求停车场信息
+        if (isEligible(naviEtaInfo.getAllDist(), 3000) && ConvertUtils.isEmpty(mParkingList)) {//三公里时请求停车场信息
             requestParking();
-        } else if (isEligible(naviEtaInfo.allDist, 2000) && !isNeedShowParking) {//两公里时展示数据
-            isNeedShowParking = true;
+        } else if (isEligible(naviEtaInfo.getAllDist(), 2000) && !mIsNeedShowParking) {//两公里时展示数据
+            mIsNeedShowParking = true;
             if (!ConvertUtils.isEmpty(mParkingList)) {
                 showNaviParkList();
             } else {
@@ -117,35 +120,43 @@ public class SceneNaviParkListImpl extends BaseSceneModel<SceneNaviParkListView>
     }
 
     @Override
-    public void onSearchResult(int taskId, int errorCode, String message, SearchResultEntity searchResultEntity) {
+    public void onSearchResult(final int taskId, final int errorCode, final String message,
+                               final SearchResultEntity searchResultEntity) {
         Logger.d(TAG, "NaviGuidanceModel => errorCode: " + errorCode + ", message: " + message);
         if (searchResultEntity.getSearchType() == AutoMapConstant.SearchType.POI_SEARCH) {
             if (ConvertUtils.isEmpty(searchResultEntity.getPoiList())) {
                 Logger.e(TAG, "NaviGuidanceModel searchResultEntity.getPoiList is null：");
                 return;
             }
-            List<PoiInfoEntity> poiList = searchResultEntity.getPoiList();
-            PoiInfoEntity poiInfoEntity = poiList.get(0);
-            String poiTag = poiInfoEntity.getPoiTag();
-            String name = poiInfoEntity.getName().trim();
+            final List<PoiInfoEntity> poiList = searchResultEntity.getPoiList();
+            final PoiInfoEntity poiInfoEntity = poiList.get(0);
+            final String poiTag = poiInfoEntity.getPoiTag();
+            final String name = poiInfoEntity.getName().trim();
             Logger.i(TAG, "NaviGuidanceModel poiTag：" + poiTag + ",name：" + name);
             //是停车场类型，然后根据终点poi执行周边搜
-            if ((!ConvertUtils.isEmpty(poiTag) && poiTag.contains(AppContext.mContext.getString(com.fy.navi.scene.R.string.st_quick_search_parking)))) {
+            if ((!ConvertUtils.isEmpty(poiTag) &&
+                    poiTag.contains(
+                            AppContext.getInstance().getMContext().getString(
+                                    com.fy.navi.scene.R.string.st_quick_search_parking)))) {
                 mIsEndParking = true;
                 mParkingList.add(NaviDataFormatHelper.getNaviParkingEntity(poiInfoEntity, true));
             }
             if (mRouteParam != null) {
-                mSearchPackage.aroundSearch(1, AppContext.mContext.getString(com.fy.navi.scene.R.string.st_quick_search_parking), mRouteParam.getRealPos());
+                mSearchPackage.aroundSearch(
+                        1,
+                        AppContext.getInstance().getMContext().getString(
+                                com.fy.navi.scene.R.string.st_quick_search_parking),
+                        mRouteParam.getRealPos());
             } else {
                 Logger.e(TAG, "mRouteParam is null：");
             }
         } else if (searchResultEntity.getSearchType() == AutoMapConstant.SearchType.AROUND_SEARCH) {
-            List<PoiInfoEntity> poiList = searchResultEntity.getPoiList();
+            final List<PoiInfoEntity> poiList = searchResultEntity.getPoiList();
             Logger.i(TAG, "getPoiList：" + poiList.size() + ",mIsEndParking：" + mIsEndParking);
             if (!ConvertUtils.isEmpty(poiList)) {
                 for (int i = 0; i < poiList.size(); i++) {
                     if (i == 0 || i == 1 || (i == 2 && !mIsEndParking)) {
-                        PoiInfoEntity poiInfoEntity = poiList.get(i);
+                        final PoiInfoEntity poiInfoEntity = poiList.get(i);
                         Logger.i(TAG, "NaviGuidanceModel naviListEntity.getName：" + poiInfoEntity.getName());
                         mParkingList.add(NaviDataFormatHelper.getNaviParkingEntity(poiInfoEntity, false));
                     } else {
@@ -153,33 +164,44 @@ public class SceneNaviParkListImpl extends BaseSceneModel<SceneNaviParkListView>
                     }
                 }
             }
-            isRequesting = false;
+            mIsRequesting = false;
             showNaviParkList();
         }
     }
 
+    /**
+     * 显示停车点列表
+     */
     private void showNaviParkList() {
-        Logger.i(TAG, "isNeedShowParking：" + isNeedShowParking + ",mIsEndParking：" + mIsEndParking + ",isDisplayed：" + isDisplayed);
-        if (isDisplayed || !isNeedShowParking) {
+        Logger.i(TAG, "isNeedShowParking：" + mIsNeedShowParking + ",mIsEndParking：" + mIsEndParking + ",isDisplayed：" + mIsDisplayed);
+        if (mIsDisplayed || !mIsNeedShowParking) {
             return;
         }
         if (!ConvertUtils.isEmpty(mParkingList)) {
             sortParkingList();
             mScreenView.showNaviParkList(mParkingList, true, 0);
             updateSceneVisible(true);
-            isDisplayed = true;
+            mIsDisplayed = true;
         }
     }
 
-    public void showParkingMark(int select) {
+    /**
+     * @param select select
+     */
+    public void showParkingMark(final int select) {
         mLayerPackage.updateSearchParkPoi(mMapTypeId, mParkingList);
-        PreviewParams previewParams = new PreviewParams();
+        final PreviewParams previewParams = new PreviewParams();
         previewParams.setMapBound(getParkingBound(mParkingList));
         mMapPackage.showPreview(mMapTypeId, previewParams);
         mLayerPackage.setParkFocus(mMapTypeId, String.valueOf(select), true);
     }
 
-    public static PreviewParams.RectDouble getParkingBound(ArrayList<NaviParkingEntity> pois) {
+    /**
+     * @param pois pois
+     * @return RectDouble
+     */
+    public static PreviewParams.RectDouble getParkingBound(
+            final ArrayList<NaviParkingEntity> pois) {
         // TODO: 2025/2/17 还需当前定位点
 //        NeLocation location = LocationManager.getInstance().getLastLocation();
 //        BizPointBusinessInfo info = new BizPointBusinessInfo();
@@ -192,14 +214,15 @@ public class SceneNaviParkListImpl extends BaseSceneModel<SceneNaviParkListView>
             double x2 = Double.MIN_VALUE;
             double y2 = Double.MIN_VALUE;
             for (int i = 0; i < pois.size(); i++) {
-                NaviParkingEntity oItem = pois.get(i);
-                x1 = Math.min(x1, oItem.getPoint().lon);
-                y1 = Math.min(y1, oItem.getPoint().lat);
-                x2 = Math.max(x2, oItem.getPoint().lon);
-                y2 = Math.max(y2, oItem.getPoint().lat);
+                final NaviParkingEntity oItem = pois.get(i);
+                x1 = Math.min(x1, oItem.getPoint().getLon());
+                y1 = Math.min(y1, oItem.getPoint().getLat());
+                x2 = Math.max(x2, oItem.getPoint().getLon());
+                y2 = Math.max(y2, oItem.getPoint().getLat());
             }
             return new PreviewParams.RectDouble(x1, x2, y2, y1);
         } catch (Exception e) {
+            Logger.e(TAG, "getParkingBound error" + e.getMessage());
             return null;
         }
     }
@@ -212,26 +235,37 @@ public class SceneNaviParkListImpl extends BaseSceneModel<SceneNaviParkListView>
         mParkingList.get(0).setRecommend(true);
     }
 
-    private boolean isEligible(int distance, int distanceCondition) {
+    /**
+     * @param distance distance
+     * @param distanceCondition distanceCondition
+     * @return boolean
+     */
+    private boolean isEligible(final int distance, final int distanceCondition) {
         return distance > (distanceCondition - 500) && distance <= distanceCondition;
     }
 
+    /**
+     * resetState
+     */
     private void resetState() {
-        isNeedShowParking = false;
-        isDisplayed = false;
-        isRequesting = false;
+        mIsNeedShowParking = false;
+        mIsDisplayed = false;
+        mIsRequesting = false;
         mParkingList.clear();
     }
 
+    /**
+     * requestParking
+     */
     private void requestParking() {
-        Logger.i(TAG, " isRequesting：" + isRequesting);
-        if (isRequesting) {
+        Logger.i(TAG, " isRequesting：" + mIsRequesting);
+        if (mIsRequesting) {
             return;
         }
         mIsEndParking = false;
         mParkingList.clear();
-        isRequesting = true;
-        List<RouteParam> allPoiParamList = mRoutePackage.getAllPoiParamList(MapTypeId.MAIN_SCREEN_MAIN_MAP);
+        mIsRequesting = true;
+        final List<RouteParam> allPoiParamList = mRoutePackage.getAllPoiParamList(MapTypeId.MAIN_SCREEN_MAIN_MAP);
         if (!ConvertUtils.isEmpty(allPoiParamList)) {
             mRouteParam = allPoiParamList.get(allPoiParamList.size() - 1);
             if (mRouteParam != null) {
@@ -251,8 +285,9 @@ public class SceneNaviParkListImpl extends BaseSceneModel<SceneNaviParkListView>
     }
 
     @Override
-    public void onItemClick(int listSize, int position, NaviParkingEntity entity) {
-        Logger.i(TAG, "position：" + position + ",entity：" + entity.getName());
+    public void onItemClick(final int listSize, final int position,
+                            final NaviParkingEntity entity) {
+        Logger.i(TAG, "position = " + position + ",entity：" + entity.getName());
         if (listSize - 1 == position && entity.isEndPoi) {
             mScreenView.showNaviParkList(mParkingList, false, 0);
         } else {
@@ -263,23 +298,27 @@ public class SceneNaviParkListImpl extends BaseSceneModel<SceneNaviParkListView>
     }
 
     @Override
-    public void onNaviClick(int position, NaviParkingEntity entity) {
+    public void onNaviClick(final int position, final NaviParkingEntity entity) {
         Logger.i(TAG, "position：" + position + ",entity：" + entity.getName());
-        mRoutePackage.requestRoute(mMapTypeId, NaviDataFormatHelper.getPoiInfoEntity(entity), entity.getPoiType(), true, RouteWayID.ROUTE_WAY_DEFAULT);
+        mRoutePackage.requestChangeEnd(mMapTypeId, NaviDataFormatHelper.getPoiInfoEntity(entity));
     }
 
     @Override
-    public void onNotifyClick(MapTypeId mapTypeId, GemBaseLayer layer, GemLayerItem pItem) {
-        if (pItem == null) {
+    public void onNotifyClick(final MapTypeId mapTypeId, final GemBaseLayer layer,
+                              final GemLayerItem item) {
+        if (item == null) {
             Logger.e(TAG, "pItem == null");
             return;
         }
-        int index = (int) pItem.getIndex();
+        final int index = (int) item.getIndex();
         Logger.i(TAG, "position：" + index);
         mScreenView.showNaviParkList(mParkingList, false, index);
     }
 
-    private void updateSceneVisible(boolean isVisible) {
+    /**
+     * @param isVisible isVisible
+     */
+    private void updateSceneVisible(final boolean isVisible) {
         mScreenView.getNaviSceneEvent().notifySceneStateChange((isVisible ? INaviSceneEvent.SceneStateChangeType.SceneShowState :
                 INaviSceneEvent.SceneStateChangeType.SceneHideState), NaviSceneId.NAVI_SCENE_PARK_LIST);
     }

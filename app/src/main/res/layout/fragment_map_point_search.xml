@@ -12,7 +12,7 @@
 
 
     <com.fy.navi.ui.view.SkinLinearLayout
-        clickCommand="@{viewModel.rootClick}"
+        clickCommand="@{viewModel.mRootClick}"
         android:layout_width="@dimen/dp_820"
         android:layout_height="wrap_content"
         android:clickable="true"

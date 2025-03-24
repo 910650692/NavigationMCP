@@ -2,7 +2,7 @@ package com.fy.navi.hmi.setting.broadcast;
 
 
 import android.app.Application;
-
+import com.android.utils.log.Logger;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 
@@ -15,15 +15,16 @@ import com.fy.navi.ui.base.BaseViewModel;
 
 public class BaseSettingBroadcastViewModel extends BaseViewModel<SettingBroadcastFragment, SettingBroadcastModel> {
 
-    public final MutableLiveData<Boolean> isNaviBroadcastDetail = new MutableLiveData<>(true);
-    public final MutableLiveData<Boolean> isNaviBroadcastConcise = new MutableLiveData<>(false);
-    public final MutableLiveData<Boolean> isNaviBroadcastSimple = new MutableLiveData<>(false);
-    public final MutableLiveData<Boolean> isCruiseBroadcast = new MutableLiveData<>(true);
-    public final MutableLiveData<Boolean> isCruiseBroadcastRoadCondition = new MutableLiveData<>(true);
-    public final MutableLiveData<Boolean> isCruiseBroadcastCamera = new MutableLiveData<>(true);
-    public final MutableLiveData<Boolean> isCruiseBroadcastSafe = new MutableLiveData<>(true);
+    public final MutableLiveData<Boolean> mIsNaviBroadcastDetail = new MutableLiveData<>(true);
+    public final MutableLiveData<Boolean> mIsNaviBroadcastConcise = new MutableLiveData<>(false);
+    public final MutableLiveData<Boolean> mIsNaviBroadcastSimple = new MutableLiveData<>(false);
+    public final MutableLiveData<Boolean> mIsCruiseBroadcast = new MutableLiveData<>(true);
+    public final MutableLiveData<Boolean> mIsCruiseBroadcastRoadCondition = new MutableLiveData<>(true);
+    public final MutableLiveData<Boolean> mIsCruiseBroadcastCamera = new MutableLiveData<>(true);
+    public final MutableLiveData<Boolean> mIsCruiseBroadcastSafe = new MutableLiveData<>(true);
+    private static final String TAG = BaseSettingBroadcastViewModel.class.getName();
 
-    public BaseSettingBroadcastViewModel(@NonNull Application application) {
+    public BaseSettingBroadcastViewModel(final @NonNull Application application) {
         super(application);
     }
 
@@ -41,52 +42,65 @@ public class BaseSettingBroadcastViewModel extends BaseViewModel<SettingBroadcas
     public void onDestroy() {
         super.onDestroy();
     }
+
+    /**
+     * 初始化
+     */
     public void initView() {
         mModel.initView();
     }
-    public void dualChoiceControl(String key, boolean isTrue) {
+
+    /**
+     * 设置巡航播报选项
+     * @param key 设置项
+     * @param isTrue 是否选中
+     */
+    public void dualChoiceControl(final String key, final boolean isTrue) {
         switch (key) {
             case SettingController.KEY_SETTING_CRUISE_BROADCAST:
-                isCruiseBroadcast.setValue(isTrue);
+                mIsCruiseBroadcast.setValue(isTrue);
                 mView.updateCruiseBroadcastEnable(isTrue);
                 break;
             case SettingController.KEY_SETTING_BROADCAST_ROAD_CONDITIONS:
-                isCruiseBroadcastRoadCondition.setValue(isTrue);
+                mIsCruiseBroadcastRoadCondition.setValue(isTrue);
                 break;
             case SettingController.KEY_SETTING_BROADCAST_ELECTRONIC_EYE:
-                isCruiseBroadcastCamera.setValue(isTrue);
+                mIsCruiseBroadcastCamera.setValue(isTrue);
                 break;
             case SettingController.KEY_SETTING_BROADCAST_SAFE_REMINDER:
-                isCruiseBroadcastSafe.setValue(isTrue);
+                mIsCruiseBroadcastSafe.setValue(isTrue);
+                break;
+            default:
+                Logger.d(TAG," Invalid value, key = " + key);
                 break;
         }
     }
 
-    public Action switchNaviBroadcastDetailClick = () -> {
+    public Action mSwitchNaviBroadcastDetailClick = () -> {
         NaviPackage.getInstance().updateBroadcastParam(2, true);
     };
-    public Action switchNaviBroadcastConciseClick = () -> {
+    public Action mSwitchNaviBroadcastConciseClick = () -> {
         NaviPackage.getInstance().updateBroadcastParam(1, true);
     };
 
-    public Action switchNaviBroadcastSimpleClick = () -> {
+    public Action mSwitchNaviBroadcastSimpleClick = () -> {
         NaviPackage.getInstance().updateBroadcastParam(3, true);
     };
 
-    public Action switchCruiseBroadcastClick = () -> {
-        boolean value = Boolean.FALSE.equals(isCruiseBroadcast.getValue());
+    public Action mSwitchCruiseBroadcastClick = () -> {
+        final boolean value = Boolean.FALSE.equals(mIsCruiseBroadcast.getValue());
         if (value) {
-            isCruiseBroadcast.setValue(true);
+            mIsCruiseBroadcast.setValue(true);
             mModel.setCruiseBroadcastOpen(true);
-            CruisePackage.getInstance().setConfigKeyDriveWarn(Boolean.TRUE.equals(isCruiseBroadcastRoadCondition.getValue()));
-            CruisePackage.getInstance().setConfigKeySafeBroadcast(Boolean.TRUE.equals(isCruiseBroadcastCamera.getValue()));
-            CruisePackage.getInstance().setConfigKeyRoadWarn(Boolean.TRUE.equals(isCruiseBroadcastSafe.getValue()));
-            mModel.setConfigKeyRoadWarn(Boolean.TRUE.equals(isCruiseBroadcastRoadCondition.getValue()));
-            mModel.setConfigKeySafeBroadcast(Boolean.TRUE.equals(isCruiseBroadcastCamera.getValue()));
-            mModel.setConfigKeyDriveWarn(Boolean.TRUE.equals(isCruiseBroadcastSafe.getValue()));
+            CruisePackage.getInstance().setConfigKeyDriveWarn(Boolean.TRUE.equals(mIsCruiseBroadcastRoadCondition.getValue()));
+            CruisePackage.getInstance().setConfigKeySafeBroadcast(Boolean.TRUE.equals(mIsCruiseBroadcastCamera.getValue()));
+            CruisePackage.getInstance().setConfigKeyRoadWarn(Boolean.TRUE.equals(mIsCruiseBroadcastSafe.getValue()));
+            mModel.setConfigKeyRoadWarn(Boolean.TRUE.equals(mIsCruiseBroadcastRoadCondition.getValue()));
+            mModel.setConfigKeySafeBroadcast(Boolean.TRUE.equals(mIsCruiseBroadcastCamera.getValue()));
+            mModel.setConfigKeyDriveWarn(Boolean.TRUE.equals(mIsCruiseBroadcastSafe.getValue()));
             mView.updateCruiseBroadcastEnable(true);
         } else {
-            isCruiseBroadcast.setValue(false);
+            mIsCruiseBroadcast.setValue(false);
             mModel.setCruiseBroadcastOpen(false);
             CruisePackage.getInstance().setConfigKeyDriveWarn(false);
             CruisePackage.getInstance().setConfigKeySafeBroadcast(false);
@@ -98,33 +112,40 @@ public class BaseSettingBroadcastViewModel extends BaseViewModel<SettingBroadcas
         }
     };
 
-    public Action switchCruiseBroadcastRoadConditionClick = () -> {
-        boolean value = Boolean.FALSE.equals(isCruiseBroadcastRoadCondition.getValue());
-        isCruiseBroadcastRoadCondition.setValue(value);
+    public Action mSwitchCruiseBroadcastRoadConditionClick = () -> {
+        final boolean value = Boolean.FALSE.equals(mIsCruiseBroadcastRoadCondition.getValue());
+        mIsCruiseBroadcastRoadCondition.setValue(value);
         mModel.setConfigKeyRoadWarn(value);
     };
 
-    public Action switchCruiseBroadcastCameraClick = () -> {
-        boolean value = Boolean.FALSE.equals(isCruiseBroadcastCamera.getValue());
-        isCruiseBroadcastCamera.setValue(value);
+    public Action mSwitchCruiseBroadcastCameraClick = () -> {
+        final boolean value = Boolean.FALSE.equals(mIsCruiseBroadcastCamera.getValue());
+        mIsCruiseBroadcastCamera.setValue(value);
         mModel.setConfigKeySafeBroadcast(value);
 
     };
 
-    public Action switchCruiseBroadcastSafeClick = () -> {
-        boolean value = Boolean.FALSE.equals(isCruiseBroadcastSafe.getValue());
-        isCruiseBroadcastSafe.setValue(value);
+    public Action mSwitchCruiseBroadcastSafeClick = () -> {
+        final boolean value = Boolean.FALSE.equals(mIsCruiseBroadcastSafe.getValue());
+        mIsCruiseBroadcastSafe.setValue(value);
         mModel.setConfigKeyDriveWarn(value);
     };
 
-    public void onNaviBroadcastChange(boolean isBroadcastDetail, boolean isBroadcastConcise, boolean isBroadcastSimple) {
-        isNaviBroadcastDetail.setValue(isBroadcastDetail);
-        isNaviBroadcastConcise.setValue(isBroadcastConcise);
-        isNaviBroadcastSimple.setValue(isBroadcastSimple);
+    /**
+     * 导航播报回调
+     * @param isBroadcastDetail 是否播报详细信息
+     * @param isBroadcastConcise 是否播报简略信息
+     * @param isBroadcastSimple 是否播报简单信息
+     */
+    public void onNaviBroadcastChange(final boolean isBroadcastDetail, final boolean isBroadcastConcise,
+                                      final boolean isBroadcastSimple) {
+        mIsNaviBroadcastDetail.setValue(isBroadcastDetail);
+        mIsNaviBroadcastConcise.setValue(isBroadcastConcise);
+        mIsNaviBroadcastSimple.setValue(isBroadcastSimple);
     }
 
 
-    public Action openBroadcastVoiceListPage = () -> {
+    public Action mOpenBroadcastVoiceListPage = () -> {
         addFragment(new SettingVoiceBroadcastFragment(), null);
     };
 }

@@ -17,21 +17,11 @@ import com.jakewharton.rxbinding2.widget.RxTextView
 import java.util.Objects
 import java.util.concurrent.TimeUnit
 
-/**
- * @Description 绑定点击事件
- * @Author lvww
- * @date 2024/11/22
- */
 @SuppressLint("CheckResult")
 @BindingAdapter("clickCommand")
 fun clickCommand(view: View, action: Action) {
     RxView.clicks(view).throttleFirst(500, TimeUnit.MILLISECONDS).subscribe { action.call() }
 }
-
-/*    @BindingAdapter(value = ["onClickCommand"], requireAll = false)
-    fun onClickCommand(view: View, action: BindingAction<*, *>) {
-        RxView.clicks(view).throttleFirst(500, TimeUnit.MILLISECONDS).subscribe { action.call() }
-    }*/
 
 /**
  * 点击事件,可返回Tag值.
@@ -45,16 +35,6 @@ fun <T> clickCommand(view: View, action: Action1<T>) {
     }
 }
 
-/*    @BindingAdapter(value = ["onClickCommand"], requireAll = false)
-    fun <T> onClickCommand(view: View, action: BindingAction<T, *>) {
-        RxView.clicks(view).throttleFirst(500, TimeUnit.MILLISECONDS).map {
-            val obj = view.tag
-            if (ConvertUtils.isEmpty(obj)) return@map Observable.just<String>("") as T
-            obj as T
-        }
-            .subscribe { o: T -> action.call(o) }
-    }*/
-
 /**
  * 点击事件,可返回自定义属性param的值.
  */
@@ -64,14 +44,6 @@ fun <P> clickCommand(view: View, action: Action2<P>, param: Any) {
     RxView.clicks(view).throttleFirst(500, TimeUnit.MILLISECONDS).map { param as P }
         .subscribe { p: P -> action.call(p) }
 }
-
-/*    @BindingAdapter(value = ["onClickCommand", "param"], requireAll = false)
-    fun <P> onClickCommand(view: View, action: BindingAction<*, P>, param: Any) {
-        RxView.clicks(view).throttleFirst(500, TimeUnit.MILLISECONDS).map {
-            if (ConvertUtils.isEmpty(param)) return@map Observable.just<String>("") as P
-            param as P
-        }.subscribe { p: P -> action.call(p) }
-    }*/
 
 /**
  * 点击事件,可返回Tag和自定义属性Param的值.
@@ -88,17 +60,6 @@ fun <T, P> clickCommand(view: View, action: Action3<T, P>, param: Any) {
     }
 }
 
-/*    @BindingAdapter(value = ["onClickCommand", "param"], requireAll = false)
-    fun <T, P> onClickCommandTagParam(view: View, action: BindingAction<T, P>, param: Any) {
-        RxView.clicks(view).throttleFirst(500, TimeUnit.MILLISECONDS).subscribe {
-            val obj = view.tag
-            if (!ConvertUtils.isEmpty(obj) && !ConvertUtils.isEmpty(param)) action.call(
-                obj as T,
-                param as P
-            )
-        }
-    }*/
-
 /**
  * 长按点击事件.
  */
@@ -108,12 +69,6 @@ fun onLongClickCommand(view: View, action: Action) {
     RxView.longClicks(view).throttleFirst(500, TimeUnit.MILLISECONDS)
         .subscribe { action.call() }
 }
-
-/*    @BindingAdapter(value = ["onLongClickCommand", "param"], requireAll = false)
-    fun onLongClickCommand(view: View, action: BindingAction<*, *>) {
-        RxView.longClicks(view).throttleFirst(500, TimeUnit.MILLISECONDS)
-            .subscribe { action.call() }
-    }*/
 
 @SuppressLint("CheckResult")
 @BindingAdapter("textWatcher")
@@ -144,21 +99,16 @@ fun loadImageUrl(imgView: ImageView, imgUrl: String, placeHolder: Int, error: In
 fun loadImageUrl(imgView: ImageView, imgUrl: String, onImageLoadListener: OnImageLoadListener) {
     Glide.with(imgView.context).load(imgUrl).addListener(
         object : RequestListener<Drawable> {
-            override fun onLoadFailed(
-                e: GlideException?,
-                model: Any?,
-                target: Target<Drawable>?,
-                isFirstResource: Boolean
-            ): Boolean {
+            override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>, isFirstResource: Boolean): Boolean {
                 onImageLoadListener.onLoadCompleted(false)
                 return false
             }
 
             override fun onResourceReady(
-                resource: Drawable?,
-                model: Any?,
+                resource: Drawable,
+                model: Any,
                 target: Target<Drawable>?,
-                dataSource: DataSource?,
+                dataSource: DataSource,
                 isFirstResource: Boolean
             ): Boolean {
                 onImageLoadListener.onLoadCompleted(true)

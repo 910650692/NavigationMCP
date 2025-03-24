@@ -1,6 +1,7 @@
 package com.fy.navi.scene.impl.route;
 
 import com.android.utils.ConvertUtils;
+import com.android.utils.NetWorkUtils;
 import com.android.utils.log.Logger;
 import com.fy.navi.scene.BaseSceneModel;
 import com.fy.navi.scene.BaseSceneView;
@@ -10,39 +11,57 @@ import com.fy.navi.service.logicpaket.setting.SettingPackage;
 
 import java.util.Hashtable;
 
-/**
- * @Description TODO
- * @Author lvww
- * @date 2024/12/2
- */
+
 public class SceneRoutePreferenceImpl extends BaseSceneModel<BaseSceneView> implements ISceneRoutePreference {
 
-    protected final String RECOMMEND = "route_preference_remmend";
-    protected final String AVOIDCONGESTION = "route_preference_avoid_congestion";
-    protected final String LESSCHARGE = "route_preference_less_charge";
-    protected final String NOTHIGHWAY = "route_preference_not_highway";
-    protected final String FIRSTHIGHWAY = "route_preference_first_highway";
-    protected final String FIRSTMAINROAD = "route_preference_first_main_road";
-    protected final String FASTESTSPEED = "route_preference_fastest_speed";
+    private static final String TAG = "RoutePreference click: ";
+    private static final String RECOMMEND = "route_preference_remmend";
+    private static final String AVOIDCONGESTION = "route_preference_avoid_congestion";
+    private static final String LESSCHARGE = "route_preference_less_charge";
+    private static final String NOTHIGHWAY = "route_preference_not_highway";
+    private static final String FIRSTHIGHWAY = "route_preference_first_highway";
+    private static final String FIRSTMAINROAD = "route_preference_first_main_road";
+    private static final String FASTESTSPEED = "route_preference_fastest_speed";
 
-    public boolean ISRECOMMENDSELECT = false;
-    public boolean ISAVOIDCONGESTIONSELECT = false;
-    public boolean ISLESSCHARGESELECT = false;
-    public boolean ISNOTHIGHWAYSELECT = false;
-    public boolean ISFIRSTHIGHWAYSELECT = false;
-    public boolean ISFIRSTMAINROADSELECT = false;
-    public boolean ISFASTESTSPEEDSELECT = false;
+    public boolean isISRECOMMENDSELECT() {
+        return mISRECOMMENDSELECT;
+    }
+    public boolean isISAVOIDCONGESTIONSELECT() {
+        return mISAVOIDCONGESTIONSELECT;
+    }
+    public boolean isISLESSCHARGESELECT() {
+        return mISLESSCHARGESELECT;
+    }
+    public boolean isISNOTHIGHWAYSELECT() {
+        return mISNOTHIGHWAYSELECT;
+    }
+    public boolean isISFIRSTHIGHWAYSELECT() {
+        return mISFIRSTHIGHWAYSELECT;
+    }
+    public boolean isISFIRSTMAINROADSELECT() {
+        return mISFIRSTMAINROADSELECT;
+    }
+    public boolean isISFASTESTSPEEDSELECT() {
+        return mISFASTESTSPEEDSELECT;
+    }
+    private boolean mISRECOMMENDSELECT = false;
+    private boolean mISAVOIDCONGESTIONSELECT = false;
+    private boolean mISLESSCHARGESELECT = false;
+    private boolean mISNOTHIGHWAYSELECT = false;
+    private boolean mISFIRSTHIGHWAYSELECT = false;
+    private boolean mISFIRSTMAINROADSELECT = false;
+    private boolean mISFASTESTSPEEDSELECT = false;
 
-    private Hashtable<String, IRoutePreferenceChangeListener> routePreferenceChangeListenerMap;
+    private Hashtable<String, IRoutePreferenceChangeListener> mRoutePreferenceChangeListenerMap;
 
     private  SettingPackage mSettingPackage;
-    private RoutePreferenceID lastRoutePreferenceID;
-    private RoutePreferenceID routePreferenceID = RoutePreferenceID.PREFERENCE_RECOMMEND;
+    private RoutePreferenceID mLastRoutePreferenceID;
+    private RoutePreferenceID mRoutePreferenceID = RoutePreferenceID.PREFERENCE_RECOMMEND;
 
-    public SceneRoutePreferenceImpl(BaseSceneView mScreenView) {
-        super(mScreenView);
+    public SceneRoutePreferenceImpl(final BaseSceneView screenView) {
+        super(screenView);
         mSettingPackage = SettingPackage.getInstance();
-        routePreferenceChangeListenerMap = new Hashtable<>();
+        mRoutePreferenceChangeListenerMap = new Hashtable<>();
     }
 
     @Override
@@ -52,6 +71,9 @@ public class SceneRoutePreferenceImpl extends BaseSceneModel<BaseSceneView> impl
 
     @Override
     public void preferenceAvoidCongestion() {
+        if (!getNetworkStatus()) {
+            return;
+        }
         setRoutePreference(AVOIDCONGESTION);
     }
 
@@ -72,310 +94,343 @@ public class SceneRoutePreferenceImpl extends BaseSceneModel<BaseSceneView> impl
 
     @Override
     public void preferenceFirstMainRoad() {
+        if (!getNetworkStatus()) {
+            return;
+        }
         setRoutePreference(FIRSTMAINROAD);
     }
 
     @Override
     public void preferenceFastestSpeed() {
+        if (!getNetworkStatus()) {
+            return;
+        }
         setRoutePreference(FASTESTSPEED);
     }
 
-    public void setOnPreferenceChangeListener(String name, IRoutePreferenceChangeListener listener) {
-        routePreferenceChangeListenerMap.put(name, listener);
+    /**
+     * 获取网络状态
+     * @return 网络状态
+     */
+    private boolean getNetworkStatus() {
+        return Boolean.TRUE.equals(NetWorkUtils.Companion.getInstance().checkNetwork());
     }
-
-    public void setRoutePreference(String mode) {
-        routePreferenceID = formatPreference(mode);
-        if (routePreferenceID == RoutePreferenceID.PREFERENCE_RECOMMEND && lastRoutePreferenceID == routePreferenceID) {
+    /**
+     * 注册监听
+     * @param name 关键字
+     * @param listener 回调
+     * */
+    public void setOnPreferenceChangeListener(final String name, final IRoutePreferenceChangeListener listener) {
+        mRoutePreferenceChangeListenerMap.put(name, listener);
+    }
+    /**
+     * 设置偏好
+     * @param mode 偏好
+     * */
+    public void setRoutePreference(final String mode) {
+        mRoutePreferenceID = formatPreference(mode);
+        if (mRoutePreferenceID == RoutePreferenceID.PREFERENCE_RECOMMEND && mLastRoutePreferenceID == mRoutePreferenceID) {
             Logger.i("the same route perference");
             return;
         }
-        mSettingPackage.setRoutePreference(routePreferenceID);
-        if (ConvertUtils.isEmpty(routePreferenceChangeListenerMap)) return;
-        for (IRoutePreferenceChangeListener listener : routePreferenceChangeListenerMap.values()) {
+        mSettingPackage.setRoutePreference(mRoutePreferenceID);
+        if (ConvertUtils.isEmpty(mRoutePreferenceChangeListenerMap)) {
+            return;
+        }
+        for (IRoutePreferenceChangeListener listener : mRoutePreferenceChangeListenerMap.values()) {
             listener.onPreferenceChange(mSettingPackage.getRoutePreference(), false);
         }
-        lastRoutePreferenceID = routePreferenceID;
+        mLastRoutePreferenceID = mRoutePreferenceID;
     }
-
+    /**
+     * 清除偏好
+     * */
     public void clearPreference() {
-        ISRECOMMENDSELECT = false;
-        ISFIRSTHIGHWAYSELECT = false;
-        ISLESSCHARGESELECT = false;
-        ISNOTHIGHWAYSELECT = false;
-        ISFIRSTMAINROADSELECT = false;
-        ISAVOIDCONGESTIONSELECT = false;
-        ISFASTESTSPEEDSELECT = false;
+        mISRECOMMENDSELECT = false;
+        mISFIRSTHIGHWAYSELECT = false;
+        mISLESSCHARGESELECT = false;
+        mISNOTHIGHWAYSELECT = false;
+        mISFIRSTMAINROADSELECT = false;
+        mISAVOIDCONGESTIONSELECT = false;
+        mISFASTESTSPEEDSELECT = false;
     }
-
+    /**
+     * 设置默认
+     * */
     public void setDefaultPreference() {
         switch (mSettingPackage.getRoutePreference()) {
             case PREFERENCE_RECOMMEND:
-                ISRECOMMENDSELECT = true;
+                mISRECOMMENDSELECT = true;
                 break;
             case PREFERENCE_AVOIDCONGESTION:
-                ISAVOIDCONGESTIONSELECT = true;
+                mISAVOIDCONGESTIONSELECT = true;
                 break;
             case PREFERENCE_LESSCHARGE:
-                ISLESSCHARGESELECT = true;
+                mISLESSCHARGESELECT = true;
                 break;
             case PREFERENCE_NOTHIGHWAY:
-                ISNOTHIGHWAYSELECT = true;
+                mISNOTHIGHWAYSELECT = true;
                 break;
             case PREFERENCE_FIRSTHIGHWAY:
-                ISFIRSTHIGHWAYSELECT = true;
+                mISFIRSTHIGHWAYSELECT = true;
                 break;
             case PREFERENCE_FIRSTMAINROAD:
-                ISFIRSTMAINROADSELECT = true;
+                mISFIRSTMAINROADSELECT = true;
                 break;
             case PREFERENCE_FASTESTSPEED:
-                ISFASTESTSPEEDSELECT = true;
+                mISFASTESTSPEEDSELECT = true;
                 break;
             case PREFERENCE_AVOIDCONGESTION_AND_LESSCHARGE:
-                ISAVOIDCONGESTIONSELECT = true;
-                ISLESSCHARGESELECT = true;
+                mISAVOIDCONGESTIONSELECT = true;
+                mISLESSCHARGESELECT = true;
                 break;
             case PREFERENCE_AVOIDCONGESTION_AND_NOTHIGHWAY:
-                ISAVOIDCONGESTIONSELECT = true;
-                ISNOTHIGHWAYSELECT = true;
+                mISAVOIDCONGESTIONSELECT = true;
+                mISNOTHIGHWAYSELECT = true;
                 break;
             case PREFERENCE_AVOIDCONGESTION_AND_FIRSTHIGHWAY:
-                ISAVOIDCONGESTIONSELECT = true;
-                ISFIRSTHIGHWAYSELECT = true;
+                mISAVOIDCONGESTIONSELECT = true;
+                mISFIRSTHIGHWAYSELECT = true;
                 break;
             case PREFERENCE_LESSCHARGE_AND_NOTHIGHWAY:
-                ISLESSCHARGESELECT = true;
-                ISNOTHIGHWAYSELECT = true;
+                mISLESSCHARGESELECT = true;
+                mISNOTHIGHWAYSELECT = true;
                 break;
             case PREFERENCE_AVOIDCONGESTION_AND_LESSCHARGE_AND_NOTHIGHWAY:
-                ISAVOIDCONGESTIONSELECT = true;
-                ISLESSCHARGESELECT = true;
-                ISNOTHIGHWAYSELECT = true;
+                mISAVOIDCONGESTIONSELECT = true;
+                mISLESSCHARGESELECT = true;
+                mISNOTHIGHWAYSELECT = true;
                 break;
             case PREFERENCE_AVOIDCONGESTION_AND_FIRSTMAINROAD:
-                ISAVOIDCONGESTIONSELECT = true;
-                ISFIRSTMAINROADSELECT = true;
+                mISAVOIDCONGESTIONSELECT = true;
+                mISFIRSTMAINROADSELECT = true;
                 break;
             case PREFERENCE_AVOIDCONGESTION_AND_FASTESTSPEED:
-                ISAVOIDCONGESTIONSELECT = true;
-                ISFASTESTSPEEDSELECT = true;
+                mISAVOIDCONGESTIONSELECT = true;
+                mISFASTESTSPEEDSELECT = true;
+                break;
+            default:
                 break;
         }
 
-        if (ConvertUtils.isEmpty(routePreferenceChangeListenerMap)) return;
-        for (IRoutePreferenceChangeListener listener : routePreferenceChangeListenerMap.values()) {
+        if (ConvertUtils.isEmpty(mRoutePreferenceChangeListenerMap)) {
+            return;
+        }
+        for (IRoutePreferenceChangeListener listener : mRoutePreferenceChangeListenerMap.values()) {
             listener.onPreferenceChange(mSettingPackage.getRoutePreference(), true);
         }
-        lastRoutePreferenceID = mSettingPackage.getRoutePreference();
+        mLastRoutePreferenceID = mSettingPackage.getRoutePreference();
     }
-
-    public RoutePreferenceID formatPreference(String mode){
+    /**
+     * 格式化偏好
+     * @param mode 模式
+     * @return 偏好
+     * */
+    public RoutePreferenceID formatPreference(final String mode){
         switch (mode){
             case RECOMMEND:
-                if (!ISRECOMMENDSELECT){
-                    ISRECOMMENDSELECT = true;
-                    ISAVOIDCONGESTIONSELECT = false;
-                    ISLESSCHARGESELECT = false;
-                    ISNOTHIGHWAYSELECT = false;
-                    ISFIRSTHIGHWAYSELECT = false;
-                    ISFIRSTMAINROADSELECT = false;
-                    ISFASTESTSPEEDSELECT = false;
+                if (!mISRECOMMENDSELECT){
+                    mISRECOMMENDSELECT = true;
+                    mISAVOIDCONGESTIONSELECT = false;
+                    mISLESSCHARGESELECT = false;
+                    mISNOTHIGHWAYSELECT = false;
+                    mISFIRSTHIGHWAYSELECT = false;
+                    mISFIRSTMAINROADSELECT = false;
+                    mISFASTESTSPEEDSELECT = false;
                     return getPreferenceID();
-                }
-                else
-                {
+                } else {
                     return RoutePreferenceID.PREFERENCE_RECOMMEND;
                 }
             case AVOIDCONGESTION:
-                if (ISAVOIDCONGESTIONSELECT) {
-                    ISAVOIDCONGESTIONSELECT = false;
-                    if (!ISLESSCHARGESELECT && !ISNOTHIGHWAYSELECT && !ISFIRSTHIGHWAYSELECT && !ISFIRSTMAINROADSELECT && !ISFASTESTSPEEDSELECT) {
-                        ISRECOMMENDSELECT = true;
+                if (mISAVOIDCONGESTIONSELECT) {
+                    mISAVOIDCONGESTIONSELECT = false;
+                    if (!mISLESSCHARGESELECT && !mISNOTHIGHWAYSELECT && !mISFIRSTHIGHWAYSELECT && !mISFIRSTMAINROADSELECT && !mISFASTESTSPEEDSELECT) {
+                        mISRECOMMENDSELECT = true;
                         return getPreferenceID();
                     }
                     return getPreferenceID();
-                }
-                else
-                {
-                    ISAVOIDCONGESTIONSELECT = true;
-                    ISRECOMMENDSELECT = false;
+                } else {
+                    mISAVOIDCONGESTIONSELECT = true;
+                    mISRECOMMENDSELECT = false;
                     return getPreferenceID();
                 }
             case LESSCHARGE:
-                if (ISLESSCHARGESELECT) {
-                    ISLESSCHARGESELECT = false;
-                    if (!ISAVOIDCONGESTIONSELECT && !ISNOTHIGHWAYSELECT) {
-                        ISRECOMMENDSELECT = true;
+                if (mISLESSCHARGESELECT) {
+                    mISLESSCHARGESELECT = false;
+                    if (!mISAVOIDCONGESTIONSELECT && !mISNOTHIGHWAYSELECT) {
+                        mISRECOMMENDSELECT = true;
                         return getPreferenceID();
                     }
                     return getPreferenceID();
-                }
-                else
-                {
-                    ISLESSCHARGESELECT = true;
-                    ISRECOMMENDSELECT = false;
-                    ISFIRSTHIGHWAYSELECT = false;
-                    ISFIRSTMAINROADSELECT = false;
-                    ISFASTESTSPEEDSELECT = false;
+                } else {
+                    mISLESSCHARGESELECT = true;
+                    mISRECOMMENDSELECT = false;
+                    mISFIRSTHIGHWAYSELECT = false;
+                    mISFIRSTMAINROADSELECT = false;
+                    mISFASTESTSPEEDSELECT = false;
                     return getPreferenceID();
                 }
             case NOTHIGHWAY:
-                if (ISNOTHIGHWAYSELECT) {
-                    ISNOTHIGHWAYSELECT = false;
-                    if (!ISAVOIDCONGESTIONSELECT && !ISLESSCHARGESELECT) {
-                        ISRECOMMENDSELECT = true;
+                if (mISNOTHIGHWAYSELECT) {
+                    mISNOTHIGHWAYSELECT = false;
+                    if (!mISAVOIDCONGESTIONSELECT && !mISLESSCHARGESELECT) {
+                        mISRECOMMENDSELECT = true;
                         return getPreferenceID();
                     }
                     return getPreferenceID();
-                }
-                else
-                {
-                    ISNOTHIGHWAYSELECT = true;
-                    ISRECOMMENDSELECT = false;
-                    ISFIRSTHIGHWAYSELECT = false;
-                    ISFIRSTMAINROADSELECT = false;
-                    ISFASTESTSPEEDSELECT = false;
+                } else {
+                    mISNOTHIGHWAYSELECT = true;
+                    mISRECOMMENDSELECT = false;
+                    mISFIRSTHIGHWAYSELECT = false;
+                    mISFIRSTMAINROADSELECT = false;
+                    mISFASTESTSPEEDSELECT = false;
                     return getPreferenceID();
                 }
             case FIRSTHIGHWAY:
-                if (ISFIRSTHIGHWAYSELECT) {
-                    ISFIRSTHIGHWAYSELECT = false;
-                    if (!ISAVOIDCONGESTIONSELECT) {
-                        ISRECOMMENDSELECT = true;
+                if (mISFIRSTHIGHWAYSELECT) {
+                    mISFIRSTHIGHWAYSELECT = false;
+                    if (!mISAVOIDCONGESTIONSELECT) {
+                        mISRECOMMENDSELECT = true;
                         return getPreferenceID();
                     }
                     return getPreferenceID();
-                }
-                else
-                {
-                    ISFIRSTHIGHWAYSELECT = true;
-                    ISRECOMMENDSELECT = false;
-                    ISLESSCHARGESELECT = false;
-                    ISNOTHIGHWAYSELECT = false;
-                    ISFIRSTMAINROADSELECT = false;
-                    ISFASTESTSPEEDSELECT = false;
+                } else {
+                    mISFIRSTHIGHWAYSELECT = true;
+                    mISRECOMMENDSELECT = false;
+                    mISLESSCHARGESELECT = false;
+                    mISNOTHIGHWAYSELECT = false;
+                    mISFIRSTMAINROADSELECT = false;
+                    mISFASTESTSPEEDSELECT = false;
                     return getPreferenceID();
                 }
             case FIRSTMAINROAD:
-                if (ISFIRSTMAINROADSELECT) {
-                    ISFIRSTMAINROADSELECT = false;
-                    if (!ISAVOIDCONGESTIONSELECT) {
-                        ISRECOMMENDSELECT = true;
+                if (mISFIRSTMAINROADSELECT) {
+                    mISFIRSTMAINROADSELECT = false;
+                    if (!mISAVOIDCONGESTIONSELECT) {
+                        mISRECOMMENDSELECT = true;
                         return getPreferenceID();
                     }
                     return getPreferenceID();
-                }
-                else
-                {
-                    ISFIRSTMAINROADSELECT = true;
-                    ISRECOMMENDSELECT = false;
-                    ISLESSCHARGESELECT = false;
-                    ISNOTHIGHWAYSELECT = false;
-                    ISFIRSTHIGHWAYSELECT = false;
-                    ISFASTESTSPEEDSELECT = false;
+                } else {
+                    mISFIRSTMAINROADSELECT = true;
+                    mISRECOMMENDSELECT = false;
+                    mISLESSCHARGESELECT = false;
+                    mISNOTHIGHWAYSELECT = false;
+                    mISFIRSTHIGHWAYSELECT = false;
+                    mISFASTESTSPEEDSELECT = false;
                     return getPreferenceID();
                 }
             case FASTESTSPEED:
-                if (ISFASTESTSPEEDSELECT) {
-                    ISFASTESTSPEEDSELECT = false;
-                    if (!ISAVOIDCONGESTIONSELECT) {
-                        ISRECOMMENDSELECT = true;
-                        return getPreferenceID();
-                    }
-                    return getPreferenceID();
-                }
-                else
-                {
-                    ISFASTESTSPEEDSELECT = true;
-                    ISRECOMMENDSELECT = false;
-                    ISLESSCHARGESELECT = false;
-                    ISNOTHIGHWAYSELECT = false;
-                    ISFIRSTHIGHWAYSELECT = false;
-                    ISFIRSTMAINROADSELECT = false;
-                    return getPreferenceID();
-                }
+                return getFaststSpeed();
             default:
                 return RoutePreferenceID.PREFERENCE_RECOMMEND;
         }
     }
-
-    private RoutePreferenceID getPreferenceID() {
-        if (ISRECOMMENDSELECT) {
-            Logger.i("RoutePreference click: " + "推荐");
-            return RoutePreferenceID.PREFERENCE_RECOMMEND;
+    /**
+     * 最快
+     * @return id
+     * */
+    private RoutePreferenceID getFaststSpeed() {
+        if (mISFASTESTSPEEDSELECT) {
+            mISFASTESTSPEEDSELECT = false;
+            if (!mISAVOIDCONGESTIONSELECT) {
+                mISRECOMMENDSELECT = true;
+                return getPreferenceID();
+            }
+            return getPreferenceID();
+        } else {
+            mISFASTESTSPEEDSELECT = true;
+            mISRECOMMENDSELECT = false;
+            mISLESSCHARGESELECT = false;
+            mISNOTHIGHWAYSELECT = false;
+            mISFIRSTHIGHWAYSELECT = false;
+            mISFIRSTMAINROADSELECT = false;
+            return getPreferenceID();
         }
-        else
-        {
-            if (ISAVOIDCONGESTIONSELECT && ISLESSCHARGESELECT && ISNOTHIGHWAYSELECT) {
-                Logger.i("RoutePreference click: " + "躲避拥堵+少收费+不走高速");
+    }
+    /**
+     * 获取id
+     * @return id
+     * */
+    private RoutePreferenceID getPreferenceID() {
+        if (mISRECOMMENDSELECT) {
+            Logger.i(TAG + "推荐");
+            return RoutePreferenceID.PREFERENCE_RECOMMEND;
+        } else {
+            if (mISAVOIDCONGESTIONSELECT && mISLESSCHARGESELECT && mISNOTHIGHWAYSELECT) {
+                Logger.i(TAG + "躲避拥堵+少收费+不走高速");
                 return RoutePreferenceID.PREFERENCE_AVOIDCONGESTION_AND_LESSCHARGE_AND_NOTHIGHWAY;
             }
 
-            if (ISAVOIDCONGESTIONSELECT && ISLESSCHARGESELECT) {
-                Logger.i("RoutePreference click: " + "躲避拥堵+少收费");
+            if (mISAVOIDCONGESTIONSELECT && mISLESSCHARGESELECT) {
+                Logger.i(TAG + "躲避拥堵+少收费");
                 return RoutePreferenceID.PREFERENCE_AVOIDCONGESTION_AND_LESSCHARGE;
             }
 
-            if (ISAVOIDCONGESTIONSELECT && ISNOTHIGHWAYSELECT) {
-                Logger.i("RoutePreference click: " + "躲避拥堵+不走高速");
+            if (mISAVOIDCONGESTIONSELECT && mISNOTHIGHWAYSELECT) {
+                Logger.i(TAG + "躲避拥堵+不走高速");
                 return RoutePreferenceID.PREFERENCE_AVOIDCONGESTION_AND_NOTHIGHWAY;
             }
 
-            if (ISAVOIDCONGESTIONSELECT && ISFIRSTHIGHWAYSELECT) {
-                Logger.i("RoutePreference click: " + "躲避拥堵+高速优先");
+            if (mISAVOIDCONGESTIONSELECT && mISFIRSTHIGHWAYSELECT) {
+                Logger.i(TAG + "躲避拥堵+高速优先");
                 return RoutePreferenceID.PREFERENCE_AVOIDCONGESTION_AND_FIRSTHIGHWAY;
             }
 
-            if (ISLESSCHARGESELECT && ISNOTHIGHWAYSELECT) {
-                Logger.i("RoutePreference click: " + "少收费+不走高速");
+            if (mISLESSCHARGESELECT && mISNOTHIGHWAYSELECT) {
+                Logger.i(TAG + "少收费+不走高速");
                 return RoutePreferenceID.PREFERENCE_LESSCHARGE_AND_NOTHIGHWAY;
             }
 
-            if (ISAVOIDCONGESTIONSELECT && ISFIRSTMAINROADSELECT) {
-                Logger.i("RoutePreference click: " + "躲避拥堵+大路优先");
+            if (mISAVOIDCONGESTIONSELECT && mISFIRSTMAINROADSELECT) {
+                Logger.i(TAG + "躲避拥堵+大路优先");
                 return RoutePreferenceID.PREFERENCE_AVOIDCONGESTION_AND_FIRSTMAINROAD;
             }
 
-            if (ISAVOIDCONGESTIONSELECT && ISFASTESTSPEEDSELECT) {
-                Logger.i("RoutePreference click: " + "躲避拥堵+速度最快");
+            if (mISAVOIDCONGESTIONSELECT && mISFASTESTSPEEDSELECT) {
+                Logger.i(TAG + "躲避拥堵+速度最快");
                 return RoutePreferenceID.PREFERENCE_AVOIDCONGESTION_AND_FASTESTSPEED;
             }
 
-            if (ISAVOIDCONGESTIONSELECT) {
-                Logger.i("RoutePreference click: " + "躲避拥堵");
+            if (mISAVOIDCONGESTIONSELECT) {
+                Logger.i(TAG + "躲避拥堵");
                 return RoutePreferenceID.PREFERENCE_AVOIDCONGESTION;
             }
 
-            if (ISLESSCHARGESELECT) {
-                Logger.i("RoutePreference click: " + "少收费");
+            if (mISLESSCHARGESELECT) {
+                Logger.i(TAG + "少收费");
                 return RoutePreferenceID.PREFERENCE_LESSCHARGE;
             }
 
-            if (ISNOTHIGHWAYSELECT) {
-                Logger.i("RoutePreference click: " + "不走高速");
+            if (mISNOTHIGHWAYSELECT) {
+                Logger.i(TAG + "不走高速");
                 return RoutePreferenceID.PREFERENCE_NOTHIGHWAY;
             }
 
-            if (ISFIRSTHIGHWAYSELECT) {
-                Logger.i("RoutePreference click: " + "高速优先");
+            if (mISFIRSTHIGHWAYSELECT) {
+                Logger.i(TAG + "高速优先");
                 return RoutePreferenceID.PREFERENCE_FIRSTHIGHWAY;
             }
 
-            if (ISFIRSTMAINROADSELECT) {
-                Logger.i("RoutePreference click: " + "大路优先");
+            if (mISFIRSTMAINROADSELECT) {
+                Logger.i(TAG + "大路优先");
                 return RoutePreferenceID.PREFERENCE_FIRSTMAINROAD;
             }
 
-            if (ISFASTESTSPEEDSELECT) {
-                Logger.i("RoutePreference click: " + "速度最快");
+            if (mISFASTESTSPEEDSELECT) {
+                Logger.i(TAG + "速度最快");
                 return RoutePreferenceID.PREFERENCE_FASTESTSPEED;
             }
-            Logger.i("RoutePreference click: " + "异常缺失");
+            Logger.i(TAG + "异常缺失");
         }
         return RoutePreferenceID.PREFERENCE_RECOMMEND;
     }
-
     public interface IRoutePreferenceChangeListener {
+        /**
+         * Scene 回调
+         * @param routePreference 偏好id
+         * @param isFirstChange 首次改变
+         * */
         void onPreferenceChange(RoutePreferenceID routePreference, boolean isFirstChange);
     }
 

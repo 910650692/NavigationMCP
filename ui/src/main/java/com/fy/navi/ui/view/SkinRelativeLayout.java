@@ -4,21 +4,16 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.RelativeLayout;
 
-/**
- * @Description TODO
- * @Author lvww
- * @date 2024/12/2
- */
 public class SkinRelativeLayout extends RelativeLayout {
-    public SkinRelativeLayout(Context context) {
+    public SkinRelativeLayout(final Context context) {
         super(context);
     }
 
-    public SkinRelativeLayout(Context context, AttributeSet attrs) {
+    public SkinRelativeLayout(final Context context, final AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public SkinRelativeLayout(Context context, AttributeSet attrs, int defStyleAttr) {
+    public SkinRelativeLayout(final Context context, final AttributeSet attrs, final int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 }

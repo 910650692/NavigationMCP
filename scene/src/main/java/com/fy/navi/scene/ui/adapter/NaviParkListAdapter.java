@@ -65,9 +65,9 @@ public class NaviParkListAdapter extends RecyclerView.Adapter<NaviParkListAdapte
         holder.itemBinding.sivParkingEnd.setVisibility((mList.size() == 1 && naviParkingEntity.isEndPoi) ? View.VISIBLE : View.GONE);
         holder.itemBinding.sclListItem.setSelected(mSelectIndex == position);
         if (!ConvertUtils.isEmpty(naviParkingEntity.tag)) {
-            holder.itemBinding.stvParkingState.setTextColor((naviParkingEntity.tag.equals(AppContext.mContext.getString(R.string.navi_recommend_parking_adequate))) ?
-                    AppContext.mContext.getResources().getColor(R.color.navi_list_item_tv_one) :
-                    AppContext.mContext.getResources().getColor(R.color.navi_list_item_stroke_select));
+            holder.itemBinding.stvParkingState.setTextColor((naviParkingEntity.tag.equals(AppContext.getInstance().getMContext().getString(R.string.navi_recommend_parking_adequate))) ?
+                    AppContext.getInstance().getMContext().getResources().getColor(R.color.navi_list_item_tv_one) :
+                    AppContext.getInstance().getMContext().getResources().getColor(R.color.navi_list_item_stroke_select));
         }
         holder.itemBinding.getRoot().setOnClickListener(v -> {
             Logger.d(TAG, "NaviAddViaAdapter item click " + position);

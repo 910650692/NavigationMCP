@@ -7,12 +7,13 @@ import com.baidu.bridge.BridgeSdk;
 import com.baidu.bridge.listener.OnConnectedListener;
 import com.baidu.oneos.protocol.listener.NaviCommandListener;
 import com.baidu.oneos.protocol.listener.NaviControlCommandListener;
-import com.fy.navi.vrbridge.Impl.NaviCommandImpl;
-import com.fy.navi.vrbridge.Impl.NaviControlCommandImpl;
-import com.fy.navi.vrbridge.bean.MapState;
+import com.fy.navi.vrbridge.impl.NaviCommandImpl;
+import com.fy.navi.vrbridge.impl.NaviControlCommandImpl;
 
 /**
  * 百度VRBridge初始化入口.
+ * @author tssh.
+ * @version $Revision.1.0.0$
  */
 public class VrBridgeManager {
 
@@ -31,7 +32,7 @@ public class VrBridgeManager {
      *
      * @param context Context.
      */
-    public void init(Context context) {
+    public void init(final Context context) {
         BridgeSdk.getInstance().connect(context.getApplicationContext(), new OnConnectedListener() {
             @Override
             public void onConnected() {

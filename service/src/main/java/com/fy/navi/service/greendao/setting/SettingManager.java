@@ -1,10 +1,7 @@
 package com.fy.navi.service.greendao.setting;
 
-import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
 import com.fy.navi.service.AppContext;
-import com.fy.navi.service.greendao.CommonSetting;
-import com.fy.navi.service.greendao.CommonSettingDao;
 import com.fy.navi.service.greendao.DaoMaster;
 
 import org.greenrobot.greendao.database.Database;
@@ -12,11 +9,7 @@ import org.greenrobot.greendao.database.Database;
 import java.util.Date;
 import java.util.List;
 
-/**
- * @Author: fenghong0322
- * @Description: 设置项数据库管理
- * @CreateDate: 2025-01-08
- */
+
 public class SettingManager {
     private static final String TAG = SettingManager.class.getSimpleName();
     private static final String DB_NAME = "setting.db";
@@ -25,6 +18,7 @@ public class SettingManager {
 
     /**
      * Get instance.
+     * @return SettingManager
      */
     public static SettingManager getInstance() {
         if (mDBHelper == null) {
@@ -43,9 +37,9 @@ public class SettingManager {
      */
     public void init() {
         // 数据库对象
-        DaoMaster.DevOpenHelper helper = new DaoMaster.DevOpenHelper(AppContext.mContext, DB_NAME);
-        Database db = helper.getWritableDb();
-        DaoMaster daoMaster = new DaoMaster(db);
+        final DaoMaster.DevOpenHelper helper = new DaoMaster.DevOpenHelper(AppContext.getInstance().getMContext(), DB_NAME);
+        final Database db = helper.getWritableDb();
+        final DaoMaster daoMaster = new DaoMaster(db);
         mSettingDao = daoMaster.newSession().getNaviSettingDao();
     }
 
@@ -54,7 +48,7 @@ public class SettingManager {
      * @param key save key
      * @param value save value
      */
-    public void insertValue(String key, String value) {
+    public void insertValue(final String key, final String value) {
         Logger.d(TAG, "key = " + key + "  value = " + value);
         if (searchFromDb(key)) {
             Logger.d(TAG, "update");
@@ -65,36 +59,43 @@ public class SettingManager {
         }
     }
 
-    private boolean searchFromDb(String key) {
-        List<NaviSetting> saveData = mSettingDao.queryBuilder()
-                .where(NaviSettingDao.Properties.Name.eq(key))
+    /**
+     * 查询某个key是否存在于数据库中
+     * @param key search key
+     * @return true if exist,false if not exist
+     */
+    private boolean searchFromDb(final String key) {
+        final List<NaviSetting> saveData = mSettingDao.queryBuilder()
+                .where(NaviSettingDao.Properties.MName.eq(key))
                 .list();
         return !saveData.isEmpty();
     }
 
     /**
      * 修改或者更新设置项数据
-     * @param key
-     * @param value
+     * @param key 对应key值
+     * @param value 对应值
      */
-    public void insertOrReplace(String key, String value) {
+    public void insertOrReplace(final String key, final String value) {
         Logger.d(TAG, "insertOrReplace key = " + key + "  value = " + value);
-        NaviSetting setting = new NaviSetting();
-        setting.setName(key);
-        setting.setValue(value);
-        setting.setUpdateTime(new Date());
+        final NaviSetting setting = new NaviSetting();
+        setting.setMName(key);
+        setting.setMValue(value);
+        setting.setMUpdateTime(new Date());
         mSettingDao.insertOrReplace(setting);
     }
 
     /**
      * 通过key查找其对应value
+     * @param key 唯一值
+     * @return value
      */
-    public String getValueByKey(String key) {
-        NaviSetting naviSetting = mSettingDao.queryBuilder()
-                .where(NaviSettingDao.Properties.Name.eq(key))
+    public String getValueByKey(final String key) {
+        final NaviSetting naviSetting = mSettingDao.queryBuilder()
+                .where(NaviSettingDao.Properties.MName.eq(key))
                 .unique();
         if (naviSetting != null) {
-            return naviSetting.getValue();
+            return naviSetting.getMValue();
         } else {
             return "";
         }
@@ -105,27 +106,30 @@ public class SettingManager {
      * @return all data list,String
      */
     private List<NaviSetting> loadAll() {
-        List<NaviSetting> settingList = mSettingDao.loadAll();
+        final List<NaviSetting> settingList = mSettingDao.loadAll();
         return settingList;
     }
 
     /**
      * 更新设置项数据
+     * @param key 对应key值
+     * @param value 对应值
      */
-    private void update(String key, String value) {
-        NaviSetting unique = mSettingDao.queryBuilder()
-                .where(NaviSettingDao.Properties.Name.eq(key))
+    private void update(final String key, final String value) {
+        final NaviSetting unique = mSettingDao.queryBuilder()
+                .where(NaviSettingDao.Properties.MName.eq(key))
                 .unique();
-        unique.setValue(value);
+        unique.setMValue(value);
         mSettingDao.update(unique);
     }
 
     /**
      * 删除某个设置项数据
+     * @param key 对应key值
      */
-    public void deleteValue(String key) {
+    public void deleteValue(final String key) {
         mSettingDao.queryBuilder()
-                .where(NaviSettingDao.Properties.Name.eq(key))
+                .where(NaviSettingDao.Properties.MName.eq(key))
                 .buildDelete()
                 .executeDeleteWithoutDetachingEntities();
     }

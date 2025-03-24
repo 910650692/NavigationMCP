@@ -168,7 +168,7 @@ public class LauncherSmallCardModel extends BaseModel<BaseLauncherSmallCardViewM
 
     @Override
     public void onRouteDrawLine(RouteLineLayerParam routeLineLayerParam) {
-        Logger.i(TAG, "onRouteDrawLine:" + routeLineLayerParam.getMapTypeId());
+        Logger.i(TAG, "onRouteDrawLine:" + routeLineLayerParam.getMMapTypeId());
     }
 
     /**

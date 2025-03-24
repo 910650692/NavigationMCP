@@ -3,14 +3,11 @@ package com.fy.navi.service.define.route;
 
 import java.util.List;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 public class RouteRestTollGateInfo {
-    private List<RouteRestTollGateDetailsInfo> routeRestTollGateDetailsInfos;
-
-    public void setRouteRestTollGateDetailsInfos(List<RouteRestTollGateDetailsInfo> routeRestTollGateDetailsInfos) {
-        this.routeRestTollGateDetailsInfos = routeRestTollGateDetailsInfos;
-    }
-
-    public List<RouteRestTollGateDetailsInfo> getRouteRestTollGateDetailsInfos() {
-        return routeRestTollGateDetailsInfos;
-    }
+    private List<RouteRestTollGateDetailsInfo> mRouteRestTollGateDetailsInfos;
 }

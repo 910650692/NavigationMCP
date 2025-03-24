@@ -191,7 +191,7 @@ public class BaseTrafficViewModel extends BaseViewModel<TrafficEventFragment, Tr
         mModel.queryDynamicPraise(subTraEventDetail.id);
         // 计算直线距离
         double distance = mModel.calcStraightDistance(new GeoPoint(poiInfo.getPoint().getLon(), poiInfo.getPoint().getLat())) / 1000f;
-        straightDis.set(String.format(AppContext.mContext.getString(R.string.traffic_distance_format), distance));
+        straightDis.set(String.format(AppContext.getInstance().getMContext().getString(R.string.traffic_distance_format), distance));
 
         ThreadManager.getInstance().postUi(() -> {
             mView.updateUi(subTraEventDetail);
@@ -200,8 +200,8 @@ public class BaseTrafficViewModel extends BaseViewModel<TrafficEventFragment, Tr
 
 
     private String getFormatThumb(@StringRes int formatStr, int number) {
-        if (number > 99) return String.format(AppContext.mContext.getString(formatStr), "99+");
-        else return String.format(AppContext.mContext.getString(formatStr), number);
+        if (number > 99) return String.format(AppContext.getInstance().getMContext().getString(formatStr), "99+");
+        else return String.format(AppContext.getInstance().getMContext().getString(formatStr), number);
     }
 
     /***

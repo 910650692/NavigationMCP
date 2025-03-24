@@ -31,7 +31,12 @@ public class SettingOthersPrivacyFragment extends BaseFragment<FragmentSettingPr
 
     }
 
-    public void setEndDate(String endDate, boolean isShow) {
+    /**
+     * 设置隐私状态
+     * @param endDate 隐私状态
+     * @param isShow 是否显示
+     */
+    public void setEndDate(final String endDate, final boolean isShow) {
         Logger.d("SettingOthersPrivacyFragment", "setEndDate：" + endDate);
         ThreadManager.getInstance().postUi(() -> {
             if (isShow) {

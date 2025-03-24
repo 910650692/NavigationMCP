@@ -31,7 +31,7 @@
             android:id="@+id/group_next"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:visibility="@{naviEta.groupNextVisible?View.VISIBLE:View.GONE}"
+            android:visibility="@{naviEta.mGroupNextVisible?View.VISIBLE:View.GONE}"
             app:constraint_referenced_ids="siv_hud_sou31,stv_text_next"
             tools:visibility="visible" />
 
@@ -67,7 +67,7 @@
             android:gravity="center"
             android:textColor="@color/navi_tbt_remaining_info_color"
             android:textSize="@dimen/sp_40"
-            android:visibility="@{naviEta.distanceTimeVisible?View.VISIBLE:View.GONE}"
+            android:visibility="@{naviEta.mDistanceTimeVisible?View.VISIBLE:View.GONE}"
             app:layout_constraintBottom_toBottomOf="@id/gl_arrive"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@id/gl_arrive"

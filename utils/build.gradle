@@ -6,6 +6,7 @@ plugins {
 android {
     namespace 'com.android.utils'
     compileSdk Integer.parseInt(libs.versions.compileSdk.get())
+    buildToolsVersion libs.versions.buildSdk.get()
 
     defaultConfig {
         minSdk Integer.parseInt(libs.versions.minSdk.get())

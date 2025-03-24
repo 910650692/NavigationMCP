@@ -15,6 +15,7 @@ import com.patac.vehicle.VehicleController;
 import com.patac.vehicle.VehicleStatusController;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import gm.powermode.PowerModeManager;
@@ -29,22 +30,13 @@ public class SignalAdapterImpl implements SignalApi {
     public SignalAdapterImpl() {
     }
 
-    private abstract class VehicleSpeedListener extends VehicleController.SignalListener<Float> {
-        public VehicleSpeedListener() {
-            super(291504647, 0, 1.0f);
-        }
-
-        protected void onSignalChanged(int area, Float value) {
-            this.onVehicleSpeedChanged(value);
-        }
-
-        public abstract void onVehicleSpeedChanged(Float speed);
-    }
-
+    /**
+     * 初始化回调函数
+     */
     private void initCallback() {
         PowertainController.getInstance().registerSpeedOfVehicleListener(new PowertainController.SpeedOfVehicleListener() {
             @Override
-            public void onSpeedOfVehicleSignalChanged(Float speed) {
+            public void onSpeedOfVehicleSignalChanged(final Float speed) {
                 Log.d(TAG, "onSpeedOfVehicleSignalChanged: " + speed);
                 for (SignalAdapterCallback callback : mCallbacks) {
                     callback.onSpeedChanged(speed);
@@ -53,7 +45,7 @@ public class SignalAdapterImpl implements SignalApi {
         });
         PowertainController.getInstance().registerVehicleMotionMovementStateListener(new PowertainController.VehicleMotionMovementStateListener() {
             @Override
-            public void onVehicleMotionMovementStateChanged(Integer gear) {
+            public void onVehicleMotionMovementStateChanged(final Integer gear) {
                 Log.d(TAG, "onVehicleMotionMovementStateChanged: " + gear);
                 for (SignalAdapterCallback callback : mCallbacks) {
                     callback.onGearChanged(gear);
@@ -70,14 +62,14 @@ public class SignalAdapterImpl implements SignalApi {
     }
 
     @Override
-    public void initSignal(Context context) {
+    public void initSignal(final Context context) {
         if (!checkVehicleEnvironment()) {
             return;
         }
         mWorkThread = new HandlerThread("can-thread");
         mWorkThread.start();
 
-        Handler handler = new Handler(mWorkThread.getLooper());
+        final Handler handler = new Handler(mWorkThread.getLooper());
 
         /**
          * 首先调用VehicleController.getInstance获得VehicleController实例.
@@ -90,7 +82,7 @@ public class SignalAdapterImpl implements SignalApi {
     }
 
     @Override
-    public void registerCallback(String key, SignalAdapterCallback callback) {
+    public void registerCallback(final String key, final SignalAdapterCallback callback) {
         if (!mCallbacks.contains(callback)) {
             mCallbacks.add(callback);
         }
@@ -98,108 +90,108 @@ public class SignalAdapterImpl implements SignalApi {
 
     @Override
     public int getChargeSystemStatus() {
-        VehicleController.Result<Integer> result;
+        final VehicleController.Result<Integer> result;
         try {
             result = PowertainController.getInstance().getHighVoltageChargeSystemStatus();
-        } catch (Exception e) {
+        } catch (IllegalStateException | NoSuchElementException | UnsupportedOperationException e) {
             Log.e(TAG, "getChargeSystemStatus: " + Log.getStackTraceString(e));
             return -1;
         }
-        Integer value = result.getValue(-1);
+        final Integer value = result.getValue(-1);
         Log.d(TAG, "getChargeSystemStatus: " + value);
         return value;
     }
 
     @Override
     public float getBatteryEnergyPercent() {
-        VehicleController.Result<Float> result;
+        final VehicleController.Result<Float> result;
         try {
             result = PowertainController.getInstance().getHighVoltageBatteryStateOfChargeBatteryStateOfCharge();
-        } catch (Exception e) {
+        } catch (IllegalStateException | NoSuchElementException | UnsupportedOperationException e) {
             Log.e(TAG, "getBatteryEnergyPercent: " + Log.getStackTraceString(e));
             return -1;
         }
-        Float value = result.getValue(-1f);
+        final Float value = result.getValue(-1f);
         Log.d(TAG, "getBatteryEnergyPercent: " + value);
         return value;
     }
 
     @Override
     public float getMaxBatteryEnergy() {
-        VehicleController.Result<Float> result;
+        final VehicleController.Result<Float> result;
         try {
             result = PowertainController.getInstance().getInfoEvBatteryCapacity();
-        } catch (Exception e) {
+        } catch (IllegalStateException | NoSuchElementException | UnsupportedOperationException e) {
             Log.e(TAG, "getMaxBatteryEnergy: " + Log.getStackTraceString(e));
             return -1;
         }
-        Float value = result.getValue(-1f);
+        final Float value = result.getValue(-1f);
         Log.d(TAG, "getMaxBatteryEnergy: " + value);
         return value;
     }
 
     @Override
     public float getBatteryEnergy() {
-        VehicleController.Result<Float> result;
+        final VehicleController.Result<Float> result;
         try {
             result = PowertainController.getInstance().getHighVoltageBatteryRemainingUsableEnergy();
-        } catch (Exception e) {
+        } catch (IllegalStateException | NoSuchElementException | UnsupportedOperationException e) {
             Log.e(TAG, "getBatteryEnergy: " + Log.getStackTraceString(e));
             return -1;
         }
-        Float value = result.getValue(-1f);
+        final Float value = result.getValue(-1f);
         Log.d(TAG, "getBatteryEnergy: " + value);
         return value;
     }
 
     @Override
     public float getOutsideTemperature() {
-        VehicleController.Result<Float> result;
+        final VehicleController.Result<Float> result;
         try {
             result = VehicleStatusController.getInstance().getOutsideTemperature();
-        } catch (Exception e) {
+        } catch (IllegalStateException | NoSuchElementException | UnsupportedOperationException e) {
             Log.e(TAG, "getOutsideTemperature: " + Log.getStackTraceString(e));
             return -1;
         }
-        Float value = result.getValue(-1f);
+        final Float value = result.getValue(-1f);
         Log.d(TAG, "getOutsideTemperature: " + value);
         return value;
     }
 
     @Override
     public float getSpeedOfVehicle() {
-        VehicleController.Result<Float> result;
+        final VehicleController.Result<Float> result;
         try {
             result = PowertainController.getInstance().getSpeedOfVehicle();
-        } catch (Exception e) {
+        } catch (IllegalStateException | NoSuchElementException | UnsupportedOperationException e) {
             Log.e(TAG, "getSpeedOfVehicle: " + Log.getStackTraceString(e));
             return -1;
         }
-        Float value = result.getValue(-1f);
+        final Float value = result.getValue(-1f);
         Log.d(TAG, "getSpeedOfVehicle: " + value);
         return value;
     }
 
     @Override
     public int getAcSwitchState() {
-        VehicleController.Result<Integer> result;
+        final VehicleController.Result<Integer> result;
         try {
             result = HvacController.getInstance().getAcSwitchState(HvacController.FIRST_ROW_LEFT_SEAT);
-        } catch (Exception e) {
+        } catch (IllegalStateException | NoSuchElementException | UnsupportedOperationException e) {
             Log.e(TAG, "getAcSwitchState: " + Log.getStackTraceString(e));
             return -1;
         }
-        Integer value = result.getValue(-1);
+        final Integer value = result.getValue(-1);
         Log.d(TAG, "getAcSwitchState: " + value);
         return value;
     }
 
     @Override
     public int getSystemState() {
-        int result;
+        final int result;
         try {
             result = PowerModeManager.getInstance().getSystemState();
-        } catch (Exception e) {
+        } catch (IllegalStateException | NoSuchElementException | UnsupportedOperationException e) {
             Log.e(TAG, "getSystemState: " + Log.getStackTraceString(e));
             return -1;
         }
@@ -207,6 +199,11 @@ public class SignalAdapterImpl implements SignalApi {
         return systemStateConversion(result);
     }
 
+    /**
+     * 检查设备是否为GM车机
+     *
+     * @return boolean
+     */
     private boolean checkVehicleEnvironment() {
         if (!"gm".equals(Build.MANUFACTURER)) { // 设备制造商
             Log.w(TAG, "checkVehicleEnvironment: not vehicle environment");
@@ -216,7 +213,13 @@ public class SignalAdapterImpl implements SignalApi {
         }
     }
 
-    private int systemStateConversion(int state) {
+    /**
+     * 状态转换
+     *
+     * @param state
+     * @return int
+     */
+    private int systemStateConversion(final int state) {
         switch (state) {
             case PowerModeManager.STATE_LOCALINFOTAINMENT: // OFF
                 return 0;

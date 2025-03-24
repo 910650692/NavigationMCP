@@ -21,9 +21,6 @@ import com.fy.navi.ui.view.SkinLinearLayout;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
-/**
- *
- */
 public class SettingFragment extends BaseFragment<FragmentSettingBinding, SettingViewModel> {
 
     @Override
@@ -51,24 +48,20 @@ public class SettingFragment extends BaseFragment<FragmentSettingBinding, Settin
     }
 
     private static class ViewPagerAdapter extends FragmentStateAdapter {
-        public ViewPagerAdapter(@NonNull Fragment fragment) {
+
+        public ViewPagerAdapter(@NonNull final Fragment fragment) {
             super(fragment);
         }
 
         @NonNull
         @Override
-        public Fragment createFragment(int position) {
-            switch (position) {
-                case 0:
-                    return new SettingNaviFragment();
-                case 1:
-                    return new SettingBroadcastFragment();
-                case 2:
-                    return new FavoriteFragment();
-                case 3:
-                    return new SettingOthersFragment();
-            }
-            return new SettingNaviFragment();
+        public Fragment createFragment(final int position) {
+            return switch (position) {
+                case 1 -> new SettingBroadcastFragment();
+                case 2 -> new FavoriteFragment();
+                case 3 -> new SettingOthersFragment();
+                default -> new SettingNaviFragment();
+            };
         }
 
         @Override
@@ -77,14 +70,17 @@ public class SettingFragment extends BaseFragment<FragmentSettingBinding, Settin
         }
     }
 
+    /**
+     * 初始化TabLayout
+     */
     private void initView() {
 
         new TabLayoutMediator(mBinding.tabLayout, mBinding.viewPager,true,false,
                 (tab, position) -> {
 
-                    View view = getLayoutInflater().inflate(R.layout.item_setting_tab, null);
-                    TextView tabText = view.findViewById(R.id.tabText);
-                    ImageView tabIcon = view.findViewById(R.id.tabIcon);
+                    final View view = getLayoutInflater().inflate(R.layout.item_setting_tab, null);
+                    final TextView tabText = view.findViewById(R.id.tabText);
+                    final ImageView tabIcon = view.findViewById(R.id.tabIcon);
 
 
                     switch (position) {
@@ -109,19 +105,24 @@ public class SettingFragment extends BaseFragment<FragmentSettingBinding, Settin
                             tabIcon.setImageResource(R.drawable.bg_setting_tab_others);
                             tabIcon.setVisibility(View.VISIBLE);
                             break;
+                        default:
+                            break;
                     }
                     Logger.i("tab.getCustomView() = " + tabText.getCurrentTextColor());
                     tab.setCustomView(view);
                 }).attach();
     }
 
+    /**
+     * 初始化监听
+     */
     private void initListener() {
 
         mBinding.tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
-            public void onTabSelected(TabLayout.Tab tab) {
+            public void onTabSelected(final TabLayout.Tab tab) {
                 // 设置选中Tab的背景和文字颜色
-                View tabView = tab.getCustomView();
+                final View tabView = tab.getCustomView();
                 if (tabView instanceof SkinLinearLayout) {
                     tabView.setSelected(true);
                     ((TextView) tabView.findViewById(R.id.tabText)).setTextColor(getResources().getColor(R.color.black));
@@ -129,9 +130,9 @@ public class SettingFragment extends BaseFragment<FragmentSettingBinding, Settin
             }
 
             @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
+            public void onTabUnselected(final TabLayout.Tab tab) {
                 // 设置非选中Tab的背景和文字颜色
-                View tabView = tab.getCustomView();
+                final View tabView = tab.getCustomView();
                 if (tabView instanceof SkinLinearLayout) {
                     tabView.setSelected(false);
                     ((TextView) tabView.findViewById(R.id.tabText)).setTextColor(getResources().getColor(R.color.setting_tab_gray));
@@ -139,7 +140,7 @@ public class SettingFragment extends BaseFragment<FragmentSettingBinding, Settin
             }
 
             @Override
-            public void onTabReselected(TabLayout.Tab tab) {
+            public void onTabReselected(final TabLayout.Tab tab) {
                 // 处理Tab重新选中的情况（可选）
             }
         });

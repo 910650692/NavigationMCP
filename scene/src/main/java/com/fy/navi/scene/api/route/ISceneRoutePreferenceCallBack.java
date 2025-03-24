@@ -1,12 +1,11 @@
 package com.fy.navi.scene.api.route;
 
-/**
- * @Description TODO
- * @Author lvww
- * @date 2024/12/2
- */
 public interface ISceneRoutePreferenceCallBack {
-
+    /**
+     * 偏好回调
+     * @param text  文本
+     * @param isFirstChange 是否第一次
+     * */
     void onRoutePreferenceChange(String text, boolean isFirstChange);
 
 }

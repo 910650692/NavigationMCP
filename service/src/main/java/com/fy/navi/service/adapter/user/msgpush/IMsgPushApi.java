@@ -10,8 +10,16 @@ import java.util.ArrayList;
 
 public interface IMsgPushApi {
 
+    /**
+     * registerCallBack
+     * @param key
+     * @param callBack
+     */
     void registerCallBack(String key, MsgPushAdapterCallback callBack);
 
+    /**
+     * initService
+     */
     void initService();
 
     /**
@@ -27,19 +35,19 @@ public interface IMsgPushApi {
 
     /**
      * 获取本地历史运营推送消息
-     * @return
+     * @return list
      */
     ArrayList<MsgPushInfo> getAutoPushMessages();
 
     /**
      * 获取本地历史AIMPOI(send2car)推送消息
-     * @return
+     * @return list
      */
     ArrayList<MsgPushInfo> getAimPoiPushMessages();
 
     /**
      * 获取本地历史中手机发送的路线推送消息
-     * @return
+     * @return list
      */
     ArrayList<MsgPushInfo> getAimRoutePushMessages();
 
@@ -52,16 +60,16 @@ public interface IMsgPushApi {
 
     /**
      * 执行一个网络请求,send2phone服务接口
-     * @param pAosRequest
-     * @return
+     * @param aosRequest
+     * @return sendReqSendToPhone
      */
-    long sendReqSendToPhone(MsgPushRequestInfo pAosRequest);
+    long sendReqSendToPhone(MsgPushRequestInfo aosRequest);
 
     /**
      * 连接设备请求
      * @param deviceId
      * @param userLocation
-     * @return
+     * @return MsgPushResponseInfo
      */
     MsgPushResponseInfo request(long deviceId, GeoPoint userLocation);
 
@@ -78,9 +86,9 @@ public interface IMsgPushApi {
 
     /**
      * 执行一个网络请求,车机互联的通用上报接口(除去导航上报)
-     * @param pAosRequest
-     * @return
+     * @param aosRequest
+     * @return long
      */
-    long sendReqWsTserviceInternalLinkAutoReport(MsgPushRequestInfo pAosRequest);
+    long sendReqWsTserviceInternalLinkAutoReport(MsgPushRequestInfo aosRequest);
 
 }

@@ -1,8 +1,5 @@
 package com.fy.navi.scene.ui.navi;
 
-
-import static com.fy.navi.scene.ui.navi.manager.NaviSceneId.NAVI_SCENE_TMC;
-
 import android.content.Context;
 import android.graphics.Canvas;
 import android.util.AttributeSet;
@@ -37,10 +34,13 @@ import java.util.List;
 
 /**
  * 路况条scene
+ * @author fy
+ * @version $Revision.*$
  */
 public class SceneNaviTmcView extends NaviSceneBase<SceneNaviTmcViewBinding, SceneNaviTmcImpl> {
     private static final String TAG = MapDefaultFinalTag.NAVI_HMI_TAG;
-    private List<NaviTmcInfo.NaviTmcInfoData> tmcBarItemsNew;
+    private ISceneCallback mISceneCallback;
+    private List<NaviTmcInfo.NaviTmcInfoData> mTmcBarItemsNew;
     // 途径点信息
     private ArrayList<NaviEtaInfo.NaviTimeAndDist> mViaRemain;
     // 上一次显示的途径点信息
@@ -62,26 +62,27 @@ public class SceneNaviTmcView extends NaviSceneBase<SceneNaviTmcViewBinding, Sce
      * tmcBar累积的已走距离,不会清零
      */
     private long mDistanceHasPassed;
-    private boolean isHorizontal = true;
+    private boolean mIsHorizontal = true;
     private boolean mOffline;
-    private int viaWidth;
+    private int mViaWidth;
 
-    public SceneNaviTmcView(@NonNull Context context) {
+    public SceneNaviTmcView(@NonNull final Context context) {
         super(context);
     }
 
-    public SceneNaviTmcView(@NonNull Context context, @Nullable AttributeSet attrs) {
+    public SceneNaviTmcView(@NonNull final Context context, @Nullable final AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public SceneNaviTmcView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public SceneNaviTmcView(@NonNull final Context context, @Nullable final AttributeSet attrs,
+                            final int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        viaWidth = ScreenUtils.Companion.getInstance().dp2px(10);
+        mViaWidth = ScreenUtils.Companion.getInstance().dp2px(10);
     }
 
     @Override
     protected NaviSceneId getSceneId() {
-        return NAVI_SCENE_TMC;
+        return NaviSceneId.NAVI_SCENE_TMC;
     }
 
     @Override
@@ -90,11 +91,11 @@ public class SceneNaviTmcView extends NaviSceneBase<SceneNaviTmcViewBinding, Sce
     }
 
     protected void init() {
-        NaviSceneManager.getInstance().addNaviScene(NAVI_SCENE_TMC, this);
+        NaviSceneManager.getInstance().addNaviScene(NaviSceneId.NAVI_SCENE_TMC, this);
     }
 
     @Override
-    public void addSceneCallback(ISceneCallback sceneCallback) {
+    public void addSceneCallback(final ISceneCallback sceneCallback) {
         mISceneCallback = sceneCallback;
     }
 
@@ -102,7 +103,7 @@ public class SceneNaviTmcView extends NaviSceneBase<SceneNaviTmcViewBinding, Sce
     public void show() {
         super.show();
         if (mISceneCallback != null) {
-            mISceneCallback.updateSceneVisible(NAVI_SCENE_TMC, true);
+            mISceneCallback.updateSceneVisible(NaviSceneId.NAVI_SCENE_TMC, true);
         }
     }
 
@@ -110,12 +111,13 @@ public class SceneNaviTmcView extends NaviSceneBase<SceneNaviTmcViewBinding, Sce
     public void hide() {
         super.hide();
         if (mISceneCallback != null) {
-            mISceneCallback.updateSceneVisible(NAVI_SCENE_TMC, true);
+            mISceneCallback.updateSceneVisible(NaviSceneId.NAVI_SCENE_TMC, true);
         }
     }
 
     @Override
-    protected SceneNaviTmcViewBinding createViewBinding(LayoutInflater inflater, ViewGroup viewGroup) {
+    protected SceneNaviTmcViewBinding createViewBinding(final LayoutInflater inflater,
+                                                        final ViewGroup viewGroup) {
         return SceneNaviTmcViewBinding.inflate(inflater, viewGroup, true);
     }
 
@@ -134,13 +136,19 @@ public class SceneNaviTmcView extends NaviSceneBase<SceneNaviTmcViewBinding, Sce
         mScreenViewModel.registerObserver();
     }
 
-    public void onUpdateTMCLightBar(NaviTmcInfo naviTmcInfo) {
+    /**
+     * @param naviTmcInfo 路况信息
+     */
+    public void onUpdateTMCLightBar(final NaviTmcInfo naviTmcInfo) {
         if (mScreenViewModel != null) {
             mScreenViewModel.onUpdateTMCLightBar(naviTmcInfo);
         }
     }
 
-    public void onNaviInfo(NaviEtaInfo naviETAInfo) {
+    /**
+     * @param naviETAInfo 导航信息
+     */
+    public void onNaviInfo(final NaviEtaInfo naviETAInfo) {
         if (mScreenViewModel != null) {
             mScreenViewModel.onNaviInfo(naviETAInfo);
         }
@@ -154,29 +162,40 @@ public class SceneNaviTmcView extends NaviSceneBase<SceneNaviTmcViewBinding, Sce
 
     /**
      * 初始化
+     * @param offline 是否离线
      */
-    public void initTmcContainer(boolean offline) {
+    public void initTmcContainer(final boolean offline) {
         setOffline(offline);
         mViewBinding.tmrtrResources.initTmcContainer(offline, mViewBinding);
     }
 
     /**
      * 更新光柱图数据view
+     * @param tbitem  item
+     * @param distanceHasPassed 经过的总距离
+     * @param totalDistance 总距离
      */
-    public void updateTmcContainerNew(List<NaviTmcInfo.NaviTmcInfoData> tbitem, long distanceHasPassed, long totalDistance) {
+    public void updateTmcContainerNew(final List<NaviTmcInfo.NaviTmcInfoData> tbitem,
+                                      final long distanceHasPassed, final long totalDistance) {
 //        Logger.d(TAG, "updateTmcContainerNew");
         setTmcContainerDataNew(tbitem, distanceHasPassed, totalDistance);
         invalidate();
     }
 
-    public void setTmcContainerDataNew(List<NaviTmcInfo.NaviTmcInfoData> items, long distanceHasPassed, long totalDistance) {
-        tmcBarItemsNew = items;
+    /**
+     * @param items items
+     * @param distanceHasPassed 已经经过的距离
+     * @param totalDistance 总距离
+     */
+    public void setTmcContainerDataNew(final List<NaviTmcInfo.NaviTmcInfoData> items,
+                                       final long distanceHasPassed, final long totalDistance) {
+        mTmcBarItemsNew = items;
         mDistanceHasPassed = distanceHasPassed;
         mTotalDistance = totalDistance;
     }
 
     @Override
-    protected void dispatchDraw(Canvas canvas) {
+    protected void dispatchDraw(final Canvas canvas) {
         super.dispatchDraw(canvas);
 //        Logger.d(TAG, "dispatchDraw");
         drawTmcContainer(canvas);
@@ -185,28 +204,30 @@ public class SceneNaviTmcView extends NaviSceneBase<SceneNaviTmcViewBinding, Sce
     /**
      * 绘制光柱图
      *
-     * @param canvas
+     * @param canvas canvas
      */
-    private void drawTmcContainer(Canvas canvas) {
+    private void drawTmcContainer(final Canvas canvas) {
         // 没有光柱图信息时不显示途径点几充电站信息
         // 重置途径点显示索引
         mViaShowIndex = 0;
         // 光主图高度
-        int height = mViewBinding.tmrtrResources.getBottom() - mViewBinding.tmrtrResources.getTop() - mViewBinding.sivCar.getHeight() / 2;
-        int width = mViewBinding.tmrtrResources.getRight() - mViewBinding.tmrtrResources.getLeft();
+        final int height = mViewBinding.tmrtrResources.getBottom() -
+                mViewBinding.tmrtrResources.getTop() - mViewBinding.sivCar.getHeight() / 2;
+        final int width = mViewBinding.tmrtrResources.getRight() -
+                mViewBinding.tmrtrResources.getLeft();
         // 计算总的路程
         long hasPassedDistance = 0;
-        if (tmcBarItemsNew != null) {
-            for (NaviTmcInfo.NaviTmcInfoData item : tmcBarItemsNew) {
+        if (mTmcBarItemsNew != null) {
+            for (NaviTmcInfo.NaviTmcInfoData item : mTmcBarItemsNew) {
                 // 已走过的路程
-                if (item.status == 10) {
-                    hasPassedDistance = item.distance;
+                if (item.getStatus() == 10) {
+                    hasPassedDistance = item.getDistance();
                 }
             }
         }
 
-        float rateDistanceToView;
-        if (isHorizontal) {
+        final float rateDistanceToView;
+        if (mIsHorizontal) {
             rateDistanceToView = (width * 1.0f) / (mTotalDistance * 1.0f);
         } else {
             //距离和View高度的比率,用于在view高度和实际距离之间进行转换,单位:像素/米
@@ -214,8 +235,8 @@ public class SceneNaviTmcView extends NaviSceneBase<SceneNaviTmcViewBinding, Sce
         }
 
         // 车标位置
-        int carPosition;
-        if (isHorizontal) {
+        final int carPosition;
+        if (mIsHorizontal) {
             carPosition = Math.round((hasPassedDistance + mDistanceHasPassed) * rateDistanceToView);
         } else {
             carPosition = Math.round((mTotalDistance - hasPassedDistance - mDistanceHasPassed) * rateDistanceToView);
@@ -224,14 +245,14 @@ public class SceneNaviTmcView extends NaviSceneBase<SceneNaviTmcViewBinding, Sce
                 mDistanceHasPassed);
         Logger.d(TAG, "drawTmcContainer width:" + width + " rateDistanceToView:" + rateDistanceToView + " carPosition :" + carPosition);
         // 移动车标的Y坐标
-        NaviUiUtil.setTranslation(mViewBinding.sivCar, carPosition, isHorizontal);
+        NaviUiUtil.setTranslation(mViewBinding.sivCar, carPosition, mIsHorizontal);
         // 绘制途径点
         if (mViaRemain != null && !mViaRemain.isEmpty()) {
             for (int i = 0; i < mViaRemain.size() && i < MAX_VIA_NUM; i++) {
-                NaviEtaInfo.NaviTimeAndDist viaItem = mViaRemain.get(i);
-                int via;
-                if (isHorizontal) {
-                    via = Math.min(Math.round((hasPassedDistance + mDistanceHasPassed + viaItem.dist) * rateDistanceToView), width - viaWidth);
+                final NaviEtaInfo.NaviTimeAndDist viaItem = mViaRemain.get(i);
+                final int via;
+                if (mIsHorizontal) {
+                    via = Math.min(Math.round((hasPassedDistance + mDistanceHasPassed + viaItem.dist) * rateDistanceToView), width - mViaWidth);
                 } else {
                     via = Math.round((mTotalDistance - hasPassedDistance - mDistanceHasPassed - viaItem.dist) * rateDistanceToView);
                 }
@@ -247,9 +268,9 @@ public class SceneNaviTmcView extends NaviSceneBase<SceneNaviTmcViewBinding, Sce
         // 绘制充电站
         if (mChargeStationRemain != null && !mChargeStationRemain.isEmpty()) {
             for (int i = 0; i < mChargeStationRemain.size() && i < MAX_VIA_NUM; i++) {
-                NaviEtaInfo.NaviTimeAndDist viaItem = mChargeStationRemain.get(i);
-                int via;
-                if (isHorizontal) {
+                final NaviEtaInfo.NaviTimeAndDist viaItem = mChargeStationRemain.get(i);
+                final int via;
+                if (mIsHorizontal) {
                     via = Math.round((hasPassedDistance + mDistanceHasPassed + viaItem.dist) * rateDistanceToView);
                 } else {
                     via = Math.round((mTotalDistance - hasPassedDistance - mDistanceHasPassed - viaItem.dist) * rateDistanceToView);
@@ -259,7 +280,7 @@ public class SceneNaviTmcView extends NaviSceneBase<SceneNaviTmcViewBinding, Sce
             }
         } else {
             // 不显示充电站
-            int offsetIndex = mLastViaRemain == null ? 0 : mLastViaRemain.size();
+            final int offsetIndex = mLastViaRemain == null ? 0 : mLastViaRemain.size();
             for (int i = 0; i < mLastChargeStationRemain.size() && i < MAX_VIA_NUM; i++) {
                 hideViaIcon(offsetIndex + i);
             }
@@ -269,10 +290,11 @@ public class SceneNaviTmcView extends NaviSceneBase<SceneNaviTmcViewBinding, Sce
     /**
      * 设置途径点和充电桩数据
      *
-     * @param viaRemain
-     * @param chargeStationRemain
+     * @param viaRemain 剩余的途经点
+     * @param chargeStationRemain 剩余的充电站
      */
-    public void updateTmcVia(ArrayList<NaviEtaInfo.NaviTimeAndDist> viaRemain, ArrayList<NaviEtaInfo.NaviTimeAndDist> chargeStationRemain) {
+    public void updateTmcVia(final ArrayList<NaviEtaInfo.NaviTimeAndDist> viaRemain,
+                             final ArrayList<NaviEtaInfo.NaviTimeAndDist> chargeStationRemain) {
         // 保存上一次显示的途经点信息
         mLastViaRemain.clear();
         if (mViaRemain != null && !mViaRemain.isEmpty()) {
@@ -294,6 +316,9 @@ public class SceneNaviTmcView extends NaviSceneBase<SceneNaviTmcViewBinding, Sce
         mChargeStationRemain = chargeStationRemain;
     }
 
+    /**
+     * 重置视图
+     */
     public void resetView() {
         if (mViewBinding == null) {
             return;
@@ -304,7 +329,14 @@ public class SceneNaviTmcView extends NaviSceneBase<SceneNaviTmcViewBinding, Sce
                 mViewBinding.siv314, mViewBinding.siv315, mViewBinding.siv316, mViewBinding.siv317, mViewBinding.siv3);
     }
 
-    private void showViaIcon(View view, SceneCommonStruct.TmcViaPointType tmcViaPointType, int viaY) {
+    /**
+     * @param view view
+     * @param tmcViaPointType 类型
+     * @param viaY viaY
+     */
+    private void showViaIcon(final View view,
+                             final SceneCommonStruct.TmcViaPointType tmcViaPointType,
+                             final int viaY) {
         if (view instanceof SkinTextView stv) {
             if (tmcViaPointType == SceneCommonStruct.TmcViaPointType.ViaPointType) {
                 stv.setText(getContext().getText(R.string.navi_via_item_pass));
@@ -314,74 +346,79 @@ public class SceneNaviTmcView extends NaviSceneBase<SceneNaviTmcViewBinding, Sce
         }
         NaviUiUtil.showView(view);
         setViaBackground(view, tmcViaPointType);
-        NaviUiUtil.setTranslation(view, viaY, isHorizontal);
+        NaviUiUtil.setTranslation(view, viaY, mIsHorizontal);
     }
 
     /**
      * 显示途径点图标
+     * @param index  index
+     * @param tmcViaPointType 类型
+     * @param viaY viaY
      */
-    private void showViaIcon(int index, SceneCommonStruct.TmcViaPointType tmcViaPointType, int viaY) {
+    private void showViaIcon(final int index,
+                             final SceneCommonStruct.TmcViaPointType tmcViaPointType,
+                             final int viaY) {
         Logger.d(TAG, "showViaIcon size:" + mViaRemain.size() + ",index :" + index + ",tmcViaPointType：" + tmcViaPointType
                 + ",viaY：" + viaY);
         switch (index) {
-            case NaviConstant.TMCViaIndex.Via0:
+            case NaviConstant.TMCViaIndex.VIA_0:
                 showViaIcon(mViewBinding.siv1, tmcViaPointType, viaY);
                 break;
-            case NaviConstant.TMCViaIndex.Via1:
+            case NaviConstant.TMCViaIndex.VIA_1:
                 showViaIcon(mViewBinding.siv2, tmcViaPointType, viaY);
                 break;
-            case NaviConstant.TMCViaIndex.Via2:
+            case NaviConstant.TMCViaIndex.VIA_2:
                 showViaIcon(mViewBinding.siv31, tmcViaPointType, viaY);
                 break;
-            case NaviConstant.TMCViaIndex.Via3:
+            case NaviConstant.TMCViaIndex.VIA_3:
                 showViaIcon(mViewBinding.siv32, tmcViaPointType, viaY);
                 break;
-            case NaviConstant.TMCViaIndex.Via4:
+            case NaviConstant.TMCViaIndex.VIA_4:
                 showViaIcon(mViewBinding.siv33, tmcViaPointType, viaY);
                 break;
-            case NaviConstant.TMCViaIndex.Via5:
+            case NaviConstant.TMCViaIndex.VIA_5:
                 showViaIcon(mViewBinding.siv34, tmcViaPointType, viaY);
                 break;
-            case NaviConstant.TMCViaIndex.Via6:
+            case NaviConstant.TMCViaIndex.VIA_6:
                 showViaIcon(mViewBinding.siv35, tmcViaPointType, viaY);
                 break;
-            case NaviConstant.TMCViaIndex.Via7:
+            case NaviConstant.TMCViaIndex.VIA_7:
                 showViaIcon(mViewBinding.siv36, tmcViaPointType, viaY);
                 break;
-            case NaviConstant.TMCViaIndex.Via8:
+            case NaviConstant.TMCViaIndex.VIA_8:
                 showViaIcon(mViewBinding.siv37, tmcViaPointType, viaY);
                 break;
-            case NaviConstant.TMCViaIndex.Via9:
+            case NaviConstant.TMCViaIndex.VIA_9:
                 showViaIcon(mViewBinding.siv38, tmcViaPointType, viaY);
                 break;
-            case NaviConstant.TMCViaIndex.Via10:
+            case NaviConstant.TMCViaIndex.VIA_10:
                 showViaIcon(mViewBinding.siv39, tmcViaPointType, viaY);
                 break;
-            case NaviConstant.TMCViaIndex.Via11:
+            case NaviConstant.TMCViaIndex.VIA_11:
                 showViaIcon(mViewBinding.siv310, tmcViaPointType, viaY);
                 break;
-            case NaviConstant.TMCViaIndex.Via12:
+            case NaviConstant.TMCViaIndex.VIA_12:
                 showViaIcon(mViewBinding.siv311, tmcViaPointType, viaY);
                 break;
-            case NaviConstant.TMCViaIndex.Via13:
+            case NaviConstant.TMCViaIndex.VIA_13:
                 showViaIcon(mViewBinding.siv312, tmcViaPointType, viaY);
                 break;
-            case NaviConstant.TMCViaIndex.Via14:
+            case NaviConstant.TMCViaIndex.VIA_14:
                 showViaIcon(mViewBinding.siv313, tmcViaPointType, viaY);
                 break;
-            case NaviConstant.TMCViaIndex.Via15:
+            case NaviConstant.TMCViaIndex.VIA_15:
                 showViaIcon(mViewBinding.siv314, tmcViaPointType, viaY);
                 break;
-            case NaviConstant.TMCViaIndex.Via16:
+            case NaviConstant.TMCViaIndex.VIA_16:
                 showViaIcon(mViewBinding.siv315, tmcViaPointType, viaY);
                 break;
-            case NaviConstant.TMCViaIndex.Via17:
+            case NaviConstant.TMCViaIndex.VIA_17:
                 showViaIcon(mViewBinding.siv316, tmcViaPointType, viaY);
                 break;
-            case NaviConstant.TMCViaIndex.Via18:
+            case NaviConstant.TMCViaIndex.VIA_18:
                 showViaIcon(mViewBinding.siv317, tmcViaPointType, viaY);
                 break;
-            case NaviConstant.TMCViaIndex.Via19:
+            case NaviConstant.TMCViaIndex.VIA_19:
                 showViaIcon(mViewBinding.siv3, tmcViaPointType, viaY);
                 break;
             default:
@@ -391,68 +428,69 @@ public class SceneNaviTmcView extends NaviSceneBase<SceneNaviTmcViewBinding, Sce
 
     /**
      * 隐藏途径点图标
+     * @param index index
      */
-    private void hideViaIcon(int index) {
+    private void hideViaIcon(final int index) {
         Logger.d(TAG, "hideViaIcon index :" + index);
         switch (index) {
-            case NaviConstant.TMCViaIndex.Via0:
+            case NaviConstant.TMCViaIndex.VIA_0:
                 NaviUiUtil.hideView(mViewBinding.siv1);
                 break;
-            case NaviConstant.TMCViaIndex.Via1:
+            case NaviConstant.TMCViaIndex.VIA_1:
                 NaviUiUtil.hideView(mViewBinding.siv2);
                 break;
-            case NaviConstant.TMCViaIndex.Via2:
+            case NaviConstant.TMCViaIndex.VIA_2:
                 NaviUiUtil.hideView(mViewBinding.siv31);
                 break;
-            case NaviConstant.TMCViaIndex.Via3:
+            case NaviConstant.TMCViaIndex.VIA_3:
                 NaviUiUtil.hideView(mViewBinding.siv32);
                 break;
-            case NaviConstant.TMCViaIndex.Via4:
+            case NaviConstant.TMCViaIndex.VIA_4:
                 NaviUiUtil.hideView(mViewBinding.siv33);
                 break;
-            case NaviConstant.TMCViaIndex.Via5:
+            case NaviConstant.TMCViaIndex.VIA_5:
                 NaviUiUtil.hideView(mViewBinding.siv34);
                 break;
-            case NaviConstant.TMCViaIndex.Via6:
+            case NaviConstant.TMCViaIndex.VIA_6:
                 NaviUiUtil.hideView(mViewBinding.siv35);
                 break;
-            case NaviConstant.TMCViaIndex.Via7:
+            case NaviConstant.TMCViaIndex.VIA_7:
                 NaviUiUtil.hideView(mViewBinding.siv36);
                 break;
-            case NaviConstant.TMCViaIndex.Via8:
+            case NaviConstant.TMCViaIndex.VIA_8:
                 NaviUiUtil.hideView(mViewBinding.siv37);
                 break;
-            case NaviConstant.TMCViaIndex.Via9:
+            case NaviConstant.TMCViaIndex.VIA_9:
                 NaviUiUtil.hideView(mViewBinding.siv38);
                 break;
-            case NaviConstant.TMCViaIndex.Via10:
+            case NaviConstant.TMCViaIndex.VIA_10:
                 NaviUiUtil.hideView(mViewBinding.siv39);
                 break;
-            case NaviConstant.TMCViaIndex.Via11:
+            case NaviConstant.TMCViaIndex.VIA_11:
                 NaviUiUtil.hideView(mViewBinding.siv310);
                 break;
-            case NaviConstant.TMCViaIndex.Via12:
+            case NaviConstant.TMCViaIndex.VIA_12:
                 NaviUiUtil.hideView(mViewBinding.siv311);
                 break;
-            case NaviConstant.TMCViaIndex.Via13:
+            case NaviConstant.TMCViaIndex.VIA_13:
                 NaviUiUtil.hideView(mViewBinding.siv312);
                 break;
-            case NaviConstant.TMCViaIndex.Via14:
+            case NaviConstant.TMCViaIndex.VIA_14:
                 NaviUiUtil.hideView(mViewBinding.siv313);
                 break;
-            case NaviConstant.TMCViaIndex.Via15:
+            case NaviConstant.TMCViaIndex.VIA_15:
                 NaviUiUtil.hideView(mViewBinding.siv314);
                 break;
-            case NaviConstant.TMCViaIndex.Via16:
+            case NaviConstant.TMCViaIndex.VIA_16:
                 NaviUiUtil.hideView(mViewBinding.siv315);
                 break;
-            case NaviConstant.TMCViaIndex.Via17:
+            case NaviConstant.TMCViaIndex.VIA_17:
                 NaviUiUtil.hideView(mViewBinding.siv316);
                 break;
-            case NaviConstant.TMCViaIndex.Via18:
+            case NaviConstant.TMCViaIndex.VIA_18:
                 NaviUiUtil.hideView(mViewBinding.siv317);
                 break;
-            case NaviConstant.TMCViaIndex.Via19:
+            case NaviConstant.TMCViaIndex.VIA_19:
                 NaviUiUtil.hideView(mViewBinding.siv3);
                 break;
             default:
@@ -460,18 +498,30 @@ public class SceneNaviTmcView extends NaviSceneBase<SceneNaviTmcViewBinding, Sce
         }
     }
 
-    public static void setViaBackground(View view, SceneCommonStruct.TmcViaPointType type) {
+    /**
+     * @param view view
+     * @param type 类型
+     */
+    public static void setViaBackground(final View view,
+                                        final SceneCommonStruct.TmcViaPointType type) {
         view.setBackgroundResource(SceneEnumRes.getDrawableEnumName0(type).getDayDrawableId());
     }
 
     /**
      * 更新光柱图数据view
+     * @param tbitem  item
+     * @param distanceHasPassed 已经经过的距离
+     * @param totalDistance 总距离
      */
-    public void updateTmcAreaNew(List<NaviTmcInfo.NaviTmcInfoData> tbitem, long distanceHasPassed, long totalDistance) {
+    public void updateTmcAreaNew(final List<NaviTmcInfo.NaviTmcInfoData> tbitem,
+                                 final long distanceHasPassed, final long totalDistance) {
         mViewBinding.tmrtrResources.updateTmcAreaNew(tbitem, distanceHasPassed, totalDistance);
     }
 
-    public void setOffline(boolean offline) {
+    /**
+     * @param offline 是否离线
+     */
+    public void setOffline(final boolean offline) {
         mOffline = offline;
         if (mOffline) {
 //            mViewBinding.carBottomLine.setImageResource(R.color.auto_color_0a80fb);

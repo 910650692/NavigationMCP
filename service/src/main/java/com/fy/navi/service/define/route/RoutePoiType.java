@@ -4,13 +4,7 @@ import androidx.annotation.IntDef;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
-
-/**
- * @Description TODO
- * @Author lvww
- * @date 2024/12/5
- */
-public class RoutePoiType {
+public interface RoutePoiType {
     /*** 路线起点 **/
     public static final int ROUTE_POI_TYPE_START = 0;
     /*** 路线途径点 **/

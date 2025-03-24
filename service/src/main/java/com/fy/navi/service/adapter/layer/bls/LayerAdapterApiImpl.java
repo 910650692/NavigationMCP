@@ -43,12 +43,23 @@ import com.fy.navi.service.define.layer.LayerType;
 import com.fy.navi.service.define.layer.RouteLineLayerParam;
 import com.fy.navi.service.define.layer.SearchResultLayer;
 import com.fy.navi.service.define.layer.bls.CarLocation;
+import com.fy.navi.service.define.layer.refix.LayerItemSearchAlongWay;
+import com.fy.navi.service.define.layer.refix.LayerItemSearchAlongWayPop;
+import com.fy.navi.service.define.layer.refix.LayerItemSearchBegin;
+import com.fy.navi.service.define.layer.refix.LayerItemSearchChargeStation;
+import com.fy.navi.service.define.layer.refix.LayerItemSearchChild;
+import com.fy.navi.service.define.layer.refix.LayerItemSearchEnd;
+import com.fy.navi.service.define.layer.refix.LayerItemSearchEntrance;
+import com.fy.navi.service.define.layer.refix.LayerItemSearchExit;
+import com.fy.navi.service.define.layer.refix.LayerItemSearchLabel;
+import com.fy.navi.service.define.layer.refix.LayerItemSearchParent;
+import com.fy.navi.service.define.layer.refix.LayerItemSearchPark;
+import com.fy.navi.service.define.layer.refix.LayerItemSearchVia;
 import com.fy.navi.service.define.map.GmBizUserFavoritePoint;
 import com.fy.navi.service.define.map.MapTypeId;
 import com.fy.navi.service.define.navi.CrossImageEntity;
 import com.fy.navi.service.define.navi.NaviLayerTexture;
 import com.fy.navi.service.define.navi.NaviParkingEntity;
-import com.fy.navi.service.define.search.PoiInfoEntity;
 import com.fy.navi.service.logicpaket.engine.EnginePackage;
 import com.fy.navi.service.logicpaket.position.PositionPackage;
 
@@ -73,7 +84,7 @@ public class LayerAdapterApiImpl implements ILayerApi {
     }
 
     @Override
-    public void initLayerService() {
+    public boolean initLayerService(MapTypeId mapTypeIdss) {
         MapTypeId[] mapTypeIds = MapTypeId.values();
         String styleBlPath = GBLCacheFilePath.BLS_ASSETS_LAYER_PATH + "style_bl.json";
         for (MapTypeId mapTypeId : mapTypeIds) {
@@ -84,6 +95,8 @@ public class LayerAdapterApiImpl implements ILayerApi {
             Logger.i(TAG, "地图  " + engineId + "  ; Layer init result -> " + result);
             ParserStyleLayerUtils.initStyleJsonFile(engineId);
         }
+        initInnerStyle();
+        return true;
     }
 
     @Override
@@ -234,7 +247,7 @@ public class LayerAdapterApiImpl implements ILayerApi {
     }
 
     @Override
-    public void drawRouteLine(RouteLineLayerParam routeLineLayer) {
+    public void drawRouteLine(MapTypeId mapTypeIds, RouteLineLayerParam routeLineLayer) {
         // 这里要给所有屏幕都加上线路绘制，如果不需要请自己处理
         MapTypeId[] ids = MapTypeId.values();
         if (!ConvertUtils.isEmpty(ids)) {
@@ -356,10 +369,10 @@ public class LayerAdapterApiImpl implements ILayerApi {
     public boolean showCross(MapTypeId mapTypeId, CrossImageEntity crossInfo) {
         boolean ret = false;
         CrossLayerStyle crossLayer = layerManager.getCrossLayer(mapTypeId);
-        if (crossInfo.getType() == NaviConstant.CrossType.CrossTypeVector || crossInfo.getType() == NaviConstant.CrossType.CrossType3D) {
+        if (crossInfo.getType() == NaviConstant.CrossType.CROSS_TYPE_VECTOR || crossInfo.getType() == NaviConstant.CrossType.CROSS_TYPE_3_D) {
             //矢量图或者三维图
             ret = crossLayer.updateCross(crossInfo.getDataBuf(), crossInfo.getType());
-        } else if (crossInfo.getType() == NaviConstant.CrossType.CrossTypeGrid) {
+        } else if (crossInfo.getType() == NaviConstant.CrossType.CROSS_TYPE_GRID) {
             ret = crossLayer.setRasterImageData(getArrowRoadImage(true, crossInfo), getArrowRoadImage(false, crossInfo));
         }
         Logger.i(TAG, "showCross ret：" + ret);
@@ -539,7 +552,38 @@ public class LayerAdapterApiImpl implements ILayerApi {
     }
 
     @Override
+    public boolean addLayerItemOfSearchResult(MapTypeId mapTypeId, ArrayList<LayerItemSearchParent> parentPoints, ArrayList<LayerItemSearchChild> childPoints, ArrayList<LayerItemSearchExit> exitPoints, ArrayList<LayerItemSearchEntrance> entrancePoints, boolean clearOtherLayerItem) {
+        return false;
+    }
+
+    @Override
+    public boolean addLayerItemOfBeginEnd(MapTypeId mapTypeId, LayerItemSearchBegin beginPoint, ArrayList<LayerItemSearchVia> viaPoints, LayerItemSearchEnd endPoint, boolean clearOtherLayerItem) {
+        return false;
+    }
+
+    @Override
+    public boolean addLayerItemOfAlongRoute(MapTypeId mapTypeId, ArrayList<LayerItemSearchAlongWay> alongWayPoints, ArrayList<LayerItemSearchAlongWayPop> alongWayPops, boolean clearOtherLayerItem) {
+        return false;
+    }
+
+    @Override
+    public boolean addLayerItemOfChargeStation(MapTypeId mapTypeId, ArrayList<LayerItemSearchChargeStation> points, boolean clearOtherLayerItem) {
+        return false;
+    }
+
+    @Override
+    public boolean addLayerItemOfPark(MapTypeId mapTypeId, ArrayList<LayerItemSearchPark> points, boolean clearOtherLayerItem) {
+        return false;
+    }
+
+    @Override
+    public boolean addLayerItemOfLabel(MapTypeId mapTypeId, LayerItemSearchLabel label, boolean clearOtherLayerItem) {
+        return false;
+    }
+
+    @Override
     public int openDynamicCenter(MapTypeId mapTypeId, boolean changeCenter) {
         return layerManager.getRouteLayer(mapTypeId).openDynamicCenter(changeCenter);
     }
+
 }

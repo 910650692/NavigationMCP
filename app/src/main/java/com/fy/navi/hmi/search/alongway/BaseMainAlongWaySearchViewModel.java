@@ -8,7 +8,7 @@ import com.fy.navi.ui.action.Action;
 import com.fy.navi.ui.base.BaseViewModel;
 
 public class BaseMainAlongWaySearchViewModel extends BaseViewModel<MainAlongWaySearchFragment, AlongWaySearchModel> {
-    public BaseMainAlongWaySearchViewModel(@NonNull Application application) {
+    public BaseMainAlongWaySearchViewModel(@NonNull final Application application) {
         super(application);
     }
 
@@ -17,6 +17,10 @@ public class BaseMainAlongWaySearchViewModel extends BaseViewModel<MainAlongWayS
         return new AlongWaySearchModel();
     }
 
-    public Action rootClick = () -> {
+    public Action getRootClick() {
+        return mRootClick;
+    }
+
+    private final Action mRootClick = () -> {
     };
 }

@@ -5,6 +5,7 @@ plugins {
 android {
     namespace 'com.fy.navi.fsa'
     compileSdk Integer.parseInt(libs.versions.compileSdk.get())
+    buildToolsVersion libs.versions.buildSdk.get()
 
     defaultConfig {
         minSdk Integer.parseInt(libs.versions.minSdk.get())
@@ -30,11 +31,11 @@ android {
 }
 
 dependencies {
-    implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation libs.appcompat
+    implementation libs.protobuf
+    implementation project(":engine:fsa")
     implementation project(":engine:adas")
     implementation project(":service")
     implementation project(":utils")
-    implementation project(':vtserver')
-    implementation libs.calibration
+    implementation project(":engine:vtserver")
 }

@@ -76,7 +76,7 @@ public class PrepareLayerStyleImpl implements IPrepareLayerStyle {
         RouteLayerDrawParam routeDrawParam = routeLayerItem.getRouteDrawParam();
 
         mNaviRouteLayerParser.getRouteLayerStyle(baseLayer, layerItem, routeLayerStyle, this,
-                routeDrawParam.mRouteStyleType, SettingConstant.isNightMode, mapTypeId);
+                routeDrawParam.mRouteStyleType, SettingConstant.ISNIGHTMODE, mapTypeId);
         return true;
     }
 
@@ -87,7 +87,7 @@ public class PrepareLayerStyleImpl implements IPrepareLayerStyle {
 
     @Override
     public boolean isRouteStyleNightMode() {
-        return SettingConstant.isNightMode;
+        return SettingConstant.ISNIGHTMODE;
     }
 
     @Override

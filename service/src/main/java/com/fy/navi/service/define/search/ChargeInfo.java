@@ -10,78 +10,449 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
 /**
- * @Author: baipeng0904
- * @Description: ChargeInfo
- * @CreateDate: 2025/2/12 15:12
+ * @version \$Revision1.0\$
+ * @author baipeng0904
  */
 @Data
 @NoArgsConstructor
 @Accessors(chain = true)
 public class ChargeInfo implements Parcelable {
-    private int childType = 0;
-    private int slow_free = 0;
-    private int slow_total = 0;
-    private int fast_free = 0;
-    private int fast_total = 0;
-    private int superFree = -1;
-    private int superTotal = -1;
-    private String srcType = "";
+    private int mChildType = 0;
+    private int mSlowFree = 0;
+    private int mSlowTotal = 0;
+    private int mFastFree = 0;
+    private int mFastTotal = 0;
+    private int mSuperFree = -1;
+    private int mSuperTotal = -1;
+    private String mSrcType = "";
     private String market = "";
-    private String parkCategory = "";
-    private String openTime = "";
-    private boolean open24h = false;
-    private float fMax;
-    private float fMin;
-    private String currentElePrice;
-    private String currentServicePrice;
+    private String mParkCategory = "";
+    private String mOpenTime = "";
+    private boolean mOpen24h = false;
+    private float mFMax;
+    private float mFMin;
+    private String mCurrentElePrice;
+    private String mCurrentServicePrice;
     private int maxPower;
     private int minPower;
-    private int queryType;
-    private String poiId;
-    private String name;
-    private String typeCode;
-    private int slowVolt;
-    private int slowPower;
-    private int fastVolt;
-    private int fastPower;
+    private int mQueryType;
+    private String mPoiId;
+    private String mName;
+    private String mTypeCode;
+    private int mSlowVolt;
+    private int mSlowPower;
+    private int mFastVolt;
+    private int mFastPower;
 
-    protected ChargeInfo(Parcel in) {
-        childType = in.readInt();
-        slow_free = in.readInt();
-        slow_total = in.readInt();
-        fast_free = in.readInt();
-        fast_total = in.readInt();
-        superFree = in.readInt();
-        superTotal = in.readInt();
-        srcType = in.readString();
+    public int getChildType() {
+        return mChildType;
+    }
+
+    /**
+     * 设置子项类型
+     * @param childType 子项类型
+     * @return ChargeInfo
+     */
+    public ChargeInfo setChildType(final int childType) {
+        this.mChildType = childType;
+        return this;
+    }
+
+    public int getSlow_free() {
+        return mSlowFree;
+    }
+
+    /**
+     * 设置慢充桩空闲数量
+     * @param slowFree 慢充桩空闲数量
+     * @return ChargeInfo
+     */
+    public ChargeInfo setSlow_free(final int slowFree) {
+        this.mSlowFree = slowFree;
+        return this;
+    }
+
+    public int getSlow_total() {
+        return mSlowTotal;
+    }
+
+    /**
+     * 设置慢充桩总数量
+     * @param slowTotal 慢充桩总数量
+     * @return ChargeInfo
+     */
+    public ChargeInfo setSlow_total(final int slowTotal) {
+        this.mSlowTotal = slowTotal;
+        return this;
+    }
+
+    public int getFast_free() {
+        return mFastFree;
+    }
+
+    /**
+     * 设置快充桩空闲数量
+     * @param fastFree 慢充桩空闲数量
+     * @return ChargeInfo
+     */
+    public ChargeInfo setFast_free(final int fastFree) {
+        this.mFastFree = fastFree;
+        return this;
+    }
+
+    public int getFast_total() {
+        return mFastTotal;
+    }
+
+    /**
+     * 设置快充桩总数量
+     * @param fastTotal 快充桩总数量
+     * @return ChargeInfo
+     */
+    public ChargeInfo setFast_total(final int fastTotal) {
+        this.mFastTotal = fastTotal;
+        return this;
+    }
+
+    public int getSuperFree() {
+        return mSuperFree;
+    }
+
+    /**
+     * 设置超充桩空闲数量
+     * @param superFree 超充桩空闲数量
+     * @return ChargeInfo
+     */
+    public ChargeInfo setSuperFree(final int superFree) {
+        this.mSuperFree = superFree;
+        return this;
+    }
+
+    public int getSuperTotal() {
+        return mSuperTotal;
+    }
+
+    /**
+     * 设置超充桩总数量
+     * @param superTotal 超充桩总数量
+     * @return ChargeInfo
+     */
+    public ChargeInfo setSuperTotal(final int superTotal) {
+        this.mSuperTotal = superTotal;
+        return this;
+    }
+
+    public String getSrcType() {
+        return mSrcType;
+    }
+
+    /**
+     * 设置srcType
+     * @param srcType srcType
+     * @return ChargeInfo
+     */
+    public ChargeInfo setSrcType(final String srcType) {
+        this.mSrcType = srcType;
+        return this;
+    }
+
+    public String getMarket() {
+        return market;
+    }
+
+    /**
+     * 设置market
+     * @param market market
+     * @return ChargeInfo
+     */
+    public ChargeInfo setMarket(final String market) {
+        this.market = market;
+        return this;
+    }
+
+    public String getParkCategory() {
+        return mParkCategory;
+    }
+
+    /**
+     * 设置停车场类型
+     * @param parkCategory 停车场类型
+     * @return ChargeInfo
+     */
+    public ChargeInfo setParkCategory(final String parkCategory) {
+        this.mParkCategory = parkCategory;
+        return this;
+    }
+
+    public String getOpenTime() {
+        return mOpenTime;
+    }
+
+    /**
+     * 设置开始营业时间
+     * @param openTime 开始营业时间
+     * @return ChargeInfo
+     */
+    public ChargeInfo setOpenTime(final String openTime) {
+        this.mOpenTime = openTime;
+        return this;
+    }
+
+    public boolean isOpen24h() {
+        return mOpen24h;
+    }
+
+    /**
+     * 设置是否24h营业
+     * @param open24h 是否24h营业
+     * @return ChargeInfo
+     */
+    public ChargeInfo setOpen24h(final boolean open24h) {
+        this.mOpen24h = open24h;
+        return this;
+    }
+
+    /**
+     * 最高电压
+     * @return float
+     */
+    public float getfMax() {
+        return mFMax;
+    }
+
+    /**
+     * 最高电压
+     * @param max float
+     * @return ChargeInfo
+     */
+    public ChargeInfo setfMax(final float max) {
+        this.mFMax = max;
+        return this;
+    }
+
+    /**
+     * 最低电压
+     * @return float
+     */
+    public float getfMin() {
+        return mFMin;
+    }
+
+    /**
+     * 最低电压
+     * @param min float
+     * @return ChargeInfo
+     */
+    public ChargeInfo setfMin(final float min) {
+        this.mFMin = min;
+        return this;
+    }
+
+    public String getCurrentElePrice() {
+        return mCurrentElePrice;
+    }
+
+    /**
+     * 设置当前电价
+     * @param currentElePrice 当前电价
+     * @return ChargeInfo
+     */
+    public ChargeInfo setCurrentElePrice(final String currentElePrice) {
+        this.mCurrentElePrice = currentElePrice;
+        return this;
+    }
+
+    public String getCurrentServicePrice() {
+        return mCurrentServicePrice;
+    }
+
+    /**
+     * 设置当前活动价格
+     * @param currentServicePrice 当前活动价格
+     * @return ChargeInfo
+     */
+    public ChargeInfo setCurrentServicePrice(final String currentServicePrice) {
+        this.mCurrentServicePrice = currentServicePrice;
+        return this;
+    }
+
+    public int getMaxPower() {
+        return maxPower;
+    }
+
+    /**
+     * 设置最大功率
+     * @param maxPower 最大功率
+     * @return ChargeInfo
+     */
+    public ChargeInfo setMaxPower(final int maxPower) {
+        this.maxPower = maxPower;
+        return this;
+    }
+
+    public int getQueryType() {
+        return mQueryType;
+    }
+
+    /**
+     * 设置搜索类别
+     * @param queryType 搜索类别
+     * @return ChargeInfo
+     */
+    public ChargeInfo setQueryType(final int queryType) {
+        this.mQueryType = queryType;
+        return this;
+    }
+
+    public int getMinPower() {
+        return minPower;
+    }
+
+    /**
+     * 设置最小功率
+     * @param minPower 最小功率
+     * @return ChargeInfo
+     */
+    public ChargeInfo setMinPower(final int minPower) {
+        this.minPower = minPower;
+        return this;
+    }
+
+    public String getPoiId() {
+        return mPoiId;
+    }
+
+    /**
+     * 设置poiId
+     * @param poiId poiId
+     * @return ChargeInfo
+     */
+    public ChargeInfo setPoiId(final String poiId) {
+        this.mPoiId = poiId;
+        return this;
+    }
+
+    public String getName() {
+        return mName;
+    }
+
+    /**
+     * 设置名称
+     * @param name 名称
+     * @return ChargeInfo
+     */
+    public ChargeInfo setName(final String name) {
+        this.mName = name;
+        return this;
+    }
+
+    public String getTypeCode() {
+        return mTypeCode;
+    }
+
+    /**
+     * 设置类别编码
+     * @param typeCode 类别编码
+     * @return ChargeInfo
+     */
+    public ChargeInfo setTypeCode(final String typeCode) {
+        this.mTypeCode = typeCode;
+        return this;
+    }
+
+    public int getSlowVolt() {
+        return mSlowVolt;
+    }
+
+    /**
+     * 设置慢充电电压
+     * @param slowVolt 慢充电电压
+     * @return ChargeInfo
+     */
+    public ChargeInfo setSlowVolt(final int slowVolt) {
+        this.mSlowVolt = slowVolt;
+        return this;
+    }
+
+    public int getSlowPower() {
+        return mSlowPower;
+    }
+
+    /**
+     * 设置慢充电功率
+     * @param slowPower 慢充电功率
+     * @return ChargeInfo
+     */
+    public ChargeInfo setSlowPower(final int slowPower) {
+        this.mSlowPower = slowPower;
+        return this;
+    }
+
+    public int getFastVolt() {
+        return mFastVolt;
+    }
+
+    /**
+     * 设置快充电电压
+     * @param fastVolt 快充电电压
+     * @return ChargeInfo
+     */
+    public ChargeInfo setFastVolt(final int fastVolt) {
+        this.mFastVolt = fastVolt;
+        return this;
+    }
+
+    public int getFastPower() {
+        return mFastPower;
+    }
+
+    /**
+     * 设置快充电功率
+     * @param fastPower 快充电功率
+     * @return ChargeInfo
+     */
+    public ChargeInfo setFastPower(final int fastPower) {
+        this.mFastPower = fastPower;
+        return this;
+    }
+
+    protected ChargeInfo(final Parcel in) {
+        mChildType = in.readInt();
+        mSlowFree = in.readInt();
+        mSlowTotal = in.readInt();
+        mFastFree = in.readInt();
+        mFastTotal = in.readInt();
+        mSuperFree = in.readInt();
+        mSuperTotal = in.readInt();
+        mSrcType = in.readString();
         market = in.readString();
-        parkCategory = in.readString();
-        openTime = in.readString();
-        open24h = in.readByte() != 0;
-        fMax = in.readFloat();
-        fMin = in.readFloat();
-        currentElePrice = in.readString();
-        currentServicePrice = in.readString();
+        mParkCategory = in.readString();
+        mOpenTime = in.readString();
+        mOpen24h = in.readByte() != 0;
+        mFMax = in.readFloat();
+        mFMin = in.readFloat();
+        mCurrentElePrice = in.readString();
+        mCurrentServicePrice = in.readString();
         maxPower = in.readInt();
         minPower = in.readInt();
-        queryType = in.readInt();
-        poiId = in.readString();
-        name = in.readString();
-        typeCode = in.readString();
-        slowVolt = in.readInt();
-        slowPower = in.readInt();
-        fastVolt = in.readInt();
-        fastPower = in.readInt();
+        mQueryType = in.readInt();
+        mPoiId = in.readString();
+        mName = in.readString();
+        mTypeCode = in.readString();
+        mSlowVolt = in.readInt();
+        mSlowPower = in.readInt();
+        mFastVolt = in.readInt();
+        mFastPower = in.readInt();
     }
 
     public static final Creator<ChargeInfo> CREATOR = new Creator<ChargeInfo>() {
         @Override
-        public ChargeInfo createFromParcel(Parcel in) {
+        public ChargeInfo createFromParcel(final Parcel in) {
             return new ChargeInfo(in);
         }
 
         @Override
-        public ChargeInfo[] newArray(int size) {
+        public ChargeInfo[] newArray(final int size) {
             return new ChargeInfo[size];
         }
     };
@@ -92,32 +463,32 @@ public class ChargeInfo implements Parcelable {
     }
 
     @Override
-    public void writeToParcel(@NonNull Parcel parcel, int i) {
-        parcel.writeInt(childType);
-        parcel.writeInt(slow_free);
-        parcel.writeInt(slow_total);
-        parcel.writeInt(fast_free);
-        parcel.writeInt(fast_total);
-        parcel.writeInt(superFree);
-        parcel.writeInt(superTotal);
-        parcel.writeString(srcType);
+    public void writeToParcel(@NonNull final Parcel parcel, final int i) {
+        parcel.writeInt(mChildType);
+        parcel.writeInt(mSlowFree);
+        parcel.writeInt(mSlowTotal);
+        parcel.writeInt(mFastFree);
+        parcel.writeInt(mFastTotal);
+        parcel.writeInt(mSuperFree);
+        parcel.writeInt(mSuperTotal);
+        parcel.writeString(mSrcType);
         parcel.writeString(market);
-        parcel.writeString(parkCategory);
-        parcel.writeString(openTime);
-        parcel.writeByte((byte) (open24h ? 1 : 0));
-        parcel.writeFloat(fMax);
-        parcel.writeFloat(fMin);
-        parcel.writeString(currentElePrice);
-        parcel.writeString(currentServicePrice);
+        parcel.writeString(mParkCategory);
+        parcel.writeString(mOpenTime);
+        parcel.writeByte((byte) (mOpen24h ? 1 : 0));
+        parcel.writeFloat(mFMax);
+        parcel.writeFloat(mFMin);
+        parcel.writeString(mCurrentElePrice);
+        parcel.writeString(mCurrentServicePrice);
         parcel.writeInt(maxPower);
         parcel.writeInt(minPower);
-        parcel.writeInt(queryType);
-        parcel.writeString(poiId);
-        parcel.writeString(name);
-        parcel.writeString(typeCode);
-        parcel.writeInt(slowVolt);
-        parcel.writeInt(slowPower);
-        parcel.writeInt(fastVolt);
-        parcel.writeInt(fastPower);
+        parcel.writeInt(mQueryType);
+        parcel.writeString(mPoiId);
+        parcel.writeString(mName);
+        parcel.writeString(mTypeCode);
+        parcel.writeInt(mSlowVolt);
+        parcel.writeInt(mSlowPower);
+        parcel.writeInt(mFastVolt);
+        parcel.writeInt(mFastPower);
     }
 }

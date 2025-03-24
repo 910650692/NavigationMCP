@@ -1,19 +1,16 @@
 package com.fy.navi.hmi.limit;
 
 
-import static com.fy.navi.service.define.map.MapTypeId.MAIN_SCREEN_MAIN_MAP;
-
 import android.os.Handler;
 import android.os.Looper;
 
+import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
-import com.fy.navi.hmi.R;
 import com.fy.navi.service.define.aos.RestrictedArea;
 import com.fy.navi.service.define.aos.RestrictedParam;
 import com.fy.navi.service.define.bean.GeoPoint;
 import com.fy.navi.service.define.map.MapTypeId;
 import com.fy.navi.service.define.mapdata.CityDataInfo;
-import com.fy.navi.service.define.mapdata.CityItemBean;
 import com.fy.navi.service.define.route.RouteRestrictionParam;
 import com.fy.navi.service.define.setting.SettingController;
 import com.fy.navi.service.greendao.setting.SettingManager;
@@ -25,10 +22,10 @@ import com.fy.navi.service.logicpaket.route.RoutePackage;
 import com.fy.navi.ui.base.BaseModel;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
- * Author: QiuYaWei
+ * @author QiuYaWei
+ * @version  \$Revision.1.0\$
  * Date: 2025/2/7
  * Description: [TODO]
  */
@@ -38,7 +35,7 @@ public class LimitDriverModel extends BaseModel<LimitDriverViewModel> implements
     private Long mLimitQueryTaskId;
     private String mCurrentCityCode;
     private static final int FAIL_TIME = 10 * 1000;
-    private Runnable loadingFail = new Runnable() {
+    private final Runnable mLoadingFail = new Runnable() {
         @Override
         public void run() {
             mLimitQueryTaskId = null;
@@ -59,23 +56,30 @@ public class LimitDriverModel extends BaseModel<LimitDriverViewModel> implements
         AosRestrictedPackage.getInstance().removeRestrictedObserver(IAosRestrictedObserver.KEY_OBSERVER_LIMIT_VIEW);
     }
 
-    public void queryLimitPolicyByCityCode(String cityCode) {
+    /**
+     * 通过城市id请求限行政策
+     * @param cityCode 城市id
+     */
+    public void queryLimitPolicyByCityCode(final String cityCode) {
         Logger.d(TAG, "queryRetry cityCode:" + cityCode);
-        String license = SettingManager.getInstance().getValueByKey(SettingController.KEY_SETTING_GUIDE_VEHICLE_NUMBER);
+        final String license = SettingManager.getInstance().getValueByKey(SettingController.KEY_SETTING_GUIDE_VEHICLE_NUMBER);
         if (license == null || license.isEmpty()) {
             Logger.d(TAG, "No license plate set");
             return;
         }
         mCurrentCityCode = cityCode;
-        RestrictedParam restrictedParam = new RestrictedParam();
+        final RestrictedParam restrictedParam = new RestrictedParam();
         // 请求根据车型等信息获取的规则 type = 7 请求城市全部规则 type = 8 请求城市列表 type = 9 根据规则请求数据
         restrictedParam.setRestrict_type(7);
         restrictedParam.setPlate(license);
         restrictedParam.setAdcodes(cityCode);
         mLimitQueryTaskId = AosRestrictedPackage.getInstance().queryRestrictedInfo(restrictedParam);
-        mHandler.postDelayed(loadingFail, FAIL_TIME);
+        mHandler.postDelayed(mLoadingFail, FAIL_TIME);
     }
 
+    /**
+     * 请求限行信息重试
+     */
     public void queryRetry() {
         if (mCurrentCityCode != null && !mCurrentCityCode.isEmpty()) {
             Logger.d(TAG, "queryRetry cityCode:" + mCurrentCityCode);
@@ -83,37 +87,33 @@ public class LimitDriverModel extends BaseModel<LimitDriverViewModel> implements
         }
     }
 
-    public double TransCityLatAndLon(double input) {
-        double scaleFactor = 1000000.0;
-        return input / scaleFactor;
-    }
-
     @Override
-    public void queryLimitResult(RouteRestrictionParam param) {
+    public void queryLimitResult(final RouteRestrictionParam param) {
         // 限行信息查询成功后更新UI
         if (mLimitQueryTaskId == null) {
             return;
         }
-        RestrictedArea restrictedAreaDetail = param.getRestrictedArea();
-        if (mLimitQueryTaskId == restrictedAreaDetail.getRequestId()) {
-            mHandler.removeCallbacks(loadingFail);
-            if (restrictedAreaDetail.cityNames == null || restrictedAreaDetail.cityNames.isEmpty()) {
+        final RestrictedArea restrictedAreaDetail = param.getMRestrictedArea();
+        if (mLimitQueryTaskId == restrictedAreaDetail.getMRequestId()) {
+            mHandler.removeCallbacks(mLoadingFail);
+            if (restrictedAreaDetail.getMCityNames() == null || restrictedAreaDetail.getMCityNames().isEmpty()) {
                 if (mCurrentCityCode != null && !mCurrentCityCode.isEmpty()) {
-                    ArrayList<String> cityName = new ArrayList<>();
+                    final ArrayList<String> cityName = new ArrayList<>();
                     cityName.add(MapDataPackage.getInstance()
-                            .getCityInfo(Integer.parseInt(mCurrentCityCode)).name);
-                    restrictedAreaDetail.setCityNames(cityName);
+                            .getCityInfo(Integer.parseInt(mCurrentCityCode)).getName());
+                    restrictedAreaDetail.setMCityNames(cityName);
                 }
             }
             if (mCurrentCityCode != null && !mCurrentCityCode.isEmpty()) {
-                CityDataInfo cityItemBean= MapDataPackage.getInstance().getCityInfo(Integer.parseInt(mCurrentCityCode));
-                MapPackage.getInstance().setMapCenter(MAIN_SCREEN_MAIN_MAP,
-                        new GeoPoint(TransCityLatAndLon(cityItemBean.cityX), TransCityLatAndLon(cityItemBean.cityY)));
+                final CityDataInfo cityItemBean= MapDataPackage.getInstance().getCityInfo(Integer.parseInt(mCurrentCityCode));
+                MapPackage.getInstance().setMapCenter(MapTypeId.MAIN_SCREEN_MAIN_MAP,
+                        new GeoPoint(ConvertUtils.transCityLatAndLon(cityItemBean.getCityX()),
+                                ConvertUtils.transCityLatAndLon(cityItemBean.getCityY())));
             }
             RoutePackage.getInstance().drawRestrictionForLimit(MapTypeId.MAIN_SCREEN_MAIN_MAP,
-                    param.getGReStrictedAreaResponseParam(),0);
-            param.setRestrictedArea(restrictedAreaDetail);
-            mViewModel.queryLimitResult(param);
+                    param.getMReStrictedAreaResponseParam(),0);
+            param.setMRestrictedArea(restrictedAreaDetail);
+            mViewModel.showPolicyUI(param);
         }
     }
 }

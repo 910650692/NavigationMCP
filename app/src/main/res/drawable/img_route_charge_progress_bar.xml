@@ -1,15 +1,15 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:id="@android:id/background">
         <shape>
-            <solid android:color="@color/white"
-                android:height="@dimen/dp_5"/>
+            <solid android:color="@color/color_20_000000"
+                android:height="@dimen/dp_6"/>
         </shape>
     </item>
     <item android:id="@android:id/progress">
         <clip >
 
             <shape >
-                <gradient  android:angle="45" android:startColor="@color/black" android:endColor="@color/black" android:height="@dimen/dp_5"/>
+                <gradient  android:angle="45" android:startColor="@color/color_2461ea" android:endColor="@color/color_2461ea" android:height="@dimen/dp_6"/>
             </shape>
         </clip>
     </item>

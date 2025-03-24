@@ -103,7 +103,7 @@ public class BaseLauncherSmallCardViewModel extends BaseViewModel<MapLauncherSma
             case NaviConstant.NaviSceneType.SCENE_PARK_LIST:
 //                naviParkingListVisibility.set(isVisible);
                 break;
-            case NaviConstant.NaviSceneType.Scene_VIA_INFO:
+            case NaviConstant.NaviSceneType.SCENE_VIA_INFO:
 //                naviViaInfoVisibility.set(isVisible);
                 break;
             case NaviConstant.NaviSceneType.SCENE_LAST_MILE:
@@ -148,8 +148,8 @@ public class BaseLauncherSmallCardViewModel extends BaseViewModel<MapLauncherSma
     }
 
     private void updateRouteName(NaviEtaInfo naviEtaInfo) {
-        if (!TextUtils.isEmpty(naviEtaInfo.curRouteName)) {
-            mView.updateRouteName(naviEtaInfo.curRouteName);
+        if (!TextUtils.isEmpty(naviEtaInfo.getCurRouteName())) {
+            mView.updateRouteName(naviEtaInfo.getCurRouteName());
         }
     }
 

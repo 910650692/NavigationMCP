@@ -1,0 +1,151 @@
+package com.fy.navi.service.adapter.layer.bls.refix;
+
+import android.content.Context;
+
+import com.android.utils.ConvertUtils;
+import com.autonavi.gbl.aosclient.model.GCoord3DDouble;
+import com.autonavi.gbl.aosclient.model.GReStrictedAreaDataCityAllRuleRes;
+import com.autonavi.gbl.aosclient.model.GReStrictedAreaDataRuleRes;
+import com.autonavi.gbl.aosclient.model.GReStrictedAreaResponseParam;
+import com.autonavi.gbl.aosclient.model.GRestrictCity;
+import com.autonavi.gbl.aosclient.model.GRestrictRule;
+import com.autonavi.gbl.common.model.Coord3DDouble;
+import com.autonavi.gbl.layer.BizControlService;
+import com.autonavi.gbl.layer.model.BizAreaType;
+import com.autonavi.gbl.layer.model.BizRouteRestrictInfo;
+import com.autonavi.gbl.map.MapView;
+import com.fy.navi.service.define.map.MapTypeId;
+import com.fy.navi.service.define.utils.NumberUtils;
+
+import java.util.ArrayList;
+
+public class LayerArea extends BaseLayerImpl {
+
+    public LayerArea(BizControlService bizService, MapView mapView, Context context) {
+        super(bizService, mapView, context);
+        getLayerAreaControl().setStyle(this);
+        getLayerAreaControl().addClickObserver(this);
+        getLayerAreaControl().addFocusChangeObserver(this);
+    }
+
+
+    /**
+     * 绘制限行区域
+     */
+    public void showLimitRestrictionView(ArrayList<GRestrictCity> cities, int position) {
+        if (ConvertUtils.isEmpty(cities)) {
+            getLayerAreaControl().clearAllItems(BizAreaType.BizAreaTypeRestrictPolygon);
+            getLayerAreaControl().clearAllItems(BizAreaType.BizAreaTypeRestrictPolyline);
+            return;
+        }
+        for (int t = NumberUtils.NUM_0; t < cities.get(position).rules.size(); t++) {
+            GRestrictRule pRestrictRule = cities.get(position).rules.get(t);
+            BizRouteRestrictInfo bizPolygonDataLine = new BizRouteRestrictInfo();
+            int linePointsListNum = pRestrictRule.linepoints.size();
+            for (int i = NumberUtils.NUM_0; i < linePointsListNum; i++) {
+                int linePointsNum = pRestrictRule.linepoints.get(i).lstPoints.size();
+                ArrayList<Coord3DDouble> lineData = new ArrayList<>();
+                for (int j = NumberUtils.NUM_0; j < linePointsNum; j++) {
+                    GCoord3DDouble point = pRestrictRule.linepoints.get(i).lstPoints.get(j);
+                    Coord3DDouble linePoint = new Coord3DDouble();
+                    linePoint.lon = point.lon;
+                    linePoint.lat = point.lat;
+                    linePoint.z = point.z;
+                    lineData.add(linePoint);
+                }
+
+                bizPolygonDataLine.lineInfos.add(lineData);
+            }
+
+            if (0 < bizPolygonDataLine.lineInfos.size()) {
+                bizPolygonDataLine.isDrawPolygonRim = true;
+                getLayerAreaControl().updateRouteRestrict(bizPolygonDataLine);
+            }
+
+            int areaPointsListNum = pRestrictRule.areapoints.size();
+
+            for (int i = NumberUtils.NUM_0; i < areaPointsListNum; i++) {
+                BizRouteRestrictInfo bizPolygonDataPolygon = new BizRouteRestrictInfo();
+                int areaPointsNum = pRestrictRule.areapoints.get(i).lstPoints.size();
+
+                for (int j = NumberUtils.NUM_0; j < areaPointsNum; j++) {
+                    GCoord3DDouble point = pRestrictRule.areapoints.get(i).lstPoints.get(j);
+                    Coord3DDouble areaPoint = new Coord3DDouble();
+                    areaPoint.lon = point.lon;
+                    areaPoint.lat = point.lat;
+                    areaPoint.z = point.z;
+                    bizPolygonDataPolygon.polygonPoints.add(areaPoint);
+                    bizPolygonDataPolygon.isDrawPolygonRim = true;
+                }
+
+                if (0 < bizPolygonDataPolygon.polygonPoints.size()) {
+                    getLayerAreaControl().updateRouteRestrict(bizPolygonDataPolygon);
+                }
+            }
+        }
+    }
+
+
+    /**
+     * 绘制限行区域
+     */
+    public void showRestrictionView(Object object, int position) {
+        if (ConvertUtils.isEmpty(object)) {
+            getLayerAreaControl().clearAllItems(BizAreaType.BizAreaTypeRestrictPolygon);
+            getLayerAreaControl().clearAllItems(BizAreaType.BizAreaTypeRestrictPolyline);
+            return;
+        }
+        GReStrictedAreaResponseParam param = (GReStrictedAreaResponseParam) object;
+        GReStrictedAreaDataRuleRes ruleRes = param.data.mDataRule;
+        if (ruleRes.citynums <= NumberUtils.NUM_0 || ConvertUtils.isEmpty(ruleRes.cities)) {
+            GReStrictedAreaDataCityAllRuleRes cityAllRuleRes = param.data.mCityAllRule;
+            showLimitRestrictionView(cityAllRuleRes.typelist, position);
+            return;
+        }
+        for (int t = NumberUtils.NUM_0; t < ruleRes.cities.get(position).rules.size(); t++) {
+            GRestrictRule pRestrictRule = ruleRes.cities.get(position).rules.get(t);
+            BizRouteRestrictInfo bizPolygonDataLine = new BizRouteRestrictInfo();
+            int linePointsListNum = pRestrictRule.linepoints.size();
+            for (int i = NumberUtils.NUM_0; i < linePointsListNum; i++) {
+                int linePointsNum = pRestrictRule.linepoints.get(i).lstPoints.size();
+                ArrayList<Coord3DDouble> lineData = new ArrayList<>();
+                for (int j = NumberUtils.NUM_0; j < linePointsNum; j++) {
+                    GCoord3DDouble point = pRestrictRule.linepoints.get(i).lstPoints.get(j);
+                    Coord3DDouble linePoint = new Coord3DDouble();
+                    linePoint.lon = point.lon;
+                    linePoint.lat = point.lat;
+                    linePoint.z = point.z;
+                    lineData.add(linePoint);
+                }
+
+                bizPolygonDataLine.lineInfos.add(lineData);
+            }
+
+            if (0 < bizPolygonDataLine.lineInfos.size()) {
+                bizPolygonDataLine.isDrawPolygonRim = true;
+                getLayerAreaControl().updateRouteRestrict(bizPolygonDataLine);
+            }
+
+            int areaPointsListNum = pRestrictRule.areapoints.size();
+
+            for (int i = NumberUtils.NUM_0; i < areaPointsListNum; i++) {
+                BizRouteRestrictInfo bizPolygonDataPolygon = new BizRouteRestrictInfo();
+                int areaPointsNum = pRestrictRule.areapoints.get(i).lstPoints.size();
+
+                for (int j = NumberUtils.NUM_0; j < areaPointsNum; j++) {
+                    GCoord3DDouble point = pRestrictRule.areapoints.get(i).lstPoints.get(j);
+                    Coord3DDouble areaPoint = new Coord3DDouble();
+                    areaPoint.lon = point.lon;
+                    areaPoint.lat = point.lat;
+                    areaPoint.z = point.z;
+                    bizPolygonDataPolygon.polygonPoints.add(areaPoint);
+                    bizPolygonDataPolygon.isDrawPolygonRim = true;
+                }
+
+                if (0 < bizPolygonDataPolygon.polygonPoints.size()) {
+                    getLayerAreaControl().updateRouteRestrict(bizPolygonDataPolygon);
+                }
+            }
+        }
+    }
+}

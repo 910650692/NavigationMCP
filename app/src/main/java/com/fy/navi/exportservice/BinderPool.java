@@ -99,9 +99,9 @@ public final class BinderPool extends IBinderPool.Stub {
     @Override
     public void startInitEngine(String pkgName) {
         Log.d(TAG, pkgName + "startInitEngine");
-        if (null != AppContext.mContext) {
-            Intent intent = new Intent(AppContext.mContext, NaviService.class);
-            ActivityCompat.startForegroundService(AppContext.mContext, intent);
+        if (null != AppContext.getInstance().getMContext()) {
+            Intent intent = new Intent(AppContext.getInstance().getMContext(), NaviService.class);
+            ActivityCompat.startForegroundService(AppContext.getInstance().getMContext(), intent);
         } else {
             Log.e(TAG, "application not created");
         }

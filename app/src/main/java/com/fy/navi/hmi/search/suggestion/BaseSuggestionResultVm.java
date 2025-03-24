@@ -9,12 +9,11 @@ import com.fy.navi.ui.action.Action;
 import com.fy.navi.ui.base.BaseViewModel;
 
 /**
- * @Description TODO
- * @Author lww
- * @date 2025/1/25
+ * @author lww
+ * @version \$Revision1.0\$
  */
 public class BaseSuggestionResultVm extends BaseViewModel<SuggestionFragment, SuggestionResultModel> {
-    public BaseSuggestionResultVm(@NonNull Application application) {
+    public BaseSuggestionResultVm(@NonNull final Application application) {
         super(application);
     }
 
@@ -23,13 +22,21 @@ public class BaseSuggestionResultVm extends BaseViewModel<SuggestionFragment, Su
         return new SuggestionResultModel();
     }
 
-    public Action rootClick = new Action() {
+    private final Action mRootClick = new Action() {
         @Override
         public void call() {
         }
     };
 
-    public void notifySearchResult(SearchResultEntity searchResultEntity) {
+    public Action getRootClick() {
+        return mRootClick;
+    }
+
+    /**
+     * 搜索结果回调
+     * @param searchResultEntity 搜索结果实体类
+     */
+    public void notifySearchResult(final SearchResultEntity searchResultEntity) {
         mView.notifySearchResult(searchResultEntity);
     }
 }

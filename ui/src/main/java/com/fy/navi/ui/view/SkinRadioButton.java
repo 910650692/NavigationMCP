@@ -6,15 +6,15 @@ import android.util.AttributeSet;
 import androidx.appcompat.widget.AppCompatRadioButton;
 
 public class SkinRadioButton extends AppCompatRadioButton {
-    public SkinRadioButton(Context context) {
+    public SkinRadioButton(final Context context) {
         super(context);
     }
 
-    public SkinRadioButton(Context context, AttributeSet attrs, int defStyleAttr) {
+    public SkinRadioButton(final Context context, final AttributeSet attrs, final int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 
-    public SkinRadioButton(Context context, AttributeSet attrs) {
+    public SkinRadioButton(final Context context, final AttributeSet attrs) {
         super(context, attrs);
     }
 }

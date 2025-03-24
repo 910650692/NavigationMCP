@@ -24,7 +24,7 @@
             app:layout_constraintTop_toTopOf="parent" >
 
             <com.fy.navi.ui.view.SkinImageView
-                clickCommand="@{viewModel.finishPrivacy}"
+                clickCommand="@{viewModel.mFinishPrivacy}"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -90,13 +90,13 @@
                 android:orientation="horizontal">
 
                 <com.fy.navi.ui.view.SkinRadioButton
-                    clickCommand="@{viewModel.oneYearPrivacy}"
+                    clickCommand="@{viewModel.mOneYearPrivacy}"
                     android:id="@+id/setting_others_privacy_one_year"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:button="@null"
-                    android:checked="@{viewModel.isOneYearPrivacy}"
+                    android:checked="@{viewModel.mIsOneYearPrivacy}"
                     android:background="@drawable/bg_setting_checkbox_selector"
                     android:gravity="center"
                     android:textSize="@dimen/sp_38"
@@ -104,13 +104,13 @@
                     android:text="@string/setting_others_privacy_one_year" />
 
                 <com.fy.navi.ui.view.SkinRadioButton
-                    clickCommand="@{viewModel.neverPrivacy}"
+                    clickCommand="@{viewModel.mNeverPrivacy}"
                     android:id="@+id/setting_others_privacy_never"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:button="@null"
-                    android:checked="@{viewModel.isNeverPrivacy}"
+                    android:checked="@{viewModel.mIsNeverPrivacy}"
                     android:background="@drawable/bg_setting_checkbox_selector"
                     android:gravity="center"
                     android:textSize="@dimen/sp_38"
@@ -124,7 +124,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:visibility="@{viewModel.isOneYearPrivacy ? View.VISIBLE : View.GONE}"
+            android:visibility="@{viewModel.mIsOneYearPrivacy ? View.VISIBLE : View.GONE}"
             app:layout_constraintStart_toStartOf="@+id/setting_others_privacy_switch"
             app:layout_constraintTop_toBottomOf="@+id/setting_others_privacy_switch">
 
@@ -140,7 +140,7 @@
                 android:id="@+id/setting_others_privacy_end_date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@{viewModel.endDate}"
+                android:text="@{viewModel.mEndDate}"
                 android:textColor="@color/setting_text_gray"
                 android:textSize="@dimen/sp_28"
                 android:layout_marginTop="@dimen/dp_10" />

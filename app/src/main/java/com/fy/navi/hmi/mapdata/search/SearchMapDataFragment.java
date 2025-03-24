@@ -1,5 +1,6 @@
 package com.fy.navi.hmi.mapdata.search;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -7,11 +8,12 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.TextView;
 
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.android.utils.gson.GsonUtils;
+import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
 import com.fy.navi.hmi.BR;
 import com.fy.navi.hmi.R;
@@ -25,14 +27,10 @@ import com.fy.navi.ui.base.BaseFragment;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * @Description 离线数据搜索结果列表页面
- * @Author fh
- * @date 2024/02/17
- */
 public class SearchMapDataFragment extends BaseFragment<FragmentSearchMapDataBinding, SearchMapDataViewModel> {
-    private SearchMapDataAdapter searchMapDataAdapter;
-    private List<BaseSearchMapDataAdapter.DataTree<ProvDataInfo, String>> dataList = new ArrayList<>();
+    private static final String TAG = SearchMapDataModel.class.getSimpleName();
+    private SearchMapDataAdapter mSearchMapDataAdapter;
+    private List<BaseSearchMapDataAdapter.DataTree<ProvDataInfo, String>> mDataList = new ArrayList<>();
 
     @Override
     public int onLayoutId() {
@@ -56,46 +54,41 @@ public class SearchMapDataFragment extends BaseFragment<FragmentSearchMapDataBin
 
     }
 
+    /**
+     * 初始化离线搜索view
+     */
     private void initSearchMapDataView() {
-        searchMapDataAdapter = new SearchMapDataAdapter(getActivity());
+        mSearchMapDataAdapter = new SearchMapDataAdapter(getActivity());
         mBinding.rvSearchOffline.setLayoutManager(new LinearLayoutManager(getActivity()));
         mBinding.rvSearchOffline.setItemAnimator(null);
-        searchMapDataAdapter.setData(dataList);
-        mBinding.rvSearchOffline.setAdapter(searchMapDataAdapter);
+        mSearchMapDataAdapter.setData(mDataList);
+        mBinding.rvSearchOffline.setAdapter(mSearchMapDataAdapter);
 
         //以下是对布局进行控制，让省份占一行，城市占两列，效果相当于一个listView嵌套gridView的效果
-        GridLayoutManager manager = new GridLayoutManager(getActivity(),1);
+        final GridLayoutManager manager = new GridLayoutManager(getActivity(),1);
         manager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override
-            public int getSpanSize(int position) {
+            public int getSpanSize(final int position) {
                 return 1;
             }
         });
         mBinding.rvSearchOffline.setLayoutManager(manager);
 
-        searchMapDataAdapter.setOfflineItemListener(new SearchMapDataAdapter.OfflineItemListener() {
+        mSearchMapDataAdapter.setOfflineItemListener(new SearchMapDataAdapter.OfflineItemListener() {
             @Override
-            public void startAllTask(int downloadMode) {
+            public void startAllTask(final ArrayList<Integer> adCodeList) {
                 if (mViewModel != null) {
-                    mViewModel.startAllTask(null);
+                    mViewModel.startAllTask(adCodeList);
                 }
             }
 
             @Override
-            public void pauseAllTask(int downloadMode) {
+            public void pauseAllTask(final ArrayList<Integer> adCodeList) {
                 if (mViewModel != null) {
-                    mViewModel.pauseAllTask(null);
-                }
-            }
-
-            @Override
-            public void cancelAllTask(int downloadMode) {
-                if (mViewModel != null) {
-                    mViewModel.cancelAllTask(null);
+                    mViewModel.pauseAllTask(adCodeList);
                 }
             }
         });
-
     }
 
     /**
@@ -104,36 +97,38 @@ public class SearchMapDataFragment extends BaseFragment<FragmentSearchMapDataBin
     private void setupSearchActions() {
         mBinding.searchOfflineEditView.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            public void beforeTextChanged(final CharSequence s, final int start, final int count, final int after) {
 
             }
 
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            public void onTextChanged(final CharSequence s, final int start, final int before, final int count) {
 
             }
 
             @Override
-            public void afterTextChanged(Editable editable) {
+            public void afterTextChanged(final Editable editable) {
                 if (!editable.toString().trim().isEmpty()) {
                     mBinding.editClear.setVisibility(View.VISIBLE);
                     mViewModel.searchAdCode(editable.toString().trim());
                 } else {
+                    // 文本为空时，清除检索到的数据
+                    if (null != mSearchMapDataAdapter) {
+                        mDataList.clear();
+                        mSearchMapDataAdapter.notifyNewData(mDataList);
+                    }
                     mBinding.editClear.setVisibility(View.GONE);
                 }
             }
         });
 
-        mBinding.searchOfflineEditView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView textView, int actionId, KeyEvent event) {
-                if (actionId == EditorInfo.IME_ACTION_DONE ||
-                        (event != null && event.getKeyCode() == KeyEvent.KEYCODE_ENTER && event.getAction() == KeyEvent.ACTION_DOWN)) {
-                    hideInput();
-                    return false;
-                } else {
-                    return false;
-                }
+        mBinding.searchOfflineEditView.setOnEditorActionListener((textView, actionId, event) -> {
+            if (actionId == EditorInfo.IME_ACTION_DONE ||
+                    (event != null && event.getKeyCode() == KeyEvent.KEYCODE_ENTER && event.getAction() == KeyEvent.ACTION_DOWN)) {
+                hideInput();
+                return true;
+            } else {
+                return false;
             }
         });
 
@@ -146,7 +141,7 @@ public class SearchMapDataFragment extends BaseFragment<FragmentSearchMapDataBin
         // 确保视图已经附加到窗口
         mBinding.searchOfflineEditView.post(() -> {
             mBinding.searchOfflineEditView.requestFocus();
-            InputMethodManager imm = (InputMethodManager) mActivity.getSystemService(Context.INPUT_METHOD_SERVICE);
+            final InputMethodManager imm = (InputMethodManager) mActivity.getSystemService(Context.INPUT_METHOD_SERVICE);
             if (imm != null) {
                 // 显示软键盘
                 imm.showSoftInput(mBinding.searchOfflineEditView, InputMethodManager.SHOW_IMPLICIT);
@@ -158,12 +153,7 @@ public class SearchMapDataFragment extends BaseFragment<FragmentSearchMapDataBin
      * 隐藏软键盘
      */
     public void hideInput() {
-       /* InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-        if (imm != null) {
-            imm.hideSoftInputFromWindow(getWindowToken(), 0);
-        }*/
-
-        InputMethodManager imm = (InputMethodManager) mActivity.getSystemService(Context.INPUT_METHOD_SERVICE);
+       final InputMethodManager imm = (InputMethodManager) mActivity.getSystemService(Context.INPUT_METHOD_SERVICE);
         if (null != imm) {
             imm.hideSoftInputFromWindow(mActivity.getWindow().getDecorView().getWindowToken(), 0);
         }
@@ -171,20 +161,21 @@ public class SearchMapDataFragment extends BaseFragment<FragmentSearchMapDataBin
 
     /**
      * 更新搜索结果
+     * @param provinceBeans
      */
-    public void updateSearchResultView(ArrayList<ProvDataInfo> provinceBeans) {
+    public void updateSearchResultView(final ArrayList<ProvDataInfo> provinceBeans) {
         ThreadManager.getInstance().postUi(() -> {
-            dataList.clear();
+            mDataList.clear();
             if (provinceBeans != null && !provinceBeans.isEmpty()) {
 
                 mBinding.noSearchOfflineView.setVisibility(View.GONE);
                 mBinding.rvSearchOffline.setVisibility(View.VISIBLE);
 
                 for (int i = 0; i < provinceBeans.size(); i++) {
-                    List<CityDataInfo> city = provinceBeans.get(i).cityInfoList;
-                    dataList.add(new BaseSearchMapDataAdapter.DataTree<>(provinceBeans.get(i), city));
+                    final List<CityDataInfo> city = provinceBeans.get(i).getCityInfoList();
+                    mDataList.add(new BaseSearchMapDataAdapter.DataTree<>(provinceBeans.get(i), city));
                 }
-                searchMapDataAdapter.notifyNewData(dataList);
+                mSearchMapDataAdapter.notifyNewData(mDataList);
             } else {
 
                 mBinding.noSearchOfflineView.setVisibility(View.VISIBLE);
@@ -195,13 +186,44 @@ public class SearchMapDataFragment extends BaseFragment<FragmentSearchMapDataBin
     }
 
     /**
+     * 更新数据列表下载进度&状态
+     * @param info
+     */
+    @SuppressLint("NotifyDataSetChanged")
+    public void notifySearchMapDataChangeView(final ProvDataInfo info) {
+        ThreadManager.getInstance().postUi(() -> {
+            Logger.d(TAG,"notifySearchMapDataChangeView  info = " + GsonUtils.toJson(info));
+            final CityDataInfo cityDataInfo = info.getCityInfoList().get(0);
+            for (int i = 0; i < mSearchMapDataAdapter.getData().size(); i++) {
+
+                if ( mSearchMapDataAdapter.getGroupItem(i).getAdcode() == cityDataInfo.getAdcode()) {
+                    // 刷新一级列表下的子级列表下载状态
+                    mSearchMapDataAdapter.getData().set(i, new BaseSearchMapDataAdapter.DataTree<>(info, info.getCityInfoList()));
+                    mSearchMapDataAdapter.notifyDataSetChanged();
+                    break;
+                } else {
+                    // 刷新二级列表下的子级列表下载状态
+                    for (int j = 0; j < mSearchMapDataAdapter.getSubItem(i).size(); j++) {
+                        if (mSearchMapDataAdapter.getSubItem(i).get(j).getAdcode() == cityDataInfo.getAdcode()) {
+                            mSearchMapDataAdapter.getSubItem(i).set(j, cityDataInfo);
+                            mSearchMapDataAdapter.notifyDataSetChanged();
+                            break;
+                        }
+                    }
+                }
+            }
+
+        });
+    }
+
+    /**
      * 清空输入框内容
      */
     public void clearEditText() {
         mBinding.searchOfflineEditView.setText("");
-        if (null != searchMapDataAdapter) {
-            dataList.clear();
-            searchMapDataAdapter.notifyNewData(dataList);
+        if (null != mSearchMapDataAdapter) {
+            mDataList.clear();
+            mSearchMapDataAdapter.notifyNewData(mDataList);
         }
     }
 

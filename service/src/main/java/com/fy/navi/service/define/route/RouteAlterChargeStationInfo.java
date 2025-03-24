@@ -4,50 +4,60 @@ package com.fy.navi.service.define.route;
 import java.io.Serializable;
 import java.util.ArrayList;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 public class RouteAlterChargeStationInfo implements Serializable {
-    public String poiId;
-    public String name;
-    public com.fy.navi.service.define.route.Coord3DDouble pos;
-    public int remainingCapacity;
-    public double remainingPercent;
-    public int chargeTime;
-    public int childType;
-    public ArrayList<String> tagInfos;
-    public RouteChargeStationNumberInfo superPlugInfo;
-    public RouteChargeStationNumberInfo fastPlugInfo;
-    public RouteChargeStationNumberInfo slowPlugInfo;
-    public RouteAlterChargePriceInfo priceInfo;
-    public RouteAlterChargePriceInfo detourInfo;
+    private String mPoiId;
+    private String mName;
+    private Coord3DDouble mPos;
+    private int mRemainingCapacity;
+    private double mRemainingPercent;
+    private int mChargeTime;
+    private int mChildType;
+    private ArrayList<String> mTagInfos;
+    private RouteChargeStationNumberInfo mSuperPlugInfo;
+    private RouteChargeStationNumberInfo mFastPlugInfo;
+    private RouteChargeStationNumberInfo mSlowPlugInfo;
+    private RouteAlterChargePriceInfo mPriceInfo;
+    private RouteAlternativeChargeDetourInfo mDetourInfo;
 
     public RouteAlterChargeStationInfo() {
-        this.poiId = "";
-        this.name = "";
-        this.pos = new com.fy.navi.service.define.route.Coord3DDouble();
-        this.remainingCapacity = 0;
-        this.remainingPercent = 0.0;
-        this.chargeTime = 0;
-        this.childType = 0;
-        this.tagInfos = new ArrayList();
-        this.superPlugInfo = new RouteChargeStationNumberInfo();
-        this.fastPlugInfo = new RouteChargeStationNumberInfo();
-        this.slowPlugInfo = new RouteChargeStationNumberInfo();
-        this.priceInfo = new RouteAlterChargePriceInfo();
-        this.detourInfo = new RouteAlterChargePriceInfo();
+        this.mPoiId = "";
+        this.mName = "";
+        this.mPos = new com.fy.navi.service.define.route.Coord3DDouble();
+        this.mRemainingCapacity = 0;
+        this.mRemainingPercent = 0.0;
+        this.mChargeTime = 0;
+        this.mChildType = 0;
+        this.mTagInfos = new ArrayList();
+        this.mSuperPlugInfo = new RouteChargeStationNumberInfo();
+        this.mFastPlugInfo = new RouteChargeStationNumberInfo();
+        this.mSlowPlugInfo = new RouteChargeStationNumberInfo();
+        this.mPriceInfo = new RouteAlterChargePriceInfo();
+        this.mDetourInfo = new RouteAlternativeChargeDetourInfo();
     }
 
-    public RouteAlterChargeStationInfo(String poiIdLiteObj, String nameLiteObj, Coord3DDouble posLiteObj, int remainingCapacityLiteObj, double remainingPercentLiteObj, int chargeTimeLiteObj, int childTypeLiteObj, ArrayList<String> tagInfosLiteObj, RouteChargeStationNumberInfo superPlugInfoLiteObj, RouteChargeStationNumberInfo fastPlugInfoLiteObj, RouteChargeStationNumberInfo slowPlugInfoLiteObj, RouteAlterChargePriceInfo priceInfoLiteObj, RouteAlterChargePriceInfo detourInfoLiteObj) {
-        this.poiId = poiIdLiteObj;
-        this.name = nameLiteObj;
-        this.pos = posLiteObj;
-        this.remainingCapacity = remainingCapacityLiteObj;
-        this.remainingPercent = remainingPercentLiteObj;
-        this.chargeTime = chargeTimeLiteObj;
-        this.childType = childTypeLiteObj;
-        this.tagInfos = tagInfosLiteObj;
-        this.superPlugInfo = superPlugInfoLiteObj;
-        this.fastPlugInfo = fastPlugInfoLiteObj;
-        this.slowPlugInfo = slowPlugInfoLiteObj;
-        this.priceInfo = priceInfoLiteObj;
-        this.detourInfo = detourInfoLiteObj;
+    public RouteAlterChargeStationInfo(final String poiIdLiteObj, final String nameLiteObj, final Coord3DDouble posLiteObj
+            , final int remainingCapacityLiteObj, final double remainingPercentLiteObj, final int chargeTimeLiteObj
+            , final int childTypeLiteObj, final ArrayList<String> tagInfosLiteObj
+            , final RouteChargeStationNumberInfo superPlugInfoLiteObj, final RouteChargeStationNumberInfo fastPlugInfoLiteObj
+            , final RouteChargeStationNumberInfo slowPlugInfoLiteObj, final RouteAlterChargePriceInfo priceInfoLiteObj
+            , final RouteAlternativeChargeDetourInfo detourInfoLiteObj) {
+        this.mPoiId = poiIdLiteObj;
+        this.mName = nameLiteObj;
+        this.mPos = posLiteObj;
+        this.mRemainingCapacity = remainingCapacityLiteObj;
+        this.mRemainingPercent = remainingPercentLiteObj;
+        this.mChargeTime = chargeTimeLiteObj;
+        this.mChildType = childTypeLiteObj;
+        this.mTagInfos = tagInfosLiteObj;
+        this.mSuperPlugInfo = superPlugInfoLiteObj;
+        this.mFastPlugInfo = fastPlugInfoLiteObj;
+        this.mSlowPlugInfo = slowPlugInfoLiteObj;
+        this.mPriceInfo = priceInfoLiteObj;
+        this.mDetourInfo = detourInfoLiteObj;
     }
 }

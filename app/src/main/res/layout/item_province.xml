@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="@dimen/dp_140"
     android:layout_marginBottom="@dimen/dp_24"
-    android:background="@drawable/bg_setting_fragment">
+    android:background="@drawable/shape_bg_map_item_data">
 
     <com.fy.navi.ui.view.SkinTextView
         android:id="@+id/item_province_name"
@@ -18,18 +18,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-     <com.fy.navi.ui.view.SkinTextView
-         android:id="@+id/item_province_data"
-         android:layout_width="wrap_content"
-         android:layout_height="wrap_content"
-         android:layout_marginStart="@dimen/dp_20"
-         app:layout_constraintBottom_toBottomOf="parent"
-         app:layout_constraintTop_toTopOf="parent"
-         app:layout_constraintLeft_toRightOf="@+id/item_province_name"
-         android:gravity="center"
-         android:textColor="@color/setting_text_gray"
-         android:textSize="@dimen/sp_32" />
-
     <com.fy.navi.ui.view.SkinImageView
         android:id="@+id/item_province_expand"
         android:layout_width="@dimen/dp_60"
@@ -39,5 +27,30 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <!--按钮下载状态-->
+    <com.fy.navi.scene.ui.setting.DownloadBtnView
+        android:id="@+id/item_download_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/dp_30"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.fy.navi.ui.view.SkinTextView
+        android:id="@+id/item_province_data"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:visibility="gone"
+        android:gravity="center"
+        android:text="@string/offline_item_city_data"
+        android:textColor="@color/color_70_000000"
+        android:textSize="@dimen/sp_26"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintRight_toLeftOf="@+id/item_download_status" />
 
 </com.fy.navi.ui.view.SkinConstraintLayout>

@@ -16,7 +16,7 @@ public interface VoiceCallback {
      * @param itemId 数据编号
      * @param opErrCode 回调操作状态码
      * @param strFilePath 文件下载存放的绝对路径
-     * @param dataType 	数据类型
+     * @param dataType 数据类型
      */
     void onDownloadImage(int itemId, int opErrCode, String strFilePath, int dataType);
 
@@ -41,7 +41,7 @@ public interface VoiceCallback {
     /**
      * 下载进度回调
      * @param downLoadMode 下载模式
-     * @param dataType 	数据类型
+     * @param dataType 数据类型
      * @param id 数据id
      * @param percentType 百分比类型 (默认0表示下载; 1表示解压融合进度)
      * @param percent 百分比值

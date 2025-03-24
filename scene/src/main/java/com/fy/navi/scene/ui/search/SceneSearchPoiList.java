@@ -1,6 +1,5 @@
 package com.fy.navi.scene.ui.search;
 
-import static com.fy.navi.service.MapDefaultFinalTag.SEARCH_HMI_TAG;
 
 import android.content.Context;
 import android.util.AttributeSet;
@@ -22,24 +21,21 @@ import com.android.utils.log.Logger;
 import com.fy.navi.scene.BaseSceneView;
 import com.fy.navi.scene.R;
 import com.fy.navi.scene.RoutePath;
-import com.fy.navi.scene.adapter.GasStationAdapter;
 import com.fy.navi.scene.adapter.GridSpacingItemDecoration;
 import com.fy.navi.scene.adapter.HorizontalSpaceItemDecoration;
 import com.fy.navi.scene.api.search.IOnFilterItemClickListener;
 import com.fy.navi.scene.databinding.PoiSearchResultViewBinding;
 import com.fy.navi.scene.impl.search.SceneSearchPoiListImpl;
 import com.fy.navi.scene.impl.search.SearchFragmentFactory;
-import com.fy.navi.scene.ui.adapter.CollectResultAdapter;
 import com.fy.navi.scene.ui.adapter.FilterChildListAdapter;
 import com.fy.navi.scene.ui.adapter.FilterListAdapter;
 import com.fy.navi.scene.ui.adapter.SearchResultAdapter;
 import com.fy.navi.service.AutoMapConstant;
+import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.define.map.MapTypeId;
 import com.fy.navi.service.define.mapdata.CityDataInfo;
 import com.fy.navi.service.define.mapdata.ProvDataInfo;
-import com.fy.navi.service.define.route.RoutePoiType;
 import com.fy.navi.service.define.search.FavoriteInfo;
-import com.fy.navi.service.define.search.GasStationInfo;
 import com.fy.navi.service.define.search.PoiInfoEntity;
 import com.fy.navi.service.define.search.SearchCategoryLocalInfo;
 import com.fy.navi.service.define.search.SearchChildCategoryLocalInfo;
@@ -55,58 +51,54 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-/**
- * @Author: baipeng0904
- * @Description: 搜索结果列表scene
- * @Date: 2020/4/16 11:05 AM
- * @CreateDate: $ $
- */
 public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding, SceneSearchPoiListImpl> {
+    private static final String DIVIDER = "_";
+    private static final String APPEND = "+";
     private SearchResultAdapter mAdapter;
-    private FilterListAdapter filterOneAdapter;
-    private FilterListAdapter filterTwoAdapter;
-    private FilterListAdapter filterThreeAdapter;
-    private FilterChildListAdapter filterOneChildAdapter;
-    private FilterChildListAdapter filterTwoChildAdapter;
-    private FilterChildListAdapter filterThreeChildAdapter;
+    private FilterListAdapter mFilterOneAdapter;
+    private FilterListAdapter mFilterTwoAdapter;
+    private FilterListAdapter mFilterThreeAdapter;
+    private FilterChildListAdapter mFilterOneChildAdapter;
+    private FilterChildListAdapter mFilterTwoChildAdapter;
+    private FilterChildListAdapter mFilterThreeChildAdapter;
     private int maxPageNum = 1;
-    private int pageNum = 1;
-    private SearchLoadingDialog searchLoadingDialog;
-    private int searchType = AutoMapConstant.SearchType.SEARCH_KEYWORD;
-    private String searchText;
-    private PoiInfoEntity poiInfoEntity;
-    private SearchResultEntity resultEntity;
-    private List<SearchCategoryLocalInfo> localInfoList;
-    private boolean isFilterViewShow = false;
-    private int horizontalSpacing = 12;
-    private int childHorizontalSpacing = 16;
-    private int childVerticalSpacing = 16;
-    private int spanCount = 3;
+    private int mPageNum = 1;
+    private SearchLoadingDialog mSearchLoadingDialog;
+    private int mSearchType = AutoMapConstant.SearchType.SEARCH_KEYWORD;
+    private String mSearchText;
+    private PoiInfoEntity mPoiInfoEntity;
+    private SearchResultEntity mResultEntity;
+    private List<SearchCategoryLocalInfo> mLocalInfoList;
+    private boolean mIsFilterViewShow = false;
+    private final int mHorizontalSpacing = 12;
+    private final int mChildHorizontalSpacing = 16;
+    private final int mChildVerticalSpacing = 16;
+    private final int mSpanCount = 3;
     //第一个一级菜单当前正在被选中的二级菜单下标
-    private int currentSelectedIndex1 = -1;
+    private int mCurrentSelectedIndex1 = -1;
     //第二个一级菜单当前正在被选中的二级菜单下标
-    private int currentSelectedIndex2 = -1;
+    private int mCurrentSelectedIndex2 = -1;
     //第三个一级菜单当前正在被选中的二级菜单下标
-    private int currentSelectedIndex3 = -1;
-    private int homeCompanyType;
+    private int mCurrentSelectedIndex3 = -1;
+    private int mHomeCompanyType;
     //已下载的城市列表
     private ArrayList<ProvDataInfo> mProvDataInfos;
 
 
-    public SceneSearchPoiList(@NonNull Context context) {
+    public SceneSearchPoiList(@NonNull final Context context) {
         super(context);
     }
 
-    public SceneSearchPoiList(@NonNull Context context, @Nullable AttributeSet attrs) {
+    public SceneSearchPoiList(@NonNull final Context context, @Nullable final AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public SceneSearchPoiList(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public SceneSearchPoiList(@NonNull final Context context, @Nullable final AttributeSet attrs, final int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 
     @Override
-    protected PoiSearchResultViewBinding createViewBinding(LayoutInflater inflater, ViewGroup viewGroup) {
+    protected PoiSearchResultViewBinding createViewBinding(final LayoutInflater inflater, final ViewGroup viewGroup) {
         return PoiSearchResultViewBinding.inflate(inflater, viewGroup, true);
     }
 
@@ -127,7 +119,7 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
         setupRefreshListener();
         setupFilterActions();
         setupChildListActions();
-        searchLoadingDialog = new SearchLoadingDialog(getContext());
+        mSearchLoadingDialog = new SearchLoadingDialog(getContext());
     }
 
     /**
@@ -138,69 +130,71 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
         mAdapter = new SearchResultAdapter();
         mViewBinding.recyclerSearchResult.setAdapter(mAdapter);
 
-        RecyclerView.ItemDecoration itemDecoration = new HorizontalSpaceItemDecoration(horizontalSpacing);
+        final RecyclerView.ItemDecoration itemDecoration = new HorizontalSpaceItemDecoration(mHorizontalSpacing);
         mViewBinding.searchFilterView.searchFilterList1.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.HORIZONTAL, false));
-        filterOneAdapter = new FilterListAdapter();
-        mViewBinding.searchFilterView.searchFilterList1.setAdapter(filterOneAdapter);
+        mFilterOneAdapter = new FilterListAdapter();
+        mViewBinding.searchFilterView.searchFilterList1.setAdapter(mFilterOneAdapter);
         mViewBinding.searchFilterView.searchFilterList1.addItemDecoration(itemDecoration);
 
         mViewBinding.searchFilterView.searchFilterList2.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.HORIZONTAL, false));
-        filterTwoAdapter = new FilterListAdapter();
-        mViewBinding.searchFilterView.searchFilterList2.setAdapter(filterTwoAdapter);
+        mFilterTwoAdapter = new FilterListAdapter();
+        mViewBinding.searchFilterView.searchFilterList2.setAdapter(mFilterTwoAdapter);
         mViewBinding.searchFilterView.searchFilterList2.addItemDecoration(itemDecoration);
 
         mViewBinding.searchFilterView.searchFilterList3.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.HORIZONTAL, false));
-        filterThreeAdapter = new FilterListAdapter();
-        mViewBinding.searchFilterView.searchFilterList3.setAdapter(filterThreeAdapter);
+        mFilterThreeAdapter = new FilterListAdapter();
+        mViewBinding.searchFilterView.searchFilterList3.setAdapter(mFilterThreeAdapter);
         mViewBinding.searchFilterView.searchFilterList3.addItemDecoration(itemDecoration);
 
-        RecyclerView.ItemDecoration gridDecoration = new GridSpacingItemDecoration(getContext(), spanCount, childVerticalSpacing, childHorizontalSpacing, false);
-        mViewBinding.searchFilterView.searchFilterList1Child.setLayoutManager(new GridLayoutManager(getContext(), spanCount));
-        filterOneChildAdapter = new FilterChildListAdapter();
-        mViewBinding.searchFilterView.searchFilterList1Child.setAdapter(filterOneChildAdapter);
+        final RecyclerView.ItemDecoration gridDecoration = new GridSpacingItemDecoration(getContext(),
+                mSpanCount, mChildVerticalSpacing, mChildHorizontalSpacing, false);
+        mViewBinding.searchFilterView.searchFilterList1Child.setLayoutManager(new GridLayoutManager(getContext(), mSpanCount));
+        mFilterOneChildAdapter = new FilterChildListAdapter();
+        mViewBinding.searchFilterView.searchFilterList1Child.setAdapter(mFilterOneChildAdapter);
         mViewBinding.searchFilterView.searchFilterList1Child.addItemDecoration(gridDecoration);
 
-        mViewBinding.searchFilterView.searchFilterList2Child.setLayoutManager(new GridLayoutManager(getContext(), spanCount));
-        filterTwoChildAdapter = new FilterChildListAdapter();
-        mViewBinding.searchFilterView.searchFilterList2Child.setAdapter(filterTwoChildAdapter);
+        mViewBinding.searchFilterView.searchFilterList2Child.setLayoutManager(new GridLayoutManager(getContext(), mSpanCount));
+        mFilterTwoChildAdapter = new FilterChildListAdapter();
+        mViewBinding.searchFilterView.searchFilterList2Child.setAdapter(mFilterTwoChildAdapter);
         mViewBinding.searchFilterView.searchFilterList2Child.addItemDecoration(gridDecoration);
 
-        mViewBinding.searchFilterView.searchFilterList3Child.setLayoutManager(new GridLayoutManager(getContext(), spanCount));
-        filterThreeChildAdapter = new FilterChildListAdapter();
-        mViewBinding.searchFilterView.searchFilterList3Child.setAdapter(filterThreeChildAdapter);
+        mViewBinding.searchFilterView.searchFilterList3Child.setLayoutManager(new GridLayoutManager(getContext(), mSpanCount));
+        mFilterThreeChildAdapter = new FilterChildListAdapter();
+        mViewBinding.searchFilterView.searchFilterList3Child.setAdapter(mFilterThreeChildAdapter);
         mViewBinding.searchFilterView.searchFilterList3Child.addItemDecoration(gridDecoration);
 
         mAdapter.setOnItemClickListener(new SearchResultAdapter.OnItemClickListener() {
             @Override
-            public void onItemClick(int position, PoiInfoEntity poiInfoEntity) {
-                Fragment fragment = (Fragment) ARouter.getInstance().build(RoutePath.Search.POI_DETAILS_FRAGMENT).navigation();
-                int poiType = AutoMapConstant.PoiType.POI_KEYWORD;
-                // 1:家 2:公司 3:常用地址 0:收藏夹 -1:都不是
-                if (mAdapter.getHomeCompanyType() == 1) {
-                    poiType = AutoMapConstant.PoiType.POI_HOME;
-                } else if (mAdapter.getHomeCompanyType() == 2) {
-                    poiType = AutoMapConstant.PoiType.POI_COMPANY;
-                } else if (mAdapter.getHomeCompanyType() == 3) {
-                    poiType = AutoMapConstant.PoiType.POI_COMMON;
-                } else if (mAdapter.getHomeCompanyType() == 0) {
-                    poiType = AutoMapConstant.PoiType.POI_COLLECTION;
-                }
-                Logger.d(SEARCH_HMI_TAG, "onClick poiType: " + poiType + " homeCompany: " + mAdapter.getHomeCompanyType());
-                addFragment((BaseFragment) fragment, SearchFragmentFactory.createPoiDetailsFragment(AutoMapConstant.SourceFragment.SEARCH_RESULT_FRAGMENT, poiType, poiInfoEntity));
+            public void onItemClick(final int position, final PoiInfoEntity poiInfoEntity) {
+                final Fragment fragment = switch (mSearchType) {
+                    case AutoMapConstant.SearchType.AROUND_SEARCH ->
+                            (Fragment) ARouter.getInstance().build(RoutePath.Search.POI_AROUND_DETAILS_FRAGMENT).navigation();
+                    case AutoMapConstant.SearchType.ALONG_WAY_SEARCH ->
+                            (Fragment) ARouter.getInstance().build(RoutePath.Search.POI_ALONG_WAY_DETAILS_FRAGMENT).navigation();
+                    default ->
+                            (Fragment) ARouter.getInstance().build(RoutePath.Search.POI_DETAILS_FRAGMENT).navigation();
+                };
+
+                int poiType = getPoiType(mAdapter.getHomeCompanyType());
+                Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "onClick poiType: " + poiType + " homeCompany: " + mAdapter.getHomeCompanyType());
+                addPoiDetailsFragment((BaseFragment) fragment, SearchFragmentFactory.createPoiDetailsFragment(
+                        AutoMapConstant.SourceFragment.SEARCH_RESULT_FRAGMENT, poiType, poiInfoEntity));
             }
 
             @Override
-            public void onNaviClick(int position, PoiInfoEntity poiInfoEntity) {
-                Logger.d(SEARCH_HMI_TAG, "onNaviClick: "+mAdapter.getHomeCompanyType());
+            public void onNaviClick(final int position, final PoiInfoEntity poiInfoEntity) {
+                Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "onNaviClick: " + mAdapter.getHomeCompanyType());
                 if (mAdapter.getHomeCompanyType() == 1
                         || mAdapter.getHomeCompanyType() == 2
                         || mAdapter.getHomeCompanyType() == 3
                         || mAdapter.getHomeCompanyType() == 0) {
-                    ToastUtils.Companion.getInstance().showCustomToastView(ResourceUtils.Companion.getInstance().getString(R.string.smp_set_success), 0);
-                    int commonName = mAdapter.getHomeCompanyType();
-                    FavoriteInfo favoriteInfo = new FavoriteInfo();
+                    ToastUtils.Companion.getInstance().showCustomToastView(
+                            ResourceUtils.Companion.getInstance().getString(R.string.smp_set_success), 0);
+                    final int commonName = mAdapter.getHomeCompanyType();
+                    final FavoriteInfo favoriteInfo = new FavoriteInfo();
                     favoriteInfo.setCommonName(commonName)
-                            .setItemId(poiInfoEntity.getPid() + "_" + poiInfoEntity.getName() + "_" + poiInfoEntity.getPoint().getLon() + "_" + poiInfoEntity.getPoint().getLat())
+                            .setItemId(poiInfoEntity.getPid() + DIVIDER + poiInfoEntity.getName()
+                                    + DIVIDER + poiInfoEntity.getPoint().getLon() + DIVIDER + poiInfoEntity.getPoint().getLat())
                             .setUpdateTime(new Date().getTime());
                     poiInfoEntity.setFavoriteInfo(favoriteInfo);
                     BehaviorPackage.getInstance().addFavoriteData(poiInfoEntity, commonName);
@@ -208,10 +202,10 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
                     closeAllFragment();
                 } else {
                     if (SearchPackage.getInstance().isAlongWaySearch()) {
-                        RoutePackage.getInstance().addViaPoint(MapTypeId.MAIN_SCREEN_MAIN_MAP, poiInfoEntity, RoutePoiType.ROUTE_POI_TYPE_WAY);
+                        RoutePackage.getInstance().addViaPoint(MapTypeId.MAIN_SCREEN_MAIN_MAP, poiInfoEntity);
                     } else {
                         SearchPackage.getInstance().clearLabelMark();
-                        Fragment fragment = (Fragment) ARouter.getInstance()
+                        final Fragment fragment = (Fragment) ARouter.getInstance()
                                 .build(RoutePath.Route.ROUTE_FRAGMENT)
                                 .navigation();
                         addFragment((BaseFragment) fragment, SearchFragmentFactory.createRouteFragment(poiInfoEntity));
@@ -222,154 +216,192 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
     }
 
     /**
+     * 获取poiType
+     *
+     * @param type 跳转类型
+     * @return AutoMapConstant.PoiType
+     */
+    private int getPoiType(int type) {
+        int poiType = AutoMapConstant.PoiType.POI_KEYWORD;
+        // 1:家 2:公司 3:常用地址 0:收藏夹 -1:都不是
+        if (type == 1) {
+            poiType = AutoMapConstant.PoiType.POI_HOME;
+        } else if (type == 2) {
+            poiType = AutoMapConstant.PoiType.POI_COMPANY;
+        } else if (type == 3) {
+            poiType = AutoMapConstant.PoiType.POI_COMMON;
+        } else if (type == 0) {
+            poiType = AutoMapConstant.PoiType.POI_COLLECTION;
+        }
+        return poiType;
+    }
+
+    /**
      * 配置搜索相关事件
      */
     private void setupSearchActions() {
         mViewBinding.searchTextBarView.ivClose.setOnClickListener(v -> mScreenViewModel.closeSearch());
         mViewBinding.searchTextBarView.searchBarTextView.setOnClickListener(v -> {
-            Logger.d(SEARCH_HMI_TAG, "setupSearchActions: " + searchType);
-            if (searchType == AutoMapConstant.SearchType.SEARCH_KEYWORD) {
+            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "setupSearchActions: " + mSearchType);
+            if (mSearchType == AutoMapConstant.SearchType.SEARCH_KEYWORD) {
                 mScreenViewModel.closeSearch();
             }
 
         });
     }
 
-    private void setupFilterActions() {
+    /**
+     * 设置筛选页面相关配置
+     */
+    private void setupFilterNormalActions() {
         mViewBinding.searchFilterView.searchFilterRoot.setVisibility(GONE);
         mViewBinding.searchFilterView.searchFilterConfirm.setOnClickListener(v -> {
-            Logger.d(SEARCH_HMI_TAG, "click confirm: ");
+            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "click confirm: ");
             mViewBinding.searchFilterView.searchFilterRoot.setVisibility(GONE);
             mViewBinding.pullRefreshLayout.setVisibility(VISIBLE);
-            isFilterViewShow = false;
-            mViewBinding.searchTextBarView.searchBarTextView.setText(searchText);
-            mScreenViewModel.keywordSearch(pageNum, searchText, resultEntity.getRetain(), "1", getClassifyData(), false);
+            mIsFilterViewShow = false;
+            mViewBinding.searchTextBarView.searchBarTextView.setText(mSearchText);
+            mScreenViewModel.keywordSearch(mPageNum, mSearchText, mResultEntity.getRetain(), getClassifyData(), false);
         });
         mViewBinding.searchFilterView.searchFilterCancel.setOnClickListener(v -> {
-            Logger.d(SEARCH_HMI_TAG, "click reset: ");
+            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "click reset: ");
             mViewBinding.searchFilterView.searchFilterRoot.setVisibility(GONE);
             mViewBinding.pullRefreshLayout.setVisibility(VISIBLE);
-            isFilterViewShow = false;
-            mViewBinding.searchTextBarView.searchBarTextView.setText(searchText);
-            mScreenViewModel.keywordSearch(pageNum, searchText);
+            mIsFilterViewShow = false;
+            mViewBinding.searchTextBarView.searchBarTextView.setText(mSearchText);
+            mScreenViewModel.keywordSearch(mPageNum, mSearchText);
         });
         mViewBinding.searchTextBarView.csFilter.setOnClickListener(v -> {
-            Logger.d(SEARCH_HMI_TAG, "click filter: ");
-            if (!isFilterViewShow) {
+            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "click filter: ");
+            if (!mIsFilterViewShow) {
                 mViewBinding.searchFilterView.searchFilterRoot.setVisibility(VISIBLE);
                 mViewBinding.pullRefreshLayout.setVisibility(GONE);
                 mViewBinding.searchResultNoData.setVisibility(GONE);
-                isFilterViewShow = true;
-                if (null != resultEntity) {
-                    mViewBinding.searchTextBarView.searchBarTextView.setText(getContext().getString(R.string.filter_result, searchText, resultEntity.getTotal()));
+                mIsFilterViewShow = true;
+                if (null != mResultEntity) {
+                    mViewBinding.searchTextBarView.searchBarTextView.setText(getContext().getString(
+                            R.string.filter_result, mSearchText, mResultEntity.getTotal()));
                 }
             }
-            if (!localInfoList.isEmpty()) {
-                for (int i = 0; i < localInfoList.size(); i++) {
-                    SearchCategoryLocalInfo searchCategoryLocalInfo = localInfoList.get(i);
+            if (!mLocalInfoList.isEmpty()) {
+                for (int i = 0; i < mLocalInfoList.size(); i++) {
+                    final SearchCategoryLocalInfo searchCategoryLocalInfo = mLocalInfoList.get(i);
                     if (i == 0) {
                         if (ConvertUtils.isEmpty(searchCategoryLocalInfo.getCategoryLocalInfos())) {
                             mViewBinding.searchFilterView.searchFilterTitle1.setVisibility(GONE);
                             mViewBinding.searchFilterView.searchFilterList1.setVisibility(GONE);
                         }
                         mViewBinding.searchFilterView.searchFilterTitle1.setText(searchCategoryLocalInfo.getName());
-                        filterOneAdapter.setCategoryList(searchCategoryLocalInfo.getCategoryLocalInfos());
+                        mFilterOneAdapter.setCategoryList(searchCategoryLocalInfo.getCategoryLocalInfos());
                     } else if (i == 1) {
                         if (ConvertUtils.isEmpty(searchCategoryLocalInfo.getCategoryLocalInfos())) {
                             mViewBinding.searchFilterView.searchFilterTitle2.setVisibility(GONE);
                             mViewBinding.searchFilterView.searchFilterList2.setVisibility(GONE);
                         }
                         mViewBinding.searchFilterView.searchFilterTitle2.setText(searchCategoryLocalInfo.getName());
-                        filterTwoAdapter.setCategoryList(searchCategoryLocalInfo.getCategoryLocalInfos());
+                        mFilterTwoAdapter.setCategoryList(searchCategoryLocalInfo.getCategoryLocalInfos());
                     } else if (i == 2) {
                         if (ConvertUtils.isEmpty(searchCategoryLocalInfo.getCategoryLocalInfos())) {
                             mViewBinding.searchFilterView.searchFilterTitle3.setVisibility(GONE);
                             mViewBinding.searchFilterView.searchFilterList3.setVisibility(GONE);
                         }
                         mViewBinding.searchFilterView.searchFilterTitle3.setText(searchCategoryLocalInfo.getName());
-                        filterThreeAdapter.setCategoryList(searchCategoryLocalInfo.getCategoryLocalInfos());
+                        mFilterThreeAdapter.setCategoryList(searchCategoryLocalInfo.getCategoryLocalInfos());
                     }
                 }
             }
         });
+    }
 
-        filterOneAdapter.setFilterItemClickListener(new IOnFilterItemClickListener() {
+    /**
+     * 设置筛选页面列表item相关配置
+     */
+    private void setupFilterActions() {
+        setupFilterNormalActions();
+        mFilterOneAdapter.setFilterItemClickListener(new IOnFilterItemClickListener() {
             @Override
-            public void onItemClick(int position) {
-                currentSelectedIndex1 = position;
-                refreshLocalInfoListCheckedState(0, currentSelectedIndex1);
-                filterOneChildAdapter.setCategoryList(null);
-                mScreenViewModel.keywordSearch(pageNum, searchText, resultEntity.getRetain(), "1", getClassifyData(), true);
+            public void onItemClick(final int position) {
+                mCurrentSelectedIndex1 = position;
+                refreshLocalInfoListCheckedState(0, mCurrentSelectedIndex1);
+                mFilterOneChildAdapter.setCategoryList(null);
+                mScreenViewModel.keywordSearch(mPageNum, mSearchText, mResultEntity.getRetain(), getClassifyData(), true);
             }
 
             @Override
-            public void onChildListExpandCollapse(List<SearchChildCategoryLocalInfo> childList, int position) {
-                currentSelectedIndex1 = position;
-                refreshLocalInfoListCheckedState(0, currentSelectedIndex1);
-                filterOneChildAdapter.setCategoryList(childList);
-            }
-        });
-
-        filterTwoAdapter.setFilterItemClickListener(new IOnFilterItemClickListener() {
-            @Override
-            public void onItemClick(int position) {
-                currentSelectedIndex2 = position;
-                refreshLocalInfoListCheckedState(1, currentSelectedIndex2);
-                filterTwoChildAdapter.setCategoryList(null);
-                mScreenViewModel.keywordSearch(pageNum, searchText, resultEntity.getRetain(), "1", getClassifyData(), true);
-            }
-
-            @Override
-            public void onChildListExpandCollapse(List<SearchChildCategoryLocalInfo> childList, int position) {
-                currentSelectedIndex2 = position;
-                refreshLocalInfoListCheckedState(1, currentSelectedIndex2);
-                filterTwoChildAdapter.setCategoryList(childList);
+            public void onChildListExpandCollapse(final List<SearchChildCategoryLocalInfo> childList, final int position) {
+                mCurrentSelectedIndex1 = position;
+                refreshLocalInfoListCheckedState(0, mCurrentSelectedIndex1);
+                mFilterOneChildAdapter.setCategoryList(childList);
             }
         });
-
-        filterThreeAdapter.setFilterItemClickListener(new IOnFilterItemClickListener() {
+        mFilterTwoAdapter.setFilterItemClickListener(new IOnFilterItemClickListener() {
             @Override
-            public void onItemClick(int position) {
-                currentSelectedIndex3 = position;
-                refreshLocalInfoListCheckedState(2, currentSelectedIndex3);
-                filterThreeChildAdapter.setCategoryList(null);
-                mScreenViewModel.keywordSearch(pageNum, searchText, resultEntity.getRetain(), "1", getClassifyData(), true);
+            public void onItemClick(final int position) {
+                mCurrentSelectedIndex2 = position;
+                refreshLocalInfoListCheckedState(1, mCurrentSelectedIndex2);
+                mFilterTwoChildAdapter.setCategoryList(null);
+                mScreenViewModel.keywordSearch(mPageNum, mSearchText, mResultEntity.getRetain(), getClassifyData(), true);
             }
 
             @Override
-            public void onChildListExpandCollapse(List<SearchChildCategoryLocalInfo> childList, int position) {
-                currentSelectedIndex3 = position;
-                refreshLocalInfoListCheckedState(2, currentSelectedIndex3);
-                filterThreeChildAdapter.setCategoryList(childList);
+            public void onChildListExpandCollapse(final List<SearchChildCategoryLocalInfo> childList, final int position) {
+                mCurrentSelectedIndex2 = position;
+                refreshLocalInfoListCheckedState(1, mCurrentSelectedIndex2);
+                mFilterTwoChildAdapter.setCategoryList(childList);
+            }
+        });
+        mFilterThreeAdapter.setFilterItemClickListener(new IOnFilterItemClickListener() {
+            @Override
+            public void onItemClick(final int position) {
+                mCurrentSelectedIndex3 = position;
+                refreshLocalInfoListCheckedState(2, mCurrentSelectedIndex3);
+                mFilterThreeChildAdapter.setCategoryList(null);
+                mScreenViewModel.keywordSearch(mPageNum, mSearchText, mResultEntity.getRetain(), getClassifyData(), true);
+            }
+
+            @Override
+            public void onChildListExpandCollapse(final List<SearchChildCategoryLocalInfo> childList, final int position) {
+                mCurrentSelectedIndex3 = position;
+                refreshLocalInfoListCheckedState(2, mCurrentSelectedIndex3);
+                mFilterThreeChildAdapter.setCategoryList(childList);
             }
         });
     }
 
+    /**
+     * 设置子列表点击事件
+     */
     private void setupChildListActions() {
-        filterOneChildAdapter.setFilterItemClickListener(position -> {
-            refreshLocalInfoListCheckedState(0, currentSelectedIndex1);
-            filterOneAdapter.notifyDataSetChanged();
-            mScreenViewModel.keywordSearch(pageNum, searchText, resultEntity.getRetain(), "1", getClassifyData(), true);
+        mFilterOneChildAdapter.setFilterItemClickListener(position -> {
+            refreshLocalInfoListCheckedState(0, mCurrentSelectedIndex1);
+            mFilterOneAdapter.notifyDataSetChanged();
+            mScreenViewModel.keywordSearch(mPageNum, mSearchText, mResultEntity.getRetain(), getClassifyData(), true);
         });
 
-        filterTwoChildAdapter.setFilterItemClickListener(position -> {
-            refreshLocalInfoListCheckedState(1, currentSelectedIndex2);
-            filterOneAdapter.notifyDataSetChanged();
-            mScreenViewModel.keywordSearch(pageNum, searchText, resultEntity.getRetain(), "1", getClassifyData(), true);
+        mFilterTwoChildAdapter.setFilterItemClickListener(position -> {
+            refreshLocalInfoListCheckedState(1, mCurrentSelectedIndex2);
+            mFilterOneAdapter.notifyDataSetChanged();
+            mScreenViewModel.keywordSearch(mPageNum, mSearchText, mResultEntity.getRetain(), getClassifyData(), true);
         });
 
-        filterThreeChildAdapter.setFilterItemClickListener(position -> {
-            refreshLocalInfoListCheckedState(2, currentSelectedIndex3);
-            filterOneAdapter.notifyDataSetChanged();
-            mScreenViewModel.keywordSearch(pageNum, searchText, resultEntity.getRetain(), "1", getClassifyData(), true);
+        mFilterThreeChildAdapter.setFilterItemClickListener(position -> {
+            refreshLocalInfoListCheckedState(2, mCurrentSelectedIndex3);
+            mFilterOneAdapter.notifyDataSetChanged();
+            mScreenViewModel.keywordSearch(mPageNum, mSearchText, mResultEntity.getRetain(), getClassifyData(), true);
         });
     }
 
-    private void refreshLocalInfoListCheckedState(int index1, int index2) {
-        if (localInfoList != null && !localInfoList.isEmpty() && index1 < localInfoList.size() - 1) {
-            SearchCategoryLocalInfo categoryLocalInfo = localInfoList.get(index1);
+    /**
+     * 刷新本地信息列表选中状态
+     *
+     * @param index1 二级列表选中下标
+     * @param index2 三级列表选中下标
+     */
+    private void refreshLocalInfoListCheckedState(final int index1, final int index2) {
+        if (mLocalInfoList != null && !mLocalInfoList.isEmpty() && index1 < mLocalInfoList.size() - 1) {
+            final SearchCategoryLocalInfo categoryLocalInfo = mLocalInfoList.get(index1);
             for (int i = 0; i < categoryLocalInfo.getCategoryLocalInfos().size(); i++) {
-                SearchChildCategoryLocalInfo childInfo = categoryLocalInfo.getCategoryLocalInfos().get(i);
+                final SearchChildCategoryLocalInfo childInfo = categoryLocalInfo.getCategoryLocalInfos().get(i);
                 if (i == index2) {
                     childInfo.setChecked(1);
                 } else {
@@ -389,20 +421,20 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
         mViewBinding.pullRefreshLayout.setRefreshListener(new RefreshListener() {
             @Override
             public void refresh() {
-                if (pageNum == 1) {
-                    Logger.d(SEARCH_HMI_TAG, "已经是第一页，无法刷新");
+                if (mPageNum == 1) {
+                    Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "已经是第一页，无法刷新");
                 } else {
-                    performSearch(--pageNum, getEditText());
+                    performSearch(--mPageNum, getEditText());
                 }
                 mViewBinding.pullRefreshLayout.finishRefresh();
             }
 
             @Override
             public void loadMore() {
-                if (pageNum >= maxPageNum) {
-                    Logger.d(SEARCH_HMI_TAG, "没有更多数据了，pageNum: " + pageNum + " / maxPageNum: " + maxPageNum);
+                if (mPageNum >= maxPageNum) {
+                    Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "没有更多数据了，pageNum: " + mPageNum + " / maxPageNum: " + maxPageNum);
                 } else {
-                    performSearch(++pageNum, getEditText());
+                    performSearch(++mPageNum, getEditText());
                 }
                 mViewBinding.pullRefreshLayout.finishLoadMore();
             }
@@ -411,50 +443,61 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
 
     /**
      * 关键字搜索
+     *
+     * @param pageNum 页码
+     * @param keyword 关键字
      */
-    public void performSearch(int pageNum, String keyword) {
+    public void performSearch(final int pageNum, final String keyword) {
         if (keyword == null || keyword.trim().isEmpty()) {
-            Logger.w(SEARCH_HMI_TAG, "搜索关键字为空，取消搜索");
+            Logger.w(MapDefaultFinalTag.SEARCH_HMI_TAG, "搜索关键字为空，取消搜索");
             return;
         }
 
-        Logger.d(SEARCH_HMI_TAG, "执行搜索 - 类型: " + searchType + ", 关键字: " + keyword + ", 页码: " + pageNum);
-        searchLoadingDialog.show();
+        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "执行搜索 - 类型: " + mSearchType + ", 关键字: " + keyword + ", 页码: " + pageNum);
+        mSearchLoadingDialog.show();
 
-        switch (searchType) {
+        switch (mSearchType) {
             case AutoMapConstant.SearchType.SEARCH_KEYWORD:
                 mScreenViewModel.keywordSearch(pageNum, keyword);
                 break;
             case AutoMapConstant.SearchType.AROUND_SEARCH:
-                mScreenViewModel.aroundSearch(pageNum, keyword, poiInfoEntity);
+                mScreenViewModel.aroundSearch(pageNum, keyword, mPoiInfoEntity);
                 break;
             case AutoMapConstant.SearchType.ALONG_WAY_SEARCH:
                 mScreenViewModel.alongWaySearch(keyword);
                 break;
             default:
-                Logger.w(SEARCH_HMI_TAG, "未知搜索类型: " + searchType);
+                Logger.w(MapDefaultFinalTag.SEARCH_HMI_TAG, "未知搜索类型: " + mSearchType);
         }
     }
 
     /**
      * 设置搜索框文本并进行搜索
+     *
+     * @param searchType 搜索类型
+     * @param searchText 关键字搜索
      */
-    public void setEditText(int searchType, String searchText) {
-        Logger.d(SEARCH_HMI_TAG, "设置搜索框文本并进行搜索 - 类型: " + searchType + ", 关键字: " + searchText);
-        this.searchType = searchType;
-        this.searchText = searchText;
+    public void setEditText(final int searchType, final String searchText) {
+        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "设置搜索框文本并进行搜索 - 类型: " + searchType + ", 关键字: " + searchText);
+        this.mSearchType = searchType;
+        this.mSearchText = searchText;
         mViewBinding.searchTextBarView.searchBarTextView.setText(searchText);
-        this.pageNum = 1;
-        performSearch(pageNum, searchText);
+        this.mPageNum = 1;
+        performSearch(mPageNum, searchText);
     }
 
-    public void setPoiInfoEntity(PoiInfoEntity poiInfo) {
-        this.poiInfoEntity = poiInfo;
+    public void setPoiInfoEntity(final PoiInfoEntity poiInfo) {
+        this.mPoiInfoEntity = poiInfo;
     }
 
-    public void setHomeCompanyState(int homeCompanyState) {
-        this.homeCompanyType = homeCompanyState;
-        Logger.d(SEARCH_HMI_TAG, "setHomeCompanyState - homeCompanyState: " + homeCompanyState);
+    /**
+     * 设置家的公司 参数
+     *
+     * @param homeCompanyState 家和公司参数
+     */
+    public void setHomeCompanyState(final int homeCompanyState) {
+        this.mHomeCompanyType = homeCompanyState;
+        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "setHomeCompanyState - homeCompanyState: " + homeCompanyState);
         if (mAdapter != null) {
             mAdapter.setHomeCompanyType(homeCompanyState);
         }
@@ -462,23 +505,25 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
 
     /**
      * 更新搜索结果
+     *
+     * @param searchResultEntity 搜索结果实体
      */
-    public void notifySearchResult(SearchResultEntity searchResultEntity) {
-        if (!ConvertUtils.isEmpty(searchLoadingDialog)) {
-            searchLoadingDialog.hide();
+    public void notifySearchResult(final SearchResultEntity searchResultEntity) {
+        if (!ConvertUtils.isEmpty(mSearchLoadingDialog)) {
+            mSearchLoadingDialog.hide();
         }
         if (searchResultEntity == null || searchResultEntity.getPoiList().isEmpty()) {
             ToastUtils.Companion.getInstance().showCustomToastView("抱歉，未找到结果");
-            searchLoadingDialog.hide();
+            mSearchLoadingDialog.hide();
             if (null != mAdapter) {
                 mAdapter.clearList();
             }
             if (searchResultEntity.getPoiType() == 0) {
                 //离线搜索无数据时，跳转城市列表搜索界面
-                Fragment fragment = (Fragment) ARouter.getInstance()
+                final Fragment fragment = (Fragment) ARouter.getInstance()
                         .build(RoutePath.Search.OFFLINE_SEARCH_FRAGMENT)
                         .navigation();
-                addFragment((BaseFragment) fragment, SearchFragmentFactory.createOfflineFragment(searchText));
+                addFragment((BaseFragment) fragment, SearchFragmentFactory.createOfflineFragment(mSearchText));
             }
             //搜索无数据时，展示无结果页面
             mViewBinding.searchResultNoData.setVisibility(VISIBLE);
@@ -488,30 +533,21 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
         mViewBinding.searchResultNoData.setVisibility(GONE);
 
         if (searchResultEntity.getPoiType() == 0) {
-            CityDataInfo cityDataInfo = mScreenViewModel.getCityInfo(mScreenViewModel.getAcCode());
+            final CityDataInfo cityDataInfo = mScreenViewModel.getCityInfo(mScreenViewModel.getAcCode());
             if (cityDataInfo != null) {
-                Logger.d(SEARCH_HMI_TAG, "城市数据信息: " + cityDataInfo.name + "，城市编码: " + mScreenViewModel.getAcCode());
+                Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "城市数据信息: " + cityDataInfo.getName() + "，城市编码: " + mScreenViewModel.getAcCode());
                 mViewBinding.searchOfflineHint.setVisibility(VISIBLE);
-                mViewBinding.searchOfflineHint.setText(getContext().getString(R.string.search_offline_hint, cityDataInfo.name));
+                mViewBinding.searchOfflineHint.setText(getContext().getString(R.string.search_offline_hint, cityDataInfo.getName()));
             }
         }
-        resultEntity = searchResultEntity;
-        searchType = searchResultEntity.getSearchType();
+        mResultEntity = searchResultEntity;
+        mSearchType = searchResultEntity.getSearchType();
         if (!ConvertUtils.isEmpty(searchResultEntity.getPoiList()) && searchResultEntity.getPoiList().size() == 1) {
             //只有一个搜索结果时，直接跳转结果界面
-            Fragment fragment = (Fragment) ARouter.getInstance().build(RoutePath.Search.POI_DETAILS_FRAGMENT).navigation();
-            int poiType = AutoMapConstant.PoiType.POI_KEYWORD;
-            // 1:家 2:公司 3:常用地址 0:收藏夹 -1:都不是
-            if (homeCompanyType == 1) {
-                poiType = AutoMapConstant.PoiType.POI_HOME;
-            } else if (homeCompanyType == 2) {
-                poiType = AutoMapConstant.PoiType.POI_COMPANY;
-            } else if (homeCompanyType == 3) {
-                poiType = AutoMapConstant.PoiType.POI_COMMON;
-            } else if (homeCompanyType == 0) {
-                poiType = AutoMapConstant.PoiType.POI_COLLECTION;
-            }
-            addFragment((BaseFragment) fragment, SearchFragmentFactory.createPoiDetailsFragment(AutoMapConstant.SourceFragment.SEARCH_RESULT_FRAGMENT, poiType, searchResultEntity.getPoiList().get(0)));
+            final Fragment fragment = (Fragment) ARouter.getInstance().build(RoutePath.Search.POI_DETAILS_FRAGMENT).navigation();
+            int poiType = getPoiType(mHomeCompanyType);
+            addFragment((BaseFragment) fragment, SearchFragmentFactory.createPoiDetailsFragment(
+                    AutoMapConstant.SourceFragment.SEARCH_RESULT_FRAGMENT, poiType, searchResultEntity.getPoiList().get(0)));
             return;
         }
         setMaxPageNum(searchResultEntity.getMaxPageNum());
@@ -519,11 +555,12 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
             mAdapter.notifyList(searchResultEntity);
             mViewBinding.recyclerSearchResult.scrollToPosition(0);
         }
-        if (isFilterViewShow) {
-            mViewBinding.searchTextBarView.searchBarTextView.setText(getContext().getString(R.string.filter_result, searchText, searchResultEntity.getTotal()));
+        if (mIsFilterViewShow) {
+            mViewBinding.searchTextBarView.searchBarTextView.setText(getContext().getString(
+                    R.string.filter_result, mSearchText, searchResultEntity.getTotal()));
         }
-        localInfoList = searchResultEntity.getLocalInfoList();
-        if (!ConvertUtils.isEmpty(localInfoList)) {
+        mLocalInfoList = searchResultEntity.getLocalInfoList();
+        if (!ConvertUtils.isEmpty(mLocalInfoList)) {
             mViewBinding.searchTextBarView.csFilter.setVisibility(VISIBLE);
             mViewBinding.searchTextBarView.ivSearch.setVisibility(GONE);
         } else {
@@ -536,32 +573,40 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
      *
      * @param searchResultEntity 数据实体类
      */
-    public void notifySilentSearchResult(SearchResultEntity searchResultEntity) {
-        if (!ConvertUtils.isEmpty(searchLoadingDialog)) {
-            searchLoadingDialog.hide();
+    public void notifySilentSearchResult(final SearchResultEntity searchResultEntity) {
+        if (!ConvertUtils.isEmpty(mSearchLoadingDialog)) {
+            mSearchLoadingDialog.hide();
         }
         if (searchResultEntity == null || searchResultEntity.getPoiList() == null || searchResultEntity.getPoiList().isEmpty()) {
             ToastUtils.Companion.getInstance().showCustomToastView("暂无数据");
-            mViewBinding.searchTextBarView.searchBarTextView.setText(getContext().getString(R.string.filter_result, searchText, 0));
-            searchLoadingDialog.hide();
+            mViewBinding.searchTextBarView.searchBarTextView.setText(getContext().getString(R.string.filter_result, mSearchText, 0));
+            mSearchLoadingDialog.hide();
             return;
         }
-        if (isFilterViewShow) {
-            Logger.d(SEARCH_HMI_TAG, "notifySilentSearchResult total: " + searchResultEntity.getTotal());
-            mViewBinding.searchTextBarView.searchBarTextView.setText(getContext().getString(R.string.filter_result, searchText, searchResultEntity.getTotal()));
+        if (mIsFilterViewShow) {
+            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "notifySilentSearchResult total: " + searchResultEntity.getTotal());
+            mViewBinding.searchTextBarView.searchBarTextView.setText(getContext().getString(
+                    R.string.filter_result, mSearchText, searchResultEntity.getTotal()));
         }
     }
 
-    private void setMaxPageNum(int maxPageNum) {
+    /**
+     * 设置最大页数
+     *
+     * @param maxPageNum 最大页数
+     */
+    private void setMaxPageNum(final int maxPageNum) {
         this.maxPageNum = maxPageNum;
-        Logger.d(SEARCH_HMI_TAG, "更新 maxPageNum: " + maxPageNum);
+        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "更新 maxPageNum: " + maxPageNum);
     }
 
     /**
      * 获取输入框内容
+     *
+     * @return 输入框内容
      */
     private String getEditText() {
-        CharSequence text = mViewBinding.searchTextBarView.searchBarTextView.getText();
+        final CharSequence text = mViewBinding.searchTextBarView.searchBarTextView.getText();
         return text != null ? text.toString().trim() : "";
     }
 
@@ -582,37 +627,45 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
         return mScreenViewModel.isAlongWaySearch();
     }
 
+    /**
+     * 获取分类数据
+     *
+     * @return 分类数据
+     */
     private String getClassifyData() {
-        StringBuilder stringBuilder = new StringBuilder();
-        for (SearchCategoryLocalInfo searchCategoryLocalInfo : localInfoList) {
+        final StringBuilder stringBuilder = new StringBuilder();
+        for (SearchCategoryLocalInfo searchCategoryLocalInfo : mLocalInfoList) {
             for (SearchChildCategoryLocalInfo searchChildCategoryLocalInfo : searchCategoryLocalInfo.getCategoryLocalInfos()) {
                 if (searchChildCategoryLocalInfo.getChecked() == 1
                         && !ConvertUtils.isEmpty(searchChildCategoryLocalInfo.getValue())) {
                     stringBuilder.append(searchChildCategoryLocalInfo.getValue());
-                    stringBuilder.append("+");
+                    stringBuilder.append(APPEND);
                 }
                 for (SearchChildCategoryLocalInfo searchChildCategoryLocalInfo1 : searchChildCategoryLocalInfo.getCategoryLocalInfos()) {
                     if (searchChildCategoryLocalInfo1.getChecked() == 1
                             && !ConvertUtils.isEmpty(searchChildCategoryLocalInfo1.getValue())) {
                         stringBuilder.append(searchChildCategoryLocalInfo1.getValue());
-                        stringBuilder.append("+");
+                        stringBuilder.append(APPEND);
                     }
                 }
             }
         }
-        if (stringBuilder.toString().endsWith("+")) {
+        if (stringBuilder.toString().endsWith(APPEND)) {
             stringBuilder.deleteCharAt(stringBuilder.length() - 1);
         }
-        Logger.d(SEARCH_HMI_TAG, "mSearchCategoryLocalInfos getClassifyData: " + stringBuilder.toString());
+        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "mSearchCategoryLocalInfos getClassifyData: " + stringBuilder.toString());
         return stringBuilder.toString();
     }
 
+    /**
+     * clear data
+     */
     public void clear() {
-        poiInfoEntity = null;
-        resultEntity = null;
-        if (localInfoList != null) {
-            localInfoList.clear();
-            localInfoList = null;
+        mPoiInfoEntity = null;
+        mResultEntity = null;
+        if (mLocalInfoList != null) {
+            mLocalInfoList.clear();
+            mLocalInfoList = null;
         }
     }
 }

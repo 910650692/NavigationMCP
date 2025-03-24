@@ -1,19 +1,43 @@
 package com.fy.navi.service.define.route;
 
 public class Coord3DDouble {
-    public double lon;
-    public double lat;
-    public double z;
-
-    public Coord3DDouble() {
-        this.lon = 0.0;
-        this.lat = 0.0;
-        this.z = 0.0;
+    public double getLon() {
+        return mLon;
     }
 
-    public Coord3DDouble(double lonLiteObj, double latLiteObj, double zLiteObj) {
-        this.lon = lonLiteObj;
-        this.lat = latLiteObj;
-        this.z = zLiteObj;
+    public void setLon(final double lon) {
+        this.mLon = lon;
+    }
+
+    public double getLat() {
+        return mLat;
+    }
+
+    public void setLat(final double lat) {
+        this.mLat = lat;
+    }
+
+    public double getZ() {
+        return mZ;
+    }
+
+    public void setZ(final double z) {
+        this.mZ = z;
+    }
+
+    private double mLon;
+    private double mLat;
+    private double mZ;
+
+    public Coord3DDouble() {
+        this.mLon = 0.0;
+        this.mLat = 0.0;
+        this.mZ = 0.0;
+    }
+
+    public Coord3DDouble(final double lonLiteObj, final double latLiteObj, final double liteObj) {
+        this.mLon = lonLiteObj;
+        this.mLat = latLiteObj;
+        this.mZ = liteObj;
     }
 }

@@ -9,10 +9,8 @@ import lombok.Setter;
 @Getter
 @Setter
 public class RestrictedArea implements Serializable {
-    public ArrayList<ArrayList<RestrictedAreaDetail>> restrictedAreaDetails = new ArrayList<>();
-    public ArrayList<String> cityNames = new ArrayList<>();
-    public ArrayList<Integer> cityPosition = new ArrayList<>();
-    private long requestId;
-    public RestrictedArea() {
-    }
+    private ArrayList<ArrayList<RestrictedAreaDetail>> mRestrictedAreaDetails = new ArrayList<>();
+    private ArrayList<String> mCityNames = new ArrayList<>();
+    private ArrayList<Integer> mCityPosition = new ArrayList<>();
+    private long mRequestId;
 }

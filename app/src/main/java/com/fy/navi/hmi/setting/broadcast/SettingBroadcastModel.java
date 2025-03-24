@@ -11,16 +11,16 @@ public class SettingBroadcastModel extends BaseModel<SettingBroadcastViewModel> 
 
     private static final String TAG = SettingBroadcastModel.class.getName();
 
-    private final SettingPackage settingPackage;
+    private final SettingPackage mSettingPackage;
 
     public SettingBroadcastModel() {
-        settingPackage = SettingPackage.getInstance();
+        mSettingPackage = SettingPackage.getInstance();
     }
 
     @Override
     public void onCreate() {
         super.onCreate();
-        settingPackage.registerCallBack("SettingBroadcastModel",this);
+        mSettingPackage.registerCallBack("SettingBroadcastModel",this);
     }
 
     @Override
@@ -28,6 +28,9 @@ public class SettingBroadcastModel extends BaseModel<SettingBroadcastViewModel> 
         super.onDestroy();
     }
 
+    /**
+     * 初始化
+     */
     public void initView() {
         setCruiseBroadcastOpen();
         setCruiseBroadcastRoadConditionOpen();
@@ -36,29 +39,43 @@ public class SettingBroadcastModel extends BaseModel<SettingBroadcastViewModel> 
         setGuideBroadcast();
     }
 
-
+    /**
+     *  设置巡航播报开关
+     */
     public void setCruiseBroadcastOpen() {
-        boolean isOpen = settingPackage.getCruiseBroadcastOpen();
+        final boolean isOpen = mSettingPackage.getCruiseBroadcastOpen();
         mViewModel.dualChoiceControl(SettingController.KEY_SETTING_CRUISE_BROADCAST,isOpen);
     }
 
+    /**
+     * 设置巡航播报前方路况
+     */
     public void setCruiseBroadcastRoadConditionOpen() {
-        boolean isOpen = settingPackage.getConfigKeyRoadWarn();
+        final boolean isOpen = mSettingPackage.getConfigKeyRoadWarn();
         mViewModel.dualChoiceControl(SettingController.KEY_SETTING_BROADCAST_ROAD_CONDITIONS,isOpen);
     }
 
+    /**
+     * 设置巡航播报安全提醒
+     */
     public void setCruiseBroadcastSafeOpen() {
-        boolean isOpen = settingPackage.getConfigKeySafeBroadcast();
+        final boolean isOpen = mSettingPackage.getConfigKeySafeBroadcast();
         mViewModel.dualChoiceControl(SettingController.KEY_SETTING_BROADCAST_SAFE_REMINDER,isOpen);
     }
 
+    /**
+     * 设置巡航播报电子眼播报
+     */
     public void setCruiseBroadcastCameraOpen() {
-        boolean isOpen = settingPackage.getConfigKeyDriveWarn();
+        final boolean isOpen = mSettingPackage.getConfigKeyDriveWarn();
         mViewModel.dualChoiceControl(SettingController.KEY_SETTING_BROADCAST_ELECTRONIC_EYE,isOpen);
     }
 
+    /**
+     * 设置导航播报模式
+     */
     private void setGuideBroadcast() {
-        int mode = settingPackage.getConfigKeyBroadcastMode();
+        final int mode = mSettingPackage.getConfigKeyBroadcastMode();
         switch (mode) {
             case 1 :
                 mViewModel.onNaviBroadcastChange(false, true, false);
@@ -69,31 +86,54 @@ public class SettingBroadcastModel extends BaseModel<SettingBroadcastViewModel> 
             case 3 :
                 mViewModel.onNaviBroadcastChange(false, false, true);
                 break;
+            default:
+                Logger.d(TAG,"Invalid value, mode = " + mode);
+                break;
         }
     }
 
-    public void setConfigKeyBroadcastMode(int broadcastMode) {
-        settingPackage.setConfigKeyBroadcastMode(broadcastMode);
+    /**
+     * 设置导航播报模式
+     * @param broadcastMode
+     */
+    public void setConfigKeyBroadcastMode(final int broadcastMode) {
+        mSettingPackage.setConfigKeyBroadcastMode(broadcastMode);
     }
 
-    public void setConfigKeyRoadWarn(boolean roadWarn) {
-        settingPackage.setConfigKeyRoadWarn(roadWarn);
+    /**
+     * 设置巡航播报前方路况
+     * @param roadWarn
+     */
+    public void setConfigKeyRoadWarn(final boolean roadWarn) {
+        mSettingPackage.setConfigKeyRoadWarn(roadWarn);
     }
 
-    public void setConfigKeySafeBroadcast(boolean safeBroadcast) {
-        settingPackage.setConfigKeySafeBroadcast(safeBroadcast);
+    /**
+     * 设置巡航播报电子眼播报
+     * @param safeBroadcast
+     */
+    public void setConfigKeySafeBroadcast(final boolean safeBroadcast) {
+        mSettingPackage.setConfigKeySafeBroadcast(safeBroadcast);
     }
 
-    public void setConfigKeyDriveWarn(boolean driveWarn) {
-        settingPackage.setConfigKeyDriveWarn(driveWarn);
+    /**
+     * 设置巡航播报安全提醒
+     * @param driveWarn
+     */
+    public void setConfigKeyDriveWarn(final boolean driveWarn) {
+        mSettingPackage.setConfigKeyDriveWarn(driveWarn);
     }
 
-    public void setCruiseBroadcastOpen(boolean isOpen) {
-        settingPackage.setCruiseBroadcastOpen(isOpen);
+    /**
+     * 设置巡航播报开关
+     * @param isOpen
+     */
+    public void setCruiseBroadcastOpen(final boolean isOpen) {
+        mSettingPackage.setCruiseBroadcastOpen(isOpen);
     }
 
     @Override
-    public void notify(int eventType, int exCode) {
+    public void notify(final int eventType, final int exCode) {
         Logger.d(TAG, "notify: eventType = " + eventType + " exCode = " + exCode);
     }
 }

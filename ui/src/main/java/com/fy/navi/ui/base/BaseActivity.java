@@ -19,11 +19,6 @@ import com.android.utils.log.Logger;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
-/**
- * @Description TODO
- * @Author lvww
- * @date 2024/11/22
- */
 public abstract class BaseActivity<V extends ViewDataBinding, VM extends BaseViewModel>
         extends AppCompatActivity implements IBaseView {
     protected V mBinding;
@@ -40,7 +35,7 @@ public abstract class BaseActivity<V extends ViewDataBinding, VM extends BaseVie
     }
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
+    protected void onCreate(final @Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Logger.i(getClass().getSimpleName(), "onCreate start");
         setImmersiveStatusBar();
@@ -82,24 +77,43 @@ public abstract class BaseActivity<V extends ViewDataBinding, VM extends BaseVie
     }
 
     @Override
-    public void addFragment(BaseFragment fragment, Bundle bundle) {
+    public void addFragment(final BaseFragment fragment, final Bundle bundle) {
         FragmentIntent.addFragment(mScreenId, onFragmentId(), getSupportFragmentManager(), fragment, bundle);
-        if (mStackManager.isFragmentStackNull(mScreenId)) onResetMapCenter();
-        else onMoveMapCenter();
+        if (mStackManager.isFragmentStackNull(mScreenId)) {
+            onResetMapCenter();
+        } else {
+            onMoveMapCenter();
+        }
     }
 
     @Override
-    public void closeFragment(boolean nextShow) {
+    public void addPoiDetailsFragment(BaseFragment fragment, Bundle bundle) {
+        FragmentIntent.addPoiDetailsFragment(mScreenId, onFragmentId(), getSupportFragmentManager(), fragment, bundle);
+        if (mStackManager.isFragmentStackNull(mScreenId)) {
+            onResetMapCenter();
+        } else {
+            onMoveMapCenter();
+        }
+    }
+
+    @Override
+    public void closeFragment(final boolean nextShow) {
         FragmentIntent.closeFragment(mScreenId, getSupportFragmentManager(), mStackManager.getCurrentFragment(mScreenId), nextShow);
-        if (mStackManager.isFragmentStackNull(mScreenId)) onResetMapCenter();
-        else onMoveMapCenter();
+        if (mStackManager.isFragmentStackNull(mScreenId)) {
+            onResetMapCenter();
+        } else {
+            onMoveMapCenter();
+        }
     }
 
     @Override
     public void closeAllFragment() {
         FragmentIntent.closeAllFragment(mScreenId, getSupportFragmentManager());
-        if (mStackManager.isFragmentStackNull(mScreenId)) onResetMapCenter();
-        else onMoveMapCenter();
+        if (mStackManager.isFragmentStackNull(mScreenId)) {
+            onResetMapCenter();
+        } else {
+            onMoveMapCenter();
+        }
     }
 
     @Override
@@ -108,10 +122,13 @@ public abstract class BaseActivity<V extends ViewDataBinding, VM extends BaseVie
     }
 
     @Override
-    public void closeAllFragmentsUntilTargetFragment(String targetClassName) {
+    public void closeAllFragmentsUntilTargetFragment(final String targetClassName) {
         FragmentIntent.closeAllFragmentsUntilTargetFragment(mScreenId, getSupportFragmentManager(), targetClassName);
-        if (mStackManager.isFragmentStackNull(mScreenId)) onResetMapCenter();
-        else onMoveMapCenter();
+        if (mStackManager.isFragmentStackNull(mScreenId)) {
+            onResetMapCenter();
+        } else {
+            onMoveMapCenter();
+        }
     }
 
     @Override
@@ -124,13 +141,16 @@ public abstract class BaseActivity<V extends ViewDataBinding, VM extends BaseVie
         return null;
     }
 
+    /**
+     * 创建ViewModel
+     */
     private void createViewModel() {
         mBinding = DataBindingUtil.setContentView(this, onLayoutId());
-        int mViewModelId = onInitVariableId();
+        final int mViewModelId = onInitVariableId();
         mViewModel = initViewModel();
         if (mViewModel == null) {
-            Class modelClass;
-            Type type = getClass().getGenericSuperclass();
+            final Class modelClass;
+            final Type type = getClass().getGenericSuperclass();
             if (type instanceof ParameterizedType) {
                 // 获取直接继承的父类(也就是BaseActivity本身)的第二个泛型参数Class
                 modelClass = (Class) ((ParameterizedType) type).getActualTypeArguments()[1];
@@ -140,14 +160,24 @@ public abstract class BaseActivity<V extends ViewDataBinding, VM extends BaseVie
             }
             mViewModel = (VM) createViewModel(modelClass);
         }
-        if (ConvertUtils.isEmpty(mViewModel)) return;
+        if (ConvertUtils.isEmpty(mViewModel)) {
+            return;
+        }
         mBinding.setVariable(mViewModelId, mViewModel);
         mBinding.setLifecycleOwner(this);
         getLifecycle().addObserver(mViewModel);
         mViewModel.attachView(this, mScreenId);
     }
 
-    private <T extends AndroidViewModel> T createViewModel(Class<T> cls) {
+    /**
+     * 创建ViewModel
+     *
+     * @param cls ViewModel类
+     * @param <T> AndroidViewModel
+     * @return AndroidViewModel
+     */
+
+    private <T extends AndroidViewModel> T createViewModel(final Class<T> cls) {
         return new ViewModelProvider(this).get(cls);
     }
 
@@ -159,9 +189,12 @@ public abstract class BaseActivity<V extends ViewDataBinding, VM extends BaseVie
 
     }
 
-    // 设置沉浸式状态栏
+
+    /**
+     * 设置沉浸式状态栏
+     */
     private void setImmersiveStatusBar() {
-        Window window = getWindow();
+        final Window window = getWindow();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             // 清除之前的标志，确保没有残留影响
             window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
@@ -176,8 +209,8 @@ public abstract class BaseActivity<V extends ViewDataBinding, VM extends BaseVie
             // 对于 Android 4.4 到 5.0 的系统，使用透明状态栏
             window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
             // 调整布局，使内容布局延伸到状态栏下
-            View decorView = window.getDecorView();
-            int option = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
+            final View decorView = window.getDecorView();
+            final int option = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
             decorView.setSystemUiVisibility(option);
         }
     }

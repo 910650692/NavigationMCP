@@ -10,7 +10,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import com.fy.navi.hmi.R;
 import com.fy.navi.hmi.databinding.FragmentLimitCitySelectionBinding;
 import com.fy.navi.service.AutoMapConstant;
-import com.fy.navi.service.define.aos.RestrictedArea;
 import com.fy.navi.service.define.mapdata.CityDataInfo;
 import com.fy.navi.service.define.mapdata.ProvDataInfo;
 import com.fy.navi.service.logicpaket.mapdata.MapDataPackage;
@@ -19,12 +18,13 @@ import com.fy.navi.ui.base.BaseFragment;
 import java.util.ArrayList;
 
 /**
- * Author: LiuChang
+ * @author LiuChang
+ * @version  \$Revision.1.0\$
  * Date: 2025/2/20
  * Description: [城市选择界面]
  */
 public class LimitCitySelectionFragment extends BaseFragment<FragmentLimitCitySelectionBinding, LimitDriverViewModel> {
-    private LimitProvincesAdapter adapter;
+    private LimitProvincesAdapter mAdapter;
     private ArrayList<ProvDataInfo> mProvDataInfos;
 
     @Override
@@ -39,29 +39,37 @@ public class LimitCitySelectionFragment extends BaseFragment<FragmentLimitCitySe
 
     @Override
     public void onInitView() {
-        adapter = new LimitProvincesAdapter(requireContext(), new ArrayList<>());
+        mAdapter = new LimitProvincesAdapter(requireContext(), new ArrayList<>());
         mBinding.recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
-        mBinding.recyclerView.setAdapter(adapter);
+        mBinding.recyclerView.setAdapter(mAdapter);
     }
 
     @Override
     public void onInitData() {
-        Bundle bundle = getArguments();
-        String cityName = (String) bundle.getSerializable(AutoMapConstant.CommonBundleKey.BUNDLE_KEY_LIMIT_CITY_SELECTION);
+        final Bundle bundle = getArguments();
+        mProvDataInfos = MapDataPackage.getInstance().getMapDataList();
+        mAdapter.setData(mProvDataInfos);
+        onInitClick();
+        if (bundle == null) {
+            return;
+        }
+        final String cityName = (String) bundle.getSerializable(AutoMapConstant.CommonBundleKey.BUNDLE_KEY_LIMIT_CITY_SELECTION);
         if (cityName != null) {
             mBinding.selectCityName.setText(cityName);
         }
-        mProvDataInfos = MapDataPackage.getInstance().getMapDataList();
-        adapter.setData(mProvDataInfos);
-        onInitClick();
+
     }
 
+    /**
+     * 点击事件初始化
+     *
+     */
     public void onInitClick() {
-        adapter.setListener(new LimitCitiesAdapter.ItemClickListener() {
+        mAdapter.setListener(new LimitCitiesAdapter.ItemClickListener() {
             @Override
-            public void onClick(String cityCode) {
+            public void onClick(final String cityCode) {
                 closeAllFragmentsUntilTargetFragment(LimitDriveFragment.class.getName());
-                Bundle bundle = new Bundle();
+                final Bundle bundle = new Bundle();
                 bundle.putSerializable(AutoMapConstant.CommonBundleKey.BUNDLE_KEY_LIMIT_CITY_TASK_ID, cityCode);
                 addFragment(new LimitDriveFragment(), bundle);
                 closeAllFragmentsUntilTargetFragment(LimitCitySelectionFragment.class.getName());
@@ -70,33 +78,33 @@ public class LimitCitySelectionFragment extends BaseFragment<FragmentLimitCitySe
 
         mBinding.editTextId.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {
+            public void beforeTextChanged(final CharSequence charSequence, final int start, final int count, final int after) {
 
             }
 
             @Override
-            public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
+            public void onTextChanged(final CharSequence charSequence, final int start, final int before, final int count) {
 
             }
 
             @Override
-            public void afterTextChanged(Editable editable) {
-                String editText = editable.toString();
+            public void afterTextChanged(final Editable editable) {
+                final String editText = editable.toString();
                 if(mProvDataInfos == null) {
                     return;
                 }
                 for (int i = 0; i < mProvDataInfos.size(); i++) {
-                    if (mProvDataInfos.get(i).name.contains(editText)) {
-                        LinearLayoutManager layoutManager = (LinearLayoutManager) mBinding
+                    if (mProvDataInfos.get(i).getName().contains(editText)) {
+                        final LinearLayoutManager layoutManager = (LinearLayoutManager) mBinding
                                 .recyclerView.getLayoutManager();
                         if (layoutManager != null) {
                             layoutManager.scrollToPositionWithOffset(i ,0);
                         }
                         break;
                     }
-                    for (CityDataInfo cityDataInfo :mProvDataInfos.get(i).cityInfoList) {
-                        if (cityDataInfo.name.contains(editText)) {
-                            LinearLayoutManager layoutManager = (LinearLayoutManager) mBinding
+                    for (CityDataInfo cityDataInfo :mProvDataInfos.get(i).getCityInfoList()) {
+                        if (cityDataInfo.getName().contains(editText)) {
+                            final LinearLayoutManager layoutManager = (LinearLayoutManager) mBinding
                                     .recyclerView.getLayoutManager();
                             if (layoutManager != null) {
                                 layoutManager.scrollToPositionWithOffset(i ,0);

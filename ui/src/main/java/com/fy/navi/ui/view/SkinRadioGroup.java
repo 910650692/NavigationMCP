@@ -5,11 +5,11 @@ import android.util.AttributeSet;
 import android.widget.RadioGroup;
 
 public class SkinRadioGroup extends RadioGroup {
-    public SkinRadioGroup(Context context) {
+    public SkinRadioGroup(final Context context) {
         super(context);
     }
 
-    public SkinRadioGroup(Context context, AttributeSet attrs) {
+    public SkinRadioGroup(final Context context, final AttributeSet attrs) {
         super(context, attrs);
     }
 }

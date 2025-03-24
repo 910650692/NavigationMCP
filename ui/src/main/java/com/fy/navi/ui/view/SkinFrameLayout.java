@@ -7,21 +7,17 @@ import android.widget.FrameLayout;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-/**
- * @Description TODO
- * @Author lvww
- * @date 2024/12/2
- */
+
 public class SkinFrameLayout extends FrameLayout {
-    public SkinFrameLayout(@NonNull Context context) {
+    public SkinFrameLayout(final @NonNull Context context) {
         super(context);
     }
 
-    public SkinFrameLayout(@NonNull Context context, @Nullable AttributeSet attrs) {
+    public SkinFrameLayout(final @NonNull Context context, final @Nullable AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public SkinFrameLayout(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public SkinFrameLayout(final @NonNull Context context, final @Nullable AttributeSet attrs, final int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 }

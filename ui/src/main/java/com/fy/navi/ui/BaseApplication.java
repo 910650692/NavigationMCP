@@ -15,11 +15,6 @@ import com.android.utils.log.Logger;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-/**
- * @Description TODO
- * @Author lvww
- * @date 2024/11/22
- */
 public class BaseApplication extends Application {
 
     public static final String TAG = "BaseApplication";
@@ -40,7 +35,7 @@ public class BaseApplication extends Application {
     }
 
     @Override
-    public void onTrimMemory(int level) {
+    public void onTrimMemory(final int level) {
         super.onTrimMemory(level);
         switch (level) {
             case TRIM_MEMORY_COMPLETE:
@@ -69,6 +64,9 @@ public class BaseApplication extends Application {
             case TRIM_MEMORY_RUNNING_MODERATE:
                 Logger.i(getClass().getSimpleName(), "系统内存充足但不多。可以考虑释放一些资源");
                 break;
+            default:
+                Logger.i(getClass().getSimpleName(), "未知的level = " + level);
+                break;
         }
     }
 
@@ -85,38 +83,59 @@ public class BaseApplication extends Application {
     private void addLifeCycleObserver() {
         ProcessLifecycleOwner.get().getLifecycle().addObserver(new DefaultLifecycleObserver() {
             @Override
-            public void onStop(@NonNull LifecycleOwner owner) {
+            public void onStop(final @NonNull LifecycleOwner owner) {
                 Logger.i(TAG, "onStop");
                 DefaultLifecycleObserver.super.onStop(owner);
-                if (ConvertUtils.isEmpty(FOREGROUND_CALLBACK_LIST)) return;
+                if (ConvertUtils.isEmpty(FOREGROUND_CALLBACK_LIST)) {
+                    return;
+                }
                 updateIsAppInForeground(false);
             }
 
             @Override
-            public void onResume(@NonNull LifecycleOwner owner) {
+            public void onResume(final @NonNull LifecycleOwner owner) {
                 Logger.i(TAG, "onResume");
                 DefaultLifecycleObserver.super.onResume(owner);
-                if (ConvertUtils.isEmpty(FOREGROUND_CALLBACK_LIST)) return;
+                if (ConvertUtils.isEmpty(FOREGROUND_CALLBACK_LIST)) {
+                    return;
+                }
                 updateIsAppInForeground(true);
             }
         });
     }
 
-    public static void addIsAppInForegroundCallback(IsAppInForegroundCallback callback) {
+    /**
+     * 添加应用前后台状态监听
+     *
+     * @param callback IsAppInForegroundCallback
+     */
+    public static void addIsAppInForegroundCallback(final IsAppInForegroundCallback callback) {
         Logger.i(TAG, "addIsAppInForegroundCallback callback = " + callback);
         if (!FOREGROUND_CALLBACK_LIST.contains(callback)) {
             FOREGROUND_CALLBACK_LIST.add(callback);
         }
     }
 
-    public static void removeIsAppInForegroundCallback(IsAppInForegroundCallback callback) {
+    /**
+     * 移除应用前后台状态监听
+     *
+     * @param callback IsAppInForegroundCallback
+     */
+    public static void removeIsAppInForegroundCallback(final IsAppInForegroundCallback callback) {
         Logger.i(TAG, "removeIsAppInForegroundCallback callback = " + callback);
         FOREGROUND_CALLBACK_LIST.remove(callback);
     }
 
-    private static void updateIsAppInForeground(boolean isAppInForeground) {
+    /**
+     * 更新应用前后台状态
+     *
+     * @param isAppInForeground true/false
+     */
+    private static void updateIsAppInForeground(final boolean isAppInForeground) {
         Logger.i(TAG, "updateIsAppInForeground isAppInForeground = " + isAppInForeground);
-        if (ConvertUtils.isEmpty(FOREGROUND_CALLBACK_LIST)) return;
+        if (ConvertUtils.isEmpty(FOREGROUND_CALLBACK_LIST)) {
+            return;
+        }
         for (IsAppInForegroundCallback callback : FOREGROUND_CALLBACK_LIST) {
             if (callback != null) {
                 callback.isAppInForeground(isAppInForeground);
@@ -126,20 +145,17 @@ public class BaseApplication extends Application {
 
     /**
      * 判断应用是否在前台
-     * <p>
-     * 用户操作	预期结果
-     * 打开应用	isForeground = true
-     * 从最近任务切换回应用	isForeground = true
-     * 弹出 Dialog 或悬浮窗	isForeground = true
-     * 按 Home 键返回桌面	isForeground = false
-     * 启动另一个应用	isForeground = false
-     * 锁屏	isForeground = false
+     * 用户操作预期结果
+     * 打开应用isForeground = true
+     * 从最近任务切换回应用isForeground = true
+     * 弹出 Dialog 或悬浮窗isForeground = true
+     * 按 Home 键返回桌面isForeground = false
+     * 启动另一个应用isForeground = false
+     * 锁屏isForeground = false
      *
      * @return true/false
      */
     public static boolean isAppInForeground() {
         return ProcessLifecycleOwner.get().getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.STARTED);
     }
-
-
 }

@@ -14,15 +14,9 @@ import com.fy.navi.ui.base.BaseFragment;
 
 import java.util.ArrayList;
 
-/**
- * @Description 附近城市推荐页面
- * @Author fh
- * @date 2025/03/13
- */
 public class NearMapDataFragment extends BaseFragment<FragmentNearMapDataBinding, NearMapDataViewModel> {
-    private CityMapDataAdapter cityMapDataAdapter;
+    private CityMapDataAdapter mCityMapDataAdapter;
 
-    private ArrayList<CityDataInfo> nearCityDataInfos;
     @Override
     public int onLayoutId() {
         return R.layout.fragment_near_map_data;
@@ -43,18 +37,33 @@ public class NearMapDataFragment extends BaseFragment<FragmentNearMapDataBinding
         mViewModel.initData();
     }
 
+    /**
+     * 初始化附近推荐城市view
+     */
     private void initNearMapDataView() {
-        cityMapDataAdapter = new CityMapDataAdapter(getActivity());
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
+        mCityMapDataAdapter = new CityMapDataAdapter(getActivity());
+        final LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         mBinding.rvNearOffline.setLayoutManager(layoutManager);
-        mBinding.rvNearOffline.setAdapter(cityMapDataAdapter);
-        cityMapDataAdapter.setItemClickListener(new CityMapDataAdapter.OnItemClickListener() {
+        mBinding.rvNearOffline.setAdapter(mCityMapDataAdapter);
+        mCityMapDataAdapter.setItemClickListener(new CityMapDataAdapter.OnItemClickListener() {
 
             @Override
-            public void onItemClick(ArrayList<Integer> cityAdCodes) {
+            public void startAllTask(final ArrayList<Integer> cityAdCodes) {
                 Logger.d( "onItemClick cityAdCodes = " + GsonUtils.toJson(cityAdCodes));
                 mViewModel.startAllTask(cityAdCodes);
+            }
+
+            @Override
+            public void pauseAllTask(final ArrayList<Integer> cityAdCodes) {
+                Logger.d( "pauseAllTask cityAdCodes = " + GsonUtils.toJson(cityAdCodes));
+                mViewModel.pauseAllTask(cityAdCodes);
+            }
+
+            @Override
+            public void deleteAllTask(final ArrayList<Integer> cityAdCodes) {
+                Logger.d( "deleteAllTask cityAdCodes = " + GsonUtils.toJson(cityAdCodes));
+                mViewModel.deleteAllTask(cityAdCodes);
             }
 
         });
@@ -63,14 +72,12 @@ public class NearMapDataFragment extends BaseFragment<FragmentNearMapDataBinding
 
     /**
      * 更新数据状态
+     * @param cityDataInfos
      */
-    public void updateNearView(ArrayList<CityDataInfo> cityDataInfos) {
-
-        nearCityDataInfos = cityDataInfos;
-
+    public void updateNearView(final ArrayList<CityDataInfo> cityDataInfos) {
         ThreadManager.getInstance().postUi(() -> {
             if (cityDataInfos != null && !cityDataInfos.isEmpty()) {
-                cityMapDataAdapter.setData(cityDataInfos);
+                mCityMapDataAdapter.setData(cityDataInfos);
             }
         });
     }

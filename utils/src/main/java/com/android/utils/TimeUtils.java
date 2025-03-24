@@ -40,6 +40,8 @@ public class TimeUtils {
 
     public static final String FORMAT_MDHM = "MM月dd日 HH:mm";
 
+    public static final String FORMAT_YYMMDD = "yyyyMMdd";
+
     private String dateFormat = FORMAT_Y_M_D_H_M_S;
 
     private static final long MILLSEC = 1000;
@@ -677,39 +679,6 @@ public class TimeUtils {
         return sb.toString();
     }
 
-    /**
-     * 计算两个经纬度坐标之间的距离（单位：米）
-     *
-     * @param lat1 第一个坐标的纬度
-     * @param lon1 第一个坐标的经度
-     * @param lat2 第二个坐标的纬度
-     * @param lon2 第二个坐标的经度
-     * @return 两个坐标之间的距离（单位：米），保留整数
-     */
-    public long calculateDistance(double lat1, double lon1, double lat2, double lon2) {
-        // 将度转换为弧度
-        double lat1Rad = Math.toRadians(lat1);
-        double lon1Rad = Math.toRadians(lon1);
-        double lat2Rad = Math.toRadians(lat2);
-        double lon2Rad = Math.toRadians(lon2);
-
-        // 计算差值
-        double deltaLat = lat2Rad - lat1Rad;
-        double deltaLon = lon2Rad - lon1Rad;
-
-        // Haversine公式
-        double a = Math.sin(deltaLat / 2) * Math.sin(deltaLat / 2) +
-                Math.cos(lat1Rad) * Math.cos(lat2Rad) *
-                        Math.sin(deltaLon / 2) * Math.sin(deltaLon / 2);
-        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-
-        // 计算距离（单位：米）
-        double distance = EARTH_RADIUS * c;
-
-        // 返回保留整数的距离
-        return Math.round(distance);
-    }
-
     private String countDate(long millSecond) {
         long year, moth, day, hour, minutes, second;
         StringBuffer stringBuffer = new StringBuffer("");
@@ -953,6 +922,20 @@ public class TimeUtils {
             e.printStackTrace();
             return "日期时间格式错误";
         }
+    }
+
+    /**
+     * 限行日期转换
+     */
+    public static String convertYMD(){
+        try {
+            final Date currentDate = new Date();
+            final SimpleDateFormat dateFormat = new SimpleDateFormat(FORMAT_YYMMDD,Locale.CHINA);
+            return dateFormat.format(currentDate);
+        }catch (IllegalArgumentException e){
+            e.printStackTrace();
+        }
+        return "";
     }
 
     public static TimeUtils getInstance() {

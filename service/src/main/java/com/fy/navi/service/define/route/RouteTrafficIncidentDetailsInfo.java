@@ -1,64 +1,74 @@
 package com.fy.navi.service.define.route;
 
-import com.autonavi.gbl.common.model.Coord2DDouble;
+
 import com.autonavi.gbl.common.path.model.RoadClass;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 public class RouteTrafficIncidentDetailsInfo {
-    public com.autonavi.gbl.common.model.Coord2DDouble pos;
-    public String title;
-    public String desc;
-    public short type;
-    public short priority;
-    public short credibility;
-    public short source;
-    public long ID;
-    public long eventType;
-    public long layerId;
-    public long layerTag;
-    public int segIndex;
-    public int linkIndex;
-    public short titleType;
-    public short reversed;
-    public int lane;
-    public int roadClass;
+    private Coord2DDouble mPos;
+    private String mTitle;
+    private String mDesc;
+    private short mType;
+    private short mPriority;
+    private short mCredibility;
+    private short mSource;
+    private long mID;
+    private long mEventType;
+    private long mLayerId;
+    private long mLayerTag;
+    private int mSegIndex;
+    private int mLinkIndex;
+    private short mTitleType;
+    private short mReversed;
+    private int mLane;
+    private int mRoadClass;
 
     public RouteTrafficIncidentDetailsInfo() {
-        this.pos = new com.autonavi.gbl.common.model.Coord2DDouble();
-        this.title = "";
-        this.desc = "";
-        this.type = 0;
-        this.priority = 0;
-        this.credibility = 0;
-        this.source = 0;
-        this.ID = 0L;
-        this.eventType = 0L;
-        this.layerId = 0L;
-        this.layerTag = 0L;
-        this.segIndex = 0;
-        this.linkIndex = 0;
-        this.titleType = 0;
-        this.reversed = 0;
-        this.lane = 0;
-        this.roadClass = -1;
+        this.mPos = new Coord2DDouble();
+        this.mTitle = "";
+        this.mDesc = "";
+        this.mType = 0;
+        this.mPriority = 0;
+        this.mCredibility = 0;
+        this.mSource = 0;
+        this.mID = 0L;
+        this.mEventType = 0L;
+        this.mLayerId = 0L;
+        this.mLayerTag = 0L;
+        this.mSegIndex = 0;
+        this.mLinkIndex = 0;
+        this.mTitleType = 0;
+        this.mReversed = 0;
+        this.mLane = 0;
+        this.mRoadClass = -1;
     }
 
-    public RouteTrafficIncidentDetailsInfo(Coord2DDouble posLiteObj, String titleLiteObj, String descLiteObj, short typeLiteObj, short priorityLiteObj, short credibilityLiteObj, short sourceLiteObj, long IDLiteObj, long eventTypeLiteObj, long layerIdLiteObj, long layerTagLiteObj, int segIndexLiteObj, int linkIndexLiteObj, short titleTypeLiteObj, short reversedLiteObj, int laneLiteObj, @RoadClass.RoadClass1 int roadClassLiteObj) {
-        this.pos = posLiteObj;
-        this.title = titleLiteObj;
-        this.desc = descLiteObj;
-        this.type = typeLiteObj;
-        this.priority = priorityLiteObj;
-        this.credibility = credibilityLiteObj;
-        this.source = sourceLiteObj;
-        this.ID = IDLiteObj;
-        this.eventType = eventTypeLiteObj;
-        this.layerId = layerIdLiteObj;
-        this.layerTag = layerTagLiteObj;
-        this.segIndex = segIndexLiteObj;
-        this.linkIndex = linkIndexLiteObj;
-        this.titleType = titleTypeLiteObj;
-        this.reversed = reversedLiteObj;
-        this.lane = laneLiteObj;
-        this.roadClass = roadClassLiteObj;
+    public RouteTrafficIncidentDetailsInfo(final Coord2DDouble posLiteObj, final String titleLiteObj, final String descLiteObj
+            , final short typeLiteObj, final short priorityLiteObj, final short credibilityLiteObj, final short sourceLiteObj
+            , final long idLiteObj, final long eventTypeLiteObj, final long layerIdLiteObj, final long layerTagLiteObj
+            , final int segIndexLiteObj, final int linkIndexLiteObj, final short titleTypeLiteObj
+            , final short reversedLiteObj, final int laneLiteObj
+            ,final  @RoadClass.RoadClass1 int roadClassLiteObj) {
+        this.mPos = posLiteObj;
+        this.mTitle = titleLiteObj;
+        this.mDesc = descLiteObj;
+        this.mType = typeLiteObj;
+        this.mPriority = priorityLiteObj;
+        this.mCredibility = credibilityLiteObj;
+        this.mSource = sourceLiteObj;
+        this.mID = idLiteObj;
+        this.mEventType = eventTypeLiteObj;
+        this.mLayerId = layerIdLiteObj;
+        this.mLayerTag = layerTagLiteObj;
+        this.mSegIndex = segIndexLiteObj;
+        this.mLinkIndex = linkIndexLiteObj;
+        this.mTitleType = titleTypeLiteObj;
+        this.mReversed = reversedLiteObj;
+        this.mLane = laneLiteObj;
+        this.mRoadClass = roadClassLiteObj;
     }
 }

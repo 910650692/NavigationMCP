@@ -10,35 +10,28 @@ import android.view.Window;
 import android.view.WindowManager;
 
 import androidx.annotation.GravityInt;
-import androidx.annotation.Nullable;
 import androidx.databinding.ViewDataBinding;
 
 import java.util.Objects;
 
-/**
- * @Description TODO
- * @Author lww
- * @date 2025/2/24
- */
 public abstract class BaseDialog<V extends ViewDataBinding> extends AlertDialog {
     private static final String TAG = BaseDialog.class.getSimpleName();
-    @Nullable
     protected IBaseDialogClickListener mDialogClickListener;
     protected V mViewBinding;
-    protected Drawable backgroundColor;
+    protected Drawable mBackgroundColor;
     /*** 点击空白处是否取消Dialog false:不结束，true:结束 **/
-    protected boolean outsideCancel = false;
+    protected boolean mOutsideCancel = false;
 
-    protected BaseDialog(Context context) {
+    protected BaseDialog(final Context context) {
         super(context);
         mViewBinding = initLayout();
     }
 
-    public void setBackgroundColor(Drawable backgroundColor) {
-        this.backgroundColor = backgroundColor;
+    public void setBackgroundColor(final Drawable backgroundColor) {
+        this.mBackgroundColor = backgroundColor;
     }
 
-    public void setDialogClickListener(IBaseDialogClickListener dialogClickListener) {
+    public void setDialogClickListener(final IBaseDialogClickListener dialogClickListener) {
         this.mDialogClickListener = dialogClickListener;
     }
 
@@ -47,28 +40,40 @@ public abstract class BaseDialog<V extends ViewDataBinding> extends AlertDialog 
     protected abstract void initListener();
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (null == backgroundColor)
-            backgroundColor = new ColorDrawable(Color.TRANSPARENT);
-        Objects.requireNonNull(getWindow()).setBackgroundDrawable(backgroundColor);
+        if (null == mBackgroundColor) {
+            mBackgroundColor = new ColorDrawable(Color.TRANSPARENT);
+        }
+        Objects.requireNonNull(getWindow()).setBackgroundDrawable(mBackgroundColor);
         setContentView(mViewBinding.getRoot());
         setOnShowListener(dialog -> {
-            if (null != mDialogClickListener) mDialogClickListener.onShowListener();
+            if (null != mDialogClickListener) {
+                mDialogClickListener.onShowListener();
+            }
         });
         setOnCancelListener(dialog -> {
-            if (null != mDialogClickListener) mDialogClickListener.onCancelClick();
+            if (null != mDialogClickListener) {
+                mDialogClickListener.onCancelClick();
+            }
         });
         initListener();
     }
 
-    public void showDialog(@GravityInt int position) {
+    /**
+     * 显示Dialog
+     *
+     * @param position 显示位置
+     */
+    public void showDialog(final @GravityInt int position) {
         super.show();
-        setCancelable(outsideCancel);
-        Window window = getWindow();
-        if (null == window) return;
+        setCancelable(mOutsideCancel);
+        final Window window = getWindow();
+        if (null == window) {
+            return;
+        }
         window.setLayout(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
-        WindowManager.LayoutParams params = window.getAttributes();
+        final WindowManager.LayoutParams params = window.getAttributes();
         params.gravity = position;
         window.setAttributes(params);
         window.addFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL);

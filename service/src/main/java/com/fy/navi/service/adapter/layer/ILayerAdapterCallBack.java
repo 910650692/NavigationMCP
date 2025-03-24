@@ -14,8 +14,6 @@ public interface ILayerAdapterCallBack {
 
     }
 
-    ;
-
     default void onNotifyClick(MapTypeId mapTypeId, GemBaseLayer layer, GemLayerItem pItem) {
 
     }

@@ -13,47 +13,50 @@ import com.fy.navi.hmi.R;
 import com.fy.navi.service.define.mapdata.CityDataInfo;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
- * Author: LiuChang
+ * @author LiuChang
+ * @version  \$Revision.1.0\$
  * Date: 2025/2/20
  * Description: [限行城市选择适配器]
  */
 public class LimitCitiesAdapter extends RecyclerView.Adapter<LimitCitiesAdapter.LimitCitiesViewHolder> {
-    private List<CityDataInfo> data = new ArrayList<>();
+    private List<CityDataInfo> mDate = new ArrayList<>();
     private ItemClickListener mListener;
-    private Context mContext;
+    private final Context mContext;
 
-    public LimitCitiesAdapter(Context context, List<CityDataInfo> data) {
+    public LimitCitiesAdapter(final Context context, final List<CityDataInfo> data) {
         this.mContext = context;
-        this.data.clear();
-        this.data = data;
+        this.mDate = data;
     }
 
-    public void setData(List<CityDataInfo> data) {
-        this.data.clear();
-        this.data = data;
-        notifyDataSetChanged();
+    /**
+     * 设置数据
+     *
+     * @param data 数据
+     */
+    public void setData(final List<CityDataInfo> data) {
+        this.mDate.clear();
+        this.mDate = data;
+        notifyItemRangeChanged(0, mDate.size());
     }
 
     @NonNull
     @Override
-    public LimitCitiesViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(mContext).inflate(R.layout.item_limit_cities, parent, false);
+    public LimitCitiesViewHolder onCreateViewHolder(final @NonNull ViewGroup parent,final int viewType) {
+        final View view = LayoutInflater.from(mContext).inflate(R.layout.item_limit_cities, parent, false);
         return new LimitCitiesViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull LimitCitiesViewHolder holder, int position) {
-        holder.tvTitle.setText(data.get(position).name);
-        holder.tvTitle.setOnClickListener(new View.OnClickListener() {
+    public void onBindViewHolder(final @NonNull LimitCitiesViewHolder holder, final int position) {
+        holder.mTitle.setText(mDate.get(position).getName());
+        holder.mTitle.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(final View v) {
                 if (mListener != null) {
-                    mListener.onClick(String.valueOf(data.get(position).adcode));
+                    mListener.onClick(String.valueOf(mDate.get(position).getAdcode()));
                 }
             }
         });
@@ -61,23 +64,27 @@ public class LimitCitiesAdapter extends RecyclerView.Adapter<LimitCitiesAdapter.
 
     @Override
     public int getItemCount() {
-        return data.size();
+        return mDate.size();
     }
 
     public static class LimitCitiesViewHolder extends RecyclerView.ViewHolder {
-        AppCompatTextView tvTitle;
+        private final AppCompatTextView mTitle;
 
-        public LimitCitiesViewHolder(@NonNull View itemView) {
+        public LimitCitiesViewHolder(final @NonNull View itemView) {
             super(itemView);
-            tvTitle = itemView.findViewById(R.id.tv_title);
+            mTitle = itemView.findViewById(R.id.tv_title);
         }
     }
 
-    public void setListener(ItemClickListener listener) {
+    public void setListener(final ItemClickListener listener) {
         mListener = listener;
     }
 
     public interface ItemClickListener {
+        /**
+         * 城市点击事件
+         * @param cityCode 城市id
+         */
         void onClick(String cityCode);
     }
 }

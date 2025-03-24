@@ -26,7 +26,7 @@
                 android:orientation="horizontal">
 
                 <com.fy.navi.ui.view.SkinImageView
-                    clickCommand="@{viewModel.closePlateNumber}"
+                    clickCommand="@{viewModel.mClosePlateNumber}"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
@@ -43,7 +43,7 @@
                     android:textSize="@dimen/sp_46"/>
 
                 <com.fy.navi.ui.view.SkinTextView
-                    clickCommand="@{viewModel.plateNumberInputFinish}"
+                    clickCommand="@{viewModel.mPlateNumberInputFinish}"
                     android:id="@+id/setting_plate_number_finish"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -75,7 +75,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/setting_plate_number_line"/>
 
             <com.fy.navi.ui.view.SkinTextView
-                clickCommand="@{viewModel.showProvinceKeyboard}"
+                clickCommand="@{viewModel.mShowProvinceKeyboard}"
                 android:id="@+id/setting_plate_number_province"
                 android:layout_width="@dimen/dp_200"
                 android:layout_height="@dimen/dp_80"
@@ -91,7 +91,7 @@
 
 
             <com.fy.navi.ui.view.SkinEditText
-                clickCommand="@{viewModel.showPlateNumberKeyboard}"
+                clickCommand="@{viewModel.mShowPlateNumberKeyboard}"
                 android:id="@+id/setting_plate_number_number"
                 android:layout_width="@dimen/dp_600"
                 android:layout_height="@dimen/dp_80"
@@ -104,7 +104,7 @@
                 app:layout_constraintTop_toTopOf="@+id/setting_plate_number_province"/>
 
             <com.fy.navi.ui.view.SkinImageView
-                clickCommand="@{viewModel.clearPlateNumber}"
+                clickCommand="@{viewModel.mClearPlateNumber}"
                 android:id="@+id/setting_plate_number_clear"
                 android:layout_width="@dimen/dp_60"
                 android:layout_height="@dimen/dp_60"
@@ -120,7 +120,7 @@
                 android:text="@string/setting_guide_plate_number_tip"
                 android:textColor="@color/setting_car_number_tip"
                 android:textSize="@dimen/sp_26"
-                android:visibility="@{viewModel.isFocus ? View.VISIBLE : View.GONE}"
+                android:visibility="@{viewModel.mIsFocus ? View.VISIBLE : View.GONE}"
                 android:layout_marginTop="@dimen/dp_16"
                 app:layout_constraintEnd_toEndOf="@+id/setting_plate_number_number"
                 app:layout_constraintTop_toBottomOf="@+id/setting_plate_number_number"/>
@@ -175,7 +175,7 @@
                 android:visibility="gone"/>
 
             <com.fy.navi.ui.view.SkinImageView
-                clickCommand="@{viewModel.hideKeyboard}"
+                clickCommand="@{viewModel.mHideKeyboard}"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_20"

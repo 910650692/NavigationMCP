@@ -11,44 +11,49 @@ import com.fy.navi.ui.view.SkinTabLayout;
 
 public class SceneVerticalTabLayout extends SkinTabLayout {
 
-    private boolean isMarginBottom;
+    private boolean mIsMarginBottom;
 
-    public SceneVerticalTabLayout(Context context) {
+    public SceneVerticalTabLayout(final Context context) {
         super(context);
     }
 
-    public SceneVerticalTabLayout(Context context, AttributeSet attrs) {
+    public SceneVerticalTabLayout(final Context context, final AttributeSet attrs) {
         super(context, attrs);
         init(context, attrs);
     }
 
-    public SceneVerticalTabLayout(Context context, AttributeSet attrs, int defStyleAttr) {
+    public SceneVerticalTabLayout(final Context context, final AttributeSet attrs, final int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init(context, attrs);
     }
 
-    private void init(Context context, AttributeSet attrs) {
-        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.SceneVerticalTabLayout);
-        isMarginBottom = a.getBoolean(R.styleable.SceneVerticalTabLayout_isMarginBottom, false);
+    /**
+     * 初始化
+     * @param context 上下文
+     * @param attrs 属性
+     */
+    private void init(final Context context, final AttributeSet attrs) {
+        final TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.SceneVerticalTabLayout);
+        mIsMarginBottom = a.getBoolean(R.styleable.SceneVerticalTabLayout_isMarginBottom, false);
         a.recycle();
     }
 
     @Override
-    protected void onLayout(boolean changed, int l, int t, int r, int b) {
+    protected void onLayout(final boolean changed, final int l, final int t, final int r, final int b) {
         super.onLayout(changed, l, t, r, b);
-        View tabStrip = getChildAt(0);
+        final View tabStrip = getChildAt(0);
         if (tabStrip instanceof LinearLayout) {
-            LinearLayout stripLayout = (LinearLayout) tabStrip;
+            final LinearLayout stripLayout = (LinearLayout) tabStrip;
             stripLayout.setOrientation(LinearLayout.VERTICAL);
-            int childCount = stripLayout.getChildCount();
+            final int childCount = stripLayout.getChildCount();
             // 调整所有tab的布局参数
             for (int i = 0; i < childCount; i++) {
-                View tabView = stripLayout.getChildAt(i);
-                LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) tabView.getLayoutParams();
+                final View tabView = stripLayout.getChildAt(i);
+                final LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) tabView.getLayoutParams();
                 params.width = LinearLayout.LayoutParams.MATCH_PARENT;
                 params.height = LinearLayout.LayoutParams.WRAP_CONTENT;
                 params.weight = 0;
-                if (isMarginBottom) {
+                if (mIsMarginBottom) {
                     params.bottomMargin = 0;
                 } else {
                     params.bottomMargin = 28;
@@ -59,9 +64,9 @@ public class SceneVerticalTabLayout extends SkinTabLayout {
     }
 
     @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+    protected void onMeasure(final int widthMeasureSpec, final int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        View tabStrip = getChildAt(0);
+        final View tabStrip = getChildAt(0);
         if (tabStrip instanceof LinearLayout) {
             ((LinearLayout) tabStrip).setOrientation(LinearLayout.VERTICAL);
         }
