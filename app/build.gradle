@@ -3,6 +3,7 @@ plugins {
 }
 
 String aveFlavorType = "type"
+String AppName = "NaviApp"
 
 android {
     namespace 'com.fy.navi.hmi'
@@ -39,7 +40,7 @@ android {
     getFlavorDimensionList().add(aveFlavorType)
 
     productFlavors {
-        Default {
+        defaule {
             dimension aveFlavorType
             isDefault = true
             manifestPlaceholders = [CAR_TYPE_VALUE: "Default",
@@ -48,7 +49,7 @@ android {
                                     appName       : 'NaviApp']
             println("默认车型/Pad渠道配置")
         }
-        Buick {
+        gb {
             dimension aveFlavorType
             manifestPlaceholders = [
                     CAR_TYPE_VALUE: "Buick",
@@ -58,7 +59,7 @@ android {
             ]
             println("别克车型渠道配置")
         }
-        Cadillac {
+        cadi {
             dimension aveFlavorType
             manifestPlaceholders = [
                     CAR_TYPE_VALUE: "Cadillac",
@@ -96,17 +97,17 @@ android {
     }
 
     sourceSets {
-        Default {
+        defaule {
             java.srcDirs = ['src_default/main/java']
             res.srcDirs = ['src_default/main/res']
             println("打包Default车型资源")
         }
-        Buick {
+        gb {
             java.srcDirs = ['src_buick/main/java']
             res.srcDirs = ['src_buick/main/res']
             println("打包别克车型资源")
         }
-        Cadillac {
+        cadi {
             java.srcDirs = ['src_cadillac/main/java']
             res.srcDirs = ['src_cadillac/main/res']
             println("打包凯迪车型资源")
@@ -116,7 +117,16 @@ android {
     applicationVariants.configureEach { variant ->
         variant.outputs.each { output ->
             def flavors = getProductFlavorList(variant)
-            println "当前的 Product Flavors 是: ${flavors.join(', ')}"
+            def flavorName = flavors.join(', ')
+            println "车型渠道列表: ${flavorName}"
+            if (flavorName == "gb") {
+                AppName = "SGMNavigation-gb"
+            } else if (flavorName == "cadi") {
+                AppName = "SGMNavigation-cadi"
+            } else {
+                AppName = "SGMNavigation-clea"
+            }
+            output.outputFileName = "${AppName}.apk"
         }
     }
 
@@ -148,7 +158,7 @@ static def getProductFlavorList(variant) {
     return variant.productFlavors.collect { it.name }
 }
 
-tasks.register('makeChannelList') {
+/*tasks.register('makeChannelList') {
     def outputFile = file('flavor_list.txt')
     def productFlavors = android.productFlavors.collect { it.name }
     doLast {
@@ -159,10 +169,11 @@ tasks.register('makeChannelList') {
         }
     }
     outputs.file outputFile
-}
+}*/
 
+/*
 tasks.configureEach { task ->
     if (task.name.startsWith("assemble")) {
         task.dependsOn makeChannelList
     }
-}
+}*/
