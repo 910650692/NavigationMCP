@@ -3,6 +3,8 @@ package com.fy.navi.scene.api.navi;
 
 import androidx.databinding.ObservableField;
 
+import com.fy.navi.ui.view.SkinTextView;
+
 public interface ISceneNaviControl {
     //关闭导航
     void closeNavi();
@@ -35,7 +37,12 @@ public interface ISceneNaviControl {
     void naviSetting();
 
     //沿途搜索
-    void alongSearch(String key);
+    void alongSearch(int index);
+
+    /**
+     * 显示主界面
+     */
+    void showMain();
 
     ObservableField<Boolean> getControlField();
 

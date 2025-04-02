@@ -1,31 +1,53 @@
 package com.fy.navi.service.define.navi;
 
+import androidx.annotation.NonNull;
+
 public class SoundInfoEntity {
-    private String text;//播报文本
-    private int ringType;//叮咚音类型
-    private boolean isRingType = false;//是否播报叮咚音
+    private String mText;//播报文本
+    private int mRingType;//叮咚音类型
+    private boolean mIsRingType = false;//是否播报叮咚音
+
+    private int soundType; // 播报类型
 
     public String getText() {
-        return text;
+        return mText;
     }
 
-    public void setText(String text) {
-        this.text = text;
+    public void setText(final String text) {
+        this.mText = text;
     }
 
     public int getRingType() {
-        return ringType;
+        return mRingType;
     }
 
-    public void setRingType(int ringType) {
-        this.ringType = ringType;
+    public void setRingType(final int ringType) {
+        this.mRingType = ringType;
     }
 
     public boolean isRingType() {
-        return isRingType;
+        return mIsRingType;
     }
 
-    public void setRingType(boolean ringType) {
-        isRingType = ringType;
+    public void setRingType(final boolean ringType) {
+        mIsRingType = ringType;
+    }
+
+    public int getSoundType() {
+        return soundType;
+    }
+
+    public void setSoundType(@PlayModule.PlayModule1 int soundType) {
+        this.soundType = soundType;
+    }
+
+    @Override
+    public String toString() {
+        return "SoundInfoEntity{" +
+                "mText='" + mText + '\'' +
+                ", mRingType=" + mRingType +
+                ", mIsRingType=" + mIsRingType +
+                ", soundType=" + soundType +
+                '}';
     }
 }

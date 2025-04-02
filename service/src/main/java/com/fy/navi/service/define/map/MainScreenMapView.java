@@ -21,7 +21,7 @@ public class MainScreenMapView extends FullScreenMapView implements IBaseScreenM
     }
 
     @Override
-    public MapTypeId provideMapTypeId() {
-        return MapTypeId.MAIN_SCREEN_MAIN_MAP;
+    public MapType provideMapTypeId() {
+        return MapType.MAIN_SCREEN_MAIN_MAP;
     }
 }

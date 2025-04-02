@@ -3,8 +3,7 @@ package com.fy.navi.scene.impl.imersive;
 
 import com.android.utils.ConvertUtils;
 import com.android.utils.thread.ThreadManager;
-import com.fy.navi.service.define.map.MapTypeId;
-import com.fy.navi.service.logicpaket.navi.NaviPackage;
+import com.fy.navi.service.define.map.MapType;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -13,7 +12,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class ImmersiveStatusScene {
 
-    private Map<MapTypeId, ImersiveStatus> imersiveStatusMap;
+    private Map<MapType, ImersiveStatus> imersiveStatusMap;
     private ConcurrentHashMap<String, IImmersiveStatusCallBack> immersiveStatusCallBacks;
 
     private ImmersiveStatusScene() {
@@ -25,7 +24,7 @@ public class ImmersiveStatusScene {
         immersiveStatusCallBacks.put(key, immersiveStatusCallBack);
     }
 
-    public void setImmersiveStatus(MapTypeId mapTypeId, ImersiveStatus imersiveStatus) {
+    public void setImmersiveStatus(MapType mapTypeId, ImersiveStatus imersiveStatus) {
         synchronized (ImmersiveStatusScene.class) {
             imersiveStatusMap.put(mapTypeId, imersiveStatus);
             ThreadManager.getInstance().postDelay(()->{
@@ -39,7 +38,7 @@ public class ImmersiveStatusScene {
         }
     }
 
-    public ImersiveStatus getCurrentImersiveStatus(MapTypeId mapTypeId) {
+    public ImersiveStatus getCurrentImersiveStatus(MapType mapTypeId) {
         if (imersiveStatusMap.containsKey(mapTypeId)){
             return imersiveStatusMap.get(mapTypeId);
         }
@@ -55,6 +54,6 @@ public class ImmersiveStatusScene {
     }
 
     public interface IImmersiveStatusCallBack {
-        void onImmersiveStatusChange(MapTypeId mapTypeId, ImersiveStatus lastImersiveStatus);
+        void onImmersiveStatusChange(MapType mapTypeId, ImersiveStatus lastImersiveStatus);
     }
 }

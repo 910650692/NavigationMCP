@@ -11,6 +11,7 @@ public class BaseSearchPoi implements Parcelable {
     private int mAdCode; //城市代码
     private String mDistance; //距离，已格式化，带单位
     private BaseGeoPoint mPoint; //经纬度
+    private BaseCityInfo mCityInfo;
 
     public BaseSearchPoi() {
 
@@ -35,6 +36,7 @@ public class BaseSearchPoi implements Parcelable {
         mAdCode = in.readInt();
         mDistance = in.readString();
         mPoint = in.readTypedObject(BaseGeoPoint.CREATOR);
+        mCityInfo = in.readTypedObject(BaseCityInfo.CREATOR);
     }
 
     @Override
@@ -45,6 +47,7 @@ public class BaseSearchPoi implements Parcelable {
         dest.writeInt(mAdCode);
         dest.writeString(mDistance);
         dest.writeTypedObject(mPoint, 0);
+        dest.writeTypedObject(mCityInfo, 0);
     }
 
     @Override
@@ -110,5 +113,13 @@ public class BaseSearchPoi implements Parcelable {
 
     public void setPoint(BaseGeoPoint point) {
         this.mPoint = point;
+    }
+
+    public BaseCityInfo getCityInfo() {
+        return mCityInfo;
+    }
+
+    public void setCityInfo(final BaseCityInfo cityInfo) {
+        mCityInfo = cityInfo;
     }
 }

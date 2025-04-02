@@ -14,8 +14,9 @@ import com.fy.navi.scene.impl.search.SearchFragmentFactory;
 import com.fy.navi.scene.ui.favorite.SceneMapPointSearchView;
 import com.fy.navi.service.AutoMapConstant;
 import com.fy.navi.service.MapDefaultFinalTag;
-import com.fy.navi.service.define.map.MapTypeId;
+import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.search.PoiInfoEntity;
+import com.fy.navi.service.logicpaket.layer.LayerPackage;
 import com.fy.navi.service.logicpaket.map.MapPackage;
 import com.fy.navi.service.logicpaket.search.SearchPackage;
 import com.fy.navi.ui.base.BaseFragment;
@@ -32,17 +33,21 @@ public class SceneMapPointSearchViewImpl extends BaseSceneModel<SceneMapPointSea
     private final SearchPackage mSearchPackage;
     private final MapPackage mMapPackage;
 
+    private final LayerPackage mLayerPackage;
+
     private int mCommonName;
 
     public SceneMapPointSearchViewImpl(final SceneMapPointSearchView scrollView) {
         super(scrollView);
         mSearchPackage = SearchPackage.getInstance();
         mMapPackage = MapPackage.getInstance();
+        mLayerPackage = LayerPackage.getInstance();
     }
 
     @Override
     public void closeFragment() {
         StackManager.getInstance().getCurrentFragment(mMapTypeId.name()).closeFragment(true);
+        mSearchPackage.clearLabelMark();
         //如果处于添加途径点流程，只需要关闭当前界面即可
         if (mCommonName == AutoMapConstant.HomeCompanyType.ALONG_WAY) {
             return;
@@ -55,6 +60,7 @@ public class SceneMapPointSearchViewImpl extends BaseSceneModel<SceneMapPointSea
                 AutoMapConstant.SourceFragment.MAIN_SEARCH_FRAGMENT,
                         AutoMapConstant.SearchType.SEARCH_KEYWORD,
                         mCommonName));
+        flyLineVisible(false);
     }
 
     public void setCommonName(final int commonName) {
@@ -71,6 +77,7 @@ public class SceneMapPointSearchViewImpl extends BaseSceneModel<SceneMapPointSea
     @Override
     public void clickSetting() {
         mScreenView.clickSetting();
+        flyLineVisible(false);
     }
 
     /**
@@ -82,7 +89,7 @@ public class SceneMapPointSearchViewImpl extends BaseSceneModel<SceneMapPointSea
         if (null == poiInfoEntity) {
             Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "doSearch: currentLocationSearch");
             mSearchPackage.currentLocationSearch();
-            mMapPackage.goToCarPosition(MapTypeId.MAIN_SCREEN_MAIN_MAP, true, true);
+            mMapPackage.goToCarPosition(MapType.MAIN_SCREEN_MAIN_MAP, true, true);
             return;
         }
         // 这里只有两种搜索类型：POI搜索和Geo搜索
@@ -93,4 +100,8 @@ public class SceneMapPointSearchViewImpl extends BaseSceneModel<SceneMapPointSea
         }
     }
 
+
+    public void flyLineVisible(boolean visible){
+        mLayerPackage.flyLineVisible(mMapTypeId, visible);
+    }
 }

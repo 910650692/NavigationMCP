@@ -1,10 +1,8 @@
 package com.fy.navi.hmi.launcher;
 
 import android.view.MotionEvent;
-import android.view.View;
 
 import com.android.utils.log.Logger;
-import com.fy.navi.hmi.map.MapModelHelp;
 import com.fy.navi.mapservice.bean.INaviConstant;
 import com.fy.navi.scene.impl.navi.inter.ISceneCallback;
 import com.fy.navi.service.adapter.navistatus.INaviStatusCallback;
@@ -14,7 +12,7 @@ import com.fy.navi.service.define.bean.MapLabelItemBean;
 import com.fy.navi.service.define.cruise.CruiseInfoEntity;
 import com.fy.navi.service.define.layer.RouteLineLayerParam;
 import com.fy.navi.service.define.map.IBaseScreenMapView;
-import com.fy.navi.service.define.map.MapTypeId;
+import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.map.MapTypeManager;
 import com.fy.navi.service.define.navi.LaneInfoEntity;
 import com.fy.navi.service.define.navi.NaviEtaInfo;
@@ -35,22 +33,16 @@ import com.fy.navi.ui.base.BaseModel;
 
 import java.util.ArrayList;
 
-/**
- * @Description
- * @Author yaWei
- * @date 2025/2/18
- */
 public class LauncherSmallCardModel extends BaseModel<BaseLauncherSmallCardViewModel> implements IMapPackageCallback,
         IRouteResultObserver, INaviStatusCallback, ISceneCallback, IGuidanceObserver, ICruiseObserver {
     private static final String TAG = "LauncherSmallCardModel";
     private MapPackage mapPackage;
-    private LayerPackage layerPackage;
-    private CommonManager commonManager;
-    private RoutePackage routePackage;
-    private NavistatusAdapter navistatusAdapter;
-    private NaviPackage naviPackage;
-    private NaviEtaInfo mNaviEtaInfo;
-    private MapModelHelp mapModelHelp;
+    private LayerPackage mLayerPackage;
+    private CommonManager mCommonManager;
+    private RoutePackage mRoutePackage;
+    private NavistatusAdapter mNavistatusAdapter;
+    private NaviPackage mNaviPackage;
+    private PositionPackage mPositionPackage;
     public LauncherSmallCardModel() {
 
     }
@@ -62,90 +54,95 @@ public class LauncherSmallCardModel extends BaseModel<BaseLauncherSmallCardViewM
         if (mapPackage != null) {
             mapPackage.unRegisterCallback(MapTypeManager.getInstance().getMapTypeIdByName(mViewModel.mScreenId), this);
             mapPackage.unBindMapView(mViewModel.getMapView());
-            routePackage.unRegisterRouteObserver(getMapId().name());
-            navistatusAdapter.unRegisterCallback(this);
+            mRoutePackage.unRegisterRouteObserver(getMapId().name());
+            mNavistatusAdapter.unRegisterCallback(this);
         }
     }
 
+    /***
+     * 把高德底图绑定到自己的视图上
+     */
     public void loadMapView() {
         Logger.d(TAG, "loadMapView");
         if (mapPackage == null) {
             Logger.d(TAG, "create map_package", "id:" + (getMapId()));
             mapPackage = MapPackage.getInstance();
-            layerPackage = LayerPackage.getInstance();
-            routePackage = RoutePackage.getInstance();
-            navistatusAdapter = NavistatusAdapter.getInstance();
-            routePackage.registerRouteObserver(getMapId().name(), this);
+            mLayerPackage = LayerPackage.getInstance();
+            mRoutePackage = RoutePackage.getInstance();
+            mNavistatusAdapter = NavistatusAdapter.getInstance();
+            mRoutePackage.registerRouteObserver(getMapId().name(), this);
             mapPackage.registerCallback(getMapId(), this);
-            navistatusAdapter.registerCallback(this);
-            naviPackage = NaviPackage.getInstance();
-            naviPackage.registerObserver(getMapId().name(), this);
-            commonManager = CommonManager.getInstance();
-            commonManager.init();
+            mNavistatusAdapter.registerCallback(this);
+            mNaviPackage = NaviPackage.getInstance();
+            mNaviPackage.registerObserver(getMapId().name(), this);
+            mCommonManager = CommonManager.getInstance();
+            mCommonManager.init();
+            mPositionPackage = PositionPackage.getInstance();
         }
         mapPackage.initMapView(mViewModel.getMapView());
     }
 
     @Override
-    public void onMapCenterChanged(MapTypeId mapTypeId, double lon, double lat) {
+    public void onMapCenterChanged(final MapType mapTypeId, final double lon, final double lat) {
         Logger.i(TAG, "onMapCenterChanged:" + lon + "_" + lat);
     }
 
     @Override
-    public void onMapLevelChanged(MapTypeId mapTypeId, float mapLevel) {
-        Logger.i(TAG, "onMapLevelChanged", "mapLevel:"+ mapLevel);
+    public void onMapLevelChanged(final MapType mapTypeId, final float mapLevel) {
+        Logger.i(TAG, "onMapLevelChanged", "mapLevel:" + mapLevel);
     }
 
     @Override
-    public void onMapClickBlank(MapTypeId mapTypeId, float px, float py) {
-
-    }
-
-    @Override
-    public void onMapClickLabel(MapTypeId mapTypeId, ArrayList<MapLabelItemBean> pLabels) {
+    public void onMapClickBlank(final MapType mapTypeId, final float px, final float py) {
 
     }
 
     @Override
-    public void onMapMove(MapTypeId mapTypeId, long px, long py, boolean moveEnd) {
+    public void onMapClickLabel(final MapType mapTypeId, final ArrayList<MapLabelItemBean> itemBeans) {
 
     }
 
     @Override
-    public void onMapScaleChanged(MapTypeId mapTypeId, int currentScale) {
+    public void onMapMove(final MapType mapTypeId, final long px, final long py, final boolean moveEnd) {
 
     }
 
     @Override
-    public void onMapInitSuccess(MapTypeId mapTypeId, boolean success) {
+    public void onMapScaleChanged(final MapType mapTypeId, final int currentScale) {
+
+    }
+
+    @Override
+    public void onMapInitSuccess(final MapType mapTypeId, final boolean success) {
         Logger.d(TAG, "onMapInitSuccess:" + mapTypeId.name());
     }
 
     @Override
-    public void onMapLoadSuccess(MapTypeId mapTypeId) {
+    public void onMapLoadSuccess(final MapType mapTypeId) {
         Logger.d(TAG, "onMapLoadSuccess:" + mapTypeId.name());
-        if (mapTypeId == MapTypeId.LAUNCHER_WIDGET_MAP) {
-            mapModelHelp = new MapModelHelp(mapTypeId);
-            layerPackage.setDefaultCarMode(mapTypeId);
+        if (mapTypeId == MapType.LAUNCHER_WIDGET_MAP) {
+            mLayerPackage.setDefaultCarMode(mapTypeId);
             mapPackage.goToCarPosition(mapTypeId);
             mapPackage.setZoomLevel(mapTypeId, 13);
 
             // TODO 车标位置设置不正确，需要高德SDK支持分屏后再修改或者测试
-            int width = (int) mViewModel.getMapView().getMapViewWidth();
-            int height = (int) mViewModel.getMapView().getMapViewHeight();
+            final int width = (int) mViewModel.getMapView().getMapViewWidth();
+            final int height = (int) mViewModel.getMapView().getMapViewHeight();
             Logger.d(TAG, "width:" + width, "height:" + height);
             mapPackage.setMapCenterInScreen(mapTypeId, width / 2, height / 2);
+            mapPackage.setMapCenter(mapTypeId, new GeoPoint(mPositionPackage.getLastCarLocation().getLongitude(),
+                    mPositionPackage.getLastCarLocation().getLatitude()));
 //            mapModelHelp.restoreSetting();
         }
     }
 
     @Override
-    public void onMapTouchEvent(MapTypeId mapTypeId, MotionEvent touchEvent) {
+    public void onMapTouchEvent(final MapType mapTypeId, final MotionEvent touchEvent) {
 
     }
 
     @Override
-    public void onMapClickPoi(MapTypeId mapTypeId, PoiInfoEntity poiInfo) {
+    public void onMapClickPoi(final MapType mapTypeId, final PoiInfoEntity poiInfo) {
         Logger.d(TAG, "onMapClickPoi");
         if (mapTypeId == getMapId()) {
             LauncherManager.getInstance().startMapActivity(INaviConstant.OpenIntentPage.POI_DETAIL_PAGE, poiInfo);
@@ -153,7 +150,7 @@ public class LauncherSmallCardModel extends BaseModel<BaseLauncherSmallCardViewM
     }
 
     @Override
-    public void onReversePoiClick(MapTypeId mapTypeId, PoiInfoEntity poiInfo) {
+    public void onReversePoiClick(final MapType mapTypeId, final PoiInfoEntity poiInfo) {
         Logger.d(TAG, "onReversePoiClick");
         if (mapTypeId == getMapId()) {
             LauncherManager.getInstance().startMapActivity(INaviConstant.OpenIntentPage.POI_DETAIL_PAGE, poiInfo);
@@ -161,13 +158,13 @@ public class LauncherSmallCardModel extends BaseModel<BaseLauncherSmallCardViewM
     }
 
     @Override
-    public void onNaviStatusChange(String naviStatus) {
+    public void onNaviStatusChange(final String naviStatus) {
         IMapPackageCallback.super.onNaviStatusChange(naviStatus);
         mViewModel.onNaviStatusChanged(naviStatus);
     }
 
     @Override
-    public void onRouteDrawLine(RouteLineLayerParam routeLineLayerParam) {
+    public void onRouteDrawLine(final RouteLineLayerParam routeLineLayerParam) {
         Logger.i(TAG, "onRouteDrawLine:" + routeLineLayerParam.getMMapTypeId());
     }
 
@@ -176,40 +173,46 @@ public class LauncherSmallCardModel extends BaseModel<BaseLauncherSmallCardViewM
      *
      * @param frameLayoutWidth fragment的宽度
      */
-    public void setMapCenterInScreen(int frameLayoutWidth) {
+    public void setMapCenterInScreen(final int frameLayoutWidth) {
         Logger.i(TAG, "setMapCenterInScreen:" + frameLayoutWidth);
-//        mapPackage.setMapCenterInScreen(getMapId(), 200, 200);
     }
 
     /**
      * 恢复底图中心点在屏幕上的位置.
+     *
+     * @param view
      */
-    public void resetMapCenterInScreen(IBaseScreenMapView view) {
-        int left = (int) (view.getMapViewWidth() / 2);
-        int top = (int) (view.getMapViewHeight() / 3);
+    public void resetMapCenterInScreen(final IBaseScreenMapView view) {
+        final int left = (int) (view.getMapViewWidth() / 2);
+        final int top = (int) (view.getMapViewHeight() / 3);
         mapPackage.setMapCenterInScreen(getMapId(), left, top);
         mapPackage.goToCarPosition(view.provideMapTypeId());
         Logger.i(TAG, "resetMapCenterInScreen", "left:" + left, "top:" + top);
     }
 
-    private MapTypeId getMapId() {
+    private MapType getMapId() {
         return mViewModel.getMapView().provideMapTypeId();
     }
 
+    /***
+     *
+     * @return 获取当前导航态
+     */
     public String getCurrentNaviStatus() {
-        if (navistatusAdapter != null)
-            return navistatusAdapter.getCurrentNaviStatus();
-        else return NaviStatus.NaviStatusType.NO_STATUS;
+        if (mNavistatusAdapter != null) {
+            return mNavistatusAdapter.getCurrentNaviStatus();
+        } else {
+            return NaviStatus.NaviStatusType.NO_STATUS;
+        }
     }
 
     @Override
-    public void onNaviInfo(NaviEtaInfo naviInfoBean) {
-        mNaviEtaInfo = naviInfoBean;
+    public void onNaviInfo(final NaviEtaInfo naviInfoBean) {
         mViewModel.onNaviInfo(naviInfoBean);
     }
 
     @Override
-    public void onNaviArrive(long traceId, int naviType) {
+    public void onNaviArrive(final long traceId, final int naviType) {
         Logger.i(TAG, "onNaviArrive", "traceId:" + traceId, "naviType:" + naviType);
         IGuidanceObserver.super.onNaviArrive(traceId, naviType);
         mViewModel.naviArriveOrStop();
@@ -222,27 +225,30 @@ public class LauncherSmallCardModel extends BaseModel<BaseLauncherSmallCardViewM
         mViewModel.naviArriveOrStop();
     }
 
+    /***
+     * 结束导航
+     */
     public void stopNavi() {
-        routePackage.clearRouteLine(MapTypeManager.getInstance().getMapTypeIdByName(mViewModel.mScreenId));
-        naviPackage.stopNavigation();
+        mRoutePackage.clearRouteLine(MapTypeManager.getInstance().getMapTypeIdByName(mViewModel.mScreenId));
+        mNaviPackage.stopNavigation();
     }
 
     @Override
-    public void onUpdateCruiseInfo(CruiseInfoEntity cruiseInfoEntity) {
+    public void onUpdateCruiseInfo(final CruiseInfoEntity cruiseInfoEntity) {
         ICruiseObserver.super.onUpdateCruiseInfo(cruiseInfoEntity);
         // 巡航-电子眼信息
         mViewModel.updateCruiseCameraInfo(cruiseInfoEntity);
     }
 
     @Override
-    public void onUpdateCruiseInfo(boolean isShowLane, LaneInfoEntity laneInfoEntity) {
+    public void onUpdateCruiseInfo(final boolean isShowLane, final LaneInfoEntity laneInfoEntity) {
         ICruiseObserver.super.onUpdateCruiseInfo(isShowLane, laneInfoEntity);
         // 巡航-车道信息
         mViewModel.updateCruiseLanInfo(laneInfoEntity);
     }
 
     @Override
-    public void onUpdateTMCLightBar(NaviTmcInfo naviTmcInfo) {
+    public void onUpdateTMCLightBar(final NaviTmcInfo naviTmcInfo) {
         IGuidanceObserver.super.onUpdateTMCLightBar(naviTmcInfo);
         mViewModel.onUpdateTMCLightBar(naviTmcInfo);
     }

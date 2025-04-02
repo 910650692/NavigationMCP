@@ -1,63 +1,59 @@
 package com.fy.navi.service.define.user.account;
 
-/**
- * @Description
- * @Author fh
- * @date 2024/12/22
- */
+
 public class AccountProfileInfo {
-    public String uid;
-    public String username;
-    public String nickname;
-    public String avatar;
-    public String mobile;
-    public String email;
+    private String mUid;
+    private String mUsername;
+    private String mNickname;
+    private String mAvatar;
+    private String mMobile;
+    private String mEmail;
 
     public String getUid() {
-        return uid;
+        return mUid;
     }
 
-    public void setUid(String uid) {
-        this.uid = uid;
+    public void setUid(final String uid) {
+        this.mUid = uid;
     }
 
     public String getUsername() {
-        return username;
+        return mUsername;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setUsername(final String username) {
+        this.mUsername = username;
     }
 
     public String getNickname() {
-        return nickname;
+        return mNickname;
     }
 
-    public void setNickname(String nickname) {
-        this.nickname = nickname;
+    public void setNickname(final String nickname) {
+        this.mNickname = nickname;
     }
 
     public String getAvatar() {
-        return avatar;
+        return mAvatar;
     }
 
-    public void setAvatar(String avatar) {
-        this.avatar = avatar;
+    public void setAvatar(final String avatar) {
+        this.mAvatar = avatar;
     }
 
     public String getMobile() {
-        return mobile;
+        return mMobile;
     }
 
-    public void setMobile(String mobile) {
-        this.mobile = mobile;
+    public void setMobile(final String mobile) {
+        this.mMobile = mobile;
     }
 
     public String getEmail() {
-        return email;
+        return mEmail;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setEmail(final String email) {
+        this.mEmail = email;
     }
 }

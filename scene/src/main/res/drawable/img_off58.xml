@@ -7,16 +7,16 @@
       android:pathData="M14.5,14.5L41.794,41.794"
       android:strokeLineJoin="round"
       android:strokeWidth="3.41176471"
-      android:fillColor="@color/svg_color_000000"
-      android:strokeColor="@color/svg_color_4B535D"
+      android:fillColor="@color/navi_color_000000_0"
+      android:strokeColor="@color/navi_color_4B535D_100"
       android:fillType="evenOdd"
       android:strokeLineCap="round"/>
   <path
       android:pathData="M14.5,41.794L41.794,14.5"
       android:strokeLineJoin="round"
       android:strokeWidth="3.41176471"
-      android:fillColor="@color/svg_color_000000"
-      android:strokeColor="@color/svg_color_4B535D"
+      android:fillColor="@color/navi_color_000000_0"
+      android:strokeColor="@color/navi_color_4B535D_100"
       android:fillType="evenOdd"
       android:strokeLineCap="round"/>
 </vector>

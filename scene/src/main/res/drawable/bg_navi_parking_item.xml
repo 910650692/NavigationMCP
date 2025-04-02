@@ -2,15 +2,12 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:state_selected="true">
         <shape android:shape="rectangle">
-            <stroke android:width="@dimen/dp_2" android:color="@color/navi_list_item_stroke_select" />
-            <solid android:color="@color/navi_list_item_bg_select" />
-            <corners android:radius="@dimen/dp_20" />
+            <solid android:color="@color/navi_color_386DF0_26" />
         </shape>
     </item>
     <item android:state_selected="false">
         <shape android:shape="rectangle">
-            <solid android:color="@color/color_B2AFC2_15" />
-            <corners android:radius="@dimen/dp_20" />
+            <solid android:color="@color/navi_color_F8F8FA_100" />
         </shape>
     </item>
 </selector>

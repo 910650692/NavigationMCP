@@ -20,13 +20,13 @@
         <!--标题-->
         <com.fy.navi.ui.view.SkinConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_134">
+            android:layout_height="@dimen/dp_125">
 
             <com.fy.navi.ui.view.SkinImageView
-                clickCommand="@{ViewModel.drivingRecordBack}"
+                clickCommand="@{ViewModel.mDrivingRecordBack}"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/img_back"
+                android:src="@drawable/img_setting_back"
                 android:layout_marginStart="@dimen/dp_26"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -38,19 +38,19 @@
                 android:layout_height="wrap_content"
                 android:text="@string/driving_record_title"
                 android:textColor="@color/black"
-                android:textSize="@dimen/sp_38"
+                android:textSize="@dimen/sp_34"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"/>
 
             <com.fy.navi.ui.view.SkinImageView
-                clickCommand="@{ViewModel.toRecordSetting}"
+                clickCommand="@{ViewModel.mToRecordSetting}"
                 android:id="@+id/driving_record_more"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/dp_32"
-                android:src="@drawable/img_settings_92"
+                android:src="@drawable/img_setting_others_selected"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent" />
@@ -60,10 +60,8 @@
         <!--未登录提示-->
         <com.fy.navi.ui.view.SkinConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:visibility="@{ViewModel.loginTipVisibility ? View.VISIBLE : View.GONE}"
-            android:paddingTop="@dimen/dp_10"
-            android:paddingBottom="@dimen/dp_10"
+            android:layout_height="@dimen/dp_71"
+            android:visibility="@{ViewModel.mLoginTipVisibility ? View.VISIBLE : View.GONE}"
             android:background="@color/color_15_b2afc2">
 
             <com.fy.navi.ui.view.SkinTextView
@@ -72,7 +70,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_30"
                 android:text="@string/driving_record_login_tip"
-                android:textColor="@color/color_70_000000"
+                android:textColor="@color/setting_text_preference"
                 android:textSize="@dimen/sp_30"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -80,10 +78,12 @@
 
             <com.fy.navi.ui.view.SkinButton
                 android:id="@+id/dr_content_btn"
-                clickCommand="@{ViewModel.toLogin}"
+                clickCommand="@{ViewModel.mToLogin}"
                 android:layout_width="@dimen/dp_130"
                 android:layout_height="@dimen/dp_52"
                 app:layout_constraintLeft_toRightOf="@+id/driving_record_login_tip"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
                 android:background="@drawable/shape_button_bg"
                 android:gravity="center"
                 android:layout_marginStart="@dimen/dp_16"
@@ -97,7 +97,7 @@
         <com.fy.navi.ui.view.SkinRadioGroup
             android:id="@+id/driving_record_tab_group"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_108"
+            android:layout_height="@dimen/dp_90"
             android:gravity="center_horizontal"
             android:orientation="horizontal"
             android:background="@drawable/bg_selecting_bar"
@@ -128,14 +128,14 @@
                 android:background="@drawable/rb_bg_selector"
                 android:gravity="center"
                 android:text="@string/driving_record_tab_2"
-                android:textColor="@color/main_map_limit_loading"
+                android:textColor="@color/setting_text_preference"
                 android:textSize="@dimen/sp_34" />
         </com.fy.navi.ui.view.SkinRadioGroup>
 
         <!--数据列表-->
         <com.fy.navi.ui.view.SkinRecyclerView
             android:id="@+id/rv_driving_record_list"
-            android:visibility="@{ViewModel.recordListViewVisibility ? View.VISIBLE : View.GONE}"
+            android:visibility="@{ViewModel.mRecordListViewVisibility ? View.VISIBLE : View.GONE}"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_24"
@@ -143,7 +143,7 @@
 
         <com.fy.navi.ui.view.SkinTextView
             android:id="@+id/empty_view"
-            android:visibility="@{ViewModel.emptyViewVisibility ? View.VISIBLE : View.GONE}"
+            android:visibility="@{ViewModel.mEmptyViewVisibility ? View.VISIBLE : View.GONE}"
             android:layout_width="match_parent"
             android:layout_height="fill_parent"
             android:gravity="center"

@@ -24,7 +24,7 @@
             android:layout_width="@dimen/dp_80"
             android:layout_height="@dimen/dp_80"
             img_url="@{model.getImageUrl()}"
-            android:layout_marginStart="@dimen/dp_40"
+            android:layout_marginStart="@dimen/dp_30"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"/>
@@ -34,9 +34,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@{model.getName()}"
-            android:textSize="@dimen/sp_36"
-            android:textColor="@color/black"
-            android:layout_marginStart="@dimen/dp_40"
+            android:textSize="@dimen/sp_34"
+            android:textColor="@color/setting_bg_tab_text_select"
+            android:layout_marginStart="@dimen/dp_16"
             app:layout_constraintStart_toEndOf="@+id/recommend_voice_header"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent" />
@@ -55,7 +55,7 @@
 
         <com.fy.navi.ui.view.SkinTextView
             android:id="@+id/recommend_voice_operate"
-            android:layout_width="@dimen/dp_200"
+            android:layout_width="@dimen/dp_180"
             android:layout_height="@dimen/dp_76"
             android:layout_marginEnd="@dimen/dp_40"
             visibility="@{model.isUsed() ? View.GONE : View.VISIBLE}"
@@ -78,7 +78,7 @@
             android:layout_marginEnd="@dimen/dp_30"
             android:text="@string/setting_broadcast_voice_current_use"
             android:textSize="@dimen/sp_26"
-            android:textColor="@color/black"
+            android:textColor="@color/setting_bg_tab_text_select"
             android:visibility="@{model.isUsed() ? View.VISIBLE : View.GONE}"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -90,7 +90,7 @@
             android:layout_height="wrap_content"
             android:text="@{model.getUnpackDataSize()}"
             android:textSize="@dimen/sp_26"
-            android:textColor="@color/black"
+            android:textColor="@color/setting_bg_tab_text_unselect"
             visibility="@{model.isUsed() ? View.GONE : View.VISIBLE}"
             android:layout_marginEnd="@dimen/dp_16"
             app:layout_constraintTop_toTopOf="parent"

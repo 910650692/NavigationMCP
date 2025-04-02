@@ -16,14 +16,17 @@ import com.fy.navi.service.adapter.route.RouteAdapter;
 import com.fy.navi.service.adapter.setting.SettingAdapter;
 import com.fy.navi.service.define.cruise.CruiseParamEntity;
 import com.fy.navi.service.define.layer.RouteLineLayerParam;
-import com.fy.navi.service.define.map.MapTypeId;
+import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.navi.NaviEtaInfo;
+import com.fy.navi.service.define.navi.NaviInfoEntity;
 import com.fy.navi.service.define.navi.NaviParamEntity;
 import com.fy.navi.service.define.navi.NaviStartType;
 import com.fy.navi.service.define.navi.NaviTmcInfo;
+import com.fy.navi.service.define.navi.NaviViaEntity;
 import com.fy.navi.service.define.navi.SoundInfoEntity;
 import com.fy.navi.service.define.navistatus.NaviStatus;
 import com.fy.navi.service.define.route.RouteParam;
+import com.fy.navi.service.logicpaket.navi.OpenApiHelper;
 import com.fy.navi.service.logicpaket.route.RoutePackage;
 import com.fy.navi.service.logicpaket.setting.SettingPackage;
 
@@ -49,7 +52,7 @@ public final  class NaviAdapter {
             Objects.requireNonNull(NaviAdapter.class.getPackage()).getName();
     public static final String NAVI_CLS_NAME = "NaviAdapterApiImpl";
     private INaviApi mNaviApi;
-    private final Map<MapTypeId, Rect> mRoadCrossRect = new HashMap<>();
+    private final Map<MapType, Rect> mRoadCrossRect = new HashMap<>();
     private LayerAdapter mLayerAdapter;
     private NavistatusAdapter mNavistatusAdapter;
     private SettingAdapter mSettingAdapter;
@@ -62,6 +65,8 @@ public final  class NaviAdapter {
     private SoundInfoEntity mSoundInfoEntity;
     @Getter
     private volatile CountDownLatch mCountDownLatch;
+
+    private ArrayList<NaviInfoEntity> mNaviInfoEntities = new ArrayList<>();
     public static final int THREE_SECONDS = 3 * 1000;
     private NaviAdapter() {
         mNaviApi = (INaviApi) AdapterConfig.getObject(NAVI_PKG_NAME, NAVI_CLS_NAME);
@@ -136,6 +141,10 @@ public final  class NaviAdapter {
      * @param routeLineLayerParam routeLineLayerParam
      */
     public void setNaviPath(final int routeIndex, final RouteLineLayerParam routeLineLayerParam) {
+        if (!ConvertUtils.isEmpty(routeLineLayerParam)) {
+            OpenApiHelper.setCurrentPathInfos((ArrayList<PathInfo>)
+                    routeLineLayerParam.getMPathInfoList());
+        }
         mNaviApi.setNaviPath(routeIndex, routeLineLayerParam);
     }
 
@@ -147,16 +156,20 @@ public final  class NaviAdapter {
                                final RouteLineLayerParam routeLineLayerParam) {
         mNavistatusAdapter.setNaviStatus(NaviStatus.NaviStatusType.NAVING);
         mNaviApi.updateNaviPath(routeIndex, routeLineLayerParam);
-        mLayerAdapter.updateGuideCarStyle(MapTypeId.MAIN_SCREEN_MAIN_MAP);
-        mLayerAdapter.updateGuideCarStyle(MapTypeId.LAUNCHER_WIDGET_MAP);
-        mLayerAdapter.updateGuideCarStyle(MapTypeId.LAUNCHER_DESK_MAP);
+        if (!ConvertUtils.isEmpty(routeLineLayerParam)) {
+            OpenApiHelper.setCurrentPathInfos((ArrayList<PathInfo>)
+                    routeLineLayerParam.getMPathInfoList());
+        }
+        mLayerAdapter.updateGuideCarStyle(MapType.MAIN_SCREEN_MAIN_MAP);
+        mLayerAdapter.updateGuideCarStyle(MapType.LAUNCHER_WIDGET_MAP);
+        mLayerAdapter.updateGuideCarStyle(MapType.LAUNCHER_DESK_MAP);
     }
 
     /**
      * @param surfaceViewId surfaceViewId
      * @param rect rect
      */
-    public void setRoadCrossRect(final MapTypeId surfaceViewId, final Rect rect) {
+    public void setRoadCrossRect(final MapType surfaceViewId, final Rect rect) {
         mRoadCrossRect.put(surfaceViewId, rect);
     }
 
@@ -164,7 +177,7 @@ public final  class NaviAdapter {
      * @param surfaceViewId surfaceViewId
      * @return Rect
      */
-    public Rect gettRoadCrossRect(final MapTypeId surfaceViewId) {
+    public Rect gettRoadCrossRect(final MapType surfaceViewId) {
         return mRoadCrossRect.get(surfaceViewId);
     }
 
@@ -210,6 +223,26 @@ public final  class NaviAdapter {
         mNaviApi.queryAppointLanesInfo(segmentIdx, linkIdx);
     }
 
+    public void setNaviInfoList(ArrayList<NaviInfoEntity> naviInfoList) {
+        mNaviInfoEntities = naviInfoList;
+    }
+
+    public ArrayList<NaviInfoEntity> getNaviInfoList() {
+        return mNaviInfoEntities;
+    }
+
+    public void updateBatteryInfo() {
+        mNaviApi.updateBatteryInfo();
+    }
+
+    /***
+     * 此接口属于动态获取
+     * @return 获取途径点信息
+     */
+    public List<NaviViaEntity> getAllViaPoints() {
+        return mNaviApi.getAllViaPoints();
+    }
+
     private static final class Helper {
         private static final NaviAdapter NAVI_ADAPTER = new NaviAdapter();
     }
@@ -250,7 +283,7 @@ public final  class NaviAdapter {
      * @return int 交通状态回调 -1：无数据 0:未知状态 1:通畅 2:缓慢 3:拥堵 4:严重拥堵 5:极度通畅
      */
     public int getTmcStatus(final String a, final String b, final String c,
-                            final MapTypeId mapTypeId) {
+                            final MapType mapTypeId) {
         Logger.i(TAG, "getTmcStatus a:" + a + " b:" + b + " c:" + c + " mapTypeId:" +
                 mapTypeId);
         final PathInfo pathInfo = (PathInfo)
@@ -318,7 +351,7 @@ public final  class NaviAdapter {
     private short getViaSegIdx(final String viaName, final PathInfo pathInfo) {
         //特殊情况需要判断下传入的位置是否是目的地 因为获取的途经点里面没有包含目的地
         final List<RouteParam> allPoiParamList = RoutePackage.getInstance().
-                getAllPoiParamList(MapTypeId.MAIN_SCREEN_MAIN_MAP);
+                getAllPoiParamList(MapType.MAIN_SCREEN_MAIN_MAP);
         if (!ConvertUtils.isEmpty(allPoiParamList)) {
             // 先判断是否是目的地
             final String endName = allPoiParamList.get(allPoiParamList.size() - 1).getName();

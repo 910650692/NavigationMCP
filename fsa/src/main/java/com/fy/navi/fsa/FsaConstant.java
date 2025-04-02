@@ -3,6 +3,14 @@ package com.fy.navi.fsa;
 public interface FsaConstant {
     String FSA_TAG = "FsaService";
 
+    int SHOW = 0;
+    int UPDATE = 1;
+    int HIDE = 2;
+
+    int NO_CHANGE = 0;
+    int INCREASE = 1;
+    int REDUCE = 2;
+
     interface InetConfig {
         int SERVICE_PORT = 9903;
         int SERVICE_ID = 3003;
@@ -181,15 +189,15 @@ public interface FsaConstant {
     }
 
     interface FsaLaneType {
-        int INVALID_VALUE = 0;
-        int NORMAL = 1;
-        int BUS_LANE = 2;
-        int TEXT_BUS_LANE = 3;
-        int VARIABLE_LANE = 4;
-        int MULTI_MEMBER_LANE = 5;
-        int TEXT_TIDAL_LANE = 6;
-        int FORWARD_ARROWS_CHANGE_LANE = 7;
-        int CROSS_MARKED_VARIABLE_LANE = 8;
+        int INVALID_VALUE = 0; // 无效值
+        int NORMAL = 1; // 普通
+        int BUS_LANE = 2; // 公交车道（可能允许社会车辆通行）
+        int TEXT_BUS_LANE = 3; // 文字公交车道（只允许公交车通行）
+        int VARIABLE_LANE = 4; // 可变车道
+        int MULTI_MEMBER_LANE = 5; // 多成员车道
+        int TEXT_TIDAL_LANE = 6; // 文字潮汐车道
+        int FORWARD_ARROWS_CHANGE_LANE = 7; // 前行箭头可变车道
+        int CROSS_MARKED_VARIABLE_LANE = 8; // 叉号可变车道
     }
 
     interface FsaLaneDirection {

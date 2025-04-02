@@ -8,7 +8,7 @@ import com.android.utils.log.Logger;
 import com.fy.navi.hmi.route.AlterChargeViewModel;
 import com.fy.navi.service.AutoMapConstant;
 import com.fy.navi.service.define.bean.GeoPoint;
-import com.fy.navi.service.define.map.MapTypeId;
+import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.route.RouteAlterChargeStationInfo;
 import com.fy.navi.service.define.route.RouteAlterChargeStationParam;
 import com.fy.navi.service.define.search.PoiInfoEntity;
@@ -24,12 +24,11 @@ import java.util.concurrent.CompletableFuture;
 
 public class AlterChargeModel extends BaseModel<AlterChargeViewModel> implements IRouteResultObserver, SearchResultCallback {
     private static final String TAG = "AlterChargeModel";
-    private static final int ALTER_CHARGE_DETAIL = 1;
     private final RoutePackage mRoutePackage;
     private final SearchPackage mSearchPackage;
     private long mAlterChargeStationTaskId;
     private int mSearchTaskId = -1;
-    private int mListSearchType;
+    private int mCurrentTaskId = -1;
 
     public AlterChargeModel() {
         mRoutePackage = RoutePackage.getInstance();
@@ -50,7 +49,7 @@ public class AlterChargeModel extends BaseModel<AlterChargeViewModel> implements
      * @param poiId poiID
      */
     public void requestAlterChargeStation(final String poiId) {
-        mAlterChargeStationTaskId = mRoutePackage.requestRouteAlternativeChargeStation(MapTypeId.MAIN_SCREEN_MAIN_MAP, poiId);
+        mAlterChargeStationTaskId = mRoutePackage.requestRouteAlternativeChargeStation(MapType.MAIN_SCREEN_MAIN_MAP, poiId);
     }
 
     /**
@@ -58,8 +57,15 @@ public class AlterChargeModel extends BaseModel<AlterChargeViewModel> implements
      * @param poiId poiID
      */
     public void getSearchDetailsMode(final String poiId) {
-        mListSearchType = ALTER_CHARGE_DETAIL;
         mSearchTaskId = mSearchPackage.poiIdSearch(poiId);
+    }
+
+    /**
+     * 请求当前充电站详情信息
+     * @param poiId poiID
+     */
+    public void getCurrentDetails(final String poiId) {
+        mCurrentTaskId = mSearchPackage.poiIdSearch(poiId);
     }
 
     /**
@@ -83,7 +89,7 @@ public class AlterChargeModel extends BaseModel<AlterChargeViewModel> implements
         poiInfoEntity.setTypeCode("011100");
         poiInfoEntity.setPoint(geoPoint);
 
-        mRoutePackage.addViaPoint(MapTypeId.MAIN_SCREEN_MAIN_MAP, poiInfoEntity);
+        mRoutePackage.addViaPoint(MapType.MAIN_SCREEN_MAIN_MAP, poiInfoEntity);
         mViewModel.getClosePage().call();
     }
 
@@ -92,7 +98,7 @@ public class AlterChargeModel extends BaseModel<AlterChargeViewModel> implements
      * @param poiInfoEntities 点信息
      */
     public void addViaList(final PoiInfoEntity poiInfoEntities) {
-        mRoutePackage.addViaPoint(MapTypeId.MAIN_SCREEN_MAIN_MAP, poiInfoEntities);
+        mRoutePackage.addViaPoint(MapType.MAIN_SCREEN_MAIN_MAP, poiInfoEntities);
         mViewModel.getClosePage().call();
     }
 
@@ -114,17 +120,26 @@ public class AlterChargeModel extends BaseModel<AlterChargeViewModel> implements
      */
     @Override
     public void onSearchResult(final int taskId, final int errorCode, final String message, final SearchResultEntity searchResultEntity) {
-        if (mSearchTaskId != taskId) {
+        Logger.d(TAG, "onSearchResult");
+        if (searchResultEntity == null) {
+            Logger.d(TAG, "searchResultEntity is null");
             return;
         }
-        Logger.d(TAG, "onSearchResult");
-        Logger.i(TAG, GsonUtils.toJson(searchResultEntity.getPoiList()));
-        if (searchResultEntity.getSearchType() == AutoMapConstant.SearchType.LINE_DEEP_INFO_SEARCH ||
-                searchResultEntity.getSearchType() == AutoMapConstant.SearchType.POI_SEARCH) {
-            final PoiInfoEntity poiInfoEntity = searchResultEntity.getPoiList().get(0);
-            if (!ConvertUtils.isEmpty(poiInfoEntity)) {
-                if (mListSearchType == ALTER_CHARGE_DETAIL) {
+        if (mSearchTaskId == taskId) {
+            Logger.i(TAG, GsonUtils.toJson(searchResultEntity.getPoiList()));
+            if (searchResultEntity.getSearchType() == AutoMapConstant.SearchType.LINE_DEEP_INFO_SEARCH ||
+                    searchResultEntity.getSearchType() == AutoMapConstant.SearchType.POI_SEARCH) {
+                final PoiInfoEntity poiInfoEntity = searchResultEntity.getPoiList().get(0);
+                if (!ConvertUtils.isEmpty(poiInfoEntity)) {
                     mViewModel.showChargeStationDetail(poiInfoEntity);
+                }
+            }
+        } else if (mCurrentTaskId == taskId) {
+            if (searchResultEntity.getSearchType() == AutoMapConstant.SearchType.LINE_DEEP_INFO_SEARCH ||
+                    searchResultEntity.getSearchType() == AutoMapConstant.SearchType.POI_SEARCH) {
+                final PoiInfoEntity poiInfoEntity = searchResultEntity.getPoiList().get(0);
+                if (!ConvertUtils.isEmpty(poiInfoEntity)) {
+                    mViewModel.showCurrentChargeStation(poiInfoEntity);
                 }
             }
         }

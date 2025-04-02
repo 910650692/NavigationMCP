@@ -14,7 +14,7 @@ import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LifecycleRegistry;
 
 import com.android.utils.log.Logger;
-import com.fy.navi.service.define.map.MapTypeId;
+import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.ui.base.BaseActivity;
 import com.fy.navi.ui.base.BaseFragment;
 import com.fy.navi.ui.base.StackManager;
@@ -29,7 +29,7 @@ public abstract class BaseSceneView<VB extends ViewDataBinding, VM extends BaseS
     private LifecycleRegistry mLifecycleRegistry = new LifecycleRegistry(this);
     protected VB mViewBinding;
     protected VM mScreenViewModel;
-    protected MapTypeId mMapTypeId;
+    protected MapType mMapTypeId;
     protected StackManager mStackManager;
 
     public BaseSceneView(@NonNull Context context) {
@@ -76,7 +76,7 @@ public abstract class BaseSceneView<VB extends ViewDataBinding, VM extends BaseS
 
     protected abstract void initObserver();
 
-    public void setScreenId(MapTypeId mMapTypeId) {
+    public void setScreenId(MapType mMapTypeId) {
         this.mMapTypeId = mMapTypeId;
         mScreenViewModel.setScreenId(mMapTypeId);
     }
@@ -101,9 +101,19 @@ public abstract class BaseSceneView<VB extends ViewDataBinding, VM extends BaseS
         activity.closeAllFragment();
     }
 
+    protected void closeCurrentFragment() {
+        BaseActivity activity = mStackManager.getCurrentActivity(mMapTypeId.name());
+        activity.closeFragment(true);
+    }
+
     protected void closeAllFragmentAndSearchView() {
         BaseActivity activity = mStackManager.getCurrentActivity(mMapTypeId.name());
         activity.closeAllFragmentAndSearchView();
+    }
+
+    protected void showCurrentFragment() {
+        BaseActivity activity = mStackManager.getCurrentActivity(mMapTypeId.name());
+        activity.showCurrentFragment();
     }
 
     public void onCreate() {

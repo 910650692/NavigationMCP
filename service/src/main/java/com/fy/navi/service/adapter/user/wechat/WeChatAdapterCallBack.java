@@ -2,11 +2,6 @@ package com.fy.navi.service.adapter.user.wechat;
 
 import com.fy.navi.service.define.user.wechat.BLResponseBean;
 
-/**
- * @Description
- * @Author fh
- * @date 2024/12/30
- */
 public interface WeChatAdapterCallBack {
 
     /**

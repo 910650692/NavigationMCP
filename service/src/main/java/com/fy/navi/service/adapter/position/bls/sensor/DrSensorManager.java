@@ -111,9 +111,9 @@ public class DrSensorManager implements SensorEventListener {
         Logger.i(TAG, "onStart cur status=" + mIsStarted.get() + " isEnable=" + mIsEnable);
         if (mIsStarted.compareAndSet(false, true)) {
             Logger.i(TAG, "mSensorManager registerListener");
-            mSensorManager.registerListener(this, mSensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE), SensorManager.SENSOR_DELAY_FASTEST, mHandler);//陀螺仪传感器
-            mSensorManager.registerListener(this, mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER), SensorManager.SENSOR_DELAY_FASTEST, mHandler);//加速度传感器
-            mSensorManager.registerListener(this, mSensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE), SensorManager.SENSOR_DELAY_FASTEST, mHandler);//环境温度传感器
+            mSensorManager.registerListener(this, mSensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE), 1000 * 100, mHandler);//陀螺仪传感器
+            mSensorManager.registerListener(this, mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER), 1000 * 100, mHandler);//加速度传感器
+            mSensorManager.registerListener(this, mSensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE), 1000 * 100, mHandler);//环境温度传感器
             mLastAccTimeMills = SystemClock.elapsedRealtime();
             mLastGyrTimeMills = SystemClock.elapsedRealtime();
             mLastPluseTimeMills = SystemClock.elapsedRealtime();
@@ -149,7 +149,7 @@ public class DrSensorManager implements SensorEventListener {
                 setLocPulseInfo(false);
             }
         };
-        mScheduledFuture = ThreadManager.getInstance().asyncWithFixDelay(mCustomTimer, 0, 100, TimeUnit.MILLISECONDS);
+        mScheduledFuture = ThreadManager.getInstance().asyncAtFixDelay(mCustomTimer, 0, 100, TimeUnit.MILLISECONDS);
     }
 
     private void stopTimerTask() {

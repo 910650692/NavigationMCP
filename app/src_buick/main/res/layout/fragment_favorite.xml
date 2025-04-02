@@ -19,6 +19,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
+            android:visibility="gone"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
@@ -38,6 +39,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/setting_text_preference"
+                android:text="@{ViewModel.mSyncTime}"
                 android:textSize="@dimen/sp_30"
                 app:layout_constraintStart_toEndOf="@+id/favorite_title"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -328,38 +330,32 @@
                 <!--无收藏数据提示-->
                 <com.fy.navi.ui.view.SkinLinearLayout
                     android:layout_width="wrap_content"
-                    android:layout_height="@dimen/dp_400"
+                    android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:gravity="center"
-                    android:layout_marginTop="@dimen/dp_150"
+                    android:layout_marginTop="@dimen/dp_194"
                     android:visibility="@{ViewModel.mTipVisibility ? View.VISIBLE : View.GONE}"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/tv_favorite_title"  >
 
-                    <com.fy.navi.ui.view.SkinImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/icon_basic_ic_star_default"/>
-
                     <com.fy.navi.ui.view.SkinTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/favorite_tip"
-                        android:textColor="@color/black"
-                        android:textSize="@dimen/sp_42"
-                        android:layout_marginTop="@dimen/dp_20" />
+                        android:textColor="@color/color_black_70"
+                        android:textSize="@dimen/sp_30"/>
 
                     <com.fy.navi.ui.view.SkinTextView
                         clickCommand="@{ViewModel.mAddFavorite}"
-                        android:layout_width="@dimen/dp_250"
-                        android:layout_height="@dimen/dp_108"
+                        android:layout_width="@dimen/dp_264"
+                        android:layout_height="@dimen/dp_83"
                         android:gravity="center"
                         android:text="@string/favorite_add"
-                        android:textSize="@dimen/sp_42"
+                        android:textSize="@dimen/sp_30"
                         android:textColor="@color/white"
-                        android:layout_marginTop="@dimen/dp_20"
-                        android:background="@drawable/bg_details_bottom_go_here"/>
+                        android:layout_marginTop="@dimen/dp_28"
+                        android:background="@drawable/bg_setting_preference_select"/>
                 </com.fy.navi.ui.view.SkinLinearLayout>
 
                 <com.fy.navi.ui.view.SkinLinearLayout

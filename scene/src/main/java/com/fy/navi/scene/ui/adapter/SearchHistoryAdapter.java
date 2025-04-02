@@ -1,7 +1,6 @@
 
 package com.fy.navi.scene.ui.adapter;
 
-import static com.fy.navi.service.MapDefaultFinalTag.SEARCH_HMI_TAG;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,12 +10,14 @@ import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.android.utils.ConvertUtils;
 import com.android.utils.ResourceUtils;
 import com.android.utils.ToastUtils;
 import com.android.utils.log.Logger;
 import com.fy.navi.scene.R;
 import com.fy.navi.scene.databinding.SearchHistoryItemBinding;
 import com.fy.navi.service.AutoMapConstant;
+import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.define.bean.GeoPoint;
 import com.fy.navi.service.define.search.FavoriteInfo;
 import com.fy.navi.service.define.search.PoiInfoEntity;
@@ -30,35 +31,39 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class SearchHistoryAdapter extends RecyclerView.Adapter<SearchHistoryAdapter.ResultHolder> {
-    private final List<History> poiEntities;
-    private final SearchPackage searchPackage;
-    private final BehaviorPackage behaviorPackage;
-    private ItemClickListener itemClickListener;
-    private int homeCompanyType = -1;// 1:家 2:公司 3:常用地址 0:收藏夹 -1:都不是
+    private final List<History> mPoiEntities;
+    private final SearchPackage mSearchPackage;
+    private final BehaviorPackage mBehaviorPackage;
+    private ItemClickListener mItemClickListener;
+    private int mHomeCompanyType = -1;// 1:家 2:公司 3:常用地址 0:收藏夹 -1:都不是
 
     public int getHomeCompanyType() {
-        return homeCompanyType;
+        return mHomeCompanyType;
     }
 
-    public void setHomeCompanyType(int homeCompanyType) {
-        this.homeCompanyType = homeCompanyType;
+    public void setHomeCompanyType(final int homeCompanyType) {
+        this.mHomeCompanyType = homeCompanyType;
     }
-    public void setOnItemClickListener(ItemClickListener onItemClickListener) {
-        this.itemClickListener = onItemClickListener;
+    public void setOnItemClickListener(final ItemClickListener onItemClickListener) {
+        this.mItemClickListener = onItemClickListener;
     }
 
     public SearchHistoryAdapter() {
-        searchPackage = SearchPackage.getInstance();
-        behaviorPackage = BehaviorPackage.getInstance();
-        this.poiEntities = new ArrayList<>();
+        mSearchPackage = SearchPackage.getInstance();
+        mBehaviorPackage = BehaviorPackage.getInstance();
+        this.mPoiEntities = new ArrayList<>();
     }
 
-    public void notifyList(List<History> searchResultEntity) {
-        int oldSize = poiEntities.size();
-        int newSize = searchResultEntity.size();
+    /**
+     * 更新列表
+     * @param searchResultEntity 源数据
+     */
+    public void notifyList(final List<History> searchResultEntity) {
+        final int oldSize = mPoiEntities.size();
+        final int newSize = searchResultEntity.size();
 
-        poiEntities.clear();
-        poiEntities.addAll(searchResultEntity);
+        mPoiEntities.clear();
+        mPoiEntities.addAll(searchResultEntity);
 
         if (oldSize == 0 && newSize > 0) {
             notifyItemRangeInserted(0, newSize);
@@ -76,16 +81,16 @@ public class SearchHistoryAdapter extends RecyclerView.Adapter<SearchHistoryAdap
 
     @NonNull
     @Override
-    public ResultHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        SearchHistoryItemBinding adapterSearchResultItemBinding = DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()), R.layout.search_history_item, parent, false);
+    public ResultHolder onCreateViewHolder(@NonNull final ViewGroup parent, final int viewType) {
+        final SearchHistoryItemBinding adapterSearchResultItemBinding = DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()), R.layout.search_history_item, parent, false);
         return new ResultHolder(adapterSearchResultItemBinding);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ResultHolder holder, int position) {
-        holder.resultItemBinding.setPoiBean(poiEntities.get(position));
+    public void onBindViewHolder(@NonNull final ResultHolder holder, final int position) {
+        holder.resultItemBinding.setPoiBean(mPoiEntities.get(position));
         holder.resultItemBinding.setLayoutPosition(String.valueOf(position + 1));
-        if (AutoMapConstant.SearchKeywordRecordKey.SEARCH_KEYWORD_RECORD_KEY == poiEntities.get(position).getMType()) {
+        if (AutoMapConstant.SearchKeywordRecordKey.SEARCH_KEYWORD_RECORD_KEY == mPoiEntities.get(position).getMType()) {
             holder.resultItemBinding.skInfoLayout.setVisibility(View.GONE);
             holder.resultItemBinding.poiToNavi.setVisibility(View.GONE);
             holder.resultItemBinding.llActionContainer.setVisibility(View.GONE);
@@ -93,10 +98,13 @@ public class SearchHistoryAdapter extends RecyclerView.Adapter<SearchHistoryAdap
             holder.resultItemBinding.skInfoLayout.setVisibility(View.VISIBLE);
             holder.resultItemBinding.poiToNavi.setVisibility(View.VISIBLE);
             holder.resultItemBinding.llActionContainer.setVisibility(View.VISIBLE);
-            holder.resultItemBinding.poiDistance.setText(SearchPackage.getInstance().calcStraightDistance(parseGeoPoint(poiEntities.get(position).getMEndPoint())));
+            if (!ConvertUtils.isEmpty(mPoiEntities.get(position).getMEndPoint())) {
+                holder.resultItemBinding.poiDistance.setText(SearchPackage.getInstance().calcStraightDistance(
+                        parseGeoPoint(mPoiEntities.get(position).getMEndPoint())));
+            }
         }
 
-        if (searchPackage.isAlongWaySearch()) {
+        if (mSearchPackage.isAlongWaySearch()) {
             holder.resultItemBinding.textNavi.setText(R.string.st_along_way_point);
             holder.resultItemBinding.ivNaviIcon.setImageDrawable(ResourceUtils.Companion.getInstance().getDrawable(R.drawable.img_basic_ic_add));
 
@@ -106,9 +114,9 @@ public class SearchHistoryAdapter extends RecyclerView.Adapter<SearchHistoryAdap
 
         }
 
-        if (homeCompanyType != -1) {
+        if (mHomeCompanyType != -1) {
             holder.resultItemBinding.ivNaviIcon.setImageResource(R.drawable.img_addq_58);
-            switch (homeCompanyType) {
+            switch (mHomeCompanyType) {
                 case 0:
                 case 3:
                     holder.resultItemBinding.textNavi.setText(R.string.st_collect_add);
@@ -125,18 +133,18 @@ public class SearchHistoryAdapter extends RecyclerView.Adapter<SearchHistoryAdap
             }
         }
         holder.resultItemBinding.crlPoiDes.setOnClickListener(v -> {
-            if (itemClickListener != null) {
-                itemClickListener.onItemClick(position, poiEntities.get(position));
+            if (mItemClickListener != null) {
+                mItemClickListener.onItemClick(position, mPoiEntities.get(position));
             }
         });
 
         holder.resultItemBinding.poiToNavi.setOnClickListener(v -> {
-            if (itemClickListener != null) {
-                itemClickListener.onNaviClick(position, poiEntities.get(position));
+            if (mItemClickListener != null) {
+                mItemClickListener.onNaviClick(position, mPoiEntities.get(position));
             }
         });
-        PoiInfoEntity poiInfo = getFavoriteInfo(poiEntities.get(position));
-        boolean isFavorite = poiInfo != null;
+        final PoiInfoEntity poiInfo = getFavoriteInfo(mPoiEntities.get(position));
+        final boolean isFavorite = poiInfo != null;
         if (isFavorite) {
             holder.resultItemBinding.ivCollect.setImageDrawable(ResourceUtils.Companion.getInstance().getDrawable(R.drawable.img_basic_ic_star));
             holder.resultItemBinding.stvCollect.setText(R.string.sha_cancel);
@@ -145,13 +153,13 @@ public class SearchHistoryAdapter extends RecyclerView.Adapter<SearchHistoryAdap
             holder.resultItemBinding.stvCollect.setText(R.string.sha_favorite);
         }
         holder.resultItemBinding.sllCollect.setOnClickListener(v -> {
-            Logger.d(SEARCH_HMI_TAG, "poi click 收藏");
+            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "poi click 收藏");
             if (isFavorite) {
                 // 取消收藏
-                behaviorPackage.deleteFavoriteData(poiInfo.getFavoriteInfo().getItemId());
+                mBehaviorPackage.deleteFavoriteData(poiInfo.getFavoriteInfo().getItemId());
                 ToastUtils.Companion.getInstance().showCustomToastView(ResourceUtils.Companion.getInstance().getString(R.string.sha_cancel_favorite));
             } else {
-                addFavoriteInfo(poiEntities.get(position));
+                addFavoriteInfo(mPoiEntities.get(position));
                 ToastUtils.Companion.getInstance().showCustomToastView(ResourceUtils.Companion.getInstance().getString(R.string.sha_has_favorite));
             }
             notifyItemChanged(position);
@@ -159,10 +167,10 @@ public class SearchHistoryAdapter extends RecyclerView.Adapter<SearchHistoryAdap
         });
         holder.resultItemBinding.sllDelete.setOnClickListener(v -> {
             holder.resultItemBinding.swipeMenuLayout.smoothClose();
-            Logger.d(SEARCH_HMI_TAG, "poi click 删除");
-            searchPackage.clearSearchKeywordRecord(poiEntities.get(position).getMId());
-            if (position >= 0 && position < poiEntities.size()) {
-                poiEntities.remove(position);
+            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "poi click 删除");
+            mSearchPackage.clearSearchKeywordRecord(mPoiEntities.get(position).getMId());
+            if (position >= 0 && position < mPoiEntities.size()) {
+                mPoiEntities.remove(position);
                 notifyItemRemoved(position);
             }
             ToastUtils.Companion.getInstance().showCustomToastView(ResourceUtils.Companion.getInstance().getString(R.string.sha_deleted));
@@ -175,7 +183,7 @@ public class SearchHistoryAdapter extends RecyclerView.Adapter<SearchHistoryAdap
      * @param history
      */
     private PoiInfoEntity getFavoriteInfo(History history) {
-        List<PoiInfoEntity> list = behaviorPackage.getFavoritePoiData(0);
+        List<PoiInfoEntity> list = mBehaviorPackage.getFavoritePoiData();
         return list.stream()
                 .filter(item -> item.getPid().equals(history.getMPoiId()))
                 .findFirst().orElse(null);
@@ -193,10 +201,10 @@ public class SearchHistoryAdapter extends RecyclerView.Adapter<SearchHistoryAdap
                 .setAddress(history.getMEndPoiName())
                 .setPid(history.getMPoiId())
                 .setPoint(historyPoint);
-        FavoriteInfo info = new FavoriteInfo().setCommonName(0)
-                .setItemId(poiInfoEntity.getPid() + "_" + poiInfoEntity.getName() + "_" + poiInfoEntity.getPoint().getLon() + "_" + poiInfoEntity.getPoint().getLat());
+        FavoriteInfo info = new FavoriteInfo().setCommonName(0);
         poiInfoEntity.setFavoriteInfo(info);
-        behaviorPackage.addFavoriteData(poiInfoEntity, 0);
+        mBehaviorPackage.addFavorite(poiInfoEntity, 0);
+//        behaviorPackage.addFavoriteData(poiInfoEntity, 0);
     }
 
     private GeoPoint parseGeoPoint(String geoPointString) {
@@ -210,7 +218,7 @@ public class SearchHistoryAdapter extends RecyclerView.Adapter<SearchHistoryAdap
             lon = Double.parseDouble(matcher.group(1));
             lat = Double.parseDouble(matcher.group(2));
         } else {
-            Logger.e(SEARCH_HMI_TAG, "parseGeoPoint: No match found for GeoPoint string: " + geoPointString);
+            Logger.e(MapDefaultFinalTag.SEARCH_HMI_TAG, "parseGeoPoint: No match found for GeoPoint string: " + geoPointString);
         }
         return new GeoPoint(lon, lat);
     }
@@ -218,11 +226,11 @@ public class SearchHistoryAdapter extends RecyclerView.Adapter<SearchHistoryAdap
 
     @Override
     public int getItemCount() {
-        return poiEntities.size();
+        return mPoiEntities.size();
     }
 
     public List<History> getPoiEntities() {
-        return poiEntities;
+        return mPoiEntities;
     }
 
     public static class ResultHolder extends RecyclerView.ViewHolder {

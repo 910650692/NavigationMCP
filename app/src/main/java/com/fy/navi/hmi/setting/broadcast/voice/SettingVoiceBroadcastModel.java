@@ -107,13 +107,12 @@ public class SettingVoiceBroadcastModel extends BaseModel<SettingVoiceBroadcastV
 
     /**
      * 载操作
-     * @param downLoadMode
      * @param opType
      * @param voiceIdDiyLst
      * @return 返回int值
      */
-    public int operate(final int downLoadMode, final int opType, final ArrayList<Integer> voiceIdDiyLst) {
-        return mVoicePackage.operate(downLoadMode, opType, voiceIdDiyLst);
+    public int operate(final int opType, final ArrayList<Integer> voiceIdDiyLst) {
+        return mVoicePackage.operate(opType, voiceIdDiyLst);
     }
 
     /**

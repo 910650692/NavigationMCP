@@ -6,6 +6,7 @@ import android.os.Parcelable;
 import androidx.annotation.NonNull;
 
 import com.fy.navi.service.define.bean.GeoPoint;
+import com.fy.navi.service.define.search.PoiInfoEntity;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -32,6 +33,7 @@ public class RouteParam implements Parcelable {
     private ChargingInfo mChargeInfo; // 充电桩信息
     private String mRetainParam; // 回传参数
     private int mAdCode; // 回传参数
+    private PoiInfoEntity mPoiInfoEntity; // poi数据
 
     public RouteParam() {
 
@@ -56,6 +58,7 @@ public class RouteParam implements Parcelable {
         mAddress = in.readString();
         mRetainParam = in.readString();
         mAdCode = in.readInt();
+        mPoiInfoEntity = in.readParcelable(PoiInfoEntity.class.getClassLoader());
     }
 
     public static final Creator<RouteParam> CREATOR = new Creator<RouteParam>() {
@@ -272,5 +275,6 @@ public class RouteParam implements Parcelable {
         parcel.writeString(mAddress);
         parcel.writeString(mRetainParam);
         parcel.writeInt(mAdCode);
+        parcel.writeParcelable(mPoiInfoEntity, i);
     }
 }

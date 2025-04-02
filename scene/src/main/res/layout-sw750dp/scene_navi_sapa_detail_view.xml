@@ -15,11 +15,11 @@
 
         <include android:id="@+id/sapa_service_detail"
             android:visibility="@{sapaDetail.mViewType == 0 ? View.VISIBLE : View.GONE}"
-            layout="@layout/sapa_service_details" />
+            layout="@layout/navi_sapa_service_details" />
 
         <include android:id="@+id/sapa_toll_detail"
             android:visibility="@{sapaDetail.mViewType == 1 ? View.VISIBLE : View.GONE}"
-            layout="@layout/sapa_toll_details" />
+            layout="@layout/navi_sapa_toll_details" />
 
 
     </com.fy.navi.ui.view.SkinConstraintLayout>

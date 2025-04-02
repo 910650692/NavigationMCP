@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- dialog -->
+    <color name="dialog_msg_top_bg">#1E2027</color>
+    <color name="dialog_msg_top_line">#33FFFFFF</color>
+    <color name="dialog_msg_top_button_color">#1D59C3</color>
+    <color name="dialog_msg_top_text_color">#FFFFFF</color>
+
+    <!-- 搜索相关 -->
+    <color name="search_poi_detail_fast">#802C2F38</color>
+
+
+    <!--算路相关-->
+    <color name="bg_route_root_bg">#FF1E2027</color>
+    <color name="route_back_icon_color">#D2D3D7</color>
+    <color name="bg_route_item_select">#FF2C2F38</color>
+    <color name="bg_route_item_unselect">#FF1E2027</color>
+    <color name="bg_route_detail_color">#802C2F38</color>
+    <color name="bg_route_big_window_select">#FF1D59C3</color>
+    <color name="bg_route_big_window_unselect">#FF2C2D36</color>
+    <color name="bg_route_button_select_color">#FF1D59C3</color>
+    <color name="bg_route_secondary_select">#1AA3C1F6</color>
+    <color name="text_color_route_item_no_select">#B3FFFFFF</color>
+    <color name="text_color_route_item_select">#FFFFFFFF</color>
+    <color name="text_route_defult">#B3FFFFFF</color>
+    <color name="route_charge_param_title_color">#FF1E1F26</color>
+    <color name="route_charge_param_total_color">#80FFFFFF</color>
+    <color name="route_charge_orange_color">#FFE06A05</color>
+    <color name="route_charge_bg_color">#802C2F38</color>
+    <color name="route_icon_color">#D2D3D7</color>
+    <color name="route_line_color">#33FFFFFF</color>
+    <color name="tab_list_route_tab_list_select">#FF005CFF</color>
+    <color name="tab_list_route_tab_list_unselect">#B3FFFFFF</color>
+    <color name="floating_search_item_night">#FFFFFFFF</color>
+    <color name="route_tbt_color_1">#323232</color>
+    <color name="route_tbt_color_2">#D2D3D7</color>
+
+
+
+
+
+    <color name="main_map_limit_loading">#B3FFFFFF</color>
+    <color name="main_map_limit_icon_color">#00000000</color>
+    <color name="main_map_limit_icon_stroke_color">#D2D3D7</color>
+    <color name="main_map_limit_title_color">#FFFFFFFF</color>
+
+    <!--搜索相关-->
+    <color name="search_tab_bg">#1E2027</color>
+    <color name="search_go_here">#FFFFFF</color>
+    <color name="search_go_here_bg">#1D59C3</color>
+    <color name="search_color_ffffff">#FFFFFF</color>
+    <color name="search_color_ffffff_40">#66FFFFFF</color>
+    <color name="search_color_ffffff_50">#80FFFFFF</color>
+    <color name="search_color_ffffff_70">#B3FFFFFF</color>
+    <color name="search_color_delete_text">#B3FFFFFF</color>
+    <color name="search_color_delete_bg">#9E171A</color>
+    <color name="search_quick_tab_view_color">#B3FFFFFF</color>
+    <color name="search_category_icon_bg">#802C2F38</color>
+    <color name="poi_details_bottom_ff_00">#FFFFFF</color>
+    <color name="poi_details_bottom_icon">#B3FFFFFF</color>
+    <color name="poi_details_spot_bg">#422C2F38</color>
+    <color name="child_sub_title_color">#B3FFFFFF</color>
+    <color name="setting_text_gray">#33FFFFFF</color>
+    <color name="search_deep_text_day">#FFFFFF</color>
+    <color name="search_shallow_text_day">#80FFFFFF</color>
+
+    <!--交通事件-->
+    <color name="traffic_bg_color">#1E2027</color>
+    <color name="traffic_bg_shadow_color">#66151414</color>
+    <color name="traffic_title_color">#ffffff</color>
+    <color name="traffic_sub_title_color">#B3ffffff</color>
+    <color name="traffic_positive_bg_color">#1D59C3</color>
+    <color name="traffic_negative_bg_color">#2C2D36</color>
+    <color name="traffic_positive_text_color">#ffffff</color>
+    <color name="traffic_bg_bg_pic_size_color">#E06A05</color>
+    <!--Launcher-Widget-->
+    <color name="widget_egle_bg_color">#1E2027</color>
+    <color name="widget_egle_bg_shadow_color">#408C889B</color>
+    <color name="widget_title_color">#ffffffff</color>
+    <color name="widget_sub_title_color">#B3ffffff</color>
+    <color name="widget_egle_icon_color">#ffffff</color>
+    <!--导航中-消息-->
+    <color name="navi_msg_title_color">#ffffff</color>
+    <color name="navi_msg_sub_title_color">#ffffff</color>
+    <color name="navi_msg_bg_color">#1E2027</color>
+    <color name="navi_msg_btn_color">#2461EA</color>
+    <color name="navi_msg_btn_text_color">#ffffff</color>
+
+    <color name="setting_bg_gray">#FF2C2D36</color>
+    <color name="setting_preference_text_gray">#B3FFFFFF</color>
+    <color name="setting_bg_keyboard">#338E97B9</color>
+
+    <!--引导-->
+    <color name="navi_color_F8F8FA_100">#FF1E2027</color>
+    <color name="navi_color_000000_50">#80FFFFFF</color>
+    <color name="navi_color_2461EA_10">#1AA3C1F6</color>
+</resources>

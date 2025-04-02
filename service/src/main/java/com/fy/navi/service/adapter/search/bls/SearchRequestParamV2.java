@@ -3,6 +3,7 @@ package com.fy.navi.service.adapter.search.bls;
 
 import androidx.annotation.Nullable;
 
+import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
 import com.autonavi.gbl.aosclient.model.GNavigationEtaqueryReqElecConstList;
 import com.autonavi.gbl.aosclient.model.GNavigationEtaqueryReqElecConstListRangeEnergy;
@@ -121,8 +122,8 @@ public final class SearchRequestParamV2 {
      * @param searchRequestInfo SearchRequestParameter
      * @return SearchEnrouteCategoryParam
      */
-    public SearchEnrouteCategoryParam convertToSearchEnRouteCategoryParamV2(SearchRequestParameter searchRequestInfo) {
-        SearchEnrouteCategoryParam paramV2 = new SearchEnrouteCategoryParam();
+    public SearchEnrouteCategoryParam convertToSearchEnRouteCategoryParamV2(final SearchRequestParameter searchRequestInfo) {
+        final SearchEnrouteCategoryParam paramV2 = new SearchEnrouteCategoryParam();
         paramV2.userLoc.lon = searchRequestInfo.getUserLoc().getLon();
         paramV2.userLoc.lat = searchRequestInfo.getUserLoc().getLat();
         // paramV2.category = searchRequestInfo.getCategory(); //需要先请求品类搜索拿到结果
@@ -286,7 +287,8 @@ public final class SearchRequestParamV2 {
         paramV2.poiLoc.lat = searchRequestInfo.getPoiLoc().getLat();
         paramV2.geoObj = searchRequestInfo.getGeoobj();
         paramV2.city = String.valueOf(searchRequestInfo.getAdCode());
-        paramV2.range = "5000";
+        paramV2.range = ConvertUtils.isEmpty(searchRequestInfo.getRange()) ?
+                "5000" : searchRequestInfo.getRange();
         return paramV2;
     }
 

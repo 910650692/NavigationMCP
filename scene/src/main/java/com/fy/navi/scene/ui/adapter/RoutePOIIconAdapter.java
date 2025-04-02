@@ -8,25 +8,25 @@ import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.fy.navi.scene.R;
-import com.fy.navi.scene.databinding.RouteLineInfoResultItemBinding;
 import com.fy.navi.scene.databinding.RoutePoiIconItemBinding;
-import com.fy.navi.service.AppContext;
-import com.fy.navi.service.define.route.RouteLineInfo;
 import com.fy.navi.service.define.search.ServiceAreaInfo;
-import com.fy.navi.service.define.utils.NumberUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class RoutePOIIconAdapter extends RecyclerView.Adapter<RoutePOIIconAdapter.Holder> {
     private List<ServiceAreaInfo.ServiceAreaChild> mRouteBeanList;
-    OnItemClickListener itemClickListener;
+    private OnItemClickListener mItemClickListener;
 
     public RoutePOIIconAdapter() {
         mRouteBeanList = new ArrayList<>();
     }
 
-    public void setRouteBeanList(List<ServiceAreaInfo.ServiceAreaChild> routeBeanList) {
+    /***
+     * 设置数据
+     * @param routeBeanList 数据列表
+     */
+    public void setRouteBeanList(final List<ServiceAreaInfo.ServiceAreaChild> routeBeanList) {
         if (null == routeBeanList) {
             return;
         }
@@ -36,13 +36,17 @@ public class RoutePOIIconAdapter extends RecyclerView.Adapter<RoutePOIIconAdapte
         notifyDataSetChanged();
     }
 
-    public void setItemClickListener(OnItemClickListener itemClickListener) {
-        this.itemClickListener = itemClickListener;
+    /***
+     * 设置监听
+     * @param itemClickListener 点击监听
+     */
+    public void setItemClickListener(final OnItemClickListener itemClickListener) {
+        this.mItemClickListener = itemClickListener;
     }
 
     @Override
-    public Holder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        RoutePoiIconItemBinding routeItemBinding =
+    public Holder onCreateViewHolder(@NonNull final ViewGroup parent, final int viewType) {
+        final RoutePoiIconItemBinding routeItemBinding =
                 DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()),
                         R.layout.route_poi_icon_item, parent, false);
         return new Holder(routeItemBinding);
@@ -57,43 +61,50 @@ public class RoutePOIIconAdapter extends RecyclerView.Adapter<RoutePOIIconAdapte
     }
 
     @Override
-    public void onBindViewHolder(@NonNull Holder holder, int position) {
+    public void onBindViewHolder(@NonNull final Holder holder, final int position) {
         switch (mRouteBeanList.get(position).getTypeCode()) {
             case "010200":
-                holder.routePoiIconItemBinding.poiServiceAreaImgLighting.setImageResource(R.drawable.img_route_poi_details_gas);
+                holder.mRoutePoiIconItemBinding.poiServiceAreaImgLighting.setImageResource(R.drawable.img_route_poi_details_gas);
                 break;
             case "200300":
-                holder.routePoiIconItemBinding.poiServiceAreaImgLighting.setImageResource(R.drawable.img_route_poi_details_wc);
+                holder.mRoutePoiIconItemBinding.poiServiceAreaImgLighting.setImageResource(R.drawable.img_route_poi_details_wc);
                 break;
             case "060400":
-                holder.routePoiIconItemBinding.poiServiceAreaImgLighting.setImageResource(R.drawable.img_route_poi_details_shopping);
+                holder.mRoutePoiIconItemBinding.poiServiceAreaImgLighting.setImageResource(R.drawable.img_route_poi_details_shopping);
                 break;
             case "150904":
-                holder.routePoiIconItemBinding.poiServiceAreaImgLighting.setImageResource(R.drawable.img_route_poi_details_parking);
+                holder.mRoutePoiIconItemBinding.poiServiceAreaImgLighting.setImageResource(R.drawable.img_route_poi_details_parking);
                 break;
             case "011100":
-                holder.routePoiIconItemBinding.poiServiceAreaImgLighting.setImageResource(R.drawable.img_route_poi_details_charging);
+                holder.mRoutePoiIconItemBinding.poiServiceAreaImgLighting.setImageResource(R.drawable.img_route_poi_details_charging);
                 break;
             case "010000":
-                holder.routePoiIconItemBinding.poiServiceAreaImgLighting.setImageResource(R.drawable.img_route_poi_details_car_service);
+                holder.mRoutePoiIconItemBinding.poiServiceAreaImgLighting.setImageResource(R.drawable.img_route_poi_details_car_service);
                 break;
             case "050100":
-                holder.routePoiIconItemBinding.poiServiceAreaImgLighting.setImageResource(R.drawable.img_route_poi_details_food);
+                holder.mRoutePoiIconItemBinding.poiServiceAreaImgLighting.setImageResource(R.drawable.img_route_poi_details_food);
+                break;
+            default:
                 break;
         }
     }
 
     public class Holder extends RecyclerView.ViewHolder {
-        public RoutePoiIconItemBinding routePoiIconItemBinding;
+        private RoutePoiIconItemBinding mRoutePoiIconItemBinding;
 
-        public Holder(RoutePoiIconItemBinding routePoiIconItemBinding) {
+        public Holder(final RoutePoiIconItemBinding routePoiIconItemBinding) {
             super(routePoiIconItemBinding.getRoot());
-            this.routePoiIconItemBinding = routePoiIconItemBinding;
+            this.mRoutePoiIconItemBinding = routePoiIconItemBinding;
             routePoiIconItemBinding.setHolder(this);
         }
     }
 
     public interface OnItemClickListener {
+        /***
+         * 点击监听
+         * @param index 下标
+         * @param isSelectIndex 选中下标
+         */
         void onItemClick(int index, boolean isSelectIndex);
     }
 }

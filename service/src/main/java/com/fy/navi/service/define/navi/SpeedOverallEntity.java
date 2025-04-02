@@ -1,142 +1,164 @@
 package com.fy.navi.service.define.navi;
 
+import androidx.annotation.NonNull;
+
 import com.fy.navi.service.adapter.navi.NaviConstant;
 
 import java.util.ArrayList;
 
 /**
  * 高速限速实体类
+ * @author fy
+ * @version $Revision.*$
  */
 public class SpeedOverallEntity {
 
     /**
      * 摄像头唯一标志，预留字段，当前一直为 0
      */
-    private int id;
+    private int mId;
     /**
      * 获取摄像头类型、绿灯数量类型（0无效类型；1多灯类型；2单灯类型）
      */
-    private int type;
+    private int mType;
 
     @NaviConstant.SpeedType
-    private int speedType;
+    private int mSpeedType;
 
     /**
      * 进入区间测速路段后实时的区间路段剩余距离
      */
-    private int remainDistance = 0;
+    private int mRemainDistance = 0;
     /**
      * 限速信息的限速值，单位 km/s
      */
-    private int speedLimit;
+    private int mSpeedLimit;
     /**
      * 平均速度
      */
-    private int averageSpeed = 0;
-    private ArrayList<Short> limitSpeedList = new ArrayList<>();
+    private int mAverageSpeed = 0;
+    private ArrayList<Short> mLimitSpeedList = new ArrayList<>();
 
     /**
      * 区间测速电子眼长度
      */
-    private int distance = 0;
+    private int mDistance = 0;
     /**
      * 最大建议车速，单位：km/h
      */
-    private long maxSpeed;
+    private long mMaxSpeed;
     /**
      * 最小建议车速，单位：km/h
      */
-    private long minSpeed;
+    private long mMinSpeed;
     /**
      * 剩余绿灯数量，单位：个
      */
-    private long lightCount;
+    private long mLightCount;
 
     public int getId() {
-        return id;
+        return mId;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setId(final int id) {
+        this.mId = id;
     }
 
     public int getType() {
-        return type;
+        return mType;
     }
 
-    public void setType(int type) {
-        this.type = type;
+    public void setType(final int type) {
+        this.mType = type;
     }
 
     public int getSpeedType() {
-        return speedType;
+        return mSpeedType;
     }
 
-    public void setSpeedType(int speedType) {
-        this.speedType = speedType;
+    public void setSpeedType(final int speedType) {
+        this.mSpeedType = speedType;
     }
 
     public int getRemainDistance() {
-        return remainDistance;
+        return mRemainDistance;
     }
 
-    public void setRemainDistance(int remainDistance) {
-        this.remainDistance = remainDistance;
+    public void setRemainDistance(final int remainDistance) {
+        this.mRemainDistance = remainDistance;
     }
 
     public int getSpeedLimit() {
-        return speedLimit;
+        return mSpeedLimit;
     }
 
-    public void setSpeedLimit(int speedLimit) {
-        this.speedLimit = speedLimit;
+    public void setSpeedLimit(final int speedLimit) {
+        this.mSpeedLimit = speedLimit;
     }
 
     public int getAverageSpeed() {
-        return averageSpeed;
+        return mAverageSpeed;
     }
 
-    public void setAverageSpeed(int averageSpeed) {
-        this.averageSpeed = averageSpeed;
+    public void setAverageSpeed(final int averageSpeed) {
+        this.mAverageSpeed = averageSpeed;
     }
 
     public int getDistance() {
-        return distance;
+        return mDistance;
     }
 
-    public void setDistance(int distance) {
-        this.distance = distance;
+    public void setDistance(final int distance) {
+        this.mDistance = distance;
     }
 
     public ArrayList<Short> getLimitSpeedList() {
-        return limitSpeedList;
+        return mLimitSpeedList;
     }
 
-    public void setLimitSpeedList(ArrayList<Short> speed) {
-        this.limitSpeedList = speed;
+    public void setLimitSpeedList(final ArrayList<Short> speed) {
+        this.mLimitSpeedList = speed;
     }
 
     public long getMaxSpeed() {
-        return maxSpeed;
+        return mMaxSpeed;
     }
 
-    public void setMaxSpeed(long maxSpeed) {
-        this.maxSpeed = maxSpeed;
+    public void setMaxSpeed(final long maxSpeed) {
+        this.mMaxSpeed = maxSpeed;
     }
 
     public long getMinSpeed() {
-        return minSpeed;
+        return mMinSpeed;
     }
 
-    public void setMinSpeed(long minSpeed) {
-        this.minSpeed = minSpeed;
+    public void setMinSpeed(final long minSpeed) {
+        this.mMinSpeed = minSpeed;
     }
 
     public long getLightCount() {
-        return lightCount;
+        return mLightCount;
     }
 
-    public void setLightCount(long lightCount) {
-        this.lightCount = lightCount;
+    public void setLightCount(final long lightCount) {
+        this.mLightCount = lightCount;
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return "SpeedOverallEntity{" +
+                "id=" + mId +
+                ", type=" + mType +
+                ", speedType=" + mSpeedType +
+                ", remainDistance=" + mRemainDistance +
+                ", speedLimit=" + mSpeedLimit +
+                ", averageSpeed=" + mAverageSpeed +
+                ", limitSpeedList=" + mLimitSpeedList +
+                ", distance=" + mDistance +
+                ", maxSpeed=" + mMaxSpeed +
+                ", minSpeed=" + mMinSpeed +
+                ", lightCount=" + mLightCount +
+                '}';
     }
 }

@@ -8,6 +8,7 @@ import com.bigtimes.sdk.BuriedPointModeEnum;
 import com.bigtimes.sdk.ModeEnum;
 import com.bigtimes.sdk.OASAPI;
 import com.sensorsdata.analytics.android.sdk.SAConfigOptions;
+import com.sensorsdata.analytics.android.sdk.SensorsDataAPI;
 
 import org.json.JSONObject;
 
@@ -28,7 +29,7 @@ public class BuryManager {
         return instance;
     }
 
-    public void initSensorsDataAPI(Context context){
+    public void initSensorsDataAPI(final Context context){
         SAConfigOptions configOptions = new SAConfigOptions();
 
         // 设置埋点模式
@@ -49,16 +50,27 @@ public class BuryManager {
         configOptions.setFlushInterval(5 * 1000);
         // 设置本地数据缓存上限值为 16 MB
         configOptions.setMaxCacheSize(16 * 1024 * 1024);
+        configOptions.enableLog(true);
 
         // 初始化 SDK
         OASAPI.startWithConfigOptions(context, configOptions);
 
-        getPresetProperties();
+        setUniqueAttributes();
     }
 
-    private void getPresetProperties(){
-        JSONObject presetProperties = OASAPI.sharedInstance().getPresetProperties();
+    private void setUniqueAttributes(){
+        SensorsDataAPI gapi = OASAPI.sharedInstance();
+//        gapi.setBasicAuth("A00000014", "$NA(5?[");
+        gapi.setBasicAuth("paih2p", "Nxq60883#");
+        gapi.setVin("A20");
+        gapi.setHardwareVersion("v1.0");
+        String channel = "channel_+++";
+        String encodedChannel = OASAPI.sharedInstance().encryptData(channel, "123");
+        gapi.setChannel(encodedChannel);
+        JSONObject presetProperties = gapi.getPresetProperties();
+        JSONObject superProps = gapi.getSuperProperties();
         Logger.i(TAG, "presetProperties: " + presetProperties.toString());
+        Logger.i(TAG, "superProps: " + superProps.toString());
     }
 
 }

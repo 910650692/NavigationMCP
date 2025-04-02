@@ -10,8 +10,8 @@
     </data>
 
     <com.fy.navi.ui.view.SkinConstraintLayout
-        android:layout_width="@dimen/dp_1660"
-        android:layout_height="@dimen/dp_1060"
+        android:layout_width="@dimen/dp_1224"
+        android:layout_height="@dimen/dp_714"
         android:clickable="true"
         android:background="@drawable/bg_setting_fragment">
 
@@ -28,7 +28,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginStart="@dimen/dp_20"
+                android:layout_marginStart="@dimen/dp_26"
                 android:src="@drawable/img_setting_back" />
 
             <com.fy.navi.ui.view.SkinTextView
@@ -128,7 +128,7 @@
                 android:id="@+id/setting_others_about_draw"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/setting_others_about_draw"
+                android:text="@{viewModel.mVersion}"
                 android:textColor="@color/setting_text_preference"
                 android:textSize="@dimen/sp_26"
                 app:layout_constraintStart_toStartOf="@+id/setting_others_about_data_version"

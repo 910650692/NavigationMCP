@@ -6,12 +6,11 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 
 import com.android.utils.ResourceUtils;
-import com.android.utils.ToastUtils;
 import com.android.utils.log.Logger;
+import com.android.utils.thread.ThreadManager;
 import com.fy.navi.hmi.R;
 import com.fy.navi.service.GBLCacheFilePath;
 import com.fy.navi.service.define.setting.SettingController;
-import com.fy.navi.service.define.voice.DownLoadMode;
 import com.fy.navi.service.define.voice.OperationStatus;
 import com.fy.navi.service.define.voice.OperationType;
 import com.fy.navi.service.define.voice.VoiceInfo;
@@ -21,7 +20,6 @@ import com.fy.navi.ui.base.BaseViewModel;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Objects;
 
 public class BaseSettingVoiceBroadcastViewModel extends BaseViewModel<SettingVoiceBroadcastFragment, SettingVoiceBroadcastModel> {
 
@@ -118,54 +116,38 @@ public class BaseSettingVoiceBroadcastViewModel extends BaseViewModel<SettingVoi
 
     /**
      * 操作
-     * @param index
+     * @param operatedIdList
      */
-    public void toOperate(final int index){
-        Logger.d("SettingVoiceBroadcastModel", "switchTaskStatusToOperate: " + index);
-        final ArrayList<VoiceInfo> voiceInfoList = new ArrayList<>(recommendVoiceList.values());
-        final VoiceInfo voiceInfo = voiceInfoList.get(index);
-        final ArrayList<Integer> operatedIdList = new ArrayList<>();
-        operatedIdList.add(voiceInfo.getId());
-
-        Logger.d("SettingVoiceBroadcastModel", "switchTaskStatusToOperate: " + operatedIdList);
-
-        switch (voiceInfo.getTaskState()) {
-            case OperationStatus.TASK_STATUS_CODE_READY:
-            case OperationStatus.TASK_STATUS_CODE_PAUSE:
-            case OperationStatus.TASK_STATUS_CODE_ERR:
-            case OperationStatus.TASK_STATUS_CODE_MAX:
-                mModel.operate(DownLoadMode.DOWNLOAD_MODE_NET.ordinal(), OperationType.OPERATION_TYPE_START.ordinal(), operatedIdList);
-                break;
-            case OperationStatus.TASK_STATUS_CODE_CHECKED:
-                ToastUtils.Companion.getInstance().showCustomToastView("验证完成");
-                break;
-            case OperationStatus.TASK_STATUS_CODE_UNZIPPED:
-                ToastUtils.Companion.getInstance().showCustomToastView("解压完成");
-                break;
-            case OperationStatus.TASK_STATUS_CODE_SUCCESS:
-                mIsDefaultVoiceUsed.setValue(false);
-                mModel.setVoice(Objects.requireNonNull(voiceInfoList.get(index)).getFilePath());
-                SettingManager.getInstance().insertOrReplace(SettingController.KEY_SETTING_VOICE_PACKAGE,
-                        String.valueOf(Objects.requireNonNull(voiceInfoList.get(index)).getId()));
-                SettingManager.getInstance().insertOrReplace(SettingController.KEY_SETTING_VOICE_ICON, voiceInfoList.get(index).getImageUrl());
-                SettingManager.getInstance().insertOrReplace(SettingController.KEY_SETTING_VOICE_NAME, voiceInfoList.get(index).getName());
-                mView.setCurrentVoice();
-                mView.setSingleChoice(index);
-                break;
-            case OperationStatus.TASK_STATUS_CODE_DOING:
-            case OperationStatus.TASK_STATUS_CODE_DONE:
-            case OperationStatus.TASK_STATUS_CODE_CHECKING:
-            case OperationStatus.TASK_STATUS_CODE_UNZIPPING:
-            case OperationStatus.TASK_STATUS_CODE_WAITING:
-                mModel.operate(DownLoadMode.DOWNLOAD_MODE_NET.ordinal(), OperationType.OPERATION_TYPE_PAUSE.ordinal(), operatedIdList);
-                break;
-            default:
-                break;
-        }
+    public void startAllTask(final ArrayList<Integer> operatedIdList){
+        mModel.operate(OperationType.OPERATION_TYPE_START.ordinal(), operatedIdList);
     }
 
     /**
-     * 设置语音信息
+     * 操作
+     * @param operatedIdList
+     */
+    public void pauseAllTask(final ArrayList<Integer> operatedIdList){
+        mModel.operate(OperationType.OPERATION_TYPE_PAUSE.ordinal(), operatedIdList);
+    }
+
+    /**
+     * 操作
+     * @param voiceInfo
+     */
+    public void toUseAllTask(final VoiceInfo voiceInfo){
+        ThreadManager.getInstance().postDelay(() -> {
+            mModel.setVoice(voiceInfo.getFilePath());
+        },0);
+        mIsDefaultVoiceUsed.setValue(false);
+        SettingManager.getInstance().insertOrReplace(SettingController.KEY_SETTING_VOICE_PACKAGE, String.valueOf(voiceInfo.getId()));
+        SettingManager.getInstance().insertOrReplace(SettingController.KEY_SETTING_VOICE_ICON, voiceInfo.getImageUrl());
+        SettingManager.getInstance().insertOrReplace(SettingController.KEY_SETTING_VOICE_NAME, voiceInfo.getName());
+        mView.setCurrentVoice();
+        mView.setSingleChoice(voiceInfo.getId());
+    }
+
+    /**
+     * 更新语音信息
      * @param id
      * @param taskCode
      * @param percent
@@ -176,7 +158,7 @@ public class BaseSettingVoiceBroadcastViewModel extends BaseViewModel<SettingVoi
             voiceInfo.setTaskState(taskCode);
             voiceInfo.setPercent(percent);
             recommendVoiceList.replace(id, voiceInfo);
-            mView.updateData(recommendVoiceList);
+            mView.updateItem(id, voiceInfo);
         }else{
             Logger.e(TAG, "No id: " + id);
         }

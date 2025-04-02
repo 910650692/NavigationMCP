@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="tipImpl"
+            type="com.fy.navi.scene.impl.navi.SceneNaviChargeTipViewImpl" />
+
+    </data>
+
+    <com.fy.navi.ui.view.SkinConstraintLayout
+        android:id="@+id/scl_root"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_scene_charge_tip"
+        android:minHeight="@dimen/dp_130">
+
+        <com.fy.navi.ui.view.SkinTextView
+            android:id="@+id/tv_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_30"
+            android:layout_marginEnd="@dimen/dp_30"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textColor="@color/navi_msg_title_color"
+            android:textSize="@dimen/sp_34"
+            app:layout_constraintEnd_toStartOf="@id/tv_action"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_chainStyle="packed"
+            app:layout_constraintBottom_toTopOf="@id/tv_desc"
+            tools:text="xxxxxxxx" />
+
+        <com.fy.navi.ui.view.SkinTextView
+            android:id="@+id/tv_desc"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textColor="@color/navi_msg_sub_title_color"
+            android:textSize="@dimen/sp_28"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@id/tv_title"
+            app:layout_constraintStart_toStartOf="@id/tv_title"
+            app:layout_constraintTop_toBottomOf="@id/tv_title"
+            tools:text="xxxxxxxx" />
+
+        <com.fy.navi.ui.view.SkinTextView
+            android:id="@+id/tv_action"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/dp_20"
+            android:background="@drawable/bg_scene_charge_tip_btn"
+            android:gravity="center"
+            android:paddingHorizontal="@dimen/dp_33"
+            android:paddingVertical="@dimen/dp_18"
+            android:textColor="@color/navi_msg_btn_text_color"
+            android:textSize="@dimen/sp_30"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_goneMarginEnd="@dimen/dp_20"
+            tools:text="去充电" />
+
+    </com.fy.navi.ui.view.SkinConstraintLayout>
+
+</layout>

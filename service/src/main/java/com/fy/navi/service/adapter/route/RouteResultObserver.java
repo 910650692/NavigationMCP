@@ -9,6 +9,7 @@ import com.fy.navi.service.define.route.RouteChargeStationParam;
 import com.fy.navi.service.define.route.RouteRestAreaParam;
 import com.fy.navi.service.define.route.RouteRestTollGateParam;
 import com.fy.navi.service.define.route.RouteRestrictionParam;
+import com.fy.navi.service.define.route.RouteTMCParam;
 import com.fy.navi.service.define.route.RouteTrafficIncidentParam;
 import com.fy.navi.service.define.route.RouteWeatherParam;
 
@@ -107,4 +108,10 @@ public interface RouteResultObserver {
      * @param json 路线信息
      */
     void onRouteL2Info(String json);
+
+    /**
+     * 通勤模式TMC信息   、
+     * @param param TMC
+     */
+    void onRouteTMCInfo(RouteTMCParam param);
 }

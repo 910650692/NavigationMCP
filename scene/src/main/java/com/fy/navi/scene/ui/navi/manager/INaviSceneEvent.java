@@ -19,12 +19,10 @@ public interface INaviSceneEvent {
      */
     void notifySceneStateChange(SceneStateChangeType type, NaviSceneId cardId);
 
-    /**
-     * @param type tupe
-     * @param obj obj
-     */
-    void notifySceneEvent(int type, Object obj);
-
     /***将隐藏的scene展示***/
     void notifySceneReset();
+
+    void destroySceneView();
+
+    void onCreateSceneView();
 }

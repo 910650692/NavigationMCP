@@ -15,4 +15,8 @@ public interface SettingConstant {
      double DEFAULT_LAT_SH = 31.239668;
      double DEFAULT_LON_SH = 121.499779;
      double DEFAULT_ALT_SH = 0.0;
+
+//    double DEFAULT_LAT_SH = 30.891088;
+//    double DEFAULT_LON_SH = 121.892752;
+//    double DEFAULT_ALT_SH = 0.0;
 }

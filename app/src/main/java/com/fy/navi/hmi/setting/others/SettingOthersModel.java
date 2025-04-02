@@ -1,6 +1,8 @@
 package com.fy.navi.hmi.setting.others;
 
 import com.android.utils.file.FileUtils;
+import com.android.utils.gson.GsonUtils;
+import com.android.utils.log.Logger;
 import com.fy.navi.service.GBLCacheFilePath;
 import com.fy.navi.service.define.setting.SettingController;
 import com.fy.navi.service.define.user.account.AccountUserInfo;
@@ -61,10 +63,9 @@ public class SettingOthersModel extends BaseModel<SettingOthersViewModel>
      * 初始化视图
      */
     public void initView() {
+        mWeChatPackage.sendReqWsPpAutoWeixinStatus();
         mViewModel.updatePrivacyStatus(mSettingPackage.getPrivacyStatus());
-        mViewModel.updateUserInfo(mAccountPackage.getUserInfo().nickname, mAccountPackage.getUserInfo().avatar);
-        final String weChatStatus = mSettingManager.getValueByKey(SettingController.KEY_SETTING_IS_WE_CHAT_BIND);
-        mViewModel.setWeChatStatus(weChatStatus.equals(SettingController.VALUE_GENERIC_TRUE));
+        mViewModel.updateUserInfo(mAccountPackage.getUserInfo().getNickname(), mAccountPackage.getUserInfo().getAvatar());
         getSdkVersion();
         mViewModel.setTotalSizeOfDirectories(getTotalSizeOfDirectories());
     }
@@ -88,7 +89,7 @@ public class SettingOthersModel extends BaseModel<SettingOthersViewModel>
      */
     @Override
     public void notifyAccountLogout(final int errCode, final int taskId, final AccountUserInfo result) {
-        if (result != null && result.code == 1) {
+        if (result != null && result.getCode() == 1) {
             mViewModel.clearUserInfo();
         }
     }
@@ -98,18 +99,18 @@ public class SettingOthersModel extends BaseModel<SettingOthersViewModel>
      */
     @Override
     public void notifyMobileLogin(final int errCode, final int taskId, final AccountUserInfo result) {
-        if (result != null && result.code == 1) {
-            if (result.profileInfo != null) {
-                mViewModel.updateUserInfo(result.profileInfo.nickname, result.profileInfo.avatar);
+        if (result != null && result.getCode() == 1) {
+            if (result.getProfileInfo() != null) {
+                mViewModel.updateUserInfo(result.getProfileInfo().getNickname(), result.getProfileInfo().getAvatar());
             }
         }
     }
 
     @Override
     public void notifyQRCodeLoginConfirm(final int errCode, final int taskId, final AccountUserInfo result) {
-        if (result != null && result.code == 1) {
-            if (result.profileInfo != null) {
-                mViewModel.updateUserInfo(result.profileInfo.nickname, result.profileInfo.avatar);
+        if (result != null && result.getCode() == 1) {
+            if (result.getProfileInfo() != null) {
+                mViewModel.updateUserInfo(result.getProfileInfo().getNickname(), result.getProfileInfo().getAvatar());
             }
         }
     }
@@ -120,10 +121,13 @@ public class SettingOthersModel extends BaseModel<SettingOthersViewModel>
 
     @Override
     public void notifyWeixinStatus(final BLResponseBean result) {
+        Logger.d("notifyWeixinStatus = " + GsonUtils.toJson(result));
         if (result != null) {
             if (result.getCode() == 1) {
+                mSettingManager.insertOrReplace(SettingController.KEY_SETTING_IS_WE_CHAT_BIND, SettingController.VALUE_GENERIC_TRUE);
                 mViewModel.setWeChatStatus(true);
             } else {
+                mSettingManager.insertOrReplace(SettingController.KEY_SETTING_IS_WE_CHAT_BIND, SettingController.VALUE_GENERIC_FALSE);
                 mViewModel.setWeChatStatus(false);
             }
         }
@@ -135,8 +139,10 @@ public class SettingOthersModel extends BaseModel<SettingOthersViewModel>
     @Override
     public void notifyGQRCodeConfirm(final BLResponseBean result) {
         if (result != null && result.getCode() == 1) {
+            mSettingManager.insertOrReplace(SettingController.KEY_SETTING_IS_WE_CHAT_BIND, SettingController.VALUE_GENERIC_TRUE);
             mViewModel.setWeChatStatus(true);
         } else {
+            mSettingManager.insertOrReplace(SettingController.KEY_SETTING_IS_WE_CHAT_BIND, SettingController.VALUE_GENERIC_FALSE);
             mViewModel.setWeChatStatus(false);
         }
     }
@@ -147,7 +153,7 @@ public class SettingOthersModel extends BaseModel<SettingOthersViewModel>
      */
     public int getValueByType() {
         int size = 0;
-        final List<History> list = mHistoryManager.getValueByType("行程历史");
+        final List<History> list = mHistoryManager.getValueByType(2);
         if (list != null && !list.isEmpty()) {
             size = list.size();
         }

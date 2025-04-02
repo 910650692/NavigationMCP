@@ -3,8 +3,12 @@ package com.fy.navi.hmi.wechat;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
+import com.android.utils.NetWorkUtils;
+import com.android.utils.ResourceUtils;
+import com.android.utils.ToastUtils;
 import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
+import com.fy.navi.hmi.R;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.define.setting.SettingController;
 import com.fy.navi.service.define.user.wechat.BLResponseBean;
@@ -16,81 +20,142 @@ import com.fy.navi.ui.base.BaseModel;
 import java.util.Base64;
 import java.util.Objects;
 
-/**
- * @Description TODO
- * @Author fh
- * @date 2024/12/18
- */
+
 public class WeChatModel extends BaseModel<WeChatViewModel> implements WeChatCallBack {
 
     private static final String TAG = MapDefaultFinalTag.WECHAT_HMI_TAG;
-    private final WeChatPackage weChatPackage;
-    private final SettingManager settingManager;
+    private final WeChatPackage mWeChatPackage;
+    private final SettingManager mSettingManager;
 
     public WeChatModel() {
-        weChatPackage = WeChatPackage.getInstance();
-        weChatPackage.initWeChatService();
-        settingManager = new SettingManager();
-        settingManager.init();
+        mWeChatPackage = WeChatPackage.getInstance();
+        mWeChatPackage.initWeChatService();
+        mSettingManager = new SettingManager();
+        mSettingManager.init();
+        NetWorkUtils.Companion.getInstance().registerNetworkObserver(mNetworkObserver);
     }
 
     @Override
     public void onCreate() {
         super.onCreate();
-        weChatPackage.registerCallBack("WeChatModel",this);
+        mWeChatPackage.registerCallBack("WeChatModel",this);
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        weChatPackage.unRegisterCallBack("WeChatModel");
+        mWeChatPackage.unRegisterCallBack("WeChatModel");
+        NetWorkUtils.Companion.getInstance().unRegisterNetworkObserver(mNetworkObserver);
     }
 
     @Override
-    public void notifyGQRCodeConfirm(BLResponseBean result) {
+    public void notifyGQRCodeConfirm(final BLResponseBean result) {
         if (result != null && result.getCode() == 1) {
             Logger.d(TAG, "notifyGQRCodeConfirm = " + GsonUtils.toJson(result));
             mViewModel.setIsBind(true);
-            settingManager.insertOrReplace(SettingController.KEY_SETTING_IS_WE_CHAT_BIND, SettingController.VALUE_GENERIC_TRUE);
+            mSettingManager.insertOrReplace(SettingController.KEY_SETTING_IS_WE_CHAT_BIND, SettingController.VALUE_GENERIC_TRUE);
         }
     }
 
     @Override
-    public void notifyWeixinQrcode(BLResponseBean result) {
+    public void notifyWeixinQrcode(final BLResponseBean result) {
+        mViewModel.stopAnimation();
         if (result != null && result.getCode() == 1) {
             Logger.d(TAG, "notifyWeixinQrcode = " + GsonUtils.toJson(result));
-            byte[] imageBytes = Base64.getDecoder().decode(result.getImgStr());
-            Bitmap bitmap = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
+            final byte[] imageBytes = Base64.getDecoder().decode(result.getImgStr());
+            final Bitmap bitmap = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
             mViewModel.updateQRCode(bitmap);
+            mViewModel.updateLoadingVisible(false, false, true);
+        } else {
+            mViewModel.updateLoadingVisible(false, true, false);
         }
     }
 
     @Override
-    public void notifyWeixinStatus(BLResponseBean result) {
+    public void notifyWeixinStatus(final BLResponseBean result) {
         if (result != null) {
             Logger.d(TAG,"notifyWeixinStatus = " + GsonUtils.toJson(result));
             if (result.getCode() == 14 || result.getCode() == 10060) {
                 mViewModel.setIsBind(false);
-                weChatPackage.sendReqWsPpAutoWeixinQrcode();
-                settingManager.insertOrReplace(SettingController.KEY_SETTING_IS_WE_CHAT_BIND, SettingController.VALUE_GENERIC_FALSE);
+                mViewModel.startAnimation();
+                mViewModel.updateLoadingVisible(true, false, false);
+                mWeChatPackage.sendReqWsPpAutoWeixinQrcode();
+                mSettingManager.insertOrReplace(SettingController.KEY_SETTING_IS_WE_CHAT_BIND, SettingController.VALUE_GENERIC_FALSE);
             } else if (result.getCode() == 1) {
                 mViewModel.setIsBind(true);
-                settingManager.insertOrReplace(SettingController.KEY_SETTING_IS_WE_CHAT_BIND, SettingController.VALUE_GENERIC_TRUE);
+                mSettingManager.insertOrReplace(SettingController.KEY_SETTING_IS_WE_CHAT_BIND, SettingController.VALUE_GENERIC_TRUE);
             }
         }
     }
 
+    /**
+     * 发送请求获取二维码
+     */
+    public void sendReqWsPpAutoWeixinQrcode() {
+        mWeChatPackage.sendReqWsPpAutoWeixinQrcode();
+    }
+
+    /**
+     * 发送请求获取绑定状态
+     */
     public void getBindStatus() {
-        String isBind = settingManager.getValueByKey(SettingController.KEY_SETTING_IS_WE_CHAT_BIND);
+        final String isBind = mSettingManager.getValueByKey(SettingController.KEY_SETTING_IS_WE_CHAT_BIND);
         if (Objects.equals(isBind, SettingController.VALUE_GENERIC_TRUE)) {
             mViewModel.setIsBind(true);
         } else if (isBind == null){
             mViewModel.setIsBind(false);
-            weChatPackage.sendReqWsPpAutoWeixinStatus();
         } else {
+            if (!getNetworkState()) {
+                ToastUtils.Companion.getInstance().showCustomToastView(
+                        ResourceUtils.Companion.getInstance().getString(R.string.setting_qr_code_load_offline_toast));
+                mViewModel.updateLoadingVisible(false, true, false);
+                return;
+            }
             mViewModel.setIsBind(false);
-            weChatPackage.sendReqWsPpAutoWeixinQrcode();
         }
-        weChatPackage.sendReqWsPpAutoWeixinStatus();
+        mWeChatPackage.sendReqWsPpAutoWeixinStatus();
+    }
+
+    private final NetWorkUtils.NetworkObserver mNetworkObserver = new NetWorkUtils.NetworkObserver() {
+        @Override
+        public void onNetConnectSuccess() {
+
+        }
+
+        @Override
+        public void onNetDisConnect() {
+            ToastUtils.Companion.getInstance().showCustomToastView(
+                    ResourceUtils.Companion.getInstance().getString(R.string.setting_qr_code_load_offline_toast));
+            mViewModel.stopAnimation();
+            mViewModel.updateLoadingVisible(false, true, false);
+        }
+
+        @Override
+        public void onNetUnavailable() {
+
+        }
+
+        @Override
+        public void onNetBlockedStatusChanged() {
+
+        }
+
+        @Override
+        public void onNetLosing() {
+
+        }
+
+        @Override
+        public void onNetLinkPropertiesChanged() {
+
+        }
+    };
+
+    /**
+     * 获取网络状态
+     * @return 网络状态
+     */
+    public boolean getNetworkState() {
+        return Boolean.TRUE.equals(NetWorkUtils.Companion.getInstance().checkNetwork());
     }
 }

@@ -7,11 +7,10 @@ import com.fy.navi.service.define.bean.PreviewParams;
 import com.fy.navi.service.define.map.IBaseScreenMapView;
 import com.fy.navi.service.define.map.MapMode;
 import com.fy.navi.service.define.map.MapStateStyle;
-import com.fy.navi.service.define.map.MapSurfaceViewSizeParams;
-import com.fy.navi.service.define.map.MapTypeId;
+import com.fy.navi.service.define.map.MapViewParams;
+import com.fy.navi.service.define.map.MapType;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @Description TODO
@@ -24,154 +23,139 @@ public class MapAdapter {
     private IMapApi mIMapApi;
 
     public static MapAdapter getInstance() {
-        return Helper.ea;
+        return Holder.INSTANCE;
     }
 
-    public boolean init(MapTypeId mapTypeId) {
-        return mIMapApi.init(mapTypeId);
-    }
-
-    public void unBindMapView(IBaseScreenMapView mapView) {
-        mIMapApi.unBindMapView(mapView);
-    }
-
-    private static final class Helper {
-        private static final MapAdapter ea = new MapAdapter();
+    private static final class Holder {
+        private static final MapAdapter INSTANCE = new MapAdapter();
     }
 
     private MapAdapter() {
         mIMapApi = (IMapApi) AdapterConfig.getObject(GAODE_API_PKG, GAODE_API_CLS);
     }
 
-    public void registerCallback(MapTypeId mapTypeId, IMapAdapterCallback callback) {
+
+    public boolean init(MapType mapTypeId) {
+        return mIMapApi.initMapService(mapTypeId);
+    }
+
+    public void unBindMapView(IBaseScreenMapView mapView) {
+        mIMapApi.unBindMapView(mapView);
+    }
+
+    public void registerCallback(MapType mapTypeId, IMapAdapterCallback callback) {
         mIMapApi.registerCallback(mapTypeId, callback);
     }
 
     public void initMapView(IBaseScreenMapView mapSurfaceView) {
-        mIMapApi.initMapView(mapSurfaceView);
+        mIMapApi.bindMapView(mapSurfaceView);
     }
 
-    public void unInitMapView(IBaseScreenMapView mapSurfaceView) {
-        mIMapApi.unInitMapView(mapSurfaceView);
+    public void unInitMapService(MapType mapTypeId) {
+        mIMapApi.unitMapService(mapTypeId);
     }
 
-    public void unInitMapService() {
-        mIMapApi.unitMapService();
-    }
-
-    public void reduceLevel(MapTypeId mapTypeId) {
+    public void reduceLevel(MapType mapTypeId) {
         mIMapApi.setZoomLevel(mapTypeId, mIMapApi.getCurrentZoomLevel(mapTypeId) - AutoMapConstant.MAP_ZOOM_LEVEL_CHANGE_FLAG);
     }
 
-    public void setZoomLevel(MapTypeId mapTypeId, float level) {
+    public void setZoomLevel(MapType mapTypeId, float level) {
         mIMapApi.setZoomLevel(mapTypeId, level);
     }
 
-    public float getZoomLevel(MapTypeId mapTypeId) {
+    public float getZoomLevel(MapType mapTypeId) {
         return mIMapApi.getCurrentZoomLevel(mapTypeId);
     }
 
-    public void amplifyLevel(MapTypeId mapTypeId) {
+    public void amplifyLevel(MapType mapTypeId) {
         mIMapApi.setZoomLevel(mapTypeId, mIMapApi.getCurrentZoomLevel(mapTypeId) + AutoMapConstant.MAP_ZOOM_LEVEL_CHANGE_FLAG);
     }
 
-    public void setMapCenterInScreen(MapTypeId mapTypeId, int x, int y) {
+    public void setMapCenterInScreen(MapType mapTypeId, int x, int y) {
         mIMapApi.setMapCenterInScreen(mapTypeId, x, y);
     }
 
-    public void setMapCenter(MapTypeId mapTypeId, GeoPoint geoPoint) {
+    public void setMapCenter(MapType mapTypeId, GeoPoint geoPoint) {
         mIMapApi.setMapCenter(mapTypeId, geoPoint);
     }
 
-    public boolean setTrafficStates(MapTypeId mapTypeId, boolean isOpen) {
-       return mIMapApi.setTrafficStates(mapTypeId, isOpen);
+    public boolean setTrafficStates(MapType mapTypeId, boolean isOpen) {
+        return mIMapApi.setTrafficStates(mapTypeId, isOpen);
     }
 
-    public void setCustomLabelTypeVisible(MapTypeId mapTypeId, ArrayList<Integer> typeList, boolean visible) {
+    public void setCustomLabelTypeVisible(MapType mapTypeId, ArrayList<Integer> typeList, boolean visible) {
         mIMapApi.setCustomLabelTypeVisible(mapTypeId, typeList, visible);
     }
 
-    public void setMapViewTextSize(MapTypeId mapTypeId, float f) {
+    public void setMapViewTextSize(MapType mapTypeId, float f) {
         mIMapApi.setMapViewTextSize(mapTypeId, f);
     }
 
-    public void switchMapMode(MapTypeId mapTypeId) {
+    public boolean switchMapMode(MapType mapTypeId) {
         MapMode mapMode = mIMapApi.getCurrentMapMode(mapTypeId);
         mapMode = switch (mapMode) {
             case UP_2D -> MapMode.UP_3D;
             case UP_3D -> MapMode.NORTH_2D;
             case NORTH_2D -> MapMode.UP_2D;
         };
-        mIMapApi.setMapMode(mapTypeId, mapMode);
+        return mIMapApi.setMapMode(mapTypeId, mapMode);
     }
 
-    public MapMode getCurrentMapMode(MapTypeId mapTypeId) {
+    public MapMode getCurrentMapMode(MapType mapTypeId) {
         return mIMapApi.getCurrentMapMode(mapTypeId);
     }
 
-    public void switchMapMode(MapTypeId mapTypeId, MapMode mapMode) {
-        mIMapApi.setMapMode(mapTypeId, mapMode);
+    public boolean switchMapMode(MapType mapTypeId, MapMode mapMode) {
+        return mIMapApi.setMapMode(mapTypeId, mapMode);
     }
 
-    public void setMapStateStyle(MapTypeId mapTypeId, MapStateStyle mapStateStyle) {
+    public void setMapStateStyle(MapType mapTypeId, MapStateStyle mapStateStyle) {
         mIMapApi.setMapStateStyle(mapTypeId, mapStateStyle);
     }
 
-    public void goToCarPosition(MapTypeId mapTypeId, boolean bAnimation, boolean changeLevel) {
+    public void goToCarPosition(MapType mapTypeId, boolean bAnimation, boolean changeLevel) {
         mIMapApi.goToCarPosition(mapTypeId, bAnimation, changeLevel);
     }
 
-    public GeoPoint mapToLonLat(MapTypeId mapTypeId, double mapX, double mapY) {
+    public GeoPoint mapToLonLat(MapType mapTypeId, double mapX, double mapY) {
         return mIMapApi.mapToLonLat(mapTypeId, mapX, mapY);
     }
 
-    public MapSurfaceViewSizeParams getMapSurfaceParam(MapTypeId mapTypeId) {
+    public MapViewParams getMapSurfaceParam(MapType mapTypeId) {
         return mIMapApi.getMapSurfaceParam(mapTypeId);
     }
 
-    public void showPreview(MapTypeId mapTypeId, PreviewParams previewParams) {
+    public void showPreview(MapType mapTypeId, PreviewParams previewParams) {
         mIMapApi.showPreview(mapTypeId, previewParams);
     }
 
-    public void exitPreview(MapTypeId mapTypeId) {
+    public void exitPreview(MapType mapTypeId) {
         mIMapApi.exitPreview(mapTypeId);
     }
 
-    public void updateUiStyle(MapTypeId mapTypeId, int uiMode) {
+    public void updateUiStyle(MapType mapTypeId, int uiMode) {
         mIMapApi.updateUiStyle(mapTypeId, uiMode);
     }
 
     // 搜索需要的对角线参数
-    public String getMapBound(MapTypeId mapTypeId) {
+    public String getMapBound(MapType mapTypeId) {
         return mIMapApi.getMapBound(mapTypeId);
     }
 
     // 设置3D建筑是否显示
-    public void set3DBuilding(MapTypeId mapTypeId, boolean isOpen) {
+    public void set3DBuilding(MapType mapTypeId, boolean isOpen) {
         mIMapApi.set3DBuilding(mapTypeId, isOpen);
     }
 
-    public float getCurrentZoomLevel(MapTypeId mapTypeId) {
+    public float getCurrentZoomLevel(MapType mapTypeId) {
         return mIMapApi.getCurrentZoomLevel(mapTypeId);
     }
 
-    public int getCurrentZoomScale(MapTypeId mapTypeId) {
+    public int getCurrentZoomScale(MapType mapTypeId) {
         return mIMapApi.getCurrentScale(mapTypeId);
     }
 
-    public void setPitchAngle(MapTypeId mapTypeId, float pitch, boolean isAnimation, boolean isSync) {
-        mIMapApi.setPitchAngle(mapTypeId, pitch, isAnimation, isSync);
-    }
-
-    public void addIsEnterPreviewCallback(MapTypeId mapTypeId, IsEnterPreviewCallback callback) {
-        mIMapApi.addIsEnterPreviewCallback(mapTypeId, callback);
-    }
-
-    public void removeIsEnterPreviewCallback(MapTypeId mapTypeId, IsEnterPreviewCallback callback) {
-        mIMapApi.removeIsEnterPreviewCallback(mapTypeId, callback);
-    }
-
-    public boolean getIsEnterPreview(MapTypeId mapTypeId) {
+    public boolean getIsEnterPreview(MapType mapTypeId) {
         return mIMapApi.getIsEnterPreview(mapTypeId);
     }
 }

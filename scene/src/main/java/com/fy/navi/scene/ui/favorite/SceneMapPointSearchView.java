@@ -21,10 +21,11 @@ import com.fy.navi.service.AutoMapConstant;
 import com.fy.navi.service.AutoMapConstant.HomeCompanyType;
 import com.fy.navi.service.AutoMapConstant.PoiType;
 import com.fy.navi.service.MapDefaultFinalTag;
-import com.fy.navi.service.define.map.MapTypeId;
+import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.search.FavoriteInfo;
 import com.fy.navi.service.define.search.PoiInfoEntity;
 import com.fy.navi.service.define.search.SearchResultEntity;
+import com.fy.navi.service.logicpaket.layer.LayerPackage;
 import com.fy.navi.service.logicpaket.route.RoutePackage;
 import com.fy.navi.service.logicpaket.search.SearchPackage;
 import com.fy.navi.service.logicpaket.setting.SettingUpdateObservable;
@@ -47,6 +48,7 @@ public class SceneMapPointSearchView extends BaseSceneView<SceneMapPointSearchVi
     private PoiInfoEntity mPoiInfoEntity;
     //common_name：1，家  2，公司 3.常用地址  0，普通收藏点
     private int mCommonName;
+
 
     public SceneMapPointSearchView(@NonNull final Context context) {
         super(context);
@@ -172,7 +174,7 @@ public class SceneMapPointSearchView extends BaseSceneView<SceneMapPointSearchVi
         ToastUtils.Companion.getInstance().showCustomToastView(mHintText);
         if (mCommonName == HomeCompanyType.ALONG_WAY) {
             if (SearchPackage.getInstance().isAlongWaySearch()) {
-                RoutePackage.getInstance().addViaPoint(MapTypeId.MAIN_SCREEN_MAIN_MAP, mPoiInfoEntity);
+                RoutePackage.getInstance().addViaPoint(MapType.MAIN_SCREEN_MAIN_MAP, mPoiInfoEntity);
                 Logger.d("mapMsgPushInfoToPoiInfoEntity1: " + GsonUtils.toJson(mPoiInfoEntity));
             }
             closeAllFragmentsUntilTargetFragment("MainAlongWaySearchFragment");
@@ -180,13 +182,17 @@ public class SceneMapPointSearchView extends BaseSceneView<SceneMapPointSearchVi
             //点击添加设置家、公司、常用地址、收藏等commonName (1家，2公司,3常用地址，0普通收藏点）
             final FavoriteInfo favoriteInfo = new FavoriteInfo();
             favoriteInfo.setCommonName(mCommonName)
-                    .setItemId(mPoiInfoEntity.getPid() + DIVIDER + mPoiInfoEntity.getName()
-                            + DIVIDER + mPoiInfoEntity.getPoint().getLon() + DIVIDER + mPoiInfoEntity.getPoint().getLat())
                     .setUpdateTime(new Date().getTime());
             mPoiInfoEntity.setFavoriteInfo(favoriteInfo);
-            BehaviorPackage.getInstance().addFavoriteData(mPoiInfoEntity, mCommonName);
+            BehaviorPackage.getInstance().addFavorite(mPoiInfoEntity, mCommonName);
+//            BehaviorPackage.getInstance().addFavoriteData(mPoiInfoEntity, mCommonName);
             SettingUpdateObservable.getInstance().onUpdateSyncTime();
-            closeAllFragment();
+//            if (mCommonName == HomeCompanyType.COLLECTION) {
+                closeAllFragmentsUntilTargetFragment("HomeCompanyFragment");
+                showCurrentFragment();
+//            } else {
+//                closeAllFragment();
+//            }
         }
     }
 

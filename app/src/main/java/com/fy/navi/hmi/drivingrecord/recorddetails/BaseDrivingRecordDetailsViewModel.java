@@ -4,17 +4,15 @@ import android.app.Application;
 
 import androidx.annotation.NonNull;
 
+import com.fy.navi.service.define.map.MapType;
+import com.fy.navi.service.logicpaket.layer.LayerPackage;
 import com.fy.navi.ui.action.Action;
 import com.fy.navi.ui.base.BaseViewModel;
 
-/**
- * @Description TODO
- * @Author fh
- * @date 2024/12/24
- */
+
 public class BaseDrivingRecordDetailsViewModel extends BaseViewModel<DrivingRecordDetailsFragment, DrivingRecordDetailsModel> {
 
-    public BaseDrivingRecordDetailsViewModel(@NonNull Application application) {
+    public BaseDrivingRecordDetailsViewModel(@NonNull final Application application) {
         super(application);
     }
 
@@ -24,19 +22,24 @@ public class BaseDrivingRecordDetailsViewModel extends BaseViewModel<DrivingReco
     }
 
     //返回上一页
-    public Action drivingRecordDetailsBack = () -> {
+    public Action mDrivingRecordDetailsBack = () -> {
+        LayerPackage.getInstance().addLayerItemOfUserTrackDepth(MapType.MAIN_SCREEN_MAIN_MAP, null, false);
         closeFragment(true);
     };
 
     /**
      * 删除行程详情
-     * @param id
+     * @param id 行程详情id
      */
-    public void delBehaviorData(String id) {
+    public void delBehaviorData(final String id) {
         mModel.delBehaviorData(id);
     }
 
-    public void closeDrivingRecordDetailsView() {
-        closeFragment(true);
+    /**
+     * 通过数据type删除其对应info
+     * @param fileName 数据文件名
+     */
+    public void deleteValueByFileName(final String fileName) {
+        mModel.deleteValueByFileName(fileName);
     }
 }

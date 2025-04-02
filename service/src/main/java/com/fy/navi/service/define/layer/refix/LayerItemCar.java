@@ -10,13 +10,11 @@ import lombok.Setter;
 @Getter
 public class LayerItemCar extends LayerItemBase {
 
-    private int speed;
+    private CarModeType carModeType = CarModeType.CAR_MODEL_TYPE_2D;
 
-    public int getSpeed() {
-        return speed;
-    }
+    private CarSceneType carType = CarSceneType.SCENE_DEFAULT;
 
-    public void setSpeed(int speed) {
-        this.speed = speed;
+    public LayerItemCar(CarModeType carModeType) {
+        this.carModeType = carModeType;
     }
 }

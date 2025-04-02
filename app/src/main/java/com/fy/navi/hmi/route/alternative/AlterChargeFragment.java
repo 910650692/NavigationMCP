@@ -90,6 +90,7 @@ public class AlterChargeFragment extends BaseFragment<FragmentAlterChargeBinding
         }
         mViewModel.getShowAlterCharge().set(true);
         mBinding.tvSelectedChargeStation.setText(routeChargeStationDetailInfo.getMName());
+        mViewModel.getCurrentDetails(routeChargeStationDetailInfo.getMPoiID());
         mViewModel.requestAlterChargeStation(routeChargeStationDetailInfo.getMPoiID());
     }
 
@@ -180,7 +181,7 @@ public class AlterChargeFragment extends BaseFragment<FragmentAlterChargeBinding
                 mViewModel.getRouteSearchTypeVisibility().set(2);
                 mBinding.scenePoiDetailsChargingStationView.poiChargeFastOccupied.setText(String.valueOf(chargeInfo.getFast_free()));
                 mBinding.scenePoiDetailsChargingStationView.poiChargeFastTotal.setText(ResourceUtils.Companion.getInstance()
-                        .getString(R.string.route_details_jg) + chargeInfo.getFast_free());
+                        .getString(R.string.route_details_jg) + chargeInfo.getFast_total());
                 mBinding.scenePoiDetailsChargingStationView.poiChargeFastCurrentAndVlot.setText(getString(R.string.route_charge_info_format
                         , chargeInfo.getFastPower() , chargeInfo.getFastVolt()));
                 mBinding.scenePoiDetailsChargingStationView.poiChargeSlowOccupied.setText(String.valueOf(chargeInfo.getSlow_free()));

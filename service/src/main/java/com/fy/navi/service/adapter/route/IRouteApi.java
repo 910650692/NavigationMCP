@@ -1,7 +1,7 @@
 package com.fy.navi.service.adapter.route;
 
 import com.fy.navi.service.define.layer.RouteLineLayerParam;
-import com.fy.navi.service.define.map.MapTypeId;
+import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.route.RouteAvoidInfo;
 import com.fy.navi.service.define.route.RouteMsgPushInfo;
 import com.fy.navi.service.define.route.RouteParam;
@@ -84,29 +84,10 @@ public interface IRouteApi {
     void unInitRouteService();
 
     /**
-     * 设置算路计划
-     * @param isNaviActive 是否导航中
-     */
-    void setRoutePlan(boolean isNaviActive);
-
-    /**
-     * 设置熟悉算路
-     * @param isFamiliarRoute 是否是熟悉算路
-     */
-    void setFamiliarRoute(boolean isFamiliarRoute);
-
-    /**
      * 设置避开道路
      * @param routeAvoidInfo 避开参数
      */
     void setAvoidRoad(RouteAvoidInfo routeAvoidInfo);
-
-    /**
-     * 设置限行+车牌开关
-     * @param plateNumber 车牌
-     * @param isTrafficRestrictionOpen 开关是否打开
-     */
-    void setRestriction(String plateNumber, boolean isTrafficRestrictionOpen);
 
     /**
      * 设置请求控制
@@ -116,18 +97,6 @@ public interface IRouteApi {
      * @param routePlan 引导是否激活
      */
     void setRequestControl(RoutePreferenceID id, String num, boolean restriction, boolean routePlan);
-
-    /**
-     * 设置电车
-     * @param isCarElecPlanOpen 电车开关
-     */
-    void setCarElecPlantion(boolean isCarElecPlanOpen);
-
-    /**
-     * 设置交通
-     * @param isOpenTraffic 交通开关
-     */
-    void setTrafficTrip(boolean isOpenTraffic);
 
     /**
      * 设置终点
@@ -140,7 +109,7 @@ public interface IRouteApi {
      * @param routeMsgPushInfo 算路还原参数
      * @param mapTypeId 屏幕Id
      */
-    void requestRouteRestoration(RouteMsgPushInfo routeMsgPushInfo, MapTypeId mapTypeId);
+    void requestRouteRestoration(RouteMsgPushInfo routeMsgPushInfo, MapType mapTypeId);
 
     /**
      * 路线还原，手机算路

@@ -53,6 +53,11 @@ public class SceneNaviEtaView extends NaviSceneBase<SceneNaviEtaViewBinding, Sce
     }
 
     @Override
+    protected String getSceneName() {
+        return NaviSceneId.NAVI_SCENE_ETA.name();
+    }
+
+    @Override
     public INaviSceneEvent getNaviSceneEvent() {
         return NaviSceneManager.getInstance();
     }
@@ -72,6 +77,14 @@ public class SceneNaviEtaView extends NaviSceneBase<SceneNaviEtaViewBinding, Sce
     @Override
     public void hide() {
         super.hide();
+        if (mISceneCallback != null) {
+            mISceneCallback.updateSceneVisible(NaviSceneId.NAVI_SCENE_ETA, false);
+        }
+    }
+
+    @Override
+    public void close() {
+        super.close();
         if (mISceneCallback != null) {
             mISceneCallback.updateSceneVisible(NaviSceneId.NAVI_SCENE_ETA, false);
         }

@@ -26,13 +26,16 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             android:layout_marginTop="@dimen/dp_5"
-            tools:color="@color/navi_red_text">
+            tools:color="@color/navi_color_FF595F_100">
 
             <com.fy.navi.ui.view.SkinTextView
                 android:id="@+id/stv_via_info"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/navi_tbt_div_info_color"
+                android:textColor="@color/navi_color_000000_100"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:maxWidth="@dimen/dp_900"
                 android:textSize="@dimen/sp_36"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -49,7 +52,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
-                android:background="@color/navi_line_color_4D818199"
+                android:background="@color/navi_color_818199_30"
                 android:layout_marginBottom="@dimen/dp_126"/>
 
 
@@ -57,7 +60,7 @@
                 android:id="@+id/siv_vertical_line"
                 android:layout_width="@dimen/dp_2"
                 android:layout_height="@dimen/dp_126"
-                android:background="@color/navi_line_color_4D818199"
+                android:background="@color/navi_color_818199_30"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"/>
@@ -73,7 +76,7 @@
                 app:layout_constraintTop_toTopOf="@+id/siv_horizontal_line"
                 android:textSize="@dimen/sp_36"
                 android:padding="@dimen/dp_24"
-                android:textColor="@color/navi_text_color_FF3377FF"
+                android:textColor="@color/navi_color_3377FF_100"
                 android:text="@string/confirm"/>
 
             <com.fy.navi.scene.ui.navi.view.ButtonText
@@ -88,7 +91,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 android:textSize="@dimen/sp_36"
                 android:text="@string/cancel"
-                android:textColor="@color/navi_tbt_div_info_color"/>
+                android:textColor="@color/navi_color_000000_100"/>
 
 
 

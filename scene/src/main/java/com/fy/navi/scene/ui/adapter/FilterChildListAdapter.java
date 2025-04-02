@@ -1,6 +1,5 @@
 package com.fy.navi.scene.ui.adapter;
 
-import static com.fy.navi.service.MapDefaultFinalTag.SEARCH_HMI_TAG;
 
 import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
@@ -15,37 +14,38 @@ import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
 import com.fy.navi.scene.R;
 import com.fy.navi.scene.api.search.IOnFilterChildItemClickListener;
-import com.fy.navi.scene.api.search.IOnFilterItemClickListener;
 import com.fy.navi.scene.databinding.FilterChildItemBinding;
-import com.fy.navi.scene.databinding.FilterItemBinding;
-import com.fy.navi.service.define.search.SearchCategoryLocalInfo;
+import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.define.search.SearchChildCategoryLocalInfo;
-import com.fy.navi.service.define.utils.NumberUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class FilterChildListAdapter extends RecyclerView.Adapter<FilterChildListAdapter.Holder> {
-    private List<SearchChildCategoryLocalInfo> mSearchCategoryLocalInfos;
-    private IOnFilterChildItemClickListener filterItemClickListener;
-    private boolean isCollapse = true;
+    private final List<SearchChildCategoryLocalInfo> mSearchCategoryLocalInfos;
+    private IOnFilterChildItemClickListener mFilterItemClickListener;
+    private boolean mIsCollapse = true;
 
     public boolean isCollapse() {
-        return isCollapse;
+        return mIsCollapse;
     }
 
-    public void setCollapse(boolean collapse) {
-        isCollapse = collapse;
+    public void setCollapse(final boolean collapse) {
+        mIsCollapse = collapse;
     }
     public FilterChildListAdapter() {
         mSearchCategoryLocalInfos = new ArrayList<>();
     }
 
-    public void setFilterItemClickListener(IOnFilterChildItemClickListener filterItemClickListener) {
-        this.filterItemClickListener = filterItemClickListener;
+    public void setFilterItemClickListener(final IOnFilterChildItemClickListener filterItemClickListener) {
+        this.mFilterItemClickListener = filterItemClickListener;
     }
 
-    public void setCategoryList(List<SearchChildCategoryLocalInfo> infos) {
+    /**
+     * 设置分类列表
+     * @param infos 分类列表
+     */
+    public void setCategoryList(final List<SearchChildCategoryLocalInfo> infos) {
         if (ConvertUtils.isEmpty(infos)) {
             mSearchCategoryLocalInfos.clear();
             notifyDataSetChanged();
@@ -57,8 +57,8 @@ public class FilterChildListAdapter extends RecyclerView.Adapter<FilterChildList
     }
 
     @Override
-    public Holder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        FilterChildItemBinding filterItemBinding =
+    public Holder onCreateViewHolder(@NonNull final ViewGroup parent, final int viewType) {
+        final FilterChildItemBinding filterItemBinding =
                 DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()),
                         R.layout.filter_child_item, parent, false);
         return new Holder(filterItemBinding);
@@ -69,56 +69,56 @@ public class FilterChildListAdapter extends RecyclerView.Adapter<FilterChildList
         if (mSearchCategoryLocalInfos == null) {
             return 0;
         }
-        if (isCollapse) {
+        if (mIsCollapse) {
             return Math.min(mSearchCategoryLocalInfos.size(), 6);
         }
         return mSearchCategoryLocalInfos.size() + 1;
     }
 
     @Override
-    public void onBindViewHolder(@NonNull Holder holder, @SuppressLint("RecyclerView") int position) {
+    public void onBindViewHolder(@NonNull final Holder holder, @SuppressLint("RecyclerView")final int position) {
         if (position == mSearchCategoryLocalInfos.size()) {
-            holder.filterItemBinding.filterChildImg.setVisibility(View.VISIBLE);
-            holder.filterItemBinding.filterChildImg.setImageResource(R.drawable.img_up_48);
-            holder.filterItemBinding.filterChildText.setVisibility(View.GONE);
-            holder.filterItemBinding.getRoot().setOnClickListener(new View.OnClickListener() {
+            holder.mfilterItemBinding.filterChildImg.setVisibility(View.VISIBLE);
+            holder.mfilterItemBinding.filterChildImg.setImageResource(R.drawable.img_up_48);
+            holder.mfilterItemBinding.filterChildText.setVisibility(View.GONE);
+            holder.mfilterItemBinding.getRoot().setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onClick(View view) {
-                    isCollapse = true;
+                public void onClick(final View view) {
+                    mIsCollapse = true;
                     notifyDataSetChanged();
                 }
             });
             return;
         }
-        SearchChildCategoryLocalInfo localInfo = mSearchCategoryLocalInfos.get(position);
+        final SearchChildCategoryLocalInfo localInfo = mSearchCategoryLocalInfos.get(position);
         if (localInfo == null) {
-            Logger.d(SEARCH_HMI_TAG, "onBindViewHolder localInfo is null");
+            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "onBindViewHolder localInfo is null");
             return;
         }
-        if (isCollapse && position == 5 && mSearchCategoryLocalInfos.size() > 6) {
-            holder.filterItemBinding.filterChildImg.setVisibility(View.VISIBLE);
-            holder.filterItemBinding.filterChildText.setVisibility(View.GONE);
-            holder.filterItemBinding.getRoot().setOnClickListener(new View.OnClickListener() {
+        if (mIsCollapse && position == 5 && mSearchCategoryLocalInfos.size() > 6) {
+            holder.mfilterItemBinding.filterChildImg.setVisibility(View.VISIBLE);
+            holder.mfilterItemBinding.filterChildText.setVisibility(View.GONE);
+            holder.mfilterItemBinding.getRoot().setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onClick(View view) {
-                    isCollapse = false;
+                public void onClick(final View view) {
+                    mIsCollapse = false;
                     notifyDataSetChanged();
                 }
             });
         } else {
-            holder.filterItemBinding.filterChildImg.setVisibility(View.GONE);
-            holder.filterItemBinding.filterChildText.setVisibility(View.VISIBLE);
-            holder.filterItemBinding.filterChildText.setText(localInfo.getName());
-            holder.filterItemBinding.filterChildText.setSelected(localInfo.getChecked() == 1);
-            holder.filterItemBinding.filterChildRoot.setSelected(localInfo.getChecked() == 1);
-            holder.filterItemBinding.getRoot().setOnClickListener(new View.OnClickListener() {
+            holder.mfilterItemBinding.filterChildImg.setVisibility(View.GONE);
+            holder.mfilterItemBinding.filterChildText.setVisibility(View.VISIBLE);
+            holder.mfilterItemBinding.filterChildText.setText(localInfo.getName());
+            holder.mfilterItemBinding.filterChildText.setSelected(localInfo.getChecked() == 1);
+            holder.mfilterItemBinding.filterChildRoot.setSelected(localInfo.getChecked() == 1);
+            holder.mfilterItemBinding.getRoot().setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onClick(View view) {
-                    if (filterItemClickListener != null) {
-                        Logger.d(SEARCH_HMI_TAG, "onClick childItem position: " + position
+                public void onClick(final View view) {
+                    if (mFilterItemClickListener != null) {
+                        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "onClick childItem position: " + position
                                 + " ,name: " + localInfo.getName());
                         refreshItemCheckedState(position);
-                        filterItemClickListener.onItemClick(position);
+                        mFilterItemClickListener.onItemClick(position);
                     }
                     notifyDataSetChanged();
                 }
@@ -130,7 +130,7 @@ public class FilterChildListAdapter extends RecyclerView.Adapter<FilterChildList
      * 刷新item的选中状态
      * @param position 点击的位置
      */
-    private void refreshItemCheckedState(int position) {
+    private void refreshItemCheckedState(final int position) {
         //如果点击位置和选中的位置相同，无操作
         if (mSearchCategoryLocalInfos.get(position).getChecked() == 1) {
             return;
@@ -145,12 +145,12 @@ public class FilterChildListAdapter extends RecyclerView.Adapter<FilterChildList
         }
     }
 
-    public class Holder extends RecyclerView.ViewHolder {
-        public FilterChildItemBinding filterItemBinding;
+    public static class Holder extends RecyclerView.ViewHolder {
+        private final FilterChildItemBinding mfilterItemBinding;
 
-        public Holder(FilterChildItemBinding filterItemBinding) {
+        public Holder(final FilterChildItemBinding filterItemBinding) {
             super(filterItemBinding.getRoot());
-            this.filterItemBinding = filterItemBinding;
+            this.mfilterItemBinding = filterItemBinding;
             filterItemBinding.setHolder(this);
         }
     }

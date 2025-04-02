@@ -37,7 +37,7 @@
             android:layout_marginTop="@dimen/dp_30"
             android:gravity="center"
             android:text="@string/limit_loading"
-            android:textColor="@color/main_map_limit_loading"
+            android:textColor="@color/traffic_sub_title_color"
             android:textSize="@dimen/sp_30"
             android:visibility="@{ViewModel.uiState == TrafficEventUiState.LOADING ? View.VISIBLE : View.GONE}"
             app:layout_constraintBottom_toTopOf="@+id/tv_retry"

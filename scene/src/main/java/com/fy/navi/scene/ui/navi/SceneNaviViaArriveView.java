@@ -19,6 +19,7 @@ import com.fy.navi.scene.ui.navi.manager.INaviSceneEvent;
 import com.fy.navi.scene.ui.navi.manager.NaviSceneBase;
 import com.fy.navi.scene.ui.navi.manager.NaviSceneId;
 import com.fy.navi.scene.ui.navi.manager.NaviSceneManager;
+import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.route.RouteParam;
 import com.fy.navi.service.logicpaket.route.RoutePackage;
 
@@ -27,8 +28,6 @@ import java.util.List;
 public class SceneNaviViaArriveView extends NaviSceneBase<SceneNaviViaArriveViewBinding, SceneNaviViaArriveViewImpl> {
     public static final String TAG = "SceneNaviViaArriveView";
     private ISceneCallback mISceneCallback;
-
-    private long mCurrentViaIndex = -1;
 
     public SceneNaviViaArriveView(@NonNull final Context context) {
         super(context);
@@ -50,19 +49,12 @@ public class SceneNaviViaArriveView extends NaviSceneBase<SceneNaviViaArriveView
         Logger.i(TAG, "show");
         // 提前点击显示，第一个途经点没有经过所以默认的viaIndex为-1
         final List<RouteParam> allPoiParamList = RoutePackage.getInstance().
-                getAllPoiParamList(mMapTypeId);
+                getAllPoiParamList(MapType.MAIN_SCREEN_MAIN_MAP);
         if (!ConvertUtils.isEmpty(allPoiParamList) && allPoiParamList.size() > 2) {
-            if (mCurrentViaIndex == -1) {
-                // 默认显示第一个
-                mViewBinding.stvViaInfo.setText(String.format(getResources().
-                        getString(R.string.is_arrived),
-                        allPoiParamList.get(1).getName()));
-            } else {
-                // 因为是提前显示这边得加二
-                mViewBinding.stvViaInfo.setText(String.format(getResources().
-                        getString(R.string.is_arrived), allPoiParamList.
-                        get((int) mCurrentViaIndex + 2).getName()));
-            }
+            // 显示第一个途经点
+            mViewBinding.stvViaInfo.setText(String.format(getResources().
+                            getString(R.string.is_arrived),
+                    allPoiParamList.get(1).getName()));
         }
         if (mISceneCallback != null) {
             mISceneCallback.updateSceneVisible(NaviSceneId.NAVI_VIA_ARRIVED_POP, true);
@@ -88,6 +80,11 @@ public class SceneNaviViaArriveView extends NaviSceneBase<SceneNaviViaArriveView
     @Override
     protected NaviSceneId getSceneId() {
         return NaviSceneId.NAVI_VIA_ARRIVED_POP;
+    }
+
+    @Override
+    protected String getSceneName() {
+        return NaviSceneId.NAVI_VIA_ARRIVED_POP.name();
     }
 
     @Override
@@ -132,7 +129,6 @@ public class SceneNaviViaArriveView extends NaviSceneBase<SceneNaviViaArriveView
      */
     public void onUpdateViaPass(final long viaIndex) {
         Logger.i(TAG, "onUpdateViaPass viaIndex = " + viaIndex);
-        mCurrentViaIndex = viaIndex;
     }
 
     /**
@@ -140,6 +136,5 @@ public class SceneNaviViaArriveView extends NaviSceneBase<SceneNaviViaArriveView
      */
     public void startNavigation() {
         Logger.i(TAG, "startNavigation");
-        mCurrentViaIndex = -1;
     }
 }

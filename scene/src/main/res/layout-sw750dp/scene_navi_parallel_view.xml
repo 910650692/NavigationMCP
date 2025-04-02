@@ -35,7 +35,7 @@
             android:contentDescription="@string/navi_bridge_down"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:background="@color/navi_red_text" />
+            tools:background="@color/navi_color_FF595F_100" />
 
         <com.fy.navi.ui.view.SkinImageView
             android:id="@+id/siv_bridge_up_down"
@@ -54,7 +54,7 @@
             android:layout_marginTop="@dimen/dp_3"
             android:gravity="center"
             android:text="@string/navi_bridge_down"
-            android:textColor="@color/navi_tbt_arrived_color"
+            android:textColor="@color/navi_color_000000_60"
             android:textSize="@dimen/sp_36"
             app:layout_constraintEnd_toEndOf="@id/sv_bridge_up_down"
             app:layout_constraintStart_toStartOf="@id/sv_bridge_up_down"
@@ -79,7 +79,7 @@
             app:layout_constraintStart_toEndOf="@id/sv_bridge_up_down"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_goneMarginStart="@dimen/dp_0"
-            tools:background="@color/navi_red_text" />
+            tools:background="@color/navi_color_FF595F_100" />
 
         <com.fy.navi.ui.view.SkinImageView
             android:id="@+id/siv_main_auxiliary"
@@ -98,7 +98,7 @@
             android:layout_marginTop="@dimen/dp_3"
             android:gravity="center"
             android:text="@string/navi_road_auxiliary"
-            android:textColor="@color/navi_tbt_arrived_color"
+            android:textColor="@color/navi_color_000000_60"
             android:textSize="@dimen/sp_36"
             app:layout_constraintEnd_toEndOf="@id/sv_main_auxiliary"
             app:layout_constraintStart_toStartOf="@id/sv_main_auxiliary"

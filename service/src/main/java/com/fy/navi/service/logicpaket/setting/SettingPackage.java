@@ -9,10 +9,10 @@ import com.android.utils.log.Logger;
 import com.fy.navi.service.R;
 import com.fy.navi.service.adapter.setting.SettingAdapter;
 import com.fy.navi.service.adapter.setting.SettingAdapterCallback;
-import com.fy.navi.service.define.layer.CarModeType;
+import com.fy.navi.service.define.layer.refix.CarModeType;
 import com.fy.navi.service.define.map.GmBizUserFavoritePoint;
 import com.fy.navi.service.define.map.MapMode;
-import com.fy.navi.service.define.map.MapTypeId;
+import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.route.RoutePreferenceID;
 import com.fy.navi.service.define.setting.SettingController;
 import com.fy.navi.service.greendao.favorite.Favorite;
@@ -57,7 +57,8 @@ public final class SettingPackage implements SettingAdapterCallback {
 
     /**
      * 注册回调
-     * @param key 回调key
+     *
+     * @param key      回调key
      * @param callback 回调
      */
     public synchronized void registerCallBack(final String key, final SettingCallback callback) {
@@ -68,7 +69,8 @@ public final class SettingPackage implements SettingAdapterCallback {
 
     /**
      * 监听设置项实时变化
-     * @param key 回调key
+     *
+     * @param key      回调key
      * @param callback 回调
      */
     public synchronized void setSettingChangeCallback(final String key, final SettingChangeCallback callback) {
@@ -84,6 +86,7 @@ public final class SettingPackage implements SettingAdapterCallback {
     public void init() {
         mSettingAdapter.initSetting();
         mSettingAdapter.registerCallback("SettingPackage", this);
+        initAllSetting();
     }
 
     @Override
@@ -96,6 +99,7 @@ public final class SettingPackage implements SettingAdapterCallback {
 
     /**
      * 从数据库获取数据
+     *
      * @param key 数据库key
      * @return 数据库value
      */
@@ -105,6 +109,7 @@ public final class SettingPackage implements SettingAdapterCallback {
 
     /**
      * 设置算路偏好
+     *
      * @param routePreferenceID 算路偏好
      */
     public void setRoutePreference(final RoutePreferenceID routePreferenceID) {
@@ -118,37 +123,47 @@ public final class SettingPackage implements SettingAdapterCallback {
 
     /**
      * 将算路偏好转换为数据库存储的算路偏好
+     *
      * @param routePreference 算路偏好
      * @return 数据库对应的算路偏好
      */
     public String formatPreferenceToDB(final RoutePreferenceID routePreference) {
         return switch (routePreference) {
             case PREFERENCE_RECOMMEND -> SettingController.VALUE_ROUTE_PREFERENCE_RECOMMEND;
-            case PREFERENCE_AVOIDCONGESTION -> SettingController.VALUE_ROUTE_PREFERENCE_AVOID_CONGESTION;
+            case PREFERENCE_AVOIDCONGESTION ->
+                    SettingController.VALUE_ROUTE_PREFERENCE_AVOID_CONGESTION;
             case PREFERENCE_LESSCHARGE -> SettingController.VALUE_ROUTE_PREFERENCE_LESS_CHARGE;
             case PREFERENCE_NOTHIGHWAY -> SettingController.VALUE_ROUTE_PREFERENCE_NOT_HIGHWAY;
             case PREFERENCE_FIRSTHIGHWAY -> SettingController.VALUE_ROUTE_PREFERENCE_FIRST_HIGHWAY;
-            case PREFERENCE_FIRSTMAINROAD -> SettingController.VALUE_ROUTE_PREFERENCE_FIRST_MAIN_ROAD;
+            case PREFERENCE_FIRSTMAINROAD ->
+                    SettingController.VALUE_ROUTE_PREFERENCE_FIRST_MAIN_ROAD;
             case PREFERENCE_FASTESTSPEED -> SettingController.VALUE_ROUTE_PREFERENCE_FASTEST_SPEED;
-            case PREFERENCE_AVOIDCONGESTION_AND_LESSCHARGE -> SettingController.VALUE_ROUTE_PREFERENCE_AVOID_CONGESTION_AND_LESS_CHARGE;
-            case PREFERENCE_AVOIDCONGESTION_AND_NOTHIGHWAY -> SettingController.VALUE_ROUTE_PREFERENCE_AVOID_CONGESTION_AND_NOT_HIGHWAY;
-            case PREFERENCE_AVOIDCONGESTION_AND_FIRSTHIGHWAY -> SettingController.VALUE_ROUTE_PREFERENCE_AVOID_CONGESTION_AND_FIRST_HIGHWAY;
-            case PREFERENCE_LESSCHARGE_AND_NOTHIGHWAY -> SettingController.VALUE_ROUTE_PREFERENCE_LESS_CHARGE_AND_NOT_HIGHWAY;
+            case PREFERENCE_AVOIDCONGESTION_AND_LESSCHARGE ->
+                    SettingController.VALUE_ROUTE_PREFERENCE_AVOID_CONGESTION_AND_LESS_CHARGE;
+            case PREFERENCE_AVOIDCONGESTION_AND_NOTHIGHWAY ->
+                    SettingController.VALUE_ROUTE_PREFERENCE_AVOID_CONGESTION_AND_NOT_HIGHWAY;
+            case PREFERENCE_AVOIDCONGESTION_AND_FIRSTHIGHWAY ->
+                    SettingController.VALUE_ROUTE_PREFERENCE_AVOID_CONGESTION_AND_FIRST_HIGHWAY;
+            case PREFERENCE_LESSCHARGE_AND_NOTHIGHWAY ->
+                    SettingController.VALUE_ROUTE_PREFERENCE_LESS_CHARGE_AND_NOT_HIGHWAY;
             case PREFERENCE_AVOIDCONGESTION_AND_LESSCHARGE_AND_NOTHIGHWAY ->
                     SettingController.VALUE_ROUTE_PREFERENCE_AVOID_CONGESTION_AND_LESS_CHARGE_AND_NOT_HIGHWAY;
-            case PREFERENCE_AVOIDCONGESTION_AND_FIRSTMAINROAD -> SettingController.VALUE_ROUTE_PREFERENCE_AVOID_CONGESTION_AND_FIRST_MAIN_ROAD;
-            case PREFERENCE_AVOIDCONGESTION_AND_FASTESTSPEED -> SettingController.VALUE_ROUTE_PREFERENCE_AVOID_CONGESTION_AND_FASTEST_SPEED;
+            case PREFERENCE_AVOIDCONGESTION_AND_FIRSTMAINROAD ->
+                    SettingController.VALUE_ROUTE_PREFERENCE_AVOID_CONGESTION_AND_FIRST_MAIN_ROAD;
+            case PREFERENCE_AVOIDCONGESTION_AND_FASTESTSPEED ->
+                    SettingController.VALUE_ROUTE_PREFERENCE_AVOID_CONGESTION_AND_FASTEST_SPEED;
         };
     }
 
 
     /**
      * 获取算路偏好
+     *
      * @return 算路偏好
      */
     public RoutePreferenceID getRoutePreference() {
         final RoutePreferenceID routePreferenceID;
-        final String data  = mSettingManager.getValueByKey(SettingController.KEY_SETTING_GUIDE_ROUTE_PREFERENCE);
+        final String data = mSettingManager.getValueByKey(SettingController.KEY_SETTING_GUIDE_ROUTE_PREFERENCE);
         if (!data.isEmpty()) {
             routePreferenceID = getRoutePreferenceFromDB();
         } else {
@@ -161,6 +176,7 @@ public final class SettingPackage implements SettingAdapterCallback {
 
     /**
      * 从数据库获取算路偏好
+     *
      * @return 算路偏好
      */
     private RoutePreferenceID getRoutePreferenceFromDB() {
@@ -198,6 +214,7 @@ public final class SettingPackage implements SettingAdapterCallback {
 
     /**
      * 设置避开限行状态  false 关闭 true 打开
+     *
      * @param avoidLimit false 关闭 true 打开
      * @return code 0 成功 其他 失败
      */
@@ -223,6 +240,7 @@ public final class SettingPackage implements SettingAdapterCallback {
 
     /**
      * 获取避开限行状态
+     *
      * @return false 关闭 true 打开
      */
     public boolean getConfigKeyAvoidLimit() {
@@ -239,6 +257,7 @@ public final class SettingPackage implements SettingAdapterCallback {
 
     /**
      * 设置车牌号
+     *
      * @param carNumber 车牌号
      */
     public void setConfigKeyPlateNumber(final String carNumber) {
@@ -246,13 +265,14 @@ public final class SettingPackage implements SettingAdapterCallback {
         if (code == 0) {
             mSettingManager.insertOrReplace(SettingController.KEY_SETTING_GUIDE_VEHICLE_NUMBER, carNumber);
             for (SettingChangeCallback callback : mChangeCallbackList.values()) {
-                callback.onSettingChanged(SettingController.KEY_SETTING_GUIDE_VEHICLE_NUMBER,carNumber);
+                callback.onSettingChanged(SettingController.KEY_SETTING_GUIDE_VEHICLE_NUMBER, carNumber);
             }
         }
     }
 
     /**
      * 获取车牌号
+     *
      * @return 车牌号
      */
     public String getConfigKeyPlateNumber() {
@@ -268,6 +288,7 @@ public final class SettingPackage implements SettingAdapterCallback {
 
     /**
      * 打开或者关闭自动比例尺
+     *
      * @param isOpen true 打开 false 关闭
      */
     public void setAutoScale(final boolean isOpen) {
@@ -279,12 +300,13 @@ public final class SettingPackage implements SettingAdapterCallback {
 
     /**
      * 判断是否打开自动比例尺
+     *
      * @return true 打开 false 关闭
      */
     public boolean getAutoScale() {
         String value = mSettingManager.getValueByKey(SettingController.KEY_SETTING_AUTO_SCALE);
         if (TextUtils.isEmpty(value)) {
-            LayerPackage.getInstance().openDynamicLevel(MapTypeId.MAIN_SCREEN_MAIN_MAP, true);
+            LayerPackage.getInstance().openDynamicLevel(MapType.MAIN_SCREEN_MAIN_MAP, true);
             value = SettingController.VALUE_GENERIC_TRUE;
             setAutoScale(true);
         }
@@ -293,6 +315,7 @@ public final class SettingPackage implements SettingAdapterCallback {
 
     /**
      * 设置是否开启车道级导航
+     *
      * @param isGuideVehicle true 打开 false 关闭
      */
     public void setGuideVehicle(final boolean isGuideVehicle) {
@@ -304,6 +327,7 @@ public final class SettingPackage implements SettingAdapterCallback {
 
     /**
      * 设置是否开启车道级导航
+     *
      * @return true 打开 false 关闭
      */
     public boolean getGuideVehicle() {
@@ -317,6 +341,7 @@ public final class SettingPackage implements SettingAdapterCallback {
 
     /**
      * 设置是否开启补能计划
+     *
      * @param isChargingPlan true 打开 false 关闭
      */
     public void setChargingPlan(final boolean isChargingPlan) {
@@ -328,6 +353,7 @@ public final class SettingPackage implements SettingAdapterCallback {
 
     /**
      * 设置是否开启补能计划
+     *
      * @return true 打开 false 关闭
      */
     public boolean getChargingPlan() {
@@ -341,6 +367,7 @@ public final class SettingPackage implements SettingAdapterCallback {
 
     /**
      * 设置显示收藏点
+     *
      * @param isFavoritePoint true 打开 false 关闭
      */
     public void setFavoritePoint(final boolean isFavoritePoint) {
@@ -352,12 +379,13 @@ public final class SettingPackage implements SettingAdapterCallback {
 
     /**
      * 设置显示收藏点
+     *
      * @param isFavoritePoint true 打开 false 关闭
      */
     public void hideOrShowFavoriteOnMainMap(final boolean isFavoritePoint) {
         if (isFavoritePoint) {
             final List<Favorite> tmpList = mFavoriteManager.getValueByCommonName(0);
-            Logger.i(TAG,"hideOrShowFavoriteOnMainMap:" + tmpList.size());
+            Logger.i(TAG, "hideOrShowFavoriteOnMainMap:" + tmpList.size());
             final ArrayList<GmBizUserFavoritePoint> list = new ArrayList<>();
             tmpList.forEach((favorite -> {
                 final GmBizUserFavoritePoint point = new GmBizUserFavoritePoint();
@@ -366,9 +394,9 @@ public final class SettingPackage implements SettingAdapterCallback {
                 point.lat = favorite.getMPointY();
                 list.add(point);
             }));
-            mLayerPackage.updateFavoriteMain(MapTypeId.MAIN_SCREEN_MAIN_MAP, list);
+            mLayerPackage.updateFavoriteMain(MapType.MAIN_SCREEN_MAIN_MAP, list);
         } else {
-            mLayerPackage.clearFavoriteMain(MapTypeId.MAIN_SCREEN_MAIN_MAP);
+            mLayerPackage.clearFavoriteMain(MapType.MAIN_SCREEN_MAIN_MAP);
         }
     }
 
@@ -397,6 +425,7 @@ public final class SettingPackage implements SettingAdapterCallback {
 
     /**
      * 设置显示充电桩
+     *
      * @param isChargingStation true 打开 false 关闭
      */
     public void setChargingStation(final boolean isChargingStation) {
@@ -408,6 +437,7 @@ public final class SettingPackage implements SettingAdapterCallback {
 
     /**
      * 获取是否显示充电桩
+     *
      * @return true 打开 false 关闭
      */
     public boolean getChargingStation() {
@@ -421,24 +451,25 @@ public final class SettingPackage implements SettingAdapterCallback {
 
     /**
      * 设置车标模式
+     *
      * @param carMode 车标模式 0: 2D默认车标  1: 3D默认车标 2: 3D骨骼车标  3: 3D车速车标
      */
-    public void setCarMode(final int carMode) {
+    public void setCarMode(final CarModeType carMode) {
         switch (carMode) {
-            case CarModeType.CAR_MODEL_TYPE_2D :
-            case CarModeType.CAR_MODEL_TYPE_3D :
+            case CAR_MODEL_TYPE_2D:
+            case CAR_MODEL_TYPE_3D:
                 mSettingManager.insertOrReplace(SettingController.KEY_SETTING_CAR_LOGO, SettingController.VALUE_NAVI_CAR_LOGO_DEFAULT);
                 for (SettingChangeCallback callback : mChangeCallbackList.values()) {
                     callback.onSettingChanged(SettingController.KEY_SETTING_CAR_LOGO, SettingController.VALUE_NAVI_CAR_LOGO_DEFAULT);
                 }
                 break;
-            case CarModeType.CAR_MODEL_TYPE_SKELETON :
+            case CAR_MODEL_TYPE_SKELETON:
                 mSettingManager.insertOrReplace(SettingController.KEY_SETTING_CAR_LOGO, SettingController.VALUE_NAVI_CAR_LOGO_BRAND);
                 for (SettingChangeCallback callback : mChangeCallbackList.values()) {
                     callback.onSettingChanged(SettingController.KEY_SETTING_CAR_LOGO, SettingController.VALUE_NAVI_CAR_LOGO_BRAND);
                 }
                 break;
-            case CarModeType.CAR_MODEL_TYPE_SPEED :
+            case CAR_MODEL_TYPE_SPEED:
                 mSettingManager.insertOrReplace(SettingController.KEY_SETTING_CAR_LOGO, SettingController.VALUE_NAVI_CAR_LOGO_SPEED);
                 for (SettingChangeCallback callback : mChangeCallbackList.values()) {
                     callback.onSettingChanged(SettingController.KEY_SETTING_CAR_LOGO, SettingController.VALUE_NAVI_CAR_LOGO_SPEED);
@@ -452,26 +483,27 @@ public final class SettingPackage implements SettingAdapterCallback {
 
     /**
      * 获取车标模式
+     *
      * @return carMode  0: 2D默认车标  1: 3D默认车标 2: 3D骨骼车标  3: 3D车速车标
      */
-    public int getCarMode() {
-        int carMode = 0;
+    public CarModeType getCarMode() {
+        CarModeType carMode = CarModeType.CAR_MODEL_TYPE_2D;
         final String data = getValueFromDB(SettingController.KEY_SETTING_CAR_LOGO);
         if (!TextUtils.isEmpty(data)) {
             switch (data) {
-                case SettingController.VALUE_NAVI_CAR_LOGO_DEFAULT :
+                case SettingController.VALUE_NAVI_CAR_LOGO_DEFAULT:
                     break;
-                case SettingController.VALUE_NAVI_CAR_LOGO_BRAND :
+                case SettingController.VALUE_NAVI_CAR_LOGO_BRAND:
                     carMode = CarModeType.CAR_MODEL_TYPE_SKELETON;
                     break;
-                case SettingController.VALUE_NAVI_CAR_LOGO_SPEED :
+                case SettingController.VALUE_NAVI_CAR_LOGO_SPEED:
                     carMode = CarModeType.CAR_MODEL_TYPE_SPEED;
                     break;
                 default:
                     break;
             }
         } else {
-            LayerPackage.getInstance().setCarMode(MapTypeId.MAIN_SCREEN_MAIN_MAP, CarModeType.CAR_MODEL_TYPE_2D);
+            LayerPackage.getInstance().setCarMode(MapType.MAIN_SCREEN_MAIN_MAP, CarModeType.CAR_MODEL_TYPE_2D);
             setCarMode(CarModeType.CAR_MODEL_TYPE_2D);
         }
         return carMode;
@@ -479,6 +511,7 @@ public final class SettingPackage implements SettingAdapterCallback {
 
     /**
      * 设置地图文字大小
+     *
      * @param isStandard true 标准字号 false 大号字
      */
     public void setMapViewTextSize(final boolean isStandard) {
@@ -497,12 +530,13 @@ public final class SettingPackage implements SettingAdapterCallback {
 
     /**
      * 获取地图文字大小
+     *
      * @return true 标准字号 false 大号字
      */
     public boolean getMapViewTextSize() {
         String value = getValueFromDB(SettingController.KEY_SETTING_TEXT_SIZE);
         if (TextUtils.isEmpty(value)) {
-            MapPackage.getInstance().setMapViewTextSize(MapTypeId.MAIN_SCREEN_MAIN_MAP, 1f);
+            MapPackage.getInstance().setMapViewTextSize(MapType.MAIN_SCREEN_MAIN_MAP, 1f);
             value = SettingController.VALUE_NAVI_TEXT_SIZE_STANDARD;
             setMapViewTextSize(true);
         }
@@ -515,30 +549,31 @@ public final class SettingPackage implements SettingAdapterCallback {
 
     /**
      * 设置导航播报模式
+     *
      * @param broadcastMode 导航播报模式 1：经典简洁播报； 2：新手详细播报，默认态； 3：极简播报 ；默认值2
      */
     public void setConfigKeyBroadcastMode(final int broadcastMode) {
         final int code = mSettingAdapter.setConfigKeyBroadcastMode(broadcastMode);
         if (code == 0) {
             switch (broadcastMode) {
-                case 1 :
-                        mSettingManager.insertOrReplace(SettingController.KEY_SETTING_NAVI_BROADCAST, SettingController.VALUE_NAVI_BROADCAST_CONCISE);
-                        for (SettingChangeCallback callback : mChangeCallbackList.values()) {
-                            callback.onSettingChanged(SettingController.KEY_SETTING_NAVI_BROADCAST, SettingController.VALUE_NAVI_BROADCAST_CONCISE);
-                        }
-                        break;
-                case 2 :
-                        mSettingManager.insertOrReplace(SettingController.KEY_SETTING_NAVI_BROADCAST, SettingController.VALUE_NAVI_BROADCAST_DETAIL);
-                        for (SettingChangeCallback callback : mChangeCallbackList.values()) {
-                            callback.onSettingChanged(SettingController.KEY_SETTING_NAVI_BROADCAST, SettingController.VALUE_NAVI_BROADCAST_DETAIL);
-                        }
-                        break;
-                case 3 :
-                        mSettingManager.insertOrReplace(SettingController.KEY_SETTING_NAVI_BROADCAST, SettingController.VALUE_NAVI_BROADCAST_SIMPLE);
-                        for (SettingChangeCallback callback : mChangeCallbackList.values()) {
-                            callback.onSettingChanged(SettingController.KEY_SETTING_NAVI_BROADCAST, SettingController.VALUE_NAVI_BROADCAST_SIMPLE);
-                        }
-                        break;
+                case 1:
+                    mSettingManager.insertOrReplace(SettingController.KEY_SETTING_NAVI_BROADCAST, SettingController.VALUE_NAVI_BROADCAST_CONCISE);
+                    for (SettingChangeCallback callback : mChangeCallbackList.values()) {
+                        callback.onSettingChanged(SettingController.KEY_SETTING_NAVI_BROADCAST, SettingController.VALUE_NAVI_BROADCAST_CONCISE);
+                    }
+                    break;
+                case 2:
+                    mSettingManager.insertOrReplace(SettingController.KEY_SETTING_NAVI_BROADCAST, SettingController.VALUE_NAVI_BROADCAST_DETAIL);
+                    for (SettingChangeCallback callback : mChangeCallbackList.values()) {
+                        callback.onSettingChanged(SettingController.KEY_SETTING_NAVI_BROADCAST, SettingController.VALUE_NAVI_BROADCAST_DETAIL);
+                    }
+                    break;
+                case 3:
+                    mSettingManager.insertOrReplace(SettingController.KEY_SETTING_NAVI_BROADCAST, SettingController.VALUE_NAVI_BROADCAST_SIMPLE);
+                    for (SettingChangeCallback callback : mChangeCallbackList.values()) {
+                        callback.onSettingChanged(SettingController.KEY_SETTING_NAVI_BROADCAST, SettingController.VALUE_NAVI_BROADCAST_SIMPLE);
+                    }
+                    break;
                 default:
                     break;
             }
@@ -547,6 +582,7 @@ public final class SettingPackage implements SettingAdapterCallback {
 
     /**
      * 获取导航播报模式
+     *
      * @return 导航播报模式 1：经典简洁播报； 2：新手详细播报，默认态； 3：极简播报 ；默认值2
      */
     public int getConfigKeyBroadcastMode() {
@@ -568,6 +604,7 @@ public final class SettingPackage implements SettingAdapterCallback {
 
     /**
      * 设置巡航播报前方路况
+     *
      * @param roadWarn 巡航播报前方路况 true：开启 false：关闭
      */
     public void setConfigKeyRoadWarn(final boolean roadWarn) {
@@ -581,7 +618,8 @@ public final class SettingPackage implements SettingAdapterCallback {
     }
 
     /**
-     *  获取巡航播报前方路况
+     * 获取巡航播报前方路况
+     *
      * @return 巡航播报前方路况 true：开启 false：关闭
      */
     public boolean getConfigKeyRoadWarn() {
@@ -598,6 +636,7 @@ public final class SettingPackage implements SettingAdapterCallback {
 
     /**
      * 设置巡航播报开关
+     *
      * @param isOpen true：开启 false：关闭
      */
     public void setCruiseBroadcastOpen(final boolean isOpen) {
@@ -609,6 +648,7 @@ public final class SettingPackage implements SettingAdapterCallback {
 
     /**
      * 获取巡航播报开关
+     *
      * @return true：开启 false：关闭
      */
     public boolean getCruiseBroadcastOpen() {
@@ -622,6 +662,7 @@ public final class SettingPackage implements SettingAdapterCallback {
 
     /**
      * 设置巡航播报电子眼播报
+     *
      * @param safeBroadcast 巡航播报电子眼播报 true：开启 false：关闭
      */
     public void setConfigKeySafeBroadcast(final boolean safeBroadcast) {
@@ -636,6 +677,7 @@ public final class SettingPackage implements SettingAdapterCallback {
 
     /**
      * 获取巡航播报电子眼播报
+     *
      * @return 巡航播报电子眼播报 true：开启 false：关闭
      */
     public boolean getConfigKeySafeBroadcast() {
@@ -652,6 +694,7 @@ public final class SettingPackage implements SettingAdapterCallback {
 
     /**
      * 设置巡航播报安全提醒
+     *
      * @param driveWarn 巡航播报安全提醒 true：开启 false：关闭
      */
     public void setConfigKeyDriveWarn(final boolean driveWarn) {
@@ -666,6 +709,7 @@ public final class SettingPackage implements SettingAdapterCallback {
 
     /**
      * 获取巡航播报安全提醒
+     *
      * @return 巡航播报安全提醒 true：开启 false：关闭
      */
     public boolean getConfigKeyDriveWarn() {
@@ -682,6 +726,7 @@ public final class SettingPackage implements SettingAdapterCallback {
 
     /**
      * 设置地图视角
+     *
      * @param mapViewMode 地图视角 0: 2D车首上，默认态; 1: 2D北上; 2: 3D车首上
      */
     public void setConfigKeyMapviewMode(final int mapViewMode) {
@@ -714,6 +759,7 @@ public final class SettingPackage implements SettingAdapterCallback {
 
     /**
      * 获取地图视角
+     *
      * @return 地图视角 0: 2D车首上，默认态; 1: 2D北上; 2: 3D车首上
      */
     public int getConfigKeyMapviewMode() {
@@ -733,7 +779,7 @@ public final class SettingPackage implements SettingAdapterCallback {
                     break;
             }
         } else {
-            MapPackage.getInstance().switchMapMode(MapTypeId.MAIN_SCREEN_MAIN_MAP, MapMode.UP_2D);
+            MapPackage.getInstance().switchMapMode(MapType.MAIN_SCREEN_MAIN_MAP, MapMode.UP_2D);
             setConfigKeyMapviewMode(mapViewMode);
         }
         return mapViewMode;
@@ -756,6 +802,7 @@ public final class SettingPackage implements SettingAdapterCallback {
 
     /**
      * 获取路况开关
+     *
      * @return 路况开关 true：开启 false：关闭
      */
     public boolean getConfigKeyRoadEvent() {
@@ -764,7 +811,7 @@ public final class SettingPackage implements SettingAdapterCallback {
         if (!TextUtils.isEmpty(value)) {
             roadEvent = Boolean.parseBoolean(value);
         } else {
-            MapPackage.getInstance().setTrafficStates(MapTypeId.MAIN_SCREEN_MAIN_MAP, true);
+            MapPackage.getInstance().setTrafficStates(MapType.MAIN_SCREEN_MAIN_MAP, true);
             setConfigKeyRoadEvent(roadEvent);
         }
         return roadEvent;
@@ -772,6 +819,7 @@ public final class SettingPackage implements SettingAdapterCallback {
 
     /**
      * 设置静音状态
+     *
      * @param mute 静音状态 0：不静音，默认态； 1：静音
      */
     public void setConfigKeyMute(final int mute) {
@@ -788,7 +836,7 @@ public final class SettingPackage implements SettingAdapterCallback {
                     for (SettingChangeCallback callback : mChangeCallbackList.values()) {
                         callback.onSettingChanged(SettingController.KEY_SETTING_VOICE_MUTE, SettingController.VALUE_VOICE_MUTE_ON);
                     }
-                   break;
+                    break;
                 default:
                     break;
             }
@@ -797,6 +845,7 @@ public final class SettingPackage implements SettingAdapterCallback {
 
     /**
      * 获取静音状态
+     *
      * @return 静音状态 0：不静音，默认态； 1：静音
      */
     public int getConfigKeyMute() {
@@ -821,6 +870,7 @@ public final class SettingPackage implements SettingAdapterCallback {
 
     /**
      * 设置白天黑夜 16：自动模式，默认态； 17：日间模式； 18：夜间模式
+     *
      * @param dayNightMode 白天黑夜 16：自动模式，默认态； 17：日间模式； 18：夜间模式
      */
     public void setConfigKeyDayNightMode(final int dayNightMode) {
@@ -853,6 +903,7 @@ public final class SettingPackage implements SettingAdapterCallback {
 
     /**
      * 获取白天黑夜
+     *
      * @return 白天黑夜 16：自动模式，默认态； 17：日间模式； 18：夜间模式
      */
     public int getConfigKeyDayNightMode() {
@@ -885,6 +936,7 @@ public final class SettingPackage implements SettingAdapterCallback {
 
     /**
      * 设置授权状态
+     *
      * @param isOneYearPrivacy true：授权一年 false：永不授权
      */
     public void setPrivacyStatus(final boolean isOneYearPrivacy) {
@@ -897,18 +949,20 @@ public final class SettingPackage implements SettingAdapterCallback {
 
     /**
      * 获取授权状态
-     * @return  true：授权一年 false：永不授权
+     *
+     * @return true：授权一年 false：永不授权
      */
     public boolean getPrivacyStatus() {
         String data = getValueFromDB(SettingController.KEY_SETTING_PRIVACY_STATUS);
         if (TextUtils.isEmpty(data)) {
-           data = SettingController.VALUE_PRIVACY_NEVER;
+            data = SettingController.VALUE_PRIVACY_NEVER;
         }
         return SettingController.VALUE_PRIVACY_ONE_YEAR.equals(data);
     }
 
     /**
      * 设置授权到期时间
+     *
      * @param endDateTime 到期时间
      */
     public void setEndDate(final String endDateTime) {
@@ -917,6 +971,7 @@ public final class SettingPackage implements SettingAdapterCallback {
 
     /**
      * 获取授权到期时间
+     *
      * @return 时间
      */
     public String getEndDate() {
@@ -928,9 +983,44 @@ public final class SettingPackage implements SettingAdapterCallback {
     }
 
 
+    /**
+     * 获取是否自动记录
+     */
+    public void getAutoRecord() {
+        final String value = mSettingManager.getValueByKey(SettingController.KEY_SETTING_IS_AUTO_RECORD);
+        if (value == null || TextUtils.isEmpty(value)) {
+            mSettingManager.insertOrReplace(SettingController.KEY_SETTING_IS_AUTO_RECORD, String.valueOf(true));
+        }
+    }
+
+    /**
+     * 初始化设置
+     */
+    public void initAllSetting() {
+        getRoutePreference();
+        getConfigKeyAvoidLimit();
+        getConfigKeyPlateNumber();
+        getGuideVehicle();
+        getChargingPlan();
+        getChargingStation();
+        getFavoritePoint();
+        getConfigKeyRoadEvent();
+        getMapViewTextSize();
+        getConfigKeyMapviewMode();
+        getCarMode();
+        getAutoScale();
+        getConfigKeyBroadcastMode();
+        getCruiseBroadcastOpen();
+        getConfigKeySafeBroadcast();
+        getConfigKeyDriveWarn();
+        getConfigKeyRoadWarn();
+        getAutoRecord();
+    }
+
+
     public interface SettingChangeCallback {
         /**
-         * @param key 设置项的key值
+         * @param key   设置项的key值
          * @param value 设置项对应的value值
          */
         void onSettingChanged(String key, String value);

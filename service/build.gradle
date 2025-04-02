@@ -9,7 +9,7 @@ android {
     buildToolsVersion libs.versions.buildSdk.get()
 
     defaultConfig {
-        minSdk Integer.parseInt(libs.versions.minSdk.get())
+        minSdk IS_PAD_RUN.toBoolean() ? Integer.parseInt(libs.versions.padminSdk.get()) :Integer.parseInt(libs.versions.minSdk.get())
         consumerProguardFiles "consumer-rules.pro"
         buildConfigField("String", "MAP_SDK", "$MAP_SDK")
         ndk {
@@ -36,7 +36,7 @@ android {
 
     //greendao配置
     greendao {
-        schemaVersion 9 // 数据库 schema 的版本号，用于数据库升级
+        schemaVersion 11 // 数据库 schema 的版本号，用于数据库升级
 //        daoPackage 'com.fy.navi.service.greendao' // 生成 DAO 类的包名
 //        targetGenDir 'src/main/java' // 生成文件的目录（通常建议放在 build/generated/source/greendao 下，以避免与源代码混淆）
     }
@@ -57,7 +57,6 @@ dependencies {
     implementation libs.lombok
     annotationProcessor libs.lombok
     implementation project(":engine:bls")
-    implementation project(":engine:encryptvin")
     implementation project(":utils")
     implementation project(":ui")
     implementation project(":burypoint")

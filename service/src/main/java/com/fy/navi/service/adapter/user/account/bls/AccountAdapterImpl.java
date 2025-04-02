@@ -19,41 +19,36 @@ import com.autonavi.gbl.util.model.SingleServiceID;
 import com.fy.navi.service.adapter.user.account.AccountAdapterCallBack;
 import com.fy.navi.service.adapter.user.account.IAccountApi;
 
-/**
- * 高德账号数据服务.
- * @Description Impl类只做SDK的原子能力封装，不做对象及数据转换
- * @Author fh
- * @date 2024/12/18
- */
+
 public class AccountAdapterImpl implements IAccountApi {
-    private AccountService mAccountService;
-    private AccountAdapterImplHelper adapterImplHelper;
+    private final AccountService mAccountService;
+    private final AccountAdapterImplHelper mAdapterImplHelper;
 
     public AccountAdapterImpl() {
         mAccountService = (AccountService) ServiceMgr.getServiceMgrInstance()
                 .getBLService(SingleServiceID.AccountSingleServiceID);
-        adapterImplHelper = new AccountAdapterImplHelper(mAccountService);
+        mAdapterImplHelper = new AccountAdapterImplHelper(mAccountService);
     }
 
     @Override
     public void initAccountService() {
-        adapterImplHelper.initAccountService();
+        mAdapterImplHelper.initAccountService();
     }
 
     @Override
-    public void registerCallBack(String key, AccountAdapterCallBack callBack) {
-        adapterImplHelper.registerCallBack(key, callBack);
+    public void registerCallBack(final String key, final AccountAdapterCallBack callBack) {
+        mAdapterImplHelper.registerCallBack(key, callBack);
     }
 
     @Override
-    public void unRegisterCallback(String key) {
-        adapterImplHelper.unRegisterCallBack(key);
+    public void unRegisterCallback(final String key) {
+        mAdapterImplHelper.unRegisterCallBack(key);
     }
 
     @Override
     public void unInitAccountService() {
         if (mAccountService != null) {
-            adapterImplHelper.removeCallback();
+            mAdapterImplHelper.removeCallback();
             if (ServiceInitStatus.ServiceInitDone != mAccountService.isInit()) {
                 mAccountService.unInit();
             }
@@ -64,10 +59,10 @@ public class AccountAdapterImpl implements IAccountApi {
      * 获取验证码请求
      */
     @Override
-    public int verificationCodeRequest(String mobileNum) {
+    public int verificationCodeRequest(final String mobileNum) {
         if (mAccountService != null) {
             //构造验证码请求参数
-            VerificationCodeRequest loginVerifyReq = new VerificationCodeRequest();
+            final VerificationCodeRequest loginVerifyReq = new VerificationCodeRequest();
             //一般场景下，取值为VerificationCodeTypeRegister 或 VerificationCodeTypeMobileLogin
             loginVerifyReq.codeType = VerificationCodeType.VerificationCodeTypeMobileLogin;// 手机号登录
             loginVerifyReq.targetType = VerificationTargetType.VerificationTargetTypeSms;
@@ -86,7 +81,7 @@ public class AccountAdapterImpl implements IAccountApi {
     @Override
     public int accountCheckRequest() {
         if (mAccountService != null) {
-            AccountCheckRequest checkReq = new AccountCheckRequest();
+            final AccountCheckRequest checkReq = new AccountCheckRequest();
             return mAccountService.executeRequest(checkReq);
         } else {
             return  -1;
@@ -95,15 +90,15 @@ public class AccountAdapterImpl implements IAccountApi {
 
     /**
      * 账号注册
-     * @return
+     * @return -1 表示注册失败，其他表示注册成功
      */
     @Override
-    public int accountRegisterRequest(String codeInput, String mobileInput) {
+    public int accountRegisterRequest(final String codeInput, final String mobileInput) {
         if (mAccountService != null) {
-            AccountRegisterRequest registerReq = new AccountRegisterRequest();
+            final AccountRegisterRequest registerReq = new AccountRegisterRequest();
             registerReq.code = codeInput;
             registerReq.mobileNum = mobileInput;
-            int res = mAccountService.executeRequest(registerReq);
+            final int res = mAccountService.executeRequest(registerReq);
             return res;
         } else {
             return -1;
@@ -112,15 +107,15 @@ public class AccountAdapterImpl implements IAccountApi {
 
     /**
      * 手机验证码登录
-     * @param codeInput
-     * @param mobileInput
-     * @return
+     * @param codeInput 验证码
+     * @param mobileInput 手机号
+     * @return -1 表示登录失败，其他表示登录成功
      */
     @Override
-    public int mobileLoginRequest(String codeInput, String mobileInput) {
+    public int mobileLoginRequest(final String codeInput, final String mobileInput) {
         // 登录请求
         if (mAccountService != null) {
-            MobileLoginRequest loginReq = new MobileLoginRequest();
+            final MobileLoginRequest loginReq = new MobileLoginRequest();
             loginReq.code = codeInput;  // 验证码
             loginReq.mobileNum = mobileInput; // 手机号
             return mAccountService.executeRequest(loginReq);
@@ -131,12 +126,12 @@ public class AccountAdapterImpl implements IAccountApi {
 
     /**
      * 获取登录二维码
-     * @return
+     * @return -1 表示获取二维码失败，其他表示获取二维码成功
      */
     @Override
-    public int qRCodeLoginRequest(int qrType) {
+    public int qrCodeLoginRequest(final int qrType) {
         if (mAccountService != null) {
-            QRCodeLoginRequest qrReq = new QRCodeLoginRequest();
+            final QRCodeLoginRequest qrReq = new QRCodeLoginRequest();
             qrReq.codeType = qrType;
             return  mAccountService.executeRequest(qrReq);
         } else {
@@ -145,9 +140,9 @@ public class AccountAdapterImpl implements IAccountApi {
     }
 
     @Override
-    public int qRCodeLoginConfirmRequest(String qrCodeId) {
+    public int qrCodeLoginConfirmRequest(final String qrCodeId) {
         if (mAccountService != null){
-            QRCodeLoginConfirmRequest req = new QRCodeLoginConfirmRequest();
+            final QRCodeLoginConfirmRequest req = new QRCodeLoginConfirmRequest();
             req.qrcodeId = qrCodeId;
             return mAccountService.executeRequest(req);
         } else {
@@ -158,12 +153,12 @@ public class AccountAdapterImpl implements IAccountApi {
 
     /**
      * 获取账号信息
-     * @return
+     * @return -1 表示获取账号信息失败，其他表示获取账号信息成功
      */
     @Override
     public int accountProfileRequest() {
         if (mAccountService != null) {
-            AccountProfileRequest profileReq = new AccountProfileRequest();
+            final AccountProfileRequest profileReq = new AccountProfileRequest();
             profileReq.mode = 0; //获取用户基本信息
             return mAccountService.executeRequest(profileReq);
         } else {
@@ -173,12 +168,12 @@ public class AccountAdapterImpl implements IAccountApi {
 
     /**
      * 获取用户头像
-     * @return
+     * @return -1 表示获取用户头像失败，其他表示获取用户头像成功
      */
     @Override
     public int avatarRequest() {
         if (mAccountService != null) {
-            AvatarRequest avatarReq = new AvatarRequest();
+            final AvatarRequest avatarReq = new AvatarRequest();
             return mAccountService.executeRequest(avatarReq);
         } else {
             return -1;
@@ -187,12 +182,12 @@ public class AccountAdapterImpl implements IAccountApi {
 
     /**
      * 退出登录请求
-     * @return
+     * @return -1 表示退出登录失败，其他表示退出登录成功
      */
     @Override
     public int accountLogoutRequest() {
         if (mAccountService != null) {
-            AccountLogoutRequest logoutReq = new AccountLogoutRequest();
+            final AccountLogoutRequest logoutReq = new AccountLogoutRequest();
             return mAccountService.executeRequest(logoutReq);
         } else {
             return -1;
@@ -201,12 +196,12 @@ public class AccountAdapterImpl implements IAccountApi {
 
     /**
      * 请求注销账号
-     * @return
+     * @return -1 表示注销账号失败，其他表示注销账号成功
      */
     @Override
     public int accountUnRegisterRequest() {
         if (mAccountService != null) {
-            AccountUnRegisterRequest request = new AccountUnRegisterRequest();
+            final AccountUnRegisterRequest request = new AccountUnRegisterRequest();
             return mAccountService.executeRequest(request);
         } else {
             return -1;

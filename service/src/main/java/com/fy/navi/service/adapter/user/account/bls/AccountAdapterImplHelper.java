@@ -27,104 +27,100 @@ import com.fy.navi.service.define.user.account.AccountUserInfo;
 
 import java.util.Hashtable;
 
-/**
- * AccountService辅助类.
- *
- * @Description Helper类只做对象及数据转换，不做原子能力调用
- * @Author fh
- * @date 2024/12/18
- */
+
 public class AccountAdapterImplHelper implements IAccountServiceObserver {
     private static final String TAG = MapDefaultFinalTag.ACCOUNT_SERVICE_TAG;
     private final AccountService mAccountService;
-    private final Hashtable<String, AccountAdapterCallBack> accountResultHashtable;
+    private final Hashtable<String, AccountAdapterCallBack> mAccountResultHashtable;
+    private String mEmail;
 
-    protected AccountAdapterImplHelper(AccountService accountService) {
-        accountResultHashtable = new Hashtable<>();
+    protected AccountAdapterImplHelper(final AccountService accountService) {
+        mAccountResultHashtable = new Hashtable<>();
         mAccountService = accountService;
     }
 
     protected void initAccountService() {
         // 构造初始化参数
-        AccountServiceParam param = new AccountServiceParam();
+        final AccountServiceParam param = new AccountServiceParam();
         param.dataPath = GBLCacheFilePath.ACCOUNT_PATH;
         // 保证传入目录存在
         FileUtils.getInstance().createDir(param.dataPath);
         //FileUtils.createDIR(param.dataPath);
         // 服务初始化
-        int res = mAccountService.init(param);
+        final int res = mAccountService.init(param);
         Logger.i(TAG, "initAccountService: initSetting=" + res);
         // 添加回调观察者
         mAccountService.addObserver(this);
     }
 
-    public void registerCallBack(String key, AccountAdapterCallBack callBack) {
-        accountResultHashtable.put(key, callBack);
+    /**
+     * 注册监听
+     * @param key 注册的key
+     * @param callBack 回调
+     */
+    public void registerCallBack(final String key, final AccountAdapterCallBack callBack) {
+        mAccountResultHashtable.put(key, callBack);
     }
 
-    public void unRegisterCallBack(String key) {
-        accountResultHashtable.remove(key);
+    /**
+     * 注销监听
+     * @param key 注册的key
+     */
+    public void unRegisterCallBack(final String key) {
+        mAccountResultHashtable.remove(key);
     }
 
+    /**
+     * 清除监听
+     */
     public void removeCallback() {
-        accountResultHashtable.clear();
+        mAccountResultHashtable.clear();
     }
 
     /**
      * 获取验证码请求回调
-     * @param errCode
-     * @param taskId
-     * @param result
+     * @param errCode 错误码
+     * @param taskId 任务ID
+     * @param result 验证码结果
      */
     @Override
-    public void notify(int errCode, int taskId, VerificationCodeResult result) {
-        /*//HMI根据业务进行后续处理
-        int resultCode = result == null ? AutoConstant.DEFAULT_ERR_CODE : result.code;
-        boolean sendSuccess = errCode == Service.ErrorCodeOK && resultCode == 1;
-        String msg = "发送验证码:" + (sendSuccess ? "成功" : "失败") + " " + errCode + "\n" + GsonUtils.toJson(result);
-        Logger.d(TAG, msg);
-        tv_msg.setText(msg);*/
+    public void notify(final int errCode, final int taskId, final VerificationCodeResult result) {
         notifyAccountRequestSuccess(errCode, taskId, result);
     }
 
     /**
      * 检查账号是否存在回调
-     * @param errCode
-     * @param taskId
-     * @param result
+     * @param errCode 错误码
+     * @param taskId 任务ID
+     * @param result 检查结果
      */
     @Override
-    public void notify(int errCode, int taskId, AccountCheckResult result) {
+    public void notify(final int errCode, final int taskId, final AccountCheckResult result) {
         notifyAccountRequestSuccess(errCode, taskId, result);
     }
 
     /**
      * 异步注册结果处理
-     * @param errCode
-     * @param taskId
-     * @param result
+     * @param errCode 错误码
+     * @param taskId 任务ID
+     * @param result 检查结果
      */
     @Override
-    public void notify(int errCode, int taskId, AccountRegisterResult result) {
-        /*if (result != null && result.code == 1) {
-            Logger.i(TAG, "AccountRegisterResult notify: res=" + result.code + "; taskId=" + taskId);
-            Logger.i("注册成功,状态: " + result.profile.username + "已登录");
-        } else {
-            Logger.i("注册失败");
-        }*/
+    public void notify(final int errCode, final int taskId, final AccountRegisterResult result) {
+
         notifyAccountRequestSuccess(errCode, taskId, result);
     }
 
     /**
      * 手机号登录结果回调
-     * @param errCode
-     * @param taskId
-     * @param result
+     * @param errCode 错误码
+     * @param taskId 任务ID
+     * @param result 检查结果
      */
     @Override
-    public void notify(int errCode, int taskId, MobileLoginResult result) {
+    public void notify(final int errCode, final int taskId, final MobileLoginResult result) {
         if (result != null && result.code == 1) {
-            Logger.i(TAG, "MobileLoginResult notify: res=" + result.code + "; taskId=" + taskId);
+            Logger.i(TAG, "MobileLoginResult notify: res=" + result.code);
             Logger.i(TAG, "userId=" + result.profile.uid);
             Logger.i("状态:" + result.profile.username + "已登录," + "id = " + result.profile.uid);
         } else {
@@ -134,32 +130,18 @@ public class AccountAdapterImplHelper implements IAccountServiceObserver {
     }
     /**
      * 获取二维码回调
-     * @param errCode
-     * @param taskId
-     * @param result
+     * @param errCode 错误码
+     * @param taskId 任务ID
+     * @param result 检查结果
      */
     @Override
-    public void notify(int errCode, int taskId, QRCodeLoginResult result) {
+    public void notify(final int errCode, final int taskId, final QRCodeLoginResult result) {
         Logger.i(TAG, "QRCodeLoginResult notify: res=" + (result == null ? -9527 : result.code) + "; taskId=" + taskId);
-       /* int resultCde = result == null ? 0 : result.code;
-        QRCodeInfo qrcode = result == null ? null : result.qrcode;
-        BinaryStream data = qrcode == null ? null : qrcode.data;
-        byte[] buffer = data == null ? null : data.buffer;
 
-        if (resultCde == 1 && buffer != null) {
-            //将字节数组转换为ImageView可调用的Bitmap对象
-            Logger.i(TAG, "生成二维码成功");
-//            Bitmap myBitmap = getPicFromBytes(buffer, null);
-//            tv_msg.setText("生成了二维码" + qrcode.id);
-//            iv_qrcode.setImageBitmap(myBitmap);
-        } else {
-            Logger.i(TAG, "生成二维码失败");
-//            tv_msg.setText("生成二维码失败");
-        }*/
         notifyAccountRequestSuccess(errCode,taskId,result);
 
         // 长轮询是否扫码
-        QRCodeLoginConfirmRequest req = new QRCodeLoginConfirmRequest();
+        final QRCodeLoginConfirmRequest req = new QRCodeLoginConfirmRequest();
         if (result == null) {
             return;
         }
@@ -169,48 +151,35 @@ public class AccountAdapterImplHelper implements IAccountServiceObserver {
 
     /**
      * 获取用户信息回调
-     * @param errCode
-     * @param taskId
-     * @param result
+     * @param errCode 错误码
+     * @param taskId 任务ID
+     * @param result 检查结果
      */
     @Override
-    public void notify(int errCode, int taskId, AccountProfileResult result) {
-       /* Logger.i(TAG, "获取用户信息回调通知: " + errCode + "," + taskId);
-        if (result != null && result.code == 1) {
-            Logger.i(TAG, "AccountProfileResult notify: res=" + result.code + "; taskId=" + taskId);
-//            tv_msg.setText("信息: 用户名=" + result.profile.username
-//                    + "; ID=" + result.profile.uid
-//                    + "; 昵称=" + result.profile.nickname
-//                    + "; 头像URL" + result.profile.avatar
-//            );
-//            AutoConstant.userld = result.profile.uid;// 保存
-//            AosManager. getInstance().setUid (AutoConstant.userId);
+    public void notify(final int errCode, final int taskId, final AccountProfileResult result) {
 
-        } else {
-            Logger.i(TAG, "获取用户信息失败 ");
-        }*/
         notifyAccountRequestSuccess(errCode,taskId,result);
     }
 
     /**
      * 头像获取请求异步回调处理
-     * @param errCode
-     * @param taskId
-     * @param result
+     * @param errCode 错误码
+     * @param taskId 任务ID
+     * @param result 检查结果
      */
     @Override
-    public void notify(int errCode, int taskId, AvatarResult result) {
+    public void notify(final int errCode, final int taskId, final AvatarResult result) {
         notifyAccountRequestSuccess(errCode,taskId,result);
     }
 
     /**
      * 退出登录回调
-     * @param errCode
-     * @param taskId
-     * @param result
+     * @param errCode 错误码
+     * @param taskId 任务ID
+     * @param result 检查结果
      */
     @Override
-    public void notify(int errCode, int taskId, AccountLogoutResult result) {
+    public void notify(final int errCode, final int taskId, final AccountLogoutResult result) {
         if (result != null && result.code == 1) {
             Logger.i(TAG, "AccountLogoutResult notify: res=" + result.code + "; taskId=" + taskId);
             Logger.i(TAG, "状态: 已登出 ");
@@ -222,28 +191,24 @@ public class AccountAdapterImplHelper implements IAccountServiceObserver {
 
     /**
      * 账号注销
-     * @param errCode
-     * @param taskId
-     * @param result
+     * @param errCode 错误码
+     * @param taskId 任务ID
+     * @param result 检查结果
      */
     @Override
-    public void notify(int errCode, int taskId, AccountUnRegisterResult result) {
-        // 回调结果处理
-        if (result.code == 0) {
-            // 删除对应同步库数据
-            // mUserTrackService.deleteLocalSyncData(userId);
-        }
+    public void notify(final int errCode, final int taskId, final AccountUnRegisterResult result) {
+
         notifyAccountRequestSuccess(errCode,taskId,result);
     }
 
     /**
      * 是否扫码登陆
-     * @param errCode
-     * @param taskId
-     * @param result
+     * @param errCode 错误码
+     * @param taskId 任务ID
+     * @param result 检查结果
      */
     @Override
-    public void notify(int errCode, int taskId, QRCodeLoginConfirmResult result) {
+    public void notify(final int errCode, final int taskId, final QRCodeLoginConfirmResult result) {
         if (result != null) {
             Logger.i(TAG, "QRCodeLoginConfirmResult notify: res=" + GsonUtils.toJson(result));
         }
@@ -252,18 +217,25 @@ public class AccountAdapterImplHelper implements IAccountServiceObserver {
 
     /***
      * 账号请求相关结果统一处理.
+     * @param errCode 错误码
+     * @param taskId 任务ID
      * @param result  请求结果
      * @param <T> GBL 请求结构类型
      */
-    public <T> void notifyAccountRequestSuccess(int errCode, int taskId, T result) {
-        if (ConvertUtils.isEmpty(accountResultHashtable)) return;
-        for (AccountAdapterCallBack callBack : accountResultHashtable.values()) {
-            if (callBack == null) continue;
+    public <T> void notifyAccountRequestSuccess(final int errCode, final int taskId, final T result) {
+        if (ConvertUtils.isEmpty(mAccountResultHashtable)) {
+            return;
+        }
+        for (AccountAdapterCallBack callBack : mAccountResultHashtable.values()) {
+            if (callBack == null) {
+                continue;
+            }
             if (result instanceof VerificationCodeResult) {
                 callBack.notifyVerificationCode(errCode, taskId, convertVerificationCodeInfo((VerificationCodeResult)result));
             } else if (result instanceof AccountCheckResult) {
-                callBack.notifyAccountCheck(errCode, taskId, getAccountBaseInfo(((AccountCheckResult) result).code, ((AccountCheckResult) result).result,
-                        ((AccountCheckResult) result).message,((AccountCheckResult) result).timestamp,((AccountCheckResult) result).version));
+                callBack.notifyAccountCheck(errCode, taskId, getAccountBaseInfo(((AccountCheckResult) result).code,
+                        ((AccountCheckResult) result).result, ((AccountCheckResult) result).message,
+                        ((AccountCheckResult) result).timestamp,((AccountCheckResult) result).version));
             } else if (result instanceof AccountRegisterResult) {
                 callBack.notifyAccountRegister(errCode, taskId, convertAccountUserInfo((AccountRegisterResult)result));
             } else if (result instanceof MobileLoginResult) {
@@ -284,9 +256,21 @@ public class AccountAdapterImplHelper implements IAccountServiceObserver {
         }
     }
 
-    private AccountUserInfo getAccountBaseInfo(int code, String result, String message, String timestamp, String version) {
-        if (result == null) return null;
-        AccountUserInfo info = new AccountUserInfo();
+    /**
+     * 获取基本信息
+     * @param code 错误码
+     * @param result 结果
+     * @param message 消息
+     * @param timestamp 时间戳
+     * @param version 版本
+     * @return 基本信息
+     */
+    private AccountUserInfo getAccountBaseInfo(final int code, final String result,
+                                               final String message, final String timestamp, final String version) {
+        if (result == null) {
+            return null;
+        }
+        final AccountUserInfo info = new AccountUserInfo();
         info.setCode(code);
         info.setResult(result);
         info.setMessage(message);
@@ -295,36 +279,66 @@ public class AccountAdapterImplHelper implements IAccountServiceObserver {
         return info;
     }
 
-    private AccountUserInfo convertVerificationCodeInfo(VerificationCodeResult result) {
-        if (result == null) return null;
-        AccountUserInfo info = getAccountBaseInfo(result.code,result.result,result.message,result.timestamp,result.version);
+    /**
+     * 转换验证码信息
+     * @param result 验证码结果
+     * @return 验证码信息
+     */
+    private AccountUserInfo convertVerificationCodeInfo(final VerificationCodeResult result) {
+        if (result == null) {
+            return null;
+        }
+        final AccountUserInfo info = getAccountBaseInfo(result.code,result.result,result.message,result.timestamp,result.version);
         info.setStatus(result.status);
         return info;
     }
 
-    private AccountUserInfo convertAccountUserInfo(AccountRegisterResult result) {
-        if (result == null) return null;
-        AccountUserInfo info = getAccountBaseInfo(result.code,result.result,result.message,result.timestamp,result.version);
+    /**
+     * 转换注册信息
+     * @param result 注册结果
+     * @return 注册信息
+     */
+    private AccountUserInfo convertAccountUserInfo(final AccountRegisterResult result) {
+        if (result == null) {
+            return null;
+        }
+        final AccountUserInfo info = getAccountBaseInfo(result.code,result.result,result.message,result.timestamp,result.version);
         if (result.profile != null) {
+            mEmail = result.profile.email;
             info.setProfileInfo(convertAccountProfileInfo(result.profile.uid, result.profile.username,result.profile.nickname,
-                    result.profile.avatar,result.profile.mobile,result.profile.email));
+                    result.profile.avatar,result.profile.mobile));
         }
         return info;
     }
 
-    private AccountUserInfo convertMobileLoginInfo(MobileLoginResult result) {
-        if (result == null) return null;
-        AccountUserInfo info = getAccountBaseInfo(result.code,result.result,result.message,result.timestamp,result.version);
+    /**
+     * 转换登录信息
+     * @param result 登录结果
+     * @return 登录信息
+     */
+    private AccountUserInfo convertMobileLoginInfo(final MobileLoginResult result) {
+        if (result == null) {
+            return null;
+        }
+        final AccountUserInfo info = getAccountBaseInfo(result.code,result.result,result.message,result.timestamp,result.version);
         if (result.profile != null) {
+            mEmail = result.profile.email;
             info.setProfileInfo(convertAccountProfileInfo(result.profile.uid, result.profile.username,result.profile.nickname,
-                    result.profile.avatar,result.profile.mobile,result.profile.email));
+                    result.profile.avatar,result.profile.mobile));
         }
         return info;
     }
 
-    private AccountUserInfo convertQRCodeLoginInfo(QRCodeLoginResult result) {
-        if (result == null) return null;
-        AccountUserInfo info = getAccountBaseInfo(result.code,result.result,result.message,result.timestamp,result.version);
+    /**
+     * 转换登录二维码信息
+     * @param result 登录结果
+     * @return 登录二维码信息
+     */
+    private AccountUserInfo convertQRCodeLoginInfo(final QRCodeLoginResult result) {
+        if (result == null) {
+            return null;
+        }
+        final AccountUserInfo info = getAccountBaseInfo(result.code,result.result,result.message,result.timestamp,result.version);
         if (result.qrcode != null) {
             info.setId(result.qrcode.id);
             info.setTimeout(result.qrcode.timeout);
@@ -335,54 +349,101 @@ public class AccountAdapterImplHelper implements IAccountServiceObserver {
         return info;
     }
 
-    private AccountUserInfo convertQRCodeLoginConfirmInfo(QRCodeLoginConfirmResult result) {
-        if (result == null) return null;
-        AccountUserInfo info = getAccountBaseInfo(result.code,result.result,result.message,result.timestamp,result.version);
+    /**
+     * 转换扫码登录结果
+     * @param result 扫码登录结果
+     * @return 扫码登录结果
+     */
+    private AccountUserInfo convertQRCodeLoginConfirmInfo(final QRCodeLoginConfirmResult result) {
+        if (result == null) {
+            return null;
+        }
+        final AccountUserInfo info = getAccountBaseInfo(result.code,result.result,result.message,result.timestamp,result.version);
         if (result.profile != null) {
+            mEmail = result.profile.email;
             info.setProfileInfo(convertAccountProfileInfo(result.profile.uid, result.profile.username,result.profile.nickname,
-                    result.profile.avatar,result.profile.mobile,result.profile.email));
+                    result.profile.avatar,result.profile.mobile));
         }
         return info;
     }
 
-    private AccountUserInfo convertAccountProfileInfo(AccountProfileResult result) {
-        if (result == null) return null;
-        AccountUserInfo info = getAccountBaseInfo(result.code,result.result,result.message,result.timestamp,result.version);
+    /**
+     * 转换用户信息
+     * @param result 获取用户信息结果
+     * @return 用户信息
+     */
+    private AccountUserInfo convertAccountProfileInfo(final AccountProfileResult result) {
+        if (result == null) {
+            return null;
+        }
+        final AccountUserInfo info = getAccountBaseInfo(result.code,result.result,result.message,result.timestamp,result.version);
         if (result.profile != null) {
+            mEmail = result.profile.email;
             info.setProfileInfo(convertAccountProfileInfo(result.profile.uid, result.profile.username,result.profile.nickname,
-                    result.profile.avatar,result.profile.mobile,result.profile.email));
+                    result.profile.avatar,result.profile.mobile));
         }
         return info;
     }
 
-    private AccountProfileInfo convertAccountProfileInfo(String uid, String username, String nickname, String avatar, String mobile, String email) {
-        AccountProfileInfo info = new AccountProfileInfo();
+    /**
+     * 转换用户信息
+     * @param uid 用户ID
+     * @param username 用户名
+     * @param nickname 昵称
+     * @param avatar 头像
+     * @param mobile 手机号
+     * @return 用户信息
+     */
+    private AccountProfileInfo convertAccountProfileInfo(final String uid, final String username, final String nickname,
+                                                         final String avatar, final String mobile) {
+        final AccountProfileInfo info = new AccountProfileInfo();
         info.setUid(uid);
         info.setUsername(username);
         info.setNickname(nickname);
         info.setAvatar(avatar);
         info.setMobile(mobile);
-        info.setEmail(email);
+        info.setEmail(mEmail);
         return info;
     }
 
-    private AccountUserInfo convertAvatarInfo(AvatarResult result) {
-        if (result == null) return null;
-        AccountUserInfo info = getAccountBaseInfo(result.code,result.result,result.message,result.timestamp,result.version);
+    /**
+     * 转换头像信息
+     * @param result 头像结果
+     * @return 头像信息
+     */
+    private AccountUserInfo convertAvatarInfo(final AvatarResult result) {
+        if (result == null) {
+            return null;
+        }
+        final AccountUserInfo info = getAccountBaseInfo(result.code,result.result,result.message,result.timestamp,result.version);
         if (result.data != null) {
             info.setBuffer(result.data.buffer);
         }
         return info;
     }
 
-    private AccountUserInfo convertAccountLogoutInfo(AccountLogoutResult result) {
-        if (result == null) return null;
+    /**
+     * 转换退出登录信息
+     * @param result 退出登录结果
+     * @return 退出登录信息
+     */
+    private AccountUserInfo convertAccountLogoutInfo(final AccountLogoutResult result) {
+        if (result == null) {
+            return null;
+        }
         return getAccountBaseInfo(result.code,result.result,result.message,result.timestamp,result.version);
     }
 
-    private AccountUserInfo convertAccountUnRegisterInfo(AccountUnRegisterResult result) {
-        if (result == null) return null;
-        AccountUserInfo info = getAccountBaseInfo(result.code,result.result,result.message,result.timestamp,result.version);
+    /**
+     * 转换注销信息
+     * @param result 注销结果
+     * @return 注销信息
+     */
+    private AccountUserInfo convertAccountUnRegisterInfo(final AccountUnRegisterResult result) {
+        if (result == null) {
+            return null;
+        }
+        final AccountUserInfo info = getAccountBaseInfo(result.code,result.result,result.message,result.timestamp,result.version);
         if (result.data != null) {
             info.setRemain(result.data.remain);
             info.setMobile(result.data.mobile);

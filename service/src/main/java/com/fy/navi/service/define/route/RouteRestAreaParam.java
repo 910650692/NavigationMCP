@@ -1,6 +1,6 @@
 package com.fy.navi.service.define.route;
 
-import com.fy.navi.service.define.map.MapTypeId;
+import com.fy.navi.service.define.map.MapType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +15,7 @@ public class RouteRestAreaParam {
     /*** 请求Id **/
     private long mRequestId;
     /*** 屏幕Id **/
-    private MapTypeId mMapTypeId;
+    private MapType mMapTypeId;
     private boolean mIsOnlineRoute = true;
     /*** 服务区信息 **/
     private List<RouteRestAreaInfo> mRouteRestAreaInfos;

@@ -23,7 +23,7 @@ import com.fy.navi.service.adapter.navi.NaviConstant;
 import com.fy.navi.service.define.bean.AdminCodeBean;
 import com.fy.navi.service.define.bean.AreaExtraInfoBean;
 import com.fy.navi.service.define.bean.GeoPoint;
-import com.fy.navi.service.define.map.MapTypeId;
+import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.navi.NaviEtaInfo;
 import com.fy.navi.service.define.navi.NaviManeuverInfo;
 import com.fy.navi.service.define.search.PoiInfoEntity;
@@ -31,11 +31,13 @@ import com.fy.navi.scene.impl.navi.common.NaviUiUtil;
 import com.fy.navi.service.logicpaket.map.MapPackage;
 import com.fy.navi.service.logicpaket.mapdata.MapDataPackage;
 import com.fy.navi.service.logicpaket.navi.NaviPackage;
+import com.fy.navi.service.logicpaket.position.IPositionPackageCallback;
+import com.fy.navi.service.logicpaket.position.PositionPackage;
 import com.fy.navi.service.logicpaket.user.behavior.BehaviorPackage;
 
 import java.util.List;
 
-public class SceneNaviTbtImpl extends BaseSceneModel<SceneNaviTbtView> {
+public class SceneNaviTbtImpl extends BaseSceneModel<SceneNaviTbtView> implements IPositionPackageCallback {
     private static final String TAG = MapDefaultFinalTag.NAVI_HMI_TAG;
     private final NaviPackage mNaviPackage;
     private final MapDataPackage mMapDataPackage;
@@ -70,6 +72,7 @@ public class SceneNaviTbtImpl extends BaseSceneModel<SceneNaviTbtView> {
     public ObservableField<Boolean> mExitInfoVisible;
     public ObservableField<Boolean> mTurnInfoVisible;
     public ObservableField<Boolean> mGroupDivVisible;
+    private final PositionPackage mPositionPackage;
 
     public SceneNaviTbtImpl(final SceneNaviTbtView screenView) {
         super(screenView);
@@ -78,9 +81,26 @@ public class SceneNaviTbtImpl extends BaseSceneModel<SceneNaviTbtView> {
         mBehaviorPackage = BehaviorPackage.getInstance();
         mMapPackage = MapPackage.getInstance();
         mLayerAdapter = LayerAdapter.getInstance();
+        mPositionPackage = PositionPackage.getInstance();
         mGroupDivVisible = new ObservableField(true);
         mTurnInfoVisible = new ObservableField(true);
         mExitInfoVisible = new ObservableField(false);
+    }
+
+    @Override
+    protected void onCreate() {
+        super.onCreate();
+        if (mPositionPackage != null) {
+            mPositionPackage.registerCallBack(this);
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mPositionPackage != null) {
+            mPositionPackage.unregisterCallBack(this);
+        }
     }
 
     /**
@@ -98,6 +118,7 @@ public class SceneNaviTbtImpl extends BaseSceneModel<SceneNaviTbtView> {
 
     /**
      * bl回调 通知更新TBT数据
+     *
      * @param naviInfoBean TBT数据
      */
     public void onNaviInfo(final NaviEtaInfo naviInfoBean) {
@@ -157,6 +178,7 @@ public class SceneNaviTbtImpl extends BaseSceneModel<SceneNaviTbtView> {
 
     /**
      * 转向图标回调
+     *
      * @param maneuverIconResponseData 转向图标数据
      */
     public void onObtainManeuverIconData(final NaviManeuverInfo maneuverIconResponseData) {
@@ -210,17 +232,18 @@ public class SceneNaviTbtImpl extends BaseSceneModel<SceneNaviTbtView> {
 
 
     /**
-     * @param traceId traceId
+     * @param traceId  traceId
      * @param naviType 导航类型
      */
     public void onNaviArrive(final long traceId, final int naviType) {
-        mLayerAdapter.clearRouteLine(MapTypeId.MAIN_SCREEN_MAIN_MAP);
+        mLayerAdapter.clearRouteLine(MapType.MAIN_SCREEN_MAIN_MAP);
         mNaviPackage.stopNavigation();
 //        StackManager.getInstance().getCurrentFragment(mMapTypeId.name()).closeFragment(true);
     }
 
     /**
      * 更新出口信息
+     *
      * @param guideBoardInfo 导航信息
      */
     public void updateExitDirectionInfo(final NaviManeuverInfo guideBoardInfo) {
@@ -303,9 +326,10 @@ public class SceneNaviTbtImpl extends BaseSceneModel<SceneNaviTbtView> {
 
     /**
      * 更新路口转向图标
-     * @param bytes    bytes
-     * @param config  config
-     * @param aroundNum  aroundNum
+     *
+     * @param bytes     bytes
+     * @param config    config
+     * @param aroundNum aroundNum
      */
     public void updateTurnIcon(final byte[] bytes, final NaviManeuverInfo.NaviManeuverConfig config, final int aroundNum) {
         if (config == null) {
@@ -325,6 +349,7 @@ public class SceneNaviTbtImpl extends BaseSceneModel<SceneNaviTbtView> {
 
     /**
      * 是否存在近阶动作信息
+     *
      * @param naviInfo naviInfo
      * @return boolean
      */
@@ -340,8 +365,9 @@ public class SceneNaviTbtImpl extends BaseSceneModel<SceneNaviTbtView> {
 
     /**
      * 是否有进阶路口信息
+     *
      * @param previousManeuverInfo previousManeuverInfo
-     * @param maneuverInfo maneuverInfo
+     * @param maneuverInfo         maneuverInfo
      * @return boolean
      */
     public static boolean isSameNextThumManeuverInfo(final NaviManeuverInfo previousManeuverInfo,
@@ -357,6 +383,7 @@ public class SceneNaviTbtImpl extends BaseSceneModel<SceneNaviTbtView> {
 
     /**
      * 更新引导信息及转向图标
+     *
      * @param isNeedUpdateDirection isNeedUpdateDirection
      */
     public void updateNaviInfoAndDirection(final boolean isNeedUpdateDirection) {
@@ -434,6 +461,7 @@ public class SceneNaviTbtImpl extends BaseSceneModel<SceneNaviTbtView> {
 
     /**
      * 更新下一道路名称view
+     *
      * @param tvNextRoadNameStr 名称
      */
     public void updateNextRoadNameView(final String tvNextRoadNameStr) {
@@ -444,6 +472,7 @@ public class SceneNaviTbtImpl extends BaseSceneModel<SceneNaviTbtView> {
 
     /**
      * 检查NaviInfoPanel是否合法
+     *
      * @param naviinfo naviInfo
      * @return boolean
      */
@@ -488,8 +517,31 @@ public class SceneNaviTbtImpl extends BaseSceneModel<SceneNaviTbtView> {
     /**
      * @param isVisible 是否可见
      */
-    private void updateSceneVisible(final boolean isVisible){
-        mScreenView.getNaviSceneEvent().notifySceneStateChange((isVisible ? INaviSceneEvent.SceneStateChangeType.SceneShowState :
-                INaviSceneEvent.SceneStateChangeType.SceneHideState), NaviSceneId.NAVI_SCENE_TBT);
+    private void updateSceneVisible(final boolean isVisible) {
+        if (mScreenView.isVisible() == isVisible) return;
+        Logger.i(MapDefaultFinalTag.NAVI_SCENE_TAG, "SceneNaviTbtImpl", isVisible);
+        mScreenView.getNaviSceneEvent().notifySceneStateChange((isVisible ?
+                INaviSceneEvent.SceneStateChangeType.SceneShowState :
+                INaviSceneEvent.SceneStateChangeType.SceneCloseState), NaviSceneId.NAVI_SCENE_TBT);
+    }
+
+    @Override
+    public void onSatelliteNum(int num) {
+        if (num == 0) {
+            mScreenView.onUpdateGpsStrength(NaviConstant.GpsStrengthState.GPS_NONE);
+        } else if (num > 0 && num <= 4) {
+            mScreenView.onUpdateGpsStrength(NaviConstant.GpsStrengthState.GPS_WEAK);
+        } else if (num > 4 && num <= 7) {
+            mScreenView.onUpdateGpsStrength(NaviConstant.GpsStrengthState.GPS_MEDIUM);
+        } else if (num > 7 && num <= 24) {
+            mScreenView.onUpdateGpsStrength(NaviConstant.GpsStrengthState.GPS_STRONG);
+        }
+    }
+
+    @Override
+    public void onGpsSatellitesChanged(boolean isLocSuccess) {
+        if (!isLocSuccess) {
+            mScreenView.onUpdateGpsStrength(NaviConstant.GpsStrengthState.GPS_NONE);
+        }
     }
 }

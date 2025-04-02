@@ -3,4 +3,76 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="transparent">#00000000</color>
+
+    <color name="search_main_tab_img_shape_bg">#4019181D</color>
+    <color name="search_main_tab_img_bg">#FF000000</color>
+
+    <!--Route-->
+    <color name="bg_route_root_bg">#FF1E2027</color>
+    <color name="bg_route_root_shadow_bg">#66151414</color>
+    <color name="text_route_detail_title">#FFFFFFFF</color>
+    <color name="text_route_defult">#B3FFFFFF</color>
+
+    <color name="bg_route_big_window_select">#FF007BFF</color>
+    <color name="bg_route_big_window_unselect">#FF2C2D36</color>
+    <color name="route_back_icon_bg">#00000000</color>
+    <color name="route_back_icon_color">#D2D3D7</color>
+    <color name="route_line_color">#33FFFFFF</color>
+    <color name="route_charge_orange_color">#FFE06A05</color>
+    <color name="bg_route_item_select">#FF2C2F38</color>
+    <color name="bg_route_item_unselect">#FF1E2027</color>
+    <color name="bg_route_detail_color">#802C2F38</color>
+    <color name="bg_route_button_select_color">#FF1D59C3</color>
+    <color name="text_route_restriction_error">#1A9E171A</color>
+    <color name="text_route_restriction_success">#1A4ABA59</color>
+    <color name="text_route_restriction_text_error">#FF9E171A</color>
+    <color name="text_route_restriction_text_success">#FF4ABA59</color>
+    <color name="text_color_route_item_no_select">#B3FFFFFF</color>
+    <color name="text_color_route_item_select">#FFFFFFFF</color>
+    <color name="text_route_search_detail_title">#80FFFFFF</color>
+    <color name="route_title_line_bg">#FF2C2D36</color>
+    <color name="route_charge_param_color">#802C2F38</color>
+    <color name="route_charge_param_title_color">#FF1E1F26</color>
+    <color name="route_charge_param_total_color">#80FFFFFF</color>
+    <color name="route_charge_button_text_color">#B3FFFFFF</color>
+    <color name="route_logo_color">#19181D</color>
+    <color name="floating_search_item_night">#FFFFFF</color>
+
+    <color name="tab_list_route_tab_list_select">#FF005CFF</color>
+    <color name="tab_list_route_tab_list_unselect">#B3FFFFFF</color>
+
+    <color name="main_map_limit_text_color">#FFFFFFFF</color>
+    <color name="main_map_limit_number_color">#FF1E2027</color>
+    <color name="main_map_limit_bg_color">#802C2F38</color>
+    <color name="main_map_limit_shadow_color">#66151414</color>
+    <color name="main_map_limit_city_bg_color">#FF2C2D36</color>
+    <color name="main_map_limit_icon_color">#00000000</color>
+    <color name="main_map_limit_icon_stroke_color">#D2D3D7</color>
+    <color name="main_map_limit_hint_color">#80FFFFFF</color>
+    <color name="main_map_limit_current_city">#B3FFFFFF</color>
+    <color name="main_map_limit_current">#FF007BFF</color>
+    <color name="main_map_limit_title_color">#FFFFFFFF</color>
+    <color name="main_map_limit_loading">#B3FFFFFF</color>
+    <color name="main_map_limit_loading_color">#1D59C3</color>
+    <color name="main_map_limit_loading_stroke_color">#2C2D36</color>
+    <color name="main_map_limit_retry_button_color">#FF1D59C3</color>
+    <color name="main_map_limit_current_city_color">#FF007BFF</color>
+    <color name="main_map_limit_button_color">#FF2C2D36</color>
+    <color name="main_map_limit_restricted">#9E171A</color>
+    <color name="main_map_limit_restricted_background">#802C2F38</color>
+    <color name="main_map_limit_recyclerview_color">#FF2C2F38</color>
+
+    <color name="setting_bg">#FF161A20</color>
+    <color name="setting_bg_stroke">#BF19181D</color>
+    <color name="setting_bg_close">#D2D3D7</color>
+    <color name="setting_bg_tab_select">#FF2C2D36</color>
+    <color name="setting_bg_tab_text_select">#FFFFFF</color>
+    <color name="setting_bg_tab_text_unselect">#B3FFFFFF</color>
+    <color name="setting_bg_voice_text">#FFFFFF</color>
+    <color name="setting_text_preference">#B3000000</color>
+    <color name="setting_car_logo_text_gray">#B3FFFFFF</color>
+    <color name="setting_bg_others">#802C2F38</color>
+    <color name="setting_bg_corner">#FFFFFF</color>
+    <color name="setting_line">#33FFFFFF</color>
+    <color name="setting_voice_has_update_color">#B3FFFFFF</color>
 </resources>

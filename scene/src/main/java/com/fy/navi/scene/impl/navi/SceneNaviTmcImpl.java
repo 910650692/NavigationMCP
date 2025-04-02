@@ -11,12 +11,13 @@ import com.fy.navi.scene.ui.navi.manager.NaviSceneId;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.define.navi.NaviEtaInfo;
 import com.fy.navi.service.define.navi.NaviTmcInfo;
+import com.fy.navi.ui.action.Action;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class SceneNaviTmcImpl extends BaseSceneModel<SceneNaviTmcView> implements NetWorkUtils.NetworkObserver {
-    private static final String TAG = MapDefaultFinalTag.NAVI_HMI_TAG;
+    private static final String TAG = MapDefaultFinalTag.NAVI_SCENE_TMC;
     private boolean mNetworkConnected = true;
     /**
      * 途径点信息
@@ -111,6 +112,8 @@ public class SceneNaviTmcImpl extends BaseSceneModel<SceneNaviTmcView> implement
 //        }
 //    }
 
+    public Action rootViewClick = () -> Logger.i(TAG, "Tmc点击事件拦截");
+
     /**
      * @param naviInfoBean 导航信息
      */
@@ -128,9 +131,7 @@ public class SceneNaviTmcImpl extends BaseSceneModel<SceneNaviTmcView> implement
      * @param naviTmcInfo TMC信息
      */
     public void onUpdateTMCLightBar(final NaviTmcInfo naviTmcInfo) {
-        Logger.i(TAG, "Navi_Tmc_cmpt onUpdateTMCLightBar");
-        if (//mRouteCarResultData == null||
-                ConvertUtils.isEmpty(naviTmcInfo)
+        if (ConvertUtils.isEmpty(naviTmcInfo)
                         || ConvertUtils.isEmpty(naviTmcInfo.getLightBarInfo())
                         || ConvertUtils.isEmpty(naviTmcInfo.getLightBarDetail())) {
             Logger.e(TAG, "onUpdateTMCLightBar failed, data is empty!");
@@ -143,13 +144,16 @@ public class SceneNaviTmcImpl extends BaseSceneModel<SceneNaviTmcView> implement
     /**
      * 更新途经点数据
      */
-    private void innerUpdateNaviInfo() {
-        Logger.i(TAG, "Navi_Tmc_cmpt innerUpdateNaviInfo: viaRemain:" + mCurNaviInfo.viaRemain + ",ChargeStationRemain:" +
-                mCurNaviInfo.ChargeStationRemain);
+    public void innerUpdateNaviInfo() {
+//        Logger.i(TAG, "Navi_Tmc_cmpt innerUpdateNaviInfo: viaRemain:" + mCurNaviInfo.viaRemain + ",ChargeStationRemain:" +
+//                mCurNaviInfo.ChargeStationRemain);
+        if (ConvertUtils.isEmpty(mCurNaviInfo)) {
+            return;
+        }
         mScreenView.updateTmcVia(mCurNaviInfo.viaRemain, mCurNaviInfo.ChargeStationRemain);
         if (mUpdateTMCInfoDistance) {
             mUpdateTMCInfoDistance = false;
-            updateTmcNew(mTmcItemsInTmcBarNew, mDistanceHasPassed, mTotalDistance, true);
+            updateTmcNew(mTmcItemsInTmcBarNew, mDistanceHasPassed, mTotalDistance, false);
         }
     }
 
@@ -178,8 +182,8 @@ public class SceneNaviTmcImpl extends BaseSceneModel<SceneNaviTmcView> implement
         }
         /** 光柱图功能，目前与鹰眼图只同时一个,目前显示的是鹰眼图，光柱图暂时关闭，根据产品需要可以开启,当前设置为false,可在GuideConstants开启  */
         //获取当前设置的主路线pathInfo,mRouteCarResultData.getFocusIndex()是当前引导的主路线索引
-        Logger.i(TAG, "Navi_Tmc_cmpt innerUpdateTMCLightBar finishDistance = {?}, restDistance = {?}, totalDistance = {?}",
-                mLightBarDetail.getFinishDistance(), mLightBarDetail.getFinishDistance(), mLightBarDetail.getTotalDistance());
+//        Logger.i(TAG, "Navi_Tmc_cmpt innerUpdateTMCLightBar finishDistance = {?}, restDistance = {?}, totalDistance = {?}",
+//                mLightBarDetail.getFinishDistance(), mLightBarDetail.getFinishDistance(), mLightBarDetail.getTotalDistance());
         //计算光柱图数据
         mTmcItemsInTmcBarNew = mLightBarDetail.getTmcInfoData();
         //获取路线长度
@@ -193,9 +197,9 @@ public class SceneNaviTmcImpl extends BaseSceneModel<SceneNaviTmcView> implement
                     finishDistance = mTmcItemsInTmcBarNew.get(i).getDistance();
                 }
             }
-            Logger.i(TAG, "Navi_Tmc_cmpt innerUpdateTMCLightBar finishDistance = {?}, " +
+/*            Logger.i(TAG, "Navi_Tmc_cmpt innerUpdateTMCLightBar finishDistance = {?}, " +
                             "totalDistance = {?}, mTotalDistance={?} , mDistanceHasPassed={?}",
-                    finishDistance, totalDistance, mTotalDistance, mDistanceHasPassed);
+                    finishDistance, totalDistance, mTotalDistance, mDistanceHasPassed);*/
             // 重新规划路线以后，需要保留已走过的距离
             if (totalDistance != (mTotalDistance - mDistanceHasPassed)) {
                 mDistanceHasPassed += mLastDistanceHasPassed;
@@ -227,6 +231,7 @@ public class SceneNaviTmcImpl extends BaseSceneModel<SceneNaviTmcView> implement
             return;
         }
         if (reRouter) {
+            Logger.i(TAG, "updateTmcNew reRouter resetView");
             mScreenView.resetView();
         }
         // TODO 临时修复进度条方案，后续重新优化tmc, 存在TMC上的途经点icon频繁闪烁且位置频繁变更问题
@@ -282,7 +287,10 @@ public class SceneNaviTmcImpl extends BaseSceneModel<SceneNaviTmcView> implement
      * @param isVisible isVisible
      */
     private void updateSceneVisible(final boolean isVisible){
-        mScreenView.getNaviSceneEvent().notifySceneStateChange((isVisible ? INaviSceneEvent.SceneStateChangeType.SceneShowState :
-                INaviSceneEvent.SceneStateChangeType.SceneHideState), NaviSceneId.NAVI_SCENE_TMC);
+        if(mScreenView.isVisible() == isVisible) return;
+        Logger.i(MapDefaultFinalTag.NAVI_SCENE_TAG, "SceneNaviTmcImpl", isVisible);
+        mScreenView.getNaviSceneEvent().notifySceneStateChange((isVisible ?
+                INaviSceneEvent.SceneStateChangeType.SceneShowState :
+                INaviSceneEvent.SceneStateChangeType.SceneCloseState), NaviSceneId.NAVI_SCENE_TMC);
     }
 }

@@ -38,9 +38,7 @@ public final class NavistatusAdapter {
     public void setNaviStatus(final String naviStatus) {
         if (naviStatus == NaviStatus.NaviStatusType.NAVING) {
             mIsGuidanceActive = true;
-        }
-
-        if (naviStatus == NaviStatus.NaviStatusType.NO_STATUS) {
+        } else {
             mIsGuidanceActive = false;
         }
         synchronized (NavistatusAdapter.class) {

@@ -2,5 +2,5 @@
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
     android:shape="rectangle">
     <corners android:radius="@dimen/dp_6" />
-    <solid android:color="@color/navi_list_item_tv_one" />
+    <solid android:color="@color/navi_color_C73333_100" />
 </shape>

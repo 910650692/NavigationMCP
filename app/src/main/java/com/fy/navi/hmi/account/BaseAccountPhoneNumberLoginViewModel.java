@@ -1,8 +1,6 @@
 package com.fy.navi.hmi.account;
 
 import android.app.Application;
-import android.os.Handler;
-import android.os.Looper;
 
 import androidx.annotation.NonNull;
 
@@ -12,10 +10,10 @@ import com.fy.navi.ui.base.BaseViewModel;
 
 public class BaseAccountPhoneNumberLoginViewModel extends BaseViewModel<AccountPhoneNumberLoginFragment, AccountPhoneNumberLoginModel> {
 
-    private String phoneNumber;
-    private String verificationCode;
+    private String mPhoneNumber;
+    private String mVerificationCode;
 
-    public BaseAccountPhoneNumberLoginViewModel(@NonNull Application application) {
+    public BaseAccountPhoneNumberLoginViewModel(@NonNull final Application application) {
         super(application);
     }
 
@@ -24,35 +22,30 @@ public class BaseAccountPhoneNumberLoginViewModel extends BaseViewModel<AccountP
         return new AccountPhoneNumberLoginModel();
     }
 
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
+    public void setPhoneNumber(final String phoneNumber) {
+        this.mPhoneNumber = phoneNumber;
     }
 
-    public void setVerificationCode(String verificationCode) {
-        this.verificationCode = verificationCode;
+    public void setVerificationCode(final String verificationCode) {
+        this.mVerificationCode = verificationCode;
     }
 
     //返回上一页
-    public Action accountBack = () -> {
+    public Action mAccountBack = () -> {
         closeFragment(true);
     };
 
 
-    public Action getVerificationCode = () -> {
-        AccountPackage.getInstance().verificationCodeRequest(phoneNumber);
+    public Action mGetVerificationCode = () -> {
+        AccountPackage.getInstance().verificationCodeRequest(mPhoneNumber);
     };
 
-    public Action clickLogin = () -> {
-        AccountPackage.getInstance().mobileLoginRequest(verificationCode, phoneNumber);
+    public Action mClickLogin = () -> {
+        AccountPackage.getInstance().mobileLoginRequest(mVerificationCode, mPhoneNumber);
     };
 
-    public Action clickQRCodeLogin = () -> {
+    public Action mClickQRCodeLogin = () -> {
         addFragment(new AccountQRCodeLoginFragment(), null);
     };
 
-    public void close() {
-        new Handler(Looper.getMainLooper()).post(() -> {
-            closeFragment(true);
-        });
-    }
 }

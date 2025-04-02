@@ -3,7 +3,7 @@ package com.fy.navi.service.adapter.route;
 import com.android.utils.ConvertUtils;
 import com.fy.navi.service.AdapterConfig;
 import com.fy.navi.service.define.layer.RouteLineLayerParam;
-import com.fy.navi.service.define.map.MapTypeId;
+import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.route.RouteAvoidInfo;
 import com.fy.navi.service.define.route.RouteCurrentPathParam;
 import com.fy.navi.service.define.route.RouteMsgPushInfo;
@@ -31,8 +31,8 @@ final public class RouteAdapter {
     public static final String REGISTRE_FROM_ROUTE = "register_from_route";
 
     private IRouteApi mRouteApi;
-    private Map<MapTypeId, List<RouteParam>> mParamMap;
-    private Map<MapTypeId, RouteCurrentPathParam> mRouteCurrentPathParamMap;
+    private Map<MapType, List<RouteParam>> mParamMap;
+    private Map<MapType, RouteCurrentPathParam> mRouteCurrentPathParamMap;
 
     private RouteAdapter() {
         mParamMap = new HashMap<>();
@@ -40,11 +40,11 @@ final public class RouteAdapter {
         mRouteApi = (IRouteApi) AdapterConfig.getObject(CLASS_API_PKG, CLASS_API_NAME);
     }
 
-    public Map<MapTypeId, List<RouteParam>> getParamMap() {
+    public Map<MapType, List<RouteParam>> getParamMap() {
         return mParamMap;
     }
 
-    public Map<MapTypeId, RouteCurrentPathParam> getRouteCurrentPathParamMap() {
+    public Map<MapType, RouteCurrentPathParam> getRouteCurrentPathParamMap() {
         return mRouteCurrentPathParamMap;
     }
 
@@ -100,7 +100,7 @@ final public class RouteAdapter {
      * @param mapTypeId 屏幕Id
      * @param paramList 点信息
      */
-    public void saveAllPoiParamList(final MapTypeId mapTypeId, final List<RouteParam> paramList) {
+    public void saveAllPoiParamList(final MapType mapTypeId, final List<RouteParam> paramList) {
         mParamMap.put(mapTypeId, paramList);
     }
 
@@ -110,7 +110,7 @@ final public class RouteAdapter {
      * @param mapTypeId 屏幕Id
      * @return 返回所有点信息
      */
-    public List<RouteParam> getAllPoiParamList(final MapTypeId mapTypeId) {
+    public List<RouteParam> getAllPoiParamList(final MapType mapTypeId) {
         final List<RouteParam> routeParams = new ArrayList<>();
         if (!ConvertUtils.isEmpty(mParamMap.get(mapTypeId))) {
             routeParams.addAll(mParamMap.get(mapTypeId));
@@ -151,36 +151,11 @@ final public class RouteAdapter {
     }
 
     /**
-     * 设置算路计划
-     * @param isNaviActive 是否导航中
-     */
-    public void setRoutePlan(final boolean isNaviActive) {
-        mRouteApi.setRoutePlan(isNaviActive);
-    }
-
-    /**
-     * 设置熟悉算路
-     * @param isFamiliarRoute 是否是熟悉算路
-     */
-    public void setFamiliarRoute(final boolean isFamiliarRoute) {
-        mRouteApi.setFamiliarRoute(isFamiliarRoute);
-    }
-
-    /**
      * 设置避开道路
      * @param routeAvoidInfo 避开参数
      */
     public void setAvoidRoad(final RouteAvoidInfo routeAvoidInfo) {
         mRouteApi.setAvoidRoad(routeAvoidInfo);
-    }
-
-    /**
-     * 设置限行+车牌开关
-     * @param plateNumber 车牌
-     * @param isTrafficRestrictionOpen 开关是否打开
-     */
-    public void setRestriction(final String plateNumber, final boolean isTrafficRestrictionOpen) {
-        mRouteApi.setRestriction(plateNumber, isTrafficRestrictionOpen);
     }
 
     /**
@@ -192,22 +167,6 @@ final public class RouteAdapter {
      */
     public void setRequestControl(final RoutePreferenceID id, final String num, final boolean restriction, final boolean routePlan) {
         mRouteApi.setRequestControl(id, num, restriction, routePlan);
-    }
-
-    /**
-     * 设置电车
-     * @param isCarElecPlanOpen 电车开关
-     */
-    public void setCarElecPlantion(final boolean isCarElecPlanOpen) {
-        mRouteApi.setCarElecPlantion(isCarElecPlanOpen);
-    }
-
-    /**
-     * 设置交通
-     * @param isOpenTraffic 交通开关
-     */
-    public void setTrafficTrip(final boolean isOpenTraffic) {
-        mRouteApi.setTrafficTrip(isOpenTraffic);
     }
 
     /**
@@ -223,7 +182,7 @@ final public class RouteAdapter {
      * @param mapTypeId 屏幕Id
      * @return 当前线路信息
      */
-    public RouteCurrentPathParam getCurrentPath(final MapTypeId mapTypeId) {
+    public RouteCurrentPathParam getCurrentPath(final MapType mapTypeId) {
         if (!ConvertUtils.isEmpty(mRouteCurrentPathParamMap.get(mapTypeId))) {
             return mRouteCurrentPathParamMap.get(mapTypeId);
         }
@@ -243,7 +202,7 @@ final public class RouteAdapter {
      * @param routeMsgPushInfo 算路还原参数
      * @param mapTypeId 屏幕Id
      */
-    public void requestRouteRestoration(final RouteMsgPushInfo routeMsgPushInfo, final MapTypeId mapTypeId) {
+    public void requestRouteRestoration(final RouteMsgPushInfo routeMsgPushInfo, final MapType mapTypeId) {
         mRouteApi.requestRouteRestoration(routeMsgPushInfo,mapTypeId);
     }
     /**

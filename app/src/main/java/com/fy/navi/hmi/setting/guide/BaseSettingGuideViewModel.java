@@ -12,9 +12,9 @@ import com.android.utils.ToastUtils;
 import com.fy.navi.hmi.mapdata.MapDataFragment;
 import com.fy.navi.hmi.setting.guide.platenumber.SettingPlateNumberFragment;
 import com.fy.navi.service.MapDefaultFinalTag;
-import com.fy.navi.service.define.layer.CarModeType;
+import com.fy.navi.service.define.layer.refix.CarModeType;
 import com.fy.navi.service.define.map.MapMode;
-import com.fy.navi.service.define.map.MapTypeId;
+import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.setting.SettingController;
 import com.fy.navi.service.logicpaket.layer.LayerPackage;
 import com.fy.navi.service.logicpaket.map.MapPackage;
@@ -74,12 +74,14 @@ public class BaseSettingGuideViewModel extends BaseViewModel<SettingNaviFragment
         mModel.initView();
     }
 
+    public Action mOfflineAvoidLimitClick = () -> {
+        ToastUtils.Companion.getInstance().showCustomToastView(
+                ResourceUtils.Companion.getInstance().getString(com.fy.navi.scene.R.string.navi_setting_offline_toast));
+    };
     // 避开限行
     public Action mAvoidLimitClick = () -> {
         if (Boolean.FALSE.equals(NetWorkUtils.Companion.getInstance().checkNetwork())
                 && Boolean.FALSE.equals(mIsAvoidLimit.getValue())) {
-            ToastUtils.Companion.getInstance().showCustomToastView(
-                    ResourceUtils.Companion.getInstance().getString(com.fy.navi.scene.R.string.navi_setting_offline_toast));
             mIsAvoidLimit.setValue(false);
             return;
         }
@@ -113,7 +115,7 @@ public class BaseSettingGuideViewModel extends BaseViewModel<SettingNaviFragment
     // 自动比例尺
     public Action mAutoScale = () -> {
         final boolean value = Boolean.FALSE.equals(mIsAutoScale.getValue());
-        LayerPackage.getInstance().openDynamicLevel(MapTypeId.MAIN_SCREEN_MAIN_MAP, value);
+        LayerPackage.getInstance().openDynamicLevel(MapType.MAIN_SCREEN_MAIN_MAP, value);
         mIsAutoScale.setValue(value);
         mModel.setAutoScale(value);
     };
@@ -126,6 +128,14 @@ public class BaseSettingGuideViewModel extends BaseViewModel<SettingNaviFragment
         }
         addFragment(new SettingPlateNumberFragment(), null);
     };
+
+    /**
+     * 设置 AvoidLimit 状态
+     * @param isAvoid true 开启 false 关闭
+     */
+    public void setAvoidStatus(final boolean isAvoid) {
+        mView.setAvoidStatus(isAvoid);
+    }
 
     /**
      * Dual choice controller.
@@ -171,7 +181,7 @@ public class BaseSettingGuideViewModel extends BaseViewModel<SettingNaviFragment
     // 实时路况
     public Action mRoadConditionClick = () -> {
         final boolean value = Boolean.FALSE.equals(mIsRoadCondition.getValue());
-        MapPackage.getInstance().setTrafficStates(MapTypeId.MAIN_SCREEN_MAIN_MAP, value);
+        MapPackage.getInstance().setTrafficStates(MapType.MAIN_SCREEN_MAIN_MAP, value);
         mIsRoadCondition.setValue(value);
         mModel.setConfigKeyRoadEvent(value);
     };
@@ -189,58 +199,58 @@ public class BaseSettingGuideViewModel extends BaseViewModel<SettingNaviFragment
         final boolean value = Boolean.FALSE.equals(mIsChargingStation.getValue());
         final ArrayList<Integer> typeList = new ArrayList<>();
         typeList.add(25);
-        MapPackage.getInstance().setCustomLabelTypeVisible(MapTypeId.MAIN_SCREEN_MAIN_MAP, typeList, value);
+        MapPackage.getInstance().setCustomLabelTypeVisible(MapType.MAIN_SCREEN_MAIN_MAP, typeList, value);
         mIsChargingStation.setValue(value);
         mModel.setChargingStation(value);
     };
 
     // 3D车头向上
     public Action mSwitchMapModel3DUpClick = () -> {
-        MapPackage.getInstance().switchMapMode(MapTypeId.MAIN_SCREEN_MAIN_MAP, MapMode.UP_3D);
+        MapPackage.getInstance().switchMapMode(MapType.MAIN_SCREEN_MAIN_MAP, MapMode.UP_3D);
     };
 
     // 2D北向上
     public Action mSwitchMapModel2DNorthClick = () -> {
-        MapPackage.getInstance().switchMapMode(MapTypeId.MAIN_SCREEN_MAIN_MAP, MapMode.NORTH_2D);
+        MapPackage.getInstance().switchMapMode(MapType.MAIN_SCREEN_MAIN_MAP, MapMode.NORTH_2D);
     };
 
     // 2D车头向上
     public Action mSwitchMapModel2DUpClick = () -> {
-        MapPackage.getInstance().switchMapMode(MapTypeId.MAIN_SCREEN_MAIN_MAP, MapMode.UP_2D);
+        MapPackage.getInstance().switchMapMode(MapType.MAIN_SCREEN_MAIN_MAP, MapMode.UP_2D);
     };
 
     // 默认车标
     public Action mSwitchMapLogoDefaultClick = () -> {
-        if (mModel.getCarMode() == 1) {
-            LayerPackage.getInstance().setCarMode(MapTypeId.MAIN_SCREEN_MAIN_MAP, CarModeType.CAR_MODEL_TYPE_2D);
+        if (mModel.getCarMode() == CarModeType.CAR_MODEL_TYPE_3D) {
+            LayerPackage.getInstance().setCarMode(MapType.MAIN_SCREEN_MAIN_MAP, CarModeType.CAR_MODEL_TYPE_2D);
             mModel.setCarMode(CarModeType.CAR_MODEL_TYPE_2D);
         } else {
-            LayerPackage.getInstance().setCarMode(MapTypeId.MAIN_SCREEN_MAIN_MAP, CarModeType.CAR_MODEL_TYPE_3D);
+            LayerPackage.getInstance().setCarMode(MapType.MAIN_SCREEN_MAIN_MAP, CarModeType.CAR_MODEL_TYPE_3D);
             mModel.setCarMode(CarModeType.CAR_MODEL_TYPE_3D);
         }
     };
 
     // 品牌车标
     public Action mSwitchMapLogoBrandClick = () -> {
-        LayerPackage.getInstance().setCarMode(MapTypeId.MAIN_SCREEN_MAIN_MAP, CarModeType.CAR_MODEL_TYPE_SKELETON);
+        LayerPackage.getInstance().setCarMode(MapType.MAIN_SCREEN_MAIN_MAP, CarModeType.CAR_MODEL_TYPE_SKELETON);
         mModel.setCarMode(CarModeType.CAR_MODEL_TYPE_SKELETON);
     };
 
     // 车速车标
     public Action mSwitchMapLogoSpeedClick = () -> {
-        LayerPackage.getInstance().setCarMode(MapTypeId.MAIN_SCREEN_MAIN_MAP, CarModeType.CAR_MODEL_TYPE_SPEED);
+        LayerPackage.getInstance().setCarMode(MapType.MAIN_SCREEN_MAIN_MAP, CarModeType.CAR_MODEL_TYPE_SPEED);
         mModel.setCarMode(CarModeType.CAR_MODEL_TYPE_SPEED);
     };
 
     // 标准字号
     public Action mNaviTextSizeStandardClick = () -> {
-        MapPackage.getInstance().setMapViewTextSize(MapTypeId.MAIN_SCREEN_MAIN_MAP, 1f);
+        MapPackage.getInstance().setMapViewTextSize(MapType.MAIN_SCREEN_MAIN_MAP, 1f);
         mModel.setMapViewTextSize(true);
     };
 
     // 大字号
     public Action mNaviTextSizeLargeClick = () -> {
-        MapPackage.getInstance().setMapViewTextSize(MapTypeId.MAIN_SCREEN_MAIN_MAP, 1.8f);
+        MapPackage.getInstance().setMapViewTextSize(MapType.MAIN_SCREEN_MAIN_MAP, 1.8f);
         mModel.setMapViewTextSize(false);
     };
 

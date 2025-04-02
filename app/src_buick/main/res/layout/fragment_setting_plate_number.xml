@@ -39,7 +39,7 @@
                     android:layout_gravity="center"
                     android:layout_marginStart="@dimen/dp_452"
                     android:text="@string/setting_guide_plate_number_my"
-                    android:textColor="@color/black"
+                    android:textColor="@color/setting_bg_tab_text_select"
                     android:textSize="@dimen/sp_38" />
 
                 <com.fy.navi.ui.view.SkinTextView
@@ -56,14 +56,6 @@
                     android:textSize="@dimen/sp_30" />
             </com.fy.navi.ui.view.SkinLinearLayout>
 
-            <com.fy.navi.ui.view.SkinView
-                android:id="@+id/setting_plate_number_line"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_1"
-                android:background="@color/bg_route_shadow_list"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/setting_plate_number_title" />
-
             <com.fy.navi.ui.view.SkinTextView
                 android:id="@+id/setting_plate_number_title_text"
                 android:layout_width="wrap_content"
@@ -71,10 +63,10 @@
                 android:layout_marginStart="@dimen/dp_40"
                 android:layout_marginTop="@dimen/dp_56"
                 android:text="@string/setting_guide_plate_number_text"
-                android:textColor="@color/black"
+                android:textColor="@color/setting_bg_tab_text_select"
                 android:textSize="@dimen/sp_34"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/setting_plate_number_line" />
+                app:layout_constraintTop_toBottomOf="@+id/setting_plate_number_title" />
 
             <com.fy.navi.ui.view.SkinTextView
                 android:id="@+id/setting_plate_number_province"
@@ -89,8 +81,9 @@
                 android:paddingEnd="@dimen/dp_22"
                 android:text="@string/setting_guide_plate_number_default"
                 android:textSize="@dimen/sp_30"
+                android:textColor="@color/setting_bg_tab_text_unselect"
                 app:layout_constraintStart_toEndOf="@+id/setting_plate_number_title_text"
-                app:layout_constraintTop_toBottomOf="@+id/setting_plate_number_line" />
+                app:layout_constraintTop_toBottomOf="@+id/setting_plate_number_title" />
 
             <com.fy.navi.ui.view.SkinEditText
                 android:id="@+id/setting_plate_number_number"
@@ -102,6 +95,7 @@
                 android:hint="@string/setting_guide_plate_number_input"
                 android:paddingLeft="@dimen/dp_30"
                 android:textSize="@dimen/sp_30"
+                android:textColor="@color/setting_bg_tab_text_select"
                 app:layout_constraintStart_toEndOf="@+id/setting_plate_number_province"
                 app:layout_constraintTop_toTopOf="@+id/setting_plate_number_province" />
 
@@ -121,7 +115,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_16"
                 android:text="@string/setting_guide_plate_number_tip"
-                android:textColor="@color/setting_car_number_tip"
+                android:textColor="@color/setting_bg_tab_text_unselect"
                 android:textSize="@dimen/sp_26"
                 android:visibility="@{viewModel.mIsFocus ? View.VISIBLE : View.GONE}"
                 app:layout_constraintEnd_toEndOf="@+id/setting_plate_number_number"
@@ -133,7 +127,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_55"
                 android:text="@string/setting_guide_plate_number_car_type"
-                android:textColor="@color/black"
+                android:textColor="@color/setting_bg_tab_text_select"
                 android:textSize="@dimen/sp_34"
                 app:layout_constraintStart_toStartOf="@+id/setting_plate_number_title_text"
                 app:layout_constraintTop_toBottomOf="@+id/setting_plate_number_title_text" />
@@ -144,7 +138,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_40"
                 android:text="@string/setting_guide_plate_number_car_type_oil"
-                android:textColor="@color/search_quick_tab_view_color"
+                android:textColor="@color/setting_bg_tab_text_unselect"
                 android:textSize="@dimen/sp_34"
                 app:layout_constraintStart_toEndOf="@+id/setting_car_type"
                 app:layout_constraintTop_toTopOf="@+id/setting_car_type" />

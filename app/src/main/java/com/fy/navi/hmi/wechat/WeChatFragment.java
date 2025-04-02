@@ -2,6 +2,8 @@ package com.fy.navi.hmi.wechat;
 
 import android.graphics.Bitmap;
 import android.view.Window;
+import android.view.animation.Animation;
+import android.view.animation.RotateAnimation;
 
 import com.android.utils.ResourceUtils;
 import com.android.utils.thread.ThreadManager;
@@ -13,16 +15,12 @@ import com.fy.navi.hmi.setting.SettingCheckDialog;
 import com.fy.navi.ui.base.BaseFragment;
 import com.fy.navi.ui.dialog.IBaseDialogClickListener;
 
-/**
- * @Description 微信互联页面
- * @Author fh
- * @date 2024/12/24
- */
+
 public class WeChatFragment extends BaseFragment<FragmentWeChatBinding, WeChatViewModel> {
 
     private final static String TAG = WeChatFragment.class.getSimpleName();
-
-    private SettingCheckDialog unbindDialog;
+    private RotateAnimation mRotateAnimation;
+    private SettingCheckDialog mUnbindDialog;
 
     @Override
     public int onLayoutId() {
@@ -38,6 +36,7 @@ public class WeChatFragment extends BaseFragment<FragmentWeChatBinding, WeChatVi
     public void onInitView() {
         mViewModel.initView();
         initDialog();
+        initAnimation();
     }
 
     @Override
@@ -45,45 +44,91 @@ public class WeChatFragment extends BaseFragment<FragmentWeChatBinding, WeChatVi
 
     }
 
-    public void updateQRCode(Bitmap bitmap) {
+    /**
+     * 更新二维码
+     * @param bitmap 二维码图片
+     */
+    public void updateQRCode(final Bitmap bitmap) {
         ThreadManager.getInstance().postUi(() -> {
             mBinding.chatContentImg.setImageBitmap(bitmap);
         });
     }
 
-    public void updateTitle(boolean isLogin) {
+    /**
+     * 更新标题
+     * @param isLogin 是否登录
+     */
+    public void updateTitle(final boolean isLogin) {
         ThreadManager.getInstance().postUi(() -> {
-            mBinding.weChatTitle.setText(isLogin ? ResourceUtils.Companion.getInstance().getString(R.string.chat_connect_title) : ResourceUtils.Companion.getInstance().getString(R.string.account_chat_connect));
+            mBinding.weChatTitle.setText(isLogin ?
+                    ResourceUtils.Companion.getInstance().getString(R.string.chat_connect_title) :
+                    ResourceUtils.Companion.getInstance().getString(R.string.account_chat_connect));
         });
     }
 
+    /**
+     * 初始化dialog
+     */
     private void initDialog() {
 
-        unbindDialog  = new SettingCheckDialog.Build(getContext())
+        mUnbindDialog = new SettingCheckDialog.Build(getContext())
                 .setTitle(ResourceUtils.Companion.getInstance().getString(R.string.chat_connect_unbind_title))
                 .setContent(ResourceUtils.Companion.getInstance().getString(R.string.chat_connect_unbind_tip))
                 .setConfirmText(ResourceUtils.Companion.getInstance().getString(R.string.chat_connect_unbind_confirm))
                 .setShowCancel(false)
                 .setDialogObserver(new IBaseDialogClickListener() {
-                    @Override
-                    public void onCommitClick() {
-                        // TODO 重启应用 恢复默认设置
-                    }
 
                 }).build();
-        clearBackground(unbindDialog.getWindow());
+        clearBackground(mUnbindDialog.getWindow());
     }
 
-    private void clearBackground(Window window) {
+    /**
+     * 清除背景色
+     * @param window 窗口
+     */
+    private void clearBackground(final Window window) {
         if (window != null) {
             window.setDimAmount(0f);
         }
     }
 
+    /**
+     * 显示解绑对话框
+     */
     public void showUnbindDialog() {
-        if (unbindDialog == null) {
+        if (mUnbindDialog == null) {
             initDialog();
         }
-        unbindDialog.show();
+        mUnbindDialog.show();
+    }
+
+    /**
+     * 初始化动画
+     */
+    private void initAnimation() {
+        // 设置图片
+        // 创建旋转动画
+        mRotateAnimation = new RotateAnimation(
+                0, 360, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+        mRotateAnimation.setDuration(1000); // 1秒完成一次旋转
+        mRotateAnimation.setRepeatCount(Animation.INFINITE); // 无限循环
+    }
+
+    /**
+     * 开始动画
+     */
+    public void startAnimation() {
+        ThreadManager.getInstance().postUi(() -> {
+            mBinding.accountQrcodeLoading.startAnimation(mRotateAnimation);
+        });
+    }
+
+    /**
+     * 结束动画
+     */
+    public void stopAnimation() {
+        ThreadManager.getInstance().postUi(() -> {
+            mBinding.accountQrcodeLoading.clearAnimation();
+        });
     }
 }

@@ -6,6 +6,7 @@ import com.fy.navi.service.define.position.DrBean;
 import com.fy.navi.service.define.position.LocInfoBean;
 import com.fy.navi.service.define.position.LocMMInfo;
 import com.fy.navi.service.define.position.LocParallelInfoEntity;
+import com.fy.navi.service.define.user.usertrack.GpsTrackPointBean;
 
 public interface IPositionAdapterCallback {
 
@@ -30,4 +31,10 @@ public interface IPositionAdapterCallback {
 
     /*** 开启L2++时调用 **/
     default void onGraspRouteResult(L2NaviBean.VehiclePositionBean vehiclePosition){}
+
+    /*** 卫星数 **/
+    default void onSatelliteNum(int num){}
+
+    /*** 回调最后位置打点信息 **/
+    default void onGpsTrackPoint(GpsTrackPointBean gpsTrackPoi0903ntBean){}
 }

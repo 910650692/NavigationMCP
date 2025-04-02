@@ -32,7 +32,7 @@
             android:paddingEnd="@dimen/dp_8"
             android:textSize="@dimen/sp_32"
             android:gravity="center"
-            android:textColor="@color/black"
+            android:textColor="@color/search_color_ffffff"
             android:background="@drawable/bg_poi_gas_type_bg"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -48,7 +48,7 @@
             android:gravity="end|center_vertical"
             android:paddingStart="@dimen/dp_8"
             android:paddingEnd="@dimen/dp_8"
-            android:textColor="@color/poi_details_bottom_icon"
+            android:textColor="@color/search_color_ffffff_50"
             app:layout_constraintStart_toEndOf="@+id/poi_gas_oil_type"
             app:layout_constraintTop_toTopOf="parent"
             />

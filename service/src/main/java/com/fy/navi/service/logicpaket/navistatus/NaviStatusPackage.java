@@ -6,31 +6,38 @@ import com.fy.navi.service.adapter.navistatus.NavistatusAdapter;
 import java.util.Hashtable;
 
 
-public class NaviStatusPackage implements INaviStatusCallback {
+public final class NaviStatusPackage implements INaviStatusCallback {
 
     private NavistatusAdapter mNavistatusAdapter;
-    private Hashtable<String, NaviStatusCallback> naviStatusCallbackMap;
+    private Hashtable<String, NaviStatusCallback> mNaviStatusCallbackMap;
 
     public static NaviStatusPackage getInstance() {
-        return NaviStatusPackage.Helper.lPackage;
+        return NaviStatusPackage.Helper.NAVI_STATUS_PACKAGE;
     }
 
     private static final class Helper {
-        private static final NaviStatusPackage lPackage = new NaviStatusPackage();
+        private static final NaviStatusPackage NAVI_STATUS_PACKAGE = new NaviStatusPackage();
     }
 
     private NaviStatusPackage() {
         mNavistatusAdapter = NavistatusAdapter.getInstance();
         mNavistatusAdapter.registerCallback(NaviStatusPackage.this);
-        naviStatusCallbackMap = new Hashtable<>();
+        mNaviStatusCallbackMap = new Hashtable<>();
     }
 
-    public void registerObserver(String key, NaviStatusCallback naviStatusCallback) {
-        naviStatusCallbackMap.put(key, naviStatusCallback);
+    /**
+     * @param key the key of the observer
+     * @param naviStatusCallback the observer
+     */
+    public void registerObserver(final String key, final NaviStatusCallback naviStatusCallback) {
+        mNaviStatusCallbackMap.put(key, naviStatusCallback);
     }
 
-    public void unregisterObserver(String key) {
-        naviStatusCallbackMap.remove(key);
+    /**
+     * @param key the key of the observer
+     */
+    public void unregisterObserver(final String key) {
+        mNaviStatusCallbackMap.remove(key);
     }
 
     public String getCurrentNaviStatus() {
@@ -46,8 +53,8 @@ public class NaviStatusPackage implements INaviStatusCallback {
     }
 
     @Override
-    public void onNaviStatusChange(String naviStatus) {
-        for (NaviStatusCallback callback : naviStatusCallbackMap.values()) {
+    public void onNaviStatusChange(final String naviStatus) {
+        for (NaviStatusCallback callback : mNaviStatusCallbackMap.values()) {
             if (null != callback) {
                 callback.onNaviStatusChange(naviStatus);
             }

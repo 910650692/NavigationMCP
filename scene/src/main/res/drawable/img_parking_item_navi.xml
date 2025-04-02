@@ -4,11 +4,11 @@
     android:viewportWidth="68"
     android:viewportHeight="68">
     <path
-        android:fillColor="@color/navi_img_color_one"
+        android:fillColor="@color/navi_color_000000_0"
         android:fillType="evenOdd"
         android:pathData="M30.707,36.404L12.837,32.121L53.142,15.858L36.879,56.163L32.596,38.293C32.365,37.327 31.673,36.635 30.707,36.404Z"
         android:strokeWidth="4"
         android:strokeAlpha="0.8"
-        android:strokeColor="@color/navi_img_color_two"
+        android:strokeColor="@color/navi_color_383839_100"
         android:strokeLineJoin="round" />
 </vector>

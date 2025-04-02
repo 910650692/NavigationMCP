@@ -133,10 +133,22 @@ public interface IUserTrackApi {
     ArrayList<DrivingRecordDataBean> getDrivingRecordDataList();
 
     /**
+     * 获取行为数据id列表
+     * @return 行为数据id列表
+     */
+    int[] getBehaviorDataIds();
+
+    /**
      * 获取巡航历史-行程数据列表（巡航历史）
      * @return 行程数据列表
      */
     ArrayList<DrivingRecordDataBean> getDrivingRecordCruiseDataList();
+
+    /**
+     * 从sdk获取当前用户行程数据列表（默认导航历史）
+     * @return 行程数据列表
+     */
+    ArrayList<DrivingRecordDataBean> getDrivingRecordDataFromSdk();
 
     /**
      * 获取所有行程总里程

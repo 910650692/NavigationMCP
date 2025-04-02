@@ -1,10 +1,8 @@
 package com.fy.navi.hmi.launcher;
 
-import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.View;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.android.utils.log.Logger;
@@ -15,7 +13,7 @@ import com.fy.navi.hmi.R;
 import com.fy.navi.hmi.databinding.ActivityLauncherSmallCardBinding;
 import com.fy.navi.service.define.cruise.CruiseInfoEntity;
 import com.fy.navi.service.define.map.IBaseScreenMapView;
-import com.fy.navi.service.define.map.MapTypeId;
+import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.navi.LaneInfoEntity;
 import com.fy.navi.service.define.navi.NaviEtaInfo;
 import com.fy.navi.service.define.navi.NaviTmcInfo;
@@ -30,7 +28,7 @@ public class MapLauncherSmallCardActivity extends BaseActivity<ActivityLauncherS
     private static final String TAG = "MapLauncherSmallCardActivity";
     @Override
     public void onCreateBefore() {
-        mScreenId = MapTypeId.LAUNCHER_WIDGET_MAP.name();
+        mScreenId = MapType.LAUNCHER_WIDGET_MAP.name();
     }
 
     @Override

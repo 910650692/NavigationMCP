@@ -19,6 +19,7 @@
             android:orientation="horizontal"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent">
+
             <com.fy.navi.scene.ui.navi.component.SubcomponentLanes
                 android:id="@+id/tlr_resources161"
                 android:layout_width="wrap_content"

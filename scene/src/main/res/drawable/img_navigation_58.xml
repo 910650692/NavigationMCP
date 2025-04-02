@@ -7,7 +7,7 @@
       android:pathData="M26.192,31.05L10.949,27.398L45.327,13.526L31.455,47.904L27.802,32.661C27.605,31.838 27.015,31.248 26.192,31.05Z"
       android:strokeLineJoin="round"
       android:strokeWidth="3.41176471"
-      android:fillColor="@color/svg_color_000000"
-      android:strokeColor="@color/svg_color_FFFFFF"
+      android:fillColor="@color/navi_color_000000_0"
+      android:strokeColor="@color/navi_color_FFFFFF_100"
       android:fillType="evenOdd"/>
 </vector>

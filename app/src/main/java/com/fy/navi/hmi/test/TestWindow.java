@@ -164,6 +164,8 @@ public class TestWindow {
             signal.getSpeedOfVehicle();
             signal.getAcSwitchState();
             signal.getSystemState();
+            signal.getRangeRemaining();
+            signal.getHighVoltageBatteryPropulsionRange();
         });
 
         mBinding.testOpenClusterActivity.setOnClickListener(v -> {

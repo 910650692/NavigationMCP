@@ -4,11 +4,33 @@ package com.fy.navi.service.define.aos;
 import com.fy.navi.service.R;
 
 /**
- * Author: QiuYaWei
+ * @author : QiuYaWei
+ * @version $Revision.*$
  * Date: 2025/3/13
  * Description: [交通事件类型]
+ * 11050, "封路"
+ * 11070, "公告"
+ * 11031, "交通管制"
+ * 11060,  "警告"
+ * 11071, "实景"
+ * 11011, "车祸"
+ * 11010, "故障"
+ * 11012, "障碍物"
+ * 11040, "施工"
+ * 11100, "积水"
+ * 11033, "警察"
+ * 11021, "拥堵"
+ * 404302,"大雾"
+ * 409302, "大雪"
+ * 502302,"路面积雪"
+ * 503302, "路面薄冰"
+ * 501302,"路面积水"
+ * 503302, "路面薄冰"
  */
 public class TrafficType {
+    private TrafficType() {
+
+    }
     // 故障
     public static final int TRAFFIC_ACCIDENT = 11010;
     // 交通事故-车祸
@@ -45,6 +67,9 @@ public class TrafficType {
                 icon = R.drawable.img_shigong_96;
             }
             case TRAFFIC_CROWD -> {
+                icon = R.drawable.img_yongdu_96;
+            }
+            default -> {
                 icon = R.drawable.img_yongdu_96;
             }
         }

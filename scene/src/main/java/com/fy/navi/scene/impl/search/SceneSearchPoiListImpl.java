@@ -13,6 +13,8 @@ import com.fy.navi.service.logicpaket.mapdata.MapDataPackage;
 import com.fy.navi.service.logicpaket.search.SearchPackage;
 import com.fy.navi.ui.base.StackManager;
 
+import java.util.List;
+
 public class SceneSearchPoiListImpl extends BaseSceneModel<SceneSearchPoiList> implements ISceneSearchPoiList {
     private final SearchPackage mSearchPackage;
     private final MapDataPackage mapDataPackage;
@@ -80,13 +82,29 @@ public class SceneSearchPoiListImpl extends BaseSceneModel<SceneSearchPoiList> i
      */
     public void aroundSearch(final int pageNum, final String keyword, final PoiInfoEntity poiInfoEntity) {
         if (poiInfoEntity == null || poiInfoEntity.getPoint() == null) {
+            mTaskId = mSearchPackage.aroundSearch(pageNum, keyword);
+            return;
+        }
+        final GeoPoint geoPoint = new GeoPoint(poiInfoEntity.getPoint().getLon(), poiInfoEntity.getPoint().getLat());
+        mTaskId = mSearchPackage.aroundSearch(pageNum, keyword, geoPoint);
+    }
+
+    /**
+     * 周边搜索
+     * @param pageNum 搜索页数
+     * @param keyword   关键字
+     * @param poiInfoEntity 周边搜索的中心点信息
+     * @param range 搜索范围
+     */
+    public void aroundSearch(final int pageNum, final String keyword, final PoiInfoEntity poiInfoEntity, final String range) {
+        if (poiInfoEntity == null || poiInfoEntity.getPoint() == null) {
             logSearch("aroundSearch", "自车位置附件搜索");
             mTaskId = mSearchPackage.aroundSearch(pageNum, keyword);
             return;
         }
         final GeoPoint geoPoint = new GeoPoint(poiInfoEntity.getPoint().getLon(), poiInfoEntity.getPoint().getLat());
         logSearch("aroundSearch", keyword);
-        mTaskId = mSearchPackage.aroundSearch(pageNum, keyword, geoPoint);
+        mTaskId = mSearchPackage.aroundSearch(pageNum, keyword, geoPoint, range);
     }
 
     /**
@@ -137,5 +155,14 @@ public class SceneSearchPoiListImpl extends BaseSceneModel<SceneSearchPoiList> i
      */
     public int getPointTypeCode(final String typeCode) {
         return mSearchPackage.getPointTypeCode(typeCode);
+    }
+
+    /**
+     * 添加poi标记
+     * @param poiInfoEntities 搜索结果列表
+     * @param index 选中下标
+     */
+    public void addPoiMarker(final List<PoiInfoEntity> poiInfoEntities, final int index) {
+        mSearchPackage.createPoiMarker(poiInfoEntities, index);
     }
 }

@@ -255,7 +255,7 @@ public class SearchResultCallbackHelper {
             if (requestParameterBuilder.isSilentSearch()) {
                 callback.onSilentSearchResult(taskId, code, message, resultList);
             } else {
-                callback.onSearchResult(taskId, code, message, resultList);
+                callback.onSearchResult(taskId, code, message, resultList, requestParameterBuilder);
             }
         }
     }

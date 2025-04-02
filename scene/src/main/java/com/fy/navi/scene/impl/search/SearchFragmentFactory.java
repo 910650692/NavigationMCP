@@ -1,9 +1,14 @@
 package com.fy.navi.scene.impl.search;
 
 import android.os.Bundle;
+import android.text.TextUtils;
 
 import androidx.annotation.Nullable;
 
+import com.fy.navi.burypoint.anno.HookMethod;
+import com.fy.navi.burypoint.bean.BuryProperty;
+import com.fy.navi.burypoint.constant.BuryConstant;
+import com.fy.navi.burypoint.controller.BuryPointController;
 import com.fy.navi.service.AutoMapConstant;
 import com.fy.navi.service.define.route.RoutePoiType;
 import com.fy.navi.service.define.search.PoiInfoEntity;
@@ -121,12 +126,20 @@ public final class SearchFragmentFactory {
      * @param poiInfoEntity  poi信息
      * @return Bundle
      */
+    @HookMethod(eventName = BuryConstant.EventName.AMAP_DESTINATION_OPEN)
     public static Bundle createPoiDetailsFragment(@AutoMapConstant.SourceFragment final String sourceFragment,
                                                   @AutoMapConstant.PoiType final int poiType, final PoiInfoEntity poiInfoEntity) {
         final Bundle args = new Bundle();
         args.putString(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SOURCE_FRAGMENT, sourceFragment);
         args.putInt(AutoMapConstant.PoiBundleKey.BUNDLE_KEY_START_POI_TYPE, poiType);
         args.putParcelable(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_OPEN_DETAIL, poiInfoEntity);
+
+        //for burying point
+        BuryProperty properties = new BuryProperty.Builder()
+                .setParams(BuryConstant.ProperType.BURY_KEY_SEARCH_CONTENTS, !TextUtils.isEmpty(poiInfoEntity.getPid()) ? poiInfoEntity.getPid() : poiInfoEntity.getName())
+                .build();
+        BuryPointController.getInstance().setBuryProps(properties);
+
         return args;
     }
 

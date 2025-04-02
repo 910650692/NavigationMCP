@@ -88,7 +88,7 @@ public class SettingFragment extends BaseFragment<FragmentSettingBinding, Settin
                             tabText.setText(R.string.setting_tab_guide);
                             tabIcon.setImageResource(R.drawable.bg_setting_tab_navi);
                             tabIcon.setVisibility(View.VISIBLE);
-                            tabText.setTextColor(getResources().getColor(R.color.black));
+                            tabText.setTextColor(getResources().getColor(R.color.setting_bg_tab_text_select));
                             break;
                         case 1:
                             tabText.setText(R.string.setting_tab_broadcast);
@@ -125,7 +125,7 @@ public class SettingFragment extends BaseFragment<FragmentSettingBinding, Settin
                 final View tabView = tab.getCustomView();
                 if (tabView instanceof SkinLinearLayout) {
                     tabView.setSelected(true);
-                    ((TextView) tabView.findViewById(R.id.tabText)).setTextColor(getResources().getColor(R.color.black));
+                    ((TextView) tabView.findViewById(R.id.tabText)).setTextColor(getResources().getColor(R.color.setting_bg_tab_text_select));
                 }
             }
 
@@ -135,7 +135,7 @@ public class SettingFragment extends BaseFragment<FragmentSettingBinding, Settin
                 final View tabView = tab.getCustomView();
                 if (tabView instanceof SkinLinearLayout) {
                     tabView.setSelected(false);
-                    ((TextView) tabView.findViewById(R.id.tabText)).setTextColor(getResources().getColor(R.color.setting_tab_gray));
+                    ((TextView) tabView.findViewById(R.id.tabText)).setTextColor(getResources().getColor(R.color.setting_bg_tab_text_unselect));
                 }
             }
 

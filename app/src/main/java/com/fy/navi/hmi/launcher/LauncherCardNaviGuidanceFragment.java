@@ -6,7 +6,7 @@ import com.fy.navi.hmi.databinding.FragmentLauncherNaviGuidanceBinding;
 import com.fy.navi.scene.impl.imersive.ImersiveStatus;
 import com.fy.navi.scene.impl.imersive.ImmersiveStatusScene;
 import com.fy.navi.scene.impl.navi.inter.ISceneCallback;
-import com.fy.navi.service.define.map.MapTypeId;
+import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.navi.CrossImageEntity;
 import com.fy.navi.service.define.navi.LaneInfoEntity;
 import com.fy.navi.service.define.navi.NaviEtaInfo;
@@ -37,24 +37,24 @@ public class LauncherCardNaviGuidanceFragment extends BaseFragment<FragmentLaunc
 
     @Override
     public void onInitView() {
-        mBinding.sceneNaviControl.setScreenId(MapTypeId.valueOf(mScreenId));
-        mBinding.sceneNaviPreference.setScreenId(MapTypeId.valueOf(mScreenId));
-        mBinding.sceneNaviTbt.setScreenId(MapTypeId.valueOf(mScreenId));
-        mBinding.sceneNaviCrossImage.setScreenId(MapTypeId.valueOf(mScreenId));
-        mBinding.sceneNaviSpeed.setScreenId(MapTypeId.valueOf(mScreenId));
-        mBinding.sceneNaviSapa.setScreenId(MapTypeId.valueOf(mScreenId));
-        mBinding.sceneNaviLanes.setScreenId(MapTypeId.valueOf(mScreenId));
-        mBinding.sceneNaviViaList.setScreenId(MapTypeId.valueOf(mScreenId));
-        mBinding.sceneNaviLastMile.setScreenId(MapTypeId.valueOf(mScreenId));
-        mBinding.sceneNaviViaInfo.setScreenId(MapTypeId.valueOf(mScreenId));
-        mBinding.sceneNaviParkingList.setScreenId(MapTypeId.valueOf(mScreenId));
+        mBinding.sceneNaviControl.setScreenId(MapType.valueOf(mScreenId));
+        mBinding.sceneNaviPreference.setScreenId(MapType.valueOf(mScreenId));
+        mBinding.sceneNaviTbt.setScreenId(MapType.valueOf(mScreenId));
+        mBinding.sceneNaviCrossImage.setScreenId(MapType.valueOf(mScreenId));
+        mBinding.sceneNaviSpeed.setScreenId(MapType.valueOf(mScreenId));
+        mBinding.sceneNaviSapa.setScreenId(MapType.valueOf(mScreenId));
+        mBinding.sceneNaviLanes.setScreenId(MapType.valueOf(mScreenId));
+        mBinding.sceneNaviViaList.setScreenId(MapType.valueOf(mScreenId));
+        mBinding.sceneNaviLastMile.setScreenId(MapType.valueOf(mScreenId));
+        mBinding.sceneNaviViaInfo.setScreenId(MapType.valueOf(mScreenId));
+        mBinding.sceneNaviParkingList.setScreenId(MapType.valueOf(mScreenId));
 
         mBinding.sceneNaviPreference.registerRoutePreferenceObserver("navi fragment", mViewModel);
     }
 
     @Override
     public void onInitData() {
-        ImmersiveStatusScene.getInstance().setImmersiveStatus(MapTypeId.MAIN_SCREEN_MAIN_MAP, ImersiveStatus.IMERSIVE);
+        ImmersiveStatusScene.getInstance().setImmersiveStatus(MapType.MAIN_SCREEN_MAIN_MAP, ImersiveStatus.IMERSIVE);
         mViewModel.startNavigation(getArguments());
     }
 
@@ -74,7 +74,8 @@ public class LauncherCardNaviGuidanceFragment extends BaseFragment<FragmentLaunc
         mBinding.sceneNaviViaInfo.onNaviInfo(naviEtaInfo);
         mBinding.sceneNaviLastMile.onNaviInfo(naviEtaInfo);
         mBinding.sceneNaviParkingList.onNaviInfo(naviEtaInfo);
-        mBinding.sceneNaviCrossImage.onNaviInfo(naviEtaInfo);
+        // TODO: 2025/3/23 lvww 导航业务逻辑修改 需要Launcher根据自己业务进行修改
+        mBinding.sceneNaviCrossImage.updateCrossProgress(naviEtaInfo.getAllDist());
     }
 
     public void updateRouteName(String routeName) {
@@ -123,6 +124,7 @@ public class LauncherCardNaviGuidanceFragment extends BaseFragment<FragmentLaunc
     }
 
     public void showNaviViaList(List<NaviViaEntity> list) {
-        mBinding.sceneNaviViaList.showNaviViaList(list);
+        // TODO: 2025/3/23 此处有修改，后续你根据自己业务进行整改
+        mBinding.sceneNaviViaList.updateViaListState(list);
     }
 }

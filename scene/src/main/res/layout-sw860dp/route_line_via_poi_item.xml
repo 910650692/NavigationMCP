@@ -43,7 +43,7 @@
             <com.fy.navi.ui.view.SkinTextView
                 android:layout_width="0.5dp"
                 android:layout_height="@dimen/dp_16"
-                android:background="@color/black"
+                android:background="@color/route_line_color"
                 app:layout_constraintStart_toStartOf="@+id/route_item_via_img"
                 app:layout_constraintEnd_toEndOf="@+id/route_item_via_img"
                 app:layout_constraintBottom_toTopOf="@+id/route_item_via_img"
@@ -52,7 +52,7 @@
             <com.fy.navi.ui.view.SkinTextView
                 android:layout_width="0.5dp"
                 android:layout_height="@dimen/dp_16"
-                android:background="@color/black"
+                android:background="@color/route_line_color"
                 app:layout_constraintStart_toStartOf="@id/route_item_via_img"
                 app:layout_constraintEnd_toEndOf="@id/route_item_via_img"
                 app:layout_constraintTop_toBottomOf="@+id/route_item_via_img"
@@ -106,7 +106,7 @@
             android:id="@+id/route_item_via_empty_line"
             android:layout_width="0.5dp"
             android:layout_height="@dimen/dp_24"
-            android:background="@color/black"
+            android:background="@color/route_line_color"
             app:layout_constraintStart_toStartOf="@+id/route_item_via_empty"
             app:layout_constraintEnd_toEndOf="@+id/route_item_via_empty"
             app:layout_constraintTop_toTopOf="@+id/route_item_via_empty"

@@ -22,6 +22,7 @@ import com.fy.navi.hmi.R;
 import com.fy.navi.hmi.navi.NaviGuidanceFragment;
 import com.fy.navi.hmi.search.alongway.MainAlongWaySearchFragment;
 import com.fy.navi.hmi.setting.SettingFragment;
+import com.fy.navi.hmi.setting.guide.platenumber.SettingPlateNumberFragment;
 import com.fy.navi.scene.api.route.ISceneRouteDetailsSelectCallBack;
 import com.fy.navi.scene.api.route.ISceneRouteGasStationChargeSelectCallBack;
 import com.fy.navi.scene.api.route.ISceneRouteGasStationWeatherServiceSelectCallBack;
@@ -37,16 +38,18 @@ import com.fy.navi.service.AppContext;
 import com.fy.navi.service.AutoMapConstant;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.define.bean.GeoPoint;
-import com.fy.navi.service.define.map.MapTypeId;
+import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.route.EvRangeOnRouteInfo;
 import com.fy.navi.service.define.route.RouteLineInfo;
 import com.fy.navi.service.define.route.RouteMsgPushInfo;
 import com.fy.navi.service.define.route.RouteParam;
+import com.fy.navi.service.define.route.RoutePriorityType;
 import com.fy.navi.service.define.route.RouteRequestParam;
 import com.fy.navi.service.define.route.RouteRestAreaDetailsInfo;
 import com.fy.navi.service.define.route.RouteRestirctionID;
 import com.fy.navi.service.define.route.RouteSpeechRequestParam;
 import com.fy.navi.service.define.route.RouteWayID;
+import com.fy.navi.service.define.route.RouteWeatherID;
 import com.fy.navi.service.define.route.RouteWeatherInfo;
 import com.fy.navi.service.define.search.PoiInfoEntity;
 import com.fy.navi.service.define.search.ServiceAreaInfo;
@@ -75,18 +78,22 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
         , RouteRequestLoadingDialog.OnCloseClickListener {
 
     private static final String TAG = BaseRouteViewModel.class.getSimpleName();
+    private static final int HIDE_DELAY_TIME = 8 * 1000;
 
     private ObservableField<Integer> mTabVisibility;
+
     public ObservableField<Integer> getTabVisibility() {
         return mTabVisibility;
     }
 
     private ObservableField<Boolean> mBatterCheckBoxVisibility;
+
     public ObservableField<Boolean> getBatterCheckBoxVisibility() {
         return mBatterCheckBoxVisibility;
     }
 
     private ObservableField<Boolean> mAlongTabSearchVisibility;
+
     public ObservableField<Boolean> getAlongTabSearchVisibility() {
         return mAlongTabSearchVisibility;
     }
@@ -101,9 +108,19 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
     }
 
     /**
+     * 主页面-子poi页
+     **/
+    private ObservableField<Integer> mSecondaryPoiVisibility;
+
+    public ObservableField<Integer> getSecondaryPoiVisibility() {
+        return mSecondaryPoiVisibility;
+    }
+
+    /**
      * 主页面-偏好页
      **/
     private ObservableField<Boolean> mRoutePreferenceVisibility;
+
     public ObservableField<Boolean> getRoutePreferenceVisibility() {
         return mRoutePreferenceVisibility;
     }
@@ -112,6 +129,7 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
      * 主页面-偏好ICON
      **/
     private ObservableField<Drawable> mRoutePreferenceDrawableVisibility;
+
     public ObservableField<Drawable> getRoutePreferenceDrawableVisibility() {
         return mRoutePreferenceDrawableVisibility;
     }
@@ -120,6 +138,7 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
      * 主页面-标题-终点名称~我的位置
      **/
     private ObservableField<String> mTitle;
+
     public ObservableField<String> getTitle() {
         return mTitle;
     }
@@ -128,6 +147,7 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
      * 主页面-限行文本
      **/
     private ObservableField<String> mRestriction;
+
     public ObservableField<String> getRestriction() {
         return mRestriction;
     }
@@ -136,6 +156,7 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
      * 主页面-限行文本颜色
      **/
     private ObservableField<Integer> mRestrictionTextColor;
+
     public ObservableField<Integer> getRestrictionTextColor() {
         return mRestrictionTextColor;
     }
@@ -144,6 +165,7 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
      * 主页面-限行背景
      **/
     private ObservableField<Drawable> mRestrictionBackground;
+
     public ObservableField<Drawable> getRestrictionBackground() {
         return mRestrictionBackground;
     }
@@ -152,6 +174,7 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
      * 主页面-限行可见
      **/
     private ObservableField<Boolean> mRestrictionVisibility;
+
     public ObservableField<Boolean> getRestrictionVisibility() {
         return mRestrictionVisibility;
     }
@@ -160,6 +183,7 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
      * 主页面-限行左侧车标可见
      **/
     private ObservableField<Boolean> mRestrictionCarVisibility;
+
     public ObservableField<Boolean> getRestrictionCarVisibility() {
         return mRestrictionCarVisibility;
     }
@@ -168,6 +192,7 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
      * 主页面-限行右侧back可见
      **/
     private ObservableField<Boolean> mRestrictionRightBackVisibility;
+
     public ObservableField<Boolean> getRestrictionRightBackVisibility() {
         return mRestrictionRightBackVisibility;
     }
@@ -176,6 +201,7 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
      * 主页面-途经点—终点名称
      **/
     private ObservableField<String> mEndName;
+
     public ObservableField<String> getEndName() {
         return mEndName;
     }
@@ -184,6 +210,7 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
      * 主页面-偏好名称
      **/
     private ObservableField<String> mPreferText;
+
     public ObservableField<String> getPreferText() {
         return mPreferText;
     }
@@ -192,6 +219,7 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
      * 主页面-开始导航文本
      **/
     private ObservableField<String> mCountDownHint;
+
     public ObservableField<String> getCountDownHint() {
         return mCountDownHint;
     }
@@ -200,6 +228,7 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
      * 主页面-途径点-缩小描述
      **/
     private ObservableField<String> mParamDes;
+
     public ObservableField<String> getParamDes() {
         return mParamDes;
     }
@@ -208,6 +237,7 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
      * 主页面-有无途经点
      **/
     private ObservableField<Boolean> mViaPoiListAllVisibility;
+
     public ObservableField<Boolean> getViaPoiListAllVisibility() {
         return mViaPoiListAllVisibility;
     }
@@ -216,6 +246,7 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
      * 主页面-途经点是否展开
      **/
     private ObservableField<Boolean> mRouteDetailsVisibility;
+
     public ObservableField<Boolean> getRouteDetailsVisibility() {
         return mRouteDetailsVisibility;
     }
@@ -224,14 +255,25 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
      * 详情页面-避开按钮背景
      **/
     private ObservableField<Drawable> mAvoidBackground;
+
     public ObservableField<Drawable> getAvoidBackground() {
         return mAvoidBackground;
+    }
+
+    /**
+     * 详情页面-避开按钮文本颜色
+     **/
+    private ObservableField<Integer> mAvoidTestColor;
+
+    public ObservableField<Integer> getAvoidTestColor() {
+        return mAvoidTestColor;
     }
 
     /**
      * 详情页面-避开按钮是否可点击
      **/
     private ObservableField<Boolean> mAvoidClickable;
+
     public ObservableField<Boolean> getAvoidClickable() {
         return mAvoidClickable;
     }
@@ -240,6 +282,7 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
      * 详情页面-避开按钮背景
      **/
     private ObservableField<Boolean> mViaPoiListVisibility;
+
     public ObservableField<Boolean> getViaPoiListVisibility() {
         return mViaPoiListVisibility;
     }
@@ -248,31 +291,37 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
      * 天气详情页面
      **/
     private ObservableField<Drawable> mWeatherDrawable;
+
     public ObservableField<Drawable> getWeatherDrawable() {
         return mWeatherDrawable;
     }
 
     private ObservableField<String> mWeatherName;
+
     public ObservableField<String> getWeatherName() {
         return mWeatherName;
     }
 
     private ObservableField<String> mWeatherCityName;
+
     public ObservableField<String> getWeatherCityName() {
         return mWeatherCityName;
     }
 
     private ObservableField<String> mWeatherTimeAndDistance;
+
     public ObservableField<String> getWeatherTimeAndDistance() {
         return mWeatherTimeAndDistance;
     }
 
     private ObservableField<String> mWeatherDiscription;
+
     public ObservableField<String> getWeatherDiscription() {
         return mWeatherDiscription;
     }
 
     private ObservableField<String> mWeatherUpdateTime;
+
     public ObservableField<String> getWeatherUpdateTime() {
         return mWeatherUpdateTime;
     }
@@ -281,41 +330,49 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
      * POI详情页面
      **/
     private ObservableField<Boolean> mRouteSearchStatusVisibility;
+
     public ObservableField<Boolean> getRouteSearchStatusVisibility() {
         return mRouteSearchStatusVisibility;
     }
 
     private ObservableField<String> mRouteSearchStatus;
+
     public ObservableField<String> getRouteSearchStatus() {
         return mRouteSearchStatus;
     }
 
     private ObservableField<String> mRouteSearchName;
+
     public ObservableField<String> getRouteSearchName() {
         return mRouteSearchName;
     }
 
     private ObservableField<String> mRouteSearchAddress;
+
     public ObservableField<String> getRouteSearchAddress() {
         return mRouteSearchAddress;
     }
 
     private ObservableField<String> mRouteSearchTimeAndDistance;
+
     public ObservableField<String> getRouteSearchTimeAndDistance() {
         return mRouteSearchTimeAndDistance;
     }
 
     private ObservableField<String> mRouteSearchElec;
+
     public ObservableField<String> getRouteSearchElec() {
         return mRouteSearchElec;
     }
 
     private ObservableField<Integer> mRouteSearchTypeVisibility;
+
     public ObservableField<Integer> getRouteSearchTypeVisibility() {
         return mRouteSearchTypeVisibility;
     }
 
     private ObservableField<String> mRouteSearchDeailsAddRemoveVia;
+
     public ObservableField<String> getRouteSearchDeailsAddRemoveVia() {
         return mRouteSearchDeailsAddRemoveVia;
     }
@@ -324,21 +381,25 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
      * POI充电站页面
      **/
     private ObservableField<String> mRouteChargeTotalMileage;
+
     public ObservableField<String> getRouteChargeTotalMileage() {
         return mRouteChargeTotalMileage;
     }
 
     private ObservableField<Boolean> mRouteProgressChargeVisibility;
+
     public ObservableField<Boolean> getRouteProgressChargeVisibility() {
         return mRouteProgressChargeVisibility;
     }
 
     private ObservableField<Boolean> mRouteProgressChargeExhaustVisibility;
+
     public ObservableField<Boolean> getRouteProgressChargeExhaustVisibility() {
         return mRouteProgressChargeExhaustVisibility;
     }
 
     private ObservableField<Integer> mRouteProgressChargeExhaust;
+
     public ObservableField<Integer> getRouteProgressChargeExhaust() {
         return mRouteProgressChargeExhaust;
     }
@@ -363,11 +424,20 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
     private PoiInfoEntity mDetailsResustEntry;
     private int mSeartype;
     private List<RouteParam> mGasChargeAlongList;
+    private Runnable mHideSecondaryPoi = new Runnable() {
+        @Override
+        public void run() {
+            if (mSecondaryPoiVisibility != null) {
+                mSecondaryPoiVisibility.set(0);
+            }
+        }
+    };
 
     public BaseRouteViewModel(final Application application) {
         super(application);
         mCurrentPageHistory.add("0");
         mIncludePageVisibility = new ObservableField<>(getCurrentPageUI());
+        mSecondaryPoiVisibility = new ObservableField<>(0);
         mTabVisibility = new ObservableField<>(0);
         mBatterCheckBoxVisibility = new ObservableField<>(false);
         mAlongTabSearchVisibility = new ObservableField<>(true);
@@ -385,6 +455,7 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
         mRestrictionRightBackVisibility = new ObservableField<>(false);
         mParamDes = new ObservableField<>("");
         mAvoidBackground = new ObservableField<>(ResourceUtils.Companion.getInstance().getDrawable(R.drawable.bg_route_details_defult_label));
+        mAvoidTestColor = new ObservableField<>(ResourceUtils.Companion.getInstance().getColor(R.color.text_route_defult));
         mAvoidClickable = new ObservableField<>(false);
         mTitle = new ObservableField<>();
         mEndName = new ObservableField<>();
@@ -413,24 +484,26 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
         mRouteProgressChargeExhaustVisibility = new ObservableField<>(true);
         mRouteProgressChargeExhaust = new ObservableField<>(0);
     }
+
     /***
      * 获取当前展示页面
      * @return 当前页面id
      */
     private Integer getCurrentPageUI() {
         Logger.i(TAG, "getCurrentPageUI: ==>");
-        if (mCurrentPageHistory.isEmpty()){
+        if (mCurrentPageHistory.isEmpty()) {
             return 0;
         }
         Logger.i(TAG, "getCurrentPageUI: " + Integer.parseInt(mCurrentPageHistory.get(mCurrentPageHistory.size() - 1)));
         return Integer.parseInt(mCurrentPageHistory.get(mCurrentPageHistory.size() - 1));
     }
+
     /***
      * 移除当前展示页面
      * @param pageId 页面id
      */
     private void removeCurrentPageUI(final String pageId) {
-        if (mCurrentPageHistory.isEmpty()){
+        if (mCurrentPageHistory.isEmpty()) {
             return;
         }
         if (mCurrentPageHistory.contains(pageId)) {
@@ -456,15 +529,19 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
         mView.hideTrip();
         closeFragment(true);
     };
+
     public Action getCloseRouteClick() {
         return mCloseRouteClick;
     }
 
     private Action mRestrictionClick = () -> {
+        cancelTimer();
         switch (mRestrictionStatus) {
             case RouteRestirctionID.REATIRCTION_LIMITTIPSTYPENOPLATE:
+                addFragment(new SettingFragment(), null);
+                addFragment(new SettingPlateNumberFragment(), null);
+                break;
             case RouteRestirctionID.REATIRCTION_LIMITTIPSTYPENOTOPEN:
-                cancelTimer();
                 addFragment(new SettingFragment(), null);
                 break;
             default:
@@ -472,6 +549,7 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
                 break;
         }
     };
+
     public Action getRestrictionClick() {
         return mRestrictionClick;
     }
@@ -483,6 +561,7 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
                 ? ResourceUtils.Companion.getInstance().getDrawable(R.drawable.img_route_up)
                 : ResourceUtils.Companion.getInstance().getDrawable(R.drawable.img_route_down));
     };
+
     public Action getPreferenceClick() {
         return mPreferenceClick;
     }
@@ -491,6 +570,7 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
         cancelTimer();
         addFragment(new MainAlongWaySearchFragment(), null);
     };
+
     public Action getAlongWaySearchClick() {
         return mAlongWaySearchClick;
     }
@@ -500,6 +580,7 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
         mRoutePreferenceVisibility.set(false);
         mViaPoiListAllVisibility.set(Boolean.FALSE.equals(mViaPoiListAllVisibility.get()));
     };
+
     public Action getOpenCloseViaClick() {
         return mOpenCloseViaClick;
     }
@@ -508,6 +589,7 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
         cancelTimer();
         mView.setEnergyChecked();
     };
+
     public Action getRouteEnergyClick() {
         return mRouteEnergyClick;
     }
@@ -518,10 +600,9 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
         mModel.clearSearchLabel();
         mModel.clearWeatherView();
         mView.hideTrip();
-        final Bundle bundle = new Bundle();
-        bundle.putInt(AutoMapConstant.RouteBundleKey.BUNDLE_KEY_START_NAVI_SIM, AutoMapConstant.NaviType.NAVI_GPS);
-        addFragment(new NaviGuidanceFragment(), bundle);
+        startNavi(false);
     };
+
     public Action getStartNaviClick() {
         return mStartNaviClick;
     }
@@ -530,8 +611,10 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
         cancelTimer();
         final RouteRequestParam param = new RouteRequestParam();
         param.setMRouteWay(RouteWayID.ROUTE_WAY_REFRESH);
+        param.setMRoutePriorityType(RoutePriorityType.ROUTE_TYPE_MANUAL_REFRESH);
         requestRoute(param);
     };
+
     public Action getRefreshRouteClick() {
         return mRefreshRouteClick;
     }
@@ -546,6 +629,7 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
         mCurrentPageHistory.remove(mCurrentPageHistory.size() - 1);
         mIncludePageVisibility.set(getCurrentPageUI());
     };
+
     public Action getCloseDetailsRouteClick() {
         return mCloseDetailsRouteClick;
     }
@@ -554,10 +638,9 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
         mModel.clearSearchLabel();
         mModel.clearWeatherView();
         mView.hideTrip();
-        final Bundle bundle = new Bundle();
-        bundle.putInt(AutoMapConstant.RouteBundleKey.BUNDLE_KEY_START_NAVI_SIM, AutoMapConstant.NaviType.NAVI_SIMULATE);
-        addFragment(new NaviGuidanceFragment(), bundle);
+        startNavi(true);
     };
+
     public Action getStartSimNaviClick() {
         return mStartSimNaviClick;
     }
@@ -566,27 +649,33 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
         mRouteDetailsVisibility.set(false);
         mView.setAvoidStatusUI(true);
     };
+
     public Action getAvoidRoadClick() {
         return mAvoidRoadClick;
     }
 
     private Action mAvoidClick = () -> mView.startAvoidRoad();
+
     public Action getAvoidClick() {
         return mAvoidClick;
     }
 
     //天气详情
     private Action mCloseWeatherDetailsClick = this::hideWeatherDeatilsUI;
+
     public Action getCloseWeatherDetailsClick() {
         return mCloseWeatherDetailsClick;
     }
+
     private Action mWeatherAviodClick = this::hideWeatherDeatilsUI;
+
     public Action getWeatherAviodClick() {
         return mWeatherAviodClick;
     }
 
     private Action mServiceRefreshClick = () -> ToastUtils.Companion.getInstance().showCustomToastView(
             ResourceUtils.Companion.getInstance().getString(R.string.route_no_function));
+
     public Action getServiceRefreshClick() {
         return mServiceRefreshClick;
     }
@@ -599,6 +688,7 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
         mModel.clearSearchLabel();
         mModel.clearRestArea();
     };
+
     public Action getCloseServicelistClick() {
         return mCloseServicelistClick;
     }
@@ -610,18 +700,21 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
         hideRouteSearchChargeListUI();
         mModel.clearSearchLabel();
     };
+
     public Action getCloseChargelistClick() {
         return mCloseChargelistClick;
     }
 
     private Action mChargeRefreshClick = () -> ToastUtils.Companion.getInstance().showCustomToastView(
             ResourceUtils.Companion.getInstance().getString(R.string.route_no_function));
+
     public Action getChargeRefreshClick() {
         return mChargeRefreshClick;
     }
 
     //POI
     private Action mCloseRouteSearchDetailClick = this::hideRouteSearchDetailsUI;
+
     public Action getCloseRouteSearchDetailClick() {
         return mCloseRouteSearchDetailClick;
     }
@@ -650,6 +743,7 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
             }
         }
     };
+
     public Action getRouteSearchDetailsAddRemoveClick() {
         return mRouteSearchDetailsAddRemoveClick;
     }
@@ -692,18 +786,21 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
             }
         }
     };
+
     public Action getRouteSearchPhoneClick() {
         return mRouteSearchPhoneClick;
     }
 
     private Action mRouteSearchAroundClick = () -> {
     };
+
     public Action getRouteSearchAroundClick() {
         return mRouteSearchAroundClick;
     }
 
     private Action mRouteSearchFavoriteClick = () -> {
     };
+
     public Action getRouteSearchFavoriteClick() {
         return mRouteSearchFavoriteClick;
     }
@@ -711,6 +808,7 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
     private Action mChargeSureClick = () -> {
         mModel.startAllRequest();
     };
+
     public Action getChargeSureClick() {
         return mChargeSureClick;
     }
@@ -722,9 +820,11 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
         hideRouteSearchChargeListUI();
         mModel.clearSearchLabel();
     };
+
     public Action getChargeCancelClick() {
         return mChargeCancelClick;
     }
+
     /***
      * 页面倒计时
      */
@@ -736,9 +836,7 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
                     mModel.clearSearchLabel();
                     mModel.clearWeatherView();
                     mView.hideTrip();
-                    final Bundle bundle = new Bundle();
-                    bundle.putInt(AutoMapConstant.RouteBundleKey.BUNDLE_KEY_START_NAVI_SIM, AutoMapConstant.NaviType.NAVI_GPS);
-                    addFragment(new NaviGuidanceFragment(), bundle);
+                    startNavi(false);
                 });
             } else {
                 final String hint = ResourceUtils.Companion.getInstance().getString(R.string.route_start_navi) + "(" + mTimes + "s)";
@@ -747,6 +845,7 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
             mTimes--;
         }, NumberUtils.NUM_0, NumberUtils.NUM_1);
     }
+
     /***
      * 取消页面倒计时
      */
@@ -758,6 +857,20 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
             mScheduledFuture = null;
         }
     }
+
+    /***
+     * 开始导航
+     * @param isSimNavi 是否模拟导航
+     */
+    public void startNavi(final boolean isSimNavi) {
+        final Bundle bundle = new Bundle();
+        bundle.putInt(AutoMapConstant.RouteBundleKey.BUNDLE_KEY_START_NAVI_SIM, isSimNavi
+                ? AutoMapConstant.NaviType.NAVI_SIMULATE : AutoMapConstant.NaviType.NAVI_GPS);
+        Logger.i(TAG, "mStartNaviClick addNaviFragment");
+        addFragment(new NaviGuidanceFragment(), bundle);
+        mModel.setPoint();
+    }
+
     /***
      * 请求算路
      * @param param 请求参数
@@ -765,6 +878,7 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
     public void requestRoute(final RouteRequestParam param) {
         mModel.requestRouteMode(param);
     }
+
     /***
      * send2car 请求算路
      * @param routeMsgPushInfo 请求参数
@@ -772,6 +886,7 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
     public void requestRouteRestoration(final RouteMsgPushInfo routeMsgPushInfo) {
         mModel.requestRouteRestoration(routeMsgPushInfo);
     }
+
     /***
      * 语音 请求算路
      * @param param 请求参数
@@ -779,6 +894,7 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
     public void requestRouteFromSpeech(final RouteSpeechRequestParam param) {
         mModel.requestRouteFromSpeech(param);
     }
+
     /***
      * 请求成功-初始页面
      */
@@ -795,9 +911,12 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
                 : ResourceUtils.Companion.getInstance().getDrawable(R.drawable.img_route_down));
         mRouteDetailsVisibility.set(true);
         mAvoidBackground.set(ResourceUtils.Companion.getInstance().getDrawable(R.drawable.bg_route_details_defult_label));
+        mAvoidTestColor.set(ResourceUtils.Companion.getInstance().getColor(R.color.text_route_defult));
         mAvoidClickable.set(false);
         mView.setAvoidStatusUI(false);
+        updateRestrictionTextUI(-1);
     }
+
     /***
      * 展示算路弹框
      */
@@ -808,24 +927,28 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
             closeAllFragmentUpRoute();
         });
     }
+
     /***
      * 隐藏算路弹框
      */
     public void hideProgressUI() {
         ThreadManager.getInstance().postUi(() -> mView.hideProgressUI());
     }
+
     /***
      * 展示搜索弹框
      */
     public void showSearchProgressUI() {
         ThreadManager.getInstance().postUi(() -> mView.showSearchProgressUI());
     }
+
     /***
      * 隐藏搜索弹框
      */
     public void hideSearchProgressUI() {
         ThreadManager.getInstance().postUi(() -> mView.hideSearchProgressUI());
     }
+
     /***
      * 展示Trip弹框
      * @param title 标题
@@ -834,6 +957,7 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
     public void showTripDialog(final String title, final String content) {
         ThreadManager.getInstance().postUi(() -> mView.showTripDialog(title, content));
     }
+
     /***
      * 展示算路结果列表
      * @param routeLineInfos 列表数据
@@ -841,6 +965,7 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
     public void setRouteResultListUI(final List<RouteLineInfo> routeLineInfos) {
         ThreadManager.getInstance().postUi(() -> mView.setRouteResultListUI(routeLineInfos));
     }
+
     /***
      * 展示途经点列表
      * @param routeParams 列表数据
@@ -867,6 +992,7 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
             mView.setViaList(routeParams);
         }
     }
+
     /***
      * 排序途经点列表
      * @param currentPosition 当前索引
@@ -875,9 +1001,12 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
     public void changeParamListMode(final int currentPosition, final int movePosition) {
         mModel.changeParamListMode(currentPosition, movePosition);
         final RouteRequestParam param = new RouteRequestParam();
-        param.setMMapTypeId(MapTypeId.MAIN_SCREEN_MAIN_MAP);
+        param.setMMapTypeId(MapType.MAIN_SCREEN_MAIN_MAP);
         param.setMRouteWay(RouteWayID.ROUTE_WAY_SORT_VIA);
+        param.setMRoutePriorityType(RoutePriorityType.ROUTE_TYPE_CHANGE_JNY_PNT);
+        requestRoute(param);
     }
+
     /***
      * 删除途经点
      * @param index 索引
@@ -885,12 +1014,13 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
     public void deleteViaParamMode(final int index) {
         mModel.deleteViaParamMode(index);
     }
+
     /***
      * 展示天气详情
      * @param routeWeatherInfo 详情数据
      */
     public void showWeatherDeatilsUI(final RouteWeatherInfo routeWeatherInfo) {
-        mWeatherDrawable.set(getWeatherIcon(routeWeatherInfo.getMWeatherID()));
+        mWeatherDrawable.set(getWeatherIcon(routeWeatherInfo.getMRouteWeatherID()));
         mWeatherName.set(routeWeatherInfo.getMWeatherName());
         mWeatherCityName.set(routeWeatherInfo.getMCityName());
         mWeatherTimeAndDistance.set(TimeUtils.getInstance().getDistanceString(routeWeatherInfo.getMDistance())
@@ -902,54 +1032,56 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
         mCurrentPageHistory.add("4");
         mIncludePageVisibility.set(getCurrentPageUI());
     }
+
     /***
      * 获取天气图片
      * @param id weatherId
      * @return 图片
      */
-    private Drawable getWeatherIcon(final int id) {
+    private Drawable getWeatherIcon(final RouteWeatherID id) {
         Drawable drawable = null;
-        if (1 == id || 5 == id || 200 == id
-                || 201 == id || 202 == id || 203 == id || 204 == id
-                || 205 == id || 206 == id || 207 == id || 208 == id
-                || 209 == id || 210 == id || 211 == id || 212 == id
-                || 213 == id) {
-            //风
-            drawable = ResourceUtils.Companion.getInstance().getDrawable(R.drawable.img_weather_wind);
-        } else if (2 == id || 300 == id || 301 == id || 302 == id || 303 == id
-                || 304 == id || 305 == id || 306 == id || 307 == id
-                || 308 == id || 309 == id || 310 == id || 311 == id
-                || 312 == id || 313 == id) {
-            //雨
-            drawable = ResourceUtils.Companion.getInstance().getDrawable(R.drawable.img_weather_rain);
-        } else if (3 == id || 400 == id || 401 == id || 402 == id || 403 == id
-                || 404 == id || 405 == id || 406 == id || 407 == id) {
-            //雪
-            drawable = ResourceUtils.Companion.getInstance().getDrawable(R.drawable.img_weather_snow);
-        } else if (6 == id || 13 == id || 16 == id || 502 == id
-                || 503 == id || 504 == id || 507 == id || 508 == id) {
-            //沙尘/霾
-            drawable = ResourceUtils.Companion.getInstance().getDrawable(R.drawable.img_weather_scb);
-        } else if (9 == id || 17 == id|| 1004 == id || 1005 == id) {
-            //雷电
-            drawable = ResourceUtils.Companion.getInstance().getDrawable(R.drawable.img_weather_thunder);
-        } else if (12 == id || 500 == id|| 501 == id) {
-            //雾
-            drawable = ResourceUtils.Companion.getInstance().getDrawable(R.drawable.img_weather_fog);
-        } else if (10 == id || 11 == id || 14 == id || 21 == id
-                || 1001 == id || 1002 == id || 1003 == id) {
-            //冰
-            drawable = ResourceUtils.Companion.getInstance().getDrawable(R.drawable.img_weather_ice);
-        } else if (100 == id) {
-            //晴
-            drawable = ResourceUtils.Companion.getInstance().getDrawable(R.drawable.img_weather_sun);
-        } else if (101 == id || 102 == id || 103 == id || 104 == id) {
-            //云
-            drawable = ResourceUtils.Companion.getInstance().getDrawable(R.drawable.img_weather_clound);
-        } else {
-            drawable = ResourceUtils.Companion.getInstance().getDrawable(R.drawable.img_weather_sun);
+        switch (id) {
+            case ROUTE_WEATHER_CLOUDY ->
+                    drawable = ResourceUtils.Companion.getInstance().getDrawable(R.drawable.img_weather_cloud);
+            case ROUTE_WEATHER_THUNDER ->
+                    drawable = ResourceUtils.Companion.getInstance().getDrawable(R.drawable.img_weather_thunder);
+            case ROUTE_WEATHER_MORE_CLOUDY ->
+                    drawable = ResourceUtils.Companion.getInstance().getDrawable(R.drawable.img_weather_more_cloud);
+            case ROUTE_WEATHER_RAIN ->
+                    drawable = ResourceUtils.Companion.getInstance().getDrawable(R.drawable.img_weather_rain);
+            case ROUTE_WEATHER_SNOW ->
+                    drawable = ResourceUtils.Companion.getInstance().getDrawable(R.drawable.img_weather_snow);
+            case ROUTE_WEATHER_BIG_RAIN ->
+                    drawable = ResourceUtils.Companion.getInstance().getDrawable(R.drawable.img_weather_big_rain);
+            case ROUTE_WEATHER_WIND ->
+                    drawable = ResourceUtils.Companion.getInstance().getDrawable(R.drawable.img_weather_wind);
+            case ROUTE_WEATHER_FOG ->
+                    drawable = ResourceUtils.Companion.getInstance().getDrawable(R.drawable.img_weather_fog);
+            case ROUTE_WEATHER_HAIL ->
+                    drawable = ResourceUtils.Companion.getInstance().getDrawable(R.drawable.img_weather_hail);
+            default ->
+                    drawable = ResourceUtils.Companion.getInstance().getDrawable(R.drawable.img_weather_sunny);
         }
         return drawable;
+    }
+
+    /***
+     * 显示子POI界面
+     */
+    public void showSecondaryPoi() {
+        mSecondaryPoiVisibility.set(1);
+        ThreadManager.getInstance().removeHandleTask(mHideSecondaryPoi);
+        ThreadManager.getInstance().postDelay(mHideSecondaryPoi, HIDE_DELAY_TIME);
+    }
+
+    /**
+     * 修改终点算路请求
+     *
+     * @param poiInfoEntity 终点数据
+     */
+    public void requestChangeEnd(final PoiInfoEntity poiInfoEntity) {
+        mModel.requestChangeEnd(poiInfoEntity);
+        showSecondaryPoi();
     }
 
     /***
@@ -959,6 +1091,7 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
         removeCurrentPageUI("4");
         mIncludePageVisibility.set(getCurrentPageUI());
     }
+
     /***
      * 隐藏服务区列表
      */
@@ -966,6 +1099,7 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
         removeCurrentPageUI("2");
         mIncludePageVisibility.set(getCurrentPageUI());
     }
+
     /***
      * 展示服务区列表
      * @param poiInfoEntities 列表数据
@@ -975,6 +1109,7 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
         mIncludePageVisibility.set(getCurrentPageUI());
         mView.showRouteSearchListUI(poiInfoEntities);
     }
+
     /***
      * 隐藏充电列表
      */
@@ -982,6 +1117,7 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
         removeCurrentPageUI("3");
         mIncludePageVisibility.set(getCurrentPageUI());
     }
+
     /***
      * 展示充电列表
      * @param poiInfoEntities 列表数据
@@ -1026,6 +1162,7 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
             }
         }
     }
+
     /***
      * 隐藏服务区详情
      */
@@ -1033,6 +1170,7 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
         removeCurrentPageUI("5");
         mIncludePageVisibility.set(getCurrentPageUI());
     }
+
     /***
      * 展示服务区详情地址
      * @param address 地址
@@ -1040,6 +1178,7 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
     public void setDetailsAddress(final String address) {
         mRouteSearchAddress.set(address);
     }
+
     /***
      * 展示充电列表
      * @param requestPoiInfoEntity 请求的数据
@@ -1056,15 +1195,12 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
         mModel.getTravelTimeFuture(new GeoPoint(requestPoiInfoEntity.getPoint().getLon(),
                         requestPoiInfoEntity.getPoint().getLat()))
                 .thenAccept(etaInfo -> {
-                    ThreadManager.getInstance().postUi(new Runnable() {
-                        @Override
-                        public void run() {
-                            mRouteSearchTimeAndDistance.set(MessageFormat.format("{0} {1}",
-                                    requestPoiInfoEntity.getDistance(), etaInfo.getTravelTime()));
-                            mRouteSearchElec.set(etaInfo.getLeftCharge() > 0 ? ResourceUtils.Companion.getInstance().getString(
-                                    com.fy.navi.scene.R.string.remain_charge, etaInfo.getLeftCharge())
-                                     : "不可达");
-                        }
+                    ThreadManager.getInstance().postUi(() -> {
+                        mRouteSearchTimeAndDistance.set(MessageFormat.format("{0} {1}",
+                                requestPoiInfoEntity.getDistance(), etaInfo.getTravelTime()));
+                        mView.showPOIDetailCharge(etaInfo.getLeftCharge());
+                        mRouteSearchElec.set(ResourceUtils.Companion.getInstance().getString(
+                                com.fy.navi.scene.R.string.remain_charge, etaInfo.getLeftCharge()));
                     });
 
                 })
@@ -1086,15 +1222,15 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
                 mRouteSearchDeailsAddRemoveVia.set(ResourceUtils.Companion.getInstance().getString(R.string.route_service_details_remove_via));
             } else {
                 mRouteSearchDeailsAddRemoveVia.set(ResourceUtils.Companion.getInstance().getString(R.string.route_service_details_add_via));
-                }
+            }
         }
         if (!ConvertUtils.isEmpty(requestPoiInfoEntity.getServiceAreaInfoList()) && requestPoiInfoEntity.getServiceAreaInfoList().size() > 0
                 && !ConvertUtils.isEmpty(requestPoiInfoEntity.getServiceAreaInfoList().get(0))) {
             final ServiceAreaInfo info = requestPoiInfoEntity.getServiceAreaInfoList().get(0);
-            if (!ConvertUtils.isEmpty(info.getName())){
+            if (!ConvertUtils.isEmpty(info.getName())) {
                 mRouteSearchName.set(info.getName());
             }
-            if (!ConvertUtils.isEmpty(info.getAddress())){
+            if (!ConvertUtils.isEmpty(info.getAddress())) {
                 mRouteSearchName.set(info.getAddress());
             }
         }
@@ -1113,6 +1249,7 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
         mCurrentPageHistory.add("5");
         mIncludePageVisibility.set(getCurrentPageUI());
     }
+
     /***
      * 判断当前点是否已经在路线上
      * @param local 路径上的点
@@ -1130,6 +1267,7 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
         }
         return false;
     }
+
     /***
      * 保存车牌和限行的数据
      */
@@ -1139,13 +1277,14 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
         mCurrentPreferences = mModel.getPreferences();
         mCurrentEnergy = mModel.getEnergy();
     }
+
     /***
      * 设置改变请求重新请求算路
      */
     public void isRequestRouteForPlateNumberAndAvoidLimitChange() {
-        ImmersiveStatusScene.getInstance().setImmersiveStatus(MapTypeId.MAIN_SCREEN_MAIN_MAP, ImersiveStatus.IMERSIVE);
+        ImmersiveStatusScene.getInstance().setImmersiveStatus(MapType.MAIN_SCREEN_MAIN_MAP, ImersiveStatus.IMERSIVE);
         if (mCurrentPlateNumber.equals(mModel.getPlateNumber()) && mCurrentavoidLimit.equals(mModel.getAvoidLimit())
-                && mCurrentEnergy.equals(mModel.getEnergy()) && mCurrentPreferences.equals(mModel.getPreferences())){
+                && mCurrentEnergy.equals(mModel.getEnergy()) && mCurrentPreferences.equals(mModel.getPreferences())) {
             return;
         }
         mRestrictionVisibility.set(false);
@@ -1158,6 +1297,7 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
         final RouteRequestParam param = new RouteRequestParam();
         requestRoute(param);
     }
+
     /***
      * 限行UI渲染
      * @param routeRestrictionType 限行类型
@@ -1210,6 +1350,7 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
                 break;
         }
     }
+
     /***
      * 选中路线UI
      * @param routeIndex 路线索引
@@ -1217,6 +1358,7 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
     public void updateSelectRouteUI(final int routeIndex) {
         ThreadManager.getInstance().postUi(() -> mView.updateSelectRouteUI(routeIndex));
     }
+
     /***
      * 更新长途TAB
      * @param isLongRoute 是否长途路
@@ -1224,6 +1366,7 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
     public void showHideTab(final boolean isLongRoute) {
         mTabVisibility.set(isLongRoute ? 2 : 1);
     }
+
     /***
      * 更新长途补能规划
      * @param isLongRoute 是否长途路
@@ -1231,6 +1374,7 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
     public void showHideElicCheckBox(final boolean isLongRoute) {
         mBatterCheckBoxVisibility.set(isLongRoute);
     }
+
     /***
      * 更新充电列表
      * @param gasChargeAlongList 列表数据
@@ -1239,6 +1383,7 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
     public void updateChareList(final List<RouteParam> gasChargeAlongList, final int listSearchType) {
         mView.updateChareList(gasChargeAlongList, listSearchType);
     }
+
     /***
      * 添加推荐充电站
      * @param poiInfoEntity poi数据
@@ -1249,6 +1394,7 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
         updateExhaustDistance();
 
     }
+
     /***
      * 移除推荐充电站
      * @param poiInfoEntity poi数据
@@ -1258,6 +1404,7 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
         mChargePoiDistanceList.remove(mChargePoiDistanceList.indexOf(poiInfoEntity.getSort_distance()));
         updateExhaustDistance();
     }
+
     /***
      * 添加充电站内容
      */
@@ -1306,6 +1453,7 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
         mRouteProgressChargeExhaust.set(progress);
         mView.updateRouteChargeExhaustUi(progress / 100.0f);
     }
+
     /***
      * 清除备选充电站数据
      */
@@ -1318,6 +1466,7 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
         if (!isFirstChange) {
             final RouteRequestParam param = new RouteRequestParam();
             param.setMRouteWay(RouteWayID.ROUTE_WAY_CHANGE_PREFERENCE);
+            param.setMRoutePriorityType(RoutePriorityType.ROUTE_TYPE_CHANGE_STRATEGE);
             requestRoute(param);
         }
         mPreferText.set(text);
@@ -1333,7 +1482,8 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
 
     @Override
     public void onRouteSelect(final boolean isTheSameIndex, final int index) {
-        ImmersiveStatusScene.getInstance().setImmersiveStatus(MapTypeId.MAIN_SCREEN_MAIN_MAP, ImersiveStatus.IMERSIVE);
+        cancelTimer();
+        ImmersiveStatusScene.getInstance().setImmersiveStatus(MapType.MAIN_SCREEN_MAIN_MAP, ImersiveStatus.IMERSIVE);
         mView.clearSceneTabUI();
         mIsChargingSelect = false;
         mView.clearSceneTabUI(false);
@@ -1354,12 +1504,15 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
     public void onRouteDetailsChecked(final boolean checkedLeastOne) {
         mAvoidBackground.set(checkedLeastOne ? ResourceUtils.Companion.getInstance().getDrawable(R.drawable.bg_route_details_avoid_road)
                 : ResourceUtils.Companion.getInstance().getDrawable(R.drawable.bg_route_details_defult_label));
+        mAvoidTestColor.set(checkedLeastOne ? ResourceUtils.Companion.getInstance().getColor(R.color.white)
+                : ResourceUtils.Companion.getInstance().getColor(R.color.text_route_defult));
         mAvoidClickable.set(checkedLeastOne);
     }
 
     @Override
     public void onTabListClick(final int tabIndex, final boolean isChecked) {
-        ImmersiveStatusScene.getInstance().setImmersiveStatus(MapTypeId.MAIN_SCREEN_MAIN_MAP, ImersiveStatus.IMERSIVE);
+        cancelTimer();
+        ImmersiveStatusScene.getInstance().setImmersiveStatus(MapType.MAIN_SCREEN_MAIN_MAP, ImersiveStatus.IMERSIVE);
         switch (tabIndex) {
             case 0:
                 if (isChecked) {
@@ -1400,7 +1553,8 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
 
     private boolean mIsChargingSelect = false;
     private Action mTabChargingClick = () -> {
-        ImmersiveStatusScene.getInstance().setImmersiveStatus(MapTypeId.MAIN_SCREEN_MAIN_MAP, ImersiveStatus.IMERSIVE);
+        cancelTimer();
+        ImmersiveStatusScene.getInstance().setImmersiveStatus(MapType.MAIN_SCREEN_MAIN_MAP, ImersiveStatus.IMERSIVE);
         if (Boolean.FALSE.equals(mIsChargingSelect)) {
             mModel.getSearchListChargeAndShow(mSearchKeyWord, 0);
         } else {
@@ -1411,6 +1565,7 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
         mIsChargingSelect = !mIsChargingSelect;
         mView.clearSceneTabUI(mIsChargingSelect);
     };
+
     public Action getTabChargingClick() {
         return mTabChargingClick;
     }

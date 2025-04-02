@@ -2,172 +2,168 @@ package com.fy.navi.service.define.user.account;
 
 import java.util.ArrayList;
 
-/**
- * @Description
- * @Author fh
- * @date 2024/12/22
- */
+
 public class AccountUserInfo {
-    public int code;
-    public String result;
-    public String message;
-    public String timestamp;
-    public String version;
-    public int status = -1;
-    public int remain;
-    public ArrayList<String> reason;
-    public String id;
-    public byte[] buffer;
-    public int timeout;
-    public String uid;
-    public String username;
-    public String nickname;
-    public String avatar;
-    public String mobile;
-    public String email;
-    public AccountProfileInfo profileInfo;
+    private int mCode;
+    private String mResult;
+    private String mMessage;
+    private String mTimestamp;
+    private String mVersion;
+    private int mStatus = -1;
+    private int mRemain;
+    private ArrayList<String> mReason;
+    private String mId;
+    private byte[] mBuffer;
+    private int mTimeout;
+    private String mUid;
+    private String mUsername;
+    private String mNickname;
+    private String mAvatar;
+    private String mMobile;
+    private String mEmail;
+    private AccountProfileInfo mProfileInfo;
 
     public int getCode() {
-        return code;
+        return mCode;
     }
 
-    public void setCode(int code) {
-        this.code = code;
+    public void setCode(final int code) {
+        this.mCode = code;
     }
 
     public String getResult() {
-        return result;
+        return mResult;
     }
 
-    public void setResult(String result) {
-        this.result = result;
+    public void setResult(final String result) {
+        this.mResult = result;
     }
 
     public String getMessage() {
-        return message;
+        return mMessage;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
+    public void setMessage(final String message) {
+        this.mMessage = message;
     }
 
     public String getTimestamp() {
-        return timestamp;
+        return mTimestamp;
     }
 
-    public void setTimestamp(String timestamp) {
-        this.timestamp = timestamp;
+    public void setTimestamp(final String timestamp) {
+        this.mTimestamp = timestamp;
     }
 
     public String getVersion() {
-        return version;
+        return mVersion;
     }
 
-    public void setVersion(String version) {
-        this.version = version;
+    public void setVersion(final String version) {
+        this.mVersion = version;
     }
 
     public int getStatus() {
-        return status;
+        return mStatus;
     }
 
-    public void setStatus(int status) {
-        this.status = status;
+    public void setStatus(final int status) {
+        this.mStatus = status;
     }
 
     public int getRemain() {
-        return remain;
+        return mRemain;
     }
 
-    public void setRemain(int remain) {
-        this.remain = remain;
+    public void setRemain(final int remain) {
+        this.mRemain = remain;
     }
 
     public ArrayList<String> getReason() {
-        return reason;
+        return mReason;
     }
 
-    public void setReason(ArrayList<String> reason) {
-        this.reason = reason;
+    public void setReason(final ArrayList<String> reason) {
+        this.mReason = reason;
     }
 
     public String getId() {
-        return id;
+        return mId;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setId(final String id) {
+        this.mId = id;
     }
 
     public byte[] getBuffer() {
-        return buffer;
+        return mBuffer;
     }
 
-    public void setBuffer(byte[] buffer) {
-        this.buffer = buffer;
+    public void setBuffer(final byte[] buffer) {
+        this.mBuffer = buffer;
     }
 
     public int getTimeout() {
-        return timeout;
+        return mTimeout;
     }
 
-    public void setTimeout(int timeout) {
-        this.timeout = timeout;
+    public void setTimeout(final int timeout) {
+        this.mTimeout = timeout;
     }
 
     public String getUid() {
-        return uid;
+        return mUid;
     }
 
-    public void setUid(String uid) {
-        this.uid = uid;
+    public void setUid(final String uid) {
+        this.mUid = uid;
     }
 
     public String getUsername() {
-        return username;
+        return mUsername;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setUsername(final String username) {
+        this.mUsername = username;
     }
 
     public String getNickname() {
-        return nickname;
+        return mNickname;
     }
 
-    public void setNickname(String nickname) {
-        this.nickname = nickname;
+    public void setNickname(final String nickname) {
+        this.mNickname = nickname;
     }
 
     public String getAvatar() {
-        return avatar;
+        return mAvatar;
     }
 
-    public void setAvatar(String avatar) {
-        this.avatar = avatar;
+    public void setAvatar(final String avatar) {
+        this.mAvatar = avatar;
     }
 
     public String getMobile() {
-        return mobile;
+        return mMobile;
     }
 
-    public void setMobile(String mobile) {
-        this.mobile = mobile;
+    public void setMobile(final String mobile) {
+        this.mMobile = mobile;
     }
 
     public String getEmail() {
-        return email;
+        return mEmail;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setEmail(final String email) {
+        this.mEmail = email;
     }
 
     public AccountProfileInfo getProfileInfo() {
-        return profileInfo;
+        return mProfileInfo;
     }
 
-    public void setProfileInfo(AccountProfileInfo profileInfo) {
-        this.profileInfo = profileInfo;
+    public void setProfileInfo(final AccountProfileInfo profileInfo) {
+        this.mProfileInfo = profileInfo;
     }
 }

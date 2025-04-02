@@ -1,0 +1,52 @@
+package com.fy.navi.scene.impl.navi;
+
+import com.android.utils.ConvertUtils;
+import com.android.utils.log.Logger;
+import com.android.utils.thread.ThreadManager;
+import com.fy.navi.scene.BaseSceneModel;
+import com.fy.navi.scene.impl.navi.inter.ISceneCallback;
+import com.fy.navi.scene.ui.navi.SceneNaviChargeTipView;
+import com.fy.navi.scene.ui.navi.manager.INaviSceneEvent;
+import com.fy.navi.scene.ui.navi.manager.NaviSceneId;
+import com.fy.navi.service.define.utils.NumberUtils;
+
+import java.util.concurrent.ScheduledFuture;
+
+public class SceneNaviChargeTipViewImpl extends BaseSceneModel<SceneNaviChargeTipView> {
+    public static final String TAG = "SceneNaviChargeTipViewImpl";
+    private ScheduledFuture scheduledFuture;
+    private int times = NumberUtils.NUM_8;
+    public SceneNaviChargeTipViewImpl(SceneNaviChargeTipView mScreenView) {
+        super(mScreenView);
+    }
+
+    public void initTimer() {
+        cancelTimer();
+        times = NumberUtils.NUM_8;
+        scheduledFuture = ThreadManager.getInstance().asyncAtFixDelay(() -> {
+            if (times == NumberUtils.NUM_0) {
+                Logger.i(TAG, "close-self!");
+                ThreadManager.getInstance().postUi(() -> {
+                    updateSceneVisible(false);
+                    cancelTimer();
+                });
+            }
+            times--;
+        }, NumberUtils.NUM_0, NumberUtils.NUM_1);
+    }
+
+    public void cancelTimer() {
+        if (!ConvertUtils.isEmpty(scheduledFuture)) {
+            ThreadManager.getInstance().cancelDelayRun(scheduledFuture);
+            scheduledFuture = null;
+        }
+    }
+
+    private void updateSceneVisible(boolean isVisible) {
+        Logger.i(TAG, "updateSceneVisible", "isVisible:" + isVisible, "currentIsVis:" + mScreenView.isVisible());
+        if(mScreenView.isVisible() == isVisible) return;
+        mScreenView.getNaviSceneEvent().notifySceneStateChange((isVisible ?
+                INaviSceneEvent.SceneStateChangeType.SceneShowState :
+                INaviSceneEvent.SceneStateChangeType.SceneCloseState), NaviSceneId.NAVI_CHARGE_TIP);
+    }
+}

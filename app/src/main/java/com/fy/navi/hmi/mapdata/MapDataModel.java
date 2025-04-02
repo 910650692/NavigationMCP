@@ -9,9 +9,11 @@ import com.fy.navi.service.define.code.UserDataCode;
 import com.fy.navi.service.define.mapdata.CityDataInfo;
 import com.fy.navi.service.define.mapdata.MergedStatusBean;
 import com.fy.navi.service.define.mapdata.ProvDataInfo;
+import com.fy.navi.service.define.position.LocInfoBean;
 import com.fy.navi.service.greendao.CommonManager;
 import com.fy.navi.service.logicpaket.mapdata.MapDataCallBack;
 import com.fy.navi.service.logicpaket.mapdata.MapDataPackage;
+import com.fy.navi.service.logicpaket.position.PositionPackage;
 import com.fy.navi.ui.base.BaseModel;
 
 import java.util.ArrayList;
@@ -48,17 +50,11 @@ public class MapDataModel extends BaseModel<MapDataViewModel> implements MapData
      * @return 返回基础包信息
      */
     public CityDataInfo getCountryData() {
-        final CityDataInfo countryInfo = mapDataPackage.getCountryData();
-        if (countryInfo.getDownLoadInfo() != null) {
-            if (countryInfo.getDownLoadInfo().getTaskState() == UserDataCode.TASK_STATUS_CODE_SUCCESS) {
-                mCommonManager.insertOrReplace(UserDataCode.SETTING_DOWNLOAD_COUNTRY, "已下载");
-            }
-        }
-        return countryInfo;
+        return mapDataPackage.getCountryData();
     }
 
     /**
-     * 是否显示 下载基础功能包推荐弹窗
+     * 是否显示 下载基础功能包推荐弹窗（首次触发下载才显示）
      * @return false 不显示； true 显示
      */
     public boolean countryDataVisible() {
@@ -68,10 +64,11 @@ public class MapDataModel extends BaseModel<MapDataViewModel> implements MapData
 
     /**
      * 获取当前城市信息
-     * @param adCode
      * @return 返回当前城市信息
      */
-    public CityDataInfo getCurrentCityInfo(final int adCode) {
+    public CityDataInfo getCurrentCityInfo() {
+        final LocInfoBean locationInfo = PositionPackage.getInstance().getLastCarLocation();
+        int adCode = mapDataPackage.getAdCodeByLonLat(locationInfo.getLongitude(), locationInfo.getLatitude());
         return mapDataPackage.getCityInfo(adCode);
     }
 
@@ -101,10 +98,11 @@ public class MapDataModel extends BaseModel<MapDataViewModel> implements MapData
 
     /**
      * 通过adCode获取附近推荐城市信息
-     * @param adCode
      * @return 返回附近城市的数据列表
      */
-    public ArrayList<CityDataInfo> getNearAdCodeList(final int adCode) {
+    public ArrayList<CityDataInfo> getNearAdCodeList() {
+        final LocInfoBean locationInfo = PositionPackage.getInstance().getLastCarLocation();
+        int adCode = mapDataPackage.getAdCodeByLonLat(locationInfo.getLongitude(), locationInfo.getLatitude());
         return mapDataPackage.getNearAdCodeList(adCode);
     }
 
@@ -114,6 +112,7 @@ public class MapDataModel extends BaseModel<MapDataViewModel> implements MapData
      */
     public void startAllTask(final ArrayList<Integer> adCodeList) {
         mapDataPackage.startAllTask(adCodeList);
+        mCommonManager.insertOrReplace(UserDataCode.SETTING_DOWNLOAD_COUNTRY, "首次触发下载");
     }
 
     /**

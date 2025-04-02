@@ -10,7 +10,7 @@
       android:strokeLineJoin="round"
       android:strokeWidth="3.6"
       android:fillColor="#00000000"
-      android:strokeColor="#4B535D"
+      android:strokeColor="@color/setting_bg_close"
       android:fillType="evenOdd"
       tools:ignore="VectorPath" />
 </vector>

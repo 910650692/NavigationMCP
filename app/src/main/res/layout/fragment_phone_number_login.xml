@@ -23,7 +23,7 @@
             app:layout_constraintTop_toTopOf="parent" >
 
             <com.fy.navi.ui.view.SkinImageView
-                clickCommand="@{ViewModel.accountBack}"
+                clickCommand="@{ViewModel.mAccountBack}"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -83,7 +83,7 @@
             android:layout_marginTop="@dimen/dp_20" />
 
         <com.fy.navi.ui.view.SkinButton
-            clickCommand="@{ViewModel.getVerificationCode}"
+            clickCommand="@{ViewModel.mGetVerificationCode}"
             android:id="@+id/get_verification_code_button"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/dp_80"
@@ -96,7 +96,7 @@
             android:layout_marginStart="@dimen/dp_290"/>
 
         <com.fy.navi.ui.view.SkinButton
-            clickCommand="@{ViewModel.clickLogin}"
+            clickCommand="@{ViewModel.mClickLogin}"
             android:id="@+id/account_login"
             android:layout_width="@dimen/dp_150"
             android:layout_height="@dimen/dp_80"
@@ -108,7 +108,7 @@
             app:layout_constraintTop_toBottomOf="@+id/verification_code_edit_text"/>
 
         <com.fy.navi.ui.view.SkinTextView
-            clickCommand="@{ViewModel.clickQRCodeLogin}"
+            clickCommand="@{ViewModel.mClickQRCodeLogin}"
             android:id="@+id/account_login_switch"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

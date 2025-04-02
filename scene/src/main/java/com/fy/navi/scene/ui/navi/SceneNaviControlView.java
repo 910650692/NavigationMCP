@@ -1,5 +1,6 @@
 package com.fy.navi.scene.ui.navi;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -9,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
+import com.android.utils.log.Logger;
 import com.fy.navi.scene.R;
 import com.fy.navi.scene.databinding.SceneNaviControlViewBinding;
 import com.fy.navi.scene.impl.imersive.ImersiveStatus;
@@ -45,8 +47,33 @@ public class SceneNaviControlView extends NaviSceneBase<SceneNaviControlViewBind
     }
 
     @Override
+    protected SceneNaviControlViewBinding createViewBinding(final LayoutInflater inflater,
+                                                            final ViewGroup viewGroup) {
+        return SceneNaviControlViewBinding.inflate(inflater, viewGroup, true);
+    }
+
+    @Override
+    protected SceneNaviControlImpl initSceneImpl() {
+        return new SceneNaviControlImpl(this);
+    }
+
+    @Override
+    protected void setInitVariableId() {
+        mViewBinding.setNaviControl(mScreenViewModel);
+    }
+
+    @Override
+    protected void initObserver() {
+    }
+
+    @Override
     protected NaviSceneId getSceneId() {
         return NaviSceneId.NAVI_SCENE_CONTROL;
+    }
+
+    @Override
+    protected String getSceneName() {
+        return NaviSceneId.NAVI_SCENE_CONTROL.name();
     }
 
     @Override
@@ -57,6 +84,7 @@ public class SceneNaviControlView extends NaviSceneBase<SceneNaviControlViewBind
     @Override
     protected void init() {
         NaviSceneManager.getInstance().addNaviScene(NaviSceneId.NAVI_SCENE_CONTROL, this);
+        initVehicleType();
     }
 
     @Override
@@ -76,23 +104,11 @@ public class SceneNaviControlView extends NaviSceneBase<SceneNaviControlViewBind
     }
 
     @Override
-    protected SceneNaviControlViewBinding createViewBinding(final LayoutInflater inflater,
-                                                            final ViewGroup viewGroup) {
-        return SceneNaviControlViewBinding.inflate(inflater, viewGroup, true);
-    }
-
-    @Override
-    protected SceneNaviControlImpl initSceneImpl() {
-        return new SceneNaviControlImpl(this);
-    }
-
-    @Override
-    protected void setInitVariableId() {
-        mViewBinding.setNaviControl(mScreenViewModel);
-    }
-
-    @Override
-    protected void initObserver() {
+    public void close() {
+        super.close();
+        if (mISceneCallback != null) {
+            mISceneCallback.updateSceneVisible(NaviSceneId.NAVI_SCENE_CONTROL, false);
+        }
     }
 
     /**
@@ -198,23 +214,26 @@ public class SceneNaviControlView extends NaviSceneBase<SceneNaviControlViewBind
     /**
      * @param mode 车头朝向类型
      */
-    public void updateCarModel(final MapMode mode) {
+    public String updateCarModel(final MapMode mode) {
+        String carModel = "";
         switch (mode) {
             case NORTH_2D:
-                mViewBinding.stvCarHead.setText(R.string.navi_north_2d);
+                carModel = getContext().getString(R.string.navi_north_2d);
                 mViewBinding.sivCarHead.setBackgroundResource(R.drawable.img_navigation_2db_58);
                 break;
             case UP_2D:
-                mViewBinding.stvCarHead.setText(R.string.navi_up_2d);
+                carModel = getContext().getString(R.string.navi_up_2d);
                 mViewBinding.sivCarHead.setBackgroundResource(R.drawable.img_navigation_2d_58);
                 break;
             case UP_3D:
-                mViewBinding.stvCarHead.setText(R.string.navi_up_3d);
+                carModel = getContext().getString(R.string.navi_up_3d);
                 mViewBinding.sivCarHead.setBackgroundResource(R.drawable.img_navigation_3d_58);
                 break;
             default:
                 break;
         }
+        mViewBinding.stvCarHead.setText(carModel);
+        return carModel;
     }
 
     /**
@@ -229,5 +248,52 @@ public class SceneNaviControlView extends NaviSceneBase<SceneNaviControlViewBind
      */
     public void naviPreviewSwitch(final int type) {
         mScreenViewModel.naviPreviewSwitch(type);
+    }
+
+    /**
+     * 显示控制详情
+     */
+    public void showControlDetails() {
+        mScreenViewModel.moreSetup();
+    }
+
+    @SuppressLint("UseCompatLoadingForDrawables")
+    private void initVehicleType() {
+        int vehicleType = mScreenViewModel.getCarType();
+        // 纯油
+        if (vehicleType == 0) {
+            mViewBinding.sivCharge.setBackground(getContext().getDrawable
+                    (R.drawable.img_lavatory_58));
+            mViewBinding.stvCharge.setText(R.string.st_quick_search_lavatory);
+            mViewBinding.sivLavatory.setBackground(getContext().getDrawable(
+                    R.drawable.img_end_point_58));
+            mViewBinding.stvLavatory.setText(R.string.navi_along_parking);
+            mViewBinding.sivService.setBackground(getContext().getDrawable(
+                    R.drawable.img_service_area_rim_58));
+            mViewBinding.stvService.setText(R.string.navi_along_service);
+            // 纯电
+        } else if (vehicleType == 1) {
+            mViewBinding.sivOil.setBackground(getContext().getDrawable(
+                    R.drawable.img_lightning_58));
+            mViewBinding.stvOil.setText(R.string.st_quick_search_charge);
+            mViewBinding.sivCharge.setBackground(getContext().getDrawable
+                    (R.drawable.img_lavatory_58));
+            mViewBinding.stvCharge.setText(R.string.st_quick_search_lavatory);
+            mViewBinding.sivLavatory.setBackground(getContext().getDrawable(
+                    R.drawable.img_end_point_58));
+            mViewBinding.stvLavatory.setText(R.string.navi_along_parking);
+            mViewBinding.sivService.setBackground(getContext().getDrawable(
+                    R.drawable.img_service_area_rim_58));
+            mViewBinding.stvService.setText(R.string.navi_along_service);
+        }
+        // 默认写的是混动
+    }
+
+    /**
+     * @param isConnected isConnected
+     */
+    public void onNetStatusChange(boolean isConnected) {
+        Logger.i(TAG, "onNetStatusChange isConnected:" + isConnected);
+        mScreenViewModel.refreshRoute();
     }
 }

@@ -4,19 +4,19 @@
     android:viewportWidth="68"
     android:viewportHeight="68">
     <path
-        android:fillColor="@color/navi_img_color_one"
+        android:fillColor="@color/navi_color_000000_0"
         android:fillType="evenOdd"
         android:pathData="M17,17L49,49"
         android:strokeWidth="4"
-        android:strokeColor="@color/navi_img_color_two"
+        android:strokeColor="@color/navi_color_383839_100"
         android:strokeLineCap="round"
         android:strokeLineJoin="round" />
     <path
-        android:fillColor="@color/navi_img_color_one"
+        android:fillColor="@color/navi_color_000000_0"
         android:fillType="evenOdd"
         android:pathData="M17,49L49,17"
         android:strokeWidth="4"
-        android:strokeColor="@color/navi_img_color_two"
+        android:strokeColor="@color/navi_color_383839_100"
         android:strokeLineCap="round"
         android:strokeLineJoin="round" />
 </vector>

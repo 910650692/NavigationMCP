@@ -6,7 +6,9 @@ import android.widget.RadioGroup;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.android.utils.NetWorkUtils;
 import com.android.utils.ResourceUtils;
+import com.android.utils.ToastUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
 import com.fy.navi.hmi.BR;
@@ -14,24 +16,23 @@ import com.fy.navi.hmi.R;
 import com.fy.navi.hmi.databinding.FragmentDrivingRecordBinding;
 import com.fy.navi.hmi.drivingrecord.adapter.DrivingRecordAdapter;
 import com.fy.navi.hmi.setting.SettingCheckDialog;
+import com.fy.navi.service.GBLCacheFilePath;
 import com.fy.navi.service.define.user.usertrack.DrivingRecordDataBean;
+import com.fy.navi.service.logicpaket.user.account.AccountPackage;
+import com.fy.navi.service.logicpaket.user.usertrack.UserTrackPackage;
 import com.fy.navi.ui.base.BaseFragment;
 import com.fy.navi.ui.dialog.IBaseDialogClickListener;
 
 import java.util.ArrayList;
 
-/**
- * @Description 用户行驶里程
- * @Author fh
- * @date 2024/12/24
- */
-public class DrivingRecordFragment  extends BaseFragment<FragmentDrivingRecordBinding, DrivingRecordViewModel> {
-    private DrivingRecordAdapter drivingRecordAdapter;
-    private SettingCheckDialog deleteDivingRecordDialog;
-    private RecordLoadingDialog recordLoadingDialog;
-    private int currectIndex = 0;
 
-    private ArrayList<DrivingRecordDataBean> dataList = new ArrayList<>();
+public class DrivingRecordFragment  extends BaseFragment<FragmentDrivingRecordBinding, DrivingRecordViewModel> {
+    private DrivingRecordAdapter mDrivingRecordAdapter;
+    private SettingCheckDialog mDeleteDivingRecordDialog;
+    private RecordLoadingDialog mRecordLoadingDialog;
+    private int mCurrentIndex = 0;
+
+    private ArrayList<DrivingRecordDataBean> mDataList = new ArrayList<>();
 
     @Override
     public int onLayoutId() {
@@ -69,49 +70,55 @@ public class DrivingRecordFragment  extends BaseFragment<FragmentDrivingRecordBi
         super.onInitObserver();
     }
 
+    /**
+     * 初始化行程列表
+     */
     private void initDrivingRecordList() {
-        drivingRecordAdapter = new DrivingRecordAdapter();
-        drivingRecordAdapter.setItemClickListener(new DrivingRecordAdapter.OnItemClickListener() {
+        mDrivingRecordAdapter = new DrivingRecordAdapter();
+        mDrivingRecordAdapter.setItemClickListener(new DrivingRecordAdapter.OnItemClickListener() {
 
             @Override
-            public void onItemClick(int index) {
-                // 跳转到行程详情页
-                recordLoadingDialog.show();
-
-                ThreadManager.getInstance().postDelay(() -> {
-                    mViewModel.goDetailsFragment(dataList.get(index));
-                    recordLoadingDialog.cancel();
-                },3000);
+            public void onItemClick(final int index) {
+                if (Boolean.TRUE.equals(NetWorkUtils.Companion.getInstance().checkNetwork())) {
+                    // 跳转到行程详情页
+                    mCurrentIndex = index;
+                    mRecordLoadingDialog.show();
+                    UserTrackPackage.getInstance().setIsNeedShowDialog(true);
+                    mViewModel.obtainGpsTrackDepInfo(GBLCacheFilePath.SYNC_PATH + "/403", mDataList.get(index).getTrackFileName());
+                } else {
+                    ToastUtils.Companion.getInstance().showCustomToastView(
+                            ResourceUtils.Companion.getInstance().getString(R.string.favorite_charging_offline));
+                }
 
             }
 
             @Override
-            public void onItemDeleteClick(int index) {
-                currectIndex = index;
-                deleteDivingRecordDialog.show();
+            public void onItemDeleteClick(final int index) {
+                mCurrentIndex = index;
+                mDeleteDivingRecordDialog.show();
             }
         });
-        LinearLayoutManager manager = new LinearLayoutManager(getActivity());
+        final LinearLayoutManager manager = new LinearLayoutManager(getActivity());
         manager.setOrientation(LinearLayoutManager.VERTICAL);
         mBinding.rvDrivingRecordList.setLayoutManager(manager);
-        mBinding.rvDrivingRecordList.setAdapter(drivingRecordAdapter);
+        mBinding.rvDrivingRecordList.setAdapter(mDrivingRecordAdapter);
 
         mBinding.drivingRecordTab1.setChecked(true);
         // 监听选择变化（可选）
         mBinding.drivingRecordTabGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
-            public void onCheckedChanged(RadioGroup radioGroup, int i) {
+            public void onCheckedChanged(final RadioGroup radioGroup, final int i) {
                 // 获取被选中的RadioButton
-                RadioButton checkedRadioButton = getActivity().findViewById(i);
+                final RadioButton checkedRadioButton = getActivity().findViewById(i);
                 // 执行你想要的操作，例如获取被选中的文本
-                String selectedText = checkedRadioButton.getText().toString();
+                final String selectedText = checkedRadioButton.getText().toString();
                 // 打印或处理选中的文本
                 Logger.d("RadioGroup", "选中的文本: " + selectedText);
-                if (selectedText.equals("导航历史")) {
+                if ("导航历史".equals(selectedText)) {
                     mBinding.drivingRecordTab1.setTextColor(getResources().getColor(R.color.white));
                     mBinding.drivingRecordTab2.setTextColor(getResources().getColor(R.color.main_map_limit_loading));
                     mViewModel.getDrivingRecordDataList();
-                } else if (selectedText.equals("巡航历史")) {
+                } else if ("巡航历史".equals(selectedText)) {
                     mBinding.drivingRecordTab1.setTextColor(getResources().getColor(R.color.main_map_limit_loading));
                     mBinding.drivingRecordTab2.setTextColor(getResources().getColor(R.color.white));
                     mViewModel.getDrivingRecordCruiseDataList();
@@ -121,15 +128,20 @@ public class DrivingRecordFragment  extends BaseFragment<FragmentDrivingRecordBi
         });
     }
 
-    // 更新历史行程数据列表
-    public void updateDrivingRecordView(ArrayList<DrivingRecordDataBean> dataList) {
+    /**
+     * 更新历史行程数据列表
+     * @param dataList 行程数据列表
+     */
+    public void updateDrivingRecordView(final ArrayList<DrivingRecordDataBean> dataList) {
         ThreadManager.getInstance().postUi(() -> {
-            this.dataList = dataList;
-            drivingRecordAdapter.setDrivingRecordList(dataList);
+            this.mDataList = dataList;
+            mDrivingRecordAdapter.setDrivingRecordList(dataList);
         });
     }
 
-    // 刷新数据
+    /**
+     * 刷新数据
+     */
     public void getDrivingRecord() {
         ThreadManager.getInstance().postDelay(() -> {
             mViewModel.getDrivingRecordData(); // 从云端同步数据到本地
@@ -141,43 +153,57 @@ public class DrivingRecordFragment  extends BaseFragment<FragmentDrivingRecordBi
      * 删除单条记录
      */
     public void initDeleteDialog() {
-        deleteDivingRecordDialog = new SettingCheckDialog.Build(getContext())
+        mDeleteDivingRecordDialog = new SettingCheckDialog.Build(getContext())
                 .setTitle(ResourceUtils.Companion.getInstance().getString(R.string.driving_item_delete_title))
                 .setContent(ResourceUtils.Companion.getInstance().getString(R.string.driving_item_delete_message))
                 .setConfirmText(ResourceUtils.Companion.getInstance().getString(R.string.driving_item_delete))
                 .setDialogObserver(new IBaseDialogClickListener() {
                     @Override
                     public void onCommitClick() {
-                        mViewModel.delBehaviorData(dataList.get(currectIndex).getId());
+                        if (AccountPackage.getInstance().isLogin()) {
+                            mViewModel.delBehaviorData(mDataList.get(mCurrentIndex).getId());
+                        }
+                        mViewModel.deleteValueByFileName(mDataList.get(mCurrentIndex).getTrackFileName());
+                        mDataList.remove(mCurrentIndex);
+                        mViewModel.updateDrivingRecordData(mDataList);
+                        ThreadManager.getInstance().postUi(() -> {
+                            ToastUtils.Companion.getInstance().showCustomToastView(
+                                    ResourceUtils.Companion.getInstance().getString(R.string.driving_record_delete_success));
+                        });
                     }
 
-                    @Override
-                    public void onCancelClick() {
-
-                    }
                 }).build();
-        clearBackground(deleteDivingRecordDialog.getWindow());
+        clearBackground(mDeleteDivingRecordDialog.getWindow());
     }
 
     /**
      * 加载行程历史详情dialog
      */
     public void initLoadingDialog() {
-        recordLoadingDialog = new RecordLoadingDialog.Build(getContext())
+        mRecordLoadingDialog = new RecordLoadingDialog.Build(getContext())
                 .setContent(ResourceUtils.Companion.getInstance().getString(R.string.driving_item_loading_message))
                 .setDialogObserver(new IBaseDialogClickListener() {
-                    @Override
-                    public void onCancelClick() {
-
-                    }
                 }).build();
-        clearBackground(recordLoadingDialog.getWindow());
+        clearBackground(mRecordLoadingDialog.getWindow());
     }
 
-    private void clearBackground(Window window) {
+    /**
+     * 清除背景
+     * @param window 窗口
+     */
+    private void clearBackground(final Window window) {
         if (window != null) {
             window.setDimAmount(0f);
         }
     }
 
+    /**
+     * 隐藏弹窗
+     */
+    public void hideDialog() {
+        ThreadManager.getInstance().postUi(() -> {
+            mRecordLoadingDialog.cancel();
+            mViewModel.goDetailsFragment(mDataList.get(mCurrentIndex));
+        });
+    }
 }

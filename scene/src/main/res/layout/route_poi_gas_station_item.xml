@@ -22,7 +22,7 @@
             android:layout_height="wrap_content"
             android:text="@string/oil_type_98"
             android:textSize="@dimen/sp_32"
-            android:textColor="@color/poi_details_bottom_icon"
+            android:textColor="@color/text_route_defult"
             />
 
     </com.fy.navi.ui.view.SkinLinearLayout>

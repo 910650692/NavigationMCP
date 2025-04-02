@@ -34,8 +34,7 @@ import com.fy.navi.service.AppContext;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.define.code.CodeManager;
 import com.fy.navi.service.define.code.ErrorCode;
-import com.fy.navi.service.define.map.MapTypeId;
-import com.fy.navi.service.define.setting.SettingConstant;
+import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.greendao.CommonManager;
 import com.fy.navi.service.greendao.setting.SettingManager;
 import com.fy.navi.service.logicpaket.aos.AosRestrictedPackage;
@@ -260,30 +259,43 @@ public class NaviService extends Service {
             String errorCodeJson = jsonObject.getJSONObject("error_code").toString();
             Map<Integer, String> mErrorCode = formJsonCode(errorCodeJson);
             errorCode.setErrorCode(mErrorCode);
+            Logger.i(TAG, "Current mErrorCode: " + mErrorCode);
             String engineCodeJson = jsonObject.getJSONObject("engine_code").toString();
             Map<Integer, String> engineErrorCode = formJsonCode(engineCodeJson);
             errorCode.setEngineCode(engineErrorCode);
+            Logger.i(TAG, "Current engineErrorCode: " + engineErrorCode);
             String mapCodeJson = jsonObject.getJSONObject("map_code").toString();
             Map<Integer, String> mapErrorCode = formJsonCode(mapCodeJson);
-            errorCode.setEngineCode(mapErrorCode);
+            errorCode.setMapCode(mapErrorCode);
+            Logger.i(TAG, "Current mapErrorCode: " + mapErrorCode);
             String searchCodeJson = jsonObject.getJSONObject("search_code").toString();
             Map<Integer, String> searchErrorCode = formJsonCode(searchCodeJson);
             errorCode.setSearchCode(searchErrorCode);
+            Logger.i(TAG, "Current searchErrorCode: " + searchErrorCode);
             String routeCodeJson = jsonObject.getJSONObject("route_code").toString();
             Map<Integer, String> routeErrorCode = formJsonCode(routeCodeJson);
-            errorCode.setSearchCode(routeErrorCode);
+            errorCode.setRouteCode(routeErrorCode);
+            Logger.i(TAG, "Current routeCodeJson: " + routeCodeJson);
             String naviCodeJson = jsonObject.getJSONObject("navi_code").toString();
             Map<Integer, String> naviErrorCode = formJsonCode(naviCodeJson);
-            errorCode.setSearchCode(naviErrorCode);
+            errorCode.setNaviCode(naviErrorCode);
+            Logger.i(TAG, "Current naviErrorCode: " + naviErrorCode);
             String settingCodeJson = jsonObject.getJSONObject("setting_code").toString();
             Map<Integer, String> settingErrorCode = formJsonCode(settingCodeJson);
-            errorCode.setSearchCode(settingErrorCode);
+            errorCode.setSettingCode(settingErrorCode);
+            Logger.i(TAG, "Current settingErrorCode: " + settingErrorCode);
             String mapDataCodeJson = jsonObject.getJSONObject("map_data_code").toString();
             Map<Integer, String> mapDataErrorCode = formJsonCode(mapDataCodeJson);
-            errorCode.setMapCode(mapDataErrorCode);
+            errorCode.setMapDataCode(mapDataErrorCode);
+            Logger.i(TAG, "Current mapDataErrorCode: " + mapDataErrorCode);
             String accountCodeJson = jsonObject.getJSONObject("account_code").toString();
             Map<Integer, String> accountErrorCode = formJsonCode(accountCodeJson);
             errorCode.setAccountCode(accountErrorCode);
+            Logger.i(TAG, "Current accountErrorCode: " + accountErrorCode);
+            String forCastCodeJson = jsonObject.getJSONObject("for_cast_code").toString();
+            Map<Integer, String> forCastErrorCode = formJsonCode(forCastCodeJson);
+            errorCode.setForCastCode(forCastErrorCode);
+            Logger.i(TAG, "Current forCastErrorCode: " + forCastErrorCode);
         }
 
         private Map<Integer, String> formJsonCode(String json) throws JSONException {
@@ -372,9 +384,9 @@ public class NaviService extends Service {
         @Override
         public Result doWork() {
             Logger.i(TAG, "Map doWork");
-            boolean mainMapInitResult = MapPackage.getInstance().init(MapTypeId.MAIN_SCREEN_MAIN_MAP);
-            boolean deskMapInitResult = MapPackage.getInstance().init(MapTypeId.LAUNCHER_DESK_MAP);
-            boolean widgetMapInitResult = MapPackage.getInstance().init(MapTypeId.LAUNCHER_WIDGET_MAP);
+            boolean mainMapInitResult = MapPackage.getInstance().init(MapType.MAIN_SCREEN_MAIN_MAP);
+            boolean deskMapInitResult = MapPackage.getInstance().init(MapType.LAUNCHER_DESK_MAP);
+            boolean widgetMapInitResult = MapPackage.getInstance().init(MapType.LAUNCHER_WIDGET_MAP);
             isMapInited = mainMapInitResult && deskMapInitResult && widgetMapInitResult;
             return (mainMapInitResult && deskMapInitResult && widgetMapInitResult) ? Result.success() : Result.failure();
         }

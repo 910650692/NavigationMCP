@@ -11,22 +11,15 @@ import androidx.core.content.ContextCompat;
 import com.alibaba.android.arouter.launcher.ARouter;
 import com.android.utils.log.Logger;
 import com.fy.navi.burypoint.BuryManager;
-import com.fy.navi.burypoint.BuryPointController;
 import com.fy.navi.flavor.BaseTestCarType;
 import com.fy.navi.flavor.TestCarType;
 import com.fy.navi.hmi.BuildConfig;
-import com.fy.navi.hmi.navi.NaviGuidanceModel;
+import com.fy.navi.scene.ui.navi.manager.INaviSceneEvent;
+import com.fy.navi.scene.ui.navi.manager.NaviSceneId;
+import com.fy.navi.scene.ui.navi.manager.NaviSceneManager;
 import com.fy.navi.service.AppContext;
 import com.fy.navi.service.MapDefaultFinalTag;
-import com.fy.navi.service.adapter.navi.NaviAdapter;
-import com.fy.navi.service.adapter.route.RouteAdapter;
-import com.fy.navi.service.define.map.MapTypeId;
-import com.fy.navi.service.define.navi.NaviDriveReportEntity;
-import com.fy.navi.service.logicpaket.map.MapPackage;
-import com.fy.navi.service.logicpaket.navi.NaviPackage;
 import com.fy.navi.ui.BaseApplication;
-
-import java.util.Objects;
 
 /**
  * @Description TODO
@@ -88,6 +81,25 @@ public class NaviApplication extends BaseApplication {
 //                    NaviPackage.getInstance().getTmcStatus(null, "滴水湖馨苑", "陆家嘴水环-码头",
 //                            MapTypeId.MAIN_SCREEN_MAIN_MAP);
 //                }
+                //个性化道路测试
+//                if (data == 3) {
+//                    OpenApiHelper.test();
+//                    return;
+//                }
+//                String roadName = intent.getStringExtra("ss");
+//                NaviExchangeEntity naviExchangeEntity = NaviPackage.getInstance().
+//                        getExchangeResult(roadName, data, MapTypeId.MAIN_SCREEN_MAIN_MAP);
+//                Logger.i("shisong", "naviExchangeEntity:" + naviExchangeEntity.toString());
+                if (data == 1) {
+                    NaviSceneManager.getInstance().notifySceneStateChange(
+                                    INaviSceneEvent.SceneStateChangeType.SceneShowState,
+                            NaviSceneId.NAVI_SCENE_PARK_LIST);
+                } else {
+                    NaviSceneManager.getInstance().notifySceneStateChange(
+                            INaviSceneEvent.SceneStateChangeType.SceneCloseState,
+                            NaviSceneId.NAVI_SCENE_PARK_LIST);
+                }
+
             }
         }, new IntentFilter("shi.song"), ContextCompat.RECEIVER_EXPORTED);
     }

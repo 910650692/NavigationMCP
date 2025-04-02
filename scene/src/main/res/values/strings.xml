@@ -70,11 +70,22 @@
     <string name="navi_recommend_parking_adequate">充足</string>
     <string name="navi_recommend_parking_end">当前终点</string>
     <string name="navi_via_num">"%s 等%d个途径点"</string>
-
     <string name="navi_send">发送</string>
     <string name="navi_send_request_info">是否需要发送目的地到手机继续导航？</string>
     <string name="navi_arrive_destination">即将达到目的地</string>
     <string name="navi_tel">电话</string>
+    <string name="left_battery_warning">续航里程不足50km</string>
+    <string name="charge_station_crowd_tip">%s充电站目前拥挤</string>
+    <string name="charge_station_not_open">%s充电站目前未营业</string>
+    <string name="charge_station_will_stop">%s充电站即将停止营业</string>
+    <string name="search_new_charge_station">查找新站</string>
+    <string name="go_charge">去充电</string>
+    <string name="left_charge_station_low">剩余里程充电站较少</string>
+    <string name="navi_along_way_search">沿途搜</string>
+    <string name="navi_map_mode_switch_fail">视角切换失败，%s无法切换</string>
+    <string name="navi_broadcast_switch">已切换为%s</string>
+    <string name="quick_charge">快</string>
+    <string name="slow_charge">慢</string>
 
     <!--算路相关-->
     <string name="route_search_loading">路线规划中…</string>
@@ -137,10 +148,11 @@
     <string name="st_add_home">设置为家</string>
     <string name="st_add_company">设置为公司</string>
     <string name="st_collect_add">添加</string>
-    <string name="st_poi_details_bottom_around">周边</string>
+    <string name="st_poi_details_bottom_around">搜索</string>
     <string name="st_poi_details_favorite">收藏</string>
     <string name="st_poi_details_bottom_phone">电话</string>
     <string name="st_along_way_point">途经点</string>
+    <string name="st_along_way_point_delete">删除途经点</string>
     <string name="mps_set_home">设置家</string>
     <string name="mps_set_home_success">设置家成功</string>
     <string name="mps_set_company">设置公司</string>
@@ -162,6 +174,8 @@
     <string name="charge_title_slow">慢</string>
     <string name="charge_title_price">全天时段费用</string>
     <string name="charge_appointment">预约</string>
+    <string name="charge_cancel_appointment">取消预约</string>
+    <string name="charge_unlock">降地锁</string>
     <string name="charge_img">看图找站</string>
     <string name="charge_img_confirm">点击查看</string>
     <string name="shv_clear_record">清空记录</string>
@@ -200,6 +214,16 @@
     <string name="remain_charge">%d%%到达</string>
     <string name="load_failed">加载失败</string>
     <string name="reload">点击重试</string>
+    <string name="go_first">先去这里</string>
+    <string name="cooperate">合作</string>
+    <string name="only_check_reservation">只看可预约</string>
+    <string name="question_mark">?</string>
+    <string name="car_repair">汽车维修</string>
+    <string name="how_to_charge">如何扫码充电</string>
+    <string name="download_app">APP下载</string>
+    <string name="charge_hint">1.使用APP打开【服务】中【充电地图】\n2.在【充电地图】中打开【扫一扫】,扫描充电桩二维码,设备启动充电。</string>
+    <string name="charge_content">使用充电桩须使用%sAPP</string>
+    <string name="charge_price_detail">充电价格详情</string>
 
 
     <!--搜索主页快捷搜-->
@@ -221,5 +245,55 @@
 
     <!--离线相关-->
     <string name="offline_item_city_status">下载</string>
+
+    <!--沿途搜索标签 油车-->
+    <string-array name="along_way_categories_gas_name">
+        <item>加油站</item>
+        <item>卫生间</item>
+        <item>停车场</item>
+        <item>服务区</item>
+        <item>美食</item>
+        <item>洗车</item>
+        <item>维修</item>
+        <item>购物</item>
+        <item>酒店</item>
+    </string-array>
+
+    <array name="along_way_category_gas_icons">
+        <item>@drawable/img_basic_ic_gas_station</item>
+        <item>@drawable/img_basic_ic_lavatory</item>
+        <item>@drawable/img_basic_ic_pull_up</item>
+        <item>@drawable/img_service_area_rim_58</item>
+        <item>@drawable/img_basic_ic_gourmet</item>
+        <item>@drawable/img_basic_ic_car_washing</item>
+        <item>@drawable/img_basic_ic_maintenance_black</item>
+        <item>@drawable/img_basic_ic_shop</item>
+        <item>@drawable/img_basic_ic_groggery</item>
+    </array>
+
+    <!--沿途搜索标签 电车-->
+    <string-array name="along_way_categories_charging_name">
+        <item>充电桩</item>
+        <item>卫生间</item>
+        <item>停车场</item>
+        <item>服务区</item>
+        <item>美食</item>
+        <item>洗车</item>
+        <item>维修</item>
+        <item>购物</item>
+        <item>酒店</item>
+    </string-array>
+
+    <array name="along_way_category_charging_icons">
+        <item>@drawable/img_basic_ic_gas_charging</item>
+        <item>@drawable/img_basic_ic_lavatory</item>
+        <item>@drawable/img_basic_ic_pull_up</item>
+        <item>@drawable/img_service_area_rim_58</item>
+        <item>@drawable/img_basic_ic_gourmet</item>
+        <item>@drawable/img_basic_ic_car_washing</item>
+        <item>@drawable/img_basic_ic_maintenance_black</item>
+        <item>@drawable/img_basic_ic_shop</item>
+        <item>@drawable/img_basic_ic_groggery</item>
+    </array>
 
 </resources>

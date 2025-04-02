@@ -10,6 +10,7 @@ import android.text.format.Time;
 import com.autonavi.gbl.common.model.Coord2DDouble;
 import com.autonavi.gbl.pos.model.LocDataType;
 import com.autonavi.gbl.pos.model.LocGnss;
+import com.fy.navi.service.adapter.position.PositionConstant;
 
 import java.math.BigInteger;
 import java.util.Objects;
@@ -111,7 +112,12 @@ public class LocationUtil {
                 locData.status = 'V'; // GPS定位状态位。'V'：无效定位
                 break;
         }
-        locData.isEncrypted = 0; // 位置是否加密偏移: 0未偏移，1已经偏移
+        // 位置是否加密偏移: 0未偏移，1已经偏移  平板不会漂移   车机会漂移
+        if(PositionConstant.isDrBack){
+            locData.isEncrypted = 1;
+        }else {
+            locData.isEncrypted = 0;
+        }
         locData.isNS = (byte) ((location.getLatitude() > 0) ? 'N' : 'S');
         locData.isEW = (byte) ((location.getLongitude() > 0) ? 'E' : 'W');
         locData.speed = (float) (location.getSpeed() * 3.6);

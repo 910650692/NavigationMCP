@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <import type="android.view.View" />
+
+        <variable
+            name="naviSearch"
+            type="com.fy.navi.scene.impl.navi.search.SceneNaviSearchResultViewImpl" />
+    </data>
+
+    <com.fy.navi.ui.view.SkinConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.fy.navi.ui.view.SkinImageView
+            android:id="@+id/siv_top_bar"
+            android:layout_width="@dimen/dp_640"
+            android:layout_height="@dimen/dp_112"
+            android:background="@drawable/bg_navi_control"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"/>
+
+        <com.fy.navi.scene.ui.navi.view.ButtonImageView
+            android:id="@+id/navi_search_along_way_exit"
+            android:layout_width="@dimen/dp_58"
+            android:layout_height="@dimen/dp_58"
+            clickCommand="@{() -> naviSearch.closeSearchResultView()}"
+            android:background="@drawable/img_back_58"
+            app:layout_constraintTop_toTopOf="@+id/siv_top_bar"
+            app:layout_constraintBottom_toBottomOf="@+id/siv_top_bar"
+            app:layout_constraintStart_toStartOf="@+id/siv_top_bar"/>
+
+        <com.fy.navi.ui.view.SkinTextView
+            android:id="@+id/stv_along_way_search"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{naviSearch.mKeyWordField}"
+            android:textColor="@color/navi_color_000000_50"
+            app:layout_constraintTop_toTopOf="@+id/navi_search_along_way_exit"
+            app:layout_constraintBottom_toBottomOf="@+id/navi_search_along_way_exit"
+            app:layout_constraintStart_toEndOf="@+id/navi_search_along_way_exit"
+            android:layout_marginStart="@dimen/dp_4"
+            android:textSize="@dimen/sp_34"
+            tools:text="充电站"/>
+
+        <com.fy.navi.ui.view.SkinLinearLayout
+            android:id="@+id/navi_search_result"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/bg_navi_control"
+            app:layout_constraintStart_toStartOf="@+id/siv_top_bar"
+            app:layout_constraintTop_toBottomOf="@+id/siv_top_bar"
+            android:layout_marginTop="@dimen/dp_20">
+
+            <com.fy.navi.scene.ui.route.SceneRouteSearchChargeRefreshListView
+                android:id="@+id/charge_station_list"
+                android:layout_height="@dimen/dp_428"
+                android:layout_width="@dimen/dp_640"
+                android:visibility="@{naviSearch.mResultVisibleType == 0 ? View.VISIBLE : View.GONE}"
+                android:background="@drawable/bg_navi_control" />
+
+            <com.fy.navi.scene.ui.navi.search.NaviSearchResultListView
+                android:id="@+id/other_list"
+                android:layout_height="@dimen/dp_428"
+                android:layout_width="@dimen/dp_640"
+                android:visibility="@{naviSearch.mResultVisibleType == 1 ? View.VISIBLE : View.GONE}"
+                android:background="@drawable/bg_navi_control" />
+
+            <com.fy.navi.ui.view.SkinLinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_38"
+                android:layout_marginBottom="@dimen/dp_40"
+                android:orientation="horizontal"
+                android:layout_gravity="center_horizontal">
+
+                <com.fy.navi.scene.ui.navi.view.ButtonText
+                    android:id="@+id/navi_search_confirm"
+                    android:layout_width="@dimen/dp_268"
+                    android:layout_height="@dimen/dp_76"
+                    android:background="@drawable/bg_navi_continue"
+                    android:textSize="@dimen/sp_30"
+                    android:textColor="@color/navi_color_FFFFFF_100"
+                    android:gravity="center"
+                    clickCommand="@{() -> naviSearch.closeSearchResultView()}"
+                    android:text="@string/dialog_commit"/>
+
+                <com.fy.navi.scene.ui.navi.view.ButtonText
+                    android:id="@+id/navi_search_cancel"
+                    android:layout_width="@dimen/dp_268"
+                    android:layout_height="@dimen/dp_76"
+                    android:background="@drawable/bg_navi_btn_add_via"
+                    android:textSize="@dimen/sp_30"
+                    android:textColor="@color/navi_color_000000_70"
+                    android:gravity="center"
+                    android:layout_marginStart="@dimen/dp_24"
+                    clickCommand="@{() -> naviSearch.closeSearchResultView()}"
+                    android:text="@string/dialog_cancel"/>
+
+            </com.fy.navi.ui.view.SkinLinearLayout>
+
+        </com.fy.navi.ui.view.SkinLinearLayout>
+
+        <include android:id="@+id/navi_search_type"
+            layout="@layout/navi_search_type_select_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toEndOf="@+id/navi_search_result"
+            app:layout_constraintBottom_toBottomOf="@+id/navi_search_result"
+            android:layout_marginStart="@dimen/dp_20"/>
+
+    </com.fy.navi.ui.view.SkinConstraintLayout>
+</layout>

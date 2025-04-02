@@ -74,8 +74,8 @@ public class VoicePackage implements VoiceAdapterCallback {
         return voiceAdapter.abortRequestDataImage(downloadMode, voiceId);
     }
 
-    public int operate(int downLoadMode, int opType, ArrayList<Integer> voiceIdDiyLst) {
-        return voiceAdapter.operate(downLoadMode, opType, voiceIdDiyLst);
+    public int operate(int opType, ArrayList<Integer> voiceIdDiyLst) {
+        return voiceAdapter.operate(opType, voiceIdDiyLst);
     }
 
     public HashMap<Integer, VoiceInfo> getRecommendVoiceList(){

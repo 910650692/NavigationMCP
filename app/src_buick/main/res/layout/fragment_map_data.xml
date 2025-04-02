@@ -47,7 +47,7 @@
 
         </com.fy.navi.ui.view.SkinLinearLayout>
 
-        <com.fy.navi.ui.view.SkinScrollView
+        <com.fy.navi.ui.view.SkinNestedScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/dp_24"
@@ -203,6 +203,7 @@
                     <com.fy.navi.ui.view.SkinTextView
                         android:id="@+id/btn_download_near_data"
                         clickCommand="@{ViewModel.mToDownloadNearData}"
+                        android:visibility="@{ViewModel.mNearDownloadBtnVisibility ? View.VISIBLE : View.GONE}"
                         android:layout_width="@dimen/dp_180"
                         android:layout_height="@dimen/dp_76"
                         android:layout_marginEnd="@dimen/dp_24"
@@ -352,7 +353,7 @@
 
             </com.fy.navi.ui.view.SkinConstraintLayout>
 
-        </com.fy.navi.ui.view.SkinScrollView>
+        </com.fy.navi.ui.view.SkinNestedScrollView>
 
     </com.fy.navi.ui.view.SkinLinearLayout>
 

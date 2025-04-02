@@ -1,5 +1,6 @@
 [versions]
 adapterRxjava = "2.1.0"
+androidAopPlugin = "2.3.9"
 agp = "8.3.2"
 arouterApi = "1.5.2"
 converterGson = "2.3.0"
@@ -8,6 +9,7 @@ kotlin = "2.0.21"
 
 compileSdk = "34"
 buildSdk = "34.0.0"
+padminSdk = "27"
 minSdk = "32"
 rxandroid = "1.2.1"
 targetSdk = "35"
@@ -16,6 +18,7 @@ junit = "4.13.2"
 junitVersion = "1.2.1"
 espressoCore = "3.6.1"
 
+androidAop = "2.3.9"
 appcompat = "1.7.0"
 material = "1.12.0"
 activity = "1.9.0"
@@ -46,6 +49,10 @@ converter-scalars = { module = "com.squareup.retrofit2:converter-scalars", versi
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
+
+android-aop = { group = "io.github.FlyJingFish.AndroidAop", name = "android-aop-processor", version.ref = "androidAop" }
+android-aop-core = { module = "io.github.FlyJingFish.AndroidAop:android-aop-core", version.ref = "androidAopPlugin" }
+android-aop-plugin = { module = "io.github.FlyJingFish.AndroidAop:android-aop-plugin", version.ref = "androidAopPlugin" }
 
 appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 logging-interceptor = { module = "com.squareup.okhttp3:logging-interceptor", version.ref = "loggingInterceptor" }
@@ -78,6 +85,7 @@ projectlombok-lombok = { group = "org.projectlombok", name = "lombok", version.r
 android-application = { id = "com.android.application", version.ref = "agp" }
 android-library = { id = "com.android.library", version.ref = "agp" }
 kotlin-plugin = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+android-aop-plugin = { id = "io.github.FlyJingFish.AndroidAop.android-aop", version.ref = "androidAop" }
 
 [bundles]
 test_junit = ['junit']

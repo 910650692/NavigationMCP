@@ -13,8 +13,8 @@ import com.fy.navi.service.AutoMapConstant;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.define.layer.GemBaseLayer;
 import com.fy.navi.service.define.layer.GemLayerItem;
-import com.fy.navi.service.define.layer.LayerType;
-import com.fy.navi.service.define.map.MapTypeId;
+import com.fy.navi.service.define.layer.refix.LayerType;
+import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.map.MapTypeManager;
 import com.fy.navi.service.define.search.PoiInfoEntity;
 import com.fy.navi.service.define.search.SearchResultEntity;
@@ -78,11 +78,19 @@ public class SearchResultModel extends BaseModel<SearchResultViewModel> implemen
     }
 
     @Override
+    public void onVoicePoiSort(final MapType mapTypeId, final String sortValue) {
+        if (mCallbackId.equals(mSearchPackage.getCurrentCallbackId())) {
+            Logger.d(TAG, "onVoicePoiSort: " + sortValue);
+            mViewModel.onVoicePoiSort(sortValue);
+        }
+    }
+
+    @Override
     public void onStart() {
         super.onStart();
         if (mLayerPackage != null) {
             Logger.d(TAG, "registerCallBack");
-            mLayerPackage.registerCallBack(MapTypeManager.getInstance().getMapTypeIdByName(mViewModel.mScreenId), this, LayerType.SEARCH_LAYER);
+            mLayerPackage.registerCallBack(MapTypeManager.getInstance().getMapTypeIdByName(mViewModel.mScreenId), this, LayerType.LAYER_SEARCH);
         }
     }
 
@@ -94,7 +102,7 @@ public class SearchResultModel extends BaseModel<SearchResultViewModel> implemen
         }
         if (mLayerPackage != null) {
             Logger.d(TAG, "unRegisterCallBack");
-            mLayerPackage.unRegisterCallBack(getIdFromName(mViewModel.mScreenId), this, LayerType.SEARCH_LAYER);
+            mLayerPackage.unRegisterCallBack(getIdFromName(mViewModel.mScreenId), this, LayerType.LAYER_SEARCH);
         }
     }
 
@@ -135,27 +143,27 @@ public class SearchResultModel extends BaseModel<SearchResultViewModel> implemen
      * @return 地图类型
      */
     // TODO 后期需要优化
-    private MapTypeId getIdFromName(@Nullable final String name) {
-        MapTypeId mapTypeId = MapTypeId.MAIN_SCREEN_MAIN_MAP;
-        if (TextUtils.equals(name, MapTypeId.MAIN_SCREEN_MAIN_MAP.name())) {
-            mapTypeId = MapTypeId.MAIN_SCREEN_MAIN_MAP;
+    private MapType getIdFromName(@Nullable final String name) {
+        MapType mapTypeId = MapType.MAIN_SCREEN_MAIN_MAP;
+        if (TextUtils.equals(name, MapType.MAIN_SCREEN_MAIN_MAP.name())) {
+            mapTypeId = MapType.MAIN_SCREEN_MAIN_MAP;
         }
         return mapTypeId;
     }
 
     @Override
-    public void onBeforeNotifyClick(final MapTypeId mapTypeId, final GemBaseLayer layer, final GemLayerItem item) {
+    public void onBeforeNotifyClick(final MapType mapTypeId, final GemBaseLayer layer, final GemLayerItem item) {
         // TODO
     }
 
     @Override
-    public void onNotifyClick(final MapTypeId mapTypeId, final GemBaseLayer layer, final GemLayerItem item) {
+    public void onNotifyClick(final MapType mapTypeId, final GemBaseLayer layer, final GemLayerItem item) {
         // TODO 图层点击事件
         Logger.d(TAG, "onNotifyClick");
     }
 
     @Override
-    public void onAfterNotifyClick(final MapTypeId mapTypeId, final GemBaseLayer layer, final GemLayerItem item) {
+    public void onAfterNotifyClick(final MapType mapTypeId, final GemBaseLayer layer, final GemLayerItem item) {
         // TODO
     }
 }

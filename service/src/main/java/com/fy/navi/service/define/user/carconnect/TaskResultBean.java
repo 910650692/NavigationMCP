@@ -2,33 +2,33 @@ package com.fy.navi.service.define.user.carconnect;
 
 public class TaskResultBean {
     //错误码
-    private int errorCode;
+    private int mErrorCode;
     //错误信息
-    private String errorMessage;
+    private String mErrorMessage;
     //请求任务ID
-    private long taskId;
+    private long mTaskId;
 
     public int getErrorCode() {
-        return errorCode;
+        return mErrorCode;
     }
 
     public void setErrorCode(int errorCode) {
-        this.errorCode = errorCode;
+        this.mErrorCode = errorCode;
     }
 
     public String getErrorMessage() {
-        return errorMessage;
+        return mErrorMessage;
     }
 
     public void setErrorMessage(String errorMessage) {
-        this.errorMessage = errorMessage;
+        this.mErrorMessage = errorMessage;
     }
 
     public long getTaskId() {
-        return taskId;
+        return mTaskId;
     }
 
     public void setTaskId(long taskId) {
-        this.taskId = taskId;
+        this.mTaskId = taskId;
     }
 }

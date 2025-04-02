@@ -6,24 +6,24 @@ import android.view.Window;
 import com.android.utils.ResourceUtils;
 import com.android.utils.StringUtils;
 import com.android.utils.TimeUtils;
+import com.android.utils.ToastUtils;
 import com.android.utils.thread.ThreadManager;
 import com.fy.navi.hmi.BR;
 import com.fy.navi.hmi.R;
 import com.fy.navi.hmi.databinding.FragmentDrivingRecordDetailsBinding;
 import com.fy.navi.hmi.setting.SettingCheckDialog;
 import com.fy.navi.service.AutoMapConstant;
+import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.user.usertrack.DrivingRecordDataBean;
+import com.fy.navi.service.logicpaket.layer.LayerPackage;
+import com.fy.navi.service.logicpaket.user.account.AccountPackage;
 import com.fy.navi.ui.base.BaseFragment;
 import com.fy.navi.ui.dialog.IBaseDialogClickListener;
 
-/**
- * @Description 用户行驶记录详情页
- * @Author fh
- * @date 2024/03/02
- */
+
 public class DrivingRecordDetailsFragment extends BaseFragment<FragmentDrivingRecordDetailsBinding, DrivingRecordDetailsViewModel> {
-    private  DrivingRecordDataBean bean = new DrivingRecordDataBean();
-    private SettingCheckDialog deleteDivingRecordDialog;
+    private  DrivingRecordDataBean mDrivingRecordDataBean = new DrivingRecordDataBean();
+    private SettingCheckDialog mDeleteDivingRecordDialog;
 
     @Override
     public int onLayoutId() {
@@ -38,30 +38,33 @@ public class DrivingRecordDetailsFragment extends BaseFragment<FragmentDrivingRe
     @Override
     public void onInitView() {
         ThreadManager.getInstance().postUi(() -> {
-            updateRecordDetailsView(bean);
+            updateRecordDetailsView(mDrivingRecordDataBean);
         });
 
         initDeleteDialog();
 
         mBinding.deleteDrivingRecord.setOnClickListener(view -> {
-            deleteDivingRecordDialog.show();
+            mDeleteDivingRecordDialog.show();
         });
     }
 
     @Override
     public void onInitData() {
-        Bundle bundle = getArguments();
+        final Bundle bundle = getArguments();
         if (bundle != null) {
-            bean = bundle.getParcelable(AutoMapConstant.RecordDetailsBundleKey.BUNDLE_RECORD_DERAILS);
+            mDrivingRecordDataBean = bundle.getParcelable(AutoMapConstant.RecordDetailsBundleKey.BUNDLE_RECORD_DERAILS);
         }
     }
 
-    // 更新行程详情UI数据
-    private void updateRecordDetailsView(DrivingRecordDataBean bean) {
+    /**
+     * 更新行程详情UI数据
+     * @param bean 行程详情数据
+     */
+    private void updateRecordDetailsView(final DrivingRecordDataBean bean) {
         if (bean != null) {
             mBinding.detailsStart.setText(StringUtils.strExcessLengthOmitted(bean.getStartPoiName(), 10));   // 设置起点
             mBinding.detailsEnd.setText(StringUtils.strExcessLengthOmitted(bean.getEndPoiName(), 15)); // 设置终点
-            mBinding.detailsTime.setText(TimeUtils.convertDateFormat(bean.getEndTime())); // 该行程完成时间
+            mBinding.detailsTime.setText(TimeUtils.convertDateFormat(bean.getStartTime())); // 该行程完成时间
 
             if (bean.getRideRunType() == 1) { //导航
                 mBinding.detailsLevel.setText("导航");
@@ -80,32 +83,37 @@ public class DrivingRecordDetailsFragment extends BaseFragment<FragmentDrivingRe
      * 删除单条记录
      */
     public void initDeleteDialog() {
-        deleteDivingRecordDialog = new SettingCheckDialog.Build(getContext())
+        mDeleteDivingRecordDialog = new SettingCheckDialog.Build(getContext())
                 .setTitle(ResourceUtils.Companion.getInstance().getString(R.string.driving_item_delete_title))
                 .setContent(ResourceUtils.Companion.getInstance().getString(R.string.driving_item_delete_message))
                 .setConfirmText(ResourceUtils.Companion.getInstance().getString(R.string.driving_item_delete))
                 .setDialogObserver(new IBaseDialogClickListener() {
                     @Override
                     public void onCommitClick() {
-                        if (bean != null) {
-                            mViewModel.delBehaviorData(bean.getId());
-
+                        if (mDrivingRecordDataBean != null) {
+                            if (AccountPackage.getInstance().isLogin()) {
+                                mViewModel.delBehaviorData(mDrivingRecordDataBean.getId());
+                            }
+                            mViewModel.deleteValueByFileName(mDrivingRecordDataBean.getTrackFileName());
+                            LayerPackage.getInstance().addLayerItemOfUserTrackDepth(MapType.MAIN_SCREEN_MAIN_MAP, null, false);
                             ThreadManager.getInstance().postUi(() -> {
-                                mViewModel.closeDrivingRecordDetailsView();
+                                closeFragment(true);
+                                ToastUtils.Companion.getInstance().showCustomToastView(
+                                        ResourceUtils.Companion.getInstance().getString(R.string.driving_record_delete_success));
                             });
 
                         }
 
                     }
-                    @Override
-                    public void onCancelClick() {
-
-                    }
                 }).build();
-        clearBackground(deleteDivingRecordDialog.getWindow());
+        clearBackground(mDeleteDivingRecordDialog.getWindow());
     }
 
-    private void clearBackground(Window window) {
+    /**
+     * 清除背景色
+     * @param window 窗口
+     */
+    private void clearBackground(final Window window) {
         if (window != null) {
             window.setDimAmount(0f);
         }

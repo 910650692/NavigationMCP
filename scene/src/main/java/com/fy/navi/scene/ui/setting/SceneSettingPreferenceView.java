@@ -9,18 +9,19 @@ import android.widget.CompoundButton;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.android.utils.ConvertUtils;
 import com.android.utils.NetWorkUtils;
 import com.android.utils.ResourceUtils;
-import com.android.utils.ToastUtils;
 import com.android.utils.thread.ThreadManager;
 import com.fy.navi.scene.BaseSceneView;
 import com.fy.navi.scene.R;
 import com.fy.navi.scene.databinding.SceneSettingPreferenceBinding;
-import com.fy.navi.scene.impl.route.SceneRoutePreferenceImpl;
+import com.fy.navi.scene.impl.preference.SceneRoutePreferenceImpl;
 import com.fy.navi.service.define.route.RoutePreferenceID;
 
 public class SceneSettingPreferenceView extends BaseSceneView<SceneSettingPreferenceBinding, SceneRoutePreferenceImpl>
         implements SceneRoutePreferenceImpl.IRoutePreferenceChangeListener{
+
     public SceneSettingPreferenceView(@NonNull final Context context) {
         super(context);
     }
@@ -59,10 +60,7 @@ public class SceneSettingPreferenceView extends BaseSceneView<SceneSettingPrefer
         mViewBinding.preferenceFirstHighway.setOnCheckedChangeListener(this::updateCheckBoxTextColor);
         mViewBinding.preferenceAvoidCongestion.setOnCheckedChangeListener((buttonView, isChecked)
                 -> ThreadManager.getInstance().postUi(() -> {
-            if(!getNetworkState()) {
-                ToastUtils.Companion.getInstance().showCustomToastView(
-                        ResourceUtils.Companion.getInstance().getString(R.string.navi_setting_offline_toast));
-            } else {
+            if(getNetworkState()) {
                 updateCheckBoxTextColor(buttonView, isChecked);
                 setBackgroundColor(buttonView, isChecked);
             }
@@ -70,20 +68,14 @@ public class SceneSettingPreferenceView extends BaseSceneView<SceneSettingPrefer
 
         mViewBinding.preferenceFirstMainRoad.setOnCheckedChangeListener((buttonView, isChecked)
                 -> ThreadManager.getInstance().postUi(() -> {
-            if(!getNetworkState()) {
-                ToastUtils.Companion.getInstance().showCustomToastView(
-                        ResourceUtils.Companion.getInstance().getString(R.string.navi_setting_offline_toast));
-            } else {
+            if(getNetworkState()) {
                 updateCheckBoxTextColor(buttonView, isChecked);
                 setBackgroundColor(buttonView, isChecked);
             }
         }));
         mViewBinding.preferenceFastestSpeed.setOnCheckedChangeListener((buttonView, isChecked)
                 -> ThreadManager.getInstance().postUi(() -> {
-            if(!getNetworkState()) {
-                ToastUtils.Companion.getInstance().showCustomToastView(
-                        ResourceUtils.Companion.getInstance().getString(R.string.navi_setting_offline_toast));
-            } else {
+            if(getNetworkState()) {
                 updateCheckBoxTextColor(buttonView, isChecked);
                 setBackgroundColor(buttonView, isChecked);
             }
@@ -93,6 +85,11 @@ public class SceneSettingPreferenceView extends BaseSceneView<SceneSettingPrefer
         mScreenViewModel.setDefaultPreference();
         setPreferenceEnable(getNetworkState());
         updateDisableButton();
+    }
+
+    @Override
+    public void onDestroy() {
+        NetWorkUtils.Companion.getInstance().unRegisterNetworkObserver(mNetworkObserver);
     }
 
     /**
@@ -125,12 +122,19 @@ public class SceneSettingPreferenceView extends BaseSceneView<SceneSettingPrefer
      * 更新Disable CheckBox文本背景颜色
      */
     private void updateDisableButton() {
-        updateCheckBoxTextColor(mViewBinding.preferenceAvoidCongestion, mScreenViewModel.isISAVOIDCONGESTIONSELECT());
-        updateCheckBoxTextColor(mViewBinding.preferenceFirstMainRoad, mScreenViewModel.isISFIRSTMAINROADSELECT());
-        updateCheckBoxTextColor(mViewBinding.preferenceFastestSpeed, mScreenViewModel.isISFASTESTSPEEDSELECT());
-        setBackgroundColor(mViewBinding.preferenceAvoidCongestion, mScreenViewModel.isISAVOIDCONGESTIONSELECT());
-        setBackgroundColor(mViewBinding.preferenceFirstMainRoad, mScreenViewModel.isISFIRSTMAINROADSELECT());
-        setBackgroundColor(mViewBinding.preferenceFastestSpeed, mScreenViewModel.isISFASTESTSPEEDSELECT());
+
+        ThreadManager.getInstance().postUi(() -> {
+            if (ConvertUtils.isEmpty(mViewBinding)){
+                return;
+            }
+
+            updateCheckBoxTextColor(mViewBinding.preferenceAvoidCongestion, mScreenViewModel.isISAVOIDCONGESTIONSELECT());
+            updateCheckBoxTextColor(mViewBinding.preferenceFirstMainRoad, mScreenViewModel.isISFIRSTMAINROADSELECT());
+            updateCheckBoxTextColor(mViewBinding.preferenceFastestSpeed, mScreenViewModel.isISFASTESTSPEEDSELECT());
+            setBackgroundColor(mViewBinding.preferenceAvoidCongestion, mScreenViewModel.isISAVOIDCONGESTIONSELECT());
+            setBackgroundColor(mViewBinding.preferenceFirstMainRoad, mScreenViewModel.isISFIRSTMAINROADSELECT());
+            setBackgroundColor(mViewBinding.preferenceFastestSpeed, mScreenViewModel.isISFASTESTSPEEDSELECT());
+        });
     }
 
     @Override

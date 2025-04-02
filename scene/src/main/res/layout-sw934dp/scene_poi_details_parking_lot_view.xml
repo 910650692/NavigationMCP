@@ -28,7 +28,7 @@
             android:paddingTop="@dimen/dp_2"
             android:paddingBottom="@dimen/dp_2"
             android:background="@drawable/bg_charge_appointment"
-            android:textColor="@color/black"
+            android:textColor="@color/search_color_ffffff"
             android:textSize="@dimen/sp_32"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"

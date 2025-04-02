@@ -15,5 +15,8 @@ public enum MessageCenterType {
     //云控相关
     //TODO
     //立即查找
-    FIND_NOW
+    FIND_NOW,
+
+    //天气
+    WEATHER
 }

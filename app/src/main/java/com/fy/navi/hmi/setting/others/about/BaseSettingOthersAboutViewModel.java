@@ -6,6 +6,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 
+import com.android.utils.thread.ThreadManager;
 import com.fy.navi.hmi.setting.others.about.help.SettingHelpFragment;
 import com.fy.navi.hmi.setting.others.licenses.SettingOthersLicensesFragment;
 import com.fy.navi.hmi.setting.others.protocol.SettingOthersProtocolCenterFragment;
@@ -17,6 +18,7 @@ public class BaseSettingOthersAboutViewModel extends BaseViewModel<SettingOthers
     public MutableLiveData<String> mChannelID = new MutableLiveData<>("");
     public MutableLiveData<String> mMapDataVersion = new MutableLiveData<>("");
     public MutableLiveData<String> mSdkVersion = new MutableLiveData<>("");
+    public MutableLiveData<String> mVersion = new MutableLiveData<>("");
 
     public BaseSettingOthersAboutViewModel(@NonNull final Application application) {
         super(application);
@@ -84,5 +86,15 @@ public class BaseSettingOthersAboutViewModel extends BaseViewModel<SettingOthers
      */
     public void setSdkVersion(final String sdkVersion) {
         this.mSdkVersion.setValue(sdkVersion);
+    }
+
+    /**
+     * 设置互联网审图号
+     * @param version 互联网审图号
+     */
+    public void setVersion(final String version) {
+        ThreadManager.getInstance().postUi(() -> {
+            this.mVersion.setValue(version);
+        });
     }
 }

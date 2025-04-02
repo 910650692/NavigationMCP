@@ -4,6 +4,7 @@ package com.fy.navi.fsa.scene;
 import android.util.Log;
 
 import com.android.utils.gson.GsonUtils;
+import com.android.utils.thread.ThreadManager;
 import com.fy.navi.fsa.FsaConstant;
 import com.fy.navi.fsa.MyFsaService;
 import com.fy.navi.fsa.bean.CameraInfo;
@@ -21,7 +22,6 @@ import com.fy.navi.fsa.bean.HighwayService;
 import com.fy.navi.fsa.bean.HighwaySubscribeInfo;
 import com.fy.navi.fsa.bean.HighwayTotalInfo;
 import com.fy.navi.fsa.bean.HudVideInfo;
-import com.fy.navi.fsa.bean.ILSImageViewInfo;
 import com.fy.navi.fsa.bean.JunctionViewInfo;
 import com.fy.navi.fsa.bean.LaneDirection;
 import com.fy.navi.fsa.bean.LaneInfo;
@@ -36,9 +36,8 @@ import com.fy.navi.fsa.bean.SpeedLimitCruiseInfo;
 import com.fy.navi.fsa.bean.SpeedLimitSignData;
 import com.fy.navi.fsa.bean.TollStation;
 import com.fy.navi.fsa.bean.TurnInfo;
-import com.fy.navi.service.adapter.navi.NaviConstant;
 import com.fy.navi.service.define.cruise.CruiseInfoEntity;
-import com.fy.navi.service.define.map.MapTypeId;
+import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.navi.CameraInfoEntity;
 import com.fy.navi.service.define.navi.CrossImageEntity;
 import com.fy.navi.service.define.navi.LaneInfoEntity;
@@ -59,6 +58,7 @@ import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public final class FsaNaviScene {
 
@@ -67,6 +67,7 @@ public final class FsaNaviScene {
     private NaviIntervalSpeedInfo mNaviIntervalSpeedInfo;
     private NaviEtaInfo mNaviEtaInfo;
     private NaviManeuverInfo mNaviManeuverInfo;
+    private LaneLineInfo mLaneLineInfo;
     private float mDrivePercent;
     private float mCurrentSpeed;
 
@@ -112,7 +113,7 @@ public final class FsaNaviScene {
         turnInfo.setPosition(new GeoPoint(121.48998888888889, 31.379458888888887));
         turnInfo.setNextRoadName(naviETAInfo.getNextRouteName());
         turnInfo.setDistanceToNextTurn(naviETAInfo.getNextDist());
-        turnInfo.setTurnKind(naviETAInfo.getCurManeuverID());
+        turnInfo.setTurnKind(convertTbtType(naviETAInfo.getCurManeuverID()));
         turnInfo.setStraight(naviETAInfo.getCurManeuverID() == FsaConstant.FsaTurnKind.ICON_CONTINUE);
         turnInfo.setRoadLevel(naviETAInfo.curRoadClass);
         if (null != naviETAInfo.NaviInfoData && naviETAInfo.NaviInfoData.size() > naviETAInfo.NaviInfoFlag) {
@@ -128,6 +129,28 @@ public final class FsaNaviScene {
         remainInfo.setRemainTime(naviETAInfo.getAllTime());
         remainInfo.setRemainDistance(naviETAInfo.getAllDist());
         fsaService.sendEvent(FsaConstant.FsaFunction.ID_REMAIN_TIME_DISTANCE, GsonUtils.toJson(remainInfo));
+    }
+
+    /**
+     * TBT类型转换.
+     *
+     * @param type TBT类型.
+     * @return TBT类型.
+     */
+    private int convertTbtType(final int type) {
+        return switch (type) {
+            case 0x2 -> 7;
+            case 0x3 -> 3;
+            case 0x4 -> 8;
+            case 0x5 -> 2;
+            case 0x6 -> 6;
+            case 0x7 -> 4;
+            case 0x8 -> 5;
+            case 0x9 -> 1;
+            case 0xB -> 9;
+            case 0xC -> 10;
+            default -> 0;
+        };
     }
 
 
@@ -282,36 +305,62 @@ public final class FsaNaviScene {
      * @param isShowLane     是否显示车道线
      */
     public void updateLaneLineInfo(final MyFsaService fsaService, final boolean isShowLane, final LaneInfoEntity laneInfoEntity) {
-        if (null == fsaService || null == laneInfoEntity) {
-            Log.e(FsaConstant.FSA_TAG, "laneInfoEntity is null");
+        Log.d(FsaConstant.FSA_TAG, "updateLaneLineInfo: isShowLane = " + isShowLane + " --------");
+        if (!isShowLane) {
+            final LaneLineInfo laneLineInfo = new LaneLineInfo();
+            laneLineInfo.setShowType(FsaConstant.HIDE);
+            mLaneLineInfo = laneLineInfo;
+            fsaService.sendEvent(FsaConstant.FsaFunction.ID_LANE_INFO, GsonUtils.toJson(laneLineInfo));
             return;
         }
-
+        if (laneInfoEntity == null) {
+            Log.d(FsaConstant.FSA_TAG, "updateLaneLineInfo: laneInfoEntity = null");
+            return;
+        }
+        Log.d(FsaConstant.FSA_TAG, "updateLaneLineInfo: frontLane = " + laneInfoEntity.getFrontLane());
+        Log.d(FsaConstant.FSA_TAG, "updateLaneLineInfo: backLane = " + laneInfoEntity.getBackLane());
+        Log.d(FsaConstant.FSA_TAG, "updateLaneLineInfo: optimalLane = " + laneInfoEntity.getOptimalLane());
         final LaneLineInfo laneLineInfo = new LaneLineInfo();
-        laneLineInfo.setShowType(isShowLane ? FsaConstant.FsaValue.ZERO : FsaConstant.FsaValue.TWO);
+        if (mLaneLineInfo == null || mLaneLineInfo.getShowType() == FsaConstant.HIDE) {
+            laneLineInfo.setShowType(FsaConstant.SHOW);
+        } else {
+            laneLineInfo.setShowType(FsaConstant.UPDATE);
+        }
+        // 车道线详细信息
         final LaneInfo laneInfo = new LaneInfo();
-        laneInfo.setPosition(new GeoPoint(laneInfoEntity.getPoint().getLon(), laneInfoEntity.getPoint().getLat()));
+        if (laneInfoEntity.getPoint() != null) {
+            laneInfo.setPosition(new GeoPoint(laneInfoEntity.getPoint().getLon(), laneInfoEntity.getPoint().getLat()));
+        }
+//        laneInfo.setRemainDistance(); 仪表与hud目前暂未使用
         laneLineInfo.setLaneInfo(laneInfo);
+        // 车道线信息
         final ArrayList<LaneItem> laneItemList = new ArrayList<>();
         laneInfo.setItemList(laneItemList);
+        // 遍历背景车道列表
         for (int i = 0; i < laneInfoEntity.getBackLane().size(); i++) {
-            final Integer laneType = laneInfoEntity.getBackLane().get(i);
-            if (laneType == 0xFF) {
+            final Integer backlaneType = laneInfoEntity.getBackLane().get(i);
+            final Integer frontlaneType = laneInfoEntity.getFrontLane().get(i);
+            if (backlaneType == 0xFF) {
                 continue;
             }
+            // 车道线信息
             final LaneItem laneItem = new LaneItem();
+            laneItemList.add(laneItem);
+            // 车道线数量变化类型
+//            laneItem.setLaneVariationType();
+            // 车道线类型信息
             final LaneTypeInfo laneTypeInfo = new LaneTypeInfo();
-            laneTypeInfo.setLaneType(amapLane2fsa(laneType));
-            final Integer optimalLane = laneInfoEntity.getOptimalLane().get(i);
-            if (optimalLane != 0xFF) {
+            laneTypeInfo.setLaneType(amapLane2fsa(backlaneType));
+            if (laneInfoEntity.getOptimalLane().get(i) != 0xFF) {
                 laneTypeInfo.setBright(true);
             }
             laneItem.setLaneTypeInfo(laneTypeInfo);
+            // 车道线方向信息
             final ArrayList<LaneDirection> directionList = new ArrayList<>();
-            amapLaneDirection2fsa(laneType, directionList);
             laneItem.setDirectionList(directionList);
-            laneItemList.add(laneItem);
+            amapLaneDirection2fsa(frontlaneType, backlaneType, directionList);
         }
+        mLaneLineInfo = laneLineInfo;
         fsaService.sendEvent(FsaConstant.FsaFunction.ID_LANE_INFO, GsonUtils.toJson(laneLineInfo));
     }
 
@@ -323,16 +372,21 @@ public final class FsaNaviScene {
      */
     private int amapLane2fsa(final int type) {
         switch (type) {
-            case 21:
-                return FsaConstant.FsaLaneType.TEXT_BUS_LANE; // 2 or 3 ?
-            case 22:
-                return FsaConstant.FsaLaneType.INVALID_VALUE; // ?
-            case 23:
+            case 21: // 公交车道
+                return FsaConstant.FsaLaneType.BUS_LANE;
+            case 22: // 空车道
+                return FsaConstant.FsaLaneType.NORMAL;
+            case 23: // 可变车道
                 return FsaConstant.FsaLaneType.VARIABLE_LANE;
-            case 24:
-                return FsaConstant.FsaLaneType.INVALID_VALUE; // ?
-            case 25:
+            case 24: // 专用车道
+                return FsaConstant.FsaLaneType.TEXT_BUS_LANE;
+            case 25: // 潮汐车道
                 return FsaConstant.FsaLaneType.TEXT_TIDAL_LANE;
+            case 13:
+            case 14:
+            case 15:
+            case 0xFF:
+                return FsaConstant.FsaLaneType.INVALID_VALUE;
             default:
                 return FsaConstant.FsaLaneType.NORMAL;
         }
@@ -341,82 +395,82 @@ public final class FsaNaviScene {
     /**
      * 车道线方向转换.
      *
-     * @param type          int.
+     * @param frontType     int.
+     * @param backType      int.
      * @param directionList ArrayList.
      */
-    private void amapLaneDirection2fsa(final int type, final ArrayList<LaneDirection> directionList) {
-        switch (type) {
-            case 0:
-                directionList.add(new LaneDirection(FsaConstant.FsaLaneDirection.GO_STRAIGHT, 0));
+    private void amapLaneDirection2fsa(final int frontType, final int backType,
+                                       final ArrayList<LaneDirection> directionList) {
+        switch (backType) {
+            case 0, 10:
+                directionList.add(new LaneDirection(FsaConstant.FsaLaneDirection.GO_STRAIGHT, frontType == 0 ? 1 : 2));
                 break;
-            case 1:
-                directionList.add(new LaneDirection(FsaConstant.FsaLaneDirection.TURN_LEFT, 0));
+            case 1, 20:
+                directionList.add(new LaneDirection(FsaConstant.FsaLaneDirection.TURN_LEFT, frontType == 1 ? 1 : 2));
                 break;
             case 2:
-                directionList.add(new LaneDirection(FsaConstant.FsaLaneDirection.GO_STRAIGHT, 0));
-                directionList.add(new LaneDirection(FsaConstant.FsaLaneDirection.TURN_LEFT, 0));
+                directionList.add(new LaneDirection(FsaConstant.FsaLaneDirection.GO_STRAIGHT, frontType == 0 ? 1 : 2));
+                directionList.add(new LaneDirection(FsaConstant.FsaLaneDirection.TURN_LEFT, frontType == 1 ? 1 : 2));
                 break;
-            case 3:
-                directionList.add(new LaneDirection(FsaConstant.FsaLaneDirection.TURN_RIGHT, 0));
+            case 3, 12:
+                directionList.add(new LaneDirection(FsaConstant.FsaLaneDirection.TURN_RIGHT, frontType == 3 ? 1 : 2));
                 break;
             case 4:
-                directionList.add(new LaneDirection(FsaConstant.FsaLaneDirection.GO_STRAIGHT, 0));
-                directionList.add(new LaneDirection(FsaConstant.FsaLaneDirection.TURN_RIGHT, 0));
+                directionList.add(new LaneDirection(FsaConstant.FsaLaneDirection.GO_STRAIGHT, frontType == 0 ? 1 : 2));
+                directionList.add(new LaneDirection(FsaConstant.FsaLaneDirection.TURN_RIGHT, frontType == 3 ? 1 : 2));
                 break;
             case 5:
-                directionList.add(new LaneDirection(FsaConstant.FsaLaneDirection.TURN_AROUND, 0));
+                directionList.add(new LaneDirection(FsaConstant.FsaLaneDirection.TURN_AROUND, frontType == 0 ? 1 : 2));
                 break;
             case 6:
-                directionList.add(new LaneDirection(FsaConstant.FsaLaneDirection.TURN_LEFT, 0));
-                directionList.add(new LaneDirection(FsaConstant.FsaLaneDirection.TURN_RIGHT, 0));
+                directionList.add(new LaneDirection(FsaConstant.FsaLaneDirection.TURN_LEFT, frontType == 1 ? 1 : 2));
+                directionList.add(new LaneDirection(FsaConstant.FsaLaneDirection.TURN_RIGHT, frontType == 3 ? 1 : 2));
                 break;
             case 7:
-                directionList.add(new LaneDirection(FsaConstant.FsaLaneDirection.GO_STRAIGHT, 0));
-                directionList.add(new LaneDirection(FsaConstant.FsaLaneDirection.TURN_LEFT, 0));
-                directionList.add(new LaneDirection(FsaConstant.FsaLaneDirection.TURN_RIGHT, 0));
-                break;
-            case 8:
-                directionList.add(new LaneDirection(FsaConstant.FsaLaneDirection.TURN_AROUND, 0));
+                directionList.add(new LaneDirection(FsaConstant.FsaLaneDirection.GO_STRAIGHT, frontType == 0 ? 1 : 2));
+                directionList.add(new LaneDirection(FsaConstant.FsaLaneDirection.TURN_LEFT, frontType == 1 ? 1 : 2));
+                directionList.add(new LaneDirection(FsaConstant.FsaLaneDirection.TURN_RIGHT, frontType == 3 ? 1 : 2));
                 break;
             case 9:
-                directionList.add(new LaneDirection(FsaConstant.FsaLaneDirection.GO_STRAIGHT, 0));
-                directionList.add(new LaneDirection(FsaConstant.FsaLaneDirection.TURN_AROUND, 0));
-                break;
-            case 10:
-                directionList.add(new LaneDirection(FsaConstant.FsaLaneDirection.GO_STRAIGHT, 0));
-                directionList.add(new LaneDirection(FsaConstant.FsaLaneDirection.TURN_AROUND, 0));
+                directionList.add(new LaneDirection(FsaConstant.FsaLaneDirection.GO_STRAIGHT, frontType == 0 ? 1 : 2));
+                directionList.add(new LaneDirection(FsaConstant.FsaLaneDirection.TURN_AROUND, frontType == 5 ? 1 : 2));
                 break;
             case 11:
-                directionList.add(new LaneDirection(FsaConstant.FsaLaneDirection.TURN_LEFT, 0));
-                directionList.add(new LaneDirection(FsaConstant.FsaLaneDirection.TURN_AROUND, 0));
-                break;
-            case 12:
-                directionList.add(new LaneDirection(FsaConstant.FsaLaneDirection.TURN_RIGHT, 0));
-                directionList.add(new LaneDirection(FsaConstant.FsaLaneDirection.TURN_AROUND, 0));
-                break;
-            case 16:
-                directionList.add(new LaneDirection(FsaConstant.FsaLaneDirection.GO_STRAIGHT, 0));
-                directionList.add(new LaneDirection(FsaConstant.FsaLaneDirection.TURN_LEFT, 0));
-                directionList.add(new LaneDirection(FsaConstant.FsaLaneDirection.TURN_AROUND, 0));
+                directionList.add(new LaneDirection(FsaConstant.FsaLaneDirection.TURN_LEFT, frontType == 1 ? 1 : 2));
+                directionList.add(new LaneDirection(FsaConstant.FsaLaneDirection.TURN_AROUND, frontType == 5 ? 1 : 2));
                 break;
             case 17:
-                directionList.add(new LaneDirection(FsaConstant.FsaLaneDirection.TURN_RIGHT, 0));
-                directionList.add(new LaneDirection(FsaConstant.FsaLaneDirection.TURN_AROUND, 0));
+                directionList.add(new LaneDirection(FsaConstant.FsaLaneDirection.TURN_RIGHT, frontType == 3 ? 1 : 2));
+                directionList.add(new LaneDirection(FsaConstant.FsaLaneDirection.TURN_AROUND, frontType == 5 ? 1 : 2));
+                break;
+            case 16:
+                directionList.add(new LaneDirection(FsaConstant.FsaLaneDirection.GO_STRAIGHT, frontType == 0 ? 1 : 2));
+                directionList.add(new LaneDirection(FsaConstant.FsaLaneDirection.TURN_LEFT, frontType == 1 ? 1 : 2));
+                directionList.add(new LaneDirection(FsaConstant.FsaLaneDirection.TURN_AROUND, frontType == 5 ? 1 : 2));
                 break;
             case 18:
-                directionList.add(new LaneDirection(FsaConstant.FsaLaneDirection.TURN_LEFT, 0));
-                directionList.add(new LaneDirection(FsaConstant.FsaLaneDirection.TURN_RIGHT, 0));
-                directionList.add(new LaneDirection(FsaConstant.FsaLaneDirection.TURN_AROUND, 0));
+                directionList.add(new LaneDirection(FsaConstant.FsaLaneDirection.TURN_LEFT, frontType == 1 ? 1 : 2));
+                directionList.add(new LaneDirection(FsaConstant.FsaLaneDirection.TURN_RIGHT, frontType == 3 ? 1 : 2));
+                directionList.add(new LaneDirection(FsaConstant.FsaLaneDirection.TURN_AROUND, frontType == 5 ? 1 : 2));
                 break;
             case 19:
-                directionList.add(new LaneDirection(FsaConstant.FsaLaneDirection.GO_STRAIGHT, 0));
-                directionList.add(new LaneDirection(FsaConstant.FsaLaneDirection.TURN_RIGHT, 0));
-                directionList.add(new LaneDirection(FsaConstant.FsaLaneDirection.TURN_AROUND, 0));
+                directionList.add(new LaneDirection(FsaConstant.FsaLaneDirection.GO_STRAIGHT, frontType == 0 ? 1 : 2));
+                directionList.add(new LaneDirection(FsaConstant.FsaLaneDirection.TURN_RIGHT, frontType == 3 ? 1 : 2));
+                directionList.add(new LaneDirection(FsaConstant.FsaLaneDirection.TURN_AROUND, frontType == 5 ? 1 : 2));
                 break;
-            case 20:
-                directionList.add(new LaneDirection(FsaConstant.FsaLaneDirection.TURN_LEFT, 0));
-                directionList.add(new LaneDirection(FsaConstant.FsaLaneDirection.TURN_AROUND, 0));
+            case 21:
+                directionList.add(new LaneDirection(FsaConstant.FsaLaneDirection.INVALID_VALUE, frontType == 21 ? 1 : 2));
                 break;
+            case 22:
+                directionList.add(new LaneDirection(FsaConstant.FsaLaneDirection.INVALID_VALUE, frontType == 22 ? 1 : 2));
+                break;
+            case 23:
+                directionList.add(new LaneDirection(FsaConstant.FsaLaneDirection.INVALID_VALUE, frontType == 23 ? 1 : 2));
+                break;
+            case 24:
+                directionList.add(new LaneDirection(FsaConstant.FsaLaneDirection.INVALID_VALUE, frontType == 24 ? 1 : 2));
+                break;
+            case 8: // 右掉头 ？
             default:
                 directionList.add(new LaneDirection(FsaConstant.FsaLaneDirection.INVALID_VALUE, 0));
                 break;
@@ -479,35 +533,22 @@ public final class FsaNaviScene {
      * @param isShowImage   boolean.
      */
     public void updateEnlargeMap(final MyFsaService fsaService, final boolean isShowImage, final CrossImageEntity naviImageInfo) {
-        if (null == fsaService || null == naviImageInfo) {
-            Log.e(FsaConstant.FSA_TAG, "naviImageInfo is null");
+        Log.d(FsaConstant.FSA_TAG, "updateEnlargeMap: isShowImage = " + isShowImage);
+        if (!isShowImage) {
+            final EnlargeMap enlargeMap = new EnlargeMap();
+            enlargeMap.setStatus(FsaConstant.HIDE);
+            fsaService.sendEvent(FsaConstant.FsaFunction.ID_ENLARGE_ICON, GsonUtils.toJson(enlargeMap));
+            fsaService.sendEvent(FsaConstant.FsaFunction.ID_HUD_ENLARGE_MAP, GsonUtils.toJson(enlargeMap));
             return;
         }
 
-        final EnlargeMap enlargeMap = new EnlargeMap();
-        if (naviImageInfo.getType() == NaviConstant.CrossType.CROSS_TYPE_GRID) {
-            enlargeMap.setType(0);
-            final ILSImageViewInfo ilsImageViewInfo = new ILSImageViewInfo();
-            ilsImageViewInfo.setType(0);
-            ilsImageViewInfo.setWidth(500);
-            ilsImageViewInfo.setWidth(320);
-            ilsImageViewInfo.setRemainDistance((int) naviImageInfo.getDistance());
-            ilsImageViewInfo.setProgressRatio((int) mDrivePercent);
-//            ilsImageViewInfo.setArrowMapName("");
-//            ilsImageViewInfo.setBackgroundMapName("");
-            if (mNaviEtaInfo != null) {
-                ilsImageViewInfo.setNextRoadName(mNaviEtaInfo.getNextRouteName());
-            }
-            ilsImageViewInfo.setBackgroundMimeType("image/jpeg");
-            if (naviImageInfo.getDataBuf() != null) {
-                ilsImageViewInfo.setBackgroundMapBytes(Base64.getEncoder().encodeToString(naviImageInfo.getDataBuf()));
-            }
-            ilsImageViewInfo.setArrowMimeType("image/png");
-            if (naviImageInfo.getArrowDataBuf() != null) {
-                ilsImageViewInfo.setArrowMapBytes(Base64.getEncoder().encodeToString(naviImageInfo.getArrowDataBuf()));
-            }
-            enlargeMap.setIlsImageViewInfo(ilsImageViewInfo);
-        } else if (naviImageInfo.getType() == NaviConstant.CrossType.CROSS_TYPE_VECTOR) {
+        if (null == naviImageInfo) {
+            Log.e(FsaConstant.FSA_TAG, "naviImageInfo is null");
+            return;
+        }
+        ThreadManager.getInstance().asyncDelay(() -> {
+            final EnlargeMap enlargeMap = new EnlargeMap();
+            enlargeMap.setStatus(FsaConstant.SHOW);
             enlargeMap.setType(1);
             final JunctionViewInfo junctionViewInfo = new JunctionViewInfo();
             junctionViewInfo.setRemainDistance((int) naviImageInfo.getDistance());
@@ -516,17 +557,13 @@ public final class FsaNaviScene {
                 junctionViewInfo.setNextRoadName(mNaviEtaInfo.getNextRouteName());
             }
             junctionViewInfo.setImageMimeType("image/jpeg");
-            if (naviImageInfo.getDataBuf() != null) {
-                junctionViewInfo.setImageBytes(Base64.getEncoder().encodeToString(naviImageInfo.getDataBuf()));
-                enlargeMap.setStatus(FsaConstant.FsaValue.ZERO);
-            } else {
-                enlargeMap.setStatus(FsaConstant.FsaValue.TWO);
-            }
+            junctionViewInfo.setImageBytes(Base64.getEncoder().encodeToString(fsaService.getmCrossImg()));
             enlargeMap.setJunctionViewInfo(junctionViewInfo);
-        }
-        Log.d(FsaConstant.FSA_TAG, "updateEnlargeMap: " + enlargeMap);
-        fsaService.sendEvent(FsaConstant.FsaFunction.ID_ENLARGE_ICON, GsonUtils.toJson(enlargeMap));
-        fsaService.sendEvent(FsaConstant.FsaFunction.ID_HUD_ENLARGE_MAP, GsonUtils.toJson(enlargeMap));
+            Log.d(FsaConstant.FSA_TAG, "updateEnlargeMap: " + enlargeMap);
+            fsaService.sendEvent(FsaConstant.FsaFunction.ID_ENLARGE_ICON, GsonUtils.toJson(enlargeMap));
+            fsaService.sendEvent(FsaConstant.FsaFunction.ID_HUD_ENLARGE_MAP, GsonUtils.toJson(enlargeMap));
+        }, 700, TimeUnit.MILLISECONDS);
+
     }
 
     /**
@@ -754,7 +791,7 @@ public final class FsaNaviScene {
      * @param requestRouteResult RequestRouteResult
      */
     public void updateDestInfo(final MyFsaService fsaService, final RequestRouteResult requestRouteResult) {
-        final RouteParam routeParam = RoutePackage.getInstance().getEndPoint(MapTypeId.MAIN_SCREEN_MAIN_MAP);
+        final RouteParam routeParam = RoutePackage.getInstance().getEndPoint(MapType.MAIN_SCREEN_MAIN_MAP);
         if (null != routeParam) {
             final DestInfo destInfo = new DestInfo();
             destInfo.setName(routeParam.getName());

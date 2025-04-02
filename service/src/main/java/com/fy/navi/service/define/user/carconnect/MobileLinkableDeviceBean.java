@@ -2,21 +2,21 @@ package com.fy.navi.service.define.user.carconnect;
 
 public class MobileLinkableDeviceBean {
     private String manufacture;
-    private long deviceId;
+    private long mDeviceId;
 
     public String getManufacture() {
         return manufacture;
     }
 
-    public void setManufacture(String manufacture) {
+    public void setManufacture(final String manufacture) {
         this.manufacture = manufacture;
     }
 
     public long getDeviceId() {
-        return deviceId;
+        return mDeviceId;
     }
 
-    public void setDeviceId(long deviceId) {
-        this.deviceId = deviceId;
+    public void setDeviceId(final long deviceId) {
+        this.mDeviceId = deviceId;
     }
 }

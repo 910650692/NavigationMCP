@@ -1,0 +1,10 @@
+{
+  "point_layer_item_style": {
+    "normal_style": {
+      "poi_marker_id": -1
+    },
+    "focus_style": {
+      "poi_marker_id": -1
+    }
+  }
+}

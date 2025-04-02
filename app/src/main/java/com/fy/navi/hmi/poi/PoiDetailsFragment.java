@@ -12,7 +12,7 @@ import com.fy.navi.scene.RoutePath;
 import com.fy.navi.service.AppContext;
 import com.fy.navi.service.AutoMapConstant;
 import com.fy.navi.service.MapDefaultFinalTag;
-import com.fy.navi.service.define.map.MapTypeId;
+import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.search.PoiInfoEntity;
 import com.fy.navi.service.define.search.SearchResultEntity;
 import com.fy.navi.ui.base.BaseFragment;
@@ -35,7 +35,7 @@ public class PoiDetailsFragment extends BaseFragment<FragmentPoiDetailsBinding, 
 
     @Override
     public void onInitView() {
-        mBinding.scenePoiDetailContentView.setScreenId(MapTypeId.valueOf(mScreenId));
+        mBinding.scenePoiDetailContentView.setScreenId(MapType.valueOf(mScreenId));
     }
 
     @Override

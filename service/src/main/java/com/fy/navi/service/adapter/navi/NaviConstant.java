@@ -79,6 +79,15 @@ public interface NaviConstant {
         int CHANGE_NAVI_PATH_RESULT_ERROR_SAME_PATH_ID = 3;
     }
 
+    @IntDef({GpsStrengthState.GPS_NONE, GpsStrengthState.GPS_STRONG,
+            GpsStrengthState.GPS_MEDIUM, GpsStrengthState.GPS_WEAK})
+    @interface GpsStrengthState {//Strong, medium, weak
+        int GPS_NONE = -1;
+        int GPS_STRONG = 0;
+        int GPS_MEDIUM = 1;
+        int GPS_WEAK = 2;
+    }
+
     @IntDef({SapaItemsType.AUTO_UNKNOWN_ERROR, SapaItemsType.SPAS_LIST,
             SapaItemsType.TOLL_STATION_LIST, SapaItemsType.TOLL_STATION_AND_SPAS})
     @interface SapaItemsType {

@@ -8,4 +8,6 @@ public interface ILocationListener {
     void onGSVInfo(LocGpgsvWrapper wrapper);
 
     void onLocationChanged(LocGnss locGnss);
+
+    void onSatelliteNum(int num);
 }

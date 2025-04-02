@@ -2,7 +2,6 @@ package com.fy.navi.service.adapter.navi.bls;
 
 import com.android.utils.ConvertUtils;
 import com.android.utils.TimeUtils;
-import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
 import com.autonavi.gbl.common.model.Coord2DDouble;
 import com.autonavi.gbl.common.path.model.LightBarItem;
@@ -43,6 +42,7 @@ import com.fy.navi.service.define.navi.CameraInfoEntity;
 import com.fy.navi.service.define.navi.NaviDriveReportEntity;
 import com.fy.navi.service.define.navi.NaviEtaInfo;
 import com.fy.navi.service.define.navi.CrossImageEntity;
+import com.fy.navi.service.define.navi.NaviInfoEntity;
 import com.fy.navi.service.define.navi.NaviMixForkInfo;
 import com.fy.navi.service.define.navi.NaviParkingEntity;
 import com.fy.navi.service.define.navi.NaviViaEntity;
@@ -117,6 +117,7 @@ public final class NaviDataFormatHelper {
         final SoundInfoEntity soundInfoEntity = new SoundInfoEntity();
         if (null != info) {
             soundInfoEntity.setText(info.text);
+            soundInfoEntity.setSoundType(info.soundType);
         }
         return soundInfoEntity;
     }
@@ -324,6 +325,22 @@ public final class NaviDataFormatHelper {
             }
         }
         return naviEtaInfo;
+    }
+
+    public static ArrayList<NaviInfoEntity> forMatNaviInfoEntity(
+            final ArrayList<NaviInfo> naviInfoList) {
+        ArrayList<NaviInfoEntity> naviInfoEntities = new ArrayList<>();
+        if (!ConvertUtils.isEmpty(naviInfoList)) {
+            for (NaviInfo naviInfo : naviInfoList) {
+                NaviInfoEntity naviInfoEntity = new NaviInfoEntity();
+                naviInfoEntity.setPathId(naviInfo.pathID);
+                naviInfoEntity.setCurSegIdx(naviInfo.curSegIdx);
+                naviInfoEntity.setRemainTime(naviInfo.routeRemain.time);
+                naviInfoEntity.setRouteRemainLightCount(naviInfo.routeRemainLightCount);
+                naviInfoEntities.add(naviInfoEntity);
+            }
+        }
+        return naviInfoEntities;
     }
 
     /**
@@ -704,11 +721,13 @@ public final class NaviDataFormatHelper {
                 naviViaEntity.setArriveDay(TimeUtils.getArriveDay(naviEtaInfo.getAllTime()));
                 naviViaEntity.setDistance(TimeUtils.getRemainInfo(AppContext.getInstance().getMContext(), naviEtaInfo.getAllDist(), naviEtaInfo.getAllTime()));
                 naviViaEntity.setArriveTime(TimeUtils.getArriveTime(AppContext.getInstance().getMContext(), naviEtaInfo.getAllTime()));
+                naviViaEntity.setmArriveTimeStamp(naviEtaInfo.getAllTime());
             } else if (obj instanceof NaviEtaInfo.NaviTimeAndDist) {
                 final NaviEtaInfo.NaviTimeAndDist timeAndDist = (NaviEtaInfo.NaviTimeAndDist) obj;
                 naviViaEntity.setArriveDay(TimeUtils.getArriveDay(timeAndDist.time));
                 naviViaEntity.setDistance(TimeUtils.getRemainInfo(AppContext.getInstance().getMContext(), timeAndDist.dist, timeAndDist.time));
                 naviViaEntity.setArriveTime(TimeUtils.getArriveTime(AppContext.getInstance().getMContext(), timeAndDist.time));
+                naviViaEntity.setmArriveTimeStamp(timeAndDist.time);
             }
         }
         return naviViaEntity;

@@ -10,7 +10,6 @@ import android.provider.Settings;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
 import com.fy.navi.fsa.MyFsaService;
 import com.fy.navi.hmi.BR;
@@ -18,7 +17,7 @@ import com.fy.navi.hmi.R;
 import com.fy.navi.hmi.databinding.ActivityStartupBinding;
 import com.fy.navi.exportservice.ScreenRecorder;
 import com.fy.navi.mapservice.bean.INaviConstant;
-import com.fy.navi.service.define.map.MapTypeId;
+import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.search.PoiInfoEntity;
 import com.fy.navi.ui.base.BaseActivity;
 
@@ -31,7 +30,7 @@ public class StartupActivity extends BaseActivity<ActivityStartupBinding, Startu
 
     @Override
     public void onCreateBefore() {
-        mScreenId = MapTypeId.MAIN_SCREEN_MAIN_MAP.name();
+        mScreenId = MapType.MAIN_SCREEN_MAIN_MAP.name();
     }
 
     @Override
@@ -85,21 +84,21 @@ public class StartupActivity extends BaseActivity<ActivityStartupBinding, Startu
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
             case PermissionUtils.REQUEST_PERMISSION_EXTERNAL_CODE:
-                Logger.i("lvww", "所有文件修改权限申请结果");
+                Logger.i("StartupActivity", "所有文件修改权限申请结果");
                 if (Environment.isExternalStorageManager())
                     PermissionUtils.getInstance().onRequestPermissionsResult(android.Manifest.permission.MANAGE_EXTERNAL_STORAGE, 0);
                 else
                     PermissionUtils.getInstance().onRequestPermissionsResult(Manifest.permission.MANAGE_EXTERNAL_STORAGE, -1);
                 break;
             case PermissionUtils.REQUEST_PERMISSION_OVERLAY_CODE:
-                Logger.i("lvww", "悬浮窗申请结果");
+                Logger.i("StartupActivity", "悬浮窗申请结果");
                 if (Settings.canDrawOverlays(this))
                     PermissionUtils.getInstance().onRequestPermissionsResult(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, 0);
                 else
                     PermissionUtils.getInstance().onRequestPermissionsResult(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, -1);
                 break;
             case PermissionUtils.REQUEST_PERMISSION_MEDIA_PROJECTION:
-                Logger.i("lvww", "媒体投影权限申请结果：" + resultCode);
+                Logger.i("StartupActivity", "媒体投影权限申请结果：" + resultCode);
                 if (resultCode == Activity.RESULT_OK) {
                     Intent intent = new Intent(this, ScreenRecorder.class);
                     intent.putExtra("code", resultCode);

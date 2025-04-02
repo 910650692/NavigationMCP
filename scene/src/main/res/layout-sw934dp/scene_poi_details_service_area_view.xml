@@ -49,25 +49,17 @@
                 android:layout_marginStart="@dimen/dp_28"/>
         </com.fy.navi.ui.view.SkinLinearLayout>
 
-        <View
-            android:id="@+id/poi_details_sub_line"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_1"
-            android:layout_marginTop="@dimen/dp_30"
-            android:background="@color/setting_text_gray"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/poi_service_area_oil" />
-
         <com.fy.navi.ui.view.SkinTextView
             android:id="@+id/poi_service_area_hours"
             android:layout_width="@dimen/dp_0"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_30"
+            android:layout_marginTop="@dimen/dp_12"
             android:layout_marginEnd="@dimen/dp_10"
-            android:textColor="@color/poi_details_bottom_icon"
+            android:maxLines="1"
+            android:textColor="@color/text_route_defult"
             android:textSize="@dimen/sp_30"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/poi_details_sub_line"
+            app:layout_constraintTop_toBottomOf="@+id/poi_service_area_oil"
             android:text="营业时间: 09:00 -- 21:00"/>
 
         <com.fy.navi.ui.view.SkinTextView
@@ -78,7 +70,7 @@
             android:layout_marginBottom="@dimen/dp_30"
             android:layout_marginEnd="@dimen/dp_10"
             android:maxLines="1"
-            android:textColor="@color/poi_details_bottom_icon"
+            android:textColor="@color/text_route_defult"
             android:textSize="@dimen/sp_30"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/poi_service_area_hours"

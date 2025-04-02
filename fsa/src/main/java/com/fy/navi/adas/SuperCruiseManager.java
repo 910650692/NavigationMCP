@@ -3,6 +3,7 @@ package com.fy.navi.adas;
 import android.util.Log;
 
 import com.android.utils.NetWorkUtils;
+import com.android.utils.gson.GsonUtils;
 import com.fy.navi.service.define.cruise.CruiseInfoEntity;
 import com.fy.navi.service.define.navi.CameraInfoEntity;
 import com.fy.navi.service.define.navi.LaneInfoEntity;
@@ -103,7 +104,7 @@ public final class SuperCruiseManager {
             mSpeedLimitBuilder.setSpeedLimitAssured(true);
             mSpeedLimitBuilder.setEffectSpeedLimit(speedEntity.getSpeedLimit());
             mSpeedLimitBuilder.setEffectiveSpeedCategory(speed2EffectiveSpeedCategoryEnum(speedEntity.getSpeedLimit()));
-            mSpeedLimitBuilder.setEffectiveSpeedType(NaviLinkProto.SpeedLimit.EffectiveSpeedTypeEnum.EFFECTIVE_UNKNOWN); // TODO 判断是否是路标限速
+            mSpeedLimitBuilder.setEffectiveSpeedType(NaviLinkProto.SpeedLimit.EffectiveSpeedTypeEnum.EFFECTIVE_UNKNOWN);
         }
 
         @Override
@@ -116,17 +117,18 @@ public final class SuperCruiseManager {
             mSpeedLimitBuilder.setSpeedLimitAssured(true);
             mSpeedLimitBuilder.setEffectSpeedLimit(cameraInfo.getSpeed());
             mSpeedLimitBuilder.setEffectiveSpeedCategory(speed2EffectiveSpeedCategoryEnum(cameraInfo.getSpeed()));
-            mSpeedLimitBuilder.setEffectiveSpeedType(NaviLinkProto.SpeedLimit.EffectiveSpeedTypeEnum.EFFECTIVE_UNKNOWN); // TODO 判断是否是路标限速
+            mSpeedLimitBuilder.setEffectiveSpeedType(NaviLinkProto.SpeedLimit.EffectiveSpeedTypeEnum.EFFECTIVE_UNKNOWN);
         }
 
         @Override
         public void onCurrentRoadSpeed(final int speed) {
             mSpeedLimitBuilder.setPostedSpeedLimit(speed);
             mSpeedLimitBuilder.setSpeedCategory(speed2SpeedCategoryEnum(speed));
-            mSpeedLimitBuilder.setSpeedLimitAssured(false);
-            mSpeedLimitBuilder.setEffectSpeedLimit(0);
+            mSpeedLimitBuilder.setSpeedLimitAssured(false); // 道路限速是false，其他是true
+            mSpeedLimitBuilder.setEffectSpeedLimit(0); // 道路限速是0，其他是speedLimit
+            // 道路限速是0，其他是speedLimit
             mSpeedLimitBuilder.setEffectiveSpeedCategory(NaviLinkProto.SpeedLimit.EffectiveSpeedCategoryEnum.EFFECTIVE_CATEGORY_UNKNOWN);
-            mSpeedLimitBuilder.setEffectiveSpeedType(NaviLinkProto.SpeedLimit.EffectiveSpeedTypeEnum.EFFECTIVE_UNKNOWN);
+            mSpeedLimitBuilder.setEffectiveSpeedType(NaviLinkProto.SpeedLimit.EffectiveSpeedTypeEnum.BY_TRAFFIC_SIGN); // 路标限速是1，其他是7
         }
     };
 
@@ -144,7 +146,7 @@ public final class SuperCruiseManager {
                     mSpeedLimitBuilder.setSpeedLimitAssured(true);
                     mSpeedLimitBuilder.setEffectSpeedLimit(speed);
                     mSpeedLimitBuilder.setEffectiveSpeedCategory(speed2EffectiveSpeedCategoryEnum(speed));
-                    mSpeedLimitBuilder.setEffectiveSpeedType(NaviLinkProto.SpeedLimit.EffectiveSpeedTypeEnum.EFFECTIVE_UNKNOWN); // TODO 判断是否是路标限速
+                    mSpeedLimitBuilder.setEffectiveSpeedType(NaviLinkProto.SpeedLimit.EffectiveSpeedTypeEnum.EFFECTIVE_UNKNOWN);
                     break;
                 }
             }
@@ -262,10 +264,31 @@ public final class SuperCruiseManager {
         final NaviLinkProto.NaviLink.Builder builder = NaviLinkProto.NaviLink.newBuilder();
         builder.setRoadInfo(mRoadInfoBuilder.build());
         builder.setSpeedLimit(mSpeedLimitBuilder.build());
-        builder.setDataAvailable(EnginePackage.getInstance().engineStatus());
+        final boolean status = EnginePackage.getInstance().engineStatus();
+        builder.setDataAvailable(status);
         final NaviLinkProto.NaviLink naviLink = builder.build();
-//        String json = GsonUtils.toJson(naviLink);
-//        JsonLog.d(TAG, json, "sendData");
+        final SuperCruiseJson superCruiseJson = new SuperCruiseJson();
+        superCruiseJson.setDataAvailable(String.valueOf(status));
+        superCruiseJson.setLaneCount(String.valueOf(mRoadInfoBuilder.getLaneCount()));
+        superCruiseJson.setRoadCategory(String.valueOf(mRoadInfoBuilder.getRoadCategory()));
+        superCruiseJson.setCountryCode(String.valueOf(mRoadInfoBuilder.getCountryCode()));
+        superCruiseJson.setMapVersionYear(String.valueOf(mRoadInfoBuilder.getMapVersionYear()));
+        superCruiseJson.setMapVersionQuarter(String.valueOf(mRoadInfoBuilder.getMapVersionQuarter()));
+        superCruiseJson.setDrivingSideCategory(String.valueOf(mRoadInfoBuilder.getDrivingSideCategory()));
+        superCruiseJson.setControlledAccess(String.valueOf(mRoadInfoBuilder.getControlledAccess()));
+        superCruiseJson.setDividedRoadCategory(String.valueOf(mRoadInfoBuilder.getDividedRoadCategory()));
+        superCruiseJson.setPostedSpeedLimit(String.valueOf(mSpeedLimitBuilder.getPostedSpeedLimit()));
+        superCruiseJson.setRecommendedSpeedLimit(String.valueOf(mSpeedLimitBuilder.getRecommendedSpeedLimit()));
+        superCruiseJson.setSpeedLimitAssured(String.valueOf(mSpeedLimitBuilder.getSpeedLimitAssured()));
+        superCruiseJson.setConditionalSpeedLimit(String.valueOf(mSpeedLimitBuilder.getConditionalSpeedLimit()));
+        superCruiseJson.setConditionalSpeedCategory(String.valueOf(mSpeedLimitBuilder.getConditionalSpeedCategory()));
+        superCruiseJson.setConditionalSpeedType(String.valueOf(mSpeedLimitBuilder.getConditionalSpeedType()));
+        superCruiseJson.setConditionalSpeedType(String.valueOf(mSpeedLimitBuilder.getConditionalSpeedType()));
+        superCruiseJson.setEffectiveSpeedCategory(String.valueOf(mSpeedLimitBuilder.getEffectiveSpeedCategory()));
+        superCruiseJson.setEffectiveSpeedType(String.valueOf(mSpeedLimitBuilder.getEffectiveSpeedType()));
+        superCruiseJson.setSpeedCategory(String.valueOf(mSpeedLimitBuilder.getSpeedCategory()));
+//        JsonLog.d(TAG, GsonUtils.toJson(superCruiseJson), "");
+        Log.d(TAG, "sendData: " + GsonUtils.toJson(superCruiseJson));
         mAdasManager.sendNavilink(naviLink);
     }
 

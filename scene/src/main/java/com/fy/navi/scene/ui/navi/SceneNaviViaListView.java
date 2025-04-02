@@ -25,8 +25,11 @@ import com.fy.navi.scene.ui.navi.manager.NaviSceneBase;
 import com.fy.navi.scene.ui.navi.manager.NaviSceneId;
 import com.fy.navi.scene.ui.navi.manager.NaviSceneManager;
 import com.fy.navi.service.AutoMapConstant;
+import com.fy.navi.service.MapDefaultFinalTag;
+import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.navi.NaviViaEntity;
 import com.fy.navi.service.define.search.PoiInfoEntity;
+import com.fy.navi.service.logicpaket.navi.OpenApiHelper;
 import com.fy.navi.ui.base.BaseFragment;
 
 import java.util.List;
@@ -58,7 +61,12 @@ public class SceneNaviViaListView extends NaviSceneBase<SceneNaviViaListViewBind
 
     @Override
     protected NaviSceneId getSceneId() {
-        return NaviSceneId.NAVI_SCENE_VIA_POINT_UNFOLD;
+        return NaviSceneId.NAVI_SCENE_VIA_POINT_LIST;
+    }
+
+    @Override
+    protected String getSceneName() {
+        return NaviSceneId.NAVI_SCENE_VIA_POINT_LIST.name();
     }
 
     @Override
@@ -67,49 +75,35 @@ public class SceneNaviViaListView extends NaviSceneBase<SceneNaviViaListViewBind
     }
 
     protected void init() {
-        NaviSceneManager.getInstance().addNaviScene(NaviSceneId.NAVI_SCENE_VIA_POINT_UNFOLD, this);
-    }
-
-    @Override
-    public void hide() {
-        super.hide();
-        if (mISceneCallback != null) {
-            mISceneCallback.updateSceneVisible(NaviSceneId.NAVI_SCENE_VIA_POINT_FOLD, false);
-        }
+        NaviSceneManager.getInstance().addNaviScene(NaviSceneId.NAVI_SCENE_VIA_POINT_LIST, this);
+        setScreenId(MapType.MAIN_SCREEN_MAIN_MAP);
     }
 
     @Override
     public void show() {
         super.show();
         if (mISceneCallback != null) {
-            mISceneCallback.updateSceneVisible(NaviSceneId.NAVI_SCENE_VIA_POINT_UNFOLD, true);
+            mISceneCallback.updateSceneVisible(NaviSceneId.NAVI_SCENE_VIA_POINT_LIST, true);
         }
+        OpenApiHelper.enterPreview(mMapTypeId);
+    }
+
+    @Override
+    public void hide() {
+        super.hide();
+        if (mISceneCallback != null) {
+            mISceneCallback.updateSceneVisible(NaviSceneId.NAVI_SCENE_VIA_POINT_LIST, false);
+        }
+        OpenApiHelper.exitPreview(mMapTypeId);
     }
 
     @Override
     public void close() {
         super.close();
         if (mISceneCallback != null) {
-            mISceneCallback.updateSceneVisible(NaviSceneId.NAVI_SCENE_VIA_POINT_FOLD, false);
+            mISceneCallback.updateSceneVisible(NaviSceneId.NAVI_SCENE_VIA_POINT_LIST, false);
         }
-    }
-
-    /**
-     * @param isExpand 是否展开
-     */
-    public void updateViaListState(final boolean isExpand) {
-        setIsViaListExpand(isExpand);
-        final INaviSceneEvent.SceneStateChangeType type;
-        final NaviSceneId sceneId;
-        if (isIsViaListExpand()) {
-            type = INaviSceneEvent.SceneStateChangeType.SceneShowState;
-            sceneId = NaviSceneId.NAVI_SCENE_VIA_POINT_UNFOLD;
-        } else {
-            type = INaviSceneEvent.SceneStateChangeType.SceneCloseState;
-            sceneId = NaviSceneId.NAVI_SCENE_VIA_POINT_FOLD;
-        }
-        Logger.i("lvww", "type -> " + type, "sceneId -> " + sceneId);
-        getNaviSceneEvent().notifySceneStateChange(type, sceneId);
+        OpenApiHelper.exitPreview(mMapTypeId);
     }
 
     @Override
@@ -154,7 +148,7 @@ public class SceneNaviViaListView extends NaviSceneBase<SceneNaviViaListViewBind
                     addFragment((BaseFragment) fragment, SearchFragmentFactory.
                             createPoiDetailsFragment(
                                     AutoMapConstant.SourceFragment.MAIN_SEARCH_FRAGMENT,
-                                    AutoMapConstant.PoiType.POI_MAP_CLICK, poiInfo));
+                                    AutoMapConstant.PoiType.POI_DELETE_AROUND, poiInfo));
                 }
             }
 
@@ -177,20 +171,36 @@ public class SceneNaviViaListView extends NaviSceneBase<SceneNaviViaListViewBind
     }
 
     /**
-     * @param list 途经点列表
+     * 展示途径点集合
      */
-    public void showNaviViaList(final List<NaviViaEntity> list) {
+    public void showNaviViaList(final boolean isVisible) {
         if (mScreenViewModel == null) {
             Logger.e(TAG, "mScreenViewModel == null：");
             return;
         }
-        if (ConvertUtils.isEmpty(list)) {
+        final INaviSceneEvent.SceneStateChangeType type;
+        if(isVisible){
+            mScreenViewModel.initTimer();
+            type = INaviSceneEvent.SceneStateChangeType.SceneShowState;
+        }else {
             mScreenViewModel.cancelTimer();
-            return;
+            type = INaviSceneEvent.SceneStateChangeType.SceneCloseState;
         }
+        if(isVisible() == isVisible) return;
+        Logger.i(MapDefaultFinalTag.NAVI_SCENE_TAG, "SceneNaviViaListView", "isVisible-> " + isVisible);
+        getNaviSceneEvent().notifySceneStateChange(type, NaviSceneId.NAVI_SCENE_VIA_POINT_LIST);
+    }
+
+    /**
+     * 更新途径点集合
+     * @param list 新途径点集合
+     */
+    public void updateViaListState(final List<NaviViaEntity> list) {
+        if(ConvertUtils.isEmpty(list) || null == mScreenViewModel ||
+                null == mNaviViaListAdapter) return;
+        mScreenViewModel.initTimer();
         Logger.i(TAG, "SceneNaviListImpl list：" + list.size());
         mNaviViaListAdapter.notifyList(list);
-        mScreenViewModel.initTimer();
     }
 
     /**

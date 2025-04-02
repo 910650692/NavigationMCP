@@ -20,6 +20,7 @@ import com.fy.navi.service.GBLCacheFilePath;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.adapter.user.behavior.BehaviorAdapterCallBack;
 import com.fy.navi.service.define.bean.GeoPoint;
+import com.fy.navi.service.define.code.UserDataCode;
 import com.fy.navi.service.define.search.FavoriteInfo;
 import com.fy.navi.service.define.search.PoiInfoEntity;
 import com.fy.navi.service.define.user.account.AccountProfileInfo;
@@ -96,7 +97,7 @@ public class BehaviorAdapterImplHelper implements IBehaviorServiceObserver, ISyn
         // 设置用户登录信息
         final AccountProfileInfo info = mAccountPackage.getUserInfo();
         final UserLoginInfo userLoginInfo = new UserLoginInfo();
-        userLoginInfo.userId = info.uid; // "请填写用户ID";
+        userLoginInfo.userId = info.getUid(); //
         //设置用户模式（同步库账号登录）
         final int userRes = mBehaviorService.setLoginInfo(userLoginInfo);
         Logger.i(TAG, "setLoginInfo: userRes = " + userRes);
@@ -116,6 +117,22 @@ public class BehaviorAdapterImplHelper implements IBehaviorServiceObserver, ISyn
         Logger.i(TAG, "setConfig: userRes = " + userRes);
     }
 
+    @Override
+    public void notify(final int eventType, final int exCode) {
+        Logger.i(TAG, "notify: eventType = " + eventType + " exCode = " + exCode);
+        if (eventType == UserDataCode.SYNC_SDK_EVENT_DATA_UPDATED) {
+            // 同步事件处理  收藏业务同步结果回调接口
+            if (ConvertUtils.isEmpty(mAccountResultHashtable)) {
+                return;
+            }
+            for (BehaviorAdapterCallBack callBack : mAccountResultHashtable.values()) {
+                if (callBack != null) {
+                    callBack.notifyFavorite(eventType, exCode);
+                }
+            }
+        }
+    }
+
     /**
      * 同步常去地点（家、公司）数据
      * 开关开启时会上传本地家、公司到后台，关闭时只会拉取后台数据
@@ -124,24 +141,6 @@ public class BehaviorAdapterImplHelper implements IBehaviorServiceObserver, ISyn
     public void syncFrequentData() {
         final int ret = mBehaviorService.syncFrequentData();
         Logger.i(TAG, "syncFrequentData: ret = " + ret);
-    }
-
-    /**
-     *  同步事件回调通知
-     * @param eventType        同步SDK回调事件类型
-     * @param exCode           同步SDK返回值
-     */
-    @Override
-    public void notify(final int eventType, final int exCode) {
-        Logger.i(TAG, "notify: eventType = " + eventType + " exCode = " + exCode);
-
-        // 收藏业务同步结果回调接口
-        // 同步事件处理
-      /*  if (ConvertUtils.isEmpty(mAccountResultHashtable)) return;
-        for (BehaviorAdapterCallBack callBack : mAccountResultHashtable.values()) {
-            if (callBack == null) continue;
-            callBack.notifyFavorite(eventType, exCode);
-        }*/
     }
 
     /**

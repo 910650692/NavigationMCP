@@ -10,8 +10,12 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.android.utils.log.Logger;
+import com.android.utils.thread.ThreadManager;
 import com.fy.navi.hmi.R;
+import com.fy.navi.service.define.bean.GeoPoint;
 import com.fy.navi.service.define.route.RouteAlterChargeStationInfo;
+import com.fy.navi.service.logicpaket.search.SearchPackage;
 import com.fy.navi.ui.view.SkinConstraintLayout;
 
 import java.util.ArrayList;
@@ -61,18 +65,21 @@ public class AlterChargeStationAdapter extends RecyclerView.Adapter<AlterChargeS
         String fastTotalNumber = mData.get(position).getMFastPlugInfo().getMTotalNumber();
         if (fastTotalNumber.isEmpty()) {
             fastTotalNumber = mContext.getString(R.string.route_invalid);
+            holder.mLayoutFast.setVisibility(View.GONE);
+
+        } else {
+            holder.mLayoutSlow.setVisibility(View.VISIBLE);
         }
-        holder.mTvFastNumber.setText(mContext.getString(R.string.route_invalid));
-        holder.mTvFastTotalNumber.setText(mContext.getString(R.string.route_charge_stations_total_number, fastTotalNumber));
+        holder.mTvFastTotalNumber.setText(fastTotalNumber);
 
         String slowTotalNumber = mData.get(position).getMSlowPlugInfo().getMTotalNumber();
         if (slowTotalNumber.isEmpty()) {
             slowTotalNumber = mContext.getString(R.string.route_invalid);
+            holder.mLayoutSlow.setVisibility(View.GONE);
+        } else {
+            holder.mLayoutSlow.setVisibility(View.VISIBLE);
         }
-        holder.mTvSlowNumber.setText(mContext.getString(R.string.route_invalid));
-        holder.mTvSlowTotalNumber.setText(mContext.getString(R.string.route_charge_stations_total_number, slowTotalNumber));
-
-        holder.mTvDistance.setText(mContext.getString(R.string.route_invalid));
+        holder.mTvSlowTotalNumber.setText(slowTotalNumber);
 
         holder.mLayoutChargeStation.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -91,6 +98,18 @@ public class AlterChargeStationAdapter extends RecyclerView.Adapter<AlterChargeS
                 }
             }
         });
+
+        SearchPackage.getInstance().getTravelTimeFuture(new GeoPoint(mData.get(position).getMPos().getLon(),
+                        mData.get(position).getMPos().getLat()))
+                .thenAccept(pair -> {
+                    ThreadManager.getInstance().postUi(() -> {
+                        holder.mTvDistance.setText(pair.first);
+                    });
+                })
+                .exceptionally(error -> {
+                    Logger.d("getTravelTimeFuture error:" + error);
+                    return null;
+                });
     }
 
     @Override
@@ -102,13 +121,13 @@ public class AlterChargeStationAdapter extends RecyclerView.Adapter<AlterChargeS
         private final AppCompatTextView mTvName;
         private final AppCompatTextView mTvNumber;
         private final AppCompatTextView mTvDistance;
-        private final AppCompatTextView mTvFastNumber;
         private final AppCompatTextView mTvFastTotalNumber;
-        private final AppCompatTextView mTvSlowNumber;
         private final AppCompatTextView mTvSlowTotalNumber;
         private final AppCompatTextView mTvCost;
         private final AppCompatTextView mButtonAlter;
         private final SkinConstraintLayout mLayoutChargeStation;
+        private final SkinConstraintLayout mLayoutFast;
+        private final SkinConstraintLayout mLayoutSlow;
 
 
         public AlterChargeStationViewHolder(final @NonNull View itemView) {
@@ -116,9 +135,9 @@ public class AlterChargeStationAdapter extends RecyclerView.Adapter<AlterChargeS
             mTvNumber = itemView.findViewById(R.id.tv_charge_station_number);
             mTvName = itemView.findViewById(R.id.tv_charge_station_name);
             mTvDistance = itemView.findViewById(R.id.tv_charge_station_distance);
-            mTvFastNumber = itemView.findViewById(R.id.tv_charge_fast_number);
+            mLayoutFast = itemView.findViewById(R.id.ly_charge_fast);
             mTvFastTotalNumber = itemView.findViewById(R.id.tv_charge_fast_total_number);
-            mTvSlowNumber = itemView.findViewById(R.id.tv_charge_slow_number);
+            mLayoutSlow = itemView.findViewById(R.id.ly_charge_slow);
             mTvSlowTotalNumber = itemView.findViewById(R.id.tv_charge_slow_total_number);
             mTvCost = itemView.findViewById(R.id.tv_charge_station_cost);
             mButtonAlter = itemView.findViewById(R.id.button_alter);

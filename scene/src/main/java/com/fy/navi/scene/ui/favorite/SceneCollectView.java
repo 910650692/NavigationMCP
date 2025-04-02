@@ -24,7 +24,7 @@ import com.fy.navi.scene.impl.search.SearchFragmentFactory;
 import com.fy.navi.scene.ui.adapter.CollectResultAdapter;
 import com.fy.navi.service.AutoMapConstant;
 import com.fy.navi.service.MapDefaultFinalTag;
-import com.fy.navi.service.define.map.MapTypeId;
+import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.search.PoiInfoEntity;
 import com.fy.navi.service.logicpaket.route.RoutePackage;
 import com.fy.navi.service.logicpaket.search.SearchPackage;
@@ -119,17 +119,18 @@ public class SceneCollectView extends BaseSceneView<SceneCollectViewBinding, Sce
                     if (mHomeCompanyType == AutoMapConstant.HomeCompanyType.ALONG_WAY) {
                         //如果是添加途径点，则改为添加途径点后跳转到路线规划页面
                         if (SearchPackage.getInstance().isAlongWaySearch()) {
-                            RoutePackage.getInstance().addViaPoint(MapTypeId.MAIN_SCREEN_MAIN_MAP, poiInfoEntity);
+                            RoutePackage.getInstance().addViaPoint(MapType.MAIN_SCREEN_MAIN_MAP, poiInfoEntity);
                         }
                         closeAllFragmentsUntilTargetFragment("MainAlongWaySearchFragment");
                     } else {
                         //如果是常用地址/收到的点跳转的收藏界面，那么点击导航按钮，根据来源页面的HomeCompany类型收藏为收藏点/常去的点
                         FavoriteManager.getInstance().addFavorite(poiInfoEntity, mHomeCompanyType);
-                        closeAllFragment();
+                        closeAllFragmentsUntilTargetFragment("HomeCompanyFragment");
+                        showCurrentFragment();
                     }
                 } else {
                     if (SearchPackage.getInstance().isAlongWaySearch()) {
-                        RoutePackage.getInstance().addViaPoint(MapTypeId.MAIN_SCREEN_MAIN_MAP, poiInfoEntity);
+                        RoutePackage.getInstance().addViaPoint(MapType.MAIN_SCREEN_MAIN_MAP, poiInfoEntity);
                     } else {
                         final Fragment fragment = (Fragment) ARouter.getInstance()
                                 .build(RoutePath.Route.ROUTE_FRAGMENT)

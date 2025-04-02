@@ -13,13 +13,20 @@ import androidx.databinding.library.baseAdapters.BR;
 import com.android.utils.log.Logger;
 import com.fy.navi.hmi.R;
 import com.fy.navi.hmi.databinding.FragmentTrafficDetailBinding;
+import com.fy.navi.scene.impl.imersive.ImersiveStatus;
+import com.fy.navi.scene.impl.imersive.ImmersiveStatusScene;
 import com.fy.navi.service.AutoMapConstant;
 import com.fy.navi.service.define.aos.FyGSubTraEventDetail;
-import com.fy.navi.service.define.aos.FyGTraEventDetail;
 import com.fy.navi.service.define.aos.TrafficType;
+import com.fy.navi.service.define.map.MapType;
+import com.fy.navi.service.define.map.MapTypeManager;
+import com.fy.navi.service.define.navistatus.NaviStatus;
 import com.fy.navi.service.define.search.PoiInfoEntity;
+import com.fy.navi.service.logicpaket.map.MapPackage;
 import com.fy.navi.ui.action.ViewAdapterKt;
 import com.fy.navi.ui.base.BaseFragment;
+
+import java.util.Objects;
 
 /**
  * Author: QiuYaWei
@@ -114,8 +121,28 @@ public class TrafficEventFragment extends BaseFragment<FragmentTrafficDetailBind
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        notifySceneImmersiveStatus(true);
+    }
+
+    @Override
     public void onDestroy() {
         super.onDestroy();
         animation.cancel();
+        notifySceneImmersiveStatus(false);
+    }
+
+    /***
+     * 通知导航中沉浸态发生改变
+     * @param flag true 代表创建完成，false销毁
+     */
+    public void notifySceneImmersiveStatus(final boolean flag) {
+        final boolean isOnNavigating = Objects.equals(MapPackage.getInstance().getNaviStatus(), NaviStatus.NaviStatusType.NAVING);
+        if (isOnNavigating) {
+            final MapType mapTypeId = MapTypeManager.getInstance().getMapTypeIdByName(mScreenId);
+            final ImersiveStatus status = flag ? ImersiveStatus.TOUCH : ImersiveStatus.IMERSIVE;
+            ImmersiveStatusScene.getInstance().setImmersiveStatus(mapTypeId, status);
+        }
     }
 }

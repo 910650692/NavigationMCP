@@ -12,7 +12,7 @@ import com.fy.navi.hmi.databinding.FragmentSearchResultBinding;
 import com.fy.navi.scene.RoutePath;
 import com.fy.navi.service.AutoMapConstant;
 import com.fy.navi.service.MapDefaultFinalTag;
-import com.fy.navi.service.define.map.MapTypeId;
+import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.search.PoiInfoEntity;
 import com.fy.navi.service.define.search.SearchResultEntity;
 import com.fy.navi.ui.base.BaseFragment;
@@ -34,7 +34,7 @@ public class SearchResultFragment extends BaseFragment<FragmentSearchResultBindi
     @Override
     public void onInitView() {
         Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "onInitView");
-        mBinding.scenePoiList.setScreenId(MapTypeId.valueOf(mScreenId));
+        mBinding.scenePoiList.setScreenId(MapType.valueOf(mScreenId));
     }
 
     @Override
@@ -57,7 +57,9 @@ public class SearchResultFragment extends BaseFragment<FragmentSearchResultBindi
         final int searchType = parsedArgs.getInt(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_TYPE);
         final String keyword = parsedArgs.getString(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_KEYWORD);
         final PoiInfoEntity entity = parsedArgs.getParcelable(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_POI_LIST);
+        final int range= parsedArgs.getInt(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_RANGE, 5000);
         mBinding.scenePoiList.setPoiInfoEntity(entity);
+        mBinding.scenePoiList.setRange(range);
         mBinding.scenePoiList.setEditText(searchType, keyword);
         Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "sourceFragmentTag : " + mSourceFragmentTag);
     }
@@ -87,6 +89,14 @@ public class SearchResultFragment extends BaseFragment<FragmentSearchResultBindi
      */
     public void notifySilentSearchResult(final SearchResultEntity searchResultEntity) {
         mBinding.scenePoiList.notifySilentSearchResult(searchResultEntity);
+    }
+
+    /**
+     * 语音筛选搜索回调
+     * @param sortValue 筛选条件
+     */
+    public void onVoicePoiSort(final String sortValue) {
+        mBinding.scenePoiList.onVoicePoiSort(sortValue);
     }
 
     @Override

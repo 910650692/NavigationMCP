@@ -24,4 +24,28 @@ public interface SignalAdapterCallback {
     default void onSystemStateChanged(int state) {
 
     }
+
+    /**
+     * 续航里程
+     * @param value 单位km
+     */
+    default void onRangeRemainingSignalChanged(float value) {
+
+    }
+
+    /**
+     * 高压电池续航里程
+     * @param value 单位km
+     */
+    default void onHighVoltageBatteryPropulsionRangeChanged(float value) {
+
+    }
+
+    /**
+     * NOP状态变化
+     * @param state 状态
+     */
+    default void onLaneCenteringWarningIndicationRequestIdcmAChanged(int state) {
+
+    }
 }

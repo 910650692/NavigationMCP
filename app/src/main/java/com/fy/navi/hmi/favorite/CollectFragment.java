@@ -11,7 +11,7 @@ import com.fy.navi.hmi.databinding.FragmentCollectBinding;
 import com.fy.navi.scene.RoutePath;
 import com.fy.navi.service.AutoMapConstant;
 import com.fy.navi.service.MapDefaultFinalTag;
-import com.fy.navi.service.define.map.MapTypeId;
+import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.search.PoiInfoEntity;
 import com.fy.navi.ui.base.BaseFragment;
 
@@ -34,7 +34,7 @@ public class CollectFragment extends BaseFragment<FragmentCollectBinding, Collec
 
     @Override
     public void onInitView() {
-        mBinding.collectView.setScreenId(MapTypeId.valueOf(mScreenId));
+        mBinding.collectView.setScreenId(MapType.valueOf(mScreenId));
     }
 
     @Override

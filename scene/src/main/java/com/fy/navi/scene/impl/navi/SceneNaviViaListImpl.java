@@ -1,6 +1,7 @@
 package com.fy.navi.scene.impl.navi;
 
 import com.android.utils.ConvertUtils;
+import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
 import com.fy.navi.scene.BaseSceneModel;
 import com.fy.navi.scene.api.navi.ISceneNaviViaList;
@@ -68,7 +69,11 @@ public class SceneNaviViaListImpl extends BaseSceneModel<SceneNaviViaListView> i
      * @param isVisible visible
      */
     private void updateSceneVisible(final boolean isVisible) {
-        mScreenView.getNaviSceneEvent().notifySceneStateChange((isVisible ? INaviSceneEvent.SceneStateChangeType.SceneShowState :
-                INaviSceneEvent.SceneStateChangeType.SceneHideState), NaviSceneId.NAVI_SCENE_VIA_POINT_UNFOLD);
+        if(mScreenView.isVisible() == isVisible) return;
+        Logger.i(MapDefaultFinalTag.NAVI_SCENE_TAG, "SceneNaviViaListImpl", isVisible);
+        mScreenView.getNaviSceneEvent().notifySceneStateChange((isVisible ?
+                INaviSceneEvent.SceneStateChangeType.SceneShowState :
+                INaviSceneEvent.SceneStateChangeType.SceneCloseState),
+                NaviSceneId.NAVI_SCENE_VIA_POINT_LIST);
     }
 }

@@ -9,24 +9,24 @@ import com.fy.navi.ui.base.BaseModel;
 
 public class AccountPhoneNumberLoginModel extends BaseModel<AccountPhoneNumberLoginViewModel> implements AccountCallBack {
 
-    private final AccountPackage accountPackage;
+    private final AccountPackage mAccountPackage;
 
     public AccountPhoneNumberLoginModel() {
-        accountPackage = AccountPackage.getInstance();
+        mAccountPackage = AccountPackage.getInstance();
     }
 
     @Override
     public void onCreate() {
         super.onCreate();
-        accountPackage.registerCallBack("AccountPhoneNumberLoginModel",this);
+        mAccountPackage.registerCallBack("AccountPhoneNumberLoginModel",this);
     }
 
     @Override
-    public void notifyMobileLogin(int errCode, int taskId, AccountUserInfo result) {
-        if (errCode == 0 && result.code == 1) {
+    public void notifyMobileLogin(final int errCode, final int taskId, final AccountUserInfo result) {
+        if (errCode == 0 && result.getCode() == 1) {
             Logger.i("AccountLoginModel AccountUserInfo = " + GsonUtils.toJson(result));
             Logger.i("AccountLoginModel", "手机号登录成功");
-            mViewModel.close();
+            closeFragment(true);
         }
     }
 }

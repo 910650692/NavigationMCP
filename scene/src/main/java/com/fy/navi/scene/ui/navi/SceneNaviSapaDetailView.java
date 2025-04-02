@@ -43,6 +43,11 @@ public class SceneNaviSapaDetailView extends NaviSceneBase<SceneNaviSapaDetailVi
     }
 
     @Override
+    protected String getSceneName() {
+        return NaviSceneId.NAVI_SAPA_DETAIL_INFO.name();
+    }
+
+    @Override
     public INaviSceneEvent getNaviSceneEvent() {
         return NaviSceneManager.getInstance();
     }

@@ -1,5 +1,9 @@
 package com.fy.navi.service.define.layer.refix;
 
+import com.fy.navi.service.define.search.ParkingInfo;
+
+import java.util.List;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -9,4 +13,7 @@ import lombok.Setter;
 @Setter
 @Getter
 public class LayerItemSearchPark extends LayerItemBase {
+
+    private List<ParkingInfo> parkingInfoList;
+
 }

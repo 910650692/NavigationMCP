@@ -1,7 +1,7 @@
 package com.fy.navi.service.logicpaket.route;
 
 import com.fy.navi.service.define.layer.RouteLineLayerParam;
-import com.fy.navi.service.define.map.MapTypeId;
+import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.route.RequestRouteResult;
 import com.fy.navi.service.define.route.RouteAlongCityParam;
 import com.fy.navi.service.define.route.EvRangeOnRouteInfo;
@@ -10,6 +10,7 @@ import com.fy.navi.service.define.route.RouteChargeStationParam;
 import com.fy.navi.service.define.route.RouteRestAreaParam;
 import com.fy.navi.service.define.route.RouteRestTollGateParam;
 import com.fy.navi.service.define.route.RouteRestrictionParam;
+import com.fy.navi.service.define.route.RouteTMCParam;
 import com.fy.navi.service.define.route.RouteTrafficIncidentParam;
 import com.fy.navi.service.define.route.RouteWeatherParam;
 
@@ -119,7 +120,7 @@ public interface IRouteResultObserver {
      * @param mapTypeId 屏幕id
      * @param errorMsg 失败信息
      */
-    default void onRouteFail(MapTypeId mapTypeId, String errorMsg) {
+    default void onRouteFail(MapType mapTypeId, String errorMsg) {
     }
 
     /**
@@ -140,7 +141,7 @@ public interface IRouteResultObserver {
      * @param mapTypeId 屏幕id
      * @param routeIndex 路线id
      */
-    default void onRouteSlected(MapTypeId mapTypeId, int routeIndex) {
+    default void onRouteSlected(MapType mapTypeId, int routeIndex) {
     }
 
     /**
@@ -164,6 +165,14 @@ public interface IRouteResultObserver {
      * @param cityName 城市名
      */
     default void onSpeechEndCityName(String cityName) {
+
+    }
+
+    /**
+     * 通勤模式TMC信息   、
+     * @param param TMC信息
+     */
+    default void onRouteTMCInfo(RouteTMCParam param) {
 
     }
 }

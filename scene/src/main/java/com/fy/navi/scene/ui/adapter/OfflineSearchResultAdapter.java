@@ -17,42 +17,46 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Author: LiuChang
+ * @author CaiYufei
+ * @version \$Revision1.0\$
  * Date: 2025/2/20
  * Description: [限行城市选择适配器]
  */
 public class OfflineSearchResultAdapter extends RecyclerView.Adapter<OfflineSearchResultAdapter.LimitCitiesViewHolder> {
-    private List<CityDataInfo> data = new ArrayList<>();
+    private List<CityDataInfo> mData = new ArrayList<>();
     private ItemClickListener mListener;
-    private Context mContext;
+    private final Context mContext;
 
-    public OfflineSearchResultAdapter(Context context, List<CityDataInfo> data) {
+    public OfflineSearchResultAdapter(final Context context, final List<CityDataInfo> data) {
         this.mContext = context;
-        this.data.clear();
-        this.data = data;
+        this.mData = data;
     }
 
-    public void setData(List<CityDataInfo> data) {
-        this.data.clear();
-        this.data = data;
+    /**
+     * 设置离线搜索结果数据
+     * @param data 离线结果数据
+     */
+    public void setData(final List<CityDataInfo> data) {
+        this.mData.clear();
+        this.mData = data;
         notifyDataSetChanged();
     }
 
     @NonNull
     @Override
-    public LimitCitiesViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(mContext).inflate(R.layout.item_limit_cities, parent, false);
+    public LimitCitiesViewHolder onCreateViewHolder(@NonNull final ViewGroup parent, final int viewType) {
+        final View view = LayoutInflater.from(mContext).inflate(R.layout.item_limit_cities, parent, false);
         return new LimitCitiesViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull LimitCitiesViewHolder holder, int position) {
-        holder.tvTitle.setText(data.get(position).getName());
-        holder.tvTitle.setOnClickListener(new View.OnClickListener() {
+    public void onBindViewHolder(@NonNull final LimitCitiesViewHolder holder, final int position) {
+        holder.mTvTitle.setText(mData.get(position).getName());
+        holder.mTvTitle.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(final View v) {
                 if (mListener != null) {
-                    mListener.onClick(data.get(position).getAdcode());
+                    mListener.onClick(mData.get(position).getAdcode());
                 }
             }
         });
@@ -60,23 +64,27 @@ public class OfflineSearchResultAdapter extends RecyclerView.Adapter<OfflineSear
 
     @Override
     public int getItemCount() {
-        return data.size();
+        return mData.size();
     }
 
     public static class LimitCitiesViewHolder extends RecyclerView.ViewHolder {
-        AppCompatTextView tvTitle;
+        private final AppCompatTextView mTvTitle;
 
-        public LimitCitiesViewHolder(@NonNull View itemView) {
+        public LimitCitiesViewHolder(@NonNull final View itemView) {
             super(itemView);
-            tvTitle = itemView.findViewById(R.id.tv_title);
+            mTvTitle = itemView.findViewById(R.id.tv_title);
         }
     }
 
-    public void setListener(ItemClickListener listener) {
+    public void setListener(final ItemClickListener listener) {
         mListener = listener;
     }
 
     public interface ItemClickListener {
+        /**
+         * 点击事件
+         * @param cityCode 点击item的城市编码
+         */
         void onClick(int cityCode);
     }
 }

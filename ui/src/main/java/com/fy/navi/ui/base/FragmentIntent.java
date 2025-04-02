@@ -130,13 +130,36 @@ public class FragmentIntent {
         transaction.remove(fragment);
         STACKMANAGER.removeBaseView(screenId, fragment);
         if (nextShow) {
-            Logger.i(TAG, "移除上一个。显示下一个");
             final BaseFragment toFragment = STACKMANAGER.getCurrentFragment(screenId);
+            Logger.i(TAG, "移除上一个。显示下一个" + toFragment);
             if (!ConvertUtils.isEmpty(toFragment)) {
                 transaction.show(toFragment);
             }
         }
         transaction.commitAllowingStateLoss();
+    }
+
+    /**
+     * 显示当前被hide的fragment
+     * @param screenId 屏幕ID
+     * @param fragmentManager fragmentManager
+     */
+    public static void showCurrentFragment(final String screenId, final FragmentManager fragmentManager) {
+        final FragmentTransaction transaction = fragmentManager.beginTransaction();
+        final BaseFragment toFragment = STACKMANAGER.getCurrentFragment(screenId);
+        Logger.i(TAG, "showCurrentFragment" + toFragment);
+        if (!ConvertUtils.isEmpty(toFragment)) {
+            Logger.i(TAG, "showCurrentFragment" + toFragment.isAdded() + " , " + toFragment.isHidden());
+            transaction.show(toFragment);
+        }
+        final List<Fragment> fragments = fragmentManager.getFragments();
+        if (!fragments.isEmpty()) {
+            for (int t = 0; t < fragments.size(); t++) {
+                Logger.i(TAG, "showCurrentFragment" + fragments.get(t));
+                Logger.i(TAG, "showCurrentFragment" + fragments.get(t).isHidden());
+            }
+        }
+        transaction.commit();
     }
 
     /**

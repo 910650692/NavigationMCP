@@ -19,9 +19,15 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.alibaba.android.arouter.launcher.ARouter;
 import com.android.utils.ConvertUtils;
+import com.android.utils.ResourceUtils;
 import com.android.utils.ToastUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
+import com.fy.navi.burypoint.anno.HookMethod;
+import com.fy.navi.burypoint.bean.BuryParam;
+import com.fy.navi.burypoint.bean.BuryProperty;
+import com.fy.navi.burypoint.constant.BuryConstant;
+import com.fy.navi.burypoint.controller.BuryPointController;
 import com.fy.navi.scene.BaseSceneView;
 import com.fy.navi.scene.R;
 import com.fy.navi.scene.RoutePath;
@@ -38,8 +44,9 @@ import com.fy.navi.service.AppContext;
 import com.fy.navi.service.AutoMapConstant;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.define.bean.GeoPoint;
-import com.fy.navi.service.define.map.MapTypeId;
+import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.mapdata.CityDataInfo;
+import com.fy.navi.service.define.route.RoutePoiType;
 import com.fy.navi.service.define.search.ChargeInfo;
 import com.fy.navi.service.define.search.ChildInfo;
 import com.fy.navi.service.define.search.FavoriteInfo;
@@ -50,10 +57,12 @@ import com.fy.navi.service.define.search.SearchResultEntity;
 import com.fy.navi.service.logicpaket.route.RoutePackage;
 import com.fy.navi.service.logicpaket.search.SearchPackage;
 import com.fy.navi.service.logicpaket.setting.SettingUpdateObservable;
-import com.fy.navi.service.logicpaket.user.behavior.BehaviorPackage;
 import com.fy.navi.ui.action.ViewAdapterKt;
 import com.fy.navi.ui.base.BaseFragment;
 import com.fy.navi.ui.dialog.IBaseDialogClickListener;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -69,7 +78,7 @@ import java.util.List;
  */
 public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsContentViewBinding,
         ScenePoiDetailContentViewImpl> {
-    private static final String HOME_COMPANY_FRAGMENT = "homeCompanyFragment";
+    private static final String HOME_COMPANY_FRAGMENT = "HomeCompanyFragment";
     private static final String DEFATULE_STRING = "--";
     private static final String DIVIDER = "_";
     private PoiInfoEntity mPoiInfoEntity;
@@ -129,41 +138,65 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
     /**
      * 去这里按钮的点击事件
      */
+
     private void handleRouteClick() {
         Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "点击去这里");
         if (mChildSelectInfo != null) {
             if (SearchPackage.getInstance().isAlongWaySearch()) {
-                RoutePackage.getInstance().addViaPoint(MapTypeId.MAIN_SCREEN_MAIN_MAP,
+                RoutePackage.getInstance().addViaPoint(MapType.MAIN_SCREEN_MAIN_MAP,
                         mChildSelectInfo);
             } else {
-                final Fragment fragment = (Fragment) ARouter.getInstance().build(
-                        RoutePath.Route.ROUTE_FRAGMENT).navigation();
-                addFragment((BaseFragment) fragment, SearchFragmentFactory.createRouteFragment(
-                        mChildSelectInfo));
+                openRouteFragment(mChildSelectInfo);
             }
         }else {
             if (SearchPackage.getInstance().isAlongWaySearch()) {
-                RoutePackage.getInstance().addViaPoint(MapTypeId.MAIN_SCREEN_MAIN_MAP,
+                RoutePackage.getInstance().addViaPoint(MapType.MAIN_SCREEN_MAIN_MAP,
                         mPoiInfoEntity);
             } else {
-                final Fragment fragment = (Fragment) ARouter.getInstance().build(
-                        RoutePath.Route.ROUTE_FRAGMENT).navigation();
-                addFragment((BaseFragment) fragment, SearchFragmentFactory.
-                        createRouteFragment(mPoiInfoEntity));
+                Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "end point1: " + mPoiInfoEntity.getPoint().getLon()
+                            + " ,lat" + mPoiInfoEntity.getPoint().getLat());
+                openRouteFragment(mPoiInfoEntity);
             }
         }
 
     }
 
+    @HookMethod(eventName = BuryConstant.EventName.AMAP_DESTINATION_GO)
+    private void openRouteFragment(PoiInfoEntity poiInfoEntity) {
+        final Fragment fragment = (Fragment) ARouter.getInstance().build(
+                RoutePath.Route.ROUTE_FRAGMENT).navigation();
+        addFragment((BaseFragment) fragment, SearchFragmentFactory.createRouteFragment(poiInfoEntity));
+
+        //for burying point
+        JSONObject params = new JSONObject();
+        try {
+            params.put(BuryConstant.Key.ROUTE_POI_TYPE, RoutePoiType.ROUTE_POI_TYPE_END);
+            params.put(BuryConstant.Key.POI_INFO_ENTRY, poiInfoEntity);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        BuryProperty properties = new BuryProperty.Builder()
+                .setParams(BuryConstant.ProperType.BURY_KEY_SEARCH_CONTENTS, params.toString())
+                .build();
+        BuryPointController.getInstance().setBuryProps(properties);
+    }
+
     /**
      * 周边搜索按钮的点击事件
      */
+    @HookMethod(eventName = BuryConstant.EventName.AMAP_DESTINATION_NEARBY)
     private void handleAroundSearchClick() {
         Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "点击周边搜索");
         final Fragment fragment = (Fragment) ARouter.getInstance().build(
                 RoutePath.Search.AROUND_SEARCH_FRAGMENT).navigation();
         addFragment((BaseFragment) fragment,
                 SearchFragmentFactory.createAroundFragment(mPoiInfoEntity));
+
+        //for burying point
+        BuryProperty properties = new BuryProperty.Builder()
+                .setParams(BuryConstant.ProperType.BURY_KEY_SEARCH_CONTENTS, mPoiInfoEntity.getName())
+                .build();
+        BuryPointController.getInstance().setBuryProps(properties);
     }
 
     /**
@@ -183,12 +216,11 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
 
             if (isFavorite) {
                 mScreenViewModel.removeFavorite(mPoiInfoEntity);
-                mScreenViewModel.deleteFavoriteData(mPoiInfoEntity.getFavoriteInfo().getItemId());
+//                mScreenViewModel.deleteFavoriteData(mPoiInfoEntity.getFavoriteInfo().getItemId());
                 ToastUtils.Companion.getInstance().showCustomToastView("取消收藏");
             } else {
-                mPoiInfoEntity.getFavoriteInfo().setItemId(mScreenViewModel.
-                        addFavorite(mPoiInfoEntity));
-                mScreenViewModel.addFavoriteData(mPoiInfoEntity, 0);
+                mScreenViewModel.addFavorite(mPoiInfoEntity, 0);
+//                mScreenViewModel.addFavoriteData(mPoiInfoEntity, 0);
                 ToastUtils.Companion.getInstance().showCustomToastView("收藏成功");
             }
         }
@@ -223,12 +255,12 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
      * @param searchResultEntity 数据实体类
      */
     public void onSearchResult(final SearchResultEntity searchResultEntity) {
+        if (null == searchResultEntity || searchResultEntity.getPoiList().isEmpty()) {
+            //ToastUtils.Companion.getInstance().showCustomToastView("暂无数据");
+            return;
+        }
         if (null != mSearchLoadingDialog) {
             mSearchLoadingDialog.hide();
-        }
-        if (null == searchResultEntity || searchResultEntity.getPoiList().isEmpty()) {
-            ToastUtils.Companion.getInstance().showCustomToastView("暂无数据");
-            return;
         }
         Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "poiType: " + searchResultEntity.getPoiType());
         if (searchResultEntity.getPoiType() == 0) {
@@ -243,7 +275,9 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
         }
         this.mPoiInfoEntity = searchResultEntity.getPoiList().get(0);
         initNormalView();
+        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "poiAoiBounds is: " + mPoiInfoEntity.getMPoiAoiBounds());
         if (mPoiInfoEntity != null && mScreenViewModel != null) {
+            ThreadManager.getInstance().removeHandleTask(mTimeoutTask);
             final int pointTypeCode = mScreenViewModel.getPointTypeCode(mPoiInfoEntity.getPointTypeCode());
             Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "pointTypeCode is: " + pointTypeCode);
             switch (pointTypeCode) {
@@ -277,56 +311,126 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
     }
 
     /**
+     * 刷新ETA信息 距离，到达时间，预计剩余电量
+     */
+    private void refreshEtaInfoView() {
+        mScreenViewModel.getTravelTimeFuture(new GeoPoint(mPoiInfoEntity.getPoint().getLon(),
+                        mPoiInfoEntity.getPoint().getLat()))
+                .thenAccept(etaInfo -> {
+                    ThreadManager.getInstance().postUi(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (!ConvertUtils.isEmpty(etaInfo) && !ConvertUtils.isEmpty(mViewBinding)
+                                    && !ConvertUtils.isEmpty(mViewBinding.poiDistanceTime)) {
+                                final String distance = formatDistanceArrayInternal(
+                                        etaInfo.getDistance());
+                                mViewBinding.poiDistanceTime.setText(MessageFormat.format("{0} {1}",
+                                        distance, etaInfo.getTravelTime()));
+                                final int leftCharge = Math.max(-99, etaInfo.getLeftCharge());
+                                if (!ConvertUtils.isEmpty(leftCharge)) {
+                                    //50%以上电量，显示满电量图片，20-50%电量，显示半电量图片
+                                    //0-20电量，显示低电量图片，文本变红
+                                    //小于0%电量，显示空电量图片，文本变红
+                                    if (leftCharge >= 50 && leftCharge <= 100) {
+                                        mViewBinding.sivArrivalCapacity.setImageResource(R.drawable.img_electricity_full_42);
+                                        mViewBinding.poiArrivalCapacity.setTextColor(
+                                                ResourceUtils.Companion.getInstance().getColor(R.color.poi_details_bottom_ff_00));
+                                    } else if (leftCharge > 20 && leftCharge < 50) {
+                                        mViewBinding.sivArrivalCapacity.setImageResource(R.drawable.img_electricity_medium_42);
+                                        mViewBinding.poiArrivalCapacity.setTextColor(
+                                                ResourceUtils.Companion.getInstance().getColor(R.color.poi_details_bottom_ff_00));
+                                    } else if (leftCharge > 0 && leftCharge <= 20) {
+                                        mViewBinding.sivArrivalCapacity.setImageResource(R.drawable.img_electricity_low_42);
+                                        mViewBinding.poiArrivalCapacity.setTextColor(
+                                                ResourceUtils.Companion.getInstance().getColor(R.color.navi_color_C73333_100));
+                                    } else if (leftCharge <= 0) {
+                                        mViewBinding.sivArrivalCapacity.setImageResource(R.drawable.img_electricity_empty_42);
+                                        mViewBinding.poiArrivalCapacity.setTextColor(
+                                                ResourceUtils.Companion.getInstance().getColor(R.color.navi_color_C73333_100));
+                                    }
+                                }
+                                mViewBinding.poiArrivalCapacity.setText(getContext().getString(
+                                        R.string.remain_charge, leftCharge));
+                            }
+                        }
+                    });
+
+                })
+                .exceptionally(error -> {
+                    Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "getTravelTimeFuture error:" + error);
+                    return null;
+                });
+    }
+
+    /**
      * 刷新通用视图
      */
     private void initNormalView() {
         if (mViewBinding != null && mPoiInfoEntity != null) {
             mViewBinding.skPoiName.setText(mPoiInfoEntity.getName());
             mViewBinding.poiSecondAddress.setText(mPoiInfoEntity.getAddress());
-            mViewBinding.scenePoiDetailsNormalView.poiBusinessHours.setText(
-                    getContext().getString(R.string.business_hour, mPoiInfoEntity.getBusinessTime()));
+            if (ConvertUtils.isEmpty(mPoiInfoEntity.getBusinessTime())) {
+                mViewBinding.scenePoiDetailsNormalView.poiBusinessHours.setVisibility(View.GONE);
+            } else {
+                mViewBinding.scenePoiDetailsNormalView.poiBusinessHours.setText(
+                        getContext().getString(R.string.business_hour, mPoiInfoEntity.getBusinessTime()));
+            }
             if (ConvertUtils.isEmpty(mPoiInfoEntity.getPhone())) {
                 mViewBinding.scenePoiDetailsNormalView.poiPhone.setVisibility(View.GONE);
                 mViewBinding.scenePoiDetailsBottomView.stlPhone.setVisibility(View.GONE);
             }
             mViewBinding.scenePoiDetailsNormalView.poiPhone.setText(
                     getContext().getString(R.string.poi_phone, mPoiInfoEntity.getPhone()));
-            mViewBinding.scenePoiDetailsBottomView.stlPhone.setOnClickListener(v -> {
-                final String phone = mPoiInfoEntity.getPhone();
-                final List<String> phoneString = new ArrayList<>();
-                if (phone.contains(";")) {
-                    final String[] split = phone.split(";");
-                    phoneString.addAll(Arrays.asList(split));
-                } else {
-                    phoneString.add(phone);
+
+            mViewBinding.scenePoiDetailsBottomView.stlPhone.setOnClickListener(new OnClickListener() {
+                @Override
+                @HookMethod(eventName = BuryConstant.EventName.AMAP_DESTINATION_PHONE)
+                public void onClick(View v) {
+                    final String phone = mPoiInfoEntity.getPhone();
+                    final List<String> phoneString = new ArrayList<>();
+                    StringBuffer phoneProp = new StringBuffer();
+                    if (phone.contains(";")) {
+                        final String[] split = phone.split(";");
+                        phoneString.addAll(Arrays.asList(split));
+                    } else {
+                        phoneString.add(phone);
+                    }
+                    if (!ConvertUtils.isEmpty(phoneString) && !ConvertUtils.isEmpty(phoneString.get(0))) {
+                        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "call phone: " + phoneString.get(0));
+                        phoneProp.append(phoneString.get(0));
+                        new SearchConfirmDialog.Build(getContext())
+                                .setDialogObserver(new IBaseDialogClickListener() {
+                                    @Override
+                                    public void onCommitClick() {
+                                        //拨打电话
+                                        final Intent intent = new Intent();
+                                        intent.setAction(Intent.ACTION_CALL);
+                                        intent.setData(Uri.parse("tel:" + phoneString.get(0)));
+                                        final Context context = getContext();
+                                        context.startActivity(intent);
+                                    }
+
+                                    @Override
+                                    public void onCancelClick() {
+
+                                    }
+                                })
+                                .setContent(getContext().getString(R.string.text_dial_phone_content, phoneString.get(0)))
+                                .setConfirmTitle(getContext().getString(R.string.text_dial))
+                                .build().show();
+
+                    } else {
+                        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "call phone is null ");
+                        phoneProp.append("");
+                    }
+
+                    //For burying point
+                    BuryProperty buryProperty = new BuryProperty.Builder()
+                            .setParams(BuryConstant.ProperType.BURY_KEY_SEARCH_CONTENTS, phoneProp.toString())
+                            .build();
+                    BuryPointController.getInstance().setBuryProps(buryProperty);
+
                 }
-                if (!ConvertUtils.isEmpty(phoneString) && !ConvertUtils.isEmpty(phoneString.get(0))) {
-                    Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "call phone: " + phoneString.get(0));
-                    new SearchConfirmDialog.Build(getContext())
-                            .setDialogObserver(new IBaseDialogClickListener() {
-                                @Override
-                                public void onCommitClick() {
-                                    //拨打电话
-                                    final Intent intent = new Intent();
-                                    intent.setAction(Intent.ACTION_CALL);
-                                    intent.setData(Uri.parse("tel:" + phoneString.get(0)));
-                                    final Context context = getContext();
-                                    context.startActivity(intent);
-                                }
-
-                                @Override
-                                public void onCancelClick() {
-
-                                }
-                            })
-                            .setContent(getContext().getString(R.string.text_dial_phone_content, phoneString.get(0)))
-                            .setConfirmTitle(getContext().getString(R.string.text_dial))
-                            .build().show();
-
-                } else {
-                    Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "call phone is null ");
-                }
-
             });
             final FavoriteInfo favoriteInfo = new FavoriteInfo()
                     .setCommonName(0)
@@ -343,29 +447,7 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
                         ContextCompat.getDrawable(getContext(),
                                 R.drawable.icon_basic_ic_star_default));
             }
-            mScreenViewModel.getTravelTimeFuture(new GeoPoint(mPoiInfoEntity.getPoint().getLon(),
-                            mPoiInfoEntity.getPoint().getLat()))
-                    .thenAccept(etaInfo -> {
-                        ThreadManager.getInstance().postUi(new Runnable() {
-                            @Override
-                            public void run() {
-                                if (!ConvertUtils.isEmpty(etaInfo) && !ConvertUtils.isEmpty(mViewBinding)
-                                        && !ConvertUtils.isEmpty(mViewBinding.poiDistanceTime)) {
-                                    final String distance = formatDistanceArrayInternal(
-                                            etaInfo.getDistance());
-                                    mViewBinding.poiDistanceTime.setText(MessageFormat.format("{0} {1}",
-                                            distance, etaInfo.getTravelTime()));
-                                    mViewBinding.poiArrivalCapacity.setText(getContext().getString(
-                                            R.string.remain_charge, etaInfo.getLeftCharge()));
-                                }
-                            }
-                        });
-
-                    })
-                    .exceptionally(error -> {
-                        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "getTravelTimeFuture error:" + error);
-                        return null;
-                    });
+            refreshEtaInfoView();
         } else {
             Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "mViewBinding or poiInfoEntity is null");
         }
@@ -600,7 +682,7 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
             parkString = getContext().getString(R.string.parking_lot_total, spaceTotal);
             mViewBinding.scenePoiDetailsParkingLotView.poiParkingLotOccupied.setText(parkString);
             mViewBinding.scenePoiDetailsParkingLotView.poiParkingLotOccupied.setTextColor(
-                    R.color.search_loading_bg_80);
+                    ResourceUtils.Companion.getInstance().getColor(R.color.search_loading_bg_80));
         } else {
             parkString = getContext().getString(R.string.parking_lot_status, spaceFree, spaceTotal);
             mViewBinding.scenePoiDetailsParkingLotView.poiParkingLotOccupied.setText(parkString);
@@ -647,8 +729,12 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
                     + gasStationInfos.size());
             serviceGasAdapter.setRouteBeanList(gasString);
         }
-        mViewBinding.scenePoiDetailsServiceAreaView.poiServiceAreaHours.setText(
-                getContext().getString(R.string.business_hour, mPoiInfoEntity.getBusinessTime()));
+        if (ConvertUtils.isEmpty(mPoiInfoEntity.getBusinessTime())) {
+            mViewBinding.scenePoiDetailsServiceAreaView.poiServiceAreaHours.setVisibility(View.GONE);
+        } else {
+            mViewBinding.scenePoiDetailsServiceAreaView.poiServiceAreaHours.setText(
+                    getContext().getString(R.string.business_hour, mPoiInfoEntity.getBusinessTime()));
+        }
         if (ConvertUtils.isEmpty(mPoiInfoEntity.getPhone())) {
             mViewBinding.scenePoiDetailsServiceAreaView.poiServiceAreaPhone.
                     setVisibility(View.GONE);
@@ -948,7 +1034,12 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
                     mViewBinding.scenePoiDetailsBottomView.stvStartRoute.setText(R.string.st_along_way_point);
                     mViewBinding.scenePoiDetailsBottomView.sivStartRoute.setVisibility(GONE);
                     mViewBinding.scenePoiDetailsBottomView.stlAroundSearch.setVisibility(GONE);
-                    mViewBinding.scenePoiDetailsBottomView.stlPoiFavorites.setVisibility(VISIBLE);
+                    if (mScreenViewModel.getViaCount() >= 1) {
+                        mViewBinding.scenePoiDetailsBottomView.stlPoiFavorites.setVisibility(GONE);
+                        mViewBinding.scenePoiDetailsBottomView.stlGoFirst.setVisibility(VISIBLE);
+                    } else {
+                        mViewBinding.scenePoiDetailsBottomView.stlPoiFavorites.setVisibility(VISIBLE);
+                    }
                 } else {
                     Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "去这里");
                     mViewBinding.scenePoiDetailsBottomView.sivStartRoute.setImageDrawable(
@@ -998,6 +1089,14 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
                 mViewBinding.scenePoiDetailsBottomView.stlAroundSearch.setVisibility(GONE);
                 mViewBinding.scenePoiDetailsBottomView.stlPoiFavorites.setVisibility(VISIBLE);
                 break;
+            case AutoMapConstant.PoiType.POI_DELETE_AROUND:
+                Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "删除途径点");
+                mViewBinding.scenePoiDetailsBottomView.sivStartRoute.setImageDrawable(null);
+                mViewBinding.scenePoiDetailsBottomView.stvStartRoute.setText(R.string.st_along_way_point_delete);
+                mViewBinding.scenePoiDetailsBottomView.sivStartRoute.setVisibility(GONE);
+                mViewBinding.scenePoiDetailsBottomView.stlAroundSearch.setVisibility(GONE);
+                mViewBinding.scenePoiDetailsBottomView.stlPoiFavorites.setVisibility(VISIBLE);
+                break;
             default:
                 break;
         }
@@ -1017,27 +1116,7 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
                 case AutoMapConstant.PoiType.POI_KEYWORD:
                 case AutoMapConstant.PoiType.POI_AROUND:
                 case AutoMapConstant.PoiType.POI_MAP_CLICK:
-                    if (mChildSelectInfo != null) {
-                        if (SearchPackage.getInstance().isAlongWaySearch()) {
-                            RoutePackage.getInstance().addViaPoint(MapTypeId.MAIN_SCREEN_MAIN_MAP,
-                                    mChildSelectInfo);
-                        } else {
-                            final Fragment fragment = (Fragment) ARouter.getInstance().build(
-                                    RoutePath.Route.ROUTE_FRAGMENT).navigation();
-                            addFragment((BaseFragment) fragment,
-                                    SearchFragmentFactory.createRouteFragment(mChildSelectInfo));
-                        }
-                    } else {
-                        if (SearchPackage.getInstance().isAlongWaySearch()) {
-                            RoutePackage.getInstance().addViaPoint(MapTypeId.MAIN_SCREEN_MAIN_MAP,
-                                    mPoiInfoEntity);
-                        } else {
-                            final Fragment fragment = (Fragment) ARouter.getInstance().build(
-                                    RoutePath.Route.ROUTE_FRAGMENT).navigation();
-                            addFragment((BaseFragment) fragment,
-                                    SearchFragmentFactory.createRouteFragment(mPoiInfoEntity));
-                        }
-                    }
+                    handleRouteClick();
 
                     break;
                 case AutoMapConstant.PoiType.POI_HOME:
@@ -1050,43 +1129,58 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
                         final String resultText = switch (poiType) {
                             case AutoMapConstant.PoiType.POI_HOME -> {
                                 commonName = 1;
-                                closeAllFragmentsUntilTargetFragment(
-                                        HOME_COMPANY_FRAGMENT);
+                                closeAllFragmentsUntilTargetFragment(HOME_COMPANY_FRAGMENT);
+                                showCurrentFragment();
                                 yield "设置家成功";
                             }
                             case AutoMapConstant.PoiType.POI_COMPANY -> {
                                 commonName = 2;
-                                closeAllFragmentsUntilTargetFragment(
-                                        HOME_COMPANY_FRAGMENT);
+                                closeAllFragmentsUntilTargetFragment(HOME_COMPANY_FRAGMENT);
+                                showCurrentFragment();
                                 yield "设置公司成功";
                             }
                             case AutoMapConstant.PoiType.POI_COMMON -> {
                                 commonName = 3;
-                                closeAllFragmentsUntilTargetFragment(
-                                        HOME_COMPANY_FRAGMENT);
+                                closeAllFragmentsUntilTargetFragment(HOME_COMPANY_FRAGMENT);
+                                showCurrentFragment();
                                 yield "添加成功";
                             }
                             default -> {
                                 commonName = 0;
-                                //todo 收藏页面未完成，待后续完善后添加跳转逻辑
+                                closeAllFragmentsUntilTargetFragment(HOME_COMPANY_FRAGMENT);
+                                showCurrentFragment();
                                 yield "添加成功";
                             }
                         };
                         final FavoriteInfo favoriteInfo = new FavoriteInfo();
                         favoriteInfo.setCommonName(commonName)
-                                .setItemId(mPoiInfoEntity.getPid() + DIVIDER + mPoiInfoEntity.getName()
-                                        + DIVIDER + mPoiInfoEntity.getPoint().getLon() + DIVIDER
-                                        + mPoiInfoEntity.getPoint().getLat())
                                 .setUpdateTime(new Date().getTime());
                         mPoiInfoEntity.setFavoriteInfo(favoriteInfo);
-                        BehaviorPackage.getInstance().addFavoriteData(mPoiInfoEntity, commonName);
+                        mScreenViewModel.addFavorite(mPoiInfoEntity, commonName);
+//                        BehaviorPackage.getInstance().addFavoriteData(mPoiInfoEntity, commonName);
                         SettingUpdateObservable.getInstance().onUpdateSyncTime();
-                        closeAllFragment();
                         ToastUtils.Companion.getInstance().showCustomToastView(resultText);
                     }
                     break;
+                case AutoMapConstant.PoiType.POI_DELETE_AROUND:
+                    RoutePackage.getInstance().removeVia(MapType.MAIN_SCREEN_MAIN_MAP,
+                            mPoiInfoEntity, true);
+                    break;
                 default:
                     break;
+            }
+        });
+        mViewBinding.scenePoiDetailsBottomView.stlGoFirst.setOnClickListener((view) -> {
+            if (mChildSelectInfo != null) {
+                if (SearchPackage.getInstance().isAlongWaySearch()) {
+                    RoutePackage.getInstance().addViaPoint(MapType.MAIN_SCREEN_MAIN_MAP,
+                            mChildSelectInfo, 0);
+                }
+            } else {
+                if (SearchPackage.getInstance().isAlongWaySearch()) {
+                    RoutePackage.getInstance().addViaPoint(MapType.MAIN_SCREEN_MAIN_MAP,
+                            mPoiInfoEntity, 0);
+                }
             }
         });
     }

@@ -1,0 +1,14 @@
+{
+  "point_layer_item_style": {
+    "normal_style": {
+      "poi_marker_id": "search_child_all.xml",
+      "poi_marker_info": "marker_info_search_child_more"
+    },
+    "focus_style": {
+      "bg_marker_id": "search_child_all.xml",
+      "bg_marker_info": "marker_info_search_child_more",
+      "poi_marker_id": "global_image_b_poi_red_hl_day_night",
+      "poi_marker_info": "marker_info_point_center_up"
+    }
+  }
+}

@@ -8,7 +8,7 @@ android {
     buildToolsVersion libs.versions.buildSdk.get()
 
     defaultConfig {
-        minSdk Integer.parseInt(libs.versions.minSdk.get())
+        minSdk IS_PAD_RUN.toBoolean() ? Integer.parseInt(libs.versions.padminSdk.get()) :Integer.parseInt(libs.versions.minSdk.get())
         versionCode 1
         versionName "1.0"
     }

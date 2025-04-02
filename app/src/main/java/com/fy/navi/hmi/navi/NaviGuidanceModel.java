@@ -1,27 +1,32 @@
 package com.fy.navi.hmi.navi;
 
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.provider.Settings;
 
 import com.android.utils.ConvertUtils;
-
-
 import com.android.utils.NetWorkUtils;
 import com.android.utils.log.Logger;
+import com.android.utils.thread.ThreadManager;
 import com.fy.navi.hmi.search.alongway.MainAlongWaySearchFragment;
+import com.fy.navi.hmi.search.searchresult.SearchResultFragment;
 import com.fy.navi.hmi.setting.SettingFragment;
 import com.fy.navi.scene.impl.imersive.ImersiveStatus;
 import com.fy.navi.scene.impl.imersive.ImmersiveStatusScene;
 import com.fy.navi.scene.impl.navi.inter.ISceneCallback;
 import com.fy.navi.scene.ui.navi.manager.NaviSceneId;
 import com.fy.navi.scene.ui.navi.manager.NaviSceneManager;
+import com.fy.navi.service.AppContext;
 import com.fy.navi.service.AutoMapConstant;
+import com.fy.navi.service.GBLCacheFilePath;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.adapter.navi.NaviConstant;
 import com.fy.navi.service.adapter.navi.bls.NaviDataFormatHelper;
-import com.fy.navi.service.define.map.MapTypeId;
+import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.map.MapTypeManager;
 import com.fy.navi.service.define.navi.CrossImageEntity;
+import com.fy.navi.service.define.navi.FyElecVehicleETAInfo;
 import com.fy.navi.service.define.navi.LaneInfoEntity;
 import com.fy.navi.service.define.navi.NaviDriveReportEntity;
 import com.fy.navi.service.define.navi.NaviEtaInfo;
@@ -32,28 +37,39 @@ import com.fy.navi.service.define.navi.SapaInfoEntity;
 import com.fy.navi.service.define.navi.SpeedOverallEntity;
 import com.fy.navi.service.define.route.RequestRouteResult;
 import com.fy.navi.service.define.route.RouteParam;
+import com.fy.navi.service.define.route.RoutePriorityType;
 import com.fy.navi.service.define.route.RouteRequestParam;
 import com.fy.navi.service.define.route.RouteWayID;
+import com.fy.navi.service.define.route.RouteWeatherInfo;
 import com.fy.navi.service.define.search.PoiInfoEntity;
+import com.fy.navi.service.define.setting.SettingController;
 import com.fy.navi.service.logicpaket.layer.LayerPackage;
 import com.fy.navi.service.logicpaket.map.MapPackage;
+import com.fy.navi.service.logicpaket.message.MessageCenterPackage;
 import com.fy.navi.service.logicpaket.navi.IGuidanceObserver;
 import com.fy.navi.service.logicpaket.navi.NaviPackage;
+import com.fy.navi.service.logicpaket.navi.OpenApiHelper;
 import com.fy.navi.service.logicpaket.route.IRouteResultObserver;
 import com.fy.navi.service.logicpaket.route.RoutePackage;
+import com.fy.navi.service.logicpaket.search.SearchPackage;
+import com.fy.navi.service.logicpaket.setting.SettingPackage;
+import com.fy.navi.service.logicpaket.user.usertrack.UserTrackPackage;
 import com.fy.navi.ui.base.BaseModel;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implements IGuidanceObserver,
-        ImmersiveStatusScene.IImmersiveStatusCallBack, ISceneCallback, IRouteResultObserver, NetWorkUtils.NetworkObserver {
+public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implements
+        IGuidanceObserver, ImmersiveStatusScene.IImmersiveStatusCallBack, ISceneCallback,
+        IRouteResultObserver, NetWorkUtils.NetworkObserver{
     private static final String TAG = MapDefaultFinalTag.NAVI_HMI_TAG;
     private final NaviPackage mNaviPackage;
     private final RoutePackage mRoutePackage;
     private final LayerPackage mLayerPackage;
     private final MapPackage mMapPackage;
+    private final MessageCenterPackage mMsgCenterPackage;
     private ImersiveStatus mCurrentStatus = ImersiveStatus.IMERSIVE;
     private List<NaviViaEntity> mViaList = new ArrayList<>();
     private NaviEtaInfo mNaviEtaInfo;
@@ -67,24 +83,39 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
     public static final int ENTER_PREVIEW = 1;
     public static final int EXIT_PREVIEW = 0;
     private NetWorkUtils mNetWorkUtils;
+    private Boolean mCurrentNetStatus;
+    private NaviGuidanceHelp mModelHelp;
+    private boolean mIsShowAutoAdd = true; // 是否显示自动添加的充电桩
+
+    public static final int ONE_SECOND = 1000;
     private List<OnNetStatusChangeListener> mNetStatusChangeListeners =
             new CopyOnWriteArrayList<>();
 
+    private final SearchPackage mSearchPackage;
+    private ChargeTipManager mTipManager;
+    private String mFilename = "";
 
     public NaviGuidanceModel() {
         mMapPackage = MapPackage.getInstance();
         mNaviPackage = NaviPackage.getInstance();
         mLayerPackage = LayerPackage.getInstance();
         mRoutePackage = RoutePackage.getInstance();
+        mSearchPackage = SearchPackage.getInstance();
         mNetWorkUtils = NetWorkUtils.Companion.getInstance();
+        mMsgCenterPackage = MessageCenterPackage.getInstance();
+        mModelHelp = new NaviGuidanceHelp();
     }
 
     @Override
     public void onCreate() {
         super.onCreate();
+        NaviSceneManager.getInstance().onCreateSceneView();
+        Logger.i(TAG, "model 建立");
         ImmersiveStatusScene.getInstance().registerCallback("NaviGuidanceModel", this);
         mNaviPackage.registerObserver(NaviConstant.KEY_NAVI_MODEL, this);
         mRoutePackage.registerRouteObserver(NaviConstant.KEY_NAVI_MODEL, this);
+        mNetWorkUtils.registerNetworkObserver(this);
+        mCurrentNetStatus = mNetWorkUtils.checkNetwork();
     }
 
     @Override
@@ -109,11 +140,27 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
             isNaviSuccess = mNaviPackage.startNavigation(false);
         }
         if (isNaviSuccess) {
-            final MapTypeId mapTypeId = MapTypeManager.getInstance().
+            Logger.i(TAG, "startNaviSuccess");
+            String isOpen = SettingPackage.getInstance().getValueFromDB(SettingController.KEY_SETTING_IS_AUTO_RECORD);
+            Logger.i(TAG, "isOpen:" + isOpen);
+            if (isOpen != null && isOpen.equals("true")) {
+                Logger.i(TAG, "开始打点");
+                @SuppressLint("HardwareIds") final String androidId = Settings.Secure.getString(
+                        AppContext.getInstance().getMContext().getContentResolver(),
+                        Settings.Secure.ANDROID_ID
+                );
+                final long curTime = System.currentTimeMillis();
+                mFilename = curTime + "_" + 1 + "_" + androidId;
+                UserTrackPackage.getInstance().startGpsTrack(GBLCacheFilePath.SYNC_PATH + "/403", mFilename, 2000);
+            }
+            mIsShowAutoAdd = true;
+            final MapType mapTypeId = MapTypeManager.getInstance().
                     getMapTypeIdByName(mViewModel.mScreenId);
             mNaviPackage.addNaviRecord(false);
             mMapPackage.goToCarPosition(mapTypeId);
             mLayerPackage.setFollowMode(mapTypeId, true);
+            // TODO 测试代码
+//            mModelHelp.mockTestChargeTipMsg(mTipManager);
         }
     }
 
@@ -121,16 +168,24 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
     public void onAttachViewModel(final NaviGuidanceViewModel baseViewModel) {
         super.onAttachViewModel(baseViewModel);
         mViewModel.addSceneCallback(this);
+        mTipManager = new ChargeTipManager(mViewModel);
     }
 
     @Override
     public void onNaviInfo(final NaviEtaInfo naviInfoBean) {
+        if (ConvertUtils.isEmpty(naviInfoBean)) return;
         mNaviEtaInfo = naviInfoBean;
         mViewModel.onNaviInfo(naviInfoBean);
+        if (mTipManager != null) {
+            mTipManager.setNextViaChargeStation(naviInfoBean);
+        }
+        mViewModel.onCrossProgress(naviInfoBean.getAllDist());
     }
 
     @Override
     public void onNaviStop() {
+        UserTrackPackage.getInstance().closeGpsTrack(GBLCacheFilePath.SYNC_PATH + "/403", mFilename);
+        mFilename = "";
         mViewModel.onNaviStop();
         mRoutePackage.removeAllRouteInfo(MapTypeManager.getInstance().getMapTypeIdByName(mViewModel.mScreenId));
         mLayerPackage.setVisibleGuideSignalLight(MapTypeManager.getInstance().getMapTypeIdByName(mViewModel.mScreenId), false);
@@ -151,7 +206,7 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
     public void onUpdateTMCLightBar(final NaviTmcInfo naviTmcInfo) {
         Logger.i(TAG, "onUpdateTMCLightBar naviTmcInfo = " + naviTmcInfo.toString());
         mNaviPackage.setTmcData(naviTmcInfo);
-        mViewModel.onUpdateTMCLightBar(naviTmcInfo);
+        mViewModel.onUpdateTMCLightBar(naviTmcInfo, mIsShowAutoAdd);
     }
 
     @Override
@@ -171,6 +226,15 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
 
     @Override
     public void onUpdateViaPass(final long viaIndex) {
+        List<RouteParam> allPoiParamList = OpenApiHelper.getAllPoiParamList(
+                MapType.MAIN_SCREEN_MAIN_MAP);
+        // 经过途经点后删除途经点
+        if (allPoiParamList.size() > 2) {
+            PoiInfoEntity poiInfo = allPoiParamList.get(1).getMPoiInfoEntity();
+            boolean isDeleteSuccess = mRoutePackage.removeVia(MapType.MAIN_SCREEN_MAIN_MAP,
+                    poiInfo, false);
+            Logger.i(TAG, "onUpdateViaPass isDeleteSuccess = " + isDeleteSuccess);
+        }
         mViewModel.onUpdateViaPass(viaIndex);
     }
 
@@ -191,14 +255,15 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
     }
 
     @Override
-    public void onRouteFail(final MapTypeId mapTypeId, final String errorMsg) {
+    public void onRouteFail(final MapType mapTypeId, final String errorMsg) {
         Logger.i(TAG, "onRouteFail");
+        mViewModel.updateViaList();
     }
 
     @Override
     public void onRouteResult(final RequestRouteResult requestRouteResult) {
         Logger.i(TAG, "onRouteResult");
-        ImmersiveStatusScene.getInstance().setImmersiveStatus(MapTypeId.MAIN_SCREEN_MAIN_MAP, ImersiveStatus.IMERSIVE);
+        ImmersiveStatusScene.getInstance().setImmersiveStatus(MapType.MAIN_SCREEN_MAIN_MAP, ImersiveStatus.IMERSIVE);
     }
 
     @Override
@@ -210,7 +275,15 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
     @Override
     public void onDestroy() {
         super.onDestroy();
-        NaviSceneManager.getInstance().removeAllBaseScene();
+        NaviSceneManager.getInstance().destroySceneView();
+        mNetWorkUtils.unRegisterNetworkObserver(this);
+        mSearchPackage.unRegisterCallBack(NaviConstant.KEY_NAVI_MODEL);
+        if (mNaviPackage != null) {
+            mNaviPackage.unregisterObserver(NaviConstant.KEY_NAVI_MODEL);
+        }
+        if (mTipManager != null) {
+            mTipManager.unInit();
+        }
     }
 
     /**
@@ -228,14 +301,15 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
     }
 
     @Override
-    public void onImmersiveStatusChange(final MapTypeId mapTypeId,
+    public void onImmersiveStatusChange(final MapType mapTypeId,
                                         final ImersiveStatus currentImersiveStatus) {
         Logger.i(TAG, "NaviGuidanceModel currentImersiveStatus：" + currentImersiveStatus +
                 "，mCurrentStatus：" + mCurrentStatus);
-        if (MapTypeId.MAIN_SCREEN_MAIN_MAP.equals(mapTypeId)) {
+        if (MapType.MAIN_SCREEN_MAIN_MAP.equals(mapTypeId)) {
             setImmersiveStatus(currentImersiveStatus);
         }
-        if (currentImersiveStatus != mCurrentStatus) {
+        if (currentImersiveStatus != mCurrentStatus ||
+                currentImersiveStatus == ImersiveStatus.TOUCH) {
             mCurrentStatus = currentImersiveStatus;
             mViewModel.onImmersiveStatusChange(currentImersiveStatus);
         }
@@ -248,6 +322,37 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
     }
 
     @Override
+    public void goCharge() {
+        ISceneCallback.super.goCharge();
+        // 注：点击【去充电】，调用 沿途搜充电站接口，展示沿途充电站列表
+        Logger.i(TAG, "立即去充电！");
+        final Bundle bundle = new Bundle();
+        bundle.putInt(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_TYPE, AutoMapConstant.SearchType.SEARCH_KEYWORD);
+        bundle.putString(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_KEYWORD, "充电站");
+        bundle.putParcelable(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_POI_LIST, null);
+        addFragment(new SearchResultFragment(), bundle);
+    }
+
+    @Override
+    public void openSupplyPlan() {
+        ISceneCallback.super.openSupplyPlan();
+        // TODO
+        Logger.i(TAG, "开启补能规划，重新算路！");
+    }
+
+    @Override
+    public void searchNewChargeStation() {
+        ISceneCallback.super.searchNewChargeStation();
+        Logger.i(TAG, "当前充电站已关闭或者繁忙，查找新的充电站");
+        // 当前充电站已关闭或者繁忙，查找新的充电站
+        Bundle bundle = new Bundle();
+        bundle.putInt(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_TYPE, AutoMapConstant.SearchType.SEARCH_KEYWORD);
+        bundle.putString(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_KEYWORD, "充电站");
+        bundle.putParcelable(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_POI_LIST, null);
+        addFragment(new SearchResultFragment(), bundle);
+    }
+
+    @Override
     public void skipSettingFragment() {
         Logger.i(TAG, "skipSettingFragment");
         addFragment(new SettingFragment(), null);
@@ -256,11 +361,15 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
     @Override
     public void deleteViaPoint(final NaviViaEntity entity) {
         ISceneCallback.super.deleteViaPoint(entity);
-        final PoiInfoEntity poiInfo = new PoiInfoEntity();
-        poiInfo.setPoint(entity.getRealPos());
-        poiInfo.setPid(entity.getPid());
-        final boolean result = mRoutePackage.removeVia(MapTypeManager.getInstance().getMapTypeIdByName(mViewModel.mScreenId), poiInfo, true);
-        mViewModel.notifyDeleteViaPointResult(result, entity);
+        if (entity.getChargeInfo() != null && entity.getChargeInfo().isAutoAdd()) {
+            showDeleteAllTip(entity);
+        } else {
+            final PoiInfoEntity poiInfo = new PoiInfoEntity();
+            poiInfo.setPoint(entity.getRealPos());
+            poiInfo.setPid(entity.getPid());
+            final boolean result = mRoutePackage.removeVia(MapTypeManager.getInstance().getMapTypeIdByName(mViewModel.mScreenId), poiInfo, true);
+            mViewModel.notifyDeleteViaPointResult(result, entity);
+        }
     }
 
     @Override
@@ -284,29 +393,34 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
      */
     public List<NaviViaEntity> getViaList() {
         mViaList.clear();
+        final List<NaviViaEntity> tmpList = new ArrayList<>();
         //[0]代表起点 [size-1]代表终点
         final List<RouteParam> allPoiParamList = mRoutePackage.getAllPoiParamList(
                 MapTypeManager.getInstance().getMapTypeIdByName(mViewModel.mScreenId));
         Logger.i(TAG, "allPoiParamList allPoiParamList:" + allPoiParamList.size());
-        for (int i = 0; i < allPoiParamList.size(); i++) {
-            if (i > 0) {
-                final RouteParam routeParam = allPoiParamList.get(i);
-                if (i == allPoiParamList.size() - 1) {
-                    mViaList.add(NaviDataFormatHelper.getNaviViaEntity(routeParam, mNaviEtaInfo));
-                } else {
-                    final ArrayList<NaviEtaInfo.NaviTimeAndDist> viaRemain = mNaviEtaInfo.viaRemain;
-                    Logger.i(TAG, "allPoiParamList viaRemain:" + viaRemain.size());
-                    if (!ConvertUtils.isEmpty(viaRemain)) {
-                        final int index = i - 1;
-                        if (viaRemain.size() > index) {
-                            mViaList.add(NaviDataFormatHelper.getNaviViaEntity(routeParam, viaRemain.get(index)));
-                        }
-                    } else {
-                        mViaList.add(NaviDataFormatHelper.getNaviViaEntity(routeParam, null));
-                    }
+        for (int i = 1; i < allPoiParamList.size() - 1; i++) {
+            final ArrayList<NaviEtaInfo.NaviTimeAndDist> viaRemain = mNaviEtaInfo.viaRemain;
+            final RouteParam routeParam = allPoiParamList.get(i);
+            Logger.i(TAG, "allPoiParamList viaRemain:" + viaRemain.size());
+            if (!ConvertUtils.isEmpty(viaRemain)) {
+                final int index = i - 1;
+                if (viaRemain.size() > index) {
+                    tmpList.add(NaviDataFormatHelper.getNaviViaEntity(routeParam, viaRemain.get(index)));
                 }
+            } else {
+                tmpList.add(NaviDataFormatHelper.getNaviViaEntity(routeParam, null));
             }
         }
+        if (mIsShowAutoAdd) {
+            tmpList.addAll(mNaviPackage.getAllViaPoints());
+            Collections.sort(tmpList, (o1, o2) -> o1.getmArriveTimeStamp() >= o2.getmArriveTimeStamp() ? 1 : -1);
+        }
+        mViaList.addAll(tmpList);
+        // 最后添加终点
+        if (!ConvertUtils.isEmpty(allPoiParamList)) {
+            mViaList.add(NaviDataFormatHelper.getNaviViaEntity(allPoiParamList.get(allPoiParamList.size() - 1), mNaviEtaInfo));
+        }
+        Logger.i(TAG, "mViaList-Size:" + mViaList.size(), "tmSize:" + tmpList.size());
         return mViaList;
     }
 
@@ -317,6 +431,7 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
         final RouteRequestParam param = new RouteRequestParam();
         param.setMMapTypeId(MapTypeManager.getInstance().getMapTypeIdByName(mViewModel.mScreenId));
         param.setMRouteWay(RouteWayID.ROUTE_WAY_CHANGE_PREFERENCE);
+        param.setMRoutePriorityType(RoutePriorityType.ROUTE_TYPE_CHANGE_STRATEGE);
         mRoutePackage.requestRoute(param);
     }
 
@@ -327,7 +442,7 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
      * @param open true-开启全览  false-关闭全览.
      */
     @Override
-    public void onVoiceOverview(final MapTypeId mapTypeId, final boolean open) {
+    public void onVoiceOverview(final MapType mapTypeId, final boolean open) {
         Logger.i(TAG, "onVoiceOverview open:" + open);
         if (open) {
             mViewModel.naviPreviewSwitch(ENTER_PREVIEW);
@@ -344,7 +459,7 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
      * @param parallelOption ，切换类型，MAIN-主路 SIDE-辅路  ON-桥上  UNDER-桥下.
      */
     @Override
-    public void onVoiceParallelOption(final MapTypeId mapTypeId, final String parallelOption) {
+    public void onVoiceParallelOption(final MapType mapTypeId, final String parallelOption) {
         Logger.i(TAG, "onVoiceParallelOption parallelOption:" + parallelOption);
         if (MAIN_ROAD.equals(parallelOption) || SIDE_ROAD.equals(parallelOption)) {
             mViewModel.naviParallelSwitch(ROAD_SWITCH);
@@ -359,7 +474,7 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
      * @param mapTypeId MapTypeId，对应底图.
      */
     @Override
-    public void onVoiceContinueNavigation(final MapTypeId mapTypeId) {
+    public void onVoiceContinueNavigation(final MapType mapTypeId) {
         Logger.i(TAG, "onVoiceContinueNavigation");
         mViewModel.naviContinue();
     }
@@ -430,42 +545,144 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
      * 网络状态改变
      */
     private void onNetStatusChange() {
-        Boolean isNetConnected = mNetWorkUtils.checkNetwork();
-        Logger.i(TAG, "onNetStatusChange isNetConnected:" + isNetConnected);
-        if (!ConvertUtils.isEmpty(mNetStatusChangeListeners)) {
-            for (OnNetStatusChangeListener listener : mNetStatusChangeListeners) {
-                listener.onNetStatusChange(Boolean.TRUE.equals(isNetConnected));
+        ThreadManager.getInstance().postDelay(new Runnable() {
+            @Override
+            public void run() {
+                Boolean isNetConnected = mNetWorkUtils.checkNetwork();
+                Logger.i(TAG, "onNetStatusChange isNetConnected:" + isNetConnected);
+                if (!ConvertUtils.isEmpty(mNetStatusChangeListeners)) {
+                    if (isNetConnected != mCurrentNetStatus) {
+                        mCurrentNetStatus = isNetConnected;
+                        for (OnNetStatusChangeListener listener : mNetStatusChangeListeners) {
+                            listener.onNetStatusChange(Boolean.TRUE.equals(isNetConnected));
+                        }
+                    }
+                }
             }
-        }
+        }, ONE_SECOND);
+
     }
 
     @Override
     public void onNetConnectSuccess() {
+        Logger.i(TAG, "onNetConnectSuccess");
         onNetStatusChange();
     }
 
     @Override
     public void onNetUnavailable() {
+        Logger.i(TAG, "onNetUnavailable");
         onNetStatusChange();
     }
 
     @Override
     public void onNetBlockedStatusChanged() {
+        Logger.i(TAG, "onNetBlockedStatusChanged");
         onNetStatusChange();
     }
 
     @Override
     public void onNetLosing() {
+        Logger.i(TAG, "onNetLosing");
         onNetStatusChange();
     }
 
     @Override
     public void onNetLinkPropertiesChanged() {
+        Logger.i(TAG, "onNetLinkPropertiesChanged");
         onNetStatusChange();
     }
 
     @Override
     public void onNetDisConnect() {
+        Logger.i(TAG, "onNetDisConnect");
         onNetStatusChange();
+    }
+    /***
+     * 这里主要是 透出预计到达时间
+     * @param infos
+     */
+    @Override
+    public void onUpdateElectVehicleETAInfo(List<FyElecVehicleETAInfo> infos) {
+        IGuidanceObserver.super.onUpdateElectVehicleETAInfo(infos);
+        Logger.i(TAG, "onUpdateElecVehicleETAInfo");
+        if (mTipManager != null) {
+            mTipManager.onUpdateElectVehicleETAInfo(infos);
+        }
+    }
+
+    @Override
+    public void onUpdateChargeStationPass(long viaIndex) {
+        IGuidanceObserver.super.onUpdateChargeStationPass(viaIndex);
+        // 将要通过的充电桩回调
+        if (mTipManager != null) {
+            mTipManager.onUpdateChargeStationPass();
+        }
+    }
+
+    /**
+     * 显示控制详情
+     */
+    @Override
+    public void showControlDetails() {
+        mViewModel.showControlDetails();
+    }
+
+    @Override
+    public void onShowNaviWeather(RouteWeatherInfo info) {
+        IGuidanceObserver.super.onShowNaviWeather(info);
+        Logger.i(TAG, "onShowNaviWeather");
+        // TODO 待实现和自测，等待tangchao
+//        final MessageCenterInfo centerInfo = new MessageCenterInfo();
+//        centerInfo.setMsgContent("desc==============");
+//        centerInfo.setMsgTitle("title");
+//        centerInfo.setMsgType(MessageCenterType.ROAD_LIMIT);
+//        mMsgCenterPackage.pushMessage(centerInfo);
+    }
+
+    private void showDeleteAllTip(final NaviViaEntity entity) {
+        Logger.i(TAG, "showDeleteAllTip");
+        mViewModel.showDeleteAllTip();
+    }
+
+    public void deleteAutoAddChargeStation() {
+        mIsShowAutoAdd = false;
+        mViewModel.onUpdateViaList(mIsShowAutoAdd);
+    }
+
+    /**
+     * @param keyWord    搜索关键字
+     * @param searchType 搜索类型
+     */
+    @Override
+    public void goSearchView(String keyWord, int searchType) {
+        ISceneCallback.super.goSearchView(keyWord, searchType);
+        mViewModel.goSearchView(keyWord, searchType);
+    }
+
+    /**
+     * 跳转到沿途搜页面
+     */
+    @Override
+    public void goAlongWayList() {
+        ISceneCallback.super.goAlongWayList();
+        mViewModel.goAlongWayList();
+    }
+
+    @Override
+    public void closeSearchView() {
+        ISceneCallback.super.closeSearchView();
+        mViewModel.closeSearchView();
+    }
+
+    @Override
+    public void onRouteSuccess(String successMsg) {
+        Logger.i(TAG, "onRouteSuccess");
+        mViewModel.updateViaList();
+    }
+
+    @Override
+    public boolean isNeedCloseNaviChargeTipLater() {
+        return mViewModel.isNeedCloseNaviChargeTipLater();
     }
 }

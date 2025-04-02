@@ -9,6 +9,8 @@ import com.fy.navi.scene.ui.navi.SceneNaviViaInfoView;
 import com.fy.navi.scene.ui.navi.manager.INaviSceneEvent;
 import com.fy.navi.scene.ui.navi.manager.NaviSceneId;
 import com.fy.navi.scene.ui.navi.manager.NaviSceneManager;
+import com.fy.navi.service.MapDefaultFinalTag;
+import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.navi.NaviEtaInfo;
 import com.fy.navi.service.define.route.RouteParam;
 import com.fy.navi.service.logicpaket.route.RoutePackage;
@@ -31,6 +33,7 @@ public class SceneNaviViaInfoImpl extends BaseSceneModel<SceneNaviViaInfoView> {
     public SceneNaviViaInfoImpl(final SceneNaviViaInfoView screenView) {
         super(screenView);
         mRoutePackage = RoutePackage.getInstance();
+        setScreenId(MapType.MAIN_SCREEN_MAIN_MAP);
     }
 
     @Override
@@ -57,6 +60,11 @@ public class SceneNaviViaInfoImpl extends BaseSceneModel<SceneNaviViaInfoView> {
      * @param naviEtaInfo naviEtaInfo
      **/
     private void checkWaypointInfo(final NaviEtaInfo naviEtaInfo) {
+        // 没有途经点的情况
+        if (ConvertUtils.isEmpty(naviEtaInfo.viaRemain)) {
+            updateSceneVisible(false);
+            return;
+        }
         // 实测这个方法返回的是总的途经点，并没有去除掉已经路过的
         final List<RouteParam> allPoiParamList = mRoutePackage.getAllPoiParamList(mMapTypeId);
         String viaName = "";
@@ -69,7 +77,7 @@ public class SceneNaviViaInfoImpl extends BaseSceneModel<SceneNaviViaInfoView> {
         // 因为要去除掉出发点和终点，所以大于2
         if (allPoiParamList.size() > 2) {
             // 当前的途经点
-            viaName = getViaName((int)mViaIndex);
+            viaName = getViaName();
             final ArrayList<NaviEtaInfo.NaviTimeAndDist> viaRemain = naviEtaInfo.viaRemain;
             Logger.i(TAG, "checkWaypointInfo ", "viaRemain.size() = " + viaRemain.size() +
                     " viaName = " + viaName);
@@ -85,13 +93,10 @@ public class SceneNaviViaInfoImpl extends BaseSceneModel<SceneNaviViaInfoView> {
             if (!viaName.equals(mViaName)) {
                 updateViaInfo();
             }
+            updateSceneVisible(true);
         }
         Logger.i(TAG, "ConvertUtils.isEmpty(naviEtaInfo.viaRemain) = " +
                 ConvertUtils.isEmpty(naviEtaInfo.viaRemain));
-        // 没有途经点的情况
-        if (ConvertUtils.isEmpty(naviEtaInfo.viaRemain)) {
-            updateSceneVisible(false);
-        }
     }
 
     /**
@@ -103,7 +108,7 @@ public class SceneNaviViaInfoImpl extends BaseSceneModel<SceneNaviViaInfoView> {
             return;
         }
         mViaName = viaName;
-        Logger.i(TAG, "onViaWaypoint");
+        Logger.i(MapDefaultFinalTag.NAVI_SCENE_TAG, "SceneNaviViaInfoImpl", true);
         NaviSceneManager.getInstance().notifySceneStateChange(
                 INaviSceneEvent.SceneStateChangeType.SceneShowState,
                 NaviSceneId.NAVI_VIA_ARRIVED_POP);
@@ -113,7 +118,9 @@ public class SceneNaviViaInfoImpl extends BaseSceneModel<SceneNaviViaInfoView> {
      * @param isVisible isVisible
      */
     private void updateSceneVisible(final boolean isVisible) {
-        Logger.i(TAG, "updateSceneVisible isVisible = " + isVisible);
+        Logger.i(TAG, "updateSceneVisible isVisible = " + isVisible +
+                " mScreenView.isVisible() = " + mScreenView.isVisible());
+        if(mScreenView.isVisible() == isVisible) return;
         mScreenView.getNaviSceneEvent().notifySceneStateChange((isVisible ? INaviSceneEvent.SceneStateChangeType.SceneShowState :
                 INaviSceneEvent.SceneStateChangeType.SceneCloseState), NaviSceneId.NAVI_SCENE_VIA_DETAIL_INFO);
     }
@@ -126,21 +133,9 @@ public class SceneNaviViaInfoImpl extends BaseSceneModel<SceneNaviViaInfoView> {
     public void onUpdateViaPass(final long viaIndex) {
         Logger.i(TAG, "onUpdateViaPass viaIndex = " + viaIndex);
         hideViaArrivedPop();
-        int currentViaIndex = (int) mViaIndex;
-        if (viaIndex == -1) {
-            // 如果是-1，说明是手动提前进入途经点需要加一
-            if (mViaIndex == -1) {
-                ++currentViaIndex;
-            }
-        } else {
-            currentViaIndex = (int) viaIndex;
-            mViaIndex = viaIndex;
-        }
         final List<RouteParam> allPoiParamList = mRoutePackage.getAllPoiParamList(mMapTypeId);
         if (!ConvertUtils.isEmpty(allPoiParamList) && allPoiParamList.size() >= 3) {
-            // 显示当前途经点到达信息所以加一就行
-            mScreenView.onArriveVia(allPoiParamList.get(currentViaIndex + 1).getName(), 0);
-            updateSceneVisible(true);
+            mScreenView.onArriveVia(allPoiParamList.get(1).getName(), 0);
         }
     }
 
@@ -151,26 +146,20 @@ public class SceneNaviViaInfoImpl extends BaseSceneModel<SceneNaviViaInfoView> {
         Logger.i(TAG, "updateViaInfo ");
         final List<RouteParam> allPoiParamList = mRoutePackage.getAllPoiParamList(mMapTypeId);
         if (!ConvertUtils.isEmpty(allPoiParamList)) {
-            mScreenView.updateViaInfo(getViaName((int) mViaIndex),
+            mScreenView.updateViaInfo(getViaName(),
                     mNaviEtaInfo.viaRemain.size());
-            updateSceneVisible(true);
         }
     }
 
     /**
-     * @param index 途经点索引
      * @return 途经点名称
      */
-    private String getViaName(final int index) {
+    private String getViaName() {
         try {
             final List<RouteParam> allPoiParamList = mRoutePackage.getAllPoiParamList(mMapTypeId);
-            if (index < 0) {
+            if (allPoiParamList.size() > 2) {
                 return allPoiParamList.get(1).getName();
-            } else if (index + 1 >= (allPoiParamList.size() - 1)) {
-                return allPoiParamList.get(allPoiParamList.size() - 2).getName();
             }
-            // 显示的是下一个途经点所以这边要加二
-            return mRoutePackage.getAllPoiParamList(mMapTypeId).get(index + 2).getName();
         } catch (Exception e) {
             Logger.e(TAG, "getViaName error", e.getMessage());
         }
@@ -181,6 +170,7 @@ public class SceneNaviViaInfoImpl extends BaseSceneModel<SceneNaviViaInfoView> {
      * 隐藏到达弹窗
      */
     private void hideViaArrivedPop() {
+        Logger.i(MapDefaultFinalTag.NAVI_SCENE_TAG, "SceneNaviViaInfoImpl", false);
         NaviSceneManager.getInstance().notifySceneStateChange(
                 INaviSceneEvent.SceneStateChangeType.SceneCloseState, NaviSceneId.NAVI_VIA_ARRIVED_POP);
     }

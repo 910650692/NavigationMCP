@@ -8,6 +8,8 @@ import com.autonavi.gbl.pos.model.LocGnss;
 import com.autonavi.gbl.pos.model.LocSignData;
 import com.autonavi.gbl.pos.model.LocType;
 import com.fy.navi.service.MapDefaultFinalTag;
+import com.fy.navi.service.adapter.position.IPositionAdapterCallback;
+import com.fy.navi.service.adapter.position.bls.PositionBlsStrategy;
 import com.fy.navi.service.adapter.position.bls.gnss.GnssManager;
 import com.fy.navi.service.adapter.position.bls.listener.IDrSensorListener;
 import com.fy.navi.service.adapter.position.bls.listener.ILocationListener;
@@ -16,17 +18,23 @@ import com.fy.navi.service.adapter.position.bls.sensor.DrSensorManager;
 import com.fy.navi.service.define.position.LocGpgsvWrapper;
 import com.fy.navi.service.define.position.LocMode;
 
+import java.util.List;
+
 /***处理后端融合数据***/
 public class CarLocBackFusionDataSource extends BaseLocBackFusionDataSource implements ILocationListener, IDrSensorListener {
     private static final String TAG = MapDefaultFinalTag.POSITION_SERVICE_TAG;
     private DrSensorManager mSensorManager;
     private GnssManager mGnssManager;
     private ILossRateAnalysisInterface mLossRateAnalysisInterface;
+    private final PositionBlsStrategy mPositionBlsStrategy;
 
-    public CarLocBackFusionDataSource(Context context, LocMode locMode, ILocBackFusionDataObserver observer, ILossRateAnalysisInterface lossRateAnalysisInterface) {
+    public CarLocBackFusionDataSource(Context context, LocMode locMode, ILocBackFusionDataObserver observer,
+                                      ILossRateAnalysisInterface lossRateAnalysisInterface,
+                                      PositionBlsStrategy mPositionBlsStrategy) {
         super(context, observer);
         mGnssManager = new GnssManager(context, (LocationManager) context.getSystemService(Context.LOCATION_SERVICE), this, locMode);
         mLossRateAnalysisInterface = lossRateAnalysisInterface;
+        this.mPositionBlsStrategy = mPositionBlsStrategy;
         if (locMode == LocMode.DrBack) {
             mSensorManager = new DrSensorManager(context, this, lossRateAnalysisInterface);
         }
@@ -97,6 +105,18 @@ public class CarLocBackFusionDataSource extends BaseLocBackFusionDataSource impl
     @Override
     public void onLocPulseInfo(LocSignData locPulse, boolean isRaw) {
         mFusionDataObserver.onLocPulseInfo(locPulse);
+    }
+
+    @Override
+    public void onSatelliteNum(int num) {
+        if(mPositionBlsStrategy!=null && mPositionBlsStrategy.getCallBack()!=null){
+            List<IPositionAdapterCallback> callbacks =  mPositionBlsStrategy.getCallBack();
+            if(callbacks!=null){
+                for (IPositionAdapterCallback callback : callbacks) {
+                    callback.onSatelliteNum(num);
+                }
+            }
+        }
     }
 
     @Override

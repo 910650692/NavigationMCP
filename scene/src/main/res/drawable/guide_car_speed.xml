@@ -3,6 +3,6 @@
     android:shape="oval">
     <stroke
         android:width="@dimen/dp_6"
-        android:color="@color/navi_toll_bg_color" />
-    <solid android:color="@color/navi_img_color_seven" />
+        android:color="@color/navi_color_2461EA_100" />
+    <solid android:color="@color/navi_color_FFFFFF_100" />
 </shape>

@@ -41,7 +41,7 @@ public class LocationFuncSwitch {
             | LocFuncSwitch.LocFuncTurningMainSideRoad | LocFuncSwitch.LocFuncUTurnMatch | LocFuncSwitch.LocFuncAbsolutePosCorrection   // 巡航
             | LocFuncSwitch.LocFuncTunnelCorrection | LocFuncSwitch.LocFuncLeaveRoundabout | LocFuncSwitch.LocFuncPosDataEnable          // 巡航
             | LocFuncSwitch.LocFuncReroutingRejectorPassOver | LocFuncSwitch.LocFuncReroutingRejectorARS | LocFuncSwitch.LocFuncReroutingRejectorDist    // 导航
-            | LocFuncSwitch.LocFuncReroutingRejectorCross;
+            | LocFuncSwitch.LocFuncReroutingRejectorCross  | LocFuncSwitch.LocFuncEHPEnable;
     // 2.后端融合模式（单轴陀螺或三轴陀螺）(0xf39b0或者997808)
                 /*locModeType.funcs |= LocFuncSwitch.LocFuncDivergingPathsRecognize | LocFuncSwitch.LocFuncTurningSmooth | LocFuncSwitch.LocFuncTurningMainSideRoad                 // 巡航
                         | LocFuncSwitch.LocFuncUTurnMatch | LocFuncSwitch.LocFuncTunnelCorrection | LocFuncSwitch.LocFuncLeaveRoundabout | LocFuncSwitch.LocFuncPosDataEnable              // 巡航

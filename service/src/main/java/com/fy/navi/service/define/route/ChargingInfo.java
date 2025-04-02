@@ -11,7 +11,8 @@ public class ChargingInfo {
     private long mPower; // 充电站功率，单位kW
     private long mVoltage; // 充电站电压，单位V
     private long mAmperage; // 充电站电流，单位A
-
+    private boolean isAutoAdd; // 如果是补能规划添加的设为 true
+    private long chargeTime;// 需要充电时常，单位秒
     @Override
     public String toString() {
         return "ChargingInfo{" +

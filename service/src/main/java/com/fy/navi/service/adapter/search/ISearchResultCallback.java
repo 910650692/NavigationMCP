@@ -1,6 +1,7 @@
 package com.fy.navi.service.adapter.search;
 
 import com.fy.navi.service.define.search.SearchErrorCode;
+import com.fy.navi.service.define.search.SearchRequestParameter;
 import com.fy.navi.service.define.search.SearchResultEntity;
 
 /**
@@ -18,8 +19,10 @@ public interface ISearchResultCallback {
      * @param message            错误消息，描述搜索操作的结果信息
      * @param searchResultEntity 搜索结果 {@link SearchResultEntity}，包含具体的搜索结果数据
      * @param taskId             任务ID
+     * @param requestParameterBuilder 搜索请求参数 {@link SearchRequestParameter}
      */
-    void onSearchResult(int taskId, @SearchErrorCode.ErrorCode int errorCode, String message, SearchResultEntity searchResultEntity);
+    void onSearchResult(int taskId, @SearchErrorCode.ErrorCode int errorCode, String message,
+                        SearchResultEntity searchResultEntity, final SearchRequestParameter requestParameterBuilder);
 
     /**
      * 静默搜索结果回调方法

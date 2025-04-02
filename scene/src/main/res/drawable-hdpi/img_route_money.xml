@@ -10,7 +10,7 @@
         android:fillType="evenOdd"
         android:pathData="M12.105,16.961L27.895,16.961"
         android:strokeWidth="3"
-        android:strokeColor="#000000"
+        android:strokeColor="@color/text_color_route_item_select"
         android:strokeLineCap="round"
         android:strokeLineJoin="round" />
 
@@ -19,7 +19,7 @@
         android:fillType="evenOdd"
         android:pathData="M12.105,24.855L27.895,24.855"
         android:strokeWidth="3"
-        android:strokeColor="#000000"
+        android:strokeColor="@color/text_color_route_item_select"
         android:strokeLineCap="round"
         android:strokeLineJoin="round" />
 
@@ -28,7 +28,7 @@
         android:fillType="evenOdd"
         android:pathData="M20.011,16.961L20.011,32.75"
         android:strokeWidth="3"
-        android:strokeColor="#000000"
+        android:strokeColor="@color/text_color_route_item_select"
         android:strokeLineCap="round"
         android:strokeLineJoin="round" />
 
@@ -37,7 +37,7 @@
         android:fillType="evenOdd"
         android:pathData="M27.895,7.75l-7.895,7.895l-7.895,-7.895"
         android:strokeWidth="3"
-        android:strokeColor="#000000"
+        android:strokeColor="@color/text_color_route_item_select"
         android:strokeLineCap="round"
         android:strokeLineJoin="round" />
 

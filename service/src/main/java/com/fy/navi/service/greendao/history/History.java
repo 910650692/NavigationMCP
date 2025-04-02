@@ -58,14 +58,29 @@ public class History {
     @Property(nameInDb = "endTime")
     private String mEndTime; // 该行程完成时间
 
+    @Property(nameInDb = "startTime")
+    private String mStartTime;
+
     @Property(nameInDb = "averageSpeed")
     private int mAverageSpeed; // 平均速度  单位:米/秒
 
+    @Property(nameInDb = "trackFileName")
+    private String mTrackFileName;
+
+    @Property(nameInDb = "filePath")
+    private String mFilePath;
+
+
+    @Generated(hash = 869423138)
+    public History() {
+    }
+
     @Keep
     public History(final Long id, final String keyWord, final String poiId, final String startPoint,
-            final String endPoint, final String startPoiName, final String endPoiName, final int type,
-            final Date updateTime, final boolean isCompleted, final int rideRunType, final int timeInterval,
-            final int runDistance, final int maxSpeed, final String endTime, final int averageSpeed) {
+                   final String endPoint, final String startPoiName, final String endPoiName, final int type,
+                   final Date updateTime, final boolean isCompleted, final int rideRunType, final int timeInterval,
+                   final int runDistance, final int maxSpeed, final String endTime, final String startName,
+                   final int averageSpeed, final String trackFileName, final String filePath) {
         this.mId = id;
         this.mKeyWord = keyWord;
         this.mPoiId = poiId;
@@ -81,13 +96,11 @@ public class History {
         this.mRunDistance = runDistance;
         this.mMaxSpeed = maxSpeed;
         this.mEndTime = endTime;
+        this.mStartTime = startName;
         this.mAverageSpeed = averageSpeed;
+        this.mTrackFileName = trackFileName;
+        this.mFilePath = filePath;
     }
-
-    @Generated(hash = 869423138)
-    public History() {
-    }
-
 
     public Long getMId() {
         return this.mId;
@@ -209,11 +222,35 @@ public class History {
         this.mEndTime = endTime;
     }
 
+    public String getMStartTime() {
+        return this.mStartTime;
+    }
+
+    public void setMStartTime(final String startTime) {
+        this.mStartTime = startTime;
+    }
+
     public int getMAverageSpeed() {
         return this.mAverageSpeed;
     }
 
     public void setMAverageSpeed(final int averageSpeed) {
         this.mAverageSpeed = averageSpeed;
+    }
+
+    public String getMTrackFileName() {
+        return this.mTrackFileName;
+    }
+
+    public void setMTrackFileName(final String trackFileName) {
+        this.mTrackFileName = trackFileName;
+    }
+
+    public String getMFilePath() {
+        return this.mFilePath;
+    }
+
+    public void setMFilePath(final String filePath) {
+        this.mFilePath = filePath;
     }
 }

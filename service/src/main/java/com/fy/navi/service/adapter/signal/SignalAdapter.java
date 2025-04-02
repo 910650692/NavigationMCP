@@ -71,4 +71,20 @@ public final class SignalAdapter {
     public int getSystemState() {
         return mSignalApi.getSystemState();
     }
+
+    public float getRangeRemaining() {
+        return mSignalApi.getRangeRemaining();
+    }
+
+    public float getHighVoltageBatteryPropulsionRange() {
+        return mSignalApi.getHighVoltageBatteryPropulsionRange();
+    }
+
+    public void setNextChargingDestination(int powerLevel, int status, int timeToArrival, int distToArrival) {
+        mSignalApi.setNextChargingDestination(powerLevel, status, timeToArrival, distToArrival);
+    }
+
+    public int getNavigationOnAdasTextToSpeachStatus() {
+        return mSignalApi.getNavigationOnAdasTextToSpeachStatus();
+    }
 }

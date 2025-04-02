@@ -15,53 +15,47 @@
     <com.fy.navi.ui.view.SkinConstraintLayout
         android:id="@+id/scl_add_via"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:clickable="true"
         android:maxHeight="@dimen/dp_586"
-        tools:background="@color/navi_red_text"
+        android:paddingHorizontal="@dimen/dp_30"
+        tools:background="@color/navi_color_FF595F_100"
         tools:layout_height="@dimen/dp_918"
         tools:layout_width="@dimen/dp_820">
 
-        <com.fy.navi.ui.view.SkinLinearLayout
+        <com.fy.navi.ui.view.SkinRecyclerView
+            android:id="@+id/srv_add_via"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:paddingHorizontal="@dimen/dp_40"
-            android:paddingBottom="@dimen/dp_40">
+            android:layout_height="@dimen/dp_390" />
 
-            <com.fy.navi.ui.view.SkinRecyclerView
-                android:id="@+id/srv_add_via"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1" />
+        <com.fy.navi.scene.ui.navi.view.ButtonLinearLayout
+            android:id="@+id/sll_add_via"
+            clickCommand="@{naviViaList.skipAlongWayFragment}"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_90"
+            android:background="@drawable/bg_navi_btn_add_via"
+            android:gravity="center"
+            android:layout_marginBottom="@dimen/dp_20"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="parent">
 
-            <com.fy.navi.scene.ui.navi.view.ButtonLinearLayout
-                android:id="@+id/sll_add_via"
-                clickCommand="@{naviViaList.skipAlongWayFragment}"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_108"
-                android:background="@drawable/bg_navi_btn_add_via"
+            <com.fy.navi.ui.view.SkinImageView
+                android:id="@+id/siv_add_via"
+                android:layout_width="@dimen/dp_58"
+                android:layout_height="@dimen/dp_58"
+                android:background="@drawable/img_add_58" />
+
+            <com.fy.navi.ui.view.SkinTextView
+                android:id="@+id/stv_add_via"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_24"
                 android:gravity="center"
-                android:orientation="horizontal">
+                android:text="@string/navi_add_via"
+                android:textColor="@color/navi_color_000000_60"
+                android:textSize="@dimen/sp_34" />
+        </com.fy.navi.scene.ui.navi.view.ButtonLinearLayout>
 
-                <com.fy.navi.ui.view.SkinImageView
-                    android:id="@+id/siv_add_via"
-                    android:layout_width="@dimen/dp_58"
-                    android:layout_height="@dimen/dp_58"
-                    android:background="@drawable/img_add_58" />
-
-                <com.fy.navi.ui.view.SkinTextView
-                    android:id="@+id/stv_add_via"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/dp_24"
-                    android:gravity="center"
-                    android:text="@string/navi_add_via"
-                    android:textColor="@color/navi_tbt_arrived_color"
-                    android:textSize="@dimen/sp_34" />
-            </com.fy.navi.scene.ui.navi.view.ButtonLinearLayout>
-
-        </com.fy.navi.ui.view.SkinLinearLayout>
     </com.fy.navi.ui.view.SkinConstraintLayout>
 </layout>
 

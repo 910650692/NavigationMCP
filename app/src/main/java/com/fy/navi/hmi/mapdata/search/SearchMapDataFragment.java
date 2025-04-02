@@ -77,16 +77,20 @@ public class SearchMapDataFragment extends BaseFragment<FragmentSearchMapDataBin
         mSearchMapDataAdapter.setOfflineItemListener(new SearchMapDataAdapter.OfflineItemListener() {
             @Override
             public void startAllTask(final ArrayList<Integer> adCodeList) {
-                if (mViewModel != null) {
-                    mViewModel.startAllTask(adCodeList);
-                }
+                ThreadManager.getInstance().postDelay(() -> {
+                    if (mViewModel != null) {
+                        mViewModel.startAllTask(adCodeList);
+                    }
+                }, 0);
             }
 
             @Override
             public void pauseAllTask(final ArrayList<Integer> adCodeList) {
-                if (mViewModel != null) {
-                    mViewModel.pauseAllTask(adCodeList);
-                }
+                ThreadManager.getInstance().postDelay(() -> {
+                    if (mViewModel != null) {
+                        mViewModel.pauseAllTask(adCodeList);
+                    }
+                }, 0);
             }
         });
     }

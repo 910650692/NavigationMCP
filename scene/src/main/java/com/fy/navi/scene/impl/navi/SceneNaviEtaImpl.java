@@ -382,7 +382,10 @@ public class SceneNaviEtaImpl extends BaseSceneModel<SceneNaviEtaView> {
      * @param isVisible isVisible
      */
     private void notifxySceneStateChange(final boolean isVisible) {
-        mScreenView.getNaviSceneEvent().notifySceneStateChange((isVisible ? INaviSceneEvent.SceneStateChangeType.SceneShowState :
-                INaviSceneEvent.SceneStateChangeType.SceneHideState), NaviSceneId.NAVI_SCENE_ETA);
+        if(mScreenView.isVisible() == isVisible) return;
+        Logger.i(MapDefaultFinalTag.NAVI_SCENE_TAG, "SceneNaviEtaImpl", isVisible);
+        mScreenView.getNaviSceneEvent().notifySceneStateChange((isVisible ?
+                INaviSceneEvent.SceneStateChangeType.SceneShowState :
+                INaviSceneEvent.SceneStateChangeType.SceneCloseState), NaviSceneId.NAVI_SCENE_ETA);
     }
 }

@@ -18,6 +18,7 @@ import com.fy.navi.scene.databinding.SceneMainAlongWaySearchBarBinding;
 import com.fy.navi.scene.impl.search.SceneMainAlongWaySearchViewImpl;
 import com.fy.navi.scene.impl.search.SearchFragmentFactory;
 import com.fy.navi.service.AutoMapConstant;
+import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.ui.base.BaseFragment;
 import com.fy.navi.ui.view.SkinTextView;
 
@@ -30,6 +31,7 @@ import com.fy.navi.ui.view.SkinTextView;
  */
 public class SceneMainAlongWaySearchView extends BaseSceneView<SceneMainAlongWaySearchBarBinding, SceneMainAlongWaySearchViewImpl> {
     private IOnHomeCompanyClickListener mClickListener;
+
     public SceneMainAlongWaySearchView(@NonNull final Context context) {
         super(context);
     }
@@ -75,6 +77,7 @@ public class SceneMainAlongWaySearchView extends BaseSceneView<SceneMainAlongWay
 
     /**
      * 点击快速搜索
+     *
      * @param position 点击下标
      */
     public void onClickQuickSearch(final int position) {
@@ -104,6 +107,7 @@ public class SceneMainAlongWaySearchView extends BaseSceneView<SceneMainAlongWay
                 //跳转地图选点页面，隐藏所有view
                 if (null != mClickListener) {
                     mClickListener.setHomeCompanyType(AutoMapConstant.HomeCompanyType.ALONG_WAY);
+                    mScreenViewModel.flyLineVisible(MapType.MAIN_SCREEN_MAIN_MAP, true);
                 }
                 break;
             case 3:

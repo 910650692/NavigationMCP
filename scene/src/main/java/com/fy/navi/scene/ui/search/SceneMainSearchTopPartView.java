@@ -11,6 +11,10 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.alibaba.android.arouter.launcher.ARouter;
+import com.fy.navi.burypoint.anno.HookMethod;
+import com.fy.navi.burypoint.bean.BuryProperty;
+import com.fy.navi.burypoint.constant.BuryConstant;
+import com.fy.navi.burypoint.controller.BuryPointController;
 import com.fy.navi.scene.BaseSceneView;
 import com.fy.navi.scene.RoutePath;
 import com.fy.navi.scene.databinding.SceneMainSearchBarBinding;
@@ -73,19 +77,40 @@ public class SceneMainSearchTopPartView extends BaseSceneView<SceneMainSearchBar
      * @param position 点击位置下标
      */
     public void onClickQuickSearch(final int position) {
-        final int searchType = (position == 4) ? AutoMapConstant.SearchType.AROUND_SEARCH : AutoMapConstant.SearchType.SEARCH_KEYWORD;
         if (position == 4) {
-            final Fragment fragment = (Fragment) ARouter.getInstance()
-                    .build(RoutePath.Search.AROUND_SEARCH_FRAGMENT)
-                    .navigation();
-            addFragment((BaseFragment) fragment, SearchFragmentFactory.createAroundFragment(null));
+            openMore();
         } else {
-            final Fragment fragment = (Fragment) ARouter.getInstance()
-                    .build(RoutePath.Search.SEARCH_RESULT_FRAGMENT)
-                    .navigation();
-            addFragment((BaseFragment) fragment, SearchFragmentFactory.createKeywordFragment(
-                    AutoMapConstant.SourceFragment.MAIN_SEARCH_FRAGMENT, searchType, mCategories[position], null));
+            triggerQuickSearch(position);
         }
+    }
+
+    /**
+     * 点击更多
+     */
+    private void openMore(){
+        final Fragment fragment = (Fragment) ARouter.getInstance()
+                .build(RoutePath.Search.AROUND_SEARCH_FRAGMENT)
+                .navigation();
+        addFragment((BaseFragment) fragment, SearchFragmentFactory.createAroundFragment(null));
+    }
+
+    /**
+     * 设置快捷点击事件
+     * @param position 点击位置下标
+     */
+    @HookMethod(eventName = BuryConstant.EventName.AMAP_MAP_SEARCH_LOCATIONTYPE)
+    private void triggerQuickSearch(final int position){
+        final int searchType = (position == 4) ? AutoMapConstant.SearchType.AROUND_SEARCH : AutoMapConstant.SearchType.SEARCH_KEYWORD;
+        final Fragment fragment = (Fragment) ARouter.getInstance()
+                .build(RoutePath.Search.SEARCH_RESULT_FRAGMENT)
+                .navigation();
+        addFragment((BaseFragment) fragment, SearchFragmentFactory.createKeywordFragment(
+                AutoMapConstant.SourceFragment.MAIN_SEARCH_FRAGMENT, searchType, mCategories[position], null));
+
+        BuryProperty buryParam = new BuryProperty.Builder()
+                .setParams(BuryConstant.ProperType.BURY_KEY_SEARCH_CONTENTS, mCategories[position])
+                .build();
+        BuryPointController.getInstance().setBuryProps(buryParam);
     }
 
     /**

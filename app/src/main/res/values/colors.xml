@@ -51,7 +51,6 @@
     <color name="dialog_use_reminder_content">#CC383839</color>
 
     <!-- 搜索相关 -->
-    <color name="search_edit_color_bg">#0F2D3D50</color>
     <color name="search_deep_text_day">#2D3D50</color>
     <color name="search_shallow_text_day">#992D3D50</color>
     <color name="bg_button_start_navigation">#60A5FA</color>
@@ -60,39 +59,58 @@
     <color name="sub_tab_line">#80CBCBCB</color>
 
     <color name="search_main_tab_bg_fff">#FFFFFFFF</color>
-    <color name="search_main_tab_bg_408c889b">#408C889B</color>
+    <color name="search_main_tab_img_shape_bg">#408C889B</color>
 
     <!--Route-->
     <color name="bg_route_root_bg">#F8F8FA</color>
+    <color name="bg_route_root_shadow_bg">#408C889B</color>
     <color name="route_back_icon_bg">#00000000</color>
-    <color name="route_back_icon_color">#383839</color>
+    <color name="route_back_icon_color">#4B535D</color>
     <color name="route_cricle_dot_gerrn_color">#4ABA59</color>
     <color name="route_cricle_dot_orange_color">#E67A2E</color>
     <color name="route_charge_orange_color">#FFFF8500</color>
     <color name="route_cricle_dot_red_color">#C73333</color>
     <color name="route_title_line_bg">#338E97B9</color>
+    <color name="route_line_color">#33000000</color>
+    <color name="route_charge_param_color">#CCFFFFFF</color>
+    <color name="route_charge_param_title_color">#26B2AFC2</color>
+    <color name="route_charge_param_total_color">#80000000</color>
+    <color name="route_charge_button_color">#FF2461EA</color>
+    <color name="route_charge_button_text_color">#FFFFFFFF</color>
+    <color name="route_logo_color">#FFFFFFFF</color>
 
-    <color name="text_route_defult">#99000000</color>
+    <color name="text_route_defult">#B3000000</color>
     <color name="text_route_title">#66000000</color>
+    <color name="text_route_detail_title">#FF000000</color>
+    <color name="text_route_button_title">#FFFFFFFF</color>
+    <color name="text_route_search_detail_title">#FF2461EA</color>
 
-    <color name="text_route_restriction_error">#22FF0000</color>
-    <color name="text_route_restriction_success">#2200FF00</color>
-    <color name="text_route_restriction_text_error">#DDFF0000</color>
-    <color name="text_route_restriction_text_success">#DD00FF00</color>
+    <color name="text_route_restriction_error">#1AC73333</color>
+    <color name="text_route_restriction_success">#1A4ABA59</color>
+    <color name="text_route_restriction_text_error">#FFC73333</color>
+    <color name="text_route_restriction_text_success">#FF4ABA59</color>
+    <color name="search_main_tab_img_bg">#FFFFFFFF</color>
 
-    <color name="bg_route_big_window_select">#2461EA</color>
+    <color name="bg_route_big_window_select">#FF2461EA</color>
     <color name="bg_route_big_window_unselect">#338E97B9</color>
+    <color name="bg_route_detail_color">#26B2AFC2</color>
+    <color name="bg_route_item_unselect">#F8F8FA</color>
+    <color name="bg_route_button_select_color">#FF2461EA</color>
+    <color name="tab_list_route_tab_list_select">#2461EA</color>
+    <color name="tab_list_route_tab_list_unselect">#B3000000</color>
 
     <color name="bg_route_shadow_list">#33000000</color>
     <color name="bg_route_item_label">#44000000</color>
     <color name="text_color_recommend">#2D3D50</color>
-    <color name="text_color_route_item_no_select">#BB000000</color>
+    <color name="text_color_route_item_no_select">#BC000000</color>
     <color name="text_color_route_item_select">#000000</color>
     <color name="route_select_color_nom">#26313336</color>
     <color name="route_select_color_sel">#000000</color>
     <color name="route_weather_bg">#769FFB</color>
     <color name="route_weather_sun">#FFE081</color>
     <color name="floating_search_item_night">#000000</color>
+    <color name="bg_route_item_select">#42386DF0</color>
+
 
 
     <!-- 离线数据相关 -->
@@ -104,7 +122,18 @@
     <color name="account_gray">#80DBD7D7</color>
 
     <!-- 设置相关 -->
+    <color name="setting_bg">#F8F8FA</color>
+    <color name="setting_bg_stroke">#408C889B</color>
+    <color name="setting_bg_close">#4B535D</color>
+    <color name="setting_bg_tab_select">#338E97B9</color>
+    <color name="setting_bg_tab_text_select">#FF000000</color>
+    <color name="setting_bg_tab_text_unselect">#B3000000</color>
+    <color name="setting_bg_voice_text">#B3000000</color>
+    <color name="setting_bg_tab_fill">#99000000</color>
     <color name="setting_bg_gray">#338E97B9</color>
+    <color name="setting_bg_others">#26B2AFC2</color>
+    <color name="setting_bg_corner">#000000</color>
+    <color name="setting_car_logo_text_gray">#80000000</color>
     <color name="setting_text_gray">#66000000</color>
     <color name="setting_text_disable">#80FFFFFF</color>
     <color name="setting_text_preference">#B3000000</color>
@@ -134,11 +163,25 @@
     <color name="setting_voice_has_update_color">#FF2461EA</color>
     <color name="setting_voice_size_color">#B3000000</color>
     <color name="setting_button_disable">#802461EA</color>
-    <color name="main_map_limit_bg_color">#338E97B9</color>
+    <color name="main_map_limit_bg_color">#3BA4A4A4</color>
+    <color name="main_map_limit_city_bg_color">#338E97B9</color>
+    <color name="main_map_limit_button_color">#338E97B9</color>
     <color name="main_map_limit_number_color">#FFF8F8FA</color>
+    <color name="main_map_limit_shadow_color">#408C889B</color>
+    <color name="main_map_limit_title_color">#FF000000</color>
+    <color name="main_map_limit_text_color">#B3000000</color>
+    <color name="main_map_limit_button_text_color">#FFFFFFFF</color>
     <color name="main_map_limit_hint_color">#80000000</color>
     <color name="main_map_limit_current_city">#B3000000</color>
+    <color name="main_map_limit_current">#FF2461EA</color>
     <color name="main_map_limit_loading">#B3000000</color>
     <color name="main_map_limit_restricted">#C73333</color>
     <color name="main_map_limit_restricted_background">#26B2AFC2</color>
+    <color name="main_map_limit_icon_color">#00000000</color>
+    <color name="main_map_limit_icon_stroke_color">#4B535D</color>
+    <color name="main_map_limit_loading_color">#2461EA</color>
+    <color name="main_map_limit_loading_stroke_color">#8E97B9</color>
+    <color name="main_map_limit_retry_button_color">#FF2461EA</color>
+    <color name="main_map_limit_current_city_color">#FF000000</color>
+    <color name="main_map_limit_recyclerview_color">#42386DF0</color>
 </resources>

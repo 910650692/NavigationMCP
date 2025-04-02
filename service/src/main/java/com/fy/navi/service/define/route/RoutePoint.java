@@ -10,10 +10,10 @@ import lombok.Setter;
 @Getter
 @Setter
 public class RoutePoint {
-    private boolean mIsDraw = true;
-    private long mPathId = 0;
-    private int mType;
-    private GeoPoint mPos;
+    public boolean mIsDraw = true;
+    public long mPathId = 0;
+    public int mType;
+    public GeoPoint mPos;
 
 
     @NonNull

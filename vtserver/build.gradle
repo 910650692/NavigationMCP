@@ -13,8 +13,7 @@ android {
 //    ndkVersion "21.3.6528147"
 
     defaultConfig {
-        minSdk Integer.parseInt(libs.versions.minSdk.get())
-
+        minSdk IS_PAD_RUN.toBoolean() ? Integer.parseInt(libs.versions.padminSdk.get()) :Integer.parseInt(libs.versions.minSdk.get())
         consumerProguardFiles "consumer-rules.pro"
         externalNativeBuild {
             cmake {
@@ -119,7 +118,7 @@ publishing {
         iAutoSnapshot(MavenPublication) {
             groupId project.maven_groupId
             artifactId project.maven_artifactId
-            version project.maven_version+'-SNAPSHOT'
+            version project.maven_version + '-SNAPSHOT'
             artifact 'build/outputs/aar/vtserver-release.aar'
         }
         iAutoRelease(MavenPublication) {
@@ -131,7 +130,7 @@ publishing {
         patacSnapshot(MavenPublication) {
             groupId project.maven_groupId
             artifactId project.maven_artifactId
-            version project.maven_version+'-SNAPSHOT'
+            version project.maven_version + '-SNAPSHOT'
             artifact 'build/outputs/aar/vtserver-release.aar'
         }
         patacRelease(MavenPublication) {

@@ -1,0 +1,11 @@
+<!-- res/drawable/bg_inner_border.xml -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- 底层：填充颜色 -->
+    <item>
+        <shape android:shape="rectangle">
+            <corners android:radius="@dimen/dp_12" />
+            <solid android:color="@color/bg_route_big_window_unselect"/> <!-- 内部填充颜色 -->
+        </shape>
+    </item>
+
+</layer-list>

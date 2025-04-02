@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- 主体背景 -->
+    <item>
+        <shape android:shape="rectangle">
+            <gradient
+                android:startColor="@color/search_poi_detail_fast"
+                android:endColor="@color/search_poi_detail_fast"
+                android:type="linear"
+                android:angle="270"
+                />
+            <corners
+                android:bottomLeftRadius="@dimen/dp_12"
+                android:bottomRightRadius="0dp"
+                android:topLeftRadius="@dimen/dp_12"
+                android:topRightRadius="0dp" />
+        </shape>
+    </item>
+</layer-list>

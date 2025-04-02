@@ -89,4 +89,32 @@ public interface SignalApi {
      * SLEEP = 4
      */
     int getSystemState();
+
+    /**
+     * 续航里程
+     *
+     * @return 单位km
+     */
+    float getRangeRemaining();
+
+    /**
+     * 高压电池续航里程
+     *
+     * @return 单位km
+     */
+    float getHighVoltageBatteryPropulsionRange();
+
+    /**
+     * 设置电池预加热参数
+     * @param powerLevel int
+     * @param status int
+     * @param timeToArrival int
+     */
+    void setNextChargingDestination(int powerLevel, int status, int timeToArrival, int distToArrival);
+
+    /**
+     * 获取智慧领航播报开关
+     * @return 0:关闭 1:开启
+     */
+    int getNavigationOnAdasTextToSpeachStatus();
 }

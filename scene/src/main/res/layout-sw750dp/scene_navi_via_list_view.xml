@@ -18,7 +18,7 @@
         android:layout_height="wrap_content"
         android:clickable="true"
         android:maxHeight="@dimen/dp_586"
-        tools:background="@color/navi_red_text"
+        tools:background="@color/navi_color_FF595F_100"
         tools:layout_height="@dimen/dp_918"
         tools:layout_width="@dimen/dp_820">
 
@@ -35,7 +35,7 @@
                 android:layout_height="0dp"
                 android:layout_weight="1" />
 
-            <com.fy.navi.ui.view.SkinLinearLayout
+            <com.fy.navi.scene.ui.navi.view.ButtonLinearLayout
                 android:id="@+id/sll_add_via"
                 clickCommand="@{naviViaList.skipAlongWayFragment}"
                 android:layout_width="match_parent"
@@ -46,9 +46,9 @@
 
                 <com.fy.navi.ui.view.SkinImageView
                     android:id="@+id/siv_add_via"
-                    android:layout_width="@dimen/dp_68"
-                    android:layout_height="@dimen/dp_68"
-                    android:background="@drawable/img_via_add" />
+                    android:layout_width="@dimen/dp_58"
+                    android:layout_height="@dimen/dp_58"
+                    android:background="@drawable/img_add_58" />
 
                 <com.fy.navi.ui.view.SkinTextView
                     android:id="@+id/stv_add_via"
@@ -57,9 +57,9 @@
                     android:layout_marginStart="@dimen/dp_24"
                     android:gravity="center"
                     android:text="@string/navi_add_via"
-                    android:textColor="@color/navi_tbt_arrived_color"
-                    android:textSize="@dimen/sp_40" />
-            </com.fy.navi.ui.view.SkinLinearLayout>
+                    android:textColor="@color/navi_color_000000_60"
+                    android:textSize="@dimen/sp_34" />
+            </com.fy.navi.scene.ui.navi.view.ButtonLinearLayout>
 
         </com.fy.navi.ui.view.SkinLinearLayout>
     </com.fy.navi.ui.view.SkinConstraintLayout>

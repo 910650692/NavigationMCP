@@ -524,14 +524,17 @@ public class SearchAdapterImpl extends SearchServiceV2Manager implements ISearch
             if (response.route_list != null && !response.route_list.isEmpty()
                     && response.route_list.get(0).path != null
                     && !response.route_list.get(0).path.isEmpty()) {
-                final float chargeLeft = (response.route_list.get(0).path.get(0).charge_left
-                        / 100000f)
-                        / BevPowerCarUtils.getInstance().maxBattenergy;
+                //公式:（当前续航-导航里程）/总续航
+                final float chargeLeft = (float) (((BevPowerCarUtils.getInstance().initlialHVBattenergy
+                                        * BevPowerCarUtils.getInstance().batterToDistance)
+                                        - response.route_list.get(0).path.get(0).distance)
+                                        / (BevPowerCarUtils.getInstance().initlialHVBattenergy * BevPowerCarUtils.getInstance().batterToDistance));
                 final int chargeLeftPercent = (int) (chargeLeft * 100);
                 final ETAInfo etaInfo = new ETAInfo()
                         .setDistance(response.route_list.get(0).path.get(0).distance)
                         .setTravelTime(TimeUtils.switchHourAndMimuteFromSecond(AppContext.getInstance().getMContext(),
                                 (int) response.route_list.get(0).path.get(0).travel_time))
+                        .setTime((int) response.route_list.get(0).path.get(0).travel_time)
                         .setLeftCharge(chargeLeftPercent);
                 future.complete(etaInfo);
                 Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "distance:" + etaInfo.getDistance() + " travelTime:"

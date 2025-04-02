@@ -24,6 +24,7 @@ final public class AmapStateUtils {
 
     /**
      * 将高德的视图模式 转换成 语音状态的视图模式
+     *
      * @param mode 高德的视图模式(0-2D正北向上，1-2D车头向上，2-3D车头向上)
      * @return mapViewMode
      */
@@ -41,10 +42,11 @@ final public class AmapStateUtils {
     }
 
     /**
-      * 将高德的播报模式 转换成 语音状态的播报模式
-      * @param mode 高德的播报模式(2-详细； 4-简洁 6-极简)
-     *  @return 播报模式
-      */
+     * 将高德的播报模式 转换成 语音状态的播报模式
+     *
+     * @param mode 高德的播报模式(2-详细； 4-简洁 6-极简)
+     * @return 播报模式
+     */
     public static int convertBroadcastMode(final int mode) {
         switch (mode) {
             case 2:
@@ -60,6 +62,7 @@ final public class AmapStateUtils {
 
     /**
      * 将高德的路线偏好 转换成 语音状态的路线偏好
+     *
      * @param preference 高德的路线偏好(0 高德推荐 2：躲避拥堵； 4：避免收费； 8：不走高速； 16：高速优先 32：速度最快  64：大路优先)
      * @return 道路偏好
      */
@@ -86,6 +89,7 @@ final public class AmapStateUtils {
 
     /**
      * 传端状态
+     *
      * @param mapState 端状态
      */
     public static void saveMapState(final MapState mapState) {
@@ -184,14 +188,15 @@ final public class AmapStateUtils {
         map.put(NaviStateCons.KEY_CURRENT_MAP_TYPE, "A_MAP");
         try {
             BridgeSdk.getInstance().getRemote(IStateManager.class).updateNaviState(map);
-        } catch (ClassCastException e) {
+        } catch (ClassCastException | NullPointerException e) {
             Log.e(IVrBridgeConstant.TAG, "updateNaviState: " + Log.getStackTraceString(e));
         }
     }
 
     /**
      * saveMapStateBoolean
-     * @param map map
+     *
+     * @param map  map
      * @param data data
      */
     private static void saveMapStateBoolean(final HashMap<String, Object> map, final JSONObject data) {
@@ -255,8 +260,8 @@ final public class AmapStateUtils {
      * 保存定位信息
      *
      * @param mapLocation 示例：{"gpsTickCount":0,"sysTickCount":1720598461888,"vaccuracy":0,"provider":"test",
-     *             "bearing":0,"resultCode":10000,"accuracy":0,"lon":116.39747,"type":0,"sourceFlag":1,
-     *             "speed":0,"lat":39.9088229}
+     *                    "bearing":0,"resultCode":10000,"accuracy":0,"lon":116.39747,"type":0,"sourceFlag":1,
+     *                    "speed":0,"lat":39.9088229}
      */
     public static void saveMapLocation(final MapLocation mapLocation) {
         if (null == mapLocation) {
@@ -284,13 +289,14 @@ final public class AmapStateUtils {
         map.put("lat", doubles[0]);
         try {
             BridgeSdk.getInstance().getRemote(IStateManager.class).updateNaviLocation(map);
-        } catch (ClassCastException e) {
+        } catch (ClassCastException | NullPointerException e) {
             Log.e(IVrBridgeConstant.TAG, "updateNaviLocation: " + Log.getStackTraceString(e));
         }
     }
 
     /**
      * gcj02ToBd09
+     *
      * @param lat 纬度
      * @param lon 经度
      * @return double

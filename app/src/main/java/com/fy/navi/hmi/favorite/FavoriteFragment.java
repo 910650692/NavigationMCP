@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.PopupWindow;
+import android.widget.ScrollView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -54,7 +55,7 @@ public class FavoriteFragment extends BaseFragment<FragmentFavoriteBinding, Favo
 
     private PopupWindow mPopupWindow;
     private SkinTextView mBtnEdit;
-    private SkinTextView mBtnDelete;
+    private SkinTextView mBtnDelete,mBtnDelete1;
     private PopupWindow mFrequentPopupWindow;
     private SkinTextView mRenameBtn;
     private SkinGridLayout mFreqAddressLayout;
@@ -80,11 +81,9 @@ public class FavoriteFragment extends BaseFragment<FragmentFavoriteBinding, Favo
 
     @Override
     public void onInitData() {
-        mViewModel.getSyncTime();
         mViewModel.getSimpleFavoriteList();
-//        mViewModel.getFavoritePoiData();
-        mViewModel.getHomeInfo();
-        mViewModel.getCompanyInfo();
+        mViewModel.getHomeFavoriteInfo();
+        mViewModel.getCompanyFavoriteInfo();
         mViewModel.initView();
         initPopupWindow();
         initFrequentPopupWindow();
@@ -94,6 +93,10 @@ public class FavoriteFragment extends BaseFragment<FragmentFavoriteBinding, Favo
     @Override
     public void onResume() {
         super.onResume();
+        mViewModel.getSimpleFavoriteList();
+        mViewModel.getHomeFavoriteInfo();
+        mViewModel.getCompanyFavoriteInfo();
+        initFrequentAddressList();
     }
 
 
@@ -107,9 +110,8 @@ public class FavoriteFragment extends BaseFragment<FragmentFavoriteBinding, Favo
         super.onHiddenChanged(hidden);
         if (!hidden) {
             mViewModel.getSimpleFavoriteList();
-//            mViewModel.getFavoritePoiData();
-            mViewModel.getHomeInfo();
-            mViewModel.getCompanyInfo();
+            mViewModel.getHomeFavoriteInfo();
+            mViewModel.getCompanyFavoriteInfo();
             initFrequentAddressList();
         }
     }
@@ -142,9 +144,7 @@ public class FavoriteFragment extends BaseFragment<FragmentFavoriteBinding, Favo
                 if (mFavoriteList != null && !mFavoriteList.isEmpty()) {
                     SettingUpdateObservable.getInstance().onUpdateSyncTime();
                     mViewModel.topFavorite(mFavoriteList.get(index), true);
-                    final long current = System.currentTimeMillis();
-                    mViewModel.updateFavoriteTopTime(mFavoriteList.get(index).getFavoriteInfo().getItemId(), current);
-                    mViewModel.updateFavoriteView(mViewModel.getFavoriteData(0));
+                    mViewModel.getSimpleFavoriteList();
                 }
             }
 
@@ -154,8 +154,7 @@ public class FavoriteFragment extends BaseFragment<FragmentFavoriteBinding, Favo
                 if (mFavoriteList != null && !mFavoriteList.isEmpty()) {
                     SettingUpdateObservable.getInstance().onUpdateSyncTime();
                     mViewModel.topFavorite(mFavoriteList.get(index), false);
-                    mViewModel.updateFavoriteTopTime(mFavoriteList.get(index).getFavoriteInfo().getItemId(), 0);
-                    mViewModel.updateFavoriteView(mViewModel.getFavoriteData(0));
+                    mViewModel.getSimpleFavoriteList();
                     ToastUtils.Companion.getInstance().showCustomToastView("已取消置顶");
                 }
                 mBinding.favoriteScroll.setEnabled(true);
@@ -166,12 +165,9 @@ public class FavoriteFragment extends BaseFragment<FragmentFavoriteBinding, Favo
                 SettingUpdateObservable.getInstance().onUpdateSyncTime();
                 if (mFavoriteList != null && !mFavoriteList.isEmpty()) {
                     mViewModel.removeFavorite(mFavoriteList.get(index));
-                    mViewModel.deleteFavoriteData(mFavoriteList.get(index).getFavoriteInfo().getItemId());
-                    mFavoriteList.remove(index);
-                    mViewModel.updateFavoriteView(mFavoriteList);
+                    mViewModel.getSimpleFavoriteList();
                     ToastUtils.Companion.getInstance().showCustomToastView("已删除");
                 }
-
             }
         });
         final LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
@@ -218,14 +214,6 @@ public class FavoriteFragment extends BaseFragment<FragmentFavoriteBinding, Favo
         }
     }
 
-    /**
-     * updateSyncTime
-     * @param syncTime
-     */
-    public void updateSyncTime(final String syncTime) {
-        mBinding.favoriteTime.setText(syncTime);
-    }
-
     private int mIndex;
 
     /**
@@ -235,7 +223,7 @@ public class FavoriteFragment extends BaseFragment<FragmentFavoriteBinding, Favo
         mFreqAddressLayout = mBinding.frequentAddressContainer;
         mFreqAddressLayout.removeAllViews();
 
-        mFrequentAddressList = mViewModel.getFavoriteData(3);
+        mFrequentAddressList = mViewModel.getFavoriteAddressInfo();
 
         final int addressCount = mFrequentAddressList.size();
         final int maxItemPerRow = 2;
@@ -391,14 +379,10 @@ public class FavoriteFragment extends BaseFragment<FragmentFavoriteBinding, Favo
     public void updateFavoriteView(final ArrayList<PoiInfoEntity> list) {
         mFavoriteList = list;
         Logger.i(TAG, "setFavoriteData -> " + GsonUtils.toJson(mFavoriteList));
-
-        ThreadManager.getInstance().postUi(() -> {
-            mFavoriteDataAdapter.setData(mFavoriteList);
-
-            final ViewGroup.LayoutParams params = mBinding.rvFavoriteList.getLayoutParams();
-            params.height = ResourceUtils.Companion.getInstance().getDimensionPixelSize(com.fy.navi.ui.R.dimen.dp_150) * mFavoriteList.size();
-            mBinding.rvFavoriteList.setLayoutParams(params);
-        });
+        mFavoriteDataAdapter.setData(mFavoriteList);
+        final ViewGroup.LayoutParams params = mBinding.rvFavoriteList.getLayoutParams();
+        params.height = ResourceUtils.Companion.getInstance().getDimensionPixelSize(com.fy.navi.ui.R.dimen.dp_150) * mFavoriteList.size();
+        mBinding.rvFavoriteList.setLayoutParams(params);
     }
 
     /**
@@ -449,10 +433,11 @@ public class FavoriteFragment extends BaseFragment<FragmentFavoriteBinding, Favo
 
         // 获取PopupWindow中的按钮并设置点击事件
         mBtnEdit = popupView.findViewById(R.id.favorite_item_rename);
-        mBtnDelete = popupView.findViewById(R.id.favorite_item_delete);
+
+        mBtnDelete1 = popupView.findViewById(R.id.favorite_item_delete);
 
         // 创建PopupWindow
-        mPopupWindow = new PopupWindow(popupView, 300, 120,true);
+        mPopupWindow = new PopupWindow(popupView, 418, 130,true);
         mPopupWindow.setContentView(popupView);
         mPopupWindow.setBackgroundDrawable(null); // 使PopupWindow背景透明
 
@@ -469,11 +454,10 @@ public class FavoriteFragment extends BaseFragment<FragmentFavoriteBinding, Favo
             mPopupWindow.dismiss();
         });
 
-        mBtnDelete.setOnClickListener(v -> {
+        mBtnDelete1.setOnClickListener(v -> {
             SettingUpdateObservable.getInstance().onUpdateSyncTime();
             final boolean isHome = mViewModel.getIsHome();
             mViewModel.removeFavorite(mViewModel.getHomeCompanyInfo(isHome));
-            mViewModel.deleteFavoriteData(mViewModel.getHomeCompanyInfo(isHome).getFavoriteInfo().getItemId());
             if (isHome) {
                 mViewModel.updateHomeView(null);
             } else {
@@ -488,23 +472,25 @@ public class FavoriteFragment extends BaseFragment<FragmentFavoriteBinding, Favo
      * @param anchorView
      */
     public void showPopupWindow(final View anchorView) {
-        // 显示PopupWindow在更多按钮的上方
-        final int[] location = new int[2];
-        anchorView.getLocationOnScreen(location);
-        final int x = location[0] - 220;
-        final int y = location[1] - mPopupWindow.getHeight(); // 计算PopupWindow的Y坐标
+        ThreadManager.getInstance().postUi(() -> {
+            // 显示PopupWindow在更多按钮的上方
+            final int[] location = new int[2];
+            anchorView.getLocationOnScreen(location);
+            final int x = location[0] - 220;
+            final int y = location[1] - mPopupWindow.getHeight(); // 计算PopupWindow的Y坐标
 
-        mBtnEdit.setTextColor(getResources().getColor(R.color.black));
-        mBtnEdit.setText(R.string.favorite_item_edit);
-        if (((mViewModel.getIsHome() && mViewModel.getHomeCompanyInfo(true) == null)) ||
-                (!mViewModel.getIsHome() && mViewModel.getHomeCompanyInfo(false) == null)) {
-            mBtnDelete.setEnabled(false);
-            mBtnDelete.setTextColor(getResources().getColor(R.color.setting_tab_gray));
-        } else {
-            mBtnDelete.setEnabled(true);
-            mBtnDelete.setTextColor(getResources().getColor(R.color.black));
-        }
-        mPopupWindow.showAtLocation(anchorView, Gravity.NO_GRAVITY, x, y);
+            mBtnEdit.setTextColor(getResources().getColor(R.color.black));
+            mBtnEdit.setText(R.string.favorite_item_edit);
+            if (((mViewModel.getIsHome() && mViewModel.getHomeCompanyInfo(true) == null)) ||
+                    (!mViewModel.getIsHome() && mViewModel.getHomeCompanyInfo(false) == null)) {
+                mBtnDelete1.setEnabled(false);
+                mBtnDelete1.setTextColor(getResources().getColor(R.color.setting_tab_gray));
+            } else {
+                mBtnDelete1.setEnabled(true);
+                mBtnDelete1.setTextColor(getResources().getColor(R.color.black));
+            }
+            mPopupWindow.showAsDropDown(anchorView, 25, -95 , Gravity.END);
+        });
     }
 
     /**
@@ -520,7 +506,7 @@ public class FavoriteFragment extends BaseFragment<FragmentFavoriteBinding, Favo
         mBtnDelete = popupView.findViewById(R.id.favorite_item_delete);
 
         // 创建PopupWindow
-        mFrequentPopupWindow = new PopupWindow(popupView, 300, 120, true);
+        mFrequentPopupWindow = new PopupWindow(popupView, 418, 130,true);
         mFrequentPopupWindow.setContentView(popupView);
         mFrequentPopupWindow.setBackgroundDrawable(null); // 使PopupWindow背景透明
 
@@ -533,7 +519,6 @@ public class FavoriteFragment extends BaseFragment<FragmentFavoriteBinding, Favo
         mBtnDelete.setOnClickListener(v -> {
             SettingUpdateObservable.getInstance().onUpdateSyncTime();
             ThreadManager.getInstance().postUi(() -> {
-                mViewModel.removeFavorite(mFrequentAddressList.get(mIndex));
                 mViewModel.deleteFavoriteData(mFrequentAddressList.get(mIndex).getFavoriteInfo().getItemId());
                 initFrequentAddressList();
             });
@@ -550,30 +535,30 @@ public class FavoriteFragment extends BaseFragment<FragmentFavoriteBinding, Favo
         anchorView.getLocationOnScreen(location);
         final int x = location[0] + 320;
         final int y = location[1] - mFrequentPopupWindow.getHeight(); // 计算PopupWindow的Y坐标
-        mFrequentPopupWindow.showAtLocation(anchorView, Gravity.NO_GRAVITY, x, y);
+        mFrequentPopupWindow.showAsDropDown(anchorView, 0, -130 , Gravity.END);
     }
 
     /**
      * backToTop
      */
-   private void backToTop() {
+    private void backToTop() {
 
-       mThreeScreenHeight = ResourceUtils.Companion.getInstance().getDimensionPixelSize(com.fy.navi.ui.R.dimen.dp_714)  * 3;
+        mThreeScreenHeight = ResourceUtils.Companion.getInstance().getDimensionPixelSize(com.fy.navi.ui.R.dimen.dp_714)  * 3;
 
-       // 设置滚动监听
-       mBinding.favoriteScroll.getViewTreeObserver().addOnScrollChangedListener(
-               () -> {
-                   final int scrollY = mBinding.favoriteScroll.getScrollY();
-                   Logger.d("scrollY", "scrollY: " + scrollY);
-                   mBinding.layoutTop.setVisibility(
-                           scrollY >= mThreeScreenHeight ? View.VISIBLE : View.INVISIBLE
-                   );
-               }
-       );
+        // 设置滚动监听
+        mBinding.favoriteScroll.getViewTreeObserver().addOnScrollChangedListener(
+                () -> {
+                    final int scrollY = mBinding.favoriteScroll.getScrollY();
+                    Logger.d("scrollY", "scrollY: " + scrollY);
+                    mBinding.layoutTop.setVisibility(
+                            scrollY >= mThreeScreenHeight ? View.VISIBLE : View.INVISIBLE
+                    );
+                }
+        );
 
-       // 按钮点击事件
-       mBinding.layoutTop.setOnClickListener(v -> {
-           mBinding.favoriteScroll.smoothScrollTo(0, 0); // 平滑滚动
-       });
-   }
+        // 按钮点击事件
+        mBinding.layoutTop.setOnClickListener(v -> {
+            mBinding.favoriteScroll.fullScroll(ScrollView.FOCUS_UP); // 平滑滚动
+        });
+    }
 }

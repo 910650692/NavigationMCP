@@ -39,6 +39,7 @@ public class SceneNaviLanesImpl extends BaseSceneModel<SceneNaviLanesView> {
      */
     public void onLaneInfo(final boolean isShowLane, final LaneInfoEntity laneInfo) {
         Logger.i(TAG, "isShowLane:" + isShowLane);
+        updateSceneVisible(isShowLane);
         if (laneInfo == null) {
             Logger.w(TAG, "laneInfo == null");
         } else {
@@ -70,37 +71,39 @@ public class SceneNaviLanesImpl extends BaseSceneModel<SceneNaviLanesView> {
                 for (int i = 0; i < LaneNum; i++) {
                     final TBTLaneInfo info = new TBTLaneInfo();
                     // 设置推荐车道
-                    info.isRecommend = laneInfo.getOptimalLane().get(i) != NaviConstant.LaneAction.LANE_ACTION_NULL;
+                    info.setRecommend(laneInfo.getOptimalLane().get(i) !=
+                            NaviConstant.LaneAction.LANE_ACTION_NULL);
                     // 设置分时车道
                     if (NaviConstant.LANE_TYPE_BUS == laneInfo.getBackLaneType().get(i)) {
-                        info.isTimeLane = true;
-                        info.timeLaneAction = laneInfo.getFrontLane().get(i) ==
+                        info.setTimeLane(true);
+                        info.setTimeLaneAction(laneInfo.getFrontLane().get(i) ==
                                 0xFF ? NaviConstant.LaneActionConstants.BACK_LANE_BUS_NO_WORKABLE :
-                                NaviConstant.LaneActionConstants.BACK_LANE_BUS_WORKABLE;
+                                NaviConstant.LaneActionConstants.BACK_LANE_BUS_WORKABLE);
                     } else if (NaviConstant.LANE_TYPE_OTHER == laneInfo.getBackLaneType().get(i)) {
-                        info.isTimeLane = true;
-                        info.timeLaneAction = laneInfo.getFrontLane().get(i) ==
+                        info.setTimeLane(true);
+                        info.setTimeLaneAction(laneInfo.getFrontLane().get(i) ==
                                 0xFF ? NaviConstant.LaneActionConstants.BACK_LANE_SPECIAL_NO_WORKABLE :
-                                NaviConstant.LaneActionConstants.BACK_LANE_SPECIAL_WORKABLE;
+                                NaviConstant.LaneActionConstants.BACK_LANE_SPECIAL_WORKABLE);
                     } else if (NaviConstant.LANE_TYPE_TIDAL == laneInfo.getBackLaneType().get(i)) {
-                        info.isTimeLane = true;
-                        info.timeLaneAction = laneInfo.getFrontLane().get(i) ==
+                        info.setTimeLane(true);
+                        info.setTimeLaneAction(laneInfo.getFrontLane().get(i) ==
                                 0xFF ? NaviConstant.LaneActionConstants.BACK_LANE_TIDAL_NO_WORKABLE :
-                                NaviConstant.LaneActionConstants.BACK_LANE_TIDAL_WORKABLE;
+                                NaviConstant.LaneActionConstants.BACK_LANE_TIDAL_WORKABLE);
                     } else if (NaviConstant.LANE_TYPE_VARIABLE == laneInfo.getBackLaneType().get(i)) {
-                        info.isTimeLane = true;
-                        info.timeLaneAction = laneInfo.getFrontLane().get(i) ==
+                        info.setTimeLane(true);
+                        info.setTimeLaneAction(laneInfo.getFrontLane().get(i) ==
                                 0xFF ?
                                 NaviConstant.LaneActionConstants.BACK_LANE_REVERSIBLE_NO_WORKABLE :
-                                NaviConstant.LaneActionConstants.BACK_LANE_REVERSIBLE_WORKABLE;
+                                NaviConstant.LaneActionConstants.BACK_LANE_REVERSIBLE_WORKABLE);
                     } else {
-                        info.isTimeLane = false;
+                        info.setTimeLane(false);
                     }
                     // 设置车道线图标
                     for (int k = 0; k < NaviConstant.LaneActionConstants.NAVI_LANE_MAP.length; k++) {
                         if (NaviConstant.LaneActionConstants.NAVI_LANE_MAP[k][0] == laneInfo.getBackLane().get(i)) {
                             if (NaviConstant.LaneActionConstants.NAVI_LANE_MAP[k][1] == laneInfo.getFrontLane().get(i)) {
-                                info.laneAction = NaviConstant.LaneActionConstants.NAVI_LANE_MAP[k][2];
+                                info.setLaneAction(NaviConstant.
+                                        LaneActionConstants.NAVI_LANE_MAP[k][2]);
                                 break;
                             }
                         }
@@ -124,13 +127,13 @@ public class SceneNaviLanesImpl extends BaseSceneModel<SceneNaviLanesView> {
         if (tollGateInfo == null || tollGateInfo.getLaneTypes() == null || tollGateInfo.getLaneTypes().isEmpty()) {
             Logger.i(TAG, "onShowTollGateLane null");
             if (mLaneInfo == null) {
-                mScreenView.setVisibleLaneInfo(false);
+                updateSceneVisible(false);
             } else {
                 onLaneInfo(true, mLaneInfo);
             }
         } else {
             Logger.i(TAG, "onShowTollGateLane " + tollGateInfo.getLaneTypes());
-            mScreenView.setVisibleLaneInfo(true);
+            updateSceneVisible(true);
             final ArrayList<SceneCommonStruct.LaneAction> list = new ArrayList<>();
             for (int i = 0; i < tollGateInfo.getLaneTypes().size(); i++) {
                 final Integer integer = tollGateInfo.getLaneTypes().get(i);
@@ -158,31 +161,31 @@ public class SceneNaviLanesImpl extends BaseSceneModel<SceneNaviLanesView> {
             final TBTLaneInfo itemData = defaultListData.get(index);
             mScreenView.setVisibleLaneDefault(index, true);
             // 车道图标的设置：1.推荐分时 2.推荐 3.分时 4.默认
-            if (itemData.isRecommend && itemData.isTimeLane) {
-                mScreenView.setBackgroundLanesDriveRecommendTimeArrow(index, SceneCommonStruct.LaneAction.get(itemData.laneAction));
-            } else if (itemData.isRecommend) {
-                mScreenView.setBackgroundLanesDriveRecommendArrow(index, SceneCommonStruct.LaneAction.get(itemData.laneAction));
-            } else if (itemData.isTimeLane) {
-                mScreenView.setBackgroundLanesDriveTimeArrow(index, SceneCommonStruct.LaneAction.get(itemData.laneAction));
+            if (itemData.isRecommend() && itemData.isTimeLane()) {
+                mScreenView.setBackgroundLanesDriveRecommendTimeArrow(index, SceneCommonStruct.LaneAction.get(itemData.getLaneAction()));
+            } else if (itemData.isRecommend()) {
+                mScreenView.setBackgroundLanesDriveRecommendArrow(index, SceneCommonStruct.LaneAction.get(itemData.getLaneAction()));
+            } else if (itemData.isTimeLane()) {
+                mScreenView.setBackgroundLanesDriveTimeArrow(index, SceneCommonStruct.LaneAction.get(itemData.getLaneAction()));
             } else {
-                mScreenView.setBackgroundLanesDriveDefaultArrow(index, SceneCommonStruct.LaneAction.get(itemData.laneAction));
+                mScreenView.setBackgroundLanesDriveDefaultArrow(index, SceneCommonStruct.LaneAction.get(itemData.getLaneAction()));
             }
 
-            if (itemData.isTimeLane) {
+            if (itemData.isTimeLane()) {
                 // 显示分时图标
                 mScreenView.sceneBottom(index);
                 // 分时图标的设置：1.推荐 2.默认
-                if (itemData.isRecommend) {
-                    mScreenView.setBackgroundLanesDriveRecommendBottom(index, SceneCommonStruct.TimeLaneBottomAction.get(itemData.timeLaneAction));
+                if (itemData.isRecommend()) {
+                    mScreenView.setBackgroundLanesDriveRecommendBottom(index, SceneCommonStruct.TimeLaneBottomAction.get(itemData.getTimeLaneAction()));
                     mScreenView.setVisibleHighlight(index, true);
                 } else {
-                    mScreenView.setBackgroundLanesDriveDefaultBottom(index, SceneCommonStruct.TimeLaneBottomAction.get(itemData.timeLaneAction));
+                    mScreenView.setBackgroundLanesDriveDefaultBottom(index, SceneCommonStruct.TimeLaneBottomAction.get(itemData.getTimeLaneAction()));
                     mScreenView.setVisibleHighlight(index, false);
                 }
             } else {
                 // 隐藏分时图标
                 mScreenView.sceneCommonArrow(index);
-                if (itemData.isRecommend) {
+                if (itemData.isRecommend()) {
                     mScreenView.setVisibleHighlight(index, true);
                 } else {
                     mScreenView.setVisibleHighlight(index, false);
@@ -209,7 +212,11 @@ public class SceneNaviLanesImpl extends BaseSceneModel<SceneNaviLanesView> {
      * @param isVisible 是否可见
      */
     private void updateSceneVisible(final boolean isVisible) {
-        mScreenView.getNaviSceneEvent().notifySceneStateChange((isVisible ? INaviSceneEvent.SceneStateChangeType.SceneShowState :
-                INaviSceneEvent.SceneStateChangeType.SceneHideState), NaviSceneId.NAVI_SCENE_LANES);
+        Logger.i(TAG, "updateSceneVisible " + isVisible + " mScreenView.isVisible():" +
+                mScreenView.isVisible());
+        if(mScreenView.isVisible() == isVisible) return;
+        mScreenView.getNaviSceneEvent().notifySceneStateChange((isVisible ?
+                INaviSceneEvent.SceneStateChangeType.SceneShowState :
+                INaviSceneEvent.SceneStateChangeType.SceneCloseState), NaviSceneId.NAVI_SCENE_LANES);
     }
 }

@@ -9,36 +9,36 @@
       android:strokeWidth="2.63793103"
       android:fillColor="#00000000"
       android:fillType="nonZero"
-      android:strokeColor="#4B535D"/>
+      android:strokeColor="@color/setting_bg_close"/>
   <path
       android:pathData="M47.75,34.043C47.75,28.395 42.362,23.75 36.25,23.75C29.813,23.75 24.75,28.395 24.75,34.043C24.75,39.729 29.813,44.338 36.25,44.338C37.624,44.338 38.962,43.965 40.336,43.631L44.025,45.75L43.012,42.219C45.725,40.064 47.75,37.24 47.75,34.043L47.75,34.043Z"
       android:strokeLineJoin="round"
       android:strokeWidth="2.63793103"
       android:fillColor="#00000000"
       android:fillType="nonZero"
-      android:strokeColor="#4B535D"/>
+      android:strokeColor="@color/setting_bg_close"/>
   <path
       android:pathData="M17.233,24.251C18.701,24.251 19.891,23.069 19.891,21.613C19.891,20.156 18.701,18.975 17.233,18.975C15.765,18.975 14.575,20.156 14.575,21.613C14.575,23.069 15.765,24.251 17.233,24.251Z"
       android:strokeWidth="1"
-      android:fillColor="#4B535D"
+      android:fillColor="@color/setting_bg_close"
       android:fillType="evenOdd"
       android:strokeColor="#00000000"/>
   <path
       android:pathData="M31.302,34.802C32.77,34.802 33.96,33.621 33.96,32.164C33.96,30.707 32.77,29.526 31.302,29.526C29.834,29.526 28.644,30.707 28.644,32.164C28.644,33.621 29.834,34.802 31.302,34.802Z"
       android:strokeWidth="1"
-      android:fillColor="#4B535D"
+      android:fillColor="@color/setting_bg_close"
       android:fillType="evenOdd"
       android:strokeColor="#00000000"/>
   <path
       android:pathData="M26.905,24.251C28.373,24.251 29.563,23.069 29.563,21.613C29.563,20.156 28.373,18.975 26.905,18.975C25.437,18.975 24.247,20.156 24.247,21.613C24.247,23.069 25.437,24.251 26.905,24.251Z"
       android:strokeWidth="1"
-      android:fillColor="#4B535D"
+      android:fillColor="@color/setting_bg_close"
       android:fillType="evenOdd"
       android:strokeColor="#00000000"/>
   <path
       android:pathData="M40.974,34.802C42.442,34.802 43.632,33.621 43.632,32.164C43.632,30.707 42.442,29.526 40.974,29.526C39.506,29.526 38.316,30.707 38.316,32.164C38.316,33.621 39.506,34.802 40.974,34.802Z"
       android:strokeWidth="1"
-      android:fillColor="#4B535D"
+      android:fillColor="@color/setting_bg_close"
       android:fillType="evenOdd"
       android:strokeColor="#00000000"/>
 </vector>

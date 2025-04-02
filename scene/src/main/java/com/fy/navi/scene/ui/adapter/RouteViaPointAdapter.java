@@ -21,13 +21,17 @@ import java.util.List;
 
 public class RouteViaPointAdapter extends RecyclerView.Adapter<RouteViaPointAdapter.Holder> {
     private List<RouteParam> mRouteParams;
-    private OnDeleteViaPointClickListener itemClickListener;
+    private OnDeleteViaPointClickListener mItemClickListener;
 
     public RouteViaPointAdapter() {
         mRouteParams = new ArrayList<>();
     }
 
-    public void setRouteBeanList(List<RouteParam> routeParams) {
+    /***
+     * 设置途径点列表信息
+     * @param routeParams 途径点信息
+     */
+    public void setRouteBeanList(final List<RouteParam> routeParams) {
         if (ConvertUtils.isEmpty(routeParams)) {
             return;
         }
@@ -36,13 +40,13 @@ public class RouteViaPointAdapter extends RecyclerView.Adapter<RouteViaPointAdap
         notifyDataSetChanged();
     }
 
-    public void setDeleteViaPointListener(OnDeleteViaPointClickListener itemClickListener) {
-        this.itemClickListener = itemClickListener;
+    public void setDeleteViaPointListener(final OnDeleteViaPointClickListener itemClickListener) {
+        this.mItemClickListener = itemClickListener;
     }
 
     @Override
-    public Holder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        RouteLineViaPoiItemBinding routeItemBinding =
+    public Holder onCreateViewHolder(final @NonNull ViewGroup parent, final int viewType) {
+        final RouteLineViaPoiItemBinding routeItemBinding =
                 DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()),
                         R.layout.route_line_via_poi_item, parent, false);
         return new Holder(routeItemBinding);
@@ -57,41 +61,56 @@ public class RouteViaPointAdapter extends RecyclerView.Adapter<RouteViaPointAdap
     }
 
     @Override
-    public void onBindViewHolder(@NonNull Holder holder, @SuppressLint("RecyclerView") int position) {
+    public void onBindViewHolder(final @NonNull Holder holder, final @SuppressLint("RecyclerView") int position) {
         if (position == mRouteParams.size() - 1) {
-            holder.routeLineViaPoiItemBinding.routeItemViaEmpty.setVisibility(View.GONE);
-            holder.routeLineViaPoiItemBinding.routeItemViaEmptyLine.setVisibility(View.GONE);
+            holder.mRouteLineViaPoiItemBinding.routeItemViaEmpty.setVisibility(View.GONE);
+            holder.mRouteLineViaPoiItemBinding.routeItemViaEmptyLine.setVisibility(View.GONE);
         } else {
-            holder.routeLineViaPoiItemBinding.routeItemViaEmpty.setVisibility(View.VISIBLE);
-            holder.routeLineViaPoiItemBinding.routeItemViaEmptyLine.setVisibility(View.VISIBLE);
+            holder.mRouteLineViaPoiItemBinding.routeItemViaEmpty.setVisibility(View.VISIBLE);
+            holder.mRouteLineViaPoiItemBinding.routeItemViaEmptyLine.setVisibility(View.VISIBLE);
         }
-        holder.routeLineViaPoiItemBinding.setModel(mRouteParams.get(position));
-        holder.routeLineViaPoiItemBinding.routeItemViaDeleteImg.setOnClickListener(view -> {
-            if (ConvertUtils.isEmpty(itemClickListener)) return;
-            itemClickListener.onDeleteViaPointClick(position);
+        holder.mRouteLineViaPoiItemBinding.setModel(mRouteParams.get(position));
+        holder.mRouteLineViaPoiItemBinding.routeItemViaDeleteImg.setOnClickListener(view -> {
+            if (ConvertUtils.isEmpty(mItemClickListener)) {
+                return;
+            }
+            mItemClickListener.onDeleteViaPointClick(position);
             mRouteParams.remove(position);
             notifyDataSetChanged();
         });
     }
 
-    public void onItemMove(int adapterPosition, int targetPosition) {
-        if (ConvertUtils.isEmpty(mRouteParams)) return;
-        if (mRouteParams.size() <= adapterPosition || mRouteParams.size() <= targetPosition) return;
+    /***
+     * 设置途径点移动
+     * @param adapterPosition 途径点索引
+     * @param targetPosition 目标索引
+     */
+    public void onItemMove(final int adapterPosition,final int targetPosition) {
+        if (ConvertUtils.isEmpty(mRouteParams)) {
+            return;
+        }
+        if (mRouteParams.size() <= adapterPosition || mRouteParams.size() <= targetPosition) {
+            return;
+        }
         Collections.swap(mRouteParams, adapterPosition, targetPosition);
         notifyItemMoved(adapterPosition, targetPosition);
     }
 
     public class Holder extends RecyclerView.ViewHolder {
-        public RouteLineViaPoiItemBinding routeLineViaPoiItemBinding;
+        private RouteLineViaPoiItemBinding mRouteLineViaPoiItemBinding;
 
-        public Holder(RouteLineViaPoiItemBinding routeLineViaPoiItemBinding) {
+        public Holder(final RouteLineViaPoiItemBinding routeLineViaPoiItemBinding) {
             super(routeLineViaPoiItemBinding.getRoot());
-            this.routeLineViaPoiItemBinding = routeLineViaPoiItemBinding;
+            this.mRouteLineViaPoiItemBinding = routeLineViaPoiItemBinding;
             routeLineViaPoiItemBinding.setHolder(this);
         }
     }
 
     public interface OnDeleteViaPointClickListener {
+        /**
+         * 途径点删除点击
+         * @param index 点击下标
+         */
         void onDeleteViaPointClick(int index);
     }
 }

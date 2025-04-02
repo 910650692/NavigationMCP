@@ -86,7 +86,7 @@ public class PlateNumberKeyboardView extends GridLayout {
             keyView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 30);
             keyView.setGravity(Gravity.CENTER);
             keyView.setTextColor(ResourceUtils.Companion.getInstance().getColor(R.color.setting_preference_text_gray));
-            keyView.setBackgroundResource(R.drawable.bg_setting_preference_normal);
+            keyView.setBackgroundResource(R.drawable.bg_setting_keyboard);
             if (BUTTON_NAME.equals(key)) {
 
                 keyView.setText(null);
@@ -115,9 +115,10 @@ public class PlateNumberKeyboardView extends GridLayout {
             final boolean isDisabled = DISABLED_KEYS.contains(key);
             if (isDisabled) {
                 // 设置禁用状态的样式
-                keyView.setTextColor(ResourceUtils.Companion.getInstance().getColor(R.color.setting_text_gray_disable));
-                keyView.setBackgroundResource(R.drawable.bg_car_number_disable);
+                keyView.setTextColor(ResourceUtils.Companion.getInstance().getColor(R.color.setting_preference_text_gray));
+                keyView.setBackgroundResource(R.drawable.bg_setting_keyboard);
                 keyView.setEnabled(false); // 禁用点击
+                keyView.setAlpha(0.5f); // 设置透明度
             } else {
                 // 设置点击事件
                 keyView.setOnClickListener(v -> {
@@ -137,7 +138,7 @@ public class PlateNumberKeyboardView extends GridLayout {
                     if (isChecked && (keyView != mLastSelectedButton)) {
                         if (mLastSelectedButton != null) {
                             mLastSelectedButton.setChecked(false);
-                            mLastSelectedButton.setBackgroundResource(R.drawable.bg_setting_preference_normal);
+                            mLastSelectedButton.setBackgroundResource(R.drawable.bg_setting_keyboard);
                             updateCheckBoxTextColor(mLastSelectedButton,false);
                         }
                         mLastSelectedButton = keyView;

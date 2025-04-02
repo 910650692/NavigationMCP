@@ -94,4 +94,10 @@ public interface IBaseView {
      * Activity必须实现.
      */
     void closeAllFragmentAndSearchView();
+
+    /**
+     * Activity 必须实现
+     * 显示当前被hide的fragment
+     */
+    void showCurrentFragment();
 }

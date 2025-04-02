@@ -58,7 +58,7 @@ public class LimitDriverCitiesAdapter extends RecyclerView.Adapter<LimitDriverCi
     public void onBindViewHolder(final @NonNull LimitDriverCitiesViewHolder holder, final int position) {
         holder.mTvTitle.setText(mData.get(position));
         if (position == mSelectedPosition) {
-            holder.mTvTitle.setTextColor(mContext.getColor(R.color.dialog_use_reminder_terms_service_color)); // 选中态为蓝色
+            holder.mTvTitle.setTextColor(mContext.getColor(R.color.main_map_limit_current)); // 选中态为蓝色
         } else {
             holder.mTvTitle.setTextColor(mContext.getColor(R.color.main_map_limit_current_city)); // 未选中态为黑色或其他默认颜色
         }

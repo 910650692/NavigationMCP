@@ -2,9 +2,8 @@ package com.fy.navi.hmi.traffic;
 
 import androidx.annotation.Nullable;
 
-import com.android.utils.MockUtil;
 import com.android.utils.log.Logger;
-import com.fy.navi.service.AppContext;
+import com.android.utils.thread.ThreadManager;
 import com.fy.navi.service.define.aos.FyCriticism;
 import com.fy.navi.service.define.aos.FyGSubTraEventDetail;
 import com.fy.navi.service.define.aos.FyGTraEventDetail;
@@ -43,14 +42,16 @@ public class TrafficModel extends BaseModel<BaseTrafficViewModel> implements IAo
     }
 
     @Override
-    public void queryTrafficEventDetailResult(@Nullable FyGTraEventDetail detail) {
+    public void queryTrafficEventDetailResult(@Nullable final FyGTraEventDetail detail) {
         IAosRestrictedObserver.super.queryTrafficEventDetailResult(detail);
         Logger.i(TAG, "queryTrafficEventDetailResult result:" + (detail != null));
         // TODO 测试数据模拟开关
         // FyGTraEventDetail mockDetail = MockUtil.getObjectFromAsset(AppContext.getInstance().getMContext(), "traffic.json",FyGTraEventDetail.class);
         if (taskId == detail.taskId) {
             Logger.i(TAG, "is  my request");
-            mViewModel.updateUi(detail, false);
+            ThreadManager.getInstance().postUi(() -> {
+                mViewModel.updateUi(detail, false);
+            });
         }
     }
 

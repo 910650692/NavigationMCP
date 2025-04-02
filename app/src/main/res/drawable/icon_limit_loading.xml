@@ -8,12 +8,12 @@
       android:strokeAlpha="0.2"
       android:strokeWidth="6"
       android:fillColor="#00000000"
-      android:strokeColor="#8E97B9"
+      android:strokeColor="@color/main_map_limit_loading_stroke_color"
       android:fillType="evenOdd"/>
   <path
       android:pathData="M60,2.25C91.89,2.25 117.75,28.11 117.75,60C117.75,91.89 91.89,117.75 60,117.75C28.11,117.75 2.25,91.89 2.25,60C2.25,58.34 3.59,57 5.25,57C6.91,57 8.25,58.34 8.25,60C8.25,88.58 31.42,111.75 60,111.75C88.58,111.75 111.75,88.58 111.75,60C111.75,31.42 88.58,8.25 60,8.25C58.34,8.25 57,6.91 57,5.25C57,3.59 58.34,2.25 60,2.25Z"
       android:strokeWidth="1"
-      android:fillColor="#2461EA"
+      android:fillColor="@color/main_map_limit_loading_color"
       android:fillType="nonZero"
       android:strokeColor="#00000000"/>
 </vector>

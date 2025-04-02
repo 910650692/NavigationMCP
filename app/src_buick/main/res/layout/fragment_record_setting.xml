@@ -19,10 +19,10 @@
         <com.fy.navi.ui.view.SkinConstraintLayout
             android:id="@+id/record_setting_title"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_138">
+            android:layout_height="@dimen/dp_125">
 
             <com.fy.navi.ui.view.SkinImageView
-                clickCommand="@{ViewModel.closeRecordSetting}"
+                clickCommand="@{ViewModel.mCloseRecordSetting}"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/img_setting_back"
@@ -37,7 +37,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/driving_record_setting"
                 android:textColor="@color/black"
-                android:textSize="@dimen/sp_38"
+                android:textSize="@dimen/sp_34"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -45,21 +45,14 @@
 
         </com.fy.navi.ui.view.SkinConstraintLayout>
 
-        <com.fy.navi.ui.view.SkinView
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_1"
-            android:background="@color/setting_line"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/record_setting_title" />
-
         <com.fy.navi.ui.view.SkinCheckBox
-            clickCommand="@{ViewModel.switchRecordSetting}"
+            clickCommand="@{ViewModel.mSwitchRecordSetting}"
             android:id="@+id/record_setting_auto_check"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_79"
-            android:layout_marginStart="@dimen/dp_40"
-            android:checked="@{ViewModel.isAutoRecord}"
+            android:layout_marginTop="@dimen/dp_57"
+            android:layout_marginStart="@dimen/dp_45"
+            android:checked="@{ViewModel.mIsAutoRecord}"
             android:button="@drawable/custom_thumb"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/record_setting_title"/>
@@ -68,8 +61,8 @@
             android:id="@+id/record_setting_auto_check_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_51"
-            android:layout_marginStart="@dimen/dp_35"
+            android:layout_marginTop="@dimen/dp_29"
+            android:layout_marginStart="@dimen/dp_24"
             android:text="@string/driving_record_auto"
             android:textColor="@color/black"
             android:textSize="@dimen/sp_34"
@@ -121,7 +114,8 @@
             app:layout_constraintStart_toStartOf="@+id/record_setting_clear"/>
 
         <com.fy.navi.ui.view.SkinButton
-            clickCommand="@{ViewModel.clearDivingRecord}"
+            clickCommand="@{ViewModel.mClearDivingRecord}"
+            android:id="@+id/record_setting_clear_btn"
             android:layout_width="@dimen/dp_160"
             android:layout_height="@dimen/dp_52"
             android:layout_marginTop="@dimen/dp_56"

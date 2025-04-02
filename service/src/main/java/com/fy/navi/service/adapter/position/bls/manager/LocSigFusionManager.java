@@ -38,7 +38,7 @@ public class LocSigFusionManager implements ILocBackFusionDataSource.ILocBackFus
         mLocMode = locMode;
         DRLogService drLogService = new DRLogService();
         mLossRateAnalysis = new LossRateAnalysisManager(this, drLogService);
-        mDataSource = new CarLocBackFusionDataSource(context, locMode, this, mLossRateAnalysis);
+        mDataSource = new CarLocBackFusionDataSource(context, locMode, this, mLossRateAnalysis,mPositionBlsStrategy);
         mPosService = mPositionBlsStrategy.getPosService();
         addObserver();
     }

@@ -49,6 +49,8 @@ public interface MapDefaultFinalTag {
      String CALIBRATION_SERVICE_TAG = DEFAULT_TAG + "_Calibration" + SERVICE_TAG;
     /*** NaviApp_Signal_Service **/
      String SIGNAL_SERVICE_TAG = DEFAULT_TAG + "_Signal" + SERVICE_TAG;
+    /*** NaviApp_Signal_ForCast **/
+     String FOR_CAST_SERVICE_TAG = DEFAULT_TAG + "ForCast" + SERVICE_TAG;
     /*** HMI Tag **/
      String HMI_TAG = "_HMI";
     /*** NaviApp_Engine_HMI **/
@@ -77,4 +79,10 @@ public interface MapDefaultFinalTag {
      String SCENE_TAG = "_Scene";
     /*** NaviApp_Navi_Scene **/
      String NAVI_SCENE_TAG = DEFAULT_TAG + "_Navi" + SCENE_TAG;
+    /*** NaviApp_Navi_Scene_Tmc **/
+    String NAVI_SCENE_TMC = DEFAULT_TAG + "_Navi" + SCENE_TAG + "_Tmc";
+    /*** NaviApp_Navi_Scene_Sap **/
+    String NAVI_SCENE_SAP = DEFAULT_TAG + "_Navi" + SCENE_TAG + "_Sap";
+    /*** NaviApp_Navi_Scene_Cross **/
+    String NAVI_SCENE_CROSS = DEFAULT_TAG + "_Navi" + SCENE_TAG + "_Cross";
 }

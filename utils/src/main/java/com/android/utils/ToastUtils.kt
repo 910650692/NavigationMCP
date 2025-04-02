@@ -3,6 +3,7 @@ package com.android.utils
 import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Looper
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.TextView
@@ -70,7 +71,7 @@ class ToastUtils private constructor() {
 
     @SuppressLint("InflateParams", "MissingInflatedId")
     fun showCustomToastView(msg: CharSequence) {
-        showCustomToastView(msg.toString(), Toast.LENGTH_SHORT)
+        showCustomToastView(msg.toString(), Toast.LENGTH_LONG)
     }
 
     @SuppressLint("InflateParams")
@@ -78,11 +79,12 @@ class ToastUtils private constructor() {
         cancelView()
         ConvertUtils.checkParam("show", msg, time)
         val view = LayoutInflater.from(mContext).inflate(R.layout.toast_base_view, null)
-        var toastText = view.findViewById<TextView>(R.id.toast_text)
-        toastText.text = msg
+        val toastText = view.findViewById<TextView>(R.id.toast_text)
         mToast = Toast(mContext)
         mToast?.view = view
+        mToast!!.setGravity(Gravity.BOTTOM or Gravity.FILL_HORIZONTAL, 0, ResourceUtils.getInstance().getDimensionPixelSize(R.dimen.dp_20))
         mToast?.setDuration(time)
+        toastText.text = msg
         mToast?.show()
     }
 

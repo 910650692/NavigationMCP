@@ -25,7 +25,7 @@ import com.fy.navi.scene.impl.search.SearchFragmentFactory;
 import com.fy.navi.scene.ui.adapter.SearchResultAdapter;
 import com.fy.navi.service.AutoMapConstant;
 import com.fy.navi.service.MapDefaultFinalTag;
-import com.fy.navi.service.define.map.MapTypeId;
+import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.search.PoiInfoEntity;
 import com.fy.navi.service.define.search.SearchResultEntity;
 import com.fy.navi.service.logicpaket.route.RoutePackage;
@@ -101,7 +101,7 @@ public class SceneSugSearchPoiList extends BaseSceneView<SugSearchResultViewBind
             @Override
             public void onNaviClick(final int position, final PoiInfoEntity poiInfoEntity) {
                 if (SearchPackage.getInstance().isAlongWaySearch()) {
-                    RoutePackage.getInstance().addViaPoint(MapTypeId.MAIN_SCREEN_MAIN_MAP, poiInfoEntity);
+                    RoutePackage.getInstance().addViaPoint(MapType.MAIN_SCREEN_MAIN_MAP, poiInfoEntity);
                 } else {
                     final Fragment fragment = (Fragment) ARouter.getInstance()
                             .build(RoutePath.Route.ROUTE_FRAGMENT)

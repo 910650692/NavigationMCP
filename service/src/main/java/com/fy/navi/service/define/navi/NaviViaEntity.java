@@ -1,79 +1,105 @@
 package com.fy.navi.service.define.navi;
 
+import androidx.annotation.NonNull;
+
 import com.fy.navi.service.define.bean.GeoPoint;
 import com.fy.navi.service.define.route.ChargingInfo;
 
 public class NaviViaEntity {
-    private String pid;
-    private GeoPoint realPos; // 实际位置坐标(必选)
-    private String name; // POI名称(可选)
-    private String address; // 地址
-    private ChargingInfo chargeInfo; // 充电桩信息
-    private String distance;
-    private String arriveTime;
-    private String arriveDay;
+    private String mPid;
+    private GeoPoint mRealPos; // 实际位置坐标(必选)
+    private String mName; // POI名称(可选)
+    private String mAddress; // 地址
+    private ChargingInfo mChargeInfo; // 充电桩信息
+    private String mDistance;
+    private String mArriveTime;
+    private String mArriveDay;
+    private long mArriveTimeStamp;
 
     public String getArriveDay() {
-        return arriveDay;
+        return mArriveDay;
     }
 
-    public void setArriveDay(String arriveDay) {
-        this.arriveDay = arriveDay;
+    public void setArriveDay(final String arriveDay) {
+        this.mArriveDay = arriveDay;
     }
 
     public GeoPoint getRealPos() {
-        return realPos;
+        return mRealPos;
     }
 
-    public void setRealPos(GeoPoint realPos) {
-        this.realPos = realPos;
+    public void setRealPos(final GeoPoint realPos) {
+        this.mRealPos = realPos;
     }
 
     public String getName() {
-        return name;
+        return mName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setName(final String name) {
+        this.mName = name;
     }
 
     public String getAddress() {
-        return address;
+        return mAddress;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
+    public void setAddress(final String address) {
+        this.mAddress = address;
     }
 
     public ChargingInfo getChargeInfo() {
-        return chargeInfo;
+        return mChargeInfo;
     }
 
-    public void setChargeInfo(ChargingInfo chargeInfo) {
-        this.chargeInfo = chargeInfo;
+    public void setChargeInfo(final ChargingInfo chargeInfo) {
+        this.mChargeInfo = chargeInfo;
     }
 
     public String getDistance() {
-        return distance;
+        return mDistance;
     }
 
-    public void setDistance(String distance) {
-        this.distance = distance;
+    public void setDistance(final String distance) {
+        this.mDistance = distance;
     }
 
     public String getArriveTime() {
-        return arriveTime;
+        return mArriveTime;
     }
 
-    public void setArriveTime(String arriveTime) {
-        this.arriveTime = arriveTime;
+    public void setArriveTime(final String arriveTime) {
+        this.mArriveTime = arriveTime;
     }
 
     public String getPid() {
-        return pid;
+        return mPid;
     }
 
-    public void setPid(String pid) {
-        this.pid = pid;
+    public void setPid(final String pid) {
+        this.mPid = pid;
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return "NaviViaEntity{" +
+                "pid='" + mPid + '\'' +
+                ", realPos=" + mRealPos +
+                ", name='" + mName + '\'' +
+                ", address='" + mAddress + '\'' +
+                ", chargeInfo=" + mChargeInfo +
+                ", distance='" + mDistance + '\'' +
+                ", arriveTime='" + mArriveTime + '\'' +
+                ", arriveDay='" + mArriveDay + '\'' +
+                '}';
+    }
+
+    public long getmArriveTimeStamp() {
+        return mArriveTimeStamp;
+    }
+
+    public void setmArriveTimeStamp(long mArriveTimeStamp) {
+        this.mArriveTimeStamp = mArriveTimeStamp;
     }
 }

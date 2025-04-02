@@ -19,6 +19,8 @@ import java.util.List;
  */
 public final class VoiceConvertUtil {
 
+    private static final String INTEGER_MATCH = "-?\\d+";
+
     private VoiceConvertUtil() {
 
     }
@@ -50,9 +52,10 @@ public final class VoiceConvertUtil {
     }
 
     /**
-     * 将语音传入的
-     * @param routeType routeType
-     * @return RoutePreferenceID
+     * 将语音传入的路线偏好转为service层保存的PreferenceID.
+     *
+     * @param routeType String，语音传入的偏好类型.
+     * @return RoutePreferenceID.
      */
     public static RoutePreferenceID convertToAMapPrefer(final String routeType) {
         final RoutePreferenceID routePreferenceID;
@@ -137,17 +140,16 @@ public final class VoiceConvertUtil {
             int leftMeter = dist % 1000;
             leftMeter = leftMeter / 100;
 
-            final StringBuffer sb = new StringBuffer();
-
+            final StringBuffer builder = new StringBuffer();
             if (leftMeter > 0) {
-                sb.append(kiloMeter);
-                sb.append(".");
-                sb.append(leftMeter);
+                builder.append(kiloMeter);
+                builder.append(".");
+                builder.append(leftMeter);
             } else {
-                sb.append(kiloMeter);
+                builder.append(kiloMeter);
             }
-            sb.append("千米");
-            return sb.toString();
+            builder.append("千米");
+            return builder.toString();
         } else {
             return dist + "米";
         }
@@ -175,5 +177,38 @@ public final class VoiceConvertUtil {
             }
             return builder.toString();
         }
+    }
+
+    /**
+     * 判断字符串是否符合整数表达式.
+     *
+     * @param str String.
+     *
+     * @return true-是整数表达式  false-不是.
+     */
+    public static boolean isNumber(final String str) {
+        if (null == str || str.isEmpty()) {
+            return false;
+        }
+
+        return str.matches(INTEGER_MATCH);
+    }
+
+    /**
+     * 判断一个String是否可以转换为数字，可以返回转换结果，反之返回0.
+     * @param str String，传入的参数.
+     * @return value，转换结果.
+     */
+    public static int getIntValue(final String str) {
+        if (null == str || str.isEmpty()) {
+            return 0;
+        }
+
+        int value = 0;
+        if (str.matches(INTEGER_MATCH)) {
+            value = Integer.parseInt(str);
+        }
+
+        return value;
     }
 }

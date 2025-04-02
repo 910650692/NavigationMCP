@@ -49,7 +49,7 @@ public class PermissionUtils {
             Manifest.permission.CALL_PHONE,
             Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
             Context.MEDIA_PROJECTION_SERVICE};
-    private boolean isMediaProjectionPermission = true; // TODO 启动HUD功能时改为false
+    private boolean isMediaProjectionPermission = true;
 
     public void setPermissionsObserver(PermissionsObserver permissionsObserver) {
         this.permissionsObserver = permissionsObserver;

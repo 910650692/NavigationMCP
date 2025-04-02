@@ -3,10 +3,10 @@ package com.fy.navi.service;
 import java.io.File;
 
 public interface GBLCacheFilePath extends AutoMapConstant {
-    /*** AutoMap/libs/ **/
+    /*** sdcard/Android/data/your_package/files/AutoMap/Gbl/libs/ **/
     public static final String DEBUG_LIBS_DIR = GBL_MAP + "libs" + File.separator;
 
-    /*** 车道级回放文件所在目录 **/
+    /*** 车道级回放文件所在目录 sdcard/Android/data/your_package/files/AutoMap/Gbl/loc_replay/ **/
     public static final String GPS_LANELOC_FOLDER = GBL_MAP + "loc_replay/";
     /*** 仿真回放路径 **/
     public static final String RECORDER_DATA_DIR = GBL_MAP + "recorder/";
@@ -67,4 +67,7 @@ public interface GBLCacheFilePath extends AutoMapConstant {
     public static final String POS_DIR = GBL_MAP + "PosDir" + File.separator;
     // TODO: 2025/2/28 定位测试用
 //    public static final String POS_DIR = POS + "PosDir" + File.separator;
+
+    /*** 通勤预测数据库缓存目录 sdcard/Android/data/your_package/files/AutoMap/Gbl/wstrDb/ **/
+    String BEHAVIOR_WSTR_DB_FILE_DIR = GBL_MAP + "wstrDb" + File.separator;
 }

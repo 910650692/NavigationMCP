@@ -1,0 +1,14 @@
+{
+  "point_layer_item_style": {
+    "normal_style": {
+      "poi_marker_id": "global_image_navi_along_search_scenic_icon_day_night",
+      "poi_marker_info": "marker_info_search_parent_deep_info"
+    },
+    "focus_style": {
+      "poi_marker_id": "global_image_navi_along_search_scenic_big_icon_day_night",
+      "poi_marker_info": "marker_info_search_parent_deep_info_focus",
+      "bubble_marker_id": "search_alongroute_name.xml",
+      "bubble_marker_info": "marker_info_search_alongroute_name"
+    }
+  }
+}

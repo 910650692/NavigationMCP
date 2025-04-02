@@ -47,6 +47,7 @@ public class SceneNaviTmcView extends NaviSceneBase<SceneNaviTmcViewBinding, Sce
     private ArrayList<NaviEtaInfo.NaviTimeAndDist> mLastViaRemain = new ArrayList<>();
     // 充电站信息
     private ArrayList<NaviEtaInfo.NaviTimeAndDist> mChargeStationRemain;
+    private boolean mIsShowAutoAddChargeStation = true;
     // 上一次显示的途径点信息
     private ArrayList<NaviEtaInfo.NaviTimeAndDist> mLastChargeStationRemain = new ArrayList<>();
     // 途径点显示索引
@@ -86,6 +87,11 @@ public class SceneNaviTmcView extends NaviSceneBase<SceneNaviTmcViewBinding, Sce
     }
 
     @Override
+    protected String getSceneName() {
+        return NaviSceneId.NAVI_SCENE_TMC.name();
+    }
+
+    @Override
     public INaviSceneEvent getNaviSceneEvent() {
         return NaviSceneManager.getInstance();
     }
@@ -111,7 +117,15 @@ public class SceneNaviTmcView extends NaviSceneBase<SceneNaviTmcViewBinding, Sce
     public void hide() {
         super.hide();
         if (mISceneCallback != null) {
-            mISceneCallback.updateSceneVisible(NaviSceneId.NAVI_SCENE_TMC, true);
+            mISceneCallback.updateSceneVisible(NaviSceneId.NAVI_SCENE_TMC, false);
+        }
+    }
+
+    @Override
+    public void close() {
+        super.close();
+        if (mISceneCallback != null) {
+            mISceneCallback.updateSceneVisible(NaviSceneId.NAVI_SCENE_TMC, false);
         }
     }
 
@@ -128,7 +142,7 @@ public class SceneNaviTmcView extends NaviSceneBase<SceneNaviTmcViewBinding, Sce
 
     @Override
     protected void setInitVariableId() {
-
+        mViewBinding.setNaviTMC(mScreenViewModel);
     }
 
     @Override
@@ -266,7 +280,7 @@ public class SceneNaviTmcView extends NaviSceneBase<SceneNaviTmcViewBinding, Sce
             }
         }
         // 绘制充电站
-        if (mChargeStationRemain != null && !mChargeStationRemain.isEmpty()) {
+        if (mChargeStationRemain != null && !mChargeStationRemain.isEmpty() && mIsShowAutoAddChargeStation) {
             for (int i = 0; i < mChargeStationRemain.size() && i < MAX_VIA_NUM; i++) {
                 final NaviEtaInfo.NaviTimeAndDist viaItem = mChargeStationRemain.get(i);
                 final int via;
@@ -301,6 +315,7 @@ public class SceneNaviTmcView extends NaviSceneBase<SceneNaviTmcViewBinding, Sce
             mLastViaRemain.addAll(mViaRemain);
         }
         if (viaRemain != null && mViaRemain != null && viaRemain.size() != mViaRemain.size()) {
+            Logger.i(TAG, "updateTmcVia resetView");
             resetView();
         }
         mViaRemain = viaRemain;
@@ -311,6 +326,7 @@ public class SceneNaviTmcView extends NaviSceneBase<SceneNaviTmcViewBinding, Sce
             mLastChargeStationRemain.addAll(mLastChargeStationRemain);
         }
         if (chargeStationRemain != null && mChargeStationRemain != null && chargeStationRemain.size() != mChargeStationRemain.size()) {
+            Logger.i(TAG, "updateTmcVia ChargeStationRemain resetView");
             resetView();
         }
         mChargeStationRemain = chargeStationRemain;
@@ -320,6 +336,7 @@ public class SceneNaviTmcView extends NaviSceneBase<SceneNaviTmcViewBinding, Sce
      * 重置视图
      */
     public void resetView() {
+        Logger.i(TAG, "resetView");
         if (mViewBinding == null) {
             return;
         }
@@ -529,5 +546,10 @@ public class SceneNaviTmcView extends NaviSceneBase<SceneNaviTmcViewBinding, Sce
 //            mViewBinding.carBottomLine.setImageResource(R.color.auto_color_ca6d);
         }
 //        mViewBinding.tmrtrResources.setOffline(offline);
+    }
+
+    public void setIsShowAutoAdd(boolean isShow) {
+        this.mIsShowAutoAddChargeStation = isShow;
+        mScreenViewModel.innerUpdateNaviInfo();
     }
 }

@@ -6,14 +6,12 @@ import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
 
-import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
 import com.fy.navi.INaviInitListener;
 import com.fy.navi.NaviService;
 import com.fy.navi.hmi.map.MapActivity;
 import com.fy.navi.mapservice.bean.INaviConstant;
 import com.fy.navi.service.AppContext;
-import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.define.search.PoiInfoEntity;
 import com.fy.navi.ui.base.BaseViewModel;
 import com.fy.navi.ui.dialog.IBaseDialogClickListener;

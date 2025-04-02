@@ -12,6 +12,11 @@ public interface IBehaviorApi {
     void initBehaviorService();
 
     /**
+     * 设置账号信息
+     */
+    void setLoginInfo();
+
+    /**
      * registerCallBack
      * @param key
      * @param callBack

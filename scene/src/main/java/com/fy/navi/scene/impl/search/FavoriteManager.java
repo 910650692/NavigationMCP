@@ -41,13 +41,9 @@ final public class FavoriteManager {
             return;
         }
         final FavoriteInfo favoriteInfo = new FavoriteInfo();
-        favoriteInfo.setCommonName(type)
-                .setItemId(poiInfoEntity.getPid()
-                        + DIVIDER + poiInfoEntity.getName()
-                        + DIVIDER + poiInfoEntity.getPoint().getLon()
-                        + DIVIDER + poiInfoEntity.getPoint().getLat()).setUpdateTime(new Date().getTime());
+        favoriteInfo.setCommonName(type);
         poiInfoEntity.setFavoriteInfo(favoriteInfo);
-        BehaviorPackage.getInstance().addFavoriteData(poiInfoEntity, type);
+        BehaviorPackage.getInstance().addFavorite(poiInfoEntity, type);
         SettingUpdateObservable.getInstance().onUpdateSyncTime();
         ToastUtils.Companion.getInstance().showCustomToastView("已添加");
     }

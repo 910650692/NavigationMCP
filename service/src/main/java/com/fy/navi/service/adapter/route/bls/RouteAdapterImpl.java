@@ -30,7 +30,7 @@ import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.adapter.route.IRouteApi;
 import com.fy.navi.service.adapter.route.RouteResultObserver;
 import com.fy.navi.service.define.layer.RouteLineLayerParam;
-import com.fy.navi.service.define.map.MapTypeId;
+import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.route.RequestRouteResult;
 import com.fy.navi.service.define.route.RouteAvoidInfo;
 import com.fy.navi.service.define.route.RouteMsgPushInfo;
@@ -57,6 +57,8 @@ public class RouteAdapterImpl implements IRouteApi {
     private static final String NUM_ONE = "1";
     private RouteService mRouteService;
     private RouteAdapterImplHelper mAdapterImplHelper;
+    private long homeRequestId = -1;
+    private long officeRequestId = -1;
 
     public RouteAdapterImpl() {
         mRouteService = (RouteService) ServiceMgr.getServiceMgrInstance()
@@ -94,6 +96,7 @@ public class RouteAdapterImpl implements IRouteApi {
         requestRouteResult.setMRouteWay(param.getMRouteWay());
         requestRouteResult.setMIsOnlineRoute(param.isMIsOnline());
         requestRouteResult.setMRouteType(param.getMRoutePriorityType());
+        requestRouteResult.setMRouteRequestCallBackType(param.getRouteRequestCallBackType());
         final RouteOption routeOption = mAdapterImplHelper.getRequestParam(requestRouteResult, paramList);
         //设置共性参数 比如在线优先 ....
         //记录请求ID和屏幕ID以供返回结果使用
@@ -145,26 +148,9 @@ public class RouteAdapterImpl implements IRouteApi {
             mRouteService.unInit();
         }
     }
-
-    @Override
-    public void setRoutePlan(final boolean isNaviActive) {
-
-    }
-
-
-    @Override
-    public void setFamiliarRoute(final boolean isFamiliarRoute) {
-
-    }
-
     @Override
     public void setAvoidRoad(final RouteAvoidInfo routeAvoidInfo) {
         mAdapterImplHelper.setAvoidRoad(routeAvoidInfo);
-    }
-
-    //设置限行+车牌开关
-    @Override
-    public void setRestriction(final String plateNumber, final boolean isTrafficRestrictionOpen) {
     }
 
     @Override
@@ -194,22 +180,12 @@ public class RouteAdapterImpl implements IRouteApi {
     }
 
     @Override
-    public void setCarElecPlantion(final boolean isCarElecPlanOpen) {
-
-    }
-
-    @Override
-    public void setTrafficTrip(final boolean isOpenTraffic) {
-
-    }
-
-    @Override
     public void sendEndEntity(final PoiInfoEntity poiInfoEntity) {
         mAdapterImplHelper.sendEndEntity(poiInfoEntity);
     }
 
     @Override
-    public void requestRouteRestoration(final RouteMsgPushInfo routeMsgPushInfo, final MapTypeId mapTypeId) {
+    public void requestRouteRestoration(final RouteMsgPushInfo routeMsgPushInfo, final MapType mapTypeId) {
         mAdapterImplHelper.checkoutRouteServer();
         // 路线还原
         Logger.i(TAG, "requestRouteRestoration");

@@ -2,7 +2,7 @@ package com.fy.navi.service.define.route;
 
 
 import com.fy.navi.service.define.layer.RouteLineLayerParam;
-import com.fy.navi.service.define.map.MapTypeId;
+import com.fy.navi.service.define.map.MapType;
 
 import java.util.List;
 
@@ -15,12 +15,14 @@ public class RequestRouteResult {
     /*** 请求Id **/
     private long mRequestId;
     /*** 屏幕Id **/
-    private MapTypeId mMapTypeId;
+    private MapType mMapTypeId;
     /*** 请求方式 **/
     private RouteWayID mRouteWay;
     private boolean mIsOnlineRoute = true;
     /*** 算路优先级 **/
     private int mRouteType = RoutePriorityType.ROUTE_TYPE_COMMON;
+    /*** 算路优先级 **/
+    private int mRouteRequestCallBackType = -1;
     /*** 路线Item结果hmi **/
     private List<RouteLineInfo> mRouteLineInfos;
     /*** 路线Item结果hmi **/

@@ -1,14 +1,12 @@
 {
   "point_layer_item_style": {
     "normal_style": {
-      "poi_marker_id": "global_image_b_poi_1_day_night",
-      "poi_marker_info": "marker_info_point_center_up",
-      "bg_marker_id": "id_static"
+      "poi_marker_id": "global_image_b_child_poi_hl_day_night",
+      "poi_marker_info": "marker_info_point_center_up"
     },
     "focus_style": {
-      "poi_marker_id": "global_image_b_poi_1_hl_day_night",
+      "poi_marker_id": "global_image_b_poi_red_hl_day_night",
       "poi_marker_info": "marker_info_point_center_up",
-      "bg_marker_id": "id_static",
       "bubble_marker_id": "search_parent_name.xml",
       "bubble_marker_info": "marker_info_search_parent_name"
     }

@@ -12,6 +12,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.android.utils.log.Logger;
+import com.android.utils.thread.ThreadManager;
+import com.fy.navi.scene.R;
 import com.fy.navi.scene.databinding.SceneNaviTbtViewBinding;
 import com.fy.navi.scene.impl.navi.SceneNaviTbtImpl;
 import com.fy.navi.scene.impl.navi.common.AutoUIDrawable;
@@ -24,17 +26,20 @@ import com.fy.navi.scene.ui.navi.manager.NaviSceneBase;
 import com.fy.navi.scene.ui.navi.manager.NaviSceneId;
 import com.fy.navi.scene.ui.navi.manager.NaviSceneManager;
 import com.fy.navi.service.MapDefaultFinalTag;
+import com.fy.navi.service.adapter.navi.NaviConstant;
 import com.fy.navi.service.define.navi.NaviEtaInfo;
 import com.fy.navi.service.define.navi.NaviManeuverInfo;
 
 /**
  * tbt看板scene
+ *
  * @author fy
  * @version $Revision.*$
  */
 public class SceneNaviTbtView extends NaviSceneBase<SceneNaviTbtViewBinding, SceneNaviTbtImpl> {
     private static final String TAG = MapDefaultFinalTag.NAVI_HMI_TAG;
     private ISceneCallback mISceneCallback;
+    private int mGpsStrength;
 
     public SceneNaviTbtView(@NonNull final Context context) {
         super(context);
@@ -52,6 +57,11 @@ public class SceneNaviTbtView extends NaviSceneBase<SceneNaviTbtViewBinding, Sce
     @Override
     protected NaviSceneId getSceneId() {
         return NaviSceneId.NAVI_SCENE_TBT;
+    }
+
+    @Override
+    protected String getSceneName() {
+        return NaviSceneId.NAVI_SCENE_TBT.name();
     }
 
     @Override
@@ -80,7 +90,15 @@ public class SceneNaviTbtView extends NaviSceneBase<SceneNaviTbtViewBinding, Sce
     public void hide() {
         super.hide();
         if (mISceneCallback != null) {
-            mISceneCallback.updateSceneVisible(NaviSceneId.NAVI_SCENE_TBT, true);
+            mISceneCallback.updateSceneVisible(NaviSceneId.NAVI_SCENE_TBT, false);
+        }
+    }
+
+    @Override
+    public void close() {
+        super.close();
+        if (mISceneCallback != null) {
+            mISceneCallback.updateSceneVisible(NaviSceneId.NAVI_SCENE_TBT, false);
         }
     }
 
@@ -123,7 +141,7 @@ public class SceneNaviTbtView extends NaviSceneBase<SceneNaviTbtViewBinding, Sce
     }
 
     /**
-     * @param traceId traceId
+     * @param traceId  traceId
      * @param naviType 导航类型
      */
     public void onNaviArrive(final long traceId, final int naviType) {
@@ -138,6 +156,7 @@ public class SceneNaviTbtView extends NaviSceneBase<SceneNaviTbtViewBinding, Sce
 
     /**
      * 设置引导转向图片
+     *
      * @param drawableValue drawable
      */
     public void setBackgroundNaviExitTurnIcon(final AutoUIDrawable drawableValue) {
@@ -148,6 +167,7 @@ public class SceneNaviTbtView extends NaviSceneBase<SceneNaviTbtViewBinding, Sce
 
     /**
      * 设置出口提示
+     *
      * @param textContent 文本内容
      */
     public void setTextNaviExit(final AutoUIString textContent) {
@@ -158,6 +178,7 @@ public class SceneNaviTbtView extends NaviSceneBase<SceneNaviTbtViewBinding, Sce
 
     /**
      * 设置到下一路口名称
+     *
      * @param textContent 文本内容
      */
     public void setTextNaviInfoDistanceNextRoad(final AutoUIString textContent) {
@@ -176,6 +197,7 @@ public class SceneNaviTbtView extends NaviSceneBase<SceneNaviTbtViewBinding, Sce
 
     /**
      * 设置引导普通转向图片
+     *
      * @param drawableValue drawable
      */
     public void setBackgroundNaviCommonTurnIcon(final AutoUIDrawable drawableValue) {
@@ -185,6 +207,7 @@ public class SceneNaviTbtView extends NaviSceneBase<SceneNaviTbtViewBinding, Sce
 
     /**
      * 设置到下一路口剩余距离单位
+     *
      * @param textContent 文本内容
      */
     @SuppressLint("SetTextI18n")
@@ -196,6 +219,7 @@ public class SceneNaviTbtView extends NaviSceneBase<SceneNaviTbtViewBinding, Sce
 
     /**
      * 设置离线引导普通转向图片
+     *
      * @param iconAction iconAction
      */
     public void setBackgroundNaviOfflineCommonTurnIcon(
@@ -208,6 +232,7 @@ public class SceneNaviTbtView extends NaviSceneBase<SceneNaviTbtViewBinding, Sce
 
     /**
      * 设置离线引导出口转向图片
+     *
      * @param iconAction iconAction
      */
     public void setBackgroundNaviOfflineExitTurnIcon(
@@ -217,5 +242,28 @@ public class SceneNaviTbtView extends NaviSceneBase<SceneNaviTbtViewBinding, Sce
         // 《出口信息》图标 ui未体现
         mViewBinding.sivHudSou33.setBackgroundResource(SceneEnumRes.getDrawableEnumName(iconAction).
                 getDayDrawableId());
+    }
+
+    public void onUpdateGpsStrength(int gpsStrength) {
+        if (mGpsStrength == gpsStrength) {
+            return;
+        }
+        ThreadManager.getInstance().postUi(() -> {
+            mGpsStrength = gpsStrength;
+            switch (gpsStrength) {
+                case NaviConstant.GpsStrengthState.GPS_NONE:
+                    mViewBinding.sivGps.setBackgroundResource(R.drawable.img_satellite_none_42);
+                    break;
+                case NaviConstant.GpsStrengthState.GPS_STRONG:
+                    mViewBinding.sivGps.setBackgroundResource(R.drawable.img_satellite_42);
+                    break;
+                case NaviConstant.GpsStrengthState.GPS_MEDIUM:
+                    mViewBinding.sivGps.setBackgroundResource(R.drawable.img_satellite_medium_42);
+                    break;
+                case NaviConstant.GpsStrengthState.GPS_WEAK:
+                    mViewBinding.sivGps.setBackgroundResource(R.drawable.img_satellite_weak_42);
+                    break;
+            }
+        });
     }
 }

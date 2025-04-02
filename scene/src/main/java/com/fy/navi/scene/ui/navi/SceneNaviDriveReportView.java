@@ -45,6 +45,11 @@ public class SceneNaviDriveReportView extends NaviSceneBase<SceneNaviDriveReport
     }
 
     @Override
+    protected String getSceneName() {
+        return NaviSceneId.NAVI_DRIVE_REPORT.name();
+    }
+
+    @Override
     public INaviSceneEvent getNaviSceneEvent() {
         return NaviSceneManager.getInstance();
     }

@@ -64,7 +64,7 @@
             app:layout_constraintBottom_toBottomOf="@id/sv_exit"
             app:layout_constraintStart_toEndOf="@id/sv_exit"
             app:layout_constraintTop_toTopOf="@id/sv_exit"
-            tools:background="@color/navi_red_text">
+            tools:background="@color/navi_color_FF595F_100">
             <!--看全览-->
             <com.fy.navi.ui.view.SkinConstraintLayout
                 android:id="@+id/sv_overview_switch"
@@ -164,41 +164,6 @@
 
             </com.fy.navi.ui.view.SkinConstraintLayout>
         </com.fy.navi.ui.view.SkinConstraintLayout>
-        
-        <com.fy.navi.ui.view.SkinConstraintLayout
-            android:id="@+id/scl_navi_continue"
-            clickCommand="@{naviControl.naviContinue}"
-            android:layout_width="@dimen/dp_310"
-            android:layout_height="@dimen/dp_92"
-            android:layout_marginStart="@dimen/dp_920"
-            android:contentDescription="@string/navi_continue_navi"
-            app:click_color_change="true"
-            android:background="@drawable/bg_navi_continue"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent">
-            
-            <com.fy.navi.ui.view.SkinImageView
-                android:id="@+id/siv_navi_continue_icon"
-                android:layout_width="@dimen/dp_58"
-                android:layout_height="@dimen/dp_58"
-                android:background="@drawable/img_navigation_58"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                android:layout_marginStart="@dimen/dp_52"/>
-            
-            <com.fy.navi.ui.view.SkinTextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="@dimen/sp_34"
-                android:textColor="@color/white"
-                app:layout_constraintTop_toTopOf="@+id/siv_navi_continue_icon"
-                app:layout_constraintBottom_toBottomOf="@+id/siv_navi_continue_icon"
-                app:layout_constraintStart_toEndOf="@+id/siv_navi_continue_icon"
-                android:text="@string/navi_continue_navi"
-                android:layout_marginStart="@dimen/dp_12"/>
-
-        </com.fy.navi.ui.view.SkinConstraintLayout>
 
         <!--更多设置视图-->
         <androidx.constraintlayout.widget.Group
@@ -224,7 +189,7 @@
             android:layout_width="@dimen/dp_640"
             android:layout_height="@dimen/dp_320"
             android:background="@drawable/bg_navi_control"
-            tools:background="@color/navi_red_text" />
+            tools:background="@color/navi_color_FF595F_100" />
 
         <com.fy.navi.ui.view.SkinView
             android:id="@+id/sv_bar"
@@ -391,7 +356,7 @@
         <!--加油站-->
         <com.fy.navi.ui.view.SkinConstraintLayout
             android:id="@+id/sv_oil"
-            clickCommand="@{() -> naviControl.alongSearch(@string/st_quick_search_station)}"
+            clickCommand="@{() -> naviControl.alongSearch(0)}"
             android:layout_width="@dimen/dp_90"
             android:layout_height="@dimen/dp_106"
             android:layout_marginBottom="@dimen/dp_30"
@@ -422,7 +387,7 @@
         <!--充电站-->
         <com.fy.navi.ui.view.SkinConstraintLayout
             android:id="@+id/sv_charge"
-            clickCommand="@{() -> naviControl.alongSearch(@string/st_quick_search_food)}"
+            clickCommand="@{() -> naviControl.alongSearch(1)}"
             android:layout_width="@dimen/dp_90"
             android:layout_height="@dimen/dp_106"
             android:layout_marginStart="@dimen/dp_38"
@@ -452,7 +417,7 @@
         <!--卫生间-->
         <com.fy.navi.ui.view.SkinConstraintLayout
             android:id="@+id/sv_lavatory"
-            clickCommand="@{() -> naviControl.alongSearch(@string/st_quick_search_lavatory)}"
+            clickCommand="@{() -> naviControl.alongSearch(2)}"
             android:layout_width="@dimen/dp_90"
             android:layout_height="@dimen/dp_106"
             android:layout_marginStart="@dimen/dp_52"
@@ -482,7 +447,7 @@
         <!--停车场-->
         <com.fy.navi.ui.view.SkinConstraintLayout
             android:id="@+id/sv_service"
-            clickCommand="@{() -> naviControl.alongSearch(@string/navi_along_parking)}"
+            clickCommand="@{() -> naviControl.alongSearch(3)}"
             android:layout_width="@dimen/dp_90"
             android:layout_height="@dimen/dp_106"
             android:layout_marginStart="@dimen/dp_43"
@@ -512,7 +477,7 @@
         <!--沿途搜-->
         <com.fy.navi.ui.view.SkinConstraintLayout
             android:id="@+id/sv_along_search"
-            clickCommand="@{() -> naviControl.alongSearch(@string/navi_along_search)}"
+            clickCommand="@{() -> naviControl.alongSearch(4)}"
             android:layout_width="@dimen/dp_90"
             android:layout_height="@dimen/dp_106"
             android:layout_marginStart="@dimen/dp_27"
@@ -546,7 +511,7 @@
             android:layout_height="@dimen/dp_1"
             android:layout_marginTop="@dimen/dp_166"
             android:layout_marginHorizontal="@dimen/dp_30"
-            android:background="@color/navi_img_color_ten"
+            android:background="@color/navi_color_000000_40"
             app:layout_constraintEnd_toEndOf="@id/sv_tools"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@id/sv_tools" />

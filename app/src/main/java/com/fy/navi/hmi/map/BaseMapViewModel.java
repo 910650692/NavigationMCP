@@ -6,6 +6,7 @@ import android.annotation.SuppressLint;
 import android.app.Application;
 import android.os.Bundle;
 import android.os.Looper;
+import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -15,9 +16,16 @@ import androidx.databinding.ObservableField;
 import androidx.databinding.ObservableInt;
 
 import com.android.utils.ConvertUtils;
+import com.android.utils.ResourceUtils;
 import com.android.utils.ToastUtils;
+import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
+import com.fy.navi.burypoint.anno.HookMethod;
+import com.fy.navi.burypoint.bean.BuryParam;
+import com.fy.navi.burypoint.bean.BuryProperty;
+import com.fy.navi.burypoint.constant.BuryConstant;
+import com.fy.navi.burypoint.controller.BuryPointController;
 import com.fy.navi.hmi.R;
 import com.fy.navi.hmi.favorite.FavoriteHelper;
 import com.fy.navi.hmi.favorite.HomeCompanyFragment;
@@ -38,7 +46,7 @@ import com.fy.navi.service.AutoMapConstant.PoiType;
 import com.fy.navi.service.define.aos.RestrictedArea;
 import com.fy.navi.service.define.aos.RestrictedAreaDetail;
 import com.fy.navi.service.define.map.IBaseScreenMapView;
-import com.fy.navi.service.define.map.MapTypeId;
+import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.message.MessageCenterInfo;
 import com.fy.navi.service.define.message.MessageCenterType;
 import com.fy.navi.service.define.navi.LaneInfoEntity;
@@ -46,7 +54,9 @@ import com.fy.navi.service.define.navistatus.NaviStatus;
 import com.fy.navi.service.define.route.RoutePoiType;
 import com.fy.navi.service.define.route.RouteRestrictionParam;
 import com.fy.navi.service.define.route.RouteSpeechRequestParam;
+import com.fy.navi.service.define.route.RouteTMCParam;
 import com.fy.navi.service.define.search.PoiInfoEntity;
+import com.fy.navi.service.define.utils.NumberUtils;
 import com.fy.navi.service.logicpaket.navistatus.NaviStatusPackage;
 import com.fy.navi.service.logicpaket.search.SearchPackage;
 import com.fy.navi.service.logicpaket.user.behavior.BehaviorPackage;
@@ -54,6 +64,11 @@ import com.fy.navi.ui.action.Action;
 import com.fy.navi.ui.base.BaseFragment;
 import com.fy.navi.ui.base.BaseViewModel;
 import com.fy.navi.ui.base.StackManager;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.concurrent.ScheduledFuture;
 
 /**
  * @Description TODO
@@ -64,14 +79,18 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
     private static final String TAG = "BaseMapViewModel";
     public ObservableBoolean backToCcPVisibility;
     public ObservableBoolean mainBTNVisibility;
+    public ObservableBoolean mScaleViewVisibility;
     public ObservableBoolean bottomNaviVisibility;
     public ObservableBoolean backToParkingVisibility;
     public ObservableBoolean messageCenterVisible;
     public ObservableField<MessageCenterInfo> messageCenterEntity;
     public ObservableField<String> messageCenterOperate;
     public ObservableField<String> messageCenterTitle;
+    public ObservableField<String> homeTime;
+    public ObservableField<String> companyTime;
     public ObservableField<String> messageCenterContent;
     public ObservableBoolean messageCenterContentVisibility;
+    public ObservableBoolean messageCenterImgVisibility;
     public ObservableField<Boolean> naviHomeVisibility;
     public ObservableInt carModeImgId;
     @Nullable
@@ -79,17 +98,24 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
     @Nullable
     private RouteRestrictionParam routeRestrictionParam;
     public ObservableField<Boolean> limitDriverVisibility;
+    public ObservableField<Boolean> tmcModeVisibility;
     public ObservableField<String> limitDriverTitle;
     public ObservableField<Boolean> cruiseVisibility;
     public ObservableField<Boolean> muteVisibility;
+    public ObservableField<Boolean> mNaviContinueVisibility;
+
+    private ScheduledFuture mScheduledFuture;
+    private final int mTimer = 300;
 
 
     public BaseMapViewModel(@NonNull Application application) {
         super(application);
         backToCcPVisibility = new ObservableBoolean(false);
         mainBTNVisibility = new ObservableBoolean(true);
+        mScaleViewVisibility = new ObservableBoolean(true);
         naviHomeVisibility = new ObservableField<>(false);
         limitDriverVisibility = new ObservableField<>(false);
+        tmcModeVisibility = new ObservableField<>(false);
         limitDriverTitle = new ObservableField<>("");
         carModeImgId = new ObservableInt(R.drawable.img_car_mode_2d_north);
         cruiseVisibility = new ObservableField<>(false);
@@ -100,8 +126,12 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         messageCenterEntity = new ObservableField<>();
         messageCenterOperate = new ObservableField<>("");
         messageCenterTitle = new ObservableField<>("");
+        homeTime = new ObservableField<>(ResourceUtils.Companion.getInstance().getString(R.string.map_go_setting));
+        companyTime = new ObservableField<>(ResourceUtils.Companion.getInstance().getString(R.string.map_go_setting));
         messageCenterContent = new ObservableField<>("");
         messageCenterContentVisibility = new ObservableBoolean(false);
+        messageCenterImgVisibility = new ObservableBoolean(false);
+        mNaviContinueVisibility = new ObservableField(false);
     }
 
     @Override
@@ -133,7 +163,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
 
     //回自车位逻辑
     public Action backToSelfParking = () -> {
-        ImmersiveStatusScene.getInstance().setImmersiveStatus(MapTypeId.MAIN_SCREEN_MAIN_MAP, ImersiveStatus.IMERSIVE);
+        ImmersiveStatusScene.getInstance().setImmersiveStatus(MapType.MAIN_SCREEN_MAIN_MAP, ImersiveStatus.IMERSIVE);
     };
 
     // 播报和静音切换
@@ -141,65 +171,84 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         mModel.setCruiseVoice(!muteVisibility.get());
     };
 
-    public Action openSearchFragment = () -> {
-        addFragment(new MainSearchFragment(), null);
-        mModel.stopCruise();
-    };
-
-    public Action openHomeFragment = () -> {
-        try {
-            PoiInfoEntity poiInfoEntity = getFavoritePoiInfo(PoiType.POI_HOME);
-            if (poiInfoEntity != null && poiInfoEntity.getFavoriteInfo() != null) {
-                //直接进入导航到家
-                SearchPackage.getInstance().clearLabelMark();
-                startRoute(poiInfoEntity);
-                return;
-            }
-            Bundle bundle = new Bundle();
-            bundle.putInt(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_TYPE, AutoMapConstant.SearchType.SEARCH_KEYWORD);
-            bundle.putInt(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_OPEN_HOME_COMPANY, AutoMapConstant.HomeCompanyType.HOME);
-            addFragment(new HomeCompanyFragment(), bundle);
+    public Action openSearchFragment = new Action() {
+        @Override
+        @HookMethod(eventName = BuryConstant.EventName.AMAP_WIDGET_SEARCH)
+        public void call() {
+            addFragment(new MainSearchFragment(), null);
             mModel.stopCruise();
-        } catch (Exception e) {
-            Logger.e(SEARCH_HMI_TAG, "skipFragment: Exception occurred", e);
         }
     };
 
-    public Action openCompanyFragment = () -> {
-        try {
-            PoiInfoEntity poiInfoEntity = getFavoritePoiInfo(PoiType.POI_COMPANY);
-            if (poiInfoEntity != null && poiInfoEntity.getFavoriteInfo() != null) {
-                //直接进入导航到公司
-                SearchPackage.getInstance().clearLabelMark();
-                startRoute(poiInfoEntity);
-                return;
+    public Action openHomeFragment = new Action() {
+        @Override
+        @HookMethod(eventName = BuryConstant.EventName.AMAP_WIDGET_HOME)
+        public void call() {
+            try {
+                PoiInfoEntity poiInfoEntity = getFavoritePoiInfo(PoiType.POI_HOME);
+                if (poiInfoEntity != null && poiInfoEntity.getFavoriteInfo() != null) {
+                    //直接进入导航到家
+                    SearchPackage.getInstance().clearLabelMark();
+                    startRoute(poiInfoEntity);
+                    return;
+                }
+                Bundle bundle = new Bundle();
+                bundle.putInt(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_TYPE, AutoMapConstant.SearchType.SEARCH_KEYWORD);
+                bundle.putInt(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_OPEN_HOME_COMPANY, AutoMapConstant.HomeCompanyType.HOME);
+                addFragment(new HomeCompanyFragment(), bundle);
+                mModel.stopCruise();
+            } catch (Exception e) {
+                Logger.e(SEARCH_HMI_TAG, "skipFragment: Exception occurred", e);
             }
-            Bundle bundle = new Bundle();
-            bundle.putInt(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_TYPE, AutoMapConstant.SearchType.SEARCH_KEYWORD);
-            bundle.putInt(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_OPEN_HOME_COMPANY, AutoMapConstant.HomeCompanyType.COMPANY);
-            addFragment(new HomeCompanyFragment(), bundle);
-            mModel.stopCruise();
-        } catch (Exception e) {
-            Logger.e(SEARCH_HMI_TAG, "skipFragment: Exception occurred", e);
         }
     };
 
-    public Action searchForChargeStation = () -> {
-        try {
-            final Bundle bundle = new Bundle();
-            bundle.putInt(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_TYPE, AutoMapConstant.SearchType.SEARCH_KEYWORD);
-            final int powerType = powerType();
-            // 油车
-            if (powerType == 0) {
-                bundle.putString(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_KEYWORD, "加油站");
-            } else {
-                bundle.putString(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_KEYWORD, "充电站");
+    public Action openCompanyFragment = new Action() {
+        @Override
+        @HookMethod(eventName = BuryConstant.EventName.AMAP_WIDGET_WORK)
+        public void call() {
+            try {
+                PoiInfoEntity poiInfoEntity = getFavoritePoiInfo(PoiType.POI_COMPANY);
+                if (poiInfoEntity != null && poiInfoEntity.getFavoriteInfo() != null) {
+                    //直接进入导航到公司
+                    SearchPackage.getInstance().clearLabelMark();
+                    startRoute(poiInfoEntity);
+                    return;
+                }
+                Bundle bundle = new Bundle();
+                bundle.putInt(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_TYPE, AutoMapConstant.SearchType.SEARCH_KEYWORD);
+                bundle.putInt(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_OPEN_HOME_COMPANY, AutoMapConstant.HomeCompanyType.COMPANY);
+                addFragment(new HomeCompanyFragment(), bundle);
+                mModel.stopCruise();
+            } catch (Exception e) {
+                Logger.e(SEARCH_HMI_TAG, "skipFragment: Exception occurred", e);
             }
-            bundle.putParcelable(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_POI_LIST, null);
-            addFragment(new SearchResultFragment(), bundle);
+        }
+    };
 
-        } catch (Exception e) {
-            Logger.e(SEARCH_HMI_TAG, "skipFragment: Exception occurred", e);
+    public Action searchForChargeStation = new Action() {
+        @Override
+        @HookMethod
+        public void call() {
+            try {
+                final Bundle bundle = new Bundle();
+                bundle.putInt(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_TYPE, AutoMapConstant.SearchType.SEARCH_KEYWORD);
+                final int powerType = powerType();
+                // 油车
+                if (powerType == 0) {
+                    bundle.putString(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_KEYWORD, "加油站");
+                } else {
+                    bundle.putString(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_KEYWORD, "充电站");
+                }
+                bundle.putParcelable(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_POI_LIST, null);
+                addFragment(new SearchResultFragment(), bundle);
+
+                //For bury point
+                BuryPointController.getInstance().setEventName(powerType == 0 ? BuryConstant.EventName.AMAP_MAP_GASSTATION : BuryConstant.EventName.AMAP_MAP_CHARGINGSTATION);
+
+            } catch (Exception e) {
+                Logger.e(SEARCH_HMI_TAG, "skipFragment: Exception occurred", e);
+            }
         }
     };
 
@@ -216,10 +265,13 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         }
     }
 
-
-    public Action openSettingFragment = () -> {
-        messageCenterVisible.set(false);
-        addFragment(new SettingFragment(), null);
+    public Action openSettingFragment = new Action() {
+        @Override
+        @HookMethod(eventName = BuryConstant.EventName.AMAP_MAP_SETTING)
+        public void call() {
+            messageCenterVisible.set(false);
+            addFragment(new SettingFragment(), null);
+        }
     };
 
     public Action carHeader = () -> {
@@ -228,6 +280,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
 
     public Action messageCenterGone = () -> {
         messageCenterVisible.set(false);
+        mModel.deleteMessage();
     };
 
     public Action openLimitDetailFragment = () -> {
@@ -266,16 +319,79 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
     }
 
     public void setMapCenterInScreen(int frameLayoutWidth) {
+        Logger.i(TAG, "setMapCenterInScreen");
         mModel.setMapCenterInScreen(frameLayoutWidth);
+        mScaleViewVisibility.set(false);
         mainBTNVisibility.set(false);
         bottomNaviVisibility.set(false);
         backToParkingVisibility.set(false);
+        initTimer();
+    }
+
+    public void setMapCenterInScreen(final int frameLayoutWidth, final Bundle bundle) {
+        int type = -1;
+        if (bundle != null) {
+            type = bundle.getInt(AutoMapConstant.RouteBundleKey.BUNDLE_KEY_START_NAVI_SIM, -1);
+        }
+        Logger.i(TAG, "setMapCenterInScreen type:" + type);
+        mModel.setMapCenterInScreen(frameLayoutWidth);
+        // 如果是导航页面的话比例尺继续正常显示
+        mScaleViewVisibility.set(type != -1);
+        mainBTNVisibility.set(false);
+        bottomNaviVisibility.set(false);
+        backToParkingVisibility.set(false);
+        cancelTimer();
     }
 
     public void resetMapCenterInScreen() {
         mModel.resetMapCenterInScreen();
+        mScaleViewVisibility.set(true);
         mainBTNVisibility.set(true);
         bottomNaviVisibility.set(true);
+        initTimer();
+    }
+
+    private void checkHomeOfficeShow() {
+        tmcModeVisibility.set(mModel.getHomeCompanyDisplay());
+        if (!mModel.getHomeCompanyDisplay()) {
+            cancelTimer();
+            return;
+        }
+        PoiInfoEntity homePoi = getFavoritePoiInfo(PoiType.POI_HOME);
+        PoiInfoEntity companyPoi = getFavoritePoiInfo(PoiType.POI_COMPANY);
+        if (ConvertUtils.isEmpty(homePoi) && ConvertUtils.isEmpty(companyPoi)) {
+            homeTime.set(ResourceUtils.Companion.getInstance().getString(R.string.map_go_setting));
+            companyTime.set(ResourceUtils.Companion.getInstance().getString(R.string.map_go_setting));
+            mView.setTMCView(0, null);
+            mView.setTMCView(1, null);
+        } else if(!ConvertUtils.isEmpty(homePoi) && !ConvertUtils.isEmpty(companyPoi)){
+            mModel.refreshHomeOfficeTMC(true);
+        } else if (!ConvertUtils.isEmpty(homePoi) && ConvertUtils.isEmpty(companyPoi)) {
+            mModel.refreshHomeOfficeTMC(true);
+            companyTime.set(ResourceUtils.Companion.getInstance().getString(R.string.map_go_setting));
+            mView.setTMCView(1, null);
+        } else {
+            mModel.refreshHomeOfficeTMC(false);
+            homeTime.set(ResourceUtils.Companion.getInstance().getString(R.string.map_go_setting));
+            mView.setTMCView(0, null);
+        }
+    }
+
+    /***
+     * 页面倒计时
+     */
+    public void initTimer() {
+        cancelTimer();
+        mScheduledFuture = ThreadManager.getInstance().asyncAtFixDelay(this::checkHomeOfficeShow, NumberUtils.NUM_0, mTimer);
+    }
+    /***
+     * 取消页面倒计时
+     */
+    public void cancelTimer() {
+        if (!ConvertUtils.isEmpty(mScheduledFuture)) {
+            ThreadManager.getInstance().cancelDelayRun(mScheduledFuture);
+            mScheduledFuture = null;
+        }
     }
 
     public void setBacktoCCP(boolean isTouchStatus) {
@@ -284,6 +400,13 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
 
     public void showOrHideSelfParkingView(boolean visible){
         backToParkingVisibility.set(visible);
+    }
+
+    public void showNaviContinueBtn(final ImersiveStatus status) {
+        final boolean currentFragmentIsNavi = StackManager.getInstance().getCurrentFragment(mScreenId) instanceof NaviGuidanceFragment;
+        final boolean vis = TextUtils.equals(NaviStatus.NaviStatusType.NAVING, mModel.getNaviStatus()) && status == ImersiveStatus.TOUCH;
+        Logger.i(TAG, "showNaviContinueBtn-vis:" + vis);
+        mNaviContinueVisibility.set(vis && !currentFragmentIsNavi);
     }
 
     /**
@@ -317,11 +440,28 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
 //            }
             return;
         }
+        openPoiDetailFragment(entity);
+    }
+
+    @HookMethod(eventName = BuryConstant.EventName.AMAP_MAP_DESTINATION_CHOOSE)
+    private void openPoiDetailFragment(PoiInfoEntity entity){
         Bundle bundle = new Bundle();
         bundle.putParcelable(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_OPEN_DETAIL, entity);
         bundle.putInt(AutoMapConstant.PoiBundleKey.BUNDLE_KEY_START_POI_TYPE, PoiType.POI_MAP_CLICK);
         PoiDetailsFragment fragment = new PoiDetailsFragment();
         addPoiDetailsFragment(fragment, bundle);
+
+        //for burying point
+        JSONObject params = new JSONObject();
+        try {
+            params.put(BuryConstant.Key.POI_INFO_ENTRY, entity);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        BuryProperty properties = new BuryProperty.Builder()
+                .setParams(BuryConstant.ProperType.BURY_KEY_SEARCH_CONTENTS, params.toString())
+                .build();
+        BuryPointController.getInstance().setBuryProps(properties);
     }
 
     public void toSearchResultFragment(String keyword) {
@@ -333,12 +473,13 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         addFragment(new SearchResultFragment(), args);
     }
 
-    public void toSearchAroundFragment(String keyword, PoiInfoEntity endPoint) {
+    public void toSearchAroundFragment(String keyword, final int radius, PoiInfoEntity endPoint) {
         Bundle args = new Bundle();
         args.putString(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SOURCE_FRAGMENT, AutoMapConstant.SourceFragment.MAIN_SEARCH_FRAGMENT);
         args.putInt(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_TYPE, AutoMapConstant.SearchType.AROUND_SEARCH);
         args.putString(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_KEYWORD, keyword);
         args.putParcelable(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_POI_LIST, endPoint);
+        args.putInt(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_RANGE, radius);
         addFragment(new SearchResultFragment(), args);
     }
 
@@ -380,7 +521,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         addFragment(new HomeCompanyFragment(), args);
     }
 
-    public void updateUiStyle(MapTypeId mapTypeId, int uiMode) {
+    public void updateUiStyle(MapType mapTypeId, int uiMode) {
         mModel.updateUiStyle(mapTypeId, uiMode);
     }
 
@@ -427,7 +568,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
             final boolean showSameDayLimit = mModel.showSameDayLimit();
             if(showSameDayLimit){
                 Logger.i("showSameDayLimit","showSameDayLimit"+statusVis);
-                mModel.managerMessage(MessageCenterType.ROAD_LIMIT,"");
+                mModel.managerMessage(MessageCenterType.ROAD_LIMIT);
             }
         }
     }
@@ -437,7 +578,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
      */
     public void offlineMap15Day(){
         if(mModel.offlineMap15Day()){
-            mModel.managerMessage(MessageCenterType.MAP_UPDATE_15,"");
+            mModel.managerMessage(MessageCenterType.MAP_UPDATE_15);
         }
     }
 
@@ -446,7 +587,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
      */
     public void offlineMap45Day(){
         if(mModel.offlineMap45Day()){
-            mModel.managerMessage(MessageCenterType.MAP_UPDATE_45,"");
+            mModel.managerMessage(MessageCenterType.MAP_UPDATE_45);
         }
     }
 
@@ -459,12 +600,17 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         messageCenterOperate.set(messageCenterInfo.getMsgOperate());
         messageCenterTitle.set(messageCenterInfo.getMsgTitle());
         messageCenterContent.set(messageCenterInfo.getMsgContent());
+        messageCenterImgVisibility.set(false);
         if(messageCenterInfo.getMsgType() == MessageCenterType.ROAD_LIMIT){
             messageCenterContentVisibility.set(false);
         }else if(messageCenterInfo.getMsgType() == MessageCenterType.MAP_UPDATE_15){
             messageCenterContentVisibility.set(false);
         }else if(messageCenterInfo.getMsgType() == MessageCenterType.MAP_UPDATE_45){
             messageCenterContentVisibility.set(true);
+        }else if(messageCenterInfo.getMsgType() == MessageCenterType.WEATHER){
+            messageCenterTitle.set("");
+            messageCenterContentVisibility.set(true);
+            messageCenterImgVisibility.set(true);
         }
     }
 
@@ -566,6 +712,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
 
     public void startNaviForRouteOver() {
         if (NaviStatus.NaviStatusType.SELECT_ROUTE == NaviStatusPackage.getInstance().getCurrentNaviStatus()) {
+            Logger.i(TAG, "startNaviForRouteOver addNaviFragment");
             Bundle bundle = new Bundle();
             bundle.putInt(AutoMapConstant.RouteBundleKey.BUNDLE_KEY_START_NAVI_SIM, AutoMapConstant.NaviType.NAVI_GPS);
             addFragment(new NaviGuidanceFragment(), bundle);
@@ -586,5 +733,27 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
      */
     public int powerType() {
         return mModel.powerType();
+    }
+
+    public void setTMCView(RouteTMCParam param) {
+        if (Boolean.TRUE.equals(param.isMIsShort()) && 0 == param.getMKey()) {
+            homeTime.set(ResourceUtils.Companion.getInstance().getString(R.string.map_in_around));
+        }
+        if (Boolean.TRUE.equals(param.isMIsShort()) && 1 == param.getMKey()) {
+            companyTime.set(ResourceUtils.Companion.getInstance().getString(R.string.map_in_around));
+        }
+
+        if (Boolean.FALSE.equals(param.isMIsShort()) && 0 == param.getMKey()) {
+            homeTime.set(param.getMTime());
+            mView.setTMCView(param.getMKey(), param.getMRouteLightBarItem());
+        }
+        if (Boolean.FALSE.equals(param.isMIsShort()) && 1 == param.getMKey()) {
+            companyTime.set(param.getMTime());
+            mView.setTMCView(param.getMKey(), param.getMRouteLightBarItem());
+        }
+
+        if (0 == param.getMKey() && !ConvertUtils.isEmpty(getFavoritePoiInfo(PoiType.POI_COMPANY))) {
+            mModel.refreshHomeOfficeTMC(false);
+        }
     }
 }

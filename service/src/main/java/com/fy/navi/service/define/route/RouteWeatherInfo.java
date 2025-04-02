@@ -13,6 +13,7 @@ public class RouteWeatherInfo {
     private int mWeatherType;
     private long mPathID;
     private int mWeatherID;
+    private RouteWeatherID mRouteWeatherID;
     private int mCityID;
     private long mTimestamp;
     private String mCityName;
@@ -23,4 +24,5 @@ public class RouteWeatherInfo {
     private long mDistance;
     private long mEta;
     private String mPlanChannelId;
+    private String mAlertLevelName;// 预警名称
 }

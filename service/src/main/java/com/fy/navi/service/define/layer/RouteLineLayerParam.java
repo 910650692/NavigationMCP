@@ -2,7 +2,7 @@ package com.fy.navi.service.define.layer;
 
 import androidx.annotation.NonNull;
 
-import com.fy.navi.service.define.map.MapTypeId;
+import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.route.RouteLinePoints;
 
 import java.util.ArrayList;
@@ -14,8 +14,11 @@ import lombok.Setter;
 @Setter
 public class RouteLineLayerParam {
     private long mRequestId;
-    private MapTypeId mMapTypeId;
+    private MapType mMapTypeId;
+    private int mRouteType;
+    private int mStrategy;
     private boolean mIsOnlineRoute = true;
+    private Object mPoiForRequest;
     /*** 底图上的路线图层信息 **/
     private ArrayList<?> mPathInfoList = new ArrayList<>();
     private RouteLinePoints mRouteLinePoints = new RouteLinePoints();

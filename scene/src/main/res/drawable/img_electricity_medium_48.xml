@@ -7,18 +7,18 @@
       android:pathData="M15.111,12.904C15.111,12.794 15.195,12.712 15.278,12.646C15.463,12.499 15.721,12.421 16,12.421L16,12.421L32,12.421C32.279,12.421 32.537,12.499 32.722,12.646C32.805,12.712 32.889,12.794 32.889,12.904L32.889,12.904L32.889,38.406C32.889,38.517 32.805,38.598 32.722,38.664C32.537,38.811 32.279,38.889 32,38.889L32,38.889L16,38.889C15.721,38.889 15.463,38.811 15.278,38.664L15.278,38.664Z"
       android:strokeWidth="2.22222222"
       android:fillColor="#00000000"
-      android:strokeColor="#000000"
+      android:strokeColor="@color/route_back_icon_color"
       android:fillType="evenOdd"/>
   <path
       android:pathData="M20.667,11.31L20.667,9.655C20.667,8.741 21.413,8 22.333,8L25.667,8C26.587,8 27.333,8.741 27.333,9.655L27.333,11.31L20.667,11.31Z"
       android:strokeWidth="1"
-      android:fillColor="#383839"
+      android:fillColor="@color/route_back_icon_color"
       android:fillType="nonZero"
       android:strokeColor="#00000000"/>
   <path
       android:pathData="M17.333,36.69l0,-15.448l13.333,-0l0,15.448z"
       android:strokeWidth="1"
-      android:fillColor="#383839"
+      android:fillColor="@color/route_back_icon_color"
       android:fillType="evenOdd"
       android:strokeColor="#00000000"/>
 </vector>

@@ -9,10 +9,13 @@ import com.fy.navi.scene.api.poi.IScenePoiDetailContentView;
 import com.fy.navi.scene.ui.poi.ScenePoiDetailContentView;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.define.bean.GeoPoint;
+import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.mapdata.CityDataInfo;
 import com.fy.navi.service.define.search.ETAInfo;
 import com.fy.navi.service.define.search.PoiInfoEntity;
+import com.fy.navi.service.logicpaket.layer.LayerPackage;
 import com.fy.navi.service.logicpaket.mapdata.MapDataPackage;
+import com.fy.navi.service.logicpaket.route.RoutePackage;
 import com.fy.navi.service.logicpaket.search.SearchPackage;
 import com.fy.navi.service.logicpaket.user.behavior.BehaviorPackage;
 import com.fy.navi.ui.base.StackManager;
@@ -29,24 +32,27 @@ public class ScenePoiDetailContentViewImpl extends BaseSceneModel<ScenePoiDetail
     private final SearchPackage mSearchPackage;
     private final BehaviorPackage mBehaviorPackage;
     private final MapDataPackage mapDataPackage;
+    private final RoutePackage mRoutePackage;
 
 
     public ScenePoiDetailContentViewImpl(final ScenePoiDetailContentView screenView) {
         super(screenView);
         mSearchPackage = SearchPackage.getInstance();
         mBehaviorPackage = BehaviorPackage.getInstance();
-        this.mapDataPackage = MapDataPackage.getInstance();
+        mapDataPackage = MapDataPackage.getInstance();
+        mRoutePackage = RoutePackage.getInstance();
     }
 
     @Override
     public void closeFragment() {
         StackManager.getInstance().getCurrentFragment(mMapTypeId.name()).closeFragment(true);
         // 清除扎标的点
-        mSearchPackage.clearLabelMark();
+        mSearchPackage.clearPoiLabelMark();
     }
 
     /**
      * 获取城市信息
+     *
      * @param acCode 城市编码
      * @return CityDataInfo
      */
@@ -83,7 +89,7 @@ public class ScenePoiDetailContentViewImpl extends BaseSceneModel<ScenePoiDetail
      * 是否收藏
      *
      * @param poiInfo PoiInfoEntity
-     * @return true：已收藏，false：未收藏
+     * @return itemId 已经收藏 null 未收藏
      */
     public String isFavorite(final PoiInfoEntity poiInfo) {
         return mBehaviorPackage.isFavorite(poiInfo);
@@ -95,8 +101,8 @@ public class ScenePoiDetailContentViewImpl extends BaseSceneModel<ScenePoiDetail
      * @param poiInfo PoiInfoEntity
      * @return id：成功，null：失败
      */
-    public String addFavorite(final PoiInfoEntity poiInfo) {
-        return mBehaviorPackage.addFavorite(poiInfo);
+    public String addFavorite(final PoiInfoEntity poiInfo, final int type) {
+        return mBehaviorPackage.addFavorite(poiInfo, type);
     }
 
     /**
@@ -112,7 +118,7 @@ public class ScenePoiDetailContentViewImpl extends BaseSceneModel<ScenePoiDetail
     /**
      * 添加收藏夹信息到本地数据库
      *
-     * @param entity 收藏点信息
+     * @param entity       收藏点信息
      * @param favoriteType 收藏点类型（1家，2公司，3常去地址，0普通收藏点）
      */
     public void addFavoriteData(final PoiInfoEntity entity, final int favoriteType) {
@@ -144,6 +150,7 @@ public class ScenePoiDetailContentViewImpl extends BaseSceneModel<ScenePoiDetail
 
     /**
      * 获取POI点类型编码
+     *
      * @param typeCode POI的typeCode
      * @return 对应类型
      */
@@ -159,5 +166,14 @@ public class ScenePoiDetailContentViewImpl extends BaseSceneModel<ScenePoiDetail
      */
     public CompletableFuture<ETAInfo> getTravelTimeFuture(final GeoPoint geoPoint) {
         return mSearchPackage.getTravelTimeFutureIncludeChargeLeft(geoPoint);
+    }
+
+    /**
+     * 获取当前已添加的途径点数量
+     *
+     * @return 途径点数量
+     */
+    public int getViaCount() {
+        return mRoutePackage.getViaPointsCount(MapType.MAIN_SCREEN_MAIN_MAP);
     }
 }

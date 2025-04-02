@@ -1,7 +1,6 @@
 package com.fy.navi.service.adapter.cruise.bls;
 
 import com.android.utils.ConvertUtils;
-import com.android.utils.log.Logger;
 import com.autonavi.gbl.guide.model.CruiseInfo;
 import com.autonavi.gbl.guide.model.LaneInfo;
 import com.autonavi.gbl.guide.model.NaviCameraExt;
@@ -21,7 +20,7 @@ import java.util.Hashtable;
  * @Author lvww
  * @date 2024/12/5
  */
-public class CruiseCallback implements ICruiseObserver{
+public class CruiseCallback implements ICruiseObserver, ISoundPlayObserver{
     private static final String TAG = MapDefaultFinalTag.NAVI_SERVICE_TAG;
     private Hashtable<String, CruiseObserver> mCruiseObservers;
 
@@ -35,7 +34,7 @@ public class CruiseCallback implements ICruiseObserver{
         if (!ConvertUtils.isEmpty(mCruiseObservers)) {
             for (CruiseObserver cruiseObserver : mCruiseObservers.values()) {
                 if (cruiseObserver != null) {
-                    cruiseObserver.onCruiseLaneInfo(ConvertUtils.isEmpty(laneInfoEntity), laneInfoEntity);
+                    cruiseObserver.onCruiseLaneInfo(!ConvertUtils.isNull(laneInfoEntity), laneInfoEntity);
                 }
             }
         }
@@ -82,5 +81,34 @@ public class CruiseCallback implements ICruiseObserver{
                 }
             }
         }
+    }
+
+    @Override
+    public void onPlayTTS(final SoundInfo soundInfo) {
+        ISoundPlayObserver.super.onPlayTTS(soundInfo);
+        if (!ConvertUtils.isEmpty(mCruiseObservers)) {
+            for (CruiseObserver cruiseObserver : mCruiseObservers.values()) {
+                if (cruiseObserver != null) {
+                    cruiseObserver.onPlayTTS(NaviDataFormatHelper.formatSoundInfo(soundInfo));
+                }
+            }
+        }
+    }
+
+    @Override
+    public void onPlayRing(int type) {
+        ISoundPlayObserver.super.onPlayRing(type);
+        if (!ConvertUtils.isEmpty(mCruiseObservers)) {
+            for (CruiseObserver cruiseObserver : mCruiseObservers.values()) {
+                if (cruiseObserver != null) {
+                    cruiseObserver.onPlayTTS(NaviDataFormatHelper.formatSoundInfo(type));
+                }
+            }
+        }
+    }
+
+    @Override
+    public boolean isPlaying() {
+        return false;
     }
 }

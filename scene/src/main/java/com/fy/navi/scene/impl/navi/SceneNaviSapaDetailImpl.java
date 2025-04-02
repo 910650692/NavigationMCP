@@ -10,12 +10,14 @@ import com.fy.navi.scene.R;
 import com.fy.navi.scene.ui.navi.SceneNaviSapaDetailView;
 import com.fy.navi.scene.ui.navi.manager.INaviSceneEvent;
 import com.fy.navi.scene.ui.navi.manager.NaviSceneId;
-import com.fy.navi.service.define.map.MapTypeId;
+import com.fy.navi.service.MapDefaultFinalTag;
+import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.navi.SapaInfoEntity;
 import com.fy.navi.service.define.route.RouteParam;
 import com.fy.navi.service.define.search.GasStationInfo;
 import com.fy.navi.service.define.search.PoiInfoEntity;
 import com.fy.navi.service.define.search.SearchResultEntity;
+import com.fy.navi.service.logicpaket.navi.OpenApiHelper;
 import com.fy.navi.service.logicpaket.route.RoutePackage;
 import com.fy.navi.service.logicpaket.search.SearchPackage;
 import com.fy.navi.service.logicpaket.search.SearchResultCallback;
@@ -87,6 +89,8 @@ public class SceneNaviSapaDetailImpl extends BaseSceneModel<SceneNaviSapaDetailV
     public ObservableField<String> mTollTel;
     // 收费站服务背景的可见性
     public ObservableField<Boolean> mTollServicesVisible;
+    // 显示的按钮文字 删除途经点还是添加途经点
+    public ObservableField<String> mButtonText;
     public static final int SERVICE_DETAIL_PAGE = 0;
     public static final int TOLL_DETAIL_PAGE = 1;
     // 将服务区的poiId存在本地
@@ -133,6 +137,7 @@ public class SceneNaviSapaDetailImpl extends BaseSceneModel<SceneNaviSapaDetailV
         mServicesVisible = new ObservableField<>(false);
         mTollServicesVisible = new ObservableField<>(false);
         mServiceGasStationVisible = new ObservableField<>(false);
+        mButtonText = new ObservableField<>();
     }
 
     @Override
@@ -152,10 +157,11 @@ public class SceneNaviSapaDetailImpl extends BaseSceneModel<SceneNaviSapaDetailV
      * @param isVisible 是否显示
      */
     private void updateSceneVisible(final boolean isVisible){
-        Logger.i(TAG, "updateSceneVisible" + ", isVisible = " + isVisible);
+        if(mScreenView.isVisible() == isVisible) return;
+        Logger.i(MapDefaultFinalTag.NAVI_SCENE_TAG, "SceneNaviSapaDetailImpl", isVisible);
         mScreenView.getNaviSceneEvent().notifySceneStateChange(
                 (isVisible ? INaviSceneEvent.SceneStateChangeType.SceneShowState :
-                INaviSceneEvent.SceneStateChangeType.SceneHideState),
+                INaviSceneEvent.SceneStateChangeType.SceneCloseState),
                 NaviSceneId.NAVI_SAPA_DETAIL_INFO);
     }
 
@@ -185,9 +191,9 @@ public class SceneNaviSapaDetailImpl extends BaseSceneModel<SceneNaviSapaDetailV
      * @param sapaInfoEntity 实体类
      */
     private void doTollSearch(final SapaInfoEntity sapaInfoEntity) {
-        Logger.i(TAG, "doTollSearch");
         final SapaInfoEntity.SAPAItem sapaItem = sapaInfoEntity.getList().get(0);
         mSapaSearchId = SearchPackage.getInstance().geoSearch(sapaItem.getPos());
+        Logger.i(TAG, "doTollSearch mSapaSearchId = " + mSapaSearchId);
     }
 
     /**
@@ -195,7 +201,6 @@ public class SceneNaviSapaDetailImpl extends BaseSceneModel<SceneNaviSapaDetailV
      * @param sapaInfoEntity 实体类
      */
     private void doServiceSearch(final SapaInfoEntity sapaInfoEntity) {
-        Logger.i(TAG, "doServiceSearch");
         final SapaInfoEntity.SAPAItem sapaItem = sapaInfoEntity.getList().get(0);
         if (sapaItem != null) {
             final long detail = sapaItem.getSapaDetail();
@@ -208,9 +213,11 @@ public class SceneNaviSapaDetailImpl extends BaseSceneModel<SceneNaviSapaDetailV
                 mGasStationSearchId = SearchPackage.getInstance().doLineDeepInfoSearch(
                         ResourceUtils.Companion.getInstance().
                                 getString(R.string.navi_via), poiIds);
+                Logger.i(TAG, "加油站详情搜索 taskId = " + mGasStationSearchId);
             }
             // 进行PoiId搜索 为了途经点添加功能
             mSapaSearchId = SearchPackage.getInstance().poiIdSearch(poiId);
+            Logger.i(TAG, "doServiceSearch  mSapaSearchId = " + mSapaSearchId);
         }
     }
 
@@ -269,7 +276,11 @@ public class SceneNaviSapaDetailImpl extends BaseSceneModel<SceneNaviSapaDetailV
                 Boolean.TRUE.equals(mServiceGasType95Visible.get()) ||
                 Boolean.TRUE.equals(mServiceGasType92Visible.get()) ||
                 Boolean.TRUE.equals(mServiceGasType0Visible.get())) {
-            mServiceGasStationVisible.set(true);
+            int powerType = OpenApiHelper.powerType();
+            // 油车和插混才显示加油站信息
+            if (powerType == 0 || powerType == 2) {
+                mServiceGasStationVisible.set(true);
+            }
         }
 
     }
@@ -324,11 +335,15 @@ public class SceneNaviSapaDetailImpl extends BaseSceneModel<SceneNaviSapaDetailV
                 if (Objects.equals(routeParam.getPoiID(), sapItem.getServicePOIID())) {
                     tag.set(mScreenView.getContext().getString(R.string.navi_via));
                     mIsVia = true;
+                    mButtonText.set(ResourceUtils.Companion.getInstance().getString(R.string.
+                            route_service_details_remove_via));
                     return;
                 }
             }
         }
         mIsVia = false;
+        mButtonText.set(ResourceUtils.Companion.getInstance().getString(R.string.
+                route_service_details_add_via));
         //服务区状态:0 非建设中（默认值），1 建设中，2 未调查 3 装修中 4 暂停营业
         final int buildingStatus = sapItem.getBuildingStatus();
         Logger.i(TAG, "tagUpdate buildingStatus = " + buildingStatus);
@@ -428,7 +443,11 @@ public class SceneNaviSapaDetailImpl extends BaseSceneModel<SceneNaviSapaDetailV
             }
             switch (i) {
                 case 6:
-                    chargeStation.set(nthBit == 1);
+                    // 只有电车和插混才显示充电桩
+                    int powerType = OpenApiHelper.powerType();
+                    if (powerType == 1 || powerType == 2) {
+                        chargeStation.set(nthBit == 1);
+                    }
                     break;
                 case 1:
                     canteen.set(nthBit == 1);
@@ -490,20 +509,22 @@ public class SceneNaviSapaDetailImpl extends BaseSceneModel<SceneNaviSapaDetailV
             });
         }
         if (mSapaSearchId == taskId) {
-            registerViaData(searchResultEntity);
+            refreshViaData(searchResultEntity);
         }
     }
 
     /**
      * @param searchResultEntity 搜索结果 {@link SearchResultEntity}，包含具体的搜索结果数据
      */
-    private void registerViaData(final SearchResultEntity searchResultEntity) {
+    private void refreshViaData(final SearchResultEntity searchResultEntity) {
         if (ConvertUtils.isEmpty(searchResultEntity.getPoiList())) {
             Logger.i(TAG, "registerViaData searchResultEntity.getPoiList() is null");
             return;
         }
         mCurrentPoiInfoEntity = searchResultEntity.getPoiList().get(0);
         mCurrentPoiType = searchResultEntity.getPoiType();
+        Logger.i(TAG, "refreshViaData mCurrentPoiInfoEntity = " +
+                mCurrentPoiInfoEntity.toString() + ", mCurrentPoiType = " + mCurrentPoiType);
     }
 
     /**
@@ -514,12 +535,13 @@ public class SceneNaviSapaDetailImpl extends BaseSceneModel<SceneNaviSapaDetailV
             Logger.i(TAG, "onAddRemoveViaClick mCurrentPoiInfoEntity or mCurrentPoiType is null");
             return;
         }
-        if (mIsVia) {
-            RoutePackage.getInstance().addViaPoint(MapTypeId.MAIN_SCREEN_MAIN_MAP,
+        Logger.i(TAG, "onAddRemoveViaClick mIsVia = " + mIsVia);
+        if (!mIsVia) {
+            RoutePackage.getInstance().addViaPoint(MapType.MAIN_SCREEN_MAIN_MAP,
                     mCurrentPoiInfoEntity);
         } else {
-            RoutePackage.getInstance().removeVia(MapTypeId.MAIN_SCREEN_MAIN_MAP,
-                    mCurrentPoiInfoEntity, true);
+            RoutePackage.getInstance().removeVia(MapType.MAIN_SCREEN_MAIN_MAP,
+                    mCurrentPoiInfoEntity, false);
         }
         updateSceneVisible(false);
     }

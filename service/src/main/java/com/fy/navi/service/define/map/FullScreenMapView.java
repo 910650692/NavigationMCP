@@ -11,7 +11,7 @@ import androidx.annotation.Nullable;
 import com.android.utils.ScreenUtils;
 
 public abstract class FullScreenMapView extends FrameLayout implements IBaseScreenMapView {
-    private MapTypeId mapTypeId = MapTypeId.MAIN_SCREEN_MAIN_MAP;
+    private MapType mapTypeId = MapType.MAIN_SCREEN_MAIN_MAP;
 
     public FullScreenMapView(@NonNull Context context) {
         super(context);
@@ -76,7 +76,7 @@ public abstract class FullScreenMapView extends FrameLayout implements IBaseScre
     }
 
     @Override
-    public MapTypeId provideMapTypeId() {
+    public MapType provideMapTypeId() {
         return mapTypeId;
     }
 }

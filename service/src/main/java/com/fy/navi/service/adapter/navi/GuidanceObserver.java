@@ -12,7 +12,10 @@ import com.fy.navi.service.define.navi.NaviMixForkInfo;
 import com.fy.navi.service.define.navi.NaviTmcInfo;
 import com.fy.navi.service.define.navi.SapaInfoEntity;
 import com.fy.navi.service.define.navi.SpeedOverallEntity;
+import com.fy.navi.service.define.route.FyRouteOption;
+import com.fy.navi.service.define.route.RouteWeatherInfo;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -98,6 +101,13 @@ public interface GuidanceObserver extends BaseNaviObserver {
     }
 
     /**
+     * 电池预加热
+     * @param isPass 是否是通过的点
+     */
+    default void onBatterHotCallBack(boolean isPass) {
+    }
+
+    /**
      * 通知用户切换主导航路线状态，客户端主动SelectMainPathID切换的回调状态
      * @param pathID pathID
      * @param result result
@@ -158,5 +168,40 @@ public interface GuidanceObserver extends BaseNaviObserver {
      */
     default void onDriveReport(NaviDriveReportEntity report){
 
+    }
+
+    /**
+     * @param pathIDList 路线ID
+     */
+    default void onDeletePath(ArrayList<Long> pathIDList){
+
+    }
+
+    /***
+     * 重新算路
+     * @param routeOption
+     */
+    default void onReroute(final FyRouteOption routeOption) {
+    }
+
+    /**
+     * 经过充电站
+     * @param viaIndex
+     */
+    default void onUpdateChargeStationPass(final long viaIndex){
+    }
+
+    /***
+     * eta透出信息
+     * @param desObj
+     */
+    default void onUpdateElectVehicleETAInfo(final List<FyElecVehicleETAInfo> desObj) {
+    }
+
+    /***
+     * 导航中天气信息透出
+     * @param info
+     */
+    default void onShowNaviWeather(final RouteWeatherInfo info) {
     }
 }

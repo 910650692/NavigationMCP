@@ -51,19 +51,31 @@ public class NearMapDataFragment extends BaseFragment<FragmentNearMapDataBinding
             @Override
             public void startAllTask(final ArrayList<Integer> cityAdCodes) {
                 Logger.d( "onItemClick cityAdCodes = " + GsonUtils.toJson(cityAdCodes));
-                mViewModel.startAllTask(cityAdCodes);
+                ThreadManager.getInstance().postDelay(() -> {
+                    if (mViewModel != null) {
+                        mViewModel.startAllTask(cityAdCodes);
+                    }
+                }, 0);
             }
 
             @Override
             public void pauseAllTask(final ArrayList<Integer> cityAdCodes) {
                 Logger.d( "pauseAllTask cityAdCodes = " + GsonUtils.toJson(cityAdCodes));
-                mViewModel.pauseAllTask(cityAdCodes);
+                ThreadManager.getInstance().postDelay(() -> {
+                    if (mViewModel != null) {
+                        mViewModel.pauseAllTask(cityAdCodes);
+                    }
+                }, 0);
             }
 
             @Override
             public void deleteAllTask(final ArrayList<Integer> cityAdCodes) {
                 Logger.d( "deleteAllTask cityAdCodes = " + GsonUtils.toJson(cityAdCodes));
-                mViewModel.deleteAllTask(cityAdCodes);
+                ThreadManager.getInstance().postDelay(() -> {
+                    if (mViewModel != null) {
+                        mViewModel.deleteAllTask(cityAdCodes);
+                    }
+                }, 0);
             }
 
         });

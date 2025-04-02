@@ -130,6 +130,57 @@ public class HistoryManager {
     }
 
     /**
+     * 通过数据type查找其对应info
+     * @param type 数据type
+     * @param poiId 数据id
+     * @return History
+     */
+    public boolean isDataExist(final int type, final String poiId) {
+        final List<History> histories;
+
+        histories = mSearchHistoryDao.queryBuilder()
+                .where(HistoryDao.Properties.MRideRunType.eq(type),
+                        HistoryDao.Properties.MPoiId.eq(poiId))
+                .list();
+        return !histories.isEmpty();
+    }
+
+
+    /**
+     * 通过数据type查找其对应info
+     * @param type 数据type
+     * @return History
+     */
+    public List<History> getValueByType(final int type) {
+        return mSearchHistoryDao.queryBuilder()
+                .where(HistoryDao.Properties.MType.eq(type))
+                .list();
+    }
+
+    /**
+     * 通过数据type删除其对应info
+     * @param type 数据type
+     */
+    public void deleteValueByKey(final int type) {
+        mSearchHistoryDao.queryBuilder()
+                .where(HistoryDao.Properties.MType.eq(type))
+                .buildDelete()
+                .executeDeleteWithoutDetachingEntities();
+    }
+
+    /**
+     * 通过数据type删除其对应info
+     * @param fileName 数据文件名
+     */
+    public void deleteValueByFileName(final String fileName) {
+        mSearchHistoryDao.queryBuilder()
+                .where(HistoryDao.Properties.MTrackFileName.eq(fileName))
+                .buildDelete()
+                .executeDeleteWithoutDetachingEntities();
+    }
+
+
+    /**
      * 获取未完成的导航
      * @return History
      */

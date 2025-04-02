@@ -1,9 +1,6 @@
 package com.fy.navi.scene.ui.adapter;
 
-import static com.fy.navi.service.MapDefaultFinalTag.SEARCH_HMI_TAG;
 
-import android.app.Application;
-import android.content.pm.ApplicationInfo;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,29 +9,27 @@ import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
 import com.fy.navi.scene.R;
-import com.fy.navi.scene.databinding.RoutePoiGasStationItemBinding;
-import com.fy.navi.scene.databinding.RoutePoiIconItemBinding;
 import com.fy.navi.scene.databinding.ScenePoiDetailsScenicChildSpotBinding;
-import com.fy.navi.service.AppContext;
+import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.define.search.ChildInfo;
 
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
 public class PoiDetailsScenicChildAdapter extends RecyclerView.Adapter<PoiDetailsScenicChildAdapter.Holder> {
-    private List<ChildInfo> mChildList;
-    OnItemClickListener itemClickListener;
-    private boolean isCollapse = true;
+    private final List<ChildInfo> mChildList;
+    private OnItemClickListener mItemClickListener;
+    private boolean mIsCollapse = true;
 
     public boolean isCollapse() {
-        return isCollapse;
+        return mIsCollapse;
     }
 
-    public void setCollapse(boolean collapse) {
-        isCollapse = collapse;
+    public void setCollapse(final boolean collapse) {
+        mIsCollapse = collapse;
     }
 
     public PoiDetailsScenicChildAdapter() {
@@ -42,8 +37,12 @@ public class PoiDetailsScenicChildAdapter extends RecyclerView.Adapter<PoiDetail
     }
 
 
-    public void setChildInfoList(List<ChildInfo> childInfoList) {
-        if (null == mChildList) {
+    /**
+     * 设置子poi点数据
+     * @param childInfoList poi点数据
+     */
+    public void setChildInfoList(final List<ChildInfo> childInfoList) {
+        if (ConvertUtils.isEmpty(childInfoList)) {
             return;
         }
 
@@ -52,13 +51,13 @@ public class PoiDetailsScenicChildAdapter extends RecyclerView.Adapter<PoiDetail
         notifyDataSetChanged();
     }
 
-    public void setItemClickListener(OnItemClickListener itemClickListener) {
-        this.itemClickListener = itemClickListener;
+    public void setItemClickListener(final OnItemClickListener itemClickListener) {
+        this.mItemClickListener = itemClickListener;
     }
 
     @Override
-    public Holder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        ScenePoiDetailsScenicChildSpotBinding scenePoiDetailsScenicChildSpotBinding =
+    public Holder onCreateViewHolder(@NonNull final ViewGroup parent, final int viewType) {
+        final ScenePoiDetailsScenicChildSpotBinding scenePoiDetailsScenicChildSpotBinding =
                 DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()),
                         R.layout.scene_poi_details_scenic_child_spot, parent, false);
         return new Holder(scenePoiDetailsScenicChildSpotBinding);
@@ -66,31 +65,31 @@ public class PoiDetailsScenicChildAdapter extends RecyclerView.Adapter<PoiDetail
 
     @Override
     public int getItemCount() {
-        if (mChildList == null) {
+        if (ConvertUtils.isEmpty(mChildList)) {
             return 0;
         }
-        if (isCollapse) {
+        if (mIsCollapse) {
             return Math.min(mChildList.size(), 2);
         }
         return mChildList.size();
     }
 
     @Override
-    public void onBindViewHolder(@NonNull Holder holder, int position) {
-        ChildInfo childInfo = mChildList.get(position);
-        int ratio = (int) Math.round(childInfo.getRatio());
-        String subTitle = holder.scenePoiDetailsScenicChildSpotBinding.childTitle.getContext().
+    public void onBindViewHolder(@NonNull final Holder holder, final int position) {
+        final ChildInfo childInfo = mChildList.get(position);
+        final int ratio = (int) Math.round(childInfo.getRatio());
+        final String subTitle = holder.mScenePoiDetailsScenicChildSpotBinding.childTitle.getContext().
                 getString(R.string.scenic_ratio, ratio);
-        Logger.d(SEARCH_HMI_TAG, "check = " + childInfo.getChecked() + " name: " + childInfo.getShortName());
-        holder.scenePoiDetailsScenicChildSpotBinding.childTitle.setText(childInfo.getShortName());
-        holder.scenePoiDetailsScenicChildSpotBinding.childSubTitle.setText(subTitle);
-        holder.scenePoiDetailsScenicChildSpotBinding.childTitle.setSelected(childInfo.getChecked() == 1);
-        holder.scenePoiDetailsScenicChildSpotBinding.childSubTitle.setSelected(childInfo.getChecked() == 1);
-        holder.scenePoiDetailsScenicChildSpotBinding.poiChildLayout.setSelected(childInfo.getChecked() == 1);
-        holder.scenePoiDetailsScenicChildSpotBinding.getRoot().setOnClickListener(new View.OnClickListener() {
+        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "check = " + childInfo.getChecked() + " name: " + childInfo.getShortName());
+        holder.mScenePoiDetailsScenicChildSpotBinding.childTitle.setText(childInfo.getShortName());
+        holder.mScenePoiDetailsScenicChildSpotBinding.childSubTitle.setText(subTitle);
+        holder.mScenePoiDetailsScenicChildSpotBinding.childTitle.setSelected(childInfo.getChecked() == 1);
+        holder.mScenePoiDetailsScenicChildSpotBinding.childSubTitle.setSelected(childInfo.getChecked() == 1);
+        holder.mScenePoiDetailsScenicChildSpotBinding.poiChildLayout.setSelected(childInfo.getChecked() == 1);
+        holder.mScenePoiDetailsScenicChildSpotBinding.getRoot().setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                if (itemClickListener != null) {
+            public void onClick(final View view) {
+                if (mItemClickListener != null) {
                     for (int i = 0; i < mChildList.size(); i++) {
                         if (i == position) {
                             mChildList.get(i).setChecked(1);
@@ -98,24 +97,29 @@ public class PoiDetailsScenicChildAdapter extends RecyclerView.Adapter<PoiDetail
                             mChildList.get(i).setChecked(-1);
                         }
                     }
-                    itemClickListener.onItemClick(position, true);
+                    mItemClickListener.onItemClick(position, true);
                 }
                 notifyDataSetChanged();
             }
         });
     }
 
-    public class Holder extends RecyclerView.ViewHolder {
-        public ScenePoiDetailsScenicChildSpotBinding scenePoiDetailsScenicChildSpotBinding;
+    public static class Holder extends RecyclerView.ViewHolder {
+        private final ScenePoiDetailsScenicChildSpotBinding mScenePoiDetailsScenicChildSpotBinding;
 
-        public Holder(ScenePoiDetailsScenicChildSpotBinding scenePoiDetailsScenicChildSpotBinding) {
+        public Holder(final ScenePoiDetailsScenicChildSpotBinding scenePoiDetailsScenicChildSpotBinding) {
             super(scenePoiDetailsScenicChildSpotBinding.getRoot());
-            this.scenePoiDetailsScenicChildSpotBinding = scenePoiDetailsScenicChildSpotBinding;
+            this.mScenePoiDetailsScenicChildSpotBinding = scenePoiDetailsScenicChildSpotBinding;
             scenePoiDetailsScenicChildSpotBinding.setHolder(this);
         }
     }
 
     public interface OnItemClickListener {
+        /**
+         * 点击事件
+         * @param index 点击下标
+         * @param isSelectIndex 是否被选中
+         */
         void onItemClick(int index, boolean isSelectIndex);
     }
 }

@@ -7,7 +7,7 @@ import com.fy.navi.scene.api.search.ISceneTerminalParking;
 import com.fy.navi.scene.ui.search.SceneTerminalParkingListView;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.define.bean.GeoPoint;
-import com.fy.navi.service.define.map.MapTypeId;
+import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.search.PoiInfoEntity;
 import com.fy.navi.service.logicpaket.route.RoutePackage;
 import com.fy.navi.service.logicpaket.search.SearchPackage;
@@ -60,6 +60,6 @@ public class SceneTerminalViewImpl extends BaseSceneModel<SceneTerminalParkingLi
      * @param poiInfoEntity poi信息实体
      */
     public void startRoute(final PoiInfoEntity poiInfoEntity) {
-        mRoutePackage.requestChangeEnd(MapTypeId.MAIN_SCREEN_MAIN_MAP, poiInfoEntity);
+        mRoutePackage.requestChangeEnd(MapType.MAIN_SCREEN_MAIN_MAP, poiInfoEntity);
     }
 }

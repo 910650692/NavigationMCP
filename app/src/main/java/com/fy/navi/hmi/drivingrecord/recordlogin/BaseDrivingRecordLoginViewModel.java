@@ -6,20 +6,29 @@ import android.os.Handler;
 import android.os.Looper;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.MutableLiveData;
 
+import com.android.utils.ResourceUtils;
+import com.android.utils.ToastUtils;
+import com.android.utils.thread.ThreadManager;
+import com.fy.navi.hmi.R;
 import com.fy.navi.hmi.drivingrecord.recordsetting.RecordSettingFragment;
+import com.fy.navi.service.define.user.account.QRCodeType;
+import com.fy.navi.service.define.user.usertrack.DrivingRecordDataBean;
 import com.fy.navi.ui.action.Action;
 import com.fy.navi.ui.base.BaseViewModel;
 
-/**
- * @Description TODO
- * @Author fh
- * @date 2024/12/24
- */
+import java.util.ArrayList;
+
+
 public class BaseDrivingRecordLoginViewModel extends BaseViewModel<DrivingRecordLoginFragment, DrivingRecordLoginModel> {
 
+    public MutableLiveData<Boolean> mQRCodeLoadingVisible = new MutableLiveData<>(true);
+    public MutableLiveData<Boolean> mQRCodeLoadFailedVisible = new MutableLiveData<>(false);
+    public MutableLiveData<Boolean> mQRCodeVisible = new MutableLiveData<>(false);
+    public MutableLiveData<Boolean> mLoginVisible = new MutableLiveData<>(false);
 
-    public BaseDrivingRecordLoginViewModel(@NonNull Application application) {
+    public BaseDrivingRecordLoginViewModel(@NonNull final Application application) {
         super(application);
     }
 
@@ -29,35 +38,128 @@ public class BaseDrivingRecordLoginViewModel extends BaseViewModel<DrivingRecord
     }
 
     //返回上一页
-    public Action drivingRecordBack = () -> {
+    public Action mDrivingRecordBack = () -> {
+        mView.stopAnimation();
         closeFragment(true);
     };
 
-    public Action toRecordSetting = () -> {
+    public Action mToRecordSetting = () -> {
         addFragment(new RecordSettingFragment(), null);
     };
 
     // 关闭当前页
-    public Action toClose = () -> {
+    public Action mToClose = () -> {
+        mView.stopAnimation();
         closeFragment(true);
     };
 
+    public Action mRetry = () -> {
+        if (mView.getNetworkState()) {
+            startAnimation();
+            qrCodeLoginRequest(QRCodeType.QR_CODE_TYPE_DEFAULT);
+        } else {
+            ToastUtils.Companion.getInstance().showCustomToastView(
+                    ResourceUtils.Companion.getInstance().getString(R.string.setting_qr_code_load_offline_toast));
+        }
+    };
+
+    /**
+     * 初始化页面
+     */
+    public void initView() {
+        mModel.initView();
+    }
+
+    /**
+     * 通过type查找其对应行程历史信息大小
+     */
     public void getValueByType() {
          mView.updateNoDataView(mModel.getValueByType());
     }
 
-    public void qRCodeLoginRequest(int qrType){
-        mModel.qRCodeLoginRequest(qrType);
+    /**
+     * 请求二维码登录
+     * @param qrType 二维码类型
+     */
+    public void qrCodeLoginRequest(final int qrType){
+        mModel.qrCodeLoginRequest(qrType);
     }
 
-    public void updateQRCode(Bitmap bitmap) {
+    /**
+     * 更新二维码
+     * @param bitmap 二维码图片
+     */
+    public void updateQRCode(final Bitmap bitmap) {
         mView.updateQRCode(bitmap);
     }
 
+    /**
+     * 关闭当前页
+     */
     public void close() {
         new Handler(Looper.getMainLooper()).post(() -> {
             closeFragment(true);
         });
     }
 
+    /**
+     * 更新二维码加载状态
+     * @param isVisibleLoading 是否显示加载中
+     * @param isVisibleFailed 是否显示加载失败
+     * @param isVisibleQRCode 是否显示二维码
+     */
+    public void updateLoadingVisible(final boolean isVisibleLoading, final boolean isVisibleFailed, final boolean isVisibleQRCode){
+        ThreadManager.getInstance().postUi(() -> {
+            mQRCodeLoadingVisible.setValue(isVisibleLoading);
+            mQRCodeLoadFailedVisible.setValue(isVisibleFailed);
+            mQRCodeVisible.setValue(isVisibleQRCode);
+        });
+    }
+
+    /**
+     * 开始动画
+     */
+    public void startAnimation(){
+        mView.startAnimation();
+    }
+
+    /**
+     * 停止动画
+     */
+    public void stopAnimation(){
+        mView.stopAnimation();
+    }
+
+    /**
+     * 展示合并记录对话框
+     */
+    public void showMergeDivingRecordDialog() {
+        mView.showMergeDivingRecordDialog();
+    }
+
+    /**
+     * 获取当前是否在行程历史登录页
+     * @return true：在行程历史登录页
+     */
+    public boolean isRecordLoginFragment() {
+        return mView.isRecordLoginFragment();
+    }
+
+    /**
+     * 设置登录按钮是否显示
+     * @param isVisible 是否显示登录按钮
+     */
+    public void setLoginVisible(final boolean isVisible) {
+        ThreadManager.getInstance().postUi(() -> {
+            mLoginVisible.setValue(isVisible);
+        });
+    }
+
+    /**
+     * 获取需要同步行程历史数据列表
+     * @return 需要同步行程历史数据列表
+     */
+    public ArrayList<DrivingRecordDataBean> getDrivingRecordDataList() {
+        return mModel.getDrivingRecordDataList();
+    }
 }

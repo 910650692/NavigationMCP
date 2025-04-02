@@ -1,12 +1,15 @@
 package com.fy.navi.scene.ui.navi;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
@@ -25,7 +28,7 @@ import com.fy.navi.service.define.navi.NaviParkingEntity;
 import java.util.List;
 
 /**
- * 列表scene 停车场列表
+ * 列表scene 停车场列表 (点击终点停车场悬挂卡片的时候显示)
  * @author fy
  * @version $Revision.*$
  */
@@ -33,6 +36,8 @@ public class SceneNaviParkListView extends NaviSceneBase<SceneNaviParkListViewBi
     private static final String TAG = MapDefaultFinalTag.NAVI_HMI_TAG;
     private NaviParkListAdapter mNaviParkListAdapter;
     private ISceneCallback mISceneCallback;
+
+    private NaviEtaInfo mNaviEtaInfo;
 
     public SceneNaviParkListView(@NonNull final Context context) {
         super(context);
@@ -54,6 +59,11 @@ public class SceneNaviParkListView extends NaviSceneBase<SceneNaviParkListViewBi
     }
 
     @Override
+    protected String getSceneName() {
+        return NaviSceneId.NAVI_SCENE_PARK_LIST.name();
+    }
+
+    @Override
     public INaviSceneEvent getNaviSceneEvent() {
         return NaviSceneManager.getInstance();
     }
@@ -66,6 +76,10 @@ public class SceneNaviParkListView extends NaviSceneBase<SceneNaviParkListViewBi
     @Override
     public void show() {
         super.show();
+        // 主动显示的时候显示卡片
+        if (null != mScreenViewModel) {
+            mScreenViewModel.checkParking(mNaviEtaInfo);
+        }
         if (mISceneCallback != null) {
             mISceneCallback.updateSceneVisible(NaviSceneId.NAVI_SCENE_PARK_LIST, true);
         }
@@ -75,7 +89,15 @@ public class SceneNaviParkListView extends NaviSceneBase<SceneNaviParkListViewBi
     public void hide() {
         super.hide();
         if (mISceneCallback != null) {
-            mISceneCallback.updateSceneVisible(NaviSceneId.NAVI_SCENE_PARK_LIST, true);
+            mISceneCallback.updateSceneVisible(NaviSceneId.NAVI_SCENE_PARK_LIST, false);
+        }
+    }
+
+    @Override
+    public void close() {
+        super.close();
+        if (mISceneCallback != null) {
+            mISceneCallback.updateSceneVisible(NaviSceneId.NAVI_SCENE_PARK_LIST, false);
         }
     }
 
@@ -101,9 +123,17 @@ public class SceneNaviParkListView extends NaviSceneBase<SceneNaviParkListViewBi
         final LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         mViewBinding.srvAddVia.setLayoutManager(layoutManager);
-
         mNaviParkListAdapter = new NaviParkListAdapter();
         mViewBinding.srvAddVia.setAdapter(mNaviParkListAdapter);
+        mViewBinding.srvAddVia.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                if (null != mScreenViewModel) {
+                    mScreenViewModel.initTimer();
+                }
+            }
+        });
     }
 
     @Override
@@ -129,7 +159,7 @@ public class SceneNaviParkListView extends NaviSceneBase<SceneNaviParkListViewBi
         if (isCheck) {
             for (int i = 0; i < list.size(); i++) {
                 final NaviParkingEntity naviParkingEntity = list.get(i);
-                if (naviParkingEntity.isEndPoi) {
+                if (naviParkingEntity.isEndPoi()) {
                     notifyList(List.of(naviParkingEntity), select);
                     return;
                 }
@@ -151,8 +181,6 @@ public class SceneNaviParkListView extends NaviSceneBase<SceneNaviParkListViewBi
      * @param naviEtaInfo 导航信息
      */
     public void onNaviInfo(final NaviEtaInfo naviEtaInfo) {
-        if (mScreenViewModel != null) {
-            mScreenViewModel.checkParking(naviEtaInfo);
-        }
+        mNaviEtaInfo = naviEtaInfo;
     }
 }

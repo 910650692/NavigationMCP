@@ -20,9 +20,10 @@ import com.fy.navi.mapservice.bean.common.BaseSearchResult;
 import com.fy.navi.mapservice.bean.common.BaseTurnInfo;
 import com.fy.navi.mapservice.common.INaviAutoApiBinder;
 import com.fy.navi.mapservice.common.INaviAutoApiCallback;
+import com.fy.navi.mapservice.util.ExportConvertUtil;
 import com.fy.navi.service.AppContext;
 import com.fy.navi.service.define.bean.GeoPoint;
-import com.fy.navi.service.define.map.MapTypeId;
+import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.navi.NaviEtaInfo;
 import com.fy.navi.service.define.navistatus.NaviStatus;
 import com.fy.navi.service.define.position.DrBean;
@@ -288,7 +289,7 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub {
             }
 
             @Override
-            public void onRouteFail(final MapTypeId mapTypeId, final String errorMsg) {
+            public void onRouteFail(final MapType mapTypeId, final String errorMsg) {
                 if (mInCallback) {
                     Log.e(TAG, "already in broadcast, can't process routeFailed");
                     return;
@@ -597,9 +598,7 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub {
             mInCallback = true;
             Log.d(TAG, "onSearchSuccess inCallback");
             final int count = mNaviAutoCallbackList.beginBroadcast();
-            Log.d(TAG, "dispatchSearchSuccess: searchResultEntity = " + searchResultEntity);
             final BaseSearchResult baseSearchResult = GsonUtils.convertToT(searchResultEntity, BaseSearchResult.class);
-            Log.d(TAG, "dispatchSearchSuccess: baseSearchResult = " + baseSearchResult);
             final String searchResultStr = GsonUtils.toJson(baseSearchResult);
             Log.d(TAG, "dispatchSearchSuccess: searchResultStr = " + searchResultStr);
 
@@ -638,9 +637,11 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub {
             mInCallback = true;
             Log.d(TAG, "onReverseSearch inCallback");
             final int count = mNaviAutoCallbackList.beginBroadcast();
-            Log.d(TAG, "dispatchReverseSearch: poiInfo = " + poiInfo);
             final BaseSearchPoi baseSearchPoi = GsonUtils.convertToT(poiInfo, BaseSearchPoi.class);
-            Log.d(TAG, "dispatchReverseSearch: baseSearchPoi = " + baseSearchPoi);
+            Log.d(TAG, "dispatchReverseSearch: origin cityCode = " + baseSearchPoi.getCityInfo().getCityCode());
+            baseSearchPoi.getCityInfo().setCityCode(
+                    ExportConvertUtil.getInstance().cityIdConvert(baseSearchPoi.getCityInfo().getCityCode())
+            );
             final String singlePoiStr = GsonUtils.toJson(baseSearchPoi);
             Log.d(TAG, "dispatchReverseSearch: singlePoiStr = " + singlePoiStr);
             for (int i = 0; i < count; i++) {
@@ -665,7 +666,7 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub {
      * @param mapTypeId MapTypeId.
      * @return int。定义在Constant中的int常量.
      */
-    private int getOutMapType(final MapTypeId mapTypeId) {
+    private int getOutMapType(final MapType mapTypeId) {
         return switch (mapTypeId) {
             case MAIN_SCREEN_MAIN_MAP -> INaviConstant.MapType.MAIN;
             case LAUNCHER_DESK_MAP -> INaviConstant.MapType.LAUNCHER_DESK;
@@ -725,6 +726,11 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub {
     @Override
     public String getDistrictDetailInfo(final String clientPkg) {
         if (null != mDistrictInfo) {
+            final int originCityId = mDistrictInfo.getCityId();
+            Log.d(TAG, "getDistrictDetailInfo: origin cityId = " + originCityId);
+            final int convertedId = ExportConvertUtil.getInstance().cityIdConvert(originCityId);
+            mDistrictInfo.setCityId(convertedId);
+            Log.d(TAG, "getDistrictDetailInfo: converted cityId = " + convertedId);
             return GsonUtils.toJson(mDistrictInfo);
         } else {
             Log.e(TAG, "current DistrictInfo is empty");
@@ -825,7 +831,7 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub {
             try {
                 Log.d(TAG, "processJumpPage: ");
                 final BaseActivity baseActivity = StackManager.getInstance()
-                        .getCurrentActivity(MapTypeId.MAIN_SCREEN_MAIN_MAP.name());
+                        .getCurrentActivity(MapType.MAIN_SCREEN_MAIN_MAP.name());
                 Intent targetIntent;
                 if (null == baseActivity) {
                     final String appPkgName = AppContext.getInstance().getMContext().getPackageName();

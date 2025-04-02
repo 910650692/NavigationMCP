@@ -2,6 +2,7 @@ package com.fy.navi.scene.impl.navi;
 
 import android.view.View;
 
+import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
 import com.fy.navi.scene.BaseSceneModel;
 import com.fy.navi.scene.impl.imersive.ImersiveStatus;
@@ -12,6 +13,8 @@ import com.fy.navi.scene.ui.navi.manager.INaviSceneEvent;
 import com.fy.navi.scene.ui.navi.manager.NaviSceneId;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.adapter.navi.NaviConstant;
+import com.fy.navi.service.adapter.navi.bls.NaviDataFormatHelper;
+import com.fy.navi.service.define.layer.refix.LayerItemCrossEntity;
 import com.fy.navi.service.define.navi.CrossImageEntity;
 import com.fy.navi.service.define.navi.NaviEtaInfo;
 import com.fy.navi.service.logicpaket.layer.LayerPackage;
@@ -21,10 +24,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SceneNaviCrossImageImpl extends BaseSceneModel<SceneNaviCrossImageView> {
-    private static final String TAG = MapDefaultFinalTag.NAVI_HMI_TAG;
+    private static final String TAG = "SceneNaviCrossImageView";
     private final NaviPackage mNaviPackage;
     private final LayerPackage mLayerPackage;
-    private NaviEtaInfo mCurNaviInfo;
     /**
      * 是否正在显示路口大图
      */
@@ -53,15 +55,18 @@ public class SceneNaviCrossImageImpl extends BaseSceneModel<SceneNaviCrossImageV
         mScreenView.setRectChange2DRoadCross(new RectChangeListener() {
             @Override
             public void onRectChange(final View view, final AutoUIViewRect newRect,
-                                     final  AutoUIViewRect oldRect) {
-                if (newRect == null) {
+                                     final AutoUIViewRect oldRect) {
+                if (newRect == null || ConvertUtils.isNull(mRoadCrossInfo)) {
+                    Logger.e(TAG, "newRect is null:" + (newRect == null) , "mRoadCrossInfo is null:" + (mRoadCrossInfo == null));
                     return;
                 }
-                Logger.i(TAG, "newRect " + newRect + ",mIsShowCrossImage：" + mIsShowCrossImage);
+                Logger.i(TAG, "newRect " + newRect + ",mIsShowCrossImage：" + mIsShowCrossImage, "is2D:" + (mRoadCrossInfo.getType() != NaviConstant.CrossType.CROSS_TYPE_3_D));
                 // 当UI区域首次显示时，需要主动触发BL显示路口大图（2D矢量路口大图第一次显示的时候默认隐藏）
                 if (mIsShowCrossImage && mRoadCrossInfo.getType() != NaviConstant.CrossType.CROSS_TYPE_3_D) {
                     mNaviPackage.setRoadCrossRect(mMapTypeId, newRect.getLocationOnScreen());
-                    if (!mLayerPackage.showCross(mMapTypeId, mRoadCrossInfo)) {
+                    LayerItemCrossEntity layerItemCrossEntity = new LayerItemCrossEntity();
+                    layerItemCrossEntity.setCrossImageEntity(mRoadCrossInfo);
+                    if (!mLayerPackage.setRasterImageData(mMapTypeId, layerItemCrossEntity)) {
                         if (mRoadCrossInfo != null) {
                             onCrossImageInfo(false, mRoadCrossInfo);
                         }
@@ -107,14 +112,10 @@ public class SceneNaviCrossImageImpl extends BaseSceneModel<SceneNaviCrossImageV
     }
 
     /**
-     * @param naviInfoBean 导航信息
+     * @param routeRemainDist 剩余长度
      */
-    public void onNaviInfo(final NaviEtaInfo naviInfoBean) {
-        mCurNaviInfo = naviInfoBean;
-        if (null == mCurNaviInfo) {
-            return;
-        }
-        final long routeRemainDist = mCurNaviInfo.getAllDist();
+    public void updateCrossProgress(final long routeRemainDist) {
+        Logger.i(TAG, "updateCrossProgress:" + routeRemainDist, "mIsShowCrossImage:" + mIsShowCrossImage);
         // 当显示路口大图时刷新进度条
         if (mIsShowCrossImage) {
             for (CrossProgressInfo progressInfo : mCrossProgressInfos) {
@@ -129,7 +130,7 @@ public class SceneNaviCrossImageImpl extends BaseSceneModel<SceneNaviCrossImageV
     }
 
     /**
-     * @param isShowImage 是否显示路口大图
+     * @param isShowImage   是否显示路口大图
      * @param naviImageInfo 路口大图信息
      */
     public void onCrossImageInfo(final boolean isShowImage, final CrossImageEntity naviImageInfo) {
@@ -150,7 +151,7 @@ public class SceneNaviCrossImageImpl extends BaseSceneModel<SceneNaviCrossImageV
             // 显示路口大图
             setRoadCrossVisible(true);
             // 近接/混淆路口大图控制（内聚方式）
-            mLayerPackage.setCrossImageInfo(mMapTypeId, naviImageInfo);
+            mLayerPackage.setCrossImageInfo(mMapTypeId, naviImageInfo.getType(), false);
         } else {
             Logger.d(TAG, "SceneNaviCrossImageImpl onHideCrossImage: type = " + naviImageInfo.getType());
             mIsShowCrossImage = false;
@@ -186,23 +187,41 @@ public class SceneNaviCrossImageImpl extends BaseSceneModel<SceneNaviCrossImageV
         if (visible) {
             if (mRoadCrossInfo.getType() != NaviConstant.CrossType.CROSS_TYPE_3_D) {
                 notifySceneStateChange(true);
-                mLayerPackage.showCross(mMapTypeId, mRoadCrossInfo);
+                LayerItemCrossEntity layerItemCrossEntity = new LayerItemCrossEntity();
+                layerItemCrossEntity.setCrossImageEntity(mRoadCrossInfo);
+                mLayerPackage.setRasterImageData(mMapTypeId, layerItemCrossEntity);
             }
         } else {
             notifySceneStateChange(false);
-            mLayerPackage.setVisible(mMapTypeId, mRoadCrossInfo.getType(), false);
+            mLayerPackage.setCrossVisible(mMapTypeId, mRoadCrossInfo.getType(), false);
             mScreenView.setProgress2DRoadCross(0);
         }
         return true;
     }
 
     /**
+     * ######值提供给View的Hide和Close方法调用，其他方法请勿使用.
+     */
+    public void closeCrossVisible() {
+        if (mRoadCrossInfo != null) {
+            mIsShowCrossImage = false;
+            notifySceneStateChange(false);
+            mLayerPackage.setCrossVisible(mMapTypeId, mRoadCrossInfo.getType(), false);
+            mScreenView.setProgress2DRoadCross(0);
+        }
+    }
+
+    /**
      * 设置2D路口大图区域可见性
+     *
      * @param isVisible 是否可见
-     * **/
+     **/
     public void notifySceneStateChange(final boolean isVisible) {
-        mScreenView.getNaviSceneEvent().notifySceneStateChange((isVisible ? INaviSceneEvent.SceneStateChangeType.SceneShowState :
-                INaviSceneEvent.SceneStateChangeType.SceneHideState), NaviSceneId.NAVI_SCENE_2D_CROSS);
+        if (mScreenView.isVisible() == isVisible) return;
+        Logger.i(TAG, "SceneNaviCrossImageImpl", isVisible);
+        mScreenView.getNaviSceneEvent().notifySceneStateChange((isVisible ?
+                INaviSceneEvent.SceneStateChangeType.SceneShowState :
+                INaviSceneEvent.SceneStateChangeType.SceneCloseState), NaviSceneId.NAVI_SCENE_2D_CROSS);
     }
 
     public void onImmersiveStatusChange(final ImersiveStatus currentImersiveStatus) {

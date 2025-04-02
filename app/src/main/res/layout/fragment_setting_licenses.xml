@@ -69,7 +69,7 @@
             android:id="@+id/setting_others_about_licenses_qr_img"
             android:layout_width="@dimen/dp_146"
             android:layout_height="@dimen/dp_146"
-            android:src="@mipmap/bg_car_connect"
+            android:src="@mipmap/icon_setting_about_licenses"
             android:layout_marginTop="@dimen/dp_40"
             android:padding="@dimen/dp_7"
             android:background="@drawable/bg_we_chat"

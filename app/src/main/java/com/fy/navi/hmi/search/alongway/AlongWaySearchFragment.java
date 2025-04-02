@@ -8,7 +8,7 @@ import com.fy.navi.hmi.R;
 import com.fy.navi.hmi.databinding.FragmentAlongWayBinding;
 import com.fy.navi.scene.RoutePath;
 import com.fy.navi.service.AutoMapConstant;
-import com.fy.navi.service.define.map.MapTypeId;
+import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.ui.base.BaseFragment;
 
 /**
@@ -31,7 +31,7 @@ public class AlongWaySearchFragment extends BaseFragment<FragmentAlongWayBinding
 
     @Override
     public void onInitView() {
-        mBinding.sceneQuickSearchView.setScreenId(MapTypeId.valueOf(mScreenId));
+        mBinding.sceneQuickSearchView.setScreenId(MapType.valueOf(mScreenId));
     }
 
     @Override

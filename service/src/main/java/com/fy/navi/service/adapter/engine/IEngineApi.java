@@ -2,7 +2,7 @@ package com.fy.navi.service.adapter.engine;
 
 import androidx.work.ListenableWorker;
 
-import com.fy.navi.service.define.map.MapTypeId;
+import com.fy.navi.service.define.map.MapType;
 
 /**
  * @Description TODO
@@ -16,7 +16,11 @@ public interface IEngineApi {
 
     ListenableWorker.Result initEngine();
 
-    int engineID(MapTypeId mapId);
+    int engineID(MapType mapId);
+
+    int eagleEyeEngineID(MapType mapId);
+
+    int mapDeviceID(MapType mapId);
 
     void switchLog();
 
@@ -24,11 +28,9 @@ public interface IEngineApi {
 
     void unInit();
 
-    int eagleEyeEngineID(MapTypeId mapId);
-
     String getSdkVersion();
 
     String getEngineVersion();
 
-    String styleBlPath(MapTypeId mapTypeId);
+    String styleBlPath(MapType mapTypeId);
 }

@@ -7,6 +7,7 @@ import com.fy.navi.scene.BaseSceneModel;
 import com.fy.navi.scene.ui.navi.SceneNaviDriveReportView;
 import com.fy.navi.scene.ui.navi.manager.INaviSceneEvent;
 import com.fy.navi.scene.ui.navi.manager.NaviSceneId;
+import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.define.navi.NaviDriveReportEntity;
 
 public class SceneNaviDriveReportImpl extends BaseSceneModel<SceneNaviDriveReportView> {
@@ -46,10 +47,11 @@ public class SceneNaviDriveReportImpl extends BaseSceneModel<SceneNaviDriveRepor
      * @param isVisible 是否可见
      */
     private void updateSceneVisible(final boolean isVisible){
-        Logger.i(TAG, "updateSceneVisible visible = " + isVisible);
+        if(mScreenView.isVisible() == isVisible) return;
+        Logger.i(MapDefaultFinalTag.NAVI_SCENE_TAG, "SceneNaviDriveReportImpl", isVisible);
         mScreenView.getNaviSceneEvent().notifySceneStateChange((isVisible ? INaviSceneEvent.
                 SceneStateChangeType.SceneShowState :
-                INaviSceneEvent.SceneStateChangeType.SceneHideState),
+                INaviSceneEvent.SceneStateChangeType.SceneCloseState),
                 NaviSceneId.NAVI_DRIVE_REPORT);
     }
 }

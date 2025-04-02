@@ -4,6 +4,7 @@ import com.fy.navi.scene.BaseSceneModel;
 import com.fy.navi.scene.api.route.ISceneRouteDetailsResultList;
 import com.fy.navi.scene.ui.route.SceneRouteDetailsResultListView;
 import com.fy.navi.service.define.route.RouteAvoidInfo;
+import com.fy.navi.service.define.route.RoutePriorityType;
 import com.fy.navi.service.define.route.RouteRequestParam;
 import com.fy.navi.service.define.route.RouteWayID;
 import com.fy.navi.service.logicpaket.route.RoutePackage;
@@ -26,6 +27,7 @@ public class SceneRouteDetailsResultListImpl extends BaseSceneModel<SceneRouteDe
         final RouteRequestParam param = new RouteRequestParam();
         param.setMMapTypeId(mMapTypeId);
         param.setMRouteWay(RouteWayID.ROUTE_WAY_AVOID);
+        param.setMRoutePriorityType(RoutePriorityType.ROUTE_TYPE_CHANGE_STRATEGE);
         mRoutePackage.requestRoute(param);
     }
 }

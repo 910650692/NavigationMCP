@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tool="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="holder"
+            type="com.fy.navi.scene.ui.adapter.RouteSecondaryPoiAdapter.Holder" />
+    </data>
+
+    <com.fy.navi.ui.view.SkinConstraintLayout
+        android:id="@+id/ly_route_secondary_poi"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <com.fy.navi.ui.view.SkinImageView
+            android:id="@+id/iv_route_secondary_poi"
+            android:layout_width="@dimen/dp_176"
+            android:layout_height="@dimen/dp_76"
+            android:layout_marginEnd="@dimen/dp_16"
+            android:background="@drawable/bg_route_secondary_poi_selected"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <com.fy.navi.ui.view.SkinTextView
+            android:id="@+id/tv_route_secondary_poi"
+            android:layout_width="@dimen/dp_148"
+            android:layout_height="@dimen/dp_39"
+            android:gravity="center"
+            android:singleLine="true"
+            android:textColor="@color/text_route_defult"
+            android:textSize="@dimen/sp_30"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/iv_route_secondary_poi"
+            app:layout_constraintStart_toStartOf="@+id/iv_route_secondary_poi"
+            app:layout_constraintTop_toTopOf="parent"
+            app:marquee="true"
+            tool:text="航站楼1" />
+
+    </com.fy.navi.ui.view.SkinConstraintLayout>
+</layout>

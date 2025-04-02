@@ -145,6 +145,11 @@ public abstract class BaseFragment<V extends ViewDataBinding, VM extends BaseVie
     public void closeAllFragmentAndSearchView() {
     }
 
+    @Override
+    public void showCurrentFragment() {
+        mActivity.showCurrentFragment();
+    }
+
     protected void onNewIntent(final Bundle bundle) {
 
     }

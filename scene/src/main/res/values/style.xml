@@ -18,7 +18,7 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_marginTop">@dimen/dp_4</item>
         <item name="android:gravity">center</item>
-        <item name="android:textColor">@color/navi_control_tv_color</item>
+        <item name="android:textColor">@color/navi_color_000000_70</item>
         <item name="android:textSize">@dimen/sp_30</item>
     </style>
 
@@ -41,7 +41,7 @@
         <item name="android:text">@string/navi_via_item_pass</item>
         <item name="android:gravity">center</item>
         <item name="android:visibility">gone</item>
-        <item name="android:textColor">@color/navi_img_color_seven</item>
+        <item name="android:textColor">@color/navi_color_FFFFFF_100</item>
         <item name="android:textSize">@dimen/sp_26</item>
     </style>
 

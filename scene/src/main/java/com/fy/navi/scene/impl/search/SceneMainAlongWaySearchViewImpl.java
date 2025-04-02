@@ -3,6 +3,8 @@ package com.fy.navi.scene.impl.search;
 import com.fy.navi.scene.BaseSceneModel;
 import com.fy.navi.scene.api.search.ISceneMainSearchView;
 import com.fy.navi.scene.ui.search.SceneMainAlongWaySearchView;
+import com.fy.navi.service.define.map.MapType;
+import com.fy.navi.service.logicpaket.layer.LayerPackage;
 import com.fy.navi.ui.base.StackManager;
 
 /**
@@ -12,6 +14,8 @@ import com.fy.navi.ui.base.StackManager;
  */
 public class SceneMainAlongWaySearchViewImpl extends BaseSceneModel<SceneMainAlongWaySearchView> implements ISceneMainSearchView {
 
+    private final LayerPackage layerPackage;
+
     /**
      * 构造方法，初始化父类和SearchPackage实例。
      *
@@ -19,6 +23,7 @@ public class SceneMainAlongWaySearchViewImpl extends BaseSceneModel<SceneMainAlo
      */
     public SceneMainAlongWaySearchViewImpl(final SceneMainAlongWaySearchView screenView) {
         super(screenView);
+        layerPackage = LayerPackage.getInstance();
     }
 
     /**
@@ -32,5 +37,9 @@ public class SceneMainAlongWaySearchViewImpl extends BaseSceneModel<SceneMainAlo
     @Override
     public void onClickQuickSearch(final int position) {
         mScreenView.onClickQuickSearch(position);
+    }
+
+    public void flyLineVisible(MapType mapTypeId, boolean visible){
+        layerPackage.flyLineVisible(mapTypeId, visible);
     }
 }

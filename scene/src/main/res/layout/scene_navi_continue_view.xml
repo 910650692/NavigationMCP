@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <import type="android.view.View" />
+
+        <variable
+            name="naviContinue"
+            type="com.fy.navi.scene.impl.navi.SceneNaviContinueImpl" />
+    </data>
+
+    <com.fy.navi.ui.view.SkinConstraintLayout
+        android:id="@+id/scl_navi_continue"
+        android:background="@drawable/bg_navi_continue"
+        clickCommand="@{() -> naviContinue.naviContinue()}"
+        app:click_color_change="true"
+        android:layout_width="@dimen/dp_310"
+        android:layout_height="@dimen/dp_92">
+
+        <com.fy.navi.ui.view.SkinImageView
+            android:id="@+id/siv_navi_continue_icon"
+            android:layout_width="@dimen/dp_58"
+            android:layout_height="@dimen/dp_58"
+            android:background="@drawable/img_navigation_58"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginStart="@dimen/dp_52"/>
+
+        <com.fy.navi.ui.view.SkinTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/sp_34"
+            android:textColor="@color/white"
+            app:layout_constraintTop_toTopOf="@+id/siv_navi_continue_icon"
+            app:layout_constraintBottom_toBottomOf="@+id/siv_navi_continue_icon"
+            app:layout_constraintStart_toEndOf="@+id/siv_navi_continue_icon"
+            android:text="@string/navi_continue_navi"
+            android:layout_marginStart="@dimen/dp_12"/>
+
+    </com.fy.navi.ui.view.SkinConstraintLayout>
+</layout>

@@ -23,6 +23,13 @@ final public class BehaviorAdapter {
     }
 
     /**
+     * 设置账号信息
+     */
+    public void setLoginInfo() {
+        mBehaviorApi.setLoginInfo();
+    }
+
+    /**
      * registerCallBack
      * @param key
      * @param callBack

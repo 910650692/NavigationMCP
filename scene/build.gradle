@@ -8,7 +8,7 @@ android {
     buildToolsVersion libs.versions.buildSdk.get()
 
     defaultConfig {
-        minSdk Integer.parseInt(libs.versions.minSdk.get())
+        minSdk IS_PAD_RUN.toBoolean() ? Integer.parseInt(libs.versions.padminSdk.get()) :Integer.parseInt(libs.versions.minSdk.get())
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
         // 添加 javaCompileOptions 和 annotationProcessorOptions
@@ -43,6 +43,7 @@ dependencies {
     implementation project(":ui")
     implementation project(":service")
     implementation project(":utils")
+    implementation project(":burypoint")
     implementation libs.arouter.api
     implementation libs.projectlombok.lombok
     annotationProcessor libs.arouter.compiler

@@ -1,12 +1,17 @@
 package com.fy.navi.hmi.navi;
 
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
+
+import com.android.utils.log.Logger;
 import com.fy.navi.hmi.BR;
 import com.fy.navi.hmi.R;
 import com.fy.navi.hmi.databinding.FragmentNaviGuidanceBinding;
 import com.fy.navi.scene.impl.imersive.ImersiveStatus;
 import com.fy.navi.scene.impl.imersive.ImmersiveStatusScene;
 import com.fy.navi.scene.impl.navi.inter.ISceneCallback;
-import com.fy.navi.service.define.map.MapTypeId;
+import com.fy.navi.scene.ui.navi.ChargeTipEntity;
+import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.navi.CrossImageEntity;
 import com.fy.navi.service.define.navi.LaneInfoEntity;
 import com.fy.navi.service.define.navi.NaviDriveReportEntity;
@@ -17,6 +22,7 @@ import com.fy.navi.service.define.navi.NaviViaEntity;
 import com.fy.navi.service.define.navi.SapaInfoEntity;
 import com.fy.navi.service.define.navi.SpeedOverallEntity;
 import com.fy.navi.ui.base.BaseFragment;
+import com.fy.navi.ui.base.StackManager;
 
 import java.util.List;
 
@@ -33,30 +39,31 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
 
     @Override
     public void onInitView() {
-        mBinding.sceneNaviControl.setScreenId(MapTypeId.valueOf(mScreenId));
-        mBinding.sceneNaviPreference.setScreenId(MapTypeId.valueOf(mScreenId));
-        mBinding.sceneNaviTbt.setScreenId(MapTypeId.valueOf(mScreenId));
-        mBinding.sceneNaviCrossImage.setScreenId(MapTypeId.valueOf(mScreenId));
-        mBinding.sceneNaviSpeed.setScreenId(MapTypeId.valueOf(mScreenId));
-        mBinding.sceneNaviSapa.setScreenId(MapTypeId.valueOf(mScreenId));
-        mBinding.sceneNaviLanes.setScreenId(MapTypeId.valueOf(mScreenId));
-        mBinding.sceneNaviViaList.setScreenId(MapTypeId.valueOf(mScreenId));
-        mBinding.sceneNaviLastMile.setScreenId(MapTypeId.valueOf(mScreenId));
-        mBinding.sceneNaviViaInfo.setScreenId(MapTypeId.valueOf(mScreenId));
-        mBinding.sceneNaviParkingList.setScreenId(MapTypeId.valueOf(mScreenId));
-        mBinding.sceneNaviViaArrive.setScreenId(MapTypeId.valueOf(mScreenId));
-        mBinding.sceneNaviSapaDetail.setScreenId(MapTypeId.valueOf(mScreenId));
+        mBinding.sceneNaviControl.setScreenId(MapType.valueOf(mScreenId));
+        mBinding.sceneNaviPreference.setScreenId(MapType.valueOf(mScreenId));
+        mBinding.sceneNaviTbt.setScreenId(MapType.valueOf(mScreenId));
+        mBinding.sceneNaviCrossImage.setScreenId(MapType.valueOf(mScreenId));
+        mBinding.sceneNaviSpeed.setScreenId(MapType.valueOf(mScreenId));
+        mBinding.sceneNaviSapa.setScreenId(MapType.valueOf(mScreenId));
+        mBinding.sceneNaviLanes.setScreenId(MapType.valueOf(mScreenId));
+        mBinding.sceneNaviViaList.setScreenId(MapType.valueOf(mScreenId));
+        mBinding.sceneNaviLastMile.setScreenId(MapType.valueOf(mScreenId));
+        mBinding.sceneNaviViaInfo.setScreenId(MapType.valueOf(mScreenId));
+        mBinding.sceneNaviParkingList.setScreenId(MapType.valueOf(mScreenId));
+        mBinding.sceneNaviViaArrive.setScreenId(MapType.valueOf(mScreenId));
+        mBinding.sceneNaviSapaDetail.setScreenId(MapType.valueOf(mScreenId));
         mBinding.sceneNaviPreference.registerRoutePreferenceObserver("navi fragment", mViewModel);
     }
 
     @Override
     public void onInitData() {
-        ImmersiveStatusScene.getInstance().setImmersiveStatus(MapTypeId.MAIN_SCREEN_MAIN_MAP, ImersiveStatus.IMERSIVE);
+        ImmersiveStatusScene.getInstance().setImmersiveStatus(MapType.MAIN_SCREEN_MAIN_MAP, ImersiveStatus.IMERSIVE);
         mViewModel.startNavigation(getArguments());
     }
 
     /**
      * 区间车速、绿波车速
+     *
      * @param speedCameraInfo speed camera info
      */
     public void onNaviSpeedCameraInfo(final SpeedOverallEntity speedCameraInfo) {
@@ -65,6 +72,7 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
 
     /**
      * 服务区信息
+     *
      * @param sapaInfoEntity sapa info entity
      */
     public void onNaviSAPAInfo(final SapaInfoEntity sapaInfoEntity) {
@@ -74,6 +82,7 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
 
     /**
      * 导航信息
+     *
      * @param naviEtaInfo navi eta info
      */
     public void onNaviInfo(final NaviEtaInfo naviEtaInfo) {
@@ -83,11 +92,11 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
         mBinding.sceneNaviViaInfo.onNaviInfo(naviEtaInfo);
         mBinding.sceneNaviLastMile.onNaviInfo(naviEtaInfo);
         mBinding.sceneNaviParkingList.onNaviInfo(naviEtaInfo);
-        mBinding.sceneNaviCrossImage.onNaviInfo(naviEtaInfo);
     }
 
     /**
      * 更新路线名称
+     *
      * @param routeName 路线名称
      */
     public void updateRouteName(final String routeName) {
@@ -103,23 +112,38 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
 
     /**
      * 路口大图
-     * @param isShowImage 是否显示图片
+     *
+     * @param isShowImage   是否显示图片
      * @param naviImageInfo 导航图片信息
      */
     public void onCrossImageInfo(final boolean isShowImage, final CrossImageEntity naviImageInfo) {
-        mBinding.sceneNaviCrossImage.onCrossImageInfo(isShowImage, naviImageInfo);
+        final boolean isRealNeedShow = isShowImage && (StackManager.getInstance().getCurrentFragment(mScreenId) instanceof NaviGuidanceFragment);
+        Logger.i("onCrossImageInfo", "isRealNeedShow:" + isRealNeedShow);
+        mBinding.sceneNaviCrossImage.onCrossImageInfo(isRealNeedShow, naviImageInfo);
+    }
+
+    /**
+     * 更新路口大图进度
+     *
+     * @param routeRemainDist 路口大图进度
+     */
+    public void updateCrossProgress(final long routeRemainDist) {
+        mBinding.sceneNaviCrossImage.updateCrossProgress(routeRemainDist);
     }
 
     /**
      * 更新TMC灯光条（路况信息）
+     *
      * @param naviTmcInfo navi tmc info
      */
-    public void onUpdateTMCLightBar(final NaviTmcInfo naviTmcInfo) {
+    public void onUpdateTMCLightBar(final NaviTmcInfo naviTmcInfo, boolean isShowAutoAdd) {
+        mBinding.sceneNaviTmc.setIsShowAutoAdd(isShowAutoAdd);
         mBinding.sceneNaviTmc.onUpdateTMCLightBar(naviTmcInfo);
     }
 
     /**
      * 转向图标信息、以及传出出入口信息
+     *
      * @param info maneuver info
      */
     public void onManeuverInfo(final NaviManeuverInfo info) {
@@ -129,7 +153,8 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
 
     /**
      * 导航到达目的地
-     * @param traceId trace id
+     *
+     * @param traceId  trace id
      * @param naviType navi type
      */
     public void onNaviArrive(final long traceId, final int naviType) {
@@ -138,8 +163,9 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
 
     /**
      * 车道线信息
+     *
      * @param isShowLane 是否显示车道线
-     * @param laneInfo lane info
+     * @param laneInfo   lane info
      */
     public void onLaneInfo(final boolean isShowLane, final LaneInfoEntity laneInfo) {
         mBinding.sceneNaviLanes.onLaneInfo(isShowLane, laneInfo);
@@ -147,15 +173,18 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
 
     /**
      * 沉浸态状态改变回调
+     *
      * @param currentImersiveStatus current immersive status
      */
     public void onImmersiveStatusChange(final ImersiveStatus currentImersiveStatus) {
         mBinding.sceneNaviControl.onImmersiveStatusChange(currentImersiveStatus);
+        mBinding.sceneNaviContinue.onImmersiveStatusChange(currentImersiveStatus);
         mBinding.sceneNaviCrossImage.onImmersiveStatusChange(currentImersiveStatus);
     }
 
     /**
      * 添加场景回调
+     *
      * @param sceneCallback scene callback
      */
     public void addSceneCallback(final ISceneCallback sceneCallback) {
@@ -176,26 +205,32 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
         mBinding.sceneNaviViaArrive.addSceneCallback(sceneCallback);
         mBinding.sceneNaviSapaDetail.addSceneCallback(sceneCallback);
         mBinding.sceneDriveReport.addSceneCallback(sceneCallback);
-    }
-
-    /**
-     * 更新via列表状态
-     * @param isExpand 是否展开
-     */
-    public void updateViaListState(final boolean isExpand) {
-        mBinding.sceneNaviViaList.updateViaListState(isExpand);
+        mBinding.sceneNaviChargeTip.addSceneCallback(sceneCallback);
+        mBinding.sceneNaviContinue.addSceneCallback(sceneCallback);
+        mBinding.sceneNaviSearch.addSceneCallback(sceneCallback);
     }
 
     /**
      * 显示途经点列表
-     * @param list list
+     *
+     * @param isVisible 是否展示途径点列表
      */
-    public void showNaviViaList(final List<NaviViaEntity> list) {
-        mBinding.sceneNaviViaList.showNaviViaList(list);
+    public void showNaviViaList(final boolean isVisible) {
+        mBinding.sceneNaviViaList.showNaviViaList(isVisible);
+    }
+
+    /**
+     * 更新via列表状态
+     *
+     * @param list 途径点列表
+     */
+    public void updateViaListState(List<NaviViaEntity> list) {
+        mBinding.sceneNaviViaList.updateViaListState(list);
     }
 
     /**
      * 途经点通过回调
+     *
      * @param viaIndex via index
      */
     public void onUpdateViaPass(final long viaIndex) {
@@ -213,6 +248,7 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
 
     /**
      * 删除途经点结果回调
+     *
      * @param result result
      * @param entity entity
      */
@@ -222,6 +258,7 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
 
     /**
      * 跳转服务区详情页方法
+     *
      * @param type           type
      * @param sapaInfoEntity sapa info entity
      */
@@ -229,8 +266,13 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
         mBinding.sceneNaviSapaDetail.skipNaviSapaDetailScene(type, sapaInfoEntity);
     }
 
+    public void notifyBatteryWarning(ChargeTipEntity entity) {
+        mBinding.sceneNaviChargeTip.updateUi(entity);
+    }
+
     /**
      * 行程报告回调
+     *
      * @param entity entity
      */
     public void onDriveReport(final NaviDriveReportEntity entity) {
@@ -256,5 +298,45 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
      */
     public void naviPreviewSwitch(final int type) {
         mBinding.sceneNaviControl.naviPreviewSwitch(type);
+    }
+
+    /**
+     * @param isConnected isConnected
+     */
+    public void onNetStatusChange(boolean isConnected) {
+        mBinding.sceneNaviPreference.onNetStatusChange(isConnected);
+        mBinding.sceneNaviControl.onNetStatusChange(isConnected);
+    }
+
+    /**
+     * 显示控制详情
+     */
+    public void showControlDetails() {
+        mBinding.sceneNaviControl.showControlDetails();
+    }
+
+    public void goSearchView(final String keyWord, final int searchType) {
+        mBinding.naviSceneContainer.setVisibility(GONE);
+        mBinding.sceneNaviSearch.setVisibility(VISIBLE);
+        mBinding.sceneNaviSearch.goSearchView(keyWord, searchType);
+    }
+
+    public void goAlongWayList() {
+        mBinding.naviSceneContainer.setVisibility(GONE);
+        mBinding.sceneNaviSearch.setVisibility(VISIBLE);
+        mBinding.sceneNaviSearch.goAlongWayList();
+    }
+
+    public void closeSearchView() {
+        mBinding.naviSceneContainer.setVisibility(VISIBLE);
+        mBinding.sceneNaviSearch.setVisibility(GONE);
+    }
+
+    public void onUpdateTMCLightBarAutoAdd(boolean isShow) {
+        mBinding.sceneNaviTmc.setIsShowAutoAdd(isShow);
+    }
+
+    public boolean isNeedCloseNaviChargeTipLater() {
+        return mBinding.sceneNaviChargeTip.getVisibility() == VISIBLE;
     }
 }

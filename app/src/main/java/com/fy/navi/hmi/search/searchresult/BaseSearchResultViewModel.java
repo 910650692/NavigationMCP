@@ -45,4 +45,12 @@ public class BaseSearchResultViewModel extends BaseViewModel<SearchResultFragmen
     public void notifySilentSearchResult(final SearchResultEntity searchResultEntity) {
         mView.notifySilentSearchResult(searchResultEntity);
     }
+
+    /**
+     * 语音筛选排序回调
+     * @param sortValue 排序条件
+     */
+    public void onVoicePoiSort(final String sortValue) {
+        mView.onVoicePoiSort(sortValue);
+    }
 }

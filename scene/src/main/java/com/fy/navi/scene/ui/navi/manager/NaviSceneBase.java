@@ -8,6 +8,7 @@ import androidx.annotation.Nullable;
 import androidx.databinding.ViewDataBinding;
 
 import com.android.utils.ConvertUtils;
+import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
 import com.fy.navi.scene.BaseSceneModel;
 import com.fy.navi.scene.BaseSceneView;
@@ -31,20 +32,19 @@ import lombok.Setter;
 @Setter
 public abstract class NaviSceneBase <VB extends ViewDataBinding, VM extends BaseSceneModel> extends BaseSceneView<VB, VM> {
     private static final String TAG = "NaviCardBase";
-    public static final int SCENE_STATE_INIT = 0x00;
-    public static final int SCENE_STATE_SHOW = 0x01;
-    public static final int SCENE_STATE_HIDE = 0x02;
-    public static final int SCENE_STATE_CLOSE = 0x03;
+    protected static final int SCENE_STATE_INIT = 0x00;
+    protected static final int SCENE_STATE_SHOW = 0x01;
+    protected static final int SCENE_STATE_HIDE = 0x02;
+    protected static final int SCENE_STATE_CLOSE = 0x03;
 
     protected static final int CLOSE_COUNTDOWN_8 = 8;
     protected static final int CLOSE_COUNTDOWN_5 = 5;
     protected static final int CLOSE_COUNTDOWN_15 = 15;
     protected static final int CLOSE_COUNTDOWN_60 = 60;
-    protected boolean mIsViaListExpand = false;//途径点列表是否展开
     protected int mSceneState = SCENE_STATE_INIT;
     private int mCountdown = 0;
     private ScheduledFuture mScheduledFuture;
-    private ISceneCallback mISceneCallback;
+    protected ISceneCallback mISceneCallback;
     private NaviSceneId mSceneId;
 
     private INaviSceneEvent mEvent = getNaviSceneEvent();
@@ -62,14 +62,6 @@ public abstract class NaviSceneBase <VB extends ViewDataBinding, VM extends Base
         super(context, attrs, defStyleAttr);
     }
 
-    public boolean isIsViaListExpand() {
-        return mIsViaListExpand;
-    }
-
-    public void setIsViaListExpand(boolean mIsViaListExpand) {
-        this.mIsViaListExpand = mIsViaListExpand;
-    }
-
     @Override
     public void onCreate() {
         super.onCreate();
@@ -78,6 +70,8 @@ public abstract class NaviSceneBase <VB extends ViewDataBinding, VM extends Base
     }
 
     protected abstract NaviSceneId getSceneId();
+
+    protected abstract String getSceneName();
 
     /**
      * @return INaviSceneEvent
@@ -132,10 +126,15 @@ public abstract class NaviSceneBase <VB extends ViewDataBinding, VM extends Base
         mCountdown = 0;
         cancelCountdown();
         mSceneState = SCENE_STATE_CLOSE;
+        mEvent.notifySceneReset();
     }
 
     public int getSceneState() {
         return mSceneState;
+    }
+
+    public boolean isVisible(){
+        return SCENE_STATE_SHOW == mSceneState;
     }
 
     protected void resetCountdown() {
@@ -145,7 +144,7 @@ public abstract class NaviSceneBase <VB extends ViewDataBinding, VM extends Base
 //                mCountdown = CLOSE_COUNTDOWN_60;
 //                break;
             case NAVI_SCENE_SERVICE_AREA:
-            case NAVI_SCENE_VIA_POINT_UNFOLD:
+            case NAVI_SCENE_VIA_POINT_LIST:
                 mCountdown = CLOSE_COUNTDOWN_15;
                 break;
             default:
@@ -161,7 +160,7 @@ public abstract class NaviSceneBase <VB extends ViewDataBinding, VM extends Base
         mScheduledFuture = ThreadManager.getInstance().asyncAtFixDelay(() -> {
             if (mCountdown == NumberUtils.NUM_0) {
                 if (mEvent != null) {
-                    if (mSceneId == NaviSceneId.NAVI_SCENE_VIA_POINT_FOLD) {
+                    if (mSceneId == NaviSceneId.NAVI_SCENE_VIA_POINT_LIST) {
                         // 只有经过所有途经点才会close，倒计时场景只会hide途经点卡片
 //                        mEvent.notifySceneStateChange(INaviSceneEvent.SceneStateChangeType.SceneHideState, mCardId);
                     } else {

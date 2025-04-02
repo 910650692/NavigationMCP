@@ -88,7 +88,8 @@ public class RouteDetailsResultAdapter extends BaseExpandableListAdapter {
         final GroupViewHolder holder;
         View convertView = convertViews;
         if (convertView == null) {
-            convertView = LayoutInflater.from(AppContext.getInstance().getMContext()).inflate(R.layout.route_details_info_result_parent_item, parent, false);
+            convertView = LayoutInflater.from(AppContext.getInstance().getMContext())
+                    .inflate(R.layout.route_details_info_result_parent_item, parent, false);
             holder = new GroupViewHolder(convertView);
             convertView.setTag(holder);
         } else {
@@ -99,7 +100,8 @@ public class RouteDetailsResultAdapter extends BaseExpandableListAdapter {
         holder.mParentRoadName.setText(getGroup(groupPosition).getMLoadName());
         holder.mParentDescription.setText(getGroup(groupPosition).getMDistance() + " "
                 + AppContext.getInstance().getMContext().getResources().getString(R.string.route_details_light_count)
-                + getGroup(groupPosition).getMLightCount() + AppContext.getInstance().getMContext().getResources().getString(R.string.route_details_light_count_unit));
+                + getGroup(groupPosition).getMLightCount()
+                + AppContext.getInstance().getMContext().getResources().getString(R.string.route_details_light_count_unit));
         holder.mParentUpDowmIcon.setImageResource(isExpanded ? R.drawable.img_route_up : R.drawable.img_route_down);
         return convertView;
     }

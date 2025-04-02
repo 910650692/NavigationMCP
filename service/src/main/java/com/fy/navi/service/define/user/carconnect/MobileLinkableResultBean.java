@@ -4,22 +4,22 @@ import java.util.ArrayList;
 
 public class MobileLinkableResultBean extends TaskResultBean{
 
-    private String lottieUrl = "";
-    private ArrayList<MobileLinkableDeviceBean> devices = new ArrayList<>();
+    private String mLottieUrl = "";
+    private ArrayList<MobileLinkableDeviceBean> mDevices = new ArrayList<>();
 
     public String getLottieUrl() {
-        return lottieUrl;
+        return mLottieUrl;
     }
 
-    public void setLottieUrl(String lottieUrl) {
-        this.lottieUrl = lottieUrl;
+    public void setLottieUrl(final String lottieUrl) {
+        this.mLottieUrl = lottieUrl;
     }
 
     public ArrayList<MobileLinkableDeviceBean> getDevices() {
-        return devices;
+        return mDevices;
     }
 
-    public void setDevices(ArrayList<MobileLinkableDeviceBean> devices) {
-        this.devices = devices;
+    public void setDevices(final ArrayList<MobileLinkableDeviceBean> devices) {
+        this.mDevices = devices;
     }
 }

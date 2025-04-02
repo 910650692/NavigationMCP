@@ -27,7 +27,7 @@ import com.fy.navi.scene.ui.adapter.SearchResultAdapter;
 import com.fy.navi.service.AutoMapConstant;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.define.bean.GeoPoint;
-import com.fy.navi.service.define.map.MapTypeId;
+import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.route.RoutePoiType;
 import com.fy.navi.service.define.search.FavoriteInfo;
 import com.fy.navi.service.define.search.PoiInfoEntity;
@@ -193,20 +193,20 @@ public class SceneSearchHistoryView extends BaseSceneView<MainAlongWaySearchHist
                 poiInfoEntity.setPoint(geoPoint);
                 final FavoriteInfo favoriteInfo = new FavoriteInfo();
                 favoriteInfo.setCommonName(commonName)
-                        .setItemId(history.getMPoiId() + DIVIDER + history.getMEndPoiName() + DIVIDER
-                                + geoPoint.getLon() + DIVIDER + geoPoint.getLat())
                         .setUpdateTime(new Date().getTime());
                 poiInfoEntity.setFavoriteInfo(favoriteInfo);
+                BehaviorPackage.getInstance().addFavorite(poiInfoEntity, commonName);
                 if (mHomeCompanyType == 1
                         || mHomeCompanyType == 2
                         || mHomeCompanyType == 3
                         || mHomeCompanyType == 0) {
-                    BehaviorPackage.getInstance().addFavoriteData(poiInfoEntity, commonName);
+//                    BehaviorPackage.getInstance().addFavoriteData(poiInfoEntity, commonName);
                     SettingUpdateObservable.getInstance().onUpdateSyncTime();
-                    closeAllFragment();
+                    closeAllFragmentsUntilTargetFragment("HomeCompanyFragment");
+                    showCurrentFragment();
                 } else {
                     if (SearchPackage.getInstance().isAlongWaySearch()) {
-                        RoutePackage.getInstance().addViaPoint(MapTypeId.MAIN_SCREEN_MAIN_MAP, poiInfoEntity);
+                        RoutePackage.getInstance().addViaPoint(MapType.MAIN_SCREEN_MAIN_MAP, poiInfoEntity);
                     } else {
                         SearchPackage.getInstance().clearLabelMark();
                         final Fragment fragment = (Fragment) ARouter.getInstance()
@@ -237,11 +237,10 @@ public class SceneSearchHistoryView extends BaseSceneView<MainAlongWaySearchHist
                 final int commonName = mSearchResultAdapter.getHomeCompanyType();
                 final FavoriteInfo favoriteInfo = new FavoriteInfo();
                 favoriteInfo.setCommonName(commonName)
-                        .setItemId(poiInfoEntity.getPid() + DIVIDER + poiInfoEntity.getName() + DIVIDER
-                                + poiInfoEntity.getPoint().getLon() + DIVIDER + poiInfoEntity.getPoint().getLat())
                         .setUpdateTime(new Date().getTime());
                 poiInfoEntity.setFavoriteInfo(favoriteInfo);
-                BehaviorPackage.getInstance().addFavoriteData(poiInfoEntity, commonName);
+                BehaviorPackage.getInstance().addFavorite(poiInfoEntity, commonName);
+//                BehaviorPackage.getInstance().addFavoriteData(poiInfoEntity, commonName);
                 SettingUpdateObservable.getInstance().onUpdateSyncTime();
                 closeAllFragment();
             }

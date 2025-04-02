@@ -6,7 +6,7 @@ import android.view.View;
 
 public interface IBaseScreenMapView {
 
-    MapTypeId provideMapTypeId();
+    MapType provideMapTypeId();
 
     Context getMapViewContext();
 

@@ -6,6 +6,8 @@ import com.fy.navi.scene.BaseSceneModel;
 import com.fy.navi.scene.api.favorite.ISceneHomeCompanyView;
 import com.fy.navi.scene.ui.favorite.SceneHomeCompanyView;
 import com.fy.navi.service.MapDefaultFinalTag;
+import com.fy.navi.service.define.map.MapType;
+import com.fy.navi.service.logicpaket.layer.LayerPackage;
 import com.fy.navi.service.logicpaket.search.SearchPackage;
 import com.fy.navi.ui.base.StackManager;
 
@@ -17,9 +19,11 @@ import com.fy.navi.ui.base.StackManager;
  */
 public class SceneHomeCompanyViewImpl extends BaseSceneModel<SceneHomeCompanyView> implements ISceneHomeCompanyView {
     private final SearchPackage mSearchPackage;
+    private final LayerPackage layerPackage;
     public SceneHomeCompanyViewImpl(final SceneHomeCompanyView scrollView) {
         super(scrollView);
         mSearchPackage = SearchPackage.getInstance();
+        layerPackage = LayerPackage.getInstance();
     }
 
     @Override
@@ -44,6 +48,10 @@ public class SceneHomeCompanyViewImpl extends BaseSceneModel<SceneHomeCompanyVie
     public void suggestionSearch(final String key) {
         Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "suggestionSearch  key:" + key);
         mSearchPackage.suggestionSearch(key);
+    }
+
+    public void flyLineVisible(MapType mapTypeId,boolean visible){
+        layerPackage.flyLineVisible(mapTypeId, visible);
     }
 
 }

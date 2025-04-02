@@ -3,7 +3,7 @@ package com.fy.navi.service.adapter.engine;
 import androidx.work.ListenableWorker;
 
 import com.fy.navi.service.AdapterConfig;
-import com.fy.navi.service.define.map.MapTypeId;
+import com.fy.navi.service.define.map.MapType;
 
 /**
  * @Description TODO
@@ -28,7 +28,7 @@ public class EngineAdapter {
         return mIEngineApi.initEngine();
     }
 
-    public int engineID(MapTypeId mapId){
+    public int engineID(MapType mapId) {
         return mIEngineApi.engineID(mapId);
     }
 
@@ -52,11 +52,15 @@ public class EngineAdapter {
         return Helper.ea;
     }
 
-    public int eagleEyeEngineID(MapTypeId mapId) {
+    public int eagleEyeEngineID(MapType mapId) {
         return mIEngineApi.eagleEyeEngineID(mapId);
     }
 
-    public String styleBlPath(MapTypeId mapTypeId) {
+    public int mapDeviceID(MapType mapId) {
+        return mIEngineApi.mapDeviceID(mapId);
+    }
+
+    public String styleBlPath(MapType mapTypeId) {
         return mIEngineApi.styleBlPath(mapTypeId);
     }
 

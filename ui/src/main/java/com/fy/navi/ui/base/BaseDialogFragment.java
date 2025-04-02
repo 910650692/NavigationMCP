@@ -134,6 +134,11 @@ public abstract class BaseDialogFragment<V extends ViewDataBinding, VM extends B
     public void closeAllFragmentAndSearchView() {
     }
 
+    @Override
+    public void showCurrentFragment() {
+        mActivity.showCurrentFragment();
+    }
+
     protected void onNewIntent(final Bundle bundle) {
 
     }

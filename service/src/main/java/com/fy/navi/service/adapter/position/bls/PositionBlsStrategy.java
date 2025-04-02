@@ -20,6 +20,7 @@ import com.android.utils.thread.ThreadManager;
 import com.autonavi.gbl.common.model.Coord3DDouble;
 import com.autonavi.gbl.pos.PosService;
 import com.autonavi.gbl.pos.model.DrInfo;
+import com.autonavi.gbl.pos.model.GPSDatetime;
 import com.autonavi.gbl.pos.model.GraspRoadResult;
 import com.autonavi.gbl.pos.model.LocDataType;
 import com.autonavi.gbl.pos.model.LocFeedbackNode;
@@ -35,6 +36,7 @@ import com.autonavi.gbl.pos.observer.IPosGraspRoadResultObserver;
 import com.autonavi.gbl.pos.observer.IPosLocInfoObserver;
 import com.autonavi.gbl.pos.observer.IPosMapMatchFeedbackObserver;
 import com.autonavi.gbl.servicemanager.ServiceMgr;
+import com.autonavi.gbl.user.usertrack.model.GpsTrackPoint;
 import com.autonavi.gbl.util.model.ServiceInitStatus;
 import com.autonavi.gbl.util.model.SingleServiceID;
 import com.fy.navi.service.AppContext;
@@ -54,13 +56,17 @@ import com.fy.navi.service.define.position.LocMode;
 import com.fy.navi.service.define.position.LocStatus;
 import com.fy.navi.service.define.position.PositionConfig;
 import com.fy.navi.service.define.setting.SettingConstant;
+import com.fy.navi.service.define.user.usertrack.GpsTrackPointBean;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.math.BigInteger;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ScheduledFuture;
@@ -99,6 +105,8 @@ public class PositionBlsStrategy implements IPosLocInfoObserver, IPosMapMatchFee
     private long mLastSaveTimes;
     private PosParallelRoadController mPosParallelRoadController;
     public boolean mAutoNaviPosLogEnable = false;
+    private GpsTrackPointBean mGpsTrackPoint = new GpsTrackPointBean();
+
 
     public PositionBlsStrategy(Context context) {
         mPosService = (PosService) ServiceMgr.getServiceMgrInstance().getBLService(SingleServiceID.PosSingleServiceID);
@@ -215,6 +223,42 @@ public class PositionBlsStrategy implements IPosLocInfoObserver, IPosMapMatchFee
                 mH.removeMessages(MSG_LOC_DR_INFO_UPDATE);
             }
             mH.sendEmptyMessage(MSG_LOC_DR_INFO_UPDATE);
+        }
+
+        //gps打点
+        ArrayList<LocMatchInfo> matchInfo = locInfo.matchInfo;
+        int matchInfoSize = matchInfo == null ? 0 : matchInfo.size();
+
+        if (matchInfoSize > 0) {
+            LocMatchInfo locMatchInfo = matchInfo.get(0);
+            mGpsTrackPoint.setF32Course(locMatchInfo.course);
+            mGpsTrackPoint.setF64Latitude(locMatchInfo.stPos.lat);
+            mGpsTrackPoint.setF64Longitude(locMatchInfo.stPos.lon);
+        }
+
+        float curSpeed = locInfo.speed;
+        mGpsTrackPoint.setF32Accuracy(locInfo.posAcc);
+        mGpsTrackPoint.setF32Speed(curSpeed);
+        mGpsTrackPoint.setF64Altitude(locInfo.alt);
+        mGpsTrackPoint.setN64TickTime(parseGpsDateTime(locInfo.gpsDatetime));
+        for (IPositionAdapterCallback callback : callbacks) {
+            callback.onGpsTrackPoint(mGpsTrackPoint);
+        }
+    }
+
+    public static long parseGpsDateTime(GPSDatetime gpsDatetime) {
+        if (gpsDatetime.year == 0) {
+            return System.currentTimeMillis();
+        }
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        try {
+            Date date = simpleDateFormat.parse(
+                    gpsDatetime.year + "-" + gpsDatetime.month + "-" + gpsDatetime.day + " " + gpsDatetime.hour + ":" + gpsDatetime.minute + ":" +
+                            gpsDatetime.second);
+            return date.getTime();
+        } catch (ParseException e) {
+
+            return System.currentTimeMillis();
         }
     }
 
@@ -579,5 +623,9 @@ public class PositionBlsStrategy implements IPosLocInfoObserver, IPosMapMatchFee
         for (IPositionAdapterCallback callback : callbacks) {
             callback.onGraspRouteResult(vehiclePosition);
         }
+    }
+
+    public List<IPositionAdapterCallback> getCallBack(){
+        return callbacks;
     }
 }

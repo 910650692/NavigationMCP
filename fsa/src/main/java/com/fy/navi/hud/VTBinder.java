@@ -27,4 +27,10 @@ public abstract class VTBinder extends Binder {
      * 通知错误
      */
     public abstract void notifyError();
+
+    /**
+     * 获取路口大图
+     * @return byte[]
+     */
+    public abstract byte[] getCrossImg();
 }

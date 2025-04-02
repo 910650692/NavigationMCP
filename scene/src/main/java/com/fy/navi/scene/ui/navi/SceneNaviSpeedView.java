@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.ViewGroup;
 
+import com.android.utils.log.Logger;
 import com.fy.navi.scene.R;
 import com.fy.navi.scene.databinding.SceneNaviSpeedViewBinding;
 import com.fy.navi.scene.impl.navi.SceneNaviSpeedImpl;
@@ -47,6 +48,11 @@ public class SceneNaviSpeedView extends NaviSceneBase<SceneNaviSpeedViewBinding,
     }
 
     @Override
+    protected String getSceneName() {
+        return NaviSceneId.NAVI_SCENE_SPEED.name();
+    }
+
+    @Override
     public INaviSceneEvent getNaviSceneEvent() {
         return NaviSceneManager.getInstance();
     }
@@ -68,7 +74,17 @@ public class SceneNaviSpeedView extends NaviSceneBase<SceneNaviSpeedViewBinding,
     public void hide() {
         super.hide();
         if (mISceneCallback != null) {
-            mISceneCallback.updateSceneVisible(NaviSceneId.NAVI_SCENE_SPEED, true);
+            Logger.i(TAG, "SceneNaviSpeedView hide");
+            mISceneCallback.updateSceneVisible(NaviSceneId.NAVI_SCENE_SPEED, false);
+        }
+    }
+
+    @Override
+    public void close() {
+        super.close();
+        if (mISceneCallback != null) {
+            Logger.i(TAG, "SceneNaviSpeedView hide");
+            mISceneCallback.updateSceneVisible(NaviSceneId.NAVI_SCENE_SPEED, false);
         }
     }
 
@@ -114,10 +130,10 @@ public class SceneNaviSpeedView extends NaviSceneBase<SceneNaviSpeedViewBinding,
         mViewBinding.stvSpeedLimitKey.setText(getContext().getText(R.string.navi_speed_overall));
         // 超速时更换背景
         mViewBinding.stvCurrentSpeed.setTextColor(getContext().getColor(averageSpeed > speedLimit ?
-                R.color.navi_list_item_tv_one : R.color.navi_toll_bg_color));
+                R.color.navi_color_C73333_100 : R.color.navi_color_2461EA_100));
         mViewBinding.stvCurrentSpeedKey.setTextColor(
-                getContext().getColor(averageSpeed > speedLimit ? R.color.navi_list_item_tv_one :
-                        R.color.navi_toll_bg_color));
+                getContext().getColor(averageSpeed > speedLimit ? R.color.navi_color_C73333_100 :
+                        R.color.navi_color_2461EA_100));
         mViewBinding.svCurrentSpeed.setBackground(
                 getContext().getDrawable(averageSpeed > speedLimit ?
                         R.drawable.guide_car_speed_stroke : R.drawable.guide_car_speed));

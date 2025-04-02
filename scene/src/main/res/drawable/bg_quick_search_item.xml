@@ -3,12 +3,12 @@
     android:shape="oval">
 
     <!-- 圆形的背景颜色 -->
-    <solid android:color="#26B2AFC2" />
+    <solid android:color="@color/search_category_icon_bg" />
 
     <!-- 圆形的边框 -->
     <stroke
         android:width="@dimen/dp_1"
-        android:color="#26B2AFC2" />
+        android:color="@color/search_category_icon_bg" />
 
     <!-- 内部的填充边距（可选） -->
     <padding

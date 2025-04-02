@@ -33,7 +33,7 @@ public class CollectModel extends BaseModel<CollectViewModel> implements Setting
      * @return list
      */
     public ArrayList<PoiInfoEntity> getFavoriteListAsync() {
-        return BehaviorPackage.getInstance().getFavoritePoiData(0);
+        return BehaviorPackage.getInstance().getFavoritePoiData();
     }
 
     @Override

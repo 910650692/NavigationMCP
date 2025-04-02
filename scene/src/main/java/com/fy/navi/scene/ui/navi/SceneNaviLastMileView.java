@@ -49,6 +49,11 @@ public class SceneNaviLastMileView extends NaviSceneBase<SceneNaviLastMileViewBi
     }
 
     @Override
+    protected String getSceneName() {
+        return NaviSceneId.NAVI_SCENE_LAST_MILE.name();
+    }
+
+    @Override
     public INaviSceneEvent getNaviSceneEvent() {
         return NaviSceneManager.getInstance();
     }
@@ -69,6 +74,14 @@ public class SceneNaviLastMileView extends NaviSceneBase<SceneNaviLastMileViewBi
     @Override
     public void hide() {
         super.hide();
+        if (mISceneCallback != null) {
+            mISceneCallback.updateSceneVisible(NaviSceneId.NAVI_SCENE_LAST_MILE, false);
+        }
+    }
+
+    @Override
+    public void close() {
+        super.close();
         if (mISceneCallback != null) {
             mISceneCallback.updateSceneVisible(NaviSceneId.NAVI_SCENE_LAST_MILE, false);
         }

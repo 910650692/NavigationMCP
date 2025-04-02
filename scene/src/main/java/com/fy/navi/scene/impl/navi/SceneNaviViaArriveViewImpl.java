@@ -6,6 +6,7 @@ import com.fy.navi.scene.impl.navi.inter.ISceneCallback;
 import com.fy.navi.scene.ui.navi.SceneNaviViaArriveView;
 import com.fy.navi.scene.ui.navi.manager.INaviSceneEvent;
 import com.fy.navi.scene.ui.navi.manager.NaviSceneId;
+import com.fy.navi.service.MapDefaultFinalTag;
 
 public class SceneNaviViaArriveViewImpl extends BaseSceneModel<SceneNaviViaArriveView> {
     public static final String TAG = "SceneNaviViaArriveViewImpl";
@@ -32,7 +33,8 @@ public class SceneNaviViaArriveViewImpl extends BaseSceneModel<SceneNaviViaArriv
      * @param isVisible the isVisible to set
      */
     public void updateSceneVisible(final boolean isVisible) {
-        Logger.i(TAG, "updateSceneVisible isVisible = " + isVisible);
+        if(mScreenView.isVisible() == isVisible) return;
+        Logger.i(MapDefaultFinalTag.NAVI_SCENE_TAG, "SceneNaviViaArriveViewImpl", isVisible);
         mScreenView.getNaviSceneEvent().notifySceneStateChange((isVisible ?
                 INaviSceneEvent.SceneStateChangeType.SceneShowState :
                 INaviSceneEvent.SceneStateChangeType.SceneCloseState),

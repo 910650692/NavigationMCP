@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="android.view.View" />
+        <variable
+            name="holder"
+            type="com.fy.navi.scene.ui.adapter.FilterChildListAdapter.Holder" />
+    </data>
+
+    <com.fy.navi.ui.view.SkinConstraintLayout
+        android:id="@+id/charge_price_root"
+        android:layout_width="@dimen/dp_560"
+        android:layout_height="@dimen/dp_130"
+        android:background="@drawable/bg_charge_price_item"
+        >
+
+        <com.fy.navi.ui.view.SkinTextView
+            android:id="@+id/charge_price_type"
+            android:layout_width="@dimen/dp_76"
+            android:layout_height="@dimen/dp_46"
+            tools:text="当前"
+            android:textSize="@dimen/sp_26"
+            android:gravity="center"
+            android:layout_marginStart="@dimen/dp_18"
+            android:textColor="@color/black"
+            android:background="@drawable/bg_favorite_top"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            />
+
+        <com.fy.navi.ui.view.SkinTextView
+            android:id="@+id/charge_price_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="0:00-6:00"
+            android:textSize="@dimen/sp_34"
+            android:gravity="center"
+            android:layout_marginStart="@dimen/dp_110"
+            android:layout_marginTop="@dimen/dp_18"
+            android:textColor="@color/black"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            />
+
+        <com.fy.navi.ui.view.SkinTextView
+            android:id="@+id/charge_price_total"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="¥100/度"
+            android:textSize="@dimen/sp_34"
+            android:gravity="center"
+            android:layout_marginStart="@dimen/dp_24"
+            android:layout_marginTop="@dimen/dp_18"
+            android:textColor="@color/black"
+            app:layout_constraintStart_toEndOf="@+id/charge_price_time"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBaseline_toBaselineOf="@+id/charge_price_time"
+            />
+
+        <com.fy.navi.ui.view.SkinTextView
+            android:id="@+id/charge_price_electric"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="电费：¥100"
+            android:textSize="@dimen/sp_30"
+            android:gravity="center"
+            android:layout_marginStart="@dimen/dp_110"
+            android:layout_marginTop="@dimen/dp_10"
+            android:textColor="@color/text_route_defult"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/charge_price_time"
+            />
+
+        <View
+            android:id="@+id/charge_price_divider"
+            android:layout_width="@dimen/dp_1"
+            android:layout_height="@dimen/dp_22"
+            android:background="@color/text_route_defult"
+            android:layout_marginStart="@dimen/dp_8"
+            app:layout_constraintStart_toEndOf="@+id/charge_price_electric"
+            app:layout_constraintBottom_toBottomOf="@+id/charge_price_electric"
+            app:layout_constraintTop_toTopOf="@+id/charge_price_electric"/>
+
+        <com.fy.navi.ui.view.SkinTextView
+            android:id="@+id/charge_price_service"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="服务费：¥1.89"
+            android:textSize="@dimen/sp_30"
+            android:gravity="center"
+            android:layout_marginStart="@dimen/dp_8"
+            android:layout_marginTop="@dimen/dp_18"
+            android:textColor="@color/text_route_defult"
+            app:layout_constraintStart_toEndOf="@+id/charge_price_divider"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBaseline_toBaselineOf="@+id/charge_price_electric"
+            />
+
+    </com.fy.navi.ui.view.SkinConstraintLayout>
+</layout>

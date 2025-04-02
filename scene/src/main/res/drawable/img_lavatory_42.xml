@@ -8,8 +8,8 @@
       android:strokeAlpha="0.8"
       android:strokeLineJoin="round"
       android:strokeWidth="2.625"
-      android:fillColor="@color/svg_color_000000"
-      android:strokeColor="@color/svg_color_FFFFFF"
+      android:fillColor="@color/navi_color_000000_0"
+      android:strokeColor="@color/navi_color_FFFFFF_100"
       android:fillType="evenOdd"
       android:strokeLineCap="round"/>
   <path
@@ -17,8 +17,8 @@
       android:strokeAlpha="0.8"
       android:strokeLineJoin="round"
       android:strokeWidth="2.625"
-      android:fillColor="@color/svg_color_000000"
-      android:strokeColor="@color/svg_color_FFFFFF"
+      android:fillColor="@color/navi_color_000000_0"
+      android:strokeColor="@color/navi_color_FFFFFF_100"
       android:fillType="evenOdd"
       android:strokeLineCap="round"/>
   <path
@@ -26,8 +26,8 @@
       android:strokeAlpha="0.8"
       android:strokeLineJoin="round"
       android:strokeWidth="2.625"
-      android:fillColor="@color/svg_color_000000"
-      android:strokeColor="@color/svg_color_FFFFFF"
+      android:fillColor="@color/navi_color_000000_0"
+      android:strokeColor="@color/navi_color_FFFFFF_100"
       android:fillType="evenOdd"
       android:strokeLineCap="round"/>
   <path
@@ -35,8 +35,8 @@
       android:strokeAlpha="0.8"
       android:strokeLineJoin="round"
       android:strokeWidth="2.625"
-      android:fillColor="@color/svg_color_000000"
-      android:strokeColor="@color/svg_color_FFFFFF"
+      android:fillColor="@color/navi_color_000000_0"
+      android:strokeColor="@color/navi_color_FFFFFF_100"
       android:fillType="evenOdd"
       android:strokeLineCap="round"/>
 </vector>

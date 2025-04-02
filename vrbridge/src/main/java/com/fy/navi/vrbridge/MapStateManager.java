@@ -6,7 +6,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.fy.navi.service.define.map.MapMode;
-import com.fy.navi.service.define.map.MapTypeId;
+import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.navi.NaviEtaInfo;
 import com.fy.navi.service.define.navistatus.NaviStatus;
 import com.fy.navi.service.define.position.LocInfoBean;
@@ -93,12 +93,12 @@ public final class MapStateManager {
         mBuilder.setHasPrivacyPermission(true);
         mBuilder.setViaPointsMaxCount(5);
 
-        mBuilder.setCurrZoomLevel((int) MapPackage.getInstance().getZoomLevel(MapTypeId.MAIN_SCREEN_MAIN_MAP));
+        mBuilder.setCurrZoomLevel((int) MapPackage.getInstance().getZoomLevel(MapType.MAIN_SCREEN_MAIN_MAP));
 
         mCurNaviStatus = NaviStatusPackage.getInstance().getCurrentNaviStatus();
         updateNaviStatus(mCurNaviStatus);
 
-        updateMapMode(MapPackage.getInstance().getCurrentMapMode(MapTypeId.MAIN_SCREEN_MAIN_MAP));
+        updateMapMode(MapPackage.getInstance().getCurrentMapMode(MapType.MAIN_SCREEN_MAIN_MAP));
 
         if (SettingPackage.getInstance().getConfigKeyMute() == 1) {
             mBuilder.setMute(true);
@@ -127,7 +127,7 @@ public final class MapStateManager {
         updateRoadEvent(SettingPackage.getInstance().getConfigKeyRoadEvent());
 
         final AccountProfileInfo userInfo = AccountPackage.getInstance().getUserInfo();
-        mBuilder.setLogin(userInfo != null && !TextUtils.isEmpty(userInfo.uid));
+        mBuilder.setLogin(userInfo != null && !TextUtils.isEmpty(userInfo.getUid()));
 
         mBuilder.setSetHome(BehaviorPackage.getInstance().getFavoriteHomeData(1) != null);
         mBuilder.setSetCompany(BehaviorPackage.getInstance().getFavoriteHomeData(2) != null);
@@ -149,7 +149,7 @@ public final class MapStateManager {
     private final IMapPackageCallback mIMapPackageCallback = new IMapPackageCallback() {
 
         @Override
-        public void onMapLevelChanged(final MapTypeId mapTypeId, final float mapLevel) {
+        public void onMapLevelChanged(final MapType mapTypeId, final float mapLevel) {
             Log.d(TAG, "onMapLevelChanged: " + mapLevel);
             mBuilder.setCurrZoomLevel((int) mapLevel);
             AmapStateUtils.saveMapState(mBuilder.build());
@@ -167,7 +167,7 @@ public final class MapStateManager {
         }
 
         @Override
-        public void onMapModeChange(final MapTypeId mapTypeId, final MapMode mapMode) {
+        public void onMapModeChange(final MapType mapTypeId, final MapMode mapMode) {
             updateMapMode(mapMode);
             AmapStateUtils.saveMapState(mBuilder.build());
         }
@@ -176,7 +176,7 @@ public final class MapStateManager {
     private final IRouteResultObserver mIRouteResultObserver = new IRouteResultObserver() {
 
         @Override
-        public void onRouteFail(final MapTypeId mapTypeId, final String errorMsg) {
+        public void onRouteFail(final MapType mapTypeId, final String errorMsg) {
             mRouteList.clear();
         }
 
@@ -187,7 +187,7 @@ public final class MapStateManager {
                 final List<RouteLineInfo> routeLineInfos = requestRouteResult.getMRouteLineInfos();
                 mRouteList.addAll(routeLineInfos);
                 mBuilder.setPathCount(routeLineInfos.size());
-                final RouteParam endPoint = RoutePackage.getInstance().getEndPoint(MapTypeId.MAIN_SCREEN_MAIN_MAP);
+                final RouteParam endPoint = RoutePackage.getInstance().getEndPoint(MapType.MAIN_SCREEN_MAIN_MAP);
                 if (endPoint != null) {
                     mBuilder.setEndPoiName(endPoint.getName());
                 }
@@ -251,19 +251,19 @@ public final class MapStateManager {
     private final AccountCallBack mAccountCallBack = new AccountCallBack() {
         @Override
         public void notifyMobileLogin(final int errCode, final int taskId, final AccountUserInfo result) {
-            mBuilder.setLogin(result != null && result.code == 1);
+            mBuilder.setLogin(result != null && result.getCode() == 1);
             AmapStateUtils.saveMapState(mBuilder.build());
         }
 
         @Override
         public void notifyQRCodeLogin(final int errCode, final int taskId, final AccountUserInfo result) {
-            mBuilder.setLogin(result != null && result.code == 1);
+            mBuilder.setLogin(result != null && result.getCode() == 1);
             AmapStateUtils.saveMapState(mBuilder.build());
         }
 
         @Override
         public void notifyAccountLogout(final int errCode, final int taskId, final AccountUserInfo result) {
-            if (result != null && result.code == 1) {
+            if (result != null && result.getCode() == 1) {
                 mBuilder.setLogin(false);
                 AmapStateUtils.saveMapState(mBuilder.build());
             }
@@ -337,7 +337,7 @@ public final class MapStateManager {
      */
     private void registerCallback() {
         NaviStatusPackage.getInstance().registerObserver(TAG, mNaviStatusCallback);
-        MapPackage.getInstance().registerCallback(MapTypeId.MAIN_SCREEN_MAIN_MAP, mIMapPackageCallback);
+        MapPackage.getInstance().registerCallback(MapType.MAIN_SCREEN_MAIN_MAP, mIMapPackageCallback);
         RoutePackage.getInstance().registerRouteObserver(TAG, mIRouteResultObserver);
         SettingPackage.getInstance().setSettingChangeCallback(TAG, mSettingChangeCallback);
         AccountPackage.getInstance().registerCallBack(TAG, mAccountCallBack);
@@ -596,6 +596,7 @@ public final class MapStateManager {
      * @return boolean
      */
     public boolean isNaviStatus() {
+        mCurNaviStatus = NaviStatusPackage.getInstance().getCurrentNaviStatus();
         final boolean isNavi = NaviStatus.NaviStatusType.NAVING.equals(mCurNaviStatus)
                 || NaviStatus.NaviStatusType.LIGHT_NAVING.equals(mCurNaviStatus);
         Log.d(IVrBridgeConstant.TAG, "naviStatus: " + isNavi);
@@ -612,6 +613,7 @@ public final class MapStateManager {
      * @return true:选路态  false：非选路态.
      */
     public boolean inSelectRoute() {
+        mCurNaviStatus = NaviStatusPackage.getInstance().getCurrentNaviStatus();
         return NaviStatus.NaviStatusType.SELECT_ROUTE.equals(mCurNaviStatus);
     }
 
@@ -622,6 +624,16 @@ public final class MapStateManager {
      */
     public List<RouteLineInfo> getRouteList() {
         return mRouteList;
+    }
+
+    /**
+     * 当前是否处于巡航状态.
+     *
+     * @return true:处于巡航态  false：非巡航态.
+     */
+    public boolean inCruiseStatus() {
+        mCurNaviStatus = NaviStatusPackage.getInstance().getCurrentNaviStatus();
+        return NaviStatus.NaviStatusType.CRUISE.equals(mCurNaviStatus);
     }
 
 }

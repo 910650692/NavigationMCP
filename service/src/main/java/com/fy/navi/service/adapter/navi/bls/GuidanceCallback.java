@@ -1,8 +1,10 @@
 package com.fy.navi.service.adapter.navi.bls;
 
 import com.android.utils.ConvertUtils;
+import com.android.utils.ToastUtils;
 import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
+import com.android.utils.thread.ThreadManager;
 import com.autonavi.gbl.common.model.Coord2DDouble;
 import com.autonavi.gbl.common.path.model.ElecVehicleETAInfo;
 import com.autonavi.gbl.common.path.model.TollGateInfo;
@@ -22,14 +24,17 @@ import com.autonavi.gbl.guide.model.NaviFacility;
 import com.autonavi.gbl.guide.model.NaviGreenWaveCarSpeed;
 import com.autonavi.gbl.guide.model.NaviInfo;
 import com.autonavi.gbl.guide.model.NaviIntervalCameraDynamicInfo;
+import com.autonavi.gbl.guide.model.NaviWeatherInfo;
 import com.autonavi.gbl.guide.model.SAPAInquireResponseData;
 import com.autonavi.gbl.guide.model.SoundInfo;
 import com.autonavi.gbl.guide.model.TrafficLightCountdown;
+import com.autonavi.gbl.guide.model.WeatherInfo;
 import com.autonavi.gbl.guide.observer.INaviObserver;
 import com.autonavi.gbl.guide.observer.ISoundPlayObserver;
 import com.autonavi.gbl.util.model.BinaryStream;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.adapter.navi.GuidanceObserver;
+import com.fy.navi.service.adapter.navi.NaviAdapter;
 import com.fy.navi.service.define.bean.GeoPoint;
 import com.fy.navi.service.define.navi.CrossImageEntity;
 import com.fy.navi.service.define.navi.FyElecVehicleETAInfo;
@@ -37,10 +42,13 @@ import com.fy.navi.service.define.navi.LaneInfoEntity;
 import com.fy.navi.service.define.navi.NaviDriveReportEntity;
 import com.fy.navi.service.define.navi.NaviEtaInfo;
 import com.fy.navi.service.define.navi.NaviMixForkInfo;
+import com.fy.navi.service.define.route.FyRouteOption;
+import com.fy.navi.service.define.route.RouteWeatherInfo;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.concurrent.ScheduledFuture;
 
 /**
  * 导航信息观察者
@@ -50,9 +58,33 @@ import java.util.List;
 public class GuidanceCallback implements INaviObserver, ISoundPlayObserver {
     private static final String TAG = MapDefaultFinalTag.NAVI_SERVICE_TAG;
     private Hashtable<String, GuidanceObserver> mGuidanceObservers;
-
-    public GuidanceCallback(final Hashtable<String, GuidanceObserver> guidanceObservers) {
+    private NaviApiImplHelper mHelper;
+    private ScheduledFuture mScheduledFuture;
+    public GuidanceCallback(final Hashtable<String, GuidanceObserver> guidanceObservers, final NaviApiImplHelper helper) {
         this.mGuidanceObservers = guidanceObservers;
+        this.mHelper = helper;
+    }
+
+    /***
+     * 页面倒计时
+     */
+    public void onBatterHotTime() {
+        cancelTimer();
+        mScheduledFuture = ThreadManager.getInstance().asyncAtFixDelay(new Runnable() {
+            @Override
+            public void run() {
+                onBatterHotCallBack(false);
+            }
+        }, 0, 10);
+    }
+    /***
+     * 取消页面倒计时
+     */
+    private void cancelTimer() {
+        if (!ConvertUtils.isEmpty(mScheduledFuture)) {
+            ThreadManager.getInstance().cancelDelayRun(mScheduledFuture);
+            mScheduledFuture = null;
+        }
     }
 
     /**
@@ -62,6 +94,9 @@ public class GuidanceCallback implements INaviObserver, ISoundPlayObserver {
      */
     @Override
     public void onUpdateNaviInfo(final ArrayList<NaviInfo> naviInfoList) {
+        mHelper.mNaviInfo = ConvertUtils.isEmpty(naviInfoList) ? null : naviInfoList.get(0);
+        NaviAdapter.getInstance().setNaviInfoList(NaviDataFormatHelper.
+                forMatNaviInfoEntity(naviInfoList));
         final NaviEtaInfo naviETAInfo = NaviDataFormatHelper.forMatNaviInfo(naviInfoList);
         if (!ConvertUtils.isEmpty(mGuidanceObservers)) {
             for (GuidanceObserver guidanceObserver : mGuidanceObservers.values()) {
@@ -218,6 +253,30 @@ public class GuidanceCallback implements INaviObserver, ISoundPlayObserver {
         }
     }
 
+    private void onBatterHotCallBack(boolean isPass) {
+        if (!ConvertUtils.isEmpty(mGuidanceObservers)) {
+            for (GuidanceObserver guidanceObserver : mGuidanceObservers.values()) {
+                if (guidanceObserver != null) {
+                    guidanceObserver.onBatterHotCallBack(isPass);
+                }
+            }
+        }
+    }
+
+    @Override
+    public void onUpdateChargeStationPass(long viaIndex) {
+        INaviObserver.super.onUpdateChargeStationPass(viaIndex);
+        // 充电站索引为路线信息中充电站列表的数组下标，它仅包含接续算路下发的充电站，不一定包括用户添加的充电站途经点。
+        // 当充电站是个途经点时，当作途经点处理，只回调 OnUpdateViaPass()，不会回调 OnUpdateChargeStationPass()。
+        if (!ConvertUtils.isEmpty(mGuidanceObservers)) {
+            for (GuidanceObserver guidanceObserver : mGuidanceObservers.values()) {
+                if (guidanceObserver != null) {
+                    guidanceObserver.onUpdateChargeStationPass(viaIndex);
+                }
+            }
+        }
+    }
+
     @Override
     public void onNaviArrive(final long traceId, final int naviType) {
         Logger.i(TAG, "GuidanceCallback onNaviArrive: id={?}, naviType={?}", traceId, naviType);
@@ -360,22 +419,33 @@ public class GuidanceCallback implements INaviObserver, ISoundPlayObserver {
         }
     }
 
+    /***
+     * 因偏航，道路限行，tmc路况拥堵等原因，guide引擎会通知外界进行路线重算
+     * @param rerouteOption
+     */
     @Override
     public void onReroute(final RouteOption rerouteOption) {
-        Logger.i(TAG, "GuidanceCallback onReroute:");
-        // TODO: 2025/1/6 此处需要触发算路
+        Logger.i(TAG, "onReroute: " + rerouteOption.getRouteReqId());
     }
 
+    /****
+     * 透出电动车ETA信息。
+     * TODO 模拟导航这里是没有回调的，需要真实环境测试，抓取log分析
+     * 透出电动车ETA信息，仅在线支持。一分钟回调一次
+     * @param elecVehicleETAInfo
+     */
     @Override
-    public void onUpdateElecVehicleETAInfo(final ArrayList<ElecVehicleETAInfo> elecVehicleETAInfo) {
+    public void onUpdateElecVehicleETAInfo(ArrayList<ElecVehicleETAInfo> elecVehicleETAInfo) {
         INaviObserver.super.onUpdateElecVehicleETAInfo(elecVehicleETAInfo);
-        Logger.i(TAG, "onUpdateElecVehicleETAInfo:" + (elecVehicleETAInfo == null));
+        Logger.i(TAG, "onUpdateElecVehicleETAInfo:" + ((ConvertUtils.isEmpty(elecVehicleETAInfo)) ? "无效信息" : elecVehicleETAInfo.size()));
         // 透出电动车ETA信息。透出电动车ETA信息，仅在线支持。一分钟回调一次
         if (!ConvertUtils.isEmpty(mGuidanceObservers)) {
             for (GuidanceObserver guidanceObserver : mGuidanceObservers.values()) {
                 if (guidanceObserver != null) {
-                    guidanceObserver.onUpdateElecVehicleETAInfo(
-                            GsonUtils.fromJson2List(elecVehicleETAInfo, FyElecVehicleETAInfo.class)
+                    final List<FyElecVehicleETAInfo> desObj = GsonUtils.fromJson2List(elecVehicleETAInfo, FyElecVehicleETAInfo.class);
+                    Logger.i(TAG, "onUpdateElectVehicleETAInfo:" + ((desObj == null) ? "desObj is null" : "size_" + desObj.size()));
+                    guidanceObserver.onUpdateElectVehicleETAInfo(
+                            desObj
                     );
                 }
             }
@@ -441,5 +511,42 @@ public class GuidanceCallback implements INaviObserver, ISoundPlayObserver {
                 }
             }
         }
+    }
+
+    @Override
+    public void onShowNaviWeather(ArrayList<NaviWeatherInfo> list) {
+        INaviObserver.super.onShowNaviWeather(list);
+        Logger.i(TAG, "onShowNaviWeather-Amp");
+        if (ConvertUtils.isEmpty(list) || ConvertUtils.isNull(list.get(0)) || ConvertUtils.isEmpty(list.get(0).weatherInfo)) {
+            return;
+        }
+        final WeatherInfo weatherInfo = list.get(0).weatherInfo.get(0);
+        if (weatherInfo == null) {
+            return;
+        }
+        final RouteWeatherInfo routeWeatherInfo = new RouteWeatherInfo();
+        routeWeatherInfo.setMWeatherID(weatherInfo.weatherID);
+        routeWeatherInfo.setMWeatherName(weatherInfo.weatherName);
+        routeWeatherInfo.setMAlertLevelName(weatherInfo.alertLevelName);
+        if (!ConvertUtils.isEmpty(mGuidanceObservers)) {
+            for (GuidanceObserver guidanceObserver : mGuidanceObservers.values()) {
+                if (guidanceObserver != null) {
+                    guidanceObserver.onShowNaviWeather(routeWeatherInfo);
+                }
+            }
+        }
+    }
+
+    @Override
+    public void onDeletePath(final ArrayList<Long> pathIDList) {
+        Logger.i(TAG, "onDeletePath: " + "经过分歧点");
+        if (!ConvertUtils.isEmpty(mGuidanceObservers)) {
+            for (GuidanceObserver guidanceObserver : mGuidanceObservers.values()) {
+                if (guidanceObserver != null) {
+                    guidanceObserver.onDeletePath(pathIDList);
+                }
+            }
+        }
+        onBatterHotCallBack(true);
     }
 }

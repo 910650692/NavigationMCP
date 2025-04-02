@@ -31,4 +31,20 @@ public class SettingPlateNumberModel extends BaseModel<SettingPlateNumberViewMod
     public String getPlateNumber() {
         return mSettingPackage.getConfigKeyPlateNumber();
     }
+
+    /**
+     * 设置车牌号
+     * @param plateNumber 车牌号
+     */
+    public void setPlateNumber(final String plateNumber) {
+        mSettingPackage.setConfigKeyPlateNumber(plateNumber);
+    }
+
+    /**
+     * 设置是否限行
+     * @param avoidLimit 是否限行
+     */
+    public void setAvoidLimit(final boolean avoidLimit) {
+        mSettingPackage.setConfigKeyAvoidLimit(avoidLimit);
+    }
 }

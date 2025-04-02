@@ -1,10 +1,13 @@
 package com.fy.navi.service.adapter.mapdata.bls;
 
 import android.annotation.SuppressLint;
+import android.view.ViewGroup;
 
 import com.android.utils.ConvertUtils;
+import com.android.utils.ToastUtils;
 import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
+import com.android.utils.thread.ThreadManager;
 import com.autonavi.gbl.data.MapDataService;
 import com.autonavi.gbl.data.model.AdminCode;
 import com.autonavi.gbl.data.model.Area;
@@ -18,6 +21,7 @@ import com.autonavi.gbl.data.model.InitConfig;
 import com.autonavi.gbl.data.model.MapDataFileType;
 import com.autonavi.gbl.data.model.MapDataMode;
 import com.autonavi.gbl.data.model.MergedStatusInfo;
+import com.autonavi.gbl.data.model.OperationType;
 import com.autonavi.gbl.data.model.ProvinceInfo;
 import com.autonavi.gbl.data.model.TaskStatusCode;
 import com.autonavi.gbl.data.observer.IDataInitObserver;
@@ -47,7 +51,6 @@ public class MapDataObserversHelper implements IDataInitObserver, IDownloadObser
     private static final String TAG = MapDataObserversHelper.class.getSimpleName();
     private static final String TAG_DATA_TYPE = "; dataType = ";
     private static final String TAG_ID = "; id = ";
-    private static final float DOWNLOAD_COMPLETED = 100.0f;
     private MapDataService mMapDataService;
     private int mInitCode;
     /*** 该集合只存放离线数据结果回调 key = 哪个类请求的，value = requestResult 理论上集合的长度永远为1**/
@@ -176,6 +179,32 @@ public class MapDataObserversHelper implements IDataInitObserver, IDownloadObser
     }
 
     /**
+     * 获取特别行政区数据
+     * @return 返回行政区信息
+     */
+    public ProvDataInfo getSpecialDataInfo() {
+        if (mMapDataService != null) {
+            final ProvDataInfo provDataInfo = new ProvDataInfo();
+            // 获取特别行政区adCode列表 [820000,810000,710000],按拼音顺序为澳门、香港、台湾（暂无台湾数据）
+            final ArrayList<Integer> adCodeSpecialLst = mMapDataService.getAdcodeList(DownLoadMode.DOWNLOAD_MODE_NET, AreaType.AREA_TYPE_SPECIAL);
+            if (null != adCodeSpecialLst && !adCodeSpecialLst.isEmpty()) {
+                // 获取对应特别行政区下的城市列表
+                final ArrayList<CityDataInfo> directCityList = new ArrayList<>();
+                for (int i = 0; i < adCodeSpecialLst.size(); i++) {
+                    final Integer cityAdcode = adCodeSpecialLst.get(i);
+                    final Area cityArea = mMapDataService.getArea(DownLoadMode.DOWNLOAD_MODE_NET, cityAdcode);
+                    directCityList.add(convertCityData(cityArea));
+                }
+                provDataInfo.setName("特别行政区");
+                provDataInfo.setCityInfoList(directCityList);
+            }
+            return provDataInfo;
+        } else {
+            return null;
+        }
+    }
+
+    /**
      * 获取所有省份+城市信息
      * @return 返回所有离线数据信息
      */
@@ -183,22 +212,17 @@ public class MapDataObserversHelper implements IDataInitObserver, IDownloadObser
         if (mMapDataService != null) {
             final ArrayList<ProvDataInfo> provinceBeanList = new ArrayList<>();
 
-            provinceBeanList.add(getDirectDataInfo()); // 添加一级直辖市对应信息
+            // 1，添加一级直辖市对应信息
+            provinceBeanList.add(getDirectDataInfo());
 
-            // 获取省份adCode列表（按拼音排序）
+            // 2，获取省份adCode列表（按拼音排序）
             final ArrayList<Integer> adCodeProvLst = mMapDataService.getAdcodeList(DownLoadMode.DOWNLOAD_MODE_NET, AreaType.AREA_TYPE_PROV);
-            // 获取特别行政区adCode列表 [820000,810000,710000],按拼音顺序为澳门、香港、台湾
-            final ArrayList<Integer> adCodeSpecialLst = mMapDataService.getAdcodeList(DownLoadMode.DOWNLOAD_MODE_NET, AreaType.AREA_TYPE_SPECIAL);
-            final ArrayList<Integer> allProvinceList = new ArrayList<>();
-            allProvinceList.addAll(adCodeProvLst); // 添加一级省份对应信息
-            allProvinceList.addAll(adCodeSpecialLst); // 添加一级特别行政区对应信息
-
-            if (null != allProvinceList && !allProvinceList.isEmpty()) {
+            final ArrayList<Integer> allProvinceList = new ArrayList<>(adCodeProvLst); // 添加一级省份对应信息
+            if (!allProvinceList.isEmpty()) {
                 for (int i = 0; i < allProvinceList.size(); i++) {
                     final Integer provAdcode = allProvinceList.get(i);
                     final Area provArea = mMapDataService.getArea(DownLoadMode.DOWNLOAD_MODE_NET, provAdcode);
                     final ProvDataInfo provDataInfo = convertProvData(provArea);
-
                     // 获取对应省份下的城市列表
                     final ArrayList<CityDataInfo> cityBeanList = new ArrayList<>();
                     final ArrayList<Integer> subCityAdcodeList = provArea.vecLowerAdcodeList;
@@ -213,6 +237,9 @@ public class MapDataObserversHelper implements IDataInitObserver, IDownloadObser
                     provinceBeanList.add(provDataInfo);
                 }
             }
+
+            // 3，添加一级特别行政区对应信息
+            provinceBeanList.add(getSpecialDataInfo());
 
             return provinceBeanList;
         } else {
@@ -575,7 +602,7 @@ public class MapDataObserversHelper implements IDataInitObserver, IDownloadObser
                         if(provDataInfo.getAreaType() == 2 || provDataInfo.getAreaType() == 3) {
                             // 获取一级城市数据包的下载状态信息(模糊搜索)
                             provDataInfo.setDownLoadInfo(getCityDownLoadInfo(provDataInfo.getAdcode()));
-                            if (provDataInfo.getDownLoadInfo().getPercent() == DOWNLOAD_COMPLETED) {
+                            if (provDataInfo.getDownLoadInfo().getTaskState() == UserDataCode.TASK_STATUS_CODE_SUCCESS) {
                                 provinceBeanList.add(provDataInfo); // 匹配到的城市数据为已下载的直辖市和省辖市集合
                             }
                         }
@@ -883,8 +910,32 @@ public class MapDataObserversHelper implements IDataInitObserver, IDownloadObser
         Logger.d(TAG, "onDownLoadStatus: downLoadMode = " + downLoadMode + TAG_DATA_TYPE + dataType +
                 TAG_ID + id + "; taskCode = " + taskCode + "; opCode = " + opCode);
 
-        updateDownloadStatus(id);
+        ThreadManager.getInstance().postUi(() -> {
+            /** OperationErrCode 处理 */
+            if (opCode == UserDataCode.OPT_NET_DISCONNECT) {    // 无网络
+                // 提示无网络链接toast
+                ToastUtils.Companion.getInstance().showCustomToastView("无网络连接，请检查网络后重试");
+            } else if (opCode == UserDataCode.OPT_DOWNLOAD_NET_ERROR) { // 网络异常
+                // 提示网络错误toast
+                ToastUtils.Companion.getInstance().showCustomToastView("网络异常，请检查网络后重试");
+            } else if (opCode == UserDataCode.OPT_NO_SPACE_LEFTED) { // 磁盘空间不足
+                // 内存空间不足toast
+                ToastUtils.Companion.getInstance().showCustomToastView("存储空间不足，已暂停下载");
+                // 暂停获取正在下载的城市数据
+                final ArrayList<Integer> adCodeList = mMapDataService.getWorkingQueueAdcodeList(DownLoadMode.DOWNLOAD_MODE_NET);
+                mMapDataService.operate(DownLoadMode.DOWNLOAD_MODE_NET, OperationType.OPERATION_TYPE_PAUSE, adCodeList);
+            } else if (opCode == UserDataCode.OPT_SPACE_NOT_ENOUGHT) { // 存储空间可能不足，是否继续下载？
+                // 内存空间不足toast
+                ToastUtils.Companion.getInstance().showCustomToastView("存储空间不足，已暂停下载");
+                final ArrayList<Integer> adCodeList = mMapDataService.getWorkingQueueAdcodeList(DownLoadMode.DOWNLOAD_MODE_NET);
+                mMapDataService.operate(DownLoadMode.DOWNLOAD_MODE_NET, OperationType.OPERATION_TYPE_PAUSE, adCodeList);
+            } else if (opCode == UserDataCode.OPT_ERROR) { // 操作异常
 
+            }
+        });
+
+        /** 通知全部数据变更,获取城市数据信息更新UI控件文案信息 */
+        updateDownloadStatus(id); // 备注：如果不想全部更新，可以获取只更更新参数 id 中的城市数据项
     }
 
     /**

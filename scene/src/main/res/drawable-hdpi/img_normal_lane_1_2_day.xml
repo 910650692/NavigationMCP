@@ -6,31 +6,31 @@
   <path
       android:pathData="M40.328,6.224L49.824,20.262C50.133,20.719 50.014,21.341 49.556,21.65C49.366,21.779 49.138,21.838 48.909,21.818L39.587,21.008C39.529,21.003 39.471,21.003 39.413,21.008L30.091,21.818C29.541,21.866 29.056,21.459 29.008,20.909C28.988,20.68 29.047,20.452 29.176,20.262L38.672,6.224C38.981,5.767 39.603,5.647 40.06,5.956C40.166,6.028 40.257,6.119 40.328,6.224Z"
       android:strokeWidth="1"
-      android:fillColor="@color/svg_color_C9CBCE"
+      android:fillColor="@color/navi_color_C9CBCE_100"
       android:fillType="evenOdd"
-      android:strokeColor="@color/svg_color_000000"/>
+      android:strokeColor="@color/navi_color_000000_0"/>
   <path
       android:pathData="M36,21.309L39.471,21L43,21.309L43,54.5C43,54.776 42.776,55 42.5,55L36.5,55C36.224,55 36,54.776 36,54.5L36,21.309L36,21.309Z"
       android:strokeWidth="1"
-      android:fillColor="@color/svg_color_C9CBCE"
+      android:fillColor="@color/navi_color_C9CBCE_100"
       android:fillType="evenOdd"
-      android:strokeColor="@color/svg_color_000000"/>
+      android:strokeColor="@color/navi_color_000000_0"/>
   <path
       android:pathData="M10.024,34.709L19.043,27.739C19.262,27.57 19.576,27.611 19.745,27.829C19.826,27.934 19.862,28.067 19.845,28.199L18.9,35.5L18.9,35.5L19.845,42.801C19.88,43.075 19.687,43.325 19.413,43.361C19.281,43.378 19.148,43.342 19.043,43.261L10.024,36.291C9.587,35.954 9.506,35.326 9.844,34.889C9.896,34.821 9.957,34.761 10.024,34.709Z"
       android:strokeWidth="1"
-      android:fillColor="@color/svg_color_4B535D"
+      android:fillColor="@color/navi_color_4B535D_100"
       android:fillType="evenOdd"
-      android:strokeColor="@color/svg_color_000000"/>
+      android:strokeColor="@color/navi_color_000000_0"/>
   <path
       android:pathData="M17.13,35.5L37.5,35.5C38.605,35.5 39.5,36.395 39.5,37.5L39.5,54.012L39.5,54.012"
       android:strokeWidth="7"
-      android:fillColor="@color/svg_color_000000"
-      android:strokeColor="@color/svg_color_4B535D"
+      android:fillColor="@color/navi_color_000000_0"
+      android:strokeColor="@color/navi_color_4B535D_100"
       android:fillType="evenOdd"/>
   <path
       android:pathData="M36,53L43,53L43,54.5C43,54.776 42.776,55 42.5,55L36.5,55C36.224,55 36,54.776 36,54.5L36,53L36,53Z"
       android:strokeWidth="1"
-      android:fillColor="@color/svg_color_4B535D"
+      android:fillColor="@color/navi_color_4B535D_100"
       android:fillType="evenOdd"
-      android:strokeColor="@color/svg_color_000000"/>
+      android:strokeColor="@color/navi_color_000000_0"/>
 </vector>

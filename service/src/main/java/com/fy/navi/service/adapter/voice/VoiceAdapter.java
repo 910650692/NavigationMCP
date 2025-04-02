@@ -66,8 +66,8 @@ public class VoiceAdapter {
         return mVoiceApi.abortRequestDataImage(downloadMode, voiceId);
     }
 
-    public int operate(int downLoadMode, int opType, ArrayList<Integer> voiceIdDiyLst) {
-        return mVoiceApi.operate(downLoadMode, opType, voiceIdDiyLst);
+    public int operate(int opType, ArrayList<Integer> voiceIdDiyLst) {
+        return mVoiceApi.operate(opType, voiceIdDiyLst);
     }
 
     public static VoiceAdapter getInstance() {

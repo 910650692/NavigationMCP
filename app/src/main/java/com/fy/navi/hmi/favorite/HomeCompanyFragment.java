@@ -2,6 +2,7 @@ package com.fy.navi.hmi.favorite;
 
 
 import android.os.Bundle;
+import android.view.View;
 
 import com.alibaba.android.arouter.facade.annotation.Route;
 import com.android.utils.ConvertUtils;
@@ -13,7 +14,7 @@ import com.fy.navi.scene.RoutePath;
 import com.fy.navi.scene.api.search.IOnHomeCompanyClickListener;
 import com.fy.navi.service.AutoMapConstant;
 import com.fy.navi.service.MapDefaultFinalTag;
-import com.fy.navi.service.define.map.MapTypeId;
+import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.search.SearchResultEntity;
 import com.fy.navi.ui.base.BaseFragment;
 
@@ -33,14 +34,14 @@ public class HomeCompanyFragment extends BaseFragment<FragmentHomeCompanyBinding
 
     @Override
     public void onInitView() {
-        mBinding.homeCompanyView.setScreenId(MapTypeId.valueOf(mScreenId));
+        mBinding.homeCompanyView.setScreenId(MapType.valueOf(mScreenId));
     }
 
     @Override
     public void onInitData() {
         defaultDataProcessing();
-        mBinding.homeCompanyView.setScreenId(MapTypeId.valueOf(mScreenId));
-        mBinding.sceneNestedScrollView.setScreenId(MapTypeId.valueOf(mScreenId));
+        mBinding.homeCompanyView.setScreenId(MapType.valueOf(mScreenId));
+        mBinding.sceneNestedScrollView.setScreenId(MapType.valueOf(mScreenId));
         mBinding.sceneNestedScrollView.setHomeCompanyState(mHomeCompany);
         mBinding.homeCompanyView.setClickListener(new IOnHomeCompanyClickListener() {
             @Override
@@ -52,6 +53,7 @@ public class HomeCompanyFragment extends BaseFragment<FragmentHomeCompanyBinding
             @Override
             public void setHomeCompanyType(final int type) {
                 FavoriteHelper.getInstance().setHomeCompanyType(type);
+                mBinding.getRoot().setVisibility(View.GONE);
             }
         });
     }

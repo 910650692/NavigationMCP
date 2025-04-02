@@ -8,7 +8,7 @@ import com.fy.navi.hmi.R;
 import com.fy.navi.hmi.databinding.FragmentMapPointSearchBinding;
 import com.fy.navi.service.AutoMapConstant;
 import com.fy.navi.service.MapDefaultFinalTag;
-import com.fy.navi.service.define.map.MapTypeId;
+import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.search.PoiInfoEntity;
 import com.fy.navi.service.define.search.SearchResultEntity;
 import com.fy.navi.ui.base.BaseFragment;
@@ -29,7 +29,7 @@ public class MapPointSearchFragment extends BaseFragment<FragmentMapPointSearchB
 
     @Override
     public void onInitView() {
-        mBinding.mapPointSearchView.setScreenId(MapTypeId.valueOf(mScreenId));
+        mBinding.mapPointSearchView.setScreenId(MapType.valueOf(mScreenId));
     }
 
     @Override

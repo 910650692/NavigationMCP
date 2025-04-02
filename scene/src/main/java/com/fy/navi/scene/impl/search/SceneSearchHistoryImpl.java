@@ -33,7 +33,7 @@ public class SceneSearchHistoryImpl extends BaseSceneModel<SceneMainSearchBottom
     public void commonAdd(final int position){
         //判断是否有常用地址
         //有常用地址打开详情页
-        final ArrayList<PoiInfoEntity> list = mBehaviorPackage.getFavoritePoiData(3);
+        final ArrayList<PoiInfoEntity> list = mBehaviorPackage.getFavoriteAddressInfo();
         final int size = list.size();
         if (size > 0 && position < size) {
             mScreenView.jumpToPoiFragment(list.get(position));

@@ -1,38 +1,38 @@
 package com.fy.navi.hmi.account.adapter;
 
 public class SlideItem {
-    private int imageResId;
-    private String text;
-    private String des;
+    private int mImageResId;
+    private String mText;
+    private String mDes;
 
-    public SlideItem(int imageResId, String text, String des) {
-        this.imageResId = imageResId;
-        this.text = text;
-        this.des = des;
+    public SlideItem(final int imageResId, final String text, final String des) {
+        this.mImageResId = imageResId;
+        this.mText = text;
+        this.mDes = des;
     }
 
     public int getImageResId() {
-        return imageResId;
+        return mImageResId;
     }
 
-    public void setImageResId(int imageResId) {
-        this.imageResId = imageResId;
+    public void setImageResId(final int imageResId) {
+        this.mImageResId = imageResId;
     }
 
     public String getText() {
-        return text;
+        return mText;
     }
 
-    public void setText(String text) {
-        this.text = text;
+    public void setText(final String text) {
+        this.mText = text;
     }
 
     public String getDes() {
-        return des;
+        return mDes;
     }
 
-    public void setDes(String des) {
-        this.des = des;
+    public void setDes(final String des) {
+        this.mDes = des;
     }
 }
 

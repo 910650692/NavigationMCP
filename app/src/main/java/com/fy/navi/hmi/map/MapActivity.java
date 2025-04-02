@@ -2,24 +2,30 @@ package com.fy.navi.hmi.map;
 
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.os.Bundle;
 import android.view.View;
 
 import androidx.annotation.NonNull;
 
 import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
+import com.android.utils.thread.ThreadManager;
 import com.fy.navi.NaviService;
+import com.fy.navi.burypoint.anno.HookMethod;
+import com.fy.navi.burypoint.constant.BuryConstant;
 import com.fy.navi.hmi.BR;
 import com.fy.navi.hmi.R;
 import com.fy.navi.hmi.databinding.ActivityMapBinding;
 import com.fy.navi.hmi.test.TestWindow;
 import com.fy.navi.mapservice.bean.INaviConstant;
 import com.fy.navi.service.define.map.IBaseScreenMapView;
-import com.fy.navi.service.define.map.MapTypeId;
-import com.fy.navi.service.define.message.MessageCenterType;
+import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.navi.LaneInfoEntity;
+import com.fy.navi.service.define.route.RouteLightBarItem;
 import com.fy.navi.service.define.search.PoiInfoEntity;
 import com.fy.navi.ui.base.BaseActivity;
+
+import java.util.List;
 
 /**
  * @Description TODO
@@ -31,8 +37,9 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
     private long lastClickTime = 0;
     private int testClickNum = 0;
     @Override
+    @HookMethod(eventName = BuryConstant.EventName.AMAP_OPEN)
     public void onCreateBefore() {
-        mScreenId = MapTypeId.MAIN_SCREEN_MAIN_MAP.name();
+        mScreenId = MapType.MAIN_SCREEN_MAIN_MAP.name();
     }
 
     @Override
@@ -78,14 +85,24 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
 
     @Override
     protected void onMoveMapCenter() {
+        Logger.i(TAG, "onMoveMapCenter");
         mBinding.searchMainTab.setVisibility(View.GONE);
         mViewModel.setMapCenterInScreen(mBinding.layoutFragment.getLeft());
     }
 
     @Override
+    protected void onMoveMapCenter(final Bundle bundle) {
+        Logger.i(TAG, "onMoveMapCenter with bundle");
+        mBinding.searchMainTab.setVisibility(View.GONE);
+        mViewModel.setMapCenterInScreen(mBinding.layoutFragment.getLeft(), bundle);
+    }
+
+    @Override
     protected void onResetMapCenter() {
-        mBinding.searchMainTab.setVisibility(View.VISIBLE);
-        mViewModel.resetMapCenterInScreen();
+        ThreadManager.getInstance().postUi(() -> {
+            mBinding.searchMainTab.setVisibility(View.VISIBLE);
+            mViewModel.resetMapCenterInScreen();
+        });
     }
 
     private void initTestWindow() {
@@ -116,7 +133,7 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
     public void onConfigurationChanged(@NonNull Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         mViewModel.updateUiStyle(
-                MapTypeId.MAIN_SCREEN_MAIN_MAP,
+                MapType.MAIN_SCREEN_MAIN_MAP,
                 newConfig.uiMode
         );
     }
@@ -134,6 +151,14 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
     }
 
     @Override
+    @HookMethod(eventName = BuryConstant.EventName.AMAP_HIDE)
+    protected void onStop() {
+        Logger.i(TAG, "onStop");
+        super.onStop();
+    }
+
+    @Override
+    @HookMethod(eventName = BuryConstant.EventName.AMAP_CLOSE)
     protected void onDestroy() {
         // 退出的时候主动保存一下最后的定位信息
         mViewModel.saveLastLocationInfo();
@@ -193,5 +218,15 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
 
     public void cruiseMuteOrUnMute(boolean isOpen) {
         mBinding.cruiseLayout.ivVoice.setSelected(isOpen);
+    }
+
+    public void setTMCView(int key, List<RouteLightBarItem> routeLightBarItems) {
+        ThreadManager.getInstance().postUi(() -> {
+            if (key == 0) {
+                mBinding.skIvBasicHomeProgress.refreshTMC(routeLightBarItems);
+            } else {
+                mBinding.skIvBasicBusProgress.refreshTMC(routeLightBarItems);
+            }
+        });
     }
 }

@@ -2,11 +2,7 @@ package com.fy.navi.service.adapter.user.account;
 
 import com.fy.navi.service.define.user.account.AccountUserInfo;
 
-/**
- * @Description
- * @Author fh
- * @date 2024/12/18
- */
+
 public interface AccountAdapterCallBack {
 
     /**

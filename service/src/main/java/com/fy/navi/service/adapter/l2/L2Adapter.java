@@ -255,11 +255,11 @@ public class L2Adapter implements GuidanceObserver, INaviStatusCallback, IPositi
             NaviMixForkInfo mixForkInfo = list.get(i);
             if (ConvertUtils.isEmpty(mixForkInfo)) continue;
             L2NaviBean.MixForksBean mixForksBean = new L2NaviBean.MixForksBean();
-            mixForksBean.setDistance(mixForkInfo.getDist());
-            mixForksBean.setRoadClass(mixForkInfo.getRoadclass());
-            mixForksBean.setSegmentIndex(mixForkInfo.getSegmentIndex());
-            mixForksBean.getPosition().setX(mixForkInfo.pos.getLat());
-            mixForksBean.getPosition().setY(mixForkInfo.pos.getLon());
+            mixForksBean.setDistance(mixForkInfo.getMDist());
+            mixForksBean.setRoadClass(mixForkInfo.getMRoadclass());
+            mixForksBean.setSegmentIndex(mixForkInfo.getMSegmentIndex());
+            mixForksBean.getPosition().setX(mixForkInfo.getMPos().getLat());
+            mixForksBean.getPosition().setY(mixForkInfo.getPos().getLon());
             mixForksBeanList.add(mixForksBean);
         }
         Logger.i(TAG, "混淆路口 :", l2NaviBean);
@@ -354,7 +354,7 @@ public class L2Adapter implements GuidanceObserver, INaviStatusCallback, IPositi
     @Override
     public void onManeuverInfo(NaviManeuverInfo respData) {
         if (!ConvertUtils.isEmpty(respData)) {
-            l2NaviBean.setRampDist(respData.disToCurrentPos); // 到前方匝道口距离
+            l2NaviBean.setRampDist(respData.getDisToCurrentPos()); // 到前方匝道口距离
         }
         Logger.i(TAG, "匝道信息 :", l2NaviBean);
         sendMessage("onParallelRoadUpdate");

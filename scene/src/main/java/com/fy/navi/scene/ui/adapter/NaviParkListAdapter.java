@@ -57,17 +57,19 @@ public class NaviParkListAdapter extends RecyclerView.Adapter<NaviParkListAdapte
         return new ResultHolder(itemBinding);
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull ResultHolder holder, @SuppressLint("RecyclerView") int position) {
         Logger.d(TAG, "NaviAddViaAdapter onBindViewHolder " + position + ",mSelectIndex= " + mSelectIndex);
         NaviParkingEntity naviParkingEntity = mList.get(position);
         holder.itemBinding.setParkBean(naviParkingEntity);
-        holder.itemBinding.sivParkingEnd.setVisibility((mList.size() == 1 && naviParkingEntity.isEndPoi) ? View.VISIBLE : View.GONE);
+//        holder.itemBinding.sivParkingEnd.setVisibility((mList.size() == 1 && naviParkingEntity.isEndPoi()) ? View.VISIBLE : View.GONE);
+        holder.itemBinding.stvNum.setText(position + 1 + "");
         holder.itemBinding.sclListItem.setSelected(mSelectIndex == position);
-        if (!ConvertUtils.isEmpty(naviParkingEntity.tag)) {
-            holder.itemBinding.stvParkingState.setTextColor((naviParkingEntity.tag.equals(AppContext.getInstance().getMContext().getString(R.string.navi_recommend_parking_adequate))) ?
-                    AppContext.getInstance().getMContext().getResources().getColor(R.color.navi_list_item_tv_one) :
-                    AppContext.getInstance().getMContext().getResources().getColor(R.color.navi_list_item_stroke_select));
+        if (!ConvertUtils.isEmpty(naviParkingEntity.getTag())) {
+            holder.itemBinding.stvParkingState.setTextColor((naviParkingEntity.getTag().equals(AppContext.getInstance().getMContext().getString(R.string.navi_recommend_parking_adequate))) ?
+                    AppContext.getInstance().getMContext().getResources().getColor(R.color.navi_color_C73333_100) :
+                    AppContext.getInstance().getMContext().getResources().getColor(R.color.navi_color_2461EA_100));
         }
         holder.itemBinding.getRoot().setOnClickListener(v -> {
             Logger.d(TAG, "NaviAddViaAdapter item click " + position);

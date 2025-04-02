@@ -1,6 +1,6 @@
 package com.fy.navi.service.define.route;
 
-import com.fy.navi.service.define.map.MapTypeId;
+import com.fy.navi.service.define.map.MapType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +14,7 @@ public class RouteWeatherParam {
     /*** 请求Id **/
     private long mRequestId;
     /*** 屏幕Id **/
-    private MapTypeId mMapTypeId;
+    private MapType mMapTypeId;
     private boolean mIsOnlineRoute = true;
     /*** 详情数据 **/
     private List<RouteWeatherInfo> mRouteWeatherInfos;

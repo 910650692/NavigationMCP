@@ -82,7 +82,7 @@
                 android:maxLines="1"
                 android:singleLine="true"
                 android:text="@{poiBean.name}"
-                android:textColor="@color/search_item_title_color_ff383839"
+                android:textColor="@color/search_color_ffffff"
                 android:textSize="@dimen/sp_40"
                 app:layout_constraintBottom_toTopOf="@+id/poi_address"
                 app:layout_constraintStart_toEndOf="@+id/crl_poi_item"

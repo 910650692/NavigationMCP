@@ -4,6 +4,9 @@ import com.fy.navi.service.define.cruise.CruiseParamEntity;
 import com.fy.navi.service.define.layer.RouteLineLayerParam;
 import com.fy.navi.service.define.navi.NaviParamEntity;
 import com.fy.navi.service.define.navi.NaviStartType;
+import com.fy.navi.service.define.navi.NaviViaEntity;
+
+import java.util.List;
 
 /**
  * @Description TODO
@@ -104,4 +107,15 @@ public interface INaviApi {
      * 获取路线上的隧道长度
      */
     void getTunnelLength();
+
+    /**
+     * 更新电量信息
+     */
+    void updateBatteryInfo();
+
+    /***
+     * 此接口属于动态获取
+     * @return 获取途径点信息
+     */
+    List<NaviViaEntity> getAllViaPoints();
 }

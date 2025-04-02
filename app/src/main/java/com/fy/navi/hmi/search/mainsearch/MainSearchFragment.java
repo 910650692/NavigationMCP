@@ -5,7 +5,7 @@ import android.content.res.TypedArray;
 import com.fy.navi.hmi.BR;
 import com.fy.navi.hmi.R;
 import com.fy.navi.hmi.databinding.MainFragmentSearchBinding;
-import com.fy.navi.service.define.map.MapTypeId;
+import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.ui.base.BaseFragment;
 
 
@@ -23,8 +23,8 @@ public class MainSearchFragment extends BaseFragment<MainFragmentSearchBinding, 
 
     @Override
     public void onInitView() {
-        mBinding.searchView.setScreenId(MapTypeId.valueOf(mScreenId));
-        mBinding.sceneNestedScrollView.setScreenId(MapTypeId.valueOf(mScreenId));
+        mBinding.searchView.setScreenId(MapType.valueOf(mScreenId));
+        mBinding.sceneNestedScrollView.setScreenId(MapType.valueOf(mScreenId));
 
     }
 

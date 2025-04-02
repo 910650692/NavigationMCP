@@ -9,21 +9,23 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.fy.navi.scene.R;
 import com.fy.navi.scene.databinding.RoutePoiGasStationItemBinding;
-import com.fy.navi.scene.databinding.RoutePoiIconItemBinding;
-import com.fy.navi.service.define.route.RouteLineInfo;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class RoutePOIGasStationAdapter extends RecyclerView.Adapter<RoutePOIGasStationAdapter.Holder> {
     private List<String> mRouteBeanList;
-    OnItemClickListener itemClickListener;
+    private OnItemClickListener mItemClickListener;
 
     public RoutePOIGasStationAdapter() {
         mRouteBeanList = new ArrayList<>();
     }
 
-    public void setRouteBeanList(List<String> routeBeanList) {
+    /***
+     * 设置数据
+     * @param routeBeanList 数据列表
+     */
+    public void setRouteBeanList(final List<String> routeBeanList) {
         if (null == routeBeanList) {
             return;
         }
@@ -33,13 +35,17 @@ public class RoutePOIGasStationAdapter extends RecyclerView.Adapter<RoutePOIGasS
         notifyDataSetChanged();
     }
 
-    public void setItemClickListener(OnItemClickListener itemClickListener) {
-        this.itemClickListener = itemClickListener;
+    /***
+     * 设置监听
+     * @param itemClickListener 点击监听
+     */
+    public void setItemClickListener(final OnItemClickListener itemClickListener) {
+        this.mItemClickListener = itemClickListener;
     }
 
     @Override
-    public Holder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        RoutePoiGasStationItemBinding routeItemBinding =
+    public Holder onCreateViewHolder(@NonNull final ViewGroup parent, final int viewType) {
+        final RoutePoiGasStationItemBinding routeItemBinding =
                 DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()),
                         R.layout.route_poi_gas_station_item, parent, false);
         return new Holder(routeItemBinding);
@@ -54,21 +60,26 @@ public class RoutePOIGasStationAdapter extends RecyclerView.Adapter<RoutePOIGasS
     }
 
     @Override
-    public void onBindViewHolder(@NonNull Holder holder, int position) {
-        holder.routePoiGasStationItemBinding.poiServiceAreaGasOilType.setText(mRouteBeanList.get(position));
+    public void onBindViewHolder(@NonNull final Holder holder, final int position) {
+        holder.mRoutePoiGasStationItemBinding.poiServiceAreaGasOilType.setText(mRouteBeanList.get(position));
     }
 
     public class Holder extends RecyclerView.ViewHolder {
-        public RoutePoiGasStationItemBinding routePoiGasStationItemBinding;
+        private RoutePoiGasStationItemBinding mRoutePoiGasStationItemBinding;
 
-        public Holder(RoutePoiGasStationItemBinding routePoiGasStationItemBinding) {
+        public Holder(final RoutePoiGasStationItemBinding routePoiGasStationItemBinding) {
             super(routePoiGasStationItemBinding.getRoot());
-            this.routePoiGasStationItemBinding = routePoiGasStationItemBinding;
+            this.mRoutePoiGasStationItemBinding = routePoiGasStationItemBinding;
             routePoiGasStationItemBinding.setHolder(this);
         }
     }
 
     public interface OnItemClickListener {
+        /***
+         * 点击监听
+         * @param index 下标
+         * @param isSelectIndex 选中下标
+         */
         void onItemClick(int index, boolean isSelectIndex);
     }
 }

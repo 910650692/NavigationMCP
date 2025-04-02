@@ -355,7 +355,10 @@ public final class NaviUiUtil {
     @SuppressLint("NewApi")//引用处已经做了版本兼容
     public static void setTranslation(final View view, final float translation, final boolean isX) {
         if (isX) {
-            view.setTranslationX(translation);
+            view.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+            view.setWillNotDraw(false);
+            view.animate().translationX(translation).setDuration(0).start();
+            view.setLayerType(View.LAYER_TYPE_HARDWARE, null);
         } else {
             view.setTranslationY(translation);
         }

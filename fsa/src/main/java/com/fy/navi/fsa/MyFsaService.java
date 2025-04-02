@@ -25,7 +25,7 @@ import com.fy.navi.hud.VTBinder;
 import com.fy.navi.service.AppContext;
 import com.fy.navi.service.adapter.navi.NaviConstant;
 import com.fy.navi.service.define.cruise.CruiseInfoEntity;
-import com.fy.navi.service.define.map.MapTypeId;
+import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.navi.CameraInfoEntity;
 import com.fy.navi.service.define.navi.CrossImageEntity;
 import com.fy.navi.service.define.navi.LaneInfoEntity;
@@ -252,7 +252,7 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
                 switchClusterActivity(true);
                 break;
             case FsaConstant.FsaEventPayload.CLOSE_HUD_MAP:
-                switchClusterActivity(false);
+//                switchClusterActivity(false);
                 break;
             case FsaConstant.FsaEventPayload.OPEN_HUD_VIDEO:
                 if (mBinder == null) {
@@ -445,7 +445,7 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
         NaviStatusPackage.getInstance().registerObserver(FsaConstant.FSA_TAG, mNaviStatusCallback);
         NaviPackage.getInstance().registerObserver(FsaConstant.FSA_TAG, mGuidanceObserver);
         CruisePackage.getInstance().registerObserver(FsaConstant.FSA_TAG, mCruiseObserver);
-        MapPackage.getInstance().registerCallback(MapTypeId.MAIN_SCREEN_MAIN_MAP, mIMapPackageCallback);
+        MapPackage.getInstance().registerCallback(MapType.MAIN_SCREEN_MAIN_MAP, mIMapPackageCallback);
         RoutePackage.getInstance().registerRouteObserver(FsaConstant.FSA_TAG, mRouteResultObserver);
         SearchPackage.getInstance().registerCallBack(FsaConstant.FSA_TAG, mSearchResultCallback);
     }
@@ -674,7 +674,7 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
     private void sendDestinationInfo() {
         final RoutePackage routePackage = RoutePackage.getInstance();
         if (null != routePackage) {
-            final RouteParam routeParam = routePackage.getEndPoint(MapTypeId.MAIN_SCREEN_MAIN_MAP);
+            final RouteParam routeParam = routePackage.getEndPoint(MapType.MAIN_SCREEN_MAIN_MAP);
             if (null != routeParam) {
                 final DestInfo destInfo = new DestInfo();
                 destInfo.setName(routeParam.getName());
@@ -785,5 +785,13 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
         intent.setAction("com.fy.navi.hmi.cluster.ClusterActivity");
         intent.putExtra("isOpen", isOpen);
         AppContext.getInstance().getMContext().startActivity(intent, options.toBundle());
+    }
+
+    /**
+     * 获取cross图片
+     * @return byte[]
+     */
+    public byte[] getmCrossImg() {
+        return mBinder.getCrossImg();
     }
 }

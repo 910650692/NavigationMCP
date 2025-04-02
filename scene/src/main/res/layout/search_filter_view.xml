@@ -89,7 +89,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dp_30"
                     android:maxLines="1"
-                    android:textColor="@color/black"
+                    android:textColor="@color/search_color_ffffff"
                     android:textSize="@dimen/sp_36"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/search_filter_list2_child"

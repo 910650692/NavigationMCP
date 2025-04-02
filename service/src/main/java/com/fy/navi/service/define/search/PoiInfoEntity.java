@@ -6,8 +6,10 @@ import android.os.Parcelable;
 
 import androidx.annotation.NonNull;
 
+import com.android.utils.ConvertUtils;
 import com.fy.navi.service.define.bean.GeoPoint;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import lombok.Data;
@@ -32,7 +34,8 @@ public class PoiInfoEntity implements Parcelable {
     private String mPhone;          // 电话
     private String mAddress;        // 地址
     private String mCategory;       // 分类，筛选使用
-    private int mAdCode;            // 城市代码
+    private int mAdCode;            // 市区县详细代码
+    private int mCityCode;          // 省市代码
     private String mDistance;       // 距离，默认带单位
     private String mTypeCode;       // POI搜索类型
     private String mPoiTag;         // POI标签
@@ -70,6 +73,10 @@ public class PoiInfoEntity implements Parcelable {
     private List<GasStationInfo> mStationList;
     // 子POI列表信息
     private List<ChildInfo> mChildInfoList;
+    // 区域边界点列表
+    private ArrayList<ArrayList<GeoPoint>> mPoiAoiBounds;
+    // 道路边界点列表
+    private ArrayList<ArrayList<GeoPoint>> mRoadPolygonBounds;
 
     public int getPoiType() {
         return mPoiType;
@@ -541,6 +548,7 @@ public class PoiInfoEntity implements Parcelable {
         mAddress = in.readString();
         mCategory = in.readString();
         mAdCode = in.readInt();
+        mCityCode = in.readInt();
         mDistance = in.readString();
         mTypeCode = in.readString();
         mPoiTag = in.readString();
@@ -567,6 +575,30 @@ public class PoiInfoEntity implements Parcelable {
         mChargeInfoList = in.createTypedArrayList(ChargeInfo.CREATOR);
         mStationList = in.createTypedArrayList(GasStationInfo.CREATOR);
         mChildInfoList = in.createTypedArrayList(ChildInfo.CREATOR);
+
+        // 新增字段 mPoiAoiBounds 的反序列化
+        // 读取外层列表的大小
+        final int outerSize = in.readInt();
+        mPoiAoiBounds = new ArrayList<>();
+        for (int i = 0; i < outerSize; i++) {
+            // 创建内层列表
+            final ArrayList<GeoPoint> innerList = new ArrayList<>();
+            // 读取内层列表的 GeoPoint 对象
+            in.readTypedList(innerList, GeoPoint.CREATOR);
+            mPoiAoiBounds.add(innerList);
+        }
+
+        // 新增字段 mRoadPolygonBounds 的反序列化
+        // 读取外层列表的大小
+        final int outerRoadSize = in.readInt();
+        mRoadPolygonBounds = new ArrayList<>();
+        for (int i = 0; i < outerRoadSize; i++) {
+            // 创建内层列表
+            final ArrayList<GeoPoint> innerList = new ArrayList<>();
+            // 读取内层列表的 GeoPoint 对象
+            in.readTypedList(innerList, GeoPoint.CREATOR);
+            mRoadPolygonBounds.add(innerList);
+        }
     }
 
     public static final Creator<PoiInfoEntity> CREATOR = new Creator<PoiInfoEntity>() {
@@ -595,6 +627,7 @@ public class PoiInfoEntity implements Parcelable {
         parcel.writeString(mAddress);
         parcel.writeString(mCategory);
         parcel.writeInt(mAdCode);
+        parcel.writeInt(mCityCode);
         parcel.writeString(mDistance);
         parcel.writeString(mTypeCode);
         parcel.writeString(mPoiTag);
@@ -621,5 +654,28 @@ public class PoiInfoEntity implements Parcelable {
         parcel.writeTypedList(mChargeInfoList);
         parcel.writeTypedList(mStationList);
         parcel.writeTypedList(mChildInfoList);
+        if(ConvertUtils.isEmpty(mPoiAoiBounds)) {
+            return;
+        }
+        parcel.writeInt(mPoiAoiBounds.size());
+        // 遍历每个内层列表
+        for (ArrayList<GeoPoint> innerList : mPoiAoiBounds) {
+            // 写入内层列表的大小
+            parcel.writeInt(innerList.size());
+            // 写入内层列表的 ChildInfo 对象
+            parcel.writeTypedList(innerList);
+        }
+
+        if(ConvertUtils.isEmpty(mRoadPolygonBounds)) {
+            return;
+        }
+        parcel.writeInt(mRoadPolygonBounds.size());
+        // 遍历每个内层列表
+        for (ArrayList<GeoPoint> innerList : mRoadPolygonBounds) {
+            // 写入内层列表的大小
+            parcel.writeInt(innerList.size());
+            // 写入内层列表的 ChildInfo 对象
+            parcel.writeTypedList(innerList);
+        }
     }
 }

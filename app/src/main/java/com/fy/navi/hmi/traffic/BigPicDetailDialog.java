@@ -37,14 +37,13 @@ public class BigPicDetailDialog extends BaseFullScreenDialog<DialogTrafficBigPic
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mViewBinding.tvNumber.setText(String.format(getContext().getString(R.string.pic_number_for), 1, mPics.size()));
+        mViewBinding.tvNumber.setText(String.valueOf(mPics.size()));
         picPageAdapter = new PicPageAdapter(fragmentActivity, mPics);
         mViewBinding.viewPage.setAdapter(picPageAdapter);
         mViewBinding.viewPage.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override
             public void onPageSelected(int position) {
                 super.onPageSelected(position);
-                mViewBinding.tvNumber.setText(String.format(getContext().getString(R.string.pic_number_for), position + 1, mPics.size()));
                 mViewBinding.ivPre.setAlpha(position <= 0 ? 0.5f : 1f);
                 mViewBinding.ivNext.setAlpha(position >= mPics.size() - 1 ? 0.5f : 1f);
             }

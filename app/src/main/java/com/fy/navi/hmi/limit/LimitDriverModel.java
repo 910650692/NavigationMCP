@@ -9,7 +9,7 @@ import com.android.utils.log.Logger;
 import com.fy.navi.service.define.aos.RestrictedArea;
 import com.fy.navi.service.define.aos.RestrictedParam;
 import com.fy.navi.service.define.bean.GeoPoint;
-import com.fy.navi.service.define.map.MapTypeId;
+import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.mapdata.CityDataInfo;
 import com.fy.navi.service.define.route.RouteRestrictionParam;
 import com.fy.navi.service.define.setting.SettingController;
@@ -106,11 +106,11 @@ public class LimitDriverModel extends BaseModel<LimitDriverViewModel> implements
             }
             if (mCurrentCityCode != null && !mCurrentCityCode.isEmpty()) {
                 final CityDataInfo cityItemBean= MapDataPackage.getInstance().getCityInfo(Integer.parseInt(mCurrentCityCode));
-                MapPackage.getInstance().setMapCenter(MapTypeId.MAIN_SCREEN_MAIN_MAP,
+                MapPackage.getInstance().setMapCenter(MapType.MAIN_SCREEN_MAIN_MAP,
                         new GeoPoint(ConvertUtils.transCityLatAndLon(cityItemBean.getCityX()),
                                 ConvertUtils.transCityLatAndLon(cityItemBean.getCityY())));
             }
-            RoutePackage.getInstance().drawRestrictionForLimit(MapTypeId.MAIN_SCREEN_MAIN_MAP,
+            RoutePackage.getInstance().drawRestrictionForLimit(MapType.MAIN_SCREEN_MAIN_MAP,
                     param.getMReStrictedAreaResponseParam(),0);
             param.setMRestrictedArea(restrictedAreaDetail);
             mViewModel.showPolicyUI(param);

@@ -1,8 +1,11 @@
 package com.fy.navi.hmi.setting.broadcast.voice;
 
+import android.view.ViewGroup;
+
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.android.utils.log.Logger;
+import com.android.utils.thread.ThreadManager;
 import com.fy.navi.hmi.BR;
 import com.fy.navi.hmi.R;
 import com.fy.navi.hmi.databinding.FragmentVoiceBroadcastBinding;
@@ -10,11 +13,11 @@ import com.fy.navi.hmi.setting.broadcast.adapter.SettingVoiceBroadcastAdapter;
 import com.fy.navi.service.define.setting.SettingController;
 import com.fy.navi.service.define.voice.DownLoadMode;
 import com.fy.navi.service.define.voice.VoiceInfo;
-import com.fy.navi.service.define.voice.VoiceServiceInitStatus;
 import com.fy.navi.service.greendao.setting.SettingManager;
 import com.fy.navi.ui.action.ViewAdapterKt;
 import com.fy.navi.ui.base.BaseFragment;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Objects;
 
@@ -54,11 +57,10 @@ public class SettingVoiceBroadcastFragment extends BaseFragment<FragmentVoiceBro
      * 初始化
      */
     private void initView() {
-        mSettingVoiceBroadcastAdapter = new SettingVoiceBroadcastAdapter();
+        mSettingVoiceBroadcastAdapter = new SettingVoiceBroadcastAdapter(getActivity());
         mSettingVoiceBroadcastAdapter.setItemClickListener(this);
         final LinearLayoutManager manager = new LinearLayoutManager(getActivity());
         manager.setOrientation(LinearLayoutManager.VERTICAL);
-        mBinding.recommendVoiceList.setNestedScrollingEnabled(true);
         mBinding.recommendVoiceList.setLayoutManager(manager);
         mBinding.recommendVoiceList.setAdapter(mSettingVoiceBroadcastAdapter);
     }
@@ -67,10 +69,10 @@ public class SettingVoiceBroadcastFragment extends BaseFragment<FragmentVoiceBro
      * 初始化数据
      */
     private void initData() {
-        setCurrentVoice();
-        if(mViewModel.isInitService() == VoiceServiceInitStatus.ServiceInitDone.ordinal()) {
+        ThreadManager.getInstance().postDelay(() -> {
+            setCurrentVoice();
             mViewModel.requestDataListCheck(DownLoadMode.DOWNLOAD_MODE_NET.ordinal(), "");
-        }
+        },0);
     }
     /**
      * 设置数据
@@ -94,6 +96,23 @@ public class SettingVoiceBroadcastFragment extends BaseFragment<FragmentVoiceBro
             }
         }
         mSettingVoiceBroadcastAdapter.setData(voiceInfoList);
+
+        // 设置recycleView的高度，使其在scrollView中完整显示
+        mBinding.recommendVoiceList.setNestedScrollingEnabled(false);
+        final ViewGroup.LayoutParams params = mBinding.recommendVoiceList.getLayoutParams();
+        params.height = calRecycleViewHeight(mSettingVoiceBroadcastAdapter.getItemCount());
+        mBinding.recommendVoiceList.setLayoutParams(params);
+    }
+
+    /**
+     *  计算item高度
+     *  @param itemCount
+     * @return int
+     */
+    private int calRecycleViewHeight(final int itemCount) {
+        final int itemHeight = getResources().getDimensionPixelSize(com.fy.navi.ui.R.dimen.dp_140);
+        final int dividerHeight = getResources().getDimensionPixelSize(com.fy.navi.ui.R.dimen.dp_24);
+        return  itemCount * (itemHeight + dividerHeight);
     }
 
     /**
@@ -102,6 +121,10 @@ public class SettingVoiceBroadcastFragment extends BaseFragment<FragmentVoiceBro
      */
     public void updateData(final HashMap<Integer, VoiceInfo> voiceInfoList) {
         mSettingVoiceBroadcastAdapter.setData(voiceInfoList);
+    }
+
+    public void updateItem(final int id, final VoiceInfo voiceInfo) {
+        mSettingVoiceBroadcastAdapter.updateItem(id, voiceInfo);
     }
 
     /**
@@ -113,20 +136,29 @@ public class SettingVoiceBroadcastFragment extends BaseFragment<FragmentVoiceBro
     }
 
     /**
-     * 设置数据列表为Fale
+     * 设置数据列表为False
      */
     public void unSelectAllVoices() {
         mSettingVoiceBroadcastAdapter.unSelectAllVoices();
     }
 
     @Override
-    public void onOperation(final int index) {
-        Logger.d("SettingVoiceBroadcastModel", "onOperationStart index: " + index);
-        mViewModel.toOperate(index);
+    public void startAllTask(ArrayList<Integer> operatedIdList) {
+        mViewModel.startAllTask(operatedIdList);
+    }
+
+    @Override
+    public void pauseAllTask(ArrayList<Integer> operatedIdList) {
+        mViewModel.pauseAllTask(operatedIdList);
+    }
+
+    @Override
+    public void toUseAllTask(final VoiceInfo voiceInfo) {
+        mViewModel.toUseAllTask(voiceInfo);
     }
 
     /**
-     * 设置当前声音
+     * 获取当前使用声音
      */
     public void setCurrentVoice() {
         final String selectedVoice = SettingManager.getInstance().getValueByKey(SettingController.KEY_SETTING_VOICE_PACKAGE);

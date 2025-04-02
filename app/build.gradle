@@ -1,9 +1,19 @@
 plugins {
     alias(libs.plugins.android.application)
+    id 'android.aop'
 }
 
 String aveFlavorType = "type"
 String AppName = "NaviApp"
+
+androidAopConfig {
+    // enabled 为 false 切面不再起作用，默认不写为 true
+    // 排除打包的实体名
+    excludePackaging 'license/NOTICE' , 'license/LICENSE.dom-software.txt' , 'license/LICENSE'
+    // verifyLeafExtends 是否开启验证叶子继承，默认打开，@AndroidAopMatchClassMethod 和 @AndroidAopCollectMethod 如果没有设置 LEAF_EXTENDS，可以关闭
+    verifyLeafExtends false
+    cutInfoJson false
+}
 
 android {
     namespace 'com.fy.navi.hmi'
@@ -12,7 +22,7 @@ android {
 
     defaultConfig {
         applicationId "com.fy.navi.hmi"
-        minSdk Integer.parseInt(libs.versions.minSdk.get())
+        minSdk IS_PAD_RUN.toBoolean() ? Integer.parseInt(libs.versions.padminSdk.get()) :Integer.parseInt(libs.versions.minSdk.get())
         targetSdk Integer.parseInt(libs.versions.targetSdk.get())
         versionCode 1
         versionName "1.0"

@@ -7,8 +7,6 @@ import com.fy.navi.service.adapter.cruise.CruiseObserver;
 import com.fy.navi.service.adapter.cruise.ICruiseApi;
 import com.fy.navi.service.adapter.navi.NaviConstant;
 import com.fy.navi.service.adapter.navi.bls.BaseGuideAdapterApiImpl;
-import com.fy.navi.service.define.map.MapTypeId;
-import com.fy.navi.service.logicpaket.layer.LayerPackage;
 
 /**
  * @Description TODO

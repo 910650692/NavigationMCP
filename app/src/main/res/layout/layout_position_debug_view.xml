@@ -74,7 +74,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_16"
             android:text="555555555555555555"
-            android:textColor="@color/navi_red_text"
+            android:textColor="@color/navi_color_FF595F_100"
             android:textSize="@dimen/sp_24" />
 
         <com.fy.navi.ui.view.SkinTextView
@@ -83,7 +83,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_16"
             android:text="555555555555555555"
-            android:textColor="@color/navi_red_text"
+            android:textColor="@color/navi_color_FF595F_100"
             android:textSize="@dimen/sp_24" />
     </com.fy.navi.ui.view.SkinLinearLayout>
 
@@ -92,6 +92,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_16"
-        android:textColor="@color/navi_red_text"
+        android:textColor="@color/navi_color_FF595F_100"
         android:textSize="@dimen/sp_36" />
 </com.fy.navi.ui.view.SkinLinearLayout>

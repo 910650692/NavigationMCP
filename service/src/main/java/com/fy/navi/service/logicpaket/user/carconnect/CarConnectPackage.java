@@ -13,78 +13,103 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CarConnectPackage implements CarConnectAdapterCallback {
-    private final CarConnectAdapter carConnectAdapter;
-    private final List<CarConnectCallBack> callBacks = new ArrayList<>();
+    private final CarConnectAdapter mCarConnectAdapter;
+    private final List<CarConnectCallBack> mCallBacks = new ArrayList<>();
 
 
     public CarConnectPackage() {
-        carConnectAdapter = CarConnectAdapter.getInstance();
+        mCarConnectAdapter = CarConnectAdapter.getInstance();
     }
     @Override
     public void initService() {
-        carConnectAdapter.initService();
-        carConnectAdapter.registerCallBack("CarConnectPackage", this);
+        mCarConnectAdapter.initService();
+        mCarConnectAdapter.registerCallBack("CarConnectPackage", this);
     }
 
-    public synchronized void registerCallBack(CarConnectCallBack callback) {
-        if (callback != null && !callBacks.contains(callback)) {
-            callBacks.add(callback);
+    /**
+     * 注册callback监听
+     * @param callback
+     */
+    public synchronized void registerCallBack(final CarConnectCallBack callback) {
+        if (callback != null && !mCallBacks.contains(callback)) {
+            mCallBacks.add(callback);
         }
     }
 
     public static CarConnectPackage getInstance() {
-        return SInstanceHolder.sInstance;
+        return SInstanceHolder.INSTANCE;
     }
 
     private static final class SInstanceHolder {
-        static final CarConnectPackage sInstance = new CarConnectPackage();
+        static final CarConnectPackage INSTANCE = new CarConnectPackage();
     }
 
-    public TaskResultBean requestMobileLinkable(GeoPoint geoPoint) {
-        return carConnectAdapter.requestMobileLinkable(geoPoint);
+    /**
+     * 可连接设备请求
+     * @param geoPoint
+     * @return TaskResultBean
+     */
+    public TaskResultBean requestMobileLinkable(final GeoPoint geoPoint) {
+        return mCarConnectAdapter.requestMobileLinkable(geoPoint);
     }
 
-    public TaskResultBean requestMobileLink(long deviceId) {
-        return carConnectAdapter.requestMobileLink(deviceId);
+    /**
+     * requestMobileLink
+     * @param deviceId
+     * @return TaskResultBean
+     */
+    public TaskResultBean requestMobileLink(final long deviceId) {
+        return mCarConnectAdapter.requestMobileLink(deviceId);
     }
 
-    public long sendReqWsTserviceInternalLinkAutoReport(CarConnectRequestBaseBean pAosRequest) {
-        return carConnectAdapter.sendReqWsTserviceInternalLinkAutoReport(pAosRequest);
+    /**
+     * sendReqWsTserviceInternalLinkAutoReport
+     * @param aosRequest
+     * @return long
+     */
+    public long sendReqWsTserviceInternalLinkAutoReport(final CarConnectRequestBaseBean aosRequest) {
+        return mCarConnectAdapter.sendReqWsTserviceInternalLinkAutoReport(aosRequest);
     }
 
+    /**
+     * abort
+     */
     public void abort() {
-        carConnectAdapter.abort();
+        mCarConnectAdapter.abort();
     }
 
-    public void abort(long taskId) {
-        carConnectAdapter.abort(taskId);
+    /**
+     * abort
+     * @param taskId
+     */
+    public void abort(final long taskId) {
+        mCarConnectAdapter.abort(taskId);
     }
-
 
     @Override
-    public void notifyMobileLinkPushMessage(MsgPushItemBean msg) {
-        for (CarConnectCallBack callBack : callBacks) {
+    public void notifyMobileLinkPushMessage(final MsgPushItemBean msg) {
+        for (CarConnectCallBack callBack : mCallBacks) {
             callBack.notifyMobileLinkPushMessage(msg);
         }
     }
 
     @Override
-    public void onRecvAckGWsTserviceInternalLinkAutoReportResponse(CarConnectResponseBaseBean responseBaseBean) {
-        for (CarConnectCallBack callBack : callBacks) {
+    public void onRecvAckGWsTserviceInternalLinkAutoReportResponse(final CarConnectResponseBaseBean responseBaseBean) {
+        for (CarConnectCallBack callBack : mCallBacks) {
             callBack.onRecvAckGWsTserviceInternalLinkAutoReportResponse(responseBaseBean);
         }
     }
 
     @Override
-    public void onMobileLinkableResult(MobileLinkableResultBean result) {
-        for (CarConnectCallBack callBack : callBacks) {
+    public void onMobileLinkableResult(final MobileLinkableResultBean result) {
+        for (CarConnectCallBack callBack : mCallBacks) {
             callBack.onMobileLinkableResult(result);
         }
     }
 
     @Override
-    public void onMobileLinkResult(TaskResultBean result) {
-        for (CarConnectCallBack callBack : callBacks) {
+    public void onMobileLinkResult(final TaskResultBean result) {
+        for (CarConnectCallBack callBack : mCallBacks) {
             callBack.onMobileLinkResult(result);
         }
     }

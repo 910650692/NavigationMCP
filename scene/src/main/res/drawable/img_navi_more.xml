@@ -4,21 +4,21 @@
     android:viewportWidth="68"
     android:viewportHeight="68">
     <path
-        android:fillColor="@color/navi_img_color_two"
+        android:fillColor="@color/navi_color_383839_100"
         android:fillType="nonZero"
         android:pathData="M16.5,34.5m-4.5,0a4.5,4.5 0,1 1,9 0a4.5,4.5 0,1 1,-9 0"
         android:strokeWidth="1"
-        android:strokeColor="@color/navi_img_color_one" />
+        android:strokeColor="@color/navi_color_000000_0" />
     <path
-        android:fillColor="@color/navi_img_color_two"
+        android:fillColor="@color/navi_color_383839_100"
         android:fillType="nonZero"
         android:pathData="M34.5,34.5m-4.5,0a4.5,4.5 0,1 1,9 0a4.5,4.5 0,1 1,-9 0"
         android:strokeWidth="1"
-        android:strokeColor="@color/navi_img_color_one" />
+        android:strokeColor="@color/navi_color_000000_0" />
     <path
-        android:fillColor="@color/navi_img_color_two"
+        android:fillColor="@color/navi_color_383839_100"
         android:fillType="nonZero"
         android:pathData="M52.5,34.5m-4.5,0a4.5,4.5 0,1 1,9 0a4.5,4.5 0,1 1,-9 0"
         android:strokeWidth="1"
-        android:strokeColor="@color/navi_img_color_one" />
+        android:strokeColor="@color/navi_color_000000_0" />
 </vector>

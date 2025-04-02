@@ -20,6 +20,7 @@ import lombok.experimental.Accessors;
 public class ETAInfo implements Parcelable {
     private int mDistance; //距离终点距离
     private String mTravelTime; //预计行程时间
+    private long mTime; //预计行程时间
     private int mLeftCharge; //剩余电量
 
     public int getDistance() {
@@ -64,10 +65,25 @@ public class ETAInfo implements Parcelable {
         return this;
     }
 
+    /**
+     * 设置剩余电量
+     * @param time 剩余电量
+     * @return ETAInfo
+     */
+    public ETAInfo setTime(final long time) {
+        this.mTime = time;
+        return this;
+    }
+
+    public long getTime() {
+        return mTime;
+    }
+
     protected ETAInfo(final Parcel in) {
        mDistance = in.readInt();
         mTravelTime = in.readString();
         mLeftCharge = in.readInt();
+        mTime = in.readLong();
     }
 
     public static final Creator<ETAInfo> CREATOR = new Creator<ETAInfo>() {
@@ -92,5 +108,6 @@ public class ETAInfo implements Parcelable {
         parcel.writeInt(mDistance);
         parcel.writeString(mTravelTime);
         parcel.writeInt(mLeftCharge);
+        parcel.writeLong(mTime);
     }
 }

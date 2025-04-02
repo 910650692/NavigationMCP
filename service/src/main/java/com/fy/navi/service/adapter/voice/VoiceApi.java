@@ -73,10 +73,9 @@ public interface VoiceApi {
 
     /**
      * 下载操作
-     * @param downLoadMode 下载模式
      * @param opType    操作类型
      * @param voiceIdDiyLst 语音ID列表
      * @return 返回错误码
      */
-    int operate(int downLoadMode, int opType, ArrayList<Integer> voiceIdDiyLst);
+    int operate(int opType, ArrayList<Integer> voiceIdDiyLst);
 }

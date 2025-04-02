@@ -1,7 +1,9 @@
 package com.fy.navi.hmi.setting.guide;
 
 
+import com.android.utils.NetWorkUtils;
 import com.android.utils.log.Logger;
+import com.fy.navi.service.define.layer.refix.CarModeType;
 import com.fy.navi.service.define.setting.SettingController;
 import com.fy.navi.service.logicpaket.calibration.CalibrationPackage;
 import com.fy.navi.service.logicpaket.setting.SettingCallback;
@@ -24,6 +26,7 @@ public class SettingGuideModel extends BaseModel<SettingGuideViewModel> implemen
         super.onCreate();
         mSettingPackage.registerCallBack(MODEL_NAME,this);
         SettingUpdateObservable.getInstance().addObserver(MODEL_NAME, this);
+        NetWorkUtils.Companion.getInstance().registerNetworkObserver(mNetworkObserver);
     }
 
     /**
@@ -43,6 +46,23 @@ public class SettingGuideModel extends BaseModel<SettingGuideViewModel> implemen
         getMapModeStatus();
         getMapViewTextSize();
         updateCarMode();
+        setNetworkConnected(isNetworkConnected());
+    }
+
+    /**
+     * 设置 AvoidLimit 状态
+     * @param isNetworkConnected true 开启 false 关闭
+     */
+    public void setNetworkConnected(final boolean isNetworkConnected) {
+        mViewModel.setAvoidStatus(isNetworkConnected);
+    }
+
+    /**
+     * 判断网络是否连接
+     * @return true 网络连接 false 网络断开
+     */
+    public boolean isNetworkConnected() {
+        return Boolean.TRUE.equals(NetWorkUtils.Companion.getInstance().checkNetwork());
     }
 
     /**
@@ -131,12 +151,12 @@ public class SettingGuideModel extends BaseModel<SettingGuideViewModel> implemen
      * 获取车标模式
      */
     private void updateCarMode() {
-        final int carMode = mSettingPackage.getCarMode();
+        final CarModeType carMode = mSettingPackage.getCarMode();
         switch (carMode) {
-            case 2 :
+            case CAR_MODEL_TYPE_SKELETON :
                 mViewModel.onCarModeChanged(false, true, false);
                 break;
-            case 3:
+            case CAR_MODEL_TYPE_3D:
                 mViewModel.onCarModeChanged(false, false, true);
                 break;
             default:
@@ -149,7 +169,7 @@ public class SettingGuideModel extends BaseModel<SettingGuideViewModel> implemen
      * 获取车标模式
      * @return carMode  0: 2D默认车标  1: 3D默认车标 2: 3D骨骼车标  3: 3D车速车标
      */
-    public int getCarMode() {
+    public CarModeType getCarMode() {
         return mSettingPackage.getCarMode();
     }
 
@@ -157,7 +177,7 @@ public class SettingGuideModel extends BaseModel<SettingGuideViewModel> implemen
      * 设置车标模式
      * @param carMode  0: 2D默认车标  1: 3D默认车标 2: 3D骨骼车标  3: 3D车速车标
      */
-    public void setCarMode(final int carMode) {
+    public void setCarMode(final CarModeType carMode) {
         mSettingPackage.setCarMode(carMode);
     }
 
@@ -272,6 +292,7 @@ public class SettingGuideModel extends BaseModel<SettingGuideViewModel> implemen
     public void onDestroy() {
         super.onDestroy();
         SettingUpdateObservable.getInstance().removeObserver(MODEL_NAME, this);
+        NetWorkUtils.Companion.getInstance().unRegisterNetworkObserver(mNetworkObserver);
     }
 
     @Override
@@ -285,4 +306,36 @@ public class SettingGuideModel extends BaseModel<SettingGuideViewModel> implemen
         Logger.d("plateNumberInputFinish" + plateNumber);
         mViewModel.onPlateNumberChanged(plateNumber);
     }
+
+    private final NetWorkUtils.NetworkObserver mNetworkObserver = new NetWorkUtils.NetworkObserver() {
+        @Override
+        public void onNetConnectSuccess() {
+            setNetworkConnected(true);
+        }
+
+        @Override
+        public void onNetDisConnect() {
+            setNetworkConnected(false);
+        }
+
+        @Override
+        public void onNetUnavailable() {
+
+        }
+
+        @Override
+        public void onNetBlockedStatusChanged() {
+
+        }
+
+        @Override
+        public void onNetLosing() {
+
+        }
+
+        @Override
+        public void onNetLinkPropertiesChanged() {
+
+        }
+    };
 }

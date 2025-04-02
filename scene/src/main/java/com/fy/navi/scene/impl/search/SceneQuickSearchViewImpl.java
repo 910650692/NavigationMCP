@@ -3,6 +3,8 @@ package com.fy.navi.scene.impl.search;
 import com.fy.navi.scene.BaseSceneModel;
 import com.fy.navi.scene.api.search.ISceneQuickSearchView;
 import com.fy.navi.scene.ui.search.SceneQuickSearchView;
+import com.fy.navi.service.AutoMapConstant;
+import com.fy.navi.service.logicpaket.search.SearchPackage;
 import com.fy.navi.ui.base.StackManager;
 
 /**
@@ -11,13 +13,19 @@ import com.fy.navi.ui.base.StackManager;
  * 继承自BaseSceneModel，并封装了与搜索相关的操作，如关闭搜索页面、中止搜索等。
  */
 public class SceneQuickSearchViewImpl extends BaseSceneModel<SceneQuickSearchView> implements ISceneQuickSearchView {
-
+    private final SearchPackage mSearchPackage;
     public SceneQuickSearchViewImpl(final SceneQuickSearchView screenView) {
         super(screenView);
+        mSearchPackage = SearchPackage.getInstance();
     }
 
     @Override
-    public void closeSearch() {
-        StackManager.getInstance().getCurrentFragment(mMapTypeId.name()).closeFragment(true);
+    public void closeSearch(final int type) {
+        if (type == AutoMapConstant.SearchType.AROUND_SEARCH) {
+            StackManager.getInstance().getCurrentFragment(mMapTypeId.name()).closeAllFragment();
+        } else {
+            StackManager.getInstance().getCurrentFragment(mMapTypeId.name()).closeFragment(true);
+        }
+        mSearchPackage.clearLabelMark();
     }
 }

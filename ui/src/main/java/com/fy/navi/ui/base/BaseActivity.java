@@ -10,6 +10,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.databinding.ViewDataBinding;
+import androidx.fragment.app.Fragment;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -78,17 +79,19 @@ public abstract class BaseActivity<V extends ViewDataBinding, VM extends BaseVie
 
     @Override
     public void addFragment(final BaseFragment fragment, final Bundle bundle) {
-        FragmentIntent.addFragment(mScreenId, onFragmentId(), getSupportFragmentManager(), fragment, bundle);
+        FragmentIntent.addFragment(mScreenId, onFragmentId(), getSupportFragmentManager(),
+                fragment, bundle);
         if (mStackManager.isFragmentStackNull(mScreenId)) {
             onResetMapCenter();
         } else {
-            onMoveMapCenter();
+            onMoveMapCenter(bundle);
         }
     }
 
     @Override
     public void addPoiDetailsFragment(BaseFragment fragment, Bundle bundle) {
-        FragmentIntent.addPoiDetailsFragment(mScreenId, onFragmentId(), getSupportFragmentManager(), fragment, bundle);
+        FragmentIntent.addPoiDetailsFragment(mScreenId, onFragmentId(), getSupportFragmentManager(),
+                fragment, bundle);
         if (mStackManager.isFragmentStackNull(mScreenId)) {
             onResetMapCenter();
         } else {
@@ -98,10 +101,22 @@ public abstract class BaseActivity<V extends ViewDataBinding, VM extends BaseVie
 
     @Override
     public void closeFragment(final boolean nextShow) {
-        FragmentIntent.closeFragment(mScreenId, getSupportFragmentManager(), mStackManager.getCurrentFragment(mScreenId), nextShow);
+        FragmentIntent.closeFragment(mScreenId, getSupportFragmentManager(),
+                mStackManager.getCurrentFragment(mScreenId), nextShow);
+        Bundle bundle = null;
+        Fragment fragment = mStackManager.getCurrentFragment(mScreenId);
+        if (fragment != null && mStackManager.getCurrentFragment(mScreenId).getClass().getName().
+                contains("NaviGuidanceFragment")) {
+            bundle = new Bundle();
+            bundle.putInt("bundle_key_route_start_navi_sim", 0);
+        }
         if (mStackManager.isFragmentStackNull(mScreenId)) {
             onResetMapCenter();
         } else {
+            if (bundle != null) {
+                onMoveMapCenter(bundle);
+                return;
+            }
             onMoveMapCenter();
         }
     }
@@ -135,6 +150,11 @@ public abstract class BaseActivity<V extends ViewDataBinding, VM extends BaseVie
     public void closeAllFragmentAndSearchView() {
         FragmentIntent.closeAllFragment(mScreenId, getSupportFragmentManager());
         onMoveMapCenter();
+    }
+
+    @Override
+    public void showCurrentFragment() {
+        FragmentIntent.showCurrentFragment(mScreenId, getSupportFragmentManager());
     }
 
     protected VM initViewModel() {
@@ -182,6 +202,10 @@ public abstract class BaseActivity<V extends ViewDataBinding, VM extends BaseVie
     }
 
     protected void onMoveMapCenter() {
+
+    }
+
+    protected void onMoveMapCenter(final Bundle bundle) {
 
     }
 

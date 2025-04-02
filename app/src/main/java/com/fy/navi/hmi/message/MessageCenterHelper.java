@@ -21,9 +21,8 @@ public class MessageCenterHelper {
      * 管理消息
      * @return 数据
      * @param messageCenterType  类型
-     * @param title  预留字段   给继续导航等传导航位置信息等
      */
-    public MessageCenterInfo manageMessage(final MessageCenterType messageCenterType,final String title) {
+    public MessageCenterInfo manageMessage(final MessageCenterType messageCenterType) {
         if(messageCenterType == MessageCenterType.ROAD_LIMIT){
            return new MessageCenterInfo(messageCenterType,
                    ResourceUtils.Companion.getInstance().getString(R.string.message_center_check),
@@ -40,6 +39,8 @@ public class MessageCenterHelper {
                     ResourceUtils.Companion.getInstance().getString(R.string.message_center_netless),
                     ResourceUtils.Companion.getInstance().getString(R.string.message_center_recommend_update),
                     new Date(),0);
+        }else if(messageCenterType == MessageCenterType.WEATHER){
+            //TODO
         }
         return null;
     }

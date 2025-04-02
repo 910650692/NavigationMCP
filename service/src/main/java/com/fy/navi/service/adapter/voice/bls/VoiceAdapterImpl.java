@@ -44,21 +44,19 @@ public class VoiceAdapterImpl implements VoiceApi, IDataInitObserver, IDataListO
             return;
         }
 
-        if(voiceService.isInit() < ServiceInitStatus.ServiceInitDoing){
-            VoiceInitConfig config = new VoiceInitConfig();
-            config.flytekStoredPath = GBLCacheFilePath.VOICE_FLY_PATH;
-            config.mitStoredPath = GBLCacheFilePath.VOICE_MIT_PATH;
-            // voicedata.json 配置文件所存放的目录
-            config.configfilePath = GBLCacheFilePath.VOICE_CONF_PATH;
-            // 设置磁盘空间安全阈值（默认设置为80MB）
-            config.thresholdValue = 80;
-            FileUtils.getInstance().createDir(config.configfilePath);
-            FileUtils.getInstance().createDir(config.flytekStoredPath);
+        VoiceInitConfig config = new VoiceInitConfig();
+        config.flytekStoredPath = GBLCacheFilePath.VOICE_FLY_PATH;
+        config.mitStoredPath = GBLCacheFilePath.VOICE_MIT_PATH;
+        // voicedata.json 配置文件所存放的目录
+        config.configfilePath = GBLCacheFilePath.VOICE_CONF_PATH;
+        // 设置磁盘空间安全阈值（默认设置为80MB）
+        config.thresholdValue = 80;
+        FileUtils.getInstance().createDir(config.configfilePath);
+        FileUtils.getInstance().createDir(config.flytekStoredPath);
 
-            voiceService.init(config, this);
-            voiceService.addNetDownloadObserver(this);
-            voiceService.addUsbDownloadObserver(this);
-        }
+        voiceService.init(config, this);
+        voiceService.addNetDownloadObserver(this);
+        voiceService.addUsbDownloadObserver(this);
     }
 
     /**
@@ -110,12 +108,7 @@ public class VoiceAdapterImpl implements VoiceApi, IDataInitObserver, IDataListO
             Logger.e("voiceService is null");
             return 0;
         }
-        if(voiceService.isInit() < ServiceInitStatus.ServiceInitDone){
-            Logger.e("voiceService is not init");
-            return 0;
-        } else {
-            return voiceService.requestDataListCheck(downLoadMode, path, this);
-        }
+        return voiceService.requestDataListCheck(downLoadMode, path, this);
     }
 
     /**
@@ -128,12 +121,8 @@ public class VoiceAdapterImpl implements VoiceApi, IDataInitObserver, IDataListO
             Logger.e("voiceService is null");
             return 0;
         }
-        if(voiceService.isInit() < ServiceInitStatus.ServiceInitDone){
-            Logger.e("voiceService is not init");
-            return 0;
-        } else {
-            return voiceService.abortRequestDataListCheck(downLoadMode);
-        }
+        return voiceService.abortRequestDataListCheck(downLoadMode);
+
     }
 
     /**
@@ -147,12 +136,7 @@ public class VoiceAdapterImpl implements VoiceApi, IDataInitObserver, IDataListO
             Logger.e("voiceService is null");
             return new ArrayList<>();
         }
-        if(voiceService.isInit() < ServiceInitStatus.ServiceInitDone){
-            Logger.e("voiceService is not init");
-            return new ArrayList<>();
-        } else {
-            return voiceService.getVoiceIdList(downLoadMode);
-        }
+        return voiceService.getVoiceIdList(downLoadMode);
     }
 
     /**
@@ -167,12 +151,7 @@ public class VoiceAdapterImpl implements VoiceApi, IDataInitObserver, IDataListO
             Logger.e("voiceService is null");
             return new ArrayList<>();
         }
-        if(voiceService.isInit() < ServiceInitStatus.ServiceInitDone){
-            Logger.e("voiceService is not init");
-            return new ArrayList<>();
-        } else {
-            return voiceService.getVoiceIdList(downloadMode, engineType);
-        }
+        return voiceService.getVoiceIdList(downloadMode, engineType);
     }
 
     @Override
@@ -205,13 +184,8 @@ public class VoiceAdapterImpl implements VoiceApi, IDataInitObserver, IDataListO
             Logger.e("voiceService is null");
             return new VoiceInfo();
         }
-        if(voiceService.isInit() < ServiceInitStatus.ServiceInitDone){
-            Logger.e("voiceService is not init");
-            return new VoiceInfo();
-        } else {
-            Voice voice =  voiceService.getVoice(downloadMode,voiceId);
-            return GsonUtils.convertToT(voice, VoiceInfo.class);
-        }
+        Voice voice =  voiceService.getVoice(downloadMode,voiceId);
+        return GsonUtils.convertToT(voice, VoiceInfo.class);
     }
 
     /**
@@ -226,12 +200,8 @@ public class VoiceAdapterImpl implements VoiceApi, IDataInitObserver, IDataListO
             Logger.e("voiceService is null");
             return 0;
         }
-        if(voiceService.isInit() < ServiceInitStatus.ServiceInitDone){
-            Logger.e("voiceService is not init");
-            return 0;
-        } else {
-            return voiceService.requestDataImage(downloadMode, voiceId, this);
-        }
+        return voiceService.requestDataImage(downloadMode, voiceId, this);
+
     }
 
     /**
@@ -246,33 +216,24 @@ public class VoiceAdapterImpl implements VoiceApi, IDataInitObserver, IDataListO
             Logger.e("voiceService is null");
             return 0;
         }
-        if(voiceService.isInit() < ServiceInitStatus.ServiceInitDone){
-            Logger.e("voiceService is not init");
-            return 0;
-        } else {
-            return voiceService.abortRequestDataImage(downloadMode, voiceId);
-        }
+        return voiceService.abortRequestDataImage(downloadMode, voiceId);
+
     }
 
     /**
      * 下载操作
-     * @param downLoadMode 下载模式
      * @param opType    操作类型
      * @param voiceIdDiyLst 语音ID列表
      * @return 返回错误码
      */
     @Override
-    public int operate(int downLoadMode, int opType, ArrayList<Integer> voiceIdDiyLst) {
+    public int operate(int opType, ArrayList<Integer> voiceIdDiyLst) {
         if(voiceService == null){
             Logger.e("voiceService is null");
             return 0;
         }
-        if(voiceService.isInit() < ServiceInitStatus.ServiceInitDone){
-            Logger.e("voiceService is not init");
-            return 0;
-        } else {
-            return voiceService.operate(downLoadMode, opType, voiceIdDiyLst);
-        }
+        return voiceService.operate(DownLoadMode.DOWNLOAD_MODE_NET.ordinal(), opType, voiceIdDiyLst);
+
     }
 
     /**

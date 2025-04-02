@@ -63,9 +63,6 @@ public class GSVInstrument extends GnssStatus.Callback {
                     validCount++;
                 }
             }
-            if (mCallback != null) {
-                mCallback.onSatelliteNum(i + 1);
-            }
         }
 
         int n = 0;
@@ -82,6 +79,9 @@ public class GSVInstrument extends GnssStatus.Callback {
             n++;
         }
         locGpgsvGPS.num = n;
+        if (mCallback != null) {
+            mCallback.onSatelliteNum(n);
+        }
         long realtime = SystemClock.elapsedRealtime();
         if (n > 0 && realtime > 0) {
             // 时间戳需与GNSS信号传入的时间戳同源

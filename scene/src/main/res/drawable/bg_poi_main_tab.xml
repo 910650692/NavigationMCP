@@ -3,7 +3,7 @@
     <!-- 外阴影 -->
     <item>
         <shape android:shape="rectangle">
-            <solid android:color="@color/search_main_tab_bg_408c889b" /> >
+            <solid android:color="@color/search_main_tab_img_shape_bg" /> >
             <corners android:radius="@dimen/dp_20" />
             <padding
                 android:bottom="@dimen/dp_1"
@@ -15,7 +15,7 @@
     <!-- 主体背景 -->
     <item>
         <shape android:shape="rectangle">
-            <solid android:color="@color/bg_route_root_bg" />
+            <solid android:color="@color/search_tab_bg" />
             <corners android:radius="@dimen/dp_20" />
         </shape>
     </item>

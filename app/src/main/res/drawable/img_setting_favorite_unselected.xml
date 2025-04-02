@@ -8,6 +8,6 @@
       android:strokeAlpha="0.7"
       android:strokeWidth="3.41176471"
       android:fillColor="#00000000"
-      android:strokeColor="#4B535D"
+      android:strokeColor="@color/setting_bg_close"
       android:fillType="evenOdd"/>
 </vector>

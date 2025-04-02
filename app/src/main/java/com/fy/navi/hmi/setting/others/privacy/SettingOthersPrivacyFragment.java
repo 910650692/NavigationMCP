@@ -23,6 +23,12 @@ public class SettingOthersPrivacyFragment extends BaseFragment<FragmentSettingPr
 
     @Override
     public void onInitView() {
+
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
         mViewModel.initView();
     }
 
@@ -43,10 +49,10 @@ public class SettingOthersPrivacyFragment extends BaseFragment<FragmentSettingPr
                 mBinding.settingOthersPrivacyEndDateLayout.setVisibility(View.VISIBLE);
                 mBinding.settingOthersPrivacyEndDate.setText(endDate);
                 mBinding.settingOthersPrivacyOneYear.setTextColor(ResourceUtils.Companion.getInstance().getColor(R.color.white));
-                mBinding.settingOthersPrivacyNever.setTextColor(ResourceUtils.Companion.getInstance().getColor(R.color.black));
+                mBinding.settingOthersPrivacyNever.setTextColor(ResourceUtils.Companion.getInstance().getColor(R.color.color_black_70));
             } else {
                 mBinding.settingOthersPrivacyEndDateLayout.setVisibility(View.GONE);
-                mBinding.settingOthersPrivacyOneYear.setTextColor(ResourceUtils.Companion.getInstance().getColor(R.color.black));
+                mBinding.settingOthersPrivacyOneYear.setTextColor(ResourceUtils.Companion.getInstance().getColor(R.color.color_black_70));
                 mBinding.settingOthersPrivacyNever.setTextColor(ResourceUtils.Companion.getInstance().getColor(R.color.white));
             }
         });

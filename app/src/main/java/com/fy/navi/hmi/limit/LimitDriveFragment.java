@@ -1,7 +1,9 @@
 package com.fy.navi.hmi.limit;
 
+import android.animation.ValueAnimator;
 import android.os.Bundle;
 import android.view.View;
+import android.view.animation.LinearInterpolator;
 
 import androidx.annotation.NonNull;
 import androidx.databinding.library.baseAdapters.BR;
@@ -15,7 +17,7 @@ import com.fy.navi.hmi.databinding.FragmentLimitDetailBinding;
 import com.fy.navi.service.AutoMapConstant;
 import com.fy.navi.service.define.aos.RestrictedArea;
 import com.fy.navi.service.define.bean.GeoPoint;
-import com.fy.navi.service.define.map.MapTypeId;
+import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.mapdata.CityDataInfo;
 import com.fy.navi.service.define.route.RouteRestrictionParam;
 import com.fy.navi.service.logicpaket.map.MapPackage;
@@ -35,6 +37,8 @@ public class LimitDriveFragment extends BaseFragment<FragmentLimitDetailBinding,
     private LimitDriverAdapter mAdapter;
     private LimitDriverCitiesAdapter mCitiesAdapter;
     private LinearLayoutManager mLayoutManager;
+    private ValueAnimator mAnimator;
+    private float mAngelTemp = 0;
     private static final String TAG = "LimitProvincesAdapter";
 
     @Override
@@ -56,6 +60,7 @@ public class LimitDriveFragment extends BaseFragment<FragmentLimitDetailBinding,
         mLayoutManager = new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false);
         mBinding.citiesRecyclerView.setLayoutManager(mLayoutManager);
         mBinding.citiesRecyclerView.setAdapter(mCitiesAdapter);
+        initLoadAnim(mBinding.ivLoading);
     }
 
     @Override
@@ -90,10 +95,59 @@ public class LimitDriveFragment extends BaseFragment<FragmentLimitDetailBinding,
         if (routeRestrictionParam != null) {
             LimitDriverHelper.getInstance().setNeedClearRestriction(true);
             LimitDriverHelper.getInstance().setRoundParam(null);
-            RoutePackage.getInstance().drawRestrictionForLimit(MapTypeId.MAIN_SCREEN_MAIN_MAP,
+            RoutePackage.getInstance().drawRestrictionForLimit(MapType.MAIN_SCREEN_MAIN_MAP,
                     routeRestrictionParam.getMReStrictedAreaResponseParam(), 0);
             showPolicyUI(routeRestrictionParam);
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mAnimator.cancel();
+    }
+
+    /**
+     * 初始化加载动画
+     * @param sivLoading 加载动画视图
+     */
+    private void initLoadAnim(final View sivLoading) {
+        // 如果动画已存在并正在运行，则取消并清理
+        if (mAnimator != null) {
+            if (mAnimator.isRunning()) {
+                mAnimator.cancel();
+            }
+            mAnimator = null;
+        }
+
+        // 创建属性动画，从 0 到 360 度循环旋转
+        mAnimator = ValueAnimator.ofFloat(0f, 360f);
+        mAnimator.setDuration(2000); // 动画持续时间
+        mAnimator.setRepeatCount(ValueAnimator.INFINITE); // 无限重复
+        mAnimator.setInterpolator(new LinearInterpolator()); // 线性插值器
+        // 添加动画更新监听器
+        mAnimator.addUpdateListener(animation -> {
+            final float angle = (float) animation.getAnimatedValue();
+            if (shouldSkipUpdate(angle)) {
+                return;
+            }
+            sivLoading.setRotation(angle);
+        });
+    }
+
+    /**
+     *用于控制角度变化频率的辅助方法
+     *@param angle 当前角度
+     *@return 是否跳过更新
+     */
+    private boolean shouldSkipUpdate(final float angle) {
+        final float changeAngle = angle - mAngelTemp;
+        final float angleStep = 10;
+        if (changeAngle > 0f && changeAngle <= angleStep) {
+            return true; // 跳过更新，避免高频调用浪费资源
+        }
+        mAngelTemp = angle; // 更新临时角度值
+        return false;
     }
 
     /**
@@ -176,6 +230,7 @@ public class LimitDriveFragment extends BaseFragment<FragmentLimitDetailBinding,
     public void showLoading() {
         ThreadManager.getInstance().postUi(() -> {
             mBinding.layoutLoading.setVisibility(View.VISIBLE);
+            mAnimator.start();
             mBinding.layoutPolicy.setVisibility(View.GONE);
             mBinding.tvLoading.setText(R.string.limit_loading);
             mBinding.tvRetry.setVisibility(View.GONE);
@@ -188,6 +243,7 @@ public class LimitDriveFragment extends BaseFragment<FragmentLimitDetailBinding,
     public void showLoadingFail() {
         ThreadManager.getInstance().postUi(() -> {
             mBinding.layoutLoading.setVisibility(View.VISIBLE);
+            mAnimator.start();
             mBinding.layoutPolicy.setVisibility(View.GONE);
             mBinding.tvLoading.setText(R.string.limit_load_fail);
             mBinding.tvRetry.setVisibility(View.VISIBLE);
@@ -204,6 +260,7 @@ public class LimitDriveFragment extends BaseFragment<FragmentLimitDetailBinding,
             if (restrictedArea != null) {
                 mViewModel.setSelectedCityName(restrictedArea.getMCityNames().get(0));
                 mBinding.layoutLoading.setVisibility(View.GONE);
+                mAnimator.cancel();
                 mBinding.layoutPolicy.setVisibility(View.VISIBLE);
                 if (restrictedArea.getMCityNames().size() > 1) {
                     mBinding.tvCity.setVisibility(View.GONE);
@@ -218,12 +275,12 @@ public class LimitDriveFragment extends BaseFragment<FragmentLimitDetailBinding,
                                 mAdapter.setData(restrictedArea.getMRestrictedAreaDetails().get(position));
                                 mBinding.tvNoContent.setVisibility(View.GONE);
                                 //绘制限行区域，地图中心跳转
-                                RoutePackage.getInstance().drawRestrictionForLimit(MapTypeId.MAIN_SCREEN_MAIN_MAP,
+                                RoutePackage.getInstance().drawRestrictionForLimit(MapType.MAIN_SCREEN_MAIN_MAP,
                                         routeRestrictionParam.getMReStrictedAreaResponseParam(), restrictedArea.getMCityPosition().get(position));
                                 final int cityCode = MapDataPackage.getInstance().searchCityAdCode(restrictedArea.getMCityNames().get(position));
                                 if (cityCode != 0) {
                                     final CityDataInfo cityItemBean= MapDataPackage.getInstance().getCityInfo(cityCode);
-                                    MapPackage.getInstance().setMapCenter(MapTypeId.MAIN_SCREEN_MAIN_MAP,
+                                    MapPackage.getInstance().setMapCenter(MapType.MAIN_SCREEN_MAIN_MAP,
                                             new GeoPoint(ConvertUtils.transCityLatAndLon(cityItemBean.getCityX()),
                                                     ConvertUtils.transCityLatAndLon(cityItemBean.getCityY())));
                                 }

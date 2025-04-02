@@ -1,6 +1,6 @@
 package com.fy.navi.service.define.route;
 
-import com.fy.navi.service.define.map.MapTypeId;
+import com.fy.navi.service.define.map.MapType;
 
 import java.util.ArrayList;
 
@@ -13,7 +13,7 @@ public class RouteChargeStationParam {
     /*** 请求Id **/
     private long mRequestId;
     /*** 屏幕Id **/
-    private MapTypeId mMapTypeId;
+    private MapType mMapTypeId;
     /*** 充电站 **/
     private ArrayList<RouteChargeStationInfo> mRouteChargeStationInfos;
     /*** 底图上的路线图层信息 **/

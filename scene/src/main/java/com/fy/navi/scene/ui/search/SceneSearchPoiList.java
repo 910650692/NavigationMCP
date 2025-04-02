@@ -32,7 +32,7 @@ import com.fy.navi.scene.ui.adapter.FilterListAdapter;
 import com.fy.navi.scene.ui.adapter.SearchResultAdapter;
 import com.fy.navi.service.AutoMapConstant;
 import com.fy.navi.service.MapDefaultFinalTag;
-import com.fy.navi.service.define.map.MapTypeId;
+import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.mapdata.CityDataInfo;
 import com.fy.navi.service.define.mapdata.ProvDataInfo;
 import com.fy.navi.service.define.search.FavoriteInfo;
@@ -81,6 +81,7 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
     //第三个一级菜单当前正在被选中的二级菜单下标
     private int mCurrentSelectedIndex3 = -1;
     private int mHomeCompanyType;
+    private int mRange = 5000;
     //已下载的城市列表
     private ArrayList<ProvDataInfo> mProvDataInfos;
 
@@ -174,8 +175,10 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
                     default ->
                             (Fragment) ARouter.getInstance().build(RoutePath.Search.POI_DETAILS_FRAGMENT).navigation();
                 };
-
-                int poiType = getPoiType(mAdapter.getHomeCompanyType());
+                if (!ConvertUtils.isEmpty(mScreenViewModel) && !ConvertUtils.isEmpty(mResultEntity)) {
+                    mScreenViewModel.addPoiMarker(mResultEntity.getPoiList(), position);
+                }
+                final int poiType = getPoiType(mAdapter.getHomeCompanyType());
                 Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "onClick poiType: " + poiType + " homeCompany: " + mAdapter.getHomeCompanyType());
                 addPoiDetailsFragment((BaseFragment) fragment, SearchFragmentFactory.createPoiDetailsFragment(
                         AutoMapConstant.SourceFragment.SEARCH_RESULT_FRAGMENT, poiType, poiInfoEntity));
@@ -193,16 +196,16 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
                     final int commonName = mAdapter.getHomeCompanyType();
                     final FavoriteInfo favoriteInfo = new FavoriteInfo();
                     favoriteInfo.setCommonName(commonName)
-                            .setItemId(poiInfoEntity.getPid() + DIVIDER + poiInfoEntity.getName()
-                                    + DIVIDER + poiInfoEntity.getPoint().getLon() + DIVIDER + poiInfoEntity.getPoint().getLat())
                             .setUpdateTime(new Date().getTime());
                     poiInfoEntity.setFavoriteInfo(favoriteInfo);
-                    BehaviorPackage.getInstance().addFavoriteData(poiInfoEntity, commonName);
+                    BehaviorPackage.getInstance().addFavorite(poiInfoEntity, commonName);
+//                    BehaviorPackage.getInstance().addFavoriteData(poiInfoEntity, commonName);
                     SettingUpdateObservable.getInstance().onUpdateSyncTime();
-                    closeAllFragment();
+                    closeAllFragmentsUntilTargetFragment("HomeCompanyFragment");
+                    showCurrentFragment();
                 } else {
                     if (SearchPackage.getInstance().isAlongWaySearch()) {
-                        RoutePackage.getInstance().addViaPoint(MapTypeId.MAIN_SCREEN_MAIN_MAP, poiInfoEntity);
+                        RoutePackage.getInstance().addViaPoint(MapType.MAIN_SCREEN_MAIN_MAP, poiInfoEntity);
                     } else {
                         SearchPackage.getInstance().clearLabelMark();
                         final Fragment fragment = (Fragment) ARouter.getInstance()
@@ -461,7 +464,7 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
                 mScreenViewModel.keywordSearch(pageNum, keyword);
                 break;
             case AutoMapConstant.SearchType.AROUND_SEARCH:
-                mScreenViewModel.aroundSearch(pageNum, keyword, mPoiInfoEntity);
+                mScreenViewModel.aroundSearch(pageNum, keyword, mPoiInfoEntity, String.valueOf(mRange));
                 break;
             case AutoMapConstant.SearchType.ALONG_WAY_SEARCH:
                 mScreenViewModel.alongWaySearch(keyword);
@@ -488,6 +491,14 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
 
     public void setPoiInfoEntity(final PoiInfoEntity poiInfo) {
         this.mPoiInfoEntity = poiInfo;
+    }
+
+    /**
+     * 设置周边搜搜索半径
+     * @param range 搜索半径
+     */
+    public void setRange(final int range) {
+        this.mRange = range;
     }
 
     /**
@@ -591,6 +602,17 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
     }
 
     /**
+     * 语音筛选搜索回调，收到此回调后根据筛选条件进行一次筛选搜索
+     * @param sortValue 筛选条件
+     */
+    public void onVoicePoiSort(final String sortValue) {
+        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "onVoicePoiSort: " + sortValue);
+        if (mScreenViewModel != null && mResultEntity != null) {
+            mScreenViewModel.keywordSearch(mPageNum, mSearchText, mResultEntity.getRetain(), getVoiceClassifyData(sortValue), false);
+        }
+    }
+
+    /**
      * 设置最大页数
      *
      * @param maxPageNum 最大页数
@@ -658,14 +680,32 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
     }
 
     /**
-     * clear data
+     * 获取语音筛选数据
+     * @param sortValue 分类名称
+     * @return 筛选数据请求value
      */
-    public void clear() {
-        mPoiInfoEntity = null;
-        mResultEntity = null;
-        if (mLocalInfoList != null) {
-            mLocalInfoList.clear();
-            mLocalInfoList = null;
+    private String getVoiceClassifyData(final String sortValue) {
+        String classifyData = "";
+        for (SearchCategoryLocalInfo searchCategoryLocalInfo : mLocalInfoList) {
+            for (SearchChildCategoryLocalInfo searchChildCategoryLocalInfo : searchCategoryLocalInfo.getCategoryLocalInfos()) {
+                if (searchChildCategoryLocalInfo.getName().equals(sortValue)) {
+                    classifyData = searchChildCategoryLocalInfo.getValue();
+                    return classifyData;
+                }
+            }
+        }
+        return classifyData;
+    }
+
+        /**
+         * clear data
+         */
+        public void clear () {
+            mPoiInfoEntity = null;
+            mResultEntity = null;
+            if (mLocalInfoList != null) {
+                mLocalInfoList.clear();
+                mLocalInfoList = null;
+            }
         }
     }
-}

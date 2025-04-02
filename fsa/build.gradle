@@ -8,7 +8,7 @@ android {
     buildToolsVersion libs.versions.buildSdk.get()
 
     defaultConfig {
-        minSdk Integer.parseInt(libs.versions.minSdk.get())
+        minSdk IS_PAD_RUN.toBoolean() ? Integer.parseInt(libs.versions.padminSdk.get()) :Integer.parseInt(libs.versions.minSdk.get())
         versionCode 1
         versionName "1.0"
     }
@@ -28,13 +28,41 @@ android {
         checkReleaseBuilds false
         abortOnError false
     }
+
+    if (IS_PAD_RUN.toBoolean()){
+        sourceSets {
+            main {
+                java {
+                    exclude 'com/fy/navi/adas/AdasClient.java'
+                    exclude 'com/fy/navi/adas/L2PPManager.java'
+                    exclude 'com/fy/navi/adas/SuperCruiseManager.java'
+                }
+            }
+        }
+    } else {
+        sourceSets {
+            main {
+                debug{
+                    java{
+                        exclude 'com/fy/navi/adas/AdasClient.java'
+                        exclude 'com/fy/navi/adas/L2PPManager.java'
+                        exclude 'com/fy/navi/adas/SuperCruiseManager.java'
+                    }
+                }
+            }
+        }
+    }
 }
 
 dependencies {
     implementation libs.appcompat
     implementation libs.protobuf
     implementation project(":engine:fsa")
-    implementation project(":engine:adas")
+    if (IS_PAD_RUN.toBoolean()){
+        releaseImplementation project(":engine:adas")
+    }else {
+        implementation project(":engine:adas")
+    }
     implementation project(":service")
     implementation project(":utils")
     implementation project(":engine:vtserver")

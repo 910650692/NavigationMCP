@@ -3,7 +3,7 @@ plugins {
     id 'maven-publish'
 }
 
-def lib_version = "0.2.2"
+def lib_version = "0.2.8"
 
 android {
     namespace 'com.fy.navi.mapservice'
@@ -11,7 +11,7 @@ android {
     buildToolsVersion libs.versions.buildSdk.get()
 
     defaultConfig {
-        minSdk Integer.parseInt(libs.versions.minSdk.get())
+        minSdk IS_PAD_RUN.toBoolean() ? Integer.parseInt(libs.versions.padminSdk.get()) :Integer.parseInt(libs.versions.minSdk.get())
         consumerProguardFiles "consumer-rules.pro"
     }
 

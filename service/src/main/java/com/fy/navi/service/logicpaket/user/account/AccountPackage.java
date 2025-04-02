@@ -10,28 +10,32 @@ import com.fy.navi.service.define.code.UserDataCode;
 import com.fy.navi.service.define.user.account.AccountProfileInfo;
 import com.fy.navi.service.define.user.account.AccountUserInfo;
 import com.fy.navi.service.greendao.CommonManager;
+import com.fy.navi.service.greendao.history.HistoryManager;
+import com.fy.navi.service.logicpaket.user.behavior.BehaviorPackage;
 import com.fy.navi.service.logicpaket.user.msgpush.MsgPushPackage;
 
 import java.util.Hashtable;
 
-/**
- * @Description
- * @Author fh
- * @date 2024/12/18
- */
-public class AccountPackage implements AccountAdapterCallBack {
+
+public final class AccountPackage implements AccountAdapterCallBack {
     private final AccountAdapter mAccountAdapter;
-    private final Hashtable<String, AccountCallBack> callBacks;
-    private CommonManager commonManager;
-    private boolean isLogin = false; // 判断当前用户是否已登录。  默认false，未登录
+    private final Hashtable<String, AccountCallBack> mCallBacks;
+    private final CommonManager mCommonManager;
+    private boolean mIsLogin = false; // 判断当前用户是否已登录。  默认false，未登录
+    private final HistoryManager mHistoryManager;
 
     private AccountPackage() {
-        callBacks = new Hashtable<>();
+        mCallBacks = new Hashtable<>();
         mAccountAdapter = AccountAdapter.getInstance();
-        commonManager = CommonManager.getInstance();
-        commonManager.init();
+        mCommonManager = CommonManager.getInstance();
+        mCommonManager.init();
+        mHistoryManager = HistoryManager.getInstance();
+        mHistoryManager.init();
     }
 
+    /**
+     * 初始化服务
+     */
     public void initAccountService(){
         mAccountAdapter.initAccountService();
         mAccountAdapter.registerCallBack("AccountPackage", this);
@@ -39,18 +43,19 @@ public class AccountPackage implements AccountAdapterCallBack {
 
     /**
      * 从本地数据库中获取用户信息
+     * @return 用户信息
      */
     public AccountProfileInfo getUserInfo() {
         AccountProfileInfo info = new AccountProfileInfo();
-        String valueJson = commonManager.getValueByKey(UserDataCode.SETTING_GET_USERINFO);
+        final String valueJson = mCommonManager.getValueByKey(UserDataCode.SETTING_GET_USERINFO);
         Logger.i("getUserInfo valueJson = " + valueJson);
         if (!TextUtils.isEmpty(valueJson)) {
            info = GsonUtils.fromJson(valueJson, AccountProfileInfo.class);
             if (info != null) {
-                if (!TextUtils.isEmpty(info.uid)) {
-                    isLogin = true;
+                if (!TextUtils.isEmpty(info.getUid())) {
+                    mIsLogin = true;
                 } else {
-                    isLogin = false;
+                    mIsLogin = false;
                 }
             }
         }
@@ -58,156 +63,155 @@ public class AccountPackage implements AccountAdapterCallBack {
     }
 
     public boolean isLogin() {
-        return isLogin;
+        return mIsLogin;
     }
 
     @Override
-    public void notifyVerificationCode(int errCode, int taskId, AccountUserInfo result) {
-        for (AccountCallBack observer : callBacks.values()) {
+    public void notifyVerificationCode(final int errCode, final int taskId, final AccountUserInfo result) {
+        for (AccountCallBack observer : mCallBacks.values()) {
             observer.notifyVerificationCode(errCode, taskId, result);
         }
     }
 
     @Override
-    public void notifyAccountCheck(int errCode, int taskId, AccountUserInfo result) {
-        for (AccountCallBack observer : callBacks.values()) {
+    public void notifyAccountCheck(final int errCode, final int taskId, final AccountUserInfo result) {
+        for (AccountCallBack observer : mCallBacks.values()) {
             observer.notifyAccountCheck(errCode, taskId, result);
         }
     }
 
     @Override
-    public void notifyAccountRegister(int errCode, int taskId, AccountUserInfo result) {
-        for (AccountCallBack observer : callBacks.values()) {
+    public void notifyAccountRegister(final int errCode, final int taskId, final AccountUserInfo result) {
+        for (AccountCallBack observer : mCallBacks.values()) {
             observer.notifyAccountRegister(errCode, taskId, result);
         }
     }
 
     @Override
-    public void notifyMobileLogin(int errCode, int taskId, AccountUserInfo result) {
+    public void notifyMobileLogin(final int errCode, final int taskId, final AccountUserInfo result) {
 
-        if (result != null && result.code == 1) {
+        if (result != null && result.getCode() == 1) {
             // 手机号登录成功后，用户登录信息保存到数据库
-            isLogin = true;
-            AccountProfileInfo info = GsonUtils.convertToT(result.profileInfo, AccountProfileInfo.class);
-            commonManager.insertOrReplace(UserDataCode.SETTING_GET_USERINFO, GsonUtils.toJson(info));
+            mIsLogin = true;
+            final AccountProfileInfo info = GsonUtils.convertToT(result.getProfileInfo(), AccountProfileInfo.class);
+            mCommonManager.insertOrReplace(UserDataCode.SETTING_GET_USERINFO, GsonUtils.toJson(info));
         }
 
-        for (AccountCallBack observer : callBacks.values()) {
+        for (AccountCallBack observer : mCallBacks.values()) {
             observer.notifyMobileLogin(errCode, taskId, result);
         }
     }
 
     @Override
-    public void notifyQRCodeLogin(int errCode, int taskId, AccountUserInfo result) {
-        for (AccountCallBack observer : callBacks.values()) {
+    public void notifyQRCodeLogin(final int errCode, final int taskId, final AccountUserInfo result) {
+        for (AccountCallBack observer : mCallBacks.values()) {
             observer.notifyQRCodeLogin(errCode, taskId, result);
         }
     }
     @Override
-    public void notifyQRCodeLoginConfirm(int errCode, int taskId, AccountUserInfo result) {
-        if (result != null && result.code == 1) {
-            isLogin = true;
-            MsgPushPackage.getInstance().startListen(result.uid);
-            AccountProfileInfo info = GsonUtils.convertToT(result.profileInfo, AccountProfileInfo.class);
-            commonManager.insertOrReplace(UserDataCode.SETTING_GET_USERINFO, GsonUtils.toJson(info));
+    public void notifyQRCodeLoginConfirm(final int errCode, final int taskId, final AccountUserInfo result) {
+        if (result != null && result.getCode() == 1) {
+            mIsLogin = true;
+            MsgPushPackage.getInstance().startListen(result.getUid());
+            final AccountProfileInfo info = GsonUtils.convertToT(result.getProfileInfo(), AccountProfileInfo.class);
+            mCommonManager.insertOrReplace(UserDataCode.SETTING_GET_USERINFO, GsonUtils.toJson(info));
+            BehaviorPackage.getInstance().setLoginInfo();
         }
-        for (AccountCallBack observer : callBacks.values()) {
+        for (AccountCallBack observer : mCallBacks.values()) {
             observer.notifyQRCodeLoginConfirm(errCode, taskId, result);
         }
     }
 
     @Override
-    public void notifyAccountProfile(int errCode, int taskId, AccountUserInfo result) {
-        for (AccountCallBack observer : callBacks.values()) {
+    public void notifyAccountProfile(final int errCode, final int taskId, final AccountUserInfo result) {
+        for (AccountCallBack observer : mCallBacks.values()) {
             observer.notifyAccountProfile(errCode, taskId, result);
         }
     }
 
     @Override
-    public void notifyAvatar(int errCode, int taskId, AccountUserInfo result) {
-        for (AccountCallBack observer : callBacks.values()) {
+    public void notifyAvatar(final int errCode, final int taskId, final AccountUserInfo result) {
+        for (AccountCallBack observer : mCallBacks.values()) {
             observer.notifyAvatar(errCode, taskId, result);
         }
     }
 
     @Override
-    public void notifyAccountLogout(int errCode, int taskId, AccountUserInfo result) {
+    public void notifyAccountLogout(final int errCode, final int taskId, final AccountUserInfo result) {
 
-        if (result != null && result.code == 1) {
+        if (result != null && result.getCode() == 1) {
             Logger.i("AccountModel", "退出登录成功");
             // 退出登录后，清除数据库中的用户信息
-            commonManager.deleteValue(UserDataCode.SETTING_GET_USERINFO);
-            isLogin = false;
+            mCommonManager.deleteValue(UserDataCode.SETTING_GET_USERINFO);
+            mIsLogin = false;
             MsgPushPackage.getInstance().stopListen();
+            BehaviorPackage.getInstance().setLoginInfo();
         }
 
-        for (AccountCallBack observer : callBacks.values()) {
+        for (AccountCallBack observer : mCallBacks.values()) {
             observer.notifyAccountLogout(errCode, taskId, result);
         }
     }
 
     @Override
-    public void notifyAccountUnRegister(int errCode, int taskId, AccountUserInfo result) {
-        for (AccountCallBack observer : callBacks.values()) {
+    public void notifyAccountUnRegister(final int errCode, final int taskId, final AccountUserInfo result) {
+        for (AccountCallBack observer : mCallBacks.values()) {
             observer.notifyAccountUnRegister(errCode, taskId, result);
         }
     }
 
-    public synchronized void registerCallBack(String key, AccountCallBack callback) {
-        if (callback != null && !callBacks.contains(callback)) {
-            callBacks.put(key,callback);
+    /**
+     * 注册回调
+     * @param key 回调key
+     * @param callback 回调
+     */
+    public synchronized void registerCallBack(final String key, final AccountCallBack callback) {
+        if (callback != null && !mCallBacks.contains(callback)) {
+            mCallBacks.put(key,callback);
         }
     }
 
-    public int verificationCodeRequest(String mobileNum) {
+    /**
+     * 发送验证码
+     * @param mobileNum 手机号
+     * @return 结果值
+     */
+    public int verificationCodeRequest(final String mobileNum) {
         return mAccountAdapter.verificationCodeRequest(mobileNum);
     }
 
-    public int accountCheckRequest() {
-        return mAccountAdapter.accountCheckRequest();
-    }
-
-    public int accountRegisterRequest(String codeInput, String mobileInput) {
-        return mAccountAdapter.accountRegisterRequest(codeInput, mobileInput);
-    }
-
-    public int mobileLoginRequest(String codeInput, String mobileInput) {
+    /**
+     * 手机号登录
+     * @param codeInput 验证码
+     * @param mobileInput 手机号
+     * @return 结果值
+     */
+    public int mobileLoginRequest(final String codeInput, final String mobileInput) {
         return mAccountAdapter.mobileLoginRequest(codeInput, mobileInput);
     }
 
-    public int qRCodeLoginRequest(int qrType) {
-        return mAccountAdapter.qRCodeLoginRequest(qrType);
+    /**
+     * 二维码登录
+     * @param qrType 二维码类型
+     * @return 结果值
+     */
+    public int qrcodeloginrequest(final int qrType) {
+        return mAccountAdapter.qrCodeLoginRequest(qrType);
     }
 
-    public int qRCodeLoginConfirmRequest(String qrCodeId) {
-        return mAccountAdapter.qRCodeLoginConfirmRequest(qrCodeId);
-    }
-
-    public int accountProfileRequest() {
-        return mAccountAdapter.accountProfileRequest();
-    }
-
-    public int avatarRequest() {
-        return mAccountAdapter.avatarRequest();
-    }
-
+    /**
+     * 退出登录
+     * @return 结果值
+     */
     public int accountLogoutRequest() {
         return mAccountAdapter.accountLogoutRequest();
     }
 
-    public int accountUnRegisterRequest() {
-        return mAccountAdapter.accountUnRegisterRequest();
-    }
-
-    public void unInitAccountService(){
-        mAccountAdapter.unInitAccountService();
-    }
-
     public static AccountPackage getInstance() {
-        return Helper.ep;
+        return Helper.EP;
     }
 
     private static final class Helper {
-        private static final AccountPackage ep = new AccountPackage();
+        private static final AccountPackage EP = new AccountPackage();
     }
 }

@@ -53,6 +53,11 @@ public class SceneNaviViaInfoView extends NaviSceneBase<SceneNaviViaInfoViewBind
     }
 
     @Override
+    protected String getSceneName() {
+        return NaviSceneId.NAVI_SCENE_VIA_DETAIL_INFO.name();
+    }
+
+    @Override
     public INaviSceneEvent getNaviSceneEvent() {
         return NaviSceneManager.getInstance();
     }
@@ -64,7 +69,6 @@ public class SceneNaviViaInfoView extends NaviSceneBase<SceneNaviViaInfoViewBind
     @Override
     public void show() {
         super.show();
-        Logger.i(TAG, "show() called");
         if (mISceneCallback != null) {
             mISceneCallback.updateSceneVisible(NaviSceneId.NAVI_SCENE_VIA_DETAIL_INFO, true);
         }

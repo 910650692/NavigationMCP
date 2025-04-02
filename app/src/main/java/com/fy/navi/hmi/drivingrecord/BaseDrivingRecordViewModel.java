@@ -16,19 +16,15 @@ import com.fy.navi.ui.base.BaseViewModel;
 
 import java.util.ArrayList;
 
-/**
- * @Description TODO
- * @Author fh
- * @date 2024/12/24
- */
+
 public class BaseDrivingRecordViewModel extends BaseViewModel<DrivingRecordFragment, DrivingRecordModel> {
 
-    public MutableLiveData<Boolean> recordListViewVisibility = new MutableLiveData<>(true);
+    public MutableLiveData<Boolean> mRecordListViewVisibility = new MutableLiveData<>(true);
     // tab下对应的无数据提示
-    public MutableLiveData<Boolean> emptyViewVisibility  = new MutableLiveData<>(false);
-    public MutableLiveData<Boolean> loginTipVisibility  = new MutableLiveData<>(false);
+    public MutableLiveData<Boolean> mEmptyViewVisibility = new MutableLiveData<>(false);
+    public MutableLiveData<Boolean> mLoginTipVisibility = new MutableLiveData<>(false);
 
-    public BaseDrivingRecordViewModel(@NonNull Application application) {
+    public BaseDrivingRecordViewModel(@NonNull final Application application) {
         super(application);
     }
 
@@ -38,30 +34,42 @@ public class BaseDrivingRecordViewModel extends BaseViewModel<DrivingRecordFragm
     }
 
     //返回上一页
-    public Action drivingRecordBack = () -> {
+    public Action mDrivingRecordBack = () -> {
         closeFragment(true);
     };
 
     //一键登录，同步里程数据
-    public Action toLogin = () -> {
+    public Action mToLogin = () -> {
         addFragment(new DrivingRecordLoginFragment(), null);
     };
 
-    public Action toRecordSetting = () -> {
+    public Action mToRecordSetting = () -> {
         addFragment(new RecordSettingFragment(), null);
     };
 
     /**
      * 跳转到行程详情页
+     * @param bean 行程详情数据
      */
-    public void goDetailsFragment(DrivingRecordDataBean bean) {
-        Bundle bundle = new Bundle();
+    public void goDetailsFragment(final DrivingRecordDataBean bean) {
+        final Bundle bundle = new Bundle();
         bundle.putParcelable(AutoMapConstant.RecordDetailsBundleKey.BUNDLE_RECORD_DERAILS, bean);
-        DrivingRecordDetailsFragment drivingRecordDetailsFragment = new DrivingRecordDetailsFragment();
+        final DrivingRecordDetailsFragment drivingRecordDetailsFragment = new DrivingRecordDetailsFragment();
         drivingRecordDetailsFragment.setArguments(bundle);
         drivingRecordDetailsFragment.onInitData();
         addFragment(drivingRecordDetailsFragment, null);
     }
+
+    /**
+     * 获取指定轨迹文件的深度信息，通过异步回调返回。
+     * @param psSavePath GPS轨迹文件保存路径
+     * @param psFileName GPS轨迹文件名
+     * @return 结果值
+     */
+    public int obtainGpsTrackDepInfo(final String psSavePath, final String psFileName) {
+        return mModel.obtainGpsTrackDepInfo(psSavePath, psFileName);
+    }
+
 
     /**
      * 从sdk获取行程数据列表保存到本地
@@ -93,35 +101,59 @@ public class BaseDrivingRecordViewModel extends BaseViewModel<DrivingRecordFragm
 
     /**
      *  根据ID删除行程信息
+     *  @param id 行程ID
+     *  @return 结果值
      */
-    public int delBehaviorData(String id) {
+    public int delBehaviorData(final String id) {
         return mModel.delBehaviorData(id);
     }
 
-    public void updateDrivingRecordData(ArrayList<DrivingRecordDataBean> dataList) {
+    /**
+     * 更新行程数据列表
+     * @param dataList 行程数据列表
+     */
+    public void updateDrivingRecordData(final ArrayList<DrivingRecordDataBean> dataList) {
         if (dataList == null || dataList.isEmpty()) {
-            recordListViewVisibility.setValue(false);
-            emptyViewVisibility.setValue(true);
+            mRecordListViewVisibility.setValue(false);
+            mEmptyViewVisibility.setValue(true);
         } else {
-            recordListViewVisibility.setValue(true);
-            emptyViewVisibility.setValue(false);
+            mRecordListViewVisibility.setValue(true);
+            mEmptyViewVisibility.setValue(false);
             mView.updateDrivingRecordView(dataList);
         }
     }
 
+    /**
+     * 更新行程数据列表
+     */
     public void updateDrivingRecordData() {
         mView.getDrivingRecord();
     }
 
     /**
      * 显示当前账号登录状态
+     * @param isLogin 是否登录
      */
-    public void updateLoginTipView(boolean isLogin) {
+    public void updateLoginTipView(final boolean isLogin) {
         if (isLogin) {
-            loginTipVisibility.setValue(false);
+            mLoginTipVisibility.setValue(false);
         } else {
-            loginTipVisibility.setValue(true);
+            mLoginTipVisibility.setValue(true);
         }
     }
 
+    /**
+     * 隐藏进度框
+     */
+    public void hideDialog() {
+        mView.hideDialog();
+    }
+
+    /**
+     * 通过数据type删除其对应info
+     * @param fileName 数据文件名
+     */
+    public void deleteValueByFileName(final String fileName) {
+        mModel.deleteValueByFileName(fileName);
+    }
 }

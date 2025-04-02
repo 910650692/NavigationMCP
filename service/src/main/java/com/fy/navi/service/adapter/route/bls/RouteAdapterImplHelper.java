@@ -1,5 +1,6 @@
 package com.fy.navi.service.adapter.route.bls;
 
+
 import com.android.utils.ConvertUtils;
 import com.android.utils.DeviceUtils;
 import com.android.utils.TimeUtils;
@@ -7,15 +8,21 @@ import com.autonavi.gbl.common.model.Coord2DDouble;
 import com.autonavi.gbl.common.model.Coord2DInt32;
 import com.autonavi.gbl.common.path.model.ChargingArgumentsInfo;
 import com.autonavi.gbl.common.path.model.GroupSegment;
+import com.autonavi.gbl.common.path.model.LightBarItem;
 import com.autonavi.gbl.common.path.model.RestrictionInfo;
 import com.autonavi.gbl.common.path.model.TrafficIncident;
 import com.autonavi.gbl.common.path.option.LinkInfo;
+import com.autonavi.gbl.route.model.BLRerouteRequestInfo;
+import com.autonavi.gbl.route.observer.INaviRerouteObserver;
 import com.fy.navi.service.define.route.Coord3DDouble;
 import com.fy.navi.service.define.route.RouteAlterChargePriceInfo;
 import com.fy.navi.service.define.route.RouteAlternativeChargeDetourInfo;
 import com.fy.navi.service.define.route.RouteChargeStationNumberInfo;
 import com.fy.navi.service.define.route.RouteL2Data;
+import com.fy.navi.service.define.route.RouteLightBarItem;
 import com.fy.navi.service.define.route.RoutePriorityType;
+import com.fy.navi.service.define.route.RouteTMCParam;
+import com.fy.navi.service.define.route.RouteWeatherID;
 import com.fy.navi.service.define.search.ParkingInfo;
 import com.fy.navi.service.define.search.PoiInfoEntity;
 import com.fy.navi.service.define.search.SearchParkInOutInfo;
@@ -61,7 +68,7 @@ import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.adapter.route.RouteResultObserver;
 import com.fy.navi.service.define.bean.GeoPoint;
 import com.fy.navi.service.define.layer.RouteLineLayerParam;
-import com.fy.navi.service.define.map.MapTypeId;
+import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.route.RequestRouteResult;
 import com.fy.navi.service.define.route.RouteAlongCityInfo;
 import com.fy.navi.service.define.route.RouteAlongCityParam;
@@ -105,7 +112,7 @@ import java.util.List;
  * RouteService辅助类.
  *
  * @author lvww
- * @version  \$Revision.1.0\$
+ * @version \$Revision.1.0\$
  * Description Helper类只做对象及数据转换，不做原子能力调用
  * Date 2024/12/5
  */
@@ -135,6 +142,7 @@ public class RouteAdapterImplHelper {
         mRouteService.init(getRouteServiceParam());
         mRouteService.addRouteResultObserver(mRouteResultObserver);
         mRouteService.addRouteWeatherObserver(mRouteWeatherObserver);
+        mRouteService.addRerouteObserver(mRerouteObserver);
     }
 
     /**
@@ -155,6 +163,7 @@ public class RouteAdapterImplHelper {
 
     /**
      * 获取算路结果
+     *
      * @return 算路结果
      */
     public Hashtable<Long, RequestRouteResult> getRouteResultDataHashtable() {
@@ -167,16 +176,17 @@ public class RouteAdapterImplHelper {
     protected RouteInitParam getRouteServiceParam() {
         final RouteInitParam routeInitParam = new RouteInitParam();
         //所有的重算由HMI自行发起
-        routeInitParam.rerouteParam = new RerouteParam(false, false);
         routeInitParam.collisionParam.state = RouteSerialParallelState.RouteSerial;
         routeInitParam.collisionParam.solution = RouteCollisionSolution.DiceCollision;
+        routeInitParam.rerouteParam.enableAutoReroute = true;
         routeInitParam.rerouteParam.enableAutoSwitchParallelReroute = true;
         return routeInitParam;
     }
 
     /**
      * 注册算路回调监听
-     * @param key key
+     *
+     * @param key                 key
      * @param routeResultObserver 回调监听对象
      */
     public void registerRouteObserver(final String key, final RouteResultObserver routeResultObserver) {
@@ -185,6 +195,7 @@ public class RouteAdapterImplHelper {
 
     /**
      * 设置算路偏好
+     *
      * @param routePreferenceID 偏好Id
      */
     public void setRoutePreference(final RoutePreferenceID routePreferenceID) {
@@ -252,12 +263,13 @@ public class RouteAdapterImplHelper {
 
     /**
      * 转化算路类别
+     *
      * @param routePriorityType 算路Type
      * @return 算路Type
      */
     public int getRouteType(final int routePriorityType) {
         switch (routePriorityType) {
-            case RoutePriorityType.ROUTE_TYPE_COMMON :
+            case RoutePriorityType.ROUTE_TYPE_COMMON:
                 return RouteType.RouteTypeCommon;
             case RoutePriorityType.ROUTE_TYPE_YAW:
                 return RouteType.RouteTypeYaw;
@@ -300,8 +312,9 @@ public class RouteAdapterImplHelper {
 
     /**
      * 获取请求参数
+     *
      * @param requestRouteResult 算路结果类
-     * @param paramList 算路点参数
+     * @param paramList          算路点参数
      * @return 算路条件
      */
     public RouteOption getRequestParam(final RequestRouteResult requestRouteResult, final List<RouteParam> paramList) {
@@ -336,6 +349,7 @@ public class RouteAdapterImplHelper {
 
     /**
      * 解注册算路回调监听
+     *
      * @param key key
      */
     public void removeRouteObserver(final String key) {
@@ -368,10 +382,10 @@ public class RouteAdapterImplHelper {
      */
     private POIForRequest convertParam2PoiForRequest(final RequestRouteResult requestRouteResult, final List<RouteParam> paramList) {
         final POIForRequest poiForRequest = new POIForRequest();
+        final RouteLineLayerParam routeLineLayerParam = requestRouteResult.getMLineLayerParam();
         for (RouteParam routeParam : paramList) {
             final POIInfo poiInfo = getPOIInfo(routeParam);
             Logger.i(TAG, "poiInfo -> ", poiInfo);
-            final RouteLineLayerParam routeLineLayerParam = requestRouteResult.getMLineLayerParam();
             switch (routeParam.getPoiType()) {
                 case RoutePoiType.ROUTE_POI_TYPE_START -> {
                     final RoutePoint routePoint = new RoutePoint();
@@ -397,6 +411,9 @@ public class RouteAdapterImplHelper {
                 default -> Logger.i(TAG, "Poi点类型错误");
             }
         }
+        routeLineLayerParam.setMPoiForRequest(poiForRequest);
+        routeLineLayerParam.setMRouteType(requestRouteResult.getMRouteType());
+        routeLineLayerParam.setMStrategy(mRouteStrategy);
         return poiForRequest;
     }
 
@@ -440,7 +457,7 @@ public class RouteAdapterImplHelper {
      * 转化算路信息
      *
      * @param pathInfoList 算路参数
-     * @param onlineRoute 是否在线算路
+     * @param onlineRoute  是否在线算路
      * @return 算路信息
      */
     private List<RouteLineInfo> convertPathInfo2RouteResult(final ArrayList<PathInfo> pathInfoList, final boolean onlineRoute) {
@@ -449,8 +466,9 @@ public class RouteAdapterImplHelper {
 
     /**
      * 路线基本信息
+     *
      * @param pathInfoList 算路参数
-     * @param onlineRoute 是否在线算路
+     * @param onlineRoute  是否在线算路
      * @return 算路信息
      **/
     private List<RouteLineInfo> getRouteLineInfoList(final ArrayList<PathInfo> pathInfoList, final boolean onlineRoute) {
@@ -509,6 +527,7 @@ public class RouteAdapterImplHelper {
 
     /**
      * 路线详情
+     *
      * @param info 算路信息
      * @return 算路详情
      **/
@@ -592,6 +611,7 @@ public class RouteAdapterImplHelper {
 
     /**
      * 获取规避路线集合
+     *
      * @param segmentInfo 路线内导航段信息类
      * @return 算路详情
      **/
@@ -622,6 +642,12 @@ public class RouteAdapterImplHelper {
             if (null == requestRouteResult) {
                 return;
             }
+            //专为通勤模式添加回调
+            if (requestRouteResult.getMRouteRequestCallBackType() != -1) {
+                handlerTMCForMap(pathInfoList, requestId, requestRouteResult.getMMapTypeId()
+                        , requestRouteResult.getMRouteRequestCallBackType());
+                return;
+            }
             handResultSuccess(getMsgs(requestRouteResult.getMRouteWay(), false));
             handlerRouteResult(requestRouteResult, pathInfoList);
             handlerDrawLine(requestRouteResult.getMLineLayerParam(), pathInfoList, requestId,
@@ -645,13 +671,19 @@ public class RouteAdapterImplHelper {
 
         @Override
         public void onNewRouteError(final PathResultData pathResultData, final RouteLimitInfo routeLimitInfo) {
-            Logger.i(TAG, "pathResultData : ", pathResultData,
+            Logger.i("song---", "pathResultData : ", pathResultData,
                     "routeLimitInfo : ", routeLimitInfo);
             if (ConvertUtils.isEmpty(mRouteResultObserverHashtable)) {
                 return;
             }
             final RequestRouteResult requestRouteResult = ConvertUtils.containToValue(mRouteResultDataHashtable, pathResultData.requestId);
             if (!ConvertUtils.isEmpty(requestRouteResult)) {
+                //专为通勤模式添加回调
+                if (requestRouteResult.getMRouteRequestCallBackType() != -1) {
+                    handlerTMCForMap(null, pathResultData.requestId, requestRouteResult.getMMapTypeId()
+                            , requestRouteResult.getMRouteRequestCallBackType());
+                    return;
+                }
                 final String errorMsg = getMsgs(requestRouteResult.getMRouteWay(), true);
                 final String errorMsgDetail = getErrorMsgsDetails(pathResultData.errorCode);
                 for (RouteResultObserver resultObserver : mRouteResultObserverHashtable.values()) {
@@ -700,6 +732,7 @@ public class RouteAdapterImplHelper {
 
     /**
      * 算路请求成功回调，用以提示HMI结束Loading框和清除队列里的空对象
+     *
      * @param successMsg 成功消息
      */
     private void handResultSuccess(final String successMsg) {
@@ -741,7 +774,7 @@ public class RouteAdapterImplHelper {
      * @param onlineRoute         是否在线算路
      */
     private void handlerDrawLine(final RouteLineLayerParam routeLineLayerParam, final ArrayList<PathInfo> pathInfoList,
-                                 final long requestId, final MapTypeId mapTypeId, final boolean onlineRoute) {
+                                 final long requestId, final MapType mapTypeId, final boolean onlineRoute) {
         routeLineLayerParam.setMRequestId(requestId);
         routeLineLayerParam.setMMapTypeId(mapTypeId);
         routeLineLayerParam.setMIsOnlineRoute(onlineRoute);
@@ -765,7 +798,7 @@ public class RouteAdapterImplHelper {
      * @param onlineRoute        是否在线算路
      */
     private void handlerRestArea(final RouteRestAreaParam routeRestAreaParam, final ArrayList<PathInfo> pathInfoList,
-                                 final long requestId, final MapTypeId mapTypeId, final boolean onlineRoute) {
+                                 final long requestId, final MapType mapTypeId, final boolean onlineRoute) {
         routeRestAreaParam.setMRequestId(requestId);
         routeRestAreaParam.setMMapTypeId(mapTypeId);
         routeRestAreaParam.setMIsOnlineRoute(onlineRoute);
@@ -811,13 +844,59 @@ public class RouteAdapterImplHelper {
     /**
      * 路线上充电站数据
      *
-     * @param routeChargeStationParam 充电站信息
      * @param pathInfoList 路线信息
      * @param requestId    请求Id
      * @param mapTypeId    视图Id
+     * @param key          家或公司
+     */
+    private void handlerTMCForMap(final ArrayList<PathInfo> pathInfoList, final long requestId
+            , final MapType mapTypeId, final int key) {
+        final RouteTMCParam param = new RouteTMCParam();
+        param.setMMapTypeId(mapTypeId);
+        param.setMRequestId(requestId);
+        param.setMKey(key);
+        final List<RouteLightBarItem> routeLightBarItems = new ArrayList<>();
+        if (!ConvertUtils.isEmpty(pathInfoList)) {
+            final int allDis = (int) pathInfoList.get(0).getLength();
+            param.setMTime(TimeUtils.getInstance().getTimeStr(pathInfoList.get(0).getTravelTime()));
+            param.setMIsShort(allDis <= 1000);
+            final ArrayList<LightBarItem> lightBarItems = pathInfoList.get(0).getLightBarItems();
+            int allPercent = 100;
+            for (int t = 0; t < lightBarItems.size(); t++) {
+                final RouteLightBarItem lightBarItem = new RouteLightBarItem();
+                lightBarItem.setMStatus(lightBarItems.get(t).status);
+                if (t == lightBarItems.size() - 1) {
+                    if (allPercent < 0) {
+                        lightBarItem.setMPercent(0);
+                    } else {
+                        lightBarItem.setMPercent(allPercent);
+                    }
+                } else {
+                    lightBarItem.setMPercent(lightBarItems.get(t).length * 100 / allDis);
+                }
+                allPercent = allPercent - lightBarItems.get(t).length * 100 / allDis;
+                routeLightBarItems.add(lightBarItem);
+            }
+        }
+        param.setMRouteLightBarItem(routeLightBarItems);
+        for (RouteResultObserver resultObserver : mRouteResultObserverHashtable.values()) {
+            if (resultObserver == null) {
+                continue;
+            }
+            resultObserver.onRouteTMCInfo(param);
+        }
+    }
+
+    /**
+     * 路线上充电站数据
+     *
+     * @param routeChargeStationParam 充电站信息
+     * @param pathInfoList            路线信息
+     * @param requestId               请求Id
+     * @param mapTypeId               视图Id
      */
     private void handlerChargingStation(final RouteChargeStationParam routeChargeStationParam,
-                                        final ArrayList<PathInfo> pathInfoList, final long requestId, final MapTypeId mapTypeId) {
+                                        final ArrayList<PathInfo> pathInfoList, final long requestId, final MapType mapTypeId) {
         routeChargeStationParam.setMRequestId(requestId);
         routeChargeStationParam.setMMapTypeId(mapTypeId);
         final ArrayList<RouteChargeStationInfo> chargeStationInfos = new ArrayList<>();
@@ -933,7 +1012,7 @@ public class RouteAdapterImplHelper {
      * @param mapTypeId         视图Id
      */
     private void handlerWeather(final RouteWeatherParam routeWeatherParam, final ArrayList<WeatherLabelItem> weatherLabelItems,
-                                final long requestId, final MapTypeId mapTypeId) {
+                                final long requestId, final MapType mapTypeId) {
         if (ConvertUtils.isEmpty(weatherLabelItems) || weatherLabelItems.isEmpty()) {
             for (RouteResultObserver resultObserver : mRouteResultObserverHashtable.values()) {
                 if (resultObserver == null) {
@@ -972,6 +1051,7 @@ public class RouteAdapterImplHelper {
         infos.setMPosition(new Coord3DDouble(info.mPosition.lon, info.mPosition.lat, info.mPosition.z));
         infos.setMWeatherType(info.mWeatherType);
         infos.setMWeatherID(info.mWeatherID);
+        infos.setMRouteWeatherID(getRouteWeatherId(info.mWeatherID));
         infos.setMPathID(info.mPathID);
         infos.setMCityID(info.mCityID);
         infos.setMTimestamp(info.mTimestamp);
@@ -987,6 +1067,83 @@ public class RouteAdapterImplHelper {
     }
 
     /**
+     * 转化天气信息
+     *
+     * @param weatherId 天气id
+     * @return 天气枚举
+     */
+    private RouteWeatherID getRouteWeatherId(final int weatherId) {
+        switch (weatherId) {
+            case 104:
+            case 901:
+                return RouteWeatherID.ROUTE_WEATHER_CLOUDY;
+            case 302:
+            case 303:
+            case 304:
+            case 1004:
+            case 1005:
+                return RouteWeatherID.ROUTE_WEATHER_THUNDER;
+            case 101:
+            case 102:
+            case 103:
+                return RouteWeatherID.ROUTE_WEATHER_MORE_CLOUDY;
+            case 300:
+            case 301:
+            case 305:
+            case 306:
+            case 307:
+            case 309:
+                return RouteWeatherID.ROUTE_WEATHER_RAIN;
+            case 400:
+            case 401:
+            case 402:
+            case 403:
+            case 404:
+            case 405:
+            case 406:
+            case 407:
+                return RouteWeatherID.ROUTE_WEATHER_SNOW;
+            case 308:
+            case 310:
+            case 311:
+            case 312:
+                return RouteWeatherID.ROUTE_WEATHER_BIG_RAIN;
+            case 200:
+            case 201:
+            case 202:
+            case 203:
+            case 204:
+            case 205:
+            case 206:
+            case 207:
+            case 208:
+            case 209:
+            case 210:
+            case 211:
+            case 212:
+            case 213:
+                return RouteWeatherID.ROUTE_WEATHER_WIND;
+            case 500:
+            case 501:
+            case 502:
+            case 503:
+            case 504:
+            case 505:
+            case 506:
+            case 507:
+            case 508:
+                return RouteWeatherID.ROUTE_WEATHER_FOG;
+            case 313:
+            case 1001:
+            case 1002:
+            case 1003:
+                return RouteWeatherID.ROUTE_WEATHER_HAIL;
+            default:
+                return RouteWeatherID.ROUTE_WEATHER_SUNNY;
+        }
+    }
+
+    /**
      * 限行提示
      *
      * @param routeRestrictionParam 限行总数据
@@ -997,7 +1154,7 @@ public class RouteAdapterImplHelper {
      */
     private void handlerRestriction(final RouteRestrictionParam routeRestrictionParam,
                                     final ArrayList<PathInfo> pathInfoList, final long requestId,
-                                    final MapTypeId mapTypeId, final boolean onlineRoute) {
+                                    final MapType mapTypeId, final boolean onlineRoute) {
         if (pathInfoList.size() <= NumberUtils.NUM_0 ||
                 pathInfoList.get(NumberUtils.NUM_0).getRestrictionInfo().title.length() == NumberUtils.NUM_0) {
             return;
@@ -1023,6 +1180,7 @@ public class RouteAdapterImplHelper {
 
     /**
      * 转化限行消息
+     *
      * @param info 限行消息
      * @return 限行消息
      */
@@ -1041,6 +1199,7 @@ public class RouteAdapterImplHelper {
 
     /**
      * 提取限行消息
+     *
      * @param ruleIdList 限行消息
      * @return 限行消息文言
      */
@@ -1058,6 +1217,7 @@ public class RouteAdapterImplHelper {
 
     /**
      * 转化限行消息
+     *
      * @param param 限行请求消息
      * @return 限行消息
      */
@@ -1106,7 +1266,7 @@ public class RouteAdapterImplHelper {
      * @param onlineRoute            是否在线算路
      */
     private void handlerRestTollGate(final RouteRestTollGateParam routeRestTollGateParam, final ArrayList<PathInfo> pathInfoList,
-                                     final long requestId, final MapTypeId mapTypeId, final boolean onlineRoute) {
+                                     final long requestId, final MapType mapTypeId, final boolean onlineRoute) {
         routeRestTollGateParam.setMRequestId(requestId);
         routeRestTollGateParam.setMMapTypeId(mapTypeId);
         routeRestTollGateParam.setMIsOnlineRoute(onlineRoute);
@@ -1133,6 +1293,7 @@ public class RouteAdapterImplHelper {
 
     /**
      * 转化收费站信息
+     *
      * @param info 收费站消息
      * @return 收费站消息
      */
@@ -1155,7 +1316,7 @@ public class RouteAdapterImplHelper {
      * @param onlineRoute         是否在线算路
      */
     private void handlerCityAdCode(final RouteAlongCityParam routeAlongCityParam, final ArrayList<PathInfo> pathInfoList,
-                                   final long requestId, final MapTypeId mapTypeId, final boolean onlineRoute) {
+                                   final long requestId, final MapType mapTypeId, final boolean onlineRoute) {
         routeAlongCityParam.setMRequestId(requestId);
         routeAlongCityParam.setMMapTypeId(mapTypeId);
         routeAlongCityParam.setMIsOnlineRoute(onlineRoute);
@@ -1184,7 +1345,7 @@ public class RouteAdapterImplHelper {
      * @param onlineRoute               是否在线算路
      */
     private void handlerTrafficIncident(final RouteTrafficIncidentParam routeTrafficIncidentParam, final ArrayList<PathInfo> pathInfoList,
-                                        final long requestId, final MapTypeId mapTypeId, final boolean onlineRoute) {
+                                        final long requestId, final MapType mapTypeId, final boolean onlineRoute) {
         routeTrafficIncidentParam.setMRequestId(requestId);
         routeTrafficIncidentParam.setMMapTypeId(mapTypeId);
         routeTrafficIncidentParam.setMIsOnlineRoute(onlineRoute);
@@ -1208,8 +1369,10 @@ public class RouteAdapterImplHelper {
             resultObserver.onRouteTrafficIncidentInfo(routeTrafficIncidentParam);
         }
     }
+
     /**
      * 转化算路交通信息
+     *
      * @param info 交通消息
      * @return 交通消息
      */
@@ -1239,7 +1402,7 @@ public class RouteAdapterImplHelper {
      * 续航里程信息
      *
      * @param pathInfoList 路线信息
-     * @param onlineRoute 是否在线导航
+     * @param onlineRoute  是否在线导航
      */
     private void handlerRange(final ArrayList<PathInfo> pathInfoList, final boolean onlineRoute) {
         final ArrayList<EvRangeOnRouteInfo> evRangeOnRouteInfos = new ArrayList<>();
@@ -1298,6 +1461,7 @@ public class RouteAdapterImplHelper {
 
     /**
      * 转化路径信息
+     *
      * @param pathInfo 路径消息
      * @return 路径信息
      */
@@ -1329,7 +1493,7 @@ public class RouteAdapterImplHelper {
                         dto.setMLinkID((int) linkInfo.getTPID());
                         dto.setMFormway(linkInfo.getFormway());
                         dto.setMLen(linkInfo.getLength());
-                        dto.setMLinktype( linkInfo.getLinkType());
+                        dto.setMLinktype(linkInfo.getLinkType());
                         dto.setMRoadclass(linkInfo.getRoadClass());
                         dto.setMRoadname(linkInfo.getRoadName());
                         dto.setMIsToll(linkInfo.isToll());
@@ -1375,7 +1539,8 @@ public class RouteAdapterImplHelper {
 
     /**
      * 获取转化后数据
-     * @param pathInfo 路径消息
+     *
+     * @param pathInfo  路径消息
      * @param firstIcon firstIcon
      * @return 转化后数据
      */
@@ -1431,6 +1596,7 @@ public class RouteAdapterImplHelper {
 
     /**
      * 获取转化后数据
+     *
      * @param pathInfo 路径消息
      * @return 转化后数据
      */
@@ -1450,6 +1616,7 @@ public class RouteAdapterImplHelper {
 
     /**
      * 获取转化后数据
+     *
      * @param pathInfo 路径消息
      * @return 转化后数据
      */
@@ -1474,7 +1641,8 @@ public class RouteAdapterImplHelper {
 
     /**
      * 获取转化后数据
-     * @param pathInfo 路径消息
+     *
+     * @param pathInfo     路径消息
      * @param segmentCount segmentCount
      * @return 转化后数据
      */
@@ -1541,6 +1709,7 @@ public class RouteAdapterImplHelper {
 
     /**
      * 获取转化后数据
+     *
      * @return 转化后数据
      */
     private RouteL2Data.EndPoiDTO getEndPoiDTO() {
@@ -1593,8 +1762,10 @@ public class RouteAdapterImplHelper {
         }
         return endPoiDTO;
     }
+
     /**
      * 转换文言
+     *
      * @param segmentInfo 导航段信息
      * @return 转化后的文言
      */
@@ -1636,20 +1807,37 @@ public class RouteAdapterImplHelper {
         handlerWeather(requestRouteResult.getMRouteWeatherParam(), arrayList, requestId, requestRouteResult.getMMapTypeId());
     };
 
-    private final IRouteAlternativeChargeStationObserver mRouteAlternativeChargeStationObserver = new IRouteAlternativeChargeStationObserver() {
-        @Override
-        public void onResult(final RouteAlternativeChargeStationResult routeAlternativeChargeStationResult) {
-            Logger.i(TAG, " requestId -> " + GsonUtils.toJson(routeAlternativeChargeStationResult));
-            handlerAlternativeChargingStation(routeAlternativeChargeStationResult);
-        }
+    private final IRouteAlternativeChargeStationObserver mRouteAlternativeChargeStationObserver = routeAlternativeChargeStationResult -> {
+        Logger.i(TAG, " requestId -> " + GsonUtils.toJson(routeAlternativeChargeStationResult));
+        handlerAlternativeChargingStation(routeAlternativeChargeStationResult);
     };
 
     public IRouteAlternativeChargeStationObserver getRouteAlternativeChargeStationObserver() {
         return mRouteAlternativeChargeStationObserver;
     }
 
+    private final INaviRerouteObserver mRerouteObserver = new INaviRerouteObserver() {
+        @Override
+        public void onModifyRerouteOption(RouteOption rerouteOption) {
+            Logger.d(TAG, "onReroute: " + rerouteOption.getRouteReqId());
+        }
+
+        @Override
+        public void onRerouteInfo(BLRerouteRequestInfo info) {
+            final RequestRouteResult requestRouteResult = ConvertUtils.containToValue(mRouteResultDataHashtable, mRequsetId);
+            if (info.option.getRouteType() == RouteType.RouteTypeYaw) {
+                Logger.i(TAG, "onReroute: 偏航引发的重算");
+                mRouteResultDataHashtable.put(info.requestId, requestRouteResult);
+            } else if (info.option.getRouteType() == RouteType.RouteTypeTMC) {
+                Logger.i(TAG, "onReroute: TMC引发的重算");
+                mRouteResultDataHashtable.put(info.requestId, requestRouteResult);
+            }
+        }
+    };
+
     /**
      * 设置终点信息
+     *
      * @param poiInfoEntity 点消息
      */
     public void sendEndEntity(final PoiInfoEntity poiInfoEntity) {

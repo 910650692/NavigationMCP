@@ -7,7 +7,7 @@ import androidx.lifecycle.LifecycleObserver;
 import androidx.lifecycle.OnLifecycleEvent;
 
 import com.android.utils.log.Logger;
-import com.fy.navi.service.define.map.MapTypeId;
+import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.ui.base.BaseFragment;
 
 /**
@@ -17,7 +17,7 @@ import com.fy.navi.ui.base.BaseFragment;
  */
 public class BaseSceneModel<V extends BaseSceneView> implements LifecycleObserver {
     protected V mScreenView;
-    protected MapTypeId mMapTypeId;
+    protected MapType mMapTypeId;
 
     protected BaseSceneModel(V mScreenView) {
         this.mScreenView = mScreenView;
@@ -33,7 +33,7 @@ public class BaseSceneModel<V extends BaseSceneView> implements LifecycleObserve
         Logger.d(getClass().getSimpleName(), "Scene onDestroy");
     }
 
-    protected void setScreenId(MapTypeId mapTypeId){
+    protected void setScreenId(MapType mapTypeId){
         this.mMapTypeId = mapTypeId;
     }
 

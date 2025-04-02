@@ -14,7 +14,7 @@ import com.fy.navi.service.AutoMapConstant;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.adapter.navi.NaviConstant;
 import com.fy.navi.service.adapter.navi.bls.NaviDataFormatHelper;
-import com.fy.navi.service.define.map.MapTypeId;
+import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.map.MapTypeManager;
 import com.fy.navi.service.define.navi.CrossImageEntity;
 import com.fy.navi.service.define.navi.LaneInfoEntity;
@@ -149,7 +149,7 @@ public class LauncherNaviGuidanceModel extends BaseModel<LauncherNaviGuidanceVie
     }
 
     @Override
-    public void onRouteFail(MapTypeId mapTypeId, String errorMsg) {
+    public void onRouteFail(MapType mapTypeId, String errorMsg) {
         Logger.i(TAG, "onRouteFail");
     }
 
@@ -173,7 +173,7 @@ public class LauncherNaviGuidanceModel extends BaseModel<LauncherNaviGuidanceVie
     }
 
     @Override
-    public void onImmersiveStatusChange(MapTypeId mapTypeId, ImersiveStatus currentImersiveStatus) {
+    public void onImmersiveStatusChange(MapType mapTypeId, ImersiveStatus currentImersiveStatus) {
         Logger.i(TAG, "NaviGuidanceModel currentImersiveStatus：" + currentImersiveStatus + "，mCurrentStatus：" + mCurrentStatus);
         if (currentImersiveStatus != mCurrentStatus) {
             mCurrentStatus = currentImersiveStatus;

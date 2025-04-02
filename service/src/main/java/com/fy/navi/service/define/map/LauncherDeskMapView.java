@@ -21,7 +21,7 @@ public class LauncherDeskMapView extends  FullScreenMapView implements IBaseScre
     }
 
     @Override
-    public MapTypeId provideMapTypeId() {
-        return MapTypeId.LAUNCHER_DESK_MAP;
+    public MapType provideMapTypeId() {
+        return MapType.LAUNCHER_DESK_MAP;
     }
 }

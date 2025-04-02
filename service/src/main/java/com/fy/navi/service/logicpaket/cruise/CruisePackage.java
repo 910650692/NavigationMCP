@@ -1,6 +1,7 @@
 package com.fy.navi.service.logicpaket.cruise;
 
 import com.android.utils.ConvertUtils;
+import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
 import com.fy.navi.service.adapter.cruise.CruiseAdapter;
 import com.fy.navi.service.adapter.cruise.CruiseObserver;
@@ -8,10 +9,12 @@ import com.fy.navi.service.adapter.layer.LayerAdapter;
 import com.fy.navi.service.adapter.navistatus.NavistatusAdapter;
 import com.fy.navi.service.adapter.speech.SpeechAdapter;
 import com.fy.navi.service.define.cruise.CruiseInfoEntity;
-import com.fy.navi.service.define.map.MapTypeId;
+import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.navi.LaneInfoEntity;
 import com.fy.navi.service.define.navi.SoundInfoEntity;
 import com.fy.navi.service.define.navistatus.NaviStatus;
+import com.fy.navi.service.logicpaket.map.MapPackage;
+import com.fy.navi.service.logicpaket.setting.SettingPackage;
 
 import java.util.Hashtable;
 
@@ -21,12 +24,12 @@ import java.util.Hashtable;
  * @date 2024/11/24
  */
 public class CruisePackage implements CruiseObserver {
+    private static final String TAG = "CruisePackage";
     private CruiseAdapter mCruiseAdapter;
     private final LayerAdapter mLayerAdapter;
     private Hashtable<String, ICruiseObserver> mCruiseObserver;
     private NavistatusAdapter mNavistatusAdapter;
     private SpeechAdapter mSpeechAdapter;
-
     private CruisePackage() {
         mCruiseObserver = new Hashtable<>();
         mCruiseAdapter = CruiseAdapter.getInstance();
@@ -60,17 +63,39 @@ public class CruisePackage implements CruiseObserver {
     public boolean startCruise() {
         boolean result = mCruiseAdapter.startCruise();
         if (result) {
-            mLayerAdapter.setFollowMode(MapTypeId.MAIN_SCREEN_MAIN_MAP, true);
+            mLayerAdapter.setFollowMode(MapType.MAIN_SCREEN_MAIN_MAP, true);
             mNavistatusAdapter.setNaviStatus(NaviStatus.NaviStatusType.CRUISE);
-            mLayerAdapter.setVisibleCruiseSignalLight(MapTypeId.MAIN_SCREEN_MAIN_MAP, true);
+            mLayerAdapter.setVisibleCruiseSignalLight(MapType.MAIN_SCREEN_MAIN_MAP, true);
+            initScaleSize();
         }
         return result;
+    }
+
+    /***
+     * ·若设置页【自动比例尺】选项关闭，则采用地图默认比例尺2D: 500m, 3D:50m, 允许用户手动调节比例尺与俯仰角从而锁定巡航视角。;
+     * 若设置页【自动比例尺】选项开启，比例尺的范围是 20~200m。速度与比例尺的对应关系参照PIS-2116第3.2.11.3章节。
+     */
+    private void initScaleSize() {
+        final boolean isAuto = SettingPackage.getInstance().getAutoScale();
+        final boolean is3D = SettingPackage.getInstance().getConfigKeyMapviewMode() == 2;
+        Logger.i(TAG, "initScaleSize", "isAuto:" + isAuto, "is3D视角：" + is3D);
+        if (!isAuto) {
+            if (is3D) {
+                MapPackage.getInstance().setZoomLevel(MapType.MAIN_SCREEN_MAIN_MAP, 17f);
+            } else {
+                MapPackage.getInstance().setZoomLevel(MapType.MAIN_SCREEN_MAIN_MAP, 14f);
+            }
+        } else {
+            // TODO 如果动态比例尺开启，高德不建议设置范围
+            // 在执行一次，防止缓存导致动态比例尺未生效
+            mLayerAdapter.openDynamicLevel(MapType.MAIN_SCREEN_MAIN_MAP, true);
+        }
     }
 
     /*结束巡航*/
     public boolean stopCruise() {
         mSpeechAdapter.stop();
-        mLayerAdapter.setFollowMode(MapTypeId.MAIN_SCREEN_MAIN_MAP, false);
+        mLayerAdapter.setFollowMode(MapType.MAIN_SCREEN_MAIN_MAP, false);
         boolean isSuccess = mCruiseAdapter.stopCruise();
         if (isSuccess) {
             mNavistatusAdapter.setNaviStatus(NaviStatus.NaviStatusType.NO_STATUS);
@@ -142,7 +167,12 @@ public class CruisePackage implements CruiseObserver {
 
     @Override
     public void onPlayTTS(SoundInfoEntity info) {
-
+        // 巡航播报是否打开
+        final boolean isCruiseOpen = SettingPackage.getInstance().getCruiseBroadcastOpen();
+        if (mSpeechAdapter != null && isCruiseOpen) {
+            mSpeechAdapter.synthesize(info.getText());
+        }
+        Logger.i(TAG, "onPlayTTS", "isCruiseTTsOpen:" + isCruiseOpen);
     }
 
     public static CruisePackage getInstance() {

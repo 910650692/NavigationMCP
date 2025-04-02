@@ -15,12 +15,22 @@ public class GemLayerItem implements Serializable {
     private double log;
     private double lat;
     private double z;
+    //搜索图层父子节点pid
+    private String pid;
     // 事件id
     private long eventId;
     private GemClickViewIdInfo clickViewIdInfo;
 
     public long getIndex() {
         return layerItemId;
+    }
+
+    public String getPid() {
+        return pid;
+    }
+
+    public void setPid(String pid) {
+        this.pid = pid;
     }
 
     public void setLayerItemId(long index) {
@@ -73,5 +83,19 @@ public class GemLayerItem implements Serializable {
 
     public void setClickBusinessType(GemLayerClickBusinessType clickBusinessType) {
         this.clickBusinessType = clickBusinessType;
+    }
+
+    @Override
+    public String toString() {
+        return "GemLayerItem{" +
+                "clickBusinessType=" + clickBusinessType +
+                ", layerItemId=" + layerItemId +
+                ", log=" + log +
+                ", lat=" + lat +
+                ", z=" + z +
+                ", pid='" + pid + '\'' +
+                ", eventId=" + eventId +
+                ", clickViewIdInfo=" + clickViewIdInfo +
+                '}';
     }
 }

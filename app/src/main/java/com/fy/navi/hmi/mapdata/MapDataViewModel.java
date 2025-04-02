@@ -20,6 +20,7 @@ import java.util.ArrayList;
 
 public class MapDataViewModel extends BaseViewModel<MapDataFragment, MapDataModel> {
     public MutableLiveData<String> mAllDownloadingDataSize = new MutableLiveData<>("0");
+    public MutableLiveData<Boolean> mNearDownloadBtnVisibility  = new MutableLiveData<>(false);
 
     public MapDataViewModel(@NonNull final Application application) {
         super(application);
@@ -32,9 +33,9 @@ public class MapDataViewModel extends BaseViewModel<MapDataFragment, MapDataMode
 
     /**
      * 获取全部省份+城市数据
-     * @param ischeck
+     * @param isCheck
      */
-    public void getAllProvinceData(final boolean ischeck) {
+    public void getAllProvinceData(final boolean isCheck) {
         ThreadManager.getInstance().postDelay(new Runnable() {
             @Override
             public void run() {
@@ -42,16 +43,15 @@ public class MapDataViewModel extends BaseViewModel<MapDataFragment, MapDataMode
                 //获取全部地图初始化数据
                 mView.updateMapDataView(mModel.getMapDataList());
                 // 获取当前城市数据
-                mView.updateCurrentCityView(mModel.getCurrentCityInfo(310000));
+                mView.updateCurrentCityView(mModel.getCurrentCityInfo());
                 // 获取基础功能包数据
                 mView.updateCountryDataView(mModel.getCountryData());
                 // 获取下载中、更新中状态下的所有城市adCode列表数据
                 mView.updateWorkingView(mModel.getWorkingList(), mModel.getWorkedList());
                 // 获取附近推荐城市信息
-                mView.updateNearDataView(mModel.getNearAdCodeList(310000));
+                mView.updateNearDataView(mModel.getNearAdCodeList());
                 // 发起云端数据列表检测
-                mModel.requestDataListCheck(ischeck);
-
+                mModel.requestDataListCheck(isCheck);
             }
         }, 0);
     }
@@ -83,22 +83,24 @@ public class MapDataViewModel extends BaseViewModel<MapDataFragment, MapDataMode
      * 下载基础包
      */
     public Action mStartDownload = () -> {
-        final CityDataInfo info = mModel.getCountryData();
-        final ArrayList<Integer> cityAdcodes = new ArrayList<>();
-        cityAdcodes.add(info.getAdcode());
-        final CityDownLoadInfo downloadItem = info.getDownLoadInfo();
-        if (downloadItem != null) {
-            if (downloadItem.getTaskState() == UserDataCode.TASK_STATUS_CODE_DOING ||
-                    downloadItem.getTaskState() == UserDataCode.TASK_STATUS_CODE_DONE ||
-                    downloadItem.getTaskState() == UserDataCode.TASK_STATUS_CODE_WAITING) {
-                pauseAllTask(cityAdcodes);
-            } else if (downloadItem.getTaskState() == UserDataCode.TASK_STATUS_CODE_PAUSE ||
-                    downloadItem.getTaskState() == UserDataCode.TASK_STATUS_CODE_READY ||
-                    downloadItem.getTaskState() == UserDataCode.TASK_STATUS_CODE_ERR ||
-                    downloadItem.getTaskState() == UserDataCode.TASK_STATUS_CODE_MAX) {
-                startAllTask(cityAdcodes);
+        ThreadManager.getInstance().postDelay(() -> {
+            final CityDataInfo info = mModel.getCountryData();
+            final ArrayList<Integer> cityAdcodes = new ArrayList<>();
+            cityAdcodes.add(info.getAdcode());
+            final CityDownLoadInfo downloadItem = info.getDownLoadInfo();
+            if (downloadItem != null) {
+                if (downloadItem.getTaskState() == UserDataCode.TASK_STATUS_CODE_DOING ||
+                        downloadItem.getTaskState() == UserDataCode.TASK_STATUS_CODE_DONE ||
+                        downloadItem.getTaskState() == UserDataCode.TASK_STATUS_CODE_WAITING) {
+                    pauseAllTask(cityAdcodes);
+                } else if (downloadItem.getTaskState() == UserDataCode.TASK_STATUS_CODE_PAUSE ||
+                        downloadItem.getTaskState() == UserDataCode.TASK_STATUS_CODE_READY ||
+                        downloadItem.getTaskState() == UserDataCode.TASK_STATUS_CODE_ERR ||
+                        downloadItem.getTaskState() == UserDataCode.TASK_STATUS_CODE_MAX) {
+                    startAllTask(cityAdcodes);
+                }
             }
-        }
+        }, 0);
     };
 
     /**
@@ -115,43 +117,41 @@ public class MapDataViewModel extends BaseViewModel<MapDataFragment, MapDataMode
      * 下载当前城市
      */
     public Action mToDownloadCurrentCity = () -> {
-       /* if (mModel.countryDataVisible()) {
-            mView.showCountryMapDataDialog();
-        }*/
-        final CityDataInfo info = mModel.getCurrentCityInfo(310000);
-        final ArrayList<Integer> cityAdcodes = new ArrayList<>();
-        cityAdcodes.add(info.getAdcode());
-        final CityDownLoadInfo downloadItem = info.getDownLoadInfo();
-        if (downloadItem != null) {
-            if (downloadItem.getTaskState() == UserDataCode.TASK_STATUS_CODE_DOING ||
-                    downloadItem.getTaskState() == UserDataCode.TASK_STATUS_CODE_DONE ||
-                    downloadItem.getTaskState() == UserDataCode.TASK_STATUS_CODE_WAITING) {
-                pauseAllTask(cityAdcodes);
-            } else if (downloadItem.getTaskState() == UserDataCode.TASK_STATUS_CODE_PAUSE ||
-                    downloadItem.getTaskState() == UserDataCode.TASK_STATUS_CODE_READY ||
-                    downloadItem.getTaskState() == UserDataCode.TASK_STATUS_CODE_ERR ||
-                    downloadItem.getTaskState() == UserDataCode.TASK_STATUS_CODE_MAX) {
-                startAllTask(cityAdcodes);
+        ThreadManager.getInstance().postDelay(() -> {
+            final CityDataInfo info = mModel.getCurrentCityInfo();
+            final ArrayList<Integer> cityAdcodes = new ArrayList<>();
+            cityAdcodes.add(info.getAdcode());
+            final CityDownLoadInfo downloadItem = info.getDownLoadInfo();
+            if (downloadItem != null) {
+                if (downloadItem.getTaskState() == UserDataCode.TASK_STATUS_CODE_DOING ||
+                        downloadItem.getTaskState() == UserDataCode.TASK_STATUS_CODE_DONE ||
+                        downloadItem.getTaskState() == UserDataCode.TASK_STATUS_CODE_WAITING) {
+                    pauseAllTask(cityAdcodes);
+                } else if (downloadItem.getTaskState() == UserDataCode.TASK_STATUS_CODE_PAUSE ||
+                        downloadItem.getTaskState() == UserDataCode.TASK_STATUS_CODE_READY ||
+                        downloadItem.getTaskState() == UserDataCode.TASK_STATUS_CODE_ERR ||
+                        downloadItem.getTaskState() == UserDataCode.TASK_STATUS_CODE_MAX) {
+                    startAllTask(cityAdcodes);
+                }
             }
-        }
+        }, 0);
     };
 
     /**
      * 附近城市-全部下载
      */
     public Action mToDownloadNearData = () -> {
-        /*if (mModel.countryDataVisible()) {
-            mView.showCountryMapDataDialog();
-        }*/
         ThreadManager.getInstance().postDelay(new Runnable() {
             @Override
             public void run() {
-                final ArrayList<CityDataInfo> list = mModel.getNearAdCodeList(310000);
+                mNearDownloadBtnVisibility.setValue(false);// 隐藏全部下载按钮
+                final ArrayList<CityDataInfo> list = mModel.getNearAdCodeList();
                 final ArrayList<Integer> cityAdcodes = new ArrayList<>();
-                for(CityDataInfo info :list) {
-                    if (info.getDownLoadInfo().getTaskState() == UserDataCode.TASK_STATUS_CODE_WAITING  // 等待中
-                            || info.getDownLoadInfo().getTaskState() == UserDataCode.TASK_STATUS_CODE_DOING
-                            || info.getDownLoadInfo().getTaskState() == UserDataCode.TASK_STATUS_CODE_DONE) { // 下载中
+                for(CityDataInfo info : list) {
+                    if (info.getDownLoadInfo().getTaskState() == UserDataCode.TASK_STATUS_CODE_READY
+                            || info.getDownLoadInfo().getTaskState() == UserDataCode.TASK_STATUS_CODE_PAUSE
+                            || info.getDownLoadInfo().getTaskState() == UserDataCode.TASK_STATUS_CODE_ERR
+                            || info.getDownLoadInfo().getTaskState() == UserDataCode.TASK_STATUS_CODE_MAX) {
                         cityAdcodes.add(info.getAdcode());
                     }
                 }
@@ -164,6 +164,11 @@ public class MapDataViewModel extends BaseViewModel<MapDataFragment, MapDataMode
      * @param adCodeList 省份、城市ID列表
      */
     public void startAllTask(final ArrayList<Integer> adCodeList) {
+        int adCode = adCodeList.get(0);
+        if (mModel.countryDataVisible() && adCode != 0) {
+            // 初次下载“非基础功能包”的任意城市包，始终提示此弹窗
+            mView.showCountryMapDataDialog();
+        }
         mModel.startAllTask(adCodeList);
     }
 
@@ -199,13 +204,19 @@ public class MapDataViewModel extends BaseViewModel<MapDataFragment, MapDataMode
         mView.notifyMapDataChangeView(provDataInfo);
         mView.notifyCurrentCityView(provDataInfo.getCityInfoList().get(0));
         mView.updateCountryDataView(provDataInfo.getCityInfoList().get(0));
+        mView.notifyNearDataView();
     }
 
     public CityDataInfo getCurrentCityInfo() {
-        return  mModel.getCurrentCityInfo(310000);
+        return  mModel.getCurrentCityInfo();
     }
 
     public CityDataInfo getCountryData() {
         return  mModel.getCountryData();
     }
+
+    public  ArrayList<CityDataInfo> getNearCityData() {
+        return  mModel.getNearAdCodeList();
+    }
+
 }

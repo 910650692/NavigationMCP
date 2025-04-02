@@ -7,24 +7,24 @@
       android:pathData="M28.592,11.088L28.555,46.912"
       android:strokeLineJoin="round"
       android:strokeWidth="3.41176471"
-      android:fillColor="@color/svg_color_000000"
-      android:strokeColor="@color/svg_color_4B535D"
+      android:fillColor="@color/navi_color_000000_0"
+      android:strokeColor="@color/navi_color_4B535D_100"
       android:fillType="evenOdd"
       android:strokeLineCap="round"/>
   <path
       android:pathData="M47.353,15.353L47.325,42.647"
       android:strokeLineJoin="round"
       android:strokeWidth="3.41176471"
-      android:fillColor="@color/svg_color_000000"
-      android:strokeColor="@color/svg_color_4B535D"
+      android:fillColor="@color/navi_color_000000_0"
+      android:strokeColor="@color/navi_color_4B535D_100"
       android:fillType="evenOdd"
       android:strokeLineCap="round"/>
   <path
       android:pathData="M10.677,15.353L10.649,42.647"
       android:strokeLineJoin="round"
       android:strokeWidth="3.41176471"
-      android:fillColor="@color/svg_color_000000"
-      android:strokeColor="@color/svg_color_4B535D"
+      android:fillColor="@color/navi_color_000000_0"
+      android:strokeColor="@color/navi_color_4B535D_100"
       android:fillType="evenOdd"
       android:strokeLineCap="round"/>
 </vector>

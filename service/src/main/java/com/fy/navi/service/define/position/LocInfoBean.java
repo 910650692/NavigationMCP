@@ -4,216 +4,217 @@ import com.android.utils.ConvertUtils;
 
 import java.util.Objects;
 
-/**
- * @Author: baipeng0904
- * @Description: 类作用描述
- * @CreateDate: $ $
- */
 public class LocInfoBean {
+
     public static final int GPS_LOCATION = 0;
     public static final int NET_LOCATION = 1;
 
-    private String provider;
+    private String mProvider;
     // 航向角度
-    private float bearing;
+    private float mBearing;
     //单位：公里/小时
-    private float speed;
+    private float mSpeed;
     // 定位精度
-    private float accuracy;
+    private float mAccuracy;
     // gps时间戳
-    private long gpsTickCount;
+    private long mGpsTickCount;
     // 系统时间戳
-    private long sysTickCount;
+    private long mSysTickCount;
     // 垂直方向精度
-    private float vaccuracy;
+    private float mVaccuracy;
     // 定位类型: -1无效定位，0卫星定位  1wifi定位 2基站定位 3 蓝牙定位 4地磁定位 5未知定位类型
-    private int type = GPS_LOCATION;
+    private int mType = GPS_LOCATION;
     // 定位来源: 0:无效 1:GPS 2:北斗 3:GLONASS 4:GALILEO 8:DR 32.WIFI-corrected 64: Base-Station-corrected
-    private int sourceFlag;
+    private int mSourceFlag;
     //纬度
-    private double latitude;
+    private double mLatitude;
     //经度
-    private double longitude;
+    private double mLongitude;
     //海拔
-    private double altitude;
+    private double mAltitude;
     //地址
-    private String address;
+    private String mAddress;
     //航向，单位：度，北零顺时针。范围：[0-360)。0 => 北, 90 => 东, 180 => 南, 270 => 西
-    private float course;
-    private long timeStamp;
+    private float mCourse;
+    private long mTimeStamp;
 
-    private long roadId;
-    private int ownership;
+    private long mRoadId;
+    private int mOwnership;
 
-    private int linkType;
+    private int mLinkType;
 
     public long getTimeStamp() {
-        return timeStamp;
+        return mTimeStamp;
     }
 
-    public void setTimeStamp(long timeStamp) {
-        this.timeStamp = timeStamp;
+    public void setTimeStamp(final long timeStamp) {
+        mTimeStamp = timeStamp;
     }
 
     public double getLatitude() {
-        return latitude;
+        return mLatitude;
     }
 
-    public void setLatitude(double latitude) {
-        this.latitude = latitude;
+    public void setLatitude(final double latitude) {
+        mLatitude = latitude;
     }
 
     public double getLongitude() {
-        return longitude;
+        return mLongitude;
     }
 
-    public void setLongitude(double longitude) {
-        this.longitude = longitude;
+    public void setLongitude(final double longitude) {
+        mLongitude = longitude;
     }
 
     public double getAltitude() {
-        return altitude;
+        return mAltitude;
     }
 
-    public void setAltitude(double altitude) {
-        this.altitude = altitude;
+    public void setAltitude(final double altitude) {
+        mAltitude = altitude;
     }
 
     public String getAddress() {
-        return address;
+        return mAddress;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
+    public void setAddress(final String address) {
+        mAddress = address;
     }
 
     public String getProvider() {
-        return provider;
+        return mProvider;
     }
 
-    public void setProvider(String provider) {
-        this.provider = provider;
+    public void setProvider(final String provider) {
+        mProvider = provider;
     }
 
     public float getBearing() {
-        return bearing;
+        return mBearing;
     }
 
-    public void setBearing(float bearing) {
-        this.bearing = bearing;
+    public void setBearing(final float bearing) {
+        mBearing = bearing;
     }
 
     public float getSpeed() {
-        return speed;
+        return mSpeed;
     }
 
-    public void setSpeed(float speed) {
-        this.speed = speed;
+    public void setSpeed(final float speed) {
+        mSpeed = speed;
     }
 
     public float getAccuracy() {
-        return accuracy;
+        return mAccuracy;
     }
 
-    public void setAccuracy(float accuracy) {
-        this.accuracy = accuracy;
+    public void setAccuracy(final float accuracy) {
+        mAccuracy = accuracy;
     }
 
     public long getGpsTickCount() {
-        return gpsTickCount;
+        return mGpsTickCount;
     }
 
-    public void setGpsTickCount(long gpsTickCount) {
-        this.gpsTickCount = gpsTickCount;
+    public void setGpsTickCount(final long gpsTickCount) {
+        mGpsTickCount = gpsTickCount;
     }
 
     public long getSysTickCount() {
-        return sysTickCount;
+        return mSysTickCount;
     }
 
-    public void setSysTickCount(long sysTickCount) {
-        this.sysTickCount = sysTickCount;
+    public void setSysTickCount(final long sysTickCount) {
+        mSysTickCount = sysTickCount;
     }
 
     public float getVaccuracy() {
-        return vaccuracy;
+        return mVaccuracy;
     }
 
-    public void setVaccuracy(float vaccuracy) {
-        this.vaccuracy = vaccuracy;
+    public void setVaccuracy(final float vaccuracy) {
+        mVaccuracy = vaccuracy;
     }
 
     public int getType() {
-        return type;
+        return mType;
     }
 
-    public void setType(int type) {
-        this.type = type;
+    public void setType(final int type) {
+        mType = type;
     }
 
     public int getSourceFlag() {
-        return sourceFlag;
+        return mSourceFlag;
     }
 
-    public void setSourceFlag(int sourceFlag) {
-        this.sourceFlag = sourceFlag;
+    public void setSourceFlag(final int sourceFlag) {
+        mSourceFlag = sourceFlag;
     }
 
     public float getCourse() {
-        return course;
+        return mCourse;
     }
 
-    public void setCourse(float course) {
-        this.course = course;
+    public void setCourse(final float course) {
+        mCourse = course;
     }
 
-    public void setRoadId(long roadId) {
-        this.roadId = roadId;
+    public void setRoadId(final long roadId) {
+        mRoadId = roadId;
     }
 
     public long getRoadId() {
-        return roadId;
+        return mRoadId;
     }
 
     public int getOwnership() {
-        return ownership;
+        return mOwnership;
     }
 
-    public void setOwnership(int ownership) {
-        this.ownership = ownership;
+    public void setOwnership(final int ownership) {
+        mOwnership = ownership;
     }
 
     public int getLinkType() {
-        return linkType;
+        return mLinkType;
     }
 
-    public void setLinkType(int linkType) {
-        this.linkType = linkType;
+    public void setLinkType(final int linkType) {
+        mLinkType = linkType;
     }
 
     @Override
     public String toString() {
         return "LocationInfo{" +
-                "latitude=" + latitude +
-                ", longitude=" + longitude +
-                ", altitude=" + altitude +
-                ", address='" + address + '\'' +
-                ", ownership='" + ownership + '\'' +
-                ", linkType='" + linkType + '\'' +
+                "latitude=" + mLatitude +
+                ", longitude=" + mLongitude +
+                ", altitude=" + mAltitude +
+                ", address='" + mAddress + '\'' +
+                ", ownership='" + mOwnership + '\'' +
+                ", linkType='" + mLinkType + '\'' +
                 '}';
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        LocInfoBean that = (LocInfoBean) o;
-        return ConvertUtils.equals(Double.valueOf(latitude), Double.valueOf(that.latitude)) &&
-                ConvertUtils.equals(Double.valueOf(longitude), Double.valueOf(that.longitude));
+    public boolean equals(final Object o) {
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        if (this == o) {
+            return true;
+        }
+        final LocInfoBean that = (LocInfoBean) o;
+        return ConvertUtils.equals(Double.valueOf(mLatitude), Double.valueOf(that.mLatitude)) &&
+                ConvertUtils.equals(Double.valueOf(mLongitude), Double.valueOf(that.mLongitude));
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(latitude, longitude, altitude);
+        return Objects.hash(mLatitude, mLongitude, mAltitude);
     }
+
 }

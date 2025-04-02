@@ -5,6 +5,7 @@ import android.text.TextUtils;
 
 import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
+import com.autonavi.gbl.common.model.Coord2DDouble;
 import com.autonavi.gbl.search.model.AggregateSearchResult;
 import com.autonavi.gbl.search.model.AlongWayPoi;
 import com.autonavi.gbl.search.model.ChargingPlugInfo;
@@ -277,6 +278,41 @@ public final class SearchResultMapper {
     }
 
     /**
+     * 获取停车场列表
+     * @param searchPoiInfo SearchPoiInfo
+     * @return 停车场列表
+     */
+    private List<ParkingInfo> getParkingList(final SearchPoiInfo searchPoiInfo) {
+        //停车场信息
+        final List<ParkingInfo> parkingInfoList = new ArrayList<>();
+        // 停车场出入口信息
+        final List<SearchParkInOutInfo> searchParkInOutInfos = searchPoiInfo.parkingInfo.inoutInfoList
+                .stream()
+                .map(inoutInfo -> new SearchParkInOutInfo()
+                        .setEntExitId(inoutInfo.entExitId)
+                        .setKeytype(inoutInfo.keytype)
+                        .setX(inoutInfo.x)
+                        .setY(inoutInfo.y))
+                .collect(Collectors.toList());
+
+        final ParkingInfo parkingInfo = new ParkingInfo()
+                .setSpaceTotal(searchPoiInfo.parkingInfo.dynamicParking.spaceTotal)
+                .setSpaceFree(searchPoiInfo.parkingInfo.dynamicParking.spaceFree)
+                .setBusyStatus(searchPoiInfo.parkingInfo.dynamicParking.busyStatus)
+                .setSrcType(searchPoiInfo.parkingInfo.dynamicParking.srcType)
+                .setSpace(searchPoiInfo.parkingInfo.space)
+                .setFee(searchPoiInfo.parkingInfo.fee)
+                .setGeometry(searchPoiInfo.parkingInfo.geometry)
+                .setDayCharge(searchPoiInfo.parkingInfo.dayCharge)
+                .setNightCharge(searchPoiInfo.parkingInfo.nightCharge)
+                .setCategory(searchPoiInfo.parkingInfo.category)
+                .setParkingSrcType(searchPoiInfo.parkingInfo.parkingSrcType)
+                .setSearchParkInOutInfos(searchParkInOutInfos);
+        parkingInfoList.add(parkingInfo);
+        return parkingInfoList;
+    }
+
+    /**
      * 映射 SearchPoiInfo 到 PoiInfoEntity
      * @param searchPoiInfo SearchPoiInfo
      * @return PoiInfoEntity
@@ -328,35 +364,31 @@ public final class SearchResultMapper {
                 .stream()
                 .map(this::mapSearchPoiChildInfo)
                 .collect(Collectors.toList());
-        //停车场信息
-        final List<ParkingInfo> parkingInfoList = new ArrayList<>();
-        // 停车场出入口信息
-        final List<SearchParkInOutInfo> searchParkInOutInfos = searchPoiInfo.parkingInfo.inoutInfoList
-                .stream()
-                .map(inoutInfo -> new SearchParkInOutInfo()
-                        .setEntExitId(inoutInfo.entExitId)
-                        .setKeytype(inoutInfo.keytype)
-                        .setX(inoutInfo.x)
-                        .setY(inoutInfo.y))
-                .collect(Collectors.toList());
-
-        final ParkingInfo parkingInfo = new ParkingInfo()
-                .setSpaceTotal(searchPoiInfo.parkingInfo.dynamicParking.spaceTotal)
-                .setSpaceFree(searchPoiInfo.parkingInfo.dynamicParking.spaceFree)
-                .setBusyStatus(searchPoiInfo.parkingInfo.dynamicParking.busyStatus)
-                .setSrcType(searchPoiInfo.parkingInfo.dynamicParking.srcType)
-                .setSpace(searchPoiInfo.parkingInfo.space)
-                .setFee(searchPoiInfo.parkingInfo.fee)
-                .setGeometry(searchPoiInfo.parkingInfo.geometry)
-                .setDayCharge(searchPoiInfo.parkingInfo.dayCharge)
-                .setNightCharge(searchPoiInfo.parkingInfo.nightCharge)
-                .setCategory(searchPoiInfo.parkingInfo.category)
-                .setParkingSrcType(searchPoiInfo.parkingInfo.parkingSrcType)
-                .setSearchParkInOutInfos(searchParkInOutInfos);
-        parkingInfoList.add(parkingInfo);
+        //区域边界点信息
+        final ArrayList<ArrayList<GeoPoint>> poiAoiBounds = new ArrayList<>();
+        for (ArrayList<Coord2DDouble> coord2DDouble : searchPoiInfo.basicInfo.poiAoiBounds) {
+            final ArrayList<GeoPoint> points = new ArrayList<>();
+            for (Coord2DDouble coord2D : coord2DDouble) {
+                final GeoPoint geoPoint = new GeoPoint(coord2D.lon, coord2D.lat);
+                points.add(geoPoint);
+            }
+            poiAoiBounds.add(points);
+        }
+        Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "poiAoiBounds is: " + poiAoiBounds);
+        //道路边界点信息
+        final ArrayList<ArrayList<GeoPoint>> roadBounds = new ArrayList<>();
+        for (ArrayList<Coord2DDouble> coord2DDouble : searchPoiInfo.basicInfo.roadPolygonBounds) {
+            final ArrayList<GeoPoint> points = new ArrayList<>();
+            for (Coord2DDouble coord2D : coord2DDouble) {
+                final GeoPoint geoPoint = new GeoPoint(coord2D.lon, coord2D.lat);
+                points.add(geoPoint);
+            }
+            roadBounds.add(points);
+        }
+        Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "roadBounds is: " + roadBounds);
         Logger.e(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "typeCode is: " + searchPoiInfo.basicInfo.typeCode
-                + " ;name is: " + searchPoiInfo.basicInfo.name
-                + " ;searchPoiInfo.basicInfo.pid:" + searchPoiInfo.basicInfo.poiId);
+                + " ;name is: " + searchPoiInfo.basicInfo.name + " ;searchPoiInfo.basicInfo.pid:" + searchPoiInfo.basicInfo.poiId
+                + " :cityCode is: " + searchPoiInfo.basicInfo.cityCode + " ;adcode is: " + searchPoiInfo.basicInfo.adcode);
         return new PoiInfoEntity()
                 .setPointTypeCode(searchPoiInfo.basicInfo.typeCode)
                 .setPid(searchPoiInfo.basicInfo.poiId)
@@ -366,6 +398,7 @@ public final class SearchResultMapper {
 
                 .setPoint(point)
                 .setAdCode(searchPoiInfo.basicInfo.adcode)
+                .setMCityCode(searchPoiInfo.basicInfo.cityCode)
                 .setIndustry(searchPoiInfo.basicInfo.industry)
                 .setPhone(searchPoiInfo.basicInfo.tel)
                 .setImageUrl(searchPoiInfo.basicInfo.imageUrl)
@@ -373,12 +406,14 @@ public final class SearchResultMapper {
                 .setRating(searchPoiInfo.basicInfo.rating)
                 .setAverageCost(searchPoiInfo.basicInfo.averageCost)
                 .setPoiTag(isParking(searchPoiInfo.basicInfo.typeCode) ? "停车场" : searchPoiInfo.basicInfo.tag)
-                .setParkingInfoList(parkingInfoList)
+                .setParkingInfoList(getParkingList(searchPoiInfo))
                 .setChildInfoList(childInfoList)
                 .setStationList(gasStationInfos)
                 .setSort_distance(ConvertUtils.str2Int(searchPoiInfo.basicInfo.distance))
                 .setSort_rate(ConvertUtils.str2Int(searchPoiInfo.rankInfo.rankNo))
                 .setSort_price(ConvertUtils.str2Int(searchPoiInfo.hotelInfo.priceLowest))
+                .setMPoiAoiBounds(poiAoiBounds)
+                .setMRoadPolygonBounds(roadBounds)
                 .setChargeInfoList(chargeInfos);
     }
 
@@ -980,6 +1015,8 @@ public final class SearchResultMapper {
                 .setFast_free(linePoiChargeInfo.fast_free)
                 .setFast_total(linePoiChargeInfo.fast_total)
                 .setSuperFree(linePoiChargeInfo.superFree)
+                .setOpen24h(linePoiChargeInfo.open24h)
+                .setOpenTime(linePoiChargeInfo.openTime)
                 .setSuperTotal(linePoiChargeInfo.superTotal);
     }
 

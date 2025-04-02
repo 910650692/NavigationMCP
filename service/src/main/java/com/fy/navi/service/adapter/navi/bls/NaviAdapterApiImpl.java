@@ -5,6 +5,9 @@ import com.autonavi.gbl.common.path.option.PathInfo;
 import com.autonavi.gbl.guide.model.NaviPath;
 import com.autonavi.gbl.guide.model.NaviType;
 import com.autonavi.gbl.guide.model.QueryLanesInfo;
+import com.autonavi.gbl.guide.model.guidecontrol.Param;
+import com.autonavi.gbl.guide.model.guidecontrol.Type;
+import com.autonavi.gbl.guide.model.guidecontrol.ElecVehicleCharge;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.adapter.navi.GuidanceObserver;
 import com.fy.navi.service.adapter.navi.INaviApi;
@@ -13,8 +16,11 @@ import com.fy.navi.service.define.cruise.CruiseParamEntity;
 import com.fy.navi.service.define.layer.RouteLineLayerParam;
 import com.fy.navi.service.define.navi.NaviParamEntity;
 import com.fy.navi.service.define.navi.NaviStartType;
+import com.fy.navi.service.define.navi.NaviViaEntity;
+import com.fy.navi.service.define.utils.BevPowerCarUtils;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 导航接口的第一层封装
@@ -135,5 +141,23 @@ public class NaviAdapterApiImpl extends BaseGuideAdapterApiImpl implements INavi
     public void getTunnelLength() {
         // TODO
 //        NaviPath naviPath = naviApiImplHelper.getNaviPathParam();
+    }
+
+    @Override
+    public void updateBatteryInfo() {
+        final float currentVehicleCharge = BevPowerCarUtils.getInstance().initlialHVBattenergy;
+        final Param param = new Param();
+        param.type = Type.GuideParamElecVehicleCharge; // 代表电量更新
+        final ElecVehicleCharge elecVehicleCharge = new ElecVehicleCharge();
+        elecVehicleCharge.vehicleCharge = currentVehicleCharge;
+        param.elecVehicle = elecVehicleCharge;
+        final boolean isSuccess = getGuideService().setParam(param);
+        Logger.i(TAG, "updateBatteryInfo:" + isSuccess, "currentVehicleCharge:" +
+                currentVehicleCharge);
+    }
+
+    @Override
+    public List<NaviViaEntity> getAllViaPoints() {
+        return mNaviApiImplHelper.getAllViaPoints();
     }
 }

@@ -80,7 +80,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/dp_10"
             android:layout_marginHorizontal="@dimen/dp_10"
-            android:background="@drawable/bg_search_main_tab"
+            android:background="@drawable/bg_traffic_event"
             android:paddingHorizontal="@dimen/dp_46"
             android:paddingVertical="@dimen/dp_20"
             android:src="@drawable/img_quit_58"

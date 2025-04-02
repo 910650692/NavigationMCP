@@ -10,7 +10,7 @@ import com.fy.navi.scene.impl.imersive.ImmersiveStatusScene;
 import com.fy.navi.service.AutoMapConstant;
 import com.fy.navi.service.define.bean.MapLabelItemBean;
 import com.fy.navi.service.define.map.MapMode;
-import com.fy.navi.service.define.map.MapTypeId;
+import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.search.PoiInfoEntity;
 import com.fy.navi.service.greendao.CommonManager;
 import com.fy.navi.service.logicpaket.engine.EnginePackage;
@@ -48,61 +48,61 @@ public class LauncherDeskModel extends BaseModel<BaseLauncherDeskViewModel> impl
     public void onDestroy() {
         super.onDestroy();
         Logger.d(TAG, "onDestroy");
-        mapPackage.unRegisterCallback(MapTypeId.MAIN_SCREEN_MAIN_MAP, this);
-        mapPackage.unInitMapView(mViewModel.getMapView());
+        mapPackage.unRegisterCallback(MapType.MAIN_SCREEN_MAIN_MAP, this);
+        mapPackage.unBindMapView(mViewModel.getMapView());
     }
 
     @Override
-    public void onMapCenterChanged(MapTypeId mapTypeId, double lon, double lat) {
-
-    }
-
-    @Override
-    public void onMapLevelChanged(MapTypeId mapTypeId, float mapLevel) {
+    public void onMapCenterChanged(MapType mapTypeId, double lon, double lat) {
 
     }
 
     @Override
-    public void onMapClickBlank(MapTypeId mapTypeId, float px, float py) {
+    public void onMapLevelChanged(MapType mapTypeId, float mapLevel) {
 
     }
 
     @Override
-    public void onMapClickLabel(MapTypeId mapTypeId, ArrayList<MapLabelItemBean> pLabels) {
+    public void onMapClickBlank(MapType mapTypeId, float px, float py) {
 
     }
 
     @Override
-    public void onMapMove(MapTypeId mapTypeId, long px, long py, boolean moveEnd) {
-        ImmersiveStatusScene.getInstance().setImmersiveStatus(MapTypeId.MAIN_SCREEN_MAIN_MAP, ImersiveStatus.TOUCH);
-    }
-
-    @Override
-    public void onMapScaleChanged(MapTypeId mapTypeId, int currentScale) {
-    }
-
-    @Override
-    public void onMapInitSuccess(MapTypeId mapTypeId, boolean success) {
+    public void onMapClickLabel(MapType mapTypeId, ArrayList<MapLabelItemBean> pLabels) {
 
     }
 
     @Override
-    public void onMapLoadSuccess(MapTypeId mapTypeId) {
+    public void onMapMove(MapType mapTypeId, long px, long py, boolean moveEnd) {
+        ImmersiveStatusScene.getInstance().setImmersiveStatus(MapType.MAIN_SCREEN_MAIN_MAP, ImersiveStatus.TOUCH);
+    }
+
+    @Override
+    public void onMapScaleChanged(MapType mapTypeId, int currentScale) {
+    }
+
+    @Override
+    public void onMapInitSuccess(MapType mapTypeId, boolean success) {
+
+    }
+
+    @Override
+    public void onMapLoadSuccess(MapType mapTypeId) {
         Logger.i(TAG, "onMapLoadSuccess", "mapTypeId:" + mapTypeId.name());
-        if (mapTypeId == MapTypeId.LAUNCHER_DESK_MAP) {
+        if (mapTypeId == MapType.LAUNCHER_DESK_MAP) {
             isMapLoadSuccess = true;
         }
     }
 
     @Override
-    public void onMapTouchEvent(MapTypeId mapTypeId, MotionEvent touchEvent) {
+    public void onMapTouchEvent(MapType mapTypeId, MotionEvent touchEvent) {
 
     }
 
     @Override
-    public void onMapClickPoi(MapTypeId mapTypeId, PoiInfoEntity poiInfo) {
+    public void onMapClickPoi(MapType mapTypeId, PoiInfoEntity poiInfo) {
         Logger.d(TAG, "onMapClickPoi", "mapTypeId:" + mapTypeId);
-        if (mapTypeId == MapTypeId.MAIN_SCREEN_MAIN_MAP) {
+        if (mapTypeId == MapType.MAIN_SCREEN_MAIN_MAP) {
             Bundle bundle = new Bundle();
             bundle.putParcelable(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_OPEN_DETAIL, poiInfo);
             bundle.putInt(AutoMapConstant.PoiBundleKey.BUNDLE_KEY_START_POI_TYPE, AutoMapConstant.PoiType.POI_MAP_CLICK);
@@ -112,12 +112,12 @@ public class LauncherDeskModel extends BaseModel<BaseLauncherDeskViewModel> impl
     }
 
     @Override
-    public void onReversePoiClick(MapTypeId mapTypeId, PoiInfoEntity poiInfo) {
+    public void onReversePoiClick(MapType mapTypeId, PoiInfoEntity poiInfo) {
         Logger.d(TAG, "onReversePoiClick", "mapTypeId:" + mapTypeId);
     }
 
     @Override
-    public void onMapModeChange(MapTypeId mapTypeId, MapMode mapMode) {
+    public void onMapModeChange(MapType mapTypeId, MapMode mapMode) {
 
     }
 

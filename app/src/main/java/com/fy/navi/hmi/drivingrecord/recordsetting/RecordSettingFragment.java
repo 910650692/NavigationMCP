@@ -7,12 +7,13 @@ import com.fy.navi.hmi.BR;
 import com.fy.navi.hmi.R;
 import com.fy.navi.hmi.databinding.FragmentRecordSettingBinding;
 import com.fy.navi.hmi.setting.SettingCheckDialog;
+import com.fy.navi.service.logicpaket.user.account.AccountPackage;
 import com.fy.navi.ui.base.BaseFragment;
 import com.fy.navi.ui.dialog.IBaseDialogClickListener;
 
 public class RecordSettingFragment extends BaseFragment<FragmentRecordSettingBinding, RecordSettingViewModel> {
 
-    private SettingCheckDialog clearDivingRecordDialog;
+    private SettingCheckDialog mClearDivingRecordDialog;
     @Override
     public int onLayoutId() {
         return R.layout.fragment_record_setting;
@@ -34,33 +35,55 @@ public class RecordSettingFragment extends BaseFragment<FragmentRecordSettingBin
 
     }
 
+    /**
+     * 初始化Dialog
+     */
     public void initDialog() {
 
-        clearDivingRecordDialog = new SettingCheckDialog.Build(getContext())
+        mClearDivingRecordDialog = new SettingCheckDialog.Build(getContext())
                 .setTitle(ResourceUtils.Companion.getInstance().getString(R.string.driving_record_setting_dialog_title))
                 .setContent(ResourceUtils.Companion.getInstance().getString(R.string.driving_record_setting_dialog_content))
                 .setConfirmText(ResourceUtils.Companion.getInstance().getString(R.string.driving_record_setting_dialog_confirm))
                 .setDialogObserver(new IBaseDialogClickListener() {
                     @Override
                     public void onCommitClick() {
-
+                        if (AccountPackage.getInstance().isLogin()) {
+                            final int[] behaviorDataIds = mViewModel.getBehaviorDataIds();
+                            for (int id : behaviorDataIds) {
+                                mViewModel.delBehaviorData(String.valueOf(id));
+                            }
+                        }
+                        mViewModel.deleteValueByKey(2);
+                        setClearButtonEnable(false);
                     }
 
-                    @Override
-                    public void onCancelClick() {
-
-                    }
                 }).build();
-        clearBackground(clearDivingRecordDialog.getWindow());
+        clearBackground(mClearDivingRecordDialog.getWindow());
     }
 
-    private void clearBackground(Window window) {
+    /**
+     * 清除背景色
+     * @param window 窗口
+     */
+    private void clearBackground(final Window window) {
         if (window != null) {
             window.setDimAmount(0f);
         }
     }
 
+    /**
+     * 展示清除记录对话框
+     */
     public void clearDivingRecord() {
-        clearDivingRecordDialog.show();
+        mClearDivingRecordDialog.show();
+    }
+
+    /**
+     * 设置清除按钮可用性
+     * @param enable 是否可用
+     */
+    public void setClearButtonEnable(final boolean enable) {
+        mBinding.recordSettingClearBtn.setEnabled(enable);
+        mBinding.recordSettingClearBtn.setAlpha(enable ? 1.0f : 0.5f);
     }
 }

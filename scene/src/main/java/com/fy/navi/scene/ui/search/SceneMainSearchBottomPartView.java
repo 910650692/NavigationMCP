@@ -27,7 +27,7 @@ import com.fy.navi.scene.ui.adapter.SearchHistoryAdapter;
 import com.fy.navi.service.AutoMapConstant;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.define.bean.GeoPoint;
-import com.fy.navi.service.define.map.MapTypeId;
+import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.route.RoutePoiType;
 import com.fy.navi.service.define.search.PoiInfoEntity;
 import com.fy.navi.service.greendao.history.History;
@@ -95,7 +95,7 @@ public class SceneMainSearchBottomPartView extends BaseSceneView<SearchHistoryVi
      * 获取常用地址信息
      */
     public void initRefreshCommonAddress() {
-        final ArrayList<PoiInfoEntity> commonList = BehaviorPackage.getInstance().getFavoritePoiData(3);
+        final ArrayList<PoiInfoEntity> commonList = BehaviorPackage.getInstance().getFavoriteAddressInfo();
         final int count = Math.min(commonList.size(), 3);
         for (int i = 0; i < count; i++) {
             if (i == 0) {
@@ -208,7 +208,7 @@ public class SceneMainSearchBottomPartView extends BaseSceneView<SearchHistoryVi
                 geoPoint.setLat(historyPoint.getLat());
                 poiInfoEntity.setPoint(geoPoint);
                 if (SearchPackage.getInstance().isAlongWaySearch()) {
-                    RoutePackage.getInstance().addViaPoint(MapTypeId.MAIN_SCREEN_MAIN_MAP, poiInfoEntity);
+                    RoutePackage.getInstance().addViaPoint(MapType.MAIN_SCREEN_MAIN_MAP, poiInfoEntity);
                 } else {
                     final Fragment fragment = (Fragment) ARouter.getInstance()
                             .build(RoutePath.Route.ROUTE_FRAGMENT)

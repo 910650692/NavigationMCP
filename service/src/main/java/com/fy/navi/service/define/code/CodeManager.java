@@ -19,6 +19,7 @@ public class CodeManager {
     private static final String CODE_TYPE_USER = "UserCode";
     private static final String CODE_TYPE_SETTING = "SettingCode";
     private static final String CODE_TYPE_MAP_DATA = "MapDataCode";
+    private static final String CODE_TYPE_FOR_CAST = "ForCast";
     private static ErrorCode mErrorCode;
 
     private CodeManager() {
@@ -185,6 +186,38 @@ public class CodeManager {
     }
 
 
+    /**
+     * 根据引擎错误码获取对应的msg
+     *
+     * @param code 错误码
+     * @return msg
+     */
+    public static String getForCastMsg(int code) {
+        return getMapCodeMsg(CODE_TYPE_FOR_CAST, code);
+    }
+
+    /**
+     * 根据引擎msg信息获取引擎对应的errorCode
+     *
+     * @param errorMsg 错误信息
+     * @return errorCode
+     */
+    public static int getForCastMsg(String errorMsg) {
+        return getCode(CODE_TYPE_FOR_CAST, errorMsg);
+    }
+
+    /**
+     * 当集合中没有SDK返回的错误码时调用此方法
+     *
+     * @param code 错误码
+     * @param msg  错误信息
+     * @return 错误码
+     */
+    public static int putForCastError(int code, String msg) {
+        return putErrorCode(CODE_TYPE_FOR_CAST, code, msg);
+    }
+
+
     private static int putErrorCode(String type, int code, String msg) {
         switch (type) {
             case CODE_TYPE_MAP -> ConvertUtils.push(mErrorCode.getMapCode(), code, msg);
@@ -203,6 +236,7 @@ public class CodeManager {
 
     private static String getMapCodeMsg(String type, int code) {
         return switch (type) {
+            case CODE_TYPE_ENGINE -> ConvertUtils.containToValue(mErrorCode.getEngineCode(), code);
             case CODE_TYPE_MAP -> ConvertUtils.containToValue(mErrorCode.getMapCode(), code);
             case CODE_TYPE_SEARCH -> ConvertUtils.containToValue(mErrorCode.getSearchCode(), code);
             case CODE_TYPE_ROUTE -> ConvertUtils.containToValue(mErrorCode.getRouteCode(), code);

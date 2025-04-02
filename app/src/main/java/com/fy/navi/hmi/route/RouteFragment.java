@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 
+import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.recyclerview.widget.ItemTouchHelper;
@@ -17,9 +18,13 @@ import com.android.utils.ResourceUtils;
 import com.android.utils.ToastUtils;
 import com.android.utils.gson.GsonUtils;
 import com.android.utils.thread.ThreadManager;
+import com.fy.navi.scene.ui.adapter.RouteSecondaryPoiAdapter;
+import com.fy.navi.service.define.bean.GeoPoint;
 import com.fy.navi.service.define.route.RouteMsgPushInfo;
+import com.fy.navi.service.define.route.RoutePriorityType;
 import com.fy.navi.service.define.route.RouteRequestParam;
 import com.fy.navi.service.define.route.RouteRestAreaDetailsInfo;
+import com.fy.navi.service.define.search.ChildInfo;
 import com.fy.navi.service.define.utils.BevPowerCarUtils;
 import com.android.utils.log.Logger;
 import com.fy.navi.hmi.BR;
@@ -33,7 +38,7 @@ import com.fy.navi.scene.ui.adapter.RouteViaPointAdapter;
 import com.fy.navi.scene.ui.search.RouteRequestLoadingDialog;
 import com.fy.navi.scene.ui.search.RouteSearchLoadingDialog;
 import com.fy.navi.service.AutoMapConstant;
-import com.fy.navi.service.define.map.MapTypeId;
+import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.route.RouteLineInfo;
 import com.fy.navi.service.define.route.RouteLineSegmentInfo;
 import com.fy.navi.service.define.route.RouteParam;
@@ -65,6 +70,7 @@ public class RouteFragment extends BaseFragment<FragmentRouteBinding, RouteViewM
     private RouteViaPointAdapter mRouteViaPointAdapter;
     private RoutePOIIconAdapter mPoiIconAdapter;
     private RoutePOIGasStationAdapter mGasStationAdapter;
+    private RouteSecondaryPoiAdapter mRouteSecondaryPoiAdapter;
     private MsgTopDialog mMsgTopDialog;
     private Map<PoiInfoEntity, View> mRouteChargeProgressViews;
 
@@ -101,6 +107,7 @@ public class RouteFragment extends BaseFragment<FragmentRouteBinding, RouteViewM
             SettingPackage.getInstance().setChargingPlan(b);
             final RouteRequestParam param = new RouteRequestParam();
             param.setMRouteWay(RouteWayID.ROUTE_WAY_REFRESH);
+            param.setMRoutePriorityType(RoutePriorityType.ROUTE_TYPE_MANUAL_REFRESH);
             mViewModel.requestRoute(param);
         });
         BevPowerCarUtils.getInstance().isElecPlanRoute = mBinding.routeLineInfoSwitchEnergy.isChecked();
@@ -165,28 +172,57 @@ public class RouteFragment extends BaseFragment<FragmentRouteBinding, RouteViewM
         mBinding.scenePoiDetailsServiceAreaView.routePoidetailGasStation.setLayoutManager(layoutManager1);
         mGasStationAdapter = new RoutePOIGasStationAdapter();
         mBinding.scenePoiDetailsServiceAreaView.routePoidetailGasStation.setAdapter(mGasStationAdapter);
+
+        final LinearLayoutManager layoutManager2 = new LinearLayoutManager(getContext());
+        layoutManager2.setOrientation(LinearLayoutManager.HORIZONTAL);
+        mBinding.rvSecondaryPoi.setLayoutManager(layoutManager2);
+        mRouteSecondaryPoiAdapter = new RouteSecondaryPoiAdapter();
+        mBinding.rvSecondaryPoi.setAdapter(mRouteSecondaryPoiAdapter);
+        mRouteSecondaryPoiAdapter.setItemClickListener(new RouteSecondaryPoiAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(final ChildInfo childInfo) {
+                final PoiInfoEntity poiInfo = new PoiInfoEntity();
+                poiInfo.setPid(childInfo.getPoiId());
+                poiInfo.setName(childInfo.getName());
+                poiInfo.setAddress(childInfo.getAddress());
+                poiInfo.setPoint(new GeoPoint(childInfo.getLocation().getLon(), childInfo.getLocation().getLat()));
+                mViewModel.requestChangeEnd(poiInfo);
+            }
+        });
+        mBinding.rvSecondaryPoi.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(@NonNull final RecyclerView recyclerView,final int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                mViewModel.cancelTimer();
+            }
+            @Override
+            public void onScrolled(@NonNull final RecyclerView recyclerView, final int dx, final int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                mViewModel.showSecondaryPoi();
+            }
+        });
     }
     /***
      * 算路请求加载框
      */
     private void initDialog() {
         mRouteRequestLoadingDialog = new RouteRequestLoadingDialog(
-                StackManager.getInstance().getCurrentActivity(MapTypeId.MAIN_SCREEN_MAIN_MAP.name()));
+                StackManager.getInstance().getCurrentActivity(MapType.MAIN_SCREEN_MAIN_MAP.name()));
         mRouteRequestLoadingDialog.setOnCloseClickListener(mViewModel);
         mSearchLoadingDialog = new RouteSearchLoadingDialog(
-                StackManager.getInstance().getCurrentActivity(MapTypeId.MAIN_SCREEN_MAIN_MAP.name()));
+                StackManager.getInstance().getCurrentActivity(MapType.MAIN_SCREEN_MAIN_MAP.name()));
     }
     /***
      * Scene 初始化
      */
     private void initRouteScene() {
-        mBinding.routeLineInfoSceneRouteResult.setScreenId(MapTypeId.valueOf(mScreenId));
-        mBinding.routeDetailInfoSceneRouteDetailsResult.setScreenId(MapTypeId.valueOf(mScreenId));
-        mBinding.routeLineInfoSceneRoutePerference.setScreenId(MapTypeId.valueOf(mScreenId));
-        mBinding.routeRightTabListScene.setScreenId(MapTypeId.valueOf(mScreenId));
-        mBinding.routeRightTabListChargeScene.setScreenId(MapTypeId.valueOf(mScreenId));
-        mBinding.routeDetailInfoSceneRouteSearchRefresh.setScreenId(MapTypeId.valueOf(mScreenId));
-        mBinding.routeChargeInfoSceneRouteSearchRefresh.setScreenId(MapTypeId.valueOf(mScreenId));
+        mBinding.routeLineInfoSceneRouteResult.setScreenId(MapType.valueOf(mScreenId));
+        mBinding.routeDetailInfoSceneRouteDetailsResult.setScreenId(MapType.valueOf(mScreenId));
+        mBinding.routeLineInfoSceneRoutePerference.setScreenId(MapType.valueOf(mScreenId));
+        mBinding.routeRightTabListScene.setScreenId(MapType.valueOf(mScreenId));
+        mBinding.routeRightTabListChargeScene.setScreenId(MapType.valueOf(mScreenId));
+        mBinding.routeDetailInfoSceneRouteSearchRefresh.setScreenId(MapType.valueOf(mScreenId));
+        mBinding.routeChargeInfoSceneRouteSearchRefresh.setScreenId(MapType.valueOf(mScreenId));
         mBinding.routeLineInfoSceneRoutePerference.registerRoutePreferenceObserver(TAG, mViewModel);
         mBinding.routeLineInfoSceneRouteResult.registerRouteSelectObserver(TAG, mViewModel);
         mBinding.routeDetailInfoSceneRouteDetailsResult.registerRouteDeatailsCheckedObserver(TAG, mViewModel);
@@ -240,10 +276,17 @@ public class RouteFragment extends BaseFragment<FragmentRouteBinding, RouteViewM
             routeRequestParam.setMPoiInfoEntity(poiInfoEntity);
             routeRequestParam.setMRoutePoiType(poiType);
             mViewModel.requestRoute(routeRequestParam);
+
+            //子poi显示
+            if (poiInfoEntity.getChildInfoList() != null && !poiInfoEntity.getChildInfoList().isEmpty()) {
+                mRouteSecondaryPoiAdapter.setChildInfoList(poiInfoEntity.getChildInfoList());
+                mViewModel.showSecondaryPoi();
+            }
             return;
         }
         closeFragment(true);
-        ToastUtils.Companion.getInstance().showCustomToastView("数据异常，无法进行路线规划");
+        ToastUtils.Companion.getInstance().showCustomToastView(
+                ResourceUtils.Companion.getInstance().getString(R.string.route_error_no_request_data));
     }
 
     @Override
@@ -335,7 +378,7 @@ public class RouteFragment extends BaseFragment<FragmentRouteBinding, RouteViewM
         }
         mViewModel.cancelTimer();
         mMsgTopDialog = new MsgTopDialog(
-                StackManager.getInstance().getCurrentActivity(MapTypeId.MAIN_SCREEN_MAIN_MAP.name()), TripID.ROUTE_LOW_BATTER);
+                StackManager.getInstance().getCurrentActivity(MapType.MAIN_SCREEN_MAIN_MAP.name()), TripID.ROUTE_LOW_BATTER);
         mMsgTopDialog.setTitle(title);
         mMsgTopDialog.setContent(content);
         mMsgTopDialog.setDialogClickListener(new IBaseDialogClickListener() {
@@ -627,6 +670,35 @@ public class RouteFragment extends BaseFragment<FragmentRouteBinding, RouteViewM
             mBinding.scenePoiDetailsChargingStationView.poiChargeParkPrice
                     .setText(ResourceUtils.Companion.getInstance().getString(R.string.route_details_charge_park_free)
                     + chargeInfo.getCurrentServicePrice());
+        }
+    }
+
+    /***
+     * 展示POI详情的剩余电量数据
+     * @param leftCharge 剩余电量
+     */
+    public void showPOIDetailCharge(final int leftCharge) {
+        if (!ConvertUtils.isEmpty(leftCharge)) {
+            //50%以上电量，显示满电量图片，20-50%电量，显示半电量图片
+            //0-20电量，显示低电量图片，文本变红
+            //小于0%电量，显示空电量图片，文本变红
+            if (leftCharge >= 50 && leftCharge <= 100) {
+                mBinding.sivArrivalCapacity.setImageResource(com.fy.navi.scene.R.drawable.img_electricity_full_42);
+                mBinding.poiArrivalCapacity.setTextColor(
+                        ResourceUtils.Companion.getInstance().getColor(com.fy.navi.scene.R.color.poi_details_bottom_ff_00));
+            } else if (leftCharge > 20 && leftCharge < 50) {
+                mBinding.sivArrivalCapacity.setImageResource(com.fy.navi.scene.R.drawable.img_electricity_medium_42);
+                mBinding.poiArrivalCapacity.setTextColor(
+                        ResourceUtils.Companion.getInstance().getColor(com.fy.navi.scene.R.color.poi_details_bottom_ff_00));
+            } else if (leftCharge > 0 && leftCharge <= 20) {
+                mBinding.sivArrivalCapacity.setImageResource(com.fy.navi.scene.R.drawable.img_electricity_low_42);
+                mBinding.poiArrivalCapacity.setTextColor(
+                        ResourceUtils.Companion.getInstance().getColor(com.fy.navi.scene.R.color.navi_color_C73333_100));
+            } else if (leftCharge <= 0) {
+                mBinding.sivArrivalCapacity.setImageResource(com.fy.navi.scene.R.drawable.img_electricity_empty_42);
+                mBinding.poiArrivalCapacity.setTextColor(
+                        ResourceUtils.Companion.getInstance().getColor(com.fy.navi.scene.R.color.navi_color_C73333_100));
+            }
         }
     }
 }

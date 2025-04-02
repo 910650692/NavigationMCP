@@ -7,8 +7,8 @@
       android:pathData="M15.257,20.567l14.074,16.014l14.074,-16.014"
       android:strokeLineJoin="round"
       android:strokeWidth="3.412"
-      android:fillColor="#00000000"
-      android:strokeColor="#4B535D"
+      android:fillColor="@color/main_map_limit_icon_color"
+      android:strokeColor="@color/main_map_limit_icon_stroke_color"
       android:fillType="evenOdd"
       android:strokeLineCap="round"/>
 </vector>

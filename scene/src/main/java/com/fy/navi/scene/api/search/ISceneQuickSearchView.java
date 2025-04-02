@@ -9,6 +9,7 @@ package com.fy.navi.scene.api.search;
 public interface ISceneQuickSearchView {
     /**
      * 关闭搜索页面
+     * @param type 搜索类型
      */
-    void closeSearch();
+    void closeSearch(int type);
 }

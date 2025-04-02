@@ -3,6 +3,7 @@ package com.fy.navi.service.logicpaket.signal;
 import android.content.Context;
 
 import com.android.utils.ConvertUtils;
+import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
 import com.fy.navi.service.adapter.signal.SignalAdapter;
 import com.fy.navi.service.adapter.signal.SignalAdapterCallback;
@@ -87,6 +88,45 @@ public final class SignalPackage implements SignalAdapterCallback {
                 for (SignalCallback signalCallback : mSignalCallbacks.values()) {
                     if (signalCallback != null) {
                         signalCallback.onSystemStateChanged(state);
+                    }
+                }
+            }
+        });
+    }
+
+    @Override
+    public void onRangeRemainingSignalChanged(final float value) {
+        ThreadManager.getInstance().postUi(() -> {
+            if (!ConvertUtils.isEmpty(mSignalCallbacks)) {
+                for (SignalCallback signalCallback : mSignalCallbacks.values()) {
+                    if (signalCallback != null) {
+                        signalCallback.onRangeRemainingSignalChanged(value);
+                    }
+                }
+            }
+        });
+    }
+
+    @Override
+    public void onHighVoltageBatteryPropulsionRangeChanged(final float value) {
+        ThreadManager.getInstance().postUi(() -> {
+            if (!ConvertUtils.isEmpty(mSignalCallbacks)) {
+                for (SignalCallback signalCallback : mSignalCallbacks.values()) {
+                    if (signalCallback != null) {
+                        signalCallback.onHighVoltageBatteryPropulsionRangeChanged(value);
+                    }
+                }
+            }
+        });
+    }
+
+    @Override
+    public void onLaneCenteringWarningIndicationRequestIdcmAChanged(final int state) {
+        ThreadManager.getInstance().postUi(() -> {
+            if (!ConvertUtils.isEmpty(mSignalCallbacks)) {
+                for (SignalCallback signalCallback : mSignalCallbacks.values()) {
+                    if (signalCallback != null) {
+                        signalCallback.onLaneCenteringWarningIndicationRequestIdcmAChanged(state);
                     }
                 }
             }
@@ -181,4 +221,43 @@ public final class SignalPackage implements SignalAdapterCallback {
         return mSignalAdapter.getSystemState();
     }
 
+    /**
+     * 续航里程
+     *
+     * @return 单位km
+     */
+    public float getRangeRemaining() {
+        return mSignalAdapter.getRangeRemaining();
+    }
+
+    /**
+     * 高压电池续航里程
+     *
+     * @return 单位km
+     */
+    public float getHighVoltageBatteryPropulsionRange() {
+        return mSignalAdapter.getHighVoltageBatteryPropulsionRange();
+    }
+
+    /**
+     * 设置电池预加热参数
+     *
+     * @param powerLevel       int
+     * @param status           int
+     * @param timeToArrival    int
+     * @param distToArrival    int
+     */
+    public void setNextChargingDestination(final int powerLevel, final int status, final int timeToArrival, final int distToArrival) {
+        Logger.i(TAG, powerLevel + "-" + status + "-" +timeToArrival + "-" + distToArrival);
+        mSignalAdapter.setNextChargingDestination(powerLevel, status, timeToArrival, distToArrival);
+    }
+
+    /**
+     * 智慧领航播报开关
+     *
+     * @return 0:关闭 1:开启
+     */
+    public int getNavigationOnAdasTextToSpeachStatus() {
+        return mSignalAdapter.getNavigationOnAdasTextToSpeachStatus();
+    }
 }

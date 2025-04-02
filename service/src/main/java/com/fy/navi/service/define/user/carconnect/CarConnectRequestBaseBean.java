@@ -15,55 +15,103 @@ public class CarConnectRequestBaseBean {
     private long mGroup;
 
     // 停车位置
-    private int bizType = 0;
+    private int mBizType = 0;
     //停车位置的格式 json格式
-    private String data = "";
+    private String mData = "";
 
+    /**
+     * getmEAosRequestType
+     * @return int
+     */
     public int getmEAosRequestType() {
         return mEAosRequestType;
     }
 
-    public void setmEAosRequestType(int mEAosRequestType) {
-        this.mEAosRequestType = mEAosRequestType;
+    /**
+     * setmEAosRequestType
+     * @param aosRequestType
+     */
+    public void setmEAosRequestType(final int aosRequestType) {
+        this.mEAosRequestType = aosRequestType;
     }
 
+    /**
+     * getmEReqProtol
+     * @return int
+     */
     public int getmEReqProtol() {
         return mEReqProtol;
     }
 
-    public void setmEReqProtol(int mEReqProtol) {
-        this.mEReqProtol = mEReqProtol;
+    /**
+     * setmEReqProtol
+     * @param reqProtol
+     */
+    public void setmEReqProtol(final int reqProtol) {
+        this.mEReqProtol = reqProtol;
     }
 
-    public int getmEReqMethod() {
+    /**
+     * getmEReqMethod
+     * @return int
+     */
+    public int getEReqMethod() {
         return mEReqMethod;
     }
 
-    public void setmEReqMethod(int mEReqMethod) {
-        this.mEReqMethod = mEReqMethod;
+    /**
+     * setmEReqMethod
+     * @param reqMethod
+     */
+    public void setmEReqMethod(final int reqMethod) {
+        this.mEReqMethod = reqMethod;
     }
 
+    /**
+     * getmTimeOut
+     * @return long
+     */
     public long getmTimeOut() {
         return mTimeOut;
     }
 
-    public void setmTimeOut(long mTimeOut) {
-        this.mTimeOut = mTimeOut;
+    /**
+     * setmTimeOut
+     * @param timeOut
+     */
+    public void setmTimeOut(final long timeOut) {
+        this.mTimeOut = timeOut;
     }
 
+    /**
+     * getmGroup
+     * @return long
+     */
     public long getmGroup() {
         return mGroup;
     }
 
-    public void setmGroup(long mGroup) {
-        this.mGroup = mGroup;
+    /**
+     * setmGroup
+     * @param group
+     */
+    public void setmGroup(final long group) {
+        this.mGroup = group;
     }
 
     public int getBizType() {
-        return bizType;
+        return mBizType;
     }
 
-    public void setBizType(int bizType) {
-        this.bizType = bizType;
+    public void setBizType(final int bizType) {
+        this.mBizType = bizType;
+    }
+
+    public String getData() {
+        return mData;
+    }
+
+    public void setData(final String mData) {
+        this.mData = mData;
     }
 }

@@ -1,12 +1,16 @@
 package com.fy.navi.scene.ui.navi;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 
 import com.android.utils.log.Logger;
 import com.fy.navi.scene.databinding.SceneNaviLanesViewBinding;
@@ -24,11 +28,14 @@ import com.fy.navi.scene.impl.navi.common.NaviUiUtil;
 
 /**
  * 车道线
+ *
  * @author fy
  * @version $Revision.*$
  */
 public class SceneNaviLanesView extends NaviSceneBase<SceneNaviLanesViewBinding, SceneNaviLanesImpl> {
     private static final String TAG = MapDefaultFinalTag.NAVI_HMI_TAG;
+
+    private ISceneCallback mISceneCallback;
 
     public SceneNaviLanesView(@NonNull final Context context) {
         super(context);
@@ -49,6 +56,11 @@ public class SceneNaviLanesView extends NaviSceneBase<SceneNaviLanesViewBinding,
     }
 
     @Override
+    protected String getSceneName() {
+        return NaviSceneId.NAVI_SCENE_LANES.name();
+    }
+
+    @Override
     public INaviSceneEvent getNaviSceneEvent() {
         return NaviSceneManager.getInstance();
     }
@@ -59,7 +71,8 @@ public class SceneNaviLanesView extends NaviSceneBase<SceneNaviLanesViewBinding,
 
     @Override
     public void addSceneCallback(final ISceneCallback sceneCallback) {
-
+        Logger.i(TAG, "addSceneCallback() sceneCallback = " + sceneCallback);
+        mISceneCallback = sceneCallback;
     }
 
     @Override
@@ -83,9 +96,34 @@ public class SceneNaviLanesView extends NaviSceneBase<SceneNaviLanesViewBinding,
 
     }
 
+    @Override
+    public void show() {
+        super.show();
+        if (mISceneCallback != null) {
+            mISceneCallback.updateSceneVisible(NaviSceneId.NAVI_SCENE_LANES, true);
+        }
+    }
+
+    @Override
+    public void hide() {
+        super.hide();
+        if (mISceneCallback != null) {
+            mISceneCallback.updateSceneVisible(NaviSceneId.NAVI_SCENE_LANES, false);
+        }
+    }
+
+    @Override
+    public void close() {
+        super.close();
+        Logger.i(TAG, "mISceneCallback = " + mISceneCallback);
+        if (mISceneCallback != null) {
+            mISceneCallback.updateSceneVisible(NaviSceneId.NAVI_SCENE_LANES, false);
+        }
+    }
+
     /**
      * @param isShowLane 是否显示车道
-     * @param laneInfo 车道信息
+     * @param laneInfo   车道信息
      */
     public void onLaneInfo(final boolean isShowLane, final LaneInfoEntity laneInfo) {
         if (mScreenViewModel != null) {
@@ -103,16 +141,8 @@ public class SceneNaviLanesView extends NaviSceneBase<SceneNaviLanesViewBinding,
     }
 
     /**
-     * @param isVisible 是否可见
-     */
-    public void setVisibleLaneInfo(final boolean isVisible) {
-        //<!--车道线-->
-        Logger.d(TAG, "SceneNaviLanesView setVisibleLaneInfo：isVisible：" + isVisible);
-        setVisibility(isVisible ? VISIBLE : GONE);
-    }
-
-    /**
      * 小设置车道线是否可见
+     *
      * @param index     index
      * @param isVisible 是否显示
      */
@@ -150,6 +180,7 @@ public class SceneNaviLanesView extends NaviSceneBase<SceneNaviLanesViewBinding,
 
     /**
      * 设置分时推荐车道线箭头
+     *
      * @param index      index
      * @param laneAction laneAction
      */
@@ -189,6 +220,7 @@ public class SceneNaviLanesView extends NaviSceneBase<SceneNaviLanesViewBinding,
 
     /**
      * 设置推荐车道线箭头
+     *
      * @param index      index
      * @param laneAction laneAction
      */
@@ -228,6 +260,7 @@ public class SceneNaviLanesView extends NaviSceneBase<SceneNaviLanesViewBinding,
 
     /**
      * 设置分时车道线箭头
+     *
      * @param index      index
      * @param laneAction laneAction
      */
@@ -266,6 +299,7 @@ public class SceneNaviLanesView extends NaviSceneBase<SceneNaviLanesViewBinding,
 
     /**
      * 设置车道线箭头
+     *
      * @param index      index
      * @param laneAction laneAction
      */
@@ -304,6 +338,7 @@ public class SceneNaviLanesView extends NaviSceneBase<SceneNaviLanesViewBinding,
 
     /**
      * 设置公交专用等场景
+     *
      * @param index index
      */
     public void sceneBottom(final int index) {
@@ -340,6 +375,7 @@ public class SceneNaviLanesView extends NaviSceneBase<SceneNaviLanesViewBinding,
 
     /**
      * 设置推荐分时车道线底部公交专用等提示
+     *
      * @param index                index
      * @param timeLaneBottomAction laneinfo
      */
@@ -379,6 +415,7 @@ public class SceneNaviLanesView extends NaviSceneBase<SceneNaviLanesViewBinding,
 
     /**
      * 设置是否高亮
+     *
      * @param index     index
      * @param isVisible 是否可见
      */
@@ -417,7 +454,8 @@ public class SceneNaviLanesView extends NaviSceneBase<SceneNaviLanesViewBinding,
 
     /**
      * 设置车道线底部公交专用等提示
-     * @param index  index
+     *
+     * @param index                index
      * @param timeLaneBottomAction laneInfo
      */
     public void setBackgroundLanesDriveDefaultBottom(final int index,
@@ -456,6 +494,7 @@ public class SceneNaviLanesView extends NaviSceneBase<SceneNaviLanesViewBinding,
 
     /**
      * 设置普通场景
+     *
      * @param index index
      */
     public void sceneCommonArrow(final int index) {
@@ -495,7 +534,7 @@ public class SceneNaviLanesView extends NaviSceneBase<SceneNaviLanesViewBinding,
      */
     public void sceneLaneInfoDefault() {
         Logger.d(TAG, "SceneNaviLanesView sceneLaneInfoDefault：");
-        setVisibility(VISIBLE);
+//        setVisibility(VISIBLE);
         NaviUiUtil.hideView(mViewBinding.tlrResources161, mViewBinding.tlrResources16, mViewBinding.tlrResources17,
                 mViewBinding.tlrResources18, mViewBinding.tlrResources19, mViewBinding.tlrResources110,
                 mViewBinding.tlrResources111, mViewBinding.tlrResources1);

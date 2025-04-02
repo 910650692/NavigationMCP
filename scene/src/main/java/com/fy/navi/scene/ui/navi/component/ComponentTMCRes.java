@@ -219,7 +219,7 @@ public class ComponentTMCRes extends SkinConstraintLayout {
         // 走过的路使用灰色
         if (mIsHorizontal) {
             canvas.drawRect(0, 0, carPosition, height,
-                    getPaintInColor(getDefaultColor(R.color.tmc_drive_past_color)));
+                    getPaintInColor(getDefaultColor(R.color.navi_color_313336_94)));
             if (pixelDistanceSum < width) {
                 canvas.drawRect(pixelDistanceSum, 0, width, height,
                         getPaintInColor(getColor(-1)));

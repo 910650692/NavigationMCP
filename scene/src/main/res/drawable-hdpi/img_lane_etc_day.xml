@@ -6,7 +6,7 @@
   <path
       android:pathData="M21,18L21,22L15,22L15,28L21,28L21,32L15,32L15,38L21,38L21,42L10,42L10,18L21,18ZM25,22L25,18L36,18L36,22L33,22L33,42L28,42L28,22L25,22ZM51,18L51,22L45,22L45,38L51,38L51,42L40,42L40,18L51,18Z"
       android:strokeWidth="1"
-      android:fillColor="@color/svg_color_4B535D"
+      android:fillColor="@color/navi_color_4B535D_100"
       android:fillType="evenOdd"
-      android:strokeColor="@color/svg_color_000000"/>
+      android:strokeColor="@color/navi_color_000000_0"/>
 </vector>

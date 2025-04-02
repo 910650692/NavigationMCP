@@ -4,7 +4,7 @@
     <!-- Shadow -->
     <item>
         <shape android:shape="rectangle">
-            <solid android:color="#408C889B" />
+            <solid android:color="@color/setting_bg_stroke"/>
             <corners android:radius="@dimen/dp_20" />
             <padding android:left="@dimen/dp_2" android:top="@dimen/dp_2" android:right="@dimen/dp_2" android:bottom="@dimen/dp_2"/>
         </shape>
@@ -13,7 +13,7 @@
     <!-- Background -->
     <item>
         <shape android:shape="rectangle">
-            <solid android:color="#F8F8FA" />
+            <solid android:color="@color/setting_bg" />
             <corners android:radius="@dimen/dp_20" />
         </shape>
     </item>

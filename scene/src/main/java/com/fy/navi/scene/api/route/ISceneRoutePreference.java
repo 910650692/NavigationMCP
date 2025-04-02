@@ -29,4 +29,9 @@ public interface ISceneRoutePreference {
      * 时间最短
      * */
     void preferenceFastestSpeed();
+
+    /**
+     * 关闭场景
+     */
+    void closeScene();
 }

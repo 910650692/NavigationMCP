@@ -22,8 +22,8 @@ public class CardWidgetMapView extends FullScreenMapView implements IBaseScreenM
     }
 
     @Override
-    public MapTypeId provideMapTypeId() {
-        return MapTypeId.LAUNCHER_WIDGET_MAP;
+    public MapType provideMapTypeId() {
+        return MapType.LAUNCHER_WIDGET_MAP;
     }
 
     @Override

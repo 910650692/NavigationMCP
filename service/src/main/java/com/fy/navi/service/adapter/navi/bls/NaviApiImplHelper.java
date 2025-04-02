@@ -1,29 +1,53 @@
 package com.fy.navi.service.adapter.navi.bls;
 
+import android.annotation.SuppressLint;
+
 import com.android.utils.ConvertUtils;
+import com.android.utils.TimeUtils;
+import com.android.utils.gson.GsonUtils;
+import com.android.utils.log.Logger;
+import com.autonavi.gbl.common.model.ElecCommonParameter;
+import com.autonavi.gbl.common.model.ElecCostList;
+import com.autonavi.gbl.common.model.ElecInfoConfig;
+import com.autonavi.gbl.common.model.ElecSpeedCostList;
+import com.autonavi.gbl.common.model.PowertrainLoss;
+import com.autonavi.gbl.common.path.model.ChargeStationInfo;
+import com.autonavi.gbl.common.path.option.POIForRequest;
 import com.autonavi.gbl.common.path.option.PathInfo;
 import com.autonavi.gbl.common.path.option.RouteType;
 import com.autonavi.gbl.guide.GuideService;
+import com.autonavi.gbl.guide.model.NaviInfo;
 import com.autonavi.gbl.guide.model.NaviPath;
+import com.autonavi.gbl.guide.model.TimeAndDist;
 import com.autonavi.gbl.guide.model.guidecontrol.CameraParam;
 import com.autonavi.gbl.guide.model.guidecontrol.CommonParam;
+import com.autonavi.gbl.guide.model.guidecontrol.EmulatorParam;
+import com.autonavi.gbl.guide.model.guidecontrol.NaviParam;
 import com.autonavi.gbl.guide.model.guidecontrol.Param;
 import com.autonavi.gbl.guide.model.guidecontrol.Type;
 import com.autonavi.gbl.guide.observer.INaviObserver;
 import com.autonavi.gbl.guide.observer.ISoundPlayObserver;
 import com.autonavi.gbl.util.model.ServiceInitStatus;
+import com.fy.navi.service.AppContext;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.adapter.navi.GuidanceObserver;
 import com.fy.navi.service.adapter.navi.NaviConstant;
+import com.fy.navi.service.define.bean.GeoPoint;
 import com.fy.navi.service.define.cruise.CruiseParamEntity;
 import com.fy.navi.service.define.layer.RouteLineLayerParam;
 import com.fy.navi.service.define.navi.NaviParamEntity;
+import com.fy.navi.service.define.navi.NaviViaEntity;
+import com.fy.navi.service.define.route.ChargingInfo;
+import com.fy.navi.service.define.utils.BevPowerCarUtils;
+import com.fy.navi.service.logicpaket.calibration.CalibrationPackage;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
 
 /**
  * impl辅助类
+ *
  * @author fy
  * @version $Revision.*$
  */
@@ -36,12 +60,15 @@ public class NaviApiImplHelper {
     private final ISoundPlayObserver mSoundPlayObserver;
     private final Hashtable<String, GuidanceObserver> mGuidanceObservers;
     private boolean mIsSimpleNavigation = false;
+    private PathInfo mCurrentPathInfo;
+    // 当前导航信息
+    protected NaviInfo mNaviInfo;
 
     protected NaviApiImplHelper(final GuideService guideService) {
         this.mGuideService = guideService;
         mGuidanceObservers = new Hashtable<>();
-        mNaviObserver = new GuidanceCallback(mGuidanceObservers);
-        mSoundPlayObserver = new GuidanceCallback(mGuidanceObservers);
+        mNaviObserver = new GuidanceCallback(mGuidanceObservers, this);
+        mSoundPlayObserver = new GuidanceCallback(mGuidanceObservers, this);
     }
 
     protected void initNaviService() {
@@ -97,6 +124,8 @@ public class NaviApiImplHelper {
                                     final RouteLineLayerParam routeLineLayerParam) {
         mRouteLineLayerParam = routeLineLayerParam;
         mainIndex = routeIndex;
+        GuidanceCallback callback = (GuidanceCallback) mNaviObserver;
+        callback.onBatterHotTime();
     }
 
     //获取开启导航关键参数
@@ -105,9 +134,10 @@ public class NaviApiImplHelper {
         // 设置完整路线信息 算路时会返回
         naviPath.vecPaths = (ArrayList<PathInfo>) mRouteLineLayerParam.getMPathInfoList();
         naviPath.mainIdx = mainIndex; // 设置主路线索引
-        naviPath.type = RouteType.RouteTypeCommon; // 设置算路类型
-        //naviPath.point = poiForRequest; // 用于GuideService偏航时组织行程点信息, 不影响路线绘制
-        naviPath.strategy = 0x08 | 0x10; // 设置算路策略
+        naviPath.type = mRouteLineLayerParam.getMRouteType(); // 设置算路类型
+        naviPath.point = (POIForRequest) mRouteLineLayerParam.getMPoiForRequest(); // 用于GuideService偏航时组织行程点信息, 不影响路线绘制
+        naviPath.strategy = mRouteLineLayerParam.getMStrategy(); // 设置算路策略
+        mCurrentPathInfo = naviPath.vecPaths.get((int) naviPath.mainIdx);
         return naviPath;
     }
 
@@ -120,13 +150,18 @@ public class NaviApiImplHelper {
         param.navi.v2x.enableCurveMeet = true; // 弯道会车预警(用户登录&&真实导航 生效)
         param.navi.v2x.enableCrossMeet = true; // 无灯路口会车预警(用户登录&&真实导航 生效)
         param.navi.naviScene = 0; //普通导航
-        param.emulator.speed = 480;//模拟导航车速
-//        param.navi.model = 1; // 多路线导航（备选路重算需要开启） 此处需要触发条件
+        EmulatorParam emulator = new EmulatorParam();
+        emulator.speed = 480;//模拟导航车速
+        param.emulator = emulator;
+        NaviParam naviParam = new NaviParam();
+        naviParam.model = 1;
+        param.navi = naviParam; // 多路线导航
         mGuideService.setParam(param);
 
         setCrossParam();
         setCameraParameters();
         setCommonParameters();
+        setElectInfoConfig();
     }
 
     /***配置路口大图***/
@@ -165,6 +200,16 @@ public class NaviApiImplHelper {
         mGuideService.setParam(param2);
     }
 
+    public void setElectInfoConfig() {
+        // 判断是否是电车需要设置能耗参数
+        if (CalibrationPackage.getInstance().powerType() == 1) {
+            Logger.i(TAG, "引导模式下：纯电车设置能耗模型！");
+            mGuideService.setElecInfoConfig(getElecInfoConfig());
+        } else {
+            Logger.i(TAG, "不是纯电动汽车，无需设置能耗模型！");
+        }
+    }
+
 
     //设置是否是轻导航
     protected void setSimpleNavigation(final boolean isSimpleNavigaion) {
@@ -173,8 +218,10 @@ public class NaviApiImplHelper {
 
     /**
      * 配置导航播报开关
+     *
      * @param naviParamEntity entity
      **/
+    @SuppressLint("WrongConstant")
     public void updateGuideParam(final NaviParamEntity naviParamEntity) {
         if (!ConvertUtils.isEmpty(naviParamEntity)) {
             final Param param = new Param();
@@ -211,5 +258,90 @@ public class NaviApiImplHelper {
     //获取是否是轻导航
     protected boolean getSimpleNavigation() {
         return mIsSimpleNavigation;
+    }
+
+    // TODO 参照RouteAdapterImpl, 后续还要修改
+    private ElecInfoConfig getElecInfoConfig() {
+        //设置电动车能耗参数
+        final ElecInfoConfig elecConfig = new ElecInfoConfig();
+        elecConfig.orgaName = BevPowerCarUtils.getInstance().extraBrand; //车厂名称，高德商业产品定义分配
+        elecConfig.vehicleConfiguration = BevPowerCarUtils.getInstance().vehicleType; //车型，应具备可读性，代表一款车型，保证一款车型只使用一个代号
+        elecConfig.fesMode = BevPowerCarUtils.getInstance().curDriveMode; //驾驶模式，设置为舒适模式
+        elecConfig.costModelSwitch = 0x8; //代价模型的组合开关，应用“自学习能耗模型”只需要开启“0x8”附加能耗代价开关来保证预测精度，其他项正常可不开启
+        elecConfig.costUnit = BevPowerCarUtils.getInstance().energyUnit; //能量单位，设置为KWH
+        elecConfig.vehiclelMass = BevPowerCarUtils.getInstance().vehicleWeight; //车重，建议使用“实时车重”提高预测精度，使用优先级：实时车重 > 半载车重 > 空载车重
+        elecConfig.maxVechicleCharge = BevPowerCarUtils.getInstance().maxBattenergy; //电动汽车的最大电量负荷，即电池容量
+        elecConfig.powerflag = 0x03; //eta包含充电时间+下发充电站充电时间
+        elecConfig.arrivingPercent = BevPowerCarUtils.getInstance().arrivingPercent; //注意arrivingPercent和leavingPercent字面含义和真实作用相反，请勿填反
+        elecConfig.leavingPercent = BevPowerCarUtils.getInstance().leavingPercent;
+        elecConfig.temperature = BevPowerCarUtils.getInstance().temperature; //车辆实时外界温度
+        elecConfig.vehicleCharge = BevPowerCarUtils.getInstance().initlialHVBattenergy;
+        elecConfig.isCharging = BevPowerCarUtils.getInstance().charging; //当前充电状态，设置为未充电
+        elecConfig.chargingPower = BevPowerCarUtils.getInstance().chargingPower; //功率
+
+        //设置代价模型的权值
+        ElecCostList costList = new ElecCostList();
+        costList.auxValue = BevPowerCarUtils.getInstance().airConditioningOpen ? 1.0f : 0.5f; //空调...
+        costList.ferryRate = BevPowerCarUtils.getInstance().ferryRate;
+        final ArrayList<ElecSpeedCostList> elecSpeedCostLists = new ArrayList<>();
+        for (int t = 0; t < BevPowerCarUtils.getInstance().elecSpeedCostLists.size(); t++) {
+            ElecSpeedCostList elecSpeedCostList = GsonUtils.convertToT(BevPowerCarUtils.getInstance().elecSpeedCostLists.get(t), ElecSpeedCostList.class);
+            elecSpeedCostLists.add(elecSpeedCostList);
+        }
+        costList.speedCost = elecSpeedCostLists;
+        final ArrayList<PowertrainLoss> powertrainLossList = new ArrayList<>();
+        for (int t = 0; t < BevPowerCarUtils.getInstance().powertrainLoss.size(); t++) {
+            PowertrainLoss powertrainLoss = GsonUtils.convertToT(BevPowerCarUtils.getInstance().powertrainLoss.get(t), PowertrainLoss.class);
+            powertrainLossList.add(powertrainLoss);
+        }
+        costList.powertrainLoss = powertrainLossList;
+        final ElecCommonParameter trans = new ElecCommonParameter(BevPowerCarUtils.getInstance().trans.access, BevPowerCarUtils.getInstance().trans.decess);
+        costList.trans = trans;
+        final ElecCommonParameter curve = new ElecCommonParameter(BevPowerCarUtils.getInstance().curve.access, BevPowerCarUtils.getInstance().curve.decess);
+        costList.curve = curve;
+        final ElecCommonParameter slope = new ElecCommonParameter(BevPowerCarUtils.getInstance().slope.access, BevPowerCarUtils.getInstance().slope.decess);
+        costList.slope = slope;
+        elecConfig.costList.add(costList);
+        return elecConfig;
+    }
+
+    /***
+     * 此接口属于动态获取
+     * @return 获取开启补能规划后自动添加的途径点
+     */
+    public List<NaviViaEntity> getAllViaPoints() {
+        if (mCurrentPathInfo == null || mNaviInfo == null) {
+            return new ArrayList<>();
+        }
+        final ArrayList<NaviViaEntity> naviViaEntities = new ArrayList<>();
+        final ArrayList<ChargeStationInfo> chargeStationInfos = mCurrentPathInfo.getChargeStationInfo();
+        final ArrayList<TimeAndDist> remainList = mNaviInfo.ChargeStationRemain;
+        if (ConvertUtils.isEmpty(chargeStationInfos) || ConvertUtils.isEmpty(remainList)) {
+            return new ArrayList<>();
+        }
+        Logger.i(TAG, "getAllViaPoints:" + chargeStationInfos.size(), "remainSize:" + remainList.size());
+        final int size = Math.min(chargeStationInfos.size(), remainList.size());
+        for (int i = 0; i < size; i++) {
+            final ChargeStationInfo stationInfo = chargeStationInfos.get(i);
+            final TimeAndDist timeAndDist = remainList.get(i);
+
+            final NaviViaEntity naviViaEntity = new NaviViaEntity();
+            naviViaEntity.setName(stationInfo.name);
+            naviViaEntity.setArriveDay(TimeUtils.getArriveDay(timeAndDist.time));
+            naviViaEntity.setDistance(TimeUtils.getRemainInfo(AppContext.getInstance().getMContext(), timeAndDist.dist, timeAndDist.time));
+            naviViaEntity.setArriveTime(TimeUtils.getArriveTime(AppContext.getInstance().getMContext(), timeAndDist.time));
+            naviViaEntity.setmArriveTimeStamp(timeAndDist.time);
+            naviViaEntities.add(naviViaEntity);
+
+            final ChargingInfo chargingInfo = new ChargingInfo();
+            chargingInfo.setAutoAdd(true);
+            chargingInfo.setMMinArrivalPercent((short) stationInfo.remainingPercent);
+            chargingInfo.setChargeTime(stationInfo.chargeTime);
+            naviViaEntity.setChargeInfo(chargingInfo);
+
+            naviViaEntity.setRealPos(new GeoPoint(stationInfo.show.lon, stationInfo.show.lat));
+            naviViaEntity.setPid(stationInfo.poiID);
+        }
+        return naviViaEntities;
     }
 }

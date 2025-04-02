@@ -3,10 +3,10 @@ package com.fy.navi.hmi.mapdata;
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
@@ -69,9 +69,7 @@ public class MapDataFragment extends BaseFragment<FragmentMapDataBinding, MapDat
      */
     private void initMapDataView() {
         mapDataAdapter = new MapDataAdapter(getActivity());
-        mBinding.rvOffline.setLayoutManager(new LinearLayoutManager(getActivity()));
         mBinding.rvOffline.setItemAnimator(null);
-        mapDataAdapter.setData(mDataList);
         mBinding.rvOffline.setAdapter(mapDataAdapter);
 
         //以下是对布局进行控制，让省份占一行，城市占两列，效果相当于一个listView嵌套gridView的效果
@@ -84,43 +82,50 @@ public class MapDataFragment extends BaseFragment<FragmentMapDataBinding, MapDat
                         == MuliteRecycleAdapter.ItemStatus.VIEW_TYPE_GROUP_ITEM ? 2 : 1;*/
             }
         });
+        manager.setRecycleChildrenOnDetach(true); // 可选，用于提升性能
         mBinding.rvOffline.setLayoutManager(manager);
 
         mapDataAdapter.setOfflineItemListener(new MapDataAdapter.OfflineItemListener() {
             @Override
             public void startAllTask(final ArrayList<Integer> cityAdCodes) {
                 Logger.d(TAG, "startAllTask");
-
-                if (mViewModel != null) {
-                    mViewModel.startAllTask(cityAdCodes);
-                }
+                ThreadManager.getInstance().postDelay(() -> {
+                    if (mViewModel != null) {
+                        mViewModel.startAllTask(cityAdCodes);
+                    }
+                }, 0);
             }
 
             @Override
             public void pauseAllTask(final ArrayList<Integer> cityAdCodes) {
                 Logger.d(TAG, "pauseAllTask");
-                if (mViewModel != null) {
-                    mViewModel.pauseAllTask(cityAdCodes);
-                }
+                ThreadManager.getInstance().postDelay(() -> {
+                    if (mViewModel != null) {
+                        mViewModel.pauseAllTask(cityAdCodes);
+                    }
+                }, 0);
             }
 
             @Override
             public void deleteAllTask(final ArrayList<Integer> cityAdCodes) {
                 Logger.d(TAG, "deleteAllTask");
-                if (mViewModel != null) {
-                    mViewModel.deleteAllTask(cityAdCodes);
-                }
+                ThreadManager.getInstance().postDelay(() -> {
+                    if (mViewModel != null) {
+                        mViewModel.deleteAllTask(cityAdCodes);
+                    }
+                }, 0);
             }
 
             @Override
             public void cancelAllTask() {
                 Logger.d(TAG, "cancelAllTask");
-                if (mViewModel != null) {
-                    mViewModel.cancelAllTask(null);
-                }
+                ThreadManager.getInstance().postDelay(() -> {
+                    if (mViewModel != null) {
+                        mViewModel.cancelAllTask(null);
+                    }
+                }, 0);
             }
         });
-
     }
 
     /**
@@ -135,7 +140,7 @@ public class MapDataFragment extends BaseFragment<FragmentMapDataBinding, MapDat
                     final List<CityDataInfo> city = provinceBeans.get(i).getCityInfoList();
                     mDataList.add(new MuliteRecycleAdapter.DataTree<>(provinceBeans.get(i).getName(), city));
                 }
-                mapDataAdapter.notifyNewData(mDataList);
+                mapDataAdapter.setData(mDataList);
             }
         });
     }
@@ -219,8 +224,9 @@ public class MapDataFragment extends BaseFragment<FragmentMapDataBinding, MapDat
     }
 
     /**
-     * 是否显示下载管理view
+     * * 是否显示下载管理view
      * @param downloadingList
+     * @param downloadedList
      */
     public void updateWorkingView(final ArrayList<CityDataInfo> downloadingList,
                                   final ArrayList<CityDataInfo> downloadedList) {
@@ -241,15 +247,51 @@ public class MapDataFragment extends BaseFragment<FragmentMapDataBinding, MapDat
     @SuppressLint("SetTextI18n")
     public void updateNearDataView(final ArrayList<CityDataInfo> nearList) {
         ThreadManager.getInstance().postUi(() -> {
-            int count = 0;
-            BigInteger sum  = BigInteger.ZERO;
             if (nearList != null && !nearList.isEmpty()) {
-                count = nearList.size();
+                BigInteger sum  = BigInteger.ZERO;
+                final int count = nearList.size();
+                int downloadedCount = 0;
                 for (CityDataInfo info : nearList) {
+                    //获取附近城市数据包大小总和
                     sum =  sum.add(info.getDownLoadInfo().getFullZipSize());
+                    //获取附近城市未下载数量
+                    if (info.getDownLoadInfo().getTaskState() == UserDataCode.TASK_STATUS_CODE_READY) {
+                        downloadedCount = downloadedCount + 1;
+                    }
+                }
+                mBinding.tvNearDataCount.setText(count + "个城市  共" + StringUtils.formatSize(sum));
+                if (downloadedCount == count) {
+                    mViewModel.mNearDownloadBtnVisibility.setValue(true);
+                } else {
+                    mViewModel.mNearDownloadBtnVisibility.setValue(false);
                 }
             }
-            mBinding.tvNearDataCount.setText(count + "个城市  共" + StringUtils.formatSize(sum));
+        });
+    }
+
+    /**
+     * 刷新附近城市推荐 - 全部下载按显隐状态
+     */
+    public void notifyNearDataView() {
+        ThreadManager.getInstance().postUi(() -> {
+            final ArrayList<CityDataInfo> nearList = mViewModel.getNearCityData();
+            if (nearList != null && !nearList.isEmpty()) {
+                int downloadedCount = 0;
+                for (CityDataInfo info : nearList) {
+                    //获取附近城市未下载数量
+                    if (info.getDownLoadInfo().getTaskState() == UserDataCode.TASK_STATUS_CODE_READY) {
+                        downloadedCount = downloadedCount + 1;
+                    }
+                }
+
+                Logger.d(TAG, "notifyNearDataView downloadedCount = " + downloadedCount);
+
+                if (downloadedCount == nearList.size()) {
+                    mViewModel.mNearDownloadBtnVisibility.setValue(true);
+                } else {
+                    mViewModel.mNearDownloadBtnVisibility.setValue(false);
+                }
+            }
         });
     }
 
@@ -261,7 +303,14 @@ public class MapDataFragment extends BaseFragment<FragmentMapDataBinding, MapDat
                 .setDialogObserver(new IBaseDialogClickListener() {
                     @Override
                     public void onCommitClick() {
-
+                       // 下载基础包
+                        ThreadManager.getInstance().postDelay(() -> {
+                            final ArrayList<Integer> adCodeList = new ArrayList<>();
+                            adCodeList.add(0);
+                            if (mViewModel != null) {
+                                mViewModel.startAllTask(adCodeList);
+                            }
+                        }, 0);
                     }
 
                     @Override

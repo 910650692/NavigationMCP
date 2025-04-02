@@ -7,11 +7,16 @@ import android.text.TextUtils;
 import androidx.annotation.NonNull;
 import androidx.databinding.ObservableField;
 
+import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
+import com.android.utils.thread.ThreadManager;
 import com.fy.navi.scene.api.route.ISceneRoutePreferenceCallBack;
 import com.fy.navi.scene.impl.imersive.ImersiveStatus;
 import com.fy.navi.scene.impl.navi.inter.ISceneCallback;
+import com.fy.navi.scene.ui.navi.ChargeTipEntity;
+import com.fy.navi.scene.ui.navi.manager.INaviSceneEvent;
 import com.fy.navi.scene.ui.navi.manager.NaviSceneId;
+import com.fy.navi.scene.ui.navi.manager.NaviSceneManager;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.define.navi.CrossImageEntity;
 import com.fy.navi.service.define.navi.LaneInfoEntity;
@@ -22,8 +27,10 @@ import com.fy.navi.service.define.navi.NaviTmcInfo;
 import com.fy.navi.service.define.navi.NaviViaEntity;
 import com.fy.navi.service.define.navi.SapaInfoEntity;
 import com.fy.navi.service.define.navi.SpeedOverallEntity;
+import com.fy.navi.service.define.utils.NumberUtils;
 import com.fy.navi.ui.action.Action;
 import com.fy.navi.ui.base.BaseViewModel;
+import com.fy.navi.ui.dialog.IBaseDialogClickListener;
 
 import java.util.List;
 
@@ -54,6 +61,8 @@ public class BaseNaviGuidanceViewModel extends
     public ObservableField<Boolean> mNaviViaArrivedPopVisibility;//途经点到达确认弹窗
     public ObservableField<Boolean> mNaviSapaDetailVisibility;//服务区/收费站详情页面
     public ObservableField<Boolean> mNaviDriveReportVisibility;//行程报告页面
+    public ObservableField<Boolean> mNaviChargeTipVisibility;
+    public ObservableField<Boolean> mNaviContinueVisibility;//继续导航
     private boolean mIsShowLane = false;
 
     public BaseNaviGuidanceViewModel(@NonNull final Application application) {
@@ -75,6 +84,8 @@ public class BaseNaviGuidanceViewModel extends
         mNaviViaArrivedPopVisibility = new ObservableField<>(false);
         mNaviSapaDetailVisibility = new ObservableField<>(false);
         mNaviDriveReportVisibility = new ObservableField<>(false);
+        mNaviChargeTipVisibility = new ObservableField<>(false);
+        mNaviContinueVisibility = new ObservableField<>(false);
     }
 
     @Override
@@ -102,16 +113,15 @@ public class BaseNaviGuidanceViewModel extends
      */
     public void onSwitchViaList() {
         final Boolean b = mNaviViaListVisibility.get();
-        Logger.i("lvww", "b -> " + b);
-        final boolean aa = Boolean.FALSE.equals(b);
-        Logger.i("lvww", "aa -> " + aa);
-        updateViaListState(aa);
+        final boolean visible = Boolean.FALSE.equals(b);
         final List<NaviViaEntity> viaList = mModel.getViaList();
-        mView.showNaviViaList(Boolean.FALSE.equals(b) ? viaList : null);
+        mView.showNaviViaList(visible);
+        mView.updateViaListState(viaList);
     }
 
     /**
      * 更新场景可见性
+     *
      * @param sceneType scene type
      * @param isVisible is visible
      */
@@ -119,24 +129,25 @@ public class BaseNaviGuidanceViewModel extends
         Logger.i(TAG, "sceneType:" + sceneType + ",isVisible:" + isVisible);
         switch (sceneType) {
             case NAVI_SCENE_3D_CROSS:
-                break;
             case NAVI_SCENE_2D_CROSS:
+                Logger.i(TAG, "路口大图展示状态：" + isVisible);
                 mNaviCrossImageVisibility.set(isVisible);
                 break;
             case NAVI_SCENE_ETA:
+                mNaviEtaVisibility.set(isVisible);
                 break;
             case NAVI_SCENE_LANES:
+                mNaviLanesVisibility.set(isVisible);
                 break;
             case NAVI_SCENE_TBT:
+                Logger.i(TAG, "TBT面板不会被隐藏");
                 break;
-            case NAVI_SCENE_VIA_POINT_FOLD:
-            case NAVI_SCENE_VIA_POINT_UNFOLD:
+            case NAVI_SCENE_VIA_POINT_LIST:
+                Logger.i(TAG, "途径点面板展示状态：" + isVisible);
                 mNaviViaListVisibility.set(isVisible);
                 break;
             case NAVI_SCENE_SERVICE_AREA:
                 mNaviSapaVisibility.set(isVisible);
-                break;
-            case CARD_CONTINUE_NAVI_BTN:
                 break;
             case NAVI_SCENE_PARALLEL:
                 mNaviParallelVisibility.set(isVisible);
@@ -157,6 +168,7 @@ public class BaseNaviGuidanceViewModel extends
                 mNaviSpeedVisibility.set(isVisible);
                 break;
             case NAVI_SCENE_TMC:
+                mNaviTmcVisibility.set(isVisible);
                 break;
             case NAVI_SCENE_VIA_DETAIL_INFO:
                 mNaviViaInfoVisibility.set(isVisible);
@@ -170,6 +182,12 @@ public class BaseNaviGuidanceViewModel extends
             case NAVI_DRIVE_REPORT:
                 mNaviDriveReportVisibility.set(isVisible);
                 break;
+            case NAVI_CHARGE_TIP:
+                mNaviChargeTipVisibility.set(isVisible);
+                break;
+            case NAVI_CONTINUE:
+                mNaviContinueVisibility.set(isVisible);
+                break;
             default:
                 break;
         }
@@ -177,6 +195,7 @@ public class BaseNaviGuidanceViewModel extends
 
     /**
      * 开始导航
+     *
      * @param bundle bundle
      */
     public void startNavigation(final Bundle bundle) {
@@ -186,6 +205,7 @@ public class BaseNaviGuidanceViewModel extends
 
     /**
      * 区间车速、绿波车速
+     *
      * @param speedCameraInfo speed camera info
      */
     public void onNaviSpeedCameraInfo(final SpeedOverallEntity speedCameraInfo) {
@@ -194,6 +214,7 @@ public class BaseNaviGuidanceViewModel extends
 
     /**
      * 服务区信息
+     *
      * @param sapaInfoEntity sapa info entity
      */
     public void onNaviSAPAInfo(final SapaInfoEntity sapaInfoEntity) {
@@ -202,6 +223,7 @@ public class BaseNaviGuidanceViewModel extends
 
     /**
      * 导航信息
+     *
      * @param naviEtaInfo navi eta info
      */
     public void onNaviInfo(final NaviEtaInfo naviEtaInfo) {
@@ -211,6 +233,7 @@ public class BaseNaviGuidanceViewModel extends
 
     /**
      * 更新路线名称
+     *
      * @param naviEtaInfo navi eta info
      */
     private void updateRouteName(final NaviEtaInfo naviEtaInfo) {
@@ -228,8 +251,18 @@ public class BaseNaviGuidanceViewModel extends
     }
 
     /**
+     * 导航信息
+     *
+     * @param routeRemainDist 路口大图进度
+     */
+    public void onCrossProgress(final long routeRemainDist) {
+        mView.updateCrossProgress(routeRemainDist);
+    }
+
+    /**
      * 路口大图
-     * @param isShowImage 是否显示图片
+     *
+     * @param isShowImage   是否显示图片
      * @param naviImageInfo 导航图片信息
      */
     public void onCrossImageInfo(final boolean isShowImage, final CrossImageEntity naviImageInfo) {
@@ -238,14 +271,16 @@ public class BaseNaviGuidanceViewModel extends
 
     /**
      * 更新TMC灯光条（路况信息）
+     *
      * @param naviTmcInfo navi tmc info
      */
-    public void onUpdateTMCLightBar(final NaviTmcInfo naviTmcInfo) {
-        mView.onUpdateTMCLightBar(naviTmcInfo);
+    public void onUpdateTMCLightBar(final NaviTmcInfo naviTmcInfo, final boolean isShow) {
+        mView.onUpdateTMCLightBar(naviTmcInfo, isShow);
     }
 
     /**
      * 转向图标信息、以及传出出入口信息
+     *
      * @param info maneuver info
      */
     public void onManeuverInfo(final NaviManeuverInfo info) {
@@ -254,7 +289,8 @@ public class BaseNaviGuidanceViewModel extends
 
     /**
      * 导航到达目的地
-     * @param traceId trace id
+     *
+     * @param traceId  trace id
      * @param naviType navi type
      */
     public void onNaviArrive(final long traceId, final int naviType) {
@@ -263,17 +299,18 @@ public class BaseNaviGuidanceViewModel extends
 
     /**
      * 车道线信息
+     *
      * @param isShowLane 是否显示车道线
-     * @param laneInfo lane info
+     * @param laneInfo   lane info
      */
     public void onLaneInfo(final boolean isShowLane, final LaneInfoEntity laneInfo) {
         mIsShowLane = isShowLane;
-        mNaviLanesVisibility.set(isShowLane);
         mView.onLaneInfo(isShowLane, laneInfo);
     }
 
     /**
      * 沉浸态状态改变回调
+     *
      * @param currentImersiveStatus current immersive status
      */
     public void onImmersiveStatusChange(final ImersiveStatus currentImersiveStatus) {
@@ -283,6 +320,7 @@ public class BaseNaviGuidanceViewModel extends
 
     /**
      * 添加场景回调
+     *
      * @param sceneCallback scene callback
      */
     public void addSceneCallback(final ISceneCallback sceneCallback) {
@@ -290,23 +328,18 @@ public class BaseNaviGuidanceViewModel extends
     }
 
     /**
-     * 更新via列表状态
-     * @param isExpand 是否展开
-     */
-    public void updateViaListState(final boolean isExpand) {
-        mView.updateViaListState(isExpand);
-    }
-
-    /**
      * 显示导航偏好页面
      */
     public void showNaviPreferenceScene() {
-        mNaviPreferenceVisibility.set(true);
+        NaviSceneManager.getInstance().notifySceneStateChange(
+                INaviSceneEvent.SceneStateChangeType.SceneShowState,
+                NaviSceneId.NAVI_SCENE_PREFERENCE);
     }
 
     /**
      * 路由偏好改变回调
-     * @param text text
+     *
+     * @param text          text
      * @param isFirstChange 是否是第一次改变
      */
     @Override
@@ -320,6 +353,7 @@ public class BaseNaviGuidanceViewModel extends
 
     /**
      * 途经点通过回调
+     *
      * @param viaIndex via index
      */
     public void onUpdateViaPass(final long viaIndex) {
@@ -328,15 +362,25 @@ public class BaseNaviGuidanceViewModel extends
 
     /**
      * 删除途经点结果回调
+     *
      * @param result result
      * @param entity entity
      */
-    public void notifyDeleteViaPointResult(final boolean result,final NaviViaEntity entity) {
+    public void notifyDeleteViaPointResult(final boolean result, final NaviViaEntity entity) {
         mView.notifyDeleteViaPointResult(result, entity);
+    }
+
+    /***
+     * 电量低提醒
+     * @param entity
+     */
+    public void notifyBatteryWarning(ChargeTipEntity entity) {
+        mView.notifyBatteryWarning(entity);
     }
 
     /**
      * 跳转服务区详情页方法
+     *
      * @param type           type
      * @param sapaInfoEntity sapa info entity
      */
@@ -346,6 +390,7 @@ public class BaseNaviGuidanceViewModel extends
 
     /**
      * 行程报告回调
+     *
      * @param entity entity
      */
     public void onDriveReport(final NaviDriveReportEntity entity) {
@@ -377,5 +422,59 @@ public class BaseNaviGuidanceViewModel extends
     public void onNetStatusChange(boolean isConnected) {
         // 离线隐藏光柱图，在线显示
         mNaviTmcVisibility.set(isConnected);
+        mView.onNetStatusChange(isConnected);
+    }
+
+    /**
+     * 显示控制详情
+     */
+    public void showControlDetails() {
+        mView.showControlDetails();
+    }
+
+    public void goSearchView(final String keyWord, final int searchType) {
+        mView.goSearchView(keyWord, searchType);
+    }
+
+    public void goAlongWayList() {
+        mView.goAlongWayList();
+    }
+
+    public void closeSearchView() {
+        mView.closeSearchView();
+    }
+
+    /**
+     * 更新via列表
+     */
+    public void updateViaList() {
+        // 延时500ms是为了等数据添加完成
+        ThreadManager.getInstance().postDelay(new Runnable() {
+            @Override
+            public void run() {
+                final List<NaviViaEntity> viaList = mModel.getViaList();
+                mView.updateViaListState(viaList);
+            }
+        }, NumberUtils.NUM_500);
+    }
+
+    public void showDeleteAllTip() {
+        new ChargeStationDeletTipDialog(mView.getActivity(), new IBaseDialogClickListener() {
+            @Override
+            public void onCommitClick() {
+                IBaseDialogClickListener.super.onCommitClick();
+                Logger.i(TAG, "确定删除！");
+                mModel.deleteAutoAddChargeStation();
+            }
+        }).show();
+    }
+
+    public void onUpdateViaList(boolean isShow) {
+        mView.updateViaListState(mModel.getViaList());
+        mView.onUpdateTMCLightBarAutoAdd(isShow);
+    }
+
+    public boolean isNeedCloseNaviChargeTipLater() {
+        return mView.isNeedCloseNaviChargeTipLater();
     }
 }

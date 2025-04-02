@@ -1,77 +1,194 @@
 package com.fy.navi.scene.ui.navi.manager;
 
-import android.util.ArrayMap;
+import androidx.annotation.Nullable;
 
 import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
+import com.fy.navi.service.MapDefaultFinalTag;
 
-import java.util.ArrayList;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
- * 导航卡片管理类
- * 负责创建销毁卡片、控制卡片显隐
- * @author fy
- * @version $Revision.*$
+ * @author lww
+ * @date 2025/3/20
  */
-public final class NaviSceneManager implements INaviSceneEvent {
-    private static final String TAG = "NaviSceneManager";
-    private final ArrayMap<NaviSceneId, NaviSceneBase> mAllBaseSceneList = new ArrayMap<>();
-    /*隐藏待显示*/
-    private ArrayList<NaviSceneBase> mHideToShowSceneList = new ArrayList<>();
-    private boolean mIsTouchState;
+public class NaviSceneManager implements INaviSceneEvent {
+    private static final String TAG = MapDefaultFinalTag.NAVI_SCENE_TAG;
+    /*** 所有的Scene **/
+    private final ConcurrentMap<NaviSceneId, NaviSceneBase> sceneViewList;
+    /*** 正在显示的Scene **/
+    private final CopyOnWriteArrayList<NaviSceneBase> showSceneList;
+    /*** 被隐藏的Scene **/
+    private final CopyOnWriteArrayList<NaviSceneBase> hideSceneList;
 
-    public static NaviSceneManager getInstance() {
-        return NaviSceneManager.Helper.INSTANCE;
-    }
-
-    private static final class Helper {
-        private static final NaviSceneManager INSTANCE = new NaviSceneManager();
-    }
+    private boolean mIsCanAddScene;
 
     private NaviSceneManager() {
+        sceneViewList = new ConcurrentHashMap<>();
+        showSceneList = new CopyOnWriteArrayList<>();
+        hideSceneList = new CopyOnWriteArrayList<>();
     }
 
-    /**
-     * 移除待显示scene元素
-     * @param scene scene
-     */
-    public void removeHideToShowScene(final NaviSceneBase scene) {
-        mHideToShowSceneList.remove(scene);
+    public static NaviSceneManager getInstance() {
+        return Helper.sm;
     }
 
-    /**
-     * 清除待显示scene集合
-     */
-    public void clearHideToShowScene() {
-        mHideToShowSceneList.clear();
+    private void onHideScene(NaviSceneId cardId) {
+        NaviSceneBase sceneBase = getSceneById(cardId);
+        if (ConvertUtils.isEmpty(sceneBase)) {
+            Logger.i(TAG, "sceneBase is null");
+            return;
+        }
+        if(NaviSceneBase.SCENE_STATE_HIDE == sceneBase.getSceneState()
+                || NaviSceneBase.SCENE_STATE_CLOSE == sceneBase.getSceneState()) return;
+        hideScene(sceneBase);
     }
 
-    @Override
-    public void notifySceneEvent(final int type, final Object obj) {
-    }
-
-    @Override
-    public void notifySceneReset() {
-        if (!ConvertUtils.isEmpty(mHideToShowSceneList)) {
-            for (NaviSceneBase naviSceneBase : mHideToShowSceneList) {
-                Logger.i(TAG, "notifySceneReset naviSceneBase:" + naviSceneBase.getSceneId() + ", SceneState:" + naviSceneBase.getSceneState());
-                if (naviSceneBase.getSceneState() != NaviSceneBase.SCENE_STATE_SHOW) {
-                    naviSceneBase.show();
+    private synchronized void onShowScene(NaviSceneId cardId) {
+        NaviSceneBase newSceneBase = getSceneById(cardId);
+        if (!ConvertUtils.isEmpty(newSceneBase)) { // 先判断集合中是否已经包含该场景
+            if (ConvertUtils.isEmpty(showSceneList)) { // 如果showSceneList为空则直接展示
+                Logger.i(TAG, "没有任何卡片在显示，直接展示新卡片", "newSceneBase -> " + newSceneBase.getSceneName());
+                showScene(newSceneBase);
+            } else {
+                if (NaviSceneBase.SCENE_STATE_SHOW == newSceneBase.getSceneState()) { // 正在展示中不进行任何操作
+                    Logger.i(TAG, "current " + newSceneBase.getSceneName() + " is show");
+                } else { // 没在展示，则根据碰撞规则展示Scene
+                    int showSceneListSize = showSceneList.size(); // 有人知道为什么要用size，而不是直接用showSceneList.size吗， 动脑筋猜一猜
+                    Logger.i(TAG, "当前展示的Scene集合长度：" + showSceneListSize);
+                    for (int i = 0; i < showSceneListSize; i++) {// 遍历所有显示的Scene，在根据定制的规则来判定正在显示的Scene是否需要隐藏或关闭
+                        if (i >= showSceneList.size()) {
+                            Logger.e(TAG, "ArrayIndexOutOfBoundsException", "i:" +i, "size:" + showSceneList.size());
+                            break;
+                        }
+                        NaviSceneBase oldSceneView = showSceneList.get(i);
+                        int sceneRule = getSceneRule(oldSceneView.getSceneId(), cardId);
+                        switch (sceneRule) {
+                            case NaviSceneRule.SCENE_SHOW_AND_SHOW -> {
+                                Logger.i(TAG, "双卡同时显示", "oldSceneView -> " + oldSceneView.getSceneName(),
+                                        "newSceneBase -> " + newSceneBase.getSceneName());
+                                showScene(newSceneBase);
+                            }
+                            case NaviSceneRule.SCENE_SHOW_AND_CLOSE -> {
+                                Logger.i(TAG, "旧卡继续显示，新卡不展示", "oldSceneView -> " + oldSceneView.getSceneName(),
+                                        "newSceneBase -> " + newSceneBase.getSceneName());
+                                closeScene(newSceneBase);
+                                return; // 有人知道为什么要用return吗
+                            }
+                            case NaviSceneRule.SCENE_SHOW_AND_HIDE -> {
+                                Logger.i(TAG, "旧卡继续显示，新卡暂时不显示，待旧卡显示结束显卡再显示", "oldSceneView -> " + oldSceneView.getSceneName(),
+                                        "newSceneBase -> " + newSceneBase.getSceneName());
+                                // TODO: 2025/3/22 等待旧卡显示完毕 打开新卡
+                                hideScene(newSceneBase);
+                                return; // 有人知道为什么要用return吗
+                            }
+                            case NaviSceneRule.SCENE_HIDE_AND_SHOW -> {
+                                Logger.i(TAG, "旧卡隐藏，开始显示新卡，新卡显示结束继续显示旧卡", "oldSceneView -> " + oldSceneView.getSceneName(),
+                                        "newSceneBase -> " + newSceneBase.getSceneName());
+                                hideScene(oldSceneView);
+                                showScene(newSceneBase);
+                            }
+                            case NaviSceneRule.SCENE_CLOSE_AND_SHOW -> {
+                                Logger.i(TAG, "旧卡关闭，开始显示新卡", "oldSceneView -> " + oldSceneView.getSceneName(),
+                                        "newSceneBase -> " + newSceneBase.getSceneName());
+                                closeScene(oldSceneView);
+                                showScene(newSceneBase);
+                            }
+                            default -> Logger.i(TAG, "不做任何处理", "oldSceneView -> " + oldSceneView.getSceneName(),
+                                    "newSceneBase -> " + newSceneBase.getSceneName());
+                        }
+                    }
                 }
             }
-        } else {
-            Logger.e(TAG, "mHideToShowSceneList is null:");
+        } else { // 不包含该场景代表这个Scene不受规则控制
+            Logger.i(TAG, "不包含此场景");
+        }
+    }
+
+    private void onCloseScene(NaviSceneId cardId) {
+        NaviSceneBase sceneBase = getSceneById(cardId);
+        if (ConvertUtils.isEmpty(sceneBase)) return;
+        if(NaviSceneBase.SCENE_STATE_CLOSE == sceneBase.getSceneState()) return;
+        closeScene(sceneBase);
+    }
+
+    private void hideScene(@Nullable NaviSceneBase sceneView) {
+        if (NaviSceneBase.SCENE_STATE_CLOSE == sceneView.getSceneState()
+                || NaviSceneBase.SCENE_STATE_HIDE == sceneView.getSceneState()) {
+            Logger.i(TAG, "current sceneView is close 不做处理: " + sceneView.getSceneName());
+            return;
+        }
+        Logger.i(TAG, "sceneView -> " + sceneView.getSceneName());
+        hideSceneList.add(sceneView);
+        sceneView.hide();
+        if (ConvertUtils.isContain(showSceneList, sceneView)) {
+            ConvertUtils.remove(showSceneList, sceneView);
+        }
+    }
+
+    private void showScene(@Nullable NaviSceneBase sceneView) {
+        Logger.i(TAG, "showScene -> " + sceneView.getSceneName(), "isOnShowing:" + (NaviSceneBase.SCENE_STATE_SHOW == sceneView.getSceneState()));
+        if (NaviSceneBase.SCENE_STATE_SHOW == sceneView.getSceneState()) return;
+        showSceneList.add(sceneView);
+        sceneView.show();
+        if (ConvertUtils.isContain(hideSceneList, sceneView)) {
+            ConvertUtils.remove(hideSceneList, sceneView);
+        }
+    }
+
+    private void closeScene(@Nullable NaviSceneBase sceneView) {
+        if (NaviSceneBase.SCENE_STATE_CLOSE == sceneView.getSceneState()) return;
+        Logger.i(TAG, "sceneView -> " + sceneView.getSceneName());
+        sceneView.close();
+        if (ConvertUtils.isContain(hideSceneList, sceneView)) {
+            ConvertUtils.remove(hideSceneList, sceneView);
+        }
+        if (ConvertUtils.isContain(showSceneList, sceneView)) {
+            ConvertUtils.remove(showSceneList, sceneView);
         }
     }
 
     /**
-     * @param type   卡片关闭/打开/隐藏
-     * @param cardId 卡片id
-     * @brief 根据底部透出的事件显示对应卡片
+     * 碰撞规则.
+     *
+     * @param oldSceneId 正在显示的Scene标识
+     * @param newSceneId 新的Scene标识
+     * @return 碰撞规则
      */
+    private int getSceneRule(NaviSceneId oldSceneId, NaviSceneId newSceneId) {
+        return NaviSceneRule.getCollisionType(oldSceneId, newSceneId);
+    }
+
+    /**
+     * @param id        id
+     * @param naviScene 卡片
+     */
+    public void addNaviScene(final NaviSceneId id, final NaviSceneBase naviScene) {
+        Logger.i(TAG, "addNaviScene", "id -> " + id.name(), "naviScene" + naviScene +
+                " mIsCanAddScene -> " + mIsCanAddScene);
+        // 因为launcher巡航等页面会复用navi的scene所以这里只能在navi页面起来后才能添加scene
+        if (!mIsCanAddScene) {
+            return;
+        }
+        if (ConvertUtils.isContain(sceneViewList, id)) {
+            Logger.i("addNaviScene", "已存在！：" + naviScene.getSceneId().name());
+        } else {
+            sceneViewList.put(id, naviScene);
+        }
+    }
+
+    /**
+     * @param id id
+     * @return 卡片, 返回值有为空的可能，使用方要进行判断
+     */
+    private NaviSceneBase getSceneById(final NaviSceneId id) {
+        return ConvertUtils.containToValue(sceneViewList, id);
+    }
+
     @Override
-    public void notifySceneStateChange(final SceneStateChangeType type, final NaviSceneId cardId) {
-        Logger.i(TAG, "notifyCardStateChange cardId:" + cardId + ", type:" + type);
+    public void notifySceneStateChange(SceneStateChangeType type, NaviSceneId cardId) {
         if (type == SceneStateChangeType.SceneCloseState) {//关闭Scene
             onCloseScene(cardId);
         } else if (type == SceneStateChangeType.SceneShowState) {//显示Scene
@@ -81,232 +198,30 @@ public final class NaviSceneManager implements INaviSceneEvent {
         }
     }
 
-    /***
-     * 显示scene
-     * @param showSceneId
-     **/
-    private void onShowScene(final NaviSceneId showSceneId) {
-        final NaviSceneBase newScene = getSceneById(showSceneId);
-        if (newScene == null) {
-            Logger.i(TAG, "newScene == null");
-            return;
-        }
-        Logger.i(TAG, "onShowScene showSceneId -> " + showSceneId + ",getSceneState：" + newScene.getSceneState());
-        // 如果当前要显示的卡片已经show状态，则直接show进行更新不用判定
-        if (newScene.getSceneState() == NaviSceneBase.SCENE_STATE_SHOW) {
-            return;
-        }
-        //关闭scene
-        final ArrayList<NaviSceneBase> closeSceneList = new ArrayList<>();
-        //待显示scene
-        final ArrayList<NaviSceneBase> showSceneList = new ArrayList<>();
-        //隐藏的scene
-        final ArrayList<NaviSceneBase> hideSceneList = new ArrayList<>();
-        for (NaviSceneId id : mAllBaseSceneList.keySet()) {
-            final NaviSceneBase curScene = mAllBaseSceneList.get(id);
-            if (curScene == null) {
-                Logger.e(TAG, "onShowScene failed. Not find card id:" + id);
-                continue;
-            }
-//            // 非显示卡片不check
-//            if (curScene.getSceneState() != NaviSceneBase.SCENE_STATE_SHOW) {
-//                continue;
-//            }
-            final int status = NaviSceneRule.getCollisionType(id, showSceneId);
-            Logger.i(TAG, "onShowScene curScene -> " + id.name() + " showSceneName -> " + showSceneId.name() + " status -> " + status);
-            if (status == NaviSceneRule.SCENE_SHOW_AND_SHOW) {//新卡旧卡同时显示
-                //显示新卡
-                if (newScene.getSceneState() != NaviSceneBase.SCENE_STATE_SHOW && !showSceneList.contains(newScene)) {
-                    showSceneList.add(newScene);
-                }
-                //显示旧卡(若旧卡是显示状态)
-                if (curScene.getSceneState() == NaviSceneBase.SCENE_STATE_SHOW && !showSceneList.contains(curScene)) {
-                    showSceneList.add(curScene);
-                }
-            } else if (status == NaviSceneRule.SCENE_SHOW_AND_CLOSE) {//显示旧卡关闭新卡
-                //关闭新卡（若旧卡是显示状态才关闭新卡）
-                if (curScene.getSceneState() == NaviSceneBase.SCENE_STATE_SHOW &&
-                        newScene.getSceneState() != NaviSceneBase.SCENE_STATE_CLOSE &&
-                        !closeSceneList.contains(newScene)) {
-                    closeSceneList.add(newScene);
-                }
-                //显示旧卡
-                if (curScene.getSceneState() == NaviSceneBase.SCENE_STATE_SHOW && !showSceneList.contains(curScene)) {
-                    showSceneList.add(curScene);
-                }
-            } else if (status == NaviSceneRule.SCENE_SHOW_AND_HIDE) {//显示旧卡隐藏新卡
-                //隐藏新卡（若旧卡是显示状态才关闭新卡）
-                if (curScene.getSceneState() == NaviSceneBase.SCENE_STATE_SHOW &&
-                        newScene.getSceneState() != NaviSceneBase.SCENE_STATE_HIDE &&
-                        !hideSceneList.contains(newScene)) {
-                    hideSceneList.add(newScene);
-                } else {
-                    if (!showSceneList.contains(newScene)) {
-                        showSceneList.add(curScene);
-                    }
-                }
-                //显示旧卡
-                if (curScene.getSceneState() == NaviSceneBase.SCENE_STATE_SHOW && !showSceneList.contains(curScene)) {
-                    showSceneList.add(curScene);
-                }
-            } else if (status == NaviSceneRule.SCENE_HIDE_AND_SHOW) {//隐藏旧卡显示新卡
-                //显示新卡
-                if (newScene.getSceneState() != NaviSceneBase.SCENE_STATE_SHOW && !showSceneList.contains(newScene)) {
-                    showSceneList.add(newScene);
-                }
-                //隐藏旧卡(若旧卡显示才会隐藏)
-                if (curScene.getSceneState() == NaviSceneBase.SCENE_STATE_SHOW && !hideSceneList.contains(curScene)) {
-                    hideSceneList.add(curScene);
-                }
-            } else if (status == NaviSceneRule.SCENE_CLOSE_AND_SHOW) {//关闭旧卡显示新卡
-                //显示新卡
-                if (newScene.getSceneState() != NaviSceneBase.SCENE_STATE_SHOW && !showSceneList.contains(newScene)) {
-                    showSceneList.add(newScene);
-                }
-                //关闭旧卡
-                if (curScene.getSceneState() != NaviSceneBase.SCENE_STATE_HIDE && !closeSceneList.contains(curScene)) {
-                    closeSceneList.add(curScene);
-                }
-            } else if (status == NaviSceneRule.SCENE_IGNORE) {    //显示新卡时，旧卡不做处理，根据自身状态显示/隐藏
-                //显示新卡
-                if (newScene.getSceneState() != NaviSceneBase.SCENE_STATE_SHOW && !showSceneList.contains(newScene)) {
-                    showSceneList.add(newScene);
-                }
-            } else if (status == NaviSceneRule.SCENE_INVALID) {   //可以忽略
-            }
-        }
-        Logger.i(TAG, "showSceneList:" + showSceneList.size() + ", closeSceneList:" +
-                closeSceneList.size() + ", hideSceneList:" + hideSceneList.size());
-        if (!ConvertUtils.isEmpty(showSceneList)) {
-            for (NaviSceneBase naviSceneBase : showSceneList) {
-                Logger.e(TAG, "show:" + naviSceneBase.getSceneId());
-                naviSceneBase.show();
-            }
-        }
-        if (!ConvertUtils.isEmpty(closeSceneList)) {
-            for (NaviSceneBase naviSceneBase : closeSceneList) {
-                Logger.i(TAG, "close:" + naviSceneBase.getSceneId());
-                naviSceneBase.close();
-            }
-        }
-        if (!ConvertUtils.isEmpty(hideSceneList)) {
-            for (NaviSceneBase naviSceneBase : hideSceneList) {
-                Logger.e(TAG, "hide:" + naviSceneBase.getSceneId());
-                naviSceneBase.hide();
-            }
-            clearHideToShowScene();
-            mHideToShowSceneList.addAll(hideSceneList);
+    @Override
+    public void notifySceneReset() {
+        for (NaviSceneBase newScene : hideSceneList) {
+            Logger.i(TAG + newScene.getSceneName());
+            onShowScene(newScene.getSceneId());
         }
     }
 
-    /**
-     * 关闭scene
-     * @param closeSceneId id
-     * */
-    private void onCloseScene(final NaviSceneId closeSceneId) {
-        final NaviSceneBase closeScene = mAllBaseSceneList.get(closeSceneId);
-        Logger.i(TAG, "onCloseScene closeSceneID -> " + closeSceneId);
-        if (closeScene == null) {
-            Logger.e(TAG, " onCloseScene == null -> ");
-            return;
-        }
-        // 已经是关闭状态
-        if (closeScene.getSceneState() == NaviSceneBase.SCENE_STATE_CLOSE) {
-            Logger.e(TAG, " onCloseScene already close");
-            return;
-        }
-        Logger.e(TAG, " onCloseScene closing ...");
-        closeScene.close();
+    @Override
+    public void destroySceneView() {
+        Logger.i(TAG, "destroySceneView");
+        mIsCanAddScene = false;
+        ConvertUtils.clear(sceneViewList);
+        ConvertUtils.clear(showSceneList);
+        ConvertUtils.clear(hideSceneList);
     }
 
-    /**
-     * 隐藏scene
-     * @param hideSceneId sceneId
-     * */
-    private void onHideScene(final NaviSceneId hideSceneId) {
-        final NaviSceneBase hideScene = mAllBaseSceneList.get(hideSceneId);
-        if (hideScene == null) {
-            Logger.e(TAG, " hideScene == null -> ");
-            return;
-        }
-        // 已经是关闭状态
-        if (hideScene.getSceneState() == NaviSceneBase.SCENE_STATE_HIDE) {
-            return;
-        }
-        Logger.i(TAG, " onHideScene hideSceneId -> " + hideSceneId);
-        hideScene.hide();
-        removeHideToShowScene(hideScene);
+    @Override
+    public void onCreateSceneView() {
+        Logger.i(TAG, "onCreateSceneView");
+        mIsCanAddScene = true;
     }
 
-    /***触摸态***/
-    public void switchToTouchState() {
-        mIsTouchState = true;
-    }
-
-    /***沉浸态***/
-    public void switchToImmerState() {
-        mIsTouchState = false;
-    }
-
-    /**
-     * @param id id
-     * @return 卡片
-     */
-    private NaviSceneBase getSceneById(final NaviSceneId id) {
-        if (mAllBaseSceneList.containsKey(id)) {
-            return mAllBaseSceneList.get(id);
-        }
-        return null;
-    }
-
-    /**
-     * @param id id
-     * @param naviScene 卡片
-     */
-    public void addNaviScene(final NaviSceneId id, final NaviSceneBase naviScene) {
-        Logger.i("lvww", "addNaviScene -> ", "id -> " + id , "is exit:" + (mAllBaseSceneList.get(id) != naviScene));
-        if (mAllBaseSceneList.get(id) != naviScene) {
-            mAllBaseSceneList.put(id, naviScene);
-        } else {
-            Logger.i("addNaviScene", "已存在！：" + naviScene.getSceneId().name());
-        }
-    }
-
-    /**
-     * 移除所有的卡片
-     */
-    public void removeAllBaseScene() {
-        clearHideToShowScene();
-        for (NaviSceneId id : NaviSceneId.values()) {
-            removeSceneById(id);
-        }
-    }
-
-    /**
-     * @param id id
-     */
-    private void removeSceneById(final NaviSceneId id) {
-        if (mAllBaseSceneList.containsKey(id)) {
-            final NaviSceneBase scene = mAllBaseSceneList.get(id);
-            if (scene != null) {
-                scene.close();
-                scene.unInit();
-                mAllBaseSceneList.remove(id);
-            }
-        } else {
-            Logger.i(TAG, " removeCardById not find card id:" + id);
-        }
-    }
-
-    /**
-     * @param id id
-     * @return 是否显示
-     */
-    public boolean isShow(final NaviSceneId id) {
-        final NaviSceneBase naviScene = getSceneById(id);
-        if (naviScene == null) {
-            return false;
-        }
-        return naviScene.getSceneState() == NaviSceneBase.SCENE_STATE_SHOW;
+    private static final class Helper {
+        private static final NaviSceneManager sm = new NaviSceneManager();
     }
 }

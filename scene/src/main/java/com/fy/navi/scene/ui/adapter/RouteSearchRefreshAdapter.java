@@ -12,7 +12,7 @@ import com.android.utils.TimeUtils;
 import com.fy.navi.scene.R;
 import com.fy.navi.scene.databinding.RouteSearchRefreshListItemBinding;
 import com.fy.navi.service.define.bean.GeoPoint;
-import com.fy.navi.service.define.map.MapTypeId;
+import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.route.RouteRestAreaDetailsInfo;
 import com.fy.navi.service.define.search.PoiInfoEntity;
 import com.fy.navi.service.define.utils.NumberUtils;
@@ -23,12 +23,16 @@ import java.util.List;
 
 public class RouteSearchRefreshAdapter extends RecyclerView.Adapter<RouteSearchRefreshAdapter.Holder> {
     private List<RouteRestAreaDetailsInfo> mRouteBeanList;
-    OnItemClickListener itemClickListener;
+    private OnItemClickListener mItemClickListener;
     public RouteSearchRefreshAdapter() {
         mRouteBeanList = new ArrayList<>();
     }
 
-    public void setRouteBeanList(List<RouteRestAreaDetailsInfo> routeBeanList) {
+    /***
+     * 设置数据
+     * @param routeBeanList 数据列表
+     */
+    public void setRouteBeanList(final List<RouteRestAreaDetailsInfo> routeBeanList) {
         if (null == routeBeanList) {
             return;
         }
@@ -37,13 +41,17 @@ public class RouteSearchRefreshAdapter extends RecyclerView.Adapter<RouteSearchR
         notifyDataSetChanged();
     }
 
-    public void setItemClickListener(OnItemClickListener itemClickListener) {
-        this.itemClickListener = itemClickListener;
+    /***
+     * 设置监听
+     * @param itemClickListener 点击监听
+     */
+    public void setItemClickListener(final OnItemClickListener itemClickListener) {
+        this.mItemClickListener = itemClickListener;
     }
 
     @Override
-    public Holder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        RouteSearchRefreshListItemBinding routeItemBinding =
+    public Holder onCreateViewHolder(@NonNull final ViewGroup parent, final int viewType) {
+        final RouteSearchRefreshListItemBinding routeItemBinding =
                 DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()),
                         R.layout.route_search_refresh_list_item, parent, false);
         return new Holder(routeItemBinding);
@@ -58,28 +66,39 @@ public class RouteSearchRefreshAdapter extends RecyclerView.Adapter<RouteSearchR
     }
 
     @Override
-    public void onBindViewHolder(@NonNull Holder holder, int position) {
-        holder.routeSearchRefreshListItemBinding.routeItemServiceNum.setText("" + (position + NumberUtils.NUM_1));
-        holder.routeSearchRefreshListItemBinding.routeItemServiceName.setText(mRouteBeanList.get(position).getMServiceName());
-        holder.routeSearchRefreshListItemBinding.routeItemServiceDescription.setText(TimeUtils.getInstance().getDistanceString(mRouteBeanList.get(position).getMRemainDist()));
-        boolean belongRouteParam = RoutePackage.getInstance().isBelongRouteParam(MapTypeId.MAIN_SCREEN_MAIN_MAP, getPoiEntry(mRouteBeanList.get(position)));
-        holder.routeSearchRefreshListItemBinding.routeItemServiceAddText.setText(belongRouteParam ? ResourceUtils.Companion.getInstance().getText(R.string.route_service_list_item_added) : ResourceUtils.Companion.getInstance().getText(R.string.route_service_list_item_add));
-        holder.routeSearchRefreshListItemBinding.routeItemServiceAddImg.setImageDrawable(belongRouteParam ? ResourceUtils.Companion.getInstance().getDrawable(R.drawable.img_route_search_added) : ResourceUtils.Companion.getInstance().getDrawable(R.drawable.img_route_search_add));
-        holder.routeSearchRefreshListItemBinding.itemRootViewService.setOnClickListener(v -> {
-            if (itemClickListener != null) {
-                itemClickListener.onItemClick(getPoiEntry(mRouteBeanList.get(position)));
+    public void onBindViewHolder(@NonNull final Holder holder, final int position) {
+        holder.mRouteSearchRefreshListItemBinding.routeItemServiceNum.setText("" + (position + NumberUtils.NUM_1));
+        holder.mRouteSearchRefreshListItemBinding.routeItemServiceName.setText(mRouteBeanList.get(position).getMServiceName());
+        holder.mRouteSearchRefreshListItemBinding.routeItemServiceDescription.setText(TimeUtils.getInstance()
+                .getDistanceString(mRouteBeanList.get(position).getMRemainDist()));
+        final boolean belongRouteParam = RoutePackage.getInstance().isBelongRouteParam(MapType.MAIN_SCREEN_MAIN_MAP
+                , getPoiEntry(mRouteBeanList.get(position)));
+        holder.mRouteSearchRefreshListItemBinding.routeItemServiceAddText.setText(belongRouteParam
+                ? ResourceUtils.Companion.getInstance().getText(R.string.route_service_list_item_added)
+                : ResourceUtils.Companion.getInstance().getText(R.string.route_service_list_item_add));
+        holder.mRouteSearchRefreshListItemBinding.routeItemServiceAddImg.setImageDrawable(belongRouteParam
+                ? ResourceUtils.Companion.getInstance().getDrawable(R.drawable.img_route_search_added)
+                : ResourceUtils.Companion.getInstance().getDrawable(R.drawable.img_route_search_add));
+        holder.mRouteSearchRefreshListItemBinding.itemRootViewService.setOnClickListener(v -> {
+            if (mItemClickListener != null) {
+                mItemClickListener.onItemClick(getPoiEntry(mRouteBeanList.get(position)));
             }
         });
 
-        holder.routeSearchRefreshListItemBinding.routeItemServiceAddBg.setOnClickListener(v -> {
-            if (itemClickListener != null) {
-                itemClickListener.onItermAddClick(getPoiEntry(mRouteBeanList.get(position)));
+        holder.mRouteSearchRefreshListItemBinding.routeItemServiceAddBg.setOnClickListener(v -> {
+            if (mItemClickListener != null) {
+                mItemClickListener.onItermAddClick(getPoiEntry(mRouteBeanList.get(position)));
             }
         });
     }
 
-    private PoiInfoEntity getPoiEntry(RouteRestAreaDetailsInfo info) {
-        PoiInfoEntity poiInfoEntity = new PoiInfoEntity();
+    /***
+     * 转换点信息
+     * @param info 详情信息
+     * @return 点信息
+     */
+    private PoiInfoEntity getPoiEntry(final RouteRestAreaDetailsInfo info) {
+        final PoiInfoEntity poiInfoEntity = new PoiInfoEntity();
         poiInfoEntity.setName(info.getMServiceName());
         poiInfoEntity.setPid(info.getMServicePOIID());
         poiInfoEntity.setPoint(new GeoPoint(info.getMPos().getLon(), info.getMPos().getLat()));
@@ -91,17 +110,26 @@ public class RouteSearchRefreshAdapter extends RecyclerView.Adapter<RouteSearchR
     }
 
     public class Holder extends RecyclerView.ViewHolder {
-        public RouteSearchRefreshListItemBinding routeSearchRefreshListItemBinding;
+        private RouteSearchRefreshListItemBinding mRouteSearchRefreshListItemBinding;
 
-        public Holder(RouteSearchRefreshListItemBinding routeSearchRefreshListItemBinding) {
+        public Holder(final RouteSearchRefreshListItemBinding routeSearchRefreshListItemBinding) {
             super(routeSearchRefreshListItemBinding.getRoot());
-            this.routeSearchRefreshListItemBinding = routeSearchRefreshListItemBinding;
+            this.mRouteSearchRefreshListItemBinding = routeSearchRefreshListItemBinding;
             routeSearchRefreshListItemBinding.setHolder(this);
         }
     }
 
     public interface OnItemClickListener {
+        /***
+         * 点击监听
+         * @param poiInfoEntity 点信息
+         */
         void onItemClick(PoiInfoEntity poiInfoEntity);
+
+        /***
+         * 点击添加按钮
+         * @param poiInfoEntity 点信息
+         */
         void onItermAddClick(PoiInfoEntity poiInfoEntity);
     }
 }

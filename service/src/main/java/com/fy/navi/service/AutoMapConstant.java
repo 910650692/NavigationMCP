@@ -10,19 +10,19 @@ import java.io.File;
 public interface AutoMapConstant {
     /*** 沙箱位置 **/
     String SD_PATH = FileUtils.SD_APP_PATH;
-    /*** 地图文件缓存位置 **/
+    /*** 地图文件缓存位置 sdcard/Android/data/your_package/files/AutoMap/ **/
     String AUTO_MAP_PATH = SD_PATH + "AutoMap" + File.separator;
-    /*** 高德地图文件缓存位置 **/
+    /*** 高德地图文件缓存位置 sdcard/Android/data/your_package/files/AutoMap/Gbl/**/
     String GBL_MAP = AUTO_MAP_PATH + "Gbl" + File.separator;
     // TODO: 2025/2/28 定位测试用
 //    String POS = FileUtils.APP_FILE_PATH + "Gbl" + File.separator;
 
-    Float MAP_ZOOM_LEVEL_MAX = 19F;
-    Float MAP_ZOOM_LEVEL_MIN = 3F;
-    Float MAP_ZOOM_LEVEL_CHANGE_FLAG = 1F;
-    Float MAP_ZOOM_LEVEL_DEFAULT = 13F;
+    float MAP_ZOOM_LEVEL_MAX = 19F;
+    float MAP_ZOOM_LEVEL_MIN = 3F;
+    float MAP_ZOOM_LEVEL_CHANGE_FLAG = 1F;
+    float MAP_ZOOM_LEVEL_DEFAULT = 13F;
 
-    Float MAP_DEFAULT_TEXT_SIZE = 1.3F;
+    float MAP_DEFAULT_TEXT_SIZE = 1.3F;
 
     int PLUG_TYPE_SLOW = 7;
     int PLUG_TYPE_FAST = 9;
@@ -94,6 +94,7 @@ public interface AutoMapConstant {
         String BUNDLE_KEY_SEARCH_OPEN_HOME_COMPANY = "bundle_key_search_open_home_company";
         String BUNDLE_KEY_SEARCH_OPEN_COLLECTION = "bundle_key_search_open_collection";
         String BUNDLE_KEY_SOURCE_FRAGMENT = "bundle_key_source_fragment";
+        String BUNDLE_KEY_SEARCH_RANGE = "bundle_key_search_range";
     }
 
     @interface TrafficEventBundleKey {

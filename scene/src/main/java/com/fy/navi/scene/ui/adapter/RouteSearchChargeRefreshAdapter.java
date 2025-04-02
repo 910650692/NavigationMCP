@@ -9,7 +9,7 @@ import com.android.utils.ConvertUtils;
 import com.android.utils.ResourceUtils;
 import com.fy.navi.scene.R;
 import com.fy.navi.scene.databinding.RouteSearchChargeRefreshListItemBinding;
-import com.fy.navi.service.define.map.MapTypeId;
+import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.route.RouteParam;
 import com.fy.navi.service.define.search.ChargeInfo;
 import com.fy.navi.service.define.search.PoiInfoEntity;
@@ -80,7 +80,7 @@ public class RouteSearchChargeRefreshAdapter extends RecyclerView.Adapter<RouteS
         if (mSearchType == 0) {
             belongRouteParam = isBelongSamePoi(mLoaclSaveEntity, mRouteBeanList.get(position));
         } else {
-            belongRouteParam = RoutePackage.getInstance().isBelongRouteParam(MapTypeId.MAIN_SCREEN_MAIN_MAP, mRouteBeanList.get(position));
+            belongRouteParam = RoutePackage.getInstance().isBelongRouteParam(MapType.MAIN_SCREEN_MAIN_MAP, mRouteBeanList.get(position));
         }
         holder.mRouteSearchChargeRefreshListItemBinding.routeItemChargeAddText.setText(belongRouteParam
                 ? ResourceUtils.Companion.getInstance().getText(R.string.route_service_list_item_added)

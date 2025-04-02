@@ -7,28 +7,28 @@
       android:pathData="M6.563,9.188L36.313,9.188A1.75,1.75 0,0 1,38.063 10.938L38.063,31.063A1.75,1.75 0,0 1,36.313 32.813L6.563,32.813A1.75,1.75 0,0 1,4.813 31.063L4.813,10.938A1.75,1.75 0,0 1,6.563 9.188z"
       android:strokeAlpha="0.8"
       android:strokeWidth="2.625"
-      android:fillColor="@color/svg_color_000000"
-      android:strokeColor="@color/svg_color_FFFFFF"
+      android:fillColor="@color/navi_color_000000_0"
+      android:strokeColor="@color/navi_color_FFFFFF_100"
       android:fillType="evenOdd"/>
   <path
       android:pathData="M15.278,28.562l0,-2.123l-6.09,0l0,-5.095l5.233,0l0,-2.1l-5.233,0l0,-4.648l5.845,0l0,-2.123l-8.033,0l0,16.089z"
       android:strokeWidth="1"
-      android:fillColor="@color/svg_color_FFFFFF"
+      android:fillColor="@color/navi_color_FFFFFF_100"
       android:fillAlpha="0.8"
       android:fillType="nonZero"
-      android:strokeColor="@color/svg_color_000000"/>
+      android:strokeColor="@color/navi_color_000000_0"/>
   <path
       android:pathData="M21.507,28.562l0,-13.966l3.745,0l0,-2.123l-9.66,0l0,2.123l3.745,0l0,13.966z"
       android:strokeWidth="1"
-      android:fillColor="@color/svg_color_FFFFFF"
+      android:fillColor="@color/navi_color_FFFFFF_100"
       android:fillAlpha="0.8"
       android:fillType="nonZero"
-      android:strokeColor="@color/svg_color_000000"/>
+      android:strokeColor="@color/navi_color_000000_0"/>
   <path
       android:pathData="M35,27.869L34.563,25.657C33.419,26.432 32.317,26.819 31.255,26.819C28.653,26.819 27.353,24.726 27.353,20.54C27.353,16.384 28.647,14.306 31.237,14.306C31.541,14.306 31.827,14.328 32.095,14.373C32.783,14.492 33.53,14.835 34.335,15.401L34.79,13.144C33.53,12.548 32.311,12.25 31.132,12.25C29.208,12.25 27.723,12.973 26.679,14.418C25.635,15.863 25.112,17.918 25.112,20.585C25.112,21.643 25.206,22.656 25.392,23.624C26.069,27.125 27.988,28.875 31.15,28.875C31.325,28.875 31.488,28.868 31.64,28.853C32.702,28.793 33.822,28.465 35,27.869Z"
       android:strokeWidth="1"
-      android:fillColor="@color/svg_color_FFFFFF"
+      android:fillColor="@color/navi_color_FFFFFF_100"
       android:fillAlpha="0.8"
       android:fillType="nonZero"
-      android:strokeColor="@color/svg_color_000000"/>
+      android:strokeColor="@color/navi_color_000000_0"/>
 </vector>

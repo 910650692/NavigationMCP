@@ -4,7 +4,7 @@ import com.android.utils.log.Logger;
 import com.fy.navi.scene.BaseSceneModel;
 import com.fy.navi.scene.api.map.ISceneScale;
 import com.fy.navi.scene.ui.map.SceneScaleView;
-import com.fy.navi.service.define.map.MapTypeId;
+import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.logicpaket.map.MapPackage;
 
 /**
@@ -23,12 +23,12 @@ public class SceneScaleImpl extends BaseSceneModel<SceneScaleView> implements IS
     @Override
     public void reduceLevel() {
         Logger.i("lvww", "缩小比例尺");
-        mapPackage.reduceLevel(MapTypeId.MAIN_SCREEN_MAIN_MAP);
+        mapPackage.reduceLevel(MapType.MAIN_SCREEN_MAIN_MAP);
     }
 
     @Override
     public void amplifyLevel() {
         Logger.i("lvww", "放大比例尺");
-        mapPackage.amplifyLevel(MapTypeId.MAIN_SCREEN_MAIN_MAP);
+        mapPackage.amplifyLevel(MapType.MAIN_SCREEN_MAIN_MAP);
     }
 }

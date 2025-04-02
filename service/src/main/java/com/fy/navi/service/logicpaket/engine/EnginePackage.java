@@ -5,7 +5,7 @@ import androidx.work.ListenableWorker;
 import com.android.utils.ConvertUtils;
 import com.fy.navi.service.adapter.engine.EngineAdapter;
 import com.fy.navi.service.adapter.engine.EngineObserver;
-import com.fy.navi.service.define.map.MapTypeId;
+import com.fy.navi.service.define.map.MapType;
 
 import java.util.Hashtable;
 
@@ -33,11 +33,11 @@ public class EnginePackage implements EngineObserver {
         return mEngineAdapter.initEngine();
     }
 
-    public int getEngineID(MapTypeId mapId) {
+    public int getEngineID(MapType mapId) {
         return mEngineAdapter.engineID(mapId);
     }
 
-    public int getEagleEyeEngineID(MapTypeId mapId) {
+    public int getEagleEyeEngineID(MapType mapId) {
         return mEngineAdapter.eagleEyeEngineID(mapId);
     }
 

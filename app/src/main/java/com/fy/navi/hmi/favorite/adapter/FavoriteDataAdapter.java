@@ -1,5 +1,6 @@
 package com.fy.navi.hmi.favorite.adapter;
 
+import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,6 +31,7 @@ public class FavoriteDataAdapter extends RecyclerView.Adapter<FavoriteDataAdapte
      * setData
      * @param list list
      */
+    @SuppressLint("NotifyDataSetChanged")
     public void setData(final List<PoiInfoEntity> list) {
         mFavoriteInfoList = list;
         notifyDataSetChanged();
@@ -88,13 +90,12 @@ public class FavoriteDataAdapter extends RecyclerView.Adapter<FavoriteDataAdapte
         });
 
         holder.mFavoriteBinding.itemFavoriteTop.setOnClickListener(v -> {
-
-             if (mFavoriteInfoList.get(position).getFavoriteInfo().getTop_time() != 0) {
-                if (mItemClickListener != null) {
+            if (mItemClickListener != null) {
+                if (mFavoriteInfoList.get(position).getFavoriteInfo().getTop_time() != 0) {
                     mItemClickListener.onItemCancelTopClick(position);
+                } else {
+                    mItemClickListener.onItemTopClick(position);
                 }
-            } else if (mItemClickListener != null) {
-                mItemClickListener.onItemTopClick(position);
             }
             holder.mFavoriteBinding.swipeMenuLayout.smoothClose();
         });

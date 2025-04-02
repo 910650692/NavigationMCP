@@ -1,11 +1,9 @@
 
 package com.fy.navi.scene.ui.adapter;
 
-import static com.fy.navi.service.MapDefaultFinalTag.SEARCH_HMI_TAG;
 
 import android.text.Spannable;
 import android.text.SpannableString;
-import android.text.SpannableStringBuilder;
 import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
@@ -19,6 +17,7 @@ import com.android.utils.log.Logger;
 import com.fy.navi.scene.R;
 import com.fy.navi.scene.databinding.TerminalParkingItemBinding;
 import com.fy.navi.service.AppContext;
+import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.define.search.ParkingInfo;
 import com.fy.navi.service.define.search.PoiInfoEntity;
 import com.fy.navi.service.define.search.SearchResultEntity;
@@ -30,9 +29,9 @@ import java.util.Map;
 
 public class TerminalParkingResultAdapter extends RecyclerView.Adapter<TerminalParkingResultAdapter.ResultHolder> {
     private static final Map<Integer, String> BUSY_STATUS_MAP = new HashMap<>();
-    private final List<PoiInfoEntity> poiEntities;
-    private OnItemClickListener onItemClickListener;
-    private int selectedPosition = -1;
+    private final List<PoiInfoEntity> mPoiEntities;
+    private OnItemClickListener mOnItemClickListener;
+    private int mSelectedPosition = -1;
     public static final int IDLE = 1;
     public static final int ENOUGH = 2;
     public static final int LESS = 3;
@@ -47,21 +46,25 @@ public class TerminalParkingResultAdapter extends RecyclerView.Adapter<TerminalP
         BUSY_STATUS_MAP.put(FULL, "已满");
     }
 
-    public void setOnItemClickListener(OnItemClickListener listener) {
-        onItemClickListener = listener;
+    public void setOnItemClickListener(final OnItemClickListener listener) {
+        mOnItemClickListener = listener;
     }
 
     public TerminalParkingResultAdapter() {
-        this.poiEntities = new ArrayList<>();
+        this.mPoiEntities = new ArrayList<>();
     }
 
-    public void notifyList(SearchResultEntity searchResultEntity) {
-        List<PoiInfoEntity> newPoiList = searchResultEntity.getPoiList();
-        int oldSize = poiEntities.size();
-        int newSize = newPoiList.size();
+    /**
+     * 更新列表
+     * @param searchResultEntity searchResultEntity 源数据
+     */
+    public void notifyList(final SearchResultEntity searchResultEntity) {
+        final List<PoiInfoEntity> newPoiList = searchResultEntity.getPoiList();
+        final int oldSize = mPoiEntities.size();
+        final int newSize = newPoiList.size();
 
-        poiEntities.clear();
-        poiEntities.addAll(newPoiList);
+        mPoiEntities.clear();
+        mPoiEntities.addAll(newPoiList);
 
         if (oldSize == 0 && newSize > 0) {
             notifyItemRangeInserted(0, newSize);
@@ -79,94 +82,116 @@ public class TerminalParkingResultAdapter extends RecyclerView.Adapter<TerminalP
 
     @NonNull
     @Override
-    public ResultHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        TerminalParkingItemBinding adapterSearchResultItemBinding = DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()), R.layout.terminal_parking_item, parent, false);
+    public ResultHolder onCreateViewHolder(@NonNull final ViewGroup parent, final int viewType) {
+        final TerminalParkingItemBinding adapterSearchResultItemBinding =
+                DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()), R.layout.terminal_parking_item, parent, false);
         return new ResultHolder(adapterSearchResultItemBinding);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ResultHolder holder, int position) {
-        holder.itemView.setSelected(position == selectedPosition);
+    public void onBindViewHolder(@NonNull final ResultHolder holder, final int position) {
+        holder.itemView.setSelected(position == mSelectedPosition);
 
         // 获取当前 POI 信息
-        PoiInfoEntity poiEntity = poiEntities.get(position);
-        ParkingInfo parkingInfo = poiEntity.getParkingInfoList().get(0);
+        final PoiInfoEntity poiEntity = mPoiEntities.get(position);
+        final ParkingInfo parkingInfo = poiEntity.getParkingInfoList().get(0);
 
-        Logger.d(SEARCH_HMI_TAG, "position: " + poiEntity.getParkingInfoList().size());
+        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "position: " + poiEntity.getParkingInfoList().size());
 
         // 设置停车场基本信息
-        holder.terminalParkingItemBinding.sktvParkingItemNum.setText(String.valueOf(position + 1));
-        holder.terminalParkingItemBinding.sktvParkingName.setText(poiEntity.getName());
+        holder.mTerminalParkingItemBinding.sktvParkingItemNum.setText(String.valueOf(position + 1));
+        holder.mTerminalParkingItemBinding.sktvParkingName.setText(poiEntity.getName());
 
 
-        String totalSpace = String.valueOf(parkingInfo.getSpace());
-        String freeSpace = String.valueOf(parkingInfo.getSpaceFree());
-        holder.terminalParkingItemBinding.sktvParkingItemLeisureNum.setText(getColoredParkingInfo(totalSpace, freeSpace));
+        final String totalSpace = String.valueOf(parkingInfo.getSpace());
+        final String freeSpace = String.valueOf(parkingInfo.getSpaceFree());
+        holder.mTerminalParkingItemBinding.sktvParkingItemLeisureNum.setText(getColoredParkingInfo(totalSpace, freeSpace));
         // 设置繁忙状态
-        holder.terminalParkingItemBinding.sktvParkingItemSufficientNum.setText(getBusStatusString(position));
+        holder.mTerminalParkingItemBinding.sktvParkingItemSufficientNum.setText(getBusStatusString(position));
 
         // 当前位置显示
-        holder.terminalParkingItemBinding.sktvParkingItemDistance.setText(AppContext.getInstance().getMContext().getString(R.string.st_distance_to_finish, poiEntity.getDistance()));
+        holder.mTerminalParkingItemBinding.sktvParkingItemDistance.setText(
+                AppContext.getInstance().getMContext().getString(R.string.st_distance_to_finish, poiEntity.getDistance()));
 
         // 处理 item 点击事件（选中状态更新）
         holder.itemView.setOnClickListener(v -> updateSelectedPosition(holder.getAdapterPosition()));
 
         // 处理导航按钮点击事件
-        holder.terminalParkingItemBinding.poiToNavi.setOnClickListener(v -> {
-            Logger.d(SEARCH_HMI_TAG, "poi click 算路|添加途经点");
-            if (onItemClickListener != null) {
-                onItemClickListener.onNaviClick(position, poiEntity);
+        holder.mTerminalParkingItemBinding.poiToNavi.setOnClickListener(v -> {
+            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "poi click 算路|添加途经点");
+            if (mOnItemClickListener != null) {
+                mOnItemClickListener.onNaviClick(position, poiEntity);
             }
         });
     }
 
     /**
      * 生成不同颜色的停车位信息
+     * @param totalSpace 总停车位
+     * @param freeSpace 剩余停车位
+     * @return SpannableString 停车位信息
      */
-    private SpannableString getColoredParkingInfo(String totalSpace, String freeSpace) {
-        String text = totalSpace + " / " + freeSpace;
-        SpannableString spannableString = new SpannableString(text);
-        int colorDark = ContextCompat.getColor(AppContext.getInstance().getMContext(), R.color.black);
-        int colorLight = ContextCompat.getColor(AppContext.getInstance().getMContext(), R.color.search_loading_bg_80);
+    private SpannableString getColoredParkingInfo(final String totalSpace, final String freeSpace) {
+        final String text = totalSpace + " / " + freeSpace;
+        final SpannableString spannableString = new SpannableString(text);
+        final int colorDark = ContextCompat.getColor(AppContext.getInstance().getMContext(), R.color.black);
+        final int colorLight = ContextCompat.getColor(AppContext.getInstance().getMContext(), R.color.search_loading_bg_80);
         spannableString.setSpan(new ForegroundColorSpan(colorDark), 0, totalSpace.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        spannableString.setSpan(new ForegroundColorSpan(colorLight), text.length() - freeSpace.length(), text.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        spannableString.setSpan(new ForegroundColorSpan(colorLight), text.length() - freeSpace.length(),
+                text.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         return spannableString;
     }
 
     /**
      * 更新选中位置，并刷新 UI
+     * @param newPosition 新位置
      */
-    private void updateSelectedPosition(int newPosition) {
-        if (selectedPosition >= 0) {
-            notifyItemChanged(selectedPosition);
+    private void updateSelectedPosition(final int newPosition) {
+        if (mSelectedPosition >= 0) {
+            notifyItemChanged(mSelectedPosition);
         }
-        selectedPosition = newPosition;
-        notifyItemChanged(selectedPosition);
+        mSelectedPosition = newPosition;
+        notifyItemChanged(mSelectedPosition);
     }
 
-    private String getBusStatusString(int position) {
-        int busyStatus = poiEntities.get(position).getParkingInfoList().get(0).getBusyStatus();
+    /**
+     * 获取停车场繁忙状态
+     * @param position 选中下标
+     * @return 繁忙状态
+     */
+    private String getBusStatusString(final int position) {
+        final int busyStatus = mPoiEntities.get(position).getParkingInfoList().get(0).getBusyStatus();
         return BUSY_STATUS_MAP.getOrDefault(busyStatus, "未知");
     }
 
     @Override
     public int getItemCount() {
-        return poiEntities.size();
+        return mPoiEntities.size();
     }
 
     public static class ResultHolder extends RecyclerView.ViewHolder {
-        public TerminalParkingItemBinding terminalParkingItemBinding;
+        private final TerminalParkingItemBinding mTerminalParkingItemBinding;
 
-        public ResultHolder(TerminalParkingItemBinding resultItemBinding) {
+        public ResultHolder(final TerminalParkingItemBinding resultItemBinding) {
             super(resultItemBinding.getRoot());
-            this.terminalParkingItemBinding = resultItemBinding;
-            this.terminalParkingItemBinding.setHolder(this);
+            this.mTerminalParkingItemBinding = resultItemBinding;
+            this.mTerminalParkingItemBinding.setHolder(this);
         }
     }
 
     public interface OnItemClickListener {
+        /**
+         * item 点击事件
+         * @param position 点击下标
+         * @param poiInfoEntity 点击 POI 信息
+         */
         void onItemClick(int position, PoiInfoEntity poiInfoEntity);
 
+        /**
+         * 导航点击事件
+         * @param position 点击下标
+         * @param poiInfoEntity 点击 POI 信息
+         */
         void onNaviClick(int position, PoiInfoEntity poiInfoEntity);
     }
 }

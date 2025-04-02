@@ -15,6 +15,7 @@ public enum GemLayerClickBusinessType {
     //路线上图层点击
     BizRouteTypeStartPoint,
     BizRouteTypeEndPoint,
+    BizRouteTypeViaPoint,
     BizRouteTypeWeather,
     BizRouteTypeRestArea,
     BizRouteTypeViaChargeStationPoint,

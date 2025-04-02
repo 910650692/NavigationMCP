@@ -2,18 +2,18 @@ package com.fy.navi.hmi.favorite;
 
 import android.app.Application;
 import android.os.Bundle;
+
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.MutableLiveData;
 
 import com.alibaba.android.arouter.launcher.ARouter;
+import com.android.utils.thread.ThreadManager;
 import com.fy.navi.hmi.route.RouteFragment;
 import com.fy.navi.scene.RoutePath;
 import com.fy.navi.scene.impl.search.SearchFragmentFactory;
 import com.fy.navi.service.AutoMapConstant;
-import com.fy.navi.service.define.bean.GeoPoint;
 import com.fy.navi.service.define.route.RoutePoiType;
-import com.fy.navi.service.define.search.FavoriteInfo;
 import com.fy.navi.service.define.search.PoiInfoEntity;
 import com.fy.navi.service.define.setting.SettingController;
 import com.fy.navi.service.logicpaket.setting.SettingUpdateObservable;
@@ -34,10 +34,10 @@ public class BaseFavoriteViewModel extends BaseViewModel<FavoriteFragment, Favor
     public MutableLiveData<Boolean> mChargingOfflineVisibility;
     public MutableLiveData<Boolean> mIsHomeCompanyDisplayed;
     public MutableLiveData<Boolean> mIsEVCar;
+    public MutableLiveData<String> mSyncTime;
     private PoiInfoEntity mHome;
     private PoiInfoEntity mCompany;
     private boolean mIsHome;
-
 
     public BaseFavoriteViewModel(final @NonNull Application application) {
         super(application);
@@ -50,6 +50,7 @@ public class BaseFavoriteViewModel extends BaseViewModel<FavoriteFragment, Favor
         mChargingOfflineVisibility = new MutableLiveData<>(false);
         mIsHomeCompanyDisplayed = new MutableLiveData<>(true);
         mIsEVCar = new MutableLiveData<>(false);
+        mSyncTime = new MutableLiveData<>();
     }
 
     @Override
@@ -74,7 +75,6 @@ public class BaseFavoriteViewModel extends BaseViewModel<FavoriteFragment, Favor
                 break;
         }
     }
-
 
     // 添加家
     public Action mGoSettingHome = () -> {
@@ -142,7 +142,7 @@ public class BaseFavoriteViewModel extends BaseViewModel<FavoriteFragment, Favor
     };
 
     public Action mFavoriteInfoClick = () -> {
-        updateFavoriteView(mModel.getFavoritePoiData(0));
+        mModel.getSimpleFavoriteList();
     };
 
     public Action mChargingInfoClick = () -> {
@@ -152,33 +152,32 @@ public class BaseFavoriteViewModel extends BaseViewModel<FavoriteFragment, Favor
         mChargingVisibility.setValue(true);
     };
 
-
     /**
-     * 获取收藏点列表
+     * 获取收藏点列表(普通POI点)
      */
     public void getSimpleFavoriteList() {
         mModel.getSimpleFavoriteList();
     }
 
     /**
-     * getFavoritePoiData
-     */
-    public void getFavoritePoiData() {
-        mModel.getFavoritePoiData();
-    }
-
-    /**
      * getHomeInfo
      */
-    public void getHomeInfo() {
-        mModel.getHomeInfo();
+    public void getHomeFavoriteInfo() {
+        mModel.getHomeFavoriteInfo();
     }
 
     /**
      * getCompanyInfo
      */
-    public void getCompanyInfo() {
-        mModel.getCompanyInfo();
+    public void getCompanyFavoriteInfo() {
+        mModel.getCompanyFavoriteInfo();
+    }
+
+    /**
+     * getAddressInfo
+     */
+    public ArrayList<PoiInfoEntity> getFavoriteAddressInfo() {
+        return mModel.getFavoriteAddressInfo();
     }
 
     /**
@@ -197,29 +196,6 @@ public class BaseFavoriteViewModel extends BaseViewModel<FavoriteFragment, Favor
     public void updateCompanyView(final PoiInfoEntity company) {
         this.mCompany = company;
         mView.updateCompanyView(company);
-    }
-
-    /**
-     * getSyncTime
-     */
-    public void getSyncTime() {
-        mModel.getSyncTime();
-    }
-
-    /**
-     * updateSyncTime
-     * @param syncTime
-     */
-    public void updateSyncTime(final String syncTime) {
-        mView.updateSyncTime(syncTime);
-    }
-
-    /**
-     * updateFavoritePoiData
-     * @param list
-     */
-    public void updateFavoritePoiData(final ArrayList<PoiInfoEntity> list) {
-        mView.updateFavoritePoiData(list);
     }
 
     /**
@@ -257,22 +233,23 @@ public class BaseFavoriteViewModel extends BaseViewModel<FavoriteFragment, Favor
      */
 
     public void updateFavoriteView(final ArrayList<PoiInfoEntity> list) {
+        ThreadManager.getInstance().postUi(() -> {
+            mChargingVisibility.setValue(false);
+            mChargingNoDataVisibility.setValue(false);
+            mChargingRequestFailedVisibility.setValue(false);
+            mChargingOfflineVisibility.setValue(false);
 
-        mChargingVisibility.setValue(false);
-        mChargingNoDataVisibility.setValue(false);
-        mChargingRequestFailedVisibility.setValue(false);
-        mChargingOfflineVisibility.setValue(false);
-
-        if (list == null || list.isEmpty()) {
-            mTipVisibility.setValue(true);
-            mDataVisibility.setValue(false);
-            mAddVisibility.setValue(false);
-        } else {
-            mTipVisibility.setValue(false);
-            mDataVisibility.setValue(true);
-            mAddVisibility.setValue(true);
-            mView.updateFavoriteView(list);
-        }
+            if (list == null || list.isEmpty()) {
+                mTipVisibility.setValue(true);
+                mDataVisibility.setValue(false);
+                mAddVisibility.setValue(false);
+            } else {
+                mTipVisibility.setValue(false);
+                mDataVisibility.setValue(true);
+                mAddVisibility.setValue(true);
+                mView.updateFavoriteView(list);
+            }
+        });
     }
 
     /**
@@ -283,34 +260,6 @@ public class BaseFavoriteViewModel extends BaseViewModel<FavoriteFragment, Favor
         mModel.removeFavorite(poiInfo);
     }
 
-    /**
-     *  添加POI收藏点
-     * @param poiName poi名称
-     * @param poiId poiId
-     * @param pointX 经度
-     * @param pointY 纬度
-     * @param type 收藏点类型
-     */
-    public void addFavorite(final String poiName, final String poiId, final int pointX, final int pointY, final int type) {
-        final PoiInfoEntity poiInfo = new PoiInfoEntity();
-        poiInfo.setName(poiName);
-        poiInfo.setPid(poiId);
-        poiInfo.setPoint(new GeoPoint(pointX, pointY));
-        final FavoriteInfo favoriteInfo = new FavoriteInfo()
-                .setCommonName(type);
-        poiInfo.setFavoriteInfo(favoriteInfo); //  1，家  2，公司  0，普通收藏点;
-        mModel.addFavorite(poiInfo);
-    }
-
-    /**
-     * 收藏点重命名
-     *
-     * @param customName
-     */
-    public void modifyFavorite(final String customName) {
-        final PoiInfoEntity favoriteInfo = new PoiInfoEntity();
-        mModel.modifyFavorite(favoriteInfo, customName);
-    }
 
     /**
      * 收藏点置顶/取消置顶
@@ -322,32 +271,6 @@ public class BaseFavoriteViewModel extends BaseViewModel<FavoriteFragment, Favor
         mModel.topFavorite(poiInfoEntity, isSetTop);
     }
 
-    /**
-     * 添加收藏夹信息到本地数据库
-     * @param entity
-     * @param favoriteType 收藏点类型（1家，2公司，3常去地址，0普通收藏点）
-     */
-    public void addFavoriteData(final PoiInfoEntity entity, final int favoriteType) {
-        mModel.addFavoriteData(entity, favoriteType);
-    }
-
-    /**
-     * 在本地获取家/公司的信息
-     * @param favoriteType 收藏点类型（1家，2公司，3常去地址，0普通收藏点）
-     * @return  entity
-     */
-    public PoiInfoEntity getFavoriteHomeData(final int favoriteType) {
-        return mModel.getFavoriteHomeData(favoriteType);
-    }
-
-    /**
-     * 在本地获取常去地址/普通收藏点的信息
-     * @param favoriteType 收藏点类型（1家，2公司，3常去地址，0普通收藏点）
-     * @return list
-     */
-    public ArrayList<PoiInfoEntity> getFavoriteData(final int favoriteType) {
-        return mModel.getFavoritePoiData(favoriteType);
-    }
 
     /**
      * 重命名时需更新本地数据

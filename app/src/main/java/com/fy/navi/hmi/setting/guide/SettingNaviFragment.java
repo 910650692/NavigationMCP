@@ -94,7 +94,7 @@ public class SettingNaviFragment extends BaseFragment<FragmentSettingNaviBinding
         if (isSelected) {
             compoundButton.setTextColor(ResourceUtils.Companion.getInstance().getColor(R.color.white));
         } else {
-            compoundButton.setTextColor(ResourceUtils.Companion.getInstance().getColor(R.color.setting_text_preference));
+            compoundButton.setTextColor(ResourceUtils.Companion.getInstance().getColor(R.color.setting_bg_tab_text_unselect));
         }
     }
 
@@ -105,10 +105,21 @@ public class SettingNaviFragment extends BaseFragment<FragmentSettingNaviBinding
      */
     public void updateLogoCheckBoxTextColor(final CompoundButton compoundButton, final boolean isSelected) {
         if (isSelected) {
-            compoundButton.setTextColor(ResourceUtils.Companion.getInstance().getColor(R.color.black));
+            compoundButton.setTextColor(ResourceUtils.Companion.getInstance().getColor(R.color.setting_bg_tab_text_select));
         } else {
-            compoundButton.setTextColor(ResourceUtils.Companion.getInstance().getColor(R.color.setting_text_gray));
+            compoundButton.setTextColor(ResourceUtils.Companion.getInstance().getColor(R.color.setting_car_logo_text_gray));
         }
     }
 
+    /**
+     * 设置 AvoidLimit 状态
+     * @param isTrue true 开启 false 关闭
+     */
+    public void setAvoidStatus(final boolean isTrue) {
+        ThreadManager.getInstance().postUi(() -> {
+            mBinding.naviAvoidLimit.setEnabled(isTrue);
+            mBinding.naviAvoidLimitOffline.setVisibility(isTrue? View.GONE : View.VISIBLE);
+            mBinding.naviAvoidLimitOffline.setEnabled(!isTrue);
+        });
+    }
 }

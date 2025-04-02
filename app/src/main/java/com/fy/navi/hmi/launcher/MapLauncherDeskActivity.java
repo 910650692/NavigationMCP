@@ -11,7 +11,7 @@ import com.fy.navi.hmi.BR;
 import com.fy.navi.hmi.R;
 import com.fy.navi.hmi.databinding.ActivityLauncherDeskBinding;
 import com.fy.navi.service.define.map.IBaseScreenMapView;
-import com.fy.navi.service.define.map.MapTypeId;
+import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.ui.base.BaseActivity;
 
 /**
@@ -29,7 +29,7 @@ public class MapLauncherDeskActivity extends BaseActivity<ActivityLauncherDeskBi
 
     @Override
     public void onCreateBefore() {
-        mScreenId = MapTypeId.LAUNCHER_DESK_MAP.name();
+        mScreenId = MapType.LAUNCHER_DESK_MAP.name();
     }
 
     @Override

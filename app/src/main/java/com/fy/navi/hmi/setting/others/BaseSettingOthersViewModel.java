@@ -86,8 +86,19 @@ public class BaseSettingOthersViewModel extends BaseViewModel<SettingOthersFragm
         }
     };
 
-    public Action mOpenAbout = () -> {
-        addFragment(new SettingOthersAboutFragment(), null);
+
+//    public Action mOpenAbout = () -> {
+//        Logger.d("mOpenAbout");
+//        addFragment(new SettingOthersAboutFragment(), null);
+//    };
+
+
+    public Action mOpenAbout = new Action() {
+
+        @Override
+        public void call() {
+            addFragment(new SettingOthersAboutFragment(), null);
+        }
     };
 
     public Action mOpenPrivacy = () -> {

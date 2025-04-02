@@ -42,7 +42,7 @@ public class ProvinceKeyboardView extends GridLayout {
             tv.setTextColor(ResourceUtils.Companion.getInstance().getColor(R.color.setting_preference_text_gray));
             tv.setGravity(Gravity.CENTER);
             tv.setButtonDrawable(null);
-            tv.setBackgroundResource(R.drawable.bg_setting_preference_normal);
+            tv.setBackgroundResource(R.drawable.bg_setting_keyboard);
             tv.setOnClickListener(v -> {
                 if (mListener != null) {
                     tv.setSelected(true);
@@ -56,7 +56,7 @@ public class ProvinceKeyboardView extends GridLayout {
                 if (isChecked && (tv != mLastSelectedButton)) {
                     if (mLastSelectedButton != null) {
                         mLastSelectedButton.setChecked(false);
-                        mLastSelectedButton.setBackgroundResource(R.drawable.bg_setting_preference_normal);
+                        mLastSelectedButton.setBackgroundResource(R.drawable.bg_setting_keyboard);
                         updateCheckBoxTextColor(mLastSelectedButton,false);
                     }
                     mLastSelectedButton = tv;
@@ -99,7 +99,7 @@ public class ProvinceKeyboardView extends GridLayout {
             } else {
                 checkBox.setChecked(false);
                 updateCheckBoxTextColor(checkBox, false);
-                checkBox.setBackgroundResource(R.drawable.bg_setting_preference_normal);
+                checkBox.setBackgroundResource(R.drawable.bg_setting_keyboard);
             }
         }
     }

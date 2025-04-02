@@ -5,6 +5,7 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import com.android.utils.log.Logger;
 import com.gm.cn.adassdk.AdasManager;
 import com.gm.cn.adassdk.AdasServiceConnectListener;
 
@@ -31,9 +32,9 @@ public final class AdasClient {
      * @param context Context.
      */
     public void start(@NonNull final Context context) {
+        Logger.d(TAG,"AdasClient start ");
         mAdasManager = AdasManager.getInstance(context);
         mAdasManager.addAdasServiceConnectListener(mServiceConnectListener);
-
     }
 
     /**

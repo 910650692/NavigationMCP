@@ -43,6 +43,11 @@ public class BehaviorAdapterImpl implements IBehaviorApi {
     }
 
     @Override
+    public void setLoginInfo() {
+        mAdapterImplHelper.setLoginInfo();
+    }
+
+    @Override
     public void registerCallBack(final String key, final BehaviorAdapterCallBack callBack) {
         mAdapterImplHelper.registerCallBack(key, callBack);
     }
@@ -71,7 +76,6 @@ public class BehaviorAdapterImpl implements IBehaviorApi {
             return null;
         }
         return mBehaviorService.getSimpleFavoriteIds();
-        //HMI进行业务处理
     }
 
     /**
@@ -109,7 +113,7 @@ public class BehaviorAdapterImpl implements IBehaviorApi {
      */
     public PoiInfoEntity getPoiInfoEntity(final ArrayList<SimpleFavoriteItem> simpleFavoriteList) {
         //HMI进行业务处理
-        PoiInfoEntity poiInfoEntity = new PoiInfoEntity();
+        PoiInfoEntity poiInfoEntity = null;
         if (simpleFavoriteList != null && !simpleFavoriteList.isEmpty()) {
             final SimpleFavoriteItem item = simpleFavoriteList.get(0);
             final FavoriteInfo info = new FavoriteInfo()
@@ -128,6 +132,7 @@ public class BehaviorAdapterImpl implements IBehaviorApi {
                     .setAddress(item.address)
                     .setPhone(item.phone_numbers)
                     .setPoint(new GeoPoint(item.point_x, item.point_y))
+                    .setName(item.name)
                     .setFavoriteInfo(info);
 
             poiInfoEntity = simpleFavoriteInfo;
@@ -165,6 +170,7 @@ public class BehaviorAdapterImpl implements IBehaviorApi {
                         .setAddress(item.address)
                         .setPhone(item.phone_numbers)
                         .setPoint(new GeoPoint(item.point_x, item.point_y))
+                        .setName(item.name)
                         .setFavoriteInfo(info);
                 dataList.add(simpleFavoriteInfo);
             }

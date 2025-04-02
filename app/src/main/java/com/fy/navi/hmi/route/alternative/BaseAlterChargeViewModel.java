@@ -6,10 +6,12 @@ import androidx.annotation.NonNull;
 import androidx.databinding.ObservableField;
 
 import com.android.utils.log.Logger;
+import com.fy.navi.hmi.R;
 import com.fy.navi.service.define.bean.GeoPoint;
-import com.fy.navi.service.define.map.MapTypeId;
+import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.route.RouteAlterChargeStationInfo;
 import com.fy.navi.service.define.route.RouteAlterChargeStationParam;
+import com.fy.navi.service.define.search.ChargeInfo;
 import com.fy.navi.service.define.search.PoiInfoEntity;
 import com.fy.navi.ui.action.Action;
 import com.fy.navi.ui.base.BaseViewModel;
@@ -66,6 +68,54 @@ public class BaseAlterChargeViewModel extends BaseViewModel<AlterChargeFragment,
         return mRouteSearchDetailAddRemoveVia;
     }
 
+    /**
+     * 当前充电站花费
+     **/
+    private ObservableField<String> mSpend;
+    public ObservableField<String> getSpend() {
+        return mSpend;
+    }
+
+    /**
+     * 当前充电站距离
+     **/
+    private ObservableField<String> mDistance;
+    public ObservableField<String> getDistance() {
+        return mDistance;
+    }
+
+    /**
+     * 当前充电站快充占用数量
+     **/
+    private ObservableField<String> mFastFree;
+    public ObservableField<String> getFastFree() {
+        return mFastFree;
+    }
+
+    /**
+     * 当前充电站快充总数量
+     **/
+    private ObservableField<String> mFastTotal;
+    public ObservableField<String> getFastTotal() {
+        return mFastTotal;
+    }
+
+    /**
+     * 当前充电站慢充占用数量
+     **/
+    private ObservableField<String> mSlowFree;
+    public ObservableField<String> getSlowFree() {
+        return mSlowFree;
+    }
+
+    /**
+     * 当前充电站慢充总数量
+     **/
+    private ObservableField<String> mSlowTotal;
+    public ObservableField<String> getSlowTotal() {
+        return mSlowTotal;
+    }
+
     public BaseAlterChargeViewModel(final @NonNull Application application) {
         super(application);
         mShowAlterCharge = new ObservableField<>(true);
@@ -76,6 +126,12 @@ public class BaseAlterChargeViewModel extends BaseViewModel<AlterChargeFragment,
         mRouteSearchElec = new ObservableField<>("");
         mRouteSearchTypeVisibility = new ObservableField<>(0);
         mRouteSearchDetailAddRemoveVia = new ObservableField<>("");
+        mSpend = new ObservableField<>(mApplication.getString(R.string.route_invalid));
+        mDistance = new ObservableField<>(mApplication.getString(R.string.route_invalid));
+        mFastFree = new ObservableField<>(mApplication.getString(R.string.route_invalid));
+        mFastTotal = new ObservableField<>(mApplication.getString(R.string.route_invalid));
+        mSlowFree = new ObservableField<>(mApplication.getString(R.string.route_invalid));
+        mSlowTotal = new ObservableField<>(mApplication.getString(R.string.route_invalid));
     }
 
     @Override
@@ -108,6 +164,14 @@ public class BaseAlterChargeViewModel extends BaseViewModel<AlterChargeFragment,
     }
 
     /**
+     * 请求当前充电站详情信息
+     * @param poiId poiID
+     */
+    public void getCurrentDetails(final String poiId) {
+        mModel.getCurrentDetails(poiId);
+    }
+
+    /**
      * 添加途径点
      * @param info 替换充电站信息
      */
@@ -128,6 +192,8 @@ public class BaseAlterChargeViewModel extends BaseViewModel<AlterChargeFragment,
      * @param poiInfoEntities 点参数
      */
     public void showChargeStationDetail(final PoiInfoEntity poiInfoEntities) {
+        mRouteSearchElec.set("20%");
+        mView.showChargeStationDetail(poiInfoEntities);
         mModel.getTravelTimeFuture(new GeoPoint(poiInfoEntities.getPoint().getLon(),poiInfoEntities.getPoint().getLat()))
                 .thenAccept(pair -> {
                     mRouteSearchTimeAndDistance.set(MessageFormat.format("{0}  {1}", pair.first, pair.second));
@@ -136,8 +202,33 @@ public class BaseAlterChargeViewModel extends BaseViewModel<AlterChargeFragment,
                     Logger.d(TAG, "getTravelTimeFuture error:" + error);
                     return null;
                 });
-        mRouteSearchElec.set("20%");
-        mView.showChargeStationDetail(poiInfoEntities);
+    }
+
+    /**
+     * 显示当前充电站数据
+     * @param poiInfoEntities 点参数
+     */
+    public void showCurrentChargeStation(final PoiInfoEntity poiInfoEntities) {
+        if (poiInfoEntities.getMChargeInfoList() == null) {
+            return;
+        }
+        final ChargeInfo chargeInfo = poiInfoEntities.getMChargeInfoList().get(0);
+        if (chargeInfo.getCurrentElePrice() != null && !chargeInfo.getCurrentElePrice().isEmpty()) {
+            final double price = Double.parseDouble(chargeInfo.getCurrentElePrice());
+            mSpend.set(String.format("%.2f", price) + mApplication.getString(R.string.route_details_charge_free_unit));
+        }
+        mFastFree.set(String.valueOf(chargeInfo.getFast_free()));
+        mFastTotal.set(mApplication.getString(R.string.route_details_jg) + chargeInfo.getFast_total());
+        mSlowFree.set(String.valueOf(chargeInfo.getSlow_free()));
+        mSlowTotal.set(mApplication.getString(R.string.route_details_jg) + chargeInfo.getSlow_total());
+        mModel.getTravelTimeFuture(new GeoPoint(poiInfoEntities.getPoint().getLon(),poiInfoEntities.getPoint().getLat()))
+                .thenAccept(pair -> {
+                    mDistance.set(pair.first);
+                })
+                .exceptionally(error -> {
+                    Logger.d(TAG, "getTravelTimeFuture error:" + error);
+                    return null;
+                });
     }
 
     // 防止点击穿透
@@ -149,7 +240,7 @@ public class BaseAlterChargeViewModel extends BaseViewModel<AlterChargeFragment,
     }
 
     private final Action mClosePage = () -> {
-        StackManager.getInstance().getCurrentFragment(MapTypeId.MAIN_SCREEN_MAIN_MAP.name()).closeFragment(true);
+        StackManager.getInstance().getCurrentFragment(MapType.MAIN_SCREEN_MAIN_MAP.name()).closeFragment(true);
     };
 
     public Action getClosePage() {

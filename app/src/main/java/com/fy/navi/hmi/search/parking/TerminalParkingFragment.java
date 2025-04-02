@@ -10,7 +10,7 @@ import com.fy.navi.hmi.databinding.FragmentTerminalParkingBinding;
 import com.fy.navi.service.AutoMapConstant;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.define.bean.GeoPoint;
-import com.fy.navi.service.define.map.MapTypeId;
+import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.search.SearchResultEntity;
 import com.fy.navi.ui.base.BaseFragment;
 
@@ -34,7 +34,7 @@ public class TerminalParkingFragment extends BaseFragment<FragmentTerminalParkin
     @Override
     public void onInitView() {
         Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "onInitView");
-        mBinding.sceneTerminalParkingListView.setScreenId(MapTypeId.valueOf(mScreenId));
+        mBinding.sceneTerminalParkingListView.setScreenId(MapType.valueOf(mScreenId));
     }
 
 

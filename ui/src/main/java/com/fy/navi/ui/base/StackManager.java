@@ -19,6 +19,28 @@ public final class StackManager {
         mBaseFragmentStack = new HashMap<>();
     }
 
+    /***
+     *
+     * @param screenId
+     * @param fragmentSimpleName
+     * @return 返回是否存在相同类名的对象
+     */
+    public boolean isExistFragment(final String screenId,final String fragmentSimpleName) {
+        boolean isExist = false;
+        if (ConvertUtils.isEmpty(mBaseFragmentStack) || ConvertUtils.isEmpty(mBaseFragmentStack.get(screenId))) {
+            isExist = false;
+        } else {
+           final Stack<BaseFragment> fragments = mBaseFragmentStack.get(screenId);
+           for (BaseFragment baseFragment : fragments) {
+                if (TextUtils.equals(baseFragment.getClass().getSimpleName(), fragmentSimpleName)) {
+                    isExist = true;
+                    break;
+                }
+           }
+        }
+        return isExist;
+    }
+
     /**
      * 判断栈是否为空.
      *

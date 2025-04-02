@@ -36,6 +36,8 @@ public class SceneNaviSpeedImpl extends BaseSceneModel<SceneNaviSpeedView> {
      * @param speedCameraInfo 限速信息
      */
     public void onNaviSpeedCameraInfo(final SpeedOverallEntity speedCameraInfo) {
+        Logger.i(TAG, "onNaviSpeedCameraInfo speedCameraInfo = " +
+                speedCameraInfo.toString());
         if (mISceneCallback == null) {
             return;
         }
@@ -44,7 +46,7 @@ public class SceneNaviSpeedImpl extends BaseSceneModel<SceneNaviSpeedView> {
             return;
         }
         final int speedType = speedCameraInfo.getSpeedType();
-        Logger.i(TAG, "speedType " + speedType);
+        Logger.d(TAG, "speedType " + speedType);
         if (speedType == NaviConstant.SpeedType.SPEED_OVERALL) {
             getLimitSpeed(speedCameraInfo.getLimitSpeedList());
             if (isValidSpeed(mLimitSpeed)) {
@@ -56,7 +58,8 @@ public class SceneNaviSpeedImpl extends BaseSceneModel<SceneNaviSpeedView> {
             if (mAverageSpeed != speedCameraInfo.getAverageSpeed()) {
                 mAverageSpeed = speedCameraInfo.getAverageSpeed();
             }
-            Logger.i(TAG, "SceneNaviSpeedImpl: limit：" + mLimitSpeed + ",average：" + mAverageSpeed + ",distance：" + mRemainDistance);
+            Logger.d(TAG, "SceneNaviSpeedImpl: limit：" + mLimitSpeed + ",average：" +
+                    mAverageSpeed + ",distance：" + mRemainDistance);
             if (mLimitSpeed == 0 || mAverageSpeed == 0) {
                 updateSceneVisible(false);
                 return;
@@ -109,7 +112,11 @@ public class SceneNaviSpeedImpl extends BaseSceneModel<SceneNaviSpeedView> {
      * @param isVisible 是否可见
      */
     private void updateSceneVisible(final boolean isVisible) {
-        mScreenView.getNaviSceneEvent().notifySceneStateChange((isVisible ? INaviSceneEvent.SceneStateChangeType.SceneShowState :
-                INaviSceneEvent.SceneStateChangeType.SceneHideState), NaviSceneId.NAVI_SCENE_SPEED);
+        if(mScreenView.isVisible() == isVisible) return;
+        Logger.i(MapDefaultFinalTag.NAVI_SCENE_TAG, "SceneNaviSpeedImpl", isVisible);
+        mScreenView.getNaviSceneEvent().notifySceneStateChange((isVisible ?
+                INaviSceneEvent.SceneStateChangeType.SceneShowState :
+                INaviSceneEvent.SceneStateChangeType.SceneCloseState),
+                NaviSceneId.NAVI_SCENE_SPEED);
     }
 }

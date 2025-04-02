@@ -1,5 +1,6 @@
 package com.fy.navi.service.logicpaket.search;
 
+import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.search.PoiInfoEntity;
 import com.fy.navi.service.define.search.SearchResultEntity;
 
@@ -39,6 +40,16 @@ public interface SearchResultCallback {
      * @param poiInfo
      */
     default void onMarkClickCallBack(PoiInfoEntity poiInfo) {
+
+    }
+
+
+    /**
+     * 语音触发筛选，通过此接口传递到搜索结果界面.
+     * @param mapTypeId MapTypeId.
+     * @param sortValue String，筛选规则.
+     */
+    default void onVoicePoiSort(MapType mapTypeId, String sortValue) {
 
     }
 }

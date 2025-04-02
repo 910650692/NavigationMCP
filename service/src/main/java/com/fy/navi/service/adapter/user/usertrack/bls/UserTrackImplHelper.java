@@ -22,8 +22,15 @@ import com.fy.navi.service.define.user.usertrack.GpsTrackPointBean;
 import com.fy.navi.service.define.user.usertrack.SearchHistoryItemBean;
 import com.fy.navi.service.greendao.history.History;
 import com.fy.navi.service.greendao.history.HistoryManager;
+import com.fy.navi.service.logicpaket.position.PositionPackage;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
@@ -47,7 +54,7 @@ public class UserTrackImplHelper implements IUserTrackObserver, IGpsInfoGetter {
 
     /**
      * 注册回调
-     * @param key 回调key
+     * @param key      回调key
      * @param callBack 回调
      */
     public void registerCallBack(final String key, final UserTrackAdapterCallBack callBack) {
@@ -217,7 +224,7 @@ public class UserTrackImplHelper implements IUserTrackObserver, IGpsInfoGetter {
             return -1;
         }
         final int ret = mUserTrackService.delSearchHistory(item, SyncMode.SyncModeNow);
-        Logger.i(TAG, "delSearchHistory ret = " + ret );
+        Logger.i(TAG, "delSearchHistory ret = " + ret);
         return ret;
     }
 
@@ -226,14 +233,15 @@ public class UserTrackImplHelper implements IUserTrackObserver, IGpsInfoGetter {
      */
     public void getDrivingRecordData() {
         if (mUserTrackService == null) {
-            return ;
+            return;
         }
         // 403  车机版只有 驾车轨迹(403) 生效
         final int type = BehaviorDataType.BehaviorTypeTrailDriveForAuto;
         // 获取行程ID列表（已完结记录）
         final int[] behaviorDataIds = mUserTrackService.getBehaviorDataIds(type);
         if (behaviorDataIds == null) {
-            return ;
+            Logger.i(TAG, "behaviorDataIds is null");
+            return;
         }
         Logger.i(TAG, "behaviorDataIds -> " + GsonUtils.toJson(behaviorDataIds));
 
@@ -242,31 +250,124 @@ public class UserTrackImplHelper implements IUserTrackObserver, IGpsInfoGetter {
             // 通过id获取行程数据Json串
             final String behaviorData = mUserTrackService.getBehaviorDataById(type, num);
             Logger.i(TAG, "behaviorData -> " + behaviorData);
-            final DrivingRecordDataBean dataBean = new Gson().fromJson(behaviorData, DrivingRecordDataBean.class);
+            final DrivingRecordDataBean dataBean = parseJsonToBean(behaviorData);
             // 获取同步库轨迹文件
             final String id = dataBean.getId();
             final String filePath = mUserTrackService.getFilePath(type, id, BehaviorFileType.BehaviorFileTrail);// 车机版只有 轨迹文件(2) 生效
             dataBean.setFilePath(filePath);
-
+            if (mHistoryManager.isDataExist(dataBean.getRideRunType(), dataBean.getId())) {
+                continue;
+            }
             if (dataBean != null) {
                 final History history = new History();
-                history.setMKeyWord(MODEL_NAME);
                 history.setMPoiId(dataBean.getId()); // 数据ID
                 history.setMStartPoiName(dataBean.getStartPoiName()); // 设置起点
                 history.setMEndPoiName(dataBean.getEndPoiName());// 设置终点
-                history.setMStartPoint(dataBean.getStartLocation());;
+                history.setMStartPoint(dataBean.getStartLocation());
                 history.setMEndPoint(dataBean.getEndLocation());
                 history.setMRunDistance(dataBean.getRunDistance());// 该行程行驶距离
+                history.setMStartTime(dataBean.getStartTime());
                 history.setMEndTime(dataBean.getEndTime()); // 该行程完成时间
                 history.setMRideRunType(dataBean.getRideRunType()); // 行程类型（导航/巡航）
                 history.setMTimeInterval(dataBean.getTimeInterval()); // 驾驶时长
-                history.setMAverageSpeed(dataBean.getAverageSpeed()); // 平均速度
+                history.setMAverageSpeed(getAverageSpeed(dataBean)); // 平均速度
                 history.setMMaxSpeed(dataBean.getMaxSpeed()); // 最快速度
+                history.setMTrackFileName(dataBean.getTrackFileName());
+                history.setMFilePath(dataBean.getFilePath());
                 history.setMType(AutoMapConstant.SearchKeywordRecordKey.DRIVING_HISTORY_RECORD_KEY); // 该条记录类型
                 mHistoryManager.insertOrReplace(history);
             }
         }
+    }
 
+    /**
+     * 行程数据解析
+     * @param jsonStr json串
+     * @return 行程数据
+     */
+    public DrivingRecordDataBean parseJsonToBean(final String jsonStr) {
+        final Gson gson = new GsonBuilder()
+                .registerTypeAdapter(DrivingRecordDataBean.class, new JsonDeserializer<DrivingRecordDataBean>() {
+                    @Override
+                    public DrivingRecordDataBean deserialize(final JsonElement json, final Type typeOfT, final JsonDeserializationContext context) {
+                        final JsonObject jsonObject = json.getAsJsonObject();
+                        final DrivingRecordDataBean bean = new DrivingRecordDataBean();
+                        // 基础字段
+                        bean.setId(jsonObject.get("id").getAsString());
+                        bean.setType(jsonObject.get("type").getAsInt());
+                        bean.setRideRunType(jsonObject.get("rideRunType").getAsInt());
+                        bean.setTimeInterval(jsonObject.get("timeInterval").getAsInt());
+                        bean.setRunDistance(jsonObject.get("runDistance").getAsInt());
+                        bean.setStartTime(jsonObject.get("startTime").getAsString());
+                        bean.setEndTime(jsonObject.get("endTime").getAsString());
+                        bean.setStartPoiName(jsonObject.get("startPoiName").getAsString());
+                        bean.setEndPoiName(jsonObject.get("endPoiName").getAsString());
+                        bean.setStartLocation(jsonObject.get("startLocation").getAsString());
+                        bean.setEndLocation(jsonObject.get("endLocation").getAsString());
+                        bean.setTrackFileName(jsonObject.get("trackFileName").getAsString());
+                        bean.setMaxSpeedTime(jsonObject.get("maxSpeedTime").getAsString());
+                        bean.setMaxSpeedLocation(jsonObject.get("maxSpeedLocation").getAsString());
+                        bean.setMaxSpeedPoiName(jsonObject.get("maxSpeedPoiName").getAsString());
+                        bean.setUpdateTime(jsonObject.get("updateTime").getAsInt());
+                        if (jsonObject.get("trackFileMd5") != null) {
+                            bean.setTrackFileMd5(jsonObject.get("trackFileMd5").getAsString());
+                        }
+                        if (jsonObject.get("trackPointsURL") != null) {
+                            bean.setTrackPointsURL(jsonObject.get("trackPointsURL").getAsString());
+                        }
+                        // 特殊类型处理
+                        final double maxSpeed = jsonObject.get("maxSpeed").getAsDouble();
+                        bean.setMaxSpeed((int) Math.round(maxSpeed));
+                        return bean;
+                    }
+                })
+                .create();
+        return gson.fromJson(jsonStr, DrivingRecordDataBean.class);
+    }
+
+
+    /**
+     * 获取平均速度
+     *
+     * @param dataBean 行程数据
+     * @return 平均速度
+     */
+    private int getAverageSpeed(final DrivingRecordDataBean dataBean) {
+        final int runDistance = dataBean.getRunDistance();
+        final int timeInterval = dataBean.getTimeInterval();
+        if (runDistance == 0 || timeInterval == 0) {
+            return 0;
+        }
+        return (int) ((double) runDistance / timeInterval * 3.6);
+    }
+
+    /**
+     * 从sdk获取当前用户行程数据列表（默认导航历史）
+     * @return 行程数据列表
+     */
+    public ArrayList<DrivingRecordDataBean> getDrivingRecordDataFromSdk() {
+        if (mUserTrackService == null) {
+            return null;
+        }
+        // 403  车机版只有 驾车轨迹(403) 生效
+        final int type = BehaviorDataType.BehaviorTypeTrailDriveForAuto;
+        // 获取行程ID列表（已完结记录）
+        final int[] behaviorDataIds = mUserTrackService.getBehaviorDataIds(type);
+        if (behaviorDataIds == null) {
+            Logger.i(TAG, "behaviorDataIds is null");
+            return null;
+        }
+        Logger.i(TAG, "behaviorDataIds -> " + GsonUtils.toJson(behaviorDataIds));
+        final ArrayList<DrivingRecordDataBean> drivingRecordDataBeans = new ArrayList<>();
+        // 通过id获取行为数据
+        for (int num : behaviorDataIds) {
+            // 通过id获取行程数据Json串
+            final String behaviorData = mUserTrackService.getBehaviorDataById(type, num);
+            Logger.i(TAG, "behaviorData -> " + behaviorData);
+            final DrivingRecordDataBean dataBean = parseJsonToBean(behaviorData);
+            drivingRecordDataBeans.add(dataBean);
+        }
+        return drivingRecordDataBeans;
     }
 
     /**
@@ -275,22 +376,25 @@ public class UserTrackImplHelper implements IUserTrackObserver, IGpsInfoGetter {
      */
     public ArrayList<DrivingRecordDataBean> getDrivingRecordDataList() {
         mGuideDataBeans.clear();
-        final List<History> list = mHistoryManager.getValueByType(MODEL_NAME);
+        final List<History> list = mHistoryManager.getValueByType(2);
         if (list != null && !list.isEmpty()) {
             for (History history : list) {
                 final DrivingRecordDataBean dataBean = new DrivingRecordDataBean();
-                dataBean.setId(history.getMPoiId()) ;// 数据ID
-                dataBean.setStartPoiName(history.getMStartPoiName()); ;// 设置起点
-                dataBean.setEndPoiName(history.getMEndPoiName()); ;// 设置终点
-                dataBean.setStartLocation(history.getMStartPoint()); ;// 数据ID
-                dataBean.setEndLocation(history.getMEndPoint()); ;// 数据ID
-                dataBean.setRunDistance(history.getMRunDistance()); ;// 该行程行驶距离
-                dataBean.setEndTime(history.getMEndTime()); ;// 该行程完成时间
-                dataBean.setRideRunType(history.getMRideRunType()); ;// 行程类型（导航/巡航）
-                dataBean.setTimeInterval(history.getMTimeInterval()); ;// 驾驶时长
-                dataBean.setTimeInterval(history.getMAverageSpeed()); ;// 平均速度
-                dataBean.setMaxSpeed(history.getMMaxSpeed()); ;// 最快速度
-                if(history.getMRideRunType() == 1) {
+                dataBean.setId(history.getMPoiId());// 数据ID
+                dataBean.setStartPoiName(history.getMStartPoiName()); // 设置起点
+                dataBean.setEndPoiName(history.getMEndPoiName()); // 设置终点
+                dataBean.setStartLocation(history.getMStartPoint()); // 数据ID
+                dataBean.setEndLocation(history.getMEndPoint()); // 数据ID
+                dataBean.setRunDistance(history.getMRunDistance()); // 该行程行驶距离
+                dataBean.setStartTime(history.getMStartTime());
+                dataBean.setEndTime(history.getMEndTime()); // 该行程完成时间
+                dataBean.setRideRunType(history.getMRideRunType()); // 行程类型（导航/巡航）
+                dataBean.setTimeInterval(history.getMTimeInterval()); // 驾驶时长
+                dataBean.setAverageSpeed(history.getMAverageSpeed()); // 平均速度
+                dataBean.setMaxSpeed(history.getMMaxSpeed()); // 最快速度
+                dataBean.setTrackFileName(history.getMTrackFileName());
+                dataBean.setFilePath(history.getMFilePath());
+                if (history.getMRideRunType() == 1) {
                     mGuideDataBeans.add(dataBean);
                 }
             }
@@ -305,22 +409,23 @@ public class UserTrackImplHelper implements IUserTrackObserver, IGpsInfoGetter {
      */
     public ArrayList<DrivingRecordDataBean> getDrivingRecordCruiseDataList() {
         mCruiseDataBeans.clear();
-        final List<History> list = mHistoryManager.getValueByType(MODEL_NAME);
+        final List<History> list = mHistoryManager.getValueByType(2);
         if (list != null && !list.isEmpty()) {
             for (History history : list) {
                 final DrivingRecordDataBean dataBean = new DrivingRecordDataBean();
-                dataBean.setId(history.getMPoiId()) ;// 数据ID
-                dataBean.setStartPoiName(history.getMStartPoiName()); ;// 设置起点
-                dataBean.setEndPoiName(history.getMEndPoiName()); ;// 设置终点
-                dataBean.setStartLocation(history.getMStartPoint()); ;// 数据ID
-                dataBean.setEndLocation(history.getMEndPoint()); ;// 数据ID
-                dataBean.setRunDistance(history.getMRunDistance()); ;// 该行程行驶距离
-                dataBean.setEndTime(history.getMEndTime()); ;// 该行程完成时间
-                dataBean.setRideRunType(history.getMRideRunType()); ;// 行程类型（导航/巡航）
-                dataBean.setTimeInterval(history.getMTimeInterval()); ;// 驾驶时长
-                dataBean.setTimeInterval(history.getMAverageSpeed()); ;// 平均速度
-                dataBean.setMaxSpeed(history.getMMaxSpeed()); ;// 最快速度
-                if(history.getMRideRunType() == 0) {
+                dataBean.setId(history.getMPoiId());// 数据ID
+                dataBean.setStartPoiName(history.getMStartPoiName()); // 设置起点
+                dataBean.setEndPoiName(history.getMEndPoiName()); // 设置终点
+                dataBean.setStartLocation(history.getMStartPoint()); // 数据ID
+                dataBean.setEndLocation(history.getMEndPoint()); // 数据ID
+                dataBean.setRunDistance(history.getMRunDistance()); // 该行程行驶距离
+                dataBean.setStartTime(history.getMStartTime());
+                dataBean.setEndTime(history.getMEndTime()); // 该行程完成时间
+                dataBean.setRideRunType(history.getMRideRunType()); // 行程类型（导航/巡航）
+                dataBean.setTimeInterval(history.getMTimeInterval()); // 驾驶时长
+                dataBean.setAverageSpeed(history.getMAverageSpeed()); // 平均速度
+                dataBean.setMaxSpeed(history.getMMaxSpeed()); // 最快速度
+                if (history.getMRideRunType() == 0) {
                     mCruiseDataBeans.add(dataBean);
                 }
             }
@@ -332,7 +437,7 @@ public class UserTrackImplHelper implements IUserTrackObserver, IGpsInfoGetter {
     /**
      * 获取轨迹数据同步回调通知
      * @param eventType 同步SDK回调事件类型
-     * @param exCode 同步SDK返回值
+     * @param exCode    同步SDK返回值
      */
     @Override
     public void notify(final int eventType, final int exCode) {
@@ -350,23 +455,39 @@ public class UserTrackImplHelper implements IUserTrackObserver, IGpsInfoGetter {
 
     /**
      * IGpsInfoGetter回调获取GPS信息
-     * @return
+     * @return GpsTrackPoint
      */
     @Override
     public GpsTrackPoint getGpsTrackPoint() {
-        // 从定位回调获取信息拼接GpsTrackPoint；若返回null,则无法生成轨迹点
-        // TODO: 2024/12/26
-        return null;
+
+        final GpsTrackPointBean bean = PositionPackage.getInstance().getGpsTrackPointBean();
+        if (bean == null) {
+            return null;
+        }
+        Logger.i(TAG, "getGpsTrackPoint -> " + GsonUtils.toJson(bean));
+        final GpsTrackPoint gpsTrackPoint = new GpsTrackPoint();
+        gpsTrackPoint.f64Latitude = bean.getF64Latitude();
+        gpsTrackPoint.f64Longitude = bean.getF64Longitude();
+        gpsTrackPoint.f32Speed = bean.getF32Speed();
+        gpsTrackPoint.f32Course = bean.getF32Course();
+        gpsTrackPoint.f64Altitude = bean.getF64Altitude();
+        gpsTrackPoint.f32Accuracy = bean.getF32Accuracy();
+        gpsTrackPoint.n64TickTime = bean.getN64TickTime();
+        gpsTrackPoint.n32SateliteTotal = bean.getN32SateliteTotal();
+        gpsTrackPoint.nSectionId = bean.getSectionId();
+
+        return gpsTrackPoint;
     }
 
     /**
      * 开启Gps轨迹生成的回调通知
-     * @param psSavePath GPS轨迹文件保存路径
-     * @param psFileName GPS轨迹文件名
+     *
+     * @param psSavePath    GPS轨迹文件保存路径
+     * @param psFileName    GPS轨迹文件名
      * @param n32SuccessTag 状态
-     * -1 失败
-     * 0 成功：新建轨迹文件进行打点
-     * 1 成功：在已存在的轨迹文件继续追加打点
+     *                      -1 失败
+     *                      0 成功：新建轨迹文件进行打点
+     *                      1 成功：在已存在的轨迹文件继续追加打点
      */
     @Override
     public void onStartGpsTrack(final int n32SuccessTag, final String psSavePath, final String psFileName) {
@@ -383,13 +504,14 @@ public class UserTrackImplHelper implements IUserTrackObserver, IGpsInfoGetter {
 
     /**
      * 关闭Gps轨迹生成的回调通知
+     *
      * @param n32SuccessTag 状态
-     * -1 失败
-     * 0 成功：新建轨迹文件进行打点
-     * 1 成功：在已存在的轨迹文件继续追加打点
-     * @param psSavePath GPS轨迹文件保存路径
-     * @param psFileName GPS轨迹文件名
-     * @param depInfo 轨迹文件信息
+     *                      -1 失败
+     *                      0 成功：新建轨迹文件进行打点
+     *                      1 成功：在已存在的轨迹文件继续追加打点
+     * @param psSavePath    GPS轨迹文件保存路径
+     * @param psFileName    GPS轨迹文件名
+     * @param depInfo       轨迹文件信息
      */
     @Override
     public void onCloseGpsTrack(final int n32SuccessTag, final String psSavePath, final String psFileName, final GpsTrackDepthInfo depInfo) {
@@ -407,6 +529,7 @@ public class UserTrackImplHelper implements IUserTrackObserver, IGpsInfoGetter {
 
     /**
      * 数据转换深度信息
+     *
      * @param depInfo 深度信息
      * @return 深度信息
      */
@@ -429,6 +552,7 @@ public class UserTrackImplHelper implements IUserTrackObserver, IGpsInfoGetter {
 
     /**
      * 数据转换Gps轨迹点信息
+     *
      * @param point Gps轨迹点信息
      * @return Gps轨迹点信息
      */
@@ -448,16 +572,19 @@ public class UserTrackImplHelper implements IUserTrackObserver, IGpsInfoGetter {
 
     /**
      * 获取Gps轨迹文件深度信息的回调通知
+     *
      * @param n32SuccessTag 状态
-     * -1 失败
-     * 0 成功：新建轨迹文件进行打点
-     * 1 成功：在已存在的轨迹文件继续追加打点
-     * @param psSavePath GPS轨迹文件保存路径
-     * @param psFileName GPS轨迹文件名
-     * @param depInfo 轨迹文件信息
+     *                      -1 失败
+     *                      0 成功：新建轨迹文件进行打点
+     *                      1 成功：在已存在的轨迹文件继续追加打点
+     * @param psSavePath    GPS轨迹文件保存路径
+     * @param psFileName    GPS轨迹文件名
+     * @param depInfo       轨迹文件信息
      */
     @Override
     public void onGpsTrackDepInfo(final int n32SuccessTag, final String psSavePath, final String psFileName, final GpsTrackDepthInfo depInfo) {
+        Logger.i(TAG, "onGpsTrackDepInfo -> n32SuccessTag = " + n32SuccessTag + "; psSavePath = " + psSavePath +
+                "; psFileName = " + psFileName + "; depInfo = " + GsonUtils.toJson(depInfo));
         if (ConvertUtils.isEmpty(mUserTrackResultHashtable)) {
             return;
         }

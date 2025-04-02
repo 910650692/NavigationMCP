@@ -1,4 +1,5 @@
 package com.fy.navi.scene.ui.navi;
+
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -20,7 +21,6 @@ import com.fy.navi.scene.ui.navi.manager.NaviSceneId;
 import com.fy.navi.scene.ui.navi.manager.NaviSceneManager;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.define.navi.CrossImageEntity;
-import com.fy.navi.service.define.navi.NaviEtaInfo;
 
 /**
  * 路口大图scene
@@ -28,7 +28,7 @@ import com.fy.navi.service.define.navi.NaviEtaInfo;
  * @version $Revision.*$
  */
 public class SceneNaviCrossImageView extends NaviSceneBase<SceneNaviCrossImageViewBinding, SceneNaviCrossImageImpl> {
-    private static final String TAG = MapDefaultFinalTag.NAVI_HMI_TAG;
+    private static final String TAG = "SceneNaviCrossImageView";
     private ViewRectChangeWatcher mViewRectChangeWatcher;
     private ISceneCallback mISceneCallback;
 
@@ -44,38 +44,6 @@ public class SceneNaviCrossImageView extends NaviSceneBase<SceneNaviCrossImageVi
     public SceneNaviCrossImageView(@NonNull final Context context,
                                    @Nullable final AttributeSet attrs, final int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-    }
-
-    @Override
-    protected NaviSceneId getSceneId() {
-        return NaviSceneId.NAVI_SCENE_2D_CROSS;
-    }
-
-    @Override
-    public INaviSceneEvent getNaviSceneEvent() {
-        return NaviSceneManager.getInstance();
-    }
-
-    @Override
-    protected void init() {
-        NaviSceneManager.getInstance().addNaviScene(
-                NaviSceneId.NAVI_SCENE_2D_CROSS, this);
-    }
-
-    @Override
-    public void show() {
-        super.show();
-        if (mISceneCallback != null) {
-            mISceneCallback.updateSceneVisible(NaviSceneId.NAVI_SCENE_2D_CROSS, true);
-        }
-    }
-
-    @Override
-    public void hide() {
-        super.hide();
-        if (mISceneCallback != null) {
-            mISceneCallback.updateSceneVisible(NaviSceneId.NAVI_SCENE_2D_CROSS, false);
-        }
     }
 
     @Override
@@ -99,12 +67,61 @@ public class SceneNaviCrossImageView extends NaviSceneBase<SceneNaviCrossImageVi
         mScreenViewModel.registerObserver();
     }
 
+    @Override
+    protected NaviSceneId getSceneId() {
+        return NaviSceneId.NAVI_SCENE_2D_CROSS;
+    }
+
+    @Override
+    protected String getSceneName() {
+        return NaviSceneId.NAVI_SCENE_2D_CROSS.name();
+    }
+
+    @Override
+    public INaviSceneEvent getNaviSceneEvent() {
+        return NaviSceneManager.getInstance();
+    }
+
+    @Override
+    protected void init() {
+        NaviSceneManager.getInstance().addNaviScene(
+                NaviSceneId.NAVI_SCENE_2D_CROSS, this);
+    }
+
+    @Override
+    public void show() {
+        super.show();
+        Logger.i(TAG, "路口大图显示");
+        if (mISceneCallback != null) {
+            mISceneCallback.updateSceneVisible(NaviSceneId.NAVI_SCENE_2D_CROSS, true);
+        }
+    }
+
+    @Override
+    public void hide() {
+        super.hide();
+        mScreenViewModel.closeCrossVisible();
+        if (mISceneCallback != null) {
+            mISceneCallback.updateSceneVisible(NaviSceneId.NAVI_SCENE_2D_CROSS, false);
+        }
+    }
+
+    @Override
+    public void close() {
+        super.close();
+        mScreenViewModel.closeCrossVisible();
+        if (mISceneCallback != null) {
+            mISceneCallback.updateSceneVisible(NaviSceneId.NAVI_SCENE_2D_CROSS, false);
+        }
+    }
+
     /**
-     * @param naviETAInfo 导航eta信息
+     * @param routeRemainDist 剩余距离
      */
-    public void onNaviInfo(final NaviEtaInfo naviETAInfo) {
+    public void updateCrossProgress(final long routeRemainDist) {
+        Logger.i(TAG, "updateCrossProgress");
         if (mScreenViewModel != null) {
-            mScreenViewModel.onNaviInfo(naviETAInfo);
+            mScreenViewModel.updateCrossProgress(routeRemainDist);
         }
     }
 
@@ -123,12 +140,16 @@ public class SceneNaviCrossImageView extends NaviSceneBase<SceneNaviCrossImageVi
      */
     public void onCrossImageInfo(final boolean isShowImage,
                                  final CrossImageEntity naviImageInfo) {
-        mScreenViewModel.onCrossImageInfo(isShowImage, naviImageInfo);
+        Logger.i(TAG, "onCrossImageInfo", "isShowImage:" + isShowImage);
+        if (mScreenViewModel != null) {
+            mScreenViewModel.onCrossImageInfo(isShowImage, naviImageInfo);
+        }
     }
 
     @Override
     public void onDestroy() {
         mScreenViewModel.unregisterObserver();
+        mScreenViewModel.closeCrossVisible();
         if (mViewRectChangeWatcher != null) {
             mViewRectChangeWatcher.destroy();
             mViewRectChangeWatcher = null;

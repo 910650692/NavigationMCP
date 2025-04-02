@@ -5,7 +5,6 @@ import android.text.TextUtils;
 
 import androidx.core.app.ActivityCompat;
 
-import com.android.utils.ConvertUtils;
 import com.android.utils.ResourceUtils;
 import com.android.utils.ToastUtils;
 import com.android.utils.log.Logger;
@@ -13,7 +12,6 @@ import com.fy.navi.NaviService;
 import com.fy.navi.hmi.R;
 import com.fy.navi.mapservice.bean.INaviConstant;
 import com.fy.navi.service.AppContext;
-import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.define.code.UserDataCode;
 import com.fy.navi.service.define.search.PoiInfoEntity;
 import com.fy.navi.service.greendao.CommonManager;

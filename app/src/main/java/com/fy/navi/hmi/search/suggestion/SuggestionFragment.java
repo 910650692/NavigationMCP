@@ -11,7 +11,7 @@ import com.fy.navi.hmi.databinding.SugSearchFragmentLayoutBindingImpl;
 import com.fy.navi.scene.RoutePath;
 import com.fy.navi.service.AutoMapConstant;
 import com.fy.navi.service.MapDefaultFinalTag;
-import com.fy.navi.service.define.map.MapTypeId;
+import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.search.SearchResultEntity;
 import com.fy.navi.ui.base.BaseFragment;
 
@@ -32,7 +32,7 @@ public class SuggestionFragment extends BaseFragment<SugSearchFragmentLayoutBind
     @Override
     public void onInitView() {
         Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "onInitView");
-        mBinding.sceneSugPoiList.setScreenId(MapTypeId.valueOf(mScreenId));
+        mBinding.sceneSugPoiList.setScreenId(MapType.valueOf(mScreenId));
     }
 
     @Override

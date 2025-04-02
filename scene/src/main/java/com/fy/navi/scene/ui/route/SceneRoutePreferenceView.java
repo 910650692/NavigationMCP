@@ -10,7 +10,7 @@ import com.fy.navi.scene.BaseSceneView;
 import com.fy.navi.scene.R;
 import com.fy.navi.scene.api.route.ISceneRoutePreferenceCallBack;
 import com.fy.navi.scene.databinding.SceneRoutePreferenceViewBinding;
-import com.fy.navi.scene.impl.route.SceneRoutePreferenceImpl;
+import com.fy.navi.scene.impl.preference.SceneRoutePreferenceImpl;
 import com.fy.navi.service.define.route.RoutePreferenceID;
 
 import java.util.Hashtable;

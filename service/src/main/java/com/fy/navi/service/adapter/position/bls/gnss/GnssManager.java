@@ -129,5 +129,8 @@ public class GnssManager implements LocationListener, IUsedSatelliteNumCallback 
     @Override
     public void onSatelliteNum(int num) {
         mUsedSatellite = num;
+        if(mLocationListener!=null){
+            mLocationListener.onSatelliteNum(num);
+        }
     }
 }

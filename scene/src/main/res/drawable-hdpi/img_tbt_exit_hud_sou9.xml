@@ -6,7 +6,7 @@
   <path
       android:pathData="M48.698,53.464C46.689,53.734 45.287,51.526 46.384,49.823L68.117,16.089C69.056,14.631 71.191,14.638 72.12,16.103L93.524,49.831C94.608,51.538 93.2,53.732 91.197,53.458L78.423,51.716L78.423,122.832C78.423,124.582 77.004,126 75.255,126L64.189,126C62.439,126 61.021,124.582 61.021,122.832L61.021,51.809L48.698,53.464Z"
       android:strokeWidth="1"
-      android:fillColor="#313336"
+      android:fillColor="@color/route_tbt_color_2"
       android:fillAlpha="1"
       android:fillType="evenOdd"
       android:strokeColor="#00000000"/>

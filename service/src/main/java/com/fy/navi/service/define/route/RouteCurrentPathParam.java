@@ -1,6 +1,6 @@
 package com.fy.navi.service.define.route;
 
-import com.fy.navi.service.define.map.MapTypeId;
+import com.fy.navi.service.define.map.MapType;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -11,7 +11,7 @@ public class RouteCurrentPathParam {
     /*** 请求Id **/
     private long mRequestId;
     /*** 屏幕Id **/
-    private MapTypeId mMapTypeId;
+    private MapType mMapTypeId;
     private boolean mIsOnlineRoute = true;
     /*** 详情数据 **/
     private Object mPathInfo;

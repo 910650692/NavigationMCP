@@ -159,7 +159,7 @@ public class BaseTrafficViewModel extends BaseViewModel<TrafficEventFragment, Tr
         }
     }
 
-    public void updateUi(FyGTraEventDetail gTraEventDetail, boolean isFromChild) {
+    public void updateUi(final FyGTraEventDetail gTraEventDetail, boolean isFromChild) {
         Logger.i(TAG, "updateUi:" + (gTraEventDetail != null), "isSuccess:" + gTraEventDetail.isRequestSuccess);
         if (!isFromChild) {
             uiState.set(gTraEventDetail.isRequestSuccess ? TrafficEventUiState.SUCCESS : TrafficEventUiState.ERROR);

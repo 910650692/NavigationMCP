@@ -1,6 +1,7 @@
 package com.fy.navi.service.logicpaket.position;
 
 import com.android.utils.ConvertUtils;
+import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.adapter.l2.L2Adapter;
@@ -15,6 +16,7 @@ import com.fy.navi.service.define.position.DrBean;
 import com.fy.navi.service.define.position.LocInfoBean;
 import com.fy.navi.service.define.position.LocMMInfo;
 import com.fy.navi.service.define.position.LocParallelInfoEntity;
+import com.fy.navi.service.define.user.usertrack.GpsTrackPointBean;
 
 import java.math.BigInteger;
 import java.util.List;
@@ -30,7 +32,7 @@ public class PositionPackage implements IPositionAdapterCallback, SignalAdapterC
     private int locationTaskSearchId = -1;
     public GeoPoint currentGeo;
     private AtomicBoolean atomicBoolean = new AtomicBoolean(false);
-
+    private GpsTrackPointBean mGpsTrackPointBean;
     public static PositionPackage getInstance() {
         return Helper.POSITIONING_PACKAGE;
     }
@@ -158,9 +160,31 @@ public class PositionPackage implements IPositionAdapterCallback, SignalAdapterC
     }
 
     @Override
+    public void onGpsTrackPoint(GpsTrackPointBean gpsTrackPointBean) {
+        Logger.i(TAG, "onGpsTrackPoint: " + GsonUtils.toJson(gpsTrackPointBean));
+        mGpsTrackPointBean = gpsTrackPointBean;
+    }
+
+
+    /**
+     * 获取GpsTrackPointBean
+     * @return GpsTrackPointBean
+     */
+    public GpsTrackPointBean getGpsTrackPointBean() {
+        return mGpsTrackPointBean;
+    }
+
+    @Override
     public void onLocAnalysisResult(@PositionConstant.DRDebugEvent int infoType, String info) {
         for (IPositionPackageCallback callback : mIPositionCallback) {
             callback.onLocAnalysisResult(infoType, info);
+        }
+    }
+
+    @Override
+    public void onSatelliteNum(int num) {
+        for (IPositionPackageCallback callback : mIPositionCallback) {
+            callback.onSatelliteNum(num);
         }
     }
 

@@ -22,7 +22,7 @@
             android:layout_width="@dimen/dp_0"
             android:layout_height="wrap_content"
             android:maxLines="1"
-            android:textColor="@color/black"
+            android:textColor="@color/poi_details_bottom_ff_00"
             android:textSize="@dimen/sp_52"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"

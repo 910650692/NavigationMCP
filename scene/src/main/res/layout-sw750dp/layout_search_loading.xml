@@ -9,7 +9,7 @@
 
         <com.fy.navi.ui.view.SkinConstraintLayout
             android:layout_width="wrap_content"
-            android:layout_height="@dimen/dp_100"
+            android:layout_height="@dimen/dp_123"
             android:background="@drawable/shape_loading_dialog_bg"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -18,8 +18,9 @@
 
             <com.fy.navi.ui.view.SkinImageView
                 android:id="@+id/iv_loading"
-                android:layout_width="@dimen/dp_80"
-                android:layout_height="@dimen/dp_80"
+                android:layout_width="@dimen/dp_60"
+                android:layout_height="@dimen/dp_60"
+                android:layout_marginStart="@dimen/dp_54"
                 android:background="@drawable/icon_search_loading"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -29,25 +30,27 @@
                 android:id="@+id/tv_message"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_20"
+                android:layout_marginStart="@dimen/dp_24"
                 android:ellipsize="end"
                 android:gravity="center"
                 android:maxWidth="@dimen/dp_500"
                 android:minWidth="@dimen/dp_90"
                 android:singleLine="true"
                 android:text="@string/st_search_loading"
-                android:textColor="@color/text_color_recommend"
-                android:textSize="@dimen/sp_32"
+                android:textColor="@color/floating_search_item_night"
+                android:textSize="@dimen/sp_34"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/iv_loading"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <com.fy.navi.ui.view.SkinImageView
                 android:id="@+id/iv_close"
-                android:layout_width="@dimen/dp_48"
-                android:layout_height="@dimen/dp_48"
-                android:layout_marginStart="@dimen/dp_10"
+                android:layout_width="@dimen/dp_58"
+                android:layout_height="@dimen/dp_58"
+                android:layout_marginStart="@dimen/dp_28"
+                android:layout_marginEnd="@dimen/dp_54"
                 android:background="@drawable/img_loading_close"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/tv_message"
                 app:layout_constraintTop_toTopOf="parent" />

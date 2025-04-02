@@ -13,8 +13,10 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 
 import com.alibaba.android.arouter.launcher.ARouter;
+import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
 import com.fy.navi.scene.BaseSceneView;
+import com.fy.navi.scene.R;
 import com.fy.navi.scene.RoutePath;
 import com.fy.navi.scene.databinding.SceneQuickSearchListBinding;
 import com.fy.navi.scene.impl.search.SceneQuickSearchViewImpl;
@@ -74,7 +76,7 @@ public class SceneQuickSearchView extends BaseSceneView<SceneQuickSearchListBind
      * 关闭搜索框的点击事件
      */
     private void setupSearchBarCloseAction() {
-        mViewBinding.searchTextBarView.ivClose.setOnClickListener(v -> mScreenViewModel.closeSearch());
+        mViewBinding.searchTextBarView.ivClose.setOnClickListener(v -> mScreenViewModel.closeSearch(mSearchType));
     }
 
     /**
@@ -101,8 +103,13 @@ public class SceneQuickSearchView extends BaseSceneView<SceneQuickSearchListBind
                         Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "Around search - Type: " + mSearchType);
                          fragment= (Fragment) ARouter.getInstance().build(RoutePath.Search.SEARCH_RESULT_FRAGMENT)
                                 .navigation();
+                         String realName = name;
+                         //直接使用维修关键字进行搜索会得到手机电脑维修等搜索结果，需要拼接成汽车维修再进行搜索
+                         if (ConvertUtils.equals(name, "维修")) {
+                             realName = getContext().getString(R.string.car_repair);
+                         }
                         addFragment((BaseFragment) fragment,SearchFragmentFactory.createKeywordFragment(
-                                AutoMapConstant.SourceFragment.FRAGMENT_AROUND, mSearchType, name, mPoiInfoEntity));
+                                AutoMapConstant.SourceFragment.FRAGMENT_AROUND, mSearchType, realName, mPoiInfoEntity));
 
                         break;
                     case AutoMapConstant.SearchType.ALONG_WAY_SEARCH:

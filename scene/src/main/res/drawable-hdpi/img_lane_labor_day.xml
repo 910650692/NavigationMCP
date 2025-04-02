@@ -6,31 +6,31 @@
   <path
       android:pathData="M20.5,26.5h19v3h-19z"
       android:strokeWidth="1"
-      android:fillColor="@color/svg_color_4B535D"
-      android:strokeColor="@color/svg_color_4B535D"
+      android:fillColor="@color/navi_color_4B535D_100"
+      android:strokeColor="@color/navi_color_4B535D_100"
       android:fillType="evenOdd"/>
   <path
       android:pathData="M21.5,35.5h17v3h-17z"
       android:strokeWidth="1"
-      android:fillColor="@color/svg_color_4B535D"
-      android:strokeColor="@color/svg_color_4B535D"
+      android:fillColor="@color/navi_color_4B535D_100"
+      android:strokeColor="@color/navi_color_4B535D_100"
       android:fillType="evenOdd"/>
   <path
       android:pathData="M28.5,26.5h3v20h-3z"
       android:strokeWidth="1"
-      android:fillColor="@color/svg_color_4B535D"
-      android:strokeColor="@color/svg_color_4B535D"
+      android:fillColor="@color/navi_color_4B535D_100"
+      android:strokeColor="@color/navi_color_4B535D_100"
       android:fillType="evenOdd"/>
   <path
       android:pathData="M20,14l6,12l4,0l-6,-12z"
       android:strokeWidth="1"
-      android:fillColor="@color/svg_color_4B535D"
+      android:fillColor="@color/navi_color_4B535D_100"
       android:fillType="evenOdd"
-      android:strokeColor="@color/svg_color_000000"/>
+      android:strokeColor="@color/navi_color_000000_0"/>
   <path
       android:pathData="M40,14l-6,12l-4,0l6,-12z"
       android:strokeWidth="1"
-      android:fillColor="@color/svg_color_4B535D"
+      android:fillColor="@color/navi_color_4B535D_100"
       android:fillType="evenOdd"
-      android:strokeColor="@color/svg_color_000000"/>
+      android:strokeColor="@color/navi_color_000000_0"/>
 </vector>

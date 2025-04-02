@@ -45,6 +45,11 @@ public class SceneNaviServiceArea extends NaviSceneBase<NaviSceneServiceAreaBind
     }
 
     @Override
+    protected String getSceneName() {
+        return NaviSceneId.NAVI_SCENE_SERVICE_AREA.name();
+    }
+
+    @Override
     public INaviSceneEvent getNaviSceneEvent() {
         return NaviSceneManager.getInstance();
     }

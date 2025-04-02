@@ -87,6 +87,8 @@ public final class SearchRequestParameter {
     private List<String> mPoiIdList;
     //POI详情搜索回传参数
     private SearchRetainParamInfo mRetainParam;
+    //搜索半径
+    private String mRange;
 
     public boolean isSilentSearch() {
         return mIsSilentSearch;
@@ -216,6 +218,10 @@ public final class SearchRequestParameter {
         return mRetainParam;
     }
 
+    public String getRange() {
+        return mRange;
+    }
+
     private SearchRequestParameter(final Builder builder) {
         this.mIsSilentSearch = builder.mIsSilentSearch;
         this.mKeyword = builder.mKeyword;
@@ -249,6 +255,7 @@ public final class SearchRequestParameter {
         this.mPathInfo = builder.mPathInfo;
         this.mPoiIdList = builder.mPoiIdList;
         this.mRetainParam = builder.mRetainParam;
+        this.mRange = builder.mRange;
     }
 
     public static class Builder {
@@ -284,6 +291,7 @@ public final class SearchRequestParameter {
         private Object mPathInfo;
         private List<String> mPoiIdList;
         private SearchRetainParamInfo mRetainParam;
+        private String mRange;
 
         /**
          * 是否静默搜索
@@ -602,6 +610,16 @@ public final class SearchRequestParameter {
          */
         public Builder searchRetainParam(final SearchRetainParamInfo retainParam) {
             this.mRetainParam = retainParam;
+            return this;
+        }
+
+        /**
+         * 搜索半径
+         * @param range 搜索半径
+         * @return Builder
+         */
+        public Builder range(final String range) {
+            this.mRange = range;
             return this;
         }
 

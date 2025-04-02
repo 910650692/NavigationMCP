@@ -15,6 +15,7 @@ import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.RunTask;
 import com.android.utils.thread.ThreadManager;
+import com.autonavi.gbl.map.model.EGLDeviceID;
 import com.autonavi.gbl.map.model.MapEngineID;
 import com.autonavi.gbl.servicemanager.ServiceMgr;
 import com.autonavi.gbl.servicemanager.model.ALCGroup;
@@ -32,7 +33,7 @@ import com.fy.navi.service.adapter.engine.EngineObserver;
 import com.fy.navi.service.adapter.engine.IEngineApi;
 import com.fy.navi.service.define.code.CodeManager;
 import com.fy.navi.service.define.code.UserDataCode;
-import com.fy.navi.service.define.map.MapTypeId;
+import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.setting.SettingController;
 import com.fy.navi.service.define.user.account.AccountProfileInfo;
 import com.fy.navi.service.greendao.CommonManager;
@@ -109,7 +110,7 @@ public class EngineAdapterImpl implements IEngineApi {
     }
 
     @Override
-    public int engineID(MapTypeId mapId) {
+    public int engineID(MapType mapId) {
         switch (mapId) {
             case MAIN_SCREEN_MAIN_MAP:
                 return MapEngineID.MapEngineIdMain;
@@ -122,7 +123,7 @@ public class EngineAdapterImpl implements IEngineApi {
     }
 
     @Override
-    public int eagleEyeEngineID(MapTypeId mapId) {
+    public int eagleEyeEngineID(MapType mapId) {
         switch (mapId) {
             case MAIN_SCREEN_MAIN_MAP:
                 return MapEngineID.MapEngineIdMainEagleEye;
@@ -135,7 +136,21 @@ public class EngineAdapterImpl implements IEngineApi {
     }
 
     @Override
-    public String styleBlPath(MapTypeId mapId) {
+    public int mapDeviceID(MapType mapId) {
+        switch (mapId) {
+            case MAIN_SCREEN_MAIN_MAP:
+                return EGLDeviceID.EGLDeviceIDDefault;
+            case LAUNCHER_DESK_MAP:
+                return EGLDeviceID.EGLDeviceIDExternal1;
+            case LAUNCHER_WIDGET_MAP:
+                return EGLDeviceID.EGLDeviceIDExternal2;
+        }
+        return EGLDeviceID.EGLDeviceIDDefault;
+    }
+
+
+    @Override
+    public String styleBlPath(MapType mapId) {
         return GBLCacheFilePath.BLS_ASSETS_LAYER_PATH + "style_bl.json";
     }
 
@@ -355,7 +370,7 @@ public class EngineAdapterImpl implements IEngineApi {
         Logger.i("getUserInfo valueJson = " + valueJson);
         if (!TextUtils.isEmpty(valueJson)) {
             info = GsonUtils.fromJson(valueJson, AccountProfileInfo.class);
-            uid = info.uid;
+            uid = info.getUid();
         }
         return uid;
     }

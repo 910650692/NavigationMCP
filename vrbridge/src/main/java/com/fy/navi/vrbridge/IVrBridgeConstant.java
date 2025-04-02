@@ -65,13 +65,15 @@ public interface IVrBridgeConstant {
         int DEFAULT = -1;
         int ONLY_KEYWORD = 0; //仅只有关键字搜索
         int WITH_PREFER = 1; //带算路偏好
-        int WITH_CONDITION = 2; //带筛选条件
+        int WITH_CONDITION = 2; //多条件深度搜索
         int WITH_PASS_BY = 3; //带途径点
         int ALONG_WAY = 4; //沿途搜
         int SET_HOME_COMPANY = 5; //设置家/公司
         int SHOW_POI_DETAIL = 6; //查询当前位置，展示POI详情
         int ADD_FAVORITE = 7; //收藏搜到的结果
         int TIME_AND_DIST = 8; //根据搜索结果获取到目的地的距离与时间
+        int CONDITION_IN_PAGE = 9; //多条件搜索跳转到搜索页面
+        int POI_SORT = 10; //POI排序
     }
 
     String CURRENT_LOCATION = "CURRENT_LOCATION";
@@ -91,13 +93,14 @@ public interface IVrBridgeConstant {
     }
 
     interface VoiceIntentParams {
-        String INTENT_PAGE = "voice_page";
-        String KEYWORD = "keyword";
-        String AROUND_POINT = "center_point";
-        String ROUTE_REQUEST = "speech_open_route";
-        String POI_DETAIL_INFO = "poi_info";
-        String HOME_COMPANY_TYPE = "home_company";
-        String ROUTE_INDEX = "route_index";
+        String INTENT_PAGE = "voice_page"; //需要打开的界面
+        String KEYWORD = "keyword"; //搜索关键字
+        String AROUND_POINT = "center_point"; //周边搜中心点
+        String ROUTE_REQUEST = "speech_open_route"; //打开路线规划
+        String POI_DETAIL_INFO = "poi_info"; //打开POI详情需要展示的poi信息
+        String HOME_COMPANY_TYPE = "home_company"; //家或公司
+        String ROUTE_INDEX = "route_index"; //选择路线时的index，从0开始
+        String AROUND_RADIUS = "radius"; //周边搜索半径，单位米
     }
 
 
@@ -112,6 +115,19 @@ public interface IVrBridgeConstant {
         String DISTANCE = "DISTANCE";
         String PRIZE = "PRIZE";
         String RATE = "RATE";
+    }
+
+    interface PoiSortValue {
+        String PRIORITY_RECOMMEND = "推荐排序";
+        String PRIORITY_DISTANCE = "距离优先";
+        String PRIORITY_RATE = "好评优先";
+        String PRIORITY_LOW_PRICE = "低价优先";
+        String PRIORITY_HIGH_PRICE = "高价优先";
+    }
+
+    interface PoiSortRule {
+        String ASCENDING = "ASCENDING"; //升序
+        String DESCENDING = "DESCENDING"; //降序
     }
 
     interface PoiType {

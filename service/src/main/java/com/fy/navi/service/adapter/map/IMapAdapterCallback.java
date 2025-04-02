@@ -4,7 +4,7 @@ import android.view.MotionEvent;
 
 import com.fy.navi.service.define.bean.MapLabelItemBean;
 import com.fy.navi.service.define.map.MapMode;
-import com.fy.navi.service.define.map.MapTypeId;
+import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.search.PoiInfoEntity;
 
 import java.util.ArrayList;
@@ -15,29 +15,34 @@ import java.util.ArrayList;
  * @date 2024/11/26
  */
 public interface IMapAdapterCallback {
-    void onMapInitSuccess(MapTypeId mapTypeId, boolean success);
+    void onMapInitSuccess(MapType mapTypeId, boolean success);
 
-    void onMapLoadSuccess(MapTypeId mapTypeId);
+    void onMapLoadSuccess(MapType mapTypeId);
 
-    void onMapCenterChanged(MapTypeId mapTypeId, double lon, double lat);
+    void onMapCenterChanged(MapType mapTypeId, double lon, double lat);
 
-    void onMapLevelChanged(MapTypeId mapTypeId, float mapLevel);
+    void onMapLevelChanged(MapType mapTypeId, float mapLevel);
 
-    void onMapClickBlank(MapTypeId mapTypeId, float px, float py);
+    void onMapClickBlank(MapType mapTypeId, float px, float py);
 
-    void onMapClickLabel(MapTypeId mapTypeId, ArrayList<MapLabelItemBean> pLabels);
+    void onMapClickLabel(MapType mapTypeId, ArrayList<MapLabelItemBean> pLabels);
 
-    void onMapMove(MapTypeId mapTypeId, long px, long py, boolean moveEnd);
+    void onMapMove(MapType mapTypeId, long px, long py, boolean moveEnd);
 
-    void onMapScaleChanged(MapTypeId mapTypeId, int currentScale);
+    void onMapScaleChanged(MapType mapTypeId, int currentScale);
 
-    void onMapTouchEvent(MapTypeId mapTypeId, MotionEvent touchEvent);
+    void onMapTouchEvent(MapType mapTypeId, MotionEvent touchEvent);
 
-    void onMapClickPoi(MapTypeId mapTypeId, PoiInfoEntity poiInfo);
+    void onMapClickPoi(MapType mapTypeId, PoiInfoEntity poiInfo);
 
-    void onOpenLayer(MapTypeId mapTypeId, PoiInfoEntity poiInfo);
+    void onOpenLayer(MapType mapTypeId, PoiInfoEntity poiInfo);
 
-    void onReversePoiClick(MapTypeId mapTypeId, PoiInfoEntity poiInfo);
+    void onReversePoiClick(MapType mapTypeId, PoiInfoEntity poiInfo);
 
-    void onMapModeChange(MapTypeId mapTypeId, MapMode mapMode);
+    void onMapModeChange(MapType mapTypeId, MapMode mapMode);
+
+    /**
+     * @param isEnterPreview true:进入预览模式，false:退出预览模式
+     */
+    void isEnterPreview(boolean isEnterPreview);
 }

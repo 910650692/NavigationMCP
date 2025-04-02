@@ -29,82 +29,82 @@ public class CarConnectResponseBaseBean {
     private ArrayList<PropertyValueInfo> mHeaders;
 
     /**
-     * getmEAosRequestType
+     * getEAosRequestType
      * @return int
      */
-    public int getmEAosRequestType() {
+    public int getEAosRequestType() {
         return mEAosRequestType;
     }
 
     /**
-     * setmEAosRequestType
+     * setEAosRequestType
      * @param eaosRequestType
      */
-    public void setmEAosRequestType(final int eaosRequestType) {
+    public void setEAosRequestType(final int eaosRequestType) {
         this.mEAosRequestType = eaosRequestType;
     }
 
     /**
-     * getmNetErrorCode
+     * getNetErrorCode
      * @return int
      */
-    public int getmNetErrorCode() {
+    public int getNetErrorCode() {
         return mNetErrorCode;
     }
 
     /**
-     * setmNetErrorCode
+     * setNetErrorCode
      * @param netErrorCode
      */
-    public void setmNetErrorCode(final int netErrorCode) {
+    public void setNetErrorCode(final int netErrorCode) {
         this.mNetErrorCode = netErrorCode;
     }
 
     /**
-     * getmNetworkStatus
+     * getNetworkStatus
      * @return int
      */
-    public int getmNetworkStatus() {
+    public int getNetworkStatus() {
         return mNetworkStatus;
     }
 
     /**
-     * setmNetworkStatus
+     * setNetworkStatus
      * @param networkStatus
      */
-    public void setmNetworkStatus(final int networkStatus) {
+    public void setNetworkStatus(final int networkStatus) {
         this.mNetworkStatus = networkStatus;
     }
 
     /**
-     * getmReqHandle
+     * getReqHandle
      * @return longg
      */
-    public long getmReqHandle() {
+    public long getReqHandle() {
         return mReqHandle;
     }
 
     /**
-     * setmReqHandle
+     * setReqHandle
      * @param reqHandle
      */
-    public void setmReqHandle(final long reqHandle) {
+    public void setReqHandle(final long reqHandle) {
         this.mReqHandle = reqHandle;
     }
 
     /**
-     * getmHttpAckCode
+     * getHttpAckCode
      * @return int
      */
-    public int getmHttpAckCode() {
+    public int getHttpAckCode() {
         return mHttpAckCode;
     }
 
     /**
-     * setmHttpAckCode
+     * setHttpAckCode
      * @param httpAckCode
      */
-    public void setmHttpAckCode(final int httpAckCode) {
+    public void setHttpAckCode(final int httpAckCode) {
         this.mHttpAckCode = httpAckCode;
     }
 

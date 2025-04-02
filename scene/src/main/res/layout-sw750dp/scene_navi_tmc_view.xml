@@ -11,6 +11,7 @@
     </data>
 
     <com.fy.navi.ui.view.SkinConstraintLayout
+        clickCommand="@{naviTMC.rootViewClick}"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_56">
 
@@ -18,7 +19,7 @@
             android:layout_width="@dimen/dp_22"
             android:layout_height="@dimen/dp_6"
             android:layout_marginStart="@dimen/dp_6"
-            android:background="@color/tmc_drive_past_color"
+            android:background="@color/navi_color_313336_94"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -176,9 +177,10 @@
 
         <com.fy.navi.ui.view.SkinImageView
             android:id="@+id/siv_car"
-            android:layout_width="@dimen/dp_56"
-            android:layout_height="@dimen/dp_56"
-            android:background="@drawable/img_tmc_car_logo"
+            android:layout_width="@dimen/dp_40"
+            android:layout_height="@dimen/dp_40"
+            android:background="@drawable/logo_2d"
+            android:rotation="90"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />

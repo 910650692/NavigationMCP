@@ -11,7 +11,7 @@ import java.util.Objects;
 public final class UserTrackAdapter {
     private static final String CLASS_API_PKG = Objects.requireNonNull(UserTrackAdapter.class.getPackage()).getName();
     private static final String CLASS_API_NAME = "UserTrackImpl";
-    private IUserTrackApi mUserTrackApi;
+    private final IUserTrackApi mUserTrackApi;
 
     private UserTrackAdapter() {
         mUserTrackApi = (IUserTrackApi) AdapterConfig.getObject(CLASS_API_PKG, CLASS_API_NAME);
@@ -104,6 +104,14 @@ public final class UserTrackAdapter {
     }
 
     /**
+     * 获取行为数据id列表
+     * @return 行为数据id列表
+     */
+    public int[] getBehaviorDataIds() {
+        return mUserTrackApi.getBehaviorDataIds();
+    }
+
+    /**
      * 从sdk获取行程数据列表保存到本地
      */
     public void getDrivingRecordData() {
@@ -124,6 +132,14 @@ public final class UserTrackAdapter {
      */
     public ArrayList<DrivingRecordDataBean> getDrivingRecordCruiseDataList() {
         return mUserTrackApi.getDrivingRecordCruiseDataList();
+    }
+
+    /**
+     * 从sdk获取当前用户行程数据列表（默认导航历史）
+     * @return 行程数据列表
+     */
+    public ArrayList<DrivingRecordDataBean> getDrivingRecordDataFromSdk() {
+        return mUserTrackApi.getDrivingRecordDataFromSdk();
     }
 
     /**

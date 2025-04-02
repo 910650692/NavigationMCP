@@ -1,5 +1,7 @@
 package com.fy.navi.hmi.setting.others.about;
 
+import com.android.utils.ResourceUtils;
+import com.fy.navi.hmi.R;
 import com.fy.navi.service.define.position.LocInfoBean;
 import com.fy.navi.service.define.setting.SettingController;
 import com.fy.navi.service.greendao.setting.SettingManager;
@@ -30,6 +32,7 @@ public class SettingOthersAboutModel extends BaseModel<SettingOthersAboutViewMod
         getChannelID();
         getMapDataID();
         getSdkVersion();
+        mViewModel.setVersion(ResourceUtils.Companion.getInstance().getString(R.string.setting_others_about_version));
     }
 
 
@@ -83,6 +86,7 @@ public class SettingOthersAboutModel extends BaseModel<SettingOthersAboutViewMod
 
     @Override
     public void onRequestMapNum(final int errorCode, final MapNumInfo mapNumInfo) {
-        Logger.d("onRequestMapNum: " + mapNumInfo.getStrKey() + " " + mapNumInfo.getStrVersion() + " " + mapNumInfo.getStrContent());
+        Logger.d("onRequestMapNum: " + mapNumInfo.getStrContent());
+        mViewModel.setVersion(mapNumInfo.getStrContent());
     }
 }

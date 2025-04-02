@@ -18,6 +18,8 @@ import com.alibaba.android.arouter.launcher.ARouter;
 import com.android.utils.ResourceUtils;
 import com.android.utils.ToastUtils;
 import com.android.utils.log.Logger;
+import com.fy.navi.burypoint.anno.HookMethod;
+import com.fy.navi.burypoint.constant.BuryConstant;
 import com.fy.navi.scene.BaseSceneView;
 import com.fy.navi.scene.R;
 import com.fy.navi.scene.RoutePath;
@@ -27,9 +29,13 @@ import com.fy.navi.scene.impl.favorite.SceneHomeCompanyViewImpl;
 import com.fy.navi.scene.impl.search.SearchFragmentFactory;
 import com.fy.navi.service.AutoMapConstant;
 import com.fy.navi.service.MapDefaultFinalTag;
+import com.fy.navi.service.adapter.layer.bls.impl.LayerFlyLineImpl;
+import com.fy.navi.service.define.layer.refix.CarModeType;
+import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.search.FavoriteInfo;
 import com.fy.navi.service.define.search.PoiInfoEntity;
 import com.fy.navi.service.define.search.SearchResultEntity;
+import com.fy.navi.service.logicpaket.layer.LayerPackage;
 import com.fy.navi.service.logicpaket.search.SearchPackage;
 import com.fy.navi.service.logicpaket.setting.SettingUpdateObservable;
 import com.fy.navi.service.logicpaket.user.behavior.BehaviorPackage;
@@ -315,19 +321,35 @@ public class SceneHomeCompanyView extends BaseSceneView<SceneHomeCompanyViewBind
                 break;
             case 2: //地图选点
                 //跳转地图选点页面，隐藏所有view
-                if (null != mClickListener) {
-                    mClickListener.setHomeCompanyType(mHomeCompanyType);
-                }
-                closeAllFragmentAndSearchView();
+                clickMapPoint();
                 break;
             case 3: //我的位置
                 Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "homeCompany onClickQuickSearch: userPoiInfoEntity: "
                         + mUserPoiInfoEntity);
-                SearchPackage.getInstance().currentLocationSearch();
+                clickMyPosition();
                 break;
             default:
                 break;
         }
+    }
+    /**
+     * 跳转地图选点页面
+     */
+    @HookMethod(eventName = BuryConstant.EventName.AMAP_MAP_POINT)
+    private void clickMapPoint(){
+        if (null != mClickListener) {
+            mClickListener.setHomeCompanyType(mHomeCompanyType);
+            mScreenViewModel.flyLineVisible(MapType.MAIN_SCREEN_MAIN_MAP, true);
+        }
+//        closeAllFragmentAndSearchView();
+    }
+
+    /**
+     * 我的位置
+     */
+    @HookMethod(eventName = BuryConstant.EventName.AMAP_MAP_MYLOCATION)
+    private void clickMyPosition(){
+        SearchPackage.getInstance().currentLocationSearch();
     }
 
     /**
@@ -349,14 +371,13 @@ public class SceneHomeCompanyView extends BaseSceneView<SceneHomeCompanyViewBind
             }
             final FavoriteInfo favoriteInfo = new FavoriteInfo();
             favoriteInfo.setCommonName(commonName)
-                    .setItemId(mUserPoiInfoEntity.getPid() + DIVIDER + mUserPoiInfoEntity.getName() + DIVIDER
-                            + mUserPoiInfoEntity.getPoint().getLon() + DIVIDER
-                            + mUserPoiInfoEntity.getPoint().getLat())
                     .setUpdateTime(new Date().getTime());
             mUserPoiInfoEntity.setFavoriteInfo(favoriteInfo);
-            BehaviorPackage.getInstance().addFavoriteData(mUserPoiInfoEntity, commonName);
+            BehaviorPackage.getInstance().addFavorite(mUserPoiInfoEntity, commonName);
+//            BehaviorPackage.getInstance().addFavoriteData(mUserPoiInfoEntity, commonName);
             SettingUpdateObservable.getInstance().onUpdateSyncTime();
-            closeAllFragment();
+            closeAllFragmentsUntilTargetFragment("HomeCompanyFragment");
+            showCurrentFragment();
         }
     }
 }

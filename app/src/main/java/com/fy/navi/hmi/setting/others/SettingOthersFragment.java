@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import android.view.Window;
 
 import com.android.utils.ResourceUtils;
+import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
 import com.fy.navi.hmi.BR;
 import com.fy.navi.hmi.R;
@@ -78,7 +79,7 @@ public class SettingOthersFragment extends BaseFragment<FragmentSettingOthersBin
                 mBinding.accountDetail.setText(ResourceUtils.Companion.getInstance().getText(R.string.setting_others_account_detail));
                 mBinding.accountImg.setImageDrawable(ResourceUtils.Companion.getInstance().getDrawable(R.mipmap.default_user_icon));
                 setCarConnectStatus(false);
-                setWeChatStatus(mViewModel.getWechatStatus());
+                setWeChatStatus(false);
             }
         });
     }
@@ -107,18 +108,21 @@ public class SettingOthersFragment extends BaseFragment<FragmentSettingOthersBin
             mBinding.settingOthersCarConnectImg.setImageResource(R.drawable.img_car_connected);
             mBinding.settingOthersCarConnect.setBackground(
                     ResourceUtils.Companion.getInstance().getDrawable(R.drawable.bg_setting_broadcast_select));
+            mBinding.settingOthersCarConnect.setAlpha(1f);
         } else if (mViewModel.getIsLogin() && !status){
             mBinding.settingOthersCarConnectText.setTextColor(
-                    ResourceUtils.Companion.getInstance().getColor(R.color.setting_text_preference));
+                    ResourceUtils.Companion.getInstance().getColor(R.color.setting_bg_tab_text_unselect));
             mBinding.settingOthersCarConnectImg.setImageResource(R.drawable.img_car_not_connect);
             mBinding.settingOthersCarConnect.setBackground(
                     ResourceUtils.Companion.getInstance().getDrawable(R.drawable.bg_setting_tab_select));
+            mBinding.settingOthersCarConnect.setAlpha(1f);
         } else {
-            mBinding.settingOthersCarConnectImg.setImageResource(R.drawable.img_car_connect_disable);
             mBinding.settingOthersCarConnectText.setTextColor(
-                    ResourceUtils.Companion.getInstance().getColor(R.color.setting_text_preference_disable));
+                    ResourceUtils.Companion.getInstance().getColor(R.color.setting_bg_tab_text_unselect));
+            mBinding.settingOthersCarConnectImg.setImageResource(R.drawable.img_car_not_connect);
             mBinding.settingOthersCarConnect.setBackground(
-                    ResourceUtils.Companion.getInstance().getDrawable(com.fy.navi.scene.R.drawable.bg_car_number_disable));
+                    ResourceUtils.Companion.getInstance().getDrawable(R.drawable.bg_setting_tab_select));
+            mBinding.settingOthersCarConnect.setAlpha(0.5f);
         }
     }
 
@@ -127,24 +131,28 @@ public class SettingOthersFragment extends BaseFragment<FragmentSettingOthersBin
      * @param status true 已绑定，false 未绑定
      */
     public void setWeChatStatus(final boolean status) {
+        Logger.i("SettingOthersFragment", "setWeChatStatus status = " + status);
         if (mViewModel.getIsLogin() && status) {
             mBinding.settingOthersWechatImg.setImageResource(R.drawable.img_wechat_bind);
             mBinding.settingOthersWechatConnect.setTextColor(
                     ResourceUtils.Companion.getInstance().getColor(R.color.white));
             mBinding.settingOthersWechat.setBackground(
                     ResourceUtils.Companion.getInstance().getDrawable(R.drawable.bg_setting_broadcast_select));
+            mBinding.settingOthersWechat.setAlpha(1f);
         } else if (mViewModel.getIsLogin() && !status){
             mBinding.settingOthersWechatImg.setImageResource(R.drawable.img_wechat_unbind);
             mBinding.settingOthersWechatConnect.setTextColor(
-                    ResourceUtils.Companion.getInstance().getColor(R.color.setting_text_preference));
+                    ResourceUtils.Companion.getInstance().getColor(R.color.setting_bg_tab_text_unselect));
             mBinding.settingOthersWechat.setBackground(
                     ResourceUtils.Companion.getInstance().getDrawable(R.drawable.bg_setting_tab_select));
+            mBinding.settingOthersWechat.setAlpha(1f);
         } else {
-            mBinding.settingOthersWechatImg.setImageResource(R.drawable.img_wechat_disable);
+            mBinding.settingOthersWechatImg.setImageResource(R.drawable.img_wechat_unbind);
             mBinding.settingOthersWechatConnect.setTextColor(
-                    ResourceUtils.Companion.getInstance().getColor(R.color.setting_text_preference_disable));
+                    ResourceUtils.Companion.getInstance().getColor(R.color.setting_bg_tab_text_unselect));
             mBinding.settingOthersWechat.setBackground(
-                    ResourceUtils.Companion.getInstance().getDrawable(com.fy.navi.scene.R.drawable.bg_car_number_disable));
+                    ResourceUtils.Companion.getInstance().getDrawable(R.drawable.bg_setting_tab_select));
+            mBinding.settingOthersWechat.setAlpha(0.5f);
         }
     }
 

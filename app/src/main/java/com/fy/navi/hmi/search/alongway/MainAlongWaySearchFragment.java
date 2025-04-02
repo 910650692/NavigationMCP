@@ -9,7 +9,7 @@ import com.fy.navi.hmi.databinding.MainFragmentAlongWayBinding;
 import com.fy.navi.hmi.favorite.FavoriteHelper;
 import com.fy.navi.scene.RoutePath;
 import com.fy.navi.scene.api.search.IOnHomeCompanyClickListener;
-import com.fy.navi.service.define.map.MapTypeId;
+import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.ui.base.BaseFragment;
 
 /**
@@ -32,8 +32,8 @@ public class MainAlongWaySearchFragment extends BaseFragment<MainFragmentAlongWa
 
     @Override
     public void onInitView() {
-        mBinding.searchView.setScreenId(MapTypeId.valueOf(mScreenId));
-        mBinding.sceneNestedScrollView.setScreenId(MapTypeId.valueOf(mScreenId));
+        mBinding.searchView.setScreenId(MapType.valueOf(mScreenId));
+        mBinding.sceneNestedScrollView.setScreenId(MapType.valueOf(mScreenId));
         mBinding.searchView.setClickListener(new IOnHomeCompanyClickListener() {
             @Override
             public void onEditClearClicked() {

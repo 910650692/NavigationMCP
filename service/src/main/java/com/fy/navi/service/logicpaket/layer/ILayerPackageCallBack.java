@@ -3,7 +3,7 @@ package com.fy.navi.service.logicpaket.layer;
 import com.fy.navi.service.define.layer.GemBaseLayer;
 import com.fy.navi.service.define.layer.GemLayerItem;
 import com.fy.navi.service.define.layer.refix.LayerItemCar;
-import com.fy.navi.service.define.map.MapTypeId;
+import com.fy.navi.service.define.map.MapType;
 
 /**
  * Author: QiuYaWei
@@ -11,16 +11,20 @@ import com.fy.navi.service.define.map.MapTypeId;
  * Description: [在这里描述文件功能]
  */
 public interface ILayerPackageCallBack {
-    default void onBeforeNotifyClick(MapTypeId mapTypeId, GemBaseLayer layer, GemLayerItem pItem) {
+    default void onBeforeNotifyClick(MapType mapTypeId, GemBaseLayer layer, GemLayerItem pItem) {
     }
 
-    default void onNotifyClick(MapTypeId mapTypeId, GemBaseLayer layer, GemLayerItem pItem) {
+    default void onNotifyClick(MapType mapTypeId, GemBaseLayer layer, GemLayerItem pItem) {
     }
 
-    default void onAfterNotifyClick(MapTypeId mapTypeId, GemBaseLayer layer, GemLayerItem pItem) {
+    default void onAfterNotifyClick(MapType mapTypeId, GemBaseLayer layer, GemLayerItem pItem) {
     }
 
 
-    default void onCarClick(MapTypeId mapTypeId, LayerItemCar layerItemCar) {
+    default void onCarClick(MapType mapTypeId, LayerItemCar layerItemCar) {
+    }
+
+    default void onFavorite(double lat,double lon) {
+
     }
 }

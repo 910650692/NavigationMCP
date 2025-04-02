@@ -8,7 +8,7 @@ import androidx.annotation.NonNull;
 
 import com.fy.navi.service.AutoMapConstant;
 import com.fy.navi.service.define.bean.GeoPoint;
-import com.fy.navi.service.define.map.MapTypeId;
+import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.route.RouteRestrictionParam;
 import com.fy.navi.service.logicpaket.map.MapPackage;
 import com.fy.navi.service.logicpaket.position.PositionPackage;
@@ -85,16 +85,16 @@ public class BaseLimitDriverViewModel extends BaseViewModel<LimitDriveFragment, 
     }
 
     private final Action mClosePage = () -> {
-        StackManager.getInstance().getCurrentFragment(MapTypeId.MAIN_SCREEN_MAIN_MAP.name()).closeFragment(true);
+        StackManager.getInstance().getCurrentFragment(MapType.MAIN_SCREEN_MAIN_MAP.name()).closeFragment(true);
 
         final LimitDriverHelper limitDriverHelper = LimitDriverHelper.getInstance();
         if (limitDriverHelper.isNeedClearRestriction()) {
-            RoutePackage.getInstance().clearRestrictionView(MapTypeId.MAIN_SCREEN_MAIN_MAP);
+            RoutePackage.getInstance().clearRestrictionView(MapType.MAIN_SCREEN_MAIN_MAP);
         } else if (limitDriverHelper.getRoundParam() != null) {
-            RoutePackage.getInstance().drawRestrictionForLimit(MapTypeId.MAIN_SCREEN_MAIN_MAP,
+            RoutePackage.getInstance().drawRestrictionForLimit(MapType.MAIN_SCREEN_MAIN_MAP,
                     limitDriverHelper.getRoundParam().getMReStrictedAreaResponseParam(), 0);
         }
-        MapPackage.getInstance().setMapCenter(MapTypeId.MAIN_SCREEN_MAIN_MAP, new GeoPoint(
+        MapPackage.getInstance().setMapCenter(MapType.MAIN_SCREEN_MAIN_MAP, new GeoPoint(
                 PositionPackage.getInstance().getLastCarLocation().getLongitude(),
                 PositionPackage.getInstance().getLastCarLocation().getLatitude()));
     };
@@ -104,7 +104,7 @@ public class BaseLimitDriverViewModel extends BaseViewModel<LimitDriveFragment, 
     }
 
     private final Action mCloseCitySelectionPage = () -> {
-        StackManager.getInstance().getCurrentFragment(MapTypeId.MAIN_SCREEN_MAIN_MAP.name()).closeFragment(true);
+        StackManager.getInstance().getCurrentFragment(MapType.MAIN_SCREEN_MAIN_MAP.name()).closeFragment(true);
     };
 
     public Action getCloseCitySelectionPage() {

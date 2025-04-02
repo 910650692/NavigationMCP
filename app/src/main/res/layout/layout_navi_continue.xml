@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="ViewModel"
+            type="com.fy.navi.hmi.map.MapViewModel" />
+    </data>
+
+    <merge xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="@dimen/dp_310"
+        android:layout_height="@dimen/dp_92"
+        tools:parentTag="com.fy.navi.ui.view.SkinConstraintLayout">
+
+        <View
+            android:id="@+id/view_bg"
+            android:layout_width="@dimen/dp_310"
+            android:layout_height="@dimen/dp_92"
+            android:layout_marginBottom="@dimen/dp_108"
+            android:background="@drawable/bg_navi_continue"
+            android:clickable="true"
+            android:contentDescription="@string/navi_continue_navi"
+            app:click_color_change="true"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <com.fy.navi.ui.view.SkinImageView
+            android:id="@+id/siv_navi_continue_icon"
+            android:layout_width="@dimen/dp_58"
+            android:layout_height="@dimen/dp_58"
+            android:layout_marginStart="@dimen/dp_52"
+            android:background="@drawable/img_navigation_58"
+            app:layout_constraintBottom_toBottomOf="@id/view_bg"
+            app:layout_constraintStart_toStartOf="@id/view_bg"
+            app:layout_constraintTop_toTopOf="@id/view_bg" />
+
+        <com.fy.navi.ui.view.SkinTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_12"
+            android:text="@string/navi_continue_navi"
+            android:textColor="@color/white"
+            android:textSize="@dimen/sp_34"
+            app:layout_constraintBottom_toBottomOf="@+id/siv_navi_continue_icon"
+            app:layout_constraintStart_toEndOf="@+id/siv_navi_continue_icon"
+            app:layout_constraintTop_toTopOf="@+id/siv_navi_continue_icon" />
+
+    </merge>
+</layout>

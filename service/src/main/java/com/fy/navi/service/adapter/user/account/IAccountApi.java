@@ -1,18 +1,29 @@
 package com.fy.navi.service.adapter.user.account;
 
-/**
- * @Description TODO
- * @Author fh
- * @date 2024/12/09
- */
+
 public interface IAccountApi {
 
+    /**
+     * 初始化账户服务
+     */
     void initAccountService();
 
+    /**
+     * 注册回调
+     * @param key 回调key
+     * @param callBack 回调
+     */
     void registerCallBack(String key, AccountAdapterCallBack callBack);
 
+    /**
+     * 注销回调
+     * @param key 回调key
+     */
     void unRegisterCallback(String key);
 
+    /**
+     * 注销账户服务
+     */
     void unInitAccountService();
 
     /**
@@ -46,11 +57,17 @@ public interface IAccountApi {
 
     /**
      * 请求获取扫码登录二维码
+     * @param qrType 二维码类型
      * @return 错误码 0：成功 其他：失败
      */
-    int qRCodeLoginRequest(int qrType);
+    int qrCodeLoginRequest(int qrType);
 
-    int qRCodeLoginConfirmRequest(String qrCodeId);
+    /**
+     * 请求扫码登录确认
+     * @param qrCodeId 二维码id
+     * @return 错误码 0：成功 其他：失败
+     */
+    int qrCodeLoginConfirmRequest(String qrCodeId);
 
     /**
      * 请求获取用户信息
