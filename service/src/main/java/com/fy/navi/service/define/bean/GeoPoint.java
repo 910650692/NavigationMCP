@@ -8,6 +8,7 @@ public class GeoPoint implements Parcelable {
     private double mLon;
     private double mLat;
     private double mZ;
+    private float mCourse;
 
     public GeoPoint() {
     }
@@ -23,10 +24,18 @@ public class GeoPoint implements Parcelable {
         this.mZ = z;
     }
 
+    public GeoPoint(double mLon, double mLat, double mZ, float mCourse) {
+        this.mLon = mLon;
+        this.mLat = mLat;
+        this.mZ = mZ;
+        this.mCourse = mCourse;
+    }
+
     protected GeoPoint(final Parcel in) {
         mLon = in.readDouble();
         mLat = in.readDouble();
         mZ = in.readDouble();
+        mCourse = in.readFloat();
     }
 
     public static final Creator<GeoPoint> CREATOR = new Creator<GeoPoint>() {
@@ -65,6 +74,14 @@ public class GeoPoint implements Parcelable {
         this.mZ = z;
     }
 
+    public float getCourse() {
+        return mCourse;
+    }
+
+    public void setCourse(float mCourse) {
+        this.mCourse = mCourse;
+    }
+
     @Override
     public String toString() {
         return "GeoPoint{" +
@@ -83,5 +100,6 @@ public class GeoPoint implements Parcelable {
         parcel.writeDouble(mLon);
         parcel.writeDouble(mLat);
         parcel.writeDouble(mZ);
+        parcel.writeFloat(mCourse);
     }
 }

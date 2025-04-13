@@ -31,6 +31,24 @@ public class FragmentIntent {
                                    final FragmentManager fragmentManager,
                                    final BaseFragment toFragment,
                                    final Bundle bundle) {
+        addFragment(screenId, containerId, fragmentManager, toFragment, bundle, true);
+    }
+
+    /**
+     * 添加Fragment
+     *
+     * @param screenId          屏幕ID
+     * @param containerId       容器ID
+     * @param fragmentManager   fragmentManager
+     * @param toFragment        BaseFragment
+     * @param bundle            参数
+     * @param isHideCurFragment 是否隐藏当前fragment
+     */
+    public static void addFragment(final String screenId, final int containerId,
+                                   final FragmentManager fragmentManager,
+                                   final BaseFragment toFragment,
+                                   final Bundle bundle,
+                                   final boolean isHideCurFragment) {
         if (ConvertUtils.isEmpty(toFragment)) {
             return;
         }
@@ -54,13 +72,17 @@ public class FragmentIntent {
             Logger.i(TAG, "fragment stack 包含");
             STACKMANAGER.removeBaseView(screenId, toFragment);
             STACKMANAGER.push(screenId, toFragment);
-            transaction.hide(currentFragment);
+            if (isHideCurFragment) {
+                transaction.hide(currentFragment);
+            }
             transaction.show(toFragment);
             toFragment.onNewIntent(bundle);
         } else {
             Logger.i(TAG, "fragment stack 不包含");
             toFragment.setArguments(bundle);
-            transaction.hide(currentFragment);
+            if (isHideCurFragment) {
+                transaction.hide(currentFragment);
+            }
             transaction.add(containerId, toFragment);
             transaction.show(toFragment);
             STACKMANAGER.push(screenId, toFragment);
@@ -121,27 +143,56 @@ public class FragmentIntent {
      *
      * @param screenId        屏幕ID
      * @param fragmentManager fragmentManager
-     * @param fragment        fragment类
      * @param nextShow        参数
      */
-    public static void closeFragment(final String screenId, final FragmentManager fragmentManager,
-                                     final BaseFragment fragment, final boolean nextShow) {
+    public static BaseFragment closeFragment(final String screenId, final FragmentManager fragmentManager, final boolean nextShow) {
+        BaseFragment currentFragment;
+        //syncFragmentList(screenId, fragmentManager);
+        currentFragment = STACKMANAGER.popFragment(screenId);
         final FragmentTransaction transaction = fragmentManager.beginTransaction();
-        transaction.remove(fragment);
-        STACKMANAGER.removeBaseView(screenId, fragment);
+        if (!ConvertUtils.isEmpty(currentFragment)) {
+            transaction.remove(currentFragment);
+        } else {
+            Logger.i(TAG, "对象为空无法移除", currentFragment);
+        }
         if (nextShow) {
             final BaseFragment toFragment = STACKMANAGER.getCurrentFragment(screenId);
             Logger.i(TAG, "移除上一个。显示下一个" + toFragment);
             if (!ConvertUtils.isEmpty(toFragment)) {
+                currentFragment = toFragment;
                 transaction.show(toFragment);
             }
         }
         transaction.commitAllowingStateLoss();
+        return currentFragment;
+    }
+
+    public static BaseFragment closeFragment(final String screenId,
+                                             final FragmentManager fragmentManager,
+                                             final Bundle bundle) {
+        BaseFragment currentFragment;
+        currentFragment = STACKMANAGER.popFragment(screenId);
+        final FragmentTransaction transaction = fragmentManager.beginTransaction();
+        if (!ConvertUtils.isEmpty(currentFragment)) {
+            transaction.remove(currentFragment);
+        } else {
+            Logger.i(TAG, "对象为空无法移除", currentFragment);
+        }
+        final BaseFragment toFragment = STACKMANAGER.getCurrentFragment(screenId);
+        Logger.i(TAG, "移除上一个。显示下一个" + toFragment);
+        if (!ConvertUtils.isEmpty(toFragment)) {
+            currentFragment = toFragment;
+            toFragment.onNewIntent(bundle);
+            transaction.show(toFragment);
+        }
+        transaction.commitAllowingStateLoss();
+        return currentFragment;
     }
 
     /**
      * 显示当前被hide的fragment
-     * @param screenId 屏幕ID
+     *
+     * @param screenId        屏幕ID
      * @param fragmentManager fragmentManager
      */
     public static void showCurrentFragment(final String screenId, final FragmentManager fragmentManager) {
@@ -190,9 +241,56 @@ public class FragmentIntent {
             }
         }
         if (index != -1) {
-            transaction.show(fragments.get(index));
+            Fragment fragment = fragments.get(index);
+            if (fragment.getClass().getName().contains("NaviGuidanceFragment")) {
+                Bundle bundle = new Bundle();
+                bundle.putInt("NAVI_CONTROL", 1);
+                if (fragment instanceof BaseFragment<?,?>) {
+                    BaseFragment baseFragment = (BaseFragment) fragment;
+                    baseFragment.onNewIntent(bundle);
+                }
+            }
+            transaction.show(fragment);
         }
         transaction.commitAllowingStateLoss();
+    }
+
+    /**
+     * 关闭导航Fragment之上的所有Fragment
+     * @param screenId 屏幕ID
+     * @param fragmentManager FragmentManager
+     */
+    public static Fragment closeAllFragmentUpNavi(final String screenId,
+                                              final FragmentManager fragmentManager) {
+        final FragmentTransaction transaction = fragmentManager.beginTransaction();
+        final List<Fragment> fragments = fragmentManager.getFragments();
+        int index = -1;
+        if (!fragments.isEmpty()) {
+            for (int t = 0; t < fragments.size(); t++) {
+                if (fragments.get(t).getClass().getName().contains("NaviGuidanceFragment")) {
+                    index = t;
+                    Logger.i(TAG, "remove top index: " + t);
+                }
+                if (index < t && index != -1) {
+                    Logger.i(TAG, "transaction remove top fragment: " +
+                            fragments.get(t).getClass().getName());
+                    transaction.remove(fragments.get(t));
+                    if (!fragments.get(t).getClass().getName().
+                            contains("SupportRequestManagerFragment")) {
+                        Logger.i(TAG, "mStackManager remove top fragment: " +
+                                fragments.get(t).getClass().getName());
+                        STACKMANAGER.removeBaseView(screenId, (IBaseView) fragments.get(t));
+                    }
+                }
+            }
+        }
+        Fragment fragment = null;
+        if (index != -1) {
+            fragment = fragments.get(index);
+            transaction.show(fragment);
+        }
+        transaction.commitAllowingStateLoss();
+        return fragment;
     }
 
 
@@ -228,15 +326,6 @@ public class FragmentIntent {
     /**
      * 关闭所有Fragment
      *
-     * @param nextShow 屏幕ID
-     */
-    public void closeFragment(final boolean nextShow) {
-
-    }
-
-    /**
-     * 关闭所有Fragment
-     *
      * @param screenId        屏幕ID
      * @param fragmentManager FragmentManager
      */
@@ -244,13 +333,10 @@ public class FragmentIntent {
         final FragmentTransaction transaction = fragmentManager.beginTransaction();
         for (Fragment fragment : fragmentManager.getFragments()) {
             transaction.remove(fragment);
-            if (fragment instanceof IBaseView) {
-                STACKMANAGER.removeBaseView(screenId, (IBaseView) fragment);
-            } else {
-                Logger.e(TAG, "cannot be cast IBaseView");
-            }
         }
         transaction.commitAllowingStateLoss();
+        // TODO: 2025/4/6 @xuqun 检查下我这么修改影响你的逻辑不 这么修改是为了换肤后栈集合清理不彻底的问题
+        STACKMANAGER.removeAllFragment(screenId);
     }
 
     /**
@@ -258,5 +344,25 @@ public class FragmentIntent {
      */
     public void closeAllFragment() {
         STACKMANAGER.removeAllFragment();
+    }
+
+    /**
+     * 同步默认栈集合和原生栈集合，应对换肤场景
+     *
+     * @param screenId        屏幕Id
+     * @param fragmentManager 碎片管理器
+     */
+    public static void syncFragmentList(final String screenId, final FragmentManager fragmentManager) {
+        List<Fragment> fragments = fragmentManager.getFragments();
+        STACKMANAGER.removeAllFragment(screenId);
+        if (!ConvertUtils.isEmpty(fragments)) {
+            for (Fragment fragment : fragments) {
+                if (fragment instanceof IBaseView) {
+                    IBaseView baseFragment = (BaseFragment) fragment;
+                    STACKMANAGER.push(screenId, baseFragment);
+                }
+            }
+        }
+        Logger.d(TAG, "同步后的默认栈：" + STACKMANAGER.getBaseFragmentStack(screenId));
     }
 }

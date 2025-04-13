@@ -49,10 +49,10 @@
                     android:layout_height="@dimen/dp_76"
                     android:layout_gravity="center"
                     android:layout_marginStart="@dimen/dp_348"
-                    android:background="@drawable/bg_setting_finish_disable"
+                    android:background="@drawable/bg_setting_preference_select"
                     android:gravity="center"
                     android:text="@string/setting_guide_plate_number_finish"
-                    android:textColor="@color/setting_text_disable"
+                    android:textColor="@color/setting_white"
                     android:textSize="@dimen/sp_30" />
             </com.fy.navi.ui.view.SkinLinearLayout>
 
@@ -162,6 +162,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:visibility="gone"
+                app:isDefault="true"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -170,6 +171,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:visibility="gone"
+                app:isDefaultCar="true"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 

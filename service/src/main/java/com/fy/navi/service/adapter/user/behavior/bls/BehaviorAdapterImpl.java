@@ -194,7 +194,8 @@ public class BehaviorAdapterImpl implements IBehaviorApi {
      */
     @Override
     public PoiInfoEntity getFavorite(final PoiInfoEntity baseInfo) {
-        if (mBehaviorService == null) {
+        if (mBehaviorService == null || baseInfo == null || baseInfo.getFavoriteInfo() == null) {
+            Logger.d(TAG, "get favorite is null");
             return null;
         }
         final FavoriteBaseItem baseItem = new FavoriteBaseItem();
@@ -231,7 +232,8 @@ public class BehaviorAdapterImpl implements IBehaviorApi {
     @SuppressLint("WrongConstant")
     @Override
     public String addFavorite(final PoiInfoEntity poiInfo) {
-        if (mBehaviorService == null) {
+        if (mBehaviorService == null || poiInfo == null || poiInfo.getFavoriteInfo() == null) {
+            Logger.d(TAG, "add favorite is null");
             return "";
         }
         final FavoriteItem item = new FavoriteItem();
@@ -253,7 +255,8 @@ public class BehaviorAdapterImpl implements IBehaviorApi {
      */
     @Override
     public String removeFavorite(final PoiInfoEntity poiInfo) {
-        if (mBehaviorService == null) {
+        if (mBehaviorService == null || poiInfo == null || poiInfo.getFavoriteInfo() == null) {
+            Logger.d(TAG, "remove favorite is null");
             return "";
         }
         final FavoriteBaseItem delItem = new FavoriteBaseItem();
@@ -276,7 +279,8 @@ public class BehaviorAdapterImpl implements IBehaviorApi {
      */
     @Override
     public String isFavorite(final PoiInfoEntity poiInfo) {
-        if (mBehaviorService == null) {
+        if (mBehaviorService == null || poiInfo == null) {
+            Logger.d(TAG, "is favorite is null");
             return "";
         }
         final FavoriteBaseItem favoriteInfo = new FavoriteBaseItem();
@@ -298,7 +302,8 @@ public class BehaviorAdapterImpl implements IBehaviorApi {
      */
     @Override
     public String topFavorite(final PoiInfoEntity info, final boolean isSetTop) {
-        if (mBehaviorService == null) {
+        if (mBehaviorService == null || info == null || info.getFavoriteInfo() == null) {
+            Logger.d(TAG, "top favorite is null");
             return "";
         }
         final FavoriteBaseItem baseItem = new FavoriteBaseItem();
@@ -317,7 +322,8 @@ public class BehaviorAdapterImpl implements IBehaviorApi {
      */
     @Override
     public String modifyFavorite(final PoiInfoEntity detailInfo, final String customName) {
-        if (mBehaviorService == null)  {
+        if (mBehaviorService == null || detailInfo == null || detailInfo.getFavoriteInfo() == null)  {
+            Logger.d(TAG, "modify favorite is null");
             return "";
         }
         // 1 获取收藏点详细数据

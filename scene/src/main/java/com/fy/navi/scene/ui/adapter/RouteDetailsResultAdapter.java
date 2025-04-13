@@ -1,11 +1,11 @@
 package com.fy.navi.scene.ui.adapter;
 
+import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 
 import com.android.utils.ConvertUtils;
 import com.fy.navi.scene.R;
@@ -72,6 +72,7 @@ public class RouteDetailsResultAdapter extends BaseExpandableListAdapter {
     public boolean isChildSelectable(final int groupPosition, final int childPosition) {
         return true;
     }
+
     /**
      * 初始化列表
      * @param routeLineSegmentInfos 列表数据
@@ -80,9 +81,13 @@ public class RouteDetailsResultAdapter extends BaseExpandableListAdapter {
     public void setAdapterResult(final List<RouteLineSegmentInfo> routeLineSegmentInfos, final boolean isAvoid) {
         this.mRouteLineSegmentInfos = routeLineSegmentInfos;
         this.mIsAvoid = isAvoid;
+        for (int i = 0; i < getGroupCount(); i++) {
+            mHashtable.put(i, false);
+        }
         notifyDataSetChanged();
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public View getGroupView(final int groupPosition, final boolean isExpanded, final View convertViews, final ViewGroup parent) {
         final GroupViewHolder holder;
@@ -105,6 +110,7 @@ public class RouteDetailsResultAdapter extends BaseExpandableListAdapter {
         holder.mParentUpDowmIcon.setImageResource(isExpanded ? R.drawable.img_route_up : R.drawable.img_route_down);
         return convertView;
     }
+
     /**
      * 初始化列表
      * @param holder view
@@ -114,13 +120,13 @@ public class RouteDetailsResultAdapter extends BaseExpandableListAdapter {
         if (mIsAvoid) {
             holder.mParentTurnIcon.setVisibility(View.GONE);
             holder.mParentCheckBox.setVisibility(View.VISIBLE);
-            holder.mParentCheckBox.setChecked(false);
-            mHashtable.put(groupPosition, false);
-            holder.mParentCheckBox.setOnCheckedChangeListener((CompoundButton compoundButton, boolean isChecked) -> {
+            holder.mParentCheckBox.setChecked(mHashtable.get(groupPosition));
+
+            holder.mParentCheckBox.setOnClickListener(view -> {
                 if (ConvertUtils.isEmpty(mListener)) {
                     return;
                 }
-                mListener.onItemCheckedChange(getRouteAvoidInfo(groupPosition, isChecked));
+                mListener.onItemCheckedChange(getRouteAvoidInfo(groupPosition, Boolean.FALSE.equals(mHashtable.get(groupPosition))));
             });
         } else {
             holder.mParentCheckBox.setVisibility(View.GONE);
@@ -136,7 +142,8 @@ public class RouteDetailsResultAdapter extends BaseExpandableListAdapter {
         final ChildViewHolder holder;
         View convertView = convertViews;
         if (convertView == null) {
-            convertView = LayoutInflater.from(AppContext.getInstance().getMContext()).inflate(R.layout.route_details_info_result_child_item, parent, false);
+            convertView = LayoutInflater.from(AppContext.getInstance().getMContext())
+                    .inflate(R.layout.route_details_info_result_child_item, parent, false);
             holder = new ChildViewHolder(convertView);
             convertView.setTag(holder);
         } else {
@@ -150,11 +157,12 @@ public class RouteDetailsResultAdapter extends BaseExpandableListAdapter {
                 + getChild(groupPosition, childPosition).getMLoadName());
         return convertView;
     }
+
     /**
      * 获取避开道路数据
      * @param groupPosition 索引
      * @param isChecked 是否勾选
-     * @return  道路数据
+     * @return 道路数据
      * */
     private RouteAvoidInfo getRouteAvoidInfo(final int groupPosition, final boolean isChecked) {
         mHashtable.put(groupPosition, isChecked);
@@ -174,6 +182,14 @@ public class RouteDetailsResultAdapter extends BaseExpandableListAdapter {
 
     public void setOnItemCheckedChangeListener(final ItemCheckedChangeListener listener) {
         this.mListener = listener;
+    }
+
+    public interface ItemCheckedChangeListener {
+        /**
+         * item 勾选回调
+         * @param routeAvoidInfo 勾选数据
+         * */
+        void onItemCheckedChange(final RouteAvoidInfo routeAvoidInfo);
     }
 
     static class GroupViewHolder {
@@ -200,13 +216,5 @@ public class RouteDetailsResultAdapter extends BaseExpandableListAdapter {
             mChildTurnIcon = view.findViewById(R.id.route_detail_info_item_child_img);
             mChildDescription = view.findViewById(R.id.route_detail_info_item_child_description);
         }
-    }
-
-    public interface ItemCheckedChangeListener {
-        /**
-         * item 勾选回调
-         * @param routeAvoidInfo 勾选数据
-         * */
-        void onItemCheckedChange(final RouteAvoidInfo routeAvoidInfo);
     }
 }

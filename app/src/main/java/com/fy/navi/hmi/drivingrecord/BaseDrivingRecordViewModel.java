@@ -124,13 +124,6 @@ public class BaseDrivingRecordViewModel extends BaseViewModel<DrivingRecordFragm
     }
 
     /**
-     * 更新行程数据列表
-     */
-    public void updateDrivingRecordData() {
-        mView.getDrivingRecord();
-    }
-
-    /**
      * 显示当前账号登录状态
      * @param isLogin 是否登录
      */

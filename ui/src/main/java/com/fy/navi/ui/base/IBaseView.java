@@ -63,15 +63,34 @@ public interface IBaseView {
      *
      * @param fragment fragment
      * @param bundle   参数
+     * @param isHideCurFragment   是否隐藏当前fragment
+     */
+    void addFragment(BaseFragment fragment, Bundle bundle, boolean isHideCurFragment);
+
+    /**
+     * Activity必须实现.
+     *
+     * @param fragment fragment
+     * @param bundle   参数
      */
     void addPoiDetailsFragment(BaseFragment fragment, Bundle bundle);
 
     /**
      * Activity必须实现.
+     * <p>
+     * 关闭当前Fragment
+     * </>
      *
      * @param nextShow 是否显示下一个Fragment
      */
     void closeFragment(boolean nextShow);
+
+    /**
+     * @param bundle bundle
+     */
+    default void closeFragment(Bundle bundle) {
+
+    }
 
     /**
      * Activity必须实现.
@@ -82,6 +101,11 @@ public interface IBaseView {
      * Activity必须实现.
      */
     void closeAllFragmentUpRoute();
+
+    /**
+     * Activity必须实现.
+     */
+    void closeAllFragmentUpNavi();
 
     /**
      * Activity必须实现.

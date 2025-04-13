@@ -63,9 +63,13 @@ import java.util.stream.Collectors;
 
 // TODO: 2024/12/30 数据需要根据业务精简一下
 public final class NaviDataFormatHelper {
+
+    public static final String TAG = "NaviDataFormatHelper";
+
     private NaviDataFormatHelper() {
 
     }
+
     private static SapaInfoEntity mCurrentSapaInfoEntity;
 
     /**
@@ -344,7 +348,7 @@ public final class NaviDataFormatHelper {
     }
 
     /**
-     * @param lightBarInfo lightBarInfo
+     * @param lightBarInfo   lightBarInfo
      * @param lightBarDetail lightBarDetail
      * @return NaviTmcInfo
      */
@@ -439,6 +443,7 @@ public final class NaviDataFormatHelper {
             naviImageInfo.setArrowDataBuf(info.arrowDataBuf);
             naviImageInfo.setOnlyVector(info.isOnlyVector);
             naviImageInfo.setDistance(info.distance);
+            naviImageInfo.setCrossImageID(info.crossImageID);
         }
         return naviImageInfo;
     }
@@ -532,7 +537,7 @@ public final class NaviDataFormatHelper {
      * @param naviCameraList naviCameraList
      * @return CameraInfoEntity
      */
-    public static CameraInfoEntity formatNearestCameraInfo(final ArrayList<NaviCameraExt> naviCameraList){
+    public static CameraInfoEntity formatNearestCameraInfo(final ArrayList<NaviCameraExt> naviCameraList) {
         final CameraInfoEntity cameraInfoEntity = new CameraInfoEntity();
         if (!ConvertUtils.isEmpty(naviCameraList)) {
             for (NaviCameraExt cameraInfo : naviCameraList) {
@@ -705,7 +710,7 @@ public final class NaviDataFormatHelper {
 
     /**
      * @param routeParam routeParam
-     * @param obj obj
+     * @param obj        obj
      * @return entity
      */
     public static NaviViaEntity getNaviViaEntity(final RouteParam routeParam, final Object obj) {
@@ -756,11 +761,15 @@ public final class NaviDataFormatHelper {
 
     /**
      * @param poiInfoEntity entity
-     * @param isEndPoi endPoi
+     * @param isEndPoi      endPoi
      * @return entity
      */
     public static NaviParkingEntity getNaviParkingEntity(final PoiInfoEntity poiInfoEntity,
                                                          final boolean isEndPoi) {
+        if (null == poiInfoEntity) {
+            Logger.e(TAG, "poiInfoEntity is null");
+            return new NaviParkingEntity();
+        }
         final String distance = poiInfoEntity.getDistance();
         final String meter = AppContext.getInstance().getMContext().getString(com.android.utils.R.string.meter);
         final String km = AppContext.getInstance().getMContext().getString(com.android.utils.R.string.km);
@@ -771,7 +780,8 @@ public final class NaviDataFormatHelper {
                 .setPid(poiInfoEntity.getPid())
                 .setPoiType(poiInfoEntity.getPoiType())
                 .setDistance(distance)
-                .setPoint(poiInfoEntity.getPoint());
+                .setPoint(poiInfoEntity.getPoint())
+                .setChargeInfoList(poiInfoEntity.getChargeInfoList());
         if (distance.contains(meter)) {
             naviParkingEntity.setSortDis(Double.parseDouble(distance.replace(meter, "").trim()));
         } else if (distance.contains(km)) {
@@ -784,7 +794,7 @@ public final class NaviDataFormatHelper {
 //            naviParkingEntity
             final int spaceTotal = parkingInfo.getSpaceTotal();
             final int spaceFree = parkingInfo.getSpaceFree();
-            if (spaceTotal != -1 && spaceFree != -1) {
+            if (spaceTotal > 0 && spaceFree > -1) {
                 naviParkingEntity.setSpaceTotal(spaceTotal)
                         .setSpaceFree(spaceFree);
                 //-停车位紧张：总车位数<=30个，剩余车位<30% ；总车位数>30个，剩余车位<10% 或 剩余车位少于10个。
@@ -802,13 +812,13 @@ public final class NaviDataFormatHelper {
         return naviParkingEntity;
     }
 
-    public static List<NaviMixForkInfo> formaterMixForkList(List<MixForkInfo> mixForkInfos){
+    public static List<NaviMixForkInfo> formaterMixForkList(List<MixForkInfo> mixForkInfos) {
         List<NaviMixForkInfo> naviMixForkInfos = new ArrayList<>();
         for (MixForkInfo mixFork : mixForkInfos) {
             Coord2DDouble coord2DDouble = mixFork.pos;
             GeoPoint geoPoint = new GeoPoint(coord2DDouble.lon, coord2DDouble.lat);
             NaviMixForkInfo naviMixForkInfo = new NaviMixForkInfo(geoPoint,
-                    mixFork.dist,mixFork.roadclass, mixFork.segmentIndex);
+                    mixFork.dist, mixFork.roadclass, mixFork.segmentIndex);
             naviMixForkInfos.add(naviMixForkInfo);
         }
         return naviMixForkInfos;
@@ -816,6 +826,7 @@ public final class NaviDataFormatHelper {
 
     /**
      * 数据转化
+     *
      * @param report 驾驶报告
      * @return NaviDriveReportEntity
      */

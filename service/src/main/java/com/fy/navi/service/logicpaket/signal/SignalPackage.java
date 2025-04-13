@@ -7,6 +7,7 @@ import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
 import com.fy.navi.service.adapter.signal.SignalAdapter;
 import com.fy.navi.service.adapter.signal.SignalAdapterCallback;
+import com.fy.navi.service.logicpaket.calibration.CalibrationPackage;
 
 import java.util.Hashtable;
 
@@ -248,6 +249,10 @@ public final class SignalPackage implements SignalAdapterCallback {
      * @param distToArrival    int
      */
     public void setNextChargingDestination(final int powerLevel, final int status, final int timeToArrival, final int distToArrival) {
+        if (!CalibrationPackage.getInstance().navigationPreConditionDataProvideEnable()) {
+            Logger.i(TAG, "not configuration");
+            return;
+        }
         Logger.i(TAG, powerLevel + "-" + status + "-" +timeToArrival + "-" + distToArrival);
         mSignalAdapter.setNextChargingDestination(powerLevel, status, timeToArrival, distToArrival);
     }

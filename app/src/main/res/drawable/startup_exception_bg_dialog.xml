@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <solid android:color="@color/white" />
+    <stroke
+        android:width="@dimen/dp_2"
+        android:color="@color/dialog_startup_exception_stroke" />
+    <corners android:radius="@dimen/dp_20" />
+    <gradient
+        android:angle="90"
+        android:endColor="@color/dialog_startup_exception_end_bg"
+        android:startColor="@color/dialog_startup_exception_end_bg"
+        android:type="linear" />
+</shape>

@@ -100,13 +100,13 @@ public interface IMapDataApi {
      * 获取下载中、更新中状态下的所有城市adCode列表
      * @return 返回下载中的信息
      */
-    ArrayList<CityDataInfo> getWorkingList();
+    ArrayList<ProvDataInfo> getWorkingList();
 
     /**
      * 获取已下载状态下的所有城市adCode列表
      * @return 返回已下载的信息
      */
-    ArrayList<CityDataInfo> getWorkedList();
+    ArrayList<ProvDataInfo> getWorkedList();
 
     /**
      * 通过adCode获取附近推荐城市信息

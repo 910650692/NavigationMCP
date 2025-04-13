@@ -17,7 +17,7 @@ public interface AutoMapConstant {
     // TODO: 2025/2/28 定位测试用
 //    String POS = FileUtils.APP_FILE_PATH + "Gbl" + File.separator;
 
-    float MAP_ZOOM_LEVEL_MAX = 19F;
+    float MAP_ZOOM_LEVEL_MAX = 20F;
     float MAP_ZOOM_LEVEL_MIN = 3F;
     float MAP_ZOOM_LEVEL_CHANGE_FLAG = 1F;
     float MAP_ZOOM_LEVEL_DEFAULT = 13F;
@@ -26,6 +26,9 @@ public interface AutoMapConstant {
 
     int PLUG_TYPE_SLOW = 7;
     int PLUG_TYPE_FAST = 9;
+
+    int SECONDS_PER_MINUTE = 60;
+    int MILLISECONDS_PER_SECOND = 1000;
 
 
     /*** ！！！搜索相关,搜索类型,只能添加不能删除！！！*/
@@ -95,6 +98,9 @@ public interface AutoMapConstant {
         String BUNDLE_KEY_SEARCH_OPEN_COLLECTION = "bundle_key_search_open_collection";
         String BUNDLE_KEY_SOURCE_FRAGMENT = "bundle_key_source_fragment";
         String BUNDLE_KEY_SEARCH_RANGE = "bundle_key_search_range";
+        String BUNDLE_KEY_SEARCH_SOURCE_DATA = "bundle_key_search_source_data";
+        String BUNDLE_KEY_CHARGE_PRICE_LIST = "bundle_key_charge_price_list";
+        String BUNDLE_KEY_CHARGE_EQUIPMENT_TYPE = "bundle_key_charge_equipment_type";
     }
 
     @interface TrafficEventBundleKey {
@@ -220,7 +226,8 @@ public interface AutoMapConstant {
             PoiType.POI_COMMON,
             PoiType.POI_AROUND,
             PoiType.POI_MAP_CLICK,
-            PoiType.POI_DELETE_AROUND
+            PoiType.POI_DELETE_AROUND,
+            PoiType.POI_MAP_CAR_CLICK
     })
     @interface PoiType {
         int POI_SUGGESTION = 0; // 预搜索
@@ -232,6 +239,7 @@ public interface AutoMapConstant {
         int POI_AROUND = 6; // 添加途径点
         int POI_MAP_CLICK = 7; // 地图点击
         int POI_DELETE_AROUND = 8;//删除途径点
+        int POI_MAP_CAR_CLICK = 9;//自车位点击事件
     }
 
     /*** ！！！沿途批量搜索支持类型！！！ */
@@ -300,5 +308,16 @@ public interface AutoMapConstant {
 
     @interface VoiceKeyWord {
         String BUNDLE_VOICE_KEY_WORD = "bundle_voice_key_word";
+    }
+
+    @IntDef({
+            EquipmentType.IDLE,
+            EquipmentType.FAST,
+            EquipmentType.SLOW,
+    })
+    @interface EquipmentType {
+        int IDLE = 0;// idle
+        int FAST = 1;// 慢充
+        int SLOW = 2;// 快充
     }
 }

@@ -24,7 +24,6 @@ import java.util.ArrayList;
 public class SceneNaviParallelImpl extends BaseSceneModel<SceneNaviParallelView> {
     private static final String TAG = MapDefaultFinalTag.NAVI_HMI_TAG;
     private final PositionPackage mPositionPackage;
-    private ISceneCallback mISceneCallback;
     private LocParallelInfoEntity mCurrentParallelRoadInfo;
     private LocParallelInfoEntity mPreviousParallelRoadInfo;
     /***按钮点击动作类型***/
@@ -50,13 +49,6 @@ public class SceneNaviParallelImpl extends BaseSceneModel<SceneNaviParallelView>
         mPositionPackage.registerCallBack(mIPositionPackageCallback);
         mBridgeUpDownVisible = new ObservableField<>(false);
         mRoadMainAuxiliaryVisible = new ObservableField<>(false);
-    }
-
-    /**
-     * @param sceneCallback sceneCallback
-     */
-    public void addSceneCallback(final ISceneCallback sceneCallback) {
-        mISceneCallback = sceneCallback;
     }
 
     public Action mClickBridgeUpDown = () -> {
@@ -231,7 +223,7 @@ public class SceneNaviParallelImpl extends BaseSceneModel<SceneNaviParallelView>
             ThreadManager.getInstance().postUi(new Runnable() {
                 @Override
                 public void run() {
-                    if (mISceneCallback == null) {
+                    if (mCallBack == null) {
                         return;
                     }
                     if (ConvertUtils.isEmpty(entity)) {
@@ -262,7 +254,7 @@ public class SceneNaviParallelImpl extends BaseSceneModel<SceneNaviParallelView>
      */
     private void refreshRoadBridgeUi() {
         Logger.i(TAG, "refreshRoadBridgeUi ");
-        if (mISceneCallback == null) {
+        if (mCallBack == null) {
             return;
         }
         Logger.i(TAG, "mCurrentParallelRoadInfo：" + mCurrentParallelRoadInfo.toString());

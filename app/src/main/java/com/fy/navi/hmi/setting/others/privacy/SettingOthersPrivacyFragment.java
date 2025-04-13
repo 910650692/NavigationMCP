@@ -48,12 +48,12 @@ public class SettingOthersPrivacyFragment extends BaseFragment<FragmentSettingPr
             if (isShow) {
                 mBinding.settingOthersPrivacyEndDateLayout.setVisibility(View.VISIBLE);
                 mBinding.settingOthersPrivacyEndDate.setText(endDate);
-                mBinding.settingOthersPrivacyOneYear.setTextColor(ResourceUtils.Companion.getInstance().getColor(R.color.white));
+                mBinding.settingOthersPrivacyOneYear.setTextColor(ResourceUtils.Companion.getInstance().getColor(R.color.setting_white));
                 mBinding.settingOthersPrivacyNever.setTextColor(ResourceUtils.Companion.getInstance().getColor(R.color.color_black_70));
             } else {
                 mBinding.settingOthersPrivacyEndDateLayout.setVisibility(View.GONE);
                 mBinding.settingOthersPrivacyOneYear.setTextColor(ResourceUtils.Companion.getInstance().getColor(R.color.color_black_70));
-                mBinding.settingOthersPrivacyNever.setTextColor(ResourceUtils.Companion.getInstance().getColor(R.color.white));
+                mBinding.settingOthersPrivacyNever.setTextColor(ResourceUtils.Companion.getInstance().getColor(R.color.setting_white));
             }
         });
     }

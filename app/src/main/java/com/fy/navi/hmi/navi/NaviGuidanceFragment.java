@@ -1,32 +1,59 @@
 package com.fy.navi.hmi.navi;
 
-import static android.view.View.GONE;
+import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
 
+import static com.fy.navi.scene.ui.navi.manager.NaviSceneId.NAVI_PROVIDE_CHARGE;
+import static com.fy.navi.scene.ui.navi.manager.NaviSceneId.NAVI_SCENE_CONTROL;
+import static com.fy.navi.scene.ui.navi.manager.NaviSceneId.NAVI_SCENE_ETA;
+import static com.fy.navi.scene.ui.navi.manager.NaviSceneId.NAVI_SCENE_TBT;
+import static com.fy.navi.scene.ui.navi.manager.NaviSceneId.NAVI_SCENE_TMC;
+
+import android.os.Bundle;
+
+import androidx.fragment.app.Fragment;
+
+import com.alibaba.android.arouter.launcher.ARouter;
+import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
+import com.android.utils.thread.ThreadManager;
 import com.fy.navi.hmi.BR;
 import com.fy.navi.hmi.R;
 import com.fy.navi.hmi.databinding.FragmentNaviGuidanceBinding;
+import com.fy.navi.hmi.startup.PermissionUtils;
+import com.fy.navi.scene.RoutePath;
 import com.fy.navi.scene.impl.imersive.ImersiveStatus;
 import com.fy.navi.scene.impl.imersive.ImmersiveStatusScene;
 import com.fy.navi.scene.impl.navi.inter.ISceneCallback;
+import com.fy.navi.scene.impl.search.SearchFragmentFactory;
 import com.fy.navi.scene.ui.navi.ChargeTipEntity;
+import com.fy.navi.scene.ui.navi.manager.NaviSceneId;
+import com.fy.navi.scene.ui.navi.manager.NaviSceneManager;
+import com.fy.navi.scene.ui.navi.manager.NaviSceneRule;
+import com.fy.navi.service.AutoMapConstant;
+import com.fy.navi.service.adapter.navi.NaviConstant;
 import com.fy.navi.service.define.map.MapType;
+import com.fy.navi.service.define.map.MapTypeManager;
 import com.fy.navi.service.define.navi.CrossImageEntity;
+import com.fy.navi.service.define.navi.FyElecVehicleETAInfo;
 import com.fy.navi.service.define.navi.LaneInfoEntity;
 import com.fy.navi.service.define.navi.NaviDriveReportEntity;
 import com.fy.navi.service.define.navi.NaviEtaInfo;
 import com.fy.navi.service.define.navi.NaviManeuverInfo;
+import com.fy.navi.service.define.navi.NaviParkingEntity;
 import com.fy.navi.service.define.navi.NaviTmcInfo;
 import com.fy.navi.service.define.navi.NaviViaEntity;
 import com.fy.navi.service.define.navi.SapaInfoEntity;
 import com.fy.navi.service.define.navi.SpeedOverallEntity;
+import com.fy.navi.service.define.search.SearchResultEntity;
 import com.fy.navi.ui.base.BaseFragment;
 import com.fy.navi.ui.base.StackManager;
 
 import java.util.List;
 
 public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBinding, NaviGuidanceViewModel> {
+    private static final String TAG = "NaviGuidanceFragment";
+
     @Override
     public int onLayoutId() {
         return R.layout.fragment_navi_guidance;
@@ -39,6 +66,7 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
 
     @Override
     public void onInitView() {
+//        PermissionUtils.getInstance().requestMediaProjection(); TODO 由于路线加载弹窗bug所以暂时屏蔽权限申请
         mBinding.sceneNaviControl.setScreenId(MapType.valueOf(mScreenId));
         mBinding.sceneNaviPreference.setScreenId(MapType.valueOf(mScreenId));
         mBinding.sceneNaviTbt.setScreenId(MapType.valueOf(mScreenId));
@@ -52,6 +80,9 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
         mBinding.sceneNaviParkingList.setScreenId(MapType.valueOf(mScreenId));
         mBinding.sceneNaviViaArrive.setScreenId(MapType.valueOf(mScreenId));
         mBinding.sceneNaviSapaDetail.setScreenId(MapType.valueOf(mScreenId));
+        mBinding.sceneNaviRecCharge.setScreenId(MapType.valueOf(mScreenId));
+        mBinding.sceneNaviRecGas.setScreenId(MapType.valueOf(mScreenId));
+        mBinding.sceneRecChargeListView.setScreenId(MapType.valueOf(mScreenId));
         mBinding.sceneNaviPreference.registerRoutePreferenceObserver("navi fragment", mViewModel);
     }
 
@@ -59,6 +90,8 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
     public void onInitData() {
         ImmersiveStatusScene.getInstance().setImmersiveStatus(MapType.MAIN_SCREEN_MAIN_MAP, ImersiveStatus.IMERSIVE);
         mViewModel.startNavigation(getArguments());
+        mViewModel.setDefultPlateNumberAndAvoidLimitSave();
+        mViewModel.initShowScene(NAVI_SCENE_CONTROL, NAVI_SCENE_TBT, NAVI_SCENE_ETA, NAVI_SCENE_TMC);
     }
 
     /**
@@ -91,7 +124,7 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
         mBinding.sceneNaviTmc.onNaviInfo(naviEtaInfo);
         mBinding.sceneNaviViaInfo.onNaviInfo(naviEtaInfo);
         mBinding.sceneNaviLastMile.onNaviInfo(naviEtaInfo);
-        mBinding.sceneNaviParkingList.onNaviInfo(naviEtaInfo);
+        mBinding.sceneNaviRecPark.onUpdateNaviInfo(naviEtaInfo, MapTypeManager.getInstance().getMapTypeIdByName(mScreenId));
     }
 
     /**
@@ -117,9 +150,24 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
      * @param naviImageInfo 导航图片信息
      */
     public void onCrossImageInfo(final boolean isShowImage, final CrossImageEntity naviImageInfo) {
-        final boolean isRealNeedShow = isShowImage && (StackManager.getInstance().getCurrentFragment(mScreenId) instanceof NaviGuidanceFragment);
-        Logger.i("onCrossImageInfo", "isRealNeedShow:" + isRealNeedShow);
+        boolean isNavi = StackManager.getInstance().
+                getCurrentFragment(mScreenId) instanceof NaviGuidanceFragment;
+        Logger.i("crossImageDebug", "isShowImage:" + isShowImage +
+                " isNaviGuidanceGragment = " + isNavi);
+        final boolean isRealNeedShow = isShowImage && isNavi;
+        Logger.i("crossImageDebug",
+                "isRealNeedShow:" + isRealNeedShow);
         mBinding.sceneNaviCrossImage.onCrossImageInfo(isRealNeedShow, naviImageInfo);
+        mBinding.sceneNaviTbt.onCrossImageInfo(isRealNeedShow, naviImageInfo);
+    }
+
+    /**
+     * 单独用来改变tbt进度的显示，因为有时候UI碰撞路口大图会主动消失，这时候就取消tbt进度条的显示
+     *
+     * @param isShowImage 是否显示图片
+     */
+    public void onCrossImageInfo(final boolean isShowImage) {
+        mBinding.sceneNaviTbt.onCrossImageInfo(isShowImage);
     }
 
     /**
@@ -129,6 +177,12 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
      */
     public void updateCrossProgress(final long routeRemainDist) {
         mBinding.sceneNaviCrossImage.updateCrossProgress(routeRemainDist);
+        ThreadManager.getInstance().postUi(new Runnable() {
+            @Override
+            public void run() {
+                mBinding.sceneNaviTbt.updateCrossProgress(routeRemainDist);
+            }
+        });
     }
 
     /**
@@ -207,7 +261,32 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
         mBinding.sceneDriveReport.addSceneCallback(sceneCallback);
         mBinding.sceneNaviChargeTip.addSceneCallback(sceneCallback);
         mBinding.sceneNaviContinue.addSceneCallback(sceneCallback);
-        mBinding.sceneNaviSearch.addSceneCallback(sceneCallback);
+        mBinding.sceneNaviRecPark.addSceneCallback(sceneCallback);
+
+        // 经纬度添加途经点失败的测试广播
+//        ContextCompat.registerReceiver(getContext(), new BroadcastReceiver() {
+//            @Override
+//            public void onReceive(Context context, Intent intent) {
+//                SapaInfoEntity.SAPAItem item = new SapaInfoEntity.SAPAItem();
+//                item.setRemainDist(8307);
+//                item.setType(1);
+//                item.setName("G1503沪嘉收费站");
+//                item.setPos(new GeoPoint(121.26777111111112, 31.3634025));
+//                item.setSapaDetail(0);
+//                item.setRemainTime(384);
+//                item.setServicePOIID("");
+//                item.setBuildingStatus(0);
+//                SapaInfoEntity sapaInfoEntity = new SapaInfoEntity();
+//                ArrayList<SapaInfoEntity.SAPAItem> list = new ArrayList<>();
+//                list.add(item);
+//                sapaInfoEntity.setList(list);
+//                skipNaviSapaDetailScene(1, sapaInfoEntity);
+//            }
+//        }, new IntentFilter("shi.song"), ContextCompat.RECEIVER_EXPORTED);
+        mBinding.sceneNaviRecCharge.addSceneCallback(sceneCallback);
+        mBinding.sceneNaviRecGas.addSceneCallback(sceneCallback);
+        mBinding.sceneRecChargeListView.addSceneCallback(sceneCallback);
+        mBinding.sceneRecGasListView.addSceneCallback(sceneCallback);
     }
 
     /**
@@ -316,20 +395,30 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
     }
 
     public void goSearchView(final String keyWord, final int searchType) {
-        mBinding.naviSceneContainer.setVisibility(GONE);
-        mBinding.sceneNaviSearch.setVisibility(VISIBLE);
-        mBinding.sceneNaviSearch.goSearchView(keyWord, searchType);
+        final Fragment fragment;
+        fragment = (Fragment) ARouter.getInstance().build(RoutePath.Search.SEARCH_RESULT_FRAGMENT)
+                .navigation();
+        Bundle bundle = SearchFragmentFactory.createKeywordFragment(
+                AutoMapConstant.SourceFragment.FRAGMENT_ALONG_WAY,
+                AutoMapConstant.SearchType.ALONG_WAY_SEARCH, keyWord, null);
+        bundle.putInt(NaviConstant.NAVI_CONTROL, 1);
+        addFragment((BaseFragment) fragment, bundle, false);
+        hideNaviContent();
     }
 
     public void goAlongWayList() {
-        mBinding.naviSceneContainer.setVisibility(GONE);
-        mBinding.sceneNaviSearch.setVisibility(VISIBLE);
-        mBinding.sceneNaviSearch.goAlongWayList();
+        final Fragment fragment;
+        fragment = (Fragment) ARouter.getInstance()
+                .build(RoutePath.Search.ALONG_WAY_SEARCH_FRAGMENT)
+                .navigation();
+        Bundle bundle = new Bundle();
+        bundle.putInt(NaviConstant.NAVI_CONTROL, 1);
+        addFragment((BaseFragment) fragment, bundle, false);
+        hideNaviContent();
     }
 
     public void closeSearchView() {
         mBinding.naviSceneContainer.setVisibility(VISIBLE);
-        mBinding.sceneNaviSearch.setVisibility(GONE);
     }
 
     public void onUpdateTMCLightBarAutoAdd(boolean isShow) {
@@ -338,5 +427,71 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
 
     public boolean isNeedCloseNaviChargeTipLater() {
         return mBinding.sceneNaviChargeTip.getVisibility() == VISIBLE;
+    }
+
+    public void onUpdateElectVehicleETAInfo(final List<FyElecVehicleETAInfo> infos) {
+        mBinding.sceneNaviViaList.updateElectVehicleETAInfo(infos);
+    }
+
+    public void cardBatteryTip(final SearchResultEntity searchResultEntity, final boolean isPureGasCar) {
+        Logger.i(TAG, "cardBatteryTip:" + isPureGasCar);
+        if (isPureGasCar) {
+            mBinding.sceneNaviRecGas.updateUi(searchResultEntity);
+        } else {
+            mBinding.sceneNaviRecCharge.updateUi(searchResultEntity);
+        }
+    }
+
+    public void updateRecChargeList(SearchResultEntity searchResultEntity) {
+        mBinding.sceneRecChargeListView.updateUi(searchResultEntity, MapTypeManager.getInstance().getMapTypeIdByName(mScreenId));
+    }
+
+    public void updateRecGasList(SearchResultEntity searchResultEntity) {
+        mBinding.sceneRecGasListView.updateUi(searchResultEntity, MapTypeManager.getInstance().getMapTypeIdByName(mScreenId));
+    }
+
+    public void updateRecParkingList(final List<NaviParkingEntity> list) {
+        mBinding.sceneNaviParkingList.updateData(list, MapTypeManager.getInstance().getMapTypeIdByName(mScreenId));
+    }
+
+    public void showNaviContent() {
+        Logger.i(TAG, "showNaviContent");
+        mBinding.naviSceneContainer.setVisibility(VISIBLE);
+    }
+
+    public void hideNaviContent() {
+        Logger.i(TAG, "hideNaviContent");
+        mBinding.naviSceneContainer.setVisibility(INVISIBLE);
+    }
+
+    public void backToNaviFragment() {
+        final BaseFragment currentFragment;
+        currentFragment = StackManager.getInstance().getCurrentFragment(mScreenId);
+        if (!(currentFragment instanceof NaviGuidanceFragment)) {
+            closeAllFragmentUpNavi();
+            mBinding.naviSceneContainer.setVisibility(VISIBLE);
+        }
+    }
+
+    @Override
+    protected void onNewIntent(final Bundle bundle) {
+        super.onNewIntent(bundle);
+        final int isNaviControl = bundle.getInt(NaviConstant.NAVI_CONTROL, 0);
+        Logger.i(TAG, "onNewIntent isNaviControl:" + isNaviControl);
+        if (isNaviControl == 1) {
+            showNaviContent();
+        }
+    }
+
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        if (!hidden) {
+            if (null != mViewModel) {
+                mViewModel.isRequestRouteForPlateNumberAndAvoidLimitChange();
+            } else {
+                Logger.i(TAG, "onHiddenChanged mViewModel is null");
+            }
+        }
     }
 }

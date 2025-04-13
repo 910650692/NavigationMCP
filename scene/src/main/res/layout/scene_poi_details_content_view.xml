@@ -46,7 +46,7 @@
                 android:paddingEnd="@dimen/dp_12"
                 android:paddingTop="@dimen/dp_8"
                 android:paddingBottom="@dimen/dp_8"
-                android:textColor="@color/white"
+                android:textColor="@color/search_color_ffffff"
                 android:textSize="@dimen/sp_36"
                 android:layout_marginTop="@dimen/dp_16"
                 android:background="@drawable/bg_setting_confirm"
@@ -77,16 +77,31 @@
             android:layout_width="@dimen/dp_0"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_24"
-            android:textColor="@color/poi_details_bottom_ff_00"
+            android:textColor="@color/search_color_ffffff_70"
             android:background="@drawable/bg_offline"
             android:textSize="@dimen/sp_34"
             android:visibility="gone"
             app:layout_constraintEnd_toStartOf="@+id/end_guideline"
             app:layout_constraintStart_toStartOf="@+id/start_guideline"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="@string/search_offline_hint"
-            tools:visibility="gone" />
-
+            tools:text="@string/search_offline_hint" />
+        <com.fy.navi.ui.view.SkinTextView
+            android:id="@+id/poi_type_text"
+            android:layout_width="@dimen/dp_0"
+            android:layout_height="@dimen/dp_46"
+            android:paddingLeft="@dimen/dp_8"
+            android:paddingRight="@dimen/dp_8"
+            android:layout_marginEnd="@dimen/dp_16"
+            android:background="@drawable/custom_info_bg_selector_day"
+            android:gravity="center"
+            android:textColor="@color/navi_color_2461EA_100"
+            android:textSize="@dimen/sp_26"
+            app:layout_constraintStart_toStartOf="@+id/start_guideline"
+            app:layout_constraintBottom_toBottomOf="@+id/sk_poi_name"
+            android:text="@string/cooperate"
+            android:visibility="gone"
+            />
+        
         <com.fy.navi.ui.view.SkinTextView
             android:id="@+id/sk_poi_name"
             android:layout_width="@dimen/dp_0"
@@ -97,9 +112,9 @@
             android:textColor="@color/poi_details_bottom_ff_00"
             android:textSize="@dimen/sp_42"
             app:layout_constraintEnd_toStartOf="@+id/poi_type_icon"
-            app:layout_constraintStart_toStartOf="@+id/start_guideline"
-            app:layout_constraintTop_toBottomOf="@+id/poi_offline_hint"
+            app:layout_constraintStart_toEndOf="@+id/poi_type_text"
             app:layout_goneMarginTop="@dimen/dp_40"
+            app:layout_constraintTop_toTopOf="parent"
             tools:text="东方明珠东方明珠东方明珠东方明珠东方明珠东方明珠" />
 
         <com.fy.navi.ui.view.SkinImageView

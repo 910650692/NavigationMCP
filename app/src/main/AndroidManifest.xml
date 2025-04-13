@@ -42,8 +42,7 @@
         android:roundIcon="${roundLogo}"
         android:supportsRtl="true"
         android:theme="@style/Theme.NaviApp"
-        android:usesCleartextTraffic="true"
-        tools:targetApi="31">
+        android:usesCleartextTraffic="true">
 
         <meta-data
             android:name="CAR_TYPE"
@@ -51,7 +50,7 @@
 
         <activity
             android:name=".startup.StartupActivity"
-            android:configChanges="uiMode|mcc|mnc|keyboardHidden|keyboard|fontScale|screenLayout|screenSize|locale|colorMode|layoutDirection"
+            android:configChanges="uiMode|mcc|mnc|keyboardHidden|keyboard|fontScale|screenLayout|screenSize|smallestScreenSize|locale|colorMode|layoutDirection"
             android:exported="true"
             android:launchMode="singleTop"
             android:screenOrientation="landscape"
@@ -65,7 +64,7 @@
 
         <activity
             android:name=".map.MapActivity"
-            android:configChanges="uiMode|mcc|mnc|keyboardHidden|keyboard|fontScale|screenLayout|screenSize|locale|colorMode|layoutDirection"
+            android:configChanges="uiMode|mcc|mnc|keyboardHidden|keyboard|fontScale|screenLayout|screenSize|smallestScreenSize|locale|colorMode|layoutDirection"
             android:exported="false"
             android:launchMode="singleTask"
             android:screenOrientation="landscape"

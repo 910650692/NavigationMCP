@@ -45,6 +45,7 @@ public class SettingPlateNumberFragment extends BaseFragment<FragmentSettingPlat
     public void onInitView() {
         mBinding.settingPlateNumberNumber.setShowSoftInputOnFocus(false);
         mBinding.settingPlateNumberFinish.setEnabled(false);
+        mBinding.settingPlateNumberFinish.setAlpha(0.5f);
         mBinding.settingPlateNumberNumber.setOnFocusChangeListener((v, hasFocus) -> {
             if (hasFocus) {
                 showPlateNumberKeyboard();
@@ -61,27 +62,25 @@ public class SettingPlateNumberFragment extends BaseFragment<FragmentSettingPlat
                 final String text = mBinding.settingPlateNumberNumber.getText().toString();
                 if (!isEVCar() && text.length() >= 5) {
                     mBinding.settingPlateNumberFinish.setEnabled(true);
-                    mBinding.settingPlateNumberFinish.setTextColor(
-                            ResourceUtils.Companion.getInstance().getColor(R.color.white));
-                    mBinding.settingPlateNumberFinish.setBackground(
-                            ResourceUtils.Companion.getInstance().getDrawable(com.fy.navi.scene.R.drawable.bg_setting_preference_select));
+                    mBinding.settingPlateNumberFinish.setAlpha(1.0f);
                 } else if (isEVCar() && text.length() >= 6){
                     mBinding.settingPlateNumberFinish.setEnabled(true);
-                    mBinding.settingPlateNumberFinish.setTextColor(
-                            ResourceUtils.Companion.getInstance().getColor(R.color.white));
-                    mBinding.settingPlateNumberFinish.setBackground(
-                            ResourceUtils.Companion.getInstance().getDrawable(com.fy.navi.scene.R.drawable.bg_setting_preference_select));
+                    mBinding.settingPlateNumberFinish.setAlpha(1.0f);
                 } else {
                     mBinding.settingPlateNumberFinish.setEnabled(false);
-                    mBinding.settingPlateNumberFinish.setTextColor(
-                            ResourceUtils.Companion.getInstance().getColor(R.color.setting_text_disable));
-                    mBinding.settingPlateNumberFinish.setBackground(
-                            ResourceUtils.Companion.getInstance().getDrawable(R.drawable.bg_setting_finish_disable));
+                    mBinding.settingPlateNumberFinish.setAlpha(0.5f);
+
                 }
+                mBinding.settingPlateNumberFinish.setTextColor(
+                        ResourceUtils.Companion.getInstance().getColor(R.color.setting_white));
+                mBinding.settingPlateNumberFinish.setBackground(
+                        ResourceUtils.Companion.getInstance().getDrawable(com.fy.navi.scene.R.drawable.bg_setting_preference_select));
+
                 // 第一位只能输入字母
                 if (text.isEmpty()) {
                     if (key.matches("[A-Z]")) {  // 只允许输入字母
                         mBinding.settingPlateNumberNumber.getText().insert(start, key);
+                        mBinding.settingPlateNumberClear.setVisibility(View.VISIBLE);
                     } else if (key.matches("[0-9]")) {  // 只允许输入数字
                         ToastUtils.Companion.getInstance().showCustomToastView(
                                 ResourceUtils.Companion.getInstance().getString(R.string.setting_guide_plate_number_first_tip));
@@ -108,29 +107,22 @@ public class SettingPlateNumberFragment extends BaseFragment<FragmentSettingPlat
                 final String text = mBinding.settingPlateNumberNumber.getText().toString();
                 if (!isEVCar() && text.length() >= 6) {
                     mBinding.settingPlateNumberFinish.setEnabled(true);
-                    mBinding.settingPlateNumberFinish.setTextColor(ResourceUtils.Companion.getInstance().getColor(R.color.white));
-                    mBinding.settingPlateNumberFinish.setBackground(
-                            ResourceUtils.Companion.getInstance().getDrawable(com.fy.navi.scene.R.drawable.bg_setting_preference_select));
+                    mBinding.settingPlateNumberFinish.setAlpha(1.0f);
                 } else if (isEVCar() && text.length() >= 7){
                     mBinding.settingPlateNumberFinish.setEnabled(true);
-                    mBinding.settingPlateNumberFinish.setTextColor(
-                            ResourceUtils.Companion.getInstance().getColor(R.color.white));
-                    mBinding.settingPlateNumberFinish.setBackground(
-                            ResourceUtils.Companion.getInstance().getDrawable(com.fy.navi.scene.R.drawable.bg_setting_preference_select));
+                    mBinding.settingPlateNumberFinish.setAlpha(1.0f);
                 } else {
                     mBinding.settingPlateNumberFinish.setEnabled(false);
-                    mBinding.settingPlateNumberFinish.setTextColor(
-                            ResourceUtils.Companion.getInstance().getColor(R.color.setting_text_disable));
-                    mBinding.settingPlateNumberFinish.setBackground(
-                            ResourceUtils.Companion.getInstance().getDrawable(R.drawable.bg_setting_finish_disable));
+                    mBinding.settingPlateNumberFinish.setAlpha(0.5f);
                 }
+                mBinding.settingPlateNumberFinish.setTextColor(
+                        ResourceUtils.Companion.getInstance().getColor(R.color.setting_white));
+                mBinding.settingPlateNumberFinish.setBackground(
+                        ResourceUtils.Companion.getInstance().getDrawable(com.fy.navi.scene.R.drawable.bg_setting_preference_select));
                 if (text.isEmpty() && !Objects.equals(mPlateNumber, "")) {
                     mIsClearPlateNumber = true;
                     mBinding.settingPlateNumberFinish.setEnabled(true);
-                    mBinding.settingPlateNumberFinish.setTextColor(
-                            ResourceUtils.Companion.getInstance().getColor(R.color.white));
-                    mBinding.settingPlateNumberFinish.setBackground(
-                            ResourceUtils.Companion.getInstance().getDrawable(com.fy.navi.scene.R.drawable.bg_setting_preference_select));
+                    mBinding.settingPlateNumberFinish.setAlpha(1.0f);
                 }
             }
         });
@@ -253,10 +245,13 @@ public class SettingPlateNumberFragment extends BaseFragment<FragmentSettingPlat
         if (plateNumber.isEmpty()) {
             mBinding.settingProvinceKeyboard.setSelectedProvince(
                     ResourceUtils.Companion.getInstance().getString(R.string.setting_guide_plate_number_default));
+            mBinding.settingPlateNumberClear.setVisibility(View.GONE);
             return;
         }
+        mBinding.settingPlateNumberClear.setVisibility(View.VISIBLE);
         mBinding.settingPlateNumberFinish.setEnabled(true);
-        mBinding.settingPlateNumberFinish.setTextColor(ResourceUtils.Companion.getInstance().getColor(R.color.white));
+        mBinding.settingPlateNumberFinish.setAlpha(1.0f);
+        mBinding.settingPlateNumberFinish.setTextColor(ResourceUtils.Companion.getInstance().getColor(R.color.setting_white));
         mBinding.settingPlateNumberFinish.setBackground(
                 ResourceUtils.Companion.getInstance().getDrawable(com.fy.navi.scene.R.drawable.bg_setting_preference_select));
         mBinding.settingPlateNumberProvince.setText(plateNumber.substring(0, 1));

@@ -20,6 +20,8 @@ public class MessageCenterInfo {
 
     private MessageCenterType msgType; //消息类型
     private String msgOperate; //消息类型
+    private int srcImg;//带图片的消息
+
     private String msgTitle;
     private String msgContent;
     private Date msgTime;

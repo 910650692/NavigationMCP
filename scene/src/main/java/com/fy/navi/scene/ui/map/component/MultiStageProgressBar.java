@@ -34,7 +34,7 @@ public class MultiStageProgressBar extends SkinView {
         int height = getHeight();
         if (ConvertUtils.isEmpty(mItems)) {
             canvas.drawRect(0, 0, width, height,
-                    getPaintInColor(ResourceUtils.Companion.getInstance().getColor(R.color.navi_color_000000_40)));
+                    getPaintInColor(ResourceUtils.Companion.getInstance().getColor(R.color.navi_color_000000_20)));
             return;
         }
         // 绘制背景色块

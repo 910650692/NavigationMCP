@@ -5,6 +5,10 @@ import com.android.utils.NetWorkUtils;
 import com.android.utils.ResourceUtils;
 import com.android.utils.ToastUtils;
 import com.android.utils.log.Logger;
+import com.fy.navi.burypoint.anno.HookMethod;
+import com.fy.navi.burypoint.bean.BuryProperty;
+import com.fy.navi.burypoint.constant.BuryConstant;
+import com.fy.navi.burypoint.controller.BuryPointController;
 import com.fy.navi.scene.BaseSceneModel;
 import com.fy.navi.scene.BaseSceneView;
 import com.fy.navi.scene.R;
@@ -156,7 +160,28 @@ public class SceneRoutePreferenceImpl extends BaseSceneModel<BaseSceneView> impl
             listener.onPreferenceChange(mSettingPackage.getRoutePreference(), false);
         }
         mLastRoutePreferenceID = mRoutePreferenceID;
+
+        sendBuryPointForSelectingRP(mode);
     }
+
+    @HookMethod(eventName = BuryConstant.EventName.AMAP_ROUTE_PREFERENCE)
+    private void sendBuryPointForSelectingRP(String mode) {
+        String routePreference = switch (mode) {
+            case RECOMMEND -> BuryConstant.RoutePreference.RECOMMEND;
+            case AVOIDCONGESTION -> BuryConstant.RoutePreference.AVOID_CONGESTION;
+            case LESSCHARGE -> BuryConstant.RoutePreference.LESS_CHARGE;
+            case NOTHIGHWAY -> BuryConstant.RoutePreference.NOT_HIGHWAY;
+            case FIRSTHIGHWAY -> BuryConstant.RoutePreference.FIRST_HIGHWAY;
+            case FIRSTMAINROAD -> BuryConstant.RoutePreference.FIRST_MAIN_ROAD;
+            case FASTESTSPEED -> BuryConstant.RoutePreference.FAST_SPEED;
+            default -> "";
+        };
+        BuryProperty properties = new BuryProperty.Builder()
+                .setParams(BuryConstant.ProperType.BURY_KEY_ROUTE_PREFERENCE, routePreference)
+                .build();
+        BuryPointController.getInstance().setBuryProps(properties);
+    }
+
     /**
      * 清除偏好
      * */

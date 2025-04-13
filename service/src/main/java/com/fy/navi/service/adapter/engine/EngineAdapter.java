@@ -3,6 +3,7 @@ package com.fy.navi.service.adapter.engine;
 import androidx.work.ListenableWorker;
 
 import com.fy.navi.service.AdapterConfig;
+import com.fy.navi.service.define.engine.GaodeLogLevel;
 import com.fy.navi.service.define.map.MapType;
 
 /**
@@ -62,6 +63,11 @@ public class EngineAdapter {
 
     public String styleBlPath(MapType mapTypeId) {
         return mIEngineApi.styleBlPath(mapTypeId);
+    }
+
+
+    public void switchLog(GaodeLogLevel logLevel){
+        mIEngineApi.switchLog(logLevel);
     }
 
     private static final class Helper {

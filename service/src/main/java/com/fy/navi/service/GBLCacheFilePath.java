@@ -15,16 +15,19 @@ public interface GBLCacheFilePath extends AutoMapConstant {
 
     /*** Auto Map log path **/
     public static final String BLS_LOG = GBL_MAP + "bllog";
-    // TODO: 2025/2/28 定位测试用
-//    public static final String BLS_LOG = FileUtils.APP_FILE_PATH + "bllog";
 
     public static final String BLS_COOKIES_PATH = GBL_MAP + "cookie";
     /*** AutoSDK资源文件的原始目录 **/
     public static final String BLS_ASSETS_PATH = "/android_assets/blRes/";
+    /*** 配置引擎样式文件MapAssert的绝对地址 **/
+    public static final String MAP_ASSET_DIR = BLS_ASSETS_PATH + "MapAsset/";
     /*** AutoSDK图层默认资源文件目录 **/
     public static final String BLS_ASSETS_LAYER_PATH = BLS_ASSETS_PATH + "LayerAsset/";
-    /*** AutoSDK图层自定义资源文件目录 **/
-    public static final String BLS_ASSETS_CUSTOM_LAYER_PATH = BLS_ASSETS_PATH + "CustomLayerAsset/";
+    /*** 自定义图层默认资源文件目录 **/
+    public static final String BLS_ASSETS_CUSTOM_STYLE_PATH = "blRes/customRes/style";
+
+    public static final String BLS_ASSETS_CUSTOM_PATH = BLS_ASSETS_PATH + "customRes/style";
+
     /*** 复制Assets文件根目录 **/
     public static final String COPY_ASSETS_DIR = GBL_MAP + "assets" + File.separator;
     /*** 用户数据目录，保存用户生成数据 **/
@@ -59,15 +62,15 @@ public interface GBLCacheFilePath extends AutoMapConstant {
     public static final String MAP_DATA_DIR = GBL_MAP + "data/";
     /*** 基本数据路径地址URL **/
     public static final String MAP_BASE_PATH = "http://mps.amap.com:80/";
-    /*** 配置引擎样式文件MapAssert的绝对地址 **/
-    public static final String MAP_ASSET_DIR = GBL_MAP + "MapAsset/";
+
 
     public static final String TBT_COMMON_CACHE_PATH = GBL_MAP + "tbtCommonComponent/cache";
 
     public static final String POS_DIR = GBL_MAP + "PosDir" + File.separator;
-    // TODO: 2025/2/28 定位测试用
-//    public static final String POS_DIR = POS + "PosDir" + File.separator;
 
     /*** 通勤预测数据库缓存目录 sdcard/Android/data/your_package/files/AutoMap/Gbl/wstrDb/ **/
     String BEHAVIOR_WSTR_DB_FILE_DIR = GBL_MAP + "wstrDb" + File.separator;
+
+    /***  暂定 激活文件保存路径  **/
+    String ACTIVATE_USER_DATA = GBL_MAP + "activate/";
 }

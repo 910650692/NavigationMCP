@@ -2,6 +2,7 @@ package com.fy.navi.scene.ui.search;
 
 
 import android.content.Context;
+import android.os.Bundle;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
@@ -23,6 +24,7 @@ import com.fy.navi.scene.R;
 import com.fy.navi.scene.RoutePath;
 import com.fy.navi.scene.adapter.GridSpacingItemDecoration;
 import com.fy.navi.scene.adapter.HorizontalSpaceItemDecoration;
+import com.fy.navi.scene.api.route.ISceneRouteGasStationChargeSelectCallBack;
 import com.fy.navi.scene.api.search.IOnFilterItemClickListener;
 import com.fy.navi.scene.databinding.PoiSearchResultViewBinding;
 import com.fy.navi.scene.impl.search.SceneSearchPoiListImpl;
@@ -51,7 +53,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding, SceneSearchPoiListImpl> {
+public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding, SceneSearchPoiListImpl>
+        implements ISceneRouteGasStationChargeSelectCallBack {
+    private static final String TAG = "SceneSearchPoiList";
     private static final String DIVIDER = "_";
     private static final String APPEND = "+";
     private SearchResultAdapter mAdapter;
@@ -84,6 +88,7 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
     private int mRange = 5000;
     //已下载的城市列表
     private ArrayList<ProvDataInfo> mProvDataInfos;
+    private boolean mIsOpenFromNavi;
 
 
     public SceneSearchPoiList(@NonNull final Context context) {
@@ -176,12 +181,14 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
                             (Fragment) ARouter.getInstance().build(RoutePath.Search.POI_DETAILS_FRAGMENT).navigation();
                 };
                 if (!ConvertUtils.isEmpty(mScreenViewModel) && !ConvertUtils.isEmpty(mResultEntity)) {
-                    mScreenViewModel.addPoiMarker(mResultEntity.getPoiList(), position);
+                    mScreenViewModel.setSelectIndex(poiInfoEntity);
                 }
                 final int poiType = getPoiType(mAdapter.getHomeCompanyType());
                 Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "onClick poiType: " + poiType + " homeCompany: " + mAdapter.getHomeCompanyType());
-                addPoiDetailsFragment((BaseFragment) fragment, SearchFragmentFactory.createPoiDetailsFragment(
-                        AutoMapConstant.SourceFragment.SEARCH_RESULT_FRAGMENT, poiType, poiInfoEntity));
+                final Bundle bundle = SearchFragmentFactory.createPoiDetailsFragment(
+                        AutoMapConstant.SourceFragment.SEARCH_RESULT_FRAGMENT, poiType, poiInfoEntity);
+                bundle.putParcelable(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_SOURCE_DATA, mResultEntity);
+                addPoiDetailsFragment((BaseFragment) fragment, bundle);
             }
 
             @Override
@@ -203,9 +210,15 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
                     SettingUpdateObservable.getInstance().onUpdateSyncTime();
                     closeAllFragmentsUntilTargetFragment("HomeCompanyFragment");
                     showCurrentFragment();
+                    mScreenViewModel.clearLabelMarker();
                 } else {
                     if (SearchPackage.getInstance().isAlongWaySearch()) {
-                        RoutePackage.getInstance().addViaPoint(MapType.MAIN_SCREEN_MAIN_MAP, poiInfoEntity);
+                        if (RoutePackage.getInstance().isBelongRouteParam(MapType.MAIN_SCREEN_MAIN_MAP, poiInfoEntity)) {
+                            RoutePackage.getInstance().removeVia(MapType.MAIN_SCREEN_MAIN_MAP, poiInfoEntity, true);
+                        } else {
+                            RoutePackage.getInstance().addViaPoint(MapType.MAIN_SCREEN_MAIN_MAP, poiInfoEntity);
+                        }
+
                     } else {
                         SearchPackage.getInstance().clearLabelMark();
                         final Fragment fragment = (Fragment) ARouter.getInstance()
@@ -224,7 +237,7 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
      * @param type 跳转类型
      * @return AutoMapConstant.PoiType
      */
-    private int getPoiType(int type) {
+    private int getPoiType(final int type) {
         int poiType = AutoMapConstant.PoiType.POI_KEYWORD;
         // 1:家 2:公司 3:常用地址 0:收藏夹 -1:都不是
         if (type == 1) {
@@ -243,11 +256,21 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
      * 配置搜索相关事件
      */
     private void setupSearchActions() {
-        mViewBinding.searchTextBarView.ivClose.setOnClickListener(v -> mScreenViewModel.closeSearch());
+        mViewBinding.searchTextBarView.ivClose.setOnClickListener(view -> {
+            if (mIsOpenFromNavi) {
+                mScreenViewModel.closeSearchOpenFromNavi();
+            } else {
+                mScreenViewModel.closeSearch();
+            }
+        });
         mViewBinding.searchTextBarView.searchBarTextView.setOnClickListener(v -> {
             Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "setupSearchActions: " + mSearchType);
             if (mSearchType == AutoMapConstant.SearchType.SEARCH_KEYWORD) {
-                mScreenViewModel.closeSearch();
+                if (mIsOpenFromNavi) {
+                    mScreenViewModel.closeSearchOpenFromNavi();
+                } else {
+                    mScreenViewModel.closeSearch();
+                }
             }
 
         });
@@ -515,13 +538,25 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
     }
 
     /**
+     * 退回到搜索结果列表页面时，重新扎标
+     */
+    public void reloadPoiMarker() {
+        mScreenViewModel.addPoiMarker(mResultEntity.getPoiList(), 0);
+    }
+
+    /**
      * 更新搜索结果
-     *
+     * @param taskId 请求任务id
      * @param searchResultEntity 搜索结果实体
      */
-    public void notifySearchResult(final SearchResultEntity searchResultEntity) {
+    public void notifySearchResult(final int taskId, final SearchResultEntity searchResultEntity) {
         if (!ConvertUtils.isEmpty(mSearchLoadingDialog)) {
             mSearchLoadingDialog.hide();
+        }
+        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "taskId: " + taskId
+                + " currentId: " + mScreenViewModel.getMTaskId());
+        if (!ConvertUtils.equals(taskId, mScreenViewModel.getMTaskId())) {
+            return;
         }
         if (searchResultEntity == null || searchResultEntity.getPoiList().isEmpty()) {
             ToastUtils.Companion.getInstance().showCustomToastView("抱歉，未找到结果");
@@ -543,6 +578,19 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
         //有数据时，隐藏异常提示界面
         mViewBinding.searchResultNoData.setVisibility(GONE);
 
+        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "mSearchType: " + mSearchType);
+
+        if (mScreenViewModel.isAlongWaySearch()) {
+            mViewBinding.routeRightTabListChargeScene.setVisibility(VISIBLE);
+            mViewBinding.routeRightTabListChargeScene.registerRouteSelectObserver(TAG, this);
+        } else {
+            mViewBinding.routeRightTabListChargeScene.setVisibility(GONE);
+        }
+
+        if (mSearchType == AutoMapConstant.SearchType.ALONG_WAY_SEARCH) {
+            mViewBinding.routeRightTabListChargeScene.highlightAlongTab();
+        }
+
         if (searchResultEntity.getPoiType() == 0) {
             final CityDataInfo cityDataInfo = mScreenViewModel.getCityInfo(mScreenViewModel.getAcCode());
             if (cityDataInfo != null) {
@@ -552,11 +600,13 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
             }
         }
         mResultEntity = searchResultEntity;
+        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "notifySearchResult name: " + searchResultEntity.getKeyword()
+                + " Object: " + this.toString());
         mSearchType = searchResultEntity.getSearchType();
         if (!ConvertUtils.isEmpty(searchResultEntity.getPoiList()) && searchResultEntity.getPoiList().size() == 1) {
             //只有一个搜索结果时，直接跳转结果界面
             final Fragment fragment = (Fragment) ARouter.getInstance().build(RoutePath.Search.POI_DETAILS_FRAGMENT).navigation();
-            int poiType = getPoiType(mHomeCompanyType);
+            final int poiType = getPoiType(mHomeCompanyType);
             addFragment((BaseFragment) fragment, SearchFragmentFactory.createPoiDetailsFragment(
                     AutoMapConstant.SourceFragment.SEARCH_RESULT_FRAGMENT, poiType, searchResultEntity.getPoiList().get(0)));
             return;
@@ -697,15 +747,28 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
         return classifyData;
     }
 
-        /**
-         * clear data
-         */
-        public void clear () {
-            mPoiInfoEntity = null;
-            mResultEntity = null;
-            if (mLocalInfoList != null) {
-                mLocalInfoList.clear();
-                mLocalInfoList = null;
-            }
+    /**
+     * clear data
+     */
+    public void clear() {
+        mPoiInfoEntity = null;
+        mResultEntity = null;
+        if (mLocalInfoList != null) {
+            mLocalInfoList.clear();
+            mLocalInfoList = null;
         }
     }
+
+    @Override
+    public void onTabListGasChargeClick(final int tabIndex) {
+        mScreenViewModel.onTabListGasChargeClick(mResultEntity.getKeyword(), tabIndex);
+        mViewBinding.routeRightTabListChargeScene.updateUi();
+    }
+
+    /**
+     * @param b 从导航进的搜索结果页面
+     */
+    public void setNaviControl(final boolean b) {
+        mIsOpenFromNavi = b;
+    }
+}

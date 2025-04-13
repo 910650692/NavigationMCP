@@ -5,6 +5,7 @@ import static androidx.core.app.ActivityCompat.startActivityForResult;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
 import android.graphics.PixelFormat;
 import android.net.Uri;
 import android.provider.Settings;
@@ -12,18 +13,24 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
-
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import com.android.utils.log.Logger;
 import com.fy.navi.fsa.MyFsaService;
 import com.fy.navi.hmi.databinding.LayoutTestBinding;
+import com.fy.navi.service.AppContext;
+import com.fy.navi.service.define.engine.GaodeLogLevel;
 import com.fy.navi.service.define.setting.SettingConstant;
 import com.fy.navi.service.greendao.setting.SettingManager;
 import com.fy.navi.service.logicpaket.calibration.CalibrationPackage;
+import com.fy.navi.service.logicpaket.engine.EnginePackage;
 import com.fy.navi.service.logicpaket.mapdata.MapDataPackage;
 import com.fy.navi.service.logicpaket.navi.NaviPackage;
 import com.fy.navi.service.logicpaket.position.PositionPackage;
 import com.fy.navi.service.logicpaket.signal.SignalPackage;
-
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.List;
 
 public class TestWindow {
     private static final String TAG = TestWindow.class.getSimpleName();
@@ -67,7 +74,17 @@ public class TestWindow {
         mWindowManager = (WindowManager) activity.getSystemService(Context.WINDOW_SERVICE);
         initLayoutParams();
         initAction();
+        initData();
         addViewToWindow();
+        initLogLevel();
+    }
+
+    private void initData() {
+        ApplicationInfo applicationInfo = AppContext.getInstance().getMApplication().getApplicationInfo();
+        String nativeLibraryDir = applicationInfo.nativeLibraryDir;
+        mBinding.testSoLib.setText(nativeLibraryDir);
+        mBinding.testNaiLogLevel.setAdapter(createNaiAdapter());
+        mBinding.testGaodeLogLevel.setAdapter(createNaiAdapter());
     }
 
     private boolean checkOverlayPermission(Context context) {
@@ -211,9 +228,79 @@ public class TestWindow {
         mBinding.testSelectTextBg.setOnClickListener(v -> toggleSelection(mBinding.testSelectTextBg));
         mBinding.testSelectTextBg1.setOnClickListener(v -> toggleSelection(mBinding.testSelectTextBg1));
         mBinding.testForegroundText.setOnClickListener(v -> toggleSelection(mBinding.testForegroundText));
+
+
+        mBinding.testNavLog.setOnCheckedChangeListener((buttonView, checked) -> {
+            if(buttonView.isPressed()){
+                Logger.switchLog(checked);
+            }
+        });
+
+        mBinding.testNaiLogLevel.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                Logger.setLogLevel(position+2);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+
+        mBinding.testGaodeLog.setOnCheckedChangeListener((buttonView, checked) -> {
+            if(buttonView.isPressed()){
+                if(checked){
+                    EnginePackage.getInstance().switchLog(GaodeLogLevel.LOG_VERBOSE);
+                }else {
+                    EnginePackage.getInstance().switchLog(GaodeLogLevel.LOG_NONE);
+                }
+            }
+        });
+
+        mBinding.testGaodeLogLevel.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if(position == 0){
+                    EnginePackage.getInstance().switchLog(GaodeLogLevel.LOG_VERBOSE);
+                }else if(position == 1){
+                    EnginePackage.getInstance().switchLog(GaodeLogLevel.LOG_DEBUG);
+                }else if(position == 2){
+                    EnginePackage.getInstance().switchLog(GaodeLogLevel.LOG_INFO);
+                }else if(position == 3){
+                    EnginePackage.getInstance().switchLog(GaodeLogLevel.LOG_WARN);
+                }else if(position == 4){
+                    EnginePackage.getInstance().switchLog(GaodeLogLevel.LOG_ERROR);
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+    }
+
+    private void initLogLevel() {
+        Logger.setLogLevel(2);
+        EnginePackage.getInstance().switchLog(GaodeLogLevel.LOG_VERBOSE);
     }
 
     private void toggleSelection(View view) {
         view.setSelected(!view.isSelected());
+    }
+
+    private ArrayAdapter<String> createNaiAdapter(){
+        // 创建一个包含选项的列表
+        List<String> options = new ArrayList<>();
+        options.add("VERBOSE");
+        options.add("DEBUG");
+        options.add("INFO");
+        options.add("WARN");
+        options.add("ERROR");
+        // 创建一个 ArrayAdapter 来为 Spinner 提供数据
+        return new ArrayAdapter<>(mActivityRef.get(),
+                android.R.layout.simple_spinner_item, options);
     }
 }

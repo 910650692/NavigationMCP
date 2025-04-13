@@ -2,6 +2,7 @@ package com.fy.navi.hmi.search.suggestion;
 
 
 import com.android.utils.log.Logger;
+import com.android.utils.thread.ThreadManager;
 import com.fy.navi.service.AutoMapConstant;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.define.search.SearchResultEntity;
@@ -29,7 +30,10 @@ public class SuggestionResultModel extends BaseModel<SuggestionResultViewModel> 
     public void onSearchResult(final int taskId, final int errorCode, final String message, final SearchResultEntity searchResultEntity) {
         if (mCallbackId.equals(mSearchPackage.getCurrentCallbackId())) {
             if (searchResultEntity.getSearchType() == AutoMapConstant.SearchType.SEARCH_SUGGESTION) {
-                mViewModel.notifySearchResult(searchResultEntity);
+                final ThreadManager threadManager = ThreadManager.getInstance();
+                threadManager.postUi(() -> {
+                    mViewModel.notifySearchResult(searchResultEntity);
+                });
             }
         } else {
             Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "Ignoring callback for ID: " + mCallbackId);

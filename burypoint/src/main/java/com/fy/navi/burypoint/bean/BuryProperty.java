@@ -19,6 +19,14 @@ public class BuryProperty {
 
     }
 
+    public BuryProperty(String key, String value){
+        params.add(new BuryParam(key,value));
+    }
+
+    public BuryProperty(List<BuryParam> params){
+        this.params = params;
+    }
+
     public BuryProperty(Builder builder){
         this.params = builder.params;
     }

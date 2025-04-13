@@ -69,7 +69,7 @@
                             android:button="@null"
                             android:gravity="center"
                             android:text="@string/offline_manager_map_downloading"
-                            android:textColor="@color/offline_black"
+                            android:textColor="@color/setting_bg_tab_text_select"
                             android:textSize="@dimen/sp_34" />
 
                         <com.fy.navi.ui.view.SkinView
@@ -82,17 +82,16 @@
                     </com.fy.navi.ui.view.SkinLinearLayout>
 
                     <com.fy.navi.ui.view.SkinTextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="@dimen/dp_40"
+                        android:layout_height="@dimen/dp_40"
                         android:text="@{ViewModel.mAllDownloadingDataSize}"
-                        android:layout_marginStart="@dimen/dp_24"
-                        android:padding="5dp"
+                        android:layout_marginBottom="@dimen/dp_20"
                         android:layout_gravity="center"
                         android:gravity="center"
                         android:visibility="@{ViewModel.mDownloadingDataVisibility ? View.VISIBLE : View.GONE}"
-                        android:textColor="@color/white"
+                        android:textColor="@color/setting_white"
                         android:textSize="@dimen/sp_26"
-                        android:background="@color/setting_others_driving_delete_bg"/>
+                        android:background="@drawable/bg_end_point" />
 
                 </com.fy.navi.ui.view.SkinLinearLayout>
 
@@ -115,7 +114,7 @@
                         android:button="@null"
                         android:gravity="center"
                         android:text="@string/offline_city_downloaded"
-                        android:textColor="@color/color_70_000000"
+                        android:textColor="@color/setting_bg_tab_text_select"
                         android:textSize="@dimen/sp_34" />
 
                     <com.fy.navi.ui.view.SkinView
@@ -132,13 +131,14 @@
 
         </com.fy.navi.ui.view.SkinConstraintLayout>
 
-        <com.fy.navi.ui.view.SkinScrollView
+        <com.fy.navi.ui.view.SkinNestedScrollView
             android:layout_width="match_parent"
             android:layout_height="fill_parent"
             android:layout_marginBottom="@dimen/dp_40"
             android:layout_marginEnd="@dimen/dp_40"
             android:layout_marginStart="@dimen/dp_40"
             android:layout_marginTop="@dimen/dp_30"
+            android:scrollbars="none"
             android:fillViewport="true">
 
             <com.fy.navi.ui.view.SkinConstraintLayout
@@ -194,7 +194,7 @@
                                     android:layout_height="wrap_content"
                                     android:textSize="@dimen/sp_34"
                                     android:layout_marginStart="@dimen/dp_16"
-                                    android:textColor="@color/setting_preference_text_gray"
+                                    android:textColor="@color/setting_bg_voice_text"
                                     android:text="@string/offline_all_city_start_download" />
 
                             </com.fy.navi.ui.view.SkinLinearLayout>
@@ -219,7 +219,7 @@
                                     android:layout_height="wrap_content"
                                     android:textSize="@dimen/sp_34"
                                     android:layout_marginStart="@dimen/dp_16"
-                                    android:textColor="@color/setting_preference_text_gray"
+                                    android:textColor="@color/setting_bg_voice_text"
                                     android:text="@string/offline_all_city_suspend_download" />
 
                             </com.fy.navi.ui.view.SkinLinearLayout>
@@ -243,7 +243,7 @@
                     android:text="@string/offline_manager_map_no_downloading"
                     android:visibility="@{ViewModel.mDownloadingNoDataVisibility ? View.VISIBLE : View.GONE}"
                     android:textSize="@dimen/sp_34"
-                    android:textColor="@color/black"
+                    android:textColor="@color/setting_bg_tab_text_select"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -265,9 +265,9 @@
                         android:gravity="center"
                         android:layout_marginTop="@dimen/dp_16"
                         android:text="@{ViewModel.mAllDownloadedDataSize}"
-                        android:textColor="@color/setting_text_preference"
+                        android:textColor="@color/setting_bg_tab_text_unselect"
                         android:textSize="@dimen/sp_30"
-                        android:background="@drawable/shape_bg_map_item_data"
+                        android:background="@drawable/shape_bg_map_data"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/font_size"/>
 
@@ -275,7 +275,7 @@
                     <com.fy.navi.ui.view.SkinRecyclerView
                         android:id="@+id/rv_downloaded_offline"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         android:layout_marginTop="@dimen/dp_40"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/downloaded_offline_layout" />
@@ -288,7 +288,7 @@
                     android:text="@string/offline_manager_map_no_downloaded"
                     android:visibility="@{ViewModel.mDownloadedNoDataVisibility ? View.VISIBLE : View.GONE}"
                     android:textSize="@dimen/sp_34"
-                    android:textColor="@color/black"
+                    android:textColor="@color/setting_bg_tab_text_select"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -296,7 +296,7 @@
 
             </com.fy.navi.ui.view.SkinConstraintLayout>
 
-        </com.fy.navi.ui.view.SkinScrollView>
+        </com.fy.navi.ui.view.SkinNestedScrollView>
 
 
     </com.fy.navi.ui.view.SkinLinearLayout>

@@ -1,4 +1,5 @@
 package com.fy.navi.scene.ui.navi;
+
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.drawable.BitmapDrawable;
@@ -17,10 +18,8 @@ import com.fy.navi.scene.impl.navi.common.AutoUIString;
 import com.fy.navi.scene.impl.navi.common.SceneCommonStruct;
 import com.fy.navi.scene.impl.navi.common.SceneEnumRes;
 import com.fy.navi.scene.impl.navi.inter.ISceneCallback;
-import com.fy.navi.scene.ui.navi.manager.INaviSceneEvent;
 import com.fy.navi.scene.ui.navi.manager.NaviSceneBase;
 import com.fy.navi.scene.ui.navi.manager.NaviSceneId;
-import com.fy.navi.scene.ui.navi.manager.NaviSceneManager;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.define.navi.NaviEtaInfo;
 import com.fy.navi.service.define.navi.NaviManeuverInfo;
@@ -32,7 +31,6 @@ import com.fy.navi.service.define.navi.NaviManeuverInfo;
  */
 public class SceneNaviEtaView extends NaviSceneBase<SceneNaviEtaViewBinding, SceneNaviEtaImpl> {
     private static final String TAG = MapDefaultFinalTag.NAVI_HMI_TAG;
-    private ISceneCallback mISceneCallback;
 
     public SceneNaviEtaView(@NonNull final Context context) {
         super(context);
@@ -50,44 +48,6 @@ public class SceneNaviEtaView extends NaviSceneBase<SceneNaviEtaViewBinding, Sce
     @Override
     protected NaviSceneId getSceneId() {
         return NaviSceneId.NAVI_SCENE_ETA;
-    }
-
-    @Override
-    protected String getSceneName() {
-        return NaviSceneId.NAVI_SCENE_ETA.name();
-    }
-
-    @Override
-    public INaviSceneEvent getNaviSceneEvent() {
-        return NaviSceneManager.getInstance();
-    }
-
-    protected void init() {
-        NaviSceneManager.getInstance().addNaviScene(NaviSceneId.NAVI_SCENE_ETA, this);
-    }
-
-    @Override
-    public void show() {
-        super.show();
-        if (mISceneCallback != null) {
-            mISceneCallback.updateSceneVisible(NaviSceneId.NAVI_SCENE_ETA, true);
-        }
-    }
-
-    @Override
-    public void hide() {
-        super.hide();
-        if (mISceneCallback != null) {
-            mISceneCallback.updateSceneVisible(NaviSceneId.NAVI_SCENE_ETA, false);
-        }
-    }
-
-    @Override
-    public void close() {
-        super.close();
-        if (mISceneCallback != null) {
-            mISceneCallback.updateSceneVisible(NaviSceneId.NAVI_SCENE_ETA, false);
-        }
     }
 
     @Override
@@ -130,6 +90,7 @@ public class SceneNaviEtaView extends NaviSceneBase<SceneNaviEtaViewBinding, Sce
 
     @Override
     public void onDestroy() {
+        mISceneCallback = null;
     }
 
     /**
@@ -190,8 +151,4 @@ public class SceneNaviEtaView extends NaviSceneBase<SceneNaviEtaViewBinding, Sce
         mViewBinding.sivHudSou31.setBackgroundResource(SceneEnumRes.getDrawableEnumName(iconAction).getDayDrawableId());
     }
 
-    @Override
-    public void addSceneCallback(final ISceneCallback sceneCallback) {
-        mISceneCallback = sceneCallback;
-    }
 }

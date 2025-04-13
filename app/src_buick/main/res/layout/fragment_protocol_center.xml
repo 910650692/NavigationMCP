@@ -149,8 +149,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/reminder_page_service_title"
-                    android:textSize="@dimen/sp_52"
-                    android:textColor="@color/black"
+                    android:textSize="@dimen/sp_38"
+                    android:textColor="@color/color_black_90"
                     android:layout_marginStart="@dimen/dp_40"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -170,8 +170,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/reminder_page_service_content"
-                    android:textColor="@color/dialog_use_reminder_content"
-                    android:textSize="@dimen/sp_46"
+                    android:textColor="@color/color_black_90"
+                    android:layout_marginEnd="@dimen/dp_10"
+                    android:textSize="@dimen/sp_36"
                     android:paddingVertical="@dimen/dp_40"/>
 
             </com.fy.navi.ui.view.SkinScrollView>

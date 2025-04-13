@@ -5,8 +5,11 @@ import android.app.Application;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 
+import com.fy.navi.service.define.user.usertrack.DrivingRecordDataBean;
 import com.fy.navi.ui.action.Action;
 import com.fy.navi.ui.base.BaseViewModel;
+
+import java.util.ArrayList;
 
 public class BaseRecordSettingViewModel extends BaseViewModel<RecordSettingFragment, RecordSettingModel> {
 
@@ -59,11 +62,11 @@ public class BaseRecordSettingViewModel extends BaseViewModel<RecordSettingFragm
     }
 
     /**
-     * 获取行为数据ID
-     * @return 行为数据ID
+     * 从sdk获取当前用户行程数据列表（默认导航历史）
+     * @return 行程数据列表
      */
-    public int[] getBehaviorDataIds() {
-        return mModel.getBehaviorDataIds();
+    public ArrayList<DrivingRecordDataBean> getDrivingRecordDataFromSdk() {
+        return mModel.getDrivingRecordDataFromSdk();
     }
     /**
      * 根据ID删除行程信息

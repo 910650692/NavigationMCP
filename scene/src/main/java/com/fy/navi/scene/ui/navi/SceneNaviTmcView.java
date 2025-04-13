@@ -15,18 +15,16 @@ import com.android.utils.log.Logger;
 import com.fy.navi.scene.R;
 import com.fy.navi.scene.databinding.SceneNaviTmcViewBinding;
 import com.fy.navi.scene.impl.navi.SceneNaviTmcImpl;
+import com.fy.navi.scene.impl.navi.common.NaviUiUtil;
 import com.fy.navi.scene.impl.navi.common.SceneCommonStruct;
 import com.fy.navi.scene.impl.navi.common.SceneEnumRes;
 import com.fy.navi.scene.impl.navi.inter.ISceneCallback;
-import com.fy.navi.scene.ui.navi.manager.INaviSceneEvent;
 import com.fy.navi.scene.ui.navi.manager.NaviSceneBase;
 import com.fy.navi.scene.ui.navi.manager.NaviSceneId;
-import com.fy.navi.scene.ui.navi.manager.NaviSceneManager;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.adapter.navi.NaviConstant;
 import com.fy.navi.service.define.navi.NaviEtaInfo;
 import com.fy.navi.service.define.navi.NaviTmcInfo;
-import com.fy.navi.scene.impl.navi.common.NaviUiUtil;
 import com.fy.navi.ui.view.SkinTextView;
 
 import java.util.ArrayList;
@@ -39,7 +37,6 @@ import java.util.List;
  */
 public class SceneNaviTmcView extends NaviSceneBase<SceneNaviTmcViewBinding, SceneNaviTmcImpl> {
     private static final String TAG = MapDefaultFinalTag.NAVI_HMI_TAG;
-    private ISceneCallback mISceneCallback;
     private List<NaviTmcInfo.NaviTmcInfoData> mTmcBarItemsNew;
     // 途径点信息
     private ArrayList<NaviEtaInfo.NaviTimeAndDist> mViaRemain;
@@ -87,49 +84,6 @@ public class SceneNaviTmcView extends NaviSceneBase<SceneNaviTmcViewBinding, Sce
     }
 
     @Override
-    protected String getSceneName() {
-        return NaviSceneId.NAVI_SCENE_TMC.name();
-    }
-
-    @Override
-    public INaviSceneEvent getNaviSceneEvent() {
-        return NaviSceneManager.getInstance();
-    }
-
-    protected void init() {
-        NaviSceneManager.getInstance().addNaviScene(NaviSceneId.NAVI_SCENE_TMC, this);
-    }
-
-    @Override
-    public void addSceneCallback(final ISceneCallback sceneCallback) {
-        mISceneCallback = sceneCallback;
-    }
-
-    @Override
-    public void show() {
-        super.show();
-        if (mISceneCallback != null) {
-            mISceneCallback.updateSceneVisible(NaviSceneId.NAVI_SCENE_TMC, true);
-        }
-    }
-
-    @Override
-    public void hide() {
-        super.hide();
-        if (mISceneCallback != null) {
-            mISceneCallback.updateSceneVisible(NaviSceneId.NAVI_SCENE_TMC, false);
-        }
-    }
-
-    @Override
-    public void close() {
-        super.close();
-        if (mISceneCallback != null) {
-            mISceneCallback.updateSceneVisible(NaviSceneId.NAVI_SCENE_TMC, false);
-        }
-    }
-
-    @Override
     protected SceneNaviTmcViewBinding createViewBinding(final LayoutInflater inflater,
                                                         final ViewGroup viewGroup) {
         return SceneNaviTmcViewBinding.inflate(inflater, viewGroup, true);
@@ -166,12 +120,6 @@ public class SceneNaviTmcView extends NaviSceneBase<SceneNaviTmcViewBinding, Sce
         if (mScreenViewModel != null) {
             mScreenViewModel.onNaviInfo(naviETAInfo);
         }
-    }
-
-    @Override
-    public void onDestroy() {
-        mScreenViewModel.unregisterObserver();
-        super.onDestroy();
     }
 
     /**

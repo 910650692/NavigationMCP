@@ -33,7 +33,7 @@
                 android:textSize="@dimen/sp_34"
                 android:text="@{layoutPosition}"
                 android:layout_marginStart="@dimen/dp_30"
-                android:textColor="@color/setting_text_preference"
+                android:textColor="@color/color_black_70"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -53,6 +53,7 @@
 
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:maxWidth="@dimen/dp_500"
                     android:text="@{model.name}"
                     android:textSize="@dimen/sp_34"
                     android:ellipsize="end"
@@ -92,8 +93,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="@dimen/sp_30"
-                    android:text="@{model.distance}"
-                    android:textColor="@color/setting_text_preference"
+                    android:textColor="@color/color_black_70"
                     tools:text="198km"/>
 
                 <com.fy.navi.ui.view.SkinView
@@ -103,7 +103,7 @@
                     android:layout_marginStart="@dimen/dp_8"
                     android:layout_marginEnd="@dimen/dp_8"
                     android:layout_gravity="center"
-                    android:background="@color/setting_text_preference" />
+                    android:background="@color/color_black_70" />
 
                 <com.fy.navi.ui.view.SkinTextView
                     android:id="@+id/item_favorite_address"
@@ -113,7 +113,7 @@
                     android:textSize="@dimen/sp_30"
                     android:ellipsize="end"
                     android:maxLines="1"
-                    android:textColor="@color/setting_text_preference"
+                    android:textColor="@color/color_black_70"
                     app:layout_constraintStart_toEndOf="@+id/item_favorite_line"
                     app:layout_constraintTop_toBottomOf="@+id/item_favorite_name"
                     tools:text="@string/favorite_item_address"/>
@@ -139,7 +139,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dp_4"
                     android:text="@string/favorite_item_navi"
-                    android:textColor="@color/setting_text_gray"
+                    android:textColor="@color/color_black_70"
                     android:textSize="@dimen/sp_30" />
 
             </com.fy.navi.ui.view.SkinLinearLayout>
@@ -174,7 +174,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/favorite_item_top"
                     android:layout_marginTop="@dimen/dp_4"
-                    android:textColor="@color/setting_text_preference"
+                    android:textColor="@color/color_black_70"
                     android:textSize="@dimen/sp_30" />
 
             </com.fy.navi.ui.view.SkinLinearLayout>

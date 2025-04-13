@@ -5,10 +5,12 @@ import android.util.Log;
 public class VTServerBQJni {
     private static final VTServerBQJni MJNI = new VTServerBQJni();
     private static IVTServerListener mListener = null;
+    private static boolean isSuccessLoadLibrary = false;
     static {
         try {
             Log.d("vtservice-jni", "VTServerBQJni static loadLibrary");
             System.loadLibrary("vtservice-jni");
+            isSuccessLoadLibrary = true;
         } catch (Throwable e) {
             Log.e("vtservice-jni", "static initializer: " + e.getMessage());
         }
@@ -31,6 +33,11 @@ public class VTServerBQJni {
         Log.d("vtservice-jni", "setVTServerListener");
         mListener = listener;
     }
+
+    public boolean isIsSuccessLoadLibrary() {
+        return isSuccessLoadLibrary;
+    }
+
     public native int nativeInitialize();
 
     public native void nativeUninitialize();

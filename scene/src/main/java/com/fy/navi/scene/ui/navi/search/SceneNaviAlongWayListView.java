@@ -11,6 +11,10 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.GridLayoutManager;
 
 import com.android.utils.log.Logger;
+import com.fy.navi.burypoint.anno.HookMethod;
+import com.fy.navi.burypoint.bean.BuryProperty;
+import com.fy.navi.burypoint.constant.BuryConstant;
+import com.fy.navi.burypoint.controller.BuryPointController;
 import com.fy.navi.scene.BaseSceneView;
 import com.fy.navi.scene.api.navi.ISceneNaviSearchView;
 import com.fy.navi.scene.databinding.SceneNaviAlongWayListViewBinding;
@@ -88,10 +92,19 @@ public class SceneNaviAlongWayListView extends BaseSceneView<SceneNaviAlongWayLi
                 // 只有沿途搜
                 Logger.i(TAG, "Along way search");
                 mISceneNaviSearchView.goSearchResultView(name, OpenApiHelper.ALONG_WAY);
+                sendBuryPointEvent(name);
             });
         } else {
             Logger.i(TAG, "quickSearchListAdapter is null");
         }
+    }
+
+    @HookMethod(eventName = BuryConstant.EventName.AMAP_NAVI_POI_ROUTE_SELECT)
+    private void sendBuryPointEvent(String name) {
+        BuryProperty buryProperty = new BuryProperty.Builder()
+                .setParams(BuryConstant.ProperType.BURY_KEY_SEARCH_CONTENTS, name)
+                .build();
+        BuryPointController.getInstance().setBuryProps(buryProperty);
     }
 
     /**

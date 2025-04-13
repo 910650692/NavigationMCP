@@ -57,7 +57,7 @@
                     android:layout_marginStart="@dimen/dp_24"
                     android:gravity="center"
                     android:text="@string/navi_add_via"
-                    android:textColor="@color/navi_color_000000_60"
+                    android:textColor="@color/common_title_color"
                     android:textSize="@dimen/sp_34" />
             </com.fy.navi.scene.ui.navi.view.ButtonLinearLayout>
 

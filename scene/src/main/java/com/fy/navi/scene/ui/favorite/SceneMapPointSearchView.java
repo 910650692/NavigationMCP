@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.android.utils.ConvertUtils;
 import com.android.utils.ToastUtils;
 import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
@@ -172,28 +173,40 @@ public class SceneMapPointSearchView extends BaseSceneView<SceneMapPointSearchVi
      */
     public void clickSetting() {
         ToastUtils.Companion.getInstance().showCustomToastView(mHintText);
+        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "clickSetting: " + mCommonName
+                + " mPoiInfoEntity: " + mPoiInfoEntity);
+        if (ConvertUtils.isEmpty(mPoiInfoEntity)) {
+            return;
+        }
         if (mCommonName == HomeCompanyType.ALONG_WAY) {
             if (SearchPackage.getInstance().isAlongWaySearch()) {
                 RoutePackage.getInstance().addViaPoint(MapType.MAIN_SCREEN_MAIN_MAP, mPoiInfoEntity);
                 Logger.d("mapMsgPushInfoToPoiInfoEntity1: " + GsonUtils.toJson(mPoiInfoEntity));
             }
             closeAllFragmentsUntilTargetFragment("MainAlongWaySearchFragment");
+            showCurrentFragment();
         } else {
             //点击添加设置家、公司、常用地址、收藏等commonName (1家，2公司,3常用地址，0普通收藏点）
             final FavoriteInfo favoriteInfo = new FavoriteInfo();
             favoriteInfo.setCommonName(mCommonName)
                     .setUpdateTime(new Date().getTime());
             mPoiInfoEntity.setFavoriteInfo(favoriteInfo);
+            if (ConvertUtils.isEmpty(mPoiInfoEntity.getPid())) {
+                //逆地理搜索出的点无poiId，需自己拼接
+                mPoiInfoEntity.setPid(mPoiInfoEntity.getPoint().getLon() + ""
+                        + mPoiInfoEntity.getPoint().getLat());
+            }
             BehaviorPackage.getInstance().addFavorite(mPoiInfoEntity, mCommonName);
 //            BehaviorPackage.getInstance().addFavoriteData(mPoiInfoEntity, mCommonName);
             SettingUpdateObservable.getInstance().onUpdateSyncTime();
 //            if (mCommonName == HomeCompanyType.COLLECTION) {
-                closeAllFragmentsUntilTargetFragment("HomeCompanyFragment");
-                showCurrentFragment();
+            closeAllFragmentsUntilTargetFragment("HomeCompanyFragment");
+            showCurrentFragment();
 //            } else {
 //                closeAllFragment();
 //            }
         }
+        mScreenViewModel.clearPoiLabelMark();
     }
 
     @Override

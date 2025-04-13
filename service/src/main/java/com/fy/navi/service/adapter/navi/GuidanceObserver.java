@@ -1,5 +1,6 @@
 package com.fy.navi.service.adapter.navi;
 
+import com.autonavi.gbl.guide.model.SuggestChangePathReason;
 import com.fy.navi.service.define.bean.GeoPoint;
 import com.fy.navi.service.define.navi.CameraInfoEntity;
 import com.fy.navi.service.define.navi.CrossImageEntity;
@@ -12,6 +13,7 @@ import com.fy.navi.service.define.navi.NaviMixForkInfo;
 import com.fy.navi.service.define.navi.NaviTmcInfo;
 import com.fy.navi.service.define.navi.SapaInfoEntity;
 import com.fy.navi.service.define.navi.SpeedOverallEntity;
+import com.fy.navi.service.define.navi.SuggestChangePathReasonEntity;
 import com.fy.navi.service.define.route.FyRouteOption;
 import com.fy.navi.service.define.route.RouteWeatherInfo;
 
@@ -204,4 +206,25 @@ public interface GuidanceObserver extends BaseNaviObserver {
      */
     default void onShowNaviWeather(final RouteWeatherInfo info) {
     }
+
+    /**
+     * 路线改变的回调
+     * @param oldPathId 老得路线ID
+     * @param pathID 新的路线ID
+     */
+    default void onChangeNaviPath(final long oldPathId, final long pathID) {
+
+    }
+
+    /**
+     * 引导切换到备选路线的回调
+     * @param newPathID 新路线id
+     * @param oldPathID 旧路线id
+     * @param reason 原因
+     */
+    default void onSuggestChangePath(long newPathID, long oldPathID,
+                                     SuggestChangePathReasonEntity reason) {
+
+    }
+
 }

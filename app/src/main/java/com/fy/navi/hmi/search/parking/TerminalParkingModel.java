@@ -2,6 +2,7 @@ package com.fy.navi.hmi.search.parking;
 
 
 import com.android.utils.log.Logger;
+import com.android.utils.thread.ThreadManager;
 import com.fy.navi.service.AutoMapConstant;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.define.search.PoiInfoEntity;
@@ -34,7 +35,11 @@ public class TerminalParkingModel extends BaseModel<TerminalParkingViewModel> im
                     || searchResultEntity.getSearchType() == AutoMapConstant.SearchType.GEO_SEARCH) {
                 return;
             }
-            mViewModel.notifySearchResult(searchResultEntity);
+            final ThreadManager threadManager = ThreadManager.getInstance();
+            threadManager.postUi(() -> {
+                mViewModel.notifySearchResult(searchResultEntity);
+
+            });
         }
     }
 

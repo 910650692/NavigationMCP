@@ -42,7 +42,7 @@ public class SceneNaviSearchView extends NaviSceneBase<SceneNaviSearchViewBindin
     }
 
     @Override
-    protected String getSceneName() {
+    public String getSceneName() {
         return "";
     }
 

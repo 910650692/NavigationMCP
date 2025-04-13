@@ -9,6 +9,10 @@ import androidx.lifecycle.MutableLiveData;
 import com.android.utils.NetWorkUtils;
 import com.android.utils.ResourceUtils;
 import com.android.utils.ToastUtils;
+import com.fy.navi.burypoint.anno.HookMethod;
+import com.fy.navi.burypoint.bean.BuryProperty;
+import com.fy.navi.burypoint.constant.BuryConstant;
+import com.fy.navi.burypoint.controller.BuryPointController;
 import com.fy.navi.hmi.mapdata.MapDataFragment;
 import com.fy.navi.hmi.setting.guide.platenumber.SettingPlateNumberFragment;
 import com.fy.navi.service.MapDefaultFinalTag;
@@ -45,6 +49,7 @@ public class BaseSettingGuideViewModel extends BaseViewModel<SettingNaviFragment
     public MutableLiveData<Boolean> mIsCarLogoBrand = new MutableLiveData<>(false);
     public MutableLiveData<Boolean> mIsCarLogoSpeed = new MutableLiveData<>(false);
     public MutableLiveData<Boolean> mIsEVCar = new MutableLiveData<>(false);
+    public MutableLiveData<Boolean> mIsPHEVCar = new MutableLiveData<>(false);
 
 
 
@@ -93,6 +98,8 @@ public class BaseSettingGuideViewModel extends BaseViewModel<SettingNaviFragment
             final boolean value = Boolean.FALSE.equals(mIsAvoidLimit.getValue());
             if (mModel.setConfigKeyAvoidLimit(value) == 0) {
                 mIsAvoidLimit.setValue(value);
+                sendBuryPointForSettingGuide(BuryConstant.GuideOption.AVOID_RESTRICT,
+                        Boolean.TRUE.equals(mIsAvoidLimit.getValue()) ? BuryConstant.Number.SECOND : BuryConstant.Number.ONE);
             }
         }
     };
@@ -102,6 +109,8 @@ public class BaseSettingGuideViewModel extends BaseViewModel<SettingNaviFragment
         final boolean value = Boolean.FALSE.equals(mIsVehicleGuide.getValue());
         mIsVehicleGuide.setValue(value);
         mModel.setGuideVehicle(value);
+
+        sendBuryPointForSettingGuide(BuryConstant.GuideOption.LEVEL_NAVI, value ? BuryConstant.Number.SECOND : BuryConstant.Number.ONE);
     };
 
     // 补能计划
@@ -110,6 +119,8 @@ public class BaseSettingGuideViewModel extends BaseViewModel<SettingNaviFragment
         SettingUpdateObservable.getInstance().notifySettingChanged(SettingController.KEY_SETTING_GUIDE_CHARGING_PLAN, value);
         mIsChargingPlan.setValue(value);
         mModel.setChargingPlan(value);
+
+        sendBuryPointForSettingGuide(BuryConstant.GuideOption.CHARGING_PLAN, value ? BuryConstant.Number.SECOND : BuryConstant.Number.ONE);
     };
 
     // 自动比例尺
@@ -118,6 +129,8 @@ public class BaseSettingGuideViewModel extends BaseViewModel<SettingNaviFragment
         LayerPackage.getInstance().openDynamicLevel(MapType.MAIN_SCREEN_MAIN_MAP, value);
         mIsAutoScale.setValue(value);
         mModel.setAutoScale(value);
+
+        sendBuryPointForSettingGuide(BuryConstant.GuideOption.AUTO_SCALE, value ? BuryConstant.Number.SECOND : BuryConstant.Number.ONE);
     };
 
     public Action mModifyPlateNumber = () -> {
@@ -146,6 +159,9 @@ public class BaseSettingGuideViewModel extends BaseViewModel<SettingNaviFragment
         switch (key) {
             case SettingController.KEY_SETTING_IS_EV_CAR:
                 mIsEVCar.setValue(isTrue);
+                break;
+            case SettingController.KEY_SETTING_IS_PHEV_CAR:
+                mIsPHEVCar.setValue(isTrue);
                 break;
             case SettingController.KEY_SETTING_GUIDE_AVOID_LIMIT:
                 mIsAvoidLimit.setValue(isTrue);
@@ -184,6 +200,8 @@ public class BaseSettingGuideViewModel extends BaseViewModel<SettingNaviFragment
         MapPackage.getInstance().setTrafficStates(MapType.MAIN_SCREEN_MAIN_MAP, value);
         mIsRoadCondition.setValue(value);
         mModel.setConfigKeyRoadEvent(value);
+
+        sendBuryPointForSettingGuide(BuryConstant.GuideOption.MAP_CONTENT, BuryConstant.MapContent.RTTI);
     };
 
     // 收藏点
@@ -192,6 +210,8 @@ public class BaseSettingGuideViewModel extends BaseViewModel<SettingNaviFragment
         mIsFavoritePoint.setValue(value);
         mModel.hideOrShowFavoriteOnMainMap(value);
         mModel.setFavoritePoint(value);
+
+        sendBuryPointForSettingGuide(BuryConstant.GuideOption.MAP_CONTENT, BuryConstant.MapContent.FAVORITE_POINT);
     };
 
     // 充电站
@@ -202,6 +222,8 @@ public class BaseSettingGuideViewModel extends BaseViewModel<SettingNaviFragment
         MapPackage.getInstance().setCustomLabelTypeVisible(MapType.MAIN_SCREEN_MAIN_MAP, typeList, value);
         mIsChargingStation.setValue(value);
         mModel.setChargingStation(value);
+
+        sendBuryPointForSettingGuide(BuryConstant.GuideOption.MAP_CONTENT, BuryConstant.MapContent.CHARGING_STATION);
     };
 
     // 3D车头向上
@@ -221,37 +243,42 @@ public class BaseSettingGuideViewModel extends BaseViewModel<SettingNaviFragment
 
     // 默认车标
     public Action mSwitchMapLogoDefaultClick = () -> {
-        if (mModel.getCarMode() == CarModeType.CAR_MODEL_TYPE_3D) {
-            LayerPackage.getInstance().setCarMode(MapType.MAIN_SCREEN_MAIN_MAP, CarModeType.CAR_MODEL_TYPE_2D);
-            mModel.setCarMode(CarModeType.CAR_MODEL_TYPE_2D);
-        } else {
-            LayerPackage.getInstance().setCarMode(MapType.MAIN_SCREEN_MAIN_MAP, CarModeType.CAR_MODEL_TYPE_3D);
-            mModel.setCarMode(CarModeType.CAR_MODEL_TYPE_3D);
-        }
+        LayerPackage.getInstance().setCarMode(MapType.MAIN_SCREEN_MAIN_MAP, CarModeType.CAR_MODE_DEFAULT);
+        mModel.setCarMode(CarModeType.CAR_MODE_DEFAULT);
+
+        sendBuryPointForSettingGuide(BuryConstant.GuideOption.AUTO_SCALE, BuryConstant.CarIcon.DEFAULT);
     };
 
     // 品牌车标
     public Action mSwitchMapLogoBrandClick = () -> {
-        LayerPackage.getInstance().setCarMode(MapType.MAIN_SCREEN_MAIN_MAP, CarModeType.CAR_MODEL_TYPE_SKELETON);
-        mModel.setCarMode(CarModeType.CAR_MODEL_TYPE_SKELETON);
+        LayerPackage.getInstance().setCarMode(MapType.MAIN_SCREEN_MAIN_MAP, CarModeType.CAR_MODEL_BRAND);
+        mModel.setCarMode(CarModeType.CAR_MODEL_BRAND);
+
+        sendBuryPointForSettingGuide(BuryConstant.GuideOption.AUTO_SCALE, BuryConstant.CarIcon.BRAND);
     };
 
     // 车速车标
     public Action mSwitchMapLogoSpeedClick = () -> {
-        LayerPackage.getInstance().setCarMode(MapType.MAIN_SCREEN_MAIN_MAP, CarModeType.CAR_MODEL_TYPE_SPEED);
-        mModel.setCarMode(CarModeType.CAR_MODEL_TYPE_SPEED);
+        LayerPackage.getInstance().setCarMode(MapType.MAIN_SCREEN_MAIN_MAP, CarModeType.CAR_MODEL_SPEED);
+        mModel.setCarMode(CarModeType.CAR_MODEL_SPEED);
+
+        sendBuryPointForSettingGuide(BuryConstant.GuideOption.AUTO_SCALE, BuryConstant.CarIcon.SPEED);
     };
 
     // 标准字号
     public Action mNaviTextSizeStandardClick = () -> {
         MapPackage.getInstance().setMapViewTextSize(MapType.MAIN_SCREEN_MAIN_MAP, 1f);
         mModel.setMapViewTextSize(true);
+
+        sendBuryPointForSettingGuide(BuryConstant.GuideOption.MAP_WORD_SIZE, BuryConstant.MapFontSize.DEFAULT);
     };
 
     // 大字号
     public Action mNaviTextSizeLargeClick = () -> {
         MapPackage.getInstance().setMapViewTextSize(MapType.MAIN_SCREEN_MAIN_MAP, 1.8f);
         mModel.setMapViewTextSize(false);
+
+        sendBuryPointForSettingGuide(BuryConstant.GuideOption.MAP_WORD_SIZE, BuryConstant.MapFontSize.BIG);
     };
 
     /**
@@ -319,5 +346,36 @@ public class BaseSettingGuideViewModel extends BaseViewModel<SettingNaviFragment
         mIsCarLogoDefault.setValue(isDefault);
         mIsCarLogoBrand.setValue(isBrand);
         mIsCarLogoSpeed.setValue(isSpeed);
+    }
+
+    /**
+     * 埋点
+     * @param option option
+     * @param value value
+     */
+    @HookMethod
+    private void sendBuryPointForSettingGuide(final String option, final String value){
+        final String eventName = switch (option){
+            case BuryConstant.GuideOption.AVOID_RESTRICT ->
+                BuryConstant.EventName.AMAP_SETTING_AVOIDRESTRICT;
+            case BuryConstant.GuideOption.LEVEL_NAVI ->
+                BuryConstant.EventName.AMAP_SETTING_LANELEVELNAVI;
+            case BuryConstant.GuideOption.MAP_CONTENT ->
+                BuryConstant.EventName.AMAP_SETTING_MAPCONTENT;
+            case BuryConstant.GuideOption.MAP_WORD_SIZE ->
+                BuryConstant.EventName.AMAP_SETTING_MAPWORDSIZE;
+            case BuryConstant.GuideOption.CAR_ICON ->
+                BuryConstant.EventName.AMAP_SETTING_CARICON;
+            case BuryConstant.GuideOption.AUTO_SCALE ->
+                BuryConstant.EventName.AMAP_SETTING_AUTOSCALE;
+            case BuryConstant.GuideOption.CHARGING_PLAN ->
+                BuryConstant.EventName.AMAP_SETTING_CHARGINGPLAN;
+            default -> BuryConstant.EventName.AMAP_UNKNOWN;
+        };
+        BuryPointController.getInstance().setEventName(eventName.toString());
+        final BuryProperty buryProperty = new BuryProperty.Builder()
+                .setParams(BuryConstant.ProperType.BURY_KEY_SETTING_CONTENT, value)
+                .build();
+        BuryPointController.getInstance().setBuryProps(buryProperty);
     }
 }

@@ -81,6 +81,13 @@ public class SceneMapPointSearchViewImpl extends BaseSceneModel<SceneMapPointSea
     }
 
     /**
+     * 清除地图选点POI扎标
+     */
+    public void clearPoiLabelMark() {
+        mSearchPackage.clearPoiLabelMark();
+    }
+
+    /**
      * 执行搜索方法
      *
      * @param poiInfoEntity poiInfoEntity
@@ -102,6 +109,6 @@ public class SceneMapPointSearchViewImpl extends BaseSceneModel<SceneMapPointSea
 
 
     public void flyLineVisible(boolean visible){
-        mLayerPackage.flyLineVisible(mMapTypeId, visible);
+        mLayerPackage.openFlyLine(mMapTypeId, visible);
     }
 }

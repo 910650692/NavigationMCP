@@ -265,7 +265,7 @@ public class VoiceInfo {
                 break;
             case OperationStatus.TASK_STATUS_CODE_DOING:
             case OperationStatus.TASK_STATUS_CODE_DONE:
-                drawable = AppContext.getInstance().getMApplication().getDrawable(R.drawable.ic_down_blue);
+                drawable = AppContext.getInstance().getMApplication().getDrawable(R.drawable.img_pause);
                 break;
             default:
                 break;

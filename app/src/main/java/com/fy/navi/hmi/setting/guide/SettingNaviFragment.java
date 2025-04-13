@@ -92,7 +92,7 @@ public class SettingNaviFragment extends BaseFragment<FragmentSettingNaviBinding
      */
     public void updateCheckBoxTextColor(final CompoundButton compoundButton, final boolean isSelected) {
         if (isSelected) {
-            compoundButton.setTextColor(ResourceUtils.Companion.getInstance().getColor(R.color.white));
+            compoundButton.setTextColor(ResourceUtils.Companion.getInstance().getColor(R.color.setting_white));
         } else {
             compoundButton.setTextColor(ResourceUtils.Companion.getInstance().getColor(R.color.setting_bg_tab_text_unselect));
         }

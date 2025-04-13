@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
@@ -15,6 +16,10 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import com.alibaba.android.arouter.launcher.ARouter;
 import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
+import com.fy.navi.burypoint.anno.HookMethod;
+import com.fy.navi.burypoint.bean.BuryProperty;
+import com.fy.navi.burypoint.constant.BuryConstant;
+import com.fy.navi.burypoint.controller.BuryPointController;
 import com.fy.navi.scene.BaseSceneView;
 import com.fy.navi.scene.R;
 import com.fy.navi.scene.RoutePath;
@@ -37,6 +42,7 @@ public class SceneQuickSearchView extends BaseSceneView<SceneQuickSearchListBind
     private QuickSearchListAdapter mQuickSearchListAdapter;
     private PoiInfoEntity mPoiInfoEntity;
     private int mSearchType;
+    private boolean mIsOpenFromNavi;
 
     public SceneQuickSearchView(@NonNull final Context context) {
         super(context);
@@ -76,7 +82,16 @@ public class SceneQuickSearchView extends BaseSceneView<SceneQuickSearchListBind
      * 关闭搜索框的点击事件
      */
     private void setupSearchBarCloseAction() {
-        mViewBinding.searchTextBarView.ivClose.setOnClickListener(v -> mScreenViewModel.closeSearch(mSearchType));
+        mViewBinding.searchTextBarView.ivClose.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (mIsOpenFromNavi) {
+                    mScreenViewModel.closeSearchOpenFromNavi();
+                } else {
+                    mScreenViewModel.closeSearch(mSearchType);
+                }
+            }
+        });
     }
 
     /**
@@ -114,6 +129,10 @@ public class SceneQuickSearchView extends BaseSceneView<SceneQuickSearchListBind
                         break;
                     case AutoMapConstant.SearchType.ALONG_WAY_SEARCH:
                         Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "Along way search - Type: " + mSearchType);
+
+                        //For Bury Point
+                        sendBuryPointForAlongWaySearch(name);
+
                         fragment= (Fragment) ARouter.getInstance().build(RoutePath.Search.SEARCH_RESULT_FRAGMENT)
                                 .navigation();
                         addFragment((BaseFragment) fragment,SearchFragmentFactory.createKeywordFragment(
@@ -163,5 +182,20 @@ public class SceneQuickSearchView extends BaseSceneView<SceneQuickSearchListBind
      */
     public void setSearchType(final int searchType) {
         this.mSearchType = searchType;
+    }
+
+    /**
+     * @param b 是否从导航进入的搜索页面
+     */
+    public void setNaviControl(boolean b) {
+        mIsOpenFromNavi = b;
+    }
+
+    @HookMethod(eventName = BuryConstant.EventName.AMAP_NAVI_POI_ROUTE_SELECT)
+    private void sendBuryPointForAlongWaySearch(String name) {
+        BuryProperty buryProperty = new BuryProperty.Builder()
+                .setParams(BuryConstant.ProperType.BURY_KEY_SEARCH_CONTENTS, name)
+                .build();
+        BuryPointController.getInstance().setBuryProps(buryProperty);
     }
 }

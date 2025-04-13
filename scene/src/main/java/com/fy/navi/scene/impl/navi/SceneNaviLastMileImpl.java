@@ -49,11 +49,13 @@ public class SceneNaviLastMileImpl extends BaseSceneModel<SceneNaviLastMileView>
         // 账号未登录不发送
         if (!AccountPackage.getInstance().isLogin()) {
             Logger.i(TAG, "SceneNaviSendPhoneImpl account is not login");
+            ToastUtils.Companion.getInstance().showCustomToastView(AppContext.getInstance().getMContext().getText(R.string.navi_no_login));
             return;
         }
         // 网络未连接不发送
         if (Boolean.FALSE.equals(NetWorkUtils.Companion.getInstance().checkNetwork())) {
             Logger.i(TAG, "SceneNaviSendPhoneImpl network is not connected");
+            ToastUtils.Companion.getInstance().showCustomToastView(AppContext.getInstance().getMContext().getText(R.string.navi_no_net));
             return;
         }
         final String value = SettingManager.getInstance().getValueByKey(
@@ -90,14 +92,31 @@ public class SceneNaviLastMileImpl extends BaseSceneModel<SceneNaviLastMileView>
 
     /**
      * 最后一公里
+     *
      * @param naviEtaInfo etainfo
      **/
     public void checkLastMile(final NaviEtaInfo naviEtaInfo) {
-//        Logger.i(TAG, "NaviGuidanceViewModel isDisplayed：" + isDisplayed + ",naviSendPhoneVisibility：" + naviSendPhoneVisibility.get());
         if (mIsDisplayedLastMile) {
             return;
         }
         if (naviEtaInfo.getAllDist() <= 1000) {
+            // 账号未登录不显示
+            if (!AccountPackage.getInstance().isLogin()) {
+                Logger.d(TAG, "SceneNaviSendPhoneImpl account is not login");
+                return;
+            }
+            // 网络未连接不显示
+            if (Boolean.FALSE.equals(NetWorkUtils.Companion.getInstance().checkNetwork())) {
+                Logger.d(TAG, "SceneNaviSendPhoneImpl network is not connected");
+                return;
+            }
+            final String value = SettingManager.getInstance().getValueByKey(
+                    SettingController.KEY_SETTING_IS_SEND_DESTINATION_LAST_MILE);
+            // 功能未设置不显示
+            if (!"1".equals(value)) {
+                Logger.d(TAG, "SceneNaviSendPhoneImpl is not send destination last mile not set");
+                return;
+            }
             mIsDisplayedLastMile = true;
             updateSceneVisible(true);
         }
@@ -107,7 +126,7 @@ public class SceneNaviLastMileImpl extends BaseSceneModel<SceneNaviLastMileView>
      * @param isVisible 是否可见
      */
     private void updateSceneVisible(final boolean isVisible) {
-        if(mScreenView.isVisible() == isVisible) return;
+        if (mScreenView.isVisible() == isVisible) return;
         Logger.i(MapDefaultFinalTag.NAVI_SCENE_TAG, "SceneNaviLastMileImpl", isVisible);
         mScreenView.getNaviSceneEvent().notifySceneStateChange((isVisible ?
                 INaviSceneEvent.SceneStateChangeType.SceneShowState :

@@ -5,6 +5,8 @@ import android.os.Bundle;
 import com.alibaba.android.arouter.facade.annotation.Route;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
+import com.fy.navi.burypoint.anno.HookMethod;
+import com.fy.navi.burypoint.constant.BuryConstant;
 import com.fy.navi.hmi.BR;
 import com.fy.navi.hmi.R;
 import com.fy.navi.hmi.databinding.FragmentCollectBinding;
@@ -38,6 +40,7 @@ public class CollectFragment extends BaseFragment<FragmentCollectBinding, Collec
     }
 
     @Override
+    @HookMethod(eventName = BuryConstant.EventName.AMAP_FAVORITE_LIST)
     public void onInitData() {
         defaultDataProcessing();
     }
@@ -76,6 +79,7 @@ public class CollectFragment extends BaseFragment<FragmentCollectBinding, Collec
         final int homeCompanyType = parsedArgs.getInt(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_OPEN_HOME_COMPANY, 0);
         mBinding.collectView.setCollectionType(mCollectionType);
         mBinding.collectView.setHomeCompanyType(homeCompanyType);
+        mBinding.collectView.setSourceFragment(parsedArgs.getString(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SOURCE_FRAGMENT));
         Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "collectionType: " + mCollectionType);
         if (mCollectionType == AutoMapConstant.CollectionType.GET_POINT) {
             initPushMsgList();

@@ -146,6 +146,7 @@ public class LogUtils {
 
     private static void recursionLog(int level, String tag, String json) {
         if (ConvertUtils.isEmpty(json)) return;
+        if (json.length() > 5 * LOG_MAX_LENGTH) return;
         if (LOG_MAX_LENGTH > json.length()) printLog(level, tag, json);
         else {
             String msg = json.substring(0, LOG_MAX_LENGTH);

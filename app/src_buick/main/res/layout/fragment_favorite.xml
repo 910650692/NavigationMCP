@@ -107,7 +107,8 @@
                         android:layout_marginTop="@dimen/dp_2"
                         android:layout_marginStart="@dimen/dp_95"
                         android:text="@string/favorite_setting"
-                        android:textColor="@color/setting_tab_gray"
+                        android:maxLines="1"
+                        android:textColor="@color/color_black_70"
                         android:textSize="@dimen/sp_30" />
 
                     <com.fy.navi.ui.view.SkinImageView
@@ -157,7 +158,8 @@
                         android:layout_marginStart="@dimen/dp_95"
                         android:layout_marginTop="@dimen/dp_2"
                         android:text="@string/favorite_setting"
-                        android:textColor="@color/setting_tab_gray"
+                        android:maxLines="1"
+                        android:textColor="@color/color_black_70"
                         android:textSize="@dimen/sp_30" />
 
                     <com.fy.navi.ui.view.SkinImageView
@@ -188,7 +190,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/favorite_favorite_switch"
-                    android:textColor="@color/setting_text_preference"
+                    android:textColor="@color/color_black_70"
                     android:textSize="@dimen/sp_30"
                     android:layout_marginStart="@dimen/dp_24"
                     app:layout_constraintStart_toEndOf="@+id/switch_favorite"
@@ -262,7 +264,7 @@
                         android:gravity="center"
                         android:text="@string/favorite_add"
                         android:layout_marginStart="@dimen/dp_8"
-                        android:textColor="@color/setting_text_preference"
+                        android:textColor="@color/color_black_70"
                         android:textSize="@dimen/sp_30" />
                 </com.fy.navi.ui.view.SkinLinearLayout>
 
@@ -297,7 +299,7 @@
                             android:background="@drawable/bg_setting_checkbox_selector"
                             android:gravity="center"
                             android:textSize="@dimen/sp_34"
-                            android:textColor="@color/white"
+                            android:textColor="@drawable/color_setting_checkbox_selector"
                             android:text="@string/favorite_switch_common" />
 
                         <com.fy.navi.ui.view.SkinRadioButton
@@ -310,7 +312,7 @@
                             android:background="@drawable/bg_setting_checkbox_selector"
                             android:gravity="center"
                             android:textSize="@dimen/sp_34"
-                            android:textColor="@color/color_black_70"
+                            android:textColor="@drawable/color_setting_checkbox_selector"
                             android:text="@string/favorite_switch_charge" />
                     </com.fy.navi.ui.view.SkinRadioGroup>
 
@@ -323,8 +325,10 @@
                     android:layout_height="match_parent"
                     android:visibility="@{ViewModel.mDataVisibility ? View.VISIBLE : View.GONE}"
                     android:layout_marginTop="@dimen/dp_24"
+                    android:layout_marginBottom="@dimen/dp_90"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/tv_favorite_switch" />
 
                 <!--无收藏数据提示-->
@@ -496,7 +500,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/favorite_top"
                 android:layout_marginStart="@dimen/dp_136"
-                android:textColor="@color/setting_text_preference"
+                android:textColor="@color/color_black_70"
                 android:textSize="@dimen/sp_34"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"

@@ -27,8 +27,6 @@ import com.fy.navi.service.define.navi.NaviEtaInfo;
  */
 public class SceneNaviViaInfoView extends NaviSceneBase<SceneNaviViaInfoViewBinding, SceneNaviViaInfoImpl> {
     private static final String TAG = MapDefaultFinalTag.NAVI_HMI_TAG;
-    private ISceneCallback mISceneCallback;
-
     public static final int ONLY_NAME = 0;
     public static final int WITH_ARRIVED_TAG = 1;
     public static final int WITH_COUNT_TAG = 2;
@@ -50,44 +48,6 @@ public class SceneNaviViaInfoView extends NaviSceneBase<SceneNaviViaInfoViewBind
     @Override
     protected NaviSceneId getSceneId() {
         return NaviSceneId.NAVI_SCENE_VIA_DETAIL_INFO;
-    }
-
-    @Override
-    protected String getSceneName() {
-        return NaviSceneId.NAVI_SCENE_VIA_DETAIL_INFO.name();
-    }
-
-    @Override
-    public INaviSceneEvent getNaviSceneEvent() {
-        return NaviSceneManager.getInstance();
-    }
-
-    protected void init() {
-        NaviSceneManager.getInstance().addNaviScene(NaviSceneId.NAVI_SCENE_VIA_DETAIL_INFO, this);
-    }
-
-    @Override
-    public void show() {
-        super.show();
-        if (mISceneCallback != null) {
-            mISceneCallback.updateSceneVisible(NaviSceneId.NAVI_SCENE_VIA_DETAIL_INFO, true);
-        }
-    }
-
-    @Override
-    public void hide() {
-        super.hide();
-        if (mISceneCallback != null) {
-            mISceneCallback.updateSceneVisible(NaviSceneId.NAVI_SCENE_VIA_DETAIL_INFO, false);
-        }
-    }
-
-    @Override
-    public void close() {
-        super.close();
-        if (mISceneCallback != null) {
-            mISceneCallback.updateSceneVisible(NaviSceneId.NAVI_SCENE_VIA_DETAIL_INFO, false);
-        }
     }
 
     @Override

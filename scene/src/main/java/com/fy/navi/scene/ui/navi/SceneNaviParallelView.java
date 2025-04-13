@@ -29,7 +29,6 @@ import com.fy.navi.service.MapDefaultFinalTag;
  */
 public class SceneNaviParallelView extends NaviSceneBase<SceneNaviParallelViewBinding, SceneNaviParallelImpl> {
     private static final String TAG = MapDefaultFinalTag.NAVI_HMI_TAG;
-    private ISceneCallback mISceneCallback;
 
     public SceneNaviParallelView(@NonNull final Context context) {
         super(context);
@@ -48,45 +47,6 @@ public class SceneNaviParallelView extends NaviSceneBase<SceneNaviParallelViewBi
     @Override
     protected NaviSceneId getSceneId() {
         return NaviSceneId.NAVI_SCENE_PARALLEL;
-    }
-
-    @Override
-    protected String getSceneName() {
-        return NaviSceneId.NAVI_SCENE_PARALLEL.name();
-    }
-
-    @Override
-    public INaviSceneEvent getNaviSceneEvent() {
-        return NaviSceneManager.getInstance();
-    }
-
-    protected void init() {
-        NaviSceneManager.getInstance().addNaviScene(
-                NaviSceneId.NAVI_SCENE_PARALLEL, this);
-    }
-
-    @Override
-    public void show() {
-        super.show();
-        if (mISceneCallback != null) {
-            mISceneCallback.updateSceneVisible(NaviSceneId.NAVI_SCENE_PARALLEL, true);
-        }
-    }
-
-    @Override
-    public void hide() {
-        super.hide();
-        if (mISceneCallback != null) {
-            mISceneCallback.updateSceneVisible(NaviSceneId.NAVI_SCENE_PARALLEL, false);
-        }
-    }
-
-    @Override
-    public void close() {
-        super.close();
-        if (mISceneCallback != null) {
-            mISceneCallback.updateSceneVisible(NaviSceneId.NAVI_SCENE_PARALLEL, false);
-        }
     }
 
     @Override
@@ -114,13 +74,6 @@ public class SceneNaviParallelView extends NaviSceneBase<SceneNaviParallelViewBi
     @Override
     public boolean onTouchEvent(final MotionEvent event) {
         return true;
-    }
-
-    @Override
-    public void addSceneCallback(final ISceneCallback sceneCallback) {
-        if (mScreenViewModel != null) {
-            mScreenViewModel.addSceneCallback(sceneCallback);
-        }
     }
 
     /***展示切换到主路的状态***/

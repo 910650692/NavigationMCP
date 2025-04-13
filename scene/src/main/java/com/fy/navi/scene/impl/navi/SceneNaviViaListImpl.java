@@ -5,18 +5,15 @@ import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
 import com.fy.navi.scene.BaseSceneModel;
 import com.fy.navi.scene.api.navi.ISceneNaviViaList;
-import com.fy.navi.scene.impl.navi.inter.ISceneCallback;
 import com.fy.navi.scene.ui.navi.SceneNaviViaListView;
 import com.fy.navi.scene.ui.navi.manager.INaviSceneEvent;
 import com.fy.navi.scene.ui.navi.manager.NaviSceneId;
-import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.define.utils.NumberUtils;
 
 import java.util.concurrent.ScheduledFuture;
 
 public class SceneNaviViaListImpl extends BaseSceneModel<SceneNaviViaListView> implements ISceneNaviViaList {
-    private static final String TAG = MapDefaultFinalTag.NAVI_HMI_TAG;
-    private ISceneCallback mISceneCallback;
+    private static final String TAG = "SceneNaviViaListImpl";
     private ScheduledFuture mScheduledFuture;
     private int mTimes = NumberUtils.NUM_8;
 
@@ -26,16 +23,9 @@ public class SceneNaviViaListImpl extends BaseSceneModel<SceneNaviViaListView> i
 
     @Override
     public void skipAlongWayFragment() {
-        if (mISceneCallback != null) {
-            mISceneCallback.skipAlongWayFragment();
+        if (mCallBack != null) {
+            mCallBack.skipAlongWayFragment();
         }
-    }
-
-    /**
-     * @param sceneCallback callback
-     */
-    public void addSceneCallback(final ISceneCallback sceneCallback) {
-        mISceneCallback = sceneCallback;
     }
 
     /**
@@ -68,9 +58,9 @@ public class SceneNaviViaListImpl extends BaseSceneModel<SceneNaviViaListView> i
     /**
      * @param isVisible visible
      */
-    private void updateSceneVisible(final boolean isVisible) {
+    public void updateSceneVisible(final boolean isVisible) {
+        Logger.i(TAG, "SceneNaviViaListImpl", "isVisible:"+ isVisible, "currentVis:" + mScreenView.isVisible());
         if(mScreenView.isVisible() == isVisible) return;
-        Logger.i(MapDefaultFinalTag.NAVI_SCENE_TAG, "SceneNaviViaListImpl", isVisible);
         mScreenView.getNaviSceneEvent().notifySceneStateChange((isVisible ?
                 INaviSceneEvent.SceneStateChangeType.SceneShowState :
                 INaviSceneEvent.SceneStateChangeType.SceneCloseState),

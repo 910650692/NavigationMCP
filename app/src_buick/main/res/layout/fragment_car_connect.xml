@@ -99,7 +99,7 @@
                         android:layout_marginTop="@dimen/dp_4"
                         android:text="@string/car_connect_login_not_connected"
                         android:textSize="@dimen/sp_26"
-                        android:textColor="@color/setting_car_connected"/>
+                        android:textColor="@color/color_black_70"/>
 
                 </com.fy.navi.ui.view.SkinLinearLayout>
 
@@ -136,7 +136,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/car_connect_login_function_1_des"
-                        android:textColor="@color/setting_car_connected_function_des"
+                        android:textColor="@color/color_black_70"
                         android:textSize="@dimen/sp_26"
                         android:layout_marginTop="@dimen/dp_16"
                         app:layout_constraintTop_toBottomOf="@+id/tv_car_connect_login_function_1"
@@ -178,7 +178,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/car_connect_login_function_2_des"
-                        android:textColor="@color/setting_car_connected_function_des"
+                        android:textColor="@color/color_black_70"
                         android:textSize="@dimen/sp_26"
                         android:layout_marginTop="@dimen/dp_16"
                         app:layout_constraintTop_toBottomOf="@+id/tv_car_connect_login_function_2"
@@ -220,7 +220,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/car_connect_login_function_3_des"
-                        android:textColor="@color/setting_car_connected_function_des"
+                        android:textColor="@color/color_black_70"
                         android:textSize="@dimen/sp_26"
                         android:layout_marginTop="@dimen/dp_16"
                         app:layout_constraintTop_toBottomOf="@+id/tv_car_connect_login_function_3"
@@ -262,7 +262,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/car_connect_login_function_4_des"
-                        android:textColor="@color/setting_car_connected_function_des"
+                        android:textColor="@color/color_black_70"
                         android:textSize="@dimen/sp_26"
                         android:layout_marginTop="@dimen/dp_16"
                         app:layout_constraintTop_toBottomOf="@+id/tv_car_connect_login_function_4"

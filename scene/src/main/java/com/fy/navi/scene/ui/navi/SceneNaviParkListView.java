@@ -1,9 +1,8 @@
 package com.fy.navi.scene.ui.navi;
-import android.annotation.SuppressLint;
+
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
@@ -13,16 +12,17 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
+import com.android.utils.thread.ThreadManager;
 import com.fy.navi.scene.databinding.SceneNaviParkListViewBinding;
+import com.fy.navi.scene.impl.imersive.ImersiveStatus;
+import com.fy.navi.scene.impl.imersive.ImmersiveStatusScene;
 import com.fy.navi.scene.impl.navi.SceneNaviParkListImpl;
-import com.fy.navi.scene.impl.navi.inter.ISceneCallback;
+import com.fy.navi.scene.impl.navi.TimerHelper;
 import com.fy.navi.scene.ui.adapter.NaviParkListAdapter;
-import com.fy.navi.scene.ui.navi.manager.INaviSceneEvent;
 import com.fy.navi.scene.ui.navi.manager.NaviSceneBase;
 import com.fy.navi.scene.ui.navi.manager.NaviSceneId;
-import com.fy.navi.scene.ui.navi.manager.NaviSceneManager;
 import com.fy.navi.service.MapDefaultFinalTag;
-import com.fy.navi.service.define.navi.NaviEtaInfo;
+import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.navi.NaviParkingEntity;
 
 import java.util.List;
@@ -35,9 +35,6 @@ import java.util.List;
 public class SceneNaviParkListView extends NaviSceneBase<SceneNaviParkListViewBinding, SceneNaviParkListImpl> {
     private static final String TAG = MapDefaultFinalTag.NAVI_HMI_TAG;
     private NaviParkListAdapter mNaviParkListAdapter;
-    private ISceneCallback mISceneCallback;
-
-    private NaviEtaInfo mNaviEtaInfo;
 
     public SceneNaviParkListView(@NonNull final Context context) {
         super(context);
@@ -54,51 +51,8 @@ public class SceneNaviParkListView extends NaviSceneBase<SceneNaviParkListViewBi
     }
 
     @Override
-    protected NaviSceneId getSceneId() {
+    public NaviSceneId getSceneId() {
         return NaviSceneId.NAVI_SCENE_PARK_LIST;
-    }
-
-    @Override
-    protected String getSceneName() {
-        return NaviSceneId.NAVI_SCENE_PARK_LIST.name();
-    }
-
-    @Override
-    public INaviSceneEvent getNaviSceneEvent() {
-        return NaviSceneManager.getInstance();
-    }
-
-    protected void init() {
-        NaviSceneManager.getInstance().addNaviScene(
-                NaviSceneId.NAVI_SCENE_PARK_LIST, this);
-    }
-
-    @Override
-    public void show() {
-        super.show();
-        // 主动显示的时候显示卡片
-        if (null != mScreenViewModel) {
-            mScreenViewModel.checkParking(mNaviEtaInfo);
-        }
-        if (mISceneCallback != null) {
-            mISceneCallback.updateSceneVisible(NaviSceneId.NAVI_SCENE_PARK_LIST, true);
-        }
-    }
-
-    @Override
-    public void hide() {
-        super.hide();
-        if (mISceneCallback != null) {
-            mISceneCallback.updateSceneVisible(NaviSceneId.NAVI_SCENE_PARK_LIST, false);
-        }
-    }
-
-    @Override
-    public void close() {
-        super.close();
-        if (mISceneCallback != null) {
-            mISceneCallback.updateSceneVisible(NaviSceneId.NAVI_SCENE_PARK_LIST, false);
-        }
     }
 
     @Override
@@ -125,62 +79,66 @@ public class SceneNaviParkListView extends NaviSceneBase<SceneNaviParkListViewBi
         mViewBinding.srvAddVia.setLayoutManager(layoutManager);
         mNaviParkListAdapter = new NaviParkListAdapter();
         mViewBinding.srvAddVia.setAdapter(mNaviParkListAdapter);
+        // 滚动列表的时候刷新定时器
         mViewBinding.srvAddVia.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                if (null != mScreenViewModel) {
-                    mScreenViewModel.initTimer();
+                // 加入防暴力操作
+                if (null != mScreenViewModel && TimerHelper.isCanDo()) {
+                    startCountdown();
+                    ImmersiveStatusScene.getInstance().setImmersiveStatus(
+                            MapType.MAIN_SCREEN_MAIN_MAP, ImersiveStatus.TOUCH);
                 }
+            }
+        });
+        mNaviParkListAdapter.setOnItemClickListener(mScreenViewModel);
+    }
+
+    public void updateData(List<NaviParkingEntity> list, final MapType mapType) {
+        setScreenId(mapType);
+        Logger.i(TAG, "updateData-size:" + list.size());
+        if (ConvertUtils.isEmpty(list)) return;
+        ThreadManager.getInstance().postUi(() -> {
+            if (!ConvertUtils.isNull(mScreenViewModel)) {
+                mNaviParkListAdapter.notifyList(list, 0);
+                notifySceneStateChange(true);
             }
         });
     }
 
     @Override
-    public void addSceneCallback(final ISceneCallback sceneCallback) {
-        mISceneCallback = sceneCallback;
-        if (mScreenViewModel != null) {
-            mScreenViewModel.addSceneCallback(sceneCallback);
+    public void show() {
+        super.show();
+        if (!ConvertUtils.isNull(mScreenViewModel)) {
+            mScreenViewModel.showPreview(mNaviParkListAdapter.getSelectIndex());
         }
     }
 
-    /**
-     * @param list list
-     * @param isCheck isCheck
-     * @param select 是否选择
-     */
-    public void showNaviParkList(final List<NaviParkingEntity> list, final boolean isCheck,
-                                 final int select) {
-        if (ConvertUtils.isEmpty(list)) {
-            return;
+    @Override
+    public void close() {
+        super.close();
+        if (!ConvertUtils.isNull(mScreenViewModel)) {
+            mScreenViewModel.exitPreview();
         }
-        mNaviParkListAdapter.setOnItemClickListener(mScreenViewModel);
-        mScreenViewModel.showParkingMark(select);
-        if (isCheck) {
-            for (int i = 0; i < list.size(); i++) {
-                final NaviParkingEntity naviParkingEntity = list.get(i);
-                if (naviParkingEntity.isEndPoi()) {
-                    notifyList(List.of(naviParkingEntity), select);
-                    return;
-                }
-            }
-        }
-        Logger.i(TAG, "SceneNaviParkListImpl list：" + list.size());
-        notifyList(list, select);
     }
 
-    /**
-     * @param list list
-     * @param select select
-     */
-    public void notifyList(final List<NaviParkingEntity> list, final int select) {
-        mNaviParkListAdapter.notifyList(list, select);
+    @Override
+    public void hide() {
+        super.hide();
+        if (!ConvertUtils.isNull(mScreenViewModel)) {
+            mScreenViewModel.exitPreview();
+        }
     }
 
-    /**
-     * @param naviEtaInfo 导航信息
-     */
-    public void onNaviInfo(final NaviEtaInfo naviEtaInfo) {
-        mNaviEtaInfo = naviEtaInfo;
+    public void onItemClick(int index) {
+        if (!ConvertUtils.isNull(mNaviParkListAdapter)) {
+            mNaviParkListAdapter.notifyItemSelect(index);
+        }
+    }
+
+    @Override
+    public boolean isNeedAutoStartTimer() {
+        return true;
     }
 }

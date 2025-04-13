@@ -1,4 +1,5 @@
 package com.fy.navi.scene.ui.navi;
+
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -10,10 +11,8 @@ import androidx.annotation.Nullable;
 import com.fy.navi.scene.databinding.SceneNaviDriveReportViewBinding;
 import com.fy.navi.scene.impl.navi.SceneNaviDriveReportImpl;
 import com.fy.navi.scene.impl.navi.inter.ISceneCallback;
-import com.fy.navi.scene.ui.navi.manager.INaviSceneEvent;
 import com.fy.navi.scene.ui.navi.manager.NaviSceneBase;
 import com.fy.navi.scene.ui.navi.manager.NaviSceneId;
-import com.fy.navi.scene.ui.navi.manager.NaviSceneManager;
 import com.fy.navi.service.define.navi.NaviDriveReportEntity;
 
 /**
@@ -23,7 +22,7 @@ import com.fy.navi.service.define.navi.NaviDriveReportEntity;
  */
 public class SceneNaviDriveReportView extends NaviSceneBase<SceneNaviDriveReportViewBinding,
         SceneNaviDriveReportImpl> {
-    private ISceneCallback mISceneCallback;
+
     public SceneNaviDriveReportView(@NonNull final Context context) {
         super(context);
     }
@@ -42,50 +41,6 @@ public class SceneNaviDriveReportView extends NaviSceneBase<SceneNaviDriveReport
     @Override
     protected NaviSceneId getSceneId() {
         return NaviSceneId.NAVI_DRIVE_REPORT;
-    }
-
-    @Override
-    protected String getSceneName() {
-        return NaviSceneId.NAVI_DRIVE_REPORT.name();
-    }
-
-    @Override
-    public INaviSceneEvent getNaviSceneEvent() {
-        return NaviSceneManager.getInstance();
-    }
-
-    @Override
-    protected void init() {
-        NaviSceneManager.getInstance().addNaviScene(NaviSceneId.NAVI_DRIVE_REPORT, this);
-    }
-
-    @Override
-    public void show() {
-        super.show();
-        if (mISceneCallback != null) {
-            mISceneCallback.updateSceneVisible(NaviSceneId.NAVI_DRIVE_REPORT, true);
-        }
-    }
-
-    @Override
-    public void hide() {
-        super.hide();
-        if (mISceneCallback != null) {
-            mISceneCallback.updateSceneVisible(NaviSceneId.NAVI_DRIVE_REPORT, false);
-        }
-    }
-
-    @Override
-    public void close() {
-        super.close();
-        if (mISceneCallback != null) {
-            mISceneCallback.updateSceneVisible(NaviSceneId.NAVI_DRIVE_REPORT, false);
-        }
-    }
-
-    @Override
-    public void addSceneCallback(final ISceneCallback sceneCallback) {
-        mISceneCallback = sceneCallback;
     }
 
     @Override

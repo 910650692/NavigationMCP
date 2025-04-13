@@ -1,5 +1,7 @@
 package com.fy.navi.scene.impl.route;
 
+import com.fy.navi.burypoint.anno.HookMethod;
+import com.fy.navi.burypoint.constant.BuryConstant;
 import com.fy.navi.scene.BaseSceneModel;
 import com.fy.navi.scene.api.route.ISceneRouteGasStationWeatherService;
 import com.fy.navi.scene.ui.route.SceneRouteGasStationWeatherServiceView;
@@ -39,6 +41,7 @@ public class SceneRouteGasStationWeatherServiceImpl extends BaseSceneModel<Scene
         super(serviceView);
     }
     @Override
+    @HookMethod(eventName = BuryConstant.EventName.AMAP_DESTINATION_ROUTE_CHARGINGSTATION)
     public void clickGasStation() {
         mIsGasStationSelect = !mIsGasStationSelect;
         mIsWeatherSelect = false;
@@ -51,6 +54,7 @@ public class SceneRouteGasStationWeatherServiceImpl extends BaseSceneModel<Scene
     }
 
     @Override
+    @HookMethod(eventName = BuryConstant.EventName.AMAP_DESTINATION_ROUTE_WEATHER)
     public void clickWeather() {
         mIsWeatherSelect = !mIsWeatherSelect;
         mIsGasStationSelect = false;
@@ -63,6 +67,7 @@ public class SceneRouteGasStationWeatherServiceImpl extends BaseSceneModel<Scene
     }
 
     @Override
+    @HookMethod(eventName = BuryConstant.EventName.AMAP_DESTINATION_ROUTE_SERVICE)
     public void clickService() {
         mIsServiceSelect = !mIsServiceSelect;
         mIsGasStationSelect = false;

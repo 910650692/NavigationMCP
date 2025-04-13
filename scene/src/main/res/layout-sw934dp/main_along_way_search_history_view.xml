@@ -17,27 +17,40 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <com.fy.navi.ui.view.SkinRecyclerView
-            android:id="@+id/rcy_record"
+            android:id="@+id/rcy_record_along"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_0"
-            app:layout_constraintBottom_toTopOf="@id/scl_delete_record"
+            app:layout_constraintBottom_toTopOf="@id/scl_delete_record_along"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintHeight_default="spread" />
 
+        <com.fy.navi.ui.view.SkinTextView
+            android:id="@+id/tv_record_null_along"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/shv_record_null"
+            android:textColor="@color/search_color_ffffff_70"
+            android:textSize="@dimen/sp_30"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
         <com.fy.navi.ui.view.SkinRecyclerView
-            android:id="@+id/suggest_result_list"
+            android:id="@+id/suggest_result_list_along"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_0"
-            app:layout_constraintBottom_toTopOf="@id/scl_delete_record"
+            app:layout_constraintBottom_toTopOf="@id/scl_delete_record_along"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintHeight_default="spread" />
 
         <com.fy.navi.ui.view.SkinConstraintLayout
-            android:id="@+id/scl_delete_record"
+            android:id="@+id/scl_delete_record_along"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="@dimen/dp_17"

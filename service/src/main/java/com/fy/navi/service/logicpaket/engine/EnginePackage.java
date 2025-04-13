@@ -5,6 +5,7 @@ import androidx.work.ListenableWorker;
 import com.android.utils.ConvertUtils;
 import com.fy.navi.service.adapter.engine.EngineAdapter;
 import com.fy.navi.service.adapter.engine.EngineObserver;
+import com.fy.navi.service.define.engine.GaodeLogLevel;
 import com.fy.navi.service.define.map.MapType;
 
 import java.util.Hashtable;
@@ -59,6 +60,10 @@ public class EnginePackage implements EngineObserver {
 
     public static EnginePackage getInstance() {
         return Helper.ep;
+    }
+
+    public void switchLog(GaodeLogLevel logLevel){
+        mEngineAdapter.switchLog(logLevel);
     }
 
     @Override

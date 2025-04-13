@@ -8,6 +8,8 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.android.utils.ConvertUtils;
+import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
 import com.fy.navi.scene.BaseSceneView;
 import com.fy.navi.scene.databinding.SceneScaleBinding;
@@ -58,6 +60,13 @@ public class SceneScaleView extends BaseSceneView<SceneScaleBinding, SceneScaleI
      * @param scale current scale
      */
     public void updateOnMapLevelChanged(String scale) {
-        mViewBinding.screenScaleSize.setText(scale);
+        Logger.d("updateOnMapLevelChanged", "scale:" + scale);
+        if (ConvertUtils.isNull(mViewBinding) || ConvertUtils.isNull(mViewBinding.screenScaleSize)) {
+            Logger.e("updateOnMapLevelChanged", "binding is null:" + (mViewBinding == null), "view is null:" + (mViewBinding.screenScaleSize == null));
+            return;
+        }
+        ThreadManager.getInstance().postUi(() -> {
+            mViewBinding.screenScaleSize.setText(scale);
+        });
     }
 }

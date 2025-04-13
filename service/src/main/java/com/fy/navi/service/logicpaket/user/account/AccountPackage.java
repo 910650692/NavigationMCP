@@ -62,6 +62,25 @@ public final class AccountPackage implements AccountAdapterCallBack {
         return info;
     }
 
+
+    /**
+     * 是否真正登录  用此方法
+     * @return 用户信息
+     */
+    public boolean reallyLogin() {
+        AccountProfileInfo info = new AccountProfileInfo();
+        final String valueJson = mCommonManager.getValueByKey(UserDataCode.SETTING_GET_USERINFO);
+        Logger.i("getUserInfo valueJson = " + valueJson);
+        if (!TextUtils.isEmpty(valueJson)) {
+            info = GsonUtils.fromJson(valueJson, AccountProfileInfo.class);
+            if (info != null) {
+                return !TextUtils.isEmpty(info.getUid());
+            }
+        }
+        return false;
+    }
+
+
     public boolean isLogin() {
         return mIsLogin;
     }

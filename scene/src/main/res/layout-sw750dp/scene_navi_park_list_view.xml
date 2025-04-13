@@ -15,6 +15,7 @@
     <com.fy.navi.ui.view.SkinConstraintLayout
         android:id="@+id/scl_park_list"
         android:layout_width="@dimen/dp_640"
+        android:clickable="true"
         android:layout_height="@dimen/dp_376">
 
         <com.fy.navi.ui.view.SkinImageView

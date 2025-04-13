@@ -68,8 +68,8 @@
                 android:textSize="@dimen/sp_30"
                 android:text="@string/limit_loading"
                 android:gravity="center"
-                android:layout_marginBottom="@dimen/dp_38"
-                app:layout_goneMarginBottom="@dimen/dp_261"
+                android:layout_marginBottom="@dimen/dp_24"
+                app:layout_goneMarginBottom="@dimen/dp_265"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintBottom_toTopOf="@+id/tv_retry" />
@@ -83,7 +83,7 @@
                 android:text="@string/limit_retry"
                 android:background="@drawable/bg_item_limit_retry"
                 android:gravity="center"
-                android:layout_marginBottom="@dimen/dp_201"
+                android:layout_marginBottom="@dimen/dp_287"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent" />

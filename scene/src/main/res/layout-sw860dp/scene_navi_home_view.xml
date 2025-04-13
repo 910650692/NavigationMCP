@@ -23,7 +23,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="回家1小时29分钟"
-            android:textColor="@color/black"
+            android:textColor="@color/search_color_ffffff"
             android:textSize="@dimen/sp_42"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />

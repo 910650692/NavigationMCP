@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="layer_route_end_pop_title">终</string>
+    <string name="layer_route_end_pop_detail">%s剩余<b>%d</b>%%</string>
+    <string name="layer_route_end_pop_type_oil">油量</string>
+    <string name="layer_route_end_pop_type_battery">电量</string>
+
+</resources>

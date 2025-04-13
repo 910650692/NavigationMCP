@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
@@ -21,14 +22,14 @@ import com.fy.navi.scene.impl.navi.common.AutoUIString;
 import com.fy.navi.scene.impl.navi.common.SceneCommonStruct;
 import com.fy.navi.scene.impl.navi.common.SceneEnumRes;
 import com.fy.navi.scene.impl.navi.inter.ISceneCallback;
-import com.fy.navi.scene.ui.navi.manager.INaviSceneEvent;
 import com.fy.navi.scene.ui.navi.manager.NaviSceneBase;
 import com.fy.navi.scene.ui.navi.manager.NaviSceneId;
-import com.fy.navi.scene.ui.navi.manager.NaviSceneManager;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.adapter.navi.NaviConstant;
+import com.fy.navi.service.define.navi.CrossImageEntity;
 import com.fy.navi.service.define.navi.NaviEtaInfo;
 import com.fy.navi.service.define.navi.NaviManeuverInfo;
+import com.fy.navi.service.define.utils.NumberUtils;
 
 /**
  * tbt看板scene
@@ -38,8 +39,11 @@ import com.fy.navi.service.define.navi.NaviManeuverInfo;
  */
 public class SceneNaviTbtView extends NaviSceneBase<SceneNaviTbtViewBinding, SceneNaviTbtImpl> {
     private static final String TAG = MapDefaultFinalTag.NAVI_HMI_TAG;
-    private ISceneCallback mISceneCallback;
     private int mGpsStrength;
+
+    private boolean mIsCrossImageShow;
+
+    private long mCrossDistance = NumberUtils.NUM_ERROR;
 
     public SceneNaviTbtView(@NonNull final Context context) {
         super(context);
@@ -57,49 +61,6 @@ public class SceneNaviTbtView extends NaviSceneBase<SceneNaviTbtViewBinding, Sce
     @Override
     protected NaviSceneId getSceneId() {
         return NaviSceneId.NAVI_SCENE_TBT;
-    }
-
-    @Override
-    protected String getSceneName() {
-        return NaviSceneId.NAVI_SCENE_TBT.name();
-    }
-
-    @Override
-    public INaviSceneEvent getNaviSceneEvent() {
-        return NaviSceneManager.getInstance();
-    }
-
-    protected void init() {
-        NaviSceneManager.getInstance().addNaviScene(NaviSceneId.NAVI_SCENE_TBT, this);
-    }
-
-    @Override
-    public void addSceneCallback(final ISceneCallback sceneCallback) {
-        mISceneCallback = sceneCallback;
-    }
-
-    @Override
-    public void show() {
-        super.show();
-        if (mISceneCallback != null) {
-            mISceneCallback.updateSceneVisible(NaviSceneId.NAVI_SCENE_TBT, true);
-        }
-    }
-
-    @Override
-    public void hide() {
-        super.hide();
-        if (mISceneCallback != null) {
-            mISceneCallback.updateSceneVisible(NaviSceneId.NAVI_SCENE_TBT, false);
-        }
-    }
-
-    @Override
-    public void close() {
-        super.close();
-        if (mISceneCallback != null) {
-            mISceneCallback.updateSceneVisible(NaviSceneId.NAVI_SCENE_TBT, false);
-        }
     }
 
     @Override
@@ -152,6 +113,7 @@ public class SceneNaviTbtView extends NaviSceneBase<SceneNaviTbtViewBinding, Sce
 
     @Override
     public void onDestroy() {
+        mISceneCallback = null;
     }
 
     /**
@@ -265,5 +227,84 @@ public class SceneNaviTbtView extends NaviSceneBase<SceneNaviTbtViewBinding, Sce
                     break;
             }
         });
+    }
+
+    public void updateCrossProgress(long routeRemainDist) {
+        Logger.i(TAG, "updateCrossProgress routeRemainDist:" + routeRemainDist);
+        if (mIsCrossImageShow) {
+            int width = calculateProgressBarLength(mCrossDistance, routeRemainDist);
+            ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams)
+                    mViewBinding.sivProgress.getLayoutParams();
+            params.width = width;
+            mViewBinding.sivProgress.setLayoutParams(params);
+            mViewBinding.sivProgress.requestLayout();
+        }
+    }
+
+    public void onCrossImageInfo(boolean isRealNeedShow, CrossImageEntity naviImageInfo) {
+        Logger.i(TAG, "onCrossImageInfo isRealNeedShow:" + isRealNeedShow +
+                " mCrossDistance:" + mCrossDistance + " naviImageInfo:" +
+                (naviImageInfo == null ? 0 : naviImageInfo.getDistance()));
+        mIsCrossImageShow = isRealNeedShow;
+        if (!mIsCrossImageShow) {
+            resetProgress();
+        }
+        mCrossDistance = naviImageInfo == null ? 0 : naviImageInfo.getDistance();
+    }
+
+    public void onCrossImageInfo(boolean isRealNeedShow) {
+        mIsCrossImageShow = isRealNeedShow;
+        if (!mIsCrossImageShow) {
+            resetProgress();
+        }
+    }
+
+    private void resetProgress() {
+        ThreadManager.getInstance().postUi(new Runnable() {
+            @Override
+            public void run() {
+                ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) mViewBinding.
+                        sivProgress.getLayoutParams();
+                params.width = 0;
+                mViewBinding.sivProgress.setLayoutParams(params);
+                mViewBinding.sivProgress.requestLayout();
+            }
+        });
+    }
+
+    /**
+     * 计算进度条长度
+     * @param totalDistance 总距离（long类型）
+     * @param remainingDistance 剩余距离（long类型）
+     * @return 进度条长度（int类型，范围0-640）
+     */
+    private int calculateProgressBarLength(long totalDistance, long remainingDistance) {
+        // 参数校验
+        if (totalDistance <= 0) {
+            Logger.i(TAG,"总距离必须大于0");
+            return 0;
+        }
+
+        if (remainingDistance < 0) {
+            Logger.i(TAG,"剩余距离不能为负数");
+            return 0;
+        }
+
+        if (remainingDistance > totalDistance) {
+            Logger.i(TAG,"剩余距离不能大于总距离");
+            return 640;
+        }
+
+        // 计算已完成的比例（0.0-1.0）
+        double progressRatio = 1.0 - ((double) remainingDistance / totalDistance);
+
+        // 确保比例在0-1范围内（处理浮点运算可能的小数误差）
+        progressRatio = Math.max(0.0, Math.min(1.0, progressRatio));
+
+        // 计算进度条长度（最大640dp）
+        int progressLength = (int) Math.round(640 * progressRatio);
+
+        // 确保返回值为0-640之间的整数
+        return Math.max(0, Math.min(640, progressLength));
     }
 }

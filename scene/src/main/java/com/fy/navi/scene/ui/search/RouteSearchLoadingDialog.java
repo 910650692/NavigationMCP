@@ -33,7 +33,7 @@ public class RouteSearchLoadingDialog extends BaseFullScreenDialog<LayoutSearchL
         super.onCreate(savedInstanceState);
         initLoadAnim(mViewBinding.ivLoading);
         mViewBinding.ivClose.setOnClickListener(v -> {
-            hide();
+            dismiss();
         });
     }
 
@@ -90,7 +90,6 @@ public class RouteSearchLoadingDialog extends BaseFullScreenDialog<LayoutSearchL
         if (mAnimator.isRunning()) {
             mAnimator.cancel();
         }
-        mAnimator = null;
     }
 
     @Override
@@ -104,6 +103,12 @@ public class RouteSearchLoadingDialog extends BaseFullScreenDialog<LayoutSearchL
     @Override
     public void hide() {
         super.hide();
+        stopAnimator();
+    }
+
+    @Override
+    public void dismiss() {
+        super.dismiss();
         stopAnimator();
     }
 }

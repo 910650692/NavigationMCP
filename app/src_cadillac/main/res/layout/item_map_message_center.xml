@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="ViewModel"
+            type="com.fy.navi.hmi.map.MapViewModel" />
+    </data>
+
+    <com.fy.navi.ui.view.SkinLinearLayout
+        android:id="@+id/message_center_parent"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/dp_120"
+        android:background="@drawable/bg_search_main_tab"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingStart="@dimen/dp_52"
+        android:paddingEnd="@dimen/dp_40"
+        android:visibility="@{ViewModel.messageCenterVisible ? View.VISIBLE : View.GONE}">
+
+        <com.fy.navi.ui.view.SkinRelativeLayout
+            android:id="@+id/base_map_message_left_container"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <com.fy.navi.ui.view.SkinTextView
+                android:id="@+id/base_map_message_center_operate"
+                clickCommand="@{ViewModel.messageCenterOperateClick}"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:includeFontPadding="false"
+                android:text="@{ViewModel.messageCenterOperate}"
+                android:textColor="@color/message_center_operate"
+                android:textSize="@dimen/sp_52" />
+
+            <com.fy.navi.ui.view.SkinImageView
+                android:id="@+id/base_map_message_center_img"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/img_message_center_weather"
+                android:visibility="@{ViewModel.messageCenterImgVisibility ? View.VISIBLE : View.GONE}" />
+
+        </com.fy.navi.ui.view.SkinRelativeLayout>
+
+        <com.fy.navi.ui.view.SkinView
+            android:id="@+id/base_map_message_center_line"
+            android:layout_width="@dimen/dp_1"
+            android:layout_height="@dimen/dp_63"
+            android:layout_marginStart="@dimen/dp_42"
+            android:background="@color/message_center_line"
+            android:visibility="@{ViewModel.messageLineVisibility ? View.VISIBLE : View.GONE}" />
+
+        <com.fy.navi.ui.view.SkinView
+            android:id="@+id/base_map_message_center_line_hight"
+            android:layout_width="@dimen/dp_2"
+            android:layout_height="@dimen/dp_72"
+            android:layout_marginStart="@dimen/dp_52"
+            android:background="@color/message_center_line"
+            android:visibility="@{ViewModel.messageLineHeightVisibility ? View.VISIBLE : View.GONE}" />
+
+        <com.fy.navi.ui.view.SkinLinearLayout
+            android:id="@+id/base_map_message_center_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_44"
+            android:maxWidth="@dimen/dp_506"
+            android:orientation="vertical"
+            android:paddingTop="@dimen/dp_24"
+            android:paddingBottom="@dimen/dp_24"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <com.fy.navi.ui.view.SkinTextView
+                android:id="@+id/base_map_message_center_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="@{ViewModel.messageCenterTitle}"
+                android:textColor="@color/message_center_title"
+                android:textSize="@dimen/sp_46"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.5" />
+
+            <com.fy.navi.ui.view.SkinTextView
+                android:id="@+id/base_map_message_center_content"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_8"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="@{ViewModel.messageCenterContent}"
+                android:textColor="@color/message_center_content"
+                android:textSize="@dimen/sp_30"
+                android:visibility="@{ViewModel.messageCenterContentVisibility ? View.VISIBLE : View.GONE}" />
+
+        </com.fy.navi.ui.view.SkinLinearLayout>
+
+        <com.fy.navi.ui.view.SkinImageView
+            android:id="@+id/message_center_close"
+            clickCommand="@{ViewModel.messageCenterGone}"
+            android:layout_width="@dimen/dp_74"
+            android:layout_height="@dimen/dp_74"
+            android:layout_marginStart="@dimen/dp_65"
+            android:src="@drawable/img__message_center_close"
+            android:visibility="@{ViewModel.messageCloseVisibility ? View.VISIBLE : View.GONE}"
+
+            />
+
+    </com.fy.navi.ui.view.SkinLinearLayout>
+</layout>

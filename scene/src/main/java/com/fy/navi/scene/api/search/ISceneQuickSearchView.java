@@ -12,4 +12,11 @@ public interface ISceneQuickSearchView {
      * @param type 搜索类型
      */
     void closeSearch(int type);
+
+    /**
+     * 关闭从导航页面打开的搜索页面
+     */
+    default void closeSearchOpenFromNavi() {
+
+    }
 }

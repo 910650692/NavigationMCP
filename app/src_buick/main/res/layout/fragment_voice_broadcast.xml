@@ -47,7 +47,7 @@
 
         </com.fy.navi.ui.view.SkinConstraintLayout>
 
-        <com.fy.navi.ui.view.SkinScrollView
+        <com.fy.navi.ui.view.SkinNestedScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:fillViewport="true">
@@ -159,7 +159,7 @@
                         android:layout_width="@dimen/dp_180"
                         android:layout_height="@dimen/dp_76"
                         android:text="@{viewModel.mIsDefaultVoiceUsed ? @string/setting_broadcast_voice_current_size : @string/setting_broadcast_voice_operate_use}"
-                        android:textColor="@{viewModel.mIsDefaultVoiceUsed ? @color/setting_bg_tab_text_select : @color/white}"
+                        android:textColor="@{viewModel.mIsDefaultVoiceUsed ? @color/setting_bg_tab_text_select : @color/setting_white}"
                         android:textSize="@dimen/sp_26"
                         android:layout_marginEnd="@dimen/dp_30"
                         app:layout_constraintTop_toTopOf="parent"
@@ -194,7 +194,7 @@
 
             </com.fy.navi.ui.view.SkinConstraintLayout>
 
-        </com.fy.navi.ui.view.SkinScrollView>
+        </com.fy.navi.ui.view.SkinNestedScrollView>
 
     </com.fy.navi.ui.view.SkinLinearLayout>
 

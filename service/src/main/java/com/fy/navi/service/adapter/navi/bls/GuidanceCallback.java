@@ -9,6 +9,7 @@ import com.autonavi.gbl.common.model.Coord2DDouble;
 import com.autonavi.gbl.common.path.model.ElecVehicleETAInfo;
 import com.autonavi.gbl.common.path.model.TollGateInfo;
 import com.autonavi.gbl.common.path.option.RouteOption;
+import com.autonavi.gbl.common.path.option.RouteType;
 import com.autonavi.gbl.guide.model.CrossImageInfo;
 import com.autonavi.gbl.guide.model.DriveReport;
 import com.autonavi.gbl.guide.model.ExitDirectionInfo;
@@ -25,13 +26,17 @@ import com.autonavi.gbl.guide.model.NaviGreenWaveCarSpeed;
 import com.autonavi.gbl.guide.model.NaviInfo;
 import com.autonavi.gbl.guide.model.NaviIntervalCameraDynamicInfo;
 import com.autonavi.gbl.guide.model.NaviWeatherInfo;
+import com.autonavi.gbl.guide.model.PathTrafficEventInfo;
 import com.autonavi.gbl.guide.model.SAPAInquireResponseData;
 import com.autonavi.gbl.guide.model.SoundInfo;
+import com.autonavi.gbl.guide.model.SuggestChangePathReason;
 import com.autonavi.gbl.guide.model.TrafficLightCountdown;
 import com.autonavi.gbl.guide.model.WeatherInfo;
 import com.autonavi.gbl.guide.observer.INaviObserver;
 import com.autonavi.gbl.guide.observer.ISoundPlayObserver;
 import com.autonavi.gbl.util.model.BinaryStream;
+import com.fy.navi.burypoint.anno.HookMethod;
+import com.fy.navi.burypoint.constant.BuryConstant;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.adapter.navi.GuidanceObserver;
 import com.fy.navi.service.adapter.navi.NaviAdapter;
@@ -42,6 +47,8 @@ import com.fy.navi.service.define.navi.LaneInfoEntity;
 import com.fy.navi.service.define.navi.NaviDriveReportEntity;
 import com.fy.navi.service.define.navi.NaviEtaInfo;
 import com.fy.navi.service.define.navi.NaviMixForkInfo;
+import com.fy.navi.service.define.navi.SoundInfoEntity;
+import com.fy.navi.service.define.navi.SuggestChangePathReasonEntity;
 import com.fy.navi.service.define.route.FyRouteOption;
 import com.fy.navi.service.define.route.RouteWeatherInfo;
 
@@ -52,6 +59,7 @@ import java.util.concurrent.ScheduledFuture;
 
 /**
  * 导航信息观察者
+ *
  * @author fy
  * @version $Revision.*$
  */
@@ -278,6 +286,7 @@ public class GuidanceCallback implements INaviObserver, ISoundPlayObserver {
     }
 
     @Override
+    @HookMethod(eventName = BuryConstant.EventName.AMAP_NAVI_END_AUTO)
     public void onNaviArrive(final long traceId, final int naviType) {
         Logger.i(TAG, "GuidanceCallback onNaviArrive: id={?}, naviType={?}", traceId, naviType);
         if (!ConvertUtils.isEmpty(mGuidanceObservers)) {
@@ -291,6 +300,7 @@ public class GuidanceCallback implements INaviObserver, ISoundPlayObserver {
 
     /**
      * 光柱图回调接口.
+     *
      * @param lightBarInfo   表示光柱图的分段路况信息（只透出未行驶路段的路况信息（不包含已行驶路段））
      * @param lightBarDetail 提供光柱图的详细信息，例如每段路况的状态和长度
      * @param passedIdx      表示已行驶过的路段索引
@@ -344,6 +354,10 @@ public class GuidanceCallback implements INaviObserver, ISoundPlayObserver {
         }
     }
 
+    /**
+     * @param pathID pathId
+     * @param result result 1:成功 2:失败，PathId无效 3:失败，因为和当前主选路线一致
+     */
     @Override
     public void onSelectMainPathStatus(final long pathID, final int result) {
         Logger.i(TAG, "GuidanceCallback onSelectMainPathStatus: pathID={?}, result={?}", pathID, result);
@@ -398,6 +412,7 @@ public class GuidanceCallback implements INaviObserver, ISoundPlayObserver {
 
     @Override
     public void onPlayTTS(final SoundInfo info) {
+        Logger.d(TAG, "onPlayTTS : " + (info==null ? "null" : info.text));
         if (!ConvertUtils.isEmpty(mGuidanceObservers)) {
             for (GuidanceObserver guidanceObserver : mGuidanceObservers.values()) {
                 if (guidanceObserver != null) {
@@ -426,6 +441,18 @@ public class GuidanceCallback implements INaviObserver, ISoundPlayObserver {
     @Override
     public void onReroute(final RouteOption rerouteOption) {
         Logger.i(TAG, "onReroute: " + rerouteOption.getRouteReqId());
+        if (rerouteOption.getRouteType() == RouteType.RouteTypeYaw
+                || rerouteOption.getRouteType() == RouteType.RouteTypeTMC) {
+            final SoundInfoEntity soundInfo = new SoundInfoEntity();
+            soundInfo.setText("您已偏航，已为您重新规划路线");
+            if (!ConvertUtils.isEmpty(mGuidanceObservers)) {
+                for (GuidanceObserver guidanceObserver : mGuidanceObservers.values()) {
+                    if (guidanceObserver != null) {
+                        guidanceObserver.onPlayTTS(soundInfo);
+                    }
+                }
+            }
+        }
     }
 
     /****
@@ -548,5 +575,50 @@ public class GuidanceCallback implements INaviObserver, ISoundPlayObserver {
             }
         }
         onBatterHotCallBack(true);
+    }
+
+    @Override
+    public void onChangeNaviPath(final long oldPathId, final long pathID) {
+        Logger.i(TAG, "onChangeNaviPath: " + "切换路线");
+        if (!ConvertUtils.isEmpty(mGuidanceObservers)) {
+            for (GuidanceObserver guidanceObserver : mGuidanceObservers.values()) {
+                if (guidanceObserver != null) {
+                    guidanceObserver.onChangeNaviPath(oldPathId, pathID);
+                }
+            }
+        }
+    }
+
+    @Override
+    public void onSuggestChangePath(long newPathID, long oldPathID,
+                                    SuggestChangePathReason reason) {
+        long saveTime = reason == null ? 0 : reason.saveTime;
+        Logger.i(TAG, "onSuggestChangePath: " + "建议切换路线 newPathId = " + newPathID +
+                " oldPathId = " + oldPathID + " saveTime = " + saveTime);
+        SuggestChangePathReasonEntity suggestChangePathReasonEntity =
+                new SuggestChangePathReasonEntity();
+        suggestChangePathReasonEntity.setSaveTime(saveTime);
+        if (!ConvertUtils.isEmpty(mGuidanceObservers)) {
+            for (GuidanceObserver guidanceObserver : mGuidanceObservers.values()) {
+                if (guidanceObserver != null) {
+                    guidanceObserver.onSuggestChangePath(newPathID, oldPathID,
+                            suggestChangePathReasonEntity);
+                }
+            }
+        }
+    }
+
+    @Override
+    public void onUpdateTREvent(ArrayList<PathTrafficEventInfo> pathsTrafficEventInfo,
+                                long pathCount) {
+        Logger.i(TAG, "onUpdateTREvent: " + "更新路线交通事件");
+        if (!ConvertUtils.isEmpty(mGuidanceObservers)) {
+            for (GuidanceObserver guidanceObserver : mGuidanceObservers.values()) {
+                if (guidanceObserver != null) {
+                    // 暂留，交通事件回调
+//                    guidanceObserver.onUpdateTREvent(pathsTrafficEventInfo, pathCount);
+                }
+            }
+        }
     }
 }

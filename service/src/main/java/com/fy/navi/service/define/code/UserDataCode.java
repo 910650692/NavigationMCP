@@ -25,6 +25,9 @@ public final class UserDataCode {
     //消息中心45天无网检测一次
     public static final String SETTING_MESSAGE_NET_LESS = "mapnetless";
 
+    //判断数据库里是否有离线数据 有数据返回“1”，没有返回“0”或空
+    public static final String SETTING_DOWNLOAD_LIST = "setting_download_list";
+
     // 离线地图数据下载状态
     public static final int TASK_STATUS_CODE_READY = 0;
     public static final int TASK_STATUS_CODE_WAITING = 1; //
@@ -40,8 +43,16 @@ public final class UserDataCode {
     public static final int TASK_STATUS_CODE_RECOVERING = 11;
     public static final int TASK_STATUS_CODE_INVALID = 12;
     public static final int TASK_STATUS_CODE_MAX = 13;
+
+    // 离线地图数据操作状态
+    public static final int OPERATION_TYPE_START = 0; // 下载
+    public static final int OPERATION_TYPE_PAUSE = 1; // 暂停
+    public static final int OPERATION_TYPE_CANCEL = 2; // 取消
+    public static final int OPERATION_TYPE_DELETE = 3; // 删除
+    public static final int OPERATION_TYPE_MAX = 4; //
+
     //正常
-    public static final int OPT_DONE = 0;
+    public static final int OPT_DONE = 0x2000000;
     //无网络连接
     public static final int OPT_NET_DISCONNECT = OPT_DONE + 1;
     // 下载网络异常
@@ -70,4 +81,5 @@ public final class UserDataCode {
     public static final int SYNC_SDK_EVENT_MERGE_END = 8; // 合并完成事件
     public static final int SYNC_SDK_EVENT_FIRST_SYNC = 9; // 用于处于登录状态，从服务端下发的数据第一次发生变化的事件
     public static final int SYNC_SDK_EVENT_DATA_BASE_INIT_DONE = 10; // 数据库初始化(包括更新完成)的事件
+    public static final String GUIDE_LOGIN_LAST_TIME = "GUIDE_LOGIN_LAST_TIME";
 }

@@ -2,127 +2,72 @@ package com.fy.navi.service.adapter.layer.bls.impl;
 
 import android.content.Context;
 
+import com.android.utils.log.Logger;
+import com.android.utils.thread.ThreadManager;
 import com.autonavi.gbl.common.model.Coord3DDouble;
 import com.autonavi.gbl.layer.BizControlService;
 import com.autonavi.gbl.layer.model.BizClickLabelType;
+import com.autonavi.gbl.layer.model.BizFlyLineType;
 import com.autonavi.gbl.layer.model.FlylineDrawMode;
 import com.autonavi.gbl.map.MapView;
 import com.autonavi.gbl.map.OperatorPosture;
-import com.autonavi.gbl.map.layer.observer.ILayerClickObserver;
-import com.autonavi.gbl.map.layer.observer.IPrepareLayerStyle;
 import com.autonavi.gbl.map.observer.IMapEventObserver;
 import com.fy.navi.service.adapter.layer.ILayerAdapterCallBack;
-import com.fy.navi.service.adapter.layer.bls.style.FlyLineEndPointStyleAdapter;
+import com.fy.navi.service.adapter.layer.bls.style.LayerFlyLineStyleAdapter;
 import com.fy.navi.service.define.bean.GeoPoint;
+import com.fy.navi.service.define.map.MapType;
 
-public class LayerFlyLineImpl extends BaseLayerImpl<FlyLineEndPointStyleAdapter> {
-    private  FlyLineEndPointStyleAdapter flyLineEndPointStyleAdapter;
-    private final IMapEventObserver pObserver;
-    public LayerFlyLineImpl(BizControlService bizService, MapView mapView, Context context) {
-        super(bizService, mapView, context);
-        setStyle(this);
-        addClickObserver(this);
-//        setVisible(true, true);
-        updateDrawMode(FlylineDrawMode.FLYLINE_CLICKED_NORMAL_END, true);
-        pObserver = new IMapEventObserver() {
-            @Override
-            public boolean onMapMoveStart() {
-                return false;
-            }
+public class LayerFlyLineImpl extends BaseLayerImpl<LayerFlyLineStyleAdapter> implements IMapEventObserver {
 
-            @Override
-            public boolean onMapMoveEnd() {
-                OperatorPosture operatorPosture = getMapView().getOperatorPosture();
-                if (null != operatorPosture) {
-                    Coord3DDouble coord3DDouble = operatorPosture.getMapCenter();
-                    GeoPoint descPoint = new GeoPoint(coord3DDouble.lon, coord3DDouble.lat);
-                    for (ILayerAdapterCallBack callBack : getCallBacks()) {
-                        callBack.onFlyLineMoveEnd(descPoint);
-                    }
-                }
-                return false;
-            }
-        };
-
+    public LayerFlyLineImpl(BizControlService bizService, MapView mapView, Context context, MapType mapType) {
+        super(bizService, mapView, context, mapType);
     }
 
     @Override
-    protected FlyLineEndPointStyleAdapter createStyleAdapter() {
-         flyLineEndPointStyleAdapter = new FlyLineEndPointStyleAdapter(getLayerFlyLineControl());
-        return flyLineEndPointStyleAdapter;
-    }
-
-    /* 更新飞线终点绘制模式 */
-    public void updateDrawMode(@FlylineDrawMode.FlylineDrawMode1 int drawMode, boolean bAnim) {
-        getLayerFlyLineControl().updateDrawMode(drawMode, bAnim);
-    }
-
-    /* 获取飞线末端选点气泡的绘制模式 */
-    public int getDrawMode() {
-        return getLayerFlyLineControl().getDrawMode();
+    protected LayerFlyLineStyleAdapter createStyleAdapter() {
+        return new LayerFlyLineStyleAdapter(getEngineId(), getLayerFlyLineControl());
     }
 
     /* 设置飞线显隐 */
-    public void setVisible(boolean bShowLine, boolean bShowPoint) {
-        getLayerFlyLineControl().setVisible(bShowLine, bShowPoint);
-        flyLineEndPointStyleAdapter.setVisible(bShowLine);
-        if (bShowLine) {
-            updateDrawMode(FlylineDrawMode.FLYLINE_CLICKED_NORMAL_END, true);
-            getMapView().addMapEventObserver(pObserver);
-            setClickLabelType(BizClickLabelType.ClickTypeLabel);
-            updateStyle();
+    public void openFlyLine(boolean bShow) {
+        if (bShow) {
+            getLayerFlyLineControl().setStyle(this);
+            getMapView().addMapEventObserver(this);
+            getLayerFlyLineControl().setClickLabelType(BizClickLabelType.ClickTypeLabel);
+            getLayerFlyLineControl().updateDrawMode(FlylineDrawMode.FLYLINE_MOVE_END, true);
         } else {
-            updateDrawMode(FlylineDrawMode.FLYLINE_NONE_END, true);
-            getMapView().removeMapEventObserver(pObserver);
-            setClickLabelType(BizClickLabelType.ClickTypeNone);
-            updateStyle();
+            getMapView().removeMapEventObserver(this);
+            getLayerFlyLineControl().setClickLabelType(BizClickLabelType.ClickTypeNone);
+            getLayerFlyLineControl().updateDrawMode(FlylineDrawMode.FLYLINE_NONE_END, true);
+            getLayerFlyLineControl().setStyle(null);
         }
+        getLayerFlyLineControl().setVisible(BizFlyLineType.BizFlyLineTypeLine, false);
+        getLayerFlyLineControl().setVisible(BizFlyLineType.BizFlyLineTypePoint, true);
+        getLayerFlyLineControl().setClickLabelMoveMap(bShow);
+        Logger.e(TAG, "openFlyLine :" + bShow);
     }
 
-    /* 隐藏飞线一次，目前应用于回车位场景 */
-    public void hideOnce() {
-        getLayerFlyLineControl().hideOnce();
+    @Override
+    public boolean onMapMoveStart() {
+        return false;
     }
 
-    /* 设置图层样式回调接口 */
-    public void setStyle(IPrepareLayerStyle pStyle) {
-        getLayerFlyLineControl().setStyle(pStyle);
+    @Override
+    public boolean onMapMoveEnd() {
+        OperatorPosture operatorPosture = getMapView().getOperatorPosture();
+        if (null != operatorPosture) {
+            Coord3DDouble coord3DDouble = operatorPosture.getMapCenter();
+            GeoPoint descPoint = new GeoPoint(coord3DDouble.lon, coord3DDouble.lat);
+            ThreadManager.getInstance().postUi(new Runnable() {
+                @Override
+                public void run() {
+                    for (ILayerAdapterCallBack callBack : getCallBacks()) {
+                        Logger.e(TAG, "onMapMoveEnd-LayerFlyLineImpl:" + Thread.currentThread().getName());
+                        callBack.onFlyLineMoveEnd(getMapType(), descPoint);
+                    }
+                }
+            });
+        }
+        return true;
     }
-
-    /* 更新样式 */
-    public void updateStyle() {
-        getLayerFlyLineControl().updateStyle();
-    }
-
-    /* 添加点击观察者回调 */
-    public void addClickObserver(ILayerClickObserver pObserver) {
-        getLayerFlyLineControl().addClickObserver(pObserver);
-    }
-
-    /* 移除点击观察者回调 */
-    public void removeClickObserver(ILayerClickObserver pObserver) {
-        getLayerFlyLineControl().removeClickObserver(pObserver);
-    }
-
-    /* 设置飞线是否可点击 */
-    public void setClickable(boolean bClickable) {
-        getLayerFlyLineControl().setClickable(bClickable);
-    }
-
-    /* 获取飞线是否可点击 */
-    public boolean getClickable() {
-        return getLayerFlyLineControl().getClickable();
-    }
-
-    /* 设置飞线点击到的元素类型 */
-    public void setClickLabelType(@BizClickLabelType.BizClickLabelType1 int clickType) {
-        getLayerFlyLineControl().setClickLabelType(clickType);
-    }
-
-    /* 获取飞线点击到的元素类型 */
-    public int getClickLabelType() {
-        return getLayerFlyLineControl().getClickLabelType();
-    }
-
-
 }

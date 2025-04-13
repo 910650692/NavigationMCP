@@ -8,14 +8,14 @@
         android:fillType="evenOdd"
         android:pathData="M16.5,50.92L16.316,16.882"
         android:strokeWidth="4"
-        android:strokeColor="@color/navi_color_383839_100"
+        android:strokeColor="@color/navi_color_4B535D_100"
         android:strokeLineCap="round" />
     <path
         android:fillColor="@color/navi_color_000000_0"
         android:fillType="evenOdd"
         android:pathData="M52.5,50.92L52.316,16.882"
         android:strokeWidth="4"
-        android:strokeColor="@color/navi_color_383839_100"
+        android:strokeColor="@color/navi_color_4B535D_100"
         android:strokeLineCap="round" />
     <path
         android:fillAlpha="0.5987164"
@@ -24,7 +24,7 @@
         android:pathData="M41.75,48.935L41.75,36.925"
         android:strokeWidth="6"
         android:strokeAlpha="0.5987164"
-        android:strokeColor="@color/navi_color_383839_100"
+        android:strokeColor="@color/navi_color_4B535D_100"
         android:strokeLineCap="round" />
     <path
         android:fillAlpha="0.5987164"
@@ -33,19 +33,19 @@
         android:pathData="M41.75,29.935L41.75,17.925"
         android:strokeWidth="6"
         android:strokeAlpha="0.5987164"
-        android:strokeColor="@color/navi_color_383839_100"
+        android:strokeColor="@color/navi_color_4B535D_100"
         android:strokeLineCap="round" />
     <path
-        android:fillColor="@color/navi_color_383839_100"
+        android:fillColor="@color/navi_color_4B535D_100"
         android:fillType="evenOdd"
         android:pathData="M39.303,29.21L42.013,33.382C42.313,33.845 42.933,33.977 43.396,33.676C43.573,33.561 43.709,33.393 43.784,33.197L48.587,20.719C48.786,20.204 48.529,19.625 48.013,19.427C47.919,19.391 47.82,19.369 47.719,19.362L34.245,18.488C33.694,18.452 33.219,18.87 33.183,19.421C33.169,19.636 33.225,19.85 33.342,20.03L35.978,24.09L35.978,24.09L39.303,29.21Z"
         android:strokeWidth="1"
-        android:strokeColor="@color/navi_color_000000_0" />
+        android:strokeColor="@color/navi_color_4B535D_100" />
     <path
         android:fillColor="@color/navi_color_000000_0"
         android:fillType="evenOdd"
         android:pathData="M38.034,26.78L30.004,32.662C29.489,33.039 29.185,33.638 29.185,34.276L29.185,49.78L29.185,49.78"
         android:strokeWidth="5"
-        android:strokeColor="@color/navi_color_383839_100"
+        android:strokeColor="@color/navi_color_4B535D_100"
         android:strokeLineCap="round" />
 </vector>

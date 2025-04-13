@@ -32,9 +32,7 @@ public final class MapState {
         mCurrPlanPref = -1;
         mMaxZoomLevel = 19;
         mMinZoomLevel = 2;
-        mIsDayWithMapStyle = true;
         mHasPrivacyPermission = false;
-        mMaxVolumeLevel = 100;
         mIsLogin = false;
         mIsAgreeTeamAgreement = false;
         mIsInTeam = false;
@@ -67,10 +65,7 @@ public final class MapState {
     private int mCurrZoomLevel; //当前地图视图大小，int值 - -1（默认）
     private String mEndPoiName; //导航目的地名字
     private String mEndPoiCity; //导航目的地所在城市
-    private boolean mIsDayWithMapStyle; //白天黑夜模式，-true:白天（默认）  - false:黑夜
     private boolean mHasPrivacyPermission; //是否同意隐私协议，- true:是 - false:否（默认）
-    private int mMaxVolumeLevel; //最大导航音量
-    private int mCurrentVolumeLevel; //当前导航音量
     private boolean mIsLogin; //是否已登录
     private boolean mIsAgreeTeamAgreement; //是否已同意组队协议条款，暂不支持组队，false
     private boolean mIsInTeam;  //是否已在组队队伍，同上
@@ -285,36 +280,12 @@ public final class MapState {
         this.mEndPoiCity = endPoiCity;
     }
 
-    public boolean isDayWithMapStyle() {
-        return mIsDayWithMapStyle;
-    }
-
-    public void setDayWithMapStyle(final boolean dayWithMapStyle) {
-        mIsDayWithMapStyle = dayWithMapStyle;
-    }
-
     public boolean isHasPrivacyPermission() {
         return mHasPrivacyPermission;
     }
 
     public void setHasPrivacyPermission(final boolean hasPrivacyPermission) {
         this.mHasPrivacyPermission = hasPrivacyPermission;
-    }
-
-    public int getMaxVolumeLevel() {
-        return mMaxVolumeLevel;
-    }
-
-    public void setMaxVolumeLevel(final int maxVolumeLevel) {
-        this.mMaxVolumeLevel = maxVolumeLevel;
-    }
-
-    public int getCurrentVolumeLevel() {
-        return mCurrentVolumeLevel;
-    }
-
-    public void setCurrentVolumeLevel(final int currentVolumeLevel) {
-        this.mCurrentVolumeLevel = currentVolumeLevel;
     }
 
     public boolean isLogin() {
@@ -411,6 +382,7 @@ public final class MapState {
             mapState.setMute(mute);
             return this;
         }
+
         /**
          * setBroadcastMode
          * @param broadcastMode broadcastMode
@@ -420,6 +392,7 @@ public final class MapState {
             mapState.setBroadcastMode(broadcastMode);
             return this;
         }
+
         /**
          * setRoutePage
          * @param routePage routePage
@@ -429,6 +402,7 @@ public final class MapState {
             mapState.setRoutePage(routePage);
             return this;
         }
+
         /**
          * setPathCount
          * @param pathCount pathCount
@@ -438,6 +412,7 @@ public final class MapState {
             mapState.setPathCount(pathCount);
             return this;
         }
+
         /**
          * setViaPointsCount
          * @param viaPointsCount viaPointsCount
@@ -447,6 +422,7 @@ public final class MapState {
             mapState.setViaPointsCount(viaPointsCount);
             return this;
         }
+
         /**
          * setViaPointsMaxCount
          * @param viaPointsMaxCount viaPointsMaxCount
@@ -456,6 +432,7 @@ public final class MapState {
             mapState.setViaPointsMaxCount(viaPointsMaxCount);
             return this;
         }
+
         /**
          * setSetHome
          * @param setHome setHome
@@ -465,6 +442,7 @@ public final class MapState {
             mapState.setSetHome(setHome);
             return this;
         }
+
         /**
          * setSetCompany
          * @param setCompany setCompany
@@ -474,6 +452,7 @@ public final class MapState {
             mapState.setSetCompany(setCompany);
             return this;
         }
+
         /**
          * setRoadEvent
          * @param roadEvent roadEvent
@@ -483,6 +462,7 @@ public final class MapState {
             mapState.setRoadEvent(roadEvent);
             return this;
         }
+
         /**
          * setOverView
          * @param overView overView
@@ -492,6 +472,7 @@ public final class MapState {
             mapState.setOverView(overView);
             return this;
         }
+
         /**
          * setParallelFlagMain
          * @param parallelFlagMain parallelFlagMain
@@ -501,6 +482,7 @@ public final class MapState {
             mapState.setParallelFlagMain(parallelFlagMain);
             return this;
         }
+
         /**
          * setSwitchParallelFlag
          * @param switchParallelFlag switchParallelFlag
@@ -510,6 +492,7 @@ public final class MapState {
             mapState.setSwitchParallelFlag(switchParallelFlag);
             return this;
         }
+
         /**
          * setParallelBridge
          * @param parallelBridge parallelBridge
@@ -519,6 +502,7 @@ public final class MapState {
             mapState.setParallelBridge(parallelBridge);
             return this;
         }
+
         /**
          * setSwitchParallelBridge
          * @param switchParallelBridge switchParallelBridge
@@ -528,6 +512,7 @@ public final class MapState {
             mapState.setSwitchParallelBridge(switchParallelBridge);
             return this;
         }
+
         /**
          * setListPage
          * @param listPage listPage
@@ -537,6 +522,7 @@ public final class MapState {
             mapState.setListPage(listPage);
             return this;
         }
+
         /**
          * setCurrPlanPref
          * @param currPlanPref currPlanPref
@@ -546,6 +532,7 @@ public final class MapState {
             mapState.setCurrPlanPref(currPlanPref);
             return this;
         }
+
         /**
          * setMaxZoomLevel
          * @param maxZoomLevel maxZoomLevel
@@ -555,6 +542,7 @@ public final class MapState {
             mapState.setMaxZoomLevel(maxZoomLevel);
             return this;
         }
+
         /**
          * setMinZoomLevel
          * @param minZoomLevel minZoomLevel
@@ -564,6 +552,7 @@ public final class MapState {
             mapState.setMinZoomLevel(minZoomLevel);
             return this;
         }
+
         /**
          * setCurrZoomLevel
          * @param currZoomLevel currZoomLevel
@@ -573,6 +562,7 @@ public final class MapState {
             mapState.setCurrZoomLevel(currZoomLevel);
             return this;
         }
+
         /**
          * setEndPoiName
          * @param endPoiName endPoiName
@@ -582,6 +572,7 @@ public final class MapState {
             mapState.setEndPoiName(endPoiName);
             return this;
         }
+
         /**
          * setEndPoiCity
          * @param endPoiCity endPoiCity
@@ -591,15 +582,7 @@ public final class MapState {
             mapState.setEndPoiCity(endPoiCity);
             return this;
         }
-        /**
-         * setDayWithMapStyle
-         * @param dayWithMapStyle dayWithMapStyle
-         * @return Builder
-         */
-        public Builder setDayWithMapStyle(final boolean dayWithMapStyle) {
-            mapState.setDayWithMapStyle(dayWithMapStyle);
-            return this;
-        }
+
         /**
          * setHasPrivacyPermission
          * @param hasPrivacyPermission hasPrivacyPermission
@@ -609,24 +592,7 @@ public final class MapState {
             mapState.setHasPrivacyPermission(hasPrivacyPermission);
             return this;
         }
-        /**
-         * setMaxVolumeLevel
-         * @param maxVolumeLevel maxVolumeLevel
-         * @return Builder
-         */
-        public Builder setMaxVolumeLevel(final int maxVolumeLevel) {
-            mapState.setMaxVolumeLevel(maxVolumeLevel);
-            return this;
-        }
-        /**
-         * setCurrentVolumeLevel
-         * @param currentVolumeLevel currentVolumeLevel
-         * @return Builder
-         */
-        public Builder setCurrentVolumeLevel(final int currentVolumeLevel) {
-            mapState.setCurrentVolumeLevel(currentVolumeLevel);
-            return this;
-        }
+
         /**
          * setLogin
          * @param login login
@@ -636,6 +602,7 @@ public final class MapState {
             mapState.setLogin(login);
             return this;
         }
+
         /**
          * setAgreeTeamAgreement
          * @param agreeTeamAgreement agreeTeamAgreement
@@ -645,6 +612,7 @@ public final class MapState {
             mapState.setAgreeTeamAgreement(agreeTeamAgreement);
             return this;
         }
+
         /**
          * setInTeam
          * @param inTeam inTeam
@@ -654,6 +622,7 @@ public final class MapState {
             mapState.setInTeam(inTeam);
             return this;
         }
+
         /**
          * setTeamLeader
          * @param teamLeader teamLeader
@@ -663,6 +632,7 @@ public final class MapState {
             mapState.setTeamLeader(teamLeader);
             return this;
         }
+
         /**
          * build
          * @return MapState

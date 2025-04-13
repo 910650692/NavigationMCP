@@ -50,30 +50,9 @@ public class L2Package implements L2DriveObserver {
     }*/
 
     @Override
-    public void onNaviStatus(String naviStatus) {
+    public void onSdTbtDataChange(String json) {
         for (L2InfoCallback callback : l2InfoCallbackMap.values()) {
-            callback.onNaviStatus(naviStatus);
-        }
-    }
-
-    @Override
-    public void onSelectRouteIndex(String routeId) {
-        for (L2InfoCallback callback : l2InfoCallbackMap.values()) {
-            callback.onSelectRouteIndex(routeId);
-        }
-    }
-
-    @Override
-    public void onParkingInfo(String parkInfo) {
-        for (L2InfoCallback callback : l2InfoCallbackMap.values()) {
-            callback.onParkingInfo(parkInfo);
-        }
-    }
-
-    @Override
-    public void onNaviInfo(String l2NaviBean) {
-        for (L2InfoCallback callback : l2InfoCallbackMap.values()) {
-            callback.onNaviInfo(l2NaviBean);
+            callback.onSdTbtDataChange(json);
         }
     }
 

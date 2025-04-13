@@ -36,7 +36,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/driving_record_setting"
-                android:textColor="@color/black"
+                android:textColor="@color/setting_bg_tab_text_select"
                 android:textSize="@dimen/sp_34"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -54,6 +54,7 @@
             android:layout_marginStart="@dimen/dp_45"
             android:checked="@{ViewModel.mIsAutoRecord}"
             android:button="@drawable/custom_thumb"
+            android:background="@android:color/transparent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/record_setting_title"/>
 
@@ -64,7 +65,7 @@
             android:layout_marginTop="@dimen/dp_29"
             android:layout_marginStart="@dimen/dp_24"
             android:text="@string/driving_record_auto"
-            android:textColor="@color/black"
+            android:textColor="@color/setting_bg_tab_text_select"
             android:textSize="@dimen/sp_34"
             app:layout_constraintTop_toBottomOf="@+id/record_setting_title"
             app:layout_constraintStart_toEndOf="@+id/record_setting_auto_check"/>
@@ -75,7 +76,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_8"
             android:text="@string/driving_record_auto_tip"
-            android:textColor="@color/setting_text_preference"
+            android:textColor="@color/setting_bg_tab_text_unselect"
             android:textSize="@dimen/sp_30"
             app:layout_constraintTop_toBottomOf="@+id/record_setting_auto_check_text"
             app:layout_constraintStart_toStartOf="@+id/record_setting_auto_check_text"/>
@@ -97,7 +98,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_36"
             android:text="@string/driving_record_clear"
-            android:textColor="@color/black"
+            android:textColor="@color/setting_bg_tab_text_select"
             android:textSize="@dimen/sp_34"
             app:layout_constraintTop_toBottomOf="@+id/record_setting_line"
             app:layout_constraintStart_toStartOf="@+id/record_setting_auto_check"/>
@@ -108,7 +109,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_8"
             android:text="@string/driving_record_clear_tip"
-            android:textColor="@color/setting_text_preference"
+            android:textColor="@color/setting_bg_tab_text_unselect"
             android:textSize="@dimen/sp_30"
             app:layout_constraintTop_toBottomOf="@+id/record_setting_clear"
             app:layout_constraintStart_toStartOf="@+id/record_setting_clear"/>
@@ -122,7 +123,7 @@
             android:layout_marginEnd="@dimen/dp_40"
             android:background="@drawable/bg_record_setting"
             android:text="@string/driving_record_clear_toast"
-            android:textColor="@color/setting_switch_selected"
+            android:textColor="@color/setting_bg_to_login_text"
             android:textSize="@dimen/sp_30"
             app:layout_constraintTop_toTopOf="@+id/record_setting_line"
             app:layout_constraintEnd_toEndOf="parent"/>

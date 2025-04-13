@@ -4,6 +4,12 @@ public interface IVrBridgeConstant {
 
     String TAG = "VrBridgeHandle";
 
+    interface NavigationOperateType {
+        String START = "START_NAVIGATION";
+        String STOP = "END_NAVIGATION";
+        String CONTINUE = "CONTINUE_NAVIGATION";
+    }
+
     //搜索目的地类型
     interface DestType {
         String HOME = "HOME";
@@ -90,6 +96,7 @@ public interface IVrBridgeConstant {
         int POI_DETAIL = 8; //展示Poi详情
         int HOME_COMPANY_SET = 9; //设置家-公司地址
         int SELECT_ROUTE = 10; //切换选中的路线
+        int CLOSE_CURRENT_PAGE = 11; //关闭当前界面
     }
 
     interface VoiceIntentParams {
@@ -157,5 +164,14 @@ public interface IVrBridgeConstant {
     }
 
     String ROAD_CONDITION = "路况";
+
+    String ROUTE_HINT = "的路线";
+
+    interface MapMode {
+        String CAR_2D = "2D_FOLLOW_LOGO"; //2D车头朝上
+        String NORTH_2D = "2D"; //2D正北朝上
+        String CAR_3D = "3D"; //3D车头朝上
+        String DEFAULT = "DEFAULT"; //收到此参数默认转为下一个模式
+    }
 
 }

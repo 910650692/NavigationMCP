@@ -130,7 +130,7 @@ public final class MapDataAdapter {
      * 获取下载中、更新中状态下的所有城市adCode列表
      * @return 返回下载中的信息
      */
-    public ArrayList<CityDataInfo> getWorkingList() {
+    public ArrayList<ProvDataInfo> getWorkingList() {
         return mMapDataApi.getWorkingList();
     }
 
@@ -138,7 +138,7 @@ public final class MapDataAdapter {
      * 获取已下载状态下的所有城市adCode列表
      * @return 返回已下载的信息
      */
-    public ArrayList<CityDataInfo> getWorkedList() {
+    public ArrayList<ProvDataInfo> getWorkedList() {
         return mMapDataApi.getWorkedList();
     }
 

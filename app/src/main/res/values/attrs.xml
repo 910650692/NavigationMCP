@@ -59,8 +59,6 @@
         <item>@drawable/img_basic_ic_groggery</item>
     </array>
 
-
-
     <array name="main_search_categories_gas_icons">
         <item>@drawable/img_basic_ic_gas_station</item>
         <item>@drawable/img_basic_ic_pull_up</item>

@@ -6,13 +6,10 @@ package com.fy.navi.service.define.layer.refix;
  * @date 2024/12/12
  */
 public enum CarModeType {
-    /* 2D默认车标 */
-    CAR_MODEL_TYPE_2D,
-    /* 3D默认车标 */
-    CAR_MODEL_TYPE_3D,
-    /* 3D骨骼车标 */
-    CAR_MODEL_TYPE_SKELETON,
-    /* 3D车速车标 */
-    CAR_MODEL_TYPE_SPEED,
-
+    /* 默认车标 */
+    CAR_MODE_DEFAULT,
+    /* 品牌 */
+    CAR_MODEL_BRAND,
+    /* 车速 */
+    CAR_MODEL_SPEED,
 }

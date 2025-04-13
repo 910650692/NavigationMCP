@@ -15,16 +15,24 @@
     <com.fy.navi.ui.view.SkinConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_146"
-        android:paddingHorizontal="@dimen/dp_24"
-        tools:background="@color/navi_color_FF595F_100"
+        tools:background="@color/navi_color_FFFFFF_80"
         tools:layout_width="@dimen/dp_820">
+
+        <com.fy.navi.ui.view.SkinImageView
+            android:id="@+id/siv_progress"
+            android:layout_width="@dimen/dp_0"
+            android:layout_height="match_parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:background="@drawable/bg_navi_tbt_progress"
+            app:layout_constraintBottom_toBottomOf="parent"/>
 
         <com.fy.navi.ui.view.SkinImageView
             android:id="@+id/siv_gps"
             android:layout_width="@dimen/dp_42"
             android:layout_height="@dimen/dp_42"
             android:layout_marginTop="@dimen/dp_16"
-            android:layout_marginEnd="@dimen/dp_2"
+            android:layout_marginEnd="@dimen/dp_26"
             android:background="@drawable/img_satellite_42"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -62,6 +70,7 @@
             android:id="@+id/sv_exit"
             android:layout_width="@dimen/dp_100"
             android:layout_height="@dimen/dp_98"
+            android:layout_marginStart="@dimen/dp_24"
             app:layout_constraintBottom_toBottomOf="@id/gl_div"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@id/gl_div" />
@@ -83,7 +92,7 @@
             android:ellipsize="end"
             android:singleLine="true"
             android:text="出口编号"
-            android:textColor="@color/black"
+            android:textColor="@color/common_title_purple_color"
             android:textSize="@dimen/sp_18"
             app:layout_constraintEnd_toEndOf="@id/sv_exit"
             app:layout_constraintStart_toStartOf="@id/sv_exit"
@@ -93,6 +102,7 @@
             android:id="@+id/siv_hud_sou3"
             android:layout_width="@dimen/dp_100"
             android:layout_height="@dimen/dp_100"
+            android:layout_marginStart="@dimen/dp_24"
             android:visibility="@{naviTbt.mTurnInfoVisible?View.VISIBLE:View.GONE}"
             app:layout_constraintBottom_toBottomOf="@id/gl_div"
             app:layout_constraintStart_toStartOf="parent"
@@ -114,7 +124,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dp_24"
             android:gravity="bottom"
-            android:textColor="@color/navi_color_000000_100"
+            android:textColor="@color/common_title_purple_color"
             android:textSize="@dimen/sp_86"
             app:layout_constraintBottom_toBottomOf="@id/gl_dis"
             app:layout_constraintStart_toEndOf="@id/siv_hud_sou3"
@@ -128,7 +138,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dp_17"
             android:gravity="center"
-            android:textColor="@color/navi_color_000000_100"
+            android:textColor="@color/common_title_purple_color"
             android:textSize="@dimen/sp_42"
             app:layout_constraintBottom_toBottomOf="@id/gl_route_name"
             app:layout_constraintStart_toEndOf="@id/stv_div_distance"
@@ -137,16 +147,16 @@
         <!--道路信息-->
         <com.fy.navi.ui.view.SkinTextView
             android:id="@+id/stv_div_address"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dp_26"
             android:ellipsize="end"
-            android:gravity="center"
+            android:gravity="center_vertical|start"
             android:singleLine="true"
-            android:maxWidth="@dimen/dp_250"
-            android:textColor="@color/navi_color_000000_100"
+            android:textColor="@color/common_title_purple_color"
             android:textSize="@dimen/sp_38"
             app:layout_constraintBottom_toBottomOf="@id/gl_route_name"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/stv_div_unit"
             app:layout_constraintTop_toTopOf="@id/gl_route_name"
             app:layout_goneMarginLeft="@dimen/dp_24"

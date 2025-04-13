@@ -3,6 +3,8 @@ package com.fy.navi.service.adapter.layer;
 import com.fy.navi.service.define.bean.GeoPoint;
 import com.fy.navi.service.define.layer.GemBaseLayer;
 import com.fy.navi.service.define.layer.GemLayerItem;
+import com.fy.navi.service.define.layer.refix.LayerItemLabelResult;
+import com.fy.navi.service.define.layer.refix.LayerItemSearchResult;
 import com.fy.navi.service.define.map.MapType;
 
 /**
@@ -16,19 +18,28 @@ public interface ILayerAdapterCallBack {
 
     }
 
-    default void onSearchItemClick(GemLayerItem pItem) {
+    default void onSearchItemClick(MapType mapTypeId, LayerItemSearchResult clickResult) {
 
     }
 
-    default void onRouteItemClick(GemLayerItem pItem) {
+    default void onRouteItemClick(MapType mapTypeId, GemLayerItem pItem) {
 
     }
 
-    default void onFavorite(double lat,double lon) {
+    default void onFavoriteClick(GeoPoint geoPoint) {
 
     }
 
-    default void onFlyLineMoveEnd(GeoPoint descPoint) {
+    default void onFlyLineMoveEnd(MapType mapTypeId, GeoPoint descPoint) {
+
+    }
+
+    /**
+     * 点击自车位
+     * @param mapType
+     * @param geoPoint
+     */
+    default void onCarClick(MapType mapType, GeoPoint geoPoint) {
 
     }
 

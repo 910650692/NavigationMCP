@@ -83,7 +83,7 @@ public class NearMapDataFragment extends BaseFragment<FragmentNearMapDataBinding
     }
 
     /**
-     * 更新数据状态
+     * 设置数据状态
      * @param cityDataInfos
      */
     public void updateNearView(final ArrayList<CityDataInfo> cityDataInfos) {
@@ -91,6 +91,16 @@ public class NearMapDataFragment extends BaseFragment<FragmentNearMapDataBinding
             if (cityDataInfos != null && !cityDataInfos.isEmpty()) {
                 mCityMapDataAdapter.setData(cityDataInfos);
             }
+        });
+    }
+
+    /**
+     * 更新数据状态
+     * @param info
+     */
+    public void notifyNearView(final CityDataInfo info) {
+        ThreadManager.getInstance().postUi(() -> {
+            mCityMapDataAdapter.updateChild(info.getAdcode(), info.getDownLoadInfo());
         });
     }
 

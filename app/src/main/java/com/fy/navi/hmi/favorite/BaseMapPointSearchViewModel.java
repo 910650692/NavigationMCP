@@ -36,4 +36,8 @@ public class BaseMapPointSearchViewModel extends BaseViewModel<MapPointSearchFra
         mView.notifySearchResult(searchResultEntity);
     }
 
+    public void hideFlyLine(){
+        mModel.hideFlyLine();
+    }
+
 }

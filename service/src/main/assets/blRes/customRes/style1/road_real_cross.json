@@ -1,0 +1,32 @@
+{
+  "rct_route_layer_style": {
+    "rct_navi_marker": {
+      "car_marker_id": "car",
+      "car_scale": 1.5,
+      "compass_marker_id": "",
+      "compass_scale": 1.5,
+      "shine_marker_id": "",
+      "shine_scale": 1.5
+    },
+    "rct_fly_line_param": {
+      "fill_marker_id": "map_lr_road_white_front",
+      "arrow_marker_id": "",
+      "width": 7,
+      "side_width": 2,
+      "fly_line_texture": {
+        "x1": 0.0,
+        "x2": 1.0,
+        "y1": 0.25,
+        "y2": 0.25,
+        "texture_len": 256
+      },
+      "fly_line_arrow_texture": {
+        "x1": 1.0,
+        "x2": 0.0,
+        "y1": 1.0,
+        "y2": 0.0,
+        "texture_len": 256
+      }
+    }
+  }
+}

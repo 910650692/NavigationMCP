@@ -4,6 +4,7 @@ package com.fy.navi.hmi.poi;
 import android.os.Bundle;
 
 import com.alibaba.android.arouter.facade.annotation.Route;
+import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
 import com.fy.navi.hmi.BR;
 import com.fy.navi.hmi.R;
@@ -23,6 +24,7 @@ import com.fy.navi.ui.base.BaseFragment;
  */
 @Route(path = RoutePath.Search.POI_DETAILS_FRAGMENT)
 public class PoiDetailsFragment extends BaseFragment<FragmentPoiDetailsBinding, PoiDetailsViewModel> {
+    private SearchResultEntity mSearchResultEntity;
     @Override
     public int onLayoutId() {
         return R.layout.fragment_poi_details;
@@ -61,8 +63,20 @@ public class PoiDetailsFragment extends BaseFragment<FragmentPoiDetailsBinding, 
 //        String sourceFragmentTag = parsedArgs.getString(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SOURCE_FRAGMENT);
         final PoiInfoEntity poiInfoEntity = parsedArgs.getParcelable(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_OPEN_DETAIL);
         final int poiType = parsedArgs.getInt(AutoMapConstant.PoiBundleKey.BUNDLE_KEY_START_POI_TYPE, AutoMapConstant.PoiType.POI_KEYWORD);
-        mBinding.scenePoiDetailContentView.refreshPoiView(poiType);
+        mBinding.scenePoiDetailContentView.refreshPoiView(poiType, poiInfoEntity);
+        mSearchResultEntity = parsedArgs.getParcelable(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_SOURCE_DATA);
         mBinding.scenePoiDetailContentView.doSearch(poiInfoEntity);
+        mBinding.scenePoiDetailContentView.setPowerType(mViewModel.powerType());
+    }
+
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        if (!hidden) {
+            if (!ConvertUtils.isEmpty(mSearchResultEntity)) {
+                mBinding.scenePoiDetailContentView.reloadLastPoiMarker(mSearchResultEntity.getPoiList());
+            }
+        }
     }
 
     /**
@@ -70,8 +84,8 @@ public class PoiDetailsFragment extends BaseFragment<FragmentPoiDetailsBinding, 
      *
      * @param searchResultEntity 搜索结果实体类
      */
-    public void onSearchResult(final SearchResultEntity searchResultEntity) {
-        mBinding.scenePoiDetailContentView.onSearchResult(searchResultEntity);
+    public void onSearchResult(final int taskId, final SearchResultEntity searchResultEntity) {
+        mBinding.scenePoiDetailContentView.onSearchResult(taskId, searchResultEntity);
     }
 
     @Override

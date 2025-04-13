@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.alibaba.android.arouter.launcher.ARouter;
+import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
 import com.fy.navi.scene.BaseSceneView;
 import com.fy.navi.scene.R;
@@ -139,6 +140,11 @@ public class SceneCollectView extends BaseSceneView<SceneCollectViewBinding, Sce
                     }
                 }
             }
+
+            @Override
+            public void onListCleared() {
+                mViewBinding.sllNoFavorite.setVisibility(View.VISIBLE);
+            }
         });
     }
 
@@ -165,6 +171,13 @@ public class SceneCollectView extends BaseSceneView<SceneCollectViewBinding, Sce
      */
     public void setAdapterData(final List<PoiInfoEntity> data) {
         mAdapter.notifyList(data);
+        if (mViewBinding != null) {
+            if (ConvertUtils.isEmpty(data)) {
+                mViewBinding.sllNoFavorite.setVisibility(View.VISIBLE);
+            } else {
+                mViewBinding.sllNoFavorite.setVisibility(View.GONE);
+            }
+        }
     }
 
     /**
@@ -186,5 +199,15 @@ public class SceneCollectView extends BaseSceneView<SceneCollectViewBinding, Sce
 
     public void setHomeCompanyType(final int homeCompanyType) {
         this.mHomeCompanyType = homeCompanyType;
+    }
+
+    /**
+     * 设置来源Fragment
+     * @param sourceFragment sourceFragment
+     */
+    public void setSourceFragment(final String sourceFragment) {
+        if (ConvertUtils.equals(sourceFragment, AutoMapConstant.SourceFragment.FRAGMENT_MAIN_ALONG_WAY)) {
+            mViewBinding.collectTitleBarView.sclCollectAdd.setVisibility(View.GONE);
+        }
     }
 }

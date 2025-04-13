@@ -29,7 +29,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/favorite_sync_tip"
-                android:textColor="@color/setting_text_preference"
+                android:textColor="@color/color_black_70"
                 android:textSize="@dimen/sp_30"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -38,9 +38,9 @@
                 android:id="@+id/favorite_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/setting_text_preference"
-                android:textSize="@dimen/sp_30"
+                android:textColor="@color/color_black_70"
                 android:text="@{ViewModel.mSyncTime}"
+                android:textSize="@dimen/sp_30"
                 app:layout_constraintStart_toEndOf="@+id/favorite_title"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -64,13 +64,11 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="@dimen/dp_69"
-            android:focusableInTouchMode="false"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/favorite_title_layout">
 
             <com.fy.navi.ui.view.SkinConstraintLayout
                 android:id="@+id/favorite_layout"
-                android:descendantFocusability="blocksDescendants"
                 android:layout_width="@dimen/dp_860"
                 android:layout_height="wrap_content">
 
@@ -109,7 +107,8 @@
                         android:layout_marginTop="@dimen/dp_2"
                         android:layout_marginStart="@dimen/dp_95"
                         android:text="@string/favorite_setting"
-                        android:textColor="@color/setting_tab_gray"
+                        android:maxLines="1"
+                        android:textColor="@color/color_black_70"
                         android:textSize="@dimen/sp_30" />
 
                     <com.fy.navi.ui.view.SkinImageView
@@ -159,7 +158,8 @@
                         android:layout_marginStart="@dimen/dp_95"
                         android:layout_marginTop="@dimen/dp_2"
                         android:text="@string/favorite_setting"
-                        android:textColor="@color/setting_tab_gray"
+                        android:maxLines="1"
+                        android:textColor="@color/color_black_70"
                         android:textSize="@dimen/sp_30" />
 
                     <com.fy.navi.ui.view.SkinImageView
@@ -190,7 +190,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/favorite_favorite_switch"
-                    android:textColor="@color/setting_text_preference"
+                    android:textColor="@color/color_black_70"
                     android:textSize="@dimen/sp_30"
                     android:layout_marginStart="@dimen/dp_24"
                     app:layout_constraintStart_toEndOf="@+id/switch_favorite"
@@ -264,7 +264,7 @@
                         android:gravity="center"
                         android:text="@string/favorite_add"
                         android:layout_marginStart="@dimen/dp_8"
-                        android:textColor="@color/setting_text_preference"
+                        android:textColor="@color/color_black_70"
                         android:textSize="@dimen/sp_30" />
                 </com.fy.navi.ui.view.SkinLinearLayout>
 
@@ -299,7 +299,7 @@
                             android:background="@drawable/bg_setting_checkbox_selector"
                             android:gravity="center"
                             android:textSize="@dimen/sp_34"
-                            android:textColor="@color/white"
+                            android:textColor="@drawable/color_setting_checkbox_selector"
                             android:text="@string/favorite_switch_common" />
 
                         <com.fy.navi.ui.view.SkinRadioButton
@@ -312,7 +312,7 @@
                             android:background="@drawable/bg_setting_checkbox_selector"
                             android:gravity="center"
                             android:textSize="@dimen/sp_34"
-                            android:textColor="@color/color_black_70"
+                            android:textColor="@drawable/color_setting_checkbox_selector"
                             android:text="@string/favorite_switch_charge" />
                     </com.fy.navi.ui.view.SkinRadioGroup>
 
@@ -325,8 +325,10 @@
                     android:layout_height="match_parent"
                     android:visibility="@{ViewModel.mDataVisibility ? View.VISIBLE : View.GONE}"
                     android:layout_marginTop="@dimen/dp_24"
+                    android:layout_marginBottom="@dimen/dp_90"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/tv_favorite_switch" />
 
                 <!--无收藏数据提示-->
@@ -394,7 +396,7 @@
                         android:text="@string/account_login"
                         android:textSize="@dimen/sp_30"
                         android:textColor="@color/white"
-                        android:layout_marginTop="@dimen/dp_30"
+                        android:layout_marginTop="@dimen/dp_28"
                         android:background="@drawable/bg_setting_preference_select"/>
                 </com.fy.navi.ui.view.SkinLinearLayout>
 
@@ -404,7 +406,7 @@
                     android:orientation="vertical"
                     android:gravity="center"
                     android:visibility="@{ViewModel.mChargingNoDataVisibility ? View.VISIBLE : View.GONE}"
-                    android:layout_marginTop="@dimen/dp_250"
+                    android:layout_marginTop="@dimen/dp_200"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/tv_favorite_title"  >
@@ -414,8 +416,8 @@
                         android:layout_height="wrap_content"
                         android:text="@string/favorite_no_charging_data"
                         android:textColor="@color/color_black_70"
-                        android:layout_marginBottom="@dimen/dp_200"
-                        android:textSize="@dimen/sp_30"/>
+                        android:textSize="@dimen/sp_30"
+                        android:layout_marginBottom="@dimen/dp_200"/>
                 </com.fy.navi.ui.view.SkinLinearLayout>
 
                 <com.fy.navi.ui.view.SkinLinearLayout
@@ -434,7 +436,7 @@
                         android:layout_height="wrap_content"
                         android:text="@string/favorite_charging_request_fail"
                         android:textColor="@color/color_black_70"
-                        android:textSize="@dimen/sp_30"/>
+                        android:textSize="@dimen/sp_30" />
 
 
                     <com.fy.navi.ui.view.SkinTextView
@@ -465,7 +467,7 @@
                         android:text="@string/favorite_charging_offline"
                         android:textColor="@color/color_black_70"
                         android:textSize="@dimen/sp_30"
-                        android:layout_marginBottom="@dimen/dp_200"/>
+                        android:layout_marginBottom="@dimen/dp_250" />
                 </com.fy.navi.ui.view.SkinLinearLayout>
 
             </com.fy.navi.ui.view.SkinConstraintLayout>
@@ -498,7 +500,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/favorite_top"
                 android:layout_marginStart="@dimen/dp_136"
-                android:textColor="@color/setting_text_preference"
+                android:textColor="@color/color_black_70"
                 android:textSize="@dimen/sp_34"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"

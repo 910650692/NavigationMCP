@@ -2,6 +2,7 @@ package com.fy.navi.service.logicpaket.navistatus;
 
 import com.fy.navi.service.adapter.navistatus.INaviStatusCallback;
 import com.fy.navi.service.adapter.navistatus.NavistatusAdapter;
+import com.fy.navi.service.define.navistatus.NaviStatus;
 
 import java.util.Hashtable;
 
@@ -50,6 +51,10 @@ public final class NaviStatusPackage implements INaviStatusCallback {
 
     public boolean isGuidanceActive() {
         return this.mNavistatusAdapter.isGuidanceActive();
+    }
+
+    public void setNaviStatus(String naviStatus) {
+        mNavistatusAdapter.setNaviStatus(naviStatus);
     }
 
     @Override

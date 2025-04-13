@@ -2,8 +2,13 @@ package com.fy.navi.scene.impl.navi.inter;
 
 
 import com.fy.navi.scene.ui.navi.manager.NaviSceneId;
+import com.fy.navi.service.define.navi.NaviParkingEntity;
 import com.fy.navi.service.define.navi.NaviViaEntity;
 import com.fy.navi.service.define.navi.SapaInfoEntity;
+import com.fy.navi.service.define.search.PoiInfoEntity;
+import com.fy.navi.service.define.search.SearchResultEntity;
+
+import java.util.List;
 
 public interface ISceneCallback {
 
@@ -27,6 +32,7 @@ public interface ISceneCallback {
 
     /**
      * 显示/隐藏场景页面
+     *
      * @param sceneType 场景类型
      * @param isVisible 是否可见
      */
@@ -48,7 +54,8 @@ public interface ISceneCallback {
 
     /**
      * 跳转到导航服务区/收费站详情页面
-     * @param type service or toll
+     *
+     * @param type           service or toll
      * @param sapaInfoEntity 服务区/收费站信息
      */
     default void skipNaviSapaDetailScene(int type, SapaInfoEntity sapaInfoEntity) {
@@ -85,7 +92,8 @@ public interface ISceneCallback {
 
     /**
      * 跳转到搜索页面
-     * @param keyWord 搜索关键字
+     *
+     * @param keyWord    搜索关键字
      * @param searchType 搜索类型
      */
     default void goSearchView(final String keyWord, final int searchType) {
@@ -108,6 +116,48 @@ public interface ISceneCallback {
      * @return 因碰撞关闭的消息卡片是否需要再打开 true：需要 false：不需要
      */
     default boolean isNeedCloseNaviChargeTipLater() {
+        return false;
+    }
+
+    /***
+     * 推荐的目的地，选择立即导航
+     */
+    default void startNaviRightNow(final PoiInfoEntity poiInfo) {
+
+    }
+
+    /***
+     * 展示推荐列表，包括：充电站列表
+     * @param searchResultEntity
+     */
+    default void showRecChargeList(final SearchResultEntity searchResultEntity) {
+
+    }
+
+
+    /***
+     * 展示推荐列表，包括：充电站列表
+     * @param searchResultEntity
+     */
+    default void showRecGasList(final SearchResultEntity searchResultEntity) {
+
+    }
+
+    /***
+     * 展示推荐列表，包括：充电站列表
+     * @param list
+     */
+    default void showRecParkList(final List<NaviParkingEntity> list) {
+
+    }
+    /**
+     * 返回到导航页面
+     */
+    default void backToNaviFragment() {
+
+    }
+
+    default boolean getCurrentFragmentIsNavi() {
         return false;
     }
 }

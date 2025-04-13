@@ -15,6 +15,7 @@
         android:layout_width="@dimen/dp_1224"
         android:layout_height="@dimen/dp_714"
         android:orientation="vertical"
+        android:clickable="true"
         android:background="@drawable/bg_setting_fragment">
 
         <!--离线搜索标题-->
@@ -34,15 +35,16 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:src="@drawable/img_back_58" />
+                android:src="@drawable/img_setting_back" />
 
             <com.fy.navi.ui.view.SkinTextView
                 clickCommand="@{ViewModel.mSearchMapDataView}"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_height="fill_parent"
                 android:layout_marginStart="@dimen/dp_4"
+                android:gravity="center_vertical"
                 android:text="@string/offline_search_tip"
-                android:textColor="@color/color_50_000000"
+                android:textColor="@color/offline_hint_text"
                 android:textSize="@dimen/sp_34" />
 
         </com.fy.navi.ui.view.SkinLinearLayout>
@@ -71,14 +73,14 @@
                     android:layout_marginBottom="@dimen/dp_40"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    android:background="@drawable/shape_bg_map_item_data">
+                    android:background="@drawable/shape_bg_map_data">
 
                     <com.fy.navi.ui.view.SkinTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/dp_30"
                         android:text="@string/offline_manager_map_title"
-                        android:textColor="@color/offline_black"
+                        android:textColor="@color/setting_bg_tab_text_select"
                         android:textSize="@dimen/sp_34"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
@@ -88,7 +90,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@{ViewModel.mAllDownloadingDataSize}"
-                        android:textColor="@color/color_70_000000"
+                        android:textColor="@color/setting_bg_tab_text_unselect"
                         android:textSize="@dimen/sp_30"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toStartOf="@+id/manager_city_view"
@@ -105,7 +107,7 @@
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
                         android:text="@string/offline_manager_map_content"
-                        android:textColor="@color/color_70_000000"
+                        android:textColor="@color/setting_bg_tab_text_unselect"
                         android:textSize="@dimen/sp_30" />
 
                 </com.fy.navi.ui.view.SkinConstraintLayout>
@@ -119,7 +121,7 @@
                     android:layout_marginStart="@dimen/dp_40"
                     app:layout_constraintTop_toBottomOf="@+id/manager_data_view"
                     app:layout_constraintStart_toStartOf="parent"
-                    android:background="@drawable/shape_bg_map_item_data">
+                    android:background="@drawable/shape_bg_map_data">
 
                     <com.fy.navi.ui.view.SkinTextView
                         android:id="@+id/current_city_name"
@@ -128,7 +130,7 @@
                         android:layout_marginStart="@dimen/dp_32"
                         android:layout_marginTop="@dimen/dp_26"
                         android:text="@string/offline_current_map_title"
-                        android:textColor="@color/offline_black"
+                        android:textColor="@color/setting_bg_tab_text_select"
                         android:textSize="@dimen/sp_34"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
@@ -141,7 +143,7 @@
                         android:layout_marginStart="@dimen/dp_32"
                         android:paddingBottom="@dimen/dp_26"
                         android:text="@string/offline_current_map_tip"
-                        android:textColor="@color/color_50_000000"
+                        android:textColor="@color/setting_bg_tab_text_unselect"
                         android:textSize="@dimen/sp_30"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/current_city_name" />
@@ -157,6 +159,18 @@
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
+                    <ProgressBar
+                        android:id="@+id/current_download_progress"
+                        style="?android:attr/progressBarStyleHorizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/dp_4"
+                        android:max="100"
+                        android:visibility="gone"
+                        android:progressDrawable="@drawable/progress_bar_style"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"/>
+
                 </com.fy.navi.ui.view.SkinConstraintLayout>
 
                 <!--附近推荐城市-->
@@ -169,7 +183,7 @@
                     android:layout_marginEnd="@dimen/dp_40"
                     app:layout_constraintTop_toBottomOf="@+id/manager_data_view"
                     app:layout_constraintLeft_toRightOf="@+id/view_current_data"
-                    android:background="@drawable/shape_bg_map_item_data">
+                    android:background="@drawable/shape_bg_map_data">
 
                     <com.fy.navi.ui.view.SkinTextView
                         clickCommand="@{ViewModel.mToNearMapDataView}"
@@ -181,7 +195,7 @@
                         android:layout_marginTop="@dimen/dp_26"
                         android:drawableRight="@drawable/img_right"
                         android:text="@string/offline_near_offline_data"
-                        android:textColor="@color/offline_black"
+                        android:textColor="@color/setting_bg_tab_text_select"
                         android:textSize="@dimen/sp_34"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
@@ -195,7 +209,7 @@
                         android:gravity="center"
                         android:paddingBottom="@dimen/dp_20"
                         android:text="@string/offline_near_data_count"
-                        android:textColor="@color/color_50_000000"
+                        android:textColor="@color/setting_bg_tab_text_unselect"
                         android:textSize="@dimen/sp_30"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/tv_near_offline_data" />
@@ -210,7 +224,7 @@
                         android:gravity="center"
                         android:background="@drawable/shape_bg_download_data"
                         android:text="@string/offline_all_net_city_start_download"
-                        android:textColor="@color/white"
+                        android:textColor="@color/setting_white"
                         android:textSize="@dimen/sp_30"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -226,7 +240,7 @@
                     android:layout_marginTop="@dimen/dp_30"
                     android:layout_marginStart="@dimen/dp_40"
                     android:text="@string/offline_text_all_data"
-                    android:textColor="@color/offline_black"
+                    android:textColor="@color/setting_bg_tab_text_select"
                     android:textSize="@dimen/sp_34"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/view_current_data" />
@@ -254,7 +268,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="@dimen/dp_140"
                             android:clickable="true"
-                            android:background="@drawable/shape_bg_map_item_data">
+                            android:background="@drawable/shape_bg_map_data">
 
                             <com.fy.navi.ui.view.SkinTextView
                                 android:id="@+id/country_city_name"
@@ -264,7 +278,7 @@
                                 android:layout_marginTop="@dimen/dp_20"
                                 android:gravity="center"
                                 android:text="@string/offline_item_city_title"
-                                android:textColor="@color/offline_black"
+                                android:textColor="@color/setting_bg_tab_text_select"
                                 android:textSize="@dimen/sp_34"
                                 app:layout_constraintStart_toStartOf="parent"
                                 app:layout_constraintTop_toTopOf="parent" />
@@ -275,10 +289,10 @@
                                 android:layout_marginStart="@dimen/dp_24"
                                 android:layout_marginTop="@dimen/dp_24"
                                 android:gravity="center"
-                                android:background="@color/setting_bg_gray"
+                                android:background="@drawable/shape_bg_map_data"
                                 android:src="@drawable/img_setting_download_white"
                                 android:text="@string/offline_recommend_map"
-                                android:textColor="@color/color_50_000000"
+                                android:textColor="@color/offline_recommend_download"
                                 android:textSize="@dimen/sp_26"
                                 app:layout_constraintLeft_toRightOf="@+id/country_city_name"
                                 app:layout_constraintTop_toTopOf="parent"  />
@@ -291,7 +305,7 @@
                                 android:gravity="center"
                                 android:paddingBottom="@dimen/dp_24"
                                 android:text="@string/offline_base_map_tip"
-                                android:textColor="@color/color_70_000000"
+                                android:textColor="@color/setting_bg_tab_text_unselect"
                                 android:textSize="@dimen/sp_30"
                                 app:layout_constraintStart_toStartOf="parent"
                                 app:layout_constraintTop_toBottomOf="@+id/country_city_name" />
@@ -313,11 +327,23 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginEnd="@dimen/dp_20"
                                 android:gravity="center"
-                                android:textColor="@color/color_70_000000"
+                                android:textColor="@color/setting_bg_tab_text_unselect"
                                 android:textSize="@dimen/sp_30"
                                 app:layout_constraintTop_toTopOf="parent"
                                 app:layout_constraintRight_toLeftOf="@+id/country_download_view"
                                 app:layout_constraintBottom_toBottomOf="parent" />
+
+                            <ProgressBar
+                                android:id="@+id/data_download_progress"
+                                style="?android:attr/progressBarStyleHorizontal"
+                                android:layout_width="match_parent"
+                                android:layout_height="@dimen/dp_4"
+                                android:max="100"
+                                android:visibility="gone"
+                                android:progressDrawable="@drawable/progress_bar_style"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent"/>
 
                         </com.fy.navi.ui.view.SkinConstraintLayout>
 

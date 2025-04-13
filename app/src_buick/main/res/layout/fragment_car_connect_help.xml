@@ -94,11 +94,11 @@
 
                 <com.fy.navi.ui.view.SkinImageView
                     android:id="@+id/remote_img"
-                    android:layout_width="@dimen/dp_461"
+                    android:layout_width="@dimen/dp_464"
                     android:layout_height="@dimen/dp_260"
                     android:layout_marginTop="@dimen/dp_42"
                     android:layout_marginStart="@dimen/dp_58"
-                    android:src="@mipmap/earth"
+                    android:src="@mipmap/icon_setting_car_remote"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintStart_toStartOf="parent"/>
 
@@ -138,11 +138,11 @@
 
                 <com.fy.navi.ui.view.SkinImageView
                     android:id="@+id/seamless_img"
-                    android:layout_width="@dimen/dp_461"
+                    android:layout_width="@dimen/dp_464"
                     android:layout_height="@dimen/dp_260"
                     android:layout_marginTop="@dimen/dp_42"
                     android:layout_marginStart="@dimen/dp_58"
-                    android:src="@mipmap/earth"
+                    android:src="@mipmap/icon_setting_seamless_interaction"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintStart_toStartOf="parent"/>
 
@@ -181,11 +181,11 @@
 
                 <com.fy.navi.ui.view.SkinImageView
                     android:id="@+id/find_img"
-                    android:layout_width="@dimen/dp_461"
+                    android:layout_width="@dimen/dp_464"
                     android:layout_height="@dimen/dp_260"
                     android:layout_marginTop="@dimen/dp_42"
                     android:layout_marginStart="@dimen/dp_58"
-                    android:src="@mipmap/earth"
+                    android:src="@mipmap/icon_setting_finding_car"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintStart_toStartOf="parent"/>
 
@@ -225,11 +225,11 @@
 
                 <com.fy.navi.ui.view.SkinImageView
                     android:id="@+id/sync_img"
-                    android:layout_width="@dimen/dp_461"
+                    android:layout_width="@dimen/dp_464"
                     android:layout_height="@dimen/dp_260"
                     android:layout_marginTop="@dimen/dp_42"
                     android:layout_marginStart="@dimen/dp_58"
-                    android:src="@mipmap/earth"
+                    android:src="@mipmap/icon_setting_data_sync"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintStart_toStartOf="parent"/>
 

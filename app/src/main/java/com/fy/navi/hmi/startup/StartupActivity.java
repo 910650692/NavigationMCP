@@ -97,20 +97,6 @@ public class StartupActivity extends BaseActivity<ActivityStartupBinding, Startu
                 else
                     PermissionUtils.getInstance().onRequestPermissionsResult(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, -1);
                 break;
-            case PermissionUtils.REQUEST_PERMISSION_MEDIA_PROJECTION:
-                Logger.i("StartupActivity", "媒体投影权限申请结果：" + resultCode);
-                if (resultCode == Activity.RESULT_OK) {
-                    Intent intent = new Intent(this, ScreenRecorder.class);
-                    intent.putExtra("code", resultCode);
-                    intent.putExtra("data", data);
-                    MyFsaService.getInstance().initHudService(this, intent);
-                    PermissionUtils.getInstance().updateMediaProjection(true);
-                    PermissionUtils.getInstance().onRequestPermissionsResult(Context.MEDIA_PROJECTION_SERVICE, 0);
-                } else {
-                    PermissionUtils.getInstance().updateMediaProjection(false);
-                    PermissionUtils.getInstance().onRequestPermissionsResult(Context.MEDIA_PROJECTION_SERVICE, -1);
-                }
-                break;
         }
     }
 }

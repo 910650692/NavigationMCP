@@ -81,6 +81,11 @@ public abstract class BaseViewModel<V extends IBaseView, M extends IBaseModel> e
     }
 
     @Override
+    public void addFragment(BaseFragment fragment, Bundle bundle, boolean isHideCurFragment) {
+        mView.addFragment(fragment, bundle, isHideCurFragment);
+    }
+
+    @Override
     public void addPoiDetailsFragment(BaseFragment fragment, Bundle bundle) {
         mView.addPoiDetailsFragment(fragment, bundle);
     }

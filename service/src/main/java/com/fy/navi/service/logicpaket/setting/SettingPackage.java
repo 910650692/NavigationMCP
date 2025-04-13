@@ -456,26 +456,23 @@ public final class SettingPackage implements SettingAdapterCallback {
      */
     public void setCarMode(final CarModeType carMode) {
         switch (carMode) {
-            case CAR_MODEL_TYPE_2D:
-            case CAR_MODEL_TYPE_3D:
-                mSettingManager.insertOrReplace(SettingController.KEY_SETTING_CAR_LOGO, SettingController.VALUE_NAVI_CAR_LOGO_DEFAULT);
-                for (SettingChangeCallback callback : mChangeCallbackList.values()) {
-                    callback.onSettingChanged(SettingController.KEY_SETTING_CAR_LOGO, SettingController.VALUE_NAVI_CAR_LOGO_DEFAULT);
-                }
-                break;
-            case CAR_MODEL_TYPE_SKELETON:
+            case CAR_MODEL_BRAND:
                 mSettingManager.insertOrReplace(SettingController.KEY_SETTING_CAR_LOGO, SettingController.VALUE_NAVI_CAR_LOGO_BRAND);
                 for (SettingChangeCallback callback : mChangeCallbackList.values()) {
                     callback.onSettingChanged(SettingController.KEY_SETTING_CAR_LOGO, SettingController.VALUE_NAVI_CAR_LOGO_BRAND);
                 }
                 break;
-            case CAR_MODEL_TYPE_SPEED:
+            case CAR_MODEL_SPEED:
                 mSettingManager.insertOrReplace(SettingController.KEY_SETTING_CAR_LOGO, SettingController.VALUE_NAVI_CAR_LOGO_SPEED);
                 for (SettingChangeCallback callback : mChangeCallbackList.values()) {
                     callback.onSettingChanged(SettingController.KEY_SETTING_CAR_LOGO, SettingController.VALUE_NAVI_CAR_LOGO_SPEED);
                 }
                 break;
             default:
+                mSettingManager.insertOrReplace(SettingController.KEY_SETTING_CAR_LOGO, SettingController.VALUE_NAVI_CAR_LOGO_DEFAULT);
+                for (SettingChangeCallback callback : mChangeCallbackList.values()) {
+                    callback.onSettingChanged(SettingController.KEY_SETTING_CAR_LOGO, SettingController.VALUE_NAVI_CAR_LOGO_DEFAULT);
+                }
                 break;
         }
 
@@ -487,24 +484,23 @@ public final class SettingPackage implements SettingAdapterCallback {
      * @return carMode  0: 2D默认车标  1: 3D默认车标 2: 3D骨骼车标  3: 3D车速车标
      */
     public CarModeType getCarMode() {
-        CarModeType carMode = CarModeType.CAR_MODEL_TYPE_2D;
+        CarModeType carMode = CarModeType.CAR_MODE_DEFAULT;
         final String data = getValueFromDB(SettingController.KEY_SETTING_CAR_LOGO);
         if (!TextUtils.isEmpty(data)) {
             switch (data) {
-                case SettingController.VALUE_NAVI_CAR_LOGO_DEFAULT:
-                    break;
                 case SettingController.VALUE_NAVI_CAR_LOGO_BRAND:
-                    carMode = CarModeType.CAR_MODEL_TYPE_SKELETON;
+                    carMode = CarModeType.CAR_MODEL_BRAND;
                     break;
                 case SettingController.VALUE_NAVI_CAR_LOGO_SPEED:
-                    carMode = CarModeType.CAR_MODEL_TYPE_SPEED;
+                    carMode = CarModeType.CAR_MODEL_SPEED;
                     break;
                 default:
+                    carMode = CarModeType.CAR_MODE_DEFAULT;
                     break;
             }
         } else {
-            LayerPackage.getInstance().setCarMode(MapType.MAIN_SCREEN_MAIN_MAP, CarModeType.CAR_MODEL_TYPE_2D);
-            setCarMode(CarModeType.CAR_MODEL_TYPE_2D);
+            LayerPackage.getInstance().setCarMode(MapType.MAIN_SCREEN_MAIN_MAP, CarModeType.CAR_MODE_DEFAULT);
+            setCarMode(CarModeType.CAR_MODE_DEFAULT);
         }
         return carMode;
     }
@@ -734,19 +730,16 @@ public final class SettingPackage implements SettingAdapterCallback {
         if (code == 0) {
             switch (mapViewMode) {
                 case 0:
-                    mSettingManager.insertOrReplace(SettingController.SETTING_GUIDE_MAP_MODE, SettingController.VALUE_MAP_MODE_CAR_2D);
                     for (SettingChangeCallback callback : mChangeCallbackList.values()) {
                         callback.onSettingChanged(SettingController.SETTING_GUIDE_MAP_MODE, SettingController.VALUE_MAP_MODE_CAR_2D);
                     }
                     break;
                 case 1:
-                    mSettingManager.insertOrReplace(SettingController.SETTING_GUIDE_MAP_MODE, SettingController.VALUE_MAP_MODE_NORTH_2D);
                     for (SettingChangeCallback callback : mChangeCallbackList.values()) {
                         callback.onSettingChanged(SettingController.SETTING_GUIDE_MAP_MODE, SettingController.VALUE_MAP_MODE_NORTH_2D);
                     }
                     break;
                 case 2:
-                    mSettingManager.insertOrReplace(SettingController.SETTING_GUIDE_MAP_MODE, SettingController.VALUE_MAP_MODE_CAR_3D);
                     for (SettingChangeCallback callback : mChangeCallbackList.values()) {
                         callback.onSettingChanged(SettingController.SETTING_GUIDE_MAP_MODE, SettingController.VALUE_MAP_MODE_CAR_3D);
                     }
@@ -825,14 +818,15 @@ public final class SettingPackage implements SettingAdapterCallback {
     public void setConfigKeyMute(final int mute) {
         final int code = mSettingAdapter.setConfigKeyMute(mute);
         if (code == 0) {
-            mSettingManager.insertOrReplace(SettingController.KEY_SETTING_VOICE_MUTE, String.valueOf(mute));
             switch (mute) {
                 case 0:
+                    mSettingManager.insertOrReplace(SettingController.KEY_SETTING_VOICE_MUTE, SettingController.VALUE_VOICE_MUTE_OFF);
                     for (SettingChangeCallback callback : mChangeCallbackList.values()) {
                         callback.onSettingChanged(SettingController.KEY_SETTING_VOICE_MUTE, SettingController.VALUE_VOICE_MUTE_OFF);
                     }
                     break;
                 case 1:
+                    mSettingManager.insertOrReplace(SettingController.KEY_SETTING_VOICE_MUTE, SettingController.VALUE_VOICE_MUTE_ON);
                     for (SettingChangeCallback callback : mChangeCallbackList.values()) {
                         callback.onSettingChanged(SettingController.KEY_SETTING_VOICE_MUTE, SettingController.VALUE_VOICE_MUTE_ON);
                     }

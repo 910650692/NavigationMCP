@@ -13,6 +13,7 @@ import com.android.utils.ResourceUtils;
 import com.fy.navi.hmi.R;
 import com.fy.navi.hmi.databinding.ItemFavoriteBinding;
 import com.fy.navi.service.define.search.PoiInfoEntity;
+import com.fy.navi.service.logicpaket.search.SearchPackage;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -62,6 +63,8 @@ public class FavoriteDataAdapter extends RecyclerView.Adapter<FavoriteDataAdapte
     public void onBindViewHolder(final @NonNull Holder holder, final int position) {
         holder.mFavoriteBinding.setModel(mFavoriteInfoList.get(position));
         holder.mFavoriteBinding.setLayoutPosition(String.valueOf(position + 1));
+        holder.mFavoriteBinding.itemFavoriteDistance.setText(
+            SearchPackage.getInstance().calcStraightDistance(mFavoriteInfoList.get(position).getPoint()));
         if (mFavoriteInfoList.get(position).getFavoriteInfo().getTop_time() != 0) {
             holder.mFavoriteBinding.swipeMenuLayout.setBackground(ResourceUtils.Companion.getInstance().getDrawable(R.color.setting_bg_top));
             holder.mFavoriteBinding.itemFavoriteTopText.setText("取消");

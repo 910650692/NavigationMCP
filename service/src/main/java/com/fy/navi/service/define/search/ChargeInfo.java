@@ -1,9 +1,13 @@
 package com.fy.navi.service.define.search;
 
+import android.annotation.SuppressLint;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
+
+import com.android.utils.log.Logger;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -43,6 +47,8 @@ public class ChargeInfo implements Parcelable {
     private int mSlowPower;
     private int mFastVolt;
     private int mFastPower;
+    private String mOperatorId; // 运营商id
+    private String mStationId; // 充电站id
 
     public int getChildType() {
         return mChildType;
@@ -257,8 +263,19 @@ public class ChargeInfo implements Parcelable {
      * @param currentElePrice 当前电价
      * @return ChargeInfo
      */
+    @SuppressLint("DefaultLocale")
     public ChargeInfo setCurrentElePrice(final String currentElePrice) {
-        this.mCurrentElePrice = currentElePrice;
+        String price = currentElePrice;
+        if (TextUtils.isEmpty(currentElePrice)) {
+            price = "--";
+        } else {
+            try {
+                price = String.format("%.2f", Double.parseDouble(currentElePrice));
+            } catch (Exception e) {
+                Logger.e("ERROR", "setCurrentElePrice error, msg = " + e.getMessage());
+            }
+        }
+        this.mCurrentElePrice = price;
         return this;
     }
 
@@ -416,6 +433,26 @@ public class ChargeInfo implements Parcelable {
         return this;
     }
 
+    public String getOperatorId() {
+        return mOperatorId;
+    }
+
+    // 设置运营商id
+    public ChargeInfo setOperatorId(String operatorId) {
+        this.mOperatorId = operatorId;
+        return this;
+    }
+
+    public String getStationId() {
+        return mStationId;
+    }
+
+    // 设置充电站id
+    public ChargeInfo setStationId(String stationId) {
+        this.mStationId = stationId;
+        return this;
+    }
+
     protected ChargeInfo(final Parcel in) {
         mChildType = in.readInt();
         mSlowFree = in.readInt();
@@ -443,6 +480,8 @@ public class ChargeInfo implements Parcelable {
         mSlowPower = in.readInt();
         mFastVolt = in.readInt();
         mFastPower = in.readInt();
+        mOperatorId = in.readString();
+        mStationId = in.readString();
     }
 
     public static final Creator<ChargeInfo> CREATOR = new Creator<ChargeInfo>() {
@@ -490,5 +529,7 @@ public class ChargeInfo implements Parcelable {
         parcel.writeInt(mSlowPower);
         parcel.writeInt(mFastVolt);
         parcel.writeInt(mFastPower);
+        parcel.writeString(mOperatorId);
+        parcel.writeString(mStationId);
     }
 }

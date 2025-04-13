@@ -4,6 +4,8 @@ import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
 
+import com.fy.navi.burypoint.anno.HookMethod;
+import com.fy.navi.burypoint.constant.BuryConstant;
 import com.fy.navi.hmi.R;
 import com.fy.navi.hmi.databinding.DialogUseReminderBinding;
 import com.fy.navi.ui.dialog.BaseFullScreenDialog;
@@ -28,10 +30,14 @@ public class ReminderDialog extends BaseFullScreenDialog<DialogUseReminderBindin
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mViewBinding.reminderIndex.reminderTermsService.setOnClickListener(v -> {
-            showOrHideDetail(true);
-            mViewBinding.reminderDetail.reminderTitle.setText(R.string.reminder_page_service_title);
-            mViewBinding.reminderDetail.reminderContent.setText(R.string.reminder_page_service_content);
+        mViewBinding.reminderIndex.reminderTermsService.setOnClickListener(new View.OnClickListener() {
+            @Override
+            @HookMethod(eventName = BuryConstant.EventName.AMAP_SERVICEAGREEMENT_CHECK)
+            public void onClick(View v) {
+                showOrHideDetail(true);
+                mViewBinding.reminderDetail.reminderTitle.setText(R.string.reminder_page_service_title);
+                mViewBinding.reminderDetail.reminderContent.setText(R.string.reminder_page_service_content);
+            }
         });
         mViewBinding.reminderIndex.reminderPagePrivacy.setOnClickListener(v -> {
             showOrHideDetail(true);

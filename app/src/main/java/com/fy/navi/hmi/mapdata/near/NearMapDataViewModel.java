@@ -29,11 +29,19 @@ public class NearMapDataViewModel extends BaseViewModel<NearMapDataFragment, Nea
     }
 
     /**
-     * 更新附近推荐城市view
+     * 设置附近推荐城市view
      * @param cityDataInfos
      */
     public void setNearCityInfo(final ArrayList<CityDataInfo> cityDataInfos) {
         mView.updateNearView(cityDataInfos);
+    }
+
+    /**
+     * 更新附近推荐城市view
+     * @param cityDataInfo
+     */
+    public void onDownLoadStatus(final CityDataInfo cityDataInfo) {
+        mView.notifyNearView(cityDataInfo);
     }
 
     /**

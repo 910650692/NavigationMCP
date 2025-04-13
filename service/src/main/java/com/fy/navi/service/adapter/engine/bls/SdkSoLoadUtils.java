@@ -96,9 +96,9 @@ public class SdkSoLoadUtils {
                 GBLCacheFilePath.COPY_ASSETS_DIR + "dynamic/layers", true);*/
 
         // 自定义纹理使用，HMI自行修改维护
-        Logger.i(TAG, "copy 自定义纹理", GBLCacheFilePath.COPY_ASSETS_DIR);
-        FileUtils.getInstance().copyAssetsFolders("bls/style1",
-                GBLCacheFilePath.COPY_ASSETS_DIR + "bls/style1");
+//        Logger.i(TAG, "copy 自定义纹理", GBLCacheFilePath.COPY_ASSETS_DIR);
+//        FileUtils.getInstance().copyAssetsFolders("bls/style1",
+//                GBLCacheFilePath.COPY_ASSETS_DIR + "bls/style1");
 
 /*         //使用HMI 自己的字体，需要自行拷贝管理，如果是使用默认字体，则HMI无需自己拷贝
         Logger.i(TAG, "copy 字体风格", descDirPath + "font");

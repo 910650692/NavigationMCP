@@ -51,7 +51,7 @@ public class SceneHomeCompanyViewImpl extends BaseSceneModel<SceneHomeCompanyVie
     }
 
     public void flyLineVisible(MapType mapTypeId,boolean visible){
-        layerPackage.flyLineVisible(mapTypeId, visible);
+        layerPackage.openFlyLine(mapTypeId, visible);
     }
 
 }

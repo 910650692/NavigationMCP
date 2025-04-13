@@ -507,7 +507,8 @@ public class SearchAdapterImpl extends SearchServiceV2Manager implements ISearch
     public CompletableFuture<ETAInfo> getTravelTimeFutureIncludeChargeLeft(
             final SearchRequestParameter searchRequestParameterBuilder) {
         Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "getTravelTimeFutureIncludeChargeLeft remainCharge: "
-                + BevPowerCarUtils.getInstance().initlialHVBattenergy);
+                + BevPowerCarUtils.getInstance().initlialHVBattenergy
+                + "maxBattery: " + BevPowerCarUtils.getInstance().maxBattenergy);
         // TODO 后面需要对接真实的能耗模型参数
         final GNavigationEtaqueryRequestParam requestParam = SearchRequestParamV2.getInstance().
                 convertToGNavigationEtaqueryRequestParam(searchRequestParameterBuilder);
@@ -525,10 +526,14 @@ public class SearchAdapterImpl extends SearchServiceV2Manager implements ISearch
                     && response.route_list.get(0).path != null
                     && !response.route_list.get(0).path.isEmpty()) {
                 //公式:（当前续航-导航里程）/总续航
-                final float chargeLeft = (float) (((BevPowerCarUtils.getInstance().initlialHVBattenergy
+                final float currentBattery = BevPowerCarUtils.getInstance().initlialHVBattenergy < 0
+                        ? 0f : BevPowerCarUtils.getInstance().initlialHVBattenergy;
+                final float maxBattery = BevPowerCarUtils.getInstance().maxBattenergy < 0
+                        ? 90.0f : BevPowerCarUtils.getInstance().maxBattenergy;
+                final float chargeLeft = (float) (((currentBattery
                                         * BevPowerCarUtils.getInstance().batterToDistance)
                                         - response.route_list.get(0).path.get(0).distance)
-                                        / (BevPowerCarUtils.getInstance().initlialHVBattenergy * BevPowerCarUtils.getInstance().batterToDistance));
+                                        / (maxBattery * BevPowerCarUtils.getInstance().batterToDistance));
                 final int chargeLeftPercent = (int) (chargeLeft * 100);
                 final ETAInfo etaInfo = new ETAInfo()
                         .setDistance(response.route_list.get(0).path.get(0).distance)

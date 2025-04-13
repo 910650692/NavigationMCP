@@ -2,6 +2,9 @@ package com.fy.navi.scene.impl.poi;
 
 
 import android.text.TextUtils;
+import android.util.Log;
+
+import androidx.lifecycle.MutableLiveData;
 
 import com.android.utils.log.Logger;
 import com.fy.navi.scene.BaseSceneModel;
@@ -20,6 +23,7 @@ import com.fy.navi.service.logicpaket.search.SearchPackage;
 import com.fy.navi.service.logicpaket.user.behavior.BehaviorPackage;
 import com.fy.navi.ui.base.StackManager;
 
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 /**
@@ -33,7 +37,17 @@ public class ScenePoiDetailContentViewImpl extends BaseSceneModel<ScenePoiDetail
     private final BehaviorPackage mBehaviorPackage;
     private final MapDataPackage mapDataPackage;
     private final RoutePackage mRoutePackage;
+    private int mTaskId;
+    // 动力类型标定
+    public MutableLiveData<Integer> mPowerType = new MutableLiveData<>();
 
+    /**
+     * 获取高德SDK请求任务Id
+     * @return 请求任务Id
+     */
+    public int getMTaskId() {
+        return mTaskId;
+    }
 
     public ScenePoiDetailContentViewImpl(final ScenePoiDetailContentView screenView) {
         super(screenView);
@@ -48,6 +62,13 @@ public class ScenePoiDetailContentViewImpl extends BaseSceneModel<ScenePoiDetail
         StackManager.getInstance().getCurrentFragment(mMapTypeId.name()).closeFragment(true);
         // 清除扎标的点
         mSearchPackage.clearPoiLabelMark();
+    }
+
+    /**
+     * 清除搜索图层所有扎标
+     */
+    public void clearLabelMarker() {
+        mSearchPackage.clearLabelMark();
     }
 
     /**
@@ -71,13 +92,13 @@ public class ScenePoiDetailContentViewImpl extends BaseSceneModel<ScenePoiDetail
             Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "doSearch: poiInfoEntity is null");
             return;
         }
-        // 这里只有两种搜索类型：POI搜索和Geo搜索
-        if (!TextUtils.isEmpty(poiInfoEntity.getPid())) {
-            mSearchPackage.poiIdSearch(poiInfoEntity.getPid());
+        // 这里只有两种搜索类型：POI搜索和Geo搜索,带”."的是逆地理搜索自行拼接的pid，不可用于逆地理搜索
+        if (!TextUtils.isEmpty(poiInfoEntity.getPid()) && !poiInfoEntity.getPid().contains(".")) {
+            mTaskId = mSearchPackage.poiIdSearch(poiInfoEntity.getPid());
             //POI详情搜索测试代码，正式版本sdk时放开
 //            mSearchPackage.poiDetailSearch(poiInfoEntity, poiInfoEntity.getRetainParam());
         } else {
-            mSearchPackage.geoSearch(poiInfoEntity.getPoint());
+            mTaskId = mSearchPackage.geoSearch(poiInfoEntity.getPoint());
         }
     }
 
@@ -113,6 +134,15 @@ public class ScenePoiDetailContentViewImpl extends BaseSceneModel<ScenePoiDetail
      */
     public String removeFavorite(final PoiInfoEntity poiInfo) {
         return mBehaviorPackage.removeFavorite(poiInfo);
+    }
+
+    /**
+     * 添加poi标记
+     * @param poiInfoEntities 搜索结果列表
+     * @param index 选中下标
+     */
+    public void addPoiMarker(final List<PoiInfoEntity> poiInfoEntities, final int index) {
+        mSearchPackage.createPoiMarker(poiInfoEntities, index);
     }
 
     /**
@@ -162,6 +192,7 @@ public class ScenePoiDetailContentViewImpl extends BaseSceneModel<ScenePoiDetail
      * 获取预计到达时间
      *
      * @param geoPoint 目标点经纬度
+     * @return distance ，travelTime
      * @return distance ，travelTime
      */
     public CompletableFuture<ETAInfo> getTravelTimeFuture(final GeoPoint geoPoint) {

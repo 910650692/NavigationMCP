@@ -1,14 +1,16 @@
 package com.fy.navi.service.logicpaket.navi;
 
 
+import com.android.utils.ConvertUtils;
 import com.android.utils.ResourceUtils;
 import com.android.utils.log.Logger;
 import com.autonavi.gbl.common.path.option.PathInfo;
 import com.fy.navi.service.R;
-import com.fy.navi.service.adapter.navi.NaviConstant;
 import com.fy.navi.service.define.bean.GeoPoint;
 import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.route.RouteParam;
+import com.fy.navi.service.define.search.ETAInfo;
+import com.fy.navi.service.define.utils.NumberUtils;
 import com.fy.navi.service.logicpaket.calibration.CalibrationPackage;
 import com.fy.navi.service.logicpaket.layer.LayerPackage;
 import com.fy.navi.service.logicpaket.map.MapPackage;
@@ -18,6 +20,7 @@ import com.fy.navi.service.logicpaket.search.SearchResultCallback;
 import com.fy.navi.service.logicpaket.setting.SettingPackage;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
@@ -48,6 +51,8 @@ public final class OpenApiHelper {
 
     private static int CURRENT_SEARCH_TYPE = -1;
 
+    private static PathInfo CURRENT_PATH_INFO = null;
+
     private OpenApiHelper() {
     }
 
@@ -57,7 +62,30 @@ public final class OpenApiHelper {
      * @return 路径信息
      */
     public static PathInfo getCurrentPathInfo(final MapType mapTypeId) {
-        return (PathInfo) ROUTE_PACKAGE.getCurrentPathInfo(mapTypeId).getMPathInfo();
+        if (null == CURRENT_PATH_INFO) {
+            return ROUTE_PACKAGE.getCurrentPathInfo(mapTypeId) == null ? null :
+                    (PathInfo) ROUTE_PACKAGE.getCurrentPathInfo(mapTypeId).getMPathInfo();
+        } else {
+            return CURRENT_PATH_INFO;
+        }
+    }
+
+    public static PathInfo getPathInfo(final MapType mapType, final long pathId) {
+        if (!ConvertUtils.isEmpty(CURRENT_PATH_INFOS)) {
+            for (PathInfo pathInfo : CURRENT_PATH_INFOS) {
+                if (pathId == pathInfo.getPathID()) {
+                    return pathInfo;
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * @param pathInfo 设置当前的路径信息
+     */
+    public static void setCurrentPathInfo(final PathInfo pathInfo) {
+        CURRENT_PATH_INFO = pathInfo;
     }
 
     /**
@@ -65,7 +93,12 @@ public final class OpenApiHelper {
      * @return 返回当前的路径id
      */
     public static long getCurrentPathId(final MapType mapTypeId) {
-        final PathInfo pathInfo = getCurrentPathInfo(mapTypeId);
+        PathInfo pathInfo = null;
+        if (null == CURRENT_PATH_INFO) {
+            pathInfo = getCurrentPathInfo(mapTypeId);
+        } else {
+            pathInfo = CURRENT_PATH_INFO;
+        }
         if (pathInfo != null) {
             return pathInfo.getPathID();
         }
@@ -84,6 +117,10 @@ public final class OpenApiHelper {
      * @param currentPathInfos 设置当前的路径信息列表
      */
     public static void setCurrentPathInfos(final List<PathInfo> currentPathInfos) {
+        if (ConvertUtils.isEmpty(currentPathInfos)) {
+            Logger.e(TAG, "setCurrentPathInfos is null");
+            return;
+        }
         Logger.i(TAG, "setCurrentPathInfos size = " + currentPathInfos.size());
         CURRENT_PATH_INFOS = new CopyOnWriteArrayList<>(currentPathInfos);
     }
@@ -174,6 +211,8 @@ public final class OpenApiHelper {
      */
     public static void enterPreview(final MapType mapTypeId) {
         NAVI_PACKAGE.setPreviewStatus(true);
+        LAYER_PACKAGE.setFollowMode(mapTypeId, false);
+        LAYER_PACKAGE.openDynamicLevel(mapTypeId, false);
         ROUTE_PACKAGE.naviShowPreview(mapTypeId);
     }
 
@@ -195,8 +234,58 @@ public final class OpenApiHelper {
     /**
      * 清除搜索扎标标记
      */
-    public static void clearLabelMark() {
+    public static void clearSearchLabelMark() {
         SEARCH_PACKAGE.clearLabelMark();
+    }
+
+    /**
+     * @param energyConsumption 到达目的地消耗的能量，单位为百分之一瓦时
+     * @param currentEnergy 当前剩余电量，单位为百分之一瓦时
+     * @param maxEnergy 最大电池量，单位为百分之一瓦时
+     * @return 获取到达电量剩余百分比
+     */
+    public static int calculateRemainingOrNeededEnergyPercent(long energyConsumption,
+                                                              long currentEnergy, long maxEnergy) {
+        // 验证当前剩余电量是否足够到达目的地
+        if (currentEnergy >= energyConsumption) {
+            // 如果电量足够，计算到达目的地后的剩余电量百分比
+            double remainingEnergyPercent = ((double)(
+                    currentEnergy - energyConsumption) * 100) / maxEnergy;
+            return (int)Math.round(remainingEnergyPercent);
+        } else {
+            // 如果电量不足，计算到达目的地还需要多少电量
+            double neededEnergyPercent = ((double)(
+                    energyConsumption - currentEnergy) * 100) / maxEnergy;
+            // 将需要的额外电量转换为相对于最大电量的百分比，并返回负数，进行四舍五入
+            return (int)Math.round(-neededEnergyPercent);
+        }
+    }
+
+    /**
+     * @param geoPoint 经纬度点
+     * @return ETAInfo 包含距离，剩余时间和剩余电量
+     */
+    public static CompletableFuture<ETAInfo> getTravelTimeFutureIncludeChargeLeft(
+            final GeoPoint geoPoint) {
+        return SEARCH_PACKAGE.getTravelTimeFutureIncludeChargeLeft(geoPoint);
+    }
+
+    /**
+     * @param pathId 路径id
+     * @return 返回对应pathId的索引
+     */
+    public static int getPathIndex(final long pathId) {
+        if (!ConvertUtils.isEmpty(CURRENT_PATH_INFOS)) {
+            for (PathInfo pathInfo : CURRENT_PATH_INFOS) {
+                if (null == pathInfo) {
+                    continue;
+                }
+                if (pathInfo.getPathID() == pathId) {
+                    return (int)pathInfo.getPathIndex();
+                }
+            }
+        }
+        return NumberUtils.NUM_ERROR;
     }
 
     // 个性化道路接口

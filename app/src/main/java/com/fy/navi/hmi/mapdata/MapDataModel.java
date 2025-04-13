@@ -17,6 +17,7 @@ import com.fy.navi.service.logicpaket.position.PositionPackage;
 import com.fy.navi.ui.base.BaseModel;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class MapDataModel extends BaseModel<MapDataViewModel> implements MapDataCallBack {
 
@@ -76,21 +77,34 @@ public class MapDataModel extends BaseModel<MapDataViewModel> implements MapData
      * 获取下载中、更新中状态下的所有城市adCode列表
      * @return 返回处于下载中、更新中的数据列表
      */
-    public ArrayList<CityDataInfo> getWorkingList() {
+    public ArrayList<ProvDataInfo> getWorkingList() {
         return mapDataPackage.getWorkingList();
     }
 
     /**
-     * 获取已下载状态下的所有城市adCode列表
-     * @return 返回处于已下载的数据列表
+     * 获取下载中、更新中状态下的所有城市adCode列表数量
+     * @return int
      */
-    public ArrayList<CityDataInfo> getWorkedList() {
+    public int getWorkingQueueSize() {
+        ArrayList<Integer> adCodeList = mapDataPackage.getWorkingQueueAdCodeList();
+        int size = 0;
+        if (adCodeList != null && !adCodeList.isEmpty()) {
+            size = adCodeList.size();
+        }
+        return size;
+    }
+
+    /**
+     * 获取已下载状态下的所有城市adCode列表
+     * @return 返回处于已下载的CityDataInfo数据列表
+     */
+    public ArrayList<ProvDataInfo> getWorkedList() {
         return mapDataPackage.getWorkedList();
     }
 
     /**
      * 获取 已下载状态的 省份+城市 结构 信息
-     * @return 获取已经下载的数据列表
+     * @return 获取已经下载的ProvDataInfo数据列表
      */
     public ArrayList<ProvDataInfo> getAllDownLoadedList() {
         return mapDataPackage.getAllDownLoadedList();
@@ -155,8 +169,10 @@ public class MapDataModel extends BaseModel<MapDataViewModel> implements MapData
     }
 
     @Override
-    public void onDownLoadStatus(final ProvDataInfo provDataInfo) {
-        mViewModel.onDownLoadStatus(provDataInfo);
+    public void onDownLoadStatus(final CityDataInfo cityDataInfo) {
+        if (cityDataInfo != null){
+            mViewModel.onDownLoadStatus(cityDataInfo);
+        }
     }
 
     @Override

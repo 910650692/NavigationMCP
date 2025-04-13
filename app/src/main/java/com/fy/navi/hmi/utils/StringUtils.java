@@ -45,24 +45,36 @@ public class StringUtils {
      * @return
      */
     public static String formatSize(BigInteger byteCount) {
-
         BigDecimal sizeInGB = new BigDecimal(byteCount).divide(new BigDecimal(1024 * 1024 * 1024), 2, RoundingMode.HALF_UP);
         if (sizeInGB.compareTo(BigDecimal.ZERO) > 1) {
             return sizeInGB.toPlainString() + " GB";
         }
-
         BigDecimal sizeInMB = new BigDecimal(byteCount).divide(new BigDecimal(1024 * 1024), 2, RoundingMode.HALF_UP);
         if (sizeInMB.compareTo(BigDecimal.ZERO) > 0) {
             return sizeInMB.toPlainString() + " MB";
         }
-
         BigDecimal sizeInKB = new BigDecimal(byteCount).divide(new BigDecimal(1024), 2, RoundingMode.HALF_UP);
         if (sizeInKB.compareTo(BigDecimal.ZERO) > 0) {
             return sizeInKB.toPlainString() + " KB";
         }
-
         // 如果都不满足，则返回字节数
         return byteCount.toString() + " B";
     }
+
+    /**
+     * 辅助方法：将字节数转换为GB、MB、KB或B的字符串表示
+     *
+     * @param bytes
+     * @return
+     */
+    public static String formatSize(long bytes) {
+        DecimalFormat decimalFormat = new DecimalFormat("#0.0");
+        if (bytes / 1024.0 / 1024.0 / 1024.0 < 1) { //数据大小小于1G
+            return decimalFormat.format(bytes / 1024.0 / 1024.0) + "MB";
+        } else {
+            return decimalFormat.format(bytes / 1024.0 / 1024.0 / 1024.0) + "GB";
+        }
+    }
+
 
 }

@@ -3,6 +3,7 @@ package com.fy.navi.hmi.mapdata.search;
 import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
+import com.fy.navi.service.define.mapdata.CityDataInfo;
 import com.fy.navi.service.define.mapdata.MergedStatusBean;
 import com.fy.navi.service.define.mapdata.ProvDataInfo;
 import com.fy.navi.service.logicpaket.mapdata.MapDataCallBack;
@@ -64,10 +65,10 @@ public class SearchMapDataModel extends BaseModel<SearchMapDataViewModel> implem
     }
 
     @Override
-    public void onDownLoadStatus(final ProvDataInfo provDataInfo) {
-        if (provDataInfo != null) {
-            Logger.d(TAG, "onDownLoadStatus: provDataInfo = "  + GsonUtils.toJson(provDataInfo));
-            mViewModel.onDownLoadStatus(provDataInfo);
+    public void onDownLoadStatus(final CityDataInfo cityDataInfo) {
+        if (cityDataInfo != null){
+            Logger.d(TAG, "onDownLoadStatus: cityDataInfo = "  + GsonUtils.toJson(cityDataInfo));
+            mViewModel.onDownLoadStatus(cityDataInfo);
         }
     }
 

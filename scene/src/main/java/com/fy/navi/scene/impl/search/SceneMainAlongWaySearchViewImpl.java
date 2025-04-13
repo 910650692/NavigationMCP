@@ -40,6 +40,6 @@ public class SceneMainAlongWaySearchViewImpl extends BaseSceneModel<SceneMainAlo
     }
 
     public void flyLineVisible(MapType mapTypeId, boolean visible){
-        layerPackage.flyLineVisible(mapTypeId, visible);
+        layerPackage.openFlyLine(mapTypeId, visible);
     }
 }

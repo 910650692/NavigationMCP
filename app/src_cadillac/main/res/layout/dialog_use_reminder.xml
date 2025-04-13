@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <include
+            android:id="@+id/reminder_index"
+            layout="@layout/dialog_use_reminder_index" />
+
+        <include
+            android:id="@+id/reminder_detail"
+            android:visibility="invisible"
+            layout="@layout/dialog_use_reminder_detail" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

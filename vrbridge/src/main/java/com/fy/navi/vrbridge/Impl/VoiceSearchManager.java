@@ -63,11 +63,12 @@ public final class VoiceSearchManager {
     private int mProcessDestIndex = -1; //当前正在处理的多目的地下标
     private SparseArray<PoiInfoEntity> mMultiplePoiArray; //多目的地途径点和目的地集合
 
-
     private String mPoiType; //地址类型，用于设置家、公司、普通点
 
     private VoiceSearchConditions mSearchCondition; //深度-筛选搜索项
     private String mSortValue;
+
+    private boolean mAlongToAround = false; //是否为沿途搜转周边搜，在沿途搜结果为空时触发
 
     //语音结果回调
     private RespCallback mRespCallback;
@@ -813,14 +814,30 @@ public final class VoiceSearchManager {
         switch (mSearchType) {
             case IVrBridgeConstant.VoiceSearchType.SET_HOME_COMPANY:
                 updateHomeCompany(poiInfo);
+                sendClosePage();
                 break;
             case IVrBridgeConstant.VoiceSearchType.WITH_PASS_BY:
                 dealNextMultipleDest(poiInfo);
+                break;
+            case IVrBridgeConstant.VoiceSearchType.ALONG_WAY:
+                mAlongToAround = false;
+                RoutePackage.getInstance().addViaPoint(MapType.MAIN_SCREEN_MAIN_MAP, poiInfo);
+                sendClosePage();
                 break;
             default:
                 planRoute(poiInfo, null);
                 break;
         }
+    }
+
+
+    /**
+     * 发送指令，关闭当前HMI界面，如设置家/公司、途径点选择等.
+     */
+    private void sendClosePage() {
+        final Bundle bundle = new Bundle();
+        bundle.putInt(IVrBridgeConstant.VoiceIntentParams.INTENT_PAGE, IVrBridgeConstant.VoiceIntentPage.CLOSE_CURRENT_PAGE);
+        MapPackage.getInstance().voiceOpenHmiPage(MapType.MAIN_SCREEN_MAIN_MAP, bundle);
     }
 
     /**
@@ -945,7 +962,7 @@ public final class VoiceSearchManager {
      * 处理沿途搜索逻辑.
      *
      * @param sessionId 语音多轮唯一标识.
-     * @param passBy 沿途点.
+     * @param passBy 关键字.
      * @param poiType 沿途点类型.
      * @param poiCallback 执行结果回调.
      */
@@ -953,17 +970,16 @@ public final class VoiceSearchManager {
         if (TextUtils.isEmpty(sessionId) || TextUtils.isEmpty(passBy)) {
             Log.e(IVrBridgeConstant.TAG, "session or passBy is empty");
             if (null != poiCallback) {
-                poiCallback.onResponse(CallResponse.createFailResponse("空的sessionId"));
+                poiCallback.onResponse(CallResponse.createFailResponse("参数为空"));
             }
             return;
         }
 
+        mAlongToAround = false;
         mSessionId = sessionId;
         mPoiCallback = poiCallback;
         //保存沿途搜参数，如果沿途搜没有结果，需转为周边搜
-        mDestInfo = new ArrivalBean();
-        mDestInfo.setDest(passBy);
-        mDestInfo.setDestType(poiType);
+        mKeyword = passBy;
         mSearchType = IVrBridgeConstant.VoiceSearchType.ALONG_WAY;
         final Bundle bundle = new Bundle();
         bundle.putInt(IVrBridgeConstant.VoiceIntentParams.INTENT_PAGE, IVrBridgeConstant.VoiceIntentPage.ALONG_SEARCH);
@@ -976,8 +992,27 @@ public final class VoiceSearchManager {
      */
     private void dealAlongWaySearchResult() {
         if (null == mSearchResultList || mSearchResultList.isEmpty()) {
-            Log.d(IVrBridgeConstant.TAG, "AlongSearch " + mKeyword + ", result is empty");
-            //todo 转为周边搜
+            if (mAlongToAround) {
+                //已经触发沿途搜转周边
+                mAlongToAround = false;
+                Log.d(IVrBridgeConstant.TAG, "AlongSearch turnAround: " + mKeyword + ", result is empty");
+                responseSearchEmpty();
+            } else {
+                mAlongToAround = true;
+                Log.d(IVrBridgeConstant.TAG, "AlongSearch " + mKeyword + "result is empty, turnAround");
+                final LocInfoBean locInfo = PositionPackage.getInstance().getLastCarLocation();
+                if (null != locInfo) {
+                    final GeoPoint geoPoint = new GeoPoint(locInfo.getLongitude(), locInfo.getLatitude());
+                    final Bundle bundle = new Bundle();
+                    bundle.putInt(IVrBridgeConstant.VoiceIntentParams.INTENT_PAGE, IVrBridgeConstant.VoiceIntentPage.AROUND_SEARCH);
+                    bundle.putString(IVrBridgeConstant.VoiceIntentParams.KEYWORD, mKeyword);
+                    bundle.putParcelable(IVrBridgeConstant.VoiceIntentParams.AROUND_POINT, geoPoint);
+                    bundle.putInt(IVrBridgeConstant.VoiceIntentParams.AROUND_RADIUS, 5000);
+                    MapPackage.getInstance().voiceOpenHmiPage(MapType.MAIN_SCREEN_MAIN_MAP, bundle);
+                } else {
+                    responseSearchEmpty();
+                }
+            }
             return;
         }
 
@@ -1076,7 +1111,6 @@ public final class VoiceSearchManager {
         favoriteInfo.setCommonName(type);
         poiInfo.setFavoriteInfo(favoriteInfo);
         BehaviorPackage.getInstance().addFavorite(poiInfo, type);
-//        BehaviorPackage.getInstance().addFavoriteData(poiInfo, type);
     }
 
     /**
@@ -1130,7 +1164,6 @@ public final class VoiceSearchManager {
             favoriteInfo.setCommonName(0);
             poiInfo.setFavoriteInfo(favoriteInfo);
             BehaviorPackage.getInstance().addFavorite(poiInfo, 0);
-//            BehaviorPackage.getInstance().addFavoriteData(poiInfo, 0);
         }
     }
 
@@ -1203,13 +1236,13 @@ public final class VoiceSearchManager {
         GeoPoint endPoint = null;
         if (IVrBridgeConstant.DestType.HOME.equals(mPoiType)) {
             //家
-            final PoiInfoEntity homeInfo = BehaviorPackage.getInstance().getFavoriteHomeData(1);
+            final PoiInfoEntity homeInfo = BehaviorPackage.getInstance().getHomeFavoriteInfo();
             if (null != homeInfo && null != homeInfo.getPoint()) {
                 endPoint = homeInfo.getPoint();
             }
         } else {
             //公司
-            final PoiInfoEntity companyInfo = BehaviorPackage.getInstance().getFavoriteHomeData(2);
+            final PoiInfoEntity companyInfo = BehaviorPackage.getInstance().getCompanyFavoriteInfo();
             if (null != companyInfo && null != companyInfo.getPoint()) {
                 endPoint = companyInfo.getPoint();
             }

@@ -2,6 +2,7 @@ package com.fy.navi.service.adapter.map;
 
 import com.fy.navi.service.AdapterConfig;
 import com.fy.navi.service.AutoMapConstant;
+import com.fy.navi.service.adapter.setting.SettingAdapter;
 import com.fy.navi.service.define.bean.GeoPoint;
 import com.fy.navi.service.define.bean.PreviewParams;
 import com.fy.navi.service.define.map.IBaseScreenMapView;
@@ -22,6 +23,8 @@ public class MapAdapter {
     private static final String GAODE_API_CLS = "MapAdapterImpl";
     private IMapApi mIMapApi;
 
+    private SettingAdapter mSettingAdapter;
+
     public static MapAdapter getInstance() {
         return Holder.INSTANCE;
     }
@@ -32,6 +35,7 @@ public class MapAdapter {
 
     private MapAdapter() {
         mIMapApi = (IMapApi) AdapterConfig.getObject(GAODE_API_PKG, GAODE_API_CLS);
+        mSettingAdapter = SettingAdapter.getInstance();
     }
 
 
@@ -98,7 +102,22 @@ public class MapAdapter {
             case UP_3D -> MapMode.NORTH_2D;
             case NORTH_2D -> MapMode.UP_2D;
         };
+        switchMapMode(mapMode);
         return mIMapApi.setMapMode(mapTypeId, mapMode);
+    }
+
+    private void switchMapMode(MapMode mapMode) {
+        switch (mapMode) {
+            case UP_2D:
+                mSettingAdapter.setConfigKeyMapviewMode(0);
+                break;
+            case UP_3D:
+                mSettingAdapter.setConfigKeyMapviewMode(2);
+                break;
+            case NORTH_2D:
+                mSettingAdapter.setConfigKeyMapviewMode(1);
+                break;
+        }
     }
 
     public MapMode getCurrentMapMode(MapType mapTypeId) {
@@ -106,6 +125,7 @@ public class MapAdapter {
     }
 
     public boolean switchMapMode(MapType mapTypeId, MapMode mapMode) {
+        switchMapMode(mapMode);
         return mIMapApi.setMapMode(mapTypeId, mapMode);
     }
 
@@ -155,7 +175,4 @@ public class MapAdapter {
         return mIMapApi.getCurrentScale(mapTypeId);
     }
 
-    public boolean getIsEnterPreview(MapType mapTypeId) {
-        return mIMapApi.getIsEnterPreview(mapTypeId);
-    }
 }

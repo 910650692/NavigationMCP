@@ -73,7 +73,6 @@ public class LauncherCardNaviGuidanceFragment extends BaseFragment<FragmentLaunc
         mBinding.sceneNaviTmc.onNaviInfo(naviEtaInfo);
         mBinding.sceneNaviViaInfo.onNaviInfo(naviEtaInfo);
         mBinding.sceneNaviLastMile.onNaviInfo(naviEtaInfo);
-        mBinding.sceneNaviParkingList.onNaviInfo(naviEtaInfo);
         // TODO: 2025/3/23 lvww 导航业务逻辑修改 需要Launcher根据自己业务进行修改
         mBinding.sceneNaviCrossImage.updateCrossProgress(naviEtaInfo.getAllDist());
     }

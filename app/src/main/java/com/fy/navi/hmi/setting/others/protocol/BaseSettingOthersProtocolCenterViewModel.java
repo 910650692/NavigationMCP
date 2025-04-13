@@ -4,6 +4,8 @@ import android.app.Application;
 
 import androidx.annotation.NonNull;
 
+import com.fy.navi.burypoint.anno.HookMethod;
+import com.fy.navi.burypoint.constant.BuryConstant;
 import com.fy.navi.ui.action.Action;
 import com.fy.navi.ui.base.BaseViewModel;
 
@@ -31,8 +33,12 @@ public class BaseSettingOthersProtocolCenterViewModel extends BaseViewModel<Sett
         closeFragment(true);
     };
 
-    public Action mOpenProtocolCenterTerm = () -> {
-        mView.showProtocolCenter(SettingOthersProtocolCenterFragment.ProtocolCenterType.PROTOCOL_TERM);
+    public Action mOpenProtocolCenterTerm = new Action() {
+        @Override
+        @HookMethod(eventName = BuryConstant.EventName.AMAP_SERVICEAGREEMENT_CHECK)
+        public void call() {
+            mView.showProtocolCenter(SettingOthersProtocolCenterFragment.ProtocolCenterType.PROTOCOL_TERM);
+        }
     };
 
     public Action mOpenProtocolCenterPrivacy = () -> {

@@ -22,7 +22,7 @@
                 android:layout_height="wrap_content"
                 android:textSize="@dimen/sp_42"
                 android:textStyle="bold"
-                android:textColor="@color/black"
+                android:textColor="@color/search_color_ffffff"
                 android:text="@string/authorization_request_title"
                 android:layout_marginTop="@dimen/dp_70"
                 app:layout_constraintEnd_toEndOf="parent"

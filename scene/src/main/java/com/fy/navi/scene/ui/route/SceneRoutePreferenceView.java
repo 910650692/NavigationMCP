@@ -5,7 +5,9 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import com.android.utils.ConvertUtils;
+import com.android.utils.NetWorkUtils;
 import com.android.utils.ResourceUtils;
+import com.android.utils.thread.ThreadManager;
 import com.fy.navi.scene.BaseSceneView;
 import com.fy.navi.scene.R;
 import com.fy.navi.scene.api.route.ISceneRoutePreferenceCallBack;
@@ -61,8 +63,16 @@ public class SceneRoutePreferenceView extends BaseSceneView<SceneRoutePreference
     @Override
     protected void initObserver() {
         mScreenViewModel.setOnPreferenceChangeListener("route fragment",this);
+        NetWorkUtils.Companion.getInstance().registerNetworkObserver(mNetworkObserver);
         mScreenViewModel.setDefaultPreference();
+        setPreferenceEnable(getNetworkState());
     }
+
+    @Override
+    public void onDestroy() {
+        NetWorkUtils.Companion.getInstance().unRegisterNetworkObserver(mNetworkObserver);
+    }
+    
     /**
      * 重置偏好
      * */
@@ -144,4 +154,59 @@ public class SceneRoutePreferenceView extends BaseSceneView<SceneRoutePreference
             callBack.onRoutePreferenceChange(getPreferText(routePreference), isFirstChange);
         }
     }
+
+    /**
+     * 设置CheckBox是否可用
+     * @param isEnable 是否可用
+     */
+    private void setPreferenceEnable(final boolean isEnable) {
+        ThreadManager.getInstance().postUi(() -> {
+            if (mViewBinding == null) {
+                return;
+            }
+            mViewBinding.preferenceAvoidCongestion.setAlpha(isEnable ? 1.0f : 0.5f);
+            mViewBinding.preferenceFirstMainRoad.setAlpha(isEnable? 1.0f : 0.5f);
+            mViewBinding.preferenceFastestSpeed.setAlpha(isEnable? 1.0f : 0.5f);
+        });
+    }
+
+    /**
+     * 获取网络状态
+     * @return 网络状态
+     */
+    private boolean getNetworkState() {
+        return Boolean.TRUE.equals(NetWorkUtils.Companion.getInstance().checkNetwork());
+    }
+
+    private final NetWorkUtils.NetworkObserver mNetworkObserver = new NetWorkUtils.NetworkObserver() {
+        @Override
+        public void onNetConnectSuccess() {
+            setPreferenceEnable(true);
+        }
+
+        @Override
+        public void onNetDisConnect() {
+            setPreferenceEnable(false);
+        }
+
+        @Override
+        public void onNetUnavailable() {
+
+        }
+
+        @Override
+        public void onNetBlockedStatusChanged() {
+
+        }
+
+        @Override
+        public void onNetLosing() {
+
+        }
+
+        @Override
+        public void onNetLinkPropertiesChanged() {
+
+        }
+    };
 }

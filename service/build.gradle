@@ -44,13 +44,16 @@ android {
     sourceSets {
         main {
             jniLibs.srcDirs = ['libs', '/jni']
+            res.srcDirs = [
+                    'src/main/res',
+                    'src/main/res_layer',
+            ]
         }
     }
 }
 
 dependencies {
-//    implementation fileTree(dir: 'libs', include: ['*.jar', '*.aar'])
-    compileOnly fileTree(dir: 'libs', include: ['framework.jar'])
+    implementation fileTree(dir: 'libs', include: ['*.jar', '*.aar'])
     implementation libs.bundles.module.library
     implementation libs.work.runtime
     implementation libs.greendao

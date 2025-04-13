@@ -84,18 +84,10 @@ public class NearMapDataModel extends BaseModel<NearMapDataViewModel> implements
     }
 
     @Override
-    public void onDownLoadStatus(final ProvDataInfo provDataInfo) {
-        Logger.d(MapDefaultFinalTag.OFFLINE_HMI_TAG, "onDownLoadStatus: provDataInfo = " + GsonUtils.toJson(provDataInfo));
-        if (provDataInfo != null && provDataInfo.getCityInfoList() != null && !provDataInfo.getCityInfoList().isEmpty()) {
-            final LocInfoBean locationInfo = PositionPackage.getInstance().getLastCarLocation();
-            final int adCode = mMapDataPackage.getAdCodeByLonLat(locationInfo.getLongitude(), locationInfo.getLatitude());
-            final ArrayList<CityDataInfo> cityDataInfos = getNearAdCodeList(adCode);
-            for (CityDataInfo cityDataInfo : cityDataInfos) {
-                if (cityDataInfo.getAdcode() == provDataInfo.getCityInfoList().get(0).getAdcode()) {
-                    cityDataInfo.setDownLoadInfo(provDataInfo.getCityInfoList().get(0).getDownLoadInfo());
-                }
-            }
-            mViewModel.setNearCityInfo(cityDataInfos);
+    public void onDownLoadStatus(final CityDataInfo cityDataInfo) {
+        Logger.d(MapDefaultFinalTag.OFFLINE_HMI_TAG, "onDownLoadStatus: cityDataInfo = " + GsonUtils.toJson(cityDataInfo));
+        if (cityDataInfo != null){
+            mViewModel.onDownLoadStatus(cityDataInfo);
         }
     }
 

@@ -114,6 +114,10 @@ public class TrafficEventFragment extends BaseFragment<FragmentTrafficDetailBind
         mBinding.tvType.setText(TrafficType.getTitleByTrafficType(layerTag));
     }
 
+    public String getTrafficType(){
+        return mBinding.tvType.getText().toString();
+    }
+
     private void updatePic(String picUrl) {
         Logger.i(TAG, "picUrl:" + (TextUtils.isEmpty(picUrl)));
         if (TextUtils.isEmpty(picUrl)) return;

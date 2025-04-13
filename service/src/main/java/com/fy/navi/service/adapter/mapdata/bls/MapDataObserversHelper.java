@@ -1,9 +1,9 @@
 package com.fy.navi.service.adapter.mapdata.bls;
 
 import android.annotation.SuppressLint;
-import android.view.ViewGroup;
 
 import com.android.utils.ConvertUtils;
+import com.android.utils.NetWorkUtils;
 import com.android.utils.ToastUtils;
 import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
@@ -21,7 +21,6 @@ import com.autonavi.gbl.data.model.InitConfig;
 import com.autonavi.gbl.data.model.MapDataFileType;
 import com.autonavi.gbl.data.model.MapDataMode;
 import com.autonavi.gbl.data.model.MergedStatusInfo;
-import com.autonavi.gbl.data.model.OperationType;
 import com.autonavi.gbl.data.model.ProvinceInfo;
 import com.autonavi.gbl.data.model.TaskStatusCode;
 import com.autonavi.gbl.data.observer.IDataInitObserver;
@@ -42,9 +41,11 @@ import com.fy.navi.service.define.mapdata.MergedStatusBean;
 import com.fy.navi.service.define.mapdata.ProvDataInfo;
 import com.fy.navi.service.greendao.CommonManager;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Hashtable;
-import java.util.List;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 public class MapDataObserversHelper implements IDataInitObserver, IDownloadObserver, IMergedStatusInfoObserver,
         IErrorDataObserver, IDataListObserver {
@@ -60,7 +61,6 @@ public class MapDataObserversHelper implements IDataInitObserver, IDownloadObser
     private String mSpaceStr = "_";
     private String mZeroStr = "0";
     private String mOneStr = "1";
-
 
     protected MapDataObserversHelper(final MapDataService mapDataService) {
         mapDataResultObserverHashtable = new Hashtable<>();
@@ -91,6 +91,9 @@ public class MapDataObserversHelper implements IDataInitObserver, IDownloadObser
         //设置异常数据监听观察者
         mMapDataService.setErrorDataObserver(this);
         mMapDataService.setIMergedStatusInfoObserver(this);
+        final ArrayList<Integer> list = mMapDataService.getDownLoadAdcodeList();
+        final String value = ConvertUtils.isEmpty(list) ? "0" : "1";
+        mCommonManager.insertOrReplace(UserDataCode.SETTING_DOWNLOAD_LIST, value);
     }
 
     /**
@@ -139,6 +142,55 @@ public class MapDataObserversHelper implements IDataInitObserver, IDownloadObser
     }
 
     /**
+     * 全省地图数据按照city info 处理
+     * @param cityBeanList
+     * @param provAdcode
+     * @return 返回本地define定义类
+     */
+    private CityDataInfo convertAllCityData(final ArrayList<CityDataInfo> cityBeanList, final int provAdcode) {
+        final CityDataInfo cityDataInfo = new CityDataInfo();
+        cityDataInfo.setAdcode(provAdcode);
+        cityDataInfo.setAreaType(3);
+        cityDataInfo.setName("全省下载");
+        cityDataInfo.setJianPin("qsdt");
+        cityDataInfo.setPinYin("quanshegnditu");
+        cityDataInfo.setUpperAdcode(provAdcode);
+        cityDataInfo.setVecNearAdcodeList(null);
+        cityDataInfo.setVecLowerAdcodeList(null);
+
+        int mTaskState = UserDataCode.TASK_STATUS_CODE_READY;
+        BigInteger sum = BigInteger.ZERO;
+        if (cityBeanList != null && !cityBeanList.isEmpty()) {
+            final int count = cityBeanList.size();
+            int downloadedCount = 0;
+            for (CityDataInfo info : cityBeanList) {
+                //获取附近城市数据包大小总和
+                sum =  sum.add(info.getDownLoadInfo().getFullZipSize());
+                //获取附近城市未下载数量
+                if (info.getDownLoadInfo().getTaskState() == UserDataCode.TASK_STATUS_CODE_READY ||
+                        info.getDownLoadInfo().getTaskState() == UserDataCode.TASK_STATUS_CODE_PAUSE ) {
+                    downloadedCount = downloadedCount + 1;
+                }
+            }
+            if (downloadedCount == count) {
+                // 全部未下载状态
+                mTaskState = UserDataCode.TASK_STATUS_CODE_READY;
+            } else {
+                // 部分未下载状态
+                mTaskState = UserDataCode.TASK_STATUS_CODE_DOING;
+            }
+        }
+        final CityDownLoadInfo cityDownLoadBean = new CityDownLoadInfo();
+        cityDownLoadBean.setAdcode(provAdcode);
+        cityDownLoadBean.setTaskState(mTaskState);
+        cityDownLoadBean.setFullZipSize(sum);
+
+        cityDataInfo.setDownLoadInfo(cityDownLoadBean);
+
+        return cityDataInfo;
+    }
+
+    /**
      * 获取基础功能包数据
      * @return 返回基础包信息
      */
@@ -146,7 +198,7 @@ public class MapDataObserversHelper implements IDataInitObserver, IDownloadObser
         if (mMapDataService != null) {
             // 基础功能包adcode（值固定为0） 目前国家类型行政编码，仅为一个元素，值固定为0
             final Area cityArea = mMapDataService.getArea(DownLoadMode.DOWNLOAD_MODE_NET, 0);
-            return convertCityData(cityArea);
+            return getCityInfo(cityArea.adcode);
         } else {
             return null;
         }
@@ -167,9 +219,13 @@ public class MapDataObserversHelper implements IDataInitObserver, IDownloadObser
                 for (int i = 0; i < adCodeDirectList.size(); i++) {
                     final Integer cityAdcode = adCodeDirectList.get(i);
                     final Area cityArea = mMapDataService.getArea(DownLoadMode.DOWNLOAD_MODE_NET, cityAdcode);
-                    directCityList.add(convertCityData(cityArea));
+                    directCityList.add(getCityInfo(cityArea.adcode));
                 }
                 provDataInfo.setName("直辖市");
+                provDataInfo.setAreaType(2);
+                provDataInfo.setAdcode(2);
+                provDataInfo.setJianPin("zxs");
+                provDataInfo.setPinYin("zhixiashi");
                 provDataInfo.setCityInfoList(directCityList);
             }
             return provDataInfo;
@@ -193,9 +249,13 @@ public class MapDataObserversHelper implements IDataInitObserver, IDownloadObser
                 for (int i = 0; i < adCodeSpecialLst.size(); i++) {
                     final Integer cityAdcode = adCodeSpecialLst.get(i);
                     final Area cityArea = mMapDataService.getArea(DownLoadMode.DOWNLOAD_MODE_NET, cityAdcode);
-                    directCityList.add(convertCityData(cityArea));
+                    directCityList.add(getCityInfo(cityArea.adcode));
                 }
                 provDataInfo.setName("特别行政区");
+                provDataInfo.setAreaType(4);
+                provDataInfo.setAdcode(4);
+                provDataInfo.setJianPin("tbxzq");
+                provDataInfo.setPinYin("tebiexingzhegnqu");
                 provDataInfo.setCityInfoList(directCityList);
             }
             return provDataInfo;
@@ -215,32 +275,32 @@ public class MapDataObserversHelper implements IDataInitObserver, IDownloadObser
             // 1，添加一级直辖市对应信息
             provinceBeanList.add(getDirectDataInfo());
 
-            // 2，获取省份adCode列表（按拼音排序）
+            // 2，获取普通省份列表（按拼音排序）
             final ArrayList<Integer> adCodeProvLst = mMapDataService.getAdcodeList(DownLoadMode.DOWNLOAD_MODE_NET, AreaType.AREA_TYPE_PROV);
-            final ArrayList<Integer> allProvinceList = new ArrayList<>(adCodeProvLst); // 添加一级省份对应信息
-            if (!allProvinceList.isEmpty()) {
-                for (int i = 0; i < allProvinceList.size(); i++) {
-                    final Integer provAdcode = allProvinceList.get(i);
-                    final Area provArea = mMapDataService.getArea(DownLoadMode.DOWNLOAD_MODE_NET, provAdcode);
-                    final ProvDataInfo provDataInfo = convertProvData(provArea);
-                    // 获取对应省份下的城市列表
-                    final ArrayList<CityDataInfo> cityBeanList = new ArrayList<>();
-                    final ArrayList<Integer> subCityAdcodeList = provArea.vecLowerAdcodeList;
-                    if (null != subCityAdcodeList && !subCityAdcodeList.isEmpty()) {
-                        for (int j = 0; j < subCityAdcodeList.size() - 1; j++) {
-                            final Integer cityAdcode = subCityAdcodeList.get(j);
-                            final  Area cityArea = mMapDataService.getArea(DownLoadMode.DOWNLOAD_MODE_NET, cityAdcode);
-                            cityBeanList.add(convertCityData(cityArea));
-                        }
+            if (!adCodeProvLst.isEmpty()) {
+                for (int i = 0; i < adCodeProvLst.size(); i++) {
+                    final Integer provAdcode = adCodeProvLst.get(i);
+                    ProvDataInfo provDataInfo = new ProvDataInfo();
+                    final ProvinceInfo info = mMapDataService.getProvinceInfo(provAdcode);
+                    provDataInfo.setName(info.provName);
+                    provDataInfo.setAreaType(info.provLevel);
+                    provDataInfo.setAdcode(info.provAdcode);
+                    provDataInfo.setJianPin(info.provInitial);
+                    provDataInfo.setPinYin(info.provPinyin);
+                    final ArrayList<CityDataInfo> cityDataInfos = new ArrayList<>();
+                    for (int j = 0; j < info.cityInfoList.size(); j++) {
+                        final Integer cityAdcode = info.cityInfoList.get(j).cityAdcode;
+                        final Area cityArea = mMapDataService.getArea(DownLoadMode.DOWNLOAD_MODE_NET, cityAdcode);
+                        cityDataInfos.add(convertCityData(cityArea));
                     }
-                    provDataInfo.setCityInfoList(cityBeanList);
+                    provDataInfo.setCityInfoList(cityDataInfos);
+
+//                    cityBeanList.add(0, convertAllCityData(cityBeanList, provDataInfo.getAdcode())); // 增加“全省地图”item
                     provinceBeanList.add(provDataInfo);
                 }
             }
-
             // 3，添加一级特别行政区对应信息
             provinceBeanList.add(getSpecialDataInfo());
-
             return provinceBeanList;
         } else {
             return null;
@@ -296,12 +356,8 @@ public class MapDataObserversHelper implements IDataInitObserver, IDownloadObser
                 cityDownLoadBean.setZipSize(downloadItem.nZipSize);
 
                 // 客户端根据 downloadItem.bIsDataUsed 和 downloadItem.taskState 字段转换为前端需要显示的文案
-                if (downloadItem.taskState == UserDataCode.TASK_STATUS_CODE_SUCCESS) {
-                    cityDownLoadBean.setStatusTip("已下载");
-                } else {
-                    cityDownLoadBean.setStatusTip(switchTaskStatusCodeToString(downloadItem.bIsDataUsed,
-                            downloadItem.taskState, downloadItem.IsCompltelyHighVer));
-                }
+                cityDownLoadBean.setStatusTip(switchTaskStatusCodeToString(downloadItem.bUpdate,
+                        downloadItem.taskState, downloadItem.IsCompltelyHighVer));
             }
             return cityDownLoadBean;
         }
@@ -319,8 +375,12 @@ public class MapDataObserversHelper implements IDataInitObserver, IDownloadObser
             final CityDataInfo cityInfo = new CityDataInfo();
             if (info != null) {
                 cityInfo.setUpperAdcode(info.belongedProvince);
-                cityInfo.setName(info.cityName);
-                cityInfo.setAreaType( info.cityLevel);
+                if (info.cityAdcode == 0) {
+                    cityInfo.setName("基础功能包");
+                } else {
+                    cityInfo.setName(info.cityName);
+                }
+                cityInfo.setAreaType(info.cityLevel);
                 cityInfo.setAdcode(info.cityAdcode);
                 cityInfo.setJianPin(info.initial);
                 cityInfo.setPinYin(info.pinyin);
@@ -337,26 +397,20 @@ public class MapDataObserversHelper implements IDataInitObserver, IDownloadObser
 
     /**
      * 根据 downloadItem.bIsDataUsed 和 downloadItem.taskState 字段转换为前端需要显示的文案
-     * @param isDataUsed
+     * @param bUpdate
      * @param taskCode
      * @param isCompltelyHighVer
      *
      * @return 返回下载提示文字
      */
-    private String switchTaskStatusCodeToString(final boolean isDataUsed, final int taskCode, final boolean isCompltelyHighVer) {
+    private String switchTaskStatusCodeToString(final boolean bUpdate, final int taskCode, final boolean isCompltelyHighVer) {
         String desc = new String("");
         switch (taskCode) {
             case TaskStatusCode.TASK_STATUS_CODE_READY:
-                if (isDataUsed) {
-                    desc = "待更新";
-                    if (isCompltelyHighVer) {
-                        // 全量更新，数据包待更新的大小用CityDownLoadItem.nFullZipSize字段值来显示
-                    } else {
-                        // 增量更新，数据包待更新的大小用CityDownLoadItem.nZipSize字段值来显示
-                    }
+                if (bUpdate) {
+                    desc = "更新";
                 } else {
                     desc = "下载";
-                    // 待下载，数据包待下载的大小用CityDownLoadItem.nFullZipSize字段值来显示
                 }
                 break;
             case TaskStatusCode.TASK_STATUS_CODE_WAITING:
@@ -368,7 +422,7 @@ public class MapDataObserversHelper implements IDataInitObserver, IDownloadObser
             case TaskStatusCode.TASK_STATUS_CODE_DOING:
             case TaskStatusCode.TASK_STATUS_CODE_DONE:
                 desc = "下载中";
-                if(isDataUsed) {
+                if(bUpdate) {
                     desc = "更新中";
                 }
                 break;
@@ -401,46 +455,108 @@ public class MapDataObserversHelper implements IDataInitObserver, IDownloadObser
      * 获取下载中、更新中状态下的所有城市adCode列表
      * @return 返回下载中的信息
      */
-    public ArrayList<CityDataInfo> getWorkingList() {
-        final ArrayList<CityDataInfo> cityBeanList = new ArrayList<>();
-        if (mMapDataService != null) {
-            final ArrayList<Integer> adCodeList = mMapDataService.getWorkingQueueAdcodeList(DownLoadMode.DOWNLOAD_MODE_NET);
-            if (null != adCodeList && !adCodeList.isEmpty()) {
-                for (int i = 0; i < adCodeList.size(); i++) {
-                    final Integer cityAdCode = adCodeList.get(i);
-                    final Area cityArea = mMapDataService.getArea(DownLoadMode.DOWNLOAD_MODE_NET, cityAdCode);
-                    final CityDataInfo  cityDataInfo = convertCityData(cityArea);
-                    if (cityDataInfo.getDownLoadInfo().getTaskState() == TaskStatusCode.TASK_STATUS_CODE_WAITING // 等待中
-                            || cityDataInfo.getDownLoadInfo().getTaskState() == TaskStatusCode.TASK_STATUS_CODE_DOING
-                            || cityDataInfo.getDownLoadInfo().getTaskState() == TaskStatusCode.TASK_STATUS_CODE_DONE // 下载中
-                            || cityDataInfo.getDownLoadInfo().getTaskState() == TaskStatusCode.TASK_STATUS_CODE_PAUSE) {  // 暂停
-                        // 下载中/更新中列表  等待中、下载中、暂停
-                        cityBeanList.add(cityDataInfo);
-                    }
-                }
-            }
+    public ArrayList<ProvDataInfo> getWorkingList() {
+        if (mMapDataService == null) {
+            return null;
         }
-        return cityBeanList;
+        // 1，获取下载中、更新中状态下的所有城市adCode列表
+        final ArrayList<Integer> downLoadAdcodeList = mMapDataService.getWorkingQueueAdcodeList(DownLoadMode.DOWNLOAD_MODE_NET);
+        Logger.d(TAG, "getWorkingList: downLoadAdcodeList" + GsonUtils.toJson(downLoadAdcodeList));
+        // 2，根据adCode获取整理后的省份+城市列表
+        final ArrayList<ProvDataInfo> provinceBeanList = getWorkDataList(downLoadAdcodeList);
+        Logger.d(TAG, "getWorkingList: provinceBeanList = " + GsonUtils.toJson(provinceBeanList));
+        return provinceBeanList;
     }
 
     /**
      * 获取已下载状态下的所有城市adCode列表
-     * @return 返回已下载的信息
+     * @return 返回已下载的CityDataInfo信息
      */
-    public ArrayList<CityDataInfo> getWorkedList() {
-        final ArrayList<CityDataInfo> downloadedList = new ArrayList<>();
-        final ArrayList<CityDataInfo> dataInfos = getCityInfoList();
-        if (null != dataInfos && !dataInfos.isEmpty()) {
-            for (CityDataInfo info : dataInfos) {
-                // 获取城市数据包的下载状态信息
-                info.setDownLoadInfo(getCityDownLoadInfo(info.getAdcode()));
-                if (info.getDownLoadInfo().getTaskState() == TaskStatusCode.TASK_STATUS_CODE_SUCCESS) {
-                    // 已下载列表
-                    downloadedList.add(info);
+    public ArrayList<ProvDataInfo> getWorkedList() {
+        if (mMapDataService == null) {
+            return null;
+        }
+        // 1，获取本地已存在数据的adcode列表信息
+        final ArrayList<Integer> downLoadAdcodeList = mMapDataService.getDownLoadAdcodeList();
+        Logger.d(TAG, "getWorkedList: downLoadAdcodeList" + GsonUtils.toJson(downLoadAdcodeList));
+        // 2，根据adCode获取整理后的省份+城市列表
+        final ArrayList<ProvDataInfo> provinceBeanList = getWorkDataList(downLoadAdcodeList);
+        Logger.d(TAG, "getWorkedList: downloadedList = " + GsonUtils.toJson(provinceBeanList));
+        return provinceBeanList;
+    }
+
+    /**
+     * 下载管理数据转换处理
+     * @param downLoadAdcodeList
+     * @return
+     */
+    public ArrayList<ProvDataInfo> getWorkDataList( final ArrayList<Integer> downLoadAdcodeList) {
+        // 1，获取省份列表
+        final ArrayList<ProvDataInfo> provDataInfoList = new ArrayList<>();
+        // 2, 获取省份下的城市列表
+        ArrayList<CityDataInfo> cityInfoList = new ArrayList<>();
+        ArrayList<CityDataInfo> cityInfoList1 = new ArrayList<>();
+        ArrayList<CityDataInfo> cityInfoList2 = new ArrayList<>();
+        ArrayList<CityDataInfo> cityInfoList3 = new ArrayList<>();
+
+        Set<String> seen = new LinkedHashSet<>(); // 使用LinkedHashSet保持顺序
+        if (null != downLoadAdcodeList && !downLoadAdcodeList.isEmpty()) {
+            for (int i = 0; i < downLoadAdcodeList.size(); i++) {
+                final  Integer cityAdCode = downLoadAdcodeList.get(i);
+                final Area area = mMapDataService.getArea(DownLoadMode.DOWNLOAD_MODE_NET, cityAdCode);
+                ProvDataInfo provDataInfo = new ProvDataInfo();
+                if (area.areaType == 0) { // 基础包
+                    provDataInfo.setName("基础功能包");
+                    provDataInfo.setAreaType(0);
+                    provDataInfo.setAdcode(0);
+                    provDataInfo.setJianPin("jcgnb");
+                    provDataInfo.setPinYin("jichugongnengbao");
+                    provDataInfo.setExpanded(true);
+                    CityDataInfo cityDataInfo = getCityInfo(area.adcode);
+                    cityInfoList.add(cityDataInfo);
+                    provDataInfo.setDownLoadInfo(cityDataInfo.getDownLoadInfo()); // 基础包在下载管理页中当做一级省份处理
+                    provDataInfo.setCityInfoList(cityInfoList);
+                } else if (area.areaType == 2) { // 直辖市
+                    provDataInfo.setName("直辖市");
+                    provDataInfo.setAreaType(2);
+                    provDataInfo.setAdcode(2);
+                    provDataInfo.setJianPin("zxs");
+                    provDataInfo.setPinYin("zhixiashi");
+                    provDataInfo.setExpanded(true);
+                    CityDataInfo cityDataInfo = getCityInfo(area.adcode);
+                    cityInfoList1.add(cityDataInfo);
+                    provDataInfo.setCityInfoList(cityInfoList1);
+                } else if (area.areaType == 4) { // 特别行政区
+                    provDataInfo.setName("特别行政区");
+                    provDataInfo.setAreaType(4);
+                    provDataInfo.setAdcode(4);
+                    provDataInfo.setJianPin("tbxzq");
+                    provDataInfo.setPinYin("tebiexingzhegnqu");
+                    provDataInfo.setExpanded(true);
+                    CityDataInfo cityDataInfo = getCityInfo(area.adcode);
+                    cityInfoList2.add(cityDataInfo);
+                    provDataInfo.setCityInfoList(cityInfoList2);
+                } else { // 普通省份
+                    final ProvinceInfo info = mMapDataService.getProvinceInfo(area.upperAdcode);
+                    provDataInfo.setName(info.provName);
+                    provDataInfo.setAreaType(info.provLevel);
+                    provDataInfo.setAdcode(info.provAdcode);
+                    provDataInfo.setJianPin(info.provInitial);
+                    provDataInfo.setPinYin(info.provPinyin);
+                    provDataInfo.setExpanded(true);
+                    CityDataInfo cityDataInfo = getCityInfo(area.adcode);
+                    cityInfoList3.add(cityDataInfo);
+                    provDataInfo.setCityInfoList(cityInfoList3);
                 }
+
+                if (seen.add(provDataInfo.getName())) { // 如果set中没有该元素，add返回true
+                    provDataInfoList.add(provDataInfo);
+                }
+
             }
         }
-        return downloadedList;
+
+        return provDataInfoList;
     }
 
     /**
@@ -457,7 +573,7 @@ public class MapDataObserversHelper implements IDataInitObserver, IDownloadObser
         final ArrayList<ProvDataInfo> provinceBeanList = new ArrayList<>();
 
         // 获取本地已存在数据的adcode列表信息
-        final ArrayList<Integer> downLoadAdcodeList =mMapDataService.getDownLoadAdcodeList();
+        final ArrayList<Integer> downLoadAdcodeList = mMapDataService.getDownLoadAdcodeList();
         Logger.d(TAG, "getDownLoadAdCodeList: downLoadAdcodeList" + GsonUtils.toJson(downLoadAdcodeList));
 
         if (null != downLoadAdcodeList && !downLoadAdcodeList.isEmpty()) {
@@ -480,7 +596,7 @@ public class MapDataObserversHelper implements IDataInitObserver, IDownloadObser
                 if (provAdcode == 0) {
                     provDataInfo.setName("直辖市");
                     provDataInfo.setAreaType(2);
-                    provDataInfo.setAdcode(0);
+                    provDataInfo.setAdcode(2);
                     provDataInfo.setJianPin("zxs");
                     provDataInfo.setPinYin("zhixiashi");
                 } else {
@@ -498,7 +614,7 @@ public class MapDataObserversHelper implements IDataInitObserver, IDownloadObser
                     final Integer downLoadAdCode = downLoadAdcodeList.get(j);
                     if (downLoadAdCode != 0) { // 移除基础功能包
                         final Area cityArea = mMapDataService.getArea(DownLoadMode.DOWNLOAD_MODE_NET, downLoadAdCode);
-                        final CityDataInfo cityDataInfo = convertCityData(cityArea);
+                        final CityDataInfo cityDataInfo = getCityInfo(cityArea.adcode);
                         if (cityDataInfo.getUpperAdcode() == provDataInfo.getAdcode()) {
                             cityBeanList.add(cityDataInfo);
                         }
@@ -559,12 +675,13 @@ public class MapDataObserversHelper implements IDataInitObserver, IDownloadObser
                                     final Integer cityAdcode = subCityAdcodeList.get(j);
                                     final Area cityArea = mMapDataService.getArea(DownLoadMode.DOWNLOAD_MODE_NET, cityAdcode);
                                     // 获取对应省份下的城市列表
-                                    cityBeanList.add(convertCityData(cityArea));
+                                    cityBeanList.add(getCityInfo(cityArea.adcode));
                                     provDataInfo.setCityInfoList(cityBeanList); // 省份下所有城市列表
                                 }
                             }
                         }
 
+//                        cityBeanList.add(0, convertAllCityData(cityBeanList, provDataInfo.getAdcode())); // 增加“全省地图”item
                         provDataInfo.setCityInfoList(cityBeanList); // 省份下所有城市列表
 
                         provinceBeanList.add(provDataInfo);
@@ -613,7 +730,7 @@ public class MapDataObserversHelper implements IDataInitObserver, IDownloadObser
                             for (int j = 0; j < subCityAdcodeList.size() - 1; j++) {
                                 final Integer cityAdcode = subCityAdcodeList.get(j);
                                 final Area cityArea = mMapDataService.getArea(DownLoadMode.DOWNLOAD_MODE_NET, cityAdcode);
-                                final CityDataInfo cityDataInfo = convertCityData(cityArea);
+                                final CityDataInfo cityDataInfo = getCityInfo(cityArea.adcode);
                                 // 获取对应省份下已下载的城市列表
                                 if (cityDataInfo.getDownLoadInfo().getTaskState() == UserDataCode.TASK_STATUS_CODE_SUCCESS) {
                                     cityBeanList.add(cityDataInfo);
@@ -648,35 +765,6 @@ public class MapDataObserversHelper implements IDataInitObserver, IDownloadObser
         }
         Logger.d(TAG, "searchAdCode: null");
         return 0;
-    }
-
-    /**
-     * 获取所有城市信息列表
-     * @return 返回所有城市信息
-     */
-    private ArrayList<CityDataInfo> getCityInfoList() {
-        if (mMapDataService != null) {
-            // 全部城市数据
-            final ArrayList<CityDataInfo> cityDataInfos = new ArrayList<>();
-            final ArrayList<CityItemInfo> cityItemInfos = mMapDataService.getCityInfoList();
-            if (cityItemInfos == null) {
-                return null;
-            }
-            for (CityItemInfo info : cityItemInfos) {
-                final  CityDataInfo dataInfo = new CityDataInfo();
-                dataInfo.setUpperAdcode(info.belongedProvince);
-                dataInfo.setName(info.cityName);
-                dataInfo.setAreaType(info.cityLevel);
-                dataInfo.setAdcode(info.cityAdcode);
-                dataInfo.setJianPin(info.initial);
-                dataInfo.setPinYin(info.pinyin);
-                cityDataInfos.add(dataInfo);
-            }
-            Logger.d(TAG, "getCityInfoList: cityDataInfos = " + GsonUtils.toJson(cityDataInfos));
-            return cityDataInfos;
-        }
-        Logger.d(TAG, "getCityInfoList is null");
-        return null;
     }
 
     /**
@@ -825,7 +913,7 @@ public class MapDataObserversHelper implements IDataInitObserver, IDownloadObser
                 for (int i = 0; i < vecNearAdCodeList.size(); i++) {
                     final  Integer cityAdCode = vecNearAdCodeList.get(i);
                     final Area area = mMapDataService.getArea(DownLoadMode.DOWNLOAD_MODE_NET, cityAdCode);
-                    nearAdCodeList.add(convertCityData(area));
+                    nearAdCodeList.add(getCityInfo(area.adcode));
                 }
             }
             Logger.d(TAG, "getNearAdCodeList: nearAdCodeList = " + GsonUtils.toJson(nearAdCodeList));
@@ -905,6 +993,7 @@ public class MapDataObserversHelper implements IDataInitObserver, IDownloadObser
      * @param taskCode  任务状态
      * @param opCode 操作状态码
      */
+    @SuppressLint("WrongConstant")
     @Override
     public void onDownLoadStatus(final int downLoadMode, final int dataType, final int id, final int taskCode, final int opCode) {
         Logger.d(TAG, "onDownLoadStatus: downLoadMode = " + downLoadMode + TAG_DATA_TYPE + dataType +
@@ -922,20 +1011,20 @@ public class MapDataObserversHelper implements IDataInitObserver, IDownloadObser
                 // 内存空间不足toast
                 ToastUtils.Companion.getInstance().showCustomToastView("存储空间不足，已暂停下载");
                 // 暂停获取正在下载的城市数据
-                final ArrayList<Integer> adCodeList = mMapDataService.getWorkingQueueAdcodeList(DownLoadMode.DOWNLOAD_MODE_NET);
-                mMapDataService.operate(DownLoadMode.DOWNLOAD_MODE_NET, OperationType.OPERATION_TYPE_PAUSE, adCodeList);
+//                final ArrayList<Integer> adCodeList = mMapDataService.getWorkingQueueAdcodeList(DownLoadMode.DOWNLOAD_MODE_NET);
+//                mMapDataService.operate(DownLoadMode.DOWNLOAD_MODE_NET, UserDataCode.OPERATION_TYPE_PAUSE, adCodeList);
             } else if (opCode == UserDataCode.OPT_SPACE_NOT_ENOUGHT) { // 存储空间可能不足，是否继续下载？
                 // 内存空间不足toast
                 ToastUtils.Companion.getInstance().showCustomToastView("存储空间不足，已暂停下载");
-                final ArrayList<Integer> adCodeList = mMapDataService.getWorkingQueueAdcodeList(DownLoadMode.DOWNLOAD_MODE_NET);
-                mMapDataService.operate(DownLoadMode.DOWNLOAD_MODE_NET, OperationType.OPERATION_TYPE_PAUSE, adCodeList);
+//                final ArrayList<Integer> adCodeList = mMapDataService.getWorkingQueueAdcodeList(DownLoadMode.DOWNLOAD_MODE_NET);
+//                mMapDataService.operate(DownLoadMode.DOWNLOAD_MODE_NET, UserDataCode.OPERATION_TYPE_PAUSE, adCodeList);
             } else if (opCode == UserDataCode.OPT_ERROR) { // 操作异常
 
             }
         });
 
         /** 通知全部数据变更,获取城市数据信息更新UI控件文案信息 */
-        updateDownloadStatus(id); // 备注：如果不想全部更新，可以获取只更更新参数 id 中的城市数据项
+        updateDownloadStatus(id); // 备注：如果不想全部更新，可以获取只更新参数 id 中的城市数据项
     }
 
     /**
@@ -959,24 +1048,21 @@ public class MapDataObserversHelper implements IDataInitObserver, IDownloadObser
      * @param id
      */
     private void updateDownloadStatus(final int id) {
-        //获取下载城市信息
-        final List<CityDataInfo> cityList = new ArrayList<>();
-        CityDataInfo cityDataInfo = new CityDataInfo();
-        if (mMapDataService != null) {
-            final Area cityArea = mMapDataService.getArea(DownLoadMode.DOWNLOAD_MODE_NET, id);
-            cityDataInfo = convertCityData(cityArea);
-            cityList.add(cityDataInfo);
+        //更新城市下载信息
+        final Area area = mMapDataService.getArea(DownLoadMode.DOWNLOAD_MODE_NET, id);
+        Logger.d(TAG, "onDownLoadStatus: area = " + GsonUtils.toJson(area));
+
+        CityDataInfo cityDataInfo = getCityInfo(area.adcode);
+
+        if (area.areaType == 0) { // 基础包
+            cityDataInfo.setUpperAdcode(0);
+        } else if (area.areaType == 2) { // 直辖市
+            cityDataInfo.setUpperAdcode(2);
+        } else if (area.areaType == 4) { // 特别行政区
+            cityDataInfo.setUpperAdcode(4);
         }
 
-        final ProvDataInfo provDataInfo = new ProvDataInfo();
-        provDataInfo.setCityInfoList(cityList); // 省份下所有城市列表
-        provDataInfo.setName(cityDataInfo.getName());
-        provDataInfo.setAreaType(cityDataInfo.getAreaType());
-        provDataInfo.setAdcode(cityDataInfo.getAdcode());
-        provDataInfo.setJianPin(cityDataInfo.getJianPin());
-        provDataInfo.setPinYin(cityDataInfo.getPinYin());
-        provDataInfo.setDownLoadInfo(getCityDownLoadInfo(cityDataInfo.getAdcode()));
-
+        Logger.d(TAG, "onDownLoadStatus: cityDataInfo = " + GsonUtils.toJson(cityDataInfo));
         if (ConvertUtils.isEmpty(mapDataResultObserverHashtable)) {
             return;
         }
@@ -984,8 +1070,63 @@ public class MapDataObserversHelper implements IDataInitObserver, IDownloadObser
             if (callBack == null) {
                 continue;
             }
-            callBack.onDownLoadStatus(provDataInfo);
+            callBack.onDownLoadStatus(cityDataInfo);
         }
+    }
+
+    private ProvDataInfo getProvDataInfo(final Area area) {
+        ProvDataInfo provDataInfo = new ProvDataInfo();
+        if (area.areaType == 0) { // 基础包
+            provDataInfo.setName("基础包功能包");
+            provDataInfo.setAreaType(0);
+            provDataInfo.setAdcode(0);
+            provDataInfo.setJianPin("jcgnb");
+            provDataInfo.setPinYin("jichugongnengbao");
+            final ArrayList<CityDataInfo> cityDataInfos = new ArrayList<>();
+            cityDataInfos.add(getCountryData());
+            provDataInfo.setCityInfoList(cityDataInfos);
+        } else if (area.areaType == 2) { // 直辖市
+            provDataInfo = getDirectDataInfo();
+        } else if (area.areaType == 4) { // 特别行政区
+            provDataInfo = getSpecialDataInfo();
+        } else { // 普通省份
+            final ProvinceInfo info = mMapDataService.getProvinceInfo(area.upperAdcode);
+            provDataInfo.setName(info.provName);
+            provDataInfo.setAreaType(info.provLevel);
+            provDataInfo.setAdcode(info.provAdcode);
+            provDataInfo.setJianPin(info.provInitial);
+            provDataInfo.setPinYin(info.provPinyin);
+
+            final ArrayList<CityDataInfo> cityDataInfos = new ArrayList<>();
+            for (int i = 0; i < info.cityInfoList.size(); i++) {
+                final Integer cityAdcode = info.cityInfoList.get(i).cityAdcode;
+                final Area cityArea = mMapDataService.getArea(DownLoadMode.DOWNLOAD_MODE_NET, cityAdcode);
+                cityDataInfos.add(convertCityData(cityArea));
+            }
+            provDataInfo.setCityInfoList(cityDataInfos);
+        }
+        return provDataInfo;
+    }
+
+    /**
+     * 数据包操作
+     * @param opType
+     * @param adCodeDiyLst
+     */
+    public void operate(final int opType, final ArrayList<Integer> adCodeDiyLst) {
+        Logger.d(TAG, "operate: opType = " + opType + ", adCodeDiyLst = " + GsonUtils.toJson(adCodeDiyLst));
+        boolean isNetConnected = NetWorkUtils.Companion.getInstance().checkNetwork();
+        if (!isNetConnected) {
+            // 提示无网络链接toast
+            ToastUtils.Companion.getInstance().showCustomToastView("无网络连接，请检查网络后重试");
+            return;
+        }
+        ThreadManager.getInstance().postDelay(() -> {
+            // 如果当前城市的数据包正在解压，则暂停操作不会立即生效，需等待解压完成。
+            if (mMapDataService != null) {
+                mMapDataService.operate(DownLoadMode.DOWNLOAD_MODE_NET, opType, adCodeDiyLst);
+            }
+        }, 0);
     }
 
     /**

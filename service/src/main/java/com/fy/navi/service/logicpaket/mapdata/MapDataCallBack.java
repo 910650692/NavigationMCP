@@ -1,14 +1,15 @@
 package com.fy.navi.service.logicpaket.mapdata;
 
+import com.fy.navi.service.define.mapdata.CityDataInfo;
 import com.fy.navi.service.define.mapdata.MergedStatusBean;
 import com.fy.navi.service.define.mapdata.ProvDataInfo;
 
 public interface MapDataCallBack {
     /**
      * 下载状态回调
-     * @param provDataInfo
+     * @param cityDataInfo
      */
-    void onDownLoadStatus(ProvDataInfo provDataInfo);
+    void onDownLoadStatus(CityDataInfo cityDataInfo );
 
     /**
      * 引擎数据融合状态信息回调

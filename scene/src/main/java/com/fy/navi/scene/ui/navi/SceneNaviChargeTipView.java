@@ -11,13 +11,13 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.android.utils.log.Logger;
+import com.android.utils.thread.ThreadManager;
 import com.fy.navi.scene.databinding.SceneNaviChargeTipViewBinding;
 import com.fy.navi.scene.impl.navi.SceneNaviChargeTipViewImpl;
 import com.fy.navi.scene.impl.navi.inter.ISceneCallback;
 import com.fy.navi.scene.ui.navi.manager.INaviSceneEvent;
 import com.fy.navi.scene.ui.navi.manager.NaviSceneBase;
 import com.fy.navi.scene.ui.navi.manager.NaviSceneId;
-import com.fy.navi.scene.ui.navi.manager.NaviSceneManager;
 
 /**
  * @author : QiuYaWei
@@ -41,23 +41,13 @@ public class SceneNaviChargeTipView extends NaviSceneBase<SceneNaviChargeTipView
     }
 
     @Override
-    protected NaviSceneId getSceneId() {
+    public NaviSceneId getSceneId() {
         return NaviSceneId.NAVI_CHARGE_TIP;
     }
 
     @Override
-    protected String getSceneName() {
-        return TAG;
-    }
-
-    @Override
-    public INaviSceneEvent getNaviSceneEvent() {
-        return NaviSceneManager.getInstance();
-    }
-
-    @Override
     protected void init() {
-        NaviSceneManager.getInstance().addNaviScene(NaviSceneId.NAVI_CHARGE_TIP, this);
+        super.init();
         mViewBinding.tvAction.setOnClickListener((view) -> {
             if (mEntity == null) {
                 return;
@@ -94,39 +84,6 @@ public class SceneNaviChargeTipView extends NaviSceneBase<SceneNaviChargeTipView
         super.show();
         Logger.i(TAG, "show!", "callBack is null:" + (mISceneCallback == null));
         mScreenViewModel.initTimer();
-        if (mISceneCallback != null) {
-            mISceneCallback.updateSceneVisible(NaviSceneId.NAVI_CHARGE_TIP, true);
-        }
-    }
-
-    @Override
-    public void hide() {
-        super.hide();
-        Logger.i(TAG, "hide!", "callBack is null:" + (mISceneCallback == null));
-        if (mISceneCallback != null) {
-            mISceneCallback.updateSceneVisible(NaviSceneId.NAVI_CHARGE_TIP, false);
-        }
-    }
-
-    @Override
-    public void close() {
-        super.close();
-        Logger.i(TAG, "close!", "callBack is null:" + (mISceneCallback == null));
-        if (mISceneCallback != null) {
-            mISceneCallback.updateSceneVisible(NaviSceneId.NAVI_CHARGE_TIP, false);
-        }
-    }
-
-    @Override
-    public void addSceneCallback(final ISceneCallback sceneCallback) {
-        Logger.i(TAG, "addSceneCallback success!");
-        mISceneCallback = sceneCallback;
-    }
-
-    @Override
-    protected void unInit() {
-        super.unInit();
-        Logger.i(TAG, "unInit success!");
     }
 
     @Override
@@ -154,16 +111,18 @@ public class SceneNaviChargeTipView extends NaviSceneBase<SceneNaviChargeTipView
      * @param entity
      */
     public void updateUi(final ChargeTipEntity entity) {
+        Logger.i(TAG, "updateUi");
         this.mEntity = entity;
         if (entity == null) {
             return;
         }
-        mViewBinding.tvTitle.setText(entity.getTitle());
-        mViewBinding.tvAction.setVisibility((TextUtils.isEmpty(entity.getAction()) ? View.GONE : View.VISIBLE));
-        mViewBinding.tvAction.setText(entity.getAction());
-        mViewBinding.tvDesc.setVisibility(TextUtils.isEmpty(entity.getSubTitle()) ? View.GONE : View.VISIBLE);
-        mViewBinding.tvDesc.setText(entity.getSubTitle());
-        getNaviSceneEvent().notifySceneStateChange(INaviSceneEvent.SceneStateChangeType.SceneShowState, getSceneId());
-        Logger.i(TAG, "updateUi");
+        ThreadManager.getInstance().postUi(() -> {
+            mViewBinding.tvTitle.setText(entity.getTitle());
+            mViewBinding.tvAction.setVisibility((TextUtils.isEmpty(entity.getAction()) ? View.GONE : View.VISIBLE));
+            mViewBinding.tvAction.setText(entity.getAction());
+            mViewBinding.tvDesc.setVisibility(TextUtils.isEmpty(entity.getSubTitle()) ? View.GONE : View.VISIBLE);
+            mViewBinding.tvDesc.setText(entity.getSubTitle());
+            getNaviSceneEvent().notifySceneStateChange(INaviSceneEvent.SceneStateChangeType.SceneShowState, getSceneId());
+        });
     }
 }

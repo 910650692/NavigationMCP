@@ -84,6 +84,8 @@ public interface SettingController {
     String VALUE_VOICE_MUTE_OFF = "setting_voice_mute_off";
     // 是否是电车
     String KEY_SETTING_IS_EV_CAR = "setting_is_ev_car";
+    // 是否是混动
+    String KEY_SETTING_IS_PHEV_CAR = "setting_is_phev_car";
     // 是否绑定微信
     String KEY_SETTING_IS_WE_CHAT_BIND = "setting_is_we_chat_bind";
     // 是否发送目的地最后一公里
@@ -99,4 +101,6 @@ public interface SettingController {
 
     // 渠道号
     String KEY_SETTING_CHANNEL_ID = "setting_channel_id";
+
+    String GUIDE_LOGIN_IS_CANCEL = "GUIDE_LOGIN_IS_CANCEL";
 }

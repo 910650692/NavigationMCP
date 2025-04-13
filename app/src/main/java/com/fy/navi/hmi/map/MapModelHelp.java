@@ -115,14 +115,14 @@ public class MapModelHelp {
         final CarModeType carLogo = mSettingPackage.getCarMode();
         Logger.i(TAG, "restoreCarMode", "车标模式:" + carLogo);
         switch (carLogo) {
-            case CAR_MODEL_TYPE_2D -> {
-                mLayerPackage.setCarMode(mMapTypeId, CarModeType.CAR_MODEL_TYPE_2D);
+            case CAR_MODE_DEFAULT -> {
+                mLayerPackage.setCarMode(mMapTypeId, CarModeType.CAR_MODE_DEFAULT);
             }
-            case CAR_MODEL_TYPE_SPEED -> {
-                mLayerPackage.setCarMode(mMapTypeId, CarModeType.CAR_MODEL_TYPE_SPEED);
+            case CAR_MODEL_BRAND -> {
+                mLayerPackage.setCarMode(mMapTypeId, CarModeType.CAR_MODEL_BRAND);
             }
-            case CAR_MODEL_TYPE_SKELETON -> {
-                mLayerPackage.setCarMode(mMapTypeId, CarModeType.CAR_MODEL_TYPE_SKELETON);
+            case CAR_MODEL_SPEED -> {
+                mLayerPackage.setCarMode(mMapTypeId, CarModeType.CAR_MODEL_SPEED);
             }
             default -> {
                 Logger.w(TAG, "不支持的车标类型！");

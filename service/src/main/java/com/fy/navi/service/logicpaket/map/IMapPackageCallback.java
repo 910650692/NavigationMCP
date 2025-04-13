@@ -50,10 +50,7 @@ public interface IMapPackageCallback {
     /*UiMode改变的时候触发，暂时就是“黑夜”和“白天”模式的切换*/
     default void onUiModeChanged(int uiMode) {}
 
-    default void onNotifyClick(MapType mapTypeId, GemBaseLayer layer, GemLayerItem pItem) {}
-
     //语音通过MapPackage触发此接口，传递打开页面的参数.
     default void onVoiceOpenPage(MapType mapTypeId, Bundle bundle) {}
 
-    default void onFlyLineMoveEnd(GeoPoint descPoint) {}
 }

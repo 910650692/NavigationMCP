@@ -12,6 +12,7 @@ import com.android.utils.ResourceUtils;
 import com.fy.navi.scene.R;
 import com.fy.navi.scene.databinding.RouteSecondaryPoiItemBinding;
 import com.fy.navi.service.define.search.ChildInfo;
+import com.fy.navi.service.define.search.PoiInfoEntity;
 import com.fy.navi.ui.view.SkinConstraintLayout;
 import com.fy.navi.ui.view.SkinImageView;
 import com.fy.navi.ui.view.SkinTextView;
@@ -20,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class RouteSecondaryPoiAdapter extends RecyclerView.Adapter<RouteSecondaryPoiAdapter.Holder>{
+    private PoiInfoEntity mPoiInfoEntity;
     private List<ChildInfo> mChildInfoList;
     private OnItemClickListener mItemClickListener;
     private int mSelected = -1;
@@ -32,12 +34,13 @@ public class RouteSecondaryPoiAdapter extends RecyclerView.Adapter<RouteSecondar
      * 设置子节点
      * @param childInfoList 子节点列表
      */
-    public void setChildInfoList(final List<ChildInfo> childInfoList) {
+    public void setChildInfoList(final List<ChildInfo> childInfoList,final PoiInfoEntity poiInfoEntity) {
         if (null == childInfoList) {
             return;
         }
         mChildInfoList.clear();
         mChildInfoList.addAll(childInfoList);
+        mPoiInfoEntity = poiInfoEntity;
         notifyDataSetChanged();
     }
 
@@ -66,6 +69,15 @@ public class RouteSecondaryPoiAdapter extends RecyclerView.Adapter<RouteSecondar
             @Override
             public void onClick(final View v) {
                 final int lastSelect = mSelected;
+                if (mSelected == position) {
+                    mSelected = -1;
+                    notifyItemChanged(lastSelect);
+                    if (mItemClickListener == null) {
+                        return;
+                    }
+                    mItemClickListener.onCancelSelectClick(mPoiInfoEntity);
+                    return;
+                }
                 mSelected = position;
                 notifyItemChanged(lastSelect);
                 notifyItemChanged(mSelected);
@@ -110,5 +122,11 @@ public class RouteSecondaryPoiAdapter extends RecyclerView.Adapter<RouteSecondar
          * @param childInfo 子节点对象
          */
         void onItemClick(ChildInfo childInfo);
+
+        /***
+         * 子节点取消选中
+         * @param poiInfoEntity 父节点对象
+         */
+        void onCancelSelectClick(PoiInfoEntity poiInfoEntity);
     }
 }

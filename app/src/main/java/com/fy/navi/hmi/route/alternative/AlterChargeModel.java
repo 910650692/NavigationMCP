@@ -11,6 +11,7 @@ import com.fy.navi.service.define.bean.GeoPoint;
 import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.route.RouteAlterChargeStationInfo;
 import com.fy.navi.service.define.route.RouteAlterChargeStationParam;
+import com.fy.navi.service.define.search.ETAInfo;
 import com.fy.navi.service.define.search.PoiInfoEntity;
 import com.fy.navi.service.define.search.SearchResultEntity;
 import com.fy.navi.service.logicpaket.route.IRouteResultObserver;
@@ -75,6 +76,15 @@ public class AlterChargeModel extends BaseModel<AlterChargeViewModel> implements
      */
     public CompletableFuture<Pair<String, String>> getTravelTimeFuture(final GeoPoint geoPoint) {
         return mSearchPackage.getTravelTimeFuture(geoPoint);
+    }
+
+    /**
+     * 获取预计到达时间与预计电量
+     * @param geoPoint 目前坐标
+     * @return 返回到达时间
+     */
+    public CompletableFuture<ETAInfo> getTravelTimeFutureWithEv(final GeoPoint geoPoint) {
+        return mSearchPackage.getTravelTimeFutureIncludeChargeLeft(geoPoint);
     }
 
     /**

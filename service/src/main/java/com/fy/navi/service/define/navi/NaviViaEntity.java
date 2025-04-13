@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 
 import com.fy.navi.service.define.bean.GeoPoint;
 import com.fy.navi.service.define.route.ChargingInfo;
+import com.fy.navi.service.define.utils.NumberUtils;
 
 public class NaviViaEntity {
     private String mPid;
@@ -15,6 +16,8 @@ public class NaviViaEntity {
     private String mArriveTime;
     private String mArriveDay;
     private long mArriveTimeStamp;
+    //到达剩余电量（百分比）非实时有数据，不能直接使用
+    private int mArriveBatteryLeft = NumberUtils.NUM_ERROR;
 
     public String getArriveDay() {
         return mArriveDay;
@@ -80,18 +83,26 @@ public class NaviViaEntity {
         this.mPid = pid;
     }
 
-    @NonNull
+    public int getArriveBatteryLeft() {
+        return mArriveBatteryLeft;
+    }
+    public void setArriveBatteryLeft(int arriveBatteryLeft) {
+        this.mArriveBatteryLeft = arriveBatteryLeft;
+    }
+
     @Override
     public String toString() {
         return "NaviViaEntity{" +
-                "pid='" + mPid + '\'' +
-                ", realPos=" + mRealPos +
-                ", name='" + mName + '\'' +
-                ", address='" + mAddress + '\'' +
-                ", chargeInfo=" + mChargeInfo +
-                ", distance='" + mDistance + '\'' +
-                ", arriveTime='" + mArriveTime + '\'' +
-                ", arriveDay='" + mArriveDay + '\'' +
+                "mPid='" + mPid + '\'' +
+                ", mRealPos=" + mRealPos +
+                ", mName='" + mName + '\'' +
+                ", mAddress='" + mAddress + '\'' +
+                ", mChargeInfo=" + mChargeInfo +
+                ", mDistance='" + mDistance + '\'' +
+                ", mArriveTime='" + mArriveTime + '\'' +
+                ", mArriveDay='" + mArriveDay + '\'' +
+                ", mArriveTimeStamp=" + mArriveTimeStamp +
+                ", mArriveBatteryLeft=" + mArriveBatteryLeft +
                 '}';
     }
 

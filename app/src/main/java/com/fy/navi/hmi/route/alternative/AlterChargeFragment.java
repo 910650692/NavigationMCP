@@ -189,16 +189,45 @@ public class AlterChargeFragment extends BaseFragment<FragmentAlterChargeBinding
                         .getString(R.string.route_details_jg) + chargeInfo.getSlow_total());
                 mBinding.scenePoiDetailsChargingStationView.poiChargeSlowCurrentAndVlot
                         .setText(getString(R.string.route_charge_info_format, chargeInfo.getSlowPower(), chargeInfo.getSlowVolt()));
-
                 mBinding.scenePoiDetailsChargingStationView.poiChargePrice
                         .setText(ResourceUtils.Companion.getInstance().getString(R.string.route_details_charge_free)
-                                +chargeInfo.getCurrentElePrice()
+                                + chargeInfo.getCurrentElePrice()
                                 + ResourceUtils.Companion.getInstance().getString(R.string.route_details_charge_free_unit));
+
                 mBinding.scenePoiDetailsChargingStationView.poiChargeParkPrice
                         .setText(ResourceUtils.Companion.getInstance().getString(R.string.route_details_charge_park_free)
                                 +chargeInfo.getCurrentServicePrice());
             }
 
         });
+    }
+
+    /***
+     * 展示POI详情的剩余电量数据
+     * @param leftCharge 剩余电量
+     */
+    public void showPOIDetailCharge(final int leftCharge) {
+        if (!ConvertUtils.isEmpty(leftCharge)) {
+            //50%以上电量，显示满电量图片，20-50%电量，显示半电量图片
+            //0-20电量，显示低电量图片，文本变红
+            //小于0%电量，显示空电量图片，文本变红
+            if (leftCharge >= 50 && leftCharge <= 100) {
+                mBinding.sivArrivalCapacity.setImageResource(com.fy.navi.scene.R.drawable.img_electricity_full_42);
+                mBinding.poiArrivalCapacity.setTextColor(
+                        ResourceUtils.Companion.getInstance().getColor(com.fy.navi.scene.R.color.text_color_route_item_select));
+            } else if (leftCharge > 20 && leftCharge < 50) {
+                mBinding.sivArrivalCapacity.setImageResource(com.fy.navi.scene.R.drawable.img_electricity_medium_42);
+                mBinding.poiArrivalCapacity.setTextColor(
+                        ResourceUtils.Companion.getInstance().getColor(com.fy.navi.scene.R.color.text_color_route_item_select));
+            } else if (leftCharge > 0 && leftCharge <= 20) {
+                mBinding.sivArrivalCapacity.setImageResource(com.fy.navi.scene.R.drawable.img_electricity_low_42);
+                mBinding.poiArrivalCapacity.setTextColor(
+                        ResourceUtils.Companion.getInstance().getColor(com.fy.navi.scene.R.color.search_color_delete_bg));
+            } else if (leftCharge <= 0) {
+                mBinding.sivArrivalCapacity.setImageResource(com.fy.navi.scene.R.drawable.img_electricity_empty_42);
+                mBinding.poiArrivalCapacity.setTextColor(
+                        ResourceUtils.Companion.getInstance().getColor(com.fy.navi.scene.R.color.search_color_delete_bg));
+            }
+        }
     }
 }

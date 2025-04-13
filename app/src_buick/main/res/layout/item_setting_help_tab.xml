@@ -15,5 +15,5 @@
         android:paddingTop="@dimen/dp_23"
         android:paddingBottom="@dimen/dp_23"
         android:textSize="@dimen/sp_34"
-        android:textColor="@color/setting_tab_gray"/>
+        android:textColor="@color/setting_bg_tab_text_unselect"/>
 </com.fy.navi.ui.view.SkinLinearLayout>

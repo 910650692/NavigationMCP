@@ -7,6 +7,8 @@ import android.view.Window;
 import com.android.utils.ResourceUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
+import com.fy.navi.burypoint.anno.HookMethod;
+import com.fy.navi.burypoint.constant.BuryConstant;
 import com.fy.navi.hmi.BR;
 import com.fy.navi.hmi.R;
 import com.fy.navi.hmi.databinding.FragmentSettingOthersBinding;
@@ -42,11 +44,6 @@ public class SettingOthersFragment extends BaseFragment<FragmentSettingOthersBin
         // 初始化数据
     }
 
-    @Override
-    public void onHiddenChanged(final boolean hidden) {
-        mViewModel.setTotalSizeOfDirectories(mViewModel.getTotalSizeOfDirectories());
-    }
-
     /**
      * 更新隐私权限状态
      * @param status true:已授权，false:未授权
@@ -66,20 +63,24 @@ public class SettingOthersFragment extends BaseFragment<FragmentSettingOthersBin
      */
     public void updateUserInfo(final String userName, final String url) {
         ThreadManager.getInstance().postUi(() -> {
-            if (!TextUtils.isEmpty(userName) && !TextUtils.isEmpty(url)) {
-                mBinding.accountName.setText(userName);
-                mBinding.accountDetail.setText(ResourceUtils.Companion.getInstance().getText(R.string.account_login_out));
-                this.mUrl = url;
-                ViewAdapterKt.loadImageUrl(mBinding.accountImg, url, R.mipmap.default_user_icon, R.mipmap.default_user_icon);
-                setCarConnectStatus(true);
-                setWeChatStatus(mViewModel.getWechatStatus());
-            } else {
+            if (TextUtils.isEmpty(userName) && TextUtils.isEmpty(url)) {
                 this.mUrl = "";
                 mBinding.accountName.setText(ResourceUtils.Companion.getInstance().getText(R.string.setting_others_account));
                 mBinding.accountDetail.setText(ResourceUtils.Companion.getInstance().getText(R.string.setting_others_account_detail));
                 mBinding.accountImg.setImageDrawable(ResourceUtils.Companion.getInstance().getDrawable(R.mipmap.default_user_icon));
                 setCarConnectStatus(false);
                 setWeChatStatus(false);
+            } else {
+                mBinding.accountName.setText(userName);
+                mBinding.accountDetail.setText(ResourceUtils.Companion.getInstance().getText(R.string.account_login_out));
+                this.mUrl = url;
+                if (TextUtils.isEmpty(url)) {
+                    mBinding.accountImg.setImageDrawable(ResourceUtils.Companion.getInstance().getDrawable(R.mipmap.default_user_icon));
+                } else {
+                    ViewAdapterKt.loadImageUrl(mBinding.accountImg, url, R.mipmap.default_user_icon, R.mipmap.default_user_icon);
+                }
+                setCarConnectStatus(true);
+                setWeChatStatus(mViewModel.getWechatStatus());
             }
         });
     }
@@ -104,7 +105,7 @@ public class SettingOthersFragment extends BaseFragment<FragmentSettingOthersBin
     public void setCarConnectStatus(final boolean status) {
         if (mViewModel.getIsLogin() && status) {
             mBinding.settingOthersCarConnectText.setTextColor(
-                    ResourceUtils.Companion.getInstance().getColor(R.color.white));
+                    ResourceUtils.Companion.getInstance().getColor(R.color.setting_white));
             mBinding.settingOthersCarConnectImg.setImageResource(R.drawable.img_car_connected);
             mBinding.settingOthersCarConnect.setBackground(
                     ResourceUtils.Companion.getInstance().getDrawable(R.drawable.bg_setting_broadcast_select));
@@ -135,7 +136,7 @@ public class SettingOthersFragment extends BaseFragment<FragmentSettingOthersBin
         if (mViewModel.getIsLogin() && status) {
             mBinding.settingOthersWechatImg.setImageResource(R.drawable.img_wechat_bind);
             mBinding.settingOthersWechatConnect.setTextColor(
-                    ResourceUtils.Companion.getInstance().getColor(R.color.white));
+                    ResourceUtils.Companion.getInstance().getColor(R.color.setting_white));
             mBinding.settingOthersWechat.setBackground(
                     ResourceUtils.Companion.getInstance().getDrawable(R.drawable.bg_setting_broadcast_select));
             mBinding.settingOthersWechat.setAlpha(1f);
@@ -179,6 +180,7 @@ public class SettingOthersFragment extends BaseFragment<FragmentSettingOthersBin
                 .setConfirmText(ResourceUtils.Companion.getInstance().getString(R.string.setting_others_reset_setting_immediate))
                 .setDialogObserver(new IBaseDialogClickListener() {
                     @Override
+                    @HookMethod(eventName = BuryConstant.EventName.AMAP_RETURN_DEFAULT)
                     public void onCommitClick() {
                         mViewModel.clearAll();
                         restartApp();

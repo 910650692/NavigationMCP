@@ -80,18 +80,17 @@
 
                 <com.fy.navi.ui.view.SkinTextView
                     android:id="@+id/poi_name"
-                    android:layout_width="@dimen/dp_0"
+                    android:layout_width="@dimen/dp_240"
                     android:layout_height="wrap_content"
                     android:ellipsize="end"
                     android:maxLines="1"
                     android:singleLine="true"
                     android:text="@{poiBean.name}"
-                    android:textColor="@color/search_item_title_color_ff383839"
+                    android:textColor="@color/search_color_ffffff"
                     android:textSize="@dimen/sp_34"
                     app:layout_constraintBottom_toTopOf="@+id/poi_address"
                     app:layout_constraintStart_toEndOf="@+id/poi_icon"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintVertical_bias="0.5"
                     tools:text="德国慕尼黑" />
 
                 <com.fy.navi.ui.view.SkinTextView
@@ -99,16 +98,16 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/dp_16"
-                    android:text="@string/favorite_item_top"
                     android:background="@drawable/bg_favorite_top"
-                    android:textSize="@dimen/sp_26"
                     android:paddingLeft="@dimen/dp_12"
-                    android:paddingRight="@dimen/dp_12"
                     android:paddingTop="@dimen/dp_6"
+                    android:paddingRight="@dimen/dp_12"
                     android:paddingBottom="@dimen/dp_6"
+                    android:text="@string/favorite_item_top"
                     android:textColor="@color/navi_color_2461EA_100"
+                    android:textSize="@dimen/sp_26"
                     app:layout_constraintStart_toEndOf="@+id/poi_name"
-                    app:layout_constraintTop_toTopOf="parent"  />
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <com.fy.navi.ui.view.SkinLinearLayout
                     android:layout_width="wrap_content"
@@ -124,10 +123,10 @@
                         android:id="@+id/item_favorite_distance"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textSize="@dimen/sp_30"
                         android:text="@{poiBean.distance}"
-                        android:textColor="@color/setting_des_text_gray"
-                        tools:text="198km"/>
+                        android:textColor="@color/search_color_ffffff_70"
+                        android:textSize="@dimen/sp_30"
+                        tools:text="198km" />
 
                     <com.fy.navi.ui.view.SkinView
                         android:id="@+id/item_favorite_line"
@@ -135,18 +134,18 @@
                         android:layout_height="@dimen/dp_22"
                         android:layout_marginStart="@dimen/dp_8"
                         android:layout_marginEnd="@dimen/dp_8"
-                        android:background="@color/setting_des_text_gray" />
+                        android:background="@color/search_color_ffffff_70" />
 
                     <com.fy.navi.ui.view.SkinTextView
                         android:id="@+id/poi_address"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textSize="@dimen/sp_30"
-                        android:text="@{poiBean.address}"
                         android:ellipsize="end"
                         android:maxLines="1"
                         android:singleLine="true"
-                        android:textColor="@color/setting_des_text_gray"
+                        android:text="@{poiBean.address}"
+                        android:textColor="@color/search_color_ffffff_70"
+                        android:textSize="@dimen/sp_30"
                         app:layout_constraintStart_toEndOf="@+id/item_favorite_line"
                         app:layout_constraintTop_toBottomOf="@+id/item_favorite_name"
                         tools:text="德国慕尼黑啤酒节柏林节柏林披萨慕尼" />
@@ -199,7 +198,7 @@
                 android:id="@+id/sll_top"
                 android:layout_width="@dimen/dp_126"
                 android:layout_height="match_parent"
-                android:background="#E2E4ED"
+                android:background="@color/bg_route_big_window_unselect"
                 android:gravity="center"
                 android:orientation="vertical">
 
@@ -224,7 +223,7 @@
                 android:id="@+id/sll_delete"
                 android:layout_width="@dimen/dp_126"
                 android:layout_height="match_parent"
-                android:background="#C73333"
+                android:background="@color/search_color_delete_bg"
                 android:gravity="center"
                 android:orientation="vertical">
 
@@ -239,7 +238,7 @@
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:text="删除"
-                    android:textColor="@color/white"
+                    android:textColor="@color/search_color_ffffff_70"
                     android:textSize="@dimen/sp_36" />
 
             </com.fy.navi.ui.view.SkinLinearLayout>

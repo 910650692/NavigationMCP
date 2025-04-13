@@ -31,6 +31,19 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/search_history_middle_view" />
 
+        <com.fy.navi.ui.view.SkinTextView
+            android:id="@+id/tv_record_null"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/shv_record_null"
+            android:textColor="@color/search_color_ffffff_70"
+            android:textSize="@dimen/sp_30"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/search_history_middle_view"/>
+
         <com.fy.navi.ui.view.SkinConstraintLayout
             android:id="@+id/scl_delete_record"
             android:layout_width="wrap_content"

@@ -14,6 +14,7 @@
 
     <com.fy.navi.ui.view.SkinConstraintLayout
         android:id="@+id/scl_park_list"
+        android:clickable="true"
         android:layout_width="@dimen/dp_640"
         android:layout_height="@dimen/dp_376">
 
@@ -33,6 +34,7 @@
             android:layout_width="@dimen/dp_640"
             android:layout_height="@dimen/dp_258"
             android:layout_marginTop="@dimen/dp_20"
+            android:clickable="true"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/siv_close_park"/>

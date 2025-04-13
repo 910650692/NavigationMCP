@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 
+import com.fy.navi.scene.R;
 import com.fy.navi.scene.databinding.LayoutConfirmDialogBinding;
 import com.fy.navi.ui.dialog.BaseFullScreenDialog;
 import com.fy.navi.ui.dialog.IBaseDialogClickListener;
@@ -38,6 +39,8 @@ public class SearchConfirmDialog extends BaseFullScreenDialog<LayoutConfirmDialo
         super.onCreate(savedInstanceState);
         mViewBinding.tvContent.setText(mContent);
         mViewBinding.tvConfirm.setText(mConfirmTitle);
+        mViewBinding.tvContent.setTextColor(getContext().getColor(R.color.content_color));
+        mViewBinding.tvCancel.setTextColor(getContext().getColor(R.color.cancel_color));
         onClick();
     }
 

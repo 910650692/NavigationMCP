@@ -66,6 +66,9 @@ public class SceneMainAlongWaySearchView extends BaseSceneView<SceneMainAlongWay
     @Override
     protected void initObserver() {
         setSkinTextViews();
+        mViewBinding.ivGasStation.setImageResource(R.drawable.icon_basic_ic_star_default);
+        mViewBinding.ivGourmet.setImageResource(R.drawable.img_basic_ic_map_point_selection);
+        mViewBinding.searchBarTextView.setHint(R.string.navi_add_via_hint);
         mViewBinding.searchBarTextView.setOnClickListener(v -> {
             final Fragment fragment = (Fragment) ARouter.getInstance()
                     .build(RoutePath.Search.SUGGESTION_FRAGMENT)

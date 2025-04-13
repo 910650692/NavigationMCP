@@ -1,5 +1,6 @@
 package com.fy.navi.hmi.setting.others.about;
 
+
 import com.android.utils.ResourceUtils;
 import com.fy.navi.hmi.R;
 import com.fy.navi.service.define.position.LocInfoBean;
@@ -47,7 +48,6 @@ public class SettingOthersAboutModel extends BaseModel<SettingOthersAboutViewMod
     public void onDestroy() {
         super.onDestroy();
     }
-
 
     /**
      * 设置渠道号

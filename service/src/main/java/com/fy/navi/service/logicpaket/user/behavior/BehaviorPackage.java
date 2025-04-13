@@ -6,6 +6,11 @@ import com.android.utils.ConvertUtils;
 import com.android.utils.ToastUtils;
 import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
+import com.android.utils.thread.ThreadManager;
+import com.fy.navi.burypoint.anno.HookMethod;
+import com.fy.navi.burypoint.bean.BuryProperty;
+import com.fy.navi.burypoint.constant.BuryConstant;
+import com.fy.navi.burypoint.controller.BuryPointController;
 import com.fy.navi.service.AppContext;
 import com.fy.navi.service.R;
 import com.fy.navi.service.adapter.layer.LayerAdapter;
@@ -14,6 +19,7 @@ import com.fy.navi.service.adapter.user.behavior.BehaviorAdapter;
 import com.fy.navi.service.adapter.user.behavior.BehaviorAdapterCallBack;
 import com.fy.navi.service.define.bean.GeoPoint;
 import com.fy.navi.service.define.code.UserDataCode;
+import com.fy.navi.service.define.layer.refix.LayerItemUserFavorite;
 import com.fy.navi.service.define.map.GmBizUserFavoritePoint;
 import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.search.FavoriteInfo;
@@ -22,6 +28,7 @@ import com.fy.navi.service.define.user.account.AccountProfileInfo;
 import com.fy.navi.service.greendao.CommonManager;
 import com.fy.navi.service.greendao.favorite.Favorite;
 import com.fy.navi.service.greendao.favorite.FavoriteManager;
+import com.fy.navi.service.logicpaket.layer.LayerPackage;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -35,6 +42,7 @@ final public class BehaviorPackage implements BehaviorAdapterCallBack {
     private final CommonManager mCommonManager;
     private final MapAdapter mapAdapter;
     private final LayerAdapter mLayerAdapter;
+    private final List<FavoriteStatusCallback> mFavoriteStatusCallbacks = new ArrayList<>();
 
     private BehaviorPackage() {
         mBehaviorAdapter = BehaviorAdapter.getInstance();
@@ -68,6 +76,12 @@ final public class BehaviorPackage implements BehaviorAdapterCallBack {
     public synchronized void registerCallBack(final BehaviorCallBack callback) {
         if (callback != null && !mCallBacks.contains(callback)) {
             mCallBacks.add(callback);
+        }
+    }
+
+    public synchronized void registerFavoriteStatusCallback(final FavoriteStatusCallback callback) {
+        if (callback != null && !mFavoriteStatusCallbacks.contains(callback)) {
+            mFavoriteStatusCallbacks.add(callback);
         }
     }
 
@@ -197,14 +211,49 @@ final public class BehaviorPackage implements BehaviorAdapterCallBack {
      * @return string
      */
     public String addFavorite(final PoiInfoEntity poiInfo, final int type) {
+        String itemId = "";
         if (isLogin() && type != 3) {
-            return mBehaviorAdapter.addFavorite(poiInfo);
+            itemId =  mBehaviorAdapter.addFavorite(poiInfo);
+        } else {
+            if (poiInfo != null && poiInfo.getFavoriteInfo() != null && TextUtils.isEmpty(poiInfo.getFavoriteInfo().getItemId())) {
+                poiInfo.getFavoriteInfo().setItemId(poiInfo.getPid());
+            }
+            addFavoriteData(poiInfo, type);
         }
-        if (poiInfo != null && poiInfo.getFavoriteInfo() != null && TextUtils.isEmpty(poiInfo.getFavoriteInfo().getItemId())) {
-            poiInfo.getFavoriteInfo().setItemId(poiInfo.getPid());
+        if (type == 1 || type == 2) {
+            notifyFavoriteStatusChanged();
         }
-        addFavoriteData(poiInfo, type);
-        return "add favorite";
+        //For Bury Point
+        sendBuryPointForAddFavorite(poiInfo, type);
+        return itemId;
+    }
+
+    @HookMethod
+    private void sendBuryPointForAddFavorite(final PoiInfoEntity poiInfo, final int type) {
+        if (poiInfo != null) {
+            String eventName = "";
+            String key = BuryConstant.ProperType.BURY_KEY_HOME_PREDICTION;
+            switch (type){
+                case 0:
+                    eventName = BuryConstant.EventName.AMAP_FAVORITE_SAVE;
+                    break;
+                case 1:
+                    eventName = BuryConstant.EventName.AMAP_HOME_SAVE;
+                    break;
+                case 2:
+                    eventName = BuryConstant.EventName.AMAP_WORK_SAVE;
+                    break;
+                case 3:
+                    eventName = BuryConstant.EventName.AMAP_SETTING_HOT_ADD;
+                    key = BuryConstant.ProperType.BURY_KEY_SEARCH_CONTENTS;
+                    break;
+            }
+            BuryPointController.getInstance().setEventName(eventName);
+            BuryProperty buryProperty = new BuryProperty.Builder()
+                    .setParams(key, poiInfo.getName())
+                    .build();
+            BuryPointController.getInstance().setBuryProps(buryProperty);
+        }
     }
 
     /**
@@ -214,13 +263,45 @@ final public class BehaviorPackage implements BehaviorAdapterCallBack {
      * @return item id
      */
     public String removeFavorite(final PoiInfoEntity poiInfo) {
+        //For Bury Point
+        sendBuryPointForRemovingOldFavorite(poiInfo);
+
+        String itemId = "";
         if (isLogin()) {
-            return mBehaviorAdapter.removeFavorite(poiInfo);
+            itemId =  mBehaviorAdapter.removeFavorite(poiInfo);
+        } else {
+            if (poiInfo != null && poiInfo.getFavoriteInfo() != null) {
+                deleteFavoriteData(poiInfo.getFavoriteInfo().getItemId());
+            }
         }
+        notifyFavoriteStatusChanged();
+        return itemId;
+    }
+
+    private void notifyFavoriteStatusChanged() {
+        for (FavoriteStatusCallback callback : mFavoriteStatusCallbacks) {
+            if (callback != null) {
+                callback.notifyFavoriteHomeChanged(getHomeFavoriteInfo() != null);
+                callback.notifyFavoriteCompanyChanged(getCompanyFavoriteInfo() != null);
+            }
+        }
+    }
+
+    @HookMethod
+    private void sendBuryPointForRemovingOldFavorite(final PoiInfoEntity poiInfo) {
         if (poiInfo != null && poiInfo.getFavoriteInfo() != null) {
-            deleteFavoriteData(poiInfo.getFavoriteInfo().getItemId());
+            String eventName = switch (poiInfo.getFavoriteInfo().getCommonName()){
+                case 0 -> BuryConstant.EventName.AMAP_FAVORITE_UNSAVE;
+                case 1 -> BuryConstant.EventName.AMAP_HOME_UNSAVE;
+                case 2 -> BuryConstant.EventName.AMAP_WORK_UNSAVE;
+                default -> BuryConstant.EventName.AMAP_UNKNOWN;
+            };
+            BuryPointController.getInstance().setEventName(eventName);
+            BuryProperty buryProperty = new BuryProperty.Builder()
+                    .setParams(BuryConstant.ProperType.BURY_KEY_HOME_PREDICTION, poiInfo.getName())
+                    .build();
+            BuryPointController.getInstance().setBuryProps(buryProperty);
         }
-        return "";
     }
 
     /**
@@ -355,13 +436,13 @@ final public class BehaviorPackage implements BehaviorAdapterCallBack {
      * @param favoriteType 收藏点类型（1家，2公司，3常去地址，0普通收藏点）
      * @return entity
      */
-    public PoiInfoEntity getFavoriteHomeData(final int favoriteType) {
-        final List<Favorite> favoriteList = mManager.getValueByCommonName(favoriteType);
-        if (null != favoriteList && !favoriteList.isEmpty()) {
-            return getPoiInfoEntity(favoriteList.get(0));
-        }
-        return null;
-    }
+//    public PoiInfoEntity getFavoriteHomesData(final int favoriteType) {
+//        final List<Favorite> favoriteList = mManager.getValueByCommonName(favoriteType);
+//        if (null != favoriteList && !favoriteList.isEmpty()) {
+//            return getPoiInfoEntity(favoriteList.get(0));
+//        }
+//        return null;
+//    }
 
     /**
      * 获取未置顶列表
@@ -497,15 +578,22 @@ final public class BehaviorPackage implements BehaviorAdapterCallBack {
      */
     private void updateFavoriteMain() {
         // 通知主图更新收藏点
-        final List<Favorite> tmpList = FavoriteManager.getInstance().getFavoriteNotTop();
-        final ArrayList<GmBizUserFavoritePoint> list = new ArrayList<>();
-        tmpList.forEach((rectFav -> {
-            final GmBizUserFavoritePoint point = new GmBizUserFavoritePoint();
-            point.favoriteType = rectFav.getMCommonName();
-            point.lon = rectFav.getMPointX();
-            point.lat = rectFav.getMPointY();
-            list.add(point);
-        }));
-        mLayerAdapter.updateFavoriteMain(MapType.MAIN_SCREEN_MAIN_MAP, list);
+        ThreadManager.getInstance().postDelay(() -> {
+            LayerItemUserFavorite layerItemUserFavorite = new LayerItemUserFavorite();
+            ArrayList<PoiInfoEntity> poiInfoEntities = getFavoritePoiData();
+            PoiInfoEntity homePoiInfoEntity = getHomeFavoriteInfo();
+            PoiInfoEntity companyFavoriteInfo = getCompanyFavoriteInfo();
+
+            if (!ConvertUtils.isEmpty(poiInfoEntities)) {
+                layerItemUserFavorite.setMSimpleFavoriteList(poiInfoEntities);
+            }
+            if (!ConvertUtils.isEmpty(homePoiInfoEntity)) {
+                layerItemUserFavorite.setMHomeFavoriteList(homePoiInfoEntity);
+            }
+            if (!ConvertUtils.isEmpty(companyFavoriteInfo)) {
+                layerItemUserFavorite.setMCompanyFavoriteList(companyFavoriteInfo);
+            }
+            LayerPackage.getInstance().addLayerItemOfFavorite(MapType.MAIN_SCREEN_MAIN_MAP, layerItemUserFavorite, true);
+        }, 100);
     }
 }

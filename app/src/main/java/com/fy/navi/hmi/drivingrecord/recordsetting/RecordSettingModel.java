@@ -3,10 +3,13 @@ package com.fy.navi.hmi.drivingrecord.recordsetting;
 import android.text.TextUtils;
 
 import com.fy.navi.service.define.setting.SettingController;
+import com.fy.navi.service.define.user.usertrack.DrivingRecordDataBean;
 import com.fy.navi.service.greendao.history.HistoryManager;
 import com.fy.navi.service.greendao.setting.SettingManager;
 import com.fy.navi.service.logicpaket.user.usertrack.UserTrackPackage;
 import com.fy.navi.ui.base.BaseModel;
+
+import java.util.ArrayList;
 
 public class RecordSettingModel extends BaseModel<RecordSettingViewModel> {
 
@@ -54,8 +57,20 @@ public class RecordSettingModel extends BaseModel<RecordSettingViewModel> {
         mViewModel.setIsAutoRecord(Boolean.parseBoolean(value));
     }
 
+    /**
+     * 获取行为数据id列表
+     * @return 行为数据id列表
+     */
     public int[] getBehaviorDataIds() {
         return mUserTrackPackage.getBehaviorDataIds();
+    }
+
+    /**
+     * 从sdk获取当前用户行程数据列表（默认导航历史）
+     * @return 行程数据列表
+     */
+    public ArrayList<DrivingRecordDataBean> getDrivingRecordDataFromSdk() {
+        return mUserTrackPackage.getDrivingRecordDataFromSdk();
     }
 
     /**

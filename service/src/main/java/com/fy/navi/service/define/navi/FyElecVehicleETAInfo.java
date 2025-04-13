@@ -22,4 +22,17 @@ public class FyElecVehicleETAInfo {
     private ArrayList<FyChargingStation> chargeStationInfo;
     private ArrayList<FyViaMergeInfo> viaMergeInfo;
     private FyEnergyEndPoint energyEndPoint;//能量耗尽点
+
+    @Override
+    public String toString() {
+        return "FyElecVehicleETAInfo{" +
+                "energyEndFlag=" + energyEndFlag +
+                ", pathID=" + pathID +
+                ", elecLinkConsume=" + elecLinkConsume +
+                ", energySum=" + energySum +
+                ", chargeStationInfo=" + chargeStationInfo +
+                ", viaMergeInfo=" + viaMergeInfo +
+                ", energyEndPoint=" + energyEndPoint +
+                '}';
+    }
 }

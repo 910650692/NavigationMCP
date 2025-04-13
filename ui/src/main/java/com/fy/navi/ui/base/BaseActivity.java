@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.databinding.ViewDataBinding;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -19,6 +20,7 @@ import com.android.utils.log.Logger;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.List;
 
 public abstract class BaseActivity<V extends ViewDataBinding, VM extends BaseViewModel>
         extends AppCompatActivity implements IBaseView {
@@ -89,6 +91,17 @@ public abstract class BaseActivity<V extends ViewDataBinding, VM extends BaseVie
     }
 
     @Override
+    public void addFragment(final BaseFragment fragment, final Bundle bundle, boolean isHideCurFragment) {
+        FragmentIntent.addFragment(mScreenId, onFragmentId(), getSupportFragmentManager(),
+                fragment, bundle, isHideCurFragment);
+        if (mStackManager.isFragmentStackNull(mScreenId)) {
+            onResetMapCenter();
+        } else {
+            onMoveMapCenter(bundle);
+        }
+    }
+
+    @Override
     public void addPoiDetailsFragment(BaseFragment fragment, Bundle bundle) {
         FragmentIntent.addPoiDetailsFragment(mScreenId, onFragmentId(), getSupportFragmentManager(),
                 fragment, bundle);
@@ -101,12 +114,9 @@ public abstract class BaseActivity<V extends ViewDataBinding, VM extends BaseVie
 
     @Override
     public void closeFragment(final boolean nextShow) {
-        FragmentIntent.closeFragment(mScreenId, getSupportFragmentManager(),
-                mStackManager.getCurrentFragment(mScreenId), nextShow);
+        BaseFragment fragment = FragmentIntent.closeFragment(mScreenId, getSupportFragmentManager(), nextShow);
         Bundle bundle = null;
-        Fragment fragment = mStackManager.getCurrentFragment(mScreenId);
-        if (fragment != null && mStackManager.getCurrentFragment(mScreenId).getClass().getName().
-                contains("NaviGuidanceFragment")) {
+        if (fragment != null && fragment.getClass().getName().contains("NaviGuidanceFragment")) {
             bundle = new Bundle();
             bundle.putInt("bundle_key_route_start_navi_sim", 0);
         }
@@ -115,6 +125,26 @@ public abstract class BaseActivity<V extends ViewDataBinding, VM extends BaseVie
         } else {
             if (bundle != null) {
                 onMoveMapCenter(bundle);
+                return;
+            }
+            onMoveMapCenter();
+        }
+    }
+
+    @Override
+    public void closeFragment(Bundle bundle) {
+        BaseFragment fragment = FragmentIntent.closeFragment(mScreenId, getSupportFragmentManager(),
+                bundle);
+        Bundle newBundle = null;
+        if (fragment != null && fragment.getClass().getName().contains("NaviGuidanceFragment")) {
+            newBundle = new Bundle();
+            newBundle.putInt("bundle_key_route_start_navi_sim", 0);
+        }
+        if (mStackManager.isFragmentStackNull(mScreenId)) {
+            onResetMapCenter();
+        } else {
+            if (newBundle != null) {
+                onMoveMapCenter(newBundle);
                 return;
             }
             onMoveMapCenter();
@@ -134,6 +164,26 @@ public abstract class BaseActivity<V extends ViewDataBinding, VM extends BaseVie
     @Override
     public void closeAllFragmentUpRoute() {
         FragmentIntent.closeAllFragmentUpRoute(mScreenId, getSupportFragmentManager());
+    }
+
+    @Override
+    public void closeAllFragmentUpNavi() {
+        Fragment fragment = FragmentIntent.closeAllFragmentUpNavi(
+                mScreenId, getSupportFragmentManager());
+        Bundle newBundle = null;
+        if (null != fragment && fragment.getClass().getName().contains("NaviGuidanceFragment")) {
+            newBundle = new Bundle();
+            newBundle.putInt("bundle_key_route_start_navi_sim", 0);
+        }
+        if (mStackManager.isFragmentStackNull(mScreenId)) {
+            onResetMapCenter();
+        } else {
+            if (newBundle != null) {
+                onMoveMapCenter(newBundle);
+                return;
+            }
+            onMoveMapCenter();
+        }
     }
 
     @Override

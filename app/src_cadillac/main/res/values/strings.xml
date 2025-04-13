@@ -1,0 +1,5 @@
+<resources>
+    <string name="st_pull_down_refresh">下拉刷新</string>
+    <string name="dialog_commit">同意</string>
+    <string name="dialog_cancel">不同意并退出</string>
+</resources>

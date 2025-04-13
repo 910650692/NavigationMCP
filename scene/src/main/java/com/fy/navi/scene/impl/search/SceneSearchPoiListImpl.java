@@ -1,37 +1,67 @@
 package com.fy.navi.scene.impl.search;
 
 
+import android.os.Bundle;
+
+import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
 import com.fy.navi.scene.BaseSceneModel;
 import com.fy.navi.scene.api.search.ISceneSearchPoiList;
 import com.fy.navi.scene.ui.search.SceneSearchPoiList;
 import com.fy.navi.service.MapDefaultFinalTag;
+import com.fy.navi.service.adapter.navi.NaviConstant;
 import com.fy.navi.service.define.bean.GeoPoint;
+import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.mapdata.CityDataInfo;
+import com.fy.navi.service.define.route.RouteParam;
 import com.fy.navi.service.define.search.PoiInfoEntity;
 import com.fy.navi.service.logicpaket.mapdata.MapDataPackage;
+import com.fy.navi.service.logicpaket.route.RoutePackage;
 import com.fy.navi.service.logicpaket.search.SearchPackage;
 import com.fy.navi.ui.base.StackManager;
 
 import java.util.List;
 
+
+/**
+ *
+ */
 public class SceneSearchPoiListImpl extends BaseSceneModel<SceneSearchPoiList> implements ISceneSearchPoiList {
     private final SearchPackage mSearchPackage;
     private final MapDataPackage mapDataPackage;
+    private final RoutePackage mRoutePackage;
     private int mTaskId;
-
+    private int mListSearchType;
+    public int getMTaskId() {
+        return mTaskId;
+    }
     public SceneSearchPoiListImpl(final SceneSearchPoiList scrollView) {
         super(scrollView);
         this.mSearchPackage = SearchPackage.getInstance();
         this.mapDataPackage = MapDataPackage.getInstance();
+        this.mRoutePackage = RoutePackage.getInstance();
     }
 
     @Override
     public void closeSearch() {
-        StackManager.getInstance().getCurrentFragment(mMapTypeId.name()).closeFragment(true);
+        if (!ConvertUtils.isEmpty(StackManager.getInstance().getCurrentFragment(mMapTypeId.name()))) {
+            StackManager.getInstance().getCurrentFragment(mMapTypeId.name()).closeFragment(true);
+        }
         mScreenView.clearEditText();
         mSearchPackage.clearLabelMark();
     }
+
+    @Override
+    public void closeSearchOpenFromNavi() {
+        if (!ConvertUtils.isEmpty(StackManager.getInstance().getCurrentFragment(mMapTypeId.name()))) {
+            final Bundle bundle = new Bundle();
+            bundle.putInt(NaviConstant.NAVI_CONTROL, 1);
+            StackManager.getInstance().getCurrentFragment(mMapTypeId.name()).closeFragment(bundle);
+        }
+        mScreenView.clearEditText();
+        mSearchPackage.clearLabelMark();
+    }
+
 
     /**
      * 获取城市信息
@@ -57,7 +87,7 @@ public class SceneSearchPoiListImpl extends BaseSceneModel<SceneSearchPoiList> i
      */
     public void keywordSearch(final int pageNum, final String keyword) {
         logSearch("keywordSearch", keyword);
-        mTaskId = mSearchPackage.keywordSearch(pageNum, keyword);
+        mTaskId = mSearchPackage.keywordSearch(pageNum, keyword, false);
     }
 
     /**
@@ -165,4 +195,51 @@ public class SceneSearchPoiListImpl extends BaseSceneModel<SceneSearchPoiList> i
     public void addPoiMarker(final List<PoiInfoEntity> poiInfoEntities, final int index) {
         mSearchPackage.createPoiMarker(poiInfoEntities, index);
     }
+
+    public void setSelectIndex(final PoiInfoEntity poiInfoEntity) {
+        mSearchPackage.setSelectIndex(poiInfoEntity);
+    }
+
+    /**
+     * 沿途搜附加卡片点击事件
+     * @param keword 关键字
+     * @param tabIndex 索引
+     */
+    public void onTabListGasChargeClick(final String keword, final int tabIndex) {
+        mListSearchType = tabIndex;
+        if (tabIndex == 0) {
+            mSearchPackage.enRouteKeywordSearch(keword);
+        } else if (tabIndex == 1) {
+            final RouteParam endPoint = mRoutePackage.getEndPoint(MapType.MAIN_SCREEN_MAIN_MAP);
+            mSearchPackage.aroundSearch(1, keword, new GeoPoint(endPoint.getRealPos().getLon(), endPoint.getRealPos().getLat()));
+        } else {
+            mSearchPackage.aroundSearch(1, keword);
+        }
+    }
+
+    /**
+     * 沿途搜确认按钮点击事件
+     * @param routeParams 批量添加途径点列表
+     */
+    public void onConfirm(final List<RouteParam> routeParams) {
+        mRoutePackage.requestManyVia(MapType.MAIN_SCREEN_MAIN_MAP, routeParams);
+    }
+
+    /**
+     * poiInfoEntity转换为RouteParam
+     * @param poiInfoEntity poiInfoEntity
+     * @return RouteParam
+     */
+    private RouteParam convertPoiInfoToRouteParam(final PoiInfoEntity poiInfoEntity) {
+        return mRoutePackage.getRouteParamFromPoiInfoEntity(poiInfoEntity, 1);
+    }
+
+
+    /**
+     * 清除搜索图层所有扎标
+     */
+    public void clearLabelMarker() {
+        mSearchPackage.clearLabelMark();
+    }
+
 }

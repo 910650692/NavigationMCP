@@ -34,6 +34,10 @@ import com.autonavi.gbl.user.msgpush.observer.IMobileLinkObserver;
 import com.autonavi.gbl.user.msgpush.observer.IMsgPushServiceObserver;
 import com.autonavi.gbl.util.model.SingleServiceID;
 import com.autonavi.gbl.util.model.TaskResult;
+import com.fy.navi.burypoint.anno.HookMethod;
+import com.fy.navi.burypoint.bean.BuryProperty;
+import com.fy.navi.burypoint.constant.BuryConstant;
+import com.fy.navi.burypoint.controller.BuryPointController;
 import com.fy.navi.service.GBLCacheFilePath;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.adapter.user.msgpush.IMsgPushApi;
@@ -343,10 +347,17 @@ public class MsgPushAdapterImpl implements IMsgPushApi, IMsgPushServiceObserver,
      * @return 整数 >0:网络请求的标识用于AbortRequest() ; =0:网络请求未发起，无回调。
      */
     @Override
+    @HookMethod(eventName = BuryConstant.EventName.AMAP_PHONE_DESTINATION_TO)
     public long sendReqSendToPhone(final MsgPushRequestInfo aosRequest) {
         final GSendToPhoneRequestParam sendToPhoneRequestParam = new GSendToPhoneRequestParam();
         GsonUtils.copyBean(aosRequest, sendToPhoneRequestParam);
         sendToPhoneRequestParam.aimpoiMsg = GsonUtils.convertToT(aosRequest, GAimpoiMsg.class);
+
+        //For Bury Point
+        BuryProperty buryProperty = new BuryProperty.Builder()
+                .setParams(BuryConstant.ProperType.BURY_KEY_SEARCH_CONTENTS, aosRequest.getName())
+                .build();
+        BuryPointController.getInstance().setBuryProps(buryProperty);
 
         // TODO
         if (mBLAosService != null) {
@@ -468,6 +479,7 @@ public class MsgPushAdapterImpl implements IMsgPushApi, IMsgPushServiceObserver,
      * @param msg 手机发送路线推送消息
      */
     @Override
+    @HookMethod(eventName = BuryConstant.EventName.AMAP_PHONE_DESTINATION_FROM)
     public void notifyMessage(final AimRoutePushMsg msg) {
         Logger.d(TAG,"notifyMessage: " + GsonUtils.toJson(msg.content));
 
@@ -533,6 +545,10 @@ public class MsgPushAdapterImpl implements IMsgPushApi, IMsgPushServiceObserver,
         if (msg.content.routeParam.destination != null) {
             routeMsgPushInfo.setMName(msg.content.routeParam.destination.name);
         }
+
+        BuryProperty buryProperty = new BuryProperty.Builder()
+                .setParams(BuryConstant.ProperType.BURY_KEY_SEARCH_CONTENTS, msg.content.routeParam.destination != null ? msg.content.routeParam.destination.name : "").build();
+        BuryPointController.getInstance().setBuryProps(buryProperty);
 
         for (MsgPushAdapterCallback callBack : mCallBacks.values()) {
             callBack.notifyAimRoutePushMessage(routeMsgPushInfo);

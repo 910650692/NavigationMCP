@@ -12,6 +12,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.utils.ConvertUtils;
 import com.android.utils.thread.ThreadManager;
+import com.fy.navi.burypoint.anno.HookMethod;
+import com.fy.navi.burypoint.bean.BuryProperty;
+import com.fy.navi.burypoint.constant.BuryConstant;
+import com.fy.navi.burypoint.controller.BuryPointController;
 import com.fy.navi.hmi.R;
 import com.fy.navi.hmi.databinding.FragmentLimitDetailBinding;
 import com.fy.navi.service.AutoMapConstant;
@@ -234,6 +238,7 @@ public class LimitDriveFragment extends BaseFragment<FragmentLimitDetailBinding,
             mBinding.layoutPolicy.setVisibility(View.GONE);
             mBinding.tvLoading.setText(R.string.limit_loading);
             mBinding.tvRetry.setVisibility(View.GONE);
+            mBinding.ivLoading.setVisibility(View.VISIBLE);
         });
     }
 
@@ -247,6 +252,7 @@ public class LimitDriveFragment extends BaseFragment<FragmentLimitDetailBinding,
             mBinding.layoutPolicy.setVisibility(View.GONE);
             mBinding.tvLoading.setText(R.string.limit_load_fail);
             mBinding.tvRetry.setVisibility(View.VISIBLE);
+            mBinding.ivLoading.setVisibility(View.GONE);
         });
     }
 
@@ -271,6 +277,7 @@ public class LimitDriveFragment extends BaseFragment<FragmentLimitDetailBinding,
                         public void onClick(final int position) {
                             if (!restrictedArea.getMCityNames().get(position).isEmpty()) {
                                 mViewModel.setSelectedCityName(restrictedArea.getMCityNames().get(position));
+                                sendBuryPointForSelectingCity(restrictedArea.getMCityNames().get(position));
                                 mBinding.recyclerView.setVisibility(View.VISIBLE);
                                 mAdapter.setData(restrictedArea.getMRestrictedAreaDetails().get(position));
                                 mBinding.tvNoContent.setVisibility(View.GONE);
@@ -306,5 +313,13 @@ public class LimitDriveFragment extends BaseFragment<FragmentLimitDetailBinding,
                 }
             }
         });
+    }
+
+    @HookMethod(eventName = BuryConstant.EventName.AMAP_TRAFFICRESTRICT_CITY)
+    private void sendBuryPointForSelectingCity(final String cityName) {
+        BuryProperty buryProperty = new BuryProperty.Builder()
+                .setParams(BuryConstant.ProperType.BURY_KEY_SEARCH_CONTENTS, cityName)
+                .build();
+        BuryPointController.getInstance().setBuryProps(buryProperty);
     }
 }

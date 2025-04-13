@@ -3,6 +3,10 @@ package com.fy.navi.service.define.navi;
 import androidx.annotation.NonNull;
 
 import com.fy.navi.service.define.bean.GeoPoint;
+import com.fy.navi.service.define.search.ChargeInfo;
+import com.fy.navi.service.define.search.PoiInfoEntity;
+
+import java.util.List;
 
 /**
  * @Description: 使用 Lombok 自动生成样板代码：
@@ -31,6 +35,9 @@ public class NaviParkingEntity {
 
     private GeoPoint mEnterPoint;
     private GeoPoint mExitPoint;
+
+    // 充电列表站信息
+    private List<ChargeInfo> mChargeInfoList;
 
     public int getPoiType() {
         return mPoiType;
@@ -208,6 +215,19 @@ public class NaviParkingEntity {
 
     public void setExitPoint(final GeoPoint exitPoint) {
         this.mExitPoint = exitPoint;
+    }
+
+    public List<ChargeInfo> getChargeInfoList() {
+        return mChargeInfoList;
+    }
+
+    /**
+     * @param chargeInfoList chargeInfoList
+     * @return NaviParkingEntity
+     */
+    public NaviParkingEntity setChargeInfoList(final List<ChargeInfo> chargeInfoList) {
+        this.mChargeInfoList = chargeInfoList;
+        return this;
     }
 
     @NonNull

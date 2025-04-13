@@ -938,6 +938,22 @@ public class TimeUtils {
         return "";
     }
 
+    public static boolean isTimeDifferenceGreaterThanOneWeek(long time1, long time2) {
+        Calendar calendar1 = Calendar.getInstance();
+        calendar1.setTimeInMillis(time1);
+
+        Calendar calendar2 = Calendar.getInstance();
+        calendar2.setTimeInMillis(time2);
+
+        long diffTime = calendar2.getTimeInMillis() - calendar1.getTimeInMillis();
+        if (diffTime < 0) {
+            return false;
+        }
+        long differenceInDays = diffTime / (24 * 60 * 60 * 1000);
+
+        return differenceInDays > 7;
+    }
+
     public static TimeUtils getInstance() {
         return Helper.timeU;
     }

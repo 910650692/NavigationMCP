@@ -62,6 +62,7 @@
     <string name="map_go_setting">去设置</string>
     <string name="map_in_around">在附近</string>
 
+
     <!-- 搜索相关 -->
     <string name="main_search_hint">搜索目的地</string>
     <string name="no_search_history">暂无历史记录</string>
@@ -78,6 +79,7 @@
     <string name="offline_text_administration">下载管理</string>
     <string name="offline_item_province_title">省份</string>
     <string name="offline_item_city_title">基础功能包</string>
+    <string name="offline_item_city_tip">新</string>
     <string name="offline_item_city_data">0MB</string>
     <string name="offline_item_city_status">下载</string>
     <string name="offline_base_map_tip">跨区域导航必备</string>
@@ -87,6 +89,7 @@
     <string name="offline_city_downloading">下载中</string>
     <string name="offline_city_downloaded">已下载</string>
     <string name="offline_all_net_city_start_download">全部下载</string>
+    <string name="offline_prov_city_start_download">全省下载</string>
     <string name="offline_all_city_start_download">全部开始</string>
     <string name="offline_all_city_suspend_download">全部暂停</string>
     <string name="offline_delete_city_data">删除</string>
@@ -101,6 +104,11 @@
     <string name="offline_manager_map_downloading_size_end">个城市下载成功</string>
     <string name="offline_item_delete_message">基础功能包为离线跨城导航必备数据，推荐下载</string>
     <string name="offline_item_cancel_delete">暂不下载</string>
+    <string name="offline_dialog_download_continue_title">继续下载提醒</string>
+    <string name="offline_dialog_download_pause_title">暂停下载提醒</string>
+    <string name="offline_dialog_download_continue">继续下载</string>
+    <string name="offline_dialog_download_pause">暂停下载</string>
+    <string name="offline_dialog_download_cancel">取消下载</string>
 
     <!--算路相关-->
     <string name="route_along_search">途径点</string>
@@ -144,6 +152,7 @@
     <string name="route_poi_details_phone">电        话:</string>
     <string name="route_poi_details_bussTime">营业时间:</string>
     <string name="route_no_function">暂未添加</string>
+    <string name="route_refresh_fast">当前算路结果和之前一致，请稍后再试。</string>
     <string name="route_error_add_start_end">无法移除起点和终点</string>
     <string name="route_error_no_service_data">无服务区数据</string>
     <string name="route_error_no_request_data">数据异常，无法进行路线规划</string>
@@ -225,7 +234,7 @@
     <string name="favorite_item_edit">编辑</string>
     <string name="favorite_add">添加</string>
     <string name="favorite_top_back">返回顶部</string>
-    <string name="favorite_favorite_switch">开启后，在地图上显示通勤地址位置及形成信息</string>
+    <string name="favorite_favorite_switch">开启后，在地图上显示通勤地址位置及行程信息</string>
     <string name="favorite_switch_common">常用收藏夹</string>
     <string name="favorite_switch_charge">专属充电站</string>
     <string name="favorite_no_charging">暂无数据</string>
@@ -298,7 +307,7 @@
     <string name="driving_record_clear_tip">行程历史清除后不可恢复，请谨慎操作</string>
     <string name="driving_record_clear_toast">立即清除</string>
     <string name="driving_record_setting">行程设置</string>
-    <string name="driving_record_setting_dialog_title">确定清除全部行程历史</string>
+    <string name="driving_record_setting_dialog_title">确定清除全部行程历史？</string>
     <string name="driving_record_setting_dialog_content">行程记录清除后不可恢复(足迹信息不受影响)</string>
     <string name="driving_record_setting_dialog_confirm">清除</string>
     <string name="driving_record_setting_dialog_merge_title">检测到本地行程数据，是否合并至登陆账号？</string>
@@ -346,7 +355,7 @@
     <string name="setting_guide_map_display">地图显示</string>
     <string name="setting_guide_road_condition">实时路况</string>
     <string name="setting_guide_favorite_point">收藏点</string>
-    <string name="setting_guide_charging_station">充电桩</string>
+    <string name="setting_guide_charging_station">充电站</string>
     <string name="setting_guide_font_size">地图文字大小</string>
     <string name="setting_guide_font_size_small">小字号</string>
     <string name="setting_guide_font_size_standard">标准字号</string>
@@ -420,25 +429,21 @@
     <string name="setting_others_about_draw">互联网审图号:GS(2024)3947号|GS(2023)551号</string>
     <string name="setting_others_about_licenses_info">证照信息</string>
     <string name="setting_others_about_help">帮助</string>
-    <string name="setting_others_about_help_remote_navi_title">遥控导航</string>
+    <string name="setting_others_about_help_remote_navi_title">手机遥控车机</string>
     <string name="setting_others_about_help_remote_navi">
-        1. 连接后，在车内使用手机导航，车机可自动同步路线并导航；\n
-        2. 可通过手机操控车机，退出导航或更改目的地。
+        1、连接后，在车内使用手机导航，车机可自动同步路线并导航；\n2、可通过手机操控车机，退出导航或更改目的地。
     </string>
-    <string name="setting_others_about_help_seamless_interconnection_title">发地点/路线</string>
+    <string name="setting_others_about_help_seamless_interconnection_title">无感互联</string>
     <string name="setting_others_about_help_seamless_interconnection">
-        1. 点击按钮可将手机高德上找到的地点或路线发送给车机；\n
-        2. 打开手机高德，将自动规划路线。
+        1、离车时，您最后浏览的地点和路线将会自动同步至手机；\n2、车内时，您浏览的地点和路线将会自动同步至车机。
     </string>
-    <string name="setting_others_about_help_find_car_title">手机找车</string>
+    <string name="setting_others_about_help_find_car_title">手机查看爱车位置</string>
     <string name="setting_others_about_help_find_car">
-        1. 手车登记同一车牌号下，到达目的地后将自动记录爱车位置；\n
-        2. 可在手机主图看到车辆，点击可导航前往。
+        1、手车登记同一车牌号下，到达目的地后将自动记录爱车位置；\n2、可在手机主图看到车辆，点击可导航前往。
     </string>
-    <string name="setting_others_about_help_data_sync_title">数据同步</string>
+    <string name="setting_others_about_help_data_sync_title">同步双端历史&#038;收藏</string>
     <string name="setting_others_about_help_data_sync">
-        1. 手机与车机上的搜索历史、收藏夹可自动同步；\n
-        2. 可在搜索页面中查看。
+        1、手机与车机上的搜索历史、收藏夹可自动同步；\n2、可在搜索页面中查看。
     </string>
     <string name="setting_others_help_tab_question">热门问题</string>
     <string name="setting_others_help_tab_display">图面显示</string>
@@ -513,7 +518,7 @@
 
     <string name="setting_others_about_help_no_data">暂未有数据</string>
     <string name="setting_others_about_help_remote_navi_tab">遥控导航</string>
-    <string name="setting_others_about_help_seamless_interconnection_tab">发送信息</string>
+    <string name="setting_others_about_help_seamless_interconnection_tab">无感交互</string>
     <string name="setting_others_about_help_find_car_tab">手机找车</string>
     <string name="setting_others_about_help_data_sync_tab">数据同步</string>
     <string name="setting_others_about_contact">联系方式</string>
@@ -568,6 +573,10 @@
     <string name="step_exit_cruise">已退出巡航模式</string>
     <string name="self_parking_space">回车位</string>
     <string name="low_battery_warning">电量不够到达终点，请查找沿途充电站</string>
+    <string name="forecast_title_home">预测家的地址是</string>
+    <string name="forecast_title_company">预测公司的地址是</string>
+    <string name="forecast_set_home">设置家成功</string>
+    <string name="forecast_set_company">设置公司成功</string>
     <!--引导相关-->
 
     <!--主图消息中心相关-->
@@ -588,10 +597,13 @@
     <string name="delete_all">删除全部</string>
     <string name="delete_charge_station_title">删除充电站</string>
     <string name="delete_charge_station_content">自动添加的充电站暂不支持逐个删除，是否要删除全部?</string>
+    <string name="startup_exception_title">无应用缓存数据</string>
+    <string name="startup_exception_content">请联网或下载离线数据后使用</string>
+    <string name="startup_exception_exit">退出</string>
 
     <!--周边搜索标签 -->
     <string-array name="around_categories_name">
-        <item>充电桩</item>
+        <item>充电站</item>
         <item>停车场</item>
         <item>美食</item>
         <item>卫生间</item>
@@ -616,7 +628,7 @@
 
     <!--主图更多搜索标签 电车-->
     <string-array name="main_search_more_categories_charging_name">
-        <item>充电桩</item>
+        <item>充电站</item>
         <item>卫生间</item>
         <item>停车场</item>
         <item>服务区</item>
@@ -642,7 +654,7 @@
 
     <!--沿途搜索标签 电车-->
     <string-array name="along_way_categories_charging_name">
-        <item>充电桩</item>
+        <item>充电站</item>
         <item>卫生间</item>
         <item>停车场</item>
         <item>服务区</item>
@@ -665,10 +677,18 @@
 
     <!--搜索主页快捷搜-->
     <string-array name="main_search_categories_name_charging">
-        <item>充电桩</item>
+        <item>充电站</item>
         <item>停车场</item>
         <item>美食</item>
         <item>洗车</item>
         <item>更多</item>
     </string-array>
+
+    <string name="guide_login_title">绑定高的账号</string>
+    <string name="guide_login_content">同步历程、收藏夹、导航路线</string>
+    <string name="guide_login_bind">立即绑定</string>
+    <string name="guide_login_cancel">不再提醒</string>
+    <string name="cruise_unmute">播报</string>
+    <string name="cruise_mute">静音</string>
+    <string name="guide_login_close_toast">您也可以在【设置-其他】内完成绑定</string>
 </resources>

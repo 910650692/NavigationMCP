@@ -12,7 +12,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.utils.ConvertUtils;
 import com.android.utils.ResourceUtils;
+import com.android.utils.ToastUtils;
 import com.android.utils.log.Logger;
+import com.android.utils.thread.ThreadManager;
 import com.fy.navi.scene.R;
 import com.fy.navi.scene.databinding.CollectResultItemBinding;
 import com.fy.navi.service.AutoMapConstant;
@@ -107,7 +109,7 @@ public class CollectResultAdapter extends RecyclerView.Adapter<CollectResultAdap
         if (mSearchPackage.isAlongWaySearch()) {
             holder.mResultItemBinding.textNavi.setText(R.string.st_along_way_point);
             holder.mResultItemBinding.ivNaviIcon.setImageDrawable(ResourceUtils.Companion.getInstance()
-                    .getDrawable(R.drawable.img_basic_ic_add_circle));
+                    .getDrawable(R.drawable.img_addq_58));
 
         } else {
             holder.mResultItemBinding.textNavi.setText(R.string.st_go_here);
@@ -117,7 +119,7 @@ public class CollectResultAdapter extends RecyclerView.Adapter<CollectResultAdap
         //若是常用地址或者收到的点，设置为加图标
         if (mCollectionType == AutoMapConstant.CollectionType.COMMON || mCollectionType == AutoMapConstant.CollectionType.GET_POINT) {
             holder.mResultItemBinding.ivNaviIcon.setImageDrawable(ResourceUtils.Companion.getInstance().
-                    getDrawable(R.drawable.img_basic_ic_add_circle));
+                    getDrawable(R.drawable.img_addq_58));
             holder.mResultItemBinding.textNavi.setText(R.string.mps_set_add);
             holder.mResultItemBinding.llActionContainer.setVisibility(View.GONE); //隐藏左滑按钮
         }
@@ -150,14 +152,24 @@ public class CollectResultAdapter extends RecyclerView.Adapter<CollectResultAdap
 //                BehaviorPackage.getInstance().updateFavoriteTopTime(poiEntities.get(position).getFavoriteInfo().getItemId(), current);
             }
             holder.mResultItemBinding.swipeMenuLayout.smoothClose();
+            final List<PoiInfoEntity> poiInfoEntityList = BehaviorPackage.getInstance().getFavoritePoiData();
+            ThreadManager.getInstance().postUi(() -> {
+                notifyList(poiInfoEntityList);
+            });
         });
         holder.mResultItemBinding.sllDelete.setOnClickListener(v -> {
-            final PoiInfoEntity info = mPoiEntities.get(position);
-            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "poi click 删除");
-            BehaviorPackage.getInstance().deleteFavoriteData(info.getFavoriteInfo().getItemId());
+            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "poi click 删除" + position);
             if (position >= 0 && position < mPoiEntities.size()) {
+                final PoiInfoEntity info = mPoiEntities.get(position);
+                BehaviorPackage.getInstance().deleteFavoriteData(info.getFavoriteInfo().getItemId());
                 mPoiEntities.remove(position);
                 notifyItemRemoved(position);
+                notifyDataSetChanged();
+                // 删除成功后的toast弹框
+                ToastUtils.Companion.getInstance().showCustomToastView(ResourceUtils.Companion.getInstance().getString(R.string.sha_deleted));
+            }
+            if (ConvertUtils.isEmpty(mPoiEntities) && mOnItemClickListener != null) {
+                mOnItemClickListener.onListCleared();
             }
             holder.mResultItemBinding.swipeMenuLayout.smoothClose();
         });
@@ -196,5 +208,10 @@ public class CollectResultAdapter extends RecyclerView.Adapter<CollectResultAdap
          * @param poiInfoEntity 点击的poi信息
          */
         void onNaviClick(int position, PoiInfoEntity poiInfoEntity);
+
+        /**
+         * 列表清空事件 当删除所有列表项之后调用
+         */
+        void onListCleared();
     }
 }

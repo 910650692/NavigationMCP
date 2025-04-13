@@ -84,6 +84,7 @@ public class MapPointSearchFragment extends BaseFragment<FragmentMapPointSearchB
     public void onDestroyView() {
         super.onDestroyView();
         FavoriteHelper.getInstance().setHomeCompanyType(-1);
+        mViewModel.hideFlyLine();
     }
 
     @Override

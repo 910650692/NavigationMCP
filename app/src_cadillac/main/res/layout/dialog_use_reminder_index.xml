@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/reminder_root_index"
+        android:layout_width="@dimen/dp_2000"
+        android:layout_height="@dimen/dp_1000"
+        android:layout_marginStart="@dimen/dp_310"
+        android:layout_marginBottom="@dimen/dp_180"
+        android:background="@drawable/shape_bg_dialog"
+        android:paddingHorizontal="@dimen/dp_100"
+        android:paddingVertical="@dimen/dp_80"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <com.fy.navi.ui.view.SkinTextView
+            android:id="@+id/reminder_title"
+            android:layout_width="@dimen/dp_1660"
+            android:layout_height="@dimen/dp_68"
+            android:text="@string/reminder_use_agreement"
+            android:textColor="@color/dialog_use_reminder_title"
+            android:textSize="@dimen/sp_52"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.fy.navi.ui.view.SkinTextView
+            android:id="@+id/reminder_click_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_30"
+            android:text="@string/reminder_click_to_view"
+            android:textColor="@color/dialog_use_reminder_content"
+            android:textSize="@dimen/sp_46"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/reminder_title" />
+
+        <com.fy.navi.ui.view.SkinTextView
+            android:id="@+id/reminder_terms_service"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_6"
+            android:layout_marginTop="@dimen/dp_30"
+            android:text="@string/reminder_page_service"
+            android:textColor="@color/dialog_use_reminder_terms_service_color"
+            android:textSize="@dimen/sp_46"
+            app:layout_constraintStart_toEndOf="@+id/reminder_click_view"
+            app:layout_constraintTop_toBottomOf="@+id/reminder_title" />
+
+        <com.fy.navi.ui.view.SkinTextView
+            android:id="@+id/reminder_click_view1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_6"
+            android:layout_marginTop="@dimen/dp_30"
+            android:text="，"
+            android:textColor="@color/dialog_use_reminder_content"
+            android:textSize="@dimen/sp_46"
+            app:layout_constraintStart_toEndOf="@+id/reminder_terms_service"
+            app:layout_constraintTop_toBottomOf="@+id/reminder_title" />
+
+        <com.fy.navi.ui.view.SkinTextView
+            android:id="@+id/reminder_page_privacy"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_6"
+            android:layout_marginTop="@dimen/dp_30"
+            android:text="@string/reminder_page_privacy"
+            android:textColor="@color/dialog_use_reminder_terms_service_color"
+            android:textSize="@dimen/sp_46"
+            app:layout_constraintStart_toEndOf="@+id/reminder_click_view1"
+            app:layout_constraintTop_toBottomOf="@+id/reminder_title" />
+
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_440"
+            android:layout_marginTop="@dimen/dp_30"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/reminder_click_view">
+
+            <com.fy.navi.ui.view.SkinTextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="@string/reminder_user_terms_personal_info"
+                android:textColor="@color/dialog_use_reminder_content"
+                android:textSize="@dimen/sp_46" />
+        </androidx.core.widget.NestedScrollView>
+
+        <com.fy.navi.ui.view.SkinButton
+            android:id="@+id/dialog_commit"
+            android:layout_width="@dimen/dp_420"
+            android:layout_height="@dimen/dp_100"
+            android:background="@drawable/bg_shape_commit_button"
+            android:gravity="center"
+            android:text="@string/dialog_commit"
+            android:textColor="@color/dialog_commit_text_white"
+            android:textSize="@dimen/sp_42"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <com.fy.navi.ui.view.SkinButton
+            android:id="@+id/dialog_cancel"
+            android:layout_width="@dimen/dp_420"
+            android:layout_height="@dimen/dp_100"
+            android:layout_marginStart="@dimen/dp_40"
+            android:background="@drawable/bg_shape_cancel_button"
+            android:gravity="center"
+            android:text="@string/dialog_cancel"
+            android:textColor="@color/dialog_cancel_text_b3181818"
+            android:textSize="@dimen/sp_42"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/dialog_commit" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

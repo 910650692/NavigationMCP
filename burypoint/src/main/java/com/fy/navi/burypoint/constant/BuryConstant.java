@@ -6,6 +6,7 @@ public class BuryConstant {
     public static final String SVID = "SVID";
 
     public static class EventName{
+        public static final String AMAP_UNKNOWN = "AMAP_Unknown";
         public static final String AMAP_OPEN = "AMAP_Open";
         public static final String AMAP_HIDE = "AMAP_Hide";
         public static final String AMAP_CLOSE = "AMAP_Close";
@@ -111,10 +112,93 @@ public class BuryConstant {
     }
 
     public static class Key{
-
         public static final String ROUTE_POI_TYPE = "RoutePoiType";
         public static final String POI_INFO_ENTRY = "PoiInfoEntity";
+    }
 
+    public static class BroadcastMode{
+        public static final String CONCISE = "简洁";
+        public static final String DETAIL = "详细";
+        public static final String MINIMALISM = "极简";
+    }
+
+    public static class RoutePreference{
+        public static final String RECOMMEND = "高德推荐";
+        public static final String AVOID_CONGESTION = "躲避拥堵";
+        public static final String LESS_CHARGE = "少收费";
+        public static final String NOT_HIGHWAY = "不走高速";
+        public static final String FIRST_HIGHWAY = "高速优先";
+        public static final String FIRST_MAIN_ROAD = "大路优先";
+        public static final String FAST_SPEED = "时间优先";
+    }
+
+    public static class SearchType{
+        public static final String CHARGING = "充电站";
+        public static final String GAS = "加油站";
+        public static final String PARKING = "停车场";
+        public static final String SERVICE = "服务区";
+    }
+
+    public static class GuideOption{
+        public static final String ROUTE_PREFERENCE = "路线偏好";
+        public static final String AVOID_RESTRICT = "避开限行";
+        public static final String LEVEL_NAVI = "车道级导航";
+        public static final String MAP_CONTENT = "地图显示";
+        public static final String MAP_WORD_SIZE = "地图文字大小";
+        public static final String CAR_ICON = "个性化车标";
+        public static final String AUTO_SCALE = "自动比例尺开关";
+        public static final String CHARGING_PLAN = "补能规划开关";
+    }
+
+    public static class BroadcastOption{
+        public static final String VOICE_PACKAGE = "播报语音";
+        public static final String VOICE_STYLE = "导航播报风格";
+        public static final String CRUISE_VOICE = "巡航播报设置";
+    }
+
+    public static class CarIcon{
+        public static final String DEFAULT = "默认";
+        public static final String BRAND = "品牌";
+        public static final String SPEED = "车速";
+    }
+
+    public static class MapFontSize{
+        public static final String DEFAULT = "标准字号";
+        public static final String BIG = "大字号";
+    }
+
+    public static class MapContent{
+        public static final String CHARGING_STATION = "充电桩";
+        public static final String RTTI = "实时路况";
+        public static final String FAVORITE_POINT = "收藏点";
+    }
+
+    public static class VoiceStyle{
+        public static final String DETAILED = "详细";
+        public static final String CONCISE = "简洁";
+        public static final String SIMPLE = "极简";
+    }
+
+    public static class CruiseVoice{
+        public static final String CLOSE = "关闭";
+        public static final String ROAD_CONDITION = "前方路况";
+        public static final String CAMERA = "电子眼播报";
+        public static final String SAFE = "安全提醒";
+    }
+
+    public static class CommonText{
+        public static final String EXIST = "存在";
+        public static final String NOT_EXIST = "不存在";
+    }
+
+    public static class Number{
+        public static final String ONE = "1";
+        public static final String SECOND = "2";
+    }
+
+    public enum ZoomAction {
+        ZOOM_IN,
+        ZOOM_OUT
     }
 
 }

@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <com.fy.navi.ui.view.SkinConstraintLayout
+            android:layout_width="@dimen/dp_1424"
+            android:layout_height="@dimen/dp_500"
+            android:background="@drawable/bg_forecast_address_dialog"
+            android:elevation="@dimen/dp_20"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0">
+
+            <com.fy.navi.ui.view.SkinTextView
+                android:id="@+id/forecast_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/dp_50"
+                android:text="@string/forecast_title_home"
+                android:layout_marginStart="@dimen/dp_100"
+                android:layout_marginEnd="@dimen/dp_100"
+                android:layout_marginTop="@dimen/dp_80"
+                android:textStyle="bold"
+                android:textColor="@color/forecast_title"
+                android:textSize="@dimen/sp_52"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <com.fy.navi.ui.view.SkinTextView
+                android:id="@+id/forecast_content"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/dp_72"
+                android:layout_marginTop="@dimen/dp_32"
+                android:drawableEnd="@drawable/img_rdeact_edit"
+                tools:text = "上海市浦东新区碧波路888号"
+                android:gravity="center_vertical"
+                android:textColor="@color/forecast_content"
+                android:textSize="@dimen/sp_46"
+                app:layout_constraintTop_toBottomOf="@+id/forecast_title"
+                app:layout_constraintLeft_toLeftOf="@+id/forecast_title"
+                app:layout_constraintRight_toRightOf="@+id/forecast_title" />
+
+            <com.fy.navi.ui.view.SkinLinearLayout
+                android:id="@+id/dialog_button_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="@dimen/dp_80"
+                app:layout_constraintStart_toStartOf="@+id/forecast_content"
+                app:layout_constraintTop_toBottomOf="@+id/forecast_content">
+
+                <com.fy.navi.ui.view.SkinButton
+                    android:id="@+id/dialog_commit"
+                    android:layout_width="@dimen/dp_420"
+                    android:layout_height="@dimen/dp_100"
+                    android:background="@drawable/bg_shape_commit_button"
+                    android:text="@string/reminder_dialog_commit"
+                    android:textColor="@color/dialog_commit_text_white"
+                    android:textSize="@dimen/sp_38" />
+
+                <com.fy.navi.ui.view.SkinButton
+                    android:id="@+id/dialog_cancel"
+                    android:layout_width="@dimen/dp_420"
+                    android:layout_marginStart="@dimen/dp_40"
+                    android:layout_height="@dimen/dp_100"
+                    android:background="@drawable/bg_shape_cancel_button"
+                    android:text="@string/reminder_dialog_cancel"
+                    android:textColor="@color/dialog_cancel_text_b3181818"
+                    android:textSize="@dimen/sp_38" />
+
+            </com.fy.navi.ui.view.SkinLinearLayout>
+        </com.fy.navi.ui.view.SkinConstraintLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

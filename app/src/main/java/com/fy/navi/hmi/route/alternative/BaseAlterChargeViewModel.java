@@ -1,12 +1,20 @@
 package com.fy.navi.hmi.route.alternative;
 
 import android.app.Application;
+import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 
 import androidx.annotation.NonNull;
 import androidx.databinding.ObservableField;
 
+import com.android.utils.ConvertUtils;
+import com.android.utils.ResourceUtils;
 import com.android.utils.log.Logger;
+import com.android.utils.thread.ThreadManager;
 import com.fy.navi.hmi.R;
+import com.fy.navi.scene.ui.search.SearchConfirmDialog;
+import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.define.bean.GeoPoint;
 import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.route.RouteAlterChargeStationInfo;
@@ -16,14 +24,19 @@ import com.fy.navi.service.define.search.PoiInfoEntity;
 import com.fy.navi.ui.action.Action;
 import com.fy.navi.ui.base.BaseViewModel;
 import com.fy.navi.ui.base.StackManager;
+import com.fy.navi.ui.dialog.IBaseDialogClickListener;
 
 import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class BaseAlterChargeViewModel extends BaseViewModel<AlterChargeFragment, AlterChargeModel> {
     private static final String TAG = "BaseAlterChargeViewModel";
     private ObservableField<Boolean> mShowAlterCharge;
     /**POI详情页面**/
     private ObservableField<Boolean> mRouteSearchStatusVisibility;
+    private ObservableField<Boolean> mRoutePhoneVisibility;
     private ObservableField<String> mRouteSearchStatus;
     private ObservableField<String> mRouteSearchName;
     private ObservableField<String> mRouteSearchAddress;
@@ -34,6 +47,10 @@ public class BaseAlterChargeViewModel extends BaseViewModel<AlterChargeFragment,
 
     public ObservableField<Boolean> getShowAlterCharge() {
         return mShowAlterCharge;
+    }
+
+    public ObservableField<Boolean> getRoutePhoneVisibility() {
+        return mRoutePhoneVisibility;
     }
 
     public ObservableField<Boolean> getRouteSearchStatusVisibility() {
@@ -116,9 +133,12 @@ public class BaseAlterChargeViewModel extends BaseViewModel<AlterChargeFragment,
         return mSlowTotal;
     }
 
+    private PoiInfoEntity mDetailsEntry;
+
     public BaseAlterChargeViewModel(final @NonNull Application application) {
         super(application);
         mShowAlterCharge = new ObservableField<>(true);
+        mRoutePhoneVisibility = new ObservableField<>(false);
         mRouteSearchStatus = new ObservableField<>("");
         mRouteSearchName = new ObservableField<>("");
         mRouteSearchAddress = new ObservableField<>("");
@@ -192,14 +212,33 @@ public class BaseAlterChargeViewModel extends BaseViewModel<AlterChargeFragment,
      * @param poiInfoEntities 点参数
      */
     public void showChargeStationDetail(final PoiInfoEntity poiInfoEntities) {
-        mRouteSearchElec.set("20%");
+        mDetailsEntry = poiInfoEntities;
+        if (!ConvertUtils.isEmpty(mDetailsEntry) && !ConvertUtils.isEmpty(mDetailsEntry.getPhone())) {
+            mRoutePhoneVisibility.set(true);
+        } else {
+            mRoutePhoneVisibility.set(false);
+        }
         mView.showChargeStationDetail(poiInfoEntities);
         mModel.getTravelTimeFuture(new GeoPoint(poiInfoEntities.getPoint().getLon(),poiInfoEntities.getPoint().getLat()))
                 .thenAccept(pair -> {
                     mRouteSearchTimeAndDistance.set(MessageFormat.format("{0}  {1}", pair.first, pair.second));
                 })
                 .exceptionally(error -> {
-                    Logger.d(TAG, "getTravelTimeFuture error:" + error);
+                    Logger.d(TAG, "showChargeStationDetail error:" + error);
+                    return null;
+                });
+        mModel.getTravelTimeFutureWithEv(new GeoPoint(poiInfoEntities.getPoint().getLon(),
+                        poiInfoEntities.getPoint().getLat()))
+                .thenAccept(etaInfo -> {
+                    ThreadManager.getInstance().postUi(() -> {
+                        mView.showPOIDetailCharge(etaInfo.getLeftCharge());
+                        mRouteSearchElec.set(ResourceUtils.Companion.getInstance().getString(
+                                com.fy.navi.scene.R.string.remain_charge, etaInfo.getLeftCharge()));
+                    });
+
+                })
+                .exceptionally(error -> {
+                    Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "showChargeStationDetail error:" + error);
                     return null;
                 });
     }
@@ -213,10 +252,8 @@ public class BaseAlterChargeViewModel extends BaseViewModel<AlterChargeFragment,
             return;
         }
         final ChargeInfo chargeInfo = poiInfoEntities.getMChargeInfoList().get(0);
-        if (chargeInfo.getCurrentElePrice() != null && !chargeInfo.getCurrentElePrice().isEmpty()) {
-            final double price = Double.parseDouble(chargeInfo.getCurrentElePrice());
-            mSpend.set(String.format("%.2f", price) + mApplication.getString(R.string.route_details_charge_free_unit));
-        }
+        mSpend.set(chargeInfo.getCurrentElePrice() + mApplication.getString(R.string.route_details_charge_free_unit));
+
         mFastFree.set(String.valueOf(chargeInfo.getFast_free()));
         mFastTotal.set(mApplication.getString(R.string.route_details_jg) + chargeInfo.getFast_total());
         mSlowFree.set(String.valueOf(chargeInfo.getSlow_free()));
@@ -253,5 +290,47 @@ public class BaseAlterChargeViewModel extends BaseViewModel<AlterChargeFragment,
 
     public Action getCloseDetail() {
         return mCloseDetail;
+    }
+
+    private final Action mRouteSearchPhoneClick = () -> {
+        if (!ConvertUtils.isEmpty(mDetailsEntry) && !ConvertUtils.isEmpty(mDetailsEntry.getPhone())) {
+            final String phone = mDetailsEntry.getPhone();
+            final List<String> phoneString = new ArrayList<>();
+            if (phone.contains(";")) {
+                final String[] split = phone.split(";");
+                phoneString.addAll(Arrays.asList(split));
+            } else {
+                phoneString.add(phone);
+            }
+            if (!ConvertUtils.isEmpty(phoneString) && !ConvertUtils.isEmpty(phoneString.get(0))) {
+                Logger.d(TAG, "call phone: " + phoneString.get(0));
+                new SearchConfirmDialog.Build(mView.getContext())
+                        .setDialogObserver(new IBaseDialogClickListener() {
+                            @Override
+                            public void onCommitClick() {
+                                //拨打电话
+                                final Intent intent = new Intent();
+                                intent.setAction(Intent.ACTION_CALL);
+                                intent.setData(Uri.parse("tel:" + phoneString.get(0)));
+                                final Context context = mView.getContext();
+                                context.startActivity(intent);
+                            }
+
+                            @Override
+                            public void onCancelClick() {
+
+                            }
+                        })
+                        .setContent(mView.getContext().getString(com.fy.navi.scene.R.string.text_dial_phone_content, phoneString.get(0)))
+                        .setConfirmTitle(mView.getContext().getString(com.fy.navi.scene.R.string.text_dial))
+                        .build().show();
+
+            } else {
+                Logger.d(TAG, "call phone is null ");
+            }
+        }
+    };
+    public Action getRouteSearchPhoneClick() {
+        return mRouteSearchPhoneClick;
     }
 }

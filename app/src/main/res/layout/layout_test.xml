@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.fy.navi.ui.view.SkinConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/cl_root"
     android:layout_width="1000dp"
     android:layout_height="match_parent"
@@ -289,6 +290,18 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/test_select_text_bg1" />
 
+    <TextView
+        android:id="@+id/test_so_lib"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_27"
+        android:textSize="@dimen/sp_20"
+        android:textColor="@color/black"
+        android:background="@color/white"
+        app:layout_constraintBottom_toBottomOf="@+id/test_foreground_text"
+        app:layout_constraintStart_toEndOf="@+id/test_foreground_text"
+        app:layout_constraintTop_toTopOf="@+id/test_foreground_text" />
+
     <com.fy.navi.ui.view.SkinTextView
         android:id="@+id/test_text_marquee"
         android:layout_width="@dimen/dp_250"
@@ -371,4 +384,44 @@
         app:layout_constraintTop_toTopOf="@id/test_open_loc_log"
         app:marquee="true" />
 
+
+   <com.fy.navi.ui.view.SkinCheckBox
+       android:id="@+id/test_nav_log"
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       app:layout_constraintStart_toStartOf="parent"
+       app:layout_constraintTop_toBottomOf="@+id/test_open_loc_log"
+       android:textSize="@dimen/sp_25"
+       android:layout_marginTop="@dimen/dp_20"
+       android:checked="true"
+       android:text="nav日志开关"/>
+
+    <Spinner
+        android:id="@+id/test_nai_log_level"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toRightOf="@+id/test_nav_log"
+        app:layout_constraintTop_toTopOf="@+id/test_nav_log"
+        android:layout_marginStart="@dimen/dp_20"
+        app:layout_constraintBottom_toBottomOf="@+id/test_nav_log"/>
+
+    <com.fy.navi.ui.view.SkinCheckBox
+        android:id="@+id/test_gaode_log"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/test_nav_log"
+        android:textSize="@dimen/sp_25"
+        android:checked="true"
+        android:text="高德日志开关"/>
+
+    <Spinner
+        android:id="@+id/test_gaode_log_level"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toRightOf="@+id/test_gaode_log"
+        app:layout_constraintTop_toTopOf="@+id/test_gaode_log"
+        android:layout_marginStart="@dimen/dp_20"
+        app:layout_constraintBottom_toBottomOf="@+id/test_gaode_log"/>
+    
 </com.fy.navi.ui.view.SkinConstraintLayout>

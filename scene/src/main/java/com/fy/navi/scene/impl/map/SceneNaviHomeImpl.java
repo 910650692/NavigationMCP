@@ -7,7 +7,6 @@ import com.fy.navi.scene.BaseSceneModel;
 import com.fy.navi.scene.api.map.ISceneCalculate;
 import com.fy.navi.scene.ui.map.SceneNaviHomeView;
 import com.fy.navi.service.define.route.RouteParam;
-import com.fy.navi.service.logicpaket.route.RoutePackage;
 
 /***
  * @author yaWei
@@ -15,11 +14,8 @@ import com.fy.navi.service.logicpaket.route.RoutePackage;
  */
 public class SceneNaviHomeImpl extends BaseSceneModel<SceneNaviHomeView>  implements ISceneCalculate {
     private static final String TAG = "SceneNaviHomeImpl";
-    private final RoutePackage mRoutePackage;
-
-    public SceneNaviHomeImpl(SceneNaviHomeView mScreenView) {
-        super(mScreenView);
-        mRoutePackage = RoutePackage.getInstance();
+    public SceneNaviHomeImpl(SceneNaviHomeView screenView) {
+        super(screenView);
     }
 
     @Override

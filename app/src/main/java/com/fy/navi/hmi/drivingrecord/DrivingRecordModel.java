@@ -103,7 +103,6 @@ public class DrivingRecordModel extends BaseModel<DrivingRecordViewModel> implem
     public void notify(final int eventType, final int exCode) {
         // 同步事件回调
         Logger.d(TAG, "notify: eventType = " + eventType + " exCode = " + exCode);
-        mViewModel.updateDrivingRecordData();
     }
 
     @Override

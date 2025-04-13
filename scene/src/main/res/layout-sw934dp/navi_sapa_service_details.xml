@@ -84,6 +84,7 @@
             android:layout_marginEnd="@dimen/dp_40"
             android:layout_marginTop="@dimen/dp_120"
             android:textSize="@dimen/sp_34"
+            android:visibility="gone"
             android:textColor="@color/navi_color_000000_100"
             android:text="@string/charge_remain_arrive" />
 
@@ -91,6 +92,7 @@
             android:id="@+id/siv_service_remain_charge_icon"
             android:layout_width="@dimen/dp_37"
             android:layout_height="@dimen/dp_37"
+            android:visibility="gone"
             android:background="@drawable/img_electricity_medium_42"
             app:layout_constraintTop_toTopOf="@+id/siv_service_details_remiancharge"
             app:layout_constraintBottom_toBottomOf="@+id/siv_service_details_remiancharge"

@@ -6,8 +6,8 @@
     <data>
 
         <variable
-            name="ScenePoiDetailContentView"
-            type="com.fy.navi.scene.impl.poi.ScenePoiDetailContentViewImpl" />
+            name="ScenePoiChargingStationReservationView"
+            type="com.fy.navi.scene.impl.poi.ScenePoiChargingStationReservationViewImpl" />
     </data>
 
     <com.fy.navi.ui.view.SkinConstraintLayout
@@ -69,7 +69,7 @@
 
             <com.fy.navi.ui.view.SkinImageView
                 android:id="@+id/poi_type_icon"
-                clickCommand="@{ScenePoiDetailContentView.closeFragment}"
+                clickCommand="@{ScenePoiChargingStationReservationView.closeFragment}"
                 android:layout_width="@dimen/dp_68"
                 android:layout_height="@dimen/dp_68"
                 android:src="@drawable/icon_poi_details_close"
@@ -171,7 +171,7 @@
                     android:layout_height="@dimen/dp_45"
                     android:textSize="@dimen/sp_34"
                     android:gravity="center"
-                    android:textColor="@color/black"
+                    android:textColor="@color/search_color_ffffff"
                     app:layout_constraintStart_toEndOf="@+id/charge_station_status"
                     app:layout_constraintTop_toTopOf="parent"
                     android:layout_marginStart="@dimen/dp_26"

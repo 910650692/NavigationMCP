@@ -1,0 +1,11 @@
+{
+  "raster_image_layer_item_style": {
+    "priority": 0,
+    "winx": 466,
+    "winy": 70,
+    "width": 640,
+    "height": 547,
+    "bg_marker_id": "global_image_cross_background_day_night",
+    "marker_id": "-1"
+  }
+}

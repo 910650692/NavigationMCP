@@ -1,5 +1,7 @@
 package com.fy.navi.service.logicpaket.user.usertrack;
 
+import android.text.TextUtils;
+
 import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
 import com.fy.navi.service.AutoMapConstant;
@@ -10,6 +12,7 @@ import com.fy.navi.service.define.bean.GeoPoint;
 import com.fy.navi.service.define.search.SearchResultEntity;
 import com.fy.navi.service.define.user.usertrack.DrivingRecordDataBean;
 import com.fy.navi.service.define.user.usertrack.GpsTrackDepthBean;
+import com.fy.navi.service.define.user.usertrack.GpsTrackPointBean;
 import com.fy.navi.service.define.user.usertrack.SearchHistoryItemBean;
 import com.fy.navi.service.greendao.history.History;
 import com.fy.navi.service.greendao.history.HistoryManager;
@@ -37,9 +40,11 @@ public final class UserTrackPackage implements UserTrackAdapterCallBack, SearchR
     private static final String KEY_Y = "y";
     private static final String WRONG = "解析出错";
 
-    private final JSONObject mJson = new JSONObject();
+    private static final String DEFAULT_NAME = "地图选点";
+
+    private JSONObject mJson = new JSONObject();
     private final History mHistory = new History();
-    private int mReverseType;
+    private int mReverseType = -1;
     private GpsTrackDepthBean mDepInfo;
     private String mPsFileName;
 
@@ -297,12 +302,15 @@ public final class UserTrackPackage implements UserTrackAdapterCallBack, SearchR
     @Override
     public void onCloseGpsTrack(final int n32SuccessTag, final String psSavePath, final String psFileName, final GpsTrackDepthBean depInfo) {
 
-        if (depInfo == null) {
+        if (depInfo == null || depInfo.getTrackPoints().isEmpty()) {
             Logger.i(TAG, "onCloseGpsTrack: 轨迹信息为空，不保存轨迹信息");
             return;
         }
 
         Logger.i(TAG, "onCloseGpsTrack: 轨迹信息：" + GsonUtils.toJson(depInfo));
+
+        this.mDepInfo = depInfo;
+        this.mPsFileName = psFileName;
 
         // 获取类型
         final String rideRunType = psFileName.split(mSPLIT)[1];
@@ -314,7 +322,7 @@ public final class UserTrackPackage implements UserTrackAdapterCallBack, SearchR
             return;
         }
         if (n32SuccessTag >= 0) {
-            Logger.i(TAG, "onCloseGpsTrack: 保存轨迹信息");
+            Logger.d(TAG, "onCloseGpsTrack: 保存轨迹信息");
             if (AccountPackage.getInstance().isLogin()) {
                 saveGpsTrackToDB(psSavePath, psFileName, depInfo);
                 saveGpsTrack(psSavePath, psFileName, depInfo);
@@ -335,68 +343,105 @@ public final class UserTrackPackage implements UserTrackAdapterCallBack, SearchR
     }
 
     /**
+     * 提取重复的地理坐标转换逻辑
+     * @param longitude 经度
+     * @param latitude 纬度
+     * @return 转换后的地理坐标
+     */
+    private JSONObject createGeoJson(final double longitude, final double latitude) throws JSONException {
+        final JSONObject loc = new JSONObject();
+        loc.put(KEY_X, String.valueOf(longitude));
+        loc.put(KEY_Y, String.valueOf(latitude));
+        return loc;
+    }
+
+    /**
+     * 提取重复的时间格式化逻辑
+     * @param timestamp 时间戳
+     * @return 格式化后的时间字符串
+     */
+    private String formatTimestamp(final long timestamp) {
+        return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+                .format(timestamp);
+    }
+
+    /**
      * 保存轨迹信息云端
      * @param psSavePath GPS轨迹文件保存路径
      * @param psFileName GPS轨迹文件名
      * @param depInfo 轨迹深度信息
      */
     public void saveGpsTrack(final String psSavePath, final String psFileName, final GpsTrackDepthBean depInfo) {
-        Logger.i(TAG, "saveGpsTrack: psSavePath = " + psSavePath + ", psFileName = " + psFileName + ", depInfo = " + depInfo);
-        if (depInfo != null) {
-
-            this.mDepInfo = depInfo;
-            this.mPsFileName = psFileName;
-            final String rideRunType = psFileName.split(mSPLIT)[1];
-            try {
-
-                mJson.put("id", psFileName);
-                mJson.put("type", 403);
-                mJson.put("rideRunType", rideRunType);
-                mJson.put("timeInterval", depInfo.getDuration());
-                mJson.put("runDistance", depInfo.getDistance());
-                //单位 km／h
-                mJson.put("maxSpeed", (int) depInfo.getTrackPoints().get(depInfo.getFastestIndex()).getF32Speed() + "");
-
-                final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
-                final String startTime = dateFormat.format(depInfo.getTrackPoints().get(0).getN64TickTime());
-                mJson.put("startTime", startTime);
-
-                final String endTime = dateFormat.format(depInfo.getTrackPoints().get(depInfo.getTrackPoints().size() - 1).getN64TickTime());
-                mJson.put("endTime", endTime);
-                mJson.put("trackFileName", psFileName);
-
-                final JSONObject startLoc = new JSONObject();
-                startLoc.put(KEY_X, depInfo.getTrackPoints().get(0).getF64Longitude() + "");
-                startLoc.put(KEY_Y, depInfo.getTrackPoints().get(0).getF64Latitude() + "");
-
-                mJson.put("startLocation", startLoc.toString());
-
-                final JSONObject endLoc = new JSONObject();
-                endLoc.put(KEY_X, depInfo.getTrackPoints().get(depInfo.getTrackPoints().size() - 1).getF64Longitude() + "");
-                endLoc.put(KEY_Y, depInfo.getTrackPoints().get((depInfo.getTrackPoints().size() - 1)).getF64Latitude() + "");
-
-                mJson.put("endLocation", endLoc.toString());
-
-                final String maxSpeedTime = dateFormat.format(depInfo.getTrackPoints().get(depInfo.getFastestIndex()).getN64TickTime());
-                mJson.put("maxSpeedTime", maxSpeedTime);
-
-                final JSONObject maxSpeedLoc = new JSONObject();
-                maxSpeedLoc.put(KEY_X, depInfo.getTrackPoints().get(depInfo.getFastestIndex()).getF64Longitude() + "");
-                maxSpeedLoc.put(KEY_Y, depInfo.getTrackPoints().get(depInfo.getFastestIndex()).getF64Latitude() + "");
-                mJson.put("maxSpeedLocation", maxSpeedLoc.toString());
-
-                final int updatetime = (int) (depInfo.getTrackPoints().get(0).getN64TickTime() / 1000);
-                mJson.put("updateTime", updatetime);
-
-                mJson.put("version", 1);
-
-            } catch (JSONException e) {
-                Logger.e(TAG, WRONG, e.getMessage());
+        try {
+            if (depInfo == null || depInfo.getTrackPoints().isEmpty()) {
+                Logger.e(TAG, "轨迹数据为空");
+                return;
             }
-        } else {
-            Logger.e(TAG, "轨迹数据为空");
+
+
+            // 使用辅助方法简化代码
+            buildCommonJsonFields(psFileName, depInfo);
+            buildLocationSpecificFields(depInfo);
+
+            Logger.d(TAG, "云端轨迹数据构建完成");
+        } catch (JSONException e) {
+            Logger.e(TAG, WRONG, e.getMessage());
+            // 添加异常恢复逻辑
+            resetTrackData();
         }
     }
+
+
+    /**
+     * 重置值
+     */
+    private void resetTrackData() {
+        this.mDepInfo = null;
+        this.mPsFileName = null;
+        this.mReverseType = -1;
+        mJson = new JSONObject(); // 需要将mJson改为非final
+    }
+
+    /**
+     * 构建公共的JSON字段
+     * @param psFileName GPS轨迹文件名
+     * @param depInfo 轨迹深度信息
+     * @throws JSONException JSON异常
+     */
+    private void buildCommonJsonFields(final String psFileName, final GpsTrackDepthBean depInfo) throws JSONException {
+        final String rideRunType = psFileName.split(mSPLIT)[1];
+        mJson.put("id", psFileName)
+                .put("type", 403)
+                .put("rideRunType", rideRunType)
+                .put("timeInterval", depInfo.getDuration())
+                .put("runDistance", depInfo.getDistance())
+                .put("maxSpeed", (int) depInfo.getTrackPoints().get(depInfo.getFastestIndex()).getF32Speed() + "");
+    }
+
+    /**
+     * 构建位置特定的JSON字段
+     * @param depInfo 轨迹深度信息
+     * @throws JSONException JSON异常
+     */
+    private void buildLocationSpecificFields(final GpsTrackDepthBean depInfo) throws JSONException {
+        // 添加空检查和边界校验
+        if (depInfo == null || depInfo.getTrackPoints().isEmpty()) {
+            throw new IllegalArgumentException("Invalid track points data");
+        }
+        final ArrayList<GpsTrackPointBean> points = depInfo.getTrackPoints();
+        mJson.put("startTime", formatTimestamp(points.get(0).getN64TickTime()))
+                .put("endTime", formatTimestamp(points.get(points.size() - 1).getN64TickTime()))
+                .put("trackFileName", mPsFileName)
+                .put("startLocation", createGeoJson(
+                        points.get(0).getF64Longitude(),
+                        points.get(0).getF64Latitude()
+                ).toString())
+                .put("endLocation", createGeoJson(
+                        points.get(points.size() - 1).getF64Longitude(),
+                        points.get(points.size() - 1).getF64Latitude()
+                ).toString());
+    }
+
 
 
     /**
@@ -407,31 +452,54 @@ public final class UserTrackPackage implements UserTrackAdapterCallBack, SearchR
      */
     private void saveGpsTrackToDB(final String psSavePath, final String psFileName, final GpsTrackDepthBean depInfo) {
         try {
-            final String rideRunType = psFileName.split(mSPLIT)[1];
+
+            // 添加参数校验
+            if (TextUtils.isEmpty(psFileName) || depInfo == null || depInfo.getTrackPoints().isEmpty()) {
+                Logger.e(TAG, "Invalid parameters in saveGpsTrackToDB");
+                return;
+            }
+
+            // 添加分割结果校验
+            final String[] parts = psFileName.split(mSPLIT);
+            if (parts.length < 2) {
+                Logger.e(TAG, "Invalid filename format: " + psFileName);
+                return;
+            }
+
+            final ArrayList<GpsTrackPointBean> points = depInfo.getTrackPoints();
+
+            // 添加轨迹点索引保护
+            final int lastIndex = points.size() - 1;
+            if (lastIndex < 0) {
+                Logger.d("index invalid, no track points available");
+                return;
+            }
+
+            final String rideRunType = parts[1];
             mHistory.setMPoiId(psFileName);
             final JSONObject startLoc = new JSONObject();
-            startLoc.put(KEY_X, depInfo.getTrackPoints().get(0).getF64Longitude() + "");
-            startLoc.put(KEY_Y, depInfo.getTrackPoints().get(0).getF64Latitude() + "");
+            startLoc.put(KEY_X, points.get(0).getF64Longitude() + "");
+            startLoc.put(KEY_Y, points.get(0).getF64Latitude() + "");
             mHistory.setMStartPoint(startLoc.toString());
             final JSONObject endLoc = new JSONObject();
-            endLoc.put(KEY_X, depInfo.getTrackPoints().get(depInfo.getTrackPoints().size() - 1).getF64Longitude() + "");
-            endLoc.put(KEY_Y, depInfo.getTrackPoints().get((depInfo.getTrackPoints().size() - 1)).getF64Latitude() + "");
+            endLoc.put(KEY_X, points.get(points.size() - 1).getF64Longitude() + "");
+            endLoc.put(KEY_Y, points.get((points.size() - 1)).getF64Latitude() + "");
             mHistory.setMEndPoint(endLoc.toString());
             mHistory.setMRunDistance((int)depInfo.getDistance());// 该行程行驶距离
             final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
-            final String startTime = dateFormat.format(depInfo.getTrackPoints().get(0).getN64TickTime());
-            final String endTime = dateFormat.format(depInfo.getTrackPoints().get(depInfo.getTrackPoints().size() - 1).getN64TickTime());
+            final String startTime = dateFormat.format(points.get(0).getN64TickTime());
+            final String endTime = dateFormat.format(points.get(points.size() - 1).getN64TickTime());
             mHistory.setMStartTime(startTime); // 该行程开始时间
             mHistory.setMEndTime(endTime); // 该行程完成时间
             mHistory.setMRideRunType(Integer.parseInt(rideRunType)); // 行程类型（导航/巡航）
             mHistory.setMTimeInterval((int)depInfo.getDuration()); // 驾驶时长
             mHistory.setMAverageSpeed((int)depInfo.getAverageSpeed()); // 平均速度
-            mHistory.setMMaxSpeed((int) depInfo.getTrackPoints().get(depInfo.getFastestIndex()).getF32Speed()); // 最快速度
+            mHistory.setMMaxSpeed((int) points.get(depInfo.getFastestIndex()).getF32Speed()); // 最快速度
             mHistory.setMTrackFileName(psFileName);
             mHistory.setMFilePath(psSavePath);
             mHistory.setMType(AutoMapConstant.SearchKeywordRecordKey.DRIVING_HISTORY_RECORD_KEY); // 该条记录类型
-            geoSearch(REVERSE_START, new GeoPoint(depInfo.getTrackPoints().get(0).getF64Longitude(),
-                    depInfo.getTrackPoints().get(0).getF64Latitude()));
+            geoSearch(REVERSE_START, new GeoPoint(points.get(0).getF64Longitude(),
+                    points.get(0).getF64Latitude()));
         } catch (JSONException e) {
             Logger.e(TAG, WRONG, e.getMessage());
         }
@@ -450,29 +518,53 @@ public final class UserTrackPackage implements UserTrackAdapterCallBack, SearchR
 
     @Override
     public void onSearchResult(final int taskId, final int errorCode, final String message, final SearchResultEntity searchResultEntity) {
-        if (searchResultEntity != null) {
-            try {
-                if (mReverseType == REVERSE_START){
+
+        if (mDepInfo == null || mDepInfo.getTrackPoints().isEmpty() || TextUtils.isEmpty(mPsFileName) || mReverseType == -1) {
+            Logger.d(TAG, "轨迹信息 或 文件名称 或 反地理编码类型为空，不进行逆地理编码");
+            return;
+        }
+
+        if (searchResultEntity == null || searchResultEntity.getPoiList() == null || searchResultEntity.getPoiList().isEmpty()) {
+            Logger.d(TAG, "逆地理编码结果为空");
+            return;
+        }
+
+        try {
+            if (mReverseType == REVERSE_START){
+                if (searchResultEntity.getPoiList() != null && !searchResultEntity.getPoiList().isEmpty()) {
                     mJson.put("startPoiName", searchResultEntity.getPoiList().get(0).getName());
                     mHistory.setMStartPoiName(searchResultEntity.getPoiList().get(0).getName());
-                    geoSearch(REVERSE_END, new GeoPoint(mDepInfo.getTrackPoints().get(mDepInfo.getTrackPoints().size() - 1).getF64Longitude(),
-                            mDepInfo.getTrackPoints().get(mDepInfo.getTrackPoints().size() - 1).getF64Latitude()));
-                } else if (mReverseType == REVERSE_END){
+                } else {
+                    mJson.put("startPoiName", DEFAULT_NAME);
+                    mHistory.setMStartPoiName(DEFAULT_NAME);
+                }
+                geoSearch(REVERSE_END, new GeoPoint(mDepInfo.getTrackPoints().get(mDepInfo.getTrackPoints().size() - 1).getF64Longitude(),
+                        mDepInfo.getTrackPoints().get(mDepInfo.getTrackPoints().size() - 1).getF64Latitude()));
+            } else if (mReverseType == REVERSE_END){
+                if (searchResultEntity.getPoiList() != null && !searchResultEntity.getPoiList().isEmpty()) {
                     mJson.put("endPoiName", searchResultEntity.getPoiList().get(0).getName());
                     mHistory.setMEndPoiName(searchResultEntity.getPoiList().get(0).getName());
-                    geoSearch(REVERSE_FASTEST, new GeoPoint(mDepInfo.getTrackPoints().get(mDepInfo.getFastestIndex()).getF64Longitude(),
-                            mDepInfo.getTrackPoints().get(mDepInfo.getFastestIndex()).getF64Latitude()));
-                    mHistoryManager.insertOrReplace(mHistory);
-                } else if (mReverseType == REVERSE_FASTEST){
-                    mJson.put("maxSpeedPoiName", searchResultEntity.getPoiList().get(0).getName());
-                    if (AccountPackage.getInstance().isLogin()) {
-                        setBehaviorData(mPsFileName, mJson.toString());
-                    }
-                    Logger.d(TAG, "保存轨迹数据成功");
+                } else {
+                    mJson.put("endPoiName", DEFAULT_NAME);
+                    mHistory.setMEndPoiName(DEFAULT_NAME);
                 }
-            } catch (JSONException e) {
-                Logger.e(TAG, WRONG, e.getMessage());
+                geoSearch(REVERSE_FASTEST, new GeoPoint(mDepInfo.getTrackPoints().get(mDepInfo.getFastestIndex()).getF64Longitude(),
+                        mDepInfo.getTrackPoints().get(mDepInfo.getFastestIndex()).getF64Latitude()));
+                mHistoryManager.insertOrReplace(mHistory);
+            } else if (mReverseType == REVERSE_FASTEST){
+                if (searchResultEntity.getPoiList() != null && !searchResultEntity.getPoiList().isEmpty()) {
+                    mJson.put("maxSpeedPoiName", searchResultEntity.getPoiList().get(0).getName());
+                } else {
+                    mJson.put("maxSpeedPoiName", DEFAULT_NAME);
+                }
+                if (AccountPackage.getInstance().isLogin()) {
+                    setBehaviorData(mPsFileName, mJson.toString());
+                }
+                resetTrackData();
+                Logger.d(TAG, "保存轨迹数据成功");
             }
+        } catch (JSONException e) {
+            Logger.e(TAG, WRONG, e.getMessage());
         }
     }
 

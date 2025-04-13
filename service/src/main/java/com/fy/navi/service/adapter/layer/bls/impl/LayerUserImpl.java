@@ -1,12 +1,13 @@
 package com.fy.navi.service.adapter.layer.bls.impl;
 
+import static com.fy.navi.service.MapDefaultFinalTag.LAYER_SERVICE_TAG;
+
 import android.content.Context;
 import com.android.utils.ConvertUtils;
+import com.android.utils.log.Logger;
 import com.autonavi.gbl.common.model.Coord3DDouble;
 import com.autonavi.gbl.layer.BizControlService;
 import com.autonavi.gbl.layer.FavoritePointLayerItem;
-import com.autonavi.gbl.layer.model.BizCustomPointInfo;
-import com.autonavi.gbl.layer.model.BizPointBusinessInfo;
 import com.autonavi.gbl.layer.model.BizUserFavoritePoint;
 import com.autonavi.gbl.layer.model.BizUserType;
 import com.autonavi.gbl.map.MapView;
@@ -17,30 +18,30 @@ import com.autonavi.gbl.user.behavior.model.FavoriteType;
 import com.autonavi.gbl.user.usertrack.model.GpsTrackDepthInfo;
 import com.autonavi.gbl.user.usertrack.model.GpsTrackPoint;
 import com.fy.navi.service.adapter.layer.ILayerAdapterCallBack;
-import com.fy.navi.service.adapter.layer.bls.style.FavoriteMainStyleAdapter;
+import com.fy.navi.service.adapter.layer.bls.style.LayerUserStyleAdapter;
 import com.fy.navi.service.define.bean.GeoPoint;
 import com.fy.navi.service.define.layer.refix.LayerItemUserFavorite;
-import com.fy.navi.service.define.layer.refix.LayerItemUserReceive;
 import com.fy.navi.service.define.layer.refix.LayerItemUserTrackDepth;
 import com.fy.navi.service.define.map.GmBizUserFavoritePoint;
+import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.search.PoiInfoEntity;
 import com.fy.navi.service.define.user.usertrack.GpsTrackDepthBean;
 import com.fy.navi.service.define.user.usertrack.GpsTrackPointBean;
 import java.util.ArrayList;
 import java.util.List;
 
-public class LayerUserImpl extends BaseLayerImpl<FavoriteMainStyleAdapter>{
+public class LayerUserImpl extends BaseLayerImpl<LayerUserStyleAdapter> {
 
-    public LayerUserImpl(BizControlService bizService, MapView mapView, Context context) {
-        super(bizService, mapView, context);
+    public LayerUserImpl(BizControlService bizService, MapView mapView, Context context, MapType mapType) {
+        super(bizService, mapView, context,mapType);
         getLayerUserControl().setStyle(this);
         getLayerUserControl().addClickObserver(this);
         getLayerUserControl().addFocusChangeObserver(this);
     }
 
     @Override
-    protected FavoriteMainStyleAdapter createStyleAdapter() {
-        return new FavoriteMainStyleAdapter();
+    protected LayerUserStyleAdapter createStyleAdapter() {
+        return new LayerUserStyleAdapter(getEngineId(),getLayerUserControl());
     }
 
     public void updateFavoriteMain(List<GmBizUserFavoritePoint> list) {
@@ -66,34 +67,41 @@ public class LayerUserImpl extends BaseLayerImpl<FavoriteMainStyleAdapter>{
         if (ConvertUtils.isEmpty(depthInfo)) {
             getLayerUserControl().getUserLayer(BizUserType.BizUserTypeGpsTrack).clearAllItems();
             getLayerUserControl().getUserLayer(BizUserType.BizUserTypeGpsTrackLine).clearAllItems();
+            Logger.e(LAYER_SERVICE_TAG,"updateGpsTrack null");
             return;
         }
 
         final GpsTrackDepthInfo info = getGpsTrackDepthInfo(depthInfo.getGpsTrackDepthBean());
         //显示用户历史轨迹相关图层
         getLayerUserControl().updateGpsTrack(info);
+        getLayerUserControl().setVisible(BizUserType.BizUserTypeGpsTrack,true);
+        getLayerUserControl().setVisible(BizUserType.BizUserTypeGpsTrackLine,true);
+        Logger.d(LAYER_SERVICE_TAG,"updateGpsTrack");
     }
 
-    /* 删除绘制用户历史行程轨迹(包括轨迹点和线) */
-    public void cleanGpsTrack() {
-        getLayerUserControl().clearAllItems(BizUserType.BizUserTypeGpsTrack);
-        getLayerUserControl().setVisible(BizUserType.BizUserTypeGpsTrack,false);
-    }
+//    /* 删除绘制用户历史行程轨迹(包括轨迹点和线) */
+//    public void cleanGpsTrack() {
+//        getLayerUserControl().clearAllItems(BizUserType.BizUserTypeGpsTrack);
+//        getLayerUserControl().clearAllItems(BizUserType.BizUserTypeGpsTrackLine);
+//        getLayerUserControl().setVisible(BizUserType.BizUserTypeGpsTrack,false);
+//        getLayerUserControl().setVisible(BizUserType.BizUserTypeGpsTrackLine,false);
+//    }
 
-    /* 更新SendToCar图层对象的气泡 */
-    public void updateSendToCar(LayerItemUserReceive sendToCarInfo) {
-        //todo
-        //构造SendToCar点
-        BizPointBusinessInfo sendToCar = new BizCustomPointInfo();
-        sendToCar.mPos3D.lon = 116.342024;
-        sendToCar.mPos3D.lat = 39.952446;
-        sendToCar.mPos3D.z = 0;
-        // 扎标位置与屏幕中心比往下偏移100个像素点
-        int x = 0;
-        int y = 100;
-        // 显示SendToCar图层
-        getLayerUserControl().updateSendToCar(sendToCar, x, y);
-    }
+//    /* 更新SendToCar图层对象的气泡 */
+//    public void updateSendToCar(LayerItemUserReceive sendToCarInfo) {
+//        //todo
+//        //构造SendToCar点
+//        BizPointBusinessInfo sendToCar = new BizCustomPointInfo();
+//        sendToCar.mPos3D.lon = 116.342024;
+//        sendToCar.mPos3D.lat = 39.952446;
+//        sendToCar.mPos3D.z = 0;
+//        // 扎标位置与屏幕中心比往下偏移100个像素点
+//        int x = 0;
+//        int y = 100;
+//        // 显示SendToCar图层
+//        getLayerUserControl().updateSendToCar(sendToCar, x, y);
+//        Logger.d("updateSendToCar","updateSendToCar");
+//    }
 
     /* 更新收藏夹中主图查看模式的收藏点 */
     public void updateFavoriteMain(LayerItemUserFavorite userFavorite) {
@@ -134,61 +142,26 @@ public class LayerUserImpl extends BaseLayerImpl<FavoriteMainStyleAdapter>{
             favoriteList.add(point);
         }
         if(ConvertUtils.isEmpty(favoriteList)){
+            Logger.e(LAYER_SERVICE_TAG,"updateFavoriteMain null");
             return;
         }
 
-//        BizUserFavoritePoint point = new BizUserFavoritePoint();
-//        point.favoriteType = FavoriteType.FavoriteTypePoi;
-//        point.mPos3D.lat = 30.893576;
-//        point.mPos3D.lon = 121.927756;
-//        favoriteList.add(point);
-//
-//        BizUserFavoritePoint point1 = new BizUserFavoritePoint();
-//        point1.favoriteType = FavoriteType.FavoriteTypeHome;
-//        point1.mPos3D.lat = 30.891461;
-//        point1.mPos3D.lon = 121.924835;
-//        favoriteList.add(point1);
-//
-//        BizUserFavoritePoint point2 = new BizUserFavoritePoint();
-//        point2.favoriteType = FavoriteType.FavoriteTypeCompany;
-//        point2.mPos3D.lat = 30.8906599;
-//        point2.mPos3D.lon = 121.930084;
-//        favoriteList.add(point2);
-
         getLayerUserControl().updateFavoriteMain(favoriteList);
         getLayerUserControl().setVisible(BizUserType.BizUserTypeFavoriteMain,true);
+        Logger.d(LAYER_SERVICE_TAG,"updateFavoriteMain size"+favoriteList.size());
     }
 
-    public void cleanFavoriteToMain(){
-        getLayerUserControl().clearAllItems(BizUserType.BizUserTypeFavoriteMain);
-        getLayerUserControl().setVisible(BizUserType.BizUserTypeFavoriteMain,false);
-    }
-
-    /* 更新收藏夹中poi查看模式的收藏点 */
-    public void updateFavoritePoi(BizUserFavoritePoint favoritePoiInfo) {
-        getLayerUserControl().setVisible(BizUserType.BizUserTypeFavoriteMain, true);
-    }
+//    public void cleanFavoriteToMain(){
+//        getLayerUserControl().clearAllItems(BizUserType.BizUserTypeFavoriteMain);
+//        getLayerUserControl().setVisible(BizUserType.BizUserTypeFavoriteMain,false);
+//        Logger.d(LAYER_SERVICE_TAG,"cleanFavoriteToMain");
+//    }
 
     /* 清除*/
     public void clearAllItems() {
         getLayerUserControl().clearAllItems();
         getLayerUserControl().setVisible(false);
     }
-
-
-    /* 添加*/
-    private void addFavoriteItem(ArrayList<BizUserFavoritePoint> favoriteList,ArrayList<PoiInfoEntity> entities,int favoriteType){
-        if(!ConvertUtils.isEmpty(entities)){
-            for (int i = 0; i < entities.size(); i++) {
-                BizUserFavoritePoint point = new BizUserFavoritePoint();
-                point.favoriteType = favoriteType;
-                point.mPos3D.lat = entities.get(i).getMPoint().getLat();
-                point.mPos3D.lon = entities.get(i).getMPoint().getLon();
-                favoriteList.add(point);
-            }
-        }
-    }
-
 
     /**
      * 数据转换深度信息
@@ -238,17 +211,19 @@ public class LayerUserImpl extends BaseLayerImpl<FavoriteMainStyleAdapter>{
 
     @Override
     public void onNotifyClick(BaseLayer layer, LayerItem pItem, ClickViewIdInfo clickViewIds) {
+        Logger.d(LAYER_SERVICE_TAG, "onNotifyClick");
         int itemType = pItem.getBusinessType();
         if(itemType == BizUserType.BizUserTypeFavoriteMain){
             if(pItem instanceof FavoritePointLayerItem){
                 FavoritePointLayerItem favoritePointLayerItem = (FavoritePointLayerItem) pItem;
                 Coord3DDouble coord3DDouble = favoritePointLayerItem.getPosition();
                 //进行数据转换
-                List<ILayerAdapterCallBack> callBacks = getCallBack();
-                for (ILayerAdapterCallBack callBack : callBacks){
-                    callBack.onFavorite(coord3DDouble.lat,coord3DDouble.lon);
+                GeoPoint geoPoint = new GeoPoint();
+                geoPoint.setLat(coord3DDouble.lat);
+                geoPoint.setLon(coord3DDouble.lon);
+                for (ILayerAdapterCallBack callBack : getCallBacks())
+                    callBack.onFavoriteClick(geoPoint);
                 }
             }
         }
-    }
 }

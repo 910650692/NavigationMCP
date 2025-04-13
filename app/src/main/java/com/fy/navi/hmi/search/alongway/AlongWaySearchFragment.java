@@ -1,14 +1,19 @@
 package com.fy.navi.hmi.search.alongway;
 
 import android.content.res.TypedArray;
+import android.os.Bundle;
 
 import com.alibaba.android.arouter.facade.annotation.Route;
+import com.android.utils.log.Logger;
 import com.fy.navi.hmi.BR;
 import com.fy.navi.hmi.R;
 import com.fy.navi.hmi.databinding.FragmentAlongWayBinding;
 import com.fy.navi.scene.RoutePath;
 import com.fy.navi.service.AutoMapConstant;
+import com.fy.navi.service.MapDefaultFinalTag;
+import com.fy.navi.service.adapter.navi.NaviConstant;
 import com.fy.navi.service.define.map.MapType;
+import com.fy.navi.service.define.search.PoiInfoEntity;
 import com.fy.navi.ui.base.BaseFragment;
 
 /**
@@ -37,6 +42,23 @@ public class AlongWaySearchFragment extends BaseFragment<FragmentAlongWayBinding
     @Override
     public void onInitData() {
         defaultDataProcessing();
+        getBundleData();
+    }
+
+    /**
+     * 获取bundle数据
+     */
+    private void getBundleData() {
+        final Bundle parsedArgs = getArguments();
+        if (parsedArgs == null) {
+            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "No valid arguments found.");
+            return;
+        }
+
+        final int isOpenFromNavi = parsedArgs.getInt(NaviConstant.NAVI_CONTROL, 0);
+        if (isOpenFromNavi == 1) {
+            mBinding.sceneQuickSearchView.setNaviControl(true);
+        }
     }
 
 

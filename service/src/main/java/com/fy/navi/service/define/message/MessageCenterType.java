@@ -18,5 +18,8 @@ public enum MessageCenterType {
     FIND_NOW,
 
     //天气
-    WEATHER
+    WEATHER,
+
+    //手车互联
+    PHONE_MESSAGE
 }

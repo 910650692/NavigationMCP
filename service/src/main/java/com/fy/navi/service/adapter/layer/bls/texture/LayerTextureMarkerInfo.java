@@ -2,8 +2,14 @@ package com.fy.navi.service.adapter.layer.bls.texture;
 
 import com.autonavi.gbl.map.layer.model.LayerIconAnchor;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 public class LayerTextureMarkerInfo {
     private int repeat;
+    @LayerIconAnchor.LayerIconAnchor1
     private int anchor;
     private float x_ratio;
     private float y_ratio;
@@ -12,68 +18,17 @@ public class LayerTextureMarkerInfo {
     private long x_offset;
     private long y_offset;
 
-    public int getRepeat() {
-        return repeat;
-    }
-
-    public void setRepeat(int repeat) {
-        this.repeat = repeat;
-    }
-
-    @LayerIconAnchor.LayerIconAnchor1
-    public int getAnchor() {
-        return anchor;
-    }
-
-    public void setAnchor(int anchor) {
-        this.anchor = anchor;
-    }
-
-    public float getX_ratio() {
-        return x_ratio;
-    }
-
-    public void setX_ratio(float x_ratio) {
-        this.x_ratio = x_ratio;
-    }
-
-    public float getY_ratio() {
-        return y_ratio;
-    }
-
-    public void setY_ratio(float y_ratio) {
-        this.y_ratio = y_ratio;
-    }
-
-    public int getGen_mipmaps() {
-        return gen_mipmaps;
-    }
-
-    public void setGen_mipmaps(int gen_mipmaps) {
-        this.gen_mipmaps = gen_mipmaps;
-    }
-
-    public int getPre_mul_alpha() {
-        return pre_mul_alpha;
-    }
-
-    public void setPre_mul_alpha(int pre_mul_alpha) {
-        this.pre_mul_alpha = pre_mul_alpha;
-    }
-
-    public long getX_offset() {
-        return x_offset;
-    }
-
-    public void setX_offset(long x_offset) {
-        this.x_offset = x_offset;
-    }
-
-    public long getY_offset() {
-        return y_offset;
-    }
-
-    public void setY_offset(long y_offset) {
-        this.y_offset = y_offset;
+    @Override
+    public String toString() {
+        return "LayerTextureMarkerInfo{" +
+                "repeat=" + repeat +
+                ", anchor=" + anchor +
+                ", x_ratio=" + x_ratio +
+                ", y_ratio=" + y_ratio +
+                ", gen_mipmaps=" + gen_mipmaps +
+                ", pre_mul_alpha=" + pre_mul_alpha +
+                ", x_offset=" + x_offset +
+                ", y_offset=" + y_offset +
+                '}';
     }
 }

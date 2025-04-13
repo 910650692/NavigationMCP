@@ -114,7 +114,7 @@
                         android:layout_marginTop="@dimen/dp_24"
                         android:text="@string/setting_qr_code_load_retry"
                         android:textSize="@dimen/sp_30"
-                        android:textColor="@color/white"
+                        android:textColor="@color/setting_white"
                         android:background="@drawable/bg_setting_preference_select"/>
                 </com.fy.navi.ui.view.SkinLinearLayout>
 

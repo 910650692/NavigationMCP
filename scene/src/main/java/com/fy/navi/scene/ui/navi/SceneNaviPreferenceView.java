@@ -17,10 +17,8 @@ import com.fy.navi.scene.api.route.ISceneRoutePreferenceCallBack;
 import com.fy.navi.scene.databinding.SceneNaviPreferenceViewBinding;
 import com.fy.navi.scene.impl.navi.inter.ISceneCallback;
 import com.fy.navi.scene.impl.preference.SceneRoutePreferenceImpl;
-import com.fy.navi.scene.ui.navi.manager.INaviSceneEvent;
 import com.fy.navi.scene.ui.navi.manager.NaviSceneBase;
 import com.fy.navi.scene.ui.navi.manager.NaviSceneId;
-import com.fy.navi.scene.ui.navi.manager.NaviSceneManager;
 import com.fy.navi.service.define.route.RoutePreferenceID;
 
 import java.util.Hashtable;
@@ -36,7 +34,6 @@ public class SceneNaviPreferenceView extends NaviSceneBase
 
     public static final String TAG = SceneNaviPreferenceView.class.getSimpleName();
 
-    private ISceneCallback mISceneCallback;
     private Hashtable<String, ISceneRoutePreferenceCallBack> mSceneRoutePreferenceCallBackMap;
 
     public SceneNaviPreferenceView(@NonNull final Context context) {
@@ -56,50 +53,6 @@ public class SceneNaviPreferenceView extends NaviSceneBase
     @Override
     protected NaviSceneId getSceneId() {
         return NaviSceneId.NAVI_SCENE_PREFERENCE;
-    }
-
-    @Override
-    protected String getSceneName() {
-        return NaviSceneId.NAVI_SCENE_PREFERENCE.name();
-    }
-
-    @Override
-    public INaviSceneEvent getNaviSceneEvent() {
-        return NaviSceneManager.getInstance();
-    }
-
-    protected void init() {
-        NaviSceneManager.getInstance().addNaviScene(NaviSceneId.NAVI_SCENE_PREFERENCE, this);
-        disAbleButton(mScreenViewModel.getNetworkStatus());
-    }
-
-    @Override
-    public void addSceneCallback(final ISceneCallback sceneCallback) {
-        mISceneCallback = sceneCallback;
-    }
-
-    @Override
-    public void show() {
-        super.show();
-        if (mISceneCallback != null) {
-            mISceneCallback.updateSceneVisible(NaviSceneId.NAVI_SCENE_PREFERENCE, true);
-        }
-    }
-
-    @Override
-    public void hide() {
-        super.hide();
-        if (mISceneCallback != null) {
-            mISceneCallback.updateSceneVisible(NaviSceneId.NAVI_SCENE_PREFERENCE, false);
-        }
-    }
-
-    @Override
-    public void close() {
-        super.close();
-        if (mISceneCallback != null) {
-            mISceneCallback.updateSceneVisible(NaviSceneId.NAVI_SCENE_PREFERENCE, false);
-        }
     }
 
     @Override

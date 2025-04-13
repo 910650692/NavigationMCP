@@ -49,6 +49,8 @@ public class BaseStartupViewModel extends BaseViewModel<StartupActivity, Startup
         NaviService.registerAppInitListener(this);
         if (isFirstLauncher) {
             popAgreementDialog();
+        } else if (mModel.isShowStartupException()) {
+            popStartupExceptionDialog();
         } else {
             checkPermission();
         }
@@ -76,8 +78,12 @@ public class BaseStartupViewModel extends BaseViewModel<StartupActivity, Startup
         ReminderDialog reminderDialog = new ReminderDialog(mView, new IBaseDialogClickListener() {
             @Override
             public void onCommitClick() {
-                checkPermission();
-                mModel.updateFirstLauncherFlag();
+                if (mModel.isShowStartupException()) {
+                    popStartupExceptionDialog();
+                } else {
+                    checkPermission();
+                    mModel.updateFirstLauncherFlag();
+                }
             }
 
             @Override
@@ -86,6 +92,24 @@ public class BaseStartupViewModel extends BaseViewModel<StartupActivity, Startup
             }
         });
         reminderDialog.show();
+    }
+
+    public void popStartupExceptionDialog() {
+        StartupExceptionDialog startupExceptionDialog = new StartupExceptionDialog(mView, new IBaseDialogClickListener() {
+            @Override
+            public void onNetWorkConnect() {
+                checkPermission();
+                if (isFirstLauncher) {
+                    mModel.updateFirstLauncherFlag();
+                }
+            }
+
+            @Override
+            public void onExit() {
+                mView.finish();
+            }
+        });
+        startupExceptionDialog.show();
     }
 
     //传递参数
@@ -99,7 +123,7 @@ public class BaseStartupViewModel extends BaseViewModel<StartupActivity, Startup
         Intent intent = new Intent(AppContext.getInstance().getMContext(), MapActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         if (mIntentPage != INaviConstant.OpenIntentPage.NONE) {
-            intent.putExtra(INaviConstant.PAGE_EXTRA ,mIntentPage);
+            intent.putExtra(INaviConstant.PAGE_EXTRA, mIntentPage);
             mIntentPage = -1;
             if (!TextUtils.isEmpty(mKeyword)) {
                 intent.putExtra(INaviConstant.SEARCH_KEYWORD_EXTRA, mKeyword);
@@ -114,7 +138,7 @@ public class BaseStartupViewModel extends BaseViewModel<StartupActivity, Startup
 
     @Override
     public void onInitFinished(boolean isSuccess) {
-        Logger.w(TAG, "onInitFinished" , "isSuccess:" + isSuccess, "permissionStatus:" + permissionStatus);
+        Logger.w(TAG, "onInitFinished", "isSuccess:" + isSuccess, "permissionStatus:" + permissionStatus);
         if (permissionStatus) {
             startMapActivity();
         } else {

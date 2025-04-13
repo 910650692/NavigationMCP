@@ -39,7 +39,7 @@ public class MapDataViewModel extends BaseViewModel<MapDataFragment, MapDataMode
         ThreadManager.getInstance().postDelay(new Runnable() {
             @Override
             public void run() {
-                mAllDownloadingDataSize.setValue(String.valueOf(mModel.getWorkingList().size()));
+                mAllDownloadingDataSize.setValue(String.valueOf(mModel.getWorkingQueueSize()));
                 //获取全部地图初始化数据
                 mView.updateMapDataView(mModel.getMapDataList());
                 // 获取当前城市数据
@@ -47,7 +47,7 @@ public class MapDataViewModel extends BaseViewModel<MapDataFragment, MapDataMode
                 // 获取基础功能包数据
                 mView.updateCountryDataView(mModel.getCountryData());
                 // 获取下载中、更新中状态下的所有城市adCode列表数据
-                mView.updateWorkingView(mModel.getWorkingList(), mModel.getWorkedList());
+                mView.updateWorkingView(mModel.getWorkingList(), mModel.getAllDownLoadedList());
                 // 获取附近推荐城市信息
                 mView.updateNearDataView(mModel.getNearAdCodeList());
                 // 发起云端数据列表检测
@@ -164,12 +164,14 @@ public class MapDataViewModel extends BaseViewModel<MapDataFragment, MapDataMode
      * @param adCodeList 省份、城市ID列表
      */
     public void startAllTask(final ArrayList<Integer> adCodeList) {
-        int adCode = adCodeList.get(0);
-        if (mModel.countryDataVisible() && adCode != 0) {
-            // 初次下载“非基础功能包”的任意城市包，始终提示此弹窗
-            mView.showCountryMapDataDialog();
+        if (adCodeList != null && !adCodeList.isEmpty()) {
+            int adCode = adCodeList.get(0);
+            if (mModel.countryDataVisible() && adCode != 0) {
+                // 初次下载“非基础功能包”的任意城市包，始终提示此弹窗
+                mView.showCountryMapDataDialog();
+            }
+            mModel.startAllTask(adCodeList);
         }
-        mModel.startAllTask(adCodeList);
     }
 
     /**
@@ -198,13 +200,16 @@ public class MapDataViewModel extends BaseViewModel<MapDataFragment, MapDataMode
 
     /**
      * 实时更新下载状态
-     * @param provDataInfo
+     * @param cityDataInfo
      */
-    public void onDownLoadStatus(final ProvDataInfo provDataInfo) {
-        mView.notifyMapDataChangeView(provDataInfo);
-        mView.notifyCurrentCityView(provDataInfo.getCityInfoList().get(0));
-        mView.updateCountryDataView(provDataInfo.getCityInfoList().get(0));
-        mView.notifyNearDataView();
+    public void onDownLoadStatus(final CityDataInfo cityDataInfo) {
+        ThreadManager.getInstance().postUi(() -> {
+            mView.notifyMapDataChangeView(cityDataInfo);
+            mView.updateCountryDataView(cityDataInfo);
+            mView.notifyCurrentCityView(cityDataInfo);
+            mView.notifyNearDataView();
+            mAllDownloadingDataSize.setValue(String.valueOf(mModel.getWorkingQueueSize()));
+        });
     }
 
     public CityDataInfo getCurrentCityInfo() {

@@ -68,7 +68,9 @@ public class RouteAdapterImpl implements IRouteApi {
         // 统一初始化场景组件服务
         final InitSceneModuleParam param = new InitSceneModuleParam();
         param.bEnableDynamicCloudShowInfoModule = true; // 开启动态运营组件
-        sceneModuleService.init(param);
+        if (sceneModuleService != null) {
+            sceneModuleService.init(param);
+        }
         mAdapterImplHelper = new RouteAdapterImplHelper(mRouteService, new BLAosService());
     }
 
@@ -109,7 +111,10 @@ public class RouteAdapterImpl implements IRouteApi {
 
     @Override
     public long requestRouteWeather(final RouteLineLayerParam routeLineLayerParam, final int index) {
-        if (ConvertUtils.isEmpty(mRouteService)) {
+        if (ConvertUtils.isEmpty(mRouteService) || index == -1 || ConvertUtils.isEmpty(routeLineLayerParam)
+            || ConvertUtils.isEmpty(routeLineLayerParam.getMPathInfoList())
+            || routeLineLayerParam.getMPathInfoList().size() < index) {
+            Logger.e(TAG, "天气请求失败");
             return -1;
         }
         return mRouteService.requestPathWeather((PathInfo) routeLineLayerParam.getMPathInfoList().get(index));

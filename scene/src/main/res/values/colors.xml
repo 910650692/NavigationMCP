@@ -15,6 +15,10 @@
     <color name="search_color_delete_text">#CCFFFFFF</color>
     <color name="search_color_delete_bg">#C73333</color>
     <color name="search_category_icon_bg">#26B2AFC2</color>
+    <color name="search_icon_search_color">#000000</color>
+    <color name="search_icon_FCCC73_color">#FCCC73</color>
+    <color name="search_icon_8E97B9_color">#8E97B9</color>
+    <color name="search_icon_delete_white">#FFFFFF</color>
 
     <color name="search_deep_text_day">#000000</color>
     <color name="search_shallow_text_day">#80000000</color>
@@ -36,6 +40,7 @@
     <color name="parking_recommended_item_15">#26B2AFC2</color>
     <color name="parking_recommended_item_42386DF0">#42386DF0</color>
     <color name="search_poi_detail_fast">#26B2AFC2</color>
+    <color name="search_collect_pin_text">#2461EA</color>
 
     <!--算路相关-->
     <color name="bg_route_root_bg">#F8F8FA</color>
@@ -82,6 +87,7 @@
     <!--引导-->
     <color name="navi_color_000000_0">#00000000</color>
     <color name="navi_color_000000_40">#66000000</color>
+    <color name="navi_color_000000_20">#33000000</color>
     <color name="navi_color_000000_50">#80000000</color>
     <color name="navi_color_000000_60">#99000000</color>
     <color name="navi_color_000000_70">#B3000000</color>
@@ -123,7 +129,10 @@
     <color name="navi_color_E1E5EA_100">#FFE1E5EA</color>
     <color name="navi_color_FF8500_100">#FFFF8500</color>
     <color name="navi_color_386DF0_26">#42386DF0</color>
+    <color name="navi_color_769FFB_100">#FF769FFB</color>
     <color name="navi_color_4ABA59">#4ABA59</color>
+    <color name="navi_color_FF2C2D36">#FF2C2D36</color>
+    <color name="navi_color_icon_park">#99383839</color>
 
     <!--柱状图-->
     <color name="auto_color_727577">#727476</color>
@@ -154,6 +163,9 @@
     <color name="ccx_cruise_lane_day">#5187ff</color>
 
     <!--设置相关-->
+    <color name="setting_white">#FFFFFFFF</color>
+    <color name="setting_black">#FF000000</color>
+    <color name="setting_bg_tab_text_unselect">#B3000000</color>
     <color name="setting_others_bg">#2D65B1</color>
     <color name="account_blue_text">#FF006CFF</color>
     <color name="map_add_reduce_icon_color">#383839</color>
@@ -167,6 +179,8 @@
     <color name="main_map_limit_icon_color">#00000000</color>
     <color name="main_map_limit_icon_stroke_color">#4B535D</color>
     <color name="main_map_limit_title_color">#FF000000</color>
+    <color name="main_map_reduce">#383839</color>
+    <color name="setting_downloading_color">#2461EA</color>
 
     <!--透明度-->
     <!--60%透明-->
@@ -182,24 +196,21 @@
     <color name="child_sub_title_color">#992461EA</color>
     <color name="divider_color">#4D818199</color>
     <color name="confirm_color">#3377FF</color>
+    <color name="cancel_color">#000000</color>
+    <color name="content_color">#000000</color>
 
     <!--离线相关-->
     <color name="color_2461ea">#FF2461EA</color>
     <color name="color_70_000000">#B3000000</color>
     <color name="color_ffffff">#FFFFFFFF</color>
 
-    <!--地图消息中心 -->
-    <color name="message_center_operate">#FF2461EA</color>
-    <color name="message_center_line">#B34B535D</color>
-    <color name="message_center_title">#FF000000</color>
-    <color name="message_center_content">#B3000000</color>
 
     <!--交通事件-->
     <color name="traffic_bg_color">#FFF8F8FA</color>
     <color name="traffic_bg_shadow_color">#408C889B</color>
     <color name="traffic_title_color">#000000</color>
     <color name="traffic_sub_title_color">#B3000000</color>
-    <color name="traffic_positive_bg_color">#2461EA </color>
+    <color name="traffic_positive_bg_color">#2461EA</color>
     <color name="traffic_negative_bg_color">#338E97B9</color>
     <color name="traffic_positive_text_color">#ffffff</color>
     <color name="traffic_bg_bg_pic_size_color">#FF8500</color>
@@ -215,4 +226,26 @@
     <color name="navi_msg_bg_color">#ffffff</color>
     <color name="navi_msg_btn_color">#2461EA</color>
     <color name="navi_msg_btn_text_color">#ffffff</color>
+
+    <!--悬挂卡-->
+    <color name="card_delete_bg_color">#66000000</color>
+    <color name="card_quick_color">#4ABA59</color>
+    <color name="card_slow_color">#FF8500</color>
+    <color name="card_tense_color">#C73333</color>
+    <color name="card_item_bg_color">#408C889B</color>
+
+    <!--通用-->
+    <color name="common_bg_color">#F8F8FA</color>
+    <color name="common_bg_shadow_color">#408C889B</color>
+    <color name="common_title_color">#B3000000</color>
+    <color name="common_sub_title_color">#80000000</color>
+    <color name="common_item_block_bg_color">#26B2AFC2</color>
+    <color name="common_blue">#FF007BFF</color>
+    <color name="common_green">#FF4ABA59</color>
+    <color name="common_orange">#FFFF8500</color>
+    <color name="common_item_select_color">#42386DF0</color>
+    <color name="common_title_purple_color">#000000</color>
+    <color name="common_delete_bg">#C73333</color>
+    <color name="common_delete_text_color">#B3FFFFFF</color>
+
 </resources>

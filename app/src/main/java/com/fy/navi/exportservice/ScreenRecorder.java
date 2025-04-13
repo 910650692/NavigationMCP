@@ -26,6 +26,8 @@ import androidx.annotation.Nullable;
 
 import com.fy.navi.fsa.R;
 import com.fy.navi.hud.VTBinder;
+import com.fy.navi.service.define.navistatus.NaviStatus;
+import com.fy.navi.service.logicpaket.navistatus.NaviStatusPackage;
 import com.iauto.vtserver.VTDescription;
 import com.iauto.vtserver.VTServerBQJni;
 
@@ -143,6 +145,10 @@ public class ScreenRecorder extends Service {
      */
     public void init() {
         Log.d(TAG, "service init");
+        if (!VTServerBQJni.getInstance().isIsSuccessLoadLibrary()) {
+            Log.d(TAG, "the so library failed to load");
+            return;
+        }
 
         // 1. NativeInitialize
         final int ret = VTServerBQJni.getInstance().nativeInitialize();
@@ -239,11 +245,14 @@ public class ScreenRecorder extends Service {
     }
 
     /**
-     * 图片裁剪
+     * 路网图裁剪
      * @param image
      * @return 数据
      */
     private byte[] imageCropping(final Image image) {
+        if (!NaviStatus.NaviStatusType.NAVING.equals(NaviStatusPackage.getInstance().getCurrentNaviStatus())) {
+            return new byte[225664];
+        }
         final int width = image.getWidth();
         final int height = image.getHeight();
         // 实测最大帧率为63FPS，可以处理丢弃部分帧达到控制帧率的目的
@@ -256,7 +265,7 @@ public class ScreenRecorder extends Service {
 
         // 定义裁剪区域
         final int startX = (width - mWidth) / 2 + 190; // 起始X坐标
-        final int startY = (height - mHeight) / 2 - 70; // 起始Y坐标
+        final int startY = (height - mHeight) / 2 + 70; // 起始Y坐标
 
         // 创建一个新的字节数组来存储裁剪后的图像数据
         final byte[] croppedData = new byte[mWidth * mHeight * pixelStride];
@@ -272,7 +281,7 @@ public class ScreenRecorder extends Service {
     }
 
     /**
-     * 保存大图
+     * 保存路口大图
      * @param image
      */
     private void saveRoadLarge(final Image image) {

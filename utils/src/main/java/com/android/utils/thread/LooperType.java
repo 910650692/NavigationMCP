@@ -10,7 +10,9 @@ public enum LooperType {
     /**
      * 频率不高的handler 线程
      */
-    CommonBackGroundLooper("CommonBackGround_HandlerThread");
+    CommonBackGroundLooper("CommonBackGround_HandlerThread"),
+
+    NaviSceneLooper("NaviScene_HandlerThread");
 
     LooperType(String threadName) {
         mThreadName = threadName;

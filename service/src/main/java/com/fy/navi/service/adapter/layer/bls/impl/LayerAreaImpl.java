@@ -14,19 +14,26 @@ import com.autonavi.gbl.layer.BizControlService;
 import com.autonavi.gbl.layer.model.BizAreaType;
 import com.autonavi.gbl.layer.model.BizRouteRestrictInfo;
 import com.autonavi.gbl.map.MapView;
+import com.fy.navi.service.adapter.layer.bls.style.LayerAreaStyleAdapter;
+import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.utils.NumberUtils;
 
 import java.util.ArrayList;
 
-public class LayerAreaImpl extends BaseLayerImpl {
+public class LayerAreaImpl extends BaseLayerImpl<LayerAreaStyleAdapter> {
 
-    public LayerAreaImpl(BizControlService bizService, MapView mapView, Context context) {
-        super(bizService, mapView, context);
+    public LayerAreaImpl(BizControlService bizService, MapView mapView, Context context, MapType mapType) {
+        super(bizService, mapView, context,mapType);
         getLayerAreaControl().setStyle(this);
         getLayerAreaControl().addClickObserver(this);
         getLayerAreaControl().addFocusChangeObserver(this);
     }
 
+
+    @Override
+    protected LayerAreaStyleAdapter createStyleAdapter() {
+        return new LayerAreaStyleAdapter(getEngineId(),getLayerAreaControl());
+    }
 
     /**
      * 绘制限行区域

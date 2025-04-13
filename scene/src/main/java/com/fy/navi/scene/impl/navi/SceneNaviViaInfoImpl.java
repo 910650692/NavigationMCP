@@ -65,7 +65,6 @@ public class SceneNaviViaInfoImpl extends BaseSceneModel<SceneNaviViaInfoView> {
             updateSceneVisible(false);
             return;
         }
-        // 实测这个方法返回的是总的途经点，并没有去除掉已经路过的
         final List<RouteParam> allPoiParamList = mRoutePackage.getAllPoiParamList(mMapTypeId);
         String viaName = "";
         if (!ConvertUtils.isEmpty(allPoiParamList)) {

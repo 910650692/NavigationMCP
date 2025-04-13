@@ -132,8 +132,15 @@ public final class CalibrationPackage {
 
     /**
      * ADAS配置情况
-     * 0 该车型未配置ADAS相关功能
-     * 8 该车型配置ADCU相关功能
+     * 0 CLEA Arch IPCM/ACM/ADM
+     * 1 CLEA Arch IPCM
+     * 2 CLEA Arch ACM
+     * 3 CLEA Arch ADM
+     * 4 GB Arch VPM/ACP3.0/ACP3.1/ADCU
+     * 5 GB Arch VPM
+     * 6 GB Arch ACP3.0
+     * 7 GB Arch ACP3.1
+     * 8 GB Arch ADCU
      * @return int
      */
     public int adasConfigurationType() {

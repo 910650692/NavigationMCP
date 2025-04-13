@@ -33,7 +33,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:src="@drawable/img_back_58" />
+                android:src="@drawable/img_setting_back" />
 
             <com.fy.navi.ui.view.SkinEditText
                 android:id="@+id/search_offline_edit_view"
@@ -50,8 +50,8 @@
                 android:imeOptions="actionSearch"
                 android:inputType="text"
                 android:maxLines="1"
-                android:textColor="@color/search_deep_text_day"
-                android:textColorHint="@color/search_shallow_text_day"
+                android:textColor="@color/setting_bg_tab_text_select"
+                android:textColorHint="@color/offline_hint_text"
                 android:textSize="@dimen/sp_38">
 
                 <requestFocus />
@@ -65,7 +65,7 @@
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:layout_marginEnd="@dimen/dp_40"
-                android:src="@drawable/img_poi_edit_delete"
+                android:src="@drawable/img_plate_number_clear"
                 android:visibility="visible" />
 
         </com.fy.navi.ui.view.SkinRelativeLayout>
@@ -94,7 +94,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/offline_no_search_hint"
-                    android:textColor="@color/color_70_000000"
+                    android:textColor="@color/setting_bg_tab_text_unselect"
                     android:textSize="@dimen/sp_34"
                     android:visibility="gone"
                     app:layout_constraintBottom_toBottomOf="parent"

@@ -3,6 +3,7 @@ package com.fy.navi.scene.ui.navi.manager;
 import android.content.Context;
 import android.util.AttributeSet;
 
+import androidx.annotation.CallSuper;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.databinding.ViewDataBinding;
@@ -23,14 +24,15 @@ import lombok.Setter;
 /**
  * 导航卡片抽象类
  * 定义卡片id、状态及实现倒计时关闭功能
- * @author fy
- * @version $Revision.*$
+ *
  * @param <VB>
  * @param <VM>
+ * @author fy
+ * @version $Revision.*$
  */
 @Getter
 @Setter
-public abstract class NaviSceneBase <VB extends ViewDataBinding, VM extends BaseSceneModel> extends BaseSceneView<VB, VM> {
+public abstract class NaviSceneBase<VB extends ViewDataBinding, VM extends BaseSceneModel> extends BaseSceneView<VB, VM> {
     private static final String TAG = "NaviCardBase";
     protected static final int SCENE_STATE_INIT = 0x00;
     protected static final int SCENE_STATE_SHOW = 0x01;
@@ -45,9 +47,11 @@ public abstract class NaviSceneBase <VB extends ViewDataBinding, VM extends Base
     private int mCountdown = 0;
     private ScheduledFuture mScheduledFuture;
     protected ISceneCallback mISceneCallback;
-    private NaviSceneId mSceneId;
+    protected NaviSceneId mSceneId;
 
     private INaviSceneEvent mEvent = getNaviSceneEvent();
+
+    protected abstract NaviSceneId getSceneId();
 
     public NaviSceneBase(@NonNull final Context context) {
         super(context);
@@ -69,80 +73,99 @@ public abstract class NaviSceneBase <VB extends ViewDataBinding, VM extends Base
         init();
     }
 
-    protected abstract NaviSceneId getSceneId();
-
-    protected abstract String getSceneName();
+    public String getSceneName() {
+        final boolean idIsNull = ConvertUtils.isNull(getSceneId());
+//        String sceneName = idIsNull ? "unknownName" : getSceneId().name();
+//        Logger.i(TAG, "getSceneName:" + sceneName);
+        return idIsNull ? "unknownName" : getSceneId().name();
+    }
 
     /**
      * @return INaviSceneEvent
      */
-    public abstract INaviSceneEvent getNaviSceneEvent();
+    public INaviSceneEvent getNaviSceneEvent() {
+        return NaviSceneManager.getInstance();
+    }
 
-    protected abstract void init();
+    @CallSuper
+    protected void init() {
+        NaviSceneManager.getInstance().addNaviScene(getSceneId(), this);
+    }
 
     /**
      * @param sceneCallback sceneCallback
      */
-    public abstract void addSceneCallback(ISceneCallback sceneCallback);
-
-    protected void unInit() {
-        mISceneCallback = null;
+    public void addSceneCallback(ISceneCallback sceneCallback) {
+        this.mISceneCallback = sceneCallback;
+        if (!ConvertUtils.isNull(mScreenViewModel)) {
+            mScreenViewModel.addCallBack(sceneCallback);
+        }
     }
 
     /**
      * 显示卡片，倒计时开始
      */
     public void show() {
+        Logger.d(TAG, "show:" + getClass().getSimpleName(), "callBack :" + (mISceneCallback == null));
         // 新卡片显示需要重置倒计时，隐藏卡片显示使用选线剩余倒计时
         if (mSceneState != SCENE_STATE_HIDE) {
             resetCountdown();
         }
-        if (isStartCountdown()) {
+        if (!ConvertUtils.isNull(mISceneCallback)) {
+            mISceneCallback.updateSceneVisible(getSceneId(), true);
+            mSceneState = SCENE_STATE_SHOW;
             startCountdown();
         }
-        mSceneState = SCENE_STATE_SHOW;
     }
 
-    public boolean isStartCountdown() {
-        return true;
+    /***
+     * 是否主动开启倒计时
+     * @return false 不处理，如果需要处理重写返回true即可
+     */
+    public boolean isNeedAutoStartTimer() {
+        return false;
     }
 
     /**
      * 隐藏卡片，但是倒计时还在
      */
     public void hide() {
+        Logger.d(TAG, "hide:" + getClass().getSimpleName(), "callBack :" + (mISceneCallback == null));
         // 新卡片如果一开始就是隐藏(有高优卡片显示时新卡创建并隐藏)，显示需要重置倒计时
         if (mSceneState == SCENE_STATE_CLOSE || mSceneState == SCENE_STATE_INIT) {
             resetCountdown();
         }
         cancelCountdown();
-        mSceneState = SCENE_STATE_HIDE;
+        if (!ConvertUtils.isNull(mISceneCallback)) {
+            mSceneState = SCENE_STATE_HIDE;
+            mISceneCallback.updateSceneVisible(getSceneId(), false);
+        }
     }
 
     /**
      * 关闭卡片，不再响应任何事件
      */
     public void close() {
+        Logger.d(TAG, "close:" + getClass().getSimpleName(), "callBack :" + (mISceneCallback == null));
         mCountdown = 0;
         cancelCountdown();
-        mSceneState = SCENE_STATE_CLOSE;
-        mEvent.notifySceneReset();
+        if (!ConvertUtils.isNull(mISceneCallback)) {
+            mSceneState = SCENE_STATE_CLOSE;
+            mISceneCallback.updateSceneVisible(getSceneId(), false);
+            mEvent.notifySceneReset();
+        }
     }
 
     public int getSceneState() {
         return mSceneState;
     }
 
-    public boolean isVisible(){
+    public boolean isVisible() {
         return SCENE_STATE_SHOW == mSceneState;
     }
 
-    protected void resetCountdown() {
+    public void resetCountdown() {
         switch (mSceneId) {
-//            case CARD_ENERGY_EARLY_WARNING:
-//            case CARD_REALTIME_MSG:
-//                mCountdown = CLOSE_COUNTDOWN_60;
-//                break;
             case NAVI_SCENE_SERVICE_AREA:
             case NAVI_SCENE_VIA_POINT_LIST:
                 mCountdown = CLOSE_COUNTDOWN_15;
@@ -153,32 +176,46 @@ public abstract class NaviSceneBase <VB extends ViewDataBinding, VM extends Base
         }
     }
 
-    protected void startCountdown() {
-        if (mCountdown == 0 || mScheduledFuture != null) {
+    public void startCountdown() {
+        resetCountdown();
+        if (mCountdown == 0 || !isNeedAutoStartTimer()) {
             return;
         }
         mScheduledFuture = ThreadManager.getInstance().asyncAtFixDelay(() -> {
             if (mCountdown == NumberUtils.NUM_0) {
-                if (mEvent != null) {
-                    if (mSceneId == NaviSceneId.NAVI_SCENE_VIA_POINT_LIST) {
-                        // 只有经过所有途经点才会close，倒计时场景只会hide途经点卡片
-//                        mEvent.notifySceneStateChange(INaviSceneEvent.SceneStateChangeType.SceneHideState, mCardId);
-                    } else {
-//                        mEvent.notifySceneStateChange(INaviSceneEvent.SceneStateChangeType.SceneCloseState, mCardId);
-                    }
-                }
+                notifySceneStateChange(false);
                 cancelCountdown();
             }
             --mCountdown;
         }, NumberUtils.NUM_0, NumberUtils.NUM_1);
     }
 
-    protected void cancelCountdown() {
-        if (mScheduledFuture != null) {
-            if (!ConvertUtils.isEmpty(mScheduledFuture)) {
-                ThreadManager.getInstance().cancelDelayRun(mScheduledFuture);
-                mScheduledFuture = null;
-            }
+    public void cancelCountdown() {
+        if (!ConvertUtils.isNull(mScheduledFuture)) {
+            ThreadManager.getInstance().cancelDelayRun(mScheduledFuture);
+            mScheduledFuture = null;
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        cancelCountdown();
+        mISceneCallback = null;
+    }
+
+    /***
+     * 根据需要复写
+     * @param isVisible
+     */
+    public void notifySceneStateChange(final boolean isVisible) {
+        final boolean isCanDo = isVisible != isVisible();
+        Logger.i(TAG, "clsName:" + getClass().getSimpleName(), "notifySceneStateChange success", "isCanDo:" + isCanDo + ",isVisible：" + isVisible);
+        if (isCanDo) {
+            getNaviSceneEvent().notifySceneStateChange((isVisible ?
+                            INaviSceneEvent.SceneStateChangeType.SceneShowState :
+                            INaviSceneEvent.SceneStateChangeType.SceneCloseState),
+                    getSceneId());
         }
     }
 }

@@ -9,6 +9,6 @@
       android:strokeLineJoin="round"
       android:strokeWidth="2.625"
       android:fillColor="#00000000"
-      android:strokeColor="#4B535D"
+      android:strokeColor="@color/route_back_icon_color"
       android:fillType="evenOdd"/>
 </vector>

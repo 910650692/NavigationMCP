@@ -11,6 +11,7 @@ import com.fy.navi.scene.ui.navi.SceneNaviSapaDetailView;
 import com.fy.navi.scene.ui.navi.manager.INaviSceneEvent;
 import com.fy.navi.scene.ui.navi.manager.NaviSceneId;
 import com.fy.navi.service.MapDefaultFinalTag;
+import com.fy.navi.service.define.bean.GeoPoint;
 import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.navi.SapaInfoEntity;
 import com.fy.navi.service.define.route.RouteParam;
@@ -105,6 +106,8 @@ public class SceneNaviSapaDetailImpl extends BaseSceneModel<SceneNaviSapaDetailV
     private boolean mIsVia;
     // 当前的poi类型（用于添加途经点）
     private int mCurrentPoiType = -1;
+    private int powerType;
+
     public SceneNaviSapaDetailImpl(final SceneNaviSapaDetailView screenView) {
         super(screenView);
         mViewType = new ObservableField<>(0);
@@ -138,6 +141,7 @@ public class SceneNaviSapaDetailImpl extends BaseSceneModel<SceneNaviSapaDetailV
         mTollServicesVisible = new ObservableField<>(false);
         mServiceGasStationVisible = new ObservableField<>(false);
         mButtonText = new ObservableField<>();
+        powerType = OpenApiHelper.powerType();
     }
 
     @Override
@@ -145,6 +149,7 @@ public class SceneNaviSapaDetailImpl extends BaseSceneModel<SceneNaviSapaDetailV
         super.onCreate();
         SearchPackage.getInstance().registerCallBack("SceneNaviSapaDetailImpl",
                 this);
+        setScreenId(MapType.MAIN_SCREEN_MAIN_MAP);
     }
 
     @Override
@@ -187,13 +192,22 @@ public class SceneNaviSapaDetailImpl extends BaseSceneModel<SceneNaviSapaDetailV
     }
 
     /**
-     * 收费站透传动作，因为SapaInfoEntity中不会透出收费站的poiId，所以这边只能进行位置搜索
+     * 收费站透传动作，因为SapaInfoEntity中不会透出收费站的poiId,手动生成poiEntityInfo
      * @param sapaInfoEntity 实体类
      */
     private void doTollSearch(final SapaInfoEntity sapaInfoEntity) {
         final SapaInfoEntity.SAPAItem sapaItem = sapaInfoEntity.getList().get(0);
-        mSapaSearchId = SearchPackage.getInstance().geoSearch(sapaItem.getPos());
-        Logger.i(TAG, "doTollSearch mSapaSearchId = " + mSapaSearchId);
+        if (sapaItem == null) {
+            Logger.e(TAG, "doTollSearch sapaItem is null");
+            return;
+        }
+        PoiInfoEntity poiInfoEntity = new PoiInfoEntity();
+        poiInfoEntity.setMName(sapaItem.getName());
+        poiInfoEntity.setMPoint(sapaItem.getPos());
+        poiInfoEntity.setPoiType(16);
+        poiInfoEntity.setPoiTag(ResourceUtils.Companion.getInstance().getString(R.string.toll));
+        mCurrentPoiInfoEntity = poiInfoEntity;
+        mCurrentPoiType = 16;
     }
 
     /**
@@ -295,6 +309,18 @@ public class SceneNaviSapaDetailImpl extends BaseSceneModel<SceneNaviSapaDetailV
             Logger.i(TAG, "updateServiceDetailInfo sapItem is null");
             return;
         }
+        if (powerType == 1) {
+            GeoPoint point = sapItem.getPos();
+            OpenApiHelper.getTravelTimeFutureIncludeChargeLeft(point).thenAccept(etaInfo -> {
+                ThreadManager.getInstance().postUi(() -> {
+                    int leftCharge = etaInfo.getLeftCharge();
+                    mScreenView.updateServiceChargeUi(leftCharge);
+                });
+            }).exceptionally(error -> {
+                Logger.e(TAG, "updateServiceDetailInfo getTravelTimeFuture error:" + error);
+                return null;
+            });
+        }
         mServicePoiId = sapItem.getServicePOIID();
         mServiceName.set(sapItem.getName());
         tagUpdate(mServiceStatusTag, sapItem);
@@ -312,6 +338,18 @@ public class SceneNaviSapaDetailImpl extends BaseSceneModel<SceneNaviSapaDetailV
         if (sapItem == null) {
             Logger.i(TAG, "updateTollDetailInfo sapItem is null");
             return;
+        }
+        if (powerType == 1) {
+            GeoPoint point = sapItem.getPos();
+            OpenApiHelper.getTravelTimeFutureIncludeChargeLeft(point).thenAccept(etaInfo -> {
+                ThreadManager.getInstance().postUi(() -> {
+                    int leftCharge = etaInfo.getLeftCharge();
+                    mScreenView.updateTollChargeUi(leftCharge);
+                });
+            }).exceptionally(error -> {
+                Logger.e(TAG, "updateTollDetailInfo getTravelTimeFuture error:" + error);
+                return null;
+            });
         }
         mTollName.set(sapItem.getName());
         tagUpdate(mTollStatusTag, sapItem);
@@ -338,6 +376,17 @@ public class SceneNaviSapaDetailImpl extends BaseSceneModel<SceneNaviSapaDetailV
                     mButtonText.set(ResourceUtils.Companion.getInstance().getString(R.string.
                             route_service_details_remove_via));
                     return;
+                }
+                boolean isCanJudgeGps = null != routeParam.getRealPos() && null != sapItem.getPos();
+                if (isCanJudgeGps) {
+                    if (routeParam.getRealPos().getLat() == sapItem.getPos().getLat() &&
+                            routeParam.getRealPos().getLon() == sapItem.getPos().getLon()) {
+                        tag.set(mScreenView.getContext().getString(R.string.navi_via));
+                        mIsVia = true;
+                        mButtonText.set(ResourceUtils.Companion.getInstance().getString(R.string.
+                                route_service_details_remove_via));
+                        return;
+                    }
                 }
             }
         }
@@ -541,7 +590,7 @@ public class SceneNaviSapaDetailImpl extends BaseSceneModel<SceneNaviSapaDetailV
                     mCurrentPoiInfoEntity);
         } else {
             RoutePackage.getInstance().removeVia(MapType.MAIN_SCREEN_MAIN_MAP,
-                    mCurrentPoiInfoEntity, false);
+                    mCurrentPoiInfoEntity, true);
         }
         updateSceneVisible(false);
     }

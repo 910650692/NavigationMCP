@@ -32,7 +32,7 @@
             android:layout_marginStart="@dimen/dp_5"
             android:maxLines="1"
             android:text=""
-            android:textColor="@color/black"
+            android:textColor="@color/search_color_ffffff"
             android:textSize="@dimen/sp_30"
             app:layout_constraintTop_toTopOf="@+id/poi_car_wash_price_icon"
             app:layout_constraintBottom_toBottomOf="@+id/poi_car_wash_price_icon"

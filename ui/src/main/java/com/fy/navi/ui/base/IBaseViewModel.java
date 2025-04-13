@@ -62,6 +62,15 @@ public interface IBaseViewModel extends LifecycleObserver {
      */
     void addFragment(BaseFragment fragment, Bundle bundle);
 
+    /**
+     * 添加Fragment
+     *
+     * @param fragment          添加的Fragment
+     * @param bundle            携带的参数
+     * @param isHideCurFragment 是否隐藏当前fragment
+     */
+    void addFragment(BaseFragment fragment, Bundle bundle, boolean isHideCurFragment);
+
     void addPoiDetailsFragment(BaseFragment fragment, Bundle bundle);
 
     /**

@@ -32,4 +32,12 @@ public interface IBaseDialogClickListener {
     default void onCancelClick() {
 
     }
+
+    default void onNetWorkConnect(){
+
+    }
+
+    default void onExit(){
+
+    }
 }

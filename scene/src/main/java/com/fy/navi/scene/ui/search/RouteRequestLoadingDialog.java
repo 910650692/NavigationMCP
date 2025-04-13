@@ -42,7 +42,7 @@ public class RouteRequestLoadingDialog extends BaseFullScreenDialog<LayoutSearch
         initLoadAnim(mViewBinding.ivLoading);
         mViewBinding.tvMessage.setText(ResourceUtils.Companion.getInstance().getText(R.string.route_search_loading));
         mViewBinding.ivClose.setOnClickListener(v -> {
-            hide();
+            dismiss();
             if (!ConvertUtils.isEmpty(mListener)) {
                 mListener.onClose();
             }
@@ -103,7 +103,6 @@ public class RouteRequestLoadingDialog extends BaseFullScreenDialog<LayoutSearch
         if (mAnimator.isRunning()) {
             mAnimator.cancel();
         }
-        mAnimator = null;
     }
 
     @Override
@@ -117,6 +116,12 @@ public class RouteRequestLoadingDialog extends BaseFullScreenDialog<LayoutSearch
     @Override
     public void hide() {
         super.hide();
+        stopAnimator();
+    }
+
+    @Override
+    public void dismiss() {
+        super.dismiss();
         stopAnimator();
     }
 

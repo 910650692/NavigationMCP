@@ -1,5 +1,7 @@
 package com.fy.navi.service.greendao.favorite;
 
+import android.text.TextUtils;
+
 import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
 import com.fy.navi.service.AppContext;
@@ -67,6 +69,10 @@ public class FavoriteManager {
      * @param customName  自定义名称 重命名时编辑的字段
      */
     public void updateCustomName(final String itemId, final String customName) {
+        if (TextUtils.isEmpty(itemId)) {
+            Logger.e(TAG, "update custom name item id is empty");
+            return;
+        }
         final Favorite unique = mFavoriteDao.queryBuilder()
                 .where(FavoriteDao.Properties.MItemId.eq(itemId))
                 .unique();
@@ -83,6 +89,10 @@ public class FavoriteManager {
      * @param topTime  置顶时间
      */
     public void updateTopTime(final String itemId, final long topTime) {
+        if (TextUtils.isEmpty(itemId)) {
+            Logger.e(TAG, "update top time itemId is empty");
+            return;
+        }
         final Favorite unique = mFavoriteDao.queryBuilder()
                 .where(FavoriteDao.Properties.MItemId.eq(itemId))
                 .unique();

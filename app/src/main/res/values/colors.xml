@@ -31,6 +31,7 @@
     <color name="color_50_000000">#80000000</color>
     <color name="color_60_000000">#99000000</color>
     <color name="color_70_000000">#B3000000</color>
+    <color name="color_black_90">#E6000000</color>
     <color name="color_black_80">#CC000000</color>
     <color name="color_black_70">#B3000000</color>
     <color name="color_80_ffffff">#CCFFFFFF</color>
@@ -50,6 +51,13 @@
     <color name="dialog_use_reminder_terms_service_color">#2461EA</color>
     <color name="dialog_use_reminder_content">#CC383839</color>
 
+
+    <!-- 主图相关 -->
+    <color name="icon_map_home_button">#4B535D</color>
+    <color name="icon_map_car_model_2d_head">#383839</color>
+    <color name="main_route_home_text">#B3000000</color>
+    <color name="forecast_edit_img">#383839</color>
+
     <!-- 搜索相关 -->
     <color name="search_deep_text_day">#2D3D50</color>
     <color name="search_shallow_text_day">#992D3D50</color>
@@ -60,6 +68,11 @@
 
     <color name="search_main_tab_bg_fff">#FFFFFFFF</color>
     <color name="search_main_tab_img_shape_bg">#408C889B</color>
+    <color name="search_color_383839_100">#383839</color>
+
+    <color name="forecast_title">#000000</color>
+    <color name="forecast_title_sure">#3377FF</color>
+    <color name="forecast_title_cancel">#000000</color>
 
     <!--Route-->
     <color name="bg_route_root_bg">#F8F8FA</color>
@@ -122,6 +135,8 @@
     <color name="account_gray">#80DBD7D7</color>
 
     <!-- 设置相关 -->
+    <color name="setting_white">#FFFFFFFF</color>
+    <color name="setting_black">#FF000000</color>
     <color name="setting_bg">#F8F8FA</color>
     <color name="setting_bg_stroke">#408C889B</color>
     <color name="setting_bg_close">#4B535D</color>
@@ -133,7 +148,16 @@
     <color name="setting_bg_gray">#338E97B9</color>
     <color name="setting_bg_others">#26B2AFC2</color>
     <color name="setting_bg_corner">#000000</color>
+    <color name="setting_bg_line">#B3000000</color>
+    <color name="setting_bg_dialog_start">#F0F2F8</color>
+    <color name="setting_bg_dialog_end">#E1E5EA</color>
+    <color name="setting_bg_dialog_line">#4D818199</color>
     <color name="setting_car_logo_text_gray">#80000000</color>
+    <color name="setting_bg_loading_dialog">#F8F8FA</color>
+    <color name="setting_bg_delete">#000000</color>
+    <color name="setting_bg_to_login">#26B2AFC2</color>
+    <color name="setting_bg_to_login_text">#FF2461EA</color>
+    <color name="setting_bg_login_detail">#FF000000</color>
     <color name="setting_text_gray">#66000000</color>
     <color name="setting_text_disable">#80FFFFFF</color>
     <color name="setting_text_preference">#B3000000</color>
@@ -163,6 +187,12 @@
     <color name="setting_voice_has_update_color">#FF2461EA</color>
     <color name="setting_voice_size_color">#B3000000</color>
     <color name="setting_button_disable">#802461EA</color>
+
+    <color name="offline_hint_text">#80000000</color>
+    <color name="offline_recommend_download">#80000000</color>
+    <color name="offline_bg_gray">#338E97B9</color>
+    <color name="offline_pause_all">#B3000000</color>
+
     <color name="main_map_limit_bg_color">#3BA4A4A4</color>
     <color name="main_map_limit_city_bg_color">#338E97B9</color>
     <color name="main_map_limit_button_color">#338E97B9</color>
@@ -184,4 +214,33 @@
     <color name="main_map_limit_retry_button_color">#FF2461EA</color>
     <color name="main_map_limit_current_city_color">#FF000000</color>
     <color name="main_map_limit_recyclerview_color">#42386DF0</color>
+    <color name="message_center_close">#4B535D</color>
+    <color name="setting_favorite_icon_color">#4B535D</color>
+    <color name="setting_favorite_popup_bg">#E8E8EF</color>
+    <color name="setting_other_car_icon_first">#7F848B</color>
+    <color name="setting_other_car_icon_second">#81868D</color>
+    <color name="dialog_startup_exception_exit">#FF3377FF</color>
+    <color name="dialog_startup_exception_line">#4D818199</color>
+    <color name="dialog_startup_exception_content">#FF000000</color>
+    <color name="dialog_startup_exception_title">#FF000000</color>
+    <color name="dialog_startup_exception_root">#66000000</color>
+    <color name="dialog_startup_exception_start_bg">#FFF0F2F8</color>
+    <color name="dialog_startup_exception_end_bg">#FFE1E5EA</color>
+    <color name="dialog_startup_exception_stroke">#FFFFFF</color>
+    <!--地图消息中心 -->
+    <color name="message_center_operate">#FF2461EA</color>
+    <color name="message_center_line">#B34B535D</color>
+    <color name="message_center_title">#FF000000</color>
+    <color name="message_center_content">#B3000000</color>
+
+    <color name="guide_login_title">#FF000000</color>
+    <color name="guide_login_close">#4B535D</color>
+    <color name="bg_guide_login_bind">#FF2461EA</color>
+    <color name="guide_login_bind_text">#FFFFFFFF</color>
+    <color name="bg_guide_login_cancel">#338E97B9</color>
+    <color name="guide_login_cancel_text">#B3000000</color>
+
+    <!--巡航-->
+    <color name="cruise_bg_color">#408C889B</color>
+    <color name="cruise_title_color">#B3000000</color>
 </resources>

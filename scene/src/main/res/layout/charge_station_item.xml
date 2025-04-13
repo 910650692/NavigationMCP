@@ -24,7 +24,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_16"
             android:gravity="center"
-            android:textColor="@color/black"
+            android:textColor="@color/search_color_ffffff"
             android:textSize="@dimen/sp_34"
             app:layout_constraintEnd_toStartOf="@+id/charge_station_detail"
             app:layout_constraintHorizontal_chainStyle="packed"

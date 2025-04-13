@@ -6,7 +6,6 @@ import android.annotation.SuppressLint;
 import android.app.Application;
 import android.os.Bundle;
 import android.os.Looper;
-import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -14,15 +13,14 @@ import androidx.annotation.StringRes;
 import androidx.databinding.ObservableBoolean;
 import androidx.databinding.ObservableField;
 import androidx.databinding.ObservableInt;
+import androidx.fragment.app.Fragment;
 
 import com.android.utils.ConvertUtils;
 import com.android.utils.ResourceUtils;
 import com.android.utils.ToastUtils;
-import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
 import com.fy.navi.burypoint.anno.HookMethod;
-import com.fy.navi.burypoint.bean.BuryParam;
 import com.fy.navi.burypoint.bean.BuryProperty;
 import com.fy.navi.burypoint.constant.BuryConstant;
 import com.fy.navi.burypoint.controller.BuryPointController;
@@ -32,6 +30,7 @@ import com.fy.navi.hmi.favorite.HomeCompanyFragment;
 import com.fy.navi.hmi.favorite.MapPointSearchFragment;
 import com.fy.navi.hmi.limit.LimitDriveFragment;
 import com.fy.navi.hmi.mapdata.MapDataFragment;
+import com.fy.navi.hmi.navi.ForecastAddressDialog;
 import com.fy.navi.hmi.navi.NaviGuidanceFragment;
 import com.fy.navi.hmi.poi.PoiDetailsFragment;
 import com.fy.navi.hmi.route.RouteFragment;
@@ -43,6 +42,7 @@ import com.fy.navi.scene.impl.imersive.ImersiveStatus;
 import com.fy.navi.scene.impl.imersive.ImmersiveStatusScene;
 import com.fy.navi.service.AutoMapConstant;
 import com.fy.navi.service.AutoMapConstant.PoiType;
+import com.fy.navi.service.adapter.navistatus.NavistatusAdapter;
 import com.fy.navi.service.define.aos.RestrictedArea;
 import com.fy.navi.service.define.aos.RestrictedAreaDetail;
 import com.fy.navi.service.define.map.IBaseScreenMapView;
@@ -56,10 +56,12 @@ import com.fy.navi.service.define.route.RouteRestrictionParam;
 import com.fy.navi.service.define.route.RouteSpeechRequestParam;
 import com.fy.navi.service.define.route.RouteTMCParam;
 import com.fy.navi.service.define.search.PoiInfoEntity;
+import com.fy.navi.service.define.user.forecast.OftenArrivedItemInfo;
 import com.fy.navi.service.define.utils.NumberUtils;
 import com.fy.navi.service.logicpaket.navistatus.NaviStatusPackage;
 import com.fy.navi.service.logicpaket.search.SearchPackage;
 import com.fy.navi.service.logicpaket.user.behavior.BehaviorPackage;
+import com.fy.navi.service.logicpaket.user.forecast.IForecastAddressCallBack;
 import com.fy.navi.ui.action.Action;
 import com.fy.navi.ui.base.BaseFragment;
 import com.fy.navi.ui.base.BaseViewModel;
@@ -68,6 +70,8 @@ import com.fy.navi.ui.base.StackManager;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Date;
+import java.util.IllegalFormatException;
 import java.util.concurrent.ScheduledFuture;
 
 /**
@@ -91,6 +95,9 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
     public ObservableField<String> messageCenterContent;
     public ObservableBoolean messageCenterContentVisibility;
     public ObservableBoolean messageCenterImgVisibility;
+    public ObservableBoolean messageLineVisibility;
+    public ObservableBoolean messageLineHeightVisibility;
+    public ObservableBoolean messageCloseVisibility;
     public ObservableField<Boolean> naviHomeVisibility;
     public ObservableInt carModeImgId;
     @Nullable
@@ -102,7 +109,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
     public ObservableField<String> limitDriverTitle;
     public ObservableField<Boolean> cruiseVisibility;
     public ObservableField<Boolean> muteVisibility;
-    public ObservableField<Boolean> mNaviContinueVisibility;
+    public ObservableField<Boolean> mPopGuideLoginShow;
 
     private ScheduledFuture mScheduledFuture;
     private final int mTimer = 300;
@@ -131,7 +138,10 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         messageCenterContent = new ObservableField<>("");
         messageCenterContentVisibility = new ObservableBoolean(false);
         messageCenterImgVisibility = new ObservableBoolean(false);
-        mNaviContinueVisibility = new ObservableField(false);
+        messageLineVisibility = new ObservableBoolean(false);
+        messageLineHeightVisibility = new ObservableBoolean(false);
+        messageCloseVisibility = new ObservableBoolean(false);
+        mPopGuideLoginShow = new ObservableField<>(false);
     }
 
     @Override
@@ -164,6 +174,8 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
     //回自车位逻辑
     public Action backToSelfParking = () -> {
         ImmersiveStatusScene.getInstance().setImmersiveStatus(MapType.MAIN_SCREEN_MAIN_MAP, ImersiveStatus.IMERSIVE);
+        //取消倒计时
+        mModel.cancelSelfParkingTimer();
     };
 
     // 播报和静音切换
@@ -192,11 +204,9 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
                     startRoute(poiInfoEntity);
                     return;
                 }
-                Bundle bundle = new Bundle();
-                bundle.putInt(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_TYPE, AutoMapConstant.SearchType.SEARCH_KEYWORD);
-                bundle.putInt(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_OPEN_HOME_COMPANY, AutoMapConstant.HomeCompanyType.HOME);
-                addFragment(new HomeCompanyFragment(), bundle);
-                mModel.stopCruise();
+
+                mModel.getOnlineForecastArrivedData(AutoMapConstant.HomeCompanyType.HOME);
+
             } catch (Exception e) {
                 Logger.e(SEARCH_HMI_TAG, "skipFragment: Exception occurred", e);
             }
@@ -215,11 +225,10 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
                     startRoute(poiInfoEntity);
                     return;
                 }
-                Bundle bundle = new Bundle();
-                bundle.putInt(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_TYPE, AutoMapConstant.SearchType.SEARCH_KEYWORD);
-                bundle.putInt(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_OPEN_HOME_COMPANY, AutoMapConstant.HomeCompanyType.COMPANY);
-                addFragment(new HomeCompanyFragment(), bundle);
-                mModel.stopCruise();
+
+                //判断是否存在预测数据
+                mModel.getOnlineForecastArrivedData(AutoMapConstant.HomeCompanyType.COMPANY);
+
             } catch (Exception e) {
                 Logger.e(SEARCH_HMI_TAG, "skipFragment: Exception occurred", e);
             }
@@ -276,6 +285,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
 
     public Action carHeader = () -> {
         mModel.switchMapMode();
+        showOrHideSelfParkingView(false);
     };
 
     public Action messageCenterGone = () -> {
@@ -291,19 +301,66 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
     };
 
     public Action messageCenterOperateClick = () -> {
-         messageCenterGone.call();
-         final MessageCenterInfo messageCenterInfo = messageCenterEntity.get();
-         if(messageCenterInfo!=null){
-             if(messageCenterInfo.getMsgType() == MessageCenterType.ROAD_LIMIT){
-                 openLimitDetailFragment.call();
-             }else if(messageCenterInfo.getMsgType() == MessageCenterType.MAP_UPDATE_15 ||
-                     messageCenterInfo.getMsgType() == MessageCenterType.MAP_UPDATE_45){
-                 final Bundle bundle = new Bundle();
-                 bundle.putBoolean("isCheck",true);
-                 addFragment(new MapDataFragment(), bundle);
-             }
-         }
+        messageCenterGone.call();
+        final MessageCenterInfo messageCenterInfo = messageCenterEntity.get();
+        if(messageCenterInfo!=null){
+            if(messageCenterInfo.getMsgType() == MessageCenterType.ROAD_LIMIT){
+                openLimitDetailFragment.call();
+            }else if(messageCenterInfo.getMsgType() == MessageCenterType.MAP_UPDATE_15 ||
+                    messageCenterInfo.getMsgType() == MessageCenterType.MAP_UPDATE_45){
+                final Bundle bundle = new Bundle();
+                bundle.putBoolean("isCheck",true);
+                addFragment(new MapDataFragment(), bundle);
+            }
+        }
     };
+
+    public boolean getTopFragment(){
+        Fragment fragment = mView.getSupportFragmentManager().findFragmentById(R.id.layout_fragment);
+        if(fragment!=null){
+            return fragment instanceof PoiDetailsFragment;
+        }
+        return false;
+    }
+
+    public void toHomeFragment(){
+        //判断是否存在预测数据
+        Bundle bundle = new Bundle();
+        bundle.putInt(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_TYPE, AutoMapConstant.SearchType.SEARCH_KEYWORD);
+        bundle.putInt(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_OPEN_HOME_COMPANY, AutoMapConstant.HomeCompanyType.HOME);
+        addFragment(new HomeCompanyFragment(), bundle);
+        mModel.stopCruise();
+    }
+
+    public void toCompanyFragment(){
+        Bundle bundle = new Bundle();
+        bundle.putInt(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_TYPE, AutoMapConstant.SearchType.SEARCH_KEYWORD);
+        bundle.putInt(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_OPEN_HOME_COMPANY, AutoMapConstant.HomeCompanyType.COMPANY);
+        addFragment(new HomeCompanyFragment(), bundle);
+        mModel.stopCruise();
+
+    }
+
+    public void showForecastDialog(int type,OftenArrivedItemInfo oftenArrivedItemInfo){
+        ThreadManager.getInstance().postUi(() -> {
+            new ForecastAddressDialog(mView, type, oftenArrivedItemInfo, new IForecastAddressCallBack() {
+                @Override
+                public void AddForecastInfo(OftenArrivedItemInfo oftenArrivedItemInfo) {
+                    mModel.addHomeOrCompanyInfoToSetting(type,oftenArrivedItemInfo);
+                    initTimer();
+                }
+
+                @Override
+                public void addressClick() {
+                    if(AutoMapConstant.HomeCompanyType.HOME == type){
+                        toHomeFragment();
+                    }else {
+                        toCompanyFragment();
+                    }
+                }
+            }).show();
+        });
+    }
 
 
     public void loadMapView(IBaseScreenMapView mapSurfaceView) {
@@ -325,7 +382,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         mainBTNVisibility.set(false);
         bottomNaviVisibility.set(false);
         backToParkingVisibility.set(false);
-        initTimer();
+        mPopGuideLoginShow.set(false);
     }
 
     public void setMapCenterInScreen(final int frameLayoutWidth, final Bundle bundle) {
@@ -335,11 +392,14 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         }
         Logger.i(TAG, "setMapCenterInScreen type:" + type);
         mModel.setMapCenterInScreen(frameLayoutWidth);
-        // 如果是导航页面的话比例尺继续正常显示
-        mScaleViewVisibility.set(type != -1);
+        final String state = NavistatusAdapter.getInstance().getCurrentNaviStatus();
+        // 如果是导航页面的话比例尺继续正常显示，算路界面正常显示比例尺
+        mScaleViewVisibility.set(type != -1 || NaviStatus.NaviStatusType.SELECT_ROUTE.equals(state)
+                || NaviStatus.NaviStatusType.ROUTING.equals(state));
         mainBTNVisibility.set(false);
         bottomNaviVisibility.set(false);
         backToParkingVisibility.set(false);
+        mPopGuideLoginShow.set(false);
         cancelTimer();
     }
 
@@ -348,6 +408,9 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         mScaleViewVisibility.set(true);
         mainBTNVisibility.set(true);
         bottomNaviVisibility.set(true);
+        if (mModel.checkPopGuideLogin()) {
+            mPopGuideLoginShow.set(true);
+        }
         initTimer();
     }
 
@@ -402,33 +465,31 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         backToParkingVisibility.set(visible);
     }
 
-    public void showNaviContinueBtn(final ImersiveStatus status) {
-        final boolean currentFragmentIsNavi = StackManager.getInstance().getCurrentFragment(mScreenId) instanceof NaviGuidanceFragment;
-        final boolean vis = TextUtils.equals(NaviStatus.NaviStatusType.NAVING, mModel.getNaviStatus()) && status == ImersiveStatus.TOUCH;
-        Logger.i(TAG, "showNaviContinueBtn-vis:" + vis);
-        mNaviContinueVisibility.set(vis && !currentFragmentIsNavi);
-    }
-
     /**
      * UE单位是公里
      *
      * @param scale 单位是米
      */
     public void updateOnMapScaleChanged(int scale) {
-        String format;
-        int kilometer;
-        if (scale / 1000 > 0) {
-            format = "%d公里";
-            kilometer = scale / 1000;
-        } else {
-            format = "%d米";
-            kilometer = scale;
+        try {
+            String format;
+            int kilometer;
+            if (scale / 1000 > 0) {
+                format = "%d公里";
+                kilometer = scale / 1000;
+            } else {
+                format = "%d米";
+                kilometer = scale;
+            }
+            final String result = String.format(format, kilometer);
+            mView.updateOnMapScaleChanged(result);
+        } catch (Exception exception) {
+            Logger.e(TAG, "updateOnMapScaleChanged, format error:" + exception.getMessage());
         }
-        mView.updateOnMapScaleChanged(String.format(format, kilometer));
     }
 
     public void toPoiDetailFragment(PoiInfoEntity entity) {
-        if (needInterceptor() && FavoriteHelper.getInstance().getHomeCompanyType() != 4) {
+        if (needInterceptor() && FavoriteHelper.getInstance().getHomeCompanyType() == -1) {
             return;
         }
         if (FavoriteHelper.getInstance().getHomeCompanyType() != -1) {
@@ -521,6 +582,21 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         addFragment(new HomeCompanyFragment(), args);
     }
 
+    /**
+     * 打开沿途搜界面.
+     *
+     * @param passBy String，沿途搜关键字.
+     */
+    public void toAlongWayFragment(final String passBy) {
+        final Bundle args = new Bundle();
+        args.putString(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SOURCE_FRAGMENT,
+                AutoMapConstant.SourceFragment.MAIN_SEARCH_FRAGMENT);
+        args.putInt(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_TYPE,
+                AutoMapConstant.SearchType.ALONG_WAY_SEARCH);
+        args.putString(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_KEYWORD, passBy);
+        addFragment(new SearchResultFragment(), args);
+    }
+
     public void updateUiStyle(MapType mapTypeId, int uiMode) {
         mModel.updateUiStyle(mapTypeId, uiMode);
     }
@@ -568,7 +644,10 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
             final boolean showSameDayLimit = mModel.showSameDayLimit();
             if(showSameDayLimit){
                 Logger.i("showSameDayLimit","showSameDayLimit"+statusVis);
-                mModel.managerMessage(MessageCenterType.ROAD_LIMIT);
+                mModel.managerMessage(new MessageCenterInfo(MessageCenterType.ROAD_LIMIT,
+                        ResourceUtils.Companion.getInstance().getString(R.string.message_center_check),0,
+                        ResourceUtils.Companion.getInstance().getString(R.string.message_center_limit),
+                        "",new Date(),0));
             }
         }
     }
@@ -578,7 +657,10 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
      */
     public void offlineMap15Day(){
         if(mModel.offlineMap15Day()){
-            mModel.managerMessage(MessageCenterType.MAP_UPDATE_15);
+            mModel.managerMessage(new MessageCenterInfo(MessageCenterType.MAP_UPDATE_15,
+                    ResourceUtils.Companion.getInstance().getString(R.string.message_center_update),0,
+                    ResourceUtils.Companion.getInstance().getString(R.string.message_center_need_update),
+                    "",new Date(),0));
         }
     }
 
@@ -587,7 +669,11 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
      */
     public void offlineMap45Day(){
         if(mModel.offlineMap45Day()){
-            mModel.managerMessage(MessageCenterType.MAP_UPDATE_45);
+            mModel.managerMessage(new MessageCenterInfo(MessageCenterType.MAP_UPDATE_45,
+                    ResourceUtils.Companion.getInstance().getString(R.string.message_center_update),0,
+                    ResourceUtils.Companion.getInstance().getString(R.string.message_center_netless),
+                    ResourceUtils.Companion.getInstance().getString(R.string.message_center_recommend_update),
+                    new Date(),0));
         }
     }
 
@@ -595,12 +681,29 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
      * @param messageCenterInfo 数据
      */
     public void onMessageInfoNotifyCallback(final MessageCenterInfo messageCenterInfo){
+        //数据  点击事件需要使用
         messageCenterEntity.set(messageCenterInfo);
+        //显示整个view
         messageCenterVisible.set(true);
+        //最左边操作标题
         messageCenterOperate.set(messageCenterInfo.getMsgOperate());
+        //标题
         messageCenterTitle.set(messageCenterInfo.getMsgTitle());
+        //内容
         messageCenterContent.set(messageCenterInfo.getMsgContent());
+        //最左边图片
         messageCenterImgVisibility.set(false);
+        //关闭显示
+        messageCloseVisibility.set(true);
+        //2行显示长的竖线
+        if(ConvertUtils.isEmpty(messageCenterInfo.getMsgContent())){
+            messageLineVisibility.set(true);
+            messageLineHeightVisibility.set(false);
+        }else {
+            messageLineVisibility.set(false);
+            messageLineHeightVisibility.set(true);
+        }
+
         if(messageCenterInfo.getMsgType() == MessageCenterType.ROAD_LIMIT){
             messageCenterContentVisibility.set(false);
         }else if(messageCenterInfo.getMsgType() == MessageCenterType.MAP_UPDATE_15){
@@ -608,9 +711,19 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         }else if(messageCenterInfo.getMsgType() == MessageCenterType.MAP_UPDATE_45){
             messageCenterContentVisibility.set(true);
         }else if(messageCenterInfo.getMsgType() == MessageCenterType.WEATHER){
-            messageCenterTitle.set("");
+            messageCenterOperate.set("");
             messageCenterContentVisibility.set(true);
             messageCenterImgVisibility.set(true);
+            mView.setMessageImg(messageCenterInfo.getSrcImg());
+        }else if(messageCenterInfo.getMsgType() == MessageCenterType.PHONE_MESSAGE){
+            //线和X图片隐藏
+            messageCenterOperate.set("");
+            messageCenterContentVisibility.set(true);
+            messageCenterImgVisibility.set(true);
+            mView.setMessageImg(messageCenterInfo.getSrcImg());
+            messageLineVisibility.set(false);
+            messageLineHeightVisibility.set(false);
+            messageCloseVisibility.set(false);
         }
     }
 
@@ -652,9 +765,9 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
     private PoiInfoEntity getFavoritePoiInfo(@PoiType int poiType) {
         return switch (poiType) {
             case PoiType.POI_HOME ->
-                    BehaviorPackage.getInstance().getFavoriteHomeData(AutoMapConstant.HomeCompanyType.HOME); //暂时取的都是本地的
+                    BehaviorPackage.getInstance().getHomeFavoriteInfo(); //暂时取的都是本地的
             case PoiType.POI_COMPANY ->
-                    BehaviorPackage.getInstance().getFavoriteHomeData(AutoMapConstant.HomeCompanyType.COMPANY);
+                    BehaviorPackage.getInstance().getCompanyFavoriteInfo();
             default -> null;
         };
     }
@@ -756,4 +869,35 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
             mModel.refreshHomeOfficeTMC(false);
         }
     }
+
+    public void checkPopGuideLogin() {
+        mPopGuideLoginShow.set(mModel.checkPopGuideLogin());
+    }
+
+    public Action guideLoginClose = () -> {
+        mPopGuideLoginShow.set(false);
+        mModel.guideLoginClose();
+        ToastUtils.Companion.getInstance()
+                .showCustomToastView(ResourceUtils.Companion.getInstance().getString(R.string.guide_login_close_toast));
+    };
+
+    public Action guideLoginBind = new Action() {
+        @Override
+        @HookMethod(eventName = BuryConstant.EventName.AMAP_ACCOUNT_POPUP_BINDINGNOW)
+        public void call() {
+            mPopGuideLoginShow.set(false);
+            mModel.guideLoginBind();
+        }
+    };
+
+    public Action guideLoginCancel = new Action() {
+        @Override
+        @HookMethod(eventName = BuryConstant.EventName.AMAP_ACCOUNT_POPUP_NOREMIND)
+        public void call() {
+            mPopGuideLoginShow.set(false);
+            mModel.guideLoginCancel();
+            ToastUtils.Companion.getInstance()
+                    .showCustomToastView(ResourceUtils.Companion.getInstance().getString(R.string.guide_login_close_toast));
+        }
+    };
 }

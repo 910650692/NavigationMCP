@@ -55,14 +55,14 @@
 
         <com.fy.navi.ui.view.SkinTextView
             android:id="@+id/recommend_voice_operate"
-            android:layout_width="@dimen/dp_180"
+            android:layout_width="wrap_content"
             android:layout_height="@dimen/dp_76"
             android:layout_marginEnd="@dimen/dp_40"
             visibility="@{model.isUsed() ? View.GONE : View.VISIBLE}"
             android:gravity="center"
             android:text="@{model.getOperateText()}"
             android:textSize="@dimen/sp_30"
-            android:textColor="@{model.isEnabled() ? @color/white : @color/setting_voice_has_update_color}"
+            android:textColor="@{model.isEnabled() ? @color/setting_white : @color/setting_voice_has_update_color}"
             android:enabled="@{model.isEnabled()}"
             android:background="@drawable/bg_voice_operate_selector"
             android:drawableStart="@{model.getLeftDrawable()}"

@@ -12,6 +12,7 @@ import com.fy.navi.hmi.databinding.FragmentSearchResultBinding;
 import com.fy.navi.scene.RoutePath;
 import com.fy.navi.service.AutoMapConstant;
 import com.fy.navi.service.MapDefaultFinalTag;
+import com.fy.navi.service.adapter.navi.NaviConstant;
 import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.search.PoiInfoEntity;
 import com.fy.navi.service.define.search.SearchResultEntity;
@@ -58,6 +59,10 @@ public class SearchResultFragment extends BaseFragment<FragmentSearchResultBindi
         final String keyword = parsedArgs.getString(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_KEYWORD);
         final PoiInfoEntity entity = parsedArgs.getParcelable(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_POI_LIST);
         final int range= parsedArgs.getInt(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_RANGE, 5000);
+        final int isOpenFromNavi = parsedArgs.getInt(NaviConstant.NAVI_CONTROL, 0);
+        if (isOpenFromNavi == 1) {
+            mBinding.scenePoiList.setNaviControl(true);
+        }
         mBinding.scenePoiList.setPoiInfoEntity(entity);
         mBinding.scenePoiList.setRange(range);
         mBinding.scenePoiList.setEditText(searchType, keyword);
@@ -66,9 +71,10 @@ public class SearchResultFragment extends BaseFragment<FragmentSearchResultBindi
 
     /**
      * 搜索结果回调
+     * @param taskId 请求回调id
      * @param searchResultEntity 搜索结果实体类
      */
-    public void notifySearchResult(final SearchResultEntity searchResultEntity) {
+    public void notifySearchResult(final int taskId, final SearchResultEntity searchResultEntity) {
         int homeCompanyType = -1;
         if (ConvertUtils.equals(mSourceFragmentTag, AutoMapConstant.SourceFragment.FRAGMENT_HOME)) {
             homeCompanyType = AutoMapConstant.HomeCompanyType.HOME;
@@ -80,7 +86,15 @@ public class SearchResultFragment extends BaseFragment<FragmentSearchResultBindi
             homeCompanyType = AutoMapConstant.HomeCompanyType.COMMON;
         }
         mBinding.scenePoiList.setHomeCompanyState(homeCompanyType);
-        mBinding.scenePoiList.notifySearchResult(searchResultEntity);
+        mBinding.scenePoiList.notifySearchResult(taskId, searchResultEntity);
+    }
+
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        if (!hidden) {
+            mBinding.scenePoiList.reloadPoiMarker();
+        }
     }
 
     /**

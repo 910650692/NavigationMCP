@@ -18,30 +18,30 @@
         <!--tab list-->
         <com.fy.navi.scene.ui.route.SceneRouteGasStationWeatherServiceView
             android:id="@+id/route_right_tab_list_scene"
-            android:layout_width="@dimen/dp_174"
-            android:layout_height="@dimen/dp_504"
+            android:layout_width="@dimen/dp_146"
+            android:layout_height="@dimen/dp_436"
             android:background="@drawable/bg_route_result"
             android:clickable="true"
             android:visibility="@{ViewModel.getTabVisibility() == 2 ? View.VISIBLE : View.GONE}"
-            android:layout_marginEnd="@dimen/dp_714"
+            android:layout_marginStart="@dimen/dp_660"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintStart_toStartOf="parent" />
 
         <com.fy.navi.ui.view.SkinConstraintLayout
-            android:layout_width="@dimen/dp_174"
-            android:layout_height="@dimen/dp_168"
+            android:layout_width="@dimen/dp_146"
+            android:layout_height="@dimen/dp_148"
             android:background="@drawable/bg_route_result"
             clickCommand="@{ViewModel.getTabChargingClick()}"
             android:visibility="@{ViewModel.getTabVisibility() == 1 ? View.VISIBLE : View.GONE}"
-            android:layout_marginEnd="@dimen/dp_714"
+            android:layout_marginStart="@dimen/dp_660"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             tools:visibility="gone">
 
             <com.fy.navi.ui.view.SkinView
                 android:id="@+id/route_right_tab_list_gas_station"
-                android:layout_width="@dimen/dp_174"
-                android:layout_height="@dimen/dp_168"
+                android:layout_width="@dimen/dp_146"
+                android:layout_height="@dimen/dp_148"
                 app:layout_constraintBottom_toTopOf="@+id/route_right_tab_list_weather"
                 app:layout_constraintStart_toStartOf="parent" />
 
@@ -49,7 +49,7 @@
                 android:id="@+id/route_right_tab_list_tv_gas_station"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/dp_30"
+                android:layout_marginBottom="@dimen/dp_28"
                 android:text="@string/route_gas_station"
                 android:textColor="@color/tab_list_route_tab_list_unselect"
                 android:textSize="@dimen/sp_30"
@@ -62,6 +62,7 @@
                 android:id="@+id/route_right_tab_list_iv_gas_station"
                 android:layout_width="@dimen/dp_58"
                 android:layout_height="@dimen/dp_58"
+                android:layout_marginBottom="@dimen/dp_4"
                 android:src="@drawable/selector_route_tab_list_charge_station"
                 app:layout_constraintBottom_toTopOf="@id/route_right_tab_list_tv_gas_station"
                 app:layout_constraintEnd_toEndOf="@id/route_right_tab_list_gas_station"
@@ -76,7 +77,7 @@
             android:visibility="@{ViewModel.getIncludePageVisibility() == 0 ? View.VISIBLE : View.GONE}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:visibility="gone">
+            tools:visibility="visible">
 
             <com.fy.navi.ui.view.SkinConstraintLayout
                 android:id="@+id/route_line_info_title"
@@ -279,7 +280,6 @@
 
                 <com.fy.navi.ui.view.SkinView
                     android:id="@+id/route_line_via_open_close"
-                    clickCommand="@{ViewModel.getOpenCloseViaClick()}"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/dp_20"
                     android:visibility="@{ViewModel.getViaPoiListVisibility() ? View.VISIBLE : View.GONE}"
@@ -287,6 +287,7 @@
 
                 <com.fy.navi.ui.view.SkinTextView
                     android:id="@+id/bg_lines"
+                    clickCommand="@{ViewModel.getOpenCloseViaClick()}"
                     android:layout_width="@dimen/dp_200"
                     android:layout_height="@dimen/dp_8"
                     android:layout_marginTop="@dimen/dp_8"
@@ -297,7 +298,6 @@
                     app:layout_constraintStart_toStartOf="@+id/route_line_via_open_close" />
 
                 <com.fy.navi.ui.view.SkinView
-                    clickCommand="@{ViewModel.getOpenCloseViaClick()}"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/dp_12"
                     android:visibility="@{ViewModel.getViaPoiListVisibility() ? View.VISIBLE : View.GONE}"
@@ -490,7 +490,7 @@
             <com.fy.navi.ui.view.SkinTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:drawableStart="@drawable/img_route_navi"
+                android:drawableStart="@drawable/icon_details_bottom_go_here"
                 android:drawablePadding="@dimen/dp_7"
                 android:gravity="center"
                 android:text="@{ViewModel.getCountDownHint()}"
@@ -712,12 +712,12 @@
             android:layout_height="match_parent"
             android:clickable="false"
             android:visibility="@{ViewModel.getIncludePageVisibility() == 3 ? View.VISIBLE : View.GONE}"
-            tools:visibility="visible">
+            tools:visibility="gone">
 
             <com.fy.navi.scene.ui.route.SceneRouteGasStationChargeServiceView
                 android:id="@+id/route_right_tab_list_charge_scene"
                 android:layout_width="@dimen/dp_174"
-                android:layout_height="@dimen/dp_504"
+                android:layout_height="@dimen/dp_464"
                 android:background="@drawable/bg_route_result"
                 android:clickable="true"
                 android:layout_marginEnd="@dimen/dp_714"

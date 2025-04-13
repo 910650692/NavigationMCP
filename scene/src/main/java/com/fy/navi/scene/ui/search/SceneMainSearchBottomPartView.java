@@ -141,6 +141,8 @@ public class SceneMainSearchBottomPartView extends BaseSceneView<SearchHistoryVi
                             //清空历史记录
                             SearchPackage.getInstance().clearSearchKeywordRecord();
                             mSearchHistoryAdapter.notifyList(new ArrayList<>());
+                            mViewBinding.rcyRecord.setVisibility(GONE);
+                            mViewBinding.tvRecordNull.setVisibility(VISIBLE);
                             showDeleteRecord();
                             ToastUtils.Companion.getInstance().showCustomToastView(
                                     ResourceUtils.Companion.getInstance().getString(R.string.ssh_cleared_history_record));
@@ -233,10 +235,14 @@ public class SceneMainSearchBottomPartView extends BaseSceneView<SearchHistoryVi
      * @param historyList 历史记录
      */
     public void notifyKeywordRecord(final List<History> historyList) {
-        if (historyList != null) {
+        if (!historyList.isEmpty()) {
             mSearchHistoryAdapter.notifyList(historyList);
+            mViewBinding.rcyRecord.setVisibility(VISIBLE);
+            mViewBinding.tvRecordNull.setVisibility(GONE);
         } else {
-            ToastUtils.Companion.getInstance().showCustomToastView(ResourceUtils.Companion.getInstance().getString(R.string.sha_no_data));
+//            ToastUtils.Companion.getInstance().showCustomToastView(ResourceUtils.Companion.getInstance().getString(R.string.sha_no_data));
+            mViewBinding.rcyRecord.setVisibility(GONE);
+            mViewBinding.tvRecordNull.setVisibility(VISIBLE);
         }
         showDeleteRecord();
     }

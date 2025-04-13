@@ -3,6 +3,8 @@ package com.fy.navi.service.define.map;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.ViewParent;
 import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
@@ -67,6 +69,11 @@ public abstract class FullScreenMapView extends FrameLayout implements IBaseScre
 
     @Override
     public void bindMapView(View mapSurfaceView) {
+        ViewParent viewParent = mapSurfaceView.getParent();
+        if(viewParent!= null){
+            ViewGroup viewGroup = (ViewGroup) viewParent;
+            viewGroup.removeView(mapSurfaceView);
+        }
         addView(mapSurfaceView);
     }
 

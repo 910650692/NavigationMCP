@@ -27,7 +27,6 @@ import java.util.List;
 
 public class SceneNaviViaArriveView extends NaviSceneBase<SceneNaviViaArriveViewBinding, SceneNaviViaArriveViewImpl> {
     public static final String TAG = "SceneNaviViaArriveView";
-    private ISceneCallback mISceneCallback;
 
     public SceneNaviViaArriveView(@NonNull final Context context) {
         super(context);
@@ -62,46 +61,8 @@ public class SceneNaviViaArriveView extends NaviSceneBase<SceneNaviViaArriveView
     }
 
     @Override
-    public void hide() {
-        super.hide();
-        if (mISceneCallback != null) {
-            mISceneCallback.updateSceneVisible(NaviSceneId.NAVI_VIA_ARRIVED_POP, false);
-        }
-    }
-
-    @Override
-    public void close() {
-        super.close();
-        if (mISceneCallback != null) {
-            mISceneCallback.updateSceneVisible(NaviSceneId.NAVI_VIA_ARRIVED_POP, false);
-        }
-    }
-
-    @Override
     protected NaviSceneId getSceneId() {
         return NaviSceneId.NAVI_VIA_ARRIVED_POP;
-    }
-
-    @Override
-    protected String getSceneName() {
-        return NaviSceneId.NAVI_VIA_ARRIVED_POP.name();
-    }
-
-    @Override
-    public INaviSceneEvent getNaviSceneEvent() {
-        return NaviSceneManager.getInstance();
-    }
-
-    @Override
-    protected void init() {
-        NaviSceneManager.getInstance().addNaviScene(NaviSceneId.NAVI_VIA_ARRIVED_POP, this);
-
-    }
-
-    @Override
-    public void addSceneCallback(final ISceneCallback sceneCallback) {
-        mISceneCallback = sceneCallback;
-        mScreenViewModel.addISceneCallback(sceneCallback);
     }
 
     @Override

@@ -7,9 +7,12 @@ import com.fy.navi.hmi.BR;
 import com.fy.navi.hmi.R;
 import com.fy.navi.hmi.databinding.FragmentRecordSettingBinding;
 import com.fy.navi.hmi.setting.SettingCheckDialog;
+import com.fy.navi.service.define.user.usertrack.DrivingRecordDataBean;
 import com.fy.navi.service.logicpaket.user.account.AccountPackage;
 import com.fy.navi.ui.base.BaseFragment;
 import com.fy.navi.ui.dialog.IBaseDialogClickListener;
+
+import java.util.ArrayList;
 
 public class RecordSettingFragment extends BaseFragment<FragmentRecordSettingBinding, RecordSettingViewModel> {
 
@@ -48,9 +51,10 @@ public class RecordSettingFragment extends BaseFragment<FragmentRecordSettingBin
                     @Override
                     public void onCommitClick() {
                         if (AccountPackage.getInstance().isLogin()) {
-                            final int[] behaviorDataIds = mViewModel.getBehaviorDataIds();
-                            for (int id : behaviorDataIds) {
-                                mViewModel.delBehaviorData(String.valueOf(id));
+                            final ArrayList<DrivingRecordDataBean> drivingRecordDataBeans =
+                                    mViewModel.getDrivingRecordDataFromSdk();
+                            for (DrivingRecordDataBean drivingRecordDataBean : drivingRecordDataBeans) {
+                                mViewModel.delBehaviorData(String.valueOf(drivingRecordDataBean.getId()));
                             }
                         }
                         mViewModel.deleteValueByKey(2);

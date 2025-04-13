@@ -187,7 +187,10 @@ final public class AmapStateUtils {
 
         map.put(NaviStateCons.KEY_CURRENT_MAP_TYPE, "A_MAP");
         try {
-            BridgeSdk.getInstance().getRemote(IStateManager.class).updateNaviState(map);
+            final IStateManager bdStateManager = BridgeSdk.getInstance().getRemote(IStateManager.class);
+            if (null != bdStateManager) {
+                bdStateManager.updateNaviState(map);
+            }
         } catch (ClassCastException | NullPointerException e) {
             Log.e(IVrBridgeConstant.TAG, "updateNaviState: " + Log.getStackTraceString(e));
         }

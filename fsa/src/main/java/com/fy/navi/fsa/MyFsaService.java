@@ -15,6 +15,7 @@ import android.view.Display;
 import android.view.WindowManager;
 
 import com.android.utils.gson.GsonUtils;
+import com.fy.navi.adas.JsonLog;
 import com.fy.navi.fsa.bean.DestInfo;
 import com.fy.navi.fsa.bean.GeoPoint;
 import com.fy.navi.fsa.bean.LaneLineInfo;
@@ -252,7 +253,7 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
                 switchClusterActivity(true);
                 break;
             case FsaConstant.FsaEventPayload.CLOSE_HUD_MAP:
-//                switchClusterActivity(false);
+                switchClusterActivity(false);
                 break;
             case FsaConstant.FsaEventPayload.OPEN_HUD_VIDEO:
                 if (mBinder == null) {
@@ -474,6 +475,7 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
         }
         final FsaServiceEvent event = (FsaServiceEvent) mService.eventHandler.getEventById(functionId);
         event.setOutputPayload(info.getBytes(StandardCharsets.UTF_8));
+        JsonLog.saveJsonToCache(info, "fsa.json", functionId + "-" + FsaIdString.function2String(functionId));
         Log.d(FsaConstant.FSA_TAG, "sendEvent: " + functionId + "-" + FsaIdString.function2String(functionId) + ", info = " + info);
         mService.eventHandler.sendEvent(event, FSACatalog.DeviceName.UNKNOWN);
         if (isSave) {
@@ -775,20 +777,27 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
                 Log.d(FsaConstant.FSA_TAG, "dispaly: " + display.getName() + ", id " + display.getDisplayId() + " :" + display);
                 if (display.getDisplayId() != 0) {
                     secondeDid = display.getDisplayId();
+                    break;
                 }
             }
         }
-        final ActivityOptions options = ActivityOptions.makeBasic();
-        options.setLaunchDisplayId(secondeDid);
-        final Intent intent = new Intent();
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.setAction("com.fy.navi.hmi.cluster.ClusterActivity");
-        intent.putExtra("isOpen", isOpen);
-        AppContext.getInstance().getMContext().startActivity(intent, options.toBundle());
+        if (isOpen) {
+            final ActivityOptions options = ActivityOptions.makeBasic();
+            options.setLaunchDisplayId(secondeDid);
+            final Intent intent = new Intent();
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.setAction("com.fy.navi.hmi.cluster.ClusterActivity");
+            intent.putExtra("isOpen", isOpen);
+            AppContext.getInstance().getMContext().startActivity(intent, options.toBundle());
+        } else {
+            final Intent intent = new Intent("ClusterActivityTAG");
+            AppContext.getInstance().getMContext().sendBroadcast(intent);
+        }
     }
 
     /**
      * 获取cross图片
+     *
      * @return byte[]
      */
     public byte[] getmCrossImg() {

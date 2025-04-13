@@ -109,19 +109,19 @@ public class SceneSearchHistoryView extends BaseSceneView<MainAlongWaySearchHist
         mSearchLoadingDialog = new SearchLoadingDialog(getContext());
         final LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        mViewBinding.rcyRecord.setLayoutManager(layoutManager);
+        mViewBinding.rcyRecordAlong.setLayoutManager(layoutManager);
         final LinearLayoutManager layoutManagerSuggestion = new LinearLayoutManager(getContext());
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        mViewBinding.suggestResultList.setLayoutManager(layoutManagerSuggestion);
+        mViewBinding.suggestResultListAlong.setLayoutManager(layoutManagerSuggestion);
 
         mSearchResultAdapter = new SearchResultAdapter();
-        mViewBinding.suggestResultList.setAdapter(mSearchResultAdapter);
+        mViewBinding.suggestResultListAlong.setAdapter(mSearchResultAdapter);
         mSearchHistoryAdapter = new SearchHistoryAdapter();
-        mViewBinding.rcyRecord.setAdapter(mSearchHistoryAdapter);
+        mViewBinding.rcyRecordAlong.setAdapter(mSearchHistoryAdapter);
 
         getSearchKeywordRecord();
 
-        mViewBinding.sclDeleteRecord.setOnClickListener(view -> {
+        mViewBinding.sclDeleteRecordAlong.setOnClickListener(view -> {
             if (mSearchHistoryAdapter.getItemCount() == 0) {
                 ToastUtils.Companion.getInstance().showCustomToastView(NODATA);
                 return;
@@ -134,6 +134,9 @@ public class SceneSearchHistoryView extends BaseSceneView<MainAlongWaySearchHist
                             SearchPackage.getInstance().clearSearchKeywordRecord();
                             mSearchHistoryAdapter.notifyList(new ArrayList<>());
                             ToastUtils.Companion.getInstance().showCustomToastView("已清空历史记录");
+                            mViewBinding.sclDeleteRecordAlong.setVisibility(GONE);
+                            mViewBinding.rcyRecordAlong.setVisibility(GONE);
+                            mViewBinding.tvRecordNullAlong.setVisibility(VISIBLE);
                         }
 
                         @Override
@@ -184,7 +187,6 @@ public class SceneSearchHistoryView extends BaseSceneView<MainAlongWaySearchHist
                 poiInfoEntity.setAddress(history.getMEndPoiName());
                 poiInfoEntity.setPoiType(RoutePoiType.ROUTE_POI_TYPE_END);
                 poiInfoEntity.setPid(history.getMPoiId());
-                ToastUtils.Companion.getInstance().showCustomToastView(ResourceUtils.Companion.getInstance().getString(R.string.smp_set_success), 0);
                 final int commonName = mSearchResultAdapter.getHomeCompanyType();
                 final GeoPoint historyPoint = parseGeoPoint(history.getMEndPoint());
                 final GeoPoint geoPoint = new GeoPoint();
@@ -200,12 +202,15 @@ public class SceneSearchHistoryView extends BaseSceneView<MainAlongWaySearchHist
                         || mHomeCompanyType == 2
                         || mHomeCompanyType == 3
                         || mHomeCompanyType == 0) {
-//                    BehaviorPackage.getInstance().addFavoriteData(poiInfoEntity, commonName);
                     SettingUpdateObservable.getInstance().onUpdateSyncTime();
                     closeAllFragmentsUntilTargetFragment("HomeCompanyFragment");
                     showCurrentFragment();
                 } else {
                     if (SearchPackage.getInstance().isAlongWaySearch()) {
+                        if (!RoutePackage.getInstance().isBelongRouteParam(MapType.MAIN_SCREEN_MAIN_MAP, poiInfoEntity)) {
+                            ToastUtils.Companion.getInstance().showCustomToastView(ResourceUtils.
+                                    Companion.getInstance().getString(R.string.smp_set_success), 0);
+                        }
                         RoutePackage.getInstance().addViaPoint(MapType.MAIN_SCREEN_MAIN_MAP, poiInfoEntity);
                     } else {
                         SearchPackage.getInstance().clearLabelMark();
@@ -292,15 +297,18 @@ public class SceneSearchHistoryView extends BaseSceneView<MainAlongWaySearchHist
      * @param historyList 搜索历史记录数据
      */
     public void notifyKeywordRecord(final List<History> historyList) {
-        if (historyList != null) {
+        if (!historyList.isEmpty()) {
             mSearchHistoryAdapter.notifyList(historyList);
-            mViewBinding.sclDeleteRecord.setVisibility(VISIBLE);
+            mViewBinding.sclDeleteRecordAlong.setVisibility(VISIBLE);
+            mViewBinding.rcyRecordAlong.setVisibility(VISIBLE);
+            mViewBinding.tvRecordNullAlong.setVisibility(GONE);
         } else {
-            ToastUtils.Companion.getInstance().showCustomToastView(NODATA);
-            mViewBinding.sclDeleteRecord.setVisibility(GONE);
+//            ToastUtils.Companion.getInstance().showCustomToastView(NODATA);
+            mViewBinding.sclDeleteRecordAlong.setVisibility(GONE);
+            mViewBinding.rcyRecordAlong.setVisibility(GONE);
+            mViewBinding.tvRecordNullAlong.setVisibility(VISIBLE);
         }
-        mViewBinding.rcyRecord.setVisibility(VISIBLE);
-        mViewBinding.suggestResultList.setVisibility(GONE);
+        mViewBinding.suggestResultListAlong.setVisibility(GONE);
 
     }
 
@@ -341,9 +349,10 @@ public class SceneSearchHistoryView extends BaseSceneView<MainAlongWaySearchHist
         if (!ConvertUtils.isEmpty(mSearchLoadingDialog)) {
             mSearchLoadingDialog.hide();
         }
-        mViewBinding.suggestResultList.setVisibility(VISIBLE);
-        mViewBinding.rcyRecord.setVisibility(GONE);
-        mViewBinding.sclDeleteRecord.setVisibility(GONE);
+        mViewBinding.suggestResultListAlong.setVisibility(VISIBLE);
+        mViewBinding.rcyRecordAlong.setVisibility(GONE);
+        mViewBinding.sclDeleteRecordAlong.setVisibility(GONE);
+        mViewBinding.tvRecordNullAlong.setVisibility(GONE);
         if (searchResultEntity == null || searchResultEntity.getPoiList().isEmpty()) {
             ToastUtils.Companion.getInstance().showCustomToastView(NODATA);
             mSearchLoadingDialog.hide();

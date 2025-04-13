@@ -45,8 +45,6 @@ public class TrafficModel extends BaseModel<BaseTrafficViewModel> implements IAo
     public void queryTrafficEventDetailResult(@Nullable final FyGTraEventDetail detail) {
         IAosRestrictedObserver.super.queryTrafficEventDetailResult(detail);
         Logger.i(TAG, "queryTrafficEventDetailResult result:" + (detail != null));
-        // TODO 测试数据模拟开关
-        // FyGTraEventDetail mockDetail = MockUtil.getObjectFromAsset(AppContext.getInstance().getMContext(), "traffic.json",FyGTraEventDetail.class);
         if (taskId == detail.taskId) {
             Logger.i(TAG, "is  my request");
             ThreadManager.getInstance().postUi(() -> {

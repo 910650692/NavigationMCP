@@ -32,10 +32,11 @@ public class BaseSearchResultViewModel extends BaseViewModel<SearchResultFragmen
 
     /**
      * 搜索结果
+     * @param taskId 请求id
      * @param searchResultEntity 搜索结果实体类
      */
-    public void notifySearchResult(final SearchResultEntity searchResultEntity) {
-        mView.notifySearchResult(searchResultEntity);
+    public void notifySearchResult(final int taskId, final SearchResultEntity searchResultEntity) {
+        mView.notifySearchResult(taskId, searchResultEntity);
     }
 
     /**

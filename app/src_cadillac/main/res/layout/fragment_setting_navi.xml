@@ -1,0 +1,641 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="viewModel"
+            type="com.fy.navi.hmi.setting.guide.SettingGuideViewModel" />
+    </data>
+
+    <com.fy.navi.ui.view.SkinScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+
+        <com.fy.navi.ui.view.SkinConstraintLayout
+            android:id="@+id/include_setting_navi"
+            android:layout_width="@dimen/dp_1104"
+            android:layout_height="wrap_content">
+
+            <!--路线偏好-->
+            <com.fy.navi.ui.view.SkinTextView
+                android:id="@+id/btnLarge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/setting_guide_route_preference"
+                android:textColor="@color/setting_bg_tab_text_select"
+                android:textSize="@dimen/sp_46"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.fy.navi.scene.ui.setting.SceneSettingPreferenceView
+                android:id="@+id/setting_route_preference"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_32"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/btnLarge"/>
+
+            <com.fy.navi.ui.view.SkinLinearLayout
+                clickCommand="@{viewModel.mAvoidLimitClick}"
+                android:id="@+id/navi_avoid_limit"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_160"
+                android:layout_marginTop="@dimen/dp_40"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                app:layout_constraintStart_toStartOf="@id/setting_route_preference"
+                app:layout_constraintTop_toBottomOf="@id/setting_route_preference">
+
+                <com.fy.navi.ui.view.SkinCheckBox
+                    clickCommand="@{viewModel.mAvoidLimitClick}"
+                    android:id="@+id/navi_avoid_limit_check"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="@{viewModel.mIsAvoidLimit}"
+                    android:background="@android:color/transparent"
+                    android:button="@drawable/setting_custom_thumb" />
+
+                <com.fy.navi.ui.view.SkinTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dp_32"
+                    android:text="@string/setting_guide_avoid_limit"
+                    android:textColor="@color/setting_bg_tab_text_select"
+                    android:textSize="@dimen/sp_46" />
+            </com.fy.navi.ui.view.SkinLinearLayout>
+
+            <com.fy.navi.ui.view.SkinView
+                clickCommand="@{viewModel.mOfflineAvoidLimitClick}"
+                android:id="@+id/navi_avoid_limit_offline"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_160"
+                android:visibility="gone"
+                app:layout_constraintStart_toStartOf="@id/setting_route_preference"
+                app:layout_constraintTop_toBottomOf="@id/setting_route_preference"/>
+
+            <com.fy.navi.ui.view.SkinConstraintLayout
+                clickCommand="@{viewModel.mModifyPlateNumber}"
+                android:id="@+id/navi_car_number_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="@{viewModel.mIsPlateNumber ? View.VISIBLE : View.GONE}"
+                android:layout_marginStart="@dimen/dp_820"
+                android:layout_marginTop="@dimen/dp_80"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/setting_route_preference" >
+
+                <com.fy.navi.ui.view.SkinTextView
+                    android:id="@+id/navi_car_number"
+                    android:layout_width="@dimen/dp_284"
+                    android:layout_height="@dimen/dp_80"
+                    android:textSize="@dimen/sp_38"
+                    android:textColor="@color/setting_bg_tab_text_select"
+                    android:gravity="center"
+                    android:background="@drawable/bg_setting_car_number"
+                    tools:text = "@string/setting_guide_car_number"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <com.fy.navi.ui.view.SkinImageView
+                    android:layout_width="@dimen/dp_74"
+                    android:layout_height="@dimen/dp_74"
+                    android:src="@drawable/img_setting_corner"
+                    android:layout_marginEnd="@dimen/dp_3"
+                    android:layout_marginBottom="@dimen/dp_3"
+                    app:layout_constraintTop_toTopOf="@+id/navi_car_number"
+                    app:layout_constraintEnd_toEndOf="@+id/navi_car_number"/>
+
+
+            </com.fy.navi.ui.view.SkinConstraintLayout>
+
+            <com.fy.navi.ui.view.SkinView
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_1"
+                android:background="@color/setting_line"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/navi_avoid_limit" />
+
+            <com.fy.navi.ui.view.SkinLinearLayout
+                clickCommand="@{viewModel.mVehicleGuide}"
+                android:id="@+id/navi_vehicle_guide"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_200"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:visibility="gone"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/navi_avoid_limit">
+
+                <com.fy.navi.ui.view.SkinCheckBox
+                    clickCommand="@{viewModel.mVehicleGuide}"
+                    android:id="@+id/switch_lane_level"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="@{viewModel.mIsVehicleGuide}"
+                    android:background="@android:color/transparent"
+                    android:button="@drawable/setting_custom_thumb" />
+
+                <com.fy.navi.ui.view.SkinLinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dp_32"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <com.fy.navi.ui.view.SkinTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/setting_guide_vehicle_guide"
+                        android:textColor="@color/setting_bg_tab_text_select"
+                        android:textSize="@dimen/sp_46" />
+
+                    <com.fy.navi.ui.view.SkinTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/dp_22"
+                        android:text="@string/setting_guide_vehicle_guide_tip"
+                        android:textColor="@color/setting_bg_tab_text_unselect"
+                        android:textSize="@dimen/sp_38" />
+
+                </com.fy.navi.ui.view.SkinLinearLayout>
+            </com.fy.navi.ui.view.SkinLinearLayout>
+
+
+            <com.fy.navi.ui.view.SkinView
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_1"
+                android:background="@color/setting_line"
+                android:visibility="gone"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/navi_vehicle_guide" />
+
+            <com.fy.navi.ui.view.SkinLinearLayout
+                clickCommand="@{viewModel.mChargingPlan}"
+                android:id="@+id/navi_charging_plan"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_200"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:visibility="@{viewModel.mIsEVCar ? View.VISIBLE : View.GONE}"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/navi_vehicle_guide">
+
+                <com.fy.navi.ui.view.SkinCheckBox
+                    clickCommand="@{viewModel.mChargingPlan}"
+                    android:id="@+id/switch_charging_plan"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="@{viewModel.mIsChargingPlan}"
+                    android:background="@android:color/transparent"
+                    android:button="@drawable/setting_custom_thumb" />
+
+                <com.fy.navi.ui.view.SkinLinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dp_32"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <com.fy.navi.ui.view.SkinTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/setting_guide_charging_plan"
+                        android:textColor="@color/setting_bg_tab_text_select"
+                        android:textSize="@dimen/sp_46" />
+
+                    <com.fy.navi.ui.view.SkinTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/dp_22"
+                        android:text="@string/setting_guide_charging_plan_des"
+                        android:textColor="@color/setting_bg_tab_text_unselect"
+                        android:textSize="@dimen/sp_38" />
+
+                </com.fy.navi.ui.view.SkinLinearLayout>
+            </com.fy.navi.ui.view.SkinLinearLayout>
+
+            <com.fy.navi.ui.view.SkinView
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_1"
+                android:background="@color/setting_line"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/navi_charging_plan" />
+
+            <com.fy.navi.ui.view.SkinTextView
+                android:id="@+id/map_display_des"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_30"
+                android:text="@string/setting_guide_map_display"
+                android:textColor="@color/setting_bg_tab_text_select"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/navi_charging_plan"
+                android:textSize="@dimen/sp_46" />
+
+            <com.fy.navi.ui.view.SkinLinearLayout
+                android:id="@+id/map_display"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_120"
+                android:layout_marginTop="@dimen/dp_24"
+                android:orientation="horizontal"
+                android:gravity="center_horizontal"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/map_display_des">
+
+                <com.fy.navi.ui.view.SkinCheckBox
+                    clickCommand="@{viewModel.mChargingStationClick}"
+                    android:id="@+id/charging_station"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="match_parent"
+                    android:button="@null"
+                    android:checked="@{viewModel.mIsChargingStation}"
+                    android:visibility="@{viewModel.mIsEVCar || viewModel.mIsPHEVCar ? View.VISIBLE : View.GONE}"
+                    android:background="@drawable/bg_setting_broadcast"
+                    android:gravity="center"
+                    android:layout_marginEnd="@dimen/dp_24"
+                    android:text="@string/setting_guide_charging_station"
+                    android:textColor="@color/setting_bg_tab_text_unselect"
+                    android:textSize="@dimen/sp_46" />
+
+                <com.fy.navi.ui.view.SkinCheckBox
+                    clickCommand="@{viewModel.mRoadConditionClick}"
+                    android:id="@+id/road_condition"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="match_parent"
+                    android:button="@null"
+                    android:checked="@{viewModel.mIsRoadCondition}"
+                    android:background="@drawable/bg_setting_broadcast"
+                    android:gravity="center"
+                    android:text="@string/setting_guide_road_condition"
+                    android:textColor="@color/setting_bg_tab_text_unselect"
+                    android:textSize="@dimen/sp_46" />
+
+                <com.fy.navi.ui.view.SkinCheckBox
+                    clickCommand="@{viewModel.mFavoritePointClick}"
+                    android:id="@+id/favorite_point"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="match_parent"
+                    android:button="@null"
+                    android:checked="@{viewModel.mIsFavoritePoint}"
+                    android:background="@drawable/bg_setting_broadcast"
+                    android:gravity="center"
+                    android:layout_marginStart="@dimen/dp_24"
+                    android:text="@string/setting_guide_favorite_point"
+                    android:textColor="@color/setting_bg_tab_text_unselect"
+                    android:textSize="@dimen/sp_46" />
+
+            </com.fy.navi.ui.view.SkinLinearLayout>
+
+            <com.fy.navi.ui.view.SkinView
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_1"
+                android:visibility="gone"
+                android:background="@color/setting_line"
+                android:layout_marginTop="@dimen/dp_29"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/map_display" />
+
+            <!--地图字号-->
+            <com.fy.navi.ui.view.SkinTextView
+                android:id="@+id/font_size"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_40"
+                android:text="@string/setting_guide_font_size"
+                android:textColor="@color/setting_bg_tab_text_select"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/map_display"
+                android:textSize="@dimen/sp_46" />
+
+            <com.fy.navi.ui.view.SkinLinearLayout
+                android:id="@+id/navi_font_size"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_120"
+                android:gravity="center_horizontal"
+                android:layout_marginTop="@dimen/dp_24"
+                android:orientation="horizontal"
+                android:background="@drawable/bg_setting_checkbox"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/font_size">
+
+                <com.fy.navi.ui.view.SkinRadioGroup
+                    android:layout_width="match_parent"
+                    android:layout_height="fill_parent"
+                    android:gravity="center_horizontal"
+                    android:orientation="horizontal">
+
+                    <com.fy.navi.ui.view.SkinRadioButton
+                        clickCommand="@{viewModel.mNaviTextSizeStandardClick}"
+                        android:id="@+id/font_size_standard"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:button="@null"
+                        android:checked="@{viewModel.mIsMapTextSizeStandard}"
+                        android:background="@drawable/bg_setting_checkbox_selector"
+                        android:gravity="center"
+                        android:textSize="@dimen/sp_46"
+                        android:textColor="@color/setting_bg_tab_text_unselect"
+                        android:text="@string/setting_guide_font_size_standard" />
+
+                    <com.fy.navi.ui.view.SkinRadioButton
+                        clickCommand="@{viewModel.mNaviTextSizeLargeClick}"
+                        android:id="@+id/font_size_large"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:button="@null"
+                        android:checked="@{viewModel.mIsMapTextSizeLarge}"
+                        android:background="@drawable/bg_setting_checkbox_selector"
+                        android:gravity="center"
+                        android:textSize="@dimen/sp_46"
+                        android:textColor="@color/setting_bg_tab_text_unselect"
+                        android:text="@string/setting_guide_font_size_large" />
+                </com.fy.navi.ui.view.SkinRadioGroup>
+
+            </com.fy.navi.ui.view.SkinLinearLayout>
+
+            <com.fy.navi.ui.view.SkinView
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_1"
+                android:layout_marginTop="@dimen/dp_29"
+                android:background="@color/setting_line"
+                android:visibility="gone"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/navi_font_size" />
+
+            <com.fy.navi.ui.view.SkinTextView
+                android:id="@+id/navi_mode_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_40"
+                android:text="@string/setting_guide_mode"
+                android:textColor="@color/setting_bg_tab_text_select"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/navi_font_size"
+                android:textSize="@dimen/sp_46" />
+
+            <com.fy.navi.ui.view.SkinLinearLayout
+                android:id="@+id/navi_mode"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_120"
+                android:gravity="center_horizontal"
+                android:layout_marginTop="@dimen/dp_24"
+                android:orientation="horizontal"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/navi_mode_title">
+
+                <com.fy.navi.ui.view.SkinRadioGroup
+                    android:layout_width="match_parent"
+                    android:layout_height="fill_parent"
+                    android:gravity="center_horizontal"
+                    android:orientation="horizontal">
+
+                    <com.fy.navi.ui.view.SkinRadioButton
+                        clickCommand="@{viewModel.mSwitchMapModel2DUpClick}"
+                        android:id="@+id/navi_HeadUp"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:button="@null"
+                        android:checked="@{viewModel.mIsMapModel2DUp}"
+                        android:background="@drawable/bg_setting_logo_selector"
+                        android:gravity="center"
+                        android:textSize="@dimen/sp_46"
+                        android:textColor="@color/setting_bg_tab_text_unselect"
+                        android:text="@string/setting_guide_mode_HeadUp" />
+
+                    <com.fy.navi.ui.view.SkinRadioButton
+                        clickCommand="@{viewModel.mSwitchMapModel2DNorthClick}"
+                        android:id="@+id/navi_NorthUp"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:layout_marginStart="@dimen/dp_35"
+                        android:button="@null"
+                        android:checked="@{viewModel.mIsMapModelNorthUp}"
+                        android:background="@drawable/bg_setting_logo_selector"
+                        android:gravity="center"
+                        android:textSize="@dimen/sp_46"
+                        android:textColor="@color/setting_bg_tab_text_unselect"
+                        android:text="@string/setting_guide_mode_NorthUp" />
+
+                    <com.fy.navi.ui.view.SkinRadioButton
+                        clickCommand="@{viewModel.mSwitchMapModel3DUpClick}"
+                        android:id="@+id/navi_3D_HeadUp"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginStart="@dimen/dp_35"
+                        android:layout_weight="1"
+                        android:button="@null"
+                        android:checked="@{viewModel.mIsMapModel3DUp}"
+                        android:background="@drawable/bg_setting_logo_selector"
+                        android:gravity="center"
+                        android:textSize="@dimen/sp_46"
+                        android:textColor="@color/setting_bg_tab_text_unselect"
+                        android:text="@string/setting_guide_mode_3D_HeadUp" />
+                </com.fy.navi.ui.view.SkinRadioGroup>
+
+            </com.fy.navi.ui.view.SkinLinearLayout>
+
+            <com.fy.navi.ui.view.SkinView
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_1"
+                android:layout_marginTop="@dimen/dp_29"
+                android:background="@color/setting_line"
+                android:visibility="gone"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/navi_mode" />
+
+            <com.fy.navi.ui.view.SkinTextView
+                android:id="@+id/setting_guide_car_logo_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/setting_guide_car_logo"
+                android:textSize="@dimen/sp_46"
+                android:textColor="@color/setting_bg_tab_text_select"
+                android:layout_marginTop="@dimen/dp_40"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/navi_mode" />
+
+            <com.fy.navi.ui.view.SkinLinearLayout
+                android:id="@+id/setting_guide_car_logo"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_168"
+                android:gravity="center_horizontal"
+                android:orientation="horizontal"
+                android:layout_marginTop="@dimen/dp_24"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/setting_guide_car_logo_title">
+
+                <com.fy.navi.ui.view.SkinRadioGroup
+                    android:layout_width="match_parent"
+                    android:layout_height="fill_parent"
+                    android:gravity="center_horizontal"
+                    android:orientation="horizontal">
+
+                    <com.fy.navi.ui.view.SkinRadioButton
+                        clickCommand="@{viewModel.mSwitchMapLogoDefaultClick}"
+                        android:id="@+id/setting_guide_car_logo_default"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:drawableStart="@mipmap/icon_car_logo_default"
+                        android:drawablePadding="@dimen/dp_35"
+                        android:button="@null"
+                        android:checked="@{viewModel.mIsCarLogoDefault}"
+                        android:paddingStart="@dimen/dp_30"
+                        android:paddingEnd="@dimen/dp_30"
+                        android:background="@drawable/bg_car_logo_selector"
+                        android:gravity="center_vertical"
+                        android:text="@string/setting_guide_car_logo_default"
+                        android:textSize="@dimen/sp_46"
+                        android:textColor="@color/setting_car_logo_text_gray" />
+
+                    <com.fy.navi.ui.view.SkinRadioButton
+                        clickCommand="@{viewModel.mSwitchMapLogoBrandClick}"
+                        android:id="@+id/setting_guide_car_logo_brand"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:drawableStart="@mipmap/icon_car_logo_brand"
+                        android:drawablePadding="@dimen/dp_35"
+                        android:layout_marginStart="@dimen/dp_35"
+                        android:button="@null"
+                        android:paddingStart="@dimen/dp_30"
+                        android:paddingEnd="@dimen/dp_30"
+                        android:checked="@{viewModel.mIsCarLogoBrand}"
+                        android:background="@drawable/bg_car_logo_selector"
+                        android:gravity="center_vertical"
+                        android:textSize="@dimen/sp_46"
+                        android:textColor="@color/setting_car_logo_text_gray"
+                        android:text="@string/setting_guide_car_logo_brand" />
+
+                    <com.fy.navi.ui.view.SkinRadioButton
+                        clickCommand="@{viewModel.mSwitchMapLogoSpeedClick}"
+                        android:id="@+id/setting_guide_car_logo_speed"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:drawableStart="@mipmap/icon_car_logo_speed"
+                        android:drawablePadding="@dimen/dp_35"
+                        android:layout_marginStart="@dimen/dp_35"
+                        android:button="@null"
+                        android:checked="@{viewModel.mIsCarLogoSpeed}"
+                        android:paddingStart="@dimen/dp_30"
+                        android:paddingEnd="@dimen/dp_30"
+                        android:background="@drawable/bg_car_logo_selector"
+                        android:gravity="center_vertical"
+                        android:textSize="@dimen/sp_46"
+                        android:textColor="@color/setting_car_logo_text_gray"
+                        android:text="@string/setting_guide_car_logo_speed" />
+                </com.fy.navi.ui.view.SkinRadioGroup>
+
+            </com.fy.navi.ui.view.SkinLinearLayout>
+
+            <com.fy.navi.ui.view.SkinLinearLayout
+                clickCommand="@{viewModel.mAutoScale}"
+                android:id="@+id/setting_guide_auto_scale"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_200"
+                android:layout_marginTop="@dimen/dp_40"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/setting_guide_car_logo">
+
+                <com.fy.navi.ui.view.SkinCheckBox
+                    clickCommand="@{viewModel.mAutoScale}"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="@{viewModel.mIsAutoScale}"
+                    android:background="@android:color/transparent"
+                    android:button="@drawable/setting_custom_thumb" />
+
+                <com.fy.navi.ui.view.SkinLinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dp_32"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <com.fy.navi.ui.view.SkinTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/setting_guide_auto_scale"
+                        android:textColor="@color/setting_bg_tab_text_select"
+                        android:textSize="@dimen/sp_46" />
+
+                    <com.fy.navi.ui.view.SkinTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/dp_8"
+                        android:text="@string/setting_guide_auto_scale_des"
+                        android:textColor="@color/setting_bg_tab_text_unselect"
+                        android:textSize="@dimen/sp_38" />
+
+                </com.fy.navi.ui.view.SkinLinearLayout>
+            </com.fy.navi.ui.view.SkinLinearLayout>
+
+            <com.fy.navi.ui.view.SkinView
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_1"
+                android:background="@color/setting_line"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/setting_guide_auto_scale" />
+
+            <com.fy.navi.ui.view.SkinTextView
+                android:id="@+id/setting_guide_offline_map"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/setting_guide_offline_map"
+                android:textSize="@dimen/sp_46"
+                android:textColor="@color/setting_bg_tab_text_select"
+                android:layout_marginTop="@dimen/dp_40"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/setting_guide_auto_scale" />
+
+            <com.fy.navi.ui.view.SkinLinearLayout
+                clickCommand="@{viewModel.mOpenOfflineData}"
+                android:id="@+id/setting_guide_offline_map_detail"
+                android:layout_width="@dimen/dp_536"
+                android:layout_height="@dimen/dp_192"
+                android:layout_marginTop="@dimen/dp_24"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/setting_guide_offline_map"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:background="@drawable/bg_setting_checkbox">
+
+                <com.fy.navi.ui.view.SkinTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="@string/setting_guide_offline_map_detail"
+                    android:layout_marginStart="@dimen/dp_40"
+                    android:textSize="@dimen/sp_46"
+                    android:textColor="@color/setting_bg_tab_text_select" />
+
+                <com.fy.navi.ui.view.SkinImageView
+                    android:layout_width="@dimen/dp_74"
+                    android:layout_height="@dimen/dp_74"
+                    android:layout_marginStart="@dimen/dp_138"
+                    android:layout_marginTop="@dimen/dp_51"
+                    android:src="@drawable/img_setting_corner"/>
+
+            </com.fy.navi.ui.view.SkinLinearLayout>
+
+        </com.fy.navi.ui.view.SkinConstraintLayout>
+
+    </com.fy.navi.ui.view.SkinScrollView>
+</layout>

@@ -90,7 +90,6 @@ public class SearchLoadingDialog extends BaseFullScreenDialog<LayoutSearchLoadin
         if (mAnimator.isRunning()) {
             mAnimator.cancel();
         }
-        mAnimator = null;
     }
 
     @Override
@@ -105,5 +104,6 @@ public class SearchLoadingDialog extends BaseFullScreenDialog<LayoutSearchLoadin
     public void hide() {
         super.hide();
         stopAnimator();
+        dismiss();
     }
 }

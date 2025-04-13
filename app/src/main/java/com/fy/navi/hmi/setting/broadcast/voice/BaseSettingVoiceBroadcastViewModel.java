@@ -6,13 +6,18 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 
 import com.android.utils.ResourceUtils;
+import com.android.utils.ToastUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
+import com.fy.navi.burypoint.anno.HookMethod;
+import com.fy.navi.burypoint.bean.BuryProperty;
+import com.fy.navi.burypoint.constant.BuryConstant;
+import com.fy.navi.burypoint.controller.BuryPointController;
 import com.fy.navi.hmi.R;
 import com.fy.navi.service.GBLCacheFilePath;
+import com.fy.navi.service.define.code.UserDataCode;
 import com.fy.navi.service.define.setting.SettingController;
 import com.fy.navi.service.define.voice.OperationStatus;
-import com.fy.navi.service.define.voice.OperationType;
 import com.fy.navi.service.define.voice.VoiceInfo;
 import com.fy.navi.service.greendao.setting.SettingManager;
 import com.fy.navi.ui.action.Action;
@@ -61,6 +66,8 @@ public class BaseSettingVoiceBroadcastViewModel extends BaseViewModel<SettingVoi
                     ResourceUtils.Companion.getInstance().getString(R.string.setting_broadcast_voice_current_name));
             mView.setCurrentVoice();
             mView.unSelectAllVoices();
+
+            sendBuryPointForSetVoice(ResourceUtils.Companion.getInstance().getString(R.string.setting_broadcast_voice_current_name));
         }
     };
     /**
@@ -85,6 +92,14 @@ public class BaseSettingVoiceBroadcastViewModel extends BaseViewModel<SettingVoi
      * @param opCode
      */
     public void onDownLoadStatus(final int downLoadMode, final int dataType, final int id, final int taskCode, final int opCode) {
+        ThreadManager.getInstance().postUi(()->{
+            if(opCode == UserDataCode.OPT_NET_DISCONNECT){
+                ToastUtils.Companion.getInstance().showCustomToastView("无网络连接，请检查网络后重试");
+            } else if (opCode == UserDataCode.OPT_DOWNLOAD_NET_ERROR) {
+                ToastUtils.Companion.getInstance().showCustomToastView("网络异常，请检查网络后重试");
+            }
+                }
+        );
         replaceVoiceInfo(id, taskCode, 0);
     }
 
@@ -119,7 +134,7 @@ public class BaseSettingVoiceBroadcastViewModel extends BaseViewModel<SettingVoi
      * @param operatedIdList
      */
     public void startAllTask(final ArrayList<Integer> operatedIdList){
-        mModel.operate(OperationType.OPERATION_TYPE_START.ordinal(), operatedIdList);
+        mModel.operate(UserDataCode.OPERATION_TYPE_START, operatedIdList);
     }
 
     /**
@@ -127,7 +142,7 @@ public class BaseSettingVoiceBroadcastViewModel extends BaseViewModel<SettingVoi
      * @param operatedIdList
      */
     public void pauseAllTask(final ArrayList<Integer> operatedIdList){
-        mModel.operate(OperationType.OPERATION_TYPE_PAUSE.ordinal(), operatedIdList);
+        mModel.operate(UserDataCode.OPERATION_TYPE_PAUSE, operatedIdList);
     }
 
     /**
@@ -144,6 +159,8 @@ public class BaseSettingVoiceBroadcastViewModel extends BaseViewModel<SettingVoi
         SettingManager.getInstance().insertOrReplace(SettingController.KEY_SETTING_VOICE_NAME, voiceInfo.getName());
         mView.setCurrentVoice();
         mView.setSingleChoice(voiceInfo.getId());
+
+        sendBuryPointForSetVoice(voiceInfo.getName());
     }
 
     /**
@@ -162,5 +179,13 @@ public class BaseSettingVoiceBroadcastViewModel extends BaseViewModel<SettingVoi
         }else{
             Logger.e(TAG, "No id: " + id);
         }
+    }
+
+    @HookMethod(eventName = BuryConstant.EventName.AMAP_SETTING_VOICEPACKAGE)
+    private void sendBuryPointForSetVoice(String name){
+        BuryProperty buryProperty = new BuryProperty.Builder()
+                .setParams(BuryConstant.ProperType.BURY_KEY_SETTING_CONTENT, name)
+                .build();
+        BuryPointController.getInstance().setBuryProps(buryProperty);
     }
 }

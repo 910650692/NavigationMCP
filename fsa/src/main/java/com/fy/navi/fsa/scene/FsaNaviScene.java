@@ -113,7 +113,9 @@ public final class FsaNaviScene {
         turnInfo.setPosition(new GeoPoint(121.48998888888889, 31.379458888888887));
         turnInfo.setNextRoadName(naviETAInfo.getNextRouteName());
         turnInfo.setDistanceToNextTurn(naviETAInfo.getNextDist());
-        turnInfo.setTurnKind(convertTbtType(naviETAInfo.getCurManeuverID()));
+        final int maneuverID = convertTbtType(naviETAInfo.getCurManeuverID());
+        turnInfo.setTurnKind(maneuverID);
+        Log.d(FsaConstant.FSA_TAG, "updateTbtInfo: " + naviETAInfo.getCurManeuverID() + " - " + maneuverID);
         turnInfo.setStraight(naviETAInfo.getCurManeuverID() == FsaConstant.FsaTurnKind.ICON_CONTINUE);
         turnInfo.setRoadLevel(naviETAInfo.curRoadClass);
         if (null != naviETAInfo.NaviInfoData && naviETAInfo.NaviInfoData.size() > naviETAInfo.NaviInfoFlag) {
@@ -135,7 +137,7 @@ public final class FsaNaviScene {
      * TBT类型转换.
      *
      * @param type TBT类型.
-     * @return TBT类型.
+     * @return hudTBT类型.
      */
     private int convertTbtType(final int type) {
         return switch (type) {
@@ -147,8 +149,18 @@ public final class FsaNaviScene {
             case 0x7 -> 4;
             case 0x8 -> 5;
             case 0x9 -> 1;
+            case 0xA -> 25;
             case 0xB -> 9;
             case 0xC -> 10;
+            case 0xD -> 0;// 服务区
+            case 0xE -> 31;
+            case 0xF -> 24;
+            case 0x15 -> 75;
+            case 0x16 -> 71;
+            case 0x17 -> 69;
+            case 0x18 -> 73;
+            case 0x41 -> 11;
+            case 0x42 -> 12;
             default -> 0;
         };
     }
@@ -459,16 +471,16 @@ public final class FsaNaviScene {
                 directionList.add(new LaneDirection(FsaConstant.FsaLaneDirection.TURN_AROUND, frontType == 5 ? 1 : 2));
                 break;
             case 21:
-                directionList.add(new LaneDirection(FsaConstant.FsaLaneDirection.INVALID_VALUE, frontType == 21 ? 1 : 2));
+                directionList.add(new LaneDirection(FsaConstant.FsaLaneDirection.GO_STRAIGHT, frontType == 21 ? 1 : 2));
                 break;
             case 22:
-                directionList.add(new LaneDirection(FsaConstant.FsaLaneDirection.INVALID_VALUE, frontType == 22 ? 1 : 2));
+                directionList.add(new LaneDirection(FsaConstant.FsaLaneDirection.GO_STRAIGHT, frontType == 22 ? 1 : 2));
                 break;
             case 23:
-                directionList.add(new LaneDirection(FsaConstant.FsaLaneDirection.INVALID_VALUE, frontType == 23 ? 1 : 2));
+                directionList.add(new LaneDirection(FsaConstant.FsaLaneDirection.GO_STRAIGHT, frontType == 23 ? 1 : 2));
                 break;
             case 24:
-                directionList.add(new LaneDirection(FsaConstant.FsaLaneDirection.INVALID_VALUE, frontType == 24 ? 1 : 2));
+                directionList.add(new LaneDirection(FsaConstant.FsaLaneDirection.GO_STRAIGHT, frontType == 24 ? 1 : 2));
                 break;
             case 8: // 右掉头 ？
             default:
@@ -677,7 +689,9 @@ public final class FsaNaviScene {
         final HighwayTotalInfo highwayTotalInfo = new HighwayTotalInfo();
         highwayTotalInfo.setShowType(0);
         final HighwayInfo highwayInfo = new HighwayInfo();
-        highwayInfo.setCurHighwayRoadName(mNaviEtaInfo.getCurRouteName());
+        if (mNaviEtaInfo != null) {
+            highwayInfo.setCurHighwayRoadName(mNaviEtaInfo.getCurRouteName());
+        }
         if (mNaviManeuverInfo != null) {
             if (mNaviManeuverInfo.getExitNameInfo() != null && !mNaviManeuverInfo.getExitNameInfo().isEmpty()) {
                 highwayInfo.setExitHighwayID(mNaviManeuverInfo.getExitNameInfo().get(0));

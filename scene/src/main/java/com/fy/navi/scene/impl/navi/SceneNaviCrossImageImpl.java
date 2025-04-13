@@ -11,12 +11,9 @@ import com.fy.navi.scene.impl.navi.inter.RectChangeListener;
 import com.fy.navi.scene.ui.navi.SceneNaviCrossImageView;
 import com.fy.navi.scene.ui.navi.manager.INaviSceneEvent;
 import com.fy.navi.scene.ui.navi.manager.NaviSceneId;
-import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.adapter.navi.NaviConstant;
-import com.fy.navi.service.adapter.navi.bls.NaviDataFormatHelper;
 import com.fy.navi.service.define.layer.refix.LayerItemCrossEntity;
 import com.fy.navi.service.define.navi.CrossImageEntity;
-import com.fy.navi.service.define.navi.NaviEtaInfo;
 import com.fy.navi.service.logicpaket.layer.LayerPackage;
 import com.fy.navi.service.logicpaket.navi.NaviPackage;
 
@@ -27,6 +24,8 @@ public class SceneNaviCrossImageImpl extends BaseSceneModel<SceneNaviCrossImageV
     private static final String TAG = "SceneNaviCrossImageView";
     private final NaviPackage mNaviPackage;
     private final LayerPackage mLayerPackage;
+
+    private ImersiveStatus mImersiveStatus;
     /**
      * 是否正在显示路口大图
      */
@@ -57,7 +56,7 @@ public class SceneNaviCrossImageImpl extends BaseSceneModel<SceneNaviCrossImageV
             public void onRectChange(final View view, final AutoUIViewRect newRect,
                                      final AutoUIViewRect oldRect) {
                 if (newRect == null || ConvertUtils.isNull(mRoadCrossInfo)) {
-                    Logger.e(TAG, "newRect is null:" + (newRect == null) , "mRoadCrossInfo is null:" + (mRoadCrossInfo == null));
+                    Logger.e(TAG, "newRect is null:" + (newRect == null), "mRoadCrossInfo is null:" + (mRoadCrossInfo == null));
                     return;
                 }
                 Logger.i(TAG, "newRect " + newRect + ",mIsShowCrossImage：" + mIsShowCrossImage, "is2D:" + (mRoadCrossInfo.getType() != NaviConstant.CrossType.CROSS_TYPE_3_D));
@@ -66,7 +65,7 @@ public class SceneNaviCrossImageImpl extends BaseSceneModel<SceneNaviCrossImageV
                     mNaviPackage.setRoadCrossRect(mMapTypeId, newRect.getLocationOnScreen());
                     LayerItemCrossEntity layerItemCrossEntity = new LayerItemCrossEntity();
                     layerItemCrossEntity.setCrossImageEntity(mRoadCrossInfo);
-                    if (!mLayerPackage.setRasterImageData(mMapTypeId, layerItemCrossEntity)) {
+                    if (!mLayerPackage.showCross(mMapTypeId, layerItemCrossEntity)) {
                         if (mRoadCrossInfo != null) {
                             onCrossImageInfo(false, mRoadCrossInfo);
                         }
@@ -150,8 +149,6 @@ public class SceneNaviCrossImageImpl extends BaseSceneModel<SceneNaviCrossImageV
             mRoadCrossInfo = naviImageInfo;
             // 显示路口大图
             setRoadCrossVisible(true);
-            // 近接/混淆路口大图控制（内聚方式）
-            mLayerPackage.setCrossImageInfo(mMapTypeId, naviImageInfo.getType(), false);
         } else {
             Logger.d(TAG, "SceneNaviCrossImageImpl onHideCrossImage: type = " + naviImageInfo.getType());
             mIsShowCrossImage = false;
@@ -189,11 +186,11 @@ public class SceneNaviCrossImageImpl extends BaseSceneModel<SceneNaviCrossImageV
                 notifySceneStateChange(true);
                 LayerItemCrossEntity layerItemCrossEntity = new LayerItemCrossEntity();
                 layerItemCrossEntity.setCrossImageEntity(mRoadCrossInfo);
-                mLayerPackage.setRasterImageData(mMapTypeId, layerItemCrossEntity);
+                mLayerPackage.showCross(mMapTypeId, layerItemCrossEntity);
             }
         } else {
             notifySceneStateChange(false);
-            mLayerPackage.setCrossVisible(mMapTypeId, mRoadCrossInfo.getType(), false);
+            mLayerPackage.hideCross(mMapTypeId, mRoadCrossInfo.getType());
             mScreenView.setProgress2DRoadCross(0);
         }
         return true;
@@ -206,7 +203,7 @@ public class SceneNaviCrossImageImpl extends BaseSceneModel<SceneNaviCrossImageV
         if (mRoadCrossInfo != null) {
             mIsShowCrossImage = false;
             notifySceneStateChange(false);
-            mLayerPackage.setCrossVisible(mMapTypeId, mRoadCrossInfo.getType(), false);
+            mLayerPackage.hideCross(mMapTypeId, mRoadCrossInfo.getType());
             mScreenView.setProgress2DRoadCross(0);
         }
     }
@@ -225,6 +222,11 @@ public class SceneNaviCrossImageImpl extends BaseSceneModel<SceneNaviCrossImageV
     }
 
     public void onImmersiveStatusChange(final ImersiveStatus currentImersiveStatus) {
+        if (mImersiveStatus != currentImersiveStatus) {
+            mImersiveStatus = currentImersiveStatus;
+        } else {
+            return;
+        }
         if (currentImersiveStatus == ImersiveStatus.TOUCH) {
             setRoadCrossVisible(false);
         }

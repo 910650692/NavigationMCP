@@ -23,6 +23,8 @@ appcompat = "1.7.0"
 material = "1.12.0"
 activity = "1.9.0"
 constraintlayout = "2.2.1"
+recyclerview = "1.3.2"
+
 coreKtx = "1.9.0"
 work-runtime = "2.9.0"
 
@@ -61,6 +63,7 @@ lombok = { module = "org.projectlombok:lombok", version.ref = "lombok" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
 constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
+recyclerview = { group = "androidx.recyclerview", name = "recyclerview", version.ref = "recyclerview" }
 
 core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 rxandroid = { module = "io.reactivex:rxandroid", version.ref = "rxandroid" }
@@ -90,6 +93,6 @@ android-aop-plugin = { id = "io.github.FlyJingFish.AndroidAop.android-aop", vers
 [bundles]
 test_junit = ['junit']
 android_junit = ['ext-junit', 'espresso-core']
-android_library = ['material', 'appcompat', 'activity', 'constraintlayout']
+android_library = ['material', 'appcompat', 'activity', 'constraintlayout', 'recyclerview']
 module_library = ['material', 'appcompat']
 

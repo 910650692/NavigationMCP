@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="transparent">#00000000</color>
+
+    <color name="shape_bg_blue_button_4760ff">#FF2461EA</color>
+    <color name="dialog_startup_exception_title">#FF181818</color>
+    <color name="dialog_startup_exception_content">#B3000000</color>
+    <color name="dialog_authorization_request_title">#FF181818</color>
+    <color name="dialog_authorization_request_content">#B3181818</color>
+    <color name="shape_bg_round">#FF181818</color>
+    <color name="dialog_cancel">#B3181818</color>
+    <color name="guide_login_title">#FF181818</color>
+    <color name="guide_login_content">#B3000000</color>
+    <color name="message_center_operate">#FF181818</color>
+    <color name="message_center_line">#33000000</color>
+    <color name="message_center_title">#FF000000</color>
+    <color name="forecast_title">#FF181818</color>
+    <color name="forecast_content">#B3000000</color>
+    <color name="forecast_title_cancel">#000000</color>
+    <color name="main_map_limit_bg_color">#2EA4A4A4</color>
+    <color name="main_map_limit_text_color">#FF000000</color>
+    <color name="poi_details_bottom_ff_00">#FF181818</color>
+    <color name="search_top_line_view_99383839">#33000000</color>
+</resources>

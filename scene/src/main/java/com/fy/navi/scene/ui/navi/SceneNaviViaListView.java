@@ -9,6 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.alibaba.android.arouter.launcher.ARouter;
 import com.android.utils.ConvertUtils;
@@ -16,8 +17,10 @@ import com.android.utils.log.Logger;
 import com.fy.navi.scene.RoutePath;
 import com.fy.navi.scene.api.navi.INaviViaItemClickListener;
 import com.fy.navi.scene.databinding.SceneNaviViaListViewBinding;
+import com.fy.navi.scene.impl.imersive.ImersiveStatus;
+import com.fy.navi.scene.impl.imersive.ImmersiveStatusScene;
 import com.fy.navi.scene.impl.navi.SceneNaviViaListImpl;
-import com.fy.navi.scene.impl.navi.inter.ISceneCallback;
+import com.fy.navi.scene.impl.navi.TimerHelper;
 import com.fy.navi.scene.impl.search.SearchFragmentFactory;
 import com.fy.navi.scene.ui.adapter.NaviViaListAdapter;
 import com.fy.navi.scene.ui.navi.manager.INaviSceneEvent;
@@ -25,13 +28,15 @@ import com.fy.navi.scene.ui.navi.manager.NaviSceneBase;
 import com.fy.navi.scene.ui.navi.manager.NaviSceneId;
 import com.fy.navi.scene.ui.navi.manager.NaviSceneManager;
 import com.fy.navi.service.AutoMapConstant;
-import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.define.map.MapType;
+import com.fy.navi.service.define.navi.FyElecVehicleETAInfo;
 import com.fy.navi.service.define.navi.NaviViaEntity;
 import com.fy.navi.service.define.search.PoiInfoEntity;
 import com.fy.navi.service.logicpaket.navi.OpenApiHelper;
+import com.fy.navi.service.logicpaket.signal.SignalPackage;
 import com.fy.navi.ui.base.BaseFragment;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -43,7 +48,9 @@ public class SceneNaviViaListView extends NaviSceneBase<SceneNaviViaListViewBind
     private static final String TAG = "SceneNaviViaListView";
     private NaviViaListAdapter mNaviViaListAdapter;
 
-    private ISceneCallback mISceneCallback;
+    List<FyElecVehicleETAInfo> mElectVehicleETAInfoList;
+
+    List<NaviViaEntity> mNaviViaEntityList;
 
     public SceneNaviViaListView(@NonNull final Context context) {
         super(context);
@@ -64,46 +71,47 @@ public class SceneNaviViaListView extends NaviSceneBase<SceneNaviViaListViewBind
         return NaviSceneId.NAVI_SCENE_VIA_POINT_LIST;
     }
 
-    @Override
-    protected String getSceneName() {
-        return NaviSceneId.NAVI_SCENE_VIA_POINT_LIST.name();
-    }
-
-    @Override
-    public INaviSceneEvent getNaviSceneEvent() {
-        return NaviSceneManager.getInstance();
-    }
-
     protected void init() {
-        NaviSceneManager.getInstance().addNaviScene(NaviSceneId.NAVI_SCENE_VIA_POINT_LIST, this);
+        super.init();
         setScreenId(MapType.MAIN_SCREEN_MAIN_MAP);
+        mElectVehicleETAInfoList = new ArrayList<>();
+        mNaviViaEntityList = new ArrayList<>();
     }
 
     @Override
     public void show() {
         super.show();
-        if (mISceneCallback != null) {
-            mISceneCallback.updateSceneVisible(NaviSceneId.NAVI_SCENE_VIA_POINT_LIST, true);
-        }
         OpenApiHelper.enterPreview(mMapTypeId);
+        ImmersiveStatusScene.getInstance().setImmersiveStatus(mMapTypeId, ImersiveStatus.TOUCH);
     }
 
     @Override
     public void hide() {
         super.hide();
-        if (mISceneCallback != null) {
-            mISceneCallback.updateSceneVisible(NaviSceneId.NAVI_SCENE_VIA_POINT_LIST, false);
-        }
         OpenApiHelper.exitPreview(mMapTypeId);
+        // taskId：1015285 途经点收起后需要关闭继续导航按钮
+        NaviSceneManager.getInstance().notifySceneStateChange(INaviSceneEvent.SceneStateChangeType.
+                SceneCloseState, NaviSceneId.NAVI_CONTINUE);
+        ImmersiveStatusScene.getInstance().setImmersiveStatus(MapType.MAIN_SCREEN_MAIN_MAP,
+                ImersiveStatus.IMERSIVE);
     }
 
     @Override
     public void close() {
         super.close();
-        if (mISceneCallback != null) {
-            mISceneCallback.updateSceneVisible(NaviSceneId.NAVI_SCENE_VIA_POINT_LIST, false);
-        }
         OpenApiHelper.exitPreview(mMapTypeId);
+        mScreenViewModel.updateSceneVisible(false);
+        // taskId：1015285 途经点收起后需要关闭继续导航按钮
+        NaviSceneManager.getInstance().notifySceneStateChange(INaviSceneEvent.SceneStateChangeType.
+                SceneCloseState, NaviSceneId.NAVI_CONTINUE);
+        ImmersiveStatusScene.getInstance().setImmersiveStatus(MapType.MAIN_SCREEN_MAIN_MAP,
+                ImersiveStatus.IMERSIVE);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mISceneCallback = null;
     }
 
     @Override
@@ -162,33 +170,32 @@ public class SceneNaviViaListView extends NaviSceneBase<SceneNaviViaListViewBind
                 }
             }
         });
-    }
 
-    @Override
-    public void addSceneCallback(final ISceneCallback sceneCallback) {
-        mISceneCallback = sceneCallback;
-        mScreenViewModel.addSceneCallback(sceneCallback);
+        mViewBinding.srvAddVia.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                // 加入防暴力操作
+                if (null != mScreenViewModel && TimerHelper.isCanDo()) {
+                    mScreenViewModel.initTimer();
+                    ImmersiveStatusScene.getInstance().setImmersiveStatus(
+                            MapType.MAIN_SCREEN_MAIN_MAP, ImersiveStatus.TOUCH);
+                }
+            }
+        });
+
     }
 
     /**
      * 展示途径点集合
      */
     public void showNaviViaList(final boolean isVisible) {
+        Logger.i(TAG, "showNaviViaList:" + isVisible);
         if (mScreenViewModel == null) {
             Logger.e(TAG, "mScreenViewModel == null：");
             return;
         }
-        final INaviSceneEvent.SceneStateChangeType type;
-        if(isVisible){
-            mScreenViewModel.initTimer();
-            type = INaviSceneEvent.SceneStateChangeType.SceneShowState;
-        }else {
-            mScreenViewModel.cancelTimer();
-            type = INaviSceneEvent.SceneStateChangeType.SceneCloseState;
-        }
-        if(isVisible() == isVisible) return;
-        Logger.i(MapDefaultFinalTag.NAVI_SCENE_TAG, "SceneNaviViaListView", "isVisible-> " + isVisible);
-        getNaviSceneEvent().notifySceneStateChange(type, NaviSceneId.NAVI_SCENE_VIA_POINT_LIST);
+        mScreenViewModel.updateSceneVisible(isVisible);
     }
 
     /**
@@ -198,9 +205,14 @@ public class SceneNaviViaListView extends NaviSceneBase<SceneNaviViaListViewBind
     public void updateViaListState(final List<NaviViaEntity> list) {
         if(ConvertUtils.isEmpty(list) || null == mScreenViewModel ||
                 null == mNaviViaListAdapter) return;
+        mNaviViaEntityList.clear();
+        mNaviViaEntityList.addAll(list);
+        addBatteryLeftData();
         mScreenViewModel.initTimer();
         Logger.i(TAG, "SceneNaviListImpl list：" + list.size());
-        mNaviViaListAdapter.notifyList(list);
+        if (!ConvertUtils.isEmpty(mNaviViaEntityList)) {
+            mNaviViaListAdapter.notifyList(mNaviViaEntityList);
+        }
     }
 
     /**
@@ -211,6 +223,56 @@ public class SceneNaviViaListView extends NaviSceneBase<SceneNaviViaListViewBind
         Logger.i(TAG, "notifyDeleteViaPointResult:" + result);
         if (result) {
             mNaviViaListAdapter.removeData(entity);
+        }
+    }
+
+    public void updateElectVehicleETAInfo(final List<FyElecVehicleETAInfo> infos) {
+        mElectVehicleETAInfoList.clear();
+        mElectVehicleETAInfoList.addAll(infos);
+        addBatteryLeftData();
+        if (!ConvertUtils.isEmpty(mNaviViaEntityList)) {
+            mNaviViaListAdapter.notifyList(mNaviViaEntityList);
+        }
+    }
+
+    /**
+     * 添加电池剩余电量数据
+     */
+    private void addBatteryLeftData() {
+        if (OpenApiHelper.powerType() != 1) {
+            Logger.i(TAG, "非纯电车不更新电池剩余电量数据");
+            return;
+        }
+        if (!ConvertUtils.isEmpty(mElectVehicleETAInfoList)) {
+            long currentPathId = OpenApiHelper.getCurrentPathId(mMapTypeId);
+            FyElecVehicleETAInfo currentVehicleETAInfo = null;
+            for (FyElecVehicleETAInfo info : mElectVehicleETAInfoList) {
+                if (info.getPathID() == currentPathId) {
+                    currentVehicleETAInfo = info;
+                    break;
+                }
+            }
+            if (null != currentVehicleETAInfo) {
+                ArrayList<Long> batteryLeftList = new ArrayList<>(
+                        currentVehicleETAInfo.getEnergySum());
+                if (ConvertUtils.isEmpty(batteryLeftList)) {
+                    return;
+                }
+                //单位转换千瓦时转为百分之一瓦时
+                long currentEnergy = (long) (SignalPackage.getInstance().getBatteryEnergy() *
+                        100000);
+                long maxEnergy = (long) (SignalPackage.getInstance().getMaxBatteryEnergy() *
+                        100000);
+                if (!ConvertUtils.isEmpty(mNaviViaEntityList)) {
+                    int size = Math.min(mNaviViaEntityList.size(), batteryLeftList.size());
+                    for (int i = 0; i < size; i++) {
+                        int chargeLeft = OpenApiHelper.
+                                calculateRemainingOrNeededEnergyPercent(
+                                        batteryLeftList.get(i), currentEnergy, maxEnergy);
+                        mNaviViaEntityList.get(i).setArriveBatteryLeft(chargeLeft);
+                    }
+                }
+            }
         }
     }
 }

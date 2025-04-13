@@ -9,8 +9,8 @@
     </data>
 
     <com.fy.navi.ui.view.SkinConstraintLayout
-        android:layout_width="@dimen/dp_1660"
-        android:layout_height="@dimen/dp_1060"
+        android:layout_width="@dimen/dp_1224"
+        android:layout_height="@dimen/dp_714"
         android:clickable="true"
         android:background="@drawable/bg_setting_fragment">
 
@@ -19,9 +19,9 @@
             clickCommand="@{ViewModel.mFinishSetting}"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_20"
-            android:layout_marginTop="@dimen/dp_20"
-            android:src="@drawable/img_basic_close"
+            android:layout_marginStart="@dimen/dp_26"
+            android:layout_marginTop="@dimen/dp_38"
+            android:src="@drawable/img_setting_close"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -34,10 +34,10 @@
 
             <com.fy.navi.scene.ui.setting.SceneVerticalTabLayout
                 android:id="@+id/tabLayout"
-                android:layout_width="@dimen/dp_304"
+                android:layout_width="@dimen/dp_223"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_186"
-                android:layout_marginStart="@dimen/dp_30"
+                android:layout_marginTop="@dimen/dp_101"
+                android:layout_marginStart="@dimen/dp_40"
                 android:background="@null"
                 app:tabBackground="@drawable/bg_setting_tab"
                 app:tabGravity="fill"
@@ -45,12 +45,21 @@
                 app:tabIndicatorHeight="0dp"
                 app:tabRippleColor="@null" />
 
+            <com.fy.navi.ui.view.SkinView
+                android:layout_width="@dimen/dp_1"
+                android:layout_height="match_parent"
+                android:background="@color/setting_line"
+                android:layout_marginTop="@dimen/dp_101"
+                android:layout_marginBottom="@dimen/dp_40"
+                android:layout_marginStart="@dimen/dp_30"/>
+
             <androidx.viewpager2.widget.ViewPager2
                 android:id="@+id/viewPager"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_marginTop="@dimen/dp_58"
-                android:layout_marginStart="@dimen/dp_62"
+                android:layout_marginTop="@dimen/dp_40"
+                android:layout_marginBottom="@dimen/dp_40"
+                android:layout_marginStart="@dimen/dp_30"
                 android:layout_weight="1" />
 
         </com.fy.navi.ui.view.SkinLinearLayout>

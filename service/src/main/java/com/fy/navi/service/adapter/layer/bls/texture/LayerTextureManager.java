@@ -20,45 +20,37 @@ import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat;
 import com.android.utils.file.FileUtils;
 import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
-import com.autonavi.gbl.layer.model.BizAGroupType;
-import com.autonavi.gbl.layer.model.BizAreaType;
-import com.autonavi.gbl.layer.model.BizCustomTypePoint;
-import com.autonavi.gbl.layer.model.BizRouteType;
 import com.autonavi.gbl.map.layer.model.Layer3DModel;
 import com.autonavi.gbl.map.layer.model.LayerIconAnchor;
+import com.autonavi.gbl.map.layer.model.LayerIconType;
 import com.autonavi.gbl.map.layer.model.LayerTexture;
 import com.autonavi.gbl.util.model.BinaryStream;
 import com.fy.navi.service.MapDefaultFinalTag;
-import com.fy.navi.service.adapter.layer.bls.impl.ILayerItemProcessor;
-import com.fy.navi.service.define.layer.refix.LayerItemBase;
+import com.fy.navi.service.adapter.layer.bls.style.IUpdateLayerItemStyleByItemDataProcessor;
+import com.fy.navi.service.define.layer.refix.LayerItemData;
+import com.fy.navi.service.define.navi.CrossImageEntity;
 
 import java.nio.ByteBuffer;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * 纹理管理类
  */
 public class LayerTextureManager {
-    protected static final String TAG = MapDefaultFinalTag.LAYER_SERVICE_TAG;
+
+    protected String TAG = MapDefaultFinalTag.LAYER_SERVICE_TAG;
 
     private static final String MARK_FROM_RES_TAG = "/";
     private static final String MARK_FROM_DRAWABLE_RES = "drawable";
     private static final String MARK_FROM_MIPMAP_RES = "mipmap";
     private static final String MARK_FROM_LAYOUT_RES = "layout";
 
+    private static final int SCALE = 1;
     /**
      * 默认错误的资源id
      */
-    public static int DEF_ERROR_ID = -1;
-    public static int RIGHT_RES_ID = 0;
-
-    private static final int MODEL_3D_ID_START = 0x10002;
-    private static final int MODEL_3D_ID_MAX = 0x10010;
-    private int m3DMarkerId = MODEL_3D_ID_START;
+    public static int DEF_ERROR_ID = 0;
 
     private static final int MARK_ID_START = 0x30001;
     private static final int MARK_ID_MAX = 0x60000;
@@ -67,30 +59,11 @@ public class LayerTextureManager {
     private BitmapFactory.Options bitmapMarkerOption;
 
     private static final AtomicReference<Canvas> DEF_CANVAS = new AtomicReference<>(new Canvas());
-    /**
-     * 默认需要使用动态纹理的类型
-     */
-    private static final List<Integer> dynamicMarkerLayerTypeList = new CopyOnWriteArrayList<Integer>(
-            List.of(
-                    BizAGroupType.BizAGroupTypeAGroup,
-                    BizCustomTypePoint.BizCustomTypePoint3,
-                    BizAreaType.BizAreaTypeEndAreaParentPoint,
-                    BizRouteType.BizRouteTypeViaETA,
-                    BizRouteType.BizRouteTypeRestArea,
-                    BizRouteType.BizRouteTypeViaRoad,
-                    BizRouteType.BizRouteTypeWeather
-            ));
+
     /**
      * 根据key缓存markid
      */
     private final ArrayMap<String, Integer> mAllMarkerId = new ArrayMap<>();
-
-    private final ArrayMap<String, Integer> mAll3DMarkerId = new ArrayMap<>();
-
-    /**
-     * 缓存了drawable资源的identify
-     */
-    private final Set<Integer> mResNameIdSet = new HashSet<>();
 
     private LayerTextureManager() {
         bitmapMarkerOption = new BitmapFactory.Options();
@@ -105,48 +78,76 @@ public class LayerTextureManager {
         public static final LayerTextureManager _INSTANCE = new LayerTextureManager();
     }
 
-    public boolean isNotValid(int markerId) {
-        return DEF_ERROR_ID == markerId;
+    /**
+     * 是否无效纹理
+     *
+     * @param markerId
+     * @return
+     */
+    public boolean isValid(int markerId) {
+        return markerId > DEF_ERROR_ID;
+    }
+
+
+    private int createMarkerId() {
+        int markerId = mMarkerId;
+        if (mAllMarkerId.size() >= MARK_ID_MAX) {
+            markerId = MARK_ID_START;
+            Logger.e(TAG, "markID资源已经超过最大值:");
+            return markerId;
+        }
+        Logger.d(TAG, "创建新的 markID:" + markerId);
+        return markerId + 1;
     }
 
 
     public int getMarkerId(String markerIdKey) {
         Integer value = mAllMarkerId.get(markerIdKey);
-        Logger.d(TAG, "纹理个数:" + mAllMarkerId.size()
-                + "\nMarkerIdKey :" + markerIdKey
-                + "\n当前 索引 mMarkerId :" + mMarkerId
-                + "\nres id : " + value);
-        if (value == null) {
-            return DEF_ERROR_ID;
-        }
+        Logger.d(TAG, "当前 纹理个数:" + mAllMarkerId.size() + " ; 当前 mMarkerId :" + mMarkerId
+                + "\n{ MarkerIdKey :" + markerIdKey + " ;resId: " + value + " }");
         return value.intValue();
+    }
+
+    public boolean isHasMarkerId(String markerIdKey) {
+        return mAllMarkerId.containsKey(markerIdKey);
     }
 
     public int addMarkerId(String markerIdKey, int resID) {
         mAllMarkerId.put(markerIdKey, resID);
         mMarkerId = resID;
-        Logger.d(TAG, "纹理个数:" + mAll3DMarkerId.size()
-                + "\nMarkerIdKey :" + markerIdKey
-                + "\n当前 索引 mMarkerId id : " + mMarkerId
-                + "\nresID id : " + resID);
-        return getMarkerId(markerIdKey);
+        Logger.d(TAG, "当前 纹理个数:" + mAllMarkerId.size() + " ; 当前 mMarkerId :" + mMarkerId
+                + "\n{ MarkerIdKey :" + markerIdKey + " ;resId: " + resID + " }");
+        return mMarkerId;
     }
 
-    public <D extends LayerItemBase> LayerTexture createLayerTexture(Context context, String markerId, String markerInfo, boolean isFocus, ILayerItemProcessor<D> processor, D data) {
+    public synchronized void clearMarkerId(String markerIdKey) {
+        ArrayList<String> markerIdKeys = new ArrayList<>();
+        for (String key : mAllMarkerId.keySet()) {
+            if (key.startsWith(markerIdKey)) {
+                markerIdKeys.add(key);
+            }
+        }
+        mAllMarkerId.removeAll(markerIdKeys);
+        mMarkerId = mMarkerId - markerIdKeys.size();
+        Logger.d(TAG, "当前 纹理个数:" + mAllMarkerId.size() + "；删除marker：" + markerIdKey + " ; 删除的纹理数量 ：" + markerIdKeys.size() + " ; 当前 mMarkerId :" + mMarkerId);
+    }
+
+    public synchronized <D extends LayerItemData> LayerTexture createLayerTexture(Context context, String markerId, String markerInfo, boolean isFocus,
+                                                                                  IUpdateLayerItemStyleByItemDataProcessor<D> processor, D data) {
         String[] tag = markerId.split(MARK_FROM_RES_TAG);
-        int resID = RIGHT_RES_ID;
+        int resID = DEF_ERROR_ID;
         if (tag.length == 2) {
             resID = context.getResources().getIdentifier(tag[1], tag[0], context.getPackageName());
         } else if (tag.length == 1) {
             resID = context.getResources().getIdentifier(tag[0], MARK_FROM_DRAWABLE_RES, context.getPackageName());
-            if (resID <= RIGHT_RES_ID) {
+            if (!isValid(resID)) {
                 resID = context.getResources().getIdentifier(tag[0], MARK_FROM_MIPMAP_RES, context.getPackageName());
-                if (resID <= RIGHT_RES_ID) {
+                if (!isValid(resID)) {
                     resID = context.getResources().getIdentifier(tag[0], MARK_FROM_LAYOUT_RES, context.getPackageName());
                 }
             }
         }
-        if (resID <= RIGHT_RES_ID) {
+        if (!isValid(resID)) {
             Logger.e(TAG, "markerId 资源不存在，请检查是否存在: " + markerId);
             return null;
         }
@@ -155,66 +156,68 @@ public class LayerTextureManager {
         try {
             drawable = context.getResources().getDrawable(resID, null);
         } catch (Exception exception) {
-            Logger.e(TAG, "markerId 非图片资源");
+            Logger.e(TAG, markerId + " 不存在 Drawable / mipmap 文件夹中");
         } finally {
             try {
                 rootView = LayoutInflater.from(context).inflate(resID, null, false);
-
-            } catch (Exception exception1) {
-                Logger.e(TAG, "markerId 非布局资源");
+            } catch (Exception exception) {
+                Logger.e(TAG, markerId + " 不存在 Layout 文件夹中");
             } finally {
                 if (drawable == null && rootView == null) {
-                    Logger.e(TAG, "markerId 资源创建失败，请检查是否存在: " + markerId);
+                    Logger.e(TAG, " 资源创建失败，请检查是否存在: " + markerId);
                     return null;
                 }
                 Bitmap bitmap = null;
-                synchronized (LayerTextureManager.class) {
-                    if (null != drawable) {
-                        Logger.d(TAG, "通过 图片 创建纹理 ：" + markerId);
-                        if (drawable instanceof BitmapDrawable) {
-                            bitmap = BitmapFactory.decodeResource(context.getResources(), resID, bitmapMarkerOption);
-                        } else if (drawable instanceof VectorDrawable || drawable instanceof VectorDrawableCompat) {
-                            int requireWidth = drawable.getIntrinsicWidth() <= 0 ? 1 : drawable.getIntrinsicWidth();
-                            int requireHeight = drawable.getIntrinsicHeight() <= 0 ? 1 : drawable.getIntrinsicHeight();
-                            Logger.d(TAG, "图片大小 requireWidth ：" + requireWidth + " ;requireHeight :" + requireHeight);
-                            bitmap = Bitmap.createBitmap(requireWidth, requireHeight, Bitmap.Config.ARGB_8888);
-                            DEF_CANVAS.get().setBitmap(bitmap);
-                            DEF_CANVAS.get().save();
-                            // 防止 View 上面有些区域空白导致最终 Bitmap 上有些区域变黑
-                            DEF_CANVAS.get().drawColor(Color.TRANSPARENT);
-                            drawable.setBounds(0, 0, requireWidth, requireHeight);
-                            drawable.draw(DEF_CANVAS.get());
-                            DEF_CANVAS.get().restore();
-                            DEF_CANVAS.get().setBitmap(null);
-                        }
-                    } else if (null != rootView) {
-                        Logger.d(TAG, "通过 布局 创建纹理 ：" + markerId);
-                        if (processor != null) {
-                            if (isFocus) {
-                                processor.onFocusProcess(rootView, data);
-                            } else {
-                                processor.onNormalProcess(rootView, data);
-                            }
-                        }
-                        rootView.measure(0, 0);
-                        rootView.layout(0, 0, rootView.getMeasuredWidth(), rootView.getMeasuredHeight());
-                        int requireWidth = rootView.getMeasuredWidth() <= 0 ? 1 : rootView.getMeasuredWidth();
-                        int requireHeight = rootView.getMeasuredHeight() <= 0 ? 1 : rootView.getMeasuredHeight();
-                        Logger.d(TAG, "布局大小 requireWidth ：" + requireWidth + " ;requireHeight :" + requireHeight);
+                if (null != drawable) {
+                    Logger.e(TAG, "优先 使用 图片 创建纹理 ：" + markerId);
+                    if (drawable instanceof BitmapDrawable) {
+                        bitmap = BitmapFactory.decodeResource(context.getResources(), resID, bitmapMarkerOption);
+                    } else if (drawable instanceof VectorDrawable || drawable instanceof VectorDrawableCompat) {
+                        int requireWidth = drawable.getIntrinsicWidth() <= 0 ? 1 : drawable.getIntrinsicWidth();
+                        int requireHeight = drawable.getIntrinsicHeight() <= 0 ? 1 : drawable.getIntrinsicHeight();
+                        Logger.d(TAG, "图片大小 requireWidth ：" + requireWidth + " ;requireHeight :" + requireHeight);
                         bitmap = Bitmap.createBitmap(requireWidth, requireHeight, Bitmap.Config.ARGB_8888);
                         DEF_CANVAS.get().setBitmap(bitmap);
                         DEF_CANVAS.get().save();
                         // 防止 View 上面有些区域空白导致最终 Bitmap 上有些区域变黑
                         DEF_CANVAS.get().drawColor(Color.TRANSPARENT);
-                        rootView.draw(DEF_CANVAS.get());
+                        drawable.setBounds(0, 0, requireWidth, requireHeight);
+                        drawable.draw(DEF_CANVAS.get());
                         DEF_CANVAS.get().restore();
                         DEF_CANVAS.get().setBitmap(null);
                     }
                 }
+
+                if (null != rootView) {
+                    Logger.e(TAG, "通过 布局 创建纹理； 如果存在同名布局和图片 会采用布局 ：" + markerId);
+                    if (processor != null) {
+                        Logger.d(TAG, "获取布局处理工具自定义布局样式 ：" + markerId);
+                        if (isFocus) {
+                            processor.onFocusProcess(rootView, data);
+                        } else {
+                            processor.onNormalProcess(rootView, data);
+                        }
+                    }
+                    rootView.measure(0, 0);
+                    rootView.layout(0, 0, rootView.getMeasuredWidth(), rootView.getMeasuredHeight());
+                    int requireWidth = (rootView.getMeasuredWidth() <= 0 ? 1 : rootView.getMeasuredWidth()) * SCALE;
+                    int requireHeight = (rootView.getMeasuredHeight() <= 0 ? 1 : rootView.getMeasuredHeight()) * SCALE;
+                    bitmap = createBitmapSafely(requireWidth, requireHeight, Bitmap.Config.ARGB_8888, 1);
+                    DEF_CANVAS.get().setBitmap(bitmap);
+                    DEF_CANVAS.get().save();
+                    // 防止 View 上面有些区域空白导致最终 Bitmap 上有些区域变黑
+                    DEF_CANVAS.get().drawColor(Color.TRANSPARENT);
+                    DEF_CANVAS.get().scale(SCALE, SCALE);
+                    rootView.draw(DEF_CANVAS.get());
+                    DEF_CANVAS.get().restore();
+                    DEF_CANVAS.get().setBitmap(null);
+                }
+
                 if (bitmap == null) {
                     Logger.e(TAG, "创建bitmap失败. markerId: " + markerId);
                     return null;
                 }
+
                 ByteBuffer dataBuffer = ByteBuffer.allocate(bitmap.getByteCount());
                 bitmap.copyPixelsToBuffer(dataBuffer);
                 LayerTexture layerTexture = new LayerTexture();
@@ -223,62 +226,52 @@ public class LayerTextureManager {
                 layerTexture.height = bitmap.getHeight();
                 layerTexture.iconType = LayerIconTypeBMP;
                 layerTexture.resID = createMarkerId();
-                layerTexture.isPreMulAlpha = true;//纹理是否预乘透明通道,1：预乘；0：未预乘  bitmap Image are loaded with the {@link Bitmap.Config#ARGB_8888} config by default
                 bitmap.recycle();
-                LayerTextureMarkerInfo markerInfoBean = null;
+
+                layerTexture.isPreMulAlpha = true;//纹理是否预乘透明通道,1：预乘；0：未预乘  bitmap Image are loaded with the {@link Bitmap.Config#ARGB_8888} config by default
+                layerTexture.anchorType = LayerIconAnchor.LayerIconAnchorCenter;
+                layerTexture.isRepeat = false;
+                layerTexture.xRatio = 0;
+                layerTexture.yRatio = 0;
+                layerTexture.isGenMipmaps = false;
 
                 if (!TextUtils.isEmpty(markerInfo)) {
-                    markerInfoBean = GsonUtils.fromJson(markerInfo, LayerTextureMarkerInfo.class);
-                }
-                if (markerInfoBean != null) {
-                    layerTexture.anchorType = markerInfoBean.getAnchor();
-                    layerTexture.xRatio = markerInfoBean.getX_ratio();
-                    layerTexture.yRatio = markerInfoBean.getY_ratio();
-                    layerTexture.isRepeat = markerInfoBean.getRepeat() == 1;
-                    layerTexture.isGenMipmaps = markerInfoBean.getGen_mipmaps() == 1;
-                } else {
-                    layerTexture.anchorType = LayerIconAnchor.LayerIconAnchorCenter;
-                    layerTexture.isRepeat = false;
-                    layerTexture.xRatio = 0;
-                    layerTexture.yRatio = 0;
-                    layerTexture.isGenMipmaps = false;
+                    try {
+                        LayerTextureMarkerInfo markerInfoBean = GsonUtils.fromJson(markerInfo, LayerTextureMarkerInfo.class);
+                        layerTexture.anchorType = markerInfoBean.getAnchor();
+                        layerTexture.xRatio = markerInfoBean.getX_ratio();
+                        layerTexture.yRatio = markerInfoBean.getY_ratio();
+                        layerTexture.isRepeat = markerInfoBean.getRepeat() == 1;
+                        layerTexture.isGenMipmaps = markerInfoBean.getGen_mipmaps() == 1;
+                    } catch (Exception exception) {
+                        Logger.e(TAG, "markerInfo 信息出错: " + markerId);
+                    }
                 }
                 return layerTexture;
             }
         }
     }
 
-    private int createMarkerId() {
-        int markerId = mMarkerId;
-        if (mAllMarkerId.size() >= MARK_ID_MAX) {
-            markerId = MARK_ID_START;
-            return markerId;
+    /**
+     * 安全的创建bitmap;如果新建 Bitmap 时产生了 OOM，可以主动进行一次 GC - System.gc()，然后再次尝试创建
+     *
+     * @return bitmap
+     */
+    private Bitmap createBitmapSafely(int width, int height, Bitmap.Config config, int retryCount) {
+        try {
+            return Bitmap.createBitmap(width, height, config);
+        } catch (OutOfMemoryError e) {
+            if (retryCount > 0) {
+                System.gc();
+                Logger.e(TAG, "创建布局纹理产生 OOM");
+                return createBitmapSafely(width, height, config, retryCount - 1);
+            }
+            return null;
         }
-        Logger.d(TAG, "创建新的 markID:" + markerId);
-        return markerId + 1;
-    }
-
-    public int get3DModelId(String layerName, String str3DModelId) {
-        String key3DModelId = layerName + "@_" + str3DModelId;
-        Integer value = mAll3DMarkerId.get(key3DModelId);
-        Logger.d(TAG, "3d 纹理个数:" + mAll3DMarkerId.size());
-        if (value == null) {
-            return DEF_ERROR_ID;
-        }
-        return value;
-    }
-
-
-    public int add3DModelId(String layerName, String str3DModelId, int resourceID) {
-        String key3DModelId = layerName + "@_" + str3DModelId;
-        mAll3DMarkerId.put(key3DModelId, resourceID);
-        m3DMarkerId = resourceID;
-        Logger.d(TAG, "3d 纹理个数:" + mAll3DMarkerId.size() + " ; 当前3d纹理 id :" + m3DMarkerId);
-        return get3DModelId(layerName, str3DModelId);
     }
 
     /**
-     * 构建车标建模对象.
+     * 构建3D模型.
      *
      * @param str3DModelId
      * @return 建模对象
@@ -286,22 +279,25 @@ public class LayerTextureManager {
     public Layer3DModel createLayer3DModel(String str3DModelId) {
         byte[] buffer = FileUtils.getInstance().getAssetFileContent(str3DModelId);
         Layer3DModel modelParam = new Layer3DModel();
-        modelParam.resourceID = create3DMarkerId();
+        modelParam.resourceID = createMarkerId();
         modelParam.dataBuff = new BinaryStream(buffer);
-        Logger.d(TAG, "创建3d模型 ：" + str3DModelId + "; resourceID : " + modelParam.resourceID);
+        Logger.d(TAG, "创建3d模型 {：" + str3DModelId + "; resourceID : " + modelParam.resourceID + "}");
         return modelParam;
     }
 
-    /**
-     * brief 获取动态纹理markerId
-     * note 该id范围为[0x30001,0x60000] 超过范围会自动复位
-     */
-    private int create3DMarkerId() {
-        int markerId = m3DMarkerId;
-        if (mAll3DMarkerId.size() >= MODEL_3D_ID_MAX) {
-            markerId = MODEL_3D_ID_START;
-            return markerId;
-        }
-        return (markerId + 1);
+
+    public LayerTexture getArrowRoadImage(boolean isArrow, CrossImageEntity crossInfo) {
+        int RES_ID = 888888888;
+        LayerTexture image = new LayerTexture();
+        image.dataBuff = new BinaryStream(isArrow ? crossInfo.getArrowDataBuf() : crossInfo.getDataBuf());
+        //栅格图箭头png
+        image.iconType = isArrow ? LayerIconType.LayerIconTypePNG : LayerIconType.LayerIconTypeJPG;
+        image.resID = RES_ID;
+        image.isGenMipmaps = false;
+        image.isPreMulAlpha = true;
+        image.isRepeat = false;
+        image.anchorType = LayerIconAnchor.LayerIconAnchorLeftTop;
+        return image;
     }
+
 }

@@ -11,11 +11,8 @@ import androidx.annotation.Nullable;
 
 import com.fy.navi.scene.databinding.SceneNaviLastMileViewBinding;
 import com.fy.navi.scene.impl.navi.SceneNaviLastMileImpl;
-import com.fy.navi.scene.impl.navi.inter.ISceneCallback;
-import com.fy.navi.scene.ui.navi.manager.INaviSceneEvent;
 import com.fy.navi.scene.ui.navi.manager.NaviSceneBase;
 import com.fy.navi.scene.ui.navi.manager.NaviSceneId;
-import com.fy.navi.scene.ui.navi.manager.NaviSceneManager;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.define.navi.NaviEtaInfo;
 
@@ -26,7 +23,6 @@ import com.fy.navi.service.define.navi.NaviEtaInfo;
  */
 public class SceneNaviLastMileView extends NaviSceneBase<SceneNaviLastMileViewBinding, SceneNaviLastMileImpl> {
     private static final String TAG = MapDefaultFinalTag.NAVI_HMI_TAG;
-    private ISceneCallback mISceneCallback;
 
     public SceneNaviLastMileView(final Context context) {
         super(context);
@@ -46,45 +42,6 @@ public class SceneNaviLastMileView extends NaviSceneBase<SceneNaviLastMileViewBi
     @Override
     protected NaviSceneId getSceneId() {
         return NaviSceneId.NAVI_SCENE_LAST_MILE;
-    }
-
-    @Override
-    protected String getSceneName() {
-        return NaviSceneId.NAVI_SCENE_LAST_MILE.name();
-    }
-
-    @Override
-    public INaviSceneEvent getNaviSceneEvent() {
-        return NaviSceneManager.getInstance();
-    }
-
-    protected void init() {
-        NaviSceneManager.getInstance().addNaviScene(NaviSceneId.NAVI_SCENE_LAST_MILE,
-                this);
-    }
-
-    @Override
-    public void show() {
-        super.show();
-        if (mISceneCallback != null) {
-            mISceneCallback.updateSceneVisible(NaviSceneId.NAVI_SCENE_LAST_MILE, true);
-        }
-    }
-
-    @Override
-    public void hide() {
-        super.hide();
-        if (mISceneCallback != null) {
-            mISceneCallback.updateSceneVisible(NaviSceneId.NAVI_SCENE_LAST_MILE, false);
-        }
-    }
-
-    @Override
-    public void close() {
-        super.close();
-        if (mISceneCallback != null) {
-            mISceneCallback.updateSceneVisible(NaviSceneId.NAVI_SCENE_LAST_MILE, false);
-        }
     }
 
     @Override
@@ -111,11 +68,6 @@ public class SceneNaviLastMileView extends NaviSceneBase<SceneNaviLastMileViewBi
     @Override
     public boolean onTouchEvent(final MotionEvent event) {
         return true;
-    }
-
-    @Override
-    public void addSceneCallback(final ISceneCallback sceneCallback) {
-        mISceneCallback = sceneCallback;
     }
 
     /**

@@ -1,5 +1,6 @@
 package com.fy.navi.scene.impl.navi;
 
+import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
 import com.fy.navi.scene.BaseSceneModel;
 import com.fy.navi.scene.impl.navi.inter.ISceneCallback;
@@ -10,23 +11,17 @@ import com.fy.navi.service.MapDefaultFinalTag;
 
 public class SceneNaviViaArriveViewImpl extends BaseSceneModel<SceneNaviViaArriveView> {
     public static final String TAG = "SceneNaviViaArriveViewImpl";
-    private ISceneCallback mISceneCallback;
     public SceneNaviViaArriveViewImpl(final SceneNaviViaArriveView screenView) {
         super(screenView);
-    }
-
-    /**
-     * @param sceneCallback the mISceneCallback to set
-     */
-    public void addISceneCallback(final ISceneCallback sceneCallback) {
-        this.mISceneCallback = sceneCallback;
     }
 
     /**
      * 点击确定后立即更新ui为途经点已到达
      */
     public void onUpdateViaPass() {
-        mISceneCallback.onUpdateViaPass();
+        if (!ConvertUtils.isNull(mCallBack)) {
+            mCallBack.onUpdateViaPass();
+        }
     }
 
     /**

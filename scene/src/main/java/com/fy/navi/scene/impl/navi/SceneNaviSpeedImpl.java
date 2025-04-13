@@ -3,7 +3,6 @@ package com.fy.navi.scene.impl.navi;
 import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
 import com.fy.navi.scene.BaseSceneModel;
-import com.fy.navi.scene.impl.navi.inter.ISceneCallback;
 import com.fy.navi.scene.ui.navi.SceneNaviSpeedView;
 import com.fy.navi.scene.ui.navi.manager.INaviSceneEvent;
 import com.fy.navi.scene.ui.navi.manager.NaviSceneId;
@@ -26,7 +25,6 @@ public class SceneNaviSpeedImpl extends BaseSceneModel<SceneNaviSpeedView> {
      * 电子👁限速
      */
     private int mCurCameraLimitSpeed = 0;
-    private ISceneCallback mISceneCallback;
 
     public SceneNaviSpeedImpl(final SceneNaviSpeedView screenView) {
         super(screenView);
@@ -38,7 +36,7 @@ public class SceneNaviSpeedImpl extends BaseSceneModel<SceneNaviSpeedView> {
     public void onNaviSpeedCameraInfo(final SpeedOverallEntity speedCameraInfo) {
         Logger.i(TAG, "onNaviSpeedCameraInfo speedCameraInfo = " +
                 speedCameraInfo.toString());
-        if (mISceneCallback == null) {
+        if (mCallBack == null) {
             return;
         }
         if (speedCameraInfo == null) {
@@ -99,13 +97,6 @@ public class SceneNaviSpeedImpl extends BaseSceneModel<SceneNaviSpeedView> {
      */
     private boolean isValidSpeed(final int speed) {
         return 0 < speed && speed < 0xff;
-    }
-
-    /**
-     * @param sceneCallback 回调
-     */
-    public void addSceneCallback(final ISceneCallback sceneCallback) {
-        mISceneCallback = sceneCallback;
     }
 
     /**

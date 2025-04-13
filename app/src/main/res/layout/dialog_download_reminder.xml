@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <com.fy.navi.ui.view.SkinConstraintLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <com.fy.navi.ui.view.SkinConstraintLayout
+            android:layout_width="@dimen/dp_550"
+            android:layout_height="@dimen/dp_280"
+            android:background="@drawable/bg_setting_dialog"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <com.fy.navi.ui.view.SkinTextView
+                android:id="@+id/dialog_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/sp_28"
+                android:textStyle="bold"
+                android:textColor="@color/black"
+                android:layout_marginTop="@dimen/dp_40"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+                <com.fy.navi.ui.view.SkinTextView
+                    android:id="@+id/dialog_confirm"
+                    android:layout_width="@dimen/dp_200"
+                    android:layout_height="@dimen/dp_50"
+                    android:gravity="center"
+                    android:background="@drawable/bg_setting_broadcast_select"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/sp_28"
+                    android:layout_marginStart="@dimen/dp_40"
+                    android:layout_marginBottom="@dimen/dp_40"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"/>
+
+                <com.fy.navi.ui.view.SkinTextView
+                    android:id="@+id/dialog_cancel"
+                    android:layout_width="@dimen/dp_200"
+                    android:layout_height="@dimen/dp_50"
+                    android:gravity="center"
+                    android:textColor="@color/color_black_70"
+                    android:textSize="@dimen/sp_28"
+                    android:text="@string/offline_dialog_download_cancel"
+                    android:layout_marginEnd="@dimen/dp_40"
+                    android:background="@drawable/bg_setting_broadcast_normal"
+                    app:layout_constraintBottom_toBottomOf="@+id/dialog_confirm"
+                    app:layout_constraintEnd_toEndOf="parent"/>
+
+        </com.fy.navi.ui.view.SkinConstraintLayout>
+    </com.fy.navi.ui.view.SkinConstraintLayout>
+</layout>

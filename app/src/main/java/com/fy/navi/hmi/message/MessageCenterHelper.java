@@ -1,14 +1,10 @@
 package com.fy.navi.hmi.message;
 
 import android.text.TextUtils;
-import com.android.utils.ResourceUtils;
-import com.fy.navi.hmi.R;
 import com.fy.navi.service.define.code.UserDataCode;
 import com.fy.navi.service.define.message.MessageCenterInfo;
 import com.fy.navi.service.define.message.MessageCenterType;
 import com.fy.navi.service.greendao.CommonManager;
-import java.util.Date;
-
 public class MessageCenterHelper {
 
     private CommonManager mCommonManager = null;
@@ -23,25 +19,30 @@ public class MessageCenterHelper {
      * @param messageCenterType  类型
      */
     public MessageCenterInfo manageMessage(final MessageCenterType messageCenterType) {
-        if(messageCenterType == MessageCenterType.ROAD_LIMIT){
-           return new MessageCenterInfo(messageCenterType,
-                   ResourceUtils.Companion.getInstance().getString(R.string.message_center_check),
-                   ResourceUtils.Companion.getInstance().getString(R.string.message_center_limit),
-                    "",new Date(),0);
-        }else if(messageCenterType == MessageCenterType.MAP_UPDATE_15){
-            return new MessageCenterInfo(messageCenterType,
-                    ResourceUtils.Companion.getInstance().getString(R.string.message_center_update),
-                    ResourceUtils.Companion.getInstance().getString(R.string.message_center_need_update),
-                    "",new Date(),0);
-        }else if(messageCenterType == MessageCenterType.MAP_UPDATE_45){
-            return new MessageCenterInfo(messageCenterType,
-                    ResourceUtils.Companion.getInstance().getString(R.string.message_center_update),
-                    ResourceUtils.Companion.getInstance().getString(R.string.message_center_netless),
-                    ResourceUtils.Companion.getInstance().getString(R.string.message_center_recommend_update),
-                    new Date(),0);
-        }else if(messageCenterType == MessageCenterType.WEATHER){
-            //TODO
-        }
+//        if(messageCenterType == MessageCenterType.ROAD_LIMIT){
+//           return new MessageCenterInfo(messageCenterType,
+//                   ResourceUtils.Companion.getInstance().getString(R.string.message_center_check),0,
+//                   ResourceUtils.Companion.getInstance().getString(R.string.message_center_limit),
+//                    "",new Date(),0);
+//        }else if(messageCenterType == MessageCenterType.MAP_UPDATE_15){
+//            return new MessageCenterInfo(messageCenterType,
+//                    ResourceUtils.Companion.getInstance().getString(R.string.message_center_update),0,
+//                    ResourceUtils.Companion.getInstance().getString(R.string.message_center_need_update),
+//                    "",new Date(),0);
+//        }else if(messageCenterType == MessageCenterType.MAP_UPDATE_45){
+//            return new MessageCenterInfo(messageCenterType,
+//                    ResourceUtils.Companion.getInstance().getString(R.string.message_center_update),0,
+//                    ResourceUtils.Companion.getInstance().getString(R.string.message_center_netless),
+//                    ResourceUtils.Companion.getInstance().getString(R.string.message_center_recommend_update),
+//                    new Date(),0);
+//        }else if(messageCenterType == MessageCenterType.WEATHER){
+//            return new MessageCenterInfo(messageCenterType,
+//                    ResourceUtils.Companion.getInstance().getString(R.string.message_center_update),0,
+//                    ResourceUtils.Companion.getInstance().getString(R.string.message_center_netless),
+//                    ResourceUtils.Companion.getInstance().getString(R.string.message_center_recommend_update),
+//                    new Date(),0);
+//        }else if(messageCenterType == MessageCenterType.PHONE_MESSAGE){
+//        }
         return null;
     }
 

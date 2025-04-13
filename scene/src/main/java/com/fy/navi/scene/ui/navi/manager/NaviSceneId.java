@@ -29,7 +29,12 @@ public enum NaviSceneId {
     NAVI_SCENE_LAST_MILE(19),//最后一公里
     NAVI_CHARGE_TIP(20),// EvCar消息
     NAVI_SUSPEND_CARD(21),// 悬挂卡
-    NAVI_CONTINUE(22);// 继续导航
+    NAVI_CONTINUE(22),// 继续导航
+    NAVI_PROVIDE_CHARGE(23),// 附近充电桩
+    NAVI_PROVIDE_GAS(24),// 附近加油站
+    NAVI_PROVIDE_CHARGE_LIST(25),// 附近充电桩列表
+    NAVI_PROVIDE_GAS_LIST(26),// 附近加油站列表
+    NAVI_PROVIDE_PARK(27);// 附近停车场
     NaviSceneId(final int i) {
 
     }

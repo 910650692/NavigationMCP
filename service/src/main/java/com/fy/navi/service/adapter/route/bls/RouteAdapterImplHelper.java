@@ -14,6 +14,9 @@ import com.autonavi.gbl.common.path.model.TrafficIncident;
 import com.autonavi.gbl.common.path.option.LinkInfo;
 import com.autonavi.gbl.route.model.BLRerouteRequestInfo;
 import com.autonavi.gbl.route.observer.INaviRerouteObserver;
+import com.fy.navi.burypoint.anno.HookMethod;
+import com.fy.navi.burypoint.constant.BuryConstant;
+import com.fy.navi.burypoint.controller.BuryPointController;
 import com.fy.navi.service.define.route.Coord3DDouble;
 import com.fy.navi.service.define.route.RouteAlterChargePriceInfo;
 import com.fy.navi.service.define.route.RouteAlternativeChargeDetourInfo;
@@ -101,7 +104,10 @@ import com.fy.navi.service.define.route.RouteWayID;
 import com.fy.navi.service.define.route.RouteWeatherInfo;
 import com.fy.navi.service.define.route.RouteWeatherParam;
 import com.fy.navi.service.define.utils.NumberUtils;
+import com.fy.navi.service.logicpaket.calibration.PowerType;
+import com.fy.navi.service.logicpaket.navi.OpenApiHelper;
 import com.fy.navi.service.logicpaket.route.RoutePackage;
+import com.fy.navi.service.logicpaket.signal.SignalPackage;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -649,6 +655,7 @@ public class RouteAdapterImplHelper {
                 return;
             }
             handResultSuccess(getMsgs(requestRouteResult.getMRouteWay(), false));
+            sendBuryPointForViaPoint(requestRouteResult.getMRouteWay());
             handlerRouteResult(requestRouteResult, pathInfoList);
             handlerDrawLine(requestRouteResult.getMLineLayerParam(), pathInfoList, requestId,
                     requestRouteResult.getMMapTypeId(), requestRouteResult.isMIsOnlineRoute());
@@ -671,7 +678,7 @@ public class RouteAdapterImplHelper {
 
         @Override
         public void onNewRouteError(final PathResultData pathResultData, final RouteLimitInfo routeLimitInfo) {
-            Logger.i("song---", "pathResultData : ", pathResultData,
+            Logger.i(TAG, "pathResultData : ", pathResultData,
                     "routeLimitInfo : ", routeLimitInfo);
             if (ConvertUtils.isEmpty(mRouteResultObserverHashtable)) {
                 return;
@@ -695,6 +702,16 @@ public class RouteAdapterImplHelper {
             }
         }
 
+        @HookMethod
+        private void sendBuryPointForViaPoint(RouteWayID routeWay) {
+            if(routeWay == RouteWayID.ROUTE_WAY_ADD_VIA){
+                BuryPointController.getInstance().setEventName(BuryConstant.EventName.AMAP_ROUTE_ADD_MIDDLE);
+            }
+            if(routeWay == RouteWayID.ROUTE_WAY_DELETE_VIA){
+                BuryPointController.getInstance().setEventName(BuryConstant.EventName.AMAP_ROUTE_DELETE_MIDDLE);
+            }
+        }
+
         private String getMsgs(final RouteWayID routeWay, final boolean isError) {
             switch (routeWay) {
                 case ROUTE_WAY_DEFAULT:
@@ -702,7 +719,7 @@ public class RouteAdapterImplHelper {
                 case ROUTE_WAY_REFRESH:
                     return isError ? "路线刷新失败" : "路线刷新成功";
                 case ROUTE_WAY_AVOID:
-                    return isError ? "道路避开失败" : "道路避开成功";
+                    return isError ? "道路避开失败" : "路线刷新成功";
                 case ROUTE_WAY_ADD_VIA:
                     return isError ? "途经点添加失败" : "途经点添加成功";
                 case ROUTE_WAY_DELETE_VIA:
@@ -1820,10 +1837,20 @@ public class RouteAdapterImplHelper {
         @Override
         public void onModifyRerouteOption(RouteOption rerouteOption) {
             Logger.d(TAG, "onReroute: " + rerouteOption.getRouteReqId());
+            if (OpenApiHelper.powerType() == PowerType.E_VEHICLE_ENERGY_ELECTRIC) {
+                float powerLeft = SignalPackage.getInstance().getBatteryEnergy();
+                Logger.i(TAG, "纯电汽车 需要传剩余电量数据 powerLeft：" + powerLeft);
+                rerouteOption.setVehicleCharge(powerLeft);
+            }
         }
 
         @Override
         public void onRerouteInfo(BLRerouteRequestInfo info) {
+            Logger.i(TAG, "onReroute: ", info.errCode + "----" + info.requestId + "----" + info.option.getRouteType() + "----" + info.option.getRouteReqId());
+            if (mRequsetId == -1 || ConvertUtils.isEmpty(mRouteResultDataHashtable)) {
+                Logger.e(TAG, "have no this data");
+                return;
+            }
             final RequestRouteResult requestRouteResult = ConvertUtils.containToValue(mRouteResultDataHashtable, mRequsetId);
             if (info.option.getRouteType() == RouteType.RouteTypeYaw) {
                 Logger.i(TAG, "onReroute: 偏航引发的重算");

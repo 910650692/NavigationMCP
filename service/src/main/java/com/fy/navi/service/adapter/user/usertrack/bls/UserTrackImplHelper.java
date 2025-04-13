@@ -1,5 +1,7 @@
 package com.fy.navi.service.adapter.user.usertrack.bls;
 
+import android.text.TextUtils;
+
 import com.android.utils.ConvertUtils;
 import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
@@ -286,39 +288,52 @@ public class UserTrackImplHelper implements IUserTrackObserver, IGpsInfoGetter {
      * @return 行程数据
      */
     public DrivingRecordDataBean parseJsonToBean(final String jsonStr) {
+
+        if (TextUtils.isEmpty(jsonStr)) {
+            Logger.i(TAG, "parseJsonToBean: 输入JSON为空");
+            return null;
+        }
         final Gson gson = new GsonBuilder()
                 .registerTypeAdapter(DrivingRecordDataBean.class, new JsonDeserializer<DrivingRecordDataBean>() {
                     @Override
-                    public DrivingRecordDataBean deserialize(final JsonElement json, final Type typeOfT, final JsonDeserializationContext context) {
+                    public DrivingRecordDataBean deserialize(final JsonElement json, final Type typeOfT,
+                                                             final JsonDeserializationContext context) {
                         final JsonObject jsonObject = json.getAsJsonObject();
                         final DrivingRecordDataBean bean = new DrivingRecordDataBean();
                         // 基础字段
-                        bean.setId(jsonObject.get("id").getAsString());
-                        bean.setType(jsonObject.get("type").getAsInt());
-                        bean.setRideRunType(jsonObject.get("rideRunType").getAsInt());
-                        bean.setTimeInterval(jsonObject.get("timeInterval").getAsInt());
-                        bean.setRunDistance(jsonObject.get("runDistance").getAsInt());
-                        bean.setStartTime(jsonObject.get("startTime").getAsString());
-                        bean.setEndTime(jsonObject.get("endTime").getAsString());
-                        bean.setStartPoiName(jsonObject.get("startPoiName").getAsString());
-                        bean.setEndPoiName(jsonObject.get("endPoiName").getAsString());
-                        bean.setStartLocation(jsonObject.get("startLocation").getAsString());
-                        bean.setEndLocation(jsonObject.get("endLocation").getAsString());
-                        bean.setTrackFileName(jsonObject.get("trackFileName").getAsString());
-                        bean.setMaxSpeedTime(jsonObject.get("maxSpeedTime").getAsString());
-                        bean.setMaxSpeedLocation(jsonObject.get("maxSpeedLocation").getAsString());
-                        bean.setMaxSpeedPoiName(jsonObject.get("maxSpeedPoiName").getAsString());
-                        bean.setUpdateTime(jsonObject.get("updateTime").getAsInt());
-                        if (jsonObject.get("trackFileMd5") != null) {
-                            bean.setTrackFileMd5(jsonObject.get("trackFileMd5").getAsString());
-                        }
-                        if (jsonObject.get("trackPointsURL") != null) {
-                            bean.setTrackPointsURL(jsonObject.get("trackPointsURL").getAsString());
-                        }
+                        bean.setId(getStringSafely(jsonObject, "id"));
+                        bean.setType(getIntSafely(jsonObject, "type"));
+                        bean.setRideRunType(getIntSafely(jsonObject, "rideRunType"));
+                        bean.setTimeInterval(getIntSafely(jsonObject, "timeInterval"));
+                        bean.setRunDistance(getIntSafely(jsonObject, "runDistance"));
+                        bean.setStartTime(getStringSafely(jsonObject, "startTime"));
+                        bean.setEndTime(getStringSafely(jsonObject, "endTime"));
+                        bean.setStartPoiName(getStringSafely(jsonObject, "startPoiName"));
+                        bean.setEndPoiName(getStringSafely(jsonObject, "endPoiName"));
+                        bean.setStartLocation(getStringSafely(jsonObject, "startLocation"));
+                        bean.setEndLocation(getStringSafely(jsonObject, "endLocation"));
+                        bean.setTrackFileName(getStringSafely(jsonObject, "trackFileName"));
+                        bean.setMaxSpeedTime(getStringSafely(jsonObject, "maxSpeedTime"));
+                        bean.setMaxSpeedLocation(getStringSafely(jsonObject, "maxSpeedLocation"));
+                        bean.setMaxSpeedPoiName(getStringSafely(jsonObject, "maxSpeedPoiName"));
+                        bean.setUpdateTime(getIntSafely(jsonObject, "updateTime"));
+                        bean.setTrackFileMd5(getStringSafely(jsonObject, "trackFileMd5"));
+                        bean.setTrackPointsURL(getStringSafely(jsonObject, "trackPointsURL"));
                         // 特殊类型处理
-                        final double maxSpeed = jsonObject.get("maxSpeed").getAsDouble();
-                        bean.setMaxSpeed((int) Math.round(maxSpeed));
+                        if (jsonObject.get("maxSpeed") != null) {
+                            final double maxSpeed = jsonObject.get("maxSpeed").getAsDouble();
+                            bean.setMaxSpeed((int) Math.round(maxSpeed));
+                        }
                         return bean;
+                    }
+
+                    // 新增安全解析方法
+                    private String getStringSafely(final JsonObject obj, final String key) {
+                        return obj.has(key) && !obj.get(key).isJsonNull() ? obj.get(key).getAsString() : "";
+                    }
+
+                    private int getIntSafely(final JsonObject obj, final String key) {
+                        return obj.has(key) && !obj.get(key).isJsonNull() ? obj.get(key).getAsInt() : 0;
                     }
                 })
                 .create();
@@ -333,12 +348,15 @@ public class UserTrackImplHelper implements IUserTrackObserver, IGpsInfoGetter {
      * @return 平均速度
      */
     private int getAverageSpeed(final DrivingRecordDataBean dataBean) {
-        final int runDistance = dataBean.getRunDistance();
-        final int timeInterval = dataBean.getTimeInterval();
-        if (runDistance == 0 || timeInterval == 0) {
+        if (dataBean == null) {
             return 0;
         }
-        return (int) ((double) runDistance / timeInterval * 3.6);
+        final int runDistance = dataBean.getRunDistance();
+        final int timeInterval = dataBean.getTimeInterval();
+        if (runDistance <= 0 || timeInterval <= 0) {
+            return 0;
+        }
+        return (int) ((runDistance * 3.6) / timeInterval);
     }
 
     /**
@@ -534,6 +552,12 @@ public class UserTrackImplHelper implements IUserTrackObserver, IGpsInfoGetter {
      * @return 深度信息
      */
     private GpsTrackDepthBean getGpsTrackDepthBean(final GpsTrackDepthInfo depInfo) {
+
+        if (depInfo == null || depInfo.trackPoints == null) {
+            Logger.e(TAG, "无效的深度信息数据");
+            return new GpsTrackDepthBean();
+        }
+
         final GpsTrackDepthBean info = new GpsTrackDepthBean();
         info.setFileName(depInfo.fileName);
         info.setFilePath(depInfo.filePath);

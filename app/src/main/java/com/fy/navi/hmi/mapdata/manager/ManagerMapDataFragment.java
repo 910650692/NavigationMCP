@@ -4,6 +4,7 @@ import android.view.View;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.android.utils.ConvertUtils;
 import com.android.utils.ResourceUtils;
 import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
@@ -11,15 +12,24 @@ import com.android.utils.thread.ThreadManager;
 import com.fy.navi.hmi.BR;
 import com.fy.navi.hmi.R;
 import com.fy.navi.hmi.databinding.FragmentManagerMapDataBinding;
-import com.fy.navi.hmi.mapdata.adapter.CityMapDataAdapter;
+import com.fy.navi.hmi.mapdata.DownloadReminderDialog;
+import com.fy.navi.hmi.mapdata.adapter.ManagerMapDataAdapter;
+import com.fy.navi.service.define.code.UserDataCode;
 import com.fy.navi.service.define.mapdata.CityDataInfo;
+import com.fy.navi.service.define.mapdata.CityDownLoadInfo;
+import com.fy.navi.service.define.mapdata.ProvDataInfo;
 import com.fy.navi.ui.base.BaseFragment;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class ManagerMapDataFragment extends BaseFragment<FragmentManagerMapDataBinding, ManagerMapDataViewModel> {
-    private CityMapDataAdapter mDownloadingMapDataAdapter;
-    private CityMapDataAdapter mDownloadedMapDataAdapter;
+    private ManagerMapDataAdapter mDownloadingMapDataAdapter;
+    private ManagerMapDataAdapter mDownloadedMapDataAdapter;
+    private boolean isDelete;
+    private List<CityDataInfo> mAllDownloadingList = new ArrayList<>();
+    private boolean mAllStartButtonChecked;
+    private boolean mAllPauseButtonChecked;
 
     @Override
     public int onLayoutId() {
@@ -46,69 +56,57 @@ public class ManagerMapDataFragment extends BaseFragment<FragmentManagerMapDataB
      * 初始化下载管理view
      */
     private void initDownloadMapDataView() {
-        mDownloadingMapDataAdapter = new CityMapDataAdapter(getActivity());
+        mDownloadingMapDataAdapter = new ManagerMapDataAdapter(getActivity());
         final LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         mBinding.rvDownloadingOffline.setLayoutManager(layoutManager);
         mBinding.rvDownloadingOffline.setAdapter(mDownloadingMapDataAdapter);
-        mDownloadingMapDataAdapter.setItemClickListener(new CityMapDataAdapter.OnItemClickListener() {
+        mDownloadingMapDataAdapter.setOnChildClickListener(new ManagerMapDataAdapter.OnChildClickListener() {
 
             @Override
             public void startAllTask(final ArrayList<Integer> cityAdCodes) {
                 Logger.d( "startAllTask cityAdCodes = " + GsonUtils.toJson(cityAdCodes));
-                ThreadManager.getInstance().postDelay(() -> {
-                    if (mViewModel != null) {
-                        mViewModel.startAllTask(cityAdCodes);
-                    }
-                }, 0);
+                showDialog(false, cityAdCodes);
             }
 
             @Override
             public void pauseAllTask(final ArrayList<Integer> cityAdCodes) {
                 Logger.d( "pauseAllTask cityAdCodes = " + GsonUtils.toJson(cityAdCodes));
-                ThreadManager.getInstance().postDelay(() -> {
-                    if (mViewModel != null) {
-                        mViewModel.pauseAllTask(cityAdCodes);
-                    }
-                }, 0);
+                showDialog(true, cityAdCodes);
             }
 
             @Override
             public void deleteAllTask(final ArrayList<Integer> cityAdCodes) {
                 Logger.d( "deleteAllTask cityAdCodes = " + GsonUtils.toJson(cityAdCodes));
-                ThreadManager.getInstance().postDelay(() -> {
-                    if (mViewModel != null) {
-                        //mViewModel.deleteAllTask(cityAdCodes);
-                    }
-                }, 0);
+                if (mViewModel != null) {
+                    mViewModel.deleteAllTask(cityAdCodes);
+                }
             }
 
         });
 
-        mDownloadedMapDataAdapter = new CityMapDataAdapter(getActivity());
+        mDownloadedMapDataAdapter = new ManagerMapDataAdapter(getActivity());
         final LinearLayoutManager layoutManager1 = new LinearLayoutManager(getActivity());
         layoutManager1.setOrientation(LinearLayoutManager.VERTICAL);
         mBinding.rvDownloadedOffline.setLayoutManager(layoutManager1);
         mBinding.rvDownloadedOffline.setAdapter(mDownloadedMapDataAdapter);
-        mDownloadedMapDataAdapter.setItemClickListener(new CityMapDataAdapter.OnItemClickListener() {
+        mDownloadedMapDataAdapter.setOnChildClickListener(new ManagerMapDataAdapter.OnChildClickListener() {
 
             @Override
             public void startAllTask(final ArrayList<Integer> cityAdCodes) {
                 Logger.d( "startAllTask cityAdCodes = " + GsonUtils.toJson(cityAdCodes));
-                mViewModel.startAllTask(cityAdCodes);
             }
 
             @Override
             public void pauseAllTask(final ArrayList<Integer> cityAdCodes) {
                 Logger.d( "pauseAllTask cityAdCodes = " + GsonUtils.toJson(cityAdCodes));
-                mViewModel.pauseAllTask(cityAdCodes);
             }
 
             @Override
             public void deleteAllTask(final ArrayList<Integer> cityAdCodes) {
                 Logger.d( "deleteAllTask cityAdCodes = " + GsonUtils.toJson(cityAdCodes));
+                isDelete = true;
                 mViewModel.deleteAllTask(cityAdCodes);
-                mViewModel.setDownloadedView(mViewModel.getWorkedList());
             }
 
         });
@@ -116,29 +114,85 @@ public class ManagerMapDataFragment extends BaseFragment<FragmentManagerMapDataB
     }
 
     /**
-     * 更新下载中view
-     * @param cityDataInfos
+     * 设置下载中view数据
+     * @param provDataInfos
      */
-    public void updateDownloadingView(final ArrayList<CityDataInfo> cityDataInfos) {
-
+    public void updateDownloadingView(final ArrayList<ProvDataInfo> provDataInfos) {
         ThreadManager.getInstance().postUi(() -> {
-            if (cityDataInfos != null && !cityDataInfos.isEmpty()) {
-                mDownloadingMapDataAdapter.setData(cityDataInfos);
+            mDownloadingMapDataAdapter.setData(provDataInfos,isDelete,false);
+            if (!ConvertUtils.isEmpty(provDataInfos)) {
+                mAllDownloadingList.clear();
+                for (ProvDataInfo provDataInfo : provDataInfos) {
+                    mAllDownloadingList.addAll(provDataInfo.getCityInfoList());
+                }
+                updateDownloadingButtonStatus();
             }
         });
+    }
+
+    /**
+     * 更新数据列表下载进度&状态
+     * @param parentId
+     * @param childId
+     * @param newValue
+     */
+    public void notifyDowningView(int parentId, int childId, CityDownLoadInfo newValue) {
+        mDownloadingMapDataAdapter.updateChild(parentId, childId, newValue);
+
+        for (CityDataInfo cityDataInfo : mAllDownloadingList) {
+            if (cityDataInfo.getAdcode() == childId) {
+                cityDataInfo.getDownLoadInfo().setTaskState(newValue.getTaskState());
+            }
+        }
+        updateDownloadingButtonStatus();
     }
 
     /**
      * 更新已下载view
-     * @param cityDataInfos
+     * @param provDataInfos
      */
-    public void updateDownloadedView(final ArrayList<CityDataInfo> cityDataInfos) {
+    public void updateDownloadedView(final ArrayList<ProvDataInfo> provDataInfos, boolean isChange) {
+        mDownloadedMapDataAdapter.setData(provDataInfos, isDelete, isChange);
+    }
 
-        ThreadManager.getInstance().postUi(() -> {
-            if (cityDataInfos != null && !cityDataInfos.isEmpty()) {
-                mDownloadedMapDataAdapter.setData(cityDataInfos);
+    /**
+     * 更新按钮状态
+     */
+    private void updateDownloadingButtonStatus() {
+        if (mAllDownloadingList.isEmpty()) {
+            return;
+        }
+        mAllStartButtonChecked = false;
+        mAllPauseButtonChecked = false;
+        for (CityDataInfo cityDataInfo : mAllDownloadingList) {
+            final int taskState = cityDataInfo.getDownLoadInfo().getTaskState();
+            if (taskState == UserDataCode.TASK_STATUS_CODE_PAUSE
+                || taskState == UserDataCode.TASK_STATUS_CODE_ERR) {
+                mAllStartButtonChecked = true;
             }
-        });
+            if (taskState == UserDataCode.TASK_STATUS_CODE_DOING
+                || taskState == UserDataCode.TASK_STATUS_CODE_WAITING) {
+                mAllPauseButtonChecked = true;
+            }
+        }
+        setStartAllTaskStatus(mAllStartButtonChecked);
+        setPauseAllTaskStatus(mAllPauseButtonChecked);
+    }
+
+    /**
+     * 是否全部开始按钮高亮
+     * @return boolean
+     */
+    public boolean getAllStartButtonChecked() {
+        return mAllStartButtonChecked;
+    }
+
+    /**
+     * 是否全部暂停高亮
+     * @return boolean
+     */
+    public boolean getAllPauseButtonChecked() {
+        return mAllPauseButtonChecked;
     }
 
     /**
@@ -148,10 +202,10 @@ public class ManagerMapDataFragment extends BaseFragment<FragmentManagerMapDataB
     public void setDownloadingTitleStatus(final boolean status) {
         ThreadManager.getInstance().postUi(() -> {
             if (status) {
-                mBinding.tvOfflineAllData.setTextColor(ResourceUtils.Companion.getInstance().getColor(R.color.black));
+                mBinding.tvOfflineAllData.setTextColor(ResourceUtils.Companion.getInstance().getColor(R.color.setting_bg_tab_text_select));
                 mBinding.offlineAllDataLine.setVisibility(View.VISIBLE);
             } else {
-                mBinding.tvOfflineAllData.setTextColor(ResourceUtils.Companion.getInstance().getColor(R.color.color_70_000000));
+                mBinding.tvOfflineAllData.setTextColor(ResourceUtils.Companion.getInstance().getColor(R.color.setting_bg_voice_text));
                 mBinding.offlineAllDataLine.setVisibility(View.GONE);
             }
         });
@@ -164,10 +218,10 @@ public class ManagerMapDataFragment extends BaseFragment<FragmentManagerMapDataB
     public void setDownloadedTitleStatus(final boolean status) {
         ThreadManager.getInstance().postUi(() -> {
             if (status) {
-                mBinding.tvOfflineDownloadAdministration.setTextColor(ResourceUtils.Companion.getInstance().getColor(R.color.black));
+                mBinding.tvOfflineDownloadAdministration.setTextColor(ResourceUtils.Companion.getInstance().getColor(R.color.setting_bg_tab_text_select));
                 mBinding.downloadAdministrationLine.setVisibility(View.VISIBLE);
             } else {
-                mBinding.tvOfflineDownloadAdministration.setTextColor(ResourceUtils.Companion.getInstance().getColor(R.color.color_70_000000));
+                mBinding.tvOfflineDownloadAdministration.setTextColor(ResourceUtils.Companion.getInstance().getColor(R.color.setting_bg_voice_text));
                 mBinding.downloadAdministrationLine.setVisibility(View.GONE);
             }
         });
@@ -181,12 +235,12 @@ public class ManagerMapDataFragment extends BaseFragment<FragmentManagerMapDataB
         ThreadManager.getInstance().postUi(() -> {
             if (isChecked) {
                 mBinding.allDataDownload.setBackground(ResourceUtils.Companion.getInstance().getDrawable(R.drawable.bg_setting_checkbox_select));
-                mBinding.tvDownloadAllStart.setTextColor(ResourceUtils.Companion.getInstance().getColor(R.color.white));
+                mBinding.tvDownloadAllStart.setTextColor(ResourceUtils.Companion.getInstance().getColor(R.color.setting_white));
                 mBinding.imgDownloadAllStart.setImageDrawable(ResourceUtils.Companion.getInstance().
                         getDrawable(R.drawable.img_download_all_start_select));
             } else {
                 mBinding.allDataDownload.setBackground(ResourceUtils.Companion.getInstance().getDrawable(R.color.transparent));
-                mBinding.tvDownloadAllStart.setTextColor(ResourceUtils.Companion.getInstance().getColor(R.color.setting_text_preference));
+                mBinding.tvDownloadAllStart.setTextColor(ResourceUtils.Companion.getInstance().getColor(R.color.setting_bg_tab_text_unselect));
                 mBinding.imgDownloadAllStart.setImageDrawable(ResourceUtils.Companion.getInstance().getDrawable(R.drawable.img_download_all_start));
             }
         });
@@ -200,15 +254,45 @@ public class ManagerMapDataFragment extends BaseFragment<FragmentManagerMapDataB
         ThreadManager.getInstance().postUi(() -> {
             if (isChecked) {
                 mBinding.allDataSuspend.setBackground(ResourceUtils.Companion.getInstance().getDrawable(R.drawable.bg_setting_checkbox_select));
-                mBinding.tvDownloadAllSuspend.setTextColor(ResourceUtils.Companion.getInstance().getColor(R.color.white));
+                mBinding.tvDownloadAllSuspend.setTextColor(ResourceUtils.Companion.getInstance().getColor(R.color.setting_white));
                 mBinding.imgDownloadAllSuspend.setImageDrawable(ResourceUtils.Companion.getInstance().
                         getDrawable(R.drawable.img_download_all_suspend_select));
             } else {
                 mBinding.allDataSuspend.setBackground(ResourceUtils.Companion.getInstance().getDrawable(R.color.transparent));
-                mBinding.tvDownloadAllSuspend.setTextColor(ResourceUtils.Companion.getInstance().getColor(R.color.setting_text_preference));
+                mBinding.tvDownloadAllSuspend.setTextColor(ResourceUtils.Companion.getInstance().getColor(R.color.setting_bg_tab_text_unselect));
                 mBinding.imgDownloadAllSuspend.setImageDrawable(ResourceUtils.Companion.getInstance().
                         getDrawable(R.drawable.img_download_all_suspend));
             }
+        });
+    }
+
+    /**
+     * 显示弹框
+     * @param isDownloading
+     */
+    private void showDialog(final boolean isDownloading, final ArrayList<Integer> cityAdCodes) {
+        ThreadManager.getInstance().postUi(() -> {
+            final DownloadReminderDialog downloadReminderDialog = new DownloadReminderDialog(mActivity);
+            downloadReminderDialog.setContent(isDownloading);
+            downloadReminderDialog.setOnDialogClickListener(new DownloadReminderDialog.OnDialogClickListener() {
+                @Override
+                public void onCommitClick() {
+                    if (mViewModel != null) {
+                        if (isDownloading) {
+                            mViewModel.pauseAllTask(cityAdCodes);
+                        } else {
+                            mViewModel.startAllTask(cityAdCodes);
+                        }
+                    }
+                }
+                @Override
+                public void onCancelClick() {
+                    if (mViewModel != null) {
+                        mViewModel.cancelAllTask(cityAdCodes);
+                    }
+                }
+            });
+            downloadReminderDialog.show();
         });
     }
 

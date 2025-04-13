@@ -5,6 +5,10 @@ import android.app.Application;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 
+import com.fy.navi.burypoint.anno.HookMethod;
+import com.fy.navi.burypoint.bean.BuryProperty;
+import com.fy.navi.burypoint.constant.BuryConstant;
+import com.fy.navi.burypoint.controller.BuryPointController;
 import com.fy.navi.service.define.setting.SettingController;
 import com.fy.navi.service.logicpaket.setting.SettingUpdateObservable;
 import com.fy.navi.ui.action.Action;
@@ -64,6 +68,7 @@ public class BaseSettingOthersPrivacyViewModel extends BaseViewModel<SettingOthe
         mModel.setPrivacyStatus(true);
         mModel.setEndDate(mModel.getFormattedDate());
         SettingUpdateObservable.getInstance().notifySettingChanged(SettingController.KEY_SETTING_PRIVACY_STATUS, true);
+        sendBuryPointForSetPrivacyTime(BuryConstant.Number.ONE);
     };
 
     public Action mNeverPrivacy = () -> {
@@ -71,6 +76,15 @@ public class BaseSettingOthersPrivacyViewModel extends BaseViewModel<SettingOthe
         mModel.setPrivacyStatus(false);
         mModel.setEndDate("");
         SettingUpdateObservable.getInstance().notifySettingChanged(SettingController.KEY_SETTING_PRIVACY_STATUS, false);
+        sendBuryPointForSetPrivacyTime(BuryConstant.Number.SECOND);
     };
+
+    @HookMethod(eventName = BuryConstant.EventName.AMAP_PRIVACY_SET)
+    private void sendBuryPointForSetPrivacyTime(String isOneYearPrivacy){
+        BuryProperty buryProperty = new BuryProperty.Builder()
+                .setParams(BuryConstant.ProperType.BURY_KEY_HOME_PREDICTION, isOneYearPrivacy)
+                .build();
+        BuryPointController.getInstance().setBuryProps(buryProperty);
+    }
 
 }

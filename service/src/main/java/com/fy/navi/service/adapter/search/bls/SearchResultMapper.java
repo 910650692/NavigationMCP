@@ -456,13 +456,13 @@ public final class SearchResultMapper {
         searchResultEntity.setPoiType(result.iPoiType);
         // 获取第一个 POI 信息
         final NearestPoi poiItem = result.poi_list.get(0);
-        final GeoPoint poiPoint = new GeoPoint(poiItem.point.lon, poiItem.point.lat);
+        final GeoPoint poiPoint = new GeoPoint(requestParameterBuilder.getPoiLoc().getLon(), requestParameterBuilder.getPoiLoc().getLat());
 
         // 构建 CityInfo
         final CityInfo cityInfo = buildCityInfo(result, poiPoint);
 
         // 构建 PoiInfoEntity
-        final PoiInfoEntity poiInfoEntity = buildPoiInfoEntity(poiItem, poiPoint, cityInfo);
+        final PoiInfoEntity poiInfoEntity = buildPoiInfoEntity(poiItem, poiPoint, cityInfo,result);
 
         // 设置 POI 列表并返回结果
         searchResultEntity.setPoiList(Collections.singletonList(poiInfoEntity));
@@ -495,14 +495,13 @@ public final class SearchResultMapper {
      * @param poiItem NearestPoi
      * @param poiPoint GeoPoint
      * @param cityInfo  CityInfo
+     * @param result SearchNearestResult
      * @return PoiInfoEntity
      */
-    private PoiInfoEntity buildPoiInfoEntity(final NearestPoi poiItem, final GeoPoint poiPoint, final CityInfo cityInfo) {
-        return new PoiInfoEntity()
-                .setPointTypeCode(poiItem.typecode)
-                .setPid(poiItem.poiid)
-                .setName(poiItem.name)
-                .setAddress(poiItem.address)
+    private PoiInfoEntity buildPoiInfoEntity(final NearestPoi poiItem, final GeoPoint poiPoint,
+                                             final CityInfo cityInfo, final SearchNearestResult result) {
+        final PoiInfoEntity poiInfoEntity = new PoiInfoEntity();
+        poiInfoEntity.setPointTypeCode(poiItem.typecode)
                 .setDistance(formatDistanceArrayInternal(poiItem.distance))
                 .setSort_price(poiItem.distance)
                 .setPoint(poiPoint)
@@ -510,6 +509,26 @@ public final class SearchResultMapper {
                 .setPhone(poiItem.tel)
                 .setBusinessTime("")
                 .setCityInfo(cityInfo);
+        if (!ConvertUtils.isEmpty(result.desc)) {
+            poiInfoEntity.setName(result.desc);
+        } else {
+            poiInfoEntity.setName(poiItem.name);
+        }
+        if (!ConvertUtils.isEmpty(result.pos)) {
+            poiInfoEntity.setAddress(result.pos);
+        } else {
+            poiInfoEntity.setAddress(poiItem.address);
+        }
+        Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "current " + poiPoint.getLon() + " " + poiPoint.getLat()
+                + " result " + poiItem.point.lon + " " + poiItem.point.lat + " id: " + poiItem.poiid
+                + " name: " + poiItem.name);
+        if (poiPoint.getLon() == poiItem.point.lon && poiPoint.getLat() == poiItem.point.lat) {
+            //如果搜索出的第一个poi点经纬度和逆地理搜索请求点的经纬度相同，则认为是同一个点，赋值pid
+            poiInfoEntity.setPid(poiItem.poiid);
+            poiInfoEntity.setName(poiItem.name);
+            poiInfoEntity.setAddress(poiItem.address);
+        }
+        return poiInfoEntity;
     }
 
 

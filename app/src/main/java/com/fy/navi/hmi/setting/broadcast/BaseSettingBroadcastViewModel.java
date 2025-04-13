@@ -2,10 +2,15 @@ package com.fy.navi.hmi.setting.broadcast;
 
 
 import android.app.Application;
-import com.android.utils.log.Logger;
+
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 
+import com.android.utils.log.Logger;
+import com.fy.navi.burypoint.anno.HookMethod;
+import com.fy.navi.burypoint.bean.BuryProperty;
+import com.fy.navi.burypoint.constant.BuryConstant;
+import com.fy.navi.burypoint.controller.BuryPointController;
 import com.fy.navi.hmi.setting.broadcast.voice.SettingVoiceBroadcastFragment;
 import com.fy.navi.service.define.setting.SettingController;
 import com.fy.navi.service.logicpaket.cruise.CruisePackage;
@@ -78,13 +83,19 @@ public class BaseSettingBroadcastViewModel extends BaseViewModel<SettingBroadcas
 
     public Action mSwitchNaviBroadcastDetailClick = () -> {
         NaviPackage.getInstance().updateBroadcastParam(2, true);
+
+        sendBuryPointForSettingBroadcast(BuryConstant.BroadcastOption.VOICE_STYLE, BuryConstant.VoiceStyle.DETAILED);
     };
     public Action mSwitchNaviBroadcastConciseClick = () -> {
         NaviPackage.getInstance().updateBroadcastParam(1, true);
+
+        sendBuryPointForSettingBroadcast(BuryConstant.BroadcastOption.VOICE_STYLE, BuryConstant.VoiceStyle.CONCISE);
     };
 
     public Action mSwitchNaviBroadcastSimpleClick = () -> {
         NaviPackage.getInstance().updateBroadcastParam(3, true);
+
+        sendBuryPointForSettingBroadcast(BuryConstant.BroadcastOption.VOICE_STYLE, BuryConstant.VoiceStyle.SIMPLE);
     };
 
     public Action mSwitchCruiseBroadcastClick = () -> {
@@ -109,6 +120,8 @@ public class BaseSettingBroadcastViewModel extends BaseViewModel<SettingBroadcas
             mModel.setConfigKeySafeBroadcast(false);
             mModel.setConfigKeyDriveWarn(false);
             mView.updateCruiseBroadcastEnable(false);
+
+            sendBuryPointForSettingBroadcast(BuryConstant.BroadcastOption.CRUISE_VOICE, BuryConstant.CruiseVoice.CLOSE);
         }
     };
 
@@ -116,6 +129,8 @@ public class BaseSettingBroadcastViewModel extends BaseViewModel<SettingBroadcas
         final boolean value = Boolean.FALSE.equals(mIsCruiseBroadcastRoadCondition.getValue());
         mIsCruiseBroadcastRoadCondition.setValue(value);
         mModel.setConfigKeyRoadWarn(value);
+
+        sendBuryPointForSettingBroadcast(BuryConstant.BroadcastOption.CRUISE_VOICE, BuryConstant.CruiseVoice.ROAD_CONDITION);
     };
 
     public Action mSwitchCruiseBroadcastCameraClick = () -> {
@@ -123,12 +138,16 @@ public class BaseSettingBroadcastViewModel extends BaseViewModel<SettingBroadcas
         mIsCruiseBroadcastCamera.setValue(value);
         mModel.setConfigKeySafeBroadcast(value);
 
+        sendBuryPointForSettingBroadcast(BuryConstant.BroadcastOption.CRUISE_VOICE, BuryConstant.CruiseVoice.CAMERA);
+
     };
 
     public Action mSwitchCruiseBroadcastSafeClick = () -> {
         final boolean value = Boolean.FALSE.equals(mIsCruiseBroadcastSafe.getValue());
         mIsCruiseBroadcastSafe.setValue(value);
         mModel.setConfigKeyDriveWarn(value);
+
+        sendBuryPointForSettingBroadcast(BuryConstant.BroadcastOption.CRUISE_VOICE, BuryConstant.CruiseVoice.SAFE);
     };
 
     /**
@@ -148,4 +167,22 @@ public class BaseSettingBroadcastViewModel extends BaseViewModel<SettingBroadcas
     public Action mOpenBroadcastVoiceListPage = () -> {
         addFragment(new SettingVoiceBroadcastFragment(), null);
     };
+
+    @HookMethod
+    private void sendBuryPointForSettingBroadcast(String option, String value){
+        String eventName = switch (option){
+            case BuryConstant.BroadcastOption.VOICE_PACKAGE ->
+                    BuryConstant.EventName.AMAP_SETTING_VOICEPACKAGE;
+            case BuryConstant.BroadcastOption.VOICE_STYLE ->
+                    BuryConstant.EventName.AMAP_SETTING_VOICESTYLE;
+            case BuryConstant.BroadcastOption.CRUISE_VOICE ->
+                    BuryConstant.EventName.AMAP_SETTING_CRUISEVOICE;
+            default -> BuryConstant.EventName.AMAP_UNKNOWN;
+        };
+        BuryPointController.getInstance().setEventName(eventName);
+        BuryProperty buryProperty = new BuryProperty.Builder()
+                .setParams(BuryConstant.ProperType.BURY_KEY_SETTING_CONTENT, value)
+                .build();
+        BuryPointController.getInstance().setBuryProps(buryProperty);
+    }
 }

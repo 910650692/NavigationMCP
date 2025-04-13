@@ -30,9 +30,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_30"
-            android:layout_marginTop="@dimen/dp_60"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toTopOf="parent" app:layout_constraintBottom_toBottomOf="parent">
 
             <com.fy.navi.ui.view.SkinTextView
                 android:id="@+id/poi_num"
@@ -66,7 +65,7 @@
             android:layout_width="@dimen/dp_0"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_30"
-            android:layout_marginEnd="@dimen/dp_40"
+            android:layout_marginEnd="@dimen/dp_10"
             android:layout_marginTop="@dimen/dp_18"
             app:layout_goneMarginBottom="@dimen/dp_18"
             app:layout_constraintEnd_toStartOf="@+id/poi_to_navi"
@@ -136,10 +135,9 @@
             android:layout_width="wrap_content"
             android:layout_height="@dimen/dp_106"
             android:layout_marginEnd="@dimen/dp_30"
-            android:layout_marginTop="@dimen/dp_12"
             android:minWidth="@dimen/dp_90"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toTopOf="@+id/crl_poi_des">
 
             <com.fy.navi.ui.view.SkinImageView
                 android:id="@+id/iv_navi_icon"

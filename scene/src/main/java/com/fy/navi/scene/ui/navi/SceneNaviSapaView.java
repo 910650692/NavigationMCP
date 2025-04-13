@@ -9,17 +9,12 @@ import android.view.ViewGroup;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
-import com.android.utils.ResourceUtils;
 import com.android.utils.log.Logger;
-import com.fy.navi.scene.R;
 import com.fy.navi.scene.databinding.SceneNaviSapaViewBinding;
 import com.fy.navi.scene.impl.navi.SceneNaviSapaImpl;
 import com.fy.navi.scene.impl.navi.inter.ISceneCallback;
-import com.fy.navi.scene.ui.navi.manager.INaviSceneEvent;
 import com.fy.navi.scene.ui.navi.manager.NaviSceneBase;
 import com.fy.navi.scene.ui.navi.manager.NaviSceneId;
-import com.fy.navi.scene.ui.navi.manager.NaviSceneManager;
-import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.define.navi.SapaInfoEntity;
 import com.fy.navi.ui.view.SkinConstraintLayout;
 
@@ -30,7 +25,6 @@ import com.fy.navi.ui.view.SkinConstraintLayout;
  */
 public class SceneNaviSapaView extends NaviSceneBase<SceneNaviSapaViewBinding, SceneNaviSapaImpl> {
     private static final String TAG = "SceneNaviSapaView";
-    private ISceneCallback mISceneCallback;
 
     public SceneNaviSapaView(final Context context) {
         super(context);
@@ -48,46 +42,6 @@ public class SceneNaviSapaView extends NaviSceneBase<SceneNaviSapaViewBinding, S
     @Override
     protected NaviSceneId getSceneId() {
         return NaviSceneId.NAVI_SCENE_SERVICE_AREA;
-    }
-
-    @Override
-    protected String getSceneName() {
-        return NaviSceneId.NAVI_SCENE_SERVICE_AREA.name();
-    }
-
-    @Override
-    public INaviSceneEvent getNaviSceneEvent() {
-        return NaviSceneManager.getInstance();
-    }
-
-
-    protected void init() {
-        NaviSceneManager.getInstance().addNaviScene(NaviSceneId.NAVI_SCENE_SERVICE_AREA,
-                this);
-    }
-
-    @Override
-    public void show() {
-        super.show();
-        if (mISceneCallback != null) {
-            mISceneCallback.updateSceneVisible(NaviSceneId.NAVI_SCENE_SERVICE_AREA, true);
-        }
-    }
-
-    @Override
-    public void hide() {
-        super.hide();
-        if (mISceneCallback != null) {
-            mISceneCallback.updateSceneVisible(NaviSceneId.NAVI_SCENE_SERVICE_AREA, false);
-        }
-    }
-
-    @Override
-    public void close() {
-        super.close();
-        if (mISceneCallback != null) {
-            mISceneCallback.updateSceneVisible(NaviSceneId.NAVI_SCENE_SERVICE_AREA, false);
-        }
     }
 
     @Override
@@ -153,6 +107,7 @@ public class SceneNaviSapaView extends NaviSceneBase<SceneNaviSapaViewBinding, S
     @Override
     public void onDestroy() {
         super.onDestroy();
+        mISceneCallback = null;
     }
 
     /**
@@ -176,7 +131,7 @@ public class SceneNaviSapaView extends NaviSceneBase<SceneNaviSapaViewBinding, S
             mViewBinding.naviSapaOnlyService.clFirstServiceChargeData.setVisibility(VISIBLE);
             ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams)
                     mViewBinding.naviSapaOnlyService.stvOnlyServiceDistance.getLayoutParams();
-            params.endToEnd = 295;
+            params.rightMargin = 295;
             mViewBinding.naviSapaOnlyService.stvOnlyServiceDistance.setLayoutParams(params);
             mViewBinding.naviSapaOnlyService.stvOnlyServiceName.setMaxWidth(170);
             mViewBinding.naviSapaOnlyService.stvOnlyServiceDistance.setMaxWidth(125);
@@ -185,7 +140,7 @@ public class SceneNaviSapaView extends NaviSceneBase<SceneNaviSapaViewBinding, S
             mViewBinding.naviSapaOnlyService.clFirstServiceChargeData.setVisibility(GONE);
             ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams)
                     mViewBinding.naviSapaOnlyService.stvOnlyServiceDistance.getLayoutParams();
-            params.endToEnd = 24;
+            params.rightMargin = 24;
             mViewBinding.naviSapaOnlyService.stvOnlyServiceDistance.setLayoutParams(params);
             mViewBinding.naviSapaOnlyService.stvOnlyServiceName.setMaxWidth(400);
             mViewBinding.naviSapaOnlyService.stvOnlyServiceDistance.setMaxWidth(200);
@@ -200,8 +155,8 @@ public class SceneNaviSapaView extends NaviSceneBase<SceneNaviSapaViewBinding, S
             mViewBinding.naviSapaFirstService.stvFirstServiceName.setVisibility(GONE);
             ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) mViewBinding.
                     naviSapaFirstService.stvFirstServiceDistance.getLayoutParams();
-            params.startToStart = 30;
-            params.bottomToBottom = 12;
+            params.leftMargin = 30;
+            params.bottomMargin = 12;
             mViewBinding.naviSapaFirstService.stvFirstServiceDistance.setLayoutParams(params);
             invalidate();
         } else {
@@ -209,8 +164,8 @@ public class SceneNaviSapaView extends NaviSceneBase<SceneNaviSapaViewBinding, S
             mViewBinding.naviSapaFirstService.stvFirstServiceName.setVisibility(VISIBLE);
             ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) mViewBinding.
                     naviSapaFirstService.stvFirstServiceDistance.getLayoutParams();
-            params.startToStart = 223;
-            params.bottomToBottom = 26;
+            params.leftMargin = 223;
+            params.bottomMargin = 26;
             mViewBinding.naviSapaFirstService.stvFirstServiceDistance.setLayoutParams(params);
             invalidate();
         }
@@ -221,7 +176,7 @@ public class SceneNaviSapaView extends NaviSceneBase<SceneNaviSapaViewBinding, S
         mViewBinding.naviSapaOnlyService.clFirstServiceChargeData.setVisibility(GONE);
         ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams)
                 mViewBinding.naviSapaOnlyService.stvOnlyServiceDistance.getLayoutParams();
-        params.endToEnd = 24;
+        params.rightMargin = 24;
         mViewBinding.naviSapaOnlyService.stvOnlyServiceDistance.setLayoutParams(params);
         mViewBinding.naviSapaOnlyService.stvOnlyServiceName.setMaxWidth(400);
         mViewBinding.naviSapaOnlyService.stvOnlyServiceDistance.setMaxWidth(200);
@@ -229,8 +184,8 @@ public class SceneNaviSapaView extends NaviSceneBase<SceneNaviSapaViewBinding, S
         mViewBinding.naviSapaFirstService.stvFirstServiceName.setVisibility(VISIBLE);
         params = (ConstraintLayout.LayoutParams) mViewBinding.
                 naviSapaFirstService.stvFirstServiceDistance.getLayoutParams();
-        params.startToStart = 223;
-        params.bottomToBottom = 26;
+        params.leftMargin = 223;
+        params.bottomMargin = 26;
         mViewBinding.naviSapaFirstService.stvFirstServiceDistance.setLayoutParams(params);
         invalidate();
     }

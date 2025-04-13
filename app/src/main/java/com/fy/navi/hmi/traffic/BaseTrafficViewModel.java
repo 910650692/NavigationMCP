@@ -13,6 +13,10 @@ import com.android.utils.TimeUtils;
 import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
+import com.fy.navi.burypoint.anno.HookMethod;
+import com.fy.navi.burypoint.bean.BuryProperty;
+import com.fy.navi.burypoint.constant.BuryConstant;
+import com.fy.navi.burypoint.controller.BuryPointController;
 import com.fy.navi.hmi.R;
 import com.fy.navi.service.AppContext;
 import com.fy.navi.service.define.aos.FyCriticism;
@@ -20,6 +24,7 @@ import com.fy.navi.service.define.aos.FyGSubTraEventDetail;
 import com.fy.navi.service.define.aos.FyGTraEventDetail;
 import com.fy.navi.service.define.bean.GeoPoint;
 import com.fy.navi.service.define.search.PoiInfoEntity;
+import com.fy.navi.service.logicpaket.navistatus.NaviStatusPackage;
 import com.fy.navi.ui.action.Action;
 import com.fy.navi.ui.base.BaseViewModel;
 
@@ -84,12 +89,14 @@ public class BaseTrafficViewModel extends BaseViewModel<TrafficEventFragment, Tr
     public Action uploadTrafficEventThumb = () -> {
         isDoThumb = true;
         mModel.uploadTrafficEvent(true, getCurrentEvent());
+        if(NaviStatusPackage.getInstance().isGuidanceActive()) sendBuryPointForReport(true);
     };
 
     // 上报交通事件，确认不存在
     public Action uploadTrafficEventUnThumb = () -> {
         isDoThumb = false;
         mModel.uploadTrafficEvent(false, getCurrentEvent());
+        if(NaviStatusPackage.getInstance().isGuidanceActive()) sendBuryPointForReport(false);
     };
 
     // 查看上一个事件
@@ -229,5 +236,14 @@ public class BaseTrafficViewModel extends BaseViewModel<TrafficEventFragment, Tr
             fyGSubTraEventDetail = GsonUtils.convertToT(fyGTraEventDetail.get(), FyGSubTraEventDetail.class);
         }
         return fyGSubTraEventDetail;
+    }
+
+    @HookMethod(eventName = BuryConstant.EventName.AMAP_NAVI_REPORT_SELECT)
+    private void sendBuryPointForReport(boolean isExist){
+        BuryProperty buryProperty = new BuryProperty.Builder()
+                .setParams(BuryConstant.ProperType.BURY_KEY_ROUTE_PREFERENCE, isExist ? BuryConstant.CommonText.EXIST : BuryConstant.CommonText.NOT_EXIST)
+                .setParams(BuryConstant.ProperType.BURY_KEY_HOME_PREDICTION, mView.getTrafficType())
+                .build();
+        BuryPointController.getInstance().setBuryProps(buryProperty);
     }
 }

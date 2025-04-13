@@ -2,6 +2,7 @@ package com.fy.navi.service.adapter.engine;
 
 import androidx.work.ListenableWorker;
 
+import com.fy.navi.service.define.engine.GaodeLogLevel;
 import com.fy.navi.service.define.map.MapType;
 
 /**
@@ -22,7 +23,7 @@ public interface IEngineApi {
 
     int mapDeviceID(MapType mapId);
 
-    void switchLog();
+    void switchLog(GaodeLogLevel logLevel);
 
     boolean engineStatus();
 

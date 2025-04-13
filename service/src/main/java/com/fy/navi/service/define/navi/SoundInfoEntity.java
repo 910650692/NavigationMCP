@@ -7,6 +7,8 @@ public class SoundInfoEntity {
     private int mRingType;//叮咚音类型
     private boolean mIsRingType = false;//是否播报叮咚音
 
+    private boolean highPriority = false;
+
     private int soundType; // 播报类型
 
     public String getText() {
@@ -41,12 +43,21 @@ public class SoundInfoEntity {
         this.soundType = soundType;
     }
 
+    public boolean isHighPriority() {
+        return highPriority;
+    }
+
+    public void setHighPriority(boolean highPriority) {
+        this.highPriority = highPriority;
+    }
+
     @Override
     public String toString() {
         return "SoundInfoEntity{" +
                 "mText='" + mText + '\'' +
                 ", mRingType=" + mRingType +
                 ", mIsRingType=" + mIsRingType +
+                ", highPriority=" + highPriority +
                 ", soundType=" + soundType +
                 '}';
     }

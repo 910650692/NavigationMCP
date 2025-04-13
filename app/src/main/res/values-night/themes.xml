@@ -1,0 +1,18 @@
+<resources>
+
+    <style name="Base.Theme.NaviApp" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="windowNoTitle">true</item>
+        <!-- 导航栏透明 -->
+        <item name="android:navigationBarColor">@color/transparent</item>
+        <!-- 状态栏透明 -->
+        <item name="android:windowTranslucentStatus">true</item>
+        <!-- 窗口背景色透明 -->
+        <item name="android:windowBackground">@color/transparent</item>
+        <!-- 窗口背景色是否缓存 -->
+        <item name="android:colorBackgroundCacheHint">@null</item>
+        <!-- 窗口触摸时间是否分离 -->
+        <item name="android:windowEnableSplitTouch">false</item>
+        <!-- 窗口子视图是否独立 -->
+        <item name="android:splitMotionEvents">false</item>
+    </style>
+</resources>

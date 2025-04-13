@@ -6,20 +6,20 @@
   <path
       android:pathData="M46,20.467m-3.271,0a3.271,3.271 0,1 1,6.541 0a3.271,3.271 0,1 1,-6.541 0"
       android:strokeWidth="1"
-      android:fillColor="#4B535D"
+      android:fillColor="@color/icon_map_home_button"
       android:fillType="evenOdd"
       android:strokeColor="#00000000"/>
   <path
       android:pathData="M37.619,23.285C34.839,24.347 32.313,25.921 30.155,27.892C26.62,31.122 24.075,35.419 23.029,40.273C22.684,41.876 22.502,43.539 22.502,45.244C22.502,58.221 33.023,68.742 46,68.742C58.977,68.742 69.498,58.221 69.498,45.244C69.498,35.193 63.186,26.615 54.311,23.258"
       android:strokeWidth="4.79166667"
       android:fillColor="#00000000"
-      android:strokeColor="#4B535D"
+      android:strokeColor="@color/icon_map_home_button"
       android:fillType="evenOdd"
       android:strokeLineCap="round"/>
   <path
       android:pathData="M37.857,39.132L45.437,60.11C45.617,60.607 46.167,60.865 46.664,60.685C46.966,60.576 47.194,60.323 47.27,60.01L49.625,50.329C49.709,49.981 49.981,49.709 50.329,49.625L59.997,47.273C60.511,47.148 60.826,46.63 60.701,46.115C60.625,45.802 60.397,45.549 60.094,45.44L39.081,37.904C38.583,37.726 38.034,37.985 37.856,38.483C37.78,38.693 37.781,38.922 37.857,39.132Z"
       android:strokeWidth="1"
-      android:fillColor="#4B535D"
+      android:fillColor="@color/icon_map_home_button"
       android:fillType="nonZero"
       android:strokeColor="#00000000"/>
 </vector>

@@ -89,20 +89,20 @@ public class DownloadBtnView extends ConstraintLayout {
                     setDownloadViewIcon(R.drawable.img_untop_bwhite_42);
                 }
                 setDownloadViewBackground(R.drawable.shape_bg_download_data);
-                setDownloadViewTextColor(R.color.color_ffffff);
+                setDownloadViewTextColor(R.color.setting_white);
                 setDownloadViewIconVisible(true);
                 break;
             case UserDataCode.TASK_STATUS_CODE_WAITING:
                 setDownloadViewText("等待中");
                 setDownloadViewBackground(R.drawable.shape_bg_download_data);
-                setDownloadViewTextColor(R.color.color_ffffff);
+                setDownloadViewTextColor(R.color.setting_white);
                 setDownloadViewIconVisible(true);
                 setDownloadViewIcon(R.drawable.img_suspend_42day);
                 break;
             case UserDataCode.TASK_STATUS_CODE_PAUSE: // 继续
                 setDownloadViewText("继续");
                 setDownloadViewBackground(R.drawable.shape_bg_download_data);
-                setDownloadViewTextColor(R.color.color_ffffff);
+                setDownloadViewTextColor(R.color.setting_white);
                 setDownloadViewIconVisible(true);
                 setDownloadViewIcon(R.drawable.img_start_42day);
                 break;
@@ -112,9 +112,10 @@ public class DownloadBtnView extends ConstraintLayout {
 //                String formatted = String.format("%.2f", data.getPercent());// 输出: 123.46
                 // Math.floor 四舍五入，向下取整
                 setDownloadViewText((int) Math.floor(data.getPercent()) + "%");
-                setDownloadViewBackground(R.drawable.shape_bg_download_data);
-                setDownloadViewTextColor(R.color.color_ffffff);
-                setDownloadViewIconVisible(false);
+                setDownloadViewBackground(R.color.transparent);
+                setDownloadViewTextColor(R.color.setting_downloading_color);
+                setDownloadViewIconVisible(true);
+                setDownloadViewIcon(R.drawable.img_pause);
                 break;
             case UserDataCode.TASK_STATUS_CODE_CHECKING:
                 // 校验中
@@ -123,9 +124,9 @@ public class DownloadBtnView extends ConstraintLayout {
                 // 校验完成
                 break;
             case UserDataCode.TASK_STATUS_CODE_UNZIPPING:
-                setDownloadViewText("解压中");
-                setDownloadViewBackground(R.drawable.shape_bg_download_data);
-                setDownloadViewTextColor(R.color.color_ffffff);
+                setDownloadViewText("解压中"+(int) Math.floor(data.getPercent()) + "%");
+                setDownloadViewBackground(R.color.transparent);
+                setDownloadViewTextColor(R.color.setting_downloading_color);
                 setDownloadViewIconVisible(false);
                 break;
             case UserDataCode.TASK_STATUS_CODE_UNZIPPED:
@@ -134,14 +135,14 @@ public class DownloadBtnView extends ConstraintLayout {
             case UserDataCode.TASK_STATUS_CODE_SUCCESS:
                 setDownloadViewText("已下载");
                 setDownloadViewBackground(0);
-                setDownloadViewTextColor(R.color.color_70_000000);
+                setDownloadViewTextColor(R.color.setting_bg_tab_text_unselect);
                 setDownloadViewIconVisible(false);
                 break;
             case UserDataCode.TASK_STATUS_CODE_ERR:
             case UserDataCode.TASK_STATUS_CODE_MAX:
                 setDownloadViewText("重试");
                 setDownloadViewBackground(R.drawable.shape_bg_download_data);
-                setDownloadViewTextColor(R.color.color_ffffff);
+                setDownloadViewTextColor(R.color.setting_white);
                 setDownloadViewIconVisible(false);
                 break;
             default:

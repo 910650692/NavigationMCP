@@ -167,12 +167,7 @@ public class CruisePackage implements CruiseObserver {
 
     @Override
     public void onPlayTTS(SoundInfoEntity info) {
-        // 巡航播报是否打开
-        final boolean isCruiseOpen = SettingPackage.getInstance().getCruiseBroadcastOpen();
-        if (mSpeechAdapter != null && isCruiseOpen) {
-            mSpeechAdapter.synthesize(info.getText());
-        }
-        Logger.i(TAG, "onPlayTTS", "isCruiseTTsOpen:" + isCruiseOpen);
+        // 这里不需要处理，统一放在NaviPackage里面处理
     }
 
     public static CruisePackage getInstance() {

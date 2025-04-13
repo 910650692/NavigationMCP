@@ -9,19 +9,28 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.alibaba.android.arouter.launcher.ARouter;
 import com.android.utils.thread.ThreadManager;
+import com.fy.navi.burypoint.anno.HookMethod;
+import com.fy.navi.burypoint.bean.BuryProperty;
+import com.fy.navi.burypoint.constant.BuryConstant;
+import com.fy.navi.burypoint.controller.BuryPointController;
 import com.fy.navi.hmi.route.RouteFragment;
 import com.fy.navi.scene.RoutePath;
 import com.fy.navi.scene.impl.search.SearchFragmentFactory;
 import com.fy.navi.service.AutoMapConstant;
+import com.fy.navi.service.define.map.MapType;
+import com.fy.navi.service.define.navistatus.NaviStatus;
 import com.fy.navi.service.define.route.RoutePoiType;
 import com.fy.navi.service.define.search.PoiInfoEntity;
 import com.fy.navi.service.define.setting.SettingController;
+import com.fy.navi.service.logicpaket.navistatus.NaviStatusPackage;
+import com.fy.navi.service.logicpaket.route.RoutePackage;
 import com.fy.navi.service.logicpaket.setting.SettingUpdateObservable;
 import com.fy.navi.ui.action.Action;
 import com.fy.navi.ui.base.BaseFragment;
 import com.fy.navi.ui.base.BaseViewModel;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class BaseFavoriteViewModel extends BaseViewModel<FavoriteFragment, FavoriteModel> {
 
@@ -78,37 +87,68 @@ public class BaseFavoriteViewModel extends BaseViewModel<FavoriteFragment, Favor
 
     // 添加家
     public Action mGoSettingHome = () -> {
-        final Bundle bundle = new Bundle();
         if (mHome == null) {
+            final Bundle bundle = new Bundle();
             bundle.putInt(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_TYPE, AutoMapConstant.SearchType.SEARCH_KEYWORD);
             bundle.putInt(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_OPEN_HOME_COMPANY, AutoMapConstant.HomeCompanyType.HOME);
             addFragment(new HomeCompanyFragment(), bundle);
         } else {
-            bundle.putParcelable(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_OPEN_ROUTE, mHome);
-            bundle.putInt(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_OPEN_ROUTE_TYPE, RoutePoiType.ROUTE_POI_TYPE_END);
-            addFragment(new RouteFragment(), bundle);
+            startRoute(mHome);
+            goHomeOrCompany(AutoMapConstant.HomeCompanyType.HOME);
         }
     };
 
     // 添加公司
     public Action mGoSettingCompany = () -> {
-        final Bundle bundle = new Bundle();
         if (mCompany == null) {
+            final Bundle bundle = new Bundle();
             bundle.putInt(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_TYPE, AutoMapConstant.SearchType.SEARCH_KEYWORD);
             bundle.putInt(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_OPEN_HOME_COMPANY, AutoMapConstant.HomeCompanyType.COMPANY);
             addFragment(new HomeCompanyFragment(), bundle);
         } else {
-            bundle.putParcelable(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_OPEN_ROUTE, mCompany);
-            bundle.putInt(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_OPEN_ROUTE_TYPE, RoutePoiType.ROUTE_POI_TYPE_END);
-            addFragment(new RouteFragment(), bundle);
+            startRoute(mCompany);
+            goHomeOrCompany(AutoMapConstant.HomeCompanyType.COMPANY);
         }
     };
 
-    public Action mShowHomeCompanyDisplayed = () -> {
-        final boolean value = Boolean.FALSE.equals(mIsHomeCompanyDisplayed.getValue());
-        SettingUpdateObservable.getInstance().notifySettingChanged(SettingController.KEY_SETTING_HOME_COMPANY_DISPLAYED, value);
-        mIsHomeCompanyDisplayed.setValue(value);
-        mModel.setHomeCompanyDisplay(value);
+    @HookMethod()
+    private void goHomeOrCompany(int type){
+        String eventName = switch(type){
+            case AutoMapConstant.HomeCompanyType.HOME -> BuryConstant.EventName.AMAP_HOME_QUICKACCESS;
+            case AutoMapConstant.HomeCompanyType.COMPANY -> BuryConstant.EventName.AMAP_WORK_QUICKACCESS;
+            default -> "";
+        };
+        BuryPointController.getInstance().setEventName(eventName);
+    }
+
+    /**
+     * 开启算路或者切换终点
+     * @param poiInfoEntity
+     */
+    public void startRoute(final PoiInfoEntity poiInfoEntity) {
+        if (Objects.equals(NaviStatusPackage.getInstance().getCurrentNaviStatus(), NaviStatus.NaviStatusType.SELECT_ROUTE)
+            || Objects.equals(NaviStatusPackage.getInstance().getCurrentNaviStatus(), NaviStatus.NaviStatusType.NAVING)) {
+            RoutePackage.getInstance().requestChangeEnd(MapType.MAIN_SCREEN_MAIN_MAP, poiInfoEntity);
+        } else {
+            final Bundle bundle = new Bundle();
+            bundle.putParcelable(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_OPEN_ROUTE, poiInfoEntity);
+            bundle.putInt(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_OPEN_ROUTE_TYPE, RoutePoiType.ROUTE_POI_TYPE_END);
+            addFragment(new RouteFragment(), bundle);
+        }
+    }
+
+    public Action mShowHomeCompanyDisplayed = new Action() {
+        @Override
+        @HookMethod(eventName = BuryConstant.EventName.AMAP_SETTING_HOMEWORKSWITCH)
+        public void call() {
+            final boolean value = Boolean.FALSE.equals(mIsHomeCompanyDisplayed.getValue());
+            SettingUpdateObservable.getInstance().notifySettingChanged(SettingController.KEY_SETTING_HOME_COMPANY_DISPLAYED, value);
+            mIsHomeCompanyDisplayed.setValue(value);
+            mModel.setHomeCompanyDisplay(value);
+
+            BuryProperty property = new BuryProperty.Builder().setParams(BuryConstant.ProperType.BURY_KEY_SETTING_CONTENT, value ? BuryConstant.Number.SECOND : BuryConstant.Number.ONE).build();
+            BuryPointController.getInstance().setBuryProps(property);
+        }
     };
 
     public boolean getIsHome() {

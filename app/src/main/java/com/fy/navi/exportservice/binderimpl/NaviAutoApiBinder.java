@@ -11,6 +11,7 @@ import android.util.Log;
 import com.android.utils.gson.GsonUtils;
 import com.fy.navi.hmi.map.MapActivity;
 import com.fy.navi.mapservice.bean.INaviConstant;
+import com.fy.navi.mapservice.bean.common.BaseCityInfo;
 import com.fy.navi.mapservice.bean.common.BaseDistrictInfo;
 import com.fy.navi.mapservice.bean.common.BaseGeoPoint;
 import com.fy.navi.mapservice.bean.common.BaseLocationInfo;
@@ -142,32 +143,37 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub {
             @Override
             public void onSearchResult(final int taskId, final int errorCode, final String message,
                                        final SearchResultEntity searchResultEntity) {
-                Log.d(TAG, "onSearchResult: start");
                 final boolean searchSuccess = null != searchResultEntity && null != searchResultEntity.getPoiList()
                         && !searchResultEntity.getPoiList().isEmpty();
+                Log.i(TAG, "onSearchResult " + searchSuccess);
+
+                PoiInfoEntity firstResult = null;
+                if (searchSuccess) {
+                    firstResult = searchResultEntity.getPoiList().get(0);
+                }
                 //逆地理解析获取行政区域信息，不对外分发
                 if (mDistrictSearchId == taskId) {
                     Log.d(TAG, "onSearchResult, mDistrictSearchId == taskId, success: " + searchSuccess);
-                    if (searchSuccess) {
-                        final PoiInfoEntity poiInfoEntity = searchResultEntity.getPoiList().get(0);
-                        if (null != poiInfoEntity) {
-                            updateDistrictAndLocation(poiInfoEntity);
-                        }
-                    }
                     mDistrictSearchId = -1;
+                    if (searchSuccess && null != firstResult) {
+                        updateDistrictAndLocation(firstResult);
+                    }
                     return;
                 }
 
                 String keyword = null;
                 if (null != searchResultEntity) {
-                    Log.d(TAG, "onSearchResult: null != searchResultEntity");
                     keyword = searchResultEntity.getKeyword();
                 }
                 if (taskId == mCommonSearchId) {
                     Log.d(TAG, "onSearchResult: taskId == mCommonSearchId");
                     if (searchSuccess) {
-                        final PoiInfoEntity poiInfoEntity = searchResultEntity.getPoiList().get(0);
-                        dispatchReverseSearch(mCommonSearchId, poiInfoEntity);
+                        String poiMsg = "empty poi";
+                        if (null != firstResult) {
+                            poiMsg = (firstResult.getName() + " ,address: " + firstResult.getAddress() + " ,pId: " + firstResult.getPid());
+                        }
+                        Log.d(TAG, "reverseSearchResult: " + poiMsg);
+                        dispatchReverseSearch(mCommonSearchId, firstResult);
                     } else {
                         dispatchSearchFailed(false, errorCode);
                     }
@@ -185,14 +191,13 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub {
             @Override
             public void onSilentSearchResult(final int  taskId, final int errorCode, final String message,
                                              final SearchResultEntity searchResultEntity) {
-                Log.d(TAG, "onSilentSearchResult start: ");
                 if (mRouteRequestAfterSearch) {
                     Log.d(TAG, "onSilentSearchResult: mRouteRequestAfterSearch = true");
                     mRouteRequestAfterSearch = false;
                     final boolean success = null != searchResultEntity && null != searchResultEntity.getPoiList()
                             && !searchResultEntity.getPoiList().isEmpty();
+                    Log.d(TAG, "onSilentSearchResult success: " + success);
                     if (success) {
-                        Log.d(TAG, "onSilentSearchResult: success");
                         final PoiInfoEntity poiInfo = searchResultEntity.getPoiList().get(0);
                         if (null != poiInfo) {
                             Log.d(TAG, "onSilentSearchResult: null != poiInfo");
@@ -227,7 +232,7 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub {
             }
 
             try {
-                Log.d(TAG, "onNaviStatusChange inCallback");
+                Log.d(TAG, "onNaviStatusChange inCallback " + naviStatus);
                 mInCallback = true;
                 final int count = mNaviAutoCallbackList.beginBroadcast();
                 for (int i = 0; i < count; i++) {
@@ -538,13 +543,15 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub {
         final CityInfo cityInfo = poiInfo.getCityInfo();
         Log.d(TAG, "updateDistrictAndLocation: " + cityInfo);
         if (null != cityInfo) {
-            if (mDistrictInfo == null) {
+            if (null == mDistrictInfo) {
                 mDistrictInfo = new BaseDistrictInfo();
             }
             mDistrictInfo.setProvince(cityInfo.getProvince());
             mDistrictInfo.setProvinceId(cityInfo.getProvinceAdCode());
             mDistrictInfo.setCity(cityInfo.getCityName());
-            mDistrictInfo.setCityId(cityInfo.getCityCode());
+            final int cityId = cityInfo.getCityCode();
+            final int convertedId = ExportConvertUtil.getInstance().cityIdConvert(cityId);
+            mDistrictInfo.setCityId(convertedId);
             mDistrictInfo.setDistrict(cityInfo.getDistrict());
             mDistrictInfo.setDistrictId(cityInfo.getDistrictAdCode());
             dispatchDistrictInfo();
@@ -625,11 +632,12 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub {
      * @param poiInfo 搜索结果.
      */
     private void dispatchReverseSearch(final int taskId, final PoiInfoEntity poiInfo) {
-        if (null == poiInfo || TextUtils.isEmpty(poiInfo.getPid())) {
+        if (null == poiInfo) {
+            Log.e(TAG, "reverse info empty");
             return;
         }
         if (mInCallback) {
-            Log.e(TAG, "already in broadcast, can't process searchSuccess");
+            Log.e(TAG, "already in broadcast, can't process reverseResult");
             return;
         }
 
@@ -638,10 +646,12 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub {
             Log.d(TAG, "onReverseSearch inCallback");
             final int count = mNaviAutoCallbackList.beginBroadcast();
             final BaseSearchPoi baseSearchPoi = GsonUtils.convertToT(poiInfo, BaseSearchPoi.class);
-            Log.d(TAG, "dispatchReverseSearch: origin cityCode = " + baseSearchPoi.getCityInfo().getCityCode());
-            baseSearchPoi.getCityInfo().setCityCode(
-                    ExportConvertUtil.getInstance().cityIdConvert(baseSearchPoi.getCityInfo().getCityCode())
-            );
+            final BaseCityInfo cityInfo = baseSearchPoi.getCityInfo();
+            if (null != cityInfo) {
+                final int cityCode = cityInfo.getCityCode();
+                final int bdCode = ExportConvertUtil.getInstance().cityIdConvert(cityCode);
+                cityInfo.setCityCode(bdCode);
+            }
             final String singlePoiStr = GsonUtils.toJson(baseSearchPoi);
             Log.d(TAG, "dispatchReverseSearch: singlePoiStr = " + singlePoiStr);
             for (int i = 0; i < count; i++) {
@@ -726,11 +736,6 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub {
     @Override
     public String getDistrictDetailInfo(final String clientPkg) {
         if (null != mDistrictInfo) {
-            final int originCityId = mDistrictInfo.getCityId();
-            Log.d(TAG, "getDistrictDetailInfo: origin cityId = " + originCityId);
-            final int convertedId = ExportConvertUtil.getInstance().cityIdConvert(originCityId);
-            mDistrictInfo.setCityId(convertedId);
-            Log.d(TAG, "getDistrictDetailInfo: converted cityId = " + convertedId);
             return GsonUtils.toJson(mDistrictInfo);
         } else {
             Log.e(TAG, "current DistrictInfo is empty");
@@ -809,8 +814,8 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub {
 
     @Override
     public void startNavi(final String clientPkg) {
-        Log.i(TAG, clientPkg + " startNavigation");
         final String curStatus = NaviStatusPackage.getInstance().getCurrentNaviStatus();
+        Log.i(TAG, clientPkg + " startNavigation: " + curStatus);
         if (NaviStatus.NaviStatusType.SELECT_ROUTE.equals(curStatus)) {
             processJumpPage(INaviConstant.OpenIntentPage.START_NAVIGATION, "", null);
         } else {
@@ -829,7 +834,7 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub {
                                  final PoiInfoEntity poiInfo) {
         if (null != AppContext.getInstance().getMContext()) {
             try {
-                Log.d(TAG, "processJumpPage: ");
+                Log.d(TAG, "processJumpPage");
                 final BaseActivity baseActivity = StackManager.getInstance()
                         .getCurrentActivity(MapType.MAIN_SCREEN_MAIN_MAP.name());
                 Intent targetIntent;

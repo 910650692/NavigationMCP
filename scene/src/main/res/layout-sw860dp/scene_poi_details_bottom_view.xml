@@ -41,7 +41,7 @@
                 android:layout_marginStart="@dimen/dp_16"
                 android:text="@string/st_go_here"
                 android:textColor="@color/search_go_here"
-                android:textSize="@dimen/sp_30"
+                android:textSize="@dimen/sp_34"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/siv_start_route"

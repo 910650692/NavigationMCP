@@ -4,17 +4,13 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
-import android.widget.CompoundButton;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.android.utils.ConvertUtils;
 import com.android.utils.NetWorkUtils;
-import com.android.utils.ResourceUtils;
 import com.android.utils.thread.ThreadManager;
 import com.fy.navi.scene.BaseSceneView;
-import com.fy.navi.scene.R;
 import com.fy.navi.scene.databinding.SceneSettingPreferenceBinding;
 import com.fy.navi.scene.impl.preference.SceneRoutePreferenceImpl;
 import com.fy.navi.service.define.route.RoutePreferenceID;
@@ -54,37 +50,9 @@ public class SceneSettingPreferenceView extends BaseSceneView<SceneSettingPrefer
     @Override
     protected void initObserver() {
         mScreenViewModel.setOnPreferenceChangeListener("setting fragment",this);
-        mViewBinding.preferenceRecommend.setOnCheckedChangeListener(this::updateCheckBoxTextColor);
-        mViewBinding.preferenceLessCharge.setOnCheckedChangeListener(this::updateCheckBoxTextColor);
-        mViewBinding.preferenceNotHighway.setOnCheckedChangeListener(this::updateCheckBoxTextColor);
-        mViewBinding.preferenceFirstHighway.setOnCheckedChangeListener(this::updateCheckBoxTextColor);
-        mViewBinding.preferenceAvoidCongestion.setOnCheckedChangeListener((buttonView, isChecked)
-                -> ThreadManager.getInstance().postUi(() -> {
-            if(getNetworkState()) {
-                updateCheckBoxTextColor(buttonView, isChecked);
-                setBackgroundColor(buttonView, isChecked);
-            }
-        }));
-
-        mViewBinding.preferenceFirstMainRoad.setOnCheckedChangeListener((buttonView, isChecked)
-                -> ThreadManager.getInstance().postUi(() -> {
-            if(getNetworkState()) {
-                updateCheckBoxTextColor(buttonView, isChecked);
-                setBackgroundColor(buttonView, isChecked);
-            }
-        }));
-        mViewBinding.preferenceFastestSpeed.setOnCheckedChangeListener((buttonView, isChecked)
-                -> ThreadManager.getInstance().postUi(() -> {
-            if(getNetworkState()) {
-                updateCheckBoxTextColor(buttonView, isChecked);
-                setBackgroundColor(buttonView, isChecked);
-            }
-        }));
-
         NetWorkUtils.Companion.getInstance().registerNetworkObserver(mNetworkObserver);
         mScreenViewModel.setDefaultPreference();
         setPreferenceEnable(getNetworkState());
-        updateDisableButton();
     }
 
     @Override
@@ -92,61 +60,16 @@ public class SceneSettingPreferenceView extends BaseSceneView<SceneSettingPrefer
         NetWorkUtils.Companion.getInstance().unRegisterNetworkObserver(mNetworkObserver);
     }
 
-    /**
-     * 更新CheckBox文本颜色
-     * @param compoundButton CheckBox
-     * @param isSelected 是否选中
-     */
-    public void updateCheckBoxTextColor(final CompoundButton compoundButton, final boolean isSelected) {
-        if (isSelected) {
-            compoundButton.setTextColor(ResourceUtils.Companion.getInstance().getColor(R.color.white));
-        } else {
-            compoundButton.setTextColor(ResourceUtils.Companion.getInstance().getColor(R.color.setting_preference_text_gray));
-        }
-    }
-
-    /**
-     * 更新背景色
-     * @param compoundButton CheckBox
-     * @param isSelected 是否选中
-     */
-    private void setBackgroundColor(final CompoundButton compoundButton, final boolean isSelected) {
-        if (isSelected) {
-            compoundButton.setBackground(ResourceUtils.Companion.getInstance().getDrawable(R.drawable.bg_setting_preference_select));
-        } else {
-            compoundButton.setBackground(ResourceUtils.Companion.getInstance().getDrawable(R.drawable.bg_setting_preference_normal));
-        }
-    }
-
-    /**
-     * 更新Disable CheckBox文本背景颜色
-     */
-    private void updateDisableButton() {
-
-        ThreadManager.getInstance().postUi(() -> {
-            if (ConvertUtils.isEmpty(mViewBinding)){
-                return;
-            }
-
-            updateCheckBoxTextColor(mViewBinding.preferenceAvoidCongestion, mScreenViewModel.isISAVOIDCONGESTIONSELECT());
-            updateCheckBoxTextColor(mViewBinding.preferenceFirstMainRoad, mScreenViewModel.isISFIRSTMAINROADSELECT());
-            updateCheckBoxTextColor(mViewBinding.preferenceFastestSpeed, mScreenViewModel.isISFASTESTSPEEDSELECT());
-            setBackgroundColor(mViewBinding.preferenceAvoidCongestion, mScreenViewModel.isISAVOIDCONGESTIONSELECT());
-            setBackgroundColor(mViewBinding.preferenceFirstMainRoad, mScreenViewModel.isISFIRSTMAINROADSELECT());
-            setBackgroundColor(mViewBinding.preferenceFastestSpeed, mScreenViewModel.isISFASTESTSPEEDSELECT());
-        });
-    }
 
     @Override
     public void onPreferenceChange(final RoutePreferenceID routePreference, final boolean isFirstChange) {
-        mViewBinding.preferenceRecommend.setChecked(mScreenViewModel.isISRECOMMENDSELECT());
-        mViewBinding.preferenceAvoidCongestion.setChecked(mScreenViewModel.isISAVOIDCONGESTIONSELECT());
-        mViewBinding.preferenceLessCharge.setChecked(mScreenViewModel.isISLESSCHARGESELECT());
-        mViewBinding.preferenceNotHighway.setChecked(mScreenViewModel.isISNOTHIGHWAYSELECT());
-        mViewBinding.preferenceFirstHighway.setChecked(mScreenViewModel.isISFIRSTHIGHWAYSELECT());
-        mViewBinding.preferenceFirstMainRoad.setChecked(mScreenViewModel.isISFIRSTMAINROADSELECT());
-        mViewBinding.preferenceFastestSpeed.setChecked(mScreenViewModel.isISFASTESTSPEEDSELECT());
-        updateDisableButton();
+        mViewBinding.preferenceRecommend.setSelected(mScreenViewModel.isISRECOMMENDSELECT());
+        mViewBinding.preferenceAvoidCongestion.setSelected(mScreenViewModel.isISAVOIDCONGESTIONSELECT());
+        mViewBinding.preferenceLessCharge.setSelected(mScreenViewModel.isISLESSCHARGESELECT());
+        mViewBinding.preferenceNotHighway.setSelected(mScreenViewModel.isISNOTHIGHWAYSELECT());
+        mViewBinding.preferenceFirstHighway.setSelected(mScreenViewModel.isISFIRSTHIGHWAYSELECT());
+        mViewBinding.preferenceFirstMainRoad.setSelected(mScreenViewModel.isISFIRSTMAINROADSELECT());
+        mViewBinding.preferenceFastestSpeed.setSelected(mScreenViewModel.isISFASTESTSPEEDSELECT());
     }
 
     /**
@@ -175,7 +98,6 @@ public class SceneSettingPreferenceView extends BaseSceneView<SceneSettingPrefer
     private final NetWorkUtils.NetworkObserver mNetworkObserver = new NetWorkUtils.NetworkObserver() {
         @Override
         public void onNetConnectSuccess() {
-            updateDisableButton();
             setPreferenceEnable(true);
         }
 

@@ -1,7 +1,5 @@
 package com.fy.navi.vrbridge;
 
-
-import android.content.res.Configuration;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -32,6 +30,7 @@ import com.fy.navi.service.logicpaket.setting.SettingPackage;
 import com.fy.navi.service.logicpaket.user.account.AccountCallBack;
 import com.fy.navi.service.logicpaket.user.account.AccountPackage;
 import com.fy.navi.service.logicpaket.user.behavior.BehaviorPackage;
+import com.fy.navi.service.logicpaket.user.behavior.FavoriteStatusCallback;
 import com.fy.navi.vrbridge.bean.MapLocation;
 import com.fy.navi.vrbridge.bean.MapState;
 
@@ -62,32 +61,18 @@ public final class MapStateManager {
         mRouteList = new ArrayList<>();
     }
 
-    // 暂无此功能
-    private int maxVolumeLevel; //最大导航音量
-    private int mCurrentVolumeLevel; //当前导航音量
-    private boolean mIsAgreeTeamAgreement; //是否已同意组队协议条款，暂不支持组队，false
-    private boolean mIsInTeam;  //是否已在组队队伍，同上
-    private boolean mIsTeamLeader; //是否组队队伍的队长，同上
     // 待对应模块添加接口 回调
-    private boolean mIsOverView; //全览模式是否开启，boolean值 - true:是 - false:否（默认）
-    private int mIsParallelFlagMain; //是否在主路，int值 - 0:主路 - 1:辅路 - -1（默认）
-    private boolean mSwitchParallelFlag; //是否可以切换主辅路，boolean值 - true:是 - false:否（默认）
-    private int mIsParallelBridge; //是否在桥上，int值 - 0:桥上 - 1:桥下 - -1（默认）
-    private boolean mSwitchParallelBridge; //是否可以切换桥上桥下，boolean值 - true:是 - false:否（默认）
-    private String mEndPoiCity; //导航目的地所在城市
     private boolean mIsSetHome; //是否设置家的地址，boolean值 - true:是 - false:否（默认）
     private boolean mIsSetCompany; //是否设置工作的地址，boolean值 - true:是 - false:否（默认）
-    // 待对应模块添加接口 回调和get
-    private boolean mIsFront; //是否是最上层app，boolean值 - true:是 - false:否（默认）
-    private boolean mOpenStatus; //导航app是否打开，boolean值 - true:是 - false:否（默认）
 
     /**
-     * 初始化
+     * 初始化.
      */
     public void init() {
         Log.d(IVrBridgeConstant.TAG, "MapStateInit");
-        mBuilder.setOpenStatus(true); // TODO
-        mBuilder.setFront(NaviPackage.getInstance().getIsAppInForeground());
+        final boolean foreground = NaviPackage.getInstance().getIsAppInForeground();
+        mBuilder.setOpenStatus(foreground);
+        mBuilder.setFront(foreground);
         mBuilder.setMaxZoomLevel(19);
         mBuilder.setMinZoomLevel(3);
         mBuilder.setHasPrivacyPermission(true);
@@ -111,26 +96,13 @@ public final class MapStateManager {
         final RoutePreferenceID routePreference = SettingPackage.getInstance().getRoutePreference();
         updatePreference(SettingPackage.getInstance().formatPreferenceToDB(routePreference));
 
-        switch (SettingPackage.getInstance().getConfigKeyDayNightMode()) {
-            case 16:
-                // TODO 自动模式
-                break;
-            case 17:
-                mBuilder.setDayWithMapStyle(true);
-                break;
-            case 18:
-                mBuilder.setDayWithMapStyle(false);
-                break;
-            default:
-        }
-
         updateRoadEvent(SettingPackage.getInstance().getConfigKeyRoadEvent());
 
         final AccountProfileInfo userInfo = AccountPackage.getInstance().getUserInfo();
         mBuilder.setLogin(userInfo != null && !TextUtils.isEmpty(userInfo.getUid()));
 
-        mBuilder.setSetHome(BehaviorPackage.getInstance().getFavoriteHomeData(1) != null);
-        mBuilder.setSetCompany(BehaviorPackage.getInstance().getFavoriteHomeData(2) != null);
+        mBuilder.setSetHome(BehaviorPackage.getInstance().getHomeFavoriteInfo() != null);
+        mBuilder.setSetCompany(BehaviorPackage.getInstance().getCompanyFavoriteInfo() != null);
 
         AmapStateUtils.saveMapState(mBuilder.build());
 
@@ -152,17 +124,6 @@ public final class MapStateManager {
         public void onMapLevelChanged(final MapType mapTypeId, final float mapLevel) {
             Log.d(TAG, "onMapLevelChanged: " + mapLevel);
             mBuilder.setCurrZoomLevel((int) mapLevel);
-            AmapStateUtils.saveMapState(mBuilder.build());
-        }
-
-        @Override
-        public void onUiModeChanged(final int uiMode) {
-            final boolean isNightMode = (uiMode & Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES;
-            if (isNightMode) {
-                mBuilder.setDayWithMapStyle(false);
-            } else {
-                mBuilder.setDayWithMapStyle(true);
-            }
             AmapStateUtils.saveMapState(mBuilder.build());
         }
 
@@ -216,9 +177,11 @@ public final class MapStateManager {
             Log.d(TAG, "registerCallback: key : " + key);
             switch (key) {
                 case SettingController.KEY_SETTING_NAVI_BROADCAST:
+                    //引导播报
                     updateBroadcastMode(value);
                     break;
                 case SettingController.KEY_SETTING_VOICE_MUTE:
+                    //播报静音
                     switch (value) {
                         case SettingController.VALUE_VOICE_MUTE_ON:
                             mBuilder.setMute(true);
@@ -233,13 +196,12 @@ public final class MapStateManager {
                     }
                     break;
                 case SettingController.KEY_SETTING_GUIDE_ROUTE_PREFERENCE:
+                    //路线偏好
                     updatePreference(value);
                     break;
                 case SettingController.KEY_SETTING_ROAD_CONDITION:
+                    //路况开关
                     updateRoadEvent(value);
-                    break;
-                case SettingController.KEY_SETTING_DISPLAY_MODE:
-                    updateDayNightMode(value);
                     break;
                 default:
                     return;
@@ -332,6 +294,20 @@ public final class MapStateManager {
         }
     };
 
+    private final FavoriteStatusCallback mFavoriteStatusCallback = new FavoriteStatusCallback() {
+        @Override
+        public void notifyFavoriteHomeChanged(boolean isSet) {
+            mBuilder.setSetHome(isSet);
+            AmapStateUtils.saveMapState(mBuilder.build());
+        }
+
+        @Override
+        public void notifyFavoriteCompanyChanged(boolean isSet) {
+            mBuilder.setSetCompany(isSet);
+            AmapStateUtils.saveMapState(mBuilder.build());
+        }
+    };
+
     /**
      * 注册回调
      */
@@ -345,6 +321,7 @@ public final class MapStateManager {
         NaviPackage.getInstance().registerObserver(TAG, mGuidanceObserver);
         NaviPackage.getInstance().addIsAppInForegroundCallback(mForeGroundCallback);
         NaviPackage.getInstance().addOnPreviewStatusChangeListener(mPreViewStatusChangeListener);
+        BehaviorPackage.getInstance().registerFavoriteStatusCallback(mFavoriteStatusCallback);
     }
 
     /**
@@ -373,6 +350,7 @@ public final class MapStateManager {
                 mBuilder.setGPSNavi(false);
                 mBuilder.setCruiseNavi(false);
                 mBuilder.setRoutePage(false);
+                break;
         }
     }
 
@@ -393,6 +371,7 @@ public final class MapStateManager {
                 break;
             default:
                 mBuilder.setCurrMapMode(-1);
+                break;
         }
     }
 
@@ -505,24 +484,6 @@ public final class MapStateManager {
                 break;
             case SettingController.VALUE_ROUTE_PREFERENCE_AVOID_CONGESTION_AND_FASTEST_SPEED:
                 mBuilder.setCurrPlanPref(16 | 256);
-                break;
-            default:
-        }
-    }
-
-    /**
-     * updateDayNightMode
-     * @param mode mode
-     */
-    private void updateDayNightMode(final String mode) {
-        switch (mode) {
-            case SettingController.VALUE_DISPLAY_MODE_DAYTIME:
-                mBuilder.setDayWithMapStyle(true);
-                break;
-            case SettingController.VALUE_DISPLAY_MODE_NIGHT:
-                mBuilder.setDayWithMapStyle(false);
-                break;
-            case SettingController.VALUE_DISPLAY_MODE_AUTO:
                 break;
             default:
         }

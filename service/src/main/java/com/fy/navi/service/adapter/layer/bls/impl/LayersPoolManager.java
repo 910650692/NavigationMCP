@@ -1,21 +1,55 @@
 package com.fy.navi.service.adapter.layer.bls.impl;
 
 
+import com.android.utils.ConvertUtils;
+import com.android.utils.log.Logger;
 import com.autonavi.gbl.layer.BizControlService;
 import com.autonavi.gbl.map.MapView;
 import com.autonavi.gbl.servicemanager.ServiceMgr;
 import com.autonavi.gbl.util.model.SingleServiceID;
 import com.fy.navi.service.AppContext;
+import com.fy.navi.service.MapDefaultFinalTag;
+import com.fy.navi.service.adapter.layer.ILayerAdapterCallBack;
 import com.fy.navi.service.adapter.map.bls.MapViewPoolManager;
 import com.fy.navi.service.define.map.MapType;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.List;
 
 public class LayersPoolManager {
 
-    private HashMap<MapType, LayersPool> layersPools = new HashMap<>();
+    private String TAG = MapDefaultFinalTag.LAYER_SERVICE_TAG;
+
+    private final HashMap<MapType, LayersPool> layersPools = new HashMap<>();
+
+    private final Hashtable<MapType, List<ILayerAdapterCallBack>> mLayerPackageCallBacks = new Hashtable<>();
 
     private BizControlService bizControlService;
+
+    public void addLayerClickCallback(MapType mapTypeId, ILayerAdapterCallBack observer) {
+        if (!mLayerPackageCallBacks.containsKey(mapTypeId)) {
+            mLayerPackageCallBacks.put(mapTypeId, new ArrayList<>());
+        }
+        if (!mLayerPackageCallBacks.get(mapTypeId).contains(observer)) {
+            Logger.d(TAG, mapTypeId + " 注册回调 ：" + observer.getClass().getSimpleName() + ";size =" + mLayerPackageCallBacks.get(mapTypeId).size());
+            get(mapTypeId).addLayerClickCallback(observer);
+            mLayerPackageCallBacks.get(mapTypeId).add(observer);
+        }
+    }
+
+    public void removeClickCallback(MapType mapTypeId, ILayerAdapterCallBack observer) {
+        if (!mLayerPackageCallBacks.containsKey(mapTypeId)) {
+            mLayerPackageCallBacks.put(mapTypeId, new ArrayList<>());
+        }
+        if (mLayerPackageCallBacks.get(mapTypeId).contains(observer)) {
+            Logger.d(TAG, mapTypeId + " 移除回调 ：" + observer.getClass().getSimpleName() + ";size =" + mLayerPackageCallBacks.get(mapTypeId).size());
+            get(mapTypeId).removeClickCallback(observer);
+            mLayerPackageCallBacks.get(mapTypeId).remove(observer);
+        }
+
+    }
 
     private static final class Holder {
         private static final LayersPoolManager INSTANCE = new LayersPoolManager();
@@ -44,7 +78,8 @@ public class LayersPoolManager {
     }
 
     public void unInitLayerService() {
-
+        bizControlService.unInit();
+        layersPools.clear();
     }
 
     public LayersPool get(MapType mapTypeId) {

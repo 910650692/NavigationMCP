@@ -55,7 +55,7 @@ public class SettingHelpFragment extends BaseFragment<FragmentSettingHelpBinding
             final View tabView = tab.getCustomView();
             if (tabView instanceof SkinLinearLayout) {
                 tabView.setSelected(true);
-                ((TextView) tabView.findViewById(R.id.tabText)).setTextColor(getResources().getColor(R.color.black));
+                ((TextView) tabView.findViewById(R.id.tabText)).setTextColor(getResources().getColor(R.color.setting_bg_tab_text_select));
             }
             mViewModel.setSelectPosition(tab.getPosition());
         }
@@ -65,7 +65,7 @@ public class SettingHelpFragment extends BaseFragment<FragmentSettingHelpBinding
             final View tabView = tab.getCustomView();
             if (tabView instanceof SkinLinearLayout) {
                 tabView.setSelected(false);
-                ((TextView) tabView.findViewById(R.id.tabText)).setTextColor(getResources().getColor(R.color.setting_tab_gray));
+                ((TextView) tabView.findViewById(R.id.tabText)).setTextColor(getResources().getColor(R.color.setting_bg_tab_text_unselect));
             }
         }
 

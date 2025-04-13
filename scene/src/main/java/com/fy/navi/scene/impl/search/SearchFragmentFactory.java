@@ -155,4 +155,17 @@ public final class SearchFragmentFactory {
         args.putParcelable(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_OPEN_ROUTE, poiInfoEntity);
         return args;
     }
+
+    public static Bundle createChargePriceFragment(final PoiInfoEntity poiInfoEntity){
+        final Bundle args = new Bundle();
+        args.putParcelable(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_CHARGE_PRICE_LIST, poiInfoEntity);
+        return args;
+    }
+
+    public static Bundle createEquipmentListFragment(final int type,final PoiInfoEntity poiInfoEntity){
+        final Bundle args = new Bundle();
+        args.putInt(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_CHARGE_EQUIPMENT_TYPE, type);
+        args.putParcelable(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_CHARGE_PRICE_LIST, poiInfoEntity);
+        return args;
+    }
 }

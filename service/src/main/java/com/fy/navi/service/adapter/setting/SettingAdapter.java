@@ -4,6 +4,8 @@ package com.fy.navi.service.adapter.setting;
 
 import com.fy.navi.service.AdapterConfig;
 import com.fy.navi.service.define.route.RoutePreferenceID;
+import com.fy.navi.service.define.setting.SettingController;
+import com.fy.navi.service.greendao.setting.SettingManager;
 
 import java.util.Objects;
 
@@ -12,8 +14,12 @@ public final class SettingAdapter {
     private static final String SETTING_API_CLS = "SettingAdapterImpl";
     private final SettingApi mSettingApi;
 
+    private final SettingManager mSettingManager;
+
     private SettingAdapter() {
         mSettingApi = (SettingApi) AdapterConfig.getObject(SETTING_API_PKG, SETTING_API_CLS);
+        mSettingManager = SettingManager.getInstance();
+        mSettingManager.init();
     }
 
     /**
@@ -208,7 +214,23 @@ public final class SettingAdapter {
      * @return 返回错误码
      */
     public int setConfigKeyMapviewMode(final int mapViewMode) {
-        return mSettingApi.setConfigKeyMapviewMode(mapViewMode);
+        final int code = mSettingApi.setConfigKeyMapviewMode(mapViewMode);
+        if (code == 0) {
+            switch (mapViewMode) {
+                case 0:
+                    mSettingManager.insertOrReplace(SettingController.SETTING_GUIDE_MAP_MODE, SettingController.VALUE_MAP_MODE_CAR_2D);
+                    break;
+                case 1:
+                    mSettingManager.insertOrReplace(SettingController.SETTING_GUIDE_MAP_MODE, SettingController.VALUE_MAP_MODE_NORTH_2D);
+                    break;
+                case 2:
+                    mSettingManager.insertOrReplace(SettingController.SETTING_GUIDE_MAP_MODE, SettingController.VALUE_MAP_MODE_CAR_3D);
+                    break;
+                default:
+                    break;
+            }
+        }
+        return code;
     }
 
     /**

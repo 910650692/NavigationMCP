@@ -38,7 +38,7 @@
                 android:text="@string/offline_near_offline_data"
                 android:layout_gravity="center"
                 android:layout_marginStart="@dimen/dp_414"
-                android:textColor="@color/black"
+                android:textColor="@color/setting_bg_tab_text_select"
                 android:textSize="@dimen/sp_38"
                 app:layout_constraintStart_toEndOf="@+id/iv_offline_map_back"
                 app:layout_constraintTop_toTopOf="parent"/>

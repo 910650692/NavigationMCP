@@ -18,260 +18,350 @@ public final class ExportConvertUtil {
     }
 
     private ExportConvertUtil() {
-        mCityIdArray.put(430100, 158); // 长沙
-        mCityIdArray.put(140100, 176); // 太原
-        mCityIdArray.put(411300, 309); // 南阳
-        mCityIdArray.put(150100, 321); // 呼和浩特
-        mCityIdArray.put(431000, 275); // 郴州
-
-        mCityIdArray.put(411600, 308); // 周口
-        mCityIdArray.put(330300, 178); // 温州
-        mCityIdArray.put(520400, 263); // 安顺
-        mCityIdArray.put(410500, 267); // 安阳
-        mCityIdArray.put(460100, 125); // 海口
-
-        mCityIdArray.put(652800, 169); // 巴音郭楞   86 库尔勒
-        mCityIdArray.put(410700, 152); // 新乡
-        mCityIdArray.put(340800, 130); // 安庆
-        mCityIdArray.put(130600, 307); // 保定
-        mCityIdArray.put(150200, 229); // 包头
-
-        mCityIdArray.put(440300, 340); // 深圳
-        mCityIdArray.put(130900, 149); // 沧州
-        mCityIdArray.put(330900, 245); // 舟山
-        mCityIdArray.put(350100, 300); // 福州
-        mCityIdArray.put(320500, 224); // 苏州
-        //21
-        mCityIdArray.put(220600, 57);  // 白山
-        mCityIdArray.put(320400, 348); // 常州
-        mCityIdArray.put(652900, 185); // 阿克苏
-        mCityIdArray.put(410100, 268); // 郑州
-        mCityIdArray.put(510100, 75);  // 成都
-
-        mCityIdArray.put(210200, 167); // 大连
-        mCityIdArray.put(341700, 299); // 池州
-        mCityIdArray.put(340300, 126); // 蚌埠
-        mCityIdArray.put(310000, 289); // 上海
-        mCityIdArray.put(441900, 119); // 东莞
-
-        mCityIdArray.put(520500, 227); // 毕节
-        mCityIdArray.put(150400, 297); // 赤峰
-        mCityIdArray.put(370800, 286); // 济宁
-        mCityIdArray.put(341100, 189); // 滁州
-        mCityIdArray.put(210600, 282); // 丹东
-
-        mCityIdArray.put(370200, 236); // 青岛
-        mCityIdArray.put(371700, 200); // 菏泽
-        mCityIdArray.put(533100, 1215);// 德宏   116 芒市
-        mCityIdArray.put(370500, 174); // 东营
-        mCityIdArray.put(532300, 105); // 楚雄彝族自治州
-        //41
-        mCityIdArray.put(370100, 288); // 济南
-        mCityIdArray.put(512000, 242); // 资阳
-        mCityIdArray.put(441400, 141); // 梅州
-        mCityIdArray.put(210400, 184); // 抚顺
-        mCityIdArray.put(510400, 81);  // 攀枝花
-
-        mCityIdArray.put(360700, 365); // 赣州
-        mCityIdArray.put(330100, 179); // 杭州
-        mCityIdArray.put(440600, 138); // 佛山
-        mCityIdArray.put(530100, 104); // 昆明
-        mCityIdArray.put(321000, 346); // 扬州
-
-        mCityIdArray.put(440700, 302); // 江门
-        mCityIdArray.put(440100, 257); // 广州
-        mCityIdArray.put(520100, 146); // 贵阳
-        mCityIdArray.put(230100, 48);  // 哈尔滨
-        mCityIdArray.put(510800, 329); // 广元
-
-        mCityIdArray.put(530500, 112); // 保山
-        mCityIdArray.put(520300, 262); // 遵义
-        mCityIdArray.put(130400, 151); // 邯郸
-        mCityIdArray.put(330700, 333); // 金华
-        mCityIdArray.put(340100, 127); // 合肥
-        //61
-        mCityIdArray.put(441300, 301); // 惠州
-        mCityIdArray.put(430700, 219); // 常德
-        mCityIdArray.put(131100, 208); // 衡水
-        mCityIdArray.put(430400, 159); // 衡阳
-        mCityIdArray.put(440500, 303); // 汕头
-
-        mCityIdArray.put(532500, 107); // 红河哈尼族彝族自治州
-        mCityIdArray.put(330500, 294); // 湖州
-        mCityIdArray.put(451100, 260); // 贺州
-        mCityIdArray.put(330200, 180); // 宁波
-        mCityIdArray.put(370700, 287); // 潍坊
-        //71
-        mCityIdArray.put(450300, 142); // 桂林
-        mCityIdArray.put(320800, 162); // 淮安
-        mCityIdArray.put(341000, 252); // 黄山
-        mCityIdArray.put(441200, 1216);// 肇庆
-        mCityIdArray.put(431200, 363); // 怀化
-
-        mCityIdArray.put(330400, 334); // 嘉兴
-        mCityIdArray.put(420600, 274); // 襄阳
-        mCityIdArray.put(410800, 211); // 焦作
-        mCityIdArray.put(350200, 194); // 厦门
-        mCityIdArray.put(140500, 290); // 晋城
-        //81
-        mCityIdArray.put(360400, 349); // 九江
-        mCityIdArray.put(450800, 341); // 贵港
-        mCityIdArray.put(410200, 210); // 开封
-        mCityIdArray.put(321200, 225); // 泰州靖江  276泰兴
-        mCityIdArray.put(440400, 140); // 珠海
-
-        mCityIdArray.put(420200, 311); // 黄石
-        mCityIdArray.put(620100, 36);  // 兰州
-        mCityIdArray.put(511100, 79);  // 乐山
-        mCityIdArray.put(371500, 366); // 聊城
-        mCityIdArray.put(450200, 305); // 柳州
-        //91
-        mCityIdArray.put(421100, 271); // 黄冈
-        mCityIdArray.put(440900, 139); // 茂名
-        mCityIdArray.put(431300, 221); // 娄底
-        mCityIdArray.put(510500, 331); // 泸州
-        mCityIdArray.put(410300, 153); // 洛阳
-
-        mCityIdArray.put(411100, 344); // 漯河
-        mCityIdArray.put(141100, 327); // 吕梁
-        mCityIdArray.put(510700, 240); // 绵阳
-        mCityIdArray.put(231000, 49);  // 牡丹江
-        mCityIdArray.put(610100, 233); // 西安
-        //101
-        mCityIdArray.put(360100, 163); // 南昌
-        mCityIdArray.put(469002, 2358);// 琼海
-        mCityIdArray.put(513400, 80);  // 凉山彝族自治州
-        mCityIdArray.put(210300, 320); // 鞍山
-        mCityIdArray.put(450100, 261); // 南宁
-
-        mCityIdArray.put(371600, 235); // 滨州
-        mCityIdArray.put(320600, 161); // 南通
-        mCityIdArray.put(231100, 39);  // 黑河
-        mCityIdArray.put(371300, 234); // 临沂
-        mCityIdArray.put(510600, 74);  // 德阳
-        //111
-        mCityIdArray.put(650100, 92);  // 乌鲁木齐
-        mCityIdArray.put(211000, 351); // 辽阳
-        mCityIdArray.put(620500, 196); // 天水
-        mCityIdArray.put(320200, 317); // 无锡
-        mCityIdArray.put(520200, 147); // 六盘水
-
-        mCityIdArray.put(360300, 350); // 萍乡
-        mCityIdArray.put(410900, 209); // 濮阳
-        mCityIdArray.put(522600, 342); // 黔东南苗族侗族自治州
-        mCityIdArray.put(130300, 148); // 秦皇岛
-        mCityIdArray.put(522300, 343); // 黔西南布依族苗族自治州
-        //121
-        mCityIdArray.put(130100, 150); // 石家庄
-        mCityIdArray.put(331000, 244); // 台州
-        mCityIdArray.put(441800, 197); // 清远
-        mCityIdArray.put(330800, 243); // 衢州
-        mCityIdArray.put(130700, 264); // 张家口
-
-        mCityIdArray.put(530300, 249); // 曲靖
-        mCityIdArray.put(350500, 134); // 泉州
-        mCityIdArray.put(511300, 291); // 南充
-        mCityIdArray.put(421000, 157); // 荆州
-        mCityIdArray.put(411400, 154); // 商丘
-        //131
-        mCityIdArray.put(350400, 254); // 三明
-        mCityIdArray.put(350800, 193); // 龙岩
-        mCityIdArray.put(440200, 137); // 韶关
-        mCityIdArray.put(210100, 58);  // 沈阳
-        mCityIdArray.put(522700, 306); // 黔南布依族苗族自治州
-
+        mCityIdArray.put(620200, 33); // 嘉峪关
+        mCityIdArray.put(620300, 34); // 金昌市
+        mCityIdArray.put(620400, 35); // 白银
+        mCityIdArray.put(620100, 36); // 兰州
+        mCityIdArray.put(620900, 37); // 酒泉市
+        mCityIdArray.put(232700, 38); // 大兴安岭地区
+        mCityIdArray.put(231100, 39); // 黑河
+        mCityIdArray.put(230700, 40); // 伊春市
+        mCityIdArray.put(230200, 41); // 齐齐哈尔市
+        mCityIdArray.put(230800, 42); // 佳木斯市
+        mCityIdArray.put(230400, 43); // 鹤岗市
+        mCityIdArray.put(231200, 44); // 绥化市
+        mCityIdArray.put(230500, 45); // 双鸭山市
+        mCityIdArray.put(230300, 46); // 鸡西市
+        mCityIdArray.put(230900, 47); // 七台河市
+        mCityIdArray.put(230100, 48); // 哈尔滨
+        mCityIdArray.put(231000, 49); // 牡丹江
+        mCityIdArray.put(230600, 50); // 大庆市
+        mCityIdArray.put(220800, 51); // 白城市
+        mCityIdArray.put(220700, 52); // 松原
+        mCityIdArray.put(220100, 53); // 长春
+        mCityIdArray.put(222400, 54); // 延边朝鲜族自治州
+        mCityIdArray.put(220200, 55); // 吉林市
+        mCityIdArray.put(220300, 56); // 四平市
+        mCityIdArray.put(220600, 57); // 白山
+        mCityIdArray.put(210100, 58); // 沈阳
+        mCityIdArray.put(210900, 59); // 阜新市
+        mCityIdArray.put(211200, 60); // 铁岭市
+        mCityIdArray.put(150700, 61); // 呼伦贝尔市
+        mCityIdArray.put(152200, 62); // 兴安盟
+        mCityIdArray.put(152500, 63); // 锡林郭勒盟
+        mCityIdArray.put(150500, 64); // 通辽市
+        mCityIdArray.put(632800, 65); // 海西蒙古族藏族自治州
+        mCityIdArray.put(630100, 66); // 西宁
+        mCityIdArray.put(632200, 67); // 海北藏族自治州
+        mCityIdArray.put(632500, 68); // 海南藏族自治州
+        mCityIdArray.put(630200, 69); // 海东市
+        mCityIdArray.put(632300, 70); // 黄南藏族自治州
+        mCityIdArray.put(632700, 71); // 玉树藏族自治州
+        mCityIdArray.put(632600, 72); // 果洛藏族自治州
+        mCityIdArray.put(513300, 73); // 甘孜藏族自治州
+        mCityIdArray.put(510600, 74); // 德阳
+        mCityIdArray.put(510100, 75); // 成都
+        mCityIdArray.put(511800, 76); // 雅安市
+        mCityIdArray.put(511400, 77); // 眉山
+        mCityIdArray.put(510300, 78); // 自贡
+        mCityIdArray.put(511100, 79); // 乐山
+        mCityIdArray.put(513400, 80); // 凉山彝族自治州
+        mCityIdArray.put(510400, 81); // 攀枝花
+        mCityIdArray.put(653200, 82); // 和田地区
+        mCityIdArray.put(653100, 83); // 喀什地区
+        mCityIdArray.put(653000, 84); // 克孜勒苏柯尔克孜自治州
+        mCityIdArray.put(652900, 85); // 阿克苏地区
+        mCityIdArray.put(652800, 86); // 巴音郭楞蒙古自治州
+        mCityIdArray.put(652700, 88); // 博尔塔拉蒙古自治州
+        mCityIdArray.put(650400, 89); // 吐鲁番市
+        mCityIdArray.put(654000, 90); // 伊犁哈萨克自治州
+        mCityIdArray.put(650500, 91); // 哈密
+        mCityIdArray.put(650100, 92); // 乌鲁木齐
+        mCityIdArray.put(652300, 93); // 昌吉回族自治州
+        mCityIdArray.put(654200, 94); // 塔城地区
+        mCityIdArray.put(650200, 95); // 克拉玛依市
+        mCityIdArray.put(654300, 96); // 阿勒泰地区
+        mCityIdArray.put(540500, 97); // 山南市
+        mCityIdArray.put(540400, 98); // 林芝市
+        mCityIdArray.put(540300, 99); // 昌都市
         mCityIdArray.put(540100, 100); // 拉萨
-        mCityIdArray.put(211300, 280); // 朝阳
-        mCityIdArray.put(450700, 145); // 钦州
-        mCityIdArray.put(330600, 293); // 绍兴
-        mCityIdArray.put(420300, 216); // 十堰
-        //141
-        mCityIdArray.put(421300, 44);  // 随州
-        mCityIdArray.put(610200, 232); // 铜川
-        mCityIdArray.put(361100, 364); // 上饶
-        mCityIdArray.put(340700, 337); // 铜陵
-        mCityIdArray.put(130200, 265); // 唐山
-
-        mCityIdArray.put(430900, 272); // 益阳
-        mCityIdArray.put(460200, 121); // 三亚
-        mCityIdArray.put(410600, 215); // 鹤壁
-        mCityIdArray.put(120000, 332); // 天津
-        mCityIdArray.put(511400, 77);  // 眉山
-        //151
-        mCityIdArray.put(420100, 218); // 武汉
-        mCityIdArray.put(150300, 123); // 乌海
-        mCityIdArray.put(340200, 129); // 芜湖
-        mCityIdArray.put(533300, 113); // 怒江傈僳族自治州
-        mCityIdArray.put(630100, 66);  // 西宁
-
-        mCityIdArray.put(450400, 304); // 梧州
-        mCityIdArray.put(421200, 362); // 咸宁
-        mCityIdArray.put(320300, 316); // 徐州
-        mCityIdArray.put(445200, 259); // 揭阳
-        mCityIdArray.put(430300, 313); // 湘潭
-        //161
-        mCityIdArray.put(371000, 175); // 威海
-        mCityIdArray.put(360500, 164); // 新余
-        mCityIdArray.put(411500, 214); // 信阳
-        mCityIdArray.put(420900, 310); // 孝感
-        mCityIdArray.put(321300, 62);  // 宿迁
-
-        mCityIdArray.put(130500, 266); // 邢台
-        mCityIdArray.put(341800, 190); // 宣城
-        mCityIdArray.put(370600, 326); // 烟台
-        mCityIdArray.put(222400, 54);  // 延边
-        mCityIdArray.put(140300, 357); // 阳泉
-        //171
-        mCityIdArray.put(410400, 173); // 平顶山汝州  213郏县
-        mCityIdArray.put(640200, 335); // 石嘴山
-        mCityIdArray.put(654000, 230); // 伊犁哈萨克自治州  90也是伊犁
-        mCityIdArray.put(320900, 223); // 盐城
-        mCityIdArray.put(430600, 220); // 岳阳
-
-        mCityIdArray.put(360600, 279); // 鹰潭
-        mCityIdArray.put(450900, 361); // 玉林
-        mCityIdArray.put(445300, 258); // 云浮
-        mCityIdArray.put(140800, 328); // 运城
-        mCityIdArray.put(610400, 323); // 咸阳
-        //181
-        mCityIdArray.put(370400, 172); // 枣庄
-        mCityIdArray.put(411000, 155); // 许昌
-        mCityIdArray.put(350600, 255); // 漳州
-        mCityIdArray.put(220100, 53);  // 长春
-        mCityIdArray.put(431100, 314); // 永州
-
+        mCityIdArray.put(540600, 101); // 那曲地区
+        mCityIdArray.put(540200, 102); // 日喀则地区
+        mCityIdArray.put(542500, 103); // 阿里地区
+        mCityIdArray.put(530100, 104); // 昆明
+        mCityIdArray.put(532300, 105); // 楚雄彝族自治州
         mCityIdArray.put(530400, 106); // 玉溪
-        mCityIdArray.put(510300, 78);  // 自贡
-        mCityIdArray.put(530600, 336); // 昭通
-        mCityIdArray.put(441700, 199); // 阳江
+        mCityIdArray.put(532500, 107); // 红河哈尼族彝族自治州
+        mCityIdArray.put(530800, 108); // 普洱市
+        mCityIdArray.put(532800, 109); // 西双版纳傣族自治州
+        mCityIdArray.put(530900, 110); // 临沧市
+        mCityIdArray.put(532900, 111); // 大理白族自治州
+        mCityIdArray.put(530500, 112); // 保山
+        mCityIdArray.put(533300, 113); // 怒江傈僳族自治州
+        mCityIdArray.put(530700, 114); // 丽江市
+        mCityIdArray.put(533400, 115); // 迪庆藏族自治州
+        mCityIdArray.put(533100, 116); // 德宏傣族景颇族自治州
+        mCityIdArray.put(620700, 117); // 张掖市
+        mCityIdArray.put(620600, 118); // 武威市
+        mCityIdArray.put(441900, 119); // 东莞
+        mCityIdArray.put(442101, 120); // 东沙群岛
+        mCityIdArray.put(460200, 121); // 三亚市
+        mCityIdArray.put(420700, 122); // 鄂州市
+        mCityIdArray.put(150300, 123); // 乌海市
+        mCityIdArray.put(460100, 125); // 海口市
+        mCityIdArray.put(340300, 126); // 蚌埠市
+        mCityIdArray.put(340100, 127); // 合肥市
+        mCityIdArray.put(341200, 128); // 阜阳市
+        mCityIdArray.put(340200, 129); // 芜湖市
+        mCityIdArray.put(340800, 130); // 安庆
+        mCityIdArray.put(110000, 131); // 北京市
+        mCityIdArray.put(500000, 132); // 重庆市
+        mCityIdArray.put(350700, 133); // 南平市
+        mCityIdArray.put(350500, 134); // 泉州市
+        mCityIdArray.put(621000, 135); // 庆阳市
+        mCityIdArray.put(621100, 136); // 定西市
+        mCityIdArray.put(440200, 137); // 韶关市
+        mCityIdArray.put(440600, 138); // 佛山市
+        mCityIdArray.put(440900, 139); // 茂名
+        mCityIdArray.put(440400, 140); // 珠海市
+        mCityIdArray.put(441400, 141); // 梅州市
+        mCityIdArray.put(450300, 142); // 桂林市
+        mCityIdArray.put(451200, 143); // 河池市
+        mCityIdArray.put(451400, 144); // 崇左市
+        mCityIdArray.put(450700, 145); // 钦州
+        mCityIdArray.put(520100, 146); // 贵阳
+        mCityIdArray.put(520200, 147); // 六盘水市
+        mCityIdArray.put(130300, 148); // 秦皇岛市
+        mCityIdArray.put(130900, 149); // 沧州市
+        mCityIdArray.put(130100, 150); // 石家庄
+        mCityIdArray.put(130400, 151); // 邯郸市
+        mCityIdArray.put(410700, 152); // 新乡市
+        mCityIdArray.put(410300, 153); // 洛阳市
+        mCityIdArray.put(411400, 154); // 商丘市
+        mCityIdArray.put(411000, 155); // 许昌市
+        mCityIdArray.put(420600, 156); // 襄阳市
+        mCityIdArray.put(421000, 157); // 荆州市
+        mCityIdArray.put(430100, 158); // 长沙
+        mCityIdArray.put(430400, 159); // 衡阳
         mCityIdArray.put(321100, 160); // 镇江
-        //191
-        mCityIdArray.put(360900, 278); // 宜春樟树
-        mCityIdArray.put(500000, 132); // 重庆
-        mCityIdArray.put(442000, 187); // 中山
-        mCityIdArray.put(140400, 356); // 长治
-        mCityIdArray.put(370300, 354); // 淄博
-
-        mCityIdArray.put(430200, 222); // 株洲
+        mCityIdArray.put(320600, 161); // 南通
+        mCityIdArray.put(320800, 162); // 淮安
+        mCityIdArray.put(360100, 163); // 南昌
+        mCityIdArray.put(360500, 164); // 新余
+        mCityIdArray.put(220500, 165); // 通化市
+        mCityIdArray.put(210700, 166); // 锦州市
+        mCityIdArray.put(210200, 167); // 大连
+        mCityIdArray.put(150900, 168); // 乌兰察布
+        mCityIdArray.put(150800, 169); // 巴彦卓尔
         mCityIdArray.put(610500, 170); // 渭南
-        mCityIdArray.put(130800, 207); // 承德 丰宁
+        mCityIdArray.put(610300, 171); // 宝鸡市
+        mCityIdArray.put(370400, 172); // 枣庄
+        mCityIdArray.put(371100, 173); // 日照市
+        mCityIdArray.put(370500, 174); // 东营
+        mCityIdArray.put(371000, 175); // 威海
+        mCityIdArray.put(140100, 176); // 太原
+        mCityIdArray.put(532600, 177); // 文山壮族苗族自治州
+        mCityIdArray.put(330300, 178); // 温州
+        mCityIdArray.put(330100, 179); // 杭州
+        mCityIdArray.put(330200, 180); // 宁波
+        mCityIdArray.put(640500, 181); // 中卫市
+        mCityIdArray.put(622900, 182); // 临夏回族自治州
+        mCityIdArray.put(220400, 183); // 辽源市
+        mCityIdArray.put(210400, 184); // 抚顺
+        mCityIdArray.put(513200, 185); // 阿坝藏族羌族自治州
+        mCityIdArray.put(511500, 186); // 宜宾市
+        mCityIdArray.put(442000, 187); // 中山
+        mCityIdArray.put(341600, 188); // 亳州市
+        mCityIdArray.put(341100, 189); // 滁州
+        mCityIdArray.put(341800, 190); // 宣城
         mCityIdArray.put(131000, 191); // 廊坊
-        mCityIdArray.put(140200, 355); // 大同
-        //201
-        mCityIdArray.put(220700, 52);  // 松原
-        mCityIdArray.put(420800, 217); // 荆门
-        mCityIdArray.put(140700, 238); // 晋中 寿阳
-        mCityIdArray.put(341200, 128); // 阜阳 颍上
+        mCityIdArray.put(350900, 192); // 宁德市
+        mCityIdArray.put(350800, 193); // 龙岩
+        mCityIdArray.put(350200, 194); // 厦门
+        mCityIdArray.put(350300, 195); // 莆田市
+        mCityIdArray.put(620500, 196); // 天水
+        mCityIdArray.put(441800, 197); // 清远
         mCityIdArray.put(440800, 198); // 湛江
-
-        mCityIdArray.put(371400, 372); // 德州 武城
+        mCityIdArray.put(441700, 199); // 阳江
+        mCityIdArray.put(441600, 200); // 河源市
+        mCityIdArray.put(445100, 201); // 潮州市
+        mCityIdArray.put(451300, 202); // 来宾市
+        mCityIdArray.put(451000, 203); // 百色市
+        mCityIdArray.put(450600, 204); // 防城港市
+        mCityIdArray.put(520600, 205); // 铜仁市
+        mCityIdArray.put(520500, 206); // 毕节市
+        mCityIdArray.put(130800, 207); // 承德
+        mCityIdArray.put(131100, 208); // 衡水
+        mCityIdArray.put(410900, 209); // 濮阳
+        mCityIdArray.put(410200, 210); // 开封
+        mCityIdArray.put(410800, 211); // 焦作
+        mCityIdArray.put(411200, 212); // 三门峡市
+        mCityIdArray.put(410400, 213); // 平顶山市
+        mCityIdArray.put(411500, 214); // 信阳
+        mCityIdArray.put(410600, 215); // 鹤壁
+        mCityIdArray.put(420300, 216); // 十堰
+        mCityIdArray.put(420800, 217); // 荆门
+        mCityIdArray.put(420100, 218); // 武汉
+        mCityIdArray.put(430700, 219); // 常德
+        mCityIdArray.put(430600, 220); // 岳阳
+        mCityIdArray.put(431300, 221); // 娄底
+        mCityIdArray.put(430200, 222); // 株洲
+        mCityIdArray.put(320900, 223); // 盐城
+        mCityIdArray.put(320500, 224); // 苏州
+        mCityIdArray.put(360200, 225); // 景德镇
+        mCityIdArray.put(361000, 226); // 抚州市
+        mCityIdArray.put(210500, 227); // 本溪市
+        mCityIdArray.put(211100, 228); // 盘锦市
+        mCityIdArray.put(150200, 229); // 包头
+        mCityIdArray.put(152900, 230); // 阿拉善盟
+        mCityIdArray.put(610800, 231); // 榆林市
+        mCityIdArray.put(610200, 232); // 铜川
+        mCityIdArray.put(610100, 233); // 西安
+        mCityIdArray.put(371300, 234); // 临沂
+        mCityIdArray.put(371600, 235); // 滨州
+        mCityIdArray.put(370200, 236); // 青岛
+        mCityIdArray.put(140600, 237); // 朔州市
+        mCityIdArray.put(140700, 238); // 晋中
+        mCityIdArray.put(511900, 239); // 巴中市
+        mCityIdArray.put(510700, 240); // 绵阳
+        mCityIdArray.put(511600, 241); // 广安市
+        mCityIdArray.put(512000, 242); // 资阳
+        mCityIdArray.put(330800, 243); // 衢州
+        mCityIdArray.put(331000, 244); // 台州
+        mCityIdArray.put(330900, 245); // 舟山
+        mCityIdArray.put(640400, 246); // 固原市
+        mCityIdArray.put(62300, 247); // 甘南藏族自治州
+        mCityIdArray.put(511000, 248); // 内江市
+        mCityIdArray.put(530300, 249); // 曲靖
+        mCityIdArray.put(340400, 250); // 淮南市
+        mCityIdArray.put(341000, 252); // 黄山
+        mCityIdArray.put(340600, 253); // 淮北市
+        mCityIdArray.put(350400, 254); // 三明
+        mCityIdArray.put(350600, 255); // 漳州
+        mCityIdArray.put(621200, 256); // 陇南市
+        mCityIdArray.put(440100, 257); // 广州
+        mCityIdArray.put(445300, 258); // 云浮
+        mCityIdArray.put(445200, 259); // 揭阳
+        mCityIdArray.put(451100, 260); // 贺州
+        mCityIdArray.put(450100, 261); // 南宁
+        mCityIdArray.put(520300, 262); // 遵义
+        mCityIdArray.put(520400, 263); // 安顺
+        mCityIdArray.put(130700, 264); // 张家口
+        mCityIdArray.put(130200, 265); // 唐山
+        mCityIdArray.put(130500, 266); // 邢台
+        mCityIdArray.put(410500, 267); // 安阳
+        mCityIdArray.put(410100, 268); // 郑州
+        mCityIdArray.put(411700, 269); // 驻马店
+        mCityIdArray.put(420500, 270); // 宜昌市
+        mCityIdArray.put(421100, 271); // 黄冈
+        mCityIdArray.put(430900, 272); // 益阳
+        mCityIdArray.put(430500, 273); // 邵阳市
+        mCityIdArray.put(433100, 274); // 湘西土家族苗族自治州
+        mCityIdArray.put(431000, 275); // 郴州
+        mCityIdArray.put(321200, 276); // 泰州市
+        mCityIdArray.put(321300, 277); // 宿迁市
+        mCityIdArray.put(360900, 278); // 宜春
+        mCityIdArray.put(360600, 279); // 鹰潭
+        mCityIdArray.put(211300, 280); // 朝阳
+        mCityIdArray.put(210800, 281); // 营口市
+        mCityIdArray.put(210600, 282); // 丹东
+        mCityIdArray.put(150600, 283); // 鄂尔多斯
+        mCityIdArray.put(610600, 284); // 延安市
+        mCityIdArray.put(611000, 285); // 商洛市
+        mCityIdArray.put(370800, 286); // 济宁
+        mCityIdArray.put(370700, 287); // 潍坊
+        mCityIdArray.put(370100, 288); // 济南
+        mCityIdArray.put(310000, 289); // 上海
+        mCityIdArray.put(140500, 290); // 晋城
+        mCityIdArray.put(511300, 291); // 南充
+        mCityIdArray.put(820000, 2911); // 澳门
+        mCityIdArray.put(810000, 2912); // 香港
+        mCityIdArray.put(331100, 292); // 丽水市
+        mCityIdArray.put(330600, 293); // 绍兴
+        mCityIdArray.put(330500, 294); // 湖州
+        mCityIdArray.put(450500, 295); // 北海市
+        mCityIdArray.put(150400, 297); // 赤峰
+        mCityIdArray.put(341500, 298); // 六安
+        mCityIdArray.put(341700, 299); // 池州
+        mCityIdArray.put(350100, 300); // 福州
+        mCityIdArray.put(441300, 301); // 惠州
+        mCityIdArray.put(440700, 302); // 江门
+        mCityIdArray.put(440500, 303); // 汕头
+        mCityIdArray.put(450400, 304); // 梧州
+        mCityIdArray.put(450200, 305); // 柳州
+        mCityIdArray.put(522700, 306); // 黔南布依族苗族自治州
+        mCityIdArray.put(130600, 307); // 保定
+        mCityIdArray.put(411600, 308); // 周口
+        mCityIdArray.put(411300, 309); // 南阳
+        mCityIdArray.put(420900, 310); // 孝感
+        mCityIdArray.put(420200, 311); // 黄石
+        mCityIdArray.put(430800, 312); // 张家界
+        mCityIdArray.put(430300, 313); // 湘潭
+        mCityIdArray.put(431100, 314); // 永州
+        mCityIdArray.put(320100, 315); // 南京
+        mCityIdArray.put(320300, 316); // 徐州
+        mCityIdArray.put(320200, 317); // 无锡
+        mCityIdArray.put(360800, 318); // 吉安
+        mCityIdArray.put(211400, 319); // 葫芦岛
+        mCityIdArray.put(210300, 320); // 鞍山
+        mCityIdArray.put(150100, 321); // 呼和浩特
+        mCityIdArray.put(640300, 322); // 吴忠
+        mCityIdArray.put(610400, 323); // 咸阳
+        mCityIdArray.put(610900, 324); // 安康
+        mCityIdArray.put(370900, 325); // 泰安市
+        mCityIdArray.put(370600, 326); // 烟台
+        mCityIdArray.put(141100, 327); // 吕梁
+        mCityIdArray.put(140800, 328); // 运城
+        mCityIdArray.put(510800, 329); // 广元
+        mCityIdArray.put(510900, 330); // 遂宁
+        mCityIdArray.put(510500, 331); // 泸州
+        mCityIdArray.put(120000, 332); // 天津
+        mCityIdArray.put(330700, 333); // 金华
+        mCityIdArray.put(330400, 334); // 嘉兴
+        mCityIdArray.put(640200, 335); // 石嘴山
+        mCityIdArray.put(530600, 336); // 昭通
+        mCityIdArray.put(340700, 337); // 铜陵
+        mCityIdArray.put(441200, 338); // 肇庆
+        mCityIdArray.put(441500, 339); // 汕尾
+        mCityIdArray.put(440300, 340); // 深圳
+        mCityIdArray.put(450800, 341); // 贵港
+        mCityIdArray.put(522600, 342); // 黔东南苗族侗族自治州
+        mCityIdArray.put(522300, 343); // 黔西南布依族苗族自治州
+        mCityIdArray.put(411100, 344); // 漯河
+        mCityIdArray.put(321000, 346); // 扬州
         mCityIdArray.put(320700, 347); // 连云港
-
+        mCityIdArray.put(320400, 348); // 常州
+        mCityIdArray.put(360400, 349); // 九江
+        mCityIdArray.put(360300, 350); // 萍乡
+        mCityIdArray.put(211000, 351); // 辽阳
+        mCityIdArray.put(610700, 352); // 汉中市
+        mCityIdArray.put(371700, 353); // 菏泽
+        mCityIdArray.put(370300, 354); // 淄博
+        mCityIdArray.put(140200, 355); // 大同
+        mCityIdArray.put(140400, 356); // 长治
+        mCityIdArray.put(140300, 357); // 阳泉
+        mCityIdArray.put(340500, 358); // 马鞍山
+        mCityIdArray.put(620800, 359); // 平凉
+        mCityIdArray.put(640100, 360); // 银川
+        mCityIdArray.put(450900, 361); // 玉林
+        mCityIdArray.put(421200, 362); // 咸宁
+        mCityIdArray.put(431200, 363); // 怀化
+        mCityIdArray.put(361100, 364); // 上饶
+        mCityIdArray.put(360700, 365); // 赣州
+        mCityIdArray.put(371500, 366); // 聊城
+        mCityIdArray.put(140900, 367); // 忻州
+        mCityIdArray.put(141000, 368); // 临汾
+        mCityIdArray.put(511700, 369); // 达州
+        mCityIdArray.put(341300, 370); // 宿州
+        mCityIdArray.put(421300, 371); // 随州
+        mCityIdArray.put(371400, 372); // 德州
+        mCityIdArray.put(422800, 373); // 恩施土家族苗族自治州
         Log.d(TAG, "cityId size: " + mCityIdArray.size());
     }
 
     /**
-     * 提供给audio，转换cityId
+     * 提供给audio，转换cityId.
+     *
      * @param cityId 高德cityId
      * @return 百度的cityId,若没有映射默认返回上海的
      */

@@ -5,6 +5,7 @@ import android.text.TextUtils;
 
 import androidx.core.app.ActivityCompat;
 
+import com.android.utils.NetWorkUtils;
 import com.android.utils.ResourceUtils;
 import com.android.utils.ToastUtils;
 import com.android.utils.log.Logger;
@@ -26,7 +27,7 @@ public class StartupModel extends BaseModel<BaseStartupViewModel>
         implements PermissionUtils.PermissionsObserver {
 
     private static final String TAG = "StartupModel";
-    private CommonManager commonManager;
+    private final CommonManager commonManager;
 
     public StartupModel() {
         commonManager = CommonManager.getInstance();
@@ -84,6 +85,13 @@ public class StartupModel extends BaseModel<BaseStartupViewModel>
         );
         Logger.i(TAG, "isFirstLauncher:" + isFirstLauncher);
         return isFirstLauncher;
+    }
+
+    public boolean isShowStartupException() {
+        boolean isNetConnect = Boolean.TRUE.equals(NetWorkUtils.Companion.getInstance().checkNetwork());
+        boolean isOfflineData = "1".equals(commonManager.getValueByKey(UserDataCode.SETTING_DOWNLOAD_LIST));
+        boolean isCache = false;//TODO 调用地图缓存接口
+        return !(isNetConnect || isOfflineData || isCache);
     }
 
     /***

@@ -14,7 +14,7 @@
 
     <com.fy.navi.ui.view.SkinConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="@dimen/dp_714">
 
         <com.fy.navi.ui.view.SkinConstraintLayout
             android:id="@+id/navi_scene_container"
@@ -106,6 +106,33 @@
                 app:constraint_referenced_ids="scene_navi_tbt,scene_navi_cross_image,
             scene_navi_eta,scene_navi_tmc,scene_navi_via_list,scene_navi_lanes,scene_navi_via_info" />
 
+            <!--缺电推荐充电站-->
+            <com.fy.navi.scene.ui.navi.SceneNaviNearProvideCharge
+                android:id="@+id/scene_navi_rec_charge"
+                android:layout_width="@dimen/dp_640"
+                android:layout_height="@dimen/dp_104"
+                android:layout_marginTop="@dimen/dp_20"
+                android:visibility="@{ViewModel.mNaviRecChargeVisibility?View.VISIBLE:View.GONE}"
+                app:layout_constraintTop_toBottomOf="@id/barrier" />
+
+            <!--缺油推荐加电站-->
+            <com.fy.navi.scene.ui.navi.SceneNaviNearProvideGas
+                android:id="@+id/scene_navi_rec_gas"
+                android:layout_width="@dimen/dp_640"
+                android:layout_height="@dimen/dp_104"
+                android:layout_marginTop="@dimen/dp_20"
+                android:visibility="@{ViewModel.mNaviRecGasVisibility?View.VISIBLE:View.GONE}"
+                app:layout_constraintTop_toBottomOf="@id/scene_navi_rec_charge" />
+
+            <!--悬挂卡-推荐停车-->
+            <com.fy.navi.scene.ui.navi.SceneNaviNearProvidePark
+                android:id="@+id/scene_navi_rec_park"
+                android:layout_width="@dimen/dp_640"
+                android:layout_height="@dimen/dp_104"
+                android:layout_marginTop="@dimen/dp_20"
+                android:visibility="@{ViewModel.mNaviRecParkVisibility?View.VISIBLE:View.GONE}"
+                app:layout_constraintTop_toBottomOf="@id/scene_navi_rec_gas" />
+
             <!--停车场列表-->
             <com.fy.navi.scene.ui.navi.SceneNaviParkListView
                 android:id="@+id/scene_navi_parking_list"
@@ -124,16 +151,6 @@
                 android:visibility="@{ViewModel.mNaviControlVisibility?View.VISIBLE:View.GONE}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />
-
-            <!--继续导航按钮-->
-            <com.fy.navi.scene.ui.navi.SceneNaviContinueView
-                android:id="@+id/scene_navi_continue"
-                android:layout_width="@dimen/dp_310"
-                android:layout_height="@dimen/dp_92"
-                android:visibility="@{ViewModel.mNaviContinueVisibility?View.VISIBLE:View.GONE}"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                android:layout_marginStart="@dimen/dp_920"/>
 
             <!--导航路线偏好-->
             <com.fy.navi.scene.ui.navi.SceneNaviPreferenceView
@@ -172,7 +189,7 @@
                 android:clickable="true"
                 android:gravity="center"
                 android:paddingHorizontal="@dimen/dp_26"
-                android:textColor="@color/navi_color_000000_100"
+                android:textColor="@color/common_title_purple_color"
                 android:textSize="@dimen/sp_34"
                 android:visibility="@{ViewModel.mNaviRouteNameVisibility?View.VISIBLE:View.GONE}"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -232,15 +249,37 @@
                 app:layout_constraintEnd_toEndOf="@id/scene_navi_tbt"
                 app:layout_constraintStart_toStartOf="@id/scene_navi_tbt"
                 app:layout_constraintTop_toBottomOf="@id/barrier" />
+
+            <com.fy.navi.scene.ui.navi.SceneNaviChargeListView
+                android:id="@+id/sceneRecChargeListView"
+                android:layout_width="@dimen/dp_640"
+                android:layout_height="@dimen/dp_376"
+                android:layout_marginTop="@dimen/dp_20"
+                app:layout_constraintStart_toStartOf="@id/scene_navi_tbt"
+                tools:background="@android:color/holo_red_light"
+                android:visibility="@{ViewModel.mNaviRecChargeListVisibility?View.VISIBLE:View.GONE}"
+                app:layout_constraintTop_toBottomOf="@id/barrier" />
+
+            <com.fy.navi.scene.ui.navi.SceneGasListView
+                android:id="@+id/sceneRecGasListView"
+                android:layout_width="@dimen/dp_640"
+                android:layout_height="@dimen/dp_376"
+                android:layout_marginTop="@dimen/dp_20"
+                app:layout_constraintStart_toStartOf="@id/scene_navi_tbt"
+                android:visibility="@{ViewModel.mNaviRecGasListVisibility?View.VISIBLE:View.GONE}"
+                app:layout_constraintTop_toBottomOf="@id/barrier" />
+
         </com.fy.navi.ui.view.SkinConstraintLayout>
 
-        <com.fy.navi.scene.ui.navi.search.SceneNaviSearchView
-            android:id="@+id/scene_navi_search"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:visibility="gone"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"/>
+        <!--继续导航按钮-->
+        <com.fy.navi.scene.ui.navi.SceneNaviContinueView
+            android:id="@+id/scene_navi_continue"
+            android:layout_width="@dimen/dp_310"
+            android:layout_height="@dimen/dp_92"
+            android:visibility="@{ViewModel.mNaviContinueVisibility?View.VISIBLE:View.GONE}"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginStart="@dimen/dp_920"/>
 
     </com.fy.navi.ui.view.SkinConstraintLayout>
 

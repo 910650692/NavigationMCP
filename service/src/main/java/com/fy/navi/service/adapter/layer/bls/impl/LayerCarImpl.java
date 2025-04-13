@@ -3,6 +3,7 @@ package com.fy.navi.service.adapter.layer.bls.impl;
 import android.content.Context;
 
 import com.android.utils.log.Logger;
+import com.android.utils.thread.ThreadManager;
 import com.autonavi.gbl.layer.BizControlService;
 import com.autonavi.gbl.layer.model.BizCarType;
 import com.autonavi.gbl.map.MapView;
@@ -13,16 +14,18 @@ import com.autonavi.gbl.map.layer.model.SkeletonAnimationInfo;
 import com.autonavi.gbl.map.layer.model.SkeletonDataInfoBase;
 import com.autonavi.gbl.map.layer.model.SkeletonDataType;
 import com.fy.navi.service.GBLCacheFilePath;
-import com.fy.navi.service.adapter.layer.bls.style.CarLayerStyleAdapter;
+import com.fy.navi.service.adapter.layer.ILayerAdapterCallBack;
+import com.fy.navi.service.adapter.layer.bls.style.LayerCarStyleAdapter;
 import com.fy.navi.service.define.bean.GeoPoint;
 import com.fy.navi.service.define.layer.refix.CarModeType;
-import com.fy.navi.service.define.layer.refix.LayerItemCar;
+import com.fy.navi.service.define.map.MapType;
 
+import java.util.function.Consumer;
 
-public class LayerCarImpl extends BaseLayerImpl<CarLayerStyleAdapter> {
+public class LayerCarImpl extends BaseLayerImpl<LayerCarStyleAdapter> {
 
-    public LayerCarImpl(BizControlService bizService, MapView mapView, Context context) {
-        super(bizService, mapView, context);
+    public LayerCarImpl(BizControlService bizService, MapView mapView, Context context, MapType mapType) {
+        super(bizService, mapView, context, mapType);
         getLayerCarControl().setStyle(this);
         getLayerCarControl().setVisible(true);
         getLayerCarControl().setClickable(true);
@@ -31,16 +34,46 @@ public class LayerCarImpl extends BaseLayerImpl<CarLayerStyleAdapter> {
     }
 
     @Override
-    protected CarLayerStyleAdapter createStyleAdapter() {
-        return new CarLayerStyleAdapter();
+    protected LayerCarStyleAdapter createStyleAdapter() {
+        return new LayerCarStyleAdapter(getEngineId(), getLayerCarControl());
     }
 
+    @Override
+    public void onCarLocChange(CarLoc carLoc) {
+        getStyleAdapter().updateCarSpeed(carLoc.speed);
+    }
+
+    @Override
+    public void onCarClick(CarLoc carLoc) {
+        getCallBacks().forEach(new Consumer<ILayerAdapterCallBack>() {
+            @Override
+            public void accept(ILayerAdapterCallBack callBack) {
+                if (callBack != null) {
+                    GeoPoint geoPoint = new GeoPoint();
+                    if (!carLoc.vecPathMatchInfo.isEmpty()) {
+                        PathMatchInfo pathMatchInfo = carLoc.vecPathMatchInfo.get(0);
+                        geoPoint.setLat(pathMatchInfo.latitude);
+                        geoPoint.setLon(pathMatchInfo.longitude);
+                    }
+                    ThreadManager.getInstance().postUi(new Runnable() {
+                        @Override
+                        public void run() {
+                            Logger.d(TAG, getMapType() + " onCarClick =" + geoPoint.toString());
+                            callBack.onCarClick(getMapType(), geoPoint);
+                        }
+                    });
+                }
+            }
+        });
+    }
 
     /* 设置骨骼车标 暂不支持骨骼车标设置*/ //TODO
     private void initSkeletonCarModel() {
         SkeletonDataInfoBase dataInfo = new SkeletonDataInfoBase();
         dataInfo.type = SkeletonDataType.FBX;//格式由UE提供的资源模型决定
-        dataInfo.skeletonDataPath = GBLCacheFilePath.COPY_ASSETS_DIR + "bls/style1/car_skeleton_logo/11/carLogo.dat";//旧接口HMI读取资源，新接口直接设置资源路径
+        dataInfo.skeletonDataPath = new StringBuffer(GBLCacheFilePath.BLS_ASSETS_CUSTOM_PATH)
+                .append(getEngineId())
+                .append("/carSkeleton/carLogo.dat").toString();
         int a = getLayerCarControl().setSkeletonDataInfo(dataInfo);
         //默认不播动画，需要动画，要再调用动画接口
         SkeletonAnimationInfo animationInfo = new SkeletonAnimationInfo();
@@ -49,17 +82,17 @@ public class LayerCarImpl extends BaseLayerImpl<CarLayerStyleAdapter> {
     }
 
     /* 设置车标模式，2D车标/3D车标/骨骼车标/车速车标 */
-    public void setCarMode(LayerItemCar carMode) {
-        int carModeType;
-        switch (carMode.getCarModeType()) {
-            case CAR_MODEL_TYPE_3D -> carModeType = CarMode.CarMode3D;
-            case CAR_MODEL_TYPE_SKELETON -> carModeType = CarMode.CarModeSkeleton;
-            case CAR_MODEL_TYPE_SPEED -> carModeType = CarMode.CarModeSpeed;
-            default -> carModeType = CarMode.CarMode2D;
+    public void setCarMode(CarModeType carModeType) {
+        int carMode;
+        switch (carModeType) {
+            case CAR_MODEL_BRAND -> carMode = CarMode.CarModeSkeleton;
+            case CAR_MODEL_SPEED -> carMode = CarMode.CarModeSpeed;
+            default -> carMode = CarMode.CarMode2D;
         }
-        Logger.d(TAG, "CarMode.CarMode2D :" + carModeType);
+        Logger.d(TAG, "setCarMode:" + carMode);
         getLayerCarControl().setCarAnimationSwitch(true);
-        getLayerCarControl().setCarMode(carModeType, true);
+        getLayerCarControl().setCarMode(carMode, true);
+
     }
 
     /* 设置车标位置信息。通常用于单次设置车标位置，频次低 */
@@ -68,7 +101,7 @@ public class LayerCarImpl extends BaseLayerImpl<CarLayerStyleAdapter> {
         PathMatchInfo info = new PathMatchInfo();
         info.longitude = geoPoint.getLon();
         info.latitude = geoPoint.getLat();
-        info.carDir = 90;
+        info.carDir = geoPoint.getCourse();
         carLocation.vecPathMatchInfo.add(info);
         getLayerCarControl().setCarPosition(carLocation);
     }

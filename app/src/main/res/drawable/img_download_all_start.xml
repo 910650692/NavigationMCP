@@ -8,5 +8,5 @@
       android:strokeWidth="4"
       android:fillColor="#00000000"
       android:fillType="nonZero"
-      android:strokeColor="#4B535D"/>
+      android:strokeColor="@color/setting_bg_close"/>
 </vector>

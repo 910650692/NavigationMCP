@@ -12,22 +12,29 @@ import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
 import com.fy.navi.scene.api.route.ISceneRoutePreferenceCallBack;
 import com.fy.navi.scene.impl.imersive.ImersiveStatus;
+import com.fy.navi.scene.impl.imersive.ImmersiveStatusScene;
 import com.fy.navi.scene.impl.navi.inter.ISceneCallback;
 import com.fy.navi.scene.ui.navi.ChargeTipEntity;
 import com.fy.navi.scene.ui.navi.manager.INaviSceneEvent;
 import com.fy.navi.scene.ui.navi.manager.NaviSceneId;
 import com.fy.navi.scene.ui.navi.manager.NaviSceneManager;
 import com.fy.navi.service.MapDefaultFinalTag;
+import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.navi.CrossImageEntity;
+import com.fy.navi.service.define.navi.FyElecVehicleETAInfo;
 import com.fy.navi.service.define.navi.LaneInfoEntity;
 import com.fy.navi.service.define.navi.NaviDriveReportEntity;
 import com.fy.navi.service.define.navi.NaviEtaInfo;
 import com.fy.navi.service.define.navi.NaviManeuverInfo;
+import com.fy.navi.service.define.navi.NaviParkingEntity;
 import com.fy.navi.service.define.navi.NaviTmcInfo;
 import com.fy.navi.service.define.navi.NaviViaEntity;
 import com.fy.navi.service.define.navi.SapaInfoEntity;
 import com.fy.navi.service.define.navi.SpeedOverallEntity;
+import com.fy.navi.service.define.route.RouteRequestParam;
+import com.fy.navi.service.define.search.SearchResultEntity;
 import com.fy.navi.service.define.utils.NumberUtils;
+import com.fy.navi.service.logicpaket.route.RoutePackage;
 import com.fy.navi.ui.action.Action;
 import com.fy.navi.ui.base.BaseViewModel;
 import com.fy.navi.ui.dialog.IBaseDialogClickListener;
@@ -64,6 +71,19 @@ public class BaseNaviGuidanceViewModel extends
     public ObservableField<Boolean> mNaviChargeTipVisibility;
     public ObservableField<Boolean> mNaviContinueVisibility;//继续导航
     private boolean mIsShowLane = false;
+    public ObservableField<Boolean> mNaviRecChargeVisibility;//悬挂卡---推荐充电站
+    public ObservableField<Boolean> mNaviRecGasVisibility;//悬挂卡---推荐加油站
+    public ObservableField<Boolean> mNaviRecParkVisibility;//悬挂卡---推荐停车场
+    public ObservableField<Boolean> mNaviRecChargeListVisibility;//沿途充电站列表
+    public ObservableField<Boolean> mNaviRecGasListVisibility;//沿途加油站列表
+    //车牌信息
+    private String mCurrentPlateNumber;
+    //限行信息
+    private String mCurrentavoidLimit;
+    //路线偏好
+    private String mCurrentPreferences;
+    //补能规划
+    private String mCurrentEnergy;
 
     public BaseNaviGuidanceViewModel(@NonNull final Application application) {
         super(application);
@@ -86,6 +106,11 @@ public class BaseNaviGuidanceViewModel extends
         mNaviDriveReportVisibility = new ObservableField<>(false);
         mNaviChargeTipVisibility = new ObservableField<>(false);
         mNaviContinueVisibility = new ObservableField<>(false);
+        mNaviRecChargeVisibility = new ObservableField<>(false);
+        mNaviRecGasVisibility = new ObservableField<>(false);
+        mNaviRecChargeListVisibility = new ObservableField<>(false);
+        mNaviRecGasListVisibility = new ObservableField<>(false);
+        mNaviRecParkVisibility = new ObservableField<>(false);
     }
 
     @Override
@@ -108,6 +133,12 @@ public class BaseNaviGuidanceViewModel extends
     //显示/隐藏 添加途径点页面
     public final Action mNaviAddVia = this::onSwitchViaList;
 
+    public void initShowScene(NaviSceneId... sceneIds) {
+        for (NaviSceneId sceneId : sceneIds) {
+            NaviSceneManager.getInstance().initShowScene(sceneId);
+        }
+    }
+
     /**
      * 显示/隐藏 途径点列表
      */
@@ -116,7 +147,9 @@ public class BaseNaviGuidanceViewModel extends
         final boolean visible = Boolean.FALSE.equals(b);
         final List<NaviViaEntity> viaList = mModel.getViaList();
         mView.showNaviViaList(visible);
-        mView.updateViaListState(viaList);
+        if (!ConvertUtils.isEmpty(viaList)) {
+            mView.updateViaListState(viaList);
+        }
     }
 
     /**
@@ -131,6 +164,7 @@ public class BaseNaviGuidanceViewModel extends
             case NAVI_SCENE_3D_CROSS:
             case NAVI_SCENE_2D_CROSS:
                 Logger.i(TAG, "路口大图展示状态：" + isVisible);
+                mView.onCrossImageInfo(isVisible);
                 mNaviCrossImageVisibility.set(isVisible);
                 break;
             case NAVI_SCENE_ETA:
@@ -187,6 +221,21 @@ public class BaseNaviGuidanceViewModel extends
                 break;
             case NAVI_CONTINUE:
                 mNaviContinueVisibility.set(isVisible);
+                break;
+            case NAVI_PROVIDE_CHARGE:
+                mNaviRecChargeVisibility.set(isVisible);
+                break;
+            case NAVI_PROVIDE_GAS:
+                mNaviRecGasVisibility.set(isVisible);
+                break;
+            case NAVI_PROVIDE_PARK:
+                mNaviRecParkVisibility.set(isVisible);
+                break;
+            case NAVI_PROVIDE_CHARGE_LIST:
+                mNaviRecChargeListVisibility.set(isVisible);
+                break;
+            case NAVI_PROVIDE_GAS_LIST:
+                mNaviRecGasListVisibility.set(isVisible);
                 break;
             default:
                 break;
@@ -453,7 +502,9 @@ public class BaseNaviGuidanceViewModel extends
             @Override
             public void run() {
                 final List<NaviViaEntity> viaList = mModel.getViaList();
-                mView.updateViaListState(viaList);
+                if (!ConvertUtils.isEmpty(viaList)) {
+                    mView.updateViaListState(viaList);
+                }
             }
         }, NumberUtils.NUM_500);
     }
@@ -470,11 +521,74 @@ public class BaseNaviGuidanceViewModel extends
     }
 
     public void onUpdateViaList(boolean isShow) {
-        mView.updateViaListState(mModel.getViaList());
+        final List<NaviViaEntity> viaList = mModel.getViaList();
+        if (!ConvertUtils.isEmpty(viaList)) {
+            mView.updateViaListState(viaList);
+        }
         mView.onUpdateTMCLightBarAutoAdd(isShow);
     }
 
     public boolean isNeedCloseNaviChargeTipLater() {
         return mView.isNeedCloseNaviChargeTipLater();
+    }
+
+    public void onUpdateElectVehicleETAInfo(final List<FyElecVehicleETAInfo> infos) {
+        if (null != mView) {
+            mView.onUpdateElectVehicleETAInfo(infos);
+        }
+    }
+
+    /***
+     * 悬挂卡提醒-电量不足或者油量不足
+     * @param searchResultEntity
+     * @param isPureGasCar
+     */
+    public void cardBatteryTip(final SearchResultEntity searchResultEntity, final boolean isPureGasCar) {
+        mView.cardBatteryTip(searchResultEntity, isPureGasCar);
+    }
+
+    public void updateRecChargeList(final SearchResultEntity searchResultEntity) {
+        mView.updateRecChargeList(searchResultEntity);
+    }
+
+    public void updateRecGasList(final SearchResultEntity searchResultEntity) {
+        mView.updateRecGasList(searchResultEntity);
+    }
+
+    public void updateRecParkingList(List<NaviParkingEntity> list) {
+        mView.updateRecParkingList(list);
+    }
+
+    public void backToNaviFragment() {
+        mView.backToNaviFragment();
+    }
+
+    /***
+     * 设置改变请求重新请求算路
+     */
+    public void isRequestRouteForPlateNumberAndAvoidLimitChange() {
+        Logger.i(TAG, "isRequestRouteForPlateNumberAndAvoidLimitChange");
+        if (mCurrentPlateNumber.equals(mModel.getPlateNumber()) &&
+                mCurrentavoidLimit.equals(mModel.getAvoidLimit()) &&
+                mCurrentEnergy.equals(mModel.getEnergy()) &&
+                mCurrentPreferences.equals(mModel.getPreferences())) {
+            Logger.i(TAG, "isRequestRouteForPlateNumberAndAvoidLimitChange 没有改变");
+            return;
+        }
+        setDefultPlateNumberAndAvoidLimitSave();
+        final RouteRequestParam param = new RouteRequestParam();
+        param.setMMapTypeId(MapType.MAIN_SCREEN_MAIN_MAP);
+        RoutePackage.getInstance().requestRoute(param);
+    }
+
+    /***
+     * 保存车牌和限行的数据
+     */
+    public void setDefultPlateNumberAndAvoidLimitSave() {
+        Logger.i(TAG, "setDefultPlateNumberAndAvoidLimitSave");
+        mCurrentPlateNumber = mModel.getPlateNumber();
+        mCurrentavoidLimit = mModel.getAvoidLimit();
+        mCurrentPreferences = mModel.getPreferences();
+        mCurrentEnergy = mModel.getEnergy();
     }
 }

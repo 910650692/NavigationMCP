@@ -3,6 +3,8 @@ package com.fy.navi.hmi.setting.others;
 import com.android.utils.file.FileUtils;
 import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
+import com.fy.navi.burypoint.anno.HookMethod;
+import com.fy.navi.burypoint.constant.BuryConstant;
 import com.fy.navi.service.GBLCacheFilePath;
 import com.fy.navi.service.define.setting.SettingController;
 import com.fy.navi.service.define.user.account.AccountUserInfo;
@@ -102,6 +104,9 @@ public class SettingOthersModel extends BaseModel<SettingOthersViewModel>
         if (result != null && result.getCode() == 1) {
             if (result.getProfileInfo() != null) {
                 mViewModel.updateUserInfo(result.getProfileInfo().getNickname(), result.getProfileInfo().getAvatar());
+
+                //For Bury Point
+                sendBuryPointForCompleteBindingAccount();
             }
         }
     }
@@ -111,6 +116,9 @@ public class SettingOthersModel extends BaseModel<SettingOthersViewModel>
         if (result != null && result.getCode() == 1) {
             if (result.getProfileInfo() != null) {
                 mViewModel.updateUserInfo(result.getProfileInfo().getNickname(), result.getProfileInfo().getAvatar());
+
+                //For Bury Point
+                sendBuryPointForCompleteBindingAccount();
             }
         }
     }
@@ -205,5 +213,10 @@ public class SettingOthersModel extends BaseModel<SettingOthersViewModel>
             dirs[i] = new File(mDirPaths[i]);
         }
         return FileUtils.formatFileSize(FileUtils.getTotalSizeOfDirectories(dirs));
+    }
+
+    @HookMethod(eventName = BuryConstant.EventName.AMAP_ACCOUNT_BIND_FINISH)
+    private void sendBuryPointForCompleteBindingAccount(){
+        //No params, so empty body
     }
 }

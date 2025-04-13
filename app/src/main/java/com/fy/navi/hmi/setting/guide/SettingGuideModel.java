@@ -153,10 +153,10 @@ public class SettingGuideModel extends BaseModel<SettingGuideViewModel> implemen
     private void updateCarMode() {
         final CarModeType carMode = mSettingPackage.getCarMode();
         switch (carMode) {
-            case CAR_MODEL_TYPE_SKELETON :
+            case CAR_MODEL_BRAND:
                 mViewModel.onCarModeChanged(false, true, false);
                 break;
-            case CAR_MODEL_TYPE_3D:
+            case CAR_MODEL_SPEED:
                 mViewModel.onCarModeChanged(false, false, true);
                 break;
             default:
@@ -276,7 +276,9 @@ public class SettingGuideModel extends BaseModel<SettingGuideViewModel> implemen
     public void getCarType() {
         final int carMode = CalibrationPackage.getInstance().powerType();
         final boolean isEVCar = carMode == 1;
+        final boolean isPHEVCar = carMode == 2;
         mViewModel.dualChoiceControl(SettingController.KEY_SETTING_IS_EV_CAR, isEVCar);
+        mViewModel.dualChoiceControl(SettingController.KEY_SETTING_IS_PHEV_CAR, isPHEVCar);
     }
 
     /**

@@ -4,6 +4,7 @@ package com.fy.navi.hmi.favorite;
 import android.content.Context;
 import android.graphics.Rect;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,15 +24,15 @@ import com.android.utils.ToastUtils;
 import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
+import com.fy.navi.burypoint.anno.HookMethod;
+import com.fy.navi.burypoint.constant.BuryConstant;
 import com.fy.navi.hmi.BR;
 import com.fy.navi.hmi.R;
 import com.fy.navi.hmi.databinding.FragmentFavoriteBinding;
 import com.fy.navi.hmi.favorite.adapter.FavoriteDataAdapter;
 import com.fy.navi.hmi.favorite.adapter.FrequentAddressAdapter;
 import com.fy.navi.hmi.poi.PoiDetailsFragment;
-import com.fy.navi.hmi.route.RouteFragment;
 import com.fy.navi.service.AutoMapConstant;
-import com.fy.navi.service.define.route.RoutePoiType;
 import com.fy.navi.service.define.search.PoiInfoEntity;
 import com.fy.navi.service.logicpaket.setting.SettingUpdateObservable;
 import com.fy.navi.ui.base.BaseFragment;
@@ -55,7 +56,8 @@ public class FavoriteFragment extends BaseFragment<FragmentFavoriteBinding, Favo
 
     private PopupWindow mPopupWindow;
     private SkinTextView mBtnEdit;
-    private SkinTextView mBtnDelete,mBtnDelete1;
+    private SkinTextView mBtnDelete;
+    private SkinTextView mBtnDelete1;
     private PopupWindow mFrequentPopupWindow;
     private SkinTextView mRenameBtn;
     private SkinGridLayout mFreqAddressLayout;
@@ -119,16 +121,16 @@ public class FavoriteFragment extends BaseFragment<FragmentFavoriteBinding, Favo
     /**
      * 初始化收藏点列表
      */
+    @HookMethod(eventName = BuryConstant.EventName.AMAP_FAVORITE_LIST)
     private void initFavoriteList() {
         mFavoriteDataAdapter = new FavoriteDataAdapter();
         mFavoriteDataAdapter.setItemClickListener(new FavoriteDataAdapter.OnItemClickListener() {
             @Override
             public void onItemNaviClick(final int index) {
                 final PoiInfoEntity poiInfoEntity = mFavoriteList.get(index);
-                final Bundle bundle = new Bundle();
-                bundle.putParcelable(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_OPEN_ROUTE, poiInfoEntity);
-                bundle.putInt(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_OPEN_ROUTE_TYPE, RoutePoiType.ROUTE_POI_TYPE_END);
-                addFragment(new RouteFragment(), bundle);
+                if (mViewModel != null) {
+                    mViewModel.startRoute(poiInfoEntity);
+                }
             }
 
             @Override
@@ -141,6 +143,7 @@ public class FavoriteFragment extends BaseFragment<FragmentFavoriteBinding, Favo
 
             @Override
             public void onItemTopClick(final int index) {
+                Logger.d(TAG,"on item top click");
                 if (mFavoriteList != null && !mFavoriteList.isEmpty()) {
                     SettingUpdateObservable.getInstance().onUpdateSyncTime();
                     mViewModel.topFavorite(mFavoriteList.get(index), true);
@@ -150,6 +153,7 @@ public class FavoriteFragment extends BaseFragment<FragmentFavoriteBinding, Favo
 
             @Override
             public void onItemCancelTopClick(final int index) {
+                Logger.d(TAG, "on item cancel top click");
                 mBinding.favoriteScroll.setEnabled(false);
                 if (mFavoriteList != null && !mFavoriteList.isEmpty()) {
                     SettingUpdateObservable.getInstance().onUpdateSyncTime();
@@ -249,11 +253,10 @@ public class FavoriteFragment extends BaseFragment<FragmentFavoriteBinding, Favo
                 showFrequentPopupWindow(itemView);
             });
             tvName.setOnClickListener(v -> {
-                final PoiInfoEntity poiInfoEntity = mFrequentAddressList.get(mIndex);
-                final Bundle bundle = new Bundle();
-                bundle.putParcelable(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_OPEN_ROUTE, poiInfoEntity);
-                bundle.putInt(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_OPEN_ROUTE_TYPE, RoutePoiType.ROUTE_POI_TYPE_END);
-                addFragment(new RouteFragment(), bundle);
+                if (mViewModel != null) {
+                    final PoiInfoEntity poiInfoEntity = mFrequentAddressList.get(mIndex);
+                    mViewModel.startRoute(poiInfoEntity);
+                }
             });
 
             final SkinGridLayout.Spec rowSpec = SkinGridLayout.spec(i / maxItemPerRow, 1);
@@ -308,8 +311,11 @@ public class FavoriteFragment extends BaseFragment<FragmentFavoriteBinding, Favo
         // 切换视图状态
         tvName.setVisibility(View.GONE);
         etName.setVisibility(View.VISIBLE);
-        etName.setText(address.getName());
-
+        String customName = "";
+        if (address.getFavoriteInfo() != null) {
+            customName = address.getFavoriteInfo().getCustom_name();
+        }
+        etName.setText(TextUtils.isEmpty(customName) ? address.getName() : customName);
         // 焦点与键盘控制
         etName.post(() -> {
             etName.requestFocus();
@@ -343,8 +349,8 @@ public class FavoriteFragment extends BaseFragment<FragmentFavoriteBinding, Favo
      */
     private void saveRenameResult(final PoiInfoEntity address, final SkinTextView tvName, final SkinEditText etName) {
         final String newName = etName.getText().toString().trim();
-        mViewModel.modifyFavoriteData(address.getFavoriteInfo().getItemId(), newName);
         if (!newName.isEmpty()) {
+            mViewModel.modifyFavoriteData(address.getFavoriteInfo().getItemId(), newName);
             address.setName(newName);
             tvName.setText(newName);
         }
@@ -356,6 +362,7 @@ public class FavoriteFragment extends BaseFragment<FragmentFavoriteBinding, Favo
         // 隐藏键盘
         final InputMethodManager imm = (InputMethodManager) requireContext().getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(etName.getWindowToken(), 0);
+        initFrequentAddressList();
     }
 
 
@@ -476,15 +483,13 @@ public class FavoriteFragment extends BaseFragment<FragmentFavoriteBinding, Favo
             // 显示PopupWindow在更多按钮的上方
             final int[] location = new int[2];
             anchorView.getLocationOnScreen(location);
-            final int x = location[0] - 220;
-            final int y = location[1] - mPopupWindow.getHeight(); // 计算PopupWindow的Y坐标
 
             mBtnEdit.setTextColor(getResources().getColor(R.color.black));
             mBtnEdit.setText(R.string.favorite_item_edit);
             if (((mViewModel.getIsHome() && mViewModel.getHomeCompanyInfo(true) == null)) ||
                     (!mViewModel.getIsHome() && mViewModel.getHomeCompanyInfo(false) == null)) {
                 mBtnDelete1.setEnabled(false);
-                mBtnDelete1.setTextColor(getResources().getColor(R.color.setting_tab_gray));
+                mBtnDelete1.setTextColor(getResources().getColor(R.color.color_black_70));
             } else {
                 mBtnDelete1.setEnabled(true);
                 mBtnDelete1.setTextColor(getResources().getColor(R.color.black));
@@ -533,8 +538,6 @@ public class FavoriteFragment extends BaseFragment<FragmentFavoriteBinding, Favo
     public void showFrequentPopupWindow(final View anchorView) {
         final int[] location = new int[2];
         anchorView.getLocationOnScreen(location);
-        final int x = location[0] + 320;
-        final int y = location[1] - mFrequentPopupWindow.getHeight(); // 计算PopupWindow的Y坐标
         mFrequentPopupWindow.showAsDropDown(anchorView, 0, -130 , Gravity.END);
     }
 

@@ -4,10 +4,6 @@
     <data>
 
         <import type="android.view.View" />
-
-        <variable
-            name="ViewModel"
-            type="com.fy.navi.hmi.map.MapViewModel" />
     </data>
 
     <merge xmlns:android="http://schemas.android.com/apk/res/android"

@@ -25,6 +25,8 @@ public interface MapDefaultFinalTag {
      String SPEECH_SERVICE_TAG = DEFAULT_TAG + "_Speech" + SERVICE_TAG;
     /*** NaviApp_Layer_Service **/
      String LAYER_SERVICE_TAG = DEFAULT_TAG + "_Layer" + SERVICE_TAG;
+    /*** NaviApp_LayerItem_Service **/
+     String LAYER_ITEM_SERVICE_TAG = DEFAULT_TAG + "_LayerItem" + SERVICE_TAG;
     /*** NaviApp_MapData_Service **/
      String MAP_DATA_SERVICE_TAG = DEFAULT_TAG + "_MapData" + SERVICE_TAG;
     /*** NaviApp_Search_Service **/

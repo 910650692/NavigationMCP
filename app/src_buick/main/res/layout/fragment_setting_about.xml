@@ -38,13 +38,13 @@
                 android:layout_marginStart="@dimen/dp_395"
                 android:text="@string/setting_others_about_title"
                 android:textSize="@dimen/sp_38"
-                android:textColor="@color/black" />
+                android:textColor="@color/setting_bg_tab_text_select" />
         </com.fy.navi.ui.view.SkinLinearLayout>
 
         <com.fy.navi.ui.view.SkinLinearLayout
             android:id="@+id/setting_others_about_image_layout"
             android:layout_width="@dimen/dp_500"
-            android:layout_height="@dimen/dp_310"
+            android:layout_height="wrap_content"
             android:orientation="vertical"
             android:gravity="center"
             android:layout_marginTop="@dimen/dp_16"
@@ -53,8 +53,8 @@
 
             <com.fy.navi.ui.view.SkinImageView
                 android:id="@+id/setting_others_about_image"
-                android:layout_width="@dimen/dp_300"
-                android:layout_height="@dimen/dp_207"
+                android:layout_width="@dimen/dp_256"
+                android:layout_height="@dimen/dp_188"
                 android:src="@mipmap/icon_setting_about" />
 
             <com.fy.navi.ui.view.SkinTextView
@@ -62,9 +62,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@{viewModel.mSdkVersion}"
-                android:textColor="@color/setting_text_preference"
+                android:textColor="@color/setting_bg_tab_text_unselect"
                 android:textSize="@dimen/sp_30"
-                android:layout_marginTop="@dimen/dp_60"
+                android:layout_marginTop="@dimen/dp_32"
                 app:layout_constraintTop_toBottomOf="@+id/setting_others_about_image"
                 app:layout_constraintStart_toStartOf="@+id/setting_others_about_image"/>
         </com.fy.navi.ui.view.SkinLinearLayout>
@@ -74,8 +74,8 @@
             android:layout_width="@dimen/dp_450"
             android:layout_height="@dimen/dp_150"
             android:orientation="vertical"
-            android:layout_marginStart="@dimen/dp_30"
-            android:layout_marginTop="@dimen/dp_60"
+            android:layout_marginStart="@dimen/dp_40"
+            android:layout_marginTop="@dimen/dp_103"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/setting_others_about_image_layout">
 
@@ -89,14 +89,14 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/setting_others_about_channel"
-                    android:textColor="@color/setting_text_preference"
+                    android:textColor="@color/setting_bg_tab_text_unselect"
                     android:textSize="@dimen/sp_26" />
 
                 <com.fy.navi.ui.view.SkinTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@{viewModel.mChannelID}"
-                    android:textColor="@color/setting_text_preference"
+                    android:textColor="@color/setting_bg_tab_text_unselect"
                     android:textSize="@dimen/sp_26"
                     android:layout_marginStart="@dimen/dp_10"/>
             </com.fy.navi.ui.view.SkinLinearLayout>
@@ -111,14 +111,14 @@
                    android:layout_width="wrap_content"
                    android:layout_height="wrap_content"
                    android:text="@string/setting_others_about_data_version"
-                   android:textColor="@color/setting_text_preference"
+                   android:textColor="@color/setting_bg_tab_text_unselect"
                    android:textSize="@dimen/sp_26" />
 
                <com.fy.navi.ui.view.SkinTextView
                    android:layout_width="wrap_content"
                    android:layout_height="wrap_content"
                    android:text="@{viewModel.mMapDataVersion}"
-                   android:textColor="@color/setting_text_preference"
+                   android:textColor="@color/setting_bg_tab_text_unselect"
                    android:textSize="@dimen/sp_26"
                    android:layout_marginStart="@dimen/dp_10" />
 
@@ -129,7 +129,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@{viewModel.mVersion}"
-                android:textColor="@color/setting_text_preference"
+                android:textColor="@color/setting_bg_tab_text_unselect"
                 android:textSize="@dimen/sp_26"
                 app:layout_constraintStart_toStartOf="@+id/setting_others_about_data_version"
                 app:layout_constraintTop_toBottomOf="@+id/setting_others_about_data_version"/>
@@ -159,7 +159,7 @@
                 android:text="@string/setting_others_privacy_protocol_center"
                 android:layout_marginStart="@dimen/dp_44"
                 android:textSize="@dimen/sp_30"
-                android:textColor="@color/setting_text_preference"
+                android:textColor="@color/setting_bg_tab_text_unselect"
                 android:gravity="center"
                 app:layout_constraintStart_toStartOf="parent"/>
 
@@ -193,7 +193,7 @@
                 android:text="@string/setting_others_about_licenses_info"
                 android:layout_marginStart="@dimen/dp_44"
                 android:textSize="@dimen/sp_30"
-                android:textColor="@color/setting_text_preference"
+                android:textColor="@color/setting_bg_tab_text_unselect"
                 android:gravity="center"
                 app:layout_constraintStart_toStartOf="parent"/>
 
@@ -227,7 +227,7 @@
                 android:text="@string/setting_others_about_help"
                 android:layout_marginStart="@dimen/dp_44"
                 android:textSize="@dimen/sp_30"
-                android:textColor="@color/setting_text_preference"
+                android:textColor="@color/setting_bg_tab_text_unselect"
                 android:gravity="center"
                 app:layout_constraintStart_toStartOf="parent"/>
 
@@ -243,13 +243,6 @@
 
         </com.fy.navi.ui.view.SkinConstraintLayout>
 
-        <com.fy.navi.ui.view.SkinView
-            android:layout_width="@dimen/dp_1000"
-            android:layout_height="@dimen/dp_1"
-            android:layout_marginStart="@dimen/dp_60"
-            app:layout_constraintStart_toStartOf="@id/setting_others_about_help"
-            app:layout_constraintTop_toBottomOf="@+id/setting_others_about_help"
-            android:background="@color/sub_tab_line"/>
 
         <com.fy.navi.ui.view.SkinTextView
             android:id="@+id/setting_others_about_contact_title"
@@ -258,7 +251,7 @@
             android:text="@string/setting_others_about_contact"
             android:layout_marginTop="@dimen/dp_24"
             android:textSize="@dimen/sp_26"
-            android:textColor="@color/setting_text_preference"
+            android:textColor="@color/setting_bg_tab_text_unselect"
             app:layout_constraintStart_toEndOf="@id/line_view_vertical"
             app:layout_constraintTop_toBottomOf="@id/setting_others_about_help"/>
 
@@ -277,7 +270,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/setting_others_about_web"
                 android:textSize="@dimen/sp_26"
-                android:textColor="@color/setting_car_number_tip" />
+                android:textColor="@color/setting_car_logo_text_gray" />
 
             <com.fy.navi.ui.view.SkinTextView
                 android:id="@+id/setting_others_about_url"
@@ -285,7 +278,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/setting_others_about_url"
                 android:textSize="@dimen/sp_26"
-                android:textColor="@color/setting_car_number_tip"
+                android:textColor="@color/setting_car_logo_text_gray"
                 app:layout_constraintStart_toEndOf="@id/line_view_vertical"
                 app:layout_constraintTop_toBottomOf="@id/setting_others_about_web"/>
 
@@ -297,14 +290,14 @@
             android:layout_marginTop="@dimen/dp_16"
             app:layout_constraintStart_toStartOf="@id/setting_others_about_web"
             app:layout_constraintTop_toBottomOf="@+id/setting_others_about_web"
-            android:background="@color/sub_tab_line"/>
+            android:background="@color/setting_bg_line"/>
 
         <com.fy.navi.ui.view.SkinView
             android:layout_width="@dimen/dp_1"
             android:layout_height="@dimen/dp_60"
             app:layout_constraintStart_toEndOf="@id/setting_others_about_web"
             app:layout_constraintTop_toTopOf="@+id/setting_others_about_web"
-            android:background="@color/sub_tab_line"/>
+            android:background="@color/setting_bg_line"/>
 
         <com.fy.navi.ui.view.SkinLinearLayout
             android:id="@+id/setting_others_about_wechat"
@@ -321,14 +314,14 @@
                 android:layout_height="wrap_content"
                 android:text="@string/setting_others_about_wechat"
                 android:textSize="@dimen/sp_26"
-                android:textColor="@color/setting_car_number_tip" />
+                android:textColor="@color/setting_car_logo_text_gray" />
 
             <com.fy.navi.ui.view.SkinTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/setting_others_about_title"
                 android:textSize="@dimen/sp_26"
-                android:textColor="@color/setting_car_number_tip" />
+                android:textColor="@color/setting_car_logo_text_gray" />
 
         </com.fy.navi.ui.view.SkinLinearLayout>
 
@@ -338,7 +331,7 @@
             android:layout_marginTop="@dimen/dp_16"
             app:layout_constraintStart_toEndOf="@id/setting_others_about_wechat"
             app:layout_constraintTop_toTopOf="@+id/setting_others_about_wechat"
-            android:background="@color/sub_tab_line"/>
+            android:background="@color/setting_bg_line"/>
 
         <com.fy.navi.ui.view.SkinLinearLayout
             android:id="@+id/setting_others_about_tel"
@@ -354,14 +347,14 @@
                 android:layout_height="wrap_content"
                 android:text="@string/setting_others_about_tel"
                 android:textSize="@dimen/sp_26"
-                android:textColor="@color/setting_car_number_tip" />
+                android:textColor="@color/setting_car_logo_text_gray" />
 
             <com.fy.navi.ui.view.SkinTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/setting_others_about_tel_number"
                 android:textSize="@dimen/sp_26"
-                android:textColor="@color/setting_car_number_tip" />
+                android:textColor="@color/setting_car_logo_text_gray" />
 
         </com.fy.navi.ui.view.SkinLinearLayout>
 
@@ -379,14 +372,14 @@
                 android:layout_height="wrap_content"
                 android:text="@string/setting_others_about_qq"
                 android:textSize="@dimen/sp_26"
-                android:textColor="@color/setting_car_number_tip" />
+                android:textColor="@color/setting_car_logo_text_gray" />
 
             <com.fy.navi.ui.view.SkinTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/setting_others_about_qq_number"
                 android:textSize="@dimen/sp_26"
-                android:textColor="@color/setting_car_number_tip" />
+                android:textColor="@color/setting_car_logo_text_gray" />
 
         </com.fy.navi.ui.view.SkinLinearLayout>
 

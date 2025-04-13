@@ -3,13 +3,13 @@ package com.fy.navi.hmi.mapdata.manager;
 import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
+import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.define.mapdata.CityDataInfo;
 import com.fy.navi.service.define.mapdata.MergedStatusBean;
 import com.fy.navi.service.define.mapdata.ProvDataInfo;
 import com.fy.navi.service.logicpaket.mapdata.MapDataCallBack;
 import com.fy.navi.service.logicpaket.mapdata.MapDataPackage;
 import com.fy.navi.ui.base.BaseModel;
-import com.fy.navi.service.MapDefaultFinalTag;
 
 import java.util.ArrayList;
 
@@ -42,7 +42,7 @@ public class ManagerMapDataModel extends BaseModel<ManagerMapDataViewModel> impl
      * 获取下载中列表
      * @return 返回数据列表
      */
-    public ArrayList<CityDataInfo> getWorkingList() {
+    public ArrayList<ProvDataInfo> getWorkingList() {
         return mMapDataPackage.getWorkingList();
     }
 
@@ -50,7 +50,7 @@ public class ManagerMapDataModel extends BaseModel<ManagerMapDataViewModel> impl
      * 获取已下载列表
      * @return 返回已下载信息
      */
-    public ArrayList<CityDataInfo> getWorkedList() {
+    public  ArrayList<ProvDataInfo>  getWorkedList() {
         return mMapDataPackage.getWorkedList();
     }
 
@@ -59,7 +59,7 @@ public class ManagerMapDataModel extends BaseModel<ManagerMapDataViewModel> impl
      * @param cityDataInfos
      * @return 返回 数据信息
      */
-    public ArrayList<Integer> getAllWorkingAdCodeList(final ArrayList<CityDataInfo> cityDataInfos) {
+    public ArrayList<Integer> getAllWorkingAdCodeList(final ArrayList<ProvDataInfo> cityDataInfos) {
         return mMapDataPackage.getAllWorkingAdCodeList(cityDataInfos);
     }
 
@@ -96,18 +96,10 @@ public class ManagerMapDataModel extends BaseModel<ManagerMapDataViewModel> impl
     }
 
     @Override
-    public void onDownLoadStatus(final ProvDataInfo provDataInfo) {
-        Logger.d(MapDefaultFinalTag.OFFLINE_HMI_TAG, "onDownLoadStatus: provDataInfo = " + GsonUtils.toJson(provDataInfo));
-        if (provDataInfo != null && provDataInfo.getCityInfoList() != null && !provDataInfo.getCityInfoList().isEmpty()) {
-            final ArrayList<CityDataInfo> cityDataInfos = getWorkingList();
-            for (CityDataInfo cityDataInfo : cityDataInfos) {
-                if (cityDataInfo.getAdcode() == provDataInfo.getCityInfoList().get(0).getAdcode()) {
-                    cityDataInfo.setDownLoadInfo(provDataInfo.getCityInfoList().get(0).getDownLoadInfo());
-                }
-            }
-            ThreadManager.getInstance().postUi(() -> {
-                mViewModel.setDownloadingView(cityDataInfos);
-            });
+    public void onDownLoadStatus(final CityDataInfo cityDataInfo) {
+        Logger.d(MapDefaultFinalTag.OFFLINE_HMI_TAG, "onDownLoadStatus: cityDataInfo = " + GsonUtils.toJson(cityDataInfo));
+        if (cityDataInfo != null){
+            mViewModel.onDownLoadStatus(cityDataInfo);
         }
     }
 

@@ -7,15 +7,12 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.ViewGroup;
 
-import com.android.utils.log.Logger;
 import com.fy.navi.scene.R;
 import com.fy.navi.scene.databinding.SceneNaviSpeedViewBinding;
 import com.fy.navi.scene.impl.navi.SceneNaviSpeedImpl;
 import com.fy.navi.scene.impl.navi.inter.ISceneCallback;
-import com.fy.navi.scene.ui.navi.manager.INaviSceneEvent;
 import com.fy.navi.scene.ui.navi.manager.NaviSceneBase;
 import com.fy.navi.scene.ui.navi.manager.NaviSceneId;
-import com.fy.navi.scene.ui.navi.manager.NaviSceneManager;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.define.navi.SpeedOverallEntity;
 
@@ -27,7 +24,6 @@ import com.fy.navi.service.define.navi.SpeedOverallEntity;
 public class SceneNaviSpeedView extends NaviSceneBase<SceneNaviSpeedViewBinding,
         SceneNaviSpeedImpl> {
     private static final String TAG = MapDefaultFinalTag.NAVI_HMI_TAG;
-    private ISceneCallback mISceneCallback;
 
     public SceneNaviSpeedView(final Context context) {
         super(context);
@@ -45,47 +41,6 @@ public class SceneNaviSpeedView extends NaviSceneBase<SceneNaviSpeedViewBinding,
     @Override
     protected NaviSceneId getSceneId() {
         return NaviSceneId.NAVI_SCENE_SPEED;
-    }
-
-    @Override
-    protected String getSceneName() {
-        return NaviSceneId.NAVI_SCENE_SPEED.name();
-    }
-
-    @Override
-    public INaviSceneEvent getNaviSceneEvent() {
-        return NaviSceneManager.getInstance();
-    }
-
-
-    protected void init() {
-        NaviSceneManager.getInstance().addNaviScene(NaviSceneId.NAVI_SCENE_SPEED, this);
-    }
-
-    @Override
-    public void show() {
-        super.show();
-        if (mISceneCallback != null) {
-            mISceneCallback.updateSceneVisible(NaviSceneId.NAVI_SCENE_SPEED, true);
-        }
-    }
-
-    @Override
-    public void hide() {
-        super.hide();
-        if (mISceneCallback != null) {
-            Logger.i(TAG, "SceneNaviSpeedView hide");
-            mISceneCallback.updateSceneVisible(NaviSceneId.NAVI_SCENE_SPEED, false);
-        }
-    }
-
-    @Override
-    public void close() {
-        super.close();
-        if (mISceneCallback != null) {
-            Logger.i(TAG, "SceneNaviSpeedView hide");
-            mISceneCallback.updateSceneVisible(NaviSceneId.NAVI_SCENE_SPEED, false);
-        }
     }
 
     @Override
@@ -111,6 +66,7 @@ public class SceneNaviSpeedView extends NaviSceneBase<SceneNaviSpeedViewBinding,
     @Override
     public void onDestroy() {
         super.onDestroy();
+        mISceneCallback = null;
     }
 
     @Override
@@ -170,14 +126,6 @@ public class SceneNaviSpeedView extends NaviSceneBase<SceneNaviSpeedViewBinding,
     public void onNaviSpeedCameraInfo(final SpeedOverallEntity speedCameraInfo) {
         if (mScreenViewModel != null) {
             mScreenViewModel.onNaviSpeedCameraInfo(speedCameraInfo);
-        }
-    }
-
-    @Override
-    public void addSceneCallback(final ISceneCallback sceneCallback) {
-        mISceneCallback = sceneCallback;
-        if (mScreenViewModel != null) {
-            mScreenViewModel.addSceneCallback(sceneCallback);
         }
     }
 }

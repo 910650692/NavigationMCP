@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:app="http://schemas.android.com/apk/res-auto">
+<layout xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
 
@@ -10,31 +11,55 @@
             type="com.fy.navi.hmi.map.BaseMapViewModel" />
     </data>
 
-    <com.fy.navi.ui.view.SkinLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+    <com.fy.navi.ui.view.SkinConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="@dimen/dp_638"
+        android:layout_height="match_parent"
         android:orientation="vertical">
 
         <com.fy.navi.scene.ui.navi.SceneNaviLanesView
             android:id="@+id/cruise_lanes_view"
             android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_92"
+            android:background="@drawable/bg_common_with_corner"
             android:clickable="true"
-            android:layout_height="@dimen/dp_110"
-            android:background="@drawable/bg_navi_tbt_middle"
             android:visibility="visible" />
 
-        <com.fy.navi.ui.view.SkinImageView
-            android:id="@+id/iv_voice"
+
+        <View
+            android:id="@+id/view_bg"
             clickCommand="@{ViewModel.muteOrUnMute}"
-            android:layout_width="@dimen/dp_204"
-            android:layout_height="@dimen/dp_160"
-            android:layout_marginTop="@dimen/dp_282"
-            android:background="@drawable/bg_search_main_tab"
-            android:scaleType="centerInside"
-            android:src="@drawable/cruise_broad_image_select"
+            android:layout_width="@dimen/dp_165"
+            android:layout_height="@dimen/dp_148"
+            android:layout_marginTop="@dimen/dp_362"
+            android:background="@drawable/bg_common_with_corner"
             app:layout_constraintStart_toStartOf="@id/cruise_lanes_view"
             app:layout_constraintTop_toBottomOf="@id/cruise_lanes_view" />
 
-    </com.fy.navi.ui.view.SkinLinearLayout>
+        <com.fy.navi.ui.view.SkinImageView
+            android:id="@+id/iv_voice"
+            android:layout_width="@dimen/dp_58"
+            android:layout_height="@dimen/dp_58"
+            android:scaleType="centerInside"
+            android:src="@drawable/cruise_broad_image_select"
+            app:layout_constraintBottom_toTopOf="@id/tv_title"
+            app:layout_constraintEnd_toEndOf="@id/view_bg"
+            app:layout_constraintStart_toStartOf="@id/view_bg"
+            app:layout_constraintTop_toTopOf="@id/view_bg"
+            app:layout_constraintVertical_chainStyle="packed" />
+
+        <com.fy.navi.ui.view.SkinTextView
+            android:id="@+id/tv_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_4"
+            android:textColor="@color/cruise_title_color"
+            android:textSize="@dimen/sp_30"
+            app:layout_constraintBottom_toBottomOf="@id/view_bg"
+            app:layout_constraintEnd_toEndOf="@id/view_bg"
+            app:layout_constraintStart_toStartOf="@id/view_bg"
+            app:layout_constraintTop_toBottomOf="@id/iv_voice"
+            tools:text="播报" />
+
+    </com.fy.navi.ui.view.SkinConstraintLayout>
 
 </layout>

@@ -1,5 +1,6 @@
 package com.fy.navi.service.define.layer.refix;
 
+import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.define.bean.GeoPoint;
 
 import java.util.ArrayList;
@@ -14,6 +15,7 @@ import lombok.Setter;
 @Getter
 public class LayerItemBase {
 
+    protected String TAG = MapDefaultFinalTag.LAYER_ITEM_SERVICE_TAG;
     //
     private ArrayList<GeoPoint> vecPoints = new ArrayList();
     //

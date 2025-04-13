@@ -14,5 +14,6 @@ public enum LayerType {
     LAYER_GUIDE_ROUTE,
     LAYER_SEARCH,
     LAYER_USER,
-    LAYER_CROSS
+    LAYER_CROSS,
+    LAYER_LABEL
 }

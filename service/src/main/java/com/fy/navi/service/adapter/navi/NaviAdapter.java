@@ -154,6 +154,15 @@ public final  class NaviAdapter {
      */
     public void updateNaviPath(final int routeIndex,
                                final RouteLineLayerParam routeLineLayerParam) {
+        if (!ConvertUtils.isEmpty(routeLineLayerParam)
+                &&  !ConvertUtils.isEmpty(routeLineLayerParam.getMPathInfoList())
+                && routeIndex != -1
+                && routeIndex < routeLineLayerParam.getMPathInfoList().size()){
+            ArrayList<Object> pathInfos = new ArrayList<>();
+            pathInfos.add(routeLineLayerParam.getMPathInfoList().get(routeIndex));
+            mLayerAdapter.updatePathInfo(MapType.MAIN_SCREEN_MAIN_MAP, pathInfos, routeIndex);
+        }
+
         mNavistatusAdapter.setNaviStatus(NaviStatus.NaviStatusType.NAVING);
         mNaviApi.updateNaviPath(routeIndex, routeLineLayerParam);
         if (!ConvertUtils.isEmpty(routeLineLayerParam)) {

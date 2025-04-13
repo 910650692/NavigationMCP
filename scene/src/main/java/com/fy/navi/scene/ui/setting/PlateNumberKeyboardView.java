@@ -1,6 +1,7 @@
 package com.fy.navi.scene.ui.setting;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.util.AttributeSet;
@@ -26,6 +27,7 @@ public class PlateNumberKeyboardView extends GridLayout {
     private static final String[] SECOND_ROW = {"Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P"};
     private static final String[] THIRD_ROW = {"A", "S", "D", "F", "G", "H", "J", "K", "L"};
     private static final String[] FOURTH_ROW = {"Z", "X", "C", "V", "B", "N", "M", BUTTON_NAME};
+    private boolean mIsDefaultCar = false;
 
     private OnKeyPressListener mListener;
     private SkinCheckBox mLastSelectedButton;
@@ -35,17 +37,22 @@ public class PlateNumberKeyboardView extends GridLayout {
 
     public PlateNumberKeyboardView(final Context context) {
         this(context, null);
+        init(context, null);
     }
 
     public PlateNumberKeyboardView(final Context context, final AttributeSet attrs) {
         super(context, attrs);
-        init();
+        init(context, attrs);
     }
 
     /**
      * 初始化键盘布局
+     * @param context 上下文
+     * @param attrs 属性集合
      */
-    private void init() {
+    private void init(final Context context, final AttributeSet attrs) {
+        final TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.PlateNumberKeyboardView);
+        mIsDefaultCar = a.getBoolean(R.styleable.PlateNumberKeyboardView_isDefaultCar, false);
         setOrientation(VERTICAL);
         // 添加四行按键
         addKeyboardRow(FIRST_ROW, true,false);
@@ -63,55 +70,61 @@ public class PlateNumberKeyboardView extends GridLayout {
     private void addKeyboardRow(final String[] keys, final boolean isNumberRow, final boolean isThirdRow) {
         final LinearLayout rowLayout = new LinearLayout(getContext());
         rowLayout.setOrientation(LinearLayout.HORIZONTAL);
-
         rowLayout.setLayoutParams(new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT
         ));
-
         int keyWidth = getResources().getDimensionPixelSize(com.fy.navi.ui.R.dimen.dp_136);
-        final int keyHeight = getResources().getDimensionPixelSize(com.fy.navi.ui.R.dimen.dp_76);
-
+        int keyHeight = getResources().getDimensionPixelSize(com.fy.navi.ui.R.dimen.dp_76);
         if (isNumberRow) {
             keyWidth = getResources().getDimensionPixelSize(com.fy.navi.ui.R.dimen.dp_107);
         }
         if (isThirdRow) {
             keyWidth = getResources().getDimensionPixelSize(com.fy.navi.ui.R.dimen.dp_120);
         }
-
+        if (!mIsDefaultCar) {
+            keyWidth = getResources().getDimensionPixelSize(com.fy.navi.ui.R.dimen.dp_177);
+            keyHeight = getResources().getDimensionPixelSize(com.fy.navi.ui.R.dimen.dp_96);
+            if (isNumberRow) {
+                keyWidth = getResources().getDimensionPixelSize(com.fy.navi.ui.R.dimen.dp_140);
+            }
+            if (isThirdRow) {
+                keyWidth = getResources().getDimensionPixelSize(com.fy.navi.ui.R.dimen.dp_156);
+            }
+        }
         for (String key : keys) {
             final SkinCheckBox keyView = new SkinCheckBox(getContext());
             keyView.setText(key);
             keyView.setButtonDrawable(null);
             keyView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 30);
+            if (!mIsDefaultCar) {
+                keyView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 38);
+            }
             keyView.setGravity(Gravity.CENTER);
             keyView.setTextColor(ResourceUtils.Companion.getInstance().getColor(R.color.setting_preference_text_gray));
             keyView.setBackgroundResource(R.drawable.bg_setting_keyboard);
             if (BUTTON_NAME.equals(key)) {
-
                 keyView.setText(null);
-
                 final Drawable drawable = ResourceUtils.Companion.getInstance().getDrawable(R.drawable.img_plate_number_delete);
                 final LayerDrawable layerDrawable = new LayerDrawable(new Drawable[]{drawable});
                 layerDrawable.setLayerGravity(0, Gravity.CENTER);
-                final int inset = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 40, getResources().getDisplayMetrics());
+                int inset = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 40, getResources().getDisplayMetrics());
                 layerDrawable.setLayerInset(0, inset, inset, inset, inset);
-
+                if (!mIsDefaultCar) {
+                    inset = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 65, getResources().getDisplayMetrics());
+                    layerDrawable.setLayerInset(0, inset, 0, 0, 0);
+                }
                 keyView.setPadding(0, 0, 0, 0);
                 keyView.setButtonDrawable(layerDrawable);
 
             }
-
-
             final LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                     keyWidth,
                     keyHeight
             );
-
             params.gravity = Gravity.CENTER;
             params.setMargins(0, 0, 8, 0);
             keyView.setLayoutParams(params);
-
             final boolean isDisabled = DISABLED_KEYS.contains(key);
             if (isDisabled) {
                 // 设置禁用状态的样式
@@ -133,7 +146,6 @@ public class PlateNumberKeyboardView extends GridLayout {
                         keyView.setBackgroundResource(R.drawable.bg_setting_preference_select);
                     }
                 });
-
                 keyView.setOnCheckedChangeListener((buttonView, isChecked) -> {
                     if (isChecked && (keyView != mLastSelectedButton)) {
                         if (mLastSelectedButton != null) {
@@ -163,7 +175,7 @@ public class PlateNumberKeyboardView extends GridLayout {
      */
     public void updateCheckBoxTextColor(final CompoundButton compoundButton, final boolean isSelected) {
         if (isSelected) {
-            compoundButton.setTextColor(ResourceUtils.Companion.getInstance().getColor(R.color.white));
+            compoundButton.setTextColor(ResourceUtils.Companion.getInstance().getColor(R.color.setting_white));
         } else {
             compoundButton.setTextColor(ResourceUtils.Companion.getInstance().getColor(R.color.setting_preference_text_gray));
         }

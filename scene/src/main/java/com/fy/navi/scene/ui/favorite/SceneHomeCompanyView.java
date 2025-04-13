@@ -15,6 +15,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.alibaba.android.arouter.launcher.ARouter;
+import com.android.utils.ConvertUtils;
 import com.android.utils.ResourceUtils;
 import com.android.utils.ToastUtils;
 import com.android.utils.log.Logger;
@@ -54,6 +55,7 @@ public class SceneHomeCompanyView extends BaseSceneView<SceneHomeCompanyViewBind
     private int mHomeCompanyType;
     private IOnHomeCompanyClickListener mClickListener;
     private PoiInfoEntity mUserPoiInfoEntity;
+    private boolean mIsClickMyPos = false;
     public void setClickListener(final IOnHomeCompanyClickListener clickListener) {
         this.mClickListener = clickListener;
     }
@@ -165,7 +167,23 @@ public class SceneHomeCompanyView extends BaseSceneView<SceneHomeCompanyViewBind
         switch (formType) {
             //家和公司: 显示地图选点、我的位置
             case AutoMapConstant.HomeCompanyType.HOME:
+                mViewBinding.searchBarTextView.setHint(getContext().getString(R.string.home_search_hint));
+                if (null != mViewBinding.sclGasStation) {
+                    mViewBinding.sclGasStation.setVisibility(View.GONE);
+                }
+                if (null != mViewBinding.sclPullUp) {
+                    mViewBinding.sclPullUp.setVisibility(View.GONE);
+                }
+                if (null != mViewBinding.sclCarWashing) {
+                    mViewBinding.sclCarWashing.setVisibility(View.VISIBLE);
+                }
+
+                if (null != mViewBinding.sclGourmet) {
+                    mViewBinding.sclGourmet.setVisibility(View.VISIBLE);
+                }
+                break;
             case AutoMapConstant.HomeCompanyType.COMPANY:
+                mViewBinding.searchBarTextView.setHint(getContext().getString(R.string.company_search_hint));
                 if (null != mViewBinding.sclGasStation) {
                     mViewBinding.sclGasStation.setVisibility(View.GONE);
                 }
@@ -350,16 +368,25 @@ public class SceneHomeCompanyView extends BaseSceneView<SceneHomeCompanyViewBind
     @HookMethod(eventName = BuryConstant.EventName.AMAP_MAP_MYLOCATION)
     private void clickMyPosition(){
         SearchPackage.getInstance().currentLocationSearch();
+        mIsClickMyPos = true;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mIsClickMyPos = false;
     }
 
     /**
-     * 搜索结果回调
+     * 搜索结果回调 添加收藏点时，点击我的位置直接进行收藏操作
      * @param searchResultEntity 搜索结果实体
      */
     public void notifySearchResult(final SearchResultEntity searchResultEntity) {
+        if (!mIsClickMyPos) {
+            return;
+        }
         if (searchResultEntity != null
-                && searchResultEntity.getPoiList() != null
-                && searchResultEntity.getPoiList().size() > 0) {
+                && !ConvertUtils.isEmpty(searchResultEntity.getPoiList())) {
             mUserPoiInfoEntity = searchResultEntity.getPoiList().get(0);
             final int commonName = mHomeCompanyType;
             if (mHomeCompanyType == AutoMapConstant.HomeCompanyType.HOME) {
@@ -373,11 +400,17 @@ public class SceneHomeCompanyView extends BaseSceneView<SceneHomeCompanyViewBind
             favoriteInfo.setCommonName(commonName)
                     .setUpdateTime(new Date().getTime());
             mUserPoiInfoEntity.setFavoriteInfo(favoriteInfo);
+            if (ConvertUtils.isEmpty(mUserPoiInfoEntity.getPid())) {
+                //逆地理搜索出的点无poiId，需自己拼接
+                mUserPoiInfoEntity.setPid(mUserPoiInfoEntity.getPoint().getLon() + ""
+                        + mUserPoiInfoEntity.getPoint().getLat());
+            }
             BehaviorPackage.getInstance().addFavorite(mUserPoiInfoEntity, commonName);
 //            BehaviorPackage.getInstance().addFavoriteData(mUserPoiInfoEntity, commonName);
             SettingUpdateObservable.getInstance().onUpdateSyncTime();
             closeAllFragmentsUntilTargetFragment("HomeCompanyFragment");
             showCurrentFragment();
+            mIsClickMyPos = false;
         }
     }
 }

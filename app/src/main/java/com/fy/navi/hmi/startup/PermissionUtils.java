@@ -18,8 +18,10 @@ import com.android.utils.ConvertUtils;
 import com.android.utils.DeviceUtils;
 import com.android.utils.log.Logger;
 import com.fy.navi.service.AppContext;
+import com.fy.navi.service.logicpaket.calibration.CalibrationPackage;
 import com.fy.navi.ui.base.StackManager;
 import com.fy.navi.ui.dialog.IBaseDialogClickListener;
+import com.iauto.vtserver.VTServerBQJni;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,9 +49,8 @@ public class PermissionUtils {
             Manifest.permission.ACCESS_FINE_LOCATION,
             Manifest.permission.MANAGE_EXTERNAL_STORAGE,
             Manifest.permission.CALL_PHONE,
-            Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
-            Context.MEDIA_PROJECTION_SERVICE};
-    private boolean isMediaProjectionPermission = true;
+            Settings.ACTION_MANAGE_OVERLAY_PERMISSION};
+    private boolean isCheckMediaProjectionPermission = false;
 
     public void setPermissionsObserver(PermissionsObserver permissionsObserver) {
         this.permissionsObserver = permissionsObserver;
@@ -77,9 +78,6 @@ public class PermissionUtils {
         }
         if (ConvertUtils.equals(permission, Settings.ACTION_MANAGE_OVERLAY_PERMISSION)) {
             return Settings.canDrawOverlays(AppContext.getInstance().getMContext());
-        }
-        if (ConvertUtils.equals(permission, Context.MEDIA_PROJECTION_SERVICE)) {
-            return isMediaProjectionPermission;
         }
         return AppContext.getInstance().getMApplication().checkSelfPermission(permission) == PackageManager.PERMISSION_GRANTED;
     }
@@ -115,9 +113,6 @@ public class PermissionUtils {
         } else if (ConvertUtils.equals(permission, Settings.ACTION_MANAGE_OVERLAY_PERMISSION)) {
             Logger.i(TAG, "申请悬浮窗权限");
             requestManageOverlay();
-        } else if (ConvertUtils.equals(permission, Context.MEDIA_PROJECTION_SERVICE)) {
-            Logger.i(TAG, "申请媒体投影权限");
-            requestMediaProjection();
         } else {
             ActivityCompat.requestPermissions(StackManager.getInstance().getMainCurrentActivity(),
                     new String[]{permission}, REQUEST_PERMISSION_CODE);
@@ -170,9 +165,23 @@ public class PermissionUtils {
     }
 
     public void requestMediaProjection(){
-        PermissionDialog permissionDialog = new PermissionDialog.Build(context)
-                .setTitle("申请媒体投影权限")
-                .setContent("地图导航中所需权限，如果没有该权限将可能会造成地图的无法使用，点击确定跳转到权限申请界面，点击取消可能会造成地图无法使用")
+        if (CalibrationPackage.getInstance().hudFuncEnable() == 0) {
+            Logger.i(TAG, "not hud configuration");
+            return;
+        }
+        if (isCheckMediaProjectionPermission) {
+            return;
+        }
+        isCheckMediaProjectionPermission = true;
+        // 判断so库是否加载成功
+        if (DeviceUtils.isCar(AppContext.getInstance().getMApplication()) ||
+                !VTServerBQJni.getInstance().isIsSuccessLoadLibrary()) {
+            return;
+        }
+        Activity mediaContext = StackManager.getInstance().getMainCurrentActivity();
+        PermissionDialog permissionDialog = new PermissionDialog.Build(mediaContext)
+                .setTitle("“屏幕录制”权限申请")
+                .setContent("保障“HUD导航视图”等功能正常使用，应用需要以下权限：\n·屏幕录制")
                 .setDialogObserver(new IBaseDialogClickListener() {
 
                     @Override
@@ -183,9 +192,9 @@ public class PermissionUtils {
 
                     @Override
                     public void onCommitClick() {
-                        mProjectionManager = (MediaProjectionManager) context.getSystemService(Context.MEDIA_PROJECTION_SERVICE);
+                        mProjectionManager = (MediaProjectionManager) mediaContext.getSystemService(Context.MEDIA_PROJECTION_SERVICE);
                         if (mProjectionManager != null) {
-                            context.startActivityForResult(mProjectionManager.createScreenCaptureIntent(), REQUEST_PERMISSION_MEDIA_PROJECTION);
+                            mediaContext.startActivityForResult(mProjectionManager.createScreenCaptureIntent(), REQUEST_PERMISSION_MEDIA_PROJECTION);
                         }
                     }
                 })
@@ -228,9 +237,5 @@ public class PermissionUtils {
         void onPermissionsSuccess();
 
         void onPermissionsFail();
-    }
-
-    public void updateMediaProjection(boolean isPermission){
-        this.isMediaProjectionPermission = isPermission;
     }
 }

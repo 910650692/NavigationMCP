@@ -61,6 +61,7 @@ public class SettingVoiceBroadcastFragment extends BaseFragment<FragmentVoiceBro
         mSettingVoiceBroadcastAdapter.setItemClickListener(this);
         final LinearLayoutManager manager = new LinearLayoutManager(getActivity());
         manager.setOrientation(LinearLayoutManager.VERTICAL);
+        mBinding.recommendVoiceList.setItemAnimator(null);
         mBinding.recommendVoiceList.setLayoutManager(manager);
         mBinding.recommendVoiceList.setAdapter(mSettingVoiceBroadcastAdapter);
     }
@@ -96,23 +97,6 @@ public class SettingVoiceBroadcastFragment extends BaseFragment<FragmentVoiceBro
             }
         }
         mSettingVoiceBroadcastAdapter.setData(voiceInfoList);
-
-        // 设置recycleView的高度，使其在scrollView中完整显示
-        mBinding.recommendVoiceList.setNestedScrollingEnabled(false);
-        final ViewGroup.LayoutParams params = mBinding.recommendVoiceList.getLayoutParams();
-        params.height = calRecycleViewHeight(mSettingVoiceBroadcastAdapter.getItemCount());
-        mBinding.recommendVoiceList.setLayoutParams(params);
-    }
-
-    /**
-     *  计算item高度
-     *  @param itemCount
-     * @return int
-     */
-    private int calRecycleViewHeight(final int itemCount) {
-        final int itemHeight = getResources().getDimensionPixelSize(com.fy.navi.ui.R.dimen.dp_140);
-        final int dividerHeight = getResources().getDimensionPixelSize(com.fy.navi.ui.R.dimen.dp_24);
-        return  itemCount * (itemHeight + dividerHeight);
     }
 
     /**

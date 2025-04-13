@@ -1,2 +1,2 @@
 configurations.maybeCreate("default")
-artifacts.add("default", file('OAS-20240530-v1-record-release.aar'))
+artifacts.add("default", file('OAS-20250408-v1-record-release.aar'))

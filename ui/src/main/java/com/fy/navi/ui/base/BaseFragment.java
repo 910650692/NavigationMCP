@@ -21,14 +21,13 @@ import java.lang.reflect.Type;
 
 public abstract class BaseFragment<V extends ViewDataBinding, VM extends BaseViewModel>
         extends Fragment implements IBaseView {
-    private final static String TAG = BaseFragment.class.getSimpleName();
     protected V mBinding;
     protected VM mViewModel;
     protected BaseActivity mActivity;
     protected String mScreenId;
 
     public BaseFragment() {
-        Logger.i(TAG, "onCreate before");
+        Logger.i(getClass().getSimpleName(), "onCreate before");
         onCreateBefore();
     }
 
@@ -42,77 +41,82 @@ public abstract class BaseFragment<V extends ViewDataBinding, VM extends BaseVie
     @Override
     public void onCreate(final @Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Logger.i(TAG, "onCreate start");
+        Logger.i(getClass().getSimpleName(), "onCreate start");
         createViewModel();
-        Logger.i(TAG, "onCreate end");
+        Logger.i(getClass().getSimpleName(), "onCreate end");
     }
 
     @Nullable
     @Override
     public View onCreateView(final @NonNull LayoutInflater inflater, final @Nullable ViewGroup container, final @Nullable Bundle savedInstanceState) {
-        Logger.i(TAG, "onCreateView start");
+        Logger.i(getClass().getSimpleName(), "onCreateView start");
         mBinding = DataBindingUtil.inflate(inflater, onLayoutId(), container, false);
         bindViewModel();
         onInitView();
         final View rootView = mBinding.getRoot();
-        Logger.i(TAG, "onCreateView end");
+        Logger.i(getClass().getSimpleName(), "onCreateView end");
         return rootView;
     }
 
     @Override
     public void onViewCreated(final @NonNull View view, final @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        Logger.i(TAG, "onViewCreated start");
+        Logger.i(getClass().getSimpleName(), "onViewCreated start");
         onInitObserver();
         onInitData();
-        Logger.i(TAG, "onViewCreated end");
+        Logger.i(getClass().getSimpleName(), "onViewCreated end");
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        Logger.i(TAG, "onStart");
+        Logger.i(getClass().getSimpleName(), "onStart");
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        Logger.i(TAG, "onResume");
+        Logger.i(getClass().getSimpleName(), "onResume");
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        Logger.i(TAG, "onPause");
+        Logger.i(getClass().getSimpleName(), "onPause");
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        Logger.i(TAG, "onStop");
+        Logger.i(getClass().getSimpleName(), "onStop");
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        Logger.i(TAG, "onDestroyView");
+        Logger.i(getClass().getSimpleName(), "onDestroyView");
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        Logger.i(TAG, "onDetach");
+        Logger.i(getClass().getSimpleName(), "onDetach");
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Logger.i(TAG, "onDestroy");
+        Logger.i(getClass().getSimpleName(), "onDestroy");
     }
 
     @Override
     public void addFragment(final BaseFragment fragment, final Bundle bundle) {
         mActivity.addFragment(fragment, bundle);
+    }
+
+    @Override
+    public void addFragment(BaseFragment fragment, Bundle bundle, boolean isHideCurFragment) {
+        mActivity.addFragment(fragment, bundle, isHideCurFragment);
     }
 
     @Override
@@ -127,6 +131,11 @@ public abstract class BaseFragment<V extends ViewDataBinding, VM extends BaseVie
     }
 
     @Override
+    public void closeFragment(Bundle bundle) {
+        mActivity.closeFragment(bundle);
+    }
+
+    @Override
     public void closeAllFragment() {
         mActivity.closeAllFragment();
     }
@@ -134,6 +143,11 @@ public abstract class BaseFragment<V extends ViewDataBinding, VM extends BaseVie
     @Override
     public void closeAllFragmentUpRoute() {
         mActivity.closeAllFragmentUpRoute();
+    }
+
+    @Override
+    public void closeAllFragmentUpNavi() {
+        mActivity.closeAllFragmentUpNavi();
     }
 
     @Override

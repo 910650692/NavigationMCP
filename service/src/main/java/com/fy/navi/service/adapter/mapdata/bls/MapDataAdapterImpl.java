@@ -1,9 +1,7 @@
 package com.fy.navi.service.adapter.mapdata.bls;
 
-import com.android.utils.log.Logger;
 import com.autonavi.gbl.data.MapDataService;
 import com.autonavi.gbl.data.model.DownLoadMode;
-import com.autonavi.gbl.data.model.OperationType;
 import com.autonavi.gbl.data.observer.IDownloadObserver;
 import com.autonavi.gbl.servicemanager.ServiceMgr;
 import com.autonavi.gbl.util.model.SingleServiceID;
@@ -124,12 +122,12 @@ public class MapDataAdapterImpl implements IMapDataApi {
     }
 
     @Override
-    public ArrayList<CityDataInfo> getWorkingList() {
+    public ArrayList<ProvDataInfo> getWorkingList() {
         return mMapDataObserversHelper.getWorkingList();
     }
 
     @Override
-    public ArrayList<CityDataInfo> getWorkedList() {
+    public ArrayList<ProvDataInfo> getWorkedList() {
         return mMapDataObserversHelper.getWorkedList();
     }
 
@@ -140,25 +138,7 @@ public class MapDataAdapterImpl implements IMapDataApi {
 
     @Override
     public void operate(final int opType, final ArrayList<Integer> adCodeDiyLst) {
-
-        // 如果当前城市的数据包正在解压，则暂停操作不会立即生效，需等待解压完成。
-        if (opType == OperationType.OPERATION_TYPE_PAUSE) {
-            Logger.d(TAG, "operate: operate = 触发暂停下载");
-        }
-
-        if (mMapDataService != null) {
-            if (opType == OperationType.OPERATION_TYPE_DELETE || opType == OperationType.OPERATION_TYPE_CANCEL) {
-                mMapDataService.operate(DownLoadMode.DOWNLOAD_MODE_NET, opType, adCodeDiyLst);
-            } else {
-                mMapDataService.operate(DownLoadMode.DOWNLOAD_MODE_NET, opType, adCodeDiyLst);
-                // 判断当前是否连接网络
-//                if (NetWorkUtils.Companion.getInstance().getNetworkTypeValue() == NetworkCapabilities.TRANSPORT_WIFI) {
-//                    mMapDataService.operate(DownLoadMode.DOWNLOAD_MODE_NET, opType, adCodeDiyLst);
-//                } else {
-//                    Logger.d(TAG, "无网络连接，请检查网络后重试");
-//                }
-            }
-        }
+         mMapDataObserversHelper.operate(opType, adCodeDiyLst);
     }
 
     @Override

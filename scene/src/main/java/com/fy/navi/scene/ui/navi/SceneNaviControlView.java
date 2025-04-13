@@ -10,16 +10,14 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
+import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
 import com.fy.navi.scene.R;
 import com.fy.navi.scene.databinding.SceneNaviControlViewBinding;
 import com.fy.navi.scene.impl.imersive.ImersiveStatus;
 import com.fy.navi.scene.impl.navi.SceneNaviControlImpl;
-import com.fy.navi.scene.impl.navi.inter.ISceneCallback;
-import com.fy.navi.scene.ui.navi.manager.INaviSceneEvent;
 import com.fy.navi.scene.ui.navi.manager.NaviSceneBase;
 import com.fy.navi.scene.ui.navi.manager.NaviSceneId;
-import com.fy.navi.scene.ui.navi.manager.NaviSceneManager;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.adapter.navi.NaviConstant;
 import com.fy.navi.service.define.map.MapMode;
@@ -31,7 +29,7 @@ import com.fy.navi.service.define.map.MapMode;
  */
 public class SceneNaviControlView extends NaviSceneBase<SceneNaviControlViewBinding, SceneNaviControlImpl> {
     private static final String TAG = MapDefaultFinalTag.NAVI_HMI_TAG;
-    private ISceneCallback mISceneCallback;
+    private ImersiveStatus mImersiveStatus;
 
     public SceneNaviControlView(@NonNull final Context context) {
         super(context);
@@ -67,47 +65,21 @@ public class SceneNaviControlView extends NaviSceneBase<SceneNaviControlViewBind
     }
 
     @Override
-    protected NaviSceneId getSceneId() {
+    public NaviSceneId getSceneId() {
         return NaviSceneId.NAVI_SCENE_CONTROL;
     }
 
     @Override
-    protected String getSceneName() {
-        return NaviSceneId.NAVI_SCENE_CONTROL.name();
-    }
-
-    @Override
-    public INaviSceneEvent getNaviSceneEvent() {
-        return NaviSceneManager.getInstance();
-    }
-
-    @Override
     protected void init() {
-        NaviSceneManager.getInstance().addNaviScene(NaviSceneId.NAVI_SCENE_CONTROL, this);
+        super.init();
         initVehicleType();
     }
 
     @Override
     public void show() {
         super.show();
-        if (mISceneCallback != null) {
-            mISceneCallback.updateSceneVisible(NaviSceneId.NAVI_SCENE_CONTROL, true);
-        }
-    }
-
-    @Override
-    public void hide() {
-        super.hide();
-        if (mISceneCallback != null) {
-            mISceneCallback.updateSceneVisible(NaviSceneId.NAVI_SCENE_CONTROL, false);
-        }
-    }
-
-    @Override
-    public void close() {
-        super.close();
-        if (mISceneCallback != null) {
-            mISceneCallback.updateSceneVisible(NaviSceneId.NAVI_SCENE_CONTROL, false);
+        if (!ConvertUtils.isNull(mScreenViewModel)) {
+            mScreenViewModel.initTimer();
         }
     }
 
@@ -115,15 +87,14 @@ public class SceneNaviControlView extends NaviSceneBase<SceneNaviControlViewBind
      * @param currentImersiveStatus status
      */
     public void onImmersiveStatusChange(final ImersiveStatus currentImersiveStatus) {
+        if (currentImersiveStatus != mImersiveStatus) {
+            mImersiveStatus = currentImersiveStatus;
+        } else {
+            return;
+        }
         if (mScreenViewModel != null) {
             mScreenViewModel.onImmersiveStatusChange(currentImersiveStatus);
         }
-    }
-
-    @Override
-    public void addSceneCallback(final ISceneCallback sceneCallback) {
-        mISceneCallback = sceneCallback;
-        mScreenViewModel.addSceneCallback(sceneCallback);
     }
 
     /**
@@ -150,6 +121,10 @@ public class SceneNaviControlView extends NaviSceneBase<SceneNaviControlViewBind
     public void changeOverViewControlLength(final boolean isShowMoreSet) {
         final Context context = getContext();
         final int dpPixels;
+        if (mViewBinding.sclSettings == null) {
+            Logger.e(TAG, "changeOverViewControlLength: mViewBinding.sclSettings is null");
+            return;
+        }
         final ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams)
                 mViewBinding.sclSettings.getLayoutParams();
         if (isShowMoreSet) {

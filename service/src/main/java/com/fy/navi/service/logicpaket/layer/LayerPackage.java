@@ -1,27 +1,25 @@
 package com.fy.navi.service.logicpaket.layer;
 
-import com.autonavi.gbl.common.model.RectInt;
-import com.autonavi.gbl.guide.model.CrossType;
-import com.autonavi.gbl.guide.model.NaviInfo;
-import com.autonavi.gbl.map.layer.model.RealCityTmcParam;
-import com.autonavi.gbl.map.layer.model.VectorCrossViewPostureEvent;
+import com.android.utils.log.Logger;
+import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.adapter.layer.ILayerAdapterCallBack;
 import com.fy.navi.service.adapter.layer.LayerAdapter;
 import com.fy.navi.service.define.bean.GeoPoint;
 import com.fy.navi.service.define.layer.refix.CarModeType;
 import com.fy.navi.service.define.layer.refix.LayerItemCrossEntity;
-import com.fy.navi.service.define.layer.refix.LayerType;
 import com.fy.navi.service.define.layer.GemBaseLayer;
 import com.fy.navi.service.define.layer.GemLayerItem;
+import com.fy.navi.service.define.layer.refix.LayerItemSearchResult;
 import com.fy.navi.service.define.layer.refix.LayerItemUserFavorite;
 import com.fy.navi.service.define.layer.refix.LayerItemUserTrackDepth;
 import com.fy.navi.service.define.map.GmBizUserFavoritePoint;
 import com.fy.navi.service.define.map.MapType;
-import com.fy.navi.service.define.navi.CrossImageEntity;
 import com.fy.navi.service.define.navi.NaviParkingEntity;
+
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * @Description TODO
@@ -29,10 +27,10 @@ import java.util.List;
  * @date 2024/12/8
  */
 public class LayerPackage implements ILayerAdapterCallBack {
-
-    private static final String TAG = LayerPackage.class.getSimpleName();
+    protected String TAG = MapDefaultFinalTag.LAYER_SERVICE_TAG;
     private LayerAdapter mLayerAdapter;
-    private final Hashtable<MapType, List<ILayerPackageCallBack>> mLayerPackageCallBacks = new Hashtable<>();
+
+    private final Hashtable<MapType, List<ILayerPackageCallBack>> callbacks = new Hashtable<>();
 
     private static final class Helper {
         private static final LayerPackage lPackage = new LayerPackage();
@@ -54,30 +52,30 @@ public class LayerPackage implements ILayerAdapterCallBack {
         return mLayerAdapter.initLayerService(mapTypeId);
     }
 
-    public void registerCallBack(MapType mapTypeId, ILayerPackageCallBack callBack, LayerType layerId) {
-        List<ILayerPackageCallBack> layerPackageCallBacks = mLayerPackageCallBacks.get(mapTypeId);
-        if (layerPackageCallBacks == null) {
-            layerPackageCallBacks = new ArrayList<>();
-            mLayerPackageCallBacks.put(mapTypeId, layerPackageCallBacks);
+    public void registerCallBack(MapType mapTypeId, ILayerPackageCallBack callback) {
+        if (!callbacks.containsKey(mapTypeId)) {
+            callbacks.put(mapTypeId, new CopyOnWriteArrayList<>());
+            mLayerAdapter.registerLayerClickObserver(mapTypeId, this);
         }
-        if (!layerPackageCallBacks.contains(callBack)) {
-            layerPackageCallBacks.add(callBack);
+        if (!callbacks.get(mapTypeId).contains(callback)) {
+            callbacks.get(mapTypeId).add(callback);
         }
-        mLayerAdapter.registerLayerClickObserver(mapTypeId, layerId, this);
     }
 
-    public void unRegisterCallBack(MapType mapTypeId, ILayerPackageCallBack callBack, LayerType layerId) {
-        List<ILayerPackageCallBack> layerPackageCallBacks = mLayerPackageCallBacks.get(mapTypeId);
-        if (layerPackageCallBacks != null) {
-            layerPackageCallBacks.remove(callBack);
+    public void unRegisterCallBack(MapType mapTypeId, ILayerPackageCallBack callBack) {
+        if (callbacks.containsKey(mapTypeId)) {
+            if (callbacks.get(mapTypeId).contains(callBack)) {
+                callbacks.get(mapTypeId).remove(callBack);
+            }
         }
-        mLayerAdapter.unRegisterLayerClickObserver(mapTypeId, layerId, this);
+        if (callbacks.get(mapTypeId).size() <= 0) {
+            mLayerAdapter.unRegisterLayerClickObserver(mapTypeId, this);
+        }
     }
 
     public void setDefaultCarMode(MapType mapTypeId) {
         mLayerAdapter.setDefaultCarMode(mapTypeId);
     }
-
 
     public void setCarMode(MapType mapTypeId, CarModeType carMode) {
         mLayerAdapter.setCarMode(mapTypeId, carMode);
@@ -111,18 +109,67 @@ public class LayerPackage implements ILayerAdapterCallBack {
 
     @Override
     public void onNotifyClick(MapType mapTypeId, GemBaseLayer layer, GemLayerItem pItem) {
-        mLayerPackageCallBacks.forEach((key, packageCallBacks) -> {
+        callbacks.forEach((key, packageCallBacks) -> {
             packageCallBacks.forEach(packageCallBack -> {
                 packageCallBack.onNotifyClick(mapTypeId, layer, pItem);
             });
         });
     }
 
+    /**
+     * 搜索图层Item点击回调
+     *
+     * @param clickResult
+     */
     @Override
-    public void onFavorite(double lat,double lon) {
-        mLayerPackageCallBacks.forEach((key, packageCallBacks) -> {
+    public void onSearchItemClick(MapType mapTypeId, LayerItemSearchResult clickResult) {
+        callbacks.forEach((key, packageCallBacks) -> {
             packageCallBacks.forEach(packageCallBack -> {
-                packageCallBack.onFavorite(lat,lon);
+                packageCallBack.onSearchItemClick(mapTypeId, clickResult);
+            });
+        });
+    }
+
+    /**
+     * 路线图层Item点击回调
+     *
+     * @param pItem
+     */
+    @Override
+    public void onRouteItemClick(MapType mapTypeId, GemLayerItem pItem) {
+        callbacks.forEach((key, packageCallBacks) -> {
+            packageCallBacks.forEach(packageCallBack -> {
+                Logger.d(TAG, "onRouteItemClick");
+                packageCallBack.onRouteItemClick(mapTypeId, pItem);
+            });
+        });
+    }
+
+    @Override
+    public void onFavoriteClick(GeoPoint geoPoint) {
+        callbacks.forEach((key, packageCallBacks) -> {
+            packageCallBacks.forEach(packageCallBack -> {
+                packageCallBack.onFavoriteClick(geoPoint);
+            });
+        });
+    }
+
+    @Override
+    public void onFlyLineMoveEnd(MapType mapTypeId, GeoPoint descPoint) {
+        callbacks.forEach((key, packageCallBacks) -> {
+            packageCallBacks.forEach(packageCallBack -> {
+                Logger.e(TAG, "onMapMoveEnd-LayerPackage:");
+                packageCallBack.onFlyLineMoveEnd(mapTypeId, descPoint);
+            });
+        });
+    }
+
+    @Override
+    public void onCarClick(MapType mapType, GeoPoint geoPoint) {
+        callbacks.forEach((key, packageCallBacks) -> {
+            packageCallBacks.forEach(packageCallBack -> {
+                Logger.e(TAG, "onCarClick :");
+                packageCallBack.onCarClick(mapType, geoPoint);
             });
         });
     }
@@ -180,24 +227,9 @@ public class LayerPackage implements ILayerAdapterCallBack {
 
     /*========================================= 路口大图 =========================================*/
 
-    /* 根据放大路口图层类型更新样式 */
-    public boolean updateCrossStyle(MapType mapTypeId, int crossType) {
-        return mLayerAdapter.updateCrossStyle(mapTypeId, crossType);
-    }
-
-    /* 根据放大路口类型进行显示隐藏控制 */
-    public boolean setCrossVisible(MapType mapTypeId, int type, boolean bVisible) {
-        return mLayerAdapter.setCrossVisible(mapTypeId, type, bVisible);
-    }
-
     /* 设置栅格图图片数据 */
-    public boolean setRasterImageData(MapType mapTypeId, LayerItemCrossEntity crossEntity) {
-        return mLayerAdapter.setRasterImageData(mapTypeId, crossEntity);
-    }
-
-    /* 根据放大路口类型填充数据 */
-    public boolean updateCross(MapType mapTypeId, LayerItemCrossEntity crossEntity) {
-        return mLayerAdapter.updateCross(mapTypeId, crossEntity);
+    public boolean showCross(MapType mapTypeId, LayerItemCrossEntity crossEntity) {
+        return mLayerAdapter.showCross(mapTypeId, crossEntity);
     }
 
     /* 根据放大路口类型隐藏对应的路口大图 */
@@ -205,51 +237,12 @@ public class LayerPackage implements ILayerAdapterCallBack {
         return mLayerAdapter.hideCross(mapTypeId, type);
     }
 
-    /* 设置导航车首上还是北上模式 */
-    public boolean set3DCrossCarMode(MapType mapTypeId, boolean isCarUp) {
-        return mLayerAdapter.set3DCrossCarMode(mapTypeId, isCarUp);
-    }
-
-    /* 设置3D飞线的路况信息 */
-    public boolean setFlyTmc(MapType mapTypeId, byte[] buffer, ArrayList<RealCityTmcParam> param) {
-        return mLayerAdapter.setFlyTmc(mapTypeId, buffer, param);
-    }
-
-    /* 更新3D精品大图引导信息 */
-    public boolean updateNaviInfo(MapType mapTypeId, NaviInfo naviInfo) {
-        return mLayerAdapter.updateNaviInfo(mapTypeId, naviInfo);
-    }
-
-    /* 设置路口栅格图信息
-     *1、设置路口大图信息，使用自带近接/混淆矢量大图显隐策略，如果没有设置数据，用户可自定义策略并调用SetViewPostureEvent触发功能
-     *2、本接口暂时只对混淆\近接路口生效，当设置路口大图信息，用户调用SetViewPostureEvent无效（内部策略自动调用
-     */
-    public boolean setCrossImageInfo(MapType mapTypeId, int type, boolean useCustom) {
-        return mLayerAdapter.setCrossImageInfo(mapTypeId, type, useCustom);
-    }
-
-    /* 设置近接/混淆矢量大图的姿态事件, 目前只有type = CrossTypeVector才有实现才有实现 */
-    public boolean setViewPostureEvent(MapType mapTypeId, CrossType type, VectorCrossViewPostureEvent postureEvent) {
-        return mLayerAdapter.setViewPostureEvent(mapTypeId, type, postureEvent);
-    }
-
-    /* 设置放大路口显示区域 */
-    public boolean setRoadCrossRect(MapType mapTypeId, int crossType, RectInt viewRect) {
-        return mLayerAdapter.setRoadCrossRect(mapTypeId, crossType, viewRect);
-    }
-
     /*========================================= 路口大图 =========================================*/
 
 
-
     /*=========================================飞线=========================================*/
-    public void flyLineVisible(MapType mapTypeId, boolean visible) {
-        mLayerAdapter.flyLineVisible(mapTypeId, visible);
+    public void openFlyLine(MapType mapTypeId, boolean visible) {
+        mLayerAdapter.openFlyLine(mapTypeId, visible);
     }
-
-    public void flyLineHideOnce(MapType mapTypeId) {
-        mLayerAdapter.flyLineHideOnce(mapTypeId);
-    }
-
 
 }

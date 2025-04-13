@@ -4,7 +4,7 @@ plugins {
 }
 
 String aveFlavorType = "type"
-String AppName = "NaviApp"
+String AppName = "导航"
 
 androidAopConfig {
     // enabled 为 false 切面不再起作用，默认不写为 true
@@ -56,7 +56,7 @@ android {
             manifestPlaceholders = [CAR_TYPE_VALUE: "Default",
                                     logo          : "@mipmap/ic_launcher",
                                     roundLogo     : "@mipmap/ic_launcher_round",
-                                    appName       : 'NaviApp']
+                                    appName       : '导航']
             println("默认车型/Pad渠道配置")
         }
         gb {
@@ -65,7 +65,7 @@ android {
                     CAR_TYPE_VALUE: "Buick",
                     logo          : "@mipmap/ic_launcher",
                     roundLogo     : "@mipmap/ic_launcher_round",
-                    appName       : "BkNaviApp"
+                    appName       : "导航"
             ]
             println("别克车型渠道配置")
         }
@@ -75,7 +75,7 @@ android {
                     CAR_TYPE_VALUE: "Cadillac",
                     logo          : "@mipmap/ic_launcher",
                     roundLogo     : "@mipmap/ic_launcher_round",
-                    appName       : "CdNaviApp"
+                    appName       : "导航"
             ]
             println("凯迪车型渠道配置")
         }

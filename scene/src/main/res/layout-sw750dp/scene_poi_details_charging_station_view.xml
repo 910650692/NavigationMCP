@@ -4,9 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
+        <import type="android.view.View"/>
         <variable
-            name="ScenePoiDetailContentView"
+            name="detailViewModel"
             type="com.fy.navi.scene.impl.poi.ScenePoiDetailContentViewImpl" />
     </data>
 
@@ -144,16 +144,17 @@
                     app:layout_constraintStart_toStartOf="@+id/poi_charge_slow_occupied"
                     app:layout_constraintTop_toBottomOf="@+id/poi_charge_slow_occupied"
                     tools:text="21kw.800v" />
-            </com.fy.navi.ui.view.SkinConstraintLayout>
 
-            <com.fy.navi.ui.view.SkinImageView
-                android:layout_width="@dimen/dp_58"
-                android:layout_height="@dimen/dp_58"
-                android:layout_marginEnd="@dimen/dp_4"
-                android:layout_marginBottom="@dimen/dp_4"
-                android:background="@drawable/img_basic_ic_corner"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"/>
+                <com.fy.navi.ui.view.SkinImageView
+                    android:layout_width="@dimen/dp_58"
+                    android:layout_height="@dimen/dp_58"
+                    android:layout_marginEnd="@dimen/dp_4"
+                    android:layout_marginBottom="@dimen/dp_4"
+                    android:background="@drawable/img_basic_ic_corner"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"/>
+
+            </com.fy.navi.ui.view.SkinConstraintLayout>
 
         </com.fy.navi.ui.view.SkinConstraintLayout>
 
@@ -169,16 +170,17 @@
             android:id="@+id/poi_charge_appointment"
             android:layout_width="@dimen/dp_76"
             android:layout_height="@dimen/dp_46"
-            android:layout_marginTop="@dimen/dp_58"
             android:background="@drawable/bg_charge_appointment"
             android:gravity="center"
             android:maxLines="1"
             android:text="@string/charge_appointment"
+            android:visibility="@{(detailViewModel.mPowerType == 1 || detailViewModel.mPowerType == 2) ? View.VISIBLE : View.GONE}"
             android:textColor="@color/bg_route_big_window_select"
             android:textSize="@dimen/sp_26"
             android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@+id/poi_charge_price_allday"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/poi_charge_layout" />
+            app:layout_constraintTop_toTopOf="@+id/poi_charge_price_allday" />
 
         <com.fy.navi.ui.view.SkinTextView
             android:id="@+id/poi_charge_price"
@@ -198,13 +200,14 @@
             android:layout_width="@dimen/dp_0"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_26"
-            android:layout_marginTop="@dimen/dp_61"
             android:maxLines="1"
             android:text="@string/charge_title_price"
+            android:visibility="@{(detailViewModel.mPowerType == 1 || detailViewModel.mPowerType == 2) ? View.VISIBLE : View.GONE}"
             android:textColor="@color/bg_route_big_window_select"
             android:textSize="@dimen/sp_30"
+            app:layout_constraintBottom_toBottomOf="@+id/poi_charge_price"
             app:layout_constraintStart_toEndOf="@+id/poi_charge_price"
-            app:layout_constraintTop_toBottomOf="@+id/poi_charge_layout" />
+            app:layout_constraintTop_toTopOf="@+id/poi_charge_price" />
 
         <com.fy.navi.ui.view.SkinTextView
             android:id="@+id/poi_charge_park_price"

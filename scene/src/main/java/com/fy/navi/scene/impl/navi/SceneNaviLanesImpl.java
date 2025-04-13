@@ -1,5 +1,7 @@
 package com.fy.navi.scene.impl.navi;
 
+import android.text.TextUtils;
+
 import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
 import com.fy.navi.scene.BaseSceneModel;
@@ -12,22 +14,31 @@ import com.fy.navi.service.adapter.navi.NaviConstant;
 import com.fy.navi.service.define.navi.LaneInfoEntity;
 import com.fy.navi.service.define.navi.SapaInfoEntity;
 import com.fy.navi.service.define.navi.TBTLaneInfo;
+import com.fy.navi.service.define.navistatus.NaviStatus;
+import com.fy.navi.service.logicpaket.navistatus.NaviStatusCallback;
+import com.fy.navi.service.logicpaket.navistatus.NaviStatusPackage;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class SceneNaviLanesImpl extends BaseSceneModel<SceneNaviLanesView> {
+public class SceneNaviLanesImpl extends BaseSceneModel<SceneNaviLanesView> implements NaviStatusCallback {
     private static final String TAG = MapDefaultFinalTag.NAVI_HMI_TAG;
     private static final int LANE_TYPE_FLAG = 0xFF;
     private LaneInfoEntity mLaneInfo;
+    private String mCurrentNaviStatus;
+    private NaviStatusPackage mNaviStatusPackage;
 
     public SceneNaviLanesImpl(final SceneNaviLanesView screenView) {
         super(screenView);
+        mNaviStatusPackage = NaviStatusPackage.getInstance();
+        mCurrentNaviStatus = NaviStatusPackage.getInstance().getCurrentNaviStatus();
+        mNaviStatusPackage.registerObserver(mMapTypeId.name(), this);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        mNaviStatusPackage.unregisterObserver(mMapTypeId.name());
     }
 
     /**
@@ -54,64 +65,107 @@ public class SceneNaviLanesImpl extends BaseSceneModel<SceneNaviLanesView> {
         if (!isShowLane) {
             mLaneInfo = null;
         } else {
-            if (laneInfo != null && laneInfo.getBackLaneType() != null && !laneInfo.getBackLaneType().isEmpty()) {
-                mLaneInfo = laneInfo;
-                // 背景车道类型为空不处理
-                final int LaneNum = laneInfo.getBackLane().size();
-                // 车道线可见
+            if (isOnCruising()) {
+                showLaneWhenCarOnCruising(laneInfo);
+            } else {
+                showLaneWhenCarOnNavigating(mLaneInfo);
+            }
+        }
+    }
+
+    /***
+     * @param laneInfo
+     * 导航态下更新车道线
+     */
+    private void showLaneWhenCarOnNavigating(final LaneInfoEntity laneInfo) {
+        Logger.d(TAG, "showLaneWhenCarOnNavigating");
+        if (laneInfo != null && laneInfo.getBackLaneType() != null && !laneInfo.getBackLaneType().isEmpty()) {
+            mLaneInfo = laneInfo;
+            // 背景车道类型为空不处理
+            final int LaneNum = laneInfo.getBackLane().size();
+            // 车道线可见
 //                mScreenView.setVisibleLaneInfo(true);
-                final List<TBTLaneInfo> listData = new ArrayList<TBTLaneInfo>();
-                Logger.i(TAG, "SceneNaviLanesImpl onShowNaviLaneInfo LaneNum=" + LaneNum +
-                        ",optimalLane=" + laneInfo.getOptimalLane() + ",backLane=" +
-                        laneInfo.getBackLane() + ",frontLane=" + laneInfo.getFrontLane() +
-                        ",backLaneType=" + laneInfo.getBackLaneType() + ",frontLaneType=" +
-                        laneInfo.getFrontLaneType() + ",extensionLane=" +
-                        laneInfo.getExtensionLane() + ",backExtenLane=" +
-                        laneInfo.getBackExtenLane());
-                for (int i = 0; i < LaneNum; i++) {
-                    final TBTLaneInfo info = new TBTLaneInfo();
-                    // 设置推荐车道
-                    info.setRecommend(laneInfo.getOptimalLane().get(i) !=
-                            NaviConstant.LaneAction.LANE_ACTION_NULL);
-                    // 设置分时车道
-                    if (NaviConstant.LANE_TYPE_BUS == laneInfo.getBackLaneType().get(i)) {
-                        info.setTimeLane(true);
-                        info.setTimeLaneAction(laneInfo.getFrontLane().get(i) ==
-                                0xFF ? NaviConstant.LaneActionConstants.BACK_LANE_BUS_NO_WORKABLE :
-                                NaviConstant.LaneActionConstants.BACK_LANE_BUS_WORKABLE);
-                    } else if (NaviConstant.LANE_TYPE_OTHER == laneInfo.getBackLaneType().get(i)) {
-                        info.setTimeLane(true);
-                        info.setTimeLaneAction(laneInfo.getFrontLane().get(i) ==
-                                0xFF ? NaviConstant.LaneActionConstants.BACK_LANE_SPECIAL_NO_WORKABLE :
-                                NaviConstant.LaneActionConstants.BACK_LANE_SPECIAL_WORKABLE);
-                    } else if (NaviConstant.LANE_TYPE_TIDAL == laneInfo.getBackLaneType().get(i)) {
-                        info.setTimeLane(true);
-                        info.setTimeLaneAction(laneInfo.getFrontLane().get(i) ==
-                                0xFF ? NaviConstant.LaneActionConstants.BACK_LANE_TIDAL_NO_WORKABLE :
-                                NaviConstant.LaneActionConstants.BACK_LANE_TIDAL_WORKABLE);
-                    } else if (NaviConstant.LANE_TYPE_VARIABLE == laneInfo.getBackLaneType().get(i)) {
-                        info.setTimeLane(true);
-                        info.setTimeLaneAction(laneInfo.getFrontLane().get(i) ==
-                                0xFF ?
-                                NaviConstant.LaneActionConstants.BACK_LANE_REVERSIBLE_NO_WORKABLE :
-                                NaviConstant.LaneActionConstants.BACK_LANE_REVERSIBLE_WORKABLE);
-                    } else {
-                        info.setTimeLane(false);
-                    }
-                    // 设置车道线图标
-                    for (int k = 0; k < NaviConstant.LaneActionConstants.NAVI_LANE_MAP.length; k++) {
-                        if (NaviConstant.LaneActionConstants.NAVI_LANE_MAP[k][0] == laneInfo.getBackLane().get(i)) {
-                            if (NaviConstant.LaneActionConstants.NAVI_LANE_MAP[k][1] == laneInfo.getFrontLane().get(i)) {
-                                info.setLaneAction(NaviConstant.
-                                        LaneActionConstants.NAVI_LANE_MAP[k][2]);
-                                break;
-                            }
+            final List<TBTLaneInfo> listData = new ArrayList<TBTLaneInfo>();
+            Logger.i(TAG, "SceneNaviLanesImpl onShowNaviLaneInfo LaneNum=" + LaneNum +
+                    ",optimalLane=" + laneInfo.getOptimalLane() + ",backLane=" +
+                    laneInfo.getBackLane() + ",frontLane=" + laneInfo.getFrontLane() +
+                    ",backLaneType=" + laneInfo.getBackLaneType() + ",frontLaneType=" +
+                    laneInfo.getFrontLaneType() + ",extensionLane=" +
+                    laneInfo.getExtensionLane() + ",backExtenLane=" +
+                    laneInfo.getBackExtenLane());
+            for (int i = 0; i < LaneNum; i++) {
+                final TBTLaneInfo info = new TBTLaneInfo();
+                // 设置推荐车道
+                info.setRecommend(laneInfo.getOptimalLane().get(i) !=
+                        NaviConstant.LaneAction.LANE_ACTION_NULL);
+                // 设置分时车道
+                if (NaviConstant.LANE_TYPE_BUS == laneInfo.getBackLaneType().get(i)) {
+                    info.setTimeLane(true);
+                    info.setTimeLaneAction(laneInfo.getFrontLane().get(i) ==
+                            0xFF ? NaviConstant.LaneActionConstants.BACK_LANE_BUS_NO_WORKABLE :
+                            NaviConstant.LaneActionConstants.BACK_LANE_BUS_WORKABLE);
+                } else if (NaviConstant.LANE_TYPE_OTHER == laneInfo.getBackLaneType().get(i)) {
+                    info.setTimeLane(true);
+                    info.setTimeLaneAction(laneInfo.getFrontLane().get(i) ==
+                            0xFF ? NaviConstant.LaneActionConstants.BACK_LANE_SPECIAL_NO_WORKABLE :
+                            NaviConstant.LaneActionConstants.BACK_LANE_SPECIAL_WORKABLE);
+                } else if (NaviConstant.LANE_TYPE_TIDAL == laneInfo.getBackLaneType().get(i)) {
+                    info.setTimeLane(true);
+                    info.setTimeLaneAction(laneInfo.getFrontLane().get(i) ==
+                            0xFF ? NaviConstant.LaneActionConstants.BACK_LANE_TIDAL_NO_WORKABLE :
+                            NaviConstant.LaneActionConstants.BACK_LANE_TIDAL_WORKABLE);
+                } else if (NaviConstant.LANE_TYPE_VARIABLE == laneInfo.getBackLaneType().get(i)) {
+                    info.setTimeLane(true);
+                    info.setTimeLaneAction(laneInfo.getFrontLane().get(i) ==
+                            0xFF ?
+                            NaviConstant.LaneActionConstants.BACK_LANE_REVERSIBLE_NO_WORKABLE :
+                            NaviConstant.LaneActionConstants.BACK_LANE_REVERSIBLE_WORKABLE);
+                } else {
+                    info.setTimeLane(false);
+                }
+                // 设置车道线图标
+                for (int k = 0; k < NaviConstant.LaneActionConstants.NAVI_LANE_MAP.length; k++) {
+                    if (NaviConstant.LaneActionConstants.NAVI_LANE_MAP[k][0] == laneInfo.getBackLane().get(i)) {
+                        if (NaviConstant.LaneActionConstants.NAVI_LANE_MAP[k][1] == laneInfo.getFrontLane().get(i)) {
+                            info.setLaneAction(NaviConstant.
+                                    LaneActionConstants.NAVI_LANE_MAP[k][2]);
+                            break;
                         }
                     }
-                    listData.add(info);
                 }
-                showLaneInfoDefault(listData);
+                listData.add(info);
             }
+            showLaneInfoDefault(listData);
+        }
+    }
+
+    /***
+     * 巡航显示车道线
+     * @param laneInfo
+     */
+    private void showLaneWhenCarOnCruising(final LaneInfoEntity laneInfo) {
+        Logger.d(TAG, "showLaneWhenCarOnCruising-laneInfo is null:" + ConvertUtils.isNull(laneInfo));
+        if (laneInfo != null && !ConvertUtils.isEmpty(laneInfo.getBackLane())) {
+            mLaneInfo = laneInfo;
+            // 背景车道类型为空不处理
+            final int LaneNum = laneInfo.getBackLane().size();
+            final List<TBTLaneInfo> listData = new ArrayList();
+            for (int i = 0; i < LaneNum; i++) {
+                final TBTLaneInfo info = new TBTLaneInfo();
+                // 设置车道线图标
+                for (int k = 0; k < NaviConstant.LaneActionConstants.NAVI_LANE_MAP.length; k++) {
+                    if (NaviConstant.LaneActionConstants.NAVI_LANE_MAP[k][0] == laneInfo.getBackLane().get(i)) {
+                        if (NaviConstant.LaneActionConstants.NAVI_LANE_MAP[k][1] == laneInfo.getFrontLane().get(i)) {
+                            info.setLaneAction(NaviConstant.
+                                    LaneActionConstants.NAVI_LANE_MAP[k][2]);
+                            break;
+                        }
+                    }
+                }
+                listData.add(info);
+            }
+            showLaneInfoDefault(listData);
+            Logger.i(TAG, "cruise update lanes success!");
         }
     }
 
@@ -211,12 +265,21 @@ public class SceneNaviLanesImpl extends BaseSceneModel<SceneNaviLanesView> {
     /**
      * @param isVisible 是否可见
      */
-    private void updateSceneVisible(final boolean isVisible) {
+    public void updateSceneVisible(final boolean isVisible) {
         Logger.i(TAG, "updateSceneVisible " + isVisible + " mScreenView.isVisible():" +
                 mScreenView.isVisible());
-        if(mScreenView.isVisible() == isVisible) return;
+        if (mScreenView.isVisible() == isVisible) return;
         mScreenView.getNaviSceneEvent().notifySceneStateChange((isVisible ?
                 INaviSceneEvent.SceneStateChangeType.SceneShowState :
                 INaviSceneEvent.SceneStateChangeType.SceneCloseState), NaviSceneId.NAVI_SCENE_LANES);
+    }
+
+    @Override
+    public void onNaviStatusChange(String naviStatus) {
+        this.mCurrentNaviStatus = naviStatus;
+    }
+
+    private boolean isOnCruising() {
+        return TextUtils.equals(mCurrentNaviStatus, NaviStatus.NaviStatusType.NAVING);
     }
 }

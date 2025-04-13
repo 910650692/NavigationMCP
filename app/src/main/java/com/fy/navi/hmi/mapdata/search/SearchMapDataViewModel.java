@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
+import com.fy.navi.service.define.mapdata.CityDataInfo;
 import com.fy.navi.service.define.mapdata.ProvDataInfo;
 import com.fy.navi.ui.action.Action;
 import com.fy.navi.ui.base.BaseViewModel;
@@ -78,10 +79,10 @@ public class SearchMapDataViewModel extends BaseViewModel<SearchMapDataFragment,
 
     /**
      * 更新数据下载状态
-     * @param info
+     * @param cityDataInfo
      */
-    public void onDownLoadStatus(final ProvDataInfo info) {
-        mView.notifySearchMapDataChangeView(info);
+    public void onDownLoadStatus(final CityDataInfo cityDataInfo) {
+        mView.notifySearchMapDataChangeView(cityDataInfo);
     }
 
 }

@@ -86,7 +86,7 @@
                     android:maxLines="1"
                     android:singleLine="true"
                     android:text="@{poiBean.name}"
-                    android:textColor="@color/search_item_title_color_ff383839"
+                    android:textColor="@color/search_color_ffffff"
                     android:textSize="@dimen/sp_34"
                     app:layout_constraintBottom_toTopOf="@+id/poi_address"
                     app:layout_constraintStart_toEndOf="@+id/poi_icon"
@@ -124,7 +124,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@{poiBean.distance}"
-                        android:textColor="@color/setting_des_text_gray"
+                        android:textColor="@color/search_color_ffffff_70"
                         android:textSize="@dimen/sp_30"
                         tools:text="198km" />
 
@@ -134,7 +134,7 @@
                         android:layout_height="@dimen/dp_22"
                         android:layout_marginStart="@dimen/dp_8"
                         android:layout_marginEnd="@dimen/dp_8"
-                        android:background="@color/setting_des_text_gray" />
+                        android:background="@color/search_color_ffffff_70" />
 
                     <com.fy.navi.ui.view.SkinTextView
                         android:id="@+id/poi_address"
@@ -144,7 +144,7 @@
                         android:maxLines="1"
                         android:singleLine="true"
                         android:text="@{poiBean.address}"
-                        android:textColor="@color/setting_des_text_gray"
+                        android:textColor="@color/search_color_ffffff_70"
                         android:textSize="@dimen/sp_30"
                         app:layout_constraintStart_toEndOf="@+id/item_favorite_line"
                         app:layout_constraintTop_toBottomOf="@+id/item_favorite_name"
@@ -198,7 +198,7 @@
                 android:id="@+id/sll_top"
                 android:layout_width="@dimen/dp_126"
                 android:layout_height="match_parent"
-                android:background="#E2E4ED"
+                android:background="@color/bg_route_big_window_unselect"
                 android:gravity="center"
                 android:orientation="vertical">
 
@@ -223,7 +223,7 @@
                 android:id="@+id/sll_delete"
                 android:layout_width="@dimen/dp_126"
                 android:layout_height="match_parent"
-                android:background="#C73333"
+                android:background="@color/search_color_delete_bg"
                 android:gravity="center"
                 android:orientation="vertical">
 
@@ -238,7 +238,7 @@
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:text="删除"
-                    android:textColor="@color/white"
+                    android:textColor="@color/search_color_ffffff_70"
                     android:textSize="@dimen/sp_36" />
 
             </com.fy.navi.ui.view.SkinLinearLayout>

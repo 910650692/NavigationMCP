@@ -39,6 +39,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             android:layout_marginStart="@dimen/dp_920"
+            android:visibility="gone"
             app:click_color_change="true"
             android:layout_width="@dimen/dp_310"
             android:layout_height="@dimen/dp_92">

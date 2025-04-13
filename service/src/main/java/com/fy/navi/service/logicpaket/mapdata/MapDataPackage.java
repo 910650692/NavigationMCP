@@ -6,10 +6,10 @@ import com.fy.navi.service.adapter.mapdata.MapDataAdapter;
 import com.fy.navi.service.adapter.mapdata.MapDataAdapterCallBack;
 import com.fy.navi.service.define.bean.AdminCodeBean;
 import com.fy.navi.service.define.bean.AreaExtraInfoBean;
+import com.fy.navi.service.define.code.UserDataCode;
 import com.fy.navi.service.define.mapdata.CityDataInfo;
 import com.fy.navi.service.define.mapdata.MergedStatusBean;
 import com.fy.navi.service.define.mapdata.ProvDataInfo;
-import com.fy.navi.service.define.voice.OperationType;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
@@ -67,22 +67,35 @@ public final class MapDataPackage implements MapDataAdapterCallBack {
     }
 
     /**
+     * 离线地图数据下载专用接口
+     * 下载模式downLoadMode=DOWNLOAD_MODE_NET时，需要等【首次】RequestDataListCheck请求的观察者监听pObserver回调OnRequestDataListCheck后调用。
+     * 下载模式downLoadMode=DOWNLOAD_MODE_USB时，需要每次等RequestDataListCheck请求的观察者监听pObserver回调OnRequestDataListCheck后调用。
+     * @return 返回等待中、下载中、暂停、解压中、重试状态下的所有城市adCode列表
+     */
+    public ArrayList<Integer> getWorkingQueueAdCodeList() {
+        return mMapDataAdapter.getWorkingQueueAdCodeList();
+    }
+
+
+    /**
      * 获取下载中、更新中状态下的所有城市adCode列表
      * @return 返回下载中/更新中的数据信息
      */
-    public ArrayList<CityDataInfo> getWorkingList() {
+    public ArrayList<ProvDataInfo> getWorkingList() {
         return mMapDataAdapter.getWorkingList();
     }
 
     /**
      * 获取所有下载中的数据列表
-     * @param cityDataInfos
+     * @param provDataInfos
      * @return 返回所有下载中的数据列表
      */
-    public ArrayList<Integer> getAllWorkingAdCodeList(final ArrayList<CityDataInfo> cityDataInfos) {
+    public ArrayList<Integer> getAllWorkingAdCodeList(final ArrayList<ProvDataInfo> provDataInfos) {
         final ArrayList<Integer> adCodeList = new ArrayList<>();
-        for (CityDataInfo cityDataInfo : cityDataInfos) {
-            adCodeList.add(cityDataInfo.getAdcode());
+        for (ProvDataInfo provDataInfo : provDataInfos) {
+            for (CityDataInfo cityDataInfo : provDataInfo.getCityInfoList()) {
+                adCodeList.add(cityDataInfo.getAdcode());
+            }
         }
         return adCodeList;
     }
@@ -91,7 +104,7 @@ public final class MapDataPackage implements MapDataAdapterCallBack {
      * 获取已下载状态下的所有城市adCode列表
      * @return 返回已下载的数据信息
      */
-    public ArrayList<CityDataInfo> getWorkedList() {
+    public ArrayList<ProvDataInfo> getWorkedList() {
         return mMapDataAdapter.getWorkedList();
     }
 
@@ -185,7 +198,7 @@ public final class MapDataPackage implements MapDataAdapterCallBack {
      * @param adCodeList 要取消下载的adCode列表,若为null,则会取消所有未完成的task
      */
     public void cancelAllTask(final ArrayList<Integer> adCodeList) {
-        mMapDataAdapter.operate(OperationType.OPERATION_TYPE_CANCEL.ordinal(), adCodeList);
+        mMapDataAdapter.operate(UserDataCode.OPERATION_TYPE_CANCEL, adCodeList);
     }
 
     /**
@@ -194,7 +207,7 @@ public final class MapDataPackage implements MapDataAdapterCallBack {
      * @param adCodeList 要删除已经下载的adCode列表
      */
     public void deleteAllTask(final ArrayList<Integer> adCodeList) {
-        mMapDataAdapter.operate(OperationType.OPERATION_TYPE_DELETE.ordinal(), adCodeList);
+        mMapDataAdapter.operate(UserDataCode.OPERATION_TYPE_DELETE, adCodeList);
     }
 
     /**
@@ -203,7 +216,7 @@ public final class MapDataPackage implements MapDataAdapterCallBack {
      * @param adCodeList 暂停下载操作 ， adcodeList为空时暂停当前进行中的adCodeList
      */
     public void pauseAllTask(final ArrayList<Integer> adCodeList) {
-        mMapDataAdapter.operate(OperationType.OPERATION_TYPE_PAUSE.ordinal(), adCodeList);
+        mMapDataAdapter.operate(UserDataCode.OPERATION_TYPE_PAUSE, adCodeList);
     }
 
     /**
@@ -212,7 +225,7 @@ public final class MapDataPackage implements MapDataAdapterCallBack {
      * @param adCodeList 继续下载操作 ， adCodeList为空时继续当前暂停中待继续的adCodeList
      */
     public void startAllTask(final ArrayList<Integer> adCodeList) {
-        mMapDataAdapter.operate(OperationType.OPERATION_TYPE_START.ordinal(), adCodeList);
+        mMapDataAdapter.operate(UserDataCode.OPERATION_TYPE_START, adCodeList);
     }
 
     /**
@@ -227,12 +240,12 @@ public final class MapDataPackage implements MapDataAdapterCallBack {
     }
 
     @Override
-    public void onDownLoadStatus(final ProvDataInfo provDataInfo) {
-        Logger.d("MapDataPackage","onDownLoadStatus -> provDataInfo: " + GsonUtils.toJson(provDataInfo));
+    public void onDownLoadStatus(final CityDataInfo cityDataInfo ) {
+        Logger.d("MapDataPackage","onDownLoadStatus -> cityDataInfo: " + GsonUtils.toJson(cityDataInfo));
 
         if (null != mCallBacks) {
             for (MapDataCallBack observer : mCallBacks.values()) {
-                observer.onDownLoadStatus(provDataInfo);
+                observer.onDownLoadStatus(cityDataInfo);
             }
         }
     }

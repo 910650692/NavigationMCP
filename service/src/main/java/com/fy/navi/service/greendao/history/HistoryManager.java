@@ -232,6 +232,8 @@ public class HistoryManager {
         final int offset = (pageNum - 1) * pageSize;
         // 使用QueryBuilder构建查询
         final QueryBuilder<History> queryBuilder = mSearchHistoryDao.queryBuilder();
+        // 添加过滤条件，不过滤行程历史
+        queryBuilder.where(HistoryDao.Properties.MRideRunType.eq(-1));
         // 按 UpdateTime 降序排列. orderDesc 表示降序
         queryBuilder.orderDesc(HistoryDao.Properties.MUpdateTime);
         // 设置LIMIT和OFFSET

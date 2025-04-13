@@ -6,22 +6,28 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 
 import com.android.utils.ResourceUtils;
+import com.android.utils.thread.ThreadManager;
 import com.fy.navi.hmi.R;
+import com.fy.navi.service.define.code.UserDataCode;
 import com.fy.navi.service.define.mapdata.CityDataInfo;
+import com.fy.navi.service.define.mapdata.ProvDataInfo;
 import com.fy.navi.ui.action.Action;
 import com.fy.navi.ui.base.BaseViewModel;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class ManagerMapDataViewModel extends BaseViewModel<ManagerMapDataFragment, ManagerMapDataModel> {
-    public MutableLiveData<Boolean> mDownloadingNoDataVisibility = new MutableLiveData<>(true);
+    public MutableLiveData<Boolean> mDownloadingNoDataVisibility = new MutableLiveData<>(false);
     public MutableLiveData<Boolean> mDownloadedNoDataVisibility = new MutableLiveData<>(false);
-    public MutableLiveData<Boolean> mDownloadingDataVisibility = new MutableLiveData<>(false);
+    public MutableLiveData<Boolean> mDownloadingDataVisibility = new MutableLiveData<>(true);
     public MutableLiveData<Boolean> mDownloadedDataVisibility = new MutableLiveData<>(false);
     public MutableLiveData<String> mAllDownloadingDataSize = new MutableLiveData<>("0");
     public MutableLiveData<String> mAllDownloadedDataSize = new MutableLiveData<>("0");
 
     private boolean mIsDownloadedPage = false;
+    private ArrayList<ProvDataInfo> downloadedInfos = new ArrayList<>();
+    private ArrayList<ProvDataInfo> downloadingInfos = new ArrayList<>();
 
     public ManagerMapDataViewModel(@NonNull final Application application) {
         super(application);
@@ -39,30 +45,62 @@ public class ManagerMapDataViewModel extends BaseViewModel<ManagerMapDataFragmen
         closeFragment(true);
     };
 
+    /**
+     * 正在下载tab
+     */
     public Action mDownloadingDataClickView = () -> {
         mIsDownloadedPage = false;
-        setDownloadingView(mModel.getWorkingList());
         mView.setDownloadingTitleStatus(true);
         mView.setDownloadedTitleStatus(false);
+        mDownloadingDataVisibility.setValue(true);
+        mDownloadedNoDataVisibility.setValue(false);
+        mDownloadedDataVisibility.setValue(false);
+        setDownloadingView(downloadingInfos);
     };
 
+    /**
+     * 已下载tab
+     */
     public Action mDownloadedClickView = () -> {
         mIsDownloadedPage = true;
-        setDownloadedView(mModel.getWorkedList());
         mView.setDownloadingTitleStatus(false);
         mView.setDownloadedTitleStatus(true);
+        mDownloadedDataVisibility.setValue(true);
+        mDownloadingDataVisibility.setValue(false);
+        mDownloadingNoDataVisibility.setValue(false);
+        setDownloadedView(downloadedInfos, false);
     };
 
     public Action mAllDataSuspend = () -> {
-        mModel.pauseAllTask(mModel.getAllWorkingAdCodeList(mModel.getWorkingList()));
-        mView.setStartAllTaskStatus(false);
-        mView.setPauseAllTaskStatus(true);
+        if (!mView.getAllPauseButtonChecked()) {
+            return;
+        }
+        ArrayList<Integer> adCodeList = new ArrayList<>();
+        if (downloadingInfos != null && !downloadingInfos.isEmpty()) {
+            for (int i = 0; i < downloadingInfos.size(); i++) {
+                final List<CityDataInfo> citys = downloadingInfos.get(i).getCityInfoList();
+                for (CityDataInfo cityDataInfo : citys) {
+                    adCodeList.add(cityDataInfo.getAdcode());
+                }
+            }
+        }
+        mModel.pauseAllTask(adCodeList);
     };
 
     public Action mAllDataDownload = () -> {
-        mModel.startAllTask(mModel.getAllWorkingAdCodeList(mModel.getWorkingList()));
-        mView.setStartAllTaskStatus(true);
-        mView.setPauseAllTaskStatus(false);
+        if (!mView.getAllStartButtonChecked()) {
+            return;
+        }
+        ArrayList<Integer> adCodeList = new ArrayList<>();
+        if (downloadingInfos != null && !downloadingInfos.isEmpty()) {
+            for (int i = 0; i < downloadingInfos.size(); i++) {
+                final List<CityDataInfo> citys = downloadingInfos.get(i).getCityInfoList();
+                for (CityDataInfo cityDataInfo : citys) {
+                    adCodeList.add(cityDataInfo.getAdcode());
+                }
+            }
+        }
+        mModel.startAllTask(adCodeList);
     };
 
     /**
@@ -70,6 +108,7 @@ public class ManagerMapDataViewModel extends BaseViewModel<ManagerMapDataFragmen
      */
     public void initView() {
         mModel.initView();
+        downloadedInfos = mModel.getWorkedList();
     }
 
     /**
@@ -89,6 +128,14 @@ public class ManagerMapDataViewModel extends BaseViewModel<ManagerMapDataFragmen
     }
 
     /**
+     * 取消下载
+     * @param adCodeList
+     */
+    public void cancelAllTask(final ArrayList<Integer> adCodeList) {
+        mModel.cancelAllTask(adCodeList);
+    }
+
+    /**
      * 暂停下载
      * @param adCodeList
      */
@@ -97,55 +144,74 @@ public class ManagerMapDataViewModel extends BaseViewModel<ManagerMapDataFragmen
     }
 
     /**
-     * 获取已下载列表
-     * @return 返回已下载信息
-     */
-    public ArrayList<CityDataInfo> getWorkedList() {
-        return mModel.getWorkedList();
-    }
-
-    /**
      * 更新下载中数据view
-     * @param cityDataInfos
+     * @param provDataInfos
      */
-    public void setDownloadingView(final ArrayList<CityDataInfo> cityDataInfos) {
+    public void setDownloadingView(final ArrayList<ProvDataInfo> provDataInfos) {
+        downloadingInfos = provDataInfos;
         if (mIsDownloadedPage) {
             return;
         }
-        if (cityDataInfos != null && !cityDataInfos.isEmpty()) {
-            mDownloadingDataVisibility.setValue(true);
+        int size = 0;
+        if (provDataInfos != null && !provDataInfos.isEmpty()) {
+            for (int i = 0; i < provDataInfos.size(); i++) {
+                final List<CityDataInfo> city = provDataInfos.get(i).getCityInfoList();
+                size = city.size() + size;
+            }
+        }
+        if (size > 0) {
             mDownloadingNoDataVisibility.setValue(false);
-            mDownloadedNoDataVisibility.setValue(false);
-            mDownloadedDataVisibility.setValue(false);
-            mView.updateDownloadingView(cityDataInfos);
-            mAllDownloadingDataSize.setValue(String.valueOf(cityDataInfos.size()));
+            mAllDownloadingDataSize.setValue(String.valueOf(size));
+            mView.updateDownloadingView(provDataInfos);
         } else {
-            mDownloadingDataVisibility.setValue(false);
             mDownloadingNoDataVisibility.setValue(true);
-            mDownloadedNoDataVisibility.setValue(false);
-            mDownloadedDataVisibility.setValue(false);
         }
     }
 
     /**
      * 更新已下载数据view
-     * @param cityDataInfos
+     * @param provDataInfos
      */
-    public void setDownloadedView(final ArrayList<CityDataInfo> cityDataInfos) {
-        if (cityDataInfos != null && !cityDataInfos.isEmpty()) {
-            mDownloadingDataVisibility.setValue(false);
-            mDownloadingNoDataVisibility.setValue(false);
-            mDownloadedNoDataVisibility.setValue(false);
-            mDownloadedDataVisibility.setValue(true);
-            mView.updateDownloadedView(cityDataInfos);
-            mAllDownloadedDataSize.setValue(ResourceUtils.Companion.getInstance().getString(R.string.offline_manager_map_downloading_size_start)
-                    + cityDataInfos.size() + ResourceUtils.Companion.getInstance().getString(R.string.offline_manager_map_downloading_size_end));
-        } else {
-            mDownloadingDataVisibility.setValue(false);
-            mDownloadingNoDataVisibility.setValue(false);
-            mDownloadedNoDataVisibility.setValue(true);
-            mDownloadedDataVisibility.setValue(false);
+    public void setDownloadedView(final ArrayList<ProvDataInfo> provDataInfos, boolean isChange) {
+        downloadedInfos = provDataInfos;
+        int size = 0;
+        if (provDataInfos != null && !provDataInfos.isEmpty()) {
+            for (int i = 0; i < provDataInfos.size(); i++) {
+                final List<CityDataInfo> city = provDataInfos.get(i).getCityInfoList();
+                size = city.size() + size;
+            }
         }
+
+        if (size > 0) {
+            mDownloadedNoDataVisibility.setValue(false);
+            mView.updateDownloadedView(provDataInfos, isChange);
+            mAllDownloadedDataSize.setValue(ResourceUtils.Companion.getInstance().getString(R.string.offline_manager_map_downloading_size_start)
+                    + size + ResourceUtils.Companion.getInstance().getString(R.string.offline_manager_map_downloading_size_end));
+        } else {
+            mDownloadedNoDataVisibility.setValue(true);
+        }
+    }
+
+    /**
+     * 实时更新下载状态
+     * @param info
+     */
+    public void onDownLoadStatus(final CityDataInfo info) {
+        ThreadManager.getInstance().postUi(() -> {
+
+            if (info.getDownLoadInfo().getTaskState() == UserDataCode.TASK_STATUS_CODE_SUCCESS) {
+                // 取消下载or已下载，重新加载下载中列表信息
+                setDownloadingView(mModel.getWorkingList());
+                setDownloadedView(mModel.getWorkedList(), true);
+            } else if (info.getDownLoadInfo().getTaskState() == UserDataCode.TASK_STATUS_CODE_READY) {
+                //当前处于已下载tab页，实时删除数据包，会动态刷新当前数据
+                setDownloadedView(mModel.getWorkedList(), true);
+            } else {
+                //实时更新列表item
+                mView.notifyDowningView(info.getUpperAdcode(), info.getAdcode(), info.getDownLoadInfo());
+            }
+
+        });
     }
 
 }

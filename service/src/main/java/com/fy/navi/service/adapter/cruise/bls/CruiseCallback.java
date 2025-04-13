@@ -1,10 +1,10 @@
 package com.fy.navi.service.adapter.cruise.bls;
 
 import com.android.utils.ConvertUtils;
+import com.android.utils.log.Logger;
 import com.autonavi.gbl.guide.model.CruiseInfo;
 import com.autonavi.gbl.guide.model.LaneInfo;
 import com.autonavi.gbl.guide.model.NaviCameraExt;
-import com.autonavi.gbl.guide.model.SoundInfo;
 import com.autonavi.gbl.guide.observer.ICruiseObserver;
 import com.autonavi.gbl.guide.observer.ISoundPlayObserver;
 import com.fy.navi.service.MapDefaultFinalTag;
@@ -31,6 +31,7 @@ public class CruiseCallback implements ICruiseObserver, ISoundPlayObserver{
     @Override
     public void onShowCruiseLaneInfo(LaneInfo info) { // 显示巡航车道线信息
         LaneInfoEntity laneInfoEntity = NaviDataFormatHelper.forMatLaneInfo(info);
+        Logger.d(TAG, "onShowCruiseLaneInfo", "backLane-size:" + (info == null ? 0:(info.backLane == null ? 0 : info.backLane.size())));
         if (!ConvertUtils.isEmpty(mCruiseObservers)) {
             for (CruiseObserver cruiseObserver : mCruiseObservers.values()) {
                 if (cruiseObserver != null) {
@@ -42,6 +43,7 @@ public class CruiseCallback implements ICruiseObserver, ISoundPlayObserver{
 
     @Override
     public void onHideCruiseLaneInfo() {
+        Logger.d(TAG, "onHideCruiseLaneInfo");
         if (!ConvertUtils.isEmpty(mCruiseObservers)) {
             for (CruiseObserver cruiseObserver : mCruiseObservers.values()) {
                 if (cruiseObserver != null) {
@@ -74,34 +76,11 @@ public class CruiseCallback implements ICruiseObserver, ISoundPlayObserver{
      */
     @Override
     public void onUpdateCruiseInfo(CruiseInfo noNaviInfor) {
+        Logger.d(TAG, "onUpdateCruiseInfo", "noNaviInfor:" + (noNaviInfor == null ? "null" : noNaviInfor.roadName));
         if (!ConvertUtils.isEmpty(mCruiseObservers)) {
             for (CruiseObserver cruiseObserver : mCruiseObservers.values()) {
                 if (cruiseObserver != null) {
                     cruiseObserver.onUpdateCruiseInfo(NaviDataFormatHelper.formatCruiseInfo(noNaviInfor));
-                }
-            }
-        }
-    }
-
-    @Override
-    public void onPlayTTS(final SoundInfo soundInfo) {
-        ISoundPlayObserver.super.onPlayTTS(soundInfo);
-        if (!ConvertUtils.isEmpty(mCruiseObservers)) {
-            for (CruiseObserver cruiseObserver : mCruiseObservers.values()) {
-                if (cruiseObserver != null) {
-                    cruiseObserver.onPlayTTS(NaviDataFormatHelper.formatSoundInfo(soundInfo));
-                }
-            }
-        }
-    }
-
-    @Override
-    public void onPlayRing(int type) {
-        ISoundPlayObserver.super.onPlayRing(type);
-        if (!ConvertUtils.isEmpty(mCruiseObservers)) {
-            for (CruiseObserver cruiseObserver : mCruiseObservers.values()) {
-                if (cruiseObserver != null) {
-                    cruiseObserver.onPlayTTS(NaviDataFormatHelper.formatSoundInfo(type));
                 }
             }
         }

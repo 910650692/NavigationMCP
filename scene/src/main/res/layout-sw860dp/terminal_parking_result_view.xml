@@ -25,7 +25,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_30"
                 android:text="建议提前选择以下到达点"
-                android:textColor="@color/black"
+                android:textColor="@color/search_color_ffffff"
                 android:textSize="@dimen/sp_38"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"

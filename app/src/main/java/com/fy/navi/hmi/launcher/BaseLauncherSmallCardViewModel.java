@@ -6,7 +6,12 @@ import android.text.TextUtils;
 import androidx.annotation.NonNull;
 import androidx.databinding.ObservableField;
 
+import com.android.utils.TimeUtils;
 import com.android.utils.log.Logger;
+import com.fy.navi.burypoint.anno.HookMethod;
+import com.fy.navi.burypoint.bean.BuryProperty;
+import com.fy.navi.burypoint.constant.BuryConstant;
+import com.fy.navi.burypoint.controller.BuryPointController;
 import com.fy.navi.mapservice.bean.INaviConstant;
 import com.fy.navi.service.adapter.navi.NaviConstant;
 import com.fy.navi.service.define.cruise.CruiseInfoEntity;
@@ -28,12 +33,14 @@ public class BaseLauncherSmallCardViewModel extends BaseViewModel<MapLauncherSma
     public ObservableField<Boolean> naviBarVisibility;
     public ObservableField<Boolean> naviUiVisibility;//tmc
     public ObservableField<Boolean> cruiseUiVisibility;//tmc
+    private NaviEtaInfo mNaviEtaInfo;
 
     public BaseLauncherSmallCardViewModel(@NonNull Application application) {
         super(application);
         naviBarVisibility = new ObservableField<>(true);
         naviUiVisibility = new ObservableField<>(true);
         cruiseUiVisibility = new ObservableField<>(true);
+        mNaviEtaInfo = new NaviEtaInfo();
     }
 
     @Override
@@ -140,6 +147,7 @@ public class BaseLauncherSmallCardViewModel extends BaseViewModel<MapLauncherSma
     public void onNaviInfo(NaviEtaInfo naviEtaInfo) {
         naviBarVisibility.set(false);
         updateRouteName(naviEtaInfo);
+        mNaviEtaInfo = naviEtaInfo;
         mView.onNaviInfo(naviEtaInfo);
     }
 
@@ -153,8 +161,19 @@ public class BaseLauncherSmallCardViewModel extends BaseViewModel<MapLauncherSma
         }
     }
 
-    public Action stopNavi = () -> {
-        mModel.stopNavi();
+    public Action stopNavi = new Action() {
+        @Override
+        @HookMethod(eventName = BuryConstant.EventName.AMAP_NAVI_END_MANUAL)
+        public void call() {
+            mModel.stopNavi();
+
+            BuryProperty buryProperty = new BuryProperty.Builder()
+                    .setParams(BuryConstant.ProperType.BURY_KEY_REMAINING_TIME, TimeUtils.getArriveTime(mApplication.getApplicationContext(), mNaviEtaInfo.getAllTime()))
+                    .setParams(BuryConstant.ProperType.BURY_KEY_TRIP_DISTANCE, TimeUtils.getRemainInfo(mApplication.getApplicationContext(), mNaviEtaInfo.getAllDist(), mNaviEtaInfo.getAllTime()))
+                    .build();
+            BuryPointController.getInstance().setBuryProps(buryProperty);
+            mNaviEtaInfo = new NaviEtaInfo();
+        }
     };
 
     public void naviArriveOrStop() {

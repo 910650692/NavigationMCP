@@ -1,21 +1,27 @@
 package com.fy.navi.hmi.map;
 
+import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.View;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatDelegate;
 
 import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
-import com.fy.navi.NaviService;
 import com.fy.navi.burypoint.anno.HookMethod;
 import com.fy.navi.burypoint.constant.BuryConstant;
+import com.fy.navi.exportservice.ScreenRecorder;
+import com.fy.navi.fsa.MyFsaService;
 import com.fy.navi.hmi.BR;
 import com.fy.navi.hmi.R;
 import com.fy.navi.hmi.databinding.ActivityMapBinding;
+import com.fy.navi.hmi.startup.PermissionUtils;
 import com.fy.navi.hmi.test.TestWindow;
 import com.fy.navi.mapservice.bean.INaviConstant;
 import com.fy.navi.service.define.map.IBaseScreenMapView;
@@ -24,6 +30,7 @@ import com.fy.navi.service.define.navi.LaneInfoEntity;
 import com.fy.navi.service.define.route.RouteLightBarItem;
 import com.fy.navi.service.define.search.PoiInfoEntity;
 import com.fy.navi.ui.base.BaseActivity;
+import com.fy.navi.ui.base.FragmentIntent;
 
 import java.util.List;
 
@@ -40,6 +47,12 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
     @HookMethod(eventName = BuryConstant.EventName.AMAP_OPEN)
     public void onCreateBefore() {
         mScreenId = MapType.MAIN_SCREEN_MAIN_MAP.name();
+    }
+
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        FragmentIntent.syncFragmentList(mScreenId, getSupportFragmentManager());
     }
 
     @Override
@@ -75,6 +88,7 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
         mViewModel.startListenMsg();
         mViewModel.offlineMap15Day();
         mViewModel.offlineMap45Day();
+        mViewModel.checkPopGuideLogin();
     }
 
     @Override
@@ -93,8 +107,10 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
     @Override
     protected void onMoveMapCenter(final Bundle bundle) {
         Logger.i(TAG, "onMoveMapCenter with bundle");
-        mBinding.searchMainTab.setVisibility(View.GONE);
-        mViewModel.setMapCenterInScreen(mBinding.layoutFragment.getLeft(), bundle);
+        ThreadManager.getInstance().postUi(() -> {
+            mBinding.searchMainTab.setVisibility(View.GONE);
+            mViewModel.setMapCenterInScreen(mBinding.layoutFragment.getLeft(), bundle);
+        });
     }
 
     @Override
@@ -132,10 +148,10 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
     @Override
     public void onConfigurationChanged(@NonNull Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        mViewModel.updateUiStyle(
-                MapType.MAIN_SCREEN_MAIN_MAP,
-                newConfig.uiMode
-        );
+        Logger.i(TAG, "current nightMode: " + newConfig.uiMode);
+        @SuppressLint("WrongConstant") int currentMode = newConfig.uiMode & Configuration.UI_MODE_NIGHT_MASK;
+        mViewModel.updateUiStyle(MapType.MAIN_SCREEN_MAIN_MAP, currentMode);
+        recreate();
     }
 
     @Override
@@ -163,8 +179,21 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
         // 退出的时候主动保存一下最后的定位信息
         mViewModel.saveLastLocationInfo();
         Logger.i(TAG, "onDestroy");
-        NaviService.exitProcess();
         super.onDestroy();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == PermissionUtils.REQUEST_PERMISSION_MEDIA_PROJECTION) {
+            Logger.i(TAG, "The result of the media projection permission request: " + resultCode);
+            if (resultCode == Activity.RESULT_OK) {
+                Intent intent = new Intent(this, ScreenRecorder.class);
+                intent.putExtra("code", resultCode);
+                intent.putExtra("data", data);
+                MyFsaService.getInstance().initHudService(this, intent);
+            }
+        }
     }
 
     private void getIntentExtra(Intent intent) {
@@ -208,6 +237,10 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
         }
     }
 
+    public void setMessageImg(int res){
+        mBinding.includeMessageCenter.baseMapMessageCenterImg.setImageResource(res);
+    }
+
     public IBaseScreenMapView getMapView() {
         return mBinding.mainMapview;
     }
@@ -218,6 +251,7 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
 
     public void cruiseMuteOrUnMute(boolean isOpen) {
         mBinding.cruiseLayout.ivVoice.setSelected(isOpen);
+        mBinding.cruiseLayout.tvTitle.setText(isOpen ? R.string.cruise_unmute : R.string.cruise_mute);
     }
 
     public void setTMCView(int key, List<RouteLightBarItem> routeLightBarItems) {

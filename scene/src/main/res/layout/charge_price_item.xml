@@ -9,6 +9,10 @@
         <variable
             name="holder"
             type="com.fy.navi.scene.ui.adapter.FilterChildListAdapter.Holder" />
+
+        <variable
+            name="chargePriceInfo"
+            type="com.fy.navi.service.define.search.ChargePriceInfo" />
     </data>
 
     <com.fy.navi.ui.view.SkinConstraintLayout
@@ -26,7 +30,7 @@
             android:textSize="@dimen/sp_26"
             android:gravity="center"
             android:layout_marginStart="@dimen/dp_18"
-            android:textColor="@color/black"
+            android:textColor="@color/search_color_ffffff"
             android:background="@drawable/bg_favorite_top"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -37,12 +41,12 @@
             android:id="@+id/charge_price_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            tools:text="0:00-6:00"
+            tools:text="@{chargePriceInfo.getmTime()}"
             android:textSize="@dimen/sp_34"
             android:gravity="center"
             android:layout_marginStart="@dimen/dp_110"
             android:layout_marginTop="@dimen/dp_18"
-            android:textColor="@color/black"
+            android:textColor="@color/search_color_ffffff"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             />
@@ -56,7 +60,7 @@
             android:gravity="center"
             android:layout_marginStart="@dimen/dp_24"
             android:layout_marginTop="@dimen/dp_18"
-            android:textColor="@color/black"
+            android:textColor="@color/search_color_ffffff"
             app:layout_constraintStart_toEndOf="@+id/charge_price_time"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBaseline_toBaselineOf="@+id/charge_price_time"
@@ -66,7 +70,7 @@
             android:id="@+id/charge_price_electric"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            tools:text="电费：¥100"
+            tools:text="@{chargePriceInfo.getmTime()}"
             android:textSize="@dimen/sp_30"
             android:gravity="center"
             android:layout_marginStart="@dimen/dp_110"
@@ -90,7 +94,7 @@
             android:id="@+id/charge_price_service"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            tools:text="服务费：¥1.89"
+            tools:text="@{@string/charge_price_ser(chargePriceInfo.getmElectricityFee())}"
             android:textSize="@dimen/sp_30"
             android:gravity="center"
             android:layout_marginStart="@dimen/dp_8"

@@ -4,10 +4,8 @@ import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
 import com.fy.navi.scene.BaseSceneModel;
-import com.fy.navi.scene.impl.navi.inter.ISceneCallback;
 import com.fy.navi.scene.ui.navi.SceneNaviChargeTipView;
 import com.fy.navi.scene.ui.navi.manager.INaviSceneEvent;
-import com.fy.navi.scene.ui.navi.manager.NaviSceneId;
 import com.fy.navi.service.define.utils.NumberUtils;
 
 import java.util.concurrent.ScheduledFuture;
@@ -16,8 +14,8 @@ public class SceneNaviChargeTipViewImpl extends BaseSceneModel<SceneNaviChargeTi
     public static final String TAG = "SceneNaviChargeTipViewImpl";
     private ScheduledFuture scheduledFuture;
     private int times = NumberUtils.NUM_8;
-    public SceneNaviChargeTipViewImpl(SceneNaviChargeTipView mScreenView) {
-        super(mScreenView);
+    public SceneNaviChargeTipViewImpl(SceneNaviChargeTipView screenView) {
+        super(screenView);
     }
 
     public void initTimer() {
@@ -47,6 +45,6 @@ public class SceneNaviChargeTipViewImpl extends BaseSceneModel<SceneNaviChargeTi
         if(mScreenView.isVisible() == isVisible) return;
         mScreenView.getNaviSceneEvent().notifySceneStateChange((isVisible ?
                 INaviSceneEvent.SceneStateChangeType.SceneShowState :
-                INaviSceneEvent.SceneStateChangeType.SceneCloseState), NaviSceneId.NAVI_CHARGE_TIP);
+                INaviSceneEvent.SceneStateChangeType.SceneCloseState), mScreenView.getSceneId());
     }
 }

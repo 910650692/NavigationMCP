@@ -24,6 +24,10 @@ public class ImmersiveStatusScene {
         immersiveStatusCallBacks.put(key, immersiveStatusCallBack);
     }
 
+    public void unRegisterCallback(String key) {
+        immersiveStatusCallBacks.remove(key);
+    }
+
     public void setImmersiveStatus(MapType mapTypeId, ImersiveStatus imersiveStatus) {
         synchronized (ImmersiveStatusScene.class) {
             imersiveStatusMap.put(mapTypeId, imersiveStatus);

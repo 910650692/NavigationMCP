@@ -20,7 +20,6 @@ import com.fy.navi.service.define.bean.MapLabelItemBean;
 import com.fy.navi.service.define.bean.PreviewParams;
 import com.fy.navi.service.define.layer.GemBaseLayer;
 import com.fy.navi.service.define.layer.GemLayerItem;
-import com.fy.navi.service.define.layer.refix.LayerType;
 import com.fy.navi.service.define.map.IBaseScreenMapView;
 import com.fy.navi.service.define.map.MapMode;
 import com.fy.navi.service.define.map.MapStateStyle;
@@ -62,7 +61,6 @@ public class MapPackage implements IMapAdapterCallback, INaviStatusCallback, ILa
     private MapPackage() {
         mMapAdapter = MapAdapter.getInstance();
         mPositionAdapter = PositionAdapter.getInstance();
-        layerAdapter = LayerAdapter.getInstance();
         mNavistatusAdapter = NavistatusAdapter.getInstance();
         blAosAdapter = BlAosAdapter.getInstance();
         mNavistatusAdapter.registerCallback(this);
@@ -70,7 +68,6 @@ public class MapPackage implements IMapAdapterCallback, INaviStatusCallback, ILa
 
     private MapAdapter mMapAdapter;
     private PositionAdapter mPositionAdapter;
-    private LayerAdapter layerAdapter;
     private NavistatusAdapter mNavistatusAdapter;
     private BlAosAdapter blAosAdapter;
     private final Hashtable<MapType, List<IMapPackageCallback>> callbackTables = new Hashtable<>();
@@ -137,7 +134,7 @@ public class MapPackage implements IMapAdapterCallback, INaviStatusCallback, ILa
     }
 
     public boolean switchMapMode(MapType mapTypeId) {
-       return mMapAdapter.switchMapMode(mapTypeId);
+        return mMapAdapter.switchMapMode(mapTypeId);
     }
 
     public MapMode getCurrentMapMode(MapType mapTypeId) {
@@ -265,11 +262,6 @@ public class MapPackage implements IMapAdapterCallback, INaviStatusCallback, ILa
 
     @Override
     public void onMapLoadSuccess(MapType mapTypeId) {
-        if (mapTypeId == MapType.MAIN_SCREEN_MAIN_MAP) {
-            layerAdapter.registerLayerClickObserver(MapType.MAIN_SCREEN_MAIN_MAP, LayerType.LAYER_SEARCH, this);
-            layerAdapter.registerLayerClickObserver(MapType.MAIN_SCREEN_MAIN_MAP, LayerType.LAYER_GUIDE_ROUTE, this);
-            layerAdapter.registerLayerClickObserver(MapType.MAIN_SCREEN_MAIN_MAP, LayerType.LAYER_FLY_LINE, this);
-        }
         Logger.i(TAG, "lvww", "底图渲染成功", "mapTypeId:" + mapTypeId.name());
         if (callbackTables.containsKey(mapTypeId) && callbackTables.get(mapTypeId) != null) {
             List<IMapPackageCallback> callbacks = callbackTables.get(mapTypeId);
@@ -348,7 +340,7 @@ public class MapPackage implements IMapAdapterCallback, INaviStatusCallback, ILa
     public void updateUiStyle(MapType mapTypeId, int uiMode) {
         mMapAdapter.updateUiStyle(mapTypeId, uiMode);
         // 通知其它地方UI发生了变化
-        Logger.d(TAG, "onUiModeChanged!");
+        Logger.d(TAG, "onUiModeChanged!", "uiMode:" + uiMode);
         callbackTables.forEach((key, values) -> values.forEach(callBack -> {
             callBack.onUiModeChanged(uiMode);
         }));
@@ -397,23 +389,6 @@ public class MapPackage implements IMapAdapterCallback, INaviStatusCallback, ILa
      */
     public void setCustomLabelTypeVisible(MapType mapTypeId, ArrayList<Integer> typeList, boolean isOpen) {
         mMapAdapter.setCustomLabelTypeVisible(mapTypeId, typeList, isOpen);
-    }
-
-    @Override
-    public void onNotifyClick(MapType mapTypeId, GemBaseLayer layer, GemLayerItem pItem) {
-        ILayerAdapterCallBack.super.onNotifyClick(mapTypeId, layer, pItem);
-        callbackTables.forEach((key, values) -> values.forEach(callBack -> {
-            callBack.onNotifyClick(key, layer, pItem);
-        }));
-    }
-
-    @Override
-    public void onFlyLineMoveEnd(GeoPoint descPoint) {
-        ILayerAdapterCallBack.super.onFlyLineMoveEnd(descPoint);
-        Logger.d(TAG, "onFlyLineMoveEnd");
-        callbackTables.forEach((key, values) -> values.forEach(callBack -> {
-            callBack.onFlyLineMoveEnd(descPoint);
-        }));
     }
 
     /**

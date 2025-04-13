@@ -1,6 +1,7 @@
 package com.fy.navi.hmi.favorite;
 
 import com.android.utils.log.Logger;
+import com.android.utils.thread.ThreadManager;
 import com.fy.navi.service.AutoMapConstant;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.define.search.SearchResultEntity;
@@ -40,7 +41,10 @@ public class HomeCompanyModel extends BaseModel<HomeCompanyViewModel> implements
             if (searchResultEntity.getSearchType() == AutoMapConstant.SearchType.SEARCH_KEYWORD
                     || searchResultEntity.getSearchType() == AutoMapConstant.SearchType.SEARCH_SUGGESTION
                     || searchResultEntity.getSearchType() == AutoMapConstant.SearchType.GEO_SEARCH) {
-                mViewModel.notifySearchResult(searchResultEntity);
+                final ThreadManager threadManager = ThreadManager.getInstance();
+                threadManager.postUi(() -> {
+                    mViewModel.notifySearchResult(searchResultEntity);
+                });
             }
             //我的位置设置
 //            if(searchResultEntity.getSearchType() == AutoMapConstant.SearchType.GEO_SEARCH){

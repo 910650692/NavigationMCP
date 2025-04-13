@@ -4,11 +4,13 @@ import android.util.Log;
 
 import com.android.utils.NetWorkUtils;
 import com.android.utils.gson.GsonUtils;
+import com.android.utils.log.Logger;
 import com.fy.navi.service.define.cruise.CruiseInfoEntity;
 import com.fy.navi.service.define.navi.CameraInfoEntity;
 import com.fy.navi.service.define.navi.LaneInfoEntity;
 import com.fy.navi.service.define.navi.NaviEtaInfo;
 import com.fy.navi.service.define.navi.SpeedOverallEntity;
+import com.fy.navi.service.logicpaket.calibration.CalibrationPackage;
 import com.fy.navi.service.logicpaket.cruise.CruisePackage;
 import com.fy.navi.service.logicpaket.cruise.ICruiseObserver;
 import com.fy.navi.service.logicpaket.engine.EnginePackage;
@@ -20,6 +22,7 @@ import com.gm.cn.adassdk.proto.NaviLinkProto;
 import java.time.LocalDate;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 public final class SuperCruiseManager {
@@ -29,7 +32,8 @@ public final class SuperCruiseManager {
     private NaviLinkProto.SpeedLimit.Builder mSpeedLimitBuilder;
     private AdasManager mAdasManager;
     private ScheduledExecutorService mScheduler;
-    private boolean misInit = false;
+    private ScheduledFuture<?> mScheduledFuture;
+    private boolean mInitialized = false;
 
     public static SuperCruiseManager getInstance() {
         return SingleHolder.INSTANCE;
@@ -52,53 +56,58 @@ public final class SuperCruiseManager {
 
         @Override
         public void onNaviInfo(final NaviEtaInfo naviETAInfo) {
-            if (naviETAInfo != null) {
-                switch (naviETAInfo.curRoadClass) {
-                    case 0: // 高速公路
-                        mRoadInfoBuilder.setRoadCategory(NaviLinkProto.RoadInfo.RoadCategoryEnum.ROAD_CATEGORY_HIGHWAY);
-                        break;
-                    case 1: // 国道
-                        mRoadInfoBuilder.setRoadCategory(NaviLinkProto.RoadInfo.RoadCategoryEnum.ROAD_CATEGORY_SFREEWAY);
-                        break;
-                    case 2: // 省道
-                        mRoadInfoBuilder.setRoadCategory(NaviLinkProto.RoadInfo.RoadCategoryEnum.ROAD_CATEGORY_FREEWAY);
-                        break;
-                    case 3: // 县道
-                        mRoadInfoBuilder.setRoadCategory(NaviLinkProto.RoadInfo.RoadCategoryEnum.ROAD_CATEGORY_COLLECTOR);
-                        break;
-                    case 4: // 乡公路
-                    case 5: // 县乡村内部道路
-                        mRoadInfoBuilder.setRoadCategory(NaviLinkProto.RoadInfo.RoadCategoryEnum.ROAD_CATEGORY_ALLEY);
-                        break;
-                    case 6: // 城市快速路
-                    case 7: // 主要道路
-                        mRoadInfoBuilder.setRoadCategory(NaviLinkProto.RoadInfo.RoadCategoryEnum.ROAD_CATEGORY_ARTERIAL);
-                        break;
-                    case 8: // 次要道路
-                    case 9: // 普通道路
-                    case 10: // 非导航道路
-                    default:
-                        mRoadInfoBuilder.setRoadCategory(NaviLinkProto.RoadInfo.RoadCategoryEnum.ROAD_CATEGORY_LOCAL);
+            if (naviETAInfo == null) {
+                Log.w(TAG, "onNaviInfo: null");
+                return;
+            }
+            Log.i(TAG, "onNaviInfo: curRoadClass = " + naviETAInfo.curRoadClass);
+            switch (naviETAInfo.curRoadClass) {
+                case 0: // 高速公路
+                    mRoadInfoBuilder.setRoadCategory(NaviLinkProto.RoadInfo.RoadCategoryEnum.ROAD_CATEGORY_HIGHWAY);
+                    break;
+                case 1: // 国道
+                    mRoadInfoBuilder.setRoadCategory(NaviLinkProto.RoadInfo.RoadCategoryEnum.ROAD_CATEGORY_SFREEWAY);
+                    break;
+                case 2: // 省道
+                    mRoadInfoBuilder.setRoadCategory(NaviLinkProto.RoadInfo.RoadCategoryEnum.ROAD_CATEGORY_FREEWAY);
+                    break;
+                case 3: // 县道
+                    mRoadInfoBuilder.setRoadCategory(NaviLinkProto.RoadInfo.RoadCategoryEnum.ROAD_CATEGORY_COLLECTOR);
+                    break;
+                case 4: // 乡公路
+                case 5: // 县乡村内部道路
+                    mRoadInfoBuilder.setRoadCategory(NaviLinkProto.RoadInfo.RoadCategoryEnum.ROAD_CATEGORY_ALLEY);
+                    break;
+                case 6: // 城市快速路
+                case 7: // 主要道路
+                    mRoadInfoBuilder.setRoadCategory(NaviLinkProto.RoadInfo.RoadCategoryEnum.ROAD_CATEGORY_ARTERIAL);
+                    break;
+                case 8: // 次要道路
+                case 9: // 普通道路
+                case 10: // 非导航道路
+                default:
+                    mRoadInfoBuilder.setRoadCategory(NaviLinkProto.RoadInfo.RoadCategoryEnum.ROAD_CATEGORY_LOCAL);
 
-                }
-                switch (naviETAInfo.curRoadClass) {
-                    case 0: // 高速公路
-                        mRoadInfoBuilder.setControlledAccess(true);
-                        break;
-                    case 6: // 城市快速路
-                        mRoadInfoBuilder.setControlledAccess(true);
-                        break;
-                    default:
-                        mRoadInfoBuilder.setControlledAccess(false);
-                }
+            }
+            switch (naviETAInfo.curRoadClass) {
+                case 0: // 高速公路
+                    mRoadInfoBuilder.setControlledAccess(true);
+                    break;
+                case 6: // 城市快速路
+                    mRoadInfoBuilder.setControlledAccess(true);
+                    break;
+                default:
+                    mRoadInfoBuilder.setControlledAccess(false);
             }
         }
 
         @Override
         public void onNaviSpeedOverallInfo(final SpeedOverallEntity speedEntity) {
             if (speedEntity == null) {
+                Log.w(TAG, "onNaviSpeedOverallInfo: null");
                 return;
             }
+            Log.i(TAG, "onNaviSpeedOverallInfo: SpeedLimit = " + speedEntity.getSpeedLimit());
             mSpeedLimitBuilder.setPostedSpeedLimit(speedEntity.getSpeedLimit());
             mSpeedLimitBuilder.setSpeedCategory(speed2SpeedCategoryEnum(speedEntity.getSpeedLimit()));
             mSpeedLimitBuilder.setSpeedLimitAssured(true);
@@ -110,8 +119,10 @@ public final class SuperCruiseManager {
         @Override
         public void onNaviCameraInfo(final CameraInfoEntity cameraInfo) {
             if (cameraInfo == null) {
+                Log.w(TAG, "onNaviCameraInfo: null");
                 return;
             }
+            Log.i(TAG, "onNaviCameraInfo: speed = " + cameraInfo.getSpeed());
             mSpeedLimitBuilder.setPostedSpeedLimit(cameraInfo.getSpeed());
             mSpeedLimitBuilder.setSpeedCategory(speed2SpeedCategoryEnum(cameraInfo.getSpeed()));
             mSpeedLimitBuilder.setSpeedLimitAssured(true);
@@ -122,6 +133,8 @@ public final class SuperCruiseManager {
 
         @Override
         public void onCurrentRoadSpeed(final int speed) {
+            Log.i(TAG, "onCurrentRoadSpeed: speed = " + speed);
+            // TODO
             mSpeedLimitBuilder.setPostedSpeedLimit(speed);
             mSpeedLimitBuilder.setSpeedCategory(speed2SpeedCategoryEnum(speed));
             mSpeedLimitBuilder.setSpeedLimitAssured(false); // 道路限速是false，其他是true
@@ -135,9 +148,16 @@ public final class SuperCruiseManager {
     private final ICruiseObserver mICruiseObserver = new ICruiseObserver() {
         @Override
         public void onShowCruiseCameraExt(final CruiseInfoEntity cruiseInfoEntity) {
-            if (cruiseInfoEntity == null || cruiseInfoEntity.getSpeed() == null) {
+            if (cruiseInfoEntity == null) {
+                Log.w(TAG, "onShowCruiseCameraExt: cruiseInfoEntity null");
                 return;
             }
+            if (cruiseInfoEntity.getSpeed() == null) {
+                Log.w(TAG, "onShowCruiseCameraExt: getSpeed null");
+                return;
+            }
+            Log.i(TAG, "onShowCruiseCameraExt: " + cruiseInfoEntity.getSpeed());
+            // 取第一个有效值
             for (int i = 0; i < cruiseInfoEntity.getSpeed().size(); i++) {
                 final Short speed = cruiseInfoEntity.getSpeed().get(i);
                 if (speed != null && speed != 0 && speed != 0xFF) {
@@ -156,16 +176,20 @@ public final class SuperCruiseManager {
     private final NetWorkUtils.NetworkObserver mNetworkObserver = new NetWorkUtils.NetworkObserver() {
         @Override
         public void onNetConnectSuccess() {
+            Log.i(TAG, "onNetConnectSuccess: ");
             final LocalDate currentDate = LocalDate.now();
-            mRoadInfoBuilder.setMapVersionYear(NaviLinkProto.RoadInfo.MapVersionYearEnum.valueOf(currentDate.getYear()));
+            mRoadInfoBuilder.setMapVersionYear(NaviLinkProto.RoadInfo.MapVersionYearEnum.forNumber(currentDate.getYear()));
             final int monthValue = currentDate.getMonthValue();
             final int quarter = (monthValue - 1) / 3 + 1;
-            mRoadInfoBuilder.setMapVersionQuarter(NaviLinkProto.RoadInfo.MapVersionQuarterEnum.valueOf(quarter));
+            mRoadInfoBuilder.setMapVersionQuarter(NaviLinkProto.RoadInfo.MapVersionQuarterEnum.forNumber(quarter));
         }
 
         @Override
         public void onNetDisConnect() {
+            Log.i(TAG, "onNetDisConnect: ");
             // TODO 离线地图的年份和季度
+            mRoadInfoBuilder.setMapVersionYear(NaviLinkProto.RoadInfo.MapVersionYearEnum.forNumber(2024));
+            mRoadInfoBuilder.setMapVersionQuarter(NaviLinkProto.RoadInfo.MapVersionQuarterEnum.forNumber(3));
         }
 
         @Override
@@ -197,19 +221,38 @@ public final class SuperCruiseManager {
      * @param adasManager AdasManager
      */
     public void init(final AdasManager adasManager) {
-        if (misInit) {
+        if (CalibrationPackage.getInstance().adasConfigurationType() != 7) {
+            Logger.i(TAG, "not GB Arch ACP3.1 configuration");
             return;
         }
-        Log.d(TAG, "init: start");
+        if (mInitialized) {
+            Log.w(TAG, "initialized");
+            return;
+        }
+        Log.i(TAG, "init");
         mRoadInfoBuilder = NaviLinkProto.RoadInfo.newBuilder();
         mSpeedLimitBuilder = NaviLinkProto.SpeedLimit.newBuilder();
         mAdasManager = adasManager;
         initData();
         initObserver();
-        mScheduler = Executors.newScheduledThreadPool(1);
-        mScheduler.scheduleWithFixedDelay(mTask, 0, 1, TimeUnit.SECONDS);
-        misInit = true;
-        Log.d(TAG, "init: end");
+        initScheduler();
+        mInitialized = true;
+    }
+
+    /**
+     * 销毁
+     */
+    public void uninit() {
+        if (!mInitialized) {
+            Log.w(TAG, "not initialized");
+            return;
+        }
+        Log.i(TAG, "uninit");
+        NaviPackage.getInstance().unregisterObserver(TAG);
+        CruisePackage.getInstance().unregisterObserver(TAG);
+        NetWorkUtils.Companion.getInstance().unRegisterNetworkObserver(mNetworkObserver);
+        mScheduledFuture.cancel(true);
+        mInitialized = false;
     }
 
     /**
@@ -234,14 +277,18 @@ public final class SuperCruiseManager {
         // Hongkong and Aomen, navi should send 0
         mRoadInfoBuilder.setDrivingSideCategory(NaviLinkProto.RoadInfo.DrivingSideCategoryEnum.NAVILINK_DRIVING_SIDE_LEFT);
         // 地图数据的日期
-        if (Boolean.TRUE.equals(NetWorkUtils.Companion.getInstance().checkNetwork())) {
+        final Boolean networkCapabilities = NetWorkUtils.Companion.getInstance().checkNetwork();
+        Log.i(TAG, "initData: networkCapabilities = " + networkCapabilities);
+        if (Boolean.TRUE.equals(networkCapabilities)) {
             final LocalDate currentDate = LocalDate.now();
-            mRoadInfoBuilder.setMapVersionYear(NaviLinkProto.RoadInfo.MapVersionYearEnum.valueOf(currentDate.getYear()));
+            mRoadInfoBuilder.setMapVersionYear(NaviLinkProto.RoadInfo.MapVersionYearEnum.forNumber(currentDate.getYear()));
             final int monthValue = currentDate.getMonthValue();
             final int quarter = (monthValue - 1) / 3 + 1;
-            mRoadInfoBuilder.setMapVersionQuarter(NaviLinkProto.RoadInfo.MapVersionQuarterEnum.valueOf(quarter));
+            mRoadInfoBuilder.setMapVersionQuarter(NaviLinkProto.RoadInfo.MapVersionQuarterEnum.forNumber(quarter));
         } else {
             // TODO 离线地图的年份和季度
+            mRoadInfoBuilder.setMapVersionYear(NaviLinkProto.RoadInfo.MapVersionYearEnum.forNumber(2024));
+            mRoadInfoBuilder.setMapVersionQuarter(NaviLinkProto.RoadInfo.MapVersionQuarterEnum.forNumber(3));
         }
     }
 
@@ -255,12 +302,17 @@ public final class SuperCruiseManager {
     }
 
     /**
+     * 初始化调度器
+     */
+    private void initScheduler() {
+        mScheduler = Executors.newScheduledThreadPool(1);
+        mScheduledFuture = mScheduler.scheduleWithFixedDelay(mTask, 0, 1, TimeUnit.SECONDS);
+    }
+
+    /**
      * 发送数据
      */
     private void sendData() {
-        if (mAdasManager == null) {
-            return;
-        }
         final NaviLinkProto.NaviLink.Builder builder = NaviLinkProto.NaviLink.newBuilder();
         builder.setRoadInfo(mRoadInfoBuilder.build());
         builder.setSpeedLimit(mSpeedLimitBuilder.build());
@@ -287,8 +339,9 @@ public final class SuperCruiseManager {
         superCruiseJson.setEffectiveSpeedCategory(String.valueOf(mSpeedLimitBuilder.getEffectiveSpeedCategory()));
         superCruiseJson.setEffectiveSpeedType(String.valueOf(mSpeedLimitBuilder.getEffectiveSpeedType()));
         superCruiseJson.setSpeedCategory(String.valueOf(mSpeedLimitBuilder.getSpeedCategory()));
-//        JsonLog.d(TAG, GsonUtils.toJson(superCruiseJson), "");
-        Log.d(TAG, "sendData: " + GsonUtils.toJson(superCruiseJson));
+        final String json = GsonUtils.toJson(superCruiseJson);
+        JsonLog.saveJsonToCache(json, "sc.json");
+        Log.v(TAG, "sendData: " + json);
         mAdasManager.sendNavilink(naviLink);
     }
 

@@ -27,6 +27,7 @@ import com.fy.navi.service.define.navi.NaviExchangeEntity;
 import com.fy.navi.service.define.navistatus.NaviStatus;
 import com.fy.navi.service.define.position.LocInfoBean;
 import com.fy.navi.service.define.position.LocParallelInfoEntity;
+import com.fy.navi.service.define.route.RouteCurrentPathParam;
 import com.fy.navi.service.define.route.RouteLineInfo;
 import com.fy.navi.service.define.route.RouteLineSegmentInfo;
 import com.fy.navi.service.define.route.RouteParam;
@@ -73,10 +74,11 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
     @Override
     public CallResponse onMapSizeAdjust(final boolean zoomIn, final int size, final RespCallback respCallback) {
         Log.d(IVrBridgeConstant.TAG, "onMapSizeAdjust: zoomIn = " + zoomIn + ", size = " + size);
-        CallResponse callResponse;
-        final float curSize = MapPackage.getInstance().getZoomLevel(MapType.MAIN_SCREEN_MAIN_MAP);
+
         openMapWhenBackground();
 
+        final CallResponse callResponse;
+        final float curSize = MapPackage.getInstance().getZoomLevel(MapType.MAIN_SCREEN_MAIN_MAP);
         final float levelSize;
         switch (size) {
             case Integer.MAX_VALUE:
@@ -90,9 +92,8 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
                 break;
             default:
                 Log.d(IVrBridgeConstant.TAG, "Error zoom action !");
-                callResponse = CallResponse.createNotSupportResponse("不支持的的缩放指令");
-                respTts(callResponse, respCallback);
-                return CallResponse.createSuccessResponse();
+                return CallResponse.createNotSupportResponse("不支持的的缩放指令");
+
         }
 
         if (zoomIn) {
@@ -127,8 +128,7 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
             }
         }
         Log.d(IVrBridgeConstant.TAG, "map state : " + MapState.getInstance().getCurrZoomLevel());
-        respTts(callResponse, respCallback);
-        return CallResponse.createSuccessResponse();
+        return callResponse;
     }
 
     /**
@@ -147,29 +147,28 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
             //查看全程
             if (inNavigation) {
                 if (preview) {
-                    respTts(CallResponse.createNotSupportResponse("当前已展示路线全览"), respCallback);
+                    return CallResponse.createNotSupportResponse("当前已展示路线全览");
                 } else {
-                    respTts(CallResponse.createSuccessResponse("已展示路线全览"), respCallback);
                     NaviPackage.getInstance().voiceRouteOverview(MapType.MAIN_SCREEN_MAIN_MAP, true);
+                    return CallResponse.createSuccessResponse("已展示路线全览");
                 }
             } else {
-                respTts(CallResponse.createNotSupportResponse("当前不在导航状态，无法查看路线全览哦"), respCallback);
+                return CallResponse.createNotSupportResponse("当前不在导航状态，无法查看路线全览哦");
             }
         } else {
             //退出全程
             if (inNavigation) {
                 if (preview) {
-                    respTts(CallResponse.createSuccessResponse("已退出路线全览"), respCallback);
                     NaviPackage.getInstance().voiceRouteOverview(MapType.MAIN_SCREEN_MAIN_MAP, false);
+                    return CallResponse.createSuccessResponse("已退出路线全览");
                 } else {
-                    respTts(CallResponse.createNotSupportResponse("当前未展示路线全览"), respCallback);
+                    return CallResponse.createNotSupportResponse("当前未展示路线全览");
                 }
             } else {
-                respTts(CallResponse.createNotSupportResponse("当前未展示路线全览"), respCallback);
                 openMapWhenBackground();
+                return CallResponse.createNotSupportResponse("当前未展示路线全览");
             }
         }
-        return CallResponse.createSuccessResponse();
     }
 
     /**
@@ -199,7 +198,16 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
     @Deprecated
     public CallResponse onFamiliarNaviToggle(final boolean open, final RespCallback respCallback) {
         Log.d(IVrBridgeConstant.TAG, "onFamiliarNaviToggle: open = " + open);
-        return null;
+        return responseNotSupport();
+    }
+
+    /**
+     * 不支持的功能统一回复.
+     *
+     * @return CallResponse.
+     */
+    private CallResponse responseNotSupport() {
+        return CallResponse.createNotSupportResponse("不支持此功能");
     }
 
     /**
@@ -214,7 +222,7 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
     @Deprecated
     public CallResponse onArNaviToggle(final boolean open, final RespCallback respCallback) {
         Log.d(IVrBridgeConstant.TAG, "onArNaviToggle: open = " + open);
-        return CallResponse.createNotSupportResponse("暂不支持切换AR导航");
+        return responseNotSupport();
     }
 
     /**
@@ -228,7 +236,7 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
     @Deprecated
     public CallResponse onNaviModeSwitch(final RespCallback respCallback) {
         Log.d(IVrBridgeConstant.TAG, "onFamiliarNaviToggle:");
-        return CallResponse.createNotSupportResponse("暂不支持切换导航模式");
+        return responseNotSupport();
     }
 
     /**
@@ -244,37 +252,36 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
     @Override
     public CallResponse onNaviActionChange(final String action, final RespCallback respCallback) {
         Log.d(IVrBridgeConstant.TAG, "onNaviActionChange: action = " + action);
-        final CallResponse callResponse;
 
-        final String curNaviStatus = NaviStatusPackage.getInstance().getCurrentNaviStatus();
+        final CallResponse callResponse;
         switch (action) {
-            case "START_NAVIGATION":
+            case IVrBridgeConstant.NavigationOperateType.START:
                 if (MapStateManager.getInstance().isNaviStatus()) {
-                    Log.d(IVrBridgeConstant.TAG, "Already in navigation state !");
-                    callResponse = CallResponse.createSuccessResponse("当前已在导航中");
+                    Log.d(IVrBridgeConstant.TAG, "Already in navigation state");
                     openMapWhenBackground();
-                } else if (Objects.equals(curNaviStatus, NaviStatus.NaviStatusType.SELECT_ROUTE)) {
-                    Log.d(IVrBridgeConstant.TAG, "Selecting route page, start navigation !");
+                    callResponse = CallResponse.createSuccessResponse("当前已在导航中");
+                } else if (MapStateManager.getInstance().inSelectRoute()) {
+                    Log.d(IVrBridgeConstant.TAG, "Selecting route page, start navigation");
+                    callResponse = CallResponse.createSuccessResponse("开始出发");
                     final Bundle bundle = new Bundle();
                     bundle.putInt(IVrBridgeConstant.VoiceIntentParams.INTENT_PAGE, IVrBridgeConstant.VoiceIntentPage.START_NAVIGATION);
                     MapPackage.getInstance().voiceOpenHmiPage(MapType.MAIN_SCREEN_MAIN_MAP, bundle);
-                    callResponse = CallResponse.createSuccessResponse("开始出发");
                 } else {
-                    Log.d(IVrBridgeConstant.TAG, "Haven't select route, keep listen !");
+                    Log.d(IVrBridgeConstant.TAG, "Haven't select route, keep listen");
                     callResponse = CallResponse.createSuccessResponse("请问你要去哪里呢");
                 }
                 break;
-            case "END_NAVIGATION":
+            case IVrBridgeConstant.NavigationOperateType.STOP:
                 if (MapStateManager.getInstance().isNaviStatus()) {
-                    Log.d(IVrBridgeConstant.TAG, "Stop navigation successfully !");
+                    Log.d(IVrBridgeConstant.TAG, "Stop navigation successfully");
                     NaviPackage.getInstance().stopNavigation();
                     callResponse = CallResponse.createSuccessResponse("导航结束");
                 } else {
-                    Log.d(IVrBridgeConstant.TAG, "Already end navigation !");
+                    Log.d(IVrBridgeConstant.TAG, "Already end navigation");
                     callResponse = CallResponse.createSuccessResponse("当前不在导航状态");
                 }
                 break;
-            case "CONTINUE_NAVIGATION":
+            case IVrBridgeConstant.NavigationOperateType.CONTINUE:
                 Log.d(IVrBridgeConstant.TAG, "Continue navigation !");
                 final int sceneState = NaviPackage.getInstance().getCurrentImmersiveStatus();
                 if (sceneState == 0) {
@@ -287,12 +294,12 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
                 }
                 break;
             default:
-                Log.d(IVrBridgeConstant.TAG, "Error navi action !");
+                Log.d(IVrBridgeConstant.TAG, "Error navi action");
                 callResponse = CallResponse.createNotSupportResponse("不支持的的导航指令");
                 break;
         }
-        respTts(callResponse, respCallback);
-        return CallResponse.createSuccessResponse();
+
+        return callResponse;
     }
 
     /**
@@ -344,8 +351,7 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
             SettingPackage.getInstance().setConfigKeyRoadEvent(open);
             builder.append("已").append(open ? "打开" : "关闭").append(IVrBridgeConstant.ROAD_CONDITION);
         }
-        respTts(CallResponse.createSuccessResponse(builder.toString()), respCallback);
-        return CallResponse.createSuccessResponse();
+        return CallResponse.createSuccessResponse(builder.toString());
     }
 
     /**
@@ -369,7 +375,7 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
             case NaviStatus.NaviStatusType.SELECT_ROUTE:
                 if (viaCount > 0) {
                     //添加途径点后不支持指定路线
-                    notSupportSpecialRoad(respCallback);
+                    return notSupportSpecialRoad();
                 } else {
                     //获取路线结果，匹配当前选择路线与剩余路线
                     chooseRoadWhenSelect(road, respCallback);
@@ -378,25 +384,33 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
             case NaviStatus.NaviStatusType.NAVING:
             case NaviStatus.NaviStatusType.LIGHT_NAVING:
                 if (viaCount > 0) {
-                    notSupportSpecialRoad(respCallback);
+                    return notSupportSpecialRoad();
                 } else {
                     chooseRoadWhenNavigation(road, respCallback);
                 }
                 break;
             default:
-                respTts(CallResponse.createNotSupportResponse("请先发起导航"), respCallback);
-                break;
+                return responseStartNaviFirst();
         }
         return CallResponse.createSuccessResponse();
     }
 
     /**
-     * 不支持个性化道路回复.
+     * 添加途径点后不支持个性化道路回复.
      *
-     * @param respCallback 语音结果回调.
+     * @return CallResponse 语音执行结果.
      */
-    private void notSupportSpecialRoad(final RespCallback respCallback) {
-        respTts(CallResponse.createNotSupportResponse("添加途经点后不支持该功能"), respCallback);
+    private CallResponse notSupportSpecialRoad() {
+        return CallResponse.createNotSupportResponse("添加途经点后不支持该功能");
+    }
+
+    /**
+     * 不在选路态/引导态请先发起导航提示.
+     *
+     * @return CallResponse 提示信息回复.
+     */
+    private CallResponse responseStartNaviFirst() {
+        return  CallResponse.createNotSupportResponse("请先发起导航");
     }
 
     /**
@@ -491,17 +505,17 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
                 break;
             case NaviExchangeEntity.ExchangeType.NO_ROUTE:
                 mNewRoute = null;
-                builder.append("没有找到走").append(road).append("的路线");
+                builder.append("没有找到走").append(road).append(IVrBridgeConstant.ROUTE_HINT);
                 respTts(CallResponse.createFailResponse(builder.toString()), respCallback);
                 break;
             case NaviExchangeEntity.ExchangeType.NORMAL_EXCHANGE:
                 mNewRoute = naviExchangeEntity.getNewRoute();
-                builder.append("找到走").append(road).append("的路线，");
+                builder.append("找到走").append(road).append(IVrBridgeConstant.ROUTE_HINT);
                 int compareTime = mNewRoute.getComePareTime();
                 if (compareTime > 0) {
-                    builder.append("慢");
+                    builder.append("，慢");
                 } else {
-                    builder.append("快");
+                    builder.append("，快");
                     compareTime = Math.abs(compareTime);
                 }
                 builder.append(VoiceConvertUtil.formatTime(compareTime)).append("，确定切换吗");
@@ -519,7 +533,7 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
      *
      * @param assign 指令类型，true-走某条路  false-不走某条路.
      * @param road String，指定道路名称.
-     * @param routeLineInfo RouteLineInfo 匹配到的路线信息.
+     * @param routeLineInfo RouteLineInfo 匹配路线信息.
      * @param respCallback RespCallback,语音结果回调.
      */
     private void responseSpecialRoad(final boolean assign, final String road,
@@ -553,7 +567,7 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
             case NaviStatus.NaviStatusType.SELECT_ROUTE:
                 if (viaCount > 0) {
                     //添加途径点后不支持指定路线
-                    notSupportSpecialRoad(respCallback);
+                    return notSupportSpecialRoad();
                 } else {
                     avoidRoadWhenSelect(road, respCallback);
                 }
@@ -561,14 +575,13 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
             case NaviStatus.NaviStatusType.NAVING:
             case NaviStatus.NaviStatusType.LIGHT_NAVING:
                 if (viaCount > 0) {
-                    notSupportSpecialRoad(respCallback);
+                    return notSupportSpecialRoad();
                 } else {
                     avoidRoadWhenNavigation(road, respCallback);
                 }
                 break;
             default:
-                respTts(CallResponse.createNotSupportResponse("请先发起导航"), respCallback);
-                break;
+                return responseStartNaviFirst();
         }
         return CallResponse.createSuccessResponse();
     }
@@ -632,8 +645,6 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
                 bundle.putInt(IVrBridgeConstant.VoiceIntentParams.INTENT_PAGE, IVrBridgeConstant.VoiceIntentPage.START_NAVIGATION);
                 MapPackage.getInstance().voiceOpenHmiPage(MapType.MAIN_SCREEN_MAIN_MAP, bundle);
             }
-
-
         } catch (NullPointerException exception) {
             Log.e(IVrBridgeConstant.TAG, "avoid road error: " + exception.getMessage());
         } catch (IndexOutOfBoundsException outOfBoundsException) {
@@ -718,7 +729,6 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
     @Override
     public CallResponse onRouteSwitch(final RespCallback respCallback) {
         Log.d(IVrBridgeConstant.TAG, "onRouteSwitch:");
-        CallResponse callResponse;
         RoutePreferenceID curRouteId = SettingPackage.getInstance().getRoutePreference();
         switch (curRouteId) {
             case PREFERENCE_RECOMMEND:
@@ -740,17 +750,12 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
                 curRouteId = RoutePreferenceID.PREFERENCE_RECOMMEND;
                 break;
             default:
-                Log.d(IVrBridgeConstant.TAG, "Go default case, no preference match currently, return !");
-                callResponse = CallResponse.createNotSupportResponse("切换路线失败，请重试 ！");
-                respTts(callResponse, respCallback);
-                return CallResponse.createSuccessResponse();
+                Log.d(IVrBridgeConstant.TAG, "Go default case, no preference match currently");
+                return CallResponse.createNotSupportResponse("不支持的偏好类型");
         }
 
         SettingPackage.getInstance().setRoutePreference(curRouteId);
-        callResponse = CallResponse.createSuccessResponse("已切换路线偏好");
-
-        respTts(callResponse, respCallback);
-        return CallResponse.createSuccessResponse();
+        return CallResponse.createSuccessResponse("已切换路线偏好");
     }
 
     /**
@@ -769,7 +774,7 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
     @Override
     public CallResponse onRouteChoose(final String type, final RespCallback respCallback) {
         Log.d(IVrBridgeConstant.TAG, "onRoadChoose: road = " + type);
-        CallResponse callResponse;
+        final CallResponse callResponse;
 
         //用于存入settingPackage
         final RoutePreferenceID routeId;
@@ -800,12 +805,9 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
                 routeId = RoutePreferenceID.PREFERENCE_FIRSTHIGHWAY;
                 tts = "高速优先";
                 break;
-            case "CHOOSE_AUTOP_ROUTE":
             default:
                 Log.d(IVrBridgeConstant.TAG, "Go default case, no preference match currently, return !");
-                callResponse = CallResponse.createFailResponse("更换偏好失败，请重试！");
-                respTts(callResponse, respCallback);
-                return CallResponse.createSuccessResponse();
+                return CallResponse.createFailResponse("不支持的偏好类型");
         }
 
         if (routeId == SettingPackage.getInstance().getRoutePreference()) {
@@ -815,8 +817,8 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
             SettingPackage.getInstance().setRoutePreference(routeId);
             callResponse = CallResponse.createSuccessResponse("已使用" + tts + "方案");
         }
-        respTts(callResponse, respCallback);
-        return CallResponse.createSuccessResponse();
+
+        return callResponse;
     }
 
     /**
@@ -882,7 +884,7 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
         if (null == locInfoBean || Double.compare(locInfoBean.getLongitude(), 0.0) <= 0
                 || Double.compare(locInfoBean.getLatitude(), 0.0) <= 0) {
             Log.e(IVrBridgeConstant.TAG, "curLocation is empty");
-            respTts(CallResponse.createFailResponse("不好意思，我定位不到你在哪里"), respCallback);
+            return CallResponse.createFailResponse("不好意思，我定位不到你在哪里");
         } else {
             //搜索Poi详情
             final GeoPoint geoPoint = new GeoPoint(locInfoBean.getLongitude(), locInfoBean.getLatitude());
@@ -923,9 +925,9 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
                     case IVrBridgeConstant.ParallelOption.SIDE:
                         //切换到辅路
                         if (flag == 1) {
-                            response = CallResponse.createSuccessResponse("已切换到辅路");
                             NaviPackage.getInstance().voiceChangeParallelRoad(MapType.MAIN_SCREEN_MAIN_MAP,
                                     IVrBridgeConstant.ParallelOption.SIDE);
+                            response = CallResponse.createSuccessResponse("已切换到辅路");
                         } else {
                             response = CallResponse.createNotSupportResponse("当前已在辅路");
                             openMapWhenBackground();
@@ -944,10 +946,8 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
             Log.w(IVrBridgeConstant.TAG, "not in navigation status");
             response = CallResponse.createFailResponse("先发起导航才能切换主辅路");
         }
-        if (null != respCallback && null != response) {
-            respCallback.onResponse(response);
-        }
-        return CallResponse.createSuccessResponse();
+
+        return response;
     }
 
     /**
@@ -1001,10 +1001,7 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
             response = CallResponse.createFailResponse("先发起导航才能切换桥上下");
         }
 
-        if (null != respCallback && null != response) {
-            respCallback.onResponse(response);
-        }
-        return CallResponse.createSuccessResponse();
+        return response;
     }
 
     /**
@@ -1017,8 +1014,7 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
     public CallResponse onForwardAsk(final RespCallback respCallback) {
         Log.d(IVrBridgeConstant.TAG, "onForwardAsk:");
         final boolean isInNavi = Objects.equals(NaviStatusPackage.getInstance().getCurrentNaviStatus(), NaviStatus.NaviStatusType.NAVING);
-        handleForwardAsk(isInNavi, respCallback);
-        return CallResponse.createSuccessResponse();
+        return handleForwardAsk(isInNavi);
     }
 
     /**
@@ -1041,8 +1037,7 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
         } else {
             response = CallResponse.createNotSupportResponse(" 当前不在导航状态，没有行程相关信息哦");
         }
-        respTts(response, respCallback);
-        return CallResponse.createSuccessResponse();
+        return response;
     }
 
     /**
@@ -1066,8 +1061,7 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
         } else {
             response = CallResponse.createNotSupportResponse("当前不在导航状态，没有行程相关信息哦 ");
         }
-        respTts(response, respCallback);
-        return CallResponse.createSuccessResponse();
+        return response;
     }
 
     /**
@@ -1084,37 +1078,38 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
     public CallResponse onDistanceLeftAsk(@Nullable final String start, @Nullable final String arrival, final RespCallback respCallback) {
         Log.d(IVrBridgeConstant.TAG, "onDistanceLeftAsk: start = " + start + ", arrival = " + arrival);
         if (TextUtils.isEmpty(arrival)) {
-            respTts(CallResponse.createFailResponse(" 不支持的目的地类型"), respCallback);
-            return CallResponse.createSuccessResponse();
+            return CallResponse.createFailResponse("目的地不可为空");
         }
 
+        final CallResponse response;
         switch (arrival) {
             case IVrBridgeConstant.PoiType.DESTINATION:
             case IVrBridgeConstant.PoiType.PASS_BY:
-                getRemainDistance(arrival, respCallback);
-                break;
+                 response = getRemainDistance(arrival);
+                 break;
             case IVrBridgeConstant.DestType.HOME:
-                getHomeEtaInfo(start, respCallback);
                 //查询到家的ETA信息
+                response = getHomeEtaInfo(start, respCallback);
                 break;
             case IVrBridgeConstant.DestType.COMPANY:
-                getCompanyEtaInfo(start, respCallback);
                 //查询到公司的ETA信息
+                response = getCompanyEtaInfo(start, respCallback);
                 break;
             default:
-                respTts(CallResponse.createFailResponse("不支持的目的地类型 "), respCallback);
+                response = CallResponse.createFailResponse("不支持的目的地类型 ");
                 break;
         }
 
-        return CallResponse.createSuccessResponse();
+        return response;
     }
 
     /**
      * 获取目的地或途径点的剩余距离
      * @param arrival 目的地
-     * @param respCallback respCallback
+     *
+     * @return CallResponse，执行结果回复.
      */
-    private void getRemainDistance(final String arrival, final RespCallback respCallback) {
+    private CallResponse getRemainDistance(final String arrival) {
         final CallResponse response;
         if (MapStateManager.getInstance().isNaviStatus()) {
             final NaviEtaInfo naviEtaInfo = MapStateManager.getInstance().getEtaInfo();
@@ -1141,20 +1136,21 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
         } else {
             response = CallResponse.createNotSupportResponse(" 当前不在导航状态，没有行程相关信息哦");
         }
-        respTts(response, respCallback);
+        return response;
     }
 
     /**
      * 获取到家的信息
      * @param start 起始点
-     * @param respCallback respCallback
+     * @param respCallback respCallback.
+     *
+     * @return CallResponse，执行回复.
      */
-    private void getHomeEtaInfo(final String start, final RespCallback respCallback) {
-        final PoiInfoEntity homeInfo = BehaviorPackage.getInstance().getFavoriteHomeData(1);
+    private CallResponse getHomeEtaInfo(final String start, final RespCallback respCallback) {
+        final PoiInfoEntity homeInfo = BehaviorPackage.getInstance().getHomeFavoriteInfo();
         if (null == homeInfo) {
             Log.e(IVrBridgeConstant.TAG, "have not save homeInfo");
-            respTts(CallResponse.createFailResponse("未找到家的地址，先去添加吧"), respCallback);
-            return;
+            return CallResponse.createFailResponse("未找到家的地址，先去添加吧");
         }
 
         if (TextUtils.isEmpty(start)) {
@@ -1171,19 +1167,22 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
             VoiceSearchManager.getInstance().searchPoiInfo(IVrBridgeConstant.VoiceSearchType.TIME_AND_DIST,
                     IVrBridgeConstant.DestType.HOME, start, respCallback);
         }
+        return CallResponse.createSuccessResponse();
     }
 
     /**
      * 获取到公司的信息
      * @param start 起始点
      * @param respCallback respCallback
+     *
+     * @return CallResponse.
      */
-    private void getCompanyEtaInfo(final String start, final RespCallback respCallback) {
-        final PoiInfoEntity companyInfo = BehaviorPackage.getInstance().getFavoriteHomeData(2);
+    private CallResponse getCompanyEtaInfo(final String start, final RespCallback respCallback) {
+        final PoiInfoEntity companyInfo = BehaviorPackage.getInstance().getCompanyFavoriteInfo();
         if (null == companyInfo) {
             Log.e(IVrBridgeConstant.TAG, "have not save homeInfo");
-            respTts(CallResponse.createFailResponse("未找到家的地址，先去添加吧"), respCallback);
-            return;
+            return CallResponse.createFailResponse("未找到家的地址，先去添加吧");
+
         }
 
         if (TextUtils.isEmpty(start)) {
@@ -1200,6 +1199,8 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
             VoiceSearchManager.getInstance().searchPoiInfo(IVrBridgeConstant.VoiceSearchType.TIME_AND_DIST,
                     IVrBridgeConstant.DestType.COMPANY, start, respCallback);
         }
+
+        return CallResponse.createSuccessResponse();
     }
 
     /**
@@ -1239,37 +1240,38 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
     public CallResponse onTimeLeftAsk(@Nullable final String start, @Nullable final String arrival, final RespCallback respCallback) {
         Log.d(IVrBridgeConstant.TAG, "onTimeLeftAsk: start = " + start + ", arrival = " + arrival);
         if (TextUtils.isEmpty(arrival)) {
-            respTts(CallResponse.createFailResponse("不支持的目的地类型"), respCallback);
-            return CallResponse.createSuccessResponse();
+            return CallResponse.createFailResponse("目的地不可为空");
         }
 
+        final CallResponse response;
         switch (arrival) {
             case IVrBridgeConstant.PoiType.DESTINATION:
             case IVrBridgeConstant.PoiType.PASS_BY:
-                getRemainTime(arrival, respCallback);
+                response = getRemainTime(arrival);
                 break;
             case IVrBridgeConstant.DestType.HOME:
                 //获取到家的ETA信息
-                getHomeEtaInfo(start, respCallback);
+                response = getHomeEtaInfo(start, respCallback);
                 break;
             case IVrBridgeConstant.DestType.COMPANY:
-                getCompanyEtaInfo(start, respCallback);
                 //获取到公司的ETA信息
+                response = getCompanyEtaInfo(start, respCallback);
                 break;
             default:
-                respTts(CallResponse.createFailResponse("不支持的目的地类型"), respCallback);
+                response = CallResponse.createFailResponse("不支持的目的地类型");
                 break;
         }
 
-        return CallResponse.createSuccessResponse();
+        return response;
     }
 
     /**
      * 查询到目的地或途径点的剩余时间
      * @param arrival 目的地
-     * @param respCallback respCallback
+     *
+     * @return CallResponse，直接结果回复.
      */
-    private void getRemainTime(final String arrival, final RespCallback respCallback) {
+    private CallResponse getRemainTime(final String arrival) {
         final CallResponse response;
         if (MapStateManager.getInstance().isNaviStatus()) {
             final NaviEtaInfo naviEtaInfo = MapStateManager.getInstance().getEtaInfo();
@@ -1294,15 +1296,16 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
         } else {
             response = CallResponse.createNotSupportResponse("当前不在导航状态，没有行程相关信息哦");
         }
-        respTts(response, respCallback);
+        return response;
     }
 
     /**
      * 处理路况询问
      * @param isInNavi 是否导航
-     * @param respCallback respCallback
+     *
+     * @return CallResponse，指令回复.
      */
-    private void handleForwardAsk(final boolean isInNavi, final RespCallback respCallback) {
+    private CallResponse handleForwardAsk(final boolean isInNavi) {
         Log.d(IVrBridgeConstant.TAG, "onTrafficConditionAsk: 转为查询前方路况");
         final CallResponse callResponse;
         if (isInNavi) {
@@ -1317,7 +1320,8 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
         } else {
             callResponse = CallResponse.createSuccessResponse("当前不在导航状态，没有行程相关信息哦");
         }
-        respTts(callResponse, respCallback);
+
+        return callResponse;
     }
 
     /**
@@ -1337,27 +1341,24 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
         boolean hasProcessed = false;//判断有没有处理
         String ttsContent = "";//回复内容
         if (trafficAskBean == null) {
-            respTts(CallResponse.createFailResponse("地点信息异常，请重试"), respCallback);
-            return CallResponse.createSuccessResponse();
+            return CallResponse.createFailResponse("地点信息异常，请重试");
         }
         final boolean isInNavi = Objects.equals(NaviStatusPackage.getInstance().getCurrentNaviStatus(), NaviStatus.NaviStatusType.NAVING);
         String strPoi = trafficAskBean.getPoi();
         final String strStart = trafficAskBean.getStart();
         final String strArrival = trafficAskBean.getArrival();
         if (ConvertUtils.isEmpty(strArrival) && ConvertUtils.isEmpty(strPoi) && ConvertUtils.isEmpty(strStart)) {
-            handleForwardAsk(isInNavi, respCallback);//trafficAskBean的成员变量全是空
-            return CallResponse.createSuccessResponse();
+            //trafficAskBean的成员变量全是空
+            return handleForwardAsk(isInNavi);
         }
         /*以下为有地点信息的查询*/
         if (!isInNavi) {
             Log.d(IVrBridgeConstant.TAG, "onTrafficConditionAsk: 非导航模式");
-            respTts(CallResponse.createFailResponse("仅支持导航路线上的路况信息查询哦"), respCallback);
-            return CallResponse.createSuccessResponse();
+            return CallResponse.createFailResponse("仅支持导航路线上的路况信息查询哦");
         }
         final List<RouteParam> allPoiParamList = RoutePackage.getInstance().getAllPoiParamList(MapType.MAIN_SCREEN_MAIN_MAP);
         if (allPoiParamList.isEmpty()) {
-            respTts(CallResponse.createFailResponse("缺少线路信息，请重试"), respCallback);
-            return CallResponse.createSuccessResponse();
+            return CallResponse.createFailResponse("缺少线路信息，请重试");
         }
         if (ConvertUtils.equals(strPoi, IVrBridgeConstant.PoiType.DESTINATION)) {
             strPoi = allPoiParamList.get(allPoiParamList.size() - 1).getName();
@@ -1410,12 +1411,11 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
         Log.d(IVrBridgeConstant.TAG, "onTrafficConditionAsk: conditionResult = " + conditionResult);
         ttsContent = mapTtsContent(ttsContent, conditionResult);
         if (!isInRoute && hasProcessed) {
-            respTts(CallResponse.createFailResponse("仅支持导航路线上的路况信息查询哦"), respCallback);
+            return CallResponse.createFailResponse("仅支持导航路线上的路况信息查询哦");
         } else {
             Log.d(IVrBridgeConstant.TAG, "onTrafficConditionAsk: ttsContent = " + ttsContent);
-            respTts(CallResponse.createSuccessResponse(ttsContent), respCallback);
+            return CallResponse.createSuccessResponse(ttsContent);
         }
-        return CallResponse.createSuccessResponse();
     }
 
     /**
@@ -1448,8 +1448,21 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
      */
     @Override
     public CallResponse onPassbyAdd(final String sessionId, final String poi, final String poiType, final PoiCallback poiCallback) {
-        Log.d(IVrBridgeConstant.TAG, "onPassbyAdd: sessionId = " + sessionId + ", poi = " + poi + ", poiType = " + poiType);
-        return null;
+        Log.d(IVrBridgeConstant.TAG, "onPassByAdd: sessionId = " + sessionId + ", poi = " + poi + ", poiType = " + poiType);
+        if (!MapStateManager.getInstance().isNaviStatus()) {
+            //非导航态不支持沿途搜
+            Log.w(IVrBridgeConstant.TAG, "alongSearch in no navigation");
+            return CallResponse.createNotSupportResponse("需要发起导航，才能帮你规划沿途的路线，试试说：导航回家");
+        }
+
+        final RouteCurrentPathParam pathParam = RoutePackage.getInstance().getCurrentPathInfo(MapType.MAIN_SCREEN_MAIN_MAP);
+        if (null != pathParam && pathParam.isMIsOnlineRoute()) {
+            //离线算路不支持沿途搜
+            Log.w(IVrBridgeConstant.TAG, "alongSearch in offline road");
+            return CallResponse.createNotSupportResponse("当前使用离线算路，不支持该功能");
+        }
+        VoiceSearchManager.getInstance().handlePassBy(sessionId, poi, poiType, poiCallback);
+        return CallResponse.createSuccessResponse();
     }
 
     /**
@@ -1461,8 +1474,8 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
      */
     @Override
     public CallResponse onPassbyDelete(final String sessionId, final PoiCallback poiCallback) {
-        Log.d(IVrBridgeConstant.TAG, "onPassbyDelete: sessionId = " + sessionId);
-        return null;
+        Log.d(IVrBridgeConstant.TAG, "onPassByDelete: sessionId = " + sessionId);
+        return responseNotSupport();
     }
 
     /**
@@ -1475,8 +1488,8 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
      */
     @Override
     public CallResponse onPassbyDelete(final int idx, final RespCallback respCallback) {
-        Log.d(IVrBridgeConstant.TAG, "onPassbyDelete: idx = " + idx);
-        return null;
+        Log.d(IVrBridgeConstant.TAG, "onPassByDelete: idx = " + idx);
+        return responseNotSupport();
     }
 
     /**
@@ -1493,7 +1506,7 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
         Log.d(IVrBridgeConstant.TAG, "onBroadcastSwitch: mode = " + mode);
         openMapWhenBackground();
 
-        CallResponse callResponse;
+        final CallResponse callResponse;
         //映射设置功能包
         final int broadcastMode;
         //用于tts播报
@@ -1515,9 +1528,7 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
             default:
                 //不播报与极简模式暂无映射
                 Log.d(IVrBridgeConstant.TAG, "Go default case, no mode match " + mode + "  currently, return !");
-                callResponse = CallResponse.createFailResponse("不支持的播报模式");
-                respTts(callResponse, respCallback);
-                return CallResponse.createSuccessResponse();
+                return CallResponse.createFailResponse("不支持的播报模式");
         }
 
         if (broadcastMode == SettingPackage.getInstance().getConfigKeyBroadcastMode()) {
@@ -1529,32 +1540,52 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
                     broadcastMode, IVrBridgeConstant.ThemeMode.DAY == themeMode);
             callResponse = CallResponse.createSuccessResponse("已切换为" + tts);
         }
-        respTts(callResponse, respCallback);
-        return CallResponse.createSuccessResponse();
+        return callResponse;
     }
 
     /**
      * 切换视图
      *
-     * @param mode         3D：车头朝上/车头向上/跟随车头/跟随/3D;
+     * @param mode         2D_FOLLOW_LOGO：2D车头朝上;
      *                     2D：正北/正北朝上/正北向上/2D;
-     *                     2D_FOLLOW_LOGO：2D车头朝上;
+     *                     3D：车头朝上/车头向上/跟随车头/跟随/3D
      *                     DEFAULT：根据当前模式切换
      * @param tts          xx模式
      * @param respCallback respCallback
-     * @return CallResponse
+     *
+     * @return CallResponse，结果回复.
      */
     @Override
     public CallResponse onMapViewSwitch(final String mode, final String tts, final RespCallback respCallback) {
         Log.d(IVrBridgeConstant.TAG, "onMapViewSwitch: mode = " + mode + ", tts = " + tts);
         openMapWhenBackground();
 
-        CallResponse callResponse;
+        final CallResponse callResponse;
+        final int curMapMode = SettingPackage.getInstance().getConfigKeyMapviewMode();
+        String targetMode = mode;
+
         final MapMode mapMode;
         final int mapModeSetting;
         final String respTts;
-        switch (mode) {
-            case "3D":
+        if (IVrBridgeConstant.MapMode.DEFAULT.equals(mode)) {
+            //随机切换为下一个模式
+            switch (curMapMode) {
+                case 0: //
+                    targetMode = IVrBridgeConstant.MapMode.NORTH_2D;
+                    break;
+                case 1:
+                    targetMode = IVrBridgeConstant.MapMode.CAR_3D;
+                    break;
+                case 2:
+                    targetMode = IVrBridgeConstant.MapMode.CAR_2D;
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        switch (targetMode) {
+            case IVrBridgeConstant.MapMode.CAR_3D:
                 mapMode = MapMode.UP_3D;
                 mapModeSetting = 2;
                 respTts = "3D模式";
@@ -1570,27 +1601,19 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
                 respTts = "2D车头朝上模式";
                 break;
             default:
-                //DEFAULT暂时不知如何得到
-                Log.d(IVrBridgeConstant.TAG, "Go default case, no mode match currently, return !");
-                callResponse = CallResponse.createFailResponse("Switch failed, please try again !");
-                respTts(callResponse, respCallback);
-                return CallResponse.createSuccessResponse();
+                return CallResponse.createFailResponse("不支持的地图模式");
         }
 
-        if (mapModeSetting == SettingPackage.getInstance().getConfigKeyMapviewMode()) {
-            callResponse = CallResponse.createSuccessResponse(
-                    "当前已是" + ((TextUtils.equals(tts, "切换视图")) ? respTts : tts) + "模式"
-            );
+        if (mapModeSetting == curMapMode) {
+            callResponse = CallResponse.createSuccessResponse("当前已是" + respTts);
         } else {
             Log.d(IVrBridgeConstant.TAG, "Map view switch successfully !!! ");
             MapPackage.getInstance().switchMapMode(MapType.MAIN_SCREEN_MAIN_MAP, mapMode);
             SettingPackage.getInstance().setConfigKeyMapviewMode(mapModeSetting);
-            callResponse = CallResponse.createSuccessResponse(
-                    "已切换为" + ((TextUtils.equals(tts, "切换视图")) ? respTts : tts) + "模式"
-            );
+            callResponse = CallResponse.createSuccessResponse("已切换为" + respTts);
         }
-        respTts(callResponse, respCallback);
-        return CallResponse.createSuccessResponse();
+
+        return callResponse;
     }
 
     /**
@@ -1607,7 +1630,7 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
         Log.d(IVrBridgeConstant.TAG, "onFavoriteAdd: poi = " + poi);
         if (TextUtils.isEmpty(poi)) {
             Log.e(IVrBridgeConstant.TAG, "addFavorite poi is empty");
-            respTts(CallResponse.createFailResponse("poi为空"), respCallback);
+            return CallResponse.createFailResponse("收藏目的地为空");
         }
         openMapWhenBackground();
 
@@ -1617,7 +1640,6 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
             if (null != routeParam) {
                 final PoiInfoEntity poiInfo = getPoiInfoEntity(routeParam);
                 BehaviorPackage.getInstance().addFavorite(poiInfo, 0);
-//                BehaviorPackage.getInstance().addFavoriteData(poiInfo, 0);
             }
         } else if (IVrBridgeConstant.PoiType.CURRENT_LOCATION.equals(poi)) {
             //当前定位
@@ -1625,7 +1647,7 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
             if (null == locInfoBean || Double.compare(locInfoBean.getLongitude(), 0.0) <= 0
                     || Double.compare(locInfoBean.getLatitude(), 0.0) <= 0) {
                 Log.e(IVrBridgeConstant.TAG, "curLocation is empty");
-                respTts(CallResponse.createFailResponse("不好意思，无法获取当前定位信息"), respCallback);
+                return CallResponse.createFailResponse("不好意思，无法获取当前定位信息");
             } else {
                 //搜索Poi详情
                 final GeoPoint geoPoint = new GeoPoint(locInfoBean.getLongitude(), locInfoBean.getLatitude());
@@ -1672,15 +1694,13 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
         openMapWhenBackground();
         final boolean inNavigation = MapStateManager.getInstance().isNaviStatus();
         if (inNavigation) {
-            respTts(CallResponse.createNotSupportResponse("导航中无法打开收藏地址"), respCallback);
+            return CallResponse.createNotSupportResponse("导航中无法打开收藏地址");
         } else {
             final Bundle bundle = new Bundle();
             bundle.putInt(IVrBridgeConstant.VoiceIntentParams.INTENT_PAGE, IVrBridgeConstant.VoiceIntentPage.FAVORITE_PAGE);
             MapPackage.getInstance().voiceOpenHmiPage(MapType.MAIN_SCREEN_MAIN_MAP, bundle);
-            respTts(CallResponse.createNotSupportResponse("已打开收藏地址"), respCallback);
+            return CallResponse.createNotSupportResponse("已打开收藏地址");
         }
-
-        return CallResponse.createSuccessResponse();
     }
 
     /**
@@ -1696,15 +1716,13 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
 
         final boolean inNavigation = MapStateManager.getInstance().isNaviStatus();
         if (inNavigation) {
-            respTts(CallResponse.createNotSupportResponse("已打开历史记录"), respCallback);
+            return CallResponse.createNotSupportResponse("已打开历史记录");
         } else {
-            respTts(CallResponse.createNotSupportResponse("导航中无法打开历史记录"), respCallback);
             final Bundle bundle = new Bundle();
             bundle.putInt(IVrBridgeConstant.VoiceIntentParams.INTENT_PAGE, IVrBridgeConstant.VoiceIntentPage.SEARCH_HISTORY);
             MapPackage.getInstance().voiceOpenHmiPage(MapType.MAIN_SCREEN_MAIN_MAP, bundle);
+            return CallResponse.createNotSupportResponse("导航中无法打开历史记录");
         }
- 
-        return CallResponse.createSuccessResponse();
     }
 
     /**
@@ -1985,17 +2003,27 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
     @Override
     public CallResponse onMuteToggle(final boolean open, final RespCallback callback) {
         Log.d(IVrBridgeConstant.TAG, "onMuteToggle: open = " + open);
-        final CallResponse callResponse;
         openMapWhenBackground();
-        //映射静音状态
-        final int muteState = open ? 1 : 0;
-        NaviPackage.getInstance().setMute(open);
-        SettingPackage.getInstance().setConfigKeyMute(muteState);
-        Log.d(IVrBridgeConstant.TAG, (open ? "Mute" : "Vocal") + " successfully");
-        callResponse = CallResponse.createSuccessResponse((open ? "Mute" : "Vocal") + " successfully");
 
-        respTts(callResponse, callback);
-        return CallResponse.createSuccessResponse();
+        final int muteStatus = SettingPackage.getInstance().getConfigKeyMute();
+        final CallResponse callResponse;
+        if (open) {
+            if (muteStatus == 1) {
+                callResponse = CallResponse.createNotSupportResponse("当前导航声音已关闭");
+            } else {
+                SettingPackage.getInstance().setConfigKeyMute(1);
+                callResponse = CallResponse.createSuccessResponse("已关闭导航声音");
+            }
+        } else {
+            if (muteStatus == 0) {
+                callResponse = CallResponse.createNotSupportResponse("当前导航声音已打开");
+            } else {
+                SettingPackage.getInstance().setConfigKeyMute(0);
+                callResponse = CallResponse.createSuccessResponse("已打开导航声音");
+            }
+        }
+
+        return callResponse;
     }
 
     @Override

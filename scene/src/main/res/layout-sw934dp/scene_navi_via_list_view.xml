@@ -15,9 +15,8 @@
     <com.fy.navi.ui.view.SkinConstraintLayout
         android:id="@+id/scl_add_via"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="@dimen/dp_400"
         android:clickable="true"
-        android:maxHeight="@dimen/dp_586"
         android:paddingHorizontal="@dimen/dp_30"
         tools:background="@color/navi_color_FF595F_100"
         tools:layout_height="@dimen/dp_918"
@@ -25,8 +24,9 @@
 
         <com.fy.navi.ui.view.SkinRecyclerView
             android:id="@+id/srv_add_via"
+            app:layout_constraintTop_toTopOf="parent"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_390" />
+            android:layout_height="@dimen/dp_270" />
 
         <com.fy.navi.scene.ui.navi.view.ButtonLinearLayout
             android:id="@+id/sll_add_via"
@@ -52,7 +52,7 @@
                 android:layout_marginStart="@dimen/dp_24"
                 android:gravity="center"
                 android:text="@string/navi_add_via"
-                android:textColor="@color/navi_color_000000_60"
+                android:textColor="@color/common_title_color"
                 android:textSize="@dimen/sp_34" />
         </com.fy.navi.scene.ui.navi.view.ButtonLinearLayout>
 

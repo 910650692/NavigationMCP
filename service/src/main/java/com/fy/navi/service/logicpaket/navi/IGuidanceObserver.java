@@ -11,6 +11,7 @@ import com.fy.navi.service.define.navi.NaviManeuverInfo;
 import com.fy.navi.service.define.navi.NaviTmcInfo;
 import com.fy.navi.service.define.navi.SapaInfoEntity;
 import com.fy.navi.service.define.navi.SpeedOverallEntity;
+import com.fy.navi.service.define.navi.SuggestChangePathReasonEntity;
 import com.fy.navi.service.define.route.FyRouteOption;
 import com.fy.navi.service.define.route.RouteWeatherInfo;
 
@@ -183,5 +184,10 @@ public interface IGuidanceObserver {
      * @param info
      */
     default void onShowNaviWeather(final RouteWeatherInfo info) {
+    }
+
+    default void onSuggestChangePath(long newPathID, long oldPathID,
+                                     SuggestChangePathReasonEntity reason) {
+
     }
 }

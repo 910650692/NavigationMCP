@@ -38,7 +38,7 @@ public class HookPointCut implements BasePointCut<HookMethod> {
 
         final String eventName = Objects.equals(hookMethod.eventName(), "") ? BuryPointController.getInstance().getEventName() : hookMethod.eventName();
 
-        Logger.d(TAG, "sendStructData: " + hookMethod.eventName() + " " + hookMethod.sid() + " " + hookMethod.svid());
+        Logger.d(TAG, "sendStructData: " + eventName + " " + hookMethod.sid() + " " + hookMethod.svid());
         if(buryProperty != null && buryProperty.getParams() != null && !buryProperty.getParams().isEmpty()){
             List<BuryParam> params = buryProperty.getParams();
             JSONObject properties = new JSONObject();

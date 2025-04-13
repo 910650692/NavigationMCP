@@ -68,7 +68,7 @@ public class SettingBroadcastFragment extends BaseFragment<FragmentSettingBroadc
      */
     public void updateCheckBoxTextColor(final CompoundButton compoundButton, final boolean isSelected) {
         if (isSelected) {
-            compoundButton.setTextColor(getResources().getColor(com.fy.navi.scene.R.color.white));
+            compoundButton.setTextColor(getResources().getColor(com.fy.navi.scene.R.color.setting_white));
         } else {
             compoundButton.setTextColor(getResources().getColor(com.fy.navi.scene.R.color.setting_preference_text_gray));
         }

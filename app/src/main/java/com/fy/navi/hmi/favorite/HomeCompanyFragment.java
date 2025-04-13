@@ -91,12 +91,12 @@ public class HomeCompanyFragment extends BaseFragment<FragmentHomeCompanyBinding
     public void notifySearchResult(final SearchResultEntity searchResultEntity) {
         if (searchResultEntity != null) {
             Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "searchType:" + searchResultEntity.getSearchType());
-            if (searchResultEntity.getSearchType() == AutoMapConstant.SearchType.GEO_SEARCH) {
-                mBinding.homeCompanyView.notifySearchResult(searchResultEntity);
-            } else {
-                mBinding.sceneNestedScrollView.setHomeCompanyState(mHomeCompany);
-                mBinding.sceneNestedScrollView.notifySearchResult(searchResultEntity);
-            }
+//            if (searchResultEntity.getSearchType() == AutoMapConstant.SearchType.GEO_SEARCH) {
+            mBinding.homeCompanyView.notifySearchResult(searchResultEntity);
+//            } else {
+            mBinding.sceneNestedScrollView.setHomeCompanyState(mHomeCompany);
+            mBinding.sceneNestedScrollView.notifySearchResult(searchResultEntity);
+//            }
         }
 
     }

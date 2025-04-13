@@ -26,8 +26,8 @@ public class BasePoiDetailsViewModel extends BaseViewModel<PoiDetailsFragment, P
      * 搜索结果回调
      * @param searchResultEntity 搜索结果实体类
      */
-    public void onSearchResult(final SearchResultEntity searchResultEntity) {
-        mView.onSearchResult(searchResultEntity);
+    public void onSearchResult(final int taskId, final SearchResultEntity searchResultEntity) {
+        mView.onSearchResult(taskId, searchResultEntity);
     }
 
     public Action getRootClick() {
@@ -36,5 +36,17 @@ public class BasePoiDetailsViewModel extends BaseViewModel<PoiDetailsFragment, P
 
     private final Action mRootClick = () -> {
     };
+
+    /**
+     * 动力类型标定
+     * -1 无效值
+     * 0 汽油车
+     * 1 纯电动车
+     * 2 插电式混动汽车
+     * @return 动力类型
+     */
+    public int powerType() {
+        return mModel.powerType();
+    }
 
 }

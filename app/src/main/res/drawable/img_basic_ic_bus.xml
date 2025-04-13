@@ -7,20 +7,20 @@
       android:pathData="M26.849,29.799L48.281,21.882C48.924,21.644 49.638,21.973 49.876,22.617C49.927,22.754 49.953,22.9 49.953,23.047L49.953,69.494C49.953,70.18 49.397,70.736 48.711,70.736L27.279,70.736C26.593,70.736 26.037,70.18 26.037,69.494L26.037,30.964C26.037,30.444 26.361,29.979 26.849,29.799Z"
       android:strokeWidth="4.33962264"
       android:fillColor="#00000000"
-      android:strokeColor="#4B535D"
+      android:strokeColor="@color/icon_map_home_button"
       android:fillType="evenOdd"/>
   <path
       android:pathData="M66.024,37.761L51.678,31.709C51.046,31.443 50.317,31.739 50.051,32.371C49.986,32.524 49.953,32.688 49.953,32.854L49.953,52.943L49.953,52.943L49.953,70.736L65.541,70.736C66.227,70.736 66.783,70.18 66.783,69.494L66.783,38.905C66.783,38.405 66.484,37.955 66.024,37.761Z"
       android:strokeWidth="4.33962264"
       android:fillColor="#00000000"
-      android:strokeColor="#4B535D"
+      android:strokeColor="@color/icon_map_home_button"
       android:fillType="evenOdd"/>
   <path
       android:pathData="M33.458,56.513L42.115,56.513"
       android:strokeLineJoin="round"
       android:strokeWidth="3.47169811"
       android:fillColor="#00000000"
-      android:strokeColor="#4B535D"
+      android:strokeColor="@color/icon_map_home_button"
       android:fillType="evenOdd"
       android:strokeLineCap="round"/>
   <path
@@ -28,7 +28,7 @@
       android:strokeLineJoin="round"
       android:strokeWidth="3.47169811"
       android:fillColor="#00000000"
-      android:strokeColor="#4B535D"
+      android:strokeColor="@color/icon_map_home_button"
       android:fillType="evenOdd"
       android:strokeLineCap="round"/>
 </vector>

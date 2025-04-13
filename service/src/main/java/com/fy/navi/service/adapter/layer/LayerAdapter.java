@@ -1,30 +1,23 @@
 package com.fy.navi.service.adapter.layer;
 
-import com.autonavi.gbl.common.model.RectInt;
 import com.autonavi.gbl.guide.model.CrossType;
-import com.autonavi.gbl.guide.model.NaviInfo;
-import com.autonavi.gbl.map.layer.model.RealCityTmcParam;
-import com.autonavi.gbl.map.layer.model.VectorCrossViewPostureEvent;
 import com.fy.navi.service.AdapterConfig;
 import com.fy.navi.service.define.bean.GeoPoint;
 import com.fy.navi.service.define.bean.PreviewParams;
 import com.fy.navi.service.define.layer.GemLayerClickBusinessType;
-import com.fy.navi.service.define.layer.refix.LayerItemCar;
 import com.fy.navi.service.define.layer.refix.LayerItemCrossEntity;
-import com.fy.navi.service.define.layer.refix.LayerType;
 import com.fy.navi.service.define.layer.RouteLineLayerParam;
 import com.fy.navi.service.define.layer.refix.CarModeType;
-import com.fy.navi.service.define.layer.refix.LayerItemCar;
+import com.fy.navi.service.define.layer.refix.LayerItemLabelResult;
+import com.fy.navi.service.define.layer.refix.LayerItemRouteEndPoint;
 import com.fy.navi.service.define.layer.refix.LayerItemSearchBeginViaEnd;
 import com.fy.navi.service.define.layer.refix.LayerItemSearchResult;
 import com.fy.navi.service.define.layer.refix.LayerItemUserFavorite;
 import com.fy.navi.service.define.layer.refix.LayerItemUserReceive;
 import com.fy.navi.service.define.layer.refix.LayerItemUserTrackDepth;
-import com.fy.navi.service.define.layer.refix.LayerType;
+import com.fy.navi.service.define.layer.refix.LayerSearchItemType;
 import com.fy.navi.service.define.map.GmBizUserFavoritePoint;
 import com.fy.navi.service.define.map.MapType;
-import com.fy.navi.service.define.navi.CrossImageEntity;
-import com.fy.navi.service.define.navi.NaviLayerTexture;
 import com.fy.navi.service.define.navi.NaviParkingEntity;
 
 import java.util.ArrayList;
@@ -62,7 +55,7 @@ public class LayerAdapter {
     }
 
     public void setCarMode(MapType mapTypeId, CarModeType carMode) {
-        mLayerApi.setCarMode(mapTypeId, new LayerItemCar(carMode));
+        mLayerApi.setCarMode(mapTypeId, carMode);
     }
 
     public int setFollowMode(MapType mapTypeId, boolean bFollow) {
@@ -77,6 +70,50 @@ public class LayerAdapter {
         mLayerApi.drawRouteLine(mapTypeId, routeLineLayer);
     }
 
+    /*更新终点扎标样式*/
+    public void updateEndPoint(MapType mapTypeId, LayerItemRouteEndPoint endPoint) {
+        mLayerApi.updateEndPoint(mapTypeId, endPoint);
+    }
+
+    /**
+     * 设置路线样式风格
+     * @param isStartNavi 是否开始导航
+     * @param isOffLine 是否离线
+     * @param isMultipleMode 是否多备选模式
+     */
+    public void setPathStyle(MapType mapTypeId, boolean isStartNavi, boolean isOffLine, boolean isMultipleMode) {
+        mLayerApi.setPathStyle(mapTypeId, isStartNavi, isOffLine, isMultipleMode);
+    }
+
+    /**
+     * 隐藏分歧备选路线
+     *
+     * @param index 隐藏路线下标 -> list下标 默认0开始
+     * @param isVisible 路线是否显示 -> 隐藏需传入false
+     */
+    public boolean setPathVisible(MapType mapTypeId, int index, boolean isVisible) {
+        return mLayerApi.setPathVisible(mapTypeId, index, isVisible);
+    }
+
+     /*删除途经点*/
+    public void removeViaPoint(MapType mapTypeId, String pid) {
+        mLayerApi.removeViaPoint(mapTypeId, pid);
+    }
+
+    /**
+     * 更新引导路线数据
+     * @param pathInfoList 路线数据
+     * @param selectIndex 选中下标
+     */
+    public boolean updatePathInfo(MapType mapTypeId, ArrayList<?> pathInfoList, int selectIndex) {
+        return mLayerApi.updatePathInfo(mapTypeId, pathInfoList, selectIndex);
+    }
+
+    /*设置行前拥堵气泡是否显示*/
+    public boolean setRouteJamBubblesVisible(MapType mapTypeId, boolean isShow) {
+        return mLayerApi.setRouteJamBubblesVisible(mapTypeId, isShow);
+    }
+
     public boolean switchSelectedPath(MapType mapTypeId, int index) {
         return mLayerApi.switchSelectedPath(mapTypeId, index);
     }
@@ -87,10 +124,6 @@ public class LayerAdapter {
 
     public void setPathArrowSegment(MapType mapTypeId, ArrayList<Long> segmentsIndexs) {
         mLayerApi.setPathArrowSegment(mapTypeId, segmentsIndexs);
-    }
-
-    public String getCurrentRouteTime(MapType mapTypeId) {
-        return mLayerApi.getCurrentRouteTime(mapTypeId);
     }
 
     public void unInitLayerService() {
@@ -122,12 +155,12 @@ public class LayerAdapter {
         mLayerApi.showRestrictionView(mapTypeId, object, position);
     }
 
-    public void registerLayerClickObserver(MapType mapTypeId, LayerType layerId, ILayerAdapterCallBack observer) {
-        mLayerApi.registerLayerClickObserver(mapTypeId, layerId, observer);
+    public void registerLayerClickObserver(MapType mapTypeId, ILayerAdapterCallBack observer) {
+        mLayerApi.registerLayerClickObserver(mapTypeId, observer);
     }
 
-    public void unRegisterLayerClickObserver(MapType mapTypeId, LayerType layerId, ILayerAdapterCallBack observer) {
-        mLayerApi.unRegisterLayerClickObserver(mapTypeId, layerId, observer);
+    public void unRegisterLayerClickObserver(MapType mapTypeId, ILayerAdapterCallBack observer) {
+        mLayerApi.unRegisterLayerClickObserver(mapTypeId, observer);
     }
 
     public void openDynamicLevel(MapType mapTypeId, boolean isOpen) {
@@ -174,27 +207,20 @@ public class LayerAdapter {
         mLayerApi.clearFavoriteMain(mapTypeId);
     }
 
-    public int setDynamicLevelLock(MapType mapTypeId, boolean isLock, int type) {
-        return mLayerApi.setDynamicLevelLock(mapTypeId, isLock, type);
-    }
-
-    public void resetDynamicLevel(MapType mapTypeId, int type) {
-        mLayerApi.resetDynamicLevel(mapTypeId, type);
-    }
-
-    public boolean getDynamicLevelLock(MapType mapTypeId, int type) {
-        return mLayerApi.getDynamicLevelLock(mapTypeId, type);
-    }
-
-    public float getDynamicLevelMapHeadDegree(MapType mapTypeId, int type) {
-        return mLayerApi.getDynamicLevelMapHeadDegree(mapTypeId, type);
-    }
-
-    public int openDynamicCenter(MapType mapTypeId, boolean changeCenter) {
-        return mLayerApi.openDynamicCenter(mapTypeId, changeCenter);
-    }
-
     /*========================================= 搜索图层接口定义=========================================*/
+
+    /* 搜索图层扎标接口 */
+    public boolean updateSearchMarker(MapType mapTypeId, LayerItemSearchResult searchResult, boolean clearOtherLayerItem) {
+        return mLayerApi.updateSearchMarker(mapTypeId, searchResult, clearOtherLayerItem);
+    }
+
+    /**
+     * 删除扎标map数据
+     * key -> BizSearchType
+     */
+    public boolean removeMapDataByKey(MapType mapTypeId, int key) {
+        return mLayerApi.removeMapDataByKey(mapTypeId, key);
+    }
 
     /**
      * 搜索POI 父点+子点+中心点
@@ -221,54 +247,6 @@ public class LayerAdapter {
     }
 
     /**
-     * 搜索起点、途经点、终点
-     *
-     * @param mapTypeId
-     * @param searchBeginViaEnd
-     * @param clearOtherLayerItem
-     * @return
-     */
-    public boolean addLayerItemOfSearchBeginEnd(MapType mapTypeId, LayerItemSearchBeginViaEnd searchBeginViaEnd, boolean clearOtherLayerItem) {
-        return mLayerApi.addLayerItemOfSearchBeginEnd(mapTypeId, searchBeginViaEnd, clearOtherLayerItem);
-    }
-
-    /**
-     * 沿途搜点 + 气泡
-     *
-     * @param mapTypeId
-     * @param searchResult
-     * @param clearOtherLayerItem
-     * @return
-     */
-    public boolean addLayerItemOfSearchAlongRoute(MapType mapTypeId, LayerItemSearchResult searchResult, boolean clearOtherLayerItem) {
-        return mLayerApi.addLayerItemOfSearchAlongRoute(mapTypeId, searchResult, clearOtherLayerItem);
-    }
-
-    /**
-     * 搜索 充电桩
-     *
-     * @param mapTypeId
-     * @param searchResult
-     * @param clearOtherLayerItem
-     * @return
-     */
-    public boolean addLayerItemOfSearchChargeStation(MapType mapTypeId, LayerItemSearchResult searchResult, boolean clearOtherLayerItem) {
-        return mLayerApi.addLayerItemOfSearchChargeStation(mapTypeId, searchResult, clearOtherLayerItem);
-    }
-
-    /**
-     * 搜索 停车场
-     *
-     * @param mapTypeId
-     * @param searchResult
-     * @param clearOtherLayerItem
-     * @return
-     */
-    public boolean addLayerItemOfSearchPark(MapType mapTypeId, LayerItemSearchResult searchResult, boolean clearOtherLayerItem) {
-        return mLayerApi.addLayerItemOfSearchPark(mapTypeId, searchResult, clearOtherLayerItem);
-    }
-
-    /**
      * 搜索 POI扎标
      *
      * @param mapTypeId
@@ -279,31 +257,6 @@ public class LayerAdapter {
     public boolean addLayerItemOfSearchLabel(MapType mapTypeId, LayerItemSearchResult searchResult, boolean clearOtherLayerItem) {
         return mLayerApi.addLayerItemOfSearchLabel(mapTypeId, searchResult, clearOtherLayerItem);
     }
-
-    /**
-     * 搜索路线图层
-     *
-     * @param mapTypeId
-     * @param searchResult
-     * @param clearOtherLayerItem
-     * @return
-     */
-    public boolean addLayerItemOfSearchLine(MapType mapTypeId, LayerItemSearchResult searchResult, boolean clearOtherLayerItem) {
-        return mLayerApi.addLayerItemOfSearchLine(mapTypeId, searchResult, clearOtherLayerItem);
-    }
-
-    /**
-     * 搜索区域图层
-     *
-     * @param mapTypeId
-     * @param searchResult
-     * @param clearOtherLayerItem
-     * @return
-     */
-    public boolean addLayerItemOfSearchPolygon(MapType mapTypeId, LayerItemSearchResult searchResult, boolean clearOtherLayerItem) {
-        return mLayerApi.addLayerItemOfSearchPolygon(mapTypeId, searchResult, clearOtherLayerItem);
-    }
-
 
     /**
      * 清除所有搜索扎标
@@ -319,8 +272,8 @@ public class LayerAdapter {
      *
      * @param mapTypeId
      */
-    public void clearSearchPOILayerItems(MapType mapTypeId) {
-        mLayerApi.clearSearchPOILayerItems(mapTypeId);
+    public void clearSearchPOILayerItems(MapType mapTypeId, LayerSearchItemType searchItemType) {
+        mLayerApi.clearSearchPOILayerItems(mapTypeId, searchItemType);
     }
 
     /*========================================= 搜索图层接口定义=========================================*/
@@ -328,62 +281,14 @@ public class LayerAdapter {
 
     /*========================================= 路口大图 =========================================*/
 
-    /* 根据放大路口图层类型更新样式 */
-    public boolean updateCrossStyle(MapType mapTypeId, @CrossType.CrossType1 int crossType) {
-        return mLayerApi.updateCrossStyle(mapTypeId, crossType);
-    }
-
-    /* 根据放大路口类型进行显示隐藏控制 */
-    public boolean setCrossVisible(MapType mapTypeId, @CrossType.CrossType1 int type, boolean bVisible) {
-        return mLayerApi.setCrossVisible(mapTypeId, type, bVisible);
-    }
-
     /* 设置栅格图图片数据 */
-    public boolean setRasterImageData(MapType mapTypeId, LayerItemCrossEntity crossEntity) {
-        return mLayerApi.setRasterImageData(mapTypeId, crossEntity);
-    }
-
-    /* 根据放大路口类型填充数据 */
-    public boolean updateCross(MapType mapTypeId, LayerItemCrossEntity crossEntity) {
-        return mLayerApi.updateCross(mapTypeId, crossEntity);
+    public boolean showCross(MapType mapTypeId, LayerItemCrossEntity crossEntity) {
+        return mLayerApi.showCross(mapTypeId, crossEntity);
     }
 
     /* 根据放大路口类型隐藏对应的路口大图 */
     public boolean hideCross(MapType mapTypeId, @CrossType.CrossType1 int type) {
         return mLayerApi.hideCross(mapTypeId, type);
-    }
-
-    /* 设置导航车首上还是北上模式 */
-    public boolean set3DCrossCarMode(MapType mapTypeId, boolean isCarUp) {
-        return mLayerApi.set3DCrossCarMode(mapTypeId, isCarUp);
-    }
-
-    /* 设置3D飞线的路况信息 */
-    public boolean setFlyTmc(MapType mapTypeId, byte[] buffer, ArrayList<RealCityTmcParam> param) {
-        return mLayerApi.setFlyTmc(mapTypeId, buffer, param);
-    }
-
-    /* 更新3D精品大图引导信息 */
-    public boolean updateNaviInfo(MapType mapTypeId, NaviInfo naviInfo) {
-        return mLayerApi.updateNaviInfo(mapTypeId, naviInfo);
-    }
-
-    /* 设置路口栅格图信息
-     *1、设置路口大图信息，使用自带近接/混淆矢量大图显隐策略，如果没有设置数据，用户可自定义策略并调用SetViewPostureEvent触发功能
-     *2、本接口暂时只对混淆\近接路口生效，当设置路口大图信息，用户调用SetViewPostureEvent无效（内部策略自动调用
-     */
-    public boolean setCrossImageInfo(MapType mapTypeId, @CrossType.CrossType1 int type, boolean useCustom) {
-        return mLayerApi.setCrossImageInfo(mapTypeId, type, useCustom);
-    }
-
-    /* 设置近接/混淆矢量大图的姿态事件, 目前只有type = CrossTypeVector才有实现才有实现 */
-    public boolean setViewPostureEvent(MapType mapTypeId, CrossType type, VectorCrossViewPostureEvent postureEvent) {
-        return mLayerApi.setViewPostureEvent(mapTypeId, type, postureEvent);
-    }
-
-    /* 设置放大路口显示区域 */
-    public boolean setRoadCrossRect(MapType mapTypeId, @CrossType.CrossType1 int crossType, RectInt viewRect) {
-        return mLayerApi.setRoadCrossRect(mapTypeId, crossType, viewRect);
     }
 
     /*========================================= 路口大图 =========================================*/
@@ -404,26 +309,6 @@ public class LayerAdapter {
     }
 
     /**
-     * 用户历史轨迹点图层清除
-     *
-     * @param mapTypeId mapTypeId
-     */
-    public void cleanLayerItemOfUserTrackDepth(MapType mapTypeId) {
-        mLayerApi.cleanLayerItemOfUserTrackDepth(mapTypeId);
-    }
-
-    /**
-     * sendtocar
-     *
-     * @param mapTypeId           mapTypeId
-     * @param receive             receive
-     * @param clearOtherLayerItem clearOtherLayerItem
-     */
-    public void addLayerItemOfUserReceive(MapType mapTypeId, LayerItemUserReceive receive, boolean clearOtherLayerItem) {
-        mLayerApi.addLayerItemOfUserReceive(mapTypeId, receive, clearOtherLayerItem);
-    }
-
-    /**
      * sendtocar
      *
      * @param mapTypeId           mapTypeId
@@ -434,20 +319,21 @@ public class LayerAdapter {
         mLayerApi.addLayerItemOfFavorite(mapTypeId, favorites, clearOtherLayerItem);
     }
 
-    /**
-     * 收藏清除
-     *
-     * @param mapTypeId mapTypeId
-     */
-    public void cleanLayerItemOfFavorite(MapType mapTypeId) {
-        mLayerApi.cleanLayerItemOfFavorite(mapTypeId);
+    public void openFlyLine(MapType mapTypeId, boolean visible) {
+        mLayerApi.openFlyLine(mapTypeId, visible);
     }
 
-    public void flyLineVisible(MapType mapTypeId, boolean visible) {
-        mLayerApi.flyLineVisible(mapTypeId, visible);
+    /*=========================================↓ 扎标图层 ↓=========================================*/
+
+    /*显示终点区域弹出框图层*/
+    public boolean updatePopSearchPointInfo(MapType mapTypeId, LayerItemLabelResult labelResult) {
+        return mLayerApi.updatePopSearchPointInfo(mapTypeId, labelResult);
     }
 
-    public void flyLineHideOnce(MapType mapTypeId) {
-        mLayerApi.flyLineHideOnce(mapTypeId);
+    /*清除扎标*/
+    public void clearLabelItem(MapType mapTypeId) {
+        mLayerApi.clearLabelItem(mapTypeId);
     }
+
+    /*=========================================↑ 扎标图层 ↑=========================================*/
 }

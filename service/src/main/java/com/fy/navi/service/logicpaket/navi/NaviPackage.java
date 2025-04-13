@@ -7,11 +7,13 @@ import com.android.utils.ConvertUtils;
 import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
+import com.autonavi.gbl.common.path.option.PathInfo;
 import com.fy.navi.service.AutoMapConstant;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.adapter.layer.LayerAdapter;
 import com.fy.navi.service.adapter.navi.GuidanceObserver;
 import com.fy.navi.service.adapter.navi.NaviAdapter;
+import com.fy.navi.service.adapter.navi.NaviConstant;
 import com.fy.navi.service.adapter.navistatus.NavistatusAdapter;
 import com.fy.navi.service.adapter.route.RouteAdapter;
 import com.fy.navi.service.adapter.speech.SpeechAdapter;
@@ -30,6 +32,7 @@ import com.fy.navi.service.define.navi.NaviViaEntity;
 import com.fy.navi.service.define.navi.SapaInfoEntity;
 import com.fy.navi.service.define.navi.SoundInfoEntity;
 import com.fy.navi.service.define.navi.SpeedOverallEntity;
+import com.fy.navi.service.define.navi.SuggestChangePathReasonEntity;
 import com.fy.navi.service.define.navistatus.NaviStatus;
 import com.fy.navi.service.define.route.RouteParam;
 import com.fy.navi.service.define.search.ETAInfo;
@@ -47,6 +50,7 @@ import com.fy.navi.ui.IsAppInForegroundCallback;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -69,7 +73,7 @@ public final class NaviPackage implements GuidanceObserver {
     private boolean mIsPreview = false;
     private NaviEtaInfo mCurrentNaviEtaInfo;
     private boolean mIsFixedOverView;
-
+    private boolean mCruiseVoiceIsOpen = true; // 巡航播报是否开启
     /**
      * 当前导航类型 -1:未知 0:GPS导航 1:模拟导航
      */
@@ -120,7 +124,6 @@ public final class NaviPackage implements GuidanceObserver {
             } else {
                 mCurrentNaviType = NumberUtils.NUM_0;
             }
-            mIsMute = false;
             mLayerAdapter.setFollowMode(MapType.MAIN_SCREEN_MAIN_MAP, true);
             mLayerAdapter.setFollowMode(MapType.LAUNCHER_WIDGET_MAP, true);
             mLayerAdapter.setFollowMode(MapType.LAUNCHER_DESK_MAP, true);
@@ -128,6 +131,17 @@ public final class NaviPackage implements GuidanceObserver {
             mLayerAdapter.setVisibleGuideSignalLight(MapType.LAUNCHER_WIDGET_MAP, true);
             mLayerAdapter.setVisibleGuideSignalLight(MapType.LAUNCHER_DESK_MAP, true);
             mNavistatusAdapter.setNaviStatus(NaviStatus.NaviStatusType.NAVING);
+            PathInfo pathInfo = mRouteAdapter.getCurrentPath(MapType.MAIN_SCREEN_MAIN_MAP) ==
+                    null ? null :
+                    (PathInfo) Objects.requireNonNull(mRouteAdapter.
+                            getCurrentPath(MapType.MAIN_SCREEN_MAIN_MAP)).getMPathInfo();
+            OpenApiHelper.setCurrentPathInfo(pathInfo);
+            ArrayList<PathInfo> list = new ArrayList<>();
+            list.add(pathInfo);
+            if (!ConvertUtils.isEmpty(list) && null != pathInfo){
+                mLayerAdapter.updatePathInfo(MapType.MAIN_SCREEN_MAIN_MAP, list,
+                        (int)pathInfo.getPathIndex());
+            }
         } else {
             mCurrentNaviType = NumberUtils.NUM_ERROR;
         }
@@ -144,6 +158,7 @@ public final class NaviPackage implements GuidanceObserver {
             mLayerAdapter.setFollowMode(MapType.MAIN_SCREEN_MAIN_MAP, false);
             mLayerAdapter.setFollowMode(MapType.LAUNCHER_WIDGET_MAP, false);
             mLayerAdapter.setFollowMode(MapType.LAUNCHER_DESK_MAP, false);
+            mCurrentNaviType = NumberUtils.NUM_ERROR;
         } else {
             Logger.w(TAG, "stopNavigation failed!");
         }
@@ -224,6 +239,19 @@ public final class NaviPackage implements GuidanceObserver {
         ThreadManager.getInstance().postUi(() -> {
             mNaviAdapter.selectMainPathID(pathID);
         });
+    }
+
+    /**
+     * 地图上选择路线，切换path加上路线绘制
+     * @param mapTypeId 屏幕id
+     * @param pathId 路线id
+     * @param pathIndex 路线索引
+     */
+    public void selectPath(final MapType mapTypeId, final long pathId, final int pathIndex) {
+        Logger.i(TAG, "selectPath: " + pathId + ",pathIndex:" + pathIndex + "mapId = " +
+                mapTypeId);
+        selectMainPathID(pathId);
+        mLayerAdapter.setSelectedPathIndex(mapTypeId, pathIndex);
     }
 
     /*设置静音*/
@@ -322,16 +350,25 @@ public final class NaviPackage implements GuidanceObserver {
 
     @Override
     public void onPlayTTS(final SoundInfoEntity info) {
-        Logger.i(TAG, "onPlayTTS: ");
+        Logger.i(TAG, "onPlayTTS: " + (info == null ? "" : info.getText()));
         ThreadManager.getInstance().postUi(() -> {
-            if (NaviAdapter.getInstance().getMCountDownLatch() != null) {
-                NaviAdapter.getInstance().setSoundInfoEntity(info);
-                NaviAdapter.getInstance().getMCountDownLatch().countDown();
+            try {
+                if (NaviAdapter.getInstance().getMCountDownLatch() != null) {
+                    NaviAdapter.getInstance().setSoundInfoEntity(info);
+                    NaviAdapter.getInstance().getMCountDownLatch().countDown();
+                }
+                // 如果处于巡航态且巡航播报关闭
+                if (NavistatusAdapter.getInstance().getCurrentNaviStatus() == NaviStatus.NaviStatusType.CRUISE && !mCruiseVoiceIsOpen) {
+                    Logger.d(TAG, "当前处于巡航态且播报关闭，故不播放声音！");
+                    return;
+                }
+                if (mIsMute) return; // 静音开关
+                //如果NOP打开并且是不播报的类型则不播报
+                if (SignalPackage.getInstance().getNavigationOnAdasTextToSpeachStatus() == 1 && !TTSPlayHelper.allowToPlayWithNopOpen(info.getSoundType())) return;
+                mSpeechAdapter.synthesize(info.getText());
+            } catch (Exception e) {
+                Logger.e(TAG, "playTTs exception:" + e.getMessage());
             }
-            if (mIsMute) return; // 静音开关
-            //如果NOP打开并且是不播报的类型则不播报 TODO nop打开状态待接入
-            if (mIsNopOpen && !TTSPlayHelper.allowToPlayWithNopOpen(info.getSoundType())) return;
-            mSpeechAdapter.synthesize(info.getText());
         });
     }
 
@@ -470,7 +507,11 @@ public final class NaviPackage implements GuidanceObserver {
 
     @Override
     public void onSelectMainPathStatus(final long pathID, final int result) {
-        Logger.i(TAG, "onSelectMainPathStatus");
+        Logger.i(TAG, "onSelectMainPathStatus " + pathID + " result " + result);
+        if (result == NaviConstant.ChangeNaviPathResult.CHANGE_NAVI_PATH_RESULT_SUCCESS) {
+            PathInfo pathInfo = OpenApiHelper.getPathInfo(MapType.MAIN_SCREEN_MAIN_MAP, pathID);
+            OpenApiHelper.setCurrentPathInfo(pathInfo);
+        }
         ThreadManager.getInstance().postUi(() -> {
             if (!ConvertUtils.isEmpty(mGuidanceObservers)) {
                 for (IGuidanceObserver guidanceObserver : mGuidanceObservers.values()) {
@@ -534,7 +575,8 @@ public final class NaviPackage implements GuidanceObserver {
             if (!ConvertUtils.isEmpty(mGuidanceObservers)) {
                 for (IGuidanceObserver guidanceObserver : mGuidanceObservers.values()) {
                     if (guidanceObserver != null) {
-                        guidanceObserver.onDriveReport(report);
+                        // 因为没有行车报告页面需求，所以这边先注释了
+//                        guidanceObserver.onDriveReport(report);
                     }
                 }
             }
@@ -550,6 +592,24 @@ public final class NaviPackage implements GuidanceObserver {
         for (Long pathId : pathIDList) {
             //todo清除该路线
         }
+    }
+
+    @Override
+    public void onChangeNaviPath(long oldPathId, long pathID) {
+        Logger.i(TAG, "onChangeNaviPath oldPathId = " + oldPathId + " pathID = " + pathID);
+    }
+
+    @Override
+    public void onSuggestChangePath(long newPathID, long oldPathID, SuggestChangePathReasonEntity reason) {
+        ThreadManager.getInstance().postUi(() -> {
+            if (!ConvertUtils.isEmpty(mGuidanceObservers)) {
+                for (IGuidanceObserver guidanceObserver : mGuidanceObservers.values()) {
+                    if (guidanceObserver != null) {
+                        guidanceObserver.onSuggestChangePath(newPathID, oldPathID, reason);
+                    }
+                }
+            }
+        });
     }
 
     /**
@@ -812,5 +872,64 @@ public final class NaviPackage implements GuidanceObserver {
      */
     public int getCurrentNaviType() {
         return mCurrentNaviType;
+    }
+
+    public void setCruiseVoiceIsOpen(final boolean isOpen) {
+        Logger.i(TAG, "setCruiseVoiceIsOpen:" + isOpen);
+        this.mCruiseVoiceIsOpen = isOpen;
+    }
+
+    /**
+     * 更新引导路线数据
+     * @param pathInfoList 路线数据
+     * @param selectIndex 选中下标
+     */
+    public boolean updatePathInfo(final MapType mapTypeId, final ArrayList<?> pathInfoList,
+                                  final int selectIndex) {
+        return mLayerAdapter.updatePathInfo(mapTypeId, pathInfoList, selectIndex);
+    }
+
+    /**
+     * 显示当前主路线的路径
+     */
+    public void onlyShowCurrentPath() {
+        Logger.i(TAG, "onlyShowCurrentPath");
+        PathInfo pathInfo = OpenApiHelper.getCurrentPathInfo(MapType.MAIN_SCREEN_MAIN_MAP);
+        if (null == pathInfo) {
+            Logger.i(TAG, "onlyShowCurrentPath pathInfo is null");
+            return;
+        }
+        ArrayList<PathInfo> pathInfoList = new ArrayList<>();
+        pathInfoList.add(pathInfo);
+        updatePathInfo(MapType.MAIN_SCREEN_MAIN_MAP, pathInfoList, (int)pathInfo.getPathIndex());
+    }
+
+    /**
+     * 显示主路线加上推荐路线
+     * @param newPathId 新的路径id
+     */
+    public void showMainAndSuggestPath(final long newPathId) {
+        // TODO 后续这边要加上推荐路线的推荐扎标，比如快多少分钟等等的
+        Logger.i(TAG, "showMainAndSuggestPath");
+        PathInfo currentPathInfo = OpenApiHelper.getCurrentPathInfo(MapType.MAIN_SCREEN_MAIN_MAP);
+        PathInfo suggestPathInfo = OpenApiHelper.getPathInfo(
+                MapType.MAIN_SCREEN_MAIN_MAP, newPathId);
+        ArrayList<PathInfo> pathInfos = new ArrayList<>();
+        pathInfos.add(currentPathInfo);
+        pathInfos.add(suggestPathInfo);
+        if (!ConvertUtils.isEmpty(pathInfos) && null != suggestPathInfo) {
+            updatePathInfo(MapType.MAIN_SCREEN_MAIN_MAP, pathInfos,
+                    (int)suggestPathInfo.getPathIndex());
+        }
+    }
+
+    /**
+     * 删除途经点
+     * @param mapTypeId 屏幕ID
+     * @param pid poiId
+     */
+    public void removeViaPoint(MapType mapTypeId, String pid) {
+        Logger.i(TAG, "removeViaPoint pid = " + pid);
+        mLayerAdapter.removeViaPoint(mapTypeId, pid);
     }
 }

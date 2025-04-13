@@ -16,8 +16,15 @@
         </attr>
     </declare-styleable>
 
-
     <declare-styleable name="SceneVerticalTabLayout">
         <attr name="isMarginBottom" format="boolean" />
+    </declare-styleable>
+
+    <declare-styleable name="ProvinceKeyboardView">
+        <attr name="isDefault" format="boolean" />
+    </declare-styleable>
+
+    <declare-styleable name="PlateNumberKeyboardView">
+        <attr name="isDefaultCar" format="boolean" />
     </declare-styleable>
 </resources>

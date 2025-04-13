@@ -16,10 +16,11 @@
 
                 <com.fy.navi.ui.view.SkinTextView
                     android:id="@+id/tv_frequent_address_text"
-                    android:layout_width="@dimen/dp_312"
+                    android:layout_width="@dimen/dp_288"
                     android:layout_height="match_parent"
                     android:gravity="center_vertical"
-                    android:layout_marginStart="@dimen/dp_23"
+                    android:layout_marginStart="@dimen/dp_24"
+                    android:layout_marginEnd="@dimen/dp_24"
                     android:text="@string/favorite_frequent_address_title"
                     android:singleLine="true"
                     android:visibility="visible"
@@ -29,14 +30,15 @@
 
                 <com.fy.navi.ui.view.SkinEditText
                     android:id="@+id/tv_frequent_address_title"
-                    android:layout_width="@dimen/dp_312"
+                    android:layout_width="@dimen/dp_288"
                     android:layout_height="match_parent"
                     android:gravity="center_vertical"
                     android:focusable="true"
                     android:focusableInTouchMode="true"
                     android:imeOptions="actionDone"
                     android:singleLine="true"
-                    android:layout_marginStart="@dimen/dp_23"
+                    android:layout_marginStart="@dimen/dp_24"
+                    android:layout_marginEnd="@dimen/dp_24"
                     android:text="@string/favorite_frequent_address_title"
                     android:background="@null"
                     android:visibility="gone"

@@ -15,11 +15,8 @@ import com.fy.navi.scene.impl.navi.SceneNaviCrossImageImpl;
 import com.fy.navi.scene.impl.navi.common.ViewRectChangeWatcher;
 import com.fy.navi.scene.impl.navi.inter.ISceneCallback;
 import com.fy.navi.scene.impl.navi.inter.RectChangeListener;
-import com.fy.navi.scene.ui.navi.manager.INaviSceneEvent;
 import com.fy.navi.scene.ui.navi.manager.NaviSceneBase;
 import com.fy.navi.scene.ui.navi.manager.NaviSceneId;
-import com.fy.navi.scene.ui.navi.manager.NaviSceneManager;
-import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.define.navi.CrossImageEntity;
 
 /**
@@ -30,7 +27,6 @@ import com.fy.navi.service.define.navi.CrossImageEntity;
 public class SceneNaviCrossImageView extends NaviSceneBase<SceneNaviCrossImageViewBinding, SceneNaviCrossImageImpl> {
     private static final String TAG = "SceneNaviCrossImageView";
     private ViewRectChangeWatcher mViewRectChangeWatcher;
-    private ISceneCallback mISceneCallback;
 
     public SceneNaviCrossImageView(@NonNull final Context context) {
         super(context);
@@ -70,49 +66,6 @@ public class SceneNaviCrossImageView extends NaviSceneBase<SceneNaviCrossImageVi
     @Override
     protected NaviSceneId getSceneId() {
         return NaviSceneId.NAVI_SCENE_2D_CROSS;
-    }
-
-    @Override
-    protected String getSceneName() {
-        return NaviSceneId.NAVI_SCENE_2D_CROSS.name();
-    }
-
-    @Override
-    public INaviSceneEvent getNaviSceneEvent() {
-        return NaviSceneManager.getInstance();
-    }
-
-    @Override
-    protected void init() {
-        NaviSceneManager.getInstance().addNaviScene(
-                NaviSceneId.NAVI_SCENE_2D_CROSS, this);
-    }
-
-    @Override
-    public void show() {
-        super.show();
-        Logger.i(TAG, "路口大图显示");
-        if (mISceneCallback != null) {
-            mISceneCallback.updateSceneVisible(NaviSceneId.NAVI_SCENE_2D_CROSS, true);
-        }
-    }
-
-    @Override
-    public void hide() {
-        super.hide();
-        mScreenViewModel.closeCrossVisible();
-        if (mISceneCallback != null) {
-            mISceneCallback.updateSceneVisible(NaviSceneId.NAVI_SCENE_2D_CROSS, false);
-        }
-    }
-
-    @Override
-    public void close() {
-        super.close();
-        mScreenViewModel.closeCrossVisible();
-        if (mISceneCallback != null) {
-            mISceneCallback.updateSceneVisible(NaviSceneId.NAVI_SCENE_2D_CROSS, false);
-        }
     }
 
     /**
@@ -184,11 +137,6 @@ public class SceneNaviCrossImageView extends NaviSceneBase<SceneNaviCrossImageVi
      * @param listener 监听
      */
     public void setOnClickRoadCross(final OnClickListener listener) {
-    }
-
-    @Override
-    public void addSceneCallback(final ISceneCallback sceneCallback) {
-        mISceneCallback = sceneCallback;
     }
 
     public void onImmersiveStatusChange(final ImersiveStatus currentImersiveStatus) {

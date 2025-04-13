@@ -53,11 +53,9 @@ public class DrivingRecordFragment  extends BaseFragment<FragmentDrivingRecordBi
 
     @Override
     public void onInitData() {
-        ThreadManager.getInstance().postDelay(() -> {
-            mViewModel.isLogin(); // 判断用户当前登录状态
-            mViewModel.getDrivingRecordData(); // 从云端同步数据到本地
-            mViewModel.getDrivingRecordDataList(); // 从本地获取导航行程历史数据
-        },0);
+        mViewModel.isLogin(); // 判断用户当前登录状态
+        mViewModel.getDrivingRecordData(); // 从云端同步数据到本地
+        mViewModel.getDrivingRecordDataList(); // 从本地获取导航行程历史数据
     }
 
     @Override
@@ -115,12 +113,12 @@ public class DrivingRecordFragment  extends BaseFragment<FragmentDrivingRecordBi
                 // 打印或处理选中的文本
                 Logger.d("RadioGroup", "选中的文本: " + selectedText);
                 if ("导航历史".equals(selectedText)) {
-                    mBinding.drivingRecordTab1.setTextColor(getResources().getColor(R.color.white));
-                    mBinding.drivingRecordTab2.setTextColor(getResources().getColor(R.color.main_map_limit_loading));
+                    mBinding.drivingRecordTab1.setTextColor(getResources().getColor(R.color.setting_white));
+                    mBinding.drivingRecordTab2.setTextColor(getResources().getColor(R.color.setting_bg_tab_text_unselect));
                     mViewModel.getDrivingRecordDataList();
                 } else if ("巡航历史".equals(selectedText)) {
-                    mBinding.drivingRecordTab1.setTextColor(getResources().getColor(R.color.main_map_limit_loading));
-                    mBinding.drivingRecordTab2.setTextColor(getResources().getColor(R.color.white));
+                    mBinding.drivingRecordTab1.setTextColor(getResources().getColor(R.color.setting_bg_tab_text_unselect));
+                    mBinding.drivingRecordTab2.setTextColor(getResources().getColor(R.color.setting_white));
                     mViewModel.getDrivingRecordCruiseDataList();
                 }
 
@@ -139,15 +137,6 @@ public class DrivingRecordFragment  extends BaseFragment<FragmentDrivingRecordBi
         });
     }
 
-    /**
-     * 刷新数据
-     */
-    public void getDrivingRecord() {
-        ThreadManager.getInstance().postDelay(() -> {
-            mViewModel.getDrivingRecordData(); // 从云端同步数据到本地
-            mViewModel.getDrivingRecordDataList(); // 从本地获取导航行程历史数据
-        },0);
-    }
 
     /**
      * 删除单条记录

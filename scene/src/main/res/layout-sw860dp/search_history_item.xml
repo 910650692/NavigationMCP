@@ -156,7 +156,7 @@
                 android:id="@+id/sll_collect"
                 android:layout_width="@dimen/dp_126"
                 android:layout_height="match_parent"
-                android:background="#E2E4ED"
+                android:background="@color/bg_route_big_window_unselect"
                 android:gravity="center"
                 android:orientation="vertical">
 

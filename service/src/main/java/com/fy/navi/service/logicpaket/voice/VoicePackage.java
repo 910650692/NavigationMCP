@@ -32,7 +32,6 @@ public class VoicePackage implements VoiceAdapterCallback {
             callBack.add(callback);
         }
     }
-
     public void init() {
         voiceAdapter.initService();
         voiceAdapter.registerCallback("VoicePackage", this);

@@ -1,0 +1,53 @@
+{
+  "vector_cross_layer_style": {
+    "vector_cross_marker": {
+      "bg_marker_id": "global_image_cross_background_day_night",
+      "arrow_outer_marker_id": "arrow_line_outer_in_cross",
+      "arrow_inner_marker_id": "arrow_line_inner_in_cross",
+      "car_marker_id": "car"
+    },
+    "vector_cross_attr": {
+      "day_mode": 1,
+      "use_style_configure": 1,
+      "arrow_border_width": 22,
+      "arrow_line_width": 18,
+      "arrow_border_color": {
+        "r": 0,
+        "g": 50,
+        "b": 20,
+        "a": 0
+      },
+      "arrow_line_color": {
+        "r": 255,
+        "g": 255,
+        "b": 0,
+        "a": 255
+      },
+      "arrow_line_cap_texture": {
+        "x1": 0.23,
+        "x2": 0.77,
+        "y1": 0.77,
+        "y2": 0.77
+      },
+      "arrow_header_cap_texture": {
+        "x1": 0.23,
+        "x2": 0.77,
+        "y1": 0.75,
+        "y2": 0
+      },
+      "arrow_line_texture": {
+        "x1": 0.23,
+        "x2": 0.77,
+        "y1": 0.77,
+        "y2": 0.77,
+        "texture_len": 0.001
+      },
+      "rect": {
+        "x_min": 466,
+        "y_min": 174,
+        "x_max": 1106,
+        "y_max": 558
+      }
+    }
+  }
+}

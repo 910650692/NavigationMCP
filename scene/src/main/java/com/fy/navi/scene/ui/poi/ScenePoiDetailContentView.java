@@ -1,11 +1,14 @@
 
 package com.fy.navi.scene.ui.poi;
 
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Parcel;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,7 +27,6 @@ import com.android.utils.ToastUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
 import com.fy.navi.burypoint.anno.HookMethod;
-import com.fy.navi.burypoint.bean.BuryParam;
 import com.fy.navi.burypoint.bean.BuryProperty;
 import com.fy.navi.burypoint.constant.BuryConstant;
 import com.fy.navi.burypoint.controller.BuryPointController;
@@ -47,7 +49,9 @@ import com.fy.navi.service.define.bean.GeoPoint;
 import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.mapdata.CityDataInfo;
 import com.fy.navi.service.define.route.RoutePoiType;
+import com.fy.navi.service.define.search.ChargeEquipmentInfo;
 import com.fy.navi.service.define.search.ChargeInfo;
+import com.fy.navi.service.define.search.ChargePriceInfo;
 import com.fy.navi.service.define.search.ChildInfo;
 import com.fy.navi.service.define.search.FavoriteInfo;
 import com.fy.navi.service.define.search.GasStationInfo;
@@ -89,6 +93,7 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
     private final int mSpanCount = 2;//数据列数
     private PoiInfoEntity mChildSelectInfo;
     private int mPoiType;
+    private boolean mViaAddType = true;
 
     public ScenePoiDetailContentView(final @NonNull Context context) {
         super(context);
@@ -138,7 +143,6 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
     /**
      * 去这里按钮的点击事件
      */
-
     private void handleRouteClick() {
         Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "点击去这里");
         if (mChildSelectInfo != null) {
@@ -150,8 +154,14 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
             }
         }else {
             if (SearchPackage.getInstance().isAlongWaySearch()) {
-                RoutePackage.getInstance().addViaPoint(MapType.MAIN_SCREEN_MAIN_MAP,
-                        mPoiInfoEntity);
+                if (mViaAddType) {
+                    RoutePackage.getInstance().addViaPoint(MapType.MAIN_SCREEN_MAIN_MAP,
+                            mPoiInfoEntity);
+                } else {
+                    RoutePackage.getInstance().removeVia(MapType.MAIN_SCREEN_MAIN_MAP,
+                            mPoiInfoEntity, true);
+                }
+
             } else {
                 Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "end point1: " + mPoiInfoEntity.getPoint().getLon()
                             + " ,lat" + mPoiInfoEntity.getPoint().getLat());
@@ -161,21 +171,25 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
 
     }
 
+    /**
+     * 打开路线界面
+     * @param poiInfoEntity poi信息
+     */
     @HookMethod(eventName = BuryConstant.EventName.AMAP_DESTINATION_GO)
-    private void openRouteFragment(PoiInfoEntity poiInfoEntity) {
+    private void openRouteFragment(final PoiInfoEntity poiInfoEntity) {
         final Fragment fragment = (Fragment) ARouter.getInstance().build(
                 RoutePath.Route.ROUTE_FRAGMENT).navigation();
         addFragment((BaseFragment) fragment, SearchFragmentFactory.createRouteFragment(poiInfoEntity));
 
         //for burying point
-        JSONObject params = new JSONObject();
+        final JSONObject params = new JSONObject();
         try {
             params.put(BuryConstant.Key.ROUTE_POI_TYPE, RoutePoiType.ROUTE_POI_TYPE_END);
             params.put(BuryConstant.Key.POI_INFO_ENTRY, poiInfoEntity);
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        BuryProperty properties = new BuryProperty.Builder()
+        final BuryProperty properties = new BuryProperty.Builder()
                 .setParams(BuryConstant.ProperType.BURY_KEY_SEARCH_CONTENTS, params.toString())
                 .build();
         BuryPointController.getInstance().setBuryProps(properties);
@@ -193,7 +207,7 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
                 SearchFragmentFactory.createAroundFragment(mPoiInfoEntity));
 
         //for burying point
-        BuryProperty properties = new BuryProperty.Builder()
+        final BuryProperty properties = new BuryProperty.Builder()
                 .setParams(BuryConstant.ProperType.BURY_KEY_SEARCH_CONTENTS, mPoiInfoEntity.getName())
                 .build();
         BuryPointController.getInstance().setBuryProps(properties);
@@ -210,7 +224,7 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
             final boolean isFavorite = !mScreenViewModel.isFavorite(mPoiInfoEntity).isEmpty();
 
             final int favoriteIcon = isFavorite ? R.drawable.icon_basic_ic_star_default :
-                    R.drawable.img_basic_ic_star;
+                    R.drawable.icon_basic_ic_star_fav;
             mViewBinding.scenePoiDetailsBottomView.sivPoiFavorites.setImageDrawable(
                     ContextCompat.getDrawable(getContext(), favoriteIcon));
 
@@ -219,7 +233,15 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
 //                mScreenViewModel.deleteFavoriteData(mPoiInfoEntity.getFavoriteInfo().getItemId());
                 ToastUtils.Companion.getInstance().showCustomToastView("取消收藏");
             } else {
+                if (ConvertUtils.isEmpty(mPoiInfoEntity.getPid())) {
+                    //逆地理搜索出的点无poiId，需自己拼接
+                    mPoiInfoEntity.setPid(mPoiInfoEntity.getPoint().getLon() + ""
+                            + mPoiInfoEntity.getPoint().getLat());
+                }
                 mScreenViewModel.addFavorite(mPoiInfoEntity, 0);
+                Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "current : "
+                        + mPoiInfoEntity.getPoint().getLon() + " " + mPoiInfoEntity.getPoint().getLat()
+                        + " ID: " + mPoiInfoEntity.getPid() + " ,name: " + mPoiInfoEntity.getName());
 //                mScreenViewModel.addFavoriteData(mPoiInfoEntity, 0);
                 ToastUtils.Companion.getInstance().showCustomToastView("收藏成功");
             }
@@ -252,11 +274,17 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
 
     /**
      * 搜索结果回调
+     * @param taskId 请求Id
      * @param searchResultEntity 数据实体类
      */
-    public void onSearchResult(final SearchResultEntity searchResultEntity) {
+    public void onSearchResult(final int taskId, final SearchResultEntity searchResultEntity) {
         if (null == searchResultEntity || searchResultEntity.getPoiList().isEmpty()) {
             //ToastUtils.Companion.getInstance().showCustomToastView("暂无数据");
+            return;
+        }
+        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "taskId: " + taskId
+                + " currentId: " + mScreenViewModel.getMTaskId());
+        if (!ConvertUtils.equals(taskId, mScreenViewModel.getMTaskId())) {
             return;
         }
         if (null != mSearchLoadingDialog) {
@@ -275,7 +303,6 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
         }
         this.mPoiInfoEntity = searchResultEntity.getPoiList().get(0);
         initNormalView();
-        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "poiAoiBounds is: " + mPoiInfoEntity.getMPoiAoiBounds());
         if (mPoiInfoEntity != null && mScreenViewModel != null) {
             ThreadManager.getInstance().removeHandleTask(mTimeoutTask);
             final int pointTypeCode = mScreenViewModel.getPointTypeCode(mPoiInfoEntity.getPointTypeCode());
@@ -381,14 +408,13 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
             }
             mViewBinding.scenePoiDetailsNormalView.poiPhone.setText(
                     getContext().getString(R.string.poi_phone, mPoiInfoEntity.getPhone()));
-
             mViewBinding.scenePoiDetailsBottomView.stlPhone.setOnClickListener(new OnClickListener() {
                 @Override
                 @HookMethod(eventName = BuryConstant.EventName.AMAP_DESTINATION_PHONE)
-                public void onClick(View v) {
+                public void onClick(final View v) {
                     final String phone = mPoiInfoEntity.getPhone();
                     final List<String> phoneString = new ArrayList<>();
-                    StringBuffer phoneProp = new StringBuffer();
+                    final StringBuffer phoneProp = new StringBuffer();
                     if (phone.contains(";")) {
                         final String[] split = phone.split(";");
                         phoneString.addAll(Arrays.asList(split));
@@ -402,17 +428,25 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
                                 .setDialogObserver(new IBaseDialogClickListener() {
                                     @Override
                                     public void onCommitClick() {
-                                        //拨打电话
-                                        final Intent intent = new Intent();
-                                        intent.setAction(Intent.ACTION_CALL);
-                                        intent.setData(Uri.parse("tel:" + phoneString.get(0)));
-                                        final Context context = getContext();
-                                        context.startActivity(intent);
+                                        try {
+                                            //拨打电话
+                                            final Intent intent = new Intent();
+                                            intent.setAction(Intent.ACTION_CALL);
+                                            intent.setData(Uri.parse("tel:" + phoneString.get(0)));
+                                            final Context context = getContext();
+                                            context.startActivity(intent);
+                                        } catch (ActivityNotFoundException e) {// 提示用户无法拨打电话
+                                            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "No app found to handle the call action: " + e.getMessage());
+                                        } catch (SecurityException e) {// 提示用户权限不足
+                                            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "Permission denied for making a call: " + e.getMessage());
+                                        } catch (NullPointerException e) {// 提示用户数据无效
+                                            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "Null pointer exception: " + e.getMessage());
+                                        } catch (IllegalArgumentException e) {// 提示用户电话号码无效
+                                            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "Invalid phone number: " + e.getMessage());
+                                        }
                                     }
-
                                     @Override
                                     public void onCancelClick() {
-
                                     }
                                 })
                                 .setContent(getContext().getString(R.string.text_dial_phone_content, phoneString.get(0)))
@@ -425,7 +459,7 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
                     }
 
                     //For burying point
-                    BuryProperty buryProperty = new BuryProperty.Builder()
+                    final BuryProperty buryProperty = new BuryProperty.Builder()
                             .setParams(BuryConstant.ProperType.BURY_KEY_SEARCH_CONTENTS, phoneProp.toString())
                             .build();
                     BuryPointController.getInstance().setBuryProps(buryProperty);
@@ -435,13 +469,17 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
             final FavoriteInfo favoriteInfo = new FavoriteInfo()
                     .setCommonName(0)
                     .setUpdateTime(new Date().getTime());
-
+            if (ConvertUtils.isEmpty(mPoiInfoEntity.getPid())) {
+                //逆地理搜索出的点无poiId，需自己拼接
+                mPoiInfoEntity.setPid(mPoiInfoEntity.getPoint().getLon() + ""
+                        + mPoiInfoEntity.getPoint().getLat());
+            }
             final String itemId = mScreenViewModel.isFavorite(mPoiInfoEntity);
             mPoiInfoEntity.setFavoriteInfo(favoriteInfo);
             if (!itemId.isEmpty()) {
                 mPoiInfoEntity.getFavoriteInfo().setItemId(itemId);
                 mViewBinding.scenePoiDetailsBottomView.sivPoiFavorites.setImageDrawable(
-                        ContextCompat.getDrawable(getContext(), R.drawable.img_basic_ic_star));
+                        ContextCompat.getDrawable(getContext(), R.drawable.icon_basic_ic_star_fav));
             } else {
                 mViewBinding.scenePoiDetailsBottomView.sivPoiFavorites.setImageDrawable(
                         ContextCompat.getDrawable(getContext(),
@@ -492,53 +530,58 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
     private void refreshChargeStationView() {
         Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "imageUrl is: " + mPoiInfoEntity.getImageUrl());
         final List<ChargeInfo> chargeInfos = mPoiInfoEntity.getChargeInfoList();
-        final ChargeInfo chargeInfo = chargeInfos.get(0);
-        if (chargeInfo.getSlowVolt() == 0 && chargeInfo.getSlowPower() == 0
-                && chargeInfo.getSlow_free() == 0 && chargeInfo.getSlow_total() == 0) {
-            mViewBinding.scenePoiDetailsChargingStationView.poiChargeSlowLayout.setVisibility(GONE);
-        } else {
-            mViewBinding.scenePoiDetailsChargingStationView.poiChargeSlowLayout.
-                    setVisibility(VISIBLE);
+        if (!ConvertUtils.isEmpty(chargeInfos)) {
+            if(mViewBinding.poiTypeText != null){
+                mViewBinding.poiTypeText.setVisibility(View.VISIBLE);
+            }
+            final ChargeInfo chargeInfo = chargeInfos.get(0);
+            if (chargeInfo.getSlowVolt() == 0 && chargeInfo.getSlowPower() == 0
+                    && chargeInfo.getSlow_free() == 0 && chargeInfo.getSlow_total() == 0) {
+                mViewBinding.scenePoiDetailsChargingStationView.poiChargeSlowLayout.setVisibility(GONE);
+            } else {
+                mViewBinding.scenePoiDetailsChargingStationView.poiChargeSlowLayout.
+                        setVisibility(VISIBLE);
+            }
+            if (chargeInfo.getFastVolt() == 0 && chargeInfo.getFastPower() == 0
+                    && chargeInfo.getFast_free() == 0 && chargeInfo.getFast_total() == 0) {
+                mViewBinding.scenePoiDetailsChargingStationView.poiChargeFastLayout.setVisibility(GONE);
+            } else {
+                mViewBinding.scenePoiDetailsChargingStationView.poiChargeFastLayout.
+                        setVisibility(VISIBLE);
+            }
+            final String fastFree = chargeInfo.getFast_free() == 0 ?
+                    DEFATULE_STRING : chargeInfo.getFast_free() + "";
+            final String fastTotal = chargeInfo.getFast_total() == 0 ?
+                    DEFATULE_STRING : "/" + chargeInfo.getFast_total();
+            final String fastVolt = chargeInfo.getFastVolt() == 0 ?
+                    DEFATULE_STRING : chargeInfo.getFastVolt() + "v";
+            final String fastPower = chargeInfo.getFastPower() == 0 ?
+                    DEFATULE_STRING : chargeInfo.getFastPower() + "kw";
+            final String fastInfo = fastPower + "." + fastVolt;
+            mViewBinding.scenePoiDetailsChargingStationView.poiChargeFastOccupied.setText(fastFree);
+            mViewBinding.scenePoiDetailsChargingStationView.poiChargeFastTotal.setText(fastTotal);
+            mViewBinding.scenePoiDetailsChargingStationView.poiChargeFastCurrentAndVlot.
+                    setText(fastInfo);
+            final String slowFree = chargeInfo.getSlow_free() == 0 ?
+                    DEFATULE_STRING : chargeInfo.getSlow_free() + "";
+            final String slowTotal = chargeInfo.getSlow_total() == 0 ?
+                    DEFATULE_STRING : "/" + chargeInfo.getSlow_total();
+            final String slowVolt = chargeInfo.getSlowVolt() == 0 ?
+                    DEFATULE_STRING : chargeInfo.getSlowVolt() + "v";
+            final String slowPower = chargeInfo.getSlowPower() == 0 ?
+                    DEFATULE_STRING : chargeInfo.getSlowPower() + "kw";
+            final String slowInfo = slowPower + "." + slowVolt;
+            mViewBinding.scenePoiDetailsChargingStationView.poiChargeSlowOccupied.setText(slowFree);
+            mViewBinding.scenePoiDetailsChargingStationView.poiChargeSlowTotal.setText(slowTotal);
+            mViewBinding.scenePoiDetailsChargingStationView.poiChargeSlowCurrentAndVlot.
+                    setText(slowInfo);
+            mViewBinding.scenePoiDetailsChargingStationView.poiChargePrice.setText(
+                    getContext().getString(
+                            R.string.charge_price, chargeInfo.getCurrentElePrice()));
+            mViewBinding.scenePoiDetailsChargingStationView.poiChargeParkPrice.setText(
+                    getContext().getString(
+                            R.string.charge_park_price, chargeInfo.getCurrentServicePrice()));
         }
-        if (chargeInfo.getFastVolt() == 0 && chargeInfo.getFastPower() == 0
-                && chargeInfo.getFast_free() == 0 && chargeInfo.getFast_total() == 0) {
-            mViewBinding.scenePoiDetailsChargingStationView.poiChargeFastLayout.setVisibility(GONE);
-        } else {
-            mViewBinding.scenePoiDetailsChargingStationView.poiChargeFastLayout.
-                    setVisibility(VISIBLE);
-        }
-        final String fastFree = chargeInfo.getFast_free() == 0 ?
-                DEFATULE_STRING : chargeInfo.getFast_free() + "";
-        final String fastTotal = chargeInfo.getFast_total() == 0 ?
-                DEFATULE_STRING : "/" + chargeInfo.getFast_total();
-        final String fastVolt = chargeInfo.getFastVolt() == 0 ?
-                DEFATULE_STRING : chargeInfo.getFastVolt() + "v";
-        final String fastPower = chargeInfo.getFastPower() == 0 ?
-                DEFATULE_STRING : chargeInfo.getFastPower() + "kw";
-        final String fastInfo = fastPower + "." + fastVolt;
-        mViewBinding.scenePoiDetailsChargingStationView.poiChargeFastOccupied.setText(fastFree);
-        mViewBinding.scenePoiDetailsChargingStationView.poiChargeFastTotal.setText(fastTotal);
-        mViewBinding.scenePoiDetailsChargingStationView.poiChargeFastCurrentAndVlot.
-                setText(fastInfo);
-        final String slowFree = chargeInfo.getSlow_free() == 0 ?
-                DEFATULE_STRING : chargeInfo.getSlow_free() + "";
-        final String slowTotal = chargeInfo.getSlow_total() == 0 ?
-                DEFATULE_STRING : "/" + chargeInfo.getSlow_total();
-        final String slowVolt = chargeInfo.getSlowVolt() == 0 ?
-                DEFATULE_STRING : chargeInfo.getSlowVolt() + "v";
-        final String slowPower = chargeInfo.getSlowPower() == 0 ?
-                DEFATULE_STRING : chargeInfo.getSlowPower() + "kw";
-        final String slowInfo = slowPower + "." + slowVolt;
-        mViewBinding.scenePoiDetailsChargingStationView.poiChargeSlowOccupied.setText(slowFree);
-        mViewBinding.scenePoiDetailsChargingStationView.poiChargeSlowTotal.setText(slowTotal);
-        mViewBinding.scenePoiDetailsChargingStationView.poiChargeSlowCurrentAndVlot.
-                setText(slowInfo);
-        mViewBinding.scenePoiDetailsChargingStationView.poiChargePrice.setText(
-                getContext().getString(
-                        R.string.charge_price, chargeInfo.getCurrentElePrice()));
-        mViewBinding.scenePoiDetailsChargingStationView.poiChargeParkPrice.setText(
-                getContext().getString(
-                        R.string.charge_park_price, chargeInfo.getCurrentServicePrice()));
         mViewBinding.scenePoiDetailsChargingStationView.poiCharegBusinessHours.setText(
                 getContext().getString(R.string.business_hour, mPoiInfoEntity.getBusinessTime()));
         if (ConvertUtils.isEmpty(mPoiInfoEntity.getPhone())) {
@@ -547,6 +590,32 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
         }
         mViewBinding.scenePoiDetailsChargingStationView.poiChargeAreaPhone.setText(
                 getContext().getString(R.string.poi_phone, mPoiInfoEntity.getPhone()));
+        mViewBinding.scenePoiDetailsChargingStationView.poiChargePriceAllday.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final Fragment fragment = (Fragment) ARouter.getInstance().build(
+                        RoutePath.Search.POI_CHARGE_PRICE_ALL_DAY_FRAGMENT).navigation();
+                //todo mock后续这边跳转会传入云端充电站详情数据中的 价格信息列表字段
+                List<ChargePriceInfo> list = new ArrayList<>();
+                ChargePriceInfo info = new ChargePriceInfo()
+                                .setmTime("00:00-07:00")
+                                .setmServiceFee(2.00F)
+                                .setmServiceFee(3.00F);
+                list.add(info);
+                list.add(info);
+                mPoiInfoEntity.setmChargePriceInfoList(list);
+                addFragment((BaseFragment) fragment, SearchFragmentFactory.createChargePriceFragment(mPoiInfoEntity));
+            }
+        });
+        mViewBinding.scenePoiDetailsChargingStationView.poiChargeFastLayout.setOnClickListener(v ->{
+            toReservationListView(AutoMapConstant.EquipmentType.FAST);
+        });
+        mViewBinding.scenePoiDetailsChargingStationView.poiChargeSlowLayout.setOnClickListener(v ->{
+            toReservationListView(AutoMapConstant.EquipmentType.SLOW);
+        });
+        mViewBinding.scenePoiDetailsChargingStationView.poiChargeAppointment.setOnClickListener(v -> {
+            toReservationDetailView();
+        });
         final String imageUrl = mPoiInfoEntity.getImageUrl();
         ViewAdapterKt.loadImageUrl(mViewBinding.scenePoiDetailsChargingStationView.poiChargeImg,
                 imageUrl, R.drawable.test_pic, R.drawable.test_pic);
@@ -865,10 +934,11 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
             }
         }
         final String avgCost;
-        if (mPoiInfoEntity.getAverageCost() == -1) {
-            avgCost = DEFATULE_STRING;
+        if (mPoiInfoEntity.getAverageCost() == -1 || mPoiInfoEntity.getAverageCost() == 0) {
+            mViewBinding.scenePoiDetailsScenicSpotView.poiScenicSpotPrice.setVisibility(View.GONE);
         } else {
             avgCost = getContext().getString(R.string.catering_price, mPoiInfoEntity.getAverageCost());
+            mViewBinding.scenePoiDetailsScenicSpotView.poiScenicSpotPrice.setText(avgCost);
         }
 
         mViewBinding.scenePoiDetailsScenicSpotView.poiScenicSpotHoursContent.setText(
@@ -878,7 +948,6 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
         }
         mViewBinding.scenePoiDetailsScenicSpotView.poiScenicSpotPhone.setText(
                 getContext().getString(R.string.poi_phone, mPoiInfoEntity.getPhone()));
-        mViewBinding.scenePoiDetailsScenicSpotView.poiScenicSpotPrice.setText(avgCost);
         mViewBinding.scenePoiDetailsGasStationView.poiGasRoot.setVisibility(GONE);
         mViewBinding.scenePoiDetailsChargingStationView.poiChargeRoot.setVisibility(GONE);
         mViewBinding.scenePoiDetailsWashCarView.poiWashCarRoot.setVisibility(GONE);
@@ -1003,6 +1072,14 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
     }
 
     /**
+     * 退回到详情页面时，重新扎标
+     * @param poiInfoEntities 需要重新扎标的列表
+     */
+    public void reloadLastPoiMarker(List<PoiInfoEntity> poiInfoEntities) {
+        mScreenViewModel.addPoiMarker(poiInfoEntities, 0);
+    }
+
+    /**
      * 刷新poi视图
      *
      * @param poiType poi类型
@@ -1014,8 +1091,9 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
      *                POI_COMMON = 5; // 添加常用地址
      *                POI_AROUND = 6; // 添加途径点
      *                POI_MAP_CLICK = 7; // 地图点击
+     * @param poiInfoEntity poi信息
      */
-    public void refreshPoiView(final int poiType) {
+    public void refreshPoiView(final int poiType, final PoiInfoEntity poiInfoEntity) {
         if (mViewBinding == null) {
             return;
         }
@@ -1031,10 +1109,17 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
                 if (mScreenViewModel.isAlongWaySearch()) {
                     Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "添加途径点");
                     mViewBinding.scenePoiDetailsBottomView.sivStartRoute.setImageDrawable(null);
-                    mViewBinding.scenePoiDetailsBottomView.stvStartRoute.setText(R.string.st_along_way_point);
+                    if (RoutePackage.getInstance().isBelongRouteParam(MapType.MAIN_SCREEN_MAIN_MAP, poiInfoEntity)) {
+                        mViaAddType = false;
+                        mViewBinding.scenePoiDetailsBottomView.stvStartRoute.setText(R.string.st_along_way_point_delete);
+                    } else {
+                        mViaAddType = true;
+                        mViewBinding.scenePoiDetailsBottomView.stvStartRoute.setText(R.string.st_along_way_point_add);
+                    }
+
                     mViewBinding.scenePoiDetailsBottomView.sivStartRoute.setVisibility(GONE);
                     mViewBinding.scenePoiDetailsBottomView.stlAroundSearch.setVisibility(GONE);
-                    if (mScreenViewModel.getViaCount() >= 1) {
+                    if (mScreenViewModel.getViaCount() >= 1 && mViaAddType) {
                         mViewBinding.scenePoiDetailsBottomView.stlPoiFavorites.setVisibility(GONE);
                         mViewBinding.scenePoiDetailsBottomView.stlGoFirst.setVisibility(VISIBLE);
                     } else {
@@ -1155,8 +1240,15 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
                         final FavoriteInfo favoriteInfo = new FavoriteInfo();
                         favoriteInfo.setCommonName(commonName)
                                 .setUpdateTime(new Date().getTime());
+                        if (ConvertUtils.isEmpty(mPoiInfoEntity.getPid())) {
+                            //逆地理搜索出的点无poiId，需自己拼接
+                            mPoiInfoEntity.setPid(mPoiInfoEntity.getPoint().getLon() + ""
+                                    + mPoiInfoEntity.getPoint().getLat());
+                        }
                         mPoiInfoEntity.setFavoriteInfo(favoriteInfo);
                         mScreenViewModel.addFavorite(mPoiInfoEntity, commonName);
+                        //收藏逻辑执行完成后，会回到来源页，所以需要取消扎标
+                        mScreenViewModel.clearLabelMarker();
 //                        BehaviorPackage.getInstance().addFavoriteData(mPoiInfoEntity, commonName);
                         SettingUpdateObservable.getInstance().onUpdateSyncTime();
                         ToastUtils.Companion.getInstance().showCustomToastView(resultText);
@@ -1193,5 +1285,49 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
     private String formatDistanceArrayInternal(final int distance) {
         final String[] distanceArray = ConvertUtils.formatDistanceArray(AppContext.getInstance().getMContext(), distance);
         return distanceArray[0] + distanceArray[1];
+    }
+
+    public void toReservationListView(int type){
+        final Fragment fragment = (Fragment) ARouter.getInstance().build(
+                RoutePath.Search.POI_CHARGE_RESERVATION_LIST_FRAGMENT).navigation();
+        //todo mock后续这边跳转会传入云端充电站详情数据中的 设备信息列表字段
+        final List<ChargeEquipmentInfo> list = new ArrayList<>();
+        final ChargeEquipmentInfo info = new ChargeEquipmentInfo()
+                .setChargeType(0)
+                .setEquipmentId("123123123")
+                .setNationalStandard("国标111")
+                .setParkNo("A47")
+                .setPower("150kw")
+                .setStatus(1);
+        list.add(info);
+        final ChargeEquipmentInfo info1 = new ChargeEquipmentInfo()
+                .setChargeType(1)
+                .setEquipmentId("123123123")
+                .setNationalStandard("国标111")
+                .setParkNo("A47")
+                .setPower("150kw")
+                .setStatus(1);
+        list.add(info1);
+        final ChargeEquipmentInfo info2 = new ChargeEquipmentInfo()
+                .setChargeType(0)
+                .setEquipmentId("123123123")
+                .setNationalStandard("国标111")
+                .setParkNo("A47")
+                .setPower("150kw")
+                .setStatus(3);
+        list.add(info2);
+        mPoiInfoEntity.setmChargeEquipmentInfoList(list);
+        addFragment((BaseFragment) fragment, SearchFragmentFactory.createEquipmentListFragment(type,mPoiInfoEntity));
+    }
+
+    public void toReservationDetailView(){
+        final Fragment fragment = (Fragment) ARouter.getInstance().build(
+                RoutePath.Search.POI_CHARGE_RESERVATION_DETAILS_FRAGMENT).navigation();
+        addFragment((BaseFragment) fragment, SearchFragmentFactory.createChargePriceFragment(mPoiInfoEntity));
+    }
+
+    public void setPowerType(int powerType){
+        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"powerType: "+powerType);
+        mScreenViewModel.mPowerType.postValue(powerType);
     }
 }
