@@ -11,17 +11,20 @@
     </data>
 
     <com.fy.navi.ui.view.SkinConstraintLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
         <com.fy.navi.ui.view.SkinConstraintLayout
             android:id="@+id/stl_start_route"
-            android:layout_width="@dimen/dp_338"
-            android:layout_height="@dimen/dp_120"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintWidth_percent="0.52"
             android:background="@drawable/bg_details_bottom_go_here"
+            android:padding="@dimen/dp_30"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/stl_go_first"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
@@ -54,23 +57,26 @@
 
         <com.fy.navi.ui.view.SkinTextView
             android:id="@+id/stl_go_first"
-            android:layout_width="@dimen/dp_338"
-            android:layout_height="@dimen/dp_120"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
             android:layout_marginStart="@dimen/dp_24"
             android:background="@drawable/bg_cancel"
             android:gravity="center"
+            app:layout_constraintWidth_percent="0.52"
+            android:padding="@dimen/dp_30"
             android:text="@string/go_first"
             android:textColor="@color/search_quick_tab_view_color"
-            android:textSize="@dimen/sp_34"
+            android:textSize="@dimen/sp_46"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@+id/stl_start_route"
+            app:layout_constraintEnd_toStartOf="@id/stl_function"
             app:layout_constraintStart_toEndOf="@+id/stl_start_route"
             app:layout_constraintTop_toTopOf="@+id/stl_start_route"
             tools:visibility="visible" />
 
         <com.fy.navi.ui.view.SkinConstraintLayout
             android:id="@+id/stl_function"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_20"
             android:layout_marginEnd="@dimen/dp_20"
@@ -81,12 +87,11 @@
 
             <com.fy.navi.ui.view.SkinConstraintLayout
                 android:id="@+id/stl_phone"
-                android:layout_width="@dimen/dp_130"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:minWidth="@dimen/dp_90"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/stl_around_search"
-                app:layout_constraintHorizontal_chainStyle="spread"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
@@ -114,10 +119,9 @@
 
             <com.fy.navi.ui.view.SkinConstraintLayout
                 android:id="@+id/stl_around_search"
-                android:layout_width="@dimen/dp_130"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:minWidth="@dimen/dp_90"
-                android:layout_marginStart="@dimen/dp_20"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/stl_poi_favorites"
                 app:layout_constraintStart_toEndOf="@+id/stl_phone"
@@ -148,10 +152,9 @@
 
             <com.fy.navi.ui.view.SkinConstraintLayout
                 android:id="@+id/stl_poi_favorites"
-                android:layout_width="@dimen/dp_130"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:minWidth="@dimen/dp_90"
-                android:layout_marginStart="@dimen/dp_20"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/stl_around_search"

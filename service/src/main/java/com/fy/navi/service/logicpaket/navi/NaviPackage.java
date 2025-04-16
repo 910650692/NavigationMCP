@@ -112,6 +112,7 @@ public final class NaviPackage implements GuidanceObserver {
 
     /**
      * 开始导航
+     *
      * @param isSimulate 是否是模拟导航
      * @return 是否导航成功
      */
@@ -121,6 +122,7 @@ public final class NaviPackage implements GuidanceObserver {
         if (result) {
             if (isSimulate) {
                 mCurrentNaviType = NumberUtils.NUM_1;
+                mNaviAdapter.setSimulationSpeed(40);
             } else {
                 mCurrentNaviType = NumberUtils.NUM_0;
             }
@@ -138,9 +140,9 @@ public final class NaviPackage implements GuidanceObserver {
             OpenApiHelper.setCurrentPathInfo(pathInfo);
             ArrayList<PathInfo> list = new ArrayList<>();
             list.add(pathInfo);
-            if (!ConvertUtils.isEmpty(list) && null != pathInfo){
+            if (!ConvertUtils.isEmpty(list) && null != pathInfo) {
                 mLayerAdapter.updatePathInfo(MapType.MAIN_SCREEN_MAIN_MAP, list,
-                        (int)pathInfo.getPathIndex());
+                        (int) pathInfo.getPathIndex());
             }
         } else {
             mCurrentNaviType = NumberUtils.NUM_ERROR;
@@ -167,6 +169,7 @@ public final class NaviPackage implements GuidanceObserver {
 
     /**
      * 注册GuidanceObserver回调，HMI层触发
+     *
      * @param key              key
      * @param guidanceObserver GuidanceObserver
      */
@@ -176,6 +179,7 @@ public final class NaviPackage implements GuidanceObserver {
 
     /**
      * 移除GuidanceObserver回调，HMI层触发
+     *
      * @param key key
      */
     public void unregisterObserver(final String key) {
@@ -243,8 +247,9 @@ public final class NaviPackage implements GuidanceObserver {
 
     /**
      * 地图上选择路线，切换path加上路线绘制
+     *
      * @param mapTypeId 屏幕id
-     * @param pathId 路线id
+     * @param pathId    路线id
      * @param pathIndex 路线索引
      */
     public void selectPath(final MapType mapTypeId, final long pathId, final int pathIndex) {
@@ -364,7 +369,8 @@ public final class NaviPackage implements GuidanceObserver {
                 }
                 if (mIsMute) return; // 静音开关
                 //如果NOP打开并且是不播报的类型则不播报
-                if (SignalPackage.getInstance().getNavigationOnAdasTextToSpeachStatus() == 1 && !TTSPlayHelper.allowToPlayWithNopOpen(info.getSoundType())) return;
+                if (SignalPackage.getInstance().getNavigationOnAdasTextToSpeachStatus() == 1 && !TTSPlayHelper.allowToPlayWithNopOpen(info.getSoundType()))
+                    return;
                 mSpeechAdapter.synthesize(info.getText());
             } catch (Exception e) {
                 Logger.e(TAG, "playTTs exception:" + e.getMessage());
@@ -614,7 +620,7 @@ public final class NaviPackage implements GuidanceObserver {
 
     /**
      * @param surfaceViewId 屏幕id.
-     * @param rect 路口矩形区域.
+     * @param rect          路口矩形区域.
      */
     public void setRoadCrossRect(final MapType surfaceViewId, final Rect rect) {
         Logger.i(TAG, "setRoadCrossRect");
@@ -625,7 +631,7 @@ public final class NaviPackage implements GuidanceObserver {
      * 语音打开/关闭引导中路线全览.
      *
      * @param mapTypeId 屏幕id.
-     * @param open  true-开启全览  false-关闭全览.
+     * @param open      true-开启全览  false-关闭全览.
      */
     public void voiceRouteOverview(final MapType mapTypeId, final boolean open) {
         Logger.i(TAG, "voiceRouteOverview: " + open);
@@ -643,7 +649,7 @@ public final class NaviPackage implements GuidanceObserver {
     /**
      * 语音切换主辅路、桥上下.
      *
-     * @param mapTypeId MapTypeId，对应底图.
+     * @param mapTypeId      MapTypeId，对应底图.
      * @param parallelOption 切换类型，MAIN-主路 SIDE-辅路  ON-桥上  UNDER-桥下.
      */
     public void voiceChangeParallelRoad(final MapType mapTypeId, final String parallelOption) {
@@ -742,6 +748,7 @@ public final class NaviPackage implements GuidanceObserver {
 
     /**
      * 设置TMC数据
+     *
      * @param naviTmcInfo NaviTmcInfo
      */
     public void setTmcData(final NaviTmcInfo naviTmcInfo) {
@@ -761,9 +768,10 @@ public final class NaviPackage implements GuidanceObserver {
     /**
      * 三个参数，地点/路段a、起点b、终点c，a不空其他为空就是查询地点或道路的路况，a为空bc不为空就是查询b到c的路况，
      * ab为空c不空就是查询当前到c的路况，abc都为空就是查询前方路况
-     * @param a String
-     * @param b String
-     * @param c String
+     *
+     * @param a         String
+     * @param b         String
+     * @param c         String
      * @param mapTypeId 屏幕id
      * @return int 交通状态回调 -1：无数据 0:未知状态 1:通畅 2:缓慢 3:拥堵 4:严重拥堵 5:极度通畅
      */
@@ -826,7 +834,8 @@ public final class NaviPackage implements GuidanceObserver {
 
     /**
      * 获取道路交换结果
-     * @param roadName 道路名称
+     *
+     * @param roadName     道路名称
      * @param exchangeType 交换类型 0:不走此道路 1:走此道路
      * @param mapTypeId    屏幕id
      * @return NaviExchangeEntity
@@ -868,6 +877,7 @@ public final class NaviPackage implements GuidanceObserver {
 
     /**
      * 当前导航类型 -1:未知 0:GPS导航 1:模拟导航
+     *
      * @return 返回当前的导航类型
      */
     public int getCurrentNaviType() {
@@ -881,8 +891,9 @@ public final class NaviPackage implements GuidanceObserver {
 
     /**
      * 更新引导路线数据
+     *
      * @param pathInfoList 路线数据
-     * @param selectIndex 选中下标
+     * @param selectIndex  选中下标
      */
     public boolean updatePathInfo(final MapType mapTypeId, final ArrayList<?> pathInfoList,
                                   final int selectIndex) {
@@ -901,11 +912,12 @@ public final class NaviPackage implements GuidanceObserver {
         }
         ArrayList<PathInfo> pathInfoList = new ArrayList<>();
         pathInfoList.add(pathInfo);
-        updatePathInfo(MapType.MAIN_SCREEN_MAIN_MAP, pathInfoList, (int)pathInfo.getPathIndex());
+        updatePathInfo(MapType.MAIN_SCREEN_MAIN_MAP, pathInfoList, (int) pathInfo.getPathIndex());
     }
 
     /**
      * 显示主路线加上推荐路线
+     *
      * @param newPathId 新的路径id
      */
     public void showMainAndSuggestPath(final long newPathId) {
@@ -919,17 +931,30 @@ public final class NaviPackage implements GuidanceObserver {
         pathInfos.add(suggestPathInfo);
         if (!ConvertUtils.isEmpty(pathInfos) && null != suggestPathInfo) {
             updatePathInfo(MapType.MAIN_SCREEN_MAIN_MAP, pathInfos,
-                    (int)suggestPathInfo.getPathIndex());
+                    (int) suggestPathInfo.getPathIndex());
         }
     }
 
     /**
      * 删除途经点
+     *
      * @param mapTypeId 屏幕ID
-     * @param pid poiId
+     * @param pid       poiId
      */
     public void removeViaPoint(MapType mapTypeId, String pid) {
         Logger.i(TAG, "removeViaPoint pid = " + pid);
         mLayerAdapter.removeViaPoint(mapTypeId, pid);
+    }
+
+    public void pauseNavi() {
+        mNaviAdapter.pauseNavi();
+    }
+
+    public void resumeNavi() {
+        mNaviAdapter.resumeNavi();
+    }
+
+    public void setSimulationSpeed(int simulationSpeed) {
+        mNaviAdapter.setSimulationSpeed(simulationSpeed);
     }
 }

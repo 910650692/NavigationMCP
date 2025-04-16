@@ -1,5 +1,7 @@
 package com.fy.navi.service.adapter.navi.bls;
 
+import static com.autonavi.gbl.guide.model.guidecontrol.Type.GuideParamEmulator;
+
 import android.annotation.SuppressLint;
 
 import com.android.utils.ConvertUtils;
@@ -151,7 +153,7 @@ public class NaviApiImplHelper {
         param.navi.v2x.enableCrossMeet = true; // 无灯路口会车预警(用户登录&&真实导航 生效)
         param.navi.naviScene = 0; //普通导航
         EmulatorParam emulator = new EmulatorParam();
-        emulator.speed = 480;//模拟导航车速
+        emulator.speed = 180;//模拟导航车速
         param.emulator = emulator;
         NaviParam naviParam = new NaviParam();
         naviParam.model = 1;
@@ -343,5 +345,25 @@ public class NaviApiImplHelper {
             naviViaEntity.setPid(stationInfo.poiID);
         }
         return naviViaEntities;
+    }
+
+    public boolean pauseNavi(long naviId) {
+        Logger.d(TAG, "pauseNavi: ");
+        return mGuideService != null && mGuideService.pauseNavi(naviId);
+    }
+
+    public boolean resumeNavi(long naviId) {
+        Logger.d(TAG, "resumeNavi: ");
+        return mGuideService != null && mGuideService.resumeNavi(naviId);
+    }
+
+    public void setSimulationSpeedParam(int simulationSpeed) {
+        //模拟导航配置参数
+        EmulatorParam mEmulatorParam = new EmulatorParam();
+        mEmulatorParam.speed = simulationSpeed;
+        Param param = new Param();
+        param.type = GuideParamEmulator;
+        param.emulator = mEmulatorParam;
+        mGuideService.setParam(param);
     }
 }

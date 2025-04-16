@@ -128,16 +128,18 @@ public class MapDataObserversHelper implements IDataInitObserver, IDownloadObser
      */
     private CityDataInfo convertCityData(final Area cityArea) {
         final CityDataInfo cityDataInfo = new CityDataInfo();
-        cityDataInfo.setAdcode(cityArea.adcode);
-        cityDataInfo.setAreaType(cityArea.areaType);
-        cityDataInfo.setName(cityArea.name);
-        cityDataInfo.setJianPin(cityArea.jianPin);
-        cityDataInfo.setPinYin(cityArea.pinYin);
-        cityDataInfo.setUpperAdcode(cityArea.upperAdcode);
-        cityDataInfo.setVecNearAdcodeList(cityArea.vecNearAdcodeList);
-        cityDataInfo.setVecLowerAdcodeList(cityArea.vecLowerAdcodeList);
-        // 获取城市数据包的下载状态信息
-        cityDataInfo.setDownLoadInfo(getCityDownLoadInfo(cityArea.adcode));
+        if (!ConvertUtils.isEmpty(cityArea)) {
+            cityDataInfo.setAdcode(cityArea.adcode);
+            cityDataInfo.setAreaType(cityArea.areaType);
+            cityDataInfo.setName(cityArea.name);
+            cityDataInfo.setJianPin(cityArea.jianPin);
+            cityDataInfo.setPinYin(cityArea.pinYin);
+            cityDataInfo.setUpperAdcode(cityArea.upperAdcode);
+            cityDataInfo.setVecNearAdcodeList(cityArea.vecNearAdcodeList);
+            cityDataInfo.setVecLowerAdcodeList(cityArea.vecLowerAdcodeList);
+            // 获取城市数据包的下载状态信息
+            cityDataInfo.setDownLoadInfo(getCityDownLoadInfo(cityArea.adcode));
+        }
         return cityDataInfo;
     }
 
@@ -314,16 +316,18 @@ public class MapDataObserversHelper implements IDataInitObserver, IDownloadObser
      */
     private ProvDataInfo convertProvData(final Area provArea) {
         final ProvDataInfo provDataInfo = new ProvDataInfo();
-        provDataInfo.setAdcode(provArea.adcode);
-        provDataInfo.setAreaType(provArea.areaType);
-        provDataInfo.setName(provArea.name);
-        provDataInfo.setJianPin(provArea.jianPin);
-        provDataInfo.setPinYin(provArea.pinYin);
-        provDataInfo.setUpperAdcode(provArea.upperAdcode);
-        provDataInfo.setVecNearAdcodeList(provArea.vecNearAdcodeList);
-        provDataInfo.setVecLowerAdcodeList(provArea.vecLowerAdcodeList);
-        // 获取省份数据包的下载状态信息
+        if (!ConvertUtils.isEmpty(provArea)) {
+            provDataInfo.setAdcode(provArea.adcode);
+            provDataInfo.setAreaType(provArea.areaType);
+            provDataInfo.setName(provArea.name);
+            provDataInfo.setJianPin(provArea.jianPin);
+            provDataInfo.setPinYin(provArea.pinYin);
+            provDataInfo.setUpperAdcode(provArea.upperAdcode);
+            provDataInfo.setVecNearAdcodeList(provArea.vecNearAdcodeList);
+            provDataInfo.setVecLowerAdcodeList(provArea.vecLowerAdcodeList);
+            // 获取省份数据包的下载状态信息
 //        provDataInfo.setDownLoadInfo(getCityDownLoadInfo(provArea.adcode));
+        }
         return provDataInfo;
     }
 

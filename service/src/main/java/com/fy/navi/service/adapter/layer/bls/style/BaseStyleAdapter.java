@@ -29,7 +29,7 @@ public class BaseStyleAdapter extends PrepareLayerParamInner {
      * @param item
      * @return
      */
-    public LayerItemData provideLayerItemDataProcessor(LayerItem item) {
+    public LayerItemData provideLayerItemData(LayerItem item) {
         return null;
     }
 
@@ -39,7 +39,7 @@ public class BaseStyleAdapter extends PrepareLayerParamInner {
      * @param item
      * @return
      */
-    public IUpdateLayerItemStyleByItemDataProcessor provideUpdateLayerItemStyleByItemDataProcessor(LayerItem item) {
+    public IUpdateBitmapViewProcessor provideUpdateBitmapViewProcessor(LayerItem item) {
         return null;
     }
 

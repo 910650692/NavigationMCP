@@ -113,6 +113,14 @@ public class SearchResultFragment extends BaseFragment<FragmentSearchResultBindi
         mBinding.scenePoiList.onVoicePoiSort(sortValue);
     }
 
+    /**
+     * 图层点击事件回调
+     * @param index 点击下标
+     */
+    public void onMarkClickCallBack(final int index) {
+        mBinding.scenePoiList.onMarkClickCallBack(index);
+    }
+
     @Override
     public void onDestroy() {
         super.onDestroy();

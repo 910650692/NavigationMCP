@@ -634,6 +634,28 @@ public final class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
     }
 
     /**
+     * 自车位置周边搜索.
+     *
+     * @param keyword String，搜索关键字.
+     * @param pageIndex int,搜索页面下标，从1开始，最大值见上一轮搜索结果BaseSearchResult里的maxPage.
+     */
+    public void nearbySearch(final String keyword, final int pageIndex) {
+        if (null == keyword || keyword.isEmpty()) {
+            Log.w(TAG, "nearbySearch keyword is empty");
+            return;
+        }
+
+        if (mInitStatus && checkBinder()) {
+            try {
+                Log.d(TAG, "nearbySearch keyword: " + keyword + ", pageIndex: " + pageIndex);
+                mBinder.nearbySearch(mPkgName, keyword, pageIndex);
+            } catch (RemoteException exception) {
+                Log.w(TAG, "nearbySearch error: " + exception.getMessage());
+            }
+        }
+    }
+
+    /**
      * 搜索地址并发起路线规划.
      *
      * @param address String，地址信息，越精准，搜索结果越准确.

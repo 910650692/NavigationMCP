@@ -15,6 +15,7 @@ import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
 import com.fy.navi.scene.BaseSceneView;
 import com.fy.navi.scene.R;
+import com.fy.navi.scene.api.search.ISceneTerminalParking;
 import com.fy.navi.scene.databinding.SceneMapPointSearchViewBinding;
 import com.fy.navi.scene.impl.favorite.SceneMapPointSearchViewImpl;
 import com.fy.navi.scene.ui.search.SearchLoadingDialog;
@@ -26,7 +27,6 @@ import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.search.FavoriteInfo;
 import com.fy.navi.service.define.search.PoiInfoEntity;
 import com.fy.navi.service.define.search.SearchResultEntity;
-import com.fy.navi.service.logicpaket.layer.LayerPackage;
 import com.fy.navi.service.logicpaket.route.RoutePackage;
 import com.fy.navi.service.logicpaket.search.SearchPackage;
 import com.fy.navi.service.logicpaket.setting.SettingUpdateObservable;
@@ -49,7 +49,10 @@ public class SceneMapPointSearchView extends BaseSceneView<SceneMapPointSearchVi
     private PoiInfoEntity mPoiInfoEntity;
     //common_name：1，家  2，公司 3.常用地址  0，普通收藏点
     private int mCommonName;
-
+    private ISceneTerminalParking mClickListener;
+    public void setClickListener(final ISceneTerminalParking clickListener) {
+        this.mClickListener = clickListener;
+    }
 
     public SceneMapPointSearchView(@NonNull final Context context) {
         super(context);
@@ -166,6 +169,15 @@ public class SceneMapPointSearchView extends BaseSceneView<SceneMapPointSearchVi
 
         }
         mScreenViewModel.setCommonName(mCommonName);
+    }
+
+    /**
+     * 关闭地图选点页面
+     */
+    public void closeMapPointView() {
+        if (null != mClickListener) {
+            mClickListener.closeSearch();
+        }
     }
 
     /**

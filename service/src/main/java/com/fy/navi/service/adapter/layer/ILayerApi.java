@@ -1,11 +1,6 @@
 package com.fy.navi.service.adapter.layer;
 
-import com.autonavi.gbl.common.model.RectInt;
 import com.autonavi.gbl.guide.model.CrossType;
-import com.autonavi.gbl.guide.model.NaviInfo;
-import com.autonavi.gbl.map.layer.model.CarMode;
-import com.autonavi.gbl.map.layer.model.RealCityTmcParam;
-import com.autonavi.gbl.map.layer.model.VectorCrossViewPostureEvent;
 import com.fy.navi.service.define.bean.GeoPoint;
 import com.fy.navi.service.define.bean.PreviewParams;
 import com.fy.navi.service.define.layer.GemLayerClickBusinessType;
@@ -16,15 +11,13 @@ import com.fy.navi.service.define.layer.refix.LayerItemLabelResult;
 import com.fy.navi.service.define.layer.refix.LayerItemRouteEndPoint;
 import com.fy.navi.service.define.layer.refix.LayerItemSearchResult;
 import com.fy.navi.service.define.layer.refix.LayerItemUserFavorite;
-import com.fy.navi.service.define.layer.refix.LayerItemUserReceive;
 import com.fy.navi.service.define.layer.refix.LayerItemUserTrackDepth;
 import com.fy.navi.service.define.layer.refix.LayerSearchItemType;
-import com.fy.navi.service.define.map.GmBizUserFavoritePoint;
 import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.navi.NaviParkingEntity;
+import com.fy.navi.service.define.search.PoiInfoEntity;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @Description TODO
@@ -137,12 +130,6 @@ public interface ILayerApi {
     /***计算两点之前的直线距离***/
     double calcStraightDistance(GeoPoint startPoint, GeoPoint endPoint);
 
-    /*搜索结果POI获取焦点*/
-    void selectSearchPoi(MapType mapTypeId, GemLayerClickBusinessType type, String strID, boolean bFocus);
-
-    /*收藏夹查看主图模式*/
-    void updateFavoriteMain(MapType mapTypeId, List<GmBizUserFavoritePoint> list);
-
     void clearFavoriteMain(MapType mapTypeId);
 
     /*========================================= ROUTE LAYER END =========================================*/
@@ -153,14 +140,11 @@ public interface ILayerApi {
 
     /*========================================= 搜索图层接口定义=========================================*/
 
-    /* 搜索图层扎标接口 */
-    boolean updateSearchMarker(MapType mapTypeId, LayerItemSearchResult searchResult, boolean clearOtherLayerItem);
+    /*搜索结果POI获取焦点*/
+    void selectSearchPoi(MapType mapTypeId, LayerSearchItemType type, int index);
 
-    /**
-     * 删除扎标map数据
-     * key -> BizSearchType
-     */
-    boolean removeMapDataByKey(MapType mapTypeId, int key);
+    /* 搜索图层扎标接口 */
+    boolean updateSearchMarker(MapType mapTypeId, LayerSearchItemType type, LayerItemSearchResult searchResult, boolean clearOtherLayerItem);
 
     /*父点+子点+中心点+出入口*/
     boolean addLayerItemOfSearchResult(MapType mapTypeId, LayerItemSearchResult searchResult, boolean clearOtherLayerItem);
@@ -187,12 +171,14 @@ public interface ILayerApi {
     /* 设置车标模式 */
     void setCarMode(MapType mapTypeId, CarModeType carMode);
 
+    /* 设置车标预览模式 */
+    void setPreviewMode(MapType mapTypeId, boolean bPreview);
+
     /* 设置车标位置信息。通常用于单次设置车标位置，频次低 */
     void setCarPosition(MapType mapTypeId, GeoPoint geoPoint);
 
     /* 设置设置跟随模式、自由模式 */
     int setFollowMode(MapType mapTypeId, boolean bFollow);
-
 
     /*========================================= 车标图层接口定义=========================================*/
 
@@ -213,9 +199,25 @@ public interface ILayerApi {
      *
      * @param mapTypeId           mapTypeId
      * @param favorites           favorites
-     * @param clearOtherLayerItem clearOtherLayerItem
      */
-    void addLayerItemOfFavorite(MapType mapTypeId, LayerItemUserFavorite favorites, boolean clearOtherLayerItem);
+    void addLayerItemOfFavorite(MapType mapTypeId, LayerItemUserFavorite favorites);
+
+
+    /**
+     * 删除单个收藏点
+     *
+     */
+    void removeFavoriteMain(MapType mapTypeId, PoiInfoEntity poiInfoEntity);
+
+
+    /**
+     * 显示隐藏收藏点
+     *
+     * @param mapTypeId           mapTypeId
+     * @param visible visible
+     */
+    void setFavoriteVisible(MapType mapTypeId, boolean visible);
+
 
     /*========================================= 用户图层接口定义=========================================*/
 

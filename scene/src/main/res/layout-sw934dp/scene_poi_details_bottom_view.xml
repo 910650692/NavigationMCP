@@ -10,7 +10,7 @@
             type="com.fy.navi.scene.impl.poi.ScenePoiDetailContentViewImpl" />
     </data>
 
-    <com.fy.navi.ui.view.SkinConstraintLayout
+    <com.fy.navi.ui.view.SkinLinearLayout
         android:layout_width="@dimen/dp_640"
         android:layout_height="@dimen/dp_108"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -18,7 +18,9 @@
 
         <com.fy.navi.ui.view.SkinConstraintLayout
             android:id="@+id/stl_start_route"
-            android:layout_width="@dimen/dp_223"
+            android:layout_width="@dimen/dp_0"
+            android:layout_weight="1"
+            android:minWidth="@dimen/dp_223"
             android:layout_height="match_parent"
             android:background="@drawable/bg_details_bottom_go_here"
             app:layout_constraintStart_toStartOf="parent">
@@ -52,7 +54,8 @@
         
         <com.fy.navi.ui.view.SkinTextView
             android:id="@+id/stl_go_first"
-            android:layout_width="@dimen/dp_223"
+            android:layout_width="@dimen/dp_0"
+            android:layout_weight="1"
             android:layout_height="match_parent"
             android:text="@string/go_first"
             android:gravity="center"
@@ -69,7 +72,8 @@
 
         <com.fy.navi.ui.view.SkinConstraintLayout
             android:id="@+id/stl_function"
-            android:layout_width="@dimen/dp_340"
+            android:layout_width="wrap_content"
+            android:maxWidth="@dimen/dp_340"
             android:layout_height="match_parent"
             android:layout_marginStart="@dimen/dp_16"
             android:layout_marginEnd="@dimen/dp_23"
@@ -168,5 +172,5 @@
             </com.fy.navi.ui.view.SkinConstraintLayout>
         </com.fy.navi.ui.view.SkinConstraintLayout>
 
-    </com.fy.navi.ui.view.SkinConstraintLayout>
+    </com.fy.navi.ui.view.SkinLinearLayout>
 </layout>

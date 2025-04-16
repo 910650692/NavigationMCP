@@ -5,10 +5,8 @@ import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Parcel;
 import android.text.TextUtils;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -94,6 +92,7 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
     private PoiInfoEntity mChildSelectInfo;
     private int mPoiType;
     private boolean mViaAddType = true;
+    private PoiDetailsScenicChildAdapter mScenicChildAdapter;
 
     public ScenePoiDetailContentView(final @NonNull Context context) {
         super(context);
@@ -227,6 +226,13 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
                     R.drawable.icon_basic_ic_star_fav;
             mViewBinding.scenePoiDetailsBottomView.sivPoiFavorites.setImageDrawable(
                     ContextCompat.getDrawable(getContext(), favoriteIcon));
+            if (mPoiType == AutoMapConstant.PoiType.POI_MAP_CAR_CLICK) {
+                final int favIcon = isFavorite ? R.drawable.img_star_white58 :
+                        R.drawable.icon_basic_ic_star_fav;
+                mViewBinding.scenePoiDetailsBottomView.sivStartRoute.setImageDrawable(
+                        ContextCompat.getDrawable(getContext(), favIcon));
+                mViewBinding.scenePoiDetailsBottomView.stvStartRoute.setText(isFavorite ? R.string.sha_favorite : R.string.sha_has_favorite);
+            }
 
             if (isFavorite) {
                 mScreenViewModel.removeFavorite(mPoiInfoEntity);
@@ -278,7 +284,7 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
      * @param searchResultEntity 数据实体类
      */
     public void onSearchResult(final int taskId, final SearchResultEntity searchResultEntity) {
-        if (null == searchResultEntity || searchResultEntity.getPoiList().isEmpty()) {
+        if (null == searchResultEntity || searchResultEntity.getPoiList().isEmpty() || ConvertUtils.isEmpty(mScreenViewModel)) {
             //ToastUtils.Companion.getInstance().showCustomToastView("暂无数据");
             return;
         }
@@ -334,6 +340,39 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
                     refreshNormalView();
                     break;
             }
+        }
+        if (mPoiType == AutoMapConstant.PoiType.POI_MAP_CAR_CLICK && mViewBinding != null) {
+            mViewBinding.poiDistanceTime.setVisibility(View.GONE);
+            mViewBinding.poiArrivalCapacity.setVisibility(View.GONE);
+            mViewBinding.sivArrivalCapacity.setVisibility(View.GONE);
+            mViewBinding.poiContentLayout.setVisibility(View.GONE);
+        }
+    }
+
+    /**
+     * 搜索图层子点点击事件
+     * @param index 点击下标
+     */
+    public void onMarkChildClickCallBack(final int index) {
+        if (mPoiInfoEntity == null || ConvertUtils.isEmpty(mPoiInfoEntity.getChildInfoList())) {
+            return;
+        }
+        final List<ChildInfo> mChildList = mPoiInfoEntity.getChildInfoList();
+        if (index < mChildList.size() && index >= 0) {
+            final ChildInfo childInfo = mChildList.get(index);
+            mChildSelectInfo = new PoiInfoEntity()
+                    .setName(childInfo.getName())
+                    .setAddress(childInfo.getAddress())
+                    .setPid(childInfo.getPoiId())
+                    .setPoint(childInfo.getLocation());
+            for (int i = 0; i < mChildList.size(); i++) {
+                if (i == index) {
+                    mChildList.get(i).setChecked(1);
+                } else {
+                    mChildList.get(i).setChecked(-1);
+                }
+            }
+            mScenicChildAdapter.setChildInfoList(mChildList);
         }
     }
 
@@ -480,10 +519,20 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
                 mPoiInfoEntity.getFavoriteInfo().setItemId(itemId);
                 mViewBinding.scenePoiDetailsBottomView.sivPoiFavorites.setImageDrawable(
                         ContextCompat.getDrawable(getContext(), R.drawable.icon_basic_ic_star_fav));
+                if (mPoiType == AutoMapConstant.PoiType.POI_MAP_CAR_CLICK) {
+                    mViewBinding.scenePoiDetailsBottomView.sivStartRoute.setImageDrawable(
+                            ContextCompat.getDrawable(getContext(), R.drawable.icon_basic_ic_star_fav));
+                    mViewBinding.scenePoiDetailsBottomView.stvStartRoute.setText(R.string.sha_has_favorite);
+                }
             } else {
                 mViewBinding.scenePoiDetailsBottomView.sivPoiFavorites.setImageDrawable(
                         ContextCompat.getDrawable(getContext(),
                                 R.drawable.icon_basic_ic_star_default));
+                if (mPoiType == AutoMapConstant.PoiType.POI_MAP_CAR_CLICK) {
+                    mViewBinding.scenePoiDetailsBottomView.sivStartRoute.setImageDrawable(
+                            ContextCompat.getDrawable(getContext(), R.drawable.img_star_white58));
+                    mViewBinding.scenePoiDetailsBottomView.stvStartRoute.setText(R.string.sha_favorite);
+                }
             }
             refreshEtaInfoView();
         } else {
@@ -825,16 +874,16 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
      */
     private void refreshChildListView() {
         final List<ChildInfo> childInfoList = mPoiInfoEntity.getChildInfoList();
-        final PoiDetailsScenicChildAdapter scenicChildAdapter = new PoiDetailsScenicChildAdapter();
+        mScenicChildAdapter = new PoiDetailsScenicChildAdapter();
         if (childInfoList != null && !childInfoList.isEmpty()) {
-            scenicChildAdapter.setChildInfoList(childInfoList);
+            mScenicChildAdapter.setChildInfoList(childInfoList);
             mViewBinding.scenePoiDetailsScenicSpotView.poiScenicSpotChildList.setLayoutManager(
                     new GridLayoutManager(getContext(), mSpanCount));
             mViewBinding.scenePoiDetailsScenicSpotView.poiScenicSpotChildList.addItemDecoration(
                     new GridSpacingItemDecoration(getContext(), mSpanCount, mChildSpacing,
                             mChildSpacing, false));
             mViewBinding.scenePoiDetailsScenicSpotView.poiScenicSpotChildList.
-                    setAdapter(scenicChildAdapter);
+                    setAdapter(mScenicChildAdapter);
             if (childInfoList.size() > 2) {
                 mViewBinding.scenePoiDetailsScenicSpotView.poiScenicSpotChildExpandCollapse.
                         setVisibility(VISIBLE);
@@ -842,13 +891,14 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
                 mViewBinding.scenePoiDetailsScenicSpotView.poiScenicSpotChildExpandCollapse.
                         setVisibility(GONE);
             }
-            scenicChildAdapter.setItemClickListener((index, isSelectIndex) -> {
+            mScenicChildAdapter.setItemClickListener((index, isSelectIndex) -> {
                 final ChildInfo childInfo = childInfoList.get(index);
                 mChildSelectInfo = new PoiInfoEntity()
                         .setName(childInfo.getName())
                         .setAddress(childInfo.getAddress())
                         .setPid(childInfo.getPoiId())
                         .setPoint(childInfo.getLocation());
+                mScreenViewModel.setChildIndex(index);
             });
         } else {
             mViewBinding.scenePoiDetailsScenicSpotView.poiScenicSpotChildExpandCollapse.
@@ -856,14 +906,14 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
         }
         mViewBinding.scenePoiDetailsScenicSpotView.poiScenicSpotChildExpandCollapse.
                 setOnClickListener(v -> {
-                    scenicChildAdapter.setCollapse(!scenicChildAdapter.isCollapse());
-                    scenicChildAdapter.notifyDataSetChanged();
+                    mScenicChildAdapter.setCollapse(!mScenicChildAdapter.isCollapse());
+                    mScenicChildAdapter.notifyDataSetChanged();
                     mViewBinding.scenePoiDetailsScenicSpotView.poiScenicSpotChildExpandCollapse.
-                            setImageResource(scenicChildAdapter.isCollapse() ?
+                            setImageResource(mScenicChildAdapter.isCollapse() ?
                                     R.drawable.img_under_the_48 : R.drawable.img_up_48);
                 });
         mViewBinding.scenePoiDetailsScenicSpotView.poiScenicSpotChildExpandCollapse.
-                setImageResource(scenicChildAdapter.isCollapse() ? R.drawable.img_under_the_48 :
+                setImageResource(mScenicChildAdapter.isCollapse() ? R.drawable.img_under_the_48 :
                         R.drawable.img_up_48);
     }
 
@@ -996,6 +1046,7 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
                         .setAddress(childInfo.getAddress())
                         .setPid(childInfo.getPoiId())
                         .setPoint(childInfo.getLocation());
+                mScreenViewModel.setChildIndex(index);
             });
         } else {
             mViewBinding.scenePoiDetailsNormalView.poiChildExpandCollapse.setVisibility(GONE);
@@ -1056,18 +1107,13 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
         ThreadManager.getInstance().postDelay(mTimeoutTask, 3000);
         mPoiInfoEntity = poiInfo;
         mScreenViewModel.doSearch(poiInfo);
-        //todo 目前尚未提供CVP点击接口，暂时使用经纬度实现，后续提供接口后修改实现
-        if (mPoiType == AutoMapConstant.PoiType.POI_MAP_CLICK) {
-            final GeoPoint currentLocation = mScreenViewModel.getCurrentLocation();
-            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "当前位置 lon" + currentLocation.getLon() + " , lat"
-                    + currentLocation.getLon()
-                    + " 目标位置 lon" + poiInfo.getPoint().getLon() + " , lat" + poiInfo.getPoint().getLat());
-            if (currentLocation.getLon() == poiInfo.getPoint().getLon()
-                    && currentLocation.getLat() == poiInfo.getPoint().getLat()) {
-                mViewBinding.poiDistanceTime.setVisibility(View.GONE);
-                mViewBinding.poiArrivalCapacity.setVisibility(View.GONE);
-                mViewBinding.sivArrivalCapacity.setVisibility(View.GONE);
-            }
+        if (mPoiType == AutoMapConstant.PoiType.POI_MAP_CAR_CLICK && mViewBinding != null) {
+            mViewBinding.poiDistanceTime.setVisibility(View.GONE);
+            mViewBinding.poiArrivalCapacity.setVisibility(View.GONE);
+            mViewBinding.sivArrivalCapacity.setVisibility(View.GONE);
+            mViewBinding.scenePoiDetailsBottomView.stvStartRoute.setVisibility(View.VISIBLE);
+            mViewBinding.scenePoiDetailsBottomView.stlGoFirst.setVisibility(View.GONE);
+            mViewBinding.scenePoiDetailsBottomView.stlFunction.setVisibility(View.GONE);
         }
     }
 
@@ -1091,6 +1137,7 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
      *                POI_COMMON = 5; // 添加常用地址
      *                POI_AROUND = 6; // 添加途径点
      *                POI_MAP_CLICK = 7; // 地图点击
+     *                POI_MAP_CAR_CLICK = 9;//自车位点击事件
      * @param poiInfoEntity poi信息
      */
     public void refreshPoiView(final int poiType, final PoiInfoEntity poiInfoEntity) {
@@ -1202,7 +1249,6 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
                 case AutoMapConstant.PoiType.POI_AROUND:
                 case AutoMapConstant.PoiType.POI_MAP_CLICK:
                     handleRouteClick();
-
                     break;
                 case AutoMapConstant.PoiType.POI_HOME:
                 case AutoMapConstant.PoiType.POI_COMPANY:
@@ -1257,6 +1303,9 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
                 case AutoMapConstant.PoiType.POI_DELETE_AROUND:
                     RoutePackage.getInstance().removeVia(MapType.MAIN_SCREEN_MAIN_MAP,
                             mPoiInfoEntity, true);
+                    break;
+                case AutoMapConstant.PoiType.POI_MAP_CAR_CLICK:
+                    handleFavoriteClick();
                     break;
                 default:
                     break;
@@ -1326,8 +1375,8 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
         addFragment((BaseFragment) fragment, SearchFragmentFactory.createChargePriceFragment(mPoiInfoEntity));
     }
 
-    public void setPowerType(int powerType){
+    public void setPowerType(final int powerType){
         Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"powerType: "+powerType);
-        mScreenViewModel.mPowerType.postValue(powerType);
+        mScreenViewModel.mPowerType.setValue(powerType);
     }
 }

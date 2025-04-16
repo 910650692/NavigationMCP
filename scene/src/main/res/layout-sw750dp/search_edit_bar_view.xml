@@ -5,14 +5,15 @@
 
     <com.fy.navi.ui.view.SkinConstraintLayout
         android:id="@+id/scl_search_top_view"
-        android:layout_width="@dimen/dp_640"
-        android:layout_height="@dimen/dp_112"
+        android:layout_width="@dimen/dp_820"
+        android:layout_height="@dimen/dp_152"
         android:background="@drawable/bg_search_main_tab">
 
         <com.fy.navi.ui.view.SkinImageView
             android:id="@+id/iv_close"
-            android:layout_width="@dimen/dp_58"
-            android:layout_height="@dimen/dp_58"
+            android:layout_width="@dimen/dp_74"
+            android:layout_height="@dimen/dp_74"
+            android:layout_marginStart="@dimen/dp_20"
             android:src="@drawable/img_basic_ic_back"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -22,7 +23,7 @@
             android:id="@+id/search_bar_edit_view"
             android:layout_width="@dimen/dp_0"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_14"
+            android:layout_marginStart="@dimen/dp_10"
             android:layout_marginEnd="@dimen/dp_10"
             android:background="@null"
             android:clickable="true"
@@ -34,7 +35,7 @@
             android:maxLines="1"
             android:textColor="@color/search_deep_text_day"
             android:textColorHint="@color/search_shallow_text_day"
-            android:textSize="@dimen/sp_34"
+            android:textSize="@dimen/sp_46"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/iv_edit_clear"
             app:layout_constraintStart_toEndOf="@+id/iv_close"
@@ -46,8 +47,8 @@
 
         <com.fy.navi.ui.view.SkinImageView
             android:id="@+id/iv_edit_clear"
-            android:layout_width="@dimen/dp_42"
-            android:layout_height="@dimen/dp_42"
+            android:layout_width="@dimen/dp_74"
+            android:layout_height="@dimen/dp_74"
             android:layout_marginEnd="@dimen/dp_20"
             android:src="@drawable/img_poi_edit_delete"
             android:visibility="invisible"

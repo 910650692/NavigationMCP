@@ -6,7 +6,6 @@ import android.widget.TextView;
 import com.android.utils.log.Logger;
 import com.autonavi.gbl.layer.BizCarControl;
 import com.autonavi.gbl.layer.SpeedCarLayerItem;
-import com.autonavi.gbl.layer.model.PrepareLayerMarkerParam;
 import com.autonavi.gbl.map.layer.LayerItem;
 import com.autonavi.gbl.map.layer.model.CarMode;
 import com.autonavi.gbl.map.layer.model.LayerItemType;
@@ -76,17 +75,17 @@ public class LayerCarStyleAdapter extends BaseStyleAdapter {
     }
 
     @Override
-    public LayerItemData provideLayerItemDataProcessor(LayerItem item) {
+    public LayerItemData provideLayerItemData(LayerItem item) {
         if (item instanceof SpeedCarLayerItem) {
             return currentCarSpeed;
         }
-        return super.provideLayerItemDataProcessor(item);
+        return super.provideLayerItemData(item);
     }
 
     @Override
-    public IUpdateLayerItemStyleByItemDataProcessor provideUpdateLayerItemStyleByItemDataProcessor(LayerItem item) {
+    public IUpdateBitmapViewProcessor provideUpdateBitmapViewProcessor(LayerItem item) {
         if (item instanceof SpeedCarLayerItem) {
-            return new IUpdateLayerItemStyleByItemDataProcessor<LayerItemCarSpeedData>() {
+            return new IUpdateBitmapViewProcessor<LayerItemCarSpeedData>() {
                 @Override
                 public void onNormalProcess(View rootView, LayerItemCarSpeedData data) {
                     Logger.d(TAG, "更新车速");
@@ -97,6 +96,6 @@ public class LayerCarStyleAdapter extends BaseStyleAdapter {
                 }
             };
         }
-        return super.provideUpdateLayerItemStyleByItemDataProcessor(item);
+        return super.provideUpdateBitmapViewProcessor(item);
     }
 }

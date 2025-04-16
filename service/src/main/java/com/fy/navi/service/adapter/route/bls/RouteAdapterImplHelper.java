@@ -1,6 +1,8 @@
 package com.fy.navi.service.adapter.route.bls;
 
 
+import android.util.Log;
+
 import com.android.utils.ConvertUtils;
 import com.android.utils.DeviceUtils;
 import com.android.utils.TimeUtils;
@@ -492,6 +494,7 @@ public class RouteAdapterImplHelper {
                 routeResult.setMTrafficLightCount(info.getTrafficLightCount() + "");
                 routeResult.setMNaviID(info.getNaviID());
                 routeResult.setMIsOnline(info.isOnline());
+                routeResult.setMElecRouteBool(BevPowerCarUtils.getInstance().bevCarElicOpen);
                 String elecRouteLabel = "不可达";
                 boolean canBeArrive = false;
                 if (onlineRoute) {
@@ -514,6 +517,9 @@ public class RouteAdapterImplHelper {
                         routeResult.setMRemainPercent(elec);
                     }
                 }
+                // 判断补能计划是否生效
+                routeResult.setMChargingStation(info.getChargeStationInfo() != null
+                        && !info.getChargeStationInfo().isEmpty());
                 routeResult.setMElecRouteLabel(elecRouteLabel);
                 routeResult.setMCanBeArrive(canBeArrive);
                 String label = "默认";
@@ -1821,6 +1827,10 @@ public class RouteAdapterImplHelper {
     private final IRouteWeatherObserver mRouteWeatherObserver = (requestId, arrayList) -> {
         Logger.i(TAG, "requestId -> " + requestId, "arrayList -> " + arrayList);
         final RequestRouteResult requestRouteResult = ConvertUtils.containToValue(mRouteResultDataHashtable, mRequsetId);
+        if (requestRouteResult == null) {
+            Logger.e(TAG, "have no this data");
+            return;
+        }
         handlerWeather(requestRouteResult.getMRouteWeatherParam(), arrayList, requestId, requestRouteResult.getMMapTypeId());
     };
 
@@ -1852,6 +1862,11 @@ public class RouteAdapterImplHelper {
                 return;
             }
             final RequestRouteResult requestRouteResult = ConvertUtils.containToValue(mRouteResultDataHashtable, mRequsetId);
+            if (ConvertUtils.isEmpty(requestRouteResult)) {
+                Log.e(TAG, "onRerouteInfo: 请求参数已经被清空");
+                return;
+            }
+            requestRouteResult.setMFastNavi(true);
             if (info.option.getRouteType() == RouteType.RouteTypeYaw) {
                 Logger.i(TAG, "onReroute: 偏航引发的重算");
                 mRouteResultDataHashtable.put(info.requestId, requestRouteResult);

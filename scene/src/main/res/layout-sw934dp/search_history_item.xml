@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
+        <import type="android.view.View"/>
         <import type="com.fy.navi.service.greendao.history.History" />
 
         <variable
@@ -22,7 +22,7 @@
     <com.fy.navi.ui.view.SwipeMenuLayout
         android:id="@+id/swipe_menu_layout"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_158"
+        android:layout_height="@dimen/dp_130"
         android:orientation="horizontal">
 
         <com.fy.navi.ui.view.SkinConstraintLayout
@@ -59,7 +59,7 @@
                 android:id="@+id/crl_poi_des"
                 android:layout_width="@dimen/dp_0"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_50"
+                android:layout_marginStart="@dimen/dp_20"
                 android:orientation="vertical"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/poi_to_navi"
@@ -102,6 +102,7 @@
                         android:layout_gravity="center_vertical"
                         android:layout_marginStart="@dimen/dp_10"
                         android:layout_marginEnd="@dimen/dp_10"
+                        android:visibility="@{poiBean.getMEndPoiName().empty ? View.GONE : View.VISIBLE}"
                         android:background="@color/search_quick_tab_view_color" />
 
                     <com.fy.navi.ui.view.SkinTextView

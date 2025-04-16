@@ -66,7 +66,7 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
 
     @Override
     public void onInitView() {
-//        PermissionUtils.getInstance().requestMediaProjection(); TODO 由于路线加载弹窗bug所以暂时屏蔽权限申请
+        PermissionUtils.getInstance().requestMediaProjection();
         mBinding.sceneNaviControl.setScreenId(MapType.valueOf(mScreenId));
         mBinding.sceneNaviPreference.setScreenId(MapType.valueOf(mScreenId));
         mBinding.sceneNaviTbt.setScreenId(MapType.valueOf(mScreenId));
@@ -125,6 +125,7 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
         mBinding.sceneNaviViaInfo.onNaviInfo(naviEtaInfo);
         mBinding.sceneNaviLastMile.onNaviInfo(naviEtaInfo);
         mBinding.sceneNaviRecPark.onUpdateNaviInfo(naviEtaInfo, MapTypeManager.getInstance().getMapTypeIdByName(mScreenId));
+        mBinding.sceneNaviRecCharge.updateDistance();
     }
 
     /**

@@ -16,6 +16,8 @@ public class SettingManager {
     private static SettingManager mDBHelper;
     private NaviSettingDao mSettingDao;
 
+    private boolean mIsInit = false;
+
     /**
      * Get instance.
      * @return SettingManager
@@ -36,11 +38,16 @@ public class SettingManager {
      * Init database and cloud data.
      */
     public void init() {
+        if (mIsInit) {
+            Logger.d(TAG, "Database had Initialized!");
+            return;
+        }
         // 数据库对象
         final DaoMaster.DevOpenHelper helper = new DaoMaster.DevOpenHelper(AppContext.getInstance().getMContext(), DB_NAME);
         final Database db = helper.getWritableDb();
         final DaoMaster daoMaster = new DaoMaster(db);
         mSettingDao = daoMaster.newSession().getNaviSettingDao();
+        mIsInit = true;
     }
 
     /**

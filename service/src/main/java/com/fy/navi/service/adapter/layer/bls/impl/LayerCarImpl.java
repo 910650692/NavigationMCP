@@ -24,6 +24,8 @@ import java.util.function.Consumer;
 
 public class LayerCarImpl extends BaseLayerImpl<LayerCarStyleAdapter> {
 
+    private static final float[] CAR_SCALE = { 1.0f, 1.0f, 1.0f, 0.6f, 0.6f, 0.6f, 0.6f, 0.6f, 0.6f, 0.8f, 0.8f, 0.8f, 0.8f, 0.8f, 0.8f, 0.8f, 0.8f, 0.8f, 0.8f, 0.8f, 1.0f };
+
     public LayerCarImpl(BizControlService bizService, MapView mapView, Context context, MapType mapType) {
         super(bizService, mapView, context, mapType);
         getLayerCarControl().setStyle(this);
@@ -31,6 +33,7 @@ public class LayerCarImpl extends BaseLayerImpl<LayerCarStyleAdapter> {
         getLayerCarControl().setClickable(true);
         getLayerCarControl().addCarObserver(this);
         initSkeletonCarModel();
+        initCarScaleByMapLevel();
     }
 
     @Override
@@ -113,6 +116,21 @@ public class LayerCarImpl extends BaseLayerImpl<LayerCarStyleAdapter> {
 
     public void updateGuideCarStyle() {
         getLayerCarControl().updateStyle(BizCarType.BizCarTypeGuide);
+    }
+
+    /**
+     * 车标预览模式
+     *
+     * @param bPreview
+     */
+    public void setPreviewMode(boolean bPreview) {
+        getLayerCarControl().setPreviewMode(bPreview);
+    }
+
+    /* 设置车标缩放系数和比例尺对应关系 */
+    private void initCarScaleByMapLevel() {
+        boolean result = getLayerCarControl().setCarScaleByMapLevel(CAR_SCALE);
+        Logger.d(TAG, "setCarScaleByMapLevel result " + result);
     }
 
 }

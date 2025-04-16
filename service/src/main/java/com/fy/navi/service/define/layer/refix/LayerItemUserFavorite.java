@@ -15,8 +15,6 @@ import lombok.Setter;
 @Getter
 public class LayerItemUserFavorite extends LayerItemBase {
 
-    private ArrayList<PoiInfoEntity> mSimpleFavoriteList; //poi
-    private PoiInfoEntity mHomeFavoriteList;   //家
-    private PoiInfoEntity mCompanyFavoriteList; //公司
+    private ArrayList<PoiInfoEntity> mSimpleFavoriteList; //注意：每次只能传一条数据  poi 家  公司
 
 }

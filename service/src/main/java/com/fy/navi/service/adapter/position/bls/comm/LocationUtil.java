@@ -10,6 +10,7 @@ import android.text.format.Time;
 import com.autonavi.gbl.common.model.Coord2DDouble;
 import com.autonavi.gbl.pos.model.LocDataType;
 import com.autonavi.gbl.pos.model.LocGnss;
+import com.fy.navi.service.adapter.calibration.CalibrationAdapter;
 import com.fy.navi.service.adapter.position.PositionConstant;
 
 import java.math.BigInteger;
@@ -114,7 +115,14 @@ public class LocationUtil {
         }
         // 位置是否加密偏移: 0未偏移，1已经偏移  平板不会漂移   车机会漂移
         if(PositionConstant.isDrBack){
-            locData.isEncrypted = 1;
+            //isEncrypted=0，则 point 字段存储的是 WGS84 坐标；若 isEncrypted=1，则 point 存储的是 GCJ02 坐标
+            if(CalibrationAdapter.getInstance().navigationDeflectionEnable()){
+                //标定参数P_Navigation_Deflection_Enable=1表示地图需要使能偏转插件，输入的GPS为WGS84坐标系的数据
+                locData.isEncrypted = 0;
+            }else {
+                //标定参数P_Navigation_Deflection_Enable=0表示地图不需要使能偏转插件，输入的GPS为GCJ02坐标系的数据；
+                locData.isEncrypted = 1;
+            }
         }else {
             locData.isEncrypted = 0;
         }

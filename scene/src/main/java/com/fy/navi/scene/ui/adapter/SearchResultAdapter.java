@@ -129,7 +129,8 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
     public void onBindViewHolder(@NonNull final ResultHolder holder, final int position) {
         holder.mResultItemBinding.setPoiBean(mPoiEntities.get(position));
         mPoiInfoEntity = mPoiEntities.get(position);
-        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "onBindViewHolder searchType1: " + mSearchResultEntity.getSearchType() + "----mHomeCompanyType: "+mHomeCompanyType);
+        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "onBindViewHolder searchType1: "
+                + mSearchResultEntity.getSearchType() + "----mHomeCompanyType: "+mHomeCompanyType);
         if (mSearchResultEntity.getSearchType() == AutoMapConstant.SearchType.SEARCH_KEYWORD
                 || mSearchResultEntity.getSearchType() == AutoMapConstant.SearchType.AROUND_SEARCH
                 || mSearchResultEntity.getSearchType() == AutoMapConstant.SearchType.ALONG_WAY_SEARCH

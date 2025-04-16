@@ -17,6 +17,7 @@ import com.fy.navi.service.define.navi.TBTLaneInfo;
 import com.fy.navi.service.define.navistatus.NaviStatus;
 import com.fy.navi.service.logicpaket.navistatus.NaviStatusCallback;
 import com.fy.navi.service.logicpaket.navistatus.NaviStatusPackage;
+import com.fy.navi.ui.base.StackManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,6 +50,7 @@ public class SceneNaviLanesImpl extends BaseSceneModel<SceneNaviLanesView> imple
      * @param laneInfo   车道信息
      */
     public void onLaneInfo(final boolean isShowLane, final LaneInfoEntity laneInfo) {
+        this.mLaneInfo = laneInfo;
         Logger.i(TAG, "isShowLane:" + isShowLane);
         updateSceneVisible(isShowLane);
         if (laneInfo == null) {
@@ -68,7 +70,7 @@ public class SceneNaviLanesImpl extends BaseSceneModel<SceneNaviLanesView> imple
             if (isOnCruising()) {
                 showLaneWhenCarOnCruising(laneInfo);
             } else {
-                showLaneWhenCarOnNavigating(mLaneInfo);
+                showLaneWhenCarOnNavigating(laneInfo);
             }
         }
     }
@@ -80,7 +82,6 @@ public class SceneNaviLanesImpl extends BaseSceneModel<SceneNaviLanesView> imple
     private void showLaneWhenCarOnNavigating(final LaneInfoEntity laneInfo) {
         Logger.d(TAG, "showLaneWhenCarOnNavigating");
         if (laneInfo != null && laneInfo.getBackLaneType() != null && !laneInfo.getBackLaneType().isEmpty()) {
-            mLaneInfo = laneInfo;
             // 背景车道类型为空不处理
             final int LaneNum = laneInfo.getBackLane().size();
             // 车道线可见
@@ -146,7 +147,6 @@ public class SceneNaviLanesImpl extends BaseSceneModel<SceneNaviLanesView> imple
     private void showLaneWhenCarOnCruising(final LaneInfoEntity laneInfo) {
         Logger.d(TAG, "showLaneWhenCarOnCruising-laneInfo is null:" + ConvertUtils.isNull(laneInfo));
         if (laneInfo != null && !ConvertUtils.isEmpty(laneInfo.getBackLane())) {
-            mLaneInfo = laneInfo;
             // 背景车道类型为空不处理
             final int LaneNum = laneInfo.getBackLane().size();
             final List<TBTLaneInfo> listData = new ArrayList();
@@ -277,9 +277,13 @@ public class SceneNaviLanesImpl extends BaseSceneModel<SceneNaviLanesView> imple
     @Override
     public void onNaviStatusChange(String naviStatus) {
         this.mCurrentNaviStatus = naviStatus;
+        Logger.d(TAG, "onNaviStatusChange", "naviStatus:" + naviStatus);
     }
 
     private boolean isOnCruising() {
-        return TextUtils.equals(mCurrentNaviStatus, NaviStatus.NaviStatusType.NAVING);
+        final String currentStatus = mNaviStatusPackage.getCurrentNaviStatus();
+        final boolean isFragmentStackEmpty = StackManager.getInstance().isFragmentStackNull(mMapTypeId.name());
+        Logger.d(TAG, "isOnCruising", "currentStatus:" + currentStatus, "isFragmentStackEmpty:" + isFragmentStackEmpty);
+        return TextUtils.equals(currentStatus, NaviStatus.NaviStatusType.CRUISE) || isFragmentStackEmpty;
     }
 }

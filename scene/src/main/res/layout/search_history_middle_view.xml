@@ -19,7 +19,7 @@
             android:id="@+id/scl_add0"
             clickCommand="@{()-> SceneSearchHistoryImpl.commonAdd(0)}"
             android:layout_width="wrap_content"
-            android:layout_height="@dimen/dp_175"
+            android:layout_height="@dimen/dp_149"
             app:layout_constraintEnd_toStartOf="@id/scl_add1"
             app:layout_constraintStart_toStartOf="parent">
 
@@ -52,7 +52,7 @@
             android:id="@+id/scl_add1"
             clickCommand="@{()-> SceneSearchHistoryImpl.commonAdd(1)}"
             android:layout_width="wrap_content"
-            android:layout_height="@dimen/dp_175"
+            android:layout_height="@dimen/dp_149"
             app:layout_constraintEnd_toStartOf="@id/scl_add2"
             app:layout_constraintStart_toEndOf="@id/scl_add0">
 
@@ -85,7 +85,7 @@
             android:id="@+id/scl_add2"
             clickCommand="@{()-> SceneSearchHistoryImpl.commonAdd(2)}"
             android:layout_width="wrap_content"
-            android:layout_height="@dimen/dp_175"
+            android:layout_height="@dimen/dp_149"
             app:layout_constraintEnd_toStartOf="@id/scl_star"
             app:layout_constraintStart_toEndOf="@id/scl_add1">
 
@@ -118,7 +118,7 @@
         <com.fy.navi.ui.view.SkinConstraintLayout
             android:id="@+id/scl_star"
             android:layout_width="wrap_content"
-            android:layout_height="@dimen/dp_175"
+            android:layout_height="@dimen/dp_149"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/scl_add2">
 

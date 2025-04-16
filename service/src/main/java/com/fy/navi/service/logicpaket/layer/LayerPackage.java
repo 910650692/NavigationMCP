@@ -12,9 +12,10 @@ import com.fy.navi.service.define.layer.GemLayerItem;
 import com.fy.navi.service.define.layer.refix.LayerItemSearchResult;
 import com.fy.navi.service.define.layer.refix.LayerItemUserFavorite;
 import com.fy.navi.service.define.layer.refix.LayerItemUserTrackDepth;
-import com.fy.navi.service.define.map.GmBizUserFavoritePoint;
+import com.fy.navi.service.define.layer.refix.LayerSearchItemType;
 import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.navi.NaviParkingEntity;
+import com.fy.navi.service.define.search.PoiInfoEntity;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
@@ -81,6 +82,10 @@ public class LayerPackage implements ILayerAdapterCallBack {
         mLayerAdapter.setCarMode(mapTypeId, carMode);
     }
 
+    public void setPreviewMode(MapType mapTypeId, boolean bPreview) {
+        mLayerAdapter.setPreviewMode(mapTypeId, bPreview);
+    }
+
     public int setFollowMode(MapType mapTypeId, boolean bFollow) {
         return mLayerAdapter.setFollowMode(mapTypeId, bFollow);
     }
@@ -119,13 +124,12 @@ public class LayerPackage implements ILayerAdapterCallBack {
     /**
      * 搜索图层Item点击回调
      *
-     * @param clickResult
      */
     @Override
-    public void onSearchItemClick(MapType mapTypeId, LayerItemSearchResult clickResult) {
+    public void onSearchItemClick(MapType mapTypeId, LayerSearchItemType type, int index) {
         callbacks.forEach((key, packageCallBacks) -> {
             packageCallBacks.forEach(packageCallBack -> {
-                packageCallBack.onSearchItemClick(mapTypeId, clickResult);
+                packageCallBack.onSearchItemClick(mapTypeId, type, index);
             });
         });
     }
@@ -146,10 +150,10 @@ public class LayerPackage implements ILayerAdapterCallBack {
     }
 
     @Override
-    public void onFavoriteClick(GeoPoint geoPoint) {
+    public void onFavoriteClick(MapType mapTypeId,PoiInfoEntity poiInfo) {
         callbacks.forEach((key, packageCallBacks) -> {
             packageCallBacks.forEach(packageCallBack -> {
-                packageCallBack.onFavoriteClick(geoPoint);
+                packageCallBack.onFavoriteClick(mapTypeId,poiInfo);
             });
         });
     }
@@ -197,10 +201,6 @@ public class LayerPackage implements ILayerAdapterCallBack {
         return mLayerAdapter.calcStraightDistance(startPoint, endPoint);
     }
 
-    public void updateFavoriteMain(MapType mapTypeId, List<GmBizUserFavoritePoint> list) {
-        mLayerAdapter.updateFavoriteMain(mapTypeId, list);
-    }
-
     public void clearFavoriteMain(MapType mapTypeId) {
         mLayerAdapter.clearFavoriteMain(mapTypeId);
     }
@@ -217,8 +217,16 @@ public class LayerPackage implements ILayerAdapterCallBack {
         mLayerAdapter.addLayerItemOfUserTrackDepth(mapTypeId, userTrackDepth, clearOtherLayerItem);
     }
 
-    public void addLayerItemOfFavorite(MapType mapTypeId, LayerItemUserFavorite favorites, boolean clearOtherLayerItem) {
-        mLayerAdapter.addLayerItemOfFavorite(mapTypeId, favorites, clearOtherLayerItem);
+    public void addLayerItemOfFavorite(MapType mapTypeId, LayerItemUserFavorite favorites) {
+        mLayerAdapter.addLayerItemOfFavorite(mapTypeId, favorites);
+    }
+
+    public void removeFavoriteMain(MapType mapTypeId, PoiInfoEntity poiInfoEntity) {
+        mLayerAdapter.removeFavoriteMain(mapTypeId,poiInfoEntity);
+    }
+
+    public void setFavoriteVisible(MapType mapTypeId, boolean visible) {
+        mLayerAdapter.setFavoriteVisible(mapTypeId,visible);
     }
 
 

@@ -20,13 +20,11 @@ import com.fy.navi.service.define.layer.refix.LayerItemSearchResult;
 import com.fy.navi.service.define.layer.refix.LayerItemUserFavorite;
 import com.fy.navi.service.define.layer.refix.LayerItemUserTrackDepth;
 import com.fy.navi.service.define.layer.refix.LayerSearchItemType;
-import com.fy.navi.service.define.map.GmBizUserFavoritePoint;
 import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.navi.NaviParkingEntity;
+import com.fy.navi.service.define.search.PoiInfoEntity;
 import com.fy.navi.service.logicpaket.position.PositionPackage;
-
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @Description TODO
@@ -74,6 +72,11 @@ public class LayerAdapterImpl implements ILayerApi {
     @Override
     public void setCarMode(MapType mapTypeId, CarModeType carMode) {
         layersPoolManager.get(mapTypeId).getLayerCar().setCarMode(carMode);
+    }
+
+    @Override
+    public void setPreviewMode(MapType mapTypeId, boolean bPreview) {
+        layersPoolManager.get(mapTypeId).getLayerCar().setPreviewMode(bPreview);
     }
 
     @Override
@@ -306,14 +309,8 @@ public class LayerAdapterImpl implements ILayerApi {
     }
 
     @Override
-    public void selectSearchPoi(MapType mapTypeId, GemLayerClickBusinessType type, String strID, boolean bFocus) {
-        layersPoolManager.get(mapTypeId).getLayerSearch().setSelect(type, strID, bFocus);
-    }
-
-
-    @Override
-    public void updateFavoriteMain(MapType mapTypeId, List<GmBizUserFavoritePoint> list) {
-        layersPoolManager.get(mapTypeId).getLayerUser().updateFavoriteMain(list);
+    public void selectSearchPoi(MapType mapTypeId, LayerSearchItemType type, int index) {
+        layersPoolManager.get(mapTypeId).getLayerSearch().setSelect(type, index);
     }
 
     @Override
@@ -322,23 +319,13 @@ public class LayerAdapterImpl implements ILayerApi {
     }
 
     /* 搜索图层扎标接口 */
-    public boolean updateSearchMarker(MapType mapTypeId, LayerItemSearchResult searchResult, boolean clearOtherLayerItem) {
+    public boolean updateSearchMarker(MapType mapTypeId, LayerSearchItemType type, LayerItemSearchResult searchResult, boolean clearOtherLayerItem) {
         if (clearOtherLayerItem) {
             layersPoolManager.get(mapTypeId).getLayerSearch().clearAllItems();
         }
-        boolean searchMarker = layersPoolManager.get(mapTypeId).getLayerSearch().updateSearchMarker(searchResult);
+        boolean searchMarker = layersPoolManager.get(mapTypeId).getLayerSearch().updateSearchMarker(type, searchResult);
         Logger.d(TAG, "updateSearchMarker " + searchMarker);
         return searchMarker;
-    }
-
-    /**
-     * 删除扎标map数据
-     * key -> BizSearchType
-     */
-    public boolean removeMapDataByKey(MapType mapTypeId, int key) {
-        boolean removedIf = layersPoolManager.get(mapTypeId).getLayerSearch().removeMapDataByKey(key);
-        Logger.d(TAG, "removeMapDataByKey " + removedIf);
-        return removedIf;
     }
 
     /**
@@ -449,11 +436,18 @@ public class LayerAdapterImpl implements ILayerApi {
     }
 
     @Override
-    public void addLayerItemOfFavorite(MapType mapTypeId, LayerItemUserFavorite favorites, boolean clearOtherLayerItem) {
-        if (clearOtherLayerItem) {
-            layersPoolManager.get(mapTypeId).getLayerUser().clearAllItems();
-        }
+    public void addLayerItemOfFavorite(MapType mapTypeId, LayerItemUserFavorite favorites) {
         layersPoolManager.get(mapTypeId).getLayerUser().updateFavoriteMain(favorites);
+    }
+
+    @Override
+    public void removeFavoriteMain(MapType mapTypeId, PoiInfoEntity poiInfoEntity) {
+        layersPoolManager.get(mapTypeId).getLayerUser().removeFavoriteMain(poiInfoEntity);
+    }
+
+    @Override
+    public void setFavoriteVisible(MapType mapTypeId, boolean visible) {
+        layersPoolManager.get(mapTypeId).getLayerUser().setFavoriteVisible(visible);
     }
 
     @Override

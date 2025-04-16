@@ -7,6 +7,7 @@ import com.android.utils.log.Logger;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.adapter.aos.BlAosAdapter;
 import com.fy.navi.service.adapter.aos.QueryRestrictedObserver;
+import com.fy.navi.service.adapter.calibration.CalibrationAdapter;
 import com.fy.navi.service.adapter.engine.EngineAdapter;
 import com.fy.navi.service.adapter.layer.LayerAdapter;
 import com.fy.navi.service.adapter.map.MapAdapter;
@@ -53,7 +54,7 @@ import com.fy.navi.service.define.utils.NumberUtils;
 import com.fy.navi.service.greendao.setting.SettingManager;
 import com.fy.navi.service.logicpaket.calibration.CalibrationPackage;
 import com.fy.navi.service.logicpaket.mapdata.MapDataPackage;
-import com.fy.navi.service.logicpaket.search.SearchPackage;
+import com.fy.navi.service.define.layer.refix.LayerItemLabelResult;
 import com.fy.navi.service.logicpaket.setting.SettingPackage;
 import com.fy.navi.service.logicpaket.signal.SignalPackage;
 import com.fy.navi.service.logicpaket.user.behavior.BehaviorPackage;
@@ -242,7 +243,7 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
         Logger.i(TAG, "onRouteDrawLine");
         final RequestRouteResult requestRouteResult = mRequestRouteResults.get(routeLineLayerParam.getMMapTypeId());
         if (!ConvertUtils.isEmpty(requestRouteResult)) {
-            if (requestRouteResult.isMFastNavi()) {
+            if (mNaviStatusAdapter.isGuidanceActive()) {
                 mNaviAdapter.updateNaviPath(NumberUtils.NUM_0, requestRouteResult.getMLineLayerParam());
             }
         }
@@ -523,6 +524,7 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
         final String platNum = SettingManager.getInstance().getValueByKey(SettingController.KEY_SETTING_GUIDE_VEHICLE_NUMBER);
         final String mVoidLimit = SettingManager.getInstance().getValueByKey(SettingController.KEY_SETTING_GUIDE_AVOID_LIMIT);
         initBevCarData();
+        setCarType();
         mRouteAdapter.setRequestControl(perfrenceId, platNum, "true".equals(mVoidLimit), mNaviStatusAdapter.isGuidanceActive());
         mSelectRouteIndex.put(param.getMMapTypeId(), NumberUtils.NUM_ERROR);
         if (!mNaviStatusAdapter.isGuidanceActive()) {
@@ -531,6 +533,21 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
         final long requestId = mRouteAdapter.requestRoute(param, paramList);
         mRequestId.put(param.getMMapTypeId(), requestId);
         return requestId;
+    }
+
+    /**
+     * 设置车辆类别
+     *
+     */
+    public void setCarType() {
+        final int carType = CalibrationAdapter.getInstance().powerType();
+        if (carType == 1 || carType == -1) {
+            BevPowerCarUtils.getInstance().carType = String.valueOf(2);
+            BevPowerCarUtils.getInstance().bevCarElicOpen = true;
+        } else {
+            BevPowerCarUtils.getInstance().carType = String.valueOf(0);
+            BevPowerCarUtils.getInstance().bevCarElicOpen = false;
+        }
     }
 
     /**
@@ -543,9 +560,9 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
     public long requestManyVia(final MapType mapTypeId, final List<RouteParam> routeParams) {
         mViaRouteParams.put(mapTypeId, routeParams);
         final RouteRequestParam routeRequestParam = new RouteRequestParam();
-        ;
         routeRequestParam.setMMapTypeId(mapTypeId);
         routeRequestParam.setMRouteWay(RouteWayID.ROUTE_WAY_ADD_ALL_VIA);
+        routeRequestParam.setMFastNavi(mNaviStatusAdapter.isGuidanceActive());
         routeRequestParam.setMRoutePriorityType(RoutePriorityType.ROUTE_TYPE_CHANGE_JNY_PNT);
         return requestRoute(routeRequestParam);
     }
@@ -560,9 +577,9 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
     public long requestChangeEnd(final MapType mapTypeId, final PoiInfoEntity poiInfoEntity) {
         mEndRouteParams.put(mapTypeId, getRouteParamFromPoiInfoEntity(poiInfoEntity, RoutePoiType.ROUTE_POI_TYPE_END));
         final RouteRequestParam routeRequestParam = new RouteRequestParam();
-        ;
         routeRequestParam.setMMapTypeId(mapTypeId);
         routeRequestParam.setMRouteWay(RouteWayID.ROUTE_WAY_CHANGE_END);
+        routeRequestParam.setMFastNavi(mNaviStatusAdapter.isGuidanceActive());
         routeRequestParam.setMRoutePriorityType(RoutePriorityType.ROUTE_TYPE_VOICE_CHANGE_DEST);
         return requestRoute(routeRequestParam);
     }
@@ -700,6 +717,7 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
         final String platNum = SettingManager.getInstance().getValueByKey(SettingController.KEY_SETTING_GUIDE_VEHICLE_NUMBER);
         final String mVoidLimit = SettingManager.getInstance().getValueByKey(SettingController.KEY_SETTING_GUIDE_AVOID_LIMIT);
         initBevCarData();
+        setCarType();
         mRouteAdapter.setRequestControl(perfrenceId, platNum, "true".equals(mVoidLimit), mNaviStatusAdapter.isGuidanceActive());
         mSelectRouteIndex.put(mapTypeId, NumberUtils.NUM_ERROR);
         if (!mNaviStatusAdapter.isGuidanceActive()) {
@@ -947,13 +965,43 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
     }
 
     /**
+     * 绘制终点附近有可用停车点
+     *
+     * @param mapTypeId 屏幕ID
+     */
+    public void showRoutePark(final MapType mapTypeId) {
+        if (ConvertUtils.isEmpty(mRequestRouteResults.get(mapTypeId))) {
+            Logger.d(TAG, "showRoutePark mRequestRouteResults is null");
+            return;
+        }
+        final RouteLineLayerParam routeLineLayerParam = mRequestRouteResults.get(mapTypeId).getMLineLayerParam();
+        if (ConvertUtils.isEmpty(routeLineLayerParam)) {
+            Logger.d(TAG, "showRoutePark routeLineLayerParam is null");
+            return;
+        }
+        final LayerItemLabelResult layerItemLabelResult = new LayerItemLabelResult();
+        layerItemLabelResult.setPointType(LayerItemLabelResult.ILabelLayerPointType.LABEL_POINT_TYPE_PARK);
+        layerItemLabelResult.setPos(routeLineLayerParam.getMRouteLinePoints().getMEndPoints().get(0).getMPos());
+        mLayerAdapter.updatePopSearchPointInfo(mapTypeId, layerItemLabelResult);
+    }
+
+    /**
      * 清除路线
      * @param mapTypeId 屏幕ID
      */
     public void clearRouteLine(final MapType mapTypeId) {
         mNaviStatusAdapter.setNaviStatus(NaviStatus.NaviStatusType.NO_STATUS);
         mLayerAdapter.clearRouteLine(mapTypeId);
+        mLayerAdapter.clearLabelItem(mapTypeId);
         removeAllRouteInfo(mapTypeId);
+    }
+
+    /**
+     * 清除终点附近停车场扎标
+     * @param mapTypeId 屏幕ID
+     */
+    public void clearEndParkPoint(final MapType mapTypeId) {
+        mLayerAdapter.clearLabelItem(mapTypeId);
     }
 
     /**
@@ -991,8 +1039,8 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
             return;
         }
         previewParams.setScreenLeft(1350);
-        previewParams.setScreenRight(500);
-        previewParams.setScreenTop(170);
+        previewParams.setScreenRight(600);
+        previewParams.setScreenTop(210);
         previewParams.setScreenBottom(20);
         mMapAdapter.showPreview(mapTypeId, previewParams);
     }
@@ -1027,28 +1075,36 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
      * @param routeIndex 路线id
      */
     public void selectRoute(final MapType mapTypeId, final int routeIndex) {
-        if (ConvertUtils.isEmpty(mRequestRouteResults.get(mapTypeId))) {
+        Logger.i(TAG, mapTypeId.getMapType());
+        if (ConvertUtils.isEmpty(mRequestRouteResults)) {
+            return;
+        }
+        final RequestRouteResult requestRouteResult = mRequestRouteResults.get(mapTypeId);
+        if (ConvertUtils.isEmpty(requestRouteResult)) {
+            Logger.e(TAG, "no data");
             return;
         }
         mLayerAdapter.setSelectedPathIndex(mapTypeId, routeIndex);
         mSelectRouteIndex.put(mapTypeId, routeIndex);
-        if (mRequestRouteResults.get(mapTypeId) != null) {
+        if (!ConvertUtils.isEmpty(requestRouteResult)) {
             mNaviAdapter.setNaviPath(routeIndex, mRequestRouteResults.get(mapTypeId).getMLineLayerParam());
         }
-        final RouteCurrentPathParam routeCurrentPathParam = mRequestRouteResults.get(mapTypeId).getMRouteCurrentPathParam();
-        routeCurrentPathParam.setMMapTypeId(mapTypeId);
-        routeCurrentPathParam.setMRequestId(mRequestRouteResults.get(mapTypeId).getMRequestId());
-        routeCurrentPathParam.setMPathInfo(mRequestRouteResults.get(mapTypeId).getMLineLayerParam().getMPathInfoList().get(routeIndex));
-        routeCurrentPathParam.setMIsOnlineRoute(mRequestRouteResults.get(mapTypeId).getMLineLayerParam().isMIsOnlineRoute());
-        mRouteAdapter.setCurrentPath(routeCurrentPathParam);
-        if (ConvertUtils.isEmpty(mRouteResultObserverMap)) {
-            return;
+        if (!ConvertUtils.isEmpty(requestRouteResult)) {
+            final RouteCurrentPathParam routeCurrentPathParam = requestRouteResult.getMRouteCurrentPathParam();
+            routeCurrentPathParam.setMMapTypeId(mapTypeId);
+            routeCurrentPathParam.setMRequestId(requestRouteResult.getMRequestId());
+            routeCurrentPathParam.setMPathInfo(requestRouteResult.getMLineLayerParam().getMPathInfoList().get(routeIndex));
+            routeCurrentPathParam.setMIsOnlineRoute(requestRouteResult.getMLineLayerParam().isMIsOnlineRoute());
+            mRouteAdapter.setCurrentPath(routeCurrentPathParam);
         }
-        for (IRouteResultObserver routeResultObserver : mRouteResultObserverMap.values()) {
-            if (ConvertUtils.isEmpty(routeResultObserver)) {
-                continue;
+
+        if (!ConvertUtils.isEmpty(mRouteResultObserverMap)) {
+            for (IRouteResultObserver routeResultObserver : mRouteResultObserverMap.values()) {
+                if (ConvertUtils.isEmpty(routeResultObserver)) {
+                    continue;
+                }
+                routeResultObserver.onRouteSlected(mapTypeId, routeIndex);
             }
-            routeResultObserver.onRouteSlected(mapTypeId, routeIndex);
         }
     }
 

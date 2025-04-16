@@ -61,7 +61,4 @@ public class MapPointSearchModel extends BaseModel<MapPointSearchViewModel> impl
         }
     }
 
-    public void hideFlyLine(){
-        LayerPackage.getInstance().openFlyLine(MapType.MAIN_SCREEN_MAIN_MAP,false);
-    }
 }

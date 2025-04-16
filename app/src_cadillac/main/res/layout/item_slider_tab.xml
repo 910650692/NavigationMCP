@@ -1,0 +1,11 @@
+<com.fy.navi.ui.view.SkinLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:gravity="center">
+
+    <com.fy.navi.ui.view.SkinView
+        android:id="@+id/item_slider_tab_line"
+        android:layout_width="@dimen/dp_78"
+        android:layout_height="@dimen/dp_8" />
+</com.fy.navi.ui.view.SkinLinearLayout>

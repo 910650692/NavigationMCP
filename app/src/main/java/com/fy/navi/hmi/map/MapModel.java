@@ -29,6 +29,7 @@ import com.fy.navi.hmi.navi.AuthorizationRequestDialog;
 import com.fy.navi.hmi.navi.ContinueNaviDialog;
 import com.fy.navi.hmi.navi.PhoneAddressDialog;
 import com.fy.navi.hmi.poi.PoiDetailsFragment;
+import com.fy.navi.hmi.traffic.TrafficEventFragment;
 import com.fy.navi.scene.RoutePath;
 import com.fy.navi.scene.impl.imersive.ImersiveStatus;
 import com.fy.navi.scene.impl.imersive.ImmersiveStatusScene;
@@ -53,6 +54,7 @@ import com.fy.navi.service.define.message.MessageCenterInfo;
 import com.fy.navi.service.define.message.MessageCenterType;
 import com.fy.navi.service.define.navi.LaneInfoEntity;
 import com.fy.navi.service.define.navi.NaviEtaInfo;
+import com.fy.navi.service.define.navi.SoundInfoEntity;
 import com.fy.navi.service.define.navistatus.NaviStatus;
 import com.fy.navi.service.define.position.LocInfoBean;
 import com.fy.navi.service.define.route.RouteMsgPushInfo;
@@ -166,7 +168,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
     private final String mCallbackId;
     private ForecastPackage mforCastPackage;
     private final AccountPackage mAccountPackage;
-
+    private NaviStatusPackage mNaviStatusPackage;
     public MapModel() {
         mCallbackId = UUID.randomUUID().toString();
         mapPackage = MapPackage.getInstance();
@@ -181,6 +183,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         mHistoryManager = HistoryManager.getInstance();
         mHistoryManager.init();
         settingManager = SettingManager.getInstance();
+        settingManager.init();
         cruisePackage = CruisePackage.getInstance();
         signalPackage = SignalPackage.getInstance();
         msgPushPackage = MsgPushPackage.getInstance();
@@ -202,6 +205,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         mforCastPackage.registerCallBack(this);
         searchPackage.registerCallBack(mCallbackId, this);
         mAccountPackage = AccountPackage.getInstance();
+        mNaviStatusPackage = NaviStatusPackage.getInstance();
     }
 
     @Override
@@ -306,7 +310,9 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         int surfaceWidth = ConvertUtils.ln2int(mapSurfaceViewSizeParams.getScreenWidth());
         int surfaceHeight = ConvertUtils.ln2int(mapSurfaceViewSizeParams.getScreenHeight());
         mapPackage.setMapCenterInScreen(MapType.MAIN_SCREEN_MAIN_MAP, surfaceWidth / 2, surfaceHeight / 2);
-        goToCarPosition();
+        ThreadManager.getInstance().postDelay(this::goToCarPosition,200);
+        mViewModel.showOrHideSelfParkingView(false);
+        stopCruise();
     }
 
     @Override
@@ -360,6 +366,8 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
             signalPackage.registerObserver(mapTypeId.name(), this);
             mapPackage.goToCarPosition(mapTypeId);
             naviPackage.registerObserver(mViewModel.mScreenId, this);
+            // 注册监听
+            cruisePackage.registerObserver(mViewModel.mScreenId, this);
             // 恢复偏好设置
             mapModelHelp.restoreSetting();
             mViewModel.initTimer();
@@ -385,7 +393,10 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         if(NaviStatusPackage.getInstance().getCurrentNaviStatus().equals(NaviStatus.NaviStatusType.SELECT_ROUTE)){
             return;
         }
-        mViewModel.showOrHideSelfParkingView(true);
+
+        ThreadManager.getInstance().postDelay(() -> {
+            mViewModel.showOrHideSelfParkingView(true);
+        },600);
     }
 
     @Override
@@ -407,8 +418,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
     public void onImmersiveStatusChange(MapType mapTypeId, ImersiveStatus currentImersiveStatus) {
         //是触控态的时候显示回车位   否则隐藏
 //        if (Boolean.FALSE.equals(mViewModel.bottomNaviVisibility.get())) return;
-        if(getBottomNaviVisibility() || getTopFragment() &&
-                NaviStatusPackage.getInstance().getCurrentNaviStatus().equals(NaviStatus.NaviStatusType.NO_STATUS)){
+        if(parkingViewExist()){
             if (currentImersiveStatus == ImersiveStatus.TOUCH) {
                 mViewModel.showOrHideSelfParkingView(true);
             } else if (currentImersiveStatus == ImersiveStatus.IMERSIVE) {
@@ -416,11 +426,24 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
                 goToCarPosition();
             }
         }
+
+        if (getNaviStatus() == NaviStatus.NaviStatusType.NAVING && settingPackage.getAutoScale()) {
+            Logger.i(TAG, "锁定比例尺，触摸态关闭动态比例尺，沉浸态开启比例尺！");
+            boolean isOpen = !naviPackage.getFixedOverViewStatus() && currentImersiveStatus == ImersiveStatus.IMERSIVE;
+            layerPackage.openDynamicLevel(mapTypeId, isOpen);
+        }
     }
 
-    private boolean getTopFragment(){
-      return mViewModel.getTopFragment();
+    private boolean parkingViewExist(){
+        return getBottomNaviVisibility() || getTopFragment(PoiDetailsFragment.class) &&
+                NaviStatusPackage.getInstance().getCurrentNaviStatus().equals(NaviStatus.NaviStatusType.NO_STATUS)
+                || getTopFragment(TrafficEventFragment.class);
     }
+
+    private boolean getTopFragment(Class<? extends Fragment> targetClass){
+      return mViewModel.getTopFragment(targetClass);
+    }
+
 
     public boolean getBottomNaviVisibility(){
         return mViewModel.bottomNaviVisibility.get();
@@ -429,10 +452,10 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
 
     private void startSelfParkingTimer() {
         cancelSelfParkingTimer();
-        if(getBottomNaviVisibility()){
+        if(parkingViewExist()){
             mSelfParkingTimer = ThreadManager.getInstance().asyncWithFixDelay(() -> {
                 cancelSelfParkingTimer();
-                if(getBottomNaviVisibility()){
+                if(parkingViewExist()){
                     ImmersiveStatusScene.getInstance().setImmersiveStatus(MapType.MAIN_SCREEN_MAIN_MAP, ImersiveStatus.IMERSIVE);
                 }
                 Logger.d("onFinish-startSelfParkingTimer");
@@ -482,6 +505,9 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         if (TextUtils.equals(mapTypeId.name(), mViewModel.mScreenId)) {
             IMapPackageCallback.super.onQueryTrafficEvent(mapTypeId, poiInfo);
             mViewModel.openTrafficDetailFragment(poiInfo);
+            ThreadManager.getInstance().postDelay(() -> {
+                mViewModel.showOrHideSelfParkingView(true);
+            },600);
         }
     }
 
@@ -573,7 +599,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
     }
 
     public String getNaviStatus() {
-        return mapPackage.getNaviStatus();
+        return mNaviStatusPackage.getCurrentNaviStatus();
     }
 
     /**
@@ -662,13 +688,9 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
     }
 
     @Override
-    public void onFavoriteClick(GeoPoint geoPoint) {
+    public void onFavoriteClick(MapType mapTypeId,PoiInfoEntity poiInfo) {
         Logger.i("onFavoriteClick",ThreadManager.getInstance().getCurrentThread().getName()+"");
         ThreadManager.getInstance().postUi(() -> {
-            PoiInfoEntity poiInfo = new PoiInfoEntity();
-            poiInfo.setPoiType(AutoMapConstant.SearchType.GEO_SEARCH);
-            poiInfo.setPoint(geoPoint);
-
             Bundle bundle = new Bundle();
             bundle.putParcelable(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_OPEN_DETAIL, poiInfo);
             bundle.putInt(AutoMapConstant.PoiBundleKey.BUNDLE_KEY_START_POI_TYPE, AutoMapConstant.PoiType.POI_MAP_CLICK);
@@ -687,47 +709,44 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
 
     @Override
     public void startCruise() {
-        boolean isNoStatus = Objects.equals(getNaviStatus(), NaviStatus.NaviStatusType.NO_STATUS);
-        Logger.i(TAG, "startCruise", "isNoStatus:" + isNoStatus);
-        if (isNoStatus) {
-            boolean isSuccess = cruisePackage.startCruise();
-            if (isSuccess) {
-                Logger.i(TAG, "startCruise success");
-                String isOpen = settingPackage.getValueFromDB(SettingController.KEY_SETTING_IS_AUTO_RECORD);
-                if (isOpen != null && isOpen.equals("true")) {
-                    Logger.i(TAG, "开始打点");
-                    @SuppressLint("HardwareIds") final String androidId = Settings.Secure.getString(
-                            AppContext.getInstance().getMContext().getContentResolver(),
-                            Settings.Secure.ANDROID_ID
-                    );
-                    final long curTime = System.currentTimeMillis();
-                    mFilename = curTime + "_" + 0 + "_" + androidId;
-                    UserTrackPackage.getInstance().startGpsTrack(GBLCacheFilePath.SYNC_PATH + "/403", mFilename, 2000);
-                }
-                mViewModel.showToast(R.string.step_into_cruise);
-                mViewModel.showOrHiddenCruise(true);
-                mViewModel.setCruiseMuteOrUnMute(
-                        Boolean.parseBoolean(settingPackage.getValueFromDB(SettingController.KEY_SETTING_CRUISE_BROADCAST))
+        final boolean isSuccess = cruisePackage.startCruise();
+        if (isSuccess) {
+            String isOpen = settingPackage.getValueFromDB(SettingController.KEY_SETTING_IS_AUTO_RECORD);
+            if (isOpen != null && isOpen.equals("true")) {
+                Logger.i(TAG, "开始打点");
+                @SuppressLint("HardwareIds") final String androidId = Settings.Secure.getString(
+                        AppContext.getInstance().getMContext().getContentResolver(),
+                        Settings.Secure.ANDROID_ID
                 );
-                mapModelHelp.setCruiseScale();
-                // 注册监听
-                cruisePackage.registerObserver(mViewModel.mScreenId, this);
+                final long curTime = System.currentTimeMillis();
+                mFilename = curTime + "_" + 0 + "_" + androidId;
+                UserTrackPackage.getInstance().startGpsTrack(GBLCacheFilePath.SYNC_PATH + "/403", mFilename, 2000);
             }
+            final SoundInfoEntity soundInfo = new SoundInfoEntity();
+            soundInfo.setText(AppContext.getInstance().getMApplication().getString(R.string.step_into_cruise));
+            naviPackage.onPlayTTS(soundInfo);
+            mViewModel.showToast(R.string.step_into_cruise);
+            mViewModel.setCruiseMuteOrUnMute(
+                    Boolean.parseBoolean(settingPackage.getValueFromDB(SettingController.KEY_SETTING_CRUISE_BROADCAST))
+            );
+            mapModelHelp.setCruiseScale();
         }
+        mViewModel.showOrHiddenCruise(isSuccess);
     }
 
     public void stopCruise() {
-        Logger.i(TAG, "stopCruise:" + getNaviStatus());
-        if (getNaviStatus() == NaviStatus.NaviStatusType.CRUISE) {
-            Logger.i(TAG, "stopCruise");
-            boolean isSuccess = cruisePackage.stopCruise();
-            if (isSuccess) {
-                UserTrackPackage.getInstance().closeGpsTrack(GBLCacheFilePath.SYNC_PATH + "/403", mFilename);
-                mViewModel.showToast(R.string.step_exit_cruise);
-                mViewModel.showOrHiddenCruise(false);
-            }
+        final boolean isSuccess = cruisePackage.stopCruise();
+        if (isSuccess) {
+            UserTrackPackage.getInstance().closeGpsTrack(GBLCacheFilePath.SYNC_PATH + "/403", mFilename);
+            final SoundInfoEntity soundInfo = new SoundInfoEntity();
+            soundInfo.setText(AppContext.getInstance().getMApplication().getString(R.string.step_exit_cruise));
+            naviPackage.onPlayTTS(soundInfo);
+            mViewModel.showToast(R.string.step_exit_cruise);
         }
-        cruisePackage.unregisterObserver(mViewModel.mScreenId);
+        if (TextUtils.equals(getNaviStatus(), NaviStatus.NaviStatusType.CRUISE)) {
+            mNaviStatusPackage.setNaviStatus(NaviStatus.NaviStatusType.NO_STATUS);
+        }
+        mViewModel.showOrHiddenCruise(false);
     }
 
     @Override
@@ -781,6 +800,9 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
                 break;
             case SettingController.KEY_SETTING_GUIDE_AVOID_LIMIT:
                 getCurrentCityLimit();
+                break;
+            case SettingController.KEY_SETTING_FAVORITE_POINT:
+                showOrHideFavoriteToMap(value);
                 break;
             default:
                 break;
@@ -1041,25 +1063,50 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         });
     }
 
+
+    private void addFavoriteToMap() {
+        //如果设置设置不显示收藏点  需要隐藏
+        final String isFavoritePointStr = settingManager.getValueByKey(SettingController.KEY_SETTING_FAVORITE_POINT);
+        final boolean isFavoritePoint = TextUtils.equals(isFavoritePointStr, "true");
+        if(!isFavoritePoint){
+            return;
+        }
+        showOrHideFavoriteToMap(String.valueOf(isFavoritePoint));
+    }
+
     /**
      * 添加收藏
      */
-    public void addFavoriteToMap() {
-        LayerItemUserFavorite layerItemUserFavorite = new LayerItemUserFavorite();
-        ArrayList<PoiInfoEntity> poiInfoEntities = behaviorPackage.getFavoritePoiData();
-        PoiInfoEntity homePoiInfoEntity = behaviorPackage.getHomeFavoriteInfo();
-        PoiInfoEntity companyFavoriteInfo = behaviorPackage.getCompanyFavoriteInfo();
+    public void showOrHideFavoriteToMap(String value) {
+        Logger.d("showOrHideFavoriteToMap",value);
+        //如果设置不显示收藏点  需要隐藏
+        if(Boolean.parseBoolean(value)){
+            LayerItemUserFavorite layerItemUserFavorite = new LayerItemUserFavorite();
+            ArrayList<PoiInfoEntity> allPoiInfoEntities = new ArrayList<>();
 
-        if (!ConvertUtils.isEmpty(poiInfoEntities)) {
-            layerItemUserFavorite.setMSimpleFavoriteList(poiInfoEntities);
+            ArrayList<PoiInfoEntity> poiInfoEntities = behaviorPackage.getFavoritePoiData();
+            PoiInfoEntity homePoiInfoEntity = behaviorPackage.getHomeFavoriteInfo();
+            PoiInfoEntity companyFavoriteInfo = behaviorPackage.getCompanyFavoriteInfo();
+
+            if (!ConvertUtils.isEmpty(poiInfoEntities)) {
+                allPoiInfoEntities.addAll(poiInfoEntities);
+            }
+            if (!ConvertUtils.isEmpty(homePoiInfoEntity)) {
+                allPoiInfoEntities.add(homePoiInfoEntity);
+            }
+            if (!ConvertUtils.isEmpty(companyFavoriteInfo)) {
+                allPoiInfoEntities.add(companyFavoriteInfo);
+            }
+            if(ConvertUtils.isEmpty(allPoiInfoEntities)){
+                return;
+            }
+
+            layerItemUserFavorite.setMSimpleFavoriteList(allPoiInfoEntities);
+            layerPackage.addLayerItemOfFavorite(MapType.MAIN_SCREEN_MAIN_MAP, layerItemUserFavorite);
+            layerPackage.setFavoriteVisible(MapType.MAIN_SCREEN_MAIN_MAP,true);
+        }else {
+            layerPackage.setFavoriteVisible(MapType.MAIN_SCREEN_MAIN_MAP,false);
         }
-        if (!ConvertUtils.isEmpty(homePoiInfoEntity)) {
-            layerItemUserFavorite.setMHomeFavoriteList(homePoiInfoEntity);
-        }
-        if (!ConvertUtils.isEmpty(companyFavoriteInfo)) {
-            layerItemUserFavorite.setMCompanyFavoriteList(companyFavoriteInfo);
-        }
-        layerPackage.addLayerItemOfFavorite(MapType.MAIN_SCREEN_MAIN_MAP, layerItemUserFavorite, true);
     }
 
     @Override
@@ -1152,17 +1199,17 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
     }
 
     @Override
-    public void onMarkClickCallBack(final PoiInfoEntity poiInfoEntity) {
-        SearchResultCallback.super.onMarkClickCallBack(poiInfoEntity);
-        if (ConvertUtils.isEmpty(poiInfoEntity)) {
-            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "onMarkClickCallBack: poiInfoEntity is null");
-            return;
-        }
-
-        final Bundle bundle = new Bundle();
-        bundle.putParcelable(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_OPEN_DETAIL, poiInfoEntity);
-        bundle.putInt(AutoMapConstant.PoiBundleKey.BUNDLE_KEY_START_POI_TYPE, AutoMapConstant.PoiType.POI_KEYWORD);
-        addPoiDetailsFragment(new PoiDetailsFragment(), bundle);
+    public void onMarkClickCallBack(final int index) {
+//        SearchResultCallback.super.onMarkClickCallBack(poiInfoEntity);
+//        if (ConvertUtils.isEmpty(poiInfoEntity)) {
+//            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "onMarkClickCallBack: poiInfoEntity is null");
+//            return;
+//        }
+//
+//        final Bundle bundle = new Bundle();
+//        bundle.putParcelable(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_OPEN_DETAIL, poiInfoEntity);
+//        bundle.putInt(AutoMapConstant.PoiBundleKey.BUNDLE_KEY_START_POI_TYPE, AutoMapConstant.PoiType.POI_KEYWORD);
+//        addPoiDetailsFragment(new PoiDetailsFragment(), bundle);
     }
 
     @Override

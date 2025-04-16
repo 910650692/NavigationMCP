@@ -159,13 +159,9 @@ public class ManagerMapDataViewModel extends BaseViewModel<ManagerMapDataFragmen
                 size = city.size() + size;
             }
         }
-        if (size > 0) {
-            mDownloadingNoDataVisibility.setValue(false);
-            mAllDownloadingDataSize.setValue(String.valueOf(size));
-            mView.updateDownloadingView(provDataInfos);
-        } else {
-            mDownloadingNoDataVisibility.setValue(true);
-        }
+        mDownloadingNoDataVisibility.setValue(size == 0);
+        mAllDownloadingDataSize.setValue(String.valueOf(size));
+        mView.updateDownloadingView(provDataInfos);
     }
 
     /**
@@ -199,13 +195,14 @@ public class ManagerMapDataViewModel extends BaseViewModel<ManagerMapDataFragmen
     public void onDownLoadStatus(final CityDataInfo info) {
         ThreadManager.getInstance().postUi(() -> {
 
-            if (info.getDownLoadInfo().getTaskState() == UserDataCode.TASK_STATUS_CODE_SUCCESS) {
+            if (info.getDownLoadInfo().getTaskState() == UserDataCode.TASK_STATUS_CODE_SUCCESS
+                || info.getDownLoadInfo().getTaskState() == UserDataCode.TASK_STATUS_CODE_READY) {
                 // 取消下载or已下载，重新加载下载中列表信息
                 setDownloadingView(mModel.getWorkingList());
-                setDownloadedView(mModel.getWorkedList(), true);
-            } else if (info.getDownLoadInfo().getTaskState() == UserDataCode.TASK_STATUS_CODE_READY) {
                 //当前处于已下载tab页，实时删除数据包，会动态刷新当前数据
-                setDownloadedView(mModel.getWorkedList(), true);
+                if (mIsDownloadedPage) {
+                    setDownloadedView(mModel.getWorkedList(), true);
+                }
             } else {
                 //实时更新列表item
                 mView.notifyDowningView(info.getUpperAdcode(), info.getAdcode(), info.getDownLoadInfo());

@@ -69,41 +69,6 @@ public class SceneNaviSapaView extends NaviSceneBase<SceneNaviSapaViewBinding, S
 
     }
 
-    /**
-     * 设置第一个容器的宽度
-     *
-     * @param width 宽度
-     * */
-    public void setFirstSflParams(final int width) {
-//        ViewGroup.LayoutParams layoutParams = mViewBinding.sflFirst.getLayoutParams();
-//        layoutParams.width = width;
-//        mViewBinding.sflFirst.setLayoutParams(layoutParams);
-    }
-
-    /**
-     * 设置first容器背景
-     *
-     * @param resID 资源id
-     * @param view view
-     * */
-    public void updateSflFirst(final int resID, final SkinConstraintLayout view) {
-//        mViewBinding.sflFirst.removeAllViews();
-//        mViewBinding.sflFirst.setBackgroundResource(resID);
-//        mViewBinding.sflFirst.addView(view);
-    }
-
-    /**
-     * 设置second容器背景
-     *
-     * @param resID 资源id
-     * @param view view
-     * */
-    public void updateSflSecond(final int resID, final SkinConstraintLayout view) {
-//        mViewBinding.sflSecond.removeAllViews();
-//        mViewBinding.sflSecond.setBackgroundResource(resID);
-//        mViewBinding.sflSecond.addView(view);
-    }
-
     @Override
     public void onDestroy() {
         super.onDestroy();

@@ -73,7 +73,7 @@ public class SceneNaviSearchResultView extends BaseSceneView<SceneNaviSearchResu
     public void showNaviSearchChargeListUI(List<PoiInfoEntity> poiList,
                                            List<RouteParam> allPoiParamList, int searchType) {
         updateSearchTypeView(searchType);
-        mViewBinding.chargeStationList.notifyResultList(poiList, allPoiParamList, searchType);
+        mViewBinding.chargeStationList.notifyResultList(poiList, allPoiParamList, searchType,0);
     }
 
     /**

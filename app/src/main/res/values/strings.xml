@@ -113,7 +113,8 @@
     <!--算路相关-->
     <string name="route_along_search">途径点</string>
     <string name="route_energy_replenishment_planning">补能规划</string>
-    <string name="route_gas_station">充电</string>
+    <string name="route_charging_station">充电</string>
+    <string name="route_gas_station">加油</string>
     <string name="route_weather">天气</string>
     <string name="route_along_service">服务区</string>
     <string name="route_reatirction_limittipstypenoplate">设置车牌， 避开限行</string>
@@ -167,6 +168,7 @@
     <string name="route_weather_update_head">高德交通： 更新于</string>
     <string name="route_weather_update_end">前</string>
     <string name="route_search_keyword_charge">充电站</string>
+    <string name="route_search_keyword_gas">加油站</string>
     <string name="route_search_keyword_charge_sure">确定</string>
     <string name="route_search_keyword_charge_cancel">取消</string>
     <string name="route_search_keyword_service">服务区</string>
@@ -195,6 +197,9 @@
     <string name="route_service_details_remove_via">删除途经点</string>
     <string name="route_service_details_add_via_charge">添加</string>
     <string name="route_service_details_remove_via_charge">移除</string>
+    <string name="route_oil_price">%s/升</string>
+    <string name="route_business_hour">营业时间：%s</string>
+    <string name="route_poi_phone">电话 :%s</string>
 
     <!-- 账号相关 -->
     <string name="account_title">账号中心</string>

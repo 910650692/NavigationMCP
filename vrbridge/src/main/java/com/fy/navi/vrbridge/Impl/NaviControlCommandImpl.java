@@ -865,8 +865,7 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
     @Override
     public CallResponse onCommonPoiSet(final String sessionId, final String poiType, @NonNull final String poi, final PoiCallback poiCallback) {
         Log.d(IVrBridgeConstant.TAG, "onCommonPoiSet: sessionId = " + sessionId + ", poiType = " + poiType + ", poi = " + poi);
-        VoiceSearchManager.getInstance().setHomeCompany(sessionId, poiType, poi, poiCallback);
-        return CallResponse.createSuccessResponse();
+        return VoiceSearchManager.getInstance().setHomeCompany(sessionId, poiType, poi, poiCallback);
     }
 
     /**
@@ -1449,18 +1448,23 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
     @Override
     public CallResponse onPassbyAdd(final String sessionId, final String poi, final String poiType, final PoiCallback poiCallback) {
         Log.d(IVrBridgeConstant.TAG, "onPassByAdd: sessionId = " + sessionId + ", poi = " + poi + ", poiType = " + poiType);
+        if (TextUtils.isEmpty(sessionId) || TextUtils.isEmpty(poi)) {
+            Log.e(IVrBridgeConstant.TAG, "session or passBy is empty");
+            return CallResponse.createFailResponse("沿途搜参数为空");
+        }
+
         if (!MapStateManager.getInstance().isNaviStatus()) {
             //非导航态不支持沿途搜
             Log.w(IVrBridgeConstant.TAG, "alongSearch in no navigation");
             return CallResponse.createNotSupportResponse("需要发起导航，才能帮你规划沿途的路线，试试说：导航回家");
         }
-
         final RouteCurrentPathParam pathParam = RoutePackage.getInstance().getCurrentPathInfo(MapType.MAIN_SCREEN_MAIN_MAP);
         if (null != pathParam && pathParam.isMIsOnlineRoute()) {
             //离线算路不支持沿途搜
             Log.w(IVrBridgeConstant.TAG, "alongSearch in offline road");
             return CallResponse.createNotSupportResponse("当前使用离线算路，不支持该功能");
         }
+
         VoiceSearchManager.getInstance().handlePassBy(sessionId, poi, poiType, poiCallback);
         return CallResponse.createSuccessResponse();
     }

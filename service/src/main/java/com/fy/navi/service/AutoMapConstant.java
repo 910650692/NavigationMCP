@@ -27,8 +27,8 @@ public interface AutoMapConstant {
     int PLUG_TYPE_SLOW = 7;
     int PLUG_TYPE_FAST = 9;
 
-    int SECONDS_PER_MINUTE = 60;
-    int MILLISECONDS_PER_SECOND = 1000;
+    int INITIAL_DELAY_MINUTE = 2;
+    int DELAY_MINUTE = 5;
 
 
     /*** ！！！搜索相关,搜索类型,只能添加不能删除！！！*/

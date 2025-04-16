@@ -16,20 +16,18 @@
 
         <com.fy.navi.ui.view.SkinLinearLayout
             android:id="@+id/root_view"
-            android:layout_width="@dimen/dp_640"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
             <include
                 android:id="@+id/search_text_bar_view"
-                layout="@layout/search_text_bar_view"
-                android:layout_width="@dimen/dp_640"
-                android:layout_height="@dimen/dp_102" />
+                layout="@layout/search_text_bar_view" />
 
             <com.fy.navi.ui.view.SkinConstraintLayout
-                android:layout_width="@dimen/dp_640"
-                android:layout_height="@dimen/dp_610"
-                android:layout_marginTop="@dimen/dp_24"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_828"
+                android:layout_marginTop="@dimen/dp_20"
                 android:background="@drawable/bg_search_main_tab">
 
                 <include

@@ -177,7 +177,6 @@ public abstract class NaviSceneBase<VB extends ViewDataBinding, VM extends BaseS
     }
 
     public void startCountdown() {
-        resetCountdown();
         if (mCountdown == 0 || !isNeedAutoStartTimer()) {
             return;
         }

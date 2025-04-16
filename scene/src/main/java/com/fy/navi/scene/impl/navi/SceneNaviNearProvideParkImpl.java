@@ -128,7 +128,7 @@ public class SceneNaviNearProvideParkImpl extends BaseSceneModel<SceneNaviNearPr
                 // 搜终点的停车场信息（因为需要实时的信息所以每次请求都要搜索）
                 if (mIsEndParking) {
                     mParkingDestationSearchTaskId =
-                            mSearchPackage.poiIdSearch(mRouteParam.getPoiID());
+                            mSearchPackage.poiIdSearch(mRouteParam.getPoiID(), true);
                     Logger.i(TAG, "开始终点搜 taskId = " + mParkingDestationSearchTaskId);
                 }
                 // 进行搜索操作(终点周边搜索)
@@ -140,10 +140,6 @@ public class SceneNaviNearProvideParkImpl extends BaseSceneModel<SceneNaviNearPr
             }
         } else {
             Logger.e(TAG, "allPoiParamList is null：");
-        }
-        // TODO 这里还需要优化，需要搜索改一下接口
-        if (!ConvertUtils.isNull(mParkingList)) {
-            ThreadManager.getInstance().postDelay(() -> OpenApiHelper.clearSearchLabelMark(), 2000);
         }
     }
 
@@ -179,7 +175,7 @@ public class SceneNaviNearProvideParkImpl extends BaseSceneModel<SceneNaviNearPr
                         1,
                         AppContext.getInstance().getMContext().getString(
                                 com.fy.navi.scene.R.string.st_quick_search_parking),
-                        mRouteParam.getRealPos());
+                        mRouteParam.getRealPos(), "2000", true);
             } else {
                 Logger.e(TAG, "mRouteParam is null：");
             }

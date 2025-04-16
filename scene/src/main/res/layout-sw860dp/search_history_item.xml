@@ -22,7 +22,7 @@
     <com.fy.navi.ui.view.SwipeMenuLayout
         android:id="@+id/swipe_menu_layout"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_158"
+        android:layout_height="@dimen/dp_130"
         android:orientation="horizontal">
 
         <com.fy.navi.ui.view.SkinConstraintLayout

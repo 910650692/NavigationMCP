@@ -13,6 +13,7 @@ import com.fy.navi.service.greendao.CommonManager;
 import com.fy.navi.service.greendao.history.HistoryManager;
 import com.fy.navi.service.logicpaket.user.behavior.BehaviorPackage;
 import com.fy.navi.service.logicpaket.user.msgpush.MsgPushPackage;
+import com.fy.navi.service.logicpaket.user.usertrack.UserTrackPackage;
 
 import java.util.Hashtable;
 
@@ -165,6 +166,7 @@ public final class AccountPackage implements AccountAdapterCallBack {
             mIsLogin = false;
             MsgPushPackage.getInstance().stopListen();
             BehaviorPackage.getInstance().setLoginInfo();
+            mHistoryManager.deleteValueByKey(2);
         }
 
         for (AccountCallBack observer : mCallBacks.values()) {

@@ -19,17 +19,17 @@ public class BaseSearchPoi implements Parcelable {
 
     public static final Creator<BaseSearchPoi> CREATOR = new Creator<BaseSearchPoi>() {
         @Override
-        public BaseSearchPoi createFromParcel(Parcel source) {
+        public BaseSearchPoi createFromParcel(final Parcel source) {
             return new BaseSearchPoi(source);
         }
 
         @Override
-        public BaseSearchPoi[] newArray(int size) {
+        public BaseSearchPoi[] newArray(final int size) {
             return new BaseSearchPoi[size];
         }
     };
 
-    public BaseSearchPoi(Parcel in) {
+    public BaseSearchPoi(final Parcel in) {
         mPid = in.readString();
         mName = in.readString();
         mAddress = in.readString();
@@ -40,7 +40,7 @@ public class BaseSearchPoi implements Parcelable {
     }
 
     @Override
-    public void writeToParcel(Parcel dest, int flags) {
+    public void writeToParcel(final Parcel dest, final int flags) {
         dest.writeString(mPid);
         dest.writeString(mName);
         dest.writeString(mAddress);
@@ -71,7 +71,7 @@ public class BaseSearchPoi implements Parcelable {
         return mPid;
     }
 
-    public void setPid(String pid) {
+    public void setPid(final String pid) {
         this.mPid = pid;
     }
 
@@ -79,7 +79,7 @@ public class BaseSearchPoi implements Parcelable {
         return mName;
     }
 
-    public void setName(String name) {
+    public void setName(final String name) {
         this.mName = name;
     }
 
@@ -87,7 +87,7 @@ public class BaseSearchPoi implements Parcelable {
         return mAddress;
     }
 
-    public void setAddress(String address) {
+    public void setAddress(final String address) {
         this.mAddress = address;
     }
 
@@ -95,7 +95,7 @@ public class BaseSearchPoi implements Parcelable {
         return mAdCode;
     }
 
-    public void setAdCode(int adCode) {
+    public void setAdCode(final int adCode) {
         this.mAdCode = adCode;
     }
 
@@ -103,7 +103,7 @@ public class BaseSearchPoi implements Parcelable {
         return mDistance;
     }
 
-    public void setDistance(String distance) {
+    public void setDistance(final String distance) {
         this.mDistance = distance;
     }
 
@@ -111,7 +111,7 @@ public class BaseSearchPoi implements Parcelable {
         return mPoint;
     }
 
-    public void setPoint(BaseGeoPoint point) {
+    public void setPoint(final BaseGeoPoint point) {
         this.mPoint = point;
     }
 

@@ -27,6 +27,7 @@ public class SpeedMonitor {
         @Override
         public void onFinish() {
             Logger.i(TAG, "CountDownTimer --- onFinish !");
+            isTiming = false;
             if (callBack != null) {
                 callBack.startCruise();
             }

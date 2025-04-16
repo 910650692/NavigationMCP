@@ -18,6 +18,8 @@ public class FavoriteManager {
     private static FavoriteManager mManager;
     private FavoriteDao mFavoriteDao;
 
+    private boolean mIsInit = false;
+
     /**
      * Get instance.
      * @return instance
@@ -38,11 +40,16 @@ public class FavoriteManager {
      * Init database and cloud data.
      */
     public void init() {
+        if (mIsInit) {
+            Logger.d(TAG, "Database had Initialized!");
+            return;
+        }
         // 数据库对象
         final DaoMaster.DevOpenHelper helper = new DaoMaster.DevOpenHelper(AppContext.getInstance().getMContext(), DB_NAME);
         final Database db = helper.getWritableDb();
         final DaoMaster daoMaster = new DaoMaster(db);
         mFavoriteDao = daoMaster.newSession().getFavoriteDao();
+        mIsInit = true;
     }
 
     /**

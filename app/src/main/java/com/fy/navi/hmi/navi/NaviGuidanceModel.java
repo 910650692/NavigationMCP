@@ -27,7 +27,6 @@ import com.fy.navi.service.AppContext;
 import com.fy.navi.service.AutoMapConstant;
 import com.fy.navi.service.GBLCacheFilePath;
 import com.fy.navi.service.MapDefaultFinalTag;
-import com.fy.navi.service.adapter.layer.LayerAdapter;
 import com.fy.navi.service.adapter.navi.NaviConstant;
 import com.fy.navi.service.adapter.navi.bls.NaviDataFormatHelper;
 import com.fy.navi.service.define.layer.GemLayerClickBusinessType;
@@ -163,6 +162,7 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
                     AutoMapConstant.NaviType.NAVI_GPS);
             isNaviSuccess = mNaviPackage.startNavigation(
                     anInt == AutoMapConstant.NaviType.NAVI_SIMULATE);
+            mViewModel.setNaviSimState(anInt == AutoMapConstant.NaviType.NAVI_SIMULATE);
         } else {
             isNaviSuccess = mNaviPackage.startNavigation(false);
         }
@@ -488,7 +488,7 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
      * 语音打开/关闭引导中路线全览.
      *
      * @param mapTypeId mapTypeId，对应底图.
-     * @param open true-开启全览  false-关闭全览.
+     * @param open      true-开启全览  false-关闭全览.
      */
     @Override
     public void onVoiceOverview(final MapType mapTypeId, final boolean open) {
@@ -504,7 +504,7 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
     /**
      * 语音切换主辅路、桥上下.
      *
-     * @param mapTypeId MapTypeId，对应底图.
+     * @param mapTypeId      MapTypeId，对应底图.
      * @param parallelOption ，切换类型，MAIN-主路 SIDE-辅路  ON-桥上  UNDER-桥下.
      */
     @Override
@@ -532,7 +532,6 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
     public void skipNaviSapaDetailScene(final int type, final SapaInfoEntity sapaInfoEntity) {
         Logger.i(TAG, "skipNaviSapaDetailScene type:" + type + " sapaInfoEntity:" +
                 sapaInfoEntity.toString());
-        ISceneCallback.super.skipNaviSapaDetailScene(type, sapaInfoEntity);
         mViewModel.skipNaviSapaDetailScene(type, sapaInfoEntity);
     }
 

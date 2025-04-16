@@ -69,7 +69,7 @@ public class SceneNaviNearProvidePark extends NaviSceneBase<NaviSceneNearProvide
 
     @Override
     protected void initObserver() {
-        mViewBinding.ivIcon.setOnClickListener(v -> {
+        mViewBinding.viewBg.setOnClickListener(v -> {
             if (!ConvertUtils.isNull(mISceneCallback)) {
                 mISceneCallback.showRecParkList(mList);
                 notifySceneStateChange(false);

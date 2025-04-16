@@ -77,8 +77,6 @@ public class MapModelHelp {
         final boolean iShowTmc = mSettingPackage.getConfigKeyRoadEvent();
         Logger.i(TAG, "restoreUserPreference", "iShowTmc:" + iShowTmc);
         mMapPackage.setTrafficStates(mMapTypeId, iShowTmc);
-        // 收藏是否显示
-        mSettingPackage.hideOrShowFavoriteOnMainMap();
         // 视角
         resetMapAngel();
         // 车标

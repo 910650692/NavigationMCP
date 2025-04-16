@@ -87,6 +87,20 @@ public class SkinTextView extends AppCompatTextView {
     }
 
     /**
+     * 跑马一次
+     */
+    public void startTextViewOneTimeMarquee() {
+        setSelected(true);
+        setSingleLine();
+        setHorizontallyScrolling(true);
+        setEllipsize(TextUtils.TruncateAt.MARQUEE);
+        setMarqueeRepeatLimit(1);
+        setFocusable(true);
+        setFocusableInTouchMode(true);
+        requestFocus();
+    }
+
+    /**
      * 开启跑马灯效果
      */
     public void startTextViewMarquee() {

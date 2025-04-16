@@ -13,6 +13,7 @@ public enum GemLayerClickBusinessType {
     BizSearchTypePoiChildPoint,
     BizSearchTypePoiParkRoute,
     BizSearchTypeChargeStation,
+    BizSearchTypePoiAlongRoute,     //沿途搜
 
     //路线上图层点击
     BizRouteTypeStartPoint,

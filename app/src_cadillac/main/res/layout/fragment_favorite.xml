@@ -472,8 +472,8 @@
 
         <com.fy.navi.ui.view.SkinConstraintLayout
             android:id="@+id/layout_top"
-            android:layout_width="@dimen/dp_334"
-            android:layout_height="@dimen/dp_90"
+            android:layout_width="@dimen/dp_432"
+            android:layout_height="@dimen/dp_120"
             android:orientation="horizontal"
             android:layout_gravity="center"
             android:visibility="gone"
@@ -483,10 +483,10 @@
             app:layout_constraintBottom_toBottomOf="parent">
 
             <com.fy.navi.ui.view.SkinImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="@dimen/dp_74"
+                android:layout_height="@dimen/dp_74"
                 android:src="@drawable/img_favorite_top"
-                android:layout_marginStart="@dimen/dp_62"
+                android:layout_marginStart="@dimen/dp_80"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"/>
@@ -495,9 +495,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/favorite_top"
-                android:layout_marginStart="@dimen/dp_136"
+                android:layout_marginStart="@dimen/dp_168"
                 android:textColor="@color/setting_text_preference"
-                android:textSize="@dimen/sp_34"
+                android:textSize="@dimen/sp_46"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"/>

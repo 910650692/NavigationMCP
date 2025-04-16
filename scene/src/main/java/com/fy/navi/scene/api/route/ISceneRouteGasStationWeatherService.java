@@ -7,7 +7,11 @@ package com.fy.navi.scene.api.route;
  */
 public interface ISceneRouteGasStationWeatherService {
     /**
-     * 充电/加油
+     * 充电
+     * */
+    void clickChargingStation();
+    /**
+     * 加油
      * */
     void clickGasStation();
     /**

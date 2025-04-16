@@ -134,7 +134,11 @@ public class NaviSceneManager implements INaviSceneEvent {
             return;
         }
         Logger.i(TAG, "sceneView -> " + sceneView.getSceneName());
-        hideSceneList.add(sceneView);
+        if (!hideSceneList.contains(sceneView)) {
+            hideSceneList.add(sceneView);
+        } else {
+            Logger.i(TAG, "hideSceneList 已存在！：" + sceneView.getSceneId().name());
+        }
         sceneView.hide();
         if (ConvertUtils.isContain(showSceneList, sceneView)) {
             ConvertUtils.remove(showSceneList, sceneView);
@@ -148,7 +152,11 @@ public class NaviSceneManager implements INaviSceneEvent {
         }
         Logger.i(TAG, "showScene -> " + sceneView.getSceneName(), "getSceneState:" + sceneView.getSceneState());
         if (NaviSceneBase.SCENE_STATE_SHOW == sceneView.getSceneState()) return;
-        showSceneList.add(sceneView);
+        if (!showSceneList.contains(sceneView)) {
+            showSceneList.add(sceneView);
+        } else {
+            Logger.i(TAG, "showSceneList 已存在！：" + sceneView.getSceneId().name());
+        }
         sceneView.show();
         if (ConvertUtils.isContain(hideSceneList, sceneView)) {
             ConvertUtils.remove(hideSceneList, sceneView);
@@ -173,7 +181,6 @@ public class NaviSceneManager implements INaviSceneEvent {
 
     //初始化要显示的scene
     public void initShowScene(NaviSceneId cardId) {
-        Logger.d(TAG, "initShowScene：cardId：" + cardId);
         if (cardId == null) {
             Logger.e(TAG, "sceneId==null");
             return;
@@ -237,17 +244,17 @@ public class NaviSceneManager implements INaviSceneEvent {
 
     @Override
     public void notifySceneReset() {
-        for (NaviSceneBase newScene : hideSceneList) {
-            Logger.i(TAG, newScene.getSceneName());
-            onShowScene(newScene.getSceneId());
-        }
+        ThreadManager.getInstance().postUi(() -> {
+            for (NaviSceneBase newScene : hideSceneList) {
+                Logger.i(TAG, newScene.getSceneName());
+                onShowScene(newScene.getSceneId());
+            }
+        });
     }
 
-    public void removeHideSceneList() {
-        for (NaviSceneBase newScene : hideSceneList) {
-            Logger.i(TAG + newScene.getSceneName());
-            onShowScene(newScene.getSceneId());
-        }
+    public void removeHideSceneList(NaviSceneBase sceneBase) {
+        Logger.i(TAG, sceneBase.getSceneName());
+        hideSceneList.remove(sceneBase);
     }
 
     @Override

@@ -116,10 +116,12 @@ public class SceneRouteSearchChargeRefreshListView
      * @param poiInfoEntities 搜索数据
      * @param loaclSaveEntity 本地已添加数据
      * @param searchType 搜索方式 0-沿途搜索
+     * @param type 列表类别 0:充电站 1：加油站
      */
-    public void notifyResultList(final List<PoiInfoEntity> poiInfoEntities, final List<RouteParam> loaclSaveEntity, final int searchType) {
+    public void notifyResultList(final List<PoiInfoEntity> poiInfoEntities,
+                                 final List<RouteParam> loaclSaveEntity, final int searchType, final int type) {
         ThreadManager.getInstance().postUi(() -> {
-            mAdapter.setRouteBeanList(poiInfoEntities, loaclSaveEntity, searchType);
+            mAdapter.setRouteBeanList(poiInfoEntities, loaclSaveEntity, searchType, type);
         });
         mLocalPoiInfoEntities = poiInfoEntities;
     }
@@ -129,6 +131,6 @@ public class SceneRouteSearchChargeRefreshListView
      * @param searchType 搜索方式
      */
     public void updateChargeList(final List<RouteParam> loaclSaveEntity, final int searchType) {
-        mAdapter.setRouteBeanList(mLocalPoiInfoEntities, loaclSaveEntity, searchType);
+        mAdapter.updateRouteBeanList(mLocalPoiInfoEntities, loaclSaveEntity, searchType);
     }
 }

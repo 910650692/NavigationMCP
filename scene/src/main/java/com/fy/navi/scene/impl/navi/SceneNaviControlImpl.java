@@ -96,9 +96,10 @@ public class SceneNaviControlImpl extends BaseSceneModel<SceneNaviControlView> i
      * 初始化设置参数
      */
     private void init() {
-        // 初始化静音状态
-        mIsMute = SettingPackage.getInstance().getConfigKeyMute() == 1;
-        mNaviPackage.setMute(mIsMute);
+        // 初始化静音状态、每次导航恢复默认播报状态
+        mIsMute = false;
+        mNaviPackage.setMute(false);
+        SettingPackage.getInstance().setConfigKeyMute(0);
         updateVariationVoice();
         // 初始化地图比例尺
         MapMode currentMapMode = mMapPackage.getCurrentMapMode(mMapTypeId);
@@ -377,16 +378,16 @@ public class SceneNaviControlImpl extends BaseSceneModel<SceneNaviControlView> i
         setImmersiveStatus(ImersiveStatus.TOUCH);
         switch (index) {
             case 0:
-                if (mVehicleType == 0 || mVehicleType == 2) {
-                    mCallBack.goSearchView(ResourceUtils.Companion.getInstance().
-                            getString(R.string.st_quick_search_station), OpenApiHelper.ALONG_WAY);
-                } else {
+                if (mVehicleType == 1) {//电车
                     mCallBack.goSearchView(ResourceUtils.Companion.getInstance().
                             getString(R.string.st_quick_search_charge), OpenApiHelper.ALONG_WAY);
+                } else {
+                    mCallBack.goSearchView(ResourceUtils.Companion.getInstance().
+                            getString(R.string.st_quick_search_station), OpenApiHelper.ALONG_WAY);
                 }
                 break;
             case 1:
-                if (mVehicleType == 1 || mVehicleType == 0) {
+                if (mVehicleType == 1 || mVehicleType == 0) {//电车-油车
                     mCallBack.goSearchView(ResourceUtils.Companion.getInstance().
                             getString(R.string.st_quick_search_lavatory), OpenApiHelper.ALONG_WAY);
                 } else {
@@ -456,11 +457,8 @@ public class SceneNaviControlImpl extends BaseSceneModel<SceneNaviControlView> i
         Logger.i(TAG, "onImmersiveStatusChange currentImersiveStatus：" +
                 currentImersiveStatus);
         if (currentImersiveStatus == ImersiveStatus.TOUCH) {
-           // notifySceneStateChange(true);
         } else {
             showMain();
-            // 沉浸态控制栏不消失
-//            notifySceneStateChange(false);
         }
     }
 

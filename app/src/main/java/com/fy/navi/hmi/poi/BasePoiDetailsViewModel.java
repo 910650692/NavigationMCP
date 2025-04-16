@@ -30,6 +30,14 @@ public class BasePoiDetailsViewModel extends BaseViewModel<PoiDetailsFragment, P
         mView.onSearchResult(taskId, searchResultEntity);
     }
 
+    /**
+     * 搜索图层子点点击事件
+     * @param index 点击下标
+     */
+    public void onMarkChildClickCallBack(final int index) {
+        mView.onMarkChildClickCallBack(index);
+    }
+
     public Action getRootClick() {
         return mRootClick;
     }

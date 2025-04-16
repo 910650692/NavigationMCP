@@ -19,7 +19,6 @@ import com.fy.navi.hmi.setting.SettingCheckDialog;
 import com.fy.navi.service.GBLCacheFilePath;
 import com.fy.navi.service.define.user.usertrack.DrivingRecordDataBean;
 import com.fy.navi.service.logicpaket.user.account.AccountPackage;
-import com.fy.navi.service.logicpaket.user.usertrack.UserTrackPackage;
 import com.fy.navi.ui.base.BaseFragment;
 import com.fy.navi.ui.dialog.IBaseDialogClickListener;
 
@@ -32,6 +31,7 @@ public class DrivingRecordFragment  extends BaseFragment<FragmentDrivingRecordBi
     private RecordLoadingDialog mRecordLoadingDialog;
     private int mCurrentIndex = 0;
 
+    String selectedText = "";
     private ArrayList<DrivingRecordDataBean> mDataList = new ArrayList<>();
 
     @Override
@@ -53,9 +53,22 @@ public class DrivingRecordFragment  extends BaseFragment<FragmentDrivingRecordBi
 
     @Override
     public void onInitData() {
-        mViewModel.isLogin(); // 判断用户当前登录状态
-        mViewModel.getDrivingRecordData(); // 从云端同步数据到本地
-        mViewModel.getDrivingRecordDataList(); // 从本地获取导航行程历史数据
+        ThreadManager.getInstance().postDelay(() -> {
+            mViewModel.isLogin(); // 判断用户当前登录状态
+            mViewModel.getDrivingRecordData(); // 从云端同步数据到本地
+            mViewModel.getDrivingRecordDataList(); // 从本地获取导航行程历史数据
+        },0);
+    }
+
+    @Override
+    public void onHiddenChanged(final boolean hidden) {
+        if (!hidden) {
+            if ("导航历史".equals(selectedText)) {
+                mViewModel.getDrivingRecordDataList(); // 从本地获取导航行程历史数据
+            } else if ("巡航历史".equals(selectedText)) {
+                mViewModel.getDrivingRecordCruiseDataList(); // 从本地获取巡航行程历史数据
+            }
+        }
     }
 
     @Override
@@ -77,12 +90,20 @@ public class DrivingRecordFragment  extends BaseFragment<FragmentDrivingRecordBi
 
             @Override
             public void onItemClick(final int index) {
+                if (mDataList.get(index).getRideRunType() == 0) {
+                    mCurrentIndex = index;
+                    mViewModel.goDetailsFragment(mDataList.get(index));
+                    return;
+                }
                 if (Boolean.TRUE.equals(NetWorkUtils.Companion.getInstance().checkNetwork())) {
                     // 跳转到行程详情页
                     mCurrentIndex = index;
                     mRecordLoadingDialog.show();
-                    UserTrackPackage.getInstance().setIsNeedShowDialog(true);
-                    mViewModel.obtainGpsTrackDepInfo(GBLCacheFilePath.SYNC_PATH + "/403", mDataList.get(index).getTrackFileName());
+                    mViewModel.setIsNeedShowDialog(true);
+                    // 获取同步库轨迹文件
+                    final String filePath = mViewModel.getFilePath(mDataList.get(index).getId());
+                    Logger.d("filePath = " + filePath);
+                    int x = mViewModel.obtainGpsTrackDepInfo(GBLCacheFilePath.SYNC_PATH + "/403", mDataList.get(index).getTrackFileName());
                 } else {
                     ToastUtils.Companion.getInstance().showCustomToastView(
                             ResourceUtils.Companion.getInstance().getString(R.string.favorite_charging_offline));
@@ -109,7 +130,7 @@ public class DrivingRecordFragment  extends BaseFragment<FragmentDrivingRecordBi
                 // 获取被选中的RadioButton
                 final RadioButton checkedRadioButton = getActivity().findViewById(i);
                 // 执行你想要的操作，例如获取被选中的文本
-                final String selectedText = checkedRadioButton.getText().toString();
+                selectedText = checkedRadioButton.getText().toString();
                 // 打印或处理选中的文本
                 Logger.d("RadioGroup", "选中的文本: " + selectedText);
                 if ("导航历史".equals(selectedText)) {

@@ -21,6 +21,7 @@ import com.fy.navi.service.define.utils.NumberUtils;
 import com.fy.navi.service.logicpaket.layer.ILayerPackageCallBack;
 import com.fy.navi.service.logicpaket.layer.LayerPackage;
 import com.fy.navi.service.logicpaket.map.MapPackage;
+import com.fy.navi.service.logicpaket.navi.NaviPackage;
 import com.fy.navi.service.logicpaket.route.RoutePackage;
 import com.fy.navi.service.logicpaket.search.SearchPackage;
 
@@ -40,6 +41,7 @@ public class SceneNaviParkListImpl extends BaseSceneModel<SceneNaviParkListView>
     private LayerPackage mLayerPackage;
     private SearchPackage mSearchPackage;
     private RoutePackage mRoutePackage;
+    private NaviPackage mNaviPackage;
 
     public SceneNaviParkListImpl(final SceneNaviParkListView screenView) {
         super(screenView);
@@ -47,6 +49,7 @@ public class SceneNaviParkListImpl extends BaseSceneModel<SceneNaviParkListView>
         mLayerPackage = LayerPackage.getInstance();
         mSearchPackage = SearchPackage.getInstance();
         mRoutePackage = RoutePackage.getInstance();
+        mNaviPackage = NaviPackage.getInstance();
     }
 
     @Override
@@ -149,6 +152,10 @@ public class SceneNaviParkListImpl extends BaseSceneModel<SceneNaviParkListView>
     }
 
     public void exitPreview() {
+        Logger.i(TAG, "exitPreview");
+        if (!ConvertUtils.isNull(mNaviPackage)) {
+            mNaviPackage.setPreviewStatus(false);
+        }
         if (!ConvertUtils.isNull(mMapPackage)) {
             mMapPackage.exitPreview(mMapTypeId);
         }

@@ -63,6 +63,17 @@ public class GsonUtils {
     }
 
     /**
+     * 反序列化.
+     *
+     * @param json     json字符
+     * @param classOfT 映射体
+     * @return json转换为实体
+     */
+    public static final <T> T fromJsonV2(String json, Class<T> classOfT) {
+        return gsonBuild.fromJson(json, classOfT);
+    }
+
+    /**
      * 反序列化 转集合.
      *
      * @param json

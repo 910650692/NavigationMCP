@@ -61,9 +61,11 @@ public class L2NaviBean {
     private VehiclePositionBean mVehiclePosition;
     @SerializedName("warningFacility")
     private WarningFacilityBean mWarningFacility;
+    @SerializedName("aheadIntersections")
     private List<AheadIntersectionsBean> mAheadIntersections;
+    @SerializedName("mixForks")
     private List<MixForksBean> mMixForks = new ArrayList<>();
-    private EndParkingInfo mEndParkingInfo = new EndParkingInfo();
+//    private EndParkingInfo mEndParkingInfo = new EndParkingInfo();
 
     /**
      * 清空所有数据
@@ -76,7 +78,7 @@ public class L2NaviBean {
         mTunnelInfo = new TunnelInfoBean();
         mVehiclePosition = new VehiclePositionBean();
         mWarningFacility = new WarningFacilityBean();
-        mEndParkingInfo = new EndParkingInfo();
+//        mEndParkingInfo = new EndParkingInfo();
         mAheadIntersections.clear();
         mMixForks.clear();
         mTollStationDist = 0;
@@ -333,7 +335,7 @@ public class L2NaviBean {
         @SerializedName("spdLmtEleEyeDist")
         private int mSpdLmtEleEyeDist;
         @SerializedName("spdLmtEleEyeSpeedValue")
-        private int mSpdLmtEleEyeSpeedValue;
+        private int mSpdLmtEleEyeSpeedValue = 0xFF;
 
         public int getSpdLmtEleEyeDist() {
             return mSpdLmtEleEyeDist;
@@ -990,13 +992,13 @@ public class L2NaviBean {
         this.mMixForks = mixForks;
     }
 
-    public EndParkingInfo getEndParkingInfo() {
-        return mEndParkingInfo;
-    }
-
-    public void setEndParkingInfo(final EndParkingInfo endParkingInfo) {
-        this.mEndParkingInfo = endParkingInfo;
-    }
+//    public EndParkingInfo getEndParkingInfo() {
+//        return mEndParkingInfo;
+//    }
+//
+//    public void setEndParkingInfo(final EndParkingInfo endParkingInfo) {
+//        this.mEndParkingInfo = endParkingInfo;
+//    }
 
     @NonNull
     @Override
@@ -1015,7 +1017,7 @@ public class L2NaviBean {
                 ", mWarningFacility=" + mWarningFacility +
                 ", mAheadIntersections=" + mAheadIntersections +
                 ", mMixForks=" + mMixForks +
-                ", mEndParkingInfo=" + mEndParkingInfo +
+//                ", mEndParkingInfo=" + mEndParkingInfo +
                 '}';
     }
 }

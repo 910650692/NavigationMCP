@@ -4,14 +4,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import androidx.databinding.DataBindingUtil;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.android.utils.ConvertUtils;
 import com.android.utils.ResourceUtils;
 import com.fy.navi.scene.R;
+import com.fy.navi.scene.adapter.GasStationAdapter;
 import com.fy.navi.scene.databinding.RouteSearchChargeRefreshListItemBinding;
 import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.route.RouteParam;
 import com.fy.navi.service.define.search.ChargeInfo;
+import com.fy.navi.service.define.search.GasStationInfo;
 import com.fy.navi.service.define.search.PoiInfoEntity;
 import com.fy.navi.service.define.utils.NumberUtils;
 import com.fy.navi.service.logicpaket.route.RoutePackage;
@@ -24,6 +27,7 @@ public class RouteSearchChargeRefreshAdapter extends RecyclerView.Adapter<RouteS
     private List<RouteParam> mLoaclSaveEntity;
     private int mSearchType;
     private OnItemClickListener mItemClickListener;
+    private int mType = 0;
     public RouteSearchChargeRefreshAdapter() {
         mRouteBeanList = new ArrayList<>();
         mLoaclSaveEntity = new ArrayList<>();
@@ -33,8 +37,29 @@ public class RouteSearchChargeRefreshAdapter extends RecyclerView.Adapter<RouteS
      * @param routeBeanList 搜索数据
      * @param loaclSaveEntity 本地已添加数据
      * @param searchType 搜索方式 0-沿途搜索
+     * @param type 列表类别 0:充电站 1：加油站
      */
-    public void setRouteBeanList(final List<PoiInfoEntity> routeBeanList, final List<RouteParam> loaclSaveEntity, final int searchType) {
+    public void setRouteBeanList(final List<PoiInfoEntity> routeBeanList, final List<RouteParam> loaclSaveEntity,
+                                 final int searchType, final int type) {
+        if (null == routeBeanList) {
+            return;
+        }
+        mRouteBeanList.clear();
+        mRouteBeanList.addAll(routeBeanList);
+        mLoaclSaveEntity.clear();
+        mLoaclSaveEntity.addAll(loaclSaveEntity);
+        mSearchType = searchType;
+        mType = type;
+        notifyDataSetChanged();
+    }
+
+    /***
+     * 展示充电站列表
+     * @param routeBeanList 搜索数据
+     * @param loaclSaveEntity 本地已添加数据
+     * @param searchType 搜索方式 0-沿途搜索
+     */
+    public void updateRouteBeanList(final List<PoiInfoEntity> routeBeanList, final List<RouteParam> loaclSaveEntity, final int searchType) {
         if (null == routeBeanList) {
             return;
         }
@@ -88,7 +113,9 @@ public class RouteSearchChargeRefreshAdapter extends RecyclerView.Adapter<RouteS
         holder.mRouteSearchChargeRefreshListItemBinding.routeItemChargeAddImg.setImageDrawable(
                 belongRouteParam ? ResourceUtils.Companion.getInstance().getDrawable(R.drawable.img_route_search_added)
                         : ResourceUtils.Companion.getInstance().getDrawable(R.drawable.img_route_search_add));
-        if (mRouteBeanList.get(position).getChargeInfoList() != null && mRouteBeanList.get(position).getChargeInfoList().size() != 0) {
+        if (mType == 0 && mRouteBeanList.get(position).getChargeInfoList() != null && mRouteBeanList.get(position).getChargeInfoList().size() != 0) {
+            holder.mRouteSearchChargeRefreshListItemBinding.scenePoiItemGasView.getRoot().setVisibility(View.GONE);
+            holder.mRouteSearchChargeRefreshListItemBinding.routeItemChargeLayout.setVisibility(View.VISIBLE);
             final ChargeInfo chargeInfo = mRouteBeanList.get(position).getChargeInfoList().get(0);
             final String fastFree = chargeInfo.getFast_free() == 0 ? "--" : chargeInfo.getFast_free() + "";
             final String fastTotal = chargeInfo.getFast_total() == 0 ? "" : "/" + chargeInfo.getFast_total();
@@ -117,6 +144,11 @@ public class RouteSearchChargeRefreshAdapter extends RecyclerView.Adapter<RouteS
                 holder.mRouteSearchChargeRefreshListItemBinding.routeItemChargePriceName.setVisibility(View.GONE);
             }
         }
+        if (mType == 1) {
+            holder.mRouteSearchChargeRefreshListItemBinding.scenePoiItemGasView.getRoot().setVisibility(View.VISIBLE);
+            holder.mRouteSearchChargeRefreshListItemBinding.routeItemChargeLayout.setVisibility(View.GONE);
+            showGasList(holder, position);
+        }
         holder.mRouteSearchChargeRefreshListItemBinding.itemRootViewCharge.setOnClickListener(v -> {
             if (mItemClickListener != null) {
                 mItemClickListener.onItemClick(mRouteBeanList.get(position));
@@ -135,6 +167,40 @@ public class RouteSearchChargeRefreshAdapter extends RecyclerView.Adapter<RouteS
             }
         });
     }
+
+    /**
+     * 显示加油站信息
+     * @param holder holder
+     * @param position 下标
+     * */
+    public void showGasList(final Holder holder, final int position) {
+        if (mRouteBeanList == null) {
+            return;
+        }
+        final List<GasStationInfo> gasStationInfos = mRouteBeanList.get(position).getStationList();
+        for (GasStationInfo gasStationInfo : gasStationInfos) {
+            if (!gasStationInfo.getPrice().contains("升")) {
+                gasStationInfo.setPrice(holder.mRouteSearchChargeRefreshListItemBinding.getRoot().getContext().
+                        getString(R.string.oil_price, gasStationInfo.getPrice()));
+            }
+        }
+        final GasStationAdapter gasStationAdapter = new GasStationAdapter();
+        //根据UE只显示前两个油品种类
+        if (!ConvertUtils.isEmpty(gasStationInfos) && gasStationInfos.size() > 2) {
+            // 截取前两个元素
+            final List<GasStationInfo> subList = gasStationInfos.subList(0, 2);
+            // 使用ArrayList构造函数创建新的列表
+            final ArrayList<GasStationInfo> newList = new ArrayList<>(subList);
+            gasStationAdapter.setGasStationList(newList);
+        } else {
+            gasStationAdapter.setGasStationList(gasStationInfos);
+        }
+        holder.mRouteSearchChargeRefreshListItemBinding.scenePoiItemGasView.getRoot().setVisibility(View.VISIBLE);
+        holder.mRouteSearchChargeRefreshListItemBinding.scenePoiItemGasView.poiGasOilList.setLayoutManager(
+                new GridLayoutManager(holder.mRouteSearchChargeRefreshListItemBinding.getRoot().getContext(), 2));
+        holder.mRouteSearchChargeRefreshListItemBinding.scenePoiItemGasView.poiGasOilList.setAdapter(gasStationAdapter);
+    }
+
     /**
      * 是否在路线上
      * @param loaclSaveEntity 路线上的点

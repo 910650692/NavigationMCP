@@ -61,6 +61,7 @@ public class SceneMapPointSearchViewImpl extends BaseSceneModel<SceneMapPointSea
                         AutoMapConstant.SearchType.SEARCH_KEYWORD,
                         mCommonName));
         flyLineVisible(false);
+        mScreenView.closeMapPointView();
     }
 
     public void setCommonName(final int commonName) {
@@ -77,6 +78,7 @@ public class SceneMapPointSearchViewImpl extends BaseSceneModel<SceneMapPointSea
     @Override
     public void clickSetting() {
         mScreenView.clickSetting();
+        mScreenView.closeMapPointView();
         flyLineVisible(false);
     }
 

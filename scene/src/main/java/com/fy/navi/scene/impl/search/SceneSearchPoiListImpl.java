@@ -196,8 +196,8 @@ public class SceneSearchPoiListImpl extends BaseSceneModel<SceneSearchPoiList> i
         mSearchPackage.createPoiMarker(poiInfoEntities, index);
     }
 
-    public void setSelectIndex(final PoiInfoEntity poiInfoEntity) {
-        mSearchPackage.setSelectIndex(poiInfoEntity);
+    public void setSelectIndex(final PoiInfoEntity poiInfoEntity, int index) {
+        mSearchPackage.setSelectIndex(poiInfoEntity, index);
     }
 
     /**

@@ -3,6 +3,7 @@ package com.fy.navi.scene.ui.route;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 
 
@@ -65,6 +66,8 @@ public class SceneRouteGasStationWeatherServiceView extends BaseSceneView<SceneR
         if (ConvertUtils.isEmpty(mViewBinding) || ConvertUtils.isEmpty(mScreenViewModel)) {
             return;
         }
+        mViewBinding.routeRightTabListTvChargingStation.setSelected(mScreenViewModel.isChargingStationSelect());
+        mViewBinding.routeRightTabListIvChargingStation.setSelected(mScreenViewModel.isChargingStationSelect());
         mViewBinding.routeRightTabListTvGasStation.setSelected(mScreenViewModel.isGasStationSelect());
         mViewBinding.routeRightTabListIvGasStation.setSelected(mScreenViewModel.isGasStationSelect());
         mViewBinding.routeRightTabListTvWeather.setSelected(mScreenViewModel.isWeatherSelect());
@@ -76,11 +79,30 @@ public class SceneRouteGasStationWeatherServiceView extends BaseSceneView<SceneR
      * 取消Tab的状态
      * */
     public void clearSceneTabUI() {
-        mScreenViewModel.setGasStationSelect(false);
+        mScreenViewModel.setChargingStationSelect(false);
         mScreenViewModel.setWeatherSelect(false);
         mScreenViewModel.setServiceSelect(false);
+        mScreenViewModel.setGasStationSelect(false);
         updateUi();
     }
+
+    /**
+     * 设置车辆动力类型
+     * @param carType 动力类型
+     * */
+    public void setCarType(final int carType) {
+        if (ConvertUtils.isEmpty(mViewBinding) || ConvertUtils.isEmpty(mScreenViewModel)) {
+            return;
+        }
+        if (carType == 1) {
+            mViewBinding.routeRightTabListGasStation.setVisibility(View.GONE);
+            mViewBinding.routeRightTabListChargingStation.setVisibility(View.VISIBLE);
+        } else {
+            mViewBinding.routeRightTabListGasStation.setVisibility(View.VISIBLE);
+            mViewBinding.routeRightTabListChargingStation.setVisibility(View.GONE);
+        }
+    }
+
     /**
      * 回调Tab的点击
      * @param tabIndex tab 索引

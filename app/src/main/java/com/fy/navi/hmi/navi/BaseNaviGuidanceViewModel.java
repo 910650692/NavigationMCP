@@ -12,7 +12,6 @@ import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
 import com.fy.navi.scene.api.route.ISceneRoutePreferenceCallBack;
 import com.fy.navi.scene.impl.imersive.ImersiveStatus;
-import com.fy.navi.scene.impl.imersive.ImmersiveStatusScene;
 import com.fy.navi.scene.impl.navi.inter.ISceneCallback;
 import com.fy.navi.scene.ui.navi.ChargeTipEntity;
 import com.fy.navi.scene.ui.navi.manager.INaviSceneEvent;
@@ -76,6 +75,7 @@ public class BaseNaviGuidanceViewModel extends
     public ObservableField<Boolean> mNaviRecParkVisibility;//悬挂卡---推荐停车场
     public ObservableField<Boolean> mNaviRecChargeListVisibility;//沿途充电站列表
     public ObservableField<Boolean> mNaviRecGasListVisibility;//沿途加油站列表
+    public ObservableField<Boolean> mNaviSim;
     //车牌信息
     private String mCurrentPlateNumber;
     //限行信息
@@ -111,6 +111,7 @@ public class BaseNaviGuidanceViewModel extends
         mNaviRecChargeListVisibility = new ObservableField<>(false);
         mNaviRecGasListVisibility = new ObservableField<>(false);
         mNaviRecParkVisibility = new ObservableField<>(false);
+        mNaviSim = new ObservableField<>(false);
     }
 
     @Override
@@ -590,5 +591,9 @@ public class BaseNaviGuidanceViewModel extends
         mCurrentavoidLimit = mModel.getAvoidLimit();
         mCurrentPreferences = mModel.getPreferences();
         mCurrentEnergy = mModel.getEnergy();
+    }
+
+    public void setNaviSimState(boolean isSim) {
+        mNaviSim.set(isSim);
     }
 }

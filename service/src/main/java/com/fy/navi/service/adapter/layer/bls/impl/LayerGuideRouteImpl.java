@@ -485,8 +485,7 @@ public class LayerGuideRouteImpl extends BaseLayerImpl<LayerGuideRouteStyleAdapt
         int openDynamicLevel = getLayerGuideRouteControl().openDynamicLevel(isOpen);
         //设置地图中心点，不根据自动比例尺移动
         int openedDynamicCenter = getLayerGuideRouteControl().openDynamicCenter(false);
-        Logger.d(TAG, "openDynamicLevel openDynamicLevel" + openDynamicLevel +
-                " openedDynamicCenter" + openedDynamicCenter + " isOpen" + isOpen);
+        Logger.d(TAG, "openDynamicLevel:" + openDynamicLevel + " openedDynamicCenter:" + openedDynamicCenter + " isOpen:" + isOpen);
         /**
          switch (dynamicLevelMode) {
          case DYNAMIC_LEVEL_GUIDE -> {

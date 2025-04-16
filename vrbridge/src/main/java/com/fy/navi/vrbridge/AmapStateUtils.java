@@ -88,9 +88,9 @@ final public class AmapStateUtils {
     }
 
     /**
-     * 传端状态
+     * 传端状态.
      *
-     * @param mapState 端状态
+     * @param mapState MapState 端状态.
      */
     public static void saveMapState(final MapState mapState) {
         if (null == mapState) {
@@ -107,13 +107,12 @@ final public class AmapStateUtils {
         if (null == data) {
             return;
         }
+
         final HashMap<String, Object> map = new HashMap<>();
         map.put(NaviStateCons.KEY_CURRENT_MAP_TYPE, "A_MAP");
-
         if (data.has("mCurrMapMode")) {
             map.put(NaviStateCons.KEY_PERSPECTIVE_MODE, data.optInt("mCurrMapMode"));
         }
-
         boolean isMute = false;
         if (data.has("mIsMute")) {
             isMute = data.optBoolean("mIsMute");
@@ -136,15 +135,12 @@ final public class AmapStateUtils {
             map.put(NaviStateCons.KEY_PASSING_POINT_MAX_COUNT,
                     data.optInt("mViaPointsMaxCount"));
         }
-
         if (data.has("mIsParallelFlagMain")) {
             map.put(NaviStateCons.KEY_ON_MAIN_ROAD, data.optInt("mIsParallelFlagMain"));
         }
-
         if (data.has("mIsParallelBridge")) {
             map.put(NaviStateCons.KEY_ON_BRIDGE, data.optInt("mIsParallelBridge"));
         }
-
         if (data.has("mCurrPlanPref")) {
             map.put(NaviStateCons.KEY_ROAD_PREFERENCE, data.optInt("mCurrPlanPref"));
         }
@@ -177,15 +173,12 @@ final public class AmapStateUtils {
         if (data.has("mEndPoiCity")) {
             map.put(NaviStateCons.KEY_DEST_CITY, data.optString("mEndPoiCity"));
         }
-
         if (data.has("mMaxVolumeLevel")) {
             map.put(NaviStateCons.KEY_MAX_VOLUME, data.optInt("mMaxVolumeLevel"));
         }
         if (data.has("mCurrentVolumeLevel")) {
             map.put(NaviStateCons.KEY_CURRENT_VOLUME, data.optInt("mCurrentVolumeLevel"));
         }
-
-        map.put(NaviStateCons.KEY_CURRENT_MAP_TYPE, "A_MAP");
         try {
             final IStateManager bdStateManager = BridgeSdk.getInstance().getRemote(IStateManager.class);
             if (null != bdStateManager) {

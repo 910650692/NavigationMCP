@@ -33,12 +33,16 @@ public class ButtonText extends SkinTextView {
     @Override
     public boolean onTouchEvent(final MotionEvent event) {
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
-            setAlpha(0.6f);
+            if (isClickable()) {
+                setAlpha(0.6f);
+            }
             return true;
         } else if (event.getAction() == MotionEvent.ACTION_UP) {
             // 手指松开反馈点击事件并恢复控件原有的透明度
-            setAlpha(1.0f);
-            callOnClick();
+            if (isClickable()) {
+                setAlpha(1.0f);
+                callOnClick();
+            }
             return true;
         }
         return super.onTouchEvent(event);

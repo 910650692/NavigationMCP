@@ -208,7 +208,6 @@ public class BaseSettingGuideViewModel extends BaseViewModel<SettingNaviFragment
     public Action mFavoritePointClick = () -> {
         final boolean value = Boolean.FALSE.equals(mIsFavoritePoint.getValue());
         mIsFavoritePoint.setValue(value);
-        mModel.hideOrShowFavoriteOnMainMap(value);
         mModel.setFavoritePoint(value);
 
         sendBuryPointForSettingGuide(BuryConstant.GuideOption.MAP_CONTENT, BuryConstant.MapContent.FAVORITE_POINT);

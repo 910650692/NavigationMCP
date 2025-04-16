@@ -23,4 +23,5 @@
     <color name="main_map_limit_text_color">#FF000000</color>
     <color name="poi_details_bottom_ff_00">#FF181818</color>
     <color name="search_top_line_view_99383839">#33000000</color>
+    <color name="search_quick_tab_view_color">#FF000000</color>
 </resources>

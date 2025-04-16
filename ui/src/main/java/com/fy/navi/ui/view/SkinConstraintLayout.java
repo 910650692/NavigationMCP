@@ -57,6 +57,10 @@ public class SkinConstraintLayout extends ConstraintLayout {
             setAlpha(1.0f);
             callOnClick();
             return true;
+        } else if (event.getAction() == MotionEvent.ACTION_CANCEL && mIsClickChangeColor) {
+            // 手指划出点击区域恢复控件原有的透明度
+            setAlpha(1.0f);
+            return true;
         }
         return super.onTouchEvent(event);
     }

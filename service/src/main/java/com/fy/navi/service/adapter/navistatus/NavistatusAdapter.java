@@ -1,12 +1,14 @@
 package com.fy.navi.service.adapter.navistatus;
 
 
+import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
 import com.fy.navi.service.define.navistatus.NaviStatus;
 
 import java.util.ArrayList;
 
 public final class NavistatusAdapter {
+    private static final String TAG = "NavistatusAdapter";
     private boolean mIsGuidanceActive = false;
     private String mNaviStatus = NaviStatus.NaviStatusType.NO_STATUS;
     private String mLastNaviStatus = NaviStatus.NaviStatusType.NO_STATUS;
@@ -36,6 +38,7 @@ public final class NavistatusAdapter {
      * */
     @NaviStatus.NaviStatusType
     public void setNaviStatus(final String naviStatus) {
+        Logger.i(TAG, "setNaviStatus:" + naviStatus, "mIsGuidanceActive:" + mIsGuidanceActive);
         if (naviStatus == NaviStatus.NaviStatusType.NAVING) {
             mIsGuidanceActive = true;
         } else {

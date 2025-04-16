@@ -12,7 +12,6 @@ import com.autonavi.gbl.layer.BizGuideRouteControl;
 import com.autonavi.gbl.layer.BizLabelControl;
 import com.autonavi.gbl.layer.BizRoadCrossControl;
 import com.autonavi.gbl.layer.BizRoadFacilityControl;
-import com.autonavi.gbl.layer.PopPointLayerItem;
 import com.autonavi.gbl.layer.RoutePathPointItem;
 import com.autonavi.gbl.layer.model.BizRoadCrossType;
 import com.autonavi.gbl.layer.model.BizRouteType;
@@ -80,13 +79,13 @@ public class LayerGuideRouteStyleAdapter extends BaseStyleAdapter {
     }
 
     @Override
-    public LayerItemData provideLayerItemDataProcessor(LayerItem item) {
+    public LayerItemData provideLayerItemData(LayerItem item) {
         if (item.getBusinessType() == BizRouteType.BizRouteTypeEndPoint) {
             if (item instanceof RoutePathPointItem) {
                 return mLayerItemRouteEndPoint;
             }
         }
-        return super.provideLayerItemDataProcessor(item);
+        return super.provideLayerItemData(item);
     }
 
     @Override
@@ -98,10 +97,10 @@ public class LayerGuideRouteStyleAdapter extends BaseStyleAdapter {
     }
 
     @Override
-    public IUpdateLayerItemStyleByItemDataProcessor provideUpdateLayerItemStyleByItemDataProcessor(LayerItem item) {
+    public IUpdateBitmapViewProcessor provideUpdateBitmapViewProcessor(LayerItem item) {
         if (item.getBusinessType() == BizRouteType.BizRouteTypeEndPoint) {
             if (item instanceof RoutePathPointItem) {
-                return new IUpdateLayerItemStyleByItemDataProcessor<LayerItemRouteEndPoint>() {
+                return new IUpdateBitmapViewProcessor<LayerItemRouteEndPoint>() {
                     @SuppressLint("StringFormatInvalid")
                     @Override
                     public void onNormalProcess(View rootView, LayerItemRouteEndPoint data) {
@@ -124,7 +123,7 @@ public class LayerGuideRouteStyleAdapter extends BaseStyleAdapter {
                 };
             }
         }
-        return super.provideUpdateLayerItemStyleByItemDataProcessor(item);
+        return super.provideUpdateBitmapViewProcessor(item);
     }
 
 }

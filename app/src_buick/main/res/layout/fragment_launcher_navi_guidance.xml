@@ -135,7 +135,7 @@
             android:layout_height="@dimen/dp_160"
             android:layout_marginStart="@dimen/dp_484"
             android:background="@drawable/bg_navi_control"
-            android:clickable="true"
+            android:clickable="false"
             android:gravity="center"
             android:textColor="@color/black"
             android:textSize="@dimen/sp_38"

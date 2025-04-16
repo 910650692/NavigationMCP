@@ -22,13 +22,15 @@ public interface INaviApi {
 
     /**
      * 注册观察者
-     * @param key key
+     *
+     * @param key              key
      * @param guidanceObserver guidanceObserver
      */
     void registerObserver(String key, GuidanceObserver guidanceObserver);
 
     /**
      * 开始导航
+     *
      * @param isSimple isSimple
      * @return boolean
      */
@@ -36,26 +38,30 @@ public interface INaviApi {
 
     /**
      * 停止导航
+     *
      * @return boolean
      */
     boolean stopNavigation();
 
     /**
      * 设置导航路线
-     * @param routeIndex routeIndex
+     *
+     * @param routeIndex          routeIndex
      * @param routeLineLayerParam routeLineLayerParam
      */
     void setNaviPath(int routeIndex, RouteLineLayerParam routeLineLayerParam);
 
     /**
      * 更新导航路线
-     * @param routeIndex routeIndex
+     *
+     * @param routeIndex          routeIndex
      * @param routeLineLayerParam routeLineLayerParam
      */
     void updateNaviPath(int routeIndex, RouteLineLayerParam routeLineLayerParam);
 
     /**
      * 注销观察者
+     *
      * @param key key
      */
     void unregisterObserver(String key);
@@ -67,6 +73,7 @@ public interface INaviApi {
 
     /**
      * 主动获取剩余路线上的SAPA信息
+     *
      * @param isFindRemainPath 是否查找剩余路径
      * @return long
      */
@@ -74,32 +81,37 @@ public interface INaviApi {
 
     /**
      * 选择主路id
+     *
      * @param pathID pathID
      */
     void selectMainPathID(long pathID);
 
     /**
      * 设置巡航参数
+     *
      * @param cruiseParamEntity cruiseParamEntity
      */
     void setCruiseParam(CruiseParamEntity cruiseParamEntity);
 
     /**
      * 更新导航参数
+     *
      * @param naviParamEntity naviParamEntity
      */
     void updateGuideParam(NaviParamEntity naviParamEntity);
 
     /**
      * 主动查询前方路况
+     *
      * @param requestId requestId
      */
     void playTRManualExt(int requestId);
 
     /**
      * 查询道路信息
+     *
      * @param segmentIdx segmentIdx
-     * @param linkIdx linkIdx
+     * @param linkIdx    linkIdx
      */
     void queryAppointLanesInfo(int segmentIdx, int linkIdx);
 
@@ -118,4 +130,19 @@ public interface INaviApi {
      * @return 获取途径点信息
      */
     List<NaviViaEntity> getAllViaPoints();
+
+    /**
+     * 暂停
+     */
+    void pauseNavi();
+
+    /**
+     * 开始
+     */
+    void resumeNavi();
+
+    /**
+     * 设置模拟导航速度
+     */
+    void setSimulationSpeed(int simulationSpeed);
 }

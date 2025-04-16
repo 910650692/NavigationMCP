@@ -176,25 +176,12 @@ public class SceneNaviSapaImpl extends BaseSceneModel<SceneNaviSapaView> impleme
     public ObservableField<String> mFirstTollDistance;
     // 保存当前的sapainfo
     private SapaInfoEntity mSapaInfoEntity;
-    private int mFirstSflWidth = 480;
     public static final String VIA = "经";
     public static final String UN_BUILDING = "非建设中";
     public static final String BUILDING = "建设中";
     public static final String UN_INVESTIGATION = "未调查";
     public static final String REMODELING = "装修中";
     public static final String TEMPORARILY_CLOSED = "暂停营业";
-    private ComponentTollStation mTollStationFirst;
-    private ComponentTollStation mTollStationSecond;
-    private ComponentHighwayService mHighwayServiceSecond;
-    private ComponentHighwayService mHighwayServiceFirst;
-    public static final String TYPE_ONE_HIGHWAY = "one_highway";
-    public static final String TYPE_ONE_TOLL = "one_toll";
-    public static final String TYPE_ALL_HIGHWAY = "all_highway";
-    public static final String TYPE_ALL_TOLL = "all_toll";
-    public static final String TYPE_FIRST_HIGHWAY = "first_highway";
-    public static final String TYPE_FIRST_TOLL = "first_toll";
-    public static final String TYPE_NONE = "";
-    private String mCurrentType = TYPE_NONE;
     private ISceneCallback mSceneCallback;
 
     public SceneNaviSapaImpl(final SceneNaviSapaView screenView) {
@@ -284,8 +271,6 @@ public class SceneNaviSapaImpl extends BaseSceneModel<SceneNaviSapaView> impleme
         super.onCreate();
         OpenApiHelper.registerSearchResultCallback(TAG, this);
     }
-
-
 
     /**
      * @param sapaInfoEntity SAPA信息

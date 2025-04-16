@@ -21,6 +21,7 @@ public class RouteLineInfo {
     private boolean mElecRouteBool = true;//是否充电算路
     private String mElecRouteLabel;//是否在线算路
     private long mDistance;//数字长度
+    private boolean mChargingStation = false;//是否存在补能充电站
 
     private List<RouteLineSegmentInfo> mRouteLineSegmentInfos;
     private boolean mCanBeArrive = true;

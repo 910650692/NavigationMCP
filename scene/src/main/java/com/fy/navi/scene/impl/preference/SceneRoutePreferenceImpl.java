@@ -78,53 +78,53 @@ public class SceneRoutePreferenceImpl extends BaseSceneModel<BaseSceneView> impl
     }
 
     @Override
-    public void preferenceRecommend() {
-        setRoutePreference(RECOMMEND);
+    public void preferenceRecommend(int source) {
+        setRoutePreference(RECOMMEND, source);
     }
 
     @Override
-    public void preferenceAvoidCongestion() {
+    public void preferenceAvoidCongestion(int source) {
         if (!getNetworkStatus()) {
             ToastUtils.Companion.getInstance().showCustomToastView(ResourceUtils.Companion.
                     getInstance().getString(R.string.navi_setting_offline_toast));
             return;
         }
-        setRoutePreference(AVOIDCONGESTION);
+        setRoutePreference(AVOIDCONGESTION, source);
     }
 
     @Override
-    public void preferenceLessCharge() {
-        setRoutePreference(LESSCHARGE);
+    public void preferenceLessCharge(int source) {
+        setRoutePreference(LESSCHARGE, source);
     }
 
     @Override
-    public void preferenceNotHighway() {
-        setRoutePreference(NOTHIGHWAY);
+    public void preferenceNotHighway(int source) {
+        setRoutePreference(NOTHIGHWAY, source);
     }
 
     @Override
-    public void preferenceFirstHighway() {
-        setRoutePreference(FIRSTHIGHWAY);
+    public void preferenceFirstHighway(int source) {
+        setRoutePreference(FIRSTHIGHWAY, source);
     }
 
     @Override
-    public void preferenceFirstMainRoad() {
+    public void preferenceFirstMainRoad(int source) {
         if (!getNetworkStatus()) {
             ToastUtils.Companion.getInstance().showCustomToastView(ResourceUtils.Companion.
                     getInstance().getString(R.string.navi_setting_offline_toast));
             return;
         }
-        setRoutePreference(FIRSTMAINROAD);
+        setRoutePreference(FIRSTMAINROAD, source);
     }
 
     @Override
-    public void preferenceFastestSpeed() {
+    public void preferenceFastestSpeed(int source) {
         if (!getNetworkStatus()) {
             ToastUtils.Companion.getInstance().showCustomToastView(ResourceUtils.Companion.
                     getInstance().getString(R.string.navi_setting_offline_toast));
             return;
         }
-        setRoutePreference(FASTESTSPEED);
+        setRoutePreference(FASTESTSPEED, source);
     }
 
     /**
@@ -146,7 +146,7 @@ public class SceneRoutePreferenceImpl extends BaseSceneModel<BaseSceneView> impl
      * 设置偏好
      * @param mode 偏好
      * */
-    public void setRoutePreference(final String mode) {
+    public void setRoutePreference(final String mode, int source) {
         mRoutePreferenceID = formatPreference(mode);
         if (mRoutePreferenceID == RoutePreferenceID.PREFERENCE_RECOMMEND && mLastRoutePreferenceID == mRoutePreferenceID) {
             Logger.i("the same route perference");
@@ -161,11 +161,16 @@ public class SceneRoutePreferenceImpl extends BaseSceneModel<BaseSceneView> impl
         }
         mLastRoutePreferenceID = mRoutePreferenceID;
 
-        sendBuryPointForSelectingRP(mode);
+        sendBuryPointForSelectingRP(mode, source);
     }
 
-    @HookMethod(eventName = BuryConstant.EventName.AMAP_ROUTE_PREFERENCE)
-    private void sendBuryPointForSelectingRP(String mode) {
+    @HookMethod()
+    private void sendBuryPointForSelectingRP(String mode, int source) {
+        String eventName = switch (source) {
+            case 0 -> BuryConstant.EventName.AMAP_SETTING_ROUTEPREFERENCE;
+            case 1 -> BuryConstant.EventName.AMAP_ROUTE_PREFERENCE;
+            default -> "";
+        };
         String routePreference = switch (mode) {
             case RECOMMEND -> BuryConstant.RoutePreference.RECOMMEND;
             case AVOIDCONGESTION -> BuryConstant.RoutePreference.AVOID_CONGESTION;
@@ -176,6 +181,7 @@ public class SceneRoutePreferenceImpl extends BaseSceneModel<BaseSceneView> impl
             case FASTESTSPEED -> BuryConstant.RoutePreference.FAST_SPEED;
             default -> "";
         };
+        BuryPointController.getInstance().setEventName(eventName);
         BuryProperty properties = new BuryProperty.Builder()
                 .setParams(BuryConstant.ProperType.BURY_KEY_ROUTE_PREFERENCE, routePreference)
                 .build();

@@ -79,7 +79,8 @@ public class PermissionUtils {
         if (ConvertUtils.equals(permission, Settings.ACTION_MANAGE_OVERLAY_PERMISSION)) {
             return Settings.canDrawOverlays(AppContext.getInstance().getMContext());
         }
-        return AppContext.getInstance().getMApplication().checkSelfPermission(permission) == PackageManager.PERMISSION_GRANTED;
+        return !ConvertUtils.isEmpty(AppContext.getInstance().getMApplication())
+                && AppContext.getInstance().getMApplication().checkSelfPermission(permission) == PackageManager.PERMISSION_GRANTED;
     }
 
     public void requestPermission() {
@@ -165,7 +166,7 @@ public class PermissionUtils {
     }
 
     public void requestMediaProjection(){
-        if (CalibrationPackage.getInstance().hudFuncEnable() == 0) {
+        if (CalibrationPackage.getInstance().hudFuncEnable() != 1) {
             Logger.i(TAG, "not hud configuration");
             return;
         }
@@ -174,8 +175,7 @@ public class PermissionUtils {
         }
         isCheckMediaProjectionPermission = true;
         // 判断so库是否加载成功
-        if (DeviceUtils.isCar(AppContext.getInstance().getMApplication()) ||
-                !VTServerBQJni.getInstance().isIsSuccessLoadLibrary()) {
+        if (!VTServerBQJni.getInstance().isIsSuccessLoadLibrary()) {
             return;
         }
         Activity mediaContext = StackManager.getInstance().getMainCurrentActivity();

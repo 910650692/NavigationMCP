@@ -84,7 +84,7 @@ public class NaviViaListAdapter extends RecyclerView.Adapter<NaviViaListAdapter.
         } else {
             holder.itemBinding.stvAddViaElec.setVisibility(VISIBLE);
             holder.itemBinding.sivAddViaElec.setVisibility(VISIBLE);
-            setChargeUi(mList.get(position).getArriveBatteryLeft(), 
+            setChargeUi(mList.get(position).getArriveBatteryLeft(),
                     holder.itemBinding.sivAddViaElec, holder.itemBinding.stvAddViaElec);
         }
         holder.itemBinding.setViaBean(mList.get(position));
@@ -100,21 +100,25 @@ public class NaviViaListAdapter extends RecyclerView.Adapter<NaviViaListAdapter.
             holder.itemBinding.groupEta.setVisibility(VISIBLE);
         }
         holder.itemBinding.swipeMenuLayout.setOnClickListener(v -> {
-            Logger.d(TAG, "NaviAddViaAdapter item click " + position);
             if (onItemClickListener != null) {
-                onItemClickListener.onItemClick(position, mList.get(position));
+                if (!ConvertUtils.isEmpty(mList)) {
+                    Logger.d(TAG, "NaviAddViaAdapter item click " + position + ",mList：" + mList.size());
+                    if (mList.size() > 1 && (position != mList.size() - 1)) {
+                        onItemClickListener.onItemClick(position, mList.get(position));
+                    }
+                }
             }
         });
 
         holder.itemBinding.llActionContainer.setOnClickListener(v -> {
-            Logger.d(TAG, "NaviAddViaAdapter item click del " + position);
+            Logger.d(TAG, "NaviAddViaAdapter item click del " + position + ",mList：" + mList.size());
             holder.itemBinding.swipeMenuLayout.smoothClose();
             if (onItemClickListener != null) {
                 onItemClickListener.onDelClick(position, mList.get(position));
             }
         });
     }
-    
+
     @SuppressLint("SetTextI18n")
     private void setChargeUi(final int chargeLeft, final SkinImageView img,
                              final SkinTextView text) {

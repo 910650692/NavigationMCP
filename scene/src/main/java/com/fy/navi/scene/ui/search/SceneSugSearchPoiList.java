@@ -17,6 +17,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import com.alibaba.android.arouter.launcher.ARouter;
 import com.android.utils.ToastUtils;
 import com.android.utils.log.Logger;
+import com.fy.navi.burypoint.anno.HookMethod;
+import com.fy.navi.burypoint.bean.BuryProperty;
+import com.fy.navi.burypoint.constant.BuryConstant;
+import com.fy.navi.burypoint.controller.BuryPointController;
 import com.fy.navi.scene.BaseSceneView;
 import com.fy.navi.scene.RoutePath;
 import com.fy.navi.scene.databinding.SugSearchResultViewBinding;
@@ -91,6 +95,7 @@ public class SceneSugSearchPoiList extends BaseSceneView<SugSearchResultViewBind
         mAdapter.setOnItemClickListener(new SearchResultAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(final int position, final PoiInfoEntity poiInfoEntity) {
+                sendBuryPointForHistoryClick(poiInfoEntity.getName());
                 final Fragment fragment = (Fragment) ARouter.getInstance()
                         .build(RoutePath.Search.POI_DETAILS_FRAGMENT)
                         .navigation();
@@ -229,5 +234,13 @@ public class SceneSugSearchPoiList extends BaseSceneView<SugSearchResultViewBind
         if (imm != null) {
             imm.showSoftInput(mViewBinding.sclSearchTopView.searchBarEditView, InputMethodManager.SHOW_IMPLICIT);
         }
+    }
+
+    @HookMethod(eventName = BuryConstant.EventName.AMAP_DESTINATION_HISTORY_SELECT)
+    private void sendBuryPointForHistoryClick(String value) {
+        BuryProperty buryProperty = new BuryProperty.Builder()
+                .setParams(BuryConstant.ProperType.BURY_KEY_SEARCH_CONTENTS, value)
+                .build();
+        BuryPointController.getInstance().setBuryProps(buryProperty);
     }
 }

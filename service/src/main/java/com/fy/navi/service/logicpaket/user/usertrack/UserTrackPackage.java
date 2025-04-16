@@ -78,10 +78,18 @@ public final class UserTrackPackage implements UserTrackAdapterCallBack, SearchR
         }
     }
 
+    /**
+     * 设置是否需要显示dialog
+     * @param isNeedShowDialog true:需要显示 false:不需要显示
+     */
     public void setIsNeedShowDialog(final boolean isNeedShowDialog) {
         mIsNeedShowDialog = isNeedShowDialog;
     }
 
+    /**
+     * 获取是否需要显示dialog
+     * @return 是否需要显示dialog
+     */
     public boolean getIsNeedShowDialog() {
         return mIsNeedShowDialog;
     }

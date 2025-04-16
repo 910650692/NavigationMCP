@@ -10,6 +10,7 @@ import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatDelegate;
+import androidx.core.view.WindowCompat;
 
 import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
@@ -52,6 +53,8 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        WindowCompat.setDecorFitsSystemWindows(getWindow(),false);
+        getWindow().setNavigationBarColor(getResources().getColor(R.color.route_charge_param_color));
         FragmentIntent.syncFragmentList(mScreenId, getSupportFragmentManager());
     }
 

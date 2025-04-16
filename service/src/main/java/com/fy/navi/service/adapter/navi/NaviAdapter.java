@@ -42,10 +42,11 @@ import lombok.Getter;
 
 /**
  * 导航相关接口适配层
+ *
  * @author fy
  * @version $Revision.*$
  */
-public final  class NaviAdapter {
+public final class NaviAdapter {
 
     public static final String TAG = "NaviAdapter";
     public static final String NAVI_PKG_NAME =
@@ -68,6 +69,7 @@ public final  class NaviAdapter {
 
     private ArrayList<NaviInfoEntity> mNaviInfoEntities = new ArrayList<>();
     public static final int THREE_SECONDS = 3 * 1000;
+
     private NaviAdapter() {
         mNaviApi = (INaviApi) AdapterConfig.getObject(NAVI_PKG_NAME, NAVI_CLS_NAME);
         mLayerAdapter = LayerAdapter.getInstance();
@@ -84,7 +86,7 @@ public final  class NaviAdapter {
     }
 
     /**
-     * @param key key
+     * @param key              key
      * @param guidanceObserver guidanceObserver
      */
     public void registerObserver(final String key, final GuidanceObserver guidanceObserver) {
@@ -137,7 +139,7 @@ public final  class NaviAdapter {
     }
 
     /**
-     * @param routeIndex routeIndex
+     * @param routeIndex          routeIndex
      * @param routeLineLayerParam routeLineLayerParam
      */
     public void setNaviPath(final int routeIndex, final RouteLineLayerParam routeLineLayerParam) {
@@ -149,15 +151,15 @@ public final  class NaviAdapter {
     }
 
     /**
-     * @param routeIndex routeIndex
+     * @param routeIndex          routeIndex
      * @param routeLineLayerParam routeLineLayerParam
      */
     public void updateNaviPath(final int routeIndex,
                                final RouteLineLayerParam routeLineLayerParam) {
         if (!ConvertUtils.isEmpty(routeLineLayerParam)
-                &&  !ConvertUtils.isEmpty(routeLineLayerParam.getMPathInfoList())
+                && !ConvertUtils.isEmpty(routeLineLayerParam.getMPathInfoList())
                 && routeIndex != -1
-                && routeIndex < routeLineLayerParam.getMPathInfoList().size()){
+                && routeIndex < routeLineLayerParam.getMPathInfoList().size()) {
             ArrayList<Object> pathInfos = new ArrayList<>();
             pathInfos.add(routeLineLayerParam.getMPathInfoList().get(routeIndex));
             mLayerAdapter.updatePathInfo(MapType.MAIN_SCREEN_MAIN_MAP, pathInfos, routeIndex);
@@ -176,7 +178,7 @@ public final  class NaviAdapter {
 
     /**
      * @param surfaceViewId surfaceViewId
-     * @param rect rect
+     * @param rect          rect
      */
     public void setRoadCrossRect(final MapType surfaceViewId, final Rect rect) {
         mRoadCrossRect.put(surfaceViewId, rect);
@@ -203,7 +205,7 @@ public final  class NaviAdapter {
 
     /**
      * @param broadcastType broadcastType
-     * @param isDay isDay
+     * @param isDay         isDay
      */
     public void updateBroadcastParam(final int broadcastType, final boolean isDay) {
         final NaviParamEntity naviParamEntity = new NaviParamEntity()
@@ -226,7 +228,7 @@ public final  class NaviAdapter {
 
     /**
      * @param segmentIdx segmentIdx
-     * @param linkIdx linkIdx
+     * @param linkIdx    linkIdx
      */
     public void queryAppointLanesInfo(final int segmentIdx, final int linkIdx) {
         mNaviApi.queryAppointLanesInfo(segmentIdx, linkIdx);
@@ -258,6 +260,7 @@ public final  class NaviAdapter {
 
     /**
      * 设置TMC数据
+     *
      * @param naviTmcInfo NaviTmcInfo
      */
     public void setTmcData(final NaviTmcInfo naviTmcInfo) {
@@ -267,6 +270,7 @@ public final  class NaviAdapter {
 
     /**
      * 设置导航数据数据
+     *
      * @param naviEtaInfo NaviEtaInfo
      */
     public void setNaviEtaInfo(final NaviEtaInfo naviEtaInfo) {
@@ -285,9 +289,10 @@ public final  class NaviAdapter {
     /**
      * 三个参数，地点/路段a、起点b、终点c，a不空其他为空就是查询地点或道路的路况，a为空bc不为空就是查询b到c的路况，
      * ab为空c不空就是查询当前到c的路况，abc都为空就是查询前方路况
-     * @param a String
-     * @param b String
-     * @param c String
+     *
+     * @param a         String
+     * @param b         String
+     * @param c         String
      * @param mapTypeId MapTypeId
      * @return int 交通状态回调 -1：无数据 0:未知状态 1:通畅 2:缓慢 3:拥堵 4:严重拥堵 5:极度通畅
      */
@@ -318,6 +323,7 @@ public final  class NaviAdapter {
 
     /**
      * abc都为空就是查询前方路况
+     *
      * @return tts
      */
     public String getFrontTmcStatus() {
@@ -353,7 +359,8 @@ public final  class NaviAdapter {
 
     /**
      * 获取途经点对应的路段索引
-     * @param viaName 途经点名称
+     *
+     * @param viaName  途经点名称
      * @param pathInfo 路径信息
      * @return 途经点对应的路段索引
      */
@@ -368,7 +375,7 @@ public final  class NaviAdapter {
                 return -2;
             }
         }
-        final List<ViaPointInfo> viaPointInfoList =  pathInfo.getViaPointInfo();
+        final List<ViaPointInfo> viaPointInfoList = pathInfo.getViaPointInfo();
         for (ViaPointInfo viaPointInfo : viaPointInfoList) {
             if (viaName.equals(viaPointInfo.poiName)) {
                 return viaPointInfo.segmentIdx;
@@ -379,8 +386,9 @@ public final  class NaviAdapter {
 
     /**
      * 获取对应路径的路况信息
+     *
      * @param naviLightBarInfoList 路况信息列表
-     * @param pathInfo 路径信息
+     * @param pathInfo             路径信息
      * @return 路径上的路况信息
      */
     private NaviTmcInfo.NaviLightBarInfo getCurrentLightBarInfo(
@@ -396,7 +404,8 @@ public final  class NaviAdapter {
 
     /**
      * 获取当点周边的交通情况
-     * @param viaName 途经点名称
+     *
+     * @param viaName  途经点名称
      * @param pathInfo 路径信息
      * @return 交通状态
      */
@@ -417,7 +426,7 @@ public final  class NaviAdapter {
                     Logger.i(TAG, "getPointTmcStatus naviLightBarItems is null");
                     return -1;
                 }
-                Logger.i(TAG, "getPointTmcStatus " + "viaSegmentIdx = "  + viaSegmentIdx +
+                Logger.i(TAG, "getPointTmcStatus " + "viaSegmentIdx = " + viaSegmentIdx +
                         "naviLightBarItems:" +
                         naviLightBarItems.toString());
                 // 搜索的是目的地
@@ -448,8 +457,9 @@ public final  class NaviAdapter {
 
     /**
      * 获取一段路线的交通状态 比如从A点到B点的交通状态
-     * @param a 地点a
-     * @param b 地点b
+     *
+     * @param a        地点a
+     * @param b        地点b
      * @param pathInfo pathInfo
      * @return int
      */
@@ -468,7 +478,8 @@ public final  class NaviAdapter {
 
     /**
      * 获取当前到途经点的交通状态
-     * @param viaName 途经点名称
+     *
+     * @param viaName  途经点名称
      * @param pathInfo pathInfo
      * @return int
      */
@@ -482,13 +493,13 @@ public final  class NaviAdapter {
         if (viaSegmentIdx < 0 || currentSegmentIdx < 0) {
             return -1;
         }
-        return getDistanceTmcStatus((short)currentSegmentIdx, viaSegmentIdx, pathInfo);
+        return getDistanceTmcStatus((short) currentSegmentIdx, viaSegmentIdx, pathInfo);
     }
 
     /**
      * @param startSegmentIdx 起始点路段索引
-     * @param endSegmentIdx 终点路段索引
-     * @param pathInfo 路径信息
+     * @param endSegmentIdx   终点路段索引
+     * @param pathInfo        路径信息
      * @return 两点之间的路况信息
      */
     private int getDistanceTmcStatus(final short startSegmentIdx, final short endSegmentIdx,
@@ -537,6 +548,7 @@ public final  class NaviAdapter {
 
     /**
      * 精细化交通状态转换
+     *
      * @param fineStatus 精细化交通状态
      * @return int交通状态
      */
@@ -545,7 +557,7 @@ public final  class NaviAdapter {
         if (fineStatus >= 100 && fineStatus < 200) {
             return TrafficStatus.TrafficStatusOpen;
             // 缓行
-        } else if(fineStatus >= 200 && fineStatus < 300) {
+        } else if (fineStatus >= 200 && fineStatus < 300) {
             return TrafficStatus.TrafficStatusSlow;
             // 拥堵
         } else if (fineStatus >= 300 && fineStatus < 400) {
@@ -553,6 +565,18 @@ public final  class NaviAdapter {
         } else {
             return 0;
         }
+    }
+
+    public void pauseNavi() {
+        mNaviApi.pauseNavi();
+    }
+
+    public void resumeNavi() {
+        mNaviApi.resumeNavi();
+    }
+
+    public void setSimulationSpeed(int simulationSpeed) {
+        mNaviApi.setSimulationSpeed(simulationSpeed);
     }
 
 

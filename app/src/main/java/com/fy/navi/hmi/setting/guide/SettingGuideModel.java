@@ -281,15 +281,6 @@ public class SettingGuideModel extends BaseModel<SettingGuideViewModel> implemen
         mViewModel.dualChoiceControl(SettingController.KEY_SETTING_IS_PHEV_CAR, isPHEVCar);
     }
 
-    /**
-     * 控制收藏点显隐
-     * @param isFavoritePoint true 显示 false 隐藏
-     */
-    public void hideOrShowFavoriteOnMainMap(final boolean isFavoritePoint) {
-        mSettingPackage.hideOrShowFavoriteOnMainMap(isFavoritePoint);
-    }
-
-
     @Override
     public void onDestroy() {
         super.onDestroy();

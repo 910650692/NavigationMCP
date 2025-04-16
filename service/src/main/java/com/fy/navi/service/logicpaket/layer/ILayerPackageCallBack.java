@@ -5,7 +5,9 @@ import com.fy.navi.service.define.layer.GemBaseLayer;
 import com.fy.navi.service.define.layer.GemLayerItem;
 import com.fy.navi.service.define.layer.refix.LayerItemLabelResult;
 import com.fy.navi.service.define.layer.refix.LayerItemSearchResult;
+import com.fy.navi.service.define.layer.refix.LayerSearchItemType;
 import com.fy.navi.service.define.map.MapType;
+import com.fy.navi.service.define.search.PoiInfoEntity;
 
 /**
  * Author: QiuYaWei
@@ -18,13 +20,13 @@ public interface ILayerPackageCallBack {
     }
 
 
-    default void onSearchItemClick(MapType mapTypeId, LayerItemSearchResult clickResult) {
+    default void onSearchItemClick(MapType mapTypeId, LayerSearchItemType type, int index) {
     }
 
     default void onRouteItemClick(MapType mapTypeId, GemLayerItem pItem) {
     }
 
-    default void onFavoriteClick(GeoPoint geoPoint) {
+    default void onFavoriteClick(MapType mapTypeId,PoiInfoEntity poiInfo) {
 
     }
 

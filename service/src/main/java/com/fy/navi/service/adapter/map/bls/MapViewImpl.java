@@ -433,6 +433,7 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver,
         } else {
             pos.maplevel = getCurrentZoomLevel();
         }
+        Logger.e(TAG,"goToCarPosition " + changeLevel);
         getMapview().goToPosition(pos, bAnimation);
         getMapview().resetTickCount(1);
     }
@@ -462,6 +463,7 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver,
                 break;
         }
         styleParam.forceUpdate = true;
+        Logger.e(TAG,"setMapStyle " );
         getMapview().getOperatorStyle().setMapStyle(styleParam, false);
         getMapview().resetTickCount(1);
     }

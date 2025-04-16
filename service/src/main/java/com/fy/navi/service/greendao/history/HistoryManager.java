@@ -19,6 +19,7 @@ public class HistoryManager {
     private static HistoryManager mManager;
     private HistoryDao mSearchHistoryDao;
     private static final int MAX_USERS = 50; // 假设最大搜索记录数为50
+    private boolean mIsInit = false;
 
     /**
      * Get instance.
@@ -40,11 +41,16 @@ public class HistoryManager {
      * Init database and cloud data.
      */
     public void init() {
+        if (mIsInit) {
+            Logger.d(TAG, "Database had Initialized!");
+            return;
+        }
         // 数据库对象
         final DaoMaster.DevOpenHelper helper = new DaoMaster.DevOpenHelper(AppContext.getInstance().getMContext(), DB_NAME);
         final Database db = helper.getWritableDb();
         final DaoMaster daoMaster = new DaoMaster(db);
         mSearchHistoryDao = daoMaster.newSession().getHistoryDao();
+        mIsInit = true;
     }
 
     /**

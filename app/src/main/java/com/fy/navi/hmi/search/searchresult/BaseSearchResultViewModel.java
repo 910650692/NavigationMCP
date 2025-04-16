@@ -54,4 +54,12 @@ public class BaseSearchResultViewModel extends BaseViewModel<SearchResultFragmen
     public void onVoicePoiSort(final String sortValue) {
         mView.onVoicePoiSort(sortValue);
     }
+
+    /**
+     * 图层点击事件回调
+     * @param index 点击下标
+     */
+    public void onMarkClickCallBack(final int index) {
+        mView.onMarkClickCallBack(index);
+    }
 }

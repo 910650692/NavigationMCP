@@ -82,6 +82,22 @@ public class DrivingRecordModel extends BaseModel<DrivingRecordViewModel> implem
         return mUserTrackPackage.obtainGpsTrackDepInfo(psSavePath, psFileName);
     }
 
+    /**
+     * 获取置顶id文件路径，用户同步数据
+     * @param id 行程ID
+     * @return 文件路径
+     */
+    public String getFilePath(final String id) {
+        return mUserTrackPackage.getFilePath(id);
+    }
+
+    /**
+     * 设置是否需要显示dialog
+     * @param isNeedShowDialog true:需要显示 false:不需要显示
+     */
+    public void setIsNeedShowDialog(final boolean isNeedShowDialog) {
+        mUserTrackPackage.setIsNeedShowDialog(isNeedShowDialog);
+    }
 
     /**
      *  根据ID删除行程信息
@@ -128,9 +144,7 @@ public class DrivingRecordModel extends BaseModel<DrivingRecordViewModel> implem
 
     @Override
     public void onGpsTrackDepInfo(final int n32SuccessTag, final String psSavePath, final String psFileName, final GpsTrackDepthBean depInfo) {
-        Logger.d(TAG, "onGpsTrackDepInfo: n32SuccessTag = " + n32SuccessTag + " psSavePath = " +
-                psSavePath + " psFileName = " + psFileName + " depInfo = " + GsonUtils.toJson(depInfo));
-        if (UserTrackPackage.getInstance().getIsNeedShowDialog()) {
+        if (mUserTrackPackage.getIsNeedShowDialog()) {
             mViewModel.hideDialog();
             if (depInfo == null) {
                 ThreadManager.getInstance().postUi(() -> {
@@ -138,6 +152,8 @@ public class DrivingRecordModel extends BaseModel<DrivingRecordViewModel> implem
                             ResourceUtils.Companion.getInstance().getString(R.string.driving_record_download_failed));
                 });
             } else {
+                Logger.d(TAG, "onGpsTrackDepInfo: n32SuccessTag = " + n32SuccessTag + " psSavePath = " +
+                        psSavePath + " psFileName = " + psFileName + " depInfo = " + GsonUtils.toJson(depInfo));
                 final LayerItemUserTrackDepth layerItemUserTrackDepth = new LayerItemUserTrackDepth();
                 layerItemUserTrackDepth.setGpsTrackDepthBean(depInfo);
                 LayerPackage.getInstance().addLayerItemOfUserTrackDepth(MapType.MAIN_SCREEN_MAIN_MAP, layerItemUserTrackDepth, false);
@@ -150,7 +166,7 @@ public class DrivingRecordModel extends BaseModel<DrivingRecordViewModel> implem
                 mPreviewParam.setbUseRect(true);
                 mPreviewParam.setRouteLine(true);
                 MapPackage.getInstance().showPreview(MapType.MAIN_SCREEN_MAIN_MAP,mPreviewParam);
-                UserTrackPackage.getInstance().setIsNeedShowDialog(false);
+                mUserTrackPackage.setIsNeedShowDialog(false);
             }
         }
     }

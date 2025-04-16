@@ -8,6 +8,10 @@ import com.android.utils.ScreenUtils;
 import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
+import com.fy.navi.burypoint.anno.HookMethod;
+import com.fy.navi.burypoint.bean.BuryProperty;
+import com.fy.navi.burypoint.constant.BuryConstant;
+import com.fy.navi.burypoint.controller.BuryPointController;
 import com.fy.navi.service.AppContext;
 import com.fy.navi.service.AutoMapConstant;
 import com.fy.navi.service.MapDefaultFinalTag;
@@ -36,6 +40,7 @@ import com.fy.navi.service.define.search.PoiInfoEntity;
 import com.fy.navi.service.define.search.SearchRequestParameter;
 import com.fy.navi.service.define.search.SearchResultEntity;
 import com.fy.navi.service.define.search.SearchRetainParamInfo;
+import com.fy.navi.service.define.utils.NumberUtils;
 import com.fy.navi.service.greendao.history.History;
 import com.fy.navi.service.greendao.history.HistoryManager;
 
@@ -116,6 +121,7 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
         }
         if (searchResultEntity != null) {
             addPoiMarker(searchResultEntity, requestParameter);
+            sentBuryPointForSearch(searchResultEntity.getKeyword());
         }
     }
 
@@ -388,6 +394,36 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
     }
 
     /**
+     * Poi Id 搜索
+     *
+     * @param poiId POI id
+     * @param isSilent 是否静默
+     * @return taskId
+     */
+    public int poiIdSearch(final String poiId, final boolean isSilent) {
+        if (poiId == null) {
+            Logger.e(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "Failed to execute poiIdSearch: searchRequestParameterBuilder is null.");
+            return -1;
+        }
+
+        final GeoPoint userLoc = new GeoPoint();
+        userLoc.setLon(mPositionAdapter.getLastCarLocation().getLongitude());
+        userLoc.setLat(mPositionAdapter.getLastCarLocation().getLatitude());
+        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "userLoc:" + userLoc.toString()
+                + "  mMapDataPackage.getAdcode()" + mMapDataAdapter.getAdCodeByLonLat(userLoc.getLon(), userLoc.getLat()));
+        final SearchRequestParameter requestParameterBuilder = new SearchRequestParameter.Builder()
+                .isSilentSearch(isSilent)
+                .poiId(poiId)
+                .queryType(AutoMapConstant.SearchQueryType.ID)
+                .searchType(AutoMapConstant.SearchType.POI_SEARCH)
+                .userLoc(userLoc)
+                .adCode(mMapDataAdapter.getAdCodeByLonLat(userLoc.getLon(), userLoc.getLat()))
+                .build();
+        Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "Executing poiDetailSearch search.");
+        return mSearchAdapter.poiIdSearch(requestParameterBuilder);
+    }
+
+    /**
      * Geo 搜索
      *
      * @param geoPoint GeoPoint
@@ -396,6 +432,23 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
     public int geoSearch(final GeoPoint geoPoint) {
         Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "Executing geoSearch search.");
         final SearchRequestParameter requestParameterBuilder = new SearchRequestParameter.Builder()
+                .searchType(AutoMapConstant.SearchType.GEO_SEARCH)
+                .poiLoc(geoPoint)
+                .build();
+        return mSearchAdapter.geoSearch(requestParameterBuilder);
+    }
+
+    /**
+     * Geo 搜索
+     *
+     * @param geoPoint GeoPoint
+     * @param isSilent 是否静默
+     * @return taskId
+     */
+    public int geoSearch(final GeoPoint geoPoint, final boolean isSilent) {
+        Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "Executing geoSearch search.");
+        final SearchRequestParameter requestParameterBuilder = new SearchRequestParameter.Builder()
+                .isSilentSearch(isSilent)
                 .searchType(AutoMapConstant.SearchType.GEO_SEARCH)
                 .poiLoc(geoPoint)
                 .build();
@@ -797,13 +850,14 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
         switch (searchResultEntity.getSearchType()) {
             case AutoMapConstant.SearchType.EN_ROUTE_KEYWORD_SEARCH:
             case AutoMapConstant.SearchType.SEARCH_KEYWORD:
-                createPoiMarker(searchResultEntity.getPoiList(), 0);
+                createPoiMarker(searchResultEntity.getPoiList(), 0, requestParameter);
                 break;
             case AutoMapConstant.SearchType.AROUND_SEARCH:
                 createPoiMarker(searchResultEntity.getPoiList(), 0);
                 createCenterPoiMarker(requestParameter);
                 break;
             case AutoMapConstant.SearchType.GEO_SEARCH:
+            case AutoMapConstant.SearchType.POI_SEARCH:
                 createLabelMarker(searchResultEntity);
                 break;
             default:
@@ -827,7 +881,8 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
         final ArrayList<PoiInfoEntity> poiList = new ArrayList<>();
         poiList.add(poiInfoEntity);
         layerItemSearchResult.setSearchResultPoints(poiList);
-        mLayerAdapter.addLayerItemOfSearchCentralPoi(MapType.MAIN_SCREEN_MAIN_MAP, layerItemSearchResult, false);
+        mLayerAdapter.updateSearchMarker(MapType.MAIN_SCREEN_MAIN_MAP,
+                LayerSearchItemType.SEARCH_POI_CENTRAL, layerItemSearchResult, false);
     }
 
     /**
@@ -843,10 +898,11 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
         final int type = getPointTypeCode(poiInfoEntity.getPointTypeCode());
         final LayerItemSearchResult layerItemSearchResult = new LayerItemSearchResult();
         layerItemSearchResult.setSearchResultPoints((ArrayList<PoiInfoEntity>) poiList);
-        layerItemSearchResult.setSelectedIndex(index);
-        layerItemSearchResult.setType(LayerSearchItemType.SEARCH_PARENT_POINT);
-        layerItemSearchResult.setItemMarkerType(LayerSearchItemMarkerType.SEARCH_ITEM_TYPE_POI);
-        mLayerAdapter.addLayerItemOfSearchResult(MapType.MAIN_SCREEN_MAIN_MAP, layerItemSearchResult, true);
+        mLayerAdapter.updateSearchMarker(MapType.MAIN_SCREEN_MAIN_MAP,
+                (type == AutoMapConstant.PointTypeCode.CHARGING_STATION ?
+                        LayerSearchItemType.SEARCH_PARENT_CHARGE_STATION :
+                        LayerSearchItemType.SEARCH_PARENT_POINT),
+                layerItemSearchResult, true);
         showPreview(poiList);
     }
 
@@ -860,47 +916,90 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
                 .filter(poiInfo -> poiInfo.getPoint() != null)
                 .map(poiInfo -> new PreviewParams.PointD(poiInfo.getPoint().getLon(), poiInfo.getPoint().getLat()))
                 .collect(Collectors.toList());
-
         previewParams.setPoints(points);
         previewParams.setbUseRect(false);
-        final int screenWidth = ScreenUtils.Companion.getInstance().getScreenWidth();
-        final int screenHeight = ScreenUtils.Companion.getInstance().getScreenHeight();
-        previewParams.setMapBound(new PreviewParams.RectDouble(0, screenWidth, 0, screenHeight));
-        mMapAdapter.showPreview(MapType.MAIN_SCREEN_MAIN_MAP, previewParams);
+//        final int screenWidth = ScreenUtils.Companion.getInstance().getScreenWidth();
+//        final int screenHeight = ScreenUtils.Companion.getInstance().getScreenHeight();
+//        previewParams.setMapBound(new PreviewParams.RectDouble(0, screenWidth, 0, screenHeight));
+        if (!ConvertUtils.isEmpty(poiList) && poiList.size() > 1) {
+            Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "showPointSPreview");
+            mMapAdapter.showPreview(MapType.MAIN_SCREEN_MAIN_MAP, previewParams);
+        } else {
+            Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "showPointPreview");
+            mMapAdapter.setMapCenter(MapType.MAIN_SCREEN_MAIN_MAP, poiList.get(0).getPoint());
+        }
     }
 
     /**
      * 设置高亮扎标
      * @param poiInfoEntity 需要高亮的poi对象
+     * @param index 需要高亮的下标
      */
-    public void setSelectIndex(final PoiInfoEntity poiInfoEntity) {
+    public void setSelectIndex(final PoiInfoEntity poiInfoEntity, final int index) {
         if (ConvertUtils.isEmpty(poiInfoEntity)) {
             return;
         }
         if (getPointTypeCode(poiInfoEntity.getPointTypeCode()) == AutoMapConstant.PointTypeCode.CHARGING_STATION) {
-            mLayerAdapter.setSearchSelect(MapType.MAIN_SCREEN_MAIN_MAP, GemLayerClickBusinessType.BizSearchTypeChargeStation
-                    , poiInfoEntity.getPid(), true);
-        } else if (getPointTypeCode(poiInfoEntity.getPointTypeCode()) == AutoMapConstant.PointTypeCode.PARKING_LOT) {
-            mLayerAdapter.setSearchSelect(MapType.MAIN_SCREEN_MAIN_MAP, GemLayerClickBusinessType.BizSearchTypePoiParkRoute
-                    , poiInfoEntity.getPid(), true);
+            mLayerAdapter.setSearchSelect(MapType.MAIN_SCREEN_MAIN_MAP, LayerSearchItemType.SEARCH_PARENT_CHARGE_STATION
+                    , index);
         } else {
-            mLayerAdapter.setSearchSelect(MapType.MAIN_SCREEN_MAIN_MAP, GemLayerClickBusinessType.BizSearchTypePoiParentPoint
-                    , poiInfoEntity.getPid(), true);
+            mLayerAdapter.setSearchSelect(MapType.MAIN_SCREEN_MAIN_MAP, LayerSearchItemType.SEARCH_PARENT_POINT
+                    , index);
         }
+        final LayerItemSearchResult layerItemSearchResult = new LayerItemSearchResult();
+        final ArrayList<PoiInfoEntity> poiList = new ArrayList<>();
+        poiList.add(poiInfoEntity);
+        layerItemSearchResult.setSearchResultPoints(poiList);
+        //被选中的poi对象需要添加子点，区域，道路的扎标
+        if (!ConvertUtils.isEmpty(poiInfoEntity.getMRoadPolygonBounds())) {
+            mLayerAdapter.updateSearchMarker(MapType.MAIN_SCREEN_MAIN_MAP, LayerSearchItemType.SEARCH_PARENT_Line_Road,
+                    layerItemSearchResult, false);
+        }
+        if (!ConvertUtils.isEmpty(poiInfoEntity.getMPoiAoiBounds())) {
+            mLayerAdapter.updateSearchMarker(MapType.MAIN_SCREEN_MAIN_MAP, LayerSearchItemType.SEARCH_PARENT_AREA,
+                    layerItemSearchResult, false);
+        }
+        if (!ConvertUtils.isEmpty(poiInfoEntity.getChildInfoList())) {
+            mLayerAdapter.updateSearchMarker(MapType.MAIN_SCREEN_MAIN_MAP, LayerSearchItemType.SEARCH_CHILD_POINT,
+                    layerItemSearchResult, false);
+        }
+
     }
 
     /**
-     * 创建 POI 点标记
-     * @param poiList List<PoiInfoEntity> 用于扎标的POI列表</PoiInfoEntity>
+     * 设置子节点高亮下标
+     * @param index 高亮下标
      */
-    private void createPoiMarker(final List<PoiInfoEntity> poiList) {
+    public void setChildIndex(final int index) {
+        Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "setChildIndex: " + index);
+        mLayerAdapter.setSearchSelect(MapType.MAIN_SCREEN_MAIN_MAP, LayerSearchItemType.SEARCH_CHILD_POINT
+                , index);
+    }
+
+    /**
+     * 搜索结果列表扎标
+     * @param poiList 搜索结果列表
+     * @param index 当前选中下标
+     * @param searchRequestParameter 搜索参数
+     */
+    private void createPoiMarker(final List<PoiInfoEntity> poiList, final int index, final SearchRequestParameter searchRequestParameter) {
         if (ConvertUtils.isEmpty(poiList)) {
             return;
         }
-
-        LayerItemSearchResult layerItemSearchResult = new LayerItemSearchResult();
+        final PoiInfoEntity poiInfoEntity = poiList.get(0);
+        final int type = getPointTypeCode(poiInfoEntity.getPointTypeCode());
+        final LayerItemSearchResult layerItemSearchResult = new LayerItemSearchResult();
         layerItemSearchResult.setSearchResultPoints((ArrayList<PoiInfoEntity>) poiList);
-        mLayerAdapter.addLayerItemOfSearchLabel(MapType.MAIN_SCREEN_MAIN_MAP, layerItemSearchResult, true);
+        final LayerSearchItemType searchType;
+        if (type == AutoMapConstant.PointTypeCode.CHARGING_STATION) {
+            searchType = LayerSearchItemType.SEARCH_PARENT_CHARGE_STATION;
+        } else if (searchRequestParameter.getSearchType() == AutoMapConstant.SearchType.EN_ROUTE_KEYWORD_SEARCH) {
+            searchType = LayerSearchItemType.SEARCH_POI_ALONG_ROUTE;
+        } else {
+            searchType = LayerSearchItemType.SEARCH_PARENT_POINT;
+        }
+        mLayerAdapter.updateSearchMarker(MapType.MAIN_SCREEN_MAIN_MAP, searchType, layerItemSearchResult, true);
+        showPreview(poiList);
     }
 
 //    /**
@@ -970,7 +1069,8 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
         list.add(firstElement);
         final LayerItemSearchResult searchResult = new LayerItemSearchResult();
         searchResult.setSearchResultPoints(list);
-        final boolean addResult = mLayerAdapter.addLayerItemOfSearchLabel(MapType.MAIN_SCREEN_MAIN_MAP, searchResult, false);
+        final boolean addResult = mLayerAdapter.updateSearchMarker(MapType.MAIN_SCREEN_MAIN_MAP,
+                LayerSearchItemType.SEARCH_POI_LABEL, searchResult, false);
         Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "createLabelMarker result:" + addResult);
     }
 
@@ -987,7 +1087,7 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
      */
     public void clearPoiLabelMark() {
         Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "clearPoiLabelMark");
-        mLayerAdapter.clearSearchPOILayerItems(MapType.MAIN_SCREEN_MAIN_MAP, LayerSearchItemType.SEARCH_PARENT_POINT);
+        mLayerAdapter.clearSearchPOILayerItems(MapType.MAIN_SCREEN_MAIN_MAP, LayerSearchItemType.SEARCH_POI_LABEL);
     }
 
     /**
@@ -1156,30 +1256,28 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
     // TODO 搜索结果扎标点击回调
     @Override
     public void onNotifyClick(final MapType mapTypeId, final GemBaseLayer layer, final GemLayerItem item) {
-        ILayerAdapterCallBack.super.onNotifyClick(mapTypeId, layer, item);
         Logger.d(TAG, "onNotifyClick");
-        if (item.getClickBusinessType() == GemLayerClickBusinessType.BizSearchTypePoiParentPoint) {
-            mLayerAdapter.setSearchSelect(mapTypeId, item.getClickBusinessType(), String.valueOf(item.getIndex()), true);
-        }
     }
 
     /**
      * 搜索结果扎标点击事件回调
-     * @param clickResult 点击的item数据
+     * @param mapTypeId 地图类型
+     * @param type 扎标类型
+     * @param index 索引
      */
-    public void onSearchItemClick(MapType mapTypeId, final LayerItemSearchResult clickResult) {
-        Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "onSearchItemClick item:" + clickResult.toString());
+    public void onSearchItemClick(final MapType mapTypeId, final LayerSearchItemType type, final int index) {
+        Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "onSearchItemClick type:" + type);
         final ThreadManager threadManager = ThreadManager.getInstance();
         for (Map.Entry<String, SearchResultCallback> entry : mISearchResultCallbackMap.entrySet()) {
             final String identifier = entry.getKey();
             mCurrentCallbackId.set(identifier);
-//            final PoiInfoEntity poiInfoEntity = new PoiInfoEntity()
-//                    .setPid(item.getPid())
-//                    .setPoint(new GeoPoint(item.getLog(), item.getLat()));
-            ArrayList<PoiInfoEntity> searchResultPoints = clickResult.getSearchResultPoints();
-            PoiInfoEntity poiInfoEntity = searchResultPoints.get(clickResult.getSelectedIndex());
             final SearchResultCallback callback = entry.getValue();
-            threadManager.postUi(() -> callback.onMarkClickCallBack(poiInfoEntity));
+            //子点的事件单独分发
+            if (type == LayerSearchItemType.SEARCH_CHILD_POINT) {
+                threadManager.postUi(() -> callback.onMarkChildClickCallBack(index));
+            } else {
+                threadManager.postUi(() -> callback.onMarkClickCallBack(index));
+            }
         }
     }
 
@@ -1223,6 +1321,14 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
                 }
             }
         });
+    }
+
+    @HookMethod(eventName = BuryConstant.EventName.AMAP_DESTINATION_INPUT)
+    private void sentBuryPointForSearch(String keywords){
+        BuryProperty buryProperty = new BuryProperty.Builder()
+                .setParams(BuryConstant.ProperType.BURY_KEY_SEARCH_CONTENTS, keywords)
+                .build();
+        BuryPointController.getInstance().setBuryProps(buryProperty);
     }
 
 }

@@ -41,17 +41,15 @@ public final class CommonManager {
      * Init database and cloud data.
      */
     public void init() {
-        if (!mIsInit) {
-            // 数据库对象
-            final DaoMaster.DevOpenHelper helper = new DaoMaster.DevOpenHelper(AppContext.getInstance().getMContext(), DB_NAME);
-            final Database db = helper.getWritableDb();
-            final DaoMaster daoMaster = new DaoMaster(db);
-            mCommonSettingDao = daoMaster.newSession().getCommonSettingDao();
-            mIsInit = true;
-            Logger.i(TAG, "Database init success!");
-        } else {
-            Logger.i(TAG, "Database had Initialized!");
+        if (mIsInit) {
+            Logger.d(TAG, "Database had Initialized!");
+            return;
         }
+        // 数据库对象
+        final DaoMaster.DevOpenHelper helper = new DaoMaster.DevOpenHelper(AppContext.getInstance().getMContext(), DB_NAME);
+        final Database db = helper.getWritableDb();
+        final DaoMaster daoMaster = new DaoMaster(db);
+        mCommonSettingDao = daoMaster.newSession().getCommonSettingDao();
     }
 
     /**

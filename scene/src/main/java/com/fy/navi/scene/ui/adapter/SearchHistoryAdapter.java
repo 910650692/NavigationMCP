@@ -14,6 +14,7 @@ import com.android.utils.ConvertUtils;
 import com.android.utils.ResourceUtils;
 import com.android.utils.ToastUtils;
 import com.android.utils.log.Logger;
+import com.android.utils.thread.ThreadManager;
 import com.fy.navi.scene.R;
 import com.fy.navi.scene.databinding.SearchHistoryItemBinding;
 import com.fy.navi.service.AutoMapConstant;
@@ -94,7 +95,11 @@ public class SearchHistoryAdapter extends RecyclerView.Adapter<SearchHistoryAdap
             holder.resultItemBinding.skInfoLayout.setVisibility(View.GONE);
             holder.resultItemBinding.poiToNavi.setVisibility(View.GONE);
             holder.resultItemBinding.llActionContainer.setVisibility(View.GONE);
+            holder.resultItemBinding.poiIcon.setVisibility(View.VISIBLE);
+            holder.resultItemBinding.poiNum.setVisibility(View.INVISIBLE);
         } else {
+            holder.resultItemBinding.poiNum.setVisibility(View.VISIBLE);
+            holder.resultItemBinding.poiIcon.setVisibility(View.INVISIBLE);
             holder.resultItemBinding.skInfoLayout.setVisibility(View.VISIBLE);
             holder.resultItemBinding.poiToNavi.setVisibility(View.VISIBLE);
             holder.resultItemBinding.llActionContainer.setVisibility(View.VISIBLE);
@@ -173,6 +178,10 @@ public class SearchHistoryAdapter extends RecyclerView.Adapter<SearchHistoryAdap
                 mPoiEntities.remove(position);
                 notifyItemRemoved(position);
             }
+            final List<History> historyList = mSearchPackage.getSearchKeywordRecord();
+            ThreadManager.getInstance().postUi(() -> {
+                notifyList(historyList);
+            });
             ToastUtils.Companion.getInstance().showCustomToastView(ResourceUtils.Companion.getInstance().getString(R.string.sha_deleted));
         });
     }

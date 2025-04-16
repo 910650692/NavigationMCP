@@ -2,7 +2,6 @@ package com.fy.navi.scene.impl.poi;
 
 
 import android.text.TextUtils;
-import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;
 
@@ -16,7 +15,6 @@ import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.mapdata.CityDataInfo;
 import com.fy.navi.service.define.search.ETAInfo;
 import com.fy.navi.service.define.search.PoiInfoEntity;
-import com.fy.navi.service.logicpaket.layer.LayerPackage;
 import com.fy.navi.service.logicpaket.mapdata.MapDataPackage;
 import com.fy.navi.service.logicpaket.route.RoutePackage;
 import com.fy.navi.service.logicpaket.search.SearchPackage;
@@ -55,6 +53,7 @@ public class ScenePoiDetailContentViewImpl extends BaseSceneModel<ScenePoiDetail
         mBehaviorPackage = BehaviorPackage.getInstance();
         mapDataPackage = MapDataPackage.getInstance();
         mRoutePackage = RoutePackage.getInstance();
+        mPowerType.setValue(-1);
     }
 
     @Override
@@ -143,6 +142,14 @@ public class ScenePoiDetailContentViewImpl extends BaseSceneModel<ScenePoiDetail
      */
     public void addPoiMarker(final List<PoiInfoEntity> poiInfoEntities, final int index) {
         mSearchPackage.createPoiMarker(poiInfoEntities, index);
+    }
+
+    /**
+     * 设置子节点高亮下标
+     * @param index 高亮下标
+     */
+    public void setChildIndex(final int index) {
+        mSearchPackage.setChildIndex(index);
     }
 
     /**

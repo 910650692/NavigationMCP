@@ -1,4 +1,5 @@
 package com.fy.navi.scene.impl.navi;
+
 import androidx.databinding.ObservableField;
 
 import com.android.utils.ConvertUtils;
@@ -161,61 +162,84 @@ public class SceneNaviSapaDetailImpl extends BaseSceneModel<SceneNaviSapaDetailV
     /**
      * @param isVisible 是否显示
      */
-    private void updateSceneVisible(final boolean isVisible){
-        if(mScreenView.isVisible() == isVisible) return;
+    private void updateSceneVisible(final boolean isVisible) {
+        if (mScreenView.isVisible() == isVisible) return;
         Logger.i(MapDefaultFinalTag.NAVI_SCENE_TAG, "SceneNaviSapaDetailImpl", isVisible);
         mScreenView.getNaviSceneEvent().notifySceneStateChange(
                 (isVisible ? INaviSceneEvent.SceneStateChangeType.SceneShowState :
-                INaviSceneEvent.SceneStateChangeType.SceneCloseState),
+                        INaviSceneEvent.SceneStateChangeType.SceneCloseState),
                 NaviSceneId.NAVI_SAPA_DETAIL_INFO);
     }
 
     /**
      * 处理详情页显示
-     * @param type  类型
+     *
+     * @param type           类型
      * @param sapaInfoEntity 实体类
      */
     public void skipNaviSapaDetailScene(final int type, final SapaInfoEntity sapaInfoEntity) {
         Logger.i(TAG, "skipNaviSapaDetailScene" + ", type = " + type +
                 ", sapaInfoEntity = " + sapaInfoEntity);
-        if (SERVICE_DETAIL_PAGE == type) {
-            doServiceSearch(sapaInfoEntity);
-            mViewType.set(0);
-            updateServiceDetailInfo(sapaInfoEntity);
-            updateSceneVisible(true);
-        } else {
-            doTollSearch(sapaInfoEntity);
-            mViewType.set(1);
-            updateTollDetailInfo(sapaInfoEntity);
+        if (sapaInfoEntity == null) {
+            Logger.e(TAG, "sapaInfoEntity is null");
+            return;
+        }
+        ArrayList<SapaInfoEntity.SAPAItem> list = sapaInfoEntity.getList();
+        if (!ConvertUtils.isEmpty(list)) {
+            if (SERVICE_DETAIL_PAGE == type) {
+                SapaInfoEntity.SAPAItem sapaItem = list.get(0);
+                if (sapaItem.getType() != 0 && list.size() > 1) {
+                    sapaItem = sapaInfoEntity.getList().get(1);
+                }
+                if (sapaItem != null) {
+                    doServiceSearch(sapaItem);
+                    mViewType.set(0);
+                    updateServiceDetailInfo(sapaItem);
+                } else {
+                    Logger.e(TAG, "sapaItem is null");
+                }
+            } else {
+                SapaInfoEntity.SAPAItem sapaItem = list.get(0);
+                if (sapaItem.getType() != 1 && list.size() > 1) {
+                    sapaItem = list.get(1);
+                }
+                if (sapaItem != null) {
+                    doTollSearch(sapaItem);
+                    mViewType.set(1);
+                    updateTollDetailInfo(sapaItem, sapaInfoEntity.getLaneTypes());
+                } else {
+                    Logger.e(TAG, "sapaItem is null");
+                }
+            }
             updateSceneVisible(true);
         }
     }
 
     /**
      * 收费站透传动作，因为SapaInfoEntity中不会透出收费站的poiId,手动生成poiEntityInfo
-     * @param sapaInfoEntity 实体类
+     *
+     * @param sapaItem 实体类
      */
-    private void doTollSearch(final SapaInfoEntity sapaInfoEntity) {
-        final SapaInfoEntity.SAPAItem sapaItem = sapaInfoEntity.getList().get(0);
-        if (sapaItem == null) {
+    private void doTollSearch(final SapaInfoEntity.SAPAItem sapaItem) {
+        if (sapaItem != null) {
+            PoiInfoEntity poiInfoEntity = new PoiInfoEntity();
+            poiInfoEntity.setMName(sapaItem.getName());
+            poiInfoEntity.setMPoint(sapaItem.getPos());
+            poiInfoEntity.setPoiType(16);
+            poiInfoEntity.setPoiTag(ResourceUtils.Companion.getInstance().getString(R.string.toll));
+            mCurrentPoiInfoEntity = poiInfoEntity;
+            mCurrentPoiType = 16;
+        } else {
             Logger.e(TAG, "doTollSearch sapaItem is null");
-            return;
         }
-        PoiInfoEntity poiInfoEntity = new PoiInfoEntity();
-        poiInfoEntity.setMName(sapaItem.getName());
-        poiInfoEntity.setMPoint(sapaItem.getPos());
-        poiInfoEntity.setPoiType(16);
-        poiInfoEntity.setPoiTag(ResourceUtils.Companion.getInstance().getString(R.string.toll));
-        mCurrentPoiInfoEntity = poiInfoEntity;
-        mCurrentPoiType = 16;
     }
 
     /**
      * 服务区搜索动作
-     * @param sapaInfoEntity 实体类
+     *
+     * @param sapaItem 实体类
      */
-    private void doServiceSearch(final SapaInfoEntity sapaInfoEntity) {
-        final SapaInfoEntity.SAPAItem sapaItem = sapaInfoEntity.getList().get(0);
+    private void doServiceSearch(final SapaInfoEntity.SAPAItem sapaItem) {
         if (sapaItem != null) {
             final long detail = sapaItem.getSapaDetail();
             final String poiId = sapaItem.getServicePOIID();
@@ -232,11 +256,14 @@ public class SceneNaviSapaDetailImpl extends BaseSceneModel<SceneNaviSapaDetailV
             // 进行PoiId搜索 为了途经点添加功能
             mSapaSearchId = SearchPackage.getInstance().poiIdSearch(poiId);
             Logger.i(TAG, "doServiceSearch  mSapaSearchId = " + mSapaSearchId);
+        } else {
+            Logger.e(TAG, "sapaItem is null");
         }
     }
 
     /**
      * 刷新服务区加油站信息
+     *
      * @param result poi点详情信息
      */
     private void refreshGasStationInfo(final SearchResultEntity result) {
@@ -301,16 +328,15 @@ public class SceneNaviSapaDetailImpl extends BaseSceneModel<SceneNaviSapaDetailV
 
 
     /**
-     * @param sapaInfoEntity 更新服务区详情页的信息
+     * @param sapaItem 更新服务区详情页的信息
      */
-    private void updateServiceDetailInfo(final SapaInfoEntity sapaInfoEntity) {
-        final SapaInfoEntity.SAPAItem sapItem = sapaInfoEntity.getList().get(0);
-        if (sapItem == null) {
+    private void updateServiceDetailInfo(final SapaInfoEntity.SAPAItem sapaItem) {
+        if (sapaItem == null) {
             Logger.i(TAG, "updateServiceDetailInfo sapItem is null");
             return;
         }
         if (powerType == 1) {
-            GeoPoint point = sapItem.getPos();
+            GeoPoint point = sapaItem.getPos();
             OpenApiHelper.getTravelTimeFutureIncludeChargeLeft(point).thenAccept(etaInfo -> {
                 ThreadManager.getInstance().postUi(() -> {
                     int leftCharge = etaInfo.getLeftCharge();
@@ -321,26 +347,25 @@ public class SceneNaviSapaDetailImpl extends BaseSceneModel<SceneNaviSapaDetailV
                 return null;
             });
         }
-        mServicePoiId = sapItem.getServicePOIID();
-        mServiceName.set(sapItem.getName());
-        tagUpdate(mServiceStatusTag, sapItem);
-        updateDistanceAndRemainTime(sapItem, mServiceDistance, mServiceRemainTime);
-        updateServiceDetails(sapItem, mServiceChargeStationVisible, mServiceCanteenVisible,
+        mServicePoiId = sapaItem.getServicePOIID();
+        mServiceName.set(sapaItem.getName());
+        tagUpdate(mServiceStatusTag, sapaItem);
+        updateDistanceAndRemainTime(sapaItem, mServiceDistance, mServiceRemainTime);
+        updateServiceDetails(sapaItem, mServiceChargeStationVisible, mServiceCanteenVisible,
                 mServiceLavatoryVisible, mServiceMaintenanceVisible, mServiceBuyVisible,
                 mServiceHotelVisible);
     }
 
     /**
-     * @param sapaInfoEntity 更新收费站详情页的信息
+     * @param sapaItem 更新收费站详情页的信息
      */
-    private void updateTollDetailInfo(final SapaInfoEntity sapaInfoEntity) {
-        final SapaInfoEntity.SAPAItem sapItem = sapaInfoEntity.getList().get(0);
-        if (sapItem == null) {
+    private void updateTollDetailInfo(final SapaInfoEntity.SAPAItem sapaItem, ArrayList<Integer> laneTypes) {
+        if (sapaItem == null) {
             Logger.i(TAG, "updateTollDetailInfo sapItem is null");
             return;
         }
         if (powerType == 1) {
-            GeoPoint point = sapItem.getPos();
+            GeoPoint point = sapaItem.getPos();
             OpenApiHelper.getTravelTimeFutureIncludeChargeLeft(point).thenAccept(etaInfo -> {
                 ThreadManager.getInstance().postUi(() -> {
                     int leftCharge = etaInfo.getLeftCharge();
@@ -351,14 +376,15 @@ public class SceneNaviSapaDetailImpl extends BaseSceneModel<SceneNaviSapaDetailV
                 return null;
             });
         }
-        mTollName.set(sapItem.getName());
-        tagUpdate(mTollStatusTag, sapItem);
-        updateDistanceAndRemainTime(sapItem, mTollDistance, mTollRemainTime);
-        updateTollDetail(sapaInfoEntity.getLaneTypes(), mTollEtcVisible, mTollAlipayVisible);
+        mTollName.set(sapaItem.getName());
+        tagUpdate(mTollStatusTag, sapaItem);
+        updateDistanceAndRemainTime(sapaItem, mTollDistance, mTollRemainTime);
+        updateTollDetail(laneTypes, mTollEtcVisible, mTollAlipayVisible);
     }
 
     /**
      * 更新标签
+     *
      * @param tag     tag
      * @param sapItem sapItem
      */
@@ -417,6 +443,7 @@ public class SceneNaviSapaDetailImpl extends BaseSceneModel<SceneNaviSapaDetailV
 
     /**
      * 更新剩余距离和剩余时间信息
+     *
      * @param sapItem        sapaItem
      * @param remainDistance remainDistance
      * @param remainTime     remainTime
@@ -432,9 +459,10 @@ public class SceneNaviSapaDetailImpl extends BaseSceneModel<SceneNaviSapaDetailV
 
     /**
      * 更新可收费类型详情
+     *
      * @param laneTypes laneTypes
-     * @param etc etc
-     * @param alipay alipay
+     * @param etc       etc
+     * @param alipay    alipay
      */
     private void updateTollDetail(final ArrayList<Integer> laneTypes,
                                   final ObservableField<Boolean> etc,
@@ -465,12 +493,13 @@ public class SceneNaviSapaDetailImpl extends BaseSceneModel<SceneNaviSapaDetailV
 
     /**
      * 更新服务区详情
+     *
      * @param sapItem       sapItem
      * @param chargeStation chargeStation
      * @param canteen       canteen
-     * @param lavatory       lavatory
-     * @param maintenance  maintenance
-     * @param buy            buy
+     * @param lavatory      lavatory
+     * @param maintenance   maintenance
+     * @param buy           buy
      * @param hotel         hotel
      */
     private void updateServiceDetails(final SapaInfoEntity.SAPAItem sapItem,

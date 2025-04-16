@@ -84,7 +84,7 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
     private static final String TAG = BaseRouteViewModel.class.getSimpleName();
 
     private final static String ROUTE_ERROR = "异常";
-    private static final int HIDE_DELAY_TIME = 8 * 1000;
+    private static final int HIDE_DELAY_TIME = 20 * 1000;
     private static final int REFRESH_TIME = 2 * 1000;
 
     private ObservableField<Integer> mTabVisibility;
@@ -295,6 +295,15 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
     }
 
     /**
+     * 搜索列表页面-标题
+     **/
+    private ObservableField<String> mSearchListTitle;
+
+    public ObservableField<String> getSearchListTitle() {
+        return mSearchListTitle;
+    }
+
+    /**
      * 天气详情页面
      **/
     private ObservableField<Drawable> mWeatherDrawable;
@@ -420,6 +429,7 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
     private String mCurrentPreferences;
     private String mCurrentEnergy;
     private String mSearchKeyWord = ResourceUtils.Companion.getInstance().getString(R.string.route_search_keyword_charge);
+    private String mGasSearchKeyWord = ResourceUtils.Companion.getInstance().getString(R.string.route_search_keyword_gas);
     private long mRouteTotalDistance;
     //计算能耗点距离
     private long mExhaustDistance;
@@ -430,6 +440,7 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
     private PoiInfoEntity mDetailsEntry;
     private PoiInfoEntity mDetailsResustEntry;
     private int mSeartype;
+    private int mSearchListType = 0;
     private List<RouteParam> mGasChargeAlongList;
     private Runnable mHideSecondaryPoi = new Runnable() {
         @Override
@@ -439,6 +450,7 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
             }
         }
     };
+    private boolean mSecondaryPoi = false;
     private boolean mRefreshable = true;
     private Runnable mRefreshTimer = new Runnable() {
         @Override
@@ -477,6 +489,7 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
         mRouteDetailsVisibility = new ObservableField<>(true);
         mViaPoiListVisibility = new ObservableField<>(false);
         mViaPoiListAllVisibility = new ObservableField<>(false);
+        mSearchListTitle = new ObservableField<>(ResourceUtils.Companion.getInstance().getString(R.string.route_search_keyword_charge));
 
         mWeatherDrawable = new ObservableField<>(ResourceUtils.Companion.getInstance().getDrawable(R.drawable.img_route_weather_clear));
         mWeatherName = new ObservableField<>("");
@@ -634,6 +647,7 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
         requestRoute(param);
         mRefreshable = false;
         ThreadManager.getInstance().postDelay(mRefreshTimer, REFRESH_TIME);
+        showSecondaryPoi();
     };
 
     public Action getRefreshRouteClick() {
@@ -705,7 +719,9 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
     private Action mCloseServicelistClick = () -> {
         mView.clearSceneTabUI();
         mIsChargingSelect = false;
+        mIsGasSelect = false;
         mView.clearSceneTabUI(false);
+        mView.clearSceneGasTabUI(false);
         hideRouteSearchListUI();
         mModel.clearSearchLabel();
         mModel.clearRestArea();
@@ -718,7 +734,9 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
     private Action mCloseChargelistClick = () -> {
         mView.clearSceneTabUI();
         mIsChargingSelect = false;
+        mIsGasSelect = false;
         mView.clearSceneTabUI(false);
+        mView.clearSceneGasTabUI(false);
         hideRouteSearchChargeListUI();
         mModel.clearSearchLabel();
     };
@@ -838,7 +856,9 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
     private Action mChargeCancelClick = () -> {
         mView.clearSceneTabUI();
         mIsChargingSelect = false;
+        mIsGasSelect = false;
         mView.clearSceneTabUI(false);
+        mView.clearSceneGasTabUI(false);
         hideRouteSearchChargeListUI();
         mModel.clearSearchLabel();
     };
@@ -892,6 +912,7 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
         bundle.putInt(AutoMapConstant.RouteBundleKey.BUNDLE_KEY_START_NAVI_SIM, isSimNavi
                 ? AutoMapConstant.NaviType.NAVI_SIMULATE : AutoMapConstant.NaviType.NAVI_GPS);
         Logger.i(TAG, "mStartNaviClick addNaviFragment");
+        mModel.clearEndParkPoint();
         addFragment(new NaviGuidanceFragment(), bundle);
         mModel.setPoint();
     }
@@ -926,7 +947,9 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
     public void showNomalRouteUI() {
         mView.clearSceneTabUI();
         mIsChargingSelect = false;
+        mIsGasSelect = false;
         mView.clearSceneTabUI(false);
+        mView.clearSceneGasTabUI(false);
         mCurrentPageHistory.clear();
         mCurrentPageHistory.add("0");
         mIncludePageVisibility.set(getCurrentPageUI());
@@ -1103,9 +1126,20 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
      * 显示子POI界面
      */
     public void showSecondaryPoi() {
+        if (!mSecondaryPoi) {
+            return;
+        }
         mSecondaryPoiVisibility.set(1);
         ThreadManager.getInstance().removeHandleTask(mHideSecondaryPoi);
         ThreadManager.getInstance().postDelay(mHideSecondaryPoi, HIDE_DELAY_TIME);
+    }
+
+    /***
+     * 设置是否存在子POI界面
+     * @param show 是否显示子poi界面
+     */
+    public void setSecondaryPoi(final boolean show) {
+        mSecondaryPoi = show;
     }
 
     /**
@@ -1153,22 +1187,29 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
     }
 
     /***
-     * 展示充电列表
+     * 展示列表
      * @param poiInfoEntities 列表数据
      * @param gasChargeAlongList 已添加的数据
      * @param listSearchType 搜索方式
+     * @param type 列表类别 0:充电站 1：加油站
      */
     public void showRouteSearchChargeListUI(final List<PoiInfoEntity> poiInfoEntities, final List<RouteParam> gasChargeAlongList
-            , final int listSearchType) {
+            , final int listSearchType,final int type) {
         if (getCurrentPageUI() != 3) {
             mCurrentPageHistory.add("3");
+            mSearchListType = type;
+            if (type == 0) {
+                mSearchListTitle.set(ResourceUtils.Companion.getInstance().getString(R.string.route_search_keyword_charge));
+            } else if (type == 1) {
+                mSearchListTitle.set(ResourceUtils.Companion.getInstance().getString(R.string.route_search_keyword_gas));
+            }
             mIncludePageVisibility.set(getCurrentPageUI());
             final RouteLineInfo routeLineInfo = mModel.getSelectLineInfo();
             mRouteChargeTotalMileage.set(ResourceUtils.Companion.getInstance().getString(R.string.route_total_mileage)
                     + routeLineInfo.getMLength());
             clearRouteChargePoiUi();
             mChargePoiDistanceList.clear();
-            mRouteProgressChargeVisibility.set(!mView.getEnergyChecked());
+            mRouteProgressChargeVisibility.set(mView.getEnergyChecked());
             final EvRangeOnRouteInfo evRangeOnRouteInfo = mModel.getRangeOnRouteInfo(mModel.getCurrentIndex());
             mRouteTotalDistance = routeLineInfo.getMDistance();
             if (evRangeOnRouteInfo.isMCanArrived()) {
@@ -1188,7 +1229,10 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
             mView.highlightAlongTab();
         }
         mAlongTabSearchVisibility.set(listSearchType == 0);
-        mView.showRouteSearchChargeListUI(poiInfoEntities, gasChargeAlongList, listSearchType);
+        mView.showRouteSearchChargeListUI(poiInfoEntities, gasChargeAlongList, listSearchType, type);
+        if (type == 1) {
+            return;
+        }
         //初始化进度条扎点
         for (PoiInfoEntity poiInfoEntity : poiInfoEntities) {
             if (isBelongSamePoi(gasChargeAlongList, poiInfoEntity)) {
@@ -1278,6 +1322,10 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
                     || pointType == AutoMapConstant.PointTypeCode.CHARGING_STATION) {
                 mRouteSearchTypeVisibility.set(2);
                 mView.showChargeDetailsUI(resultPoiInfoEntity);
+            } else if (requestPoiInfoEntity.getPoiTag().equals(ResourceUtils.Companion.getInstance().getString(R.string.route_search_keyword_gas))
+                    || pointType == AutoMapConstant.PointTypeCode.GAS_STATION) {
+                mRouteSearchTypeVisibility.set(1);
+                mView.showPOIDetailGas(resultPoiInfoEntity);
             }
         });
         if (getCurrentPageUI() != 5) {
@@ -1408,7 +1456,23 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
      * @param isLongRoute 是否长途路
      */
     public void showHideTab(final boolean isLongRoute) {
-        mTabVisibility.set(isLongRoute ? 2 : 1);
+        if (mModel.powerType() == 1) {
+            mTabVisibility.set(isLongRoute ? 2 : 1);
+        } else {
+            mTabVisibility.set(isLongRoute ? 2 : 3);
+        }
+    }
+
+    /**
+     * 动力类型标定
+     * -1 无效值
+     * 0 汽油车
+     * 1 纯电动车
+     * 2 插电式混动汽车
+     * @return 动力类型
+     */
+    public int powerType() {
+        return mModel.powerType();
     }
 
     /***
@@ -1512,6 +1576,7 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
             param.setMRouteWay(RouteWayID.ROUTE_WAY_CHANGE_PREFERENCE);
             param.setMRoutePriorityType(RoutePriorityType.ROUTE_TYPE_CHANGE_STRATEGE);
             requestRoute(param);
+            showSecondaryPoi();
         }
         mPreferText.set(text);
         mRoutePreferenceVisibility.set(false);
@@ -1532,7 +1597,9 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
         ImmersiveStatusScene.getInstance().setImmersiveStatus(MapType.MAIN_SCREEN_MAIN_MAP, ImersiveStatus.IMERSIVE);
         mView.clearSceneTabUI();
         mIsChargingSelect = false;
+        mIsGasSelect = false;
         mView.clearSceneTabUI(false);
+        mView.clearSceneGasTabUI(false);
         if (isTheSameIndex) {
             mCurrentPageHistory.add("1");
         }
@@ -1587,6 +1654,16 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
                     mModel.clearRestArea();
                 }
                 break;
+            case 3:
+                if (isChecked) {
+                    mModel.getSearchListChargeAndShow(mGasSearchKeyWord, 0);
+                } else {
+                    hideRouteSearchDetailsUI();
+                    hideRouteSearchListUI();
+                    hideRouteSearchChargeListUI();
+                    mModel.clearSearchLabel();
+                }
+                break;
             default:
                 break;
         }
@@ -1594,7 +1671,11 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
 
     @Override
     public void onTabListGasChargeClick(final int tabIndex) {
-        mModel.getSearchListChargeAndShow(mSearchKeyWord, tabIndex);
+        if (mSearchListType == 0) {
+            mModel.getSearchListChargeAndShow(mSearchKeyWord, tabIndex);
+        } else if (mSearchListType == 1) {
+            mModel.getSearchListChargeAndShow(mGasSearchKeyWord, tabIndex);
+        }
     }
 
     private boolean mIsChargingSelect = false;
@@ -1614,6 +1695,25 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
 
     public Action getTabChargingClick() {
         return mTabChargingClick;
+    }
+
+    private boolean mIsGasSelect = false;
+    private Action mTabGasClick = () -> {
+        cancelTimer();
+        ImmersiveStatusScene.getInstance().setImmersiveStatus(MapType.MAIN_SCREEN_MAIN_MAP, ImersiveStatus.IMERSIVE);
+        if (Boolean.FALSE.equals(mIsGasSelect)) {
+            mModel.getSearchListChargeAndShow(mGasSearchKeyWord, 0);
+        } else {
+            hideRouteSearchDetailsUI();
+            hideRouteSearchListUI();
+            mModel.clearSearchLabel();
+        }
+        mIsGasSelect = !mIsGasSelect;
+        mView.clearSceneGasTabUI(mIsGasSelect);
+    };
+
+    public Action getTabGasClick() {
+        return mTabGasClick;
     }
 
     @Override

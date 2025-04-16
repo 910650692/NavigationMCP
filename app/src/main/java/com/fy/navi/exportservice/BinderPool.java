@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
 import android.os.RemoteCallbackList;
+import android.os.RemoteException;
 import android.util.Log;
 
 import androidx.core.app.ActivityCompat;
@@ -22,19 +23,21 @@ import java.util.HashMap;
 public final class BinderPool extends IBinderPool.Stub {
 
     private static final String TAG = BinderPool.class.getSimpleName();
+
+    private IEngineObserver mEngineObserver;
     private final RemoteCallbackList<IBinderPoolCallback> mBinderPoolCallbackList = new RemoteCallbackList<>();
     private final HashMap<String, Binder> mBinderMap = new HashMap<>();
     private boolean mInCallback = false;
 
-    private static final BinderPool mInstance = new BinderPool();
+    private static final BinderPool INSTANCE = new BinderPool();
 
     public static BinderPool getInstance() {
-        return mInstance;
+        return INSTANCE;
     }
 
     private BinderPool() {
         //引擎初始化状态监听
-        IEngineObserver mEngineObserver = new IEngineObserver() {
+        mEngineObserver = new IEngineObserver() {
             @Override
             public void onInitEngineSuccess() {
                 if (mInCallback) {
@@ -43,15 +46,15 @@ public final class BinderPool extends IBinderPool.Stub {
 
                 try {
                     mInCallback = true;
-                    int count = mBinderPoolCallbackList.beginBroadcast();
+                    final int count = mBinderPoolCallbackList.beginBroadcast();
                     for (int i = 0; i < count; i++) {
-                        IBinderPoolCallback binderPoolCallback = mBinderPoolCallbackList.getRegisteredCallbackItem(i);
+                        final IBinderPoolCallback binderPoolCallback = mBinderPoolCallbackList.getRegisteredCallbackItem(i);
                         if (null != binderPoolCallback) {
                             binderPoolCallback.onEngineInitSuccess();
                         }
                     }
-                } catch (Exception exception) {
-                    Log.e(TAG, "dispatch initEngineSuccess error: " + exception.getMessage());
+                } catch (RemoteException re) {
+                    Log.e(TAG, "dispatch initEngineSuccess error: " + re.getMessage());
                 } finally {
                     mBinderPoolCallbackList.finishBroadcast();
                     mInCallback = false;
@@ -59,21 +62,21 @@ public final class BinderPool extends IBinderPool.Stub {
             }
 
             @Override
-            public void onInitEngineFail(int code, String msg) {
+            public void onInitEngineFail(final int code, final String msg) {
                 if (mInCallback) {
                     return;
                 }
 
                 try {
                     mInCallback = true;
-                    int count = mBinderPoolCallbackList.beginBroadcast();
+                    final int count = mBinderPoolCallbackList.beginBroadcast();
                     for (int i = 0; i < count; i++) {
-                        IBinderPoolCallback binderPoolCallback = mBinderPoolCallbackList.getRegisteredCallbackItem(i);
+                        final IBinderPoolCallback binderPoolCallback = mBinderPoolCallbackList.getRegisteredCallbackItem(i);
                         if (null != binderPoolCallback) {
                             binderPoolCallback.onEngineInitFailed();
                         }
                     }
-                } catch (Exception exception) {
+                } catch (RemoteException exception) {
                     Log.e(TAG, "dispatch onInitEngineFail error: " + exception.getMessage());
                 } finally {
                     mBinderPoolCallbackList.finishBroadcast();
@@ -85,22 +88,22 @@ public final class BinderPool extends IBinderPool.Stub {
     }
 
     @Override
-    public void addBindPoolCallback(String pckName, IBinderPoolCallback binderPoolCallback) {
+    public void addBindPoolCallback(final String pckName, final IBinderPoolCallback binderPoolCallback) {
         mBinderPoolCallbackList.register(binderPoolCallback, pckName);
     }
 
     @Override
-    public boolean getEngineInitStatus(String pckName) {
-        boolean initStatus = EnginePackage.getInstance().engineStatus();
+    public boolean getEngineInitStatus(final String pckName) {
+        final boolean initStatus = EnginePackage.getInstance().engineStatus();
         Log.d(TAG, pckName + "getEngineInit: " + initStatus);
         return initStatus;
     }
 
     @Override
-    public void startInitEngine(String pkgName) {
+    public void startInitEngine(final String pkgName) {
         Log.d(TAG, pkgName + "startInitEngine");
         if (null != AppContext.getInstance().getMContext()) {
-            Intent intent = new Intent(AppContext.getInstance().getMContext(), NaviService.class);
+            final Intent intent = new Intent(AppContext.getInstance().getMContext(), NaviService.class);
             ActivityCompat.startForegroundService(AppContext.getInstance().getMContext(), intent);
         } else {
             Log.e(TAG, "application not created");
@@ -108,12 +111,21 @@ public final class BinderPool extends IBinderPool.Stub {
     }
 
     @Override
-    public IBinder queryBinder(String packName, String binderName) {
+    public IBinder queryBinder(final String packName, final String binderName) {
         Log.d(TAG, packName + " queryBinder: " + binderName);
         return getBinder(binderName, packName);
     }
 
-    private synchronized IBinder getBinder(String binderCode, String packName) {
+    /**
+     * 根据Binder名称获取对应实现.
+     *
+     * @param binderCode 名称.
+     * @param packName client包名.
+     *
+     * @return 对应binder实现.
+     */
+    private synchronized IBinder getBinder(final String binderCode, final String packName) {
+        Log.d(TAG, packName + "getBinder " + binderCode);
         Binder binder = mBinderMap.get(binderCode);
         if (binder == null) {
             if (BinderType.NAVI_AUTO_API.name().equals(binderCode)) {

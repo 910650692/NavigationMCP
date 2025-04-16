@@ -19,6 +19,9 @@ import com.android.utils.ConvertUtils;
 import com.android.utils.ResourceUtils;
 import com.android.utils.ToastUtils;
 import com.android.utils.log.Logger;
+import com.fy.navi.burypoint.bean.BuryProperty;
+import com.fy.navi.burypoint.constant.BuryConstant;
+import com.fy.navi.burypoint.controller.BuryPointController;
 import com.fy.navi.scene.BaseSceneView;
 import com.fy.navi.scene.R;
 import com.fy.navi.scene.RoutePath;
@@ -172,6 +175,7 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
         mAdapter.setOnItemClickListener(new SearchResultAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(final int position, final PoiInfoEntity poiInfoEntity) {
+                sendBuryPointForListSelect(position+1, poiInfoEntity.getName());
                 final Fragment fragment = switch (mSearchType) {
                     case AutoMapConstant.SearchType.AROUND_SEARCH ->
                             (Fragment) ARouter.getInstance().build(RoutePath.Search.POI_AROUND_DETAILS_FRAGMENT).navigation();
@@ -181,7 +185,7 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
                             (Fragment) ARouter.getInstance().build(RoutePath.Search.POI_DETAILS_FRAGMENT).navigation();
                 };
                 if (!ConvertUtils.isEmpty(mScreenViewModel) && !ConvertUtils.isEmpty(mResultEntity)) {
-                    mScreenViewModel.setSelectIndex(poiInfoEntity);
+                    mScreenViewModel.setSelectIndex(poiInfoEntity, position);
                 }
                 final int poiType = getPoiType(mAdapter.getHomeCompanyType());
                 Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "onClick poiType: " + poiType + " homeCompany: " + mAdapter.getHomeCompanyType());
@@ -480,8 +484,10 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
         }
 
         Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "执行搜索 - 类型: " + mSearchType + ", 关键字: " + keyword + ", 页码: " + pageNum);
+        if(ConvertUtils.isEmpty(mSearchLoadingDialog)){
+            mSearchLoadingDialog = new SearchLoadingDialog(getContext());
+        }
         mSearchLoadingDialog.show();
-
         switch (mSearchType) {
             case AutoMapConstant.SearchType.SEARCH_KEYWORD:
                 mScreenViewModel.keywordSearch(pageNum, keyword);
@@ -541,7 +547,9 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
      * 退回到搜索结果列表页面时，重新扎标
      */
     public void reloadPoiMarker() {
-        mScreenViewModel.addPoiMarker(mResultEntity.getPoiList(), 0);
+        if (!ConvertUtils.isEmpty(mScreenViewModel) && !ConvertUtils.isEmpty(mResultEntity)) {
+            mScreenViewModel.addPoiMarker(mResultEntity.getPoiList(), 0);
+        }
     }
 
     /**
@@ -663,6 +671,25 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
     }
 
     /**
+     * 图层点击事件回调
+     * @param index 点击下标
+     */
+    public void onMarkClickCallBack(final int index) {
+        if (mResultEntity != null) {
+            final List<PoiInfoEntity> list = mResultEntity.getPoiList();
+            if (!ConvertUtils.isEmpty(list) && index < list.size()) {
+                final Bundle bundle = new Bundle();
+                final Fragment fragment = (Fragment) ARouter.getInstance().build(RoutePath.Search.POI_DETAILS_FRAGMENT).navigation();
+                bundle.putParcelable(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_OPEN_DETAIL, list.get(index));
+                bundle.putInt(AutoMapConstant.PoiBundleKey.BUNDLE_KEY_START_POI_TYPE, AutoMapConstant.PoiType.POI_KEYWORD);
+                addPoiDetailsFragment((BaseFragment) fragment, bundle);
+            }
+        }
+
+
+    }
+
+    /**
      * 设置最大页数
      *
      * @param maxPageNum 最大页数
@@ -770,5 +797,13 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
      */
     public void setNaviControl(final boolean b) {
         mIsOpenFromNavi = b;
+    }
+
+    private void sendBuryPointForListSelect(int index, String value){
+        BuryProperty buryProperty = new BuryProperty.Builder()
+                .setParams(BuryConstant.ProperType.BURY_KEY_SEARCH_CONTENTS, value)
+                .setParams(BuryConstant.ProperType.BURY_KEY_HOME_PREDICTION, Integer.toString(index))
+                .build();
+        BuryPointController.getInstance().setBuryProps(buryProperty);
     }
 }

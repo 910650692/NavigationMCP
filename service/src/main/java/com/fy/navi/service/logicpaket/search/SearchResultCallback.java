@@ -37,9 +37,17 @@ public interface SearchResultCallback {
 
     /**
      * 搜索扎标点击事件
-     * @param poiInfo
+     * @param index 下标点击事件
      */
-    default void onMarkClickCallBack(PoiInfoEntity poiInfo) {
+    default void onMarkClickCallBack(final int index) {
+
+    }
+
+    /**
+     * 搜索子点扎标点击事件
+     * @param index 下标点击事件
+     */
+    default void onMarkChildClickCallBack(final int index) {
 
     }
 

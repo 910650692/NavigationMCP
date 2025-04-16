@@ -164,6 +164,7 @@
                         android:gravity="center_horizontal"
                         android:layout_marginTop="@dimen/dp_16"
                         android:orientation="horizontal"
+                        android:visibility="@{ViewModel.mDownloadingNoDataVisibility ? View.GONE : View.VISIBLE}"
                         android:background="@drawable/bg_setting_checkbox"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent">

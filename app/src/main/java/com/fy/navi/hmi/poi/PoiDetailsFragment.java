@@ -88,6 +88,14 @@ public class PoiDetailsFragment extends BaseFragment<FragmentPoiDetailsBinding, 
         mBinding.scenePoiDetailContentView.onSearchResult(taskId, searchResultEntity);
     }
 
+    /**
+     * 搜索图层子点点击事件
+     * @param index 点击下标
+     */
+    public void onMarkChildClickCallBack(final int index) {
+        mBinding.scenePoiDetailContentView.onMarkChildClickCallBack(index);
+    }
+
     @Override
     protected PoiDetailsViewModel initViewModel() {
         mViewModel = new PoiDetailsViewModel(AppContext.getInstance().getMApplication());

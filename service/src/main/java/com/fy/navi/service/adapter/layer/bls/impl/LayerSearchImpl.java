@@ -4,10 +4,15 @@ package com.fy.navi.service.adapter.layer.bls.impl;
 import android.content.Context;
 
 import com.android.utils.ConvertUtils;
+import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
 import com.autonavi.gbl.common.model.Coord2DDouble;
 import com.autonavi.gbl.common.model.Coord3DDouble;
 import com.autonavi.gbl.layer.BizControlService;
+import com.autonavi.gbl.layer.SearchAlongWayLayerItem;
+import com.autonavi.gbl.layer.SearchChargeStationLayerItem;
+import com.autonavi.gbl.layer.SearchChildLayerItem;
+import com.autonavi.gbl.layer.SearchParentLayerItem;
 import com.autonavi.gbl.layer.model.AlongWayLabelType;
 import com.autonavi.gbl.layer.model.BizLineBusinessInfo;
 import com.autonavi.gbl.layer.model.BizPointBusinessInfo;
@@ -22,6 +27,7 @@ import com.autonavi.gbl.layer.model.BizSearchType;
 import com.autonavi.gbl.map.MapView;
 import com.autonavi.gbl.map.layer.BaseLayer;
 import com.autonavi.gbl.map.layer.LayerItem;
+import com.autonavi.gbl.map.layer.PointLayerItem;
 import com.autonavi.gbl.map.layer.model.ClickViewIdInfo;
 import com.fy.navi.service.adapter.layer.ILayerAdapterCallBack;
 import com.fy.navi.service.adapter.layer.bls.style.LayerSearchStyleAdapter;
@@ -29,6 +35,7 @@ import com.fy.navi.service.define.bean.GeoPoint;
 import com.fy.navi.service.define.layer.GemLayerClickBusinessType;
 import com.fy.navi.service.define.layer.RouteLineLayerParam;
 import com.fy.navi.service.define.layer.refix.LayerItemSearchResult;
+import com.fy.navi.service.define.layer.refix.LayerSearchAlongRouteType;
 import com.fy.navi.service.define.layer.refix.LayerSearchItemType;
 import com.fy.navi.service.define.layer.refix.LayerSearchPOIType;
 import com.fy.navi.service.define.map.MapType;
@@ -40,17 +47,11 @@ import com.fy.navi.service.define.utils.NumberUtils;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 public class LayerSearchImpl extends BaseLayerImpl<LayerSearchStyleAdapter> {
 
-    /**
-     * 存放扎标数据
-     * Key -> BizSearchType
-     * Value -> LayerItemSearchResult
-     */
-    private static final Map<Integer, LayerItemSearchResult> sMarkerInfoMap = new ConcurrentHashMap<>();
+    private static final String LINE_TYPE_ROAD = "Road";
+    private static final String LINE_TYPE_PARK = "Park";
 
     public LayerSearchImpl(BizControlService bizService, MapView mapView, Context context, MapType mapType) {
         super(bizService, mapView, context, mapType);
@@ -58,25 +59,34 @@ public class LayerSearchImpl extends BaseLayerImpl<LayerSearchStyleAdapter> {
         getLayerSearchControl().addClickObserver(this);
     }
 
-    public void setSelect(GemLayerClickBusinessType type, String strID, boolean bFocus) {
-        Logger.d(TAG, "setSelect", "strID:" + strID, "bFocus:" + bFocus);
+    public void setSelect(LayerSearchItemType type, int index) {
+        Logger.d(TAG, "setSelect type " + type.ordinal() + " index " + index);
         if (getLayerSearchControl() != null) {
             switch (type) {
-                case BizSearchTypePoiParentPoint -> {
-                    int result = getLayerSearchControl().setFocus(BizSearchType.BizSearchTypePoiParentPoint, strID, bFocus);
+                case SEARCH_PARENT_POINT -> {
+                    int result = getLayerSearchControl().setFocus(
+                            BizSearchType.BizSearchTypePoiParentPoint, String.valueOf(index), true);
                     Logger.d(TAG, "setSelect-BizSearchTypePoiParentPoint:" + result);
                 }
-                case BizSearchTypePoiChildPoint -> {
-                    int result = getLayerSearchControl().setFocus(BizSearchType.BizSearchTypePoiChildPoint, strID, bFocus);
+                case SEARCH_CHILD_POINT -> {
+                    int result = getLayerSearchControl().setFocus(
+                            BizSearchType.BizSearchTypePoiChildPoint, String.valueOf(index), true);
                     Logger.d(TAG, "setSelect-BizSearchTypePoiChildPoint:" + result);
                 }
-                case BizSearchTypePoiParkRoute -> {
-                    int result = getLayerSearchControl().setFocus(BizSearchType.BizSearchTypePoiParkRoute, strID, bFocus);
+                case SEARCH_PARENT_PARK -> {
+                    int result = getLayerSearchControl().setFocus(
+                            BizSearchType.BizSearchTypePoiParkRoute, String.valueOf(index), true);
                     Logger.d(TAG, "setSelect-BizSearchTypePoiParkRoute:" + result);
                 }
-                case BizSearchTypeChargeStation -> {
-                    int result = getLayerSearchControl().setFocus(BizSearchType.BizSearchTypeChargeStation, strID, bFocus);
+                case SEARCH_PARENT_CHARGE_STATION -> {
+                    int result = getLayerSearchControl().setFocus(
+                            BizSearchType.BizSearchTypeChargeStation, String.valueOf(index), true);
                     Logger.d(TAG, "setSelect-BizSearchTypeChargeStation:" + result);
+                }
+                case SEARCH_POI_ALONG_ROUTE -> {
+                    int result = getLayerSearchControl().setFocus(
+                            BizSearchType.BizSearchTypePoiAlongRoute, String.valueOf(index), true);
+                    Logger.d(TAG, "setSelect-BizSearchTypePoiAlongRoute:" + result);
                 }
             }
         }
@@ -84,54 +94,66 @@ public class LayerSearchImpl extends BaseLayerImpl<LayerSearchStyleAdapter> {
 
     @Override
     public void onNotifyClick(BaseLayer layer, LayerItem pItem, ClickViewIdInfo clickViewIds) {
-        super.onNotifyClick(layer, pItem, clickViewIds);
         dispatchClick(pItem);
     }
 
     private void dispatchClick(LayerItem pItem) {
-        List<ILayerAdapterCallBack> callBacks = getCallBacks();
-        if (ConvertUtils.isEmpty(callBacks)) {
-            Logger.e(TAG, "callBacks is null");
-            return;
-        }
-        Logger.d(TAG, "dispatchClick " + callBacks.size() + " BusinessType " + pItem.getBusinessType());
-        for (int i = NumberUtils.NUM_0; i < callBacks.size(); i++) {
-            LayerItemSearchResult clickResult = getClickResult(pItem);
-            Logger.d(TAG, "dispatchClick clickResult:" + clickResult.toString());
-            callBacks.get(i).onSearchItemClick(getMapType(), clickResult);
-        }
-    }
-
-    private LayerItemSearchResult getClickResult(LayerItem pItem) {
-        LayerItemSearchResult result = null;
-        switch (pItem.getBusinessType()) {
+        int index;
+        int businessType = pItem.getBusinessType();
+        Logger.d(TAG, "dispatchClick businessType " + businessType);
+        switch (businessType) {
             // 搜索图层内容点击
             case BizSearchType.BizSearchTypePoiParentPoint -> {
-                int index = Integer.parseInt(pItem.getID());
-                result = getMapDataByKey(BizSearchType.BizSearchTypePoiParentPoint, index);
-                Logger.d(TAG, "getClickResult-BizSearchTypePoiParentPoint " + index);
+                if (pItem instanceof SearchParentLayerItem parentLayerItem) {
+                    index = Integer.parseInt(parentLayerItem.getID());
+                    Logger.d(TAG, "dispatchClick-BizSearchTypePoiParentPoint index " + index);
+                    handleClickCallback(LayerSearchItemType.SEARCH_PARENT_POINT, index);
+                }
             }
             case BizSearchType.BizSearchTypePoiChildPoint -> {
-                int index = Integer.parseInt(pItem.getID());
-                result = getMapDataByKey(BizSearchType.BizSearchTypePoiChildPoint, index);
-                Logger.d(TAG, "getClickResult-BizSearchTypePoiChildPoint " + index);
+                if (pItem instanceof SearchChildLayerItem childLayerItem) {
+                    index = Integer.parseInt(childLayerItem.getID());
+                    Logger.d(TAG, "dispatchClick-BizSearchTypePoiChildPoint index " + index);
+                    handleClickCallback(LayerSearchItemType.SEARCH_CHILD_POINT, index);
+                }
             }
             case BizSearchType.BizSearchTypePoiParkRoute -> {
-                int index = Integer.parseInt(pItem.getID());
-                result = getMapDataByKey(BizSearchType.BizSearchTypePoiParkRoute, index);
-                Logger.d(TAG, "getClickResult-BizSearchTypePoiParkRoute " + index);
+                if (pItem instanceof PointLayerItem parkItem) {
+                    index = Integer.parseInt(parkItem.getID());
+                    Logger.d(TAG, "dispatchClick-BizSearchTypePoiParkRoute index " + index);
+                    handleClickCallback(LayerSearchItemType.SEARCH_PARENT_PARK, index);
+                }
             }
             case BizSearchType.BizSearchTypeChargeStation -> {
-                int index = Integer.parseInt(pItem.getID());
-                result = getMapDataByKey(BizSearchType.BizSearchTypeChargeStation, index);
-                Logger.d(TAG, "getClickResult BizSearchTypeChargeStation " + index);
+                if (pItem instanceof SearchChargeStationLayerItem chargeStationLayerItem) {
+                    index = Integer.parseInt(chargeStationLayerItem.getID());
+                    Logger.d(TAG, "dispatchClick BizSearchTypeChargeStation index " + index);
+                    handleClickCallback(LayerSearchItemType.SEARCH_PARENT_CHARGE_STATION, index);
+                }
+            }
+            case BizSearchType.BizSearchTypePoiAlongRoute -> {
+                if (pItem instanceof SearchAlongWayLayerItem searchAlongWayLayerItem) {
+                    index = Integer.parseInt(searchAlongWayLayerItem.getID());
+                    Logger.d(TAG, "dispatchClick BizSearchTypePoiAlongRoute index " + index);
+                    handleClickCallback(LayerSearchItemType.SEARCH_POI_ALONG_ROUTE, index);
+                }
             }
             default -> {
                 // TODO 扩展新的需求
-
             }
         }
-        return result;
+    }
+
+    private void handleClickCallback(LayerSearchItemType type, int index) {
+        List<ILayerAdapterCallBack> callBacks = getCallBacks();
+        if (ConvertUtils.isEmpty(callBacks)) {
+            Logger.e(TAG, "handleClickCallback callBacks is Empty");
+            return;
+        }
+        Logger.d(TAG, "handleClickCallback type " + type.ordinal() + " index " + index);
+        for (ILayerAdapterCallBack callback : callBacks) {
+            callback.onSearchItemClick(getMapType(), type, index);
+        }
     }
 
     @Override
@@ -140,20 +162,25 @@ public class LayerSearchImpl extends BaseLayerImpl<LayerSearchStyleAdapter> {
     }
 
     /* 搜索图层扎标接口 */
-    public boolean updateSearchMarker(LayerItemSearchResult searchResult) {
+    public boolean updateSearchMarker(LayerSearchItemType type, LayerItemSearchResult searchResult) {
         if (ConvertUtils.isEmpty(searchResult)) {
             Logger.e(TAG, "updateSearchMarker searchResult == null");
             return false;
         }
-        LayerSearchItemType type = searchResult.getType();
         Logger.d(TAG, "updateSearchMarker type " + type.ordinal());
         boolean result = false;
         switch (type) {
-            case SEARCH_PARENT_Line -> {
+            case SEARCH_PARENT_Line_Road -> {
                 ArrayList<PoiInfoEntity> parentList = searchResult.getSearchResultPoints();
                 PoiInfoEntity parentPoint = parentList.get(NumberUtils.NUM_0);
                 ArrayList<ArrayList<GeoPoint>> mRoadPolygonBounds = parentPoint.getMRoadPolygonBounds();
-                result = updateSearchLine(mRoadPolygonBounds);
+                result = updateSearchLine(mRoadPolygonBounds, LINE_TYPE_ROAD);
+            }
+            case SEARCH_PARENT_Line_Park -> {
+                ArrayList<PoiInfoEntity> parentList = searchResult.getSearchResultPoints();
+                PoiInfoEntity parentPoint = parentList.get(NumberUtils.NUM_0);
+                ArrayList<ArrayList<GeoPoint>> mRoadPolygonBounds = parentPoint.getMRoadPolygonBounds();
+                result = updateSearchLine(mRoadPolygonBounds, LINE_TYPE_PARK);
             }
             case SEARCH_PARENT_AREA -> {
                 ArrayList<PoiInfoEntity> parentList = searchResult.getSearchResultPoints();
@@ -163,77 +190,40 @@ public class LayerSearchImpl extends BaseLayerImpl<LayerSearchStyleAdapter> {
             }
             case SEARCH_PARENT_POINT -> {
                 result = updateSearchParentPoi(searchResult);
-                if (result) {
-                    sMarkerInfoMap.put(BizSearchType.BizSearchTypePoiParentPoint, searchResult);
-                }
             }
             case SEARCH_CHILD_POINT -> {
                 result = updateSearchChildPoi(searchResult);
-                if (result) {
-                    sMarkerInfoMap.put(BizSearchType.BizSearchTypePoiChildPoint, searchResult);
-                }
             }
             case SEARCH_POI_CENTRAL -> {
                 result = updateSearchCentralPoi(searchResult);
             }
             case SEARCH_POI_BEGIN_END -> {
                 result = updateSearchBeginEndPoi(searchResult);
-                if (result) {
-                    sMarkerInfoMap.put(BizSearchType.BizSearchTypePoiBeginEnd, searchResult);
-                }
             }
             case SEARCH_POI_ALONG_ROUTE -> {
                 result = updateSearchAlongRoutePoi(searchResult);
                 updateSearchAlongRoutePoiPop(searchResult);
-                if (result) {
-                    sMarkerInfoMap.put(BizSearchType.BizSearchTypePoiAlongRoute, searchResult);
-                }
             }
             case SEARCH_PARENT_PARK -> {
                 result = updateSearchParkPoi(searchResult);
-                if (result) {
-                    sMarkerInfoMap.put(BizSearchType.BizSearchTypePoiParkRoute, searchResult);
-                }
             }
             case SEARCH_POI_LABEL -> {
                 result = updateSearchPoiLabel(searchResult);
             }
             case SEARCH_PARENT_CHARGE_STATION -> {
                 result = updateSearchChargeStation(searchResult);
-                if (result) {
-                    sMarkerInfoMap.put(BizSearchType.BizSearchTypePoiChildPoint, searchResult);
-                }
             }
         }
         return result;
     }
 
-    private LayerItemSearchResult getMapDataByKey(int key, int selectIndex) {
-        LayerItemSearchResult result = null;
-        result = sMarkerInfoMap.get(key);
-        if (ConvertUtils.isEmpty(result)) {
-            result = new LayerItemSearchResult();
-            return result;
-        }
-        result.setSelectedIndex(selectIndex);
-        return result;
-    }
-
-    /**
-     * 删除扎标map数据
-     */
-    public boolean removeMapDataByKey(int key) {
-        boolean removedIf = sMarkerInfoMap.entrySet().removeIf(entry -> entry.getKey() == key);
-        Logger.d(TAG, "removeMapDataByKey " + removedIf);
-        return removedIf;
-    }
-
     /* 搜索路线图层业务 */
-    public boolean updateSearchLine(ArrayList<ArrayList<GeoPoint>> roadPolygonBounds) {
+    public boolean updateSearchLine(ArrayList<ArrayList<GeoPoint>> roadPolygonBounds, String typeId) {
         if (ConvertUtils.isEmpty(roadPolygonBounds)) {
-            Logger.e(TAG, "updateSearchParentPoi poiAoiBounds == null");
+            Logger.e(TAG, "updateSearchLine poiAoiBounds == null");
             return false;
         }
+        Logger.d(TAG, "updateSearchLine roadPolygonBounds " + roadPolygonBounds.size());
         getLayerSearchControl().setVisible(BizSearchType.BizSearchTypeLine, true);
         ArrayList<BizLineBusinessInfo> pointListBl = new ArrayList<>();
         for (int i = NumberUtils.NUM_0; i < roadPolygonBounds.size(); i++) {
@@ -242,15 +232,17 @@ public class LayerSearchImpl extends BaseLayerImpl<LayerSearchStyleAdapter> {
                 continue;
             }
             BizLineBusinessInfo info = new BizLineBusinessInfo();
-            info.id = i + "";
+            info.id = typeId;
             for (int j = NumberUtils.NUM_0; j < geoPoints.size(); j++) {
                 Coord3DDouble coord3DDouble = new Coord3DDouble();
                 coord3DDouble.lon = geoPoints.get(j).getLon();
                 coord3DDouble.lat = geoPoints.get(j).getLat();
                 info.mVecPoints.add(coord3DDouble);
             }
+            Logger.d(TAG, "updateSearchLine i " + i + " info.size " + info.mVecPoints.size());
             pointListBl.add(info);
         }
+        Logger.d(TAG, "updateSearchLine pointListBl " + pointListBl.size());
         getLayerSearchControl().updateSearchLine(pointListBl);
         return true;
     }
@@ -258,27 +250,33 @@ public class LayerSearchImpl extends BaseLayerImpl<LayerSearchStyleAdapter> {
     /* 搜索区域图层业务，多区域面 */
     public boolean updateSearchPolygon(ArrayList<ArrayList<GeoPoint>> poiAoiBounds) {
         if (ConvertUtils.isEmpty(poiAoiBounds)) {
-            Logger.e(TAG, "updateSearchParentPoi poiAoiBounds == null");
+            Logger.e(TAG, "updateSearchPolygon poiAoiBounds == null");
             return false;
         }
         getLayerSearchControl().setVisible(BizSearchType.BizSearchTypePoiEndAreaPolygon, true);
-        ArrayList<BizPolygonBusinessInfo> pointListBl = new ArrayList<>();
-        for (int i = NumberUtils.NUM_0; i < poiAoiBounds.size(); i++) {
-            ArrayList<GeoPoint> geoPoints = poiAoiBounds.get(i);
-            if (ConvertUtils.isEmpty(geoPoints)) {
+        getLayerSearchControl().setVisible(BizSearchType.BizSearchTypePoiEndAreaPolyline, true);
+        BizPolygonBusinessInfo polygonBusinessInfo = new BizPolygonBusinessInfo();
+        ArrayList<GeoPoint> geoPointArrayList = poiAoiBounds.get(0);
+        ArrayList<Coord3DDouble> pointListBl = new ArrayList<>();
+        if (ConvertUtils.isEmpty(geoPointArrayList)) {
+            Logger.d(TAG, "updateSearchPolygon geoPointArrayList is null");
+            return false;
+        }
+        Logger.d(TAG, "updateSearchPolygon geoPointArrayList " + geoPointArrayList.size());
+        for (int i = NumberUtils.NUM_0; i < geoPointArrayList.size(); i++) {
+            GeoPoint geoPoint = geoPointArrayList.get(i);
+            if (ConvertUtils.isEmpty(geoPoint)) {
                 continue;
             }
-            BizPolygonBusinessInfo info = new BizPolygonBusinessInfo();
-            info.id = i + "";
-            for (int j = NumberUtils.NUM_0; j < geoPoints.size(); j++) {
-                Coord3DDouble coord3DDouble = new Coord3DDouble();
-                coord3DDouble.lon = geoPoints.get(j).getLon();
-                coord3DDouble.lat = geoPoints.get(j).getLat();
-                info.mVecPoints.add(coord3DDouble);
-            }
-            pointListBl.add(info);
+            Coord3DDouble coord3DDouble = new Coord3DDouble();
+            coord3DDouble.lon = geoPoint.getLon();
+            coord3DDouble.lat = geoPoint.getLat();
+            pointListBl.add(coord3DDouble);
         }
-        getLayerSearchControl().updateSearchPolygon(pointListBl);
+        polygonBusinessInfo.mDrawPolygonRim = true;
+        polygonBusinessInfo.mVecPoints = pointListBl;
+        Logger.d(TAG, "updateSearchPolygon pointListBl " + pointListBl.size());
+        getLayerSearchControl().updateSearchPolygon(polygonBusinessInfo);
         return true;
     }
 
@@ -295,12 +293,6 @@ public class LayerSearchImpl extends BaseLayerImpl<LayerSearchStyleAdapter> {
             return false;
         }
         Logger.d(TAG, "updateSearchParentPoi parentList " + parentList.size());
-        //此处区分是否充电站/停车场类型 需使用专用接口  后续全部替换为updateSearchMarker实现
-        PoiInfoEntity entity = parentList.get(0);
-        if (ConvertUtils.isEmpty(entity)) {
-            Logger.e(TAG, "updateSearchParentPoi entity == null");
-            return false;
-        }
         getLayerSearchControl().setVisible(BizSearchType.BizSearchTypePoiParentPoint, true);
         ArrayList<BizSearchParentPoint> parentPoints = new ArrayList<>();
         for (int i = NumberUtils.NUM_0; i < parentList.size(); i++) {
@@ -312,7 +304,7 @@ public class LayerSearchImpl extends BaseLayerImpl<LayerSearchStyleAdapter> {
             int pointTypeCode = getPointTypeCode(poiInfoEntity.getPointTypeCode());
             int poiType = poiInfoEntity.getPoiType();
             Logger.d(TAG, "poiInfoEntity pointTypeCode " + poiInfoEntity.getPointTypeCode() +
-                    " pointTypeCode " + pointTypeCode + " poiType " + poiType);
+                    " pointTypeCode " + pointTypeCode + " poiType " + poiType + " pid " + poiInfoEntity.getPid());
             BizSearchParentPoint parent = new BizSearchParentPoint();
             parent.poiName = poiInfoEntity.getName();
             parent.poiType = pointTypeCode;
@@ -323,10 +315,7 @@ public class LayerSearchImpl extends BaseLayerImpl<LayerSearchStyleAdapter> {
             parentPoints.add(parent);
         }
         boolean updateSearchParentPoi = getLayerSearchControl().updateSearchParentPoi(parentPoints);
-        Logger.d(TAG, "updateSearchParentPoi " + updateSearchParentPoi);
-        if (updateSearchParentPoi) {
-            sMarkerInfoMap.put(BizSearchType.BizSearchTypePoiParentPoint, searchResult);
-        }
+        Logger.d(TAG, "updateSearchParentPoi " + updateSearchParentPoi + " parentPoints " + parentPoints.size());
         return updateSearchParentPoi;
     }
 
@@ -342,10 +331,7 @@ public class LayerSearchImpl extends BaseLayerImpl<LayerSearchStyleAdapter> {
             Logger.e(TAG, "updateSearchChildPoi searchChildList == null");
             return false;
         }
-        int parentFocusIndex = searchResult.getSelectedIndex();
-        parentFocusIndex = parentFocusIndex == NumberUtils.NUM_ERROR ? NumberUtils.NUM_0 : parentFocusIndex;
-        Logger.d(TAG, "parentFocusIndex " + parentFocusIndex);
-        PoiInfoEntity poiInfoEntity = searchResultList.get(parentFocusIndex);
+        PoiInfoEntity poiInfoEntity = searchResultList.get(NumberUtils.NUM_0);
         if (ConvertUtils.isEmpty(poiInfoEntity)) {
             Logger.e(TAG, "updateSearchChildPoi poiInfoEntity == null");
             return false;
@@ -361,16 +347,13 @@ public class LayerSearchImpl extends BaseLayerImpl<LayerSearchStyleAdapter> {
             ChildInfo childInfo = searchChildList.get(i);
             BizSearchChildPoint childPoint = new BizSearchChildPoint();
             childPoint.childType = childInfo.getChildType();
-            childPoint.shortName = childInfo.getMName();
+            childPoint.shortName = childInfo.getShortName();
             childPoint.mPos3D.lon = childInfo.getLocation().getLon();
             childPoint.mPos3D.lat = childInfo.getLocation().getLat();
             childPoints.add(childPoint);
         }
         boolean updateSearchChildPoi = getLayerSearchControl().updateSearchChildPoi(childPoints);
-        Logger.d(TAG, "updateSearchChildPoi " + updateSearchChildPoi);
-        if (updateSearchChildPoi) {
-            sMarkerInfoMap.put(BizSearchType.BizSearchTypePoiChildPoint, searchResult);
-        }
+        Logger.d(TAG, "updateSearchChildPoi " + updateSearchChildPoi + " childPoints " + childPoints.size());
         return updateSearchChildPoi;
     }
 
@@ -447,64 +430,22 @@ public class LayerSearchImpl extends BaseLayerImpl<LayerSearchStyleAdapter> {
             Logger.e(TAG, "updateSearchBeginEndPoi searchResult == null");
             return false;
         }
-        RouteLineLayerParam routeLineLayerParam = searchResult.getRouteLineLayerParam();
-        if (ConvertUtils.isEmpty(routeLineLayerParam)) {
-            Logger.e(TAG, "updateSearchBeginEndPoi routeLineLayerParam == null");
+        ArrayList<PoiInfoEntity> searchResultPoints = searchResult.getSearchResultPoints();
+        if (ConvertUtils.isEmpty(searchResultPoints)) {
+            Logger.e(TAG, "updateSearchBeginEndPoi searchResultPoints == null");
             return false;
         }
-        RouteLinePoints routeLinePoints = routeLineLayerParam.getMRouteLinePoints();
-        if (ConvertUtils.isEmpty(routeLinePoints)) {
-            Logger.e(TAG, "updateSearchBeginEndPoi routeLinePoints == null");
-            return false;
-        }
-        ArrayList<RoutePoint> startPoints = routeLinePoints.getMStartPoints();
-        ArrayList<RoutePoint> endPoints = routeLinePoints.getMEndPoints();
-        ArrayList<RoutePoint> viaPoints = routeLinePoints.getMViaPoints();
-        if (ConvertUtils.isEmpty(startPoints) || ConvertUtils.isEmpty(endPoints)) {
-            Logger.e(TAG, "updateSearchBeginEndPoi startPoints || endPoints is empty");
-            return false;
-        } else {
-            Logger.d(TAG, "updateSearchBeginEndPoi startPoints:" + startPoints.size() +
-                    " endPoints:" + endPoints.size());
-        }
-        getLayerSearchControl().setVisible(BizSearchType.BizSearchTypePoiBeginEnd, true);
-
         ArrayList<BizSearchBeginEndPoint> bizSearchBeginEndPoints = new ArrayList<>();
-        //添加搜索起点
-        BizSearchBeginEndPoint begin = new BizSearchBeginEndPoint();
-        begin.pointType = 0;
-        begin.pointCount = 1;
-        begin.mPos3D.lat = startPoints.get(NumberUtils.NUM_0).getMPos().getLat();
-        begin.mPos3D.lon = startPoints.get(NumberUtils.NUM_0).getMPos().getLon();
-        bizSearchBeginEndPoints.add(begin);
-        //添加搜索终点
-        BizSearchBeginEndPoint end = new BizSearchBeginEndPoint();
-        end.pointType = 1;
-        end.pointCount = 1;
-        end.mTypeCode = "11";
-        end.mPos3D.lat = endPoints.get(NumberUtils.NUM_0).getMPos().getLat();
-        end.mPos3D.lon = endPoints.get(NumberUtils.NUM_0).getMPos().getLon();
-        bizSearchBeginEndPoints.add(end);
-        //添加搜索途径点
-        if (!ConvertUtils.isEmpty(viaPoints)) {
-            Logger.d(TAG, "updateSearchBeginEndPoi viaPoints:" + viaPoints.size());
-            for (int i = NumberUtils.NUM_0; i < viaPoints.size(); i++) {
-                RoutePoint routePoint = viaPoints.get(i);
-                BizSearchBeginEndPoint via = new BizSearchBeginEndPoint();
-                via.pointType = 2;
-                via.pointCount = 2;
-                via.mPos3D.lat = routePoint.getMPos().getLat();
-                via.mPos3D.lon = routePoint.getMPos().getLon();
-                bizSearchBeginEndPoints.add(via);
-            }
-        } else {
-            Logger.d(TAG, "updateSearchBeginEndPoi viaPoints is empty");
+        for (PoiInfoEntity poi : searchResultPoints) {
+            BizSearchBeginEndPoint bizSearchBeginEndPoint = new BizSearchBeginEndPoint();
+            bizSearchBeginEndPoint.pointType = poi.getPoiType();
+            bizSearchBeginEndPoint.mPos3D.lat = poi.getPoint().getLat();
+            bizSearchBeginEndPoint.mPos3D.lon = poi.getPoint().getLon();
         }
-        boolean updateSearchBeginEndPoi = getLayerSearchControl().updateSearchBeginEndPoi(bizSearchBeginEndPoints);
-        if (updateSearchBeginEndPoi) {
-            sMarkerInfoMap.put(BizSearchType.BizSearchTypePoiBeginEnd, searchResult);
-        }
-        return updateSearchBeginEndPoi;
+        boolean result = getLayerSearchControl().updateSearchBeginEndPoi(bizSearchBeginEndPoints);
+        Logger.d(TAG, "updateSearchBeginEndPoi result " + result +
+                " bizSearchBeginEndPoints " + bizSearchBeginEndPoints.size());
+        return result;
     }
 
     /* 沿途搜索图层业务 */
@@ -519,11 +460,15 @@ public class LayerSearchImpl extends BaseLayerImpl<LayerSearchStyleAdapter> {
             Logger.e(TAG, "updateSearchAlongRoutePoi parentPoints == null");
             return false;
         }
-
         getLayerSearchControl().setVisible(BizSearchType.BizSearchTypePoiAlongRoute, true);
 
         ArrayList<BizSearchAlongWayPoint> alongWayPoints = new ArrayList<>();
-        for (PoiInfoEntity poi : parentPoints) {
+        for (int i = NumberUtils.NUM_0; i < parentPoints.size(); i++) {
+            PoiInfoEntity poi = parentPoints.get(i);
+            if (ConvertUtils.isEmpty(poi)) {
+                Logger.e(TAG, "updateSearchAlongRoutePoi poi is empty");
+                continue;
+            }
             BizSearchAlongWayPoint viaPoint = new BizSearchAlongWayPoint();
             viaPoint.mPos3D.lat = poi.getPoint().getLat();
             viaPoint.mPos3D.lon = poi.getPoint().getLon();
@@ -533,16 +478,14 @@ public class LayerSearchImpl extends BaseLayerImpl<LayerSearchStyleAdapter> {
             viaPoint.name = poi.getName();
             //自定义标签名
             viaPoint.labelName = "";
-            int pointTypeCode = getPointTypeCode(poi.getTypeCode());
+            int pointTypeCode = getAlongRouteTypeCode(poi.getTypeCode());
             viaPoint.searchType = pointTypeCode;
             alongWayPoints.add(viaPoint);
         }
-        boolean updateSearchAlongRoutePoi = getLayerSearchControl().updateSearchAlongRoutePoi(alongWayPoints);
-        Logger.d(TAG, "updateSearchAlongRoutePoi " + updateSearchAlongRoutePoi);
-        if (updateSearchAlongRoutePoi) {
-            sMarkerInfoMap.put(BizSearchType.BizSearchTypePoiAlongRoute, searchResult);
-        }
-        return updateSearchAlongRoutePoi;
+        boolean result = getLayerSearchControl().updateSearchAlongRoutePoi(alongWayPoints);
+        Logger.d(TAG, "updateSearchAlongRoutePoi result " + result +
+                " alongWayPoints " + alongWayPoints.size());
+        return result;
     }
 
     /* 沿途搜索气泡图层业务 */
@@ -586,6 +529,44 @@ public class LayerSearchImpl extends BaseLayerImpl<LayerSearchStyleAdapter> {
         return LayerSearchPOIType.SEARCH_NONE;
     }
 
+    /**
+     * 获取沿途搜POI 类型
+     * @param typeCode poi的typeCode
+     * @return POI类型
+     */
+    public int getAlongRouteTypeCode(final String typeCode) {
+        if (ConvertUtils.isEmpty(typeCode)) {
+            return LayerSearchAlongRouteType.SEARCH_ALONG_ROUTE_NONE;
+        }
+        for (String code : typeCode.split("\\|")) {
+            if (code.startsWith("0101")) {
+                return LayerSearchAlongRouteType.SEARCH_ALONG_ROUTE_GAS;
+            }
+            if (code.startsWith("0111")) {
+                return LayerSearchAlongRouteType.SEARCH_ALONG_ROUTE_CHARGE;
+            }
+            if ("010500".equals(code)) {
+                return LayerSearchAlongRouteType.SEARCH_ALONG_ROUTE_CAR_WASH;
+            }
+            if (code.startsWith("05")) {
+                return LayerSearchAlongRouteType.SEARCH_ALONG_ROUTE_FOOD;
+            }
+            if (code.startsWith("1509")) {
+                return LayerSearchAlongRouteType.SEARCH_ALONG_ROUTE_PARK;
+            }
+            if (code.startsWith("1803")) {
+                return LayerSearchAlongRouteType.SEARCH_ALONG_ROUTE_REST_AREA;
+            }
+            if (code.startsWith("11")) {
+                return LayerSearchAlongRouteType.SEARCH_ALONG_ROUTE_SCENIC_SPOT;
+            }
+            if (code.startsWith("15")) {
+                return LayerSearchAlongRouteType.SEARCH_ALONG_ROUTE_ROAD_INFO;
+            }
+        }
+        return LayerSearchAlongRouteType.SEARCH_ALONG_ROUTE_NONE;
+    }
+
     /* 停车场图层业务 */
     public boolean updateSearchParkPoi(LayerItemSearchResult searchResult) {
         if (ConvertUtils.isEmpty(searchResult)) {
@@ -601,24 +582,18 @@ public class LayerSearchImpl extends BaseLayerImpl<LayerSearchStyleAdapter> {
 
         //画停车场
         ArrayList<BizPointBusinessInfo> parkPoints = new ArrayList<>();
-        for (int i = NumberUtils.NUM_0; i < parkingInfoList.size(); i++) {
-            PoiInfoEntity poiInfoEntity = parkingInfoList.get(i);
+        for (PoiInfoEntity poiInfoEntity : parkingInfoList) {
             BizPointBusinessInfo park = new BizPointBusinessInfo();
             Coord2DDouble poiLoc = new Coord2DDouble();
             poiLoc.lat = poiInfoEntity.getMPoint().getLat();
             poiLoc.lon = poiInfoEntity.getMPoint().getLon();
-            if (poiLoc != null) {
-                park.mPos3D.lat = poiLoc.lat;
-                park.mPos3D.lon = poiLoc.lon;
-            }
+            park.mPos3D.lat = poiLoc.lat;
+            park.mPos3D.lon = poiLoc.lon;
             parkPoints.add(park);
         }
-        boolean updateSearchParkPoi = getLayerSearchControl().updateSearchParkPoi(parkPoints);
-        Logger.d(TAG, "updateSearchParkPoi " + updateSearchParkPoi + " parkPoints " + parkPoints.size());
-        if (updateSearchParkPoi) {
-            sMarkerInfoMap.put(BizSearchType.BizSearchTypePoiParkRoute, searchResult);
-        }
-        return updateSearchParkPoi;
+        boolean result = getLayerSearchControl().updateSearchParkPoi(parkPoints);
+        Logger.d(TAG, "updateSearchParkPoi result " + result + " parkPoints " + parkPoints.size());
+        return result;
     }
 
     /* POI扎标图层业务 */
@@ -643,7 +618,9 @@ public class LayerSearchImpl extends BaseLayerImpl<LayerSearchStyleAdapter> {
         bizBusinessInfos.mPos3D = new Coord3DDouble(poiInfoEntity.getPoint().getLon(), poiInfoEntity.getPoint().getLat(), poiInfoEntity.getPoint().getZ());
         bizBusinessInfos.mTypeCode = poiInfoEntity.getTypeCode();
 
-        return getLayerSearchControl().updateSearchPoiLabel(bizBusinessInfos);
+        boolean result = getLayerSearchControl().updateSearchPoiLabel(bizBusinessInfos);
+        Logger.d(TAG, "updateSearchPoiLabel result " + result);
+        return result;
     }
 
     /* 充电桩扎标图层业务 */
@@ -652,37 +629,33 @@ public class LayerSearchImpl extends BaseLayerImpl<LayerSearchStyleAdapter> {
             Logger.e(TAG, "updateSearchChargeStation searchResult == null");
             return false;
         }
-        List<PoiInfoEntity> parkingInfoList = searchResult.getSearchResultPoints();
-        if (ConvertUtils.isEmpty(parkingInfoList)) {
+        List<PoiInfoEntity> chargeList = searchResult.getSearchResultPoints();
+        if (ConvertUtils.isEmpty(chargeList)) {
             Logger.e(TAG, "updateSearchChargeStation parkingInfoList == null");
             return false;
         }
         getLayerSearchControl().setVisible(BizSearchType.BizSearchTypeChargeStation, true);
 
         //画充电桩
-        ArrayList<BizSearchChargeStationInfo> parkPoints = new ArrayList<>();
-        for (int i = NumberUtils.NUM_0; i < parkingInfoList.size(); i++) {
-            PoiInfoEntity poiInfoEntity = parkingInfoList.get(i);
+        ArrayList<BizSearchChargeStationInfo> chargeStationInfos = new ArrayList<>();
+        for (PoiInfoEntity poiInfoEntity : chargeList) {
             BizSearchChargeStationInfo chargeStation = new BizSearchChargeStationInfo();
             Coord2DDouble poiLoc = new Coord2DDouble();
             poiLoc.lat = poiInfoEntity.getMPoint().getLat();
             poiLoc.lon = poiInfoEntity.getMPoint().getLon();
-            if (poiLoc != null) {
-                chargeStation.mPos3D.lat = poiLoc.lat;
-                chargeStation.mPos3D.lon = poiLoc.lon;
-            }
-            parkPoints.add(chargeStation);
+            chargeStation.mPos3D.lat = poiLoc.lat;
+            chargeStation.mPos3D.lon = poiLoc.lon;
+            chargeStationInfos.add(chargeStation);
         }
-        boolean searchChargeStation = getLayerSearchControl().updateSearchChargeStation(parkPoints);
-        Logger.d(TAG, "updateSearchChargeStation " + searchChargeStation);
-        if (searchChargeStation) {
-            sMarkerInfoMap.put(BizSearchType.BizSearchTypeChargeStation, searchResult);
-        }
-        return searchChargeStation;
+        boolean result = getLayerSearchControl().updateSearchChargeStation(chargeStationInfos);
+        Logger.d(TAG, "updateSearchChargeStation result " + result +
+                " chargeStationInfos " + chargeStationInfos.size());
+        return result;
     }
 
     /* 清除所有搜索扎标*/
     public void clearAllItems() {
+        Logger.d(TAG, "LayerSearch -> clearAllItems");
         getLayerSearchControl().clearAllItems();
         getLayerSearchControl().setVisible(false);
     }
@@ -693,7 +666,7 @@ public class LayerSearchImpl extends BaseLayerImpl<LayerSearchStyleAdapter> {
     public void clearSearchItemByType(LayerSearchItemType searchItemType) {
         Logger.d(TAG, "clearSearchItemByType searchItemType " + searchItemType.ordinal());
         switch (searchItemType) {
-            case SEARCH_PARENT_Line -> {
+            case SEARCH_PARENT_Line_Road -> {
                 getLayerSearchControl().clearAllItems(BizSearchType.BizSearchTypeLine);
                 getLayerSearchControl().setVisible(BizSearchType.BizSearchTypeLine, false);
             }

@@ -1,7 +1,6 @@
 package com.fy.navi.scene.impl.search;
 
 import android.os.Bundle;
-import android.text.TextUtils;
 
 import androidx.annotation.Nullable;
 
@@ -136,7 +135,7 @@ public final class SearchFragmentFactory {
 
         //for burying point
         BuryProperty properties = new BuryProperty.Builder()
-                .setParams(BuryConstant.ProperType.BURY_KEY_SEARCH_CONTENTS, !TextUtils.isEmpty(poiInfoEntity.getPid()) ? poiInfoEntity.getPid() : poiInfoEntity.getName())
+                .setParams(BuryConstant.ProperType.BURY_KEY_SEARCH_CONTENTS, poiInfoEntity.getName())
                 .build();
         BuryPointController.getInstance().setBuryProps(properties);
 

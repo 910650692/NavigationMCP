@@ -24,19 +24,19 @@ public class MapService extends Service {
 
     @Nullable
     @Override
-    public IBinder onBind(Intent intent) {
-        String packageName = intent.getStringExtra("packageName");
+    public IBinder onBind(final Intent intent) {
+        final String packageName = intent.getStringExtra("packageName");
         Log.d(TAG, "onBind: " + packageName);
         return BinderPool.getInstance();
     }
 
     @Override
-    public boolean onUnbind(Intent intent) {
+    public boolean onUnbind(final Intent intent) {
         return super.onUnbind(intent);
     }
 
     @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
+    public int onStartCommand(final Intent intent, final int flags, final int startId) {
         Log.d(TAG, "onStartCommand");
         return START_STICKY;
     }
@@ -48,12 +48,12 @@ public class MapService extends Service {
         super.onCreate();
         Log.d(TAG, "onCreate");
 
-        NotificationChannel channel = new NotificationChannel(NOTIFICATION_ID, NOTIFICATION_NAME,
+        final NotificationChannel channel = new NotificationChannel(NOTIFICATION_ID, NOTIFICATION_NAME,
                 NotificationManager.IMPORTANCE_LOW);
-        NotificationManager manager = (NotificationManager) this
+        final NotificationManager manager = (NotificationManager) this
                 .getSystemService(Context.NOTIFICATION_SERVICE);
         manager.createNotificationChannel(channel);
-        Notification notification = new Notification.Builder(this, NOTIFICATION_ID).build();
+        final Notification notification = new Notification.Builder(this, NOTIFICATION_ID).build();
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
             startForeground(FOREGROUND_SERVICE_ID, notification);
         } else {

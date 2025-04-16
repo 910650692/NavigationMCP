@@ -75,7 +75,8 @@
 
             <com.fy.navi.ui.view.SkinTextView
                 android:id="@+id/poi_name"
-                android:layout_width="@dimen/dp_0"
+                android:layout_width="match_parent"
+                android:maxWidth="@dimen/dp_438"
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
                 android:maxLines="1"
@@ -87,7 +88,7 @@
                 app:layout_constraintStart_toEndOf="@+id/crl_poi_item"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_bias="0.5"
-                tools:text="德国慕尼黑" />
+                tools:text="德国慕尼黑德国慕尼黑德国慕尼黑德国慕尼黑德国慕尼黑德国慕尼黑德国慕尼黑德国慕尼黑" />
 
             <com.fy.navi.ui.view.SkinTextView
                 android:id="@+id/poi_distance"

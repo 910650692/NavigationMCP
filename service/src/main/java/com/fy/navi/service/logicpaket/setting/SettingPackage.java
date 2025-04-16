@@ -378,38 +378,6 @@ public final class SettingPackage implements SettingAdapterCallback {
     }
 
     /**
-     * 设置显示收藏点
-     *
-     * @param isFavoritePoint true 打开 false 关闭
-     */
-    public void hideOrShowFavoriteOnMainMap(final boolean isFavoritePoint) {
-        if (isFavoritePoint) {
-            final List<Favorite> tmpList = mFavoriteManager.getValueByCommonName(0);
-            Logger.i(TAG, "hideOrShowFavoriteOnMainMap:" + tmpList.size());
-            final ArrayList<GmBizUserFavoritePoint> list = new ArrayList<>();
-            tmpList.forEach((favorite -> {
-                final GmBizUserFavoritePoint point = new GmBizUserFavoritePoint();
-                point.favoriteType = favorite.getMCommonName();
-                point.lon = favorite.getMPointX();
-                point.lat = favorite.getMPointY();
-                list.add(point);
-            }));
-            mLayerPackage.updateFavoriteMain(MapType.MAIN_SCREEN_MAIN_MAP, list);
-        } else {
-            mLayerPackage.clearFavoriteMain(MapType.MAIN_SCREEN_MAIN_MAP);
-        }
-    }
-
-    /**
-     * 设置显隐收藏点
-     */
-    public void hideOrShowFavoriteOnMainMap() {
-        final String isFavoritePointStr = mSettingManager.getValueByKey(SettingController.KEY_SETTING_FAVORITE_POINT);
-        final boolean isFavoritePoint = TextUtils.equals(isFavoritePointStr, "true");
-        hideOrShowFavoriteOnMainMap(isFavoritePoint);
-    }
-
-    /**
      * 获取是否显示收藏点
      *
      * @return true 打开 false 关闭

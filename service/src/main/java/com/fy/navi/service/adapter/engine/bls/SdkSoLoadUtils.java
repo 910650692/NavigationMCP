@@ -12,30 +12,39 @@ import com.fy.navi.service.GBLCacheFilePath;
 import java.io.File;
 
 /**
- * @Description TODO
- * @Author lvww
- * @date 2024/11/24
+ * TODO说明
+ * @author lvww
+ * @version  $Revision.2024/11/24$
  */
-public class SdkSoLoadUtils {
+public final class SdkSoLoadUtils {
     private static final String TAG = MapDefaultFinalTag.ENGINE_SERVICE_TAG;
 
-    public static boolean loadDebugSo(File soFile) {
+    private SdkSoLoadUtils() {
+
+    }
+
+    /**
+     * loadDebugSo
+     * @param soFile File
+     * @return 是否异常
+     */
+    public static boolean loadDebugSo(final File soFile) {
         boolean isException = false;
-        String libName = soFile.getName();
+        final String libName = soFile.getName();
         //本地存在debug so，则加载本地so
-        File oldFile = new File(getLibsCopyPath() + "/" + libName);
+        final File oldFile = new File(getLibsCopyPath() + "/" + libName);
         if (oldFile.exists()) {
-            File delFile = new File(getLibsCopyPath() + "/"
+            final File delFile = new File(getLibsCopyPath() + "/"
                     + libName + System.currentTimeMillis());
             if (oldFile.renameTo(delFile)) {
                 delFile.delete();
             }
         }
-        String debugSoPath = getLibsCopyPath() + "/lib" + libName + ".so";
+        final String debugSoPath = getLibsCopyPath() + "/lib" + libName + ".so";
         FileUtils.getInstance().copyFile(soFile, new File(debugSoPath));
         try {
             System.load(debugSoPath);
-        } catch (Throwable e) {
+        } catch (UnsatisfiedLinkError | SecurityException | NullPointerException e) {
             ThreadManager.getInstance().postUi(() ->
                     Toast.makeText(AppContext.getInstance().getMContext(), "libs加载外部so库崩溃", Toast.LENGTH_LONG));
             isException = true;
@@ -53,24 +62,27 @@ public class SdkSoLoadUtils {
         return "/data/data/" + AppContext.getInstance().getMApplication().getPackageName() + "/sdkLibs";
     }
 
+    /**
+     * 加载库
+     */
     public static void loadLibrary() {
         Logger.i(TAG, GBLCacheFilePath.DEBUG_LIBS_DIR);
         if (FileUtils.getInstance().checkFileDir(GBLCacheFilePath.DEBUG_LIBS_DIR)) {
             //先判断debug so中是否有gbl，如果有，gbl需要最后加载
-            File[] listFile = FileUtils.getInstance().listSubFiles(GBLCacheFilePath.DEBUG_LIBS_DIR);
+            final File[] listFile = FileUtils.getInstance().listSubFiles(GBLCacheFilePath.DEBUG_LIBS_DIR);
             if (listFile == null) {
                 Logger.i(TAG, "文件夹存在，但是没有内容");
                 return;
             }
             for (int i = 0; i < listFile.length; i++) {
-                File soFile = listFile[i];
+                final File soFile = listFile[i];
                 Logger.i(TAG, "遍历 listFile -> " + soFile.getName());
                 if ("libGbl.so".equals(soFile.getName())) {
                     continue;
                 }
                 loadDebugSo(soFile);
             }
-            File gblSoFile = new File(GBLCacheFilePath.DEBUG_LIBS_DIR + "/libGbl.so");
+            final File gblSoFile = new File(GBLCacheFilePath.DEBUG_LIBS_DIR + "/libGbl.so");
             Logger.i(TAG, "gblSoFile -> " + gblSoFile.getPath());
             if (gblSoFile.exists()) {
                 loadDebugSo(gblSoFile);
@@ -83,6 +95,10 @@ public class SdkSoLoadUtils {
         }
     }
 
+    /**
+     * copyAssetsFiles
+     * @return int
+     */
     public static int copyAssetsFiles() {
         // 若 amapauto20/ 目录创建失败, 可能导致 bl 初始化失败
 

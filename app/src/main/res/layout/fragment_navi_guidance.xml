@@ -60,8 +60,8 @@
                 android:layout_width="@dimen/dp_640"
                 android:layout_height="wrap_content"
                 android:background="@drawable/bg_navi_tbt_middle"
-                android:paddingStart="@dimen/dp_34"
-                android:paddingEnd="@dimen/dp_40"
+                android:paddingStart="@dimen/dp_31"
+                android:paddingEnd="@dimen/dp_30"
                 android:visibility="@{ViewModel.mNaviTmcVisibility?View.VISIBLE:View.GONE}"
                 app:layout_constraintStart_toStartOf="@id/scene_navi_tbt"
                 app:layout_constraintTop_toBottomOf="@id/scene_navi_eta" />
@@ -186,7 +186,7 @@
                 android:layout_height="@dimen/dp_92"
                 android:layout_marginStart="@dimen/dp_365"
                 android:background="@drawable/bg_navi_control"
-                android:clickable="true"
+                android:clickable="false"
                 android:gravity="center"
                 android:paddingHorizontal="@dimen/dp_26"
                 android:textColor="@color/common_title_purple_color"
@@ -255,18 +255,18 @@
                 android:layout_width="@dimen/dp_640"
                 android:layout_height="@dimen/dp_376"
                 android:layout_marginTop="@dimen/dp_20"
-                app:layout_constraintStart_toStartOf="@id/scene_navi_tbt"
-                tools:background="@android:color/holo_red_light"
                 android:visibility="@{ViewModel.mNaviRecChargeListVisibility?View.VISIBLE:View.GONE}"
-                app:layout_constraintTop_toBottomOf="@id/barrier" />
+                app:layout_constraintStart_toStartOf="@id/scene_navi_tbt"
+                app:layout_constraintTop_toBottomOf="@id/barrier"
+                tools:background="@android:color/holo_red_light" />
 
             <com.fy.navi.scene.ui.navi.SceneGasListView
                 android:id="@+id/sceneRecGasListView"
                 android:layout_width="@dimen/dp_640"
                 android:layout_height="@dimen/dp_376"
                 android:layout_marginTop="@dimen/dp_20"
-                app:layout_constraintStart_toStartOf="@id/scene_navi_tbt"
                 android:visibility="@{ViewModel.mNaviRecGasListVisibility?View.VISIBLE:View.GONE}"
+                app:layout_constraintStart_toStartOf="@id/scene_navi_tbt"
                 app:layout_constraintTop_toBottomOf="@id/barrier" />
 
         </com.fy.navi.ui.view.SkinConstraintLayout>
@@ -276,10 +276,19 @@
             android:id="@+id/scene_navi_continue"
             android:layout_width="@dimen/dp_310"
             android:layout_height="@dimen/dp_92"
+            android:layout_marginStart="@dimen/dp_920"
             android:visibility="@{ViewModel.mNaviContinueVisibility?View.VISIBLE:View.GONE}"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            android:layout_marginStart="@dimen/dp_920"/>
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <com.fy.navi.scene.ui.navi.GuidanceSimulationView
+            android:id="@+id/navi_sim_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_950"
+            android:visibility="@{ViewModel.mNaviSim?View.VISIBLE:View.GONE}"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
     </com.fy.navi.ui.view.SkinConstraintLayout>
 

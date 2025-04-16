@@ -24,18 +24,11 @@ import com.gm.cn.adassdk.proto.ADUProto;
 import com.google.protobuf.InvalidProtocolBufferException;
 
 import java.nio.charset.StandardCharsets;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
 
 public final class L2PPManager {
     private static final String TAG = L2PPManager.class.getSimpleName();
 
     private AdasManager mAdasManager;
-    private String mTBTJson;
-    private ScheduledExecutorService mScheduler;
-    private ScheduledFuture<?> mScheduledFuture;
     private boolean mInitialized = false;
 
     public static L2PPManager getInstance() {
@@ -57,6 +50,7 @@ public final class L2PPManager {
                 return;
             }
             Log.i(TAG, "send route data: " + json);
+//            JsonLog.print("send route data", json);
             JsonLog.saveJsonToCache(json, "l2.json", "l2_route");
             mAdasManager.sendData(DataType.SDRoute, json.getBytes());
         }
@@ -69,8 +63,10 @@ public final class L2PPManager {
                 Log.w(TAG, "onSdTbtDataChange: json null");
                 return;
             }
-            Log.v(TAG, "onSdTbtDataChange: " + json);
-            mTBTJson = json;
+            Log.v(TAG, "send tbt data: " + json);
+//            JsonLog.print("send tbt data", json);
+            JsonLog.saveJsonToCache(json, "l2.json", "l2_tbt");
+            mAdasManager.sendData(DataType.SDPeriodShortData, json.getBytes());
         }
     };
 
@@ -365,8 +361,6 @@ public final class L2PPManager {
         RoutePackage.getInstance().registerRouteObserver(TAG, mIRouteResultObserver);
         L2Package.getInstance().registerCallback(TAG, mL2InfoCallback);
         SignalPackage.getInstance().registerObserver(TAG, mSignalCallback);
-        mScheduler = Executors.newScheduledThreadPool(1);
-        mScheduledFuture = mScheduler.scheduleWithFixedDelay(mTask, 0, 1, TimeUnit.SECONDS);
         // odd接口
         mAdasManager.setDataCallback(mDataCallback);
         // tts接口
@@ -386,7 +380,6 @@ public final class L2PPManager {
         RoutePackage.getInstance().unRegisterRouteObserver(TAG);
         L2Package.getInstance().unregisterCallback(TAG);
         SignalPackage.getInstance().unregisterObserver(TAG);
-        mScheduledFuture.cancel(true);
         mAdasManager.removeDataCallback();
         mAdasManager.unregisterADUPropertyCallback();
         mInitialized = false;
@@ -415,19 +408,5 @@ public final class L2PPManager {
         info.setHighPriority(highPriority);
         NaviPackage.getInstance().onPlayTTS(info);
     }
-
-    private final Runnable mTask = new Runnable() {
-        @Override
-        public void run() {
-            if (mTBTJson == null) {
-                Log.i(TAG, "send tbt data: json null");
-                return;
-            }
-            JsonLog.saveJsonToCache(mTBTJson, "l2.json", "l2_tbt");
-            Log.v(TAG, "send tbt data: " + mTBTJson);
-//            JsonLog.print(TAG, mTBTJson);
-            mAdasManager.sendData(DataType.SDPeriodShortData, mTBTJson.getBytes());
-        }
-    };
 
 }

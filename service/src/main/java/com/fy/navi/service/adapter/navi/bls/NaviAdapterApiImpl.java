@@ -24,6 +24,7 @@ import java.util.List;
 
 /**
  * 导航接口的第一层封装
+ *
  * @author fy
  * @version $Revision.*$
  */
@@ -132,7 +133,7 @@ public class NaviAdapterApiImpl extends BaseGuideAdapterApiImpl implements INavi
     }
 
     @Override
-        public void queryAppointLanesInfo(final int segmentIdx, final int linkIdx) {
+    public void queryAppointLanesInfo(final int segmentIdx, final int linkIdx) {
         final QueryLanesInfo queryLanesInfo = new QueryLanesInfo(segmentIdx, linkIdx, -1);
         getGuideService().queryAppointLanesInfo(queryLanesInfo);
     }
@@ -159,5 +160,20 @@ public class NaviAdapterApiImpl extends BaseGuideAdapterApiImpl implements INavi
     @Override
     public List<NaviViaEntity> getAllViaPoints() {
         return mNaviApiImplHelper.getAllViaPoints();
+    }
+
+    @Override
+    public void pauseNavi() {
+        mNaviApiImplHelper.pauseNavi(mNaviId);
+    }
+
+    @Override
+    public void resumeNavi() {
+        mNaviApiImplHelper.resumeNavi(mNaviId);
+    }
+
+    @Override
+    public void setSimulationSpeed(int simulationSpeed) {
+        mNaviApiImplHelper.setSimulationSpeedParam(simulationSpeed);
     }
 }

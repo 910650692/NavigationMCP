@@ -1,7 +1,5 @@
 package com.fy.navi.hmi.setting.broadcast.voice;
 
-import android.view.ViewGroup;
-
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.android.utils.log.Logger;

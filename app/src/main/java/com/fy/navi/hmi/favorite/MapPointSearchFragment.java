@@ -6,6 +6,7 @@ import com.android.utils.log.Logger;
 import com.fy.navi.hmi.BR;
 import com.fy.navi.hmi.R;
 import com.fy.navi.hmi.databinding.FragmentMapPointSearchBinding;
+import com.fy.navi.scene.api.search.ISceneTerminalParking;
 import com.fy.navi.service.AutoMapConstant;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.define.map.MapType;
@@ -53,6 +54,12 @@ public class MapPointSearchFragment extends BaseFragment<FragmentMapPointSearchB
         final int poiType = parsedArgs.getInt(AutoMapConstant.PoiBundleKey.BUNDLE_KEY_START_POI_TYPE,-1);
         doSearch(poiInfoEntity);
         mBinding.mapPointSearchView.refreshPoiView(poiType);
+        mBinding.mapPointSearchView.setClickListener(new ISceneTerminalParking() {
+            @Override
+            public void closeSearch() {
+                FavoriteHelper.getInstance().setHomeCompanyType(-1);
+            }
+        });
     }
 
     @Override
@@ -83,8 +90,6 @@ public class MapPointSearchFragment extends BaseFragment<FragmentMapPointSearchB
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        FavoriteHelper.getInstance().setHomeCompanyType(-1);
-        mViewModel.hideFlyLine();
     }
 
     @Override

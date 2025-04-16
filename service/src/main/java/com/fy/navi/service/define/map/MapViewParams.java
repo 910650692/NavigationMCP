@@ -1,5 +1,6 @@
 package com.fy.navi.service.define.map;
 
+import com.android.utils.ScreenUtils;
 import com.fy.navi.service.AppContext;
 import com.fy.navi.service.AutoMapConstant;
 
@@ -23,7 +24,7 @@ public class MapViewParams {
         this.x = 0;
         this.y = 0;
         this.screenWidth = AppContext.getInstance().getMContext().getResources().getDisplayMetrics().widthPixels;
-        this.screenHeight = AppContext.getInstance().getMContext().getResources().getDisplayMetrics().heightPixels;
+        this.screenHeight = AppContext.getInstance().getMContext().getResources().getDisplayMetrics().heightPixels + ScreenUtils.Companion.getInstance().getNavigationBarHeight(AppContext.getInstance().getMContext());;
         this.width = screenWidth;
         this.height = screenHeight;
         this.densityDpi = AppContext.getInstance().getMContext().getResources().getDisplayMetrics().densityDpi;

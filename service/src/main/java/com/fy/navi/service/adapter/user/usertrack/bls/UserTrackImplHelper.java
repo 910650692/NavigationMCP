@@ -8,7 +8,6 @@ import com.android.utils.log.Logger;
 import com.autonavi.gbl.user.model.BehaviorDataType;
 import com.autonavi.gbl.user.syncsdk.model.SyncMode;
 import com.autonavi.gbl.user.usertrack.UserTrackService;
-import com.autonavi.gbl.user.usertrack.model.BehaviorFileType;
 import com.autonavi.gbl.user.usertrack.model.GpsTrackDepthInfo;
 import com.autonavi.gbl.user.usertrack.model.GpsTrackPoint;
 import com.autonavi.gbl.user.usertrack.model.SearchHistoryItem;
@@ -19,6 +18,7 @@ import com.fy.navi.service.AutoMapConstant;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.adapter.user.usertrack.UserTrackAdapterCallBack;
 import com.fy.navi.service.define.user.usertrack.DrivingRecordDataBean;
+import com.fy.navi.service.define.user.usertrack.DrivingRecordDataBeanAdapter;
 import com.fy.navi.service.define.user.usertrack.GpsTrackDepthBean;
 import com.fy.navi.service.define.user.usertrack.GpsTrackPointBean;
 import com.fy.navi.service.define.user.usertrack.SearchHistoryItemBean;
@@ -27,12 +27,7 @@ import com.fy.navi.service.greendao.history.HistoryManager;
 import com.fy.navi.service.logicpaket.position.PositionPackage;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
@@ -46,6 +41,9 @@ public class UserTrackImplHelper implements IUserTrackObserver, IGpsInfoGetter {
     private final ArrayList<DrivingRecordDataBean> mGuideDataBeans = new ArrayList<>();
     private final ArrayList<DrivingRecordDataBean> mCruiseDataBeans = new ArrayList<>();
     private static final String MODEL_NAME = "行程历史";
+    private final Gson mGson = new GsonBuilder()
+            .registerTypeAdapter(DrivingRecordDataBean.class, new DrivingRecordDataBeanAdapter())
+            .create();
 
     protected UserTrackImplHelper(final UserTrackService userTrackService) {
         mUserTrackResultHashtable = new Hashtable<>();
@@ -253,10 +251,6 @@ public class UserTrackImplHelper implements IUserTrackObserver, IGpsInfoGetter {
             final String behaviorData = mUserTrackService.getBehaviorDataById(type, num);
             Logger.i(TAG, "behaviorData -> " + behaviorData);
             final DrivingRecordDataBean dataBean = parseJsonToBean(behaviorData);
-            // 获取同步库轨迹文件
-            final String id = dataBean.getId();
-            final String filePath = mUserTrackService.getFilePath(type, id, BehaviorFileType.BehaviorFileTrail);// 车机版只有 轨迹文件(2) 生效
-            dataBean.setFilePath(filePath);
             if (mHistoryManager.isDataExist(dataBean.getRideRunType(), dataBean.getId())) {
                 continue;
             }
@@ -283,63 +277,17 @@ public class UserTrackImplHelper implements IUserTrackObserver, IGpsInfoGetter {
     }
 
     /**
-     * 行程数据解析
-     * @param jsonStr json串
-     * @return 行程数据
+     * 解析json数据为DrivingRecordDataBean
+     * @param jsonStr json数据
+     * @return DrivingRecordDataBean
      */
     public DrivingRecordDataBean parseJsonToBean(final String jsonStr) {
-
         if (TextUtils.isEmpty(jsonStr)) {
             Logger.i(TAG, "parseJsonToBean: 输入JSON为空");
             return null;
         }
-        final Gson gson = new GsonBuilder()
-                .registerTypeAdapter(DrivingRecordDataBean.class, new JsonDeserializer<DrivingRecordDataBean>() {
-                    @Override
-                    public DrivingRecordDataBean deserialize(final JsonElement json, final Type typeOfT,
-                                                             final JsonDeserializationContext context) {
-                        final JsonObject jsonObject = json.getAsJsonObject();
-                        final DrivingRecordDataBean bean = new DrivingRecordDataBean();
-                        // 基础字段
-                        bean.setId(getStringSafely(jsonObject, "id"));
-                        bean.setType(getIntSafely(jsonObject, "type"));
-                        bean.setRideRunType(getIntSafely(jsonObject, "rideRunType"));
-                        bean.setTimeInterval(getIntSafely(jsonObject, "timeInterval"));
-                        bean.setRunDistance(getIntSafely(jsonObject, "runDistance"));
-                        bean.setStartTime(getStringSafely(jsonObject, "startTime"));
-                        bean.setEndTime(getStringSafely(jsonObject, "endTime"));
-                        bean.setStartPoiName(getStringSafely(jsonObject, "startPoiName"));
-                        bean.setEndPoiName(getStringSafely(jsonObject, "endPoiName"));
-                        bean.setStartLocation(getStringSafely(jsonObject, "startLocation"));
-                        bean.setEndLocation(getStringSafely(jsonObject, "endLocation"));
-                        bean.setTrackFileName(getStringSafely(jsonObject, "trackFileName"));
-                        bean.setMaxSpeedTime(getStringSafely(jsonObject, "maxSpeedTime"));
-                        bean.setMaxSpeedLocation(getStringSafely(jsonObject, "maxSpeedLocation"));
-                        bean.setMaxSpeedPoiName(getStringSafely(jsonObject, "maxSpeedPoiName"));
-                        bean.setUpdateTime(getIntSafely(jsonObject, "updateTime"));
-                        bean.setTrackFileMd5(getStringSafely(jsonObject, "trackFileMd5"));
-                        bean.setTrackPointsURL(getStringSafely(jsonObject, "trackPointsURL"));
-                        // 特殊类型处理
-                        if (jsonObject.get("maxSpeed") != null) {
-                            final double maxSpeed = jsonObject.get("maxSpeed").getAsDouble();
-                            bean.setMaxSpeed((int) Math.round(maxSpeed));
-                        }
-                        return bean;
-                    }
-
-                    // 新增安全解析方法
-                    private String getStringSafely(final JsonObject obj, final String key) {
-                        return obj.has(key) && !obj.get(key).isJsonNull() ? obj.get(key).getAsString() : "";
-                    }
-
-                    private int getIntSafely(final JsonObject obj, final String key) {
-                        return obj.has(key) && !obj.get(key).isJsonNull() ? obj.get(key).getAsInt() : 0;
-                    }
-                })
-                .create();
-        return gson.fromJson(jsonStr, DrivingRecordDataBean.class);
+        return mGson.fromJson(jsonStr, DrivingRecordDataBean.class);
     }
-
 
     /**
      * 获取平均速度

@@ -16,9 +16,6 @@ import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.RunTask;
 import com.android.utils.thread.ThreadManager;
-import com.autonavi.gbl.activation.ActivationModule;
-import com.autonavi.gbl.activation.model.ActivationInitParam;
-import com.autonavi.gbl.activation.observer.INetActivateObserver;
 import com.autonavi.gbl.map.model.EGLDeviceID;
 import com.autonavi.gbl.map.model.MapEngineID;
 import com.autonavi.gbl.servicemanager.ServiceMgr;
@@ -46,40 +43,30 @@ import com.fy.navi.service.greendao.setting.SettingManager;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * @Description TODO
- * @Author lvww
- * @date 2024/11/24
+ * TODO说明
+ * @author lvww
+ * @version $Revision.2024/11/24$
  */
 public class EngineAdapterImpl implements IEngineApi {
     private static final String TAG = MapDefaultFinalTag.ENGINE_SERVICE_TAG;
     private final List<EngineObserver> mEngineObserverList;
-    private boolean isActive = false;
+    private boolean mIsActive = false;
     // TODO: 配置父子渠道包，每次更新aar包时都要核实一下
-    private final String CHANNEL_NAME = "C13953968867";
-    SettingManager settingManager;
-    private final ActivationModule mActivationService;
-    private Timer mOrderStateCheckTimer;
-    private int mOrderCheckCount = 0;
-    // 首次延迟 2 分钟
-    private static final long INITIAL_DELAY = 2 * AutoMapConstant.SECONDS_PER_MINUTE * AutoMapConstant.MILLISECONDS_PER_SECOND;
-    // 后续延迟周期 5 分钟
-    private static final long PERIOD = 5 * AutoMapConstant.SECONDS_PER_MINUTE * AutoMapConstant.MILLISECONDS_PER_SECOND;
-
-
-    private final INetActivateObserver mNetActivateObserver = new INetActivateObserver() {
-        @Override
-        public void onNetActivateResponse(final int returnCode) {
-            //网络激活结果处理
-            Logger.i(TAG, "网络激活返回码 = " + returnCode);
-        }
-    };
+    private final String mChanelName = "C13953968867";
+    private SettingManager mSettingManager;
 
     static {
         Logger.i(TAG, "load gbl xxx.so");
@@ -88,14 +75,18 @@ public class EngineAdapterImpl implements IEngineApi {
 
     public EngineAdapterImpl() {
         mEngineObserverList = new ArrayList<>();
-        settingManager = SettingManager.getInstance();
-        settingManager.init();
-        mActivationService = ActivationModule.getInstance();
+        mSettingManager = SettingManager.getInstance();
+        mSettingManager.init();
     }
 
-
-    public void addInitEnginObserver(EngineObserver observer) {
-        if (ConvertUtils.isContain(mEngineObserverList, observer)) return;
+    /**
+     * 添加初始化观察者
+     * @param observer EngineObserver
+     */
+    public void addInitEnginObserver(final EngineObserver observer) {
+        if (ConvertUtils.isContain(mEngineObserverList, observer)) {
+            return;
+        }
         mEngineObserverList.add(observer);
     }
 
@@ -106,24 +97,24 @@ public class EngineAdapterImpl implements IEngineApi {
             public ListenableWorker.Result get() {
                 return startInitEngine();
             }
-        }, 20);
+        }, 13, TimeUnit.MINUTES);
     }
 
     @Override
-    public void switchLog(GaodeLogLevel logLevel) {
+    public void switchLog(final GaodeLogLevel logLevel) {
         /* 场景一：关闭日志 */
 //        ServiceMgr.getServiceMgrInstance().switchLog(ALCLogLevel.LogLevelNone);
 //        ServiceMgr.getServiceMgrInstance().setGroupMask(ALCGroup.GROUP_MASK_NULL);
         /* 场景二：低频Log */
-        if(logLevel.getCode() == GaodeLogLevel.LOG_NONE.getCode()){
+        if (logLevel.getCode() == GaodeLogLevel.LOG_NONE.getCode()) {
             ServiceMgr.getServiceMgrInstance().switchLog(ALCLogLevel.LogLevelNone);
-        }else if(logLevel.getCode() == GaodeLogLevel.LOG_DEBUG.getCode()){
+        } else if (logLevel.getCode() == GaodeLogLevel.LOG_DEBUG.getCode()) {
             ServiceMgr.getServiceMgrInstance().switchLog(ALCLogLevel.LogLevelDebug);
-        }else if(logLevel.getCode() == GaodeLogLevel.LOG_INFO.getCode()){
+        } else if (logLevel.getCode() == GaodeLogLevel.LOG_INFO.getCode()) {
             ServiceMgr.getServiceMgrInstance().switchLog(ALCLogLevel.LogLevelInfo);
-        }else if(logLevel.getCode() == GaodeLogLevel.LOG_WARN.getCode()){
+        } else if (logLevel.getCode() == GaodeLogLevel.LOG_WARN.getCode()) {
             ServiceMgr.getServiceMgrInstance().switchLog(ALCLogLevel.LogLevelWarn);
-        }else if(logLevel.getCode() == GaodeLogLevel.LOG_ERROR.getCode()){
+        } else if (logLevel.getCode() == GaodeLogLevel.LOG_ERROR.getCode()) {
             ServiceMgr.getServiceMgrInstance().switchLog(ALCLogLevel.LogLevelError);
         }
         ServiceMgr.getServiceMgrInstance().setGroupMask(ALCGroup.GROUP_MASK_BL_AE);
@@ -138,20 +129,18 @@ public class EngineAdapterImpl implements IEngineApi {
 
     @Override
     public boolean engineStatus() {
-        return isActive;
+        return mIsActive;
     }
 
     @Override
     public void unInit() {
         ServiceMgr.getServiceMgrInstance().unInitBL();
         ServiceMgr.getServiceMgrInstance().unInitBaseLibs();
-        mActivationService.setNetActivateObserver(null);
-        mActivationService.unInit();
-        stopActivationCheck();
+        ActivationManager.getInstance().unInit();
     }
 
     @Override
-    public int engineID(MapType mapId) {
+    public int engineID(final MapType mapId) {
         switch (mapId) {
             case MAIN_SCREEN_MAIN_MAP:
                 return MapEngineID.MapEngineIdMain;
@@ -159,12 +148,14 @@ public class EngineAdapterImpl implements IEngineApi {
                 return MapEngineID.MapEngineIdEx1;
             case LAUNCHER_WIDGET_MAP:
                 return MapEngineID.MapEngineIdEx2;
+            default:
+                break;
         }
         return MapEngineID.MapEngineIdInvalid;
     }
 
     @Override
-    public int eagleEyeEngineID(MapType mapId) {
+    public int eagleEyeEngineID(final MapType mapId) {
         switch (mapId) {
             case MAIN_SCREEN_MAIN_MAP:
                 return MapEngineID.MapEngineIdMainEagleEye;
@@ -172,12 +163,14 @@ public class EngineAdapterImpl implements IEngineApi {
                 return MapEngineID.MapEngineIdEx1EagleEye;
             case LAUNCHER_WIDGET_MAP:
                 return MapEngineID.MapEngineIdEx2EagleEye;
+            default:
+                break;
         }
         return MapEngineID.MapEngineIdInvalid;
     }
 
     @Override
-    public int mapDeviceID(MapType mapId) {
+    public int mapDeviceID(final MapType mapId) {
         switch (mapId) {
             case MAIN_SCREEN_MAIN_MAP:
                 return EGLDeviceID.EGLDeviceIDDefault;
@@ -185,90 +178,93 @@ public class EngineAdapterImpl implements IEngineApi {
                 return EGLDeviceID.EGLDeviceIDExternal1;
             case LAUNCHER_WIDGET_MAP:
                 return EGLDeviceID.EGLDeviceIDExternal2;
+            default:
+                break;
         }
         return EGLDeviceID.EGLDeviceIDDefault;
     }
 
 
     @Override
-    public String styleBlPath(MapType mapId) {
+    public String styleBlPath(final MapType mapId) {
         return GBLCacheFilePath.BLS_ASSETS_LAYER_PATH + "style_bl.json";
     }
 
+    /**
+     * 开始初始化engine
+     * @return 初始化结果
+     */
     private ListenableWorker.Result startInitEngine() {
+        Logger.d(TAG, "EngineAdapterImpl : startInitEngine");
         checkUatMapLimit();
-        if (isActive) return ListenableWorker.Result.success();
-        int overDue = isOverdue();
+        if (mIsActive) {
+            return ListenableWorker.Result.success();
+        }
+        final int overDue = isOverdue();
         if (!ConvertUtils.equals(0, overDue)) {
-            Data data = new Data.Builder()
+            final Data data = new Data.Builder()
                     .putInt("errorCode", overDue)
                     .putString("errorMsg", CodeManager.getEngineMsg(overDue))
                     .build();
             return ListenableWorker.Result.failure(data);
         }
         SdkSoLoadUtils.copyAssetsFiles();
-        int initBaseLibsResult = initEngineParam();
+        final int initBaseLibsResult = initEngineParam();
         if (!ConvertUtils.equals(0, initBaseLibsResult)) {
-            Data data = new Data.Builder()
-                    .putInt("errorCode", 10004)
-                    .putString("errorMsg", CodeManager.getEngineMsg(10004))
-                    .build();
-            onEngineObserver(10004);
-            return ListenableWorker.Result.failure(data);
+            return buildFailure(10004,  CodeManager.getEngineMsg(10004));
+
         }
-
-//        //初始化激活服务
-//        //todo获取uuid,有uuid才能初始化激活服务来查看激活状态
-//        final int actInitResultCode = initActivateParam();
-//        if (!ConvertUtils.equals(0, actInitResultCode)) {
-//            Logger.e(TAG, "激活初始化失败");
-//            final Data data = new Data.Builder()
-//                    .putInt("errorCode", 10006)
-//                    .putString("errorMsg", CodeManager.getEngineMsg(10006))
-//                    .build();
-//            onEngineObserver(10006);
-//            return ListenableWorker.Result.failure(data);
+//        //======激活======//
+//        //获取uuid
+//        final String uuid = ActivationManager.getInstance().getThirdPartyUUID();
+//        if (ConvertUtils.isEmpty(uuid)) {
+//            Logger.e(TAG,"uuid为空");
+//            return buildFailure(10008, CodeManager.getEngineMsg(10008));
 //        }
-
-        //查询激活状态
-//        if (!checkActivationStatue()) {
-//            //todo云对云下单
-//            //检查下单状态
-//            startOrderStateCheck();
-//            //todo查询到下单成功后再走下面的网络激活
-//            if (!ConvertUtils.equals(0, netActivate())) {
-//                Logger.e(TAG, "网络激活失败");
-//                final Data data = new Data.Builder()
-//                        .putInt("errorCode", 10007)
-//                        .putString("errorMsg", CodeManager.getEngineMsg(10007))
-//                        .build();
-//                onEngineObserver(10007);
-//                return ListenableWorker.Result.failure(data);
+//        //初始化激活服务
+//        Logger.e(TAG,"uuid = " + uuid);
+//        if (!ActivationManager.getInstance().initActivationService(uuid)) {
+//            Logger.e(TAG,"激活服务初始化失败");
+//            return buildFailure(10006, CodeManager.getEngineMsg(10006));
+//        }
+//        //查询激活状态
+//        if (!ActivationManager.getInstance().checkActivationStatus()) {
+//            Logger.e(TAG,"未激活，开始下单");
+//            //下单
+//            if (!ActivationManager.getInstance().createCloudOrder()) {
+//                return buildFailure(10009, CodeManager.getEngineMsg(10009));
+//            }
+//            //查询下单状态
+//            if (!pollOrderStatusWithRetry()) {
+//                return buildFailure(10010, CodeManager.getEngineMsg(10010));
+//            }
+//            //网络激活
+//            if (!ActivationManager.getInstance().netActivate()) {
+//                return buildFailure(10007, CodeManager.getEngineMsg(10007));
 //            }
 //        }
 
-        int sdkResultCode = initSDKParam();
+        final int sdkResultCode = initSDKParam();
         if (!ConvertUtils.equals(0, sdkResultCode)) {
-            Data data = new Data.Builder()
-                    .putInt("errorCode", 10005)
-                    .putString("errorMsg", CodeManager.getEngineMsg(10005))
-                    .build();
-            onEngineObserver(10005);
-            return ListenableWorker.Result.failure(data);
+            return buildFailure(10005, CodeManager.getEngineMsg(10005));
         }
-        isActive = true;
+        mIsActive = true;
         onEngineObserver(0);
         return ListenableWorker.Result.success();
     }
 
+    /**
+     * 是否过期
+     * @return 错误码
+     */
     private int isOverdue() {
         //单位微秒
-        long limitTime = ServiceMgr.getServiceMgrInstance().getSdkLimitTimeUTC();
+        final long limitTime = ServiceMgr.getServiceMgrInstance().getSdkLimitTimeUTC();
         if (limitTime == 0) {
             return onEngineObserver(10003);
         }
-        long limitTimeMillis = limitTime / 1000;
-        long currentTime = System.currentTimeMillis();
+        final long limitTimeMillis = limitTime / 1000;
+        final long currentTime = System.currentTimeMillis();
         Logger.d(TAG, "====limitTimeMillis = {?}， currentTime = {?}", limitTimeMillis, currentTime);
         if (limitTimeMillis < currentTime) {
             return onEngineObserver(10002);
@@ -276,8 +272,12 @@ public class EngineAdapterImpl implements IEngineApi {
         return 0;
     }
 
+    /**
+     * 初始化BaseLib参数
+     * @return 初始化结果
+     */
     private int initEngineParam() {
-        BaseInitParam baseInitParam = new BaseInitParam();
+        final BaseInitParam baseInitParam = new BaseInitParam();
         baseInitParam.logFileName = "amap.android.";
         baseInitParam.logPath = GBLCacheFilePath.BLS_LOG;
         baseInitParam.logLevel = ALCLogLevel.LogLevelDebug;
@@ -297,60 +297,23 @@ public class EngineAdapterImpl implements IEngineApi {
         baseInitParam.cachePath = GBLCacheFilePath.COPY_ASSETS_DIR;
         //用户数据目录，保存用户生成数据
         baseInitParam.userDataPath = GBLCacheFilePath.USER_CACHE_PATH;
-        baseInitParam.channelName = CHANNEL_NAME;
-        settingManager.insertOrReplace(SettingController.KEY_SETTING_CHANNEL_ID, CHANNEL_NAME);
-        baseInitParam.setIPlatformInterface(platformInterface);
+        baseInitParam.channelName = mChanelName;
+        mSettingManager.insertOrReplace(SettingController.KEY_SETTING_CHANNEL_ID, mChanelName);
+        baseInitParam.setIPlatformInterface(PLAT_FORM_INTERFACE);
 
         FileUtils.getInstance().createDir(baseInitParam.logPath);
         Logger.i(TAG, "create log file path", baseInitParam.logPath);
-        int result = ServiceMgr.getServiceMgrInstance().initBaseLibs(baseInitParam, AppContext.getInstance().getMApplication());
+        final int result = ServiceMgr.getServiceMgrInstance().initBaseLibs(baseInitParam, AppContext.getInstance().getMApplication());
         Logger.i(TAG, "initEngineParam result", result);
         return result;
     }
 
     /**
-     * 初始化激活参数
-     *
-     * @return int
+     * 初始化BL参数
+     * @return 初始化结果
      */
-    private int initActivateParam() {
-        mActivationService.setNetActivateObserver(mNetActivateObserver);
-
-        final ActivationInitParam actInitParam = new ActivationInitParam();
-
-        // 是否检查客户编号
-        actInitParam.isCheckClientNo = true;
-        // 是否检查项目编号
-        actInitParam.isCheckModelNo = true;
-        // 是否支持 批量激活
-        actInitParam.isSupportVolumeAct = false;
-        //项目编号 非基础版项目传0, 内部读取配置文件的值
-        actInitParam.iProjectId = 0;
-        // 激活码的长度为24，设置为其他值无法激活
-        actInitParam.iCodeLength = 24;
-        // 设备编号 info4的uuid
-        actInitParam.szDeviceID = "";
-        // 激活文件保存路径
-        actInitParam.szUserDataFileDir = GBLCacheFilePath.ACTIVATE_USER_DATA;
-
-        final int initResult = mActivationService.init(actInitParam);
-        Logger.i(TAG, "initActivateParam: initResult = " + initResult);
-        return initResult;
-    }
-
-    /**
-     * 网络激活
-     * @return 激活结果
-     */
-    private int netActivate() {
-        final String hardWareCode = "0000000000"; // 默认10个0
-        final int netActivateResult = mActivationService.netActivate(hardWareCode);
-        Logger.i(TAG, "netActivateResult = " + netActivateResult);
-        return netActivateResult;
-    }
-
     private int initSDKParam() {
-        BLInitParam blInitParam = new BLInitParam();
+        final BLInitParam blInitParam = new BLInitParam();
         //样式、播报等相关配置存放路径
         blInitParam.dataPath.cfgFilePath = AutoMapConstant.GBL_MAP;
         //离线地图数据下载存放路径
@@ -370,7 +333,7 @@ public class EngineAdapterImpl implements IEngineApi {
 
         FileUtils.getInstance().createDir(blInitParam.dataPath.onlinePath);
         Logger.i(TAG, "create online file path", blInitParam.dataPath.onlinePath);
-        int result = ServiceMgr.getServiceMgrInstance().initBL(blInitParam, AppContext.getInstance().getMApplication());
+        final int result = ServiceMgr.getServiceMgrInstance().initBL(blInitParam, AppContext.getInstance().getMApplication());
         Logger.i(TAG, "initSDKParam", result);
         return result;
     }
@@ -379,8 +342,9 @@ public class EngineAdapterImpl implements IEngineApi {
      * 引擎初始化结果回调.
      *
      * @param code !0 失败/0 成功
+     * @return code
      */
-    private int onEngineObserver(int code) {
+    private int onEngineObserver(final int code) {
         for (EngineObserver observer : mEngineObserverList) {
             if (ConvertUtils.equals(0, code)) {
                 observer.onInitEngineSuccess();
@@ -405,22 +369,22 @@ public class EngineAdapterImpl implements IEngineApi {
      * 非激活版本地图，<=7天时，进行toast提醒
      */
     private void checkUatMapLimit() {
-        long mSdkLimitTimeUTC = ServiceMgr.getServiceMgrInstance().getSdkLimitTimeUTC();
+        final long mSdkLimitTimeUTC = ServiceMgr.getServiceMgrInstance().getSdkLimitTimeUTC();
         Logger.i(TAG, "sdkLimitTimeUTC = " + mSdkLimitTimeUTC);
-        int activateCode;
+        //int activateCode;
         //获取SDK的限制时间（UTC），如该版本为激活包等没有配置有效时间的情况，则返回0
         if (mSdkLimitTimeUTC != 0) {
             //获取的是微秒数，需要转换成毫秒
-            long sdkLimitTimeUTC = (long) (mSdkLimitTimeUTC * 0.001);
+            final long sdkLimitTimeUTC = (long) (mSdkLimitTimeUTC * 0.001);
             if (sdkLimitTimeUTC != 0) {
                 //当前时间 毫秒
-                long currentTimeMillis = System.currentTimeMillis();
+                final long currentTimeMillis = System.currentTimeMillis();
                 //14天限制
-                long limitTime = 7L * 24 * 60 * 60 * 1000;
+                final long limitTime = 7L * 24 * 60 * 60 * 1000;
                 Logger.i(TAG, "sdkLimitTimeUTC = " + sdkLimitTimeUTC + ",currentTimeMillis = " + currentTimeMillis + "," + limitTime);
                 if ((sdkLimitTimeUTC - currentTimeMillis) <= limitTime) {
-                    SimpleDateFormat fds = new SimpleDateFormat("MM月dd日", Locale.getDefault());
-                    String mmDdByDate = fds.format(new Date(sdkLimitTimeUTC));
+                    final SimpleDateFormat fds = new SimpleDateFormat("MM月dd日", Locale.getDefault());
+                    final String mmDdByDate = fds.format(new Date(sdkLimitTimeUTC));
                     Logger.i(TAG, "sdkLimitTimeUTC mmDdByDate = " + mmDdByDate);
                     if (!TextUtils.isEmpty(mmDdByDate)) {
                         ToastUtils.Companion.getInstance().showTextLong("地图试用版本于在" + mmDdByDate + "到期，请尽快升级");
@@ -440,15 +404,15 @@ public class EngineAdapterImpl implements IEngineApi {
         return ServiceMgr.getEngineVersion();
     }
 
-    private static final IPlatformInterface platformInterface = new IPlatformInterface() {
+    private static final IPlatformInterface PLAT_FORM_INTERFACE = new IPlatformInterface() {
 
         @Override
-        public float getDensity(int i) {
+        public float getDensity(final int i) {
             return ResourceUtils.Companion.getInstance().getDisplayMetrics().density;
         }
 
         @Override
-        public int getDensityDpi(int i) {
+        public int getDensityDpi(final int i) {
             return ResourceUtils.Companion.getInstance().getDisplayMetrics().densityDpi;
         }
 
@@ -463,10 +427,10 @@ public class EngineAdapterImpl implements IEngineApi {
         }
 
         @Override
-        public boolean getAosNetworkParam(ArrayList<KeyValue> arrayList) {
+        public boolean getAosNetworkParam(final ArrayList<KeyValue> arrayList) {
 
             @SuppressLint("HardwareIds")
-            String androidId = Settings.Secure.getString(
+            final String androidId = Settings.Secure.getString(
                     AppContext.getInstance().getMContext().getContentResolver(),
                     Settings.Secure.ANDROID_ID
             );
@@ -475,7 +439,7 @@ public class EngineAdapterImpl implements IEngineApi {
             /**< client_network_class   获取当前网络状态 2G=1；3G=2；4G=3；wifi=4 ；*/
             arrayList.add(new KeyValue("client_network_class", "4"));
             /**< uid 如果已登录，需要传入，通过用户登录接口由服务端下发 */
-            String uid = getUid();
+            final String uid = getUid();
             if (!uid.isEmpty()) {
                 arrayList.add(new KeyValue("uid", uid));
             }
@@ -484,32 +448,36 @@ public class EngineAdapterImpl implements IEngineApi {
         }
 
         @Override
-        public String amapEncode(byte[] bytes) {
+        public String amapEncode(final byte[] bytes) {
             return "";
         }
 
         @Override
-        public String amapEncodeBinary(byte[] bytes) {
+        public String amapEncodeBinary(final byte[] bytes) {
             return "";
         }
 
         @Override
-        public String amapDecode(byte[] bytes) {
+        public String amapDecode(final byte[] bytes) {
             return "";
         }
 
         @Override
-        public boolean getAosSign(String s, String[] strings) {
+        public boolean getAosSign(final String s, final String[] strings) {
             return false;
         }
     };
 
+    /**
+     * 获取uid
+     * @return uid
+     */
     public static String getUid() {
         String uid = "";
-        CommonManager commonManager = CommonManager.getInstance();
+        final CommonManager commonManager = CommonManager.getInstance();
         commonManager.init();
         AccountProfileInfo info = new AccountProfileInfo();
-        String valueJson = commonManager.getValueByKey(UserDataCode.SETTING_GET_USERINFO);
+        final String valueJson = commonManager.getValueByKey(UserDataCode.SETTING_GET_USERINFO);
         Logger.i("getUserInfo valueJson = " + valueJson);
         if (!TextUtils.isEmpty(valueJson)) {
             info = GsonUtils.fromJson(valueJson, AccountProfileInfo.class);
@@ -519,72 +487,88 @@ public class EngineAdapterImpl implements IEngineApi {
     }
 
     /**
-     * 查询下单状态
+     * 带重试的订单激活状态查询
+     *
      * @return 是否成功
      */
-    private boolean checkOrderState() {
-        //todo 待泛亚提供查询下单状态
-        Logger.e(TAG, "下单状态 = ");
-        return false;
-    }
+    private boolean pollOrderStatusWithRetry() {
+        final int maxRetries = 3;
+        final long[] delays = {AutoMapConstant.INITIAL_DELAY_MINUTE,
+                AutoMapConstant.DELAY_MINUTE, AutoMapConstant.DELAY_MINUTE};
+        final AtomicInteger retryCount = new AtomicInteger(0);
+        final ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
+        final CompletableFuture<Boolean> future = new CompletableFuture<>();
 
-    /**
-     * 检查激活状态
-     *
-     * @return true 已激活
-     */
-    private boolean checkActivationStatue() {
-        if (mActivationService == null) {
-            Logger.e(TAG, "mActivationService == null" );
-            return false;
-        }
-        final int activateStatus = mActivationService.getActivateStatus();
-        Logger.e(TAG, "激活状态码 = " + activateStatus);
-        return ConvertUtils.equals(0, activateStatus);
-    }
+        final Runnable task = new Runnable() {
+            @Override
+            public void run() {
+                if (future.isDone()) {
+                    return;
+                }
+                try {
+                    final boolean isOrdered = ActivationManager.getInstance().checkOrderStatus();
+                    if (isOrdered) {
+                        future.complete(true);
+                        executor.shutdownNow();
+                        return;
+                    }
 
-    /**
-     * 取消timer
-     */
-    private void cancelTimer() {
-        if (mOrderStateCheckTimer != null) {
-            mOrderStateCheckTimer.cancel();
-            mOrderStateCheckTimer = null;
-        }
-    }
-
-    /**
-     * 停止任务
-     */
-    public void stopActivationCheck() {
-        cancelTimer();
-    }
-
-    /**
-     * 启动检查
-     */
-    private void startOrderStateCheck() {
-        if (mOrderStateCheckTimer == null) {
-            mOrderStateCheckTimer = new Timer();
-        }
-        mOrderStateCheckTimer.schedule(new OrderCheckTask(), INITIAL_DELAY, PERIOD);
-    }
-
-    /**
-     * 激活查询task
-     */
-    private final class OrderCheckTask extends TimerTask {
-        @Override
-        public void run() {
-            final boolean isOrdered = checkOrderState();
-            ++mOrderCheckCount;
-            Logger.d(TAG, "OrderCheckTask: OrderState = " + isOrdered);
-            if (isOrdered) {
-                cancelTimer(); // 下单成功则停止任务
-            } else if (mOrderCheckCount > 3) {
-                //todo失败提示
-                cancelTimer();
+                    final int currentCount = retryCount.incrementAndGet();
+                    if (currentCount > maxRetries) {
+                        future.complete(false);
+                        executor.shutdownNow();
+                    }
+                } catch (NullPointerException | IllegalArgumentException e) {
+                    future.completeExceptionally(e);
+                    executor.shutdownNow();
+                }
             }
+        };
+
+        long totalDelay = 0;
+        //第一次延时两分钟，第二次延时七分钟，第三次延时十二分钟，三个任务同时发放
+        for (int count = 0; count < maxRetries; ++count) {
+            if (count == 0) {
+                totalDelay = delays[count];
+            } else {
+                totalDelay += delays[count];
+            }
+            executor.schedule(task, totalDelay, TimeUnit.MINUTES);
         }
+
+        try {
+            // 总超时 = 所有可能延迟之和 + 缓冲时间（例如15分钟）
+            final long totalTimeout = Arrays.stream(delays).sum() + 1; // 2+5+5 +1=13分钟
+            return future.get(totalTimeout, TimeUnit.MINUTES);
+        } catch (TimeoutException e) {
+            executor.shutdownNow();
+            Logger.e(TAG,"订单状态轮询总超时");
+            return false;
+        } catch (ExecutionException e) {
+            Logger.e(TAG,"轮询异常: " + e.getCause());
+            return false;
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            Logger.e(TAG,"轮询被中断");
+            return false;
+        } finally {
+            executor.shutdown();
+        }
+    }
+
+    /**
+     * 封装错误数据构建
+     *
+     * @param code 错误码
+     * @param msg  错误信息
+     * @return result
+     */
+    private ListenableWorker.Result buildFailure(final int code, final String msg) {
+        final Data data = new Data.Builder()
+                .putInt("errorCode", code)
+                .putString("errorMsg", msg)
+                .build();
+        onEngineObserver(code);
+        return ListenableWorker.Result.failure(data);
     }
 }

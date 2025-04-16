@@ -158,10 +158,10 @@ public interface NaviConstant {
     interface LocSwitchRoadType {
         int AUTO_UNKNOWN_ERROR = Integer.MIN_VALUE;
         int LOC_SWITCH_NULL = -1;
-        int LOC_SWITCH_MAIN_TO_SIDE = 1;
-        int LOC_SWITCH_SIDE_TO_MAIN = 0;
-        int LOC_SWITCH_UP_BRIDGE_TO_DOWN_BRIDGE = 3;
-        int LOC_SWITCH_DOWN_BRIDGE_TO_UP_BRIDGE = 2;
+        int LOC_SWITCH_MAIN_TO_SIDE = 0;
+        int LOC_SWITCH_SIDE_TO_MAIN = 1;
+        int LOC_SWITCH_UP_BRIDGE_TO_DOWN_BRIDGE = 2;
+        int LOC_SWITCH_DOWN_BRIDGE_TO_UP_BRIDGE = 3;
     }
 
     interface TMCTrafficStatus {

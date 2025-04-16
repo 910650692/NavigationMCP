@@ -169,6 +169,7 @@ public class BaseLayerImpl<S extends BaseStyleAdapter> extends PrepareLayerStyle
         Logger.d(TAG, " onNotifyFocusChange");
     }
 
+
     @Override
     public void onNotifyCameraFilterInfo(CameraFilterInfo cameraFilterInfo) {
 //        Logger.d(TAG, " onNotifyCameraFilterInfo");
@@ -250,7 +251,7 @@ public class BaseLayerImpl<S extends BaseStyleAdapter> extends PrepareLayerStyle
                     (getStyleAdapter() != null && getStyleAdapter().isNeedReCreate(item))) {
                 Logger.e(TAG, getClass().getSimpleName() + " 图层 :" + layer.getName() + " ;开始创建 新纹理 " + markerIdKey);
                 LayerTexture layerTexture = LayerTextureManager.get().createLayerTexture(context, styleInfo.markerId, styleInfo.markerInfo, item.getFocus(),
-                        getStyleAdapter().provideUpdateLayerItemStyleByItemDataProcessor(item), getStyleAdapter().provideLayerItemDataProcessor(item));
+                        getStyleAdapter().provideUpdateBitmapViewProcessor(item), getStyleAdapter().provideLayerItemData(item));
                 if (layer.getMapView().addLayerTexture(layerTexture)) {
                     markerId = LayerTextureManager.get().addMarkerId(markerIdKey, layerTexture.resID);
                     Logger.d(TAG, getClass().getSimpleName() + " 图层 :" + layer.getName() + " ;图元业务类型 :" + item.getBusinessType() + " ; 图元 ：" + item.getItemType()
@@ -267,7 +268,7 @@ public class BaseLayerImpl<S extends BaseStyleAdapter> extends PrepareLayerStyle
             }
         } else {
             Logger.e(TAG, getClass().getSimpleName() + " 图层 :" + layer.getName() + " ;图元业务类型 :" + item.getBusinessType() + " ; 图元 ：" + item.getItemType()
-                    + " \n复用 默认 纹理 :{" + null + " ; " + markerId + " } ");
+                    + " \n复用 默认 纹理 :{ NULL ; " + markerId + " } ");
         }
         return markerId;
     }

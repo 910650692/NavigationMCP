@@ -22,7 +22,7 @@
             >
             <com.fy.navi.ui.view.SkinTextView
                 android:id="@+id/preference_recommend"
-                clickCommand="@{Scene.preferenceRecommend}"
+                clickCommand="@{() -> Scene.preferenceRecommend(1)}"
                 android:layout_width="@dimen/dp_560"
                 android:layout_height="@dimen/dp_88"
                 android:layout_marginStart="@dimen/dp_40"
@@ -40,7 +40,7 @@
 
             <com.fy.navi.ui.view.SkinTextView
                 android:id="@+id/preference_avoid_congestion"
-                clickCommand="@{Scene.preferenceAvoidCongestion}"
+                clickCommand="@{() -> Scene.preferenceAvoidCongestion(1)}"
                 android:layout_width="@dimen/dp_268"
                 android:layout_height="@dimen/dp_88"
                 android:layout_marginTop="@dimen/dp_32"
@@ -57,7 +57,7 @@
 
             <com.fy.navi.ui.view.SkinTextView
                 android:id="@+id/preference_first_main_road"
-                clickCommand="@{Scene.preferenceFirstMainRoad}"
+                clickCommand="@{() -> Scene.preferenceFirstMainRoad(1)}"
                 android:layout_width="@dimen/dp_268"
                 android:layout_height="@dimen/dp_88"
                 android:layout_marginStart="@dimen/dp_35"
@@ -74,7 +74,7 @@
 
             <com.fy.navi.ui.view.SkinTextView
                 android:id="@+id/preference_first_highway"
-                clickCommand="@{Scene.preferenceFirstHighway}"
+                clickCommand="@{() -> Scene.preferenceFirstHighway(1)}"
                 android:layout_width="@dimen/dp_268"
                 android:layout_height="@dimen/dp_88"
                 android:layout_marginTop="@dimen/dp_32"
@@ -90,7 +90,7 @@
 
             <com.fy.navi.ui.view.SkinTextView
                 android:id="@+id/preference_not_highway"
-                clickCommand="@{Scene.preferenceNotHighway}"
+                clickCommand="@{() -> Scene.preferenceNotHighway(1)}"
                 android:layout_width="@dimen/dp_268"
                 android:layout_height="@dimen/dp_88"
                 android:layout_marginStart="@dimen/dp_35"
@@ -107,7 +107,7 @@
 
             <com.fy.navi.ui.view.SkinTextView
                 android:id="@+id/preference_less_charge"
-                clickCommand="@{Scene.preferenceLessCharge}"
+                clickCommand="@{() -> Scene.preferenceLessCharge(1)}"
                 android:layout_width="@dimen/dp_268"
                 android:layout_height="@dimen/dp_88"
                 android:layout_marginTop="@dimen/dp_32"
@@ -123,7 +123,7 @@
 
             <com.fy.navi.ui.view.SkinTextView
                 android:id="@+id/preference_fastest_speed"
-                clickCommand="@{Scene.preferenceFastestSpeed}"
+                clickCommand="@{() -> Scene.preferenceFastestSpeed(1)}"
                 android:layout_width="@dimen/dp_268"
                 android:layout_height="@dimen/dp_88"
                 android:layout_marginStart="@dimen/dp_30"

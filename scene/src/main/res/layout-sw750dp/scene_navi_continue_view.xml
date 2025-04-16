@@ -15,29 +15,29 @@
         android:background="@drawable/bg_navi_continue"
         clickCommand="@{() -> naviContinue.naviContinueClick()}"
         app:click_color_change="true"
-        android:layout_width="@dimen/dp_310"
-        android:layout_height="@dimen/dp_92">
+        android:layout_width="@dimen/dp_410"
+        android:layout_height="@dimen/dp_120">
 
         <com.fy.navi.ui.view.SkinImageView
             android:id="@+id/siv_navi_continue_icon"
-            android:layout_width="@dimen/dp_58"
-            android:layout_height="@dimen/dp_58"
+            android:layout_width="@dimen/dp_74"
+            android:layout_height="@dimen/dp_74"
             android:background="@drawable/img_navigation_58"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginStart="@dimen/dp_52"/>
+            android:layout_marginStart="@dimen/dp_56"/>
 
         <com.fy.navi.ui.view.SkinTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/sp_34"
+            android:textSize="@dimen/sp_46"
             android:textColor="@android:color/white"
             app:layout_constraintTop_toTopOf="@+id/siv_navi_continue_icon"
             app:layout_constraintBottom_toBottomOf="@+id/siv_navi_continue_icon"
             app:layout_constraintStart_toEndOf="@+id/siv_navi_continue_icon"
             android:text="@string/navi_continue_navi"
-            android:layout_marginStart="@dimen/dp_12"/>
+            android:layout_marginStart="@dimen/dp_16"/>
 
     </com.fy.navi.ui.view.SkinConstraintLayout>
 </layout>

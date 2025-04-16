@@ -74,7 +74,7 @@ public class SceneNaviNearProvideCharge extends NaviSceneBase<NaviSceneNearProvi
             startNaviRightNow();
             notifySceneStateChange(false);
         });
-        mViewBinding.ivIcon.setOnClickListener(v -> {
+        mViewBinding.viewBg.setOnClickListener(v -> {
             if (!ConvertUtils.isNull(mISceneCallback) && !ConvertUtils.isNull(mEntity)) {
                 Logger.i(TAG, "showRecChargeList");
                 notifySceneStateChange(false);
@@ -138,6 +138,20 @@ public class SceneNaviNearProvideCharge extends NaviSceneBase<NaviSceneNearProvi
             // 清楚搜索扎标
             OpenApiHelper.clearSearchLabelMark();
         });
+    }
+
+    /***
+     * 导航中更新推荐充电桩显示距离
+     */
+    public void updateDistance() {
+        if (mViewBinding == null || getVisibility() == GONE) {
+            return;
+        }
+        if (mPoiInfoEntity == null || mPoiInfoEntity.getPoint() == null) {
+            return;
+        }
+        //Logger.d(TAG, "updateDistance", "distance:"+mScreenViewModel.getChargeDistance(mPoiInfoEntity.getPoint()));
+        mViewBinding.tvDistance.setText(mScreenViewModel.getChargeDistance(mPoiInfoEntity.getPoint()));
     }
 
     private void setStationInfo(ChargeInfo chargeInfo) {

@@ -21,6 +21,8 @@ interface INaviAutoApiBinder {
 
     int requestReverseGeoSearch(in String pkgName, in BaseGeoPoint geoPoint);
 
+    void nearbySearch(String pkgName, String keyword, int pageIndex);
+
     void searchAndNavi(String pkgName, in String address);
 
     void cancelAllSearchRequest(String pkgName);

@@ -1,8 +1,13 @@
 package com.fy.navi.service.logicpaket.cruise;
 
+import android.text.TextUtils;
+
 import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
+import com.fy.navi.burypoint.anno.HookMethod;
+import com.fy.navi.burypoint.constant.BuryConstant;
+import com.fy.navi.burypoint.controller.BuryPointController;
 import com.fy.navi.service.adapter.cruise.CruiseAdapter;
 import com.fy.navi.service.adapter.cruise.CruiseObserver;
 import com.fy.navi.service.adapter.layer.LayerAdapter;
@@ -15,6 +20,7 @@ import com.fy.navi.service.define.navi.SoundInfoEntity;
 import com.fy.navi.service.define.navistatus.NaviStatus;
 import com.fy.navi.service.logicpaket.map.MapPackage;
 import com.fy.navi.service.logicpaket.setting.SettingPackage;
+import com.fy.navi.ui.base.StackManager;
 
 import java.util.Hashtable;
 
@@ -61,12 +67,23 @@ public class CruisePackage implements CruiseObserver {
      * @return
      */
     public boolean startCruise() {
-        boolean result = mCruiseAdapter.startCruise();
+        boolean result;
+        final boolean isFragmentStackNull = StackManager.getInstance().isFragmentStackNull(MapType.MAIN_SCREEN_MAIN_MAP.name());
+        final boolean isNoStatus = TextUtils.equals(mNavistatusAdapter.getCurrentNaviStatus(), NaviStatus.NaviStatusType.NO_STATUS);
+        final boolean isOnCruise = TextUtils.equals(mNavistatusAdapter.getCurrentNaviStatus(), NaviStatus.NaviStatusType.CRUISE);
+        if (isNoStatus && isFragmentStackNull && !isOnCruise) {
+            result = mCruiseAdapter.startCruise();
+        } else {
+            result = false;
+        }
+        Logger.i(TAG, "startCruise:" + result, "currentStatus:" + mNavistatusAdapter.getCurrentNaviStatus(),
+                "isFragmentStackNull:" + isFragmentStackNull, "isOnCruise:" + isOnCruise);
         if (result) {
             mLayerAdapter.setFollowMode(MapType.MAIN_SCREEN_MAIN_MAP, true);
             mNavistatusAdapter.setNaviStatus(NaviStatus.NaviStatusType.CRUISE);
             mLayerAdapter.setVisibleCruiseSignalLight(MapType.MAIN_SCREEN_MAIN_MAP, true);
             initScaleSize();
+            sendBuryPointForCruise(true);
         }
         return result;
     }
@@ -94,12 +111,20 @@ public class CruisePackage implements CruiseObserver {
 
     /*结束巡航*/
     public boolean stopCruise() {
-        mSpeechAdapter.stop();
-        mLayerAdapter.setFollowMode(MapType.MAIN_SCREEN_MAIN_MAP, false);
-        boolean isSuccess = mCruiseAdapter.stopCruise();
-        if (isSuccess) {
-            mNavistatusAdapter.setNaviStatus(NaviStatus.NaviStatusType.NO_STATUS);
+        boolean isSuccess;
+        final boolean isOnCruise = TextUtils.equals(mNavistatusAdapter.getCurrentNaviStatus(), NaviStatus.NaviStatusType.CRUISE);
+        if (isOnCruise) {
+            isSuccess = mCruiseAdapter.stopCruise();
+        } else {
+            isSuccess = false;
         }
+        if (isSuccess) {
+            mSpeechAdapter.stop();
+            mLayerAdapter.setFollowMode(MapType.MAIN_SCREEN_MAIN_MAP, false);
+            mNavistatusAdapter.setNaviStatus(NaviStatus.NaviStatusType.NO_STATUS);
+            sendBuryPointForCruise(false);
+        }
+        Logger.i(TAG, "stopCruise", "result:" + isSuccess, "currentNaviStatus:" + mNavistatusAdapter.getCurrentNaviStatus());
         return isSuccess;
     }
 
@@ -168,6 +193,12 @@ public class CruisePackage implements CruiseObserver {
     @Override
     public void onPlayTTS(SoundInfoEntity info) {
         // 这里不需要处理，统一放在NaviPackage里面处理
+    }
+
+    @HookMethod
+    private void sendBuryPointForCruise(boolean isEnter) {
+        String eventName = isEnter ? BuryConstant.EventName.AMAP_CRUISE_ENTER : BuryConstant.EventName.AMAP_CRUISE_EXIT;
+        BuryPointController.getInstance().setEventName(eventName);
     }
 
     public static CruisePackage getInstance() {

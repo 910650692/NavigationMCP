@@ -20,6 +20,7 @@ import com.fy.navi.service.logicpaket.layer.LayerPackage;
 import com.fy.navi.service.logicpaket.map.MapPackage;
 import com.fy.navi.service.logicpaket.navi.NaviPackage;
 import com.fy.navi.service.logicpaket.navi.OpenApiHelper;
+import com.fy.navi.service.logicpaket.search.SearchPackage;
 import com.fy.navi.ui.base.StackManager;
 
 import java.util.concurrent.ScheduledFuture;
@@ -32,7 +33,7 @@ public class SceneNaviContinueImpl extends BaseSceneModel<SceneNaviContinueView>
     private LayerPackage mLayerPackage;
     private NaviPackage mNaviPackage;
     private MapPackage mMapPackage;
-
+    private SearchPackage mSearchPackage;
     private ScheduledFuture mScheduledFuture;
     private int mTimes = NumberUtils.NUM_8;
 
@@ -41,6 +42,7 @@ public class SceneNaviContinueImpl extends BaseSceneModel<SceneNaviContinueView>
         mLayerPackage = LayerPackage.getInstance();
         mNaviPackage = NaviPackage.getInstance();
         mMapPackage = MapPackage.getInstance();
+        mSearchPackage = SearchPackage.getInstance();
         setScreenId(MapType.MAIN_SCREEN_MAIN_MAP);
     }
 
@@ -126,6 +128,7 @@ public class SceneNaviContinueImpl extends BaseSceneModel<SceneNaviContinueView>
         if (!mNaviPackage.getFixedOverViewStatus()) {
             OpenApiHelper.exitPreview(mMapTypeId);
         }
+        mSearchPackage.clearLabelMark();
         ImmersiveStatusScene.getInstance().setImmersiveStatus(mMapTypeId, ImersiveStatus.IMERSIVE);
         // 隐藏继续当行按钮
         notifySceneStateChange(false);

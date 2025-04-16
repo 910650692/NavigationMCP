@@ -52,8 +52,8 @@
 
             <com.fy.navi.ui.view.SkinImageView
                 android:id="@+id/poi_icon"
-                android:layout_width="@dimen/dp_68"
-                android:layout_height="@dimen/dp_68"
+                android:layout_width="@dimen/dp_74"
+                android:layout_height="@dimen/dp_74"
                 android:gravity="center"
                 android:minWidth="@dimen/dp_30"
                 android:src="@drawable/img_basic_ic_orientation"

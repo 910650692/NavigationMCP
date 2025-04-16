@@ -83,7 +83,7 @@ public class PositionPackage implements IPositionAdapterCallback, SignalAdapterC
     }
 
     /**切换主辅路、高架
-     * @param switchRoadType 0:切换到主路 1:切换到辅路 2:切换到高架上 3:切换到高架下 -1:默认值，表示不切换
+     * @param switchRoadType 0:切换到辅路 1:切换到主路 2:切换到高架下 3:切换到高架上 -1:默认值，表示不切换
      * @param roadId 通常从onParallelRoadUpdate回调中获取  在线算路时，可以传入0 离线算路时，必须传入正确的道路ID
      * */
     public void switchParallelRoad(int switchRoadType, BigInteger roadId) {

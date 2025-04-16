@@ -1,7 +1,8 @@
 package com.fy.navi.service.define.layer.refix;
 
 public enum LayerSearchItemType {
-    SEARCH_PARENT_Line,     //搜索路线图层业务
+    SEARCH_PARENT_Line_Road,     //搜索路线图层业务 道路线类型
+    SEARCH_PARENT_Line_Park,     //搜索路线图层业务  停车场类型线
     SEARCH_PARENT_AREA,     //搜索区域图层业务，多区域面
 
     SEARCH_PARENT_POINT,    //搜索POI父点图层业务

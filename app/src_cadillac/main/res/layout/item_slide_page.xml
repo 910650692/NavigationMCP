@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.fy.navi.ui.view.SkinLinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical">
+
+    <com.fy.navi.ui.view.SkinImageView
+        android:id="@+id/car_connect_bg"
+        android:layout_width="@dimen/dp_560"
+        android:layout_height="@dimen/dp_320"
+        android:src="@mipmap/bg_car_connect"/>
+
+    <com.fy.navi.ui.view.SkinTextView
+        android:id="@+id/car_connect_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_40"
+        android:gravity="center"
+        android:text="@string/car_connect_login_function_1"
+        android:textSize="@dimen/sp_46"
+        android:textColor="@color/black" />
+
+    <com.fy.navi.ui.view.SkinTextView
+        android:id="@+id/car_connect_title_des"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_32"
+        android:text="@string/account_car_connect_tip"
+        android:textSize="@dimen/sp_32"
+        android:textColor="@color/setting_bg_tab_text_unselect" />
+
+</com.fy.navi.ui.view.SkinLinearLayout>

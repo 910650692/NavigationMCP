@@ -10,6 +10,7 @@ import com.fy.navi.scene.impl.imersive.ImersiveStatus;
 import com.fy.navi.scene.impl.imersive.ImmersiveStatusScene;
 import com.fy.navi.scene.ui.navi.SceneNaviChargeListView;
 import com.fy.navi.service.define.layer.refix.LayerItemSearchResult;
+import com.fy.navi.service.define.layer.refix.LayerSearchItemType;
 import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.search.PoiInfoEntity;
 import com.fy.navi.service.logicpaket.layer.ILayerPackageCallBack;
@@ -77,9 +78,9 @@ public class SceneChargeListViewImpl extends BaseSceneModel<SceneNaviChargeListV
     }
 
     @Override
-    public void onSearchItemClick(MapType mapTypeId, LayerItemSearchResult clickResult) {
-        ILayerPackageCallBack.super.onSearchItemClick(mapTypeId, clickResult);
+    public void onSearchItemClick(MapType mapTypeId, LayerSearchItemType type, int index) {
+        ILayerPackageCallBack.super.onSearchItemClick(mapTypeId, type, index);
         //TODO 暂时点击不了，待测试和修改
-        Logger.i(TAG, "onSearchItemClick:" + (clickResult == null ? "null" : clickResult.getStrID()));
+        Logger.i(TAG, "onSearchItemClick  type:" + type.ordinal() + " index " + index);
     }
 }

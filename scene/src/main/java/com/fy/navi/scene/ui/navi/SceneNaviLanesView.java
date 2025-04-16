@@ -55,6 +55,7 @@ public class SceneNaviLanesView extends NaviSceneBase<SceneNaviLanesViewBinding,
 
     @Override
     public void show() {
+        Logger.d(TAG, "mIsShowLane：" + mIsShowLane);
         if (mIsShowLane) {
             super.show();
         } else {

@@ -1,5 +1,6 @@
 package com.fy.navi.vrbridge.impl;
 
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.baidu.oneos.protocol.bean.ArrivalBean;
@@ -43,8 +44,7 @@ public class NaviCommandImpl implements NaviCommandListener {
     @Override
     public CallResponse onRouteNavi(final String sessionId, final ArrivalBean dest, final PoiCallback poiCallback) {
         Log.d(IVrBridgeConstant.TAG, "onRouteNavi: sessionId = " + sessionId + ", dest = " + dest);
-        VoiceSearchManager.getInstance().handleCommonSearch(sessionId, dest, poiCallback);
-        return CallResponse.createSuccessResponse();
+        return VoiceSearchManager.getInstance().handleCommonSearch(sessionId, dest, poiCallback);
     }
 
     /**
@@ -59,12 +59,16 @@ public class NaviCommandImpl implements NaviCommandListener {
     @Override
     public CallResponse onPassbySearch(final String sessionId, final String passBy, final String poiType, final PoiCallback poiCallback) {
         Log.d(IVrBridgeConstant.TAG, "onPassBySearch: sessionId = " + sessionId + ", passBy = " + passBy + ", poiType = " + poiType);
+        if (TextUtils.isEmpty(sessionId) || TextUtils.isEmpty(passBy)) {
+            Log.e(IVrBridgeConstant.TAG, "session or passBy is empty");
+            return CallResponse.createFailResponse("沿途搜参数为空");
+        }
+
         if (!MapStateManager.getInstance().isNaviStatus()) {
             //非导航态不支持沿途搜
             Log.w(IVrBridgeConstant.TAG, "alongSearch in no navigation");
             return CallResponse.createNotSupportResponse("需要发起导航，才能帮你规划沿途的路线，试试说：导航回家");
         }
-
         final RouteCurrentPathParam pathParam = RoutePackage.getInstance().getCurrentPathInfo(MapType.MAIN_SCREEN_MAIN_MAP);
         if (null != pathParam && pathParam.isMIsOnlineRoute()) {
             //离线算路不支持沿途搜

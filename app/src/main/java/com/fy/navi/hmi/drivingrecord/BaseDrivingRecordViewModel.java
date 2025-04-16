@@ -70,6 +70,22 @@ public class BaseDrivingRecordViewModel extends BaseViewModel<DrivingRecordFragm
         return mModel.obtainGpsTrackDepInfo(psSavePath, psFileName);
     }
 
+    /**
+     * 获取置顶id文件路径，用户同步数据
+     * @param id 行程ID
+     * @return 文件路径
+     */
+    public String getFilePath(final String id) {
+        return mModel.getFilePath(id);
+    }
+
+    /**
+     * 设置是否需要显示dialog
+     * @param isNeedShowDialog true:需要显示 false:不需要显示
+     */
+    public void setIsNeedShowDialog(final boolean isNeedShowDialog) {
+        mModel.setIsNeedShowDialog(isNeedShowDialog);
+    }
 
     /**
      * 从sdk获取行程数据列表保存到本地

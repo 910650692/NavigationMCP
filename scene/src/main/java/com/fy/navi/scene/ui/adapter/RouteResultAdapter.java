@@ -4,6 +4,7 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.fy.navi.scene.R;
 import com.fy.navi.scene.databinding.RouteLineInfoResultItemBinding;
 import com.fy.navi.service.AppContext;

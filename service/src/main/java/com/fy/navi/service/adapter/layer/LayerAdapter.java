@@ -10,18 +10,15 @@ import com.fy.navi.service.define.layer.RouteLineLayerParam;
 import com.fy.navi.service.define.layer.refix.CarModeType;
 import com.fy.navi.service.define.layer.refix.LayerItemLabelResult;
 import com.fy.navi.service.define.layer.refix.LayerItemRouteEndPoint;
-import com.fy.navi.service.define.layer.refix.LayerItemSearchBeginViaEnd;
 import com.fy.navi.service.define.layer.refix.LayerItemSearchResult;
 import com.fy.navi.service.define.layer.refix.LayerItemUserFavorite;
-import com.fy.navi.service.define.layer.refix.LayerItemUserReceive;
 import com.fy.navi.service.define.layer.refix.LayerItemUserTrackDepth;
 import com.fy.navi.service.define.layer.refix.LayerSearchItemType;
-import com.fy.navi.service.define.map.GmBizUserFavoritePoint;
 import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.navi.NaviParkingEntity;
+import com.fy.navi.service.define.search.PoiInfoEntity;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @Description TODO
@@ -56,6 +53,10 @@ public class LayerAdapter {
 
     public void setCarMode(MapType mapTypeId, CarModeType carMode) {
         mLayerApi.setCarMode(mapTypeId, carMode);
+    }
+
+    public void setPreviewMode(MapType mapTypeId, boolean bPreview) {
+        mLayerApi.setPreviewMode(mapTypeId, bPreview);
     }
 
     public int setFollowMode(MapType mapTypeId, boolean bFollow) {
@@ -195,31 +196,20 @@ public class LayerAdapter {
         return mLayerApi.calcStraightDistance(startPoint, endPoint);
     }
 
-    public void setSearchSelect(MapType mapTypeId, GemLayerClickBusinessType type, String strID, boolean bFocus) {
-        mLayerApi.selectSearchPoi(mapTypeId, type, strID, bFocus);
-    }
-
-    public void updateFavoriteMain(MapType mapTypeId, List<GmBizUserFavoritePoint> list) {
-        mLayerApi.updateFavoriteMain(mapTypeId, list);
-    }
-
     public void clearFavoriteMain(MapType mapTypeId) {
         mLayerApi.clearFavoriteMain(mapTypeId);
     }
 
+
     /*========================================= 搜索图层接口定义=========================================*/
 
-    /* 搜索图层扎标接口 */
-    public boolean updateSearchMarker(MapType mapTypeId, LayerItemSearchResult searchResult, boolean clearOtherLayerItem) {
-        return mLayerApi.updateSearchMarker(mapTypeId, searchResult, clearOtherLayerItem);
+    public void setSearchSelect(MapType mapTypeId, LayerSearchItemType type, int index) {
+        mLayerApi.selectSearchPoi(mapTypeId, type, index);
     }
 
-    /**
-     * 删除扎标map数据
-     * key -> BizSearchType
-     */
-    public boolean removeMapDataByKey(MapType mapTypeId, int key) {
-        return mLayerApi.removeMapDataByKey(mapTypeId, key);
+    /* 搜索图层扎标接口 */
+    public boolean updateSearchMarker(MapType mapTypeId, LayerSearchItemType type, LayerItemSearchResult searchResult, boolean clearOtherLayerItem) {
+        return mLayerApi.updateSearchMarker(mapTypeId, type, searchResult, clearOtherLayerItem);
     }
 
     /**
@@ -313,10 +303,17 @@ public class LayerAdapter {
      *
      * @param mapTypeId           mapTypeId
      * @param favorites           favorites
-     * @param clearOtherLayerItem clearOtherLayerItem
      */
-    public void addLayerItemOfFavorite(MapType mapTypeId, LayerItemUserFavorite favorites, boolean clearOtherLayerItem) {
-        mLayerApi.addLayerItemOfFavorite(mapTypeId, favorites, clearOtherLayerItem);
+    public void addLayerItemOfFavorite(MapType mapTypeId, LayerItemUserFavorite favorites) {
+        mLayerApi.addLayerItemOfFavorite(mapTypeId, favorites);
+    }
+
+    public void removeFavoriteMain(MapType mapTypeId, PoiInfoEntity poiInfoEntity) {
+        mLayerApi.removeFavoriteMain(mapTypeId,poiInfoEntity);
+    }
+
+    public void setFavoriteVisible(MapType mapTypeId, boolean visible) {
+        mLayerApi.setFavoriteVisible(mapTypeId,visible);
     }
 
     public void openFlyLine(MapType mapTypeId, boolean visible) {

@@ -176,7 +176,7 @@ public final class OpenApiHelper {
         final RouteParam endPoint = ROUTE_PACKAGE.getEndPoint(MapType.MAIN_SCREEN_MAIN_MAP);
         taskId = SEARCH_PACKAGE.aroundSearch(1, ResourceUtils.Companion.getInstance().
                 getString(R.string.navi_parking_list),
-                new GeoPoint(endPoint.getRealPos().getLon(), endPoint.getRealPos().getLat()));
+                new GeoPoint(endPoint.getRealPos().getLon(), endPoint.getRealPos().getLat()), "2000", true);
         return taskId;
     }
 
@@ -212,6 +212,7 @@ public final class OpenApiHelper {
     public static void enterPreview(final MapType mapTypeId) {
         NAVI_PACKAGE.setPreviewStatus(true);
         LAYER_PACKAGE.setFollowMode(mapTypeId, false);
+        LAYER_PACKAGE.setPreviewMode(mapTypeId,true);
         LAYER_PACKAGE.openDynamicLevel(mapTypeId, false);
         ROUTE_PACKAGE.naviShowPreview(mapTypeId);
     }
@@ -227,6 +228,7 @@ public final class OpenApiHelper {
         // 回到当前位置
         MAP_PACKAGE.goToCarPosition(mapTypeId, false, false);
         LAYER_PACKAGE.setFollowMode(mapTypeId, true);
+        LAYER_PACKAGE.setPreviewMode(mapTypeId,false);
         LAYER_PACKAGE.openDynamicLevel(mapTypeId, SettingPackage.getInstance().
                 getAutoScale());
     }

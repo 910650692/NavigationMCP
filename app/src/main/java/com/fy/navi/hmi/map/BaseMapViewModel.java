@@ -28,6 +28,7 @@ import com.fy.navi.hmi.R;
 import com.fy.navi.hmi.favorite.FavoriteHelper;
 import com.fy.navi.hmi.favorite.HomeCompanyFragment;
 import com.fy.navi.hmi.favorite.MapPointSearchFragment;
+import com.fy.navi.hmi.limit.LimitCitySelectionFragment;
 import com.fy.navi.hmi.limit.LimitDriveFragment;
 import com.fy.navi.hmi.mapdata.MapDataFragment;
 import com.fy.navi.hmi.navi.ForecastAddressDialog;
@@ -293,11 +294,16 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         mModel.deleteMessage();
     };
 
-    public Action openLimitDetailFragment = () -> {
-        if (needInterceptor()) return;
-        Bundle bundle = new Bundle();
-        bundle.putSerializable(AutoMapConstant.CommonBundleKey.BUNDLE_KEY_LIMIT_DRIVER, routeRestrictionParam);
-        addFragment(new LimitDriveFragment(), bundle);
+    public Action openLimitDetailFragment = new Action() {
+        @Override
+        @HookMethod(eventName = BuryConstant.EventName.AMAP_TRAFFICRESTRICT_CURRENT)
+        public void call() {
+            if (needInterceptor()) return;
+            Bundle bundle = new Bundle();
+            bundle.putSerializable(AutoMapConstant.CommonBundleKey.BUNDLE_KEY_LIMIT_DRIVER, routeRestrictionParam);
+            addPoiDetailsFragment(new LimitDriveFragment(), bundle);
+            closeAllFragmentsUntilTargetFragment(LimitCitySelectionFragment.class.getName());
+        }
     };
 
     public Action messageCenterOperateClick = () -> {
@@ -315,10 +321,10 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         }
     };
 
-    public boolean getTopFragment(){
+    public boolean getTopFragment(Class<? extends Fragment> targetClass) {
         Fragment fragment = mView.getSupportFragmentManager().findFragmentById(R.id.layout_fragment);
-        if(fragment!=null){
-            return fragment instanceof PoiDetailsFragment;
+        if (fragment != null) {
+            return targetClass.isInstance(fragment);
         }
         return false;
     }
@@ -493,12 +499,8 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
             return;
         }
         if (FavoriteHelper.getInstance().getHomeCompanyType() != -1) {
-            //如果正在执行地图选点流程，点击item后拉起MapPointSearchFragment进行搜索
-//            Fragment fragment = StackManager.getInstance().getCurrentFragment(mScreenId);
-//            if (fragment instanceof MapPointSearchFragment) {
-//                ((MapPointSearchFragment) fragment).doSearch(entity);
-            addFragment(new MapPointSearchFragment(), MapPointSearchFragment.getBundle(FavoriteHelper.getInstance().getHomeCompanyType(), entity));
-//            }
+            //如果正在执行地图选点流程，点击item后拉起MapPointSearchFragment进行搜索;
+            addPoiDetailsFragment(new MapPointSearchFragment(), MapPointSearchFragment.getBundle(FavoriteHelper.getInstance().getHomeCompanyType(), entity));
             return;
         }
         openPoiDetailFragment(entity);

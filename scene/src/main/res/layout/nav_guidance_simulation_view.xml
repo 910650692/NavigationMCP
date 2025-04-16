@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.fy.navi.ui.view.SkinRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    tools:layout_height="@dimen/dp_180"
+    tools:layout_width="@dimen/dp_800">
+
+    <com.fy.navi.ui.view.SkinImageButton
+        android:id="@+id/switch_sim_navi"
+        android:layout_width="@dimen/dp_100"
+        android:layout_height="@dimen/dp_100"
+        android:background="@drawable/pause_sim_navi" />
+
+    <com.fy.navi.ui.view.SkinButton
+        android:id="@+id/switch_sim_speed"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@id/switch_sim_navi"
+        android:layout_alignBottom="@id/switch_sim_navi"
+        android:layout_toRightOf="@id/switch_sim_navi"
+        android:gravity="center"
+        android:text="40km/h"
+        android:textSize="@dimen/dp_34" />
+</com.fy.navi.ui.view.SkinRelativeLayout>

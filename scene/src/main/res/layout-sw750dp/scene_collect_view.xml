@@ -10,20 +10,18 @@
 
     <com.fy.navi.ui.view.SkinLinearLayout
         android:id="@+id/scl_search_top_view"
-        android:layout_width="@dimen/dp_640"
+        android:layout_width="@dimen/dp_820"
         android:layout_height="match_parent"
         android:orientation="vertical">
 
         <include
             android:id="@+id/collect_title_bar_view"
-            layout="@layout/collect_title_bar_view"
-            android:layout_width="@dimen/dp_640"
-            android:layout_height="@dimen/dp_112" />
+            layout="@layout/collect_title_bar_view"/>
 
         <com.fy.navi.ui.view.SkinConstraintLayout
-            android:layout_width="@dimen/dp_640"
-            android:layout_height="@dimen/dp_582"
-            android:layout_marginTop="@dimen/dp_20"
+            android:layout_width="@dimen/dp_820"
+            android:layout_height="@dimen/dp_610"
+            android:layout_marginTop="@dimen/dp_24"
             android:background="@drawable/bg_search_main_tab">
 
             <com.fy.navi.ui.view.SkinRecyclerView
@@ -41,6 +39,11 @@
                 android:visibility="gone"
                 android:orientation="vertical">
 
+                <com.fy.navi.ui.view.SkinImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/icon_basic_ic_star_default"/>
+
                 <com.fy.navi.ui.view.SkinTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -52,5 +55,6 @@
 
             </com.fy.navi.ui.view.SkinLinearLayout>
         </com.fy.navi.ui.view.SkinConstraintLayout>
+
     </com.fy.navi.ui.view.SkinLinearLayout>
 </layout>

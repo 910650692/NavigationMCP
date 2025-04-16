@@ -13,7 +13,6 @@ import androidx.annotation.Nullable;
 import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
-import com.fy.navi.scene.R;
 import com.fy.navi.scene.databinding.NaviSceneNearProvideStationGasBinding;
 import com.fy.navi.scene.impl.navi.SceneNaviNearProvideGasImpl;
 import com.fy.navi.scene.ui.navi.manager.NaviSceneBase;
@@ -75,7 +74,7 @@ public class SceneNaviNearProvideGas extends NaviSceneBase<NaviSceneNearProvideS
 
     @Override
     protected void initObserver() {
-        mViewBinding.ivIcon.setOnClickListener(v -> {
+        mViewBinding.viewBg.setOnClickListener(v -> {
             if (!ConvertUtils.isNull(mISceneCallback) && !ConvertUtils.isNull(mEntity)) {
                 Logger.i(TAG, "showRecGasList");
                 notifySceneStateChange(false);
@@ -163,5 +162,10 @@ public class SceneNaviNearProvideGas extends NaviSceneBase<NaviSceneNearProvideS
 
             mViewBinding.tv92.setVisibility(View.GONE);
         }
+    }
+
+    @Override
+    public boolean isNeedAutoStartTimer() {
+        return true;
     }
 }

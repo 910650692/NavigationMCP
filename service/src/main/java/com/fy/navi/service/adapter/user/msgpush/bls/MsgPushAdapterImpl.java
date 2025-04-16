@@ -1,5 +1,6 @@
 package com.fy.navi.service.adapter.user.msgpush.bls;
 
+import com.android.utils.ConvertUtils;
 import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
 import com.autonavi.gbl.aosclient.BLAosService;
@@ -354,7 +355,7 @@ public class MsgPushAdapterImpl implements IMsgPushApi, IMsgPushServiceObserver,
         sendToPhoneRequestParam.aimpoiMsg = GsonUtils.convertToT(aosRequest, GAimpoiMsg.class);
 
         //For Bury Point
-        BuryProperty buryProperty = new BuryProperty.Builder()
+        final BuryProperty buryProperty = new BuryProperty.Builder()
                 .setParams(BuryConstant.ProperType.BURY_KEY_SEARCH_CONTENTS, aosRequest.getName())
                 .build();
         BuryPointController.getInstance().setBuryProps(buryProperty);
@@ -481,6 +482,10 @@ public class MsgPushAdapterImpl implements IMsgPushApi, IMsgPushServiceObserver,
     @Override
     @HookMethod(eventName = BuryConstant.EventName.AMAP_PHONE_DESTINATION_FROM)
     public void notifyMessage(final AimRoutePushMsg msg) {
+        if (msg == null) {
+            Logger.e(TAG,"msg is null");
+            return;
+        }
         Logger.d(TAG,"notifyMessage: " + GsonUtils.toJson(msg.content));
 
         final RouteMsgPushInfo routeMsgPushInfo = new RouteMsgPushInfo();
@@ -488,9 +493,12 @@ public class MsgPushAdapterImpl implements IMsgPushApi, IMsgPushServiceObserver,
         final PoiInfoEntity poiInfoEntity = new PoiInfoEntity();
         poiInfoEntity.setName(msg.content.routeParam.destination.name);
         poiInfoEntity.setPid(msg.content.routeParam.destination.poiId);
+        final ArrayList<RoutepathrestorationPointInfo> endPoints = msg.content.routeParam.endPoints;
         final GeoPoint geoPoint = new GeoPoint();
-        geoPoint.setLat(Double.parseDouble(msg.content.routeParam.endPoints.get(0).lat));
-        geoPoint.setLon(Double.parseDouble(msg.content.routeParam.endPoints.get(0).lon));
+        if (!ConvertUtils.isEmpty(endPoints) && endPoints.get(0) != null ) {
+            geoPoint.setLat(Double.parseDouble(endPoints.get(0).lat));
+            geoPoint.setLon(Double.parseDouble(endPoints.get(0).lon));
+        }
         poiInfoEntity.setPoint(geoPoint);
         routeMsgPushInfo.setMPoiInfoEntity(poiInfoEntity);
 
@@ -499,8 +507,10 @@ public class MsgPushAdapterImpl implements IMsgPushApi, IMsgPushServiceObserver,
         startPoint.setMType(0);
         startPoint.setMPathId(0);
         final GeoPoint startGeoPoint = new GeoPoint();
-        startGeoPoint.setLon(Double.parseDouble(msg.content.path.startPoints.points.get(0).lon));
-        startGeoPoint.setLat(Double.parseDouble(msg.content.path.startPoints.points.get(0).lat));
+        if (!ConvertUtils.isEmpty(endPoints) && endPoints.get(0) != null) {
+            startGeoPoint.setLon(Double.parseDouble(endPoints.get(0).lon));
+            startGeoPoint.setLat(Double.parseDouble(endPoints.get(0).lat));
+        }
         startGeoPoint.setZ( 0);
         startPoint.setMPos(startGeoPoint);
         routeMsgPushInfo.setMStartPoint(startPoint);
@@ -510,8 +520,11 @@ public class MsgPushAdapterImpl implements IMsgPushApi, IMsgPushServiceObserver,
         endPoint.setMType(1);
         endPoint.setMPathId(0);
         final GeoPoint endGeoPoint = new GeoPoint();
-        endGeoPoint.setLon(Double.parseDouble(msg.content.path.endPoints.points.get(0).lon));
-        endGeoPoint.setLat(Double.parseDouble(msg.content.path.endPoints.points.get(0).lat));
+        if (!ConvertUtils.isEmpty(endPoints) && endPoints.get(0) != null) {
+            endGeoPoint.setLon(Double.parseDouble(endPoints.get(0).lon));
+            endGeoPoint.setLat(Double.parseDouble(endPoints.get(0).lat));
+        }
+
         endGeoPoint.setZ(0);
         endPoint.setMPos(endGeoPoint);
         routeMsgPushInfo.setMEndPoint(endPoint);
@@ -546,7 +559,7 @@ public class MsgPushAdapterImpl implements IMsgPushApi, IMsgPushServiceObserver,
             routeMsgPushInfo.setMName(msg.content.routeParam.destination.name);
         }
 
-        BuryProperty buryProperty = new BuryProperty.Builder()
+        final BuryProperty buryProperty = new BuryProperty.Builder()
                 .setParams(BuryConstant.ProperType.BURY_KEY_SEARCH_CONTENTS, msg.content.routeParam.destination != null ? msg.content.routeParam.destination.name : "").build();
         BuryPointController.getInstance().setBuryProps(buryProperty);
 

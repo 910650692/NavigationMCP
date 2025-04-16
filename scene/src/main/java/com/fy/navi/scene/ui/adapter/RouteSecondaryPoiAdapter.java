@@ -60,12 +60,15 @@ public class RouteSecondaryPoiAdapter extends RecyclerView.Adapter<RouteSecondar
     @Override
     public void onBindViewHolder(@NonNull final Holder holder, final int position) {
         if (mSelected == position) {
-            holder.mImageView.setBackground(ResourceUtils.Companion.getInstance().getDrawable(R.drawable.bg_route_secondary_poi_selected));
+            holder.mTextView.setBackground(ResourceUtils.Companion.getInstance().getDrawable(R.drawable.bg_route_secondary_poi_selected));
+            holder.mTextView.setTextColor(ResourceUtils.Companion.getInstance().getColor(R.color.bg_route_button_select_color));
+            holder.mTextView.startTextViewOneTimeMarquee();
         } else {
-            holder.mImageView.setBackground(ResourceUtils.Companion.getInstance().getDrawable(R.drawable.bg_route_secondary_poi_unselected));
+            holder.mTextView.setBackground(ResourceUtils.Companion.getInstance().getDrawable(R.drawable.bg_route_secondary_poi_unselected));
+            holder.mTextView.setTextColor(ResourceUtils.Companion.getInstance().getColor(R.color.text_route_defult));
         }
-        holder.mTextView.setText(mChildInfoList.get(position).getName());
-        holder.mImageView.setOnClickListener(new View.OnClickListener() {
+        holder.mTextView.setText(mChildInfoList.get(position).getShortName());
+        holder.mTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
                 final int lastSelect = mSelected;
@@ -103,7 +106,6 @@ public class RouteSecondaryPoiAdapter extends RecyclerView.Adapter<RouteSecondar
     public class Holder extends RecyclerView.ViewHolder {
         private RouteSecondaryPoiItemBinding mRouteSecondaryPoiItemBinding;
         private SkinTextView mTextView;
-        private SkinImageView mImageView;
         private SkinConstraintLayout mLayout;
 
         public Holder(@NonNull final RouteSecondaryPoiItemBinding routeSecondaryPoiItemBinding) {
@@ -111,7 +113,6 @@ public class RouteSecondaryPoiAdapter extends RecyclerView.Adapter<RouteSecondar
             this.mRouteSecondaryPoiItemBinding = routeSecondaryPoiItemBinding;
             mRouteSecondaryPoiItemBinding.setHolder(this);
             mTextView = mRouteSecondaryPoiItemBinding.tvRouteSecondaryPoi;
-            mImageView = mRouteSecondaryPoiItemBinding.ivRouteSecondaryPoi;
             mLayout = mRouteSecondaryPoiItemBinding.lyRouteSecondaryPoi;
         }
     }

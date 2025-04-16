@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <style name="style_navi_control_iv2_com">
+        <item name="android:layout_width">@dimen/dp_74</item>
+        <item name="android:layout_height">@dimen/dp_74</item>
+        <item name="android:layout_marginTop">@dimen/dp_30</item>
+    </style>
+
+    <style name="style_navi_control_tv_com">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">@dimen/dp_6</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">@color/common_title_color</item>
+        <item name="android:textSize">@dimen/sp_38</item>
+    </style>
+
+    <style name="style_navi_control_iv_com">
+        <item name="android:layout_width">@dimen/dp_74</item>
+        <item name="android:layout_height">@dimen/dp_74</item>
+        <item name="android:layout_marginTop">@dimen/dp_30</item>
+    </style>
+
+</resources>

@@ -24,10 +24,12 @@ import com.fy.navi.service.define.map.GmBizUserFavoritePoint;
 import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.search.FavoriteInfo;
 import com.fy.navi.service.define.search.PoiInfoEntity;
+import com.fy.navi.service.define.setting.SettingController;
 import com.fy.navi.service.define.user.account.AccountProfileInfo;
 import com.fy.navi.service.greendao.CommonManager;
 import com.fy.navi.service.greendao.favorite.Favorite;
 import com.fy.navi.service.greendao.favorite.FavoriteManager;
+import com.fy.navi.service.greendao.setting.SettingManager;
 import com.fy.navi.service.logicpaket.layer.LayerPackage;
 
 import java.util.ArrayList;
@@ -43,6 +45,7 @@ final public class BehaviorPackage implements BehaviorAdapterCallBack {
     private final MapAdapter mapAdapter;
     private final LayerAdapter mLayerAdapter;
     private final List<FavoriteStatusCallback> mFavoriteStatusCallbacks = new ArrayList<>();
+    private final SettingManager mSettingManager;
 
     private BehaviorPackage() {
         mBehaviorAdapter = BehaviorAdapter.getInstance();
@@ -52,6 +55,8 @@ final public class BehaviorPackage implements BehaviorAdapterCallBack {
         mCommonManager.init();
         mapAdapter = MapAdapter.getInstance();
         mLayerAdapter = LayerAdapter.getInstance();
+        mSettingManager = new SettingManager();
+        mSettingManager.init();
     }
 
     /**
@@ -212,16 +217,36 @@ final public class BehaviorPackage implements BehaviorAdapterCallBack {
      */
     public String addFavorite(final PoiInfoEntity poiInfo, final int type) {
         String itemId = "";
+        PoiInfoEntity savedPoiInfo = null;
+        if (type == 1) {
+            savedPoiInfo = getHomeFavoriteInfo();
+        } else if (type == 2) {
+            savedPoiInfo = getCompanyFavoriteInfo();
+        }
+
         if (isLogin() && type != 3) {
             itemId =  mBehaviorAdapter.addFavorite(poiInfo);
         } else {
-            if (poiInfo != null && poiInfo.getFavoriteInfo() != null && TextUtils.isEmpty(poiInfo.getFavoriteInfo().getItemId())) {
-                poiInfo.getFavoriteInfo().setItemId(poiInfo.getPid());
+            if (poiInfo != null && poiInfo.getFavoriteInfo() != null) {
+                if (TextUtils.isEmpty(poiInfo.getFavoriteInfo().getItemId())) {
+                    poiInfo.getFavoriteInfo().setItemId(poiInfo.getPid());
+                }
+                itemId = poiInfo.getFavoriteInfo().getItemId();
+                addFavoriteData(poiInfo, type);
             }
-            addFavoriteData(poiInfo, type);
         }
         if (type == 1 || type == 2) {
             notifyFavoriteStatusChanged();
+        }
+
+        //更新家或公司时成功时需要把原先的扎点去掉
+        if (savedPoiInfo != null && !TextUtils.isEmpty(itemId)) {
+            updateFavoriteMain(savedPoiInfo, false);
+        }
+
+        //非常去地址添加成功后更新扎点
+        if (type != 3 && !TextUtils.isEmpty(itemId)) {
+            updateFavoriteMain(poiInfo, true);
         }
         //For Bury Point
         sendBuryPointForAddFavorite(poiInfo, type);
@@ -265,14 +290,19 @@ final public class BehaviorPackage implements BehaviorAdapterCallBack {
     public String removeFavorite(final PoiInfoEntity poiInfo) {
         //For Bury Point
         sendBuryPointForRemovingOldFavorite(poiInfo);
-
         String itemId = "";
         if (isLogin()) {
             itemId =  mBehaviorAdapter.removeFavorite(poiInfo);
         } else {
             if (poiInfo != null && poiInfo.getFavoriteInfo() != null) {
+                itemId = poiInfo.getFavoriteInfo().getItemId();
                 deleteFavoriteData(poiInfo.getFavoriteInfo().getItemId());
             }
+            updateFavoriteMain(poiInfo, false);
+        }
+        //删除成功
+        if (!TextUtils.isEmpty(itemId)) {
+            updateFavoriteMain(poiInfo, false);
         }
         notifyFavoriteStatusChanged();
         return itemId;
@@ -409,7 +439,6 @@ final public class BehaviorPackage implements BehaviorAdapterCallBack {
             deleteFavoriteDataByType(favoriteType);
         }
         mManager.insertValue(favorite);
-        updateFavoriteMain();
     }
 
     /**
@@ -541,7 +570,6 @@ final public class BehaviorPackage implements BehaviorAdapterCallBack {
      */
     public void deleteFavoriteData(final String itemId) {
         mManager.deleteValue(itemId);
-        updateFavoriteMain();
     }
 
     /**
@@ -551,7 +579,6 @@ final public class BehaviorPackage implements BehaviorAdapterCallBack {
      */
     public void deleteFavoriteDataByType(final int favoriteType) {
         mManager.deleteByFavoriteType(favoriteType);
-        updateFavoriteMain();
     }
 
 
@@ -575,25 +602,30 @@ final public class BehaviorPackage implements BehaviorAdapterCallBack {
 
     /**
      *  显示收藏夹图层，主图查看模式
+     * @param poiInfoEntity
+     * @param isAddFavorite
      */
-    private void updateFavoriteMain() {
+
+    private void updateFavoriteMain(PoiInfoEntity poiInfoEntity, boolean isAddFavorite) {
+        if (poiInfoEntity == null) {
+            Logger.e("updateFavoriteMain", "the poi is null");
+            return;
+        }
+        final String isFavoritePointStr = mSettingManager.getValueByKey(SettingController.KEY_SETTING_FAVORITE_POINT);
+        final boolean isFavoritePoint = TextUtils.equals(isFavoritePointStr, "true");
+        LayerPackage.getInstance().setFavoriteVisible(MapType.MAIN_SCREEN_MAIN_MAP, isFavoritePoint);
+
         // 通知主图更新收藏点
         ThreadManager.getInstance().postDelay(() -> {
-            LayerItemUserFavorite layerItemUserFavorite = new LayerItemUserFavorite();
-            ArrayList<PoiInfoEntity> poiInfoEntities = getFavoritePoiData();
-            PoiInfoEntity homePoiInfoEntity = getHomeFavoriteInfo();
-            PoiInfoEntity companyFavoriteInfo = getCompanyFavoriteInfo();
-
-            if (!ConvertUtils.isEmpty(poiInfoEntities)) {
+            if (isAddFavorite) {
+                LayerItemUserFavorite layerItemUserFavorite = new LayerItemUserFavorite();
+                final ArrayList<PoiInfoEntity> poiInfoEntities = new ArrayList<>();
+                poiInfoEntities.add(poiInfoEntity);
                 layerItemUserFavorite.setMSimpleFavoriteList(poiInfoEntities);
+                LayerPackage.getInstance().addLayerItemOfFavorite(MapType.MAIN_SCREEN_MAIN_MAP, layerItemUserFavorite);
+            } else {
+                LayerPackage.getInstance().removeFavoriteMain(MapType.MAIN_SCREEN_MAIN_MAP, poiInfoEntity);
             }
-            if (!ConvertUtils.isEmpty(homePoiInfoEntity)) {
-                layerItemUserFavorite.setMHomeFavoriteList(homePoiInfoEntity);
-            }
-            if (!ConvertUtils.isEmpty(companyFavoriteInfo)) {
-                layerItemUserFavorite.setMCompanyFavoriteList(companyFavoriteInfo);
-            }
-            LayerPackage.getInstance().addLayerItemOfFavorite(MapType.MAIN_SCREEN_MAIN_MAP, layerItemUserFavorite, true);
         }, 100);
     }
 }

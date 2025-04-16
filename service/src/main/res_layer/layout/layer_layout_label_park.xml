@@ -6,7 +6,7 @@
 
     <ImageView
         android:src="@drawable/layer_image_parking_available"
-        android:layout_marginTop="@dimen/dp_30"
+        android:layout_marginTop="@dimen/dp_70"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         android:layout_width="wrap_content"

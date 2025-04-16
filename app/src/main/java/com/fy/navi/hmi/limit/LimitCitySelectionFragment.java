@@ -1,8 +1,12 @@
 package com.fy.navi.hmi.limit;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.KeyEvent;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.TextView;
 
 import androidx.databinding.library.baseAdapters.BR;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -103,6 +107,9 @@ public class LimitCitySelectionFragment extends BaseFragment<FragmentLimitCitySe
                         break;
                     }
                     for (CityDataInfo cityDataInfo :mProvDataInfos.get(i).getCityInfoList()) {
+                        if (cityDataInfo.getName() == null) {
+                            continue;
+                        }
                         if (cityDataInfo.getName().contains(editText)) {
                             final LinearLayoutManager layoutManager = (LinearLayoutManager) mBinding
                                     .recyclerView.getLayoutManager();
@@ -115,6 +122,24 @@ public class LimitCitySelectionFragment extends BaseFragment<FragmentLimitCitySe
                 }
             }
         });
+
+        mBinding.editTextId.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(final TextView v, final int actionId, final KeyEvent event) {
+                hideInput();
+                return true;
+            }
+        });
+    }
+
+    /**
+     * 隐藏软键盘
+     */
+    public void hideInput() {
+        final InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+        if (imm != null) {
+            imm.hideSoftInputFromWindow(mBinding.recyclerView.getWindowToken(), 0);
+        }
     }
 
 }

@@ -47,6 +47,11 @@ public class PoiDetailsModel extends BaseModel<PoiDetailsViewModel> implements S
     }
 
     @Override
+    public void onMarkChildClickCallBack(final int index) {
+        mViewModel.onMarkChildClickCallBack(index);
+    }
+
+    @Override
     public void onDestroy() {
         super.onDestroy();
         Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "PoiDetailsModel 销毁");
