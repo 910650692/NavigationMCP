@@ -2,6 +2,7 @@ package com.fy.navi.service.adapter.route;
 
 import com.fy.navi.service.define.layer.RouteLineLayerParam;
 import com.fy.navi.service.define.map.MapType;
+import com.fy.navi.service.define.position.LocInfoBean;
 import com.fy.navi.service.define.route.RouteAvoidInfo;
 import com.fy.navi.service.define.route.RouteMsgPushInfo;
 import com.fy.navi.service.define.route.RouteParam;
@@ -9,6 +10,7 @@ import com.fy.navi.service.define.route.RoutePreferenceID;
 import com.fy.navi.service.define.route.RouteRequestParam;
 import com.fy.navi.service.define.search.PoiInfoEntity;
 
+import java.math.BigInteger;
 import java.util.List;
 
 /**
@@ -116,4 +118,15 @@ public interface IRouteApi {
      * @param requestId 算路还原参数
      */
     void abortRequest(long requestId);
+
+    /**
+     * 平行路切换完成重算路
+     *
+     * @param switchRoadType 切换类型
+     * @param locInfoBean    定位
+     * @param roadID         路线ID
+     * @param flag           主辅路状态
+     * @param hwFlag         高架桥状态
+     */
+    long requestSwitchParallelRoute(int switchRoadType, LocInfoBean locInfoBean, BigInteger roadID, short flag, short hwFlag);
 }

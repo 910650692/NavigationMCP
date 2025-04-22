@@ -11,7 +11,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.databinding.ViewDataBinding;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -20,7 +19,6 @@ import com.android.utils.log.Logger;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.List;
 
 public abstract class BaseActivity<V extends ViewDataBinding, VM extends BaseViewModel>
         extends AppCompatActivity implements IBaseView {
@@ -81,6 +79,7 @@ public abstract class BaseActivity<V extends ViewDataBinding, VM extends BaseVie
 
     @Override
     public void addFragment(final BaseFragment fragment, final Bundle bundle) {
+        onFragmentSizeChanged();
         FragmentIntent.addFragment(mScreenId, onFragmentId(), getSupportFragmentManager(),
                 fragment, bundle);
         if (mStackManager.isFragmentStackNull(mScreenId)) {
@@ -92,6 +91,7 @@ public abstract class BaseActivity<V extends ViewDataBinding, VM extends BaseVie
 
     @Override
     public void addFragment(final BaseFragment fragment, final Bundle bundle, boolean isHideCurFragment) {
+        onFragmentSizeChanged();
         FragmentIntent.addFragment(mScreenId, onFragmentId(), getSupportFragmentManager(),
                 fragment, bundle, isHideCurFragment);
         if (mStackManager.isFragmentStackNull(mScreenId)) {
@@ -260,6 +260,13 @@ public abstract class BaseActivity<V extends ViewDataBinding, VM extends BaseVie
     }
 
     protected void onResetMapCenter() {
+
+    }
+
+    /***
+     * fragment 容器发生变化的时候触发
+     */
+    protected void onFragmentSizeChanged() {
 
     }
 

@@ -108,7 +108,7 @@ public class NaviGasStationAdapter extends RecyclerView.Adapter<NaviGasStationAd
         });
         binding.viewNaviNow.setOnClickListener(v -> {
             if (!ConvertUtils.isNull(mItemClickListener)) {
-                mItemClickListener.navi(position);
+                mItemClickListener.navi(mData.get(position));
             }
         });
     }
@@ -138,9 +138,9 @@ public class NaviGasStationAdapter extends RecyclerView.Adapter<NaviGasStationAd
     public interface OnItemClickListener {
         /***
          * 立即导航
-         * @param index
+         * @param poiInfo
          */
-        void navi(final int index);
+        void navi(final PoiInfoEntity poiInfo);
 
         /***
          * 选中

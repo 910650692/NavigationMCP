@@ -2,7 +2,6 @@ package com.fy.navi.service.define.mapdata;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 public class ProvDataInfo implements Serializable {
     // 行政编码
@@ -25,14 +24,14 @@ public class ProvDataInfo implements Serializable {
     private ArrayList<CityDataInfo> mCityInfoList = new ArrayList<>();
     // 模糊搜索 - 一级城市数据包对应的下载状态信息
     private CityDownLoadInfo mDownLoadInfo;
-    private boolean isExpanded;
+    private boolean mIsExpanded;
 
     public boolean isExpanded() {
-        return isExpanded;
+        return mIsExpanded;
     }
 
     public void setExpanded(boolean expanded) {
-        isExpanded = expanded;
+        mIsExpanded = expanded;
     }
 
     public int getAdcode() {
@@ -114,4 +113,14 @@ public class ProvDataInfo implements Serializable {
     public void setDownLoadInfo(final CityDownLoadInfo downLoadInfo) {
         this.mDownLoadInfo = downLoadInfo;
     }
+
+    /**
+     * 判断搜索时是否是一个单独条目的城市
+     * @return
+     */
+    public boolean isParentCity() {
+        return mAreaType == 2 || mAreaType == 3;
+    }
+
+
 }

@@ -73,7 +73,7 @@ public final class SearchObserversHelper implements IKeyWordSearchObserverV2, IS
                     Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "Received search result: "
                             + resultType.getSimpleName() + ", taskId=" + taskId + " ;errorCode: " + errorCode);
                     if (errorCode == Service.ErrorCodeOK) {
-                        callbackWrapper.onSuccess(result);
+                        callbackWrapper.onSuccess(taskId, result);
                     } else {
                         callbackWrapper.onFailure(errorCode, result);
                     }

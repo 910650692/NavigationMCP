@@ -2,6 +2,7 @@ package com.fy.navi.scene.impl.navi.inter;
 
 
 import com.fy.navi.scene.ui.navi.manager.NaviSceneId;
+import com.fy.navi.scene.util.HandCardType;
 import com.fy.navi.service.define.navi.NaviParkingEntity;
 import com.fy.navi.service.define.navi.NaviViaEntity;
 import com.fy.navi.service.define.navi.SapaInfoEntity;
@@ -112,18 +113,11 @@ public interface ISceneCallback {
 
     }
 
-    /**
-     * @return 因碰撞关闭的消息卡片是否需要再打开 true：需要 false：不需要
-     */
-    default boolean isNeedCloseNaviChargeTipLater() {
-        return false;
-    }
-
     /***
      * 推荐的目的地，选择立即导航
      */
-    default void startNaviRightNow(final PoiInfoEntity poiInfo) {
-
+    default long startNaviRightNow(final PoiInfoEntity poiInfo) {
+        return -1;
     }
 
     /***
@@ -150,6 +144,10 @@ public interface ISceneCallback {
     default void showRecParkList(final List<NaviParkingEntity> list) {
 
     }
+
+    default void showHandingCardDetail(final List<PoiInfoEntity> list, final HandCardType type) {
+
+    }
     /**
      * 返回到导航页面
      */
@@ -157,7 +155,25 @@ public interface ISceneCallback {
 
     }
 
+    /**
+     * @return 是否是导航页面
+     */
     default boolean getCurrentFragmentIsNavi() {
         return false;
+    }
+
+    /**
+     * 获取到是否有页面需要保持全览状态，当前有途经点列表，停车场列表，充电站列表，加油站列表
+     * @return 是否需要预览列表
+     */
+    default boolean isNeedPreViewShowList() {
+        return false;
+    }
+
+    /**
+     * 隐藏导航页面，只保留继续导航按钮
+     */
+    default void hideNaviContent() {
+
     }
 }

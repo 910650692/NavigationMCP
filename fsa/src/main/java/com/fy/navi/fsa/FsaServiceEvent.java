@@ -6,7 +6,7 @@ import com.gm.fsa.service.catalog.FSACatalog;
 import com.gm.fsa.service.catalog.FSAEvent;
 
 public final class FsaServiceEvent extends FSAEvent {
-
+    private static final String TAG = "FsaServiceEvent";
     public FsaServiceEvent(final int functionId) {
         super(functionId, true, FSACatalog.TransportPath.TCP, true);
     }
@@ -21,6 +21,11 @@ public final class FsaServiceEvent extends FSAEvent {
         return null;
     }
 
+    /**
+     * 接收数据的地方
+     * @param ip
+     * @param isSubscriber
+     */
     @Override
     public void onSubscriberChanged(final String ip, final boolean isSubscriber) {
         Log.d("FsaServiceEvent", "onSubscriberChanged: ip = " + ip

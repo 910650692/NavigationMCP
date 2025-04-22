@@ -13,6 +13,7 @@ import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.adapter.setting.SettingAdapterCallback;
 import com.fy.navi.service.adapter.setting.SettingApi;
 import com.fy.navi.service.define.route.RoutePreferenceID;
+import com.fy.navi.service.define.setting.SettingController;
 
 import java.util.Hashtable;
 
@@ -273,6 +274,31 @@ public class SettingAdapterImpl implements SettingApi, IBehaviorServiceObserver 
         castSimple.intValue = broadcastMode;
         Logger.d(TAG, "setConfigKeyBroadcastMode broadcastMode: " + broadcastMode);
         final int res = mBehaviorService.setConfig(ConfigKey.ConfigKeyBroadcastMode, castSimple, SyncMode.SyncModeNow);
+        if (res == 0) {
+            switch (broadcastMode) {
+                case 1:
+                    for (final SettingAdapterCallback settingAdapterCallback : mSettingHashtable.values()) {
+                        settingAdapterCallback.onSettingChanged(
+                                SettingController.KEY_SETTING_NAVI_BROADCAST, SettingController.VALUE_NAVI_BROADCAST_CONCISE);
+                    }
+                    break;
+                case 2:
+                    for (final SettingAdapterCallback settingAdapterCallback : mSettingHashtable.values()) {
+                        settingAdapterCallback.onSettingChanged(
+                                SettingController.KEY_SETTING_NAVI_BROADCAST, SettingController.VALUE_NAVI_BROADCAST_DETAIL);
+                    }
+                    break;
+                case 3:
+                    for (final SettingAdapterCallback settingAdapterCallback : mSettingHashtable.values()) {
+                        settingAdapterCallback.onSettingChanged(
+                                SettingController.KEY_SETTING_NAVI_BROADCAST, SettingController.VALUE_NAVI_BROADCAST_SIMPLE);
+                    }
+                    break;
+                default:
+                    break;
+            }
+
+        }
         return res;
     }
 
@@ -382,7 +408,29 @@ public class SettingAdapterImpl implements SettingApi, IBehaviorServiceObserver 
         final ConfigValue castSimple = new ConfigValue();
         castSimple.intValue = mapViewMode;
         Logger.d(TAG, "setConfigKeyMapviewMode mapViewMode: " + mapViewMode);
-        return mBehaviorService.setConfig(ConfigKey.ConfigKeyMapviewMode, castSimple, SyncMode.SyncModeNow);
+        final int res = mBehaviorService.setConfig(ConfigKey.ConfigKeyMapviewMode, castSimple, SyncMode.SyncModeNow);
+        if (res == 0) {
+            switch (mapViewMode) {
+                case 0:
+                    for (SettingAdapterCallback resultCallback : mSettingHashtable.values()) {
+                        resultCallback.onSettingChanged(SettingController.SETTING_GUIDE_MAP_MODE, SettingController.VALUE_MAP_MODE_CAR_2D);
+                    }
+                    break;
+                case 1:
+                    for (SettingAdapterCallback resultCallback : mSettingHashtable.values()) {
+                        resultCallback.onSettingChanged(SettingController.SETTING_GUIDE_MAP_MODE, SettingController.VALUE_MAP_MODE_NORTH_2D);
+                    }
+                    break;
+                case 2:
+                    for (SettingAdapterCallback resultCallback : mSettingHashtable.values()) {
+                        resultCallback.onSettingChanged(SettingController.SETTING_GUIDE_MAP_MODE, SettingController.VALUE_MAP_MODE_CAR_3D);
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
+        return res;
     }
 
     /**
@@ -410,7 +458,13 @@ public class SettingAdapterImpl implements SettingApi, IBehaviorServiceObserver 
         configValue.intValue = roadEvent ? 1 : 0;
 
         Logger.d(TAG, "setConfigKeyRoadEvent roadEvent: " + roadEvent);
-        return mBehaviorService.setConfig(ConfigKey.ConfigKeyRoadEvent, configValue, SyncMode.SyncModeNow);
+        final int res = mBehaviorService.setConfig(ConfigKey.ConfigKeyRoadEvent, configValue, SyncMode.SyncModeNow);
+        if (res == 0) {
+            for (SettingAdapterCallback resultCallback : mSettingHashtable.values()) {
+                resultCallback.onSettingChanged(SettingController.KEY_SETTING_ROAD_CONDITION, String.valueOf(roadEvent));
+            }
+        }
+        return res;
     }
 
     /**
@@ -466,7 +520,25 @@ public class SettingAdapterImpl implements SettingApi, IBehaviorServiceObserver 
         final ConfigValue castSimple = new ConfigValue();
         castSimple.intValue = mute;
         Logger.d(TAG, "setConfigKeyMute mute: " + mute);
-        return mBehaviorService.setConfig(ConfigKey.ConfigKeyMute, castSimple, SyncMode.SyncModeNow);
+        final int res = mBehaviorService.setConfig(ConfigKey.ConfigKeyMute, castSimple, SyncMode.SyncModeNow);
+        if (res == 0) {
+            switch (mute) {
+                case 0:
+                    for (SettingAdapterCallback resultCallback : mSettingHashtable.values()) {
+                        resultCallback.onSettingChanged(SettingController.KEY_SETTING_VOICE_MUTE, SettingController.VALUE_VOICE_MUTE_ON);
+                    }
+                    break;
+                case 1:
+                    for (SettingAdapterCallback resultCallback : mSettingHashtable.values()) {
+                        resultCallback.onSettingChanged(SettingController.KEY_SETTING_VOICE_MUTE, SettingController.VALUE_VOICE_MUTE_OFF);
+                    }
+                    break;
+                default:
+                    break;
+            }
+
+        }
+        return res;
     }
 
     /**

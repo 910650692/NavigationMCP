@@ -5,6 +5,7 @@ import android.text.TextUtils;
 
 import androidx.core.app.ActivityCompat;
 
+import com.android.utils.ConvertUtils;
 import com.android.utils.NetWorkUtils;
 import com.android.utils.ResourceUtils;
 import com.android.utils.ToastUtils;
@@ -16,6 +17,8 @@ import com.fy.navi.service.AppContext;
 import com.fy.navi.service.define.code.UserDataCode;
 import com.fy.navi.service.define.search.PoiInfoEntity;
 import com.fy.navi.service.greendao.CommonManager;
+import com.fy.navi.service.logicpaket.engine.EnginePackage;
+import com.fy.navi.service.logicpaket.engine.IEngineObserver;
 import com.fy.navi.ui.base.BaseModel;
 
 /**
@@ -28,11 +31,43 @@ public class StartupModel extends BaseModel<BaseStartupViewModel>
 
     private static final String TAG = "StartupModel";
     private final CommonManager commonManager;
+    private IEngineObserver mEngineObserver = new IEngineObserver() {
+        @Override
+        public void onInitEngineSuccess() {
+            Logger.d(TAG, "激活初始化成功，开始其余引擎初始化");
+            Intent intent = new Intent(AppContext.getInstance().getMContext(), NaviService.class);
+            intent.putExtra(NaviService.START_APPLICATION_KEY, true);
+            int intentPage = mViewModel.getIntentPage();
+            if (intentPage != INaviConstant.OpenIntentPage.NONE) {
+                intent.putExtra(INaviConstant.PAGE_EXTRA, intentPage);
+                mViewModel.setIntentPage(-1);
+                String searchKeyword = mViewModel.getKeyword();
+                if (!TextUtils.isEmpty(searchKeyword)) {
+                    intent.putExtra(INaviConstant.SEARCH_KEYWORD_EXTRA, searchKeyword);
+                }
+                PoiInfoEntity endPoint = mViewModel.getEndPoint();
+                if (null != endPoint) {
+                    intent.putExtra(INaviConstant.ROUTE_END_POI, endPoint);
+                }
+            }
+            ActivityCompat.startForegroundService(AppContext.getInstance().getMContext(), intent);
+        }
+
+        @Override
+        public void onInitEngineFail(final int code, final String msg) {
+            Logger.e(TAG, "激活初始化失败，Error Code = " + code + "; Error Massage = " + msg);
+            if (!ConvertUtils.equals(10007, code)) {
+                Logger.e(TAG, "关闭应用");
+                mViewModel.finishStartUp();
+            }
+        }
+    };
 
     public StartupModel() {
         commonManager = CommonManager.getInstance();
         commonManager.init();
         PermissionUtils.getInstance().setPermissionsObserver(this);
+        EnginePackage.getInstance().addEngineObserver(TAG, mEngineObserver);
     }
 
     @Override
@@ -60,22 +95,7 @@ public class StartupModel extends BaseModel<BaseStartupViewModel>
         if (NaviService.isMapInited) {
             mViewModel.startMapActivity();
         } else {
-            Intent intent = new Intent(AppContext.getInstance().getMContext(), NaviService.class);
-            intent.putExtra(NaviService.START_APPLICATION_KEY, true);
-            int intentPage = mViewModel.getIntentPage();
-            if (intentPage != INaviConstant.OpenIntentPage.NONE) {
-                intent.putExtra(INaviConstant.PAGE_EXTRA, intentPage);
-                mViewModel.setIntentPage(-1);
-                String searchKeyword = mViewModel.getKeyword();
-                if (!TextUtils.isEmpty(searchKeyword)) {
-                    intent.putExtra(INaviConstant.SEARCH_KEYWORD_EXTRA, searchKeyword);
-                }
-                PoiInfoEntity endPoint = mViewModel.getEndPoint();
-                if (null != endPoint) {
-                    intent.putExtra(INaviConstant.ROUTE_END_POI, endPoint);
-                }
-            }
-            ActivityCompat.startForegroundService(AppContext.getInstance().getMContext(), intent);
+            EnginePackage.getInstance().initEngine();
         }
     }
 

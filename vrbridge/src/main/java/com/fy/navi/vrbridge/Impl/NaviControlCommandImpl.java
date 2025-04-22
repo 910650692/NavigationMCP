@@ -341,14 +341,15 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
     @Override
     @Deprecated
     public CallResponse onTrafficModeToggle(final boolean open, final RespCallback respCallback) {
-        Log.d(IVrBridgeConstant.TAG, "onTrafficModeToggle: open = " + open);
+        final boolean curTrafficMode = SettingPackage.getInstance().getConfigKeyRoadEvent();
+        Log.d(IVrBridgeConstant.TAG, "onTrafficModeToggle open: " + open + ", curStatus: " + curTrafficMode);
         openMapWhenBackground();
 
         final StringBuilder builder = new StringBuilder();
-        if (open == SettingPackage.getInstance().getConfigKeyRoadEvent()) {
+        if (open == curTrafficMode) {
             builder.append("当前").append(IVrBridgeConstant.ROAD_CONDITION).append("已").append(open ? "打开" : "关闭");
         } else {
-            SettingPackage.getInstance().setConfigKeyRoadEvent(open);
+            MapPackage.getInstance().setTrafficStates(MapType.MAIN_SCREEN_MAIN_MAP, open);
             builder.append("已").append(open ? "打开" : "关闭").append(IVrBridgeConstant.ROAD_CONDITION);
         }
         return CallResponse.createSuccessResponse(builder.toString());
@@ -729,32 +730,33 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
     @Override
     public CallResponse onRouteSwitch(final RespCallback respCallback) {
         Log.d(IVrBridgeConstant.TAG, "onRouteSwitch:");
-        RoutePreferenceID curRouteId = SettingPackage.getInstance().getRoutePreference();
+        final RoutePreferenceID curRouteId = SettingPackage.getInstance().getRoutePreference();
+        final RoutePreferenceID targetId;
         switch (curRouteId) {
             case PREFERENCE_RECOMMEND:
-                curRouteId = RoutePreferenceID.PREFERENCE_NOTHIGHWAY;
+                targetId = RoutePreferenceID.PREFERENCE_NOTHIGHWAY;
                 break;
             case PREFERENCE_NOTHIGHWAY:
-                curRouteId = RoutePreferenceID.PREFERENCE_LESSCHARGE;
+                targetId = RoutePreferenceID.PREFERENCE_LESSCHARGE;
                 break;
             case PREFERENCE_LESSCHARGE:
-                curRouteId = RoutePreferenceID.PREFERENCE_AVOIDCONGESTION;
+                targetId = RoutePreferenceID.PREFERENCE_AVOIDCONGESTION;
                 break;
             case PREFERENCE_AVOIDCONGESTION:
-                curRouteId = RoutePreferenceID.PREFERENCE_FASTESTSPEED;
+                targetId = RoutePreferenceID.PREFERENCE_FASTESTSPEED;
                 break;
             case PREFERENCE_FASTESTSPEED:
-                curRouteId = RoutePreferenceID.PREFERENCE_FIRSTHIGHWAY;
+                targetId = RoutePreferenceID.PREFERENCE_FIRSTHIGHWAY;
                 break;
             case PREFERENCE_FIRSTHIGHWAY:
-                curRouteId = RoutePreferenceID.PREFERENCE_RECOMMEND;
+                targetId = RoutePreferenceID.PREFERENCE_RECOMMEND;
                 break;
             default:
                 Log.d(IVrBridgeConstant.TAG, "Go default case, no preference match currently");
                 return CallResponse.createNotSupportResponse("不支持的偏好类型");
         }
 
-        SettingPackage.getInstance().setRoutePreference(curRouteId);
+        SettingPackage.getInstance().setRoutePreferenceByVoice(targetId);
         return CallResponse.createSuccessResponse("已切换路线偏好");
     }
 
@@ -810,11 +812,13 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
                 return CallResponse.createFailResponse("不支持的偏好类型");
         }
 
-        if (routeId == SettingPackage.getInstance().getRoutePreference()) {
-            openMapWhenBackground();
+        openMapWhenBackground();
+        final RoutePreferenceID curPrefer = SettingPackage.getInstance().getRoutePreference();
+        Log.d(IVrBridgeConstant.TAG, "curRoutePrefer: " + curPrefer + ", target: " + routeId);
+        if (routeId == curPrefer) {
             callResponse = CallResponse.createSuccessResponse("当前已是" + tts + "的路线");
         } else {
-            SettingPackage.getInstance().setRoutePreference(routeId);
+            SettingPackage.getInstance().setRoutePreferenceByVoice(routeId);
             callResponse = CallResponse.createSuccessResponse("已使用" + tts + "方案");
         }
 
@@ -1535,7 +1539,9 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
                 return CallResponse.createFailResponse("不支持的播报模式");
         }
 
-        if (broadcastMode == SettingPackage.getInstance().getConfigKeyBroadcastMode()) {
+        final int curBroadcastMode = SettingPackage.getInstance().getConfigKeyBroadcastMode();
+        Log.i(IVrBridgeConstant.TAG, "curBroadcast: " + curBroadcastMode + ", target: " + broadcastMode);
+        if (broadcastMode == curBroadcastMode) {
             callResponse = CallResponse.createSuccessResponse("当前已为" + tts);
         } else {
             final int themeMode = SettingPackage.getInstance().getConfigKeyDayNightMode();
@@ -1561,59 +1567,58 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
      */
     @Override
     public CallResponse onMapViewSwitch(final String mode, final String tts, final RespCallback respCallback) {
-        Log.d(IVrBridgeConstant.TAG, "onMapViewSwitch: mode = " + mode + ", tts = " + tts);
+
         openMapWhenBackground();
+        final MapMode curMapMode = MapPackage.getInstance().getCurrentMapMode(MapType.MAIN_SCREEN_MAIN_MAP);
+        Log.d(IVrBridgeConstant.TAG, "onMapViewSwitch mode:" + mode + ", tts:" + tts + ", curMode:" + curMapMode.name());
 
+        final String voiceTargetMode;
         final CallResponse callResponse;
-        final int curMapMode = SettingPackage.getInstance().getConfigKeyMapviewMode();
-        String targetMode = mode;
-
-        final MapMode mapMode;
-        final int mapModeSetting;
+        final MapMode targetMode;
         final String respTts;
-        if (IVrBridgeConstant.MapMode.DEFAULT.equals(mode)) {
-            //随机切换为下一个模式
+
+        if (IVrBridgeConstant.VoiceMapMode.DEFAULT.equals(mode)) {
+            //切换为下一个MapMode
             switch (curMapMode) {
-                case 0: //
-                    targetMode = IVrBridgeConstant.MapMode.NORTH_2D;
+                case UP_2D: //当前为2D车头朝上
+                    voiceTargetMode = IVrBridgeConstant.VoiceMapMode.NORTH_2D;
                     break;
-                case 1:
-                    targetMode = IVrBridgeConstant.MapMode.CAR_3D;
+                case NORTH_2D: //当前为2D正北朝上
+                    voiceTargetMode = IVrBridgeConstant.VoiceMapMode.CAR_3D;
                     break;
-                case 2:
-                    targetMode = IVrBridgeConstant.MapMode.CAR_2D;
+                case UP_3D: //当前为3D模式
+                    voiceTargetMode = IVrBridgeConstant.VoiceMapMode.CAR_2D;
                     break;
                 default:
+                    voiceTargetMode = null;
                     break;
             }
+        } else {
+            voiceTargetMode = mode;
         }
 
-        switch (targetMode) {
-            case IVrBridgeConstant.MapMode.CAR_3D:
-                mapMode = MapMode.UP_3D;
-                mapModeSetting = 2;
-                respTts = "3D模式";
+        switch (voiceTargetMode) {
+            case IVrBridgeConstant.VoiceMapMode.NORTH_2D:
+                targetMode = MapMode.NORTH_2D;
+                respTts = "正北模式";
                 break;
-            case "2D":
-                mapMode = MapMode.NORTH_2D;
-                mapModeSetting = 1;
+            case IVrBridgeConstant.VoiceMapMode.CAR_2D:
+                targetMode = MapMode.UP_2D;
                 respTts = "2D模式";
                 break;
-            case "2D_FOLLOW_LOGO":
-                mapMode = MapMode.UP_2D;
-                mapModeSetting = 0;
-                respTts = "2D车头朝上模式";
+            case IVrBridgeConstant.VoiceMapMode.CAR_3D:
+                targetMode = MapMode.UP_3D;
+                respTts = tts;
                 break;
             default:
                 return CallResponse.createFailResponse("不支持的地图模式");
         }
 
-        if (mapModeSetting == curMapMode) {
+        if (targetMode == curMapMode) {
             callResponse = CallResponse.createSuccessResponse("当前已是" + respTts);
         } else {
             Log.d(IVrBridgeConstant.TAG, "Map view switch successfully !!! ");
-            MapPackage.getInstance().switchMapMode(MapType.MAIN_SCREEN_MAIN_MAP, mapMode);
-            SettingPackage.getInstance().setConfigKeyMapviewMode(mapModeSetting);
+            MapPackage.getInstance().switchMapMode(MapType.MAIN_SCREEN_MAIN_MAP, targetMode);
             callResponse = CallResponse.createSuccessResponse("已切换为" + respTts);
         }
 
@@ -1720,12 +1725,12 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
 
         final boolean inNavigation = MapStateManager.getInstance().isNaviStatus();
         if (inNavigation) {
-            return CallResponse.createNotSupportResponse("已打开历史记录");
+            return CallResponse.createNotSupportResponse("导航中无法打开历史记录");
         } else {
             final Bundle bundle = new Bundle();
             bundle.putInt(IVrBridgeConstant.VoiceIntentParams.INTENT_PAGE, IVrBridgeConstant.VoiceIntentPage.SEARCH_HISTORY);
             MapPackage.getInstance().voiceOpenHmiPage(MapType.MAIN_SCREEN_MAIN_MAP, bundle);
-            return CallResponse.createNotSupportResponse("导航中无法打开历史记录");
+            return CallResponse.createNotSupportResponse("已打开历史记录");
         }
     }
 
@@ -2015,14 +2020,14 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
             if (muteStatus == 1) {
                 callResponse = CallResponse.createNotSupportResponse("当前导航声音已关闭");
             } else {
-                SettingPackage.getInstance().setConfigKeyMute(1);
+                NaviPackage.getInstance().setMute(true);
                 callResponse = CallResponse.createSuccessResponse("已关闭导航声音");
             }
         } else {
             if (muteStatus == 0) {
                 callResponse = CallResponse.createNotSupportResponse("当前导航声音已打开");
             } else {
-                SettingPackage.getInstance().setConfigKeyMute(0);
+                NaviPackage.getInstance().setMute(false);
                 callResponse = CallResponse.createSuccessResponse("已打开导航声音");
             }
         }

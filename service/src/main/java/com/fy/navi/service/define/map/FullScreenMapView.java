@@ -34,17 +34,17 @@ public abstract class FullScreenMapView extends FrameLayout implements IBaseScre
 
     @Override
     public long getMapViewHeight() {
-        return getResources().getDisplayMetrics().heightPixels + ScreenUtils.Companion.getInstance().getStatusBarHeight(getMapViewContext()) + ScreenUtils.Companion.getInstance().getNavigationBarHeight(getMapViewContext());
+        return getScreenHeight();
     }
 
     @Override
     public long getMapViewWidth() {
-        return ScreenUtils.Companion.getInstance().getRealScreenWidth(getMapViewContext());
+        return getScreenWidth();
     }
 
     @Override
     public long getScreenHeight() {
-        return getResources().getDisplayMetrics().heightPixels + ScreenUtils.Companion.getInstance().getStatusBarHeight(getMapViewContext()) + ScreenUtils.Companion.getInstance().getNavigationBarHeight(getMapViewContext());
+        return ScreenUtils.Companion.getInstance().getRealScreenHeight(getMapViewContext());
     }
 
     @Override

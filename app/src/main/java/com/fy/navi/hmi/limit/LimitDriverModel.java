@@ -22,6 +22,7 @@ import com.fy.navi.service.logicpaket.route.RoutePackage;
 import com.fy.navi.ui.base.BaseModel;
 
 import java.util.ArrayList;
+import java.util.UUID;
 
 /**
  * @author QiuYaWei
@@ -34,6 +35,7 @@ public class LimitDriverModel extends BaseModel<LimitDriverViewModel> implements
     private static Handler mHandler;
     private Long mLimitQueryTaskId;
     private String mCurrentCityCode;
+    private final String mCallbackId;
     private static final int FAIL_TIME = 10 * 1000;
     private final Runnable mLoadingFail = new Runnable() {
         @Override
@@ -43,17 +45,21 @@ public class LimitDriverModel extends BaseModel<LimitDriverViewModel> implements
         }
     };
 
+    public LimitDriverModel() {
+        mCallbackId = UUID.randomUUID().toString();
+    }
+
     @Override
     public void onCreate() {
         super.onCreate();
         mHandler = new Handler(Looper.getMainLooper());
-        AosRestrictedPackage.getInstance().addRestrictedObserver(IAosRestrictedObserver.KEY_OBSERVER_LIMIT_VIEW, this);
+        AosRestrictedPackage.getInstance().addRestrictedObserver(mCallbackId, this);
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        AosRestrictedPackage.getInstance().removeRestrictedObserver(IAosRestrictedObserver.KEY_OBSERVER_LIMIT_VIEW);
+        AosRestrictedPackage.getInstance().removeRestrictedObserver(mCallbackId);
     }
 
     /**
@@ -109,6 +115,7 @@ public class LimitDriverModel extends BaseModel<LimitDriverViewModel> implements
                 MapPackage.getInstance().setMapCenter(MapType.MAIN_SCREEN_MAIN_MAP,
                         new GeoPoint(ConvertUtils.transCityLatAndLon(cityItemBean.getCityX()),
                                 ConvertUtils.transCityLatAndLon(cityItemBean.getCityY())));
+                MapPackage.getInstance().setZoomLevel(MapType.MAIN_SCREEN_MAIN_MAP, 10);
             }
             RoutePackage.getInstance().drawRestrictionForLimit(MapType.MAIN_SCREEN_MAIN_MAP,
                     param.getMReStrictedAreaResponseParam(),0);

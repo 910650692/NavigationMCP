@@ -175,4 +175,11 @@ public interface IRouteResultObserver {
     default void onRouteTMCInfo(RouteTMCParam param) {
 
     }
+
+    /**
+     * 算路偏航消息
+     */
+    default void onReroute() {
+
+    }
 }

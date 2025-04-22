@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
 
@@ -8,65 +9,81 @@
             name="naviLanes"
             type="com.fy.navi.scene.impl.navi.SceneNaviLanesImpl" />
     </data>
-    <!--宽度和高度由外面的父容器决定-->
-    <com.fy.navi.ui.view.SkinConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
 
-        <com.fy.navi.ui.view.SkinLinearLayout
+    <merge tools:parentTag="com.fy.navi.ui.view.SkinConstraintLayout">
+
+        <com.fy.navi.scene.ui.navi.component.SubcomponentLanes
+            android:id="@+id/tlr_resources161"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:orientation="horizontal"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/tlr_resources16"
+            app:layout_constraintHorizontal_chainStyle="spread"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.fy.navi.scene.ui.navi.component.SubcomponentLanes
+            android:id="@+id/tlr_resources16"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/tlr_resources17"
+            app:layout_constraintStart_toEndOf="@id/tlr_resources161"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.fy.navi.scene.ui.navi.component.SubcomponentLanes
+            android:id="@+id/tlr_resources17"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/tlr_resources18"
+            app:layout_constraintStart_toEndOf="@id/tlr_resources16"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.fy.navi.scene.ui.navi.component.SubcomponentLanes
+            android:id="@+id/tlr_resources18"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/tlr_resources19"
+            app:layout_constraintStart_toEndOf="@id/tlr_resources17"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.fy.navi.scene.ui.navi.component.SubcomponentLanes
+            android:id="@+id/tlr_resources19"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/tlr_resources110"
+            app:layout_constraintStart_toEndOf="@id/tlr_resources18"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.fy.navi.scene.ui.navi.component.SubcomponentLanes
+            android:id="@+id/tlr_resources110"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/tlr_resources111"
+            app:layout_constraintStart_toEndOf="@id/tlr_resources19"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.fy.navi.scene.ui.navi.component.SubcomponentLanes
+            android:id="@+id/tlr_resources111"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/tlr_resources1"
+            app:layout_constraintStart_toEndOf="@id/tlr_resources110"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.fy.navi.scene.ui.navi.component.SubcomponentLanes
+            android:id="@+id/tlr_resources1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:gravity="center_vertical"
-            app:layout_constraintStart_toStartOf="parent">
+            app:layout_constraintStart_toEndOf="@id/tlr_resources111"
+            app:layout_constraintTop_toTopOf="parent" />
 
-            <com.fy.navi.scene.ui.navi.component.SubcomponentLanes
-                android:id="@+id/tlr_resources161"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-
-            <com.fy.navi.scene.ui.navi.component.SubcomponentLanes
-                android:id="@+id/tlr_resources16"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_26" />
-
-            <com.fy.navi.scene.ui.navi.component.SubcomponentLanes
-                android:id="@+id/tlr_resources17"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_26" />
-
-            <com.fy.navi.scene.ui.navi.component.SubcomponentLanes
-                android:id="@+id/tlr_resources18"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_marginStart="@dimen/dp_26" />
-
-            <com.fy.navi.scene.ui.navi.component.SubcomponentLanes
-                android:id="@+id/tlr_resources19"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_26" />
-
-            <com.fy.navi.scene.ui.navi.component.SubcomponentLanes
-                android:id="@+id/tlr_resources110"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_26" />
-
-            <com.fy.navi.scene.ui.navi.component.SubcomponentLanes
-                android:id="@+id/tlr_resources111"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_26" />
-
-            <com.fy.navi.scene.ui.navi.component.SubcomponentLanes
-                android:id="@+id/tlr_resources1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_26" />
-        </com.fy.navi.ui.view.SkinLinearLayout>
-    </com.fy.navi.ui.view.SkinConstraintLayout>
+    </merge>
 </layout>

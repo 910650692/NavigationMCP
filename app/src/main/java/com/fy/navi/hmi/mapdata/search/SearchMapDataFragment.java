@@ -86,8 +86,10 @@ public class SearchMapDataFragment extends BaseFragment<FragmentSearchMapDataBin
             }
 
             @Override
-            public void deleteAllTask(ArrayList<Integer> cityAdCodes) {
-
+            public void deleteAllTask(final ArrayList<Integer> cityAdCodes) {
+                if (mViewModel != null) {
+                    mViewModel.deleteAllTask(cityAdCodes);
+                }
             }
 
             @Override
@@ -96,14 +98,14 @@ public class SearchMapDataFragment extends BaseFragment<FragmentSearchMapDataBin
             }
 
             @Override
-            public void allDownloadTask(ArrayList<Integer> cityDataInfos) {
+            public void allDownloadTask(final ArrayList<Integer> cityDataInfos) {
                 if (mViewModel != null) {
                     mViewModel.startAllTask(cityDataInfos);
                 }
             }
 
             @Override
-            public void allPauseTask(ArrayList<Integer> cityDataInfos) {
+            public void allPauseTask(final ArrayList<Integer> cityDataInfos) {
                 if (mViewModel != null) {
                     mViewModel.pauseAllTask(cityDataInfos);
                 }
@@ -204,25 +206,15 @@ public class SearchMapDataFragment extends BaseFragment<FragmentSearchMapDataBin
      */
     public void notifySearchMapDataChangeView(final CityDataInfo info) {
         ThreadManager.getInstance().postUi(() -> {
+            if (info == null) {
+                Logger.e(TAG, "info is null");
+                return;
+            }
             Logger.d(TAG,"notifySearchMapDataChangeView  info = " + GsonUtils.toJson(info));
-
             // 刷新二级列表的下载状态
             mSearchMapDataAdapter.updateChild(info.getUpperAdcode(), info.getAdcode(), info.getDownLoadInfo());
-
-           /* for (CityDataInfo data : info.getCityInfoList()) {
-
-                if (data.getAreaType() == 2 || data.getAreaType() == 3) {
-                    // 刷新一级列表下的子级列表下载状态
-                    mSearchMapDataAdapter.updateParent(info.getAdcode(), info);
-                } else {
-                    // 刷新二级列表下的子级列表下载状态
-                    for (CityDataInfo cityDataInfo : info.getCityInfoList()) {
-                        mSearchMapDataAdapter.updateChild(info.getAdcode(), cityDataInfo.getAdcode(), cityDataInfo.getDownLoadInfo());
-                    }
-                }
-
-            }*/
-
+            //刷新省份城市下载状态
+            mSearchMapDataAdapter.updateParent(info.getAdcode(), info.getDownLoadInfo());
         });
     }
 

@@ -23,8 +23,8 @@ public class MapViewParams {
     public MapViewParams() {
         this.x = 0;
         this.y = 0;
-        this.screenWidth = AppContext.getInstance().getMContext().getResources().getDisplayMetrics().widthPixels;
-        this.screenHeight = AppContext.getInstance().getMContext().getResources().getDisplayMetrics().heightPixels + ScreenUtils.Companion.getInstance().getNavigationBarHeight(AppContext.getInstance().getMContext());;
+        this.screenWidth = ScreenUtils.Companion.getInstance().getRealScreenWidth(AppContext.getInstance().getMContext());
+        this.screenHeight = ScreenUtils.Companion.getInstance().getRealScreenHeight(AppContext.getInstance().getMContext());
         this.width = screenWidth;
         this.height = screenHeight;
         this.densityDpi = AppContext.getInstance().getMContext().getResources().getDisplayMetrics().densityDpi;

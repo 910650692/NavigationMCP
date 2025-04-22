@@ -120,7 +120,9 @@ public final class FsaNaviScene {
         turnInfo.setRoadLevel(naviETAInfo.curRoadClass);
         if (null != naviETAInfo.NaviInfoData && naviETAInfo.NaviInfoData.size() > naviETAInfo.NaviInfoFlag) {
             final NaviEtaInfo.NaviInfoPanel naviInfoPanel = naviETAInfo.NaviInfoData.get(naviETAInfo.NaviInfoFlag);
+            //下一个路口的剩余的距离
             turnInfo.setRemainDistance(naviInfoPanel.segmentRemain.dist);
+            //设置转向名字
             turnInfo.setDirectionName(naviInfoPanel.nextRouteName);
         }
         laneInfoList.add(turnInfo);
@@ -744,6 +746,8 @@ public final class FsaNaviScene {
      *
      * @param fsaService   MyFsaService.
      * @param locationInfo LocInfoBean.
+     *                     速度    tat
+     *                     车道信息
      */
     public void updateCurrentCarLocation(final MyFsaService fsaService, final LocInfoBean locationInfo) {
         final CurrentCarLocation currentCarLocation = new CurrentCarLocation();

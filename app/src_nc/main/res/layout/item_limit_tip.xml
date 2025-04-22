@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+    <data>
+        <import type="android.view.View" />
+        <variable
+            name="ViewModel"
+            type="com.fy.navi.hmi.map.MapViewModel" />
+    </data>
+    <com.fy.navi.ui.view.SkinConstraintLayout
+        android:id="@+id/cl_limit_parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:minWidth="@dimen/dp_282"
+        android:minHeight="@dimen/dp_104"
+        android:visibility="@{ViewModel.limitDriverVisibility ? View.VISIBLE : View.GONE}"
+        clickCommand="@{ViewModel.openLimitDetailFragment}"
+        android:background="@drawable/bg_button_map_limit"
+        android:paddingHorizontal="@dimen/dp_26"
+        android:paddingVertical="@dimen/dp_12">
+
+        <com.fy.navi.ui.view.SkinTextView
+            android:id="@+id/tv_limit_first"
+            android:layout_width="@dimen/dp_61"
+            android:layout_height="@dimen/dp_80"
+            android:background="@drawable/bg_item_limit_number"
+            android:gravity="center"
+            android:textColor="@color/main_map_limit_text_color"
+            android:textSize="@dimen/sp_38"
+            android:visibility="gone"
+            tools:text="2" />
+
+        <com.fy.navi.ui.view.SkinTextView
+            android:id="@+id/tv_limit_second"
+            android:layout_width="@dimen/dp_61"
+            android:layout_height="@dimen/dp_80"
+            android:visibility="gone"
+            android:background="@drawable/bg_item_limit_number"
+            android:gravity="center"
+            android:layout_marginStart="@dimen/dp_20"
+            app:layout_constraintStart_toEndOf="@id/tv_limit_first"
+            android:textColor="@color/main_map_limit_text_color"
+            android:textSize="@dimen/sp_38"
+            tools:text="6" />
+
+        <com.fy.navi.ui.view.SkinTextView
+            android:id="@+id/tv_desc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/main_map_limit_text_color"
+            android:textSize="@dimen/sp_38"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:text="@{ViewModel.limitDriverTitle}" />
+
+    </com.fy.navi.ui.view.SkinConstraintLayout>
+</layout>

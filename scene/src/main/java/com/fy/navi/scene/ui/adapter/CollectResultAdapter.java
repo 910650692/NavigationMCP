@@ -95,17 +95,18 @@ public class CollectResultAdapter extends RecyclerView.Adapter<CollectResultAdap
         if (!ConvertUtils.isEmpty(mPoiEntities.get(position).getFavoriteInfo())
                 && mPoiEntities.get(position).getFavoriteInfo().getTop_time() != 0) {
             holder.mResultItemBinding.itemFavoriteTopTag.setVisibility(View.VISIBLE);
-            holder.mResultItemBinding.itemFavoriteDistance.setVisibility(View.VISIBLE);
-            holder.mResultItemBinding.itemFavoriteLine.setVisibility(View.VISIBLE);
+//            holder.mResultItemBinding.itemFavoriteDistance.setVisibility(View.VISIBLE);
+//            holder.mResultItemBinding.itemFavoriteLine.setVisibility(View.VISIBLE);
             holder.mResultItemBinding.swipeMenuLayout.setBackground(ResourceUtils.Companion.getInstance().getDrawable(R.color.bg_route_item_select));
             holder.mResultItemBinding.stvTop.setText(ResourceUtils.Companion.getInstance().getString(R.string.dsc_cancel));
         } else {
             holder.mResultItemBinding.itemFavoriteTopTag.setVisibility(View.GONE);
-            holder.mResultItemBinding.itemFavoriteDistance.setVisibility(View.GONE);
-            holder.mResultItemBinding.itemFavoriteLine.setVisibility(View.GONE);
             holder.mResultItemBinding.swipeMenuLayout.setBackground(ResourceUtils.Companion.getInstance().getDrawable(R.color.transparent));
             holder.mResultItemBinding.stvTop.setText(ResourceUtils.Companion.getInstance().getString(R.string.favorite_item_top));
         }
+        //根据UE，收藏点不需要显示距离数据
+        holder.mResultItemBinding.itemFavoriteDistance.setVisibility(View.GONE);
+        holder.mResultItemBinding.itemFavoriteLine.setVisibility(View.GONE);
         if (mSearchPackage.isAlongWaySearch()) {
             holder.mResultItemBinding.textNavi.setText(R.string.st_along_way_point);
             holder.mResultItemBinding.ivNaviIcon.setImageDrawable(ResourceUtils.Companion.getInstance()

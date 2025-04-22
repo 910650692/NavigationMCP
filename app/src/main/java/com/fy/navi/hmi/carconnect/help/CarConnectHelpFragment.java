@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
+import com.android.utils.ResourceUtils;
 import com.fy.navi.hmi.BR;
 import com.fy.navi.hmi.R;
 import com.fy.navi.hmi.databinding.FragmentCarConnectHelpBinding;
@@ -53,7 +54,8 @@ public class CarConnectHelpFragment extends BaseFragment<FragmentCarConnectHelpB
             final View tabView = tab.getCustomView();
             if (tabView instanceof SkinLinearLayout) {
                 tabView.setSelected(true);
-                ((TextView) tabView.findViewById(R.id.tabText)).setTextColor(getResources().getColor(R.color.black));
+                ((TextView) tabView.findViewById(R.id.tabText)).setTextColor(
+                        ResourceUtils.Companion.getInstance().getColor(R.color.setting_bg_tab_text_select));
             }
             mViewModel.setSelectPosition(tab.getPosition());
         }
@@ -63,7 +65,8 @@ public class CarConnectHelpFragment extends BaseFragment<FragmentCarConnectHelpB
             final View tabView = tab.getCustomView();
             if (tabView instanceof SkinLinearLayout) {
                 tabView.setSelected(false);
-                ((TextView) tabView.findViewById(R.id.tabText)).setTextColor(getResources().getColor(R.color.setting_car_connected_help_tab_default));
+                ((TextView) tabView.findViewById(R.id.tabText)).setTextColor(
+                        ResourceUtils.Companion.getInstance().getColor(R.color.setting_bg_tab_text_unselect));
             }
         }
 

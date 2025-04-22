@@ -6,60 +6,64 @@ import android.os.Parcelable;
 
 public class BaseTurnInfo implements Parcelable {
 
-    public int allTime; //剩余距离/m
-    public int allDist; //剩余时间/s
-    public String curRouteName = ""; //当前道路名
-    public int curManeuverID = -1; //当前转向ID
-    public String nextRouteName = ""; //下个道路名
-    public int nextManeuverID = -1; //下个路口转向ID
-    public int nextDist; //下个路口距离/m
-    public int curRoadClass; //当前道路等级
-    public int routeRemainLightCount; //剩余红绿灯数量
-    public int cityCode;
+    private int mType;
+    private int mAllTime; //剩余距离/m
+    private int mAllDist; //剩余时间/s
+    private String mCurRouteName = ""; //当前道路名
+    private int mCurRoadClass; //当前道路等级
+    /**
+     * 当前路口转向ID 用来区分显示tbt板上的转向提示图标
+     * 官方枚举类是 ManeuverIconID
+     * 本地枚举类是INaviConstant.ManeuverId.
+     */
+    private int mCurManeuverID = -1;
+    private String mNextRouteName = ""; //下个道路名
+    private int mNextManeuverID = -1; //下个路口转向ID
+    private int mNextDist; //下个路口距离/m
+    private int mRingOutCnt; //剩余红绿灯数量
 
     public BaseTurnInfo() {
-        curRoadClass = -1;
-        cityCode = 0;
-    }
 
-    public BaseTurnInfo (Parcel in) {
-        allTime = in.readInt();
-        allDist = in.readInt();
-        curRouteName = in.readString();
-        curManeuverID = in.readInt();
-        nextRouteName = in.readString();
-        nextManeuverID = in.readInt();
-        nextDist = in.readInt();
-        curRoadClass = in.readInt();
-        routeRemainLightCount = in.readInt();
-        cityCode = in.readInt();
     }
 
     public static final Creator<BaseTurnInfo> CREATOR = new Creator<BaseTurnInfo>() {
         @Override
-        public BaseTurnInfo createFromParcel(Parcel source) {
+        public BaseTurnInfo createFromParcel(final Parcel source) {
             return new BaseTurnInfo(source);
         }
 
         @Override
-        public BaseTurnInfo[] newArray(int size) {
+        public BaseTurnInfo[] newArray(final int size) {
             return new BaseTurnInfo[size];
         }
     };
 
+    public BaseTurnInfo (final Parcel in) {
+        mType = in.readInt();
+        mAllTime = in.readInt();
+        mAllDist = in.readInt();
+        mCurRouteName = in.readString();
+        mCurRoadClass = in.readInt();
+        mCurManeuverID = in.readInt();
+        mNextRouteName = in.readString();
+        mNextManeuverID = in.readInt();
+        mNextDist = in.readInt();
+        mRingOutCnt = in.readInt();
+    }
+
 
     @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(allTime);
-        dest.writeInt(allDist);
-        dest.writeString(curRouteName);
-        dest.writeInt(curManeuverID);
-        dest.writeString(nextRouteName);
-        dest.writeInt(nextManeuverID);
-        dest.writeInt(nextDist);
-        dest.writeInt(curRoadClass);
-        dest.writeInt(routeRemainLightCount);
-        dest.writeInt(cityCode);
+    public void writeToParcel(final Parcel dest, final int flags) {
+        dest.writeInt(mType);
+        dest.writeInt(mAllTime);
+        dest.writeInt(mAllDist);
+        dest.writeString(mCurRouteName);
+        dest.writeInt(mCurRoadClass);
+        dest.writeInt(mCurManeuverID);
+        dest.writeString(mNextRouteName);
+        dest.writeInt(mNextManeuverID);
+        dest.writeInt(mNextDist);
+        dest.writeInt(mRingOutCnt);
     }
 
 
@@ -71,97 +75,97 @@ public class BaseTurnInfo implements Parcelable {
     @Override
     public String toString() {
         return "BaseTurnInfo{" +
-                "allTime=" + allTime +
-                ", allDist=" + allDist +
-                ", curRouteName='" + curRouteName + '\'' +
-                ", curManeuverID=" + curManeuverID +
-                ", nextRouteName='" + nextRouteName + '\'' +
-                ", nextManeuverID=" + nextManeuverID +
-                ", nextDist=" + nextDist +
-                ", curRoadClass=" + curRoadClass +
-                ", remainLightCount=" + routeRemainLightCount +
-                ", cityCode=" + cityCode +
+                "mType=" + mType +
+                ", mAllTime=" + mAllTime +
+                ", mAllDist=" + mAllDist +
+                ", mCurRouteName='" + mCurRouteName + '\'' +
+                ", mCurRoadClass=" + mCurRoadClass +
+                ", mCurManeuverID=" + mCurManeuverID +
+                ", mNextRouteName='" + mNextRouteName + '\'' +
+                ", mNextManeuverID=" + mNextManeuverID +
+                ", mNextDist=" + mNextDist +
+                ", mRingOutCnt=" + mRingOutCnt +
                 '}';
     }
 
-    public int getAllTime() {
-        return allTime;
+    public int getType() {
+        return mType;
     }
 
-    public void setAllTime(int allTime) {
-        this.allTime = allTime;
+    public void setType(final int type) {
+        mType = type;
+    }
+
+    public int getAllTime() {
+        return mAllTime;
+    }
+
+    public void setAllTime(final int allTime) {
+        mAllTime = allTime;
     }
 
     public int getAllDist() {
-        return allDist;
+        return mAllDist;
     }
 
-    public void setAllDist(int allDist) {
-        this.allDist = allDist;
+    public void setAllDist(final int allDist) {
+        mAllDist = allDist;
     }
 
     public String getCurRouteName() {
-        return curRouteName;
+        return mCurRouteName;
     }
 
-    public void setCurRouteName(String curRouteName) {
-        this.curRouteName = curRouteName;
-    }
-
-    public int getCurManeuverID() {
-        return curManeuverID;
-    }
-
-    public void setCurManeuverID(int curManeuverID) {
-        this.curManeuverID = curManeuverID;
-    }
-
-    public String getNextRouteName() {
-        return nextRouteName;
-    }
-
-    public void setNextRouteName(String nextRouteName) {
-        this.nextRouteName = nextRouteName;
-    }
-
-    public int getNextManeuverID() {
-        return nextManeuverID;
-    }
-
-    public void setNextManeuverID(int nextManeuverID) {
-        this.nextManeuverID = nextManeuverID;
-    }
-
-    public int getNextDist() {
-        return nextDist;
-    }
-
-    public void setNextDist(int nextDist) {
-        this.nextDist = nextDist;
+    public void setCurRouteName(final String curRouteName) {
+        mCurRouteName = curRouteName;
     }
 
     public int getCurRoadClass() {
-        return curRoadClass;
+        return mCurRoadClass;
     }
 
-    public void setCurRoadClass(int curRoadClass) {
-        this.curRoadClass = curRoadClass;
+    public void setCurRoadClass(final int curRoadClass) {
+        mCurRoadClass = curRoadClass;
     }
 
-    public int getRouteRemainLightCount() {
-        return routeRemainLightCount;
+    public int getCurManeuverID() {
+        return mCurManeuverID;
     }
 
-    public void setRouteRemainLightCount(int routeRemainLightCount) {
-        this.routeRemainLightCount = routeRemainLightCount;
+    public void setCurManeuverID(final int curManeuverID) {
+        mCurManeuverID = curManeuverID;
     }
 
-    public int getCityCode() {
-        return cityCode;
+    public String getNextRouteName() {
+        return mNextRouteName;
     }
 
-    public void setCityCode(int cityCode) {
-        this.cityCode = cityCode;
+    public void setNextRouteName(final String nextRouteName) {
+        mNextRouteName = nextRouteName;
+    }
+
+    public int getNextManeuverID() {
+        return mNextManeuverID;
+    }
+
+    public void setNextManeuverID(final int nextManeuverID) {
+        mNextManeuverID = nextManeuverID;
+    }
+
+    public int getNextDist() {
+        return mNextDist;
+    }
+
+    public void setNextDist(final int nextDist) {
+        mNextDist = nextDist;
+    }
+
+    public int getRingOutCnt() {
+        return mRingOutCnt;
+    }
+
+    public void setRingOutCnt(final int ringOutCnt) {
+        mRingOutCnt = ringOutCnt;
     }
 
 }

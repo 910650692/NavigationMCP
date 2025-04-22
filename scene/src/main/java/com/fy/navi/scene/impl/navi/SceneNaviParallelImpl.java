@@ -1,4 +1,5 @@
 package com.fy.navi.scene.impl.navi;
+
 import androidx.databinding.ObservableField;
 
 import com.android.utils.ConvertUtils;
@@ -6,16 +7,17 @@ import com.android.utils.NetWorkUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
 import com.fy.navi.scene.BaseSceneModel;
-import com.fy.navi.scene.impl.navi.inter.ISceneCallback;
 import com.fy.navi.scene.ui.navi.SceneNaviParallelView;
 import com.fy.navi.scene.ui.navi.manager.INaviSceneEvent;
 import com.fy.navi.scene.ui.navi.manager.NaviSceneId;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.adapter.navi.NaviConstant;
+import com.fy.navi.service.define.position.LocInfoBean;
 import com.fy.navi.service.define.position.LocParallelInfoEntity;
 import com.fy.navi.service.define.position.LocalParallelRoadEntity;
 import com.fy.navi.service.logicpaket.position.IPositionPackageCallback;
 import com.fy.navi.service.logicpaket.position.PositionPackage;
+import com.fy.navi.service.logicpaket.route.RoutePackage;
 import com.fy.navi.ui.action.Action;
 
 import java.math.BigInteger;
@@ -102,7 +104,8 @@ public class SceneNaviParallelImpl extends BaseSceneModel<SceneNaviParallelView>
         }
         // 网络正常就进行正常路算
         if (Boolean.TRUE.equals(NetWorkUtils.Companion.getInstance().checkNetwork())) {
-            mPositionPackage.switchParallelRoad(mSwitchActionType, BigInteger.ZERO);
+            final BigInteger parallelRoadId = getOffLineParallelRoadId(mSwitchActionType);
+            mPositionPackage.switchParallelRoad(mSwitchActionType, parallelRoadId);
         } else {
             Logger.i(TAG, "网络异常，进行离线平行路切换");
             // 离线不支持平行路的桥梁切换，这里加判断容错
@@ -121,7 +124,8 @@ public class SceneNaviParallelImpl extends BaseSceneModel<SceneNaviParallelView>
 
     /**
      * 获取离线切换的平行路道路ID
-     * @param switchActionType 平行路切换类型 -1：不切换 0：主路切换到辅路 1：辅路切换到主路
+     *
+     * @param switchActionType 平行路切换类型 -1：不切换 0:切换到辅路 1:切换到主路
      * @return 离线切换的平行路道路ID
      */
     private BigInteger getOffLineParallelRoadId(final int switchActionType) {
@@ -200,8 +204,22 @@ public class SceneNaviParallelImpl extends BaseSceneModel<SceneNaviParallelView>
     private IPositionPackageCallback mIPositionPackageCallback = new IPositionPackageCallback() {
         @Override
         public void onSwitchParallelRoadFinished() {
-            Logger.i(TAG, "onSwitchParallelRoadFinished ");
-            // 这边开启了平行路切换后自动算路，所以不进行手动切换
+            Logger.i(TAG, "onSwitchParallelRoadFinished 平行路切换结束 mCurrentParallelRoadInfo:" + (mCurrentParallelRoadInfo != null));
+            if (mCurrentParallelRoadInfo != null) {
+                LocInfoBean locInfoBean = mPositionPackage.getLastCarLocation();
+                final ArrayList<LocalParallelRoadEntity> list = mCurrentParallelRoadInfo.getLocalParallelRoadArrayList();
+                BigInteger roadID = BigInteger.ZERO;
+                if(list != null && !list.isEmpty()){
+                    LocalParallelRoadEntity entity = list.get(0);
+                    if(entity != null){
+                        roadID = entity.getRoadID();
+                    }
+                }
+                int flag = mCurrentParallelRoadInfo.getFlag();
+                int hwFlag = mCurrentParallelRoadInfo.getHwFlag();
+                RoutePackage.getInstance().requestSwitchParallelRoute(mSwitchRoadType,locInfoBean, roadID, (short) flag, (short) hwFlag);
+            }
+            mIsSwitchParallelEnabled = true;
         }
 
         /**
@@ -219,7 +237,7 @@ public class SceneNaviParallelImpl extends BaseSceneModel<SceneNaviParallelView>
          */
         @Override
         public void onParallelRoadUpdate(final LocParallelInfoEntity entity) {
-            Logger.i(TAG, "onParallelRoadUpdate " + entity.toString());
+            Logger.i(TAG, "onParallelRoadUpdate平行路切换 " + entity.toString());
             ThreadManager.getInstance().postUi(new Runnable() {
                 @Override
                 public void run() {
@@ -257,7 +275,7 @@ public class SceneNaviParallelImpl extends BaseSceneModel<SceneNaviParallelView>
         if (mCallBack == null) {
             return;
         }
-        Logger.i(TAG, "mCurrentParallelRoadInfo：" + mCurrentParallelRoadInfo.toString());
+        Logger.i(TAG, "平行路切换mCurrentParallelRoadInfo：" + mCurrentParallelRoadInfo.toString());
         // 平行路切换功能隐藏
         if (mCurrentParallelRoadInfo == null) {
             mRoadMainAuxiliaryVisible.set(false);
@@ -267,7 +285,7 @@ public class SceneNaviParallelImpl extends BaseSceneModel<SceneNaviParallelView>
         }
 
         if (mPreviousParallelRoadInfo != null) {
-            Logger.i(TAG, "mPreviousParallelRoadInfo：" +
+            Logger.i(TAG, "平行路切换mPreviousParallelRoadInfo：" +
                     mPreviousParallelRoadInfo.toString());
             // 如果主辅路和桥上下没有变化，直接返回
             if (mPreviousParallelRoadInfo.getFlag() == mCurrentParallelRoadInfo.getFlag() &&

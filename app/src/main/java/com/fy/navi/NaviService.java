@@ -7,6 +7,7 @@ import android.app.NotificationManager;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.ServiceInfo;
 import android.os.Build;
 import android.os.IBinder;
@@ -15,7 +16,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.work.Constraints;
-import androidx.work.Data;
 import androidx.work.NetworkType;
 import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkInfo;
@@ -28,6 +28,8 @@ import com.android.utils.file.ParseJsonUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
 import com.fy.navi.adas.AdasClient;
+import com.fy.navi.broadcast.SteeringWheelButtonReceiver;
+import com.fy.navi.clslink.ClsLinkManager;
 import com.fy.navi.fsa.MyFsaService;
 import com.fy.navi.hmi.BuildConfig;
 import com.fy.navi.service.AppContext;
@@ -38,7 +40,6 @@ import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.greendao.CommonManager;
 import com.fy.navi.service.greendao.setting.SettingManager;
 import com.fy.navi.service.logicpaket.aos.AosRestrictedPackage;
-import com.fy.navi.service.logicpaket.calibration.CalibrationPackage;
 import com.fy.navi.service.logicpaket.cruise.CruisePackage;
 import com.fy.navi.service.logicpaket.engine.EnginePackage;
 import com.fy.navi.service.logicpaket.hotupdate.HotUpdatePackage;
@@ -85,7 +86,6 @@ public class NaviService extends Service {
     private static final String NOTIFICATION_NAME = "NaviService";
     private static final int FOREGROUND_SERVICE_ID = 0x02;
     public static final String START_APPLICATION_KEY = "startMapView";
-    private final OneTimeWorkRequest engineWorkRequest;
     private final OneTimeWorkRequest parseJsonWorkRequest;
     private final OneTimeWorkRequest mapInitWorkRequest;
     private final OneTimeWorkRequest layerInitWorkRequest;
@@ -106,10 +106,6 @@ public class NaviService extends Service {
                 .build();
         parseJsonWorkRequest = new OneTimeWorkRequest.Builder(ParseJson.class)
                 .addTag("ParseJson ErrorCode")
-                .build();
-        engineWorkRequest = new OneTimeWorkRequest.Builder(EngineInitWorker.class)
-                .setConstraints(constraints)
-                .addTag("Init Engine")
                 .build();
         positionWorkRequest = new OneTimeWorkRequest.Builder(PositionInitWorker.class)
                 .addTag("Init Position")
@@ -154,6 +150,7 @@ public class NaviService extends Service {
         commonManager = CommonManager.getInstance();
         settingManager.init();
         commonManager.init();
+        initBroadcast();
     }
 
     @Override
@@ -195,7 +192,6 @@ public class NaviService extends Service {
         //需要启动应用界面才会走此observer
         if (hasActivity) {
             ParseJson.addParseJsonObserver(parseJsonWorkRequest.getId());
-            EngineInitWorker.addEngineObserver(engineWorkRequest.getId());
             PositionInitWorker.addPositionObserver(positionWorkRequest.getId());
             MapInit.addMapInitObserver(mapInitWorkRequest.getId());
             LayerInit.addLayerInitObserver(layerInitWorkRequest.getId());
@@ -206,7 +202,6 @@ public class NaviService extends Service {
 
         WorkManager.getInstance(AppContext.getInstance().getMContext())
                 .beginWith(parseJsonWorkRequest)
-                .then(engineWorkRequest)
                 .then(positionWorkRequest)
                 .then(mapInitWorkRequest)
                 .then(layerInitWorkRequest)
@@ -312,38 +307,6 @@ public class NaviService extends Service {
         }
     }
 
-    @SuppressLint("WorkerHasAPublicModifier")
-    public static final class EngineInitWorker extends Worker {
-        public EngineInitWorker(@NonNull Context context, @NonNull WorkerParameters workerParams) {
-            super(context, workerParams);
-        }
-
-        @NonNull
-        @Override
-        public Result doWork() {
-            Logger.i(TAG, "Engine doWork");
-            return EnginePackage.getInstance().initEngine();
-        }
-
-        private static void addEngineObserver(UUID id) {
-            WorkManager.getInstance(AppContext.getInstance().getMContext()).getWorkInfoByIdLiveData(id)
-                    .observe(StackManager.getInstance().getFirstActivity(), workInfo -> {
-                        WorkInfo.State state = workInfo.getState();
-                        switch (state) {
-                            case ENQUEUED -> Logger.i(TAG, "Engine init enqueued");
-                            case RUNNING -> Logger.i(TAG, "Engine init running");
-                            case BLOCKED -> Logger.d(TAG, "Engine init block");
-                            case FAILED -> {
-                                Data data = workInfo.getOutputData();
-                                Logger.e(TAG, "Engine init fail", data.getKeyValueMap());
-                            }
-                            case CANCELLED -> Logger.i(TAG, "Engine init cancel");
-                            case SUCCEEDED -> Logger.i(TAG, "Engine init success");
-                        }
-                    });
-        }
-    }
-
     public static final class PositionInitWorker extends Worker {
         public PositionInitWorker(@NonNull Context context, @NonNull WorkerParameters workerParams) {
             super(context, workerParams);
@@ -388,8 +351,9 @@ public class NaviService extends Service {
             boolean mainMapInitResult = MapPackage.getInstance().init(MapType.MAIN_SCREEN_MAIN_MAP);
             boolean deskMapInitResult = MapPackage.getInstance().init(MapType.LAUNCHER_DESK_MAP);
             boolean widgetMapInitResult = MapPackage.getInstance().init(MapType.LAUNCHER_WIDGET_MAP);
-            isMapInited = mainMapInitResult && deskMapInitResult && widgetMapInitResult;
-            return (mainMapInitResult && deskMapInitResult && widgetMapInitResult) ? Result.success() : Result.failure();
+            boolean hudMapInitResult = MapPackage.getInstance().init(MapType.HUD_MAP);
+            isMapInited = mainMapInitResult && deskMapInitResult && widgetMapInitResult && hudMapInitResult;
+            return (mainMapInitResult && deskMapInitResult && widgetMapInitResult && hudMapInitResult) ? Result.success() : Result.failure();
         }
 
         private static void addMapInitObserver(UUID uuid) {
@@ -540,6 +504,7 @@ public class NaviService extends Service {
         public Result doWork() {
             MyFsaService.getInstance().init();
             AdasClient.getInstance().start(AppContext.getInstance().getMContext());
+            ClsLinkManager.getInstance().init();
             return Result.success();
         }
 
@@ -611,5 +576,11 @@ public class NaviService extends Service {
     public static void exitProcess() {
         Logger.i(TAG, "exitProcess success!");
         System.exit(0);
+    }
+
+    private void initBroadcast() {
+        SteeringWheelButtonReceiver steeringWheelButtonReceiver = new SteeringWheelButtonReceiver();
+        IntentFilter intentFilter = new IntentFilter(SteeringWheelButtonReceiver.ACTION);
+        AppContext.getInstance().getMContext().registerReceiver(steeringWheelButtonReceiver, intentFilter, Context.RECEIVER_EXPORTED);
     }
 }

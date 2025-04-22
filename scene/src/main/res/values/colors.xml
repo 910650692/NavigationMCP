@@ -70,7 +70,7 @@
     <color name="tab_list_route_tab_list_select">#2461EA</color>
     <color name="tab_list_route_tab_list_unselect">#B3000000</color>
 
-    <color name="bg_route_item_select">#42386DF0</color>
+    <color name="bg_route_item_select">#EEF0FC</color>
     <color name="bg_route_item_unselect">#F8F8FA</color>
 
     <color name="color_f8f8fa">#F8F8FA</color>
@@ -243,9 +243,13 @@
     <color name="common_blue">#FF007BFF</color>
     <color name="common_green">#FF4ABA59</color>
     <color name="common_orange">#FFFF8500</color>
-    <color name="common_item_select_color">#42386DF0</color>
+    <color name="common_item_select_color">#F2F5FE</color>
     <color name="common_title_purple_color">#000000</color>
     <color name="common_delete_bg">#C73333</color>
     <color name="common_delete_text_color">#B3FFFFFF</color>
 
+    <color name="handing_card_fold_color">#408C889B</color>
+    <color name="handing_card_fold_indicator_color">#338E97B9</color>
+    <color name="handing_card_icon_fill_color">#9E171A</color>
+    <color name="handing_card_icon_stroke_color">#000000</color>
 </resources>

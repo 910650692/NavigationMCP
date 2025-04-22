@@ -19,7 +19,6 @@ import java.io.PrintStream
  * @Introduce: 屏幕管理.
  * @Author: lvww
  * @Date: 2023/11/13
- * @Description :
  */
 class ScreenUtils private constructor() {
     private var mContext: Context? = null
@@ -187,7 +186,7 @@ class ScreenUtils private constructor() {
     }
 
     companion object {
-       fun getInstance() = Helper.instance
+        fun getInstance() = Helper.instance
     }
 
     /**
@@ -203,6 +202,21 @@ class ScreenUtils private constructor() {
             display.getSize(size)
         }
         return size.x
+    }
+
+    /**
+     * 获取屏幕的真实高度
+     */
+    fun getRealScreenHeight(context: Context): Int {
+        val windowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
+        val display = windowManager.defaultDisplay
+        val size = Point()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            display.getRealSize(size)
+        } else {
+            display.getSize(size)
+        }
+        return size.y
     }
 
     fun getStatusBarHeight(context: Context): Int {

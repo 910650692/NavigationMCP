@@ -167,7 +167,7 @@ public interface IVrBridgeConstant {
 
     String ROUTE_HINT = "的路线";
 
-    interface MapMode {
+    interface VoiceMapMode {
         String CAR_2D = "2D_FOLLOW_LOGO"; //2D车头朝上
         String NORTH_2D = "2D"; //2D正北朝上
         String CAR_3D = "3D"; //3D车头朝上

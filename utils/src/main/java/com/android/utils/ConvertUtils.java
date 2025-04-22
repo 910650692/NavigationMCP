@@ -14,6 +14,7 @@ import androidx.annotation.Nullable;
 import com.android.utils.log.Logger;
 
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -83,6 +84,9 @@ public class ConvertUtils {
 
     public static Integer double2int(Double args) {
         return double2int(args, 0);
+    }
+    public static String stringFormatTwo(String args){
+        return stringFormatTwo(args,"0.00");
     }
 
     /**
@@ -1216,4 +1220,28 @@ public class ConvertUtils {
         final double scaleFactor = 1000000.0;
         return input / scaleFactor;
     }
-}
+
+    /**
+     * 将米转换为公里
+     *
+     * @param meters 以米为单位的距离
+     * @return 以公里为单位的距离
+     */
+    public static float convertMetersToKilometers(final long meters) {
+        return meters / 1000.0f; // 使用 1000.0f 确保结果是 float 类型
+    }
+
+    // 将字符串数字保留2位小数输出
+    public static String stringFormatTwo(String value,String defaultValue){
+        String numberStr = value;
+        try {
+            DecimalFormat df = new DecimalFormat("0.00"); // 保留2位小数
+            double number = Double.parseDouble(numberStr);
+            String result = df.format(number);
+            return result;
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+            return defaultValue;
+        }
+
+    }}

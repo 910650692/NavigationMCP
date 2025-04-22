@@ -37,6 +37,7 @@ public class SearchHistoryAdapter extends RecyclerView.Adapter<SearchHistoryAdap
     private final BehaviorPackage mBehaviorPackage;
     private ItemClickListener mItemClickListener;
     private int mHomeCompanyType = -1;// 1:家 2:公司 3:常用地址 0:收藏夹 -1:都不是
+    private boolean mShowActionContainer = true;
 
     public int getHomeCompanyType() {
         return mHomeCompanyType;
@@ -52,6 +53,7 @@ public class SearchHistoryAdapter extends RecyclerView.Adapter<SearchHistoryAdap
     public SearchHistoryAdapter() {
         mSearchPackage = SearchPackage.getInstance();
         mBehaviorPackage = BehaviorPackage.getInstance();
+        mShowActionContainer = true;
         this.mPoiEntities = new ArrayList<>();
     }
 
@@ -65,7 +67,6 @@ public class SearchHistoryAdapter extends RecyclerView.Adapter<SearchHistoryAdap
 
         mPoiEntities.clear();
         mPoiEntities.addAll(searchResultEntity);
-
         if (oldSize == 0 && newSize > 0) {
             notifyItemRangeInserted(0, newSize);
         } else if (oldSize > 0 && newSize == 0) {
@@ -94,15 +95,16 @@ public class SearchHistoryAdapter extends RecyclerView.Adapter<SearchHistoryAdap
         if (AutoMapConstant.SearchKeywordRecordKey.SEARCH_KEYWORD_RECORD_KEY == mPoiEntities.get(position).getMType()) {
             holder.resultItemBinding.skInfoLayout.setVisibility(View.GONE);
             holder.resultItemBinding.poiToNavi.setVisibility(View.GONE);
-            holder.resultItemBinding.llActionContainer.setVisibility(View.GONE);
+            holder.resultItemBinding.llActionContainer.setVisibility(mShowActionContainer ? View.VISIBLE : View.GONE);
+            holder.resultItemBinding.sllCollect.setVisibility(View.INVISIBLE);
             holder.resultItemBinding.poiIcon.setVisibility(View.VISIBLE);
-            holder.resultItemBinding.poiNum.setVisibility(View.INVISIBLE);
+            holder.resultItemBinding.poiIcon.setImageDrawable(ResourceUtils.Companion.getInstance().getDrawable(R.drawable.search_poi_icon));
         } else {
-            holder.resultItemBinding.poiNum.setVisibility(View.VISIBLE);
-            holder.resultItemBinding.poiIcon.setVisibility(View.INVISIBLE);
+            holder.resultItemBinding.poiIcon.setVisibility(View.VISIBLE);
+            holder.resultItemBinding.poiIcon.setImageDrawable(ResourceUtils.Companion.getInstance().getDrawable(R.drawable.img_basic_ic_orientation));
             holder.resultItemBinding.skInfoLayout.setVisibility(View.VISIBLE);
             holder.resultItemBinding.poiToNavi.setVisibility(View.VISIBLE);
-            holder.resultItemBinding.llActionContainer.setVisibility(View.VISIBLE);
+            holder.resultItemBinding.llActionContainer.setVisibility(mShowActionContainer ? View.VISIBLE : View.GONE);
             if (!ConvertUtils.isEmpty(mPoiEntities.get(position).getMEndPoint())) {
                 holder.resultItemBinding.poiDistance.setText(SearchPackage.getInstance().calcStraightDistance(
                         parseGeoPoint(mPoiEntities.get(position).getMEndPoint())));
@@ -256,5 +258,9 @@ public class SearchHistoryAdapter extends RecyclerView.Adapter<SearchHistoryAdap
         void onItemClick(int position, History poiInfoEntity);
 
         void onNaviClick(int position, History poiInfoEntity);
+    }
+
+    public void setNoShowActionContainer(){
+        mShowActionContainer = false;
     }
 }

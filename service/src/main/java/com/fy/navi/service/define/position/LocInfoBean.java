@@ -42,6 +42,23 @@ public class LocInfoBean {
     private int mOwnership;
 
     private int mLinkType;
+    //导航段
+    private int mSegmCur;
+    //道路段
+    private int mLinkCur;
+    //最后一个点索引
+    private int mPostCur;
+    private float mMatchRoadCourse;
+    private float mCourseAcc;
+    private int mStartDirType;
+    private float mGpsDir;
+    private float mCompassDir;
+    private int mFormway;
+    private int mStartPosType;
+    private float mFittingCourse;
+    private int mRoadDir;
+    private float mFittingCourseAcc;
+    private String mRequestRouteInfo;
 
     public long getTimeStamp() {
         return mTimeStamp;
@@ -187,6 +204,118 @@ public class LocInfoBean {
         mLinkType = linkType;
     }
 
+    public int getSegmCur() {
+        return mSegmCur;
+    }
+
+    public void setSegmCur(int segmCur) {
+        this.mSegmCur = segmCur;
+    }
+
+    public int getLinkCur() {
+        return mLinkCur;
+    }
+
+    public void setLinkCur(int linkCur) {
+        this.mLinkCur = linkCur;
+    }
+
+    public int getPostCur() {
+        return mPostCur;
+    }
+
+    public void setPostCur(int postCur) {
+        this.mPostCur = postCur;
+    }
+
+    public float getMatchRoadCourse() {
+        return mMatchRoadCourse;
+    }
+
+    public void setMatchRoadCourse(float matchRoadCourse) {
+        this.mMatchRoadCourse = matchRoadCourse;
+    }
+
+    public float getCourseAcc() {
+        return mCourseAcc;
+    }
+
+    public void setCourseAcc(float courseAcc) {
+        this.mCourseAcc = courseAcc;
+    }
+
+    public int getStartDirType() {
+        return mStartDirType;
+    }
+
+    public void setStartDirType(int startDirType) {
+        this.mStartDirType = startDirType;
+    }
+
+    public float getGpsDir() {
+        return mGpsDir;
+    }
+
+    public void setGpsDir(float gpsDir) {
+        this.mGpsDir = gpsDir;
+    }
+
+    public float getCompassDir() {
+        return mCompassDir;
+    }
+
+    public void setCompassDir(float compassDir) {
+        this.mCompassDir = compassDir;
+    }
+
+    public int getFormway() {
+        return mFormway;
+    }
+
+    public void setFormway(int formway) {
+        this.mFormway = formway;
+    }
+
+    public int getStartPosType() {
+        return mStartPosType;
+    }
+
+    public void setStartPosType(int startPosType) {
+        this.mStartPosType = startPosType;
+    }
+
+    public float getFittingCourse() {
+        return mFittingCourse;
+    }
+
+    public void setFittingCourse(float fittingCourse) {
+        this.mFittingCourse = fittingCourse;
+    }
+
+    public int getRoadDir() {
+        return mRoadDir;
+    }
+
+    public void setRoadDir(int roadDir) {
+        this.mRoadDir = roadDir;
+    }
+
+    public float getFittingCourseAcc() {
+        return mFittingCourseAcc;
+    }
+
+    public void setFittingCourseAcc(float fittingCourseAcc) {
+        this.mFittingCourseAcc = fittingCourseAcc;
+    }
+
+    public String getRequestRouteInfo() {
+        return mRequestRouteInfo;
+    }
+
+    public void setRequestRouteInfo(String requestRouteInfo) {
+        this.mRequestRouteInfo = requestRouteInfo;
+    }
+
     @Override
     public String toString() {
         return "LocationInfo{" +
@@ -196,6 +325,20 @@ public class LocInfoBean {
                 ", address='" + mAddress + '\'' +
                 ", ownership='" + mOwnership + '\'' +
                 ", linkType='" + mLinkType + '\'' +
+                ", mSegmCur='" + mSegmCur + '\'' +
+                ", mLinkCur='" + mLinkCur + '\'' +
+                ", mPostCur='" + mPostCur + '\'' +
+                ", mMatchRoadCourse='" + mMatchRoadCourse + '\'' +
+                ", mCourseAcc='" + mCourseAcc + '\'' +
+                ", mStartDirType='" + mStartDirType + '\'' +
+                ", mGpsDir='" + mGpsDir + '\'' +
+                ", mCompassDir='" + mCompassDir + '\'' +
+                ", mFormway='" + mFormway + '\'' +
+                ", mStartPosType='" + mStartPosType + '\'' +
+                ", mFittingCourse='" + mFittingCourse + '\'' +
+                ", mRoadDir='" + mRoadDir + '\'' +
+                ", mFittingCourseAcc='" + mFittingCourseAcc + '\'' +
+                ", mRequestRouteInfo='" + mRequestRouteInfo + '\'' +
                 '}';
     }
 

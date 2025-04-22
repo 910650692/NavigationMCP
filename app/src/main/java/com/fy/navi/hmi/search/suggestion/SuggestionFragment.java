@@ -7,6 +7,7 @@ import com.alibaba.android.arouter.facade.annotation.Route;
 import com.android.utils.log.Logger;
 import com.fy.navi.hmi.BR;
 import com.fy.navi.hmi.R;
+import com.fy.navi.hmi.databinding.SugSearchFragmentLayoutBinding;
 import com.fy.navi.hmi.databinding.SugSearchFragmentLayoutBindingImpl;
 import com.fy.navi.scene.RoutePath;
 import com.fy.navi.service.AutoMapConstant;
@@ -16,7 +17,7 @@ import com.fy.navi.service.define.search.SearchResultEntity;
 import com.fy.navi.ui.base.BaseFragment;
 
 @Route(path = RoutePath.Search.SUGGESTION_FRAGMENT)
-public class SuggestionFragment extends BaseFragment<SugSearchFragmentLayoutBindingImpl, SuggestionResultViewModel> {
+public class SuggestionFragment extends BaseFragment<SugSearchFragmentLayoutBinding, SuggestionResultViewModel> {
 
     @Override
     public int onLayoutId() {

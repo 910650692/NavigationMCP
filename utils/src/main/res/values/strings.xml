@@ -12,6 +12,7 @@
     <string name="rg_arrive_time_after_day">%1$s天后到达</string>
     <string name="km">公里</string>
     <string name="meter">米</string>
+    <string name="now">现在</string>
     <string name="tbt_time_hour_unit">小时</string>
     <string name="tbt_time_minute_unit">分钟</string>
     <string name="navi_parking_tight">紧张</string>

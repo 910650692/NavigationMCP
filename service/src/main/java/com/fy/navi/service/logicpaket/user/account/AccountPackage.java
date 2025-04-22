@@ -13,7 +13,6 @@ import com.fy.navi.service.greendao.CommonManager;
 import com.fy.navi.service.greendao.history.HistoryManager;
 import com.fy.navi.service.logicpaket.user.behavior.BehaviorPackage;
 import com.fy.navi.service.logicpaket.user.msgpush.MsgPushPackage;
-import com.fy.navi.service.logicpaket.user.usertrack.UserTrackPackage;
 
 import java.util.Hashtable;
 

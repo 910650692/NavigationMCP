@@ -401,7 +401,7 @@ public final class NaviUiUtil {
 
         // 计算控件相对于应用显示区域的坐标
         final int relativeLeft = location[0] + windowVisibleDisplayFrame.left;
-        final int relativeTop = location[1] + windowVisibleDisplayFrame.top;
+        final int relativeTop = location[1];
 
         // 获取控件的宽度和高度
         final int width = view.getWidth();

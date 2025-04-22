@@ -290,6 +290,7 @@ public class LimitDriveFragment extends BaseFragment<FragmentLimitDetailBinding,
                                     MapPackage.getInstance().setMapCenter(MapType.MAIN_SCREEN_MAIN_MAP,
                                             new GeoPoint(ConvertUtils.transCityLatAndLon(cityItemBean.getCityX()),
                                                     ConvertUtils.transCityLatAndLon(cityItemBean.getCityY())));
+                                    MapPackage.getInstance().setZoomLevel(MapType.MAIN_SCREEN_MAIN_MAP, 10);
                                 }
                             } else {
                                 mBinding.recyclerView.setVisibility(View.GONE);

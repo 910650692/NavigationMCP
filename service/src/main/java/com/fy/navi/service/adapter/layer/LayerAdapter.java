@@ -1,12 +1,13 @@
 package com.fy.navi.service.adapter.layer;
 
+import android.graphics.Rect;
+
 import com.autonavi.gbl.guide.model.CrossType;
 import com.fy.navi.service.AdapterConfig;
 import com.fy.navi.service.define.bean.GeoPoint;
 import com.fy.navi.service.define.bean.PreviewParams;
-import com.fy.navi.service.define.layer.GemLayerClickBusinessType;
+import com.fy.navi.service.define.layer.refix.DynamicLevelMode;
 import com.fy.navi.service.define.layer.refix.LayerItemCrossEntity;
-import com.fy.navi.service.define.layer.RouteLineLayerParam;
 import com.fy.navi.service.define.layer.refix.CarModeType;
 import com.fy.navi.service.define.layer.refix.LayerItemLabelResult;
 import com.fy.navi.service.define.layer.refix.LayerItemRouteEndPoint;
@@ -16,6 +17,7 @@ import com.fy.navi.service.define.layer.refix.LayerItemUserTrackDepth;
 import com.fy.navi.service.define.layer.refix.LayerSearchItemType;
 import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.navi.NaviParkingEntity;
+import com.fy.navi.service.define.route.RequestRouteResult;
 import com.fy.navi.service.define.search.PoiInfoEntity;
 
 import java.util.ArrayList;
@@ -67,13 +69,28 @@ public class LayerAdapter {
         return mLayerApi.getPathResultBound(mapTypeId, pathResult);
     }
 
-    public void drawRouteLine(MapType mapTypeId, RouteLineLayerParam routeLineLayer) {
-        mLayerApi.drawRouteLine(mapTypeId, routeLineLayer);
+    public void drawRouteLine(MapType mapTypeId, RequestRouteResult routeResult) {
+        mLayerApi.drawRouteLine(mapTypeId, routeResult);
     }
 
-    /*更新终点扎标样式*/
-    public void updateEndPoint(MapType mapTypeId, LayerItemRouteEndPoint endPoint) {
-        mLayerApi.updateEndPoint(mapTypeId, endPoint);
+    /*更新终点扎标数据*/
+    public void updateRouteEndPoint(MapType mapTypeId, LayerItemRouteEndPoint endPoint) {
+        mLayerApi.updateRouteEndPoint(mapTypeId, endPoint);
+    }
+
+    /* 是否打开动态比例尺功能，type区分巡航动态比例尺还是导航动态比例尺 */
+    public void openDynamicLevel(MapType mapTypeId, DynamicLevelMode dynamicLevelMode) {
+        mLayerApi.openDynamicLevel(mapTypeId, dynamicLevelMode);
+    }
+
+    /* 设置动态比例尺是否锁住状态，type区分巡航动态比例尺还是导航动态比例尺 */
+    public void setDynamicLevelLock(MapType mapTypeId, DynamicLevelMode dynamicLevelMode, boolean isLock) {
+        mLayerApi.setDynamicLevelLock(mapTypeId, dynamicLevelMode, isLock);
+    }
+
+    /* 设置自动比例尺是否主动调整地图中心 */
+    public void openDynamicCenter(MapType mapTypeId, boolean isDynaCenterLock) {
+        mLayerApi.openDynamicCenter(mapTypeId, isDynaCenterLock);
     }
 
     /**
@@ -279,6 +296,11 @@ public class LayerAdapter {
     /* 根据放大路口类型隐藏对应的路口大图 */
     public boolean hideCross(MapType mapTypeId, @CrossType.CrossType1 int type) {
         return mLayerApi.hideCross(mapTypeId, type);
+    }
+
+    /* 动态更新路口大图显示区域 */
+    public void updateRoadCrossRect(MapType mapTypeId, Rect rect) {
+        mLayerApi.updateRoadCrossRect(mapTypeId, rect);
     }
 
     /*========================================= 路口大图 =========================================*/

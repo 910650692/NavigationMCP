@@ -976,6 +976,16 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
         });
     }
 
+
+    /***
+     * 只展示算路中弹框
+     */
+    public void showProgressUIOnly() {
+        ThreadManager.getInstance().postUi(() -> {
+            mView.showProgressUI();
+        });
+    }
+
     /***
      * 隐藏算路弹框
      * @param success 算路成功
@@ -1207,9 +1217,6 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
             final RouteLineInfo routeLineInfo = mModel.getSelectLineInfo();
             mRouteChargeTotalMileage.set(ResourceUtils.Companion.getInstance().getString(R.string.route_total_mileage)
                     + routeLineInfo.getMLength());
-            clearRouteChargePoiUi();
-            mChargePoiDistanceList.clear();
-            mRouteProgressChargeVisibility.set(mView.getEnergyChecked());
             final EvRangeOnRouteInfo evRangeOnRouteInfo = mModel.getRangeOnRouteInfo(mModel.getCurrentIndex());
             mRouteTotalDistance = routeLineInfo.getMDistance();
             if (evRangeOnRouteInfo.isMCanArrived()) {
@@ -1228,6 +1235,9 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
 
             mView.highlightAlongTab();
         }
+        clearRouteChargePoiUi();
+        mChargePoiDistanceList.clear();
+        mRouteProgressChargeVisibility.set(mView.getEnergyChecked() && listSearchType == 0);
         mAlongTabSearchVisibility.set(listSearchType == 0);
         mView.showRouteSearchChargeListUI(poiInfoEntities, gasChargeAlongList, listSearchType, type);
         if (type == 1) {
@@ -1480,6 +1490,7 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
      * @param isLongRoute 是否长途路
      */
     public void showHideElicCheckBox(final boolean isLongRoute) {
+        mView.setPreferenceMaxWidth(isLongRoute);
         mBatterCheckBoxVisibility.set(isLongRoute);
     }
 
@@ -1509,7 +1520,12 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
      */
     public void removeRouteChargePoiUi(final PoiInfoEntity poiInfoEntity) {
         mView.removeRouteChargePoiUi(poiInfoEntity);
-        mChargePoiDistanceList.remove(mChargePoiDistanceList.indexOf(poiInfoEntity.getSort_distance()));
+        final int index = mChargePoiDistanceList.indexOf(poiInfoEntity.getSort_distance());
+        if (index == -1) {
+            Logger.d(TAG, "mChargePoiDistanceList: " + mChargePoiDistanceList + " distance:" + poiInfoEntity.getSort_distance());
+            return;
+        }
+        mChargePoiDistanceList.remove(index);
         updateExhaustDistance();
     }
 
@@ -1571,6 +1587,9 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
 
     @Override
     public void onRoutePreferenceChange(final String text, final boolean isFirstChange) {
+        if (mView.isHidden()) {
+            return;
+        }
         if (!isFirstChange) {
             final RouteRequestParam param = new RouteRequestParam();
             param.setMRouteWay(RouteWayID.ROUTE_WAY_CHANGE_PREFERENCE);

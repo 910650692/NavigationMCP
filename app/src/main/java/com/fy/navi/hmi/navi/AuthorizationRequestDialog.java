@@ -1,6 +1,7 @@
 package com.fy.navi.hmi.navi;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 
@@ -21,7 +22,11 @@ public class AuthorizationRequestDialog extends BaseDialog<DialogAuthorizationRe
         return DialogAuthorizationRequestBinding.inflate(LayoutInflater.from(getContext()));
     }
 
-
+    @Override
+    protected void onCreate(final Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setCanceledOnTouchOutside(false);
+    }
 
     @Override
     protected void initListener() {
@@ -34,6 +39,7 @@ public class AuthorizationRequestDialog extends BaseDialog<DialogAuthorizationRe
 
         mViewBinding.dialogCancel.setOnClickListener(v -> {
             cancel();
+            System.exit(0);
         });
     }
 

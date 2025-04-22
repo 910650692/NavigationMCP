@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.view.WindowCompat;
 
 import com.android.utils.ConvertUtils;
+import com.android.utils.ScreenUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
 import com.fy.navi.burypoint.anno.HookMethod;
@@ -25,6 +26,7 @@ import com.fy.navi.hmi.databinding.ActivityMapBinding;
 import com.fy.navi.hmi.startup.PermissionUtils;
 import com.fy.navi.hmi.test.TestWindow;
 import com.fy.navi.mapservice.bean.INaviConstant;
+import com.fy.navi.service.define.cruise.CruiseInfoEntity;
 import com.fy.navi.service.define.map.IBaseScreenMapView;
 import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.navi.LaneInfoEntity;
@@ -122,6 +124,11 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
             mBinding.searchMainTab.setVisibility(View.VISIBLE);
             mViewModel.resetMapCenterInScreen();
         });
+    }
+
+    @Override
+    public void showParkingView() {
+        mViewModel.showParkingView();
     }
 
     private void initTestWindow() {
@@ -265,5 +272,23 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
                 mBinding.skIvBasicBusProgress.refreshTMC(routeLightBarItems);
             }
         });
+    }
+
+    @Override
+    protected void onFragmentSizeChanged() {
+        super.onFragmentSizeChanged();
+        mViewModel.stopCruise();
+    }
+
+    public void updateCruiseRoadName(CruiseInfoEntity cruiseInfoEntity) {
+        if (ConvertUtils.isNull(cruiseInfoEntity) || ConvertUtils.isEmpty(cruiseInfoEntity.roadName)) {
+            mBinding.cruiseLayout.tvCurrentRoadName.setVisibility(View.INVISIBLE);
+            return;
+        }
+        ThreadManager.getInstance().postUi(() -> {
+                    mBinding.cruiseLayout.tvCurrentRoadName.setText(cruiseInfoEntity.roadName);
+                    mBinding.cruiseLayout.tvCurrentRoadName.setVisibility(View.VISIBLE);
+                }
+        );
     }
 }

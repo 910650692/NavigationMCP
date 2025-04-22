@@ -21,6 +21,7 @@ public class SwipeDeleteLayout extends LinearLayout {
     private float mStartX;
     private float mStartY;
     private OnSwipeActionListener mOnActionListener;
+    private boolean mIsOpen = true;
 
     public SwipeDeleteLayout(Context context) {
         this(context, null);
@@ -89,7 +90,7 @@ public class SwipeDeleteLayout extends LinearLayout {
             case MotionEvent.ACTION_MOVE:
                 float dx = x - mStartX;
                 float dy = y - mStartY;
-                if (Math.abs(dx) > Math.abs(dy)) {
+                if (Math.abs(dx) > Math.abs(dy) && mIsOpen) {
                     intercept = true;
                 }
                 break;
@@ -185,6 +186,10 @@ public class SwipeDeleteLayout extends LinearLayout {
         this.mOnActionListener = listener;
     }
 
+    public void removeSwipeActionListener() {
+        this.mOnActionListener = null;
+    }
+
     public interface OnSwipeActionListener {
         void onDelete(SwipeDeleteLayout layout);
 
@@ -193,5 +198,13 @@ public class SwipeDeleteLayout extends LinearLayout {
          * @param onDragging
          */
         void onStateChanged(boolean onDragging);
+    }
+
+    public void closeSwipe() {
+        this.mIsOpen = false;
+    }
+
+    public void openSwipe() {
+        this.mIsOpen = true;
     }
 }

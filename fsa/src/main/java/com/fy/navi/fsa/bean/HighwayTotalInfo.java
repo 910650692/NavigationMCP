@@ -1,7 +1,20 @@
 package com.fy.navi.fsa.bean;
 
+/**
+ * 高速路信息
+ */
 public class HighwayTotalInfo {
+    /**
+     * 导航信息显示状态
+     * -1 – 无效值
+     * 0 – 展示
+     * 1 – 更新
+     * 2 – 隐藏
+     */
     private int showType;
+    /**
+     * 高速路信息
+     */
     private HighwayInfo highwayInfo;
 
     public HighwayTotalInfo() {

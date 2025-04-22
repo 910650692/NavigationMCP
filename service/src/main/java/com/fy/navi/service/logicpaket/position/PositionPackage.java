@@ -87,8 +87,7 @@ public class PositionPackage implements IPositionAdapterCallback, SignalAdapterC
      * @param roadId 通常从onParallelRoadUpdate回调中获取  在线算路时，可以传入0 离线算路时，必须传入正确的道路ID
      * */
     public void switchParallelRoad(int switchRoadType, BigInteger roadId) {
-        Logger.i(TAG, "switchParallelRoad switchRoadType: " + switchRoadType +
-                " roadId: " + roadId);
+        Logger.i(TAG, "平行路切换switchParallelRoad switchRoadType: " + switchRoadType + " roadId: " + roadId);
         mPositionAdapter.switchParallelRoad(switchRoadType, roadId);
     }
 

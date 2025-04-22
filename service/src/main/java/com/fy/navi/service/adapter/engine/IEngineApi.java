@@ -19,10 +19,15 @@ public interface IEngineApi {
     void addInitEnginObserver(EngineObserver observer);
 
     /**
-     * 初始化引擎
-     * @return 初始化结果
+     * 添加激活观察者
+     * @param observer ActivateObserver
      */
-    ListenableWorker.Result initEngine();
+    void addActivateObserver(ActivateObserver observer);
+
+    /**
+     * 初始化引擎
+     */
+    void initEngine();
 
     /**
      * 获取引擎id
@@ -61,6 +66,18 @@ public interface IEngineApi {
      * 反初始化引擎
      */
     void unInit();
+
+    /**
+     * 重试网络激活
+     */
+    void netActivateRetry();
+
+    /**
+     * 手动激活
+     * @param loginCode 激活码
+     * @param userCode 序列号
+     */
+    void manualActivate(String userCode, String loginCode);
 
     /**
      * 获取sdk版本

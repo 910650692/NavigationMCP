@@ -1,9 +1,7 @@
 package com.fy.navi.hmi.navi;
 
-import com.android.utils.ConvertUtils;
 import com.android.utils.thread.ThreadManager;
 import com.fy.navi.hmi.R;
-import com.fy.navi.hmi.map.PowerMonitorService;
 import com.fy.navi.service.define.route.RouteWeatherID;
 
 /**
@@ -40,16 +38,5 @@ public class NaviGuidanceHelp {
      */
     public void mockTestChargeTipMsg(final ChargeTipManager tipManager) {
         ThreadManager.getInstance().postDelay(() -> tipManager.mockTest(), 6000L);
-    }
-
-    /***
-     * 行驶过程中车辆电量提示低
-     * 通知电量低
-     * @param powerMonitorService
-     */
-    public void mockTestNotifyElectLow(PowerMonitorService powerMonitorService) {
-        if (!ConvertUtils.isEmpty(powerMonitorService)) {
-            ThreadManager.getInstance().postDelay(() -> powerMonitorService.mockTest(), 6000L);
-        }
     }
 }

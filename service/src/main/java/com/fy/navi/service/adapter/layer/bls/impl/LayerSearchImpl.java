@@ -60,7 +60,7 @@ public class LayerSearchImpl extends BaseLayerImpl<LayerSearchStyleAdapter> {
     }
 
     public void setSelect(LayerSearchItemType type, int index) {
-        Logger.d(TAG, "setSelect type " + type.ordinal() + " index " + index);
+        Logger.d(TAG, "setSelect type " + type + " index " + index);
         if (getLayerSearchControl() != null) {
             switch (type) {
                 case SEARCH_PARENT_POINT -> {
@@ -150,7 +150,7 @@ public class LayerSearchImpl extends BaseLayerImpl<LayerSearchStyleAdapter> {
             Logger.e(TAG, "handleClickCallback callBacks is Empty");
             return;
         }
-        Logger.d(TAG, "handleClickCallback type " + type.ordinal() + " index " + index);
+        Logger.d(TAG, "handleClickCallback type " + type + " index " + index);
         for (ILayerAdapterCallBack callback : callBacks) {
             callback.onSearchItemClick(getMapType(), type, index);
         }
@@ -167,7 +167,7 @@ public class LayerSearchImpl extends BaseLayerImpl<LayerSearchStyleAdapter> {
             Logger.e(TAG, "updateSearchMarker searchResult == null");
             return false;
         }
-        Logger.d(TAG, "updateSearchMarker type " + type.ordinal());
+        Logger.d(TAG, "updateSearchMarker type " + type);
         boolean result = false;
         switch (type) {
             case SEARCH_PARENT_Line_Road -> {
@@ -664,7 +664,7 @@ public class LayerSearchImpl extends BaseLayerImpl<LayerSearchStyleAdapter> {
      * 清除指定搜索类型扎标
      */
     public void clearSearchItemByType(LayerSearchItemType searchItemType) {
-        Logger.d(TAG, "clearSearchItemByType searchItemType " + searchItemType.ordinal());
+        Logger.d(TAG, "clearSearchItemByType searchItemType " + searchItemType);
         switch (searchItemType) {
             case SEARCH_PARENT_Line_Road -> {
                 getLayerSearchControl().clearAllItems(BizSearchType.BizSearchTypeLine);

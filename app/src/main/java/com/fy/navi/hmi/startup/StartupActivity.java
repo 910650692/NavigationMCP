@@ -1,21 +1,21 @@
 package com.fy.navi.hmi.startup;
 
 import android.Manifest;
-import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Environment;
 import android.provider.Settings;
+import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.view.animation.LinearInterpolator;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.android.utils.log.Logger;
-import com.fy.navi.fsa.MyFsaService;
 import com.fy.navi.hmi.BR;
 import com.fy.navi.hmi.R;
 import com.fy.navi.hmi.databinding.ActivityStartupBinding;
-import com.fy.navi.exportservice.ScreenRecorder;
 import com.fy.navi.mapservice.bean.INaviConstant;
 import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.search.PoiInfoEntity;
@@ -28,6 +28,8 @@ import com.fy.navi.ui.base.BaseActivity;
  */
 public class StartupActivity extends BaseActivity<ActivityStartupBinding, StartupViewModel> {
 
+    private Animation mRotateAnim;
+
     @Override
     public void onCreateBefore() {
         mScreenId = MapType.MAIN_SCREEN_MAIN_MAP.name();
@@ -39,12 +41,33 @@ public class StartupActivity extends BaseActivity<ActivityStartupBinding, Startu
     }
 
     @Override
+    public int onFragmentId() {
+        return R.id.fragment_container;
+    }
+
+    @Override
     public int onInitVariableId() {
         return BR.ViewModel;
     }
 
     @Override
-    public void onInitView() {}
+    public void onInitView() {
+        mRotateAnim = AnimationUtils.loadAnimation(this, R.anim.rotate_animation);
+        mRotateAnim.setDuration(2000);
+        mRotateAnim.setRepeatCount(Animation.INFINITE);
+        mRotateAnim.setInterpolator(new LinearInterpolator());
+        mBinding.mainImg.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (mRotateAnim != null) {
+            Logger.i("startup onDestroy");
+            mRotateAnim.cancel();
+            mRotateAnim = null;
+        }
+        super.onDestroy();
+    }
 
     @Override
     public void onInitData() {
@@ -97,6 +120,27 @@ public class StartupActivity extends BaseActivity<ActivityStartupBinding, Startu
                 else
                     PermissionUtils.getInstance().onRequestPermissionsResult(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, -1);
                 break;
+        }
+    }
+
+    /**
+     * 控制激活动画
+     * @param show 是否显示
+     */
+    public void showActivatingView(final boolean show) {
+        if (show) {
+            mBinding.mainImg.setVisibility(View.GONE);
+            mBinding.activatingImg.setVisibility(View.VISIBLE);
+            mBinding.activatingTv.setVisibility(View.VISIBLE);
+            mBinding.activatingImg.startAnimation(mRotateAnim);
+        } else {
+            mBinding.mainImg.setVisibility(View.VISIBLE);
+            mBinding.activatingImg.setVisibility(View.GONE);
+            mBinding.activatingTv.setVisibility(View.GONE);
+            if (mRotateAnim != null) {
+                mRotateAnim.cancel(); // 停止并重置动画
+                mRotateAnim.reset();
+            }
         }
     }
 }

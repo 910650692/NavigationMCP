@@ -45,6 +45,7 @@ public class NearMapDataFragment extends BaseFragment<FragmentNearMapDataBinding
         final LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         mBinding.rvNearOffline.setLayoutManager(layoutManager);
+        mBinding.rvNearOffline.setItemAnimator(null);
         mBinding.rvNearOffline.setAdapter(mCityMapDataAdapter);
         mCityMapDataAdapter.setItemClickListener(new CityMapDataAdapter.OnItemClickListener() {
 

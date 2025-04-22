@@ -223,6 +223,7 @@
     <string name="filter_text">筛选</string>
     <string name="filter_result">%s(%d)</string>
     <string name="search_result_no_data">很抱歉，未找到结果\n您可以换个词试试</string>
+    <string name="sug_search_result_no_data">很抱歉，未找到结果您可以换个词试试</string>
     <string name="search_offline_hint">网络异常，已切换至离线，当前搜索城市：%s</string>
     <string name="search_offline_no_city_hint">无网络连接，请检查网络后重试</string>
     <string name="search_offline_no_result_hint">没有找到”%s“相关城市</string>

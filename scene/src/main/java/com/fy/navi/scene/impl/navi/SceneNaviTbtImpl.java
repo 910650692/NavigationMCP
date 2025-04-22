@@ -503,11 +503,13 @@ public class SceneNaviTbtImpl extends BaseSceneModel<SceneNaviTbtView> implement
         mDistanceStrArray = ConvertUtils.formatDistanceArray(mScreenView.getContext(), mDistanceNextRoad);
         // 距路口小于10，显示现在
         if (mDistanceNextRoad <= 10) {
-            Logger.d(TAG, "sceneNowNextRoad：");
-            mGroupDivVisible.set(false);
+            Logger.d(TAG, "sceneNowNextRoad：" + mDistanceNextRoad);
+            //mGroupDivVisible.set(false);
+            mScreenView.setTextNaviInfoDistanceNextRoad(new AutoUIString(mScreenView.getContext().getString(com.android.utils.R.string.now)));
+            mScreenView.setTextNaviInfoDistanceNextRoadUnit(new AutoUIString(""));
         } else {
             // 显示距离路口实际距离和单位
-            Logger.d(TAG, "sceneDistanceNextRoad：");
+            Logger.d(TAG, "sceneDistanceNextRoad：" + mDistanceNextRoad);
             mGroupDivVisible.set(true);
             mScreenView.setTextNaviInfoDistanceNextRoad(new AutoUIString(mDistanceStrArray[0] + ""));
             mScreenView.setTextNaviInfoDistanceNextRoadUnit(new AutoUIString(mDistanceStrArray[1] + ""));

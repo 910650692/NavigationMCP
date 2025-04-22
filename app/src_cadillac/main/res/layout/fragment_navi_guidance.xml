@@ -116,46 +116,24 @@
             scene_navi_eta,scene_navi_tmc,scene_navi_via_list,scene_navi_lanes,scene_navi_via_info"
                 tools:visibility="gone" />
 
-            <!--缺电推荐充电站-->
-            <com.fy.navi.scene.ui.navi.SceneNaviNearProvideCharge
-                android:id="@+id/scene_navi_rec_charge"
+            <!--悬挂卡-->
+            <com.fy.navi.scene.ui.navi.hangingcard.NaviSceneHangingCard
+                android:id="@+id/scene_handing_card"
                 android:layout_width="@dimen/dp_820"
-                android:layout_height="@dimen/dp_104"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_20"
-                android:visibility="@{ViewModel.mNaviRecChargeVisibility?View.VISIBLE:View.GONE}"
-                app:layout_constraintTop_toBottomOf="@id/barrier"
-                tools:visibility="gone" />
+                android:visibility="@{ViewModel.mHandingCardVisibility?View.VISIBLE:View.GONE}"
+                app:layout_constraintTop_toBottomOf="@id/barrier" />
 
-            <!--缺油推荐加电站-->
-            <com.fy.navi.scene.ui.navi.SceneNaviNearProvideGas
-                android:id="@+id/scene_navi_rec_gas"
-                android:layout_width="@dimen/dp_820"
-                android:layout_height="@dimen/dp_104"
-                android:layout_marginTop="@dimen/dp_20"
-                android:visibility="@{ViewModel.mNaviRecGasVisibility?View.VISIBLE:View.GONE}"
-                app:layout_constraintTop_toBottomOf="@id/scene_navi_rec_charge"
-                tools:visibility="gone" />
-
-            <!--悬挂卡-推荐停车-->
-            <com.fy.navi.scene.ui.navi.SceneNaviNearProvidePark
-                android:id="@+id/scene_navi_rec_park"
-                android:layout_width="@dimen/dp_820"
-                android:layout_height="@dimen/dp_104"
-                android:layout_marginTop="@dimen/dp_20"
-                android:visibility="@{ViewModel.mNaviRecParkVisibility?View.VISIBLE:View.GONE}"
-                app:layout_constraintTop_toBottomOf="@id/scene_navi_rec_gas"
-                tools:visibility="gone" />
-
-            <!--停车场列表-->
-            <com.fy.navi.scene.ui.navi.SceneNaviParkListView
-                android:id="@+id/scene_navi_parking_list"
+            <!--悬挂卡详情-->
+            <com.fy.navi.scene.ui.navi.hangingcard.NaviSceneHandingCardDetail
+                android:id="@+id/scene_navi_card_detail"
                 android:layout_width="@dimen/dp_820"
                 android:layout_height="@dimen/dp_376"
                 android:layout_marginTop="@dimen/dp_20"
                 android:background="@drawable/bg_navi_btn_common"
-                android:visibility="@{ViewModel.mNaviParkingListVisibility?View.VISIBLE:View.GONE}"
-                app:layout_constraintTop_toBottomOf="@id/barrier"
-                tools:visibility="gone" />
+                android:visibility="@{ViewModel.mHandingCardDetailVisibility?View.VISIBLE:View.GONE}"
+                app:layout_constraintTop_toBottomOf="@id/barrier" />
 
             <!--控制tools-->
             <com.fy.navi.scene.ui.navi.SceneNaviControlView
@@ -229,7 +207,7 @@
                 android:id="@+id/scene_navi_parallel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_290"
+                android:layout_marginStart="@dimen/dp_20"
                 android:visibility="@{ViewModel.mNaviParallelVisibility?View.VISIBLE:View.GONE}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@id/scene_navi_tbt"
@@ -270,27 +248,6 @@
                 android:layout_marginTop="@dimen/dp_30"
                 android:visibility="@{ViewModel.mNaviChargeTipVisibility ? View.VISIBLE : View.GONE}"
                 app:layout_constraintEnd_toEndOf="@id/scene_navi_tbt"
-                app:layout_constraintStart_toStartOf="@id/scene_navi_tbt"
-                app:layout_constraintTop_toBottomOf="@id/barrier"
-                tools:visibility="gone" />
-
-            <com.fy.navi.scene.ui.navi.SceneNaviChargeListView
-                android:id="@+id/sceneRecChargeListView"
-                android:layout_width="@dimen/dp_820"
-                android:layout_height="@dimen/dp_376"
-                android:layout_marginTop="@dimen/dp_20"
-                android:visibility="@{ViewModel.mNaviRecChargeListVisibility?View.VISIBLE:View.GONE}"
-                app:layout_constraintStart_toStartOf="@id/scene_navi_tbt"
-                app:layout_constraintTop_toBottomOf="@id/barrier"
-                tools:background="@android:color/holo_red_light"
-                tools:visibility="gone" />
-
-            <com.fy.navi.scene.ui.navi.SceneGasListView
-                android:id="@+id/sceneRecGasListView"
-                android:layout_width="@dimen/dp_820"
-                android:layout_height="@dimen/dp_376"
-                android:layout_marginTop="@dimen/dp_20"
-                android:visibility="@{ViewModel.mNaviRecGasListVisibility?View.VISIBLE:View.GONE}"
                 app:layout_constraintStart_toStartOf="@id/scene_navi_tbt"
                 app:layout_constraintTop_toBottomOf="@id/barrier"
                 tools:visibility="gone" />

@@ -1,5 +1,6 @@
 package com.fy.navi.hmi.mapdata.adapter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,7 +10,6 @@ import android.widget.ProgressBar;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.utils.ResourceUtils;
-import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
 import com.fy.navi.hmi.R;
 import com.fy.navi.hmi.utils.StringUtils;
@@ -27,79 +27,86 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SearchMapDataAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+    public static final String TAG = SearchMapDataAdapter.class.getName();
     private static final int TYPE_PARENT = 0;
     private static final int TYPE_CHILD = 1;
     private Context mContext;
-    private List<ProvDataInfo> parentItems = new ArrayList<>();
-    private OnChildClickListener onChildClickListener;
-    private boolean isClickAllStart = true;
-    private boolean isClickAllPause = false;
+    private final List<ProvDataInfo> mProvinceList = new ArrayList<>();
+    private OnChildClickListener mOnChildClickListener;
+    private boolean mIsClickAllStart = true;
+    private boolean mIsClickAllPause = false;
 
     public SearchMapDataAdapter(final Context context) {
         this.mContext = context;
     }
 
-    public void setData(List<ProvDataInfo> parentItems) {
-        this.parentItems = parentItems;
-        notifyDataSetChanged();
+    /**
+     * set adapter data
+     * @param parentItems
+     */
+    @SuppressLint("NotifyDataSetChanged")
+    public void setData(final List<ProvDataInfo> parentItems) {
+        if (parentItems != null) {
+            mProvinceList.clear();
+            mProvinceList.addAll(parentItems);
+            notifyDataSetChanged();
+        }
     }
 
     public void setOnChildClickListener(final OnChildClickListener listener) {
-        this.onChildClickListener = listener;
+        this.mOnChildClickListener = listener;
     }
 
     @Override
-    public int getItemViewType(int position) {
-        int parentIndex = 0;
+    public int getItemViewType(final int position) {
         int itemCount = 0;
-
-        for (ProvDataInfo parent : parentItems) {
+        for (ProvDataInfo provDataInfo : mProvinceList) {
             if (position == itemCount) {
-                return TYPE_PARENT;
+                return provDataInfo.isParentCity() ? TYPE_CHILD : TYPE_PARENT;
             }
             itemCount++;
-
-            if (parent.isExpanded()) {
-                if (position < itemCount + parent.getCityInfoList().size()) {
+            if (provDataInfo.isExpanded()) {
+                if (position < itemCount + provDataInfo.getCityInfoList().size()) {
                     return TYPE_CHILD;
                 }
-                itemCount += parent.getCityInfoList().size();
+                itemCount += provDataInfo.getCityInfoList().size();
             }
         }
         throw new IllegalStateException("Invalid position");
     }
 
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        LayoutInflater inflater = LayoutInflater.from(parent.getContext());
+    public RecyclerView.ViewHolder onCreateViewHolder(final ViewGroup parent, final int viewType) {
+        final LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         if (viewType == TYPE_PARENT) {
-            View view = inflater.inflate(R.layout.item_province, parent, false);
+            final View view = inflater.inflate(R.layout.item_province, parent, false);
             return new ParentViewHolder(view);
         } else {
-            View view = inflater.inflate(R.layout.item_city_data, parent, false);
+            final View view = inflater.inflate(R.layout.item_city_data, parent, false);
             return new ChildViewHolder(view);
         }
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        int parentIndex = 0;
+    public void onBindViewHolder(final RecyclerView.ViewHolder holder, final int position) {
         int itemCount = 0;
-
-        for (ProvDataInfo parent : parentItems) {
+        for (ProvDataInfo provDataInfo : mProvinceList) {
             if (position == itemCount) {
-                ((ParentViewHolder) holder).bind(parent);
+                if (provDataInfo.isParentCity()) {
+                    ((ChildViewHolder) holder).bind(provDataInfo, null);
+                } else {
+                    ((ParentViewHolder) holder).bind(provDataInfo);
+                }
                 return;
             }
             itemCount++;
-
-            if (parent.isExpanded()) {
-                if (position < itemCount + parent.getCityInfoList().size()) {
-                    int childPos = position - itemCount;
-                    ((ChildViewHolder) holder).bind(parent, parent.getCityInfoList().get(childPos));
+            if (provDataInfo.isExpanded()) {
+                if (position < itemCount + provDataInfo.getCityInfoList().size()) {
+                    final int childPos = position - itemCount;
+                    ((ChildViewHolder) holder).bind(provDataInfo, provDataInfo.getCityInfoList().get(childPos));
                     return;
                 }
-                itemCount += parent.getCityInfoList().size();
+                itemCount += provDataInfo.getCityInfoList().size();
             }
         }
         throw new IllegalStateException("Invalid position");
@@ -107,9 +114,9 @@ public class SearchMapDataAdapter extends RecyclerView.Adapter<RecyclerView.View
 
     @Override
     public int getItemCount() {
-        if (parentItems != null && !parentItems.isEmpty()) {
-            int count = parentItems.size();
-            for (ProvDataInfo parent : parentItems) {
+        if ( !mProvinceList.isEmpty()) {
+            int count = mProvinceList.size();
+            for (ProvDataInfo parent : mProvinceList) {
                 if (parent.isExpanded()) {
                     count += parent.getCityInfoList().size();
                 }
@@ -124,84 +131,34 @@ public class SearchMapDataAdapter extends RecyclerView.Adapter<RecyclerView.View
      * 父项ViewHolder
      */
     class ParentViewHolder extends RecyclerView.ViewHolder {
-        private SkinTextView title;
-        private SkinImageView expandIcon;
-        private DownloadBtnView mGroupDownloadBtnView;
-        private SkinTextView provinceData;
+        private SkinTextView mTitle;
+        private SkinImageView mExpandIcon;
 
-        ParentViewHolder(View itemView) {
+        ParentViewHolder(final View itemView) {
             super(itemView);
-            title = itemView.findViewById(R.id.item_province_name);
-            expandIcon = itemView.findViewById(R.id.item_province_expand);
-            mGroupDownloadBtnView = itemView.findViewById(R.id.item_download_status);
-            provinceData = itemView.findViewById(R.id.item_province_data);
+            mTitle = itemView.findViewById(R.id.item_province_name);
+            mExpandIcon = itemView.findViewById(R.id.item_province_expand);
 
             itemView.setOnClickListener(v -> {
-                int position = getAdapterPosition();
+                final int position = getAdapterPosition();
+                Logger.d(TAG, "clicking the parent position is " + getParentPosition(position));
                 if (position != RecyclerView.NO_POSITION) {
-                    ProvDataInfo parent = parentItems.get(getParentPosition(position));
-                    final int areaType = parent.getAreaType();
-                    if (areaType != 2 && areaType != 3) {
+                    final ProvDataInfo parent = mProvinceList.get(getParentPosition(position));
+                    if (!parent.isParentCity()) {
                         parent.setExpanded(!parent.isExpanded());
-                        notifyItemChanged(position);
+                        notifyDataSetChanged();
                     }
                 }
-            });
-
-            // 下载 or 暂停下载
-            mGroupDownloadBtnView.setOnClickListener(v -> {
-                int position = getAdapterPosition();
-                if (position != RecyclerView.NO_POSITION) {
-                    ProvDataInfo parent = parentItems.get(getParentPosition(position));
-                    Logger.d( "group parent: " + GsonUtils.toJson(parent));
-
-                    final ArrayList<Integer> cityAdCodes = new ArrayList<>();
-                    cityAdCodes.add(parent.getAdcode());
-                    if (onChildClickListener != null) {
-                        switch (parent.getDownLoadInfo().getTaskState()) {
-                            case UserDataCode.TASK_STATUS_CODE_DOING:  // 下载中 or 更新中（downloadItem.bIsDataUsed = true 更新中）
-                            case UserDataCode.TASK_STATUS_CODE_DONE:   // 下载中 or 更新中（downloadItem.bIsDataUsed = true 更新中）
-                            case UserDataCode.TASK_STATUS_CODE_WAITING: // 等待中 or 等待更新中
-                                onChildClickListener.pauseAllTask(cityAdCodes);
-                                break;
-                            case UserDataCode.TASK_STATUS_CODE_PAUSE:  // 暂停
-                            case UserDataCode.TASK_STATUS_CODE_READY:  // 待下载 or 待更新 (downloadItem.bIsDataUsed = true 待更新)
-                            case UserDataCode.TASK_STATUS_CODE_ERR: // 错误 - 重试
-                            case UserDataCode.TASK_STATUS_CODE_MAX: // 重试
-                                onChildClickListener.startAllTask(cityAdCodes);
-                                break;
-                            default:
-                                break;
-                        }
-                    }
-
-                }
-
             });
         }
 
-        void bind(ProvDataInfo parent) {
-            title.setText(parent.getName()); //省份名称
-            expandIcon.setImageResource(parent.isExpanded() ? R.drawable.img_up_58 : R.drawable.img_under_the_58);
-
-            final CityDownLoadInfo downloadItem = parent.getDownLoadInfo();
-            final int areaType = parent.getAreaType();
-            // item 若为城市，则显示城市下载状态；若为省份，则显示展开/关闭按钮
-            if (areaType == 2 || areaType == 3) {
-                mGroupDownloadBtnView.setVisibility(View.VISIBLE);
-                expandIcon.setVisibility(View.GONE);
-                provinceData.setVisibility(View.VISIBLE);
-                //城市数据包大小
-                final String sizeString = StringUtils.formatSize(downloadItem.getFullZipSize().longValue());
-                provinceData.setText(sizeString);
-                // 下载按钮状态
-                mGroupDownloadBtnView.parseDownloadStatusInfo(downloadItem);
-            } else {
-                mGroupDownloadBtnView.setVisibility(View.GONE);
-                expandIcon.setVisibility(View.VISIBLE);
-                provinceData.setVisibility(View.GONE);
-            }
-
+        /**
+         * bind
+         * @param parent
+         */
+        void bind(final ProvDataInfo parent) {
+            mTitle.setText(parent.getName()); //省份名称
+            mExpandIcon.setImageResource(parent.isExpanded() ? R.drawable.img_up_58 : R.drawable.img_under_the_58);
         }
     }
 
@@ -209,48 +166,70 @@ public class SearchMapDataAdapter extends RecyclerView.Adapter<RecyclerView.View
      * 子项ViewHolder
      */
     class ChildViewHolder extends RecyclerView.ViewHolder {
-        private SkinTextView cityName;
-        private SkinTextView cityData;
+        private SkinTextView mCityName;
+        private SkinTextView mCityData;
         private DownloadBtnView mDownloadBtnView;
-        private CustomSwipeMenuLayout swipeMenuLayout;
-        private SkinButton allDownload;
-        private SkinButton allPause;
-        private SkinTextView deleteCity;
+        private CustomSwipeMenuLayout mSwipeMenuLayout;
+        private SkinButton mAllDownload;
+        private SkinButton mAllPause;
+        private SkinTextView mDeleteCity;
         private ProgressBar mDownloadProgress;
 
-        ChildViewHolder(View itemView) {
+        ChildViewHolder(final View itemView) {
             super(itemView);
-            cityName = itemView.findViewById(R.id.item_city_name);
-            cityData = itemView.findViewById(R.id.item_city_data);
-            swipeMenuLayout = itemView.findViewById(R.id.swipe_menu_layout);
+            mCityName = itemView.findViewById(R.id.item_city_name);
+            mCityData = itemView.findViewById(R.id.item_city_data);
+            mSwipeMenuLayout = itemView.findViewById(R.id.swipe_menu_layout);
             mDownloadBtnView = itemView.findViewById(R.id.item_download_status);
-            allDownload = itemView.findViewById(R.id.item_all_download);
-            allPause = itemView.findViewById(R.id.item_all_pause);
-            deleteCity = itemView.findViewById(R.id.item_driving_delete);
+            mAllDownload = itemView.findViewById(R.id.item_all_download);
+            mAllPause = itemView.findViewById(R.id.item_all_pause);
+            mDeleteCity = itemView.findViewById(R.id.item_driving_delete);
             mDownloadProgress = itemView.findViewById(R.id.download_progress);
         }
 
-        void bind(ProvDataInfo parent, CityDataInfo child) {
-
-            final CityDownLoadInfo downloadItem = child.getDownLoadInfo();
+        /**
+         * bind
+         * @param parent
+         * @param child
+         */
+        void bind(final ProvDataInfo parent, final CityDataInfo child) {
+            final CityDownLoadInfo downloadItem = parent.isParentCity() ?
+                parent.getDownLoadInfo() : child.getDownLoadInfo();
             // 非已下载状态，禁止侧滑删除
             if (downloadItem.getTaskState() == UserDataCode.TASK_STATUS_CODE_SUCCESS) {
-                swipeMenuLayout.setSwipeEnabled(true);
+                mSwipeMenuLayout.setSwipeEnabled(true);
             } else {
-                swipeMenuLayout.setSwipeEnabled(false);
-                swipeMenuLayout.smoothClose();
+                mSwipeMenuLayout.setSwipeEnabled(false);
+                mSwipeMenuLayout.smoothClose();
             }
+
             // 城市名称
-            cityName.setText(child.getName());
+            mCityName.setText(parent.isParentCity() ? parent.getName() : child.getName());
             // 城市数据包大小
             final String sizeString = StringUtils.formatSize(downloadItem.getFullZipSize().longValue());
-            cityData.setText(sizeString);
-            // 全省条目按钮显示状态
-            if (child.getName().equals("全省下载")) {
+            mCityData.setText(sizeString);
+            if (parent.isParentCity() || !("全省下载").equals(child.getName())) {
+                mDownloadBtnView.setVisibility(View.VISIBLE);
+                mAllDownload.setVisibility(View.GONE);
+                mAllPause.setVisibility(View.GONE);
+                //下载按钮状态
+                mDownloadBtnView.parseDownloadStatusInfo(downloadItem);
+                final boolean isShowDownloadProgress = downloadItem.getTaskState()  == UserDataCode.TASK_STATUS_CODE_DOING
+                    || downloadItem.getTaskState() == UserDataCode.TASK_STATUS_CODE_DONE
+                    || downloadItem.getTaskState() == UserDataCode.TASK_STATUS_CODE_UNZIPPING
+                    || downloadItem.getTaskState() == UserDataCode.TASK_STATUS_CODE_PAUSE;
+                if (isShowDownloadProgress) {
+                    mDownloadProgress.setProgress((int) Math.floor(downloadItem.getPercent()));
+                    mDownloadProgress.setVisibility(View.VISIBLE);
+                } else {
+                    mDownloadProgress.setVisibility(View.GONE);
+                }
+            } else {
+                // 全省条目按钮显示状态
                 mDownloadBtnView.setVisibility(View.GONE);
-                allDownload.setVisibility(View.VISIBLE);
-                allPause.setVisibility(View.VISIBLE);
-                List<CityDataInfo> cityDataInfos = parent.getCityInfoList();
+                mAllDownload.setVisibility(View.VISIBLE);
+                mAllPause.setVisibility(View.VISIBLE);
+                final List<CityDataInfo> cityDataInfos = parent.getCityInfoList();
                 final ArrayList<Integer> cityAdCodes = new ArrayList<>();
                 for (CityDataInfo info : cityDataInfos) {
                     if (info.getDownLoadInfo().getTaskState() == UserDataCode.TASK_STATUS_CODE_SUCCESS) {
@@ -258,44 +237,28 @@ public class SearchMapDataAdapter extends RecyclerView.Adapter<RecyclerView.View
                     }
                 }
                 if (cityDataInfos.size() == cityAdCodes.size()) { // 该省份下所有城市均已下载
-                    isClickAllStart = false;
+                    mIsClickAllStart = false;
                 }
-                setAllStartAndPauseStatus(allDownload, allPause, isClickAllStart, isClickAllPause);
-            } else {
-                mDownloadBtnView.setVisibility(View.VISIBLE);
-                allDownload.setVisibility(View.GONE);
-                allPause.setVisibility(View.GONE);
-                //下载按钮状态
-                mDownloadBtnView.parseDownloadStatusInfo(child.getDownLoadInfo());
-                final boolean isShowDownloadProgress = child.getDownLoadInfo().getTaskState()  == UserDataCode.TASK_STATUS_CODE_DOING
-                    || child.getDownLoadInfo().getTaskState() == UserDataCode.TASK_STATUS_CODE_DONE
-                    || child.getDownLoadInfo().getTaskState() == UserDataCode.TASK_STATUS_CODE_UNZIPPING
-                    || child.getDownLoadInfo().getTaskState() == UserDataCode.TASK_STATUS_CODE_PAUSE;
-                if (isShowDownloadProgress) {
-                    mDownloadProgress.setProgress((int) Math.floor(child.getDownLoadInfo().getPercent()));
-                    mDownloadProgress.setVisibility(View.VISIBLE);
-                } else {
-                    mDownloadProgress.setVisibility(View.GONE);
-                }
+                setAllStartAndPauseStatus(mAllDownload, mAllPause, mIsClickAllStart, mIsClickAllPause);
             }
 
             // 下载 or 暂停下载
             mDownloadBtnView.setOnClickListener(v -> {
-                Logger.d( "parent: " + GsonUtils.toJson(parent) + " child: " + GsonUtils.toJson(child));
+                Logger.d(TAG, "clicking position is " + getAdapterPosition());
                 final ArrayList<Integer> cityAdCodes = new ArrayList<>();
                 cityAdCodes.add(downloadItem.getAdcode());
-                if (onChildClickListener != null) {
+                if (mOnChildClickListener != null) {
                     switch (downloadItem.getTaskState()) {
                         case UserDataCode.TASK_STATUS_CODE_DOING:  // 下载中 or 更新中（downloadItem.bIsDataUsed = true 更新中）
                         case UserDataCode.TASK_STATUS_CODE_DONE:   // 下载中 or 更新中（downloadItem.bIsDataUsed = true 更新中）
                         case UserDataCode.TASK_STATUS_CODE_WAITING: // 等待中 or 等待更新中
-                            onChildClickListener.pauseAllTask(cityAdCodes);
+                            mOnChildClickListener.pauseAllTask(cityAdCodes);
                             break;
                         case UserDataCode.TASK_STATUS_CODE_PAUSE:  // 暂停
                         case UserDataCode.TASK_STATUS_CODE_READY:  // 待下载 or 待更新 (downloadItem.bIsDataUsed = true 待更新)
                         case UserDataCode.TASK_STATUS_CODE_ERR: // 错误 - 重试
                         case UserDataCode.TASK_STATUS_CODE_MAX: // 重试
-                            onChildClickListener.startAllTask(cityAdCodes);
+                            mOnChildClickListener.startAllTask(cityAdCodes);
                             break;
                         default:
                             break;
@@ -303,19 +266,17 @@ public class SearchMapDataAdapter extends RecyclerView.Adapter<RecyclerView.View
                 }
             });
             // 删除已下载数据
-            deleteCity.setOnClickListener(view -> {
-                Logger.d( "parent: " + GsonUtils.toJson(parent) + " child: " + GsonUtils.toJson(child));
+            mDeleteCity.setOnClickListener(view -> {
                 final ArrayList<Integer> cityAdCodes = new ArrayList<>();
                 cityAdCodes.add(downloadItem.getAdcode());
-                if (onChildClickListener != null) {
-                    onChildClickListener.deleteAllTask(cityAdCodes);
+                if (mOnChildClickListener != null) {
+                    mOnChildClickListener.deleteAllTask(cityAdCodes);
                 }
             });
             // 全部开始下载
-            allDownload.setOnClickListener(view -> {
-                Logger.d( "parent: " + GsonUtils.toJson(parent) + " child: " + GsonUtils.toJson(child));
-                setAllStartAndPauseStatus(allDownload, allPause,false, true);
-                List<CityDataInfo> cityDataInfos = parent.getCityInfoList();
+            mAllDownload.setOnClickListener(view -> {
+                setAllStartAndPauseStatus(mAllDownload, mAllPause,false, true);
+                final List<CityDataInfo> cityDataInfos = parent.getCityInfoList();
                 final ArrayList<Integer> cityAdCodes = new ArrayList<>();
                 for (CityDataInfo info : cityDataInfos) {
                     if (info.getDownLoadInfo().getTaskState() == UserDataCode.TASK_STATUS_CODE_PAUSE ||
@@ -325,15 +286,14 @@ public class SearchMapDataAdapter extends RecyclerView.Adapter<RecyclerView.View
                         cityAdCodes.add(info.getAdcode());
                     }
                 }
-                if (onChildClickListener != null) {
-                    onChildClickListener.allDownloadTask(cityAdCodes);
+                if (mOnChildClickListener != null) {
+                    mOnChildClickListener.allDownloadTask(cityAdCodes);
                 }
             });
             // 全部暂停下载
-            allPause.setOnClickListener(view -> {
-                Logger.d( "parent: " + GsonUtils.toJson(parent) + " child: " + GsonUtils.toJson(child));
-                setAllStartAndPauseStatus(allDownload, allPause,false, true);
-                List<CityDataInfo> cityDataInfos = parent.getCityInfoList();
+            mAllPause.setOnClickListener(view -> {
+                setAllStartAndPauseStatus(mAllDownload, mAllPause,false, true);
+                final List<CityDataInfo> cityDataInfos = parent.getCityInfoList();
                 final ArrayList<Integer> cityAdCodes = new ArrayList<>();
                 for (CityDataInfo info : cityDataInfos) {
                     if (info.getDownLoadInfo().getTaskState() == UserDataCode.TASK_STATUS_CODE_DOING ||
@@ -342,8 +302,8 @@ public class SearchMapDataAdapter extends RecyclerView.Adapter<RecyclerView.View
                         cityAdCodes.add(info.getAdcode());
                     }
                 }
-                if (onChildClickListener != null) {
-                    onChildClickListener.allPauseTask(cityAdCodes);
+                if (mOnChildClickListener != null) {
+                    mOnChildClickListener.allPauseTask(cityAdCodes);
                 }
             });
         }
@@ -351,13 +311,15 @@ public class SearchMapDataAdapter extends RecyclerView.Adapter<RecyclerView.View
 
     /**
      * 设置全部开始/全部暂停按钮状态
-     * @param isStart 全部开始按钮是否可点击，默认可点击
-     * @param isPause 全部暂停按钮是否可点击，默认不可点击
+     * @param allDownload
+     * @param allPause
+     * @param isStart
+     * @param isPause
      */
-    private void setAllStartAndPauseStatus(SkinButton allDownload, SkinButton allPause, final boolean isStart, final boolean isPause) {
-        isClickAllStart = isStart;
-        isClickAllPause = isPause;
-        if (isClickAllStart) {
+    private void setAllStartAndPauseStatus(final SkinButton allDownload, final SkinButton allPause, final boolean isStart, final boolean isPause) {
+        mIsClickAllStart = isStart;
+        mIsClickAllPause = isPause;
+        if (mIsClickAllStart) {
             allDownload.setTextColor(ResourceUtils.Companion.getInstance().getColor(R.color.white));
             allDownload.setBackgroundResource(R.drawable.shape_bg_download_data);
             allDownload.setEnabled(true);
@@ -369,7 +331,7 @@ public class SearchMapDataAdapter extends RecyclerView.Adapter<RecyclerView.View
             allDownload.setAlpha(0.7f);
         }
 
-        if (isClickAllPause) {
+        if (mIsClickAllPause) {
             allPause.setTextColor(ResourceUtils.Companion.getInstance().getColor(R.color.white));
             allPause.setBackgroundResource(R.drawable.shape_bg_download_data);
             allPause.setEnabled(true);
@@ -388,15 +350,18 @@ public class SearchMapDataAdapter extends RecyclerView.Adapter<RecyclerView.View
      * @param childId
      * @param newValue
      */
-    public void updateChild(int parentId, int childId, CityDownLoadInfo newValue) {
-        int childPosition = getChildPosition(parentId, childId);
-        for (ProvDataInfo parent : parentItems) {
+    public void updateChild(final int parentId, final int childId, final CityDownLoadInfo newValue) {
+        final int childPosition = getChildPosition(parentId, childId);
+        for (ProvDataInfo parent : mProvinceList) {
             if (parent.getAdcode() == parentId) {
                 for (CityDataInfo child : parent.getCityInfoList()) {
                     if (child.getAdcode() == childId) {
                         child.setDownLoadInfo(newValue);
-                        notifyItemChanged(childPosition);
-                        return;
+                        if (childPosition != -1) {
+                            Logger.d(TAG, "child position is " + childPosition);
+                            notifyItemChanged(childPosition);
+                            return;
+                        }
                     }
                 }
             }
@@ -407,12 +372,12 @@ public class SearchMapDataAdapter extends RecyclerView.Adapter<RecyclerView.View
      * 新增方法：根据父项和子项ID获取子项的绝对位置
      * @param parentId
      * @param childId
-     * @return
+     * @return child position
      */
-    public int getChildPosition(int parentId, int childId) {
+    public int getChildPosition(final int parentId, final int childId) {
         int position = 0;
 
-        for (ProvDataInfo parent : parentItems) {
+        for (ProvDataInfo parent : mProvinceList) {
             position++; // 父项位置
 
             if (parent.getAdcode() == parentId) {
@@ -437,18 +402,16 @@ public class SearchMapDataAdapter extends RecyclerView.Adapter<RecyclerView.View
     /**
      * 辅助方法：根据位置获取父项索引
      * @param adapterPosition
-     * @return
+     * @return parent position
      */
-    private int getParentPosition(int adapterPosition) {
-        int parentIndex = 0;
+    private int getParentPosition(final int adapterPosition) {
         int itemCount = 0;
-
-        for (ProvDataInfo parent : parentItems) {
+        int parentIndex = 0;
+        for (ProvDataInfo parent : mProvinceList) {
             if (adapterPosition == itemCount) {
                 return parentIndex;
             }
             itemCount++;
-
             if (parent.isExpanded()) {
                 if (adapterPosition < itemCount + parent.getCityInfoList().size()) {
                     return parentIndex;
@@ -461,13 +424,35 @@ public class SearchMapDataAdapter extends RecyclerView.Adapter<RecyclerView.View
     }
 
     /**
+     * 获取parent city在布局中的位置
+     * @param parentId
+     * @return parent position
+     */
+    private int getParentPositionById(final int parentId) {
+        int parentPosition = 0;
+        for (int i = 0; i < mProvinceList.size(); i++) {
+            final ProvDataInfo provDataInfo = mProvinceList.get(i);
+            if (provDataInfo.getAdcode() == parentId) {
+                return parentPosition;
+            } else {
+                if (provDataInfo.isExpanded()) {
+                    parentPosition += provDataInfo.getCityInfoList().size() + 1;
+                } else {
+                    parentPosition ++;
+                }
+            }
+        }
+        return -1;
+    }
+
+    /**
      * 获取Parent项在其所在分组中的相对位置
      * @param parentId 父项ID
      * @return 分组中的索引位置，未找到返回-1
      */
-    public int getParentIndex(int parentId) {
-        for (int i = 0; i < parentItems.size(); i++) {
-            if (parentItems.get(i).getAdcode() == parentId) {
+    public int getParentIndex(final int parentId) {
+        for (int i = 0; i < mProvinceList.size(); i++) {
+            if (mProvinceList.get(i).getAdcode() == parentId) {
                 return i;
             }
         }
@@ -479,15 +464,16 @@ public class SearchMapDataAdapter extends RecyclerView.Adapter<RecyclerView.View
      * @param parentId 父项ID
      * @param info 新ProvDataInfo信息
      */
-    public void updateParent(int parentId, final ProvDataInfo info) {
-        int parentIndex = getParentIndex(parentId);
+    public void updateParent(final int parentId, final CityDownLoadInfo info) {
+        final int parentIndex = getParentIndex(parentId);
         if (parentIndex != -1) {
-            ProvDataInfo parent = parentItems.get(parentIndex);
-            parent.setDownLoadInfo(info.getDownLoadInfo());
+           final ProvDataInfo parent = mProvinceList.get(parentIndex);
+            parent.setDownLoadInfo(info);
             // 获取父项在列表中的绝对位置
-            int adapterPosition = getParentPosition(parentId);
-            if (adapterPosition != -1) {
-                notifyItemChanged(adapterPosition);
+            final int parentPosition = getParentPositionById(parentId);
+            Logger.d(TAG, "parent position is " + parentPosition);
+            if (parentPosition != -1) {
+                notifyItemChanged(parentPosition);
             }
         }
     }

@@ -86,18 +86,6 @@
                 android:visibility="@{ViewModel.naviViaInfoVisibility?View.VISIBLE:View.GONE}" />
         </com.fy.navi.ui.view.SkinLinearLayout>
 
-        <!--停车场列表-->
-        <com.fy.navi.scene.ui.navi.SceneNaviParkListView
-            android:id="@+id/scene_navi_parking_list"
-            android:layout_width="@dimen/dp_820"
-            android:layout_height="@dimen/dp_0"
-            android:layout_marginTop="@dimen/dp_16"
-            android:layout_marginBottom="@dimen/dp_30"
-            android:background="@drawable/bg_navi_btn_common"
-            android:visibility="@{ViewModel.naviParkingListVisibility?View.VISIBLE:View.GONE}"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/sll_eta" />
-
         <!--控制tools-->
         <com.fy.navi.scene.ui.navi.SceneNaviControlView
             android:id="@+id/scene_navi_control"

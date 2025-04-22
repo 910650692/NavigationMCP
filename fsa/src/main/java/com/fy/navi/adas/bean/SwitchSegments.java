@@ -2,17 +2,56 @@ package com.fy.navi.adas.bean;
 
 import com.google.gson.annotations.SerializedName;
 
+/**
+ * 基于SD的道路matching类型分段
+ *
+ * 一条路径线由N个段组成，每个段由N个链路组成，每个链路由N个点组成
+ */
 public class SwitchSegments {
+    /**
+     * segment起点在SD上对应坐标点序列的index
+     */
     private int begin;
+    /**
+     * segment起点在SD上对应link的index
+     */
     private int begin_link_index;
+    /**
+     * segment起点在SD上对应link的offset
+     */
     private double begin_link_offset;
+    /**
+     * 坐标点序列
+     */
     private Coord[] coords;
+    /**
+     * segment终点在SD上对应坐标点序列的index
+     */
     private int end;
+    /**
+     * segment终点在SD上对应link的index
+     */
     private int end_link_index;
+    /**
+     * segment终点在SD上对应link的offset
+     */
     private double end_link_offset;
     private double length;
+    /**
+     * segment对应的智驾功能类型
+     * •0: unmatch
+     * •9, sd unp
+     * •10, sd hnp
+     * •11, sd odd close
+     */
     private int mode;
+    /**
+     * 类型描述
+     */
     private String mode_describe;
+    /**
+     * 区间的长度，单位米
+     */
     @SerializedName("length")
     private int mLength;
 

@@ -13,6 +13,7 @@ import com.fy.navi.scene.RoutePath;
 import com.fy.navi.service.AppContext;
 import com.fy.navi.service.AutoMapConstant;
 import com.fy.navi.service.MapDefaultFinalTag;
+import com.fy.navi.service.adapter.navi.NaviConstant;
 import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.search.PoiInfoEntity;
 import com.fy.navi.service.define.search.SearchResultEntity;
@@ -43,11 +44,23 @@ public class PoiDetailsFragment extends BaseFragment<FragmentPoiDetailsBinding, 
     @Override
     public void onInitData() {
         getSearchPoiInfo();
+        getBundleData();
     }
 
     @Override
     protected void onNewIntent(final Bundle bundle) {
         super.onNewIntent(bundle);
+    }
+
+    /**
+     * 获取bundle数据
+     */
+    private void getBundleData() {
+        final Bundle parsedArgs = getArguments();
+        final int isOpenFromNavi = parsedArgs.getInt(NaviConstant.NAVI_CONTROL, 0);
+        if (isOpenFromNavi == 1) {
+            mBinding.scenePoiDetailContentView.setNaviControl(true);
+        }
     }
 
     /**
@@ -71,10 +84,15 @@ public class PoiDetailsFragment extends BaseFragment<FragmentPoiDetailsBinding, 
 
     @Override
     public void onHiddenChanged(boolean hidden) {
+        Logger.d("onHiddenChanged",hidden);
         super.onHiddenChanged(hidden);
         if (!hidden) {
             if (!ConvertUtils.isEmpty(mSearchResultEntity)) {
                 mBinding.scenePoiDetailContentView.reloadLastPoiMarker(mSearchResultEntity.getPoiList());
+            }
+            mBinding.scenePoiDetailContentView.reloadPoiLabelMarker();
+            if(mViewModel.calcDistanceBetweenPoints()){
+                mBinding.scenePoiDetailContentView.showSelfParkingView();
             }
         }
     }

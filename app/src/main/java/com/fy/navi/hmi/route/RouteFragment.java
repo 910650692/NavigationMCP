@@ -79,6 +79,8 @@ public class RouteFragment extends BaseFragment<FragmentRouteBinding, RouteViewM
     private final int mSpacing = 24; // 上下间距
     private final int mHorizontalSpacing = 32; // 左右间距
     private final int mSpanCount = 2;//数据列数
+    private final int mMaxWidthWithBatter= 322;
+    private final int mMaxWidthWithoutBatter= 530;
     private static final int SWIPE_THRESHOLD = 100;
     private RouteRequestLoadingDialog mRouteRequestLoadingDialog;
     private RouteSearchLoadingDialog mSearchLoadingDialog;
@@ -149,6 +151,7 @@ public class RouteFragment extends BaseFragment<FragmentRouteBinding, RouteViewM
         });
         mBinding.routeLineViaPoiRecycle.setAdapter(mRouteViaPointAdapter);
         final ItemTouchHelper touchHelper = new ItemTouchHelper(new ItemTouchHelper.Callback() {
+            private int mOriginalPosition = -1;
             private int movePosition = -1;
             private int mCurrentPosition = -1;
 
@@ -162,6 +165,9 @@ public class RouteFragment extends BaseFragment<FragmentRouteBinding, RouteViewM
             @Override
             public boolean onMove(final RecyclerView recyclerView, final RecyclerView.ViewHolder viewHolder
                     , final RecyclerView.ViewHolder target) {
+                if (mOriginalPosition == -1) {
+                    mOriginalPosition = viewHolder.getAdapterPosition();
+                }
                 mCurrentPosition = viewHolder.getAdapterPosition();
                 movePosition = target.getAdapterPosition();
                 mRouteViaPointAdapter.onItemMove(viewHolder.getAdapterPosition(), target.getAdapterPosition());
@@ -175,7 +181,13 @@ public class RouteFragment extends BaseFragment<FragmentRouteBinding, RouteViewM
             @Override
             public void clearView(final RecyclerView recyclerView, final RecyclerView.ViewHolder viewHolder) {
                 super.clearView(recyclerView, viewHolder);
-                mViewModel.changeParamListMode(mCurrentPosition, movePosition);
+                if (mOriginalPosition == movePosition) {
+                    Logger.d(TAG, "The position has not changed");
+                    mOriginalPosition = -1;
+                    return;
+                }
+                mViewModel.changeParamListMode(mOriginalPosition, movePosition);
+                mOriginalPosition = -1;
             }
 
             @Override
@@ -477,6 +489,10 @@ public class RouteFragment extends BaseFragment<FragmentRouteBinding, RouteViewM
      * 算路请求弹框展示
      */
     public void showProgressUI() {
+        if (!ConvertUtils.isEmpty(mRouteRequestLoadingDialog) && mRouteRequestLoadingDialog.isShowing()) {
+            Logger.d("mRouteRequestLoadingDialog is showing");
+            return;
+        }
         mRouteRequestLoadingDialog = new RouteRequestLoadingDialog(
                 StackManager.getInstance().getCurrentActivity(MapType.MAIN_SCREEN_MAIN_MAP.name()));
         mRouteRequestLoadingDialog.setOnCloseClickListener(mViewModel);
@@ -499,6 +515,10 @@ public class RouteFragment extends BaseFragment<FragmentRouteBinding, RouteViewM
      * 搜索请求弹框开启
      */
     public void showSearchProgressUI() {
+        if (!ConvertUtils.isEmpty(mSearchLoadingDialog) && mSearchLoadingDialog.isShowing()) {
+            Logger.d("mSearchLoadingDialog is showing");
+            return;
+        }
         mSearchLoadingDialog = new RouteSearchLoadingDialog(
                 StackManager.getInstance().getCurrentActivity(MapType.MAIN_SCREEN_MAIN_MAP.name()));
         if (!ConvertUtils.isEmpty(mSearchLoadingDialog)) {
@@ -971,6 +991,20 @@ public class RouteFragment extends BaseFragment<FragmentRouteBinding, RouteViewM
                         ResourceUtils.Companion.getInstance().getColor(com.fy.navi.scene.R.color.search_color_delete_bg));
             }
         }
+    }
+
+    /***
+     * 切换算路偏好最大宽度
+     * @param batter 是否补能
+     */
+    public void setPreferenceMaxWidth(final boolean batter) {
+        ThreadManager.getInstance().postUi(() -> {
+            if (batter) {
+                mBinding.routeLineInfoTvPrefer.setMaxWidth(mMaxWidthWithBatter);
+            } else {
+                mBinding.routeLineInfoTvPrefer.setMaxWidth(mMaxWidthWithoutBatter);
+            }
+        });
     }
 
     /***

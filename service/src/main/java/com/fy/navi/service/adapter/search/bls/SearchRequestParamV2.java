@@ -24,6 +24,7 @@ import com.autonavi.gbl.search.model.SearchRetainParam;
 import com.autonavi.gbl.search.model.SearchSuggestionParam;
 import com.autonavi.gbl.search.model.SearchSuggestionQueryType;
 import com.autonavi.gbl.search.model.SearchTipsCityInfo;
+import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.define.bean.GeoPoint;
 import com.fy.navi.service.define.search.SearchRequestParameter;
 import com.fy.navi.service.define.search.SearchRetainParamInfo;
@@ -91,6 +92,7 @@ public final class SearchRequestParamV2 {
         paramV2.city = String.valueOf(searchRequestInfo.getAdCode());
         paramV2.geoObj = searchRequestInfo.getGeoobj();
         paramV2.offlineParam.resultMaxCount = DEFAULT_RESULT_MAX_COUNT;
+        paramV2.offlineParam.adcode = searchRequestInfo.getAdCode();
         paramV2.customParam.classifyParam.retainState = searchRequestInfo.getRetainState();
         paramV2.customParam.classifyParam.checkedLevel = searchRequestInfo.getCheckedLevel();
         paramV2.customParam.classifyParam.classifyV2Data = searchRequestInfo.getClassifyV2Data();
@@ -205,6 +207,14 @@ public final class SearchRequestParamV2 {
         param.id = searchRequestInfo.getPoiId();
         param.userLoc.lon = searchRequestInfo.getUserLoc().getLon();
         param.userLoc.lat = searchRequestInfo.getUserLoc().getLat();
+        if (!ConvertUtils.isEmpty(searchRequestInfo.getPoiLoc())) {
+            Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "Executing poiDetailSearch search1." + searchRequestInfo.getPoiLoc().toString());
+            param.poiLoc.lon = searchRequestInfo.getPoiLoc().getLon();
+            param.poiLoc.lat = searchRequestInfo.getPoiLoc().getLat();
+        }
+        param.queryType = searchRequestInfo.getQueryType();
+        param.offlineParam.resultMaxCount = DEFAULT_RESULT_MAX_COUNT;
+        param.offlineParam.adcode = searchRequestInfo.getAdCode();
         return param;
     }
 

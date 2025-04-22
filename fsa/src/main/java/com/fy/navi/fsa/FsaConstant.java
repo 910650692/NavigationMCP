@@ -3,14 +3,23 @@ package com.fy.navi.fsa;
 public interface FsaConstant {
     String FSA_TAG = "FsaService";
 
+    //显示
     int SHOW = 0;
+    //修改
     int UPDATE = 1;
+    //隐藏
     int HIDE = 2;
 
     int NO_CHANGE = 0;
     int INCREASE = 1;
     int REDUCE = 2;
 
+    /**
+     * 在FSA协议中，分客户端和服务端的概念（
+     * 端口信息：FSA_SERVICE_PORT = 9903；
+     * FSA_SERVICE_ID = 3003；
+     * FSA_SERVICE_IP = "172.16.4.100"），这里统一明确，
+     */
     interface InetConfig {
         int SERVICE_PORT = 9903;
         int SERVICE_ID = 3003;

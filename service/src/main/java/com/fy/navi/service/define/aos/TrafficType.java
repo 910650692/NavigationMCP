@@ -60,7 +60,7 @@ public class TrafficType {
             case TRAFFIC_STOP_PASS -> {
                 icon = R.drawable.img_fenglu_96;
             }
-            case TRAFFIC_CONTROL -> {
+            case TRAFFIC_PUBLIC, TRAFFIC_CONTROL -> {
                 icon = R.drawable.img_guanzhi_96;
             }
             case TRAFFIC_ROAD_REPAIR -> {

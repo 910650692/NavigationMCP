@@ -18,366 +18,577 @@
         android:layout_height="match_parent"
         tools:context=".startup.StartupActivity">
 
-        <com.fy.navi.service.define.map.MainScreenMapView
-            android:id="@+id/main_mapview"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+        <!--MFC___FocusParkingView-->
+        <com.android.car.ui.FocusParkingView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
 
-        <com.fy.navi.ui.view.SkinConstraintLayout
-            android:id="@+id/search_main_tab"
-            clickCommand="@{ViewModel.intercept}"
+        <!--MFC___Map FocusArea
+            nudgeRight 右移到指定ID FocusArea
+            nudgeLeft 左移到指定ID FocusArea-->
+        <com.android.car.ui.FocusArea
+            android:id="@+id/focuse_main_mapview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_310"
-            android:layout_marginTop="@dimen/dp_140"
-            android:background="@drawable/bg_search_main_tab"
-            android:visibility="@{ViewModel.mainBTNVisibility ? View.VISIBLE : View.GONE}"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:nudgeLeft="@+id/focuse_main_tab"
+            app:nudgeRight="@+id/focuse_main_tab">
+
+            <com.fy.navi.service.define.map.MainScreenMapView
+                android:id="@+id/main_mapview"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@null"
+                android:focusable="true" />
+        </com.android.car.ui.FocusArea>
+
+        <!--MFC___Button FocusArea
+            nudgeRight 右移到指定ID FocusArea
+            nudgeLeft 左移到指定ID FocusArea
+            app:wrapAround="true" 自动循环
+            android:focusedByDefault="true" 当FocusArea获取焦点后，指定哪个子控件默认获取
+            app:defaultFocusOverridesHistory="true" 当再次回到FocusArea， 移除缓存焦点，默认焦点还是在focusedByDefault
+            android:focusable="false" 无法选中的控件都需要设置
+            android:focusable="true" 可选中的控件都需要设置
+            -->
+        <com.android.car.ui.FocusArea
+            android:id="@+id/focuse_main_tab"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:defaultFocusOverridesHistory="true"
+            app:nudgeLeft="@+id/focuse_main_mapview"
+            app:nudgeRight="@+id/focuse_main_mapview"
+            app:wrapAround="true">
 
             <com.fy.navi.ui.view.SkinConstraintLayout
-                android:layout_width="@dimen/dp_600"
-                android:layout_height="@dimen/dp_152"
-                android:background="@drawable/bg_search_main_tab"
-                android:visibility="@{ViewModel.tmcModeVisibility ? View.GONE : View.VISIBLE}"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:visibility="gone">
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
-                <com.fy.navi.ui.view.SkinImageView
-                    android:id="@+id/sk_iv_basic_home"
-                    clickCommand="@{ViewModel.openHomeFragment}"
-                    android:layout_width="@dimen/dp_106"
-                    android:layout_height="@dimen/dp_106"
-                    android:layout_marginStart="@dimen/dp_60"
-                    android:src="@drawable/img_basic_ic_home"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <com.fy.navi.ui.view.SkinImageView
-                    android:id="@+id/sk_iv_basic_bus"
-                    clickCommand="@{ViewModel.openCompanyFragment}"
-                    android:layout_width="@dimen/dp_106"
-                    android:layout_height="@dimen/dp_106"
-                    android:layout_marginStart="@dimen/dp_81"
-                    android:src="@drawable/img_basic_ic_bus"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/sk_iv_basic_home"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <com.fy.navi.ui.view.SkinImageView
-                    android:id="@+id/sk_iv_basic_search"
-                    clickCommand="@{ViewModel.openSearchFragment}"
-                    android:layout_width="@dimen/dp_106"
-                    android:layout_height="@dimen/dp_106"
-                    android:layout_marginStart="@dimen/dp_81"
-                    android:src="@drawable/img_basic_ic_search"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/sk_iv_basic_bus"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-            </com.fy.navi.ui.view.SkinConstraintLayout>
-
-            <com.fy.navi.ui.view.SkinConstraintLayout
-                android:layout_width="wrap_content"
-                android:layout_height="@dimen/dp_152"
-                android:background="@drawable/bg_search_main_tab"
-                android:visibility="@{ViewModel.tmcModeVisibility ? View.VISIBLE : View.GONE}"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:visibility="visible">
-
-                <com.fy.navi.ui.view.SkinImageView
-                    android:id="@+id/sk_iv_basic_home_tq"
-                    clickCommand="@{ViewModel.openHomeFragment}"
-                    android:layout_width="@dimen/dp_106"
-                    android:layout_height="@dimen/dp_106"
-                    android:layout_marginStart="@dimen/dp_60"
-                    android:src="@drawable/img_basic_ic_home"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <com.fy.navi.ui.view.SkinTextView
-                    android:id="@+id/sk_iv_basic_home_text"
-                    clickCommand="@{ViewModel.openHomeFragment}"
+                <com.fy.navi.ui.view.SkinConstraintLayout
+                    android:id="@+id/search_main_tab"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_47"
-                    android:ellipsize="end"
-                    android:maxWidth="@dimen/dp_120"
-                    android:maxLines="1"
-                    android:text="@{ViewModel.homeTime}"
-                    android:textColor="@color/main_route_home_text"
-                    android:textSize="@dimen/sp_32"
-                    app:layout_constraintStart_toEndOf="@+id/sk_iv_basic_home_tq"
-                    app:layout_constraintTop_toTopOf="parent"
-                    tools:text="在附近" />
+                    android:layout_marginStart="@dimen/dp_310"
+                    android:layout_marginTop="@dimen/dp_140"
+                    android:background="@drawable/bg_search_main_tab"
+                    android:focusable="false"
+                    android:visibility="@{ViewModel.mainBTNVisibility ? View.VISIBLE : View.GONE}"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
 
-                <com.fy.navi.scene.ui.map.component.MultiStageProgressBar
-                    android:id="@+id/sk_iv_basic_home_progress"
-                    clickCommand="@{ViewModel.openHomeFragment}"
-                    android:layout_width="@dimen/dp_112"
-                    android:layout_height="@dimen/dp_8"
-                    android:layout_marginTop="@dimen/dp_6"
-                    app:layout_constraintStart_toEndOf="@+id/sk_iv_basic_home_tq"
-                    app:layout_constraintTop_toBottomOf="@+id/sk_iv_basic_home_text"
-                    tools:background="@color/auto_color_ca6d" />
+                    <com.fy.navi.ui.view.SkinConstraintLayout
+                        android:layout_width="@dimen/dp_600"
+                        android:layout_height="@dimen/dp_152"
+                        android:background="@drawable/bg_search_main_tab"
+                        android:focusable="false"
+                        android:visibility="@{ViewModel.tmcModeVisibility ? View.GONE : View.VISIBLE}"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:visibility="visible">
 
-                <com.fy.navi.ui.view.SkinImageView
-                    android:id="@+id/sk_iv_basic_bus_tq"
-                    clickCommand="@{ViewModel.openCompanyFragment}"
-                    android:layout_width="@dimen/dp_106"
-                    android:layout_height="@dimen/dp_106"
-                    android:layout_marginStart="@dimen/dp_40"
-                    android:src="@drawable/img_basic_ic_bus"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/sk_iv_basic_home_progress"
-                    app:layout_constraintTop_toTopOf="parent" />
+                        <com.fy.navi.ui.view.SkinView
+                            android:id="@+id/sk_iv_basic_home_mfc_bg"
+                            clickCommand="@{ViewModel.openHomeFragment}"
+                            android:layout_width="@dimen/dp_200"
+                            android:layout_height="match_parent"
+                            android:background="@drawable/bg_base_mfc_cadillac_bg_selector"
+                            android:focusable="true"
+                            android:focusedByDefault="true"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
 
-                <com.fy.navi.ui.view.SkinTextView
-                    android:id="@+id/sk_iv_basic_bus_text"
-                    clickCommand="@{ViewModel.openCompanyFragment}"
+                        <com.fy.navi.ui.view.SkinImageView
+                            android:id="@+id/sk_iv_basic_home"
+                            android:layout_width="@dimen/dp_106"
+                            android:layout_height="@dimen/dp_106"
+                            android:focusable="false"
+                            android:src="@drawable/img_basic_ic_home"
+                            app:layout_constraintBottom_toBottomOf="@+id/sk_iv_basic_home_mfc_bg"
+                            app:layout_constraintEnd_toEndOf="@+id/sk_iv_basic_home_mfc_bg"
+                            app:layout_constraintStart_toStartOf="@+id/sk_iv_basic_home_mfc_bg"
+                            app:layout_constraintTop_toTopOf="@+id/sk_iv_basic_home_mfc_bg" />
+
+                        <com.fy.navi.ui.view.SkinView
+                            android:id="@+id/sk_iv_basic_bus_mfc_bg"
+                            clickCommand="@{ViewModel.openCompanyFragment}"
+                            android:layout_width="@dimen/dp_200"
+                            android:layout_height="match_parent"
+                            android:layout_marginStart="@dimen/dp_200"
+                            android:background="@drawable/bg_base_mfc_cadillac_bg_selector"
+                            android:focusable="true"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <com.fy.navi.ui.view.SkinImageView
+                            android:id="@+id/sk_iv_basic_bus"
+                            android:layout_width="@dimen/dp_106"
+                            android:layout_height="@dimen/dp_106"
+                            android:focusable="false"
+                            android:src="@drawable/img_basic_ic_bus"
+                            app:layout_constraintBottom_toBottomOf="@+id/sk_iv_basic_bus_mfc_bg"
+                            app:layout_constraintEnd_toEndOf="@+id/sk_iv_basic_bus_mfc_bg"
+                            app:layout_constraintStart_toStartOf="@+id/sk_iv_basic_bus_mfc_bg"
+                            app:layout_constraintTop_toTopOf="@+id/sk_iv_basic_bus_mfc_bg" />
+
+                        <com.fy.navi.ui.view.SkinView
+                            android:id="@+id/sk_iv_basic_search_mfc_bg"
+                            clickCommand="@{ViewModel.openSearchFragment}"
+                            android:layout_width="@dimen/dp_200"
+                            android:layout_height="match_parent"
+                            android:layout_marginStart="@dimen/dp_400"
+                            android:background="@drawable/bg_base_mfc_cadillac_bg_selector"
+                            android:focusable="true"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <com.fy.navi.ui.view.SkinImageView
+                            android:id="@+id/sk_iv_basic_search"
+                            android:layout_width="@dimen/dp_106"
+                            android:layout_height="@dimen/dp_106"
+                            android:focusable="false"
+                            android:src="@drawable/img_basic_ic_search"
+                            app:layout_constraintBottom_toBottomOf="@+id/sk_iv_basic_search_mfc_bg"
+                            app:layout_constraintEnd_toEndOf="@+id/sk_iv_basic_search_mfc_bg"
+                            app:layout_constraintStart_toStartOf="@+id/sk_iv_basic_search_mfc_bg"
+                            app:layout_constraintTop_toTopOf="@+id/sk_iv_basic_search_mfc_bg" />
+
+                    </com.fy.navi.ui.view.SkinConstraintLayout>
+
+                    <com.fy.navi.ui.view.SkinConstraintLayout
+                        android:layout_width="@dimen/dp_764"
+                        android:layout_height="@dimen/dp_152"
+                        android:background="@drawable/bg_search_main_tab"
+                        android:visibility="@{ViewModel.tmcModeVisibility ? View.VISIBLE : View.GONE}"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:visibility="gone">
+
+                        <com.fy.navi.ui.view.SkinView
+                            android:id="@+id/sk_iv_basic_home_tq_mfc_bg"
+                            clickCommand="@{ViewModel.openHomeFragment}"
+                            android:layout_width="@dimen/dp_288"
+                            android:layout_height="match_parent"
+                            android:background="@drawable/bg_base_mfc_cadillac_bg_selector"
+                            android:focusable="true"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <com.fy.navi.ui.view.SkinImageView
+                            android:id="@+id/sk_iv_basic_home_tq"
+                            android:layout_width="@dimen/dp_106"
+                            android:layout_height="@dimen/dp_106"
+                            android:layout_marginStart="@dimen/dp_60"
+                            android:focusable="false"
+                            android:src="@drawable/img_basic_ic_home"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <com.fy.navi.ui.view.SkinTextView
+                            android:id="@+id/sk_iv_basic_home_text"
+                            clickCommand="@{ViewModel.openHomeFragment}"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/dp_47"
+                            android:ellipsize="end"
+                            android:focusable="false"
+                            android:maxWidth="@dimen/dp_120"
+                            android:maxLines="1"
+                            android:text="@{ViewModel.homeTime}"
+                            android:textColor="@color/main_route_home_text"
+                            android:textSize="@dimen/sp_32"
+                            app:layout_constraintStart_toEndOf="@+id/sk_iv_basic_home_tq"
+                            app:layout_constraintTop_toTopOf="parent"
+                            tools:text="在附近" />
+
+                        <com.fy.navi.scene.ui.map.component.MultiStageProgressBar
+                            android:id="@+id/sk_iv_basic_home_progress"
+                            clickCommand="@{ViewModel.openHomeFragment}"
+                            android:layout_width="@dimen/dp_112"
+                            android:layout_height="@dimen/dp_8"
+                            android:layout_marginTop="@dimen/dp_6"
+                            android:focusable="false"
+                            app:layout_constraintStart_toEndOf="@+id/sk_iv_basic_home_tq"
+                            app:layout_constraintTop_toBottomOf="@+id/sk_iv_basic_home_text"
+                            tools:background="@color/auto_color_ca6d" />
+
+                        <com.fy.navi.ui.view.SkinView
+                            android:id="@+id/sk_iv_basic_bus_tq_mfc_bg"
+                            clickCommand="@{ViewModel.openCompanyFragment}"
+                            android:layout_width="@dimen/dp_288"
+                            android:layout_height="match_parent"
+                            android:layout_marginStart="@dimen/dp_288"
+                            android:background="@drawable/bg_base_mfc_cadillac_bg_selector"
+                            android:focusable="true"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <com.fy.navi.ui.view.SkinImageView
+                            android:id="@+id/sk_iv_basic_bus_tq"
+                            android:layout_width="@dimen/dp_106"
+                            android:layout_height="@dimen/dp_106"
+                            android:layout_marginStart="@dimen/dp_40"
+                            android:focusable="false"
+                            android:src="@drawable/img_basic_ic_bus"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toEndOf="@id/sk_iv_basic_home_progress"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <com.fy.navi.ui.view.SkinTextView
+                            android:id="@+id/sk_iv_basic_bus_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/dp_47"
+                            android:ellipsize="end"
+                            android:focusable="false"
+                            android:maxWidth="@dimen/dp_120"
+                            android:maxLines="1"
+                            android:text="@{ViewModel.companyTime}"
+                            android:textColor="@color/main_route_home_text"
+                            android:textSize="@dimen/sp_32"
+                            app:layout_constraintStart_toEndOf="@+id/sk_iv_basic_bus_tq"
+                            app:layout_constraintTop_toTopOf="parent"
+                            tools:text="32分" />
+
+                        <com.fy.navi.scene.ui.map.component.MultiStageProgressBar
+                            android:id="@+id/sk_iv_basic_bus_progress"
+                            android:layout_width="@dimen/dp_112"
+                            android:layout_height="@dimen/dp_8"
+                            android:layout_marginTop="@dimen/dp_6"
+                            android:layout_marginBottom="@dimen/dp_30"
+                            android:focusable="false"
+                            app:layout_constraintStart_toEndOf="@+id/sk_iv_basic_bus_tq"
+                            app:layout_constraintTop_toBottomOf="@+id/sk_iv_basic_bus_text"
+                            tools:background="@color/auto_color_ca6d" />
+
+                        <com.fy.navi.ui.view.SkinTextView
+                            android:id="@+id/tv_line"
+                            android:layout_width="@dimen/dp_2"
+                            android:layout_height="@dimen/dp_56"
+                            android:layout_marginStart="@dimen/dp_40"
+                            android:background="@color/route_line_color"
+                            android:focusable="false"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toEndOf="@id/sk_iv_basic_bus_progress"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <com.fy.navi.ui.view.SkinView
+                            android:id="@+id/sk_iv_basic_search_tq_mfc_bg"
+                            clickCommand="@{ViewModel.openSearchFragment}"
+                            android:layout_width="@dimen/dp_187"
+                            android:layout_height="match_parent"
+                            android:layout_marginStart="@dimen/dp_578"
+                            android:background="@drawable/bg_base_mfc_cadillac_bg_selector"
+                            android:focusable="true"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <com.fy.navi.ui.view.SkinImageView
+                            android:id="@+id/sk_iv_basic_search_tq"
+                            android:layout_width="@dimen/dp_106"
+                            android:layout_height="@dimen/dp_106"
+                            android:layout_marginStart="@dimen/dp_20"
+                            android:layout_marginEnd="@dimen/dp_60"
+                            android:focusable="false"
+                            android:src="@drawable/img_basic_ic_search"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toEndOf="@id/tv_line"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                    </com.fy.navi.ui.view.SkinConstraintLayout>
+                </com.fy.navi.ui.view.SkinConstraintLayout>
+
+                <com.fy.navi.ui.view.SkinConstraintLayout
+                    android:id="@+id/root_guide_login"
+                    android:layout_width="@dimen/dp_820"
+                    android:layout_height="@dimen/dp_422"
+                    android:layout_marginTop="@dimen/dp_20"
+                    android:background="@drawable/bg_guide_login"
+                    android:clickable="true"
+                    android:focusable="false"
+                    android:visibility="@{ViewModel.mPopGuideLoginShow?View.VISIBLE:View.GONE}"
+                    app:layout_constraintStart_toStartOf="@id/search_main_tab"
+                    app:layout_constraintTop_toBottomOf="@id/search_main_tab"
+                    tools:visibility="visible">
+
+                    <com.fy.navi.ui.view.SkinTextView
+                        android:id="@+id/tv_guide_login_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/dp_52"
+                        android:layout_marginTop="@dimen/dp_52"
+                        android:focusable="false"
+                        android:text="@string/guide_login_title"
+                        android:textColor="@color/guide_login_title"
+                        android:textSize="@dimen/sp_52"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <com.fy.navi.ui.view.SkinImageView
+                        clickCommand="@{ViewModel.guideLoginClose}"
+                        android:layout_width="@dimen/dp_74"
+                        android:layout_height="@dimen/dp_74"
+                        android:layout_marginTop="@dimen/dp_48"
+                        android:layout_marginEnd="@dimen/dp_36"
+                        android:background="@drawable/bg_base_mfc_cadillac_bg_selector"
+                        android:focusable="true"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:srcCompat="@drawable/guide_login_close" />
+
+                    <com.fy.navi.ui.view.SkinTextView
+                        android:id="@+id/tv_guide_login_content"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/dp_40"
+                        android:focusable="false"
+                        android:text="@string/guide_login_content"
+                        android:textColor="@color/guide_login_content"
+                        android:textSize="@dimen/sp_38"
+                        app:layout_constraintLeft_toLeftOf="@id/tv_guide_login_title"
+                        app:layout_constraintTop_toBottomOf="@id/tv_guide_login_title" />
+
+                    <com.fy.navi.ui.view.SkinButton
+                        android:id="@+id/btn_guide_login_bind"
+                        clickCommand="@{ViewModel.guideLoginBind}"
+                        android:layout_width="@dimen/dp_342"
+                        android:layout_height="@dimen/dp_120"
+                        android:layout_marginStart="@dimen/dp_52"
+                        android:layout_marginTop="@dimen/dp_40"
+                        android:layout_marginBottom="@dimen/dp_52"
+                        android:background="@drawable/bg_guide_login_bind"
+                        android:focusable="true"
+                        android:text="@string/guide_login_bind"
+                        android:textColor="@color/guide_login_bind_text"
+                        android:textSize="@dimen/sp_34"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@id/btn_guide_login_cancel"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/tv_guide_login_content" />
+
+                    <com.fy.navi.ui.view.SkinButton
+                        android:id="@+id/btn_guide_login_cancel"
+                        clickCommand="@{ViewModel.guideLoginCancel}"
+                        android:layout_width="@dimen/dp_342"
+                        android:layout_height="@dimen/dp_120"
+                        android:layout_marginStart="@dimen/dp_32"
+                        android:layout_marginEnd="@dimen/dp_52"
+                        android:background="@drawable/bg_guide_login_cancel"
+                        android:text="@string/guide_login_cancel"
+                        android:textColor="@color/guide_login_cancel_text"
+                        android:textSize="@dimen/sp_34"
+                        app:layout_constraintBottom_toBottomOf="@id/btn_guide_login_bind"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/btn_guide_login_bind"
+                        app:layout_constraintTop_toTopOf="@id/btn_guide_login_bind" />
+
+                </com.fy.navi.ui.view.SkinConstraintLayout>
+                <!--推送服务，导航回家-->
+                <com.fy.navi.scene.ui.map.SceneNaviHomeView
+                    android:id="@+id/scene_navi_home"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_47"
-                    android:ellipsize="end"
-                    android:maxWidth="@dimen/dp_120"
-                    android:maxLines="1"
-                    android:text="@{ViewModel.companyTime}"
-                    android:textColor="@color/main_route_home_text"
-                    android:textSize="@dimen/sp_32"
-                    app:layout_constraintStart_toEndOf="@+id/sk_iv_basic_bus_tq"
-                    app:layout_constraintTop_toTopOf="parent"
-                    tools:text="32分" />
+                    android:layout_marginTop="@dimen/dp_24"
+                    android:focusable="false"
+                    android:visibility="@{ViewModel.naviHomeVisibility ? View.VISIBLE : View.GONE}"
+                    app:layout_constraintStart_toStartOf="@id/search_main_tab"
+                    app:layout_constraintTop_toBottomOf="@id/search_main_tab"
+                    tools:visibility="gone" />
 
-                <com.fy.navi.scene.ui.map.component.MultiStageProgressBar
-                    android:id="@+id/sk_iv_basic_bus_progress"
-                    clickCommand="@{ViewModel.openCompanyFragment}"
-                    android:layout_width="@dimen/dp_112"
-                    android:layout_height="@dimen/dp_8"
-                    android:layout_marginTop="@dimen/dp_6"
-                    android:layout_marginBottom="@dimen/dp_30"
-                    app:layout_constraintStart_toEndOf="@+id/sk_iv_basic_bus_tq"
-                    app:layout_constraintTop_toBottomOf="@+id/sk_iv_basic_bus_text"
-                    tools:background="@color/auto_color_ca6d" />
-
-                <com.fy.navi.ui.view.SkinTextView
-                    android:id="@+id/tv_line"
-                    android:layout_width="@dimen/dp_2"
-                    android:layout_height="@dimen/dp_56"
-                    android:layout_marginStart="@dimen/dp_40"
-                    android:background="@color/route_line_color"
+                <com.fy.navi.ui.view.SkinConstraintLayout
+                    android:id="@+id/search_main_tab_bottom"
+                    clickCommand="@{ViewModel.intercept}"
+                    android:layout_width="@dimen/dp_600"
+                    android:layout_height="@dimen/dp_152"
+                    android:layout_marginStart="@dimen/dp_310"
+                    android:layout_marginBottom="@dimen/dp_180"
+                    android:background="@drawable/bg_search_main_tab"
+                    android:focusable="false"
+                    android:visibility="@{ViewModel.bottomNaviVisibility ? View.VISIBLE : View.GONE}"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/sk_iv_basic_bus_progress"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintStart_toStartOf="parent">
 
-                <com.fy.navi.ui.view.SkinImageView
-                    android:id="@+id/sk_iv_basic_search_tq"
-                    clickCommand="@{ViewModel.openSearchFragment}"
-                    android:layout_width="@dimen/dp_106"
-                    android:layout_height="@dimen/dp_106"
-                    android:layout_marginStart="@dimen/dp_20"
-                    android:layout_marginEnd="@dimen/dp_60"
-                    android:src="@drawable/img_basic_ic_search"
+                    <com.fy.navi.ui.view.SkinView
+                        android:id="@+id/sk_iv_basic_routing_mfc_bg"
+                        clickCommand="@{ViewModel.searchForChargeStation}"
+                        android:layout_width="@dimen/dp_200"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/bg_base_mfc_cadillac_bg_selector"
+                        android:focusable="true"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <com.fy.navi.ui.view.SkinImageView
+                        android:id="@+id/sk_iv_basic_routing"
+                        android:layout_width="@dimen/dp_106"
+                        android:layout_height="@dimen/dp_106"
+                        android:layout_marginStart="@dimen/dp_60"
+                        android:focusable="false"
+                        android:src="@drawable/img_home_gas_station"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <com.fy.navi.ui.view.SkinView
+                        android:id="@+id/sk_iv_basic_car_head_mfc_bg"
+                        clickCommand="@{ViewModel.carHeader}"
+                        android:layout_width="@dimen/dp_200"
+                        android:layout_height="match_parent"
+                        android:layout_marginStart="@dimen/dp_200"
+                        android:background="@drawable/bg_base_mfc_cadillac_bg_selector"
+                        android:focusable="true"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <com.fy.navi.ui.view.SkinImageView
+                        android:id="@+id/sk_iv_basic_car_head"
+                        imageRes="@{ViewModel.carModeImgId}"
+                        android:layout_width="@dimen/dp_106"
+                        android:layout_height="@dimen/dp_106"
+                        android:layout_marginStart="@dimen/dp_81"
+                        android:focusable="false"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@+id/sk_iv_basic_ccp"
+                        app:layout_constraintStart_toEndOf="@+id/sk_iv_basic_routing"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_goneMarginEnd="@dimen/dp_60"
+                        tools:src="@drawable/img_car_mode_2d_head" />
+
+                    <com.fy.navi.ui.view.SkinView
+                        android:id="@+id/sk_iv_basic_settings_mfc_bg"
+                        clickCommand="@{ViewModel.openSettingFragment}"
+                        android:layout_width="@dimen/dp_200"
+                        android:layout_height="match_parent"
+                        android:layout_marginStart="@dimen/dp_400"
+                        android:background="@drawable/bg_base_mfc_cadillac_bg_selector"
+                        android:focusable="true"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <com.fy.navi.ui.view.SkinImageView
+                        android:id="@+id/sk_iv_basic_settings"
+                        android:layout_width="@dimen/dp_106"
+                        android:layout_height="@dimen/dp_106"
+                        android:layout_marginStart="@dimen/dp_81"
+                        android:layout_marginEnd="@dimen/dp_60"
+                        android:focusable="false"
+                        android:src="@drawable/img_basic_ic_settings"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/sk_iv_basic_car_head"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                </com.fy.navi.ui.view.SkinConstraintLayout>
+
+                <com.fy.navi.ui.view.SkinConstraintLayout
+                    android:id="@+id/parking_main_tab_bottom"
+                    android:layout_width="@dimen/dp_298"
+                    android:layout_height="@dimen/dp_120"
+                    android:layout_marginBottom="@dimen/dp_180"
+                    android:background="@drawable/bg_search_main_tab"
+                    android:focusable="false"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:visibility="@{ViewModel.backToParkingVisibility ? View.VISIBLE : View.GONE}"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/tv_line"
+                    app:layout_constraintStart_toStartOf="parent">
+
+                    <com.fy.navi.ui.view.SkinView
+                        clickCommand="@{ViewModel.backToSelfParking}"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/bg_base_mfc_cadillac_bg_selector"
+                        android:focusable="true"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <com.fy.navi.ui.view.SkinImageView
+                        android:id="@+id/self_parking_space_iv"
+                        android:layout_width="@dimen/dp_74"
+                        android:layout_height="@dimen/dp_74"
+                        android:layout_marginStart="@dimen/dp_30"
+                        android:focusable="false"
+                        android:src="@drawable/img_parking_space_58"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <com.fy.navi.ui.view.SkinTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/dp_120"
+                        android:layout_marginEnd="@dimen/dp_40"
+                        android:focusable="false"
+                        android:text="@string/self_parking_space"
+                        android:textColor="@color/poi_details_bottom_ff_00"
+                        android:textSize="@dimen/sp_46"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent">
+
+                    </com.fy.navi.ui.view.SkinTextView>
+
+                </com.fy.navi.ui.view.SkinConstraintLayout>
+
+                <com.fy.navi.scene.ui.map.SceneScaleView
+                    android:id="@+id/scene_scale_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/dp_336"
+                    android:layout_marginBottom="@dimen/dp_180"
+                    android:focusable="false"
+                    android:visibility="@{ViewModel.mScaleViewVisibility ? View.VISIBLE : View.GONE}"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    tools:visibility="visible" />
+
+                <com.fy.navi.ui.view.SkinView
+                    android:id="@+id/test_button"
+                    android:layout_width="@dimen/dp_100"
+                    android:layout_height="@dimen/dp_100"
+                    android:focusable="false"
+                    android:text="@string/engineering_panel_entrance"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent" />
+
+                <include
+                    android:id="@+id/include_message_center"
+                    layout="@layout/item_map_message_center"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_140"
+                    android:focusable="false"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
+                <include
+                    android:id="@+id/include_limit"
+                    layout="@layout/item_limit_tip"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_80"
+                    android:layout_marginEnd="@dimen/dp_430"
+                    android:focusable="false"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <include
+                    android:id="@+id/cruise_layout"
+                    layout="@layout/cruise_on_map"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp_0"
+                    android:layout_marginTop="@dimen/dp_20"
+                    android:focusable="false"
+                    android:visibility="@{ViewModel.cruiseVisibility ? View.VISIBLE : View.GONE}"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/search_main_tab"
+                    tools:visibility="gone" />
             </com.fy.navi.ui.view.SkinConstraintLayout>
-        </com.fy.navi.ui.view.SkinConstraintLayout>
-
-
-        <com.fy.navi.ui.view.SkinConstraintLayout
-            android:id="@+id/root_guide_login"
-            android:layout_width="@dimen/dp_820"
-            android:layout_height="@dimen/dp_422"
-            android:layout_marginTop="@dimen/dp_20"
-            android:background="@drawable/bg_guide_login"
-            android:visibility="@{ViewModel.mPopGuideLoginShow?View.VISIBLE:View.GONE}"
-            app:layout_constraintStart_toStartOf="@id/search_main_tab"
-            app:layout_constraintTop_toBottomOf="@id/search_main_tab"
-            tools:visibility="visible">
-
-            <com.fy.navi.ui.view.SkinTextView
-                android:id="@+id/tv_guide_login_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_52"
-                android:layout_marginTop="@dimen/dp_52"
-                android:text="@string/guide_login_title"
-                android:textColor="@color/guide_login_title"
-                android:textSize="@dimen/sp_52"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <com.fy.navi.ui.view.SkinImageView
-                clickCommand="@{ViewModel.guideLoginClose}"
-                android:layout_width="@dimen/dp_74"
-                android:layout_height="@dimen/dp_74"
-                android:layout_marginTop="@dimen/dp_48"
-                android:layout_marginEnd="@dimen/dp_36"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/guide_login_close" />
-
-            <com.fy.navi.ui.view.SkinTextView
-                android:id="@+id/tv_guide_login_content"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_40"
-                android:text="@string/guide_login_content"
-                android:textColor="@color/guide_login_content"
-                android:textSize="@dimen/sp_38"
-                app:layout_constraintLeft_toLeftOf="@id/tv_guide_login_title"
-                app:layout_constraintTop_toBottomOf="@id/tv_guide_login_title" />
-
-            <com.fy.navi.ui.view.SkinButton
-                android:id="@+id/btn_guide_login_bind"
-                clickCommand="@{ViewModel.guideLoginBind}"
-                android:layout_width="@dimen/dp_342"
-                android:layout_height="@dimen/dp_120"
-                android:layout_marginStart="@dimen/dp_52"
-                android:layout_marginTop="@dimen/dp_40"
-                android:layout_marginBottom="@dimen/dp_52"
-                android:background="@drawable/bg_guide_login_bind"
-                android:text="@string/guide_login_bind"
-                android:textColor="@color/guide_login_bind_text"
-                android:textSize="@dimen/sp_34"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/btn_guide_login_cancel"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tv_guide_login_content" />
-
-            <com.fy.navi.ui.view.SkinButton
-                android:id="@+id/btn_guide_login_cancel"
-                clickCommand="@{ViewModel.guideLoginCancel}"
-                android:layout_width="@dimen/dp_342"
-                android:layout_height="@dimen/dp_120"
-                android:layout_marginStart="@dimen/dp_32"
-                android:layout_marginEnd="@dimen/dp_52"
-                android:background="@drawable/bg_guide_login_cancel"
-                android:text="@string/guide_login_cancel"
-                android:textColor="@color/guide_login_cancel_text"
-                android:textSize="@dimen/sp_34"
-                app:layout_constraintBottom_toBottomOf="@id/btn_guide_login_bind"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/btn_guide_login_bind"
-                app:layout_constraintTop_toTopOf="@id/btn_guide_login_bind" />
-
-        </com.fy.navi.ui.view.SkinConstraintLayout>
-        <!--推送服务，导航回家-->
-        <com.fy.navi.scene.ui.map.SceneNaviHomeView
-            android:id="@+id/scene_navi_home"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_24"
-            android:visibility="@{ViewModel.naviHomeVisibility ? View.VISIBLE : View.GONE}"
-            app:layout_constraintStart_toStartOf="@id/search_main_tab"
-            app:layout_constraintTop_toBottomOf="@id/search_main_tab"
-            tools:visibility="gone" />
-
-        <com.fy.navi.ui.view.SkinConstraintLayout
-            android:id="@+id/search_main_tab_bottom"
-            clickCommand="@{ViewModel.intercept}"
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/dp_152"
-            android:layout_marginStart="@dimen/dp_310"
-            android:layout_marginBottom="@dimen/dp_180"
-            android:background="@drawable/bg_search_main_tab"
-            android:visibility="@{ViewModel.bottomNaviVisibility ? View.VISIBLE : View.GONE}"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent">
-
-            <com.fy.navi.ui.view.SkinImageView
-                android:id="@+id/sk_iv_basic_routing"
-                clickCommand="@{ViewModel.searchForChargeStation}"
-                android:layout_width="@dimen/dp_106"
-                android:layout_height="@dimen/dp_106"
-                android:layout_marginStart="@dimen/dp_60"
-                android:src="@drawable/img_home_gas_station"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <com.fy.navi.ui.view.SkinImageView
-                android:id="@+id/sk_iv_basic_car_head"
-                clickCommand="@{ViewModel.carHeader}"
-                imageRes="@{ViewModel.carModeImgId}"
-                android:layout_width="@dimen/dp_106"
-                android:layout_height="@dimen/dp_106"
-                android:layout_marginStart="@dimen/dp_81"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/sk_iv_basic_ccp"
-                app:layout_constraintStart_toEndOf="@+id/sk_iv_basic_routing"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_goneMarginEnd="@dimen/dp_60"
-                tools:src="@drawable/img_car_mode_2d_head" />
-
-            <com.fy.navi.ui.view.SkinImageView
-                android:id="@+id/sk_iv_basic_settings"
-                clickCommand="@{ViewModel.openSettingFragment}"
-                android:layout_width="@dimen/dp_106"
-                android:layout_height="@dimen/dp_106"
-                android:layout_marginStart="@dimen/dp_81"
-                android:layout_marginEnd="@dimen/dp_60"
-                android:src="@drawable/img_basic_ic_settings"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/sk_iv_basic_car_head"
-                app:layout_constraintTop_toTopOf="parent" />
-
-        </com.fy.navi.ui.view.SkinConstraintLayout>
-
-        <com.fy.navi.ui.view.SkinLinearLayout
-            android:id="@+id/parking_main_tab_bottom"
-            clickCommand="@{ViewModel.backToSelfParking}"
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/dp_120"
-            android:layout_marginBottom="@dimen/dp_180"
-            android:background="@drawable/bg_search_main_tab"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:visibility="@{ViewModel.backToParkingVisibility ? View.VISIBLE : View.GONE}"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent">
-
-            <com.fy.navi.ui.view.SkinImageView
-                android:id="@+id/self_parking_space_iv"
-                android:layout_width="@dimen/dp_74"
-                android:layout_height="@dimen/dp_74"
-                android:layout_marginStart="@dimen/dp_30"
-                android:src="@drawable/img_parking_space_58"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <com.fy.navi.ui.view.SkinTextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_16"
-                android:layout_marginEnd="@dimen/dp_40"
-                android:text="@string/self_parking_space"
-                android:textColor="@color/poi_details_bottom_ff_00"
-                android:textSize="@dimen/sp_46">
-
-            </com.fy.navi.ui.view.SkinTextView>
-
-        </com.fy.navi.ui.view.SkinLinearLayout>
-
-        <com.fy.navi.scene.ui.map.SceneScaleView
-            android:id="@+id/scene_scale_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/dp_336"
-            android:layout_marginBottom="@dimen/dp_180"
-            android:visibility="@{ViewModel.mScaleViewVisibility ? View.VISIBLE : View.GONE}"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            tools:visibility="visible" />
+        </com.android.car.ui.FocusArea>
 
         <com.fy.navi.ui.view.SkinFrameLayout
             android:id="@+id/layout_fragment"
@@ -385,51 +596,11 @@
             android:layout_height="match_parent"
             android:layout_marginStart="@dimen/dp_310"
             android:layout_marginTop="@dimen/dp_140"
+            android:focusable="false"
             android:maxWidth="@dimen/dp_1000"
             android:minWidth="@dimen/dp_1042"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:visibility="gone" />
-
-        <com.fy.navi.ui.view.SkinView
-            android:id="@+id/test_button"
-            android:layout_width="@dimen/dp_100"
-            android:layout_height="@dimen/dp_100"
-            android:text="@string/engineering_panel_entrance"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
-
-        <include
-            android:id="@+id/include_message_center"
-            layout="@layout/item_map_message_center"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_140"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <include
-            android:id="@+id/include_limit"
-            layout="@layout/item_limit_tip"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_80"
-            android:layout_marginEnd="@dimen/dp_430"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <include
-            android:id="@+id/cruise_layout"
-            layout="@layout/cruise_on_map"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_20"
-            android:visibility="@{ViewModel.cruiseVisibility ? View.VISIBLE : View.GONE}"
-            app:layout_constraintStart_toEndOf="@id/search_main_tab"
-            app:layout_constraintStart_toStartOf="@id/search_main_tab"
-            app:layout_constraintTop_toBottomOf="@id/search_main_tab"
-            tools:visibility="gone" />
-
     </com.fy.navi.ui.view.SkinConstraintLayout>
 </layout>

@@ -36,10 +36,16 @@ public class SceneNaviViaListImpl extends BaseSceneModel<SceneNaviViaListView> i
         mTimes = NumberUtils.NUM_8;
         mScheduledFuture = ThreadManager.getInstance().asyncAtFixDelay(() -> {
             if (mTimes == NumberUtils.NUM_0) {
-                ThreadManager.getInstance().postUi(() -> {
-                    updateSceneVisible(false);
-                    cancelTimer();
-                });
+                // 只有当前是navi页面才执行倒计时关闭页面
+                boolean currentNavi = mCallBack != null && mCallBack.getCurrentFragmentIsNavi();
+                if (currentNavi) {
+                    ThreadManager.getInstance().postUi(() -> {
+                        updateSceneVisible(false);
+                        cancelTimer();
+                    });
+                } else {
+                    initTimer();
+                }
             }
             mTimes--;
         }, NumberUtils.NUM_0, NumberUtils.NUM_1);

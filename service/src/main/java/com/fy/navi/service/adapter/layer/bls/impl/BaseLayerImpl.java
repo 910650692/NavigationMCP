@@ -215,6 +215,10 @@ public class BaseLayerImpl<S extends BaseStyleAdapter> extends PrepareLayerStyle
                 } else {
                     Logger.d(TAG, getClass().getSimpleName() + " 图层 :" + layer.getName() + " ; 解析自定义配置 json文件成功 =" + jsonFilePath);
                 }
+                if (getStyleAdapter().isNeedRefreshJsonValue(item)) {
+                    Logger.d(TAG, "isNeedRefreshJsonValue -> true");
+                    styleJson = getStyleAdapter().provideUpdateStyleJson(item, styleJson);
+                }
             }
             if (!TextUtils.isEmpty(styleJson)) {
                 //缓存自定义json TODO

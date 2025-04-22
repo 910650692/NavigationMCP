@@ -1,12 +1,36 @@
 package com.fy.navi.fsa.bean;
 
+/**
+ * 1.1.6、获取导航态剩余距离、时间
+ */
 public class RemainInfo {
+    /**
+     * 剩余距离
+     */
     private int remainDistance;
+    /**
+     * 剩余时间
+     */
     private int remainTime;
+    /**
+     * 备选路线剩余距离
+     */
     private int[] auxRemainDist;
+    /**
+     * 备选路线剩余时间
+     */
     private int[] auxRemainTime;
+    /**
+     * 备选路线标签信息
+     */
     private String[] auxLabelInfo;
+    /**
+     * 三条路线的剩余红绿灯数量
+     */
     private int[] remainTrafficLight;
+    /**
+     * 备选路线相对收费信息
+     */
     private int[] auxTollInfo;
 
     public int getRemainDistance() {

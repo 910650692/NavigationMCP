@@ -5,8 +5,10 @@ import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
 import com.fy.navi.service.AutoMapConstant;
 import com.fy.navi.service.MapDefaultFinalTag;
+import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.search.SearchResultEntity;
 import com.fy.navi.service.logicpaket.calibration.CalibrationPackage;
+import com.fy.navi.service.logicpaket.map.MapPackage;
 import com.fy.navi.service.logicpaket.search.SearchPackage;
 import com.fy.navi.service.logicpaket.search.SearchResultCallback;
 import com.fy.navi.ui.base.BaseModel;
@@ -21,6 +23,8 @@ public class PoiDetailsModel extends BaseModel<PoiDetailsViewModel> implements S
     private final SearchPackage mSearchPackage;
     private final String mCallbackId;
     private final CalibrationPackage mCalibrationPackage;
+    private final MapPackage mapPackage;
+    private double maxDistance = 5; //自车位和地图中心点阈值
 
     public PoiDetailsModel() {
         Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "PoiDetailsModel 初始化");
@@ -28,6 +32,7 @@ public class PoiDetailsModel extends BaseModel<PoiDetailsViewModel> implements S
         mCallbackId = UUID.randomUUID().toString();
         mSearchPackage.registerCallBack(mCallbackId, this);
         mCalibrationPackage = CalibrationPackage.getInstance();
+        mapPackage= MapPackage.getInstance();
     }
 
     @Override
@@ -68,5 +73,9 @@ public class PoiDetailsModel extends BaseModel<PoiDetailsViewModel> implements S
      */
     public int powerType() {
         return mCalibrationPackage.powerType();
+    }
+
+    public boolean calcStraightDistance(){
+        return mapPackage.isCarLocation(MapType.MAIN_SCREEN_MAIN_MAP,maxDistance);
     }
 }

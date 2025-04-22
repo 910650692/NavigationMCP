@@ -12,7 +12,7 @@
 
     <com.fy.navi.ui.view.SkinLinearLayout
         android:layout_width="@dimen/dp_640"
-        android:layout_height="@dimen/dp_108"
+        android:layout_height="@dimen/dp_106"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
@@ -20,8 +20,10 @@
             android:id="@+id/stl_start_route"
             android:layout_width="@dimen/dp_0"
             android:layout_weight="1"
-            android:minWidth="@dimen/dp_223"
-            android:layout_height="match_parent"
+            android:minWidth="@dimen/dp_260"
+            android:maxWidth="@dimen/dp_560"
+            android:layout_height="@dimen/dp_90"
+            android:layout_gravity="center_vertical"
             android:background="@drawable/bg_details_bottom_go_here"
             app:layout_constraintStart_toStartOf="parent">
 
@@ -54,12 +56,12 @@
         
         <com.fy.navi.ui.view.SkinTextView
             android:id="@+id/stl_go_first"
-            android:layout_width="@dimen/dp_0"
-            android:layout_weight="1"
-            android:layout_height="match_parent"
+            android:layout_width="@dimen/dp_223"
+            android:layout_height="@dimen/dp_90"
             android:text="@string/go_first"
             android:gravity="center"
             android:textSize="@dimen/sp_34"
+            android:layout_gravity="center_vertical"
             android:background="@drawable/bg_cancel"
             android:textColor="@color/search_quick_tab_view_color"
             android:layout_marginStart="@dimen/dp_24"
@@ -73,18 +75,18 @@
         <com.fy.navi.ui.view.SkinConstraintLayout
             android:id="@+id/stl_function"
             android:layout_width="wrap_content"
-            android:maxWidth="@dimen/dp_340"
+
             android:layout_height="match_parent"
             android:layout_marginStart="@dimen/dp_16"
-            android:layout_marginEnd="@dimen/dp_23"
+
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/stl_go_first">
 
             <com.fy.navi.ui.view.SkinConstraintLayout
                 android:id="@+id/stl_phone"
-                android:layout_width="wrap_content"
+                android:layout_width="@dimen/dp_90"
                 android:layout_height="match_parent"
-                android:minWidth="@dimen/dp_90"
+
                 app:layout_constraintEnd_toStartOf="@+id/stl_around_search"
                 app:layout_constraintHorizontal_chainStyle="spread"
                 app:layout_constraintStart_toStartOf="parent">
@@ -112,10 +114,11 @@
 
             <com.fy.navi.ui.view.SkinConstraintLayout
                 android:id="@+id/stl_around_search"
-                android:layout_width="wrap_content"
+                android:layout_width="@dimen/dp_90"
                 android:layout_height="match_parent"
-                android:minWidth="@dimen/dp_90"
-                tools:visibility="gone"
+
+                android:layout_marginStart="@dimen/dp_16"
+                tools:visibility="visible"
                 app:layout_constraintEnd_toStartOf="@+id/stl_poi_favorites"
                 app:layout_constraintStart_toEndOf="@+id/stl_phone">
 
@@ -142,10 +145,11 @@
 
             <com.fy.navi.ui.view.SkinConstraintLayout
                 android:id="@+id/stl_poi_favorites"
-                android:layout_width="wrap_content"
+                android:layout_width="@dimen/dp_90"
                 android:layout_height="match_parent"
-                android:minWidth="@dimen/dp_90"
-                tools:visibility="gone"
+
+                tools:visibility="visible"
+                android:layout_marginStart="@dimen/dp_16"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/stl_around_search">
 

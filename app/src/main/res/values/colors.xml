@@ -4,7 +4,6 @@
     <color name="white">#FFFFFFFF</color>
     <color name="transparent">#00000000</color>
 
-
     <!-- 透明度对照表
          100% - FF
          95% - F2
@@ -183,7 +182,7 @@
     <color name="setting_car_connected_help_tab_default">#B3000000</color>
     <color name="setting_dialog_confirm">#FF3377FF</color>
     <color name="setting_line_view">#FFF8F8FA</color>
-    <color name="setting_bg_top">#42386DF0</color>
+    <color name="setting_bg_top">#338E97B9</color>
     <color name="setting_voice_has_update_color">#FF2461EA</color>
     <color name="setting_voice_size_color">#B3000000</color>
     <color name="setting_button_disable">#802461EA</color>

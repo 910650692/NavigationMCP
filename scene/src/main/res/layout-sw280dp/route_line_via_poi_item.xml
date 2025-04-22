@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="model"
+            type="com.fy.navi.service.define.route.RouteParam" />
+
+        <variable
+            name="holder"
+            type="com.fy.navi.scene.ui.adapter.RouteViaPointAdapter.Holder" />
+    </data>
+
+    <com.fy.navi.ui.view.SkinConstraintLayout
+        android:id="@+id/route_item_via_root"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.fy.navi.ui.view.SkinConstraintLayout
+            android:id="@+id/content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toTopOf="@+id/route_item_via_empty"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <com.fy.navi.ui.view.SkinView
+                android:id="@+id/line_bg"
+                android:layout_width="@dimen/dp_16"
+                android:layout_height="@dimen/dp_48" />
+
+            <com.fy.navi.ui.view.SkinImageView
+                android:id="@+id/route_item_via_img"
+                android:layout_width="@dimen/dp_14"
+                android:layout_height="@dimen/dp_14"
+                android:src="@drawable/circle_dot_orange"
+                app:layout_constraintBottom_toBottomOf="@+id/line_bg"
+                app:layout_constraintStart_toStartOf="@+id/line_bg"
+                app:layout_constraintTop_toTopOf="@+id/line_bg" />
+
+            <com.fy.navi.ui.view.SkinTextView
+                android:layout_width="0.5dp"
+                android:layout_height="@dimen/dp_16"
+                android:background="@color/route_line_color"
+                app:layout_constraintBottom_toTopOf="@+id/route_item_via_img"
+                app:layout_constraintEnd_toEndOf="@+id/route_item_via_img"
+                app:layout_constraintStart_toStartOf="@+id/route_item_via_img" />
+
+            <com.fy.navi.ui.view.SkinTextView
+                android:layout_width="0.5dp"
+                android:layout_height="@dimen/dp_16"
+                android:background="@color/route_line_color"
+                app:layout_constraintEnd_toEndOf="@id/route_item_via_img"
+                app:layout_constraintStart_toStartOf="@id/route_item_via_img"
+                app:layout_constraintTop_toBottomOf="@+id/route_item_via_img" />
+
+            <com.fy.navi.ui.view.SkinImageView
+                android:id="@+id/route_item_via_long_img"
+                android:layout_width="@dimen/dp_54"
+                android:layout_height="@dimen/dp_54"
+                android:src="@drawable/img_route_via_long_press"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/line_bg"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.fy.navi.ui.view.SkinTextView
+                android:id="@+id/route_via_item_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:ellipsize="end"
+                android:maxWidth="@dimen/dp_350"
+                android:maxLines="1"
+                android:text="@{model.name}"
+                android:textColor="@color/text_route_defult"
+                android:textSize="@dimen/sp_38"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/route_item_via_long_img"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="烽火路烽火路烽火路烽火路烽火路烽火路烽火路烽火路烽火路" />
+
+            <com.fy.navi.ui.view.SkinView
+                android:id="@+id/route_item_via_delete_img"
+                android:layout_width="@dimen/dp_68"
+                android:layout_height="@dimen/dp_44"
+                android:layout_marginEnd="@dimen/dp_24"
+                app:layout_constraintEnd_toEndOf="parent" />
+
+            <com.fy.navi.ui.view.SkinImageView
+                android:layout_width="@dimen/dp_54"
+                android:layout_height="@dimen/dp_54"
+                android:layout_marginEnd="@dimen/dp_40"
+                android:src="@drawable/img_route_via_remove_via"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+        </com.fy.navi.ui.view.SkinConstraintLayout>
+
+        <com.fy.navi.ui.view.SkinView
+            android:id="@+id/route_item_via_empty"
+            android:layout_width="@dimen/dp_16"
+            android:layout_height="@dimen/dp_24"
+            app:layout_constraintTop_toBottomOf="@+id/content"
+            app:layout_constraintStart_toStartOf="parent"/>
+
+        <com.fy.navi.ui.view.SkinTextView
+            android:id="@+id/route_item_via_empty_line"
+            android:layout_width="0.5dp"
+            android:layout_height="@dimen/dp_24"
+            android:background="@color/route_line_color"
+            app:layout_constraintStart_toStartOf="@+id/route_item_via_empty"
+            app:layout_constraintEnd_toEndOf="@+id/route_item_via_empty"
+            app:layout_constraintTop_toTopOf="@+id/route_item_via_empty"
+            />
+
+    </com.fy.navi.ui.view.SkinConstraintLayout>
+</layout>

@@ -13,6 +13,8 @@ import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
 import com.autonavi.gbl.common.model.Coord2DDouble;
+import com.autonavi.gbl.common.model.Coord3DDouble;
+import com.autonavi.gbl.common.model.SizeFloat;
 import com.autonavi.gbl.map.MapService;
 import com.autonavi.gbl.map.MapView;
 import com.autonavi.gbl.map.OperatorPosture;
@@ -37,10 +39,12 @@ import com.autonavi.gbl.map.model.MapStyleMode;
 import com.autonavi.gbl.map.model.MapStyleParam;
 import com.autonavi.gbl.map.model.MapStyleTime;
 import com.autonavi.gbl.map.model.MapViewParam;
+import com.autonavi.gbl.map.model.MapViewPortParam;
 import com.autonavi.gbl.map.model.MapViewStateType;
 import com.autonavi.gbl.map.model.MapZoomScaleMode;
 import com.autonavi.gbl.map.model.MapviewMode;
 import com.autonavi.gbl.map.model.MapviewModeParam;
+import com.autonavi.gbl.map.model.PointD;
 import com.autonavi.gbl.map.model.PreviewParam;
 import com.autonavi.gbl.map.observer.IAnimationObserver;
 import com.autonavi.gbl.map.observer.IBLMapBusinessDataObserver;
@@ -66,6 +70,7 @@ import com.fy.navi.service.define.map.MapMode;
 import com.fy.navi.service.define.map.MapStateStyle;
 import com.fy.navi.service.define.map.MapViewParams;
 import com.fy.navi.service.define.map.MapType;
+import com.fy.navi.service.define.mfc.MfcController;
 import com.fy.navi.service.define.search.PoiInfoEntity;
 import com.fy.navi.service.logicpaket.engine.EnginePackage;
 import com.fy.navi.service.logicpaket.navistatus.NaviStatusPackage;
@@ -325,6 +330,15 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver,
         getMapview().getOperatorPosture().setMapCenter(geoPoint.getLon(), geoPoint.getLat(), 0, true, true);
     }
 
+
+    public GeoPoint getMapCenter() {
+      Coord3DDouble coord3DDouble = getMapview().getOperatorPosture().getMapCenter();
+      GeoPoint mapCenter = new GeoPoint();
+      mapCenter.setLon(coord3DDouble.lon);
+      mapCenter.setLat(coord3DDouble.lat);
+      return mapCenter;
+    }
+
     public boolean setTrafficStates(boolean isOpen) {
         int status = isOpen ? 1 : 0;
         boolean result = getMapview().setControllerStatesOperator(MapControllerStatesType.MAP_CONTROLLER_ONOFF_TRAFFIC_STATE, status, true);
@@ -436,6 +450,35 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver,
         Logger.e(TAG,"goToCarPosition " + changeLevel);
         getMapview().goToPosition(pos, bAnimation);
         getMapview().resetTickCount(1);
+    }
+
+
+    /**
+     * mfc 控制地图上下左右移动
+     * mfcController 方向
+     * moveDistance  距离
+     */
+    public void mfcMoveMap(MfcController mfcController,int moveDistance){
+        Coord3DDouble mapCenter = getMapview().getOperatorPosture().getMapCenter();
+        PointD pointD = getMapview().getOperatorPosture().lonLatToScreen(mapCenter.lon,mapCenter.lat,0);
+        double centerX = pointD.x;
+        double centerY = pointD.y;
+        if(mfcController == MfcController.LEFT){
+            centerX = centerX - moveDistance;
+        }else if(mfcController == MfcController.RIGHT){
+            centerX = centerX + moveDistance;
+        }else if(mfcController == MfcController.UP){
+            centerY = centerY - moveDistance;
+        }else if(mfcController == MfcController.DOWN){
+            centerY = centerY + moveDistance;
+        }
+
+        Coord2DDouble coord2DDouble = getMapview().getOperatorPosture().
+                screenToLonLat(centerX,centerY);
+        Coord3DDouble moveCenter = new Coord3DDouble();
+        moveCenter.lon = coord2DDouble.lon;
+        moveCenter.lat = coord2DDouble.lat;
+        getMapview().getOperatorPosture().setMapCenter(moveCenter);
     }
 
     /**
@@ -687,5 +730,17 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver,
     @Override
     public boolean onBusinessDataObserver(int i, long l, long l1) {
         return false;
+    }
+
+    public void changeMapViewParams(MapViewParams mapViewParams) {
+        this.mapViewParams = mapViewParams;
+        long x = mapViewParams.getX(); //左上角 左偏置
+        long y = mapViewParams.getY(); //左上角 顶偏置
+        long width = mapViewParams.getWidth(); //地图宽
+        long height = mapViewParams.getHeight(); //地图高
+        long screenWidth = mapViewParams.getScreenWidth(); //屏幕宽
+        long screenHeight = mapViewParams.getScreenHeight(); //屏幕高
+        MapViewPortParam mapViewPortParam = new MapViewPortParam(x, y, width, height, screenWidth, screenHeight);
+        getMapview().setMapviewPort(mapViewPortParam);
     }
 }

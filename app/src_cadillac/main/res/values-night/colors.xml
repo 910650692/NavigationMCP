@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="search_main_tab_img_shape_bg">#4019181D</color>
+    <color name="img_basic_ic_home_color">#D2D3D7</color>
+    <color name="img_basic_ic_bus_color">#D2D3D7</color>
+    <color name="img_basic_ic_search_color">#D2D3D7</color>
+    <color name="route_back_icon_bg">#00000000</color>
+    <color name="route_back_icon_color">#D2D3D7</color>
+    <color name="guide_login_content">#B3FFFFFF</color>
+</resources>

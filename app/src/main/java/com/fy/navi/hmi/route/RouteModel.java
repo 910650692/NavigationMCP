@@ -19,6 +19,7 @@ import com.fy.navi.burypoint.controller.BuryPointController;
 import com.fy.navi.hmi.R;
 import com.fy.navi.hmi.limit.LimitCitySelectionFragment;
 import com.fy.navi.hmi.limit.LimitDriveFragment;
+import com.fy.navi.hmi.map.GasCarTipManager;
 import com.fy.navi.hmi.poi.PoiDetailsFragment;
 import com.fy.navi.hmi.search.parking.TerminalParkingFragment;
 import com.fy.navi.scene.RoutePath;
@@ -28,6 +29,7 @@ import com.fy.navi.service.AutoMapConstant;
 import com.fy.navi.service.define.bean.GeoPoint;
 import com.fy.navi.service.define.layer.GemLayerItem;
 import com.fy.navi.service.define.layer.RouteLineLayerParam;
+import com.fy.navi.service.define.layer.refix.LayerItemRouteEndPoint;
 import com.fy.navi.service.define.map.MapStateStyle;
 import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.navistatus.NaviStatus;
@@ -102,6 +104,7 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
     private long mRestirctionTaskId;
     private RouteRestrictionParam mRouteRestrictionParams;
     private RequestRouteResult mRequestRouteResults;
+    private GasCarTipManager mGasCarTipManager = new GasCarTipManager();
     private boolean mIsFirstRequest = true;
     private int mCarType = -1;
 
@@ -316,6 +319,10 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
      * @param poiInfoEntity  请求参数
      * */
     public void getAddress(final PoiInfoEntity poiInfoEntity) {
+        if (poiInfoEntity == null) {
+            Logger.d(TAG, "getAddress is null");
+            return;
+        }
         mTaskMap.clear();
         mLocalTaskId = mSearchPackage.deppInfoSearch(poiInfoEntity.getPid()
                 , new GeoPoint(poiInfoEntity.getPoint().getLon(), poiInfoEntity.getPoint().getLat()));
@@ -573,7 +580,8 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
      * @return 路线信息
      * */
     public RouteLineInfo getSelectLineInfo() {
-        if (!ConvertUtils.isEmpty(mRouteLineInfos)) {
+        if (!ConvertUtils.isEmpty(mRouteLineInfos) && mRouteLineInfos.size() > getCurrentIndex()
+                && getCurrentIndex() != -1) {
             return mRouteLineInfos.get(getCurrentIndex());
         }
         return null;
@@ -810,6 +818,14 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
     }
 
     @Override
+    public void onReroute() {
+        if (!ConvertUtils.isEmpty(mViewModel)) {
+            Logger.i(TAG, "偏航引发算路");
+            mViewModel.showProgressUIOnly();
+        }
+    }
+
+    @Override
     public void onRouteSlected(final MapType mapTypeId, final int routeIndex) {
         if (mapTypeId == MapType.MAIN_SCREEN_MAIN_MAP) {
             if (!ConvertUtils.isEmpty(mViewModel)) {
@@ -835,6 +851,18 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
                                 || mRouteLineInfos.get(routeIndex).isMChargingStation());
                     } else {
                         mViewModel.showHideElicCheckBox(false);
+                    }
+
+                    //绘制终点扎标
+                    if (powerType() == 0 || powerType() == 2) {
+                        final float num = mGasCarTipManager.getRemainGasPercent(ConvertUtils.convertMetersToKilometers(mRouteLineInfos.get(getCurrentIndex()).getMDistance()));
+                        Logger.d(TAG, "getRemainGasPercent: " + num);
+                        if (num != 0) {
+                            mRoutePackage.drawEndPoint(mapTypeId, LayerItemRouteEndPoint.LayerRouteEndPointType.LAYER_ROUTE_END_TYPE_OIL, (int) (num * 100) );
+                        }
+                    }  else if (mRouteLineInfos.get(routeIndex).isMCanBeArrive()){
+                        mRoutePackage.drawEndPoint(mapTypeId, LayerItemRouteEndPoint.LayerRouteEndPointType.LAYER_ROUTE_END_TYPE_BATTERY,
+                                mRouteLineInfos.get(routeIndex).getMRemainPercent());
                     }
                 }
             }
@@ -1035,7 +1063,7 @@ public void onImmersiveStatusChange(final MapType mapTypeId, final ImersiveStatu
     public void onSilentSearchResult(final int taskId, final int errorCode, final String message, final SearchResultEntity searchResultEntity) {
         if (mParkSearchId == taskId) {
             if (searchResultEntity.getPoiList() != null && !searchResultEntity.getPoiList().isEmpty()
-                    && mSearchPackage.isAlongWaySearch()) {
+                    && mRoutePackage.isRouteState()) {
                 showRoutePark(MapType.MAIN_SCREEN_MAIN_MAP);
             }
         }

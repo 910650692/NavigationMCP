@@ -4,9 +4,6 @@ import android.annotation.SuppressLint;
 import android.provider.Settings;
 import android.text.TextUtils;
 
-import androidx.work.Data;
-import androidx.work.ListenableWorker;
-
 import com.android.utils.ConvertUtils;
 import com.android.utils.NetWorkUtils;
 import com.android.utils.ResourceUtils;
@@ -14,7 +11,6 @@ import com.android.utils.ToastUtils;
 import com.android.utils.file.FileUtils;
 import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
-import com.android.utils.thread.RunTask;
 import com.android.utils.thread.ThreadManager;
 import com.autonavi.gbl.map.model.EGLDeviceID;
 import com.autonavi.gbl.map.model.MapEngineID;
@@ -30,9 +26,9 @@ import com.fy.navi.service.AppContext;
 import com.fy.navi.service.AutoMapConstant;
 import com.fy.navi.service.GBLCacheFilePath;
 import com.fy.navi.service.MapDefaultFinalTag;
+import com.fy.navi.service.adapter.engine.ActivateObserver;
 import com.fy.navi.service.adapter.engine.EngineObserver;
 import com.fy.navi.service.adapter.engine.IEngineApi;
-import com.fy.navi.service.define.code.CodeManager;
 import com.fy.navi.service.define.code.UserDataCode;
 import com.fy.navi.service.define.engine.GaodeLogLevel;
 import com.fy.navi.service.define.map.MapType;
@@ -47,6 +43,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.CancellationException;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
@@ -63,6 +60,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class EngineAdapterImpl implements IEngineApi {
     private static final String TAG = MapDefaultFinalTag.ENGINE_SERVICE_TAG;
     private final List<EngineObserver> mEngineObserverList;
+    private final List<ActivateObserver> mActObserverList;
+    private final ActivationManager.IActivateHelper manualActivateListener;
+    private static final String ERR_MSG = "Error Massage : ";
     private boolean mIsActive = false;
     // TODO: 配置父子渠道包，每次更新aar包时都要核实一下
     private final String mChanelName = "C13953968867";
@@ -75,14 +75,47 @@ public class EngineAdapterImpl implements IEngineApi {
 
     public EngineAdapterImpl() {
         mEngineObserverList = new ArrayList<>();
+        mActObserverList = new ArrayList<>();
         mSettingManager = SettingManager.getInstance();
         mSettingManager.init();
+        manualActivateListener = new ActivationManager.IActivateHelper() {
+            @Override
+            public void onUUIDGet(final String uuid) {
+                Logger.d(TAG, "uuid获取成功 : " + uuid);
+                if (ConvertUtils.isEmpty(uuid)) {
+                    Logger.d(TAG,"uuid为空");
+                    logResult(10008);
+                    return;
+                }
+                beginInitActivateService(uuid);
+            }
+
+            @Override
+            public void onManualActivated(final boolean isSuccess) {
+                if (!isSuccess) {
+                    Logger.e(TAG, "手动激活失败");
+                    return;
+                }
+                Logger.d(TAG, "手动激活成功，开始BL初始化");
+                initBLLib();
+            }
+
+            @Override
+            public void onNetActivated(final boolean isSuccess) {
+                if (!isSuccess) {
+                    Logger.e(TAG, "网络激活失败");
+                    onNetActivateFailed();
+                    logResult(10007);
+                    return;
+                }
+                Logger.d(TAG, "网络激活成功，开始BL初始化");
+                initBLLib();
+            }
+        };
+        ActivationManager.getInstance().addManualActivateListener(manualActivateListener);
     }
 
-    /**
-     * 添加初始化观察者
-     * @param observer EngineObserver
-     */
+    @Override
     public void addInitEnginObserver(final EngineObserver observer) {
         if (ConvertUtils.isContain(mEngineObserverList, observer)) {
             return;
@@ -91,13 +124,21 @@ public class EngineAdapterImpl implements IEngineApi {
     }
 
     @Override
-    public ListenableWorker.Result initEngine() {
-        return ThreadManager.getInstance().supplyAsync(new RunTask<>() {
+    public void addActivateObserver(final ActivateObserver observer) {
+        if (ConvertUtils.isContain(mActObserverList, observer)) {
+            return;
+        }
+        mActObserverList.add(observer);
+    }
+
+    @Override
+    public void initEngine() {
+        ThreadManager.getInstance().execute(new Runnable() {
             @Override
-            public ListenableWorker.Result get() {
-                return startInitEngine();
+            public void run() {
+                startInitEngine();
             }
-        }, 13, TimeUnit.MINUTES);
+        });
     }
 
     @Override
@@ -148,6 +189,8 @@ public class EngineAdapterImpl implements IEngineApi {
                 return MapEngineID.MapEngineIdEx1;
             case LAUNCHER_WIDGET_MAP:
                 return MapEngineID.MapEngineIdEx2;
+            case HUD_MAP:
+                return MapEngineID.MapEngineIdEx3;
             default:
                 break;
         }
@@ -163,6 +206,8 @@ public class EngineAdapterImpl implements IEngineApi {
                 return MapEngineID.MapEngineIdEx1EagleEye;
             case LAUNCHER_WIDGET_MAP:
                 return MapEngineID.MapEngineIdEx2EagleEye;
+            case HUD_MAP:
+                return MapEngineID.MapEngineIdEx3EagleEye;
             default:
                 break;
         }
@@ -178,6 +223,8 @@ public class EngineAdapterImpl implements IEngineApi {
                 return EGLDeviceID.EGLDeviceIDExternal1;
             case LAUNCHER_WIDGET_MAP:
                 return EGLDeviceID.EGLDeviceIDExternal2;
+            case HUD_MAP:
+                return EGLDeviceID.EGLDeviceIDExternal3;
             default:
                 break;
         }
@@ -192,65 +239,88 @@ public class EngineAdapterImpl implements IEngineApi {
 
     /**
      * 开始初始化engine
-     * @return 初始化结果
      */
-    private ListenableWorker.Result startInitEngine() {
+    private void startInitEngine() {
         Logger.d(TAG, "EngineAdapterImpl : startInitEngine");
         checkUatMapLimit();
         if (mIsActive) {
-            return ListenableWorker.Result.success();
+            return;
         }
         final int overDue = isOverdue();
         if (!ConvertUtils.equals(0, overDue)) {
-            final Data data = new Data.Builder()
-                    .putInt("errorCode", overDue)
-                    .putString("errorMsg", CodeManager.getEngineMsg(overDue))
-                    .build();
-            return ListenableWorker.Result.failure(data);
+            logResult(overDue);
+            return;
         }
         SdkSoLoadUtils.copyAssetsFiles();
         final int initBaseLibsResult = initEngineParam();
         if (!ConvertUtils.equals(0, initBaseLibsResult)) {
-            return buildFailure(10004,  CodeManager.getEngineMsg(10004));
-
+            logResult(10004);
+            return;
         }
-//        //======激活======//
-//        //获取uuid
-//        final String uuid = ActivationManager.getInstance().getThirdPartyUUID();
-//        if (ConvertUtils.isEmpty(uuid)) {
-//            Logger.e(TAG,"uuid为空");
-//            return buildFailure(10008, CodeManager.getEngineMsg(10008));
-//        }
-//        //初始化激活服务
-//        Logger.e(TAG,"uuid = " + uuid);
+        beginInitActivateService("");
+        //获取uuid
+        //ActivationManager.getInstance().getThirdPartyUUID();
+    }
+
+    /**
+     * 重试网络激活
+     */
+    @Override
+    public void netActivateRetry() {
+        onActivating();
+        ActivationManager.getInstance().netActivate();
+    }
+
+    /**
+     * 获取完uuid后开始后续流程
+     * @param uuid uuid
+     */
+    private void beginInitActivateService(final String uuid) {
+        //初始化激活服务
+//        Logger.d(TAG,"uuid = " + uuid);
 //        if (!ActivationManager.getInstance().initActivationService(uuid)) {
-//            Logger.e(TAG,"激活服务初始化失败");
-//            return buildFailure(10006, CodeManager.getEngineMsg(10006));
+//            Logger.d(TAG,"激活服务初始化失败");
+//            logResult(10006);
+//            return;
 //        }
 //        //查询激活状态
 //        if (!ActivationManager.getInstance().checkActivationStatus()) {
-//            Logger.e(TAG,"未激活，开始下单");
+//            onActivating();
+//            Logger.d(TAG,"未激活，开始下单");
 //            //下单
 //            if (!ActivationManager.getInstance().createCloudOrder()) {
-//                return buildFailure(10009, CodeManager.getEngineMsg(10009));
+//                logResult(10009);
+//                return;
 //            }
 //            //查询下单状态
 //            if (!pollOrderStatusWithRetry()) {
-//                return buildFailure(10010, CodeManager.getEngineMsg(10010));
+//                logResult(10010);
+//                return;
 //            }
 //            //网络激活
-//            if (!ActivationManager.getInstance().netActivate()) {
-//                return buildFailure(10007, CodeManager.getEngineMsg(10007));
-//            }
+//            ActivationManager.getInstance().netActivate();
+//        } else {
+//            initBLLib();
 //        }
+        initBLLib();
+    }
 
+    @Override
+    public void manualActivate(final String userCode, final String loginCode) {
+        Logger.d(TAG, "manualActivate...");
+        ActivationManager.getInstance().manualActivate(userCode, loginCode);
+    }
+    /**
+     * 初始化BL lib
+     */
+    private void initBLLib() {
         final int sdkResultCode = initSDKParam();
         if (!ConvertUtils.equals(0, sdkResultCode)) {
-            return buildFailure(10005, CodeManager.getEngineMsg(10005));
+            logResult(10005);
+            return;
         }
         mIsActive = true;
         onEngineObserver(0);
-        return ListenableWorker.Result.success();
     }
 
     /**
@@ -349,10 +419,60 @@ public class EngineAdapterImpl implements IEngineApi {
             if (ConvertUtils.equals(0, code)) {
                 observer.onInitEngineSuccess();
             } else {
-                observer.onInitEngineFail(code, CodeManager.getEngineMsg(code));
+                observer.onInitEngineFail(code, getEngineMsg(code));
             }
         }
         return code;
+    }
+
+    /**
+     * 映射错误信息
+     * @param code code
+     * @return msg
+     */
+    private String getEngineMsg(final int code) {
+        return switch (code) {
+            case 10000 -> "引擎初始化成功";
+            case 10001 -> "引擎初始化失败";
+            case 10002 -> "SDK超出有效期";
+            case 10003 -> "SDK无效";
+            case 10004 -> "BaseLibs参数传输错误";
+            case 10005 -> "BlSdk参数传输错误";
+            case 10006 -> "激活参数传输错误";
+            case 10007 -> "网络激活失败";
+            case 10008 -> "UUID获取失败";
+            case 10009 -> "云对云下单失败";
+            case 10010 -> "订单状态查询超时";
+            default -> "未知错误码";
+        };
+    }
+
+    /**
+     * 正在激活
+     */
+    private void onActivating() {
+        for (ActivateObserver observer : mActObserverList) {
+            ThreadManager.getInstance().postUi(new Runnable() {
+                @Override
+                public void run() {
+                    observer.onActivating();
+                }
+            });
+        }
+    }
+
+    /**
+     * 网络激活失败通知
+     */
+    private void onNetActivateFailed() {
+        for (ActivateObserver observer : mActObserverList) {
+            ThreadManager.getInstance().postUi(new Runnable() {
+                @Override
+                public void run() {
+                    observer.onNetActivateFailed(ActivationManager.getNetFailedCount());
+                }
+            });
+        }
     }
 
     /**
@@ -493,7 +613,7 @@ public class EngineAdapterImpl implements IEngineApi {
      */
     private boolean pollOrderStatusWithRetry() {
         final int maxRetries = 3;
-        final long[] delays = {AutoMapConstant.INITIAL_DELAY_MINUTE,
+        final long[] delays = {AutoMapConstant.TWO_MINUTES_DELAY,
                 AutoMapConstant.DELAY_MINUTE, AutoMapConstant.DELAY_MINUTE};
         final AtomicInteger retryCount = new AtomicInteger(0);
         final ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
@@ -514,6 +634,11 @@ public class EngineAdapterImpl implements IEngineApi {
                     }
 
                     final int currentCount = retryCount.incrementAndGet();
+                    Logger.d(TAG,"轮询次数 : " + currentCount);
+                    if (currentCount == 1) {
+                        future.complete(true);
+                        executor.shutdownNow();
+                    }
                     if (currentCount > maxRetries) {
                         future.complete(false);
                         executor.shutdownNow();
@@ -533,13 +658,17 @@ public class EngineAdapterImpl implements IEngineApi {
             } else {
                 totalDelay += delays[count];
             }
-            executor.schedule(task, totalDelay, TimeUnit.MINUTES);
+            executor.schedule(task, totalDelay, TimeUnit.SECONDS);
         }
 
         try {
             // 总超时 = 所有可能延迟之和 + 缓冲时间（例如15分钟）
             final long totalTimeout = Arrays.stream(delays).sum() + 1; // 2+5+5 +1=13分钟
-            return future.get(totalTimeout, TimeUnit.MINUTES);
+            return future.get(totalTimeout, TimeUnit.SECONDS);
+        } catch (CancellationException e){
+            executor.shutdownNow();
+            Logger.e(TAG,"CancellationException");
+            return false;
         } catch (TimeoutException e) {
             executor.shutdownNow();
             Logger.e(TAG,"订单状态轮询总超时");
@@ -560,15 +689,9 @@ public class EngineAdapterImpl implements IEngineApi {
      * 封装错误数据构建
      *
      * @param code 错误码
-     * @param msg  错误信息
-     * @return result
      */
-    private ListenableWorker.Result buildFailure(final int code, final String msg) {
-        final Data data = new Data.Builder()
-                .putInt("errorCode", code)
-                .putString("errorMsg", msg)
-                .build();
+    private void logResult(final int code) {
+        Logger.d(TAG, ERR_MSG + "  " + code +" :" + getEngineMsg(code));
         onEngineObserver(code);
-        return ListenableWorker.Result.failure(data);
     }
 }

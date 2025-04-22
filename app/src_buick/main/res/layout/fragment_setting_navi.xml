@@ -125,7 +125,7 @@
                 clickCommand="@{viewModel.mVehicleGuide}"
                 android:id="@+id/navi_vehicle_guide"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_124"
+                android:layout_height="@dimen/dp_150"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
                 android:visibility="gone"
@@ -179,7 +179,7 @@
                 clickCommand="@{viewModel.mChargingPlan}"
                 android:id="@+id/navi_charging_plan"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_124"
+                android:layout_height="@dimen/dp_150"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
                 android:visibility="@{viewModel.mIsEVCar ? View.VISIBLE : View.GONE}"
@@ -471,7 +471,6 @@
                 android:id="@+id/setting_guide_car_logo"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_148"
-                android:gravity="center_horizontal"
                 android:orientation="horizontal"
                 android:layout_marginTop="@dimen/dp_16"
                 app:layout_constraintStart_toStartOf="parent"
@@ -480,63 +479,68 @@
                 <com.fy.navi.ui.view.SkinRadioGroup
                     android:layout_width="match_parent"
                     android:layout_height="fill_parent"
-                    android:gravity="center_horizontal"
                     android:orientation="horizontal">
 
-                    <com.fy.navi.ui.view.SkinRadioButton
+                    <com.fy.navi.scene.ui.setting.DrawableCenterRadioButton
                         clickCommand="@{viewModel.mSwitchMapLogoDefaultClick}"
                         android:id="@+id/setting_guide_car_logo_default"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:drawableStart="@mipmap/icon_setting_car_logo_default"
-                        android:drawablePadding="@dimen/dp_35"
                         android:button="@null"
                         android:checked="@{viewModel.mIsCarLogoDefault}"
-                        android:paddingStart="@dimen/dp_30"
-                        android:paddingEnd="@dimen/dp_30"
+                        android:drawablePadding="@dimen/dp_31"
+                        android:paddingStart="@dimen/dp_37"
+                        app:drawableWidth="@dimen/dp_80"
+                        app:drawableHeight="@dimen/dp_80"
                         android:background="@drawable/bg_car_logo_selector"
                         android:gravity="center_vertical"
                         android:text="@string/setting_guide_car_logo_default"
-                        android:textSize="@dimen/sp_34"
-                        android:textColor="@color/setting_car_logo_text_gray" />
+                        android:textSize="@dimen/sp_38"
+                        app:normalTextColor="@color/setting_car_logo_text_gray"
+                        app:selectedTextColor="@color/setting_bg_tab_text_unselect"/>
 
-                    <com.fy.navi.ui.view.SkinRadioButton
+                    <com.fy.navi.scene.ui.setting.DrawableCenterRadioButton
                         clickCommand="@{viewModel.mSwitchMapLogoBrandClick}"
                         android:id="@+id/setting_guide_car_logo_brand"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:drawableStart="@mipmap/icon_setting_car_logo_brand"
-                        android:drawablePadding="@dimen/dp_35"
-                        android:layout_marginStart="@dimen/dp_35"
+                        android:layout_marginStart="@dimen/dp_25"
                         android:button="@null"
-                        android:paddingStart="@dimen/dp_30"
-                        android:paddingEnd="@dimen/dp_30"
+                        app:drawableWidth="@dimen/dp_80"
+                        app:drawableHeight="@dimen/dp_80"
                         android:checked="@{viewModel.mIsCarLogoBrand}"
+                        android:drawablePadding="@dimen/dp_31"
+                        android:paddingStart="@dimen/dp_37"
                         android:background="@drawable/bg_car_logo_selector"
                         android:gravity="center_vertical"
-                        android:textSize="@dimen/sp_34"
-                        android:textColor="@color/setting_car_logo_text_gray"
+                        android:textSize="@dimen/sp_38"
+                        app:normalTextColor="@color/setting_car_logo_text_gray"
+                        app:selectedTextColor="@color/setting_bg_tab_text_unselect"
                         android:text="@string/setting_guide_car_logo_brand" />
 
-                    <com.fy.navi.ui.view.SkinRadioButton
+                    <com.fy.navi.scene.ui.setting.DrawableCenterRadioButton
                         clickCommand="@{viewModel.mSwitchMapLogoSpeedClick}"
                         android:id="@+id/setting_guide_car_logo_speed"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:drawableStart="@mipmap/icon_setting_car_logo_speed"
-                        android:drawablePadding="@dimen/dp_35"
-                        android:layout_marginStart="@dimen/dp_35"
+                        android:layout_marginStart="@dimen/dp_25"
                         android:button="@null"
                         android:checked="@{viewModel.mIsCarLogoSpeed}"
-                        android:paddingStart="@dimen/dp_30"
-                        android:paddingEnd="@dimen/dp_30"
+                        android:drawablePadding="@dimen/dp_31"
+                        android:paddingStart="@dimen/dp_37"
+                        app:drawableWidth="@dimen/dp_80"
+                        app:drawableHeight="@dimen/dp_80"
                         android:background="@drawable/bg_car_logo_selector"
                         android:gravity="center_vertical"
-                        android:textSize="@dimen/sp_34"
-                        android:textColor="@color/setting_car_logo_text_gray"
+                        android:textSize="@dimen/sp_38"
+                        app:normalTextColor="@color/setting_car_logo_text_gray"
+                        app:selectedTextColor="@color/setting_bg_tab_text_unselect"
                         android:text="@string/setting_guide_car_logo_speed" />
                 </com.fy.navi.ui.view.SkinRadioGroup>
 
@@ -546,7 +550,7 @@
                 clickCommand="@{viewModel.mAutoScale}"
                 android:id="@+id/setting_guide_auto_scale"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_124"
+                android:layout_height="@dimen/dp_150"
                 android:layout_marginTop="@dimen/dp_30"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
@@ -632,10 +636,7 @@
                     android:layout_marginStart="@dimen/dp_114"
                     android:layout_marginTop="@dimen/dp_35"
                     android:src="@drawable/img_setting_corner"/>
-
-
             </com.fy.navi.ui.view.SkinLinearLayout>
-
 
         </com.fy.navi.ui.view.SkinConstraintLayout>
 

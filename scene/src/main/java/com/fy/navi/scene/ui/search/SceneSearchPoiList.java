@@ -322,21 +322,30 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
                             mViewBinding.searchFilterView.searchFilterList1.setVisibility(GONE);
                         }
                         mViewBinding.searchFilterView.searchFilterTitle1.setText(searchCategoryLocalInfo.getName());
+                        mFilterOneAdapter.setMIsExpand(false);
+                        mFilterOneAdapter.setMCurrentExpandName("");
                         mFilterOneAdapter.setCategoryList(searchCategoryLocalInfo.getCategoryLocalInfos());
+                        mFilterOneChildAdapter.setCategoryList(null);
                     } else if (i == 1) {
                         if (ConvertUtils.isEmpty(searchCategoryLocalInfo.getCategoryLocalInfos())) {
                             mViewBinding.searchFilterView.searchFilterTitle2.setVisibility(GONE);
                             mViewBinding.searchFilterView.searchFilterList2.setVisibility(GONE);
                         }
                         mViewBinding.searchFilterView.searchFilterTitle2.setText(searchCategoryLocalInfo.getName());
+                        mFilterTwoAdapter.setMIsExpand(false);
+                        mFilterTwoAdapter.setMCurrentExpandName("");
                         mFilterTwoAdapter.setCategoryList(searchCategoryLocalInfo.getCategoryLocalInfos());
+                        mFilterTwoChildAdapter.setCategoryList(null);
                     } else if (i == 2) {
                         if (ConvertUtils.isEmpty(searchCategoryLocalInfo.getCategoryLocalInfos())) {
                             mViewBinding.searchFilterView.searchFilterTitle3.setVisibility(GONE);
                             mViewBinding.searchFilterView.searchFilterList3.setVisibility(GONE);
                         }
                         mViewBinding.searchFilterView.searchFilterTitle3.setText(searchCategoryLocalInfo.getName());
+                        mFilterThreeAdapter.setMIsExpand(false);
+                        mFilterThreeAdapter.setMCurrentExpandName("");
                         mFilterThreeAdapter.setCategoryList(searchCategoryLocalInfo.getCategoryLocalInfos());
+                        mFilterThreeChildAdapter.setCategoryList(null);
                     }
                 }
             }
@@ -484,10 +493,12 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
         }
 
         Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "执行搜索 - 类型: " + mSearchType + ", 关键字: " + keyword + ", 页码: " + pageNum);
-        if(ConvertUtils.isEmpty(mSearchLoadingDialog)){
+        if (null != mSearchLoadingDialog && mSearchLoadingDialog.isShowing()) {
+            Logger.e(MapDefaultFinalTag.SEARCH_HMI_TAG, "mSearchLoadingDialog is showing");
+        } else {
             mSearchLoadingDialog = new SearchLoadingDialog(getContext());
+            mSearchLoadingDialog.show();
         }
-        mSearchLoadingDialog.show();
         switch (mSearchType) {
             case AutoMapConstant.SearchType.SEARCH_KEYWORD:
                 mScreenViewModel.keywordSearch(pageNum, keyword);
@@ -559,7 +570,7 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
      */
     public void notifySearchResult(final int taskId, final SearchResultEntity searchResultEntity) {
         if (!ConvertUtils.isEmpty(mSearchLoadingDialog)) {
-            mSearchLoadingDialog.hide();
+            mSearchLoadingDialog.dismiss();
         }
         Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "taskId: " + taskId
                 + " currentId: " + mScreenViewModel.getMTaskId());
@@ -568,7 +579,7 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
         }
         if (searchResultEntity == null || searchResultEntity.getPoiList().isEmpty()) {
             ToastUtils.Companion.getInstance().showCustomToastView("抱歉，未找到结果");
-            mSearchLoadingDialog.hide();
+            mSearchLoadingDialog.dismiss();
             if (null != mAdapter) {
                 mAdapter.clearList();
             }
@@ -644,12 +655,12 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
      */
     public void notifySilentSearchResult(final SearchResultEntity searchResultEntity) {
         if (!ConvertUtils.isEmpty(mSearchLoadingDialog)) {
-            mSearchLoadingDialog.hide();
+            mSearchLoadingDialog.dismiss();
         }
         if (searchResultEntity == null || searchResultEntity.getPoiList() == null || searchResultEntity.getPoiList().isEmpty()) {
             ToastUtils.Companion.getInstance().showCustomToastView("暂无数据");
             mViewBinding.searchTextBarView.searchBarTextView.setText(getContext().getString(R.string.filter_result, mSearchText, 0));
-            mSearchLoadingDialog.hide();
+            mSearchLoadingDialog.dismiss();
             return;
         }
         if (mIsFilterViewShow) {

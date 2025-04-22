@@ -27,7 +27,7 @@ public interface AutoMapConstant {
     int PLUG_TYPE_SLOW = 7;
     int PLUG_TYPE_FAST = 9;
 
-    int INITIAL_DELAY_MINUTE = 2;
+    int TWO_MINUTES_DELAY = 2;
     int DELAY_MINUTE = 5;
 
 
@@ -121,6 +121,7 @@ public interface AutoMapConstant {
         String BUNDLE_KEY_LIMIT_ROUND = "bundle_key_limit_round";
         String BUNDLE_KEY_LIMIT_CITY_SELECTION = "bundle_key_limit_city_selection";
         String BUNDLE_KEY_LIMIT_CITY_TASK_ID = "bundle_key_limit_city_task_id";
+        String BUNDLE_KEY_SETTING_TAB = "bundle_key_setting_tab";
     }
 
     @IntDef({NaviType.NAVI_GPS,

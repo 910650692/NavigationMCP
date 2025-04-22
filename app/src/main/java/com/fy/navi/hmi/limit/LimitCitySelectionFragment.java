@@ -72,10 +72,9 @@ public class LimitCitySelectionFragment extends BaseFragment<FragmentLimitCitySe
         mAdapter.setListener(new LimitCitiesAdapter.ItemClickListener() {
             @Override
             public void onClick(final String cityCode) {
-                closeAllFragmentsUntilTargetFragment(LimitDriveFragment.class.getName());
                 final Bundle bundle = new Bundle();
                 bundle.putSerializable(AutoMapConstant.CommonBundleKey.BUNDLE_KEY_LIMIT_CITY_TASK_ID, cityCode);
-                addFragment(new LimitDriveFragment(), bundle);
+                addPoiDetailsFragment(new LimitDriveFragment(), bundle);
                 closeAllFragmentsUntilTargetFragment(LimitCitySelectionFragment.class.getName());
             }
         });

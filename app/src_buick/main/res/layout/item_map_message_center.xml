@@ -49,18 +49,22 @@
         <com.fy.navi.ui.view.SkinView
             android:id="@+id/base_map_message_center_line"
             android:layout_width="@dimen/dp_1"
-            android:layout_height="@dimen/dp_63"
+            android:layout_height="@dimen/dp_62"
             android:background="@color/message_center_line"
             android:layout_marginStart="@dimen/dp_42"
+            android:layout_marginTop="@dimen/dp_15"
+            android:layout_marginBottom="@dimen/dp_15"
             android:visibility="@{ViewModel.messageLineVisibility ? View.VISIBLE : View.GONE}"
             />
 
         <com.fy.navi.ui.view.SkinView
-            android:id="@+id/base_map_message_center_line_hight"
+            android:id="@+id/base_map_message_center_line_height"
             android:layout_width="@dimen/dp_1"
             android:layout_height="@dimen/dp_75"
             android:background="@color/message_center_line"
             android:layout_marginStart="@dimen/dp_42"
+            android:layout_marginTop="@dimen/dp_37"
+            android:layout_marginBottom="28dp"
             android:visibility="@{ViewModel.messageLineHeightVisibility ? View.VISIBLE : View.GONE}"
             />
 
@@ -70,9 +74,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toTopOf="parent"
-            android:paddingTop="@dimen/dp_24"
             android:orientation="vertical"
-            android:paddingBottom="@dimen/dp_24"
             android:maxWidth="@dimen/dp_506">
 
             <com.fy.navi.ui.view.SkinTextView
@@ -93,6 +95,7 @@
                 android:id="@+id/base_map_message_center_content"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:maxWidth="@dimen/dp_506"
                 android:text="@{ViewModel.messageCenterContent}"
                 android:maxLines="1"
                 android:ellipsize="end"

@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.android.utils.ConvertUtils;
+import com.android.utils.ResourceUtils;
 import com.android.utils.ToastUtils;
 import com.android.utils.log.Logger;
 import com.fy.navi.scene.BaseSceneView;
@@ -132,7 +133,7 @@ public class OfflineSearchPoiList extends BaseSceneView<OfflineSearchResultViewB
      */
     private void setupSearchActions() {
         mViewBinding.offlineSearchTopView.ivClose.setOnClickListener(v -> mScreenViewModel.closeSearch());
-
+        mViewBinding.offlineSearchTopView.searchBarEditView.setHint(ResourceUtils.Companion.getInstance().getString(R.string.offline_search_hint));
         mViewBinding.offlineSearchTopView.searchBarEditView.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(final CharSequence s, final int start, final int count, final int after) {

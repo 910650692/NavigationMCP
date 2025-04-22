@@ -84,11 +84,11 @@
                     <com.fy.navi.ui.view.SkinTextView
                         android:layout_width="@dimen/dp_40"
                         android:layout_height="@dimen/dp_40"
-                        android:text="@{ViewModel.mAllDownloadingDataSize}"
+                        android:text="@{String.valueOf(ViewModel.mAllDownloadingDataSize)}"
                         android:layout_marginBottom="@dimen/dp_20"
                         android:layout_gravity="center"
                         android:gravity="center"
-                        android:visibility="@{ViewModel.mDownloadingDataVisibility ? View.VISIBLE : View.GONE}"
+                        android:visibility="@{ViewModel.mAllDownloadingDataSize > 0 ? View.VISIBLE : View.GONE}"
                         android:textColor="@color/setting_white"
                         android:textSize="@dimen/sp_26"
                         android:background="@drawable/bg_end_point" />
@@ -266,6 +266,7 @@
                         android:gravity="center"
                         android:layout_marginTop="@dimen/dp_16"
                         android:text="@{ViewModel.mAllDownloadedDataSize}"
+                        android:visibility="@{ViewModel.mDownloadedNoDataVisibility ? View.GONE : View.VISIBLE}"
                         android:textColor="@color/setting_bg_tab_text_unselect"
                         android:textSize="@dimen/sp_30"
                         android:background="@drawable/shape_bg_map_data"

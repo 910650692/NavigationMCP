@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="android.view.View" />
+        <variable
+            name="model"
+            type="com.fy.navi.service.define.route.RouteLineInfo" />
+
+        <variable
+            name="holder"
+            type="com.fy.navi.scene.ui.adapter.RouteResultAdapter.Holder" />
+    </data>
+
+    <com.fy.navi.ui.view.SkinConstraintLayout
+        android:id="@+id/item_root_view"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_168">
+
+        <com.fy.navi.ui.view.SkinView
+            android:id="@+id/route_detail_info_item_img_bg"
+            android:layout_width="@dimen/dp_60"
+            android:layout_height="match_parent"
+            android:outlineSpotShadowColor="@color/bg_route_shadow_list"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.fy.navi.ui.view.SkinView
+            android:id="@+id/route_detail_info_item_img_bg_view"
+            android:layout_width="@dimen/dp_60"
+            android:layout_height="@dimen/dp_60"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent" />
+
+        <com.fy.navi.ui.view.SkinImageView
+            android:id="@+id/route_detail_info_item_img"
+            android:layout_width="@dimen/dp_60"
+            android:layout_height="@dimen/dp_60"
+            android:src="@drawable/img_tbt_exit_hud_sou2"
+            app:layout_constraintTop_toTopOf="@id/route_detail_info_item_img_bg"
+            app:layout_constraintBottom_toBottomOf="@id/route_detail_info_item_img_bg" />
+
+        <CheckBox
+            android:id="@+id/route_detail_info_item_cbx"
+            android:layout_width="@dimen/dp_60"
+            android:layout_height="@dimen/dp_60"
+            android:button="@drawable/route_details_selector"
+            app:layout_constraintBottom_toBottomOf="@id/route_detail_info_item_img_bg"
+            app:layout_constraintEnd_toEndOf="@id/route_detail_info_item_img_bg"
+            app:layout_constraintStart_toStartOf="@id/route_detail_info_item_img_bg"
+            app:layout_constraintTop_toTopOf="@+id/route_detail_info_item_img_bg" />
+
+        <com.fy.navi.ui.view.SkinTextView
+            android:id="@+id/route_detail_info_item_road_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_24"
+            android:layout_marginStart="@dimen/dp_34"
+            android:textColor="@color/floating_search_item_night"
+            android:textSize="@dimen/sp_46"
+            android:textStyle="bold"
+            app:layout_constraintStart_toEndOf="@id/route_detail_info_item_img_bg"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="晨晖路" />
+
+        <com.fy.navi.ui.view.SkinTextView
+            android:id="@+id/route_detail_info_item_description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_34"
+            android:layout_marginBottom="@dimen/dp_20"
+            android:layout_marginTop="@dimen/dp_14"
+            android:textColor="@color/text_color_route_item_no_select"
+            android:textSize="@dimen/sp_38"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@id/route_detail_info_item_img_bg"
+            app:layout_constraintTop_toBottomOf="@+id/route_detail_info_item_road_name"
+            tools:text="42米 红绿灯1个" />
+
+        <com.fy.navi.ui.view.SkinImageView
+            android:id="@+id/route_detail_info_item_img_updown"
+            android:layout_width="@dimen/dp_74"
+            android:layout_height="@dimen/dp_74"
+            android:src="@drawable/img_route_down"
+            android:layout_marginEnd="@dimen/dp_40"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/route_detail_info_item_img_bg"
+            app:layout_constraintBottom_toBottomOf="@id/route_detail_info_item_img_bg" />
+
+    </com.fy.navi.ui.view.SkinConstraintLayout>
+</layout>

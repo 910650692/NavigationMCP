@@ -79,6 +79,36 @@ android {
             ]
             println("凯迪车型渠道配置")
         }
+        NDLB {
+            dimension aveFlavorType
+            manifestPlaceholders = [
+                    CAR_TYPE_VALUE: "NDLB",
+                    logo          : "@mipmap/ic_launcher",
+                    roundLogo     : "@mipmap/ic_launcher_round",
+                    appName       : "导航"
+            ]
+            println("NDLB车型渠道配置")
+        }
+        CLEA557 {
+            dimension aveFlavorType
+            manifestPlaceholders = [
+                    CAR_TYPE_VALUE: "557",
+                    logo          : "@mipmap/ic_launcher",
+                    roundLogo     : "@mipmap/ic_launcher_round",
+                    appName       : "导航"
+            ]
+            println("557车型渠道配置")
+        }
+        NCXB {
+            dimension aveFlavorType
+            manifestPlaceholders = [
+                    CAR_TYPE_VALUE: "NCXB",
+                    logo          : "@mipmap/ic_launcher",
+                    roundLogo     : "@mipmap/ic_launcher_round",
+                    appName       : "导航"
+            ]
+            println("NCXB车型渠道配置")
+        }
     }
 
     signingConfigs {
@@ -122,6 +152,21 @@ android {
             res.srcDirs = ['src_cadillac/main/res']
             println("打包凯迪车型资源")
         }
+        NDLB {
+            java.srcDirs = ['src_nd/main/java']
+            res.srcDirs = ['src_nd/main/res']
+            println("打包ND车型资源")
+        }
+        CLEA557 {
+            java.srcDirs = ['src_557/main/java']
+            res.srcDirs = ['src_557/main/res']
+            println("打包557车型资源")
+        }
+        NCXB {
+            java.srcDirs = ['src_nc/main/java']
+            res.srcDirs = ['src_nc/main/res']
+            println("打包NC车型资源")
+        }
     }
 
     applicationVariants.configureEach { variant ->
@@ -147,6 +192,7 @@ android {
 
 dependencies {
     implementation libs.bundles.android.library
+    implementation libs.car.ui.lib
     testImplementation libs.bundles.test.junit
     androidTestImplementation libs.bundles.android.junit
     implementation libs.work.runtime

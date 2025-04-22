@@ -17,6 +17,7 @@ import com.fy.navi.service.define.route.RoutePreferenceID;
 
 public class SceneSettingPreferenceView extends BaseSceneView<SceneSettingPreferenceBinding, SceneRoutePreferenceImpl>
         implements SceneRoutePreferenceImpl.IRoutePreferenceChangeListener{
+    public static final String TAG = SceneSettingPreferenceView.class.getSimpleName();
 
     public SceneSettingPreferenceView(@NonNull final Context context) {
         super(context);
@@ -37,7 +38,7 @@ public class SceneSettingPreferenceView extends BaseSceneView<SceneSettingPrefer
 
     @Override
     protected SceneRoutePreferenceImpl initSceneImpl() {
-        return new SceneRoutePreferenceImpl(this);
+        return new SceneRoutePreferenceImpl(TAG,this);
     }
 
     @Override
@@ -58,6 +59,7 @@ public class SceneSettingPreferenceView extends BaseSceneView<SceneSettingPrefer
     @Override
     public void onDestroy() {
         NetWorkUtils.Companion.getInstance().unRegisterNetworkObserver(mNetworkObserver);
+        mScreenViewModel.unSettingChangeCallback(TAG);
     }
 
 

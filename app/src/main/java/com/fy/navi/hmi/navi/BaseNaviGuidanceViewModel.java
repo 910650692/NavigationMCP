@@ -25,13 +25,11 @@ import com.fy.navi.service.define.navi.LaneInfoEntity;
 import com.fy.navi.service.define.navi.NaviDriveReportEntity;
 import com.fy.navi.service.define.navi.NaviEtaInfo;
 import com.fy.navi.service.define.navi.NaviManeuverInfo;
-import com.fy.navi.service.define.navi.NaviParkingEntity;
 import com.fy.navi.service.define.navi.NaviTmcInfo;
 import com.fy.navi.service.define.navi.NaviViaEntity;
 import com.fy.navi.service.define.navi.SapaInfoEntity;
 import com.fy.navi.service.define.navi.SpeedOverallEntity;
 import com.fy.navi.service.define.route.RouteRequestParam;
-import com.fy.navi.service.define.search.SearchResultEntity;
 import com.fy.navi.service.define.utils.NumberUtils;
 import com.fy.navi.service.logicpaket.route.RoutePackage;
 import com.fy.navi.ui.action.Action;
@@ -39,6 +37,7 @@ import com.fy.navi.ui.base.BaseViewModel;
 import com.fy.navi.ui.dialog.IBaseDialogClickListener;
 
 import java.util.List;
+import java.util.Objects;
 
 
 /**
@@ -76,6 +75,8 @@ public class BaseNaviGuidanceViewModel extends
     public ObservableField<Boolean> mNaviRecChargeListVisibility;//沿途充电站列表
     public ObservableField<Boolean> mNaviRecGasListVisibility;//沿途加油站列表
     public ObservableField<Boolean> mNaviSim;
+    public ObservableField<Boolean> mHandingCardVisibility;// 悬挂卡
+    public ObservableField<Boolean> mHandingCardDetailVisibility;// 悬挂卡-详情
     //车牌信息
     private String mCurrentPlateNumber;
     //限行信息
@@ -112,6 +113,8 @@ public class BaseNaviGuidanceViewModel extends
         mNaviRecGasListVisibility = new ObservableField<>(false);
         mNaviRecParkVisibility = new ObservableField<>(false);
         mNaviSim = new ObservableField<>(false);
+        mHandingCardVisibility = new ObservableField<>(false);
+        mHandingCardDetailVisibility = new ObservableField<>(false);
     }
 
     @Override
@@ -144,6 +147,10 @@ public class BaseNaviGuidanceViewModel extends
      * 显示/隐藏 途径点列表
      */
     public void onSwitchViaList() {
+        if (Objects.equals(mNaviCrossImageVisibility.get(), Boolean.TRUE)) {
+            Logger.i(TAG, "路口大图已经在展示中");
+            return;
+        }
         final Boolean b = mNaviViaListVisibility.get();
         final boolean visible = Boolean.FALSE.equals(b);
         final List<NaviViaEntity> viaList = mModel.getViaList();
@@ -223,20 +230,11 @@ public class BaseNaviGuidanceViewModel extends
             case NAVI_CONTINUE:
                 mNaviContinueVisibility.set(isVisible);
                 break;
-            case NAVI_PROVIDE_CHARGE:
-                mNaviRecChargeVisibility.set(isVisible);
+            case NAVI_SUSPEND_CARD:
+                mHandingCardVisibility.set(isVisible);
                 break;
-            case NAVI_PROVIDE_GAS:
-                mNaviRecGasVisibility.set(isVisible);
-                break;
-            case NAVI_PROVIDE_PARK:
-                mNaviRecParkVisibility.set(isVisible);
-                break;
-            case NAVI_PROVIDE_CHARGE_LIST:
-                mNaviRecChargeListVisibility.set(isVisible);
-                break;
-            case NAVI_PROVIDE_GAS_LIST:
-                mNaviRecGasListVisibility.set(isVisible);
+            case NAVI_SUSPEND_CARD_DETAIL:
+                mHandingCardDetailVisibility.set(isVisible);
                 break;
             default:
                 break;
@@ -529,35 +527,10 @@ public class BaseNaviGuidanceViewModel extends
         mView.onUpdateTMCLightBarAutoAdd(isShow);
     }
 
-    public boolean isNeedCloseNaviChargeTipLater() {
-        return mView.isNeedCloseNaviChargeTipLater();
-    }
-
     public void onUpdateElectVehicleETAInfo(final List<FyElecVehicleETAInfo> infos) {
         if (null != mView) {
             mView.onUpdateElectVehicleETAInfo(infos);
         }
-    }
-
-    /***
-     * 悬挂卡提醒-电量不足或者油量不足
-     * @param searchResultEntity
-     * @param isPureGasCar
-     */
-    public void cardBatteryTip(final SearchResultEntity searchResultEntity, final boolean isPureGasCar) {
-        mView.cardBatteryTip(searchResultEntity, isPureGasCar);
-    }
-
-    public void updateRecChargeList(final SearchResultEntity searchResultEntity) {
-        mView.updateRecChargeList(searchResultEntity);
-    }
-
-    public void updateRecGasList(final SearchResultEntity searchResultEntity) {
-        mView.updateRecGasList(searchResultEntity);
-    }
-
-    public void updateRecParkingList(List<NaviParkingEntity> list) {
-        mView.updateRecParkingList(list);
     }
 
     public void backToNaviFragment() {
@@ -595,5 +568,15 @@ public class BaseNaviGuidanceViewModel extends
 
     public void setNaviSimState(boolean isSim) {
         mNaviSim.set(isSim);
+    }
+
+    public void hideNaviContent() {
+        if (null != mView) {
+            mView.hideNaviContent();
+        }
+    }
+
+    public boolean isNeedPreViewShowList() {
+        return mHandingCardDetailVisibility.get() || mNaviViaListVisibility.get();
     }
 }

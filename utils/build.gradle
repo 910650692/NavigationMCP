@@ -30,4 +30,5 @@ dependencies {
     implementation libs.bundles.module.library
     implementation libs.gson
     implementation libs.okhttp
+    implementation libs.signal
 }

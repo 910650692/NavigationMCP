@@ -54,6 +54,9 @@ public class SettingPlateNumberFragment extends BaseFragment<FragmentSettingPlat
         });
         mBinding.settingProvinceKeyboard.setOnProvinceSelectedListener(province -> {
             mBinding.settingPlateNumberProvince.setText(province);
+            mBinding.settingPlateNumberNumber.requestFocus();
+            mBinding.settingPlateNumberNumber.setSelection(mBinding.settingPlateNumberNumber.length());
+            showPlateNumberKeyboard();
         });
         mBinding.settingPlateNumberKeyboard.setOnKeyPressListener(new PlateNumberKeyboardView.OnKeyPressListener() {
             @Override
@@ -266,7 +269,6 @@ public class SettingPlateNumberFragment extends BaseFragment<FragmentSettingPlat
         if (!Objects.equals(mPlateNumber, "")) {
             mIsClearPlateNumber = true;
         }
-        mBinding.settingPlateNumberProvince.setText(ResourceUtils.Companion.getInstance().getText(R.string.setting_guide_plate_number_default));
         mBinding.settingPlateNumberNumber.setText("");
     }
 

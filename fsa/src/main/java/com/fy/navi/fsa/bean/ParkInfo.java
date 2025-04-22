@@ -1,7 +1,12 @@
 package com.fy.navi.fsa.bean;
 
+/**
+ * 停车场信息
+ */
 public class ParkInfo {
+    //位置
     private GeoPoint location;
+    //名字
     private String name;
 
     public ParkInfo() {

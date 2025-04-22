@@ -9,6 +9,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.PopupWindow;
@@ -42,6 +43,8 @@ import com.fy.navi.ui.view.SkinImageView;
 import com.fy.navi.ui.view.SkinTextView;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 
@@ -50,6 +53,7 @@ public class FavoriteFragment extends BaseFragment<FragmentFavoriteBinding, Favo
     private final static String TAG = FavoriteFragment.class.getSimpleName();
     private ArrayList<PoiInfoEntity> mFavoriteList = new ArrayList<>();
     private ArrayList<PoiInfoEntity> mFrequentAddressList = new ArrayList<>();
+    private final Map<Integer, View> mViewMap = new HashMap<>();
 
     private FavoriteDataAdapter mFavoriteDataAdapter;
     private FrequentAddressAdapter mFrequentAddressAdapter;
@@ -237,6 +241,8 @@ public class FavoriteFragment extends BaseFragment<FragmentFavoriteBinding, Favo
             final View itemView = LayoutInflater.from(getContext()).inflate(R.layout.item_frequent_address, mFreqAddressLayout, false);
             final SkinTextView tvName = itemView.findViewById(R.id.tv_frequent_address_text);
             final SkinImageView btnMore = itemView.findViewById(R.id.tv_frequent_address_more);
+            mViewMap.put(i, itemView);
+
             tvName.setText(mFrequentAddressList.get(i).getName());
             final String name = mFrequentAddressList.get(i).getFavoriteInfo().getCustom_name();
             boolean isRename = false;
@@ -248,9 +254,11 @@ public class FavoriteFragment extends BaseFragment<FragmentFavoriteBinding, Favo
             }
             final int finalI = i;
             btnMore.setOnClickListener(v -> {
-                this.mAnchorView = itemView;
-                mIndex = finalI;
-                showFrequentPopupWindow(itemView);
+                if (!isRenameStatus()) {
+                    this.mAnchorView = itemView;
+                    mIndex = finalI;
+                    showFrequentPopupWindow(itemView);
+                }
             });
             tvName.setOnClickListener(v -> {
                 if (mViewModel != null) {
@@ -298,6 +306,23 @@ public class FavoriteFragment extends BaseFragment<FragmentFavoriteBinding, Favo
         }
     }
 
+    /**
+     * 判断是否重命名状态
+     * @return true/false
+     */
+    private boolean isRenameStatus() {
+        final View view = mViewMap.get(mIndex);
+        if (view != null) {
+            final SkinTextView tvName = view.findViewById(R.id.tv_frequent_address_text);
+            final SkinEditText etName = view.findViewById(R.id.tv_frequent_address_title);
+            if (etName.getVisibility() == View.VISIBLE && etName.hasFocus()) {
+                etName.setVisibility(View.GONE);
+                tvName.setVisibility(View.VISIBLE);
+                return true;
+            }
+        }
+        return false;
+    }
 
     /**
      * showRenameDialog
@@ -320,8 +345,9 @@ public class FavoriteFragment extends BaseFragment<FragmentFavoriteBinding, Favo
         etName.post(() -> {
             etName.requestFocus();
             etName.setSelection(etName.getText().length()); // 光标置于末尾
-            final InputMethodManager imm = (InputMethodManager) requireContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.showSoftInput(etName, InputMethodManager.SHOW_IMPLICIT);
+            if (getActivity() != null) {
+                getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+            }
         });
 
         // 完成编辑监听

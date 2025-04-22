@@ -47,7 +47,6 @@ public class LauncherCardNaviGuidanceFragment extends BaseFragment<FragmentLaunc
         mBinding.sceneNaviViaList.setScreenId(MapType.valueOf(mScreenId));
         mBinding.sceneNaviLastMile.setScreenId(MapType.valueOf(mScreenId));
         mBinding.sceneNaviViaInfo.setScreenId(MapType.valueOf(mScreenId));
-        mBinding.sceneNaviParkingList.setScreenId(MapType.valueOf(mScreenId));
 
         mBinding.sceneNaviPreference.registerRoutePreferenceObserver("navi fragment", mViewModel);
     }
@@ -113,7 +112,6 @@ public class LauncherCardNaviGuidanceFragment extends BaseFragment<FragmentLaunc
     public void addSceneCallback(ISceneCallback sceneCallback) {
         mBinding.sceneNaviControl.addSceneCallback(sceneCallback);
         mBinding.sceneNaviViaList.addSceneCallback(sceneCallback);
-        mBinding.sceneNaviParkingList.addSceneCallback(sceneCallback);
         mBinding.sceneNaviLastMile.addSceneCallback(sceneCallback);
         mBinding.sceneNaviViaInfo.addSceneCallback(sceneCallback);
         mBinding.sceneNaviParallel.addSceneCallback(sceneCallback);

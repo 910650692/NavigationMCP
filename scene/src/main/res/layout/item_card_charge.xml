@@ -4,7 +4,8 @@
     <com.fy.navi.ui.view.SkinConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
-        android:layout_width="match_parent"
+        android:id="@+id/item_root"
+        android:layout_width="@dimen/dp_640"
         android:layout_height="@dimen/dp_216">
 
         <com.fy.navi.ui.view.SkinTextView
@@ -25,11 +26,12 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_72"
-            android:layout_marginTop="@dimen/dp_18"
             android:gravity="center_vertical"
             android:orientation="horizontal"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/view_navi_now"
+            app:layout_constraintVertical_chainStyle="packed"
+            app:layout_constraintBottom_toTopOf="@id/ll_sub"
             app:layout_constraintTop_toTopOf="parent">
 
             <com.fy.navi.ui.view.SkinTextView
@@ -63,12 +65,11 @@
             android:id="@+id/ll_sub"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:gravity="center_vertical"
             android:orientation="horizontal"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="@id/ll_title"
-            app:layout_constraintEnd_toEndOf="@id/ll_title"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toBottomOf="@id/tv_title"
+            app:layout_constraintEnd_toEndOf="@id/ll_title">
 
             <com.fy.navi.ui.view.SkinTextView
                 android:id="@+id/tv_sub_title"

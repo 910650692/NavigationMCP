@@ -13,6 +13,8 @@ import com.fy.navi.hmi.map.MapActivity;
 import com.fy.navi.mapservice.bean.INaviConstant;
 import com.fy.navi.service.AppContext;
 import com.fy.navi.service.define.search.PoiInfoEntity;
+import com.fy.navi.service.logicpaket.engine.EnginePackage;
+import com.fy.navi.service.logicpaket.engine.IActivateObserver;
 import com.fy.navi.ui.base.BaseViewModel;
 import com.fy.navi.ui.dialog.IBaseDialogClickListener;
 
@@ -31,6 +33,38 @@ public class BaseStartupViewModel extends BaseViewModel<StartupActivity, Startup
     private int mIntentPage = -1; //对应界面
     private String mKeyword; //搜索关键字
     private PoiInfoEntity mEndPoint; // 路线规划目的地
+
+    private NetActivateFailedDialog mFailedDialog;
+    private IActivateObserver mActObserver = new IActivateObserver() {
+        @Override
+        public void onActivating() {
+            Logger.d(TAG, "onActivating...");
+            showActivatingView(true);
+        }
+
+        @Override
+        public void onNetActivateFailed(final int failedCount) {
+            Logger.d(TAG, "onNetActivateFailed count = " + failedCount);
+            showActivatingView(false);
+            if (failedCount >= 3) {
+                mFailedDialog.setConfirmText();
+                mFailedDialog.setDialogClickListener(new IBaseDialogClickListener() {
+                    @Override
+                    public void onCommitClick() {
+                        Logger.d(TAG, "确认跳转手动激活");
+                        addFragment(new ManualActivateFragment(), null);
+                    }
+
+                    @Override
+                    public void onCancelClick() {
+                        Logger.d(TAG, "激活失败，手动退出应用");
+                        mView.finish();
+                    }
+                });
+            }
+            mFailedDialog.show();
+        }
+    };
 
     public BaseStartupViewModel(@NonNull Application application) {
         super(application);
@@ -54,13 +88,37 @@ public class BaseStartupViewModel extends BaseViewModel<StartupActivity, Startup
         } else {
             checkPermission();
         }
+        EnginePackage.getInstance().addActObserver(mActObserver);
+        mFailedDialog = new NetActivateFailedDialog(mView);
+        mFailedDialog.setDialogClickListener(new IBaseDialogClickListener() {
+            @Override
+            public void onCommitClick() {
+                Logger.d(TAG, " 重试网络激活");
+                EnginePackage.getInstance().netActivateRetry();
+            }
+
+            @Override
+            public void onCancelClick() {
+                Logger.d(TAG, "激活失败，手动退出应用");
+                mView.finish();
+            }
+        });
+    }
+
+    /**
+     * 关闭activity
+     */
+    public void finishStartUp() {
+        mView.finish();
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
         Logger.i(TAG, "onDestroy");
+        mFailedDialog.cancel();
         NaviService.unRegisterAppInitListener(this);
+        EnginePackage.getInstance().removeActObserver(mActObserver);
     }
 
     private void checkPermission() {
@@ -139,11 +197,22 @@ public class BaseStartupViewModel extends BaseViewModel<StartupActivity, Startup
     @Override
     public void onInitFinished(boolean isSuccess) {
         Logger.w(TAG, "onInitFinished", "isSuccess:" + isSuccess, "permissionStatus:" + permissionStatus);
+        if (!isSuccess) {
+            return;
+        }
         if (permissionStatus) {
             startMapActivity();
         } else {
             Logger.w(TAG, "onInitFinished but not has permissionStatus!");
         }
+    }
+
+    /**
+     * 显示激活加载图片
+     * @param show 是否显示
+     */
+    public void showActivatingView(final boolean show) {
+        mView.showActivatingView(show);
     }
 
     public void updatePermissionStatus(boolean status) {

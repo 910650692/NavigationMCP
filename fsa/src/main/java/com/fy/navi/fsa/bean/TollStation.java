@@ -1,7 +1,16 @@
 package com.fy.navi.fsa.bean;
 
+/**
+ * 高速收费站
+ */
 public class TollStation {
+    /**
+     * 收费站名称
+     */
     private String name;
+    /**
+     * 到收费站的距离
+     */
     private int distance;
 
     public String getName() {

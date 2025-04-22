@@ -22,11 +22,10 @@ public class ManagerMapDataViewModel extends BaseViewModel<ManagerMapDataFragmen
     public MutableLiveData<Boolean> mDownloadedNoDataVisibility = new MutableLiveData<>(false);
     public MutableLiveData<Boolean> mDownloadingDataVisibility = new MutableLiveData<>(true);
     public MutableLiveData<Boolean> mDownloadedDataVisibility = new MutableLiveData<>(false);
-    public MutableLiveData<String> mAllDownloadingDataSize = new MutableLiveData<>("0");
+    public MutableLiveData<Integer> mAllDownloadingDataSize = new MutableLiveData<>(0);
     public MutableLiveData<String> mAllDownloadedDataSize = new MutableLiveData<>("0");
 
     private boolean mIsDownloadedPage = false;
-    private ArrayList<ProvDataInfo> downloadedInfos = new ArrayList<>();
     private ArrayList<ProvDataInfo> downloadingInfos = new ArrayList<>();
 
     public ManagerMapDataViewModel(@NonNull final Application application) {
@@ -68,7 +67,7 @@ public class ManagerMapDataViewModel extends BaseViewModel<ManagerMapDataFragmen
         mDownloadedDataVisibility.setValue(true);
         mDownloadingDataVisibility.setValue(false);
         mDownloadingNoDataVisibility.setValue(false);
-        setDownloadedView(downloadedInfos, false);
+        setDownloadedView(mModel.getWorkedList(), false);
     };
 
     public Action mAllDataSuspend = () -> {
@@ -108,7 +107,6 @@ public class ManagerMapDataViewModel extends BaseViewModel<ManagerMapDataFragmen
      */
     public void initView() {
         mModel.initView();
-        downloadedInfos = mModel.getWorkedList();
     }
 
     /**
@@ -160,7 +158,7 @@ public class ManagerMapDataViewModel extends BaseViewModel<ManagerMapDataFragmen
             }
         }
         mDownloadingNoDataVisibility.setValue(size == 0);
-        mAllDownloadingDataSize.setValue(String.valueOf(size));
+        mAllDownloadingDataSize.setValue(size);
         mView.updateDownloadingView(provDataInfos);
     }
 
@@ -169,7 +167,6 @@ public class ManagerMapDataViewModel extends BaseViewModel<ManagerMapDataFragmen
      * @param provDataInfos
      */
     public void setDownloadedView(final ArrayList<ProvDataInfo> provDataInfos, boolean isChange) {
-        downloadedInfos = provDataInfos;
         int size = 0;
         if (provDataInfos != null && !provDataInfos.isEmpty()) {
             for (int i = 0; i < provDataInfos.size(); i++) {
@@ -178,14 +175,11 @@ public class ManagerMapDataViewModel extends BaseViewModel<ManagerMapDataFragmen
             }
         }
 
-        if (size > 0) {
-            mDownloadedNoDataVisibility.setValue(false);
-            mView.updateDownloadedView(provDataInfos, isChange);
-            mAllDownloadedDataSize.setValue(ResourceUtils.Companion.getInstance().getString(R.string.offline_manager_map_downloading_size_start)
-                    + size + ResourceUtils.Companion.getInstance().getString(R.string.offline_manager_map_downloading_size_end));
-        } else {
-            mDownloadedNoDataVisibility.setValue(true);
-        }
+        mDownloadedNoDataVisibility.setValue(size == 0);
+        mView.updateDownloadedView(provDataInfos, isChange);
+        mAllDownloadedDataSize.setValue(ResourceUtils.Companion.getInstance().getString(R.string.offline_manager_map_downloading_size_start)
+            + size + ResourceUtils.Companion.getInstance().getString(R.string.offline_manager_map_downloading_size_end));
+
     }
 
     /**

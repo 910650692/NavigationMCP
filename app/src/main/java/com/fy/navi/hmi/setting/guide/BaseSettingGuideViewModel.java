@@ -199,8 +199,6 @@ public class BaseSettingGuideViewModel extends BaseViewModel<SettingNaviFragment
         final boolean value = Boolean.FALSE.equals(mIsRoadCondition.getValue());
         MapPackage.getInstance().setTrafficStates(MapType.MAIN_SCREEN_MAIN_MAP, value);
         mIsRoadCondition.setValue(value);
-        mModel.setConfigKeyRoadEvent(value);
-
         sendBuryPointForSettingGuide(BuryConstant.GuideOption.MAP_CONTENT, BuryConstant.MapContent.RTTI);
     };
 

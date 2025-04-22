@@ -25,7 +25,8 @@ import java.util.Hashtable;
 /**
  *
  */
-public class SceneRoutePreferenceImpl extends BaseSceneModel<BaseSceneView> implements ISceneRoutePreference {
+public class SceneRoutePreferenceImpl extends BaseSceneModel<BaseSceneView>
+        implements ISceneRoutePreference, SettingPackage.SettingChangeCallback {
 
     private static final String TAG = "RoutePreference click: ";
     private static final String RECOMMEND = "route_preference_remmend";
@@ -71,9 +72,10 @@ public class SceneRoutePreferenceImpl extends BaseSceneModel<BaseSceneView> impl
     private RoutePreferenceID mLastRoutePreferenceID;
     private RoutePreferenceID mRoutePreferenceID = RoutePreferenceID.PREFERENCE_RECOMMEND;
 
-    public SceneRoutePreferenceImpl(final BaseSceneView screenView) {
+    public SceneRoutePreferenceImpl(final String tag, final BaseSceneView screenView) {
         super(screenView);
         mSettingPackage = SettingPackage.getInstance();
+        mSettingPackage.setSettingChangeCallback(tag, this);
         mRoutePreferenceChangeListenerMap = new Hashtable<>();
     }
 
@@ -125,6 +127,26 @@ public class SceneRoutePreferenceImpl extends BaseSceneModel<BaseSceneView> impl
             return;
         }
         setRoutePreference(FASTESTSPEED, source);
+    }
+
+    /**
+     * 解注册
+     * @param tag tag
+     */
+    public void unSettingChangeCallback(final String tag) {
+        mSettingPackage.unRegisterSettingChangeCallback(tag);
+    }
+
+    @Override
+    public void onRoutePreferenceChange(final RoutePreferenceID routePreferenceID) {
+        clearPreference();
+        setDefaultPreference();
+        if (ConvertUtils.isEmpty(mRoutePreferenceChangeListenerMap)) {
+            return;
+        }
+        for (IRoutePreferenceChangeListener listener : mRoutePreferenceChangeListenerMap.values()) {
+            listener.onPreferenceChange(mSettingPackage.getRoutePreference(), false);
+        }
     }
 
     /**

@@ -100,21 +100,25 @@
                 app:layout_constraintTop_toBottomOf="@+id/route_item_charge_add_img"
                 tools:text="添加" />
 
-            <com.fy.navi.ui.view.SkinConstraintLayout
+            <com.fy.navi.ui.view.SkinLinearLayout
                 android:id="@+id/route_item_charge_layout"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginTop="@dimen/dp_130"
+                android:layout_marginStart="@dimen/dp_70"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent">
 
-                <com.fy.navi.ui.view.SkinConstraintLayout
+                <com.fy.navi.ui.view.SkinLinearLayout
                     android:id="@+id/route_item_charge_fast_root"
                     android:layout_width="wrap_content"
                     android:layout_height="@dimen/dp_46"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    android:layout_marginTop="@dimen/dp_130"
-                    android:layout_marginStart="@dimen/dp_70"
+                    android:layout_marginEnd="@dimen/dp_10"
                     android:paddingRight="@dimen/dp_10"
                     android:background="@drawable/bg_fast_charge">
+
                     <com.fy.navi.ui.view.SkinTextView
                         android:id="@+id/route_item_charge_fast_name"
                         android:layout_width="@dimen/dp_46"
@@ -124,6 +128,7 @@
                         android:textColor="@color/route_cricle_dot_gerrn_color"
                         android:textSize="@dimen/sp_28"
                         android:background="@drawable/bg_fast_charge_item"/>
+
                     <com.fy.navi.ui.view.SkinTextView
                         android:id="@+id/route_item_charge_fast_num_one"
                         android:layout_width="wrap_content"
@@ -144,17 +149,16 @@
                         android:textColor="@color/route_charge_param_total_color"
                         android:textSize="@dimen/sp_28"
                         app:layout_constraintStart_toEndOf="@+id/route_item_charge_fast_num_one"/>
-                </com.fy.navi.ui.view.SkinConstraintLayout>
+                </com.fy.navi.ui.view.SkinLinearLayout>
 
-                <com.fy.navi.ui.view.SkinConstraintLayout
+                <com.fy.navi.ui.view.SkinLinearLayout
                     android:id="@+id/route_item_charge_low_root"
                     android:layout_width="wrap_content"
                     android:layout_height="@dimen/dp_46"
-                    app:layout_constraintTop_toTopOf="@+id/route_item_charge_fast_root"
-                    android:layout_marginStart="@dimen/dp_10"
+                    android:layout_marginEnd="@dimen/dp_10"
                     android:paddingRight="@dimen/dp_10"
-                    app:layout_constraintStart_toEndOf="@+id/route_item_charge_fast_root"
                     android:background="@drawable/bg_fast_charge">
+
                     <com.fy.navi.ui.view.SkinTextView
                         android:id="@+id/route_item_charge_low_name"
                         android:layout_width="@dimen/dp_46"
@@ -164,6 +168,7 @@
                         android:gravity="center"
                         android:textColor="@color/route_cricle_dot_orange_color"
                         android:background="@drawable/bg_fast_charge_item"/>
+
                     <com.fy.navi.ui.view.SkinTextView
                         android:id="@+id/route_item_charge_low_num_one"
                         android:layout_width="wrap_content"
@@ -184,16 +189,14 @@
                         android:textColor="@color/route_charge_param_total_color"
                         android:textSize="@dimen/sp_28"
                         app:layout_constraintStart_toEndOf="@+id/route_item_charge_low_num_one"/>
-                </com.fy.navi.ui.view.SkinConstraintLayout>
+                </com.fy.navi.ui.view.SkinLinearLayout>
 
-                <com.fy.navi.ui.view.SkinConstraintLayout
+                <com.fy.navi.ui.view.SkinLinearLayout
                     android:id="@+id/route_item_charge_price_root"
                     android:layout_width="wrap_content"
                     android:layout_height="@dimen/dp_46"
-                    app:layout_constraintTop_toTopOf="@+id/route_item_charge_fast_root"
-                    android:layout_marginStart="@dimen/dp_10"
-                    app:layout_constraintStart_toEndOf="@+id/route_item_charge_low_root"
-                    >
+                    app:layout_constraintStart_toEndOf="@+id/route_item_charge_low_root">
+
                     <com.fy.navi.ui.view.SkinImageView
                         android:id="@+id/route_item_charge_price_name"
                         android:layout_width="@dimen/dp_36"
@@ -212,10 +215,9 @@
                         android:textColor="@color/text_route_defult"
                         app:layout_constraintStart_toEndOf="@+id/route_item_charge_price_name"/>
 
-                </com.fy.navi.ui.view.SkinConstraintLayout>
+                </com.fy.navi.ui.view.SkinLinearLayout>
 
-
-            </com.fy.navi.ui.view.SkinConstraintLayout>
+            </com.fy.navi.ui.view.SkinLinearLayout>
 
             <include
                 android:id="@+id/scene_poi_item_gas_view"

@@ -1,9 +1,24 @@
 package com.fy.navi.fsa.bean;
 
+/**
+ * 快速路出口
+ */
 public class FastWayExitInfo {
+    /**
+     * exitID	String	快速路出口ID
+     */
     private String exitID;
+    /**
+     * exitRoadName	String	快速路出口路名
+     */
     private String exitRoadName;
+    /**
+     * exitDirectionName	String	快速路出口方向名称
+     */
     private String exitDirectionName;
+    /**
+     * distance	int	到此快速路出口的剩余距离
+     */
     private int distance;
 
     public FastWayExitInfo() {

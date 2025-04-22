@@ -3,35 +3,56 @@ package com.fy.navi.service.logicpaket.engine;
 import androidx.work.ListenableWorker;
 
 import com.android.utils.ConvertUtils;
+import com.fy.navi.service.adapter.engine.ActivateObserver;
 import com.fy.navi.service.adapter.engine.EngineAdapter;
 import com.fy.navi.service.adapter.engine.EngineObserver;
 import com.fy.navi.service.define.engine.GaodeLogLevel;
 import com.fy.navi.service.define.map.MapType;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
 
 /**
  * @Description TODO
  * @Author lvww
  * @date 2024/11/24
  */
-public class EnginePackage implements EngineObserver {
+public class EnginePackage implements EngineObserver, ActivateObserver {
     private final EngineAdapter mEngineAdapter;
     private final Hashtable<String, IEngineObserver> engineObserverHashtable;
+    private final List<IActivateObserver> mActObserverList;
 
     private EnginePackage() {
         engineObserverHashtable = new Hashtable<>();
+        mActObserverList = new ArrayList<>();
         mEngineAdapter = EngineAdapter.getInstance();
         mEngineAdapter.addEngineObserver(this);
+        mEngineAdapter.addActivateObserver(this);
     }
 
+    /**
+     * 添加激活观察者
+     * @param actObserver actObserver
+     */
+    public void addActObserver(final IActivateObserver actObserver) {
+        mActObserverList.add(actObserver);
+    }
+
+    /**
+     * 移除激活观察者
+     * @param actObserver actObserver
+     */
+    public void removeActObserver(final IActivateObserver actObserver) {
+        mActObserverList.remove(actObserver);
+    }
 
     public void addEngineObserver(String key, IEngineObserver observer) {
         engineObserverHashtable.put(key, observer);
     }
 
-    public ListenableWorker.Result initEngine() {
-        return mEngineAdapter.initEngine();
+    public void initEngine() {
+        mEngineAdapter.initEngine();
     }
 
     public int getEngineID(MapType mapId) {
@@ -80,6 +101,40 @@ public class EnginePackage implements EngineObserver {
             if (ConvertUtils.isEmpty(iEngineObserver)) continue;
             iEngineObserver.onInitEngineFail(code, msg);
         }
+    }
+
+    @Override
+    public void onActivating() {
+        for (IActivateObserver actObserver : mActObserverList) {
+            if (actObserver != null) {
+                actObserver.onActivating();
+            }
+        }
+    }
+
+    @Override
+    public void onNetActivateFailed(final int failedCount) {
+        for (IActivateObserver actObserver : mActObserverList) {
+            if (actObserver != null) {
+                actObserver.onNetActivateFailed(failedCount);
+            }
+        }
+    }
+
+    /**
+     * 重试网络激活
+     */
+    public void netActivateRetry() {
+        mEngineAdapter.netActivateRetry();
+    }
+
+    /**
+     * 手动激活
+     * @param loginCode 激活码
+     * @param userCode 序列号
+     */
+    void manualActivate(final String userCode, final String loginCode) {
+        mEngineAdapter.manualActivate(userCode, loginCode);
     }
 
     private static final class Helper {

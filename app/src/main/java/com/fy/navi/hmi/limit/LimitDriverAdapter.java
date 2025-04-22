@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.fy.navi.hmi.R;
 import com.fy.navi.service.define.aos.RestrictedAreaDetail;
-import com.fy.navi.ui.view.SkinConstraintLayout;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,12 +55,6 @@ public class LimitDriverAdapter extends RecyclerView.Adapter<LimitDriverAdapter.
         holder.mTvTime.setText(bean.getMTime());
         final String descText = bean.getMSummary() + "\n" + bean.getMDesc();
         holder.mTvDesc.setText(descText);
-        if (position % 2 == 0) {
-            holder.mLyItemLimit.setBackground(mContext.getDrawable(R.drawable.bg_item_limit_detail_desc));
-        } else {
-            holder.mLyItemLimit.setBackground(null);
-        }
-
 
     }
 
@@ -75,7 +68,6 @@ public class LimitDriverAdapter extends RecyclerView.Adapter<LimitDriverAdapter.
         private final AppCompatTextView mTvState;
         private final AppCompatTextView mTvTime;
         private final AppCompatTextView mTvDesc;
-        private final SkinConstraintLayout mLyItemLimit;
 
         public LimitDriverViewHolder(final @NonNull View itemView) {
             super(itemView);
@@ -83,7 +75,6 @@ public class LimitDriverAdapter extends RecyclerView.Adapter<LimitDriverAdapter.
             mTvState = itemView.findViewById(R.id.tv_state);
             mTvTime = itemView.findViewById(R.id.tv_time);
             mTvDesc = itemView.findViewById(R.id.tv_desc);
-            mLyItemLimit = itemView.findViewById(R.id.ly_item_limit);
         }
     }
 }

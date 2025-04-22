@@ -15,18 +15,20 @@ import com.fy.navi.service.adapter.map.MapAdapter;
 import com.fy.navi.service.adapter.navistatus.INaviStatusCallback;
 import com.fy.navi.service.adapter.navistatus.NavistatusAdapter;
 import com.fy.navi.service.adapter.position.PositionAdapter;
+import com.fy.navi.service.adapter.setting.SettingAdapter;
 import com.fy.navi.service.define.bean.GeoPoint;
 import com.fy.navi.service.define.bean.MapLabelItemBean;
 import com.fy.navi.service.define.bean.PreviewParams;
-import com.fy.navi.service.define.layer.GemBaseLayer;
-import com.fy.navi.service.define.layer.GemLayerItem;
 import com.fy.navi.service.define.map.IBaseScreenMapView;
 import com.fy.navi.service.define.map.MapMode;
 import com.fy.navi.service.define.map.MapStateStyle;
 import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.map.MapViewParams;
+import com.fy.navi.service.define.mfc.MfcController;
+import com.fy.navi.service.define.position.LocInfoBean;
 import com.fy.navi.service.define.search.PoiInfoEntity;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
@@ -63,10 +65,14 @@ public class MapPackage implements IMapAdapterCallback, INaviStatusCallback, ILa
         mPositionAdapter = PositionAdapter.getInstance();
         mNavistatusAdapter = NavistatusAdapter.getInstance();
         blAosAdapter = BlAosAdapter.getInstance();
+        mSettingAdapter = SettingAdapter.getInstance();
         mNavistatusAdapter.registerCallback(this);
+        layerAdapter = LayerAdapter.getInstance();
     }
 
     private MapAdapter mMapAdapter;
+    private LayerAdapter layerAdapter;
+    private SettingAdapter mSettingAdapter;
     private PositionAdapter mPositionAdapter;
     private NavistatusAdapter mNavistatusAdapter;
     private BlAosAdapter blAosAdapter;
@@ -129,6 +135,25 @@ public class MapPackage implements IMapAdapterCallback, INaviStatusCallback, ILa
         mMapAdapter.setMapCenter(mapTypeId, geoPoint);
     }
 
+    public GeoPoint getMapCenter(MapType mapTypeId){
+       return mMapAdapter.getMapCenter(mapTypeId);
+    }
+
+    public boolean isCarLocation(MapType mapTypeId,double maxDistance){
+        GeoPoint mapCenter = getMapCenter(mapTypeId);
+        LocInfoBean locInfoBean = mPositionAdapter.getLastCarLocation();
+        if(!ConvertUtils.isEmpty(mapCenter) && !ConvertUtils.isEmpty(locInfoBean)){
+            GeoPoint carLocInfo = new GeoPoint(locInfoBean.getLongitude(),locInfoBean.getLatitude());
+            double distance = layerAdapter.calcStraightDistance(mapCenter,carLocInfo);
+            BigDecimal num1 = new BigDecimal(distance);
+            BigDecimal num2 = new BigDecimal(maxDistance);
+            //判断num1是否大于num2
+            int result = num1.compareTo(num2);
+            return result > 0;
+        }
+        return false;
+    }
+
     public void setMapViewTextSize(MapType mapTypeId, float f) {
         mMapAdapter.setMapViewTextSize(mapTypeId, f);
     }
@@ -155,6 +180,10 @@ public class MapPackage implements IMapAdapterCallback, INaviStatusCallback, ILa
 
     public void goToCarPosition(MapType mapTypeId, boolean bAnimation, boolean changeLevel) {
         mMapAdapter.goToCarPosition(mapTypeId, bAnimation, changeLevel);
+    }
+
+    public void mfcMoveMap(MapType mapTypeId, MfcController mfcController, int moveDistance) {
+        mMapAdapter.mfcMoveMap(mapTypeId,mfcController, moveDistance);
     }
 
     public GeoPoint mapToLonLat(MapType mapTypeId, double mapX, double mapY) {
@@ -377,7 +406,11 @@ public class MapPackage implements IMapAdapterCallback, INaviStatusCallback, ILa
      * @return true means success
      */
     public boolean setTrafficStates(MapType mapTypeId, boolean isOpen) {
-        return mMapAdapter.setTrafficStates(mapTypeId, isOpen);
+        boolean isOpenTraffic =  mMapAdapter.setTrafficStates(mapTypeId, isOpen);
+        if (isOpenTraffic) {
+            mSettingAdapter.setConfigKeyRoadEvent(isOpen);
+        }
+        return isOpenTraffic;
     }
 
     /**

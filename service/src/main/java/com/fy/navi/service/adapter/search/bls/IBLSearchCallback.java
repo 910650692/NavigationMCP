@@ -10,10 +10,10 @@ package com.fy.navi.service.adapter.search.bls;
 public interface IBLSearchCallback<T> {
     /**
      * 数据请求成功
-     *
+     * @param taskId 任务ID
      * @param data 请求到的数据
      */
-    void onSuccess(T data);
+    void onSuccess(int taskId, T data);
 
     /**
      * 请求失败

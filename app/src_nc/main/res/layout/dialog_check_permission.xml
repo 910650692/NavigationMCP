@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <com.fy.navi.ui.view.SkinConstraintLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <com.fy.navi.ui.view.SkinConstraintLayout
+            android:layout_width="@dimen/dp_1600"
+            android:layout_height="@dimen/dp_600"
+            android:layout_marginStart="@dimen/dp_310"
+            android:layout_marginTop="@dimen/dp_520"
+            android:layout_marginEnd="@dimen/dp_2039"
+            android:layout_marginBottom="@dimen/dp_180"
+            android:background="@drawable/shape_bg_dialog"
+            android:paddingHorizontal="@dimen/dp_100"
+            android:paddingVertical="@dimen/dp_80"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <com.fy.navi.ui.view.SkinTextView
+                android:id="@+id/permission_title"
+                android:layout_width="@dimen/dp_1200"
+                android:layout_height="@dimen/dp_68"
+                android:gravity="center_vertical"
+                android:textColor="@color/permission_quest_dialog_title"
+                android:textSize="@dimen/sp_52"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="权限申请" />
+
+            <com.fy.navi.ui.view.SkinTextView
+                android:id="@+id/permission_content"
+                android:layout_width="@dimen/dp_1400"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_32"
+                android:textColor="@color/permission_quest_dialog_content"
+                android:textSize="@dimen/sp_46"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/permission_title"
+                tools:text="地图导航中所需要权限，如果没有该权限将可能造成地图无法使用，点击确定按钮跳转到申请权限界面进行申请，点击取消可能会造成地图部分功能暂时无法使用" />
+
+            <com.fy.navi.ui.view.SkinButton
+                android:id="@+id/dialog_commit"
+                android:layout_width="@dimen/dp_420"
+                android:layout_height="@dimen/dp_100"
+                android:background="@drawable/bg_shape_commit_button"
+                android:text="@string/permission_quest_dialog_commit"
+                android:textColor="@color/dialog_commit_text_white"
+                android:textSize="@dimen/sp_42"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <com.fy.navi.ui.view.SkinButton
+                android:id="@+id/dialog_cancel"
+                android:layout_width="@dimen/dp_420"
+                android:layout_height="@dimen/dp_100"
+                android:background="@drawable/bg_shape_cancel_button"
+                android:text="@string/permission_quest_dialog_cancel"
+                android:textColor="@color/dialog_cancel_text_b3181818"
+                android:textSize="@dimen/sp_42"
+                android:layout_marginStart="@dimen/dp_40"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/dialog_commit" />
+        </com.fy.navi.ui.view.SkinConstraintLayout>
+    </com.fy.navi.ui.view.SkinConstraintLayout>
+</layout>

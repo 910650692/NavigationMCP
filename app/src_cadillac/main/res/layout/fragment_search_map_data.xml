@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="ViewModel"
+            type="com.fy.navi.hmi.mapdata.search.SearchMapDataViewModel" />
+    </data>
+
+    <com.fy.navi.ui.view.SkinLinearLayout
+        android:layout_width="@dimen/dp_1578"
+        android:layout_height="@dimen/dp_1000"
+        android:background="@drawable/bg_setting_fragment"
+        android:orientation="vertical">
+
+        <com.fy.navi.ui.view.SkinRelativeLayout
+            android:id="@+id/rl_offline_top"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_152"
+            android:layout_marginStart="@dimen/dp_52"
+            android:layout_marginTop="@dimen/dp_52"
+            android:layout_marginEnd="@dimen/dp_52"
+            android:background="@drawable/shape_bg_map_data"
+            android:gravity="center_vertical">
+
+            <com.fy.navi.ui.view.SkinImageView
+                android:id="@+id/iv_offline_map_back"
+                clickCommand="@{ViewModel.mCloseSearchMapDataView}"
+                android:layout_width="@dimen/dp_74"
+                android:layout_height="@dimen/dp_74"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="@dimen/dp_20"
+                android:src="@drawable/img_setting_back" />
+
+            <com.fy.navi.ui.view.SkinEditText
+                android:id="@+id/search_offline_edit_view"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_152"
+                android:layout_marginStart="@dimen/dp_104"
+                android:background="@null"
+                android:clickable="true"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:gravity="center_vertical"
+                android:hint="@string/offline_search_tip"
+                android:imeOptions="actionSearch"
+                android:inputType="text"
+                android:maxLines="1"
+                android:textColor="@color/setting_bg_tab_text_select"
+                android:textColorHint="@color/offline_hint_text"
+                android:textSize="@dimen/sp_46">
+
+                <requestFocus />
+            </com.fy.navi.ui.view.SkinEditText>
+
+            <com.fy.navi.ui.view.SkinImageView
+                android:id="@+id/edit_clear"
+                clickCommand="@{ViewModel.mClearEdit}"
+                android:layout_width="@dimen/dp_54"
+                android:layout_height="@dimen/dp_54"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="@dimen/dp_32"
+                android:src="@drawable/img_plate_number_clear"
+                android:visibility="visible" />
+
+        </com.fy.navi.ui.view.SkinRelativeLayout>
+
+        <com.fy.navi.ui.view.SkinScrollView
+            android:layout_width="match_parent"
+            android:layout_height="fill_parent"
+            android:fillViewport="true">
+
+            <com.fy.navi.ui.view.SkinConstraintLayout
+                android:layout_width="@dimen/dp_1578"
+                android:layout_height="fill_parent"
+                android:padding="@dimen/dp_52">
+
+                <!--全部城市地图数据-->
+                <com.fy.navi.ui.view.SkinRecyclerView
+                    android:id="@+id/rv_search_offline"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/rl_offline_top" />
+
+                <!--无数据提示-->
+                <com.fy.navi.ui.view.SkinTextView
+                    android:id="@+id/no_search_offline_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/offline_no_search_hint"
+                    android:textColor="@color/setting_bg_tab_text_unselect"
+                    android:textSize="@dimen/sp_46"
+                    android:visibility="gone"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            </com.fy.navi.ui.view.SkinConstraintLayout>
+
+        </com.fy.navi.ui.view.SkinScrollView>
+
+    </com.fy.navi.ui.view.SkinLinearLayout>
+
+</layout>

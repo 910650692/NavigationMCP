@@ -407,12 +407,12 @@
         <include
             android:id="@+id/cruise_layout"
             layout="@layout/cruise_on_map"
-            android:layout_width="@dimen/dp_638"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_20"
-            tools:visibility="visible"
             android:visibility="@{ViewModel.cruiseVisibility ? View.VISIBLE : View.GONE}"
-            app:layout_constraintStart_toStartOf="@id/search_main_tab"
+            app:layout_constraintStart_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/search_main_tab" />
 
     </com.fy.navi.ui.view.SkinConstraintLayout>

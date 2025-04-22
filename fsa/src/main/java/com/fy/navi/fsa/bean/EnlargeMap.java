@@ -1,9 +1,30 @@
 package com.fy.navi.fsa.bean;
 
+/**
+ * 1.1.11、获取放大图信息
+ */
 public class EnlargeMap {
+    /**
+     * type	int	放大图类型
+     * 0 – 图片类型
+     * 1 – 矢量图类型
+     */
     private int type;
+    /**
+     * status	int	放大图状态
+     * -1 – 无效值
+     * 0 – 展示
+     * 1 – 更新
+     * 2 – 隐藏
+     */
     private int status;
+    /**
+     * ilsImageViewInfo	ILSImageViewInfo	图片放大图信息
+     */
     private ILSImageViewInfo ilsImageViewInfo;
+    /**
+     * junctionViewInfo	JunctionViewInfo	矢量放大图信息
+     */
     private JunctionViewInfo junctionViewInfo;
 
     public EnlargeMap() {

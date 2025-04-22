@@ -1,9 +1,20 @@
 package com.fy.navi.fsa.bean;
 
+/**
+ * 1.1.7、获取导航目的地的名称和坐标
+ */
 public class DestInfo {
-
+    /**
+     * 目的地名称
+     */
     private String name;
+    /**
+     * 目的地地址
+     */
     private String address;
+    /**
+     * 目的地经纬度
+     */
     private GeoPoint location;
 
     public DestInfo() {}

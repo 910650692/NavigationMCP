@@ -5,8 +5,10 @@ import com.android.utils.ConvertUtils;
 import com.android.utils.ResourceUtils;
 import com.android.utils.log.Logger;
 import com.autonavi.gbl.common.path.option.PathInfo;
+import com.autonavi.gbl.map.model.MapviewMode;
 import com.fy.navi.service.R;
 import com.fy.navi.service.define.bean.GeoPoint;
+import com.fy.navi.service.define.map.MapMode;
 import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.route.RouteParam;
 import com.fy.navi.service.define.search.ETAInfo;
@@ -222,6 +224,10 @@ public final class OpenApiHelper {
      * @param mapTypeId 屏幕id
      */
     public static void exitPreview(final MapType mapTypeId) {
+        if (NAVI_PACKAGE.getFixedOverViewStatus()) {
+            Logger.i(TAG, "exitPreview: 固定全览状态，不能退出全览");
+            return;
+        }
         NAVI_PACKAGE.setPreviewStatus(false);
         // 退出全览
         MAP_PACKAGE.exitPreview(mapTypeId);
@@ -229,8 +235,28 @@ public final class OpenApiHelper {
         MAP_PACKAGE.goToCarPosition(mapTypeId, false, false);
         LAYER_PACKAGE.setFollowMode(mapTypeId, true);
         LAYER_PACKAGE.setPreviewMode(mapTypeId,false);
+        // bugID：1023666 导航中缩放地图然后点击继续导航，恢复到导航跟随态的过程时间太长
+        setCurrentZoomLevel(mapTypeId);
         LAYER_PACKAGE.openDynamicLevel(mapTypeId, SettingPackage.getInstance().
                 getAutoScale());
+    }
+
+    /**
+     * 设置当前车标模式的默认比例尺
+     * @param mapType 屏幕类型
+     */
+    public static void setCurrentZoomLevel(MapType mapType) {
+        MapMode currentMapMode = MAP_PACKAGE.getCurrentMapMode(mapType);
+        switch (currentMapMode) {
+            case UP_2D, NORTH_2D:
+                MAP_PACKAGE.setZoomLevel(mapType, 14);
+                break;
+            case UP_3D:
+                MAP_PACKAGE.setZoomLevel(mapType, 17);
+                break;
+            default:
+                break;
+        }
     }
 
     /**

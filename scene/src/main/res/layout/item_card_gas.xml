@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <com.fy.navi.ui.view.SkinConstraintLayout
+        android:id="@+id/item_root"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_216">
 

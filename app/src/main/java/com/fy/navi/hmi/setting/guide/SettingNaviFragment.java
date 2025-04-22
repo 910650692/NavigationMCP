@@ -80,9 +80,6 @@ public class SettingNaviFragment extends BaseFragment<FragmentSettingNaviBinding
         mBinding.naviHeadUp.setOnCheckedChangeListener(this::updateCheckBoxTextColor);
         mBinding.naviNorthUp.setOnCheckedChangeListener(this::updateCheckBoxTextColor);
         mBinding.navi3DHeadUp.setOnCheckedChangeListener(this::updateCheckBoxTextColor);
-        mBinding.settingGuideCarLogoDefault.setOnCheckedChangeListener(this::updateLogoCheckBoxTextColor);
-        mBinding.settingGuideCarLogoBrand.setOnCheckedChangeListener(this::updateLogoCheckBoxTextColor);
-        mBinding.settingGuideCarLogoSpeed.setOnCheckedChangeListener(this::updateLogoCheckBoxTextColor);
     }
 
     /**
@@ -95,19 +92,6 @@ public class SettingNaviFragment extends BaseFragment<FragmentSettingNaviBinding
             compoundButton.setTextColor(ResourceUtils.Companion.getInstance().getColor(R.color.setting_white));
         } else {
             compoundButton.setTextColor(ResourceUtils.Companion.getInstance().getColor(R.color.setting_bg_tab_text_unselect));
-        }
-    }
-
-    /**
-     * 更新车标CheckBox文字颜色
-     * @param compoundButton CheckBox
-     * @param isSelected 选中状态
-     */
-    public void updateLogoCheckBoxTextColor(final CompoundButton compoundButton, final boolean isSelected) {
-        if (isSelected) {
-            compoundButton.setTextColor(ResourceUtils.Companion.getInstance().getColor(R.color.setting_bg_tab_text_select));
-        } else {
-            compoundButton.setTextColor(ResourceUtils.Companion.getInstance().getColor(R.color.setting_car_logo_text_gray));
         }
     }
 

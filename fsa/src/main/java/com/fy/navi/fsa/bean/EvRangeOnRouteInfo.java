@@ -1,8 +1,20 @@
 package com.fy.navi.fsa.bean;
 
+/**
+ * 1.1.12、获取续航里程信息
+ */
 public class EvRangeOnRouteInfo {
+    /**
+     * canArrived	boolean	是否可以到达终点
+     */
     private boolean canArrived;
+    /**
+     * pos	GeoPoint	如果可以抵达终点，返回终点坐标，如果不可以抵达终点，返回可以到达的坐标
+     */
     private GeoPoint pos;
+    /**
+     * remainRangeDistance	int	到达终点后剩余续航里程（km），只有在可以抵达终点的时候才有效
+     */
     private int remainRangeDistance;
 
     public EvRangeOnRouteInfo() {

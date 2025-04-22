@@ -3,28 +3,24 @@ package com.fy.navi.service.logicpaket.setting;
 
 import android.text.TextUtils;
 
+import com.android.utils.ConvertUtils;
 import com.android.utils.ResourceUtils;
 import com.android.utils.ToastUtils;
-import com.android.utils.log.Logger;
 import com.fy.navi.service.R;
 import com.fy.navi.service.adapter.setting.SettingAdapter;
 import com.fy.navi.service.adapter.setting.SettingAdapterCallback;
 import com.fy.navi.service.define.layer.refix.CarModeType;
-import com.fy.navi.service.define.map.GmBizUserFavoritePoint;
 import com.fy.navi.service.define.map.MapMode;
 import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.route.RoutePreferenceID;
 import com.fy.navi.service.define.setting.SettingController;
-import com.fy.navi.service.greendao.favorite.Favorite;
 import com.fy.navi.service.greendao.favorite.FavoriteManager;
 import com.fy.navi.service.greendao.setting.SettingManager;
 import com.fy.navi.service.logicpaket.layer.LayerPackage;
 import com.fy.navi.service.logicpaket.map.MapPackage;
 import com.fy.navi.service.logicpaket.navi.NaviPackage;
 
-import java.util.ArrayList;
 import java.util.Hashtable;
-import java.util.List;
 
 public final class SettingPackage implements SettingAdapterCallback {
     public static final String TAG = SettingPackage.class.getSimpleName();
@@ -79,6 +75,22 @@ public final class SettingPackage implements SettingAdapterCallback {
         }
     }
 
+    /**
+     * 注销回调
+     * @param key 回调key
+     */
+    public void unRegisterCallBack(final String key) {
+        mCallbackList.remove(key);
+    }
+
+    /**
+     * 注销回调
+     * @param key 回调key
+     */
+    public void unRegisterSettingChangeCallback(final String key) {
+        mChangeCallbackList.remove(key);
+    }
+
 
     /**
      * 设置初始化
@@ -96,6 +108,12 @@ public final class SettingPackage implements SettingAdapterCallback {
         }
     }
 
+    @Override
+    public void onSettingChanged(final String key, final String value) {
+        for (SettingChangeCallback callback : mChangeCallbackList.values()) {
+            callback.onSettingChanged(key, value);
+        }
+    }
 
     /**
      * 从数据库获取数据
@@ -118,6 +136,20 @@ public final class SettingPackage implements SettingAdapterCallback {
             for (SettingChangeCallback callback : mChangeCallbackList.values()) {
                 callback.onSettingChanged(SettingController.KEY_SETTING_GUIDE_ROUTE_PREFERENCE, formatPreferenceToDB(routePreferenceID));
             }
+        }
+    }
+
+    /**
+     * 提供给语音--设置偏好
+     * @param routePreferenceID 偏好ID
+     */
+    public void setRoutePreferenceByVoice(final RoutePreferenceID routePreferenceID) {
+        setRoutePreference(routePreferenceID);
+        for (SettingChangeCallback callback : mChangeCallbackList.values()) {
+            if (ConvertUtils.isEmpty(callback)) {
+                continue;
+            }
+            callback.onRoutePreferenceChange(routePreferenceID);
         }
     }
 
@@ -521,19 +553,16 @@ public final class SettingPackage implements SettingAdapterCallback {
         if (code == 0) {
             switch (broadcastMode) {
                 case 1:
-                    mSettingManager.insertOrReplace(SettingController.KEY_SETTING_NAVI_BROADCAST, SettingController.VALUE_NAVI_BROADCAST_CONCISE);
                     for (SettingChangeCallback callback : mChangeCallbackList.values()) {
                         callback.onSettingChanged(SettingController.KEY_SETTING_NAVI_BROADCAST, SettingController.VALUE_NAVI_BROADCAST_CONCISE);
                     }
                     break;
                 case 2:
-                    mSettingManager.insertOrReplace(SettingController.KEY_SETTING_NAVI_BROADCAST, SettingController.VALUE_NAVI_BROADCAST_DETAIL);
                     for (SettingChangeCallback callback : mChangeCallbackList.values()) {
                         callback.onSettingChanged(SettingController.KEY_SETTING_NAVI_BROADCAST, SettingController.VALUE_NAVI_BROADCAST_DETAIL);
                     }
                     break;
                 case 3:
-                    mSettingManager.insertOrReplace(SettingController.KEY_SETTING_NAVI_BROADCAST, SettingController.VALUE_NAVI_BROADCAST_SIMPLE);
                     for (SettingChangeCallback callback : mChangeCallbackList.values()) {
                         callback.onSettingChanged(SettingController.KEY_SETTING_NAVI_BROADCAST, SettingController.VALUE_NAVI_BROADCAST_SIMPLE);
                     }
@@ -754,7 +783,6 @@ public final class SettingPackage implements SettingAdapterCallback {
     public void setConfigKeyRoadEvent(final boolean roadEvent) {
         final int code = mSettingAdapter.setConfigKeyRoadEvent(roadEvent);
         if (code == 0) {
-            mSettingManager.insertOrReplace(SettingController.KEY_SETTING_ROAD_CONDITION, String.valueOf(roadEvent));
             for (SettingChangeCallback callback : mChangeCallbackList.values()) {
                 callback.onSettingChanged(SettingController.KEY_SETTING_ROAD_CONDITION, String.valueOf(roadEvent));
             }
@@ -985,6 +1013,15 @@ public final class SettingPackage implements SettingAdapterCallback {
          * @param key   设置项的key值
          * @param value 设置项对应的value值
          */
-        void onSettingChanged(String key, String value);
+        default void onSettingChanged(String key, String value){
+
+        }
+
+        /**
+         * @param routePreferenceID  偏好ID
+         */
+        default void onRoutePreferenceChange(RoutePreferenceID routePreferenceID){
+
+        }
     }
 }

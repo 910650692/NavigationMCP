@@ -1,5 +1,7 @@
 package com.fy.navi.service.adapter.layer.bls;
 
+import android.graphics.Rect;
+
 import com.android.utils.log.Logger;
 import com.autonavi.gbl.common.model.Coord2DDouble;
 import com.autonavi.gbl.guide.model.CrossType;
@@ -11,9 +13,8 @@ import com.fy.navi.service.adapter.layer.bls.impl.LayersPoolManager;
 import com.fy.navi.service.define.bean.GeoPoint;
 import com.fy.navi.service.define.bean.PreviewParams;
 import com.fy.navi.service.define.layer.refix.CarModeType;
-import com.fy.navi.service.define.layer.GemLayerClickBusinessType;
+import com.fy.navi.service.define.layer.refix.DynamicLevelMode;
 import com.fy.navi.service.define.layer.refix.LayerItemCrossEntity;
-import com.fy.navi.service.define.layer.RouteLineLayerParam;
 import com.fy.navi.service.define.layer.refix.LayerItemLabelResult;
 import com.fy.navi.service.define.layer.refix.LayerItemRouteEndPoint;
 import com.fy.navi.service.define.layer.refix.LayerItemSearchResult;
@@ -22,6 +23,7 @@ import com.fy.navi.service.define.layer.refix.LayerItemUserTrackDepth;
 import com.fy.navi.service.define.layer.refix.LayerSearchItemType;
 import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.navi.NaviParkingEntity;
+import com.fy.navi.service.define.route.RequestRouteResult;
 import com.fy.navi.service.define.search.PoiInfoEntity;
 import com.fy.navi.service.logicpaket.position.PositionPackage;
 import java.util.ArrayList;
@@ -109,13 +111,13 @@ public class LayerAdapterImpl implements ILayerApi {
      * @param routeLineLayer
      */
     @Override
-    public void drawRouteLine(MapType mapTypeId, RouteLineLayerParam routeLineLayer) {
-        layersPoolManager.get(mapTypeId).getLayerGuideRoute().drawRouteLine(routeLineLayer);
+    public void drawRouteLine(MapType mapTypeId, RequestRouteResult routeResult) {
+        layersPoolManager.get(mapTypeId).getLayerGuideRoute().drawRouteLine(routeResult);
     }
 
-    /*更新终点扎标样式*/
-    public void updateEndPoint(MapType mapTypeId, LayerItemRouteEndPoint endPoint) {
-        layersPoolManager.get(mapTypeId).getLayerGuideRoute().updateEndPoint(endPoint);
+    /* 更新终点扎标数据 */
+    public void updateRouteEndPoint(MapType mapTypeId, LayerItemRouteEndPoint endPoint) {
+        layersPoolManager.get(mapTypeId).getLayerGuideRoute().updateRouteEndPoint(endPoint);
     }
 
     /**
@@ -243,18 +245,6 @@ public class LayerAdapterImpl implements ILayerApi {
     }
 
     /**
-     * 获取预计到达时间
-     *
-     * @param mapTypeId
-     * @return
-     */
-    @Override
-    public String getCurrentRouteTime(MapType mapTypeId) {
-
-        return layersPoolManager.get(mapTypeId).getLayerGuideRoute().getCurrentRouteTime();
-    }
-
-    /**
      * 设置转向箭头要显示导航段
      *
      * @param mapTypeId
@@ -267,13 +257,26 @@ public class LayerAdapterImpl implements ILayerApi {
 
     /**
      * 是否打开自动比例尺
-     *
-     * @param mapTypeId 地图类型
-     * @param isOpen    开关状态
+     * ====此方法后续废弃====
      */
     @Override
     public void openDynamicLevel(MapType mapTypeId, boolean isOpen) {
         layersPoolManager.get(mapTypeId).getLayerGuideRoute().openDynamicLevel(isOpen);
+    }
+
+    /* 是否打开动态比例尺功能，type区分巡航动态比例尺还是导航动态比例尺 */
+    public void openDynamicLevel(MapType mapTypeId, DynamicLevelMode dynamicLevelMode) {
+        layersPoolManager.get(mapTypeId).getLayerGuideRoute().openDynamicLevel(dynamicLevelMode);
+    }
+
+    /* 设置动态比例尺是否锁住状态，type区分巡航动态比例尺还是导航动态比例尺 */
+    public void setDynamicLevelLock(MapType mapTypeId, DynamicLevelMode dynamicLevelMode, boolean isLock) {
+        layersPoolManager.get(mapTypeId).getLayerGuideRoute().setDynamicLevelLock(dynamicLevelMode, isLock);
+    }
+
+    /* 设置自动比例尺是否主动调整地图中心 */
+    public void openDynamicCenter(MapType mapTypeId, boolean isDynaCenterLock) {
+        layersPoolManager.get(mapTypeId).getLayerGuideRoute().openDynamicCenter(isDynaCenterLock);
     }
 
     @Override
@@ -422,6 +425,11 @@ public class LayerAdapterImpl implements ILayerApi {
         Logger.d(TAG, "hideCross " + b);
         Logger.i("crossImageDebug", "hideCross " + b);
         return b;
+    }
+
+    /* 动态更新路口大图显示区域 */
+    public void updateRoadCrossRect(MapType mapTypeId, Rect rect) {
+        layersPoolManager.get(mapTypeId).getLayerGuideRoute().updateRoadCrossRect(rect);
     }
 
     /*========================================= 路口大图 =========================================*/

@@ -1,7 +1,16 @@
 package com.fy.navi.fsa.bean;
 
+/**
+ * 高速入口
+ */
 public class HighWayEntranceInfo {
+    /**
+     * 高速入口道路名称
+     */
     private String roadName;
+    /**
+     * 到此高速入口的距离
+     */
     private int distance;
 
     public HighWayEntranceInfo() {

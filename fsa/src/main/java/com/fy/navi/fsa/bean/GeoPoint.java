@@ -1,7 +1,12 @@
 package com.fy.navi.fsa.bean;
 
+/**
+ * 位置
+ */
 public class GeoPoint {
+    //经度
     private double lng;
+    //纬度
     private double lat;
 
     public GeoPoint() {}

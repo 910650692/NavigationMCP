@@ -70,13 +70,15 @@ public class FavoriteDataAdapter extends RecyclerView.Adapter<FavoriteDataAdapte
             holder.mFavoriteBinding.itemFavoriteTopText.setText("取消");
             holder.mFavoriteBinding.itemFavoriteDistance.setVisibility(View.VISIBLE);
             holder.mFavoriteBinding.itemFavoriteLine.setVisibility(View.VISIBLE);
-            holder.mFavoriteBinding.itemFavoriteTopTag.setVisibility(View.VISIBLE);
+            holder.mFavoriteBinding.itemFavoriteTopTag.setVisibility(View.GONE);
+            holder.mFavoriteBinding.itemFavoriteTopIcon.setImageResource(R.drawable.img_favorite_untop);
         } else {
             holder.mFavoriteBinding.swipeMenuLayout.setBackground(ResourceUtils.Companion.getInstance().getDrawable(R.color.transparent));
             holder.mFavoriteBinding.itemFavoriteTopText.setText("置顶");
             holder.mFavoriteBinding.itemFavoriteDistance.setVisibility(View.GONE);
             holder.mFavoriteBinding.itemFavoriteLine.setVisibility(View.GONE);
             holder.mFavoriteBinding.itemFavoriteTopTag.setVisibility(View.GONE);
+            holder.mFavoriteBinding.itemFavoriteTopIcon.setImageResource(R.drawable.img_favorite_top);
         }
         //查看POI详情
         holder.mFavoriteBinding.contentLayout.setOnClickListener(v -> {

@@ -3,8 +3,19 @@ package com.fy.navi.fsa.bean;
 import java.util.ArrayList;
 
 public class HighwayService {
+    /**
+     * 服务区信息类型
+     * 0 – 高速信息订阅列表，包含深度信息
+     * 1 – 高速路信息，这里的服务区信息只有名称和距离，没有深度信息
+     */
     private int type;
+    /**
+     * 高速信息订阅列表
+     */
     private ArrayList<HighwaySubscribeInfo> highWaySubscribeInfos;
+    /**
+     * 高速路信息
+     */
     private HighwayTotalInfo highwayTotalInfo;
 
     public HighwayService() {

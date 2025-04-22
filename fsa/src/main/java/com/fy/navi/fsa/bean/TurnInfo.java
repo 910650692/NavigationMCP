@@ -1,16 +1,31 @@
 package com.fy.navi.fsa.bean;
 
+/**
+ * 获取TBT信息
+ */
 public class TurnInfo {
+    //当前路口的位置
     private GeoPoint position;
+    //下一个路口的剩余的距离
     private int remainDistance;
+    //上一个路口到当前路口的距离，单位：米
     private int distanceToPreTurn;
+    //当前路口到下一个路口的距离，单位：米
     private int distanceToNextTurn;
+    //转向名字
     private String directionName;
+    //当前路名
     private String roadName;
+    //下一个路名
     private String nextRoadName;
+    //是否直行
     private boolean isStraight;
+    //转向类型
     private int turnKind;
+    //是否为高速面板信息
     private boolean isHightway;
+    //道路等级，值含义参见：3.3.4 roadLevel字段取值的含义。
+    //附加说明：当该值为高速路或者城市快速路时（roadLevel = 0或者1），则说明该路段支持NOP导航
     private int roadLevel;
 
     public TurnInfo() {

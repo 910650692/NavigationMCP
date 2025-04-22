@@ -5,6 +5,7 @@ import android.annotation.SuppressLint;
 import androidx.databinding.ObservableField;
 
 import com.android.utils.ConvertUtils;
+import com.android.utils.NetWorkUtils;
 import com.android.utils.ResourceUtils;
 import com.android.utils.ToastUtils;
 import com.android.utils.log.Logger;
@@ -45,10 +46,8 @@ public class SceneNaviControlImpl extends BaseSceneModel<SceneNaviControlView> i
         ISceneNaviControl {
     private static final String TAG = MapDefaultFinalTag.NAVI_HMI_TAG;
     private final NaviPackage mNaviPackage;
-    private LayerPackage mLayerPackage;
     private MapPackage mMapPackage;
     private RoutePackage mRoutePackage;
-    private SearchPackage mSearchPackage;
     private SettingPackage mSettingPackage;
     private ImmersiveStatusScene mImmersiveStatusScene;
     private ScheduledFuture mScheduledFuture;
@@ -59,20 +58,13 @@ public class SceneNaviControlImpl extends BaseSceneModel<SceneNaviControlView> i
     public ObservableField<Boolean> mGroupMoreSetupVisible;
 
     private long mLastClickTime;
-    private boolean mIsNeedShowChargeTipLater;
-    // true:退出全览 false:看全览
-//    private boolean mIsPreViewShowing = false;
-//    private boolean mIsFixedOverview = false;//是否是固定全览状态
     private boolean mIsMute;
-
     private int mVehicleType;
 
     public SceneNaviControlImpl(final SceneNaviControlView screenView) {
         super(screenView);
         mNaviPackage = NaviPackage.getInstance();
         mRoutePackage = RoutePackage.getInstance();
-        mLayerPackage = LayerPackage.getInstance();
-        mSearchPackage = SearchPackage.getInstance();
         mMapPackage = MapPackage.getInstance();
         mSettingPackage = SettingPackage.getInstance();
         mControlVisible = new ObservableField<>(true);
@@ -99,7 +91,6 @@ public class SceneNaviControlImpl extends BaseSceneModel<SceneNaviControlView> i
         // 初始化静音状态、每次导航恢复默认播报状态
         mIsMute = false;
         mNaviPackage.setMute(false);
-        SettingPackage.getInstance().setConfigKeyMute(0);
         updateVariationVoice();
         // 初始化地图比例尺
         MapMode currentMapMode = mMapPackage.getCurrentMapMode(mMapTypeId);
@@ -129,20 +120,6 @@ public class SceneNaviControlImpl extends BaseSceneModel<SceneNaviControlView> i
     public void naviContinue() {
         Logger.i(TAG, "naviContinue", "showPreview status : " +
                 mNaviPackage.getFixedOverViewStatus());
-        // 隐藏控制页面
-//        ImmersiveStatusScene.getInstance().setImmersiveStatus(mMapTypeId, ImersiveStatus.IMERSIVE);
-//        if (!mIsFixedOverview) {
-//            // 更新全览状态
-//            mLayerPackage.setFollowMode(mMapTypeId, true);
-//            mMapPackage.setZoomLevel(mMapTypeId, 17);
-//            mIsPreViewShowing = false;
-//            mMapPackage.goToCarPosition(mMapTypeId, false, false);
-//            mNaviPackage.setPreviewStatus(false);
-//        }
-//        cancelTimer();
-//        if (mCallBack != null) {
-//            mCallBack.updateSceneVisible(NaviSceneId.NAVI_SCENE_PREFERENCE, false);
-//        }
     }
 
     @Override
@@ -150,12 +127,7 @@ public class SceneNaviControlImpl extends BaseSceneModel<SceneNaviControlView> i
         Logger.i(TAG, "moreSetup");
         initTimer();
         setImmersiveStatus(ImersiveStatus.TOUCH);
-        // 更多页面展开后关闭EV消息卡片
-        mIsNeedShowChargeTipLater = mCallBack.isNeedCloseNaviChargeTipLater();
-        if (mIsNeedShowChargeTipLater) {
-            NaviSceneManager.getInstance().notifySceneStateChange(INaviSceneEvent.
-                    SceneStateChangeType.SceneCloseState, NaviSceneId.NAVI_CHARGE_TIP);
-        }
+        NaviSceneManager.getInstance().showControlMoreSetup();
         mGroupOneVisible.set(false);
         mGroupTwoVisible.set(true);
     }
@@ -220,7 +192,6 @@ public class SceneNaviControlImpl extends BaseSceneModel<SceneNaviControlView> i
             setImmersiveStatus(ImersiveStatus.TOUCH);
             mIsMute = mNaviPackage.isMute();
             mNaviPackage.setMute(!mIsMute);
-            SettingPackage.getInstance().setConfigKeyMute(!mIsMute ? 1 : 0);
             updateVariationVoice();
         }
     }
@@ -265,6 +236,36 @@ public class SceneNaviControlImpl extends BaseSceneModel<SceneNaviControlView> i
         }
         mLastClickTime = currentTime;
         initTimer();
+        requestReRoute();
+    }
+
+    /**
+     * 网络状态导致的刷新
+     */
+    public void refreshRouteCauseNet() {
+        boolean isCanRefresh = TimerHelper.isCanRefreshRoute();
+        if (!isCanRefresh) {
+            boolean currentNetStatus = Boolean.TRUE.equals(NetWorkUtils.Companion.getInstance().
+                    checkNetwork());
+            ThreadManager.getInstance().postDelay(new Runnable() {
+                @Override
+                public void run() {
+                    boolean netStatus = Boolean.TRUE.equals(NetWorkUtils.Companion.getInstance().
+                            checkNetwork());
+                    if (currentNetStatus != netStatus) {
+                        requestReRoute();
+                    }
+                }
+            }, NumberUtils.NUM_3000);
+            return;
+        }
+        requestReRoute();
+    }
+
+    /**
+     * 请求路线刷新
+     */
+    private void requestReRoute() {
         final RouteRequestParam param = new RouteRequestParam();
         param.setMMapTypeId(mMapTypeId);
         param.setMRouteWay(RouteWayID.ROUTE_WAY_REFRESH);
@@ -482,11 +483,7 @@ public class SceneNaviControlImpl extends BaseSceneModel<SceneNaviControlView> i
      */
     @Override
     public void showMain() {
-        // 更多页面收起后判断是否需要再显示消息卡片
-        if (mIsNeedShowChargeTipLater) {
-            NaviSceneManager.getInstance().notifySceneStateChange(INaviSceneEvent.
-                    SceneStateChangeType.SceneShowState, NaviSceneId.NAVI_CHARGE_TIP);
-        }
+        NaviSceneManager.getInstance().notifySceneReset("showMain");
         mControlVisible.set(true);
         mGroupOneVisible.set(true);
         mGroupTwoVisible.set(false);
@@ -504,7 +501,6 @@ public class SceneNaviControlImpl extends BaseSceneModel<SceneNaviControlView> i
                 mNaviPackage.getPreviewStatus() +
                 ",broadcastMode：" + broadcastMode + ",MapMode：" + currentMapMode);
     }
-
 
     /**
      * 取消倒计时

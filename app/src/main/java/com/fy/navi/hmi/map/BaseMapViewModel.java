@@ -46,6 +46,7 @@ import com.fy.navi.service.AutoMapConstant.PoiType;
 import com.fy.navi.service.adapter.navistatus.NavistatusAdapter;
 import com.fy.navi.service.define.aos.RestrictedArea;
 import com.fy.navi.service.define.aos.RestrictedAreaDetail;
+import com.fy.navi.service.define.cruise.CruiseInfoEntity;
 import com.fy.navi.service.define.map.IBaseScreenMapView;
 import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.message.MessageCenterInfo;
@@ -109,6 +110,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
     public ObservableField<Boolean> tmcModeVisibility;
     public ObservableField<String> limitDriverTitle;
     public ObservableField<Boolean> cruiseVisibility;
+    public ObservableField<Boolean> cruiseLanesVisibility;
     public ObservableField<Boolean> muteVisibility;
     public ObservableField<Boolean> mPopGuideLoginShow;
 
@@ -143,6 +145,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         messageLineHeightVisibility = new ObservableBoolean(false);
         messageCloseVisibility = new ObservableBoolean(false);
         mPopGuideLoginShow = new ObservableField<>(false);
+        cruiseLanesVisibility = new ObservableField<>(false);
     }
 
     @Override
@@ -384,7 +387,11 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
     public void setMapCenterInScreen(int frameLayoutWidth) {
         Logger.i(TAG, "setMapCenterInScreen");
         mModel.setMapCenterInScreen(frameLayoutWidth);
-        mScaleViewVisibility.set(false);
+        final String state = NavistatusAdapter.getInstance().getCurrentNaviStatus();
+        // 如果是导航页面的话比例尺继续正常显示，算路界面正常显示比例尺
+        mScaleViewVisibility.set(NaviStatus.NaviStatusType.SELECT_ROUTE.equals(state)
+                || NaviStatus.NaviStatusType.ROUTING.equals(state) ||
+                NaviStatus.NaviStatusType.NAVING.equals(state));
         mainBTNVisibility.set(false);
         bottomNaviVisibility.set(false);
         backToParkingVisibility.set(false);
@@ -401,7 +408,8 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         final String state = NavistatusAdapter.getInstance().getCurrentNaviStatus();
         // 如果是导航页面的话比例尺继续正常显示，算路界面正常显示比例尺
         mScaleViewVisibility.set(type != -1 || NaviStatus.NaviStatusType.SELECT_ROUTE.equals(state)
-                || NaviStatus.NaviStatusType.ROUTING.equals(state));
+                || NaviStatus.NaviStatusType.ROUTING.equals(state) ||
+                NaviStatus.NaviStatusType.NAVING.equals(state));
         mainBTNVisibility.set(false);
         bottomNaviVisibility.set(false);
         backToParkingVisibility.set(false);
@@ -418,6 +426,10 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
             mPopGuideLoginShow.set(true);
         }
         initTimer();
+    }
+
+    public void showParkingView(){
+        mModel.showParkingView();
     }
 
     private void checkHomeOfficeShow() {
@@ -799,11 +811,20 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
     // 更新巡航态下的车道信息
     public void updateCruiseLanInfo(boolean isShowLane, LaneInfoEntity laneInfoEntity) {
         mView.updateCruiseLanInfo(isShowLane, laneInfoEntity);
+        cruiseLanesVisibility.set(cruiseVisibility.get() && !ConvertUtils.isNull(laneInfoEntity) && !ConvertUtils.isEmpty(laneInfoEntity.getBackLane()));
     }
 
     public void showOrHiddenCruise(boolean isShow) {
         cruiseVisibility.set(isShow);
         bottomNaviVisibility.set(!isShow && mainBTNVisibility.get());
+    }
+
+    /***
+     * 判断巡航UI是否正在显示
+     * @return
+     */
+    public boolean isCruiseUiVisible() {
+        return cruiseVisibility.get();
     }
 
     public void setCruiseMuteOrUnMute(boolean isOpen) {
@@ -835,7 +856,9 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
     }
 
     public void openCollectFragment() {
-        addFragment(new SettingFragment(), null);
+        final Bundle bundle = new Bundle();
+        bundle.putInt(AutoMapConstant.CommonBundleKey.BUNDLE_KEY_SETTING_TAB, 3);
+        addFragment(new SettingFragment(), bundle);
     }
 
     /**
@@ -902,4 +925,8 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
                     .showCustomToastView(ResourceUtils.Companion.getInstance().getString(R.string.guide_login_close_toast));
         }
     };
+
+    public void updateCruiseRoadName(CruiseInfoEntity cruiseInfoEntity) {
+        mView.updateCruiseRoadName(cruiseInfoEntity);
+    }
 }

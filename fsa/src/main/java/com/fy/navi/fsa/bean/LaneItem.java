@@ -2,9 +2,24 @@ package com.fy.navi.fsa.bean;
 
 import java.util.ArrayList;
 
+/**
+ * 车道线信息
+ */
 public class LaneItem {
+    /**
+     * 车道线类型信息
+     */
     private LaneTypeInfo laneTypeInfo;
+    /**
+     * 车道线数量变化类型
+     * 0 – 无变化
+     * 1 – 增加
+     * 2 – 减少
+     */
     private int laneVariationType;
+    /**
+     * 车道线方向信息
+     */
     private ArrayList<LaneDirection> directionList;
 
     public LaneTypeInfo getLaneTypeInfo() {

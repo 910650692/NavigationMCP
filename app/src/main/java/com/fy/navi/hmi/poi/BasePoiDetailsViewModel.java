@@ -57,4 +57,8 @@ public class BasePoiDetailsViewModel extends BaseViewModel<PoiDetailsFragment, P
         return mModel.powerType();
     }
 
+    public boolean calcDistanceBetweenPoints(){
+        return mModel.calcStraightDistance();
+    }
+
 }

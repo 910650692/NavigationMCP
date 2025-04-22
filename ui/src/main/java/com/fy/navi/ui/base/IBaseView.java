@@ -124,4 +124,12 @@ public interface IBaseView {
      * 显示当前被hide的fragment
      */
     void showCurrentFragment();
+
+    /**
+     * Activity 必须实现
+     * 显示自车位view
+     */
+    default void showParkingView(){
+
+    };
 }

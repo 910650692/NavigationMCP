@@ -26,12 +26,7 @@ public class LayerLabelStyleAdapter extends BaseStyleAdapter {
         Logger.d(TAG, "provideLayerItemStyleJson BusinessType" + item.getBusinessType());
         switch (item.getBusinessType()) {
             case BizLabelType.BizLabelTypeRoutePopSearchPoint -> {
-                Logger.d(TAG,"终点停车场图层");
-                if (item instanceof PopPointLayerItem) {
-                    PopPointLayerItem popPointLayerItem = (PopPointLayerItem) item;
-                    String mText = popPointLayerItem.getMText();
-                    Logger.d(TAG, "provideLayerItemStyleJson mText " + mText);
-                }
+                Logger.d(TAG,"终点停车场图层使用自定义扎标");
                 return KEY_LABEL_END_PARK;
             }
         }

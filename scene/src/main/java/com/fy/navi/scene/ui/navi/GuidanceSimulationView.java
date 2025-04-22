@@ -20,8 +20,8 @@ public class GuidanceSimulationView extends SkinRelativeLayout implements View.O
     /**
      * 模拟导航速度
      */
-    private int mCurrentSeed = SIM_NAVI_SPEED[3];
-    protected static final int[] SIM_NAVI_SPEED = {40, 80, 120, 180, 200, 300};
+    private int mCurrentSeed = SIM_NAVI_SPEED[1];
+    protected static final int[] SIM_NAVI_SPEED = {10, 40, 80, 120, 200, 400, 800, 1600};
 
     public GuidanceSimulationView(Context context) {
         super(context);
@@ -45,6 +45,7 @@ public class GuidanceSimulationView extends SkinRelativeLayout implements View.O
         mBinding = NavGuidanceSimulationViewBinding.bind(view);
         mBinding.switchSimNavi.setOnClickListener(this);
         mBinding.switchSimSpeed.setOnClickListener(this);
+        mBinding.simSpeedReduce.setOnClickListener(this);
     }
 
     /**
@@ -65,6 +66,9 @@ public class GuidanceSimulationView extends SkinRelativeLayout implements View.O
         } else if (v.getId() == R.id.switch_sim_speed) {
             String str = setSimulateCarSpeed();
             mBinding.switchSimSpeed.setText(str);
+        } else if (v.getId() == R.id.sim_speed_reduce) {
+            String str = reduceSimulateSpeed();
+            mBinding.switchSimSpeed.setText(str);
         }
     }
 
@@ -75,6 +79,21 @@ public class GuidanceSimulationView extends SkinRelativeLayout implements View.O
                     mCurrentSeed = SIM_NAVI_SPEED[0];
                 } else {
                     mCurrentSeed = SIM_NAVI_SPEED[i + 1];
+                }
+                break;
+            }
+        }
+        NaviPackage.getInstance().setSimulationSpeed(mCurrentSeed);
+        return mCurrentSeed + "km/h";
+    }
+
+    public String reduceSimulateSpeed() {
+        for (int i = 0; i < SIM_NAVI_SPEED.length; i++) {
+            if (mCurrentSeed == SIM_NAVI_SPEED[i]) {
+                if (i == 0) {
+                    mCurrentSeed = SIM_NAVI_SPEED[SIM_NAVI_SPEED.length - 1];
+                } else {
+                    mCurrentSeed = SIM_NAVI_SPEED[i - 1];
                 }
                 break;
             }

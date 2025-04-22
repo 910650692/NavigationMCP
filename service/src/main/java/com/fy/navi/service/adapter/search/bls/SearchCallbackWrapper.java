@@ -18,11 +18,11 @@ public class SearchCallbackWrapper<T> implements IBLSearchCallback<T> {
     }
 
     @Override
-    public void onSuccess(final T data) {
+    public void onSuccess(final int taskId, final T data) {
         if (mBllSearchCallback == null) {
             return;
         }
-        mBllSearchCallback.onSuccess(data);
+        mBllSearchCallback.onSuccess(taskId, data);
     }
 
     @Override

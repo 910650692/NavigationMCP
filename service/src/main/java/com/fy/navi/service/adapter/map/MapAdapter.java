@@ -10,6 +10,7 @@ import com.fy.navi.service.define.map.MapMode;
 import com.fy.navi.service.define.map.MapStateStyle;
 import com.fy.navi.service.define.map.MapViewParams;
 import com.fy.navi.service.define.map.MapType;
+import com.fy.navi.service.define.mfc.MfcController;
 
 import java.util.ArrayList;
 
@@ -83,6 +84,10 @@ public class MapAdapter {
         mIMapApi.setMapCenter(mapTypeId, geoPoint);
     }
 
+    public GeoPoint getMapCenter(MapType mapTypeId) {
+       return mIMapApi.getMapCenter(mapTypeId);
+    }
+
     public boolean setTrafficStates(MapType mapTypeId, boolean isOpen) {
         return mIMapApi.setTrafficStates(mapTypeId, isOpen);
     }
@@ -135,6 +140,10 @@ public class MapAdapter {
 
     public void goToCarPosition(MapType mapTypeId, boolean bAnimation, boolean changeLevel) {
         mIMapApi.goToCarPosition(mapTypeId, bAnimation, changeLevel);
+    }
+
+    public void mfcMoveMap(MapType mapTypeId, MfcController mfcController, int moveDistance) {
+        mIMapApi.mfcMoveMap(mapTypeId,mfcController, moveDistance);
     }
 
     public GeoPoint mapToLonLat(MapType mapTypeId, double mapX, double mapY) {

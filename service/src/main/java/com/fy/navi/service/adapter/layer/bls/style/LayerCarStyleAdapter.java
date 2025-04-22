@@ -88,7 +88,7 @@ public class LayerCarStyleAdapter extends BaseStyleAdapter {
             return new IUpdateBitmapViewProcessor<LayerItemCarSpeedData>() {
                 @Override
                 public void onNormalProcess(View rootView, LayerItemCarSpeedData data) {
-                    Logger.d(TAG, "更新车速");
+                    Logger.d(TAG, "更新车速"+data.getSpeed());
                     if (rootView != null) {
                         TextView layerCarSpeed = rootView.findViewById(R.id.layer_car_speed);
                         layerCarSpeed.setText(String.valueOf(data.getSpeed()));

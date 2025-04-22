@@ -69,6 +69,9 @@ public class FilterChildListAdapter extends RecyclerView.Adapter<FilterChildList
         if (mSearchCategoryLocalInfos == null) {
             return 0;
         }
+        if(mSearchCategoryLocalInfos.isEmpty()){
+            return 0;
+        }
         if (mIsCollapse) {
             return Math.min(mSearchCategoryLocalInfos.size(), 6);
         }

@@ -70,6 +70,14 @@ public class SearchMapDataViewModel extends BaseViewModel<SearchMapDataFragment,
     }
 
     /**
+     * 删除数据包
+     * @param adCodeList
+     */
+    public void deleteAllTask(final ArrayList<Integer> adCodeList) {
+        mModel.deleteAllTask(adCodeList);
+    }
+
+    /**
      * 取消下载
      * @param adCodeList
      */

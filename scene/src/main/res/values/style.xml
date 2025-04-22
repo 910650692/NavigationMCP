@@ -48,4 +48,11 @@
     <declare-styleable name="MaxHeightScrollView">
         <attr name="maxHeight" format="dimension" />
     </declare-styleable>
+
+    <declare-styleable name="DrawableCenterRadioButton">
+        <attr name="drawableWidth" format="dimension"/>
+        <attr name="drawableHeight" format="dimension"/>
+        <attr name="normalTextColor" format="color|reference" />
+        <attr name="selectedTextColor" format="color|reference" />
+    </declare-styleable>
 </resources>

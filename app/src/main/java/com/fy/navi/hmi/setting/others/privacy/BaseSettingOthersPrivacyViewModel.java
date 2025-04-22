@@ -9,10 +9,14 @@ import com.fy.navi.burypoint.anno.HookMethod;
 import com.fy.navi.burypoint.bean.BuryProperty;
 import com.fy.navi.burypoint.constant.BuryConstant;
 import com.fy.navi.burypoint.controller.BuryPointController;
+import com.fy.navi.service.define.navistatus.NaviStatus;
 import com.fy.navi.service.define.setting.SettingController;
+import com.fy.navi.service.logicpaket.navistatus.NaviStatusPackage;
 import com.fy.navi.service.logicpaket.setting.SettingUpdateObservable;
 import com.fy.navi.ui.action.Action;
 import com.fy.navi.ui.base.BaseViewModel;
+
+import java.util.Objects;
 
 public class BaseSettingOthersPrivacyViewModel extends BaseViewModel<SettingOthersPrivacyFragment, SettingOthersPrivacyModel> {
 
@@ -77,6 +81,10 @@ public class BaseSettingOthersPrivacyViewModel extends BaseViewModel<SettingOthe
         mModel.setEndDate("");
         SettingUpdateObservable.getInstance().notifySettingChanged(SettingController.KEY_SETTING_PRIVACY_STATUS, false);
         sendBuryPointForSetPrivacyTime(BuryConstant.Number.SECOND);
+        //非导航状态直接退出应用，导航状态则等导航结束再退出
+        if (!Objects.equals(NaviStatusPackage.getInstance().getCurrentNaviStatus(), NaviStatus.NaviStatusType.NAVING)) {
+            System.exit(0);
+        }
     };
 
     @HookMethod(eventName = BuryConstant.EventName.AMAP_PRIVACY_SET)

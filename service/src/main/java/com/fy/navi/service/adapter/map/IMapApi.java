@@ -7,6 +7,7 @@ import com.fy.navi.service.define.map.MapMode;
 import com.fy.navi.service.define.map.MapStateStyle;
 import com.fy.navi.service.define.map.MapViewParams;
 import com.fy.navi.service.define.map.MapType;
+import com.fy.navi.service.define.mfc.MfcController;
 
 import java.util.ArrayList;
 
@@ -84,6 +85,9 @@ public interface IMapApi {
     /*** 设置地图中线点 **/
     void setMapCenter(MapType mapTypeId, GeoPoint coord3DDoubleBean);
 
+    /*** 获取地图中线点 **/
+    GeoPoint getMapCenter(MapType mapTypeId);
+
     boolean setTrafficStates(MapType mapTypeId, boolean isOpen);
 
     // 地图POI分类控制显隐
@@ -100,6 +104,9 @@ public interface IMapApi {
     void setMapStateStyle(MapType mapTypeId, MapStateStyle mapStateStyle);
 
     void goToCarPosition(MapType mapTypeId, boolean bAnimation, boolean changeLevel);
+
+    /* mfc移动地图*/
+    void mfcMoveMap(MapType mapTypeId, MfcController mfcController, int moveDistance);
 
     GeoPoint mapToLonLat(MapType mapTypeId, double mapX, double mapY);
 

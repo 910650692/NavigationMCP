@@ -10,12 +10,12 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.android.utils.ConvertUtils;
+import com.android.utils.NetWorkUtils;
 import com.android.utils.ResourceUtils;
 import com.android.utils.log.Logger;
 import com.fy.navi.scene.R;
 import com.fy.navi.scene.api.route.ISceneRoutePreferenceCallBack;
 import com.fy.navi.scene.databinding.SceneNaviPreferenceViewBinding;
-import com.fy.navi.scene.impl.navi.inter.ISceneCallback;
 import com.fy.navi.scene.impl.preference.SceneRoutePreferenceImpl;
 import com.fy.navi.scene.ui.navi.manager.NaviSceneBase;
 import com.fy.navi.scene.ui.navi.manager.NaviSceneId;
@@ -64,7 +64,7 @@ public class SceneNaviPreferenceView extends NaviSceneBase
     @Override
     protected SceneRoutePreferenceImpl initSceneImpl() {
         mSceneRoutePreferenceCallBackMap = new Hashtable<>();
-        return new SceneRoutePreferenceImpl(this);
+        return new SceneRoutePreferenceImpl(TAG, this);
     }
 
     /**
@@ -80,6 +80,10 @@ public class SceneNaviPreferenceView extends NaviSceneBase
     @Override
     protected void setInitVariableId() {
         mViewBinding.setScene(mScreenViewModel);
+        boolean isNetAvailable = Boolean.TRUE.equals(NetWorkUtils.Companion.getInstance().
+                checkNetwork());
+        Logger.i(TAG, "setInitVariable isNetAvailable = " + isNetAvailable);
+        disAbleButton(isNetAvailable);
     }
 
     @Override
@@ -155,6 +159,9 @@ public class SceneNaviPreferenceView extends NaviSceneBase
         String firstCommendText = "";
         // 第二个选择的路线偏好
         String secondCommendText = "";
+        if (mScreenViewModel == null) {
+            return;
+        }
         boolean isReCommendSelect = mScreenViewModel.isISRECOMMENDSELECT();
         if (isReCommendSelect) {
             firstCommendText = ResourceUtils.Companion.getInstance().
@@ -232,6 +239,11 @@ public class SceneNaviPreferenceView extends NaviSceneBase
             assert mViewBinding.stvRoutePreferenceSelected != null;
             mViewBinding.stvRoutePreferenceSelected.setText(firstCommendText);
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        mScreenViewModel.unSettingChangeCallback(TAG);
     }
 
     /**

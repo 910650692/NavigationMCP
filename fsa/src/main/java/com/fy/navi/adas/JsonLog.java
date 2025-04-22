@@ -1,5 +1,6 @@
 package com.fy.navi.adas;
 
+import android.annotation.SuppressLint;
 import android.icu.text.SimpleDateFormat;
 import android.util.Log;
 
@@ -13,22 +14,26 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Date;
+import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+/**
+ * JsonLog
+ */
 public final class JsonLog {
+    //本类TAG
     private static final String TAG = "JsonLog";
-
+    //"\n"为换行符
     private static final String LINE_SEPARATOR = System.getProperty("line.separator");
+    //线程池
     private static ExecutorService mExecutorService;
 
-    private JsonLog() {
-
-    }
+    //防止构造方法创建实例
+    private JsonLog() {}
 
     /**
      * 打印线
-     *
      * @param tag   TAG
      * @param isTop 是否打印上边框
      */
@@ -42,7 +47,6 @@ public final class JsonLog {
 
     /**
      * 打印json
-     *
      * @param tag   TAG
      * @param json  json
      */
@@ -78,6 +82,7 @@ public final class JsonLog {
      * @param fileName 文件名
      * @param tag   TAG
      */
+    @SuppressLint("SimpleDateFormat")
     public static void saveJsonToCache(final String json, final String fileName, final String tag) {
         if (mExecutorService == null) {
             mExecutorService = Executors.newSingleThreadExecutor();

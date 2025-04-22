@@ -572,6 +572,20 @@ public class PositionBlsStrategy implements IPosLocInfoObserver, IPosMapMatchFee
                     location.setRoadId(locInfo.roadId);
                     location.setLinkType(locInfo.matchInfo.get(0).linkType);
                     location.setCourse(locInfo.matchInfo.get(0).course);
+                    location.setSegmCur(locInfo.matchInfo.get(0).segmCur);
+                    location.setLinkCur(locInfo.matchInfo.get(0).linkCur);
+                    location.setPostCur(locInfo.matchInfo.get(0).postCur);
+                    location.setMatchRoadCourse(locInfo.matchRoadCourse);
+                    location.setCourseAcc(locInfo.courseAcc);
+                    location.setStartDirType(locInfo.startDirType);
+                    location.setGpsDir(locInfo.gpsDir);
+                    location.setCompassDir(locInfo.compassDir);
+                    location.setFormway(locInfo.matchInfo.get(0).formway);
+                    location.setStartPosType(locInfo.startPosType);
+                    location.setFittingCourse(locInfo.fittingCourse);
+                    location.setRoadDir(locInfo.roadDir);
+                    location.setFittingCourseAcc(locInfo.fittingCourseAcc);
+                    location.setRequestRouteInfo(locInfo.requestRouteInfo);
                 }
             }
         }

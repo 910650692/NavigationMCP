@@ -10,7 +10,7 @@
     </data>
 
     <com.fy.navi.ui.view.SkinConstraintLayout
-        android:layout_width="@dimen/dp_860"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
 
@@ -69,7 +69,7 @@
 
             <com.fy.navi.ui.view.SkinConstraintLayout
                 android:id="@+id/favorite_layout"
-                android:layout_width="@dimen/dp_860"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
                 <!--设置家-->
@@ -101,7 +101,7 @@
 
                     <com.fy.navi.ui.view.SkinTextView
                         android:id="@+id/favorite_home_name"
-                        android:layout_width="wrap_content"
+                        android:layout_width="@dimen/dp_210"
                         android:layout_height="wrap_content"
                         android:layout_below="@+id/favorite_home"
                         android:layout_marginTop="@dimen/dp_2"
@@ -152,7 +152,7 @@
 
                     <com.fy.navi.ui.view.SkinTextView
                         android:id="@+id/favorite_company_name"
-                        android:layout_width="wrap_content"
+                        android:layout_width="@dimen/dp_210"
                         android:layout_height="wrap_content"
                         android:layout_below="@+id/favorite_company"
                         android:layout_marginStart="@dimen/dp_95"
@@ -357,7 +357,7 @@
                         android:gravity="center"
                         android:text="@string/favorite_add"
                         android:textSize="@dimen/sp_30"
-                        android:textColor="@color/white"
+                        android:textColor="@color/setting_white"
                         android:layout_marginTop="@dimen/dp_28"
                         android:background="@drawable/bg_setting_preference_select"/>
                 </com.fy.navi.ui.view.SkinLinearLayout>

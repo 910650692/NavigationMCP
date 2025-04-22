@@ -7,21 +7,16 @@
 
         <import type="android.view.View" />
 
-        <variable
-            name="naviParkList"
-            type="com.fy.navi.scene.api.navi.ISceneNaviParkList" />
     </data>
 
     <com.fy.navi.ui.view.SkinConstraintLayout
         android:id="@+id/scl_park_list"
         android:layout_width="@dimen/dp_640"
         android:clickable="true"
-        android:translationZ="2dp"
         android:layout_height="@dimen/dp_376">
 
         <com.fy.navi.ui.view.SkinImageView
             android:id="@+id/siv_close_park"
-            clickCommand="@{naviParkList.closeParkList}"
             android:layout_width="@dimen/dp_58"
             android:layout_height="@dimen/dp_58"
             android:layout_marginTop="@dimen/dp_26"

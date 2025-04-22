@@ -36,6 +36,7 @@ public class CruisePackage implements CruiseObserver {
     private Hashtable<String, ICruiseObserver> mCruiseObserver;
     private NavistatusAdapter mNavistatusAdapter;
     private SpeechAdapter mSpeechAdapter;
+
     private CruisePackage() {
         mCruiseObserver = new Hashtable<>();
         mCruiseAdapter = CruiseAdapter.getInstance();
@@ -67,17 +68,7 @@ public class CruisePackage implements CruiseObserver {
      * @return
      */
     public boolean startCruise() {
-        boolean result;
-        final boolean isFragmentStackNull = StackManager.getInstance().isFragmentStackNull(MapType.MAIN_SCREEN_MAIN_MAP.name());
-        final boolean isNoStatus = TextUtils.equals(mNavistatusAdapter.getCurrentNaviStatus(), NaviStatus.NaviStatusType.NO_STATUS);
-        final boolean isOnCruise = TextUtils.equals(mNavistatusAdapter.getCurrentNaviStatus(), NaviStatus.NaviStatusType.CRUISE);
-        if (isNoStatus && isFragmentStackNull && !isOnCruise) {
-            result = mCruiseAdapter.startCruise();
-        } else {
-            result = false;
-        }
-        Logger.i(TAG, "startCruise:" + result, "currentStatus:" + mNavistatusAdapter.getCurrentNaviStatus(),
-                "isFragmentStackNull:" + isFragmentStackNull, "isOnCruise:" + isOnCruise);
+        final boolean result = mCruiseAdapter.startCruise();
         if (result) {
             mLayerAdapter.setFollowMode(MapType.MAIN_SCREEN_MAIN_MAP, true);
             mNavistatusAdapter.setNaviStatus(NaviStatus.NaviStatusType.CRUISE);
@@ -111,13 +102,7 @@ public class CruisePackage implements CruiseObserver {
 
     /*结束巡航*/
     public boolean stopCruise() {
-        boolean isSuccess;
-        final boolean isOnCruise = TextUtils.equals(mNavistatusAdapter.getCurrentNaviStatus(), NaviStatus.NaviStatusType.CRUISE);
-        if (isOnCruise) {
-            isSuccess = mCruiseAdapter.stopCruise();
-        } else {
-            isSuccess = false;
-        }
+        boolean isSuccess = mCruiseAdapter.stopCruise();
         if (isSuccess) {
             mSpeechAdapter.stop();
             mLayerAdapter.setFollowMode(MapType.MAIN_SCREEN_MAIN_MAP, false);

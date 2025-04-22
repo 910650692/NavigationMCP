@@ -152,7 +152,7 @@ public abstract class NaviSceneBase<VB extends ViewDataBinding, VM extends BaseS
         if (!ConvertUtils.isNull(mISceneCallback)) {
             mSceneState = SCENE_STATE_CLOSE;
             mISceneCallback.updateSceneVisible(getSceneId(), false);
-            mEvent.notifySceneReset();
+            mEvent.notifySceneReset("close");
         }
     }
 
@@ -162,6 +162,10 @@ public abstract class NaviSceneBase<VB extends ViewDataBinding, VM extends BaseS
 
     public boolean isVisible() {
         return SCENE_STATE_SHOW == mSceneState;
+    }
+
+    public boolean isHidden() {
+        return SCENE_STATE_HIDE == mSceneState;
     }
 
     public void resetCountdown() {

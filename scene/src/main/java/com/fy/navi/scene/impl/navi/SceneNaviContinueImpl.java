@@ -75,8 +75,7 @@ public class SceneNaviContinueImpl extends BaseSceneModel<SceneNaviContinueView>
             initTimer();
             notifySceneStateChange(true);
         } else {
-            naviContinue();
-            notifySceneStateChange(false);
+            judgeIfNeedNaviContinue();
         }
     }
 
@@ -92,21 +91,28 @@ public class SceneNaviContinueImpl extends BaseSceneModel<SceneNaviContinueView>
                 ThreadManager.getInstance().postUi(new Runnable() {
                     @Override
                     public void run() {
-                        // 在非引导页面显示的继续导航按钮需要一直显示，所以在非导航页面倒计时结束后重新开启导航
-                        if (null != mCallBack) {
-                            boolean currentIsNavi = mCallBack.getCurrentFragmentIsNavi();
-                            Logger.i(TAG, "initTimer currentIsNavi：" + currentIsNavi);
-                            if (!currentIsNavi) {
-                                initTimer();
-                            } else {
-                                naviContinue();
-                            }
-                        }
+                        judgeIfNeedNaviContinue();
                     }
                 });
             }
             mTimes--;
         }, NumberUtils.NUM_0, NumberUtils.NUM_1);
+    }
+
+    private void judgeIfNeedNaviContinue() {
+        // 在非引导页面显示的继续导航按钮需要一直显示，所以在非导航页面倒计时结束后重新开启导航
+        if (null != mCallBack) {
+            boolean currentIsNavi = mCallBack.getCurrentFragmentIsNavi();
+            // 如果有需要全览的列表正在显示不直接进入导航态
+            boolean isNeedPreViewShowList = mCallBack.isNeedPreViewShowList();
+            Logger.i(TAG, "initTimer currentIsNavi：" + currentIsNavi +
+                    " isNeedPreViewShowList = " + isNeedPreViewShowList);
+            if (!currentIsNavi || isNeedPreViewShowList) {
+                initTimer();
+            } else {
+                naviContinue();
+            }
+        }
     }
 
     /**

@@ -46,4 +46,12 @@ public class BaseStyleAdapter extends PrepareLayerParamInner {
     public boolean isNeedReCreate(LayerItem item) {
         return false;
     }
+
+    public boolean isNeedRefreshJsonValue(LayerItem item) {
+        return false;
+    }
+
+    public String provideUpdateStyleJson(LayerItem item, String oldJson) {
+        return oldJson;
+    }
 }

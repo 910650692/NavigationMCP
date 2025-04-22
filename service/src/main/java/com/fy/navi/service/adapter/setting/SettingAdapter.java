@@ -1,7 +1,6 @@
 package com.fy.navi.service.adapter.setting;
 
 
-
 import com.fy.navi.service.AdapterConfig;
 import com.fy.navi.service.define.route.RoutePreferenceID;
 import com.fy.navi.service.define.setting.SettingController;
@@ -146,7 +145,23 @@ public final class SettingAdapter {
      * @return 0:成功 其他：失败
      */
     public int setConfigKeyBroadcastMode(final int broadcastMode) {
-        return mSettingApi.setConfigKeyBroadcastMode(broadcastMode);
+        final int code = mSettingApi.setConfigKeyBroadcastMode(broadcastMode);
+        if (code == 0) {
+            switch (broadcastMode) {
+                case 1:
+                    mSettingManager.insertOrReplace(SettingController.KEY_SETTING_NAVI_BROADCAST, SettingController.VALUE_NAVI_BROADCAST_CONCISE);
+                    break;
+                case 2:
+                    mSettingManager.insertOrReplace(SettingController.KEY_SETTING_NAVI_BROADCAST, SettingController.VALUE_NAVI_BROADCAST_DETAIL);
+                    break;
+                case 3:
+                    mSettingManager.insertOrReplace(SettingController.KEY_SETTING_NAVI_BROADCAST, SettingController.VALUE_NAVI_BROADCAST_SIMPLE);
+                    break;
+                default:
+                    break;
+            }
+        }
+        return code;
     }
 
     /**
@@ -247,7 +262,11 @@ public final class SettingAdapter {
      * @return 返回错误码
      */
     public int setConfigKeyRoadEvent(final boolean roadEvent) {
-        return mSettingApi.setConfigKeyRoadEvent(roadEvent);
+        final int code = mSettingApi.setConfigKeyRoadEvent(roadEvent);
+        if (code == 0) {
+            mSettingManager.insertOrReplace(SettingController.KEY_SETTING_ROAD_CONDITION, String.valueOf(roadEvent));
+        }
+        return code;
     }
 
     /**
@@ -289,7 +308,20 @@ public final class SettingAdapter {
      * @return 返回错误码
      */
     public int setConfigKeyMute(final int mute) {
-        return mSettingApi.setConfigKeyMute(mute);
+        final int code = mSettingApi.setConfigKeyMute(mute);
+        if (code == 0) {
+            switch (mute) {
+                case 0:
+                    mSettingManager.insertOrReplace(SettingController.KEY_SETTING_VOICE_MUTE, SettingController.VALUE_VOICE_MUTE_ON);
+                    break;
+                case 1:
+                    mSettingManager.insertOrReplace(SettingController.KEY_SETTING_VOICE_MUTE, SettingController.VALUE_VOICE_MUTE_OFF);
+                    break;
+                default:
+                    break;
+            }
+        }
+        return code;
     }
 
     /**

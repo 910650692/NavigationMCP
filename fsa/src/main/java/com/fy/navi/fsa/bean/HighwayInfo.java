@@ -1,17 +1,56 @@
 package com.fy.navi.fsa.bean;
 
+/**
+ * 高速路信息
+ */
 public class HighwayInfo {
+    /**
+     * 当前高速路名
+     */
     private String curHighwayRoadName;
+    /**
+     * 高速出口唯一标识
+     */
     private String exitHighwayID;
+    /**
+     * 高速出口方向名称
+     */
     private String exitHighwayDirectName;
+    /**
+     * 出口剩余距离
+     */
     private int exitRemainDist;
+    /**
+     * 高速出口下一个道路名称
+     */
     private String exitHighwayNextRoadName;
+    /**
+     * 距离下一个诱导点的剩余距离
+     */
     private int nextGPRemainDist;
+    /**
+     * 最近的高速收费口名称
+     */
     private String tollGateName;
+    /**
+     * 最近的高速收费口的剩余距离
+     */
     private int tollGateRemainDist;
+    /**
+     * 最近的服务区名称
+     */
     private String serviceAreaName;
+    /**
+     * 最近的服务区的剩余距离
+     */
     private int serviceAreaRemainDist;
+    /**
+     * 下一个服务区名称
+     */
     private String nextServiceAreaName;
+    /**
+     * 下一个最近服务区的剩余距离
+     */
     private int nextServiceAreaRemainDist;
 
     public String getCurHighwayRoadName() {

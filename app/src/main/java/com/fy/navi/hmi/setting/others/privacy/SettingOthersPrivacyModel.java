@@ -1,7 +1,12 @@
 package com.fy.navi.hmi.setting.others.privacy;
 
 
+import android.text.TextUtils;
+
+import com.fy.navi.service.define.navistatus.NaviStatus;
 import com.fy.navi.service.define.setting.SettingController;
+import com.fy.navi.service.logicpaket.navistatus.NaviStatusCallback;
+import com.fy.navi.service.logicpaket.navistatus.NaviStatusPackage;
 import com.fy.navi.service.logicpaket.setting.SettingCallback;
 import com.fy.navi.service.logicpaket.setting.SettingPackage;
 import com.fy.navi.ui.base.BaseModel;
@@ -9,7 +14,7 @@ import com.fy.navi.ui.base.BaseModel;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
-public class SettingOthersPrivacyModel extends BaseModel<SettingOthersPrivacyViewModel> implements SettingCallback{
+public class SettingOthersPrivacyModel extends BaseModel<SettingOthersPrivacyViewModel> implements SettingCallback, NaviStatusCallback {
 
     private final SettingPackage mSettingPackage;
 
@@ -21,6 +26,7 @@ public class SettingOthersPrivacyModel extends BaseModel<SettingOthersPrivacyVie
     public void onCreate() {
         super.onCreate();
         mSettingPackage.registerCallBack("SettingOthersPrivacyModel",this);
+        NaviStatusPackage.getInstance().registerObserver("SettingOthersPrivacyModel", this);
     }
 
     /**
@@ -90,5 +96,12 @@ public class SettingOthersPrivacyModel extends BaseModel<SettingOthersPrivacyVie
     @Override
     public void notify(final int eventType, final int exCode) {
 
+    }
+
+    @Override
+    public void onNaviStatusChange(final String naviStatus) {
+        if (!mSettingPackage.getPrivacyStatus() && TextUtils.equals(naviStatus, NaviStatus.NaviStatusType.NO_STATUS)) {
+            System.exit(0);
+        }
     }
 }

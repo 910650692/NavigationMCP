@@ -1,6 +1,5 @@
 package com.fy.navi.service.adapter.engine;
 
-import androidx.work.ListenableWorker;
 
 import com.fy.navi.service.AdapterConfig;
 import com.fy.navi.service.define.engine.GaodeLogLevel;
@@ -29,11 +28,18 @@ public final class EngineAdapter {
     }
 
     /**
-     * 初始化引擎
-     * @return Result
+     * 添加激活观察者
+     * @param observer ActivateObserver
      */
-    public ListenableWorker.Result initEngine() {
-        return mIEngineApi.initEngine();
+    public void addActivateObserver(final ActivateObserver observer){
+        mIEngineApi.addActivateObserver(observer);
+    }
+
+    /**
+     * 初始化引擎
+     */
+    public void initEngine() {
+        mIEngineApi.initEngine();
     }
 
     /**
@@ -70,6 +76,22 @@ public final class EngineAdapter {
 
     public static EngineAdapter getInstance() {
         return Helper.EA;
+    }
+
+    /**
+     * 重试网络激活
+     */
+    public void netActivateRetry() {
+        mIEngineApi.netActivateRetry();
+    }
+
+    /**
+     * 手动激活
+     * @param loginCode 激活码
+     * @param userCode 序列号
+     */
+    public void manualActivate(final String userCode, final String loginCode) {
+        mIEngineApi.manualActivate(userCode, loginCode);
     }
 
     /**

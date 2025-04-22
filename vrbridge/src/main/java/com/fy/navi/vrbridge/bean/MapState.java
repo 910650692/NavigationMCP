@@ -43,7 +43,7 @@ public final class MapState {
     private boolean mIsFront; //是否是最上层app，boolean值 - true:是 - false:否（默认）
     private boolean mIsGPSNavi; //是否在导航中，boolean值 - true:是 - false:否（默认）
     private boolean mIsCruiseNavi; //是否在巡航中，boolean值 - true:是 - false:否（默认）
-    private int mCurrMapMode; //地图视角，0:车头向上 - 1:正北向上 - 2:3D车头向上 - -1（默认）
+    private int mCurrMapMode; //地图视角，0:车头向上 -- 1:正北向上 -- 2:3D车头向上 - -1（默认）
     private boolean mIsMute; //播报是否静音，-true:是  -false:否（默认）
     private int mBroadcastMode; //- 0:标准/详细 - 1:简洁 - 2:静音 - 3:提示音 - 4:不播报模式 - 5:极简 - -1（默认）
     private boolean mIsRoutePage; //是否处于规划路线状态，boolean值 - true:是 - false:否（默认）

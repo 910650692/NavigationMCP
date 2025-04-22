@@ -64,7 +64,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/setting_others_privacy_location_description"
-            android:textColor="@color/setting_text_gray"
+            android:textColor="@color/setting_bg_tab_text_unselect"
             android:textSize="@dimen/sp_38"
             android:layout_marginTop="@dimen/dp_22"
             app:layout_constraintStart_toStartOf="@+id/setting_others_privacy_location"
@@ -132,7 +132,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/setting_others_privacy_end_date"
-                android:textColor="@color/setting_text_gray"
+                android:textColor="@color/setting_bg_tab_text_unselect"
                 android:textSize="@dimen/sp_38"
                 android:layout_marginTop="@dimen/dp_22" />
 
@@ -141,7 +141,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@{viewModel.mEndDate}"
-                android:textColor="@color/setting_text_gray"
+                android:textColor="@color/setting_bg_tab_text_unselect"
                 android:textSize="@dimen/sp_38"
                 android:layout_marginTop="@dimen/dp_22" />
         </com.fy.navi.ui.view.SkinLinearLayout>

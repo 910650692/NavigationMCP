@@ -8,6 +8,8 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.android.utils.ConvertUtils;
 import com.android.utils.ResourceUtils;
+import com.android.utils.gson.GsonUtils;
+import com.android.utils.log.Logger;
 import com.fy.navi.scene.R;
 import com.fy.navi.scene.adapter.GasStationAdapter;
 import com.fy.navi.scene.databinding.RouteSearchChargeRefreshListItemBinding;
@@ -117,23 +119,26 @@ public class RouteSearchChargeRefreshAdapter extends RecyclerView.Adapter<RouteS
             holder.mRouteSearchChargeRefreshListItemBinding.scenePoiItemGasView.getRoot().setVisibility(View.GONE);
             holder.mRouteSearchChargeRefreshListItemBinding.routeItemChargeLayout.setVisibility(View.VISIBLE);
             final ChargeInfo chargeInfo = mRouteBeanList.get(position).getChargeInfoList().get(0);
-            final String fastFree = chargeInfo.getFast_free() == 0 ? "--" : chargeInfo.getFast_free() + "";
-            final String fastTotal = chargeInfo.getFast_total() == 0 ? "" : "/" + chargeInfo.getFast_total();
+
+            final String fastFree = chargeInfo.getFast_free() == 0 ? "" : chargeInfo.getFast_free() + "/";
+            final String fastTotal = chargeInfo.getFast_total() == 0 ? "" : "" + chargeInfo.getFast_total();
             holder.mRouteSearchChargeRefreshListItemBinding.routeItemChargeFastNumOne.setText(fastFree);
-            if (!ConvertUtils.isEmpty(fastTotal)) {
-                holder.mRouteSearchChargeRefreshListItemBinding.routeItemChargeFastNumTwo.setText(fastTotal);
-            } else {
-                holder.mRouteSearchChargeRefreshListItemBinding.routeItemChargeFastNumTwo.setVisibility(View.GONE);
+            holder.mRouteSearchChargeRefreshListItemBinding.routeItemChargeFastNumTwo.setText(fastTotal);
+            if (ConvertUtils.isEmpty(fastFree) && ConvertUtils.isEmpty(fastTotal)) {
+                holder.mRouteSearchChargeRefreshListItemBinding.routeItemChargeFastRoot.setVisibility(View.GONE);
+            } else if (ConvertUtils.isEmpty(fastFree)) {
+                holder.mRouteSearchChargeRefreshListItemBinding.routeItemChargeFastNumOne.setVisibility(View.GONE);
             }
 
-            final String slowFree = chargeInfo.getSlow_free() == 0 ? "--" : chargeInfo.getSlow_free() + "";
-            final String slowTotal = chargeInfo.getSlow_total() == 0 ? "" : "/" + chargeInfo.getSlow_total();
+            final String slowFree = chargeInfo.getSlow_free() == 0 ? "" : chargeInfo.getSlow_free() + "/";
+            final String slowTotal = chargeInfo.getSlow_total() == 0 ? "" : "" + chargeInfo.getSlow_total();
             holder.mRouteSearchChargeRefreshListItemBinding.routeItemChargeLowNumOne.setText(slowFree);
-            if (!ConvertUtils.isEmpty(slowTotal)) {
-                holder.mRouteSearchChargeRefreshListItemBinding.routeItemChargeLowNumTwo.setText(fastTotal);
-            } else {
-                holder.mRouteSearchChargeRefreshListItemBinding.routeItemChargeLowNumTwo.setVisibility(View.GONE);
+            if (ConvertUtils.isEmpty(slowFree) && ConvertUtils.isEmpty(slowTotal)) {
+                holder.mRouteSearchChargeRefreshListItemBinding.routeItemChargeLowRoot.setVisibility(View.GONE);
+            } else if (ConvertUtils.isEmpty(slowFree)) {
+                holder.mRouteSearchChargeRefreshListItemBinding.routeItemChargeLowNumOne.setVisibility(View.GONE);
             }
+
             if (!ConvertUtils.isEmpty(mRouteBeanList.get(position).getChargeInfoList().get(0).getCurrentElePrice())) {
                 holder.mRouteSearchChargeRefreshListItemBinding.routeItemChargePriceName.setVisibility(View.VISIBLE);
                 holder.mRouteSearchChargeRefreshListItemBinding.routeItemChargePriceNum.setVisibility(View.VISIBLE);

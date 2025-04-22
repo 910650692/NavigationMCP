@@ -43,8 +43,10 @@ import com.fy.navi.service.greendao.CommonManager;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.LinkedHashSet;
+import java.util.Map;
 import java.util.Set;
 
 public class MapDataObserversHelper implements IDataInitObserver, IDownloadObserver, IMergedStatusInfoObserver,
@@ -200,6 +202,10 @@ public class MapDataObserversHelper implements IDataInitObserver, IDownloadObser
         if (mMapDataService != null) {
             // 基础功能包adcode（值固定为0） 目前国家类型行政编码，仅为一个元素，值固定为0
             final Area cityArea = mMapDataService.getArea(DownLoadMode.DOWNLOAD_MODE_NET, 0);
+            if (cityArea == null) {
+                Logger.e(TAG, "cityArea is null");
+                return null;
+            }
             return getCityInfo(cityArea.adcode);
         } else {
             return null;
@@ -221,7 +227,9 @@ public class MapDataObserversHelper implements IDataInitObserver, IDownloadObser
                 for (int i = 0; i < adCodeDirectList.size(); i++) {
                     final Integer cityAdcode = adCodeDirectList.get(i);
                     final Area cityArea = mMapDataService.getArea(DownLoadMode.DOWNLOAD_MODE_NET, cityAdcode);
-                    directCityList.add(getCityInfo(cityArea.adcode));
+                    if (cityArea != null) {
+                        directCityList.add(getCityInfo(cityArea.adcode));
+                    }
                 }
                 provDataInfo.setName("直辖市");
                 provDataInfo.setAreaType(2);
@@ -251,7 +259,9 @@ public class MapDataObserversHelper implements IDataInitObserver, IDownloadObser
                 for (int i = 0; i < adCodeSpecialLst.size(); i++) {
                     final Integer cityAdcode = adCodeSpecialLst.get(i);
                     final Area cityArea = mMapDataService.getArea(DownLoadMode.DOWNLOAD_MODE_NET, cityAdcode);
-                    directCityList.add(getCityInfo(cityArea.adcode));
+                    if (cityArea != null) {
+                        directCityList.add(getCityInfo(cityArea.adcode));
+                    }
                 }
                 provDataInfo.setName("特别行政区");
                 provDataInfo.setAreaType(4);
@@ -501,13 +511,17 @@ public class MapDataObserversHelper implements IDataInitObserver, IDownloadObser
         ArrayList<CityDataInfo> cityInfoList = new ArrayList<>();
         ArrayList<CityDataInfo> cityInfoList1 = new ArrayList<>();
         ArrayList<CityDataInfo> cityInfoList2 = new ArrayList<>();
-        ArrayList<CityDataInfo> cityInfoList3 = new ArrayList<>();
+        Map<Integer, ArrayList<CityDataInfo>> provinceMap = new HashMap<>();
 
         Set<String> seen = new LinkedHashSet<>(); // 使用LinkedHashSet保持顺序
         if (null != downLoadAdcodeList && !downLoadAdcodeList.isEmpty()) {
             for (int i = 0; i < downLoadAdcodeList.size(); i++) {
                 final  Integer cityAdCode = downLoadAdcodeList.get(i);
                 final Area area = mMapDataService.getArea(DownLoadMode.DOWNLOAD_MODE_NET, cityAdCode);
+                if (area == null) {
+                    Logger.e(TAG, "area is null");
+                    continue;
+                }
                 ProvDataInfo provDataInfo = new ProvDataInfo();
                 if (area.areaType == 0) { // 基础包
                     provDataInfo.setName("基础功能包");
@@ -549,8 +563,13 @@ public class MapDataObserversHelper implements IDataInitObserver, IDownloadObser
                     provDataInfo.setPinYin(info.provPinyin);
                     provDataInfo.setExpanded(true);
                     CityDataInfo cityDataInfo = getCityInfo(area.adcode);
-                    cityInfoList3.add(cityDataInfo);
-                    provDataInfo.setCityInfoList(cityInfoList3);
+                    ArrayList<CityDataInfo> cityDataInfoList = provinceMap.get(provDataInfo.getAdcode());
+                    if (cityDataInfoList == null) {
+                        cityDataInfoList = new ArrayList<>();
+                    }
+                    cityDataInfoList.add(cityDataInfo);
+                    provinceMap.put(provDataInfo.getAdcode(), cityDataInfoList);
+                    provDataInfo.setCityInfoList(cityDataInfoList);
                 }
 
                 if (seen.add(provDataInfo.getName())) { // 如果set中没有该元素，add返回true
@@ -587,7 +606,7 @@ public class MapDataObserversHelper implements IDataInitObserver, IDownloadObser
             for (int i = 0; i < downLoadAdcodeList.size(); i++) {
                 final Integer downLoadAdCode = downLoadAdcodeList.get(i);
                 final Area cityArea = mMapDataService.getArea(DownLoadMode.DOWNLOAD_MODE_NET, downLoadAdCode);
-                if (!provAdcodeList.contains(cityArea.upperAdcode)) {
+                if (cityArea != null && !provAdcodeList.contains(cityArea.upperAdcode)) {
                     provAdcodeList.add(cityArea.upperAdcode);
                 }
             }
@@ -618,9 +637,11 @@ public class MapDataObserversHelper implements IDataInitObserver, IDownloadObser
                     final Integer downLoadAdCode = downLoadAdcodeList.get(j);
                     if (downLoadAdCode != 0) { // 移除基础功能包
                         final Area cityArea = mMapDataService.getArea(DownLoadMode.DOWNLOAD_MODE_NET, downLoadAdCode);
-                        final CityDataInfo cityDataInfo = getCityInfo(cityArea.adcode);
-                        if (cityDataInfo.getUpperAdcode() == provDataInfo.getAdcode()) {
-                            cityBeanList.add(cityDataInfo);
+                        if (cityArea != null) {
+                            final CityDataInfo cityDataInfo = getCityInfo(cityArea.adcode);
+                            if (cityDataInfo.getUpperAdcode() == provDataInfo.getAdcode()) {
+                                cityBeanList.add(cityDataInfo);
+                            }
                         }
                     }
                 }
@@ -678,9 +699,11 @@ public class MapDataObserversHelper implements IDataInitObserver, IDownloadObser
                                 for (int j = 0; j < subCityAdcodeList.size(); j++) {
                                     final Integer cityAdcode = subCityAdcodeList.get(j);
                                     final Area cityArea = mMapDataService.getArea(DownLoadMode.DOWNLOAD_MODE_NET, cityAdcode);
-                                    // 获取对应省份下的城市列表
-                                    cityBeanList.add(getCityInfo(cityArea.adcode));
-                                    provDataInfo.setCityInfoList(cityBeanList); // 省份下所有城市列表
+                                    if (cityArea != null) {
+                                        // 获取对应省份下的城市列表
+                                        cityBeanList.add(getCityInfo(cityArea.adcode));
+                                        provDataInfo.setCityInfoList(cityBeanList); // 省份下所有城市列表
+                                    }
                                 }
                             }
                         }
@@ -734,12 +757,15 @@ public class MapDataObserversHelper implements IDataInitObserver, IDownloadObser
                             for (int j = 0; j < subCityAdcodeList.size() - 1; j++) {
                                 final Integer cityAdcode = subCityAdcodeList.get(j);
                                 final Area cityArea = mMapDataService.getArea(DownLoadMode.DOWNLOAD_MODE_NET, cityAdcode);
-                                final CityDataInfo cityDataInfo = getCityInfo(cityArea.adcode);
-                                // 获取对应省份下已下载的城市列表
-                                if (cityDataInfo.getDownLoadInfo().getTaskState() == UserDataCode.TASK_STATUS_CODE_SUCCESS) {
-                                    cityBeanList.add(cityDataInfo);
+                                if (cityArea != null) {
+                                    final CityDataInfo cityDataInfo = getCityInfo(cityArea.adcode);
+                                    // 获取对应省份下已下载的城市列表
+                                    if (cityDataInfo.getDownLoadInfo().getTaskState() == UserDataCode.TASK_STATUS_CODE_SUCCESS) {
+                                        cityBeanList.add(cityDataInfo);
+                                    }
+                                    provDataInfo.setCityInfoList(cityBeanList); // 省份下所有已下载城市列表
                                 }
-                                provDataInfo.setCityInfoList(cityBeanList); // 省份下所有已下载城市列表
+
                             }
                         }
                         if (provDataInfo.getCityInfoList() != null && !provDataInfo.getCityInfoList().isEmpty()) {
@@ -911,13 +937,19 @@ public class MapDataObserversHelper implements IDataInitObserver, IDownloadObser
     public ArrayList<CityDataInfo> getNearAdCodeList(final int adCode) {
         if (mMapDataService != null) {
             final Area cityArea = mMapDataService.getArea(DownLoadMode.DOWNLOAD_MODE_NET, adCode);
+            if (cityArea == null) {
+                Logger.e(TAG, "city area is null");
+                return null;
+            }
             final ArrayList<Integer> vecNearAdCodeList = cityArea.vecNearAdcodeList;
             final ArrayList<CityDataInfo> nearAdCodeList = new ArrayList<>();
             if (null != vecNearAdCodeList && !vecNearAdCodeList.isEmpty()) {
                 for (int i = 0; i < vecNearAdCodeList.size(); i++) {
                     final  Integer cityAdCode = vecNearAdCodeList.get(i);
                     final Area area = mMapDataService.getArea(DownLoadMode.DOWNLOAD_MODE_NET, cityAdCode);
-                    nearAdCodeList.add(getCityInfo(area.adcode));
+                    if (area != null) {
+                        nearAdCodeList.add(getCityInfo(area.adcode));
+                    }
                 }
             }
             Logger.d(TAG, "getNearAdCodeList: nearAdCodeList = " + GsonUtils.toJson(nearAdCodeList));
@@ -1054,6 +1086,10 @@ public class MapDataObserversHelper implements IDataInitObserver, IDownloadObser
     private void updateDownloadStatus(final int id) {
         //更新城市下载信息
         final Area area = mMapDataService.getArea(DownLoadMode.DOWNLOAD_MODE_NET, id);
+        if (area == null) {
+            Logger.e(TAG, "area is null");
+            return;
+        }
         Logger.d(TAG, "onDownLoadStatus: area = " + GsonUtils.toJson(area));
 
         CityDataInfo cityDataInfo = getCityInfo(area.adcode);

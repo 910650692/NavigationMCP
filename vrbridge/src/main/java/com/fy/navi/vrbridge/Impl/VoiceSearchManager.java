@@ -296,7 +296,7 @@ public final class VoiceSearchManager {
                 return disposeMultipleDest();
             case IVrBridgeConstant.VoiceSearchType.WITH_CONDITION:
                 //深度Poi多轮
-                return disposeConditionSearch();
+            return disposeConditionSearch();
             default:
                 Log.w(IVrBridgeConstant.TAG, "unHandle searchType: " + mSearchType);
                 return CallResponse.createNotSupportResponse("不支持的搜索/导航意图");
@@ -413,9 +413,14 @@ public final class VoiceSearchManager {
      */
     private void responseSearchWithResult() {
         if (null != mPoiCallback) {
-            final List<PoiBean> poiBeanList = VoiceConvertUtil.convertSearchResult(mSearchResultList);
-            final int size = poiBeanList.size();
-            mPoiCallback.onPoiSearch(mSessionId, poiBeanList, size);
+            try {
+                final List<PoiBean> poiBeanList = VoiceConvertUtil.convertSearchResult(mSearchResultList);
+                final int size = poiBeanList.size();
+                Log.d(IVrBridgeConstant.TAG, "response poiBeanListSize : " + size);
+                mPoiCallback.onPoiSearch(mSessionId, poiBeanList, size);
+            } catch (NullPointerException npe) {
+                Log.w(IVrBridgeConstant.TAG, "responseSearchPoi error: " + npe.getMessage());
+            }
         }
     }
 
@@ -492,6 +497,7 @@ public final class VoiceSearchManager {
         boolean containCompany = false;
         //处理途径点
         final int size = passByPoi.size();
+        Log.d(IVrBridgeConstant.TAG, "disposeMultipleDest: passByPoiSize = " + size);
         for (int i = 0; i < size; i++) {
             final PoiBean poiBean = passByPoi.valueAt(i);
             final String name = poiBean.getName();
@@ -507,7 +513,10 @@ public final class VoiceSearchManager {
                 containCompany = true;
                 mNormalDestList.put(i, singleDestInfo);
             } else if (mGenericsList.contains(type)) {
+                Log.d(IVrBridgeConstant.TAG, "process " + type);
                 mGenericsDestList.put(i, singleDestInfo);
+            } else {
+                mNormalDestList.put(i, singleDestInfo);
             }
         }
 
@@ -524,7 +533,10 @@ public final class VoiceSearchManager {
             containCompany = true;
             mNormalDestList.put(size, singleDestInfo);
         } else if (mGenericsList.contains(destType)) {
+            Log.d(IVrBridgeConstant.TAG, "process " + destType);
             mGenericsDestList.put(size, singleDestInfo);
+        } else {
+            mNormalDestList.put(size, singleDestInfo);
         }
 
         if (containHome) {
@@ -542,6 +554,7 @@ public final class VoiceSearchManager {
             }
         }
 
+        Log.d(IVrBridgeConstant.TAG, "multipleDest normal size: " + mNormalDestList.size() + ", generics size: " + mGenericsDestList.size());
         dealNextMultipleDest(null);
         return CallResponse.createSuccessResponse();
     }
@@ -600,6 +613,7 @@ public final class VoiceSearchManager {
             int size = mMultiplePoiArray.size();
             Log.d(IVrBridgeConstant.TAG, "totalMultiple poi size: " + size);
             final PoiInfoEntity endPoi = mMultiplePoiArray.valueAt(size - 1);
+            Log.d(IVrBridgeConstant.TAG, "poiName: " + endPoi.getName() + ", address: " + endPoi.getAddress() + ", pid: " + endPoi.getPid());
             mMultiplePoiArray.removeAt(size - 1);
 
             size = mMultiplePoiArray.size();
@@ -829,18 +843,22 @@ public final class VoiceSearchManager {
 
         switch (mSearchType) {
             case IVrBridgeConstant.VoiceSearchType.SET_HOME_COMPANY:
+                //设置家/公司地址为选择的poi
                 updateHomeCompany(poiInfo);
                 sendClosePage();
                 break;
             case IVrBridgeConstant.VoiceSearchType.WITH_PASS_BY:
+                //选中的点为泛型poi，继续处理下一个点
                 dealNextMultipleDest(poiInfo);
                 break;
             case IVrBridgeConstant.VoiceSearchType.ALONG_WAY:
+                //选中poi作为途径点
                 mAlongToAround = false;
                 RoutePackage.getInstance().addViaPoint(MapType.MAIN_SCREEN_MAIN_MAP, poiInfo);
                 sendClosePage();
                 break;
             default:
+                //所选poi作为目的地发起算路
                 planRoute(poiInfo, null);
                 break;
         }
@@ -1095,6 +1113,7 @@ public final class VoiceSearchManager {
         Log.w(IVrBridgeConstant.TAG, "setHomeCompany searchResultSize: " + size);
         if (size == 1) {
             updateHomeCompany(mSearchResultList.get(0));
+            sendClosePage();
         } else {
             responseSearchWithResult();
         }

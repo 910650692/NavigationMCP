@@ -1,20 +1,24 @@
 package com.fy.navi.scene.impl.poi;
 
 
+import android.os.Bundle;
 import android.text.TextUtils;
 
 import androidx.lifecycle.MutableLiveData;
 
+import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
 import com.fy.navi.scene.BaseSceneModel;
 import com.fy.navi.scene.api.poi.IScenePoiDetailContentView;
 import com.fy.navi.scene.ui.poi.ScenePoiDetailContentView;
 import com.fy.navi.service.MapDefaultFinalTag;
+import com.fy.navi.service.adapter.navi.NaviConstant;
 import com.fy.navi.service.define.bean.GeoPoint;
 import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.mapdata.CityDataInfo;
 import com.fy.navi.service.define.search.ETAInfo;
 import com.fy.navi.service.define.search.PoiInfoEntity;
+import com.fy.navi.service.define.search.SearchResultEntity;
 import com.fy.navi.service.logicpaket.mapdata.MapDataPackage;
 import com.fy.navi.service.logicpaket.route.RoutePackage;
 import com.fy.navi.service.logicpaket.search.SearchPackage;
@@ -58,7 +62,14 @@ public class ScenePoiDetailContentViewImpl extends BaseSceneModel<ScenePoiDetail
 
     @Override
     public void closeFragment() {
-        StackManager.getInstance().getCurrentFragment(mMapTypeId.name()).closeFragment(true);
+        boolean isOpenFromNavi = mScreenView != null && mScreenView.getIsOpenFromNavi();
+        if (!isOpenFromNavi) {
+            StackManager.getInstance().getCurrentFragment(mMapTypeId.name()).closeFragment(true);
+        } else {
+            Bundle bundle = new Bundle();
+            bundle.putInt(NaviConstant.NAVI_CONTROL, 1);
+            StackManager.getInstance().getCurrentFragment(mMapTypeId.name()).closeFragment(bundle);
+        }
         // 清除扎标的点
         mSearchPackage.clearPoiLabelMark();
     }
@@ -93,7 +104,11 @@ public class ScenePoiDetailContentViewImpl extends BaseSceneModel<ScenePoiDetail
         }
         // 这里只有两种搜索类型：POI搜索和Geo搜索,带”."的是逆地理搜索自行拼接的pid，不可用于逆地理搜索
         if (!TextUtils.isEmpty(poiInfoEntity.getPid()) && !poiInfoEntity.getPid().contains(".")) {
-            mTaskId = mSearchPackage.poiIdSearch(poiInfoEntity.getPid());
+            if (!ConvertUtils.isEmpty(poiInfoEntity.getPoint())) {
+                mTaskId = mSearchPackage.poiIdSearch(poiInfoEntity.getPid(), poiInfoEntity.getPoint());
+            } else {
+                mTaskId = mSearchPackage.poiIdSearch(poiInfoEntity.getPid());
+            }
             //POI详情搜索测试代码，正式版本sdk时放开
 //            mSearchPackage.poiDetailSearch(poiInfoEntity, poiInfoEntity.getRetainParam());
         } else {
@@ -142,6 +157,16 @@ public class ScenePoiDetailContentViewImpl extends BaseSceneModel<ScenePoiDetail
      */
     public void addPoiMarker(final List<PoiInfoEntity> poiInfoEntities, final int index) {
         mSearchPackage.createPoiMarker(poiInfoEntities, index);
+    }
+
+    /**
+     * 添加poi标记
+     * @param searchResultEntity poi扎标对象
+     */
+    public void createLabelMarker(final SearchResultEntity searchResultEntity) {
+        if (searchResultEntity != null) {
+            mSearchPackage.createLabelMarker(searchResultEntity);
+        }
     }
 
     /**

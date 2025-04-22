@@ -1,24 +1,48 @@
 package com.fy.navi.adas;
 
+/**
+ * 超级巡航
+ *
+ *一条路径线由N个段组成，每个段由N个链路组成，每个链路由N个点组成
+ */
 public class SuperCruiseJson {
+    //数据可用
     private String dataAvailable;
+    //车道数量
     private String laneCount;
+    //道路类型
     private String roadCategory;
+    //国家代码
     private String countryCode;
+    //地图版本 年份
     private String mapVersionYear;
+    //地图版本 季度
     private String mapVersionQuarter;
+    //行驶方向
     private String drivingSideCategory;
+    //是否受控
     private String controlledAccess;
+    //划分道路类别
     private String dividedRoadCategory;
+    //发布限速
     private String postedSpeedLimit;
+    //推荐限速
     private String recommendedSpeedLimit;
+    //限速是否保证
     private String speedLimitAssured;
+    //条件限速
     private String conditionalSpeedLimit;
+    //条件 速度类别
     private String conditionalSpeedCategory;
+    //条件 速度类型
     private String conditionalSpeedType;
+    //效果 限速
     private String effectSpeedLimit;
+    //效果 速度类别
     private String effectiveSpeedCategory;
+    //效果 速度类型
     private String effectiveSpeedType;
+    //速度类别
     private String speedCategory;
 
     public String getDataAvailable() {

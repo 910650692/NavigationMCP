@@ -20,7 +20,7 @@ public interface INaviSceneEvent {
     void notifySceneStateChange(SceneStateChangeType type, NaviSceneId cardId);
 
     /***将隐藏的scene展示***/
-    void notifySceneReset();
+    void notifySceneReset(String from);
 
     void destroySceneView();
 

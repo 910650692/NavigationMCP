@@ -21,6 +21,9 @@ public class LayerFlyLineImpl extends BaseLayerImpl<LayerFlyLineStyleAdapter> im
 
     public LayerFlyLineImpl(BizControlService bizService, MapView mapView, Context context, MapType mapType) {
         super(bizService, mapView, context, mapType);
+        getLayerFlyLineControl().updateDrawMode(FlylineDrawMode.FLYLINE_MOVE_END, true);
+        getLayerFlyLineControl().setVisible(BizFlyLineType.BizFlyLineTypeLine, false);
+        getLayerFlyLineControl().setVisible(BizFlyLineType.BizFlyLineTypePoint, false);
     }
 
     @Override
@@ -33,17 +36,11 @@ public class LayerFlyLineImpl extends BaseLayerImpl<LayerFlyLineStyleAdapter> im
         if (bShow) {
             getLayerFlyLineControl().setStyle(this);
             getMapView().addMapEventObserver(this);
-            getLayerFlyLineControl().setClickLabelType(BizClickLabelType.ClickTypeLabel);
-            getLayerFlyLineControl().updateDrawMode(FlylineDrawMode.FLYLINE_MOVE_END, true);
         } else {
-            getMapView().removeMapEventObserver(this);
-            getLayerFlyLineControl().setClickLabelType(BizClickLabelType.ClickTypeNone);
-            getLayerFlyLineControl().updateDrawMode(FlylineDrawMode.FLYLINE_NONE_END, true);
             getLayerFlyLineControl().setStyle(null);
+            getMapView().removeMapEventObserver(this);
         }
-        getLayerFlyLineControl().setVisible(BizFlyLineType.BizFlyLineTypeLine, false);
-        getLayerFlyLineControl().setVisible(BizFlyLineType.BizFlyLineTypePoint, true);
-        getLayerFlyLineControl().setClickLabelMoveMap(bShow);
+        getLayerFlyLineControl().setVisible(BizFlyLineType.BizFlyLineTypePoint, bShow);
         Logger.e(TAG, "openFlyLine :" + bShow);
     }
 

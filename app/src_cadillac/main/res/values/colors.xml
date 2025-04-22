@@ -24,4 +24,8 @@
     <color name="poi_details_bottom_ff_00">#FF181818</color>
     <color name="search_top_line_view_99383839">#33000000</color>
     <color name="search_quick_tab_view_color">#FF000000</color>
+    <color name="search_main_tab_img_shape_bg">#FFF8F8FA</color>
+    <color name="img_basic_ic_home_color">#4B535D</color>
+    <color name="img_basic_ic_bus_color">#4B535D</color>
+    <color name="img_basic_ic_search_color">#4B535D</color>
 </resources>

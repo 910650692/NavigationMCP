@@ -3,16 +3,16 @@ package com.fy.navi.hmi.setting.guide;
 
 import com.android.utils.NetWorkUtils;
 import com.android.utils.log.Logger;
+import com.android.utils.thread.ThreadManager;
 import com.fy.navi.service.define.layer.refix.CarModeType;
 import com.fy.navi.service.define.setting.SettingController;
 import com.fy.navi.service.logicpaket.calibration.CalibrationPackage;
-import com.fy.navi.service.logicpaket.setting.SettingCallback;
 import com.fy.navi.service.logicpaket.setting.SettingPackage;
 import com.fy.navi.service.logicpaket.setting.SettingUpdateObservable;
 import com.fy.navi.ui.base.BaseModel;
 
 public class SettingGuideModel extends BaseModel<SettingGuideViewModel> implements
-        SettingCallback, SettingUpdateObservable.SettingUpdateObserver {
+        SettingUpdateObservable.SettingUpdateObserver, SettingPackage.SettingChangeCallback {
     private static final String TAG = SettingGuideModel.class.getName();
     private final SettingPackage mSettingPackage;
     private static final String MODEL_NAME = "SettingGuideModel";
@@ -24,8 +24,8 @@ public class SettingGuideModel extends BaseModel<SettingGuideViewModel> implemen
     @Override
     public void onCreate() {
         super.onCreate();
-        mSettingPackage.registerCallBack(MODEL_NAME,this);
         SettingUpdateObservable.getInstance().addObserver(MODEL_NAME, this);
+        mSettingPackage.setSettingChangeCallback(MODEL_NAME,this);
         NetWorkUtils.Companion.getInstance().registerNetworkObserver(mNetworkObserver);
     }
 
@@ -239,14 +239,6 @@ public class SettingGuideModel extends BaseModel<SettingGuideViewModel> implemen
     }
 
     /**
-     * 设置路况开关
-     * @param roadEvent 路况开关 true：开启 false：关闭
-     */
-    public void setConfigKeyRoadEvent(final boolean roadEvent) {
-        mSettingPackage.setConfigKeyRoadEvent(roadEvent);
-    }
-
-    /**
      * 设置车牌号
      * @param carNumber 车牌号
      */
@@ -289,12 +281,6 @@ public class SettingGuideModel extends BaseModel<SettingGuideViewModel> implemen
     }
 
     @Override
-    public void notify(final int eventType, final int exCode) {
-        // 数据发生变化，通知HMI更新UI
-        // updateInterface(key, value);
-    }
-
-    @Override
     public void onPlateNumberChanged(final String plateNumber) {
         Logger.d("plateNumberInputFinish" + plateNumber);
         mViewModel.onPlateNumberChanged(plateNumber);
@@ -331,4 +317,32 @@ public class SettingGuideModel extends BaseModel<SettingGuideViewModel> implemen
 
         }
     };
+
+    @Override
+    public void onSettingChanged(final String key, final String value) {
+        switch (key) {
+            case SettingController.SETTING_GUIDE_MAP_MODE :
+                switch (value) {
+                    case SettingController.VALUE_MAP_MODE_CAR_2D:
+                        ThreadManager.getInstance().postUi(() -> mViewModel.onMapModeChanged(false, false, true));
+                        break;
+                    case SettingController.VALUE_MAP_MODE_NORTH_2D:
+                        ThreadManager.getInstance().postUi(() -> mViewModel.onMapModeChanged(false, true, false));
+                        break;
+                    case SettingController.VALUE_MAP_MODE_CAR_3D:
+                        ThreadManager.getInstance().postUi(() -> mViewModel.onMapModeChanged(true, false, false));
+                        break;
+                    default:
+                        break;
+                }
+                break;
+            case SettingController.KEY_SETTING_ROAD_CONDITION:
+                ThreadManager.getInstance().postUi(() ->
+                        mViewModel.dualChoiceControl(SettingController.KEY_SETTING_ROAD_CONDITION, Boolean.parseBoolean(value)));
+                break;
+            default:
+                break;
+        }
+
+    }
 }

@@ -689,6 +689,7 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub {
             case MAIN_SCREEN_MAIN_MAP -> INaviConstant.MapType.MAIN;
             case LAUNCHER_DESK_MAP -> INaviConstant.MapType.LAUNCHER_DESK;
             case LAUNCHER_WIDGET_MAP -> INaviConstant.MapType.LAUNCHER_WIDGET;
+            case HUD_MAP -> INaviConstant.MapType.HUD_WIDGET;
         };
     }
 

@@ -11,7 +11,7 @@ import java.nio.charset.StandardCharsets;
 
 public class FsaServiceMethod extends FSAMethod {
 
-
+    private static final String TAG = "FsaServiceMethod";
     private IRequestReceiveListener mListener;
 
     public FsaServiceMethod(final IRequestReceiveListener listener) {
@@ -25,17 +25,21 @@ public class FsaServiceMethod extends FSAMethod {
 
     @Override
     public void onRequest(final NotificationObject notificationObject) {
-        if (null == notificationObject || null == notificationObject.msg) {
-            Log.e(FsaConstant.FSA_TAG, "NotificationObject is empty");
+        if (null == notificationObject) {
+            Log.w(FsaConstant.FSA_TAG, "received method request: notificationObject null");
             return;
         }
-
         final FSAMessage fsaMessage = notificationObject.msg;
+        if (null == fsaMessage) {
+            Log.w(FsaConstant.FSA_TAG, "received method request: msg null");
+            return;
+        }
         final int functionId = fsaMessage.getFunctionId();
         final String payload = new String(fsaMessage.getPayload(), StandardCharsets.UTF_8);
-        Log.d(FsaConstant.FSA_TAG, "receiveRequest, functionId: " + functionId + ", payload: " + payload);
         if (null != mListener) {
             mListener.onReceiveRequest(functionId, payload);
+        } else {
+            Log.w(FsaConstant.FSA_TAG, "received method request: mListener null");
         }
     }
 

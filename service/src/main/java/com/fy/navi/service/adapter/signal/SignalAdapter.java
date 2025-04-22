@@ -6,6 +6,9 @@ import com.fy.navi.service.AdapterConfig;
 
 import java.util.Objects;
 
+/**
+ * 车辆信号
+ */
 public final class SignalAdapter {
     private static final String SIGNAL_API_PKG = Objects.requireNonNull(SignalAdapter.class.getPackage()).getName();
     private static final String SIGNAL_API_CLS = "SignalAdapterImpl";

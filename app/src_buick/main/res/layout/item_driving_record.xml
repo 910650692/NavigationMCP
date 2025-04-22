@@ -84,7 +84,17 @@
                     app:layout_constraintTop_toTopOf="@id/item_driving_end_name"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintBottom_toBottomOf="@id/item_driving_end_name"/>
+
+                <com.fy.navi.ui.view.SkinView
+                    android:id="@+id/view_line"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp_1"
+                    android:background="@color/setting_line"
+                    android:layout_marginEnd="@dimen/dp_40"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent" />
             </com.fy.navi.ui.view.SkinConstraintLayout>
+
             <com.fy.navi.ui.view.SkinLinearLayout
                 android:id="@+id/item_driving_delete"
                 android:layout_width="@dimen/dp_170"
@@ -106,12 +116,5 @@
                     android:textSize="@dimen/sp_30" />
             </com.fy.navi.ui.view.SkinLinearLayout>
         </com.fy.navi.ui.view.SwipeMenuLayout>
-        <com.fy.navi.ui.view.SkinView
-            android:id="@+id/view_line"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_1"
-            android:background="@color/setting_text_preference"
-            app:layout_constraintTop_toBottomOf="@id/swipe_menu_layout"
-            app:layout_constraintStart_toStartOf="parent" />
     </com.fy.navi.ui.view.SkinConstraintLayout>
 </layout>

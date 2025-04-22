@@ -29,6 +29,12 @@ public class FilterListAdapter extends RecyclerView.Adapter<FilterListAdapter.Ho
     private boolean mIsExpand = false;
     private String mCurrentExpandName = "";
 
+    public void setMIsExpand(final boolean isExpand) {
+        this.mIsExpand = isExpand;
+    }
+    public void setMCurrentExpandName(final String name) {
+        this.mCurrentExpandName = name;
+    }
     public void setFilterItemClickListener(final IOnFilterItemClickListener filterItemClickListener) {
         this.mFilterItemClickListener = filterItemClickListener;
     }
@@ -73,14 +79,14 @@ public class FilterListAdapter extends RecyclerView.Adapter<FilterListAdapter.Ho
             return;
         }
         holder.mFilterItemBinding.filterText.setText(localInfo.getName());
-        holder.mFilterItemBinding.filterText.setSelected(localInfo.getChecked() == 1);
-        holder.mFilterItemBinding.filterRoot.setSelected(localInfo.getChecked() == 1);
         holder.mFilterItemBinding.filterImg.setImageResource(ConvertUtils.equals(mCurrentExpandName,
                 localInfo.getName()) ? R.drawable.img_up_48 : R.drawable.img_under_the_48);
         if (localInfo.getCategoryLocalInfos() != null && !localInfo.getCategoryLocalInfos().isEmpty()) {
             holder.mFilterItemBinding.filterImg.setVisibility(View.VISIBLE);
         } else {
             holder.mFilterItemBinding.filterImg.setVisibility(View.GONE);
+            holder.mFilterItemBinding.filterText.setSelected(localInfo.getChecked() == 1);
+            holder.mFilterItemBinding.filterRoot.setSelected(localInfo.getChecked() == 1);
         }
 
         holder.mFilterItemBinding.getRoot().setOnClickListener(new View.OnClickListener() {

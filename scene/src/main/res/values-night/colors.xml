@@ -145,4 +145,7 @@
 
     <color name="setting_downloading_color">#007BFF</color>
 
+    <color name="handing_card_fold_color">#66151414</color>
+    <color name="handing_card_fold_indicator_color">#FF2C2D36</color>
+
 </resources>

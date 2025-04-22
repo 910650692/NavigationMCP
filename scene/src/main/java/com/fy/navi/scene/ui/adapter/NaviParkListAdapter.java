@@ -1,9 +1,6 @@
 
 package com.fy.navi.scene.ui.adapter;
 
-import static android.view.View.GONE;
-import static android.view.View.VISIBLE;
-
 import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,20 +15,16 @@ import com.android.utils.log.Logger;
 import com.fy.navi.scene.R;
 import com.fy.navi.scene.api.navi.INaviParkItemClickListener;
 import com.fy.navi.scene.databinding.SceneNaviParkListItemBinding;
-import com.fy.navi.service.AppContext;
 import com.fy.navi.service.MapDefaultFinalTag;
-import com.fy.navi.service.define.navi.NaviParkingEntity;
-import com.fy.navi.service.define.search.ChargeInfo;
+import com.fy.navi.service.define.search.ParkingInfo;
 import com.fy.navi.service.define.search.PoiInfoEntity;
-import com.fy.navi.service.logicpaket.navi.OpenApiHelper;
-import com.fy.navi.ui.view.SkinTextView;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class NaviParkListAdapter extends RecyclerView.Adapter<NaviParkListAdapter.ResultHolder> {
     private static final String TAG = MapDefaultFinalTag.NAVI_HMI_TAG;
-    private final List<NaviParkingEntity> mList;
+    private final List<PoiInfoEntity> mList;
     private INaviParkItemClickListener onItemClickListener;
     private int mSelectIndex;
 
@@ -48,7 +41,7 @@ public class NaviParkListAdapter extends RecyclerView.Adapter<NaviParkListAdapte
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    public void notifyList(List<NaviParkingEntity> list, int select) {
+    public void notifyList(List<PoiInfoEntity> list, int select) {
         Logger.d(TAG, "NaviAddViaAdapter notifyList " + list);
         if (ConvertUtils.isEmpty(list)) {
             return;
@@ -70,64 +63,39 @@ public class NaviParkListAdapter extends RecyclerView.Adapter<NaviParkListAdapte
     @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull ResultHolder holder, @SuppressLint("RecyclerView") int position) {
-        Logger.d(TAG, "NaviAddViaAdapter onBindViewHolder " + position + ",mSelectIndex= " + mSelectIndex);
-        int powerType = OpenApiHelper.powerType();
-        NaviParkingEntity naviParkingEntity = mList.get(position);
-        List<ChargeInfo> chargeInfoList = naviParkingEntity.getChargeInfoList();
-        // 如果是纯电或者混动并且有充电站信息就显示充电站信息，否则显示停车场车位信息
-        boolean isShowChargeInfo = (powerType == 1 || powerType == 2) && !ConvertUtils.
-                isEmpty(chargeInfoList);
-        if (isShowChargeInfo) {
-            holder.itemBinding.stvParkingNum.setVisibility(GONE);
-            holder.itemBinding.sclParkingOrChargeInfo.setVisibility(VISIBLE);
-            setChargeData(holder, chargeInfoList);
-        } else {
-            holder.itemBinding.stvParkingNum.setVisibility(VISIBLE);
-            holder.itemBinding.sclParkingOrChargeInfo.setVisibility(GONE);
+        final PoiInfoEntity poiInfo = mList.get(position);
+        final List<ParkingInfo> parkingInfos = poiInfo.getParkingInfoList();
+        if (ConvertUtils.isEmpty(parkingInfos)) {
+            return;
         }
-        holder.itemBinding.setParkBean(naviParkingEntity);
-//        holder.itemBinding.sivParkingEnd.setVisibility((mList.size() == 1 && naviParkingEntity.isEndPoi()) ? View.VISIBLE : View.GONE);
-        holder.itemBinding.stvNum.setText(position + 1 + "");
-        if (!ConvertUtils.isEmpty(naviParkingEntity.getTag())) {
-            holder.itemBinding.stvParkingState.setTextColor((naviParkingEntity.getTag().equals(AppContext.getInstance().getMContext().getString(R.string.navi_recommend_parking_adequate))) ?
-                    AppContext.getInstance().getMContext().getResources().getColor(R.color.navi_color_C73333_100) :
-                    AppContext.getInstance().getMContext().getResources().getColor(R.color.navi_color_2461EA_100));
-        }
-        holder.itemBinding.getRoot().setOnClickListener(v -> {
-            Logger.d(TAG, "NaviAddViaAdapter item click " + position);
+        final ParkingInfo parkingInfo = parkingInfos.get(0);
+        holder.itemBinding.tvNumber.setText(String.valueOf(position + 1));
+        holder.itemBinding.tvTitle.setText(poiInfo.getName());
+        holder.itemBinding.tvDistance.setText(poiInfo.getDistance());
+        holder.itemBinding.sclListItem.setOnClickListener(v -> {
             if (onItemClickListener != null && mSelectIndex != position) {
                 onItemClickListener.onItemClick(position);
                 mSelectIndex = position;
                 notifyDataSetChanged();
             }
         });
-        holder.itemBinding.svParkingNavi.setOnClickListener(v -> {
+        holder.itemBinding.viewNaviNow.setOnClickListener(v -> {
             if (onItemClickListener != null) {
                 onItemClickListener.onNaviClick(position, mList.get(position));
             }
         });
-        holder.itemBinding.getRoot().setBackgroundResource(position == mSelectIndex ? R.color.common_item_select_color : R.color.transparent);
-    }
 
-    @SuppressLint("SetTextI18n")
-    private void setChargeData(ResultHolder holder, List<ChargeInfo> chargeInfoList) {
-        int fastChargeFreeCount = 0;
-        int fastChargeTotalCount = 0;
-        int slowChargeFreeCount = 0;
-        int slowChargeTotalCount = 0;
-        for (ChargeInfo chargeInfo : chargeInfoList) {
-            if (chargeInfo == null) {
-                continue;
-            }
-            fastChargeFreeCount = fastChargeFreeCount + chargeInfo.getFast_free();
-            fastChargeTotalCount = fastChargeTotalCount + chargeInfo.getFast_total();
-            slowChargeFreeCount = slowChargeFreeCount + chargeInfo.getSlow_free();
-            slowChargeTotalCount = slowChargeTotalCount + chargeInfo.getSlow_total();
-        }
-        holder.itemBinding.stvFastChargeCount.setText(fastChargeFreeCount + "");
-        holder.itemBinding.stvFastChargeTotal.setText("/" + fastChargeTotalCount);
-        holder.itemBinding.stvSlowChargeCount.setText(slowChargeFreeCount + "");
-        holder.itemBinding.stvSlowChargeTotal.setText("/" + slowChargeTotalCount);
+        holder.itemBinding.tvSpace.setVisibility(parkingInfo.getSpaceTotal() > 0 ? View.VISIBLE : View.GONE);
+        holder.itemBinding.tvTotal.setVisibility(parkingInfo.getSpaceTotal() > 0 ? View.VISIBLE : View.GONE);
+        holder.itemBinding.tvDesc.setVisibility(parkingInfo.getSpaceTotal() > 0 ? View.VISIBLE : View.GONE);
+        holder.itemBinding.tvSpace.setText(String.valueOf(parkingInfo.getSpaceFree()));
+        holder.itemBinding.tvTotal.setText("/" + parkingInfo.getSpaceTotal());
+
+        final String desc = parkIsCrowed(poiInfo) ? holder.itemBinding.tvDesc.getContext().getString(R.string.tense)
+                : holder.itemBinding.tvDesc.getContext().getString(R.string.chong_zu);
+        holder.itemBinding.tvDesc.setText(desc);
+        holder.itemBinding.tvEnd.setVisibility(poiInfo.getIsEndPoint() ? View.VISIBLE : View.GONE);
+        holder.itemBinding.getRoot().setBackgroundResource(position == mSelectIndex ? R.color.common_item_select_color : R.color.transparent);
     }
 
     @Override
@@ -156,5 +124,21 @@ public class NaviParkListAdapter extends RecyclerView.Adapter<NaviParkListAdapte
             this.itemBinding = resultItemBinding;
             this.itemBinding.setHolder(this);
         }
+    }
+
+    /***
+     * 判断停车场是否紧张
+     * -停车位紧张：总车位数<=30个，剩余车位<30% ；总车位数>30个，剩余车位<10% 或 剩余车位少于10个。
+     */
+    private boolean parkIsCrowed(final PoiInfoEntity poiInfo) {
+        if (ConvertUtils.isNull(poiInfo) || ConvertUtils.isEmpty(poiInfo.getParkingInfoList())) {
+            return false;
+        }
+        final ParkingInfo parkingInfo = poiInfo.getParkingInfoList().get(0);
+        final int totalSize = parkingInfo.getSpaceTotal();
+        final int spaceSize = parkingInfo.getSpaceFree();
+        Logger.i(TAG, "parkIsCrowed", "totalSize:" + totalSize, "spaceSize:" + spaceSize);
+        if (totalSize <= 0) return false;
+        return (totalSize <= 30 && spaceSize * 1f / totalSize < 0.3) || (totalSize > 30 && (spaceSize * 1f / totalSize < 0.1 || spaceSize < 10));
     }
 }

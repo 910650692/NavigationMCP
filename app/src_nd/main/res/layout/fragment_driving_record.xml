@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <data>
+        <import type="android.view.View" />
+        <variable
+            name="ViewModel"
+            type="com.fy.navi.hmi.drivingrecord.DrivingRecordViewModel" />
+    </data>
+    <com.fy.navi.ui.view.SkinLinearLayout
+        android:layout_width="@dimen/dp_1224"
+        android:layout_height="@dimen/dp_714"
+        android:clickable="true"
+        android:background="@drawable/bg_setting_fragment"
+        android:orientation="vertical">
+        <!--标题-->
+        <com.fy.navi.ui.view.SkinConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_125">
+            <com.fy.navi.ui.view.SkinImageView
+                clickCommand="@{ViewModel.mDrivingRecordBack}"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/img_setting_back"
+                android:layout_marginStart="@dimen/dp_26"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"/>
+            <com.fy.navi.ui.view.SkinTextView
+                android:id="@+id/driving_record_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/driving_record_title"
+                android:textColor="@color/setting_bg_tab_text_select"
+                android:textSize="@dimen/sp_34"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"/>
+            <com.fy.navi.ui.view.SkinImageView
+                clickCommand="@{ViewModel.mToRecordSetting}"
+                android:id="@+id/driving_record_more"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/dp_32"
+                android:src="@drawable/img_setting_others_selected"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent" />
+        </com.fy.navi.ui.view.SkinConstraintLayout>
+        <!--未登录提示-->
+        <com.fy.navi.ui.view.SkinConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_71"
+            android:visibility="@{ViewModel.mLoginTipVisibility ? View.VISIBLE : View.GONE}"
+            android:background="@color/setting_bg_to_login">
+            <com.fy.navi.ui.view.SkinTextView
+                android:id="@+id/driving_record_login_tip"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_30"
+                android:text="@string/driving_record_login_tip"
+                android:textColor="@color/setting_bg_tab_text_unselect"
+                android:textSize="@dimen/sp_30"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"/>
+            <com.fy.navi.ui.view.SkinButton
+                android:id="@+id/dr_content_btn"
+                clickCommand="@{ViewModel.mToLogin}"
+                android:layout_width="@dimen/dp_130"
+                android:layout_height="@dimen/dp_52"
+                app:layout_constraintLeft_toRightOf="@+id/driving_record_login_tip"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:background="@drawable/shape_button_bg"
+                android:gravity="center"
+                android:layout_marginStart="@dimen/dp_16"
+                android:text="@string/driving_record_login"
+                android:textColor="@color/setting_bg_to_login_text"
+                android:textSize="@dimen/sp_30" />
+        </com.fy.navi.ui.view.SkinConstraintLayout>
+        <!--导航tab切换-->
+        <com.fy.navi.ui.view.SkinRadioGroup
+            android:id="@+id/driving_record_tab_group"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_90"
+            android:gravity="center_horizontal"
+            android:orientation="horizontal"
+            android:background="@drawable/bg_setting_checkbox"
+            android:layout_marginTop="@dimen/dp_24"
+            android:layout_marginStart="@dimen/dp_40"
+            android:layout_marginEnd="@dimen/dp_40"
+            android:padding="@dimen/dp_8">
+            <com.fy.navi.ui.view.SkinRadioButton
+                android:id="@+id/driving_record_tab_1"
+                android:layout_width="@dimen/dp_0"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:button="@null"
+                android:background="@drawable/rb_bg_selector"
+                android:gravity="center"
+                android:checked="true"
+                android:text="@string/driving_record_tab_1"
+                android:textColor="@color/setting_white"
+                android:textSize="@dimen/sp_34" />
+            <com.fy.navi.ui.view.SkinRadioButton
+                android:id="@+id/driving_record_tab_2"
+                android:layout_width="@dimen/dp_0"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:button="@null"
+                android:background="@drawable/rb_bg_selector"
+                android:gravity="center"
+                android:text="@string/driving_record_tab_2"
+                android:textColor="@color/setting_bg_tab_text_unselect"
+                android:textSize="@dimen/sp_34" />
+        </com.fy.navi.ui.view.SkinRadioGroup>
+        <!--数据列表-->
+        <com.fy.navi.ui.view.SkinRecyclerView
+            android:id="@+id/rv_driving_record_list"
+            android:visibility="@{ViewModel.mRecordListViewVisibility ? View.VISIBLE : View.GONE}"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_24"
+            android:layout_marginBottom="@dimen/dp_40" />
+        <com.fy.navi.ui.view.SkinTextView
+            android:id="@+id/empty_view"
+            android:visibility="@{ViewModel.mEmptyViewVisibility ? View.VISIBLE : View.GONE}"
+            android:layout_width="match_parent"
+            android:layout_height="fill_parent"
+            android:gravity="center"
+            android:text="@string/driving_record_no_history"
+            android:textColor="@color/setting_bg_tab_text_select"
+            android:textSize="@dimen/sp_30" />
+    </com.fy.navi.ui.view.SkinLinearLayout>
+</layout>

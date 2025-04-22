@@ -1,12 +1,13 @@
 package com.fy.navi.service.adapter.layer;
 
+import android.graphics.Rect;
+
 import com.autonavi.gbl.guide.model.CrossType;
 import com.fy.navi.service.define.bean.GeoPoint;
 import com.fy.navi.service.define.bean.PreviewParams;
-import com.fy.navi.service.define.layer.GemLayerClickBusinessType;
 import com.fy.navi.service.define.layer.refix.CarModeType;
+import com.fy.navi.service.define.layer.refix.DynamicLevelMode;
 import com.fy.navi.service.define.layer.refix.LayerItemCrossEntity;
-import com.fy.navi.service.define.layer.RouteLineLayerParam;
 import com.fy.navi.service.define.layer.refix.LayerItemLabelResult;
 import com.fy.navi.service.define.layer.refix.LayerItemRouteEndPoint;
 import com.fy.navi.service.define.layer.refix.LayerItemSearchResult;
@@ -15,6 +16,7 @@ import com.fy.navi.service.define.layer.refix.LayerItemUserTrackDepth;
 import com.fy.navi.service.define.layer.refix.LayerSearchItemType;
 import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.navi.NaviParkingEntity;
+import com.fy.navi.service.define.route.RequestRouteResult;
 import com.fy.navi.service.define.search.PoiInfoEntity;
 
 import java.util.ArrayList;
@@ -37,10 +39,10 @@ public interface ILayerApi {
     PreviewParams getPathResultBound(MapType mapTypeId, ArrayList<?> pathResult);
 
     /* 绘制路线 */
-    void drawRouteLine(MapType mapTypeId, RouteLineLayerParam routeLineLayer);
+    void drawRouteLine(MapType mapTypeId, RequestRouteResult routeResult);
 
-    /*更新终点扎标样式*/
-    void updateEndPoint(MapType mapTypeId, LayerItemRouteEndPoint endPoint);
+    /*更新终点扎标数据*/
+    void updateRouteEndPoint(MapType mapTypeId, LayerItemRouteEndPoint endPoint);
 
     /* 选择路线 */
     void setSelectedPathIndex(MapType mapTypeId, int routeIndex);
@@ -65,9 +67,6 @@ public interface ILayerApi {
 
     /*设置转向箭头要显示导航段*/
     void setPathArrowSegment(MapType mapTypeId, ArrayList<Long> segmentsIndexs);
-
-    /*获取预计到达时间*/
-    String getCurrentRouteTime(MapType mapTypeId);
 
     /*设置行前拥堵气泡是否显示*/
     boolean setRouteJamBubblesVisible(MapType mapTypeId, boolean isShow);
@@ -131,6 +130,15 @@ public interface ILayerApi {
     double calcStraightDistance(GeoPoint startPoint, GeoPoint endPoint);
 
     void clearFavoriteMain(MapType mapTypeId);
+
+    /* 是否打开动态比例尺功能，type区分巡航动态比例尺还是导航动态比例尺 */
+    void openDynamicLevel(MapType mapTypeId, DynamicLevelMode dynamicLevelMode);
+
+    /* 设置动态比例尺是否锁住状态，type区分巡航动态比例尺还是导航动态比例尺 */
+    void setDynamicLevelLock(MapType mapTypeId, DynamicLevelMode dynamicLevelMode, boolean isLock);
+
+    /* 设置自动比例尺是否主动调整地图中心 */
+    void openDynamicCenter(MapType mapTypeId, boolean isDynaCenterLock);
 
     /*========================================= ROUTE LAYER END =========================================*/
 
@@ -228,6 +236,9 @@ public interface ILayerApi {
 
     /* 根据放大路口类型隐藏对应的路口大图 */
     boolean hideCross(MapType mapTypeId, @CrossType.CrossType1 int type);
+
+    /* 动态更新路口大图显示区域 */
+    void updateRoadCrossRect(MapType mapTypeId, Rect rect);
 
     /*========================================= 路口大图 =========================================*/
 

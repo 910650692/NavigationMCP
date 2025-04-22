@@ -21,8 +21,10 @@ import com.fy.navi.service.define.aos.RestrictedParam;
 import com.fy.navi.service.define.bean.GeoPoint;
 import com.fy.navi.service.define.bean.PreviewParams;
 import com.fy.navi.service.define.layer.RouteLineLayerParam;
+import com.fy.navi.service.define.layer.refix.LayerItemRouteEndPoint;
 import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.navistatus.NaviStatus;
+import com.fy.navi.service.define.position.LocInfoBean;
 import com.fy.navi.service.define.route.EvRangeOnRouteInfo;
 import com.fy.navi.service.define.route.RequestRouteResult;
 import com.fy.navi.service.define.route.RouteAlongCityParam;
@@ -59,10 +61,13 @@ import com.fy.navi.service.logicpaket.setting.SettingPackage;
 import com.fy.navi.service.logicpaket.signal.SignalPackage;
 import com.fy.navi.service.logicpaket.user.behavior.BehaviorPackage;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -448,6 +453,16 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
         }
     }
 
+    @Override
+    public void onReRoute() {
+        for (IRouteResultObserver routeResultObserver : mRouteResultObserverMap.values()) {
+            if (ConvertUtils.isEmpty(routeResultObserver)) {
+                continue;
+            }
+            routeResultObserver.onReroute();
+        }
+    }
+
     /**
      * 路线上充电站数据回调    、
      * @param json 路线信息
@@ -533,6 +548,13 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
         final long requestId = mRouteAdapter.requestRoute(param, paramList);
         mRequestId.put(param.getMMapTypeId(), requestId);
         return requestId;
+    }
+
+    /**
+     * 平行路切换完成重算路
+     */
+    public long requestSwitchParallelRoute(int switchRoadType, LocInfoBean locInfoBean, BigInteger roadID, short flag, short hwFlag) {
+        return mRouteAdapter.requestSwitchParallelRoute(switchRoadType, locInfoBean, roadID, flag, hwFlag);
     }
 
     /**
@@ -961,7 +983,7 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
             arrivalTimes.add(routeLineInfo.getMTravelTime());
         }
         routeLineLayerParam.setMEstimatedTimeOfArrival(arrivalTimes);
-        mLayerAdapter.drawRouteLine(mapTypeId, routeLineLayerParam);
+        mLayerAdapter.drawRouteLine(mapTypeId, mRequestRouteResults.get(mapTypeId));
     }
 
     /**
@@ -1062,9 +1084,9 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
             return;
         }
         previewParams.setScreenLeft(1350);
-        previewParams.setScreenRight(500);
-        previewParams.setScreenTop(170);
-        previewParams.setScreenBottom(20);
+        previewParams.setScreenRight(600);
+        previewParams.setScreenTop(210);
+        previewParams.setScreenBottom(200);
         mMapAdapter.showPreview(mapTypeId, previewParams);
     }
 
@@ -1241,6 +1263,20 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
     }
 
     /**
+     * 判断是否为算路态。
+     *
+     * @return true为算路态，false为算路态
+     */
+    public boolean isRouteState() {
+        final String currentNaviStatus = NavistatusAdapter.getInstance().getCurrentNaviStatus();
+        final Set<String> validStatuses = new HashSet<>(Set.of(
+                NaviStatus.NaviStatusType.ROUTING,
+                NaviStatus.NaviStatusType.SELECT_ROUTE
+        ));
+        return validStatuses.contains(currentNaviStatus);
+    }
+
+    /**
      * 获取路线上所有的点
      * @param mapTypeId 屏幕Id
      * @return 返回所有点信心
@@ -1356,6 +1392,20 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
     }
 
     /**
+     * 更新终点扎标数据
+     * @param mapTypeId 屏幕Id
+     * @param type 终点类别
+     * @param num 剩余油量获取电量
+     */
+    public void drawEndPoint(final MapType mapTypeId , final LayerItemRouteEndPoint.LayerRouteEndPointType type, final int num) {
+        Logger.d(TAG, "drawEndPoint: type " + type + ",num " + num);
+        final LayerItemRouteEndPoint layerItemRouteEndPoint = new LayerItemRouteEndPoint();
+        layerItemRouteEndPoint.setEndPointType(LayerItemRouteEndPoint.LayerRouteEndPointType.LAYER_ROUTE_END_TYPE_BATTERY);
+        layerItemRouteEndPoint.setRestNum(num);
+        mLayerAdapter.updateRouteEndPoint(mapTypeId, layerItemRouteEndPoint);
+    }
+
+    /**
      * 设置避开道路
      * @param routeAvoidInfo 避开参数
      */
@@ -1465,6 +1515,10 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
         param.setMRoutePriorityType(RoutePriorityType.ROUTE_TYPE_YAW);
         param.setRouteRequestCallBackType(isHome ? 0 : 1);
         mRouteAdapter.requestRoute(param, routeParams);
+    }
+
+    public Map<MapType, Long> getRequestIds() {
+        return mRequestId;
     }
 
     private static final class Helper {

@@ -21,6 +21,7 @@ import com.fy.navi.service.define.navi.CrossImageEntity;
 
 /**
  * 路口大图scene
+ *
  * @author yf
  * @version $Revision.*$
  */
@@ -60,12 +61,23 @@ public class SceneNaviCrossImageView extends NaviSceneBase<SceneNaviCrossImageVi
 
     @Override
     protected void initObserver() {
-        mScreenViewModel.registerObserver();
     }
 
     @Override
     protected NaviSceneId getSceneId() {
         return NaviSceneId.NAVI_SCENE_2D_CROSS;
+    }
+
+    @Override
+    public void hide() {
+        super.hide();
+        mScreenViewModel.hideCross();
+    }
+
+    @Override
+    public void show() {
+        super.show();
+        mScreenViewModel.setRoadCrossVisible(true);
     }
 
     /**
@@ -88,7 +100,7 @@ public class SceneNaviCrossImageView extends NaviSceneBase<SceneNaviCrossImageVi
     }
 
     /**
-     * @param isShowImage 是否显示图片
+     * @param isShowImage   是否显示图片
      * @param naviImageInfo 路口大图信息
      */
     public void onCrossImageInfo(final boolean isShowImage,
@@ -113,6 +125,7 @@ public class SceneNaviCrossImageView extends NaviSceneBase<SceneNaviCrossImageVi
 
     /**
      * 设置2D路口大图位置大小变化事件监听
+     *
      * @param rectChangedListener 监听
      */
     public void setRectChange2DRoadCross(final RectChangeListener rectChangedListener) {
@@ -126,17 +139,11 @@ public class SceneNaviCrossImageView extends NaviSceneBase<SceneNaviCrossImageVi
 
     /**
      * 设置2D路口大图进度
+     *
      * @param progress 进度
      */
     public void setProgress2DRoadCross(final int progress) {
         Logger.i(TAG, "SceneNaviCrossImageView progress：" + progress);
-    }
-
-    /**
-     * 设置路口大图区域点击事件监听
-     * @param listener 监听
-     */
-    public void setOnClickRoadCross(final OnClickListener listener) {
     }
 
     public void onImmersiveStatusChange(final ImersiveStatus currentImersiveStatus) {

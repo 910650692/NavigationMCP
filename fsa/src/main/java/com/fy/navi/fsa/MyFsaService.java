@@ -15,6 +15,7 @@ import android.view.Display;
 import android.view.WindowManager;
 
 import com.android.utils.gson.GsonUtils;
+import com.android.utils.log.Logger;
 import com.fy.navi.adas.JsonLog;
 import com.fy.navi.fsa.bean.DestInfo;
 import com.fy.navi.fsa.bean.GeoPoint;
@@ -71,6 +72,7 @@ import java.util.Objects;
 import java.util.Set;
 
 public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListener {
+    private static final String TAG = "MyFsaService";
 
     private FSAService mService;
     private boolean mServiceInitSuccess;
@@ -230,15 +232,13 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
      */
     @Override
     public void onReceiveRequest(final int functionId, final String payload) {
-        if (null == payload || payload.isEmpty()) {
-            Log.e(FsaConstant.FSA_TAG, "onReceiveRequest: empty payload, can't send event");
-            return;
-        }
-        Log.e(FsaConstant.FSA_TAG, "onReceiveRequest: " + payload + " - " + FsaIdString.event2String(payload));
         if (FsaConstant.FsaMethod.ID_REQUEST_MSG == functionId) {
+            Log.i(FsaConstant.FSA_TAG, "received method request: payload = " + payload + " - " + FsaIdString.event2String(payload));
             // checkStyle 方法太长故进行分割
             handlePayload1(payload);
             handlePayload2(payload);
+        } else {
+            Log.v(FsaConstant.FSA_TAG, "received method request: other function = " + functionId);
         }
     }
 
@@ -375,7 +375,7 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
                 sendDestinationInfo();
                 break;
             case FsaConstant.FsaEventPayload.CURRENT_ROAD:
-                // 获取当前路名
+                //1.1.8 获取当前路名
                 sendEventToMapCheckState(FsaConstant.FsaFunction.ID_CURRENT_ROAD, NaviStatus.NaviStatusType.NAVING, "");
                 break;
             case FsaConstant.FsaEventPayload.SERVICE_AREA:
@@ -476,7 +476,11 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
         final FsaServiceEvent event = (FsaServiceEvent) mService.eventHandler.getEventById(functionId);
         event.setOutputPayload(info.getBytes(StandardCharsets.UTF_8));
         JsonLog.saveJsonToCache(info, "fsa.json", functionId + "-" + FsaIdString.function2String(functionId));
-        Log.d(FsaConstant.FSA_TAG, "sendEvent: " + functionId + "-" + FsaIdString.function2String(functionId) + ", info = " + info);
+        if (functionId == FsaConstant.FsaFunction.ID_ENLARGE_ICON || functionId == FsaConstant.FsaFunction.ID_HUD_ENLARGE_MAP) {
+            Log.d(FsaConstant.FSA_TAG, "sendEvent: " + functionId + "-" + FsaIdString.function2String(functionId));
+        } else {
+            Log.d(FsaConstant.FSA_TAG, "sendEvent: " + functionId + "-" + FsaIdString.function2String(functionId) + ", info = " + info);
+        }
         mService.eventHandler.sendEvent(event, FSACatalog.DeviceName.UNKNOWN);
         if (isSave) {
             FsaNaviScene.getInstance().saveData(functionId, info);

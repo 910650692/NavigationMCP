@@ -69,13 +69,18 @@ class OkHttpUtils private constructor() {
     /**
      * post请求
      */
-    fun <T> postAsyncHttp(url: String, callback: OkHttpCallback<T>, requestBody: RequestBody): Call? {
+    fun <T> postAsyncHttp(url: String, mapHeader: Map<String, String> = emptyMap(), callback: OkHttpCallback<T>, requestBody: RequestBody): Call? {
         return try {
-            val request = Request.Builder()
+            val requestBuilder = Request.Builder()
                 .url(url)
                 .post(requestBody)
-                .build()
-                
+
+            mapHeader.forEach { (key, value) ->
+                requestBuilder.addHeader(key, value)
+            }
+
+            val request = requestBuilder.build()
+
             okHttpClient.newCall(request).apply {
                 enqueue(object : Callback {
                     override fun onFailure(call: Call, e: IOException) {
@@ -103,30 +108,30 @@ class OkHttpUtils private constructor() {
     /**
      * 异步post表单提交
      */
-    fun <T> postFromBody(map: Map<String, String>, url: String, callback: OkHttpCallback<T>): Call? {
+    fun <T> postFromBody(map: Map<String, String>, mapHeader: Map<String, String>, url: String, callback: OkHttpCallback<T>): Call? {
         val builder = FormBody.Builder()
         map.forEach { (key, value) -> 
             builder.add(key, value)
         }
-        return postAsyncHttp(url, callback, builder.build())
+        return postAsyncHttp(url, mapHeader, callback, builder.build())
     }
 
     /**
      * 异步json格式提交数据
      */
-    fun <T> postJson(map: Map<String, String>, url: String, callback: OkHttpCallback<T>): Call? {
+    fun <T> postJson(map: Map<String, String>, mapHeader: Map<String, String>, url: String, callback: OkHttpCallback<T>): Call? {
         val jsonBody = map.entries.joinToString("&") { (key, value) -> 
             "$key=$value"
         }
         val mediaType = "application/json; charset=utf-8".toMediaTypeOrNull()
         val requestBody = RequestBody.create(mediaType, jsonBody)
-        return postAsyncHttp(url, callback, requestBody)
+        return postAsyncHttp(url, mapHeader, callback, requestBody)
     }
 
     /**
      * post上传单张图片
      */
-    fun <T> postImage(file: File, url: String, callback: OkHttpCallback<T>): Call? {
+    fun <T> postImage(file: File, mapHeader: Map<String, String>, url: String, callback: OkHttpCallback<T>): Call? {
         val requestBody = MultipartBody.Builder()
             .setType(MultipartBody.FORM)
             .addFormDataPart(
@@ -135,7 +140,7 @@ class OkHttpUtils private constructor() {
                 RequestBody.create("image/png".toMediaTypeOrNull(), file)
             )
             .build()
-        return postAsyncHttp(url, callback, requestBody)
+        return postAsyncHttp(url, mapHeader, callback, requestBody)
     }
 
     /**

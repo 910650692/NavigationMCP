@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@drawable/layer_image_road_via_charge_station_bg"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/route_via_charge_position"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:text="123"
+        android:gravity="center"
+        android:textColor="@color/white"
+        android:background="@drawable/layer_image_route_via_charge_position_bg"
+        android:textSize="@dimen/sp_32"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <TextView
+        android:id="@+id/route_via_charge_time"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/route_via_charge_position"
+        android:layout_marginStart="@dimen/dp_10"
+        tools:text="充电 23 分钟"
+        android:textColor="@color/layer_route_via_charge_time_text_color"
+        android:textSize="@dimen/sp_24"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <TextView
+        android:id="@+id/route_via_charge_distance"
+        app:layout_constraintStart_toStartOf="@+id/route_via_charge_time"
+        app:layout_constraintTop_toBottomOf="@+id/route_via_charge_time"
+        android:layout_marginTop="@dimen/dp_6"
+        tools:text="间隔 32 公里"
+        android:textColor="@color/layer_route_via_charge_distance_text_color"
+        android:textSize="@dimen/sp_22"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

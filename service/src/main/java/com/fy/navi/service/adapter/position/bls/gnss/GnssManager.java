@@ -14,6 +14,7 @@ import android.os.Handler;
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 
+import com.android.utils.DeviceUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.LooperType;
 import com.android.utils.thread.ThreadManager;
@@ -97,17 +98,18 @@ public class GnssManager implements LocationListener, IUsedSatelliteNumCallback 
 
     @Override
     public void onLocationChanged(@NonNull Location location) {
-
-        // 输出位置信息
-        final StringBuilder sb = new StringBuilder();
-        sb.append("当前位置信息:")
-                .append("\n精度:").append(location.getLongitude())
-                .append("\n纬度:").append(location.getLatitude())
-                .append("\n高度:").append(location.getAltitude())
-                .append("\n速度:").append(location.getSpeed())
-                .append("\n方向:").append(location.getBearing())
-                .append("\n定位精度:").append(location.getAccuracy());
-        Logger.d(TAG, "原生 onLocationChanged ：" +sb.toString());
+        if (DeviceUtils.isCar(mContext)) {
+            // 输出位置信息
+            final StringBuilder sb = new StringBuilder();
+            sb.append("当前位置信息:")
+                    .append("\n精度:").append(location.getLongitude())
+                    .append("\n纬度:").append(location.getLatitude())
+                    .append("\n高度:").append(location.getAltitude())
+                    .append("\n速度:").append(location.getSpeed())
+                    .append("\n方向:").append(location.getBearing())
+                    .append("\n定位精度:").append(location.getAccuracy());
+            Logger.d(TAG, "原生 onLocationChanged ：" + sb.toString());
+        }
         mLocationListener.onLocationChanged(LocationUtil.getLocGnssByLocation(location, mUsedSatellite));
     }
 
@@ -129,7 +131,7 @@ public class GnssManager implements LocationListener, IUsedSatelliteNumCallback 
     @Override
     public void onSatelliteNum(int num) {
         mUsedSatellite = num;
-        if(mLocationListener!=null){
+        if (mLocationListener != null) {
             mLocationListener.onSatelliteNum(num);
         }
     }

@@ -8,5 +8,5 @@ import com.fy.navi.service.define.navi.L2NaviBean;
  * @date 2025/3/12
  */
 public interface L2DriveObserver {
-    void onSdTbtDataChange(String json);
+    void onSdTbtDataChange(L2NaviBean l2NaviBean);
 }

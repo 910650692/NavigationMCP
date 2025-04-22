@@ -26,7 +26,7 @@ import java.util.List;
 public class ManagerMapDataFragment extends BaseFragment<FragmentManagerMapDataBinding, ManagerMapDataViewModel> {
     private ManagerMapDataAdapter mDownloadingMapDataAdapter;
     private ManagerMapDataAdapter mDownloadedMapDataAdapter;
-    private boolean isDelete;
+    private boolean mIsDelete;
     private List<CityDataInfo> mAllDownloadingList = new ArrayList<>();
     private boolean mAllStartButtonChecked;
     private boolean mAllPauseButtonChecked;
@@ -60,6 +60,7 @@ public class ManagerMapDataFragment extends BaseFragment<FragmentManagerMapDataB
         final LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         mBinding.rvDownloadingOffline.setLayoutManager(layoutManager);
+        mBinding.rvDownloadingOffline.setItemAnimator(null);
         mBinding.rvDownloadingOffline.setAdapter(mDownloadingMapDataAdapter);
         mDownloadingMapDataAdapter.setOnChildClickListener(new ManagerMapDataAdapter.OnChildClickListener() {
 
@@ -105,7 +106,7 @@ public class ManagerMapDataFragment extends BaseFragment<FragmentManagerMapDataB
             @Override
             public void deleteAllTask(final ArrayList<Integer> cityAdCodes) {
                 Logger.d( "deleteAllTask cityAdCodes = " + GsonUtils.toJson(cityAdCodes));
-                isDelete = true;
+                mIsDelete = true;
                 mViewModel.deleteAllTask(cityAdCodes);
             }
 
@@ -119,7 +120,7 @@ public class ManagerMapDataFragment extends BaseFragment<FragmentManagerMapDataB
      */
     public void updateDownloadingView(final ArrayList<ProvDataInfo> provDataInfos) {
         ThreadManager.getInstance().postUi(() -> {
-            mDownloadingMapDataAdapter.setData(provDataInfos,isDelete,false);
+            mDownloadingMapDataAdapter.setData(provDataInfos,mIsDelete,false);
             if (!ConvertUtils.isEmpty(provDataInfos)) {
                 mAllDownloadingList.clear();
                 for (ProvDataInfo provDataInfo : provDataInfos) {
@@ -136,7 +137,7 @@ public class ManagerMapDataFragment extends BaseFragment<FragmentManagerMapDataB
      * @param childId
      * @param newValue
      */
-    public void notifyDowningView(int parentId, int childId, CityDownLoadInfo newValue) {
+    public void notifyDowningView(final int parentId, final int childId, final CityDownLoadInfo newValue) {
         mDownloadingMapDataAdapter.updateChild(parentId, childId, newValue);
 
         for (CityDataInfo cityDataInfo : mAllDownloadingList) {
@@ -150,9 +151,10 @@ public class ManagerMapDataFragment extends BaseFragment<FragmentManagerMapDataB
     /**
      * 更新已下载view
      * @param provDataInfos
+     * @param isChange
      */
-    public void updateDownloadedView(final ArrayList<ProvDataInfo> provDataInfos, boolean isChange) {
-        mDownloadedMapDataAdapter.setData(provDataInfos, isDelete, isChange);
+    public void updateDownloadedView(final ArrayList<ProvDataInfo> provDataInfos, final boolean isChange) {
+        mDownloadedMapDataAdapter.setData(provDataInfos, mIsDelete, isChange);
     }
 
     /**
@@ -269,6 +271,7 @@ public class ManagerMapDataFragment extends BaseFragment<FragmentManagerMapDataB
     /**
      * 显示弹框
      * @param isDownloading
+     * @param cityAdCodes
      */
     private void showDialog(final boolean isDownloading, final ArrayList<Integer> cityAdCodes) {
         ThreadManager.getInstance().postUi(() -> {

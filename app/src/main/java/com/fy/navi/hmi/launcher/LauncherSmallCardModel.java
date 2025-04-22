@@ -184,7 +184,7 @@ public class LauncherSmallCardModel extends BaseModel<BaseLauncherSmallCardViewM
      */
     public void resetMapCenterInScreen(final IBaseScreenMapView view) {
         final int left = (int) (view.getMapViewWidth() / 2);
-        final int top = (int) (view.getMapViewHeight() / 3);
+        final int top = (int) (view.getMapViewHeight() * 3/ 5);
         mapPackage.setMapCenterInScreen(getMapId(), left, top);
         mapPackage.goToCarPosition(view.provideMapTypeId());
         Logger.i(TAG, "resetMapCenterInScreen", "left:" + left, "top:" + top);

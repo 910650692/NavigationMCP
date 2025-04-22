@@ -4,6 +4,7 @@ import com.android.utils.ConvertUtils;
 import com.fy.navi.service.AdapterConfig;
 import com.fy.navi.service.define.layer.RouteLineLayerParam;
 import com.fy.navi.service.define.map.MapType;
+import com.fy.navi.service.define.position.LocInfoBean;
 import com.fy.navi.service.define.route.RouteAvoidInfo;
 import com.fy.navi.service.define.route.RouteCurrentPathParam;
 import com.fy.navi.service.define.route.RouteMsgPushInfo;
@@ -12,6 +13,7 @@ import com.fy.navi.service.define.route.RoutePreferenceID;
 import com.fy.navi.service.define.route.RouteRequestParam;
 import com.fy.navi.service.define.search.PoiInfoEntity;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -92,6 +94,19 @@ final public class RouteAdapter {
      */
     public long requestRoute(final RouteRequestParam param, final List<RouteParam> paramList) {
         return mRouteApi.requestRoute(param, paramList);
+    }
+
+    /**
+     * 平行路切换完成重算路
+     *
+     * @param switchRoadType 切换类型
+     * @param locInfoBean    定位
+     * @param roadID         路线ID
+     * @param flag           主辅路状态
+     * @param hwFlag         高架桥状态
+     */
+    public long requestSwitchParallelRoute(int switchRoadType, LocInfoBean locInfoBean, BigInteger roadID, short flag, short hwFlag) {
+       return mRouteApi.requestSwitchParallelRoute(switchRoadType, locInfoBean, roadID, flag, hwFlag);
     }
 
     /**

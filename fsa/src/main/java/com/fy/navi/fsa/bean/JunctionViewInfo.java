@@ -2,12 +2,33 @@ package com.fy.navi.fsa.bean;
 
 import java.util.Objects;
 
+/**
+ * 矢量放大图信息
+ */
 public class JunctionViewInfo {
+    /**
+     * remainDistance	int	剩余距离，单位：米
+     */
     private int remainDistance;
+    /**
+     * progressRatio	int	进度百分比
+     */
     private int progressRatio;
+    /**
+     * nextRoadName	String	放大图所在路名
+     */
     private String nextRoadName;
+    /**
+     * turnKind	int	转向类型
+     */
     private int turnKind;
+    /**
+     * imageBytes	String	放大图，Base64字符串，png/jpg
+     */
     private String imageBytes;
+    /**
+     * imageMimeType	String	图类型。“image/png”或“image/jpeg”
+     */
     private String imageMimeType;
 
     public int getRemainDistance() {

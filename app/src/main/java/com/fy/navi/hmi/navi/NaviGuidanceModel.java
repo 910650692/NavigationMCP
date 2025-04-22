@@ -13,8 +13,7 @@ import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
 import com.fy.navi.burypoint.anno.HookMethod;
 import com.fy.navi.burypoint.constant.BuryConstant;
-import com.fy.navi.hmi.map.OnPowerChangeListener;
-import com.fy.navi.hmi.map.PowerMonitorService;
+import com.fy.navi.hmi.R;
 import com.fy.navi.hmi.search.alongway.MainAlongWaySearchFragment;
 import com.fy.navi.hmi.search.searchresult.SearchResultFragment;
 import com.fy.navi.hmi.setting.SettingFragment;
@@ -33,6 +32,8 @@ import com.fy.navi.service.define.layer.GemLayerClickBusinessType;
 import com.fy.navi.service.define.layer.GemLayerItem;
 import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.map.MapTypeManager;
+import com.fy.navi.service.define.message.MessageCenterInfo;
+import com.fy.navi.service.define.message.MessageCenterType;
 import com.fy.navi.service.define.navi.CrossImageEntity;
 import com.fy.navi.service.define.navi.FyElecVehicleETAInfo;
 import com.fy.navi.service.define.navi.LaneInfoEntity;
@@ -59,7 +60,7 @@ import com.fy.navi.service.greendao.setting.SettingManager;
 import com.fy.navi.service.logicpaket.layer.ILayerPackageCallBack;
 import com.fy.navi.service.logicpaket.layer.LayerPackage;
 import com.fy.navi.service.logicpaket.map.MapPackage;
-import com.fy.navi.service.logicpaket.message.MessageCenterPackage;
+import com.fy.navi.service.logicpaket.message.MessageCenterManager;
 import com.fy.navi.service.logicpaket.navi.IGuidanceObserver;
 import com.fy.navi.service.logicpaket.navi.NaviPackage;
 import com.fy.navi.service.logicpaket.navi.OpenApiHelper;
@@ -80,14 +81,13 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implements
         IGuidanceObserver, ImmersiveStatusScene.IImmersiveStatusCallBack, ISceneCallback,
-        IRouteResultObserver, NetWorkUtils.NetworkObserver, OnPowerChangeListener,
-        SearchResultCallback, ILayerPackageCallBack {
+        IRouteResultObserver, NetWorkUtils.NetworkObserver, ILayerPackageCallBack {
     private static final String TAG = MapDefaultFinalTag.NAVI_HMI_TAG;
     private final NaviPackage mNaviPackage;
     private final RoutePackage mRoutePackage;
     private final LayerPackage mLayerPackage;
     private final MapPackage mMapPackage;
-    private final MessageCenterPackage mMsgCenterPackage;
+    private final MessageCenterManager messageCenterManager;
     private ImersiveStatus mCurrentStatus = ImersiveStatus.IMERSIVE;
     private List<NaviViaEntity> mViaList = new ArrayList<>();
     private NaviEtaInfo mNaviEtaInfo;
@@ -112,9 +112,6 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
     private final SearchPackage mSearchPackage;
     private ChargeTipManager mTipManager;
     private String mFilename = "";
-    private long mGasSearchId;
-    private long mChargeSearchId;
-    private PowerMonitorService mPowerMonitorService;
 
     public NaviGuidanceModel() {
         mMapPackage = MapPackage.getInstance();
@@ -123,9 +120,8 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
         mRoutePackage = RoutePackage.getInstance();
         mSearchPackage = SearchPackage.getInstance();
         mNetWorkUtils = NetWorkUtils.Companion.getInstance();
-        mMsgCenterPackage = MessageCenterPackage.getInstance();
+        messageCenterManager = MessageCenterManager.getInstance();
         mModelHelp = new NaviGuidanceHelp();
-        mPowerMonitorService = new PowerMonitorService();
     }
 
     @Override
@@ -138,9 +134,6 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
         mRoutePackage.registerRouteObserver(NaviConstant.KEY_NAVI_MODEL, this);
         mNetWorkUtils.registerNetworkObserver(this);
         mCurrentNetStatus = mNetWorkUtils.checkNetwork();
-        mSearchPackage.registerCallBack(NaviConstant.KEY_NAVI_MODEL, this);
-        mPowerMonitorService.registerListener(this);
-        mPowerMonitorService.startSchedule();
         mLayerPackage.registerCallBack(MapType.MAIN_SCREEN_MAIN_MAP, this);
     }
 
@@ -313,9 +306,6 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
         }
         if (mTipManager != null) {
             mTipManager.unInit();
-        }
-        if (!ConvertUtils.isEmpty(mPowerMonitorService)) {
-            mPowerMonitorService.unRegisterListener(this);
         }
     }
 
@@ -564,42 +554,6 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
         return Boolean.TRUE.equals(isNetConnected);
     }
 
-    @Override
-    public void onElectricLowerNotify() {
-        if (mSearchPackage != null) {
-            mChargeSearchId = mSearchPackage.enRouteKeywordSearch("充电桩", true);
-            Logger.i(TAG, "onElectricLowerNotify-alongWaySearch:" + mGasSearchId);
-        }
-    }
-
-    @Override
-    public void onGasLowerNotify() {
-        if (mSearchPackage != null) {
-            mGasSearchId = mSearchPackage.enRouteKeywordSearch("加油站", true);
-            Logger.i(TAG, "onGasLowerNotify-alongWaySearch:" + mGasSearchId);
-        }
-    }
-
-    @Override
-    public void onSilentSearchResult(int taskId, int errorCode, String message, SearchResultEntity searchResultEntity) {
-        SearchResultCallback.super.onSilentSearchResult(taskId, errorCode, message, searchResultEntity);
-        final boolean isPureGasCar = taskId == mGasSearchId;
-        final boolean isSuccess = !ConvertUtils.isNull(searchResultEntity) && !ConvertUtils.isEmpty(searchResultEntity.getPoiList());
-        Logger.i(TAG, "onSearchResult", "isSuccess:" + isSuccess, "mChargeSearchId:" + mChargeSearchId, "mGasSearchId:" + mGasSearchId, "taskId:" + taskId);
-        ThreadManager.getInstance().postUi(() -> {
-            if ((taskId == mGasSearchId || taskId == mChargeSearchId) && isSuccess) {
-                mViewModel.cardBatteryTip(searchResultEntity, isPureGasCar);
-                // 确保提示成功后再取消定时器
-                mPowerMonitorService.stopSchedule();
-            }
-        });
-    }
-
-    @Override
-    public void onSearchResult(int taskId, int errorCode, String message, SearchResultEntity searchResultEntity) {
-
-    }
-
     public interface OnNetStatusChangeListener {
         /**
          * @param isConnected true 网络可用，false 网络不可用
@@ -720,12 +674,12 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
     public void onShowNaviWeather(RouteWeatherInfo info) {
         IGuidanceObserver.super.onShowNaviWeather(info);
         Logger.i(TAG, "onShowNaviWeather");
-        // TODO 待实现和自测，等待tangchao
-//        final MessageCenterInfo centerInfo = new MessageCenterInfo();
-//        centerInfo.setMsgContent("desc==============");
-//        centerInfo.setMsgTitle("title");
-//        centerInfo.setMsgType(MessageCenterType.ROAD_LIMIT);
-//        mMsgCenterPackage.pushMessage(centerInfo);
+        final MessageCenterInfo centerInfo = new MessageCenterInfo();
+        centerInfo.setMsgTitle(info.getMWeatherName());
+        centerInfo.setMsgContent(info.getMText());
+        centerInfo.setSrcImg(R.drawable.img_message_center_weather);
+        centerInfo.setMsgType(MessageCenterType.WEATHER);
+        messageCenterManager.pushMessage(centerInfo);
     }
 
     private void showDeleteAllTip(final NaviViaEntity entity) {
@@ -768,42 +722,10 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
     public void onRouteSuccess(String successMsg) {
         Logger.i(TAG, "onRouteSuccess");
         mViewModel.updateViaList();
-    }
-
-    @Override
-    public boolean isNeedCloseNaviChargeTipLater() {
-        return mViewModel.isNeedCloseNaviChargeTipLater();
-    }
-
-    /***
-     * 推荐的Scene立即导航
-     * ·点击卡片右侧【算路箭头】区域直接变更目的地开始导航，不进行路线规划。
-     * @param poiInfo
-     */
-    @Override
-    public void startNaviRightNow(PoiInfoEntity poiInfo) {
-        ISceneCallback.super.startNaviRightNow(poiInfo);
-        if (mRoutePackage != null) {
-            mRoutePackage.requestChangeEnd(MapTypeManager.getInstance().getMapTypeIdByName(mViewModel.mScreenId), poiInfo);
+        // 如果是预览状态，还是进入预览
+        if (mNaviPackage.getPreviewStatus()) {
+            OpenApiHelper.enterPreview(MapType.MAIN_SCREEN_MAIN_MAP);
         }
-    }
-
-    @Override
-    public void showRecChargeList(SearchResultEntity searchResultEntity) {
-        ISceneCallback.super.showRecChargeList(searchResultEntity);
-        mViewModel.updateRecChargeList(searchResultEntity);
-    }
-
-    @Override
-    public void showRecGasList(SearchResultEntity searchResultEntity) {
-        ISceneCallback.super.showRecGasList(searchResultEntity);
-        mViewModel.updateRecGasList(searchResultEntity);
-    }
-
-    @Override
-    public void showRecParkList(final List<NaviParkingEntity> list) {
-        ISceneCallback.super.showRecParkList(list);
-        mViewModel.updateRecParkingList(list);
     }
 
     @Override
@@ -832,6 +754,21 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
         Fragment fragment = StackManager.getInstance().
                 getCurrentFragment(MapType.MAIN_SCREEN_MAIN_MAP.name());
         return fragment instanceof NaviGuidanceFragment;
+    }
+
+    @Override
+    public void hideNaviContent() {
+        if (null != mViewModel) {
+            mViewModel.hideNaviContent();
+        }
+    }
+
+    @Override
+    public boolean isNeedPreViewShowList() {
+        if (mViewModel != null) {
+            return mViewModel.isNeedPreViewShowList();
+        }
+        return false;
     }
 
     public void backToNaviFragment() {

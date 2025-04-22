@@ -1,10 +1,28 @@
 package com.fy.navi.fsa.bean;
 
+/**
+ * 1.1.13、获取导航态限速信息（非区间限速）
+ */
 public class ForwardCameraInfo {
+    /**
+     * type	int	摄像头类型，当前只支持限速、红绿灯、违章摄像头，取值参考CameraInfo类的type字段
+     */
     private int type;
+    /**
+     * remainDistance	int	当前为止距离摄像头的距离
+     */
     private int remainDistance;
+    /**
+     * speedLimit	int	限速摄像头的限速值，单位：米/秒。限速摄像头才有效
+     */
     private int speedLimit;
+    /**
+     * isOverSpeed	boolean	是否超速，限速摄像头才有效
+     */
     private boolean isOverSpeed;
+    /**
+     * position	GeoPoint	摄像头的位置信息
+     */
     private GeoPoint position;
 
     public ForwardCameraInfo() {

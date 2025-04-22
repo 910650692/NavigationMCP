@@ -52,7 +52,13 @@ public class GasStationAdapter extends RecyclerView.Adapter<GasStationAdapter.Ho
 
     @Override
     public void onBindViewHolder(final Holder holder, @SuppressLint("RecyclerView")final int position) {
-        holder.mGasStationItemBinding.poiGasOilType.setText(mGasStationInfos.get(position).getType());
+        String type = mGasStationInfos.get(position).getType();
+        if ("B5生物柴油".equals(type)) {
+            type = "B5";
+        } else if ("0#车柴".equals(type)) {
+            type = "0#";
+        }
+        holder.mGasStationItemBinding.poiGasOilType.setText(type);
         holder.mGasStationItemBinding.poiGasOilPrice.setText(mGasStationInfos.get(position).getPrice());
     }
 

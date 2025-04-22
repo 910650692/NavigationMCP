@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="viewModel"
+            type="com.fy.navi.hmi.search.alongway.AlongWaySearchViewModel" />
+    </data>
+
+
+    <com.fy.navi.ui.view.SkinLinearLayout
+        clickCommand="@{viewModel.rootClick}"
+        android:layout_width="@dimen/dp_640"
+        android:layout_height="match_parent"
+        android:clickable="true"
+        android:orientation="vertical">
+
+        <com.fy.navi.scene.ui.search.SceneQuickSearchView
+            android:id="@+id/scene_quick_search_view"
+            android:layout_width="@dimen/dp_640"
+            android:layout_height="match_parent" />
+    </com.fy.navi.ui.view.SkinLinearLayout>
+</layout>

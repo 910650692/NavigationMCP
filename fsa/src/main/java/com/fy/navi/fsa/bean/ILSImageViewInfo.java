@@ -2,18 +2,57 @@ package com.fy.navi.fsa.bean;
 
 import java.util.Objects;
 
+/**
+ * 图片放大图信息
+ */
 public class ILSImageViewInfo {
+    /**
+     * type	int	0 - RGB格式
+     */
     private int type;
+    /**
+     * width	int	放大图宽度
+     */
     private int width;
+    /**
+     * height	int	放大图高度
+     */
     private int height;
+    /**
+     * remainDistance	int	剩余距离，单位：米
+     */
     private int remainDistance;
+    /**
+     * progressRatio	int	进度百分比
+     */
     private int progressRatio;
+    /**
+     * arrowMapName	String	箭头图的名字
+     */
     private String arrowMapName;
+    /**
+     * backgroundMapName	String	背景图的名字
+     */
     private String backgroundMapName;
+    /**
+     * nextRoadName	String	放大图所在路名
+     */
     private String nextRoadName;
+    /**
+     * backgroundMapBytes	String	背景图，Base64字符串png/jpg
+     */
     private String backgroundMapBytes;
+    /**
+     * arrowMapBytes	String	箭头图，Base64字符串png/jpg
+     */
     private String arrowMapBytes;
+    /**
+     * backgroundMimeType	String	背景图类型。“image/png”或“image/jpeg”
+     */
     private String backgroundMimeType;
+    /**
+     * arrowMimeType	String	箭头图类型。“image/png”或“image/jpeg”
+     */
     private String arrowMimeType;
 
     public int getType() {

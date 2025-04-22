@@ -80,6 +80,9 @@ public class SceneNaviViaInfoImpl extends BaseSceneModel<SceneNaviViaInfoView> {
             final ArrayList<NaviEtaInfo.NaviTimeAndDist> viaRemain = naviEtaInfo.viaRemain;
             Logger.i(TAG, "checkWaypointInfo ", "viaRemain.size() = " + viaRemain.size() +
                     " viaName = " + viaName);
+            if (ConvertUtils.isEmpty(viaName)) {
+                return;
+            }
             if (!ConvertUtils.isEmpty(viaRemain)) {
                 final NaviEtaInfo.NaviTimeAndDist naviTimeAndDist = viaRemain.get(0);
                 final int dist = naviTimeAndDist.dist;
@@ -87,6 +90,7 @@ public class SceneNaviViaInfoImpl extends BaseSceneModel<SceneNaviViaInfoView> {
                 // 因为viaPass是先更新，途经点名称更新后距离又比较小会导致重复调用，这边距离加上上限
                 if (dist <= 500 && dist > 200) {
                     onViaWaypoint(viaName);
+                    updateViaInfo();
                 }
             }
             if (!viaName.equals(mViaName)) {

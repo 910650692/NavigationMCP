@@ -1,7 +1,16 @@
 package com.fy.navi.fsa.bean;
 
+/**
+ * 服务区信息
+ */
 public class ServiceAreaInfo {
+    /**
+     * 位置
+     */
     private GeoPoint location;
+    /**
+     * 服务区名字
+     */
     private String name;
 
     public ServiceAreaInfo() {

@@ -4,7 +4,11 @@ import android.util.Log;
 
 import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
+import com.fy.navi.adas.bean.Coord;
 import com.fy.navi.adas.bean.OddBean;
+import com.fy.navi.adas.bean.OddResponse;
+import com.fy.navi.adas.bean.SwitchSegments;
+import com.fy.navi.service.define.navi.L2NaviBean;
 import com.fy.navi.service.define.navi.PlayModule;
 import com.fy.navi.service.define.navi.SoundInfoEntity;
 import com.fy.navi.service.logicpaket.calibration.CalibrationPackage;
@@ -25,44 +29,75 @@ import com.google.protobuf.InvalidProtocolBufferException;
 
 import java.nio.charset.StandardCharsets;
 
+/**
+ * L2++ 管理类
+ */
 public final class L2PPManager {
+    //本类TAG
     private static final String TAG = L2PPManager.class.getSimpleName();
 
+    /**
+     * 车端高级辅助驾驶系统 管理类
+     */
     private AdasManager mAdasManager;
+    /**
+     * 是否初始化
+     */
     private boolean mInitialized = false;
 
+    /**
+     * 获取L2PPManager实例
+     * @return
+     */
     public static L2PPManager getInstance() {
         return SingleHolder.INSTANCE;
     }
 
+    /**
+     * 创建L2PPManager实例
+     */
     private final static class SingleHolder {
         private static final L2PPManager INSTANCE = new L2PPManager();
     }
 
-    private L2PPManager() {
-    }
+    /**
+     * 防止构造函数创建
+     */
+    private L2PPManager() {}
 
+    /**
+     * 算路观察者
+     */
     private final IRouteResultObserver mIRouteResultObserver = new IRouteResultObserver() {
+        /**
+         * 路线上充电站数据回调    、
+         * @param json 路线信息
+         */
         @Override
         public void onL2DataCallBack(final String json) {
             if (json == null) {
-                Log.w(TAG, "onL2DataCallBack: json null");
+                Logger.w(TAG, "onL2DataCallBack: json null");
                 return;
             }
-            Log.i(TAG, "send route data: " + json);
-//            JsonLog.print("send route data", json);
+            Logger.d(TAG, "onL2DataCallBack send route data: " + json);
             JsonLog.saveJsonToCache(json, "l2.json", "l2_route");
+            //通过高级辅助驾驶系统管理类 将高德算出来的路线信息发出去
+            //DataType.SDRoute 路线数据
             mAdasManager.sendData(DataType.SDRoute, json.getBytes());
         }
     };
 
+    /**
+     * TBT数据
+     */
     private final L2InfoCallback mL2InfoCallback = new L2InfoCallback() {
         @Override
-        public void onSdTbtDataChange(final String json) {
-            if (json == null) {
-                Log.w(TAG, "onSdTbtDataChange: json null");
+        public void onSdTbtDataChange(final L2NaviBean l2NaviBean) {
+            if (l2NaviBean == null) {
+                Log.w(TAG, "onSdTbtDataChange: l2NaviBean null");
                 return;
             }
+            String json = GsonUtils.toJson(l2NaviBean);
             Log.v(TAG, "send tbt data: " + json);
 //            JsonLog.print("send tbt data", json);
             JsonLog.saveJsonToCache(json, "l2.json", "l2_tbt");
@@ -70,34 +105,75 @@ public final class L2PPManager {
         }
     };
 
-    private DataCallback mDataCallback = new DataCallback() {
+    /**
+     * Map provider向MFF返回的matching response的接口和数据结构
+     */
+    private final DataCallback mDataCallback = new DataCallback() {
         @Override
         public void onDataCallback(final DataType dataType, final byte[] bytes) {
             if (dataType == null) {
-                Log.w(TAG, "onDataCallback: ");
+                Logger.w(TAG, "onDataCallback: dataType null");
                 return;
             }
             if (bytes == null) {
-                Log.w(TAG, "onDataCallback: ");
+                Logger.w(TAG, "onDataCallback: bytes null");
                 return;
             }
-            Log.i(TAG, "onDataCallback: dataType = " + dataType);
+            Logger.d(TAG, "onDataCallback: dataType = " + dataType);
             if (dataType != DataType.SDMapReserve) {
                 return;
             }
             final String jsonString = new String(bytes, StandardCharsets.UTF_8);
             JsonLog.saveJsonToCache(jsonString, "odd.json");
-            Log.i(TAG, "onDataCallback: oddBean = " + jsonString);
+            Logger.d(TAG, "onDataCallback: oddBean = " + jsonString);
             try {
                 final OddBean oddBean = GsonUtils.fromJson(jsonString, OddBean.class);
+                if (oddBean == null) {
+                    Log.e(TAG, "onDataCallback: oddBean null");
+                    return;
+                }
+                if (oddBean.getError_code() == 0) {
+                    OddResponse response = oddBean.getResponse();
+                    if (response == null) {
+                        Log.e(TAG, "onDataCallback: response null");
+                        return;
+                    }
+                    if (response.getStatus_code() == 0) {
+                        SwitchSegments[] switchSegments = response.getSwitch_segments();
+                        if (switchSegments == null) {
+                            Log.e(TAG, "onDataCallback: switchSegments null");
+                            return;
+                        }
+                        for (SwitchSegments switchSegment : switchSegments) {
+                            if (switchSegment == null) {
+                                continue;
+                            }
+                            /*
+                            0 UNMATCH
+                            9 sd unp
+                            10 sd hnp
+                            11 sd odd close
+                             */
+                            int mode = switchSegment.getMode();
+                            if (mode == 9 || mode == 10){
+
+                            }
+                            Coord[] coords = switchSegment.getCoords();
+                        }
+                    } else {
+                        Logger.e(TAG, "onDataCallback: StatusCode = " + response.getStatus_code() + "--" + response.getMessage());
+                    }
+                } else {
+                    Logger.e(TAG, "onDataCallback: ErrorCode = " + oddBean.getError_code() + "--" + oddBean.getError_message());
+                }
                 // TODO nop扎标
             } catch (Exception e) {
-                Log.e(TAG, "onDataCallback: fromJson error", e);
+                Logger.e(TAG, "onDataCallback: fromJson error", e);
             }
         }
     };
 
-    private PropertyCallback mPropertyCallback = new PropertyCallback() {
+    private final PropertyCallback mPropertyCallback = new PropertyCallback() {
         @Override
         public void onPropertyChange(final int propertyId, final byte[] result) {
             if (result == null) {
@@ -305,6 +381,9 @@ public final class L2PPManager {
         }
     }
 
+    /**
+     * 车速变化
+     */
     private SignalCallback mSignalCallback = new SignalCallback() {
         @Override
         public void onLaneCenteringWarningIndicationRequestIdcmAChanged(final int state) {

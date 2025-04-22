@@ -12,6 +12,7 @@ import com.fy.navi.service.define.map.MapMode;
 import com.fy.navi.service.define.map.MapStateStyle;
 import com.fy.navi.service.define.map.MapViewParams;
 import com.fy.navi.service.define.map.MapType;
+import com.fy.navi.service.define.mfc.MfcController;
 
 import java.util.ArrayList;
 
@@ -46,6 +47,7 @@ public class MapAdapterImpl implements IMapApi {
                 mapView.getScreenWidth(), mapView.getScreenHeight(),
                 mapView.getScreenDensityDpi());
         MapViewImpl mapSurfaceViewImp = mapViewPoolManager.get(mapView.provideMapTypeId(), mapViewParams);
+        mapSurfaceViewImp.changeMapViewParams(mapViewParams);
         mapView.bindMapView(mapSurfaceViewImp);
     }
 
@@ -94,6 +96,11 @@ public class MapAdapterImpl implements IMapApi {
     }
 
     @Override
+    public GeoPoint getMapCenter(MapType mapTypeId) {
+        return mapViewPoolManager.get(mapTypeId).getMapCenter();
+    }
+
+    @Override
     public boolean setTrafficStates(MapType mapTypeId, boolean isOpen) {
         return mapViewPoolManager.get(mapTypeId).setTrafficStates(isOpen);
     }
@@ -126,6 +133,11 @@ public class MapAdapterImpl implements IMapApi {
     @Override
     public void goToCarPosition(MapType mapTypeId, boolean bAnimation, boolean changeLevel) {
         mapViewPoolManager.get(mapTypeId).goToCarPosition(bAnimation, changeLevel);
+    }
+
+    @Override
+    public void mfcMoveMap(MapType mapTypeId, MfcController mfcController, int moveDistance) {
+        mapViewPoolManager.get(mapTypeId).mfcMoveMap(mfcController, moveDistance);
     }
 
     @Override

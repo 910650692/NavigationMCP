@@ -49,6 +49,7 @@ public class BaseTrafficViewModel extends BaseViewModel<TrafficEventFragment, Tr
     public ObservableField<String> currentIndicator = new ObservableField<>("");
     public ObservableField<Boolean> preEnable = new ObservableField<>(true);
     public ObservableField<Boolean> nextEnable = new ObservableField<>(true);
+    public ObservableField<String> mLoadingDesc = new ObservableField<>("");
 
     private int currentIndex = 0;
     private boolean isDoThumb = false; // 去点赞
@@ -66,6 +67,7 @@ public class BaseTrafficViewModel extends BaseViewModel<TrafficEventFragment, Tr
         currentIndex = 0;
         if (fyGTraEventDetail.get() == null || !fyGTraEventDetail.get().isRequestSuccess || poiInfo != entity) {
             uiState.set(TrafficEventUiState.LOADING);
+            mLoadingDesc.set(AppContext.getInstance().getMContext().getString(R.string.limit_loading));
             mModel.queryTrafficEventInfo(entity);
             this.poiInfo = entity;
         } else {
@@ -168,6 +170,8 @@ public class BaseTrafficViewModel extends BaseViewModel<TrafficEventFragment, Tr
 
     public void updateUi(final FyGTraEventDetail gTraEventDetail, boolean isFromChild) {
         Logger.i(TAG, "updateUi:" + (gTraEventDetail != null), "isSuccess:" + gTraEventDetail.isRequestSuccess);
+        mLoadingDesc.set(gTraEventDetail.isRequestSuccess ? AppContext.getInstance().getMContext().getString(R.string.limit_loading)
+                : AppContext.getInstance().getMContext().getString(R.string.limit_load_fail));
         if (!isFromChild) {
             uiState.set(gTraEventDetail.isRequestSuccess ? TrafficEventUiState.SUCCESS : TrafficEventUiState.ERROR);
             if (!gTraEventDetail.isRequestSuccess) {

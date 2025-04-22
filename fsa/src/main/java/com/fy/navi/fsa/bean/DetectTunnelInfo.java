@@ -1,8 +1,20 @@
 package com.fy.navi.fsa.bean;
 
+/**
+ *    隧道信息
+ */
 public class DetectTunnelInfo {
+    /**
+     * tunnelLength	int	隧道长度
+     */
     private int tunnelLength;
+    /**
+     * distToTunnelEntrance	int	距离隧道入口的距离
+     */
     private int distToTunnelEntrance;
+    /**
+     * distToTunnelExit	int	距离隧道出口的距离
+     */
     private int distToTunnelExit;
 
     public DetectTunnelInfo() {

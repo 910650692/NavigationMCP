@@ -46,6 +46,7 @@ final public class BehaviorPackage implements BehaviorAdapterCallBack {
     private final LayerAdapter mLayerAdapter;
     private final List<FavoriteStatusCallback> mFavoriteStatusCallbacks = new ArrayList<>();
     private final SettingManager mSettingManager;
+    private boolean mIsFavoriteDataUpdated = true;      //设置开关关闭时是否有收藏信息变更；
 
     private BehaviorPackage() {
         mBehaviorAdapter = BehaviorAdapter.getInstance();
@@ -614,6 +615,7 @@ final public class BehaviorPackage implements BehaviorAdapterCallBack {
         final String isFavoritePointStr = mSettingManager.getValueByKey(SettingController.KEY_SETTING_FAVORITE_POINT);
         final boolean isFavoritePoint = TextUtils.equals(isFavoritePointStr, "true");
         LayerPackage.getInstance().setFavoriteVisible(MapType.MAIN_SCREEN_MAIN_MAP, isFavoritePoint);
+        mIsFavoriteDataUpdated = !isFavoritePoint;
 
         // 通知主图更新收藏点
         ThreadManager.getInstance().postDelay(() -> {
@@ -627,5 +629,21 @@ final public class BehaviorPackage implements BehaviorAdapterCallBack {
                 LayerPackage.getInstance().removeFavoriteMain(MapType.MAIN_SCREEN_MAIN_MAP, poiInfoEntity);
             }
         }, 100);
+    }
+
+    /**
+     * 获取开关关闭时收藏信息是否有更新
+     * @return isFavoriteDataUpdated
+     */
+    public boolean getFavoriteDataUpdatedStatus() {
+        return mIsFavoriteDataUpdated;
+    }
+
+    /**
+     * 设置收藏信息是否更新状态
+     * @param isSet
+     */
+    public void setFavoriteDataUpdatedStatus(final boolean isSet) {
+        this.mIsFavoriteDataUpdated = isSet;
     }
 }

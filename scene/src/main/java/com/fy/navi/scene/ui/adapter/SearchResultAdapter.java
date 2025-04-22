@@ -378,25 +378,48 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
      */
     private void refreshChargeStationView(final ResultHolder resultHolder) {
         Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "refreshChargeStationView");
+        // 重置includeview中视图状态避免数据重用导致数据异常加载
+        resultHolder.mResultItemBinding.scenePoiItemChargeView.poiChargeFastRoot.setVisibility(View.VISIBLE);
+        resultHolder.mResultItemBinding.scenePoiItemChargeView.poiChargeSlowRoot.setVisibility(View.VISIBLE);
+        resultHolder.mResultItemBinding.scenePoiItemChargeView.poiChargeFastFree.setText("");
+        resultHolder.mResultItemBinding.scenePoiItemChargeView.poiChargeFastTotal.setText("");
+        resultHolder.mResultItemBinding.scenePoiItemChargeView.poiChargeFastTotal.setVisibility(View.VISIBLE);
+        resultHolder.mResultItemBinding.scenePoiItemChargeView.poiChargeSlowFree.setText("");
+        resultHolder.mResultItemBinding.scenePoiItemChargeView.poiChargeSlowTotal.setText("");
+        resultHolder.mResultItemBinding.scenePoiItemChargeView.poiChargeSlowTotal.setVisibility(View.VISIBLE);
+
         final List<ChargeInfo> chargeInfos = mPoiInfoEntity.getChargeInfoList();
         final ChargeInfo chargeInfo = chargeInfos.get(0);
-        final String fastFree = chargeInfo.getFast_free() == 0 ? "--" : chargeInfo.getFast_free() + "";
-        final String fastTotal = chargeInfo.getFast_total() == 0 ? "" : "/" + chargeInfo.getFast_total();
+        final String fastFree = chargeInfo.getFast_free() == 0 ? "" : chargeInfo.getFast_free() + "";
+        String fastTotal = chargeInfo.getFast_total() == 0 ? "" : "/" + chargeInfo.getFast_total();
         resultHolder.mResultItemBinding.scenePoiItemChargeView.poiChargeFastFree.setText(fastFree);
-        if (!ConvertUtils.isEmpty(fastTotal)) {
-            resultHolder.mResultItemBinding.scenePoiItemChargeView.poiChargeFastTotal.setText(fastTotal);
-        } else {
+        if (ConvertUtils.isEmpty(fastFree) && ConvertUtils.isEmpty(fastTotal)) {
+            resultHolder.mResultItemBinding.scenePoiItemChargeView.poiChargeFastRoot.setVisibility(View.GONE);
+        } else if (ConvertUtils.isEmpty(fastFree)) {
+            resultHolder.mResultItemBinding.scenePoiItemChargeView.poiChargeFastFree.setVisibility(View.GONE);
+        } else if (ConvertUtils.isEmpty(fastTotal)) {
             resultHolder.mResultItemBinding.scenePoiItemChargeView.poiChargeFastTotal.setVisibility(View.GONE);
         }
+        if (!ConvertUtils.isEmpty(fastTotal) && ConvertUtils.isEmpty(fastFree)) {
+            fastTotal = chargeInfo.getFast_total() + "";
+            resultHolder.mResultItemBinding.scenePoiItemChargeView.poiChargeFastTotal.setText(fastTotal);
+        }
 
-        final String slowFree = chargeInfo.getSlow_free() == 0 ? "--" : chargeInfo.getSlow_free() + "";
-        final String slowTotal = chargeInfo.getSlow_total() == 0 ? "" : "/" + chargeInfo.getSlow_total();
+        final String slowFree = chargeInfo.getSlow_free() == 0 ? "" : chargeInfo.getSlow_free() + "";
+        String slowTotal = chargeInfo.getSlow_total() == 0 ? "" : "/" + chargeInfo.getSlow_total();
         resultHolder.mResultItemBinding.scenePoiItemChargeView.poiChargeSlowFree.setText(slowFree);
-        if (!ConvertUtils.isEmpty(slowTotal)) {
-            resultHolder.mResultItemBinding.scenePoiItemChargeView.poiChargeSlowTotal.setText(fastTotal);
-        } else {
+        if (ConvertUtils.isEmpty(slowFree) && ConvertUtils.isEmpty(slowTotal)) {
+            resultHolder.mResultItemBinding.scenePoiItemChargeView.poiChargeSlowRoot.setVisibility(View.GONE);
+        } else if (ConvertUtils.isEmpty(slowFree)) {
+            resultHolder.mResultItemBinding.scenePoiItemChargeView.poiChargeSlowFree.setVisibility(View.GONE);
+        } else if (ConvertUtils.isEmpty(slowTotal)) {
             resultHolder.mResultItemBinding.scenePoiItemChargeView.poiChargeSlowTotal.setVisibility(View.GONE);
         }
+        if (!ConvertUtils.isEmpty(slowTotal) && ConvertUtils.isEmpty(slowFree)) {
+            slowTotal = chargeInfo.getSlow_total() + "";
+            resultHolder.mResultItemBinding.scenePoiItemChargeView.poiChargeSlowTotal.setText(slowTotal);
+        }
+
         resultHolder.mResultItemBinding.scenePoiItemChargeView.poiChargePrice.setText(
                 resultHolder.mResultItemBinding.getRoot().getContext().getString(
                 R.string.charge_price_simple, chargeInfo.getCurrentElePrice()));

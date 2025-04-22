@@ -55,7 +55,7 @@ public class BaseRouteLine implements Parcelable {
         dest.writeByte((byte) (mCanBeArrive ? 1 : 0));
     }
 
-    public static final Creator<BaseRouteLine> CREATOR = new Creator<>() {
+    public static final Creator<BaseRouteLine> CREATOR = new Creator<BaseRouteLine>() {
         @Override
         public BaseRouteLine createFromParcel(final Parcel source) {
             return new BaseRouteLine(source);

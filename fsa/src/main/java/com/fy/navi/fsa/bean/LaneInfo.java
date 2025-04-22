@@ -3,8 +3,17 @@ package com.fy.navi.fsa.bean;
 import java.util.ArrayList;
 
 public class LaneInfo {
+    /**
+     * 到车道线的剩余距离
+     */
     private int remainDistance;
+    /**
+     * 当前车道线的位置
+     */
     private GeoPoint position;
+    /**
+     * 车道线信息
+     */
     private ArrayList<LaneItem> itemList;
 
     public int getRemainDistance() {

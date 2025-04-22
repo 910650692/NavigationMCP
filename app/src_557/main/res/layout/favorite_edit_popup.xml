@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <com.fy.navi.ui.view.SkinLinearLayout
+        android:layout_width="@dimen/dp_418"
+        android:layout_height="@dimen/dp_130"
+        android:orientation="horizontal"
+        android:background="@drawable/bg_setting_popup">
+
+        <com.fy.navi.ui.view.SkinTextView
+            android:id="@+id/favorite_item_rename"
+            android:layout_width="@dimen/dp_0"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="@string/favorite_item_rename"
+            android:textSize="@dimen/sp_28"
+            android:gravity="center"
+            android:textColor="@color/color_black_70"/>
+
+        <com.fy.navi.ui.view.SkinView
+            android:layout_width="@dimen/dp_1"
+            android:layout_height="@dimen/dp_62"
+            android:layout_gravity="center"
+            android:background="@color/setting_line"/>
+
+        <com.fy.navi.ui.view.SkinTextView
+            android:id="@+id/favorite_item_delete"
+            android:layout_width="@dimen/dp_0"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="@string/favorite_item_delete"
+            android:textSize="@dimen/sp_28"
+            android:gravity="center"
+            android:textColor="@color/color_black_70"/>
+
+    </com.fy.navi.ui.view.SkinLinearLayout>
+
+</layout>

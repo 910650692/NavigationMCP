@@ -77,13 +77,12 @@ public class SceneNaviCrossImageImpl extends BaseSceneModel<SceneNaviCrossImageV
         notifySceneStateChange(false);
     }
 
-    /**
-     * 注册观察者
-     */
-    public void registerObserver() {
-//        mLayerPackage.setVisible(mMapTypeId, NaviConstant.CrossType.CrossTypeGrid, false);
-//        mLayerPackage.setVisible(mMapTypeId, NaviConstant.CrossType.CrossTypeVector, false);
-//        mLayerPackage.setVisible(mMapTypeId, NaviConstant.CrossType.CrossType3D, false);
+    public void hideCross() {
+        if (!ConvertUtils.isNull(mRoadCrossInfo)) {
+            mLayerPackage.hideCross(mMapTypeId, mRoadCrossInfo.getType());
+        } else {
+            Logger.e(TAG, "mRoadCrossInfo = null");
+        }
     }
 
     /**
@@ -154,7 +153,7 @@ public class SceneNaviCrossImageImpl extends BaseSceneModel<SceneNaviCrossImageV
             mIsShowCrossImage = false;
             notifySceneStateChange(false);
             mScreenView.setProgress2DRoadCross(0);
-            mLayerPackage.hideCross(mMapTypeId, naviImageInfo.getType());
+            hideCross();
             mRoadCrossInfo = null;
         }
     }
@@ -190,7 +189,7 @@ public class SceneNaviCrossImageImpl extends BaseSceneModel<SceneNaviCrossImageV
             }
         } else {
             notifySceneStateChange(false);
-            mLayerPackage.hideCross(mMapTypeId, mRoadCrossInfo.getType());
+            hideCross();
             mScreenView.setProgress2DRoadCross(0);
         }
         return true;
@@ -203,7 +202,7 @@ public class SceneNaviCrossImageImpl extends BaseSceneModel<SceneNaviCrossImageV
         if (mRoadCrossInfo != null) {
             mIsShowCrossImage = false;
             notifySceneStateChange(false);
-            mLayerPackage.hideCross(mMapTypeId, mRoadCrossInfo.getType());
+            hideCross();
             mScreenView.setProgress2DRoadCross(0);
         }
     }
@@ -227,8 +226,9 @@ public class SceneNaviCrossImageImpl extends BaseSceneModel<SceneNaviCrossImageV
         } else {
             return;
         }
-        if (currentImersiveStatus == ImersiveStatus.TOUCH) {
-            setRoadCrossVisible(false);
-        }
+        //触碰态大图不消失
+//        if (currentImersiveStatus == ImersiveStatus.TOUCH) {
+//            setRoadCrossVisible(false);
+//        }
     }
 }

@@ -43,6 +43,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.NaviApp"
         android:usesCleartextTraffic="true">
+        <activity
+            android:name=".hud.HUDMapActivity"
+            android:exported="false" />
 
         <meta-data
             android:name="CAR_TYPE"
@@ -68,6 +71,7 @@
             android:exported="false"
             android:launchMode="singleTask"
             android:screenOrientation="landscape"
+            android:windowSoftInputMode="adjustPan"
             tools:ignore="DiscouragedApi" />
 
         <activity
@@ -86,7 +90,7 @@
 
         <activity
             android:name=".cluster.ClusterActivity"
-            android:exported="true" >
+            android:exported="true">
             <intent-filter>
                 <action android:name="com.fy.navi.hmi.cluster.ClusterActivity" />
                 <category android:name="android.intent.category.DEFAULT" />

@@ -1,14 +1,49 @@
 package com.fy.navi.adas.bean;
 
 public class OddResponse {
+    /**
+     * matching接口版本
+     */
     private String api_version;
+    /**
+     * 车端数据catalog
+     */
     private String catalog_name;
+    /**
+     * DDLD landtopo数据版本
+     */
     private String landtopo_data_version;
-    private String message;
-    private int status_code;
-    private String uuid;
+    /**
+     * 异常CODE对应的信息，正常为空
+     */
+    private String message;//错误信息
+    /**
+     * 云端算路异常状态CODE
+     * 0 正常，请求版本与云端数据版本一致
+     * 1 错误，请求版本与云端数据版本不一致
+     * 2 错误，请求的catalog不存在或不支持云端算路服务
+     * 3 没有权限
+     * 4 mode不正确
+     * 5 请求体异常
+     * 6 服务内部异常
+     * 502  odd close获取失败
+     * 503 冷加载地图获取失败
+     */
+    private int status_code;//状态码
+    /**
+     * matching服务序号，标识云端匹配算路请求唯一ID
+     */
+    private String uuid;//uuid
+    /**
+     * 车端数据version
+     */
     private int version;
-    private String[] switch_segments;
+    /**
+     * 基于SD的道路matching类型分段
+     *
+     * 一条路径线由N个段组成，每个段由N个链路组成，每个链路由N个点组成
+     */
+    private SwitchSegments[] switch_segments;
 
     public String getApi_version() {
         return api_version;
@@ -66,11 +101,11 @@ public class OddResponse {
         this.version = version;
     }
 
-    public String[] getSwitch_segments() {
+    public SwitchSegments[] getSwitch_segments() {
         return switch_segments;
     }
 
-    public void setSwitch_segments(String[] switch_segments) {
+    public void setSwitch_segments(SwitchSegments[] switch_segments) {
         this.switch_segments = switch_segments;
     }
 }

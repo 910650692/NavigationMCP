@@ -28,7 +28,6 @@ import com.fy.navi.service.define.navistatus.NaviStatus;
 import com.fy.navi.service.define.route.RouteParam;
 import com.fy.navi.service.logicpaket.navi.OpenApiHelper;
 import com.fy.navi.service.logicpaket.route.RoutePackage;
-import com.fy.navi.service.logicpaket.setting.SettingPackage;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -53,7 +52,6 @@ public final class NaviAdapter {
             Objects.requireNonNull(NaviAdapter.class.getPackage()).getName();
     public static final String NAVI_CLS_NAME = "NaviAdapterApiImpl";
     private INaviApi mNaviApi;
-    private final Map<MapType, Rect> mRoadCrossRect = new HashMap<>();
     private LayerAdapter mLayerAdapter;
     private NavistatusAdapter mNavistatusAdapter;
     private SettingAdapter mSettingAdapter;
@@ -176,22 +174,6 @@ public final class NaviAdapter {
         mLayerAdapter.updateGuideCarStyle(MapType.LAUNCHER_DESK_MAP);
     }
 
-    /**
-     * @param surfaceViewId surfaceViewId
-     * @param rect          rect
-     */
-    public void setRoadCrossRect(final MapType surfaceViewId, final Rect rect) {
-        mRoadCrossRect.put(surfaceViewId, rect);
-    }
-
-    /**
-     * @param surfaceViewId surfaceViewId
-     * @return Rect
-     */
-    public Rect gettRoadCrossRect(final MapType surfaceViewId) {
-        return mRoadCrossRect.get(surfaceViewId);
-    }
-
     public static NaviAdapter getInstance() {
         return Helper.NAVI_ADAPTER;
     }
@@ -215,13 +197,13 @@ public final class NaviAdapter {
                 .setFatiguedTTS(2);
         if (broadcastType == NaviConstant.BroadcastType.BROADCAST_CONCISE) {
             naviParamEntity.setStyle(4);
-            SettingPackage.getInstance().setConfigKeyBroadcastMode(1);
+            mSettingAdapter.setConfigKeyBroadcastMode(1);
         } else if (broadcastType == NaviConstant.BroadcastType.BROADCAST_MINIMALISM) {
             naviParamEntity.setStyle(6);
-            SettingPackage.getInstance().setConfigKeyBroadcastMode(3);
+            mSettingAdapter.setConfigKeyBroadcastMode(3);
         } else {
             naviParamEntity.setStyle(2);
-            SettingPackage.getInstance().setConfigKeyBroadcastMode(2);
+            mSettingAdapter.setConfigKeyBroadcastMode(2);
         }
         mNaviApi.updateGuideParam(naviParamEntity);
     }

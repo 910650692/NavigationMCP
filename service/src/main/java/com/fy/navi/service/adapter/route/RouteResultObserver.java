@@ -114,4 +114,9 @@ public interface RouteResultObserver {
      * @param param TMC
      */
     void onRouteTMCInfo(RouteTMCParam param);
+
+    /**
+     * 算路偏航消息
+     */
+    void onReRoute();
 }

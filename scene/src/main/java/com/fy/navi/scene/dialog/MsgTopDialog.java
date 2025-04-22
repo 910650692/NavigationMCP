@@ -15,16 +15,22 @@ import com.fy.navi.ui.dialog.IBaseDialogClickListener;
 public class MsgTopDialog extends BaseDialog<DialogMsgTopBinding> {
 
     private TripID mTripId;
+    private int left;
+    private int top;
 
     public MsgTopDialog(final Context context, final TripID tripID) {
         super(context);
         mTripId = tripID;
+        left = getContext().getResources().getDimensionPixelOffset(com.fy.navi.ui.R.dimen.dp_1146);
+        top = getContext().getResources().getDimensionPixelOffset(com.fy.navi.ui.R.dimen.dp_12);
     }
 
     public MsgTopDialog(final Context context, final TripID tripID, final IBaseDialogClickListener dialogClickListener) {
         super(context);
         mTripId = tripID;
         setDialogClickListener(dialogClickListener);
+        left = getContext().getResources().getDimensionPixelOffset(com.fy.navi.ui.R.dimen.dp_1146);
+        top = getContext().getResources().getDimensionPixelOffset(com.fy.navi.ui.R.dimen.dp_12);
     }
 
     @Override
@@ -34,7 +40,7 @@ public class MsgTopDialog extends BaseDialog<DialogMsgTopBinding> {
 
     @Override
     protected void initListener() {
-        mViewBinding.topDialogView.setOnClickListener(v -> {
+        mViewBinding.topDialogTitle.setOnClickListener(v -> {
             cancel();
             if (null != mDialogClickListener) {
                 mDialogClickListener.onCommitClick(mTripId);
@@ -84,14 +90,15 @@ public class MsgTopDialog extends BaseDialog<DialogMsgTopBinding> {
      * 展示弹框
      */
     public void showDialog() {
-        super.showDialog(Gravity.TOP);
+        super.showDialog(Gravity.TOP|Gravity.LEFT);
         final Window window = getWindow();
         if (null == window) {
             return;
         }
-        window.setLayout(getContext().getResources().getDimensionPixelOffset(com.fy.navi.ui.R.dimen.dp_948),
-                WindowManager.LayoutParams.WRAP_CONTENT);
+        window.setLayout(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
         final WindowManager.LayoutParams params = window.getAttributes();
+        params.x = left;
+        params.y = top;
         window.setAttributes(params);
     }
 }

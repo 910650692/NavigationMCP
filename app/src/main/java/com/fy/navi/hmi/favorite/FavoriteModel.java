@@ -1,5 +1,6 @@
 package com.fy.navi.hmi.favorite;
 
+import com.alibaba.android.arouter.utils.TextUtils;
 import com.fy.navi.service.define.search.PoiInfoEntity;
 import com.fy.navi.service.define.setting.SettingController;
 import com.fy.navi.service.greendao.setting.SettingManager;
@@ -96,7 +97,10 @@ public class FavoriteModel extends BaseModel<FavoriteViewModel> implements Behav
      * getHomeCompanyDisplay
      */
     public void getHomeCompanyDisplay() {
-        final String value = mSettingManager.getValueByKey(SettingController.KEY_SETTING_HOME_COMPANY_DISPLAYED);
+        String value = mSettingManager.getValueByKey(SettingController.KEY_SETTING_HOME_COMPANY_DISPLAYED);
+        if (TextUtils.isEmpty(value)) {
+            value = SettingController.VALUE_GENERIC_TRUE;
+        }
         final boolean isHomeCompanyDisplay = Boolean.parseBoolean(value);
         mViewModel.dualChoiceControl(SettingController.KEY_SETTING_HOME_COMPANY_DISPLAYED, isHomeCompanyDisplay);
     }

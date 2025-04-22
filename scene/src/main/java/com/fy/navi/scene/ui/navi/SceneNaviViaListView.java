@@ -1,6 +1,7 @@
 package com.fy.navi.scene.ui.navi;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
@@ -28,6 +29,7 @@ import com.fy.navi.scene.ui.navi.manager.NaviSceneBase;
 import com.fy.navi.scene.ui.navi.manager.NaviSceneId;
 import com.fy.navi.scene.ui.navi.manager.NaviSceneManager;
 import com.fy.navi.service.AutoMapConstant;
+import com.fy.navi.service.adapter.navi.NaviConstant;
 import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.navi.FyElecVehicleETAInfo;
 import com.fy.navi.service.define.navi.NaviViaEntity;
@@ -153,10 +155,14 @@ public class SceneNaviViaListView extends NaviSceneBase<SceneNaviViaListViewBind
                     final PoiInfoEntity poiInfo = new PoiInfoEntity();
                     poiInfo.setPid(entity.getPid());
                     poiInfo.setPoint(entity.getRealPos());
-                    addFragment((BaseFragment) fragment, SearchFragmentFactory.
+                    Bundle bundle = SearchFragmentFactory.
                             createPoiDetailsFragment(
                                     AutoMapConstant.SourceFragment.MAIN_SEARCH_FRAGMENT,
-                                    AutoMapConstant.PoiType.POI_DELETE_AROUND, poiInfo));
+                                    AutoMapConstant.PoiType.POI_DELETE_AROUND, poiInfo);
+                    bundle.putInt(NaviConstant.NAVI_CONTROL, 1);
+                    addFragment((BaseFragment) fragment, bundle, false);
+                    mISceneCallback.hideNaviContent();
+                    resetTimer();
                 }
             }
 
@@ -167,6 +173,7 @@ public class SceneNaviViaListView extends NaviSceneBase<SceneNaviViaListViewBind
                 if (mISceneCallback != null) {
                     Logger.i(TAG, "onDelClick:" + position);
                     mISceneCallback.deleteViaPoint(entity);
+                    resetTimer();
                 }
             }
         });
@@ -175,15 +182,23 @@ public class SceneNaviViaListView extends NaviSceneBase<SceneNaviViaListViewBind
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                // 加入防暴力操作
-                if (null != mScreenViewModel && TimerHelper.isCanDo()) {
-                    mScreenViewModel.initTimer();
-                    ImmersiveStatusScene.getInstance().setImmersiveStatus(
-                            MapType.MAIN_SCREEN_MAIN_MAP, ImersiveStatus.TOUCH);
-                }
+                resetTimer();
             }
         });
 
+    }
+
+    /**
+     * 操作页面后重新计时
+     */
+    private void resetTimer() {
+        Logger.i(TAG, "resetTimer");
+        // 加入防暴力操作
+        if (null != mScreenViewModel && TimerHelper.isCanDo()) {
+            mScreenViewModel.initTimer();
+            ImmersiveStatusScene.getInstance().setImmersiveStatus(
+                    MapType.MAIN_SCREEN_MAIN_MAP, ImersiveStatus.TOUCH);
+        }
     }
 
     /**

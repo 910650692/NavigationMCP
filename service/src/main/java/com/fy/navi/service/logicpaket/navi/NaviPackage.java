@@ -16,6 +16,7 @@ import com.fy.navi.service.adapter.navi.NaviAdapter;
 import com.fy.navi.service.adapter.navi.NaviConstant;
 import com.fy.navi.service.adapter.navistatus.NavistatusAdapter;
 import com.fy.navi.service.adapter.route.RouteAdapter;
+import com.fy.navi.service.adapter.setting.SettingAdapter;
 import com.fy.navi.service.adapter.speech.SpeechAdapter;
 import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.navi.CameraInfoEntity;
@@ -63,6 +64,7 @@ public final class NaviPackage implements GuidanceObserver {
     private NaviAdapter mNaviAdapter;
     private LayerAdapter mLayerAdapter;
     private SpeechAdapter mSpeechAdapter;
+    private SettingAdapter mSettingAdapter;
     private Hashtable<String, IGuidanceObserver> mGuidanceObservers;
     private NavistatusAdapter mNavistatusAdapter;
     private final HistoryManager mManager;
@@ -90,6 +92,7 @@ public final class NaviPackage implements GuidanceObserver {
         mNavistatusAdapter = NavistatusAdapter.getInstance();
         mLayerAdapter = LayerAdapter.getInstance();
         mRouteAdapter = RouteAdapter.getInstance();
+        mSettingAdapter = SettingAdapter.getInstance();
         mManager = HistoryManager.getInstance();
         mManager.init();
         addIsInForegroundCallback();
@@ -119,6 +122,8 @@ public final class NaviPackage implements GuidanceObserver {
     public boolean startNavigation(final boolean isSimulate) {
         final boolean result = mNaviAdapter.startNavigation(isSimulate ?
                 NaviStartType.NAVI_TYPE_SIMULATION : NaviStartType.NAVI_TYPE_GPS);
+        final String currentNaviStatus = mNavistatusAdapter.getCurrentNaviStatus();
+        Logger.i(TAG, "startNavigation", "result:" + result, "isSimulate:" + isSimulate, "currentNaviStatus:" + currentNaviStatus);
         if (result) {
             if (isSimulate) {
                 mCurrentNaviType = NumberUtils.NUM_1;
@@ -261,6 +266,7 @@ public final class NaviPackage implements GuidanceObserver {
 
     /*设置静音*/
     public void setMute(final boolean isMute) {
+        mSettingAdapter.setConfigKeyMute(isMute? 1 : 0);
         mIsMute = isMute;
     }
 
@@ -624,7 +630,7 @@ public final class NaviPackage implements GuidanceObserver {
      */
     public void setRoadCrossRect(final MapType surfaceViewId, final Rect rect) {
         Logger.i(TAG, "setRoadCrossRect");
-        mNaviAdapter.setRoadCrossRect(surfaceViewId, rect);
+        mLayerAdapter.updateRoadCrossRect(surfaceViewId, rect);
     }
 
     /**

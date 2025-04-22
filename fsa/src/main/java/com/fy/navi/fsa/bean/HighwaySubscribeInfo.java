@@ -1,11 +1,35 @@
 package com.fy.navi.fsa.bean;
 
 public class HighwaySubscribeInfo {
+    /**
+     * 服务区信息类型
+     * 0 – 非法值
+     * 1 – 高速收费站
+     * 2 – 高速入口
+     * 3 – 高速出口
+     * 4 – 高速服务区
+     * 5 – 快速路出口
+     */
     private int type;
+    /**
+     * 高速入口
+     */
     private HighWayEntranceInfo highWayEntranceInfo;
+    /**
+     * 高速收费站
+     */
     private TollStation tollStation;
+    /**
+     * 高速服务区
+     */
     private HighWayServiceAreaInfo serviceAreaInfo;
+    /**
+     * 高速出口
+     */
     private HighWayExitInfo highWayExitInfo;
+    /**
+     * 快速路出口
+     */
     private FastWayExitInfo fastWayExitInfo;
 
     public int getType() {

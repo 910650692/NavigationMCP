@@ -2,8 +2,6 @@ package com.fy.navi.hmi.navi;
 
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
-
-import static com.fy.navi.scene.ui.navi.manager.NaviSceneId.NAVI_PROVIDE_CHARGE;
 import static com.fy.navi.scene.ui.navi.manager.NaviSceneId.NAVI_SCENE_CONTROL;
 import static com.fy.navi.scene.ui.navi.manager.NaviSceneId.NAVI_SCENE_ETA;
 import static com.fy.navi.scene.ui.navi.manager.NaviSceneId.NAVI_SCENE_TBT;
@@ -14,7 +12,6 @@ import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 
 import com.alibaba.android.arouter.launcher.ARouter;
-import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
 import com.fy.navi.hmi.BR;
@@ -27,25 +24,19 @@ import com.fy.navi.scene.impl.imersive.ImmersiveStatusScene;
 import com.fy.navi.scene.impl.navi.inter.ISceneCallback;
 import com.fy.navi.scene.impl.search.SearchFragmentFactory;
 import com.fy.navi.scene.ui.navi.ChargeTipEntity;
-import com.fy.navi.scene.ui.navi.manager.NaviSceneId;
-import com.fy.navi.scene.ui.navi.manager.NaviSceneManager;
-import com.fy.navi.scene.ui.navi.manager.NaviSceneRule;
 import com.fy.navi.service.AutoMapConstant;
 import com.fy.navi.service.adapter.navi.NaviConstant;
 import com.fy.navi.service.define.map.MapType;
-import com.fy.navi.service.define.map.MapTypeManager;
 import com.fy.navi.service.define.navi.CrossImageEntity;
 import com.fy.navi.service.define.navi.FyElecVehicleETAInfo;
 import com.fy.navi.service.define.navi.LaneInfoEntity;
 import com.fy.navi.service.define.navi.NaviDriveReportEntity;
 import com.fy.navi.service.define.navi.NaviEtaInfo;
 import com.fy.navi.service.define.navi.NaviManeuverInfo;
-import com.fy.navi.service.define.navi.NaviParkingEntity;
 import com.fy.navi.service.define.navi.NaviTmcInfo;
 import com.fy.navi.service.define.navi.NaviViaEntity;
 import com.fy.navi.service.define.navi.SapaInfoEntity;
 import com.fy.navi.service.define.navi.SpeedOverallEntity;
-import com.fy.navi.service.define.search.SearchResultEntity;
 import com.fy.navi.ui.base.BaseFragment;
 import com.fy.navi.ui.base.StackManager;
 
@@ -77,12 +68,9 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
         mBinding.sceneNaviViaList.setScreenId(MapType.valueOf(mScreenId));
         mBinding.sceneNaviLastMile.setScreenId(MapType.valueOf(mScreenId));
         mBinding.sceneNaviViaInfo.setScreenId(MapType.valueOf(mScreenId));
-        mBinding.sceneNaviParkingList.setScreenId(MapType.valueOf(mScreenId));
         mBinding.sceneNaviViaArrive.setScreenId(MapType.valueOf(mScreenId));
         mBinding.sceneNaviSapaDetail.setScreenId(MapType.valueOf(mScreenId));
-        mBinding.sceneNaviRecCharge.setScreenId(MapType.valueOf(mScreenId));
-        mBinding.sceneNaviRecGas.setScreenId(MapType.valueOf(mScreenId));
-        mBinding.sceneRecChargeListView.setScreenId(MapType.valueOf(mScreenId));
+        mBinding.sceneHandingCard.setScreenId(MapType.valueOf(mScreenId));
         mBinding.sceneNaviPreference.registerRoutePreferenceObserver("navi fragment", mViewModel);
     }
 
@@ -124,8 +112,6 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
         mBinding.sceneNaviTmc.onNaviInfo(naviEtaInfo);
         mBinding.sceneNaviViaInfo.onNaviInfo(naviEtaInfo);
         mBinding.sceneNaviLastMile.onNaviInfo(naviEtaInfo);
-        mBinding.sceneNaviRecPark.onUpdateNaviInfo(naviEtaInfo, MapTypeManager.getInstance().getMapTypeIdByName(mScreenId));
-        mBinding.sceneNaviRecCharge.updateDistance();
     }
 
     /**
@@ -245,7 +231,6 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
     public void addSceneCallback(final ISceneCallback sceneCallback) {
         mBinding.sceneNaviControl.addSceneCallback(sceneCallback);
         mBinding.sceneNaviViaList.addSceneCallback(sceneCallback);
-        mBinding.sceneNaviParkingList.addSceneCallback(sceneCallback);
         mBinding.sceneNaviLastMile.addSceneCallback(sceneCallback);
         mBinding.sceneNaviViaInfo.addSceneCallback(sceneCallback);
         mBinding.sceneNaviParallel.addSceneCallback(sceneCallback);
@@ -262,8 +247,8 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
         mBinding.sceneDriveReport.addSceneCallback(sceneCallback);
         mBinding.sceneNaviChargeTip.addSceneCallback(sceneCallback);
         mBinding.sceneNaviContinue.addSceneCallback(sceneCallback);
-        mBinding.sceneNaviRecPark.addSceneCallback(sceneCallback);
-
+        mBinding.sceneHandingCard.addSceneCallback(sceneCallback);
+        mBinding.sceneNaviCardDetail.addSceneCallback(sceneCallback);
         // 经纬度添加途经点失败的测试广播
 //        ContextCompat.registerReceiver(getContext(), new BroadcastReceiver() {
 //            @Override
@@ -284,10 +269,6 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
 //                skipNaviSapaDetailScene(1, sapaInfoEntity);
 //            }
 //        }, new IntentFilter("shi.song"), ContextCompat.RECEIVER_EXPORTED);
-        mBinding.sceneNaviRecCharge.addSceneCallback(sceneCallback);
-        mBinding.sceneNaviRecGas.addSceneCallback(sceneCallback);
-        mBinding.sceneRecChargeListView.addSceneCallback(sceneCallback);
-        mBinding.sceneRecGasListView.addSceneCallback(sceneCallback);
     }
 
     /**
@@ -426,33 +407,8 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
         mBinding.sceneNaviTmc.setIsShowAutoAdd(isShow);
     }
 
-    public boolean isNeedCloseNaviChargeTipLater() {
-        return mBinding.sceneNaviChargeTip.getVisibility() == VISIBLE;
-    }
-
     public void onUpdateElectVehicleETAInfo(final List<FyElecVehicleETAInfo> infos) {
         mBinding.sceneNaviViaList.updateElectVehicleETAInfo(infos);
-    }
-
-    public void cardBatteryTip(final SearchResultEntity searchResultEntity, final boolean isPureGasCar) {
-        Logger.i(TAG, "cardBatteryTip:" + isPureGasCar);
-        if (isPureGasCar) {
-            mBinding.sceneNaviRecGas.updateUi(searchResultEntity);
-        } else {
-            mBinding.sceneNaviRecCharge.updateUi(searchResultEntity);
-        }
-    }
-
-    public void updateRecChargeList(SearchResultEntity searchResultEntity) {
-        mBinding.sceneRecChargeListView.updateUi(searchResultEntity, MapTypeManager.getInstance().getMapTypeIdByName(mScreenId));
-    }
-
-    public void updateRecGasList(SearchResultEntity searchResultEntity) {
-        mBinding.sceneRecGasListView.updateUi(searchResultEntity, MapTypeManager.getInstance().getMapTypeIdByName(mScreenId));
-    }
-
-    public void updateRecParkingList(final List<NaviParkingEntity> list) {
-        mBinding.sceneNaviParkingList.updateData(list, MapTypeManager.getInstance().getMapTypeIdByName(mScreenId));
     }
 
     public void showNaviContent() {

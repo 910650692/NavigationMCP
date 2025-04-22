@@ -6,8 +6,11 @@ import com.fy.navi.scene.BaseSceneModel;
 import com.fy.navi.scene.api.search.ISceneSearchPoiList;
 import com.fy.navi.scene.ui.search.SceneSugSearchPoiList;
 import com.fy.navi.service.MapDefaultFinalTag;
+import com.fy.navi.service.greendao.history.History;
 import com.fy.navi.service.logicpaket.search.SearchPackage;
 import com.fy.navi.ui.base.StackManager;
+
+import java.util.List;
 
 /**
  * @author baipeng0904
@@ -51,5 +54,10 @@ public class SceneSugSearchPoiListImpl extends BaseSceneModel<SceneSugSearchPoiL
      */
     public void abortSearch(final int taskId) {
         mSearchPackage.abortSearch(taskId);
+    }
+
+    public List<History> getSearchKeywordRecord(){
+        List<History> historyList = mSearchPackage.getSearchKeywordRecord();
+        return historyList;
     }
 }

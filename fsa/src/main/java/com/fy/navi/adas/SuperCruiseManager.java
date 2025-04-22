@@ -10,12 +10,14 @@ import com.fy.navi.service.define.navi.CameraInfoEntity;
 import com.fy.navi.service.define.navi.LaneInfoEntity;
 import com.fy.navi.service.define.navi.NaviEtaInfo;
 import com.fy.navi.service.define.navi.SpeedOverallEntity;
+import com.fy.navi.service.define.navistatus.NaviStatus;
 import com.fy.navi.service.logicpaket.calibration.CalibrationPackage;
 import com.fy.navi.service.logicpaket.cruise.CruisePackage;
 import com.fy.navi.service.logicpaket.cruise.ICruiseObserver;
-import com.fy.navi.service.logicpaket.engine.EnginePackage;
 import com.fy.navi.service.logicpaket.navi.IGuidanceObserver;
 import com.fy.navi.service.logicpaket.navi.NaviPackage;
+import com.fy.navi.service.logicpaket.navistatus.NaviStatusCallback;
+import com.fy.navi.service.logicpaket.navistatus.NaviStatusPackage;
 import com.gm.cn.adassdk.AdasManager;
 import com.gm.cn.adassdk.proto.NaviLinkProto;
 
@@ -34,6 +36,11 @@ public final class SuperCruiseManager {
     private ScheduledExecutorService mScheduler;
     private ScheduledFuture<?> mScheduledFuture;
     private boolean mInitialized = false;
+    private int mRoadSpeedLimit = 0;
+    private int mEleEyeSpeedLimit = 0;
+    private int mZoneSpeedLimit = 0;
+    private int mCruiseSpeedLimit = 0;
+    private String mNaviStatus = "";
 
     public static SuperCruiseManager getInstance() {
         return SingleHolder.INSTANCE;
@@ -46,6 +53,13 @@ public final class SuperCruiseManager {
     private SuperCruiseManager() {
     }
 
+    private final NaviStatusCallback mNaviStatusCallback = new NaviStatusCallback() {
+        @Override
+        public void onNaviStatusChange(String naviStatus) {
+            mNaviStatus = naviStatus;
+        }
+    };
+
     private final IGuidanceObserver mIGuidanceObserver = new IGuidanceObserver() {
         @Override
         public void onLaneInfo(final boolean isShowLane, final LaneInfoEntity laneInfoEntity) {
@@ -54,13 +68,16 @@ public final class SuperCruiseManager {
 //            }
         }
 
+        //导航信息
         @Override
         public void onNaviInfo(final NaviEtaInfo naviETAInfo) {
             if (naviETAInfo == null) {
                 Log.w(TAG, "onNaviInfo: null");
+                mRoadInfoBuilder.setRoadCategory(NaviLinkProto.RoadInfo.RoadCategoryEnum.UNRECOGNIZED);
+                mRoadInfoBuilder.setControlledAccess(false);
                 return;
             }
-            Log.i(TAG, "onNaviInfo: curRoadClass = " + naviETAInfo.curRoadClass);
+            Log.i(TAG, "onNaviInfo: " + naviETAInfo.curRoadClass);
             switch (naviETAInfo.curRoadClass) {
                 case 0: // 高速公路
                     mRoadInfoBuilder.setRoadCategory(NaviLinkProto.RoadInfo.RoadCategoryEnum.ROAD_CATEGORY_HIGHWAY);
@@ -91,8 +108,6 @@ public final class SuperCruiseManager {
             }
             switch (naviETAInfo.curRoadClass) {
                 case 0: // 高速公路
-                    mRoadInfoBuilder.setControlledAccess(true);
-                    break;
                 case 6: // 城市快速路
                     mRoadInfoBuilder.setControlledAccess(true);
                     break;
@@ -101,47 +116,33 @@ public final class SuperCruiseManager {
             }
         }
 
+        //高速限速实
         @Override
         public void onNaviSpeedOverallInfo(final SpeedOverallEntity speedEntity) {
             if (speedEntity == null) {
                 Log.w(TAG, "onNaviSpeedOverallInfo: null");
+                mZoneSpeedLimit = 0;
                 return;
             }
-            Log.i(TAG, "onNaviSpeedOverallInfo: SpeedLimit = " + speedEntity.getSpeedLimit());
-            mSpeedLimitBuilder.setPostedSpeedLimit(speedEntity.getSpeedLimit());
-            mSpeedLimitBuilder.setSpeedCategory(speed2SpeedCategoryEnum(speedEntity.getSpeedLimit()));
-            mSpeedLimitBuilder.setSpeedLimitAssured(true);
-            mSpeedLimitBuilder.setEffectSpeedLimit(speedEntity.getSpeedLimit());
-            mSpeedLimitBuilder.setEffectiveSpeedCategory(speed2EffectiveSpeedCategoryEnum(speedEntity.getSpeedLimit()));
-            mSpeedLimitBuilder.setEffectiveSpeedType(NaviLinkProto.SpeedLimit.EffectiveSpeedTypeEnum.EFFECTIVE_UNKNOWN);
+            mZoneSpeedLimit = speedEntity.getSpeedLimit();
+            Log.i(TAG, "onNaviSpeedOverallInfo: " + mZoneSpeedLimit);
         }
 
         @Override
         public void onNaviCameraInfo(final CameraInfoEntity cameraInfo) {
             if (cameraInfo == null) {
                 Log.w(TAG, "onNaviCameraInfo: null");
+                mEleEyeSpeedLimit = 0;
                 return;
             }
-            Log.i(TAG, "onNaviCameraInfo: speed = " + cameraInfo.getSpeed());
-            mSpeedLimitBuilder.setPostedSpeedLimit(cameraInfo.getSpeed());
-            mSpeedLimitBuilder.setSpeedCategory(speed2SpeedCategoryEnum(cameraInfo.getSpeed()));
-            mSpeedLimitBuilder.setSpeedLimitAssured(true);
-            mSpeedLimitBuilder.setEffectSpeedLimit(cameraInfo.getSpeed());
-            mSpeedLimitBuilder.setEffectiveSpeedCategory(speed2EffectiveSpeedCategoryEnum(cameraInfo.getSpeed()));
-            mSpeedLimitBuilder.setEffectiveSpeedType(NaviLinkProto.SpeedLimit.EffectiveSpeedTypeEnum.EFFECTIVE_UNKNOWN);
+            mEleEyeSpeedLimit = cameraInfo.getSpeed();
+            Log.i(TAG, "onNaviCameraInfo: " + mEleEyeSpeedLimit);
         }
 
         @Override
         public void onCurrentRoadSpeed(final int speed) {
-            Log.i(TAG, "onCurrentRoadSpeed: speed = " + speed);
-            // TODO
-            mSpeedLimitBuilder.setPostedSpeedLimit(speed);
-            mSpeedLimitBuilder.setSpeedCategory(speed2SpeedCategoryEnum(speed));
-            mSpeedLimitBuilder.setSpeedLimitAssured(false); // 道路限速是false，其他是true
-            mSpeedLimitBuilder.setEffectSpeedLimit(0); // 道路限速是0，其他是speedLimit
-            // 道路限速是0，其他是speedLimit
-            mSpeedLimitBuilder.setEffectiveSpeedCategory(NaviLinkProto.SpeedLimit.EffectiveSpeedCategoryEnum.EFFECTIVE_CATEGORY_UNKNOWN);
-            mSpeedLimitBuilder.setEffectiveSpeedType(NaviLinkProto.SpeedLimit.EffectiveSpeedTypeEnum.BY_TRAFFIC_SIGN); // 路标限速是1，其他是7
+            mRoadSpeedLimit = speed;
+            Log.i(TAG, "onCurrentRoadSpeed: " + mRoadSpeedLimit);
         }
     };
 
@@ -150,10 +151,12 @@ public final class SuperCruiseManager {
         public void onShowCruiseCameraExt(final CruiseInfoEntity cruiseInfoEntity) {
             if (cruiseInfoEntity == null) {
                 Log.w(TAG, "onShowCruiseCameraExt: cruiseInfoEntity null");
+                mCruiseSpeedLimit = 0;
                 return;
             }
             if (cruiseInfoEntity.getSpeed() == null) {
                 Log.w(TAG, "onShowCruiseCameraExt: getSpeed null");
+                mCruiseSpeedLimit = 0;
                 return;
             }
             Log.i(TAG, "onShowCruiseCameraExt: " + cruiseInfoEntity.getSpeed());
@@ -161,12 +164,7 @@ public final class SuperCruiseManager {
             for (int i = 0; i < cruiseInfoEntity.getSpeed().size(); i++) {
                 final Short speed = cruiseInfoEntity.getSpeed().get(i);
                 if (speed != null && speed != 0 && speed != 0xFF) {
-                    mSpeedLimitBuilder.setPostedSpeedLimit(speed);
-                    mSpeedLimitBuilder.setSpeedCategory(speed2SpeedCategoryEnum(speed));
-                    mSpeedLimitBuilder.setSpeedLimitAssured(true);
-                    mSpeedLimitBuilder.setEffectSpeedLimit(speed);
-                    mSpeedLimitBuilder.setEffectiveSpeedCategory(speed2EffectiveSpeedCategoryEnum(speed));
-                    mSpeedLimitBuilder.setEffectiveSpeedType(NaviLinkProto.SpeedLimit.EffectiveSpeedTypeEnum.EFFECTIVE_UNKNOWN);
+                    mCruiseSpeedLimit = speed;
                     break;
                 }
             }
@@ -213,7 +211,16 @@ public final class SuperCruiseManager {
         }
     };
 
-    private final Runnable mTask = this::sendData;
+    private final Runnable mTask = new Runnable() {
+        @Override
+        public void run() {
+            try {
+                sendData();
+            } catch (Exception e) {
+                Log.e(TAG, "sendData: ", e);
+            }
+        }
+    };
 
     /**
      * 初始化
@@ -259,6 +266,8 @@ public final class SuperCruiseManager {
      * 初始化数据
      */
     private void initData() {
+        // 导航状态
+        mNaviStatus = NaviStatusPackage.getInstance().getCurrentNaviStatus();
         // 车道数量
         mRoadInfoBuilder.setLaneCount(0);
         // 推荐限速
@@ -296,6 +305,7 @@ public final class SuperCruiseManager {
      * 初始化观察者
      */
     private void initObserver() {
+        NaviStatusPackage.getInstance().registerObserver(TAG, mNaviStatusCallback);
         NaviPackage.getInstance().registerObserver(TAG, mIGuidanceObserver);
         CruisePackage.getInstance().registerObserver(TAG, mICruiseObserver);
         NetWorkUtils.Companion.getInstance().registerNetworkObserver(mNetworkObserver);
@@ -313,14 +323,55 @@ public final class SuperCruiseManager {
      * 发送数据
      */
     private void sendData() {
+        boolean mSpeedLimitDataAvailabl;
+        switch (mNaviStatus) {
+            case NaviStatus.NaviStatusType.NAVING://导航
+                if (mRoadSpeedLimit > 0 || mEleEyeSpeedLimit > 0 || mZoneSpeedLimit > 0) {
+                    mSpeedLimitDataAvailabl = true;
+                    int minSpeedLimit = findMinNonZeroSpeedLimit(mRoadSpeedLimit, mEleEyeSpeedLimit, mZoneSpeedLimit);
+                    if (mRoadSpeedLimit == minSpeedLimit) {
+                        mSpeedLimitBuilder.setSpeedLimitAssured(false); // TODO 道路限速是false，其他是true
+                        mSpeedLimitBuilder.setEffectSpeedLimit(0); // TODO 道路限速是0，其他是speedLimit
+                        mSpeedLimitBuilder.setEffectiveSpeedCategory(NaviLinkProto.SpeedLimit.EffectiveSpeedCategoryEnum.EFFECTIVE_CATEGORY_UNKNOWN);// TODO 道路限速是0，其他是speedLimit
+                        mSpeedLimitBuilder.setEffectiveSpeedType(NaviLinkProto.SpeedLimit.EffectiveSpeedTypeEnum.BY_TRAFFIC_SIGN); // TODO 路标限速是1，其他是7
+                    } else if (mEleEyeSpeedLimit == minSpeedLimit) {
+                        mSpeedLimitBuilder.setSpeedLimitAssured(true);
+                        mSpeedLimitBuilder.setEffectSpeedLimit(minSpeedLimit);
+                        mSpeedLimitBuilder.setEffectiveSpeedCategory(speed2EffectiveSpeedCategoryEnum(minSpeedLimit));
+                        mSpeedLimitBuilder.setEffectiveSpeedType(NaviLinkProto.SpeedLimit.EffectiveSpeedTypeEnum.EFFECTIVE_UNKNOWN);
+                    } else if (mZoneSpeedLimit == minSpeedLimit) {
+                        mSpeedLimitBuilder.setSpeedLimitAssured(true);
+                        mSpeedLimitBuilder.setEffectSpeedLimit(minSpeedLimit);
+                        mSpeedLimitBuilder.setEffectiveSpeedCategory(speed2EffectiveSpeedCategoryEnum(minSpeedLimit));
+                        mSpeedLimitBuilder.setEffectiveSpeedType(NaviLinkProto.SpeedLimit.EffectiveSpeedTypeEnum.EFFECTIVE_UNKNOWN);
+                    }
+                    mSpeedLimitBuilder.setPostedSpeedLimit(minSpeedLimit);
+                    mSpeedLimitBuilder.setSpeedCategory(speed2SpeedCategoryEnum(minSpeedLimit));
+                } else {
+                    mSpeedLimitDataAvailabl = false;
+                }
+                break;
+            case NaviStatus.NaviStatusType.CRUISE://巡航
+                mSpeedLimitDataAvailabl = mCruiseSpeedLimit > 0;
+                mSpeedLimitBuilder.setSpeedLimitAssured(true);
+                mSpeedLimitBuilder.setPostedSpeedLimit(mCruiseSpeedLimit);
+                mSpeedLimitBuilder.setEffectSpeedLimit(mCruiseSpeedLimit);
+                mSpeedLimitBuilder.setEffectiveSpeedCategory(speed2EffectiveSpeedCategoryEnum(mCruiseSpeedLimit));
+                mSpeedLimitBuilder.setEffectiveSpeedType(NaviLinkProto.SpeedLimit.EffectiveSpeedTypeEnum.EFFECTIVE_UNKNOWN);
+                break;
+            default:
+                mSpeedLimitDataAvailabl = false;
+        }
+
         final NaviLinkProto.NaviLink.Builder builder = NaviLinkProto.NaviLink.newBuilder();
         builder.setRoadInfo(mRoadInfoBuilder.build());
         builder.setSpeedLimit(mSpeedLimitBuilder.build());
-        final boolean status = EnginePackage.getInstance().engineStatus();
-        builder.setDataAvailable(status);
+        builder.setDataAvailable(mSpeedLimitDataAvailabl);
         final NaviLinkProto.NaviLink naviLink = builder.build();
+        mAdasManager.sendNavilink(naviLink);
+        // 下面的部分用于log打印
         final SuperCruiseJson superCruiseJson = new SuperCruiseJson();
-        superCruiseJson.setDataAvailable(String.valueOf(status));
+        superCruiseJson.setDataAvailable(String.valueOf(builder.getDataAvailable()));
         superCruiseJson.setLaneCount(String.valueOf(mRoadInfoBuilder.getLaneCount()));
         superCruiseJson.setRoadCategory(String.valueOf(mRoadInfoBuilder.getRoadCategory()));
         superCruiseJson.setCountryCode(String.valueOf(mRoadInfoBuilder.getCountryCode()));
@@ -341,8 +392,21 @@ public final class SuperCruiseManager {
         superCruiseJson.setSpeedCategory(String.valueOf(mSpeedLimitBuilder.getSpeedCategory()));
         final String json = GsonUtils.toJson(superCruiseJson);
         JsonLog.saveJsonToCache(json, "sc.json");
-        Log.v(TAG, "sendData: " + json);
-        mAdasManager.sendNavilink(naviLink);
+        Log.d(TAG, "sendData: " + json);
+    }
+
+    private int findMinNonZeroSpeedLimit(int... speeds) {
+        int minSpeed = Integer.MAX_VALUE;
+        boolean foundNonZero = false;
+
+        for (int speed : speeds) {
+            if (speed > 0 && speed < minSpeed) {
+                minSpeed = speed;
+                foundNonZero = true;
+            }
+        }
+
+        return foundNonZero ? minSpeed : 0; // 如果没有找到非零值，返回0
     }
 
     /**

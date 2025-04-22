@@ -20,12 +20,14 @@
         android:orientation="horizontal"
         android:paddingStart="@dimen/dp_52"
         android:paddingEnd="@dimen/dp_40"
+        android:focusable="false"
         android:visibility="@{ViewModel.messageCenterVisible ? View.VISIBLE : View.GONE}">
 
         <com.fy.navi.ui.view.SkinRelativeLayout
             android:id="@+id/base_map_message_left_container"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:focusable="false">
 
             <com.fy.navi.ui.view.SkinTextView
                 android:id="@+id/base_map_message_center_operate"
@@ -35,6 +37,8 @@
                 android:includeFontPadding="false"
                 android:text="@{ViewModel.messageCenterOperate}"
                 android:textColor="@color/message_center_operate"
+                android:focusable="true"
+                android:background="@drawable/bg_base_mfc_cadillac_bg_selector"
                 android:textSize="@dimen/sp_52" />
 
             <com.fy.navi.ui.view.SkinImageView
@@ -42,6 +46,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/img_message_center_weather"
+                android:focusable="false"
                 android:visibility="@{ViewModel.messageCenterImgVisibility ? View.VISIBLE : View.GONE}" />
 
         </com.fy.navi.ui.view.SkinRelativeLayout>
@@ -52,6 +57,7 @@
             android:layout_height="@dimen/dp_63"
             android:layout_marginStart="@dimen/dp_42"
             android:background="@color/message_center_line"
+            android:focusable="false"
             android:visibility="@{ViewModel.messageLineVisibility ? View.VISIBLE : View.GONE}" />
 
         <com.fy.navi.ui.view.SkinView
@@ -60,6 +66,7 @@
             android:layout_height="@dimen/dp_72"
             android:layout_marginStart="@dimen/dp_52"
             android:background="@color/message_center_line"
+            android:focusable="false"
             android:visibility="@{ViewModel.messageLineHeightVisibility ? View.VISIBLE : View.GONE}" />
 
         <com.fy.navi.ui.view.SkinLinearLayout
@@ -71,6 +78,7 @@
             android:orientation="vertical"
             android:paddingTop="@dimen/dp_24"
             android:paddingBottom="@dimen/dp_24"
+            android:focusable="false"
             app:layout_constraintTop_toTopOf="parent">
 
             <com.fy.navi.ui.view.SkinTextView
@@ -79,6 +87,7 @@
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
                 android:maxLines="1"
+                android:focusable="false"
                 android:text="@{ViewModel.messageCenterTitle}"
                 android:textColor="@color/message_center_title"
                 android:textSize="@dimen/sp_46"
@@ -93,6 +102,7 @@
                 android:layout_marginTop="@dimen/dp_8"
                 android:ellipsize="end"
                 android:maxLines="1"
+                android:focusable="false"
                 android:text="@{ViewModel.messageCenterContent}"
                 android:textColor="@color/message_center_content"
                 android:textSize="@dimen/sp_30"
@@ -107,8 +117,9 @@
             android:layout_height="@dimen/dp_74"
             android:layout_marginStart="@dimen/dp_65"
             android:src="@drawable/img__message_center_close"
+            android:focusable="true"
             android:visibility="@{ViewModel.messageCloseVisibility ? View.VISIBLE : View.GONE}"
-
+            android:background="@drawable/bg_base_mfc_cadillac_bg_selector"
             />
 
     </com.fy.navi.ui.view.SkinLinearLayout>

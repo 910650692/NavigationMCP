@@ -78,6 +78,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_16"
             app:layout_constraintTop_toTopOf="parent"
+            app:layout_goneMarginStart="@dimen/dp_0"
             app:layout_constraintStart_toEndOf="@+id/poi_charge_fast_root"
             android:background="@drawable/bg_poi_gas_price_bg">
 
@@ -130,15 +131,23 @@
 
         </com.fy.navi.ui.view.SkinConstraintLayout>
 
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/endBarrier"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:barrierDirection="end"
+            app:constraint_referenced_ids="poi_charge_fast_root,poi_charge_slow_root"/>
+
         <com.fy.navi.ui.view.SkinImageView
             android:id="@id/poi_car_charge_price_icon"
             android:layout_width="@dimen/dp_37"
             android:layout_height="@dimen/dp_37"
             android:src="@drawable/img_money_select_42"
             android:layout_marginStart="@dimen/dp_18"
-            app:layout_constraintStart_toEndOf="@+id/poi_charge_slow_root"
-            app:layout_constraintTop_toTopOf="@+id/poi_charge_slow_root"
-            app:layout_constraintBottom_toBottomOf="@+id/poi_charge_slow_root"/>
+            app:layout_goneMarginStart="@dimen/dp_0"
+            app:layout_constraintStart_toEndOf="@+id/endBarrier"
+            app:layout_constraintTop_toTopOf="@+id/endBarrier"
+            app:layout_constraintBottom_toBottomOf="@+id/endBarrier"/>
 
         <com.fy.navi.ui.view.SkinTextView
             android:id="@+id/poi_charge_price"

@@ -51,6 +51,8 @@ public class SceneNaviTmcView extends NaviSceneBase<SceneNaviTmcViewBinding, Sce
     private static int mViaShowIndex = 0;
     // 途经点和充电站最多显示20个
     private final static int MAX_VIA_NUM = 20;
+    // 途经点和充电站显示宽度
+    private final static int VIA_WIDTH = 45;
     /**
      * < tmcBar累积的总距离，注意与当前路线长度不同，重算后_totalDistance不是新路线的长度，
      * 而是_distanceHasPassed加上新路线长度，避免重算后tmcBar回到起点
@@ -203,32 +205,15 @@ public class SceneNaviTmcView extends NaviSceneBase<SceneNaviTmcViewBinding, Sce
         } else {
             carPosition = Math.round((mTotalDistance - hasPassedDistance - mDistanceHasPassed) * rateDistanceToView);
         }
-        Logger.d(TAG, "drawTmcContainer mTotalDistance:" + mTotalDistance + " hasPassedDistance:" + hasPassedDistance + " mDistanceHasPassed :" +
-                mDistanceHasPassed);
-        Logger.d(TAG, "drawTmcContainer width:" + width + " rateDistanceToView:" + rateDistanceToView + " carPosition :" + carPosition);
+        Logger.d(TAG, "mTotalDistance:" + mTotalDistance + " hasPassedDistance:" + hasPassedDistance + " mDistanceHasPassed :" + mDistanceHasPassed
+        +" width:" + width + " rateDistanceToView:" + rateDistanceToView + " carPosition :" + carPosition);
         // 移动车标的Y坐标
         NaviUiUtil.setTranslation(mViewBinding.sivCar, carPosition, mIsHorizontal);
-        // 绘制途径点
-        if (mViaRemain != null && !mViaRemain.isEmpty()) {
-            for (int i = 0; i < mViaRemain.size() && i < MAX_VIA_NUM; i++) {
-                final NaviEtaInfo.NaviTimeAndDist viaItem = mViaRemain.get(i);
-                final int via;
-                if (mIsHorizontal) {
-                    via = Math.min(Math.round((hasPassedDistance + mDistanceHasPassed + viaItem.dist) * rateDistanceToView), width - mViaWidth);
-                } else {
-                    via = Math.round((mTotalDistance - hasPassedDistance - mDistanceHasPassed - viaItem.dist) * rateDistanceToView);
-                }
-                mViaShowIndex++;
-                showViaIcon(i, SceneCommonStruct.TmcViaPointType.ViaPointType, via);
-            }
-        } else {
-            // 不显示途经点
-            for (int i = 0; i < mLastViaRemain.size() && i < MAX_VIA_NUM; i++) {
-                hideViaIcon(i);
-            }
-        }
+        ArrayList<Integer> chargeShowList = new ArrayList<>();
         // 绘制充电站
         if (mChargeStationRemain != null && !mChargeStationRemain.isEmpty() && mIsShowAutoAddChargeStation) {
+            StringBuilder logBuilder = new StringBuilder();
+            int preVia = 0;
             for (int i = 0; i < mChargeStationRemain.size() && i < MAX_VIA_NUM; i++) {
                 final NaviEtaInfo.NaviTimeAndDist viaItem = mChargeStationRemain.get(i);
                 final int via;
@@ -237,14 +222,59 @@ public class SceneNaviTmcView extends NaviSceneBase<SceneNaviTmcViewBinding, Sce
                 } else {
                     via = Math.round((mTotalDistance - hasPassedDistance - mDistanceHasPassed - viaItem.dist) * rateDistanceToView);
                 }
-                Logger.d(TAG, "mChargeStationRemain size:" + mViaRemain.size() + "-----via:" + via);
-                showViaIcon(mViaShowIndex + i, SceneCommonStruct.TmcViaPointType.ViaChargeType, via);
+                boolean isShow = false;
+                if ((via - preVia > VIA_WIDTH || preVia == 0) && (width - via > VIA_WIDTH)) {
+                    isShow = true;
+                    chargeShowList.add(via);
+                    preVia = via;
+                    mViaShowIndex++;
+                    showViaIcon(i, SceneCommonStruct.TmcViaPointType.ViaChargeType, via);
+                }
+                logBuilder.append(" ").append(i).append(":via:").append(via).append(".show:").append(isShow);
             }
+            Logger.d(TAG, "mViaShowIndex:" + mViaShowIndex + logBuilder);
         } else {
             // 不显示充电站
             final int offsetIndex = mLastViaRemain == null ? 0 : mLastViaRemain.size();
             for (int i = 0; i < mLastChargeStationRemain.size() && i < MAX_VIA_NUM; i++) {
                 hideViaIcon(offsetIndex + i);
+            }
+        }
+
+        // 绘制途径点
+        if (mViaRemain != null && !mViaRemain.isEmpty()) {
+            StringBuilder logBuilder = new StringBuilder();
+            int preVia = 0;
+            for (int i = 0; i < mViaRemain.size() && i < MAX_VIA_NUM; i++) {
+                final NaviEtaInfo.NaviTimeAndDist viaItem = mViaRemain.get(i);
+                final int via;
+                boolean isShow = false;
+                if (mIsHorizontal) {
+                    via = Math.min(Math.round((hasPassedDistance + mDistanceHasPassed + viaItem.dist) * rateDistanceToView), width - mViaWidth);
+                } else {
+                    via = Math.round((mTotalDistance - hasPassedDistance - mDistanceHasPassed - viaItem.dist) * rateDistanceToView);
+                }
+                if ((via - preVia > VIA_WIDTH || preVia == 0) && (width - via > VIA_WIDTH) ) {
+                    boolean isOverlapping = false;
+                    for (Integer item : chargeShowList) {
+                        if (Math.abs(item - via) < VIA_WIDTH) {
+                            isOverlapping = true;
+                            break;
+                        }
+                    }
+                    if (!isOverlapping) {
+                        isShow = true;
+                        preVia = via;
+                        showViaIcon(mViaShowIndex + i, SceneCommonStruct.TmcViaPointType.ViaPointType, via);
+                    }
+                }
+                logBuilder.append(" ").append(mViaShowIndex + i).append(":via:").append(via).append(".show:").append(isShow);
+            }
+            Logger.d(TAG, "ViaRemain mViaShowIndex:" + mViaShowIndex + " size:" + mViaRemain.size() + logBuilder);
+        } else {
+            // 不显示途经点
+            for (int i = 0; i < mLastViaRemain.size() && i < MAX_VIA_NUM; i++) {
+                hideViaIcon(i);
             }
         }
     }

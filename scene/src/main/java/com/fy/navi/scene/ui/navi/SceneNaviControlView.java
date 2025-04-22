@@ -269,6 +269,6 @@ public class SceneNaviControlView extends NaviSceneBase<SceneNaviControlViewBind
      */
     public void onNetStatusChange(boolean isConnected) {
         Logger.i(TAG, "onNetStatusChange isConnected:" + isConnected);
-        mScreenViewModel.refreshRoute();
+        mScreenViewModel.refreshRouteCauseNet();
     }
 }

@@ -20,7 +20,7 @@ import java.util.Hashtable;
 
 public class SceneRoutePreferenceView extends BaseSceneView<SceneRoutePreferenceViewBinding, SceneRoutePreferenceImpl>
         implements SceneRoutePreferenceImpl.IRoutePreferenceChangeListener {
-
+    public static final String TAG = SceneRoutePreferenceView.class.getSimpleName();
     private Hashtable<String, ISceneRoutePreferenceCallBack> mSceneRoutePreferenceCallBackMap;
 
     public SceneRoutePreferenceView(final Context context) {
@@ -43,7 +43,7 @@ public class SceneRoutePreferenceView extends BaseSceneView<SceneRoutePreference
     @Override
     protected SceneRoutePreferenceImpl initSceneImpl() {
         mSceneRoutePreferenceCallBackMap = new Hashtable<>();
-        return new SceneRoutePreferenceImpl(this);
+        return new SceneRoutePreferenceImpl(TAG, this);
     }
     /**
      * fragment注册监听
@@ -71,6 +71,7 @@ public class SceneRoutePreferenceView extends BaseSceneView<SceneRoutePreference
     @Override
     public void onDestroy() {
         NetWorkUtils.Companion.getInstance().unRegisterNetworkObserver(mNetworkObserver);
+        mScreenViewModel.unSettingChangeCallback(TAG);
     }
     
     /**

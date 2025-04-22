@@ -57,6 +57,14 @@ public class SearchMapDataModel extends BaseModel<SearchMapDataViewModel> implem
     }
 
     /**
+     * 删除数据包
+     * @param adCodeList
+     */
+    public void deleteAllTask(final ArrayList<Integer> adCodeList) {
+        mapDataPackage.deleteAllTask(adCodeList);
+    }
+
+    /**
      * 取消下载
      * @param adCodeList
      */

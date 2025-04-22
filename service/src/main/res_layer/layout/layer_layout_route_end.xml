@@ -4,35 +4,24 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <ImageView
-        android:id="@+id/route_end_bg"
-        android:src="@drawable/layer_image_end_pop"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
-
-    <TextView
-        android:text="@string/layer_route_end_pop_title"
-        android:textColor="@color/white"
-        android:textSize="@dimen/dp_60"
-        android:textStyle="bold"
-        android:layout_marginStart="@dimen/dp_40"
-        android:layout_marginTop="@dimen/dp_25"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
-
     <TextView
         android:id="@+id/route_end_detail"
-        android:textSize="@dimen/dp_35"
+        android:textSize="@dimen/sp_22"
         android:text="电量剩余20%"
+        android:background="@drawable/shape_search_end_bg"
         android:textColor="@color/layer_route_end_point_detail_color"
-        android:layout_marginTop="@dimen/dp_30"
-        android:layout_marginStart="@dimen/dp_160"
+        android:layout_marginStart="@dimen/dp_40"
+        android:layout_marginTop="@dimen/dp_10"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <ImageView
+        android:id="@+id/route_end_bg"
+        android:src="@drawable/layer_search_end_bg"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
 

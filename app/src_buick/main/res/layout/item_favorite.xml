@@ -121,7 +121,7 @@
 
             <com.fy.navi.ui.view.SkinLinearLayout
                 android:id="@+id/item_favorite_navi"
-                android:layout_width="@dimen/dp_90"
+                android:layout_width="@dimen/dp_170"
                 android:layout_height="match_parent"
                 android:gravity="center"
                 android:orientation="vertical"
@@ -148,9 +148,8 @@
 
         <com.fy.navi.ui.view.SkinLinearLayout
             android:id="@+id/ll_action_container"
-            android:layout_width="@dimen/dp_300"
+            android:layout_width="@dimen/dp_340"
             android:layout_height="match_parent"
-            android:paddingStart="@dimen/dp_40"
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
@@ -164,6 +163,7 @@
                 android:orientation="vertical">
 
                 <com.fy.navi.ui.view.SkinImageView
+                    android:id="@+id/item_favorite_top_icon"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:src="@drawable/img_favorite_top"/>

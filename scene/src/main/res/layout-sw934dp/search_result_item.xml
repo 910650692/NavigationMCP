@@ -31,7 +31,8 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_30"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" app:layout_constraintBottom_toBottomOf="parent">
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent">
 
             <com.fy.navi.ui.view.SkinTextView
                 android:id="@+id/poi_num"

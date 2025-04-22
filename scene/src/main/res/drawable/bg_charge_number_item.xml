@@ -11,9 +11,9 @@
                 />
             <corners
                 android:bottomLeftRadius="@dimen/dp_12"
-                android:bottomRightRadius="0dp"
+                android:bottomRightRadius="@dimen/dp_12"
                 android:topLeftRadius="@dimen/dp_12"
-                android:topRightRadius="0dp" />
+                android:topRightRadius="@dimen/dp_12" />
         </shape>
     </item>
 </layer-list>

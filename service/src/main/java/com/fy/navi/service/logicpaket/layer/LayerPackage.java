@@ -6,6 +6,7 @@ import com.fy.navi.service.adapter.layer.ILayerAdapterCallBack;
 import com.fy.navi.service.adapter.layer.LayerAdapter;
 import com.fy.navi.service.define.bean.GeoPoint;
 import com.fy.navi.service.define.layer.refix.CarModeType;
+import com.fy.navi.service.define.layer.refix.DynamicLevelMode;
 import com.fy.navi.service.define.layer.refix.LayerItemCrossEntity;
 import com.fy.navi.service.define.layer.GemBaseLayer;
 import com.fy.navi.service.define.layer.GemLayerItem;
@@ -107,10 +108,15 @@ public class LayerPackage implements ILayerAdapterCallBack {
         mLayerAdapter.setVisibleGuideSignalLight(mapTypeId, isVisible);
     }
 
+    // 此接口后续废弃
     public void openDynamicLevel(MapType mapTypeId, boolean isOpen) {
         mLayerAdapter.openDynamicLevel(mapTypeId, isOpen);
     }
 
+    /* 是否打开动态比例尺功能，type区分巡航动态比例尺还是导航动态比例尺 */
+    public void openDynamicLevel(MapType mapTypeId, DynamicLevelMode dynamicLevelMode) {
+        mLayerAdapter.openDynamicLevel(mapTypeId, dynamicLevelMode);
+    }
 
     @Override
     public void onNotifyClick(MapType mapTypeId, GemBaseLayer layer, GemLayerItem pItem) {
@@ -253,4 +259,8 @@ public class LayerPackage implements ILayerAdapterCallBack {
         mLayerAdapter.openFlyLine(mapTypeId, visible);
     }
 
+    /* 设置动态比例尺是否锁住状态，type区分巡航动态比例尺还是导航动态比例尺 */
+    public void setDynamicLevelLock(MapType mapTypeId, DynamicLevelMode dynamicLevelMode, boolean isLock) {
+        mLayerAdapter.setDynamicLevelLock(mapTypeId, dynamicLevelMode, isLock);
+    }
 }

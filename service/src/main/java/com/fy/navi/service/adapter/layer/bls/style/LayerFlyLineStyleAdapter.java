@@ -18,7 +18,6 @@ public class LayerFlyLineStyleAdapter extends BaseStyleAdapter {
 
     @Override
     public String provideLayerItemStyleJson(LayerItem item) {
-
         switch (item.getBusinessType()) {
             case BizFlyLineType.BizFlyLineTypePoint -> {
                 if (bizFlyLineControl != null) {

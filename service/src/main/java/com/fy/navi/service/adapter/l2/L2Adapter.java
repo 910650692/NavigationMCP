@@ -110,7 +110,7 @@ public class L2Adapter {
             vehiclePosition.setDistToDestination(naviEtaInfo.getAllDist()); // 当前位置到目的地距离
             vehiclePosition.setLocationLinkIndex(naviEtaInfo.curLinkIdx); //自车当前位置的link索引，跟全局路线中的link索引对应
 
-            vehiclePosition.setCurrentSpeedLimit(naviEtaInfo.curLinkSpeed); // 当前自车所在道路限速
+            //vehiclePosition.setCurrentSpeedLimit(naviEtaInfo.curLinkSpeed); // 当前自车所在道路限速
             vehiclePosition.setRoadClass(naviEtaInfo.curRoadClass); // 当前自车所在道路等级
 
             L2NaviBean.GuidePointInfoBean guidePointInfo = l2NaviBean.getGuidePointInfo();
@@ -164,9 +164,9 @@ public class L2Adapter {
                 crossInfoDataBean.setBackLaneType(new ArrayList<>());
                 crossInfoDataBean.setFrontLaneType(new ArrayList<>());
                 crossInfoDataBean.setLaneTypes(new ArrayList<>());
-                crossInfoDataBean.setSegmentIndex(0);
-                crossInfoDataBean.setLinkIndex(0);
-                crossInfoDataBean.setTimestamp(0);
+                crossInfoDataBean.setSegmentIndex(-1);
+                crossInfoDataBean.setLinkIndex(-1);
+                crossInfoDataBean.setTimestamp(System.currentTimeMillis());
                 l2NaviBean.setHasTidalLane(0);
                 l2NaviBean.setAheadIntersections(new ArrayList<>());
                 return;
@@ -311,9 +311,13 @@ public class L2Adapter {
         }
 
         @Override
-        public void onCurrentRoadSpeed(int speed) { // TODO
+        public void onCurrentRoadSpeed(int speed) {
+            L2NaviBean.VehiclePositionBean vehiclePosition = l2NaviBean.getVehiclePosition();
+            vehiclePosition.setCurrentSpeedLimit(speed);
             L2NaviBean.WarningFacilityBean warningFacilityBean = l2NaviBean.getWarningFacility();
             warningFacilityBean.setLimitSpeed(speed); // 警示牌限速值
+            warningFacilityBean.setBoardSignType(10);
+//            warningFacilityBean.setBoardSignDist();
             Logger.i(TAG, "当前限速", speed);
         }
 
@@ -474,7 +478,7 @@ public class L2Adapter {
             }
             // 为防止并发问题，发送消息时暂停接口回调，防止修改l2NaviBean对象
             // unRegisterAdapterCallback();
-            l2DriveObserver.onSdTbtDataChange(GsonUtils.toJson(l2NaviBean));
+            l2DriveObserver.onSdTbtDataChange(l2NaviBean);
             // registerAdapterCallback();
         }
     }

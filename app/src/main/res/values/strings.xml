@@ -366,9 +366,9 @@
     <string name="setting_guide_font_size_standard">标准字号</string>
     <string name="setting_guide_font_size_large">大字号</string>
     <string name="setting_guide_mode">导航视角</string>
-    <string name="setting_guide_mode_HeadUp">车头向上</string>
-    <string name="setting_guide_mode_NorthUp">北向上</string>
-    <string name="setting_guide_mode_3D_HeadUp">3D车头向上</string>
+    <string name="setting_guide_mode_HeadUp">2D车头</string>
+    <string name="setting_guide_mode_NorthUp">2D正北</string>
+    <string name="setting_guide_mode_3D_HeadUp">3D车头</string>
     <string name="setting_guide_car_logo">个性化车标</string>
     <string name="setting_guide_car_logo_default">默认</string>
     <string name="setting_guide_car_logo_brand">品牌</string>
@@ -385,7 +385,7 @@
     <string name="setting_tab_favorite">收藏</string>
     <string name="setting_tab_others">其他</string>
     <string name="setting_broadcast_navi">导航播报</string>
-    <string name="setting_broadcast_navi_detail">详情</string>
+    <string name="setting_broadcast_navi_detail">详细</string>
     <string name="setting_broadcast_navi_concise">简洁</string>
     <string name="setting_broadcast_navi_clear">极简</string>
     <string name="setting_broadcast_cruise">巡航播报</string>
@@ -419,7 +419,7 @@
     <string name="setting_others_privacy_permission_no">未授权</string>
     <string name="setting_others_privacy_permission_yes">已授权</string>
     <string name="setting_others_privacy_protocol_center">协议中心</string>
-    <string name="setting_others_privacy_term">高德隐私条款</string>
+    <string name="setting_others_privacy_term">高德服务条款</string>
     <string name="setting_others_privacy_policy">高德隐私权政策</string>
     <string name="setting_others_privacy_protocol">高德隐私协议</string>
     <string name="setting_others_reset_setting">恢复默认设置</string>
@@ -606,6 +606,13 @@
     <string name="startup_exception_content">请联网或下载离线数据后使用</string>
     <string name="startup_exception_exit">退出</string>
 
+    <!-- 激活相关 -->
+    <string name="activating">SDK激活…</string>
+    <string name="activation_failed">SDK激活失败</string>
+    <string name="activation_failed_retry">重试</string>
+    <string name="activation_finish">稍后激活</string>
+    <string name="activation_manual">手动激活</string>
+
     <!--周边搜索标签 -->
     <string-array name="around_categories_name">
         <item>充电站</item>
@@ -696,4 +703,6 @@
     <string name="cruise_unmute">播报</string>
     <string name="cruise_mute">静音</string>
     <string name="guide_login_close_toast">您也可以在【设置-其他】内完成绑定</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

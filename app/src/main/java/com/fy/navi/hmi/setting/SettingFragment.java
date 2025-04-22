@@ -1,5 +1,6 @@
 package com.fy.navi.hmi.setting;
 
+import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -16,6 +17,7 @@ import com.fy.navi.hmi.favorite.FavoriteFragment;
 import com.fy.navi.hmi.setting.broadcast.SettingBroadcastFragment;
 import com.fy.navi.hmi.setting.guide.SettingNaviFragment;
 import com.fy.navi.hmi.setting.others.SettingOthersFragment;
+import com.fy.navi.service.AutoMapConstant;
 import com.fy.navi.ui.base.BaseFragment;
 import com.fy.navi.ui.view.SkinLinearLayout;
 import com.google.android.material.tabs.TabLayout;
@@ -45,6 +47,12 @@ public class SettingFragment extends BaseFragment<FragmentSettingBinding, Settin
 
     @Override
     public void onInitData() {
+        final Bundle bundle = getArguments();
+        if (bundle != null) {
+            final int id  = bundle.getInt(AutoMapConstant.CommonBundleKey.BUNDLE_KEY_SETTING_TAB);
+            mBinding.viewPager.setCurrentItem(id - 1, false);
+        }
+
     }
 
     private static class ViewPagerAdapter extends FragmentStateAdapter {

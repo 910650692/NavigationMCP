@@ -1,16 +1,15 @@
 package com.fy.navi.scene.ui.navi.manager;
 
-import android.os.Handler;
-
 import androidx.annotation.Nullable;
 
 import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
-import com.android.utils.thread.LooperType;
 import com.android.utils.thread.ThreadManager;
 import com.fy.navi.service.MapDefaultFinalTag;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -27,8 +26,11 @@ public class NaviSceneManager implements INaviSceneEvent {
     private final CopyOnWriteArrayList<NaviSceneBase> showSceneList;
     /*** 被隐藏的Scene **/
     private final CopyOnWriteArrayList<NaviSceneBase> hideSceneList;
-
     private boolean mIsCanAddScene;
+
+    private final List<NaviSceneId> hideByMoreSetup = new ArrayList<>(Arrays.asList(
+            NaviSceneId.NAVI_SCENE_PARK_LIST, NaviSceneId.NAVI_SUSPEND_CARD, NaviSceneId.NAVI_CHARGE_TIP,
+            NaviSceneId.NAVI_SCENE_SERVICE_AREA, NaviSceneId.NAVI_SCENE_2D_CROSS));
 
     private NaviSceneManager() {
         sceneViewList = new ConcurrentHashMap<>();
@@ -46,8 +48,10 @@ public class NaviSceneManager implements INaviSceneEvent {
             Logger.i(TAG, "sceneBase is null");
             return;
         }
-        if (NaviSceneBase.SCENE_STATE_HIDE == sceneBase.getSceneState()
-                || NaviSceneBase.SCENE_STATE_CLOSE == sceneBase.getSceneState()) return;
+        if (NaviSceneBase.SCENE_STATE_HIDE == sceneBase.getSceneState() || NaviSceneBase.SCENE_STATE_CLOSE == sceneBase.getSceneState()) {
+            return;
+        }
+        Logger.i(TAG, "onHideScene Name -> " + sceneBase.getSceneName());
         hideScene(sceneBase);
     }
 
@@ -64,7 +68,17 @@ public class NaviSceneManager implements INaviSceneEvent {
                     } else { // 没在展示，则根据碰撞规则展示Scene
                         ArrayList<NaviSceneBase> temporaryList = new ArrayList<>(showSceneList);
                         int showSceneListSize = temporaryList.size(); // 有人知道为什么要用size，而不是直接用showSceneList.size吗， 动脑筋猜一猜
-                        Logger.i(TAG, "当前展示的Scene集合长度：" + showSceneListSize);
+                        Logger.d(TAG, "当前展示的Scene集合长度:" + showSceneListSize + " newName:" + newSceneBase.getSceneName() + " newState:" + newSceneBase.getSceneState() + " newId:" + cardId.ordinal());
+                        StringBuilder logShowAndShow = new StringBuilder();
+                        StringBuilder logShowAndClose = new StringBuilder();
+                        StringBuilder logShowAndHide = new StringBuilder();
+                        StringBuilder logHideAndShow = new StringBuilder();
+                        StringBuilder logCloseAndShow = new StringBuilder();
+                        boolean isShowAndShow = false;
+                        boolean isShowAndClose = false;
+                        boolean isShowAndHide = false;
+                        boolean isHideAndShow = false;
+                        boolean isCloseAndShow = false;
                         for (int i = 0; i < showSceneListSize; i++) {// 遍历所有显示的Scene，在根据定制的规则来判定正在显示的Scene是否需要隐藏或关闭
                             if (i >= temporaryList.size()) {
                                 Logger.e(TAG, "ArrayIndexOutOfBoundsException", "i:" + i, "size:" + temporaryList.size());
@@ -74,40 +88,65 @@ public class NaviSceneManager implements INaviSceneEvent {
                             int sceneRule = getSceneRule(oldSceneView.getSceneId(), cardId);
                             switch (sceneRule) {
                                 case NaviSceneRule.SCENE_SHOW_AND_SHOW -> {
-                                    Logger.i(TAG, "双卡同时显示", "oldSceneView -> " + oldSceneView.getSceneName() + ",oldId:" + oldSceneView.getSceneId().ordinal(),
-                                            "newSceneBase -> " + newSceneBase.getSceneName() + ",newId:" + cardId.ordinal());
+                                    //Logger.i(TAG, "双卡同时显示", "oldSceneView:" + oldSceneView.getSceneName() + " oldId:" + oldSceneView.getSceneId().ordinal());
+                                    if (!isShowAndShow) {
+                                        isShowAndShow = true;
+                                        logShowAndShow.append("双卡同时显示:");
+                                    }
+                                    logShowAndShow.append(oldSceneView.getSceneId().ordinal()).append(":").append(oldSceneView.getSceneName()).append(" ");
                                     showScene(newSceneBase);
                                 }
                                 case NaviSceneRule.SCENE_SHOW_AND_CLOSE -> {
-                                    Logger.i(TAG, "旧卡继续显示，新卡不展示", "oldSceneView -> " + oldSceneView.getSceneName() + ",oldId:" + oldSceneView.getSceneId().ordinal(),
-                                            "newSceneBase -> " + newSceneBase.getSceneName() + ",newId:" + cardId.ordinal());
+                                    //Logger.i(TAG, "旧卡继续显示，新卡不展示", "oldSceneView:" + oldSceneView.getSceneName() + " oldId:" + oldSceneView.getSceneId().ordinal());
+                                    if (!isShowAndClose) {
+                                        isShowAndClose = true;
+                                        logShowAndClose.append("旧卡继续显示，新卡不展示:");
+                                    }
+                                    logShowAndClose.append(oldSceneView.getSceneId().ordinal()).append(":").append(oldSceneView.getSceneName()).append(" ");
                                     closeScene(newSceneBase);
                                     return; // 有人知道为什么要用return吗
                                 }
                                 case NaviSceneRule.SCENE_SHOW_AND_HIDE -> {
-                                    Logger.i(TAG, "旧卡继续显示，新卡暂时不显示，待旧卡显示结束显卡再显示", "oldSceneView -> " + oldSceneView.getSceneName() + ",oldId:" + oldSceneView.getSceneId().ordinal(),
-                                            "newSceneBase -> " + newSceneBase.getSceneName() + ",newId:" + cardId.ordinal());
+                                    //Logger.i(TAG, "旧卡继续显示，新卡暂时不显示，待旧卡显示结束显卡再显示", "oldSceneView:" + oldSceneView.getSceneName() + " oldId:" + oldSceneView.getSceneId().ordinal());
+                                    if (!isShowAndHide) {
+                                        isShowAndHide = true;
+                                        logShowAndHide.append("旧卡继续显示，新卡暂时不显示，待旧卡显示结束显卡再显示:");
+                                    }
+                                    logShowAndHide.append(oldSceneView.getSceneId().ordinal()).append(":").append(oldSceneView.getSceneName()).append(" ");
                                     // TODO: 2025/3/22 等待旧卡显示完毕 打开新卡
                                     hideScene(newSceneBase);
                                     return; // 有人知道为什么要用return吗
                                 }
                                 case NaviSceneRule.SCENE_HIDE_AND_SHOW -> {
-                                    Logger.i(TAG, "旧卡隐藏，开始显示新卡，新卡显示结束继续显示旧卡", "oldSceneView -> " + oldSceneView.getSceneName() + ",oldId:" + oldSceneView.getSceneId().ordinal(),
-                                            "newSceneBase -> " + newSceneBase.getSceneName() + ",newId:" + cardId.ordinal());
+                                    //Logger.i(TAG, "旧卡隐藏，开始显示新卡，新卡显示结束继续显示旧卡", "oldSceneView:" + oldSceneView.getSceneName() + " oldId:" + oldSceneView.getSceneId().ordinal());
+                                    if (!isHideAndShow) {
+                                        isHideAndShow = true;
+                                        logHideAndShow.append("旧卡继续显示，新卡暂时不显示，待旧卡显示结束显卡再显示:");
+                                    }
+                                    logHideAndShow.append(oldSceneView.getSceneId().ordinal()).append(":").append(oldSceneView.getSceneName()).append(" ");
                                     hideScene(oldSceneView);
                                     showScene(newSceneBase);
                                 }
                                 case NaviSceneRule.SCENE_CLOSE_AND_SHOW -> {
-                                    Logger.i(TAG, "旧卡关闭，开始显示新卡", "oldSceneView -> " + oldSceneView.getSceneName() + ",oldId:" + oldSceneView.getSceneId().ordinal(),
-                                            "newSceneBase -> " + newSceneBase.getSceneName() + ",newId:" + cardId.ordinal());
+                                    //Logger.i(TAG, "旧卡关闭，开始显示新卡", "oldSceneView:" + oldSceneView.getSceneName() + " oldId:" + oldSceneView.getSceneId().ordinal();
+                                    if (!isCloseAndShow) {
+                                        isCloseAndShow = true;
+                                        logCloseAndShow.append("旧卡关闭，开始显示新卡:");
+                                    }
+                                    logCloseAndShow.append(oldSceneView.getSceneId().ordinal()).append(":").append(oldSceneView.getSceneName()).append(" ");
                                     closeScene(oldSceneView);
                                     showScene(newSceneBase);
                                 }
                                 default ->
-                                        Logger.i(TAG, "不做任何处理", "oldSceneView -> " + oldSceneView.getSceneName() + ",oldId:" + oldSceneView.getSceneId().ordinal(),
-                                                "newSceneBase -> " + newSceneBase.getSceneName() + ",newId:" + cardId.ordinal());
+                                        Logger.i(TAG, "不做任何处理", "oldSceneView:" + oldSceneView.getSceneName() + " oldId:" + oldSceneView.getSceneId().ordinal(),
+                                                " newName:" + newSceneBase.getSceneName() + " newState:" + newSceneBase.getSceneState() + " newId:" + cardId.ordinal());
                             }
                         }
+                        if (isShowAndShow) Logger.i(TAG, logShowAndShow);
+                        if (isShowAndClose) Logger.i(TAG, logShowAndClose);
+                        if (isShowAndHide) Logger.i(TAG, logShowAndHide);
+                        if (isHideAndShow) Logger.i(TAG, logHideAndShow);
+                        if (isCloseAndShow) Logger.i(TAG, logCloseAndShow);
                     }
                 }
             } else { // 不包含该场景代表这个Scene不受规则控制
@@ -118,8 +157,13 @@ public class NaviSceneManager implements INaviSceneEvent {
 
     private void onCloseScene(NaviSceneId cardId) {
         NaviSceneBase sceneBase = getSceneById(cardId);
-        if (ConvertUtils.isEmpty(sceneBase)) return;
-        if (NaviSceneBase.SCENE_STATE_CLOSE == sceneBase.getSceneState()) return;
+        if (ConvertUtils.isEmpty(sceneBase)) {
+            return;
+        }
+        if (NaviSceneBase.SCENE_STATE_CLOSE == sceneBase.getSceneState()) {
+            return;
+        }
+        Logger.i(TAG, "onCloseScene", "Name:" + sceneBase.getSceneName() + " State:" + sceneBase.getSceneState());
         closeScene(sceneBase);
     }
 
@@ -133,7 +177,7 @@ public class NaviSceneManager implements INaviSceneEvent {
             Logger.i(TAG, "current sceneView is close 不做处理: " + sceneView.getSceneName());
             return;
         }
-        Logger.i(TAG, "sceneView -> " + sceneView.getSceneName());
+        //Logger.i(TAG, "sceneView -> " + sceneView.getSceneName());
         if (!hideSceneList.contains(sceneView)) {
             hideSceneList.add(sceneView);
         } else {
@@ -150,7 +194,7 @@ public class NaviSceneManager implements INaviSceneEvent {
             Logger.e(TAG, "sceneView==null");
             return;
         }
-        Logger.i(TAG, "showScene -> " + sceneView.getSceneName(), "getSceneState:" + sceneView.getSceneState());
+        //Logger.i(TAG, "showScene -> " + sceneView.getSceneName(), " getSceneState:" + sceneView.getSceneState());
         if (NaviSceneBase.SCENE_STATE_SHOW == sceneView.getSceneState()) return;
         if (!showSceneList.contains(sceneView)) {
             showSceneList.add(sceneView);
@@ -168,7 +212,7 @@ public class NaviSceneManager implements INaviSceneEvent {
             Logger.e(TAG, "sceneView==null");
             return;
         }
-        Logger.i(TAG, "closeScene", "sceneView -> " + sceneView.getSceneName() + "," + sceneView.getSceneState());
+        //Logger.i(TAG, "closeScene", "sceneView -> " + sceneView.getSceneName() + "," + sceneView.getSceneState());
         if (NaviSceneBase.SCENE_STATE_CLOSE == sceneView.getSceneState()) return;
         sceneView.close();
         if (ConvertUtils.isContain(hideSceneList, sceneView)) {
@@ -227,7 +271,7 @@ public class NaviSceneManager implements INaviSceneEvent {
      * @param id id
      * @return 卡片, 返回值有为空的可能，使用方要进行判断
      */
-    private NaviSceneBase getSceneById(final NaviSceneId id) {
+    public NaviSceneBase getSceneById(final NaviSceneId id) {
         return ConvertUtils.containToValue(sceneViewList, id);
     }
 
@@ -243,18 +287,28 @@ public class NaviSceneManager implements INaviSceneEvent {
     }
 
     @Override
-    public void notifySceneReset() {
-        ThreadManager.getInstance().postUi(() -> {
-            for (NaviSceneBase newScene : hideSceneList) {
-                Logger.i(TAG, newScene.getSceneName());
-                onShowScene(newScene.getSceneId());
-            }
-        });
+    public void notifySceneReset(String from) {
+        if (!ConvertUtils.isEmpty(hideSceneList)) {
+            StringBuilder logBuilder = new StringBuilder();
+            ThreadManager.getInstance().postUi(() -> {
+                for (NaviSceneBase newScene : hideSceneList) {
+                    logBuilder.append(" ").append(newScene.getSceneName()).append(":").append(newScene.getSceneId());
+                    onShowScene(newScene.getSceneId());
+                }
+            });
+            Logger.i(TAG, from + logBuilder);
+        }
     }
 
     public void removeHideSceneList(NaviSceneBase sceneBase) {
         Logger.i(TAG, sceneBase.getSceneName());
         hideSceneList.remove(sceneBase);
+    }
+
+    public void clearHideSceneList() {
+        if (!ConvertUtils.isEmpty(hideSceneList)) {
+            ConvertUtils.clear(hideSceneList);
+        }
     }
 
     @Override
@@ -270,6 +324,26 @@ public class NaviSceneManager implements INaviSceneEvent {
     public void onCreateSceneView() {
         Logger.i(TAG, "onCreateSceneView");
         mIsCanAddScene = true;
+    }
+
+    //控制栏-更多 跟控制栏一个scene，因此该形态单独处理
+    public void showControlMoreSetup() {
+        Logger.i(TAG, "showControlMoreSetup");
+        for (NaviSceneId sceneId : hideByMoreSetup) {
+            NaviSceneBase sceneBase = getSceneById(sceneId);
+            if (!ConvertUtils.isEmpty(sceneBase)) {
+                if (sceneBase.mSceneState == NaviSceneBase.SCENE_STATE_SHOW) {
+                    //该场景下tmc未加入碰撞逻辑，暂时单独处理，以后有好的处理方式再优化
+                    if (sceneId == NaviSceneId.NAVI_SCENE_2D_CROSS) {
+                        notifySceneReset("showControlMoreSetup");
+                    }
+                    Logger.i(TAG, "showControlMoreSetup hideSceneName -> " + sceneBase.getSceneName());
+                    hideScene(sceneBase);
+                }
+            } else {
+                Logger.e(TAG, "sceneBase is null " + sceneId);
+            }
+        }
     }
 
     private static final class Helper {

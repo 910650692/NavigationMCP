@@ -186,8 +186,8 @@ public class RouteAdapterImplHelper {
         //所有的重算由HMI自行发起
         routeInitParam.collisionParam.state = RouteSerialParallelState.RouteSerial;
         routeInitParam.collisionParam.solution = RouteCollisionSolution.DiceCollision;
-        routeInitParam.rerouteParam.enableAutoReroute = true;
-        routeInitParam.rerouteParam.enableAutoSwitchParallelReroute = true;
+        routeInitParam.rerouteParam.enableAutoReroute = false;
+        routeInitParam.rerouteParam.enableAutoSwitchParallelReroute = false;//关闭“切换平行路自动重算”
         return routeInitParam;
     }
 
@@ -641,7 +641,7 @@ public class RouteAdapterImplHelper {
     private final IRouteResultObserver mRouteResultObserver = new IRouteResultObserver() {
         @Override
         public void onNewRoute(final PathResultData pathResultData, final ArrayList<PathInfo> pathInfoList, final RouteLimitInfo routeLimitInfo) {
-            Logger.i(TAG, "pathResultData -> " + pathResultData.errorCode, " pathInfoList -> "
+            Logger.i(TAG, "平行路切换onNewRoute pathResultData -> " + pathResultData.errorCode, " pathInfoList -> "
                     + pathInfoList.size(), " routeLimitInfo -> " + routeLimitInfo);
             if (ConvertUtils.isEmpty(pathResultData)) {
                 return;
@@ -684,7 +684,7 @@ public class RouteAdapterImplHelper {
 
         @Override
         public void onNewRouteError(final PathResultData pathResultData, final RouteLimitInfo routeLimitInfo) {
-            Logger.i(TAG, "pathResultData : ", pathResultData,
+            Logger.i(TAG, "平行路切换onNewRouteError pathResultData : ", pathResultData,
                     "routeLimitInfo : ", routeLimitInfo);
             if (ConvertUtils.isEmpty(mRouteResultObserverHashtable)) {
                 return;
@@ -710,10 +710,10 @@ public class RouteAdapterImplHelper {
 
         @HookMethod
         private void sendBuryPointForViaPoint(RouteWayID routeWay) {
-            if(routeWay == RouteWayID.ROUTE_WAY_ADD_VIA){
+            if (routeWay == RouteWayID.ROUTE_WAY_ADD_VIA) {
                 BuryPointController.getInstance().setEventName(BuryConstant.EventName.AMAP_ROUTE_ADD_MIDDLE);
             }
-            if(routeWay == RouteWayID.ROUTE_WAY_DELETE_VIA){
+            if (routeWay == RouteWayID.ROUTE_WAY_DELETE_VIA) {
                 BuryPointController.getInstance().setEventName(BuryConstant.EventName.AMAP_ROUTE_DELETE_MIDDLE);
             }
         }
@@ -1846,7 +1846,7 @@ public class RouteAdapterImplHelper {
     private final INaviRerouteObserver mRerouteObserver = new INaviRerouteObserver() {
         @Override
         public void onModifyRerouteOption(RouteOption rerouteOption) {
-            Logger.d(TAG, "onReroute: " + rerouteOption.getRouteReqId());
+            Logger.d(TAG, "平行路切换onModifyRerouteOption onReroute : " + rerouteOption.getRouteReqId());
             if (OpenApiHelper.powerType() == PowerType.E_VEHICLE_ENERGY_ELECTRIC) {
                 float powerLeft = SignalPackage.getInstance().getBatteryEnergy();
                 Logger.i(TAG, "纯电汽车 需要传剩余电量数据 powerLeft：" + powerLeft);
@@ -1856,7 +1856,7 @@ public class RouteAdapterImplHelper {
 
         @Override
         public void onRerouteInfo(BLRerouteRequestInfo info) {
-            Logger.i(TAG, "onReroute: ", info.errCode + "----" + info.requestId + "----" + info.option.getRouteType() + "----" + info.option.getRouteReqId());
+            Logger.i(TAG, "平行路切换onRerouteInfo: ", info.errCode + "----" + info.requestId + "----" + info.option.getRouteType() + "----" + info.option.getRouteReqId());
             if (mRequsetId == -1 || ConvertUtils.isEmpty(mRouteResultDataHashtable)) {
                 Logger.e(TAG, "have no this data");
                 return;
@@ -1870,10 +1870,28 @@ public class RouteAdapterImplHelper {
             if (info.option.getRouteType() == RouteType.RouteTypeYaw) {
                 Logger.i(TAG, "onReroute: 偏航引发的重算");
                 mRouteResultDataHashtable.put(info.requestId, requestRouteResult);
+                for (RouteResultObserver resultObserver : mRouteResultObserverHashtable.values()) {
+                    if (resultObserver == null) {
+                        continue;
+                    }
+                    resultObserver.onReRoute();
+                }
             } else if (info.option.getRouteType() == RouteType.RouteTypeTMC) {
                 Logger.i(TAG, "onReroute: TMC引发的重算");
                 mRouteResultDataHashtable.put(info.requestId, requestRouteResult);
+                for (RouteResultObserver resultObserver : mRouteResultObserverHashtable.values()) {
+                    if (resultObserver == null) {
+                        continue;
+                    }
+                    resultObserver.onReRoute();
+                }
             }
+        }
+
+        @Override
+        public void onSwitchParallelRoadRerouteInfo(BLRerouteRequestInfo info) {
+            //接收平行路切换自动重算的算路请求信息
+            Logger.i(TAG, "onReroute:平行路切换自动重算 errCode:" + info.errCode + " requestId:" + info.requestId);
         }
     };
 

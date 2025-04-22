@@ -271,12 +271,12 @@ public class SearchResultCallbackHelper {
      */
     public <T> SearchCallbackWrapper<T> createCallbackWrapper(
             final Class<T> resultType,
-            final Consumer<T> onSuccess,
+            final BiConsumer<Integer, T> onSuccess,
             final BiConsumer<Integer, T> onFailure) {
         return new SearchCallbackWrapper<>(new IBLSearchCallback<T>() {
             @Override
-            public void onSuccess(final T result) {
-                onSuccess.accept(result);
+            public void onSuccess(final int taskId, final T result) {
+                onSuccess.accept(taskId, result);
             }
 
             @Override

@@ -1,5 +1,9 @@
 package com.fy.navi.service.adapter.route.bls;
 
+import static com.autonavi.gbl.common.path.model.PointType.PointTypeStart;
+import static com.autonavi.gbl.common.path.option.ParalleType.paralleTypeMainSide;
+import static com.autonavi.gbl.common.path.option.ParalleType.paralleTypeOverhead;
+
 import com.android.utils.ConvertUtils;
 import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
@@ -9,8 +13,14 @@ import com.autonavi.gbl.common.model.ElecCostList;
 import com.autonavi.gbl.common.model.ElecInfoConfig;
 import com.autonavi.gbl.common.model.ElecSpeedCostList;
 import com.autonavi.gbl.common.model.PowertrainLoss;
+import com.autonavi.gbl.common.path.model.POIInfo;
+import com.autonavi.gbl.common.path.model.PointType;
+import com.autonavi.gbl.common.path.option.CurrentPositionInfo;
+import com.autonavi.gbl.common.path.option.POIForRequest;
 import com.autonavi.gbl.common.path.option.PathInfo;
 import com.autonavi.gbl.common.path.option.RouteOption;
+import com.autonavi.gbl.common.path.option.RouteType;
+import com.autonavi.gbl.pos.model.LocSwitchRoadType;
 import com.autonavi.gbl.route.RouteService;
 import com.autonavi.gbl.route.model.RouteAlternativeChargeStationParam;
 import com.autonavi.gbl.route.model.RouteChargingPreference;
@@ -31,6 +41,7 @@ import com.fy.navi.service.adapter.route.IRouteApi;
 import com.fy.navi.service.adapter.route.RouteResultObserver;
 import com.fy.navi.service.define.layer.RouteLineLayerParam;
 import com.fy.navi.service.define.map.MapType;
+import com.fy.navi.service.define.position.LocInfoBean;
 import com.fy.navi.service.define.route.RequestRouteResult;
 import com.fy.navi.service.define.route.RouteAvoidInfo;
 import com.fy.navi.service.define.route.RouteMsgPushInfo;
@@ -41,6 +52,7 @@ import com.fy.navi.service.define.route.RouteWayID;
 import com.fy.navi.service.define.search.PoiInfoEntity;
 import com.fy.navi.service.define.utils.BevPowerCarUtils;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
@@ -57,8 +69,11 @@ public class RouteAdapterImpl implements IRouteApi {
     private static final String NUM_ONE = "1";
     private RouteService mRouteService;
     private RouteAdapterImplHelper mAdapterImplHelper;
+    private RouteOption mLastRouteOption;
+    private RequestRouteResult mLastRequestRouteResult;
     private long homeRequestId = -1;
     private long officeRequestId = -1;
+    private long mRequestRouteId = -1;
 
     public RouteAdapterImpl() {
         mRouteService = (RouteService) ServiceMgr.getServiceMgrInstance()
@@ -100,10 +115,13 @@ public class RouteAdapterImpl implements IRouteApi {
         requestRouteResult.setMRouteType(param.getMRoutePriorityType());
         requestRouteResult.setMRouteRequestCallBackType(param.getRouteRequestCallBackType());
         final RouteOption routeOption = mAdapterImplHelper.getRequestParam(requestRouteResult, paramList);
+        mLastRouteOption = routeOption;
+        mLastRequestRouteResult = requestRouteResult;
         //设置共性参数 比如在线优先 ....
         //记录请求ID和屏幕ID以供返回结果使用
         final long requestId = mRouteService.requestRoute(routeOption);
-        final Hashtable<Long, RequestRouteResult> routeResultHashtable =  mAdapterImplHelper.getRouteResultDataHashtable();
+        mRequestRouteId = requestId;
+        final Hashtable<Long, RequestRouteResult> routeResultHashtable = mAdapterImplHelper.getRouteResultDataHashtable();
         routeResultHashtable.put(requestId, requestRouteResult);
         Logger.i(TAG, "route plane request id " + requestId);
         return requestId;
@@ -293,5 +311,99 @@ public class RouteAdapterImpl implements IRouteApi {
         costList.slope = slope;
         elecConfig.costList.add(costList);
         return elecConfig;
+    }
+
+    /**
+     * 平行路切换完成重算路
+     * @param switchRoadType 切换类型
+     * @param locInfoBean 定位
+     * @param roadID 路线ID
+     * @param flag 主辅路状态
+     * @param hwFlag 高架桥状态
+     */
+    public long requestSwitchParallelRoute(int switchRoadType,LocInfoBean locInfoBean, BigInteger roadID, short flag, short hwFlag) {
+        if(mLastRouteOption == null || mLastRequestRouteResult == null){
+            Logger.i(TAG, "平行路切换requestSwitchParallelRoute: mLastRouteOption == null");
+            return -1;
+        }
+        if(locInfoBean == null){
+            Logger.i(TAG, "平行路切换requestSwitchParallelRoute: locInfoBean == null");
+            return -1;
+        }
+        if(mRouteService == null){
+            Logger.i(TAG, "平行路切换requestSwitchParallelRoute: mRouteService == null");
+            return -1;
+        }
+        if(mRequestRouteId != -1){
+            mRouteService.abortRequest(mRequestRouteId);
+        }
+        mLastRouteOption.setRouteType(RouteType.RouteTypeParallelRoad);
+
+        // 设置行程点信息poiForRequest
+        // 对于平行路切换来说终点和途径点一般保持上一次的不变，但是起点需要重新设置，且必须设置起点的道路ID
+        // 起点信息poiInfo，来源于定位回调 IPosLocInfoObserver.onLocInfoUpdate
+        POIForRequest poiForRequest = mLastRouteOption.getPOIForRequest();
+        if (poiForRequest == null){
+            Logger.i(TAG, "平行路切换requestSwitchParallelRoute: poiForRequest == null");
+            return -1;
+        }
+
+        // 起点设置
+        POIInfo startPoiInfo = new POIInfo();
+        startPoiInfo.realPos.lon = locInfoBean.getLongitude();
+        startPoiInfo.realPos.lat = locInfoBean.getLatitude();
+        startPoiInfo.type = 0;//GPS点
+        poiForRequest.clearPoint(PointTypeStart);
+        poiForRequest.addPoint(PointTypeStart, startPoiInfo);
+        POIInfo endInfo = poiForRequest.getPoint(PointType.PointTypeEnd,0);
+        Logger.i(TAG, "平行路切换requestSwitchParallelRoute start lon:"+locInfoBean.getLongitude()+" lat:"+locInfoBean.getLatitude());
+        if(endInfo != null){
+            Logger.i(TAG, "平行路切换requestSwitchParallelRoute endInfo.name:"+endInfo.name+" lat:"+endInfo.realPos.lat+" lon:"+endInfo.realPos.lon);
+        }
+
+        poiForRequest.setDirection(locInfoBean.getMatchRoadCourse());
+        poiForRequest.setReliability(locInfoBean.getCourseAcc());
+        poiForRequest.setAngleType(locInfoBean.getStartDirType());
+        poiForRequest.setAngleGps(locInfoBean.getGpsDir());
+        poiForRequest.setAngleComp(locInfoBean.getCompassDir());
+        poiForRequest.setSpeed(locInfoBean.getSpeed());
+        poiForRequest.setLinkType(locInfoBean.getLinkType());
+        poiForRequest.setFormWay(locInfoBean.getFormway());
+        poiForRequest.setSigType(locInfoBean.getStartPosType());
+        poiForRequest.setFittingDir(locInfoBean.getFittingCourse());
+        poiForRequest.setMatchingDir(locInfoBean.getRoadDir());
+        poiForRequest.setFittingCredit(locInfoBean.getFittingCourseAcc());
+        poiForRequest.setPrecision(locInfoBean.getAccuracy());
+        poiForRequest.setSourceInfo(locInfoBean.getRequestRouteInfo());
+
+        // 平行路切换必须使用定位onParallelRoadUpdate回调的内容
+        poiForRequest.setPointRoadID(PointTypeStart, 0, roadID);
+        // 更新行程点信息
+        mLastRouteOption.setPOIForRequest(poiForRequest);
+
+        // 设置当前导航位置信息
+        CurrentPositionInfo curLocation = new CurrentPositionInfo();
+        curLocation.linkIndex = locInfoBean.getLinkCur();
+        curLocation.pointIndex = locInfoBean.getPostCur();
+        curLocation.segmentIndex = locInfoBean.getSegmCur();
+        curLocation.overheadFlag = hwFlag; //0：无高架 1：车标在高架上（车标所在道路有对应高架下） 2：车标在高架下（车标所在道路有对应高架上）
+        curLocation.parallelRoadFlag = flag; //0：无主辅路（车标所在道路旁无主辅路） 1：车标在主路（车标所在道路旁有辅路） 2：车标在辅路（车标所在道路旁有主路）
+        mLastRouteOption.setCurrentLocation(curLocation);
+
+        // 设置切换类型：高架切换 paralleTypeOverhead 还是 主辅路切换 paralleTypeMainSide，根据主辅路切换信息决定的
+        if (switchRoadType == LocSwitchRoadType.LocSwitchUpBridgeToDownBridge || switchRoadType == LocSwitchRoadType.LocSwitchDownBridgeToUpBridge) {
+            mLastRouteOption.setParalleType(paralleTypeOverhead);
+        }
+        if (switchRoadType == LocSwitchRoadType.LocSwitchMainToSide || switchRoadType == LocSwitchRoadType.LocSwitchSideToMain) {
+            mLastRouteOption.setParalleType(paralleTypeMainSide);
+        }
+
+        // 发起路线重算
+        final long requestId = mRouteService.requestRoute(mLastRouteOption);
+        mRequestRouteId = requestId;
+        final Hashtable<Long, RequestRouteResult> routeResultHashtable = mAdapterImplHelper.getRouteResultDataHashtable();
+        routeResultHashtable.put(requestId, mLastRequestRouteResult);
+        Logger.i(TAG, "平行路切换requestSwitchParallelRoute switchRoadType:"+switchRoadType+" roadID:"+roadID+" flag:"+flag+" hwFlag:"+hwFlag+" requestId:"+requestId);
+        return requestId;
     }
 }

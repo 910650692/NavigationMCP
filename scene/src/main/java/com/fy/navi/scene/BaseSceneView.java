@@ -29,7 +29,7 @@ public abstract class BaseSceneView<VB extends ViewDataBinding, VM extends BaseS
     private LifecycleRegistry mLifecycleRegistry = new LifecycleRegistry(this);
     protected VB mViewBinding;
     protected VM mScreenViewModel;
-    protected MapType mMapTypeId;
+    protected MapType mMapTypeId = MapType.MAIN_SCREEN_MAIN_MAP;
     protected StackManager mStackManager;
 
     public BaseSceneView(@NonNull Context context) {
@@ -119,6 +119,11 @@ public abstract class BaseSceneView<VB extends ViewDataBinding, VM extends BaseS
     protected void showCurrentFragment() {
         BaseActivity activity = mStackManager.getCurrentActivity(mMapTypeId.name());
         activity.showCurrentFragment();
+    }
+
+    public void showSelfParkingView(){
+        BaseActivity activity = mStackManager.getCurrentActivity(mMapTypeId.name());
+        activity.showParkingView();
     }
 
     public void onCreate() {

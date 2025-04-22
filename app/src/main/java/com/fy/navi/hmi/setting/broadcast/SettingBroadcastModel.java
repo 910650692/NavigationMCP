@@ -1,12 +1,12 @@
 package com.fy.navi.hmi.setting.broadcast;
 
 import com.android.utils.log.Logger;
+import com.android.utils.thread.ThreadManager;
 import com.fy.navi.service.define.setting.SettingController;
-import com.fy.navi.service.logicpaket.setting.SettingCallback;
 import com.fy.navi.service.logicpaket.setting.SettingPackage;
 import com.fy.navi.ui.base.BaseModel;
 
-public class SettingBroadcastModel extends BaseModel<SettingBroadcastViewModel> implements SettingCallback {
+public class SettingBroadcastModel extends BaseModel<SettingBroadcastViewModel> implements SettingPackage.SettingChangeCallback {
 
 
     private static final String TAG = SettingBroadcastModel.class.getName();
@@ -20,7 +20,7 @@ public class SettingBroadcastModel extends BaseModel<SettingBroadcastViewModel> 
     @Override
     public void onCreate() {
         super.onCreate();
-        mSettingPackage.registerCallBack("SettingBroadcastModel",this);
+        mSettingPackage.setSettingChangeCallback("SettingBroadcastModel",this);
     }
 
     @Override
@@ -133,7 +133,22 @@ public class SettingBroadcastModel extends BaseModel<SettingBroadcastViewModel> 
     }
 
     @Override
-    public void notify(final int eventType, final int exCode) {
-        Logger.d(TAG, "notify: eventType = " + eventType + " exCode = " + exCode);
+    public void onSettingChanged(final String key, final String value) {
+        Logger.d(TAG,"onSettingChanged, key = " + key + ", value = " + value);
+        if (key.equals(SettingController.KEY_SETTING_NAVI_BROADCAST)) {
+            switch (value) {
+                case SettingController.VALUE_NAVI_BROADCAST_DETAIL:
+                    ThreadManager.getInstance().postUi(() -> mViewModel.onNaviBroadcastChange(true, false, false));
+                    break;
+                case SettingController.VALUE_NAVI_BROADCAST_CONCISE:
+                    ThreadManager.getInstance().postUi(() -> mViewModel.onNaviBroadcastChange(false, true, false));
+                    break;
+                case SettingController.VALUE_NAVI_BROADCAST_SIMPLE:
+                    ThreadManager.getInstance().postUi(() -> mViewModel.onNaviBroadcastChange(false, false, true));
+                    break;
+                default:
+                    break;
+            }
+        }
     }
 }

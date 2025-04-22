@@ -4,6 +4,7 @@ import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
 import com.fy.navi.service.adapter.l2.L2Adapter;
 import com.fy.navi.service.adapter.l2.L2DriveObserver;
+import com.fy.navi.service.define.navi.L2NaviBean;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -50,9 +51,9 @@ public class L2Package implements L2DriveObserver {
     }*/
 
     @Override
-    public void onSdTbtDataChange(String json) {
+    public void onSdTbtDataChange(L2NaviBean l2NaviBean) {
         for (L2InfoCallback callback : l2InfoCallbackMap.values()) {
-            callback.onSdTbtDataChange(json);
+            callback.onSdTbtDataChange(l2NaviBean);
         }
     }
 

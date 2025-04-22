@@ -1,9 +1,23 @@
 package com.fy.navi.fsa.bean;
-
+/**
+ * 高速出口
+ */
 public class HighWayExitInfo {
+    /**
+     * 高速出口ID
+     */
     private String exitID;
+    /**
+     * exitRoadName	String	高速出口路名
+     */
     private String exitRoadName;
+    /**
+     * exitDirectionName	String	高速出口方向名称
+     */
     private String exitDirectionName;
+    /**
+     * distance	int	到此高速出口的剩余距离
+     */
     private int distance;
 
     public HighWayExitInfo() {

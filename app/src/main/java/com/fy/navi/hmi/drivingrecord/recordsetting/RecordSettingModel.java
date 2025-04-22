@@ -4,18 +4,22 @@ import android.text.TextUtils;
 
 import com.fy.navi.service.define.setting.SettingController;
 import com.fy.navi.service.define.user.usertrack.DrivingRecordDataBean;
+import com.fy.navi.service.greendao.history.History;
 import com.fy.navi.service.greendao.history.HistoryManager;
 import com.fy.navi.service.greendao.setting.SettingManager;
+import com.fy.navi.service.logicpaket.user.account.AccountPackage;
 import com.fy.navi.service.logicpaket.user.usertrack.UserTrackPackage;
 import com.fy.navi.ui.base.BaseModel;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class RecordSettingModel extends BaseModel<RecordSettingViewModel> {
 
     private final SettingManager mSettingManager;
     private final UserTrackPackage mUserTrackPackage;
     private final HistoryManager mHistoryManager;
+    private final AccountPackage mAccountPackage;
 
     public RecordSettingModel() {
         mSettingManager = SettingManager.getInstance();
@@ -23,6 +27,7 @@ public class RecordSettingModel extends BaseModel<RecordSettingViewModel> {
         mUserTrackPackage = UserTrackPackage.getInstance();
         mHistoryManager = HistoryManager.getInstance();
         mHistoryManager.init();
+        mAccountPackage = AccountPackage.getInstance();
     }
 
     /**
@@ -30,10 +35,12 @@ public class RecordSettingModel extends BaseModel<RecordSettingViewModel> {
      */
     public void initView() {
         getAutoRecord();
-        if (getBehaviorDataIds() != null) {
-            mViewModel.setClearButtonEnable(getBehaviorDataIds().length > 0);
+        if (!mAccountPackage.isLogin()) {
+            final List<History> historyList = mHistoryManager.getValueByType(2);
+            mViewModel.setClearButtonEnable(historyList != null && !historyList.isEmpty());
         } else {
-            mViewModel.setClearButtonEnable(false);
+            final int[] dataIds = mUserTrackPackage.getBehaviorDataIds();
+            mViewModel.setClearButtonEnable(dataIds != null && dataIds.length > 0);
         }
     }
 

@@ -13,7 +13,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.experimental.Accessors;
 
 /**
@@ -85,6 +87,17 @@ public class PoiInfoEntity implements Parcelable {
     public int getPoiType() {
         return mPoiType;
     }
+
+    public boolean getIsEndPoint() {
+        return mIsEndPoint;
+    }
+
+    public void setIsEndPoint(boolean isEndPoint) {
+        this.mIsEndPoint = isEndPoint;
+    }
+
+    // 是否是终点
+    private boolean mIsEndPoint = false;
 
     /**
      * 设置poi类型

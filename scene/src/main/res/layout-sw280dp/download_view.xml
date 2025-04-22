@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.fy.navi.ui.view.SkinConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/download_status"
+    android:layout_width="@dimen/dp_278"
+    android:layout_height="@dimen/dp_96"
+    android:background="@drawable/shape_bg_download_data">
+
+    <com.fy.navi.ui.view.SkinLinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="fill_parent"
+        android:gravity="center"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.fy.navi.ui.view.SkinImageView
+            android:id="@+id/btn_status"
+            android:layout_width="@dimen/dp_54"
+            android:layout_height="@dimen/dp_54"
+            android:layout_marginEnd="@dimen/dp_10"
+            android:src="@drawable/img_untop_bwhite_42"/>
+
+        <com.fy.navi.ui.view.SkinTextView
+            android:id="@+id/status_tip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/setting_white"
+            android:text="@string/offline_item_city_status"
+            android:textSize="@dimen/sp_38" />
+
+    </com.fy.navi.ui.view.SkinLinearLayout>
+
+
+</com.fy.navi.ui.view.SkinConstraintLayout>

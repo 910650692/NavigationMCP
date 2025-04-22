@@ -256,6 +256,8 @@ public class SceneNaviTbtView extends NaviSceneBase<SceneNaviTbtViewBinding, Sce
         mIsCrossImageShow = isRealNeedShow;
         if (!mIsCrossImageShow) {
             resetProgress();
+        } else {
+            updateTbtHeight(101, 4, 35);
         }
     }
 
@@ -268,7 +270,31 @@ public class SceneNaviTbtView extends NaviSceneBase<SceneNaviTbtViewBinding, Sce
                 params.width = 0;
                 mViewBinding.sivProgress.setLayoutParams(params);
                 mViewBinding.sivProgress.requestLayout();
+                updateTbtHeight(119, 16, 30);
             }
+        });
+    }
+
+    /**
+     * 因为路口大图出现的时候TBT布局和正常状态下的不一致，所以需要动态修改
+     * @param height 布局高度
+     * @param gpsTopMargin gps图标上边距
+     */
+    private void updateTbtHeight(int height, int gpsTopMargin, int guideEnd) {
+        ThreadManager.getInstance().postUi(() -> {
+            LayoutParams params = (LayoutParams) mViewBinding.
+                    sclProgress.getLayoutParams();
+            params.height = height;
+            mViewBinding.sclProgress.setLayoutParams(params);
+            mViewBinding.sclProgress.requestLayout();
+            params = (LayoutParams) mViewBinding.sivGps.getLayoutParams();
+            params.topMargin = gpsTopMargin;
+            mViewBinding.sivGps.setLayoutParams(params);
+            mViewBinding.sivGps.requestLayout();
+            params = (LayoutParams) mViewBinding.glRouteName.getLayoutParams();
+            params.guideEnd = guideEnd;
+            mViewBinding.glRouteName.setLayoutParams(params);
+            mViewBinding.glRouteName.requestLayout();
         });
     }
 
