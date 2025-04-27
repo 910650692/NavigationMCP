@@ -63,13 +63,11 @@
             android:id="@+id/favorite_scroll"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:focusableInTouchMode="false"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/favorite_title_layout">
 
             <com.fy.navi.ui.view.SkinConstraintLayout
                 android:id="@+id/favorite_layout"
-                android:descendantFocusability="blocksDescendants"
                 android:layout_width="@dimen/dp_1104"
                 android:layout_height="wrap_content">
 

@@ -11,7 +11,6 @@ import com.android.utils.ToastUtils;
 import com.android.utils.file.FileUtils;
 import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
-import com.android.utils.thread.ThreadManager;
 import com.autonavi.gbl.map.model.EGLDeviceID;
 import com.autonavi.gbl.map.model.MapEngineID;
 import com.autonavi.gbl.servicemanager.ServiceMgr;
@@ -26,7 +25,6 @@ import com.fy.navi.service.AppContext;
 import com.fy.navi.service.AutoMapConstant;
 import com.fy.navi.service.GBLCacheFilePath;
 import com.fy.navi.service.MapDefaultFinalTag;
-import com.fy.navi.service.adapter.engine.ActivateObserver;
 import com.fy.navi.service.adapter.engine.EngineObserver;
 import com.fy.navi.service.adapter.engine.IEngineApi;
 import com.fy.navi.service.define.code.UserDataCode;
@@ -39,18 +37,9 @@ import com.fy.navi.service.greendao.setting.SettingManager;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.concurrent.CancellationException;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * TODO说明
@@ -60,10 +49,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class EngineAdapterImpl implements IEngineApi {
     private static final String TAG = MapDefaultFinalTag.ENGINE_SERVICE_TAG;
     private final List<EngineObserver> mEngineObserverList;
-    private final List<ActivateObserver> mActObserverList;
-    private final ActivationManager.IActivateHelper manualActivateListener;
-    private static final String ERR_MSG = "Error Massage : ";
     private boolean mIsActive = false;
+    private static final String ERR_MSG = "Error Massage : ";
     // TODO: 配置父子渠道包，每次更新aar包时都要核实一下
     private final String mChanelName = "C13953968867";
     private SettingManager mSettingManager;
@@ -75,44 +62,8 @@ public class EngineAdapterImpl implements IEngineApi {
 
     public EngineAdapterImpl() {
         mEngineObserverList = new ArrayList<>();
-        mActObserverList = new ArrayList<>();
         mSettingManager = SettingManager.getInstance();
         mSettingManager.init();
-        manualActivateListener = new ActivationManager.IActivateHelper() {
-            @Override
-            public void onUUIDGet(final String uuid) {
-                Logger.d(TAG, "uuid获取成功 : " + uuid);
-                if (ConvertUtils.isEmpty(uuid)) {
-                    Logger.d(TAG,"uuid为空");
-                    logResult(10008);
-                    return;
-                }
-                beginInitActivateService(uuid);
-            }
-
-            @Override
-            public void onManualActivated(final boolean isSuccess) {
-                if (!isSuccess) {
-                    Logger.e(TAG, "手动激活失败");
-                    return;
-                }
-                Logger.d(TAG, "手动激活成功，开始BL初始化");
-                initBLLib();
-            }
-
-            @Override
-            public void onNetActivated(final boolean isSuccess) {
-                if (!isSuccess) {
-                    Logger.e(TAG, "网络激活失败");
-                    onNetActivateFailed();
-                    logResult(10007);
-                    return;
-                }
-                Logger.d(TAG, "网络激活成功，开始BL初始化");
-                initBLLib();
-            }
-        };
-        ActivationManager.getInstance().addManualActivateListener(manualActivateListener);
     }
 
     @Override
@@ -121,24 +72,6 @@ public class EngineAdapterImpl implements IEngineApi {
             return;
         }
         mEngineObserverList.add(observer);
-    }
-
-    @Override
-    public void addActivateObserver(final ActivateObserver observer) {
-        if (ConvertUtils.isContain(mActObserverList, observer)) {
-            return;
-        }
-        mActObserverList.add(observer);
-    }
-
-    @Override
-    public void initEngine() {
-        ThreadManager.getInstance().execute(new Runnable() {
-            @Override
-            public void run() {
-                startInitEngine();
-            }
-        });
     }
 
     @Override
@@ -177,7 +110,6 @@ public class EngineAdapterImpl implements IEngineApi {
     public void unInit() {
         ServiceMgr.getServiceMgrInstance().unInitBL();
         ServiceMgr.getServiceMgrInstance().unInitBaseLibs();
-        ActivationManager.getInstance().unInit();
     }
 
     @Override
@@ -237,11 +169,10 @@ public class EngineAdapterImpl implements IEngineApi {
         return GBLCacheFilePath.BLS_ASSETS_LAYER_PATH + "style_bl.json";
     }
 
-    /**
-     * 开始初始化engine
-     */
-    private void startInitEngine() {
-        Logger.d(TAG, "EngineAdapterImpl : startInitEngine");
+
+    @Override
+    public void initBaseLibs() {
+        Logger.d(TAG, "initBaseLibs :");
         checkUatMapLimit();
         if (mIsActive) {
             return;
@@ -255,65 +186,12 @@ public class EngineAdapterImpl implements IEngineApi {
         final int initBaseLibsResult = initEngineParam();
         if (!ConvertUtils.equals(0, initBaseLibsResult)) {
             logResult(10004);
-            return;
         }
-        beginInitActivateService("");
-        //获取uuid
-        //ActivationManager.getInstance().getThirdPartyUUID();
-    }
-
-    /**
-     * 重试网络激活
-     */
-    @Override
-    public void netActivateRetry() {
-        onActivating();
-        ActivationManager.getInstance().netActivate();
-    }
-
-    /**
-     * 获取完uuid后开始后续流程
-     * @param uuid uuid
-     */
-    private void beginInitActivateService(final String uuid) {
-        //初始化激活服务
-//        Logger.d(TAG,"uuid = " + uuid);
-//        if (!ActivationManager.getInstance().initActivationService(uuid)) {
-//            Logger.d(TAG,"激活服务初始化失败");
-//            logResult(10006);
-//            return;
-//        }
-//        //查询激活状态
-//        if (!ActivationManager.getInstance().checkActivationStatus()) {
-//            onActivating();
-//            Logger.d(TAG,"未激活，开始下单");
-//            //下单
-//            if (!ActivationManager.getInstance().createCloudOrder()) {
-//                logResult(10009);
-//                return;
-//            }
-//            //查询下单状态
-//            if (!pollOrderStatusWithRetry()) {
-//                logResult(10010);
-//                return;
-//            }
-//            //网络激活
-//            ActivationManager.getInstance().netActivate();
-//        } else {
-//            initBLLib();
-//        }
-        initBLLib();
     }
 
     @Override
-    public void manualActivate(final String userCode, final String loginCode) {
-        Logger.d(TAG, "manualActivate...");
-        ActivationManager.getInstance().manualActivate(userCode, loginCode);
-    }
-    /**
-     * 初始化BL lib
-     */
-    private void initBLLib() {
+    public void initBL() {
+        Logger.d(TAG, "initBL :");
         final int sdkResultCode = initSDKParam();
         if (!ConvertUtils.equals(0, sdkResultCode)) {
             logResult(10005);
@@ -438,41 +316,8 @@ public class EngineAdapterImpl implements IEngineApi {
             case 10003 -> "SDK无效";
             case 10004 -> "BaseLibs参数传输错误";
             case 10005 -> "BlSdk参数传输错误";
-            case 10006 -> "激活参数传输错误";
-            case 10007 -> "网络激活失败";
-            case 10008 -> "UUID获取失败";
-            case 10009 -> "云对云下单失败";
-            case 10010 -> "订单状态查询超时";
             default -> "未知错误码";
         };
-    }
-
-    /**
-     * 正在激活
-     */
-    private void onActivating() {
-        for (ActivateObserver observer : mActObserverList) {
-            ThreadManager.getInstance().postUi(new Runnable() {
-                @Override
-                public void run() {
-                    observer.onActivating();
-                }
-            });
-        }
-    }
-
-    /**
-     * 网络激活失败通知
-     */
-    private void onNetActivateFailed() {
-        for (ActivateObserver observer : mActObserverList) {
-            ThreadManager.getInstance().postUi(new Runnable() {
-                @Override
-                public void run() {
-                    observer.onNetActivateFailed(ActivationManager.getNetFailedCount());
-                }
-            });
-        }
     }
 
     /**
@@ -604,85 +449,6 @@ public class EngineAdapterImpl implements IEngineApi {
             uid = info.getUid();
         }
         return uid;
-    }
-
-    /**
-     * 带重试的订单激活状态查询
-     *
-     * @return 是否成功
-     */
-    private boolean pollOrderStatusWithRetry() {
-        final int maxRetries = 3;
-        final long[] delays = {AutoMapConstant.TWO_MINUTES_DELAY,
-                AutoMapConstant.DELAY_MINUTE, AutoMapConstant.DELAY_MINUTE};
-        final AtomicInteger retryCount = new AtomicInteger(0);
-        final ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
-        final CompletableFuture<Boolean> future = new CompletableFuture<>();
-
-        final Runnable task = new Runnable() {
-            @Override
-            public void run() {
-                if (future.isDone()) {
-                    return;
-                }
-                try {
-                    final boolean isOrdered = ActivationManager.getInstance().checkOrderStatus();
-                    if (isOrdered) {
-                        future.complete(true);
-                        executor.shutdownNow();
-                        return;
-                    }
-
-                    final int currentCount = retryCount.incrementAndGet();
-                    Logger.d(TAG,"轮询次数 : " + currentCount);
-                    if (currentCount == 1) {
-                        future.complete(true);
-                        executor.shutdownNow();
-                    }
-                    if (currentCount > maxRetries) {
-                        future.complete(false);
-                        executor.shutdownNow();
-                    }
-                } catch (NullPointerException | IllegalArgumentException e) {
-                    future.completeExceptionally(e);
-                    executor.shutdownNow();
-                }
-            }
-        };
-
-        long totalDelay = 0;
-        //第一次延时两分钟，第二次延时七分钟，第三次延时十二分钟，三个任务同时发放
-        for (int count = 0; count < maxRetries; ++count) {
-            if (count == 0) {
-                totalDelay = delays[count];
-            } else {
-                totalDelay += delays[count];
-            }
-            executor.schedule(task, totalDelay, TimeUnit.SECONDS);
-        }
-
-        try {
-            // 总超时 = 所有可能延迟之和 + 缓冲时间（例如15分钟）
-            final long totalTimeout = Arrays.stream(delays).sum() + 1; // 2+5+5 +1=13分钟
-            return future.get(totalTimeout, TimeUnit.SECONDS);
-        } catch (CancellationException e){
-            executor.shutdownNow();
-            Logger.e(TAG,"CancellationException");
-            return false;
-        } catch (TimeoutException e) {
-            executor.shutdownNow();
-            Logger.e(TAG,"订单状态轮询总超时");
-            return false;
-        } catch (ExecutionException e) {
-            Logger.e(TAG,"轮询异常: " + e.getCause());
-            return false;
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            Logger.e(TAG,"轮询被中断");
-            return false;
-        } finally {
-            executor.shutdown();
-        }
     }
 
     /**

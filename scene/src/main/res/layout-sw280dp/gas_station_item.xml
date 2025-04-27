@@ -6,6 +6,7 @@
     <data>
 
         <import type="android.view.View" />
+
         <variable
             name="model"
             type="com.fy.navi.service.define.route.RouteParam" />
@@ -20,38 +21,38 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/bg_poi_gas_price_bg"
+        android:focusable="false">
 
-        >
         <com.fy.navi.ui.view.SkinTextView
             android:id="@+id/poi_gas_oil_type"
             android:layout_width="wrap_content"
-            android:minWidth="@dimen/dp_72"
-            android:layout_height="@dimen/dp_52"
-            android:text="0#车柴"
+            android:layout_height="@dimen/dp_64"
+            android:background="@drawable/bg_poi_gas_type_bg"
+            android:focusable="false"
+            android:gravity="center"
+            android:minWidth="@dimen/dp_96"
             android:paddingStart="@dimen/dp_8"
             android:paddingEnd="@dimen/dp_8"
-            android:textSize="@dimen/sp_32"
-            android:gravity="center"
+            android:text="0#车柴"
             android:textColor="@color/search_color_ffffff"
-            android:background="@drawable/bg_poi_gas_type_bg"
+            android:textSize="@dimen/sp_40"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <com.fy.navi.ui.view.SkinTextView
             android:id="@+id/poi_gas_oil_price"
             android:layout_width="wrap_content"
-            android:minWidth="@dimen/dp_108"
-            android:layout_height="@dimen/dp_52"
-            tools:text="7.6/升"
-            android:textSize="@dimen/sp_32"
+            android:layout_height="@dimen/dp_64"
+            android:focusable="false"
             android:gravity="end|center_vertical"
+            android:minWidth="@dimen/dp_132"
             android:paddingStart="@dimen/dp_8"
             android:paddingEnd="@dimen/dp_8"
             android:textColor="@color/search_color_ffffff_50"
+            android:textSize="@dimen/sp_40"
             app:layout_constraintStart_toEndOf="@+id/poi_gas_oil_type"
             app:layout_constraintTop_toTopOf="parent"
-            />
+            tools:text="7.6/升" />
 
     </com.fy.navi.ui.view.SkinConstraintLayout>
 </layout>

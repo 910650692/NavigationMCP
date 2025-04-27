@@ -5,9 +5,11 @@ import android.text.TextUtils;
 
 import androidx.annotation.Nullable;
 
+import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
 import com.fy.navi.service.AutoMapConstant;
+import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.map.MapTypeManager;
 import com.fy.navi.service.define.search.PoiInfoEntity;
@@ -30,7 +32,11 @@ public class SearchResultModel extends BaseModel<SearchResultViewModel> implemen
     private final LayerPackage mLayerPackage;
     private final String mCallbackId;
 
+    private int mTaskId;
+    private SearchResultEntity mSearchResultEntity;
+
     public SearchResultModel() {
+        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "SearchResultModel 初始化" + this);
         mCallbackId = UUID.randomUUID().toString();
         mSearchPackage = SearchPackage.getInstance();
         mLayerPackage = LayerPackage.getInstance();
@@ -40,6 +46,17 @@ public class SearchResultModel extends BaseModel<SearchResultViewModel> implemen
     public void onCreate() {
         super.onCreate();
         mSearchPackage.registerCallBack(mCallbackId, this);
+    }
+
+    /**
+     * 恢复fragment状态
+     */
+    public void onReStoreFragment() {
+        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "onReStoreFragment: " + mSearchResultEntity);
+        if (!ConvertUtils.isEmpty(mSearchResultEntity)) {
+            final ThreadManager threadManager = ThreadManager.getInstance();
+            threadManager.postUi(() -> mViewModel.notifySearchResult(mTaskId, mSearchResultEntity));
+        }
     }
 
     @Override
@@ -54,6 +71,8 @@ public class SearchResultModel extends BaseModel<SearchResultViewModel> implemen
                     || searchResultEntity.getSearchType() == AutoMapConstant.SearchType.ALONG_WAY_SEARCH
                     || searchResultEntity.getSearchType() == AutoMapConstant.SearchType.EN_ROUTE_KEYWORD_SEARCH) {
                 final ThreadManager threadManager = ThreadManager.getInstance();
+                mTaskId = taskId;
+                mSearchResultEntity = searchResultEntity;
                 threadManager.postUi(() -> mViewModel.notifySearchResult(taskId, searchResultEntity));
             }
         }
@@ -95,6 +114,7 @@ public class SearchResultModel extends BaseModel<SearchResultViewModel> implemen
     @Override
     public void onDestroy() {
         super.onDestroy();
+        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "SearchResultModel 销毁");
         if (mSearchPackage != null) {
             mSearchPackage.unRegisterCallBack(mCallbackId);
         }

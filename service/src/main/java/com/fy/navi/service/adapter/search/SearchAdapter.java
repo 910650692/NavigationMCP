@@ -6,6 +6,7 @@ import com.fy.navi.service.AdapterConfig;
 import com.fy.navi.service.define.search.ETAInfo;
 import com.fy.navi.service.define.search.SearchRequestParameter;
 import com.fy.navi.service.define.utils.BevPowerCarUtils;
+import com.fy.navi.service.logicpaket.calibration.CalibrationPackage;
 import com.fy.navi.service.logicpaket.signal.SignalPackage;
 
 import java.util.Objects;
@@ -26,6 +27,7 @@ final public class SearchAdapter {
     private final ISearchApi mSearchApi;
 
     private SignalPackage mSignalPackage;
+    private CalibrationPackage mCalibrationPackage;
 
     /**
      * 私有构造方法，防止外部实例化.
@@ -34,6 +36,7 @@ final public class SearchAdapter {
     private SearchAdapter() {
         mSearchApi = (ISearchApi) AdapterConfig.getObject(SEARCH_API_PKG, SEARCH_API_CLS);
         mSignalPackage = SignalPackage.getInstance();
+        mCalibrationPackage = CalibrationPackage.getInstance();
     }
 
     /**
@@ -233,6 +236,10 @@ final public class SearchAdapter {
         }
         if (mSignalPackage.getMaxBatteryEnergy() > 0) {
             BevPowerCarUtils.getInstance().maxBattenergy = mSignalPackage.getMaxBatteryEnergy();
+        }
+        if (mCalibrationPackage.highVoltageBatteryPropulsionTotalRangeNavi() > 0) {
+            BevPowerCarUtils.getInstance().batterToDistanceCarSignal = (double)
+                    mCalibrationPackage.highVoltageBatteryPropulsionTotalRangeNavi() / 100;
         }
         return mSearchApi.getTravelTimeFutureIncludeChargeLeft(searchRequestParameter);
     }

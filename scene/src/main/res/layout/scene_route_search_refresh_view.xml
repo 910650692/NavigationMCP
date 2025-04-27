@@ -15,7 +15,6 @@
     <com.fy.navi.ui.view.SkinRecyclerView
         android:id="@+id/route_result"
         android:layout_width="match_parent"
-        android:background="@drawable/bg_route_result"
         android:layout_height="match_parent"
         />
 

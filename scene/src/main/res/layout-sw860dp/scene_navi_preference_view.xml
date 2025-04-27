@@ -126,7 +126,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/preference_avoid_congestion"
                 app:layout_constraintTop_toTopOf="@id/preference_first_highway"
                 app:select_background_color="@drawable/navi_selector_preference"
-                app:select_text_color="@color/white" />
+                app:select_text_color="@color/navi_color_FFFFFF_100" />
 
             <com.fy.navi.ui.view.SkinTextView
                 android:id="@+id/preference_less_charge"

@@ -1,8 +1,8 @@
 package com.fy.navi.service.adapter.user.msgpush;
 
 import com.fy.navi.service.define.route.RouteMsgPushInfo;
-import com.fy.navi.service.define.user.msgpush.MsgPushResponseInfo;
 import com.fy.navi.service.define.user.msgpush.MsgPushInfo;
+import com.fy.navi.service.define.user.msgpush.MsgPushResponseInfo;
 
 public interface MsgPushAdapterCallback {
 
@@ -34,6 +34,10 @@ public interface MsgPushAdapterCallback {
      * @param msg
      */
     void notifyMobileLinkPushMessage(MsgPushInfo msg);
+
+    default void notifyDisconnectFromMobileMessage(int status) {
+
+    }
 
     /**
      * 网络库线程中回调业务应答类

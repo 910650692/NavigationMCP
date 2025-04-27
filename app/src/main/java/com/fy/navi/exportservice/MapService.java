@@ -10,10 +10,11 @@ import android.content.Intent;
 import android.content.pm.ServiceInfo;
 import android.os.Build;
 import android.os.IBinder;
-import android.util.Log;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
+
+import com.android.utils.log.Logger;
 
 public class MapService extends Service {
     private static final String TAG = MapService.class.getSimpleName();
@@ -26,7 +27,7 @@ public class MapService extends Service {
     @Override
     public IBinder onBind(final Intent intent) {
         final String packageName = intent.getStringExtra("packageName");
-        Log.d(TAG, "onBind: " + packageName);
+        Logger.d(TAG, "onBind: " + packageName);
         return BinderPool.getInstance();
     }
 
@@ -37,7 +38,7 @@ public class MapService extends Service {
 
     @Override
     public int onStartCommand(final Intent intent, final int flags, final int startId) {
-        Log.d(TAG, "onStartCommand");
+        Logger.d(TAG, "onStartCommand");
         return START_STICKY;
     }
 
@@ -46,7 +47,7 @@ public class MapService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        Log.d(TAG, "onCreate");
+        Logger.d(TAG, "onCreate");
 
         final NotificationChannel channel = new NotificationChannel(NOTIFICATION_ID, NOTIFICATION_NAME,
                 NotificationManager.IMPORTANCE_LOW);
@@ -63,7 +64,7 @@ public class MapService extends Service {
 
     @Override
     public void onDestroy() {
-        Log.d(TAG, "onDestroy");
+        Logger.d(TAG, "onDestroy");
         super.onDestroy();
     }
 }

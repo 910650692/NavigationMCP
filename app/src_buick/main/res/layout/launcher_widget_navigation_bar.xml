@@ -8,15 +8,15 @@
 
         <variable
             name="ViewModel"
-            type="com.fy.navi.hmi.launcher.BaseLauncherSmallCardViewModel" />
+            type="com.fy.navi.hmi.launcher.BaseSmallCardMapViewModel" />
     </data>
 
     <com.fy.navi.ui.view.SkinConstraintLayout
         android:id="@+id/search_main_tab"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:visibility="@{ViewModel.naviBarVisibility ? View.VISIBLE : View.GONE}"
-        android:paddingBottom="@dimen/dp_30">
+        android:paddingBottom="@dimen/dp_30"
+        android:visibility="@{ViewModel.naviBarVisibility ? View.VISIBLE : View.GONE}">
 
         <com.fy.navi.ui.view.SkinImageView
             android:id="@+id/sk_iv_basic_home"
@@ -33,9 +33,9 @@
 
         <com.fy.navi.ui.view.SkinImageView
             android:id="@+id/sk_iv_basic_bus"
+            clickCommand="@{ViewModel.goCompany}"
             android:layout_width="@dimen/dp_92"
             android:layout_height="@dimen/dp_92"
-            clickCommand="@{ViewModel.goCompany}"
             android:src="@drawable/img_basic_ic_bus"
             app:layout_constraintBottom_toBottomOf="@id/sk_iv_basic_home"
             app:layout_constraintEnd_toStartOf="@id/sk_iv_basic_search"

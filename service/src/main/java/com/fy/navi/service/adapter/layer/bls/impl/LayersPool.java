@@ -45,7 +45,7 @@ public class LayersPool {
         result = bizControlService.initCollisionConfig(mapView, styleBlPath);
         Logger.d(TAG, "initCollisionConfig result :" + result);
         result = bizControlService.isInit() == ServiceInitStatus.ServiceInitDone;
-        Logger.d(TAG, "initLayerServiceresult :" + result);
+        Logger.d(TAG, "initLayerServiceResult :" + result);
 
         allLayers.put(LayerType.LAYER_AREA, new LayerAreaImpl(bizControlService, mapView, context, mapTypeId));
         allLayers.put(LayerType.LAYER_CAR, new LayerCarImpl(bizControlService, mapView, context, mapTypeId));

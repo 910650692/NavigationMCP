@@ -50,7 +50,8 @@
         <com.fy.navi.ui.view.SkinNestedScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:fillViewport="true">
+            android:fillViewport="true"
+            android:scrollbars="vertical">
 
             <com.fy.navi.ui.view.SkinConstraintLayout
                 android:layout_width="match_parent"

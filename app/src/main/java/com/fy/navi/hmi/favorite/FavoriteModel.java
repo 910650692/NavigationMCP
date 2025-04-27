@@ -176,13 +176,5 @@ public class FavoriteModel extends BaseModel<FavoriteViewModel> implements Behav
         mBehaviorPackage.updateFavoriteTopTime(itemId, topTime);
     }
 
-    /**
-     * 删除 itemId 对应的本地数据
-     * @param itemId  收藏点唯一码
-     */
-    public void deleteFavoriteData(final String itemId) {
-        mBehaviorPackage.deleteFavoriteData(itemId);
-    }
-
 }
 

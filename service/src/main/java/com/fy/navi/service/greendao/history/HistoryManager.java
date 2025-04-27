@@ -136,6 +136,17 @@ public class HistoryManager {
     }
 
     /**
+     * 删除某个数据
+     * @param keyWord 数据keyword
+     */
+    public void deleteValueByKey(final String keyWord) {
+        mSearchHistoryDao.queryBuilder()
+               .where(HistoryDao.Properties.MKeyWord.eq(keyWord))
+               .buildDelete()
+               .executeDeleteWithoutDetachingEntities();
+    }
+
+    /**
      * 通过数据type查找其对应info
      * @param type 数据type
      * @param poiId 数据id
@@ -247,5 +258,35 @@ public class HistoryManager {
         // 执行查询并返回结果
         final List<History> historyList = queryBuilder.list();
         return historyList;
+    }
+
+    /**
+     * 通过起点名称、终点名称和更新时间联合查询数据
+     * @param startPoiName 起点名称
+     * @param endPoiName   终点名称
+     * @param updateTime   更新时间
+     * @return 匹配的历史记录列表
+     */
+    public List<History> getByStartEndPoiAndTime(final String startPoiName, final String endPoiName, final Date updateTime) {
+        return mSearchHistoryDao.queryBuilder()
+                .where(HistoryDao.Properties.MStartPoiName.eq(startPoiName),
+                        HistoryDao.Properties.MEndPoiName.eq(endPoiName),
+                        HistoryDao.Properties.MUpdateTime.eq(updateTime))
+                .list();
+    }
+
+    /**
+     * 通过起点名称、终点名称和更新时间联合删除数据
+     * @param startPoiName 起点名称
+     * @param endPoiName   终点名称
+     * @param updateTime   更新时间
+     */
+    public void deleteByStartEndPoiAndTime(final String startPoiName, final String endPoiName, final Date updateTime) {
+        mSearchHistoryDao.queryBuilder()
+                .where(HistoryDao.Properties.MStartPoiName.eq(startPoiName),
+                        HistoryDao.Properties.MEndPoiName.eq(endPoiName),
+                        HistoryDao.Properties.MUpdateTime.eq(updateTime))
+                .buildDelete()
+                .executeDeleteWithoutDetachingEntities();
     }
 }

@@ -13,6 +13,7 @@ import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.adapter.user.usertrack.IUserTrackApi;
 import com.fy.navi.service.adapter.user.usertrack.UserTrackAdapterCallBack;
 import com.fy.navi.service.define.user.usertrack.DrivingRecordDataBean;
+import com.fy.navi.service.define.user.usertrack.HistoryRouteItemBean;
 import com.fy.navi.service.define.user.usertrack.SearchHistoryItemBean;
 
 import java.util.ArrayList;
@@ -80,15 +81,46 @@ public class UserTrackImpl implements IUserTrackApi {
 
     /**
      * 删除所有搜索历史记录
-     * @param mode 同步方式
      * @return 删除结果
      */
     @Override
-    public int clearSearchHistory(final int mode) {
+    public int clearSearchHistory() {
         if (mUserTrackService == null) {
             return -1;
         }
-        return mUserTrackService.clearSearchHistory(mode);
+        return mUserTrackService.clearSearchHistory(SyncMode.SyncModeNow);
+    }
+
+    @Override
+    public ArrayList<HistoryRouteItemBean> getHistoryRoute() {
+        if (mUserTrackService == null) {
+            return null;
+        }
+        return mAdapterImplHelper.getHistoryRoute();
+    }
+
+    @Override
+    public int addHistoryRoute(final HistoryRouteItemBean item) {
+        if (mUserTrackService == null) {
+            return -1;
+        }
+        return mAdapterImplHelper.addHistoryRoute(item);
+    }
+
+    @Override
+    public int delHistoryRoute(final HistoryRouteItemBean bean) {
+        if (mUserTrackService == null) {
+            return -1;
+        }
+        return mAdapterImplHelper.delHistoryRoute(bean);
+    }
+
+    @Override
+    public int clearHistoryRoute() {
+        if (mUserTrackService == null) {
+            return -1;
+        }
+        return mAdapterImplHelper.clearHistoryRoute();
     }
 
     /**

@@ -22,7 +22,7 @@
     <com.fy.navi.ui.view.SwipeMenuLayout
         android:id="@+id/swipe_menu_layout"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_130"
+        android:layout_height="@dimen/dp_168"
         android:focusable="false"
         android:orientation="horizontal">
 
@@ -41,6 +41,7 @@
                 android:minWidth="@dimen/dp_30"
                 android:text="@{layoutPosition}"
                 android:focusable="false"
+                android:visibility="gone"
                 android:textColor="@color/search_quick_tab_view_color"
                 android:textSize="@dimen/sp_38"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -50,11 +51,11 @@
 
             <com.fy.navi.ui.view.SkinImageView
                 android:id="@+id/poi_icon"
-                android:layout_width="@dimen/dp_42"
-                android:layout_height="@dimen/dp_42"
+                android:layout_width="@dimen/dp_54"
+                android:layout_height="@dimen/dp_54"
                 android:focusable="false"
                 android:src="@drawable/search_poi_icon"
-                android:visibility="gone"
+                android:visibility="visible"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -65,7 +66,7 @@
                 android:layout_height="wrap_content"
                 android:focusable="true"
                 android:background="@drawable/bg_base_mfc_cadillac_bg_selector"
-                android:layout_marginStart="@dimen/dp_50"
+                android:layout_marginStart="@dimen/dp_20"
                 android:orientation="vertical"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/poi_to_navi"
@@ -81,7 +82,7 @@
                     android:focusable="false"
                     android:text="@{poiBean.getMKeyWord()}"
                     android:textColor="@color/search_color_ffffff"
-                    android:textSize="@dimen/sp_40"
+                    android:textSize="@dimen/sp_46"
                     tools:text="德国慕尼黑" />
 
                 <com.fy.navi.ui.view.SkinLinearLayout
@@ -101,7 +102,7 @@
                         android:text="100m"
                         android:focusable="false"
                         android:textColor="@color/search_quick_tab_view_color"
-                        android:textSize="@dimen/sp_36"
+                        android:textSize="@dimen/sp_38"
                         tools:text="100Km" />
 
                     <View
@@ -124,7 +125,7 @@
                         android:focusable="false"
                         android:text="@{poiBean.getMEndPoiName()}"
                         android:textColor="@color/search_quick_tab_view_color"
-                        android:textSize="@dimen/sp_36"
+                        android:textSize="@dimen/sp_38"
                         tools:text="德国慕尼黑啤酒节柏林节柏林披萨慕尼" />
                 </com.fy.navi.ui.view.SkinLinearLayout>
             </com.fy.navi.ui.view.SkinLinearLayout>
@@ -143,8 +144,8 @@
 
                 <com.fy.navi.ui.view.SkinImageView
                     android:id="@+id/iv_navi_icon"
-                    android:layout_width="@dimen/dp_68"
-                    android:layout_height="@dimen/dp_68"
+                    android:layout_width="@dimen/dp_74"
+                    android:layout_height="@dimen/dp_74"
                     android:focusable="false"
                     android:src="@drawable/img_basic_ic_navi" />
 
@@ -155,14 +156,14 @@
                     android:text="@string/st_go_here"
                     android:focusable="false"
                     android:textColor="@color/search_quick_tab_view_color"
-                    android:textSize="@dimen/sp_36" />
+                    android:textSize="@dimen/sp_38" />
             </com.fy.navi.ui.view.SkinLinearLayout>
 
         </com.fy.navi.ui.view.SkinConstraintLayout>
 
         <com.fy.navi.ui.view.SkinLinearLayout
             android:id="@+id/ll_action_container"
-            android:layout_width="@dimen/dp_252"
+            android:layout_width="@dimen/dp_320"
             android:layout_height="match_parent"
             android:gravity="center_vertical"
             android:focusable="false"
@@ -170,7 +171,7 @@
 
             <com.fy.navi.ui.view.SkinLinearLayout
                 android:id="@+id/sll_collect"
-                android:layout_width="@dimen/dp_126"
+                android:layout_width="@dimen/dp_160"
                 android:layout_height="match_parent"
                 android:background="@color/bg_route_big_window_unselect"
                 android:gravity="center"
@@ -179,8 +180,8 @@
 
                 <com.fy.navi.ui.view.SkinImageView
                     android:id="@+id/iv_collect"
-                    android:layout_width="@dimen/dp_68"
-                    android:layout_height="@dimen/dp_68"
+                    android:layout_width="@dimen/dp_74"
+                    android:layout_height="@dimen/dp_74"
                     android:focusable="false"
                     android:src="@drawable/icon_basic_ic_star_default" />
 
@@ -193,13 +194,13 @@
                     android:text="收藏"
                     android:focusable="false"
                     android:textColor="@color/search_quick_tab_view_color"
-                    android:textSize="@dimen/sp_36" />
+                    android:textSize="@dimen/sp_38" />
 
             </com.fy.navi.ui.view.SkinLinearLayout>
 
             <com.fy.navi.ui.view.SkinLinearLayout
                 android:id="@+id/sll_delete"
-                android:layout_width="@dimen/dp_126"
+                android:layout_width="@dimen/dp_160"
                 android:layout_height="match_parent"
                 android:background="@color/search_color_delete_bg"
                 android:gravity="center"
@@ -207,8 +208,8 @@
                 android:orientation="vertical">
 
                 <com.fy.navi.ui.view.SkinImageView
-                    android:layout_width="@dimen/dp_68"
-                    android:layout_height="@dimen/dp_68"
+                    android:layout_width="@dimen/dp_74"
+                    android:layout_height="@dimen/dp_74"
                     android:focusable="false"
                     android:src="@drawable/img_basic_ic_delete_white" />
 
@@ -220,7 +221,7 @@
                     android:text="删除"
                     android:focusable="false"
                     android:textColor="@color/search_color_delete_text"
-                    android:textSize="@dimen/sp_36" />
+                    android:textSize="@dimen/sp_38" />
 
             </com.fy.navi.ui.view.SkinLinearLayout>
         </com.fy.navi.ui.view.SkinLinearLayout>

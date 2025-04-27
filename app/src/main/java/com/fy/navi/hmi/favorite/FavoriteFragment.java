@@ -1,17 +1,20 @@
 package com.fy.navi.hmi.favorite;
 
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.FrameLayout;
 import android.widget.PopupWindow;
 import android.widget.ScrollView;
 
@@ -67,6 +70,9 @@ public class FavoriteFragment extends BaseFragment<FragmentFavoriteBinding, Favo
     private SkinGridLayout mFreqAddressLayout;
     private View mAnchorView;
     private int mThreeScreenHeight;
+    private int mOldScrollY;
+    private boolean mIsStopScroll;
+    private boolean mIsTouchEvent;
 
     @Override
     public int onLayoutId() {
@@ -228,6 +234,9 @@ public class FavoriteFragment extends BaseFragment<FragmentFavoriteBinding, Favo
      * initFrequentAddressList
      */
     private void initFrequentAddressList() {
+        if (getActivity() == null) {
+            return;
+        }
         mFreqAddressLayout = mBinding.frequentAddressContainer;
         mFreqAddressLayout.removeAllViews();
 
@@ -235,10 +244,14 @@ public class FavoriteFragment extends BaseFragment<FragmentFavoriteBinding, Favo
 
         final int addressCount = mFrequentAddressList.size();
         final int maxItemPerRow = 2;
+        final int margin = mViewModel.getPopupData().get("addButtonMargin");
 
         // 添加地址项
         for (int i = 0; i < addressCount; i++) {
             final View itemView = LayoutInflater.from(getContext()).inflate(R.layout.item_frequent_address, mFreqAddressLayout, false);
+            final int withSpec = View.MeasureSpec.makeMeasureSpec(mFreqAddressLayout.getMeasuredWidth(), View.MeasureSpec.AT_MOST);
+            final int heightSpec = View.MeasureSpec.makeMeasureSpec(mFreqAddressLayout.getMeasuredHeight(), View.MeasureSpec.AT_MOST);
+            itemView.measure(withSpec, heightSpec);
             final SkinTextView tvName = itemView.findViewById(R.id.tv_frequent_address_text);
             final SkinImageView btnMore = itemView.findViewById(R.id.tv_frequent_address_more);
             mViewMap.put(i, itemView);
@@ -271,16 +284,20 @@ public class FavoriteFragment extends BaseFragment<FragmentFavoriteBinding, Favo
             final SkinGridLayout.Spec colSpec = SkinGridLayout.spec(i % maxItemPerRow, 1);
 
             final SkinGridLayout.LayoutParams params = new SkinGridLayout.LayoutParams(rowSpec, colSpec);
-            params.width = getResources().getDimensionPixelSize(com.fy.navi.ui.R.dimen.dp_417);
-            params.height = getResources().getDimensionPixelSize(com.fy.navi.ui.R.dimen.dp_130);
-            params.bottomMargin = getResources().getDimensionPixelSize(com.fy.navi.ui.R.dimen.dp_20);
-            params.rightMargin = getResources().getDimensionPixelSize(com.fy.navi.ui.R.dimen.dp_20);
+
+            params.width = itemView.getLayoutParams().width;
+            params.height = itemView.getLayoutParams().height;
+            params.bottomMargin = margin;
+            params.rightMargin = margin;
             mFreqAddressLayout.addView(itemView, params);
         }
 
         // 添加按钮逻辑
         if (addressCount <= 3) {
             final View addButton = LayoutInflater.from(getContext()).inflate(R.layout.item_add_frequent_address, mFreqAddressLayout, false);
+            final int withSpec = View.MeasureSpec.makeMeasureSpec(mFreqAddressLayout.getMeasuredWidth(), View.MeasureSpec.AT_MOST);
+            final int heightSpec = View.MeasureSpec.makeMeasureSpec(mFreqAddressLayout.getMeasuredHeight(), View.MeasureSpec.AT_MOST);
+            addButton.measure(withSpec, heightSpec);
             final int targetRow = addressCount / maxItemPerRow; // 计算应插入的行
             final int targetCol = addressCount % maxItemPerRow; // 计算应插入的列
 
@@ -299,9 +316,9 @@ public class FavoriteFragment extends BaseFragment<FragmentFavoriteBinding, Favo
             final SkinGridLayout.Spec colSpec = SkinGridLayout.spec(targetCol, 1);
 
             final SkinGridLayout.LayoutParams params = new SkinGridLayout.LayoutParams(rowSpec, colSpec);
-            params.width = getResources().getDimensionPixelSize(com.fy.navi.ui.R.dimen.dp_130);
-            params.height = getResources().getDimensionPixelSize(com.fy.navi.ui.R.dimen.dp_130);
-            params.rightMargin = getResources().getDimensionPixelSize(com.fy.navi.ui.R.dimen.dp_20);
+            params.width = addButton.getLayoutParams().width;
+            params.height = addButton.getLayoutParams().height;
+            params.rightMargin = margin;
             mFreqAddressLayout.addView(addButton, params);
         }
     }
@@ -460,17 +477,23 @@ public class FavoriteFragment extends BaseFragment<FragmentFavoriteBinding, Favo
      * initPopupWindow
      */
     private void initPopupWindow() {
+        if (getActivity() == null) {
+            return;
+        }
+        final FrameLayout decorView = (FrameLayout) getActivity().getWindow().getDecorView();
 
         // 创建PopupWindow的视图
-        final View popupView = LayoutInflater.from(getContext()).inflate(R.layout.favorite_edit_popup, null);
+        final View popupView = LayoutInflater.from(getContext()).inflate(R.layout.favorite_edit_popup, decorView, false);
+        final int withSpec = View.MeasureSpec.makeMeasureSpec(decorView.getMeasuredWidth(), View.MeasureSpec.AT_MOST);
+        final int heightSpec = View.MeasureSpec.makeMeasureSpec(decorView.getMeasuredHeight(), View.MeasureSpec.AT_MOST);
+        popupView.measure(withSpec, heightSpec);
 
         // 获取PopupWindow中的按钮并设置点击事件
         mBtnEdit = popupView.findViewById(R.id.favorite_item_rename);
-
         mBtnDelete1 = popupView.findViewById(R.id.favorite_item_delete);
 
         // 创建PopupWindow
-        mPopupWindow = new PopupWindow(popupView, 418, 130,true);
+        mPopupWindow = new PopupWindow(popupView, popupView.getLayoutParams().width, popupView.getLayoutParams().height,true);
         mPopupWindow.setContentView(popupView);
         mPopupWindow.setBackgroundDrawable(null); // 使PopupWindow背景透明
 
@@ -510,17 +533,17 @@ public class FavoriteFragment extends BaseFragment<FragmentFavoriteBinding, Favo
             final int[] location = new int[2];
             anchorView.getLocationOnScreen(location);
 
-            mBtnEdit.setTextColor(getResources().getColor(R.color.black));
             mBtnEdit.setText(R.string.favorite_item_edit);
             if (((mViewModel.getIsHome() && mViewModel.getHomeCompanyInfo(true) == null)) ||
                     (!mViewModel.getIsHome() && mViewModel.getHomeCompanyInfo(false) == null)) {
                 mBtnDelete1.setEnabled(false);
-                mBtnDelete1.setTextColor(getResources().getColor(R.color.color_black_70));
+                mBtnDelete1.setTextColor(getResources().getColor(R.color.color_black_35));
             } else {
                 mBtnDelete1.setEnabled(true);
-                mBtnDelete1.setTextColor(getResources().getColor(R.color.black));
+                mBtnDelete1.setTextColor(getResources().getColor(R.color.color_black_70));
             }
-            mPopupWindow.showAsDropDown(anchorView, 25, -95 , Gravity.END);
+            final int y = mViewModel.getPopupData().get("homeOfficeY");
+            mPopupWindow.showAsDropDown(anchorView, 25, y , Gravity.END);
         });
     }
 
@@ -528,19 +551,23 @@ public class FavoriteFragment extends BaseFragment<FragmentFavoriteBinding, Favo
      * initFrequentPopupWindow
      */
     private void initFrequentPopupWindow() {
-
+        if (getActivity() == null) {
+            return;
+        }
+        final FrameLayout decorView = (FrameLayout) getActivity().getWindow().getDecorView();
         // 创建PopupWindow的视图
-        final View popupView = LayoutInflater.from(getContext()).inflate(R.layout.favorite_edit_popup, null);
-
+        final View popupView = LayoutInflater.from(getContext()).inflate(R.layout.favorite_edit_popup, decorView, false);
+        final int withSpec = View.MeasureSpec.makeMeasureSpec(decorView.getMeasuredWidth(), View.MeasureSpec.AT_MOST);
+        final int heightSpec = View.MeasureSpec.makeMeasureSpec(decorView.getMeasuredHeight(), View.MeasureSpec.AT_MOST);
+        popupView.measure(withSpec, heightSpec);
         // 获取PopupWindow中的按钮并设置点击事件
         mRenameBtn = popupView.findViewById(R.id.favorite_item_rename);
         mBtnDelete = popupView.findViewById(R.id.favorite_item_delete);
 
         // 创建PopupWindow
-        mFrequentPopupWindow = new PopupWindow(popupView, 418, 130,true);
+        mFrequentPopupWindow = new PopupWindow(popupView, popupView.getLayoutParams().width, popupView.getLayoutParams().height, true);
         mFrequentPopupWindow.setContentView(popupView);
         mFrequentPopupWindow.setBackgroundDrawable(null); // 使PopupWindow背景透明
-
 
         mRenameBtn.setOnClickListener(v -> {
             showRenameDialog(mFrequentAddressList.get(mIndex), mAnchorView);
@@ -550,7 +577,7 @@ public class FavoriteFragment extends BaseFragment<FragmentFavoriteBinding, Favo
         mBtnDelete.setOnClickListener(v -> {
             SettingUpdateObservable.getInstance().onUpdateSyncTime();
             ThreadManager.getInstance().postUi(() -> {
-                mViewModel.deleteFavoriteData(mFrequentAddressList.get(mIndex).getFavoriteInfo().getItemId());
+                mViewModel.removeFavorite(mFrequentAddressList.get(mIndex));
                 initFrequentAddressList();
             });
             mFrequentPopupWindow.dismiss();
@@ -564,20 +591,45 @@ public class FavoriteFragment extends BaseFragment<FragmentFavoriteBinding, Favo
     public void showFrequentPopupWindow(final View anchorView) {
         final int[] location = new int[2];
         anchorView.getLocationOnScreen(location);
-        mFrequentPopupWindow.showAsDropDown(anchorView, 0, -130 , Gravity.END);
+        final int y = mViewModel.getPopupData().get("frequentY");
+        mFrequentPopupWindow.showAsDropDown(anchorView, 0, y , Gravity.END);
     }
-
     /**
      * backToTop
      */
+    @SuppressLint("ClickableViewAccessibility")
     private void backToTop() {
 
         mThreeScreenHeight = ResourceUtils.Companion.getInstance().getDimensionPixelSize(com.fy.navi.ui.R.dimen.dp_714)  * 3;
+
+        mBinding.favoriteScroll.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(final View v, final MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        mIsTouchEvent = true;
+                        break;
+                    case  MotionEvent.ACTION_UP:
+                        mIsTouchEvent = false;
+                        break;
+                    default:
+                        break;
+                }
+                return false;
+            }
+        });
 
         // 设置滚动监听
         mBinding.favoriteScroll.getViewTreeObserver().addOnScrollChangedListener(
                 () -> {
                     final int scrollY = mBinding.favoriteScroll.getScrollY();
+                    final int scrollX = mBinding.favoriteScroll.getScrollX();
+                    if (scrollY == 0 && mIsStopScroll && !mIsTouchEvent) {
+                        mBinding.favoriteScroll.scrollTo(scrollX, mOldScrollY);
+                        return;
+                    }
+                    mOldScrollY = Math.max(scrollY, 0);
+                    mIsStopScroll = true;
                     Logger.d("scrollY", "scrollY: " + scrollY);
                     mBinding.layoutTop.setVisibility(
                             scrollY >= mThreeScreenHeight ? View.VISIBLE : View.INVISIBLE
@@ -587,6 +639,7 @@ public class FavoriteFragment extends BaseFragment<FragmentFavoriteBinding, Favo
 
         // 按钮点击事件
         mBinding.layoutTop.setOnClickListener(v -> {
+            mIsStopScroll = false;
             mBinding.favoriteScroll.fullScroll(ScrollView.FOCUS_UP); // 平滑滚动
         });
     }

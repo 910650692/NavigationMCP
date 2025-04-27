@@ -2,7 +2,6 @@ package com.fy.navi.service.logicpaket.map;
 
 import android.os.Bundle;
 import android.view.MotionEvent;
-
 import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
@@ -24,10 +23,13 @@ import com.fy.navi.service.define.map.MapMode;
 import com.fy.navi.service.define.map.MapStateStyle;
 import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.map.MapViewParams;
+import com.fy.navi.service.define.map.ThemeType;
+import com.fy.navi.service.define.map.MapVisibleAreaDataManager;
+import com.fy.navi.service.define.map.MapVisibleAreaInfo;
+import com.fy.navi.service.define.map.MapVisibleAreaType;
 import com.fy.navi.service.define.mfc.MfcController;
 import com.fy.navi.service.define.position.LocInfoBean;
 import com.fy.navi.service.define.search.PoiInfoEntity;
-
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Hashtable;
@@ -129,6 +131,13 @@ public class MapPackage implements IMapAdapterCallback, INaviStatusCallback, ILa
 
     public void setMapCenterInScreen(MapType mapTypeId, int x, int y) {
         mMapAdapter.setMapCenterInScreen(mapTypeId, x, y);
+    }
+
+    public void changMapCenterInScreen(MapType mapTypeId, MapVisibleAreaType mapVisibleAreaType){
+        MapVisibleAreaInfo mapVisibleAreaInfo = MapVisibleAreaDataManager.getInstance().getDataByKey(mapVisibleAreaType);
+        if(!ConvertUtils.isEmpty(mapVisibleAreaInfo)){
+            mMapAdapter.setMapCenterInScreen(mapTypeId, mapVisibleAreaInfo.getMleftscreenoffer(), mapVisibleAreaInfo.getMtopscreenoffer());
+        }
     }
 
     public void setMapCenter(MapType mapTypeId, GeoPoint geoPoint) {
@@ -366,12 +375,12 @@ public class MapPackage implements IMapAdapterCallback, INaviStatusCallback, ILa
 
     }
 
-    public void updateUiStyle(MapType mapTypeId, int uiMode) {
-        mMapAdapter.updateUiStyle(mapTypeId, uiMode);
+    public void updateUiStyle(MapType mapTypeId, ThemeType type) {
+        mMapAdapter.updateUiStyle(mapTypeId, type);
         // 通知其它地方UI发生了变化
-        Logger.d(TAG, "onUiModeChanged!", "uiMode:" + uiMode);
+        Logger.d(TAG, "onUiModeChanged!", "ThemeType:" + type.name());
         callbackTables.forEach((key, values) -> values.forEach(callBack -> {
-            callBack.onUiModeChanged(uiMode);
+            callBack.onUiModeChanged(type);
         }));
     }
 

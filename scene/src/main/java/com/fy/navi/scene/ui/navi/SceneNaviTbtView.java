@@ -237,6 +237,11 @@ public class SceneNaviTbtView extends NaviSceneBase<SceneNaviTbtViewBinding, Sce
                     mViewBinding.sivProgress.getLayoutParams();
             params.width = width;
             mViewBinding.sivProgress.setLayoutParams(params);
+            if (width == 640) {
+                mViewBinding.sivProgress.setBackgroundResource(R.drawable.bg_navi_tbt_progress_full);
+            } else {
+                mViewBinding.sivProgress.setBackgroundResource(R.drawable.bg_navi_tbt_progress);
+            }
             mViewBinding.sivProgress.requestLayout();
         }
     }

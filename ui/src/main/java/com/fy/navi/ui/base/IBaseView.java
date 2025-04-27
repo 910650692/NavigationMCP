@@ -51,6 +51,16 @@ public interface IBaseView {
     void onInitData();
 
     /**
+     * onReStoreFragment
+     */
+    default void onReStoreFragment(){}
+
+    /**
+     * onReStoreFragment
+     */
+    default void onGetFragmentData(){}
+
+    /**
      * Activity必须实现.
      *
      * @param fragment fragment

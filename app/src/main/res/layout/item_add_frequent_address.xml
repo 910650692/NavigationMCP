@@ -7,8 +7,8 @@
 
     <com.fy.navi.ui.view.SkinImageView
         android:id="@+id/iv_add1"
-        android:layout_width="@dimen/dp_68"
-        android:layout_height="@dimen/dp_68"
+        android:layout_width="@dimen/dp_58"
+        android:layout_height="@dimen/dp_58"
         android:src="@drawable/img_basic_ic_add"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

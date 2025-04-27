@@ -19,7 +19,7 @@ public class DevicesIdUtil {
     }
 
     public DevicesIdUtil() {
-        mPatacServiceManager = PatacServiceManager.newInstance(mApplication);
+
     }
 
     /**
@@ -27,6 +27,7 @@ public class DevicesIdUtil {
      * @return id
      */
     public String getDeviceId() {
+        mPatacServiceManager = PatacServiceManager.newInstance(mApplication);
         try {
             final PatacVehicleManager vehicleManager
                     = (PatacVehicleManager) mPatacServiceManager.getPatacManager(PatacServiceManager.PATAC_VEHICLE_SERVICE);

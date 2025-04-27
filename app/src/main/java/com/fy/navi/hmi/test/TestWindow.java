@@ -6,9 +6,12 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.graphics.PixelFormat;
 import android.net.Uri;
 import android.provider.Settings;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,6 +20,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import com.android.utils.log.Logger;
 import com.fy.navi.fsa.MyFsaService;
+import com.fy.navi.hmi.BuildConfig;
 import com.fy.navi.hmi.databinding.LayoutTestBinding;
 import com.fy.navi.service.AppContext;
 import com.fy.navi.service.define.engine.GaodeLogLevel;
@@ -80,9 +84,16 @@ public class TestWindow {
     }
 
     private void initData() {
-        ApplicationInfo applicationInfo = AppContext.getInstance().getMApplication().getApplicationInfo();
-        String nativeLibraryDir = applicationInfo.nativeLibraryDir;
-        mBinding.testSoLib.setText(nativeLibraryDir);
+        try {
+            PackageManager packageManager = AppContext.getInstance().getMApplication().getPackageManager();
+            PackageInfo packageInfo = packageManager.getPackageInfo(AppContext.getInstance().getMApplication().getPackageName(), 0);
+            mBinding.testVersion.setText("versionName: " + packageInfo.versionName + "\n" +
+                    "versionCode: " + packageInfo.getLongVersionCode() + "\n" +
+                    "flavor: " + BuildConfig.FLAVOR + "\n" +
+                    "buildType: " + BuildConfig.BUILD_TYPE);
+        } catch (PackageManager.NameNotFoundException e) {
+            Log.e(TAG, "initData: ", e);
+        }
         mBinding.testNaiLogLevel.setAdapter(createNaiAdapter());
         mBinding.testGaodeLogLevel.setAdapter(createNaiAdapter());
     }
@@ -100,7 +111,7 @@ public class TestWindow {
     private void initLayoutParams() {
         mLayoutParams = new WindowManager.LayoutParams();
         mLayoutParams.type = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
-        mLayoutParams.flags = WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL | WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN;
+        mLayoutParams.flags = WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL;
         mLayoutParams.gravity = Gravity.TOP | Gravity.END;
         mLayoutParams.width = WindowManager.LayoutParams.WRAP_CONTENT;
         mLayoutParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
@@ -117,13 +128,7 @@ public class TestWindow {
     }
 
     private void removeViewFromWindow() {
-        if (!isShowing) {
-            return;
-        }
-        Activity mActivity = mActivityRef.get();
-        if (mActivity != null && mWindowManager != null) {
-            mWindowManager.removeView(mBinding.getRoot());
-        }
+        mWindowManager.removeView(mBinding.getRoot());
         isShowing = false;
     }
 

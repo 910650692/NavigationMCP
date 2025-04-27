@@ -411,7 +411,7 @@ public class SceneNaviTbtImpl extends BaseSceneModel<SceneNaviTbtView> implement
         }
         // 显示当前道路
         final AdminCodeBean adminCode = new AdminCodeBean();
-        adminCode.nAdCode = mCurNaviInfo.cityCode;
+        adminCode.setnAdCode(mCurNaviInfo.cityCode);
         // 二、三级道路名称
         final AreaExtraInfoBean areaExtraInfo = mMapDataPackage.getAreaExtraInfo(adminCode);
         final PoiInfoEntity home = mBehaviorPackage.getHomeFavoriteInfo();
@@ -423,16 +423,16 @@ public class SceneNaviTbtImpl extends BaseSceneModel<SceneNaviTbtView> implement
             final GeoPoint homeCoord = home.getPoint();
             adCode = mMapDataPackage.getAdCodeByLonLat(homeCoord.getLon(), homeCoord.getLat());
         }
-        if (areaExtraInfo != null && adCode > 0 && areaExtraInfo.stAdCode != null && areaExtraInfo.stAdCode.nCityAdCode != adCode) {
-            Logger.i(TAG, "SceneNaviTbtImpl innerUpdateNaviInfo cityName= " + areaExtraInfo.cityName + ",townName=" + areaExtraInfo.townName);
-            if (!TextUtils.isEmpty(areaExtraInfo.cityName)) {
-                final String tempCityName = areaExtraInfo.cityName.endsWith(mScreenView.getContext().getString(R.string.navi_city_name_postfix))
-                        ? areaExtraInfo.cityName.substring(0, areaExtraInfo.cityName.length() - 1) : areaExtraInfo.cityName;
+        if (areaExtraInfo != null && adCode > 0 && areaExtraInfo.getStAdCode() != null && areaExtraInfo.getStAdCode().getnCityAdCode() != adCode) {
+            Logger.i(TAG, "SceneNaviTbtImpl innerUpdateNaviInfo cityName= " + areaExtraInfo.getCityName() + ",townName=" + areaExtraInfo.getTownName());
+            if (!TextUtils.isEmpty(areaExtraInfo.getCityName())) {
+                final String tempCityName = areaExtraInfo.getCityName().endsWith(mScreenView.getContext().getString(R.string.navi_city_name_postfix))
+                        ? areaExtraInfo.getCityName().substring(0, areaExtraInfo.getCityName().length() - 1) : areaExtraInfo.getCityName();
                 extraRoadName += tempCityName;
             }
-            if (!TextUtils.isEmpty(areaExtraInfo.townName)) {
-                final String tempTownName = areaExtraInfo.townName.endsWith(mScreenView.getContext().getString(R.string.navi_town_name_postfix))
-                        ? areaExtraInfo.townName.substring(0, areaExtraInfo.townName.length() - 1) : areaExtraInfo.townName;
+            if (!TextUtils.isEmpty(areaExtraInfo.getTownName())) {
+                final String tempTownName = areaExtraInfo.getTownName().endsWith(mScreenView.getContext().getString(R.string.navi_town_name_postfix))
+                        ? areaExtraInfo.getTownName().substring(0, areaExtraInfo.getTownName().length() - 1) : areaExtraInfo.getTownName();
                 if (!TextUtils.isEmpty(extraRoadName)) {
                     extraRoadName = extraRoadName + mScreenView.getContext().getString(R.string.auto_navi_text_residue_diving) + tempTownName;
                 } else {

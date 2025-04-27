@@ -6,6 +6,7 @@
     <data>
 
         <import type="android.view.View" />
+
         <variable
             name="model"
             type="com.fy.navi.service.define.route.RouteLineInfo" />
@@ -19,32 +20,40 @@
         android:id="@+id/item_root_view"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_184"
-        android:paddingStart="@dimen/dp_24"
-        android:paddingEnd="@dimen/dp_40"
-        android:background="@color/bg_route_item_select">
+        android:background="@color/bg_route_item_select"
+        android:focusable="false">
+
+        <com.fy.navi.ui.view.SkinView
+            android:id="@+id/item_root_view_bg"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/bg_base_mfc_cadillac_bg_selector"
+            android:focusable="true" />
 
         <com.fy.navi.ui.view.SkinTextView
             android:id="@+id/route_item_num"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:focusable="false"
             android:gravity="center"
+            android:layout_marginStart="@dimen/dp_24"
+            android:text="0"
             android:textColor="@color/text_color_route_item_no_select"
             android:textSize="@dimen/sp_38"
-            android:text="0"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <com.fy.navi.ui.view.SkinTextView
             android:id="@+id/route_item_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_30"
             android:layout_marginStart="@dimen/dp_24"
+            android:layout_marginTop="@dimen/dp_30"
+            android:focusable="false"
+            android:text="@{model.MTravelTime}"
             android:textColor="@color/text_color_route_item_select"
             android:textSize="@dimen/sp_46"
-            android:text="@{model.MTravelTime}"
             app:layout_constraintStart_toEndOf="@+id/route_item_num"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="xx小时xx分钟" />
@@ -53,13 +62,15 @@
             android:id="@+id/route_item_tag"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/text_route_defult"
             android:layout_marginTop="@dimen/dp_32"
-            android:textSize="@dimen/sp_32"
+            android:background="@drawable/bg_route_details_defult_label"
+            android:focusable="false"
+            android:layout_marginEnd="@dimen/dp_40"
             android:paddingHorizontal="@dimen/dp_16"
             android:paddingVertical="@dimen/dp_7"
             android:text="@{model.MLabel}"
-            android:background="@drawable/bg_route_details_defult_label"
+            android:textColor="@color/text_route_defult"
+            android:textSize="@dimen/sp_32"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="少收费" />
@@ -68,10 +79,11 @@
             android:id="@+id/route_item_distance"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dp_30"
+            android:focusable="false"
+            android:text="@{model.MLength}"
             android:textColor="@color/text_color_route_item_no_select"
             android:textSize="@dimen/sp_38"
-            android:layout_marginBottom="@dimen/dp_30"
-            android:text="@{model.MLength}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="@+id/route_item_time"
             tools:text="xx公里" />
@@ -83,6 +95,7 @@
             android:layout_height="@dimen/dp_54"
             android:layout_marginStart="@dimen/dp_41"
             android:layout_marginBottom="@dimen/dp_30"
+            android:focusable="false"
             android:src="@drawable/img_route_money"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/route_item_distance" />
@@ -91,10 +104,11 @@
             android:id="@+id/route_item_traffic_light_value"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dp_30"
+            android:focusable="false"
+            android:text="@{model.MTollCost}"
             android:textColor="@color/text_color_route_item_no_select"
             android:textSize="@dimen/sp_38"
-            android:layout_marginBottom="@dimen/dp_30"
-            android:text="@{model.MTollCost}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/route_item_traffic_light"
             tools:text="88" />
@@ -105,6 +119,7 @@
             android:layout_height="@dimen/dp_54"
             android:layout_marginStart="@dimen/dp_41"
             android:layout_marginBottom="@dimen/dp_30"
+            android:focusable="false"
             android:src="@drawable/img_route_lingt"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/route_item_traffic_light_value" />
@@ -114,10 +129,11 @@
             android:id="@+id/route_item_price"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dp_30"
+            android:focusable="false"
+            android:text="@{model.MTrafficLightCount}"
             android:textColor="@color/text_color_route_item_no_select"
             android:textSize="@dimen/sp_38"
-            android:layout_marginBottom="@dimen/dp_30"
-            android:text="@{model.MTrafficLightCount}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/route_item_traffic_price"
             tools:text="3" />
@@ -128,8 +144,9 @@
             android:layout_height="@dimen/dp_54"
             android:layout_marginStart="@dimen/dp_41"
             android:layout_marginBottom="@dimen/dp_30"
-            android:visibility="@{model.MElecRouteBool ? View.VISIBLE : View.GONE}"
+            android:focusable="false"
             android:src="@drawable/img_route_electricity"
+            android:visibility="@{model.MElecRouteBool ? View.VISIBLE : View.GONE}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/route_item_price" />
 
@@ -138,11 +155,12 @@
             android:id="@+id/route_item_electricity"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dp_30"
+            android:focusable="false"
+            android:text="@{model.MElecRouteLabel}"
             android:textColor="@color/text_color_route_item_no_select"
             android:textSize="@dimen/sp_38"
-            android:layout_marginBottom="@dimen/dp_30"
             android:visibility="@{model.MElecRouteBool ? View.VISIBLE : View.GONE}"
-            android:text="@{model.MElecRouteLabel}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/route_item_electricity_img"
             tools:text="60%到达" />

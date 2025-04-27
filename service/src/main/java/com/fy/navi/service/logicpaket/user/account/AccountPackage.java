@@ -1,5 +1,6 @@
 package com.fy.navi.service.logicpaket.user.account;
 
+import android.accounts.Account;
 import android.text.TextUtils;
 
 import com.android.utils.gson.GsonUtils;
@@ -7,6 +8,7 @@ import com.android.utils.log.Logger;
 import com.fy.navi.service.adapter.user.account.AccountAdapter;
 import com.fy.navi.service.adapter.user.account.AccountAdapterCallBack;
 import com.fy.navi.service.define.code.UserDataCode;
+import com.fy.navi.service.define.user.account.AccessTokenParam;
 import com.fy.navi.service.define.user.account.AccountProfileInfo;
 import com.fy.navi.service.define.user.account.AccountUserInfo;
 import com.fy.navi.service.greendao.CommonManager;
@@ -113,7 +115,7 @@ public final class AccountPackage implements AccountAdapterCallBack {
             // 手机号登录成功后，用户登录信息保存到数据库
             mIsLogin = true;
             final AccountProfileInfo info = GsonUtils.convertToT(result.getProfileInfo(), AccountProfileInfo.class);
-            mCommonManager.insertOrReplace(UserDataCode.SETTING_GET_USERINFO, GsonUtils.toJson(info));
+            mCommonManager.insertUserInfo(UserDataCode.SETTING_GET_USERINFO, GsonUtils.toJson(info));
         }
 
         for (AccountCallBack observer : mCallBacks.values()) {
@@ -133,7 +135,7 @@ public final class AccountPackage implements AccountAdapterCallBack {
             mIsLogin = true;
             MsgPushPackage.getInstance().startListen(result.getUid());
             final AccountProfileInfo info = GsonUtils.convertToT(result.getProfileInfo(), AccountProfileInfo.class);
-            mCommonManager.insertOrReplace(UserDataCode.SETTING_GET_USERINFO, GsonUtils.toJson(info));
+            mCommonManager.insertUserInfo(UserDataCode.SETTING_GET_USERINFO, GsonUtils.toJson(info));
             BehaviorPackage.getInstance().setLoginInfo();
         }
         for (AccountCallBack observer : mCallBacks.values()) {
@@ -217,6 +219,25 @@ public final class AccountPackage implements AccountAdapterCallBack {
      */
     public int qrcodeloginrequest(final int qrType) {
         return mAccountAdapter.qrCodeLoginRequest(qrType);
+    }
+
+    /**
+     * 获取账户accessToken
+     * @param param 详细说明见AccessTokenParam
+     * @return accessToken 获取失败返回空串， "-1"为无效值需要稍后重试
+     */
+    public String getAccessToken(final AccessTokenParam param) {
+        return mAccountAdapter.getAccessToken(param);
+    }
+
+    /**
+     * 获取idpUserId
+     * @param availableAccount 账户对象
+     * @param key 账户信息的key值 ; id 用 AutoMapConstant.AccountInfoKey.IDP_USER_ID
+     * @return userId
+     */
+    public String getIdpUserId(final Account availableAccount, final String key) {
+        return mAccountAdapter.getIdpUserId(availableAccount, key);
     }
 
     /**

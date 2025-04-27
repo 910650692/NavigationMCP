@@ -15,31 +15,18 @@ import com.fy.navi.service.define.navi.LaneInfoEntity;
 import com.fy.navi.service.define.navi.SapaInfoEntity;
 import com.fy.navi.service.define.navi.TBTLaneInfo;
 import com.fy.navi.service.define.navistatus.NaviStatus;
-import com.fy.navi.service.logicpaket.navistatus.NaviStatusCallback;
 import com.fy.navi.service.logicpaket.navistatus.NaviStatusPackage;
 import com.fy.navi.ui.base.StackManager;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class SceneNaviLanesImpl extends BaseSceneModel<SceneNaviLanesView> implements NaviStatusCallback {
+public class SceneNaviLanesImpl extends BaseSceneModel<SceneNaviLanesView> {
     private static final String TAG = MapDefaultFinalTag.NAVI_HMI_TAG;
-    private static final int LANE_TYPE_FLAG = 0xFF;
     private LaneInfoEntity mLaneInfo;
-    private String mCurrentNaviStatus;
-    private NaviStatusPackage mNaviStatusPackage;
 
     public SceneNaviLanesImpl(final SceneNaviLanesView screenView) {
         super(screenView);
-        mNaviStatusPackage = NaviStatusPackage.getInstance();
-        mCurrentNaviStatus = NaviStatusPackage.getInstance().getCurrentNaviStatus();
-        mNaviStatusPackage.registerObserver(mMapTypeId.name(), this);
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        mNaviStatusPackage.unregisterObserver(mMapTypeId.name());
     }
 
     /**
@@ -274,14 +261,8 @@ public class SceneNaviLanesImpl extends BaseSceneModel<SceneNaviLanesView> imple
                 INaviSceneEvent.SceneStateChangeType.SceneCloseState), NaviSceneId.NAVI_SCENE_LANES);
     }
 
-    @Override
-    public void onNaviStatusChange(String naviStatus) {
-        this.mCurrentNaviStatus = naviStatus;
-        Logger.d(TAG, "onNaviStatusChange", "naviStatus:" + naviStatus);
-    }
-
     private boolean isOnCruising() {
-        final String currentStatus = mNaviStatusPackage.getCurrentNaviStatus();
+        final String currentStatus = NaviStatusPackage.getInstance().getCurrentNaviStatus();
         final boolean isFragmentStackEmpty = StackManager.getInstance().isFragmentStackNull(mMapTypeId.name());
         Logger.d(TAG, "isOnCruising", "currentStatus:" + currentStatus, "isFragmentStackEmpty:" + isFragmentStackEmpty);
         return TextUtils.equals(currentStatus, NaviStatus.NaviStatusType.CRUISE) || isFragmentStackEmpty;

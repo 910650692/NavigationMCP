@@ -22,10 +22,10 @@ public class SkyBoxManager {
         return InstanceHolder.instance;
     }
 
-    public void initSkyBox(MapView mapView) {
+    public void initSkyBox(MapView mapView, boolean isNight) {
         //获取天空盒子纹理数据
         BinaryStream binaryStream = null;
-        byte[] skyboxDay = FileUtils.getInstance().getAssetFileContent("blRes/MapAsset/skybox_day.data");
+        byte[] skyboxDay = FileUtils.getInstance().getAssetFileContent(isNight ? "blRes/MapAsset/skybox_night.data" : "blRes/MapAsset/skybox_day.data");
         binaryStream = new BinaryStream(skyboxDay);
 
         //设置天空盒子

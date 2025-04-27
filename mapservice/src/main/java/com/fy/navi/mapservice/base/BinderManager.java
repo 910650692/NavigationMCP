@@ -1,8 +1,8 @@
 package com.fy.navi.mapservice.base;
 
 import android.os.RemoteException;
-import android.util.Log;
 
+import com.android.utils.log.Logger;
 import com.fy.navi.mapservice.IBinderPool;
 import com.fy.navi.mapservice.IBinderPoolCallback;
 import com.fy.navi.mapservice.apimanager.IEngineStatusCallback;
@@ -58,7 +58,7 @@ public final class BinderManager {
      */
     public synchronized void updateBinderPool(final IBinderPool binderPool) {
         if (binderPool == null) {
-            Log.e(TAG, "updateBinderPool: binderPool null");
+            Logger.e(TAG, "updateBinderPool: binderPool null");
             return;
         }
         this.mBinderPool = binderPool;
@@ -92,7 +92,7 @@ public final class BinderManager {
      * 绑定成功后根据engine初始化状态执行分发或初始化引擎.
      */
     private void judgeEngineStatus() {
-        Log.d(TAG, "BinderManager judgeEngine");
+        Logger.d(TAG, "BinderManager judgeEngine");
         if (isBonded()) {
             try {
                 final boolean engineInit = mBinderPool.getEngineInitStatus(MapSdk.getInstance().getPackageName());
@@ -103,13 +103,13 @@ public final class BinderManager {
                         }
                     }
                 } else {
-                    Log.d(TAG, "BinderManager start initEngine");
+                    Logger.d(TAG, "BinderManager start initEngine");
                     final String pkgName = MapSdk.getInstance().getPackageName();
                     mBinderPool.addBindPoolCallback(pkgName, mBinderPoolCallback);
                     mBinderPool.startInitEngine(pkgName);
                 }
             } catch (RemoteException exception) {
-                Log.e(TAG, "getEngineInitStatus error: " + exception.getMessage());
+                Logger.e(TAG, "getEngineInitStatus error: " + exception.getMessage());
             }
         }
     }
@@ -131,7 +131,7 @@ public final class BinderManager {
                 naviAutoApiBinder =  INaviAutoApiBinder.Stub.asInterface(mBinderPool.queryBinder(
                         MapSdk.getInstance().getPackageName(), BinderType.NAVI_AUTO_API.name()));
             } catch (RemoteException exception) {
-                Log.e(TAG, "query naviAutoBinder error: " + exception.getMessage());
+                Logger.e(TAG, "query naviAutoBinder error: " + exception.getMessage());
             }
         }
 

@@ -39,4 +39,19 @@ public class BaseSuggestionResultVm extends BaseViewModel<SuggestionFragment, Su
     public void notifySearchResult(final SearchResultEntity searchResultEntity) {
         mView.notifySearchResult(searchResultEntity);
     }
+
+    /**
+     * 恢复fragment状态
+     */
+    public void onReStoreFragment() {
+        mModel.onReStoreFragment();
+    }
+
+    /**
+     * 编辑框内容改变回调
+     * @param content 编辑框内容
+     */
+    public void onEditTextChanged(final String content) {
+        mModel.onEditTextChanged(content);
+    }
 }

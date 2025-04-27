@@ -100,6 +100,7 @@
     <string name="slow_charge">慢</string>
     <string name="toll">收费站</string>
     <string name="current_newest_path">当前已是最新路线</string>
+    <string name="switch_car_angle">已切换至%s视角</string>
 
     <!--算路相关-->
     <string name="route_search_loading">路线规划中…</string>

@@ -249,37 +249,12 @@ final public class BehaviorPackage implements BehaviorAdapterCallBack {
         if (type != 3 && !TextUtils.isEmpty(itemId)) {
             updateFavoriteMain(poiInfo, true);
         }
-        //For Bury Point
-        sendBuryPointForAddFavorite(poiInfo, type);
-        return itemId;
-    }
 
-    @HookMethod
-    private void sendBuryPointForAddFavorite(final PoiInfoEntity poiInfo, final int type) {
-        if (poiInfo != null) {
-            String eventName = "";
-            String key = BuryConstant.ProperType.BURY_KEY_HOME_PREDICTION;
-            switch (type){
-                case 0:
-                    eventName = BuryConstant.EventName.AMAP_FAVORITE_SAVE;
-                    break;
-                case 1:
-                    eventName = BuryConstant.EventName.AMAP_HOME_SAVE;
-                    break;
-                case 2:
-                    eventName = BuryConstant.EventName.AMAP_WORK_SAVE;
-                    break;
-                case 3:
-                    eventName = BuryConstant.EventName.AMAP_SETTING_HOT_ADD;
-                    key = BuryConstant.ProperType.BURY_KEY_SEARCH_CONTENTS;
-                    break;
-            }
-            BuryPointController.getInstance().setEventName(eventName);
-            BuryProperty buryProperty = new BuryProperty.Builder()
-                    .setParams(key, poiInfo.getName())
-                    .build();
-            BuryPointController.getInstance().setBuryProps(buryProperty);
+        //收藏列表添加成功，弹出Toast
+        if (type == 0 && !TextUtils.isEmpty(itemId)) {
+            ToastUtils.Companion.getInstance().showCustomToastView("收藏成功");
         }
+        return itemId;
     }
 
     /**
@@ -569,7 +544,7 @@ final public class BehaviorPackage implements BehaviorAdapterCallBack {
      *
      * @param itemId 收藏点唯一码
      */
-    public void deleteFavoriteData(final String itemId) {
+    private void deleteFavoriteData(final String itemId) {
         mManager.deleteValue(itemId);
     }
 

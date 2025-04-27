@@ -322,6 +322,7 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
             }
             routeResultObserver.onRouteAlterChargeStationInfo(routeAlterChargeStationParam);
         }
+        mLayerAdapter.updateRouteReplaceChargePoints(MapType.MAIN_SCREEN_MAIN_MAP, routeAlterChargeStationParam.getMRouteAlterChargeStationInfos());
     }
 
     @Override
@@ -899,6 +900,14 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
     }
 
     /**
+     * 发送L2++数据
+     * @param mapTypeId 屏幕id
+     */
+    private void sendL2Data(final MapType mapTypeId) {
+        mRouteAdapter.sendL2Data(mapTypeId);
+    }
+
+    /**
      * 判断是否是路线上的点
      * @param mapTypeId 屏幕Id
      * @param poiInfoEntity 点信息
@@ -984,6 +993,12 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
         }
         routeLineLayerParam.setMEstimatedTimeOfArrival(arrivalTimes);
         mLayerAdapter.drawRouteLine(mapTypeId, mRequestRouteResults.get(mapTypeId));
+        mLayerAdapter.drawRouteLine(MapType.LAUNCHER_DESK_MAP, mRequestRouteResults.get(mapTypeId));
+    }
+
+    /*更新终点扎标数据*/
+    public void updateRouteEndPoint(MapType mapTypeId, LayerItemRouteEndPoint endPoint) {
+        mLayerAdapter.updateRouteEndPoint(mapTypeId, endPoint);
     }
 
     /**
@@ -1059,6 +1074,24 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
         if (ConvertUtils.isEmpty(previewParams)) {
             Logger.e(TAG, "previewParams is null");
             return;
+        }
+        previewParams.setScreenLeft(1350);
+        previewParams.setScreenRight(600);
+        previewParams.setScreenTop(210);
+        previewParams.setScreenBottom(20);
+        mMapAdapter.showPreview(mapTypeId, previewParams);
+    }
+
+    /**
+     * 限行页面路线全览
+     * @param mapTypeId 屏幕ID
+     */
+    public void showRestrictedAreaPreview(final MapType mapTypeId, final RouteRestrictionParam param) {
+        final PreviewParams previewParams = new PreviewParams();
+        previewParams.setRouteLine(false);
+        previewParams.setbUseRect(false);
+        if (!ConvertUtils.isEmpty(param) && !ConvertUtils.isEmpty(param.getMRestrictedArea())) {
+            previewParams.setPoints(param.getMRestrictedArea().getMPointList());
         }
         previewParams.setScreenLeft(1350);
         previewParams.setScreenRight(600);
@@ -1389,20 +1422,6 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
     public void drawRestrictionForLimit(final MapType mapTypeId, final Object param, final int position) {
         mLayerAdapter.showRestrictionView(mapTypeId, null);
         mLayerAdapter.showRestrictionView(mapTypeId, param, position);
-    }
-
-    /**
-     * 更新终点扎标数据
-     * @param mapTypeId 屏幕Id
-     * @param type 终点类别
-     * @param num 剩余油量获取电量
-     */
-    public void drawEndPoint(final MapType mapTypeId , final LayerItemRouteEndPoint.LayerRouteEndPointType type, final int num) {
-        Logger.d(TAG, "drawEndPoint: type " + type + ",num " + num);
-        final LayerItemRouteEndPoint layerItemRouteEndPoint = new LayerItemRouteEndPoint();
-        layerItemRouteEndPoint.setEndPointType(LayerItemRouteEndPoint.LayerRouteEndPointType.LAYER_ROUTE_END_TYPE_BATTERY);
-        layerItemRouteEndPoint.setRestNum(num);
-        mLayerAdapter.updateRouteEndPoint(mapTypeId, layerItemRouteEndPoint);
     }
 
     /**

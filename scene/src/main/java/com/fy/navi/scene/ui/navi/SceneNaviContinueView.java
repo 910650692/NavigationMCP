@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.android.utils.log.Logger;
 import com.fy.navi.scene.databinding.SceneNaviContinueViewBinding;
 import com.fy.navi.scene.impl.imersive.ImersiveStatus;
 import com.fy.navi.scene.impl.navi.SceneNaviContinueImpl;
@@ -70,5 +71,15 @@ public class SceneNaviContinueView extends NaviSceneBase<SceneNaviContinueViewBi
      */
     public void backToNaviFragment() {
         mISceneCallback.backToNaviFragment();
+    }
+
+    /**
+     * 配合语音实现的继续导航操作
+     */
+    public void naviContinueByVoice() {
+        Logger.i(TAG, "naviContinueByVoice");
+        if (null != mScreenViewModel) {
+            mScreenViewModel.naviContinueClick();
+        }
     }
 }

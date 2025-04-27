@@ -12,6 +12,7 @@ import com.autonavi.gbl.util.model.SingleServiceID;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.adapter.setting.SettingAdapterCallback;
 import com.fy.navi.service.adapter.setting.SettingApi;
+import com.fy.navi.service.define.map.ThemeType;
 import com.fy.navi.service.define.route.RoutePreferenceID;
 import com.fy.navi.service.define.setting.SettingController;
 
@@ -562,9 +563,9 @@ public class SettingAdapterImpl implements SettingApi, IBehaviorServiceObserver 
      * @return 返回错误码
      */
     @Override
-    public int setConfigKeyDayNightMode(final int dayNightMode) {
+    public int setConfigKeyDayNightMode(final ThemeType dayNightMode) {
         final ConfigValue castSimple = new ConfigValue();
-        castSimple.intValue = dayNightMode;
+        castSimple.intValue = ThemeType.getThemeValueByType(dayNightMode);
         Logger.d(TAG, "setConfigKeyDayNightMode dayNightMode: " + dayNightMode);
         return mBehaviorService.setConfig(ConfigKey.ConfigKeyDayNightMode, castSimple, SyncMode.SyncModeNow);
     }

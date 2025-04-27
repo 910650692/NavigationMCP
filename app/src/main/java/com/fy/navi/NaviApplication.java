@@ -1,25 +1,18 @@
 package com.fy.navi;
 
-import android.annotation.SuppressLint;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
-
 import androidx.appcompat.app.AppCompatDelegate;
-import androidx.core.content.ContextCompat;
 
 import com.alibaba.android.arouter.launcher.ARouter;
+import com.android.utils.DeviceUtils;
+import com.android.utils.crash.AppCrashRecord;
 import com.android.utils.log.Logger;
 import com.fy.navi.burypoint.BuryManager;
 import com.fy.navi.flavor.BaseTestCarType;
 import com.fy.navi.flavor.TestCarType;
 import com.fy.navi.hmi.BuildConfig;
-import com.fy.navi.scene.ui.navi.manager.INaviSceneEvent;
-import com.fy.navi.scene.ui.navi.manager.NaviSceneId;
-import com.fy.navi.scene.ui.navi.manager.NaviSceneManager;
 import com.fy.navi.service.AppContext;
 import com.fy.navi.service.MapDefaultFinalTag;
+import com.fy.navi.service.adapter.search.cloudByPatac.PatacNetClient;
 import com.fy.navi.ui.BaseApplication;
 
 /**
@@ -38,8 +31,13 @@ public class NaviApplication extends BaseApplication {
         AppContext.getInstance().setMContext(getApplicationContext());
         Logger.setDefaultTag(MapDefaultFinalTag.DEFAULT_TAG);
         initARouter();
-        initSensorsDataAPI(); // 初始化SDK
+        initDataTrack(); // 初始化SDK
         BaseTestCarType testCarType = new TestCarType();
+        PatacNetClient.getInstance().init(); // 初始化网络适配器
+
+        if (!DeviceUtils.isCar(this)) {
+            Thread.setDefaultUncaughtExceptionHandler(new AppCrashRecord(this));
+        }
     }
 
     @Override
@@ -57,7 +55,7 @@ public class NaviApplication extends BaseApplication {
         ARouter.init(this);
     }
 
-    private void initSensorsDataAPI() {
-        BuryManager.getInstance().initSensorsDataAPI(getApplicationContext());
+    private void initDataTrack() {
+        BuryManager.getInstance().initPatacDataTrackManager(getApplicationContext(), DeviceUtils.isCar(getApplicationContext()));
     }
 }

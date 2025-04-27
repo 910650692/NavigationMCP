@@ -10,44 +10,32 @@
     </data>
 
     <com.fy.navi.ui.view.SkinConstraintLayout
-        android:layout_width="@dimen/dp_1660"
-        android:layout_height="@dimen/dp_960"
+        android:layout_width="@dimen/dp_1224"
+        android:layout_height="@dimen/dp_714"
         android:clickable="true"
         android:background="@drawable/bg_setting_fragment">
 
-        <com.fy.navi.ui.view.SkinLinearLayout
-            android:id="@+id/setting_others_privacy_layout"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_120"
-            android:orientation="horizontal"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" >
-
             <com.fy.navi.ui.view.SkinImageView
                 clickCommand="@{viewModel.mFinishPrivacy}"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginStart="@dimen/dp_20"
-                android:src="@drawable/img_basic_ic_back" />
+                android:layout_width="@dimen/dp_58"
+                android:layout_height="@dimen/dp_58"
+                android:layout_marginStart="@dimen/dp_26"
+                android:layout_marginTop="@dimen/dp_38"
+                android:src="@drawable/img_basic_ic_back"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"/>
 
             <com.fy.navi.ui.view.SkinTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginStart="@dimen/dp_560"
+                android:layout_centerInParent="true"
                 android:text="@string/setting_others_privacy"
-                android:textSize="@dimen/sp_46"
-                android:textColor="@color/black" />
-        </com.fy.navi.ui.view.SkinLinearLayout>
-
-        <com.fy.navi.ui.view.SkinView
-            android:id="@+id/line_view"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_1"
-            android:layout_marginTop="@dimen/dp_20"
-            app:layout_constraintTop_toBottomOf="@+id/setting_others_privacy_layout"
-            android:background="@color/sub_tab_line"/>
+                android:textSize="@dimen/sp_34"
+                android:layout_marginTop="@dimen/dp_40"
+                android:textColor="@color/black"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
 
         <com.fy.navi.ui.view.SkinTextView
             android:id="@+id/setting_others_privacy_location"
@@ -55,37 +43,37 @@
             android:layout_height="wrap_content"
             android:text="@string/setting_others_privacy_location"
             android:textColor="@color/black"
-            android:textSize="@dimen/sp_36"
-            android:layout_marginTop="@dimen/dp_30"
-            android:layout_marginStart="@dimen/dp_50"
+            android:textSize="@dimen/sp_34"
+            android:layout_marginTop="@dimen/dp_154"
+            android:layout_marginStart="@dimen/dp_39"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/line_view"/>
+            app:layout_constraintTop_toTopOf="parent" />
 
         <com.fy.navi.ui.view.SkinTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/setting_others_privacy_location_description"
-            android:textColor="@color/setting_bg_tab_text_unselect"
-            android:textSize="@dimen/sp_28"
-            android:layout_marginTop="@dimen/dp_10"
+            android:textColor="@color/color_black_70"
+            android:textSize="@dimen/sp_30"
+            android:layout_marginTop="@dimen/dp_8"
             app:layout_constraintStart_toStartOf="@+id/setting_others_privacy_location"
             app:layout_constraintTop_toBottomOf="@+id/setting_others_privacy_location"/>
 
         <com.fy.navi.ui.view.SkinLinearLayout
             android:id="@+id/setting_others_privacy_switch"
-            android:layout_width="@dimen/dp_400"
-            android:layout_height="@dimen/dp_108"
+            android:layout_width="@dimen/dp_296"
+            android:layout_height="@dimen/dp_90"
             android:gravity="center_horizontal"
-            android:layout_marginTop="@dimen/dp_30"
-            android:layout_marginEnd="@dimen/dp_30"
+            android:layout_marginTop="@dimen/dp_155"
+            android:layout_marginEnd="@dimen/dp_40"
             android:orientation="horizontal"
             android:background="@drawable/bg_setting_checkbox"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/line_view">
+            app:layout_constraintTop_toTopOf="parent">
 
             <com.fy.navi.ui.view.SkinRadioGroup
                 android:layout_width="match_parent"
-                android:layout_height="fill_parent"
+                android:layout_height="match_parent"
                 android:gravity="center_horizontal"
                 android:orientation="horizontal">
 
@@ -99,7 +87,7 @@
                     android:checked="@{viewModel.mIsOneYearPrivacy}"
                     android:background="@drawable/bg_setting_checkbox_selector"
                     android:gravity="center"
-                    android:textSize="@dimen/sp_38"
+                    android:textSize="@dimen/sp_34"
                     android:textColor="@color/black"
                     android:text="@string/setting_others_privacy_one_year" />
 
@@ -113,7 +101,7 @@
                     android:checked="@{viewModel.mIsNeverPrivacy}"
                     android:background="@drawable/bg_setting_checkbox_selector"
                     android:gravity="center"
-                    android:textSize="@dimen/sp_38"
+                    android:textSize="@dimen/sp_34"
                     android:textColor="@color/black"
                     android:text="@string/setting_others_privacy_never" />
             </com.fy.navi.ui.view.SkinRadioGroup>
@@ -124,26 +112,26 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginTop="@dimen/dp_10"
             android:visibility="@{viewModel.mIsOneYearPrivacy ? View.VISIBLE : View.GONE}"
-            app:layout_constraintStart_toStartOf="@+id/setting_others_privacy_switch"
+            app:layout_constraintEnd_toEndOf="@+id/setting_others_privacy_switch"
             app:layout_constraintTop_toBottomOf="@+id/setting_others_privacy_switch">
 
             <com.fy.navi.ui.view.SkinTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/setting_others_privacy_end_date"
-                android:textColor="@color/setting_bg_tab_text_unselect"
-                android:textSize="@dimen/sp_28"
-                android:layout_marginTop="@dimen/dp_10" />
+                android:textColor="@color/color_black_70"
+                android:textSize="@dimen/sp_30" />
 
             <com.fy.navi.ui.view.SkinTextView
                 android:id="@+id/setting_others_privacy_end_date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@{viewModel.mEndDate}"
-                android:textColor="@color/setting_bg_tab_text_unselect"
-                android:textSize="@dimen/sp_28"
-                android:layout_marginTop="@dimen/dp_10" />
+                android:textColor="@color/color_black_70"
+                android:textSize="@dimen/sp_30" />
         </com.fy.navi.ui.view.SkinLinearLayout>
     </com.fy.navi.ui.view.SkinConstraintLayout>
 </layout>

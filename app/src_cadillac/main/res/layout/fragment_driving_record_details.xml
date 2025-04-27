@@ -11,17 +11,47 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:fillViewport="true">
+
         <com.fy.navi.ui.view.SkinConstraintLayout
             android:layout_width="@dimen/dp_820"
             android:layout_height="@dimen/dp_692"
             android:paddingBottom="@dimen/dp_52"
             android:background="@drawable/bg_setting_fragment">
+
+            <com.android.car.ui.FocusParkingView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <com.android.car.ui.FocusArea
+                android:id="@+id/focus_close"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <com.fy.navi.ui.view.SkinView
+                    clickCommand="@{ViewModel.mDrivingRecordDetailsBack}"
+                    android:layout_width="@dimen/dp_74"
+                    android:layout_height="@dimen/dp_74"
+                    android:focusable="true"
+                    android:layout_marginStart="@dimen/dp_20"
+                    android:layout_marginTop="@dimen/dp_39"
+                    android:background="@drawable/bg_base_mfc_cadillac_bg_selector"/>
+
+                <com.fy.navi.ui.view.SkinView
+                    clickCommand="@{ViewModel.mDeleteRecord}"
+                    android:layout_width="@dimen/dp_74"
+                    android:layout_height="@dimen/dp_74"
+                    android:focusable="true"
+                    android:layout_marginStart="@dimen/dp_631"
+                    android:layout_marginTop="@dimen/dp_39"
+                    android:background="@drawable/bg_base_mfc_cadillac_bg_selector"/>
+
+            </com.android.car.ui.FocusArea>
             <!--标题-->
             <com.fy.navi.ui.view.SkinImageView
-                clickCommand="@{ViewModel.mDrivingRecordDetailsBack}"
                 android:layout_width="@dimen/dp_74"
                 android:layout_height="@dimen/dp_74"
                 android:src="@drawable/img_setting_back"
+                android:focusable="false"
                 android:layout_marginStart="@dimen/dp_20"
                 android:layout_marginTop="@dimen/dp_39"
                 app:layout_constraintStart_toStartOf="parent"
@@ -32,6 +62,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/driving_record_title"
+                android:focusable="false"
                 android:textColor="@color/setting_bg_tab_text_select"
                 android:textSize="@dimen/sp_46"
                 android:layout_marginTop="@dimen/dp_43"
@@ -45,6 +76,7 @@
                 android:layout_height="@dimen/dp_74"
                 android:layout_marginEnd="@dimen/dp_20"
                 android:layout_marginTop="@dimen/dp_39"
+                android:focusable="false"
                 android:src="@drawable/img_driving_record_delete"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -53,6 +85,7 @@
                 android:id="@+id/details_view"
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/dp_1"
+                android:focusable="false"
                 android:background="@color/transparent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/driving_record_title" />
@@ -63,6 +96,7 @@
                 android:layout_height="@dimen/dp_20"
                 android:layout_marginTop="@dimen/dp_67"
                 android:layout_marginStart="@dimen/dp_52"
+                android:focusable="false"
                 android:background="@drawable/bg_start_point"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/details_view" />
@@ -74,6 +108,7 @@
                 android:layout_marginStart="@dimen/dp_30"
                 android:layout_marginTop="@dimen/dp_52"
                 android:text="@string/driving_record_details_start"
+                android:focusable="false"
                 android:textColor="@color/setting_bg_tab_text_unselect"
                 android:textSize="@dimen/sp_38"
                 app:layout_constraintLeft_toRightOf="@+id/item_driving_start_img"
@@ -86,6 +121,7 @@
                 android:layout_marginTop="@dimen/dp_52"
                 android:layout_marginEnd="@dimen/dp_52"
                 android:text="@string/driving_record_details_cost"
+                android:focusable="false"
                 android:textColor="@color/setting_bg_tab_text_unselect"
                 android:textSize="@dimen/sp_38"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -97,6 +133,7 @@
                 android:layout_height="@dimen/dp_20"
                 android:layout_marginTop="@dimen/dp_45"
                 android:layout_marginStart="@dimen/dp_52"
+                android:focusable="false"
                 android:background="@drawable/bg_end_point"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/details_start" />
@@ -108,6 +145,7 @@
                 android:layout_marginStart="@dimen/dp_31"
                 android:layout_marginTop="@dimen/dp_30"
                 android:text="@string/driving_record_details_end"
+                android:focusable="false"
                 android:textColor="@color/setting_bg_tab_text_unselect"
                 android:textSize="@dimen/sp_38"
                 app:layout_constraintLeft_toRightOf="@+id/item_driving_end_img"
@@ -120,6 +158,7 @@
                 android:layout_marginTop="@dimen/dp_30"
                 android:layout_marginEnd="@dimen/dp_52"
                 android:text="@string/driving_record_details_level"
+                android:focusable="false"
                 android:textColor="@color/setting_bg_tab_text_unselect"
                 android:textSize="@dimen/sp_38"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -132,6 +171,7 @@
                 android:layout_marginTop="@dimen/dp_35"
                 android:layout_marginStart="@dimen/dp_52"
                 android:layout_marginEnd="@dimen/dp_52"
+                android:focusable="false"
                 android:background="@color/color_20_000000"
                 app:layout_constraintTop_toBottomOf="@+id/details_end" />
             <!--导航里程-->
@@ -141,6 +181,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_40"
                 android:layout_marginStart="@dimen/dp_52"
+                android:focusable="false"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/details_end_view">
 
@@ -149,6 +190,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/driving_record_details_count"
+                    android:focusable="false"
                     android:textColor="@color/setting_bg_tab_text_select"
                     android:textSize="@dimen/sp_46"
                     app:layout_constraintStart_toStartOf="parent"
@@ -160,6 +202,7 @@
                     android:layout_height="wrap_content"
                     android:visibility="gone"
                     android:text="@string/driving_record_details_unit"
+                    android:focusable="false"
                     android:textColor="@color/setting_bg_tab_text_select"
                     android:textSize="@dimen/sp_46"
                     app:layout_constraintStart_toEndOf="@+id/details_guide_count"
@@ -172,6 +215,7 @@
                     android:layout_marginTop="@dimen/dp_8"
                     android:gravity="center"
                     android:text="@string/driving_record_details_content"
+                    android:focusable="false"
                     android:textColor="@color/setting_bg_tab_text_unselect"
                     android:textSize="@dimen/sp_38"
                     app:layout_constraintStart_toStartOf="parent"
@@ -181,6 +225,7 @@
             <com.fy.navi.ui.view.SkinConstraintLayout
                 android:id="@+id/details_guide_time_view"
                 android:layout_width="@dimen/dp_300"
+                android:focusable="false"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_40"
                 android:layout_marginEnd="@dimen/dp_52"
@@ -192,6 +237,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/driving_record_details_time"
+                    android:focusable="false"
                     android:textColor="@color/setting_bg_tab_text_select"
                     android:textSize="@dimen/sp_46"
                     app:layout_constraintStart_toStartOf="parent"
@@ -203,6 +249,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dp_8"
                     android:text="@string/driving_record_details_time_unit"
+                    android:focusable="false"
                     android:textColor="@color/setting_bg_tab_text_unselect"
                     android:textSize="@dimen/sp_38"
                     app:layout_constraintStart_toStartOf="parent"
@@ -215,6 +262,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_32"
                 android:layout_marginStart="@dimen/dp_52"
+                android:focusable="false"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/details_guide_view">
 
@@ -223,16 +271,19 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/driving_record_details_speed"
+                    android:focusable="false"
                     android:textColor="@color/setting_bg_tab_text_select"
                     android:textSize="@dimen/sp_46"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"/>
+
                 <com.fy.navi.ui.view.SkinTextView
                     android:id="@+id/details_guide_speed_unit"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:text="@string/driving_record_details_speed_unit"
+                    android:focusable="false"
                     android:textColor="@color/setting_bg_tab_text_select"
                     android:textSize="@dimen/sp_46"
                     app:layout_constraintStart_toEndOf="@+id/details_guide_speed"
@@ -245,6 +296,7 @@
                     android:layout_marginTop="@dimen/dp_8"
                     android:gravity="center"
                     android:text="@string/driving_record_details_speed_content"
+                    android:focusable="false"
                     android:textColor="@color/setting_bg_tab_text_unselect"
                     android:textSize="@dimen/sp_38"
                     app:layout_constraintStart_toStartOf="parent"
@@ -257,6 +309,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_32"
                 android:layout_marginEnd="@dimen/dp_52"
+                android:focusable="false"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/details_guide_view">
 
@@ -265,6 +318,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/driving_record_details_fast_speed"
+                    android:focusable="false"
                     android:textColor="@color/setting_bg_tab_text_select"
                     android:textSize="@dimen/sp_46"
                     app:layout_constraintStart_toStartOf="parent"
@@ -275,6 +329,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/driving_record_details_fast_speed_unit"
+                    android:focusable="false"
                     android:textColor="@color/setting_bg_tab_text_select"
                     android:textSize="@dimen/sp_46"
                     app:layout_constraintStart_toEndOf="@+id/details_guide_fast_speed"
@@ -286,6 +341,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dp_8"
                     android:text="@string/driving_record_details_fast_speed_content"
+                    android:focusable="false"
                     android:textColor="@color/setting_bg_tab_text_unselect"
                     android:textSize="@dimen/sp_38"
                     app:layout_constraintStart_toStartOf="parent"

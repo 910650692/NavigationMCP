@@ -9,7 +9,7 @@
 
         <com.fy.navi.ui.view.SkinConstraintLayout
             android:layout_width="@dimen/dp_1100"
-            android:layout_height="@dimen/dp_500"
+            android:layout_height="@dimen/dp_600"
             android:background="@drawable/shape_bg_dialog"
             android:paddingHorizontal="@dimen/dp_100"
             android:paddingVertical="@dimen/dp_80"

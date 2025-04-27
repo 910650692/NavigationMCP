@@ -7,4 +7,20 @@
     <color name="route_back_icon_bg">#00000000</color>
     <color name="route_back_icon_color">#D2D3D7</color>
     <color name="guide_login_content">#B3FFFFFF</color>
+    <color name="message_center_operate">#FFFFFFFF</color>
+    <color name="message_center_content">#B3FFFFFF</color>
+    <color name="auto_color_ca6d">#FF4ABA59</color>
+    <color name="auto_color_f4cf4b">#FFEBA21B</color>
+    <color name="auto_color_e85466">#FF9E171A</color>
+    <color name="auto_color_c04361">#980818</color>
+    <color name="auto_color_379e4f">#099332</color>
+    <color name="navi_color_2461EA_10">#1A005CFF</color>
+    <color name="bg_route_big_window_select">#FF005CFF</color>
+    <color name="bg_route_detail_color">#26B2AFC2</color>
+    <color name="bg_setting_car_connected_help_sub_title">#B3FFFFFF</color>
+    <color name="setting_bg_to_login_text">#FF005CFF</color>
+    <color name="setting_bg_others">#26B2AFC2</color>
+    <color name="setting_text_preference">#FFFFFFFF</color>
+    <color name="setting_car_number_tip">#B3FFFFFF</color>
+    <color name="permission_quest_dialog_title">#FFFFFFFF</color>
 </resources>

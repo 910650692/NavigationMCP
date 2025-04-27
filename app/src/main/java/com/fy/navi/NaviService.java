@@ -504,7 +504,7 @@ public class NaviService extends Service {
         public Result doWork() {
             MyFsaService.getInstance().init();
             AdasClient.getInstance().start(AppContext.getInstance().getMContext());
-            ClsLinkManager.getInstance().init();
+//            ClsLinkManager.getInstance().init();
             return Result.success();
         }
 

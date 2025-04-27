@@ -5,7 +5,6 @@ package com.fy.navi.service.define.layer.refix;
 import androidx.annotation.StringDef;
 
 import com.fy.navi.service.define.bean.GeoPoint;
-import com.fy.navi.service.define.layer.GemLayerClickBusinessType;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

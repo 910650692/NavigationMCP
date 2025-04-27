@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import com.android.utils.ConvertUtils;
+import com.android.utils.log.Logger;
 import com.fy.navi.scene.BaseSceneView;
 import com.fy.navi.scene.api.route.ISceneRouteGasStationChargeSelectCallBack;
 import com.fy.navi.scene.databinding.SceneRouteStationChargeServiceBinding;
@@ -87,6 +88,10 @@ public class SceneRouteGasStationChargeServiceView
      * 高亮沿途
      * */
     public void highlightAlongTab() {
+        if (mScreenViewModel == null) {
+            Logger.d("mScreenViewModel is null ");
+            return;
+        }
         mScreenViewModel.setGasStationSelect(true);
         mScreenViewModel.setWeatherSelect(false);
         mScreenViewModel.setServiceSelect(false);

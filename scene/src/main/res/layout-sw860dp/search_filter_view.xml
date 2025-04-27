@@ -6,8 +6,6 @@
     <com.fy.navi.ui.view.SkinConstraintLayout
         android:id="@+id/search_filter_root"
         android:layout_width="match_parent"
-        android:paddingStart="@dimen/dp_40"
-        android:paddingEnd="@dimen/dp_40"
         android:layout_height="match_parent"
         tools:visibility="visible"
         android:visibility="gone">
@@ -21,6 +19,8 @@
             <com.fy.navi.ui.view.SkinConstraintLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:paddingStart="@dimen/dp_40"
+                android:paddingEnd="@dimen/dp_40"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent">
 
@@ -122,7 +122,9 @@
             android:gravity="center"
             android:background="@drawable/bg_confirm"
             android:text="@string/dsc_confirm"
+            android:layout_marginStart="@dimen/dp_40"
             android:layout_marginBottom="@dimen/dp_40"
+            android:textColor="@color/search_main_tab_bg_fff"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             android:textSize="@dimen/sp_34"/>
@@ -135,6 +137,7 @@
             android:background="@drawable/bg_cancel"
             android:text="@string/dsc_reset"
             android:layout_marginBottom="@dimen/dp_40"
+            android:layout_marginEnd="@dimen/dp_40"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             android:textSize="@dimen/sp_34"/>

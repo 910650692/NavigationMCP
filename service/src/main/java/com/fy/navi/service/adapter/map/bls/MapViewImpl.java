@@ -9,6 +9,7 @@ import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 
 import com.android.utils.ConvertUtils;
+import com.android.utils.ThemeUtils;
 import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
@@ -70,6 +71,7 @@ import com.fy.navi.service.define.map.MapMode;
 import com.fy.navi.service.define.map.MapStateStyle;
 import com.fy.navi.service.define.map.MapViewParams;
 import com.fy.navi.service.define.map.MapType;
+import com.fy.navi.service.define.map.ThemeType;
 import com.fy.navi.service.define.mfc.MfcController;
 import com.fy.navi.service.define.search.PoiInfoEntity;
 import com.fy.navi.service.logicpaket.engine.EnginePackage;
@@ -129,6 +131,7 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver,
         createMapService();
         createMapDevice();
         createMapView();
+        initTheme();
         initOperatorPosture();
         initOperatorBusiness();
         initOperatorGesture();
@@ -256,8 +259,17 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver,
         getMapview().getOperatorGesture().enableSliding(true);
     }
 
+    /***
+     * 初始化默认主题
+     */
+    public void initTheme() {
+       final MapStyleParam styleParam = getMapview().getOperatorStyle().getMapStyle();
+       styleParam.time = ThemeUtils.INSTANCE.isNightModeEnabled(getContext()) ? MapStyleTime.MapTimeNight : MapStyleTime.MapTimeDay;
+       getMapview().getOperatorStyle().setMapStyle(styleParam, false);
+    }
+
     private void initSkyBox() {
-        SkyBoxManager.getInstance().initSkyBox(getMapview());
+        SkyBoxManager.getInstance().initSkyBox(getMapview(), ThemeUtils.INSTANCE.isNightModeEnabled(getContext()));
     }
 
 
@@ -487,9 +499,9 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver,
     protected void setMapStyle(MapStateStyle mapStateStyle) {
         MapStyleParam styleParam = getMapview().getOperatorStyle().getMapStyle();
         styleParam.mode = MapStyleMode.MapModeDefault;
-        int currentUiMode = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
-        styleParam.time =
-                currentUiMode == Configuration.UI_MODE_NIGHT_YES ? MapStyleTime.MapTimeNight : MapStyleTime.MapTimeDay;
+        boolean isNightMode = ThemeUtils.INSTANCE.isNightModeEnabled(getContext());
+        Logger.i(TAG, "setMapStyle:" + isNightMode);
+        styleParam.time = isNightMode ? MapStyleTime.MapTimeNight : MapStyleTime.MapTimeDay;
         switch (mapStateStyle) {
             case MAP_NAVI:
                 styleParam.state = MapModelDtoConstants.MAP_MODE_SUBSTATE_NAVI_CAR;
@@ -670,16 +682,16 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver,
         }
     }
 
-    public void updateUiStyle(int uiMode) {
+    public void updateUiStyle(ThemeType uiMode) {
         final MapStyleParam styleParam = getMapview().getOperatorStyle().getMapStyle();
         final int preTime = styleParam.time;
-        final boolean isNightMode = (uiMode & Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES;
-        final int expectTime = isNightMode ? MapStyleTime.MapTimeNight : MapStyleTime.MapTimeDay;
-        Logger.d(TAG, "isNightMode:" + isNightMode, "preTime:" + preTime, "expectTime:" + expectTime);
+
+        final int expectTime = uiMode == ThemeType.NIGHT ? MapStyleTime.MapTimeNight : MapStyleTime.MapTimeDay;
+        Logger.d(TAG, "preTime:" + preTime, "expectTime:" + expectTime);
         if (preTime != expectTime) {
             styleParam.time = expectTime;
             getMapview().getOperatorStyle().setMapStyle(styleParam, false);
-            SkyBoxManager.getInstance().updateSkyBox(getMapview(), isNightMode);
+            SkyBoxManager.getInstance().updateSkyBox(getMapview(), uiMode == ThemeType.NIGHT);
         }
     }
 

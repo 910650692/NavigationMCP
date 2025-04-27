@@ -24,6 +24,25 @@ public class BaseStyleAdapter extends PrepareLayerParamInner {
     }
 
     /**
+     * 是否需要重新组织json字符串
+     * @param item
+     * @return
+     */
+    public boolean isNeedRefreshJsonValue(LayerItem item) {
+        return false;
+    }
+
+    /***
+     * 重新刷新json字符串
+     * @param item
+     * @param oldJson
+     * @return
+     */
+    public String refreshOldJsonValue(LayerItem item, String oldJson) {
+        return oldJson;
+    }
+
+    /**
      * 提供更新布局类型的item的数据源
      *
      * @param item
@@ -43,15 +62,4 @@ public class BaseStyleAdapter extends PrepareLayerParamInner {
         return null;
     }
 
-    public boolean isNeedReCreate(LayerItem item) {
-        return false;
-    }
-
-    public boolean isNeedRefreshJsonValue(LayerItem item) {
-        return false;
-    }
-
-    public String provideUpdateStyleJson(LayerItem item, String oldJson) {
-        return oldJson;
-    }
 }

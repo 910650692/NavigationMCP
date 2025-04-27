@@ -4,9 +4,12 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * BizCruiseCongestionInfo
+ * Odd数据
  */
 @Setter
 @Getter
 public class LayerItemRouteOdd extends LayerItemBase {
+
+
+
 }

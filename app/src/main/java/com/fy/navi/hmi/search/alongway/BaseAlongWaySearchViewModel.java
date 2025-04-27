@@ -4,6 +4,7 @@ import android.app.Application;
 
 import androidx.annotation.NonNull;
 
+import com.fy.navi.service.define.search.SearchResultEntity;
 import com.fy.navi.ui.action.Action;
 import com.fy.navi.ui.base.BaseViewModel;
 
@@ -34,5 +35,13 @@ public class BaseAlongWaySearchViewModel extends BaseViewModel<AlongWaySearchFra
      */
     public int powerType() {
         return mModel.powerType();
+    }
+
+    /**
+     * 搜索结果回调
+     * @param searchResultEntity 搜索结果实体类
+     */
+    public void notifySearchResult(final SearchResultEntity searchResultEntity) {
+        mView.notifySearchResult(searchResultEntity);
     }
 }

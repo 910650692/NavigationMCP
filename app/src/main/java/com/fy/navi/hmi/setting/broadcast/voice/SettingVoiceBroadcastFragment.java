@@ -3,13 +3,11 @@ package com.fy.navi.hmi.setting.broadcast.voice;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.android.utils.log.Logger;
-import com.android.utils.thread.ThreadManager;
 import com.fy.navi.hmi.BR;
 import com.fy.navi.hmi.R;
 import com.fy.navi.hmi.databinding.FragmentVoiceBroadcastBinding;
 import com.fy.navi.hmi.setting.broadcast.adapter.SettingVoiceBroadcastAdapter;
 import com.fy.navi.service.define.setting.SettingController;
-import com.fy.navi.service.define.voice.DownLoadMode;
 import com.fy.navi.service.define.voice.VoiceInfo;
 import com.fy.navi.service.greendao.setting.SettingManager;
 import com.fy.navi.ui.action.ViewAdapterKt;
@@ -68,10 +66,7 @@ public class SettingVoiceBroadcastFragment extends BaseFragment<FragmentVoiceBro
      * 初始化数据
      */
     private void initData() {
-        ThreadManager.getInstance().postDelay(() -> {
-            setCurrentVoice();
-            mViewModel.requestDataListCheck(DownLoadMode.DOWNLOAD_MODE_NET.ordinal(), "");
-        },0);
+        setCurrentVoice();
     }
     /**
      * 设置数据

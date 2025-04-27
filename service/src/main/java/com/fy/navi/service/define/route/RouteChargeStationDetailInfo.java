@@ -22,6 +22,7 @@ public class RouteChargeStationDetailInfo implements Serializable {
     private int mRemainingCapacity;
     private double mRemainingPercent;
     private int mIndex;
+    private int mInterval = -1;
 
     public RouteChargeStationDetailInfo() {
         this.mSegmentIdx = 0;

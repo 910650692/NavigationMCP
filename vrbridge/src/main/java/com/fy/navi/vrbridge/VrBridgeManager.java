@@ -1,8 +1,8 @@
 package com.fy.navi.vrbridge;
 
 import android.content.Context;
-import android.util.Log;
 
+import com.android.utils.log.Logger;
 import com.baidu.bridge.BridgeSdk;
 import com.baidu.bridge.listener.OnConnectedListener;
 import com.baidu.oneos.protocol.listener.NaviCommandListener;
@@ -36,7 +36,7 @@ public class VrBridgeManager {
         BridgeSdk.getInstance().connect(context.getApplicationContext(), new OnConnectedListener() {
             @Override
             public void onConnected() {
-                Log.d(IVrBridgeConstant.TAG, "BridgeSdk connected");
+                Logger.d(IVrBridgeConstant.TAG, "BridgeSdk connected");
                 mBridgeInit = true;
                 BridgeSdk.getInstance().addCapability(NaviCommandListener.class, new NaviCommandImpl());
                 BridgeSdk.getInstance().addCapability(NaviControlCommandListener.class, new NaviControlCommandImpl());
@@ -45,7 +45,7 @@ public class VrBridgeManager {
 
             @Override
             public void onDisconnected() {
-                Log.d(IVrBridgeConstant.TAG, "BridgeSdk disconnected");
+                Logger.d(IVrBridgeConstant.TAG, "BridgeSdk disconnected");
                 mBridgeInit = false;
                 BridgeSdk.getInstance().removeCapability(NaviCommandListener.class);
                 BridgeSdk.getInstance().removeCapability(NaviControlCommandListener.class);

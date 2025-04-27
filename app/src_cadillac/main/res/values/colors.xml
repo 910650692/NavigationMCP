@@ -28,4 +28,12 @@
     <color name="img_basic_ic_home_color">#4B535D</color>
     <color name="img_basic_ic_bus_color">#4B535D</color>
     <color name="img_basic_ic_search_color">#4B535D</color>
+    <color name="auto_color_ca6d">#FF4ABA59</color>
+    <color name="auto_color_f4cf4b">#FFEBA21B</color>
+    <color name="auto_color_e85466">#FF9E171A</color>
+    <color name="auto_color_c04361">#980818</color>
+    <color name="auto_color_379e4f">#099332</color>
+    <color name="navi_color_2461EA_10">#1A2461EA</color>
+    <color name="bg_route_big_window_select">#FF2461EA</color>
+    <color name="bg_route_detail_color">#26B2AFC2</color>
 </resources>

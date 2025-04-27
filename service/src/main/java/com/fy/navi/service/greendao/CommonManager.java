@@ -97,6 +97,19 @@ public final class CommonManager {
     }
 
     /**
+     * 插入用户信息
+     * @param key 对应key值
+     * @param value 对应值
+     */
+    public void insertUserInfo(final String key, final String value) {
+        final CommonSetting setting = new CommonSetting();
+        setting.setMName(key);
+        setting.setMValue(value);
+        setting.setMUpdateTime(new Date());
+        mCommonSettingDao.insertOrReplace(setting);
+    }
+
+    /**
      * 通过key查找其对应value
      * @param key 唯一值
      * @return value

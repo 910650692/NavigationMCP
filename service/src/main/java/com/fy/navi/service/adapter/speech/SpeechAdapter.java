@@ -55,9 +55,15 @@ public class SpeechAdapter {
         }
     }
 
+    public void synthesize(boolean isNormalTTS, String text) {
+        if (mSpeechApi != null) {
+            mSpeechApi.synthesize(isNormalTTS, text);
+        }
+    }
+
     public void synthesize(String text) {
         if (mSpeechApi != null) {
-            mSpeechApi.synthesize(text);
+            mSpeechApi.synthesize(true, text);
         }
     }
 

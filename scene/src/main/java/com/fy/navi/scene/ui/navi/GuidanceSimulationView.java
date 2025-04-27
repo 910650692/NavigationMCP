@@ -9,6 +9,7 @@ import com.android.utils.log.Logger;
 import com.fy.navi.scene.R;
 import com.fy.navi.scene.databinding.NavGuidanceSimulationViewBinding;
 import com.fy.navi.service.logicpaket.navi.NaviPackage;
+import com.fy.navi.ui.BuildConfig;
 import com.fy.navi.ui.view.SkinRelativeLayout;
 
 
@@ -75,7 +76,7 @@ public class GuidanceSimulationView extends SkinRelativeLayout implements View.O
     public String setSimulateCarSpeed() {
         for (int i = 0; i < SIM_NAVI_SPEED.length; i++) {
             if (mCurrentSeed == SIM_NAVI_SPEED[i]) {
-                if (i == SIM_NAVI_SPEED.length - 1) {
+                if (i == (BuildConfig.DEBUG ? SIM_NAVI_SPEED.length - 1 : SIM_NAVI_SPEED.length - 5)) {
                     mCurrentSeed = SIM_NAVI_SPEED[0];
                 } else {
                     mCurrentSeed = SIM_NAVI_SPEED[i + 1];
@@ -91,7 +92,7 @@ public class GuidanceSimulationView extends SkinRelativeLayout implements View.O
         for (int i = 0; i < SIM_NAVI_SPEED.length; i++) {
             if (mCurrentSeed == SIM_NAVI_SPEED[i]) {
                 if (i == 0) {
-                    mCurrentSeed = SIM_NAVI_SPEED[SIM_NAVI_SPEED.length - 1];
+                    mCurrentSeed = SIM_NAVI_SPEED[BuildConfig.DEBUG ? SIM_NAVI_SPEED.length - 1 : SIM_NAVI_SPEED.length - 5];
                 } else {
                     mCurrentSeed = SIM_NAVI_SPEED[i - 1];
                 }

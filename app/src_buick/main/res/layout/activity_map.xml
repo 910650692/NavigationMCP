@@ -329,8 +329,10 @@
             android:orientation="horizontal"
             android:visibility="@{ViewModel.backToParkingVisibility ? View.VISIBLE : View.GONE}"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent">
+            app:layout_constraintLeft_toRightOf="@+id/search_main_tab"
+            app:layout_constraintRight_toLeftOf="@+id/scene_scale_view"
+            app:layout_goneMarginStart="@dimen/dp_1106"
+            app:layout_goneMarginRight="@dimen/dp_516">
 
             <com.fy.navi.ui.view.SkinImageView
                 android:id="@+id/self_parking_space_iv"

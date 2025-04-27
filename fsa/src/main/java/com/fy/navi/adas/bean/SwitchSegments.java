@@ -36,7 +36,10 @@ public class SwitchSegments {
      * segment终点在SD上对应link的offset
      */
     private double end_link_offset;
-    private double length;
+    /**
+     * 区间的长度，单位米
+     */
+    private float length;
     /**
      * segment对应的智驾功能类型
      * •0: unmatch
@@ -49,19 +52,6 @@ public class SwitchSegments {
      * 类型描述
      */
     private String mode_describe;
-    /**
-     * 区间的长度，单位米
-     */
-    @SerializedName("length")
-    private int mLength;
-
-    public int getmLength() {
-        return mLength;
-    }
-
-    public void setmLength(int mLength) {
-        this.mLength = mLength;
-    }
 
     public String getMode_describe() {
         return mode_describe;
@@ -83,7 +73,7 @@ public class SwitchSegments {
         return length;
     }
 
-    public void setLength(double length) {
+    public void setLength(float length) {
         this.length = length;
     }
 

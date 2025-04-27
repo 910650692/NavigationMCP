@@ -5,10 +5,10 @@ import android.os.Binder;
 import android.os.IBinder;
 import android.os.RemoteCallbackList;
 import android.os.RemoteException;
-import android.util.Log;
 
 import androidx.core.app.ActivityCompat;
 
+import com.android.utils.log.Logger;
 import com.fy.navi.NaviService;
 import com.fy.navi.exportservice.binderimpl.NaviAutoApiBinder;
 import com.fy.navi.mapservice.IBinderPool;
@@ -54,7 +54,7 @@ public final class BinderPool extends IBinderPool.Stub {
                         }
                     }
                 } catch (RemoteException re) {
-                    Log.e(TAG, "dispatch initEngineSuccess error: " + re.getMessage());
+                    Logger.e(TAG, "dispatch initEngineSuccess error: " + re.getMessage());
                 } finally {
                     mBinderPoolCallbackList.finishBroadcast();
                     mInCallback = false;
@@ -77,7 +77,7 @@ public final class BinderPool extends IBinderPool.Stub {
                         }
                     }
                 } catch (RemoteException exception) {
-                    Log.e(TAG, "dispatch onInitEngineFail error: " + exception.getMessage());
+                    Logger.e(TAG, "dispatch onInitEngineFail error: " + exception.getMessage());
                 } finally {
                     mBinderPoolCallbackList.finishBroadcast();
                     mInCallback = false;
@@ -95,24 +95,24 @@ public final class BinderPool extends IBinderPool.Stub {
     @Override
     public boolean getEngineInitStatus(final String pckName) {
         final boolean initStatus = EnginePackage.getInstance().engineStatus();
-        Log.d(TAG, pckName + "getEngineInit: " + initStatus);
+        Logger.d(TAG, pckName + "getEngineInit: " + initStatus);
         return initStatus;
     }
 
     @Override
     public void startInitEngine(final String pkgName) {
-        Log.d(TAG, pkgName + "startInitEngine");
+        Logger.d(TAG, pkgName + "startInitEngine");
         if (null != AppContext.getInstance().getMContext()) {
             final Intent intent = new Intent(AppContext.getInstance().getMContext(), NaviService.class);
             ActivityCompat.startForegroundService(AppContext.getInstance().getMContext(), intent);
         } else {
-            Log.e(TAG, "application not created");
+            Logger.e(TAG, "application not created");
         }
     }
 
     @Override
     public IBinder queryBinder(final String packName, final String binderName) {
-        Log.d(TAG, packName + " queryBinder: " + binderName);
+        Logger.d(TAG, packName + " queryBinder: " + binderName);
         return getBinder(binderName, packName);
     }
 
@@ -125,7 +125,7 @@ public final class BinderPool extends IBinderPool.Stub {
      * @return 对应binder实现.
      */
     private synchronized IBinder getBinder(final String binderCode, final String packName) {
-        Log.d(TAG, packName + "getBinder " + binderCode);
+        Logger.d(TAG, packName + "getBinder " + binderCode);
         Binder binder = mBinderMap.get(binderCode);
         if (binder == null) {
             if (BinderType.NAVI_AUTO_API.name().equals(binderCode)) {

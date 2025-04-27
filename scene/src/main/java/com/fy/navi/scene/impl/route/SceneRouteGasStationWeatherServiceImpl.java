@@ -60,8 +60,8 @@ public class SceneRouteGasStationWeatherServiceImpl extends BaseSceneModel<Scene
         mScreenView.updateUi();
 
         mScreenView.clickTab(0, mIsChargingStationSelect);
-        mScreenView.clickTab(2, mIsServiceSelect);
         mScreenView.clickTab(1, mIsWeatherSelect);
+        mScreenView.clickTab(2, mIsServiceSelect);
         mScreenView.clickTab(3, mIsGasStationSelect);
     }
 
@@ -76,8 +76,8 @@ public class SceneRouteGasStationWeatherServiceImpl extends BaseSceneModel<Scene
 
         mScreenView.clickTab(1, mIsWeatherSelect);
         mScreenView.clickTab(2, mIsServiceSelect);
-        mScreenView.clickTab(0, mIsChargingStationSelect);
         mScreenView.clickTab(3, mIsGasStationSelect);
+        mScreenView.clickTab(0, mIsChargingStationSelect);
     }
 
     @Override
@@ -91,8 +91,8 @@ public class SceneRouteGasStationWeatherServiceImpl extends BaseSceneModel<Scene
 
         mScreenView.clickTab(0, mIsChargingStationSelect);
         mScreenView.clickTab(2, mIsServiceSelect);
-        mScreenView.clickTab(1, mIsWeatherSelect);
         mScreenView.clickTab(3, mIsGasStationSelect);
+        mScreenView.clickTab(1, mIsWeatherSelect);
     }
 
     @Override
@@ -106,7 +106,7 @@ public class SceneRouteGasStationWeatherServiceImpl extends BaseSceneModel<Scene
 
         mScreenView.clickTab(0, mIsChargingStationSelect);
         mScreenView.clickTab(1, mIsWeatherSelect);
-        mScreenView.clickTab(2, mIsServiceSelect);
         mScreenView.clickTab(3, mIsGasStationSelect);
+        mScreenView.clickTab(2, mIsServiceSelect);
     }
 }

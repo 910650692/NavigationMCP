@@ -228,7 +228,7 @@
             clickCommand="@{() -> naviSapa.onClick(1)}"
             android:layout_width="@dimen/dp_270"
             android:layout_height="match_parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
+            app:layout_constraintEnd_toEndOf="parent" />
 
         <com.fy.navi.ui.view.SkinImageView
             android:id="@+id/siv_first_service_toll_icon"

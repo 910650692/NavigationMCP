@@ -15,7 +15,5 @@ import java.lang.annotation.Target;
 public @interface HookMethod {
 
     String eventName() default "";
-    String sid() default "S00000008";
-    String svid() default "SV00000088";
 
 }

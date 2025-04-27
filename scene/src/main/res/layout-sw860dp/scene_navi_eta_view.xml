@@ -15,7 +15,8 @@
     <com.fy.navi.ui.view.SkinConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingHorizontal="@dimen/dp_30"
+        android:paddingVertical="@dimen/dp_7"
+        android:paddingTop="@dimen/dp_16"
         tools:background="@drawable/bg_navi_tbt_middle"
         tools:layout_height="@dimen/dp_475"
         tools:layout_width="@dimen/dp_820">

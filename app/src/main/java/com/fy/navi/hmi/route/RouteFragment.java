@@ -336,11 +336,20 @@ public class RouteFragment extends BaseFragment<FragmentRouteBinding, RouteViewM
     @Override
     public void onInitData() {
         mViewModel.setDefultPlateNumberAndAvoidLimitSave();
+    }
+
+    @Override
+    public void onGetFragmentData() {
         final Bundle bundle = getArguments();
         assert bundle != null;
         final RouteSpeechRequestParam param = (RouteSpeechRequestParam) bundle.getSerializable("speech_open_route");
         if (!ConvertUtils.isEmpty(param)) {
             Logger.i(TAG, "speech: " + ConvertUtils.isEmpty(param));
+            final PoiInfoEntity mEndPoiInfoEntity = param.getMEndPoiInfoEntity();
+            if (!ConvertUtils.isEmpty(mEndPoiInfoEntity)) {
+                mViewModel.getTitle().set(mEndPoiInfoEntity.getMName());
+                mViewModel.getEndName().set(mEndPoiInfoEntity.getMName());
+            }
             mViewModel.requestRouteFromSpeech(param);
             return;
         }
@@ -379,6 +388,13 @@ public class RouteFragment extends BaseFragment<FragmentRouteBinding, RouteViewM
         closeFragment(true);
         ToastUtils.Companion.getInstance().showCustomToastView(
                 ResourceUtils.Companion.getInstance().getString(R.string.route_error_no_request_data));
+    }
+
+    @Override
+    public void onReStoreFragment() {
+        if (!ConvertUtils.isEmpty(mViewModel)) {
+            mViewModel.onReStoreFragment();
+        }
     }
 
     @Override

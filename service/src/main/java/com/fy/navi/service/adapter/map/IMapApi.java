@@ -7,6 +7,7 @@ import com.fy.navi.service.define.map.MapMode;
 import com.fy.navi.service.define.map.MapStateStyle;
 import com.fy.navi.service.define.map.MapViewParams;
 import com.fy.navi.service.define.map.MapType;
+import com.fy.navi.service.define.map.ThemeType;
 import com.fy.navi.service.define.mfc.MfcController;
 
 import java.util.ArrayList;
@@ -119,7 +120,7 @@ public interface IMapApi {
     void exitPreview(MapType mapTypeId);
 
     /*更新UI样式，暂时只适配了黑夜、白天*/
-    void updateUiStyle(MapType mapTypeId, int uiMode);
+    void updateUiStyle(MapType mapTypeId, ThemeType uiMode);
 
     String getMapBound(MapType mapTypeId);
 

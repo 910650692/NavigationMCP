@@ -21,6 +21,9 @@ import com.fy.navi.ui.base.BaseFragment;
 @Route(path = RoutePath.Search.SEARCH_RESULT_FRAGMENT)
 public class SearchResultFragment extends BaseFragment<FragmentSearchResultBinding, SearchResultViewModel> {
     private String mSourceFragmentTag;
+    private int mTaskId;
+    private SearchResultEntity mSearchResultEntity;
+    private int mHomeCompany;
     @Override
     public int onLayoutId() {
         Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "onLayoutId");
@@ -41,7 +44,23 @@ public class SearchResultFragment extends BaseFragment<FragmentSearchResultBindi
     @Override
     public void onInitData() {
         Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "onInitData");
+    }
+
+    @Override
+    public void onGetFragmentData() {
+        super.onGetFragmentData();
+        //正常进入Fragment请求数据并刷新界面
+        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "onGetFragmentData " + mBinding.scenePoiList);
         getBundleData();
+        
+    }
+
+    @Override
+    public void onReStoreFragment() {
+        //日夜模式切换使用保存的数据恢复界面
+        super.onReStoreFragment();
+        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "onReStoreFragment ");
+        mViewModel.onReStoreFragment();
     }
 
     /**
@@ -75,18 +94,22 @@ public class SearchResultFragment extends BaseFragment<FragmentSearchResultBindi
      * @param searchResultEntity 搜索结果实体类
      */
     public void notifySearchResult(final int taskId, final SearchResultEntity searchResultEntity) {
-        int homeCompanyType = -1;
+        mHomeCompany = -1;
         if (ConvertUtils.equals(mSourceFragmentTag, AutoMapConstant.SourceFragment.FRAGMENT_HOME)) {
-            homeCompanyType = AutoMapConstant.HomeCompanyType.HOME;
+            mHomeCompany = AutoMapConstant.HomeCompanyType.HOME;
         } else if (ConvertUtils.equals(mSourceFragmentTag, AutoMapConstant.SourceFragment.FRAGMENT_COMPANY)) {
-            homeCompanyType = AutoMapConstant.HomeCompanyType.COMPANY;
+            mHomeCompany = AutoMapConstant.HomeCompanyType.COMPANY;
         } else if (ConvertUtils.equals(mSourceFragmentTag, AutoMapConstant.SourceFragment.FRAGMENT_COLLECTION)) {
-            homeCompanyType = AutoMapConstant.HomeCompanyType.COLLECTION;
+            mHomeCompany = AutoMapConstant.HomeCompanyType.COLLECTION;
         } else if (ConvertUtils.equals(mSourceFragmentTag, AutoMapConstant.SourceFragment.FRAGMENT_COMMON)) {
-            homeCompanyType = AutoMapConstant.HomeCompanyType.COMMON;
+            mHomeCompany = AutoMapConstant.HomeCompanyType.COMMON;
         }
-        mBinding.scenePoiList.setHomeCompanyState(homeCompanyType);
-        mBinding.scenePoiList.notifySearchResult(taskId, searchResultEntity);
+        mTaskId = taskId;
+        mSearchResultEntity = searchResultEntity;
+        mBinding.scenePoiList.setHomeCompanyState(mHomeCompany);
+        mBinding.scenePoiList.notifySearchResult(mTaskId, mSearchResultEntity);
+        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "notifySearchResult " + mSearchResultEntity);
+
     }
 
     @Override

@@ -8,22 +8,34 @@ import java.util.ArrayList;
 public class HistoryPoiItemBean {
 
     private String mItemId;
+    // POI唯一标识ID
     private String mPoiId;
+    // POI类别编码
     private String mTypeCode;
+    // POI名称
     private String mName;
+    // POI地址
     private String mAddress;
+    // POI坐标
     private GeoPoint mPoiLoc;
     private GeoPoint mNavLoc;
+    // 终点的父POIID
     private String mParent;
+    // 终点的父POI与子POI的关系类型
     private int mChildType;
+    // POI门脸朝向
     private String mTowardsAngle;
+    // 终点的楼层信息
     private String mFloorNo;
+    // 该POI有扩展信息 0x0001:标识multi_navi多到达点，强制查询POI 0x0002:标示shop_mark底商，强制查询POI
     private int mEndPoiExtension;
+    // 更新时间
     private long mUpdateTime;
-
+    // 城市编码
     private int mCityCode;
+    // 城市名称
     private String mCityName;
-
+    // 入口位置列表
     private ArrayList<GeoPoint> mEntranceList;
 
 

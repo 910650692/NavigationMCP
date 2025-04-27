@@ -13,7 +13,6 @@ import com.autonavi.gbl.data.observer.IDownloadObserver;
 import com.autonavi.gbl.data.observer.IImageObserver;
 import com.autonavi.gbl.servicemanager.ServiceMgr;
 import com.autonavi.gbl.util.errorcode.common.Service;
-import com.autonavi.gbl.util.model.ServiceInitStatus;
 import com.autonavi.gbl.util.model.SingleServiceID;
 import com.fy.navi.service.GBLCacheFilePath;
 import com.fy.navi.service.adapter.voice.VoiceAdapterCallback;
@@ -29,10 +28,11 @@ public class VoiceAdapterImpl implements VoiceApi, IDataInitObserver, IDataListO
     private static final String TAG = VoiceAdapterImpl.class.getSimpleName();
     private final Hashtable<String, VoiceAdapterCallback> callbacks;
     private final VoiceService voiceService;
-
+    HashMap<Integer, VoiceInfo> recommendVoiceList;
 
     public VoiceAdapterImpl() {
         callbacks = new Hashtable<>();
+        recommendVoiceList = new HashMap<>();
         voiceService = (VoiceService) ServiceMgr.getServiceMgrInstance().getBLService(SingleServiceID.VoiceDataSingleServiceID);
     }
     @Override
@@ -156,21 +156,19 @@ public class VoiceAdapterImpl implements VoiceApi, IDataInitObserver, IDataListO
 
     @Override
     public HashMap<Integer, VoiceInfo> getRecommendVoiceList() {
-        HashMap<Integer, VoiceInfo> voiceList = new HashMap<>();
-        ArrayList<Integer> voiceIdList = getVoiceIdList(DownLoadMode.DOWNLOAD_MODE_NET.ordinal());
-        for (int i = 0; i < voiceIdList.size(); i++) {
-            VoiceInfo voiceInfo = getVoice(DownLoadMode.DOWNLOAD_MODE_NET.ordinal(), voiceIdList.get(i));
-            if(voiceInfo != null){
-                Logger.d(TAG, "voiceInfo: " + GsonUtils.toJson(voiceInfo));
+        if(recommendVoiceList == null || recommendVoiceList.isEmpty()){
+            HashMap<Integer, VoiceInfo> voiceList = new HashMap<>();
+            ArrayList<Integer> voiceIdList = getVoiceIdList(DownLoadMode.DOWNLOAD_MODE_NET.ordinal());
+            for (int i = 0; i < voiceIdList.size(); i++) {
+                VoiceInfo voiceInfo = getVoice(DownLoadMode.DOWNLOAD_MODE_NET.ordinal(), voiceIdList.get(i));
+                if(voiceInfo != null){
+                    Logger.d(TAG, "voiceInfo: " + GsonUtils.toJson(voiceInfo));
+                    voiceList.put(voiceInfo.getId(), voiceInfo);
+                }
             }
-//            Logger.d(TAG,  "Name: " + voiceInfo.getName() + " voiceIdList: " + voiceInfo.getId());
-//            if (voiceInfo.isRecommended()){
-//                voiceList.add(voiceInfo);
-//            }
-//            voiceList.add(voiceInfo);
-            voiceList.put(voiceInfo.getId(), voiceInfo);
+            recommendVoiceList = voiceList;
         }
-        return voiceList;
+        return recommendVoiceList;
     }
 
     /**
@@ -185,7 +183,12 @@ public class VoiceAdapterImpl implements VoiceApi, IDataInitObserver, IDataListO
             return new VoiceInfo();
         }
         Voice voice =  voiceService.getVoice(downloadMode,voiceId);
-        return GsonUtils.convertToT(voice, VoiceInfo.class);
+        if(voice != null){
+            return GsonUtils.convertToT(voice, VoiceInfo.class);
+        }else{
+            Logger.e("voice is null");
+            return new VoiceInfo();
+        }
     }
 
     /**
@@ -248,6 +251,7 @@ public class VoiceAdapterImpl implements VoiceApi, IDataInitObserver, IDataListO
 
         if(Service.ErrorCodeOK == opCode){
             Logger.d(TAG, "VoiceService 初始化成功");
+            requestDataListCheck(DownLoadMode.DOWNLOAD_MODE_NET.ordinal(), "");
         } else {
             Logger.d(TAG, "VoiceService 初始化失败");
         }
@@ -257,7 +261,6 @@ public class VoiceAdapterImpl implements VoiceApi, IDataInitObserver, IDataListO
             if (callBack == null) continue;
             callBack.onInit(downLoadMode, dataType, opCode);
         }
-//        requestDataListCheck(DownLoadMode.DOWNLOAD_MODE_NET.ordinal(), "");
     }
 
     /**
@@ -286,6 +289,7 @@ public class VoiceAdapterImpl implements VoiceApi, IDataInitObserver, IDataListO
     public void onRequestDataListCheck(int downLoadMode, int dataType, int opCode) {
         Logger.d(TAG, "VoiceService onRequestDataListCheck: downLoadMode=" + downLoadMode
                 + "dataType=" + dataType + "opCode=" + opCode);
+        getRecommendVoiceList();
         if (ConvertUtils.isEmpty(callbacks)) return;
         for (VoiceAdapterCallback callBack : callbacks.values()) {
             if (callBack == null) continue;

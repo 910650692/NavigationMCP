@@ -3,29 +3,43 @@ package com.fy.navi.hmi.setting.broadcast;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
 import com.fy.navi.service.define.setting.SettingController;
+import com.fy.navi.service.define.voice.VoiceInfo;
 import com.fy.navi.service.logicpaket.setting.SettingPackage;
+import com.fy.navi.service.logicpaket.speech.ISpeechObserver;
+import com.fy.navi.service.logicpaket.speech.SpeechPackage;
+import com.fy.navi.service.logicpaket.voice.VoicePackage;
 import com.fy.navi.ui.base.BaseModel;
 
-public class SettingBroadcastModel extends BaseModel<SettingBroadcastViewModel> implements SettingPackage.SettingChangeCallback {
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
+public class SettingBroadcastModel extends BaseModel<SettingBroadcastViewModel> implements SettingPackage.SettingChangeCallback, ISpeechObserver {
 
 
     private static final String TAG = SettingBroadcastModel.class.getName();
 
     private final SettingPackage mSettingPackage;
+    private final SpeechPackage mSpeechPackage;
+    private final VoicePackage mVoicePackage;
 
     public SettingBroadcastModel() {
+        mSpeechPackage = SpeechPackage.getInstance();
         mSettingPackage = SettingPackage.getInstance();
+        mVoicePackage = VoicePackage.getInstance();
     }
 
     @Override
     public void onCreate() {
         super.onCreate();
         mSettingPackage.setSettingChangeCallback("SettingBroadcastModel",this);
+        mSpeechPackage.addObserver("SettingBroadcastModel",this);
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
+        mSpeechPackage.removeObserver("SettingBroadcastModel");
     }
 
     /**
@@ -150,5 +164,26 @@ public class SettingBroadcastModel extends BaseModel<SettingBroadcastViewModel> 
                     break;
             }
         }
+    }
+
+    @Override
+    public void onVoiceSet(int result) {
+        mViewModel.setCurrentVoice();
+    }
+
+    public List<String> getRecommendVoiceList() {
+        HashMap<Integer, VoiceInfo> voiceMap = mVoicePackage.getRecommendVoiceList();
+        List<String> mVoiceIcon = new ArrayList<>();
+        if(voiceMap != null && !voiceMap.isEmpty()){
+            List<VoiceInfo> voiceList = new ArrayList<>(voiceMap.values());
+            if(!voiceList.isEmpty()){
+                int i = 0;
+                do{
+                    mVoiceIcon.add(i < voiceList.size() - 1 ? voiceList.get(i).getImageUrl() : "");
+                    i++;
+                }while (i < 4);
+            }
+        }
+        return mVoiceIcon;
     }
 }

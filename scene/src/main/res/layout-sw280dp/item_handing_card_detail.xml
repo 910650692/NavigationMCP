@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+
+    </data>
+
+    <com.fy.navi.ui.view.SkinFrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_264"
+        android:orientation="vertical">
+
+        <include
+            android:id="@+id/cl_charge"
+            layout="@layout/item_card_charge"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <include
+            android:id="@+id/cl_gas"
+            layout="@layout/item_card_gas"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <include
+            android:id="@+id/cl_park"
+            layout="@layout/scene_navi_park_list_item"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </com.fy.navi.ui.view.SkinFrameLayout>
+</layout>

@@ -3,21 +3,34 @@ package com.fy.navi.service.define.user.usertrack;
 import com.fy.navi.service.define.bean.GeoPoint;
 
 import java.util.ArrayList;
-
+import java.util.Date;
 
 
 public class HistoryRouteItemBean {
     private String mItemId;
+    // 起点位置
     private GeoPoint mStartLoc;
+    // 终点位置
     private GeoPoint mEndLoc;
+    // 路线策略
     private int mMethod;
+    // 起点信息
     private HistoryPoiItemBean mFromPoi;
+    // 终点信息
     private HistoryPoiItemBean mToPoi;
+    // 途经点信息
     private ArrayList<HistoryPoiItemBean> mMidPoi;
+    // 更新时间，单位秒
     private long mUpdateTime;
+    // 更新时间（本地使用）
+    private Date mTime;
 
+    // 车机端只有 302 类型
     private int mType;
+    // 唯一ID
     private String mId;
+
+    private boolean mIsCompleted;
 
     public String getItemId() {
         return mItemId;
@@ -85,6 +98,22 @@ public class HistoryRouteItemBean {
 
     public int getType() {
         return mType;
+    }
+
+    public boolean getIsCompleted() {
+        return mIsCompleted;
+    }
+
+    public void setIsCompleted(final boolean isCompleted) {
+        this.mIsCompleted = isCompleted;
+    }
+
+    public Date getTime() {
+        return mTime;
+    }
+
+    public void setTime(final Date time) {
+        this.mTime = time;
     }
 
     public void setType(final int type) {

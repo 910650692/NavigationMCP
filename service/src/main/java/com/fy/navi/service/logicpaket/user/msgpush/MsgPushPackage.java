@@ -7,6 +7,7 @@ import com.fy.navi.service.define.route.RouteMsgPushInfo;
 import com.fy.navi.service.define.user.msgpush.MsgPushInfo;
 import com.fy.navi.service.define.user.msgpush.MsgPushRequestInfo;
 import com.fy.navi.service.define.user.msgpush.MsgPushResponseInfo;
+import com.fy.navi.service.logicpaket.user.account.AccountPackage;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
@@ -109,6 +110,16 @@ public class MsgPushPackage implements MsgPushAdapterCallback{
         for (MsgPushCallBack callBack : callBacks.values()) {
             callBack.notifyMobileLinkPushMessage(msg);
         }
+    }
+
+    /**
+     * 手机端点击断开连接消息
+     *
+     * @param status 1：互联 0：断开
+     */
+    @Override
+    public void notifyDisconnectFromMobileMessage(int status) {
+        if (status == 1) AccountPackage.getInstance().accountLogoutRequest();
     }
 
     @Override

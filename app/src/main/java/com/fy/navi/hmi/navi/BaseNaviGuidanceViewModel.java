@@ -31,6 +31,7 @@ import com.fy.navi.service.define.navi.SapaInfoEntity;
 import com.fy.navi.service.define.navi.SpeedOverallEntity;
 import com.fy.navi.service.define.route.RouteRequestParam;
 import com.fy.navi.service.define.utils.NumberUtils;
+import com.fy.navi.service.logicpaket.navi.NaviPackage;
 import com.fy.navi.service.logicpaket.route.RoutePackage;
 import com.fy.navi.ui.action.Action;
 import com.fy.navi.ui.base.BaseViewModel;
@@ -51,7 +52,7 @@ public class BaseNaviGuidanceViewModel extends
     private static final String TAG = MapDefaultFinalTag.NAVI_HMI_TAG;
     public ObservableField<Boolean> mNaviLanesVisibility;//车道线
     public ObservableField<Boolean> mNaviViaListVisibility;//途径点列表
-    public ObservableField<Boolean> mNaviParkingListVisibility;//停车场列表
+    public ObservableField<Boolean> mNaviControlVisibilityMore;//control more
     public ObservableField<Boolean> mNaviViaInfoVisibility;//显示途径点信息
     public ObservableField<Boolean> mNaviLastMileVisibility;//最后一公里
     public ObservableField<Boolean> mNaviRouteNameVisibility;//当前路名
@@ -94,7 +95,7 @@ public class BaseNaviGuidanceViewModel extends
         mNaviParallelVisibility = new ObservableField<>(false);
         mNaviLanesVisibility = new ObservableField<>(false);
         mNaviViaListVisibility = new ObservableField<>(false);
-        mNaviParkingListVisibility = new ObservableField<>(false);
+        mNaviControlVisibilityMore = new ObservableField<>(false);
         mNaviPreferenceVisibility = new ObservableField<>(false);
         mNaviTmcVisibility = new ObservableField<>(true);
         mNaviEtaVisibility = new ObservableField<>(true);
@@ -174,12 +175,15 @@ public class BaseNaviGuidanceViewModel extends
                 Logger.i(TAG, "路口大图展示状态：" + isVisible);
                 mView.onCrossImageInfo(isVisible);
                 mNaviCrossImageVisibility.set(isVisible);
+                mView.updateViewRadius();
                 break;
             case NAVI_SCENE_ETA:
                 mNaviEtaVisibility.set(isVisible);
+                mView.updateViewRadius();
                 break;
             case NAVI_SCENE_LANES:
                 mNaviLanesVisibility.set(isVisible);
+                mView.updateViewRadius();
                 break;
             case NAVI_SCENE_TBT:
                 Logger.i(TAG, "TBT面板不会被隐藏");
@@ -194,8 +198,8 @@ public class BaseNaviGuidanceViewModel extends
             case NAVI_SCENE_PARALLEL:
                 mNaviParallelVisibility.set(isVisible);
                 break;
-            case NAVI_SCENE_PARK_LIST:
-                mNaviParkingListVisibility.set(isVisible);
+            case NAVI_SCENE_CONTROL_MORE:
+                mNaviControlVisibilityMore.set(isVisible);
                 break;
             case NAVI_SCENE_CONTROL:
                 mNaviControlVisibility.set(isVisible);
@@ -211,9 +215,11 @@ public class BaseNaviGuidanceViewModel extends
                 break;
             case NAVI_SCENE_TMC:
                 mNaviTmcVisibility.set(isVisible);
+                mView.updateViewRadius();
                 break;
             case NAVI_SCENE_VIA_DETAIL_INFO:
                 mNaviViaInfoVisibility.set(isVisible);
+                mView.updateViewRadius();
                 break;
             case NAVI_VIA_ARRIVED_POP:
                 mNaviViaArrivedPopVisibility.set(isVisible);
@@ -228,7 +234,8 @@ public class BaseNaviGuidanceViewModel extends
                 mNaviChargeTipVisibility.set(isVisible);
                 break;
             case NAVI_CONTINUE:
-                mNaviContinueVisibility.set(isVisible);
+                Logger.i(TAG, "NAVI_CONTINUE固定全览：" + NaviPackage.getInstance().getFixedOverViewStatus() + " isVisible:" + isVisible);
+                mNaviContinueVisibility.set(!NaviPackage.getInstance().getFixedOverViewStatus() && isVisible);
                 break;
             case NAVI_SUSPEND_CARD:
                 mHandingCardVisibility.set(isVisible);
@@ -362,7 +369,8 @@ public class BaseNaviGuidanceViewModel extends
      * @param currentImersiveStatus current immersive status
      */
     public void onImmersiveStatusChange(final ImersiveStatus currentImersiveStatus) {
-        mNaviRouteNameVisibility.set(currentImersiveStatus == ImersiveStatus.IMERSIVE);
+        Logger.i(TAG, "onImmersiveStatusChange固定全览：" + NaviPackage.getInstance().getFixedOverViewStatus() + " currentImersiveStatus:" + currentImersiveStatus);
+        mNaviRouteNameVisibility.set(NaviPackage.getInstance().getFixedOverViewStatus() || currentImersiveStatus == ImersiveStatus.IMERSIVE);
         mView.onImmersiveStatusChange(currentImersiveStatus);
     }
 
@@ -382,6 +390,15 @@ public class BaseNaviGuidanceViewModel extends
         NaviSceneManager.getInstance().notifySceneStateChange(
                 INaviSceneEvent.SceneStateChangeType.SceneShowState,
                 NaviSceneId.NAVI_SCENE_PREFERENCE);
+    }
+
+    /**
+     * 显示控制条更多页面
+     */
+    public void showNaviControlMoreScene() {
+        NaviSceneManager.getInstance().notifySceneStateChange(
+                INaviSceneEvent.SceneStateChangeType.SceneShowState,
+                NaviSceneId.NAVI_SCENE_CONTROL_MORE);
     }
 
     /**
@@ -508,6 +525,15 @@ public class BaseNaviGuidanceViewModel extends
         }, NumberUtils.NUM_500);
     }
 
+    /**
+     * 立即更新via列表
+     */
+    public void updateViaListImm() {
+        final List<NaviViaEntity> viaList = mModel.getViaList();
+        if (!ConvertUtils.isEmpty(viaList)) {
+            mView.updateViaListState(viaList);
+        }
+    }
     public void showDeleteAllTip() {
         new ChargeStationDeletTipDialog(mView.getActivity(), new IBaseDialogClickListener() {
             @Override

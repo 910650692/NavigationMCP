@@ -2,7 +2,12 @@ package com.fy.navi.hmi.map;
 
 import android.os.CountDownTimer;
 
+import com.android.utils.ConvertUtils;
+import com.android.utils.DeviceUtils;
 import com.android.utils.log.Logger;
+import com.fy.navi.service.AppContext;
+import com.fy.navi.service.adapter.position.VehicleSpeedController;
+import com.fy.navi.service.define.position.ISpeedCallback;
 
 /**
  * Author: QiuYaWei
@@ -10,7 +15,7 @@ import com.android.utils.log.Logger;
  * Description: [车速监测何时进入巡航，条件：车速大于15Km/h且超过10s]
  */
 // 车速监控类
-public class SpeedMonitor {
+public class SpeedMonitor implements ISpeedCallback {
     private static final String TAG = "SpeedMonitor";
     // 标记是否正在计时
     private boolean isTiming = false;
@@ -18,6 +23,7 @@ public class SpeedMonitor {
     private static final long INTERVAL_TIME = 1000L;
     private static final long TOTAL_TIME = 15*1000L;
     private CallBack callBack;
+    private VehicleSpeedController mSpeedController;
     private CountDownTimer countDownTimer = new CountDownTimer(TOTAL_TIME, INTERVAL_TIME) {
         @Override
         public void onTick(long millisUntilFinished) {
@@ -34,6 +40,19 @@ public class SpeedMonitor {
         }
     };
 
+    public SpeedMonitor() {
+
+    }
+
+    public void registerSpeedCallBack() {
+        if (DeviceUtils.isCar(AppContext.getInstance().getMContext())) {
+            mSpeedController = new VehicleSpeedController(AppContext.getInstance().getMContext(), this);
+            mSpeedController.registerCallback();
+        } else {
+            Logger.e(TAG, "PAD无法使用此功能！");
+        }
+    }
+
     public void registerCallBack(CallBack callBack) {
         this.callBack = callBack;
     }
@@ -43,7 +62,7 @@ public class SpeedMonitor {
     }
 
     // 处理车速更新的方法 speed单位 km/h
-    public void updateSpeed(float speed) {
+    private void updateSpeed(float speed) {
         Logger.i(TAG, "updateSpeed:" + speed);
         if (speed >= SPEED_THRESHOLD) {
             if (!isTiming) {
@@ -58,6 +77,11 @@ public class SpeedMonitor {
         }
     }
 
+    @Override
+    public void onSpeedChanged(float speed) {
+        updateSpeed(speed);
+    }
+
     public interface CallBack {
         void startCruise();
     }
@@ -67,6 +91,9 @@ public class SpeedMonitor {
             isTiming = false;
             countDownTimer.cancel();
             removeCallBack();
+        }
+        if (!ConvertUtils.isNull(mSpeedController)) {
+            mSpeedController.unregisterCallback();
         }
     }
 }

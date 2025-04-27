@@ -17,6 +17,7 @@ import com.fy.navi.service.AppContext;
 import com.fy.navi.service.define.code.UserDataCode;
 import com.fy.navi.service.define.search.PoiInfoEntity;
 import com.fy.navi.service.greendao.CommonManager;
+import com.fy.navi.service.logicpaket.activate.ActivatePackage;
 import com.fy.navi.service.logicpaket.engine.EnginePackage;
 import com.fy.navi.service.logicpaket.engine.IEngineObserver;
 import com.fy.navi.ui.base.BaseModel;
@@ -34,7 +35,7 @@ public class StartupModel extends BaseModel<BaseStartupViewModel>
     private IEngineObserver mEngineObserver = new IEngineObserver() {
         @Override
         public void onInitEngineSuccess() {
-            Logger.d(TAG, "激活初始化成功，开始其余引擎初始化");
+            Logger.d(TAG, "引擎初始化成功，开始其余模块初始化");
             Intent intent = new Intent(AppContext.getInstance().getMContext(), NaviService.class);
             intent.putExtra(NaviService.START_APPLICATION_KEY, true);
             int intentPage = mViewModel.getIntentPage();
@@ -55,11 +56,9 @@ public class StartupModel extends BaseModel<BaseStartupViewModel>
 
         @Override
         public void onInitEngineFail(final int code, final String msg) {
-            Logger.e(TAG, "激活初始化失败，Error Code = " + code + "; Error Massage = " + msg);
-            if (!ConvertUtils.equals(10007, code)) {
-                Logger.e(TAG, "关闭应用");
-                mViewModel.finishStartUp();
-            }
+            Logger.e(TAG, "引擎初始化失败，Error Code = " + code + "; Error Massage = " + msg);
+            Logger.e(TAG, "关闭应用");
+            mViewModel.finishStartUp();
         }
     };
 
@@ -95,7 +94,9 @@ public class StartupModel extends BaseModel<BaseStartupViewModel>
         if (NaviService.isMapInited) {
             mViewModel.startMapActivity();
         } else {
-            EnginePackage.getInstance().initEngine();
+            EnginePackage.getInstance().initBaseLibs();//内部失败走initFailed回调结束应用
+            //ActivatePackage.getInstance().startActivate();
+            EnginePackage.getInstance().initBL();
         }
     }
 

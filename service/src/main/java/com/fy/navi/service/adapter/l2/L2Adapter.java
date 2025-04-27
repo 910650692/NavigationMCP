@@ -3,13 +3,14 @@ package com.fy.navi.service.adapter.l2;
 import android.util.Log;
 
 import com.android.utils.ConvertUtils;
-import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
 import com.autonavi.gbl.common.path.model.LinkType;
 import com.autonavi.gbl.common.path.option.LinkInfo;
 import com.autonavi.gbl.common.path.option.PathInfo;
 import com.autonavi.gbl.common.path.option.SegmentInfo;
 import com.autonavi.gbl.guide.model.ManeuverIconID;
+import com.fy.navi.service.adapter.cruise.CruiseAdapter;
+import com.fy.navi.service.adapter.cruise.CruiseObserver;
 import com.fy.navi.service.adapter.navi.GuidanceObserver;
 import com.fy.navi.service.adapter.navi.NaviAdapter;
 import com.fy.navi.service.adapter.navi.NaviConstant;
@@ -19,6 +20,7 @@ import com.fy.navi.service.adapter.position.IPositionAdapterCallback;
 import com.fy.navi.service.adapter.position.PositionAdapter;
 import com.fy.navi.service.adapter.route.RouteAdapter;
 import com.fy.navi.service.define.bean.GeoPoint;
+import com.fy.navi.service.define.cruise.CruiseInfoEntity;
 import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.navi.CameraInfoEntity;
 import com.fy.navi.service.define.navi.L2NaviBean;
@@ -85,6 +87,7 @@ public class L2Adapter {
         NaviAdapter.getInstance().registerObserver(getClass().getSimpleName(), mGuidanceObserver);
         NavistatusAdapter.getInstance().registerCallback(mINaviStatusCallback);
         PositionAdapter.getInstance().registerCallback(mIPositionAdapterCallback);
+        CruiseAdapter.getInstance().registerObserver(TAG, mCruiseObserver);
     }
 
     /**
@@ -298,9 +301,9 @@ public class L2Adapter {
             intervalCameraDataBean.setIntervalCameraEndPointDist(speedEntity.getRemainDistance());
             ArrayList<Short> speedList = speedEntity.getLimitSpeedList();
             short speed = 0;
-            // 获取第一个不为0的限速值
+            // 获取第一个有效值
             for (Short i : speedList) {
-                if (i != 0) {
+                if (i != 0 && i != 0xFF) {
                     speed = i;
                     break;
                 }
@@ -416,6 +419,89 @@ public class L2Adapter {
             }
             vpb.setMainSideRots(entity.getFlag());
             Logger.i(TAG, "主辅路", vpb.getMainSideRots());
+        }
+    };
+
+    private final CruiseObserver mCruiseObserver = new CruiseObserver() {
+        @Override
+        public void onCruiseLaneInfo(boolean isShowLane, LaneInfoEntity laneInfo) {
+        }
+
+        @Override
+        public void onShowCruiseCameraExt(CruiseInfoEntity cruiseInfoEntity) {
+            L2NaviBean.LimitCameraDataBean limitCameraData = l2NaviBean.getLimitCameraData();
+            if (cruiseInfoEntity == null) {
+                Logger.i(TAG, "cruiseInfoEntity null");
+                limitCameraData.setSpdLmtEleEyeSpeedValue(0xFF);
+                limitCameraData.setSpdLmtEleEyeDist(-1);
+                return;
+            }
+            if (cruiseInfoEntity.getSpeed() == null) {
+                Logger.i(TAG, "speed null");
+                limitCameraData.setSpdLmtEleEyeSpeedValue(0xFF);
+                limitCameraData.setSpdLmtEleEyeDist(-1);
+                return;
+            }
+            short speed = 0;
+            // 获取第一个有效值
+            for (Short i : cruiseInfoEntity.getSpeed()) {
+                if (i != 0 && i != 0xFF) {
+                    speed = i;
+                    break;
+                }
+            }
+            if (speed == 0) {
+                Logger.i(TAG, "speed == 0");
+                limitCameraData.setSpdLmtEleEyeSpeedValue(0xFF);
+                limitCameraData.setSpdLmtEleEyeDist(-1);
+                return;
+            }
+            if (cruiseInfoEntity.distance > 2000) { // 超过2km无需返回
+                Logger.i(TAG, "over 2km");
+                limitCameraData.setSpdLmtEleEyeSpeedValue(0xFF);
+                limitCameraData.setSpdLmtEleEyeDist(-1);
+                return;
+            }
+            limitCameraData.setSpdLmtEleEyeSpeedValue(speed);
+            limitCameraData.setSpdLmtEleEyeDist(cruiseInfoEntity.distance);
+            Logger.i(TAG, "巡航电子眼" + limitCameraData);
+        }
+
+        @Override
+        public void onUpdateCruiseInfo(CruiseInfoEntity cruiseInfoEntity) {
+            L2NaviBean.VehiclePositionBean vehiclePosition = l2NaviBean.getVehiclePosition();
+            if (cruiseInfoEntity == null) {
+                Logger.i(TAG, "cruiseInfoEntity null");
+                vehiclePosition.setRoadClass(0xFF);
+                return;
+            }
+            vehiclePosition.setRoadClass(cruiseInfoEntity.roadClass);
+            Logger.i(TAG, "巡航道路等级", cruiseInfoEntity.roadClass);
+        }
+
+        @Override
+        public void setConfigKeyRoadWarn(boolean roadWarn) {
+
+        }
+
+        @Override
+        public void setConfigKeySafeBroadcast(boolean safeBroadcast) {
+
+        }
+
+        @Override
+        public void setConfigKeyDriveWarn(boolean driveWarn) {
+
+        }
+
+        @Override
+        public void onPlayTTS(SoundInfoEntity info) {
+
+        }
+
+        @Override
+        public void onNaviStop() {
+
         }
     };
 

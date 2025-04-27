@@ -5,9 +5,6 @@ import android.annotation.SuppressLint;
 import androidx.databinding.ObservableField;
 
 import com.android.utils.ConvertUtils;
-import com.android.utils.NetWorkUtils;
-import com.android.utils.ResourceUtils;
-import com.android.utils.ToastUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
 import com.fy.navi.burypoint.anno.HookMethod;
@@ -15,30 +12,21 @@ import com.fy.navi.burypoint.bean.BuryProperty;
 import com.fy.navi.burypoint.constant.BuryConstant;
 import com.fy.navi.burypoint.controller.BuryPointController;
 import com.fy.navi.scene.BaseSceneModel;
-import com.fy.navi.scene.R;
 import com.fy.navi.scene.api.navi.ISceneNaviControl;
 import com.fy.navi.scene.impl.imersive.ImersiveStatus;
 import com.fy.navi.scene.impl.imersive.ImmersiveStatusScene;
 import com.fy.navi.scene.ui.navi.SceneNaviControlView;
 import com.fy.navi.scene.ui.navi.manager.INaviSceneEvent;
-import com.fy.navi.scene.ui.navi.manager.NaviSceneId;
 import com.fy.navi.scene.ui.navi.manager.NaviSceneManager;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.adapter.navi.NaviConstant;
 import com.fy.navi.service.define.map.MapMode;
 import com.fy.navi.service.define.map.MapType;
-import com.fy.navi.service.define.route.RoutePriorityType;
-import com.fy.navi.service.define.route.RouteRequestParam;
-import com.fy.navi.service.define.route.RouteWayID;
 import com.fy.navi.service.define.utils.NumberUtils;
-import com.fy.navi.service.logicpaket.layer.LayerPackage;
 import com.fy.navi.service.logicpaket.map.MapPackage;
 import com.fy.navi.service.logicpaket.navi.NaviPackage;
 import com.fy.navi.service.logicpaket.navi.OpenApiHelper;
 import com.fy.navi.service.logicpaket.route.RoutePackage;
-import com.fy.navi.service.logicpaket.search.SearchPackage;
-import com.fy.navi.service.logicpaket.setting.SettingPackage;
-import com.fy.navi.service.logicpaket.speech.SpeechPackage;
 
 import java.util.concurrent.ScheduledFuture;
 
@@ -48,16 +36,11 @@ public class SceneNaviControlImpl extends BaseSceneModel<SceneNaviControlView> i
     private final NaviPackage mNaviPackage;
     private MapPackage mMapPackage;
     private RoutePackage mRoutePackage;
-    private SettingPackage mSettingPackage;
     private ImmersiveStatusScene mImmersiveStatusScene;
     private ScheduledFuture mScheduledFuture;
     private int mTimes = NumberUtils.NUM_8;
-    public ObservableField<Boolean> mControlVisible;
-    public ObservableField<Boolean> mGroupOneVisible;
-    public ObservableField<Boolean> mGroupTwoVisible;
     public ObservableField<Boolean> mGroupMoreSetupVisible;
 
-    private long mLastClickTime;
     private boolean mIsMute;
     private int mVehicleType;
 
@@ -66,13 +49,8 @@ public class SceneNaviControlImpl extends BaseSceneModel<SceneNaviControlView> i
         mNaviPackage = NaviPackage.getInstance();
         mRoutePackage = RoutePackage.getInstance();
         mMapPackage = MapPackage.getInstance();
-        mSettingPackage = SettingPackage.getInstance();
-        mControlVisible = new ObservableField<>(true);
-        mGroupOneVisible = new ObservableField<>(true);
-        mGroupTwoVisible = new ObservableField<>(false);
         mGroupMoreSetupVisible = new ObservableField<>(true);
         mImmersiveStatusScene = ImmersiveStatusScene.getInstance();
-        mLastClickTime = System.currentTimeMillis();
     }
 
     @SuppressLint("WrongConstant")
@@ -118,8 +96,7 @@ public class SceneNaviControlImpl extends BaseSceneModel<SceneNaviControlView> i
 
     @Override
     public void naviContinue() {
-        Logger.i(TAG, "naviContinue", "showPreview status : " +
-                mNaviPackage.getFixedOverViewStatus());
+        Logger.i(TAG, "naviContinue", "showPreview status : " + mNaviPackage.getFixedOverViewStatus());
     }
 
     @Override
@@ -127,9 +104,9 @@ public class SceneNaviControlImpl extends BaseSceneModel<SceneNaviControlView> i
         Logger.i(TAG, "moreSetup");
         initTimer();
         setImmersiveStatus(ImersiveStatus.TOUCH);
-        NaviSceneManager.getInstance().showControlMoreSetup();
-        mGroupOneVisible.set(false);
-        mGroupTwoVisible.set(true);
+        if(mCallBack != null){
+            mCallBack.skipNaviControlMoreScene();
+        }
     }
 
     /**
@@ -224,82 +201,10 @@ public class SceneNaviControlImpl extends BaseSceneModel<SceneNaviControlView> i
     }
 
     @Override
-    @HookMethod(eventName = BuryConstant.EventName.AMAP_NAVI_MAP_MANUAL_REFRESHMAP)
-    public void refreshRoute() {
-        Logger.i(TAG, "refreshRoute");
-        long currentTime = System.currentTimeMillis();
-        boolean isCanRefreshRoute = currentTime - mLastClickTime > NumberUtils.NUM_2000;
-        if (!isCanRefreshRoute) {
-            ToastUtils.Companion.getInstance().showCustomToastView(
-                    ResourceUtils.Companion.getInstance().getString(R.string.current_newest_path));
-            return;
-        }
-        mLastClickTime = currentTime;
-        initTimer();
-        requestReRoute();
-    }
-
-    /**
-     * 网络状态导致的刷新
-     */
-    public void refreshRouteCauseNet() {
-        boolean isCanRefresh = TimerHelper.isCanRefreshRoute();
-        if (!isCanRefresh) {
-            boolean currentNetStatus = Boolean.TRUE.equals(NetWorkUtils.Companion.getInstance().
-                    checkNetwork());
-            ThreadManager.getInstance().postDelay(new Runnable() {
-                @Override
-                public void run() {
-                    boolean netStatus = Boolean.TRUE.equals(NetWorkUtils.Companion.getInstance().
-                            checkNetwork());
-                    if (currentNetStatus != netStatus) {
-                        requestReRoute();
-                    }
-                }
-            }, NumberUtils.NUM_3000);
-            return;
-        }
-        requestReRoute();
-    }
-
-    /**
-     * 请求路线刷新
-     */
-    private void requestReRoute() {
-        final RouteRequestParam param = new RouteRequestParam();
-        param.setMMapTypeId(mMapTypeId);
-        param.setMRouteWay(RouteWayID.ROUTE_WAY_REFRESH);
-        param.setMRoutePriorityType(RoutePriorityType.ROUTE_TYPE_MANUAL_REFRESH);
-        // 算路那边在线刷新失败后会自动调用离线刷新，所以这边就调用一个接口就好
-        mRoutePackage.requestRoute(param);
-    }
+    public void refreshRoute() {}
 
     @Override
-    public void naviBroadcast() {
-        Logger.i(TAG, "naviBroadcast");
-        setImmersiveStatus(ImersiveStatus.TOUCH);
-        initTimer();
-        switchBroadcastMode();
-    }
-
-    /*** 切换播报模式***/
-    public void switchBroadcastMode() {
-        int broadcastMode = mSettingPackage.getConfigKeyBroadcastMode();
-        broadcastMode = switch (broadcastMode) {
-            case NaviConstant.BroadcastType.BROADCAST_DETAIL ->
-                    NaviConstant.BroadcastType.BROADCAST_CONCISE;
-            case NaviConstant.BroadcastType.BROADCAST_CONCISE ->
-                    NaviConstant.BroadcastType.BROADCAST_MINIMALISM;
-            default -> NaviConstant.BroadcastType.BROADCAST_DETAIL;
-        };
-        mSettingPackage.setConfigKeyBroadcastMode(broadcastMode);
-        broadcastModeSwitchTts(broadcastMode);
-        mScreenView.updateBroadcast(broadcastMode);
-        Logger.i(TAG, "updateBroadcast：" + broadcastMode);
-
-        //For Bury Point
-        sendBroadcastModeTts(broadcastMode);
-    }
+    public void naviBroadcast() {}
 
     @HookMethod(eventName = BuryConstant.EventName.AMAP_NAVI_VOICE_SELECT)
     private void sendBroadcastModeTts(int broadcastMode) {
@@ -315,127 +220,17 @@ public class SceneNaviControlImpl extends BaseSceneModel<SceneNaviControlView> i
         BuryPointController.getInstance().setBuryProps(properties);
     }
 
-    private void broadcastModeSwitchTts(int broadcastMode) {
-        String tts = switch (broadcastMode) {
-            case NaviConstant.BroadcastType.BROADCAST_CONCISE ->
-                    String.format(ResourceUtils.Companion.getInstance().
-                                    getString(R.string.navi_broadcast_switch),
-                            ResourceUtils.Companion.getInstance().
-                                    getString(R.string.navi_broadcast_concise));
-            case NaviConstant.BroadcastType.BROADCAST_MINIMALISM ->
-                    String.format(ResourceUtils.Companion.getInstance().
-                                    getString(R.string.navi_broadcast_switch),
-                            ResourceUtils.Companion.getInstance().
-                                    getString(R.string.navi_broadcast_minimalism));
-            default -> String.format(ResourceUtils.Companion.getInstance().
-                            getString(R.string.navi_broadcast_switch),
-                    ResourceUtils.Companion.getInstance().
-                            getString(R.string.navi_broadcast_detail));
-        };
-        SpeechPackage.getInstance().synthesize(tts);
-    }
+    @Override
+    public void routePreference() {}
 
     @Override
-    public void routePreference() {
-        Logger.i(TAG, "routePreference");
-        setImmersiveStatus(ImersiveStatus.TOUCH);
-        if (mCallBack != null) {
-            cancelTimer();
-            mCallBack.skipNaviPreferenceScene();
-        }
-    }
+    public void carHead() {}
 
     @Override
-    public void carHead() {
-        Logger.i(TAG, "carHead");
-        setImmersiveStatus(ImersiveStatus.TOUCH);
-        initTimer();
-        MapMode currentMapMode = mMapPackage.getCurrentMapMode(mMapTypeId);
-        boolean result = mMapPackage.switchMapMode(mMapTypeId);
-        MapMode switchedMapMode = mMapPackage.getCurrentMapMode(mMapTypeId);
-        //如果切换前后模式一样，没有切换成功发toast提示
-        if (!result || currentMapMode == switchedMapMode) {
-            String failModeText = mScreenView.updateCarModel(switchedMapMode);
-            ToastUtils.Companion.getInstance().showCustomToastView(String.
-                    format(ResourceUtils.Companion.getInstance().
-                            getString(R.string.navi_map_mode_switch_fail), failModeText));
-            return;
-        }
-        mScreenView.updateCarModel(switchedMapMode);
-    }
+    public void naviSetting() {}
 
     @Override
-    public void naviSetting() {
-        Logger.i(TAG, "naviSetting");
-        if (mCallBack != null) {
-            cancelTimer();
-            mCallBack.skipSettingFragment();
-        }
-    }
-
-    @Override
-    public void alongSearch(final int index) {
-        Logger.i(TAG, "alongSearch index:" + index + " mVehicleType:" + mVehicleType);
-        setImmersiveStatus(ImersiveStatus.TOUCH);
-        switch (index) {
-            case 0:
-                if (mVehicleType == 1) {//电车
-                    mCallBack.goSearchView(ResourceUtils.Companion.getInstance().
-                            getString(R.string.st_quick_search_charge), OpenApiHelper.ALONG_WAY);
-                } else {
-                    mCallBack.goSearchView(ResourceUtils.Companion.getInstance().
-                            getString(R.string.st_quick_search_station), OpenApiHelper.ALONG_WAY);
-                }
-                break;
-            case 1:
-                if (mVehicleType == 1 || mVehicleType == 0) {//电车-油车
-                    mCallBack.goSearchView(ResourceUtils.Companion.getInstance().
-                            getString(R.string.st_quick_search_lavatory), OpenApiHelper.ALONG_WAY);
-                } else {
-                    mCallBack.goSearchView(ResourceUtils.Companion.getInstance().
-                            getString(R.string.st_quick_search_charge), OpenApiHelper.ALONG_WAY);
-                }
-                break;
-            case 2:
-                if (mVehicleType == 1 || mVehicleType == 0) {
-                    mCallBack.goSearchView(ResourceUtils.Companion.getInstance().
-                            getString(R.string.st_quick_search_parking), OpenApiHelper.ALONG_WAY);
-                } else {
-                    mCallBack.goSearchView(ResourceUtils.Companion.getInstance().
-                            getString(R.string.st_quick_search_lavatory), OpenApiHelper.ALONG_WAY);
-                }
-                break;
-            case 3:
-                if (mVehicleType == 1 || mVehicleType == 0) {
-                    mCallBack.goSearchView(ResourceUtils.Companion.getInstance().
-                            getString(R.string.navi_along_service), OpenApiHelper.ALONG_WAY);
-                } else {
-                    mCallBack.goSearchView(ResourceUtils.Companion.getInstance().
-                            getString(R.string.st_quick_search_parking), OpenApiHelper.ALONG_WAY);
-                }
-                break;
-            case 4:
-                mCallBack.goAlongWayList();
-                break;
-            default:
-                break;
-        }
-    }
-
-    @Override
-    public ObservableField<Boolean> getControlField() {
-        return mControlVisible;
-    }
-
-    @Override
-    public ObservableField<Boolean> getGroupOneField() {
-        return mGroupOneVisible;
-    }
-
-    @Override
-    public ObservableField<Boolean> getGroupTwoField() {
-        return mGroupTwoVisible;
-    }
+    public void alongSearch(final int index) {}
 
     @Override
     public ObservableField<Boolean> getGroupMoreSetupField() {
@@ -483,23 +278,15 @@ public class SceneNaviControlImpl extends BaseSceneModel<SceneNaviControlView> i
      */
     @Override
     public void showMain() {
-        NaviSceneManager.getInstance().notifySceneReset("showMain");
-        mControlVisible.set(true);
-        mGroupOneVisible.set(true);
-        mGroupTwoVisible.set(false);
+        NaviSceneManager.getInstance().notifySceneReset(true);
         isShowMoreSetup(true);
         mScreenView.updateOverview(mNaviPackage.getFixedOverViewStatus() ?
                 NaviConstant.OverviewType.OVERVIEW_FIXED :
                 NaviConstant.OverviewType.OVERVIEW_DEFAULT);
         updateVariationVoice();
-        final int broadcastMode = mSettingPackage.getConfigKeyBroadcastMode();
-        mScreenView.updateBroadcast(broadcastMode);
-        final MapMode currentMapMode = mMapPackage.getCurrentMapMode(mMapTypeId);
-        mScreenView.updateCarModel(currentMapMode);
         Logger.i(TAG, " initControlState isFixedOverview：" +
                 mNaviPackage.getFixedOverViewStatus() + ",isPreViewShowing：" +
-                mNaviPackage.getPreviewStatus() +
-                ",broadcastMode：" + broadcastMode + ",MapMode：" + currentMapMode);
+                mNaviPackage.getPreviewStatus());
     }
 
     /**

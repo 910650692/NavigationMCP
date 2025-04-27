@@ -66,7 +66,7 @@
         <com.fy.navi.ui.view.SkinConstraintLayout
             android:id="@+id/crl_poi_des"
             android:layout_width="@dimen/dp_0"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/dp_124"
             android:layout_marginStart="@dimen/dp_24"
             android:layout_marginTop="@dimen/dp_22"
             android:layout_marginEnd="@dimen/dp_22"
@@ -78,7 +78,8 @@
 
             <com.fy.navi.ui.view.SkinTextView
                 android:id="@+id/poi_name"
-                android:layout_width="@dimen/dp_0"
+                android:layout_width="match_parent"
+                android:maxWidth="@dimen/dp_638"
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
                 android:maxLines="1"
@@ -94,7 +95,7 @@
 
             <com.fy.navi.ui.view.SkinTextView
                 android:id="@+id/poi_distance"
-                android:layout_width="@dimen/dp_0"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_14"
                 android:text="@{poiBean.distance}"

@@ -1,6 +1,10 @@
 package com.fy.navi.service.adapter.user.account;
 
 
+import android.accounts.Account;
+
+import com.fy.navi.service.define.user.account.AccessTokenParam;
+
 public interface IAccountApi {
 
     /**
@@ -92,5 +96,20 @@ public interface IAccountApi {
      * @return 错误码 0：成功 其他：失败
      */
     int accountUnRegisterRequest();
+
+    /**
+     * 获取账户accessToken
+     * @param param 详细说明见AccessTokenParam
+     * @return accessToken 获取失败返回空串
+     */
+    String getAccessToken(final AccessTokenParam param);
+
+    /**
+     * 获取idpUserId
+     * @param availableAccount 账户对象
+     * @param key 账户信息的key值
+     * @return userId
+     */
+    String getIdpUserId(final Account availableAccount, final String key);
 
 }

@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="equipmentInfo"
+            type="com.fy.navi.service.define.search.ChargeEquipmentInfo" />
+    </data>
+
+    <com.fy.navi.ui.view.SkinConstraintLayout
+        android:id="@+id/equipment_item"
+        android:layout_width="@dimen/dp_348"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_20"
+        android:background="@drawable/bg_charge_price_item">
+
+        <com.fy.navi.ui.view.SkinTextView
+            android:id="@+id/park_no"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_20"
+            android:gravity="center"
+            android:text="@{@string/charge_equipment_pack_no(equipmentInfo.getParkNo)}"
+            android:textSize="@dimen/sp_46"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="车位号:A34" />
+
+        <com.fy.navi.ui.view.SkinLinearLayout
+            android:id="@+id/equipment_status"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_12"
+            android:gravity="center"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/park_no">
+
+            <com.fy.navi.ui.view.SkinTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/common_item_block_bg"
+                android:paddingVertical="@dimen/dp_7"
+                android:paddingHorizontal="@dimen/dp_12"
+                android:gravity="center"
+                android:text="@{equipmentInfo.getChargeType == 0 ? @string/charge_title_fast : @string/charge_title_slow}"
+                android:textColor="@color/card_quick_color"
+                android:textSize="@dimen/sp_32"
+                tools:text="快" />
+
+            <com.fy.navi.ui.view.SkinTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingVertical="@dimen/dp_7"
+                android:paddingHorizontal="@dimen/dp_12"
+                android:layout_marginLeft="@dimen/dp_12"
+                android:background="@drawable/common_item_block_bg"
+                android:gravity="center"
+                android:paddingLeft="@dimen/dp_12"
+                android:paddingRight="@dimen/dp_12"
+                android:text="@string/charge_equipment_status"
+                android:textSize="@dimen/sp_32" />
+        </com.fy.navi.ui.view.SkinLinearLayout>
+
+        <com.fy.navi.ui.view.SkinButton
+            android:id="@+id/charge_reservation_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_equipment_item"
+            android:gravity="center"
+            android:text="@string/charge_appointment"
+            android:layout_marginTop="@dimen/dp_27"
+            android:paddingVertical="@dimen/dp_7"
+            android:textColor="@color/charge_reservation_button_color"
+            android:textSize="@dimen/sp_38"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/equipment_status" />
+    </com.fy.navi.ui.view.SkinConstraintLayout>
+</layout>

@@ -28,18 +28,17 @@ public final class EngineAdapter {
     }
 
     /**
-     * 添加激活观察者
-     * @param observer ActivateObserver
+     * 初始化BaseLibs
      */
-    public void addActivateObserver(final ActivateObserver observer){
-        mIEngineApi.addActivateObserver(observer);
+    public void initBaseLibs() {
+        mIEngineApi.initBaseLibs();
     }
 
     /**
-     * 初始化引擎
+     * 初始化BL
      */
-    public void initEngine() {
-        mIEngineApi.initEngine();
+    public void initBL() {
+        mIEngineApi.initBL();
     }
 
     /**
@@ -76,22 +75,6 @@ public final class EngineAdapter {
 
     public static EngineAdapter getInstance() {
         return Helper.EA;
-    }
-
-    /**
-     * 重试网络激活
-     */
-    public void netActivateRetry() {
-        mIEngineApi.netActivateRetry();
-    }
-
-    /**
-     * 手动激活
-     * @param loginCode 激活码
-     * @param userCode 序列号
-     */
-    public void manualActivate(final String userCode, final String loginCode) {
-        mIEngineApi.manualActivate(userCode, loginCode);
     }
 
     /**

@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
@@ -45,6 +46,20 @@ public abstract class BaseActivity<V extends ViewDataBinding, VM extends BaseVie
         onInitObserver();
         onInitData();
         Logger.i(getClass().getSimpleName(), "onCreate end");
+    }
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean("onConfigurationChanged",true);
+        Logger.i("song---");
+    }
+
+    @Override
+    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        boolean onConfigurationChanged = savedInstanceState.getBoolean("onConfigurationChanged");
+        Logger.i("song---", onConfigurationChanged);
     }
 
     @Override

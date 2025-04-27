@@ -113,7 +113,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:paddingStart="@dimen/dp_20"
-                android:textColor="@color/common_sub_title_color"
+                android:textColor="@color/navi_color_000000_60"
                 android:textSize="@dimen/sp_36"
                 app:layout_constraintBottom_toBottomOf="@id/stv_add_via_distance"
                 app:layout_constraintEnd_toEndOf="parent"

@@ -6,23 +6,22 @@ import com.android.utils.ConvertUtils;
 import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
 import com.autonavi.gbl.aosclient.BLAosService;
+import com.autonavi.gbl.aosclient.model.GCoord3DDouble;
 import com.autonavi.gbl.aosclient.model.GReStrictedAreaDataRes;
 import com.autonavi.gbl.aosclient.model.GReStrictedAreaRequestParam;
 import com.autonavi.gbl.aosclient.model.GReStrictedAreaResponseParam;
 import com.autonavi.gbl.aosclient.model.GRestrictCity;
 import com.autonavi.gbl.aosclient.model.GRestrictRule;
+import com.autonavi.gbl.aosclient.model.GRestrictRulePoints;
 import com.autonavi.gbl.aosclient.model.GTrafficEventCommentRequestParam;
 import com.autonavi.gbl.aosclient.model.GTrafficEventCommentResponseParam;
 import com.autonavi.gbl.aosclient.model.GTrafficEventDetailRequestParam;
 import com.autonavi.gbl.aosclient.model.GTrafficEventDetailResponseParam;
-import com.autonavi.gbl.aosclient.model.GWsArchiveTrafficeventUpdateRequestParam;
-import com.autonavi.gbl.aosclient.model.GWsArchiveTrafficeventUpdateResponseParam;
 import com.autonavi.gbl.aosclient.model.GWsDynamicInfoEventPraiseStampStatusQueryRequestParam;
 import com.autonavi.gbl.aosclient.model.GWsDynamicInfoEventPraiseStampStatusQueryResponseParam;
 import com.autonavi.gbl.aosclient.observer.ICallBackReStrictedArea;
 import com.autonavi.gbl.aosclient.observer.ICallBackTrafficEventComment;
 import com.autonavi.gbl.aosclient.observer.ICallBackTrafficEventDetail;
-import com.autonavi.gbl.aosclient.observer.ICallBackWsArchiveTrafficeventUpdate;
 import com.autonavi.gbl.aosclient.observer.ICallBackWsDynamicInfoEventPraiseStampStatusQuery;
 import com.autonavi.gbl.util.BlToolPoiID;
 import com.fy.navi.service.adapter.aos.BlAosHelper;
@@ -34,10 +33,12 @@ import com.fy.navi.service.define.aos.FyTrafficUploadParameter;
 import com.fy.navi.service.define.aos.RestrictedArea;
 import com.fy.navi.service.define.aos.RestrictedParam;
 import com.fy.navi.service.define.aos.RestrictedAreaDetail;
+import com.fy.navi.service.define.bean.PreviewParams;
 import com.fy.navi.service.define.route.RouteRestrictionParam;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
 
 /**
  * @Description TODO
@@ -156,6 +157,7 @@ public class BlAosAdapterImpl implements IBlAosApi, ICallBackReStrictedArea, ICa
         GReStrictedAreaDataRes gReStrictedAreaDataRes = param.data;
         restrictedArea.setMRequestId(taskId);
         ArrayList<GRestrictCity> typelist = new ArrayList<>();
+        List<PreviewParams.PointD> pointList = new ArrayList<>();
         if (gReStrictedAreaDataRes.mType == 7) {
             typelist.addAll(gReStrictedAreaDataRes.mCityAllRule.typelist);
         } else if (gReStrictedAreaDataRes.mType == 9) {
@@ -178,17 +180,52 @@ public class BlAosAdapterImpl implements IBlAosApi, ICallBackReStrictedArea, ICa
                             restrictedAreaDetail.setMSummary(restrictRule.summary);
                             restrictedAreaDetail.setMEffect(restrictRule.effect);
                             restrictedAreaDetails.add(restrictedAreaDetail);
+                            pointList.addAll(getPointList(restrictRule));
                         }
                     }
                     restrictedAreaDetailsList.add(restrictedAreaDetails);
                 }
             }
             Logger.d(TAG, "getRestrictedAreaDetail:" + cityNames);
+            restrictedArea.setMPointList(pointList);
             restrictedArea.setMCityNames(cityNames);
             restrictedArea.setMCityPosition(cityPositions);
             restrictedArea.setMRestrictedAreaDetails(restrictedAreaDetailsList);
         }
         return restrictedArea;
+    }
+
+    private List<PreviewParams.PointD> getPointList(GRestrictRule restrictRule) {
+        List<PreviewParams.PointD> list = new ArrayList<>();
+        ArrayList<GRestrictRulePoints> linepoints = restrictRule.linepoints;
+        if (!ConvertUtils.isEmpty(linepoints)) {
+            for (GRestrictRulePoints restrictRulePoints : linepoints) {
+                if (!ConvertUtils.isEmpty(restrictRulePoints.lstPoints)) {
+                    ArrayList<GCoord3DDouble> lstPoints = restrictRulePoints.lstPoints;
+                    for (GCoord3DDouble coord3DDouble : lstPoints) {
+                        PreviewParams.PointD pointD = new PreviewParams.PointD();
+                        pointD.x = coord3DDouble.lon;
+                        pointD.y = coord3DDouble.lat;
+                        list.add(pointD);
+                    }
+                }
+            }
+        }
+        ArrayList<GRestrictRulePoints> areapoints = restrictRule.areapoints;
+        if (!ConvertUtils.isEmpty(areapoints)) {
+            for (GRestrictRulePoints restrictRulePoints : areapoints) {
+                if (!ConvertUtils.isEmpty(restrictRulePoints.lstPoints)) {
+                    ArrayList<GCoord3DDouble> lstPoints = restrictRulePoints.lstPoints;
+                    for (GCoord3DDouble coord3DDouble : lstPoints) {
+                        PreviewParams.PointD pointD = new PreviewParams.PointD();
+                        pointD.x = coord3DDouble.lon;
+                        pointD.y = coord3DDouble.lat;
+                        list.add(pointD);
+                    }
+                }
+            }
+        }
+        return list;
     }
 
     @Override

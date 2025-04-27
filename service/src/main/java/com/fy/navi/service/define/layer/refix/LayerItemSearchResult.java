@@ -1,6 +1,5 @@
 package com.fy.navi.service.define.layer.refix;
 
-import com.fy.navi.service.define.layer.RouteLineLayerParam;
 import com.fy.navi.service.define.search.PoiInfoEntity;
 
 import java.util.ArrayList;

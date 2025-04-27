@@ -6,17 +6,23 @@ import android.app.Application;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 
+import com.android.utils.NetWorkUtils;
+import com.android.utils.ResourceUtils;
+import com.android.utils.ToastUtils;
 import com.android.utils.log.Logger;
 import com.fy.navi.burypoint.anno.HookMethod;
 import com.fy.navi.burypoint.bean.BuryProperty;
 import com.fy.navi.burypoint.constant.BuryConstant;
 import com.fy.navi.burypoint.controller.BuryPointController;
+import com.fy.navi.hmi.R;
 import com.fy.navi.hmi.setting.broadcast.voice.SettingVoiceBroadcastFragment;
 import com.fy.navi.service.define.setting.SettingController;
 import com.fy.navi.service.logicpaket.cruise.CruisePackage;
 import com.fy.navi.service.logicpaket.navi.NaviPackage;
 import com.fy.navi.ui.action.Action;
 import com.fy.navi.ui.base.BaseViewModel;
+
+import java.util.List;
 
 public class BaseSettingBroadcastViewModel extends BaseViewModel<SettingBroadcastFragment, SettingBroadcastModel> {
 
@@ -53,6 +59,10 @@ public class BaseSettingBroadcastViewModel extends BaseViewModel<SettingBroadcas
      */
     public void initView() {
         mModel.initView();
+    }
+
+    public List<String> setVoiceIcons() {
+        return mModel.getRecommendVoiceList();
     }
 
     /**
@@ -163,8 +173,16 @@ public class BaseSettingBroadcastViewModel extends BaseViewModel<SettingBroadcas
         mIsNaviBroadcastSimple.setValue(isBroadcastSimple);
     }
 
+    public void setCurrentVoice(){
+        mView.setCurrentVoice();
+    }
+
 
     public Action mOpenBroadcastVoiceListPage = () -> {
+        if(!Boolean.TRUE.equals(NetWorkUtils.Companion.getInstance().checkNetwork())){
+            ToastUtils.Companion.getInstance().showCustomToastView(ResourceUtils.Companion.getInstance().getString(R.string.setting_broadcast_voice_no_net));
+            return;
+        }
         addFragment(new SettingVoiceBroadcastFragment(), null);
     };
 

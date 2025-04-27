@@ -22,7 +22,7 @@
         android:gravity="center"
         android:text="km/h"
         android:layout_marginTop="-10dp"
-        android:textColor="@color/black"
+        android:textColor="@color/layer_car_speed_unit_color"
         android:textStyle="bold"
         android:textSize="17dp" />
 </LinearLayout>

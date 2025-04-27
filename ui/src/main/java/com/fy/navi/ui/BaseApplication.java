@@ -1,6 +1,7 @@
 package com.fy.navi.ui;
 
 import android.app.Application;
+import android.os.UserManager;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.DefaultLifecycleObserver;
@@ -9,6 +10,7 @@ import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.ProcessLifecycleOwner;
 
 import com.android.utils.ConvertUtils;
+import com.android.utils.DeviceUtils;
 import com.android.utils.UtilsManager;
 import com.android.utils.log.Logger;
 
@@ -25,6 +27,10 @@ public class BaseApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        if (DeviceUtils.isCar(this) && getSystemService(UserManager.class).isSystemUser()) {
+            Logger.d(TAG, "CurrentisSystemuser,killprocess");
+            System.exit(0);
+        }
         UtilsManager.init(this);
         addLifeCycleObserver();
     }

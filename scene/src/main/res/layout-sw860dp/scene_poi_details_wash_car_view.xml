@@ -58,7 +58,6 @@
             android:layout_marginTop="@dimen/dp_14"
             android:layout_marginBottom="@dimen/dp_30"
             android:layout_marginEnd="@dimen/dp_10"
-            android:maxLines="1"
             android:text="电        话: 021-888888"
             android:textColor="@color/poi_details_bottom_icon"
             android:textSize="@dimen/sp_36"

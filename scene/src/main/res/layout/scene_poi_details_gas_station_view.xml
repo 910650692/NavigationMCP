@@ -22,6 +22,7 @@
             android:id="@+id/poi_gas_oil_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:clipToPadding="false"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"/>
 
@@ -54,7 +55,6 @@
             android:layout_marginTop="@dimen/dp_14"
             android:layout_marginBottom="@dimen/dp_30"
             android:layout_marginEnd="@dimen/dp_10"
-            android:maxLines="1"
             android:textColor="@color/text_route_defult"
             android:textSize="@dimen/sp_36"
             app:layout_constraintStart_toStartOf="parent"

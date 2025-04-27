@@ -4,14 +4,15 @@
 
     <com.fy.navi.ui.view.SkinConstraintLayout
         android:id="@+id/scl_search_top_view"
-        android:layout_width="@dimen/dp_820"
+        android:layout_width="@dimen/dp_640"
         android:layout_height="@dimen/dp_102"
         android:background="@drawable/bg_search_main_tab">
 
         <com.fy.navi.ui.view.SkinImageView
+            android:layout_marginStart="@dimen/dp_14"
             android:id="@+id/iv_close"
-            android:layout_width="@dimen/dp_68"
-            android:layout_height="@dimen/dp_68"
+            android:layout_width="@dimen/dp_58"
+            android:layout_height="@dimen/dp_58"
             android:src="@drawable/img_basic_ic_back"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"

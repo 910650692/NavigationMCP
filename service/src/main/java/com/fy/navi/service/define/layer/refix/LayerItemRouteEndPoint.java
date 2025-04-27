@@ -10,29 +10,17 @@ import lombok.Setter;
 @Getter
 public class LayerItemRouteEndPoint extends LayerItemData {
 
-    private LayerRouteEndPointType endPointType;   //终点扎标类型
+    private LayerPointItemType endPointType;   //终点扎标类型
     private int restNum;    //剩余油量/电量
+    private String businessHours;   //营业时间
 
     @Override
     public String toString() {
-        return "RouteLayerEndPointInfo{" +
+        return "LayerItemRouteEndPoint{" +
                 "endPointType=" + endPointType +
                 ", restNum=" + restNum +
+                ", businessHours='" + businessHours + '\'' +
                 '}';
     }
 
-    public enum LayerRouteEndPointType {
-        /**
-         * 默认终点扎标
-         */
-        LAYER_ROUTE_END_TYPE_DEFAULT,
-        /**
-         * 剩余电量
-         */
-        LAYER_ROUTE_END_TYPE_BATTERY,
-        /**
-         * 剩余油量
-         */
-        LAYER_ROUTE_END_TYPE_OIL
-    }
 }

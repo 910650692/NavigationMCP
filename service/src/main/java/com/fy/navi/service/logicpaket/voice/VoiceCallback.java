@@ -6,27 +6,35 @@ public interface VoiceCallback {
 
     /**
      * @param downLoadMode 下载模式
-     * @param dataType 数据类型
-     * @param opCode 错误码
+     * @param dataType     数据类型
+     * @param opCode       错误码
      */
-    void onInit(int downLoadMode, int dataType, int opCode);
+    default void onInit(int downLoadMode, int dataType, int opCode) {
+
+    }
 
     /**
      * 拉取头像观察者回调
-     * @param itemId 数据编号
-     * @param opErrCode 回调操作状态码
+     *
+     * @param itemId      数据编号
+     * @param opErrCode   回调操作状态码
      * @param strFilePath 文件下载存放的绝对路径
-     * @param dataType 数据类型
+     * @param dataType    数据类型
      */
-    void onDownloadImage(int itemId, int opErrCode, String strFilePath, int dataType);
+    default void onDownloadImage(int itemId, int opErrCode, String strFilePath, int dataType) {
+
+    }
 
     /**
      * 数据列表获校验请求回调
+     *
      * @param downLoadMode 下载模式
-     * @param dataType 数据类型
-     * @param opCode 错误码
+     * @param dataType     数据类型
+     * @param opCode       错误码
      */
-    void onRequestDataListCheck(int downLoadMode, int dataType, int opCode);
+    default void onRequestDataListCheck(int downLoadMode, int dataType, int opCode) {
+
+    }
 
     /**
      * 下载状态回调

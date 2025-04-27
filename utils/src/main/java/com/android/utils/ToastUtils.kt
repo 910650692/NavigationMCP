@@ -8,6 +8,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.TextView
 import android.widget.Toast
+import com.fy.navi.burypoint.anno.HookMethod
+import com.fy.navi.burypoint.bean.BuryProperty
+import com.fy.navi.burypoint.constant.BuryConstant
+import com.fy.navi.burypoint.controller.BuryPointController
 import com.google.android.material.snackbar.Snackbar
 
 
@@ -86,6 +90,7 @@ class ToastUtils private constructor() {
         mToast?.setDuration(time)
         toastText.text = msg
         mToast?.show()
+        sendBuryPointForShowToast(msg)
     }
 
     fun showCustomToastView(view: View, msg: String) {
@@ -97,6 +102,7 @@ class ToastUtils private constructor() {
         mToast?.view = view
         mToast?.setDuration(Toast.LENGTH_SHORT)
         mToast?.show()
+        sendBuryPointForShowToast(msg)
     }
 
     /**
@@ -110,6 +116,7 @@ class ToastUtils private constructor() {
         if (cancel) cancelView()
         mToast = Toast.makeText(mContext, sequence, duration)
         mToast?.show()
+        sendBuryPointForShowToast(sequence.toString())
     }
 
     private fun cancelView() {
@@ -141,5 +148,13 @@ class ToastUtils private constructor() {
 
     object Helper {
         val toast = ToastUtils()
+    }
+
+    @HookMethod(eventName = BuryConstant.EventName.AMAP_POPUP)
+    private fun sendBuryPointForShowToast(msg: String) {
+        val pro = BuryProperty.Builder()
+            .setParams(BuryConstant.ProperType.BURY_KEY_HOME_PREDICTION, msg)
+            .build()
+        BuryPointController.getInstance().buryProps = pro
     }
 }

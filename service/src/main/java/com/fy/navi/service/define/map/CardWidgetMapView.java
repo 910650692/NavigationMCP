@@ -27,6 +27,16 @@ public class CardWidgetMapView extends FullScreenMapView implements IBaseScreenM
     }
 
     @Override
+    public long getScreenWidth() {
+        return getRight();
+    }
+
+    @Override
+    public long getScreenHeight() {
+        return getBottom();
+    }
+
+    @Override
     public long getMapViewWidth() {
         return getRight();
     }

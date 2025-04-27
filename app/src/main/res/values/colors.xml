@@ -33,6 +33,7 @@
     <color name="color_black_90">#E6000000</color>
     <color name="color_black_80">#CC000000</color>
     <color name="color_black_70">#B3000000</color>
+    <color name="color_black_35">#59000000</color>
     <color name="color_80_ffffff">#CCFFFFFF</color>
     <color name="color_15_b2afc2">#26B2AFC2</color>
     <color name="color_2461ea">#FF2461EA</color>
@@ -90,6 +91,7 @@
     <color name="route_charge_button_color">#FF2461EA</color>
     <color name="route_charge_button_text_color">#FFFFFFFF</color>
     <color name="route_logo_color">#FFFFFFFF</color>
+    <color name="route_white">#FFFFFFFF</color>
 
     <color name="text_route_defult">#B3000000</color>
     <color name="text_route_title">#66000000</color>
@@ -186,6 +188,7 @@
     <color name="setting_voice_has_update_color">#FF2461EA</color>
     <color name="setting_voice_size_color">#B3000000</color>
     <color name="setting_button_disable">#802461EA</color>
+    <color name="setting_back_top">#E3E5EC</color>
 
     <color name="offline_hint_text">#80000000</color>
     <color name="offline_recommend_download">#80000000</color>

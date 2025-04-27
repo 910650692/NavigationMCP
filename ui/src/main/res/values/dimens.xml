@@ -4100,4 +4100,7 @@
     <dimen name="dp_3997">3997dp</dimen>
     <dimen name="dp_3998">3998dp</dimen>
     <dimen name="dp_3999">3999dp</dimen>
+    <!--动态底部控制栏宽度-->
+    <dimen name="control_view_normal_width">455dp</dimen>
+    <dimen name="control_view_short_width">302dp</dimen>
 </resources>

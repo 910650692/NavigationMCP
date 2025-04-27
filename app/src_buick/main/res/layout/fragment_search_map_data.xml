@@ -39,7 +39,7 @@
                 android:id="@+id/search_offline_edit_view"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_112"
-                android:layout_marginStart="@dimen/dp_110"
+                android:layout_marginStart="@dimen/dp_76"
                 android:layout_marginEnd="@dimen/dp_10"
                 android:background="@null"
                 android:clickable="true"
@@ -50,8 +50,9 @@
                 android:imeOptions="actionSearch"
                 android:inputType="text"
                 android:maxLines="1"
-                android:textColor="@color/setting_bg_tab_text_select"
-                android:textColorHint="@color/offline_hint_text"
+                android:textCursorDrawable="@drawable/shape_edittext_cursor"
+                android:textColor="@color/black"
+                android:textColorHint="@color/black"
                 android:textSize="@dimen/sp_34">
 
                 <requestFocus />

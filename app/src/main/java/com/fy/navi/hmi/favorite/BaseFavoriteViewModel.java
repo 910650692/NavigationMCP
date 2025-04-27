@@ -30,6 +30,8 @@ import com.fy.navi.ui.base.BaseFragment;
 import com.fy.navi.ui.base.BaseViewModel;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 public class BaseFavoriteViewModel extends BaseViewModel<FavoriteFragment, FavoriteModel> {
@@ -331,11 +333,15 @@ public class BaseFavoriteViewModel extends BaseViewModel<FavoriteFragment, Favor
     }
 
     /**
-     * 删除 itemId 对应的本地数据
-     * @param itemId  收藏点唯一码
+     * 不同车型获取不同数据
+     * @return
      */
-    public void deleteFavoriteData(final String itemId) {
-        mModel.deleteFavoriteData(itemId);
+    public Map<String, Integer> getPopupData() {
+        return new HashMap<>(){{
+            put("homeOfficeY", -95);
+            put("frequentY", -130);
+            put("addButtonMargin", 20);
+        }};
     }
 
 }

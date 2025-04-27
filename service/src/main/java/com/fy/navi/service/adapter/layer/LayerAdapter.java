@@ -11,13 +11,15 @@ import com.fy.navi.service.define.layer.refix.LayerItemCrossEntity;
 import com.fy.navi.service.define.layer.refix.CarModeType;
 import com.fy.navi.service.define.layer.refix.LayerItemLabelResult;
 import com.fy.navi.service.define.layer.refix.LayerItemRouteEndPoint;
+import com.fy.navi.service.define.layer.refix.LayerItemRouteOdd;
 import com.fy.navi.service.define.layer.refix.LayerItemSearchResult;
 import com.fy.navi.service.define.layer.refix.LayerItemUserFavorite;
 import com.fy.navi.service.define.layer.refix.LayerItemUserTrackDepth;
-import com.fy.navi.service.define.layer.refix.LayerSearchItemType;
+import com.fy.navi.service.define.layer.refix.LayerPointItemType;
 import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.navi.NaviParkingEntity;
 import com.fy.navi.service.define.route.RequestRouteResult;
+import com.fy.navi.service.define.route.RouteAlterChargeStationInfo;
 import com.fy.navi.service.define.search.PoiInfoEntity;
 
 import java.util.ArrayList;
@@ -57,6 +59,10 @@ public class LayerAdapter {
         mLayerApi.setCarMode(mapTypeId, carMode);
     }
 
+    public CarModeType getCarModeType(MapType mapTypeId) {
+        return mLayerApi.getCarModeType(mapTypeId);
+    }
+
     public void setPreviewMode(MapType mapTypeId, boolean bPreview) {
         mLayerApi.setPreviewMode(mapTypeId, bPreview);
     }
@@ -73,9 +79,23 @@ public class LayerAdapter {
         mLayerApi.drawRouteLine(mapTypeId, routeResult);
     }
 
+    public void setPassGray(final MapType mapTypeId, final boolean isSetGray) {
+        mLayerApi.setPassGray(mapTypeId, isSetGray);
+    }
+
+    /* 路线替换补能扎标 */
+    public void updateRouteReplaceChargePoints(MapType mapTypeId, ArrayList<RouteAlterChargeStationInfo> chargeStationInfos) {
+        mLayerApi.updateRouteReplaceChargePoints(mapTypeId, chargeStationInfos);
+    }
+
     /*更新终点扎标数据*/
     public void updateRouteEndPoint(MapType mapTypeId, LayerItemRouteEndPoint endPoint) {
         mLayerApi.updateRouteEndPoint(mapTypeId, endPoint);
+    }
+
+    /* 更新Odd信息 */
+    public void updateOddInfo(MapType mapTypeId, ArrayList<LayerItemRouteOdd> oddInfoList, long pathId) {
+        mLayerApi.updateOddInfo(mapTypeId, oddInfoList, pathId);
     }
 
     /* 是否打开动态比例尺功能，type区分巡航动态比例尺还是导航动态比例尺 */
@@ -220,12 +240,12 @@ public class LayerAdapter {
 
     /*========================================= 搜索图层接口定义=========================================*/
 
-    public void setSearchSelect(MapType mapTypeId, LayerSearchItemType type, int index) {
+    public void setSearchSelect(MapType mapTypeId, LayerPointItemType type, int index) {
         mLayerApi.selectSearchPoi(mapTypeId, type, index);
     }
 
     /* 搜索图层扎标接口 */
-    public boolean updateSearchMarker(MapType mapTypeId, LayerSearchItemType type, LayerItemSearchResult searchResult, boolean clearOtherLayerItem) {
+    public boolean updateSearchMarker(MapType mapTypeId, LayerPointItemType type, LayerItemSearchResult searchResult, boolean clearOtherLayerItem) {
         return mLayerApi.updateSearchMarker(mapTypeId, type, searchResult, clearOtherLayerItem);
     }
 
@@ -279,7 +299,7 @@ public class LayerAdapter {
      *
      * @param mapTypeId
      */
-    public void clearSearchPOILayerItems(MapType mapTypeId, LayerSearchItemType searchItemType) {
+    public void clearSearchPOILayerItems(MapType mapTypeId, LayerPointItemType searchItemType) {
         mLayerApi.clearSearchPOILayerItems(mapTypeId, searchItemType);
     }
 

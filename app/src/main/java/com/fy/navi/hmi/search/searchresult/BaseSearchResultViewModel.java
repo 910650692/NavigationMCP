@@ -62,4 +62,11 @@ public class BaseSearchResultViewModel extends BaseViewModel<SearchResultFragmen
     public void onMarkClickCallBack(final int index) {
         mView.onMarkClickCallBack(index);
     }
+
+    /**
+     * 恢复fragment状态
+     */
+    public void onReStoreFragment() {
+        mModel.onReStoreFragment();
+    }
 }

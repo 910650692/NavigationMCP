@@ -32,6 +32,7 @@ import com.fy.navi.service.logicpaket.search.SearchPackage;
 import com.fy.navi.ui.base.BaseFragment;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author baipeng0904
@@ -87,6 +88,7 @@ public class SceneCollectView extends BaseSceneView<SceneCollectViewBinding, Sce
         mViewBinding.rcvCollect.setLayoutManager(new LinearLayoutManager(getContext()));
         mAdapter = new CollectResultAdapter();
         mViewBinding.rcvCollect.setAdapter(mAdapter);
+        mViewBinding.rcvCollect.setItemAnimator(null);
         mAdapter.setOnItemClickListener(new CollectResultAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(final int position, final PoiInfoEntity poiInfoEntity) {

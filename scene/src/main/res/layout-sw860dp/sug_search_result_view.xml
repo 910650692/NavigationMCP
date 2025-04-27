@@ -17,11 +17,11 @@
         <include
             android:id="@+id/scl_search_top_view"
             layout="@layout/search_edit_bar_view"
-            android:layout_width="@dimen/dp_820"
+            android:layout_width="@dimen/dp_640"
             android:layout_height="@dimen/dp_102" />
 
         <com.fy.navi.ui.view.SkinConstraintLayout
-            android:layout_width="@dimen/dp_820"
+            android:layout_width="@dimen/dp_640"
             android:layout_height="@dimen/dp_610"
             android:layout_marginTop="@dimen/dp_24"
             android:background="@drawable/bg_search_main_tab">
@@ -50,7 +50,6 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
         </com.fy.navi.ui.view.SkinConstraintLayout>
-
     </com.fy.navi.ui.view.SkinLinearLayout>
 
 </layout>

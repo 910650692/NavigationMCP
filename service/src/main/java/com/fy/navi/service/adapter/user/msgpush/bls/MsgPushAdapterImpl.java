@@ -1,5 +1,7 @@
 package com.fy.navi.service.adapter.user.msgpush.bls;
 
+import android.util.Log;
+
 import com.android.utils.ConvertUtils;
 import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
@@ -24,6 +26,7 @@ import com.autonavi.gbl.user.msgpush.model.AimRoutePushInfo;
 import com.autonavi.gbl.user.msgpush.model.AimRoutePushMsg;
 import com.autonavi.gbl.user.msgpush.model.AutoPushInfo;
 import com.autonavi.gbl.user.msgpush.model.AutoPushMsg;
+import com.autonavi.gbl.user.msgpush.model.LinkStatusPushMsg;
 import com.autonavi.gbl.user.msgpush.model.MobileDestination;
 import com.autonavi.gbl.user.msgpush.model.MobileLinkPushMsg;
 import com.autonavi.gbl.user.msgpush.model.MobileLinkRequest;
@@ -635,6 +638,14 @@ public class MsgPushAdapterImpl implements IMsgPushApi, IMsgPushServiceObserver,
 
         for (MsgPushAdapterCallback callBack : mCallBacks.values()) {
             callBack.onRecvAckGWsTserviceInternalLinkAutoReportResponse(msgPushResponseInfo);
+        }
+    }
+
+    @Override
+    public void notifyMessage(LinkStatusPushMsg msg) {
+        int status = msg.status;
+        for (MsgPushAdapterCallback callBack : mCallBacks.values()) {
+            callBack.notifyDisconnectFromMobileMessage(status);
         }
     }
 }

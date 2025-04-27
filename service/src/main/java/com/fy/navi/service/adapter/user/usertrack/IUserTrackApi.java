@@ -1,6 +1,7 @@
 package com.fy.navi.service.adapter.user.usertrack;
 
 import com.fy.navi.service.define.user.usertrack.DrivingRecordDataBean;
+import com.fy.navi.service.define.user.usertrack.HistoryRouteItemBean;
 import com.fy.navi.service.define.user.usertrack.SearchHistoryItemBean;
 
 import java.util.ArrayList;
@@ -84,10 +85,35 @@ public interface IUserTrackApi {
 
     /**
      * 删除所有搜索历史记录
-     * @param mode 同步方式
      * @return 删除结果
      */
-    int clearSearchHistory(int mode);
+    int clearSearchHistory();
+
+    /**
+     * 获取历史路线列表
+     * @return 历史路线列表
+     */
+    ArrayList<HistoryRouteItemBean> getHistoryRoute();
+
+    /**
+     * 添加历史路线
+     * @param item 历史路线
+     * @return 添加结果
+     */
+    int addHistoryRoute(HistoryRouteItemBean item);
+
+    /**
+     * 删除历史路线
+     * @param bean 历史路线名称
+     * @return 删除结果
+     */
+    int delHistoryRoute(HistoryRouteItemBean bean);
+
+    /**
+     * 删除历史路线
+     * @return 删除结果
+     */
+    int clearHistoryRoute();
 
     /**
      * 设置行程信息

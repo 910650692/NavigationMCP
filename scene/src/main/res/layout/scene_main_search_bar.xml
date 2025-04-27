@@ -11,7 +11,7 @@
     </data>
 
     <com.fy.navi.ui.view.SkinConstraintLayout
-        android:layout_width="@dimen/dp_820"
+        android:layout_width="@dimen/dp_640"
         android:layout_height="@dimen/dp_263"
         android:background="@drawable/bg_search_main_tab"
         app:layout_constraintStart_toStartOf="parent"
@@ -20,16 +20,16 @@
         <com.fy.navi.ui.view.SkinConstraintLayout
             android:id="@+id/scl_search_top_view"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_102"
-            android:layout_marginStart="@dimen/dp_16"
+            android:layout_height="@dimen/dp_112"
+            android:layout_marginStart="@dimen/dp_14"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
             <com.fy.navi.ui.view.SkinImageView
                 android:id="@+id/iv_close"
                 clickCommand="@{MainSearchView.closeSearch}"
-                android:layout_width="@dimen/dp_68"
-                android:layout_height="@dimen/dp_68"
+                android:layout_width="@dimen/dp_58"
+                android:layout_height="@dimen/dp_58"
                 android:src="@drawable/img_basic_ic_back"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -53,8 +53,8 @@
 
             <com.fy.navi.ui.view.SkinImageView
                 android:id="@+id/iv_search"
-                android:layout_width="@dimen/dp_68"
-                android:layout_height="@dimen/dp_68"
+                android:layout_width="@dimen/dp_58"
+                android:layout_height="@dimen/dp_58"
                 android:layout_marginEnd="@dimen/dp_20"
                 android:src="@mipmap/icon_search40"
                 android:visibility="invisible"
@@ -75,7 +75,7 @@
         <com.fy.navi.ui.view.SkinConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_53"
+            android:layout_marginStart="@dimen/dp_42"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/sub_line_view">
 
@@ -83,13 +83,14 @@
                 android:id="@+id/scl_gas_station"
                 clickCommand="@{() -> MainSearchView.onClickQuickSearch(0)}"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:minWidth="90dp">
 
                 <com.fy.navi.ui.view.SkinImageView
                     android:id="@+id/iv_gas_station"
-                    android:layout_width="@dimen/dp_68"
-                    android:layout_height="@dimen/dp_68"
-                    android:layout_marginTop="@dimen/dp_25"
+                    android:layout_width="@dimen/dp_58"
+                    android:layout_height="@dimen/dp_58"
+                    android:layout_marginTop="@dimen/dp_20"
                     android:src="@drawable/img_basic_ic_gas_station"
                     app:layout_constraintEnd_toEndOf="@+id/scl_gas_station"
                     app:layout_constraintStart_toStartOf="@id/scl_gas_station"
@@ -100,7 +101,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/search_quick_tab_view_color"
-                    android:textSize="@dimen/sp_36"
+                    android:textSize="@dimen/sp_30"
                     app:layout_constraintEnd_toEndOf="@+id/scl_gas_station"
                     app:layout_constraintStart_toStartOf="@id/scl_gas_station"
                     app:layout_constraintTop_toBottomOf="@+id/iv_gas_station"
@@ -112,15 +113,16 @@
                 clickCommand="@{() -> MainSearchView.onClickQuickSearch(1)}"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_58"
+                android:layout_marginStart="@dimen/dp_30"
+                android:minWidth="90dp"
                 app:layout_constraintLeft_toRightOf="@+id/scl_gas_station"
                 app:layout_constraintTop_toBottomOf="@+id/sub_line_view">
 
                 <com.fy.navi.ui.view.SkinImageView
                     android:id="@+id/iv_pull_up"
-                    android:layout_width="@dimen/dp_68"
-                    android:layout_height="@dimen/dp_68"
-                    android:layout_marginTop="@dimen/dp_25"
+                    android:layout_width="@dimen/dp_58"
+                    android:layout_height="@dimen/dp_58"
+                    android:layout_marginTop="@dimen/dp_20"
                     android:src="@drawable/img_basic_ic_pull_up"
                     app:layout_constraintEnd_toEndOf="@+id/scl_pull_up"
                     app:layout_constraintStart_toStartOf="@id/scl_pull_up"
@@ -131,7 +133,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/search_quick_tab_view_color"
-                    android:textSize="@dimen/sp_36"
+                    android:textSize="@dimen/sp_30"
                     app:layout_constraintEnd_toEndOf="@+id/scl_pull_up"
                     app:layout_constraintStart_toStartOf="@id/scl_pull_up"
                     app:layout_constraintTop_toBottomOf="@+id/iv_pull_up"
@@ -143,15 +145,16 @@
                 clickCommand="@{() -> MainSearchView.onClickQuickSearch(2)}"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_58"
+                android:layout_marginStart="@dimen/dp_30"
+                android:minWidth="90dp"
                 app:layout_constraintLeft_toRightOf="@+id/scl_pull_up"
                 app:layout_constraintTop_toBottomOf="@+id/sub_line_view">
 
                 <com.fy.navi.ui.view.SkinImageView
                     android:id="@+id/iv_gourmet"
-                    android:layout_width="@dimen/dp_68"
-                    android:layout_height="@dimen/dp_68"
-                    android:layout_marginTop="@dimen/dp_25"
+                    android:layout_width="@dimen/dp_58"
+                    android:layout_height="@dimen/dp_58"
+                    android:layout_marginTop="@dimen/dp_20"
                     android:src="@drawable/img_basic_ic_gourmet"
                     app:layout_constraintEnd_toEndOf="@+id/scl_gourmet"
                     app:layout_constraintStart_toStartOf="@id/scl_gourmet"
@@ -162,7 +165,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/search_quick_tab_view_color"
-                    android:textSize="@dimen/sp_36"
+                    android:textSize="@dimen/sp_30"
                     app:layout_constraintEnd_toEndOf="@+id/scl_gourmet"
                     app:layout_constraintStart_toStartOf="@id/scl_gourmet"
                     app:layout_constraintTop_toBottomOf="@+id/iv_gourmet"
@@ -174,15 +177,16 @@
                 clickCommand="@{() -> MainSearchView.onClickQuickSearch(3)}"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_58"
+                android:layout_marginStart="@dimen/dp_30"
+                android:minWidth="90dp"
                 app:layout_constraintLeft_toRightOf="@+id/scl_gourmet"
                 app:layout_constraintTop_toBottomOf="@+id/sub_line_view">
 
                 <com.fy.navi.ui.view.SkinImageView
                     android:id="@+id/iv_car_washing"
-                    android:layout_width="@dimen/dp_68"
-                    android:layout_height="@dimen/dp_68"
-                    android:layout_marginTop="@dimen/dp_25"
+                    android:layout_width="@dimen/dp_58"
+                    android:layout_height="@dimen/dp_58"
+                    android:layout_marginTop="@dimen/dp_20"
                     android:src="@drawable/img_basic_ic_car_washing"
                     app:layout_constraintEnd_toEndOf="@+id/scl_car_washing"
                     app:layout_constraintStart_toStartOf="@id/scl_car_washing"
@@ -193,7 +197,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/search_quick_tab_view_color"
-                    android:textSize="@dimen/sp_36"
+                    android:textSize="@dimen/sp_30"
                     app:layout_constraintEnd_toEndOf="@+id/scl_car_washing"
                     app:layout_constraintStart_toStartOf="@id/scl_car_washing"
                     app:layout_constraintTop_toBottomOf="@+id/iv_car_washing"
@@ -205,15 +209,16 @@
                 clickCommand="@{() -> MainSearchView.onClickQuickSearch(4)}"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_58"
+                android:layout_marginStart="@dimen/dp_30"
+                android:minWidth="90dp"
                 app:layout_constraintLeft_toRightOf="@+id/scl_car_washing"
                 app:layout_constraintTop_toBottomOf="@+id/sub_line_view">
 
                 <com.fy.navi.ui.view.SkinImageView
                     android:id="@+id/iv_more"
-                    android:layout_width="@dimen/dp_68"
-                    android:layout_height="@dimen/dp_68"
-                    android:layout_marginTop="@dimen/dp_25"
+                    android:layout_width="@dimen/dp_58"
+                    android:layout_height="@dimen/dp_58"
+                    android:layout_marginTop="@dimen/dp_20"
                     android:src="@drawable/img_basic_ic_more"
                     app:layout_constraintEnd_toEndOf="@+id/scl_more"
                     app:layout_constraintStart_toStartOf="@id/scl_more"
@@ -225,7 +230,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/st_quick_search_more"
                     android:textColor="@color/search_quick_tab_view_color"
-                    android:textSize="@dimen/sp_36"
+                    android:textSize="@dimen/sp_30"
                     app:layout_constraintEnd_toEndOf="@+id/scl_more"
                     app:layout_constraintStart_toStartOf="@id/scl_more"
                     app:layout_constraintTop_toBottomOf="@+id/iv_more" />

@@ -17,9 +17,7 @@ public class LayerSearchStyleAdapter extends BaseStyleAdapter {
 
     @Override
     public String provideLayerItemStyleJson(LayerItem item) {
-        Logger.d(TAG, "provideLayerItemStyleJson getBusinessType:" + item.getBusinessType());
-        int businessType = item.getBusinessType();
-        switch (businessType) {
+        switch (item.getBusinessType()) {
             case BizSearchType.BizSearchTypePoiParentPoint -> {
                 if (item instanceof SearchParentLayerItem parentLayerItem) {
                     int poiType = parentLayerItem.getPoiType();

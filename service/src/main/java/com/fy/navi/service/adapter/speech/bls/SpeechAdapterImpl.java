@@ -1,9 +1,6 @@
 package com.fy.navi.service.adapter.speech.bls;
 
-import android.util.Log;
-
 import com.android.utils.ConvertUtils;
-import com.android.utils.file.FileUtils;
 import com.android.utils.log.Logger;
 import com.autonavi.gbl.servicemanager.ServiceMgr;
 import com.autonavi.gbl.speech.SpeechSynthesizeService;
@@ -31,6 +28,7 @@ public class SpeechAdapterImpl implements ISpeechSynthesizeObserver, ISpeechApi 
     private int taskId = 0;
     private int mSampleRate = 0;
     public int playingRequestId = 0;
+    private boolean mIsNormalTTS = true;
 
     public SpeechAdapterImpl() {
         mSpeechService = (SpeechSynthesizeService) ServiceMgr.getServiceMgrInstance()
@@ -68,6 +66,7 @@ public class SpeechAdapterImpl implements ISpeechSynthesizeObserver, ISpeechApi 
 
     /**
      * 切换语音包（默认语音/明星语音）
+     *
      * @param irfPath 语音包路劲
      * @return 返回码，是否设置成功 errorcode.common.Service.ErrorCodeOK：表示设置成功。
      */
@@ -75,14 +74,20 @@ public class SpeechAdapterImpl implements ISpeechSynthesizeObserver, ISpeechApi 
     public int setVoice(String irfPath) {
         int result = mSpeechService.setVoice(irfPath);
         Logger.i(TAG, "result：" + result);
+
+        for (ISpeechAdapterCallback callback : mSpeechAdapterCallback) {
+            callback.onVoiceSet(result);
+        }
+
         return result;
     }
 
     @Override
-    public void synthesize(String text) {
-        Logger.i(TAG, "text：" + text + ",mSpeechService：" + mSpeechService);
+    public void synthesize(boolean isNormalTTS, String text) {
+        Logger.i(TAG, "text：" + text + ",isNormalTTS：" + isNormalTTS);
         if (!ConvertUtils.isEmpty(text)) {
             if (null != mSpeechService) {
+                mIsNormalTTS = isNormalTTS;
                 playingRequestId = taskId;
                 mSpeechService.synthesize(text, false, taskId++);
             }
@@ -102,7 +107,7 @@ public class SpeechAdapterImpl implements ISpeechSynthesizeObserver, ISpeechApi 
 
     /**
      * @param sampleRate sampleRate 采样率
-     * @param pcmLen PCM分片大小
+     * @param pcmLen     PCM分片大小
      */
     @Override
     public void onSampleRateChange(int sampleRate, int[] pcmLen) {
@@ -112,19 +117,21 @@ public class SpeechAdapterImpl implements ISpeechSynthesizeObserver, ISpeechApi 
 
     /**
      * 当语音合成开始时触发的回调
+     *
      * @param requestId requestId 请求唯一标识符
      */
     @Override
     public void onStart(int requestId) {
         Logger.d(TAG, "onStart requestId:" + requestId);
-        NaviAudioPlayer.getInstance().createAudioTrack(requestId, mSampleRate);
+        NaviAudioPlayer.getInstance().createAudioTrack(requestId, mSampleRate, mIsNormalTTS);
     }
 
     /**
      * 返回语音合成的数据，可能会分多次回调
+     *
      * @param requestId requestId 请求唯一标识符
-     * @param pcmData pcmData 返回的音频数据
-     * @param duration duration 返回的音频数据长度，单位是毫秒
+     * @param pcmData   pcmData 返回的音频数据
+     * @param duration  duration 返回的音频数据长度，单位是毫秒
      */
     @Override
     public void onGetData(int requestId, BinaryStream pcmData, long duration) {
@@ -134,8 +141,9 @@ public class SpeechAdapterImpl implements ISpeechSynthesizeObserver, ISpeechApi 
 
     /**
      * 当语音合成过程中发生错误时触发的回调
+     *
      * @param requestId requestId 请求唯一标识符
-     * @param errCode errCode 错误码
+     * @param errCode   errCode 错误码
      */
     @Override
     public void onError(int requestId, int errCode) {
@@ -145,6 +153,7 @@ public class SpeechAdapterImpl implements ISpeechSynthesizeObserver, ISpeechApi 
 
     /**
      * 当语音合成正常结束时触发的回调
+     *
      * @param requestId requestId 请求唯一标识符
      */
     @Override

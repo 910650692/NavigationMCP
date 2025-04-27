@@ -1,5 +1,7 @@
 package com.fy.navi.service.adapter.user.account.bls;
 
+import android.accounts.Account;
+
 import com.autonavi.gbl.servicemanager.ServiceMgr;
 import com.autonavi.gbl.user.account.AccountService;
 import com.autonavi.gbl.user.account.model.AccountCheckRequest;
@@ -18,6 +20,7 @@ import com.autonavi.gbl.util.model.ServiceInitStatus;
 import com.autonavi.gbl.util.model.SingleServiceID;
 import com.fy.navi.service.adapter.user.account.AccountAdapterCallBack;
 import com.fy.navi.service.adapter.user.account.IAccountApi;
+import com.fy.navi.service.define.user.account.AccessTokenParam;
 
 
 public class AccountAdapterImpl implements IAccountApi {
@@ -206,6 +209,16 @@ public class AccountAdapterImpl implements IAccountApi {
         } else {
             return -1;
         }
+    }
+
+    @Override
+    public String getAccessToken(final AccessTokenParam param) {
+        return mAdapterImplHelper.getAccessToken(param);
+    }
+
+    @Override
+    public String getIdpUserId(final Account availableAccount, final String key) {
+        return mAdapterImplHelper.getIdpUserId(availableAccount, key);
     }
 
 }

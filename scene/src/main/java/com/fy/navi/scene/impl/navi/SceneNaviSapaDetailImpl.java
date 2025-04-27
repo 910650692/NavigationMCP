@@ -12,6 +12,8 @@ import com.fy.navi.scene.ui.navi.SceneNaviSapaDetailView;
 import com.fy.navi.scene.ui.navi.manager.INaviSceneEvent;
 import com.fy.navi.scene.ui.navi.manager.NaviSceneId;
 import com.fy.navi.service.MapDefaultFinalTag;
+import com.fy.navi.service.define.bean.AdminCodeBean;
+import com.fy.navi.service.define.bean.AreaExtraInfoBean;
 import com.fy.navi.service.define.bean.GeoPoint;
 import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.navi.SapaInfoEntity;
@@ -19,6 +21,9 @@ import com.fy.navi.service.define.route.RouteParam;
 import com.fy.navi.service.define.search.GasStationInfo;
 import com.fy.navi.service.define.search.PoiInfoEntity;
 import com.fy.navi.service.define.search.SearchResultEntity;
+import com.fy.navi.service.define.utils.NumberUtils;
+import com.fy.navi.service.logicpaket.mapdata.MapDataPackage;
+import com.fy.navi.service.logicpaket.navi.NaviPackage;
 import com.fy.navi.service.logicpaket.navi.OpenApiHelper;
 import com.fy.navi.service.logicpaket.route.RoutePackage;
 import com.fy.navi.service.logicpaket.search.SearchPackage;
@@ -380,6 +385,27 @@ public class SceneNaviSapaDetailImpl extends BaseSceneModel<SceneNaviSapaDetailV
         tagUpdate(mTollStatusTag, sapaItem);
         updateDistanceAndRemainTime(sapaItem, mTollDistance, mTollRemainTime);
         updateTollDetail(laneTypes, mTollEtcVisible, mTollAlipayVisible);
+        final AdminCodeBean adminCode = new AdminCodeBean();
+        int cityCode = NaviPackage.getInstance().getCityCode();
+        if (cityCode == NumberUtils.NUM_ERROR) {
+            return;
+        }
+        adminCode.setnAdCode(cityCode);
+        final AreaExtraInfoBean areaExtraInfo = MapDataPackage.getInstance().
+                getAreaExtraInfo(adminCode);
+        if (areaExtraInfo == null) {
+            return;
+        }
+        String areaName = "";
+        String provName = areaExtraInfo.getProvName();
+        String cityName = areaExtraInfo.getCityName();
+        String townName = areaExtraInfo.getTownName();
+        if (null != provName && provName.equals(cityName)) {
+            areaName = cityName + townName;
+        } else {
+            areaName = provName + cityName + townName;
+        }
+        mTollRouteName.set(areaName);
     }
 
     /**
@@ -474,6 +500,7 @@ public class SceneNaviSapaDetailImpl extends BaseSceneModel<SceneNaviSapaDetailV
             return;
         }
         for (Integer integer : laneTypes) {
+            Logger.i(TAG, "updateTollDetail laneTypes = " + integer);
             // TollLaneTypeETC等于2可以显示etc标识
             if (integer == 2) {
                 etc.set(true);

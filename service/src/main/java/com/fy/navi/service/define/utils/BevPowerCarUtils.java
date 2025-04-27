@@ -13,7 +13,8 @@ public class BevPowerCarUtils {
 
     public String engineVersion = "1.0";
     public String sdkVersion = "750";
-    public double batterToDistance = 4200;//每1%的电行驶多少公里
+    public double batterToDistance = 4200;//每1%的电行驶多少公里,离线状态下预估值
+    public double batterToDistanceCarSignal = 0;//每1%的电行驶多少公里，根据车身信号计算
     public boolean isElecPlanRoute = true; //是否自动续航-路线添加充电站 ---接口获取
     public String carType = "2"; //车辆类型：0客车，1货车, 2电动客车，3电动货车，4插电式混动客车，5插电式混动货车---接口获取
     public boolean bevCarElicOpen = true; //电车设置能耗模型

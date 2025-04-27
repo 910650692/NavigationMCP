@@ -14,11 +14,8 @@ import com.android.utils.ToastUtils;
 import com.fy.navi.scene.R;
 import com.fy.navi.scene.databinding.SceneNaviParallelViewBinding;
 import com.fy.navi.scene.impl.navi.SceneNaviParallelImpl;
-import com.fy.navi.scene.impl.navi.inter.ISceneCallback;
-import com.fy.navi.scene.ui.navi.manager.INaviSceneEvent;
 import com.fy.navi.scene.ui.navi.manager.NaviSceneBase;
 import com.fy.navi.scene.ui.navi.manager.NaviSceneId;
-import com.fy.navi.scene.ui.navi.manager.NaviSceneManager;
 import com.fy.navi.service.AppContext;
 import com.fy.navi.service.MapDefaultFinalTag;
 

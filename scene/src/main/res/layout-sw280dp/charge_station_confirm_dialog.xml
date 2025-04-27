@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+    </data>
+
+    <com.fy.navi.ui.view.SkinConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/search_loading_bg_80">
+    <com.fy.navi.ui.view.SkinConstraintLayout
+        android:layout_width="@dimen/dp_1100"
+        android:layout_height="@dimen/dp_324"
+        android:background="@drawable/bg_confirm_dialog"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+        <com.fy.navi.ui.view.SkinTextView
+            android:id="@+id/tv_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:maxWidth="@dimen/dp_900"
+            android:layout_marginTop="@dimen/dp_70"
+            tools:text="@string/reservation_title"
+            android:textColor="@color/content_color"
+            android:textSize="@dimen/sp_36"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.fy.navi.ui.view.SkinTextView
+            android:id="@+id/tv_tip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:maxWidth="@dimen/dp_900"
+            tools:text="@string/reservation_tip"
+            android:textColor="@color/content_color"
+            android:textSize="@dimen/sp_36"
+            app:layout_constraintTop_toBottomOf="@+id/tv_title"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <View
+            android:id="@+id/divider"
+            android:layout_width="@dimen/dp_1018"
+            android:layout_height="@dimen/dp_2"
+            android:layout_marginTop="@dimen/dp_196"
+            android:background="@color/divider_color"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            />
+
+        <View
+            android:id="@+id/divider_vertical"
+            android:layout_width="@dimen/dp_2"
+            android:layout_height="@dimen/dp_126"
+            android:background="@color/divider_color"
+            app:layout_constraintTop_toBottomOf="@+id/divider"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            />
+
+        <com.fy.navi.ui.view.SkinTextView
+            android:id="@+id/tv_confirm"
+            android:layout_width="@dimen/dp_0"
+            android:layout_height="@dimen/dp_0"
+            android:gravity="center"
+            android:maxWidth="@dimen/dp_900"
+            android:text="@string/dsc_confirm"
+            android:textColor="@color/confirm_color"
+            android:textSize="@dimen/sp_36"
+            app:layout_constraintEnd_toEndOf="@id/divider_vertical"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/divider" />
+
+        <com.fy.navi.ui.view.SkinTextView
+            android:id="@+id/tv_cancel"
+            android:layout_width="@dimen/dp_0"
+            android:layout_height="@dimen/dp_0"
+            android:gravity="center"
+            android:maxWidth="@dimen/dp_900"
+            android:text="@string/dsc_cancel"
+            android:textColor="@color/cancel_color"
+            android:textSize="@dimen/sp_36"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/divider_vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/divider" />
+
+    </com.fy.navi.ui.view.SkinConstraintLayout>
+
+    </com.fy.navi.ui.view.SkinConstraintLayout>
+</layout>

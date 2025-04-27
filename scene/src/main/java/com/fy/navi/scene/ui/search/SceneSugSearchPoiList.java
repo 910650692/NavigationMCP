@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.alibaba.android.arouter.launcher.ARouter;
+import com.android.utils.ConvertUtils;
 import com.android.utils.ResourceUtils;
 import com.android.utils.ToastUtils;
 import com.android.utils.log.Logger;
@@ -26,6 +27,7 @@ import com.fy.navi.burypoint.controller.BuryPointController;
 import com.fy.navi.scene.BaseSceneView;
 import com.fy.navi.scene.R;
 import com.fy.navi.scene.RoutePath;
+import com.fy.navi.scene.api.search.IClearEditTextListener;
 import com.fy.navi.scene.databinding.SugSearchResultViewBinding;
 import com.fy.navi.scene.impl.search.SceneSugSearchPoiListImpl;
 import com.fy.navi.scene.impl.search.SearchFragmentFactory;
@@ -57,7 +59,7 @@ import java.util.regex.Pattern;
  */
 public class SceneSugSearchPoiList extends BaseSceneView<SugSearchResultViewBinding, SceneSugSearchPoiListImpl> {
     private SearchResultAdapter mAdapter;
-
+    private IClearEditTextListener mClearEditTextListener;
     private SearchHistoryAdapter mSearchHistoryAdapter;
 
     public SceneSugSearchPoiList(@NonNull final Context context) {
@@ -94,7 +96,7 @@ public class SceneSugSearchPoiList extends BaseSceneView<SugSearchResultViewBind
         setupRecyclerView();
         setupHistoryRecycleView();
         setupSearchActions();
-        requestFocusAndShowKeyboard();
+//        requestFocusAndShowKeyboard();
     }
 
     /**
@@ -113,6 +115,15 @@ public class SceneSugSearchPoiList extends BaseSceneView<SugSearchResultViewBind
                 super.onScrolled(recyclerView, dx, dy);
                 if (dy != 0) {
                     //列表滑动时，隐藏软键盘
+                    hideInput();
+                }
+            }
+
+            @Override
+            public void onScrollStateChanged(@NonNull final RecyclerView recyclerView, final int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                if (newState == RecyclerView.SCROLL_STATE_DRAGGING) {
+                    // 用户正在拖动 RecyclerView,隐藏软键盘
                     hideInput();
                 }
             }
@@ -155,17 +166,26 @@ public class SceneSugSearchPoiList extends BaseSceneView<SugSearchResultViewBind
             mViewBinding.recyclerSearchHistory.setVisibility(GONE);
             mViewBinding.recyclerNoHint.setVisibility(VISIBLE);
             mViewBinding.recyclerNoHint.setText(ResourceUtils.Companion.getInstance().getString(R.string.shv_record_null));
-        }else{
+        }else if(!list.isEmpty() && getEditText().isEmpty()){
             mViewBinding.recyclerSearchHistory.setVisibility(VISIBLE);
             mViewBinding.recyclerNoHint.setVisibility(GONE);
             mSearchHistoryAdapter.notifyList(list);
         }
         mViewBinding.recyclerSearchHistory.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
-            public void onScrolled(@NonNull RecyclerView recyclerView, final int dx, final int dy) {
+            public void onScrolled(@NonNull final RecyclerView recyclerView, final int dx, final int dy) {
                 super.onScrolled(recyclerView, dx, dy);
                 if (dy != 0) {
                     //列表滑动时，隐藏软键盘
+                    hideInput();
+                }
+            }
+
+            @Override
+            public void onScrollStateChanged(@NonNull final RecyclerView recyclerView, final int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                if (newState == RecyclerView.SCROLL_STATE_DRAGGING) {
+                    // 用户正在拖动 RecyclerView,隐藏软键盘
                     hideInput();
                 }
             }
@@ -244,6 +264,9 @@ public class SceneSugSearchPoiList extends BaseSceneView<SugSearchResultViewBind
 
             @Override
             public void afterTextChanged(final Editable editable) {
+                if (mClearEditTextListener != null) {
+                    mClearEditTextListener.onEditTextChanged(editable.toString().trim());
+                }
                 if (!editable.toString().trim().isEmpty()) {
                     mViewBinding.sclSearchTopView.ivEditClear.setVisibility(VISIBLE);
                     mViewBinding.recyclerSearchResult.setVisibility(VISIBLE);
@@ -298,7 +321,7 @@ public class SceneSugSearchPoiList extends BaseSceneView<SugSearchResultViewBind
      * @param searchResultEntity 搜索结果实体类
      */
     public void notifySearchResult(final SearchResultEntity searchResultEntity) {
-        if (searchResultEntity == null || searchResultEntity.getPoiList().isEmpty()) {
+        if ((searchResultEntity == null || searchResultEntity.getPoiList().isEmpty()) && !getEditText().isEmpty()) {
             ToastUtils.Companion.getInstance().showCustomToastView("暂无数据");
             mViewBinding.recyclerSearchResult.setVisibility(GONE);
             mViewBinding.recyclerNoHint.setVisibility(VISIBLE);
@@ -306,7 +329,12 @@ public class SceneSugSearchPoiList extends BaseSceneView<SugSearchResultViewBind
             mAdapter.clearList();
             return;
         }
-        if (mAdapter != null) {
+        if (searchResultEntity != null && !ConvertUtils.isEmpty(searchResultEntity.getKeyword())) {
+            if (ConvertUtils.isEmpty(getEditText()) || !ConvertUtils.equals(getEditText(), searchResultEntity.getKeyword())) {
+                mViewBinding.sclSearchTopView.searchBarEditView.setText(searchResultEntity.getKeyword());
+            }
+        }
+        if (mAdapter != null && !getEditText().isEmpty()) {
             mViewBinding.recyclerSearchResult.setVisibility(VISIBLE);
             mViewBinding.recyclerNoHint.setVisibility(GONE);
             mAdapter.notifyList(searchResultEntity);
@@ -395,5 +423,9 @@ public class SceneSugSearchPoiList extends BaseSceneView<SugSearchResultViewBind
             Logger.e(MapDefaultFinalTag.SEARCH_HMI_TAG, "parseGeoPoint: No match found for GeoPoint string: " + geoPointString);
         }
         return new GeoPoint(lon, lat);
+    }
+
+    public void setEditTextChangedListener(final IClearEditTextListener clickListener) {
+        this.mClearEditTextListener = clickListener;
     }
 }

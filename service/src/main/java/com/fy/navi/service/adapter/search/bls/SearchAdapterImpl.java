@@ -39,24 +39,31 @@ import com.fy.navi.service.adapter.search.ISearchApi;
 import com.fy.navi.service.adapter.search.ISearchResultCallback;
 import com.fy.navi.service.adapter.search.cloud.http.ApiClient;
 import com.fy.navi.service.adapter.search.cloud.http.RxRetrofitClient;
+import com.fy.navi.service.adapter.search.cloudByPatac.api.SearchRepository;
+import com.fy.navi.service.adapter.search.cloudByPatac.req.StationReq;
 import com.fy.navi.service.define.search.ETAInfo;
 import com.fy.navi.service.define.search.PoiInfoEntity;
 import com.fy.navi.service.define.search.SearchRequestParameter;
+import com.fy.navi.service.define.search.TestInfo;
 import com.fy.navi.service.define.utils.BevPowerCarUtils;
+import com.patac.netlib.callback.NetDisposableObserver;
+import com.patac.netlib.exception.ApiException;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.Executor;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
-import rx.Observable;
-import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
+import io.reactivex.Observable;
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 
 
 /**
@@ -243,30 +250,34 @@ public class SearchAdapterImpl extends SearchServiceV2Manager implements ISearch
      */
     @Override
     public int queryStationNewResult(final SearchRequestParameter searchRequestParameter) {
-        final Map<String, String> parameters = new HashMap<>();
-        parameters.put("areaCode", ""); // 城市 （stationList为空必传
-        parameters.put("lat", ""); // 纬度 例:32.489931
-        parameters.put("lng", ""); // 经度 例:119.862440
-        parameters.put("keyWords", ""); // 地址/充电站名称 模糊查询
-        parameters.put("stationList", ""); // 用于用户收藏后查询
-        parameters.put("operatorId", ""); // 运营商ID
-        parameters.put("stationIds", ""); // 充电站ID
-        parameters.put("filterList", ""); // 充电站筛选条
-        parameters.put("filterAttr", ""); // 筛选属性
-        parameters.put("filterValue", ""); // 筛选值
-        parameters.put("stationFlag", ""); // 充电站标识 （A-凯迪拉克专属站,B-奥特能专属站,C类)AB: A&B类站,NAB: 非A/B类站,NA:非A类站
-        parameters.put("distance", ""); // 距离（默认单位：公里）
-        parameters.put("stationType", ""); // 不传或0代表所有，1为仅对外开放(公共站)，2为不对外开放
-        parameters.put("from", ""); // 第N页
-        parameters.put("size", ""); // 每页记录数
-        parameters.put("stationStatus", ""); // 站点状态 0: 未知；1 : 建设中；5: 关闭下线：6: 维护中；50: 正常使用
-        parameters.put("isParkFeeFree", ""); // 停车减免 0：不支持 1：支持
-        parameters.put("carOwnerFlag", ""); // 是否支持公共充电 1：支持
-        parameters.put("internalUse", ""); // 是否内部站 1：是 不传或传空 默认不查询内部站
-        parameters.put("stationTypeFlag", ""); // 场站类型： 商场、写字楼、文体、机场、火车站、景区高速服务区
-        parameters.put("parkType", ""); // 车位情况：侧桩、后桩、混
-        final Observable<PoiInfoEntity> poiInfoEntityObservable = RxRetrofitClient.getInstance().
-                create(ApiClient.class).queryStationNewResult(parameters);
+//        final Map<String, String> parameters = new HashMap<>();
+//        parameters.put("areaCode", ""); // 城市 （stationList为空必传
+//        parameters.put("lat", ""); // 纬度 例:32.489931
+//        parameters.put("lng", ""); // 经度 例:119.862440
+//        parameters.put("keyWords", ""); // 地址/充电站名称 模糊查询
+//        parameters.put("stationList", ""); // 用于用户收藏后查询
+//        parameters.put("operatorId", ""); // 运营商ID
+//        parameters.put("stationIds", ""); // 充电站ID
+//        parameters.put("filterList", ""); // 充电站筛选条
+//        parameters.put("filterAttr", ""); // 筛选属性
+//        parameters.put("filterValue", ""); // 筛选值
+//        parameters.put("stationFlag", ""); // 充电站标识 （A-凯迪拉克专属站,B-奥特能专属站,C类)AB: A&B类站,NAB: 非A/B类站,NA:非A类站
+//        parameters.put("distance", ""); // 距离（默认单位：公里）
+//        parameters.put("stationType", ""); // 不传或0代表所有，1为仅对外开放(公共站)，2为不对外开放
+//        parameters.put("from", ""); // 第N页
+//        parameters.put("size", ""); // 每页记录数
+//        parameters.put("stationStatus", ""); // 站点状态 0: 未知；1 : 建设中；5: 关闭下线：6: 维护中；50: 正常使用
+//        parameters.put("isParkFeeFree", ""); // 停车减免 0：不支持 1：支持
+//        parameters.put("carOwnerFlag", ""); // 是否支持公共充电 1：支持
+//        parameters.put("internalUse", ""); // 是否内部站 1：是 不传或传空 默认不查询内部站
+//        parameters.put("stationTypeFlag", ""); // 场站类型： 商场、写字楼、文体、机场、火车站、景区高速服务区
+//        parameters.put("parkType", ""); // 车位情况：侧桩、后桩、混
+//        final Observable<PoiInfoEntity> poiInfoEntityObservable = RxRetrofitClient.getInstance().
+//                create(ApiClient.class).queryStationNewResult(parameters);
+//        queryStationNewResult(mTaskId.incrementAndGet(), searchRequestParameter, poiInfoEntityObservable);
+        StationReq req = new StationReq("1.0");
+        req.setmAreaCode("");
+        final Observable<TestInfo> poiInfoEntityObservable = SearchRepository.getInstance().queryStationNewResult(req);
         queryStationNewResult(mTaskId.incrementAndGet(), searchRequestParameter, poiInfoEntityObservable);
         return mTaskId.get();
     }
@@ -278,31 +289,19 @@ public class SearchAdapterImpl extends SearchServiceV2Manager implements ISearch
      * @param source     请求参数
      * @param observable 回调监听
      */
-    private void queryStationNewResult(final int taskId, final SearchRequestParameter source, final Observable<PoiInfoEntity> observable) {
+    private void queryStationNewResult(final int taskId, final SearchRequestParameter source, final Observable<TestInfo> observable) {
+        Logger.d("huangli","1: "+observable.toString());
         observable.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<PoiInfoEntity>() {
+                .subscribe(new NetDisposableObserver<TestInfo>() {
                     @Override
-                    public void onStart() {
-                        Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "---onStart......");
+                    public void onSuccess(TestInfo data) {
+                        Logger.d("huangli","data: "+data);
                     }
 
                     @Override
-                    public void onCompleted() {
-                        Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "---onCompleted......");
-                    }
-
-                    @Override
-                    public void onError(final Throwable e) {
-                        Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "---onError......" + e.getMessage());
-                    }
-
-                    @Override
-                    public void onNext(final PoiInfoEntity cloudPoiResultBean) {
-                        Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG,
-                                Thread.currentThread().getName() + "---onNext......"
-                                        + cloudPoiResultBean.toString());
-
+                    public void onFailed(ApiException apiException) {
+                        Logger.d("huangli","Exce: "+apiException);
                     }
                 });
     }
@@ -508,7 +507,8 @@ public class SearchAdapterImpl extends SearchServiceV2Manager implements ISearch
             final SearchRequestParameter searchRequestParameterBuilder) {
         Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "getTravelTimeFutureIncludeChargeLeft remainCharge: "
                 + BevPowerCarUtils.getInstance().initlialHVBattenergy
-                + "maxBattery: " + BevPowerCarUtils.getInstance().maxBattenergy);
+                + "maxBattery: " + BevPowerCarUtils.getInstance().maxBattenergy
+                + "batteryDistance" + BevPowerCarUtils.getInstance().batterToDistanceCarSignal);
         // TODO 后面需要对接真实的能耗模型参数
         final GNavigationEtaqueryRequestParam requestParam = SearchRequestParamV2.getInstance().
                 convertToGNavigationEtaqueryRequestParam(searchRequestParameterBuilder);
@@ -530,8 +530,10 @@ public class SearchAdapterImpl extends SearchServiceV2Manager implements ISearch
                         ? 0f : BevPowerCarUtils.getInstance().initlialHVBattenergy;
                 final float maxBattery = BevPowerCarUtils.getInstance().maxBattenergy < 0
                         ? 90.0f : BevPowerCarUtils.getInstance().maxBattenergy;
+                final double batteryDistance = BevPowerCarUtils.getInstance().batterToDistanceCarSignal > 0 ?
+                        BevPowerCarUtils.getInstance().batterToDistanceCarSignal : BevPowerCarUtils.getInstance().batterToDistance;
                 final float chargeLeft = (float) (((currentBattery
-                                        * BevPowerCarUtils.getInstance().batterToDistance)
+                                        * batteryDistance)
                                         - response.route_list.get(0).path.get(0).distance)
                                         / (maxBattery * BevPowerCarUtils.getInstance().batterToDistance));
                 final int chargeLeftPercent = (int) (chargeLeft * 100);
@@ -543,7 +545,7 @@ public class SearchAdapterImpl extends SearchServiceV2Manager implements ISearch
                         .setLeftCharge(chargeLeftPercent);
                 future.complete(etaInfo);
                 Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "distance:" + etaInfo.getDistance() + " travelTime:"
-                        + etaInfo.getTravelTime()
+                        + etaInfo.getTravelTime() + " batteryDistance: " + batteryDistance
                         + " chargeLeft:" + chargeLeftPercent);
             } else {
                 future.completeExceptionally(new Exception("No valid route data found"));

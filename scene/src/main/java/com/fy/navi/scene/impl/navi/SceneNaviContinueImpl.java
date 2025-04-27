@@ -47,8 +47,7 @@ public class SceneNaviContinueImpl extends BaseSceneModel<SceneNaviContinueView>
     }
 
     public void notifySceneStateChange(final boolean isVisible) {
-        Logger.i(TAG, "notifySceneStateChange", isVisible + " mScreenView.isVisible()：" +
-                mScreenView.isVisible());
+        Logger.i(TAG, "notifySceneStateChange", isVisible + " mScreenView.isVisible()：" + mScreenView.isVisible());
         if (mScreenView.isVisible() == isVisible) return;
         mScreenView.getNaviSceneEvent().notifySceneStateChange((isVisible ?
                         INaviSceneEvent.SceneStateChangeType.SceneShowState :
@@ -60,8 +59,11 @@ public class SceneNaviContinueImpl extends BaseSceneModel<SceneNaviContinueView>
      * @param currentImersiveStatus 沉浸态触摸态回调
      */
     public void onImmersiveStatusChange(final ImersiveStatus currentImersiveStatus) {
-        Logger.i(TAG, "onImmersiveStatusChange currentImersiveStatus：" +
-                currentImersiveStatus);
+        Logger.i(TAG, "onImmersiveStatusChange-currentImersiveStatus：" + currentImersiveStatus + " mImersiveStatus:" + mImersiveStatus
+                + " mIsFixedOverView:" + NaviPackage.getInstance().getFixedOverViewStatus());
+        if (currentImersiveStatus == ImersiveStatus.TOUCH && NaviPackage.getInstance().getFixedOverViewStatus()) {
+            return;
+        }
         if (mImersiveStatus != currentImersiveStatus) {
             mImersiveStatus = currentImersiveStatus;
         } else {
@@ -129,8 +131,6 @@ public class SceneNaviContinueImpl extends BaseSceneModel<SceneNaviContinueView>
 
     public void naviContinue() {
         Logger.i(TAG, "naviContinue");
-        ImmersiveStatusScene.getInstance().setImmersiveStatus(
-                MapType.MAIN_SCREEN_MAIN_MAP, ImersiveStatus.IMERSIVE);
         if (!mNaviPackage.getFixedOverViewStatus()) {
             OpenApiHelper.exitPreview(mMapTypeId);
         }

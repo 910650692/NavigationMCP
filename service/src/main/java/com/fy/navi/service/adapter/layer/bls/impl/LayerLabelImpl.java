@@ -5,7 +5,6 @@ import android.content.Context;
 import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
 import com.autonavi.gbl.layer.BizControlService;
-import com.autonavi.gbl.layer.PopPointLayerItem;
 import com.autonavi.gbl.layer.model.BizLabelType;
 import com.autonavi.gbl.layer.model.BizPopPointBusinessInfo;
 import com.autonavi.gbl.map.MapView;
@@ -15,16 +14,12 @@ import com.autonavi.gbl.map.layer.model.ClickViewIdInfo;
 import com.fy.navi.service.adapter.layer.ILayerAdapterCallBack;
 import com.fy.navi.service.adapter.layer.bls.style.LayerLabelStyleAdapter;
 import com.fy.navi.service.define.bean.GeoPoint;
-import com.fy.navi.service.define.layer.GemLayerClickBusinessType;
-import com.fy.navi.service.define.layer.GemLayerItem;
 import com.fy.navi.service.define.layer.refix.LayerItemLabelResult;
+import com.fy.navi.service.define.layer.refix.LayerItemRoutePointClickResult;
+import com.fy.navi.service.define.layer.refix.LayerPointItemType;
 import com.fy.navi.service.define.map.MapType;
-import com.fy.navi.service.define.utils.NumberUtils;
 
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 public class LayerLabelImpl extends BaseLayerImpl<LayerLabelStyleAdapter> {
 
@@ -47,38 +42,22 @@ public class LayerLabelImpl extends BaseLayerImpl<LayerLabelStyleAdapter> {
     }
 
     private void dispatchClick(LayerItem pItem) {
-        List<ILayerAdapterCallBack> callBacks = getCallBacks();
-        if (ConvertUtils.isEmpty(callBacks)) {
-            Logger.e(TAG, "callBacks is null");
-            return;
-        }
-        Logger.d(TAG, "dispatchClick " + callBacks.size() + " BusinessType " + pItem.getBusinessType());
-        for (int i = NumberUtils.NUM_0; i < callBacks.size(); i++) {
-            GemLayerItem clickResult = getClickResult(pItem);
-            Logger.d(TAG, "dispatchClick clickResult:" + clickResult.toString());
-            callBacks.get(i).onRouteItemClick(getMapType(), clickResult);
-        }
-    }
-
-    private GemLayerItem getClickResult(LayerItem pItem) {
-        GemLayerItem result = new GemLayerItem();
+        LayerPointItemType type = LayerPointItemType.NULL;
+        LayerItemRoutePointClickResult result = new LayerItemRoutePointClickResult();
         switch (pItem.getBusinessType()) {
             case BizLabelType.BizLabelTypeRoutePopSearchPoint -> {
-                if (pItem instanceof PopPointLayerItem popPointLayerItem) {
-                    Logger.d(TAG, "getClickResult BizLabelTypeRoutePopSearchPoint");
-                    result.setClickBusinessType(GemLayerClickBusinessType.BizLabelTypeRoutePopSearchPoint);
-                }
-            }
-            default -> {
-                //待添加其他业务
-                result.setClickBusinessType(GemLayerClickBusinessType.UnKnown);
+                type = LayerPointItemType.ROUTE_POINT_END_PARK;
             }
         }
-        return result;
+        Logger.d(TAG, "dispatchItemClickEvent type = " + type + " ; result = " + result.toString());
+        for (ILayerAdapterCallBack callback : getCallBacks()) {
+            callback.onRouteItemClick(getMapType(), type, result);
+        }
     }
 
     /**
      * 显示终点区域弹出框图层
+     *
      * @param labelResult
      */
     public boolean updatePopSearchPointInfo(LayerItemLabelResult labelResult) {

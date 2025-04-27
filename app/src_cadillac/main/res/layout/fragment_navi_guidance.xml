@@ -14,16 +14,13 @@
 
     <com.fy.navi.ui.view.SkinConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="@dimen/dp_1000">
 
         <com.fy.navi.ui.view.SkinConstraintLayout
             android:id="@+id/navi_scene_container"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:maxHeight="@dimen/dp_1000">
 
             <!--tbt-->
             <com.fy.navi.scene.ui.navi.SceneNaviTbtView
@@ -76,7 +73,7 @@
                 android:id="@+id/scene_navi_via_list"
                 android:layout_width="@dimen/dp_820"
                 android:layout_height="wrap_content"
-                android:background="@drawable/bg_navi_tbt_middle"
+                android:background="@drawable/bg_navi_tbt_bottom"
                 android:paddingTop="@dimen/dp_40"
                 android:visibility="@{ViewModel.mNaviViaListVisibility?View.VISIBLE:View.GONE}"
                 app:layout_constraintStart_toStartOf="@id/scene_navi_tbt"
@@ -129,7 +126,7 @@
             <com.fy.navi.scene.ui.navi.hangingcard.NaviSceneHandingCardDetail
                 android:id="@+id/scene_navi_card_detail"
                 android:layout_width="@dimen/dp_820"
-                android:layout_height="@dimen/dp_376"
+                android:layout_height="@dimen/dp_568"
                 android:layout_marginTop="@dimen/dp_20"
                 android:background="@drawable/bg_navi_btn_common"
                 android:visibility="@{ViewModel.mHandingCardDetailVisibility?View.VISIBLE:View.GONE}"
@@ -140,8 +137,16 @@
                 android:id="@+id/scene_navi_control"
                 android:layout_width="@dimen/dp_820"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/dp_180"
                 android:visibility="@{ViewModel.mNaviControlVisibility?View.VISIBLE:View.GONE}"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <!--控制tools more-->
+            <com.fy.navi.scene.ui.navi.SceneNaviControlMoreView
+                android:id="@+id/scene_navi_control_more"
+                android:layout_width="@dimen/dp_820"
+                android:layout_height="wrap_content"
+                android:visibility="@{ViewModel.mNaviControlVisibilityMore?View.VISIBLE:View.GONE}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />
 
@@ -179,14 +184,14 @@
             <com.fy.navi.scene.ui.navi.view.ButtonText
                 android:id="@+id/stv_navi_route_name"
                 android:layout_width="wrap_content"
-                android:layout_height="@dimen/dp_92"
-                android:layout_marginStart="@dimen/dp_365"
+                android:layout_height="@dimen/dp_120"
+                android:layout_marginStart="@dimen/dp_713"
                 android:background="@drawable/bg_navi_control"
                 android:clickable="false"
                 android:gravity="center"
-                android:paddingHorizontal="@dimen/dp_26"
+                android:paddingHorizontal="@dimen/dp_40"
                 android:textColor="@color/common_title_purple_color"
-                android:textSize="@dimen/sp_34"
+                android:textSize="@dimen/sp_46"
                 android:visibility="@{ViewModel.mNaviRouteNameVisibility?View.VISIBLE:View.GONE}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@id/scene_navi_tbt"
@@ -257,9 +262,9 @@
         <!--继续导航按钮-->
         <com.fy.navi.scene.ui.navi.SceneNaviContinueView
             android:id="@+id/scene_navi_continue"
-            android:layout_width="@dimen/dp_310"
-            android:layout_height="@dimen/dp_92"
-            android:layout_marginStart="@dimen/dp_920"
+            android:layout_width="@dimen/dp_410"
+            android:layout_height="@dimen/dp_120"
+            android:layout_marginStart="@dimen/dp_1460"
             android:visibility="@{ViewModel.mNaviContinueVisibility?View.VISIBLE:View.GONE}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent" />

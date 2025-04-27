@@ -71,7 +71,7 @@ public class RouteResultAdapter extends RecyclerView.Adapter<RouteResultAdapter.
         final int index = position;
         setSelectStatus(holder, mCurrentIndex == position);
         holder.mRouteLineInfoResultItemBinding.routeItemNum.setText("" + (position + NumberUtils.NUM_1));
-        holder.mRouteLineInfoResultItemBinding.itemRootView.setOnClickListener(v -> {
+        holder.mRouteLineInfoResultItemBinding.itemRootViewBg.setOnClickListener(v -> {
             final boolean isSelectIndex = mCurrentIndex == index;
             if (mItemClickListener != null) {
                 mItemClickListener.onItemClick(position, isSelectIndex);

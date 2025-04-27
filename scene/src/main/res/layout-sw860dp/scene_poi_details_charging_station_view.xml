@@ -19,18 +19,22 @@
 
         <com.fy.navi.ui.view.SkinConstraintLayout
             android:id="@+id/poi_charge_layout"
-            android:layout_width="wrap_content"
+            android:layout_width="@dimen/dp_560"
             android:layout_height="wrap_content"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
             <com.fy.navi.ui.view.SkinConstraintLayout
                 android:id="@+id/poi_charge_fast_layout"
-                android:layout_width="@dimen/dp_268"
+                android:layout_width="@dimen/dp_0"
+                app:layout_constraintHorizontal_weight="1"
+                android:minWidth="@dimen/dp_268"
+                tools:visibility="visible"
                 android:layout_height="@dimen/dp_104"
                 android:layout_marginTop="@dimen/dp_4"
                 android:background="@drawable/bg_charge_number_item"
                 app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/poi_charge_slow_layout"
                 app:layout_constraintTop_toTopOf="parent">
 
                 <com.fy.navi.ui.view.SkinTextView
@@ -91,12 +95,17 @@
 
             <com.fy.navi.ui.view.SkinConstraintLayout
                 android:id="@+id/poi_charge_slow_layout"
-                android:layout_width="@dimen/dp_268"
+                android:layout_width="@dimen/dp_0"
+                app:layout_constraintHorizontal_weight="1"
+                android:minWidth="@dimen/dp_268"
+                tools:visibility="visible"
                 android:layout_height="@dimen/dp_104"
                 android:layout_marginStart="@dimen/dp_24"
+                app:layout_goneMarginStart="@dimen/dp_0"
                 android:layout_marginTop="@dimen/dp_4"
                 android:background="@drawable/bg_charge_number_item"
                 app:layout_constraintStart_toEndOf="@+id/poi_charge_fast_layout"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
                 <com.fy.navi.ui.view.SkinTextView
@@ -240,7 +249,6 @@
             android:layout_width="@dimen/dp_0"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_16"
-            android:maxLines="1"
             android:textColor="@color/text_route_defult"
             android:textSize="@dimen/sp_30"
             app:layout_constraintStart_toStartOf="parent"

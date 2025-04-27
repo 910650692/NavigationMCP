@@ -1,6 +1,5 @@
 package com.fy.navi.service.adapter.engine;
 
-import androidx.work.ListenableWorker;
 
 import com.fy.navi.service.define.engine.GaodeLogLevel;
 import com.fy.navi.service.define.map.MapType;
@@ -19,15 +18,14 @@ public interface IEngineApi {
     void addInitEnginObserver(EngineObserver observer);
 
     /**
-     * 添加激活观察者
-     * @param observer ActivateObserver
+     * 初始化BaseLib
      */
-    void addActivateObserver(ActivateObserver observer);
+    void initBaseLibs();
 
     /**
-     * 初始化引擎
+     * 初始化BLLib
      */
-    void initEngine();
+    void initBL();
 
     /**
      * 获取引擎id
@@ -66,18 +64,6 @@ public interface IEngineApi {
      * 反初始化引擎
      */
     void unInit();
-
-    /**
-     * 重试网络激活
-     */
-    void netActivateRetry();
-
-    /**
-     * 手动激活
-     * @param loginCode 激活码
-     * @param userCode 序列号
-     */
-    void manualActivate(String userCode, String loginCode);
 
     /**
      * 获取sdk版本

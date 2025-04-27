@@ -10,13 +10,15 @@ import com.fy.navi.service.define.layer.refix.DynamicLevelMode;
 import com.fy.navi.service.define.layer.refix.LayerItemCrossEntity;
 import com.fy.navi.service.define.layer.refix.LayerItemLabelResult;
 import com.fy.navi.service.define.layer.refix.LayerItemRouteEndPoint;
+import com.fy.navi.service.define.layer.refix.LayerItemRouteOdd;
 import com.fy.navi.service.define.layer.refix.LayerItemSearchResult;
 import com.fy.navi.service.define.layer.refix.LayerItemUserFavorite;
 import com.fy.navi.service.define.layer.refix.LayerItemUserTrackDepth;
-import com.fy.navi.service.define.layer.refix.LayerSearchItemType;
+import com.fy.navi.service.define.layer.refix.LayerPointItemType;
 import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.navi.NaviParkingEntity;
 import com.fy.navi.service.define.route.RequestRouteResult;
+import com.fy.navi.service.define.route.RouteAlterChargeStationInfo;
 import com.fy.navi.service.define.search.PoiInfoEntity;
 
 import java.util.ArrayList;
@@ -41,8 +43,14 @@ public interface ILayerApi {
     /* 绘制路线 */
     void drawRouteLine(MapType mapTypeId, RequestRouteResult routeResult);
 
+    /* 路线替换补能扎标 */
+    void updateRouteReplaceChargePoints(MapType mapTypeId, ArrayList<RouteAlterChargeStationInfo> chargeStationInfos);
+
     /*更新终点扎标数据*/
     void updateRouteEndPoint(MapType mapTypeId, LayerItemRouteEndPoint endPoint);
+
+    /* 更新Odd信息 */
+    void updateOddInfo(MapType mapTypeId, ArrayList<LayerItemRouteOdd> oddInfoList, long pathId);
 
     /* 选择路线 */
     void setSelectedPathIndex(MapType mapTypeId, int routeIndex);
@@ -149,10 +157,10 @@ public interface ILayerApi {
     /*========================================= 搜索图层接口定义=========================================*/
 
     /*搜索结果POI获取焦点*/
-    void selectSearchPoi(MapType mapTypeId, LayerSearchItemType type, int index);
+    void selectSearchPoi(MapType mapTypeId, LayerPointItemType type, int index);
 
     /* 搜索图层扎标接口 */
-    boolean updateSearchMarker(MapType mapTypeId, LayerSearchItemType type, LayerItemSearchResult searchResult, boolean clearOtherLayerItem);
+    boolean updateSearchMarker(MapType mapTypeId, LayerPointItemType type, LayerItemSearchResult searchResult, boolean clearOtherLayerItem);
 
     /*父点+子点+中心点+出入口*/
     boolean addLayerItemOfSearchResult(MapType mapTypeId, LayerItemSearchResult searchResult, boolean clearOtherLayerItem);
@@ -167,7 +175,7 @@ public interface ILayerApi {
     void clearAllSearchLayerItems(MapType mapTypeId);
 
     /*清除搜索POI扎标*/
-    void clearSearchPOILayerItems(MapType mapTypeId, LayerSearchItemType searchItemType);
+    void clearSearchPOILayerItems(MapType mapTypeId, LayerPointItemType searchItemType);
 
     /*========================================= 搜索图层接口定义=========================================*/
 
@@ -178,6 +186,13 @@ public interface ILayerApi {
 
     /* 设置车标模式 */
     void setCarMode(MapType mapTypeId, CarModeType carMode);
+
+    /***
+     * 获取当前屏幕的车标模式
+     * @param mapTypeId
+     * @return
+     */
+    CarModeType getCarModeType(MapType mapTypeId);
 
     /* 设置车标预览模式 */
     void setPreviewMode(MapType mapTypeId, boolean bPreview);
@@ -254,5 +269,11 @@ public interface ILayerApi {
 
     /*清除扎标*/
     void clearLabelItem(MapType mapTypeId);
+
+    /***
+     * 设置走过的路线是否置灰
+     * @param isSetGray
+     */
+    void setPassGray(MapType mapTypeId, boolean isSetGray);
     /*=========================================↑ 扎标图层 ↑=========================================*/
 }

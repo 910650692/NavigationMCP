@@ -290,18 +290,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/test_select_text_bg1" />
 
-    <TextView
-        android:id="@+id/test_so_lib"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_27"
-        android:textSize="@dimen/sp_20"
-        android:textColor="@color/black"
-        android:background="@color/white"
-        app:layout_constraintBottom_toBottomOf="@+id/test_foreground_text"
-        app:layout_constraintStart_toEndOf="@+id/test_foreground_text"
-        app:layout_constraintTop_toTopOf="@+id/test_foreground_text" />
-
     <com.fy.navi.ui.view.SkinTextView
         android:id="@+id/test_text_marquee"
         android:layout_width="@dimen/dp_250"
@@ -404,6 +392,17 @@
         app:layout_constraintTop_toTopOf="@+id/test_nav_log"
         android:layout_marginStart="@dimen/dp_20"
         app:layout_constraintBottom_toBottomOf="@+id/test_nav_log"/>
+
+    <TextView
+        android:id="@+id/test_version"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_20"
+        android:background="@color/white"
+        android:textColor="@color/black"
+        android:textSize="@dimen/sp_20"
+        app:layout_constraintStart_toEndOf="@+id/test_nai_log_level"
+        app:layout_constraintTop_toTopOf="@+id/test_nai_log_level" />
 
     <com.fy.navi.ui.view.SkinCheckBox
         android:id="@+id/test_gaode_log"

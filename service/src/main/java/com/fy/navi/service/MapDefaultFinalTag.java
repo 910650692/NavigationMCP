@@ -11,6 +11,8 @@ public interface MapDefaultFinalTag {
      String INIT_SERVICE_TAG = DEFAULT_TAG + "_Init" + SERVICE_TAG;
     /*** NaviApp_Engine_Service **/
      String ENGINE_SERVICE_TAG = DEFAULT_TAG + "_Engine" + SERVICE_TAG;
+    /*** NaviApp_Activate_Service **/
+    String ACTIVATE_SERVICE_TAG = DEFAULT_TAG + "_Activate" + SERVICE_TAG;
     /*** NaviApp_Map_Service **/
      String MAP_SERVICE_TAG = DEFAULT_TAG + "_Map" + SERVICE_TAG;
     /*** NaviApp_Route_Service **/

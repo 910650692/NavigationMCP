@@ -44,11 +44,5 @@ public interface ISceneNaviControl {
      */
     void showMain();
 
-    ObservableField<Boolean> getControlField();
-
-    ObservableField<Boolean> getGroupOneField();
-
-    ObservableField<Boolean> getGroupTwoField();
-
     ObservableField<Boolean> getGroupMoreSetupField();
 }

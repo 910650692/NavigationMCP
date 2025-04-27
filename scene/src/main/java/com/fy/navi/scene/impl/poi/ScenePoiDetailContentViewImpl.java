@@ -193,7 +193,7 @@ public class ScenePoiDetailContentViewImpl extends BaseSceneModel<ScenePoiDetail
      * @param itemId 收藏点唯一码
      */
     public void deleteFavoriteData(final String itemId) {
-        mBehaviorPackage.deleteFavoriteData(itemId);
+//        mBehaviorPackage.deleteFavoriteData(itemId);
     }
 
     /**

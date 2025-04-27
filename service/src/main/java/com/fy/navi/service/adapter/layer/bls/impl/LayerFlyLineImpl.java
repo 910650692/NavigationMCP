@@ -59,12 +59,11 @@ public class LayerFlyLineImpl extends BaseLayerImpl<LayerFlyLineStyleAdapter> im
                 @Override
                 public void run() {
                     for (ILayerAdapterCallBack callBack : getCallBacks()) {
-                        Logger.e(TAG, "onMapMoveEnd-LayerFlyLineImpl:" + Thread.currentThread().getName());
                         callBack.onFlyLineMoveEnd(getMapType(), descPoint);
                     }
                 }
             });
         }
-        return true;
+        return getLayerFlyLineControl().getVisible(BizFlyLineType.BizFlyLineTypePoint);
     }
 }

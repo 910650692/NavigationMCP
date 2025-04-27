@@ -1,6 +1,5 @@
 package com.fy.navi.hmi.map;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -9,11 +8,10 @@ import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.view.WindowCompat;
 
 import com.android.utils.ConvertUtils;
-import com.android.utils.ScreenUtils;
+import com.android.utils.ThemeUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
 import com.fy.navi.burypoint.anno.HookMethod;
@@ -28,7 +26,9 @@ import com.fy.navi.hmi.test.TestWindow;
 import com.fy.navi.mapservice.bean.INaviConstant;
 import com.fy.navi.service.define.cruise.CruiseInfoEntity;
 import com.fy.navi.service.define.map.IBaseScreenMapView;
+import com.fy.navi.service.define.map.MainScreenMapView;
 import com.fy.navi.service.define.map.MapType;
+import com.fy.navi.service.define.map.ThemeType;
 import com.fy.navi.service.define.navi.LaneInfoEntity;
 import com.fy.navi.service.define.route.RouteLightBarItem;
 import com.fy.navi.service.define.search.PoiInfoEntity;
@@ -46,6 +46,9 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
     private static final String TAG = "MapActivity";
     private long lastClickTime = 0;
     private int testClickNum = 0;
+    private static final String KEY_CHANGE_SAVE_INSTANCE = "key_change_save_instance";
+    private MainScreenMapView mapView;
+
     @Override
     @HookMethod(eventName = BuryConstant.EventName.AMAP_OPEN)
     public void onCreateBefore() {
@@ -159,9 +162,25 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
     public void onConfigurationChanged(@NonNull Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         Logger.i(TAG, "current nightMode: " + newConfig.uiMode);
-        @SuppressLint("WrongConstant") int currentMode = newConfig.uiMode & Configuration.UI_MODE_NIGHT_MASK;
-        mViewModel.updateUiStyle(MapType.MAIN_SCREEN_MAIN_MAP, currentMode);
+        mViewModel.updateUiStyle(MapType.MAIN_SCREEN_MAIN_MAP, ThemeUtils.INSTANCE.isNightModeEnabled(this) ? ThemeType.NIGHT : ThemeType.DAY);
         recreate();
+    }
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if (!ConvertUtils.isEmpty(outState)) {
+            outState.putBoolean(KEY_CHANGE_SAVE_INSTANCE, true);
+        }
+    }
+
+    @Override
+    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        if (!ConvertUtils.isEmpty(savedInstanceState)) {
+            boolean isNeedToUpdateData = savedInstanceState.getBoolean(KEY_CHANGE_SAVE_INSTANCE);
+            //todo 页面恢复，请恢复数据
+        }
     }
 
     @Override
@@ -278,7 +297,16 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
     protected void onFragmentSizeChanged() {
         super.onFragmentSizeChanged();
         mViewModel.stopCruise();
+        setMapFocusable(false);
     }
+
+    public void setMapFocusable(boolean b) {
+        if (ConvertUtils.isEmpty(mapView)) {
+            mapView = (MainScreenMapView) getMapView();
+        }
+        mapView.setFocusable(b);
+    }
+
 
     public void updateCruiseRoadName(CruiseInfoEntity cruiseInfoEntity) {
         if (ConvertUtils.isNull(cruiseInfoEntity) || ConvertUtils.isEmpty(cruiseInfoEntity.roadName)) {

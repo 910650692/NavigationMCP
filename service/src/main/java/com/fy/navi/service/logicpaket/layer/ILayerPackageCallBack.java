@@ -1,11 +1,8 @@
 package com.fy.navi.service.logicpaket.layer;
 
 import com.fy.navi.service.define.bean.GeoPoint;
-import com.fy.navi.service.define.layer.GemBaseLayer;
-import com.fy.navi.service.define.layer.GemLayerItem;
-import com.fy.navi.service.define.layer.refix.LayerItemLabelResult;
-import com.fy.navi.service.define.layer.refix.LayerItemSearchResult;
-import com.fy.navi.service.define.layer.refix.LayerSearchItemType;
+import com.fy.navi.service.define.layer.refix.LayerItemRoutePointClickResult;
+import com.fy.navi.service.define.layer.refix.LayerPointItemType;
 import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.search.PoiInfoEntity;
 
@@ -16,14 +13,10 @@ import com.fy.navi.service.define.search.PoiInfoEntity;
  */
 public interface ILayerPackageCallBack {
 
-    default void onNotifyClick(MapType mapTypeId, GemBaseLayer layer, GemLayerItem pItem) {
+    default void onSearchItemClick(MapType mapTypeId, LayerPointItemType type, int index) {
     }
 
-
-    default void onSearchItemClick(MapType mapTypeId, LayerSearchItemType type, int index) {
-    }
-
-    default void onRouteItemClick(MapType mapTypeId, GemLayerItem pItem) {
+    default void onRouteItemClick(MapType mapTypeId, LayerPointItemType type, LayerItemRoutePointClickResult result) {
     }
 
     default void onFavoriteClick(MapType mapTypeId,PoiInfoEntity poiInfo) {

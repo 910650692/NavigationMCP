@@ -19,8 +19,8 @@
 
         <com.fy.navi.ui.view.SkinImageView
             android:id="@+id/main_img"
-            android:layout_width="@dimen/dp_3000"
-            android:layout_height="@dimen/dp_1000"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:scaleType="fitXY"
             android:src="@drawable/starting_bg"
             app:layout_constraintBottom_toBottomOf="parent"

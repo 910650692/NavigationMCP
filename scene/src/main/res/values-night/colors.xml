@@ -123,7 +123,10 @@
     <color name="navi_color_383839_100">#D2D3D7</color>
     <color name="navi_color_F1B341_100">#EBA21B</color>
     <color name="navi_color_000000_20">#33FFFFFF</color>
+    <color name="navi_color_000000_70">#B3FFFFFF</color>
+    <color name="navi_color_8E97B9_20">#FF2C2D36</color>
     <color name="navi_color_icon_park">#FFFFFF</color>
+    <color name="navi_color_000000_100">#FFFFFFFF</color>
 
     <!--悬挂卡-->
     <color name="card_delete_bg_color">#66ffffff</color>
@@ -147,5 +150,9 @@
 
     <color name="handing_card_fold_color">#66151414</color>
     <color name="handing_card_fold_indicator_color">#FF2C2D36</color>
+    <color name="poi_type_text_color">#FF1E1F26</color>
+    <color name="charge_price_type_bg">#FF1E1F26</color>
+    <color name="charge_reservation_button_color">#B3FFFFFF</color>
+    <color name="bg_charge_price_root_color">#26B2AFC2</color>
 
 </resources>

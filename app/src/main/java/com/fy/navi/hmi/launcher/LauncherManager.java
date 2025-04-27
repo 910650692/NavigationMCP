@@ -9,6 +9,8 @@ import androidx.core.app.ActivityCompat;
 
 import com.android.utils.log.Logger;
 import com.fy.navi.NaviService;
+import com.fy.navi.burypoint.anno.HookMethod;
+import com.fy.navi.burypoint.constant.BuryConstant;
 import com.fy.navi.hmi.map.MapActivity;
 import com.fy.navi.mapservice.bean.INaviConstant;
 import com.fy.navi.service.AppContext;
@@ -44,6 +46,7 @@ public class LauncherManager {
     /***
      * 启动Navi_App
      */
+    @HookMethod(eventName = BuryConstant.EventName.AMAP_WIDGET_ENTERAPP)
     public void startMapActivity(int pageCode) {
         Logger.i(TAG, "startMapActivity:" + pageCode);
         Intent intent = new Intent(AppContext.getInstance().getMContext(), MapActivity.class);
@@ -55,6 +58,7 @@ public class LauncherManager {
     /***
      * 启动Navi_App
      */
+    @HookMethod(eventName = BuryConstant.EventName.AMAP_WIDGET_ENTERAPP)
     public void startMapActivity(int pageCode, @Nullable PoiInfoEntity poiInfo) {
         Logger.i(TAG, "startMapActivity:" + pageCode);
         Intent intent = new Intent(AppContext.getInstance().getMContext(), MapActivity.class);

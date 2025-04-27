@@ -10,6 +10,7 @@ import com.fy.navi.service.define.map.MapMode;
 import com.fy.navi.service.define.map.MapStateStyle;
 import com.fy.navi.service.define.map.MapViewParams;
 import com.fy.navi.service.define.map.MapType;
+import com.fy.navi.service.define.map.ThemeType;
 import com.fy.navi.service.define.mfc.MfcController;
 
 import java.util.ArrayList;
@@ -162,8 +163,8 @@ public class MapAdapter {
         mIMapApi.exitPreview(mapTypeId);
     }
 
-    public void updateUiStyle(MapType mapTypeId, int uiMode) {
-        mIMapApi.updateUiStyle(mapTypeId, uiMode);
+    public void updateUiStyle(MapType mapTypeId, ThemeType type) {
+        mIMapApi.updateUiStyle(mapTypeId, type);
     }
 
     // 搜索需要的对角线参数

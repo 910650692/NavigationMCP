@@ -1,22 +1,24 @@
 package com.fy.navi.burypoint;
 
 import android.content.Context;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 
-import com.android.utils.log.Logger;
-import com.bigtimes.sdk.AlarmModeEnum;
-import com.bigtimes.sdk.BuriedPointModeEnum;
-import com.bigtimes.sdk.ModeEnum;
-import com.bigtimes.sdk.OASAPI;
-import com.sensorsdata.analytics.android.sdk.SAConfigOptions;
-import com.sensorsdata.analytics.android.sdk.SensorsDataAPI;
+import com.fy.navi.burypoint.constant.BuryConstant;
 
-import org.json.JSONObject;
+import patac.manager.datatrack.PatacDataTrackManager;
 
 public class BuryManager {
 
     private static final String TAG = "BuryManager";
 
     private static volatile BuryManager instance;
+
+    private static final String APP_INIT_VERSION_NAME = "0.1";
+    private static String mAppVersionName = APP_INIT_VERSION_NAME;
+    private PatacDataTrackManager mPatacDataTrackManager = null;
+    private Context context;
+    private boolean isCar = false;
 
     public static BuryManager getInstance(){
         if (instance == null){
@@ -29,48 +31,45 @@ public class BuryManager {
         return instance;
     }
 
-    public void initSensorsDataAPI(final Context context){
-        SAConfigOptions configOptions = new SAConfigOptions();
-
-        // 设置埋点模式
-        // UNIFIED_SERVICE：统一服务
-        // INTEGRATION：独立集成）
-        configOptions.buriedPointMode(BuriedPointModeEnum.INTEGRATION);
-
-        // 设置SDK的模式，如DEV PROD等
-        // DEV模式为开发模式，能够输出调试信息，使用枚举定义这两种模式
-        configOptions.mode(ModeEnum.DEV);
-
-        // 设置预警
-        configOptions.alarm(AlarmModeEnum.LOG);
-
-        // 每缓存 ？ 条日志发送一次
-        configOptions.setFlushBulkSize(50);
-        // 设置每 ？ 毫秒发送一次
-        configOptions.setFlushInterval(5 * 1000);
-        // 设置本地数据缓存上限值为 16 MB
-        configOptions.setMaxCacheSize(16 * 1024 * 1024);
-        configOptions.enableLog(true);
-
-        // 初始化 SDK
-        OASAPI.startWithConfigOptions(context, configOptions);
-
-        setUniqueAttributes();
+    public void initPatacDataTrackManager(Context context, boolean isCar){
+        this.isCar = isCar;
+        if(!isCar) return;
+        this.context = context;
+        mPatacDataTrackManager = PatacDataTrackManager.getInstance(context);
     }
 
-    private void setUniqueAttributes(){
-        SensorsDataAPI gapi = OASAPI.sharedInstance();
-//        gapi.setBasicAuth("A00000014", "$NA(5?[");
-        gapi.setBasicAuth("paih2p", "Nxq60883#");
-        gapi.setVin("A20");
-        gapi.setHardwareVersion("v1.0");
-        String channel = "channel_+++";
-        String encodedChannel = OASAPI.sharedInstance().encryptData(channel, "123");
-        gapi.setChannel(encodedChannel);
-        JSONObject presetProperties = gapi.getPresetProperties();
-        JSONObject superProps = gapi.getSuperProperties();
-        Logger.i(TAG, "presetProperties: " + presetProperties.toString());
-        Logger.i(TAG, "superProps: " + superProps.toString());
+    public PatacDataTrackManager getPatacDataTrackManager() {
+        return mPatacDataTrackManager;
+    }
+
+    public String getSid(){
+        return BuryConstant.Model.S_ID;
+    }
+
+    public String getSvid(){
+        return BuryConstant.Model.S_VID;
+    }
+
+    public String getAppId(){
+        return BuryConstant.Model.APP_ID;
+    }
+
+    public boolean getCar() {
+        return isCar;
+    }
+
+    public String getAppVersion() {
+        if (!APP_INIT_VERSION_NAME.equals(mAppVersionName)) {
+            // 初始化第一次的时候才获取应用版本号
+            return mAppVersionName;
+        }
+        try {
+            PackageInfo info = context.getPackageManager().getPackageInfo(context.getPackageName(), PackageManager.GET_CONFIGURATIONS);
+            mAppVersionName = info.versionName;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        return mAppVersionName;
     }
 
 }

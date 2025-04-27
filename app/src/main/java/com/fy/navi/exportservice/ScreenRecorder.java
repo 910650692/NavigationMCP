@@ -20,10 +20,10 @@ import android.media.projection.MediaProjectionManager;
 import android.os.Build;
 import android.os.IBinder;
 import android.util.DisplayMetrics;
-import android.util.Log;
 
 import androidx.annotation.Nullable;
 
+import com.android.utils.log.Logger;
 import com.fy.navi.fsa.R;
 import com.fy.navi.hud.VTBinder;
 import com.fy.navi.service.define.navistatus.NaviStatus;
@@ -36,6 +36,7 @@ import java.nio.ByteBuffer;
 import java.util.Objects;
 
 public class ScreenRecorder extends Service {
+
     private MediaProjectionManager mMediaProjectionManager;
     private MediaProjection mMediaProjection;
     private ImageReader mImageReader;
@@ -111,7 +112,7 @@ public class ScreenRecorder extends Service {
         mMediaProjectionManager = (MediaProjectionManager) getSystemService(Context.MEDIA_PROJECTION_SERVICE);
         mMediaProjection = mMediaProjectionManager.getMediaProjection(resultCode, Objects.requireNonNull(resultData));
 
-        Log.i(TAG, "mMediaProjection created: " + mMediaProjection);
+        Logger.i(TAG, "mMediaProjection created: " + mMediaProjection);
 
         final DisplayMetrics metrics = getResources().getDisplayMetrics();
         mDensity = metrics.densityDpi;
@@ -144,15 +145,15 @@ public class ScreenRecorder extends Service {
      * 初始化
      */
     public void init() {
-        Log.d(TAG, "service init");
+        Logger.d(TAG, "service init");
         if (!VTServerBQJni.getInstance().isIsSuccessLoadLibrary()) {
-            Log.d(TAG, "the so library failed to load");
+            Logger.d(TAG, "the so library failed to load");
             return;
         }
 
         // 1. NativeInitialize
         final int ret = VTServerBQJni.getInstance().nativeInitialize();
-        Log.d(TAG, "NativeInitialize ret is " + ret);
+        Logger.d(TAG, "NativeInitialize ret is " + ret);
 
         // 2. NativeSetVideoDescription
         final VTDescription description = new VTDescription();
@@ -160,20 +161,20 @@ public class ScreenRecorder extends Service {
         description.height = mHeight;
         description.videoFormat = 0x901001;  // PixelFormat.RGBA_8888;
         VTServerBQJni.getInstance().nativeSetVideoDescription(description);
-        Log.d(TAG, "NativeSetVideoDescription");
+        Logger.d(TAG, "NativeSetVideoDescription");
     }
 
     /**
      * 开始
      */
     public void start() {
-        Log.d(TAG, "service start");
+        Logger.d(TAG, "service start");
         if (!mStartFlag) {
             mStartFlag = true;
 
             // 3. NativeStart
             final int ret = VTServerBQJni.getInstance().nativeStart();
-            Log.d(TAG, "service start NativeStart ret is " + ret);
+            Logger.d(TAG, "service start NativeStart ret is " + ret);
         }
     }
 
@@ -181,13 +182,13 @@ public class ScreenRecorder extends Service {
      * 停止
      */
     public void stop() {
-        Log.d(TAG, "service stop");
+        Logger.d(TAG, "service stop");
         if (mStartFlag) {
             mStartFlag = false;
 
             // 4. NativeStop
             final int ret = VTServerBQJni.getInstance().nativeStop();
-            Log.d(TAG, "service stop NativeStop ret is " + ret);
+            Logger.d(TAG, "service stop NativeStop ret is " + ret);
         }
     }
 
@@ -195,7 +196,7 @@ public class ScreenRecorder extends Service {
      * 销毁
      */
     public void uninit() {
-        Log.d(TAG, "service uninit");
+        Logger.d(TAG, "service uninit");
 
         // 6. NativeUninitialize
         VTServerBQJni.getInstance().nativeUninitialize();
@@ -214,7 +215,7 @@ public class ScreenRecorder extends Service {
             ++mCodeNum;
         }
         VTServerBQJni.getInstance().nativeNotifyError(mCodeNum, "test error code");
-        Log.d(TAG, "service notify error[" + mCodeNum + "]");
+        Logger.d(TAG, "service notify error[" + mCodeNum + "]");
     }
 
     // Binder

@@ -1,8 +1,15 @@
 package com.fy.navi.service.adapter.user.usertrack;
 
+import android.text.TextUtils;
+
+import com.android.utils.gson.GsonUtils;
 import com.fy.navi.service.AdapterConfig;
+import com.fy.navi.service.define.code.UserDataCode;
+import com.fy.navi.service.define.user.account.AccountProfileInfo;
 import com.fy.navi.service.define.user.usertrack.DrivingRecordDataBean;
+import com.fy.navi.service.define.user.usertrack.HistoryRouteItemBean;
 import com.fy.navi.service.define.user.usertrack.SearchHistoryItemBean;
+import com.fy.navi.service.greendao.CommonManager;
 
 import java.util.ArrayList;
 import java.util.Objects;
@@ -12,9 +19,12 @@ public final class UserTrackAdapter {
     private static final String CLASS_API_PKG = Objects.requireNonNull(UserTrackAdapter.class.getPackage()).getName();
     private static final String CLASS_API_NAME = "UserTrackImpl";
     private final IUserTrackApi mUserTrackApi;
+    private final CommonManager mCommonManager;
 
     private UserTrackAdapter() {
         mUserTrackApi = (IUserTrackApi) AdapterConfig.getObject(CLASS_API_PKG, CLASS_API_NAME);
+        mCommonManager = CommonManager.getInstance();
+        mCommonManager.init();
     }
 
     /**
@@ -49,6 +59,22 @@ public final class UserTrackAdapter {
     }
 
     /**
+     * 判断是否登录
+     * @return 是否登录
+     */
+    public boolean isLogin() {
+        final AccountProfileInfo info;
+        final String valueJson = mCommonManager.getValueByKey(UserDataCode.SETTING_GET_USERINFO);
+        if (!TextUtils.isEmpty(valueJson)) {
+            info = GsonUtils.fromJson(valueJson, AccountProfileInfo.class);
+            if (info != null) {
+                return !TextUtils.isEmpty(info.getUid());
+            }
+        }
+        return false;
+    }
+
+    /**
      * 获取搜索历史记录列表
      * @return 搜索历史记录列表
      */
@@ -76,11 +102,44 @@ public final class UserTrackAdapter {
 
     /**
      * 删除所有搜索历史记录
-     * @param mode 同步方式
      * @return 删除结果
      */
-    public int clearSearchHistory(final int mode){
-        return mUserTrackApi.clearSearchHistory(mode);
+    public int clearSearchHistory(){
+        return mUserTrackApi.clearSearchHistory();
+    }
+
+    /**
+     * 获取历史路线列表
+     * @return 历史路线列表
+     */
+    public ArrayList<HistoryRouteItemBean> getHistoryRoute() {
+        return mUserTrackApi.getHistoryRoute();
+    }
+
+    /**
+     * 添加历史路线
+     * @param item 历史路线
+     * @return 添加结果
+     */
+    public int addHistoryRoute(final HistoryRouteItemBean item) {
+        return mUserTrackApi.addHistoryRoute(item);
+    }
+
+    /**
+     * 删除历史路线
+     * @param bean 历史路线名称
+     * @return 删除结果
+     */
+    public int delHistoryRoute(final HistoryRouteItemBean bean) {
+        return mUserTrackApi.delHistoryRoute(bean);
+    }
+
+    /**
+     * 删除历史路线
+     * @return 删除结果
+     */
+    public int clearHistoryRoute() {
+        return mUserTrackApi.clearHistoryRoute();
     }
 
     /**

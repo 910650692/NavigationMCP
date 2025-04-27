@@ -2,10 +2,12 @@ package com.fy.navi.scene.impl.search;
 
 import android.os.Bundle;
 
+import com.android.utils.log.Logger;
 import com.fy.navi.scene.BaseSceneModel;
 import com.fy.navi.scene.api.search.ISceneQuickSearchView;
 import com.fy.navi.scene.ui.search.SceneQuickSearchView;
 import com.fy.navi.service.AutoMapConstant;
+import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.adapter.navi.NaviConstant;
 import com.fy.navi.service.logicpaket.search.SearchPackage;
 import com.fy.navi.ui.base.StackManager;
@@ -25,7 +27,7 @@ public class SceneQuickSearchViewImpl extends BaseSceneModel<SceneQuickSearchVie
     @Override
     public void closeSearch(final int type) {
         if (type == AutoMapConstant.SearchType.AROUND_SEARCH) {
-            StackManager.getInstance().getCurrentFragment(mMapTypeId.name()).closeAllFragment();
+            StackManager.getInstance().getCurrentFragment(mMapTypeId.name()).closeAllFragmentsUntilTargetFragment("AroundSearchFragment");
         } else {
             StackManager.getInstance().getCurrentFragment(mMapTypeId.name()).closeFragment(true);
         }
@@ -38,5 +40,14 @@ public class SceneQuickSearchViewImpl extends BaseSceneModel<SceneQuickSearchVie
         bundle.putInt(NaviConstant.NAVI_CONTROL, 1);
         StackManager.getInstance().getCurrentFragment(mMapTypeId.name()).closeFragment(bundle);
         mSearchPackage.clearLabelMark();
+    }
+
+    /**
+     * 预搜索
+     * @param key 关键字
+     */
+    public void suggestionSearch(final String key) {
+        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "suggestionSearch  key:" + key);
+        mSearchPackage.suggestionSearch(key);
     }
 }

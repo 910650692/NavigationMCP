@@ -1,0 +1,309 @@
+package com.fy.navi.service.adapter.activate.bls;
+
+import com.android.utils.ConvertUtils;
+import com.android.utils.log.Logger;
+import com.android.utils.thread.ThreadManager;
+import com.fy.navi.service.AutoMapConstant;
+import com.fy.navi.service.MapDefaultFinalTag;
+import com.fy.navi.service.adapter.activate.ActivateObserver;
+import com.fy.navi.service.adapter.activate.IActivateApi;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.CancellationException;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+import java.util.concurrent.atomic.AtomicInteger;
+
+public class ActivateAdapterImpl implements IActivateApi {
+    private static final String TAG = MapDefaultFinalTag.ACTIVATE_SERVICE_TAG;
+
+    private final List<ActivateObserver> mActObserverList;
+    private final ActivationManager.IActivateHelper manualActivateListener;
+    private static final String ERR_MSG = "Error Massage : ";
+
+    public ActivateAdapterImpl() {
+        mActObserverList = new ArrayList<>();
+        manualActivateListener = new ActivationManager.IActivateHelper() {
+            @Override
+            public void onUUIDGet(final String uuid) {
+                Logger.d(TAG, "uuid获取成功 : " + uuid);
+                if (ConvertUtils.isEmpty(uuid)) {
+                    logResult(10003);
+                    onActivatedError();
+                    return;
+                }
+                beginInitActivateService(uuid);
+            }
+
+            @Override
+            public void onManualActivated(final boolean isSuccess) {
+                if (!isSuccess) {
+                    Logger.e(TAG, "手动激活失败");
+                    return;
+                }
+                Logger.d(TAG, "手动激活成功，开始BL初始化");
+                onActivated();
+            }
+
+            @Override
+            public void onNetActivated(final boolean isSuccess) {
+                if (!isSuccess) {
+                    onNetActivateFailed();
+                    logResult(10002);
+                    return;
+                }
+                Logger.d(TAG, "网络激活成功，开始BL初始化");
+                onActivated();
+            }
+        };
+        ActivationManager.getInstance().addManualActivateListener(manualActivateListener);
+    }
+
+    @Override
+    public void initActivate() {
+        startActivate();
+    }
+
+    @Override
+    public void unInit() {
+        ActivationManager.getInstance().unInit();
+    }
+
+    @Override
+    public void addActivateObserver(final ActivateObserver observer) {
+        if (ConvertUtils.isContain(mActObserverList, observer)) {
+            return;
+        }
+        mActObserverList.add(observer);
+    }
+
+    /**
+     * 开始激活流程
+     */
+    public void startActivate() {
+        Logger.d(TAG, "startActivate : ");
+        ThreadManager.getInstance().runAsync(new Runnable() {
+            @Override
+            public void run() {
+                ActivationManager.getInstance().getThirdPartyUUID();
+            }
+        });
+    }
+
+    /**
+     * 重试网络激活
+     */
+    @Override
+    public void netActivateRetry() {
+        onActivating();
+        ActivationManager.getInstance().netActivate();
+    }
+
+
+    /**
+     * 获取完uuid后开始后续流程
+     * @param uuid uuid
+     */
+    private void beginInitActivateService(final String uuid) {
+        //初始化激活服务
+        Logger.d(TAG,"uuid = " + uuid);
+        if (!ActivationManager.getInstance().initActivationService(uuid)) {
+            logResult(10001);
+            onActivatedError();
+            return;
+        }
+        //查询激活状态
+        if (!ActivationManager.getInstance().checkActivationStatus()) {
+            onActivating();
+            Logger.d(TAG,"未激活，开始下单");
+            //下单
+            if (!ActivationManager.getInstance().createCloudOrder()) {
+                logResult(10004);
+                onActivatedError();
+                return;
+            }
+            //查询下单状态
+            if (!pollOrderStatusWithRetry()) {
+                logResult(10005);
+                return;
+            }
+            //网络激活
+            ActivationManager.getInstance().netActivate();
+        } else {
+            onActivated();
+        }
+
+    }
+
+    @Override
+    public void manualActivate(final String userCode, final String loginCode) {
+        Logger.d(TAG, "manualActivate...");
+        ActivationManager.getInstance().manualActivate(userCode, loginCode);
+    }
+
+    /**
+     * 映射错误信息
+     * @param code code
+     * @return msg
+     */
+    private String getEngineMsg(final int code) {
+        return switch (code) {
+            case 10001 -> "激活参数传输错误";
+            case 10002 -> "网络激活失败";
+            case 10003 -> "UUID获取失败";
+            case 10004 -> "云对云下单失败";
+            case 10005 -> "订单状态查询超时";
+            default -> "未知错误码";
+        };
+    }
+
+    /**
+     * 正在激活
+     */
+    private void onActivating() {
+        for (ActivateObserver observer : mActObserverList) {
+            ThreadManager.getInstance().postUi(new Runnable() {
+                @Override
+                public void run() {
+                    observer.onActivating();
+                }
+            });
+        }
+    }
+
+    /**
+     * 网络激活失败通知
+     */
+    private void onNetActivateFailed() {
+        for (ActivateObserver observer : mActObserverList) {
+            ThreadManager.getInstance().postUi(new Runnable() {
+                @Override
+                public void run() {
+                    observer.onNetActivateFailed(ActivationManager.getNetFailedCount());
+                }
+            });
+        }
+    }
+
+    /**
+     * 网络激活成功回调
+     */
+    public void onActivated() {
+        for (ActivateObserver observer : mActObserverList) {
+            ThreadManager.getInstance().postUi(new Runnable() {
+                @Override
+                public void run() {
+                    observer.onActivated();
+                }
+            });
+        }
+    }
+
+    /**
+     * 网络激活出现错误
+     */
+    public void onActivatedError() {
+        for (ActivateObserver observer : mActObserverList) {
+            ThreadManager.getInstance().postUi(new Runnable() {
+                @Override
+                public void run() {
+                    observer.onActivatedError();
+                }
+            });
+        }
+    }
+
+    /**
+     * 带重试的订单激活状态查询
+     *
+     * @return 是否成功
+     */
+    private boolean pollOrderStatusWithRetry() {
+        final int maxRetries = 3;
+        final long[] delays = {AutoMapConstant.TWO_MINUTES_DELAY,
+                AutoMapConstant.DELAY_MINUTE, AutoMapConstant.DELAY_MINUTE};
+        final AtomicInteger retryCount = new AtomicInteger(0);
+        final ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
+        final CompletableFuture<Boolean> future = new CompletableFuture<>();
+
+        final Runnable task = new Runnable() {
+            @Override
+            public void run() {
+                if (future.isDone()) {
+                    return;
+                }
+                try {
+                    final boolean isOrdered = ActivationManager.getInstance().checkOrderStatus();
+                    if (isOrdered) {
+                        future.complete(true);
+                        executor.shutdownNow();
+                        return;
+                    }
+
+                    final int currentCount = retryCount.incrementAndGet();
+                    Logger.d(TAG,"轮询次数 : " + currentCount);
+                    if (currentCount == 2) {
+                        future.complete(true);
+                        executor.shutdownNow();
+                    }
+                    if (currentCount > maxRetries) {
+                        future.complete(false);
+                        executor.shutdownNow();
+                    }
+                } catch (NullPointerException | IllegalArgumentException e) {
+                    future.completeExceptionally(e);
+                    executor.shutdownNow();
+                }
+            }
+        };
+
+        long totalDelay = 0;
+        //第一次延时两分钟，第二次延时七分钟，第三次延时十二分钟，三个任务同时发放
+        for (int count = 0; count < maxRetries; ++count) {
+            if (count == 0) {
+                totalDelay = delays[count];
+            } else {
+                totalDelay += delays[count];
+            }
+            executor.schedule(task, totalDelay, TimeUnit.SECONDS);
+        }
+
+        try {
+            // 总超时 = 所有可能延迟之和 + 缓冲时间（例如15分钟）
+            final long totalTimeout = Arrays.stream(delays).sum() + 1; // 2+5+5 +1=13分钟
+            return future.get(totalTimeout, TimeUnit.SECONDS);
+        } catch (CancellationException e){
+            executor.shutdownNow();
+            Logger.e(TAG,"CancellationException");
+            return false;
+        } catch (TimeoutException e) {
+            executor.shutdownNow();
+            Logger.e(TAG,"订单状态轮询总超时");
+            return false;
+        } catch (ExecutionException e) {
+            Logger.e(TAG,"轮询异常: " + e.getCause());
+            return false;
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            Logger.e(TAG,"轮询被中断");
+            return false;
+        } finally {
+            executor.shutdown();
+        }
+    }
+
+    /**
+     * 封装错误数据构建
+     *
+     * @param code 错误码
+     */
+    private void logResult(final int code) {
+        Logger.d(TAG, ERR_MSG + "  " + code +" :" + getEngineMsg(code));
+    }
+}

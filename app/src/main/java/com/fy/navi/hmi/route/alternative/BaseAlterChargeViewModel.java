@@ -44,6 +44,8 @@ public class BaseAlterChargeViewModel extends BaseViewModel<AlterChargeFragment,
     private ObservableField<String> mRouteSearchElec;
     private ObservableField<Integer> mRouteSearchTypeVisibility;
     private ObservableField<String> mRouteSearchDetailAddRemoveVia;
+    private ObservableField<String> mRouteCurrentName;
+    private RouteAlterChargeStationParam mRouteAlterChargeStationParam;
 
     public ObservableField<Boolean> getShowAlterCharge() {
         return mShowAlterCharge;
@@ -83,6 +85,10 @@ public class BaseAlterChargeViewModel extends BaseViewModel<AlterChargeFragment,
 
     public ObservableField<String> getRouteSearchDetailAddRemoveVia() {
         return mRouteSearchDetailAddRemoveVia;
+    }
+
+    public ObservableField<String> getRouteCurrentName() {
+        return mRouteCurrentName;
     }
 
     /**
@@ -146,6 +152,7 @@ public class BaseAlterChargeViewModel extends BaseViewModel<AlterChargeFragment,
         mRouteSearchElec = new ObservableField<>("");
         mRouteSearchTypeVisibility = new ObservableField<>(0);
         mRouteSearchDetailAddRemoveVia = new ObservableField<>("");
+        mRouteCurrentName = new ObservableField<>("");
         mSpend = new ObservableField<>(mApplication.getString(R.string.route_invalid));
         mDistance = new ObservableField<>(mApplication.getString(R.string.route_invalid));
         mFastFree = new ObservableField<>(mApplication.getString(R.string.route_invalid));
@@ -172,7 +179,20 @@ public class BaseAlterChargeViewModel extends BaseViewModel<AlterChargeFragment,
      * @param routeAlterChargeStationParam 替换充电站搜索信息
      */
     public void showAlterChargeStationInfo(final RouteAlterChargeStationParam routeAlterChargeStationParam) {
+        mRouteAlterChargeStationParam = routeAlterChargeStationParam;
         mView.showAlterChargeStationInfo(routeAlterChargeStationParam);
+    }
+
+    /**
+     * 恢复充电站列表信息
+     */
+    public void reStoreFragment() {
+        if (mRouteAlterChargeStationParam != null) {
+            mView.showAlterChargeStationInfo(mRouteAlterChargeStationParam);
+        }
+        if (mDetailsEntry != null && Boolean.FALSE.equals(getShowAlterCharge().get())) {
+            showChargeStationDetail(mDetailsEntry);
+        }
     }
 
     /**
@@ -181,6 +201,18 @@ public class BaseAlterChargeViewModel extends BaseViewModel<AlterChargeFragment,
      */
     public void getSearchDetailsMode(final String poiId) {
         mModel.getSearchDetailsMode(poiId);
+    }
+
+    /**
+     * 图层请求充电站详情信息
+     * @param index index
+     */
+    public void getSearchDetailsMode(final int index) {
+        if (mRouteAlterChargeStationParam != null && index < mRouteAlterChargeStationParam.getMRouteAlterChargeStationInfos().size()) {
+            mModel.getSearchDetailsMode(mRouteAlterChargeStationParam.getMRouteAlterChargeStationInfos().get(index).getMPoiId());
+        } else {
+            Logger.d(TAG, "index error:");
+        }
     }
 
     /**

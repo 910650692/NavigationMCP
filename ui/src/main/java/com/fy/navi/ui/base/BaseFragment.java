@@ -14,10 +14,12 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.Objects;
 
 public abstract class BaseFragment<V extends ViewDataBinding, VM extends BaseViewModel>
         extends Fragment implements IBaseView {
@@ -25,6 +27,8 @@ public abstract class BaseFragment<V extends ViewDataBinding, VM extends BaseVie
     protected VM mViewModel;
     protected BaseActivity mActivity;
     protected String mScreenId;
+
+    private static final String KEY_CHANGE_SAVE_INSTANCE = "key_change_save_instance";
 
     public BaseFragment() {
         Logger.i(getClass().getSimpleName(), "onCreate before");
@@ -64,7 +68,21 @@ public abstract class BaseFragment<V extends ViewDataBinding, VM extends BaseVie
         Logger.i(getClass().getSimpleName(), "onViewCreated start");
         onInitObserver();
         onInitData();
+        if (ConvertUtils.isEmpty(savedInstanceState)
+                || Boolean.FALSE.equals(Objects.requireNonNull(savedInstanceState).getBoolean(KEY_CHANGE_SAVE_INSTANCE))){
+            //todo 请在此方法里面请求数据，并将数据保存
+            onGetFragmentData();
+        } else {
+            //todo 请在此方法里面使用保存数据刷新UI
+            onReStoreFragment();
+        }
         Logger.i(getClass().getSimpleName(), "onViewCreated end");
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean(KEY_CHANGE_SAVE_INSTANCE,true);
     }
 
     @Override

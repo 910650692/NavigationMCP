@@ -162,7 +162,8 @@ public class CollectResultAdapter extends RecyclerView.Adapter<CollectResultAdap
             Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "poi click 删除" + position);
             if (position >= 0 && position < mPoiEntities.size()) {
                 final PoiInfoEntity info = mPoiEntities.get(position);
-                BehaviorPackage.getInstance().deleteFavoriteData(info.getFavoriteInfo().getItemId());
+//                BehaviorPackage.getInstance().deleteFavoriteData(info.getFavoriteInfo().getItemId());
+                BehaviorPackage.getInstance().removeFavorite(info);
                 mPoiEntities.remove(position);
                 notifyItemRemoved(position);
                 notifyDataSetChanged();

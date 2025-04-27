@@ -28,8 +28,8 @@ import com.fy.navi.service.GBLCacheFilePath;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.adapter.navi.NaviConstant;
 import com.fy.navi.service.adapter.navi.bls.NaviDataFormatHelper;
-import com.fy.navi.service.define.layer.GemLayerClickBusinessType;
-import com.fy.navi.service.define.layer.GemLayerItem;
+import com.fy.navi.service.define.layer.refix.LayerItemRoutePointClickResult;
+import com.fy.navi.service.define.layer.refix.LayerPointItemType;
 import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.map.MapTypeManager;
 import com.fy.navi.service.define.message.MessageCenterInfo;
@@ -257,12 +257,17 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
             PoiInfoEntity poiInfo = allPoiParamList.get(1).getMPoiInfoEntity();
             boolean isDeleteSuccess = mRoutePackage.removeVia(MapType.MAIN_SCREEN_MAIN_MAP,
                     poiInfo, false);
+            // 删除后更新途经点列表信息
+            if (null != mViewModel) {
+                mViewModel.updateViaListImm();
+            }
             Logger.i(TAG, "onUpdateViaPass isDeleteSuccess = " + isDeleteSuccess);
         }
         mViewModel.onUpdateViaPass(viaIndex);
     }
 
     @Override
+    @HookMethod(eventName = BuryConstant.EventName.AMAP_NAVI_MAP_MANUAL_NEWROUTE)
     public void onSelectMainPathStatus(final long pathID, final int result) {
         Logger.i(TAG, "onSelectMainPathStatus pathID = " + pathID + " result = " + result);
         if (result == NaviConstant.ChangeNaviPathResult.CHANGE_NAVI_PATH_RESULT_SUCCESS) {
@@ -413,6 +418,11 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
     @Override
     public void skipNaviPreferenceScene() {
         mViewModel.showNaviPreferenceScene();
+    }
+
+    @Override
+    public void skipNaviControlMoreScene() {
+        mViewModel.showNaviControlMoreScene();
     }
 
     @Override
@@ -729,23 +739,21 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
     }
 
     @Override
-    public void onRouteItemClick(MapType mapTypeId, GemLayerItem pItem) {
-        Logger.i(TAG, "onRouteItemClick pItem = " + pItem.toString());
-        if (null != pItem) {
-            if (pItem.getClickBusinessType() == GemLayerClickBusinessType.BizRouteTypePath) {
-                int currentNaviType = mNaviPackage.getCurrentNaviType();
-                if (currentNaviType != 0) {
-                    Logger.i(TAG, "非GPS 导航，不支持手动切换路线");
-                    return;
-                }
-                if (Boolean.FALSE.equals(NetWorkUtils.Companion.getInstance().checkNetwork())) {
-                    Logger.i(TAG, "离线状态，不支持手动切换路线");
-                    return;
-                }
-                long pathId = pItem.getIndex();
-                int pathIndex = OpenApiHelper.getPathIndex(pathId);
-                mNaviPackage.selectPath(MapType.MAIN_SCREEN_MAIN_MAP, pathId, pathIndex);
+    public void onRouteItemClick(MapType mapTypeId, LayerPointItemType type, LayerItemRoutePointClickResult result) {
+        Logger.i(TAG, "onRouteItemClick result = " + result.toString());
+        if (type == LayerPointItemType.ROUTE_PATH) {
+            int currentNaviType = mNaviPackage.getCurrentNaviType();
+            if (currentNaviType != 0) {
+                Logger.i(TAG, "非GPS 导航，不支持手动切换路线");
+                return;
             }
+            if (Boolean.FALSE.equals(NetWorkUtils.Companion.getInstance().checkNetwork())) {
+                Logger.i(TAG, "离线状态，不支持手动切换路线");
+                return;
+            }
+            long pathId = result.getIndex();
+            int pathIndex = OpenApiHelper.getPathIndex(pathId);
+            mNaviPackage.selectPath(MapType.MAIN_SCREEN_MAIN_MAP, pathId, pathIndex);
         }
     }
 

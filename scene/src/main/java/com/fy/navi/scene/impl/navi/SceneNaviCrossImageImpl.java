@@ -63,13 +63,7 @@ public class SceneNaviCrossImageImpl extends BaseSceneModel<SceneNaviCrossImageV
                 // 当UI区域首次显示时，需要主动触发BL显示路口大图（2D矢量路口大图第一次显示的时候默认隐藏）
                 if (mIsShowCrossImage && mRoadCrossInfo.getType() != NaviConstant.CrossType.CROSS_TYPE_3_D) {
                     mNaviPackage.setRoadCrossRect(mMapTypeId, newRect.getLocationOnScreen());
-                    LayerItemCrossEntity layerItemCrossEntity = new LayerItemCrossEntity();
-                    layerItemCrossEntity.setCrossImageEntity(mRoadCrossInfo);
-                    if (!mLayerPackage.showCross(mMapTypeId, layerItemCrossEntity)) {
-                        if (mRoadCrossInfo != null) {
-                            onCrossImageInfo(false, mRoadCrossInfo);
-                        }
-                    }
+                    showLayerCross();
                 }
             }
         });
@@ -78,6 +72,7 @@ public class SceneNaviCrossImageImpl extends BaseSceneModel<SceneNaviCrossImageV
     }
 
     public void hideCross() {
+        Logger.i(TAG, "hideCross");
         if (!ConvertUtils.isNull(mRoadCrossInfo)) {
             mLayerPackage.hideCross(mMapTypeId, mRoadCrossInfo.getType());
         } else {
@@ -183,9 +178,7 @@ public class SceneNaviCrossImageImpl extends BaseSceneModel<SceneNaviCrossImageV
         if (visible) {
             if (mRoadCrossInfo.getType() != NaviConstant.CrossType.CROSS_TYPE_3_D) {
                 notifySceneStateChange(true);
-                LayerItemCrossEntity layerItemCrossEntity = new LayerItemCrossEntity();
-                layerItemCrossEntity.setCrossImageEntity(mRoadCrossInfo);
-                mLayerPackage.showCross(mMapTypeId, layerItemCrossEntity);
+                showLayerCross();
             }
         } else {
             notifySceneStateChange(false);
@@ -193,6 +186,20 @@ public class SceneNaviCrossImageImpl extends BaseSceneModel<SceneNaviCrossImageV
             mScreenView.setProgress2DRoadCross(0);
         }
         return true;
+    }
+
+    /**
+     * 显示图层中的路口大图
+     */
+    public void showLayerCross() {
+        Logger.i(TAG, "showLayerCross()");
+        LayerItemCrossEntity layerItemCrossEntity = new LayerItemCrossEntity();
+        layerItemCrossEntity.setCrossImageEntity(mRoadCrossInfo);
+        if (!mLayerPackage.showCross(mMapTypeId, layerItemCrossEntity)) {
+            if (mRoadCrossInfo != null) {
+                onCrossImageInfo(false, mRoadCrossInfo);
+            }
+        }
     }
 
     /**

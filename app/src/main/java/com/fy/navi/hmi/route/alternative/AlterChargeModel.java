@@ -8,12 +8,18 @@ import com.android.utils.log.Logger;
 import com.fy.navi.hmi.route.AlterChargeViewModel;
 import com.fy.navi.service.AutoMapConstant;
 import com.fy.navi.service.define.bean.GeoPoint;
+import com.fy.navi.service.define.layer.refix.LayerItemRoutePointClickResult;
+import com.fy.navi.service.define.layer.refix.LayerPointItemType;
 import com.fy.navi.service.define.map.MapType;
+import com.fy.navi.service.define.navistatus.NaviStatus;
 import com.fy.navi.service.define.route.RouteAlterChargeStationInfo;
 import com.fy.navi.service.define.route.RouteAlterChargeStationParam;
 import com.fy.navi.service.define.search.ETAInfo;
 import com.fy.navi.service.define.search.PoiInfoEntity;
 import com.fy.navi.service.define.search.SearchResultEntity;
+import com.fy.navi.service.logicpaket.layer.ILayerPackageCallBack;
+import com.fy.navi.service.logicpaket.layer.LayerPackage;
+import com.fy.navi.service.logicpaket.navistatus.NaviStatusPackage;
 import com.fy.navi.service.logicpaket.route.IRouteResultObserver;
 import com.fy.navi.service.logicpaket.route.RoutePackage;
 import com.fy.navi.service.logicpaket.search.SearchPackage;
@@ -23,10 +29,11 @@ import com.fy.navi.ui.base.BaseModel;
 
 import java.util.concurrent.CompletableFuture;
 
-public class AlterChargeModel extends BaseModel<AlterChargeViewModel> implements IRouteResultObserver, SearchResultCallback {
+public class AlterChargeModel extends BaseModel<AlterChargeViewModel> implements IRouteResultObserver, SearchResultCallback, ILayerPackageCallBack {
     private static final String TAG = "AlterChargeModel";
     private final RoutePackage mRoutePackage;
     private final SearchPackage mSearchPackage;
+    private final LayerPackage mLayerPackage;
     private long mAlterChargeStationTaskId;
     private int mSearchTaskId = -1;
     private int mCurrentTaskId = -1;
@@ -34,8 +41,14 @@ public class AlterChargeModel extends BaseModel<AlterChargeViewModel> implements
     public AlterChargeModel() {
         mRoutePackage = RoutePackage.getInstance();
         mSearchPackage = SearchPackage.getInstance();
+        mLayerPackage = LayerPackage.getInstance();
+    }
+
+    @Override
+    public void onCreate() {
         mRoutePackage.registerRouteObserver(TAG, this);
         mSearchPackage.registerCallBack(TAG, this);
+        mLayerPackage.registerCallBack(MapType.MAIN_SCREEN_MAIN_MAP, this);
     }
 
     @Override
@@ -43,6 +56,7 @@ public class AlterChargeModel extends BaseModel<AlterChargeViewModel> implements
         super.onDestroy();
         mRoutePackage.unRegisterRouteObserver(TAG);
         mSearchPackage.unRegisterCallBack(TAG);
+        mLayerPackage.unRegisterCallBack(MapType.MAIN_SCREEN_MAIN_MAP, this);
     }
 
     /**
@@ -152,6 +166,25 @@ public class AlterChargeModel extends BaseModel<AlterChargeViewModel> implements
                     mViewModel.showCurrentChargeStation(poiInfoEntity);
                 }
             }
+        }
+    }
+
+    @Override
+    public void onRouteItemClick(MapType mapTypeId, LayerPointItemType type, LayerItemRoutePointClickResult result) {
+        Logger.d(TAG, "onRouteItemClick");
+        if (ConvertUtils.isEmpty(result) || ConvertUtils.isEmpty(type)) {
+            return;
+        }
+        if (!NaviStatus.NaviStatusType.SELECT_ROUTE.equals(NaviStatusPackage.getInstance().getCurrentNaviStatus())) {
+            Logger.i(TAG, "is not on route page");
+            return;
+        }
+        switch (type) {
+            case ROUTE_POINT_VIA_REPLACE_CHARGE:
+                mViewModel.getSearchDetailsMode((int) result.getIndex());
+                break;
+            default:
+                break;
         }
     }
 }

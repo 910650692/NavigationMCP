@@ -33,9 +33,8 @@ android {
 dependencies {
     implementation libs.appcompat
     implementation libs.material
-    implementation project(":utils")
     implementation libs.android.aop.core
     implementation libs.appcompat
     annotationProcessor libs.android.aop
-    implementation project(":engine:oas")
+    implementation libs.signal
 }

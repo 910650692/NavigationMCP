@@ -8,5 +8,6 @@ package com.fy.navi.service.logicpaket.speech;
  */
 public interface ISpeechObserver {
 
+    void onVoiceSet(int result);
 
 }

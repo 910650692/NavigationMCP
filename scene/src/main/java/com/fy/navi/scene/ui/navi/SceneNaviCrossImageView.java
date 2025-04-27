@@ -13,7 +13,6 @@ import com.fy.navi.scene.databinding.SceneNaviCrossImageViewBinding;
 import com.fy.navi.scene.impl.imersive.ImersiveStatus;
 import com.fy.navi.scene.impl.navi.SceneNaviCrossImageImpl;
 import com.fy.navi.scene.impl.navi.common.ViewRectChangeWatcher;
-import com.fy.navi.scene.impl.navi.inter.ISceneCallback;
 import com.fy.navi.scene.impl.navi.inter.RectChangeListener;
 import com.fy.navi.scene.ui.navi.manager.NaviSceneBase;
 import com.fy.navi.scene.ui.navi.manager.NaviSceneId;
@@ -71,13 +70,37 @@ public class SceneNaviCrossImageView extends NaviSceneBase<SceneNaviCrossImageVi
     @Override
     public void hide() {
         super.hide();
-        mScreenViewModel.hideCross();
+        if (null != mScreenViewModel) {
+            mScreenViewModel.hideCross();
+        }
+    }
+
+    @Override
+    public void close() {
+        super.close();
+        if (null != mScreenViewModel) {
+            mScreenViewModel.hideCross();
+        }
     }
 
     @Override
     public void show() {
         super.show();
-        mScreenViewModel.setRoadCrossVisible(true);
+        if (null != mScreenViewModel) {
+            mScreenViewModel.setRoadCrossVisible(true);
+        }
+    }
+
+    public void hideLayerCross() {
+        if (null != mScreenViewModel) {
+            mScreenViewModel.hideCross();
+        }
+    }
+
+    public void showLayerCross() {
+        if (null != mScreenViewModel) {
+            mScreenViewModel.showLayerCross();
+        }
     }
 
     /**

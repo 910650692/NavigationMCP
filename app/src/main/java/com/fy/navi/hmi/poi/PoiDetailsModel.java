@@ -1,6 +1,7 @@
 package com.fy.navi.hmi.poi;
 
 
+import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
 import com.fy.navi.service.AutoMapConstant;
@@ -25,6 +26,8 @@ public class PoiDetailsModel extends BaseModel<PoiDetailsViewModel> implements S
     private final CalibrationPackage mCalibrationPackage;
     private final MapPackage mapPackage;
     private double maxDistance = 5; //自车位和地图中心点阈值
+    private int mTaskId;
+    private SearchResultEntity mSearchResultEntity;
 
     public PoiDetailsModel() {
         Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "PoiDetailsModel 初始化");
@@ -35,6 +38,17 @@ public class PoiDetailsModel extends BaseModel<PoiDetailsViewModel> implements S
         mapPackage= MapPackage.getInstance();
     }
 
+    /**
+     * 恢复fragment时，根据数据恢复界面
+     */
+    public void onReStoreFragment() {
+        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "taskId: " + mTaskId + " ,mSearchResultEntity：" + mSearchResultEntity);
+        if (!ConvertUtils.isEmpty(mSearchResultEntity)) {
+            final ThreadManager threadManager = ThreadManager.getInstance();
+            threadManager.postUi(() -> mViewModel.onSearchResult(mTaskId, mSearchResultEntity));
+        }
+    }
+
     @Override
     public void onSearchResult(final int taskId, final int errorCode, final String message, final SearchResultEntity searchResultEntity) {
         if (mCallbackId.equals(mSearchPackage.getCurrentCallbackId())) {
@@ -42,6 +56,8 @@ public class PoiDetailsModel extends BaseModel<PoiDetailsViewModel> implements S
             if (searchResultEntity.getSearchType() == AutoMapConstant.SearchType.POI_SEARCH
                     || searchResultEntity.getSearchType() == AutoMapConstant.SearchType.GEO_SEARCH) {
                 final ThreadManager threadManager = ThreadManager.getInstance();
+                mTaskId = taskId;
+                mSearchResultEntity = searchResultEntity;
                 threadManager.postUi(() -> {
                     mViewModel.onSearchResult(taskId, searchResultEntity);
                 });
@@ -75,6 +91,10 @@ public class PoiDetailsModel extends BaseModel<PoiDetailsViewModel> implements S
         return mCalibrationPackage.powerType();
     }
 
+    /**
+     * 判断是否在自车位
+     * @return 是否在自车位
+     */
     public boolean calcStraightDistance(){
         return mapPackage.isCarLocation(MapType.MAIN_SCREEN_MAIN_MAP,maxDistance);
     }

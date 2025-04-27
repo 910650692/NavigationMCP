@@ -18,6 +18,8 @@ import com.fy.navi.service.adapter.navistatus.NavistatusAdapter;
 import com.fy.navi.service.adapter.route.RouteAdapter;
 import com.fy.navi.service.adapter.setting.SettingAdapter;
 import com.fy.navi.service.adapter.speech.SpeechAdapter;
+import com.fy.navi.service.adapter.user.usertrack.UserTrackAdapter;
+import com.fy.navi.service.define.bean.GeoPoint;
 import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.navi.CameraInfoEntity;
 import com.fy.navi.service.define.navi.CrossImageEntity;
@@ -38,6 +40,8 @@ import com.fy.navi.service.define.navistatus.NaviStatus;
 import com.fy.navi.service.define.route.RouteParam;
 import com.fy.navi.service.define.search.ETAInfo;
 import com.fy.navi.service.define.search.PoiInfoEntity;
+import com.fy.navi.service.define.user.usertrack.HistoryPoiItemBean;
+import com.fy.navi.service.define.user.usertrack.HistoryRouteItemBean;
 import com.fy.navi.service.define.utils.NumberUtils;
 import com.fy.navi.service.greendao.history.History;
 import com.fy.navi.service.greendao.history.HistoryManager;
@@ -49,6 +53,7 @@ import com.fy.navi.ui.BaseApplication;
 import com.fy.navi.ui.IsAppInForegroundCallback;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Objects;
@@ -69,6 +74,7 @@ public final class NaviPackage implements GuidanceObserver {
     private NavistatusAdapter mNavistatusAdapter;
     private final HistoryManager mManager;
     private RouteAdapter mRouteAdapter;
+    private UserTrackAdapter mUserTrackAdapter;
     private boolean mIsMute = false;
     private boolean mIsNopOpen = false;
     private int mCurrentImmersiveStatus = -1;
@@ -93,6 +99,7 @@ public final class NaviPackage implements GuidanceObserver {
         mLayerAdapter = LayerAdapter.getInstance();
         mRouteAdapter = RouteAdapter.getInstance();
         mSettingAdapter = SettingAdapter.getInstance();
+        mUserTrackAdapter = UserTrackAdapter.getInstance();
         mManager = HistoryManager.getInstance();
         mManager.init();
         addIsInForegroundCallback();
@@ -148,10 +155,16 @@ public final class NaviPackage implements GuidanceObserver {
             if (!ConvertUtils.isEmpty(list) && null != pathInfo) {
                 mLayerAdapter.updatePathInfo(MapType.MAIN_SCREEN_MAIN_MAP, list,
                         (int) pathInfo.getPathIndex());
+                mLayerAdapter.updatePathInfo(MapType.LAUNCHER_WIDGET_MAP, list,
+                        (int) pathInfo.getPathIndex());
+                mLayerAdapter.updatePathInfo(MapType.LAUNCHER_DESK_MAP, list,
+                        (int) pathInfo.getPathIndex());
             }
         } else {
             mCurrentNaviType = NumberUtils.NUM_ERROR;
         }
+        mRouteAdapter.sendL2Data(MapType.MAIN_SCREEN_MAIN_MAP);
+        mRouteAdapter.sendL2Data(MapType.LAUNCHER_WIDGET_MAP);
         return result;
     }
 
@@ -161,7 +174,6 @@ public final class NaviPackage implements GuidanceObserver {
     public boolean stopNavigation() {
         final boolean result = mNaviAdapter.stopNavigation();
         if (result) {
-            mSpeechAdapter.stop();
             mLayerAdapter.setFollowMode(MapType.MAIN_SCREEN_MAIN_MAP, false);
             mLayerAdapter.setFollowMode(MapType.LAUNCHER_WIDGET_MAP, false);
             mLayerAdapter.setFollowMode(MapType.LAUNCHER_DESK_MAP, false);
@@ -203,19 +215,47 @@ public final class NaviPackage implements GuidanceObserver {
             final RouteParam startParam = allPoiParamList.get(0);
             final RouteParam endParam = allPoiParamList.get(allPoiParamList.size() - 1);
             final History history = new History();
-            history.setMKeyWord(endParam.getName());
-            history.setMPoiId(endParam.getPoiID());
-            history.setMStartPoiName(startParam.getName());
-            history.setMEndPoiName(endParam.getName());
-            history.setMStartPoint(startParam.getRealPos().toString());
-            history.setMEndPoint(endParam.getRealPos().toString());
+            String key = endParam.getName();
+            history.setMKeyWord(key);
+            String endPoiId = endParam.getPoiID();
+            history.setMPoiId(endPoiId);
+            String startName = startParam.getName();
+            history.setMStartPoiName(startName);
+            String endName = endParam.getName();
+            history.setMEndPoiName(endName);
+            GeoPoint startPoint = startParam.getRealPos();
+            history.setMStartPoint(startPoint.toString());
+            GeoPoint endPoint = endParam.getRealPos();
+            history.setMEndPoint(endPoint.toString());
             history.setMType(AutoMapConstant.SearchKeywordRecordKey.SEARCH_NAVI_RECORD_KEY);
             history.setMIsCompleted(isCompleted);
+            Date date = new Date();
+            history.setMUpdateTime(date);
             if (isCompleted) {
                 mManager.insertOrReplace(history);
             } else {
                 mManager.insertValue(history);
             }
+            // 如果登陆了话就将数据传给高德
+            if (mUserTrackAdapter.isLogin()) {
+                HistoryRouteItemBean historyRouteItemBean = new HistoryRouteItemBean();
+                historyRouteItemBean.setId(key);
+                historyRouteItemBean.setStartLoc(startPoint);
+                historyRouteItemBean.setEndLoc(endPoint);
+                historyRouteItemBean.setIsCompleted(isCompleted);
+                historyRouteItemBean.setUpdateTime(date.getTime());
+                historyRouteItemBean.setType(
+                        AutoMapConstant.SearchKeywordRecordKey.SEARCH_NAVI_RECORD_KEY);
+                HistoryPoiItemBean startPoiItemBean = new HistoryPoiItemBean();
+                startPoiItemBean.setPoiId(startParam.getPoiID());
+                startPoiItemBean.setName(startName);
+                historyRouteItemBean.setFromPoi(startPoiItemBean);
+                HistoryPoiItemBean endPoiItemBean = new HistoryPoiItemBean();
+                endPoiItemBean.setPoiId(endPoiId);
+                endPoiItemBean.setName(endName);
+                mUserTrackAdapter.addHistoryRoute(historyRouteItemBean);
+            }
+
         }
     }
 
@@ -877,6 +917,16 @@ public final class NaviPackage implements GuidanceObserver {
     public int getRouteRemainLightCount() {
         if (mCurrentNaviEtaInfo != null) {
             return mCurrentNaviEtaInfo.getRouteRemainLightCount();
+        }
+        return NumberUtils.NUM_ERROR;
+    }
+
+    /**
+     * @return 返回当前城市的城市代码
+     */
+    public int getCityCode() {
+        if (null != mCurrentNaviEtaInfo) {
+            return mCurrentNaviEtaInfo.cityCode;
         }
         return NumberUtils.NUM_ERROR;
     }

@@ -1,5 +1,7 @@
 package com.fy.navi.service.logicpaket.layer;
 
+import android.car.Car;
+
 import com.android.utils.log.Logger;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.adapter.layer.ILayerAdapterCallBack;
@@ -8,12 +10,10 @@ import com.fy.navi.service.define.bean.GeoPoint;
 import com.fy.navi.service.define.layer.refix.CarModeType;
 import com.fy.navi.service.define.layer.refix.DynamicLevelMode;
 import com.fy.navi.service.define.layer.refix.LayerItemCrossEntity;
-import com.fy.navi.service.define.layer.GemBaseLayer;
-import com.fy.navi.service.define.layer.GemLayerItem;
-import com.fy.navi.service.define.layer.refix.LayerItemSearchResult;
+import com.fy.navi.service.define.layer.refix.LayerItemRoutePointClickResult;
 import com.fy.navi.service.define.layer.refix.LayerItemUserFavorite;
 import com.fy.navi.service.define.layer.refix.LayerItemUserTrackDepth;
-import com.fy.navi.service.define.layer.refix.LayerSearchItemType;
+import com.fy.navi.service.define.layer.refix.LayerPointItemType;
 import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.navi.NaviParkingEntity;
 import com.fy.navi.service.define.search.PoiInfoEntity;
@@ -83,6 +83,10 @@ public class LayerPackage implements ILayerAdapterCallBack {
         mLayerAdapter.setCarMode(mapTypeId, carMode);
     }
 
+    public CarModeType getCarModeType(MapType mapTypeId) {
+        return mLayerAdapter.getCarModeType(mapTypeId);
+    }
+
     public void setPreviewMode(MapType mapTypeId, boolean bPreview) {
         mLayerAdapter.setPreviewMode(mapTypeId, bPreview);
     }
@@ -118,21 +122,12 @@ public class LayerPackage implements ILayerAdapterCallBack {
         mLayerAdapter.openDynamicLevel(mapTypeId, dynamicLevelMode);
     }
 
-    @Override
-    public void onNotifyClick(MapType mapTypeId, GemBaseLayer layer, GemLayerItem pItem) {
-        callbacks.forEach((key, packageCallBacks) -> {
-            packageCallBacks.forEach(packageCallBack -> {
-                packageCallBack.onNotifyClick(mapTypeId, layer, pItem);
-            });
-        });
-    }
-
     /**
      * 搜索图层Item点击回调
      *
      */
     @Override
-    public void onSearchItemClick(MapType mapTypeId, LayerSearchItemType type, int index) {
+    public void onSearchItemClick(MapType mapTypeId, LayerPointItemType type, int index) {
         callbacks.forEach((key, packageCallBacks) -> {
             packageCallBacks.forEach(packageCallBack -> {
                 packageCallBack.onSearchItemClick(mapTypeId, type, index);
@@ -142,15 +137,13 @@ public class LayerPackage implements ILayerAdapterCallBack {
 
     /**
      * 路线图层Item点击回调
-     *
-     * @param pItem
      */
     @Override
-    public void onRouteItemClick(MapType mapTypeId, GemLayerItem pItem) {
+    public void onRouteItemClick(MapType mapTypeId, LayerPointItemType type, LayerItemRoutePointClickResult result) {
         callbacks.forEach((key, packageCallBacks) -> {
             packageCallBacks.forEach(packageCallBack -> {
                 Logger.d(TAG, "onRouteItemClick");
-                packageCallBack.onRouteItemClick(mapTypeId, pItem);
+                packageCallBack.onRouteItemClick(mapTypeId, type, result);
             });
         });
     }
@@ -262,5 +255,9 @@ public class LayerPackage implements ILayerAdapterCallBack {
     /* 设置动态比例尺是否锁住状态，type区分巡航动态比例尺还是导航动态比例尺 */
     public void setDynamicLevelLock(MapType mapTypeId, DynamicLevelMode dynamicLevelMode, boolean isLock) {
         mLayerAdapter.setDynamicLevelLock(mapTypeId, dynamicLevelMode, isLock);
+    }
+
+    public void setPassGray(MapType mapTypeId, boolean isGray) {
+        mLayerAdapter.setPassGray(mapTypeId, isGray);
     }
 }

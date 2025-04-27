@@ -163,7 +163,8 @@ public class SearchHistoryAdapter extends RecyclerView.Adapter<SearchHistoryAdap
             Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "poi click 收藏");
             if (isFavorite) {
                 // 取消收藏
-                mBehaviorPackage.deleteFavoriteData(poiInfo.getFavoriteInfo().getItemId());
+//                mBehaviorPackage.deleteFavoriteData(poiInfo.getFavoriteInfo().getItemId());
+                mBehaviorPackage.removeFavorite(poiInfo);
                 ToastUtils.Companion.getInstance().showCustomToastView(ResourceUtils.Companion.getInstance().getString(R.string.sha_cancel_favorite));
             } else {
                 addFavoriteInfo(mPoiEntities.get(position));

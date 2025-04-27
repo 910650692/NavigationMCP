@@ -17,13 +17,15 @@ import com.fy.navi.service.define.layer.refix.DynamicLevelMode;
 import com.fy.navi.service.define.layer.refix.LayerItemCrossEntity;
 import com.fy.navi.service.define.layer.refix.LayerItemLabelResult;
 import com.fy.navi.service.define.layer.refix.LayerItemRouteEndPoint;
+import com.fy.navi.service.define.layer.refix.LayerItemRouteOdd;
 import com.fy.navi.service.define.layer.refix.LayerItemSearchResult;
 import com.fy.navi.service.define.layer.refix.LayerItemUserFavorite;
 import com.fy.navi.service.define.layer.refix.LayerItemUserTrackDepth;
-import com.fy.navi.service.define.layer.refix.LayerSearchItemType;
+import com.fy.navi.service.define.layer.refix.LayerPointItemType;
 import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.navi.NaviParkingEntity;
 import com.fy.navi.service.define.route.RequestRouteResult;
+import com.fy.navi.service.define.route.RouteAlterChargeStationInfo;
 import com.fy.navi.service.define.search.PoiInfoEntity;
 import com.fy.navi.service.logicpaket.position.PositionPackage;
 import java.util.ArrayList;
@@ -77,6 +79,11 @@ public class LayerAdapterImpl implements ILayerApi {
     }
 
     @Override
+    public CarModeType getCarModeType(MapType mapTypeId) {
+        return layersPoolManager.get(mapTypeId).getLayerCar().getCarModeType();
+    }
+
+    @Override
     public void setPreviewMode(MapType mapTypeId, boolean bPreview) {
         layersPoolManager.get(mapTypeId).getLayerCar().setPreviewMode(bPreview);
     }
@@ -115,9 +122,19 @@ public class LayerAdapterImpl implements ILayerApi {
         layersPoolManager.get(mapTypeId).getLayerGuideRoute().drawRouteLine(routeResult);
     }
 
+    /* 路线替换补能扎标 */
+    public void updateRouteReplaceChargePoints(MapType mapTypeId, ArrayList<RouteAlterChargeStationInfo> chargeStationInfos) {
+        layersPoolManager.get(mapTypeId).getLayerGuideRoute().updateRouteReplaceChargePoints(chargeStationInfos);
+    }
+
     /* 更新终点扎标数据 */
     public void updateRouteEndPoint(MapType mapTypeId, LayerItemRouteEndPoint endPoint) {
         layersPoolManager.get(mapTypeId).getLayerGuideRoute().updateRouteEndPoint(endPoint);
+    }
+
+    /* 更新Odd信息 */
+    public void updateOddInfo(MapType mapTypeId, ArrayList<LayerItemRouteOdd> oddInfoList, long pathId) {
+        layersPoolManager.get(mapTypeId).getLayerGuideRoute().updateOddInfo(oddInfoList, pathId);
     }
 
     /**
@@ -312,7 +329,7 @@ public class LayerAdapterImpl implements ILayerApi {
     }
 
     @Override
-    public void selectSearchPoi(MapType mapTypeId, LayerSearchItemType type, int index) {
+    public void selectSearchPoi(MapType mapTypeId, LayerPointItemType type, int index) {
         layersPoolManager.get(mapTypeId).getLayerSearch().setSelect(type, index);
     }
 
@@ -322,7 +339,7 @@ public class LayerAdapterImpl implements ILayerApi {
     }
 
     /* 搜索图层扎标接口 */
-    public boolean updateSearchMarker(MapType mapTypeId, LayerSearchItemType type, LayerItemSearchResult searchResult, boolean clearOtherLayerItem) {
+    public boolean updateSearchMarker(MapType mapTypeId, LayerPointItemType type, LayerItemSearchResult searchResult, boolean clearOtherLayerItem) {
         if (clearOtherLayerItem) {
             layersPoolManager.get(mapTypeId).getLayerSearch().clearAllItems();
         }
@@ -405,7 +422,7 @@ public class LayerAdapterImpl implements ILayerApi {
      *
      * @param mapTypeId
      */
-    public void clearSearchPOILayerItems(MapType mapTypeId, LayerSearchItemType searchItemType) {
+    public void clearSearchPOILayerItems(MapType mapTypeId, LayerPointItemType searchItemType) {
         layersPoolManager.get(mapTypeId).getLayerSearch().clearSearchItemByType(searchItemType);
     }
 
@@ -473,6 +490,11 @@ public class LayerAdapterImpl implements ILayerApi {
     /*清除扎标*/
     public void clearLabelItem(MapType mapTypeId) {
         layersPoolManager.get(mapTypeId).getLayerLabel().clearLabelItem();
+    }
+
+    @Override
+    public void setPassGray(MapType mapTypeId, boolean isSetGray) {
+        layersPoolManager.get(mapTypeId).getLayerGuideRoute().setPassGreyMode(isSetGray);
     }
 
     /*=========================================↑ 扎标图层 ↑=========================================*/

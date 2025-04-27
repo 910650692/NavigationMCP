@@ -19,3 +19,10 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+-dontwarn org.vclusters.R$layout
+
+-keep class retrofit2.** { *; }
+-keepattributes Signature
+
+-keep class com.google.gson.** { *; }
+-keep class com.yourmodel.package.** { *; }

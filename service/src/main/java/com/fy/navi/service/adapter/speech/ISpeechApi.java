@@ -17,7 +17,7 @@ public interface ISpeechApi {
 
     int setVoice(String irfPath);
 
-    void synthesize(String text);
+    void synthesize(boolean isNormalTTS, String text);
 
     void stop();
 }

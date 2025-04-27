@@ -13,4 +13,9 @@
     <string name="layer_route_via_charge_distance">%s%d公里</string>
     <string name="layer_route_via_charge_distance_first">距起点</string>
     <string name="layer_route_via_charge_distance_behind">间隔</string>
+
+    <!--  替换补能点扎标  -->
+    <string name="layer_route_replace_charge_fast">快%s</string>
+    <string name="layer_route_replace_charge_slow">慢%s</string>
+    <string name="layer_route_replace_charge_price">￥%s/%s</string>
 </resources>

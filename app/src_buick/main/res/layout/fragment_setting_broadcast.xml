@@ -59,38 +59,38 @@
                     app:layout_constraintTop_toTopOf="parent"/>
 
                 <com.fy.navi.ui.view.SkinImageView
+                    android:id="@+id/navi_broadcast_voice_others_1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/dp_358"
                     android:layout_marginTop="@dimen/dp_47"
-                    android:src="@mipmap/icon_setting_voice_others"
                     app:layout_constraintStart_toEndOf="@+id/navi_broadcast_voice_name"
                     app:layout_constraintTop_toTopOf="parent"/>
 
                 <com.fy.navi.ui.view.SkinImageView
+                    android:id="@+id/navi_broadcast_voice_others_2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/dp_390"
                     android:layout_marginTop="@dimen/dp_47"
-                    android:src="@mipmap/icon_setting_voice_others"
                     app:layout_constraintStart_toEndOf="@+id/navi_broadcast_voice_name"
                     app:layout_constraintTop_toTopOf="parent"/>
 
                 <com.fy.navi.ui.view.SkinImageView
+                    android:id="@+id/navi_broadcast_voice_others_3"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/dp_422"
                     android:layout_marginTop="@dimen/dp_47"
-                    android:src="@mipmap/icon_setting_voice_others"
                     app:layout_constraintStart_toEndOf="@+id/navi_broadcast_voice_name"
                     app:layout_constraintTop_toTopOf="parent"/>
 
                 <com.fy.navi.ui.view.SkinImageView
+                    android:id="@+id/navi_broadcast_voice_others_4"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/dp_454"
                     android:layout_marginTop="@dimen/dp_47"
-                    android:src="@mipmap/icon_setting_voice_others"
                     app:layout_constraintStart_toEndOf="@+id/navi_broadcast_voice_name"
                     app:layout_constraintTop_toTopOf="parent"/>
 

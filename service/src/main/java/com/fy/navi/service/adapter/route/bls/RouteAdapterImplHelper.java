@@ -23,6 +23,7 @@ import com.fy.navi.service.define.route.Coord3DDouble;
 import com.fy.navi.service.define.route.RouteAlterChargePriceInfo;
 import com.fy.navi.service.define.route.RouteAlternativeChargeDetourInfo;
 import com.fy.navi.service.define.route.RouteChargeStationNumberInfo;
+import com.fy.navi.service.define.route.RouteCurrentPathParam;
 import com.fy.navi.service.define.route.RouteL2Data;
 import com.fy.navi.service.define.route.RouteLightBarItem;
 import com.fy.navi.service.define.route.RoutePriorityType;
@@ -57,7 +58,6 @@ import com.autonavi.gbl.common.path.option.SegmentInfo;
 import com.autonavi.gbl.common.path.option.UserAvoidInfo;
 import com.autonavi.gbl.route.RouteService;
 import com.autonavi.gbl.route.model.PathResultData;
-import com.autonavi.gbl.route.model.RerouteParam;
 import com.autonavi.gbl.route.model.RouteAlternativeChargeStationInfo;
 import com.autonavi.gbl.route.model.RouteAlternativeChargeStationResult;
 import com.autonavi.gbl.route.model.RouteCollisionSolution;
@@ -186,7 +186,7 @@ public class RouteAdapterImplHelper {
         //所有的重算由HMI自行发起
         routeInitParam.collisionParam.state = RouteSerialParallelState.RouteSerial;
         routeInitParam.collisionParam.solution = RouteCollisionSolution.DiceCollision;
-        routeInitParam.rerouteParam.enableAutoReroute = false;
+        routeInitParam.rerouteParam.enableAutoReroute = true;
         routeInitParam.rerouteParam.enableAutoSwitchParallelReroute = false;//关闭“切换平行路自动重算”
         return routeInitParam;
     }
@@ -663,6 +663,8 @@ public class RouteAdapterImplHelper {
             handResultSuccess(getMsgs(requestRouteResult.getMRouteWay(), false));
             sendBuryPointForViaPoint(requestRouteResult.getMRouteWay());
             handlerRouteResult(requestRouteResult, pathInfoList);
+            handlerChargingStation(requestRouteResult.getMRouteChargeStationParam(), pathInfoList,
+                    requestId, requestRouteResult.getMMapTypeId());
             handlerDrawLine(requestRouteResult.getMLineLayerParam(), pathInfoList, requestId,
                     requestRouteResult.getMMapTypeId(), requestRouteResult.isMIsOnlineRoute());
             handlerRestArea(requestRouteResult.getMRouteRestAreaParam(), pathInfoList, requestId,
@@ -672,9 +674,6 @@ public class RouteAdapterImplHelper {
             handlerRange(pathInfoList, requestRouteResult.isMIsOnlineRoute());
             handlerCityAdCode(requestRouteResult.getMRouteAlongCityParam(), pathInfoList, requestId,
                     requestRouteResult.getMMapTypeId(), requestRouteResult.isMIsOnlineRoute());
-            handlerChargingStation(requestRouteResult.getMRouteChargeStationParam(), pathInfoList,
-                    requestId, requestRouteResult.getMMapTypeId());
-            handlerL2SData(pathInfoList);
 //            handlerTrafficIncident(requestRouteResult.getRouteTrafficIncidentParam(), pathInfoList, requestId,
 //            requestRouteResult.getMapTypeId(), requestRouteResult.isOnlineRoute());
 //            handlerRestTollGate(requestRouteResult.getRouteRestTollGateParam(), pathInfoList,
@@ -960,8 +959,10 @@ public class RouteAdapterImplHelper {
         final RouteChargeStationDetailInfo infos = new RouteChargeStationDetailInfo();
         infos.setMSegmentIdx(info.segmentIdx);
         infos.setMDirection(info.direction);
-        infos.setMShow(new com.fy.navi.service.define.route.Coord2DDouble(info.show.lon, info.show.lat));
-        infos.setMProjective(new com.fy.navi.service.define.route.Coord2DDouble(info.projective.lon, info.projective.lat));
+        infos.setMShow(new com.fy.navi.service.define.route
+                .Coord2DDouble(ConvertUtils.transProjectionLatAndLon(info.show.lon), ConvertUtils.transProjectionLatAndLon(info.show.lat)));
+        infos.setMProjective(new com.fy.navi.service.define.route
+                .Coord2DDouble(ConvertUtils.transProjectionLatAndLon(info.projective.lon), ConvertUtils.transProjectionLatAndLon(info.projective.lat)));
         infos.setMPoiID(info.poiID);
         infos.setMName(info.name);
         infos.setMBrandName(info.brandName);
@@ -1464,21 +1465,18 @@ public class RouteAdapterImplHelper {
     }
 
     /**
-     * 路线上充电站数据回调
+     * 发送L2++数据
      *
-     * @param pathInfoList 路线信息
+     * @param routeCurrentPathParam 路线信息
      */
-    private void handlerL2SData(final ArrayList<PathInfo> pathInfoList) {
-        final List<RouteL2Data> routeL2DataList = new ArrayList<>();
-        for (PathInfo pathInfo : pathInfoList) {
-            final RouteL2Data routeL2Data = getRouteL2Data(pathInfo);
-            routeL2DataList.add(routeL2Data);
-        }
+    public void sendL2SData(final RouteCurrentPathParam routeCurrentPathParam) {
+        final PathInfo pathInfo = (PathInfo) routeCurrentPathParam.getMPathInfo();
+        final RouteL2Data routeL2Data = getRouteL2Data(pathInfo);
         for (RouteResultObserver resultObserver : mRouteResultObserverHashtable.values()) {
             if (resultObserver == null) {
                 continue;
             }
-            resultObserver.onRouteL2Info(GsonUtils.toJson(routeL2DataList));
+            resultObserver.onRouteL2Info(GsonUtils.toJson(routeL2Data));
         }
     }
 
@@ -1866,6 +1864,7 @@ public class RouteAdapterImplHelper {
                 Log.e(TAG, "onRerouteInfo: 请求参数已经被清空");
                 return;
             }
+            requestRouteResult.setMRouteWay(RouteWayID.ROUTE_WAY_DEFAULT);
             requestRouteResult.setMFastNavi(true);
             if (info.option.getRouteType() == RouteType.RouteTypeYaw) {
                 Logger.i(TAG, "onReroute: 偏航引发的重算");

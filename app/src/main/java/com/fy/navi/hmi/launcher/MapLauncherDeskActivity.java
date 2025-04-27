@@ -81,10 +81,25 @@ public class MapLauncherDeskActivity extends BaseActivity<ActivityLauncherDeskBi
 
     @Override
     public void onInitFinished(boolean isSuccess) {
-        mViewModel.loadMapView();
+        Logger.i(TAG, "onInitFinished:" + isSuccess);
+        if (isSuccess) {
+            mViewModel.loadMapView();
+        }
     }
 
     public IBaseScreenMapView getMapView() {
         return mBinding.mainMapview;
     }
+
+    /*private void showFloatingWindow() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !Settings.canDrawOverlays(this)) {
+            val intent = Intent(
+                    Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                    Uri.parse("package:$packageName")
+            )
+            startActivityForResult(intent, REQUEST_CODE_DRAW_OVERLAY_PERMISSION)
+        } else {
+            startFloatingWindowService()
+        }
+    }*/
 }

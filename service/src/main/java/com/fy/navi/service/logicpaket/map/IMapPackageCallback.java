@@ -3,12 +3,10 @@ package com.fy.navi.service.logicpaket.map;
 import android.os.Bundle;
 import android.view.MotionEvent;
 
-import com.fy.navi.service.define.bean.GeoPoint;
 import com.fy.navi.service.define.bean.MapLabelItemBean;
-import com.fy.navi.service.define.layer.GemBaseLayer;
-import com.fy.navi.service.define.layer.GemLayerItem;
 import com.fy.navi.service.define.map.MapMode;
 import com.fy.navi.service.define.map.MapType;
+import com.fy.navi.service.define.map.ThemeType;
 import com.fy.navi.service.define.search.PoiInfoEntity;
 
 import java.util.ArrayList;
@@ -48,7 +46,7 @@ public interface IMapPackageCallback {
     default void onNaviStatusChange(String naviStatus) {}
 
     /*UiMode改变的时候触发，暂时就是“黑夜”和“白天”模式的切换*/
-    default void onUiModeChanged(int uiMode) {}
+    default void onUiModeChanged(ThemeType uiMode) {}
 
     //语音通过MapPackage触发此接口，传递打开页面的参数.
     default void onVoiceOpenPage(MapType mapTypeId, Bundle bundle) {}

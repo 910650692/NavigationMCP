@@ -14,38 +14,71 @@
         android:clickable="true"
         android:background="@drawable/bg_setting_fragment">
 
-        <com.fy.navi.ui.view.SkinImageView
-            android:id="@+id/setting_close"
-            clickCommand="@{ViewModel.mFinishSetting}"
-            android:layout_width="@dimen/dp_74"
-            android:layout_height="@dimen/dp_74"
-            android:layout_marginStart="@dimen/dp_32"
-            android:layout_marginTop="@dimen/dp_48"
-            android:src="@drawable/img_setting_close"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+        <com.android.car.ui.FocusParkingView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <com.android.car.ui.FocusArea
+            android:id="@+id/focus_close"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:nudgeDown="@+id/focus_tab"
+            app:nudgeUp="@+id/focus_tab">
+
+            <com.fy.navi.ui.view.SkinView
+                clickCommand="@{ViewModel.mFinishSetting}"
+                android:layout_width="@dimen/dp_74"
+                android:layout_height="@dimen/dp_74"
+                android:layout_marginStart="@dimen/dp_32"
+                android:layout_marginTop="@dimen/dp_48"
+                android:focusable="true"
+                android:background="@drawable/bg_base_mfc_cadillac_bg_selector"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"/>
+        </com.android.car.ui.FocusArea>
+
+            <com.fy.navi.ui.view.SkinImageView
+                android:id="@+id/setting_close"
+                android:layout_width="@dimen/dp_74"
+                android:layout_height="@dimen/dp_74"
+                android:layout_marginStart="@dimen/dp_32"
+                android:layout_marginTop="@dimen/dp_48"
+                android:focusable="false"
+                android:src="@drawable/img_setting_close"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
         <com.fy.navi.ui.view.SkinLinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="horizontal"
+            android:focusable="false"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <com.fy.navi.scene.ui.setting.SceneVerticalTabLayout
-                android:id="@+id/tabLayout"
-                android:layout_width="@dimen/dp_288"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_144"
-                android:layout_marginStart="@dimen/dp_42"
-                android:background="@null"
-                app:tabBackground="@drawable/bg_setting_tab"
-                app:tabGravity="fill"
-                app:tabMode="fixed"
-                app:tabIndicatorHeight="0dp"
-                app:tabRippleColor="@null"
-                app:tabPaddingStart="@dimen/dp_0"
-                app:tabPaddingEnd="@dimen/dp_0"/>
+            <com.android.car.ui.FocusArea
+                android:id="@+id/focus_tab"
+                app:nudgeRight="@+id/focus_page"
+                app:nudgeUp="@+id/focus_close"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <com.fy.navi.scene.ui.setting.SceneVerticalTabLayout
+                    android:id="@+id/tabLayout"
+                    android:layout_width="@dimen/dp_288"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_144"
+                    android:layout_marginStart="@dimen/dp_42"
+                    android:background="@null"
+                    android:focusedByDefault="true"
+                    app:tabGravity="fill"
+                    app:tabMode="fixed"
+                    app:tabBackground="@drawable/bg_setting_tab"
+                    app:tabIndicatorHeight="0dp"
+                    app:tabRippleColor="@null"
+                    app:tabPaddingStart="@dimen/dp_0"
+                    app:tabPaddingEnd="@dimen/dp_0"/>
+            </com.android.car.ui.FocusArea>
 
             <com.fy.navi.ui.view.SkinView
                 android:layout_width="@dimen/dp_1"
@@ -55,15 +88,22 @@
                 android:layout_marginBottom="@dimen/dp_40"
                 android:layout_marginStart="@dimen/dp_35"/>
 
-            <androidx.viewpager2.widget.ViewPager2
-                android:id="@+id/viewPager"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_marginTop="@dimen/dp_52"
-                android:layout_marginBottom="@dimen/dp_52"
-                android:layout_marginStart="@dimen/dp_45"
-                android:layout_weight="1" />
+            <com.android.car.ui.FocusArea
+                android:id="@+id/focus_page"
+                app:nudgeUp="@+id/focus_close"
+                app:nudgeLeft="@+id/focus_tab"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
 
+                <androidx.viewpager2.widget.ViewPager2
+                    android:id="@+id/viewPager"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="@dimen/dp_52"
+                    android:layout_marginBottom="@dimen/dp_52"
+                    android:layout_marginStart="@dimen/dp_45"
+                    android:layout_weight="1" />
+            </com.android.car.ui.FocusArea>
         </com.fy.navi.ui.view.SkinLinearLayout>
     </com.fy.navi.ui.view.SkinConstraintLayout>
 </layout>

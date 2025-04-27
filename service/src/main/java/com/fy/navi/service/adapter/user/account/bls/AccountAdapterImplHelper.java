@@ -1,5 +1,12 @@
 package com.fy.navi.service.adapter.user.account.bls;
 
+import android.accounts.Account;
+import android.accounts.AccountManager;
+import android.accounts.AccountManagerFuture;
+import android.accounts.AuthenticatorException;
+import android.accounts.OperationCanceledException;
+import android.os.Bundle;
+
 import com.android.utils.ConvertUtils;
 import com.android.utils.file.FileUtils;
 import com.android.utils.gson.GsonUtils;
@@ -19,24 +26,30 @@ import com.autonavi.gbl.user.account.model.QRCodeLoginResult;
 import com.autonavi.gbl.user.account.model.VerificationCodeResult;
 import com.autonavi.gbl.user.account.observer.IAccountServiceObserver;
 import com.autonavi.gbl.util.model.ServiceInitStatus;
+import com.fy.navi.service.AppContext;
+import com.fy.navi.service.AutoMapConstant;
 import com.fy.navi.service.GBLCacheFilePath;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.adapter.user.account.AccountAdapterCallBack;
+import com.fy.navi.service.define.user.account.AccessTokenParam;
 import com.fy.navi.service.define.user.account.AccountProfileInfo;
 import com.fy.navi.service.define.user.account.AccountUserInfo;
 
+import java.io.IOException;
 import java.util.Hashtable;
 
 
 public class AccountAdapterImplHelper implements IAccountServiceObserver {
     private static final String TAG = MapDefaultFinalTag.ACCOUNT_SERVICE_TAG;
     private final AccountService mAccountService;
+    private final AccountManager mAccountManager;
     private final Hashtable<String, AccountAdapterCallBack> mAccountResultHashtable;
     private String mEmail;
 
     protected AccountAdapterImplHelper(final AccountService accountService) {
         mAccountResultHashtable = new Hashtable<>();
         mAccountService = accountService;
+        mAccountManager = AccountManager.get(AppContext.getInstance().getMContext());
     }
 
     protected void initAccountService() {
@@ -459,6 +472,46 @@ public class AccountAdapterImplHelper implements IAccountServiceObserver {
         if (ServiceInitStatus.ServiceNotInit == mAccountService.isInit()) {
             initAccountService();
         }
+    }
+
+    /**
+     * 获取账户accessToken
+     * @param param 详细说明见AccessTokenParam
+     * @return accessToken 获取失败返回空串, "-1"为无效值需要稍后重试
+     */
+    public String getAccessToken(final AccessTokenParam param) {
+        String authTokenToken = "";
+        try {
+            final AccountManagerFuture<Bundle> future =
+                    mAccountManager.getAuthTokenByFeatures(
+                            param.getMAccountType(),
+                            param.getMAuthTokenType(),
+                            param.getMFeatures(),
+                            param.getMActivity(),
+                            param.getMAddAccountOption(),
+                            param.getMGetAuthTokenOption(),
+                            param.getMCallback(),
+                            param.getMHandler());
+            final Bundle bnd = future.getResult();
+            authTokenToken = bnd.getString(AccountManager.KEY_AUTHTOKEN);
+            Logger.i(TAG, "authTokenToken : " + authTokenToken);
+        } catch (OperationCanceledException | AuthenticatorException | IOException e) {
+            Logger.e(TAG, e.getMessage());
+        }
+        if (ConvertUtils.equals(authTokenToken, "-1")) {
+            Logger.e(TAG, "authTokenToken 无效值，请稍后再试");
+        }
+        return authTokenToken;
+    }
+
+    /**
+     * 获取idpUserId
+     * @param availableAccount 账户对象
+     * @param key 账户信息的key值 ; id 用 AutoMapConstant.AccountInfoKey.IDP_USER_ID
+     * @return userId
+     */
+    public String getIdpUserId(final Account availableAccount, final String key) {
+        return mAccountManager.getUserData(availableAccount, key);
     }
 
 }

@@ -68,8 +68,8 @@
                 android:textSize="@dimen/sp_30"
                 android:text="@string/limit_loading"
                 android:gravity="center"
-                android:layout_marginBottom="@dimen/dp_24"
-                app:layout_goneMarginBottom="@dimen/dp_265"
+                android:layout_marginBottom="@dimen/dp_38"
+                app:layout_goneMarginBottom="@dimen/dp_261"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintBottom_toTopOf="@+id/tv_retry" />
@@ -83,7 +83,7 @@
                 android:text="@string/limit_retry"
                 android:background="@drawable/bg_item_limit_retry"
                 android:gravity="center"
-                android:layout_marginBottom="@dimen/dp_287"
+                android:layout_marginBottom="@dimen/dp_201"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent" />
@@ -95,7 +95,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:visibility="invisible">
-
+            
             <com.fy.navi.ui.view.SkinConstraintLayout
                 android:id="@+id/layout_multi_city"
                 android:layout_width="@dimen/dp_362"

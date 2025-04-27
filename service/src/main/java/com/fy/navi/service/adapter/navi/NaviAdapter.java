@@ -160,7 +160,7 @@ public final class NaviAdapter {
                 && routeIndex < routeLineLayerParam.getMPathInfoList().size()) {
             ArrayList<Object> pathInfos = new ArrayList<>();
             pathInfos.add(routeLineLayerParam.getMPathInfoList().get(routeIndex));
-            mLayerAdapter.updatePathInfo(MapType.MAIN_SCREEN_MAIN_MAP, pathInfos, routeIndex);
+            updatePathInfo(MapType.MAIN_SCREEN_MAIN_MAP, pathInfos, routeIndex);
         }
 
         mNavistatusAdapter.setNaviStatus(NaviStatus.NaviStatusType.NAVING);
@@ -172,6 +172,7 @@ public final class NaviAdapter {
         mLayerAdapter.updateGuideCarStyle(MapType.MAIN_SCREEN_MAIN_MAP);
         mLayerAdapter.updateGuideCarStyle(MapType.LAUNCHER_WIDGET_MAP);
         mLayerAdapter.updateGuideCarStyle(MapType.LAUNCHER_DESK_MAP);
+        mRouteAdapter.sendL2Data(MapType.MAIN_SCREEN_MAIN_MAP);
     }
 
     public static NaviAdapter getInstance() {
@@ -559,6 +560,21 @@ public final class NaviAdapter {
 
     public void setSimulationSpeed(int simulationSpeed) {
         mNaviApi.setSimulationSpeed(simulationSpeed);
+    }
+
+    /**
+     * 更新引导路线数据
+     * @param pathInfoList 路线数据
+     * @param selectIndex 选中下标
+     */
+    public boolean updatePathInfo(MapType mapTypeId, ArrayList<?> pathInfoList, int selectIndex) {
+        Logger.i(TAG, "updatePathInfo pathInfoList.size = " +
+                (!ConvertUtils.isEmpty(pathInfoList) ? pathInfoList.size() : 0) +
+                " selectIndex = " + selectIndex);
+        if (null != mLayerAdapter) {
+            return mLayerAdapter.updatePathInfo(mapTypeId, pathInfoList, selectIndex);
+        }
+        return false;
     }
 
 

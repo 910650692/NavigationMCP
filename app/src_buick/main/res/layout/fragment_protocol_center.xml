@@ -135,7 +135,7 @@
             <com.fy.navi.ui.view.SkinConstraintLayout
                 android:id="@+id/protocol_center_title_layout"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_132">
+                android:layout_height="@dimen/dp_142">
 
                 <com.fy.navi.ui.view.SkinImageView
                     clickCommand="@{viewModel.mCloseProtocolCenter}"
@@ -155,11 +155,10 @@
                     android:text="@string/reminder_page_service_title"
                     android:textSize="@dimen/sp_38"
                     android:textColor="@color/color_black_90"
-                    android:layout_marginStart="@dimen/dp_40"
+                    android:layout_marginStart="@dimen/dp_10"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"/>
+                    app:layout_constraintStart_toEndOf="@+id/protocol_center_back"/>
 
             </com.fy.navi.ui.view.SkinConstraintLayout>
 
@@ -167,7 +166,8 @@
                 android:id="@+id/protocol_center_container"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:paddingHorizontal="@dimen/dp_100">
+                android:layout_marginStart="@dimen/dp_100"
+                android:layout_marginEnd="@dimen/dp_50">
 
                 <com.fy.navi.ui.view.SkinTextView
                     android:id="@+id/protocol_center_content"
@@ -175,9 +175,8 @@
                     android:layout_height="wrap_content"
                     android:text="@string/reminder_page_service_content"
                     android:textColor="@color/color_black_90"
-                    android:layout_marginEnd="@dimen/dp_10"
-                    android:textSize="@dimen/sp_36"
-                    android:paddingVertical="@dimen/dp_40"/>
+                    android:layout_marginEnd="@dimen/dp_50"
+                    android:textSize="@dimen/sp_36"/>
 
             </com.fy.navi.ui.view.SkinScrollView>
 

@@ -162,4 +162,8 @@ public class DeviceUtils {
         Log.i("A_MAP", "getDeviceType deviceType =" + deviceType);
         return deviceType;
     }
+
+    public static Context getApplication() {
+        return mApplication;
+    }
 }

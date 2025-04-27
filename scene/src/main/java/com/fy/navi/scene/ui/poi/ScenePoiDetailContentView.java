@@ -5,7 +5,10 @@ import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.text.Spannable;
+import android.text.SpannableString;
 import android.text.TextUtils;
+import android.text.style.LeadingMarginSpan;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -95,6 +98,7 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
     private PoiDetailsScenicChildAdapter mScenicChildAdapter;
     private SearchResultEntity mSearchResultEntity;
     private boolean mIsOpenFromNavi;
+    private int mChildSelectIndex = -1;
 
     public ScenePoiDetailContentView(final @NonNull Context context) {
         super(context);
@@ -218,6 +222,41 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
         BuryPointController.getInstance().setBuryProps(properties);
     }
 
+    @HookMethod
+    private void sendBuryPointForAddFavorite(final String name, final int type) {
+        String eventName = "";
+        String key = BuryConstant.ProperType.BURY_KEY_HOME_PREDICTION;
+        switch (type){
+            case 0:
+                eventName = BuryConstant.EventName.AMAP_SETTING_FAVORITE_ADD;
+                key = BuryConstant.ProperType.BURY_KEY_SEARCH_CONTENTS;
+                break;
+            case 1:
+                eventName = BuryConstant.EventName.AMAP_HOME_SAVE;
+                break;
+            case 2:
+                eventName = BuryConstant.EventName.AMAP_WORK_SAVE;
+                break;
+            case 3:
+                eventName = BuryConstant.EventName.AMAP_SETTING_HOT_ADD;
+                key = BuryConstant.ProperType.BURY_KEY_SEARCH_CONTENTS;
+                break;
+        }
+        BuryPointController.getInstance().setEventName(eventName);
+        BuryProperty buryProperty = new BuryProperty.Builder()
+                .setParams(key, name)
+                .build();
+        BuryPointController.getInstance().setBuryProps(buryProperty);
+    }
+
+    @HookMethod(eventName = BuryConstant.EventName.AMAP_FAVORITE_SAVE)
+    private void sendBuryPointForAddFavoriteFromMap(final String name) {
+        BuryProperty buryProperty = new BuryProperty.Builder()
+                .setParams(BuryConstant.ProperType.BURY_KEY_HOME_PREDICTION, name)
+                .build();
+        BuryPointController.getInstance().setBuryProps(buryProperty);
+    }
+
     /**
      * 收藏按钮的点击事件
      */
@@ -251,11 +290,11 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
                             + mPoiInfoEntity.getPoint().getLat());
                 }
                 mScreenViewModel.addFavorite(mPoiInfoEntity, 0);
+                sendBuryPointForAddFavoriteFromMap(mPoiInfoEntity.getName());
                 Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "current : "
                         + mPoiInfoEntity.getPoint().getLon() + " " + mPoiInfoEntity.getPoint().getLat()
                         + " ID: " + mPoiInfoEntity.getPid() + " ,name: " + mPoiInfoEntity.getName());
 //                mScreenViewModel.addFavoriteData(mPoiInfoEntity, 0);
-                ToastUtils.Companion.getInstance().showCustomToastView("收藏成功");
             }
         }
     }
@@ -296,7 +335,7 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
         }
         Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "taskId: " + taskId
                 + " currentId: " + mScreenViewModel.getMTaskId());
-        if (!ConvertUtils.equals(taskId, mScreenViewModel.getMTaskId())) {
+        if (!ConvertUtils.equals(taskId, mScreenViewModel.getMTaskId()) && mScreenViewModel.getMTaskId() != 0) {
             return;
         }
         if (null != mSearchLoadingDialog) {
@@ -453,8 +492,18 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
                 mViewBinding.scenePoiDetailsNormalView.poiPhone.setVisibility(View.GONE);
                 mViewBinding.scenePoiDetailsBottomView.stlPhone.setVisibility(View.GONE);
             }
-            mViewBinding.scenePoiDetailsNormalView.poiPhone.setText(
-                    getContext().getString(R.string.poi_phone, mPoiInfoEntity.getPhone()));
+            String text = getContext().getString(R.string.poi_phone, mPoiInfoEntity.getPhone()).replace(";",";\n");
+            SpannableString spannable = new SpannableString(text);
+            int newLinePos = text.indexOf("\n");
+            if (newLinePos >= 0) {
+                spannable.setSpan(
+                        new LeadingMarginSpan.Standard((int) ResourceUtils.Companion.getInstance().getDimension(com.fy.navi.ui.R.dimen.dp_90), 0),
+                        newLinePos + 1,
+                        text.length(),
+                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                );
+            }
+            mViewBinding.scenePoiDetailsNormalView.poiPhone.setText(spannable);
             mViewBinding.scenePoiDetailsBottomView.stlPhone.setOnClickListener(new OnClickListener() {
                 @Override
                 @HookMethod(eventName = BuryConstant.EventName.AMAP_DESTINATION_PHONE)
@@ -563,8 +612,18 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
         if (ConvertUtils.isEmpty(mPoiInfoEntity.getPhone())) {
             mViewBinding.scenePoiDetailsGasStationView.poiGasPhone.setVisibility(View.GONE);
         }
-        mViewBinding.scenePoiDetailsGasStationView.poiGasPhone.setText(
-                getContext().getString(R.string.poi_phone, mPoiInfoEntity.getPhone()));
+        String text = getContext().getString(R.string.poi_phone, mPoiInfoEntity.getPhone()).replace(";",";\n");
+        SpannableString spannable = new SpannableString(text);
+        int newLinePos = text.indexOf("\n");
+        if (newLinePos >= 0) {
+            spannable.setSpan(
+                    new LeadingMarginSpan.Standard((int) ResourceUtils.Companion.getInstance().getDimension(com.fy.navi.ui.R.dimen.dp_90), 0),
+                    newLinePos + 1,
+                    text.length(),
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+            );
+        }
+        mViewBinding.scenePoiDetailsGasStationView.poiGasPhone.setText(spannable);
         mViewBinding.scenePoiDetailsGasStationView.poiGasOilList.setLayoutManager(
                 new GridLayoutManager(getContext(), mSpanCount));
         mViewBinding.scenePoiDetailsGasStationView.poiGasOilList.addItemDecoration(
@@ -642,8 +701,18 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
             mViewBinding.scenePoiDetailsChargingStationView.poiChargeAreaPhone.
                     setVisibility(View.GONE);
         }
-        mViewBinding.scenePoiDetailsChargingStationView.poiChargeAreaPhone.setText(
-                getContext().getString(R.string.poi_phone, mPoiInfoEntity.getPhone()));
+        String text = getContext().getString(R.string.poi_phone, mPoiInfoEntity.getPhone()).replace(";",";\n");
+        SpannableString spannable = new SpannableString(text);
+        int newLinePos = text.indexOf("\n");
+        if (newLinePos >= 0) {
+            spannable.setSpan(
+                    new LeadingMarginSpan.Standard((int) ResourceUtils.Companion.getInstance().getDimension(com.fy.navi.ui.R.dimen.dp_80), 0),
+                    newLinePos + 1,
+                    text.length(),
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+            );
+        }
+        mViewBinding.scenePoiDetailsChargingStationView.poiChargeAreaPhone.setText(spannable);
         mViewBinding.scenePoiDetailsChargingStationView.poiChargePriceAllday.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -773,8 +842,18 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
         if (ConvertUtils.isEmpty(mPoiInfoEntity.getPhone())) {
             mViewBinding.scenePoiDetailsCateringView.poiCateringPhone.setVisibility(View.GONE);
         }
-        mViewBinding.scenePoiDetailsCateringView.poiCateringPhone.setText(
-                getContext().getString(R.string.poi_phone, mPoiInfoEntity.getPhone()));
+        String text = getContext().getString(R.string.poi_phone, mPoiInfoEntity.getPhone()).replace(";",";\n");
+        SpannableString spannable = new SpannableString(text);
+        int newLinePos = text.indexOf("\n");
+        if (newLinePos >= 0) {
+            spannable.setSpan(
+                    new LeadingMarginSpan.Standard((int) ResourceUtils.Companion.getInstance().getDimension(com.fy.navi.ui.R.dimen.dp_90), 0),
+                    newLinePos + 1,
+                    text.length(),
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+            );
+        }
+        mViewBinding.scenePoiDetailsCateringView.poiCateringPhone.setText(spannable);
         mViewBinding.scenePoiDetailsCateringView.poiCateringPrice.setText(avgCost);
         mViewBinding.scenePoiDetailsGasStationView.poiGasRoot.setVisibility(GONE);
         mViewBinding.scenePoiDetailsChargingStationView.poiChargeRoot.setVisibility(GONE);
@@ -816,8 +895,18 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
         if (ConvertUtils.isEmpty(mPoiInfoEntity.getPhone())) {
             mViewBinding.scenePoiDetailsParkingLotView.poiParkingLotPhone.setVisibility(View.GONE);
         }
-        mViewBinding.scenePoiDetailsParkingLotView.poiParkingLotPhone.setText(
-                getContext().getString(R.string.poi_phone, mPoiInfoEntity.getPhone()));
+        String text = getContext().getString(R.string.poi_phone, mPoiInfoEntity.getPhone()).replace(";",";\n");
+        SpannableString spannable = new SpannableString(text);
+        int newLinePos = text.indexOf("\n");
+        if (newLinePos >= 0) {
+            spannable.setSpan(
+                    new LeadingMarginSpan.Standard((int) ResourceUtils.Companion.getInstance().getDimension(com.fy.navi.ui.R.dimen.dp_90), 0),
+                    newLinePos + 1,
+                    text.length(),
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+            );
+        }
+        mViewBinding.scenePoiDetailsParkingLotView.poiParkingLotPhone.setText(spannable);
         mViewBinding.scenePoiDetailsGasStationView.poiGasRoot.setVisibility(GONE);
         mViewBinding.scenePoiDetailsChargingStationView.poiChargeRoot.setVisibility(GONE);
         mViewBinding.scenePoiDetailsWashCarView.poiWashCarRoot.setVisibility(GONE);
@@ -862,8 +951,18 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
             mViewBinding.scenePoiDetailsServiceAreaView.poiServiceAreaPhone.
                     setVisibility(View.GONE);
         }
-        mViewBinding.scenePoiDetailsServiceAreaView.poiServiceAreaPhone.setText(
-                getContext().getString(R.string.poi_phone, mPoiInfoEntity.getPhone()));
+        String text = getContext().getString(R.string.poi_phone, mPoiInfoEntity.getPhone()).replace(";",";\n");
+        SpannableString spannable = new SpannableString(text);
+        int newLinePos = text.indexOf("\n");
+        if (newLinePos >= 0) {
+            spannable.setSpan(
+                    new LeadingMarginSpan.Standard((int) ResourceUtils.Companion.getInstance().getDimension(com.fy.navi.ui.R.dimen.dp_90), 0),
+                    newLinePos + 1,
+                    text.length(),
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+            );
+        }
+        mViewBinding.scenePoiDetailsServiceAreaView.poiServiceAreaPhone.setText(spannable);
         mViewBinding.scenePoiDetailsGasStationView.poiGasRoot.setVisibility(GONE);
         mViewBinding.scenePoiDetailsChargingStationView.poiChargeRoot.setVisibility(GONE);
         mViewBinding.scenePoiDetailsWashCarView.poiWashCarRoot.setVisibility(GONE);
@@ -881,6 +980,15 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
         final List<ChildInfo> childInfoList = mPoiInfoEntity.getChildInfoList();
         mScenicChildAdapter = new PoiDetailsScenicChildAdapter();
         if (childInfoList != null && !childInfoList.isEmpty()) {
+            if (mChildSelectIndex != -1 && mChildSelectIndex < childInfoList.size()) {
+                childInfoList.get(mChildSelectIndex).setChecked(1);
+                final ChildInfo childInfo = childInfoList.get(mChildSelectIndex);
+                mChildSelectInfo = new PoiInfoEntity()
+                        .setName(childInfo.getName())
+                        .setAddress(childInfo.getAddress())
+                        .setPid(childInfo.getPoiId())
+                        .setPoint(childInfo.getLocation());
+            }
             mScenicChildAdapter.setChildInfoList(childInfoList);
             mViewBinding.scenePoiDetailsScenicSpotView.poiScenicSpotChildList.setVisibility(View.VISIBLE);
             mViewBinding.scenePoiDetailsScenicSpotView.poiScenicSpotChildList.setLayoutManager(
@@ -1003,8 +1111,18 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
         if (ConvertUtils.isEmpty(mPoiInfoEntity.getPhone())) {
             mViewBinding.scenePoiDetailsScenicSpotView.poiScenicSpotPhone.setVisibility(View.GONE);
         }
-        mViewBinding.scenePoiDetailsScenicSpotView.poiScenicSpotPhone.setText(
-                getContext().getString(R.string.poi_phone, mPoiInfoEntity.getPhone()));
+        String text = getContext().getString(R.string.poi_phone, mPoiInfoEntity.getPhone()).replace(";",";\n");
+        SpannableString spannable = new SpannableString(text);
+        int newLinePos = text.indexOf("\n");
+        if (newLinePos >= 0) {
+            spannable.setSpan(
+                    new LeadingMarginSpan.Standard((int) ResourceUtils.Companion.getInstance().getDimension(com.fy.navi.ui.R.dimen.dp_90), 0),
+                    newLinePos + 1,
+                    text.length(),
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+            );
+        }
+        mViewBinding.scenePoiDetailsScenicSpotView.poiScenicSpotPhone.setText(spannable);
         mViewBinding.scenePoiDetailsGasStationView.poiGasRoot.setVisibility(GONE);
         mViewBinding.scenePoiDetailsChargingStationView.poiChargeRoot.setVisibility(GONE);
         mViewBinding.scenePoiDetailsWashCarView.poiWashCarRoot.setVisibility(GONE);
@@ -1125,6 +1243,10 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
             mViewBinding.scenePoiDetailsBottomView.stlGoFirst.setVisibility(View.GONE);
             mViewBinding.scenePoiDetailsBottomView.stlFunction.setVisibility(View.GONE);
         }
+    }
+
+    public void setChildIndex(final int index) {
+        mChildSelectIndex = index;
     }
 
     /**
@@ -1325,6 +1447,7 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
                         }
                         mPoiInfoEntity.setFavoriteInfo(favoriteInfo);
                         mScreenViewModel.addFavorite(mPoiInfoEntity, commonName);
+                        sendBuryPointForAddFavorite(mPoiInfoEntity.getName(), commonName);
                         //收藏逻辑执行完成后，会回到来源页，所以需要取消扎标
                         mScreenViewModel.clearLabelMarker();
 //                        BehaviorPackage.getInstance().addFavoriteData(mPoiInfoEntity, commonName);

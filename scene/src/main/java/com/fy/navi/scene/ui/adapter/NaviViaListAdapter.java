@@ -105,6 +105,7 @@ public class NaviViaListAdapter extends RecyclerView.Adapter<NaviViaListAdapter.
                     Logger.d(TAG, "NaviAddViaAdapter item click " + position + ",mList：" + mList.size());
                     if (mList.size() > 1 && (position != mList.size() - 1)) {
                         onItemClickListener.onItemClick(position, mList.get(position));
+                        holder.itemBinding.swipeMenuLayout.smoothClose();
                     }
                 }
             }

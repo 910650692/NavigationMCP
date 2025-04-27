@@ -36,6 +36,8 @@ import com.fy.navi.vrbridge.bean.MapState;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public final class MapStateManager {
 
@@ -45,6 +47,10 @@ public final class MapStateManager {
     private NaviEtaInfo mEtaInfo = null; //TBT信息
     private int mLimitSpeed = 0; //当前道路限速
     private LocParallelInfoEntity mParallelInfo = null; //平行路信息
+    private Timer mLocationIntervalTimer; //定位信息倒计时
+    private LocationIntervalTask mLocationIntervalTask;
+    private int mLocationInterval = 10; //语音定位信息最多10s更新一次
+
 
     private final MapState.Builder mBuilder;
 
@@ -90,7 +96,8 @@ public final class MapStateManager {
             mBuilder.setBroadcastMode(2);
         } else {
             mBuilder.setMute(false);
-            updateBroadcastMode(SettingPackage.getInstance().getConfigKeyBroadcastMode());
+            final int broadcastMode = SettingPackage.getInstance().getConfigKeyBroadcastMode();
+            updateBroadcastMode(broadcastMode);
         }
 
         final RoutePreferenceID routePreference = SettingPackage.getInstance().getRoutePreference();
@@ -104,7 +111,7 @@ public final class MapStateManager {
         mBuilder.setSetHome(BehaviorPackage.getInstance().getHomeFavoriteInfo() != null);
         mBuilder.setSetCompany(BehaviorPackage.getInstance().getCompanyFavoriteInfo() != null);
 
-        AmapStateUtils.saveMapState(mBuilder.build());
+        AMapStateUtils.saveMapState(mBuilder.build());
 
         registerCallback();
     }
@@ -114,7 +121,7 @@ public final class MapStateManager {
         public void onNaviStatusChange(final String naviStatus) {
             mCurNaviStatus = naviStatus;
             updateNaviStatus(naviStatus);
-            AmapStateUtils.saveMapState(mBuilder.build());
+            AMapStateUtils.saveMapState(mBuilder.build());
         }
     };
 
@@ -124,13 +131,13 @@ public final class MapStateManager {
         public void onMapLevelChanged(final MapType mapTypeId, final float mapLevel) {
             Log.d(TAG, "onMapLevelChanged: " + mapLevel);
             mBuilder.setCurrZoomLevel((int) mapLevel);
-            AmapStateUtils.saveMapState(mBuilder.build());
+            AMapStateUtils.saveMapState(mBuilder.build());
         }
 
         @Override
         public void onMapModeChange(final MapType mapTypeId, final MapMode mapMode) {
             updateMapMode(mapMode);
-            AmapStateUtils.saveMapState(mBuilder.build());
+            AMapStateUtils.saveMapState(mBuilder.build());
         }
     };
 
@@ -152,7 +159,7 @@ public final class MapStateManager {
                 if (endPoint != null) {
                     mBuilder.setEndPoiName(endPoint.getName());
                 }
-                AmapStateUtils.saveMapState(mBuilder.build());
+                AMapStateUtils.saveMapState(mBuilder.build());
             } else {
                 mRouteList.clear();
             }
@@ -161,20 +168,19 @@ public final class MapStateManager {
         @Override
         public void onSpeechViaNum(final int size) {
             mBuilder.setViaPointsCount(size);
-            AmapStateUtils.saveMapState(mBuilder.build());
+            AMapStateUtils.saveMapState(mBuilder.build());
         }
 
         @Override
         public void onSpeechEndCityName(final String cityName) {
             mBuilder.setEndPoiCity(cityName);
-            AmapStateUtils.saveMapState(mBuilder.build());
+            AMapStateUtils.saveMapState(mBuilder.build());
         }
     };
 
     private final SettingPackage.SettingChangeCallback mSettingChangeCallback = new SettingPackage.SettingChangeCallback() {
         @Override
         public void onSettingChanged(final String key, final String value) {
-            Log.d(TAG, "registerCallback: key : " + key);
             switch (key) {
                 case SettingController.KEY_SETTING_NAVI_BROADCAST:
                     //引导播报
@@ -184,12 +190,14 @@ public final class MapStateManager {
                     //播报静音
                     switch (value) {
                         case SettingController.VALUE_VOICE_MUTE_ON:
-                            mBuilder.setMute(true);
-                            mBuilder.setBroadcastMode(2);
-                            break;
-                        case SettingController.VALUE_VOICE_MUTE_OFF:
+                            //声音打开
                             mBuilder.setMute(false);
                             updateBroadcastMode(SettingPackage.getInstance().getConfigKeyBroadcastMode());
+                            break;
+                        case SettingController.VALUE_VOICE_MUTE_OFF:
+                            //声音关闭
+                            mBuilder.setMute(true);
+                            mBuilder.setBroadcastMode(2);
                             break;
                         default:
                             return;
@@ -206,7 +214,7 @@ public final class MapStateManager {
                 default:
                     return;
             }
-            AmapStateUtils.saveMapState(mBuilder.build());
+            AMapStateUtils.saveMapState(mBuilder.build());
         }
     };
 
@@ -214,20 +222,20 @@ public final class MapStateManager {
         @Override
         public void notifyMobileLogin(final int errCode, final int taskId, final AccountUserInfo result) {
             mBuilder.setLogin(result != null && result.getCode() == 1);
-            AmapStateUtils.saveMapState(mBuilder.build());
+            AMapStateUtils.saveMapState(mBuilder.build());
         }
 
         @Override
         public void notifyQRCodeLogin(final int errCode, final int taskId, final AccountUserInfo result) {
             mBuilder.setLogin(result != null && result.getCode() == 1);
-            AmapStateUtils.saveMapState(mBuilder.build());
+            AMapStateUtils.saveMapState(mBuilder.build());
         }
 
         @Override
         public void notifyAccountLogout(final int errCode, final int taskId, final AccountUserInfo result) {
             if (result != null && result.getCode() == 1) {
                 mBuilder.setLogin(false);
-                AmapStateUtils.saveMapState(mBuilder.build());
+                AMapStateUtils.saveMapState(mBuilder.build());
             }
         }
     };
@@ -236,15 +244,19 @@ public final class MapStateManager {
 
         @Override
         public void onLocationInfo(final LocInfoBean locationInfo) {
-            // TODO 要求10s一次
-            Log.d(TAG, "onLocationInfo: ");
-            final MapLocation mapLocation = new MapLocation();
-            mapLocation.setLon(locationInfo.getLongitude());
-            mapLocation.setLat(locationInfo.getLatitude());
-            mapLocation.setBearing((int) locationInfo.getBearing());
-            mapLocation.setProvider(locationInfo.getProvider());
-            mapLocation.setSpeed((int) locationInfo.getSpeed());
-            AmapStateUtils.saveMapLocation(mapLocation);
+            if (mLocationInterval == 0) {
+                final MapLocation mapLocation = new MapLocation();
+                mapLocation.setLon(locationInfo.getLongitude());
+                mapLocation.setLat(locationInfo.getLatitude());
+                mapLocation.setBearing((int) locationInfo.getBearing());
+                mapLocation.setProvider(locationInfo.getProvider());
+                mapLocation.setSpeed((int) locationInfo.getSpeed());
+                AMapStateUtils.saveMapLocation(mapLocation);
+                mLocationInterval = 10;
+                mLocationIntervalTimer = new Timer();
+                mLocationIntervalTask = new LocationIntervalTask();
+                mLocationIntervalTimer.schedule(mLocationIntervalTask, 1000, 1000);
+            }
         }
 
         @Override
@@ -253,10 +265,31 @@ public final class MapStateManager {
             mParallelInfo = entity;
             if (null != entity) {
                 updateParallelRoadStatus(entity);
-                AmapStateUtils.saveMapState(mBuilder.build());
+                AMapStateUtils.saveMapState(mBuilder.build());
             }
         }
     };
+
+    //收到定位信息后，开始倒计时，10s才允许再次更新位置新
+    private final class LocationIntervalTask extends TimerTask {
+        @Override
+        public void run() {
+            countDownInterval();
+        }
+    }
+
+    /**
+     * 定位信息倒计时.
+     */
+    private void countDownInterval() {
+        mLocationInterval--;
+        if (mLocationInterval == 0) {
+            if (null != mLocationIntervalTimer) {
+                mLocationIntervalTimer.cancel();
+            }
+            mLocationIntervalTask = null;
+        }
+    }
 
     private final IGuidanceObserver mGuidanceObserver = new IGuidanceObserver() {
         @Override
@@ -282,7 +315,7 @@ public final class MapStateManager {
         @Override
         public void onPreViewStatusChange(final boolean isPreView) {
             mBuilder.setOverView(isPreView);
-            AmapStateUtils.saveMapState(mBuilder.build());
+            AMapStateUtils.saveMapState(mBuilder.build());
         }
     };
 
@@ -290,21 +323,21 @@ public final class MapStateManager {
         @Override
         public void onAppInForeground(final boolean isInForeground) {
             mBuilder.setFront(isInForeground);
-            AmapStateUtils.saveMapState(mBuilder.build());
+            AMapStateUtils.saveMapState(mBuilder.build());
         }
     };
 
     private final FavoriteStatusCallback mFavoriteStatusCallback = new FavoriteStatusCallback() {
         @Override
-        public void notifyFavoriteHomeChanged(boolean isSet) {
+        public void notifyFavoriteHomeChanged(final boolean isSet) {
             mBuilder.setSetHome(isSet);
-            AmapStateUtils.saveMapState(mBuilder.build());
+            AMapStateUtils.saveMapState(mBuilder.build());
         }
 
         @Override
-        public void notifyFavoriteCompanyChanged(boolean isSet) {
+        public void notifyFavoriteCompanyChanged(final boolean isSet) {
             mBuilder.setSetCompany(isSet);
-            AmapStateUtils.saveMapState(mBuilder.build());
+            AMapStateUtils.saveMapState(mBuilder.build());
         }
     };
 
@@ -375,6 +408,27 @@ public final class MapStateManager {
         }
     }
 
+
+    /**
+     * updateBroadcastMode
+     * @param mode mode 1：经典简洁播报； 2：新手详细播报，默认态； 3：极简播报.
+     */
+    private void updateBroadcastMode(final int mode) {
+        switch (mode) {
+            case 1:
+                mBuilder.setBroadcastMode(1);
+                break;
+            case 2:
+                mBuilder.setBroadcastMode(0);
+                break;
+            case 3:
+                mBuilder.setBroadcastMode(5);
+                break;
+            default:
+                break;
+        }
+    }
+
     /**
      * updateBroadcastMode
      * @param mode mode
@@ -391,25 +445,7 @@ public final class MapStateManager {
                 mBuilder.setBroadcastMode(5);
                 break;
             default:
-        }
-    }
-
-    /**
-     * updateBroadcastMode
-     * @param mode mode
-     */
-    private void updateBroadcastMode(final int mode) {
-        switch (mode) {
-            case 1:
-                mBuilder.setBroadcastMode(1);
                 break;
-            case 2:
-                mBuilder.setBroadcastMode(0);
-                break;
-            case 3:
-                mBuilder.setBroadcastMode(5);
-                break;
-            default:
         }
     }
 

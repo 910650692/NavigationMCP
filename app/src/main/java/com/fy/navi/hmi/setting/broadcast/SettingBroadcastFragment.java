@@ -11,6 +11,7 @@ import com.fy.navi.service.greendao.setting.SettingManager;
 import com.fy.navi.ui.action.ViewAdapterKt;
 import com.fy.navi.ui.base.BaseFragment;
 
+import java.util.List;
 import java.util.Objects;
 
 public class SettingBroadcastFragment extends BaseFragment<FragmentSettingBroadcastBinding, SettingBroadcastViewModel>{
@@ -28,6 +29,7 @@ public class SettingBroadcastFragment extends BaseFragment<FragmentSettingBroadc
     public void onInitView() {
         mViewModel.initView();
         setCurrentVoice();
+        setVoiceIcons();
         updateCheckBoxTextColor();
     }
 
@@ -96,5 +98,13 @@ public class SettingBroadcastFragment extends BaseFragment<FragmentSettingBroadc
             }
         }
 
+    }
+
+    public void setVoiceIcons(){
+        List<String> mVoiceIcon = mViewModel.setVoiceIcons();
+        ViewAdapterKt.loadImageUrl(mBinding.naviBroadcastVoiceOthers1, mVoiceIcon.get(0), R.mipmap.default_voice, R.mipmap.default_voice);
+        ViewAdapterKt.loadImageUrl(mBinding.naviBroadcastVoiceOthers2, mVoiceIcon.get(1), R.mipmap.default_voice, R.mipmap.default_voice);
+        ViewAdapterKt.loadImageUrl(mBinding.naviBroadcastVoiceOthers3, mVoiceIcon.get(2), R.mipmap.default_voice, R.mipmap.default_voice);
+        ViewAdapterKt.loadImageUrl(mBinding.naviBroadcastVoiceOthers4, mVoiceIcon.get(3), R.mipmap.default_voice, R.mipmap.default_voice);
     }
 }

@@ -2,8 +2,18 @@ package com.fy.navi.burypoint.constant;
 
 public class BuryConstant {
 
-    public static final String SID = "SID";
-    public static final String SVID = "SVID";
+    public static class Model{
+        public static final String S_ID = DataTrackerConfig.currentConfig().getsId();
+        public static final String S_VID = DataTrackerConfig.currentConfig().getsVid();
+        public static final String APP_ID = DataTrackerConfig.currentConfig().getAppId();
+    }
+
+    public static class Property {
+
+        public static final String CLASS_NAME = "android.os.SystemProperties";
+        public static final String PRODUCTION_SYSTEM_PROPERTY_NAME = "ro.patac.production";
+
+    }
 
     public static class EventName{
         public static final String AMAP_UNKNOWN = "AMAP_Unknown";

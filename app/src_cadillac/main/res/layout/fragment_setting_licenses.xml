@@ -15,20 +15,43 @@
         android:clickable="true"
         android:background="@drawable/bg_setting_fragment">
 
-        <com.fy.navi.ui.view.SkinLinearLayout
-            android:id="@+id/setting_others_licenses_layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" >
+        <com.android.car.ui.FocusParkingView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
 
-            <com.fy.navi.ui.view.SkinImageView
+        <com.android.car.ui.FocusArea
+            android:id="@+id/focus_close"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:nudgeDown="@+id/focus_close"
+            app:nudgeUp="@+id/focus_close">
+
+            <com.fy.navi.ui.view.SkinView
                 clickCommand="@{viewModel.mFinishLicenses}"
                 android:layout_width="@dimen/dp_74"
                 android:layout_height="@dimen/dp_74"
                 android:layout_marginStart="@dimen/dp_32"
                 android:layout_marginTop="@dimen/dp_48"
+                android:focusable="true"
+                android:focusedByDefault="true"
+                android:background="@drawable/bg_base_mfc_cadillac_bg_selector"/>
+        </com.android.car.ui.FocusArea>
+
+        <com.fy.navi.ui.view.SkinLinearLayout
+            android:id="@+id/setting_others_licenses_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:focusable="false"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" >
+
+            <com.fy.navi.ui.view.SkinImageView
+                android:layout_width="@dimen/dp_74"
+                android:layout_height="@dimen/dp_74"
+                android:layout_marginStart="@dimen/dp_32"
+                android:layout_marginTop="@dimen/dp_48"
+                android:focusable="false"
                 android:src="@drawable/img_setting_back" />
 
             <com.fy.navi.ui.view.SkinTextView
@@ -38,6 +61,7 @@
                 android:layout_marginTop="@dimen/dp_52"
                 android:text="@string/setting_others_about_licenses_info"
                 android:textSize="@dimen/sp_46"
+                android:focusable="false"
                 android:textColor="@color/setting_bg_tab_text_select" />
         </com.fy.navi.ui.view.SkinLinearLayout>
 
@@ -48,6 +72,7 @@
             android:layout_marginTop="@dimen/dp_52"
             android:textColor="@color/setting_bg_tab_text_unselect"
             android:textSize="@dimen/sp_38"
+            android:focusable="false"
             android:text="@string/setting_others_about_licenses_icp"
             app:layout_constraintTop_toBottomOf="@+id/setting_others_licenses_layout"
             app:layout_constraintStart_toStartOf="parent"
@@ -59,6 +84,7 @@
             android:layout_height="wrap_content"
             android:textColor="@color/setting_bg_tab_text_unselect"
             android:textSize="@dimen/sp_38"
+            android:focusable="false"
             android:text="@string/setting_others_about_licenses_company"
             app:layout_constraintTop_toBottomOf="@+id/setting_others_about_licenses_icp"
             app:layout_constraintStart_toStartOf="parent"
@@ -71,6 +97,7 @@
             android:src="@mipmap/icon_setting_about_licenses"
             android:layout_marginTop="@dimen/dp_40"
             android:padding="@dimen/dp_14"
+            android:focusable="false"
             android:background="@drawable/bg_we_chat"
             app:layout_constraintTop_toBottomOf="@+id/setting_others_about_licenses_company"
             app:layout_constraintStart_toStartOf="parent"
@@ -84,6 +111,7 @@
             android:text="@string/setting_others_about_licenses_qr"
             android:textColor="@color/setting_bg_tab_text_unselect"
             android:textSize="@dimen/sp_38"
+            android:focusable="false"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/setting_others_about_licenses_qr_img" />
@@ -95,6 +123,7 @@
             android:text="@string/setting_others_about_licenses_qr_desc"
             android:textColor="@color/setting_bg_tab_text_unselect"
             android:textSize="@dimen/sp_38"
+            android:focusable="false"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/setting_others_about_licenses_qr"/>
@@ -107,6 +136,7 @@
             android:text="@string/setting_others_about_licenses_safe"
             android:textColor="@color/setting_bg_tab_text_unselect"
             android:textSize="@dimen/sp_38"
+            android:focusable="false"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/setting_others_about_licenses_qr_desc"/>

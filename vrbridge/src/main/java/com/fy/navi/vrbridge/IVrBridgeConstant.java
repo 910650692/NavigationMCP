@@ -34,6 +34,7 @@ public interface IVrBridgeConstant {
         String CINEMA = "CINEMA"; //电影院
         String TOILET = "TOILET"; //卫生间/厕所/洗手间/WC
         String BEAUTY = "BEAUTY"; //丽人/美发/美容/美甲/美体
+        String POI_COLLECT = "poiCollect";
     }
 
     //导航去目的地的路线偏好
@@ -80,6 +81,7 @@ public interface IVrBridgeConstant {
         int TIME_AND_DIST = 8; //根据搜索结果获取到目的地的距离与时间
         int CONDITION_IN_PAGE = 9; //多条件搜索跳转到搜索页面
         int POI_SORT = 10; //POI排序
+        int START_ARRIVAL_INFO = 11; //两点之前的时长和距离，与到家/公司分开处理
     }
 
     String CURRENT_LOCATION = "CURRENT_LOCATION";
@@ -138,7 +140,7 @@ public interface IVrBridgeConstant {
     }
 
     interface PoiType {
-        String CURRENT_LOCATION = "LOCATION"; //当前位置
+        String CURRENT_LOCATION = "CURRENT_LOCATION"; //当前位置
         String DESTINATION = "DESTINATION"; //目的地
         String COMMON = "common_poi"; //普通Poi
         String PASS_BY = "PASSBY"; //途径点
@@ -172,6 +174,13 @@ public interface IVrBridgeConstant {
         String NORTH_2D = "2D"; //2D正北朝上
         String CAR_3D = "3D"; //3D车头朝上
         String DEFAULT = "DEFAULT"; //收到此参数默认转为下一个模式
+    }
+
+    //语音传递的引导播报模式
+    interface VoiceBroadcastMode {
+        String DETAILED = "DETAILED"; //详细
+        String BRIEF = "BRIEF"; //简洁
+        String MINIMALIST = "MINIMALIST"; //极简
     }
 
 }

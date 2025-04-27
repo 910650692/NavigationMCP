@@ -27,16 +27,15 @@ import com.fy.navi.scene.impl.imersive.ImersiveStatus;
 import com.fy.navi.scene.impl.imersive.ImmersiveStatusScene;
 import com.fy.navi.service.AutoMapConstant;
 import com.fy.navi.service.define.bean.GeoPoint;
-import com.fy.navi.service.define.layer.GemLayerItem;
 import com.fy.navi.service.define.layer.RouteLineLayerParam;
+import com.fy.navi.service.define.layer.refix.LayerItemRoutePointClickResult;
 import com.fy.navi.service.define.layer.refix.LayerItemRouteEndPoint;
+import com.fy.navi.service.define.layer.refix.LayerPointItemType;
 import com.fy.navi.service.define.map.MapStateStyle;
 import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.navistatus.NaviStatus;
 import com.fy.navi.service.define.route.EvRangeOnRouteInfo;
 import com.fy.navi.service.define.route.RequestRouteResult;
-import com.fy.navi.service.define.route.RouteAlongCityInfo;
-import com.fy.navi.service.define.route.RouteAlongCityParam;
 import com.fy.navi.service.define.route.RouteChargeStationDetailInfo;
 import com.fy.navi.service.define.route.RouteChargeStationInfo;
 import com.fy.navi.service.define.route.RouteChargeStationParam;
@@ -51,12 +50,10 @@ import com.fy.navi.service.define.route.RouteRequestParam;
 import com.fy.navi.service.define.route.RouteRestAreaDetailsInfo;
 import com.fy.navi.service.define.route.RouteRestAreaInfo;
 import com.fy.navi.service.define.route.RouteRestAreaParam;
-import com.fy.navi.service.define.route.RouteRestTollGateParam;
 import com.fy.navi.service.define.route.RouteRestirctionID;
 import com.fy.navi.service.define.route.RouteRestrictionInfo;
 import com.fy.navi.service.define.route.RouteRestrictionParam;
 import com.fy.navi.service.define.route.RouteSpeechRequestParam;
-import com.fy.navi.service.define.route.RouteTrafficIncidentParam;
 import com.fy.navi.service.define.route.RouteWayID;
 import com.fy.navi.service.define.route.RouteWeatherInfo;
 import com.fy.navi.service.define.route.RouteWeatherParam;
@@ -98,7 +95,6 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
     private List<RouteWeatherInfo> mRouteWeatherInfos;
     private RouteChargeStationParam mRouteChargeStationParam;
     private List<RouteRestrictionInfo> mRouteRestrictionInfo;
-    private List<RouteAlongCityInfo> mRouteAlongCityInfos;
     private List<RouteParam> mRouteParams;
     private Map<Integer, PoiInfoEntity> mTaskMap = new HashMap<>();
     private long mRestirctionTaskId;
@@ -118,23 +114,23 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
     public RouteModel() {
         mLayerPackage = LayerPackage.getInstance();
         mRoutePackage = RoutePackage.getInstance();
-        mRoutePackage.registerRouteObserver(TAG, this);
         mSearchPackage = SearchPackage.getInstance();
-        MapPackage.getInstance().setMapStateStyle(MapType.MAIN_SCREEN_MAIN_MAP, MapStateStyle.MAP_ROUTING);
     }
 
     @Override
     public void onCreate() {
         super.onCreate();
+        Logger.d(TAG, "registerCallBack");
+        ImmersiveStatusScene.getInstance().registerCallback(TAG, this);
+        mLayerPackage.registerCallBack(MapType.MAIN_SCREEN_MAIN_MAP, this);
+        mSearchPackage.registerCallBack(TAG, this);
+        mRoutePackage.registerRouteObserver(TAG, this);
+        MapPackage.getInstance().setMapStateStyle(MapType.MAIN_SCREEN_MAIN_MAP, MapStateStyle.MAP_ROUTING);
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        Logger.d(TAG, "registerCallBack");
-        ImmersiveStatusScene.getInstance().registerCallback(TAG, this);
-        mLayerPackage.registerCallBack(MapType.MAIN_SCREEN_MAIN_MAP, this);
-        mSearchPackage.registerCallBack(TAG, this);
     }
 
     @Override
@@ -399,8 +395,18 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
      * @param geoPoint 目标点
      * @return 时间和距离
      * */
-    public CompletableFuture<ETAInfo> getTravelTimeFuture(final GeoPoint geoPoint) {
+    public CompletableFuture<ETAInfo> getTravelTimeFutureIncludeChargeLeft(final GeoPoint geoPoint) {
         return mSearchPackage.getTravelTimeFutureIncludeChargeLeft(geoPoint);
+    }
+
+    /**
+     * 获取当前点到此点的时间和距离
+     * @param startPoint 起点
+     * @param endPoint 终点
+     * @return 时间和距离
+     * */
+    public CompletableFuture<ETAInfo> getTravelTimeFutureIncludeChargeLeft(final GeoPoint startPoint, final GeoPoint endPoint) {
+        return mSearchPackage.getTravelTimeFutureIncludeChargeLeft(startPoint, endPoint);
     }
 
     /**
@@ -532,7 +538,6 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
         mRouteLineInfos = null;
         mRouteWeatherInfos = null;
         mRouteRestrictionInfo = null;
-        mRouteAlongCityInfos = null;
         mIsFirstRequest = false;
         if (!ConvertUtils.isEmpty(successMsg)) {
             ThreadManager.getInstance().postUi(() -> {
@@ -654,6 +659,7 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
 
     @Override
     public void onRouteDrawLine(final RouteLineLayerParam routeLineLayerParam) {
+        routeDrawLine();
         mRoutePackage.showRouteLine(routeLineLayerParam.getMMapTypeId());
         final RoutePoint endPoint = routeLineLayerParam.getMRouteLinePoints().getMEndPoints().get(0);
         mParkSearchId = mSearchPackage.aroundSearch(1, BuryConstant.SearchType.PARKING, endPoint.getMPos(),"2000", true);
@@ -661,6 +667,81 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
         ImmersiveStatusScene.getInstance().setImmersiveStatus(MapType.MAIN_SCREEN_MAIN_MAP, ImersiveStatus.IMERSIVE);
         if (!ConvertUtils.isEmpty(mViewModel)) {
             mViewModel.hideProgressUI(true);
+        }
+    }
+
+    /**
+     * 配置图层所需相关数据
+     */
+    public void routeDrawLine() {
+        //绘制终点扎标
+        final List<LayerItemRouteEndPoint> layerItemRouteEndPoints = new ArrayList<>();
+        for (int i =0 ;i < mRouteLineInfos.size(); i++) {
+            final LayerItemRouteEndPoint layerItemRouteEndPoint = new LayerItemRouteEndPoint();
+            if (powerType() == 0 || powerType() == 2) {
+                final float num = mGasCarTipManager.getRemainGasPercent(ConvertUtils
+                        .convertMetersToKilometers(mRouteLineInfos.get(i).getMDistance()));
+                Logger.d(TAG, "getRemainGasPercent: " + num);
+                if (num != 0) {
+                    layerItemRouteEndPoint.setEndPointType(LayerPointItemType.ROUTE_POINT_END_OIL);
+                    layerItemRouteEndPoint.setRestNum((int) num);
+                } else {
+                    layerItemRouteEndPoint.setEndPointType(LayerPointItemType.ROUTE_POINT_END_OIL);
+                    layerItemRouteEndPoint.setRestNum(-1);
+                }
+            }  else {
+                if (mRouteLineInfos.get(i).isMCanBeArrive()) {
+                    layerItemRouteEndPoint.setEndPointType(LayerPointItemType.ROUTE_POINT_END_BATTERY);
+                    layerItemRouteEndPoint.setRestNum(mRouteLineInfos.get(i).getMRemainPercent());
+                } else {
+                    layerItemRouteEndPoint.setEndPointType(LayerPointItemType.ROUTE_POINT_END_BATTERY);
+                    layerItemRouteEndPoint.setRestNum(-1);
+                }
+            }
+            layerItemRouteEndPoints.add(layerItemRouteEndPoint);
+        }
+        mRequestRouteResults.setMLayerItemRouteEndPoint(layerItemRouteEndPoints);
+
+        //配置补能点数据
+        final RouteChargeStationParam routeChargeStationParam = mRequestRouteResults.getMRouteChargeStationParam();
+        if (routeChargeStationParam == null) {
+            return;
+        }
+        final ArrayList<RouteChargeStationInfo> routeChargeStationInfos = routeChargeStationParam.getMRouteChargeStationInfos();
+        if (routeChargeStationInfos == null || routeChargeStationInfos.isEmpty()) {
+            return;
+        }
+        for (int i = 0;i < routeChargeStationInfos.size(); i++) {
+            final ArrayList<RouteChargeStationDetailInfo> routeChargeStationDetailInfo = routeChargeStationInfos.get(i)
+                    .getMRouteChargeStationDetailInfo();
+            if (routeChargeStationDetailInfo != null && !routeChargeStationDetailInfo.isEmpty()) {
+                for (int j =0; j<routeChargeStationDetailInfo.size(); j++) {
+                    final int currentIndex = j;
+                    if (currentIndex == 0){
+                        getTravelTimeFutureIncludeChargeLeft(new GeoPoint(routeChargeStationDetailInfo.get(currentIndex).getMShow().getLon(),
+                                routeChargeStationDetailInfo.get(currentIndex).getMShow().getLat()))
+                                .thenAccept(etaInfo -> {
+                                    routeChargeStationDetailInfo.get(currentIndex).setMInterval(etaInfo.getDistance());
+                                })
+                                .exceptionally(error -> {
+                                    Logger.d(TAG, "showChargeStationDetail error:" + error);
+                                    return null;
+                                });
+                    } else {
+                        getTravelTimeFutureIncludeChargeLeft(new GeoPoint(routeChargeStationDetailInfo.get(currentIndex -1).getMShow().getLon(),
+                                        routeChargeStationDetailInfo.get(currentIndex-1).getMShow().getLat()),
+                                new GeoPoint(routeChargeStationDetailInfo.get(currentIndex).getMShow().getLon(),
+                                routeChargeStationDetailInfo.get(currentIndex).getMShow().getLat()))
+                                .thenAccept(etaInfo -> {
+                                    routeChargeStationDetailInfo.get(currentIndex).setMInterval(etaInfo.getDistance());
+                                })
+                                .exceptionally(error -> {
+                                    Logger.d(TAG, "showChargeStationDetail error:" + error);
+                                    return null;
+                                });
+                    }
+                }
+            }
         }
     }
 
@@ -733,21 +814,6 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
         }
     }
 
-    @Override
-    public void onRouteRestTollGateInfo(final RouteRestTollGateParam routeRestTollGateParam) {
-    }
-
-    @Override
-    public void onRouteCityInfo(final RouteAlongCityParam routeAlongCityParam) {
-        //长途判断
-        if (ConvertUtils.isEmpty(routeAlongCityParam)) {
-            return;
-        }
-        mRouteAlongCityInfos = routeAlongCityParam.getMRouteAlongCityInfos();
-//        if (isFirstRequest) showParkingFragment();
-//        isFirstRequest = false;
-    }
-
     /***
      * 打开停车场推荐
      */
@@ -767,10 +833,6 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
      */
     public void clearEndParkPoint() {
         mRoutePackage.clearEndParkPoint(MapType.MAIN_SCREEN_MAIN_MAP);
-    }
-
-    @Override
-    public void onRouteTrafficIncidentInfo(final RouteTrafficIncidentParam routeTrafficIncidentParam) {
     }
 
     @Override
@@ -852,18 +914,6 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
                     } else {
                         mViewModel.showHideElicCheckBox(false);
                     }
-
-                    //绘制终点扎标
-                    if (powerType() == 0 || powerType() == 2) {
-                        final float num = mGasCarTipManager.getRemainGasPercent(ConvertUtils.convertMetersToKilometers(mRouteLineInfos.get(getCurrentIndex()).getMDistance()));
-                        Logger.d(TAG, "getRemainGasPercent: " + num);
-                        if (num != 0) {
-                            mRoutePackage.drawEndPoint(mapTypeId, LayerItemRouteEndPoint.LayerRouteEndPointType.LAYER_ROUTE_END_TYPE_OIL, (int) (num * 100) );
-                        }
-                    }  else if (mRouteLineInfos.get(routeIndex).isMCanBeArrive()){
-                        mRoutePackage.drawEndPoint(mapTypeId, LayerItemRouteEndPoint.LayerRouteEndPointType.LAYER_ROUTE_END_TYPE_BATTERY,
-                                mRouteLineInfos.get(routeIndex).getMRemainPercent());
-                    }
                 }
             }
         }
@@ -875,7 +925,7 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
     }
 
     @Override
-    public void onRouteItemClick(final MapType mapTypeId, final GemLayerItem item) {
+    public void onRouteItemClick(final MapType mapTypeId, final LayerPointItemType type, final LayerItemRoutePointClickResult item) {
         Logger.e(TAG, "onRouteItemClick-RouteModel");
         if (ConvertUtils.isEmpty(item)) {
             return;
@@ -884,8 +934,8 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
             Logger.i(TAG, "is not on route page");
             return;
         }
-        switch (item.getClickBusinessType()) {
-            case BizRouteTypePath:
+        switch (type) {
+            case ROUTE_PATH:
                 if (!ConvertUtils.isEmpty(mRouteLineInfos)) {
                     int index = -1;
                     for (int t = 0; t < mRouteLineInfos.size(); t++) {
@@ -898,9 +948,9 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
                     }
                 }
                 break;
-            case BizRouteTypeStartPoint:
-            case BizRouteTypeViaPoint:
-            case BizRouteTypeEndPoint:
+            case ROUTE_POINT_START:
+            case ROUTE_POINT_END:
+            case ROUTE_POINT_VIA:
                 final PoiInfoEntity poiInfo = new PoiInfoEntity();
                 poiInfo.setPoint(new GeoPoint(item.getLog(), item.getLat()));
                 final Bundle poiBundle = new Bundle();
@@ -909,14 +959,14 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
                 final PoiDetailsFragment poiFragment = new PoiDetailsFragment();
                 addPoiDetailsFragment(poiFragment, poiBundle);
                 break;
-            case BizRouteTypeWeather:
+            case ROUTE_POINT_WEATHER:
                 if (!ConvertUtils.isEmpty(mRouteWeatherInfos) && mRouteWeatherInfos.size() > item.getIndex()) {
                     if (!ConvertUtils.isEmpty(mViewModel)) {
                         mViewModel.showWeatherDeatilsUI(mRouteWeatherInfos.get((int) (item.getIndex())));
                     }
                 }
                 break;
-            case BizRouteTypeRestArea:
+            case ROUTE_POINT_REST_AREA:
                 if (!ConvertUtils.isEmpty(mRouteRestAreaInfos) && mRouteRestAreaInfos.size() > getCurrentIndex()
                         && getCurrentIndex() != -1
                         && !ConvertUtils.isEmpty(mRouteRestAreaInfos.get(getCurrentIndex()))
@@ -926,7 +976,7 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
                     getSearchDetailsMode(poiEntryFromService);
                 }
                 break;
-            case BizRouteTypeViaChargeStationPoint:
+            case ROUTE_POINT_VIA_CHARGE_STATION:
                 if (mRouteChargeStationParam == null) {
                     return;
                 }
@@ -946,7 +996,7 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
                 closeAllFragmentsUntilTargetFragment("AlterChargeFragment");
                 addFragment((BaseFragment) chargeFragment, chargeBundle);
                 break;
-            case BizLabelTypeRoutePopSearchPoint:
+            case ROUTE_POINT_END_PARK:
                 clearEndParkPoint();
                 showParkingFragment();
                 break;
@@ -954,71 +1004,6 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
                 break;
     }
 }
-
-//    @Override
-//    public void onNotifyClick(final MapType mapTypeId, final GemBaseLayer layer, final GemLayerItem item) {
-//        if (item.getClickBusinessType() == GemLayerClickBusinessType.BizRouteTypeWeather) {
-//            if (!ConvertUtils.isEmpty(mRouteWeatherInfos) && mRouteWeatherInfos.size() > item.getIndex()) {
-//                mViewModel.showWeatherDeatilsUI(mRouteWeatherInfos.get((int) (item.getIndex())));
-//            }
-//        } else if (item.getClickBusinessType() == GemLayerClickBusinessType.BizRouteTypeRestArea) {
-//            if (!ConvertUtils.isEmpty(mRouteRestAreaInfos) && mRouteRestAreaInfos.size() > getCurrentIndex()
-//                    && !ConvertUtils.isEmpty(mRouteRestAreaInfos.get(getCurrentIndex()))
-//                    && !ConvertUtils.isEmpty(mRouteRestAreaInfos.get(getCurrentIndex()).getMRouteRestAreaDetailsInfos())) {
-//                final PoiInfoEntity poiEntryFromService = getPoiEntryFromService(
-//                        mRouteRestAreaInfos.get(getCurrentIndex()).getMRouteRestAreaDetailsInfos().get((int) (item.getIndex())));
-//                getSearchDetailsMode(poiEntryFromService);
-//            }
-//        } else if (item.getClickBusinessType() == GemLayerClickBusinessType.BizRouteTypePath) {
-//            if (!ConvertUtils.isEmpty(mRouteLineInfos)) {
-//                int index = -1;
-//                for (int t = 0; t < mRouteLineInfos.size(); t++) {
-//                    if (item.getIndex() == mRouteLineInfos.get(t).getMPathID()) {
-//                        index = t;
-//                    }
-//                }
-//                if (index != -1 && index != getCurrentIndex()) {
-//                    mRoutePackage.selectRoute(MapType.MAIN_SCREEN_MAIN_MAP, index);
-//                }
-//            }
-//        } else if (item.getClickBusinessType() == GemLayerClickBusinessType.BizRouteTypeTrafficEventTip) {
-//            final PoiInfoEntity poiInfo = new PoiInfoEntity();
-//            poiInfo.setPid(String.valueOf(item.getEventId()));
-//            poiInfo.setPoint(new GeoPoint(item.getLog(), item.getLat(), item.getZ()));
-//            final Bundle bundle = new Bundle();
-//            bundle.putParcelable(AutoMapConstant.TrafficEventBundleKey.BUNDLE_KEY_ENTITY, poiInfo);
-//            final TrafficEventFragment trafficEventFragment;
-//            final BaseFragment fragment = StackManager.getInstance().getCurrentFragment(mViewModel.mScreenId);
-//            if (fragment != null && fragment instanceof TrafficEventFragment) {
-//                trafficEventFragment = (TrafficEventFragment) fragment;
-//                trafficEventFragment.setArguments(bundle);
-//                trafficEventFragment.onInitData();
-//            } else {
-//                trafficEventFragment = new TrafficEventFragment();
-//                addFragment(trafficEventFragment, bundle);
-//            }
-//        } else if (item.getClickBusinessType() == GemLayerClickBusinessType.BizRouteTypeViaChargeStationPoint) {
-//            if (mRouteChargeStationParam == null) {
-//                return;
-//            }
-//            final ArrayList<RouteChargeStationInfo> routeChargeStationInfos = mRouteChargeStationParam.getMRouteChargeStationInfos();
-//            if (routeChargeStationInfos == null) {
-//                return;
-//            }
-//            final ArrayList<RouteChargeStationDetailInfo> routeChargeStationDetailInfo = routeChargeStationInfos.get(getCurrentIndex())
-//                    .getMRouteChargeStationDetailInfo();
-//            if (routeChargeStationDetailInfo == null || routeChargeStationDetailInfo.size() <= item.getIndex()) {
-//                return;
-//            }
-//            final Fragment fragment = (Fragment) ARouter.getInstance().build(RoutePath.Route.ALTER_CHARGE_FRAGMENT).navigation();
-//            final Bundle bundle = new Bundle();
-//            bundle.putSerializable(AutoMapConstant.RouteBundleKey.BUNDLE_KEY_ALTER_CHARGE_STATION,
-//                    routeChargeStationDetailInfo.get((int) item.getIndex()));
-//            closeAllFragmentsUntilTargetFragment("AlterChargeFragment");
-//            addFragment((BaseFragment) fragment, bundle);
-//
-//        }
-//    }
 
 /**
  * 服务区数据转POI数据
@@ -1150,4 +1135,14 @@ public void setPoint() {
             .build();
     BuryPointController.getInstance().setBuryProps(property);
 }
+
+    public void onReStoreFragment() {
+        if (!ConvertUtils.isEmpty(mRequestRouteResults)) {
+            onRouteResult(mRequestRouteResults);
+            mRoutePackage.selectRoute(MapType.MAIN_SCREEN_MAIN_MAP, getCurrentIndex());
+            if (!ConvertUtils.isEmpty(mRequestRouteResults.getMRouteRestAreaParam())) {
+                onRouteRestAreaInfo(mRequestRouteResults.getMRouteRestAreaParam());
+            }
+        }
+    }
 }

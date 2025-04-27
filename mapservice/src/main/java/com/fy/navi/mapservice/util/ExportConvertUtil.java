@@ -1,7 +1,8 @@
 package com.fy.navi.mapservice.util;
 
-import android.util.Log;
 import android.util.SparseIntArray;
+
+import com.android.utils.log.Logger;
 
 public final class ExportConvertUtil {
 
@@ -356,7 +357,7 @@ public final class ExportConvertUtil {
         mCityIdArray.put(421300, 371); // 随州
         mCityIdArray.put(371400, 372); // 德州
         mCityIdArray.put(422800, 373); // 恩施土家族苗族自治州
-        Log.d(TAG, "cityId size: " + mCityIdArray.size());
+        Logger.d(TAG, "cityId size: " + mCityIdArray.size());
     }
 
     /**

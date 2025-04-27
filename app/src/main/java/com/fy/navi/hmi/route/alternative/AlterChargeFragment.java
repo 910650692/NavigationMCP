@@ -58,8 +58,12 @@ public class AlterChargeFragment extends BaseFragment<FragmentAlterChargeBinding
 
     @Override
     public void onInitData() {
-        final Bundle bundle = getArguments();
         onInitClick();
+    }
+
+    @Override
+    public void onGetFragmentData() {
+        final Bundle bundle = getArguments();
         if (bundle == null) {
             return;
         }
@@ -67,7 +71,11 @@ public class AlterChargeFragment extends BaseFragment<FragmentAlterChargeBinding
         final RouteChargeStationDetailInfo routeChargeStationDetailInfo = (RouteChargeStationDetailInfo)
                 bundle.getSerializable(AutoMapConstant.RouteBundleKey.BUNDLE_KEY_ALTER_CHARGE_STATION);
         showAlterChargeStation(routeChargeStationDetailInfo);
+    }
 
+    @Override
+    public void onReStoreFragment() {
+        mViewModel.reStoreFragment();
     }
 
     @Override
@@ -89,7 +97,7 @@ public class AlterChargeFragment extends BaseFragment<FragmentAlterChargeBinding
             return;
         }
         mViewModel.getShowAlterCharge().set(true);
-        mBinding.tvSelectedChargeStation.setText(routeChargeStationDetailInfo.getMName());
+        mViewModel.getRouteCurrentName().set(routeChargeStationDetailInfo.getMName());
         mViewModel.getCurrentDetails(routeChargeStationDetailInfo.getMPoiID());
         mViewModel.requestAlterChargeStation(routeChargeStationDetailInfo.getMPoiID());
     }

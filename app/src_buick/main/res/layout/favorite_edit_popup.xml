@@ -14,7 +14,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:text="@string/favorite_item_rename"
-            android:textSize="@dimen/sp_28"
+            android:textSize="@dimen/sp_26"
             android:gravity="center"
             android:textColor="@color/color_black_70"/>
 
@@ -30,7 +30,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:text="@string/favorite_item_delete"
-            android:textSize="@dimen/sp_28"
+            android:textSize="@dimen/sp_26"
             android:gravity="center"
             android:textColor="@color/color_black_70"/>
 

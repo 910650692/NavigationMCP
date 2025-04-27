@@ -2,6 +2,7 @@ package com.fy.navi.service.define.route;
 
 
 import com.fy.navi.service.define.layer.RouteLineLayerParam;
+import com.fy.navi.service.define.layer.refix.LayerItemRouteEndPoint;
 import com.fy.navi.service.define.map.MapType;
 
 import java.util.List;
@@ -45,6 +46,8 @@ public class RequestRouteResult {
     private RouteCurrentPathParam mRouteCurrentPathParam = new RouteCurrentPathParam();
     /*** 沿途充电站 **/
     private RouteChargeStationParam mRouteChargeStationParam = new RouteChargeStationParam();
+    /*** 路线终点参数 **/
+    private List<LayerItemRouteEndPoint> mLayerItemRouteEndPoint;
     /*** 是否快速导航 **/
     private boolean mFastNavi = false;
 }

@@ -67,6 +67,7 @@
     <string name="main_search_hint">搜索目的地</string>
     <string name="no_search_history">暂无历史记录</string>
     <string name="along_way_search_title">沿途搜</string>
+    <string name="along_way_search_hint">沿途去哪儿,都能搜</string>
     <string name="around_search_title">在%s附近搜索</string>
     <string name="around_search_title_current_location">当前位置</string>
 
@@ -384,6 +385,7 @@
     <string name="setting_tab_broadcast">播报</string>
     <string name="setting_tab_favorite">收藏</string>
     <string name="setting_tab_others">其他</string>
+
     <string name="setting_broadcast_navi">导航播报</string>
     <string name="setting_broadcast_navi_detail">详细</string>
     <string name="setting_broadcast_navi_concise">简洁</string>
@@ -403,6 +405,7 @@
     <string name="setting_broadcast_voice_default">系统语音</string>
     <string name="setting_broadcast_voice_recommend">高德标准语音</string>
     <string name="setting_broadcast_voice_has_update">有更新</string>
+    <string name="setting_broadcast_voice_no_net">无网络连接，请检查网络后重试</string>
     <string name="setting_others_account">绑定高德账号</string>
     <string name="setting_others_account_detail">收藏夹/历史账号同步至车</string>
     <string name="setting_others_account_logout">退出绑定后需要重新扫码绑定</string>
@@ -696,7 +699,7 @@
         <item>更多</item>
     </string-array>
 
-    <string name="guide_login_title">绑定高的账号</string>
+    <string name="guide_login_title">绑定高德账号</string>
     <string name="guide_login_content">同步历程、收藏夹、导航路线</string>
     <string name="guide_login_bind">立即绑定</string>
     <string name="guide_login_cancel">不再提醒</string>

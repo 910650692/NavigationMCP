@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="viewModel"
+            type="com.fy.navi.hmi.poi.chargingstation.BaseChargePriceListViewModel" />
+    </data>
+
+    <com.fy.navi.ui.view.SkinLinearLayout
+        clickCommand="@{viewModel.rootClick}"
+        android:layout_width="@dimen/dp_820"
+        android:layout_height="match_parent"
+        android:clickable="true"
+        android:orientation="vertical">
+        <com.fy.navi.scene.ui.poi.ScenePoiChargePriceListView
+            android:id="@+id/charge_price"
+            android:layout_width="@dimen/dp_820"
+            android:layout_height="match_parent">
+
+        </com.fy.navi.scene.ui.poi.ScenePoiChargePriceListView>
+    </com.fy.navi.ui.view.SkinLinearLayout>
+</layout>

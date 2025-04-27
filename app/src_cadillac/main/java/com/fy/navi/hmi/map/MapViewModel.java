@@ -2,6 +2,7 @@ package com.fy.navi.hmi.map;
 
 import android.annotation.SuppressLint;
 import android.app.Application;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 
@@ -12,6 +13,7 @@ import com.android.utils.ConvertUtils;
 import com.android.utils.ToastUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
+import com.fy.navi.hmi.navi.AuthorizationRequestDialog;
 import com.fy.navi.service.define.map.MainScreenMapView;
 import com.fy.navi.service.define.mfc.MfcController;
 
@@ -47,7 +49,7 @@ public class MapViewModel extends BaseMapViewModel {
             mapView.setOnFocusChangeListener((view, b) -> {
                 if (Boolean.FALSE.equals(b)) {
                     //地图失去焦点，取消倒计时
-                    cancelTimer();
+                    cancelMapViewTimer();
                 } else {
                     Logger.i(TAG, "MFC: Map 获取焦点");
                     //todo 提示用户，点击确定按钮可以操作地图
@@ -58,14 +60,18 @@ public class MapViewModel extends BaseMapViewModel {
                 boolean isActionUp = keyEvent.getAction() == KeyEvent.ACTION_UP;
                 switch (keyCode) {
                     case KeyEvent.KEYCODE_DPAD_CENTER:
-                        if (!mInDirectManipulationMode && isActionUp) {
-                            Logger.i(TAG, "MFC Map Click Center");
-                            setDModeMap(true);
-                            initMapViewTimer();
-                        } else {
-                            setDModeMap(false);
+                        if (isActionUp) {
+                            if (!mInDirectManipulationMode) {
+                                Logger.i(TAG, "MFC Map Click Center in");
+                                setDModeMap(true);
+                                initMapViewTimer();
+                            } else {
+                                Logger.i(TAG, "MFC Map Click Center out");
+                                setDModeMap(false);
+                            }
+                            return true;
                         }
-                        return true;
+                        return false;
                     case KeyEvent.KEYCODE_BACK:
                         if (!mInDirectManipulationMode) {
                             return false;
@@ -154,6 +160,16 @@ public class MapViewModel extends BaseMapViewModel {
         }
         if (Boolean.FALSE.equals(isDMode)) {
             cancelMapViewTimer();
+        }
+    }
+
+    /**
+     * 显示隐私授权弹框
+     * @param dialog
+     */
+    public void showAuthorizationRequestDialog(AuthorizationRequestDialog dialog) {
+        if (dialog != null) {
+            dialog.showDialog(Gravity.START | Gravity.BOTTOM);
         }
     }
 }

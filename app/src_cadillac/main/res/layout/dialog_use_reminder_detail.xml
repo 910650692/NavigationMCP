@@ -35,7 +35,7 @@
 
         <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_562"
+            android:layout_height="@dimen/dp_742"
             android:layout_marginTop="@dimen/dp_30"
             android:paddingHorizontal="@dimen/dp_100"
             app:layout_constraintStart_toStartOf="parent"

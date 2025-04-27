@@ -3,13 +3,18 @@ package com.android.utils
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.Resources
-
 import android.os.Handler
 import android.os.Looper
-
 import com.android.utils.log.Logger
-import okhttp3.*
+import okhttp3.Call
+import okhttp3.Callback
+import okhttp3.FormBody
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.RequestBody
+import okhttp3.Response
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
@@ -24,9 +29,7 @@ class OkHttpUtils private constructor() {
         .readTimeout(10, TimeUnit.SECONDS)
         .writeTimeout(10, TimeUnit.SECONDS)
         .build()
-        
     private lateinit var handler: Handler
-
     fun init(context: Context?) {
         mContext = context
         mResources = mContext!!.resources
@@ -41,7 +44,6 @@ class OkHttpUtils private constructor() {
             val request = Request.Builder()
                 .url(url)
                 .build()
-            
             okHttpClient.newCall(request).apply {
                 enqueue(object : Callback {
                     override fun onFailure(call: Call, e: IOException) {
@@ -69,22 +71,22 @@ class OkHttpUtils private constructor() {
     /**
      * post请求
      */
-    fun <T> postAsyncHttp(url: String, mapHeader: Map<String, String> = emptyMap(), callback: OkHttpCallback<T>, requestBody: RequestBody): Call? {
+    fun <T> postAsyncHttp(
+        url: String,
+        mapHeader: Map<String, String> = emptyMap(),
+        callback: OkHttpCallback<T>,
+        requestBody: RequestBody
+    ): Call? {
         return try {
-            val requestBuilder = Request.Builder()
-                .url(url)
-                .post(requestBody)
-
-            mapHeader.forEach { (key, value) ->
-                requestBuilder.addHeader(key, value)
-            }
-
-            val request = requestBuilder.build()
-
+            val request = Request.Builder().apply {
+                url(url)
+                post(requestBody)
+                mapHeader.forEach { (k, v) -> addHeader(k, v) }
+            }.build()
             okHttpClient.newCall(request).apply {
                 enqueue(object : Callback {
                     override fun onFailure(call: Call, e: IOException) {
-                        failedCallBack("访问失败", callback)
+                        failedCallBack("访问失败 : ${e.message}", callback)
                     }
 
                     override fun onResponse(call: Call, response: Response) {
@@ -94,7 +96,7 @@ class OkHttpUtils private constructor() {
                                 successCallBack(result as T, callback)
                             }
                         } else {
-                            failedCallBack("服务器错误", callback)
+                            failedCallBack("服务器错误 : ${response.code}", callback)
                         }
                     }
                 })
@@ -108,9 +110,14 @@ class OkHttpUtils private constructor() {
     /**
      * 异步post表单提交
      */
-    fun <T> postFromBody(map: Map<String, String>, mapHeader: Map<String, String>, url: String, callback: OkHttpCallback<T>): Call? {
+    fun <T> postFromBody(
+        map: Map<String, String>,
+        mapHeader: Map<String, String>,
+        url: String,
+        callback: OkHttpCallback<T>
+    ): Call? {
         val builder = FormBody.Builder()
-        map.forEach { (key, value) -> 
+        map.forEach { (key, value) ->
             builder.add(key, value)
         }
         return postAsyncHttp(url, mapHeader, callback, builder.build())
@@ -119,8 +126,13 @@ class OkHttpUtils private constructor() {
     /**
      * 异步json格式提交数据
      */
-    fun <T> postJson(map: Map<String, String>, mapHeader: Map<String, String>, url: String, callback: OkHttpCallback<T>): Call? {
-        val jsonBody = map.entries.joinToString("&") { (key, value) -> 
+    fun <T> postJson(
+        map: Map<String, String>,
+        mapHeader: Map<String, String>,
+        url: String,
+        callback: OkHttpCallback<T>
+    ): Call? {
+        val jsonBody = map.entries.joinToString("&") { (key, value) ->
             "$key=$value"
         }
         val mediaType = "application/json; charset=utf-8".toMediaTypeOrNull()
@@ -131,7 +143,12 @@ class OkHttpUtils private constructor() {
     /**
      * post上传单张图片
      */
-    fun <T> postImage(file: File, mapHeader: Map<String, String>, url: String, callback: OkHttpCallback<T>): Call? {
+    fun <T> postImage(
+        file: File,
+        mapHeader: Map<String, String>,
+        url: String,
+        callback: OkHttpCallback<T>
+    ): Call? {
         val requestBody = MultipartBody.Builder()
             .setType(MultipartBody.FORM)
             .addFormDataPart(
@@ -156,36 +173,29 @@ class OkHttpUtils private constructor() {
             override fun onResponse(call: Call, response: Response) {
                 var inputStream: InputStream? = null
                 var outputStream: FileOutputStream? = null
-                
                 try {
                     val savePath = isExistDir(saveDir)
                     val file = File(savePath, getNameFromUrl(url))
-                    
                     response.body?.let { body ->
                         inputStream = body.byteStream()
                         outputStream = FileOutputStream(file)
-                        
                         val total = body.contentLength()
                         var sum = 0L
                         val buffer = ByteArray(1024)
                         var len: Int
-                        
                         while (inputStream?.read(buffer).also { len = it ?: -1 } != -1) {
                             if (Thread.currentThread().isInterrupted) {
                                 throw IOException("Download canceled")
                             }
-                            
                             len.let {
                                 outputStream?.write(buffer, 0, it)
                                 sum += it
-                                
                                 if (total > 0) {
                                     val progress = (sum * 100 / total).toInt()
                                     onProgress(progress, callback)
                                 }
                             }
                         }
-                        
                         outputStream?.flush()
                         successCallBack("下载完成" as T, callback)
                     }
@@ -215,7 +225,6 @@ class OkHttpUtils private constructor() {
             .url(url)
             .post(body)
             .build()
-            
         okHttpClient.newCall(request).enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {
                 failedCallBack("filePath上传失败", callback)
@@ -271,7 +280,6 @@ class OkHttpUtils private constructor() {
         @SuppressLint("StaticFieldLeak")
         @Volatile
         private var instance: OkHttpUtils? = null
-
         fun getInstance() = instance ?: synchronized(this) {
             instance ?: OkHttpUtils().also { instance = it }
         }

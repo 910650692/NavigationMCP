@@ -12,7 +12,7 @@
 
         <variable
             name="holder"
-            type="com.fy.navi.scene.ui.adapter.RouteResultAdapter.Holder" />
+            type="com.fy.navi.scene.ui.adapter.RouteDetailsResultsChildAdapter.Holder" />
     </data>
 
     <com.fy.navi.ui.view.SkinConstraintLayout
@@ -20,13 +20,15 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_70"
         android:paddingStart="@dimen/dp_50"
-        android:paddingEnd="@dimen/dp_50">
+        android:paddingEnd="@dimen/dp_50"
+        android:focusable="false">
 
         <com.fy.navi.ui.view.SkinImageView
             android:id="@+id/route_detail_info_item_child_img"
             android:layout_marginStart="@dimen/dp_70"
             android:layout_width="@dimen/dp_42"
             android:layout_height="@dimen/dp_42"
+            android:focusable="false"
             android:src="@drawable/img_tbt_exit_hud_sou2"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -38,6 +40,7 @@
             android:layout_height="wrap_content"
             android:textColor="@color/text_color_route_item_no_select"
             android:textSize="@dimen/sp_28"
+            android:focusable="false"
             android:layout_marginStart="@dimen/dp_10"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"

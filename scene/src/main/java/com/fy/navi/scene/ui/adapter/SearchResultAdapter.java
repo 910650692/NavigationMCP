@@ -53,7 +53,11 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
     private final int mSpanCount = 2;
     private final int mSpacing = 16;
     private final int mHorizontalSpacing = 16;
-
+    private PoiInfoEntity mChildSelectInfo;
+    private int mChildSelectIndex = -1;
+    private int mParentSelectIndex;
+    private int mLastParentSelectIndex;
+    private boolean isFirstRefresh = true;
     public void setOnItemClickListener(final OnItemClickListener listener) {
         mOnItemClickListener = listener;
     }
@@ -101,7 +105,7 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
 
         mPoiEntities.clear();
         mPoiEntities.addAll(newPoiList);
-
+        isFirstRefresh = true;
         if (oldSize == 0 && newSize > 0) {
             notifyItemRangeInserted(0, newSize);
         } else if (oldSize > 0 && newSize == 0) {
@@ -134,6 +138,7 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
         if (mSearchResultEntity.getSearchType() == AutoMapConstant.SearchType.SEARCH_KEYWORD
                 || mSearchResultEntity.getSearchType() == AutoMapConstant.SearchType.AROUND_SEARCH
                 || mSearchResultEntity.getSearchType() == AutoMapConstant.SearchType.ALONG_WAY_SEARCH
+                || mSearchResultEntity.getSearchType() == AutoMapConstant.SearchType.EN_ROUTE_KEYWORD_SEARCH
                 || mSearchResultEntity.getSearchType() == AutoMapConstant.SearchType.SEARCH_SUGGESTION) {
             holder.mResultItemBinding.poiNum.setVisibility(View.VISIBLE);
             holder.mResultItemBinding.poiIcon.setVisibility(View.GONE);
@@ -192,7 +197,7 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
                mPoiInfoEntity.setDistance(mSearchPackage.calcStraightDistance(mPoiInfoEntity.getPoint()));
             }
             if (mPoiInfoEntity.getPointTypeCode() == null) {
-                refreshNormalView();
+                refreshNormalView(holder);
                 return;
             }
             final int pointTypeCode = mSearchPackage.getPointTypeCode(mPoiInfoEntity.getPointTypeCode());
@@ -221,7 +226,7 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
                     break;
                 case AutoMapConstant.PointTypeCode.OTHERS:
                 default:
-                    refreshNormalView();
+                    refreshNormalView(holder);
                     break;
             }
         }
@@ -236,23 +241,33 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
         holder.mResultItemBinding.crlPoiDes.setOnClickListener(v -> {
             Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "poi click 详情");
             if (mOnItemClickListener != null) {
-                mOnItemClickListener.onItemClick(position, mPoiEntities.get(position));
+                if (mParentSelectIndex == position && mChildSelectIndex != -1) {
+                    mOnItemClickListener.onChildItemClick(position, mPoiEntities.get(position), mChildSelectIndex);
+                } else {
+                    mOnItemClickListener.onItemClick(position, mPoiEntities.get(position));
+                }
             }
         });
 
         holder.mResultItemBinding.poiToNavi.setOnClickListener(v -> {
             Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "poi click 算路|添加途经点");
             if (mOnItemClickListener != null) {
-                mOnItemClickListener.onNaviClick(position, mPoiEntities.get(position));
+                if (mParentSelectIndex == position && mChildSelectIndex != -1 && mChildSelectInfo != null) {
+                    mOnItemClickListener.onNaviClick(position, mChildSelectInfo);
+                } else {
+                    mOnItemClickListener.onNaviClick(position, mPoiEntities.get(position));
+                }
             }
         });
     }
 
     /**
      * 刷新通用视图
+     * @param resultHolder holder
      */
-    private void refreshNormalView() {
+    private void refreshNormalView(final ResultHolder resultHolder) {
         Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "refreshNormalView do nothing");
+        resultHolder.mResultItemBinding.crlPoiDetail.setVisibility(View.GONE);
     }
 
     /**
@@ -260,6 +275,9 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
      * @param resultHolder holder
      */
     private void refreshScenicSpotView(final ResultHolder resultHolder) {
+        resultHolder.mResultItemBinding.scenePoiItemScenicSpotView.poiScenicSpotPrice.setVisibility(View.VISIBLE);
+        resultHolder.mResultItemBinding.scenePoiItemScenicSpotView.poiScenicSpotPriceIcon.setVisibility(View.VISIBLE);
+        resultHolder.mResultItemBinding.scenePoiItemScenicSpotView.getRoot().setVisibility(View.VISIBLE);
         if (mPoiInfoEntity.getAverageCost() == -1 || mPoiInfoEntity.getAverageCost() == 0) {
             resultHolder.mResultItemBinding.scenePoiItemScenicSpotView.poiScenicSpotPrice.setVisibility(View.GONE);
             resultHolder.mResultItemBinding.scenePoiItemScenicSpotView.poiScenicSpotPriceIcon.setVisibility(View.GONE);
@@ -273,9 +291,37 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
             scenicChildAdapter.setChildInfoList(childInfoList);
             resultHolder.mResultItemBinding.scenePoiItemScenicSpotView.poiScenicSpotChildList.setLayoutManager(
                     new GridLayoutManager(resultHolder.mResultItemBinding.getRoot().getContext(), mSpanCount));
-            resultHolder.mResultItemBinding.scenePoiItemScenicSpotView.poiScenicSpotChildList.addItemDecoration(
-                    new GridSpacingItemDecoration(resultHolder.mResultItemBinding.getRoot().getContext(), mSpanCount, mSpacing, mSpacing, false));
+            if (resultHolder.mResultItemBinding.scenePoiItemScenicSpotView.poiScenicSpotChildList.getItemDecorationCount() == 0) {
+                resultHolder.mResultItemBinding.scenePoiItemScenicSpotView.poiScenicSpotChildList.addItemDecoration(
+                        new GridSpacingItemDecoration(resultHolder.mResultItemBinding.getRoot().getContext(), mSpanCount, mSpacing, mSpacing, false));
+            }
             resultHolder.mResultItemBinding.scenePoiItemScenicSpotView.poiScenicSpotChildList.setAdapter(scenicChildAdapter);
+            scenicChildAdapter.setItemClickListener((index, isSelectIndex) -> {
+                mChildSelectIndex = index;
+                if (isFirstRefresh) {
+                    mLastParentSelectIndex = resultHolder.getAdapterPosition();
+                    isFirstRefresh = false;
+                }
+                mParentSelectIndex = resultHolder.getAdapterPosition();
+                if (mLastParentSelectIndex != mParentSelectIndex) {
+                    if (!ConvertUtils.isEmpty(mPoiEntities) && mLastParentSelectIndex < mPoiEntities.size()) {
+                        final PoiInfoEntity poiInfoEntity = mPoiEntities.get(mLastParentSelectIndex);
+                        if (!ConvertUtils.isEmpty(poiInfoEntity) && !ConvertUtils.isEmpty(poiInfoEntity.getChildInfoList())) {
+                            for (ChildInfo childInfo : poiInfoEntity.getChildInfoList()) {
+                                childInfo.setChecked(0);
+                            }
+                        }
+                        notifyItemChanged(mLastParentSelectIndex);
+                    }
+                }
+                final ChildInfo childInfo = childInfoList.get(index);
+                mChildSelectInfo = new PoiInfoEntity()
+                        .setName(childInfo.getName())
+                        .setAddress(childInfo.getAddress())
+                        .setPid(childInfo.getPoiId())
+                        .setPoint(childInfo.getLocation());
+                mLastParentSelectIndex = resultHolder.getAdapterPosition();
+            });
         }
         resultHolder.mResultItemBinding.scenePoiItemScenicSpotView.getRoot().setVisibility(View.VISIBLE);
     }
@@ -286,6 +332,7 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
      */
     private void refreshServiceAreaView(final ResultHolder resultHolder) {
         Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "refreshServiceAreaView");
+        resultHolder.mResultItemBinding.crlPoiDetail.setVisibility(View.GONE);
     }
 
     /***
@@ -332,6 +379,8 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
         if (mPoiInfoEntity == null || mPoiInfoEntity.getParkingInfoList() == null || mPoiInfoEntity.getParkingInfoList().isEmpty()) {
             return;
         }
+        resultHolder.mResultItemBinding.scenePoiItemParkingServiceView.poiParkingFreeTotal.setText("");
+        resultHolder.mResultItemBinding.scenePoiItemParkingServiceView.getRoot().setVisibility(View.VISIBLE);
         final ParkingInfo parkingInfo = mPoiInfoEntity.getParkingInfoList().get(0);
         String parkString = "";
         final int spaceFree = parkingInfo.getSpaceFree();
@@ -356,6 +405,8 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
      */
     private void refreshCateringView(final ResultHolder resultHolder) {
         Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "refreshCateringView" + mPoiInfoEntity.getAverageCost());
+        resultHolder.mResultItemBinding.scenePoiItemCateringView.getRoot().setVisibility(View.VISIBLE);
+        resultHolder.mResultItemBinding.scenePoiItemCateringView.poiCateringPrice.setText("");
         if (mPoiInfoEntity.getAverageCost() == -1) {
             resultHolder.mResultItemBinding.scenePoiItemCateringView.getRoot().setVisibility(View.GONE);
         } else {
@@ -370,6 +421,7 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
      */
     private void refreshCarWashView(final ResultHolder resultHolder) {
         Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "refreshCarWashView");
+        resultHolder.mResultItemBinding.crlPoiDetail.setVisibility(View.GONE);
     }
 
     /**
@@ -400,8 +452,10 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
         } else if (ConvertUtils.isEmpty(fastTotal)) {
             resultHolder.mResultItemBinding.scenePoiItemChargeView.poiChargeFastTotal.setVisibility(View.GONE);
         }
-        if (!ConvertUtils.isEmpty(fastTotal) && ConvertUtils.isEmpty(fastFree)) {
-            fastTotal = chargeInfo.getFast_total() + "";
+        if (!ConvertUtils.isEmpty(fastTotal)) {
+            if (ConvertUtils.isEmpty(fastFree)) {
+                fastTotal = chargeInfo.getFast_total() + "";
+            }
             resultHolder.mResultItemBinding.scenePoiItemChargeView.poiChargeFastTotal.setText(fastTotal);
         }
 
@@ -415,8 +469,10 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
         } else if (ConvertUtils.isEmpty(slowTotal)) {
             resultHolder.mResultItemBinding.scenePoiItemChargeView.poiChargeSlowTotal.setVisibility(View.GONE);
         }
-        if (!ConvertUtils.isEmpty(slowTotal) && ConvertUtils.isEmpty(slowFree)) {
-            slowTotal = chargeInfo.getSlow_total() + "";
+        if (!ConvertUtils.isEmpty(slowTotal)) {
+            if (ConvertUtils.isEmpty(slowFree)) {
+                slowTotal = chargeInfo.getSlow_total() + "";
+            }
             resultHolder.mResultItemBinding.scenePoiItemChargeView.poiChargeSlowTotal.setText(slowTotal);
         }
 
@@ -528,5 +584,15 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
          * @param poiInfoEntity 选中的数据
          */
         void onNaviClick(int position, PoiInfoEntity poiInfoEntity);
+
+        /**
+         *
+         * @param position 点击下标
+         * @param poiInfoEntity 选中的数据
+         * @param childPosition 选中的子点下标
+         */
+        default void onChildItemClick(int position, PoiInfoEntity poiInfoEntity, int childPosition){
+
+        }
     }
 }

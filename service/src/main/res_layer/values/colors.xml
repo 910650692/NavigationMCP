@@ -3,7 +3,12 @@
 
     <color name="layer_route_end_point_detail_color">#DC2B2B</color>
     <color name="layer_car_speed_color">#DC2B2B</color>
+    <color name="layer_car_speed_unit_color">#CC000000</color>
     <color name="layer_route_via_charge_time_text_color">#CC000000</color>
     <color name="layer_route_via_charge_distance_text_color">#80000000</color>
+
+    <color name="layer_route_replace_charge_fast_text_color">#FFE34335</color>
+    <color name="layer_route_replace_charge_slow_text_color">#FF4ABA59</color>
+    <color name="layer_route_replace_charge_price_text_color">#CC000000</color>
 
 </resources>

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@drawable/layer_image_search_replace_charge_bg"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/search_replace_charge_position"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:text="123"
+        android:gravity="center"
+        android:textColor="@color/white"
+        android:background="@drawable/layer_image_route_via_charge_position_bg"
+        android:textSize="@dimen/sp_32"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <LinearLayout
+        android:id="@+id/search_replace_charge_whole_linear"
+        android:visibility="gone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/search_replace_charge_position"
+        android:layout_marginStart="@dimen/dp_10"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/search_replace_charge_count_linear"
+            android:visibility="gone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/search_replace_charge_fast"
+                tools:text="快6/6"
+                android:textColor="@color/layer_route_replace_charge_fast_text_color"
+                android:textSize="@dimen/sp_24"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <TextView
+                android:id="@+id/search_replace_charge_slow"
+                android:layout_marginStart="@dimen/dp_10"
+                tools:text="慢2/6"
+                android:textColor="@color/layer_route_replace_charge_slow_text_color"
+                android:textSize="@dimen/sp_24"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/search_replace_charge_price"
+            android:layout_marginTop="@dimen/dp_6"
+            tools:text="￥1.65/度"
+            android:textColor="@color/layer_route_replace_charge_price_text_color"
+            android:textSize="@dimen/sp_24"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

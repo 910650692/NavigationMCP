@@ -4,20 +4,22 @@ import android.util.Log;
 
 import com.android.utils.NetWorkUtils;
 import com.android.utils.gson.GsonUtils;
-import com.android.utils.log.Logger;
 import com.fy.navi.service.define.cruise.CruiseInfoEntity;
 import com.fy.navi.service.define.navi.CameraInfoEntity;
 import com.fy.navi.service.define.navi.LaneInfoEntity;
 import com.fy.navi.service.define.navi.NaviEtaInfo;
 import com.fy.navi.service.define.navi.SpeedOverallEntity;
 import com.fy.navi.service.define.navistatus.NaviStatus;
+import com.fy.navi.service.define.position.LocInfoBean;
 import com.fy.navi.service.logicpaket.calibration.CalibrationPackage;
 import com.fy.navi.service.logicpaket.cruise.CruisePackage;
 import com.fy.navi.service.logicpaket.cruise.ICruiseObserver;
+import com.fy.navi.service.logicpaket.mapdata.MapDataPackage;
 import com.fy.navi.service.logicpaket.navi.IGuidanceObserver;
 import com.fy.navi.service.logicpaket.navi.NaviPackage;
 import com.fy.navi.service.logicpaket.navistatus.NaviStatusCallback;
 import com.fy.navi.service.logicpaket.navistatus.NaviStatusPackage;
+import com.fy.navi.service.logicpaket.position.PositionPackage;
 import com.gm.cn.adassdk.AdasManager;
 import com.gm.cn.adassdk.proto.NaviLinkProto;
 
@@ -175,19 +177,13 @@ public final class SuperCruiseManager {
         @Override
         public void onNetConnectSuccess() {
             Log.i(TAG, "onNetConnectSuccess: ");
-            final LocalDate currentDate = LocalDate.now();
-            mRoadInfoBuilder.setMapVersionYear(NaviLinkProto.RoadInfo.MapVersionYearEnum.forNumber(currentDate.getYear()));
-            final int monthValue = currentDate.getMonthValue();
-            final int quarter = (monthValue - 1) / 3 + 1;
-            mRoadInfoBuilder.setMapVersionQuarter(NaviLinkProto.RoadInfo.MapVersionQuarterEnum.forNumber(quarter));
+            setOnlineMapVersion();
         }
 
         @Override
         public void onNetDisConnect() {
             Log.i(TAG, "onNetDisConnect: ");
-            // TODO 离线地图的年份和季度
-            mRoadInfoBuilder.setMapVersionYear(NaviLinkProto.RoadInfo.MapVersionYearEnum.forNumber(2024));
-            mRoadInfoBuilder.setMapVersionQuarter(NaviLinkProto.RoadInfo.MapVersionQuarterEnum.forNumber(3));
+            setOfflineMapVersion();
         }
 
         @Override
@@ -229,7 +225,7 @@ public final class SuperCruiseManager {
      */
     public void init(final AdasManager adasManager) {
         if (CalibrationPackage.getInstance().adasConfigurationType() != 7) {
-            Logger.i(TAG, "not GB Arch ACP3.1 configuration");
+            Log.i(TAG, "not GB Arch ACP3.1 configuration");
             return;
         }
         if (mInitialized) {
@@ -289,15 +285,9 @@ public final class SuperCruiseManager {
         final Boolean networkCapabilities = NetWorkUtils.Companion.getInstance().checkNetwork();
         Log.i(TAG, "initData: networkCapabilities = " + networkCapabilities);
         if (Boolean.TRUE.equals(networkCapabilities)) {
-            final LocalDate currentDate = LocalDate.now();
-            mRoadInfoBuilder.setMapVersionYear(NaviLinkProto.RoadInfo.MapVersionYearEnum.forNumber(currentDate.getYear()));
-            final int monthValue = currentDate.getMonthValue();
-            final int quarter = (monthValue - 1) / 3 + 1;
-            mRoadInfoBuilder.setMapVersionQuarter(NaviLinkProto.RoadInfo.MapVersionQuarterEnum.forNumber(quarter));
+            setOnlineMapVersion();
         } else {
-            // TODO 离线地图的年份和季度
-            mRoadInfoBuilder.setMapVersionYear(NaviLinkProto.RoadInfo.MapVersionYearEnum.forNumber(2024));
-            mRoadInfoBuilder.setMapVersionQuarter(NaviLinkProto.RoadInfo.MapVersionQuarterEnum.forNumber(3));
+            setOfflineMapVersion();
         }
     }
 
@@ -393,6 +383,7 @@ public final class SuperCruiseManager {
         final String json = GsonUtils.toJson(superCruiseJson);
         JsonLog.saveJsonToCache(json, "sc.json");
         Log.d(TAG, "sendData: " + json);
+//        JsonLog.print(TAG, json);
     }
 
     private int findMinNonZeroSpeedLimit(int... speeds) {
@@ -503,5 +494,32 @@ public final class SuperCruiseManager {
         } else {
             return NaviLinkProto.SpeedLimit.EffectiveSpeedCategoryEnum.EFFECTIVE_CATEGORY_UNKNOWN;
         }
+    }
+
+    private void setOnlineMapVersion() {
+        final LocalDate currentDate = LocalDate.now();
+        Log.i(TAG, "setOnlineMapVersion: " + currentDate);
+        setMapVersion(currentDate.getYear(), currentDate.getMonthValue());
+    }
+
+    private void setOfflineMapVersion() {
+        try {
+            final LocInfoBean locInfoBean = PositionPackage.getInstance().getLastCarLocation();
+            final int adCode = MapDataPackage.getInstance().getAdCodeByLonLat(locInfoBean.getLongitude(), locInfoBean.getLatitude());
+            final String mapDataID = MapDataPackage.getInstance().getDataFileVersion(adCode);
+            Log.i(TAG, "setOfflineMapVersion: " + mapDataID);
+            // 例：3_24_12_02_01_111111
+            String[] strings = mapDataID.split("_");
+            setMapVersion(Integer.parseInt("20" + strings[1]), Integer.parseInt(strings[2]));
+        } catch (Exception e) {
+            Log.e(TAG, "setOfflineMapVersion: ", e);
+        }
+    }
+
+    private void setMapVersion(int year, int month) {
+        Log.i(TAG, "setMapVersion: " + year + ", " + month);
+        mRoadInfoBuilder.setMapVersionYear(NaviLinkProto.RoadInfo.MapVersionYearEnum.forNumber(year));
+        final int quarter = (month - 1) / 3;
+        mRoadInfoBuilder.setMapVersionQuarter(NaviLinkProto.RoadInfo.MapVersionQuarterEnum.forNumber(quarter));
     }
 }

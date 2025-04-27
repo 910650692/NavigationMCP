@@ -2,6 +2,7 @@ package com.fy.navi.service.adapter.setting;
 
 
 import com.fy.navi.service.AdapterConfig;
+import com.fy.navi.service.define.map.ThemeType;
 import com.fy.navi.service.define.route.RoutePreferenceID;
 import com.fy.navi.service.define.setting.SettingController;
 import com.fy.navi.service.greendao.setting.SettingManager;
@@ -337,7 +338,7 @@ public final class SettingAdapter {
      * @param dayNightMode 白天黑夜 16：自动模式，默认态； 17：日间模式； 18：夜间模式
      * @return 返回错误码
      */
-    public int setConfigKeyDayNightMode(final int dayNightMode) {
+    public int setConfigKeyDayNightMode(final ThemeType dayNightMode) {
         return mSettingApi.setConfigKeyDayNightMode(dayNightMode);
     }
 

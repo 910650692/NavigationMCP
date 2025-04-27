@@ -4,7 +4,6 @@ package com.fy.navi.service.adapter.layer.bls.impl;
 import android.content.Context;
 
 import com.android.utils.ConvertUtils;
-import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
 import com.autonavi.gbl.common.model.Coord2DDouble;
 import com.autonavi.gbl.common.model.Coord3DDouble;
@@ -32,15 +31,11 @@ import com.autonavi.gbl.map.layer.model.ClickViewIdInfo;
 import com.fy.navi.service.adapter.layer.ILayerAdapterCallBack;
 import com.fy.navi.service.adapter.layer.bls.style.LayerSearchStyleAdapter;
 import com.fy.navi.service.define.bean.GeoPoint;
-import com.fy.navi.service.define.layer.GemLayerClickBusinessType;
-import com.fy.navi.service.define.layer.RouteLineLayerParam;
 import com.fy.navi.service.define.layer.refix.LayerItemSearchResult;
 import com.fy.navi.service.define.layer.refix.LayerSearchAlongRouteType;
-import com.fy.navi.service.define.layer.refix.LayerSearchItemType;
+import com.fy.navi.service.define.layer.refix.LayerPointItemType;
 import com.fy.navi.service.define.layer.refix.LayerSearchPOIType;
 import com.fy.navi.service.define.map.MapType;
-import com.fy.navi.service.define.route.RouteLinePoints;
-import com.fy.navi.service.define.route.RoutePoint;
 import com.fy.navi.service.define.search.ChildInfo;
 import com.fy.navi.service.define.search.PoiInfoEntity;
 import com.fy.navi.service.define.utils.NumberUtils;
@@ -59,7 +54,12 @@ public class LayerSearchImpl extends BaseLayerImpl<LayerSearchStyleAdapter> {
         getLayerSearchControl().addClickObserver(this);
     }
 
-    public void setSelect(LayerSearchItemType type, int index) {
+    @Override
+    protected LayerSearchStyleAdapter createStyleAdapter() {
+        return new LayerSearchStyleAdapter(getEngineId(), getLayerSearchControl());
+    }
+
+    public void setSelect(LayerPointItemType type, int index) {
         Logger.d(TAG, "setSelect type " + type + " index " + index);
         if (getLayerSearchControl() != null) {
             switch (type) {
@@ -93,76 +93,43 @@ public class LayerSearchImpl extends BaseLayerImpl<LayerSearchStyleAdapter> {
     }
 
     @Override
-    public void onNotifyClick(BaseLayer layer, LayerItem pItem, ClickViewIdInfo clickViewIds) {
-        dispatchClick(pItem);
-    }
-
-    private void dispatchClick(LayerItem pItem) {
-        int index;
-        int businessType = pItem.getBusinessType();
-        Logger.d(TAG, "dispatchClick businessType " + businessType);
-        switch (businessType) {
+    protected void dispatchItemClickEvent(LayerItem item) {
+        int index = 0;
+        LayerPointItemType type = LayerPointItemType.NULL;
+        switch (item.getBusinessType()) {
             // 搜索图层内容点击
             case BizSearchType.BizSearchTypePoiParentPoint -> {
-                if (pItem instanceof SearchParentLayerItem parentLayerItem) {
-                    index = Integer.parseInt(parentLayerItem.getID());
-                    Logger.d(TAG, "dispatchClick-BizSearchTypePoiParentPoint index " + index);
-                    handleClickCallback(LayerSearchItemType.SEARCH_PARENT_POINT, index);
-                }
+                index = Integer.parseInt(item.getID());
+                type = LayerPointItemType.SEARCH_PARENT_POINT;
             }
             case BizSearchType.BizSearchTypePoiChildPoint -> {
-                if (pItem instanceof SearchChildLayerItem childLayerItem) {
-                    index = Integer.parseInt(childLayerItem.getID());
-                    Logger.d(TAG, "dispatchClick-BizSearchTypePoiChildPoint index " + index);
-                    handleClickCallback(LayerSearchItemType.SEARCH_CHILD_POINT, index);
-                }
+                index = Integer.parseInt(item.getID());
+                type = LayerPointItemType.SEARCH_CHILD_POINT;
             }
             case BizSearchType.BizSearchTypePoiParkRoute -> {
-                if (pItem instanceof PointLayerItem parkItem) {
-                    index = Integer.parseInt(parkItem.getID());
-                    Logger.d(TAG, "dispatchClick-BizSearchTypePoiParkRoute index " + index);
-                    handleClickCallback(LayerSearchItemType.SEARCH_PARENT_PARK, index);
-                }
+                index = Integer.parseInt(item.getID());
+                type = LayerPointItemType.SEARCH_PARENT_PARK;
             }
             case BizSearchType.BizSearchTypeChargeStation -> {
-                if (pItem instanceof SearchChargeStationLayerItem chargeStationLayerItem) {
-                    index = Integer.parseInt(chargeStationLayerItem.getID());
-                    Logger.d(TAG, "dispatchClick BizSearchTypeChargeStation index " + index);
-                    handleClickCallback(LayerSearchItemType.SEARCH_PARENT_CHARGE_STATION, index);
-                }
+                index = Integer.parseInt(item.getID());
+                type = LayerPointItemType.SEARCH_PARENT_CHARGE_STATION;
             }
             case BizSearchType.BizSearchTypePoiAlongRoute -> {
-                if (pItem instanceof SearchAlongWayLayerItem searchAlongWayLayerItem) {
-                    index = Integer.parseInt(searchAlongWayLayerItem.getID());
-                    Logger.d(TAG, "dispatchClick BizSearchTypePoiAlongRoute index " + index);
-                    handleClickCallback(LayerSearchItemType.SEARCH_POI_ALONG_ROUTE, index);
-                }
+                index = Integer.parseInt(item.getID());
+                type = LayerPointItemType.SEARCH_POI_ALONG_ROUTE;
             }
             default -> {
                 // TODO 扩展新的需求
             }
         }
-    }
-
-    private void handleClickCallback(LayerSearchItemType type, int index) {
-        List<ILayerAdapterCallBack> callBacks = getCallBacks();
-        if (ConvertUtils.isEmpty(callBacks)) {
-            Logger.e(TAG, "handleClickCallback callBacks is Empty");
-            return;
-        }
-        Logger.d(TAG, "handleClickCallback type " + type + " index " + index);
-        for (ILayerAdapterCallBack callback : callBacks) {
+        Logger.d(TAG, "dispatchItemClickEvent type = " + type + " ; index = " + index);
+        for (ILayerAdapterCallBack callback : getCallBacks()) {
             callback.onSearchItemClick(getMapType(), type, index);
         }
     }
 
-    @Override
-    protected LayerSearchStyleAdapter createStyleAdapter() {
-        return new LayerSearchStyleAdapter(getEngineId(), getLayerSearchControl());
-    }
-
     /* 搜索图层扎标接口 */
-    public boolean updateSearchMarker(LayerSearchItemType type, LayerItemSearchResult searchResult) {
+    public boolean updateSearchMarker(LayerPointItemType type, LayerItemSearchResult searchResult) {
         if (ConvertUtils.isEmpty(searchResult)) {
             Logger.e(TAG, "updateSearchMarker searchResult == null");
             return false;
@@ -388,39 +355,6 @@ public class LayerSearchImpl extends BaseLayerImpl<LayerSearchStyleAdapter> {
     public boolean updateSearchExitEntrancePoi(LayerItemSearchResult searchResult) {
         getLayerSearchControl().setVisible(BizSearchType.BizSearchTypePoiExitEntrance, true);
         ArrayList<BizSearchExitEntrancePoint> pointListBl = new ArrayList<>();
-
-        // TODO: 2025/3/25  暂无此需求
-        /**
-         //画出入口
-         ArrayList<BizSearchExitEntrancePoint> exitEntrancePoints = new ArrayList<>();
-         ArrayList<Coord2DDouble> entrancesList = poiBase == null ? null : poiBase.entrances_list;
-         int entranceListSize = entrancesList == null ? 0 : entrancesList.size();
-
-         if (entranceListSize > 0) {
-         for (int i2 = 0; i2 < entranceListSize; i2++) {
-         Coord2DDouble item = entrancesList.get(i2);
-         BizSearchExitEntrancePoint exitEntrancePoint = new BizSearchExitEntrancePoint();
-         exitEntrancePoint.type = 2;
-         exitEntrancePoint.mPos3D.lon = item.lon;
-         exitEntrancePoint.mPos3D.lat = item.lat;
-         exitEntrancePoints.add(exitEntrancePoint);
-         }
-         }
-
-         ArrayList<Coord2DDouble> exitList = poiBase == null ? null : poiBase.exit_list;
-         int exitListSize = exitList == null ? 0 : exitList.size();
-         for (int i2 = 0; i2 < exitListSize; i2++) {
-         Coord2DDouble item = exitList.get(i2);
-         BizSearchExitEntrancePoint exitEntrancePoint = new BizSearchExitEntrancePoint();
-         exitEntrancePoint.type = 1;
-         exitEntrancePoint.mPos3D.lon = item.lon;
-         exitEntrancePoint.mPos3D.lat = item.lat;
-         exitEntrancePoints.add(exitEntrancePoint);
-         }
-         if (exitEntrancePoints.size() > 0) {
-         bizSearchControl.updateSearchExitEntrancePoi(exitEntrancePoints);
-         }
-         */
         return getLayerSearchControl().updateSearchExitEntrancePoi(pointListBl);
     }
 
@@ -531,6 +465,7 @@ public class LayerSearchImpl extends BaseLayerImpl<LayerSearchStyleAdapter> {
 
     /**
      * 获取沿途搜POI 类型
+     *
      * @param typeCode poi的typeCode
      * @return POI类型
      */
@@ -635,7 +570,8 @@ public class LayerSearchImpl extends BaseLayerImpl<LayerSearchStyleAdapter> {
             return false;
         }
         getLayerSearchControl().setVisible(BizSearchType.BizSearchTypeChargeStation, true);
-
+        //开启碰撞
+        getLayerSearchControl().getSearchLayer(BizSearchType.BizSearchTypeChargeStation).enableCollision(true);
         //画充电桩
         ArrayList<BizSearchChargeStationInfo> chargeStationInfos = new ArrayList<>();
         for (PoiInfoEntity poiInfoEntity : chargeList) {
@@ -663,7 +599,7 @@ public class LayerSearchImpl extends BaseLayerImpl<LayerSearchStyleAdapter> {
     /**
      * 清除指定搜索类型扎标
      */
-    public void clearSearchItemByType(LayerSearchItemType searchItemType) {
+    public void clearSearchItemByType(LayerPointItemType searchItemType) {
         Logger.d(TAG, "clearSearchItemByType searchItemType " + searchItemType);
         switch (searchItemType) {
             case SEARCH_PARENT_Line_Road -> {

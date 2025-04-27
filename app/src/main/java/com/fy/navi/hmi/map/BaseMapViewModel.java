@@ -31,6 +31,7 @@ import com.fy.navi.hmi.favorite.MapPointSearchFragment;
 import com.fy.navi.hmi.limit.LimitCitySelectionFragment;
 import com.fy.navi.hmi.limit.LimitDriveFragment;
 import com.fy.navi.hmi.mapdata.MapDataFragment;
+import com.fy.navi.hmi.navi.AuthorizationRequestDialog;
 import com.fy.navi.hmi.navi.ForecastAddressDialog;
 import com.fy.navi.hmi.navi.NaviGuidanceFragment;
 import com.fy.navi.hmi.poi.PoiDetailsFragment;
@@ -49,6 +50,7 @@ import com.fy.navi.service.define.aos.RestrictedAreaDetail;
 import com.fy.navi.service.define.cruise.CruiseInfoEntity;
 import com.fy.navi.service.define.map.IBaseScreenMapView;
 import com.fy.navi.service.define.map.MapType;
+import com.fy.navi.service.define.map.ThemeType;
 import com.fy.navi.service.define.message.MessageCenterInfo;
 import com.fy.navi.service.define.message.MessageCenterType;
 import com.fy.navi.service.define.navi.LaneInfoEntity;
@@ -69,11 +71,7 @@ import com.fy.navi.ui.base.BaseFragment;
 import com.fy.navi.ui.base.BaseViewModel;
 import com.fy.navi.ui.base.StackManager;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.Date;
-import java.util.IllegalFormatException;
 import java.util.concurrent.ScheduledFuture;
 
 /**
@@ -418,6 +416,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
     }
 
     public void resetMapCenterInScreen() {
+        mView.setMapFocusable(true);
         mModel.resetMapCenterInScreen();
         mScaleViewVisibility.set(true);
         mainBTNVisibility.set(true);
@@ -527,14 +526,8 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         addPoiDetailsFragment(fragment, bundle);
 
         //for burying point
-        JSONObject params = new JSONObject();
-        try {
-            params.put(BuryConstant.Key.POI_INFO_ENTRY, entity);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
         BuryProperty properties = new BuryProperty.Builder()
-                .setParams(BuryConstant.ProperType.BURY_KEY_SEARCH_CONTENTS, params.toString())
+                .setParams(BuryConstant.ProperType.BURY_KEY_SEARCH_CONTENTS, entity.getName())
                 .build();
         BuryPointController.getInstance().setBuryProps(properties);
     }
@@ -611,8 +604,8 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         addFragment(new SearchResultFragment(), args);
     }
 
-    public void updateUiStyle(MapType mapTypeId, int uiMode) {
-        mModel.updateUiStyle(mapTypeId, uiMode);
+    public void updateUiStyle(MapType mapTypeId, ThemeType isNight) {
+        mModel.updateUiStyle(mapTypeId, isNight);
     }
 
     // TODO 到了下班时间收到回家推送消息，显示回家UI---待推送功能实现
@@ -928,5 +921,15 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
 
     public void updateCruiseRoadName(CruiseInfoEntity cruiseInfoEntity) {
         mView.updateCruiseRoadName(cruiseInfoEntity);
+    }
+
+    /**
+     * 显示隐私授权弹框
+     * @param dialog
+     */
+    public void showAuthorizationRequestDialog(final AuthorizationRequestDialog dialog) {
+        if (dialog != null) {
+            dialog.show();
+        }
     }
 }

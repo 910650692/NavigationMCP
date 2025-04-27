@@ -23,6 +23,12 @@
         android:paddingEnd="@dimen/dp_42"
         android:background="@color/bg_route_item_select">
 
+        <com.fy.navi.ui.view.SkinView
+            android:id="@+id/item_root_view_bg"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            />
+
         <com.fy.navi.ui.view.SkinTextView
             android:id="@+id/route_item_num"
             android:layout_width="wrap_content"

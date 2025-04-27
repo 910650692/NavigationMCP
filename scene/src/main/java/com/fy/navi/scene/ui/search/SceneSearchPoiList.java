@@ -176,14 +176,7 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
             @Override
             public void onItemClick(final int position, final PoiInfoEntity poiInfoEntity) {
                 sendBuryPointForListSelect(position+1, poiInfoEntity.getName());
-                final Fragment fragment = switch (mSearchType) {
-                    case AutoMapConstant.SearchType.AROUND_SEARCH ->
-                            (Fragment) ARouter.getInstance().build(RoutePath.Search.POI_AROUND_DETAILS_FRAGMENT).navigation();
-                    case AutoMapConstant.SearchType.ALONG_WAY_SEARCH ->
-                            (Fragment) ARouter.getInstance().build(RoutePath.Search.POI_ALONG_WAY_DETAILS_FRAGMENT).navigation();
-                    default ->
-                            (Fragment) ARouter.getInstance().build(RoutePath.Search.POI_DETAILS_FRAGMENT).navigation();
-                };
+                final Fragment fragment = (Fragment) ARouter.getInstance().build(RoutePath.Search.POI_DETAILS_FRAGMENT).navigation();
                 if (!ConvertUtils.isEmpty(mScreenViewModel) && !ConvertUtils.isEmpty(mResultEntity)) {
                     mScreenViewModel.setSelectIndex(poiInfoEntity, position);
                 }
@@ -192,6 +185,22 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
                 final Bundle bundle = SearchFragmentFactory.createPoiDetailsFragment(
                         AutoMapConstant.SourceFragment.SEARCH_RESULT_FRAGMENT, poiType, poiInfoEntity);
                 bundle.putParcelable(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_SOURCE_DATA, mResultEntity);
+                addPoiDetailsFragment((BaseFragment) fragment, bundle);
+            }
+
+            @Override
+            public void onChildItemClick(final int position, final PoiInfoEntity poiInfoEntity, final int childPosition) {
+                sendBuryPointForListSelect(position+1, poiInfoEntity.getName());
+                final Fragment fragment = (Fragment) ARouter.getInstance().build(RoutePath.Search.POI_DETAILS_FRAGMENT).navigation();
+                if (!ConvertUtils.isEmpty(mScreenViewModel) && !ConvertUtils.isEmpty(mResultEntity)) {
+                    mScreenViewModel.setSelectIndex(poiInfoEntity, position);
+                }
+                final int poiType = getPoiType(mAdapter.getHomeCompanyType());
+                Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "onClick poiType: " + poiType + " homeCompany: " + mAdapter.getHomeCompanyType());
+                final Bundle bundle = SearchFragmentFactory.createPoiDetailsFragment(
+                        AutoMapConstant.SourceFragment.SEARCH_RESULT_FRAGMENT, poiType, poiInfoEntity);
+                bundle.putParcelable(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_SOURCE_DATA, mResultEntity);
+                bundle.putInt(AutoMapConstant.ChildIndex.BUNDLE_CHILD_INDEX, childPosition);
                 addPoiDetailsFragment((BaseFragment) fragment, bundle);
             }
 
@@ -574,7 +583,7 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
         }
         Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "taskId: " + taskId
                 + " currentId: " + mScreenViewModel.getMTaskId());
-        if (!ConvertUtils.equals(taskId, mScreenViewModel.getMTaskId())) {
+        if (!ConvertUtils.equals(taskId, mScreenViewModel.getMTaskId()) && mScreenViewModel.getMTaskId() != 0) {
             return;
         }
         if (searchResultEntity == null || searchResultEntity.getPoiList().isEmpty()) {

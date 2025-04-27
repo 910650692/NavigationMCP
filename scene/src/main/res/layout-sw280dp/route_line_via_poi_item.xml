@@ -19,12 +19,14 @@
     <com.fy.navi.ui.view.SkinConstraintLayout
         android:id="@+id/route_item_via_root"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:focusable="false">
 
         <com.fy.navi.ui.view.SkinConstraintLayout
             android:id="@+id/content"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/dp_62"
+            android:focusable="false"
             app:layout_constraintBottom_toTopOf="@+id/route_item_via_empty"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -33,29 +35,33 @@
             <com.fy.navi.ui.view.SkinView
                 android:id="@+id/line_bg"
                 android:layout_width="@dimen/dp_16"
-                android:layout_height="@dimen/dp_48" />
+                android:layout_height="@dimen/dp_70"
+                android:focusable="false"/>
 
             <com.fy.navi.ui.view.SkinImageView
                 android:id="@+id/route_item_via_img"
                 android:layout_width="@dimen/dp_14"
                 android:layout_height="@dimen/dp_14"
                 android:src="@drawable/circle_dot_orange"
+                android:focusable="false"
                 app:layout_constraintBottom_toBottomOf="@+id/line_bg"
                 app:layout_constraintStart_toStartOf="@+id/line_bg"
                 app:layout_constraintTop_toTopOf="@+id/line_bg" />
 
             <com.fy.navi.ui.view.SkinTextView
                 android:layout_width="0.5dp"
-                android:layout_height="@dimen/dp_16"
+                android:layout_height="@dimen/dp_28"
                 android:background="@color/route_line_color"
+                android:focusable="false"
                 app:layout_constraintBottom_toTopOf="@+id/route_item_via_img"
                 app:layout_constraintEnd_toEndOf="@+id/route_item_via_img"
                 app:layout_constraintStart_toStartOf="@+id/route_item_via_img" />
 
             <com.fy.navi.ui.view.SkinTextView
                 android:layout_width="0.5dp"
-                android:layout_height="@dimen/dp_16"
+                android:layout_height="@dimen/dp_28"
                 android:background="@color/route_line_color"
+                android:focusable="false"
                 app:layout_constraintEnd_toEndOf="@id/route_item_via_img"
                 app:layout_constraintStart_toStartOf="@id/route_item_via_img"
                 app:layout_constraintTop_toBottomOf="@+id/route_item_via_img" />
@@ -64,6 +70,7 @@
                 android:id="@+id/route_item_via_long_img"
                 android:layout_width="@dimen/dp_54"
                 android:layout_height="@dimen/dp_54"
+                android:focusable="false"
                 android:src="@drawable/img_route_via_long_press"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/line_bg"
@@ -75,7 +82,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:ellipsize="end"
-                android:maxWidth="@dimen/dp_350"
+                android:focusable="false"
+                android:maxWidth="@dimen/dp_450"
                 android:maxLines="1"
                 android:text="@{model.name}"
                 android:textColor="@color/text_route_defult"
@@ -88,14 +96,17 @@
             <com.fy.navi.ui.view.SkinView
                 android:id="@+id/route_item_via_delete_img"
                 android:layout_width="@dimen/dp_68"
-                android:layout_height="@dimen/dp_44"
+                android:layout_height="@dimen/dp_68"
+                android:focusable="true"
+                android:background="@drawable/bg_base_mfc_cadillac_bg_selector"
                 android:layout_marginEnd="@dimen/dp_24"
                 app:layout_constraintEnd_toEndOf="parent" />
 
             <com.fy.navi.ui.view.SkinImageView
                 android:layout_width="@dimen/dp_54"
                 android:layout_height="@dimen/dp_54"
-                android:layout_marginEnd="@dimen/dp_40"
+                android:layout_marginEnd="@dimen/dp_30"
+                android:focusable="false"
                 android:src="@drawable/img_route_via_remove_via"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -104,15 +115,17 @@
 
         <com.fy.navi.ui.view.SkinView
             android:id="@+id/route_item_via_empty"
-            android:layout_width="@dimen/dp_16"
-            android:layout_height="@dimen/dp_24"
+            android:layout_width="@dimen/dp_14"
+            android:layout_height="@dimen/dp_28"
+            android:focusable="false"
             app:layout_constraintTop_toBottomOf="@+id/content"
             app:layout_constraintStart_toStartOf="parent"/>
 
         <com.fy.navi.ui.view.SkinTextView
             android:id="@+id/route_item_via_empty_line"
             android:layout_width="0.5dp"
-            android:layout_height="@dimen/dp_24"
+            android:layout_height="@dimen/dp_20"
+            android:focusable="false"
             android:background="@color/route_line_color"
             app:layout_constraintStart_toStartOf="@+id/route_item_via_empty"
             app:layout_constraintEnd_toEndOf="@+id/route_item_via_empty"

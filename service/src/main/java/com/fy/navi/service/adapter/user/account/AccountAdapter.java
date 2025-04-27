@@ -1,6 +1,9 @@
 package com.fy.navi.service.adapter.user.account;
 
+import android.accounts.Account;
+
 import com.fy.navi.service.AdapterConfig;
+import com.fy.navi.service.define.user.account.AccessTokenParam;
 
 import java.util.Objects;
 
@@ -106,6 +109,25 @@ public final class AccountAdapter {
      */
     public int accountUnRegisterRequest() {
         return mAccountApi.accountUnRegisterRequest();
+    }
+
+    /**
+     * 获取账户accessToken
+     * @param param 详细说明见AccessTokenParam
+     * @return accessToken 获取失败返回空串，"-1"为无效值需要稍后重试
+     */
+    public String getAccessToken(final AccessTokenParam param) {
+        return mAccountApi.getAccessToken(param);
+    }
+
+    /**
+     * 获取idpUserId
+     * @param availableAccount 账户对象
+     * @param key 账户信息的key值 ; id 用 AutoMapConstant.AccountInfoKey.IDP_USER_ID
+     * @return userId
+     */
+    public String getIdpUserId(final Account availableAccount, final String key) {
+        return mAccountApi.getIdpUserId(availableAccount, key);
     }
 
     /**

@@ -16,18 +16,40 @@
         android:orientation="vertical"
         android:background="@drawable/bg_setting_fragment">
 
+        <com.android.car.ui.FocusParkingView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
         <com.fy.navi.ui.view.SkinConstraintLayout
             android:id="@+id/voice_broadcast_head"
+            android:focusable="false"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
+            <com.android.car.ui.FocusArea
+                android:id="@+id/focus_close"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:nudgeDown="@+id/focus_tab"
+                app:nudgeUp="@+id/focus_tab">
+
+                <com.fy.navi.ui.view.SkinView
+                    clickCommand="@{viewModel.mSwitchVoiceBroadcastClick}"
+                    android:layout_width="@dimen/dp_74"
+                    android:layout_height="@dimen/dp_74"
+                    android:layout_marginStart="@dimen/dp_32"
+                    android:layout_marginTop="@dimen/dp_48"
+                    android:focusable="true"
+                    android:background="@drawable/bg_base_mfc_cadillac_bg_selector"/>
+            </com.android.car.ui.FocusArea>
+
             <com.fy.navi.ui.view.SkinImageView
-                clickCommand="@{viewModel.mSwitchVoiceBroadcastClick}"
                 android:layout_width="@dimen/dp_74"
                 android:layout_height="@dimen/dp_74"
                 android:src="@drawable/img_setting_back"
                 android:layout_marginStart="@dimen/dp_32"
                 android:layout_marginTop="@dimen/dp_48"
+                android:focusable="false"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -37,6 +59,7 @@
                 android:layout_marginStart="@dimen/dp_10"
                 android:layout_marginTop="@dimen/dp_52"
                 android:text="@string/setting_broadcast_voice_head"
+                android:focusable="false"
                 android:textColor="@color/setting_bg_tab_text_select"
                 android:textSize="@dimen/sp_46"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -49,147 +72,169 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:fillViewport="true"
-            android:layout_marginTop="@dimen/dp_52">
+            android:layout_marginTop="@dimen/dp_52"
+            android:scrollbars="vertical">
 
-            <com.fy.navi.ui.view.SkinConstraintLayout
+            <com.android.car.ui.FocusArea
+                android:id="@+id/focus_tab"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                app:nudgeDown="@+id/focus_close"
+                app:nudgeUp="@+id/focus_close">
 
                 <com.fy.navi.ui.view.SkinConstraintLayout
-                    android:id="@+id/current_voice_broadcast_layout"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/dp_168"
-                    android:layout_marginStart="@dimen/dp_52"
-                    android:layout_marginEnd="@dimen/dp_52"
-                    android:background="@drawable/bg_selecting_bar"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent">
+                    android:layout_height="wrap_content">
 
-                    <com.fy.navi.scene.ui.setting.SceneCircleImageView
-                        android:id="@+id/current_voice_broadcast_header"
-                        android:layout_width="@dimen/dp_88"
-                        android:layout_height="@dimen/dp_88"
-                        android:layout_marginStart="@dimen/dp_40"
-                        android:src="@mipmap/default_voice"
+                    <com.fy.navi.ui.view.SkinConstraintLayout
+                        android:id="@+id/current_voice_broadcast_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/dp_168"
+                        android:layout_marginStart="@dimen/dp_52"
+                        android:layout_marginEnd="@dimen/dp_52"
+                        android:focusable="true"
+                        android:focusedByDefault="true"
+                        android:background="@drawable/bg_setting_others_selector"
+                        app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"/>
+                        app:layout_constraintEnd_toEndOf="parent">
+
+                        <com.fy.navi.scene.ui.setting.SceneCircleImageView
+                            android:id="@+id/current_voice_broadcast_header"
+                            android:layout_width="@dimen/dp_88"
+                            android:layout_height="@dimen/dp_88"
+                            android:layout_marginStart="@dimen/dp_40"
+                            android:src="@mipmap/default_voice"
+                            android:focusable="false"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"/>
+
+                        <com.fy.navi.ui.view.SkinTextView
+                            android:id="@+id/current_voice_broadcast_current_name"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/setting_broadcast_voice_current_name"
+                            android:textColor="@color/setting_bg_tab_text_select"
+                            android:textSize="@dimen/sp_46"
+                            android:focusable="false"
+                            android:layout_marginStart="@dimen/dp_20"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toEndOf="@+id/current_voice_broadcast_header"/>
+
+                        <com.fy.navi.ui.view.SkinTextView
+                            android:id="@+id/current_voice_broadcast_current_status"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/setting_broadcast_voice_current_use"
+                            android:textColor="@color/setting_bg_tab_text_select"
+                            android:textSize="@dimen/sp_32"
+                            android:focusable="false"
+                            android:layout_marginEnd="@dimen/dp_40"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"/>
+
+                    </com.fy.navi.ui.view.SkinConstraintLayout>
 
                     <com.fy.navi.ui.view.SkinTextView
-                        android:id="@+id/current_voice_broadcast_current_name"
+                        android:id="@+id/current_voice_broadcast_default_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/setting_broadcast_voice_current_name"
-                        android:textColor="@color/setting_bg_tab_text_select"
+                        android:text="@string/setting_broadcast_voice_default"
+                        android:textColor="@color/setting_bg_voice_text"
                         android:textSize="@dimen/sp_46"
-                        android:layout_marginStart="@dimen/dp_20"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintStart_toEndOf="@+id/current_voice_broadcast_header"/>
+                        android:focusable="false"
+                        android:layout_marginStart="@dimen/dp_52"
+                        android:layout_marginTop="@dimen/dp_40"
+                        app:layout_constraintTop_toBottomOf="@+id/current_voice_broadcast_layout"
+                        app:layout_constraintStart_toStartOf="parent" />
 
-                    <com.fy.navi.ui.view.SkinTextView
-                        android:id="@+id/current_voice_broadcast_current_status"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/setting_broadcast_voice_current_use"
-                        android:textColor="@color/setting_bg_tab_text_select"
-                        android:textSize="@dimen/sp_32"
-                        android:layout_marginEnd="@dimen/dp_40"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"/>
-
-                </com.fy.navi.ui.view.SkinConstraintLayout>
-
-                <com.fy.navi.ui.view.SkinTextView
-                    android:id="@+id/current_voice_broadcast_default_name"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/setting_broadcast_voice_default"
-                    android:textColor="@color/setting_bg_voice_text"
-                    android:textSize="@dimen/sp_46"
-                    android:layout_marginStart="@dimen/dp_52"
-                    android:layout_marginTop="@dimen/dp_40"
-                    app:layout_constraintTop_toBottomOf="@+id/current_voice_broadcast_layout"
-                    app:layout_constraintStart_toStartOf="parent" />
-
-                <com.fy.navi.ui.view.SkinConstraintLayout
-                    android:id="@+id/default_voice_broadcast_layout"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/dp_168"
-                    android:layout_marginStart="@dimen/dp_52"
-                    android:layout_marginEnd="@dimen/dp_52"
-                    android:layout_marginTop="@dimen/dp_24"
-                    android:background="@drawable/bg_selecting_bar"
-                    app:layout_constraintTop_toBottomOf="@+id/current_voice_broadcast_default_name"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent">
-
-                    <com.fy.navi.scene.ui.setting.SceneCircleImageView
-                        android:id="@+id/default_voice_header"
-                        android:layout_width="@dimen/dp_88"
-                        android:layout_height="@dimen/dp_88"
-                        android:layout_marginStart="@dimen/dp_40"
-                        android:src="@mipmap/default_voice"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"/>
-
-                    <com.fy.navi.ui.view.SkinTextView
-                        android:id="@+id/default_voice_name"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/setting_broadcast_voice_current_name"
-                        android:textColor="@color/setting_bg_tab_text_select"
-                        android:textSize="@dimen/sp_46"
-                        android:layout_marginStart="@dimen/dp_20"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintStart_toEndOf="@+id/default_voice_header"/>
-
-                    <com.fy.navi.ui.view.SkinTextView
+                    <com.fy.navi.ui.view.SkinConstraintLayout
                         clickCommand="@{viewModel.mSwitchDefaultVoice}"
-                        android:background="@drawable/bg_voice_operate_selector"
-                        android:enabled="@{!viewModel.mIsDefaultVoiceUsed}"
-                        android:id="@+id/default_voice_status"
-                        android:gravity="center"
-                        android:layout_width="@dimen/dp_240"
-                        android:layout_height="@dimen/dp_96"
-                        android:text="@{viewModel.mIsDefaultVoiceUsed ? @string/setting_broadcast_voice_current_size : @string/setting_broadcast_voice_operate_use}"
-                        android:textColor="@{viewModel.mIsDefaultVoiceUsed ? @color/setting_bg_tab_text_select : @color/setting_white}"
-                        android:textSize="@dimen/sp_38"
-                        android:layout_marginEnd="@dimen/dp_40"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"/>
+                        android:id="@+id/default_voice_broadcast_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/dp_168"
+                        android:layout_marginStart="@dimen/dp_52"
+                        android:layout_marginEnd="@dimen/dp_52"
+                        android:layout_marginTop="@dimen/dp_24"
+                        android:focusable="true"
+                        android:background="@drawable/bg_setting_others_selector"
+                        app:layout_constraintTop_toBottomOf="@+id/current_voice_broadcast_default_name"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent">
+
+                        <com.fy.navi.scene.ui.setting.SceneCircleImageView
+                            android:id="@+id/default_voice_header"
+                            android:layout_width="@dimen/dp_88"
+                            android:layout_height="@dimen/dp_88"
+                            android:layout_marginStart="@dimen/dp_40"
+                            android:src="@mipmap/default_voice"
+                            android:focusable="false"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"/>
+
+                        <com.fy.navi.ui.view.SkinTextView
+                            android:id="@+id/default_voice_name"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/setting_broadcast_voice_current_name"
+                            android:textColor="@color/setting_bg_tab_text_select"
+                            android:textSize="@dimen/sp_46"
+                            android:focusable="false"
+                            android:layout_marginStart="@dimen/dp_20"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toEndOf="@+id/default_voice_header"/>
+
+                        <com.fy.navi.ui.view.SkinTextView
+                            clickCommand="@{viewModel.mSwitchDefaultVoice}"
+                            android:enabled="@{!viewModel.mIsDefaultVoiceUsed}"
+                            android:background="@drawable/bg_voice_operate_selector"
+                            android:id="@+id/default_voice_status"
+                            android:gravity="center"
+                            android:focusable="false"
+                            android:layout_width="@dimen/dp_240"
+                            android:layout_height="@dimen/dp_96"
+                            android:text="@{viewModel.mIsDefaultVoiceUsed ? @string/setting_broadcast_voice_current_size : @string/setting_broadcast_voice_operate_use}"
+                            android:textColor="@{viewModel.mIsDefaultVoiceUsed ? @color/setting_bg_tab_text_select : @color/setting_white}"
+                            android:textSize="@dimen/sp_38"
+                            android:layout_marginEnd="@dimen/dp_40"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"/>
+
+                    </com.fy.navi.ui.view.SkinConstraintLayout>
+
+                    <com.fy.navi.ui.view.SkinTextView
+                        android:id="@+id/recommend_voice_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/setting_broadcast_voice_recommend"
+                        android:textColor="@color/setting_bg_voice_text"
+                        android:textSize="@dimen/sp_46"
+                        android:focusable="false"
+                        android:layout_marginStart="@dimen/dp_52"
+                        android:layout_marginTop="@dimen/dp_40"
+                        app:layout_constraintTop_toBottomOf="@+id/default_voice_broadcast_layout"
+                        app:layout_constraintStart_toStartOf="parent" />
+
+                    <com.fy.navi.ui.view.SkinRecyclerView
+                        android:id="@+id/recommend_voice_list"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/dp_52"
+                        android:paddingHorizontal="@dimen/dp_52"
+                        app:layout_constraintTop_toBottomOf="@+id/recommend_voice_name"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"/>
 
                 </com.fy.navi.ui.view.SkinConstraintLayout>
 
-                <com.fy.navi.ui.view.SkinTextView
-                    android:id="@+id/recommend_voice_name"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/setting_broadcast_voice_recommend"
-                    android:textColor="@color/setting_bg_voice_text"
-                    android:textSize="@dimen/sp_46"
-                    android:layout_marginStart="@dimen/dp_52"
-                    android:layout_marginTop="@dimen/dp_40"
-                    app:layout_constraintTop_toBottomOf="@+id/default_voice_broadcast_layout"
-                    app:layout_constraintStart_toStartOf="parent" />
-
-                <com.fy.navi.ui.view.SkinRecyclerView
-                    android:id="@+id/recommend_voice_list"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/dp_52"
-                    android:paddingHorizontal="@dimen/dp_52"
-                    app:layout_constraintTop_toBottomOf="@+id/recommend_voice_name"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"/>
-
-            </com.fy.navi.ui.view.SkinConstraintLayout>
+            </com.android.car.ui.FocusArea>
 
         </com.fy.navi.ui.view.SkinNestedScrollView>
 

@@ -5,6 +5,7 @@ import android.app.Application;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 
+import com.android.utils.NetWorkUtils;
 import com.android.utils.ResourceUtils;
 import com.android.utils.ToastUtils;
 import com.android.utils.log.Logger;
@@ -45,6 +46,15 @@ public class BaseSettingVoiceBroadcastViewModel extends BaseViewModel<SettingVoi
     @Override
     public void onCreate() {
         super.onCreate();
+        getRecommendVoiceList();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if(recommendVoiceList != null && !recommendVoiceList.isEmpty()){
+            mView.setData(recommendVoiceList);
+        }
     }
 
     @Override
@@ -59,29 +69,17 @@ public class BaseSettingVoiceBroadcastViewModel extends BaseViewModel<SettingVoi
     public Action mSwitchDefaultVoice = () -> {
         if(Boolean.FALSE.equals(mIsDefaultVoiceUsed.getValue())){
             mIsDefaultVoiceUsed.setValue(true);
-            mModel.setVoice(GBLCacheFilePath.DEFAULT_VOICE_PATH);
             SettingManager.getInstance().insertOrReplace(SettingController.KEY_SETTING_VOICE_PACKAGE, "default");
             SettingManager.getInstance().insertOrReplace(SettingController.KEY_SETTING_VOICE_ICON, "default");
             SettingManager.getInstance().insertOrReplace(SettingController.KEY_SETTING_VOICE_NAME,
                     ResourceUtils.Companion.getInstance().getString(R.string.setting_broadcast_voice_current_name));
+            mModel.setVoice(GBLCacheFilePath.DEFAULT_VOICE_PATH);
             mView.setCurrentVoice();
             mView.unSelectAllVoices();
 
             sendBuryPointForSetVoice(ResourceUtils.Companion.getInstance().getString(R.string.setting_broadcast_voice_current_name));
         }
     };
-    /**
-     * 数据列表检查
-     * @param downLoadMode
-     * @param dataType
-     * @param opCode
-     */
-    public void onRequestDataListCheck(final int downLoadMode, final int dataType, final int opCode){
-        if(opCode == 0){
-            recommendVoiceList = mModel.getRecommendVoiceList();
-            mView.setData(recommendVoiceList);
-        }
-    }
 
     /**
      * 下载状态回调
@@ -98,9 +96,8 @@ public class BaseSettingVoiceBroadcastViewModel extends BaseViewModel<SettingVoi
             } else if (opCode == UserDataCode.OPT_DOWNLOAD_NET_ERROR) {
                 ToastUtils.Companion.getInstance().showCustomToastView("网络异常，请检查网络后重试");
             }
-                }
-        );
-        replaceVoiceInfo(id, taskCode, 0);
+        });
+        replaceVoiceInfo(id, taskCode, -1);
     }
 
     /**
@@ -116,17 +113,8 @@ public class BaseSettingVoiceBroadcastViewModel extends BaseViewModel<SettingVoi
         replaceVoiceInfo(id, taskCode, percent);
     }
 
-    public int isInitService(){
-        return mModel.isInitService();
-    }
-
-    /**
-     * 检查数据列表
-     * @param downLoadMode
-     * @param path
-     */
-    public void requestDataListCheck(final int downLoadMode, final String path){
-        mModel.requestDataListCheck(downLoadMode, path);
+    public void getRecommendVoiceList(){
+        recommendVoiceList = mModel.getRecommendVoiceList();
     }
 
     /**
@@ -134,6 +122,10 @@ public class BaseSettingVoiceBroadcastViewModel extends BaseViewModel<SettingVoi
      * @param operatedIdList
      */
     public void startAllTask(final ArrayList<Integer> operatedIdList){
+        if(!getNetworkState()){
+            ToastUtils.Companion.getInstance().showCustomToastView(ResourceUtils.Companion.getInstance().getString(R.string.setting_broadcast_voice_no_net));
+            return;
+        }
         mModel.operate(UserDataCode.OPERATION_TYPE_START, operatedIdList);
     }
 
@@ -142,6 +134,10 @@ public class BaseSettingVoiceBroadcastViewModel extends BaseViewModel<SettingVoi
      * @param operatedIdList
      */
     public void pauseAllTask(final ArrayList<Integer> operatedIdList){
+        if(!getNetworkState()){
+            ToastUtils.Companion.getInstance().showCustomToastView(ResourceUtils.Companion.getInstance().getString(R.string.setting_broadcast_voice_no_net));
+            return;
+        }
         mModel.operate(UserDataCode.OPERATION_TYPE_PAUSE, operatedIdList);
     }
 
@@ -150,13 +146,11 @@ public class BaseSettingVoiceBroadcastViewModel extends BaseViewModel<SettingVoi
      * @param voiceInfo
      */
     public void toUseAllTask(final VoiceInfo voiceInfo){
-        ThreadManager.getInstance().postDelay(() -> {
-            mModel.setVoice(voiceInfo.getFilePath());
-        },0);
         mIsDefaultVoiceUsed.setValue(false);
         SettingManager.getInstance().insertOrReplace(SettingController.KEY_SETTING_VOICE_PACKAGE, String.valueOf(voiceInfo.getId()));
         SettingManager.getInstance().insertOrReplace(SettingController.KEY_SETTING_VOICE_ICON, voiceInfo.getImageUrl());
         SettingManager.getInstance().insertOrReplace(SettingController.KEY_SETTING_VOICE_NAME, voiceInfo.getName());
+        mModel.setVoice(voiceInfo.getFilePath());
         mView.setCurrentVoice();
         mView.setSingleChoice(voiceInfo.getId());
 
@@ -173,12 +167,20 @@ public class BaseSettingVoiceBroadcastViewModel extends BaseViewModel<SettingVoi
         final VoiceInfo voiceInfo = recommendVoiceList.get(id);
         if(voiceInfo != null){
             voiceInfo.setTaskState(taskCode);
-            voiceInfo.setPercent(percent);
+            if(percent != -1) voiceInfo.setPercent(percent);
             recommendVoiceList.replace(id, voiceInfo);
             mView.updateItem(id, voiceInfo);
         }else{
             Logger.e(TAG, "No id: " + id);
         }
+    }
+
+    /**
+     * 获取网络状态
+     * @return 网络状态
+     */
+    public boolean getNetworkState() {
+        return Boolean.TRUE.equals(NetWorkUtils.Companion.getInstance().checkNetwork());
     }
 
     @HookMethod(eventName = BuryConstant.EventName.AMAP_SETTING_VOICEPACKAGE)

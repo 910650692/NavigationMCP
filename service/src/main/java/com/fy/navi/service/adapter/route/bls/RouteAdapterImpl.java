@@ -44,6 +44,7 @@ import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.position.LocInfoBean;
 import com.fy.navi.service.define.route.RequestRouteResult;
 import com.fy.navi.service.define.route.RouteAvoidInfo;
+import com.fy.navi.service.define.route.RouteCurrentPathParam;
 import com.fy.navi.service.define.route.RouteMsgPushInfo;
 import com.fy.navi.service.define.route.RouteParam;
 import com.fy.navi.service.define.route.RoutePreferenceID;
@@ -311,6 +312,15 @@ public class RouteAdapterImpl implements IRouteApi {
         costList.slope = slope;
         elecConfig.costList.add(costList);
         return elecConfig;
+    }
+
+    /**
+     * 发送L2++数据
+     * @param routeCurrentPathParam L2
+     */
+    @Override
+    public void sendL2Data(final RouteCurrentPathParam routeCurrentPathParam) {
+        mAdapterImplHelper.sendL2SData(routeCurrentPathParam);
     }
 
     /**

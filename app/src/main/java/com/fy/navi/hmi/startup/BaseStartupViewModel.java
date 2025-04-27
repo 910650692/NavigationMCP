@@ -9,12 +9,15 @@ import androidx.annotation.NonNull;
 import com.android.utils.log.Logger;
 import com.fy.navi.INaviInitListener;
 import com.fy.navi.NaviService;
+import com.fy.navi.burypoint.anno.HookMethod;
+import com.fy.navi.burypoint.constant.BuryConstant;
 import com.fy.navi.hmi.map.MapActivity;
 import com.fy.navi.mapservice.bean.INaviConstant;
 import com.fy.navi.service.AppContext;
 import com.fy.navi.service.define.search.PoiInfoEntity;
+import com.fy.navi.service.logicpaket.activate.ActivatePackage;
 import com.fy.navi.service.logicpaket.engine.EnginePackage;
-import com.fy.navi.service.logicpaket.engine.IActivateObserver;
+import com.fy.navi.service.logicpaket.activate.IActivateObserver;
 import com.fy.navi.ui.base.BaseViewModel;
 import com.fy.navi.ui.dialog.IBaseDialogClickListener;
 
@@ -57,12 +60,25 @@ public class BaseStartupViewModel extends BaseViewModel<StartupActivity, Startup
 
                     @Override
                     public void onCancelClick() {
-                        Logger.d(TAG, "激活失败，手动退出应用");
-                        mView.finish();
+                        Logger.e(TAG, "网络激活失败，手动退出应用");
+                        finishStartUp();
                     }
                 });
             }
             mFailedDialog.show();
+        }
+
+        @Override
+        public void onActivated() {
+            Logger.d(TAG, "激活成功回调，开始BL初始化");
+            EnginePackage.getInstance().initBL();
+        }
+
+        @Override
+        public void onActivatedError() {
+            Logger.e(TAG, "激活出现错误，退出应用");
+            showActivatingView(false);
+            finishStartUp();
         }
     };
 
@@ -88,19 +104,19 @@ public class BaseStartupViewModel extends BaseViewModel<StartupActivity, Startup
         } else {
             checkPermission();
         }
-        EnginePackage.getInstance().addActObserver(mActObserver);
+        ActivatePackage.getInstance().addActObserver(mActObserver);
         mFailedDialog = new NetActivateFailedDialog(mView);
         mFailedDialog.setDialogClickListener(new IBaseDialogClickListener() {
             @Override
             public void onCommitClick() {
                 Logger.d(TAG, " 重试网络激活");
-                EnginePackage.getInstance().netActivateRetry();
+                ActivatePackage.getInstance().netActivateRetry();
             }
 
             @Override
             public void onCancelClick() {
                 Logger.d(TAG, "激活失败，手动退出应用");
-                mView.finish();
+                finishStartUp();
             }
         });
     }
@@ -118,7 +134,7 @@ public class BaseStartupViewModel extends BaseViewModel<StartupActivity, Startup
         Logger.i(TAG, "onDestroy");
         mFailedDialog.cancel();
         NaviService.unRegisterAppInitListener(this);
-        EnginePackage.getInstance().removeActObserver(mActObserver);
+        ActivatePackage.getInstance().removeActObserver(mActObserver);
     }
 
     private void checkPermission() {
@@ -146,12 +162,13 @@ public class BaseStartupViewModel extends BaseViewModel<StartupActivity, Startup
 
             @Override
             public void onCancelClick() {
-                mView.finish();
+                finishStartUp();
             }
         });
         reminderDialog.show();
     }
 
+    @HookMethod(eventName = BuryConstant.EventName.AMAP_OPEN_FAIL)
     public void popStartupExceptionDialog() {
         StartupExceptionDialog startupExceptionDialog = new StartupExceptionDialog(mView, new IBaseDialogClickListener() {
             @Override
@@ -164,7 +181,7 @@ public class BaseStartupViewModel extends BaseViewModel<StartupActivity, Startup
 
             @Override
             public void onExit() {
-                mView.finish();
+                finishStartUp();
             }
         });
         startupExceptionDialog.show();
@@ -191,7 +208,7 @@ public class BaseStartupViewModel extends BaseViewModel<StartupActivity, Startup
             }
         }
         AppContext.getInstance().getMContext().startActivity(intent);
-        mView.finish();
+        finishStartUp();
     }
 
     @Override

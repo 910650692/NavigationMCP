@@ -223,7 +223,9 @@ public class SceneNaviViaListView extends NaviSceneBase<SceneNaviViaListViewBind
         mNaviViaEntityList.clear();
         mNaviViaEntityList.addAll(list);
         addBatteryLeftData();
-        mScreenViewModel.initTimer();
+        if (this.getVisibility() == VISIBLE) {
+            mScreenViewModel.initTimer();
+        }
         Logger.i(TAG, "SceneNaviListImpl list：" + list.size());
         if (!ConvertUtils.isEmpty(mNaviViaEntityList)) {
             mNaviViaListAdapter.notifyList(mNaviViaEntityList);

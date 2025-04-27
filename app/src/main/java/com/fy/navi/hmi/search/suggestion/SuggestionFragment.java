@@ -8,8 +8,8 @@ import com.android.utils.log.Logger;
 import com.fy.navi.hmi.BR;
 import com.fy.navi.hmi.R;
 import com.fy.navi.hmi.databinding.SugSearchFragmentLayoutBinding;
-import com.fy.navi.hmi.databinding.SugSearchFragmentLayoutBindingImpl;
 import com.fy.navi.scene.RoutePath;
+import com.fy.navi.scene.api.search.IClearEditTextListener;
 import com.fy.navi.service.AutoMapConstant;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.define.map.MapType;
@@ -39,9 +39,25 @@ public class SuggestionFragment extends BaseFragment<SugSearchFragmentLayoutBind
     @Override
     public void onInitData() {
         Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "onInitData");
+        mBinding.sceneSugPoiList.setEditTextChangedListener(new IClearEditTextListener() {
+            @Override
+            public void onEditTextChanged(final String content) {
+                mViewModel.onEditTextChanged(content);
+            }
+        });
+    }
+
+    @Override
+    public void onGetFragmentData() {
+        super.onGetFragmentData();
         getBundleData();
     }
 
+    @Override
+    public void onReStoreFragment() {
+        super.onReStoreFragment();
+        mViewModel.onReStoreFragment();
+    }
 
     @Override
     public void onDestroy() {
@@ -51,9 +67,9 @@ public class SuggestionFragment extends BaseFragment<SugSearchFragmentLayoutBind
     @Override
     public void onHiddenChanged(final boolean hidden) {
         super.onHiddenChanged(hidden);
-        if (!hidden) {
-            mBinding.sceneSugPoiList.requestFocusAndShowKeyboard();
-        }
+//        if (!hidden) {
+//            mBinding.sceneSugPoiList.requestFocusAndShowKeyboard();
+//        }
     }
 
     /**

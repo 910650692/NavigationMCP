@@ -10,8 +10,8 @@ import android.os.HandlerThread;
 import android.os.IBinder;
 import android.os.Message;
 import android.os.RemoteException;
-import android.util.Log;
 
+import com.android.utils.log.Logger;
 import com.fy.navi.mapservice.IBinderPool;
 
 import java.lang.ref.WeakReference;
@@ -39,7 +39,7 @@ public final class MapSdk {
         startKeepConnectHandlerThread();
         final Handler.Callback handlerCallback = message -> {
             if (mIBinder != null && mIBinder.pingBinder()) {
-                Log.i(TAG, "Service connected");
+                Logger.i(TAG, "Service connected");
                 return true;
             }
             final Intent intent = new Intent();
@@ -53,7 +53,7 @@ public final class MapSdk {
                     context.bindService(intent, mServiceConnection, Context.BIND_AUTO_CREATE);
                 }
             } catch (SecurityException e) {
-                Log.e(TAG, "The caller does not have permission to access the service or the service cannot be found.");
+                Logger.e(TAG, "The caller does not have permission to access the service or the service cannot be found.");
             } finally {
                 tryConnectService(2000);
             }
@@ -73,9 +73,9 @@ public final class MapSdk {
      */
     public void startConnect(final Context context) {
         if (mConnected) {
-            Log.d(TAG, "MapSdk already connected");
+            Logger.d(TAG, "MapSdk already connected");
         } else {
-            Log.d(TAG, "MapSdk startConnect");
+            Logger.d(TAG, "MapSdk startConnect");
             mContextReference = new WeakReference<>(context);
             mClientPkg = context.getPackageName();
             tryConnectService(0);
@@ -99,7 +99,7 @@ public final class MapSdk {
     private final ServiceConnection mServiceConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(final ComponentName name, final IBinder binder) {
-            Log.d(TAG, "onServiceConnected");
+            Logger.d(TAG, "onServiceConnected");
             try {
                 mConnected = true;
                 mIBinder = binder;
@@ -107,14 +107,14 @@ public final class MapSdk {
                 mKeepHandle.removeMessages(mConnectMsg);
                 BinderManager.getInstance().updateBinderPool(IBinderPool.Stub.asInterface(binder));
             } catch (RemoteException e) {
-                Log.e(TAG, "The target IBinder's process has already died: " + e);
+                Logger.e(TAG, "The target IBinder's process has already died: " + e);
                 tryConnectService(0);
             }
         }
 
         @Override
         public void onServiceDisconnected(final ComponentName name) {
-            Log.d(TAG, "onServiceDisconnected");
+            Logger.d(TAG, "onServiceDisconnected");
             mConnected = false;
             tryConnectService(500);
         }
@@ -124,7 +124,7 @@ public final class MapSdk {
      * 绑定的service死亡时回调
      */
     private final IBinder.DeathRecipient mDeathRecipient = () -> {
-        Log.w(TAG, "binderDied callback");
+        Logger.w(TAG, "binderDied callback");
         tryConnectService(500);
     };
 
@@ -145,15 +145,15 @@ public final class MapSdk {
     private void tryConnectService(final long delayMillis) {
         try {
             if (mIBinder != null && !mIBinder.pingBinder()) {
-                Log.d(TAG, "tryConnectService: link to death");
+                Logger.d(TAG, "tryConnectService: link to death");
                 stopConnect();
             }
         } catch (NoSuchElementException e) {
-            Log.e(TAG, "the given recipient has not been registered with the IBinder, and the IBinder is still alive.");
+            Logger.e(TAG, "the given recipient has not been registered with the IBinder, and the IBinder is still alive.");
         } catch (NullPointerException e) {
-            Log.e(TAG, "unlinkToDeath NullPointer - " + e);
+            Logger.e(TAG, "unlinkToDeath NullPointer - " + e);
         }
-        Log.d(TAG, "tryConnectService");
+        Logger.d(TAG, "tryConnectService");
         mKeepHandle.removeMessages(mConnectMsg);
         final Message message = Message.obtain();
         message.what = mConnectMsg;

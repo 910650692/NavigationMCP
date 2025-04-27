@@ -24,6 +24,7 @@ public class BasePoiDetailsViewModel extends BaseViewModel<PoiDetailsFragment, P
 
     /**
      * 搜索结果回调
+     * @param taskId 任务id
      * @param searchResultEntity 搜索结果实体类
      */
     public void onSearchResult(final int taskId, final SearchResultEntity searchResultEntity) {
@@ -57,8 +58,20 @@ public class BasePoiDetailsViewModel extends BaseViewModel<PoiDetailsFragment, P
         return mModel.powerType();
     }
 
+    /**
+     * 判断是否在自车位
+     * @return 是否在自车位
+     */
     public boolean calcDistanceBetweenPoints(){
         return mModel.calcStraightDistance();
+    }
+
+
+    /**
+     * 恢复fragment状态
+     */
+    public void onReStoreFragment() {
+        mModel.onReStoreFragment();
     }
 
 }

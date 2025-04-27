@@ -73,7 +73,9 @@ public class FragmentIntent {
             STACKMANAGER.removeBaseView(screenId, toFragment);
             STACKMANAGER.push(screenId, toFragment);
             if (isHideCurFragment) {
-                transaction.hide(currentFragment);
+                if(currentFragment.isAdded() && currentFragment.getParentFragmentManager() == fragmentManager){
+                    transaction.hide(currentFragment);
+                }
             }
             transaction.show(toFragment);
             toFragment.onNewIntent(bundle);
@@ -81,7 +83,9 @@ public class FragmentIntent {
             Logger.i(TAG, "fragment stack 不包含");
             toFragment.setArguments(bundle);
             if (isHideCurFragment) {
-                transaction.hide(currentFragment);
+                if(currentFragment.isAdded() && currentFragment.getParentFragmentManager() == fragmentManager) {
+                    transaction.hide(currentFragment);
+                }
             }
             transaction.add(containerId, toFragment);
             transaction.show(toFragment);

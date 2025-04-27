@@ -12,7 +12,7 @@
 
         <variable
             name="holder"
-            type="com.fy.navi.scene.ui.adapter.RouteResultAdapter.Holder" />
+            type="com.fy.navi.scene.ui.adapter.RouteDetailsResultsChildAdapter.Holder" />
     </data>
 
     <com.fy.navi.ui.view.SkinConstraintLayout

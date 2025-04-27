@@ -4,8 +4,12 @@ import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
 import com.fy.navi.service.adapter.l2.L2Adapter;
 import com.fy.navi.service.adapter.l2.L2DriveObserver;
+import com.fy.navi.service.adapter.layer.LayerAdapter;
+import com.fy.navi.service.define.layer.refix.LayerItemRouteOdd;
+import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.navi.L2NaviBean;
 
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -18,9 +22,11 @@ import java.util.concurrent.ConcurrentMap;
 public class L2Package implements L2DriveObserver {
     private final ConcurrentMap<String, L2InfoCallback> l2InfoCallbackMap = new ConcurrentHashMap<>();
     private L2Adapter mL2Adapter;
+    private LayerAdapter mLayerAdapter;
 
     private L2Package() {
         mL2Adapter = L2Adapter.getInstance();
+        mLayerAdapter = LayerAdapter.getInstance();
         mL2Adapter.registerCallback(this);
     }
 
@@ -55,6 +61,11 @@ public class L2Package implements L2DriveObserver {
         for (L2InfoCallback callback : l2InfoCallbackMap.values()) {
             callback.onSdTbtDataChange(l2NaviBean);
         }
+    }
+
+    /* 更新Odd信息 */
+    public void updateOddInfo(MapType mapTypeId, ArrayList<LayerItemRouteOdd> oddInfoList, long pathId) {
+        mLayerAdapter.updateOddInfo(mapTypeId, oddInfoList, pathId);
     }
 
     private static final class Helper {

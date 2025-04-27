@@ -252,4 +252,9 @@
     <color name="handing_card_fold_indicator_color">#338E97B9</color>
     <color name="handing_card_icon_fill_color">#9E171A</color>
     <color name="handing_card_icon_stroke_color">#000000</color>
+
+    <color name="poi_type_text_color">#26B2AFC2</color>
+    <color name="charge_price_type_bg">#26B2AFC2</color>
+    <color name="charge_reservation_button_color">#FF000000</color>
+    <color name="bg_charge_price_root_color">#26B2AFC2</color>
 </resources>

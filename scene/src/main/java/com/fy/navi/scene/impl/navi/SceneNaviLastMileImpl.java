@@ -3,15 +3,20 @@ package com.fy.navi.scene.impl.navi;
 
 import com.android.utils.ConvertUtils;
 import com.android.utils.NetWorkUtils;
+import com.android.utils.ResourceUtils;
 import com.android.utils.ToastUtils;
 import com.android.utils.log.Logger;
+import com.fy.navi.burypoint.anno.HookMethod;
+import com.fy.navi.burypoint.bean.BuryProperty;
+import com.fy.navi.burypoint.constant.BuryConstant;
+import com.fy.navi.burypoint.controller.BuryPointController;
 import com.fy.navi.scene.BaseSceneModel;
 import com.fy.navi.scene.R;
 import com.fy.navi.scene.api.navi.ISceneNaviLastMile;
 import com.fy.navi.scene.ui.navi.SceneNaviLastMileView;
-import com.fy.navi.service.AppContext;
 import com.fy.navi.scene.ui.navi.manager.INaviSceneEvent;
 import com.fy.navi.scene.ui.navi.manager.NaviSceneId;
+import com.fy.navi.service.AppContext;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.define.navi.NaviEtaInfo;
 import com.fy.navi.service.define.route.RouteParam;
@@ -119,6 +124,7 @@ public class SceneNaviLastMileImpl extends BaseSceneModel<SceneNaviLastMileView>
             }
             mIsDisplayedLastMile = true;
             updateSceneVisible(true);
+            sendBuryPointForPopup();
         }
     }
 
@@ -131,5 +137,13 @@ public class SceneNaviLastMileImpl extends BaseSceneModel<SceneNaviLastMileView>
         mScreenView.getNaviSceneEvent().notifySceneStateChange((isVisible ?
                 INaviSceneEvent.SceneStateChangeType.SceneShowState :
                 INaviSceneEvent.SceneStateChangeType.SceneCloseState), NaviSceneId.NAVI_SCENE_LAST_MILE);
+    }
+
+    @HookMethod(eventName = BuryConstant.EventName.AMAP_POPUP)
+    private void sendBuryPointForPopup(){
+        BuryProperty property = new BuryProperty.Builder()
+                .setParams(BuryConstant.ProperType.BURY_KEY_HOME_PREDICTION, ResourceUtils.Companion.getInstance().getString(R.string.navi_send_request_info))
+                .build();
+        BuryPointController.getInstance().setBuryProps(property);
     }
 }

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_focused="true">
+        <layer-list>
+            <item>
+                <selector>
+                    <item android:state_checked="true" android:drawable="@drawable/rb_bg_checked" />
+                    <item android:state_checked="false" android:drawable="@color/transparent" />
+                </selector>
+            </item>
+            <item android:drawable="@drawable/bg_base_mfc_cadillac_bg_selector"/>
+        </layer-list>
+    </item>
+    <!-- 选中状态 -->
+    <item android:state_checked="true" android:drawable="@drawable/rb_bg_checked" />
+    <item android:state_checked="false" android:drawable="@color/transparent" />
+</selector>

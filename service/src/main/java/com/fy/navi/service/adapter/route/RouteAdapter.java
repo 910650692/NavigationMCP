@@ -228,6 +228,12 @@ final public class RouteAdapter {
         mRouteApi.abortRequest(requestId);
     }
 
+    public void sendL2Data(final MapType mapTypeId) {
+        if (!ConvertUtils.isEmpty(mRouteCurrentPathParamMap.get(mapTypeId))) {
+            mRouteApi.sendL2Data(mRouteCurrentPathParamMap.get(mapTypeId));
+        }
+    }
+
     private static final class Helper {
         private static final RouteAdapter RA = new RouteAdapter();
     }

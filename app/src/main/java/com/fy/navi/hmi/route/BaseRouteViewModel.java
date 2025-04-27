@@ -1280,7 +1280,7 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
         mDetailsResustEntry = resultPoiInfoEntity;
         mRouteSearchName.set(requestPoiInfoEntity.getName());
         mRouteSearchAddress.set(requestPoiInfoEntity.getAddress());
-        mModel.getTravelTimeFuture(new GeoPoint(requestPoiInfoEntity.getPoint().getLon(),
+        mModel.getTravelTimeFutureIncludeChargeLeft(new GeoPoint(requestPoiInfoEntity.getPoint().getLon(),
                         requestPoiInfoEntity.getPoint().getLat()))
                 .thenAccept(etaInfo -> {
                     ThreadManager.getInstance().postUi(() -> {
@@ -1764,5 +1764,10 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
     @Override
     public void onClose() {
         mModel.cancelRoute();
+    }
+
+    public void onReStoreFragment() {
+        showNomalRouteUI();
+        mModel.onReStoreFragment();
     }
 }

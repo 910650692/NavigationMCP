@@ -2,6 +2,7 @@ package com.fy.navi.service.adapter.layer.bls.impl;
 
 import android.content.Context;
 import android.graphics.Rect;
+import android.text.TextUtils;
 
 import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
@@ -29,22 +30,22 @@ import com.autonavi.gbl.layer.model.BizRouteWeatherInfo;
 import com.autonavi.gbl.layer.model.BizThreeUrgentInfo;
 import com.autonavi.gbl.layer.model.DynamicLevelParam;
 import com.autonavi.gbl.layer.model.DynamicLevelType;
+import com.autonavi.gbl.layer.model.ODDDrawMode;
 import com.autonavi.gbl.layer.model.RouteDrawStyle;
 import com.autonavi.gbl.map.MapView;
-import com.autonavi.gbl.map.layer.BaseLayer;
 import com.autonavi.gbl.map.layer.LayerItem;
 import com.autonavi.gbl.map.layer.RoutePathLayer;
-import com.autonavi.gbl.map.layer.model.ClickViewIdInfo;
 import com.autonavi.gbl.map.layer.model.RouteLayerScene;
 import com.autonavi.gbl.route.model.WeatherLabelItem;
 import com.fy.navi.service.adapter.layer.ILayerAdapterCallBack;
 import com.fy.navi.service.adapter.layer.bls.style.LayerGuideRouteStyleAdapter;
-import com.fy.navi.service.adapter.layer.bls.texture.LayerTextureManager;
+import com.fy.navi.service.adapter.layer.bls.texture.TexturePoolManager;
 import com.fy.navi.service.adapter.navi.NaviConstant;
+import com.fy.navi.service.adapter.navistatus.NavistatusAdapter;
+import com.fy.navi.service.define.bean.GeoPoint;
 import com.fy.navi.service.define.bean.PreviewParams;
 import com.fy.navi.service.define.layer.refix.DynamicLevelMode;
-import com.fy.navi.service.define.layer.GemLayerClickBusinessType;
-import com.fy.navi.service.define.layer.GemLayerItem;
+import com.fy.navi.service.define.layer.refix.LayerItemRoutePointClickResult;
 import com.fy.navi.service.define.layer.refix.LayerItemRouteEndPoint;
 import com.fy.navi.service.define.layer.refix.LayerItemRouteEnergyKey;
 import com.fy.navi.service.define.layer.refix.LayerItemRouteOdd;
@@ -53,16 +54,19 @@ import com.fy.navi.service.define.layer.refix.LayerItemRouteRestArea;
 import com.fy.navi.service.define.layer.refix.LayerItemRouteThreeUrgent;
 import com.fy.navi.service.define.layer.refix.LayerItemRouteViaRoad;
 import com.fy.navi.service.define.layer.refix.LayerItemTrafficEvent;
+import com.fy.navi.service.define.layer.refix.LayerPointItemType;
 import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.navi.CrossImageEntity;
+import com.fy.navi.service.define.navistatus.NaviStatus;
 import com.fy.navi.service.define.route.RequestRouteResult;
+import com.fy.navi.service.define.route.RouteAlterChargeStationInfo;
 import com.fy.navi.service.define.route.RouteLinePoints;
-import com.fy.navi.service.define.utils.NumberUtils;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class LayerGuideRouteImpl extends BaseLayerImpl<LayerGuideRouteStyleAdapter> {
+
+    private static ArrayList<PathInfo> mPathInfoList = new ArrayList<>();
 
     public LayerGuideRouteImpl(BizControlService bizService, MapView mapView, Context context, MapType mapType) {
         super(bizService, mapView, context, mapType);
@@ -83,96 +87,83 @@ public class LayerGuideRouteImpl extends BaseLayerImpl<LayerGuideRouteStyleAdapt
     }
 
     @Override
-    public void onNotifyClick(BaseLayer layer, LayerItem pItem, ClickViewIdInfo clickViewIds) {
-        super.onNotifyClick(layer, pItem, clickViewIds);
-        dispatchClick(pItem);
-    }
-
-    private void dispatchClick(LayerItem pItem) {
-        List<ILayerAdapterCallBack> callBacks = getCallBacks();
-        if (ConvertUtils.isEmpty(callBacks)) {
-            Logger.e(TAG, "callBacks is null");
-            return;
-        }
-        Logger.d(TAG, "dispatchClick " + callBacks.size());
-        for (int i = NumberUtils.NUM_0; i < callBacks.size(); i++) {
-            GemLayerItem clickResult = getClickResult(pItem);
-            Logger.d(TAG, "dispatchClick clickResult:" + clickResult.toString());
-            callBacks.get(i).onRouteItemClick(getMapType(), clickResult);
-        }
-    }
-
-    private GemLayerItem getClickResult(LayerItem pItem) {
-        GemLayerItem gemLayerItem = new GemLayerItem();
-        switch (pItem.getBusinessType()) {
-            // 路线图层内容点击
+    protected void dispatchItemClickEvent(LayerItem item) {
+        LayerPointItemType type = LayerPointItemType.NULL;
+        LayerItemRoutePointClickResult result = new LayerItemRoutePointClickResult();
+        switch (item.getBusinessType()) {
             case BizRouteType.BizRouteTypeStartPoint -> {
-                Coord3DDouble coord3DDouble = ((RoutePathPointItem) pItem).getPosition();
-                if (ConvertUtils.isEmpty(coord3DDouble)) {
-                    Logger.d(TAG, "BizRouteTypeStartPoint coord3DDouble is null");
-                    return gemLayerItem;
+                type = LayerPointItemType.ROUTE_POINT_START;
+                Coord3DDouble coord3DDouble = ((RoutePathPointItem) item).getPosition();
+                if (!ConvertUtils.isEmpty(coord3DDouble)) {
+                    result.setLat(coord3DDouble.lat);
+                    result.setLog(coord3DDouble.lon);
                 }
-                gemLayerItem.setLat(coord3DDouble.lat);
-                gemLayerItem.setLog(coord3DDouble.lon);
-                gemLayerItem.setZ(coord3DDouble.z);
-                gemLayerItem.setClickBusinessType(GemLayerClickBusinessType.BizRouteTypeStartPoint);
             }
             case BizRouteType.BizRouteTypeEndPoint -> {
-                Coord3DDouble coord3DDouble = ((RoutePathPointItem) pItem).getPosition();
-                if (ConvertUtils.isEmpty(coord3DDouble)) {
-                    Logger.d(TAG, "BizRouteTypeEndPoint coord3DDouble is null");
-                    return gemLayerItem;
+                if (item instanceof RoutePathPointItem endPoint) {
+                    int pathId = (int) endPoint.getPathId();
+                    if (pathId == LayerPointItemType.ROUTE_POINT_END_PARK.ordinal()) {
+                        type = LayerPointItemType.ROUTE_POINT_END_PARK;
+                    } else if (pathId == LayerPointItemType.ROUTE_POINT_END_BUSINESS_HOURS.ordinal()) {
+                        type = LayerPointItemType.ROUTE_POINT_END_BUSINESS_HOURS;
+                    } else {
+                        type = LayerPointItemType.ROUTE_POINT_END;
+                    }
                 }
-                gemLayerItem.setLat(coord3DDouble.lat);
-                gemLayerItem.setLog(coord3DDouble.lon);
-                gemLayerItem.setZ(coord3DDouble.z);
-                gemLayerItem.setClickBusinessType(GemLayerClickBusinessType.BizRouteTypeEndPoint);
+                Coord3DDouble coord3DDouble = ((RoutePathPointItem) item).getPosition();
+                if (!ConvertUtils.isEmpty(coord3DDouble)) {
+                    result.setLat(coord3DDouble.lat);
+                    result.setLog(coord3DDouble.lon);
+                }
             }
             case BizRouteType.BizRouteTypeViaPoint -> {
-                Coord3DDouble coord3DDouble = ((RoutePathPointItem) pItem).getPosition();
-                if (ConvertUtils.isEmpty(coord3DDouble)) {
-                    Logger.d(TAG, "BizRouteTypeViaPoint coord3DDouble is null");
-                    return gemLayerItem;
+                Coord3DDouble coord3DDouble = ((RoutePathPointItem) item).getPosition();
+                if (!ConvertUtils.isEmpty(coord3DDouble)) {
+                    result.setLat(coord3DDouble.lat);
+                    result.setLog(coord3DDouble.lon);
                 }
-                gemLayerItem.setLat(coord3DDouble.lat);
-                gemLayerItem.setLog(coord3DDouble.lon);
-                gemLayerItem.setZ(coord3DDouble.z);
-                gemLayerItem.setLayerItemId(Integer.parseInt(pItem.getID()));
-                gemLayerItem.setClickBusinessType(GemLayerClickBusinessType.BizRouteTypeViaPoint);
+                result.setIndex(Integer.parseInt(item.getID()));
+                long pathId = ((RoutePathPointItem) item).getPathId();
+                if (pathId == LayerPointItemType.ROUTE_POINT_VIA_REPLACE_CHARGE.ordinal()) {
+                    //途经点点击-自定义替换补能点扎标
+                    type = LayerPointItemType.ROUTE_POINT_VIA_REPLACE_CHARGE;
+                } else {
+                    //途经点点击-默认扎标
+                    type = LayerPointItemType.ROUTE_POINT_VIA;
+                }
             }
             case BizRouteType.BizRouteTypePath -> {
-                Logger.d(TAG, "getClickResult BizRouteTypePath id:" + pItem.getID());
-                gemLayerItem.setLayerItemId(Long.parseLong(pItem.getID()));
-                gemLayerItem.setClickBusinessType(GemLayerClickBusinessType.BizRouteTypePath);
+                result.setIndex(Long.parseLong(item.getID()));
+                type = LayerPointItemType.ROUTE_PATH;
             }
             case BizRouteType.BizRouteTypeWeather -> {
-                gemLayerItem.setLayerItemId(Integer.parseInt(pItem.getID()));
-                gemLayerItem.setClickBusinessType(GemLayerClickBusinessType.BizRouteTypeWeather);
+                result.setIndex(Long.parseLong(item.getID()));
+                type = LayerPointItemType.ROUTE_POINT_WEATHER;
             }
             case BizRouteType.BizRouteTypeRestArea -> {
-                gemLayerItem.setLayerItemId(Integer.parseInt(pItem.getID()));
-                gemLayerItem.setClickBusinessType(GemLayerClickBusinessType.BizRouteTypeRestArea);
+                result.setIndex(Long.parseLong(item.getID()));
+                type = LayerPointItemType.ROUTE_POINT_REST_AREA;
             }
             case BizRouteType.BizRouteTypeViaChargeStationPoint -> {
-                gemLayerItem.setLayerItemId(Integer.parseInt(pItem.getID()));
-                gemLayerItem.setClickBusinessType(GemLayerClickBusinessType.BizRouteTypeViaChargeStationPoint);
+                result.setIndex(Integer.parseInt(item.getID()));
+                type = LayerPointItemType.ROUTE_POINT_VIA_CHARGE_STATION;
             }
             case BizRouteType.BizRouteTypeTrafficEventTip -> {
-                RouteTrafficEventTipsLayerItem trafficEventTipsLayerItem = (RouteTrafficEventTipsLayerItem) pItem;
+                RouteTrafficEventTipsLayerItem trafficEventTipsLayerItem = (RouteTrafficEventTipsLayerItem) item;
                 long eventID = trafficEventTipsLayerItem.getMTrafficEventTipsInfo().mTrafficIncident.ID;
                 Coord3DDouble coord3DDouble = trafficEventTipsLayerItem.getPosition();
-                gemLayerItem.setLat(coord3DDouble.lat);
-                gemLayerItem.setLog(coord3DDouble.lon);
-                gemLayerItem.setZ(coord3DDouble.z);
-                gemLayerItem.setEventId(eventID);
-                gemLayerItem.setClickBusinessType(GemLayerClickBusinessType.BizRouteTypeTrafficEventTip);
-            }
-            default -> {
-                // TODO 扩展新的需求
-                gemLayerItem.setClickBusinessType(GemLayerClickBusinessType.UnKnown);
+                if (!ConvertUtils.isEmpty(coord3DDouble)) {
+                    result.setLat(coord3DDouble.lat);
+                    result.setLog(coord3DDouble.lon);
+                }
+                result.setEventID(eventID);
+                type = LayerPointItemType.ROUTE_POINT_TRAFFIC_EVENT;
             }
         }
-        return gemLayerItem;
+        Logger.d(TAG, "dispatchItemClickEvent type = " + type + " ; result = " + result.toString());
+        for (ILayerAdapterCallBack callback : getCallBacks()) {
+            callback.onRouteItemClick(getMapType(), type, result);
+        }
     }
 
     /**
@@ -201,6 +192,7 @@ public class LayerGuideRouteImpl extends BaseLayerImpl<LayerGuideRouteStyleAdapt
         int result = getLayerGuideRouteControl().updatePaths();
         Logger.d(TAG, "updatePaths result : " + result);
         getLayerGuideRouteControl().updatePathArrow();
+        setRouteJamBubblesVisible(true);
     }
 
     /**
@@ -252,7 +244,7 @@ public class LayerGuideRouteImpl extends BaseLayerImpl<LayerGuideRouteStyleAdapt
      */
     public void setPassGreyMode(boolean bPassGrey) {
         Logger.d(TAG, "setPassGreyMode");
-        getLayerGuideRouteControl().setPassGreyMode(true);
+        getLayerGuideRouteControl().setPassGreyMode(bPassGrey);
     }
 
     /**
@@ -290,6 +282,54 @@ public class LayerGuideRouteImpl extends BaseLayerImpl<LayerGuideRouteStyleAdapt
         RoutePoints pathPoints = getRoutePoints(routeLinePoints);
         int points = getLayerGuideRouteControl().setPathPoints(pathPoints);
         Logger.d(TAG, "setPathPoints points " + points);
+    }
+
+    /* 路线替换补能扎标 */
+    public void updateRouteReplaceChargePoints(ArrayList<RouteAlterChargeStationInfo> chargeStationInfos) {
+        Logger.d(TAG, "drawRouteViaReplaceChargeStation");
+        if (!ConvertUtils.isEmpty(chargeStationInfos)) {
+            RoutePoints routePoints = getRouteViaReplaceChargePoints(chargeStationInfos);
+            int points = getLayerGuideRouteControl().setPathPoints(routePoints);
+            Logger.d(TAG, "drawRouteViaReplaceChargeStation points " + points);
+            getStyleAdapter().updateRouteReplaceChargeInfo(chargeStationInfos);
+            getLayerGuideRouteControl().updatePaths();
+        }
+    }
+
+    //转换替换补能扎标数据
+    private RoutePoints getRouteViaReplaceChargePoints(ArrayList<RouteAlterChargeStationInfo> info) {
+        RoutePoints infos = new RoutePoints();
+        ArrayList<RoutePoint> via = new ArrayList<>();
+        for (int t = 0; t < info.size(); t++) {
+            RoutePoint point = new RoutePoint();
+            point.mType = 2;
+            point.mPathId = LayerPointItemType.ROUTE_POINT_VIA_REPLACE_CHARGE.ordinal();
+            point.mPos = new Coord3DDouble(info.get(t).getMPos().getLon()
+                    , info.get(t).getMPos().getLat()
+                    , info.get(t).getMPos().getZ());
+            via.add(point);
+        }
+        infos.mViaPoints = via;
+        RoutePathPointItem startPoint = (RoutePathPointItem) getLayerGuideRouteControl().getRouteLayer(BizRouteType.BizRouteTypeStartPoint).getItem("0");
+        ArrayList<RoutePoint> startList = new ArrayList<>();
+        if (!ConvertUtils.isEmpty(startPoint)) {
+            Coord3DDouble startPointPosition = startPoint.getPosition();
+            RoutePoint point = new RoutePoint();
+            point.mPos = startPointPosition;
+            startList.add(point);
+            infos.mStartPoints = startList;
+        }
+        RoutePathPointItem endPoint = (RoutePathPointItem) getLayerGuideRouteControl().getRouteLayer(BizRouteType.BizRouteTypeEndPoint).getItem("0");
+        ArrayList<RoutePoint> endList = new ArrayList<>();
+        if (!ConvertUtils.isEmpty(endPoint)) {
+            Coord3DDouble endPointPosition = endPoint.getPosition();
+            RoutePoint point = new RoutePoint();
+            point.mPos = endPointPosition;
+            endList.add(point);
+            infos.mEndPoints = endList;
+        }
+        Logger.d(TAG, "getRouteViaReplaceChargePoints routeReplaceChargePoints " + via.size());
+        return infos;
     }
 
     /**
@@ -371,11 +411,48 @@ public class LayerGuideRouteImpl extends BaseLayerImpl<LayerGuideRouteStyleAdapt
         getLayerGuideRouteControl().updateEnergyKeyInfo(energyKeyInfosBls);
     }
 
-
-    //更新Odd信息
-    public void updateOddInfo(ArrayList<LayerItemRouteOdd> oddInfoList) {
-        Logger.d(TAG, "updateOddInfo oddInfoList" + oddInfoList);
-        ArrayList<BizOddInfo> oddInfoListBls = new ArrayList<BizOddInfo>();
+    /* 更新Odd信息 */
+    public void updateOddInfo(ArrayList<LayerItemRouteOdd> oddInfoList, long pathId) {
+        if (ConvertUtils.isEmpty(oddInfoList)) {
+            Logger.e(TAG, "updateOddInfo oddInfoList is Empty");
+            return;
+        }
+        //判断当前odd数据是否与当前选中路线绑定
+        int selectedPathIndex = getLayerGuideRouteControl().getSelectedPathIndex();
+        if (ConvertUtils.isEmpty(mPathInfoList)) {
+            Logger.e(TAG, "updateOddInfo mPathInfoList is Empty");
+            return;
+        }
+        PathInfo pathInfo = mPathInfoList.get(selectedPathIndex);
+        long pathID = pathInfo.getPathID();
+        Logger.d(TAG, "updateOddInfo pathID " + pathID + " pathId " + pathId);
+        if (pathID != pathId) {
+            Logger.e(TAG, "updateOddInfo pathID != pathId");
+            return;
+        }
+        //判断当前是否导航态
+        String currentNaviStatus = NavistatusAdapter.getInstance().getCurrentNaviStatus();
+        if (!TextUtils.equals(currentNaviStatus, NaviStatus.NaviStatusType.NAVING)) {
+            Logger.e(TAG, "updateOddInfo 非导航态");
+            return;
+        }
+        //转换odd数据
+        ArrayList<BizOddInfo> oddInfoListBls = new ArrayList<>();
+        for (LayerItemRouteOdd routeOdd : oddInfoList) {
+            ArrayList<GeoPoint> vecPoints = routeOdd.getVecPoints();
+            BizOddInfo oddInfo = new BizOddInfo();
+            ArrayList<Coord3DDouble> bizVecPoints = new ArrayList<>();
+            for (GeoPoint point : vecPoints) {
+                Coord3DDouble coord3DDouble = new Coord3DDouble();
+                coord3DDouble.lat = point.getLat();
+                coord3DDouble.lon = point.getLon();
+                bizVecPoints.add(coord3DDouble);
+            }
+            oddInfo.vecPoints = bizVecPoints;
+            oddInfoListBls.add(oddInfo);
+        }
+        getLayerGuideRouteControl().setODDDrawMode(ODDDrawMode.ODDDrawModeStartEndPoint);
+        Logger.d(TAG, "updateOddInfo oddInfoList" + oddInfoList.size() + " oddInfoListBls " + oddInfoListBls.size());
         getLayerGuideRouteControl().updateOddInfo(oddInfoListBls);
     }
 
@@ -589,6 +666,7 @@ public class LayerGuideRouteImpl extends BaseLayerImpl<LayerGuideRouteStyleAdapt
         getLayerGuideRouteControl().clearPaths();
         long pathCount = pathInfoList == null ? 0 : pathInfoList.size();
         ArrayList<BizPathInfoAttrs> bizPathInfoAttrs = new ArrayList<>();
+        mPathInfoList = (ArrayList<PathInfo>) pathInfoList;
         for (int i = 0; i < pathCount; i++) {
             if (pathInfoList.get(i) instanceof PathInfo) {
                 PathInfo pathInfo = (PathInfo) pathInfoList.get(i);
@@ -724,8 +802,8 @@ public class LayerGuideRouteImpl extends BaseLayerImpl<LayerGuideRouteStyleAdapt
             ret = getLayerRoadCrossControl().updateCross(crossInfo.getDataBuf(), getCrossType(crossInfo.getType()));
         } else if (crossInfo.getType() == NaviConstant.CrossType.CROSS_TYPE_GRID) {
             ret = getLayerRoadCrossControl().setRasterImageData(
-                    LayerTextureManager.get().getArrowRoadImage(true, crossInfo),
-                    LayerTextureManager.get().getArrowRoadImage(false, crossInfo));
+                    TexturePoolManager.get().getArrowRoadImage(true, crossInfo),
+                    TexturePoolManager.get().getArrowRoadImage(false, crossInfo));
         }
         Logger.i(TAG, "showCross ret：" + ret);
         getLayerRoadCrossControl().setVisible(getCrossType(crossInfo.getType()), ret);

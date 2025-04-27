@@ -12,6 +12,7 @@ import com.fy.navi.service.define.map.MapMode;
 import com.fy.navi.service.define.map.MapStateStyle;
 import com.fy.navi.service.define.map.MapViewParams;
 import com.fy.navi.service.define.map.MapType;
+import com.fy.navi.service.define.map.ThemeType;
 import com.fy.navi.service.define.mfc.MfcController;
 
 import java.util.ArrayList;
@@ -161,7 +162,7 @@ public class MapAdapterImpl implements IMapApi {
     }
 
     @Override
-    public void updateUiStyle(MapType mapTypeId, int uiMode) {
+    public void updateUiStyle(MapType mapTypeId, ThemeType uiMode) {
         mapViewPoolManager.get(mapTypeId).updateUiStyle(uiMode);
     }
 

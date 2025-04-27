@@ -1222,6 +1222,16 @@ public class ConvertUtils {
     }
 
     /**
+     * 抖音坐标转换
+     * @param input 信息输入
+     * @return 返回转换后信息
+     */
+    public static double transProjectionLatAndLon(final double input) {
+        final double scaleFactor = 3600000.0;
+        return input / scaleFactor;
+    }
+
+    /**
      * 将米转换为公里
      *
      * @param meters 以米为单位的距离

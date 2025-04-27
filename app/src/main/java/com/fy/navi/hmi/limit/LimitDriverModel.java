@@ -110,17 +110,18 @@ public class LimitDriverModel extends BaseModel<LimitDriverViewModel> implements
                     restrictedAreaDetail.setMCityNames(cityName);
                 }
             }
-            if (mCurrentCityCode != null && !mCurrentCityCode.isEmpty()) {
-                final CityDataInfo cityItemBean= MapDataPackage.getInstance().getCityInfo(Integer.parseInt(mCurrentCityCode));
-                MapPackage.getInstance().setMapCenter(MapType.MAIN_SCREEN_MAIN_MAP,
-                        new GeoPoint(ConvertUtils.transCityLatAndLon(cityItemBean.getCityX()),
-                                ConvertUtils.transCityLatAndLon(cityItemBean.getCityY())));
-                MapPackage.getInstance().setZoomLevel(MapType.MAIN_SCREEN_MAIN_MAP, 10);
-            }
+//            if (mCurrentCityCode != null && !mCurrentCityCode.isEmpty()) {
+//                final CityDataInfo cityItemBean= MapDataPackage.getInstance().getCityInfo(Integer.parseInt(mCurrentCityCode));
+//                MapPackage.getInstance().setMapCenter(MapType.MAIN_SCREEN_MAIN_MAP,
+//                        new GeoPoint(ConvertUtils.transCityLatAndLon(cityItemBean.getCityX()),
+//                                ConvertUtils.transCityLatAndLon(cityItemBean.getCityY())));
+//                MapPackage.getInstance().setZoomLevel(MapType.MAIN_SCREEN_MAIN_MAP, 10);
+//            }
             RoutePackage.getInstance().drawRestrictionForLimit(MapType.MAIN_SCREEN_MAIN_MAP,
                     param.getMReStrictedAreaResponseParam(),0);
             param.setMRestrictedArea(restrictedAreaDetail);
             mViewModel.showPolicyUI(param);
+            RoutePackage.getInstance().showRestrictedAreaPreview(MapType.MAIN_SCREEN_MAIN_MAP, param);
         }
     }
 }

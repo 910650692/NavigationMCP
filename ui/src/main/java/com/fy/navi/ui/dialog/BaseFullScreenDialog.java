@@ -21,7 +21,11 @@ public abstract class BaseFullScreenDialog<V extends ViewDataBinding> extends Al
     protected IBaseDialogClickListener mDialogClickListener;
 
     protected BaseFullScreenDialog(final Context context) {
-        super(context);
+        this(context, 0);
+    }
+
+    protected BaseFullScreenDialog(Context context, int themeResId) {
+        super(context, themeResId);
         mViewBinding = initLayout();
     }
 

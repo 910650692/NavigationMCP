@@ -2,9 +2,14 @@ package com.fy.navi.hmi.setting;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.text.TextUtils;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 
+import com.fy.navi.hmi.BuildConfig;
 import com.fy.navi.hmi.databinding.DialogSettingCheckBinding;
 import com.fy.navi.ui.dialog.BaseFullScreenDialog;
 import com.fy.navi.ui.dialog.IBaseDialogClickListener;
@@ -16,6 +21,9 @@ public class SettingCheckDialog extends BaseFullScreenDialog<DialogSettingCheckB
     private final String mConfirmText;
     private final boolean mIsShowCancel;
 
+    public static final int TRADITIONAL = 1;
+    public static final int DEFAULT = 0;
+
     @Override
     protected DialogSettingCheckBinding initLayout() {
         return DialogSettingCheckBinding.inflate(LayoutInflater.from(getContext()));
@@ -24,7 +32,7 @@ public class SettingCheckDialog extends BaseFullScreenDialog<DialogSettingCheckB
 
     protected SettingCheckDialog(final Context context, final String title, final String content, final String confirmText,
                                  final boolean isShowCancel, final IBaseDialogClickListener observer) {
-        super(context);
+        super(context, TextUtils.equals("cadi", BuildConfig.FLAVOR) ? TRADITIONAL : DEFAULT);
         this.mTitle = title;
         this.mContent = content;
         this.mConfirmText = confirmText;
@@ -49,6 +57,25 @@ public class SettingCheckDialog extends BaseFullScreenDialog<DialogSettingCheckB
         }
         mViewBinding.dialogCommit.setText(mConfirmText);
         onClick();
+    }
+
+    @Override
+    public void show() {
+        super.show();
+        if(TextUtils.equals("cadi", BuildConfig.FLAVOR)){
+            final Window window = getWindow();
+            if (null == window) {
+                return;
+            }
+            window.setLayout(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
+            final WindowManager.LayoutParams params = window.getAttributes();
+            params.gravity = Gravity.START | Gravity.BOTTOM;
+            params.x = getContext().getResources().getDimensionPixelOffset(com.fy.navi.ui.R.dimen.dp_310);
+            params.y = getContext().getResources().getDimensionPixelOffset(com.fy.navi.ui.R.dimen.dp_180);
+            window.setAttributes(params);
+            window.addFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL);
+            window.clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+        }
     }
 
     /**

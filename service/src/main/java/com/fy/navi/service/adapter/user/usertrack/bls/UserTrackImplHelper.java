@@ -5,11 +5,14 @@ import android.text.TextUtils;
 import com.android.utils.ConvertUtils;
 import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
+import com.autonavi.gbl.common.model.Coord2DDouble;
 import com.autonavi.gbl.user.model.BehaviorDataType;
 import com.autonavi.gbl.user.syncsdk.model.SyncMode;
 import com.autonavi.gbl.user.usertrack.UserTrackService;
 import com.autonavi.gbl.user.usertrack.model.GpsTrackDepthInfo;
 import com.autonavi.gbl.user.usertrack.model.GpsTrackPoint;
+import com.autonavi.gbl.user.usertrack.model.HistoryRouteItem;
+import com.autonavi.gbl.user.usertrack.model.HistoryRoutePoiItem;
 import com.autonavi.gbl.user.usertrack.model.SearchHistoryItem;
 import com.autonavi.gbl.user.usertrack.observer.IGpsInfoGetter;
 import com.autonavi.gbl.user.usertrack.observer.IUserTrackObserver;
@@ -17,10 +20,13 @@ import com.autonavi.gbl.util.model.ServiceInitStatus;
 import com.fy.navi.service.AutoMapConstant;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.adapter.user.usertrack.UserTrackAdapterCallBack;
+import com.fy.navi.service.define.bean.GeoPoint;
 import com.fy.navi.service.define.user.usertrack.DrivingRecordDataBean;
 import com.fy.navi.service.define.user.usertrack.DrivingRecordDataBeanAdapter;
 import com.fy.navi.service.define.user.usertrack.GpsTrackDepthBean;
 import com.fy.navi.service.define.user.usertrack.GpsTrackPointBean;
+import com.fy.navi.service.define.user.usertrack.HistoryPoiItemBean;
+import com.fy.navi.service.define.user.usertrack.HistoryRouteItemBean;
 import com.fy.navi.service.define.user.usertrack.SearchHistoryItemBean;
 import com.fy.navi.service.greendao.history.History;
 import com.fy.navi.service.greendao.history.HistoryManager;
@@ -54,6 +60,7 @@ public class UserTrackImplHelper implements IUserTrackObserver, IGpsInfoGetter {
 
     /**
      * 注册回调
+     *
      * @param key      回调key
      * @param callBack 回调
      */
@@ -63,6 +70,7 @@ public class UserTrackImplHelper implements IUserTrackObserver, IGpsInfoGetter {
 
     /**
      * 移除回调
+     *
      * @param key 回调key
      */
     public void unRegisterCallBack(final String key) {
@@ -88,6 +96,7 @@ public class UserTrackImplHelper implements IUserTrackObserver, IGpsInfoGetter {
 
     /**
      * 获取搜索历史记录列表
+     *
      * @return 搜索历史记录列表
      */
     public ArrayList<SearchHistoryItemBean> getSearchHistory() {
@@ -107,53 +116,23 @@ public class UserTrackImplHelper implements IUserTrackObserver, IGpsInfoGetter {
 
     /**
      * 转换历史记录数据
+     *
      * @param item 搜索历史记录
      * @return 搜索历史记录bean
      */
     private SearchHistoryItemBean getSearchHistoryItem(final SearchHistoryItem item) {
         final SearchHistoryItemBean bean = new SearchHistoryItemBean();
-        bean.setName(item.name);
-        bean.setPoiid(item.poiid);
-        bean.setId(item.id);
-        bean.setType(item.type);
-        bean.setDatatype(item.datatype);
-        bean.setX(item.x);
-        bean.setY(item.y);
-        bean.setXentr(item.x_entr);
-        bean.setYentr(item.y_entr);
-        bean.setUpdateTime(item.update_time);
-        bean.setHistoryType(item.history_type);
-        bean.setIconinfo(item.iconinfo);
-        bean.setAdcode(item.adcode);
-        bean.setDistrict(item.district);
-        bean.setAddress(item.address);
-        bean.setPoiTag(item.poi_tag);
-        bean.setFuncText(item.func_text);
-        bean.setShortName(item.short_name);
-        bean.setDisplayInfo(item.display_info);
-        bean.setSearchQuery(item.search_query);
-        bean.setTerminals(item.terminals);
-        bean.setIgnoreDistrict(item.ignore_district);
-        bean.setSearchTag(item.search_tag);
-        bean.setSearchQuerySet(item.search_query_set);
-        bean.setRichRating(item.rich_rating);
-        bean.setNumReview(item.num_review);
-        bean.setCategory(item.category);
-        bean.setSuperAddress(item.super_address);
-        bean.setDatatypeSpec(item.datatype_spec);
-        bean.setPoi(item.poi);
-        bean.setCitycode(item.citycode);
-        bean.setVersion(item.version);
-        bean.setParent(item.parent);
-        bean.setChildType(item.childType);
-        bean.setTowardsAngle(item.towardsAngle);
-        bean.setFloorNo(item.floorNo);
-        bean.setEndPoiExtension(item.endPoiExtension);
+        if (!ConvertUtils.isEmpty(item)) {
+            bean.setName(item.name);
+            bean.setUpdateTime(item.update_time);
+            Logger.d(TAG, "getSearchHistoryItem: " + GsonUtils.toJson(bean));
+        }
         return bean;
     }
 
     /**
      * 添加搜索历史记录
+     *
      * @param bean 搜索历史记录
      * @return 添加结果
      */
@@ -167,53 +146,22 @@ public class UserTrackImplHelper implements IUserTrackObserver, IGpsInfoGetter {
 
     /**
      * 转换历史记录数据
+     *
      * @param bean 搜索历史记录bean
      * @return 搜索历史记录
      */
     private SearchHistoryItem getSearchHistoryItem(final SearchHistoryItemBean bean) {
         final SearchHistoryItem item = new SearchHistoryItem();
-        item.name = bean.getName();
-        item.poiid = bean.getPoiid();
-        item.id = bean.getId();
-        item.type = bean.getType();
-        item.datatype = bean.getDatatype();
-        item.x = bean.getX();
-        item.y = bean.getY();
-        item.x_entr = bean.getXentr();
-        item.y_entr = bean.getYentr();
-        item.update_time = bean.getUpdateTime();
-        item.history_type = bean.getHistoryType();
-        item.iconinfo = bean.getIconinfo();
-        item.adcode = bean.getAdcode();
-        item.district = bean.getDistrict();
-        item.address = bean.getAddress();
-        item.poi_tag = bean.getPoiTag();
-        item.func_text = bean.getFuncText();
-        item.short_name = bean.getShortName();
-        item.display_info = bean.getDisplayInfo();
-        item.search_query = bean.getSearchQuery();
-        item.terminals = bean.getTerminals();
-        item.ignore_district = bean.getIgnoreDistrict();
-        item.search_tag = bean.getSearchTag();
-        item.search_query_set = bean.getSearchQuerySet();
-        item.rich_rating = bean.getRichRating();
-        item.num_review = bean.getNumReview();
-        item.category = bean.getCategory();
-        item.super_address = bean.getSuperAddress();
-        item.datatype_spec = bean.getDatatypeSpec();
-        item.poi = bean.getPoi();
-        item.citycode = bean.getCitycode();
-        item.version = bean.getVersion();
-        item.parent = bean.getParent();
-        item.childType = bean.getChildType();
-        item.towardsAngle = bean.getTowardsAngle();
-        item.floorNo = bean.getFloorNo();
-        item.endPoiExtension = bean.getEndPoiExtension();
+        if (!ConvertUtils.isEmpty(bean)) {
+            item.name = bean.getName();
+            item.update_time = bean.getUpdateTime();
+        }
         return item;
     }
 
     /**
      * 删除搜索历史记录
+     *
      * @param name 搜索历史记录名称
      * @return 删除结果
      */
@@ -226,6 +174,176 @@ public class UserTrackImplHelper implements IUserTrackObserver, IGpsInfoGetter {
         final int ret = mUserTrackService.delSearchHistory(item, SyncMode.SyncModeNow);
         Logger.i(TAG, "delSearchHistory ret = " + ret);
         return ret;
+    }
+
+    /**
+     * 获取导航历史记录列表
+     *
+     * @return 导航历史记录列表
+     */
+    public ArrayList<HistoryRouteItemBean> getHistoryRoute() {
+        if (mUserTrackService == null) {
+            return null;
+        }
+        if (mUserTrackService.getHistoryRoute() == null) {
+            return null;
+        }
+        final ArrayList<HistoryRouteItemBean> historyItems = new ArrayList<>();
+        for (HistoryRouteItem item : mUserTrackService.getHistoryRoute()) {
+            historyItems.add(getHistoryRouteItemBean(item));
+        }
+        return historyItems;
+    }
+
+    /**
+     * 转换导航历史记录
+     *
+     * @param item 导航历史记录
+     * @return 导航历史记录bean
+     */
+    private HistoryRouteItemBean getHistoryRouteItemBean(final HistoryRouteItem item) {
+        final HistoryRouteItemBean bean = new HistoryRouteItemBean();
+        if (!ConvertUtils.isEmpty(item)) {
+            bean.setId(item.id);
+            bean.setType(item.type);
+            bean.setStartLoc(new GeoPoint(item.startLoc.lon, item.startLoc.lat));
+            bean.setEndLoc(new GeoPoint(item.endLoc.lon, item.endLoc.lat));
+            bean.setMethod(item.method);
+            bean.setUpdateTime(item.updateTime);
+            bean.setFromPoi(getHistoryPoiItemBean(item.fromPoi));
+            bean.setToPoi(getHistoryPoiItemBean(item.toPoi));
+            // 中间POI列表转换
+            if (item.midPoi != null) {
+                final ArrayList<HistoryPoiItemBean> midPois = new ArrayList<>();
+                for (HistoryRoutePoiItem poi : item.midPoi) {
+                    midPois.add(getHistoryPoiItemBean(poi));
+                }
+                bean.setMidPoi(midPois);
+            }
+            Logger.d(TAG, "getHistoryRouteItemBean: " + GsonUtils.toJson(bean));
+        }
+        return bean;
+    }
+
+    /**
+     * 转换导航历史记录
+     *
+     * @param poi 导航历史记录
+     * @return 导航历史记录bean
+     */
+    private HistoryRouteItem getHistoryPoiItem(final HistoryRouteItemBean poi) {
+        final HistoryRouteItem item = new HistoryRouteItem();
+        if (!ConvertUtils.isEmpty(poi)) {
+            item.id = poi.getId();
+            item.type = poi.getType();
+            item.updateTime = poi.getUpdateTime();
+            item.startLoc = new Coord2DDouble(poi.getStartLoc().getLon(), poi.getStartLoc().getLat());
+            item.endLoc = new Coord2DDouble(poi.getEndLoc().getLon(), poi.getEndLoc().getLat());
+            item.method = poi.getMethod();
+            item.fromPoi = getHistoryRoutePoiItem(poi.getFromPoi());
+            item.toPoi = getHistoryRoutePoiItem(poi.getToPoi());
+            if (poi.getMidPoi() != null) {
+                final ArrayList<HistoryRoutePoiItem> midPois = new ArrayList<>();
+                for (HistoryPoiItemBean poiItem : poi.getMidPoi()) {
+                    midPois.add(getHistoryRoutePoiItem(poiItem));
+                }
+                item.midPoi = midPois;
+            }
+        }
+        return item;
+    }
+
+    /**
+     * 添加导航历史记录
+     *
+     * @param bean 导航历史记录
+     * @return 添加结果
+     */
+    public int addHistoryRoute(final HistoryRouteItemBean bean) {
+        if (mUserTrackService == null) {
+            return -1;
+        }
+        final HistoryRouteItem item = getHistoryPoiItem(bean);
+        final int code = mUserTrackService.addHistoryRoute(item, SyncMode.SyncModeNow);
+        Logger.d(TAG, "addHistoryRoute ret = " + code + " bean = " + GsonUtils.toJson(bean));
+        return code;
+    }
+
+    /**
+     * 删除导航历史记录
+     *
+     * @param bean 导航历史记录
+     * @return 删除结果
+     */
+    public int delHistoryRoute(final HistoryRouteItemBean bean) {
+        if (mUserTrackService == null) {
+            return -1;
+        }
+        final HistoryRouteItem item = getHistoryPoiItem(bean);
+        final int code = mUserTrackService.delHistoryRoute(item, SyncMode.SyncModeNow);
+        Logger.d(TAG, "delHistoryRoute ret = " + code + " bean = " + GsonUtils.toJson(bean));
+        return code;
+    }
+
+    /**
+     * 清空导航历史记录
+     *
+     * @return 删除结果
+     */
+    public int clearHistoryRoute() {
+        if (mUserTrackService == null) {
+            return -1;
+        }
+        final int code = mUserTrackService.clearHistoryRoute(SyncMode.SyncModeNow);
+        Logger.d(TAG, "clearHistoryRoute ret = " + code);
+        return code;
+    }
+
+    /**
+     * 转换导航历史记录
+     *
+     * @param bean 导航历史记录
+     * @return 导航历史记录bean
+     */
+    private HistoryRoutePoiItem getHistoryRoutePoiItem(final HistoryPoiItemBean bean) {
+        final HistoryRoutePoiItem poi = new HistoryRoutePoiItem();
+        if (!ConvertUtils.isEmpty(bean)) {
+            poi.poiId = bean.getPoiId();
+            poi.name = bean.getName();
+        }
+        return poi;
+    }
+
+    /**
+     * 转换导航历史记录
+     *
+     * @param sourcePoi 导航历史记录
+     * @return 导航历史记录bean
+     */
+    private HistoryPoiItemBean getHistoryPoiItemBean(final HistoryRoutePoiItem sourcePoi) {
+        final HistoryPoiItemBean targetPoi = new HistoryPoiItemBean();
+        if (!ConvertUtils.isEmpty(sourcePoi)) {
+            targetPoi.setPoiId(sourcePoi.poiId);
+            targetPoi.setTypeCode(sourcePoi.typeCode);
+            targetPoi.setName(sourcePoi.name);
+            targetPoi.setAddress(sourcePoi.address);
+            targetPoi.setPoiLoc(new GeoPoint(sourcePoi.poiLoc.lon, sourcePoi.poiLoc.lat));
+            targetPoi.setParent(sourcePoi.parent);
+            targetPoi.setChildType(sourcePoi.childType);
+            targetPoi.setTowardsAngle(sourcePoi.towardsAngle);
+            targetPoi.setFloorNo(sourcePoi.floorNo);
+            targetPoi.setEndPoiExtension(sourcePoi.endPoiExtension);
+            targetPoi.setCityCode(sourcePoi.cityCode);
+            targetPoi.setCityName(sourcePoi.cityName);
+            if (sourcePoi.entranceList != null && !sourcePoi.entranceList.isEmpty()) {
+                final ArrayList<GeoPoint> entrances = new ArrayList<>();
+                for (Coord2DDouble loc : sourcePoi.entranceList) {
+                    entrances.add(new GeoPoint(loc.lon, loc.lat));
+                }
+                targetPoi.setEntranceList(entrances);
+            }
+        }
+        return targetPoi;
     }
 
     /**
@@ -278,6 +396,7 @@ public class UserTrackImplHelper implements IUserTrackObserver, IGpsInfoGetter {
 
     /**
      * 解析json数据为DrivingRecordDataBean
+     *
      * @param jsonStr json数据
      * @return DrivingRecordDataBean
      */
@@ -309,6 +428,7 @@ public class UserTrackImplHelper implements IUserTrackObserver, IGpsInfoGetter {
 
     /**
      * 从sdk获取当前用户行程数据列表（默认导航历史）
+     *
      * @return 行程数据列表
      */
     public ArrayList<DrivingRecordDataBean> getDrivingRecordDataFromSdk() {
@@ -338,6 +458,7 @@ public class UserTrackImplHelper implements IUserTrackObserver, IGpsInfoGetter {
 
     /**
      * 获取导航行程历史数据
+     *
      * @return 导航行程历史数据
      */
     public ArrayList<DrivingRecordDataBean> getDrivingRecordDataList() {
@@ -371,6 +492,7 @@ public class UserTrackImplHelper implements IUserTrackObserver, IGpsInfoGetter {
 
     /**
      * 获取巡航行程历史数据
+     *
      * @return 巡航行程历史数据
      */
     public ArrayList<DrivingRecordDataBean> getDrivingRecordCruiseDataList() {
@@ -402,6 +524,7 @@ public class UserTrackImplHelper implements IUserTrackObserver, IGpsInfoGetter {
 
     /**
      * 获取轨迹数据同步回调通知
+     *
      * @param eventType 同步SDK回调事件类型
      * @param exCode    同步SDK返回值
      */
@@ -421,6 +544,7 @@ public class UserTrackImplHelper implements IUserTrackObserver, IGpsInfoGetter {
 
     /**
      * IGpsInfoGetter回调获取GPS信息
+     *
      * @return GpsTrackPoint
      */
     @Override
@@ -530,15 +654,17 @@ public class UserTrackImplHelper implements IUserTrackObserver, IGpsInfoGetter {
      */
     private GpsTrackPointBean getGpsTrackPointBean(final GpsTrackPoint point) {
         final GpsTrackPointBean pointBean = new GpsTrackPointBean();
-        pointBean.setF64Latitude(point.f64Latitude);
-        pointBean.setF64Longitude(point.f64Longitude);
-        pointBean.setF64Altitude(point.f64Altitude);
-        pointBean.setF32Accuracy(point.f32Accuracy);
-        pointBean.setF32Speed(point.f32Speed);
-        pointBean.setF32Course(point.f32Course);
-        pointBean.setN64TickTime(point.n64TickTime);
-        pointBean.setN32SateliteTotal(point.n32SateliteTotal);
-        pointBean.setSectionId(point.nSectionId);
+        if (!ConvertUtils.isEmpty(point)) {
+            pointBean.setF64Latitude(point.f64Latitude);
+            pointBean.setF64Longitude(point.f64Longitude);
+            pointBean.setF64Altitude(point.f64Altitude);
+            pointBean.setF32Accuracy(point.f32Accuracy);
+            pointBean.setF32Speed(point.f32Speed);
+            pointBean.setF32Course(point.f32Course);
+            pointBean.setN64TickTime(point.n64TickTime);
+            pointBean.setN32SateliteTotal(point.n32SateliteTotal);
+            pointBean.setSectionId(point.nSectionId);
+        }
         return pointBean;
     }
 

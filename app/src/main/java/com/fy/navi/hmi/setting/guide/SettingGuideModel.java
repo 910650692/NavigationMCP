@@ -15,10 +15,12 @@ public class SettingGuideModel extends BaseModel<SettingGuideViewModel> implemen
         SettingUpdateObservable.SettingUpdateObserver, SettingPackage.SettingChangeCallback {
     private static final String TAG = SettingGuideModel.class.getName();
     private final SettingPackage mSettingPackage;
+    private final CalibrationPackage mCalibrationPackage;
     private static final String MODEL_NAME = "SettingGuideModel";
 
     public SettingGuideModel() {
         mSettingPackage = SettingPackage.getInstance();
+        mCalibrationPackage = CalibrationPackage.getInstance();
     }
 
     @Override
@@ -46,6 +48,7 @@ public class SettingGuideModel extends BaseModel<SettingGuideViewModel> implemen
         getMapModeStatus();
         getMapViewTextSize();
         updateCarMode();
+        getLaneLevelFuncEnable();
         setNetworkConnected(isNetworkConnected());
     }
 
@@ -266,11 +269,19 @@ public class SettingGuideModel extends BaseModel<SettingGuideViewModel> implemen
      * 获取车辆类型
      */
     public void getCarType() {
-        final int carMode = CalibrationPackage.getInstance().powerType();
+        final int carMode = mCalibrationPackage.powerType();
         final boolean isEVCar = carMode == 1;
         final boolean isPHEVCar = carMode == 2;
         mViewModel.dualChoiceControl(SettingController.KEY_SETTING_IS_EV_CAR, isEVCar);
         mViewModel.dualChoiceControl(SettingController.KEY_SETTING_IS_PHEV_CAR, isPHEVCar);
+    }
+
+    /**
+     * 获取车道级导航是否支持
+     */
+    private void getLaneLevelFuncEnable() {
+        final boolean laneLevelFuncEnable = mCalibrationPackage.laneLevelNavigatioFuncEnable();
+        mViewModel.setLaneLevelVisibility(laneLevelFuncEnable);
     }
 
     @Override

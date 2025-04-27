@@ -14,8 +14,9 @@
 
     <com.fy.navi.ui.view.SkinConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
+        android:layout_height="match_parent"
+        android:maxHeight="@dimen/dp_756">
+        <!--tbt-->
         <com.fy.navi.ui.view.SkinLinearLayout
             android:id="@+id/sll_eta"
             android:layout_width="@dimen/dp_820"
@@ -36,8 +37,8 @@
                 android:id="@+id/scene_navi_cross_image"
                 android:layout_width="@dimen/dp_820"
                 android:layout_height="@dimen/dp_306"
-                tools:background="@drawable/bg_navi_parking_item"
                 android:visibility="@{ViewModel.naviCrossImageVisibility?View.VISIBLE:View.GONE}"
+                tools:background="@drawable/bg_navi_parking_item"
                 tools:visibility="gone" />
             <!--eta信息-->
             <com.fy.navi.scene.ui.navi.SceneNaviEtaView
@@ -53,18 +54,17 @@
                 clickCommand="@{ViewModel.naviAddVia}"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingHorizontal="@dimen/dp_40"
-                android:paddingTop="@dimen/dp_16"
-                android:paddingBottom="@dimen/dp_30"
                 android:background="@drawable/bg_navi_tbt_middle"
+                android:paddingStart="@dimen/dp_34"
+                android:paddingEnd="@dimen/dp_40"
                 android:visibility="@{ViewModel.naviTmcVisibility?View.VISIBLE:View.GONE}" />
             <!--添加途径点列表-->
             <com.fy.navi.scene.ui.navi.SceneNaviViaListView
                 android:id="@+id/scene_navi_via_list"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingTop="@dimen/dp_40"
                 android:background="@drawable/bg_navi_tbt_middle"
+                android:paddingTop="@dimen/dp_40"
                 android:visibility="@{ViewModel.naviViaListVisibility?View.VISIBLE:View.GONE}" />
             <!--车道线-->
             <com.fy.navi.scene.ui.navi.SceneNaviLanesView
@@ -73,8 +73,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:paddingBottom="@dimen/dp_30"
                 android:background="@drawable/bg_navi_tbt_middle"
+                android:paddingBottom="@dimen/dp_30"
                 android:visibility="@{ViewModel.naviLanesVisibility?View.VISIBLE:View.GONE}" />
             <!--显示经过途经点信息-->
             <com.fy.navi.scene.ui.navi.SceneNaviViaInfoView
@@ -85,25 +85,22 @@
                 android:background="@drawable/bg_navi_tbt_bottom"
                 android:visibility="@{ViewModel.naviViaInfoVisibility?View.VISIBLE:View.GONE}" />
         </com.fy.navi.ui.view.SkinLinearLayout>
-
         <!--控制tools-->
         <com.fy.navi.scene.ui.navi.SceneNaviControlView
             android:id="@+id/scene_navi_control"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/dp_184"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
         <!--导航路线偏好-->
         <com.fy.navi.scene.ui.navi.SceneNaviPreferenceView
             android:id="@+id/scene_navi_preference"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/dp_184"
+            android:layout_width="@dimen/dp_820"
+            android:layout_height="@dimen/dp_366"
+            android:background="@drawable/bg_navi_btn_common"
             android:visibility="@{ViewModel.naviPreferenceVisibility?View.VISIBLE:View.GONE}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
-
         <!--限速-->
         <com.fy.navi.scene.ui.navi.SceneNaviSpeedView
             android:id="@+id/scene_navi_speed"
@@ -128,7 +125,6 @@
             android:layout_width="@dimen/dp_300"
             android:layout_height="@dimen/dp_160"
             android:layout_marginStart="@dimen/dp_484"
-            android:layout_marginBottom="@dimen/dp_184"
             android:background="@drawable/bg_navi_control"
             android:clickable="false"
             android:gravity="center"
@@ -143,7 +139,7 @@
             android:id="@+id/scene_navi_last_mile"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_48"
+            android:layout_marginStart="@dimen/dp_40"
             android:visibility="@{ViewModel.naviLastMileVisibility?View.VISIBLE:View.GONE}"
             app:layout_constraintStart_toEndOf="@id/sll_eta"
             app:layout_constraintTop_toTopOf="@id/sll_eta" />
@@ -152,9 +148,10 @@
             android:id="@+id/scene_navi_parallel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/dp_184"
+            android:layout_marginStart="@dimen/dp_160"
             android:visibility="@{ViewModel.naviParallelVisibility?View.VISIBLE:View.GONE}"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@id/sll_eta" />
+            app:layout_constraintStart_toEndOf="@id/sll_eta"
+            tools:visibility="visible" />
     </com.fy.navi.ui.view.SkinConstraintLayout>
 </layout>

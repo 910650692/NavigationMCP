@@ -17,14 +17,24 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btnLarge">
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.fy.navi.ui.view.SkinView
             clickCommand="@{() -> SceneSettingPreferenceView.preferenceRecommend(0)}"
+            android:layout_width="@dimen/dp_536"
+            android:layout_height="@dimen/dp_120"
+            android:focusable="true"
+            android:focusedByDefault="true"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:background="@drawable/bg_base_mfc_cadillac_bg_selector" />
+
+        <com.fy.navi.ui.view.SkinTextView
             android:id="@+id/preference_recommend"
             android:layout_width="@dimen/dp_536"
             android:layout_height="@dimen/dp_120"
             android:button="@null"
             android:gravity="center"
             android:text="@string/route_preference_recommend"
+            android:focusable="false"
             android:textColor="@color/setting_preference_text_gray"
             android:textSize="@dimen/sp_46"
             app:layout_constraintStart_toStartOf="parent"
@@ -33,8 +43,17 @@
             app:select_text_color="@color/setting_white"
             app:select_background_color="@drawable/bg_setting_preference"/>
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.fy.navi.ui.view.SkinView
             clickCommand="@{() -> SceneSettingPreferenceView.preferenceFirstHighway(0)}"
+            android:layout_width="@dimen/dp_252"
+            android:layout_height="@dimen/dp_120"
+            android:focusable="true"
+            android:layout_marginStart="@dimen/dp_32"
+            app:layout_constraintLeft_toRightOf="@+id/preference_recommend"
+            app:layout_constraintTop_toTopOf="parent"
+            android:background="@drawable/bg_base_mfc_cadillac_bg_selector" />
+
+        <com.fy.navi.ui.view.SkinTextView
             android:id="@+id/preference_first_highway"
             android:layout_width="@dimen/dp_252"
             android:layout_height="@dimen/dp_120"
@@ -42,6 +61,7 @@
             android:button="@null"
             android:gravity="center"
             android:text="@string/route_preference_first_highway"
+            android:focusable="false"
             android:textColor="@color/setting_preference_text_gray"
             android:textSize="@dimen/sp_46"
             app:layout_constraintLeft_toRightOf="@+id/preference_recommend"
@@ -50,8 +70,17 @@
             app:select_text_color="@color/setting_white"
             app:select_background_color="@drawable/bg_setting_preference"/>
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.fy.navi.ui.view.SkinView
             clickCommand="@{() -> SceneSettingPreferenceView.preferenceNotHighway(0)}"
+            android:layout_width="@dimen/dp_252"
+            android:layout_height="@dimen/dp_120"
+            android:focusable="true"
+            android:layout_marginStart="@dimen/dp_32"
+            app:layout_constraintLeft_toRightOf="@+id/preference_first_highway"
+            app:layout_constraintTop_toTopOf="parent"
+            android:background="@drawable/bg_base_mfc_cadillac_bg_selector"/>
+
+        <com.fy.navi.ui.view.SkinTextView
             android:id="@+id/preference_not_highway"
             android:layout_width="@dimen/dp_252"
             android:layout_height="@dimen/dp_120"
@@ -59,6 +88,7 @@
             android:button="@null"
             android:gravity="center"
             android:text="@string/route_preference_not_highway"
+            android:focusable="false"
             android:textColor="@color/setting_preference_text_gray"
             android:textSize="@dimen/sp_46"
             app:layout_constraintLeft_toRightOf="@+id/preference_first_highway"
@@ -67,8 +97,17 @@
             app:select_text_color="@color/setting_white"
             app:select_background_color="@drawable/bg_setting_preference"/>
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.fy.navi.ui.view.SkinView
             clickCommand="@{() -> SceneSettingPreferenceView.preferenceAvoidCongestion(0)}"
+            android:layout_width="@dimen/dp_252"
+            android:layout_height="@dimen/dp_120"
+            android:focusable="true"
+            android:layout_marginTop="@dimen/dp_32"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/preference_recommend"
+            android:background="@drawable/bg_base_mfc_cadillac_bg_selector"/>
+
+        <com.fy.navi.ui.view.SkinTextView
             android:id="@+id/preference_avoid_congestion"
             android:layout_width="@dimen/dp_252"
             android:layout_height="@dimen/dp_120"
@@ -76,6 +115,7 @@
             android:button="@null"
             android:gravity="center"
             android:text="@string/route_preference_avoiding_congestion"
+            android:focusable="false"
             android:textColor="@color/setting_preference_text_gray"
             android:textSize="@dimen/sp_46"
             app:layout_constraintStart_toStartOf="parent"
@@ -84,8 +124,18 @@
             app:select_text_color="@color/setting_white"
             app:select_background_color="@drawable/bg_setting_preference"/>
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.fy.navi.ui.view.SkinView
             clickCommand="@{() -> SceneSettingPreferenceView.preferenceFirstMainRoad(0)}"
+            android:layout_width="@dimen/dp_252"
+            android:layout_height="@dimen/dp_120"
+            android:focusable="true"
+            android:layout_marginStart="@dimen/dp_32"
+            android:layout_marginTop="@dimen/dp_32"
+            app:layout_constraintLeft_toRightOf="@+id/preference_avoid_congestion"
+            app:layout_constraintTop_toBottomOf="@+id/preference_recommend"
+            android:background="@drawable/bg_base_mfc_cadillac_bg_selector" />
+
+        <com.fy.navi.ui.view.SkinTextView
             android:id="@+id/preference_first_main_road"
             android:layout_width="@dimen/dp_252"
             android:layout_height="@dimen/dp_120"
@@ -94,6 +144,7 @@
             android:button="@null"
             android:gravity="center"
             android:text="@string/route_preference_first_main_road"
+            android:focusable="false"
             android:textColor="@color/setting_preference_text_gray"
             android:textSize="@dimen/sp_46"
             app:layout_constraintLeft_toRightOf="@+id/preference_avoid_congestion"
@@ -102,8 +153,18 @@
             app:select_text_color="@color/setting_white"
             app:select_background_color="@drawable/bg_setting_preference"/>
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.fy.navi.ui.view.SkinView
             clickCommand="@{() -> SceneSettingPreferenceView.preferenceLessCharge(0)}"
+            android:layout_width="@dimen/dp_252"
+            android:layout_height="@dimen/dp_120"
+            android:focusable="true"
+            android:layout_marginStart="@dimen/dp_32"
+            android:layout_marginTop="@dimen/dp_32"
+            app:layout_constraintLeft_toRightOf="@+id/preference_first_main_road"
+            app:layout_constraintTop_toBottomOf="@+id/preference_recommend"
+            android:background="@drawable/bg_base_mfc_cadillac_bg_selector" />
+
+        <com.fy.navi.ui.view.SkinTextView
             android:id="@+id/preference_less_charge"
             android:layout_width="@dimen/dp_252"
             android:layout_height="@dimen/dp_120"
@@ -112,6 +173,7 @@
             android:button="@null"
             android:gravity="center"
             android:text="@string/route_preference_less_charge"
+            android:focusable="false"
             android:textColor="@color/setting_preference_text_gray"
             android:textSize="@dimen/sp_46"
             app:layout_constraintLeft_toRightOf="@+id/preference_first_main_road"
@@ -120,8 +182,18 @@
             app:select_text_color="@color/setting_white"
             app:select_background_color="@drawable/bg_setting_preference"/>
 
-        <com.fy.navi.ui.view.SkinTextView
+        <com.fy.navi.ui.view.SkinView
             clickCommand="@{() -> SceneSettingPreferenceView.preferenceFastestSpeed(0)}"
+            android:layout_width="@dimen/dp_252"
+            android:layout_height="@dimen/dp_120"
+            android:focusable="true"
+            android:layout_marginStart="@dimen/dp_32"
+            android:layout_marginTop="@dimen/dp_32"
+            app:layout_constraintLeft_toRightOf="@+id/preference_less_charge"
+            app:layout_constraintTop_toBottomOf="@+id/preference_recommend"
+            android:background="@drawable/bg_base_mfc_cadillac_bg_selector" />
+
+        <com.fy.navi.ui.view.SkinTextView
             android:id="@+id/preference_fastest_speed"
             android:layout_width="@dimen/dp_252"
             android:layout_height="@dimen/dp_120"
@@ -130,6 +202,7 @@
             android:button="@null"
             android:gravity="center"
             android:text="@string/route_preference_fastest_speed"
+            android:focusable="false"
             android:textColor="@color/setting_preference_text_gray"
             android:textSize="@dimen/sp_46"
             app:layout_constraintLeft_toRightOf="@+id/preference_less_charge"

@@ -11,7 +11,7 @@
     </data>
 
     <com.fy.navi.ui.view.SkinConstraintLayout
-        android:layout_width="@dimen/dp_640"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
         <com.fy.navi.ui.view.SkinView
@@ -67,8 +67,9 @@
             android:id="@+id/stv_via_count"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/dp_30"
             app:layout_constraintBottom_toBottomOf="@id/sv_bottom_view"
-            app:layout_constraintStart_toEndOf="@id/stv_way"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/sv_bottom_view"
             android:textColor="@color/common_title_color"
             android:textSize="@dimen/sp_34"

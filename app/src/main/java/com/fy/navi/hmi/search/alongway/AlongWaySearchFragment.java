@@ -13,7 +13,7 @@ import com.fy.navi.service.AutoMapConstant;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.adapter.navi.NaviConstant;
 import com.fy.navi.service.define.map.MapType;
-import com.fy.navi.service.define.search.PoiInfoEntity;
+import com.fy.navi.service.define.search.SearchResultEntity;
 import com.fy.navi.ui.base.BaseFragment;
 
 /**
@@ -80,7 +80,17 @@ public class AlongWaySearchFragment extends BaseFragment<FragmentAlongWayBinding
         mBinding.sceneQuickSearchView.setQuickSearchListAdapterData(iconArray, categories);
         mBinding.sceneQuickSearchView.setSearchType(AutoMapConstant.SearchType.ALONG_WAY_SEARCH);
         mBinding.sceneQuickSearchView.setPoiInfoEntity(null);
-        mBinding.sceneQuickSearchView.setTextView(getString(R.string.along_way_search_title));
+        mBinding.sceneQuickSearchView.setTextView(getString(R.string.along_way_search_hint));
+    }
+
+    /**
+     * 搜索结果回调
+     * @param searchResultEntity 搜索结果实体类
+     */
+    public void notifySearchResult(final SearchResultEntity searchResultEntity) {
+        if (searchResultEntity.getSearchType() == AutoMapConstant.SearchType.SEARCH_SUGGESTION) {
+            mBinding.sceneQuickSearchView.notifySearchResult(searchResultEntity);
+        }
     }
 
     @Override

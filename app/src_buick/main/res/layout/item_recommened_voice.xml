@@ -72,6 +72,15 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"/>
 
+        <com.fy.navi.ui.view.SkinView
+            android:id="@+id/recommend_voice_operate_view"
+            android:layout_width="@dimen/dp_0"
+            android:layout_height="@dimen/dp_0"
+            app:layout_constraintTop_toTopOf="@+id/recommend_voice_operate"
+            app:layout_constraintBottom_toBottomOf="@+id/recommend_voice_operate"
+            app:layout_constraintStart_toStartOf="@+id/recommend_voice_operate"
+            app:layout_constraintEnd_toEndOf="@+id/recommend_voice_operate"/>
+
         <com.fy.navi.ui.view.SkinTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

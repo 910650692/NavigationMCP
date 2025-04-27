@@ -7,6 +7,7 @@
     <color name="color_black_90">#E6FFFFFF</color>
     <color name="color_black_80">#CCFFFFFF</color>
     <color name="color_black_70">#B3FFFFFF</color>
+    <color name="color_black_35">#59FFFFFF</color>
 
     <color name="search_main_tab_img_shape_bg">#4019181D</color>
     <color name="search_main_tab_img_bg">#FF000000</color>
@@ -41,6 +42,7 @@
     <color name="route_charge_param_total_color">#80FFFFFF</color>
     <color name="route_charge_button_text_color">#B3FFFFFF</color>
     <color name="route_logo_color">#19181D</color>
+    <color name="route_white">#FFFFFFFF</color>
     <color name="floating_search_item_night">#FFFFFF</color>
 
     <color name="tab_list_route_tab_list_select">#FF005CFF</color>
@@ -106,6 +108,7 @@
     <color name="setting_dialog_confirm">#FFE5B586</color>
     <color name="setting_other_car_icon_first">#D2D3D7</color>
     <color name="setting_other_car_icon_second">#2C2F38</color>
+    <color name="setting_back_top">#2C2D36</color>
 
     <color name="offline_hint_text">#FFFFFFFF</color>
     <color name="offline_recommend_download">#80FFFFFF</color>

@@ -4,7 +4,8 @@ plugins {
 }
 
 String aveFlavorType = "type"
-String AppName = "导航"
+String appName = "导航"
+String apkName = "NaviApp"
 
 androidAopConfig {
     // enabled 为 false 切面不再起作用，默认不写为 true
@@ -13,6 +14,10 @@ androidAopConfig {
     // verifyLeafExtends 是否开启验证叶子继承，默认打开，@AndroidAopMatchClassMethod 和 @AndroidAopCollectMethod 如果没有设置 LEAF_EXTENDS，可以关闭
     verifyLeafExtends false
     cutInfoJson false
+}
+
+def generateTime() {
+    return new Date().format("yyyyMMdd_HHmmss")
 }
 
 android {
@@ -25,7 +30,7 @@ android {
         minSdk IS_PAD_RUN.toBoolean() ? Integer.parseInt(libs.versions.padminSdk.get()) :Integer.parseInt(libs.versions.minSdk.get())
         targetSdk Integer.parseInt(libs.versions.targetSdk.get())
         versionCode 1
-        versionName "1.0"
+        versionName generateTime() + ".1"
         buildConfigField("String", "MAP_SDK", "$MAP_SDK")
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         // 添加 javaCompileOptions 和 annotationProcessorOptions
@@ -56,16 +61,16 @@ android {
             manifestPlaceholders = [CAR_TYPE_VALUE: "Default",
                                     logo          : "@mipmap/ic_launcher",
                                     roundLogo     : "@mipmap/ic_launcher_round",
-                                    appName       : '导航']
+                                    appName       : appName]
             println("默认车型/Pad渠道配置")
         }
-        gb {
+        buick {
             dimension aveFlavorType
             manifestPlaceholders = [
                     CAR_TYPE_VALUE: "Buick",
                     logo          : "@mipmap/ic_launcher",
                     roundLogo     : "@mipmap/ic_launcher_round",
-                    appName       : "导航"
+                    appName       : appName
             ]
             println("别克车型渠道配置")
         }
@@ -75,39 +80,39 @@ android {
                     CAR_TYPE_VALUE: "Cadillac",
                     logo          : "@mipmap/ic_launcher",
                     roundLogo     : "@mipmap/ic_launcher_round",
-                    appName       : "导航"
+                    appName       : appName
             ]
             println("凯迪车型渠道配置")
         }
-        NDLB {
+        clea8255 {
             dimension aveFlavorType
             manifestPlaceholders = [
                     CAR_TYPE_VALUE: "NDLB",
                     logo          : "@mipmap/ic_launcher",
                     roundLogo     : "@mipmap/ic_launcher_round",
-                    appName       : "导航"
+                    appName       : appName
             ]
-            println("NDLB车型渠道配置")
+            println("5578255车型渠道配置")
         }
-        CLEA557 {
+        clea8775 {
             dimension aveFlavorType
             manifestPlaceholders = [
                     CAR_TYPE_VALUE: "557",
                     logo          : "@mipmap/ic_launcher",
                     roundLogo     : "@mipmap/ic_launcher_round",
-                    appName       : "导航"
+                    appName       : appName
             ]
-            println("557车型渠道配置")
+            println("5578775车型渠道配置")
         }
-        NCXB {
+        ndnc8155 {
             dimension aveFlavorType
             manifestPlaceholders = [
                     CAR_TYPE_VALUE: "NCXB",
                     logo          : "@mipmap/ic_launcher",
                     roundLogo     : "@mipmap/ic_launcher_round",
-                    appName       : "导航"
+                    appName       : appName
             ]
-            println("NCXB车型渠道配置")
+            println("NDNC8155车型渠道配置")
         }
     }
 
@@ -127,12 +132,17 @@ android {
     }
     buildTypes {
         debug {
+            debuggable true
+            minifyEnabled false
+            shrinkResources false
             signingConfig signingConfigs.debug
         }
         release {
+            debuggable false
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            shrinkResources false
             signingConfig signingConfigs.release
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
 
@@ -142,7 +152,7 @@ android {
             res.srcDirs = ['src_default/main/res']
             println("打包Default车型资源")
         }
-        gb {
+        buick {
             java.srcDirs = ['src_buick/main/java']
             res.srcDirs = ['src_buick/main/res']
             println("打包别克车型资源")
@@ -152,20 +162,20 @@ android {
             res.srcDirs = ['src_cadillac/main/res']
             println("打包凯迪车型资源")
         }
-        NDLB {
-            java.srcDirs = ['src_nd/main/java']
-            res.srcDirs = ['src_nd/main/res']
-            println("打包ND车型资源")
+        clea8255 {
+            java.srcDirs = ['src_clea_8255/main/java']
+            res.srcDirs = ['src_clea_8255/main/res']
+            println("打包clea8255车型资源")
         }
-        CLEA557 {
-            java.srcDirs = ['src_557/main/java']
-            res.srcDirs = ['src_557/main/res']
-            println("打包557车型资源")
+        clea8775 {
+            java.srcDirs = ['src_clea_8775/main/java']
+            res.srcDirs = ['src_clea_8775/main/res']
+            println("打包clea8775车型资源")
         }
-        NCXB {
-            java.srcDirs = ['src_nc/main/java']
-            res.srcDirs = ['src_nc/main/res']
-            println("打包NC车型资源")
+        ndnc8155 {
+            java.srcDirs = ['src_nd_nc/main/java']
+            res.srcDirs = ['src_nd_nc/main/res']
+            println("打包NDNC8155车型资源")
         }
     }
 
@@ -174,14 +184,22 @@ android {
             def flavors = getProductFlavorList(variant)
             def flavorName = flavors.join(', ')
             println "车型渠道列表: ${flavorName}"
-            if (flavorName == "gb") {
-                AppName = "SGMNavigation-gb"
+            if (flavorName == "buick") {
+                apkName = "SGMNavigation-buick"
             } else if (flavorName == "cadi") {
-                AppName = "SGMNavigation-cadi"
+                apkName = "SGMNavigation-cadi"
+            } else if (flavorName == "clea8255") {
+                apkName = "SGMNavigation-clea8255"
+            } else if (flavorName == "clea8775") {
+                apkName = "SGMNavigation-clea8775"
+            } else if (flavorName == "ndnc8155") {
+                apkName = "SGMNavigation-ndnc8155"
+            } else if (flavorName == "ndnc8775") {
+                apkName = "SGMNavigation-ndnc8775"
             } else {
-                AppName = "SGMNavigation-clea"
+                apkName = "SGMNavigation-pad"
             }
-            output.outputFileName = "${AppName}.apk"
+            output.outputFileName = "${apkName}.apk"
         }
     }
 

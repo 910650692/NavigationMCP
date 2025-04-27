@@ -42,10 +42,6 @@ public class DrivingRecordDetailsFragment extends BaseFragment<FragmentDrivingRe
         });
 
         initDeleteDialog();
-
-        mBinding.deleteDrivingRecord.setOnClickListener(view -> {
-            mDeleteDivingRecordDialog.show();
-        });
     }
 
     @Override
@@ -117,6 +113,13 @@ public class DrivingRecordDetailsFragment extends BaseFragment<FragmentDrivingRe
         if (window != null) {
             window.setDimAmount(0f);
         }
+    }
+
+    /**
+     * 显示删除记录弹窗
+     */
+    public void showDialog() {
+        mDeleteDivingRecordDialog.show();
     }
 
     @Override

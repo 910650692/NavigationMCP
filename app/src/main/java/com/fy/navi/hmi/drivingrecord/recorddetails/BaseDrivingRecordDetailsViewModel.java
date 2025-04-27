@@ -27,6 +27,11 @@ public class BaseDrivingRecordDetailsViewModel extends BaseViewModel<DrivingReco
         closeFragment(true);
     };
 
+    //返回上一页
+    public Action mDeleteRecord= () -> {
+        mView.showDialog();
+    };
+
     /**
      * 删除行程详情
      * @param id 行程详情id

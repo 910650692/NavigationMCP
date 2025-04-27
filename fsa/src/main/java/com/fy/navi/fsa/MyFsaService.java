@@ -28,6 +28,7 @@ import com.fy.navi.service.AppContext;
 import com.fy.navi.service.adapter.navi.NaviConstant;
 import com.fy.navi.service.define.cruise.CruiseInfoEntity;
 import com.fy.navi.service.define.map.MapType;
+import com.fy.navi.service.define.map.ThemeType;
 import com.fy.navi.service.define.navi.CameraInfoEntity;
 import com.fy.navi.service.define.navi.CrossImageEntity;
 import com.fy.navi.service.define.navi.LaneInfoEntity;
@@ -615,9 +616,8 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
     private final IMapPackageCallback mIMapPackageCallback = new IMapPackageCallback() {
 
         @Override
-        public void onUiModeChanged(final int uiMode) {
-            final boolean isNightMode = (uiMode & Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES;
-            if (isNightMode) {
+        public void onUiModeChanged(final ThemeType uiMode) {
+            if (uiMode == ThemeType.NIGHT) {
                 sendEvent(FsaConstant.FsaFunction.ID_THEME_CHANGED, FsaConstant.FsaValue.FALSE);
             } else {
                 sendEvent(FsaConstant.FsaFunction.ID_THEME_CHANGED, FsaConstant.FsaValue.TRUE);

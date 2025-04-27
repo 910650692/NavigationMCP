@@ -13,7 +13,7 @@
 
     <com.fy.navi.ui.view.SkinConstraintLayout
         android:layout_width="@dimen/dp_640"
-        android:layout_height="@dimen/dp_711"
+        android:layout_height="wrap_content"
         android:background="@drawable/bg_navi_control">
 
         <com.fy.navi.ui.view.SkinTextView
@@ -110,15 +110,20 @@
             android:layout_marginTop="@dimen/dp_41"
             android:layout_marginEnd="@dimen/dp_30" />
 
+        <com.fy.navi.ui.view.SkinLinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginTop="@dimen/dp_181">
+
         <com.fy.navi.ui.view.SkinTextView
             android:id="@+id/siv_service_details_route_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@{sapaDetail.mServiceRouteName}"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
             android:layout_marginStart="@dimen/dp_40"
-            android:layout_marginTop="@dimen/dp_181"
             android:textSize="@dimen/sp_30"
             android:visibility="gone"
             android:textColor="@color/navi_color_000000_70"
@@ -129,13 +134,11 @@
             android:layout_width="wrap_content"
             android:layout_height="@dimen/dp_52"
             android:visibility="@{sapaDetail.mServicesVisible ? View.VISIBLE : View.GONE}"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
             android:gravity="center_vertical"
             android:paddingEnd="@dimen/dp_4"
             android:background="@drawable/sapa_service_details_icon_bg"
             android:layout_marginStart="@dimen/dp_40"
-            android:layout_marginTop="@dimen/dp_195">
+            android:layout_marginTop="@dimen/dp_24">
 
             <com.fy.navi.ui.view.SkinImageView
                 android:id="@+id/siv_service_details_service_charge_station"
@@ -195,14 +198,12 @@
         <com.fy.navi.ui.view.SkinLinearLayout
             android:layout_width="wrap_content"
             android:layout_height="@dimen/dp_52"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
             android:gravity="center_vertical"
             android:visibility="@{sapaDetail.mServiceGasStationVisible ? View.VISIBLE : View.GONE}"
             android:paddingEnd="@dimen/dp_9"
             android:background="@drawable/sapa_service_details_icon_bg"
             android:layout_marginStart="@dimen/dp_40"
-            android:layout_marginTop="@dimen/dp_271">
+            android:layout_marginTop="@dimen/dp_24">
 
             <com.fy.navi.ui.view.SkinConstraintLayout
                 android:id="@+id/siv_service_details_gas_icon_bg"
@@ -278,20 +279,16 @@
             android:layout_width="@dimen/dp_560"
             android:layout_height="@dimen/dp_1"
             android:visibility="gone"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
             android:background="@color/navi_color_000000_40"
-            android:layout_marginTop="@dimen/dp_408"
+            android:layout_marginTop="@dimen/dp_24"
             app:layout_constraintEnd_toEndOf="parent" />
 
         <com.fy.navi.ui.view.SkinTextView
             android:id="@+id/siv_service_details_business_hours"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/siv_horizontal_line"
             android:layout_marginStart="@dimen/dp_40"
-            android:layout_marginTop="@dimen/dp_30"
+            android:layout_marginTop="@dimen/dp_24"
             android:textSize="@dimen/sp_30"
             android:visibility="gone"
             android:textColor="@color/navi_color_000000_70"
@@ -302,10 +299,8 @@
             android:id="@+id/siv_service_details_phone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/siv_horizontal_line"
             android:layout_marginStart="@dimen/dp_40"
-            android:layout_marginTop="@dimen/dp_94"
+            android:layout_marginTop="@dimen/dp_24"
             android:textSize="@dimen/sp_30"
             android:visibility="gone"
             android:textColor="@color/navi_color_000000_70"
@@ -315,19 +310,15 @@
             android:id="@+id/bt_service_details_add_via"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_90"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
             clickCommand="@{() -> sapaDetail.onAddRemoveViaClick()}"
-            android:layout_marginEnd="@dimen/dp_40"
             android:background="@drawable/sapa_add_via_bg"
-            android:layout_marginStart="@dimen/dp_40"
-            android:layout_marginBottom="@dimen/dp_40"
+            android:layout_margin="@dimen/dp_40"
             android:textSize="@dimen/sp_34"
             android:gravity="center"
             android:text="@{sapaDetail.mButtonText}"
             tools:text="添加途经点"
             android:textColor="@color/navi_color_FFFFFF_100" />
+        </com.fy.navi.ui.view.SkinLinearLayout>
 
         <com.fy.navi.ui.view.SkinConstraintLayout
             android:id="@+id/scl_service_details_tel"

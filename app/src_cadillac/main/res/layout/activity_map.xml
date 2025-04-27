@@ -491,8 +491,10 @@
                     android:orientation="horizontal"
                     android:visibility="@{ViewModel.backToParkingVisibility ? View.VISIBLE : View.GONE}"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent">
+                    app:layout_constraintLeft_toRightOf="@+id/search_main_tab"
+                    app:layout_constraintRight_toLeftOf="@+id/scene_scale_view"
+                    app:layout_goneMarginStart="@dimen/dp_1106"
+                    app:layout_goneMarginRight="@dimen/dp_516">
 
                     <com.fy.navi.ui.view.SkinView
                         clickCommand="@{ViewModel.backToSelfParking}"
@@ -530,18 +532,6 @@
                     </com.fy.navi.ui.view.SkinTextView>
 
                 </com.fy.navi.ui.view.SkinConstraintLayout>
-
-                <com.fy.navi.scene.ui.map.SceneScaleView
-                    android:id="@+id/scene_scale_view"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/dp_336"
-                    android:layout_marginBottom="@dimen/dp_180"
-                    android:focusable="false"
-                    android:visibility="@{ViewModel.mScaleViewVisibility ? View.VISIBLE : View.GONE}"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    tools:visibility="visible" />
 
                 <com.fy.navi.ui.view.SkinView
                     android:id="@+id/test_button"
@@ -589,6 +579,18 @@
                     tools:visibility="gone" />
             </com.fy.navi.ui.view.SkinConstraintLayout>
         </com.android.car.ui.FocusArea>
+
+        <com.fy.navi.scene.ui.map.SceneScaleView
+            android:id="@+id/scene_scale_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/dp_336"
+            android:layout_marginBottom="@dimen/dp_180"
+            android:focusable="false"
+            android:visibility="@{ViewModel.mScaleViewVisibility ? View.VISIBLE : View.GONE}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            tools:visibility="visible" />
 
         <com.fy.navi.ui.view.SkinFrameLayout
             android:id="@+id/layout_fragment"

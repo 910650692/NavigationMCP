@@ -3,7 +3,6 @@ package com.fy.navi.hmi.map;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Looper;
 import android.os.Parcelable;
@@ -22,6 +21,10 @@ import com.android.utils.TimeUtils;
 import com.android.utils.ToastUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
+import com.fy.navi.burypoint.anno.HookMethod;
+import com.fy.navi.burypoint.bean.BuryProperty;
+import com.fy.navi.burypoint.constant.BuryConstant;
+import com.fy.navi.burypoint.controller.BuryPointController;
 import com.fy.navi.hmi.R;
 import com.fy.navi.hmi.account.AccountQRCodeLoginFragment;
 import com.fy.navi.hmi.message.MessageCenterHelper;
@@ -42,16 +45,13 @@ import com.fy.navi.service.define.bean.GeoPoint;
 import com.fy.navi.service.define.bean.MapLabelItemBean;
 import com.fy.navi.service.define.code.UserDataCode;
 import com.fy.navi.service.define.cruise.CruiseInfoEntity;
-import com.fy.navi.service.define.layer.GemBaseLayer;
-import com.fy.navi.service.define.layer.GemLayerItem;
 import com.fy.navi.service.define.layer.refix.LayerItemUserFavorite;
-import com.fy.navi.service.define.layer.refix.LayerType;
 import com.fy.navi.service.define.map.IBaseScreenMapView;
 import com.fy.navi.service.define.map.MapMode;
 import com.fy.navi.service.define.map.MapType;
-import com.fy.navi.service.define.map.MapViewParams;
+import com.fy.navi.service.define.map.MapVisibleAreaType;
+import com.fy.navi.service.define.map.ThemeType;
 import com.fy.navi.service.define.message.MessageCenterInfo;
-import com.fy.navi.service.define.message.MessageCenterType;
 import com.fy.navi.service.define.mfc.MfcController;
 import com.fy.navi.service.define.navi.LaneInfoEntity;
 import com.fy.navi.service.define.navi.NaviEtaInfo;
@@ -121,7 +121,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
-import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.ScheduledFuture;
 
@@ -170,6 +169,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
     private ForecastPackage mforCastPackage;
     private final AccountPackage mAccountPackage;
     private NaviStatusPackage mNaviStatusPackage;
+    private boolean mLoadMapSuccess = true;  //只加载一次
     public MapModel() {
         mCallbackId = UUID.randomUUID().toString();
         mapPackage = MapPackage.getInstance();
@@ -292,13 +292,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
      */
     public void setMapCenterInScreen(int frameLayoutWidth) {
         Logger.i(TAG, "setMapCenterInScreen: " + frameLayoutWidth);
-        MapViewParams mapSurfaceViewSizeParams = mapPackage.getMapSurfaceParam(MapType.MAIN_SCREEN_MAIN_MAP);
-        mapSurfaceViewSizeParams.setScreenLeftOffset(frameLayoutWidth);
-        int surfaceWidth = ConvertUtils.ln2int(mapSurfaceViewSizeParams.getWidth());
-        int surfaceHeight = ConvertUtils.ln2int(mapSurfaceViewSizeParams.getHeight());
-        int left = (surfaceWidth /*- frameLayoutWidth*/) / 2 /*+ frameLayoutWidth*/;
-        int top = surfaceHeight * 3 / 5;
-        mapPackage.setMapCenterInScreen(MapType.MAIN_SCREEN_MAIN_MAP, left, top);
+        mapPackage.changMapCenterInScreen(MapType.MAIN_SCREEN_MAIN_MAP, MapVisibleAreaType.MAIN_AREA_NAVING);
     }
 
     /**
@@ -306,12 +300,8 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
      */
     public void resetMapCenterInScreen() {
         Logger.i(TAG, "resetMapCenterInScreen");
-        MapViewParams mapSurfaceViewSizeParams = mapPackage.getMapSurfaceParam(MapType.MAIN_SCREEN_MAIN_MAP);
-        mapSurfaceViewSizeParams.setScreenLeftOffset(100);
-        int surfaceWidth = ConvertUtils.ln2int(mapSurfaceViewSizeParams.getScreenWidth());
-        int surfaceHeight = ConvertUtils.ln2int(mapSurfaceViewSizeParams.getScreenHeight());
-        mapPackage.setMapCenterInScreen(MapType.MAIN_SCREEN_MAIN_MAP, surfaceWidth / 2, surfaceHeight * 3/ 5);
-        ThreadManager.getInstance().postDelay(this::goToCarPosition,200);
+        goToCarPosition();
+        mapPackage.changMapCenterInScreen(MapType.MAIN_SCREEN_MAIN_MAP, MapVisibleAreaType.MAIN_AREA_CAR);
         mViewModel.showOrHideSelfParkingView(false);
         stopCruise();
     }
@@ -359,13 +349,15 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
 
     @Override
     public void onMapLoadSuccess(MapType mapTypeId) {
-        if (mapTypeId == MapType.MAIN_SCREEN_MAIN_MAP) {
+        if (mapTypeId == MapType.MAIN_SCREEN_MAIN_MAP && mLoadMapSuccess) {
+            mLoadMapSuccess = false;
             settingPackage.setSettingChangeCallback(mapTypeId.name(), this);
             layerPackage.setDefaultCarMode(mapTypeId);
             mapPackage.setMapCenter(mapTypeId, new GeoPoint(positionPackage.getLastCarLocation().getLongitude(),
                     positionPackage.getLastCarLocation().getLatitude()));
             signalPackage.registerObserver(mapTypeId.name(), this);
             mapPackage.goToCarPosition(mapTypeId);
+            mapPackage.changMapCenterInScreen(MapType.MAIN_SCREEN_MAIN_MAP, MapVisibleAreaType.MAIN_AREA_CAR);
             naviPackage.registerObserver(mViewModel.mScreenId, this);
             // 注册监听
             cruisePackage.registerObserver(mViewModel.mScreenId, this);
@@ -373,6 +365,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
             mapModelHelp.restoreSetting();
             mViewModel.initTimer();
             addFavoriteToMap();
+            speedMonitor.registerSpeedCallBack();
         }
     }
 
@@ -383,6 +376,11 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         startSelfParkingTimer();
         // 退出巡航
         stopCruise();
+
+        //For Bury Point
+        if(NaviStatusPackage.getInstance().isGuidanceActive()){
+            sendBuryPointForWakeup();
+        }
     }
 
     @Override
@@ -435,7 +433,9 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         }
 
         //导航中偶现 回车位出现问题
-        if(TextUtils.equals(getNaviStatus(),NaviStatus.NaviStatusType.ROUTING) || TextUtils.equals(getNaviStatus(),NaviStatus.NaviStatusType.NAVING)){
+        if(TextUtils.equals(getNaviStatus(),NaviStatus.NaviStatusType.ROUTING) ||
+                TextUtils.equals(getNaviStatus(),NaviStatus.NaviStatusType.NAVING) ||
+                TextUtils.equals(getNaviStatus(),NaviStatus.NaviStatusType.CRUISE)){
             mViewModel.showOrHideSelfParkingView(false);
         }
     }
@@ -485,11 +485,10 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         mapPackage.goToCarPosition(MapType.MAIN_SCREEN_MAIN_MAP);
     }
 
-    public void updateUiStyle(MapType mapTypeId, int uiMode) {
-        final boolean isNightMode = (uiMode & Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES;
-        final String value = isNightMode ? SettingController.VALUE_DISPLAY_MODE_NIGHT : SettingController.VALUE_DISPLAY_MODE_DAYTIME;
-        mapPackage.updateUiStyle(mapTypeId, uiMode);
-        commonManager.insertOrReplace(SettingController.KEY_SETTING_DISPLAY_MODE, value);
+    public void updateUiStyle(MapType mapTypeId, ThemeType type) {
+        // TODO 现在是跟随系统主题变化，只有黑夜和白天
+        mapPackage.updateUiStyle(mapTypeId, type);
+        mSettingPackage.setConfigKeyDayNightMode(type);
     }
 
     public void saveLastLocationInfo() {
@@ -781,12 +780,6 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
     }
 
     @Override
-    public void onSpeedChanged(float speed) {
-        // speed 单位：m/s 转换成km/h
-        speedMonitor.updateSpeed(speed * 3.6f);
-    }
-
-    @Override
     public void onGearChanged(int gear) {
         Logger.i(TAG, "onGearChanged:" + gear);
         switch (gear) {
@@ -987,12 +980,33 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         favoriteInfo.setMCommonName(favoriteType);
         poiInfoEntity.setFavoriteInfo(favoriteInfo);
         behaviorPackage.addFavorite(poiInfoEntity,favoriteType);
+        sendBuryPointForAddFavorite(poiInfoEntity.getName(), favoriteType);
 
         if(favoriteType == 1){
             ToastUtils.Companion.getInstance().showCustomToastView(ResourceUtils.Companion.getInstance().getString(R.string.forecast_set_home));
         }else {
             ToastUtils.Companion.getInstance().showCustomToastView(ResourceUtils.Companion.getInstance().getString(R.string.forecast_set_company));
         }
+
+    }
+
+    @HookMethod
+    private void sendBuryPointForAddFavorite(final String name, final int type) {
+        String eventName = "";
+        String key = BuryConstant.ProperType.BURY_KEY_HOME_PREDICTION;
+        switch (type){
+            case 1:
+                eventName = BuryConstant.EventName.AMAP_HOME_SAVE;
+                break;
+            case 2:
+                eventName = BuryConstant.EventName.AMAP_WORK_SAVE;
+                break;
+        }
+        BuryPointController.getInstance().setEventName(eventName);
+        BuryProperty buryProperty = new BuryProperty.Builder()
+                .setParams(key, name)
+                .build();
+        BuryPointController.getInstance().setBuryProps(buryProperty);
     }
 
 
@@ -1153,6 +1167,8 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
     @Override
     public void onMessageInfoNotifyCallback(final MessageCenterInfo messageCenterInfo) {
         mViewModel.onMessageInfoNotifyCallback(messageCenterInfo);
+
+        sendBuryPointForPopup(messageCenterInfo != null ? messageCenterInfo.getMsgTitle() : "");
     }
 
     @Override
@@ -1226,7 +1242,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
                 SettingUpdateObservable.getInstance().notifySettingChanged(SettingController.KEY_SETTING_PRIVACY_STATUS, true);
             }
         });
-        authorizationRequestDialog.show();
+        mViewModel.showAuthorizationRequestDialog(authorizationRequestDialog);
     }
 
     @Override
@@ -1300,5 +1316,18 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         // 退出巡航
         stopCruise();
         mapPackage.mfcMoveMap(MapType.MAIN_SCREEN_MAIN_MAP, mfcController, moveDis);
+    }
+
+    @HookMethod(eventName = BuryConstant.EventName.AMAP_NAVI_MAP_MANUAL_WAKEUP)
+    private void sendBuryPointForWakeup(){
+        //Empty body
+    }
+
+    @HookMethod(eventName = BuryConstant.EventName.AMAP_POPUP)
+    private void sendBuryPointForPopup(final String msg){
+        BuryProperty property = new BuryProperty.Builder()
+                .setParams(BuryConstant.ProperType.BURY_KEY_HOME_PREDICTION, msg)
+                .build();
+        BuryPointController.getInstance().setBuryProps(property);
     }
 }

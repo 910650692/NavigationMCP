@@ -807,15 +807,16 @@ public class MapDataObserversHelper implements IDataInitObserver, IDownloadObser
         if (mMapDataService != null && adminCode != null) {
             final AreaExtraInfoBean areaExtraInfoBean = new AreaExtraInfoBean();
             final AreaExtraInfo areaExtraInfo = mMapDataService.getAreaExtraInfo(new
-                    AdminCode(adminCode.euRegionCode, adminCode.nCityAdCode, adminCode.nAdCode));
+                    AdminCode(adminCode.getEuRegionCode(), adminCode.getnCityAdCode(), adminCode.getnAdCode()));
             if (areaExtraInfo != null) {
-                areaExtraInfoBean.cityName = areaExtraInfo.cityName;
-                areaExtraInfoBean.townName = areaExtraInfo.townName;
-                areaExtraInfoBean.provName = areaExtraInfo.provName;
-                areaExtraInfoBean.stAdCode = new AdminCodeBean(areaExtraInfo.stAdCode.euRegionCode,
-                        areaExtraInfo.stAdCode.nCityAdCode, areaExtraInfo.stAdCode.nAdCode);
-                areaExtraInfoBean.stCenterPoint = new AdMapPointBean(areaExtraInfo.stCenterPoint.nLon,
-                        areaExtraInfo.stCenterPoint.nLat, areaExtraInfo.stCenterPoint.nZlevel);
+                areaExtraInfoBean.setCityName(areaExtraInfo.cityName);
+                areaExtraInfoBean.setTownName(areaExtraInfo.townName);
+                areaExtraInfoBean.setProvName(areaExtraInfo.provName);
+                areaExtraInfoBean.setStAdCode(new AdminCodeBean(areaExtraInfo.stAdCode.euRegionCode,
+                        areaExtraInfo.stAdCode.nCityAdCode, areaExtraInfo.stAdCode.nAdCode));
+                areaExtraInfoBean.setStCenterPoint(new AdMapPointBean(
+                        areaExtraInfo.stCenterPoint.nLon, areaExtraInfo.stCenterPoint.nLat,
+                        areaExtraInfo.stCenterPoint.nZlevel));
             }
             return areaExtraInfoBean;
         }

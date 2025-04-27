@@ -12,6 +12,7 @@ import com.fy.navi.service.adapter.setting.SettingAdapterCallback;
 import com.fy.navi.service.define.layer.refix.CarModeType;
 import com.fy.navi.service.define.map.MapMode;
 import com.fy.navi.service.define.map.MapType;
+import com.fy.navi.service.define.map.ThemeType;
 import com.fy.navi.service.define.route.RoutePreferenceID;
 import com.fy.navi.service.define.setting.SettingController;
 import com.fy.navi.service.greendao.favorite.FavoriteManager;
@@ -863,10 +864,10 @@ public final class SettingPackage implements SettingAdapterCallback {
      *
      * @param dayNightMode 白天黑夜 16：自动模式，默认态； 17：日间模式； 18：夜间模式
      */
-    public void setConfigKeyDayNightMode(final int dayNightMode) {
+    public void setConfigKeyDayNightMode(final ThemeType dayNightMode) {
         final int code = mSettingAdapter.setConfigKeyDayNightMode(dayNightMode);
         if (code == 0) {
-            switch (dayNightMode) {
+            switch (ThemeType.getThemeValueByType(dayNightMode)) {
                 case 16:
                     mSettingManager.insertOrReplace(SettingController.KEY_SETTING_DISPLAY_MODE, SettingController.VALUE_DISPLAY_MODE_AUTO);
                     for (SettingChangeCallback callback : mChangeCallbackList.values()) {
@@ -880,10 +881,7 @@ public final class SettingPackage implements SettingAdapterCallback {
                     }
                     break;
                 case 18:
-                    mSettingManager.insertOrReplace(SettingController.KEY_SETTING_DISPLAY_MODE, SettingController.VALUE_DISPLAY_MODE_NIGHT);
-                    for (SettingChangeCallback callback : mChangeCallbackList.values()) {
-                        callback.onSettingChanged(SettingController.KEY_SETTING_DISPLAY_MODE, SettingController.VALUE_DISPLAY_MODE_NIGHT);
-                    }
+
                     break;
                 default:
                     break;

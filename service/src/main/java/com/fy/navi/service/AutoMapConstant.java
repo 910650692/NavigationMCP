@@ -321,4 +321,22 @@ public interface AutoMapConstant {
         int FAST = 1;// 慢充
         int SLOW = 2;// 快充
     }
+
+    @interface ChildIndex {
+        String BUNDLE_CHILD_INDEX = "bundle_child_index";
+    }
+
+    @interface AccountTokenParamType {
+
+        String ACCOUNT_TYPE_PATAC_HMI = "com.patac.hmi.account";
+
+        String AUTH_TOKEN_TYPE_READ_ONLY = "read_only";
+        String AUTH_TOKEN_TYPE_FULL_ACCESS = "full_access";
+    }
+
+    @interface AccountInfoKey {
+        String IDP_USER_ID = "com.patac.hmi.account.idpUserId";
+        String NICK_NAME = "com.patac.hmi.account.idpUserId";
+        String PHONE = "com.patac.hmi.account.phone";
+    }
 }

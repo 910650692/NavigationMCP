@@ -152,7 +152,7 @@ public abstract class NaviSceneBase<VB extends ViewDataBinding, VM extends BaseS
         if (!ConvertUtils.isNull(mISceneCallback)) {
             mSceneState = SCENE_STATE_CLOSE;
             mISceneCallback.updateSceneVisible(getSceneId(), false);
-            mEvent.notifySceneReset("close");
+            //mEvent.notifySceneReset("close");
         }
     }
 

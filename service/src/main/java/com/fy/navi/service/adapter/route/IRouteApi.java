@@ -4,6 +4,7 @@ import com.fy.navi.service.define.layer.RouteLineLayerParam;
 import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.position.LocInfoBean;
 import com.fy.navi.service.define.route.RouteAvoidInfo;
+import com.fy.navi.service.define.route.RouteCurrentPathParam;
 import com.fy.navi.service.define.route.RouteMsgPushInfo;
 import com.fy.navi.service.define.route.RouteParam;
 import com.fy.navi.service.define.route.RoutePreferenceID;
@@ -129,4 +130,10 @@ public interface IRouteApi {
      * @param hwFlag         高架桥状态
      */
     long requestSwitchParallelRoute(int switchRoadType, LocInfoBean locInfoBean, BigInteger roadID, short flag, short hwFlag);
+
+    /**
+     * 发送L2++数据
+     * @param routeCurrentPathParam L2
+     */
+    void sendL2Data(RouteCurrentPathParam routeCurrentPathParam);
 }

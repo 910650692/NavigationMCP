@@ -16,6 +16,10 @@ import com.android.utils.ConvertUtils;
 import com.android.utils.ResourceUtils;
 import com.android.utils.ToastUtils;
 import com.android.utils.log.Logger;
+import com.fy.navi.burypoint.anno.HookMethod;
+import com.fy.navi.burypoint.bean.BuryProperty;
+import com.fy.navi.burypoint.constant.BuryConstant;
+import com.fy.navi.burypoint.controller.BuryPointController;
 import com.fy.navi.scene.BaseSceneView;
 import com.fy.navi.scene.R;
 import com.fy.navi.scene.RoutePath;
@@ -205,6 +209,7 @@ public class SceneSearchHistoryView extends BaseSceneView<MainAlongWaySearchHist
                     SettingUpdateObservable.getInstance().onUpdateSyncTime();
                     closeAllFragmentsUntilTargetFragment("HomeCompanyFragment");
                     showCurrentFragment();
+                    sendBuryPointForAddFavorite(poiInfoEntity, commonName);
                 } else {
                     if (SearchPackage.getInstance().isAlongWaySearch()) {
                         if (!RoutePackage.getInstance().isBelongRouteParam(MapType.MAIN_SCREEN_MAIN_MAP, poiInfoEntity)) {
@@ -245,6 +250,7 @@ public class SceneSearchHistoryView extends BaseSceneView<MainAlongWaySearchHist
                         .setUpdateTime(new Date().getTime());
                 poiInfoEntity.setFavoriteInfo(favoriteInfo);
                 BehaviorPackage.getInstance().addFavorite(poiInfoEntity, commonName);
+                sendBuryPointForAddFavorite(poiInfoEntity, commonName);
 //                BehaviorPackage.getInstance().addFavoriteData(poiInfoEntity, commonName);
                 SettingUpdateObservable.getInstance().onUpdateSyncTime();
                 closeAllFragment();
@@ -369,5 +375,34 @@ public class SceneSearchHistoryView extends BaseSceneView<MainAlongWaySearchHist
      */
     public void notifySilentSearchResult(final SearchResultEntity searchResultEntity) {
 
+    }
+
+    @HookMethod
+    private void sendBuryPointForAddFavorite(final PoiInfoEntity poiInfo, final int type) {
+        if (poiInfo != null) {
+            String eventName = "";
+            String key = BuryConstant.ProperType.BURY_KEY_HOME_PREDICTION;
+            switch (type){
+                case 0:
+                    eventName = BuryConstant.EventName.AMAP_SETTING_FAVORITE_ADD;
+                    key = BuryConstant.ProperType.BURY_KEY_SEARCH_CONTENTS;
+                    break;
+                case 1:
+                    eventName = BuryConstant.EventName.AMAP_HOME_SAVE;
+                    break;
+                case 2:
+                    eventName = BuryConstant.EventName.AMAP_WORK_SAVE;
+                    break;
+                case 3:
+                    eventName = BuryConstant.EventName.AMAP_SETTING_HOT_ADD;
+                    key = BuryConstant.ProperType.BURY_KEY_SEARCH_CONTENTS;
+                    break;
+            }
+            BuryPointController.getInstance().setEventName(eventName);
+            BuryProperty buryProperty = new BuryProperty.Builder()
+                    .setParams(key, poiInfo.getName())
+                    .build();
+            BuryPointController.getInstance().setBuryProps(buryProperty);
+        }
     }
 }

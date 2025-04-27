@@ -53,14 +53,16 @@
 
         <com.fy.navi.ui.view.SkinTextView
             android:id="@+id/sktv_parking_name"
-            android:layout_width="wrap_content"
+            android:layout_width="@dimen/dp_0"
             android:layout_height="@dimen/dp_46"
             android:layout_marginStart="@dimen/dp_16"
             android:layout_marginTop="@dimen/dp_18"
-            android:gravity="center"
+            android:ellipsize="end"
+            android:maxLines="1"
             android:text="@string/st_parking_item_recommended"
             android:textColor="@color/poi_details_bottom_ff_00"
             android:textSize="@dimen/sp_34"
+            app:layout_constraintEnd_toStartOf="@+id/poi_to_navi"
             app:layout_constraintStart_toEndOf="@+id/sktv_parking_item_recommended"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="大雨停车场" />

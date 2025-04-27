@@ -1,5 +1,6 @@
 package com.fy.navi.service.adapter.setting;
 
+import com.fy.navi.service.define.map.ThemeType;
 import com.fy.navi.service.define.route.RoutePreferenceID;
 
 
@@ -210,7 +211,7 @@ public interface SettingApi {
      * @param dayNightMode 白天黑夜 16：自动模式，默认态； 17：日间模式； 18：夜间模式
      * @return 返回错误码
      */
-    int setConfigKeyDayNightMode(int dayNightMode);
+    int setConfigKeyDayNightMode(ThemeType dayNightMode);
 
     /**
      * 获取白天黑夜

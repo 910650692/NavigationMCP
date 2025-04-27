@@ -43,7 +43,21 @@ public class PoiDetailsFragment extends BaseFragment<FragmentPoiDetailsBinding, 
 
     @Override
     public void onInitData() {
+    }
+
+    @Override
+    public void onGetFragmentData() {
+        super.onGetFragmentData();
+        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "onGetFragmentData " );
         getSearchPoiInfo();
+        getBundleData();
+    }
+
+    @Override
+    public void onReStoreFragment() {
+        super.onReStoreFragment();
+        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "onReStoreFragment " );
+        mViewModel.onReStoreFragment();
         getBundleData();
     }
 
@@ -57,9 +71,19 @@ public class PoiDetailsFragment extends BaseFragment<FragmentPoiDetailsBinding, 
      */
     private void getBundleData() {
         final Bundle parsedArgs = getArguments();
-        final int isOpenFromNavi = parsedArgs.getInt(NaviConstant.NAVI_CONTROL, 0);
-        if (isOpenFromNavi == 1) {
-            mBinding.scenePoiDetailContentView.setNaviControl(true);
+        if (parsedArgs != null) {
+            final int isOpenFromNavi = parsedArgs.getInt(NaviConstant.NAVI_CONTROL, 0);
+            final PoiInfoEntity poiInfoEntity = parsedArgs.getParcelable(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_OPEN_DETAIL);
+            final int poiType = parsedArgs.getInt(AutoMapConstant.PoiBundleKey.BUNDLE_KEY_START_POI_TYPE, AutoMapConstant.PoiType.POI_KEYWORD);
+            final int childIndex = parsedArgs.getInt(AutoMapConstant.ChildIndex.BUNDLE_CHILD_INDEX, -1);
+            mSearchResultEntity = parsedArgs.getParcelable(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_SOURCE_DATA);
+            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "poiType " + poiType);
+            mBinding.scenePoiDetailContentView.refreshPoiView(poiType, poiInfoEntity);
+            mBinding.scenePoiDetailContentView.setChildIndex(childIndex);
+            mBinding.scenePoiDetailContentView.setPowerType(mViewModel.powerType());
+            if (isOpenFromNavi == 1) {
+                mBinding.scenePoiDetailContentView.setNaviControl(true);
+            }
         }
     }
 
@@ -76,9 +100,11 @@ public class PoiDetailsFragment extends BaseFragment<FragmentPoiDetailsBinding, 
 //        String sourceFragmentTag = parsedArgs.getString(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SOURCE_FRAGMENT);
         final PoiInfoEntity poiInfoEntity = parsedArgs.getParcelable(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_OPEN_DETAIL);
         final int poiType = parsedArgs.getInt(AutoMapConstant.PoiBundleKey.BUNDLE_KEY_START_POI_TYPE, AutoMapConstant.PoiType.POI_KEYWORD);
+        final int childIndex = parsedArgs.getInt(AutoMapConstant.ChildIndex.BUNDLE_CHILD_INDEX, -1);
         mBinding.scenePoiDetailContentView.refreshPoiView(poiType, poiInfoEntity);
         mSearchResultEntity = parsedArgs.getParcelable(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_SOURCE_DATA);
         mBinding.scenePoiDetailContentView.doSearch(poiInfoEntity);
+        mBinding.scenePoiDetailContentView.setChildIndex(childIndex);
         mBinding.scenePoiDetailContentView.setPowerType(mViewModel.powerType());
     }
 
@@ -99,7 +125,7 @@ public class PoiDetailsFragment extends BaseFragment<FragmentPoiDetailsBinding, 
 
     /**
      * 搜索结果回调
-     *
+     * @param taskId 任务id
      * @param searchResultEntity 搜索结果实体类
      */
     public void onSearchResult(final int taskId, final SearchResultEntity searchResultEntity) {
@@ -115,8 +141,7 @@ public class PoiDetailsFragment extends BaseFragment<FragmentPoiDetailsBinding, 
     }
 
     @Override
-    protected PoiDetailsViewModel initViewModel() {
-        mViewModel = new PoiDetailsViewModel(AppContext.getInstance().getMApplication());
-        return mViewModel;
+    public void onDestroy() {
+        super.onDestroy();
     }
 }

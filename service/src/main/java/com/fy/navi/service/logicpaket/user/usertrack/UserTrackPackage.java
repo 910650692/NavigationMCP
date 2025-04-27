@@ -13,7 +13,9 @@ import com.fy.navi.service.define.search.SearchResultEntity;
 import com.fy.navi.service.define.user.usertrack.DrivingRecordDataBean;
 import com.fy.navi.service.define.user.usertrack.GpsTrackDepthBean;
 import com.fy.navi.service.define.user.usertrack.GpsTrackPointBean;
+import com.fy.navi.service.define.user.usertrack.HistoryRouteItemBean;
 import com.fy.navi.service.define.user.usertrack.SearchHistoryItemBean;
+import com.fy.navi.service.greendao.CommonManager;
 import com.fy.navi.service.greendao.history.History;
 import com.fy.navi.service.greendao.history.HistoryManager;
 import com.fy.navi.service.logicpaket.search.SearchPackage;
@@ -28,12 +30,16 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public final class UserTrackPackage implements UserTrackAdapterCallBack, SearchResultCallback {
     private static final String TAG = MapDefaultFinalTag.USER_TRACK_SERVICE_TAG;
     private final UserTrackAdapter mUserTrackAdapter;
     private Hashtable<String,UserTrackCallBack> mCallBacks;
     private final HistoryManager mHistoryManager;
+    private final CommonManager mCommonManager;
     private boolean mIsNeedShowDialog = false;
     private final String mSPLIT = "_";
     private static final String KEY_X = "x";
@@ -52,6 +58,8 @@ public final class UserTrackPackage implements UserTrackAdapterCallBack, SearchR
         mUserTrackAdapter = UserTrackAdapter.getInstance();
         mHistoryManager = HistoryManager.getInstance();
         mHistoryManager.init();
+        mCommonManager = CommonManager.getInstance();
+        mCommonManager.init();
     }
     private final static int REVERSE_START = 8;
     private final static int REVERSE_FASTEST = 9;
@@ -102,11 +110,39 @@ public final class UserTrackPackage implements UserTrackAdapterCallBack, SearchR
     }
 
     /**
+     * 判断是否登录
+     * @return 是否登录
+     */
+    public boolean isLogin() {
+        return mUserTrackAdapter.isLogin();
+    }
+
+    /**
      * 获取搜索历史记录列表
      * @return 搜索历史记录列表
      */
     public ArrayList<SearchHistoryItemBean> getSearchHistory() {
-        return mUserTrackAdapter.getSearchHistory();
+        if (isLogin()) {
+            return mUserTrackAdapter.getSearchHistory();
+        }
+        return getSearchHistoryFromDB();
+    }
+
+    /**
+     * 从数据库获取搜索历史记录列表
+     * @return 搜索历史记录列表
+     */
+    private ArrayList<SearchHistoryItemBean> getSearchHistoryFromDB() {
+        final ArrayList<SearchHistoryItemBean> list = new ArrayList<>();
+        final List<History> historyList = mHistoryManager.loadHistoryByPage(1,100);
+        if (historyList != null && !historyList.isEmpty()) {
+            for (History history : historyList) {
+                final SearchHistoryItemBean item = new SearchHistoryItemBean();
+                item.setName(history.getMKeyWord());
+                list.add(item);
+            }
+        }
+        return list;
     }
 
     /**
@@ -126,7 +162,26 @@ public final class UserTrackPackage implements UserTrackAdapterCallBack, SearchR
         item1.name = "肯德基";
         item1.category = "50301";
         item1.datatype_spec = "1"; // 可以自己定义 ICON 标记*/
-        return mUserTrackAdapter.addSearchHistory(item);
+        if (isLogin()) {
+            return mUserTrackAdapter.addSearchHistory(item);
+        } else {
+            addSearchHistoryToDB(item);
+        }
+        return 0;
+    }
+
+    /**
+     * 添加搜索历史记录到数据库
+     * @param item 搜索历史记录
+     */
+    private void addSearchHistoryToDB(final SearchHistoryItemBean item) {
+        if (item == null) {
+            return;
+        }
+        final History history = new History();
+        history.setMKeyWord(item.getName());
+        history.setMType(AutoMapConstant.SearchKeywordRecordKey.SEARCH_KEYWORD_RECORD_KEY);
+        mHistoryManager.insertOrReplace(history);
     }
 
     /**
@@ -136,7 +191,174 @@ public final class UserTrackPackage implements UserTrackAdapterCallBack, SearchR
      */
     public int delSearchHistory(final String name) {
         // name = "肯德基";
-        return mUserTrackAdapter.delSearchHistory(name);
+        if (isLogin()) {
+            return mUserTrackAdapter.delSearchHistory(name);
+        } else {
+            return delHistoryFromDB(name);
+        }
+    }
+
+    /**
+     * 从数据库删除搜索历史记录
+     * @param name 搜索历史记录名称
+     * @return 删除结果
+     */
+    private int delHistoryFromDB(final String name) {
+        if (TextUtils.isEmpty(name)) {
+            return -1;
+        }
+        final List<History> history = mHistoryManager.getValueByType(name);
+        if (history != null) {
+            mHistoryManager.deleteValueByKey(name);
+        }
+        return 0;
+    }
+
+    /**
+     * 删除所有搜索历史记录
+     * @return 删除结果
+     */
+    public int clearSearchHistory(){
+        if (isLogin()) {
+            mUserTrackAdapter.clearSearchHistory();
+        } else {
+            mHistoryManager.deleteValueByKey(AutoMapConstant.SearchKeywordRecordKey.SEARCH_KEYWORD_RECORD_KEY);
+        }
+        return 0;
+    }
+
+    /**
+     * 获取历史路线列表
+     * @return 历史路线列表
+     */
+    public ArrayList<HistoryRouteItemBean> getHistoryRoute() {
+        if (isLogin()) {
+            return mUserTrackAdapter.getHistoryRoute();
+        } else {
+            return getHistoryRouteFromDB();
+        }
+    }
+
+    /**
+     * 从数据库获取历史路线列表
+     * @return 历史路线列表
+     */
+    private ArrayList<HistoryRouteItemBean> getHistoryRouteFromDB() {
+        final ArrayList<HistoryRouteItemBean> list = new ArrayList<>();
+        final List<History> historyList = mHistoryManager.getValueByType(AutoMapConstant.SearchKeywordRecordKey.SEARCH_NAVI_RECORD_KEY);
+        if (historyList != null && !historyList.isEmpty()) {
+            for (History history : historyList) {
+                final HistoryRouteItemBean item = new HistoryRouteItemBean();
+                item.getToPoi().setName(history.getMKeyWord());
+                item.getToPoi().setPoiId(history.getMPoiId());
+                item.getToPoi().setPoiLoc(parseGeoPoint(history.getMEndPoint()));
+                item.getFromPoi().setName(history.getMStartPoiName());
+                item.getFromPoi().setPoiLoc(parseGeoPoint(history.getMStartPoint()));
+                item.setType(history.getMType());
+                item.setTime(history.getMUpdateTime());
+                list.add(item);
+            }
+        }
+        return list;
+    }
+
+    /**
+     * 解析geoPoint字符串
+     * @param geoPointString geoPoint字符串
+     * @return GeoPoint
+     */
+    private GeoPoint parseGeoPoint(final String geoPointString) {
+        final Pattern pattern = Pattern.compile("lon=([-\\d.]+), lat=([-\\d.]+)");
+        final Matcher matcher = pattern.matcher(geoPointString);
+
+        double lon = 0.0;
+        double lat = 0.0;
+
+        if (matcher.find()) {
+            lon = Double.parseDouble(Objects.requireNonNull(matcher.group(1)));
+            lat = Double.parseDouble(Objects.requireNonNull(matcher.group(2)));
+        } else {
+            Logger.e("parseGeoPoint: No match found for GeoPoint string: " + geoPointString);
+        }
+        return new GeoPoint(lon, lat);
+    }
+
+    /**
+     * 添加历史路线
+     * @param item 历史路线
+     * @return 添加结果
+     */
+    public int addHistoryRoute(final HistoryRouteItemBean item) {
+        if (isLogin()) {
+            return mUserTrackAdapter.addHistoryRoute(item);
+        } else {
+            addHistoryRouteToDB(item);
+        }
+        return 0;
+    }
+
+    /**
+     * 添加历史路线到数据库
+     * @param item 历史路线
+     */
+    private void addHistoryRouteToDB(final HistoryRouteItemBean item) {
+        if (item == null) {
+            return;
+        }
+        final History history = new History();
+        history.setMType(AutoMapConstant.SearchKeywordRecordKey.SEARCH_NAVI_RECORD_KEY);
+        history.setMPoiId(item.getToPoi().getPoiId());
+        history.setMStartPoint(item.getFromPoi().getPoiLoc().toString());
+        history.setMEndPoint(item.getToPoi().getPoiLoc().toString());
+        history.setMStartPoiName(item.getFromPoi().getName());
+        history.setMEndPoiName(item.getToPoi().getName());
+        history.setMIsCompleted(item.getIsCompleted());
+        history.setMUpdateTime(item.getTime());
+        mHistoryManager.insertOrReplace(history);
+    }
+
+    /**
+     * 删除历史路线
+     * @param bean 历史路线名称
+     * @return 删除结果
+     */
+    public int delHistoryRoute(final HistoryRouteItemBean bean) {
+        if (isLogin()) {
+            return mUserTrackAdapter.delHistoryRoute(bean);
+        } else {
+            return delHistoryRouteFromDB(bean);
+        }
+   }
+
+    /**
+     * 从数据库删除历史路线
+     * @param bean 历史路线
+     * @return 删除结果
+     */
+    private int delHistoryRouteFromDB(final HistoryRouteItemBean bean) {
+        if (bean == null) {
+            return -1;
+        }
+        final List<History> history = mHistoryManager.getByStartEndPoiAndTime(
+                bean.getFromPoi().getName(), bean.getToPoi().getName(), bean.getTime());
+        if (history != null) {
+            mHistoryManager.deleteByStartEndPoiAndTime(
+                    bean.getFromPoi().getName(), bean.getToPoi().getName(), bean.getTime());
+        }
+        return 0;
+    }
+
+    /**
+     * 删除历史路线
+     * @return 删除结果
+     */
+    public int clearHistoryRoute() {
+        if (isLogin()) {
+            return mUserTrackAdapter.clearHistoryRoute();
+        } else {
+            mHistoryManager.deleteValueByKey(AutoMapConstant.SearchKeywordRecordKey.SEARCH_NAVI_RECORD_KEY);
+        }
+        return 0;
     }
 
     /**

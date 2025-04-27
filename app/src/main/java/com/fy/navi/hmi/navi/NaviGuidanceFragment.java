@@ -41,6 +41,7 @@ import com.fy.navi.ui.base.BaseFragment;
 import com.fy.navi.ui.base.StackManager;
 
 import java.util.List;
+import java.util.Objects;
 
 public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBinding, NaviGuidanceViewModel> {
     private static final String TAG = "NaviGuidanceFragment";
@@ -59,6 +60,7 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
     public void onInitView() {
         PermissionUtils.getInstance().requestMediaProjection();
         mBinding.sceneNaviControl.setScreenId(MapType.valueOf(mScreenId));
+        mBinding.sceneNaviControlMore.setScreenId(MapType.valueOf(mScreenId));
         mBinding.sceneNaviPreference.setScreenId(MapType.valueOf(mScreenId));
         mBinding.sceneNaviTbt.setScreenId(MapType.valueOf(mScreenId));
         mBinding.sceneNaviCrossImage.setScreenId(MapType.valueOf(mScreenId));
@@ -219,6 +221,7 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
      */
     public void onImmersiveStatusChange(final ImersiveStatus currentImersiveStatus) {
         mBinding.sceneNaviControl.onImmersiveStatusChange(currentImersiveStatus);
+        mBinding.sceneNaviControlMore.onImmersiveStatusChange(currentImersiveStatus);
         mBinding.sceneNaviContinue.onImmersiveStatusChange(currentImersiveStatus);
         mBinding.sceneNaviCrossImage.onImmersiveStatusChange(currentImersiveStatus);
     }
@@ -230,6 +233,7 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
      */
     public void addSceneCallback(final ISceneCallback sceneCallback) {
         mBinding.sceneNaviControl.addSceneCallback(sceneCallback);
+        mBinding.sceneNaviControlMore.addSceneCallback(sceneCallback);
         mBinding.sceneNaviViaList.addSceneCallback(sceneCallback);
         mBinding.sceneNaviLastMile.addSceneCallback(sceneCallback);
         mBinding.sceneNaviViaInfo.addSceneCallback(sceneCallback);
@@ -344,7 +348,7 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
      * 导航继续
      */
     public void naviContinue() {
-        mBinding.sceneNaviControl.naviContinue();
+        mBinding.sceneNaviContinue.naviContinueByVoice();
     }
 
     /**
@@ -366,7 +370,7 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
      */
     public void onNetStatusChange(boolean isConnected) {
         mBinding.sceneNaviPreference.onNetStatusChange(isConnected);
-        mBinding.sceneNaviControl.onNetStatusChange(isConnected);
+        mBinding.sceneNaviControlMore.onNetStatusChange(isConnected);
     }
 
     /**
@@ -414,10 +418,18 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
     public void showNaviContent() {
         Logger.i(TAG, "showNaviContent");
         mBinding.naviSceneContainer.setVisibility(VISIBLE);
+        // 如果路口大图还是显示状态就继续显示
+        if (mBinding.sceneNaviCrossImage.getVisibility() == VISIBLE) {
+            mBinding.sceneNaviCrossImage.showLayerCross();
+        }
     }
 
     public void hideNaviContent() {
         Logger.i(TAG, "hideNaviContent");
+        // 如果路口大图是展示状态就进行隐藏
+        if (mBinding.sceneNaviCrossImage.getVisibility() == VISIBLE) {
+            mBinding.sceneNaviCrossImage.hideLayerCross();
+        }
         mBinding.naviSceneContainer.setVisibility(INVISIBLE);
     }
 
@@ -449,6 +461,61 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
             } else {
                 Logger.i(TAG, "onHiddenChanged mViewModel is null");
             }
+        }
+    }
+
+    /**
+     * 修改TBT面板的圆角样式
+     */
+    public void updateViewRadius() {
+        if (mViewModel == null) {
+            return;
+        }
+        if (Objects.equals(mViewModel.mNaviCrossImageVisibility.get(), Boolean.TRUE)) {
+            mBinding.sceneNaviEta.setBackgroundResource
+                    (com.fy.navi.scene.R.drawable.bg_navi_tbt_bottom);
+            return;
+        }
+        boolean isLastCarLine = Objects.equals(mViewModel.mNaviLanesVisibility.get(),
+                Boolean.TRUE) &&
+                Objects.equals(mViewModel.mNaviViaInfoVisibility.get(), Boolean.FALSE);
+        if (isLastCarLine) {
+            mBinding.sceneNaviLanes.setBackgroundResource(
+                    com.fy.navi.scene.R.drawable.bg_navi_tbt_bottom);
+            mBinding.sceneNaviTmc.setBackgroundResource(
+                    com.fy.navi.scene.R.drawable.bg_navi_tbt_middle);
+            mBinding.sceneNaviEta.setBackgroundResource(
+                    com.fy.navi.scene.R.drawable.bg_navi_tbt_middle);
+            return;
+        }
+        boolean isLastViaInfo = Objects.equals(mViewModel.mNaviViaInfoVisibility.get(),
+                Boolean.TRUE);
+        if (isLastViaInfo) {
+            mBinding.sceneNaviLanes.setBackgroundResource(
+                    com.fy.navi.scene.R.drawable.bg_navi_tbt_middle);
+            mBinding.sceneNaviTmc.setBackgroundResource(
+                    com.fy.navi.scene.R.drawable.bg_navi_tbt_middle);
+            mBinding.sceneNaviEta.setBackgroundResource(
+                    com.fy.navi.scene.R.drawable.bg_navi_tbt_middle);
+            return;
+        }
+        boolean isLastTmc = Objects.equals(mViewModel.mNaviTmcVisibility.get(), Boolean.TRUE) &&
+                Objects.equals(mViewModel.mNaviLanesVisibility.get(), Boolean.FALSE) &&
+                Objects.equals(mViewModel.mNaviViaInfoVisibility.get(), Boolean.FALSE);
+        if (isLastTmc) {
+            mBinding.sceneNaviEta.setBackgroundResource(
+                    com.fy.navi.scene.R.drawable.bg_navi_tbt_middle);
+            mBinding.sceneNaviTmc.setBackgroundResource(
+                    com.fy.navi.scene.R.drawable.bg_navi_tbt_bottom);
+            return;
+        }
+        boolean isLastEta = Objects.equals(mViewModel.mNaviEtaVisibility.get(), Boolean.TRUE) &&
+                Objects.equals(mViewModel.mNaviTmcVisibility.get(), Boolean.FALSE) &&
+                Objects.equals(mViewModel.mNaviLanesVisibility.get(), Boolean.FALSE) &&
+                Objects.equals(mViewModel.mNaviViaInfoVisibility.get(), Boolean.FALSE);
+        if (isLastEta) {
+            mBinding.sceneNaviEta.setBackgroundResource(
+                    com.fy.navi.scene.R.drawable.bg_navi_tbt_bottom);
         }
     }
 }

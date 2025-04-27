@@ -35,6 +35,7 @@ public class BaseSettingGuideViewModel extends BaseViewModel<SettingNaviFragment
     public MutableLiveData<Boolean> mIsAvoidLimit = new MutableLiveData<>(false);
     public MutableLiveData<Boolean> mIsPlateNumber = new MutableLiveData<>(false);
     public MutableLiveData<Boolean> mIsVehicleGuide = new MutableLiveData<>(true);
+    public MutableLiveData<Boolean> mIsLaneLevelVisibility = new MutableLiveData<>(false);
     public MutableLiveData<Boolean> mIsChargingPlan = new MutableLiveData<>(true);
     public MutableLiveData<Boolean> mIsMapModel3DUp = new MutableLiveData<>(false);
     public MutableLiveData<Boolean> mIsMapModel2DUp = new MutableLiveData<>(true);
@@ -299,6 +300,14 @@ public class BaseSettingGuideViewModel extends BaseViewModel<SettingNaviFragment
                 mModel.setConfigKeyPlateNumber("");
             }
         }
+    }
+
+    /**
+     * 设置车道级导航是否可见
+     * @param isVisible true 显示 false 隐藏
+     */
+    public void setLaneLevelVisibility(final boolean isVisible) {
+        mIsLaneLevelVisibility.setValue(isVisible);
     }
 
     /**
