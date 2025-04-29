@@ -26,6 +26,7 @@ import java.util.ArrayList;
 
 public class BehaviorAdapterImpl implements IBehaviorApi {
     private static final String TAG = MapDefaultFinalTag.FAVORITE_SERVICE_TAG;
+    public static final float BASE_POINT = 3600000.0F;
     private BehaviorAdapterImplHelper mAdapterImplHelper;
     private BehaviorService mBehaviorService;
     private SyncSdkService mSyncSdkService;
@@ -131,7 +132,7 @@ public class BehaviorAdapterImpl implements IBehaviorApi {
                     .setAdCode(ConvertUtils.str2Int(item.city_code))
                     .setAddress(item.address)
                     .setPhone(item.phone_numbers)
-                    .setPoint(new GeoPoint(item.point_x, item.point_y))
+                    .setPoint(new GeoPoint(item.point_x / BASE_POINT, item.point_y / BASE_POINT))
                     .setName(item.name)
                     .setFavoriteInfo(info);
 
@@ -164,14 +165,15 @@ public class BehaviorAdapterImpl implements IBehaviorApi {
                         .setClassification(item.classification)
                         .setTop_time(item.top_time);
 
-                final PoiInfoEntity simpleFavoriteInfo = new PoiInfoEntity()
-                        .setPid(String.valueOf(item.id))
+                PoiInfoEntity simpleFavoriteInfo = new PoiInfoEntity()
+//                        .setPid(String.valueOf(item.id))
                         .setAdCode(ConvertUtils.str2Int(item.city_code))
                         .setAddress(item.address)
                         .setPhone(item.phone_numbers)
-                        .setPoint(new GeoPoint(item.point_x, item.point_y))
+                        .setPoint(new GeoPoint(item.point_x / BASE_POINT, item.point_y / BASE_POINT))
                         .setName(item.name)
                         .setFavoriteInfo(info);
+                simpleFavoriteInfo = getFavorite(simpleFavoriteInfo);
                 dataList.add(simpleFavoriteInfo);
             }
         }
@@ -201,29 +203,33 @@ public class BehaviorAdapterImpl implements IBehaviorApi {
         final FavoriteBaseItem baseItem = new FavoriteBaseItem();
         baseItem.item_id = baseInfo.getFavoriteInfo().getItemId();
         baseItem.poiid = baseInfo.getPid();
-        baseItem.point_x = (int) baseInfo.getPoint().getLon();
-        baseItem.point_y = (int) baseInfo.getPoint().getLat();
+        baseItem.point_x = (int) (baseInfo.getPoint().getLon() * BASE_POINT);
+        baseItem.point_y = (int) (baseInfo.getPoint().getLat() * BASE_POINT);
         baseItem.name = baseInfo.getName();
 
         final FavoriteItem favoriteItem = mBehaviorService.getFavorite(baseItem);
         //HMI进行业务处理
-        final FavoriteInfo favoriteInfo = new FavoriteInfo()
-                .setItemId(favoriteItem.item_id)
-                .setCommonName(favoriteItem.common_name)
-                .setTag(favoriteItem.tag)
-                .setType(favoriteItem.type)
-                .setNewType(favoriteItem.newType)
-                .setCustom_name(favoriteItem.custom_name)
-                .setClassification(favoriteItem.classification)
-                .setTop_time(favoriteItem.top_time);
-        final PoiInfoEntity info = new PoiInfoEntity()
-                .setPid(String.valueOf(favoriteItem.poiid))
-                .setAdCode(ConvertUtils.str2Int(favoriteItem.city_code))
-                .setAddress(favoriteItem.address)
-                .setPhone(favoriteItem.phone_numbers)
-                .setPoint(new GeoPoint(favoriteItem.point_x, favoriteItem.point_y))
-                .setFavoriteInfo(favoriteInfo);
-        return info;
+        if (favoriteItem != null) {
+            final FavoriteInfo favoriteInfo = new FavoriteInfo()
+                    .setItemId(favoriteItem.item_id)
+                    .setCommonName(favoriteItem.common_name)
+                    .setTag(favoriteItem.tag)
+                    .setType(favoriteItem.type)
+                    .setNewType(favoriteItem.newType)
+                    .setCustom_name(favoriteItem.custom_name)
+                    .setClassification(favoriteItem.classification)
+                    .setTop_time(favoriteItem.top_time);
+            final PoiInfoEntity info = new PoiInfoEntity()
+                    .setPid(String.valueOf(favoriteItem.poiid))
+                    .setAdCode(ConvertUtils.str2Int(favoriteItem.city_code))
+                    .setAddress(favoriteItem.address)
+                    .setPhone(favoriteItem.phone_numbers)
+                    .setName(favoriteItem.name)
+                    .setPoint(new GeoPoint(baseItem.point_x / BASE_POINT, baseItem.point_y / BASE_POINT))
+                    .setFavoriteInfo(favoriteInfo);
+            return info;
+        }
+        return baseInfo;
     }
 
     /**
@@ -242,11 +248,11 @@ public class BehaviorAdapterImpl implements IBehaviorApi {
         item.address = poiInfo.getAddress();
         item.common_name = poiInfo.getFavoriteInfo().getCommonName();
         item.name = poiInfo.getName();
-        item.point_x = (int) poiInfo.getPoint().getLon();
-        item.point_y = (int) poiInfo.getPoint().getLat();
+        item.point_x = (int) (poiInfo.getPoint().getLon() * BASE_POINT);
+        item.point_y = (int) (poiInfo.getPoint().getLat() * BASE_POINT);
         // 添加成功返回 FavoriteItem 对应的存档ID
         final String result = mBehaviorService.addFavorite(item, SyncMode.SyncModeNow);
-        Logger.d(TAG, "addFavorite result = ", result);
+        Logger.d(TAG, "addFavorite result = ", result + " " + item.point_x);
         return result;
     }
 
@@ -262,8 +268,8 @@ public class BehaviorAdapterImpl implements IBehaviorApi {
         final FavoriteBaseItem delItem = new FavoriteBaseItem();
         delItem.item_id = poiInfo.getFavoriteInfo().getItemId();
         delItem.poiid = poiInfo.getPid();
-        delItem.point_x = (int) poiInfo.getPoint().getLon();
-        delItem.point_y = (int) poiInfo.getPoint().getLat();
+        delItem.point_x = (int) (poiInfo.getPoint().getLon() * BASE_POINT);
+        delItem.point_y = (int) (poiInfo.getPoint().getLat() * BASE_POINT);
         delItem.name = poiInfo.getName();
         Logger.d(TAG, "delFavorite", GsonUtils.toJson(delItem));
         // 删除成功返回 FavoriteBaseItem对应的存档ID
@@ -285,8 +291,8 @@ public class BehaviorAdapterImpl implements IBehaviorApi {
         }
         final FavoriteBaseItem favoriteInfo = new FavoriteBaseItem();
         favoriteInfo.poiid = poiInfo.getPid();
-        favoriteInfo.point_x = (int) poiInfo.getPoint().getLon();
-        favoriteInfo.point_y = (int) poiInfo.getPoint().getLat();
+        favoriteInfo.point_x = (int) (poiInfo.getPoint().getLon() * BASE_POINT);
+        favoriteInfo.point_y = (int) (poiInfo.getPoint().getLat() * BASE_POINT);
         favoriteInfo.name = poiInfo.getName();
         // 返回 收藏点存档ID 表示已收藏
         final String result = mBehaviorService.isFavorited(favoriteInfo);
@@ -309,8 +315,8 @@ public class BehaviorAdapterImpl implements IBehaviorApi {
         final FavoriteBaseItem baseItem = new FavoriteBaseItem();
         baseItem.item_id = info.getFavoriteInfo().getItemId();
         baseItem.poiid = info.getPid();
-        baseItem.point_x = (int) info.getPoint().getLon();
-        baseItem.point_y = (int) info.getPoint().getLat();
+        baseItem.point_x = (int) (info.getPoint().getLon() * BASE_POINT);
+        baseItem.point_y = (int) (info.getPoint().getLat() * BASE_POINT);
         baseItem.name = info.getName();
         final String ret = mBehaviorService.topFavorite(baseItem, isSetTop, SyncMode.SyncModeNow);
         Logger.d(TAG, "topFavorite ret = ", ret);
@@ -330,8 +336,8 @@ public class BehaviorAdapterImpl implements IBehaviorApi {
         final FavoriteBaseItem baseItem = new FavoriteBaseItem();
         baseItem.item_id = detailInfo.getFavoriteInfo().getItemId();
         baseItem.poiid = detailInfo.getPid();
-        baseItem.point_x = (int) detailInfo.getPoint().getLon();
-        baseItem.point_y = (int) detailInfo.getPoint().getLat();
+        baseItem.point_x = (int) (detailInfo.getPoint().getLon() * BASE_POINT);
+        baseItem.point_y = (int) (detailInfo.getPoint().getLat() * BASE_POINT);
         baseItem.name = detailInfo.getName();
         final FavoriteItem detailItem = mBehaviorService.getFavorite(baseItem);
         // 2 重命名

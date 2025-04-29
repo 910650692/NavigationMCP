@@ -477,10 +477,10 @@ public class AccountAdapterImplHelper implements IAccountServiceObserver {
     /**
      * 获取账户accessToken
      * @param param 详细说明见AccessTokenParam
-     * @return accessToken 获取失败返回空串, "-1"为无效值需要稍后重试
+     * @return accessToken 获取失败返回空串
      */
     public String getAccessToken(final AccessTokenParam param) {
-        String authTokenToken = "";
+        String authToken = "";
         try {
             final AccountManagerFuture<Bundle> future =
                     mAccountManager.getAuthTokenByFeatures(
@@ -493,15 +493,12 @@ public class AccountAdapterImplHelper implements IAccountServiceObserver {
                             param.getMCallback(),
                             param.getMHandler());
             final Bundle bnd = future.getResult();
-            authTokenToken = bnd.getString(AccountManager.KEY_AUTHTOKEN);
-            Logger.i(TAG, "authTokenToken : " + authTokenToken);
+            authToken = bnd.getString(AccountManager.KEY_AUTHTOKEN);
+            Logger.i(TAG, "authToken : " + authToken);
         } catch (OperationCanceledException | AuthenticatorException | IOException e) {
             Logger.e(TAG, e.getMessage());
         }
-        if (ConvertUtils.equals(authTokenToken, "-1")) {
-            Logger.e(TAG, "authTokenToken 无效值，请稍后再试");
-        }
-        return authTokenToken;
+        return authToken;
     }
 
     /**

@@ -15,6 +15,10 @@
         android:clickable="true"
         android:background="@drawable/bg_setting_fragment">
 
+        <com.android.car.ui.FocusParkingView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
         <com.fy.navi.ui.view.SkinConstraintLayout
             android:id="@+id/car_connect_title_layout"
             android:layout_width="match_parent"
@@ -22,10 +26,27 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" >
 
+            <com.android.car.ui.FocusArea
+                android:id="@+id/focus_close"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:nudgeDown="@+id/focus_tab"
+                app:nudgeUp="@+id/focus_tab">
+
+                <com.fy.navi.ui.view.SkinView
+                    clickCommand="@{ViewModel.mCarConnectBack}"
+                    android:layout_width="@dimen/dp_74"
+                    android:layout_height="@dimen/dp_74"
+                    android:layout_marginStart="@dimen/dp_32"
+                    android:layout_marginTop="@dimen/dp_48"
+                    android:focusable="true"
+                    android:background="@drawable/bg_base_mfc_cadillac_bg_selector"/>
+            </com.android.car.ui.FocusArea>
+
             <com.fy.navi.ui.view.SkinImageView
-                clickCommand="@{ViewModel.mCarConnectBack}"
                 android:layout_width="@dimen/dp_74"
                 android:layout_height="@dimen/dp_74"
+                android:focusable="false"
                 android:layout_marginStart="@dimen/dp_32"
                 android:layout_marginTop="@dimen/dp_48"
                 android:src="@drawable/img_basic_ic_back"
@@ -39,6 +60,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/car_connect_title"
                 android:textSize="@dimen/sp_46"
+                android:focusable="false"
                 android:textColor="@color/black"
                 android:layout_marginTop="@dimen/dp_52"
                 android:layout_marginStart="@dimen/dp_697"
@@ -51,6 +73,7 @@
             android:id="@+id/line_view"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_1"
+            android:focusable="false"
             app:layout_constraintTop_toBottomOf="@+id/car_connect_title_layout"
             android:background="@color/transparent"/>
 
@@ -58,6 +81,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_0"
             android:orientation="vertical"
+            android:focusable="false"
             app:layout_constraintTop_toBottomOf="@+id/line_view"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -67,6 +91,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
+                android:focusable="false"
                 android:layout_marginTop="@dimen/dp_73"
                 android:gravity="center">
 
@@ -74,12 +99,14 @@
                     android:id="@+id/iv_user_icon"
                     android:layout_width="@dimen/dp_112"
                     android:layout_height="@dimen/dp_112"
+                    android:focusable="false"
                     android:src="@mipmap/default_user_icon" />
 
                 <com.fy.navi.ui.view.SkinLinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
+                    android:focusable="false"
                     android:layout_marginStart="@dimen/dp_24">
 
                     <com.fy.navi.ui.view.SkinTextView
@@ -88,6 +115,7 @@
                         android:layout_height="wrap_content"
                         android:text="@string/car_connect_login_user_name"
                         android:textSize="@dimen/sp_46"
+                        android:focusable="false"
                         android:textColor="@color/black" />
 
                     <com.fy.navi.ui.view.SkinTextView
@@ -97,6 +125,7 @@
                         android:layout_marginTop="@dimen/dp_8"
                         android:text="@string/car_connect_login_not_connected"
                         android:textSize="@dimen/sp_38"
+                        android:focusable="false"
                         android:textColor="@color/color_black_70"/>
 
                 </com.fy.navi.ui.view.SkinLinearLayout>
@@ -107,6 +136,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_310"
                 android:orientation="horizontal"
+                android:focusable="false"
                 android:layout_marginTop="@dimen/dp_83"
                 android:paddingHorizontal="@dimen/dp_52">
 
@@ -115,7 +145,8 @@
                     android:layout_width="@dimen/dp_0"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:background="@drawable/bg_car_connect_function">
+                    android:focusable="true"
+                    android:background="@drawable/bg_car_connect_function_selector">
 
                     <com.fy.navi.ui.view.SkinTextView
                         android:id="@+id/tv_car_connect_login_function_1"
@@ -124,6 +155,7 @@
                         android:text="@string/car_connect_login_function_1"
                         android:textColor="@color/black"
                         android:textSize="@dimen/sp_46"
+                        android:focusable="false"
                         android:layout_marginTop="@dimen/dp_32"
                         android:layout_marginStart="@dimen/dp_40"
                         app:layout_constraintTop_toTopOf="parent"
@@ -135,6 +167,7 @@
                         android:text="@string/car_connect_login_function_1_des"
                         android:textColor="@color/color_black_70"
                         android:textSize="@dimen/sp_32"
+                        android:focusable="false"
                         android:layout_marginTop="@dimen/dp_16"
                         app:layout_constraintTop_toBottomOf="@+id/tv_car_connect_login_function_1"
                         app:layout_constraintStart_toStartOf="@+id/tv_car_connect_login_function_1"/>
@@ -143,6 +176,7 @@
                         android:layout_width="@dimen/dp_90"
                         android:layout_height="@dimen/dp_90"
                         android:src="@drawable/remote_navi"
+                        android:focusable="false"
                         android:layout_marginEnd="@dimen/dp_24"
                         android:layout_marginBottom="@dimen/dp_24"
                         app:layout_constraintBottom_toBottomOf="parent"
@@ -156,7 +190,7 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:layout_marginStart="@dimen/dp_25"
-                    android:background="@drawable/bg_car_connect_function">
+                    android:background="@drawable/bg_car_connect_function_selector">
 
                     <com.fy.navi.ui.view.SkinTextView
                         android:id="@+id/tv_car_connect_login_function_2"
@@ -165,6 +199,7 @@
                         android:text="@string/car_connect_login_function_2"
                         android:textColor="@color/black"
                         android:textSize="@dimen/sp_46"
+                        android:focusable="false"
                         android:layout_marginTop="@dimen/dp_32"
                         android:layout_marginStart="@dimen/dp_40"
                         app:layout_constraintTop_toTopOf="parent"
@@ -176,6 +211,7 @@
                         android:text="@string/car_connect_login_function_2_des"
                         android:textColor="@color/color_black_70"
                         android:textSize="@dimen/sp_32"
+                        android:focusable="false"
                         android:layout_marginTop="@dimen/dp_16"
                         app:layout_constraintTop_toBottomOf="@+id/tv_car_connect_login_function_2"
                         app:layout_constraintStart_toStartOf="@+id/tv_car_connect_login_function_2"/>
@@ -184,6 +220,7 @@
                         android:layout_width="@dimen/dp_90"
                         android:layout_height="@dimen/dp_90"
                         android:src="@drawable/no_sense_connnect"
+                        android:focusable="false"
                         android:layout_marginEnd="@dimen/dp_24"
                         android:layout_marginBottom="@dimen/dp_24"
                         app:layout_constraintBottom_toBottomOf="parent"
@@ -197,7 +234,7 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:layout_marginStart="@dimen/dp_25"
-                    android:background="@drawable/bg_car_connect_function">
+                    android:background="@drawable/bg_car_connect_function_selector">
 
                     <com.fy.navi.ui.view.SkinTextView
                         android:id="@+id/tv_car_connect_login_function_3"
@@ -206,6 +243,7 @@
                         android:text="@string/car_connect_login_function_3"
                         android:textColor="@color/black"
                         android:textSize="@dimen/sp_46"
+                        android:focusable="false"
                         android:layout_marginTop="@dimen/dp_32"
                         android:layout_marginStart="@dimen/dp_40"
                         app:layout_constraintTop_toTopOf="parent"
@@ -217,6 +255,7 @@
                         android:text="@string/car_connect_login_function_3_des"
                         android:textColor="@color/color_black_70"
                         android:textSize="@dimen/sp_32"
+                        android:focusable="false"
                         android:layout_marginTop="@dimen/dp_16"
                         app:layout_constraintTop_toBottomOf="@+id/tv_car_connect_login_function_3"
                         app:layout_constraintStart_toStartOf="@+id/tv_car_connect_login_function_3"/>
@@ -225,6 +264,7 @@
                         android:layout_width="@dimen/dp_90"
                         android:layout_height="@dimen/dp_90"
                         android:src="@drawable/find_car"
+                        android:focusable="false"
                         android:layout_marginEnd="@dimen/dp_24"
                         android:layout_marginBottom="@dimen/dp_24"
                         app:layout_constraintBottom_toBottomOf="parent"
@@ -238,7 +278,7 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:layout_marginStart="@dimen/dp_25"
-                    android:background="@drawable/bg_car_connect_function">
+                    android:background="@drawable/bg_car_connect_function_selector">
 
                     <com.fy.navi.ui.view.SkinTextView
                         android:id="@+id/tv_car_connect_login_function_4"
@@ -247,6 +287,7 @@
                         android:text="@string/car_connect_login_function_4"
                         android:textColor="@color/black"
                         android:textSize="@dimen/sp_46"
+                        android:focusable="false"
                         android:layout_marginTop="@dimen/dp_32"
                         android:layout_marginStart="@dimen/dp_40"
                         app:layout_constraintTop_toTopOf="parent"
@@ -258,6 +299,7 @@
                         android:text="@string/car_connect_login_function_4_des"
                         android:textColor="@color/color_black_70"
                         android:textSize="@dimen/sp_32"
+                        android:focusable="false"
                         android:layout_marginTop="@dimen/dp_16"
                         app:layout_constraintTop_toBottomOf="@+id/tv_car_connect_login_function_4"
                         app:layout_constraintStart_toStartOf="@+id/tv_car_connect_login_function_4"/>
@@ -266,6 +308,7 @@
                         android:layout_width="@dimen/dp_90"
                         android:layout_height="@dimen/dp_90"
                         android:src="@drawable/data_sync"
+                        android:focusable="false"
                         android:layout_marginEnd="@dimen/dp_24"
                         android:layout_marginBottom="@dimen/dp_24"
                         app:layout_constraintBottom_toBottomOf="parent"
@@ -276,10 +319,12 @@
             </com.fy.navi.ui.view.SkinLinearLayout>
 
             <com.fy.navi.ui.view.SkinLinearLayout
+                clickCommand="@{ViewModel.mLastOneMile}"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_80"
-                android:gravity="center">
+                android:gravity="center"
+                android:background="@drawable/bg_base_mfc_cadillac_bg_selector">
 
                 <com.fy.navi.ui.view.SkinCheckBox
                     android:id="@+id/cb_car_connect_login_function"

@@ -14,137 +14,163 @@
         android:layout_height="@dimen/dp_1000"
         android:clickable="true">
 
-        <com.fy.navi.ui.view.SkinConstraintLayout
+        <com.android.car.ui.FocusParkingView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <com.android.car.ui.FocusArea
+            android:id="@+id/focus_close"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@drawable/bg_setting_fragment">
+            app:nudgeDown="@+id/focus_tab"
+            app:nudgeUp="@+id/focus_tab">
 
-            <com.fy.navi.ui.view.SkinLinearLayout
-                android:id="@+id/setting_plate_number_title"
+            <com.fy.navi.ui.view.SkinConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_174"
-                android:orientation="horizontal">
+                android:layout_height="match_parent"
+                android:focusable="false"
+                android:background="@drawable/bg_setting_fragment">
+
+                <com.fy.navi.ui.view.SkinLinearLayout
+                    android:id="@+id/setting_plate_number_title"
+                    android:layout_width="match_parent"
+                    android:focusable="false"
+                    android:layout_height="@dimen/dp_174"
+                    android:orientation="horizontal">
+
+                    <com.fy.navi.ui.view.SkinImageView
+                        clickCommand="@{viewModel.mClosePlateNumber}"
+                        android:layout_width="@dimen/dp_74"
+                        android:layout_height="@dimen/dp_74"
+                        android:layout_marginStart="@dimen/dp_32"
+                        android:layout_gravity="center"
+                        android:focusable="true"
+                        android:background="@drawable/bg_base_mfc_cadillac_bg_selector"
+                        android:src="@drawable/img_setting_back" />
+
+                    <com.fy.navi.ui.view.SkinTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/dp_579"
+                        android:layout_gravity="center"
+                        android:focusable="false"
+                        android:text="@string/setting_guide_plate_number_my"
+                        android:textColor="@color/setting_bg_tab_text_select"
+                        android:textSize="@dimen/sp_52" />
+
+                    <com.fy.navi.ui.view.SkinTextView
+                        android:id="@+id/setting_plate_number_finish"
+                        clickCommand="@{viewModel.mPlateNumberInputFinish}"
+                        android:layout_width="@dimen/dp_240"
+                        android:layout_height="@dimen/dp_96"
+                        android:layout_marginStart="@dimen/dp_393"
+                        android:background="@drawable/bg_setting_dialog_confirm_selector"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:focusable="true"
+                        android:text="@string/setting_guide_plate_number_finish"
+                        android:textColor="@color/setting_white"
+                        android:textSize="@dimen/sp_46" />
+                </com.fy.navi.ui.view.SkinLinearLayout>
+
+                <com.fy.navi.ui.view.SkinTextView
+                    android:id="@+id/setting_plate_number_title_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dp_52"
+                    android:layout_marginTop="@dimen/dp_30"
+                    android:text="@string/setting_guide_plate_number_text"
+                    android:textColor="@color/setting_bg_tab_text_select"
+                    android:textSize="@dimen/sp_46"
+                    android:focusable="false"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/setting_plate_number_title" />
+
+                <com.fy.navi.ui.view.SkinTextView
+                    android:id="@+id/setting_plate_number_province"
+                    clickCommand="@{viewModel.mShowProvinceKeyboard}"
+                    android:layout_width="@dimen/dp_252"
+                    android:layout_height="@dimen/dp_120"
+                    android:layout_marginStart="@dimen/dp_32"
+                    android:background="@drawable/bg_setting_dialog_cancel_selector"
+                    android:drawableEnd="@drawable/img_setting_down"
+                    android:gravity="center"
+                    android:focusable="true"
+                    android:paddingHorizontal="@dimen/dp_59"
+                    android:text="@string/setting_guide_plate_number_default"
+                    android:textSize="@dimen/sp_46"
+                    android:textColor="@color/setting_bg_tab_text_unselect"
+                    app:layout_constraintStart_toEndOf="@+id/setting_plate_number_title_text"
+                    app:layout_constraintTop_toBottomOf="@+id/setting_plate_number_title" />
+
+                <com.fy.navi.ui.view.SkinEditText
+                    android:id="@+id/setting_plate_number_number"
+                    clickCommand="@{viewModel.mShowPlateNumberKeyboard}"
+                    android:layout_width="@dimen/dp_974"
+                    android:layout_height="@dimen/dp_120"
+                    android:layout_marginStart="@dimen/dp_32"
+                    android:background="@drawable/bg_setting_car_number_selector"
+                    android:hint="@string/setting_guide_plate_number_input"
+                    android:paddingLeft="@dimen/dp_30"
+                    android:textSize="@dimen/sp_46"
+                    android:focusable="true"
+                    android:textColor="@color/setting_bg_tab_text_select"
+                    app:layout_constraintStart_toEndOf="@+id/setting_plate_number_province"
+                    app:layout_constraintTop_toTopOf="@+id/setting_plate_number_province" />
 
                 <com.fy.navi.ui.view.SkinImageView
-                    clickCommand="@{viewModel.mClosePlateNumber}"
-                    android:layout_width="@dimen/dp_74"
-                    android:layout_height="@dimen/dp_74"
-                    android:layout_marginStart="@dimen/dp_32"
-                    android:layout_gravity="center"
-                    android:src="@drawable/img_setting_back" />
+                    android:id="@+id/setting_plate_number_clear"
+                    clickCommand="@{viewModel.mClearPlateNumber}"
+                    android:layout_width="@dimen/dp_54"
+                    android:layout_height="@dimen/dp_54"
+                    android:layout_marginTop="@dimen/dp_32"
+                    android:layout_marginEnd="@dimen/dp_32"
+                    android:focusable="true"
+                    android:background="@drawable/bg_base_mfc_cadillac_bg_selector"
+                    android:src="@drawable/img_plate_number_clear"
+                    app:layout_constraintEnd_toEndOf="@+id/setting_plate_number_number"
+                    app:layout_constraintTop_toTopOf="@+id/setting_plate_number_number" />
 
                 <com.fy.navi.ui.view.SkinTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/dp_579"
-                    android:layout_gravity="center"
-                    android:text="@string/setting_guide_plate_number_my"
-                    android:textColor="@color/setting_bg_tab_text_select"
-                    android:textSize="@dimen/sp_52" />
+                    android:layout_marginTop="@dimen/dp_16"
+                    android:text="@string/setting_guide_plate_number_tip"
+                    android:textColor="@color/setting_bg_tab_text_unselect"
+                    android:textSize="@dimen/sp_32"
+                    android:focusable="false"
+                    android:visibility="@{viewModel.mIsFocus ? View.VISIBLE : View.GONE}"
+                    app:layout_constraintEnd_toEndOf="@+id/setting_plate_number_number"
+                    app:layout_constraintTop_toBottomOf="@+id/setting_plate_number_number" />
 
                 <com.fy.navi.ui.view.SkinTextView
-                    android:id="@+id/setting_plate_number_finish"
-                    clickCommand="@{viewModel.mPlateNumberInputFinish}"
-                    android:layout_width="@dimen/dp_240"
-                    android:layout_height="@dimen/dp_96"
-                    android:layout_marginStart="@dimen/dp_393"
-                    android:background="@drawable/bg_setting_preference_select"
-                    android:layout_gravity="center"
-                    android:gravity="center"
-                    android:text="@string/setting_guide_plate_number_finish"
-                    android:textColor="@color/setting_white"
-                    android:textSize="@dimen/sp_46" />
-            </com.fy.navi.ui.view.SkinLinearLayout>
+                    android:id="@+id/setting_car_type"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_70"
+                    android:text="@string/setting_guide_plate_number_car_type"
+                    android:textColor="@color/setting_bg_tab_text_select"
+                    android:textSize="@dimen/sp_46"
+                    android:focusable="false"
+                    app:layout_constraintStart_toStartOf="@+id/setting_plate_number_title_text"
+                    app:layout_constraintTop_toBottomOf="@+id/setting_plate_number_title_text" />
 
-            <com.fy.navi.ui.view.SkinTextView
-                android:id="@+id/setting_plate_number_title_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_52"
-                android:layout_marginTop="@dimen/dp_30"
-                android:text="@string/setting_guide_plate_number_text"
-                android:textColor="@color/setting_bg_tab_text_select"
-                android:textSize="@dimen/sp_46"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/setting_plate_number_title" />
+                <com.fy.navi.ui.view.SkinTextView
+                    android:id="@+id/setting_car_type_detail"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dp_40"
+                    android:text="@string/setting_guide_plate_number_car_type_oil"
+                    android:layout_marginTop="@dimen/dp_5"
+                    android:textColor="@color/setting_bg_tab_text_unselect"
+                    android:textSize="@dimen/sp_38"
+                    android:focusable="false"
+                    app:layout_constraintStart_toEndOf="@+id/setting_car_type"
+                    app:layout_constraintTop_toTopOf="@+id/setting_car_type" />
 
-            <com.fy.navi.ui.view.SkinTextView
-                android:id="@+id/setting_plate_number_province"
-                clickCommand="@{viewModel.mShowProvinceKeyboard}"
-                android:layout_width="@dimen/dp_252"
-                android:layout_height="@dimen/dp_120"
-                android:layout_marginStart="@dimen/dp_32"
-                android:background="@drawable/bg_setting_tab_select"
-                android:drawableEnd="@drawable/img_setting_down"
-                android:gravity="center"
-                android:paddingHorizontal="@dimen/dp_59"
-                android:text="@string/setting_guide_plate_number_default"
-                android:textSize="@dimen/sp_46"
-                android:textColor="@color/setting_bg_tab_text_unselect"
-                app:layout_constraintStart_toEndOf="@+id/setting_plate_number_title_text"
-                app:layout_constraintTop_toBottomOf="@+id/setting_plate_number_title" />
+            </com.fy.navi.ui.view.SkinConstraintLayout>
 
-            <com.fy.navi.ui.view.SkinEditText
-                android:id="@+id/setting_plate_number_number"
-                clickCommand="@{viewModel.mShowPlateNumberKeyboard}"
-                android:layout_width="@dimen/dp_974"
-                android:layout_height="@dimen/dp_120"
-                android:layout_marginStart="@dimen/dp_32"
-                android:background="@drawable/bg_setting_car_number"
-                android:hint="@string/setting_guide_plate_number_input"
-                android:paddingLeft="@dimen/dp_30"
-                android:textSize="@dimen/sp_46"
-                android:textColor="@color/setting_bg_tab_text_select"
-                app:layout_constraintStart_toEndOf="@+id/setting_plate_number_province"
-                app:layout_constraintTop_toTopOf="@+id/setting_plate_number_province" />
-
-            <com.fy.navi.ui.view.SkinImageView
-                android:id="@+id/setting_plate_number_clear"
-                clickCommand="@{viewModel.mClearPlateNumber}"
-                android:layout_width="@dimen/dp_54"
-                android:layout_height="@dimen/dp_54"
-                android:layout_marginTop="@dimen/dp_32"
-                android:layout_marginEnd="@dimen/dp_32"
-                android:src="@drawable/img_plate_number_clear"
-                app:layout_constraintEnd_toEndOf="@+id/setting_plate_number_number"
-                app:layout_constraintTop_toTopOf="@+id/setting_plate_number_number" />
-
-            <com.fy.navi.ui.view.SkinTextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_16"
-                android:text="@string/setting_guide_plate_number_tip"
-                android:textColor="@color/setting_bg_tab_text_unselect"
-                android:textSize="@dimen/sp_32"
-                android:visibility="@{viewModel.mIsFocus ? View.VISIBLE : View.GONE}"
-                app:layout_constraintEnd_toEndOf="@+id/setting_plate_number_number"
-                app:layout_constraintTop_toBottomOf="@+id/setting_plate_number_number" />
-
-            <com.fy.navi.ui.view.SkinTextView
-                android:id="@+id/setting_car_type"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_70"
-                android:text="@string/setting_guide_plate_number_car_type"
-                android:textColor="@color/setting_bg_tab_text_select"
-                android:textSize="@dimen/sp_46"
-                app:layout_constraintStart_toStartOf="@+id/setting_plate_number_title_text"
-                app:layout_constraintTop_toBottomOf="@+id/setting_plate_number_title_text" />
-
-            <com.fy.navi.ui.view.SkinTextView
-                android:id="@+id/setting_car_type_detail"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_40"
-                android:text="@string/setting_guide_plate_number_car_type_oil"
-                android:layout_marginTop="@dimen/dp_5"
-                android:textColor="@color/setting_bg_tab_text_unselect"
-                android:textSize="@dimen/sp_38"
-                app:layout_constraintStart_toEndOf="@+id/setting_car_type"
-                app:layout_constraintTop_toTopOf="@+id/setting_car_type" />
-
-        </com.fy.navi.ui.view.SkinConstraintLayout>
-
+        </com.android.car.ui.FocusArea>
 
         <com.fy.navi.ui.view.SkinConstraintLayout
             android:id="@+id/setting_plate_number_keyboard_layout"
@@ -154,26 +180,38 @@
             android:layout_marginEnd="@dimen/dp_52"
             android:layout_marginBottom="@dimen/dp_52"
             android:visibility="gone"
+            android:focusable="false"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent">
 
-            <com.fy.navi.scene.ui.setting.ProvinceKeyboardView
-                android:id="@+id/setting_province_keyboard"
+            <com.android.car.ui.FocusArea
+                android:id="@+id/focus_tab"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:visibility="gone"
-                app:isDefault="false"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                android:layout_height="match_parent"
+                app:nudgeDown="@+id/focus_close"
+                app:nudgeUp="@+id/focus_close">
 
-            <com.fy.navi.scene.ui.setting.PlateNumberKeyboardView
-                android:id="@+id/setting_plate_number_keyboard"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:visibility="gone"
-                app:isDefaultCar="false"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                <com.fy.navi.scene.ui.setting.ProvinceKeyboardView
+                    android:id="@+id/setting_province_keyboard"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    app:isDefault="false"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <com.fy.navi.scene.ui.setting.PlateNumberKeyboardView
+                    android:id="@+id/setting_plate_number_keyboard"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    app:isDefaultCar="false"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            </com.android.car.ui.FocusArea>
+
+
 
         </com.fy.navi.ui.view.SkinConstraintLayout>
 

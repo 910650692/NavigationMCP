@@ -14,6 +14,7 @@
         android:id="@+id/poi_car_wash_root"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:focusable="false"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent">
         
@@ -21,6 +22,7 @@
             android:id="@id/poi_car_wash_price_icon"
             android:layout_width="@dimen/dp_37"
             android:layout_height="@dimen/dp_37"
+            android:focusable="false"
             android:src="@drawable/img_money_select_42"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"/>
@@ -32,6 +34,7 @@
             android:layout_marginStart="@dimen/dp_5"
             android:maxLines="1"
             android:text=""
+            android:focusable="false"
             android:textColor="@color/search_color_ffffff"
             android:textSize="@dimen/sp_30"
             app:layout_constraintTop_toTopOf="@+id/poi_car_wash_price_icon"

@@ -99,7 +99,9 @@ public class LayerGuideRouteStyleAdapter extends BaseStyleAdapter {
                     if (ConvertUtils.isEmpty(mRouteResult) ||
                             ConvertUtils.isEmpty(mRouteResult.getMLayerItemRouteEndPoint()) ||
                             ConvertUtils.isEmpty(mRouteResult.getMLayerItemRouteEndPoint()
-                                    .get(mRouteControl.getSelectedPathIndex()))) {
+                                    .get(mRouteControl.getSelectedPathIndex())) ||
+                            ConvertUtils.isEmpty(mRouteResult.getMLayerItemRouteEndPoint()
+                                    .get(mRouteControl.getSelectedPathIndex()).getRestNum() == NumberUtils.NUM_ERROR)) {
                         Logger.d(TAG, "终点扎标-默认扎标");
                         return super.provideLayerItemStyleJson(item);
                     } else {

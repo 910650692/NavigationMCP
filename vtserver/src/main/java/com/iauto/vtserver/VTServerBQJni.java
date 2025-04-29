@@ -2,17 +2,19 @@ package com.iauto.vtserver;
 
 import android.util.Log;
 
+import com.android.utils.log.Logger;
+
 public class VTServerBQJni {
     private static final VTServerBQJni MJNI = new VTServerBQJni();
     private static IVTServerListener mListener = null;
     private static boolean isSuccessLoadLibrary = false;
     static {
         try {
-            Log.d("vtservice-jni", "VTServerBQJni static loadLibrary");
+            Logger.d("vtservice-jni", "VTServerBQJni static loadLibrary");
             System.loadLibrary("vtservice-jni");
             isSuccessLoadLibrary = true;
         } catch (Throwable e) {
-            Log.e("vtservice-jni", "static initializer: " + e.getMessage());
+            Logger.e("vtservice-jni", "static initializer: " + e.getMessage());
         }
     }
     private VTServerBQJni() {
@@ -23,14 +25,14 @@ public class VTServerBQJni {
 
     // APP Reply function used by C++
     public static void onNotifyEvent(int eventtype, int code, String msg) {
-        Log.d("vtservice-jni", "onNotifyEvent eventtype = " + eventtype + ", code = " + code + ", msg = " + msg);
+        Logger.d("vtservice-jni", "onNotifyEvent eventtype = " + eventtype + ", code = " + code + ", msg = " + msg);
         if (mListener != null) {
             mListener.onNotifyEvent(eventtype, code, msg);
         }
     }
     //set callback
     public void setVTServerListener(IVTServerListener listener) {
-        Log.d("vtservice-jni", "setVTServerListener");
+        Logger.d("vtservice-jni", "setVTServerListener");
         mListener = listener;
     }
 

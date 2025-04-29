@@ -16,17 +16,39 @@
         android:clickable="true"
         android:background="@drawable/bg_setting_fragment">
 
+        <com.android.car.ui.FocusParkingView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
         <com.fy.navi.ui.view.SkinConstraintLayout
             android:id="@+id/help_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
+            <com.android.car.ui.FocusArea
+                android:id="@+id/focus_close"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:nudgeDown="@+id/focus_tab"
+                app:nudgeUp="@+id/focus_tab">
+
+                <com.fy.navi.ui.view.SkinView
+                    clickCommand="@{viewModel.mClickBack}"
+                    android:focusable="true"
+                    android:layout_width="@dimen/dp_74"
+                    android:layout_height="@dimen/dp_74"
+                    android:layout_marginStart="@dimen/dp_32"
+                    android:layout_marginTop="@dimen/dp_48"
+                    android:background="@drawable/bg_base_mfc_cadillac_bg_selector"/>
+
+            </com.android.car.ui.FocusArea>
+
             <com.fy.navi.ui.view.SkinImageView
-                clickCommand="@{viewModel.mClickBack}"
                 android:layout_width="@dimen/dp_74"
                 android:layout_height="@dimen/dp_74"
                 android:layout_marginStart="@dimen/dp_32"
                 android:layout_marginTop="@dimen/dp_48"
+                android:focusable="false"
                 android:src="@drawable/help_ic_back"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -36,6 +58,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/setting_others_about_help"
+                android:focusable="false"
                 android:textSize="@dimen/sp_46"
                 android:textColor="@color/black"
                 android:layout_marginTop="@dimen/dp_52"
@@ -48,44 +71,59 @@
         <com.fy.navi.ui.view.SkinView
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_1"
+            android:focusable="false"
             android:background="@color/transparent" />
 
         <com.fy.navi.ui.view.SkinConstraintLayout
             android:id="@+id/help_content"
+            android:focusable="false"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <com.fy.navi.scene.ui.setting.SceneVerticalTabLayout
-                android:id="@+id/help_table"
-                android:layout_width="@dimen/dp_288"
-                android:layout_height="wrap_content"
-                android:background="@null"
-                app:tabBackground="@drawable/bg_setting_tab"
-                app:tabGravity="fill"
-                app:tabMode="fixed"
-                app:isMarginBottom="true"
-                app:tabIndicatorHeight="0dp"
-                app:tabRippleColor="@null"
-                android:layout_marginStart="@dimen/dp_52"
-                android:layout_marginTop="@dimen/dp_32"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
+            <com.android.car.ui.FocusArea
+                android:id="@+id/focus_tab"
+                app:nudgeRight="@+id/focus_page"
+                app:nudgeUp="@+id/focus_close"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <com.fy.navi.scene.ui.setting.SceneVerticalTabLayout
+                    android:id="@+id/help_table"
+                    android:layout_width="@dimen/dp_288"
+                    android:layout_height="wrap_content"
+                    android:background="@null"
+                    app:tabBackground="@drawable/bg_setting_tab"
+                    app:tabGravity="fill"
+                    app:tabMode="fixed"
+                    android:focusedByDefault="true"
+                    android:focusable="true"
+                    app:isMarginBottom="true"
+                    app:tabIndicatorHeight="0dp"
+                    app:tabRippleColor="@null"
+                    android:layout_marginStart="@dimen/dp_52"
+                    android:layout_marginTop="@dimen/dp_32"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent" />
+
+            </com.android.car.ui.FocusArea>
 
             <com.fy.navi.ui.view.SkinView
                 android:id="@+id/help_vertical_line"
                 android:layout_width="@dimen/dp_1"
                 android:layout_height="@dimen/dp_0"
+                android:focusable="false"
                 android:background="@color/transparent"
                 android:layout_marginStart="@dimen/dp_140"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/help_table"/>
+                app:layout_constraintStart_toEndOf="@+id/focus_tab"/>
 
             <com.fy.navi.ui.view.SkinConstraintLayout
                 android:id="@+id/remote_navi"
                 android:layout_width="@dimen/dp_0"
                 android:layout_height="match_parent"
                 android:layout_marginTop="@dimen/dp_80"
+                android:focusable="false"
                 android:visibility="@{viewModel.mSelectPosition == 0 ? View.VISIBLE : View.GONE}"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -96,6 +134,7 @@
                     android:id="@+id/remote_img"
                     android:layout_width="@dimen/dp_560"
                     android:layout_height="@dimen/dp_320"
+                    android:focusable="false"
                     android:src="@mipmap/icon_setting_car_remote"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintStart_toStartOf="parent"/>
@@ -108,6 +147,7 @@
                     android:textSize="@dimen/sp_46"
                     android:textColor="@color/black"
                     android:layout_marginTop="@dimen/dp_40"
+                    android:focusable="false"
                     app:layout_constraintTop_toBottomOf="@+id/remote_img"
                     app:layout_constraintStart_toStartOf="@+id/remote_img"/>
 
@@ -116,6 +156,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/setting_others_about_help_remote_navi"
                     android:textSize="@dimen/sp_38"
+                    android:focusable="false"
                     android:textColor="@color/bg_setting_car_connected_help_sub_title"
                     android:layout_marginTop="@dimen/dp_32"
                     app:layout_constraintTop_toBottomOf="@+id/remote_title"
@@ -128,6 +169,7 @@
                 android:layout_width="@dimen/dp_0"
                 android:layout_height="match_parent"
                 android:layout_marginTop="@dimen/dp_80"
+                android:focusable="false"
                 android:visibility="@{viewModel.mSelectPosition == 1 ? View.VISIBLE : View.GONE}"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -138,6 +180,7 @@
                     android:id="@+id/seamless_img"
                     android:layout_width="@dimen/dp_560"
                     android:layout_height="@dimen/dp_320"
+                    android:focusable="false"
                     android:src="@mipmap/icon_setting_seamless_interaction"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintStart_toStartOf="parent"/>
@@ -150,6 +193,7 @@
                     android:textSize="@dimen/sp_46"
                     android:textColor="@color/black"
                     android:layout_marginTop="@dimen/dp_40"
+                    android:focusable="false"
                     app:layout_constraintTop_toBottomOf="@+id/seamless_img"
                     app:layout_constraintStart_toStartOf="@+id/seamless_img"/>
 
@@ -160,6 +204,7 @@
                     android:textSize="@dimen/sp_38"
                     android:textColor="@color/bg_setting_car_connected_help_sub_title"
                     android:layout_marginTop="@dimen/dp_32"
+                    android:focusable="false"
                     app:layout_constraintTop_toBottomOf="@+id/seamless_title"
                     app:layout_constraintStart_toStartOf="@+id/seamless_title"/>
 
@@ -169,6 +214,7 @@
                 android:layout_width="@dimen/dp_0"
                 android:layout_height="match_parent"
                 android:layout_marginTop="@dimen/dp_80"
+                android:focusable="false"
                 android:visibility="@{viewModel.mSelectPosition == 2 ? View.VISIBLE : View.GONE}"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -179,6 +225,7 @@
                     android:id="@+id/find_img"
                     android:layout_width="@dimen/dp_560"
                     android:layout_height="@dimen/dp_320"
+                    android:focusable="false"
                     android:src="@mipmap/icon_setting_finding_car"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintStart_toStartOf="parent"/>
@@ -189,6 +236,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/setting_others_about_help_find_car_title"
                     android:textSize="@dimen/sp_46"
+                    android:focusable="false"
                     android:textColor="@color/black"
                     android:layout_marginTop="@dimen/dp_40"
                     app:layout_constraintTop_toBottomOf="@+id/find_img"
@@ -199,6 +247,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/setting_others_about_help_find_car"
                     android:textSize="@dimen/sp_38"
+                    android:focusable="false"
                     android:textColor="@color/bg_setting_car_connected_help_sub_title"
                     android:layout_marginTop="@dimen/dp_32"
                     app:layout_constraintTop_toBottomOf="@+id/find_title"
@@ -211,6 +260,7 @@
                 android:layout_width="@dimen/dp_0"
                 android:layout_height="match_parent"
                 android:layout_marginTop="@dimen/dp_80"
+                android:focusable="false"
                 android:visibility="@{viewModel.mSelectPosition == 3 ? View.VISIBLE : View.GONE}"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -221,6 +271,7 @@
                     android:id="@+id/sync_img"
                     android:layout_width="@dimen/dp_560"
                     android:layout_height="@dimen/dp_320"
+                    android:focusable="false"
                     android:src="@mipmap/icon_setting_data_sync"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintStart_toStartOf="parent"/>
@@ -231,6 +282,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/setting_others_about_help_data_sync_title"
                     android:textSize="@dimen/sp_46"
+                    android:focusable="false"
                     android:textColor="@color/black"
                     android:layout_marginTop="@dimen/dp_40"
                     app:layout_constraintTop_toBottomOf="@+id/sync_img"
@@ -241,6 +293,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/setting_others_about_help_data_sync"
                     android:textSize="@dimen/sp_38"
+                    android:focusable="false"
                     android:textColor="@color/bg_setting_car_connected_help_sub_title"
                     android:layout_marginTop="@dimen/dp_32"
                     app:layout_constraintTop_toBottomOf="@+id/sync_title"

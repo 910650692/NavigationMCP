@@ -19,6 +19,7 @@ import com.fy.navi.scene.R;
 import com.fy.navi.scene.databinding.CollectResultItemBinding;
 import com.fy.navi.service.AutoMapConstant;
 import com.fy.navi.service.MapDefaultFinalTag;
+import com.fy.navi.service.define.bean.GeoPoint;
 import com.fy.navi.service.define.search.PoiInfoEntity;
 import com.fy.navi.service.logicpaket.search.SearchPackage;
 import com.fy.navi.service.logicpaket.setting.SettingUpdateObservable;
@@ -126,7 +127,26 @@ public class CollectResultAdapter extends RecyclerView.Adapter<CollectResultAdap
         }
 
         holder.mResultItemBinding.crlPoiDes.setOnClickListener(v -> {
-            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "poi click 详情");
+            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "poi click 详情" + mPoiEntities.get(position).getPid()
+                    + " itemId: " + mPoiEntities.get(position).getFavoriteInfo().getItemId());
+            final String input = mPoiEntities.get(position).getPid();
+            if (!ConvertUtils.isEmpty(input) && input.contains(".")) {
+                // 找到第二个小数点的位置
+                final int firstDotIndex = input.indexOf('.'); // 第一个小数点的位置
+                final int secondDotIndex = input.indexOf('.', firstDotIndex + 1); // 第二个小数点的位置
+                if (secondDotIndex != -1 && firstDotIndex != -1) {
+                    // 分割字符串
+                    final String firstPart = input.substring(0, secondDotIndex - 3); // 第一部分（从开头到第二个小数点前2位）
+                    final String secondPart = input.substring(secondDotIndex - 2); // 第二部分（从第二个小数点前2位后开始）
+
+                    // 转换为 double
+                    final double firstNumber = Double.parseDouble(firstPart);
+                    final double secondNumber = Double.parseDouble(secondPart);
+                    final GeoPoint geoPoint = new GeoPoint(firstNumber, secondNumber);
+                    mPoiEntities.get(position).setPoint(geoPoint);
+                }
+            }
+
             if (mOnItemClickListener != null) {
                 mOnItemClickListener.onItemClick(position, mPoiEntities.get(position));
             }

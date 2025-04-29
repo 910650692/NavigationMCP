@@ -10,10 +10,11 @@
             type="com.fy.navi.hmi.drivingrecord.recordsetting.RecordSettingViewModel" />
     </data>
     <com.fy.navi.ui.view.SkinConstraintLayout
-        android:layout_width="@dimen/dp_1224"
-        android:layout_height="@dimen/dp_714"
+        android:layout_width="@dimen/dp_1282"
+        android:layout_height="@dimen/dp_772"
         android:clickable="true"
-        android:background="@drawable/bg_setting_fragment"
+        android:padding="@dimen/dp_29"
+        android:background="@drawable/bg_setting_shadow"
         android:orientation="vertical">
 
         <com.fy.navi.ui.view.SkinConstraintLayout

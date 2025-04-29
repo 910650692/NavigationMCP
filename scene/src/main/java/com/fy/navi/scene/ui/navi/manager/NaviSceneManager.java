@@ -10,6 +10,7 @@ import com.fy.navi.service.MapDefaultFinalTag;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -386,6 +387,18 @@ public class NaviSceneManager implements INaviSceneEvent {
         ConvertUtils.clear(sceneViewList);
         ConvertUtils.clear(showSceneList);
         ConvertUtils.clear(hideSceneList);
+    }
+
+    public void restoreList() {
+        for (Map.Entry<NaviSceneId, NaviSceneBase> entry : sceneViewList.entrySet()) {
+            NaviSceneBase base = entry.getValue();
+            if (base.getSceneState() == NaviSceneBase.SCENE_STATE_SHOW) {
+                showSceneList.add(base);
+            }
+            if (base.getSceneState() == NaviSceneBase.SCENE_STATE_HIDE) {
+                hideSceneList.add(base);
+            }
+        }
     }
 
     @Override

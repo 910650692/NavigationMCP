@@ -1,8 +1,8 @@
 package com.fy.navi.vrbridge;
 
 import android.text.TextUtils;
-import android.util.Log;
 
+import com.android.utils.log.Logger;
 import com.fy.navi.service.define.map.MapMode;
 import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.navi.NaviEtaInfo;
@@ -75,7 +75,7 @@ public final class MapStateManager {
      * 初始化.
      */
     public void init() {
-        Log.d(IVrBridgeConstant.TAG, "MapStateInit");
+        Logger.d(IVrBridgeConstant.TAG, "MapStateInit");
         final boolean foreground = NaviPackage.getInstance().getIsAppInForeground();
         mBuilder.setOpenStatus(foreground);
         mBuilder.setFront(foreground);
@@ -129,7 +129,7 @@ public final class MapStateManager {
 
         @Override
         public void onMapLevelChanged(final MapType mapTypeId, final float mapLevel) {
-            Log.d(TAG, "onMapLevelChanged: " + mapLevel);
+            Logger.d(TAG, "onMapLevelChanged: " + mapLevel);
             mBuilder.setCurrZoomLevel((int) mapLevel);
             AMapStateUtils.saveMapState(mBuilder.build());
         }
@@ -596,7 +596,7 @@ public final class MapStateManager {
         mCurNaviStatus = NaviStatusPackage.getInstance().getCurrentNaviStatus();
         final boolean isNavi = NaviStatus.NaviStatusType.NAVING.equals(mCurNaviStatus)
                 || NaviStatus.NaviStatusType.LIGHT_NAVING.equals(mCurNaviStatus);
-        Log.d(IVrBridgeConstant.TAG, "naviStatus: " + isNavi);
+        Logger.d(IVrBridgeConstant.TAG, "naviStatus: " + isNavi);
         return isNavi;
     }
 

@@ -126,7 +126,7 @@ public class SettingVoiceBroadcastAdapter extends RecyclerView.Adapter<SettingVo
         holder.mVoiceBroadcastBinding.recommendVoiceProgress.setProgressDrawable(
                 ResourceUtils.Companion.getInstance().getDrawable(R.drawable.progress_bar_style));
 
-        holder.mVoiceBroadcastBinding.recommendVoiceOperateView.setOnClickListener(v -> {
+        holder.mVoiceBroadcastBinding.recommendVoiceItem.setOnClickListener(v -> {
             if (mOnItemClickListener != null) {
                 final ArrayList<Integer> operatedIdList = new ArrayList<>();
                 operatedIdList.add(voiceInfo.getId());

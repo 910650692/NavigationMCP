@@ -44,6 +44,31 @@ public class WeChatFragment extends BaseFragment<FragmentWeChatBinding, WeChatVi
 
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        clearDialog();
+    }
+
+    @Override
+    public void onReStoreFragment() {
+        super.onReStoreFragment();
+        restoreFragment();
+    }
+
+    private void restoreFragment(){
+        if(mViewModel.getDialogShown()){
+            mUnbindDialog.show();
+        }
+    }
+
+    private void clearDialog(){
+        if(mUnbindDialog.isShowing()){
+            mUnbindDialog.dismiss();
+        }
+        mUnbindDialog = null;
+    }
+
     /**
      * 更新二维码
      * @param bitmap 二维码图片
@@ -78,6 +103,15 @@ public class WeChatFragment extends BaseFragment<FragmentWeChatBinding, WeChatVi
                 .setShowCancel(false)
                 .setDialogObserver(new IBaseDialogClickListener() {
 
+                    @Override
+                    public void onCommitClick() {
+                        mViewModel.setDialogShown(false);
+                    }
+
+                    @Override
+                    public void onCancelClick() {
+                        mViewModel.setDialogShown(false);
+                    }
                 }).build();
         clearBackground(mUnbindDialog.getWindow());
     }

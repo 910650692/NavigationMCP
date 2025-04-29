@@ -5,11 +5,13 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
+@AllArgsConstructor
 public class AccessTokenParam {
 
     //账户类型

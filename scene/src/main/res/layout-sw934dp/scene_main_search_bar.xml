@@ -11,9 +11,13 @@
     </data>
 
     <com.fy.navi.ui.view.SkinConstraintLayout
-        android:layout_width="@dimen/dp_640"
-        android:layout_height="@dimen/dp_263"
-        android:background="@drawable/bg_search_main_tab"
+        android:layout_width="@dimen/dp_698"
+        android:layout_height="@dimen/dp_320"
+        android:paddingStart="@dimen/dp_29"
+        android:paddingEnd="@dimen/dp_29"
+        android:paddingTop="@dimen/dp_29"
+        android:paddingBottom="@dimen/dp_29"
+        android:background="@drawable/bg_search_main_tab_shadow"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 

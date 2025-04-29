@@ -39,7 +39,7 @@ public class LimitCitiesAdapter extends RecyclerView.Adapter<LimitCitiesAdapter.
     public void setData(final List<CityDataInfo> data) {
         this.mDate.clear();
         this.mDate = data;
-        notifyItemRangeChanged(0, mDate.size());
+        notifyDataSetChanged();
     }
 
     @NonNull

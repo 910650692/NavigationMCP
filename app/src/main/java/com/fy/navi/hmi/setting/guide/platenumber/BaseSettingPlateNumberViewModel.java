@@ -12,6 +12,8 @@ public class BaseSettingPlateNumberViewModel extends BaseViewModel<SettingPlateN
 
     public MutableLiveData<Boolean> mIsFocus = new MutableLiveData<>(false);
 
+    private MutableLiveData<Boolean> mIsDeletePlateNumberDialog= new MutableLiveData<>(false);
+
     public BaseSettingPlateNumberViewModel(@NonNull final Application application) {
         super(application);
     }
@@ -74,5 +76,13 @@ public class BaseSettingPlateNumberViewModel extends BaseViewModel<SettingPlateN
      */
     public void setIsFocus(final boolean isFocus) {
         this.mIsFocus.setValue(isFocus);
+    }
+
+    public void setIsDeletePlateNumberDialog(boolean isDeletePlateNumberDialog){
+        mIsDeletePlateNumberDialog.setValue(isDeletePlateNumberDialog);
+    }
+
+    public boolean getIsDeletePlateNumberDialog(){
+        return Boolean.TRUE.equals(mIsDeletePlateNumberDialog.getValue());
     }
 }

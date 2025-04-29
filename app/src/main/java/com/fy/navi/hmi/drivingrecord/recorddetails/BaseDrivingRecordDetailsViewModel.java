@@ -3,14 +3,20 @@ package com.fy.navi.hmi.drivingrecord.recorddetails;
 import android.app.Application;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.MutableLiveData;
 
 import com.fy.navi.service.define.map.MapType;
+import com.fy.navi.service.define.user.usertrack.DrivingRecordDataBean;
 import com.fy.navi.service.logicpaket.layer.LayerPackage;
 import com.fy.navi.ui.action.Action;
 import com.fy.navi.ui.base.BaseViewModel;
 
 
 public class BaseDrivingRecordDetailsViewModel extends BaseViewModel<DrivingRecordDetailsFragment, DrivingRecordDetailsModel> {
+
+    private MutableLiveData<DrivingRecordDataBean> bean = new MutableLiveData<>();
+
+    private MutableLiveData<Boolean> isDeleteDivingRecordDialog = new MutableLiveData<>(false);
 
     public BaseDrivingRecordDetailsViewModel(@NonNull final Application application) {
         super(application);
@@ -30,6 +36,7 @@ public class BaseDrivingRecordDetailsViewModel extends BaseViewModel<DrivingReco
     //返回上一页
     public Action mDeleteRecord= () -> {
         mView.showDialog();
+        setIsDeleteDrivingRecordDialog(true);
     };
 
     /**
@@ -46,5 +53,34 @@ public class BaseDrivingRecordDetailsViewModel extends BaseViewModel<DrivingReco
      */
     public void deleteValueByFileName(final String fileName) {
         mModel.deleteValueByFileName(fileName);
+    }
+
+    /**
+     * 设置bean
+     * @param bean
+     */
+    public void setBean(DrivingRecordDataBean bean){
+        this.bean.setValue(bean);
+    }
+
+    /**
+     * 获取bean
+     */
+    public DrivingRecordDataBean getBean(){
+        return bean.getValue();
+    }
+
+    /**
+     * 获取是否显示删除记录dialog
+     */
+    public boolean getIsDeleteDivingRecordDialog() {
+        return Boolean.TRUE.equals(isDeleteDivingRecordDialog.getValue());
+    }
+
+    /**
+     * 设置是否显示删除记录dialog
+     */
+    public void setIsDeleteDrivingRecordDialog(Boolean isDeleteDrivingRecordDialog) {
+        this.isDeleteDivingRecordDialog.setValue(isDeleteDrivingRecordDialog);
     }
 }

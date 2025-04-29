@@ -7,6 +7,8 @@ import androidx.annotation.NonNull;
 
 import com.fy.navi.hmi.carconnect.help.CarConnectHelpFragment;
 import com.fy.navi.service.MapDefaultFinalTag;
+import com.fy.navi.service.define.setting.SettingController;
+import com.fy.navi.service.greendao.setting.SettingManager;
 import com.fy.navi.ui.action.Action;
 import com.fy.navi.ui.base.BaseViewModel;
 
@@ -40,6 +42,13 @@ public class BaseCarConnectViewModel extends BaseViewModel<CarConnectFragment, C
 
     public Action mOpenHelpForth = () -> {
         openCommonHelp(3);
+    };
+
+    public Action mLastOneMile = () -> {
+        final boolean isChecked = SettingManager.getInstance().getValueByKey(
+                SettingController.KEY_SETTING_IS_SEND_DESTINATION_LAST_MILE).equals(CarConnectFragment.DESTINATION_SEND);
+        mView.setLastOneMile(!isChecked);
+        mView.setLastOneMileChecked(!isChecked);
     };
 
     /**

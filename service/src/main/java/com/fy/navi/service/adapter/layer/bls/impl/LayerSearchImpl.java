@@ -36,6 +36,7 @@ import com.fy.navi.service.define.layer.refix.LayerSearchAlongRouteType;
 import com.fy.navi.service.define.layer.refix.LayerPointItemType;
 import com.fy.navi.service.define.layer.refix.LayerSearchPOIType;
 import com.fy.navi.service.define.map.MapType;
+import com.fy.navi.service.define.search.ChargeInfo;
 import com.fy.navi.service.define.search.ChildInfo;
 import com.fy.navi.service.define.search.PoiInfoEntity;
 import com.fy.navi.service.define.utils.NumberUtils;
@@ -395,6 +396,8 @@ public class LayerSearchImpl extends BaseLayerImpl<LayerSearchStyleAdapter> {
             return false;
         }
         getLayerSearchControl().setVisible(BizSearchType.BizSearchTypePoiAlongRoute, true);
+        //开启碰撞
+        getLayerSearchControl().getSearchLayer(BizSearchType.BizSearchTypePoiAlongRoute).enableCollision(true);
 
         ArrayList<BizSearchAlongWayPoint> alongWayPoints = new ArrayList<>();
         for (int i = NumberUtils.NUM_0; i < parentPoints.size(); i++) {
@@ -412,8 +415,30 @@ public class LayerSearchImpl extends BaseLayerImpl<LayerSearchStyleAdapter> {
             viaPoint.name = poi.getName();
             //自定义标签名
             viaPoint.labelName = "";
-            int pointTypeCode = getAlongRouteTypeCode(poi.getTypeCode());
-            viaPoint.searchType = pointTypeCode;
+            int pointTypeCode = getAlongRouteTypeCode(poi.getPointTypeCode());
+            Logger.d(TAG, "updateSearchAlongRoutePoi pointTypeCode " + pointTypeCode);
+            switch (pointTypeCode) {
+                //填充沿途搜充电站数据
+                case LayerSearchAlongRouteType.SEARCH_ALONG_ROUTE_CHARGE -> {
+                    List<ChargeInfo> chargeInfoList = poi.getChargeInfoList();
+                    if (!ConvertUtils.isEmpty(chargeInfoList)) {
+                        ChargeInfo chargeInfo = chargeInfoList.get(NumberUtils.NUM_0);
+                        if (!ConvertUtils.isEmpty(chargeInfo)) {
+                            viaPoint.mExtraData.chargeStationInfo.fastFree = chargeInfo.getMFastFree();
+                            viaPoint.mExtraData.chargeStationInfo.fastTotal = chargeInfo.getMFastTotal();
+                            viaPoint.mExtraData.chargeStationInfo.slowFree = chargeInfo.getMSlowFree();
+                            viaPoint.mExtraData.chargeStationInfo.slowTotal = chargeInfo.getMSlowTotal();
+                        } else {
+                            Logger.e(TAG, "updateSearchAlongRoutePoi pointTypeCode " + pointTypeCode +
+                                    " chargeInfo == null");
+                        }
+                    } else {
+                        Logger.e(TAG, "updateSearchAlongRoutePoi pointTypeCode " + pointTypeCode +
+                                " chargeInfoList is Empty");
+                    }
+                }
+            }
+            viaPoint.typeCode = pointTypeCode;
             alongWayPoints.add(viaPoint);
         }
         boolean result = getLayerSearchControl().updateSearchAlongRoutePoi(alongWayPoints);

@@ -6,10 +6,14 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.SystemClock;
 import android.text.format.Time;
+
+import com.android.utils.log.Logger;
 import com.autonavi.gbl.common.model.Coord2DDouble;
 import com.autonavi.gbl.pos.model.LocGnss;
 import com.fy.navi.service.adapter.position.PositionConstant;
 import com.fy.navi.service.logicpaket.calibration.CalibrationPackage;
+
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Objects;
 
@@ -125,7 +129,17 @@ public class LocationUtil {
         }
         locData.isNS = (byte) ((location.getLatitude() > 0) ? 'N' : 'S');
         locData.isEW = (byte) ((location.getLongitude() > 0) ? 'E' : 'W');
-        locData.speed = (float) (location.getSpeed() * 3.6);
+        float speed = (float) (location.getSpeed() * 3.6);
+        if(speed > 0 && isDecimalTrailingZeros(speed)){
+            Logger.d("TrailingZeros1","normal--" + speed);
+            BigDecimal decimal1 = new BigDecimal(speed);
+            BigDecimal decimal2 = new BigDecimal("0.01");
+            BigDecimal decimal3 = decimal1.add(decimal2);
+            speed = decimal3.floatValue();
+            Logger.d("TrailingZeros1","speed--" + speed);
+        }
+        locData.speed = speed;
+        Logger.d("TrailingZeros2",speed);
         locData.point = new Coord2DDouble(0.0, 0.0);
         locData.point.lon = location.getLongitude();
         locData.point.lat = location.getLatitude();
@@ -229,5 +243,14 @@ public class LocationUtil {
         if (lat < 0.8293 || lat > 55.8271)
             return true;
         return false;
+    }
+
+
+    /**
+     * @param num  判断数字小数点 后面是否全部是 0
+     */
+    private static boolean isDecimalTrailingZeros(float num) {
+        String formatted = String.format("%.10f", num);
+        return formatted.matches("\\d+\\.0+");
     }
 }

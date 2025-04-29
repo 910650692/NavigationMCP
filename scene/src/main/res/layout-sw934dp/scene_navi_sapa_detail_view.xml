@@ -10,8 +10,8 @@
     </data>
 
     <com.fy.navi.ui.view.SkinConstraintLayout
-        android:layout_width="@dimen/dp_640"
-        android:layout_height="@dimen/dp_711">
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
 
         <include android:id="@+id/sapa_service_detail"
             android:visibility="@{sapaDetail.mViewType == 0 ? View.VISIBLE : View.GONE}"

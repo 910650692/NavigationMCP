@@ -18,7 +18,7 @@ import java.util.Objects;
 
 public class CarConnectFragment extends BaseFragment<FragmentCarConnectBinding, CarConnectViewModel> {
 
-    private static final String DESTINATION_SEND = "1";
+    public static final String DESTINATION_SEND = "1";
     private static final String DESTINATION_UNSENT = "0";
 
     @Override
@@ -88,10 +88,26 @@ public class CarConnectFragment extends BaseFragment<FragmentCarConnectBinding, 
 
     private final CompoundButton.OnCheckedChangeListener mOnCheckedChangeListener = (buttonView, isChecked) -> {
         Logger.e("onCheckedChanged: " + isChecked);
+        setLastOneMile(isChecked);
+    };
+
+    /**
+     * 设置最后一公里选中状态
+     * @param isChecked 选中状态
+     */
+    public void setLastOneMile(final boolean isChecked) {
         if(isChecked){
             SettingManager.getInstance().insertOrReplace(SettingController.KEY_SETTING_IS_SEND_DESTINATION_LAST_MILE, DESTINATION_SEND);
         } else {
             SettingManager.getInstance().insertOrReplace(SettingController.KEY_SETTING_IS_SEND_DESTINATION_LAST_MILE, DESTINATION_UNSENT);
         }
-    };
+    }
+
+    /**
+     * 设置最后一公里选中状态
+     * @param isChecked 选中状态
+     */
+    public void setLastOneMileChecked(final boolean isChecked) {
+        mBinding.cbCarConnectLoginFunction.setChecked(isChecked);
+    }
 }

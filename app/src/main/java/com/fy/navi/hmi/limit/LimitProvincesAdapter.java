@@ -45,7 +45,7 @@ public class LimitProvincesAdapter extends RecyclerView.Adapter<LimitProvincesAd
         for (ProvDataInfo provDataInfo : data) {
             this.mData.add(new LimitProvinceBean(provDataInfo));
         }
-        notifyItemRangeChanged(0, mData.size());
+        notifyDataSetChanged();
     }
 
     @NonNull

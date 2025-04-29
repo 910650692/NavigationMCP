@@ -7,6 +7,7 @@
         android:id="@+id/scl_search_top_view"
         android:layout_width="@dimen/dp_820"
         android:layout_height="@dimen/dp_152"
+        android:focusable="false"
         android:background="@drawable/bg_search_main_tab">
 
         <com.fy.navi.ui.view.SkinImageView
@@ -14,6 +15,8 @@
             android:layout_width="@dimen/dp_74"
             android:layout_height="@dimen/dp_74"
             android:layout_marginStart="@dimen/dp_20"
+            android:focusable="true"
+            android:background="@drawable/bg_base_mfc_cadillac_bg_selector"
             android:src="@drawable/img_basic_ic_back"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -52,6 +55,7 @@
             android:layout_marginEnd="@dimen/dp_20"
             android:src="@drawable/img_poi_edit_delete"
             android:visibility="invisible"
+            android:focusable="false"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />

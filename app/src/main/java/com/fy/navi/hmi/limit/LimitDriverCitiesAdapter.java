@@ -43,7 +43,7 @@ public class LimitDriverCitiesAdapter extends RecyclerView.Adapter<LimitDriverCi
         this.mData = data;
         if(this.mData != null && !this.mData.isEmpty()) {
             mSelectedPosition = 0;
-            notifyItemRangeChanged(0, mData.size());
+            notifyDataSetChanged();
         }
     }
 

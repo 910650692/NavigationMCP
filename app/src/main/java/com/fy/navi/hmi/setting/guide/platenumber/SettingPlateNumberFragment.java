@@ -143,6 +143,31 @@ public class SettingPlateNumberFragment extends BaseFragment<FragmentSettingPlat
 
     }
 
+    @Override
+    public void onReStoreFragment() {
+        super.onReStoreFragment();
+        restoreFragment();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        clearDialog();
+    }
+
+    private void restoreFragment(){
+        if(mViewModel.getIsDeletePlateNumberDialog()){
+            mDeletePlateNumberDialog.show();
+        }
+    }
+
+    private void clearDialog(){
+        if(mDeletePlateNumberDialog.isShowing()){
+            mDeletePlateNumberDialog.dismiss();
+        }
+        mDeletePlateNumberDialog = null;
+    }
+
     /**
      * 初始化删除车牌号码对话框
      */
@@ -154,11 +179,16 @@ public class SettingPlateNumberFragment extends BaseFragment<FragmentSettingPlat
                 .setDialogObserver(new IBaseDialogClickListener() {
                     @Override
                     public void onCommitClick() {
+                        mViewModel.setIsDeletePlateNumberDialog(false);
                         mIsClearPlateNumber = false;
                         SettingUpdateObservable.getInstance().setPlateNumber("");
                         closeFragment(true);
                     }
 
+                    @Override
+                    public void onCancelClick() {
+                        mViewModel.setIsDeletePlateNumberDialog(false);
+                    }
                 }).build();
 
         clearBackground(mDeletePlateNumberDialog.getWindow());
@@ -232,6 +262,7 @@ public class SettingPlateNumberFragment extends BaseFragment<FragmentSettingPlat
         } else if (mIsClearPlateNumber){
             mViewModel.setPlateNumber("");
             mViewModel.setAvoidLimit(false);
+            mViewModel.setIsDeletePlateNumberDialog(true);
             mDeletePlateNumberDialog.show();
         } else {
             ToastUtils.Companion.getInstance().showCustomToastView(

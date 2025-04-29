@@ -160,6 +160,10 @@ public abstract class NaviSceneBase<VB extends ViewDataBinding, VM extends BaseS
         return mSceneState;
     }
 
+    public void setSceneState(int state) {
+        mSceneState = state;
+    }
+
     public boolean isVisible() {
         return SCENE_STATE_SHOW == mSceneState;
     }

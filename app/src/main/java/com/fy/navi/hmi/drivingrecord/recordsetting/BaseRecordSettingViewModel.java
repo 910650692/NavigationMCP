@@ -13,11 +13,13 @@ import java.util.ArrayList;
 
 public class BaseRecordSettingViewModel extends BaseViewModel<RecordSettingFragment, RecordSettingModel> {
 
+
+    public MutableLiveData<Boolean> mIsAutoRecord = new MutableLiveData<>(true);
+    private MutableLiveData<Boolean> mIsClearDivingRecordDialog = new MutableLiveData<>(false);
+
     public BaseRecordSettingViewModel(@NonNull final Application application) {
         super(application);
     }
-
-    public MutableLiveData<Boolean> mIsAutoRecord = new MutableLiveData<>(true);
 
     @Override
     protected RecordSettingModel initModel() {
@@ -37,6 +39,7 @@ public class BaseRecordSettingViewModel extends BaseViewModel<RecordSettingFragm
 
     public Action mClearDivingRecord = () -> {
         mView.clearDivingRecord();
+        setIsClearDivingRecordDialog(true);
     };
 
     public Action mSwitchRecordSetting = () -> {
@@ -82,5 +85,21 @@ public class BaseRecordSettingViewModel extends BaseViewModel<RecordSettingFragm
      */
     public void deleteValueByKey(final int type) {
         mModel.deleteValueByKey(type);
+    }
+
+    /**
+     * 设置是否显示清除行程数据对话框
+     * @param isShow 是否显示
+     */
+    public void setIsClearDivingRecordDialog(final boolean isShow) {
+        mIsClearDivingRecordDialog.setValue(isShow);
+    }
+
+    /**
+     * 获取是否显示清除行程数据对话框
+     * @return 是否显示
+     */
+    public boolean getIsClearDivingRecordDialog() {
+        return Boolean.TRUE.equals(mIsClearDivingRecordDialog.getValue());
     }
 }

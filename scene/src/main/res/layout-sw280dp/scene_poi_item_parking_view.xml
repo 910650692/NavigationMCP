@@ -18,6 +18,7 @@
         android:paddingEnd="@dimen/dp_12"
         android:paddingTop="@dimen/dp_4"
         android:paddingBottom="@dimen/dp_4"
+        android:focusable="false"
         android:background="@drawable/bg_charge_appointment"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent">
@@ -29,6 +30,7 @@
             android:layout_marginStart="@dimen/dp_5"
             android:maxLines="1"
             android:text=""
+            android:focusable="false"
             android:textColor="@color/bg_route_big_window_select"
             android:textSize="@dimen/sp_26"
             app:layout_constraintTop_toTopOf="@+id/poi_car_wash_price_icon"

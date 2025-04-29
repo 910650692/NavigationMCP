@@ -12,7 +12,8 @@
 
         <com.fy.navi.ui.view.SkinScrollView
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_412"
+            android:layout_height="@dimen/dp_372"
+            android:layout_marginTop="@dimen/dp_40"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent">
 

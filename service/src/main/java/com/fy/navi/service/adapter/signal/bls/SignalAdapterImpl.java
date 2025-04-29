@@ -8,6 +8,7 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.util.Log;
 
+import com.android.utils.log.Logger;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.adapter.signal.SignalAdapterCallback;
 import com.fy.navi.service.adapter.signal.SignalApi;
@@ -43,7 +44,7 @@ public class SignalAdapterImpl implements SignalApi {
         PowertainController.getInstance().registerSpeedOfVehicleListener(new PowertainController.SpeedOfVehicleListener() {
             @Override
             public void onSpeedOfVehicleSignalChanged(final Float speed) {
-                Log.d(TAG, "onSpeedOfVehicleSignalChanged: " + speed);
+                Logger.d(TAG, "onSpeedOfVehicleSignalChanged: " + speed);
                 for (SignalAdapterCallback callback : mCallbacks) {
                     callback.onSpeedChanged(speed);
                 }
@@ -52,7 +53,7 @@ public class SignalAdapterImpl implements SignalApi {
         PowertainController.getInstance().registerVehicleMotionMovementStateListener(new PowertainController.VehicleMotionMovementStateListener() {
             @Override
             public void onVehicleMotionMovementStateChanged(final Integer gear) {
-                Log.d(TAG, "onVehicleMotionMovementStateChanged: " + gear);
+                Logger.d(TAG, "onVehicleMotionMovementStateChanged: " + gear);
                 for (SignalAdapterCallback callback : mCallbacks) {
                     callback.onGearChanged(gear);
                 }
@@ -61,7 +62,7 @@ public class SignalAdapterImpl implements SignalApi {
         PowertainController.getInstance().registerRangeRemainingListener(new PowertainController.RangeRemainingListener() {
             @Override
             public void onRangeRemainingSignalChanged(final Float value) {
-                Log.d(TAG, "onRangeRemainingSignalChanged: " + value);
+                Logger.d(TAG, "onRangeRemainingSignalChanged: " + value);
                 for (SignalAdapterCallback callback : mCallbacks) {
                     callback.onRangeRemainingSignalChanged(value);
                 }
@@ -71,14 +72,14 @@ public class SignalAdapterImpl implements SignalApi {
                 new PowertainController.HighVoltageBatteryPropulsionRangeListener() {
                     @Override
                     public void onHighVoltageBatteryPropulsionRangeChanged(final float value) {
-                        Log.d(TAG, "onHighVoltageBatteryPropulsionRangeChanged: " + value);
+                        Logger.d(TAG, "onHighVoltageBatteryPropulsionRangeChanged: " + value);
                         for (SignalAdapterCallback callback : mCallbacks) {
                             callback.onHighVoltageBatteryPropulsionRangeChanged(value);
                         }
                     }
                 });
         PowerModeManager.getInstance().registerSystemStateListener((newMode, oldMode) -> {
-            Log.d(TAG, "onSystemStateChanged: oldMode = " + oldMode + ", newMode = " + newMode);
+            Logger.d(TAG, "onSystemStateChanged: oldMode = " + oldMode + ", newMode = " + newMode);
             for (SignalAdapterCallback callback : mCallbacks) {
                 callback.onSystemStateChanged(systemStateConversion(newMode));
             }
@@ -89,20 +90,20 @@ public class SignalAdapterImpl implements SignalApi {
                     new DriveAssistController.LaneCenteringWarningIndicationRequestIdcmAListener() {
                         @Override
                         public void onLaneCenteringWarningIndicationRequestIdcmAChanged(final int state) {
-                            Log.d(TAG, "onLaneCenteringWarningIndicationRequestIdcmAChanged: " + state);
+                            Logger.d(TAG, "onLaneCenteringWarningIndicationRequestIdcmAChanged: " + state);
                             for (SignalAdapterCallback callback : mCallbacks) {
                                 callback.onLaneCenteringWarningIndicationRequestIdcmAChanged(state);
                             }
                         }
                     });
         } catch (UnsupportedOperationException e) {
-            Log.d(TAG, "initCallback: " + Log.getStackTraceString(e));
+            Logger.e(TAG, "initCallback: " + Log.getStackTraceString(e));
         }
     }
 
     private Car.CarServiceLifecycleListener mCarServiceLifecycleListener = new Car.CarServiceLifecycleListener() {
         public void onLifecycleChanged(final Car car, final boolean carReady) {
-            Log.d(TAG, "CarServiceLifecycleListener onLifecycleChanged: " + carReady);
+            Logger.d(TAG, "CarServiceLifecycleListener onLifecycleChanged: " + carReady);
             if (!carReady) {
                 reset();
             } else {
@@ -128,11 +129,11 @@ public class SignalAdapterImpl implements SignalApi {
          * 如果传递的Handler是null，后续的Event处理将会主线程Looper中处理 */
         mVehicleController = VehicleController.getInstance(context, handler);
         initCallback();
-        Log.d(TAG, "init: success");
+        Logger.d(TAG, "init: success");
 
         mCar = Car.createCar(context, handler, 5000L, this.mCarServiceLifecycleListener);
         if (mCar != null && mCar.isConnected()) {
-            Log.d(TAG, "Car connect successfully in VehicleService constructor");
+            Logger.d(TAG, "Car connect successfully in VehicleService constructor");
             initPropertyManager(mCar);
         }
     }
@@ -145,10 +146,10 @@ public class SignalAdapterImpl implements SignalApi {
     private synchronized void initPropertyManager(final Car car) {
         this.mCar = car;
         if (this.mPropertyManager == null) {
-            Log.d(TAG, "init CarPropertyManager");
+            Logger.d(TAG, "init CarPropertyManager");
             this.mPropertyManager = (CarPropertyManager) this.mCar.getCarManager("property");
         } else {
-            Log.i(TAG, "mPropertyManager in VehicleService had been inited");
+            Logger.i(TAG, "mPropertyManager in VehicleService had been inited");
         }
     }
 
@@ -172,11 +173,11 @@ public class SignalAdapterImpl implements SignalApi {
         try {
             result = PowertainController.getInstance().getHighVoltageChargeSystemStatus();
         } catch (IllegalStateException | NoSuchElementException | UnsupportedOperationException e) {
-            Log.e(TAG, "getChargeSystemStatus: " + Log.getStackTraceString(e));
+            Logger.e(TAG, "getChargeSystemStatus: " + Log.getStackTraceString(e));
             return -1;
         }
         final Integer value = result.getValue(-1);
-        Log.d(TAG, "getChargeSystemStatus: " + value);
+        Logger.d(TAG, "getChargeSystemStatus: " + value);
         return value;
     }
 
@@ -186,11 +187,11 @@ public class SignalAdapterImpl implements SignalApi {
         try {
             result = PowertainController.getInstance().getHighVoltageBatteryStateOfChargeBatteryStateOfCharge();
         } catch (IllegalStateException | NoSuchElementException | UnsupportedOperationException e) {
-            Log.e(TAG, "getBatteryEnergyPercent: " + Log.getStackTraceString(e));
+            Logger.e(TAG, "getBatteryEnergyPercent: " + Log.getStackTraceString(e));
             return -1;
         }
         final Float value = result.getValue(-1f);
-        Log.d(TAG, "getBatteryEnergyPercent: " + value);
+        Logger.d(TAG, "getBatteryEnergyPercent: " + value);
         return value;
     }
 
@@ -200,11 +201,11 @@ public class SignalAdapterImpl implements SignalApi {
         try {
             result = PowertainController.getInstance().getInfoEvBatteryCapacity();
         } catch (IllegalStateException | NoSuchElementException | UnsupportedOperationException e) {
-            Log.w(TAG, "getMaxBatteryEnergy: " + Log.getStackTraceString(e));
+            Logger.w(TAG, "getMaxBatteryEnergy: " + Log.getStackTraceString(e));
             return -1;
         }
         final Float value = result.getValue(-1f);
-        Log.d(TAG, "getMaxBatteryEnergy: " + value);
+        Logger.d(TAG, "getMaxBatteryEnergy: " + value);
         return value;
     }
 
@@ -214,11 +215,11 @@ public class SignalAdapterImpl implements SignalApi {
         try {
             result = PowertainController.getInstance().getHighVoltageBatteryRemainingUsableEnergy();
         } catch (IllegalStateException | NoSuchElementException | UnsupportedOperationException e) {
-            Log.e(TAG, "getBatteryEnergy: " + Log.getStackTraceString(e));
+            Logger.e(TAG, "getBatteryEnergy: " + Log.getStackTraceString(e));
             return -1;
         }
         final Float value = result.getValue(-1f);
-        Log.d(TAG, "getBatteryEnergy: " + value);
+        Logger.d(TAG, "getBatteryEnergy: " + value);
         return value;
     }
 
@@ -228,11 +229,11 @@ public class SignalAdapterImpl implements SignalApi {
         try {
             result = VehicleStatusController.getInstance().getOutsideTemperature();
         } catch (IllegalStateException | NoSuchElementException | UnsupportedOperationException e) {
-            Log.e(TAG, "getOutsideTemperature: " + Log.getStackTraceString(e));
+            Logger.e(TAG, "getOutsideTemperature: " + Log.getStackTraceString(e));
             return -1;
         }
         final Float value = result.getValue(-1f);
-        Log.d(TAG, "getOutsideTemperature: " + value);
+        Logger.d(TAG, "getOutsideTemperature: " + value);
         return value;
     }
 
@@ -242,11 +243,11 @@ public class SignalAdapterImpl implements SignalApi {
         try {
             result = PowertainController.getInstance().getSpeedOfVehicle();
         } catch (IllegalStateException | NoSuchElementException | UnsupportedOperationException e) {
-            Log.e(TAG, "getSpeedOfVehicle: " + Log.getStackTraceString(e));
+            Logger.e(TAG, "getSpeedOfVehicle: " + Log.getStackTraceString(e));
             return -1;
         }
         final Float value = result.getValue(-1f);
-        Log.d(TAG, "getSpeedOfVehicle: " + value);
+        Logger.d(TAG, "getSpeedOfVehicle: " + value);
         return value;
     }
 
@@ -256,11 +257,11 @@ public class SignalAdapterImpl implements SignalApi {
         try {
             result = HvacController.getInstance().getAcSwitchState(HvacController.FIRST_ROW_LEFT_SEAT);
         } catch (IllegalStateException | NoSuchElementException | UnsupportedOperationException e) {
-            Log.e(TAG, "getAcSwitchState: " + Log.getStackTraceString(e));
+            Logger.e(TAG, "getAcSwitchState: " + Log.getStackTraceString(e));
             return -1;
         }
         final Integer value = result.getValue(-1);
-        Log.d(TAG, "getAcSwitchState: " + value);
+        Logger.d(TAG, "getAcSwitchState: " + value);
         return value;
     }
 
@@ -270,10 +271,10 @@ public class SignalAdapterImpl implements SignalApi {
         try {
             result = PowerModeManager.getInstance().getSystemState();
         } catch (IllegalStateException | NoSuchElementException | UnsupportedOperationException e) {
-            Log.e(TAG, "getSystemState: " + Log.getStackTraceString(e));
+            Logger.e(TAG, "getSystemState: " + Log.getStackTraceString(e));
             return -1;
         }
-        Log.d(TAG, "getSystemState: " + result);
+        Logger.d(TAG, "getSystemState: " + result);
         return systemStateConversion(result);
     }
 
@@ -283,11 +284,11 @@ public class SignalAdapterImpl implements SignalApi {
         try {
             result = PowertainController.getInstance().getRangeRemaining();
         } catch (IllegalStateException | NoSuchElementException | UnsupportedOperationException e) {
-            Log.e(TAG, "getRangeRemaining: " + Log.getStackTraceString(e));
+            Logger.e(TAG, "getRangeRemaining: " + Log.getStackTraceString(e));
             return -1;
         }
         final Float value = result.getValue(-1f);
-        Log.d(TAG, "getRangeRemaining: " + value);
+        Logger.d(TAG, "getRangeRemaining: " + value);
         return value;
     }
 
@@ -297,26 +298,26 @@ public class SignalAdapterImpl implements SignalApi {
         try {
             result = PowertainController.getInstance().getHighVoltageBatteryPropulsionRange();
         } catch (IllegalStateException | NoSuchElementException | UnsupportedOperationException e) {
-            Log.e(TAG, "getHighVoltageBatteryPropulsionRange: " + Log.getStackTraceString(e));
+            Logger.e(TAG, "getHighVoltageBatteryPropulsionRange: " + Log.getStackTraceString(e));
             return -1;
         }
         final Float value = result.getValue(-1f);
-        Log.d(TAG, "getHighVoltageBatteryPropulsionRange: " + value);
+        Logger.d(TAG, "getHighVoltageBatteryPropulsionRange: " + value);
         return value;
     }
 
     @Override
     public void setNextChargingDestination(final int powerLevel, final int status, final int timeToArrival, final int distToArrival) {
         if (mPropertyManager == null) {
-            Log.w(TAG, "setNextChargingDestination: mPropertyManager is null");
+            Logger.w(TAG, "setNextChargingDestination: mPropertyManager is null");
             return;
         }
-        Log.d(TAG, "setNextChargingDestination: " + powerLevel + ", " + status + ", " + timeToArrival + ", " + distToArrival);
+        Logger.d(TAG, "setNextChargingDestination: " + powerLevel + ", " + status + ", " + timeToArrival + ", " + distToArrival);
         final int[] nextChargingDestination = new int[]{distToArrival, status, timeToArrival, powerLevel};
         try {
             mPropertyManager.setProperty(int[].class, VendorProperty.NEXT_CHARGING_DESTINATION_INFORMATION_1, 0, nextChargingDestination);
         } catch (IllegalArgumentException e) {
-            Log.e(TAG, "setNextChargingDestination: " + Log.getStackTraceString(e));
+            Logger.e(TAG, "setNextChargingDestination: " + Log.getStackTraceString(e));
         }
     }
 
@@ -326,11 +327,11 @@ public class SignalAdapterImpl implements SignalApi {
         try {
             result = DriveAssistController.getInstance().getNavigationOnAdasTextToSpeachStatus();
         } catch (IllegalStateException | NoSuchElementException | UnsupportedOperationException e) {
-            Log.e(TAG, "getNavigationOnAdasTextToSpeachStatus: " + Log.getStackTraceString(e));
+            Logger.e(TAG, "getNavigationOnAdasTextToSpeachStatus: " + Log.getStackTraceString(e));
             return -1;
         }
         final Integer value = result.getValue(-1);
-        Log.d(TAG, "getNavigationOnAdasTextToSpeachStatus: " + value);
+        Logger.d(TAG, "getNavigationOnAdasTextToSpeachStatus: " + value);
         return value;
     }
 
@@ -341,7 +342,7 @@ public class SignalAdapterImpl implements SignalApi {
      */
     private boolean checkVehicleEnvironment() {
         if (!"gm".equals(Build.MANUFACTURER)) { // 设备制造商
-            Log.w(TAG, "checkVehicleEnvironment: not vehicle environment");
+            Logger.w(TAG, "checkVehicleEnvironment: not vehicle environment");
             return false;
         } else {
             return true;

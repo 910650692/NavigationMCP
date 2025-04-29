@@ -114,7 +114,7 @@ public final class AccountAdapter {
     /**
      * 获取账户accessToken
      * @param param 详细说明见AccessTokenParam
-     * @return accessToken 获取失败返回空串，"-1"为无效值需要稍后重试
+     * @return accessToken 获取失败返回空串
      */
     public String getAccessToken(final AccessTokenParam param) {
         return mAccountApi.getAccessToken(param);

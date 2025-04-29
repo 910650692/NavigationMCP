@@ -14,7 +14,7 @@ import com.fy.navi.ui.base.BaseModel;
 /**
  * HUD Model
  */
-public class HUDModel extends BaseModel<HUDViewModel>implements IMapPackageCallback, IEngineObserver {
+public class HUDModel extends BaseModel<BaseHUDViewModel>implements IMapPackageCallback, IEngineObserver {
     private static final String TAG = "HUDModel";
     private final MapPackage mapPackage;
 

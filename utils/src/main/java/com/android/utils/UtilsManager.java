@@ -24,7 +24,7 @@ public class UtilsManager {
         ScreenUtils.Companion.getInstance().init(context);
         ResourceUtils.Companion.getInstance().init(context);
         DeviceUtils.mApplication = context;
-        //DevicesIdUtil.mApplication = context;
+        DevicesIdUtil.getInstance().init(context);
     }
 
     public static final void clearCache() {
@@ -35,6 +35,6 @@ public class UtilsManager {
         ScreenUtils.Companion.getInstance().clearCache();
         ResourceUtils.Companion.getInstance().clearCache();
         DeviceUtils.mApplication = null;
-        //DevicesIdUtil.mApplication = null;
+        DevicesIdUtil.getInstance().unInit();
     }
 }

@@ -221,6 +221,7 @@ public class DrSensorManager implements SensorEventListener {
         sensorData.valueY = mGyroYValue;
         sensorData.valueZ = mGyroZValue;
         sensorData.temperature = mTemperature;
+        Logger.d("mTemperature",mTemperature);
         sensorData.tickTime = BigInteger.valueOf(tickTime);
         sensorData.interval = (int) gyroTime;
         sensorData.dataType = LocDataType.LocDataGyro;

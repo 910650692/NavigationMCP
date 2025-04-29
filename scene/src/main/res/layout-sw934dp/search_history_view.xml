@@ -10,10 +10,14 @@
             type="com.fy.navi.scene.impl.search.SceneSearchHistoryImpl" />
     </data>
     <com.fy.navi.ui.view.SkinFrameLayout
-        android:layout_width="@dimen/dp_640"
-        android:layout_height="@dimen/dp_432"
+        android:layout_width="@dimen/dp_698"
+        android:layout_height="@dimen/dp_532"
+        android:paddingStart="@dimen/dp_29"
+        android:paddingEnd="@dimen/dp_29"
+        android:paddingTop="@dimen/dp_60"
+        android:paddingBottom="@dimen/dp_60"
         android:clipToOutline="true"
-        android:background="@drawable/bg_search_main_tab"
+        android:background="@drawable/bg_search_main_tab_shadow"
         android:layerType="hardware">
     <com.fy.navi.scene.ui.search.MaxheightNestedScrollView
         android:layout_width="@dimen/dp_640"

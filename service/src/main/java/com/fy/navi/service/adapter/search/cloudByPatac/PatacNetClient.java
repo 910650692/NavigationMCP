@@ -3,7 +3,6 @@ package com.fy.navi.service.adapter.search.cloudByPatac;
 import com.android.utils.DeviceUtils;
 import com.android.utils.log.Logger;
 import com.fy.navi.service.AppContext;
-import com.fy.navi.service.BuildConfig;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.patac.netlib.bean.HeaderBean;
 import com.patac.netlib.factory.NetPkiFactory;
@@ -25,15 +24,20 @@ public class PatacNetClient {
         return mInstance;
     }
 
-    private PatacNetClient() {}
+    private PatacNetClient() {
+    }
 
-    public void init(){
-
+    public void init() {
         // 设置网络断开时间
         NetConfigUtils.getInstance().setConnectTimeOut(DEFAULT_CONNECT_TIMEOUT);
-        Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG,"NetConfigUtils is car: " + DeviceUtils.isCar(AppContext.getInstance().getMApplication()));
-        if(DeviceUtils.isCar(AppContext.getInstance().getMApplication())){
-            NetPkiFactory.getInstance().init(AppContext.getInstance().getMApplication(),new HeaderBean("1",0), HttpConstants.AppKeyProd.BASE_CLOUD_URL, true);
+        Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "NetConfigUtils is car: " + DeviceUtils.isCar(AppContext.getInstance().getMApplication()));
+        if (DeviceUtils.isCar(AppContext.getInstance().getMApplication())) {
+            NetPkiFactory.getInstance().init(
+                    AppContext.getInstance().getMApplication(),
+                    new HeaderBean("SELF_DEVELOPED_MAP", "1.0", 0),
+                    "https://test-ninfo-securitygateway.sgmlink.com:667/info4gw/",
+                    true
+            );
         }
     }
 }

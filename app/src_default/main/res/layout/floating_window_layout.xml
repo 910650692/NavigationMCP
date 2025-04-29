@@ -1,0 +1,48 @@
+<layout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <View
+            android:id="@+id/view_bg"
+            android:layout_width="@dimen/dp_484"
+            android:layout_height="@dimen/dp_92"
+            android:background="@drawable/bg_search_main_tab"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.fy.navi.ui.view.SkinImageView
+            android:id="@+id/sk_iv_basic_home"
+            android:layout_width="@dimen/dp_92"
+            android:layout_height="@dimen/dp_92"
+            android:src="@drawable/img_basic_ic_home"
+            app:layout_constraintBottom_toBottomOf="@id/view_bg"
+            app:layout_constraintEnd_toStartOf="@id/sk_iv_basic_bus"
+            app:layout_constraintHorizontal_chainStyle="spread"
+            app:layout_constraintStart_toStartOf="@id/view_bg"
+            app:layout_constraintTop_toTopOf="@id/view_bg" />
+
+        <com.fy.navi.ui.view.SkinImageView
+            android:id="@+id/sk_iv_basic_bus"
+            android:layout_width="@dimen/dp_92"
+            android:layout_height="@dimen/dp_92"
+            android:src="@drawable/img_basic_ic_bus"
+            app:layout_constraintBottom_toBottomOf="@id/sk_iv_basic_home"
+            app:layout_constraintEnd_toStartOf="@id/sk_iv_basic_search"
+            app:layout_constraintStart_toEndOf="@id/sk_iv_basic_home"
+            app:layout_constraintTop_toTopOf="@id/sk_iv_basic_home" />
+
+        <com.fy.navi.ui.view.SkinImageView
+            android:id="@+id/sk_iv_basic_search"
+            android:layout_width="@dimen/dp_92"
+            android:layout_height="@dimen/dp_92"
+            android:src="@drawable/img_basic_ic_search"
+            app:layout_constraintEnd_toEndOf="@id/view_bg"
+            app:layout_constraintStart_toEndOf="@+id/sk_iv_basic_bus"
+            app:layout_constraintTop_toTopOf="@id/sk_iv_basic_home" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

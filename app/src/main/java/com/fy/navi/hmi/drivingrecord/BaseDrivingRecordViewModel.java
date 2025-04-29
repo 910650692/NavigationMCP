@@ -24,6 +24,8 @@ public class BaseDrivingRecordViewModel extends BaseViewModel<DrivingRecordFragm
     public MutableLiveData<Boolean> mEmptyViewVisibility = new MutableLiveData<>(false);
     public MutableLiveData<Boolean> mLoginTipVisibility = new MutableLiveData<>(false);
 
+    private MutableLiveData<Boolean> mIsDeleteDivingRecordDialog = new MutableLiveData<>(false);
+
     public BaseDrivingRecordViewModel(@NonNull final Application application) {
         super(application);
     }
@@ -164,5 +166,21 @@ public class BaseDrivingRecordViewModel extends BaseViewModel<DrivingRecordFragm
      */
     public void deleteValueByFileName(final String fileName) {
         mModel.deleteValueByFileName(fileName);
+    }
+
+    /**
+     * 显示删除对话框
+     * @param visibility true:显示 false:不显示
+     */
+    public void seIstDeleteDivingRecordDialog(final boolean visibility) {
+        mIsDeleteDivingRecordDialog.setValue(visibility);
+    }
+
+    /**
+     * 获取删除对话框显示状态
+     * @return true:显示 false:不显示
+     */
+    public boolean getIstDeleteDivingRecordDialog() {
+        return Boolean.TRUE.equals(mIsDeleteDivingRecordDialog.getValue());
     }
 }

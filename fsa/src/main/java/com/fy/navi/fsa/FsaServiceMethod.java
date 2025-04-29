@@ -2,6 +2,7 @@ package com.fy.navi.fsa;
 
 import android.util.Log;
 
+import com.android.utils.log.Logger;
 import com.gm.fsa.service.FSAMessage;
 import com.gm.fsa.service.FSAServiceConnectedClient;
 import com.gm.fsa.service.NotificationObject;
@@ -26,12 +27,12 @@ public class FsaServiceMethod extends FSAMethod {
     @Override
     public void onRequest(final NotificationObject notificationObject) {
         if (null == notificationObject) {
-            Log.w(FsaConstant.FSA_TAG, "received method request: notificationObject null");
+            Logger.w(FsaConstant.FSA_TAG, "received method request: notificationObject null");
             return;
         }
         final FSAMessage fsaMessage = notificationObject.msg;
         if (null == fsaMessage) {
-            Log.w(FsaConstant.FSA_TAG, "received method request: msg null");
+            Logger.w(FsaConstant.FSA_TAG, "received method request: msg null");
             return;
         }
         final int functionId = fsaMessage.getFunctionId();
@@ -39,7 +40,7 @@ public class FsaServiceMethod extends FSAMethod {
         if (null != mListener) {
             mListener.onReceiveRequest(functionId, payload);
         } else {
-            Log.w(FsaConstant.FSA_TAG, "received method request: mListener null");
+            Logger.w(FsaConstant.FSA_TAG, "received method request: mListener null");
         }
     }
 

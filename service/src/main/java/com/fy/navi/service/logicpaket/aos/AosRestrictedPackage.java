@@ -1,12 +1,16 @@
 package com.fy.navi.service.logicpaket.aos;
 
+import com.android.utils.ConvertUtils;
 import com.fy.navi.service.adapter.aos.BlAosAdapter;
 import com.fy.navi.service.adapter.aos.QueryRestrictedObserver;
+import com.fy.navi.service.adapter.map.MapAdapter;
 import com.fy.navi.service.define.aos.FyCriticism;
 import com.fy.navi.service.define.aos.FyGTraEventDetail;
 import com.fy.navi.service.define.aos.FyTrafficUploadParameter;
 import com.fy.navi.service.define.aos.RestrictedArea;
 import com.fy.navi.service.define.aos.RestrictedParam;
+import com.fy.navi.service.define.bean.PreviewParams;
+import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.route.RouteRestrictionParam;
 import com.fy.navi.service.logicpaket.map.IMapPackageCallback;
 
@@ -21,11 +25,13 @@ import java.util.List;
 public class AosRestrictedPackage implements QueryRestrictedObserver {
     private static final String TAG = "AosRestrictedPackage";
     private final BlAosAdapter mBlAosAdapter;
+    private final MapAdapter mMapAdapter;
     private final Hashtable<String, IAosRestrictedObserver> restrictedObserverList;
     private final Hashtable<String, List<IMapPackageCallback>> callbackTables = new Hashtable<>();
 
     private AosRestrictedPackage() {
         mBlAosAdapter = BlAosAdapter.getInstance();
+        mMapAdapter = MapAdapter.getInstance();
         restrictedObserverList = new Hashtable<>();
         mBlAosAdapter.addRestrictedObserver("AosRestrictedPackage", this);
     }
@@ -64,6 +70,26 @@ public class AosRestrictedPackage implements QueryRestrictedObserver {
 
     public static AosRestrictedPackage getInstance() {
         return Helper.aosPackage;
+    }
+
+    /**
+     * 限行页面路线全览
+     * @param mapTypeId 屏幕ID
+     */
+    public void showRestrictedAreaPreview(final MapType mapTypeId, final RouteRestrictionParam param, final int index) {
+        final PreviewParams previewParams = new PreviewParams();
+        previewParams.setRouteLine(false);
+        previewParams.setbUseRect(false);
+        if (!ConvertUtils.isEmpty(param) && !ConvertUtils.isEmpty(param.getMRestrictedArea())
+                && !ConvertUtils.isEmpty(param.getMRestrictedArea().getMPointList())
+                && index < param.getMRestrictedArea().getMPointList().size() ) {
+            previewParams.setPoints(param.getMRestrictedArea().getMPointList().get(index));
+        }
+        previewParams.setScreenLeft(1200);
+        previewParams.setScreenRight(600);
+        previewParams.setScreenTop(210);
+        previewParams.setScreenBottom(140);
+        mMapAdapter.showPreview(mapTypeId, previewParams);
     }
 
     @Override

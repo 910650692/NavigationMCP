@@ -1,0 +1,10 @@
+{
+  "point_layer_item_style": {
+    "normal_style": {
+      "poi_marker_id": "layer_layout_search_along_way_charge_normal"
+    },
+    "focus_style": {
+      "poi_marker_id": "layer_layout_search_along_way_charge_focused"
+    }
+  }
+}

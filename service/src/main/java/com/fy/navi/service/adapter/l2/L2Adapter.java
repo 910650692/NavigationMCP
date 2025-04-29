@@ -1,7 +1,5 @@
 package com.fy.navi.service.adapter.l2;
 
-import android.util.Log;
-
 import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
 import com.autonavi.gbl.common.path.model.LinkType;
@@ -535,7 +533,7 @@ public class L2Adapter {
             try {
                 sendMessage();
             } catch (Exception e) {
-                Log.e(TAG, "sendMessage: ", e);
+                Logger.e(TAG, "sendMessage: ", e);
             }
         }
     };

@@ -37,7 +37,7 @@ public class LimitDriverAdapter extends RecyclerView.Adapter<LimitDriverAdapter.
     public void setData(final List<RestrictedAreaDetail> list) {
         this.mDate.clear();
         this.mDate.addAll(list);
-        notifyItemRangeChanged(0, mDate.size());
+        notifyDataSetChanged();
     }
 
     @NonNull

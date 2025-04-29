@@ -92,15 +92,6 @@
             android:screenOrientation="landscape"
             tools:ignore="DiscouragedApi" />
 
-        <activity
-            android:name=".cluster.ClusterActivity"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="com.fy.navi.hmi.cluster.ClusterActivity" />
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-
         <service
             android:name="com.fy.navi.exportservice.MapService"
             android:defaultToDeviceProtectedStorage="true"

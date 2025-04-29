@@ -193,6 +193,13 @@ public class MapPackage implements IMapAdapterCallback, INaviStatusCallback, ILa
 
     public void mfcMoveMap(MapType mapTypeId, MfcController mfcController, int moveDistance) {
         mMapAdapter.mfcMoveMap(mapTypeId,mfcController, moveDistance);
+        if (callbackTables.containsKey(mapTypeId) && callbackTables.get(mapTypeId) != null) {
+            List<IMapPackageCallback> callbacks = callbackTables.get(mapTypeId);
+            if (ConvertUtils.isEmpty(callbacks)) return;
+            for (IMapPackageCallback callback : callbacks) {
+                callback.onMapTouchEvent(mapTypeId, null);
+            }
+        }
     }
 
     public GeoPoint mapToLonLat(MapType mapTypeId, double mapX, double mapY) {

@@ -13,20 +13,20 @@
 
     <com.fy.navi.ui.view.SkinLinearLayout
         clickCommand="@{viewModel.mRootClick}"
-        android:layout_width="@dimen/dp_640"
+        android:layout_width="@dimen/dp_698"
         android:layout_height="match_parent"
         android:clickable="true"
         android:orientation="vertical">
 
         <com.fy.navi.scene.ui.favorite.SceneHomeCompanyView
             android:id="@+id/home_company_view"
-            android:layout_width="@dimen/dp_640"
-            android:layout_height="@dimen/dp_262" />
+            android:layout_width="@dimen/dp_698"
+            android:layout_height="@dimen/dp_320" />
 
         <com.fy.navi.scene.ui.search.SceneSearchHistoryView
             android:id="@+id/scene_nested_scroll_view"
-            android:layout_width="@dimen/dp_640"
-            android:layout_height="@dimen/dp_432"
-            android:layout_marginTop="@dimen/dp_20" />
+            android:layout_width="@dimen/dp_698"
+            android:layout_height="@dimen/dp_490"
+            android:layout_marginTop="-40dp" />
     </com.fy.navi.ui.view.SkinLinearLayout>
 </layout>

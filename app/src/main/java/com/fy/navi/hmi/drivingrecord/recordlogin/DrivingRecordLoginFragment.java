@@ -62,15 +62,35 @@ public class DrivingRecordLoginFragment extends BaseFragment<FragmentDrivingReco
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
+    public void onDestroy() {
+        super.onDestroy();
+        clearDialog();
     }
 
     @Override
-    public void onInitObserver() {
-        super.onInitObserver();
+    public void onReStoreFragment() {
+        super.onReStoreFragment();
+        restoreFragment();
     }
 
+    /**
+     * 恢复Fragment的状态
+     */
+    private void restoreFragment(){
+        if(mViewModel.getIsMergeDivingRecordDialog()){
+            mMergeDivingRecordDialog.show();
+        }
+    }
+
+    /**
+     * 清除Dialog
+     */
+    private void clearDialog(){
+        if(mMergeDivingRecordDialog.isShowing()){
+            mMergeDivingRecordDialog.dismiss();
+        }
+        mMergeDivingRecordDialog = null;
+    }
 
     /**
      * 更新二维码
@@ -145,6 +165,7 @@ public class DrivingRecordLoginFragment extends BaseFragment<FragmentDrivingReco
                 .setDialogObserver(new IBaseDialogClickListener() {
                     @Override
                     public void onCommitClick() {
+                        mViewModel.setIsMergeDivingRecordDialog(false);
                         final ArrayList<DrivingRecordDataBean> dataBeanList = mViewModel.getDrivingRecordDataList();
                         if (dataBeanList == null || dataBeanList.isEmpty()) {
                             return;
@@ -154,6 +175,10 @@ public class DrivingRecordLoginFragment extends BaseFragment<FragmentDrivingReco
                         }
                     }
 
+                    @Override
+                    public void onCancelClick() {
+                        mViewModel.setIsMergeDivingRecordDialog(false);
+                    }
                 }).build();
         clearBackground(mMergeDivingRecordDialog.getWindow());
     }

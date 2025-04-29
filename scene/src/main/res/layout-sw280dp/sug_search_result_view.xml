@@ -12,6 +12,7 @@
     <com.fy.navi.ui.view.SkinLinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:focusable="false"
         android:orientation="vertical">
 
         <include
@@ -21,6 +22,7 @@
         <com.fy.navi.ui.view.SkinConstraintLayout
             android:layout_width="@dimen/dp_820"
             android:layout_height="@dimen/dp_828"
+            android:focusable="false"
             android:layout_marginTop="@dimen/dp_20"
             android:background="@drawable/bg_search_main_tab">
 
@@ -28,12 +30,14 @@
                 android:id="@+id/recycler_search_result"
                 android:scrollbars="vertical"
                 android:visibility="gone"
+                android:focusable="false"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:paddingBottom="@dimen/dp_32"/>
             <com.fy.navi.ui.view.SkinRecyclerView
                 android:id="@+id/recycler_search_history"
                 android:scrollbars="vertical"
+                android:focusable="false"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
             <com.fy.navi.ui.view.SkinTextView
@@ -41,6 +45,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/shv_record_null"
+                android:focusable="false"
                 android:textColor="@color/search_color_ffffff_70"
                 android:textSize="@dimen/sp_30"
                 android:visibility="gone"

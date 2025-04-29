@@ -10,21 +10,25 @@
 
     <com.fy.navi.ui.view.SkinLinearLayout
         android:id="@+id/scl_search_top_view"
-        android:layout_width="@dimen/dp_640"
+        android:layout_width="@dimen/dp_698"
         android:layout_height="match_parent"
         android:orientation="vertical">
 
         <include
             android:id="@+id/collect_title_bar_view"
             layout="@layout/collect_title_bar_view"
-            android:layout_width="@dimen/dp_640"
-            android:layout_height="@dimen/dp_112" />
+            android:layout_width="@dimen/dp_698"
+            android:layout_height="@dimen/dp_170" />
 
         <com.fy.navi.ui.view.SkinConstraintLayout
-            android:layout_width="@dimen/dp_640"
-            android:layout_height="@dimen/dp_582"
-            android:layout_marginTop="@dimen/dp_20"
-            android:background="@drawable/bg_search_main_tab">
+            android:layout_width="@dimen/dp_698"
+            android:layout_height="@dimen/dp_702"
+            android:paddingStart="@dimen/dp_29"
+            android:paddingEnd="@dimen/dp_29"
+            android:paddingTop="@dimen/dp_60"
+            android:paddingBottom="@dimen/dp_60"
+            android:layout_marginTop="-40dp"
+            android:background="@drawable/bg_search_main_tab_shadow">
 
             <com.fy.navi.ui.view.SkinRecyclerView
                 android:id="@+id/rcv_collect"

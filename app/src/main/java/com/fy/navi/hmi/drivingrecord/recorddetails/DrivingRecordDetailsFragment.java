@@ -3,10 +3,13 @@ package com.fy.navi.hmi.drivingrecord.recorddetails;
 import android.os.Bundle;
 import android.view.Window;
 
+import androidx.annotation.NonNull;
+
 import com.android.utils.ResourceUtils;
 import com.android.utils.StringUtils;
 import com.android.utils.TimeUtils;
 import com.android.utils.ToastUtils;
+import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
 import com.fy.navi.hmi.BR;
 import com.fy.navi.hmi.R;
@@ -46,10 +49,58 @@ public class DrivingRecordDetailsFragment extends BaseFragment<FragmentDrivingRe
 
     @Override
     public void onInitData() {
+        getBundleData();
+    }
+
+    @Override
+    public void onReStoreFragment() {
+        super.onReStoreFragment();
+        Logger.d("DrivingRecordDetailsFragment", "onReStoreFragment");
+        restoreFragment();
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if(mDrivingRecordDataBean != null){
+            mViewModel.setBean(mDrivingRecordDataBean);
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        clearDialog();
+    }
+
+    /**
+     * 获取bundle数据
+     */
+    public void getBundleData(){
         final Bundle bundle = getArguments();
         if (bundle != null) {
             mDrivingRecordDataBean = bundle.getParcelable(AutoMapConstant.RecordDetailsBundleKey.BUNDLE_RECORD_DERAILS);
         }
+    }
+
+    /**
+     * 恢复fragment
+     */
+    private void restoreFragment(){
+        mDrivingRecordDataBean = mViewModel.getBean();
+        if(mViewModel.getIsDeleteDivingRecordDialog()){
+            mDeleteDivingRecordDialog.show();
+        }
+    }
+
+    /**
+     * 清除弹窗
+     */
+    private void clearDialog(){
+        if(mDeleteDivingRecordDialog.isShowing()){
+            mDeleteDivingRecordDialog.dismiss();
+        }
+        mDeleteDivingRecordDialog = null;
     }
 
     /**
@@ -86,6 +137,7 @@ public class DrivingRecordDetailsFragment extends BaseFragment<FragmentDrivingRe
                 .setDialogObserver(new IBaseDialogClickListener() {
                     @Override
                     public void onCommitClick() {
+                        mViewModel.setIsDeleteDrivingRecordDialog(false);
                         if (mDrivingRecordDataBean != null) {
                             if (AccountPackage.getInstance().isLogin()) {
                                 mViewModel.delBehaviorData(mDrivingRecordDataBean.getId());
@@ -100,6 +152,11 @@ public class DrivingRecordDetailsFragment extends BaseFragment<FragmentDrivingRe
 
                         }
 
+                    }
+
+                    @Override
+                    public void onCancelClick() {
+                        mViewModel.setIsDeleteDrivingRecordDialog(false);
                     }
                 }).build();
         clearBackground(mDeleteDivingRecordDialog.getWindow());

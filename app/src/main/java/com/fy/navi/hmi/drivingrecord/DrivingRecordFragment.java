@@ -81,6 +81,31 @@ public class DrivingRecordFragment  extends BaseFragment<FragmentDrivingRecordBi
         super.onInitObserver();
     }
 
+    @Override
+    public void onReStoreFragment() {
+        super.onReStoreFragment();
+        restoreFragment();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        clearDialog();
+    }
+
+    private void restoreFragment(){
+        if(mViewModel.getIstDeleteDivingRecordDialog()){
+            mDeleteDivingRecordDialog.show();
+        }
+    }
+
+    private void clearDialog(){
+        if(mDeleteDivingRecordDialog.isShowing()){
+            mDeleteDivingRecordDialog.dismiss();
+        }
+        mDeleteDivingRecordDialog = null;
+    }
+
     /**
      * 初始化行程列表
      */
@@ -115,6 +140,7 @@ public class DrivingRecordFragment  extends BaseFragment<FragmentDrivingRecordBi
             public void onItemDeleteClick(final int index) {
                 mCurrentIndex = index;
                 mDeleteDivingRecordDialog.show();
+                mViewModel.seIstDeleteDivingRecordDialog(true);
             }
         });
         final LinearLayoutManager manager = new LinearLayoutManager(getActivity());
@@ -170,6 +196,7 @@ public class DrivingRecordFragment  extends BaseFragment<FragmentDrivingRecordBi
                 .setDialogObserver(new IBaseDialogClickListener() {
                     @Override
                     public void onCommitClick() {
+                        mViewModel.seIstDeleteDivingRecordDialog(false);
                         if (AccountPackage.getInstance().isLogin()) {
                             mViewModel.delBehaviorData(mDataList.get(mCurrentIndex).getId());
                         }
@@ -182,6 +209,10 @@ public class DrivingRecordFragment  extends BaseFragment<FragmentDrivingRecordBi
                         });
                     }
 
+                    @Override
+                    public void onCancelClick() {
+                        mViewModel.seIstDeleteDivingRecordDialog(false);
+                    }
                 }).build();
         clearBackground(mDeleteDivingRecordDialog.getWindow());
     }

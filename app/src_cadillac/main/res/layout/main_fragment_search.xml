@@ -22,24 +22,26 @@
         <com.android.car.ui.FocusParkingView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
-                <!--MFC___Map FocusArea-->
-                <com.android.car.ui.FocusArea
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    app:defaultFocusOverridesHistory="true"
-                    app:wrapAround="true">
+        <!--MFC___Map FocusArea-->
+        <com.android.car.ui.FocusArea
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:defaultFocusOverridesHistory="true"
+            app:wrapAround="true">
 
-                    <com.fy.navi.scene.ui.search.SceneMainSearchTopPartView
-                        android:id="@+id/search_view"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
+            <com.fy.navi.scene.ui.search.SceneMainSearchTopPartView
+                android:id="@+id/search_view"
+                android:layout_width="wrap_content"
+                android:focusable="false"
+                android:layout_height="wrap_content" />
 
-                    <com.fy.navi.scene.ui.search.SceneMainSearchBottomPartView
-                        android:id="@+id/scene_nested_scroll_view"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/dp_20" />
-                </com.android.car.ui.FocusArea>
-            </com.fy.navi.ui.view.SkinLinearLayout>
-        </layout>
+            <com.fy.navi.scene.ui.search.SceneMainSearchBottomPartView
+                android:id="@+id/scene_nested_scroll_view"
+                android:layout_width="wrap_content"
+                android:focusable="false"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_20" />
+        </com.android.car.ui.FocusArea>
+    </com.fy.navi.ui.view.SkinLinearLayout>
+</layout>

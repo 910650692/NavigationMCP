@@ -38,6 +38,7 @@ public final class JsonLog {
      * @param isTop 是否打印上边框
      */
     private static void printLine(final String tag, final boolean isTop) {
+        // 此类仅在本地调试时使用，且因为格式需要所以使用原生的log
         if (isTop) {
             Log.d(tag, "╔═══════════════════════════════════════════════════════════════════════════════════════");
         } else {
@@ -59,6 +60,7 @@ public final class JsonLog {
             printLine(tag, true);
             final String[] lines = message.split(LINE_SEPARATOR);
             for (String line : lines) {
+                // 此类仅在本地调试时使用，且因为格式需要所以使用原生的log
                 Log.d(tag, "║ " + line);
             }
             printLine(tag, false);
@@ -101,6 +103,7 @@ public final class JsonLog {
             try (FileWriter fileWriter = new FileWriter(file, true)) {
                 fileWriter.write(message);
             } catch (IOException e) {
+                // 此类仅在本地调试时使用，且因为格式需要所以使用原生的log
                 Log.e(TAG, "Error saving JSON data to cache file: " + file.getAbsolutePath(), e);
             }
         });

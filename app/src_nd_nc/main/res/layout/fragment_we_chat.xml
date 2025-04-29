@@ -13,10 +13,11 @@
     </data>
 
     <com.fy.navi.ui.view.SkinConstraintLayout
-        android:layout_width="@dimen/dp_1224"
-        android:layout_height="@dimen/dp_714"
+        android:layout_width="@dimen/dp_1282"
+        android:layout_height="@dimen/dp_772"
         android:clickable="true"
-        android:background="@drawable/bg_setting_fragment">
+        android:padding="@dimen/dp_29"
+        android:background="@drawable/bg_setting_shadow">
 
         <com.fy.navi.ui.view.SkinLinearLayout
             android:id="@+id/we_chat_title_layout"

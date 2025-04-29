@@ -3,6 +3,7 @@ package com.fy.navi.service.adapter.activate.bls;
 import androidx.annotation.NonNull;
 
 import com.android.utils.ConvertUtils;
+import com.android.utils.DevicesIdUtil;
 import com.android.utils.OkHttpUtils;
 import com.android.utils.log.Logger;
 import com.autonavi.gbl.activation.ActivationModule;
@@ -11,12 +12,20 @@ import com.autonavi.gbl.activation.model.ActivationInitParam;
 import com.autonavi.gbl.activation.observer.INetActivateObserver;
 import com.fy.navi.service.GBLCacheFilePath;
 import com.fy.navi.service.MapDefaultFinalTag;
-import com.fy.navi.service.adapter.engine.bls.TOTPUtils;
+import com.fy.navi.service.adapter.activate.cloudpatac.response.AppKeyResponse;
+import com.fy.navi.service.adapter.activate.cloudpatac.api.AppKeyRepository;
+import com.fy.navi.service.adapter.activate.cloudpatac.request.AppKeyReq;
+import com.patac.netlib.callback.NetDisposableObserver;
+import com.patac.netlib.exception.ApiException;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
+
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 
 public final class ActivationManager {
     private static final String TAG = MapDefaultFinalTag.ACTIVATE_SERVICE_TAG;
@@ -46,8 +55,8 @@ public final class ActivationManager {
 
     private ActivationManager() {
         mActivationService = ActivationModule.getInstance();
-        //DEVICES_ID = DevicesIdUtil.getInstance().getDeviceId();
-        SYS_VERSION = "";
+        DEVICES_ID = DevicesIdUtil.getInstance().getDeviceId();
+        SYS_VERSION = "1.0";
         Logger.d(TAG, "ActivationManager: devicesId = " + DEVICES_ID);
         Logger.d(TAG, "                  sysVersion = " + SYS_VERSION);
     }
@@ -86,8 +95,8 @@ public final class ActivationManager {
      */
     public void getThirdPartyUUID() {
         Logger.d(TAG, "getThirdPartyUUID: ");
-        //genAppKey();
-        mActivateListener.onUUIDGet("1");
+        genAppKey();
+        //mActivateListener.onUUIDGet("1");
     }
 
     /**
@@ -95,48 +104,69 @@ public final class ActivationManager {
      */
     private void genAppKey() {
         Logger.d(TAG, "genAppKey: ");
-        final HashMap<String, String> header = new HashMap<>();
-        header.put("Content-Type", "application/json;charset=UTF-8");
 
-        final HashMap<String, String> body = new HashMap<>();
+        final AppKeyReq req = new AppKeyReq("1.0");
+        req.setCheckAppKey(false);
+        req.setHeaderJson(true);
+        req.setAddContentType(true);
 
-        OkHttpUtils.Companion.getInstance().postFromBody(
-                body,
-                header,
-                TEST_URL + TEST_APP_ID,
-                new OkHttpUtils.OkHttpCallback<String>() {
+        final Observable<AppKeyResponse> observable = AppKeyRepository.getInstance().queryAppKey(req);
+
+        Logger.d(TAG ,"1: "+observable.toString());
+        observable.subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new NetDisposableObserver<AppKeyResponse>() {
                     @Override
-                    public void onProgress(final int progress) {
-                        Logger.d(TAG, "genAppKey onProgress...");
+                    public void onSuccess(final AppKeyResponse appKeyBean) {
+                        Logger.d(TAG, appKeyBean.toString());
                     }
 
                     @Override
-                    public void onFail(@NonNull final String error) {
-                        Logger.d(TAG, "genAppKey onFail : " + error);
+                    public void onFailed(final ApiException e) {
+                        Logger.d(TAG,"Exception code : " + e.getCode());
+                        Logger.d(TAG,"Exception msg : " + e.getMessage());
                     }
+                });
 
-                    @Override
-                    public void onSuccess(final String result) {
-                        Logger.d(TAG, "genAppKey onSuccess : " + result);
-                        try {
-                            final JSONObject jsonObject = new JSONObject(result);
-                            final JSONObject dataSet = new JSONObject(jsonObject.getString("dataSet"));
-                            APP_KEY = dataSet.getString("appKey");
-                        } catch (JSONException e) {
-                            Logger.e(TAG, "JSONException : " + e);
-                        }
-                        Logger.d(TAG, "APP_KEY : " + APP_KEY);
-                        genAuthCode();
-                    }
-                }
-        );
+
+
+//        OkHttpUtils.Companion.getInstance().postFromBody(
+//                body,
+//                header,
+//                TEST_URL + TEST_APP_ID,
+//                new OkHttpUtils.OkHttpCallback<String>() {
+//                    @Override
+//                    public void onProgress(final int progress) {
+//                        Logger.d(TAG, "genAppKey onProgress...");
+//                    }
+//
+//                    @Override
+//                    public void onFail(@NonNull final String error) {
+//                        Logger.d(TAG, "genAppKey onFail : " + error);
+//                    }
+//
+//                    @Override
+//                    public void onSuccess(final String result) {
+//                        Logger.d(TAG, "genAppKey onSuccess : " + result);
+//                        try {
+//                            final JSONObject jsonObject = new JSONObject(result);
+//                            final JSONObject dataSet = new JSONObject(jsonObject.getString("dataSet"));
+//                            APP_KEY = dataSet.getString("appKey");
+//                        } catch (JSONException e) {
+//                            Logger.e(TAG, "JSONException : " + e);
+//                        }
+//                        Logger.d(TAG, "APP_KEY : " + APP_KEY);
+//                        genAuthCode();
+//                    }
+//                }
+//        );
     }
 
     /**
      * 获取authCode
      */
     private void genAuthCode() {
-        AUTH_CODE = TOTPUtils.generateMyTOTP(APP_KEY);
+        //AUTH_CODE =         TOTPUtil.getInstance().generateMyTOTP(APP_KEY);
         Logger.d(TAG, "genAuthCode: " + AUTH_CODE);
         postUUID();
     }
@@ -270,15 +300,25 @@ public final class ActivationManager {
         final String hardWareCode = "0000000000"; // 默认10个0
         final int netActivateResult = mActivationService.netActivate(hardWareCode);
         Logger.i(TAG, "netActivateResult = " + netActivateResult);
-        mActivateListener.onNetActivated(true);
+        mActivateListener.onNetActivated(false);
     }
+/*
+这是激活需要的参数信息
+设备号：22A5E69D7783D0A06C62BB7BE9A73ADA(001042)
 
+序列号：PETAW9KTKQS79GZQBCXA984B
+
+激活码：UR32YH4SP4S9SQ57SJZ9ZUK9
+
+渠道号:C13953968867
+ */
     /**
      * 手动激活
      * @param userCode 序列号
      * @param loginCode 激活码
      */
     public void manualActivate(final String userCode, final String loginCode) {
+        Logger.d(TAG, "userCode = " + userCode + "; loginCode = " + loginCode);
         if (mActivationService == null) {
             Logger.d(TAG, "mActivationService == null");
             return;
@@ -288,6 +328,7 @@ public final class ActivationManager {
             Logger.d(TAG, "activateReturnParam == null");
             return;
         }
+        Logger.d(TAG, "activateReturnParam.iErrorCode = " + activateReturnParam.iErrorCode);
         mActivateListener.onManualActivated(ConvertUtils.equals(0, activateReturnParam.iErrorCode));
     }
 

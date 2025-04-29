@@ -164,7 +164,7 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
 //        AppContext.getInstance().getMContext().registerReceiver(new BroadcastReceiver() {
 //            @Override
 //            public void onReceive(Context context, Intent intent) {
-//                Log.d(FsaConstant.FSA_TAG, "onReceive: " + intent.getAction());
+//                Logger.d(FsaConstant.FSA_TAG, "onReceive: " + intent.getAction());
 //                if (intent.getAction().equals("fsatest")) {
 //                    onReceiveRequest(FsaConstant.FsaMethod.ID_REQUEST_MSG, intent.getStringExtra("payload"));
 //                }
@@ -176,7 +176,7 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
     private final IEngineObserver mEngineObserver = new IEngineObserver() {
         @Override
         public void onInitEngineSuccess() {
-            Log.d(FsaConstant.FSA_TAG, "serviceEngine init success");
+            Logger.d(FsaConstant.FSA_TAG, "serviceEngine init success");
             initFsaService();
             addPackageListener();
             sendEvent(FsaConstant.FsaFunction.ID_ROAD_NETWORK_MODE, FsaConstant.FsaValue.STRING_ONE);
@@ -184,7 +184,7 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
 
         @Override
         public void onInitEngineFail(final int code, final String msg) {
-            Log.e(FsaConstant.FSA_TAG, "engineInit error, code: " + code + ", msg: " + msg);
+            Logger.e(FsaConstant.FSA_TAG, "engineInit error, code: " + code + ", msg: " + msg);
             sendEvent(FsaConstant.FsaFunction.ID_ROAD_NETWORK_MODE, FsaConstant.FsaValue.STRING_ZERO);
         }
     };
@@ -234,12 +234,12 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
     @Override
     public void onReceiveRequest(final int functionId, final String payload) {
         if (FsaConstant.FsaMethod.ID_REQUEST_MSG == functionId) {
-            Log.i(FsaConstant.FSA_TAG, "received method request: payload = " + payload + " - " + FsaIdString.event2String(payload));
+            Logger.i(FsaConstant.FSA_TAG, "received method request: payload = " + payload + " - " + FsaIdString.event2String(payload));
             // checkStyle 方法太长故进行分割
             handlePayload1(payload);
             handlePayload2(payload);
         } else {
-            Log.v(FsaConstant.FSA_TAG, "received method request: other function = " + functionId);
+            Logger.v(FsaConstant.FSA_TAG, "received method request: other function = " + functionId);
         }
     }
 
@@ -261,7 +261,7 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
                     return;
                 }
                 if (mIsHudServiceStart) {
-                    Log.e(FsaConstant.FSA_TAG, FsaIdString.event2String(payload) + ": vtserver has been started");
+                    Logger.e(FsaConstant.FSA_TAG, FsaIdString.event2String(payload) + ": vtserver has been started");
                     return;
                 }
                 mBinder.start();
@@ -272,7 +272,7 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
                     return;
                 }
                 if (!mIsHudServiceStart) {
-                    Log.e(FsaConstant.FSA_TAG, FsaIdString.event2String(payload) + ": vtserver has been stopped");
+                    Logger.e(FsaConstant.FSA_TAG, FsaIdString.event2String(payload) + ": vtserver has been stopped");
                     return;
                 }
                 mBinder.stop();
@@ -289,7 +289,7 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
                     return;
                 }
                 if (mIsHudInit) {
-                    Log.e(FsaConstant.FSA_TAG, FsaIdString.event2String(payload) + ": hud is initialized");
+                    Logger.e(FsaConstant.FSA_TAG, FsaIdString.event2String(payload) + ": hud is initialized");
                     return;
                 }
                 mBinder.init();
@@ -301,7 +301,7 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
                     return;
                 }
                 if (!mIsHudInit) {
-                    Log.e(FsaConstant.FSA_TAG, FsaIdString.event2String(payload) + ": vtserver has been uninitialized");
+                    Logger.e(FsaConstant.FSA_TAG, FsaIdString.event2String(payload) + ": vtserver has been uninitialized");
                     return;
                 }
                 mBinder.uninit();
@@ -471,16 +471,16 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
      */
     public void sendEvent(final int functionId, final String info, final boolean isSave) {
         if (!checkSubscribe(functionId)) {
-            Log.v(FsaConstant.FSA_TAG, "sendEvent: not subscribe functionId = " + functionId);
+            Logger.v(FsaConstant.FSA_TAG, "sendEvent: not subscribe functionId = " + functionId);
             return;
         }
         final FsaServiceEvent event = (FsaServiceEvent) mService.eventHandler.getEventById(functionId);
         event.setOutputPayload(info.getBytes(StandardCharsets.UTF_8));
         JsonLog.saveJsonToCache(info, "fsa.json", functionId + "-" + FsaIdString.function2String(functionId));
         if (functionId == FsaConstant.FsaFunction.ID_ENLARGE_ICON || functionId == FsaConstant.FsaFunction.ID_HUD_ENLARGE_MAP) {
-            Log.d(FsaConstant.FSA_TAG, "sendEvent: " + functionId + "-" + FsaIdString.function2String(functionId));
+            Logger.d(FsaConstant.FSA_TAG, "sendEvent: " + functionId + "-" + FsaIdString.function2String(functionId));
         } else {
-            Log.d(FsaConstant.FSA_TAG, "sendEvent: " + functionId + "-" + FsaIdString.function2String(functionId) + ", info = " + info);
+            Logger.d(FsaConstant.FSA_TAG, "sendEvent: " + functionId + "-" + FsaIdString.function2String(functionId) + ", info = " + info);
         }
         mService.eventHandler.sendEvent(event, FSACatalog.DeviceName.UNKNOWN);
         if (isSave) {
@@ -644,7 +644,7 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
 
         @Override
         public void onRouteRanges(final ArrayList<EvRangeOnRouteInfo> evRangeOnRouteInfos) {
-            Log.d(FsaConstant.FSA_TAG, "onRouteRanges: ");
+            Logger.d(FsaConstant.FSA_TAG, "onRouteRanges: ");
             FsaNaviScene.getInstance().updateEvRangeOnRouteInfo(MyFsaService.this, evRangeOnRouteInfos);
         }
     };
@@ -702,7 +702,7 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
      */
     private void judgeMapCurStatus(final int functionId, final String targetStatus) {
         if (null == targetStatus || targetStatus.isEmpty()) {
-            Log.e(FsaConstant.FSA_TAG, "targetStatus is empty");
+            Logger.e(FsaConstant.FSA_TAG, "targetStatus is empty");
             return;
         }
         final NaviStatusPackage naviStatusPackage = NaviStatusPackage.getInstance();
@@ -778,7 +778,7 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
         if (!"gm".equals(Build.MANUFACTURER)) { // 如果是非车机环境
             final DisplayManager displayManager = AppContext.getInstance().getMContext().getSystemService(DisplayManager.class);
             for (Display display : displayManager.getDisplays()) {
-                Log.d(FsaConstant.FSA_TAG, "dispaly: " + display.getName() + ", id " + display.getDisplayId() + " :" + display);
+                Logger.d(FsaConstant.FSA_TAG, "dispaly: " + display.getName() + ", id " + display.getDisplayId() + " :" + display);
                 if (display.getDisplayId() != 0) {
                     secondeDid = display.getDisplayId();
                     break;

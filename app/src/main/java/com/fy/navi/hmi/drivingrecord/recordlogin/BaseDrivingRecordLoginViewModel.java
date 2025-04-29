@@ -27,6 +27,7 @@ public class BaseDrivingRecordLoginViewModel extends BaseViewModel<DrivingRecord
     public MutableLiveData<Boolean> mQRCodeLoadFailedVisible = new MutableLiveData<>(false);
     public MutableLiveData<Boolean> mQRCodeVisible = new MutableLiveData<>(false);
     public MutableLiveData<Boolean> mLoginVisible = new MutableLiveData<>(false);
+    private MutableLiveData<Boolean> mIsMergeDivingRecordDialog = new MutableLiveData<>(false);
 
     public BaseDrivingRecordLoginViewModel(@NonNull final Application application) {
         super(application);
@@ -135,6 +136,7 @@ public class BaseDrivingRecordLoginViewModel extends BaseViewModel<DrivingRecord
      */
     public void showMergeDivingRecordDialog() {
         mView.showMergeDivingRecordDialog();
+        setIsMergeDivingRecordDialog(true);
     }
 
     /**
@@ -161,5 +163,24 @@ public class BaseDrivingRecordLoginViewModel extends BaseViewModel<DrivingRecord
      */
     public ArrayList<DrivingRecordDataBean> getDrivingRecordDataList() {
         return mModel.getDrivingRecordDataList();
+    }
+
+    /**
+     * 设置是否显示合并记录对话框的值
+     * 此方法用于更新观察者模式中观察的值，以通知订阅者关于是否应该显示合并记录对话框
+     *
+     * @param isMergeDivingRecordDialog 一个布尔值，指示是否应该显示合并记录对话框
+     */
+    public void setIsMergeDivingRecordDialog(final boolean isMergeDivingRecordDialog) {
+        mIsMergeDivingRecordDialog.setValue(isMergeDivingRecordDialog);
+    }
+
+    /**
+     * 获取是否显示合并记录对话框的值
+     *
+     * @return 一个布尔值，指示是否应该显示合并记录对话框
+     */
+    public boolean getIsMergeDivingRecordDialog() {
+        return Boolean.TRUE.equals(mIsMergeDivingRecordDialog.getValue());
     }
 }

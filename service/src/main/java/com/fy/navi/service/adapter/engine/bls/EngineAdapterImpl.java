@@ -177,11 +177,7 @@ public class EngineAdapterImpl implements IEngineApi {
         if (mIsActive) {
             return;
         }
-        final int overDue = isOverdue();
-        if (!ConvertUtils.equals(0, overDue)) {
-            logResult(overDue);
-            return;
-        }
+
         SdkSoLoadUtils.copyAssetsFiles();
         final int initBaseLibsResult = initEngineParam();
         if (!ConvertUtils.equals(0, initBaseLibsResult)) {
@@ -191,6 +187,11 @@ public class EngineAdapterImpl implements IEngineApi {
 
     @Override
     public void initBL() {
+        final int overDue = isOverdue();
+        if (!ConvertUtils.equals(0, overDue)) {
+            logResult(overDue);
+            return;
+        }
         Logger.d(TAG, "initBL :");
         final int sdkResultCode = initSDKParam();
         if (!ConvertUtils.equals(0, sdkResultCode)) {

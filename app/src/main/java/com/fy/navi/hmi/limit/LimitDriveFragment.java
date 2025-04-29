@@ -24,6 +24,7 @@ import com.fy.navi.service.define.bean.GeoPoint;
 import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.mapdata.CityDataInfo;
 import com.fy.navi.service.define.route.RouteRestrictionParam;
+import com.fy.navi.service.logicpaket.aos.AosRestrictedPackage;
 import com.fy.navi.service.logicpaket.map.MapPackage;
 import com.fy.navi.service.logicpaket.mapdata.MapDataPackage;
 import com.fy.navi.service.logicpaket.route.RoutePackage;
@@ -89,6 +90,9 @@ public class LimitDriveFragment extends BaseFragment<FragmentLimitDetailBinding,
         if (roundParam != null) {
             LimitDriverHelper.getInstance().setNeedClearRestriction(false);
             LimitDriverHelper.getInstance().setRoundParam(roundParam);
+            final RestrictedArea restrictedAreaDetail = roundParam.getMRestrictedArea();
+            roundParam.setMRestrictedArea(restrictedAreaDetail);
+            AosRestrictedPackage.getInstance().showRestrictedAreaPreview(MapType.MAIN_SCREEN_MAIN_MAP, roundParam, 0);
             showPolicyUI(roundParam);
             return;
         }
@@ -101,6 +105,9 @@ public class LimitDriveFragment extends BaseFragment<FragmentLimitDetailBinding,
             LimitDriverHelper.getInstance().setRoundParam(null);
             RoutePackage.getInstance().drawRestrictionForLimit(MapType.MAIN_SCREEN_MAIN_MAP,
                     routeRestrictionParam.getMReStrictedAreaResponseParam(), 0);
+            final RestrictedArea restrictedAreaDetail = routeRestrictionParam.getMRestrictedArea();
+            routeRestrictionParam.setMRestrictedArea(restrictedAreaDetail);
+            AosRestrictedPackage.getInstance().showRestrictedAreaPreview(MapType.MAIN_SCREEN_MAIN_MAP, routeRestrictionParam, 0);
             showPolicyUI(routeRestrictionParam);
         }
     }
@@ -284,14 +291,9 @@ public class LimitDriveFragment extends BaseFragment<FragmentLimitDetailBinding,
                                 //绘制限行区域，地图中心跳转
                                 RoutePackage.getInstance().drawRestrictionForLimit(MapType.MAIN_SCREEN_MAIN_MAP,
                                         routeRestrictionParam.getMReStrictedAreaResponseParam(), restrictedArea.getMCityPosition().get(position));
-                                final int cityCode = MapDataPackage.getInstance().searchCityAdCode(restrictedArea.getMCityNames().get(position));
-                                if (cityCode != 0) {
-                                    final CityDataInfo cityItemBean= MapDataPackage.getInstance().getCityInfo(cityCode);
-                                    MapPackage.getInstance().setMapCenter(MapType.MAIN_SCREEN_MAIN_MAP,
-                                            new GeoPoint(ConvertUtils.transCityLatAndLon(cityItemBean.getCityX()),
-                                                    ConvertUtils.transCityLatAndLon(cityItemBean.getCityY())));
-                                    MapPackage.getInstance().setZoomLevel(MapType.MAIN_SCREEN_MAIN_MAP, 10);
-                                }
+                                final RestrictedArea restrictedAreaDetail = routeRestrictionParam.getMRestrictedArea();
+                                routeRestrictionParam.setMRestrictedArea(restrictedAreaDetail);
+                                AosRestrictedPackage.getInstance().showRestrictedAreaPreview(MapType.MAIN_SCREEN_MAIN_MAP, routeRestrictionParam, position);
                             } else {
                                 mBinding.recyclerView.setVisibility(View.GONE);
                                 mBinding.tvNoContent.setVisibility(View.VISIBLE);

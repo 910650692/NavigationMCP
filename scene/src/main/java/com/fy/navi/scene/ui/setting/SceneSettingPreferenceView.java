@@ -52,8 +52,8 @@ public class SceneSettingPreferenceView extends BaseSceneView<SceneSettingPrefer
     protected void initObserver() {
         mScreenViewModel.setOnPreferenceChangeListener("setting fragment",this);
         NetWorkUtils.Companion.getInstance().registerNetworkObserver(mNetworkObserver);
-        mScreenViewModel.setDefaultPreference();
         setPreferenceEnable(getNetworkState());
+        mScreenViewModel.setDefaultPreference();
     }
 
     @Override

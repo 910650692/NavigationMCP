@@ -1043,7 +1043,6 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
         } else {
             mTitle.set(AppContext.getInstance().getMContext().getString(R.string.route_my_location));
             mViaPoiListVisibility.set(true);
-            mViaPoiListAllVisibility.set(true);
             String stringParam = ResourceUtils.Companion.getInstance().getString(R.string.route_via_head)
                     + routeParams.size() + ResourceUtils.Companion.getInstance().getString(R.string.route_via_palce);
             for (int t = NumberUtils.NUM_0; t < routeParams.size(); t++) {

@@ -58,6 +58,7 @@ dependencies {
     implementation libs.appcompat
     implementation libs.protobuf
     implementation libs.vehicleapi
+    implementation libs.protobean
     implementation project(":engine:fsa")
     if (IS_PAD_RUN.toBoolean()){
         releaseImplementation project(":engine:adas")

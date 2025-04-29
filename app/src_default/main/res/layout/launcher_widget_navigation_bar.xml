@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?><!--TODO 暂时按照UE布局-->
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="ViewModel"
+            type="com.fy.navi.hmi.launcher.BaseSmallCardMapViewModel" />
+    </data>
+
+    <com.fy.navi.ui.view.SkinConstraintLayout
+        android:id="@+id/search_main_tab"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/dp_30"
+        android:visibility="@{ViewModel.naviBarVisibility ? View.VISIBLE : View.GONE}">
+
+        <com.fy.navi.ui.view.SkinImageView
+            android:id="@+id/sk_iv_basic_home"
+            clickCommand="@{ViewModel.goHome}"
+            android:layout_width="@dimen/dp_92"
+            android:layout_height="@dimen/dp_92"
+            android:layout_marginStart="@dimen/dp_124"
+            android:src="@drawable/img_basic_ic_home"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/sk_iv_basic_bus"
+            app:layout_constraintHorizontal_chainStyle="spread_inside"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.fy.navi.ui.view.SkinImageView
+            android:id="@+id/sk_iv_basic_bus"
+            clickCommand="@{ViewModel.goCompany}"
+            android:layout_width="@dimen/dp_92"
+            android:layout_height="@dimen/dp_92"
+            android:src="@drawable/img_basic_ic_bus"
+            app:layout_constraintBottom_toBottomOf="@id/sk_iv_basic_home"
+            app:layout_constraintEnd_toStartOf="@id/sk_iv_basic_search"
+            app:layout_constraintStart_toEndOf="@id/sk_iv_basic_home"
+            app:layout_constraintTop_toTopOf="@id/sk_iv_basic_home" />
+
+        <com.fy.navi.ui.view.SkinImageView
+            android:id="@+id/sk_iv_basic_search"
+            clickCommand="@{ViewModel.goSearch}"
+            android:layout_width="@dimen/dp_92"
+            android:layout_height="@dimen/dp_92"
+            android:layout_marginEnd="@dimen/dp_124"
+            android:src="@drawable/img_basic_ic_search"
+            app:layout_constraintBottom_toBottomOf="@id/sk_iv_basic_home"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/sk_iv_basic_bus"
+            app:layout_constraintTop_toTopOf="@id/sk_iv_basic_home" />
+
+    </com.fy.navi.ui.view.SkinConstraintLayout>
+
+</layout>

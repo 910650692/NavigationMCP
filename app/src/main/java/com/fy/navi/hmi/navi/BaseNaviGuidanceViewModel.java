@@ -37,6 +37,7 @@ import com.fy.navi.ui.action.Action;
 import com.fy.navi.ui.base.BaseViewModel;
 import com.fy.navi.ui.dialog.IBaseDialogClickListener;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -86,6 +87,9 @@ public class BaseNaviGuidanceViewModel extends
     private String mCurrentPreferences;
     //补能规划
     private String mCurrentEnergy;
+    private final NaviModelSaveEntity mModelSaveEntity;
+
+    private final ArrayList<Integer> mSceneStatus;
 
     public BaseNaviGuidanceViewModel(@NonNull final Application application) {
         super(application);
@@ -116,6 +120,8 @@ public class BaseNaviGuidanceViewModel extends
         mNaviSim = new ObservableField<>(false);
         mHandingCardVisibility = new ObservableField<>(false);
         mHandingCardDetailVisibility = new ObservableField<>(false);
+        mModelSaveEntity = new NaviModelSaveEntity();
+        mSceneStatus = new ArrayList<>();
     }
 
     @Override
@@ -264,6 +270,7 @@ public class BaseNaviGuidanceViewModel extends
      * @param speedCameraInfo speed camera info
      */
     public void onNaviSpeedCameraInfo(final SpeedOverallEntity speedCameraInfo) {
+        mModelSaveEntity.setSpeedOverallEntity(speedCameraInfo);
         mView.onNaviSpeedCameraInfo(speedCameraInfo);
     }
 
@@ -273,6 +280,7 @@ public class BaseNaviGuidanceViewModel extends
      * @param sapaInfoEntity sapa info entity
      */
     public void onNaviSAPAInfo(final SapaInfoEntity sapaInfoEntity) {
+        mModelSaveEntity.setSapaInfoEntity(sapaInfoEntity);
         mView.onNaviSAPAInfo(sapaInfoEntity);
     }
 
@@ -282,6 +290,7 @@ public class BaseNaviGuidanceViewModel extends
      * @param naviEtaInfo navi eta info
      */
     public void onNaviInfo(final NaviEtaInfo naviEtaInfo) {
+        mModelSaveEntity.setNaviEtaInfo(naviEtaInfo);
         updateRouteName(naviEtaInfo);
         mView.onNaviInfo(naviEtaInfo);
     }
@@ -311,6 +320,7 @@ public class BaseNaviGuidanceViewModel extends
      * @param routeRemainDist 路口大图进度
      */
     public void onCrossProgress(final long routeRemainDist) {
+        mModelSaveEntity.setCrossProgress(routeRemainDist);
         mView.updateCrossProgress(routeRemainDist);
     }
 
@@ -321,6 +331,7 @@ public class BaseNaviGuidanceViewModel extends
      * @param naviImageInfo 导航图片信息
      */
     public void onCrossImageInfo(final boolean isShowImage, final CrossImageEntity naviImageInfo) {
+        mModelSaveEntity.setCrossImageEntity(naviImageInfo);
         mView.onCrossImageInfo(isShowImage, naviImageInfo);
     }
 
@@ -330,6 +341,7 @@ public class BaseNaviGuidanceViewModel extends
      * @param naviTmcInfo navi tmc info
      */
     public void onUpdateTMCLightBar(final NaviTmcInfo naviTmcInfo, final boolean isShow) {
+        mModelSaveEntity.setNaviTmcInfo(naviTmcInfo);
         mView.onUpdateTMCLightBar(naviTmcInfo, isShow);
     }
 
@@ -339,6 +351,7 @@ public class BaseNaviGuidanceViewModel extends
      * @param info maneuver info
      */
     public void onManeuverInfo(final NaviManeuverInfo info) {
+        mModelSaveEntity.setNaviManeuverInfo(info);
         mView.onManeuverInfo(info);
     }
 
@@ -359,6 +372,7 @@ public class BaseNaviGuidanceViewModel extends
      * @param laneInfo   lane info
      */
     public void onLaneInfo(final boolean isShowLane, final LaneInfoEntity laneInfo) {
+        mModelSaveEntity.setLaneInfo(laneInfo);
         mIsShowLane = isShowLane;
         mView.onLaneInfo(isShowLane, laneInfo);
     }
@@ -604,5 +618,62 @@ public class BaseNaviGuidanceViewModel extends
 
     public boolean isNeedPreViewShowList() {
         return mHandingCardDetailVisibility.get() || mNaviViaListVisibility.get();
+    }
+
+    public ArrayList<Integer> getSceneStatus() {
+        return mSceneStatus;
+    }
+
+    /**
+     * 恢复导航数据
+     */
+    public void restoreNavigation() {
+        if (null == mModelSaveEntity) {
+            Logger.i(TAG, "mModelSaveEntity is null");
+            return;
+        }
+        final SpeedOverallEntity speedOverallEntity = mModelSaveEntity.getSpeedOverallEntity();
+        boolean isNeedShowSpeedCameraInfo = Objects.equals(mNaviSpeedVisibility.get(),
+                Boolean.TRUE) && speedOverallEntity != null;
+        if (isNeedShowSpeedCameraInfo) {
+            onNaviSpeedCameraInfo(speedOverallEntity);
+        }
+        final SapaInfoEntity sapaInfoEntity = mModelSaveEntity.getSapaInfoEntity();
+        boolean isNeedRestoreSapaInfo = (Objects.equals(mNaviSapaVisibility.get(), Boolean.TRUE) ||
+                Objects.equals(mNaviLanesVisibility.get(), Boolean.TRUE)) && sapaInfoEntity != null;
+        if (isNeedRestoreSapaInfo) {
+            onNaviSAPAInfo(sapaInfoEntity);
+        }
+        final NaviEtaInfo naviEtaInfo = mModelSaveEntity.getNaviEtaInfo();
+        boolean isNeedRestoreEtaInfo = naviEtaInfo != null;
+        if (isNeedRestoreEtaInfo) {
+            onNaviInfo(naviEtaInfo);
+        }
+        final CrossImageEntity naviImageInfo = mModelSaveEntity.getCrossImageEntity();
+        boolean isNeedRestoreCrossImageInfo = naviImageInfo != null &&
+                Objects.equals(mNaviCrossImageVisibility.get(), Boolean.TRUE);
+        if (isNeedRestoreCrossImageInfo) {
+            onCrossProgress(mModelSaveEntity.getCrossProgress());
+            onCrossImageInfo(true, naviImageInfo);
+        }
+        NaviTmcInfo naviTmcInfo = mModelSaveEntity.getNaviTmcInfo();
+        boolean isNeedRestoreTmcInfo = naviTmcInfo != null;
+        if (isNeedRestoreTmcInfo) {
+            onUpdateTMCLightBar(naviTmcInfo, mModel == null || mModel.getIsShowAutoAdd());
+        }
+        NaviManeuverInfo info = mModelSaveEntity.getNaviManeuverInfo();
+        boolean isNeedRestoreManeuverInfo = info != null;
+        if (isNeedRestoreManeuverInfo) {
+            onManeuverInfo(info);
+        }
+        LaneInfoEntity laneInfo = mModelSaveEntity.getLaneInfo();
+        boolean isNeedRestoreLaneInfo = laneInfo != null &&
+                Objects.equals(mNaviLanesVisibility.get(), Boolean.TRUE);
+        if (isNeedRestoreLaneInfo) {
+            onLaneInfo(mIsShowLane, laneInfo);
+        }
+        if (null != mView) {
+            mView.updateViewRadius();
+        }
     }
 }

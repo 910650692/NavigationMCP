@@ -95,7 +95,7 @@ public final class ActivatePackage implements ActivateObserver {
      * @param loginCode 激活码
      * @param userCode 序列号
      */
-    void manualActivate(final String userCode, final String loginCode) {
+    public void manualActivate(final String userCode, final String loginCode) {
         mActivateAdapter.manualActivate(userCode, loginCode);
     }
 }

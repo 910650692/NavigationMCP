@@ -4,9 +4,10 @@
 
     <com.fy.navi.ui.view.SkinConstraintLayout
         android:id="@+id/scl_search_top_view"
-        android:layout_width="@dimen/dp_640"
-        android:layout_height="@dimen/dp_102"
-        android:background="@drawable/bg_search_main_tab">
+        android:layout_width="@dimen/dp_698"
+        android:layout_height="@dimen/dp_170"
+        android:padding="@dimen/dp_29"
+        android:background="@drawable/bg_search_main_tab_shadow">
 
         <com.fy.navi.ui.view.SkinImageView
             android:layout_marginStart="@dimen/dp_14"

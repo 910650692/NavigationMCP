@@ -9,4 +9,6 @@
     <color name="layer_route_replace_charge_fast_text_color">#FFE34335</color>
     <color name="layer_route_replace_charge_slow_text_color">#FF4ABA59</color>
     <color name="layer_route_replace_charge_price_text_color">#CC000000</color>
+
+    <color name="layer_custom_point_bg_fill_color">#FF293854</color>
 </resources>

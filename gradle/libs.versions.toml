@@ -44,6 +44,7 @@ lombok = "1.18.30"
 carUiLib = "2.6.0"
 vehicleapi = "0.0.15"
 basic = "0.3.1"
+protobean = "0.5.15"
 
 [libraries]
 adapter-rxjava = { module = "com.squareup.retrofit2:adapter-rxjava", version.ref = "adapterRxjava" }
@@ -82,6 +83,7 @@ androidcar = {module = "com.patac.framework:android.car_vcupro" , version.ref = 
 guava = {module = "com.google.guava:guava" , version.ref = "guava"}
 protobuf = {module = "com.google.protobuf:protobuf-java-util" , version.ref = "protobuf"}
 vehicleapi = {module = "com.cls.core.vehicle.api:vehicleapi" , version.ref = "vehicleapi"}
+protobean = {module = "com.cls.core:proto-java" , version.ref = "protobean"}
 
 greendao-plugin = { module = "org.greenrobot:greendao-gradle-plugin", version.ref = "greendaoGradlePlugin" }
 greendao = {module = "org.greenrobot:greendao", version.ref = "greendao"}

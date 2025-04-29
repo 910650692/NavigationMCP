@@ -17,14 +17,18 @@
         <include
             android:id="@+id/scl_search_top_view"
             layout="@layout/search_edit_bar_view"
-            android:layout_width="@dimen/dp_640"
-            android:layout_height="@dimen/dp_102" />
+            android:layout_width="@dimen/dp_698"
+            android:layout_height="@dimen/dp_170" />
 
         <com.fy.navi.ui.view.SkinConstraintLayout
-            android:layout_width="@dimen/dp_640"
-            android:layout_height="@dimen/dp_610"
-            android:layout_marginTop="@dimen/dp_24"
-            android:background="@drawable/bg_search_main_tab">
+            android:layout_width="@dimen/dp_698"
+            android:layout_height="@dimen/dp_668"
+            android:layout_marginTop="-40dp"
+            android:paddingStart="@dimen/dp_29"
+            android:paddingEnd="@dimen/dp_29"
+            android:paddingTop="@dimen/dp_60"
+            android:paddingBottom="@dimen/dp_60"
+            android:background="@drawable/bg_search_main_tab_shadow">
 
             <com.fy.navi.ui.view.SkinRecyclerView
                 android:id="@+id/recycler_search_result"

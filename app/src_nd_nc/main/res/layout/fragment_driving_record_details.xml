@@ -12,11 +12,12 @@
         android:layout_height="wrap_content"
         android:fillViewport="true">
         <com.fy.navi.ui.view.SkinConstraintLayout
-            android:layout_width="@dimen/dp_640"
-            android:layout_height="@dimen/dp_530"
-            android:paddingTop="@dimen/dp_32"
-            android:paddingBottom="@dimen/dp_40"
-            android:background="@drawable/bg_setting_fragment">
+            android:layout_width="@dimen/dp_698"
+            android:layout_height="@dimen/dp_588"
+            android:paddingTop="@dimen/dp_61"
+            android:paddingBottom="@dimen/dp_69"
+            android:paddingHorizontal="@dimen/dp_29"
+            android:background="@drawable/bg_setting_shadow">
             <!--标题-->
             <com.fy.navi.ui.view.SkinImageView
                 clickCommand="@{ViewModel.mDrivingRecordDetailsBack}"

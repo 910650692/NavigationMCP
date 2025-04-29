@@ -25,6 +25,10 @@ public class BaseSettingOthersViewModel extends BaseViewModel<SettingOthersFragm
     public MutableLiveData<String> mSdkVersion = new MutableLiveData<>("");
     public MutableLiveData<String> mTotalSize = new MutableLiveData<>("0KB");
 
+    public MutableLiveData<Boolean> mClearMemoryDialogShown = new MutableLiveData<>(false);
+    public MutableLiveData<Boolean> mResetSettingDialogShown = new MutableLiveData<>(false);
+    public MutableLiveData<Boolean> mLogoutAccountDialogShown = new MutableLiveData<>(false);
+
 
     public BaseSettingOthersViewModel(@NonNull final Application application) {
         super(application);
@@ -83,6 +87,7 @@ public class BaseSettingOthersViewModel extends BaseViewModel<SettingOthersFragm
             addFragment(new AccountQRCodeLoginFragment(), null);
         } else {
             mView.showLogoutAccountDialog();
+            setLogoutAccountDialogShown(true);
         }
     };
 
@@ -107,10 +112,12 @@ public class BaseSettingOthersViewModel extends BaseViewModel<SettingOthersFragm
 
     public Action mClearMemory = () -> {
         mView.showClearMemoryDialog();
+        setMemoryDialogShown(true);
     };
 
     public Action mResetSetting = () -> {
         mView.showResetSettingDialog();
+        setResetSettingDialogShown(true);
     };
 
     /**
@@ -213,5 +220,29 @@ public class BaseSettingOthersViewModel extends BaseViewModel<SettingOthersFragm
      */
     public String getTotalSizeOfDirectories() {
         return mModel.getTotalSizeOfDirectories();
+    }
+
+    public void setMemoryDialogShown(boolean isClearMemoryDialogShown){
+        mClearMemoryDialogShown.setValue(isClearMemoryDialogShown);
+    }
+
+    public boolean getIsClearMemoryDialogShown() {
+        return Boolean.TRUE.equals(mClearMemoryDialogShown.getValue());
+    }
+
+    public void setResetSettingDialogShown(boolean isResetSettingDialogShown) {
+        mResetSettingDialogShown.setValue(isResetSettingDialogShown);
+    }
+
+    public boolean getIsResetSettingDialogShown() {
+        return Boolean.TRUE.equals(mResetSettingDialogShown.getValue());
+    }
+
+    public boolean getIsLogoutAccountDialogShown() {
+        return Boolean.TRUE.equals(mLogoutAccountDialogShown.getValue());
+    }
+
+    public void setLogoutAccountDialogShown(boolean isLogoutAccountDialogShown) {
+        mLogoutAccountDialogShown.setValue(isLogoutAccountDialogShown);
     }
 }

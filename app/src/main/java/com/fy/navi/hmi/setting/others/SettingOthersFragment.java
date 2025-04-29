@@ -44,6 +44,18 @@ public class SettingOthersFragment extends BaseFragment<FragmentSettingOthersBin
         // 初始化数据
     }
 
+    @Override
+    public void onReStoreFragment() {
+        super.onReStoreFragment();
+        restoreFragment();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        clearDialog();
+    }
+
     /**
      * 更新隐私权限状态
      * @param status true:已授权，false:未授权
@@ -168,10 +180,15 @@ public class SettingOthersFragment extends BaseFragment<FragmentSettingOthersBin
                 .setDialogObserver(new IBaseDialogClickListener() {
                     @Override
                     public void onCommitClick() {
+                        mViewModel.setMemoryDialogShown(false);
                         mViewModel.deleteFilesInDirectories();
                         mViewModel.setTotalSizeOfDirectories(mViewModel.getTotalSizeOfDirectories());
                     }
 
+                    @Override
+                    public void onCancelClick() {
+                        mViewModel.setMemoryDialogShown(false);
+                    }
                 }).build();
 
         mResetSettingDialog  = new SettingCheckDialog.Build(getContext())
@@ -183,9 +200,14 @@ public class SettingOthersFragment extends BaseFragment<FragmentSettingOthersBin
                     @HookMethod(eventName = BuryConstant.EventName.AMAP_RETURN_DEFAULT)
                     public void onCommitClick() {
                         mViewModel.clearAll();
+                        mViewModel.setResetSettingDialogShown(false);
                         restartApp();
                     }
 
+                    @Override
+                    public void onCancelClick() {
+                        mViewModel.setResetSettingDialogShown(false);
+                    }
                 }).build();
 
         mLogoutAccountDialog  = new SettingCheckDialog.Build(getContext())
@@ -195,9 +217,14 @@ public class SettingOthersFragment extends BaseFragment<FragmentSettingOthersBin
                 .setDialogObserver(new IBaseDialogClickListener() {
                     @Override
                     public void onCommitClick() {
+                        mViewModel.setLogoutAccountDialogShown(false);
                         mViewModel.logoutAccount();
                     }
 
+                    @Override
+                    public void onCancelClick() {
+                        mViewModel.setLogoutAccountDialogShown(false);
+                    }
                 }).build();
 
         clearBackground(mClearMemoryDialog.getWindow());
@@ -228,6 +255,33 @@ public class SettingOthersFragment extends BaseFragment<FragmentSettingOthersBin
             android.os.Process.killProcess(android.os.Process.myPid());
             System.exit(0);
         }
+    }
+
+    private void restoreFragment(){
+        if(mViewModel.getIsClearMemoryDialogShown()){
+            mClearMemoryDialog.show();
+        }
+        if(mViewModel.getIsResetSettingDialogShown()){
+            mResetSettingDialog.show();
+        }
+        if(mViewModel.getIsLogoutAccountDialogShown()){
+            mLogoutAccountDialog.show();
+        }
+    }
+
+    private void clearDialog(){
+        if(mClearMemoryDialog.isShowing()){
+            mClearMemoryDialog.dismiss();
+        }
+        if(mResetSettingDialog.isShowing()){
+            mResetSettingDialog.dismiss();
+        }
+        if(mLogoutAccountDialog.isShowing()){
+            mLogoutAccountDialog.dismiss();
+        }
+        mClearMemoryDialog = null;
+        mResetSettingDialog = null;
+        mLogoutAccountDialog = null;
     }
 
     /**

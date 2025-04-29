@@ -9,6 +9,7 @@ import static com.fy.navi.scene.ui.navi.manager.NaviSceneId.NAVI_SCENE_TMC;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import com.alibaba.android.arouter.launcher.ARouter;
@@ -24,6 +25,7 @@ import com.fy.navi.scene.impl.imersive.ImmersiveStatusScene;
 import com.fy.navi.scene.impl.navi.inter.ISceneCallback;
 import com.fy.navi.scene.impl.search.SearchFragmentFactory;
 import com.fy.navi.scene.ui.navi.ChargeTipEntity;
+import com.fy.navi.scene.ui.navi.manager.NaviSceneManager;
 import com.fy.navi.service.AutoMapConstant;
 import com.fy.navi.service.adapter.navi.NaviConstant;
 import com.fy.navi.service.define.map.MapType;
@@ -40,6 +42,7 @@ import com.fy.navi.service.define.navi.SpeedOverallEntity;
 import com.fy.navi.ui.base.BaseFragment;
 import com.fy.navi.ui.base.StackManager;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -54,6 +57,38 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
     @Override
     public int onInitVariableId() {
         return BR.ViewModel;
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        saveSceneStatus();
+    }
+
+    /**
+     * 保存场景状态
+     */
+    private void saveSceneStatus() {
+        ArrayList<Integer> list = mViewModel.getSceneStatus();
+        list.clear();
+        list.add(mBinding.sceneNaviViaInfo.getSceneState());
+        list.add(mBinding.sceneNaviLastMile.getSceneState());
+        list.add(mBinding.sceneNaviParallel.getSceneState());
+        list.add(mBinding.sceneNaviLanes.getSceneState());
+        list.add(mBinding.sceneNaviViaList.getSceneState());
+        list.add(mBinding.sceneNaviControlMore.getSceneState());
+        list.add(mBinding.sceneNaviPreference.getSceneState());
+        list.add(mBinding.sceneNaviTmc.getSceneState());
+        list.add(mBinding.sceneNaviEta.getSceneState());
+        list.add(mBinding.sceneNaviSpeed.getSceneState());
+        list.add(mBinding.sceneNaviSapa.getSceneState());
+        list.add(mBinding.sceneNaviCrossImage.getSceneState());
+        list.add(mBinding.sceneNaviControl.getSceneState());
+        list.add(mBinding.sceneNaviViaArrive.getSceneState());
+        list.add(mBinding.sceneNaviSapaDetail.getSceneState());
+        list.add(mBinding.sceneNaviChargeTip.getSceneState());
+        list.add(mBinding.sceneNaviContinue.getSceneState());
+        list.add(mBinding.sceneNaviCardDetail.getSceneState());
     }
 
     @Override
@@ -78,10 +113,51 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
 
     @Override
     public void onInitData() {
+    }
+
+    @Override
+    public void onGetFragmentData() {
+        Logger.i(TAG, "onGetFragmentData");
         ImmersiveStatusScene.getInstance().setImmersiveStatus(MapType.MAIN_SCREEN_MAIN_MAP, ImersiveStatus.IMERSIVE);
         mViewModel.startNavigation(getArguments());
         mViewModel.setDefultPlateNumberAndAvoidLimitSave();
         mViewModel.initShowScene(NAVI_SCENE_CONTROL, NAVI_SCENE_TBT, NAVI_SCENE_ETA, NAVI_SCENE_TMC);
+    }
+
+    @Override
+    public void onReStoreFragment() {
+        Logger.i(TAG, "onReStoreFragment");
+        if (null != mViewModel) {
+            mViewModel.restoreNavigation();
+            restoreSceneStatus();
+        }
+    }
+
+    /**
+     * 恢复场景状态
+     * 不手动恢复，黑白模式切换后页面碰撞会有问题
+     */
+    private void restoreSceneStatus() {
+        ArrayList<Integer> list = mViewModel.getSceneStatus();
+        mBinding.sceneNaviViaInfo.setSceneState(list.get(0));
+        mBinding.sceneNaviLastMile.setSceneState(list.get(1));
+        mBinding.sceneNaviParallel.setSceneState(list.get(2));
+        mBinding.sceneNaviLanes.setSceneState(list.get(3));
+        mBinding.sceneNaviViaList.setSceneState(list.get(4));
+        mBinding.sceneNaviControlMore.setSceneState(list.get(5));
+        mBinding.sceneNaviPreference.setSceneState(list.get(6));
+        mBinding.sceneNaviTmc.setSceneState(list.get(7));
+        mBinding.sceneNaviEta.setSceneState(list.get(8));
+        mBinding.sceneNaviSpeed.setSceneState(list.get(9));
+        mBinding.sceneNaviSapa.setSceneState(list.get(10));
+        mBinding.sceneNaviCrossImage.setSceneState(list.get(11));
+        mBinding.sceneNaviControl.setSceneState(list.get(12));
+        mBinding.sceneNaviViaArrive.setSceneState(list.get(13));
+        mBinding.sceneNaviSapaDetail.setSceneState(list.get(14));
+        mBinding.sceneNaviChargeTip.setSceneState(list.get(15));
+        mBinding.sceneNaviContinue.setSceneState(list.get(16));
+        mBinding.sceneNaviCardDetail.setSceneState(list.get(17));
+        NaviSceneManager.getInstance().restoreList();
     }
 
     /**

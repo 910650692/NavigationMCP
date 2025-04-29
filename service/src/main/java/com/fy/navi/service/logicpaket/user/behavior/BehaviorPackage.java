@@ -38,6 +38,7 @@ import java.util.Date;
 import java.util.List;
 
 final public class BehaviorPackage implements BehaviorAdapterCallBack {
+    public static final String TAG = BehaviorPackage.class.getName();
     private final BehaviorAdapter mBehaviorAdapter;
     private final List<BehaviorCallBack> mCallBacks = new ArrayList<>();
     private final FavoriteManager mManager;
@@ -98,7 +99,7 @@ final public class BehaviorPackage implements BehaviorAdapterCallBack {
     private boolean isLogin() {
         boolean isLogin = false;
         final String valueJson = mCommonManager.getValueByKey(UserDataCode.SETTING_GET_USERINFO);
-        Logger.i("getUserInfo valueJson = " + valueJson);
+        Logger.i(TAG,"getUserInfo valueJson = " + valueJson);
         if (!TextUtils.isEmpty(valueJson)) {
             final AccountProfileInfo  info = GsonUtils.fromJson(valueJson, AccountProfileInfo.class);
             isLogin = info != null && !TextUtils.isEmpty(info.getUid());
@@ -218,6 +219,10 @@ final public class BehaviorPackage implements BehaviorAdapterCallBack {
      */
     public String addFavorite(final PoiInfoEntity poiInfo, final int type) {
         String itemId = "";
+        if (poiInfo == null) {
+            Logger.e(TAG, "the poi info is null");
+            return itemId;
+        }
         PoiInfoEntity savedPoiInfo = null;
         if (type == 1) {
             savedPoiInfo = getHomeFavoriteInfo();
@@ -228,13 +233,17 @@ final public class BehaviorPackage implements BehaviorAdapterCallBack {
         if (isLogin() && type != 3) {
             itemId =  mBehaviorAdapter.addFavorite(poiInfo);
         } else {
-            if (poiInfo != null && poiInfo.getFavoriteInfo() != null) {
-                if (TextUtils.isEmpty(poiInfo.getFavoriteInfo().getItemId())) {
-                    poiInfo.getFavoriteInfo().setItemId(poiInfo.getPid());
-                }
-                itemId = poiInfo.getFavoriteInfo().getItemId();
-                addFavoriteData(poiInfo, type);
+            if (poiInfo.getFavoriteInfo() == null) {
+                Logger.e(TAG, "the favorite info is null");
+                return itemId;
             }
+            if (TextUtils.isEmpty(poiInfo.getFavoriteInfo().getItemId())) {
+                itemId = poiInfo.getPid() + type;
+            } else {
+                itemId = poiInfo.getFavoriteInfo().getItemId() + type;
+            }
+            poiInfo.getFavoriteInfo().setItemId(itemId);
+            addFavoriteData(poiInfo, type);
         }
         if (type == 1 || type == 2) {
             notifyFavoriteStatusChanged();
@@ -264,17 +273,22 @@ final public class BehaviorPackage implements BehaviorAdapterCallBack {
      * @return item id
      */
     public String removeFavorite(final PoiInfoEntity poiInfo) {
+        String itemId = "";
+        if (poiInfo == null) {
+            Logger.e(TAG, "poi info is null");
+            return itemId;
+        }
         //For Bury Point
         sendBuryPointForRemovingOldFavorite(poiInfo);
-        String itemId = "";
         if (isLogin()) {
             itemId =  mBehaviorAdapter.removeFavorite(poiInfo);
         } else {
-            if (poiInfo != null && poiInfo.getFavoriteInfo() != null) {
-                itemId = poiInfo.getFavoriteInfo().getItemId();
-                deleteFavoriteData(poiInfo.getFavoriteInfo().getItemId());
+            if (poiInfo.getFavoriteInfo() == null) {
+                Logger.e(TAG, "the favorite info is null");
+                return itemId;
             }
-            updateFavoriteMain(poiInfo, false);
+            itemId = poiInfo.getFavoriteInfo().getItemId();
+            deleteFavoriteData(itemId);
         }
         //删除成功
         if (!TextUtils.isEmpty(itemId)) {
@@ -317,13 +331,27 @@ final public class BehaviorPackage implements BehaviorAdapterCallBack {
      * @return string
      */
     public String isFavorite(final PoiInfoEntity poiInfo) {
+        String itemId = "";
+        if (poiInfo == null) {
+            Logger.e(TAG, "poi info is null");
+            return itemId;
+        }
         if (isLogin()) {
-            return mBehaviorAdapter.isFavorite(poiInfo);
+            itemId = mBehaviorAdapter.isFavorite(poiInfo);
+        } else {
+            if (TextUtils.isEmpty(poiInfo.getPid())) {
+                Logger.e(TAG, "the pid is empty");
+                return itemId;
+            }
+            if (poiInfo.getFavoriteInfo() == null || TextUtils.isEmpty(poiInfo.getFavoriteInfo().getItemId())) {
+                itemId = poiInfo.getPid() + 0;
+            } else {
+                itemId = poiInfo.getFavoriteInfo().getItemId();
+            }
+            //普通收藏点
+            itemId = isFavorite(itemId) ? itemId : "";
         }
-        if (poiInfo != null && !TextUtils.isEmpty(poiInfo.getPid())) {
-            return isFavorite(poiInfo.getPid()) ? poiInfo.getPid() : "";
-        }
-        return "";
+        return itemId;
     }
 
     /**
@@ -584,7 +612,7 @@ final public class BehaviorPackage implements BehaviorAdapterCallBack {
 
     private void updateFavoriteMain(PoiInfoEntity poiInfoEntity, boolean isAddFavorite) {
         if (poiInfoEntity == null) {
-            Logger.e("updateFavoriteMain", "the poi is null");
+            Logger.e(TAG, "the poi is null");
             return;
         }
         final String isFavoritePointStr = mSettingManager.getValueByKey(SettingController.KEY_SETTING_FAVORITE_POINT);

@@ -10,16 +10,17 @@
     </data>
 
     <com.fy.navi.ui.view.SkinConstraintLayout
-        android:layout_width="@dimen/dp_820"
-        android:layout_height="@dimen/dp_443"
-        android:background="@drawable/bg_search_main_tab">
+        android:layout_width="@dimen/dp_698"
+        android:layout_height="@dimen/dp_501"
+        android:padding="@dimen/dp_29"
+        android:background="@drawable/bg_search_main_tab_shadow">
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/start_guideline"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            app:layout_constraintGuide_begin="@dimen/dp_40" />
+            app:layout_constraintGuide_begin="@dimen/dp_69" />
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/end_guideline"
@@ -27,7 +28,7 @@
             android:layout_height="match_parent"
             android:orientation="vertical"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintGuide_end="@dimen/dp_40" />
+            app:layout_constraintGuide_end="@dimen/dp_69" />
 
         <com.fy.navi.ui.view.SkinTextView
             android:id="@+id/sk_poi_name"
@@ -46,12 +47,12 @@
         <com.fy.navi.ui.view.SkinImageView
             android:id="@+id/poi_type_icon"
             clickCommand="@{SceneMapPointSearchView.closeFragment}"
-            android:layout_width="@dimen/dp_68"
-            android:layout_height="@dimen/dp_68"
-            android:layout_marginTop="@dimen/dp_33"
+            android:layout_width="@dimen/dp_58"
+            android:layout_height="@dimen/dp_58"
             android:src="@drawable/icon_poi_details_close"
             app:layout_constraintEnd_toEndOf="@+id/end_guideline"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="@id/sk_poi_name"
+            app:layout_constraintBottom_toBottomOf="@+id/sk_poi_name"/>
 
         <com.fy.navi.ui.view.SkinTextView
             android:id="@+id/poi_second_address"
@@ -60,6 +61,7 @@
             android:layout_marginTop="@dimen/dp_40"
             android:layout_marginEnd="@dimen/dp_10"
             android:maxLines="2"
+            android:ellipsize="end"
             android:textColor="@color/search_color_ffffff_70"
             android:textSize="@dimen/sp_36"
             app:layout_constraintStart_toStartOf="@+id/start_guideline"

@@ -47,17 +47,18 @@ public class ProvinceKeyboardView extends GridLayout {
             tv.setText(province);
             tv.setTextSize(TypedValue.COMPLEX_UNIT_SP, 30);
             if (!isDefault) {
-                tv.setTextSize(TypedValue.COMPLEX_UNIT_SP, 38);
+                tv.setTextSize(TypedValue.COMPLEX_UNIT_SP, 21.66f);
             }
             tv.setTextColor(ResourceUtils.Companion.getInstance().getColor(R.color.setting_preference_text_gray));
             tv.setGravity(Gravity.CENTER);
             tv.setButtonDrawable(null);
-            tv.setBackgroundResource(R.drawable.bg_setting_keyboard);
+            tv.setFocusable(true);
+            tv.setBackgroundResource(R.drawable.bg_setting_keyboard_selector);
             tv.setOnClickListener(v -> {
                 if (mListener != null) {
                     tv.setSelected(true);
                     updateCheckBoxTextColor(tv,true);
-                    tv.setBackgroundResource(R.drawable.bg_setting_preference_select);
+                    tv.setBackgroundResource(R.drawable.bg_setting_keyboard_select_selector);
                     mListener.onProvinceSelected(province);
                 }
             });
@@ -66,7 +67,7 @@ public class ProvinceKeyboardView extends GridLayout {
                 if (isChecked && (tv != mLastSelectedButton)) {
                     if (mLastSelectedButton != null) {
                         mLastSelectedButton.setChecked(false);
-                        mLastSelectedButton.setBackgroundResource(R.drawable.bg_setting_keyboard);
+                        mLastSelectedButton.setBackgroundResource(R.drawable.bg_setting_keyboard_selector);
                         updateCheckBoxTextColor(mLastSelectedButton,false);
                     }
                     mLastSelectedButton = tv;
@@ -108,12 +109,12 @@ public class ProvinceKeyboardView extends GridLayout {
             if (checkBox.getText().toString().equals(province)) {
                 checkBox.setChecked(true);
                 updateCheckBoxTextColor(checkBox, true);
-                checkBox.setBackgroundResource(R.drawable.bg_setting_preference_select);
+                checkBox.setBackgroundResource(R.drawable.bg_setting_keyboard_select_selector);
                 mLastSelectedButton = checkBox;
             } else {
                 checkBox.setChecked(false);
                 updateCheckBoxTextColor(checkBox, false);
-                checkBox.setBackgroundResource(R.drawable.bg_setting_keyboard);
+                checkBox.setBackgroundResource(R.drawable.bg_setting_keyboard_selector);
             }
         }
     }

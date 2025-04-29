@@ -286,14 +286,16 @@ public class LayerGuideRouteImpl extends BaseLayerImpl<LayerGuideRouteStyleAdapt
 
     /* 路线替换补能扎标 */
     public void updateRouteReplaceChargePoints(ArrayList<RouteAlterChargeStationInfo> chargeStationInfos) {
-        Logger.d(TAG, "drawRouteViaReplaceChargeStation");
-        if (!ConvertUtils.isEmpty(chargeStationInfos)) {
-            RoutePoints routePoints = getRouteViaReplaceChargePoints(chargeStationInfos);
-            int points = getLayerGuideRouteControl().setPathPoints(routePoints);
-            Logger.d(TAG, "drawRouteViaReplaceChargeStation points " + points);
-            getStyleAdapter().updateRouteReplaceChargeInfo(chargeStationInfos);
-            getLayerGuideRouteControl().updatePaths();
+        Logger.d(TAG, "updateRouteReplaceChargePoints");
+        if (ConvertUtils.isEmpty(chargeStationInfos)) {
+            Logger.e(TAG, "updateRouteReplaceChargePoints chargeStationInfos is Empty");
+            return;
         }
+        RoutePoints routePoints = getRouteViaReplaceChargePoints(chargeStationInfos);
+        int points = getLayerGuideRouteControl().setPathPoints(routePoints);
+        Logger.d(TAG, "updateRouteReplaceChargePoints points " + points);
+        getStyleAdapter().updateRouteReplaceChargeInfo(chargeStationInfos);
+        getLayerGuideRouteControl().updatePaths();
     }
 
     //转换替换补能扎标数据

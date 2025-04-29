@@ -124,6 +124,10 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
         mModelHelp = new NaviGuidanceHelp();
     }
 
+    public boolean getIsShowAutoAdd() {
+        return mIsShowAutoAdd;
+    }
+
     @Override
     public void onCreate() {
         super.onCreate();

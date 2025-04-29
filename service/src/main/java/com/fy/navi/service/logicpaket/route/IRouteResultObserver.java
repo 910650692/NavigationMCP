@@ -7,6 +7,7 @@ import com.fy.navi.service.define.route.RouteAlongCityParam;
 import com.fy.navi.service.define.route.EvRangeOnRouteInfo;
 import com.fy.navi.service.define.route.RouteAlterChargeStationParam;
 import com.fy.navi.service.define.route.RouteChargeStationParam;
+import com.fy.navi.service.define.route.RouteL2Data;
 import com.fy.navi.service.define.route.RouteRestAreaParam;
 import com.fy.navi.service.define.route.RouteRestTollGateParam;
 import com.fy.navi.service.define.route.RouteRestrictionParam;
@@ -146,9 +147,9 @@ public interface IRouteResultObserver {
 
     /**
      * 路线上充电站数据回调    、
-     * @param json 路线信息
+     * @param routeL2Data 路线信息
      */
-    default void onL2DataCallBack(String json) {
+    default void onL2DataCallBack(RouteL2Data routeL2Data) {
 
     }
 

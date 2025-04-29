@@ -1476,7 +1476,7 @@ public class RouteAdapterImplHelper {
             if (resultObserver == null) {
                 continue;
             }
-            resultObserver.onRouteL2Info(GsonUtils.toJson(routeL2Data));
+            resultObserver.onRouteL2Info(routeL2Data);
         }
     }
 

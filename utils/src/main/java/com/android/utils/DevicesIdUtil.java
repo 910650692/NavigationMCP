@@ -6,8 +6,8 @@ import patac.manager.PatacServiceManager;
 import patac.manager.PatacServiceNotConnectedException;
 import patac.manager.vehicle.PatacVehicleManager;
 
-public class DevicesIdUtil {
-    protected static Context mApplication;
+public final class DevicesIdUtil {
+    private static Context mApplication;
     private PatacServiceManager mPatacServiceManager;
 
     public static DevicesIdUtil getInstance() {
@@ -18,8 +18,23 @@ public class DevicesIdUtil {
         public static final DevicesIdUtil INSTANCE = new DevicesIdUtil();
     }
 
-    public DevicesIdUtil() {
+    private DevicesIdUtil() {
 
+    }
+
+    /**
+     * 初始化context
+     * @param context context
+     */
+    public void init(final Context context) {
+        mApplication = context;
+    }
+
+    /**
+     * 反初始化
+     */
+    public void unInit() {
+        mApplication = null;
     }
 
     /**
@@ -27,6 +42,9 @@ public class DevicesIdUtil {
      * @return id
      */
     public String getDeviceId() {
+        if (!DeviceUtils.isCar(mApplication)){
+            return "";
+        }
         mPatacServiceManager = PatacServiceManager.newInstance(mApplication);
         try {
             final PatacVehicleManager vehicleManager

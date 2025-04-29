@@ -415,7 +415,7 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
                 .poiLoc(geoPoint)
                 .adCode(mMapDataAdapter.getAdCodeByLonLat(userLoc.getLon(), userLoc.getLat()))
                 .build();
-        Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "Executing poiDetailSearch search." + geoPoint.toString());
+        Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "Executing poiDetailSearch search." + poiId);
         return mSearchAdapter.poiIdSearch(requestParameterBuilder);
     }
 
@@ -1041,13 +1041,14 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
         final LayerItemSearchResult layerItemSearchResult = new LayerItemSearchResult();
         layerItemSearchResult.setSearchResultPoints((ArrayList<PoiInfoEntity>) poiList);
         final LayerPointItemType searchType;
-        if (type == AutoMapConstant.PointTypeCode.CHARGING_STATION) {
-            searchType = LayerPointItemType.SEARCH_PARENT_CHARGE_STATION;
-        } else if (searchRequestParameter.getSearchType() == AutoMapConstant.SearchType.EN_ROUTE_KEYWORD_SEARCH) {
+        if (searchRequestParameter.getSearchType() == AutoMapConstant.SearchType.EN_ROUTE_KEYWORD_SEARCH) {
             searchType = LayerPointItemType.SEARCH_POI_ALONG_ROUTE;
+        } else if (type == AutoMapConstant.PointTypeCode.CHARGING_STATION) {
+            searchType = LayerPointItemType.SEARCH_PARENT_CHARGE_STATION;
         } else {
             searchType = LayerPointItemType.SEARCH_PARENT_POINT;
         }
+        Logger.d(TAG, "createPoiMarker searchType " + searchType);
         sMarkerInfoMap.put(searchType, layerItemSearchResult);
         mLayerAdapter.updateSearchMarker(MapType.MAIN_SCREEN_MAIN_MAP, searchType, layerItemSearchResult, true);
         showPreview(poiList);

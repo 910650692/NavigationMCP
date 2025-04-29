@@ -383,7 +383,7 @@ public class UserTrackImplHelper implements IUserTrackObserver, IGpsInfoGetter {
                 history.setMStartTime(dataBean.getStartTime());
                 history.setMEndTime(dataBean.getEndTime()); // 该行程完成时间
                 history.setMRideRunType(dataBean.getRideRunType()); // 行程类型（导航/巡航）
-                history.setMTimeInterval(dataBean.getTimeInterval()); // 驾驶时长
+                history.setMTimeInterval(Math.abs(dataBean.getTimeInterval())); // 驾驶时长
                 history.setMAverageSpeed(getAverageSpeed(dataBean)); // 平均速度
                 history.setMMaxSpeed(dataBean.getMaxSpeed()); // 最快速度
                 history.setMTrackFileName(dataBean.getTrackFileName());

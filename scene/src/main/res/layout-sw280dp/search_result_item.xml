@@ -21,8 +21,11 @@
     </data>
 
     <com.fy.navi.ui.view.SkinConstraintLayout
+        android:id="@+id/crl_poi_root"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:focusable="true"
+        android:background="@drawable/bg_base_mfc_cadillac_bg_selector"
         android:minHeight="@dimen/dp_158">
 
         <com.fy.navi.ui.view.SkinConstraintLayout
@@ -30,6 +33,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_24"
+            android:focusable="false"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
@@ -40,6 +44,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:minWidth="@dimen/dp_30"
+                android:focusable="false"
                 android:text="@{layoutPosition}"
                 android:textColor="@color/search_quick_tab_view_color"
                 android:textSize="@dimen/sp_38"
@@ -54,6 +59,7 @@
                 android:id="@+id/poi_icon"
                 android:layout_width="@dimen/dp_74"
                 android:layout_height="@dimen/dp_74"
+                android:focusable="false"
                 android:gravity="center"
                 android:minWidth="@dimen/dp_30"
                 android:src="@drawable/img_basic_ic_orientation"
@@ -70,6 +76,7 @@
             android:layout_marginStart="@dimen/dp_24"
             android:layout_marginTop="@dimen/dp_22"
             android:layout_marginEnd="@dimen/dp_22"
+            android:focusable="false"
             app:layout_constraintBottom_toTopOf="@+id/crl_poi_detail"
             app:layout_constraintEnd_toStartOf="@+id/poi_to_navi"
             app:layout_constraintStart_toEndOf="@+id/crl_poi_item"
@@ -83,6 +90,7 @@
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
                 android:maxLines="1"
+                android:focusable="false"
                 android:singleLine="true"
                 android:text="@{poiBean.name}"
                 android:textColor="@color/search_color_ffffff"
@@ -99,6 +107,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_14"
                 android:text="@{poiBean.distance}"
+                android:focusable="false"
                 android:textColor="@color/search_quick_tab_view_color"
                 android:textSize="@dimen/sp_38"
                 app:layout_constraintEnd_toStartOf="@+id/poi_to_navi"
@@ -110,6 +119,7 @@
                 android:layout_width="@dimen/dp_1"
                 android:layout_height="@dimen/dp_35"
                 android:layout_marginStart="@dimen/dp_14"
+                android:focusable="false"
                 android:background="@color/search_quick_tab_view_color"
                 app:layout_constraintBottom_toBottomOf="@+id/poi_address"
                 app:layout_constraintStart_toEndOf="@+id/poi_distance"
@@ -124,6 +134,7 @@
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:singleLine="true"
+                android:focusable="false"
                 android:text="@{poiBean.address}"
                 android:textColor="@color/search_quick_tab_view_color"
                 android:textSize="@dimen/sp_38"
@@ -139,6 +150,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/dp_30"
+            android:focusable="true"
+            android:background="@drawable/bg_base_mfc_cadillac_bg_selector"
             android:minWidth="@dimen/dp_90"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -149,6 +162,7 @@
                 android:layout_width="@dimen/dp_74"
                 android:layout_height="@dimen/dp_74"
                 android:src="@drawable/img_basic_ic_navi"
+                android:focusable="false"
                 app:layout_constraintEnd_toEndOf="@id/text_navi"
                 app:layout_constraintStart_toStartOf="@+id/text_navi"
                 app:layout_constraintTop_toTopOf="parent"
@@ -159,6 +173,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/st_go_here"
+                android:focusable="false"
                 android:textColor="@color/search_quick_tab_view_color"
                 android:textSize="@dimen/sp_38"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -172,6 +187,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_18"
             android:layout_marginBottom="@dimen/dp_18"
+            android:focusable="false"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="@+id/crl_poi_des"
             app:layout_constraintTop_toBottomOf="@+id/crl_poi_des">

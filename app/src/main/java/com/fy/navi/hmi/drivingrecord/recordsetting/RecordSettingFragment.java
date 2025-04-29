@@ -38,6 +38,37 @@ public class RecordSettingFragment extends BaseFragment<FragmentRecordSettingBin
 
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        clearDialog();
+    }
+
+    @Override
+    public void onReStoreFragment() {
+        super.onReStoreFragment();
+        restoreFragment();
+    }
+
+    /**
+     * 恢复Fragment的状态
+     */
+    private void restoreFragment(){
+        if(mViewModel.getIsClearDivingRecordDialog()){
+            mClearDivingRecordDialog.show();
+        }
+    }
+
+    /**
+     * 清除Dialog
+     */
+    private void clearDialog(){
+        if(mClearDivingRecordDialog.isShowing()){
+            mClearDivingRecordDialog.dismiss();
+        }
+        mClearDivingRecordDialog = null;
+    }
+
     /**
      * 初始化Dialog
      */
@@ -50,6 +81,7 @@ public class RecordSettingFragment extends BaseFragment<FragmentRecordSettingBin
                 .setDialogObserver(new IBaseDialogClickListener() {
                     @Override
                     public void onCommitClick() {
+                        mViewModel.setIsClearDivingRecordDialog(false);
                         if (AccountPackage.getInstance().isLogin()) {
                             final ArrayList<DrivingRecordDataBean> drivingRecordDataBeans =
                                     mViewModel.getDrivingRecordDataFromSdk();
@@ -61,6 +93,10 @@ public class RecordSettingFragment extends BaseFragment<FragmentRecordSettingBin
                         setClearButtonEnable(false);
                     }
 
+                    @Override
+                    public void onCancelClick() {
+                        mViewModel.setIsClearDivingRecordDialog(false);
+                    }
                 }).build();
         clearBackground(mClearDivingRecordDialog.getWindow());
     }

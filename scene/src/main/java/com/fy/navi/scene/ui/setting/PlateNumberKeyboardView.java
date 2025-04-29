@@ -98,11 +98,12 @@ public class PlateNumberKeyboardView extends GridLayout {
             keyView.setButtonDrawable(null);
             keyView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 30);
             if (!mIsDefaultCar) {
-                keyView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 38);
+                keyView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 21.66f);
             }
             keyView.setGravity(Gravity.CENTER);
+            keyView.setFocusable(true);
             keyView.setTextColor(ResourceUtils.Companion.getInstance().getColor(R.color.setting_preference_text_gray));
-            keyView.setBackgroundResource(R.drawable.bg_setting_keyboard);
+            keyView.setBackgroundResource(R.drawable.bg_setting_keyboard_selector);
             if (BUTTON_NAME.equals(key)) {
                 keyView.setText(null);
                 final Drawable drawable = ResourceUtils.Companion.getInstance().getDrawable(R.drawable.img_plate_number_delete);
@@ -111,7 +112,7 @@ public class PlateNumberKeyboardView extends GridLayout {
                 int inset = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 40, getResources().getDisplayMetrics());
                 layerDrawable.setLayerInset(0, inset, inset, inset, inset);
                 if (!mIsDefaultCar) {
-                    inset = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 65, getResources().getDisplayMetrics());
+                    inset = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 35, getResources().getDisplayMetrics());
                     layerDrawable.setLayerInset(0, inset, 0, 0, 0);
                 }
                 keyView.setPadding(0, 0, 0, 0);
@@ -127,9 +128,8 @@ public class PlateNumberKeyboardView extends GridLayout {
             keyView.setLayoutParams(params);
             final boolean isDisabled = DISABLED_KEYS.contains(key);
             if (isDisabled) {
-                // 设置禁用状态的样式
                 keyView.setTextColor(ResourceUtils.Companion.getInstance().getColor(R.color.setting_preference_text_gray));
-                keyView.setBackgroundResource(R.drawable.bg_setting_keyboard);
+                keyView.setBackgroundResource(R.drawable.bg_setting_keyboard_selector);
                 keyView.setEnabled(false); // 禁用点击
                 keyView.setAlpha(0.5f); // 设置透明度
             } else {
@@ -143,20 +143,19 @@ public class PlateNumberKeyboardView extends GridLayout {
                         }
                         keyView.setSelected(true);
                         updateCheckBoxTextColor(keyView,true);
-                        keyView.setBackgroundResource(R.drawable.bg_setting_preference_select);
+                        keyView.setBackgroundResource(R.drawable.bg_setting_keyboard_select_selector);
                     }
                 });
                 keyView.setOnCheckedChangeListener((buttonView, isChecked) -> {
                     if (isChecked && (keyView != mLastSelectedButton)) {
                         if (mLastSelectedButton != null) {
                             mLastSelectedButton.setChecked(false);
-                            mLastSelectedButton.setBackgroundResource(R.drawable.bg_setting_keyboard);
+                            mLastSelectedButton.setBackgroundResource(R.drawable.bg_setting_keyboard_selector);
                             updateCheckBoxTextColor(mLastSelectedButton,false);
                         }
                         mLastSelectedButton = keyView;
                     }
                 });
-
             }
             rowLayout.addView(keyView);
         }

@@ -16,21 +16,25 @@
 
         <com.fy.navi.ui.view.SkinLinearLayout
             android:id="@+id/root_view"
-            android:layout_width="@dimen/dp_640"
+            android:layout_width="@dimen/dp_698"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
             <include
                 android:id="@+id/search_text_bar_view"
                 layout="@layout/search_text_bar_view"
-                android:layout_width="@dimen/dp_640"
-                android:layout_height="@dimen/dp_102" />
+                android:layout_width="@dimen/dp_698"
+                android:layout_height="@dimen/dp_170" />
 
             <com.fy.navi.ui.view.SkinConstraintLayout
-                android:layout_width="@dimen/dp_640"
-                android:layout_height="@dimen/dp_610"
-                android:layout_marginTop="@dimen/dp_24"
-                android:background="@drawable/bg_search_main_tab">
+                android:layout_width="@dimen/dp_698"
+                android:layout_height="@dimen/dp_668"
+                android:paddingStart="@dimen/dp_29"
+                android:paddingEnd="@dimen/dp_29"
+                android:paddingTop="@dimen/dp_60"
+                android:paddingBottom="@dimen/dp_60"
+                android:layout_marginTop="-40dp"
+                android:background="@drawable/bg_search_main_tab_shadow">
 
                 <include
                     android:id="@+id/search_filter_view"
@@ -38,7 +42,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:visibility="visible"
-                    tools:visibility="gone"/>
+                    tools:visibility="visible"/>
 
                 <com.fy.navi.ui.view.SkinTextView
                     android:id="@+id/search_offline_hint"
@@ -53,7 +57,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     android:visibility="gone"
-                    tools:visibility="visible"
+                    tools:visibility="gone"
                     android:text="@string/search_offline_hint"
                     android:textSize="@dimen/sp_34"/>
 

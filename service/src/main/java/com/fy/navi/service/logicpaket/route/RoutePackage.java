@@ -32,6 +32,7 @@ import com.fy.navi.service.define.route.RouteAlterChargeStationParam;
 import com.fy.navi.service.define.route.RouteAvoidInfo;
 import com.fy.navi.service.define.route.RouteChargeStationParam;
 import com.fy.navi.service.define.route.RouteCurrentPathParam;
+import com.fy.navi.service.define.route.RouteL2Data;
 import com.fy.navi.service.define.route.RouteLineInfo;
 import com.fy.navi.service.define.route.RouteMsgPushInfo;
 import com.fy.navi.service.define.route.RouteParam;
@@ -440,8 +441,8 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
     }
 
     @Override
-    public void onRouteL2Info(final String json) {
-        l2DatacallBack(json);
+    public void onRouteL2Info(final RouteL2Data routeL2Data) {
+        l2DatacallBack(routeL2Data);
     }
 
     @Override
@@ -466,15 +467,15 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
 
     /**
      * 路线上充电站数据回调    、
-     * @param json 路线信息
+     * @param routeL2Data 路线信息
      */
-    private void l2DatacallBack(final String json) {
+    private void l2DatacallBack(final RouteL2Data routeL2Data) {
         if (!ConvertUtils.isEmpty(mRouteResultObserverMap)) {
             for (IRouteResultObserver routeResultObserver : mRouteResultObserverMap.values()) {
                 if (ConvertUtils.isEmpty(routeResultObserver)) {
                     continue;
                 }
-                routeResultObserver.onL2DataCallBack(json);
+                routeResultObserver.onL2DataCallBack(routeL2Data);
             }
         }
     }
@@ -1078,25 +1079,7 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
         previewParams.setScreenLeft(1350);
         previewParams.setScreenRight(600);
         previewParams.setScreenTop(210);
-        previewParams.setScreenBottom(20);
-        mMapAdapter.showPreview(mapTypeId, previewParams);
-    }
-
-    /**
-     * 限行页面路线全览
-     * @param mapTypeId 屏幕ID
-     */
-    public void showRestrictedAreaPreview(final MapType mapTypeId, final RouteRestrictionParam param) {
-        final PreviewParams previewParams = new PreviewParams();
-        previewParams.setRouteLine(false);
-        previewParams.setbUseRect(false);
-        if (!ConvertUtils.isEmpty(param) && !ConvertUtils.isEmpty(param.getMRestrictedArea())) {
-            previewParams.setPoints(param.getMRestrictedArea().getMPointList());
-        }
-        previewParams.setScreenLeft(1350);
-        previewParams.setScreenRight(600);
-        previewParams.setScreenTop(210);
-        previewParams.setScreenBottom(20);
+        previewParams.setScreenBottom(140);
         mMapAdapter.showPreview(mapTypeId, previewParams);
     }
 

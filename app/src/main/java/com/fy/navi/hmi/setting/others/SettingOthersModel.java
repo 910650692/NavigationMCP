@@ -3,6 +3,7 @@ package com.fy.navi.hmi.setting.others;
 import com.android.utils.file.FileUtils;
 import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
+import com.android.utils.thread.ThreadManager;
 import com.fy.navi.burypoint.anno.HookMethod;
 import com.fy.navi.burypoint.constant.BuryConstant;
 import com.fy.navi.service.GBLCacheFilePath;
@@ -130,15 +131,17 @@ public class SettingOthersModel extends BaseModel<SettingOthersViewModel>
     @Override
     public void notifyWeixinStatus(final BLResponseBean result) {
         Logger.d("notifyWeixinStatus = " + GsonUtils.toJson(result));
-        if (result != null) {
-            if (result.getCode() == 1) {
-                mSettingManager.insertOrReplace(SettingController.KEY_SETTING_IS_WE_CHAT_BIND, SettingController.VALUE_GENERIC_TRUE);
-                mViewModel.setWeChatStatus(true);
-            } else {
-                mSettingManager.insertOrReplace(SettingController.KEY_SETTING_IS_WE_CHAT_BIND, SettingController.VALUE_GENERIC_FALSE);
-                mViewModel.setWeChatStatus(false);
+        ThreadManager.getInstance().postUi(() -> {
+            if (result != null) {
+                if (result.getCode() == 1) {
+                    mSettingManager.insertOrReplace(SettingController.KEY_SETTING_IS_WE_CHAT_BIND, SettingController.VALUE_GENERIC_TRUE);
+                    mViewModel.setWeChatStatus(true);
+                } else {
+                    mSettingManager.insertOrReplace(SettingController.KEY_SETTING_IS_WE_CHAT_BIND, SettingController.VALUE_GENERIC_FALSE);
+                    mViewModel.setWeChatStatus(false);
+                }
             }
-        }
+        });
     }
 
     /**
@@ -146,13 +149,15 @@ public class SettingOthersModel extends BaseModel<SettingOthersViewModel>
      */
     @Override
     public void notifyGQRCodeConfirm(final BLResponseBean result) {
-        if (result != null && result.getCode() == 1) {
-            mSettingManager.insertOrReplace(SettingController.KEY_SETTING_IS_WE_CHAT_BIND, SettingController.VALUE_GENERIC_TRUE);
-            mViewModel.setWeChatStatus(true);
-        } else {
-            mSettingManager.insertOrReplace(SettingController.KEY_SETTING_IS_WE_CHAT_BIND, SettingController.VALUE_GENERIC_FALSE);
-            mViewModel.setWeChatStatus(false);
-        }
+        ThreadManager.getInstance().postUi(() -> {
+            if (result != null && result.getCode() == 1) {
+                mSettingManager.insertOrReplace(SettingController.KEY_SETTING_IS_WE_CHAT_BIND, SettingController.VALUE_GENERIC_TRUE);
+                mViewModel.setWeChatStatus(true);
+            } else {
+                mSettingManager.insertOrReplace(SettingController.KEY_SETTING_IS_WE_CHAT_BIND, SettingController.VALUE_GENERIC_FALSE);
+                mViewModel.setWeChatStatus(false);
+            }
+        });
     }
 
     /**

@@ -5,19 +5,18 @@ import static androidx.core.app.ActivityCompat.startActivityForResult;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.PixelFormat;
 import android.net.Uri;
 import android.provider.Settings;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+
 import com.android.utils.log.Logger;
 import com.fy.navi.fsa.MyFsaService;
 import com.fy.navi.hmi.BuildConfig;
@@ -32,6 +31,7 @@ import com.fy.navi.service.logicpaket.mapdata.MapDataPackage;
 import com.fy.navi.service.logicpaket.navi.NaviPackage;
 import com.fy.navi.service.logicpaket.position.PositionPackage;
 import com.fy.navi.service.logicpaket.signal.SignalPackage;
+
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
@@ -92,7 +92,7 @@ public class TestWindow {
                     "flavor: " + BuildConfig.FLAVOR + "\n" +
                     "buildType: " + BuildConfig.BUILD_TYPE);
         } catch (PackageManager.NameNotFoundException e) {
-            Log.e(TAG, "initData: ", e);
+            Logger.e(TAG, "initData: ", e);
         }
         mBinding.testNaiLogLevel.setAdapter(createNaiAdapter());
         mBinding.testGaodeLogLevel.setAdapter(createNaiAdapter());

@@ -238,7 +238,7 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
      * @param position 下标
      */
     private void setOnClickListener(@NonNull final ResultHolder holder, final int position) {
-        holder.mResultItemBinding.crlPoiDes.setOnClickListener(v -> {
+        holder.mResultItemBinding.getRoot().setOnClickListener(v -> {
             Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "poi click 详情");
             if (mOnItemClickListener != null) {
                 if (mParentSelectIndex == position && mChildSelectIndex != -1) {

@@ -1,8 +1,7 @@
 package com.fy.navi.adas;
 
-import android.util.Log;
-
 import com.android.utils.gson.GsonUtils;
+import com.android.utils.log.Logger;
 import com.fy.navi.adas.bean.Coord;
 import com.fy.navi.adas.bean.OddBean;
 import com.fy.navi.adas.bean.OddResponse;
@@ -12,6 +11,7 @@ import com.fy.navi.service.AppContext;
 import com.fy.navi.service.define.navi.L2NaviBean;
 import com.fy.navi.service.define.navi.PlayModule;
 import com.fy.navi.service.define.navi.SoundInfoEntity;
+import com.fy.navi.service.define.route.RouteL2Data;
 import com.fy.navi.service.logicpaket.calibration.CalibrationPackage;
 import com.fy.navi.service.logicpaket.l2.L2InfoCallback;
 import com.fy.navi.service.logicpaket.l2.L2Package;
@@ -72,15 +72,16 @@ public final class L2PPManager {
     private final IRouteResultObserver mIRouteResultObserver = new IRouteResultObserver() {
         /**
          * 路线上充电站数据回调    、
-         * @param json 路线信息
+         * @param routeL2Data 路线信息
          */
         @Override
-        public void onL2DataCallBack(final String json) {
-            if (json == null) {
-                Log.w(TAG, "onL2DataCallBack: json null");
+        public void onL2DataCallBack(final RouteL2Data routeL2Data) {
+            if (routeL2Data == null) {
+                Logger.w(TAG, "onL2DataCallBack: routeL2Data null");
                 return;
             }
-            Log.d(TAG, "send route data: " + json);
+            String json = GsonUtils.toJson(routeL2Data);
+            Logger.d(TAG, "send route data: " + json);
 //            JsonLog.print("send route data", json);
             JsonLog.saveJsonToCache(json, "l2.json", "l2_route");
             //通过高级辅助驾驶系统管理类 将高德算出来的路线信息发出去
@@ -96,11 +97,11 @@ public final class L2PPManager {
         @Override
         public void onSdTbtDataChange(final L2NaviBean l2NaviBean) {
             if (l2NaviBean == null) {
-                Log.w(TAG, "onSdTbtDataChange: l2NaviBean null");
+                Logger.w(TAG, "onSdTbtDataChange: l2NaviBean null");
                 return;
             }
             String json = GsonUtils.toJson(l2NaviBean);
-            Log.v(TAG, "send tbt data: " + json);
+            Logger.v(TAG, "send tbt data: " + json);
 //            JsonLog.print("send tbt data", json);
             JsonLog.saveJsonToCache(json, "l2.json", "l2_tbt");
             mAdasManager.sendData(DataType.SDPeriodShortData, json.getBytes());
@@ -114,36 +115,36 @@ public final class L2PPManager {
         @Override
         public void onDataCallback(final DataType dataType, final byte[] bytes) {
             if (dataType == null) {
-                Log.w(TAG, "onDataCallback: dataType null");
+                Logger.w(TAG, "onDataCallback: dataType null");
                 return;
             }
             if (bytes == null) {
-                Log.w(TAG, "onDataCallback: bytes null");
+                Logger.w(TAG, "onDataCallback: bytes null");
                 return;
             }
-            Log.d(TAG, "onDataCallback: dataType = " + dataType);
+            Logger.d(TAG, "onDataCallback: dataType = " + dataType);
             if (dataType != DataType.SDMapReserve) {
                 return;
             }
             final String jsonString = new String(bytes, StandardCharsets.UTF_8);
             JsonLog.saveJsonToCache(jsonString, "odd.json");
-            Log.d(TAG, "onDataCallback: oddBean = " + jsonString);
+            Logger.d(TAG, "onDataCallback: oddBean = " + jsonString);
             try {
                 final OddBean oddBean = GsonUtils.fromJson(jsonString, OddBean.class);
                 if (oddBean == null) {
-                    Log.e(TAG, "onDataCallback: oddBean null");
+                    Logger.e(TAG, "onDataCallback: oddBean null");
                     return;
                 }
                 if (oddBean.getError_code() == 0) {
                     OddResponse response = oddBean.getResponse();
                     if (response == null) {
-                        Log.e(TAG, "onDataCallback: response null");
+                        Logger.e(TAG, "onDataCallback: response null");
                         return;
                     }
                     if (response.getStatus_code() == 0) {
                         SwitchSegments[] switchSegments = response.getSwitch_segments();
                         if (switchSegments == null) {
-                            Log.e(TAG, "onDataCallback: switchSegments null");
+                            Logger.e(TAG, "onDataCallback: switchSegments null");
                             return;
                         }
                         for (SwitchSegments switchSegment : switchSegments) {
@@ -163,13 +164,13 @@ public final class L2PPManager {
                             Coord[] coords = switchSegment.getCoords();
                         }
                     } else {
-                        Log.e(TAG, "onDataCallback: StatusCode = " + response.getStatus_code() + "--" + response.getMessage());
+                        Logger.e(TAG, "onDataCallback: StatusCode = " + response.getStatus_code() + "--" + response.getMessage());
                     }
                 } else {
-                    Log.e(TAG, "onDataCallback: ErrorCode = " + oddBean.getError_code() + "--" + oddBean.getError_message());
+                    Logger.e(TAG, "onDataCallback: ErrorCode = " + oddBean.getError_code() + "--" + oddBean.getError_message());
                 }
             } catch (Exception e) {
-                Log.e(TAG, "onDataCallback: fromJson error", e);
+                Logger.e(TAG, "onDataCallback: fromJson error", e);
             }
         }
     };
@@ -178,10 +179,10 @@ public final class L2PPManager {
         @Override
         public void onPropertyChange(final int propertyId, final byte[] result) {
             if (result == null) {
-                Log.w(TAG, "onPropertyChange: result null");
+                Logger.w(TAG, "onPropertyChange: result null");
                 return;
             }
-            Log.i(TAG, "onPropertyChange: propertyId = " + propertyId);
+            Logger.i(TAG, "onPropertyChange: propertyId = " + propertyId);
             if (propertyId != Properties.ADASWarnings) {
                 return;
             }
@@ -189,10 +190,10 @@ public final class L2PPManager {
             try {
                 status = ADUProto.ADASWarnings_status.parseFrom(result);
             } catch (InvalidProtocolBufferException e) {
-                Log.e(TAG, "onPropertyChange: parseFrom error", e);
+                Logger.e(TAG, "onPropertyChange: parseFrom error", e);
             }
             if (status == null) {
-                Log.w(TAG, "onPropertyChange: status null");
+                Logger.w(TAG, "onPropertyChange: status null");
                 return;
             }
             checkPropertyId1(status);
@@ -389,7 +390,7 @@ public final class L2PPManager {
     private SignalCallback mSignalCallback = new SignalCallback() {
         @Override
         public void onLaneCenteringWarningIndicationRequestIdcmAChanged(final int state) {
-            Log.i(TAG, "onCanSignalChanged: " + state);
+            Logger.i(TAG, "onCanSignalChanged: " + state);
             switch (state) {
                 case 0xD:
                 case 0xB:
@@ -435,11 +436,11 @@ public final class L2PPManager {
      */
     public void init(final AdasManager adasManager) {
         if (CalibrationPackage.getInstance().adasConfigurationType() != 8) {
-            Log.i(TAG, "not GB Arch ADCU configuration");
+            Logger.i(TAG, "not GB Arch ADCU configuration");
             return;
         }
         if (mInitialized) {
-            Log.i(TAG, "initialized");
+            Logger.i(TAG, "initialized");
             return;
         }
         mAdasManager = adasManager;
@@ -458,10 +459,10 @@ public final class L2PPManager {
      */
     public void uninit() {
         if (!mInitialized) {
-            Log.i(TAG, "not initialized");
+            Logger.i(TAG, "not initialized");
             return;
         }
-        Log.i(TAG, "uninit");
+        Logger.i(TAG, "uninit");
         RoutePackage.getInstance().unRegisterRouteObserver(TAG);
         L2Package.getInstance().unregisterCallback(TAG);
         SignalPackage.getInstance().unregisterObserver(TAG);
@@ -486,7 +487,7 @@ public final class L2PPManager {
      * @param highPriority
      */
     private void sendTTS(final String tts, final boolean highPriority) {
-        Log.i(TAG, "sendTTS: tts = " + tts + ", highPriority = " + highPriority);
+        Logger.i(TAG, "sendTTS: tts = " + tts + ", highPriority = " + highPriority);
         final SoundInfoEntity info = new SoundInfoEntity();
         info.setText(tts);
         info.setSoundType(PlayModule.PlayModuleLaneNavi);

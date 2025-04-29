@@ -1,9 +1,7 @@
 package com.fy.navi.fsa.scene;
 
-
-import android.util.Log;
-
 import com.android.utils.gson.GsonUtils;
+import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
 import com.fy.navi.fsa.FsaConstant;
 import com.fy.navi.fsa.MyFsaService;
@@ -91,7 +89,7 @@ public final class FsaNaviScene {
      */
     public void updateTbtInfo(final MyFsaService fsaService, final NaviEtaInfo naviETAInfo) {
         if (null == naviETAInfo) {
-            Log.e(FsaConstant.FSA_TAG, "tbtInfo is null");
+            Logger.e(FsaConstant.FSA_TAG, "tbtInfo is null");
             return;
         }
         mNaviEtaInfo = naviETAInfo;
@@ -115,7 +113,7 @@ public final class FsaNaviScene {
         turnInfo.setDistanceToNextTurn(naviETAInfo.getNextDist());
         final int maneuverID = convertTbtType(naviETAInfo.getCurManeuverID());
         turnInfo.setTurnKind(maneuverID);
-        Log.d(FsaConstant.FSA_TAG, "updateTbtInfo: " + naviETAInfo.getCurManeuverID() + " - " + maneuverID);
+        Logger.d(FsaConstant.FSA_TAG, "updateTbtInfo: " + naviETAInfo.getCurManeuverID() + " - " + maneuverID);
         turnInfo.setStraight(naviETAInfo.getCurManeuverID() == FsaConstant.FsaTurnKind.ICON_CONTINUE);
         turnInfo.setRoadLevel(naviETAInfo.curRoadClass);
         if (null != naviETAInfo.NaviInfoData && naviETAInfo.NaviInfoData.size() > naviETAInfo.NaviInfoFlag) {
@@ -176,12 +174,12 @@ public final class FsaNaviScene {
      */
     public void updateTmcInfo(final MyFsaService fsaService, final NaviTmcInfo naviTmcInfo) {
         if (null == fsaService) {
-            Log.e(FsaConstant.FSA_TAG, "FSA service is null");
+            Logger.e(FsaConstant.FSA_TAG, "FSA service is null");
             return;
         }
         if (null == naviTmcInfo || null == naviTmcInfo.getLightBarDetail() || null == naviTmcInfo.getLightBarDetail().getTmcInfoData()
                 || naviTmcInfo.getLightBarDetail().getTmcInfoData().isEmpty()) {
-            Log.e(FsaConstant.FSA_TAG, "naviTmcInfo is null");
+            Logger.e(FsaConstant.FSA_TAG, "naviTmcInfo is null");
         }
 
         final ArrayList<RoadCondition> roadConditionList = new ArrayList<>();
@@ -208,7 +206,7 @@ public final class FsaNaviScene {
      */
     public void updateNavigationCameraInfo(final MyFsaService fsaService, final CameraInfoEntity cameraInfo) {
         if (null == fsaService || null == cameraInfo) {
-            Log.e(FsaConstant.FSA_TAG, "navigation camera is null");
+            Logger.e(FsaConstant.FSA_TAG, "navigation camera is null");
             return;
         }
 
@@ -216,7 +214,7 @@ public final class FsaNaviScene {
         if (FsaConstant.FsaCameraType.INTERVAL_VELOCITY_START == subType
                 || FsaConstant.FsaCameraType.INTERVAL_VELOCITY_END == subType
                 || FsaConstant.FsaCameraType.INTERVAL_VELOCITY_START_END == subType) {
-            Log.d(FsaConstant.FSA_TAG, "updateNavigationCameraInfo: cameraId = "
+            Logger.d(FsaConstant.FSA_TAG, "updateNavigationCameraInfo: cameraId = "
                     + cameraInfo.getCameraId() + ", subCameraId = " + cameraInfo.getSubCameraId()
                     + ", type = " + cameraInfo.getSubType()
                     + ", remainDistance = " + cameraInfo.getDistance()
@@ -276,7 +274,7 @@ public final class FsaNaviScene {
      */
     public void updateIntervalCameraInfo(final MyFsaService fsaService, final SpeedOverallEntity speedCameraInfo) {
         if (null == fsaService || null == speedCameraInfo) {
-            Log.e(FsaConstant.FSA_TAG, "interval camera is null");
+            Logger.e(FsaConstant.FSA_TAG, "interval camera is null");
             return;
         }
         final ArrayList<Short> limitSpeedList = speedCameraInfo.getLimitSpeedList();
@@ -290,7 +288,7 @@ public final class FsaNaviScene {
                 }
             }
         }
-        Log.d(FsaConstant.FSA_TAG, "updateIntervalCameraInfo: id = "
+        Logger.d(FsaConstant.FSA_TAG, "updateIntervalCameraInfo: id = "
                 + speedCameraInfo.getId() + ", type = " + speedCameraInfo.getType()
                 + ", remainDistance = " + speedCameraInfo.getRemainDistance()
                 + ", speedLimit = " + limitSpeed
@@ -319,7 +317,7 @@ public final class FsaNaviScene {
      * @param isShowLane     是否显示车道线
      */
     public void updateLaneLineInfo(final MyFsaService fsaService, final boolean isShowLane, final LaneInfoEntity laneInfoEntity) {
-        Log.d(FsaConstant.FSA_TAG, "updateLaneLineInfo: isShowLane = " + isShowLane + " --------");
+        Logger.d(FsaConstant.FSA_TAG, "updateLaneLineInfo: isShowLane = " + isShowLane + " --------");
         if (!isShowLane) {
             final LaneLineInfo laneLineInfo = new LaneLineInfo();
             laneLineInfo.setShowType(FsaConstant.HIDE);
@@ -328,12 +326,12 @@ public final class FsaNaviScene {
             return;
         }
         if (laneInfoEntity == null) {
-            Log.d(FsaConstant.FSA_TAG, "updateLaneLineInfo: laneInfoEntity = null");
+            Logger.d(FsaConstant.FSA_TAG, "updateLaneLineInfo: laneInfoEntity = null");
             return;
         }
-        Log.d(FsaConstant.FSA_TAG, "updateLaneLineInfo: frontLane = " + laneInfoEntity.getFrontLane());
-        Log.d(FsaConstant.FSA_TAG, "updateLaneLineInfo: backLane = " + laneInfoEntity.getBackLane());
-        Log.d(FsaConstant.FSA_TAG, "updateLaneLineInfo: optimalLane = " + laneInfoEntity.getOptimalLane());
+        Logger.d(FsaConstant.FSA_TAG, "updateLaneLineInfo: frontLane = " + laneInfoEntity.getFrontLane());
+        Logger.d(FsaConstant.FSA_TAG, "updateLaneLineInfo: backLane = " + laneInfoEntity.getBackLane());
+        Logger.d(FsaConstant.FSA_TAG, "updateLaneLineInfo: optimalLane = " + laneInfoEntity.getOptimalLane());
         final LaneLineInfo laneLineInfo = new LaneLineInfo();
         if (mLaneLineInfo == null || mLaneLineInfo.getShowType() == FsaConstant.HIDE) {
             laneLineInfo.setShowType(FsaConstant.SHOW);
@@ -499,7 +497,7 @@ public final class FsaNaviScene {
      */
     public void updateCruiseInfoEntity(final MyFsaService fsaService, final CruiseInfoEntity cruiseInfoEntity) {
         if (null == fsaService || null == cruiseInfoEntity) {
-            Log.e(FsaConstant.FSA_TAG, "cruiseInfoEntity is null");
+            Logger.e(FsaConstant.FSA_TAG, "cruiseInfoEntity is null");
             return;
         }
 
@@ -547,7 +545,7 @@ public final class FsaNaviScene {
      * @param isShowImage   boolean.
      */
     public void updateEnlargeMap(final MyFsaService fsaService, final boolean isShowImage, final CrossImageEntity naviImageInfo) {
-        Log.d(FsaConstant.FSA_TAG, "updateEnlargeMap: isShowImage = " + isShowImage);
+        Logger.d(FsaConstant.FSA_TAG, "updateEnlargeMap: isShowImage = " + isShowImage);
         if (!isShowImage) {
             final EnlargeMap enlargeMap = new EnlargeMap();
             enlargeMap.setStatus(FsaConstant.HIDE);
@@ -557,7 +555,7 @@ public final class FsaNaviScene {
         }
 
         if (null == naviImageInfo) {
-            Log.e(FsaConstant.FSA_TAG, "naviImageInfo is null");
+            Logger.e(FsaConstant.FSA_TAG, "naviImageInfo is null");
             return;
         }
         ThreadManager.getInstance().asyncDelay(() -> {
@@ -573,7 +571,7 @@ public final class FsaNaviScene {
             junctionViewInfo.setImageMimeType("image/jpeg");
             junctionViewInfo.setImageBytes(Base64.getEncoder().encodeToString(fsaService.getmCrossImg()));
             enlargeMap.setJunctionViewInfo(junctionViewInfo);
-            Log.d(FsaConstant.FSA_TAG, "updateEnlargeMap: " + enlargeMap);
+            Logger.d(FsaConstant.FSA_TAG, "updateEnlargeMap: " + enlargeMap);
             fsaService.sendEvent(FsaConstant.FsaFunction.ID_ENLARGE_ICON, GsonUtils.toJson(enlargeMap));
             fsaService.sendEvent(FsaConstant.FsaFunction.ID_HUD_ENLARGE_MAP, GsonUtils.toJson(enlargeMap));
         }, 700, TimeUnit.MILLISECONDS);
@@ -588,7 +586,7 @@ public final class FsaNaviScene {
      */
     public void updateHighwayService(final MyFsaService fsaService, final SapaInfoEntity sapaInfoEntity) {
         if (null == fsaService || null == sapaInfoEntity) {
-            Log.e(FsaConstant.FSA_TAG, "sapaInfoEntity is null");
+            Logger.e(FsaConstant.FSA_TAG, "sapaInfoEntity is null");
             return;
         }
         sendHighWaySubscribeInfos(fsaService, sapaInfoEntity);

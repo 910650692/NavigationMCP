@@ -157,7 +157,7 @@ public class BlAosAdapterImpl implements IBlAosApi, ICallBackReStrictedArea, ICa
         GReStrictedAreaDataRes gReStrictedAreaDataRes = param.data;
         restrictedArea.setMRequestId(taskId);
         ArrayList<GRestrictCity> typelist = new ArrayList<>();
-        List<PreviewParams.PointD> pointList = new ArrayList<>();
+        ArrayList<ArrayList<PreviewParams.PointD>> pointLists = new ArrayList<>();
         if (gReStrictedAreaDataRes.mType == 7) {
             typelist.addAll(gReStrictedAreaDataRes.mCityAllRule.typelist);
         } else if (gReStrictedAreaDataRes.mType == 9) {
@@ -170,6 +170,7 @@ public class BlAosAdapterImpl implements IBlAosApi, ICallBackReStrictedArea, ICa
                     cityPositions.add(typelist.indexOf(gRestrictCity));
                     ArrayList<GRestrictRule> restrictRules = gRestrictCity.rules;
                     ArrayList<RestrictedAreaDetail> restrictedAreaDetails = new ArrayList<>();
+                    ArrayList<PreviewParams.PointD> pointDS = new ArrayList<>();
                     if (!ConvertUtils.isEmpty(restrictRules)) {
                         for (GRestrictRule restrictRule : restrictRules) {
                             int index = restrictRules.indexOf(restrictRule) + 1;
@@ -180,14 +181,15 @@ public class BlAosAdapterImpl implements IBlAosApi, ICallBackReStrictedArea, ICa
                             restrictedAreaDetail.setMSummary(restrictRule.summary);
                             restrictedAreaDetail.setMEffect(restrictRule.effect);
                             restrictedAreaDetails.add(restrictedAreaDetail);
-                            pointList.addAll(getPointList(restrictRule));
+                            pointDS.addAll(getPointList(restrictRule));
                         }
                     }
+                    pointLists.add(pointDS);
                     restrictedAreaDetailsList.add(restrictedAreaDetails);
                 }
             }
             Logger.d(TAG, "getRestrictedAreaDetail:" + cityNames);
-            restrictedArea.setMPointList(pointList);
+            restrictedArea.setMPointList(pointLists);
             restrictedArea.setMCityNames(cityNames);
             restrictedArea.setMCityPosition(cityPositions);
             restrictedArea.setMRestrictedAreaDetails(restrictedAreaDetailsList);

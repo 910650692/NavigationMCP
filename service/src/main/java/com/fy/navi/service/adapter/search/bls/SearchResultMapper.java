@@ -346,7 +346,9 @@ public final class SearchResultMapper {
                 .setFast_free(fastFree)
                 .setFast_total(fastTotal)
                 .setCurrentElePrice(searchPoiInfo.chargingStationInfo.current_ele_price)
-                .setCurrentServicePrice(searchPoiInfo.chargingStationInfo.parkPrice);
+                .setCurrentServicePrice(searchPoiInfo.chargingStationInfo.parkPrice)
+                .setMBrand(searchPoiInfo.chargingStationInfo.brand_desc);
+        Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "brand is: " + searchPoiInfo.chargingStationInfo.brand_desc);
         for (ChargingPlugInfo chargingPlugInfo : searchPoiInfo.chargingStationInfo.plugsInfo) {
             if (chargingPlugInfo.plugType == AutoMapConstant.PLUG_TYPE_SLOW) {
                 chargeInfo.setSlowVolt(chargingPlugInfo.slowVoltage)

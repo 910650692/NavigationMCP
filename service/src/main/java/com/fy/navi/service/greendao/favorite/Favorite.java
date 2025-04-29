@@ -15,6 +15,7 @@ public class Favorite {
     @Id(autoincrement = true)
     private Long mId;
 
+    @Unique
     @Property(nameInDb = "itemId")
     private String mItemId; // 收藏点唯一码, 由AutoSDK内部生成
 

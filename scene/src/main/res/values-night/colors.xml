@@ -154,5 +154,6 @@
     <color name="charge_price_type_bg">#FF1E1F26</color>
     <color name="charge_reservation_button_color">#B3FFFFFF</color>
     <color name="bg_charge_price_root_color">#26B2AFC2</color>
+    <color name="bg_confirm_dialog_sw280_color">#FF000000</color>
 
 </resources>

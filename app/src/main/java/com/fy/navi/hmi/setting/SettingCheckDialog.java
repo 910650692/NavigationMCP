@@ -70,8 +70,8 @@ public class SettingCheckDialog extends BaseFullScreenDialog<DialogSettingCheckB
             window.setLayout(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
             final WindowManager.LayoutParams params = window.getAttributes();
             params.gravity = Gravity.START | Gravity.BOTTOM;
-            params.x = getContext().getResources().getDimensionPixelOffset(com.fy.navi.ui.R.dimen.dp_310);
-            params.y = getContext().getResources().getDimensionPixelOffset(com.fy.navi.ui.R.dimen.dp_180);
+            params.x = getContext().getResources().getDimensionPixelOffset(com.fy.navi.ui.R.dimen.dp_281);
+            params.y = getContext().getResources().getDimensionPixelOffset(com.fy.navi.ui.R.dimen.dp_111);
             window.setAttributes(params);
             window.addFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL);
             window.clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);

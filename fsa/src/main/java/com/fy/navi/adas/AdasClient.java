@@ -1,10 +1,10 @@
 package com.fy.navi.adas;
 
 import android.content.Context;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import com.android.utils.log.Logger;
 import com.gm.cn.adassdk.AdasManager;
 import com.gm.cn.adassdk.AdasServiceConnectListener;
 
@@ -47,7 +47,7 @@ public final class AdasClient {
      * @param context Context.
      */
     public void start(@NonNull final Context context) {
-        Log.d(TAG, "start");
+        Logger.d(TAG, "start");
         //获取AdasManager实例
         mAdasManager = AdasManager.getInstance(context);
         //添加连接状态监听
@@ -58,7 +58,7 @@ public final class AdasClient {
     private final AdasServiceConnectListener mServiceConnectListener = new AdasServiceConnectListener() {
         @Override
         public void onServiceReady(final boolean serviceReady) {//连接状态回调
-            Log.d(TAG, "connection status: " + serviceReady);
+            Logger.d(TAG, "connection status: " + serviceReady);
             //serviceReady == true 初始化SuperCruiseManager和L2PPManager
             //serviceReady == false 反初始化SuperCruiseManager和L2PPManager
             if (serviceReady) {

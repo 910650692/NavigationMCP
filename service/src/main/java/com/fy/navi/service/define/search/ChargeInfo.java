@@ -49,6 +49,7 @@ public class ChargeInfo implements Parcelable {
     private int mFastPower;
     private String mOperatorId; // 运营商id
     private String mStationId; // 充电站id
+    private String mBrand; // 品牌
 
     public int getChildType() {
         return mChildType;
@@ -482,6 +483,7 @@ public class ChargeInfo implements Parcelable {
         mFastPower = in.readInt();
         mOperatorId = in.readString();
         mStationId = in.readString();
+        mBrand = in.readString();
     }
 
     public static final Creator<ChargeInfo> CREATOR = new Creator<ChargeInfo>() {
@@ -531,5 +533,6 @@ public class ChargeInfo implements Parcelable {
         parcel.writeInt(mFastPower);
         parcel.writeString(mOperatorId);
         parcel.writeString(mStationId);
+        parcel.writeString(mBrand);
     }
 }

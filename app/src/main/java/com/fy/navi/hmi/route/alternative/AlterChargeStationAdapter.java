@@ -45,7 +45,7 @@ public class AlterChargeStationAdapter extends RecyclerView.Adapter<AlterChargeS
     public void setData(final List<RouteAlterChargeStationInfo> data) {
         this.mData.clear();
         this.mData = data;
-        notifyItemRangeChanged(0, mData.size());
+        notifyDataSetChanged();
     }
 
     @NonNull

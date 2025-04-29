@@ -20,6 +20,8 @@ public class BaseWeChatViewModel extends BaseViewModel<WeChatFragment, WeChatMod
     public MutableLiveData<Boolean> mQRCodeLoadFailedVisible = new MutableLiveData<>(false);
     public MutableLiveData<Boolean> mQRCodeVisible = new MutableLiveData<>(false);
 
+    private MutableLiveData<Boolean> mDialogShown = new MutableLiveData<>(false);
+
 
     public MutableLiveData<Boolean> mIsBind = new MutableLiveData<>(false);
 
@@ -39,6 +41,7 @@ public class BaseWeChatViewModel extends BaseViewModel<WeChatFragment, WeChatMod
 
     public Action mHowToBind = () -> {
         mView.showUnbindDialog();
+        setDialogShown(true);
     };
 
     public Action mRetry = () -> {
@@ -58,6 +61,14 @@ public class BaseWeChatViewModel extends BaseViewModel<WeChatFragment, WeChatMod
     public void setIsBind(final boolean isBind) {
         this.mIsBind.postValue(isBind);
         mView.updateTitle(isBind);
+    }
+
+    public boolean getDialogShown() {
+        return Boolean.TRUE.equals(mDialogShown.getValue());
+    }
+
+    public void setDialogShown(boolean isShown){
+        mDialogShown.setValue(isShown);
     }
 
 
