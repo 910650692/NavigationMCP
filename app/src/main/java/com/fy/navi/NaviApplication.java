@@ -36,6 +36,7 @@ public class NaviApplication extends BaseApplication {
         PatacNetClient.getInstance().init(); // 初始化网络适配器
 
         if (!DeviceUtils.isCar(this)) {
+            Logger.d(TAG, "current is car version");
             Thread.setDefaultUncaughtExceptionHandler(new AppCrashRecord(this));
         }
     }
