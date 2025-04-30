@@ -5,10 +5,12 @@ import android.app.Application;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 
+import com.android.utils.ConvertUtils;
 import com.android.utils.thread.ThreadManager;
 import com.fy.navi.hmi.mapdata.manager.ManagerMapDataFragment;
 import com.fy.navi.hmi.mapdata.near.NearMapDataFragment;
 import com.fy.navi.hmi.mapdata.search.SearchMapDataFragment;
+import com.fy.navi.hmi.utils.StringUtils;
 import com.fy.navi.service.define.code.UserDataCode;
 import com.fy.navi.service.define.mapdata.CityDataInfo;
 import com.fy.navi.service.define.mapdata.CityDownLoadInfo;
@@ -16,11 +18,14 @@ import com.fy.navi.service.define.mapdata.ProvDataInfo;
 import com.fy.navi.ui.action.Action;
 import com.fy.navi.ui.base.BaseViewModel;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 
 public class MapDataViewModel extends BaseViewModel<MapDataFragment, MapDataModel> {
-    public MutableLiveData<String> mAllDownloadingDataSize = new MutableLiveData<>("0");
-    public MutableLiveData<Boolean> mNearDownloadBtnVisibility  = new MutableLiveData<>(false);
+    public MutableLiveData<String> mAllDownloadingDataSize = new MutableLiveData<>();
+    public MutableLiveData<Boolean> mNearDownloadBtnVisibility = new MutableLiveData<>(false);
+    public MutableLiveData<Boolean> mManagerDownloadVisibility = new MutableLiveData<>(false);
+    public MutableLiveData<String> mNearCityDataSize = new MutableLiveData<>("0");
 
     public MapDataViewModel(@NonNull final Application application) {
         super(application);
@@ -36,9 +41,6 @@ public class MapDataViewModel extends BaseViewModel<MapDataFragment, MapDataMode
      * @param isCheck
      */
     public void getAllProvinceData(final boolean isCheck) {
-        ThreadManager.getInstance().postDelay(new Runnable() {
-            @Override
-            public void run() {
                 mAllDownloadingDataSize.setValue(String.valueOf(mModel.getWorkingQueueSize()));
                 //获取全部地图初始化数据
                 mView.updateMapDataView(mModel.getMapDataList());
@@ -46,14 +48,10 @@ public class MapDataViewModel extends BaseViewModel<MapDataFragment, MapDataMode
                 mView.updateCurrentCityView(mModel.getCurrentCityInfo());
                 // 获取基础功能包数据
                 mView.updateCountryDataView(mModel.getCountryData());
-                // 获取下载中、更新中状态下的所有城市adCode列表数据
-                mView.updateWorkingView(mModel.getWorkingList(), mModel.getAllDownLoadedList());
                 // 获取附近推荐城市信息
-                mView.updateNearDataView(mModel.getNearAdCodeList());
+                updateNearDataView();
                 // 发起云端数据列表检测
                 mModel.requestDataListCheck(isCheck);
-            }
-        }, 0);
     }
 
     public Action mFinishMapDataView = () -> closeFragment(true);
@@ -165,7 +163,7 @@ public class MapDataViewModel extends BaseViewModel<MapDataFragment, MapDataMode
      */
     public void startAllTask(final ArrayList<Integer> adCodeList) {
         if (adCodeList != null && !adCodeList.isEmpty()) {
-            int adCode = adCodeList.get(0);
+            final int adCode = adCodeList.get(0);
             if (mModel.countryDataVisible() && adCode != 0) {
                 // 初次下载“非基础功能包”的任意城市包，始终提示此弹窗
                 mView.showCountryMapDataDialog();
@@ -207,7 +205,7 @@ public class MapDataViewModel extends BaseViewModel<MapDataFragment, MapDataMode
             mView.notifyMapDataChangeView(cityDataInfo);
             mView.updateCountryDataView(cityDataInfo);
             mView.notifyCurrentCityView(cityDataInfo);
-            mView.notifyNearDataView();
+            notifyNearDataView();
             mAllDownloadingDataSize.setValue(String.valueOf(mModel.getWorkingQueueSize()));
         });
     }
@@ -220,8 +218,52 @@ public class MapDataViewModel extends BaseViewModel<MapDataFragment, MapDataMode
         return  mModel.getCountryData();
     }
 
-    public  ArrayList<CityDataInfo> getNearCityData() {
-        return  mModel.getNearAdCodeList();
+    /**
+     * 更新下载管理界面状态
+     */
+    public void updateManagerDownloadView() {
+        final ArrayList<ProvDataInfo> workingList = mModel.getWorkingList();
+        if (!ConvertUtils.isEmpty(workingList)) {
+            mManagerDownloadVisibility.setValue(true);
+        } else {
+            final ArrayList<ProvDataInfo> allDownLoadedList = mModel.getAllDownLoadedList();
+            mManagerDownloadVisibility.setValue(!ConvertUtils.isEmpty(allDownLoadedList));
+        }
     }
 
+    /**
+     * 更新附近城市推荐信息
+     */
+    private void updateNearDataView() {
+        final ArrayList<CityDataInfo> nearCityList = mModel.getNearAdCodeList();
+        if (ConvertUtils.isEmpty(nearCityList)) {
+            return;
+        }
+        BigInteger sum  = BigInteger.ZERO;
+        final int count = nearCityList.size();
+        int downloadedCount = 0;
+        for (CityDataInfo info : nearCityList) {
+            //获取附近城市数据包大小总和
+            sum =  sum.add(info.getDownLoadInfo().getFullZipSize());
+            //获取附近城市未下载数量
+            if (info.getDownLoadInfo().getTaskState() == UserDataCode.TASK_STATUS_CODE_READY) {
+                downloadedCount++;
+            }
+        }
+        mNearCityDataSize.setValue(count + "个城市  共" + StringUtils.formatSize(sum));
+        mNearDownloadBtnVisibility.setValue(downloadedCount == count);
+    }
+
+    /**
+     * 刷新附近城市推荐 - 全部下载按显隐状态
+     */
+    private void notifyNearDataView() {
+        final ArrayList<CityDataInfo> nearList = mModel.getNearAdCodeList();
+        if (!ConvertUtils.isEmpty(nearList)) {
+            final long downloadedCount = nearList.stream()
+                .filter(cityDataInfo -> cityDataInfo.getDownLoadInfo().getTaskState() == UserDataCode.TASK_STATUS_CODE_READY)
+                .count();
+            mNearDownloadBtnVisibility.setValue(downloadedCount == nearList.size());
+        }
+    }
 }

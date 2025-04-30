@@ -217,10 +217,10 @@ public class SwipeMenuLayout extends ViewGroup {
     @Override
     protected void onDetachedFromWindow() {
         if (this == mViewCache) {
-            mViewCache.smoothClose();
+            mViewCache.quickClose();
             mViewCache = null;
         } else {
-            smoothClose();
+            quickClose();
         }
         super.onDetachedFromWindow();
     }

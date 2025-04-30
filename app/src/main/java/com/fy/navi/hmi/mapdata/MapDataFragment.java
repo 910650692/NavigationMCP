@@ -20,7 +20,6 @@ import com.fy.navi.service.define.mapdata.ProvDataInfo;
 import com.fy.navi.ui.base.BaseFragment;
 import com.fy.navi.ui.dialog.IBaseDialogClickListener;
 
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -57,6 +56,14 @@ public class MapDataFragment extends BaseFragment<FragmentMapDataBinding, MapDat
         }
         if (mViewModel != null) {
             mViewModel.getAllProvinceData(mIsCheck);
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (mViewModel != null) {
+            mViewModel.updateManagerDownloadView();
         }
     }
 
@@ -218,75 +225,6 @@ public class MapDataFragment extends BaseFragment<FragmentMapDataBinding, MapDat
         }
     }
 
-    /**
-     * * 是否显示下载管理view
-     * @param downloadingList
-     * @param downloadedList
-     */
-    public void updateWorkingView(final ArrayList<ProvDataInfo> downloadingList,
-                                  final ArrayList<ProvDataInfo> downloadedList) {
-        ThreadManager.getInstance().postUi(() -> {
-            if ((downloadingList != null && !downloadingList.isEmpty())
-                    || (downloadedList!= null &&!downloadedList.isEmpty())) {
-                mBinding.managerDataView.setVisibility(View.VISIBLE);
-            } else {
-                mBinding.managerDataView.setVisibility(View.GONE);
-            }
-        });
-    }
-
-    /**
-     * 显示附近城市推荐信息
-     * @param nearList
-     */
-    @SuppressLint("SetTextI18n")
-    public void updateNearDataView(final ArrayList<CityDataInfo> nearList) {
-        ThreadManager.getInstance().postUi(() -> {
-            if (nearList != null && !nearList.isEmpty()) {
-                BigInteger sum  = BigInteger.ZERO;
-                final int count = nearList.size();
-                int downloadedCount = 0;
-                for (CityDataInfo info : nearList) {
-                    //获取附近城市数据包大小总和
-                    sum =  sum.add(info.getDownLoadInfo().getFullZipSize());
-                    //获取附近城市未下载数量
-                    if (info.getDownLoadInfo().getTaskState() == UserDataCode.TASK_STATUS_CODE_READY) {
-                        downloadedCount = downloadedCount + 1;
-                    }
-                }
-                mBinding.tvNearDataCount.setText(count + "个城市  共" + StringUtils.formatSize(sum));
-                if (downloadedCount == count) {
-                    mViewModel.mNearDownloadBtnVisibility.setValue(true);
-                } else {
-                    mViewModel.mNearDownloadBtnVisibility.setValue(false);
-                }
-            }
-        });
-    }
-
-    /**
-     * 刷新附近城市推荐 - 全部下载按显隐状态
-     */
-    public void notifyNearDataView() {
-        final ArrayList<CityDataInfo> nearList = mViewModel.getNearCityData();
-        if (nearList != null && !nearList.isEmpty()) {
-            int downloadedCount = 0;
-            for (CityDataInfo info : nearList) {
-                //获取附近城市未下载数量
-                if (info.getDownLoadInfo().getTaskState() == UserDataCode.TASK_STATUS_CODE_READY) {
-                    downloadedCount = downloadedCount + 1;
-                }
-            }
-
-            Logger.d(TAG, "notifyNearDataView downloadedCount = " + downloadedCount);
-
-            if (downloadedCount == nearList.size()) {
-                mViewModel.mNearDownloadBtnVisibility.setValue(true);
-            } else {
-                mViewModel.mNearDownloadBtnVisibility.setValue(false);
-            }
-        }
-    }
 
     /**
      * 是否首次下载基础功能包提示

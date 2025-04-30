@@ -13,14 +13,14 @@
     </data>
 
     <com.fy.navi.ui.view.SkinConstraintLayout
-        android:layout_width="@dimen/dp_174"
-        android:layout_height="@dimen/dp_464">
+        android:layout_width="@dimen/dp_146"
+        android:layout_height="@dimen/dp_436">
 
         <com.fy.navi.ui.view.SkinView
             android:id="@+id/route_right_tab_list_service"
             clickCommand="@{Scene.clickAround}"
-            android:layout_width="@dimen/dp_174"
-            android:layout_height="@dimen/dp_154"
+            android:layout_width="@dimen/dp_146"
+            android:layout_height="@dimen/dp_146"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             />
@@ -50,8 +50,8 @@
         <com.fy.navi.ui.view.SkinView
             android:id="@+id/route_right_tab_list_weather"
             clickCommand="@{Scene.clickEnd}"
-            android:layout_width="@dimen/dp_174"
-            android:layout_height="@dimen/dp_154"
+            android:layout_width="@dimen/dp_146"
+            android:layout_height="@dimen/dp_146"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintBottom_toTopOf="@+id/route_right_tab_list_service"
             />
@@ -82,8 +82,8 @@
         <com.fy.navi.ui.view.SkinView
             clickCommand="@{Scene.clickAlone}"
             android:id="@+id/route_right_tab_list_gas_station"
-            android:layout_width="@dimen/dp_174"
-            android:layout_height="@dimen/dp_154"
+            android:layout_width="@dimen/dp_146"
+            android:layout_height="@dimen/dp_146"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintBottom_toTopOf="@+id/route_right_tab_list_weather"
             />

@@ -17,22 +17,38 @@
         android:clickable="true"
         android:background="@drawable/bg_setting_fragment">
 
+        <com.android.car.ui.FocusParkingView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
         <com.fy.navi.ui.view.SkinLinearLayout
             android:id="@+id/phone_qrcode_login_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
+            android:focusable="false"
             android:layout_marginTop="@dimen/dp_48"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" >
 
-            <com.fy.navi.ui.view.SkinImageView
-                clickCommand="@{ViewModel.mAccountBack}"
-                android:layout_width="@dimen/dp_74"
-                android:layout_height="@dimen/dp_74"
-                android:layout_gravity="center"
-                android:layout_marginStart="@dimen/dp_32"
-                android:src="@drawable/img_setting_back" />
+            <com.android.car.ui.FocusArea
+                android:id="@+id/focus_close"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:nudgeDown="@+id/focus_tab"
+                app:nudgeUp="@+id/focus_tab">
+
+                <com.fy.navi.ui.view.SkinImageView
+                    clickCommand="@{ViewModel.mAccountBack}"
+                    android:layout_width="@dimen/dp_74"
+                    android:layout_height="@dimen/dp_74"
+                    android:layout_gravity="center"
+                    android:focusable="true"
+                    android:focusedByDefault="true"
+                    android:layout_marginStart="@dimen/dp_32"
+                    android:background="@drawable/bg_base_mfc_cadillac_bg_selector"
+                    android:src="@drawable/img_setting_back" />
+            </com.android.car.ui.FocusArea>
 
             <com.fy.navi.ui.view.SkinTextView
                 android:id="@+id/account_qrcode_login"
@@ -43,6 +59,7 @@
                 android:layout_marginStart="@dimen/dp_545"
                 android:text="@string/setting_others_account"
                 android:textSize="@dimen/sp_46"
+                android:focusable="false"
                 android:textColor="@color/setting_bg_tab_text_select" />
         </com.fy.navi.ui.view.SkinLinearLayout>
 
@@ -51,6 +68,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
+            android:focusable="false"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/phone_qrcode_login_title">
 
@@ -60,6 +78,7 @@
                 android:layout_marginTop="@dimen/dp_90"
                 android:layout_marginStart="@dimen/dp_163"
                 android:gravity="center"
+                android:focusable="false"
                 android:orientation="vertical">
 
                 <com.fy.navi.ui.view.SkinImageView
@@ -69,6 +88,7 @@
                     android:background="@drawable/bg_we_chat"
                     android:padding="@dimen/dp_16"
                     tools:visibility="gone"
+                    android:focusable="false"
                     android:visibility="@{ViewModel.mQRCodeVisible ? View.VISIBLE : View.GONE}" />
 
                 <com.fy.navi.ui.view.SkinLinearLayout
@@ -76,18 +96,21 @@
                     android:layout_height="@dimen/dp_340"
                     android:orientation="vertical"
                     android:gravity="center"
+                    android:focusable="false"
                     android:visibility="@{ViewModel.mQRCodeLoadingVisible ? View.VISIBLE : View.GONE}">
 
                     <com.fy.navi.ui.view.SkinImageView
                         android:id="@+id/account_qrcode_loading"
                         android:layout_width="@dimen/dp_160"
                         android:layout_height="@dimen/dp_160"
+                        android:focusable="false"
                         android:src="@drawable/img_setting_qr_loading"/>
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/setting_qr_code_loading"
+                        android:focusable="false"
                         android:layout_marginTop="@dimen/dp_32"
                         android:textColor="@color/setting_bg_tab_text_unselect"
                         android:textSize="@dimen/sp_38"/>
@@ -100,6 +123,7 @@
                     android:orientation="vertical"
                     android:gravity="center"
                     tools:visibility="gone"
+                    android:focusable="false"
                     android:visibility="@{ViewModel.mQRCodeLoadFailedVisible ? View.VISIBLE : View.GONE}">
 
                     <com.fy.navi.ui.view.SkinTextView
@@ -107,17 +131,29 @@
                         android:layout_height="wrap_content"
                         android:text="@string/setting_qr_code_load_failed"
                         android:textSize="@dimen/sp_38"
+                        android:focusable="false"
                         android:textColor="@color/setting_bg_tab_text_unselect"/>
 
-                    <com.fy.navi.ui.view.SkinButton
-                        clickCommand="@{ViewModel.mRetry}"
-                        android:layout_width="@dimen/dp_340"
-                        android:layout_height="@dimen/dp_96"
-                        android:layout_marginTop="@dimen/dp_40"
-                        android:text="@string/setting_qr_code_load_retry"
-                        android:textSize="@dimen/sp_38"
-                        android:textColor="@color/setting_white"
-                        android:background="@drawable/bg_setting_preference_select"/>
+                    <com.android.car.ui.FocusArea
+                        android:id="@+id/focus_tab"
+                        app:nudgeRight="@+id/focus_page"
+                        app:nudgeUp="@+id/focus_close"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+
+                        <com.fy.navi.ui.view.SkinButton
+                            clickCommand="@{ViewModel.mRetry}"
+                            android:layout_width="@dimen/dp_340"
+                            android:layout_height="@dimen/dp_96"
+                            android:layout_marginTop="@dimen/dp_40"
+                            android:text="@string/setting_qr_code_load_retry"
+                            android:textSize="@dimen/sp_38"
+                            android:focusable="true"
+                            android:textColor="@color/setting_white"
+                            android:background="@drawable/bg_setting_dialog_confirm_selector"/>
+
+                    </com.android.car.ui.FocusArea>
+
                 </com.fy.navi.ui.view.SkinLinearLayout>
 
                 <com.fy.navi.ui.view.SkinTextView
@@ -128,6 +164,7 @@
                     android:gravity="center"
                     android:text="@string/account_QRCode_login_tip"
                     android:textSize="@dimen/sp_32"
+                    android:focusable="false"
                     android:textColor="@color/setting_bg_tab_text_unselect" />
             </com.fy.navi.ui.view.SkinLinearLayout>
 
@@ -137,12 +174,14 @@
                 android:orientation="vertical"
                 android:layout_marginStart="@dimen/dp_217"
                 android:layout_marginTop="@dimen/dp_90"
+                android:focusable="false"
                 android:gravity="center">
 
                 <androidx.viewpager2.widget.ViewPager2
                     android:id="@+id/account_qrcode_viewpager"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"/>
+                    android:layout_height="wrap_content"
+                    android:focusable="false"/>
 
                 <com.fy.navi.ui.view.SkinTabLayout
                     android:id="@+id/account_qrcode_tab"
@@ -151,6 +190,7 @@
                     android:layout_marginTop="@dimen/dp_40"
                     android:background="@color/setting_line"
                     app:tabInlineLabel="true"
+                    android:focusable="false"
                     app:tabIndicatorHeight="@dimen/dp_8"
                     app:tabIndicatorColor="@color/setting_switch_selected"/>
 

@@ -78,7 +78,7 @@
             android:layout_height="@dimen/dp_206"
             android:paddingHorizontal="@dimen/dp_29"
             android:paddingVertical="@dimen/dp_29"
-            android:background="@drawable/bg_route_result"
+            android:background="@drawable/bg_route_shadow"
             clickCommand="@{ViewModel.getTabGasClick()}"
             android:visibility="@{ViewModel.getTabVisibility() == 3 ? View.VISIBLE : View.GONE}"
             android:layout_marginStart="@dimen/dp_660"
@@ -125,7 +125,7 @@
             android:visibility="@{ViewModel.getIncludePageVisibility() == 0 ? View.VISIBLE : View.GONE}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:visibility="visible">
+            tools:visibility="gone">
 
             <com.fy.navi.ui.view.SkinConstraintLayout
                 android:id="@+id/route_line_info_title"
@@ -795,8 +795,8 @@
 
             <com.fy.navi.scene.ui.route.SceneRouteGasStationChargeServiceView
                 android:id="@+id/route_right_tab_list_charge_scene"
-                android:layout_width="@dimen/dp_232"
-                android:layout_height="@dimen/dp_522"
+                android:layout_width="@dimen/dp_204"
+                android:layout_height="@dimen/dp_494"
                 android:paddingHorizontal="@dimen/dp_29"
                 android:paddingVertical="@dimen/dp_29"
                 android:background="@drawable/bg_route_shadow"
@@ -1038,11 +1038,10 @@
             android:id="@+id/route_weather_details"
             android:layout_width="@dimen/dp_698"
             android:layout_height="match_parent"
-            android:paddingVertical="@dimen/dp_29"
-            android:paddingHorizontal="@dimen/dp_29"
-            android:background="@drawable/bg_route_result"
+            android:paddingVertical="@dimen/dp_59"
+            android:paddingHorizontal="@dimen/dp_59"
+            android:background="@drawable/bg_route_shadow"
             android:clickable="true"
-            android:padding="@dimen/dp_30"
             android:visibility="@{ViewModel.getIncludePageVisibility() == 4 ? View.VISIBLE : View.GONE}"
             tools:visibility="gone">
 

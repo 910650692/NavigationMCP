@@ -521,8 +521,13 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
         if (mCurrentPageHistory.isEmpty()) {
             return 0;
         }
-        Logger.i(TAG, "getCurrentPageUI: " + Integer.parseInt(mCurrentPageHistory.get(mCurrentPageHistory.size() - 1)));
-        return Integer.parseInt(mCurrentPageHistory.get(mCurrentPageHistory.size() - 1));
+        final int index = Integer.parseInt(mCurrentPageHistory.get(mCurrentPageHistory.size() - 1));
+        if (index == 0) {
+            //回到算路结果页需要全览路线
+            ImmersiveStatusScene.getInstance().setImmersiveStatus(MapType.MAIN_SCREEN_MAIN_MAP, ImersiveStatus.IMERSIVE);
+        }
+        Logger.i(TAG, "getCurrentPageUI: " + index);
+        return index;
     }
 
     /***

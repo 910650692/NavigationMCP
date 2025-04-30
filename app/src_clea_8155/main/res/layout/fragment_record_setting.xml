@@ -138,5 +138,10 @@
             android:layout_marginStart="@dimen/dp_40"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/record_setting_clear_des" />
+
+        <com.fy.navi.ui.view.SkinView
+            android:id="@+id/record_setting_clear_focus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
     </com.fy.navi.ui.view.SkinConstraintLayout>
 </layout>

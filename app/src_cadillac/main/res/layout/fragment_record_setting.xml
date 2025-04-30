@@ -91,6 +91,7 @@
 
             <com.fy.navi.ui.view.SkinView
                 clickCommand="@{ViewModel.mClearDivingRecord}"
+                android:id="@+id/record_setting_clear_focus"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_210"
                 android:focusable="true"

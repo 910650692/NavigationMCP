@@ -32,6 +32,7 @@ import java.util.List;
 
 /**
  * 路况条scene
+ *
  * @author fy
  * @version $Revision.*$
  */
@@ -126,6 +127,7 @@ public class SceneNaviTmcView extends NaviSceneBase<SceneNaviTmcViewBinding, Sce
 
     /**
      * 初始化
+     *
      * @param offline 是否离线
      */
     public void initTmcContainer(final boolean offline) {
@@ -135,9 +137,10 @@ public class SceneNaviTmcView extends NaviSceneBase<SceneNaviTmcViewBinding, Sce
 
     /**
      * 更新光柱图数据view
-     * @param tbitem  item
+     *
+     * @param tbitem            item
      * @param distanceHasPassed 经过的总距离
-     * @param totalDistance 总距离
+     * @param totalDistance     总距离
      */
     public void updateTmcContainerNew(final List<NaviTmcInfo.NaviTmcInfoData> tbitem,
                                       final long distanceHasPassed, final long totalDistance) {
@@ -147,9 +150,9 @@ public class SceneNaviTmcView extends NaviSceneBase<SceneNaviTmcViewBinding, Sce
     }
 
     /**
-     * @param items items
+     * @param items             items
      * @param distanceHasPassed 已经经过的距离
-     * @param totalDistance 总距离
+     * @param totalDistance     总距离
      */
     public void setTmcContainerDataNew(final List<NaviTmcInfo.NaviTmcInfoData> items,
                                        final long distanceHasPassed, final long totalDistance) {
@@ -206,7 +209,7 @@ public class SceneNaviTmcView extends NaviSceneBase<SceneNaviTmcViewBinding, Sce
             carPosition = Math.round((mTotalDistance - hasPassedDistance - mDistanceHasPassed) * rateDistanceToView);
         }
         Logger.d(TAG, "mTotalDistance:" + mTotalDistance + " hasPassedDistance:" + hasPassedDistance + " mDistanceHasPassed :" + mDistanceHasPassed
-        +" width:" + width + " rateDistanceToView:" + rateDistanceToView + " carPosition :" + carPosition);
+                + " width:" + width + " rateDistanceToView:" + rateDistanceToView + " carPosition :" + carPosition);
         // 移动车标的Y坐标
         NaviUiUtil.setTranslation(mViewBinding.sivCar, carPosition, mIsHorizontal);
         ArrayList<Integer> chargeShowList = new ArrayList<>();
@@ -216,7 +219,7 @@ public class SceneNaviTmcView extends NaviSceneBase<SceneNaviTmcViewBinding, Sce
             int preVia = 0;
             for (int i = 0; i < mChargeStationRemain.size() && i < MAX_VIA_NUM; i++) {
                 final NaviEtaInfo.NaviTimeAndDist viaItem = mChargeStationRemain.get(i);
-                final int via;
+                int via;
                 if (mIsHorizontal) {
                     via = Math.round((hasPassedDistance + mDistanceHasPassed + viaItem.dist) * rateDistanceToView);
                 } else {
@@ -229,6 +232,16 @@ public class SceneNaviTmcView extends NaviSceneBase<SceneNaviTmcViewBinding, Sce
                     preVia = via;
                     mViaShowIndex++;
                     showViaIcon(i, SceneCommonStruct.TmcViaPointType.ViaChargeType, via);
+                } else if (i == mChargeStationRemain.size() - 1 || i == MAX_VIA_NUM - 1) {
+                    //最后一个如果显示不全则往前移动
+                    if (preVia == 0 || (width - preVia > VIA_WIDTH * 2)) {
+                        via = width - VIA_WIDTH;
+                        isShow = true;
+                        chargeShowList.add(via);
+                        preVia = via;
+                        mViaShowIndex++;
+                        showViaIcon(i, SceneCommonStruct.TmcViaPointType.ViaChargeType, via);
+                    }
                 }
                 logBuilder.append(" ").append(i).append(":via:").append(via).append(".show:").append(isShow);
             }
@@ -247,14 +260,14 @@ public class SceneNaviTmcView extends NaviSceneBase<SceneNaviTmcViewBinding, Sce
             int preVia = 0;
             for (int i = 0; i < mViaRemain.size() && i < MAX_VIA_NUM; i++) {
                 final NaviEtaInfo.NaviTimeAndDist viaItem = mViaRemain.get(i);
-                final int via;
+                int via;
                 boolean isShow = false;
                 if (mIsHorizontal) {
                     via = Math.min(Math.round((hasPassedDistance + mDistanceHasPassed + viaItem.dist) * rateDistanceToView), width - mViaWidth);
                 } else {
                     via = Math.round((mTotalDistance - hasPassedDistance - mDistanceHasPassed - viaItem.dist) * rateDistanceToView);
                 }
-                if ((via - preVia > VIA_WIDTH || preVia == 0) && (width - via > VIA_WIDTH) ) {
+                if ((via - preVia > VIA_WIDTH || preVia == 0) && (width - via > VIA_WIDTH)) {
                     boolean isOverlapping = false;
                     for (Integer item : chargeShowList) {
                         if (Math.abs(item - via) < VIA_WIDTH) {
@@ -263,6 +276,21 @@ public class SceneNaviTmcView extends NaviSceneBase<SceneNaviTmcViewBinding, Sce
                         }
                     }
                     if (!isOverlapping) {
+                        isShow = true;
+                        preVia = via;
+                        showViaIcon(mViaShowIndex + i, SceneCommonStruct.TmcViaPointType.ViaPointType, via);
+                    }
+                } else if (i == mViaRemain.size() - 1 || i == MAX_VIA_NUM - 1) {
+                    //最后一个如果显示不全则往前移动
+                    boolean isOverlapping = false;
+                    for (Integer item : chargeShowList) {
+                        if (Math.abs(item - via) < VIA_WIDTH || Math.abs(item - width) < VIA_WIDTH * 2) {
+                            isOverlapping = true;
+                            break;
+                        }
+                    }
+                    if (!isOverlapping && (preVia == 0 || (width - preVia > VIA_WIDTH * 2))) {
+                        via = width - VIA_WIDTH;
                         isShow = true;
                         preVia = via;
                         showViaIcon(mViaShowIndex + i, SceneCommonStruct.TmcViaPointType.ViaPointType, via);
@@ -282,7 +310,7 @@ public class SceneNaviTmcView extends NaviSceneBase<SceneNaviTmcViewBinding, Sce
     /**
      * 设置途径点和充电桩数据
      *
-     * @param viaRemain 剩余的途经点
+     * @param viaRemain           剩余的途经点
      * @param chargeStationRemain 剩余的充电站
      */
     public void updateTmcVia(final ArrayList<NaviEtaInfo.NaviTimeAndDist> viaRemain,
@@ -325,9 +353,9 @@ public class SceneNaviTmcView extends NaviSceneBase<SceneNaviTmcViewBinding, Sce
     }
 
     /**
-     * @param view view
+     * @param view            view
      * @param tmcViaPointType 类型
-     * @param viaY viaY
+     * @param viaY            viaY
      */
     private void showViaIcon(final View view,
                              final SceneCommonStruct.TmcViaPointType tmcViaPointType,
@@ -346,9 +374,10 @@ public class SceneNaviTmcView extends NaviSceneBase<SceneNaviTmcViewBinding, Sce
 
     /**
      * 显示途径点图标
-     * @param index  index
+     *
+     * @param index           index
      * @param tmcViaPointType 类型
-     * @param viaY viaY
+     * @param viaY            viaY
      */
     private void showViaIcon(final int index,
                              final SceneCommonStruct.TmcViaPointType tmcViaPointType,
@@ -423,6 +452,7 @@ public class SceneNaviTmcView extends NaviSceneBase<SceneNaviTmcViewBinding, Sce
 
     /**
      * 隐藏途径点图标
+     *
      * @param index index
      */
     private void hideViaIcon(final int index) {
@@ -504,9 +534,10 @@ public class SceneNaviTmcView extends NaviSceneBase<SceneNaviTmcViewBinding, Sce
 
     /**
      * 更新光柱图数据view
-     * @param tbitem  item
+     *
+     * @param tbitem            item
      * @param distanceHasPassed 已经经过的距离
-     * @param totalDistance 总距离
+     * @param totalDistance     总距离
      */
     public void updateTmcAreaNew(final List<NaviTmcInfo.NaviTmcInfoData> tbitem,
                                  final long distanceHasPassed, final long totalDistance) {

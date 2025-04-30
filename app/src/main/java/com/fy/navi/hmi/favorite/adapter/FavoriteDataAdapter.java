@@ -106,7 +106,7 @@ public class FavoriteDataAdapter extends RecyclerView.Adapter<FavoriteDataAdapte
         });
 
         holder.mFavoriteBinding.itemFavoriteDelete.setOnClickListener(v -> {
-            holder.mFavoriteBinding.swipeMenuLayout.smoothClose();
+            holder.mFavoriteBinding.swipeMenuLayout.quickClose();
             if (mItemClickListener != null) {
                 mItemClickListener.onItemDeleteClick(position);
             }

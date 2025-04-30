@@ -125,5 +125,6 @@ public class RecordSettingFragment extends BaseFragment<FragmentRecordSettingBin
     public void setClearButtonEnable(final boolean enable) {
         mBinding.recordSettingClearBtn.setEnabled(enable);
         mBinding.recordSettingClearBtn.setAlpha(enable ? 1.0f : 0.5f);
+        mBinding.recordSettingClearFocus.setEnabled(enable);
     }
 }
