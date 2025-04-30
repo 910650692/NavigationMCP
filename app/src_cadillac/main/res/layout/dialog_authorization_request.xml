@@ -86,7 +86,7 @@
                     android:background="@drawable/bg_shape_commit_button"
                     android:gravity="center"
                     android:text="@string/authorization_request_agree"
-                    android:textColor="@color/white"
+                    android:textColor="@color/dialog_confirm_color"
                     android:textSize="@dimen/sp_42" />
 
                 <View

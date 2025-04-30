@@ -14,24 +14,34 @@
 
     <com.fy.navi.ui.view.SkinConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_1000">
+        android:layout_height="@dimen/dp_1000"
+        android:focusable="false">
+
+        <com.android.car.ui.FocusParkingView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <com.android.car.ui.FocusArea
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
         <com.fy.navi.ui.view.SkinConstraintLayout
             android:id="@+id/navi_scene_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:focusable="false"
             android:maxHeight="@dimen/dp_1000">
 
             <!--tbt-->
             <com.fy.navi.scene.ui.navi.SceneNaviTbtView
                 android:id="@+id/scene_navi_tbt"
-                clickCommand="@{ViewModel.mNaviAddVia}"
                 android:layout_width="@dimen/dp_820"
                 android:layout_height="wrap_content"
                 android:background="@drawable/bg_navi_tbt_top"
                 android:minHeight="@dimen/dp_1"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
+                android:focusable="false"
                 tools:visibility="visible" />
 
             <!--路口大图区域 -->
@@ -43,22 +53,22 @@
                 app:layout_constraintStart_toStartOf="@id/scene_navi_tbt"
                 app:layout_constraintTop_toBottomOf="@id/scene_navi_tbt"
                 tools:background="@drawable/bg_navi_parking_item"
+                android:focusable="false"
                 tools:visibility="gone" />
             <!--eta信息-->
             <com.fy.navi.scene.ui.navi.SceneNaviEtaView
                 android:id="@+id/scene_navi_eta"
-                clickCommand="@{ViewModel.mNaviAddVia}"
                 android:layout_width="@dimen/dp_820"
                 android:layout_height="@dimen/dp_80"
                 android:background="@drawable/bg_navi_tbt_middle"
                 android:visibility="@{ViewModel.mNaviEtaVisibility?View.VISIBLE:View.GONE}"
                 app:layout_constraintStart_toStartOf="@id/scene_navi_tbt"
                 app:layout_constraintTop_toBottomOf="@id/scene_navi_cross_image"
+                android:focusable="false"
                 tools:visibility="visible" />
             <!--路况条-->
             <com.fy.navi.scene.ui.navi.SceneNaviTmcView
                 android:id="@+id/scene_navi_tmc"
-                clickCommand="@{ViewModel.mNaviAddVia}"
                 android:layout_width="@dimen/dp_820"
                 android:layout_height="wrap_content"
                 android:background="@drawable/bg_navi_tbt_middle"
@@ -67,7 +77,47 @@
                 android:visibility="@{ViewModel.mNaviTmcVisibility?View.VISIBLE:View.GONE}"
                 app:layout_constraintStart_toStartOf="@id/scene_navi_tbt"
                 app:layout_constraintTop_toBottomOf="@id/scene_navi_eta"
+                android:focusable="false"
                 tools:visibility="gone" />
+            <!--车道线-->
+            <com.fy.navi.scene.ui.navi.SceneNaviLanesView
+                android:id="@+id/scene_navi_lanes"
+                android:layout_width="@dimen/dp_820"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@drawable/bg_navi_tbt_middle"
+                android:paddingBottom="@dimen/dp_30"
+                android:focusable="false"
+                android:visibility="@{ViewModel.mNaviLanesVisibility?View.VISIBLE:View.GONE}"
+                app:layout_constraintStart_toStartOf="@id/scene_navi_tbt"
+                app:layout_constraintTop_toBottomOf="@id/scene_navi_tmc"
+                tools:visibility="gone" />
+            <!--显示经过途经点信息-->
+            <com.fy.navi.scene.ui.navi.SceneNaviViaInfoView
+                android:id="@+id/scene_navi_via_info"
+                android:layout_width="@dimen/dp_820"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_navi_tbt_bottom"
+                android:focusable="false"
+                android:visibility="@{ViewModel.mNaviViaInfoVisibility?View.VISIBLE:View.GONE}"
+                app:layout_constraintStart_toStartOf="@id/scene_navi_tbt"
+                app:layout_constraintTop_toBottomOf="@id/scene_navi_lanes"
+                tools:visibility="gone" />
+
+            <com.fy.navi.ui.view.SkinButton
+                android:id="@+id/scene_navi_scl_top"
+                android:layout_width="@dimen/dp_0"
+                android:layout_height="@dimen/dp_0"
+                clickCommand="@{ViewModel.mNaviAddVia}"
+                android:background="@drawable/bg_base_mfc_cadillac_bg_selector"
+                android:focusable="true"
+                android:focusedByDefault="true"
+                app:layout_constraintStart_toStartOf="@id/scene_navi_tbt"
+                app:layout_constraintEnd_toEndOf="@id/scene_navi_tbt"
+                app:layout_constraintTop_toTopOf="@id/scene_navi_tbt"
+                app:layout_constraintBottom_toBottomOf="@id/scene_navi_via_info"
+                />
+
             <!--添加途径点列表-->
             <com.fy.navi.scene.ui.navi.SceneNaviViaListView
                 android:id="@+id/scene_navi_via_list"
@@ -75,33 +125,10 @@
                 android:layout_height="wrap_content"
                 android:background="@drawable/bg_navi_tbt_bottom"
                 android:paddingTop="@dimen/dp_40"
+                android:focusable="false"
                 android:visibility="@{ViewModel.mNaviViaListVisibility?View.VISIBLE:View.GONE}"
                 app:layout_constraintStart_toStartOf="@id/scene_navi_tbt"
-                app:layout_constraintTop_toBottomOf="@id/scene_navi_tmc"
-                tools:visibility="gone" />
-            <!--车道线-->
-            <com.fy.navi.scene.ui.navi.SceneNaviLanesView
-                android:id="@+id/scene_navi_lanes"
-                clickCommand="@{ViewModel.mNaviAddVia}"
-                android:layout_width="@dimen/dp_820"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:background="@drawable/bg_navi_tbt_middle"
-                android:paddingBottom="@dimen/dp_30"
-                android:visibility="@{ViewModel.mNaviLanesVisibility?View.VISIBLE:View.GONE}"
-                app:layout_constraintStart_toStartOf="@id/scene_navi_tbt"
-                app:layout_constraintTop_toBottomOf="@id/scene_navi_via_list"
-                tools:visibility="gone" />
-            <!--显示经过途经点信息-->
-            <com.fy.navi.scene.ui.navi.SceneNaviViaInfoView
-                android:id="@+id/scene_navi_via_info"
-                clickCommand="@{ViewModel.mNaviAddVia}"
-                android:layout_width="@dimen/dp_820"
-                android:layout_height="wrap_content"
-                android:background="@drawable/bg_navi_tbt_bottom"
-                android:visibility="@{ViewModel.mNaviViaInfoVisibility?View.VISIBLE:View.GONE}"
-                app:layout_constraintStart_toStartOf="@id/scene_navi_tbt"
-                app:layout_constraintTop_toBottomOf="@id/scene_navi_lanes"
+                app:layout_constraintTop_toBottomOf="@id/scene_navi_scl_top"
                 tools:visibility="gone" />
 
             <androidx.constraintlayout.widget.Barrier
@@ -109,8 +136,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:barrierDirection="bottom"
+                android:focusable="false"
                 app:constraint_referenced_ids="scene_navi_tbt,scene_navi_cross_image,
-            scene_navi_eta,scene_navi_tmc,scene_navi_via_list,scene_navi_lanes,scene_navi_via_info"
+            scene_navi_eta,scene_navi_tmc,scene_navi_lanes,scene_navi_via_info,scene_navi_scl_top,scene_navi_via_list"
                 tools:visibility="gone" />
 
             <!--悬挂卡-->
@@ -119,6 +147,7 @@
                 android:layout_width="@dimen/dp_820"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_20"
+                android:focusable="false"
                 android:visibility="@{ViewModel.mHandingCardVisibility?View.VISIBLE:View.GONE}"
                 app:layout_constraintTop_toBottomOf="@id/barrier" />
 
@@ -129,6 +158,7 @@
                 android:layout_height="@dimen/dp_568"
                 android:layout_marginTop="@dimen/dp_20"
                 android:background="@drawable/bg_navi_btn_common"
+                android:focusable="false"
                 android:visibility="@{ViewModel.mHandingCardDetailVisibility?View.VISIBLE:View.GONE}"
                 app:layout_constraintTop_toBottomOf="@id/barrier" />
 
@@ -137,6 +167,7 @@
                 android:id="@+id/scene_navi_control"
                 android:layout_width="@dimen/dp_820"
                 android:layout_height="wrap_content"
+                android:focusable="false"
                 android:visibility="@{ViewModel.mNaviControlVisibility?View.VISIBLE:View.GONE}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />
@@ -146,6 +177,7 @@
                 android:id="@+id/scene_navi_control_more"
                 android:layout_width="@dimen/dp_820"
                 android:layout_height="wrap_content"
+                android:focusable="false"
                 android:visibility="@{ViewModel.mNaviControlVisibilityMore?View.VISIBLE:View.GONE}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />
@@ -156,6 +188,7 @@
                 android:layout_width="@dimen/dp_820"
                 android:layout_height="@dimen/dp_366"
                 android:background="@drawable/bg_navi_btn_common"
+                android:focusable="false"
                 android:visibility="@{ViewModel.mNaviPreferenceVisibility?View.VISIBLE:View.GONE}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -166,6 +199,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_20"
+                android:focusable="false"
                 android:visibility="@{ViewModel.mNaviSpeedVisibility?View.VISIBLE:View.GONE}"
                 app:layout_constraintStart_toEndOf="@id/scene_navi_tbt"
                 app:layout_constraintTop_toTopOf="@id/scene_navi_tbt"
@@ -176,6 +210,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_23"
+                android:focusable="false"
                 android:visibility="@{ViewModel.mNaviSapaVisibility?View.VISIBLE:View.GONE}"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/barrier"
@@ -192,6 +227,7 @@
                 android:paddingHorizontal="@dimen/dp_40"
                 android:textColor="@color/common_title_purple_color"
                 android:textSize="@dimen/sp_46"
+                android:focusable="false"
                 android:visibility="@{ViewModel.mNaviRouteNameVisibility?View.VISIBLE:View.GONE}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@id/scene_navi_tbt"
@@ -203,6 +239,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_40"
+                android:focusable="false"
                 android:visibility="@{ViewModel.mNaviLastMileVisibility?View.VISIBLE:View.GONE}"
                 app:layout_constraintStart_toEndOf="@id/scene_navi_tbt"
                 app:layout_constraintTop_toTopOf="@id/scene_navi_tbt"
@@ -213,6 +250,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_20"
+                android:focusable="false"
                 android:visibility="@{ViewModel.mNaviParallelVisibility?View.VISIBLE:View.GONE}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@id/scene_navi_tbt"
@@ -223,6 +261,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_40"
+                android:focusable="false"
                 android:visibility="@{ViewModel.mNaviViaArrivedPopVisibility?View.VISIBLE:View.GONE}"
                 app:layout_constraintStart_toEndOf="@+id/scene_navi_tbt"
                 app:layout_constraintTop_toTopOf="@dimen/dp_180"
@@ -232,6 +271,7 @@
                 android:id="@+id/scene_navi_sapa_detail"
                 android:layout_width="@dimen/dp_820"
                 android:layout_height="@dimen/dp_711"
+                android:focusable="false"
                 android:visibility="@{ViewModel.mNaviSapaDetailVisibility?View.VISIBLE:View.GONE}"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -241,6 +281,7 @@
                 android:id="@+id/scene_drive_report"
                 android:layout_width="@dimen/dp_820"
                 android:layout_height="@dimen/dp_700"
+                android:focusable="false"
                 android:visibility="@{ViewModel.mNaviDriveReportVisibility?View.VISIBLE:View.GONE}"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -251,32 +292,35 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_30"
+                android:focusable="false"
                 android:visibility="@{ViewModel.mNaviChargeTipVisibility ? View.VISIBLE : View.GONE}"
                 app:layout_constraintEnd_toEndOf="@id/scene_navi_tbt"
                 app:layout_constraintStart_toStartOf="@id/scene_navi_tbt"
                 app:layout_constraintTop_toBottomOf="@id/barrier"
                 tools:visibility="gone" />
 
+            <!--继续导航按钮-->
+            <com.fy.navi.scene.ui.navi.SceneNaviContinueView
+                android:id="@+id/scene_navi_continue"
+                android:layout_width="@dimen/dp_410"
+                android:layout_height="@dimen/dp_120"
+                android:layout_marginStart="@dimen/dp_1460"
+                android:focusable="false"
+                android:visibility="@{ViewModel.mNaviContinueVisibility?View.VISIBLE:View.GONE}"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <com.fy.navi.scene.ui.navi.GuidanceSimulationView
+                android:id="@+id/navi_sim_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_950"
+                android:focusable="false"
+                android:visibility="@{ViewModel.mNaviSim?View.VISIBLE:View.GONE}"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
         </com.fy.navi.ui.view.SkinConstraintLayout>
-
-        <!--继续导航按钮-->
-        <com.fy.navi.scene.ui.navi.SceneNaviContinueView
-            android:id="@+id/scene_navi_continue"
-            android:layout_width="@dimen/dp_410"
-            android:layout_height="@dimen/dp_120"
-            android:layout_marginStart="@dimen/dp_1460"
-            android:visibility="@{ViewModel.mNaviContinueVisibility?View.VISIBLE:View.GONE}"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
-
-        <com.fy.navi.scene.ui.navi.GuidanceSimulationView
-            android:id="@+id/navi_sim_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_950"
-            android:visibility="@{ViewModel.mNaviSim?View.VISIBLE:View.GONE}"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+        </com.android.car.ui.FocusArea>
 
     </com.fy.navi.ui.view.SkinConstraintLayout>
 

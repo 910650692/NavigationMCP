@@ -1047,4 +1047,8 @@ public class RouteFragment extends BaseFragment<FragmentRouteBinding, RouteViewM
                 new GridLayoutManager(getContext(), mSpanCount));
         mBinding.scenePoiDetailsGasStationView.poiGasOilList.setAdapter(gasStationAdapter);
     }
+
+    public View getRootViewForMFC() {
+        return  mBinding.getRoot();
+    }
 }

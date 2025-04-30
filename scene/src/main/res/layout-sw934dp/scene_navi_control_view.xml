@@ -33,7 +33,7 @@
             android:layout_height="wrap_content"
             android:paddingVertical="@dimen/dp_29"
             android:paddingHorizontal="@dimen/dp_29"
-            android:background="@drawable/bg_navi_transport_shadow">
+            android:background="@drawable/bg_small_transparent">
 
             <com.fy.navi.ui.view.SkinConstraintLayout
                 android:id="@+id/sv_exit"
@@ -69,7 +69,7 @@
             android:paddingHorizontal="@dimen/dp_29"
             android:paddingVertical="@dimen/dp_29"
             android:layout_marginStart="-38dp"
-            android:background="@drawable/bg_navi_transport_shadow"
+            android:background="@drawable/bg_small_transparent"
             app:layout_constraintBottom_toBottomOf="@id/sv_exit_container"
             app:layout_constraintStart_toEndOf="@id/sv_exit_container"
             app:layout_constraintTop_toTopOf="@id/sv_exit_container">

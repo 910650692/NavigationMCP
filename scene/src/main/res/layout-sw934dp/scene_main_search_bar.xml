@@ -17,7 +17,7 @@
         android:paddingEnd="@dimen/dp_29"
         android:paddingTop="@dimen/dp_29"
         android:paddingBottom="@dimen/dp_29"
-        android:background="@drawable/bg_search_main_tab_shadow"
+        android:background="@drawable/bg_search_shadow"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -71,6 +71,8 @@
             android:id="@+id/sub_line_view"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_1"
+            android:layout_marginStart="@dimen/dp_29"
+            android:layout_marginEnd="@dimen/dp_29"
             android:background="@color/search_top_line_view_99383839"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

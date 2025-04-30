@@ -17,7 +17,7 @@
             android:paddingTop="@dimen/dp_61"
             android:paddingBottom="@dimen/dp_69"
             android:paddingHorizontal="@dimen/dp_29"
-            android:background="@drawable/bg_setting_shadow">
+            android:background="@drawable/bg_shadow">
             <!--标题-->
             <com.fy.navi.ui.view.SkinImageView
                 clickCommand="@{ViewModel.mDrivingRecordDetailsBack}"

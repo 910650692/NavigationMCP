@@ -1,10 +1,19 @@
 package com.fy.navi.adas.bean;
 
+import com.android.utils.log.Logger;
+import com.fy.navi.service.define.bean.GeoPoint;
+import com.fy.navi.service.define.layer.refix.LayerItemRouteOdd;
+import com.fy.navi.service.define.map.MapType;
+import com.fy.navi.service.logicpaket.l2.L2Package;
+
+import java.util.ArrayList;
+
 /**
  * OddBean
  * Map provider向MFF返回的matching response的接口和数据结构
  */
 public class OddBean {
+    private static final String TAG = "OddBean";
     /**
      * matching异常状态CODE
      * 0 正常
@@ -58,5 +67,67 @@ public class OddBean {
 
     public void setResponse(OddResponse response) {
         this.response = response;
+    }
+
+    public ArrayList<LayerItemRouteOdd> toLayerItemRouteOddList() {
+        if (this.getError_code() == 0) {
+            OddResponse response = this.getResponse();
+            if (response == null) {
+                Logger.e(TAG, "response null");
+                return null;
+            }
+            ArrayList<SwitchSegment> switchSegments = response.getSwitch_segments();
+            if (switchSegments == null) {
+                Logger.e(TAG, "switchSegments null");
+                return null;
+            }
+            ArrayList<LayerItemRouteOdd> oddInfoList = new ArrayList<>();
+            for (SwitchSegment switchSegment : switchSegments) {
+                if (switchSegment == null) {
+                    continue;
+                }
+                /*
+                0 UNMATCH
+                9 sd unp
+                10 sd hnp
+                11 sd odd close
+                 */
+                int mode = switchSegment.getMode();
+                if (mode != 9 && mode != 10) {
+                    continue;
+                }
+                LayerItemRouteOdd layerItemRouteOdd = new LayerItemRouteOdd();
+                try {
+                    ArrayList<Coord> coords = switchSegment.getCoords();
+                    Coord startCoord = coords.get(0);
+                    Coord endCoord = coords.get(coords.size() - 1);
+                    layerItemRouteOdd.addGeoPoint(new GeoPoint(startCoord.getX(), startCoord.getY()));
+                    layerItemRouteOdd.addGeoPoint(new GeoPoint(endCoord.getX(), endCoord.getY()));
+                } catch (Exception e) {
+                    Logger.e(TAG, "error " + e.getMessage());
+                }
+                oddInfoList.add(layerItemRouteOdd);
+            }
+            return oddInfoList;
+        } else {
+            Logger.e(TAG, "ErrorCode = " + getError_code() + "--" + getError_message());
+            return null;
+        }
+    }
+
+    public long getPathId() {
+        if (this.getError_code() == 0) {
+            OddResponse response = this.getResponse();
+            if (response == null) {
+                Logger.e(TAG, "response null");
+                return -1;
+            }
+            long pathId = response.getPath_id();
+            Logger.e(TAG, "pathId = " + pathId);
+            return pathId;
+        } else {
+            Logger.e(TAG, "ErrorCode = " + getError_code() + "--" + getError_message());
+            return -1;
+        }
     }
 }

@@ -93,6 +93,13 @@ public class SceneNaviParallelImpl extends BaseSceneModel<SceneNaviParallelView>
         mSwitchActionType = NaviConstant.LocSwitchRoadType.LOC_SWITCH_NULL;
     }
 
+    public void showMain() {
+        mScreenView.sceneRoadSide();
+        mSwitchRoadType = NaviConstant.LocSwitchRoadType.LOC_SWITCH_MAIN_TO_SIDE;
+        mRoadMainAuxiliaryVisible.set(true);
+        updateSceneVisible(true);
+    }
+
     /**
      * 请求切换平行路
      */

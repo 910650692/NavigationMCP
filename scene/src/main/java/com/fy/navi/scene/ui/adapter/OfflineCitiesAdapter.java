@@ -52,7 +52,7 @@ public class OfflineCitiesAdapter extends RecyclerView.Adapter<OfflineCitiesAdap
     @Override
     public void onBindViewHolder(@NonNull final LimitCitiesViewHolder holder, final int position) {
         holder.mTvTitle.setText(mData.get(position).getName());
-        holder.mTvTitle.setOnClickListener(new View.OnClickListener() {
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
                 if (mListener != null) {

@@ -100,10 +100,12 @@ public class CollectResultAdapter extends RecyclerView.Adapter<CollectResultAdap
 //            holder.mResultItemBinding.itemFavoriteLine.setVisibility(View.VISIBLE);
             holder.mResultItemBinding.swipeMenuLayout.setBackground(ResourceUtils.Companion.getInstance().getDrawable(R.color.bg_route_item_select));
             holder.mResultItemBinding.stvTop.setText(ResourceUtils.Companion.getInstance().getString(R.string.dsc_cancel));
+            holder.mResultItemBinding.imgTop.setImageResource(R.drawable.img_untop_58);
         } else {
             holder.mResultItemBinding.itemFavoriteTopTag.setVisibility(View.GONE);
             holder.mResultItemBinding.swipeMenuLayout.setBackground(ResourceUtils.Companion.getInstance().getDrawable(R.color.transparent));
             holder.mResultItemBinding.stvTop.setText(ResourceUtils.Companion.getInstance().getString(R.string.favorite_item_top));
+            holder.mResultItemBinding.imgTop.setImageResource(R.drawable.img_top_pinned);
         }
         //根据UE，收藏点不需要显示距离数据
         holder.mResultItemBinding.itemFavoriteDistance.setVisibility(View.GONE);

@@ -15,12 +15,14 @@
     <com.fy.navi.ui.view.SkinConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_154"
+        android:focusable="true"
         android:background="@drawable/recycler_item_selector">
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:focusable="false"
             android:orientation="vertical"
             app:layout_constraintGuide_begin="@dimen/dp_72" />
 
@@ -31,6 +33,7 @@
             android:layout_marginStart="@dimen/dp_30"
             android:textColor="@color/search_quick_tab_view_color"
             android:textSize="@dimen/sp_30"
+            android:focusable="false"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -46,6 +49,7 @@
             android:paddingStart="@dimen/dp_10"
             android:paddingEnd="@dimen/dp_10"
             android:text="@string/st_parking_item_recommended"
+            android:focusable="false"
             android:textColor="@color/setting_preference_select"
             android:textSize="@dimen/sp_26"
             app:layout_constraintStart_toEndOf="@+id/guideline"
@@ -59,6 +63,7 @@
             android:layout_marginTop="@dimen/dp_18"
             android:gravity="center"
             android:text="@string/st_parking_item_recommended"
+            android:focusable="false"
             android:textColor="@color/poi_details_bottom_ff_00"
             android:textSize="@dimen/sp_34"
             app:layout_constraintStart_toEndOf="@+id/sktv_parking_item_recommended"
@@ -74,6 +79,7 @@
             android:gravity="center"
             android:paddingStart="@dimen/dp_10"
             android:paddingEnd="@dimen/dp_10"
+            android:focusable="false"
             android:textColor="@color/search_quick_tab_view_color"
             android:textSize="@dimen/sp_26"
             app:layout_constraintStart_toEndOf="@+id/guideline"
@@ -90,6 +96,7 @@
             android:gravity="center"
             android:paddingStart="@dimen/dp_10"
             android:paddingEnd="@dimen/dp_10"
+            android:focusable="false"
             android:textColor="@color/setting_preference_select"
             android:textSize="@dimen/sp_26"
             app:layout_constraintStart_toEndOf="@+id/sktv_parking_item_leisure_num"
@@ -106,6 +113,7 @@
             android:gravity="center"
             android:paddingStart="@dimen/dp_10"
             android:paddingEnd="@dimen/dp_10"
+            android:focusable="false"
             android:textColor="@color/search_loading_bg_80"
             android:textSize="@dimen/sp_26"
             app:layout_constraintStart_toEndOf="@+id/sktv_parking_item_sufficient_num"
@@ -118,6 +126,8 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/dp_30"
             android:minWidth="@dimen/dp_90"
+            android:focusable="true"
+            android:background="@drawable/bg_base_mfc_cadillac_bg_selector"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent">
@@ -126,6 +136,7 @@
                 android:id="@+id/iv_navi_icon"
                 android:layout_width="@dimen/dp_58"
                 android:layout_height="@dimen/dp_58"
+                android:focusable="false"
                 android:src="@drawable/img_basic_ic_navi"
                 app:layout_constraintEnd_toEndOf="@id/text_navi"
                 app:layout_constraintStart_toStartOf="@+id/text_navi"
@@ -137,6 +148,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/st_go_here"
+                android:focusable="false"
                 android:textColor="@color/search_quick_tab_view_color"
                 android:textSize="@dimen/sp_30"
                 app:layout_constraintEnd_toEndOf="parent"

@@ -730,15 +730,15 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
                 addFragment((BaseFragment) fragment, SearchFragmentFactory.createChargePriceFragment(mPoiInfoEntity));
             }
         });
-        mViewBinding.scenePoiDetailsChargingStationView.poiChargeFastLayout.setOnClickListener(v ->{
-            toReservationListView(AutoMapConstant.EquipmentType.FAST);
-        });
-        mViewBinding.scenePoiDetailsChargingStationView.poiChargeSlowLayout.setOnClickListener(v ->{
-            toReservationListView(AutoMapConstant.EquipmentType.SLOW);
-        });
-        mViewBinding.scenePoiDetailsChargingStationView.poiChargeAppointment.setOnClickListener(v -> {
-            toReservationDetailView();
-        });
+//        mViewBinding.scenePoiDetailsChargingStationView.poiChargeFastLayout.setOnClickListener(v ->{
+//            toReservationListView(AutoMapConstant.EquipmentType.FAST);
+//        });
+//        mViewBinding.scenePoiDetailsChargingStationView.poiChargeSlowLayout.setOnClickListener(v ->{
+//            toReservationListView(AutoMapConstant.EquipmentType.SLOW);
+//        });
+//        mViewBinding.scenePoiDetailsChargingStationView.poiChargeAppointment.setOnClickListener(v -> {
+//            toReservationDetailView();
+//        });
         final String imageUrl = mPoiInfoEntity.getImageUrl();
         ViewAdapterKt.loadImageUrl(mViewBinding.scenePoiDetailsChargingStationView.poiChargeImg,
                 imageUrl, R.drawable.test_pic, R.drawable.test_pic);

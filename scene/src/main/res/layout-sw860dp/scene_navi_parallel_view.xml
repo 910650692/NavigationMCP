@@ -15,6 +15,9 @@
     <com.fy.navi.ui.view.SkinConstraintLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:paddingVertical="@dimen/dp_29"
+        android:paddingHorizontal="@dimen/dp_29"
+        android:background="@drawable/bg_small_transparent"
         android:clickable="true"
         tools:visibility="visible">
 
@@ -29,8 +32,8 @@
         <com.fy.navi.ui.view.SkinView
             android:id="@+id/sv_bridge_up_down"
             clickCommand="@{naviParallel.mClickBridgeUpDown}"
-            android:layout_width="@dimen/dp_204"
-            android:layout_height="@dimen/dp_160"
+            android:layout_width="@dimen/dp_150"
+            android:layout_height="@dimen/dp_148"
             android:background="@drawable/bg_navi_btn_common"
             android:contentDescription="@string/navi_bridge_down"
             app:layout_constraintStart_toStartOf="parent"
@@ -55,7 +58,7 @@
             android:gravity="center"
             android:text="@string/navi_bridge_down"
             android:textColor="@color/navi_color_000000_70"
-            android:textSize="@dimen/sp_36"
+            android:textSize="@dimen/sp_30"
             app:layout_constraintEnd_toEndOf="@id/sv_bridge_up_down"
             app:layout_constraintStart_toStartOf="@id/sv_bridge_up_down"
             app:layout_constraintTop_toBottomOf="@id/siv_bridge_up_down" />
@@ -71,8 +74,8 @@
         <com.fy.navi.ui.view.SkinView
             android:id="@+id/sv_main_auxiliary"
             clickCommand="@{naviParallel.mClickMainAuxiliary}"
-            android:layout_width="@dimen/dp_204"
-            android:layout_height="@dimen/dp_160"
+            android:layout_width="@dimen/dp_150"
+            android:layout_height="@dimen/dp_148"
             android:layout_marginStart="@dimen/dp_20"
             android:background="@drawable/bg_navi_btn_common"
             android:contentDescription="@string/navi_road_main"
@@ -99,7 +102,7 @@
             android:gravity="center"
             android:text="@string/navi_road_auxiliary"
             android:textColor="@color/navi_color_000000_70"
-            android:textSize="@dimen/sp_36"
+            android:textSize="@dimen/sp_30"
             app:layout_constraintEnd_toEndOf="@id/sv_main_auxiliary"
             app:layout_constraintStart_toStartOf="@id/sv_main_auxiliary"
             app:layout_constraintTop_toBottomOf="@id/siv_main_auxiliary" />

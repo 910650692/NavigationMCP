@@ -14,7 +14,7 @@
         android:layout_height="@dimen/dp_772"
         android:clickable="true"
         android:padding="@dimen/dp_29"
-        android:background="@drawable/bg_setting_shadow">
+        android:background="@drawable/bg_shadow">
 
         <com.fy.navi.ui.view.SkinConstraintLayout
             android:id="@+id/car_connect_title_layout"

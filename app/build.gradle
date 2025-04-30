@@ -10,7 +10,7 @@ String apkName = "NaviApp"
 androidAopConfig {
     // enabled 为 false 切面不再起作用，默认不写为 true
     // 排除打包的实体名
-    excludePackaging 'license/NOTICE' , 'license/LICENSE.dom-software.txt' , 'license/LICENSE'
+    excludePackaging 'license/NOTICE', 'license/LICENSE.dom-software.txt', 'license/LICENSE'
     // verifyLeafExtends 是否开启验证叶子继承，默认打开，@AndroidAopMatchClassMethod 和 @AndroidAopCollectMethod 如果没有设置 LEAF_EXTENDS，可以关闭
     verifyLeafExtends false
     cutInfoJson false
@@ -27,7 +27,7 @@ android {
 
     defaultConfig {
         applicationId "com.fy.navi.hmi"
-        minSdk IS_PAD_RUN.toBoolean() ? Integer.parseInt(libs.versions.padminSdk.get()) :Integer.parseInt(libs.versions.minSdk.get())
+        minSdk IS_PAD_RUN.toBoolean() ? Integer.parseInt(libs.versions.padminSdk.get()) : Integer.parseInt(libs.versions.minSdk.get())
         targetSdk Integer.parseInt(libs.versions.targetSdk.get())
         versionCode 1
         versionName generateTime() + ".1"
@@ -55,6 +55,7 @@ android {
     getFlavorDimensionList().add(aveFlavorType)
 
     productFlavors {
+        // 为方便区分，需要和mk文件的平台架构一一对应，但是资源可以共用
         defaule {
             dimension aveFlavorType
             isDefault = true
@@ -62,57 +63,62 @@ android {
                                     logo          : "@mipmap/ic_launcher",
                                     roundLogo     : "@mipmap/ic_launcher_round",
                                     appName       : appName]
-            println("默认车型/Pad渠道配置")
+            println("Pad渠道配置")
         }
         buick {
+            // 车型平台GB 电子架构GB 屏幕30寸 硬件平台 8155
             dimension aveFlavorType
             manifestPlaceholders = [
-                    CAR_TYPE_VALUE: "Buick",
+                    CAR_TYPE_VALUE: "gbBuick",
                     logo          : "@mipmap/ic_launcher",
                     roundLogo     : "@mipmap/ic_launcher_round",
                     appName       : appName
             ]
-            println("别克车型渠道配置")
+            println("Buick车型渠道配置")
         }
         cadi {
+            // 车型平台GB 电子架构GB 屏幕34寸 硬件平台8155/8195
             dimension aveFlavorType
             manifestPlaceholders = [
-                    CAR_TYPE_VALUE: "Cadillac",
+                    CAR_TYPE_VALUE: "gbCadi",
                     logo          : "@mipmap/ic_launcher",
                     roundLogo     : "@mipmap/ic_launcher_round",
                     appName       : appName
             ]
-            println("凯迪车型渠道配置")
+            println("Cadi车型渠道配置")
         }
-        clea8255 {
+        clea_8255 {
+            // 车型平台557 电子架构local 屏幕16.3寸 硬件平台8255 目前8755尚未定义产品线
             dimension aveFlavorType
             manifestPlaceholders = [
-                    CAR_TYPE_VALUE: "NDLB",
+                    CAR_TYPE_VALUE: "clea_8255",
                     logo          : "@mipmap/ic_launcher",
                     roundLogo     : "@mipmap/ic_launcher_round",
                     appName       : appName
             ]
-            println("5578255车型渠道配置")
+            println("557-8255车型渠道配置")
         }
-        clea8775 {
+        clea_local_8155 {
+            // 车型平台NDLB和NCXB 电子架构local 屏幕15.6寸 硬件平台8155
             dimension aveFlavorType
             manifestPlaceholders = [
-                    CAR_TYPE_VALUE: "557",
+                    CAR_TYPE_VALUE: "clea_local_8155",
                     logo          : "@mipmap/ic_launcher",
                     roundLogo     : "@mipmap/ic_launcher_round",
                     appName       : appName
             ]
-            println("5578775车型渠道配置")
+            println("ndnc8155车型渠道配置")
         }
-        ndnc8155 {
+        clea_8775 {
+            // 车型平台NDLB和NCXB 电子架构local 屏幕15.6寸 硬件平台8775
             dimension aveFlavorType
             manifestPlaceholders = [
-                    CAR_TYPE_VALUE: "NCXB",
+                    CAR_TYPE_VALUE: "clea_8775",
                     logo          : "@mipmap/ic_launcher",
                     roundLogo     : "@mipmap/ic_launcher_round",
                     appName       : appName
             ]
-            println("NDNC8155车型渠道配置")
+            println("ndnc8775车型渠道配置")
         }
     }
 
@@ -162,20 +168,20 @@ android {
             res.srcDirs = ['src_cadillac/main/res']
             println("打包凯迪车型资源")
         }
-        clea8255 {
+        clea_8255 {
             java.srcDirs = ['src_clea_8255/main/java']
             res.srcDirs = ['src_clea_8255/main/res']
-            println("打包clea8255车型资源")
+            println("打包5578255车型资源")
         }
-        clea8775 {
+        clea_local_8155 {
+            java.srcDirs = ['src_clea_8155/main/java']
+            res.srcDirs = ['src_clea_8155/main/res']
+            println("打包NDNC8155车型资源")
+        }
+        clea_8775 {
             java.srcDirs = ['src_clea_8775/main/java']
             res.srcDirs = ['src_clea_8775/main/res']
-            println("打包clea8775车型资源")
-        }
-        ndnc8155 {
-            java.srcDirs = ['src_nd_nc/main/java']
-            res.srcDirs = ['src_nd_nc/main/res']
-            println("打包NDNC8155车型资源")
+            println("打包NDNC8775车型资源")
         }
     }
 
@@ -188,16 +194,14 @@ android {
                 apkName = "SGMNavigation-buick"
             } else if (flavorName == "cadi") {
                 apkName = "SGMNavigation-cadi"
-            } else if (flavorName == "clea8255") {
+            } else if (flavorName == "clea_8255") {
                 apkName = "SGMNavigation-clea8255"
-            } else if (flavorName == "clea8775") {
-                apkName = "SGMNavigation-clea8775"
-            } else if (flavorName == "ndnc8155") {
+            } else if (flavorName == "clea_local_8155") {
                 apkName = "SGMNavigation-ndnc8155"
-            } else if (flavorName == "ndnc8775") {
+            } else if (flavorName == "clea_8775") {
                 apkName = "SGMNavigation-ndnc8775"
             } else {
-                apkName = "SGMNavigation-pad"
+                apkName = "SGMNavigation"
             }
             output.outputFileName = "${apkName}.apk"
         }

@@ -17,12 +17,23 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
-
-        <com.fy.navi.scene.ui.search.SceneTerminalParkingListView
-            android:id="@+id/scene_terminal_parking_list_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:layoutType="scene_search_result_fragment" />
+        <!--MFC___FocusParkingView-->
+        <com.android.car.ui.FocusParkingView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <!--MFC___Map FocusArea-->
+        <com.android.car.ui.FocusArea
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:defaultFocusOverridesHistory="true"
+            app:wrapAround="true">
+            <com.fy.navi.scene.ui.search.SceneTerminalParkingListView
+                android:id="@+id/scene_terminal_parking_list_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:layoutType="scene_search_result_fragment" />
+        </com.android.car.ui.FocusArea>
     </com.fy.navi.ui.view.SkinLinearLayout>
 
 </layout>

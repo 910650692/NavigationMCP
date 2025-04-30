@@ -13,7 +13,7 @@
         android:layout_height="@dimen/dp_772"
         android:clickable="true"
         android:padding="@dimen/dp_29"
-        android:background="@drawable/bg_setting_shadow"
+        android:background="@drawable/bg_shadow"
         android:orientation="vertical">
         <!--未登录有数据view-->
         <com.fy.navi.ui.view.SkinLinearLayout

@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
     <item>
         <bitmap
-            android:src="@drawable/bg_transparent_night_shadow"
+            android:src="@drawable/bg_transparent_shadow"
             android:gravity="fill"
             tools:ignore="ResourceCycle" />
     </item>

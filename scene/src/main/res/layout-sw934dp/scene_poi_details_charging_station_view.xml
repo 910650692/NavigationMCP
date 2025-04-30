@@ -284,6 +284,7 @@
                 android:layout_marginEnd="@dimen/dp_24"
                 android:maxLines="1"
                 android:text="@string/charge_img_confirm"
+                android:visibility="gone"
                 android:textColor="@color/bg_route_big_window_select"
                 android:textSize="@dimen/sp_30"
                 app:layout_constraintBaseline_toBaselineOf="@+id/poi_charge_img_title"

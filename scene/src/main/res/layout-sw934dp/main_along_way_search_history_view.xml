@@ -14,9 +14,9 @@
         android:layout_height="match_parent"
         android:paddingStart="@dimen/dp_29"
         android:paddingEnd="@dimen/dp_29"
-        android:paddingTop="@dimen/dp_60"
-        android:paddingBottom="@dimen/dp_60"
-        android:background="@drawable/bg_search_main_tab_shadow"
+        android:paddingTop="@dimen/dp_29"
+        android:paddingBottom="@dimen/dp_29"
+        android:background="@drawable/bg_search_shadow"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 

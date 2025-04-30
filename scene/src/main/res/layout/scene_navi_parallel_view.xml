@@ -15,6 +15,9 @@
     <com.fy.navi.ui.view.SkinConstraintLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:paddingVertical="@dimen/dp_29"
+        android:paddingHorizontal="@dimen/dp_29"
+        android:background="@drawable/bg_small_transparent"
         android:clickable="true"
         tools:visibility="visible">
 
@@ -39,9 +42,9 @@
 
         <com.fy.navi.ui.view.SkinImageView
             android:id="@+id/siv_bridge_up_down"
-            android:layout_width="@dimen/dp_58"
-            android:layout_height="@dimen/dp_58"
-            android:layout_marginTop="@dimen/dp_19"
+            android:layout_width="@dimen/dp_68"
+            android:layout_height="@dimen/dp_68"
+            android:layout_marginTop="@dimen/dp_16"
             android:background="@drawable/img_parallel_bridge_down"
             app:layout_constraintEnd_toEndOf="@id/sv_bridge_up_down"
             app:layout_constraintStart_toStartOf="@id/sv_bridge_up_down"
@@ -51,7 +54,7 @@
             android:id="@+id/stv_bridge_up_down"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_4"
+            android:layout_marginTop="@dimen/dp_3"
             android:gravity="center"
             android:text="@string/navi_bridge_down"
             android:textColor="@color/navi_color_000000_70"
@@ -83,9 +86,9 @@
 
         <com.fy.navi.ui.view.SkinImageView
             android:id="@+id/siv_main_auxiliary"
-            android:layout_width="@dimen/dp_58"
-            android:layout_height="@dimen/dp_58"
-            android:layout_marginTop="@dimen/dp_19"
+            android:layout_width="@dimen/dp_68"
+            android:layout_height="@dimen/dp_68"
+            android:layout_marginTop="@dimen/dp_16"
             android:background="@drawable/img_parallel_road_auxiliary"
             app:layout_constraintEnd_toEndOf="@id/sv_main_auxiliary"
             app:layout_constraintStart_toStartOf="@id/sv_main_auxiliary"
@@ -95,7 +98,7 @@
             android:id="@+id/stv_main_auxiliary"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_4"
+            android:layout_marginTop="@dimen/dp_3"
             android:gravity="center"
             android:text="@string/navi_road_auxiliary"
             android:textColor="@color/navi_color_000000_70"

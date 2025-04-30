@@ -2,6 +2,7 @@
 <com.fy.navi.ui.view.SkinConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/fl_trip_lanes_resources"
+    android:focusable="false"
     android:layout_width="@dimen/dp_74"
     android:layout_height="@dimen/dp_74">
 
@@ -9,6 +10,7 @@
         android:id="@+id/siv_drive_way_arrow"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:focusable="false"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

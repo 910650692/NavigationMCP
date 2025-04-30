@@ -12,7 +12,8 @@
         android:layout_width="@dimen/dp_176"
         android:layout_height="@dimen/dp_76"
         android:layout_marginTop="@dimen/dp_16"
-        android:background="@drawable/bg_limit_city_button">
+        android:focusable="true"
+        android:background="@drawable/bg_limit_city_button_selector">
 
         <com.fy.navi.ui.view.SkinTextView
             android:id="@+id/tv_title"
@@ -24,6 +25,7 @@
             android:gravity="center"
             android:maxLines="1"
             android:ellipsize="end"
+            android:focusable="false"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"

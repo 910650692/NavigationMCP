@@ -10,23 +10,25 @@
     </data>
 
     <com.fy.navi.ui.view.SkinLinearLayout
-        android:layout_width="@dimen/dp_640"
+        android:layout_width="@dimen/dp_820"
         android:layout_height="match_parent"
         android:orientation="vertical"
+        android:focusable="false"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <include
             android:id="@+id/search_text_bar_view"
             layout="@layout/search_edit_bar_view"
-            android:layout_width="@dimen/dp_640"
-            android:layout_height="@dimen/dp_102" />
+            android:layout_width="@dimen/dp_820"
+            android:layout_height="@dimen/dp_152" />
 
         <com.fy.navi.ui.view.SkinRecyclerView
             android:id="@+id/sk_rcv_quick"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_610"
+            android:layout_height="@dimen/dp_828"
             android:layout_marginTop="@dimen/dp_20"
+            android:focusable="false"
             android:background="@drawable/bg_search_main_tab"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -35,8 +37,10 @@
         <com.fy.navi.ui.view.SkinRecyclerView
             android:id="@+id/sk_rcv_suggestion"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_610"
+            android:layout_height="@dimen/dp_828"
             android:layout_marginTop="@dimen/dp_24"
+            android:focusable="false"
+            android:visibility="gone"
             android:background="@drawable/bg_search_main_tab"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -50,6 +54,7 @@
             android:textColor="@color/search_color_ffffff_70"
             android:textSize="@dimen/sp_30"
             android:visibility="gone"
+            android:focusable="false"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

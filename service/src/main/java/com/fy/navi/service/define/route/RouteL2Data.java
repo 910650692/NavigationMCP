@@ -207,6 +207,8 @@ public class RouteL2Data {
         private Boolean mHasParallel;
         @SerializedName("direction")
         private Integer mDirection;
+        @SerializedName("laneNum")
+        private Integer mLaneNum;
     }
 
     @NoArgsConstructor

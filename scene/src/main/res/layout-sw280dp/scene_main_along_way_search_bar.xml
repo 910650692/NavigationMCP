@@ -11,9 +11,10 @@
 
     <com.fy.navi.ui.view.SkinConstraintLayout
         android:layout_width="@dimen/dp_820"
-        android:layout_height="@dimen/dp_350"
+        android:layout_height="@dimen/dp_354"
         android:background="@drawable/bg_search_main_tab"
         app:layout_constraintStart_toStartOf="parent"
+        android:focusable="false"
         app:layout_constraintTop_toTopOf="parent">
 
         <com.fy.navi.ui.view.SkinConstraintLayout
@@ -21,6 +22,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_151"
             android:layout_marginStart="@dimen/dp_16"
+            android:focusable="false"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
@@ -30,6 +32,8 @@
                 android:layout_width="@dimen/dp_96"
                 android:layout_height="@dimen/dp_96"
                 android:src="@drawable/img_basic_ic_back"
+                android:focusable="true"
+                android:background="@drawable/bg_base_mfc_cadillac_bg_selector"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -40,6 +44,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_14"
                 android:background="@null"
+                android:focusable="true"
                 android:hint="@string/main_search_hint"
                 android:maxLines="1"
                 android:textColor="@color/search_deep_text_day"
@@ -56,6 +61,8 @@
                 android:layout_height="@dimen/dp_96"
                 android:layout_marginEnd="@dimen/dp_20"
                 android:src="@mipmap/icon_search40"
+                android:focusable="true"
+                android:background="@drawable/bg_base_mfc_cadillac_bg_selector"
                 android:visibility="invisible"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -66,6 +73,7 @@
             android:id="@+id/sub_line_view"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_1"
+            android:focusable="false"
             android:background="@color/search_top_line_view_99383839"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -74,6 +82,7 @@
         <com.fy.navi.ui.view.SkinConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:focusable="false"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/sub_line_view">
 
@@ -81,6 +90,8 @@
                 android:id="@+id/scl_gas_station"
                 clickCommand="@{() -> MainSearchView.onClickQuickSearch(0)}"
                 android:layout_width="@dimen/dp_0"
+                android:focusable="true"
+                android:background="@drawable/bg_base_mfc_cadillac_bg_selector"
                 android:layout_height="wrap_content"
                 app:layout_constraintWidth_percent="0.25">
 
@@ -89,6 +100,7 @@
                     android:layout_width="@dimen/dp_96"
                     android:layout_height="@dimen/dp_96"
                     android:layout_marginTop="@dimen/dp_25"
+                    android:focusable="false"
                     android:src="@drawable/img_basic_ic_gas_station"
                     app:layout_constraintEnd_toEndOf="@+id/scl_gas_station"
                     app:layout_constraintStart_toStartOf="@id/scl_gas_station"
@@ -98,6 +110,7 @@
                     android:id="@+id/tv_gas_station"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:focusable="false"
                     android:text="@string/st_quick_search_station"
                     android:textColor="@color/search_quick_tab_view_color"
                     android:textSize="@dimen/sp_38"
@@ -111,6 +124,8 @@
                 clickCommand="@{() -> MainSearchView.onClickQuickSearch(1)}"
                 android:layout_width="@dimen/dp_0"
                 android:layout_height="wrap_content"
+                android:focusable="true"
+                android:background="@drawable/bg_base_mfc_cadillac_bg_selector"
                 app:layout_constraintLeft_toRightOf="@+id/scl_gas_station"
                 app:layout_constraintTop_toBottomOf="@+id/sub_line_view"
                 app:layout_constraintWidth_percent="0.25">
@@ -120,6 +135,7 @@
                     android:layout_width="@dimen/dp_96"
                     android:layout_height="@dimen/dp_96"
                     android:layout_marginTop="@dimen/dp_25"
+                    android:focusable="false"
                     android:src="@drawable/img_basic_ic_pull_up"
                     app:layout_constraintEnd_toEndOf="@+id/scl_pull_up"
                     app:layout_constraintStart_toStartOf="@id/scl_pull_up"
@@ -130,6 +146,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/st_quick_search_parking"
+                    android:focusable="false"
                     android:textColor="@color/search_quick_tab_view_color"
                     android:textSize="@dimen/sp_38"
                     app:layout_constraintEnd_toEndOf="@+id/scl_pull_up"
@@ -142,6 +159,8 @@
                 clickCommand="@{() -> MainSearchView.onClickQuickSearch(2)}"
                 android:layout_width="@dimen/dp_0"
                 android:layout_height="wrap_content"
+                android:focusable="true"
+                android:background="@drawable/bg_base_mfc_cadillac_bg_selector"
                 app:layout_constraintLeft_toRightOf="@+id/scl_pull_up"
                 app:layout_constraintTop_toBottomOf="@+id/sub_line_view"
                 app:layout_constraintWidth_percent="0.25">
@@ -151,6 +170,7 @@
                     android:layout_width="@dimen/dp_96"
                     android:layout_height="@dimen/dp_96"
                     android:layout_marginTop="@dimen/dp_25"
+                    android:focusable="false"
                     android:src="@drawable/img_basic_ic_gourmet"
                     app:layout_constraintEnd_toEndOf="@+id/scl_gourmet"
                     app:layout_constraintStart_toStartOf="@id/scl_gourmet"
@@ -161,6 +181,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/st_quick_search_food"
+                    android:focusable="false"
                     android:textColor="@color/search_quick_tab_view_color"
                     android:textSize="@dimen/sp_38"
                     app:layout_constraintEnd_toEndOf="@+id/scl_gourmet"
@@ -173,6 +194,8 @@
                 clickCommand="@{() -> MainSearchView.onClickQuickSearch(3)}"
                 android:layout_width="@dimen/dp_0"
                 android:layout_height="wrap_content"
+                android:focusable="true"
+                android:background="@drawable/bg_base_mfc_cadillac_bg_selector"
                 app:layout_constraintLeft_toRightOf="@+id/scl_gourmet"
                 app:layout_constraintTop_toBottomOf="@+id/sub_line_view"
                 app:layout_constraintWidth_percent="0.25">
@@ -182,6 +205,7 @@
                     android:layout_width="@dimen/dp_96"
                     android:layout_height="@dimen/dp_96"
                     android:layout_marginTop="@dimen/dp_25"
+                    android:focusable="false"
                     android:src="@drawable/img_basic_ic_car_washing"
                     app:layout_constraintEnd_toEndOf="@+id/scl_car_washing"
                     app:layout_constraintStart_toStartOf="@id/scl_car_washing"
@@ -192,6 +216,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/st_quick_search_car_washing"
+                    android:focusable="false"
                     android:textColor="@color/search_quick_tab_view_color"
                     android:textSize="@dimen/sp_38"
                     app:layout_constraintEnd_toEndOf="@+id/scl_car_washing"

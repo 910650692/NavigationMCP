@@ -55,7 +55,8 @@
             android:layout_marginEnd="@dimen/dp_20"
             android:src="@drawable/img_poi_edit_delete"
             android:visibility="invisible"
-            android:focusable="false"
+            android:focusable="true"
+            android:background="@drawable/bg_base_mfc_cadillac_bg_selector"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />

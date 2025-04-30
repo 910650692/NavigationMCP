@@ -1493,7 +1493,8 @@ public class RouteAdapterImplHelper {
         data.setMPathID((int) pathInfo.getPathID());
         final long segmentCount = pathInfo.getSegmentCount();
         int linkCnt = 0;
-        int pntCnt = 0;
+        int forCnt = 0;
+        int startIndex = 0;
         final List<RouteL2Data.LinksDTO> linksDTOS = new ArrayList<>();
         final List<RouteL2Data.PntsDTO> pntsDTOS = new ArrayList<>();
         int firstIcon = 0;
@@ -1502,12 +1503,9 @@ public class RouteAdapterImplHelper {
                 //linkCnt
                 final long linkCount = pathInfo.getSegmentInfo(segmentIndex).getLinkCount();
                 linkCnt += linkCount;
-                int startIndex = -1;
                 if (linkCnt > 0) {
                     for (int linkIndex = 0; linkIndex < linkCount; linkIndex++) {
                         final LinkInfo linkInfo = pathInfo.getSegmentInfo(segmentIndex).getLinkInfo(linkIndex);
-                        //linkCnt
-                        pntCnt += linkInfo.getPoints().size();
                         //linksDTOS
                         final RouteL2Data.LinksDTO dto = new RouteL2Data.LinksDTO();
                         // TrafficLightsDTO
@@ -1526,13 +1524,18 @@ public class RouteAdapterImplHelper {
                         dto.setMAssistantAction(linkInfo.getAssistantAction());
                         dto.setMHasParallel(linkInfo.hasParallelRoad());
                         dto.setMDirection((int) linkInfo.getRoadDirection());
-                        dto.setMPntBegIdx(startIndex + 1);
+                        dto.setMLaneNum((int) linkInfo.getLaneNum());
+                        dto.setMPntBegIdx(startIndex);
                         dto.setMPntCnt(linkInfo.getPoints().size());
-                        startIndex += linkInfo.getPoints().size();
+                        startIndex += linkInfo.getPoints().size() - 1;
                         linksDTOS.add(dto);
                         final ArrayList<Coord2DInt32> points = linkInfo.getPoints();
-                        if (points.size() > 0) {
-                            for (int poiIndex = 0; poiIndex < points.size(); poiIndex++) {
+                        if (points.size() > 1) {
+                            if (forCnt != 0) {
+                                points.remove(0);
+                            }
+                            forCnt++;
+                            for (int poiIndex = 0 ;poiIndex < points.size(); poiIndex++) {
                                 final RouteL2Data.PntsDTO pnt = new RouteL2Data.PntsDTO();
                                 pnt.setMX(points.get(poiIndex).lon / 3600000.0);
                                 pnt.setMY(points.get(poiIndex).lat / 3600000.0);
@@ -1547,9 +1550,9 @@ public class RouteAdapterImplHelper {
         }
 
         data.setMLinkCnt(linkCnt);
-        data.setMPntCnt(pntCnt);
         data.setMLinks(linksDTOS);
         data.setMPnts(pntsDTOS);
+        data.setMPntCnt(pntsDTOS.size());
         data.setMGuideGroups(getGuideGroupsDTO(pathInfo, firstIcon));
         data.setMTrafficLights(getTrafficLightsDTOS(pathInfo));
         data.setMRestTollGateInfos(getRestTollGateInfosDTOS(pathInfo));

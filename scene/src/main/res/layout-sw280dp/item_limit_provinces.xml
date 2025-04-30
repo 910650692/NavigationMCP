@@ -11,6 +11,7 @@
     <com.fy.navi.ui.view.SkinConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:focusable="false"
         android:layout_marginBottom="@dimen/dp_30">
 
         <com.fy.navi.ui.view.SkinTextView
@@ -19,6 +20,7 @@
             android:layout_height="wrap_content"
             android:textColor="@color/main_map_limit_title_color"
             android:textSize="@dimen/sp_34"
+            android:focusable="false"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="周边城市"/>
@@ -30,12 +32,15 @@
             android:src="@drawable/img_limit_up"
             app:layout_constraintBottom_toBottomOf="@id/tv_title"
             app:layout_constraintEnd_toEndOf="parent"
+            android:focusable="true"
+            android:background="@drawable/bg_base_mfc_cadillac_bg_selector"
             app:layout_constraintTop_toTopOf="@id/tv_title" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_view"
             android:layout_width="match_parent"
             android:layout_height="0dp"
+            android:focusable="false"
             android:numColumns="3"
             app:layout_constraintTop_toBottomOf="@+id/tv_title" />
 

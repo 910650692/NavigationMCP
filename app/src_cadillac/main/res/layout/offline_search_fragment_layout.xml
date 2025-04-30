@@ -17,12 +17,23 @@
         android:layout_height="match_parent"
         android:clickable="true"
         android:orientation="vertical">
-
-        <com.fy.navi.scene.ui.search.OfflineSearchPoiList
-            android:id="@+id/offline_city_list"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:layoutType="scene_sug_search_fragment" />
+        <!--MFC___FocusParkingView-->
+        <com.android.car.ui.FocusParkingView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <!--MFC___Map FocusArea-->
+        <com.android.car.ui.FocusArea
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:defaultFocusOverridesHistory="true"
+            app:wrapAround="true">
+            <com.fy.navi.scene.ui.search.OfflineSearchPoiList
+                android:id="@+id/offline_city_list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:layoutType="scene_sug_search_fragment" />
+        </com.android.car.ui.FocusArea>
     </com.fy.navi.ui.view.SkinLinearLayout>
 
 </layout>

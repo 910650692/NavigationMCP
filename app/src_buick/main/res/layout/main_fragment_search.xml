@@ -28,7 +28,7 @@
         <com.fy.navi.scene.ui.search.SceneMainSearchBottomPartView
             android:id="@+id/scene_nested_scroll_view"
             android:layout_width="@dimen/dp_698"
-            android:layout_height="match_parent"
-            android:layout_marginTop="-40dp" />
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_m_38" />
     </com.fy.navi.ui.view.SkinLinearLayout>
 </layout>

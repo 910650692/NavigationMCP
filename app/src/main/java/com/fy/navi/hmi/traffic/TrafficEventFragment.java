@@ -33,7 +33,7 @@ import java.util.Objects;
  * Date: 2025/2/27
  * Description: [在这里描述文件功能]
  */
-public class TrafficEventFragment extends BaseFragment<FragmentTrafficDetailBinding, BaseTrafficViewModel> {
+public class TrafficEventFragment extends BaseFragment<FragmentTrafficDetailBinding, TrafficViewModel> {
     private static final String TAG = "TrafficEventFragment";
     private Animation animation;
 

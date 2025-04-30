@@ -16,7 +16,7 @@
         android:layout_height="wrap_content"
         android:paddingHorizontal="@dimen/dp_24"
         android:paddingVertical="@dimen/dp_24"
-        android:background="@drawable/bg_navi_transport_shadow">
+        android:background="@drawable/bg_transparent_shadow">
 
         <com.fy.navi.ui.view.SkinConstraintLayout
             android:layout_width="@dimen/dp_640"

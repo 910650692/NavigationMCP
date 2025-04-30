@@ -22,13 +22,13 @@
 
         <com.fy.navi.ui.view.SkinConstraintLayout
             android:layout_width="@dimen/dp_698"
-            android:layout_height="@dimen/dp_702"
+            android:layout_height="@dimen/dp_640"
             android:paddingStart="@dimen/dp_29"
             android:paddingEnd="@dimen/dp_29"
-            android:paddingTop="@dimen/dp_60"
-            android:paddingBottom="@dimen/dp_60"
-            android:layout_marginTop="-40dp"
-            android:background="@drawable/bg_search_main_tab_shadow">
+            android:paddingTop="@dimen/dp_29"
+            android:paddingBottom="@dimen/dp_29"
+            android:layout_marginTop="@dimen/dp_m_38"
+            android:background="@drawable/bg_search_shadow">
 
             <com.fy.navi.ui.view.SkinRecyclerView
                 android:id="@+id/rcv_collect"

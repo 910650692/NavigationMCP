@@ -29,7 +29,7 @@
                 android:layout_height="wrap_content"
                 android:paddingHorizontal="@dimen/dp_29"
                 android:paddingVertical="@dimen/dp_29"
-                android:background="@drawable/bg_navi_transport_shadow"
+                android:background="@drawable/bg_big_transparent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
@@ -159,9 +159,8 @@
             <!--导航路线偏好-->
             <com.fy.navi.scene.ui.navi.SceneNaviPreferenceView
                 android:id="@+id/scene_navi_preference"
-                android:layout_width="@dimen/dp_640"
-                android:layout_height="@dimen/dp_366"
-                android:background="@drawable/bg_navi_btn_common"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:visibility="@{ViewModel.mNaviPreferenceVisibility?View.VISIBLE:View.GONE}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />
@@ -185,21 +184,29 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/scl_top_container" />
             <!--当前路名-->
-            <com.fy.navi.scene.ui.navi.view.ButtonText
-                android:id="@+id/stv_navi_route_name"
+            <com.fy.navi.ui.view.SkinConstraintLayout
                 android:layout_width="wrap_content"
-                android:layout_height="@dimen/dp_92"
-                android:layout_marginStart="@dimen/dp_340"
-                android:background="@drawable/bg_navi_control"
-                android:clickable="false"
-                android:gravity="center"
-                android:paddingHorizontal="@dimen/dp_26"
-                android:textColor="@color/common_title_purple_color"
-                android:textSize="@dimen/sp_34"
-                android:visibility="@{ViewModel.mNaviRouteNameVisibility?View.VISIBLE:View.GONE}"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="@dimen/dp_29"
+                android:paddingVertical="@dimen/dp_29"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@id/scl_top_container"
-                tools:text="申港大道" />
+                android:background="@drawable/bg_small_transparent"
+                android:layout_marginStart="@dimen/dp_607"
+                android:visibility="@{ViewModel.mNaviRouteNameVisibility?View.VISIBLE:View.GONE}">
+                <com.fy.navi.scene.ui.navi.view.ButtonText
+                    android:id="@+id/stv_navi_route_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/dp_92"
+                    android:background="@drawable/bg_navi_control"
+                    android:clickable="false"
+                    android:gravity="center"
+                    android:paddingHorizontal="@dimen/dp_26"
+                    android:textColor="@color/common_title_purple_color"
+                    android:textSize="@dimen/sp_34"
+                    tools:text="申港大道" />
+            </com.fy.navi.ui.view.SkinConstraintLayout>
+
             <!--最后一公里-->
             <com.fy.navi.scene.ui.navi.SceneNaviLastMileView
                 android:id="@+id/scene_navi_last_mile"
@@ -262,7 +269,8 @@
             android:id="@+id/scene_navi_continue"
             android:layout_width="@dimen/dp_310"
             android:layout_height="@dimen/dp_92"
-            android:layout_marginStart="@dimen/dp_920"
+            android:layout_marginStart="@dimen/dp_1186"
+            android:layout_marginBottom="@dimen/dp_29"
             android:visibility="@{ViewModel.mNaviContinueVisibility?View.VISIBLE:View.GONE}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent" />

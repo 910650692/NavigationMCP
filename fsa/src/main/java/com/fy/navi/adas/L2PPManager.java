@@ -2,12 +2,11 @@ package com.fy.navi.adas;
 
 import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
-import com.fy.navi.adas.bean.Coord;
 import com.fy.navi.adas.bean.OddBean;
-import com.fy.navi.adas.bean.OddResponse;
-import com.fy.navi.adas.bean.SwitchSegments;
 import com.fy.navi.fsa.R;
 import com.fy.navi.service.AppContext;
+import com.fy.navi.service.define.layer.refix.LayerItemRouteOdd;
+import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.navi.L2NaviBean;
 import com.fy.navi.service.define.navi.PlayModule;
 import com.fy.navi.service.define.navi.SoundInfoEntity;
@@ -29,6 +28,7 @@ import com.gm.cn.adassdk.proto.ADUProto;
 import com.google.protobuf.InvalidProtocolBufferException;
 
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 
 /**
  * L2++ 管理类
@@ -48,6 +48,7 @@ public final class L2PPManager {
 
     /**
      * 获取L2PPManager实例
+     *
      * @return
      */
     public static L2PPManager getInstance() {
@@ -64,7 +65,8 @@ public final class L2PPManager {
     /**
      * 防止构造函数创建
      */
-    private L2PPManager() {}
+    private L2PPManager() {
+    }
 
     /**
      * 算路观察者
@@ -129,49 +131,19 @@ public final class L2PPManager {
             final String jsonString = new String(bytes, StandardCharsets.UTF_8);
             JsonLog.saveJsonToCache(jsonString, "odd.json");
             Logger.d(TAG, "onDataCallback: oddBean = " + jsonString);
+            OddBean oddBean = null;
             try {
-                final OddBean oddBean = GsonUtils.fromJson(jsonString, OddBean.class);
-                if (oddBean == null) {
-                    Logger.e(TAG, "onDataCallback: oddBean null");
-                    return;
-                }
-                if (oddBean.getError_code() == 0) {
-                    OddResponse response = oddBean.getResponse();
-                    if (response == null) {
-                        Logger.e(TAG, "onDataCallback: response null");
-                        return;
-                    }
-                    if (response.getStatus_code() == 0) {
-                        SwitchSegments[] switchSegments = response.getSwitch_segments();
-                        if (switchSegments == null) {
-                            Logger.e(TAG, "onDataCallback: switchSegments null");
-                            return;
-                        }
-                        for (SwitchSegments switchSegment : switchSegments) {
-                            if (switchSegment == null) {
-                                continue;
-                            }
-                            /*
-                            0 UNMATCH
-                            9 sd unp
-                            10 sd hnp
-                            11 sd odd close
-                             */
-                            int mode = switchSegment.getMode();
-                            if (mode == 9 || mode == 10) {
-                                // TODO nop扎标
-                            }
-                            Coord[] coords = switchSegment.getCoords();
-                        }
-                    } else {
-                        Logger.e(TAG, "onDataCallback: StatusCode = " + response.getStatus_code() + "--" + response.getMessage());
-                    }
-                } else {
-                    Logger.e(TAG, "onDataCallback: ErrorCode = " + oddBean.getError_code() + "--" + oddBean.getError_message());
-                }
+                oddBean = GsonUtils.fromJson(jsonString, OddBean.class);
             } catch (Exception e) {
                 Logger.e(TAG, "onDataCallback: fromJson error", e);
             }
+            if (oddBean == null) {
+                Logger.e(TAG, "onDataCallback: oddBean null");
+                return;
+            }
+            ArrayList<LayerItemRouteOdd> layerItemRouteOddList = oddBean.toLayerItemRouteOddList();
+            long pathId = oddBean.getPathId();
+            L2Package.getInstance().updateOddInfo(MapType.MAIN_SCREEN_MAIN_MAP, layerItemRouteOddList, pathId);
         }
     };
 

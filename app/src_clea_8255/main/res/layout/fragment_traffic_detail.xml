@@ -14,7 +14,7 @@
 
         <variable
             name="ViewModel"
-            type="com.fy.navi.hmi.traffic.BaseTrafficViewModel" />
+            type="com.fy.navi.hmi.traffic.TrafficViewModel" />
     </data>
 
     <com.fy.navi.ui.view.SkinConstraintLayout

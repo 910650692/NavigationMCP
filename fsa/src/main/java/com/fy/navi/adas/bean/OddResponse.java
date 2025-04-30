@@ -1,111 +1,114 @@
 package com.fy.navi.adas.bean;
 
-public class OddResponse {
-    /**
-     * matching接口版本
-     */
-    private String api_version;
-    /**
-     * 车端数据catalog
-     */
-    private String catalog_name;
-    /**
-     * DDLD landtopo数据版本
-     */
-    private String landtopo_data_version;
-    /**
-     * 异常CODE对应的信息，正常为空
-     */
-    private String message;//错误信息
-    /**
-     * 云端算路异常状态CODE
-     * 0 正常，请求版本与云端数据版本一致
-     * 1 错误，请求版本与云端数据版本不一致
-     * 2 错误，请求的catalog不存在或不支持云端算路服务
-     * 3 没有权限
-     * 4 mode不正确
-     * 5 请求体异常
-     * 6 服务内部异常
-     * 502  odd close获取失败
-     * 503 冷加载地图获取失败
-     */
-    private int status_code;//状态码
-    /**
-     * matching服务序号，标识云端匹配算路请求唯一ID
-     */
-    private String uuid;//uuid
-    /**
-     * 车端数据version
-     */
-    private int version;
-    /**
-     * 基于SD的道路matching类型分段
-     *
-     * 一条路径线由N个段组成，每个段由N个链路组成，每个链路由N个点组成
-     */
-    private SwitchSegments[] switch_segments;
+import java.util.ArrayList;
 
-    public String getApi_version() {
-        return api_version;
+class OddResponse {
+    private EndPoi endPoi;
+    private String engineVer;
+    private ArrayList<GuideGroup> guideGroups;
+    private InterfaceMeta interfaceMeta;
+    private int linkCnt;
+    private ArrayList<Link> links;
+    private long path_id;
+    private int pntCnt;
+    private ArrayList<Pnt> pnts;
+    private String sdkVer;
+    private ArrayList<SwitchSegment> switch_segments;
+    private ArrayList<TrafficLight> trafficLights;
+
+    public EndPoi getEndPoi() {
+        return endPoi;
     }
 
-    public void setApi_version(String api_version) {
-        this.api_version = api_version;
+    public void setEndPoi(EndPoi endPoi) {
+        this.endPoi = endPoi;
     }
 
-    public String getCatalog_name() {
-        return catalog_name;
+    public String getEngineVer() {
+        return engineVer;
     }
 
-    public void setCatalog_name(String catalog_name) {
-        this.catalog_name = catalog_name;
+    public void setEngineVer(String engineVer) {
+        this.engineVer = engineVer;
     }
 
-    public String getLandtopo_data_version() {
-        return landtopo_data_version;
+    public ArrayList<GuideGroup> getGuideGroups() {
+        return guideGroups;
     }
 
-    public void setLandtopo_data_version(String landtopo_data_version) {
-        this.landtopo_data_version = landtopo_data_version;
+    public void setGuideGroups(ArrayList<GuideGroup> guideGroups) {
+        this.guideGroups = guideGroups;
     }
 
-    public String getMessage() {
-        return message;
+    public InterfaceMeta getInterfaceMeta() {
+        return interfaceMeta;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
+    public void setInterfaceMeta(InterfaceMeta interfaceMeta) {
+        this.interfaceMeta = interfaceMeta;
     }
 
-    public int getStatus_code() {
-        return status_code;
+    public int getLinkCnt() {
+        return linkCnt;
     }
 
-    public void setStatus_code(int status_code) {
-        this.status_code = status_code;
+    public void setLinkCnt(int linkCnt) {
+        this.linkCnt = linkCnt;
     }
 
-    public String getUuid() {
-        return uuid;
+    public ArrayList<Link> getLinks() {
+        return links;
     }
 
-    public void setUuid(String uuid) {
-        this.uuid = uuid;
+    public void setLinks(ArrayList<Link> links) {
+        this.links = links;
     }
 
-    public int getVersion() {
-        return version;
+    public long getPath_id() {
+        return path_id;
     }
 
-    public void setVersion(int version) {
-        this.version = version;
+    public void setPath_id(long path_id) {
+        this.path_id = path_id;
     }
 
-    public SwitchSegments[] getSwitch_segments() {
+    public int getPntCnt() {
+        return pntCnt;
+    }
+
+    public void setPntCnt(int pntCnt) {
+        this.pntCnt = pntCnt;
+    }
+
+    public ArrayList<Pnt> getPnts() {
+        return pnts;
+    }
+
+    public void setPnts(ArrayList<Pnt> pnts) {
+        this.pnts = pnts;
+    }
+
+    public String getSdkVer() {
+        return sdkVer;
+    }
+
+    public void setSdkVer(String sdkVer) {
+        this.sdkVer = sdkVer;
+    }
+
+    public ArrayList<SwitchSegment> getSwitch_segments() {
         return switch_segments;
     }
 
-    public void setSwitch_segments(SwitchSegments[] switch_segments) {
+    public void setSwitch_segments(ArrayList<SwitchSegment> switch_segments) {
         this.switch_segments = switch_segments;
+    }
+
+    public ArrayList<TrafficLight> getTrafficLights() {
+        return trafficLights;
+    }
+
+    public void setTrafficLights(ArrayList<TrafficLight> trafficLights) {
+        this.trafficLights = trafficLights;
     }
 }

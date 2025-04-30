@@ -14,7 +14,7 @@
         android:layout_height="@dimen/dp_772"
         android:padding="@dimen/dp_29"
         android:clickable="true"
-        android:background="@drawable/bg_setting_shadow">
+        android:background="@drawable/bg_shadow">
 
             <com.fy.navi.ui.view.SkinImageView
                 clickCommand="@{viewModel.mFinishPrivacy}"

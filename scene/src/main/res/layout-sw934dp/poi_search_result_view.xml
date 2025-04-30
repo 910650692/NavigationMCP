@@ -31,10 +31,10 @@
                 android:layout_height="@dimen/dp_668"
                 android:paddingStart="@dimen/dp_29"
                 android:paddingEnd="@dimen/dp_29"
-                android:paddingTop="@dimen/dp_60"
-                android:paddingBottom="@dimen/dp_60"
-                android:layout_marginTop="-40dp"
-                android:background="@drawable/bg_search_main_tab_shadow">
+                android:paddingTop="@dimen/dp_29"
+                android:paddingBottom="@dimen/dp_29"
+                android:layout_marginTop="@dimen/dp_m_38"
+                android:background="@drawable/bg_search_shadow">
 
                 <include
                     android:id="@+id/search_filter_view"
@@ -92,12 +92,13 @@
 
         <com.fy.navi.scene.ui.route.SceneRouteGasStationChargeServiceView
             android:id="@+id/route_right_tab_list_charge_scene"
-            android:layout_width="@dimen/dp_174"
-            android:layout_height="@dimen/dp_464"
-            android:background="@drawable/bg_route_result"
+            android:layout_width="@dimen/dp_232"
+            android:layout_height="@dimen/dp_522"
+            android:padding="@dimen/dp_29"
+            android:background="@drawable/bg_search_shadow"
             android:clickable="true"
             android:visibility="gone"
-            android:layout_marginStart="@dimen/dp_20"
+            android:layout_marginStart="@dimen/dp_m_9"
             app:layout_constraintBottom_toBottomOf="@id/root_view"
             app:layout_constraintStart_toEndOf="@+id/root_view" />
     </com.fy.navi.ui.view.SkinConstraintLayout>

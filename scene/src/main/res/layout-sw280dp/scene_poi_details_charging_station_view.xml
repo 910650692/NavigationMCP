@@ -26,8 +26,8 @@
 
             <com.fy.navi.ui.view.SkinConstraintLayout
                 android:id="@+id/poi_charge_fast_layout"
-                android:layout_width="@dimen/dp_268"
-                android:layout_height="@dimen/dp_104"
+                android:layout_width="@dimen/dp_338"
+                android:layout_height="@dimen/dp_134"
                 android:layout_marginTop="@dimen/dp_4"
                 android:background="@drawable/bg_charge_number_item"
                 app:layout_constraintStart_toStartOf="parent"
@@ -91,8 +91,8 @@
 
             <com.fy.navi.ui.view.SkinConstraintLayout
                 android:id="@+id/poi_charge_slow_layout"
-                android:layout_width="@dimen/dp_268"
-                android:layout_height="@dimen/dp_104"
+                android:layout_width="@dimen/dp_338"
+                android:layout_height="@dimen/dp_134"
                 android:layout_marginStart="@dimen/dp_24"
                 android:layout_marginTop="@dimen/dp_4"
                 android:background="@drawable/bg_charge_number_item"
@@ -174,7 +174,7 @@
             android:gravity="center"
             android:maxLines="1"
             android:text="@string/charge_appointment"
-            android:visibility="visible"
+            android:visibility="@{(detailViewModel.mPowerType == 1 || detailViewModel.mPowerType == 2) ? View.VISIBLE : View.GONE}"
             android:textColor="@color/bg_route_big_window_select"
             android:textSize="@dimen/sp_26"
             android:textStyle="bold"

@@ -11,6 +11,7 @@
     </data>
 
     <com.fy.navi.ui.view.SkinConstraintLayout
+        android:focusable="false"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -19,6 +20,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_92"
             android:layout_marginTop="@dimen/dp_30"
+            android:focusable="false"
             android:background="@drawable/bg_navi_tbt_bottom_view" />
 
         <com.fy.navi.ui.view.SkinTextView
@@ -26,6 +28,7 @@
             android:layout_width="@dimen/dp_60"
             android:layout_height="@dimen/dp_60"
             android:layout_marginStart="@dimen/dp_60"
+            android:focusable="false"
             android:background="@drawable/img_navi_via_item_btn_pass"
             android:gravity="center"
             android:text="@string/navi_via_item_pass"
@@ -40,6 +43,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_24"
+            android:focusable="false"
             android:maxWidth="@dimen/dp_242"
             android:maxLines="1"
             android:textColor="@color/common_title_purple_color"
@@ -55,6 +59,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/dp_30"
+            android:focusable="false"
             android:text="@string/navi_arrived"
             android:textColor="@color/common_title_color"
             android:textSize="@dimen/sp_34"
@@ -68,6 +73,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/dp_30"
+            android:focusable="false"
             app:layout_constraintBottom_toBottomOf="@id/sv_bottom_view"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/sv_bottom_view"

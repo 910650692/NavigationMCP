@@ -4,7 +4,7 @@ package com.fy.navi.adas.bean;
 /**
  * 坐标
  */
-public class Coord {
+class Coord {
     private double x;
     private double y;
 

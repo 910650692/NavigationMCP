@@ -8,6 +8,7 @@
     <com.fy.navi.ui.view.SkinFrameLayout
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_264"
+        android:focusable="false"
         android:orientation="vertical">
 
         <include

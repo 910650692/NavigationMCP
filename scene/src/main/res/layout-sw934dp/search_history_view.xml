@@ -9,88 +9,93 @@
             name="SceneSearchHistoryImpl"
             type="com.fy.navi.scene.impl.search.SceneSearchHistoryImpl" />
     </data>
-    <com.fy.navi.ui.view.SkinFrameLayout
+    <com.fy.navi.ui.view.SkinConstraintLayout
         android:layout_width="@dimen/dp_698"
-        android:layout_height="@dimen/dp_532"
-        android:paddingStart="@dimen/dp_29"
-        android:paddingEnd="@dimen/dp_29"
-        android:paddingTop="@dimen/dp_60"
-        android:paddingBottom="@dimen/dp_60"
-        android:clipToOutline="true"
-        android:background="@drawable/bg_search_main_tab_shadow"
-        android:layerType="hardware">
-    <com.fy.navi.scene.ui.search.MaxheightNestedScrollView
-        android:layout_width="@dimen/dp_640"
-        android:fillViewport="true"
-        android:padding="@dimen/dp_1"
-        android:maxLength="@dimen/dp_432"
-        android:scrollbars="vertical"
-        android:layout_height="wrap_content">
-        <com.fy.navi.ui.view.SkinConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <include
-                android:id="@+id/search_history_middle_view"
-                layout="@layout/search_history_middle_view"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-
-            <com.fy.navi.ui.view.SkinRecyclerView
-                android:id="@+id/rcy_record"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:nestedScrollingEnabled="false"
-                app:layout_constraintBottom_toTopOf="@+id/scl_delete_record"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/search_history_middle_view" />
-
-            <com.fy.navi.ui.view.SkinTextView
-                android:id="@+id/tv_record_null"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_283"
-                android:text="@string/shv_record_null"
-                android:textColor="@color/search_color_ffffff_70"
-                android:textSize="@dimen/sp_30"
-                android:visibility="gone"
-                android:gravity="center"
-                app:layout_constraintTop_toBottomOf="@+id/search_history_middle_view"/>
-
-            <com.fy.navi.ui.view.SkinConstraintLayout
-                android:id="@+id/scl_delete_record"
-                android:layout_width="wrap_content"
-                android:layout_height="@dimen/dp_0"
-                android:padding="@dimen/dp_17"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent">
-
-                <com.fy.navi.ui.view.SkinImageView
-                    android:id="@+id/iv_delete"
-                    android:layout_width="@dimen/dp_60"
-                    android:layout_height="@dimen/dp_60"
-                    android:src="@drawable/img_basic_ic_delete"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintRight_toLeftOf="@+id/tv_delete"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <com.fy.navi.ui.view.SkinTextView
-                    android:id="@+id/tv_delete"
-                    android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/dp_29"
+        android:background="@drawable/bg_search_shadow"
+        >
+        <com.fy.navi.ui.view.SkinFrameLayout
+            android:layout_width="@dimen/dp_698"
+            android:layout_height="@dimen/dp_490"
+            android:clipToOutline="true"
+            android:layerType="hardware"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
+            <com.fy.navi.scene.ui.search.MaxheightNestedScrollView
+                android:layout_width="@dimen/dp_640"
+                android:fillViewport="true"
+                android:padding="@dimen/dp_1"
+                android:maxLength="@dimen/dp_432"
+                android:scrollbars="vertical"
+                android:layout_height="wrap_content">
+                <com.fy.navi.ui.view.SkinConstraintLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/dp_9"
-                    android:text="@string/shv_clear_record"
-                    android:textColor="@color/search_color_ffffff_40"
-                    android:textSize="@dimen/sp_32"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintLeft_toRightOf="@id/iv_delete"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
 
-            </com.fy.navi.ui.view.SkinConstraintLayout>
-        </com.fy.navi.ui.view.SkinConstraintLayout>
-    </com.fy.navi.scene.ui.search.MaxheightNestedScrollView>
-    </com.fy.navi.ui.view.SkinFrameLayout>
+                    <include
+                        android:id="@+id/search_history_middle_view"
+                        layout="@layout/search_history_middle_view"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+                    <com.fy.navi.ui.view.SkinRecyclerView
+                        android:id="@+id/rcy_record"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:nestedScrollingEnabled="false"
+                        app:layout_constraintBottom_toTopOf="@+id/scl_delete_record"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/search_history_middle_view" />
+
+                    <com.fy.navi.ui.view.SkinTextView
+                        android:id="@+id/tv_record_null"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/dp_283"
+                        android:text="@string/shv_record_null"
+                        android:textColor="@color/search_color_ffffff_70"
+                        android:textSize="@dimen/sp_30"
+                        android:visibility="gone"
+                        android:gravity="center"
+                        app:layout_constraintTop_toBottomOf="@+id/search_history_middle_view"/>
+
+                    <com.fy.navi.ui.view.SkinConstraintLayout
+                        android:id="@+id/scl_delete_record"
+                        android:layout_width="wrap_content"
+                        android:layout_height="@dimen/dp_0"
+                        android:padding="@dimen/dp_17"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toRightOf="parent">
+
+                        <com.fy.navi.ui.view.SkinImageView
+                            android:id="@+id/iv_delete"
+                            android:layout_width="@dimen/dp_60"
+                            android:layout_height="@dimen/dp_60"
+                            android:src="@drawable/img_basic_ic_delete"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintRight_toLeftOf="@+id/tv_delete"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <com.fy.navi.ui.view.SkinTextView
+                            android:id="@+id/tv_delete"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/dp_9"
+                            android:text="@string/shv_clear_record"
+                            android:textColor="@color/search_color_ffffff_40"
+                            android:textSize="@dimen/sp_32"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintLeft_toRightOf="@id/iv_delete"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                    </com.fy.navi.ui.view.SkinConstraintLayout>
+                </com.fy.navi.ui.view.SkinConstraintLayout>
+            </com.fy.navi.scene.ui.search.MaxheightNestedScrollView>
+        </com.fy.navi.ui.view.SkinFrameLayout>
+
+    </com.fy.navi.ui.view.SkinConstraintLayout>
 </layout>

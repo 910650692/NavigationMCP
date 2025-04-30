@@ -69,6 +69,12 @@ public class SceneNaviParallelView extends NaviSceneBase<SceneNaviParallelViewBi
     }
 
     @Override
+    public void show() {
+        super.show();
+        mScreenViewModel.showMain();
+    }
+
+    @Override
     public boolean onTouchEvent(final MotionEvent event) {
         return true;
     }

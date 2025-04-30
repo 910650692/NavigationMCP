@@ -17,6 +17,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:clickable="true"
+        android:focusable="false"
         android:maxHeight="@dimen/dp_586"
         tools:background="@color/navi_color_FF595F_100"
         tools:layout_height="@dimen/dp_918"
@@ -26,11 +27,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
+            android:focusable="false"
             android:paddingHorizontal="@dimen/dp_40"
             android:paddingBottom="@dimen/dp_40">
 
             <com.fy.navi.ui.view.SkinRecyclerView
                 android:id="@+id/srv_add_via"
+                android:focusable="false"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1" />
@@ -42,12 +45,14 @@
                 android:layout_height="@dimen/dp_108"
                 android:background="@drawable/bg_navi_btn_add_via"
                 android:gravity="center"
+                android:focusable="true"
                 android:orientation="horizontal">
 
                 <com.fy.navi.ui.view.SkinImageView
                     android:id="@+id/siv_add_via"
                     android:layout_width="@dimen/dp_58"
                     android:layout_height="@dimen/dp_58"
+                    android:focusable="false"
                     android:background="@drawable/img_add_58" />
 
                 <com.fy.navi.ui.view.SkinTextView
@@ -56,6 +61,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/dp_24"
                     android:gravity="center"
+                    android:focusable="false"
                     android:text="@string/navi_add_via"
                     android:textColor="@color/common_title_color"
                     android:textSize="@dimen/sp_34" />

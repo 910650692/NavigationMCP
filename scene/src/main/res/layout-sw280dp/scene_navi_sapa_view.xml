@@ -16,6 +16,7 @@
         clickCommand="@{naviSapa.rootViewClick}"
         android:layout_width="@dimen/dp_640"
         android:layout_height="@dimen/dp_157"
+        android:focusable="false"
         tools:ignore="MissingDefaultResource">
 
         <include

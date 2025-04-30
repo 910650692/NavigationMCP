@@ -15,10 +15,10 @@
         android:layout_height="wrap_content"
         android:paddingStart="@dimen/dp_29"
         android:paddingEnd="@dimen/dp_29"
-        android:paddingTop="@dimen/dp_60"
-        android:paddingBottom="@dimen/dp_60"
-        android:background="@drawable/bg_search_main_tab_shadow"
-        android:maxHeight="@dimen/dp_834">
+        android:paddingTop="@dimen/dp_29"
+        android:paddingBottom="@dimen/dp_29"
+        android:background="@drawable/bg_search_shadow"
+        android:maxHeight="@dimen/dp_772">
 
         <com.fy.navi.ui.view.SkinConstraintLayout
             android:id="@+id/cs_poi_no_result"
