@@ -7,7 +7,7 @@
 
         <variable
             name="ViewModel"
-            type="com.fy.navi.hmi.launcher.BaseLauncherSmallCardViewModel" />
+            type="com.fy.navi.hmi.launcher.LauncherSmallCardViewModel" />
     </data>
 
     <com.fy.navi.ui.view.SkinLinearLayout

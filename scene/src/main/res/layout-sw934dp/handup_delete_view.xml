@@ -22,7 +22,7 @@
                 android:layout_width="@dimen/dp_58"
                 android:layout_height="@dimen/dp_58"
                 android:src="@drawable/img_favorite_delete"
-                app:layout_constraintBottom_toTopOf="@id/tv_title"
+                app:layout_constraintBottom_toTopOf="@id/tv_delete"
                 app:layout_constraintEnd_toEndOf="@id/tv_delete"
                 app:layout_constraintStart_toStartOf="@id/tv_delete"
                 app:layout_constraintTop_toTopOf="parent"

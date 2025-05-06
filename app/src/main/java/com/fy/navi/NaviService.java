@@ -15,8 +15,6 @@ import android.os.IBinder;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
-import androidx.work.Constraints;
-import androidx.work.NetworkType;
 import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkInfo;
 import androidx.work.WorkManager;
@@ -29,40 +27,13 @@ import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
 import com.fy.navi.adas.AdasClient;
 import com.fy.navi.broadcast.SteeringWheelButtonReceiver;
-import com.fy.navi.clslink.ClsLinkManager;
 import com.fy.navi.fsa.MyFsaService;
 import com.fy.navi.hmi.BuildConfig;
 import com.fy.navi.service.AppContext;
 import com.fy.navi.service.MapDefaultFinalTag;
+import com.fy.navi.service.StartService;
 import com.fy.navi.service.define.code.CodeManager;
 import com.fy.navi.service.define.code.ErrorCode;
-import com.fy.navi.service.define.map.MapType;
-import com.fy.navi.service.greendao.CommonManager;
-import com.fy.navi.service.greendao.setting.SettingManager;
-import com.fy.navi.service.logicpaket.aos.AosRestrictedPackage;
-import com.fy.navi.service.logicpaket.cruise.CruisePackage;
-import com.fy.navi.service.logicpaket.engine.EnginePackage;
-import com.fy.navi.service.logicpaket.hotupdate.HotUpdatePackage;
-import com.fy.navi.service.logicpaket.layer.LayerPackage;
-import com.fy.navi.service.logicpaket.map.MapPackage;
-import com.fy.navi.service.logicpaket.mapdata.MapDataPackage;
-import com.fy.navi.service.logicpaket.navi.NaviPackage;
-import com.fy.navi.service.logicpaket.position.PositionPackage;
-import com.fy.navi.service.logicpaket.recorder.RecorderPackage;
-import com.fy.navi.service.logicpaket.route.RoutePackage;
-import com.fy.navi.service.logicpaket.search.SearchPackage;
-import com.fy.navi.service.logicpaket.setting.SettingPackage;
-import com.fy.navi.service.logicpaket.signal.SignalPackage;
-import com.fy.navi.service.logicpaket.speech.SpeechPackage;
-import com.fy.navi.service.logicpaket.user.account.AccountPackage;
-import com.fy.navi.service.logicpaket.user.behavior.BehaviorPackage;
-import com.fy.navi.service.logicpaket.user.carconnect.CarConnectPackage;
-import com.fy.navi.service.logicpaket.user.forecast.ForecastPackage;
-import com.fy.navi.service.logicpaket.user.group.GroupPackage;
-import com.fy.navi.service.logicpaket.user.msgpush.MsgPushPackage;
-import com.fy.navi.service.logicpaket.user.usertrack.UserTrackPackage;
-import com.fy.navi.service.logicpaket.voice.VoicePackage;
-import com.fy.navi.service.tts.NaviAudioPlayer;
 import com.fy.navi.ui.base.StackManager;
 import com.fy.navi.vrbridge.VrBridgeManager;
 
@@ -73,7 +44,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.UUID;
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * @Description TODO
@@ -87,40 +58,15 @@ public class NaviService extends Service {
     private static final int FOREGROUND_SERVICE_ID = 0x02;
     public static final String START_APPLICATION_KEY = "startMapView";
     private final OneTimeWorkRequest parseJsonWorkRequest;
-    private final OneTimeWorkRequest mapInitWorkRequest;
-    private final OneTimeWorkRequest layerInitWorkRequest;
-    private final OneTimeWorkRequest unInitEngineWorkRequest;
-    private final OneTimeWorkRequest positionWorkRequest;
-    private final OneTimeWorkRequest sdkServiceInitWorkRequest;
-    private final OneTimeWorkRequest fsaInitWorkRequest;
-    private final OneTimeWorkRequest vrBridgeWorkRequest;
-    private SettingManager settingManager;
-    private CommonManager commonManager;
-    private static boolean isMapOnIniting = false;
-    public static boolean isMapInited = false;
-    private static final CopyOnWriteArrayList<INaviInitListener> initListeners = new CopyOnWriteArrayList<>();
+    private static OneTimeWorkRequest fsaInitWorkRequest;
+    private static OneTimeWorkRequest vrBridgeWorkRequest;
+    private static AtomicBoolean atomicBoolean = new AtomicBoolean(false);
 
     public NaviService() {
-        Constraints constraints = new Constraints.Builder()
-                .setRequiredNetworkType(NetworkType.NOT_REQUIRED) // TODO NetworkType.NOT_REQUIRED 为临时方案
-                .build();
+        initBroadcast();
+        StartService.getInstance().registerSdkCallback(sdkInitCallback);
         parseJsonWorkRequest = new OneTimeWorkRequest.Builder(ParseJson.class)
                 .addTag("ParseJson ErrorCode")
-                .build();
-        positionWorkRequest = new OneTimeWorkRequest.Builder(PositionInitWorker.class)
-                .addTag("Init Position")
-                .build();
-        mapInitWorkRequest = new OneTimeWorkRequest.Builder(MapInit.class)
-                .addTag("map Init")
-                .build();
-        layerInitWorkRequest = new OneTimeWorkRequest.Builder(LayerInit.class)
-                .addTag("Layer Init")
-                .build();
-        sdkServiceInitWorkRequest = new OneTimeWorkRequest.Builder(SdkServiceInit.class)
-                .addTag("SdkService Init")
-                .build();
-        unInitEngineWorkRequest = new OneTimeWorkRequest.Builder(EngineUnInitWorker.class)
-                .addTag("UnInit Engine")
                 .build();
         fsaInitWorkRequest = new OneTimeWorkRequest.Builder(FsaInitWorker.class)
                 .addTag("Fsa Init")
@@ -145,20 +91,18 @@ public class NaviService extends Service {
         } else {
             startForeground(FOREGROUND_SERVICE_ID, notification, ServiceInfo.FOREGROUND_SERVICE_TYPE_SHORT_SERVICE);
         }
-        //初始化数据库
-        settingManager = SettingManager.getInstance();
-        commonManager = CommonManager.getInstance();
-        settingManager.init();
-        commonManager.init();
-        initBroadcast();
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        ConvertUtils.isNullRequire(intent, "Please pass the interface startup parameters");
-        boolean isStart = intent.getBooleanExtra(START_APPLICATION_KEY, false);
-        Logger.i(TAG, "onStartCommand", "isStart:" + isStart);
-        startInitEngine(isStart);
+        Logger.i(TAG, "校验Sdk的可用状态");
+        boolean sdkStatus = StartService.getInstance().checkSdkActivation();
+        if (!sdkStatus) {
+            Logger.i(TAG, "Sdk尚未被初始化");
+            startParseJson();
+        }else {
+            Logger.i(TAG, "Sdk已经初始化");
+        }
         return super.onStartCommand(intent, flags, startId);
     }
 
@@ -174,42 +118,17 @@ public class NaviService extends Service {
         Logger.i(TAG, "onDestroy");
     }
 
-    private synchronized void startInitEngine(boolean isStart) {
-        Logger.i(TAG, "startInitEngine", "isMapInited:" + isMapInited, "isMapOnIniting:" + isMapOnIniting);
-        if (isMapInited) {
-            Logger.i(TAG, "map had inited!");
-            stopSelf();
-            return;
-        }
-        if (isMapOnIniting) {
-            Logger.i(TAG, "map on initing!");
-            stopSelf();
-            return;
-        }
-        isMapOnIniting = true;
-        boolean hasActivity = StackManager.getInstance().getFirstActivity() != null;
-        Logger.i(TAG, "hasActivity:" + hasActivity);
-        //需要启动应用界面才会走此observer
-        if (hasActivity) {
-            ParseJson.addParseJsonObserver(parseJsonWorkRequest.getId());
-            PositionInitWorker.addPositionObserver(positionWorkRequest.getId());
-            MapInit.addMapInitObserver(mapInitWorkRequest.getId());
-            LayerInit.addLayerInitObserver(layerInitWorkRequest.getId());
-            SdkServiceInit.addSdkServiceInitObserver(sdkServiceInitWorkRequest.getId(), isStart);
-            FsaInitWorker.addEngineObserver(fsaInitWorkRequest.getId());
-            VrBridgeInitWorker.addEngineObserver(vrBridgeWorkRequest.getId());
-        }
+    private void initBroadcast() {
+        SteeringWheelButtonReceiver steeringWheelButtonReceiver = new SteeringWheelButtonReceiver();
+        IntentFilter intentFilter = new IntentFilter(SteeringWheelButtonReceiver.ACTION);
+        AppContext.getInstance().getMContext().registerReceiver(steeringWheelButtonReceiver, intentFilter, Context.RECEIVER_EXPORTED);
+    }
 
+    private synchronized void startParseJson() {
+        ParseJson.addParseJsonObserver(parseJsonWorkRequest.getId());
         WorkManager.getInstance(AppContext.getInstance().getMContext())
                 .beginWith(parseJsonWorkRequest)
-                .then(positionWorkRequest)
-                .then(mapInitWorkRequest)
-                .then(layerInitWorkRequest)
-                .then(sdkServiceInitWorkRequest)
-                .then(fsaInitWorkRequest)
-                .then(vrBridgeWorkRequest)
                 .enqueue();
-        stopSelf();
     }
 
     @SuppressLint("WorkerHasAPublicModifier")
@@ -246,7 +165,10 @@ public class NaviService extends Service {
                             case BLOCKED -> Logger.i(TAG, "parse json block");
                             case CANCELLED -> Logger.i(TAG, "parse json cancel");
                             case FAILED -> Logger.e(TAG, "parse json fail");
-                            case SUCCEEDED -> Logger.i(TAG, "parse json success");
+                            case SUCCEEDED -> {
+                                Logger.i(TAG, "parse json success");
+                                StartService.getInstance().startInitSdk();
+                            }
                         }
                     });
         }
@@ -260,34 +182,57 @@ public class NaviService extends Service {
             Map<Integer, String> engineErrorCode = formJsonCode(engineCodeJson);
             errorCode.setEngineCode(engineErrorCode);
             Logger.i(TAG, "Current engineErrorCode: " + engineErrorCode);
+
+            String activationCode = jsonObject.getJSONObject("activation_code").toString();
+            Map<Integer, String> activityErrorCode = formJsonCode(activationCode);
+            errorCode.setMapCode(activityErrorCode);
+            Logger.i(TAG, "Current activityErrorCode: " + activityErrorCode);
+
+            String positionCode = jsonObject.getJSONObject("position_code").toString();
+            Map<Integer, String> positionErrorCode = formJsonCode(positionCode);
+            errorCode.setMapCode(positionErrorCode);
+            Logger.i(TAG, "Current positionErrorCode: " + positionErrorCode);
+
             String mapCodeJson = jsonObject.getJSONObject("map_code").toString();
             Map<Integer, String> mapErrorCode = formJsonCode(mapCodeJson);
             errorCode.setMapCode(mapErrorCode);
             Logger.i(TAG, "Current mapErrorCode: " + mapErrorCode);
+
+            String layerCodeJson = jsonObject.getJSONObject("layer_code").toString();
+            Map<Integer, String> layerErrorCode = formJsonCode(layerCodeJson);
+            errorCode.setMapCode(layerErrorCode);
+            Logger.i(TAG, "Current layerErrorCode: " + layerErrorCode);
+
             String searchCodeJson = jsonObject.getJSONObject("search_code").toString();
             Map<Integer, String> searchErrorCode = formJsonCode(searchCodeJson);
             errorCode.setSearchCode(searchErrorCode);
             Logger.i(TAG, "Current searchErrorCode: " + searchErrorCode);
+
             String routeCodeJson = jsonObject.getJSONObject("route_code").toString();
             Map<Integer, String> routeErrorCode = formJsonCode(routeCodeJson);
             errorCode.setRouteCode(routeErrorCode);
             Logger.i(TAG, "Current routeCodeJson: " + routeCodeJson);
+
             String naviCodeJson = jsonObject.getJSONObject("navi_code").toString();
             Map<Integer, String> naviErrorCode = formJsonCode(naviCodeJson);
             errorCode.setNaviCode(naviErrorCode);
             Logger.i(TAG, "Current naviErrorCode: " + naviErrorCode);
+
             String settingCodeJson = jsonObject.getJSONObject("setting_code").toString();
             Map<Integer, String> settingErrorCode = formJsonCode(settingCodeJson);
             errorCode.setSettingCode(settingErrorCode);
             Logger.i(TAG, "Current settingErrorCode: " + settingErrorCode);
+
             String mapDataCodeJson = jsonObject.getJSONObject("map_data_code").toString();
             Map<Integer, String> mapDataErrorCode = formJsonCode(mapDataCodeJson);
             errorCode.setMapDataCode(mapDataErrorCode);
             Logger.i(TAG, "Current mapDataErrorCode: " + mapDataErrorCode);
+
             String accountCodeJson = jsonObject.getJSONObject("account_code").toString();
             Map<Integer, String> accountErrorCode = formJsonCode(accountCodeJson);
             errorCode.setAccountCode(accountErrorCode);
             Logger.i(TAG, "Current accountErrorCode: " + accountErrorCode);
+
             String forCastCodeJson = jsonObject.getJSONObject("for_cast_code").toString();
             Map<Integer, String> forCastErrorCode = formJsonCode(forCastCodeJson);
             errorCode.setForCastCode(forCastErrorCode);
@@ -304,189 +249,6 @@ public class NaviService extends Service {
                 errorCode.put(keyCode, keyMsg);
             }
             return errorCode;
-        }
-    }
-
-    public static final class PositionInitWorker extends Worker {
-        public PositionInitWorker(@NonNull Context context, @NonNull WorkerParameters workerParams) {
-            super(context, workerParams);
-        }
-
-        @NonNull
-        @Override
-        public Result doWork() {
-            Logger.i(TAG, "Position doWork");
-            PositionPackage.getInstance().init();
-            return Result.success();
-        }
-
-        public static void addPositionObserver(UUID uuid) {
-            WorkManager.getInstance(AppContext.getInstance().getMContext()).getWorkInfoByIdLiveData(uuid)
-                    .observe(StackManager.getInstance().getFirstActivity(), workInfo -> {
-                        WorkInfo.State state = workInfo.getState();
-                        switch (state) {
-                            case ENQUEUED -> Logger.i(TAG, "Position init enqueued");
-                            case RUNNING -> Logger.i(TAG, "Position running");
-                            case BLOCKED -> Logger.i(TAG, "Position block");
-                            case FAILED -> Logger.e(TAG, "Position init fail");
-                            case CANCELLED -> Logger.i(TAG, "Position cancel");
-                            case SUCCEEDED -> {
-                                Logger.i(TAG, "Position init success");
-                                PositionPackage.getInstance().startPosition();
-                            }
-                        }
-                    });
-        }
-    }
-
-    public static final class MapInit extends Worker {
-        public MapInit(@NonNull Context context, @NonNull WorkerParameters workerParams) {
-            super(context, workerParams);
-        }
-
-        @NonNull
-        @Override
-        public Result doWork() {
-            Logger.i(TAG, "Map doWork");
-            boolean mainMapInitResult = MapPackage.getInstance().init(MapType.MAIN_SCREEN_MAIN_MAP);
-            boolean deskMapInitResult = MapPackage.getInstance().init(MapType.LAUNCHER_DESK_MAP);
-            boolean widgetMapInitResult = MapPackage.getInstance().init(MapType.LAUNCHER_WIDGET_MAP);
-            boolean hudMapInitResult = MapPackage.getInstance().init(MapType.HUD_MAP);
-            isMapInited = mainMapInitResult && deskMapInitResult && widgetMapInitResult && hudMapInitResult;
-            return (mainMapInitResult && deskMapInitResult && widgetMapInitResult && hudMapInitResult) ? Result.success() : Result.failure();
-        }
-
-        private static void addMapInitObserver(UUID uuid) {
-            WorkManager.getInstance(AppContext.getInstance().getMContext()).getWorkInfoByIdLiveData(uuid)
-                    .observe(StackManager.getInstance().getFirstActivity(), workInfo -> {
-                        WorkInfo.State state = workInfo.getState();
-                        switch (state) {
-                            case ENQUEUED -> Logger.i(TAG, "Map init enqueued");
-                            case RUNNING -> Logger.i(TAG, "Map init running");
-                            case BLOCKED -> Logger.i(TAG, "Map init block");
-                            case FAILED -> Logger.e(TAG, "Map init fail");
-                            case CANCELLED -> Logger.i(TAG, "Map init cancel");
-                            case SUCCEEDED -> Logger.i(TAG, "Map init success");
-                        }
-                    });
-        }
-    }
-
-    public static final class LayerInit extends Worker {
-        public LayerInit(@NonNull Context context, @NonNull WorkerParameters workerParams) {
-            super(context, workerParams);
-        }
-
-        @NonNull
-        @Override
-        public Result doWork() {
-            Logger.d(TAG, "LayerInit doWork");
-            LayerPackage.getInstance().initLayerService();
-            return Result.success();
-        }
-
-        private static void addLayerInitObserver(UUID uuid) {
-            WorkManager.getInstance(AppContext.getInstance().getMContext()).getWorkInfoByIdLiveData(uuid)
-                    .observe(StackManager.getInstance().getFirstActivity(), workInfo -> {
-                        WorkInfo.State state = workInfo.getState();
-                        switch (state) {
-                            case ENQUEUED -> Logger.i(TAG, "NaviApp_Layer init enqueued");
-                            case RUNNING -> Logger.i(TAG, "NaviApp_Layer init running");
-                            case BLOCKED -> Logger.i(TAG, "NaviApp_Layer init block");
-                            case FAILED -> Logger.e(TAG, "NaviApp_Layer init fail");
-                            case CANCELLED -> Logger.i(TAG, "NaviApp_Layer init cancel");
-                            case SUCCEEDED -> Logger.i(TAG, "NaviApp_Layer init success");
-                        }
-                    });
-        }
-    }
-
-    public static final class SdkServiceInit extends Worker {
-
-        public SdkServiceInit(@NonNull Context context, @NonNull WorkerParameters workerParams) {
-            super(context, workerParams);
-        }
-
-        @NonNull
-        @Override
-        public Result doWork() {
-            SettingPackage.getInstance().init();
-            SearchPackage.getInstance().initSearchService();
-            NaviPackage.getInstance().initNaviService();
-            RoutePackage.getInstance().initRouteService();
-            CruisePackage.getInstance().initCruise();
-            MapDataPackage.getInstance().initMapDataService();
-            RecorderPackage.getInstance().initService();
-            UserTrackPackage.getInstance().initUserTrackService();
-            AccountPackage.getInstance().initAccountService();
-            BehaviorPackage.getInstance().initBehaviorService();
-            CarConnectPackage.getInstance().initService();
-            ForecastPackage.getInstance().initService();
-            GroupPackage.getInstance().initService();
-            MsgPushPackage.getInstance().initService();
-            AosRestrictedPackage.getInstance().initAosService();
-            VoicePackage.getInstance().init();
-            SignalPackage.getInstance().init(AppContext.getInstance().getMContext());
-            SpeechPackage.getInstance().init();
-            NaviAudioPlayer.getInstance().init();
-            HotUpdatePackage.getInstance().initService();
-            return Result.success();
-        }
-
-        private static void addSdkServiceInitObserver(UUID uuid, boolean isStart) {
-            WorkManager.getInstance(AppContext.getInstance().getMContext()).getWorkInfoByIdLiveData(uuid)
-                    .observe(StackManager.getInstance().getFirstActivity(), workInfo -> {
-                        WorkInfo.State state = workInfo.getState();
-                        switch (state) {
-                            case ENQUEUED -> Logger.i(TAG, "NaviApp_SdkService init enqueued");
-                            case RUNNING -> Logger.i(TAG, "NaviApp_SdkService init running");
-                            case BLOCKED -> Logger.i(TAG, "NaviApp_SdkService init block");
-                            case FAILED -> {
-                                Logger.e(TAG, "NaviApp_SdkService init fail");
-                                notifyAppInitFinished(false);
-                            }
-                            case CANCELLED -> {
-                                Logger.i(TAG, "NaviApp_SdkService init cancel");
-                                notifyAppInitFinished(false);
-                            }
-                            case SUCCEEDED -> {
-                                isMapInited = true;
-                                Logger.i(TAG, "NaviApp_SdkService init success");
-                                notifyAppInitFinished(true);
-                            }
-                        }
-                    });
-        }
-    }
-
-    public static final class EngineUnInitWorker extends Worker {
-        public EngineUnInitWorker(@NonNull Context context, @NonNull WorkerParameters workerParams) {
-            super(context, workerParams);
-
-        }
-
-        @NonNull
-        @Override
-        public Result doWork() {
-            MapPackage.getInstance().unInitMapService();
-            LayerPackage.getInstance().unInitLayerService();
-            RoutePackage.getInstance().unInitNaviService();
-            NaviPackage.getInstance().unInitNaviService();
-            CruisePackage.getInstance().unInitCruise();
-            SearchPackage.getInstance().unInitSearchService();
-            EnginePackage.getInstance().unInitEngine();
-            return Result.success();
-        }
-
-        private static void addEngineObserver(UUID uuid) {
-            WorkManager.getInstance(AppContext.getInstance().getMContext()).getWorkInfoByIdLiveData(uuid)
-                    .observe(StackManager.getInstance().getFirstActivity(), workInfo -> {
-                        WorkInfo.State state = workInfo.getState();
-                        switch (state) {
-                            case FAILED -> Logger.e(TAG, "Engine unInit fail");
-                            case SUCCEEDED -> Logger.i(TAG, "Engine unInit success");
-                        }
-                    });
         }
     }
 
@@ -507,18 +269,6 @@ public class NaviService extends Service {
 //            ClsLinkManager.getInstance().init();
             return Result.success();
         }
-
-        private static void addEngineObserver(UUID uuid) {
-            WorkManager.getInstance(AppContext.getInstance().getMContext()).getWorkInfoByIdLiveData(uuid)
-                    .observe(StackManager.getInstance().getFirstActivity(), workInfo -> {
-                        WorkInfo.State state = workInfo.getState();
-                        switch (state) {
-                            case BLOCKED -> Logger.i(TAG, "Fsa init block");
-                            case FAILED -> Logger.e(TAG, "Fsa init fail");
-                            case SUCCEEDED -> Logger.i(TAG, "Fsa init success");
-                        }
-                    });
-        }
     }
 
     /**
@@ -536,51 +286,26 @@ public class NaviService extends Service {
             ThreadManager.getInstance().postUi(() -> VrBridgeManager.getInstance().init(getApplicationContext()));
             return Result.success();
         }
+    }
 
-        private static void addEngineObserver(UUID uuid) {
-            WorkManager.getInstance(AppContext.getInstance().getMContext()).getWorkInfoByIdLiveData(uuid)
-                    .observe(StackManager.getInstance().getFirstActivity(), workInfo -> {
-                        WorkInfo.State state = workInfo.getState();
-                        switch (state) {
-                            case BLOCKED -> Logger.i(TAG, "VrBridge init block");
-                            case FAILED -> Logger.e(TAG, "VrBridge init fail");
-                            case SUCCEEDED -> Logger.i(TAG, "VrBridge init success");
-                        }
-                    });
+    private static final StartService.ISdkInitCallback sdkInitCallback = new StartService.ISdkInitCallback() {
+        @Override
+        public void onSdkInitSuccess() {
+            WorkManager.getInstance(AppContext.getInstance().getMContext())
+                    .beginWith(fsaInitWorkRequest)
+                    .then(vrBridgeWorkRequest)
+                    .enqueue();
         }
 
-    }
-
-    public static void registerAppInitListener(INaviInitListener listener) {
-        Logger.i(TAG, "registerAppInitListener", "size:" + initListeners.size());
-        if (!initListeners.contains(listener)) {
-            Logger.i(TAG, "registerAppInitListener", "success");
-            initListeners.add(listener);
+        @Override
+        public void onSdkInitFail(int initSdkResult, String msg) {
+            if (!atomicBoolean.get()) {
+                Logger.i(TAG, "Engine init fail and the retry in progress......");
+                StartService.getInstance().retryEngineInit();
+                atomicBoolean.set(true);
+            } else {
+                Logger.i(TAG, "Engine init fail and the number of retries exceeded");
+            }
         }
-    }
-
-    public static void unRegisterAppInitListener(INaviInitListener listener) {
-
-        initListeners.remove(listener);
-    }
-
-    public static void notifyAppInitFinished(boolean result) {
-        Logger.i(TAG, "notifyAppInitFinished", "size:" + initListeners.size());
-        isMapOnIniting = false;
-        initListeners.forEach((listener) -> {
-            Logger.i(TAG, "notifyAppInitFinished");
-            listener.onInitFinished(result);
-        });
-    }
-
-    public static void exitProcess() {
-        Logger.i(TAG, "exitProcess success!");
-        System.exit(0);
-    }
-
-    private void initBroadcast() {
-        SteeringWheelButtonReceiver steeringWheelButtonReceiver = new SteeringWheelButtonReceiver();
-        IntentFilter intentFilter = new IntentFilter(SteeringWheelButtonReceiver.ACTION);
-        AppContext.getInstance().getMContext().registerReceiver(steeringWheelButtonReceiver, intentFilter, Context.RECEIVER_EXPORTED);
-    }
+    };
 }

@@ -6,8 +6,8 @@ import com.android.utils.file.FileUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
 import com.fy.navi.service.AppContext;
-import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.GBLCacheFilePath;
+import com.fy.navi.service.MapDefaultFinalTag;
 
 import java.io.File;
 
@@ -18,10 +18,6 @@ import java.io.File;
  */
 public final class SdkSoLoadUtils {
     private static final String TAG = MapDefaultFinalTag.ENGINE_SERVICE_TAG;
-
-    private SdkSoLoadUtils() {
-
-    }
 
     /**
      * loadDebugSo

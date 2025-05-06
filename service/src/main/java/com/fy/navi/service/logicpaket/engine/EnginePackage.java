@@ -27,16 +27,18 @@ public class EnginePackage implements EngineObserver {
         engineObserverHashtable.put(key, observer);
     }
 
-    /**
-     * 初始化BaseLibs
-     */
+    public void removeEngineObserver(String key) {
+        ConvertUtils.remove(engineObserverHashtable, key);
+    }
+
+    public void checkSdkLimit() {
+        mEngineAdapter.checkSdkLimit();
+    }
+
     public void initBaseLibs() {
         mEngineAdapter.initBaseLibs();
     }
 
-    /**
-     * 初始化BL
-     */
     public void initBL() {
         mEngineAdapter.initBL();
     }
@@ -47,10 +49,6 @@ public class EnginePackage implements EngineObserver {
 
     public int getEagleEyeEngineID(MapType mapId) {
         return mEngineAdapter.eagleEyeEngineID(mapId);
-    }
-
-    public boolean engineStatus() {
-        return mEngineAdapter.engineStatus();
     }
 
     public void unInitEngine() {
@@ -69,8 +67,20 @@ public class EnginePackage implements EngineObserver {
         return Helper.ep;
     }
 
-    public void switchLog(GaodeLogLevel logLevel){
+    public void switchLog(GaodeLogLevel logLevel) {
         mEngineAdapter.switchLog(logLevel);
+    }
+
+    public String getChanelName() {
+        return mEngineAdapter.getChanelName();
+    }
+
+    @Override
+    public void onInitBaseLibSuccess() {
+        for (IEngineObserver iEngineObserver : engineObserverHashtable.values()) {
+            if (ConvertUtils.isEmpty(iEngineObserver)) continue;
+            iEngineObserver.onInitBaseLibSuccess();
+        }
     }
 
     @Override

@@ -45,6 +45,7 @@ public class HandingCardDetailAdapter extends RecyclerView.Adapter<HandingCardDe
         dataList.clear();
         dataList.addAll(infoEntities);
         mType = type;
+        mSelectIndex = 0;
         notifyDataSetChanged();
     }
 
@@ -132,11 +133,11 @@ public class HandingCardDetailAdapter extends RecyclerView.Adapter<HandingCardDe
             final GasStationInfo secondBean = infos.get(1);
             binding.clGas.tv95.setVisibility(View.VISIBLE);
             binding.clGas.tv95.setText(firstBean.getType());
-            binding.clGas.tv95Price.setText(firstBean.getPrice());
+            binding.clGas.tv95Price.setText(String.format(mContext.getString(R.string.price_sdf), firstBean.getPrice()));
 
             binding.clGas.tv92.setVisibility(View.VISIBLE);
             binding.clGas.tv92.setText(secondBean.getType());
-            binding.clGas.tv92Price.setText(secondBean.getPrice());
+            binding.clGas.tv92Price.setText(String.format(mContext.getString(R.string.price_sdf), secondBean.getPrice()));
         } else if (infos.size() == 1) {
             binding.clGas.ll95.setVisibility(View.VISIBLE);
             binding.clGas.ll92.setVisibility(View.VISIBLE);
@@ -144,7 +145,7 @@ public class HandingCardDetailAdapter extends RecyclerView.Adapter<HandingCardDe
             final GasStationInfo firstBean = infos.get(0);
             binding.clGas.tv95.setVisibility(View.VISIBLE);
             binding.clGas.tv95.setText(firstBean.getType());
-            binding.clGas.tv95Price.setText(firstBean.getPrice());
+            binding.clGas.tv95Price.setText(String.format(mContext.getString(R.string.price_sdf), firstBean.getPrice()));
 
             binding.clGas.tv92.setVisibility(View.GONE);
             binding.clGas.tv92Price.setVisibility(View.GONE);
@@ -180,8 +181,10 @@ public class HandingCardDetailAdapter extends RecyclerView.Adapter<HandingCardDe
         binding.clPark.sclListItem.setOnClickListener(v -> {
             if (mItemClickListener != null && mSelectIndex != position) {
                 mItemClickListener.onItemSelect(position);
+                final int tIndex = mSelectIndex;
                 mSelectIndex = position;
-                notifyDataSetChanged();
+                notifyItemChanged(tIndex);
+                notifyItemChanged(mSelectIndex);
             }
         });
         binding.clPark.viewNaviNow.setOnClickListener(v -> {
@@ -200,7 +203,7 @@ public class HandingCardDetailAdapter extends RecyclerView.Adapter<HandingCardDe
                 : binding.clPark.tvDesc.getContext().getString(R.string.chong_zu);
         binding.clPark.tvDesc.setText(desc);
         binding.clPark.tvEnd.setVisibility(poiInfo.getIsEndPoint() ? View.VISIBLE : View.GONE);
-        binding.clPark.getRoot().setBackgroundResource(position == mSelectIndex ? R.color.common_item_select_color : R.color.transparent);
+        binding.clPark.sclListItem.setBackgroundResource(position == mSelectIndex ? R.color.common_item_select_color : R.color.transparent);
     }
 
     @Override

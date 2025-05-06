@@ -37,4 +37,16 @@ public class BaseCollectViewModel extends BaseViewModel<CollectFragment, Collect
     public List<PoiInfoEntity> getPushMsgList() {
         return mModel.getPushMsgList();
     }
+
+    /**
+     * 动力类型标定
+     * -1 无效值
+     * 0 汽油车
+     * 1 纯电动车
+     * 2 插电式混动汽车
+     * @return 动力类型
+     */
+    public int powerType() {
+        return mModel.powerType();
+    }
 }

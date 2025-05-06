@@ -21,7 +21,7 @@ public interface IPositionApi {
     void unInitPositionService();
 
     /*定位服务初始化*/
-    void init();
+    boolean init();
 
     /*获取当前位置*/
     LocInfoBean getLastCarLocation();

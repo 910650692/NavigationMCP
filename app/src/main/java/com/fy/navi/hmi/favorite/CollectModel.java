@@ -5,6 +5,7 @@ import com.android.utils.log.Logger;
 import com.fy.navi.service.define.bean.GeoPoint;
 import com.fy.navi.service.define.search.PoiInfoEntity;
 import com.fy.navi.service.define.user.msgpush.MsgPushInfo;
+import com.fy.navi.service.logicpaket.calibration.CalibrationPackage;
 import com.fy.navi.service.logicpaket.setting.SettingCallback;
 import com.fy.navi.service.logicpaket.setting.SettingPackage;
 import com.fy.navi.service.logicpaket.user.behavior.BehaviorPackage;
@@ -20,9 +21,10 @@ public class CollectModel extends BaseModel<CollectViewModel> implements Setting
     private final BehaviorPackage mBehaviorPackage;
     private final SettingPackage mSettingPackage;
     private final MsgPushPackage mMsgPushPackage;
+    private final CalibrationPackage mCalibrationPackage;
     public CollectModel() {
         mBehaviorPackage = BehaviorPackage.getInstance();
-
+        mCalibrationPackage = CalibrationPackage.getInstance();
         mSettingPackage=SettingPackage.getInstance();
         mSettingPackage.registerCallBack(CollectModel.class.getSimpleName(),this);
         mMsgPushPackage = MsgPushPackage.getInstance();
@@ -70,5 +72,17 @@ public class CollectModel extends BaseModel<CollectViewModel> implements Setting
         entity.setPoint(point);
         entity.setPid(msgPushInfo.getPoiId());
         return entity;
+    }
+
+    /**
+     * 动力类型标定
+     * -1 无效值
+     * 0 汽油车
+     * 1 纯电动车
+     * 2 插电式混动汽车
+     * @return 动力类型
+     */
+    public int powerType() {
+        return mCalibrationPackage.powerType();
     }
 }

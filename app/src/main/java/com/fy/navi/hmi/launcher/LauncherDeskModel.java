@@ -4,6 +4,7 @@ import android.view.MotionEvent;
 
 import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
+import com.fy.navi.service.StartService;
 import com.fy.navi.service.define.bean.MapLabelItemBean;
 import com.fy.navi.service.define.map.MapMode;
 import com.fy.navi.service.define.map.MapType;
@@ -20,11 +21,13 @@ import java.util.ArrayList;
  * @Author yaWei
  * @date 2025/2/18
  */
-public class LauncherDeskModel extends BaseModel<BaseLauncherDeskViewModel> implements IMapPackageCallback {
-    private MapPackage mapPackage;
+public class LauncherDeskModel extends BaseModel<BaseLauncherDeskViewModel> implements StartService.ISdkInitCallback, IMapPackageCallback {
     private static final String TAG = "LauncherDeskModel";
+    private MapPackage mapPackage;
+    private boolean mapLoadStatus = false;
 
     public LauncherDeskModel() {
+        StartService.getInstance().registerSdkCallback(this);
     }
 
     @Override
@@ -41,6 +44,12 @@ public class LauncherDeskModel extends BaseModel<BaseLauncherDeskViewModel> impl
             mapPackage.unRegisterCallback(getMapId(), this);
             mapPackage.unBindMapView(mViewModel.getMapView());
         }
+    }
+
+    @Override
+    public void onSdkInitSuccess() {
+        if(mapLoadStatus) return;
+        mapPackage.initMapView(mViewModel.getMapView());
     }
 
     @Override
@@ -80,6 +89,7 @@ public class LauncherDeskModel extends BaseModel<BaseLauncherDeskViewModel> impl
     @Override
     public void onMapLoadSuccess(MapType mapTypeId) {
         Logger.i(TAG, "onMapLoadSuccess", "mapTypeId:" + mapTypeId.name());
+        mapLoadStatus = true;
     }
 
     @Override

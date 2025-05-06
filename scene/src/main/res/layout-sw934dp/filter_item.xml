@@ -31,7 +31,7 @@
             tools:text="快充"
             android:textSize="@dimen/sp_30"
             android:gravity="center"
-            android:textColor="@drawable/custom_filter_item_text_bg_selector_day"
+            android:textColor="@color/custom_filter_item_text_bg_selector_day"
             app:layout_constraintEnd_toStartOf="@+id/filter_img"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"

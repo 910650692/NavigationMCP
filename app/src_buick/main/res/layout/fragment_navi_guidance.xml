@@ -122,7 +122,9 @@
             <!--悬挂卡-->
             <com.fy.navi.scene.ui.navi.hangingcard.NaviSceneHangingCard
                 android:id="@+id/scene_handing_card"
-                android:layout_width="@dimen/dp_640"
+                android:layout_width="0dp"
+                app:layout_constraintStart_toStartOf="@id/scl_top_container"
+                app:layout_constraintEnd_toEndOf="@id/scl_top_container"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_m_9"
                 android:visibility="@{ViewModel.mHandingCardVisibility?View.VISIBLE:View.GONE}"
@@ -131,10 +133,11 @@
             <!--悬挂卡详情-->
             <com.fy.navi.scene.ui.navi.hangingcard.NaviSceneHandingCardDetail
                 android:id="@+id/scene_navi_card_detail"
-                android:layout_width="@dimen/dp_640"
-                android:layout_height="@dimen/dp_376"
-                android:layout_marginTop="@dimen/dp_m_9"
-                android:background="@drawable/bg_navi_btn_common"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/dp_433"
+                app:layout_constraintStart_toStartOf="@id/scl_top_container"
+                app:layout_constraintEnd_toEndOf="@id/scl_top_container"
+                android:layout_marginTop="@dimen/dp_m_32"
                 android:visibility="@{ViewModel.mHandingCardDetailVisibility?View.VISIBLE:View.GONE}"
                 app:layout_constraintTop_toBottomOf="@id/scl_top_container" />
 

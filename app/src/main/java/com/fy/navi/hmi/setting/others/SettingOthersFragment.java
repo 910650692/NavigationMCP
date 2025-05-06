@@ -200,6 +200,7 @@ public class SettingOthersFragment extends BaseFragment<FragmentSettingOthersBin
                     @HookMethod(eventName = BuryConstant.EventName.AMAP_RETURN_DEFAULT)
                     public void onCommitClick() {
                         mViewModel.clearAll();
+                        mViewModel.resetSetting();
                         mViewModel.setResetSettingDialogShown(false);
                         restartApp();
                     }
@@ -257,6 +258,9 @@ public class SettingOthersFragment extends BaseFragment<FragmentSettingOthersBin
         }
     }
 
+    /**
+     * 保存界面
+     */
     private void restoreFragment(){
         if(mViewModel.getIsClearMemoryDialogShown()){
             mClearMemoryDialog.show();
@@ -269,6 +273,9 @@ public class SettingOthersFragment extends BaseFragment<FragmentSettingOthersBin
         }
     }
 
+    /**
+     * 清除dialog
+     */
     private void clearDialog(){
         if(mClearMemoryDialog.isShowing()){
             mClearMemoryDialog.dismiss();

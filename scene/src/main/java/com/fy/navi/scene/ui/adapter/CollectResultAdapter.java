@@ -95,10 +95,10 @@ public class CollectResultAdapter extends RecyclerView.Adapter<CollectResultAdap
         holder.mResultItemBinding.setLayoutPosition(String.valueOf(position + 1));
         if (!ConvertUtils.isEmpty(mPoiEntities.get(position).getFavoriteInfo())
                 && mPoiEntities.get(position).getFavoriteInfo().getTop_time() != 0) {
-            holder.mResultItemBinding.itemFavoriteTopTag.setVisibility(View.VISIBLE);
+            holder.mResultItemBinding.itemFavoriteTopTag.setVisibility(View.GONE);
 //            holder.mResultItemBinding.itemFavoriteDistance.setVisibility(View.VISIBLE);
 //            holder.mResultItemBinding.itemFavoriteLine.setVisibility(View.VISIBLE);
-            holder.mResultItemBinding.swipeMenuLayout.setBackground(ResourceUtils.Companion.getInstance().getDrawable(R.color.bg_route_item_select));
+            holder.mResultItemBinding.swipeMenuLayout.setBackground(ResourceUtils.Companion.getInstance().getDrawable(R.color.navi_color_8E97B9_20));
             holder.mResultItemBinding.stvTop.setText(ResourceUtils.Companion.getInstance().getString(R.string.dsc_cancel));
             holder.mResultItemBinding.imgTop.setImageResource(R.drawable.img_untop_58);
         } else {

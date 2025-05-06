@@ -7,149 +7,157 @@
 
     </data>
 
-    <com.fy.navi.ui.view.SwipeDeleteLayout
+    <com.fy.navi.ui.view.SkinCardView
         android:layout_width="@dimen/dp_820"
         android:layout_height="@dimen/dp_152"
-        android:id="@+id/swipeDeleteView"
-        android:clickable="true"
-        android:background="@drawable/bg_scene_charge_tip">
+        android:elevation="@dimen/dp_30"
+        android:outlineSpotShadowColor="@color/common_bg_shadow_color"
+        app:cardBackgroundColor="@color/common_bg_color"
+        app:cardCornerRadius="@dimen/dp_14">
 
-        <com.fy.navi.ui.view.SkinConstraintLayout
+        <com.fy.navi.ui.view.SwipeDeleteLayout
+            android:id="@+id/swipeDeleteView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:clickable="true">
 
-            <View
-                android:id="@+id/view_bg"
+            <com.fy.navi.ui.view.SkinConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent">
 
-            <com.fy.navi.ui.view.SkinImageView
-                android:id="@+id/iv_icon"
-                android:layout_width="@dimen/dp_74"
-                android:layout_height="@dimen/dp_74"
-                android:layout_marginStart="@dimen/dp_12"
-                android:src="@drawable/img_refuel_low_58"
-                app:layout_constraintBottom_toBottomOf="@id/view_bg"
-                app:layout_constraintStart_toStartOf="@id/view_bg"
-                app:layout_constraintTop_toTopOf="@id/view_bg" />
+                <View
+                    android:id="@+id/view_bg"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
 
-            <com.fy.navi.ui.view.SkinTextView
-                android:id="@+id/tv_title"
-                android:layout_width="@dimen/dp_528"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_12"
-                android:ellipsize="end"
-                android:maxLines="1"
-                android:textColor="@color/traffic_title_color"
-                android:textSize="@dimen/sp_38"
-                app:layout_constraintStart_toEndOf="@id/iv_icon"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toTopOf="@id/ll_type_and_price"
-                app:layout_constraintVertical_chainStyle="packed"
-                tools:text="加油站…" />
-
-            <com.fy.navi.ui.view.SkinTextView
-                android:id="@+id/tv_sub_title"
-                android:layout_width="@dimen/dp_96"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_12"
-                android:layout_marginTop="@dimen/dp_12"
-                android:layout_marginBottom="@dimen/dp_24"
-                android:ellipsize="end"
-                android:maxLines="1"
-                android:textColor="@color/traffic_title_color"
-                android:textSize="@dimen/sp_32"
-                android:visibility="gone"
-                app:layout_constraintBottom_toBottomOf="@id/view_bg"
-                app:layout_constraintStart_toEndOf="@id/iv_icon"
-                tools:text="服务区" />
-
-            <LinearLayout
-                android:id="@+id/ll_type_and_price"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:paddingEnd="@dimen/dp_12"
-                app:layout_constraintTop_toBottomOf="@id/tv_title"
-                app:layout_constraintBottom_toBottomOf="@id/view_bg"
-                app:layout_constraintEnd_toStartOf="@id/view_navi_now"
-                app:layout_constraintStart_toStartOf="@id/tv_title">
+                <com.fy.navi.ui.view.SkinImageView
+                    android:id="@+id/iv_icon"
+                    android:layout_width="@dimen/dp_74"
+                    android:layout_height="@dimen/dp_74"
+                    android:layout_marginStart="@dimen/dp_12"
+                    android:src="@drawable/img_refuel_low_58"
+                    app:layout_constraintBottom_toBottomOf="@id/view_bg"
+                    app:layout_constraintStart_toStartOf="@id/view_bg"
+                    app:layout_constraintTop_toTopOf="@id/view_bg" />
 
                 <com.fy.navi.ui.view.SkinTextView
-                    android:id="@+id/tv_95"
-                    android:layout_width="wrap_content"
+                    android:id="@+id/tv_title"
+                    android:layout_width="@dimen/dp_528"
                     android:layout_height="wrap_content"
-                    android:text="@string/gas_95"
-                    android:textColor="@color/common_title_color"
-                    android:textSize="@dimen/sp_32" />
+                    android:layout_marginStart="@dimen/dp_12"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:textColor="@color/traffic_title_color"
+                    android:textSize="@dimen/sp_38"
+                    app:layout_constraintBottom_toTopOf="@id/ll_type_and_price"
+                    app:layout_constraintStart_toEndOf="@id/iv_icon"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_chainStyle="packed"
+                    tools:text="加油站…" />
 
                 <com.fy.navi.ui.view.SkinTextView
-                    android:id="@+id/tv_95_price"
-                    android:layout_width="wrap_content"
+                    android:id="@+id/tv_sub_title"
+                    android:layout_width="@dimen/dp_96"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/dp_8"
-                    android:textColor="@color/common_sub_title_color"
+                    android:layout_marginStart="@dimen/dp_12"
+                    android:layout_marginTop="@dimen/dp_12"
+                    android:layout_marginBottom="@dimen/dp_24"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:textColor="@color/traffic_title_color"
                     android:textSize="@dimen/sp_32"
-                    tools:text="￥7.6" />
+                    android:visibility="gone"
+                    app:layout_constraintBottom_toBottomOf="@id/view_bg"
+                    app:layout_constraintStart_toEndOf="@id/iv_icon"
+                    tools:text="服务区" />
+
+                <LinearLayout
+                    android:id="@+id/ll_type_and_price"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingEnd="@dimen/dp_12"
+                    app:layout_constraintBottom_toBottomOf="@id/view_bg"
+                    app:layout_constraintEnd_toStartOf="@id/view_navi_now"
+                    app:layout_constraintStart_toStartOf="@id/tv_title"
+                    app:layout_constraintTop_toBottomOf="@id/tv_title">
+
+                    <com.fy.navi.ui.view.SkinTextView
+                        android:id="@+id/tv_95"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/gas_95"
+                        android:textColor="@color/common_title_color"
+                        android:textSize="@dimen/sp_32" />
+
+                    <com.fy.navi.ui.view.SkinTextView
+                        android:id="@+id/tv_95_price"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/dp_8"
+                        android:textColor="@color/common_sub_title_color"
+                        android:textSize="@dimen/sp_32"
+                        tools:text="￥7.6" />
+
+                    <com.fy.navi.ui.view.SkinTextView
+                        android:id="@+id/tv_92"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/dp_16"
+                        android:text="@string/gas_92"
+                        android:textColor="@color/common_title_color"
+                        android:textSize="@dimen/sp_32" />
+
+                    <com.fy.navi.ui.view.SkinTextView
+                        android:id="@+id/tv_92_price"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/dp_8"
+                        android:textColor="@color/common_sub_title_color"
+                        android:textSize="@dimen/sp_32"
+                        tools:text="￥7.2" />
+
+                </LinearLayout>
+
+                <com.fy.navi.ui.view.SkinImageView
+                    android:id="@+id/iv_navi_icon"
+                    android:layout_width="@dimen/dp_54"
+                    android:layout_height="@dimen/dp_54"
+                    android:src="@drawable/img_navigation_black_58"
+                    app:layout_constraintBottom_toTopOf="@id/tv_distance"
+                    app:layout_constraintEnd_toEndOf="@id/tv_distance"
+                    app:layout_constraintStart_toStartOf="@id/tv_distance"
+                    app:layout_constraintTop_toTopOf="@id/view_bg"
+                    app:layout_constraintVertical_chainStyle="packed" />
 
                 <com.fy.navi.ui.view.SkinTextView
-                    android:id="@+id/tv_92"
+                    android:id="@+id/tv_distance"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/dp_16"
-                    android:text="@string/gas_92"
-                    android:textColor="@color/common_title_color"
-                    android:textSize="@dimen/sp_32" />
-
-                <com.fy.navi.ui.view.SkinTextView
-                    android:id="@+id/tv_92_price"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/dp_8"
-                    android:textColor="@color/common_sub_title_color"
+                    android:layout_marginTop="@dimen/dp_10"
+                    android:layout_marginEnd="@dimen/dp_32"
+                    android:gravity="center"
+                    android:minWidth="@dimen/dp_120"
+                    android:textColor="@color/traffic_sub_title_color"
                     android:textSize="@dimen/sp_32"
-                    tools:text="￥7.2" />
+                    app:layout_constraintBottom_toBottomOf="@id/view_bg"
+                    app:layout_constraintEnd_toEndOf="@id/view_bg"
+                    app:layout_constraintTop_toBottomOf="@id/iv_navi_icon"
+                    tools:text="7.2公里" />
 
-            </LinearLayout>
+                <View
+                    android:id="@+id/view_navi_now"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    app:layout_constraintBottom_toBottomOf="@id/tv_distance"
+                    app:layout_constraintEnd_toEndOf="@id/tv_distance"
+                    app:layout_constraintStart_toStartOf="@id/tv_distance"
+                    app:layout_constraintTop_toTopOf="@id/iv_navi_icon" />
 
-            <com.fy.navi.ui.view.SkinImageView
-                android:id="@+id/iv_navi_icon"
-                android:layout_width="@dimen/dp_54"
-                android:layout_height="@dimen/dp_54"
-                android:src="@drawable/img_navigation_black_58"
-                app:layout_constraintBottom_toTopOf="@id/tv_distance"
-                app:layout_constraintEnd_toEndOf="@id/tv_distance"
-                app:layout_constraintStart_toStartOf="@id/tv_distance"
-                app:layout_constraintTop_toTopOf="@id/view_bg"
-                app:layout_constraintVertical_chainStyle="packed" />
+            </com.fy.navi.ui.view.SkinConstraintLayout>
 
-            <com.fy.navi.ui.view.SkinTextView
-                android:id="@+id/tv_distance"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_10"
-                android:layout_marginEnd="@dimen/dp_32"
-                android:minWidth="@dimen/dp_120"
-                android:textColor="@color/traffic_sub_title_color"
-                android:textSize="@dimen/sp_32"
-                android:gravity="center"
-                app:layout_constraintBottom_toBottomOf="@id/view_bg"
-                app:layout_constraintEnd_toEndOf="@id/view_bg"
-                app:layout_constraintTop_toBottomOf="@id/iv_navi_icon"
-                tools:text="7.2公里" />
-
-            <View
-                android:id="@+id/view_navi_now"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                app:layout_constraintBottom_toBottomOf="@id/tv_distance"
-                app:layout_constraintEnd_toEndOf="@id/tv_distance"
-                app:layout_constraintStart_toStartOf="@id/tv_distance"
-                app:layout_constraintTop_toTopOf="@id/iv_navi_icon" />
-
-        </com.fy.navi.ui.view.SkinConstraintLayout>
-
-        <include layout="@layout/handup_delete_view" />
-    </com.fy.navi.ui.view.SwipeDeleteLayout>
+            <include layout="@layout/handup_delete_view" />
+        </com.fy.navi.ui.view.SwipeDeleteLayout>
+    </com.fy.navi.ui.view.SkinCardView>
 </layout>

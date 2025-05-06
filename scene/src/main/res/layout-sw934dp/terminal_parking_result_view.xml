@@ -9,9 +9,10 @@
     </data>
 
     <com.fy.navi.ui.view.SkinLinearLayout
-        android:layout_width="@dimen/dp_640"
+        android:layout_width="@dimen/dp_698"
         android:layout_height="match_parent"
-        android:background="@drawable/bg_search_main_tab"
+        android:padding="@dimen/dp_29"
+        android:background="@drawable/bg_search_shadow"
         android:orientation="vertical">
 
         <com.fy.navi.ui.view.SkinConstraintLayout

@@ -43,6 +43,7 @@ public class CollectFragment extends BaseFragment<FragmentCollectBinding, Collec
     @HookMethod(eventName = BuryConstant.EventName.AMAP_FAVORITE_LIST)
     public void onInitData() {
         defaultDataProcessing();
+        mBinding.collectView.setPowerType(mViewModel.powerType());
     }
 
     /**

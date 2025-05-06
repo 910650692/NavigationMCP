@@ -6,6 +6,9 @@ package com.fy.navi.service.logicpaket.engine;
  * @date 2024/11/26
  */
 public interface IEngineObserver {
+    default void onInitBaseLibSuccess(){
+
+    }
 
     void onInitEngineSuccess();
 

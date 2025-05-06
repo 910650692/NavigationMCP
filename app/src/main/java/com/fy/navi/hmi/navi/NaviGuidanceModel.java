@@ -216,6 +216,7 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
         mRoutePackage.removeAllRouteInfo(MapTypeManager.getInstance().getMapTypeIdByName(mViewModel.mScreenId));
         mLayerPackage.setVisibleGuideSignalLight(MapTypeManager.getInstance().getMapTypeIdByName(mViewModel.mScreenId), false);
         mNaviPackage.addNaviRecord(true);
+        mRoutePackage.clearRouteLine(MapTypeManager.getInstance().getMapTypeIdByName(mViewModel.mScreenId));
     }
 
     @Override

@@ -34,6 +34,7 @@ public class BaseSmallCardMapViewModel extends BaseViewModel<SmallCardMapFragmen
     public ObservableField<Boolean> naviUiVisibility;//tmc
     public ObservableField<Boolean> cruiseUiVisibility;//tmc
     public ObservableField<Boolean> mPlaceHolderVisibility;//占位图
+    public ObservableField<Boolean> mCruiseEgleVisibility; // 巡航电子眼
     private NaviEtaInfo mNaviEtaInfo;
 
     public BaseSmallCardMapViewModel(@NonNull Application application) {
@@ -42,6 +43,7 @@ public class BaseSmallCardMapViewModel extends BaseViewModel<SmallCardMapFragmen
         naviUiVisibility = new ObservableField<>(true);
         cruiseUiVisibility = new ObservableField<>(true);
         mPlaceHolderVisibility = new ObservableField<>(true);
+        mCruiseEgleVisibility = new ObservableField<>(false);
         mNaviEtaInfo = new NaviEtaInfo();
     }
 
@@ -127,6 +129,7 @@ public class BaseSmallCardMapViewModel extends BaseViewModel<SmallCardMapFragmen
 
     public void updateCruiseCameraInfo(CruiseInfoEntity cruiseInfoEntity) {
         mView.updateCruiseCameraInfo(cruiseInfoEntity);
+        mCruiseEgleVisibility.set(cruiseInfoEntity != null);
     }
 
     public void updateCruiseLanInfo(final boolean isShowLane, final LaneInfoEntity laneInfoEntity) {

@@ -76,6 +76,11 @@ public class ActivateAdapterImpl implements IActivateApi {
     }
 
     @Override
+    public boolean checkActivation() {
+        return true;
+    }
+
+    @Override
     public void addActivateObserver(final ActivateObserver observer) {
         if (ConvertUtils.isContain(mActObserverList, observer)) {
             return;
@@ -154,11 +159,13 @@ public class ActivateAdapterImpl implements IActivateApi {
      */
     private String getEngineMsg(final int code) {
         return switch (code) {
-            case 10001 -> "激活参数传输错误";
-            case 10002 -> "网络激活失败";
-            case 10003 -> "UUID获取失败";
-            case 10004 -> "云对云下单失败";
-            case 10005 -> "订单状态查询超时";
+            case 20000 -> "激活成功";
+            case 20001 -> "激活失败";
+            case 20003 -> "激活参数传输错误";
+            case 20004 -> "网络激活失败";
+            case 20005 -> "UUID获取失败";
+            case 20006 -> "云对云下单失败";
+            case 20007 -> "订单状态查询超时";
             default -> "未知错误码";
         };
     }

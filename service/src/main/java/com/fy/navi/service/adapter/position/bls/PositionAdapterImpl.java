@@ -50,7 +50,7 @@ public class PositionAdapterImpl implements IPositionApi, ISpeedCallback {
     }
 
     @Override
-    public void init() {
+    public boolean init() {
         // TODO: 2025/2/25 此处定位模式需要在存储中配置,临时使用constant配置  GNSS/后端融合切换
         mLocMode = PositionConstant.isDrBack ? LocMode.DrBack : LocMode.GNSS;
         if (mLocMode == LocMode.DrBack) {
@@ -59,6 +59,7 @@ public class PositionAdapterImpl implements IPositionApi, ISpeedCallback {
         }
         boolean initResult = positionStrategy.initLocEngine(mLocMode, new PositionConfig());
         Logger.i(TAG, "initLocEngine: " + initResult + ",mLocMode：" + mLocMode);
+        return initResult;
     }
 
     @Override

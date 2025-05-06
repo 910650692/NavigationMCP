@@ -6,7 +6,7 @@
         <import type="android.view.View"/>
         <variable
             name="ViewModel"
-            type="com.fy.navi.hmi.startup.ManualActivateViewModel" />
+            type="com.fy.navi.hmi.activity.ManualActivateViewModel" />
     </data>
 
     <com.fy.navi.ui.view.SkinConstraintLayout

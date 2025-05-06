@@ -2,18 +2,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <data>
-
-        <import type="com.android.utils.ConvertUtils" />
-
-        <import type="android.view.View" />
-
-        <variable
-            name="holder"
-            type="com.fy.navi.scene.ui.adapter.NaviParkListAdapter.ResultHolder" />
-
-    </data>
-
     <com.fy.navi.ui.view.SkinConstraintLayout
         android:id="@+id/scl_list_item"
         android:layout_width="match_parent"

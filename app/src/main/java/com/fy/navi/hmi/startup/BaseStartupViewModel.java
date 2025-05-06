@@ -7,18 +7,15 @@ import android.text.TextUtils;
 import androidx.annotation.NonNull;
 
 import com.android.utils.log.Logger;
-import com.fy.navi.INaviInitListener;
-import com.fy.navi.NaviService;
 import com.fy.navi.burypoint.anno.HookMethod;
 import com.fy.navi.burypoint.constant.BuryConstant;
 import com.fy.navi.hmi.map.MapActivity;
+import com.fy.navi.hmi.permission.ReminderDialog;
 import com.fy.navi.mapservice.bean.INaviConstant;
 import com.fy.navi.service.AppContext;
 import com.fy.navi.service.define.search.PoiInfoEntity;
-import com.fy.navi.service.logicpaket.activate.ActivatePackage;
-import com.fy.navi.service.logicpaket.engine.EnginePackage;
-import com.fy.navi.service.logicpaket.activate.IActivateObserver;
 import com.fy.navi.ui.base.BaseViewModel;
+import com.fy.navi.ui.base.StackManager;
 import com.fy.navi.ui.dialog.IBaseDialogClickListener;
 
 /**
@@ -26,9 +23,8 @@ import com.fy.navi.ui.dialog.IBaseDialogClickListener;
  * @Author lww
  * @date 2025/1/25
  */
-public class BaseStartupViewModel extends BaseViewModel<StartupActivity, StartupModel> implements INaviInitListener {
+public class BaseStartupViewModel extends BaseViewModel<StartupActivity, StartupModel> {
     protected static final String TAG = "BaseStartupViewModel";
-    private boolean permissionStatus;
     /*** 查看用户是否同意过隐私协议 **/
     private boolean isFirstLauncher;
 
@@ -37,8 +33,8 @@ public class BaseStartupViewModel extends BaseViewModel<StartupActivity, Startup
     private String mKeyword; //搜索关键字
     private PoiInfoEntity mEndPoint; // 路线规划目的地
 
-    private NetActivateFailedDialog mFailedDialog;
-    private IActivateObserver mActObserver = new IActivateObserver() {
+//    private NetActivateFailedDialog mFailedDialog;
+   /* private IActivateObserver mActObserver = new IActivateObserver() {
         @Override
         public void onActivating() {
             Logger.d(TAG, "onActivating...");
@@ -80,11 +76,11 @@ public class BaseStartupViewModel extends BaseViewModel<StartupActivity, Startup
             showActivatingView(false);
             finishStartUp();
         }
-    };
+    };*/
 
     public BaseStartupViewModel(@NonNull Application application) {
         super(application);
-        permissionStatus = PermissionUtils.getInstance().checkoutPermission();
+        Logger.d(TAG, "获取是否是第一次打开应用");
         isFirstLauncher = mModel.isFirstLauncher();
     }
 
@@ -96,15 +92,13 @@ public class BaseStartupViewModel extends BaseViewModel<StartupActivity, Startup
     @Override
     public void onCreate() {
         super.onCreate();
-        NaviService.registerAppInitListener(this);
-        if (isFirstLauncher) {
-            popAgreementDialog();
-        } else if (mModel.isShowStartupException()) {
+        Logger.d(TAG, "检测隐私弹窗和网络 缓存等");
+        if (mModel.isShowStartupException()) {
             popStartupExceptionDialog();
         } else {
-            checkPermission();
+            checkPrivacyRights();
         }
-        ActivatePackage.getInstance().addActObserver(mActObserver);
+/*        ActivatePackage.getInstance().addActObserver(mActObserver);
         mFailedDialog = new NetActivateFailedDialog(mView);
         mFailedDialog.setDialogClickListener(new IBaseDialogClickListener() {
             @Override
@@ -118,31 +112,23 @@ public class BaseStartupViewModel extends BaseViewModel<StartupActivity, Startup
                 Logger.d(TAG, "激活失败，手动退出应用");
                 finishStartUp();
             }
-        });
+        });*/
     }
 
-    /**
-     * 关闭activity
-     */
-    public void finishStartUp() {
-        mView.finish();
+    private void checkPrivacyRights() {
+        if (isFirstLauncher) {
+            popAgreementDialog();
+        } else {
+            mModel.checkPermission();
+        }
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
         Logger.i(TAG, "onDestroy");
-        mFailedDialog.cancel();
-        NaviService.unRegisterAppInitListener(this);
-        ActivatePackage.getInstance().removeActObserver(mActObserver);
-    }
-
-    private void checkPermission() {
-        if (permissionStatus) {
-            mModel.startInitEngine();
-        } else {
-            PermissionUtils.getInstance().requestPermission();
-        }
+//        mFailedDialog.cancel();
+//        ActivatePackage.getInstance().removeActObserver(mActObserver);
     }
 
     /**
@@ -152,17 +138,13 @@ public class BaseStartupViewModel extends BaseViewModel<StartupActivity, Startup
         ReminderDialog reminderDialog = new ReminderDialog(mView, new IBaseDialogClickListener() {
             @Override
             public void onCommitClick() {
-                if (mModel.isShowStartupException()) {
-                    popStartupExceptionDialog();
-                } else {
-                    checkPermission();
-                    mModel.updateFirstLauncherFlag();
-                }
+                mModel.updateFirstLauncherFlag();
+                mModel.checkPermission();
             }
 
             @Override
             public void onCancelClick() {
-                finishStartUp();
+                StackManager.getInstance().exitApp();
             }
         });
         reminderDialog.show();
@@ -173,15 +155,12 @@ public class BaseStartupViewModel extends BaseViewModel<StartupActivity, Startup
         StartupExceptionDialog startupExceptionDialog = new StartupExceptionDialog(mView, new IBaseDialogClickListener() {
             @Override
             public void onNetWorkConnect() {
-                checkPermission();
-                if (isFirstLauncher) {
-                    mModel.updateFirstLauncherFlag();
-                }
+                checkPrivacyRights();
             }
 
             @Override
             public void onExit() {
-                finishStartUp();
+                StackManager.getInstance().exitApp();
             }
         });
         startupExceptionDialog.show();
@@ -208,32 +187,16 @@ public class BaseStartupViewModel extends BaseViewModel<StartupActivity, Startup
             }
         }
         AppContext.getInstance().getMContext().startActivity(intent);
-        finishStartUp();
-    }
-
-    @Override
-    public void onInitFinished(boolean isSuccess) {
-        Logger.w(TAG, "onInitFinished", "isSuccess:" + isSuccess, "permissionStatus:" + permissionStatus);
-        if (!isSuccess) {
-            return;
-        }
-        if (permissionStatus) {
-            startMapActivity();
-        } else {
-            Logger.w(TAG, "onInitFinished but not has permissionStatus!");
-        }
+        mView.finish();
     }
 
     /**
      * 显示激活加载图片
+     *
      * @param show 是否显示
      */
     public void showActivatingView(final boolean show) {
         mView.showActivatingView(show);
-    }
-
-    public void updatePermissionStatus(boolean status) {
-        this.permissionStatus = status;
     }
 
     public int getIntentPage() {

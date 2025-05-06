@@ -2,6 +2,7 @@ package com.fy.navi.scene.ui.navi.hangingcard;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
@@ -10,6 +11,7 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.android.utils.log.Logger;
 import com.fy.navi.scene.databinding.NaviSceneHandingCardDetailBinding;
 import com.fy.navi.scene.impl.imersive.ImersiveStatus;
 import com.fy.navi.scene.impl.imersive.ImmersiveStatusScene;
@@ -98,6 +100,7 @@ public class NaviSceneHandingCardDetail extends NaviSceneBase<NaviSceneHandingCa
     }
 
     public void updateUi(List<PoiInfoEntity> list, HandCardType type) {
+        mViewBinding.recyclerView.scrollToPosition(0);
         mScreenViewModel.updateUi(list, type);
         mAdapter.notifyDataChanged(list, type);
         notifySceneStateChange(true);

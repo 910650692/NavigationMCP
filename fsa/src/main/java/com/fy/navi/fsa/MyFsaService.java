@@ -25,6 +25,7 @@ import com.fy.navi.fsa.bean.TurnInfo;
 import com.fy.navi.fsa.scene.FsaNaviScene;
 import com.fy.navi.hud.VTBinder;
 import com.fy.navi.service.AppContext;
+import com.fy.navi.service.StartService;
 import com.fy.navi.service.adapter.navi.NaviConstant;
 import com.fy.navi.service.define.cruise.CruiseInfoEntity;
 import com.fy.navi.service.define.map.MapType;
@@ -151,14 +152,14 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
      * 根据service引擎初始化状态添加各个模块的数据监听.
      */
     public void init() {
-        final boolean engineInit = EnginePackage.getInstance().engineStatus();
+        final boolean engineInit = StartService.getInstance().getSdkActivityStatus();
         if (engineInit) {
             if (initFsaService()) {
                 sendEvent(FsaConstant.FsaFunction.ID_ROAD_NETWORK_MODE, FsaConstant.FsaValue.STRING_ONE);
             }
             addPackageListener();
         } else {
-            EnginePackage.getInstance().addEngineObserver(FsaConstant.FSA_TAG, mEngineObserver);
+            StartService.getInstance().registerSdkCallback(mEngineObserver);
         }
 
 //        AppContext.getInstance().getMContext().registerReceiver(new BroadcastReceiver() {
@@ -173,9 +174,9 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
     }
 
     //Map引擎初始化监听
-    private final IEngineObserver mEngineObserver = new IEngineObserver() {
+    private final StartService.ISdkInitCallback mEngineObserver = new StartService.ISdkInitCallback() {
         @Override
-        public void onInitEngineSuccess() {
+        public void onSdkInitSuccess() {
             Logger.d(FsaConstant.FSA_TAG, "serviceEngine init success");
             initFsaService();
             addPackageListener();
@@ -183,7 +184,7 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
         }
 
         @Override
-        public void onInitEngineFail(final int code, final String msg) {
+        public void onSdkInitFail(final int code, final String msg) {
             Logger.e(FsaConstant.FSA_TAG, "engineInit error, code: " + code + ", msg: " + msg);
             sendEvent(FsaConstant.FsaFunction.ID_ROAD_NETWORK_MODE, FsaConstant.FsaValue.STRING_ZERO);
         }
@@ -209,6 +210,7 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
             mService.shutdown();
             mServiceInitSuccess = false;
         }
+        StartService.getInstance().unregisterSdkCallback(mEngineObserver);
     }
 
     /**

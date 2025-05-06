@@ -5,6 +5,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
 
+        <com.android.car.ui.FocusParkingView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="@dimen/dp_720"
             android:layout_height="wrap_content"
@@ -39,16 +43,22 @@
                 android:textColor="@color/setting_bg_tab_text_select"
                 android:textSize="@dimen/sp_46" />
 
-            <com.fy.navi.ui.view.SkinImageView
-                android:id="@+id/loading_close"
-                android:layout_width="@dimen/dp_74"
-                android:layout_height="@dimen/dp_74"
+            <com.android.car.ui.FocusArea
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_36"
                 android:layout_marginEnd="@dimen/dp_68"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintLeft_toRightOf="@+id/loading_content"
-                android:src="@drawable/img_setting_close"/>
+                app:layout_constraintLeft_toRightOf="@+id/loading_content">
+
+                <com.fy.navi.ui.view.SkinImageView
+                    android:id="@+id/loading_close"
+                    android:layout_width="@dimen/dp_74"
+                    android:layout_height="@dimen/dp_74"
+                    android:background="@drawable/bg_base_mfc_cadillac_bg_selector"
+                    android:src="@drawable/img_setting_close"/>
+            </com.android.car.ui.FocusArea>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>

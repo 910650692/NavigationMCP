@@ -30,7 +30,7 @@
             android:orientation="horizontal"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/view_navi_now"
-            app:layout_constraintVertical_chainStyle="packed"
+            app:layout_constraintVertical_chainStyle="spread"
             app:layout_constraintBottom_toTopOf="@id/ll_sub"
             app:layout_constraintTop_toTopOf="parent">
 
@@ -68,7 +68,7 @@
             android:orientation="horizontal"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="@id/ll_title"
-            app:layout_constraintTop_toBottomOf="@id/tv_title"
+            app:layout_constraintTop_toBottomOf="@id/ll_title"
             app:layout_constraintEnd_toEndOf="@id/ll_title">
 
             <com.fy.navi.ui.view.SkinTextView

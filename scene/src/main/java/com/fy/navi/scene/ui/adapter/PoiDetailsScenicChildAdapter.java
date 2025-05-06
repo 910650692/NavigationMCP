@@ -1,11 +1,13 @@
 package com.fy.navi.scene.ui.adapter;
 
 
+import android.content.res.ColorStateList;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -82,7 +84,15 @@ public class PoiDetailsScenicChildAdapter extends RecyclerView.Adapter<PoiDetail
                 getString(R.string.scenic_ratio, ratio);
         Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "check = " + childInfo.getChecked() + " name: " + childInfo.getShortName());
         holder.mScenePoiDetailsScenicChildSpotBinding.childTitle.setText(childInfo.getShortName());
+        final ColorStateList titleList = ContextCompat.getColorStateList(holder.mScenePoiDetailsScenicChildSpotBinding.childTitle.getContext(),
+                R.color.custom_filter_item_text_bg_selector_day);
+        holder.mScenePoiDetailsScenicChildSpotBinding.childTitle.setTextColor(titleList);
+
         holder.mScenePoiDetailsScenicChildSpotBinding.childSubTitle.setText(subTitle);
+        final ColorStateList subTitleList = ContextCompat.getColorStateList(holder.mScenePoiDetailsScenicChildSpotBinding.childSubTitle.getContext(),
+                R.color.custom_filter_sub_item_text_bg_selector_day);
+        holder.mScenePoiDetailsScenicChildSpotBinding.childSubTitle.setTextColor(subTitleList);
+
         holder.mScenePoiDetailsScenicChildSpotBinding.childTitle.setSelected(childInfo.getChecked() == 1);
         holder.mScenePoiDetailsScenicChildSpotBinding.childSubTitle.setSelected(childInfo.getChecked() == 1);
         holder.mScenePoiDetailsScenicChildSpotBinding.poiChildLayout.setSelected(childInfo.getChecked() == 1);

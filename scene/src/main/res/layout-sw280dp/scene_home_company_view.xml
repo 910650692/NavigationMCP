@@ -99,7 +99,7 @@
                     android:layout_width="@dimen/dp_74"
                     android:layout_height="@dimen/dp_74"
                     android:layout_marginTop="@dimen/dp_32"
-                    android:src="@drawable/img_basic_ic_star"
+                    android:src="@drawable/img_star58"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent" />
@@ -131,7 +131,7 @@
                     android:layout_width="@dimen/dp_74"
                     android:layout_height="@dimen/dp_74"
                     android:layout_marginTop="@dimen/dp_32"
-                    android:src="@drawable/img_basic_ic_orientation"
+                    android:src="@drawable/img_broadcast_black_58"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent" />

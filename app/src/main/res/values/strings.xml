@@ -4,6 +4,7 @@
     <string name="permission_quest_fail">权限申请失败</string>
     <string name="permission_quest_dialog_commit">确定</string>
     <string name="permission_quest_dialog_cancel">取消</string>
+    <string name="startup_sdk_init_fail">高德引擎初始化失败</string>
 
     <!-- 隐私条款和协议 -->
     <string name="reminder_use_agreement">用户条款和个人信息保护政策</string>
@@ -516,8 +517,8 @@
     <string name="setting_others_help_tab_data_one">1. 离线地图有什么用?</string>
     <string name="setting_others_help_tab_data_one_answer">下载离线地图后，无网或弱网情况下软件将自动使用离线地图进行搜索、导航，部分城市离线地图还支持路口大图和三维路口大图功能。</string>
     <string name="setting_others_help_tab_data_two">2. 如何下载、更新地图?</string>
-    <string name="setting_others_help_tab_data_two_answer">在图面上，点击左上角更多按钮，选择【离线数据】，我们为您提供了二种方式进行数据下载、更新。方式一:在线更新。点击【离线地图】，可直接联网下载地图数据;
-        方式二:U盘更新。前往官网(www.amapauto.com)下载地图数据包解压后存放于U盘根目录，进入【离线数据】—【U盘更新】，将自动识别您U盘中的数据，您可根据需要选择需要更新的数据。</string>
+    <string name="setting_others_help_tab_data_two_answer">在图面上，点击左上角更多按钮，选择【离线数据】，我们为您提供了二种方式进行数据下载、更新。\n方式一:在线更新。点击【离线地图】，可直接联网下载地图数据;
+        \n方式二:U盘更新。前往官网(www.amapauto.com)下载地图数据包解压后存放于U盘根目录，进入【离线数据】—【U盘更新】，将自动识别您U盘中的数据，您可根据需要选择需要更新的数据。</string>
     <string name="setting_others_help_tab_data_three">3. 如何更改存储位置?</string>
     <string name="setting_others_help_tab_data_three_answer">进入【离线数据】—【更改存储位置】，可以选择您希望存放离线数据的存储位置，我们会将您已经下载的数据移动到该存储位置。</string>
     <string name="setting_others_help_tab_data_four">4. 我插了外置卡/U盘，为什么不识别?</string>

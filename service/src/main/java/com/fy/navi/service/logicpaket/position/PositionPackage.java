@@ -43,14 +43,16 @@ public class PositionPackage implements IPositionAdapterCallback, SignalAdapterC
         mSignalAdapter = SignalAdapter.getInstance();
     }
 
-    public void init() {
+    public boolean init() {
         Logger.i(TAG, "init：" + atomicBoolean.get());
+        boolean initResult = false;
         if (!atomicBoolean.get()) {
             atomicBoolean.set(true);
-            mPositionAdapter.init();
+            initResult  = mPositionAdapter.init();
             mSignalAdapter.registerCallback("PositionPackage", this);
             currentGeo = new GeoPoint(mPositionAdapter.getLastCarLocation().getLongitude(), mPositionAdapter.getLastCarLocation().getLatitude());
         }
+        return initResult;
     }
 
     public synchronized void registerCallBack(IPositionPackageCallback callback) {

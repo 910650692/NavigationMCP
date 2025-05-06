@@ -7,6 +7,10 @@ package com.fy.navi.service.adapter.engine;
  */
 public interface EngineObserver {
 
+    default void onInitBaseLibSuccess(){
+
+    }
+
     /**
      * 引擎初始化成功回调
      */

@@ -472,6 +472,7 @@
                         android:layout_marginStart="@dimen/dp_81"
                         android:layout_marginEnd="@dimen/dp_60"
                         android:focusable="false"
+
                         android:src="@drawable/img_basic_ic_settings"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -484,6 +485,7 @@
                     android:id="@+id/parking_main_tab_bottom"
                     android:layout_width="@dimen/dp_298"
                     android:layout_height="@dimen/dp_120"
+                    android:layout_marginStart="@dimen/dp_1826"
                     android:layout_marginBottom="@dimen/dp_180"
                     android:background="@drawable/bg_search_main_tab"
                     android:focusable="false"
@@ -491,10 +493,7 @@
                     android:orientation="horizontal"
                     android:visibility="@{ViewModel.backToParkingVisibility ? View.VISIBLE : View.GONE}"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintLeft_toRightOf="@+id/search_main_tab"
-                    app:layout_constraintRight_toLeftOf="@+id/scene_scale_view"
-                    app:layout_goneMarginStart="@dimen/dp_1106"
-                    app:layout_goneMarginRight="@dimen/dp_516">
+                    app:layout_constraintStart_toStartOf="parent">
 
                     <com.fy.navi.ui.view.SkinView
                         clickCommand="@{ViewModel.backToSelfParking}"
@@ -573,8 +572,8 @@
                     android:focusable="false"
                     android:visibility="@{ViewModel.cruiseVisibility ? View.VISIBLE : View.GONE}"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/search_main_tab"
                     tools:visibility="gone" />
             </com.fy.navi.ui.view.SkinConstraintLayout>

@@ -44,8 +44,11 @@ public class SettingPlateNumberFragment extends BaseFragment<FragmentSettingPlat
     @Override
     public void onInitView() {
         mBinding.settingPlateNumberNumber.setShowSoftInputOnFocus(false);
-        mBinding.settingPlateNumberFinish.setEnabled(false);
-        mBinding.settingPlateNumberFinish.setAlpha(0.5f);
+        mBinding.settingPlateNumberProvince.setText(mViewModel.getProvince().isEmpty() ?
+                ResourceUtils.Companion.getInstance().getString(R.string.setting_guide_plate_number_default) :
+                mViewModel.getProvince());
+        mBinding.settingPlateNumberNumber.setText(mViewModel.getPlateNumberString());
+        setFinishButtonState(mViewModel.getPlateNumberString());
         mBinding.settingPlateNumberNumber.setOnFocusChangeListener((v, hasFocus) -> {
             if (hasFocus) {
                 showPlateNumberKeyboard();
@@ -54,6 +57,7 @@ public class SettingPlateNumberFragment extends BaseFragment<FragmentSettingPlat
         });
         mBinding.settingProvinceKeyboard.setOnProvinceSelectedListener(province -> {
             mBinding.settingPlateNumberProvince.setText(province);
+            mViewModel.setProvince(province);
             mBinding.settingPlateNumberNumber.requestFocus();
             mBinding.settingPlateNumberNumber.setSelection(mBinding.settingPlateNumberNumber.length());
             showPlateNumberKeyboard();
@@ -63,17 +67,7 @@ public class SettingPlateNumberFragment extends BaseFragment<FragmentSettingPlat
             public void onKeyPress(final String key) {
                 final int start = mBinding.settingPlateNumberNumber.getSelectionStart();
                 final String text = mBinding.settingPlateNumberNumber.getText().toString();
-                if (!isEVCar() && text.length() >= 5) {
-                    mBinding.settingPlateNumberFinish.setEnabled(true);
-                    mBinding.settingPlateNumberFinish.setAlpha(1.0f);
-                } else if (isEVCar() && text.length() >= 6){
-                    mBinding.settingPlateNumberFinish.setEnabled(true);
-                    mBinding.settingPlateNumberFinish.setAlpha(1.0f);
-                } else {
-                    mBinding.settingPlateNumberFinish.setEnabled(false);
-                    mBinding.settingPlateNumberFinish.setAlpha(0.5f);
-
-                }
+                setFinishButtonState(text);
                 mBinding.settingPlateNumberFinish.setTextColor(
                         ResourceUtils.Companion.getInstance().getColor(R.color.setting_white));
                 mBinding.settingPlateNumberFinish.setBackground(
@@ -138,6 +132,24 @@ public class SettingPlateNumberFragment extends BaseFragment<FragmentSettingPlat
         initDialog();
     }
 
+    /**
+     * 设置完成按钮状态
+     * @param text 车牌号码
+     */
+    private void setFinishButtonState(final String text) {
+        if (!isEVCar() && text.length() >= 5) {
+            mBinding.settingPlateNumberFinish.setEnabled(true);
+            mBinding.settingPlateNumberFinish.setAlpha(1.0f);
+        } else if (isEVCar() && text.length() >= 6){
+            mBinding.settingPlateNumberFinish.setEnabled(true);
+            mBinding.settingPlateNumberFinish.setAlpha(1.0f);
+        } else {
+            mBinding.settingPlateNumberFinish.setEnabled(false);
+            mBinding.settingPlateNumberFinish.setAlpha(0.5f);
+        }
+        mViewModel.setPlateNumberString(text);
+    }
+
     @Override
     public void onInitData() {
 
@@ -155,12 +167,18 @@ public class SettingPlateNumberFragment extends BaseFragment<FragmentSettingPlat
         clearDialog();
     }
 
+    /**
+     * 恢复fragment
+     */
     private void restoreFragment(){
         if(mViewModel.getIsDeletePlateNumberDialog()){
             mDeletePlateNumberDialog.show();
         }
     }
 
+    /**
+     * 清除dialog
+     */
     private void clearDialog(){
         if(mDeletePlateNumberDialog.isShowing()){
             mDeletePlateNumberDialog.dismiss();
@@ -181,6 +199,8 @@ public class SettingPlateNumberFragment extends BaseFragment<FragmentSettingPlat
                     public void onCommitClick() {
                         mViewModel.setIsDeletePlateNumberDialog(false);
                         mIsClearPlateNumber = false;
+                        mViewModel.setPlateNumber("");
+                        mViewModel.setAvoidLimit(false);
                         SettingUpdateObservable.getInstance().setPlateNumber("");
                         closeFragment(true);
                     }
@@ -260,8 +280,6 @@ public class SettingPlateNumberFragment extends BaseFragment<FragmentSettingPlat
             SettingUpdateObservable.getInstance().setPlateNumber(plateNumber);
             closeFragment(true);
         } else if (mIsClearPlateNumber){
-            mViewModel.setPlateNumber("");
-            mViewModel.setAvoidLimit(false);
             mViewModel.setIsDeletePlateNumberDialog(true);
             mDeletePlateNumberDialog.show();
         } else {

@@ -37,11 +37,11 @@ public class MapAdapter {
 
     private MapAdapter() {
         mIMapApi = (IMapApi) AdapterConfig.getObject(GAODE_API_PKG, GAODE_API_CLS);
-        mSettingAdapter = SettingAdapter.getInstance();
     }
 
 
     public boolean init(MapType mapTypeId) {
+        mSettingAdapter = SettingAdapter.getInstance();
         return mIMapApi.initMapService(mapTypeId);
     }
 
@@ -90,7 +90,11 @@ public class MapAdapter {
     }
 
     public boolean setTrafficStates(MapType mapTypeId, boolean isOpen) {
-        return mIMapApi.setTrafficStates(mapTypeId, isOpen);
+        boolean isOpenTraffic =  mIMapApi.setTrafficStates(mapTypeId, isOpen);
+        if (isOpenTraffic) {
+            mSettingAdapter.setConfigKeyRoadEvent(isOpen);
+        }
+        return isOpenTraffic;
     }
 
     public void setCustomLabelTypeVisible(MapType mapTypeId, ArrayList<Integer> typeList, boolean visible) {

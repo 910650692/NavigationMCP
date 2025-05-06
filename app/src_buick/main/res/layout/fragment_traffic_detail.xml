@@ -19,10 +19,10 @@
 
     <com.fy.navi.ui.view.SkinConstraintLayout
         clickCommand="@{ViewModel.rootClick}"
-        android:layout_width="@dimen/dp_640"
+        android:layout_width="@dimen/dp_700"
         android:layout_height="wrap_content"
-        android:background="@drawable/bg_search_main_tab"
-        android:minHeight="@dimen/dp_714"
+        android:background="@drawable/bg_shadow_handcard"
+        android:minHeight="@dimen/dp_768"
         android:paddingBottom="@dimen/dp_24">
 
         <com.fy.navi.ui.view.SkinTextView

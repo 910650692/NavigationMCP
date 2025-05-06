@@ -7,6 +7,7 @@ import com.fy.navi.service.define.map.MapType;
 
 /**
  * TODO说明
+ *
  * @author lvww
  * @version $Revision.2024/11/24$
  */
@@ -21,41 +22,33 @@ public final class EngineAdapter {
 
     /**
      * 添加初始化引擎观察者
+     *
      * @param observer EngineObserver
      */
     public void addEngineObserver(final EngineObserver observer) {
         mIEngineApi.addInitEnginObserver(observer);
     }
 
-    /**
-     * 初始化BaseLibs
-     */
+    public void checkSdkLimit() {
+        mIEngineApi.checkSdkLimit();
+    }
+
     public void initBaseLibs() {
         mIEngineApi.initBaseLibs();
     }
 
-    /**
-     * 初始化BL
-     */
     public void initBL() {
         mIEngineApi.initBL();
     }
 
     /**
      * 获取引擎id
+     *
      * @param mapId mapId
      * @return int mapId
      */
     public int engineID(final MapType mapId) {
         return mIEngineApi.engineID(mapId);
-    }
-
-    /**
-     * 获取引擎状态
-     * @return 是否激活
-     */
-    public boolean engineStatus() {
-        return mIEngineApi.engineStatus();
     }
 
     /**
@@ -79,6 +72,7 @@ public final class EngineAdapter {
 
     /**
      * 获取鹰眼引擎id
+     *
      * @param mapId MapType
      * @return 鹰眼引擎id
      */
@@ -88,6 +82,7 @@ public final class EngineAdapter {
 
     /**
      * 获取EGLDeviceID
+     *
      * @param mapId MapType
      * @return EGLDeviceID
      */
@@ -97,6 +92,7 @@ public final class EngineAdapter {
 
     /**
      * 获取style_bl路径
+     *
      * @param mapTypeId MapType
      * @return 路径字符串
      */
@@ -106,10 +102,15 @@ public final class EngineAdapter {
 
     /**
      * 切换log级别
+     *
      * @param logLevel logLevel
      */
-    public void switchLog(final GaodeLogLevel logLevel){
+    public void switchLog(final GaodeLogLevel logLevel) {
         mIEngineApi.switchLog(logLevel);
+    }
+
+    public String getChanelName() {
+        return mIEngineApi.getChanelName();
     }
 
     private static final class Helper {

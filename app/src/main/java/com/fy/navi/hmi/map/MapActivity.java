@@ -21,7 +21,7 @@ import com.fy.navi.fsa.MyFsaService;
 import com.fy.navi.hmi.BR;
 import com.fy.navi.hmi.R;
 import com.fy.navi.hmi.databinding.ActivityMapBinding;
-import com.fy.navi.hmi.startup.PermissionUtils;
+import com.fy.navi.hmi.permission.PermissionUtils;
 import com.fy.navi.hmi.test.TestWindow;
 import com.fy.navi.mapservice.bean.INaviConstant;
 import com.fy.navi.service.define.cruise.CruiseInfoEntity;

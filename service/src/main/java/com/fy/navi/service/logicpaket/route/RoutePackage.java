@@ -1123,6 +1123,10 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
             Logger.e(TAG, "no data");
             return;
         }
+        if (routeIndex == -1 || routeIndex >= requestRouteResult.getMLineLayerParam().getMPathInfoList().size()) {
+            Logger.e(TAG, "out of bounds");
+            return;
+        }
         mLayerAdapter.setSelectedPathIndex(mapTypeId, routeIndex);
         mSelectRouteIndex.put(mapTypeId, routeIndex);
         if (!ConvertUtils.isEmpty(requestRouteResult)) {

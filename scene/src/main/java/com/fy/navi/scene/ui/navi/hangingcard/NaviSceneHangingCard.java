@@ -194,14 +194,21 @@ public class NaviSceneHangingCard extends NaviSceneBase<HangingCardLayoutBinding
     }
 
     private void addChild(HandCardType type, ViewGroup parent) {
+        final CardView newCardView = CardManager.getInstance().createCardViewByType(this, type);
         if (parent.getChildCount() > 0) {
             CardView cardView = (CardView) parent.getChildAt(0);
             if (!ConvertUtils.isNull(cardView) && cardView.mType != type) {
                 parent.removeAllViews();
-                parent.addView(CardManager.getInstance().createCardViewByType(this, type));
+                parent.addView(newCardView);
+                if (isVisible()) {
+                    newCardView.startTimer();
+                }
             }
         } else {
-            parent.addView(CardManager.getInstance().createCardViewByType(this, type));
+            parent.addView(newCardView);
+            if (isVisible()) {
+                newCardView.startTimer();
+            }
         }
     }
 }

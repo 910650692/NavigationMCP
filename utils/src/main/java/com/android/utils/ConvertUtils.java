@@ -620,7 +620,7 @@ public class ConvertUtils {
      * @return 添加后的list集合
      */
     public static <T> List<T> push(List<T> list, T... args) {
-        if (isEmpty(list)) list = new ArrayList<>();
+        if (isNull(list)) list = new ArrayList<>();
         list.addAll(Arrays.asList(args));
         return list;
     }

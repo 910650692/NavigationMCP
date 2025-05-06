@@ -8,10 +8,6 @@
 
         <import type="android.view.View" />
 
-        <variable
-            name="holder"
-            type="com.fy.navi.scene.ui.adapter.NaviParkListAdapter.ResultHolder" />
-
     </data>
 
     <com.fy.navi.ui.view.SkinConstraintLayout

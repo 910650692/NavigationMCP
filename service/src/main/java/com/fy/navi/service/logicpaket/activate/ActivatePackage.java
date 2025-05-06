@@ -24,6 +24,10 @@ public final class ActivatePackage implements ActivateObserver {
         return ActivatePackage.Helper.INSTANCE;
     }
 
+    public boolean checkActivation() {
+        return mActivateAdapter.checkActivation();
+    }
+
     /**
      * 开始激活流程
      */

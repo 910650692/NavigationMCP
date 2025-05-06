@@ -12,6 +12,7 @@ import com.fy.navi.flavor.TestCarType;
 import com.fy.navi.hmi.BuildConfig;
 import com.fy.navi.service.AppContext;
 import com.fy.navi.service.MapDefaultFinalTag;
+import com.fy.navi.service.StartService;
 import com.fy.navi.service.adapter.search.cloudByPatac.PatacNetClient;
 import com.fy.navi.ui.BaseApplication;
 
@@ -44,7 +45,7 @@ public class NaviApplication extends BaseApplication {
     public void onTerminate() {
         super.onTerminate();
         Logger.i(TAG, "onTerminate");
-        NaviService.exitProcess();
+        StartService.getInstance().unSdkInit();
     }
 
     private void initARouter() {

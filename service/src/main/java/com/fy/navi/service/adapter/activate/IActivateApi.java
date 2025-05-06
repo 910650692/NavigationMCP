@@ -1,6 +1,9 @@
 package com.fy.navi.service.adapter.activate;
 
 public interface IActivateApi {
+
+    boolean checkActivation();
+
     /**
      * 添加激活观察者
      * @param observer ActivateObserver

@@ -190,6 +190,13 @@ public class SettingOthersModel extends BaseModel<SettingOthersViewModel>
     }
 
     /**
+     *重置设置
+     */
+    public void resetSetting() {
+        mSettingPackage.initAllSetting();
+    }
+
+    /**
      * @return 获取微信绑定状态
      */
     public boolean getWechatStatus() {
@@ -220,6 +227,9 @@ public class SettingOthersModel extends BaseModel<SettingOthersViewModel>
         return FileUtils.formatFileSize(FileUtils.getTotalSizeOfDirectories(dirs));
     }
 
+    /**
+     * 埋点
+     */
     @HookMethod(eventName = BuryConstant.EventName.AMAP_ACCOUNT_BIND_FINISH)
     private void sendBuryPointForCompleteBindingAccount(){
         //No params, so empty body

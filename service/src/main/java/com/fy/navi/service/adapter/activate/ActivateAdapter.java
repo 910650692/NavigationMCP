@@ -21,6 +21,10 @@ public final class ActivateAdapter {
         return Helper.INSTANCE;
     }
 
+    public boolean checkActivation() {
+        return mActivateApi.checkActivation();
+    }
+
     /**
      * 初始化激活服务
      */
@@ -44,8 +48,9 @@ public final class ActivateAdapter {
 
     /**
      * 手动激活
+     *
      * @param loginCode 激活码
-     * @param userCode 序列号
+     * @param userCode  序列号
      */
     public void manualActivate(final String userCode, final String loginCode) {
         mActivateApi.manualActivate(userCode, loginCode);
@@ -53,9 +58,10 @@ public final class ActivateAdapter {
 
     /**
      * 添加激活观察者
+     *
      * @param observer ActivateObserver
      */
-    public void addActivateObserver(final ActivateObserver observer){
+    public void addActivateObserver(final ActivateObserver observer) {
         mActivateApi.addActivateObserver(observer);
     }
 

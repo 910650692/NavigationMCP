@@ -4,6 +4,7 @@ import android.app.Application;
 
 import androidx.annotation.NonNull;
 
+import com.fy.navi.service.define.map.IBaseScreenMapView;
 import com.fy.navi.ui.base.BaseViewModel;
 
 /**
@@ -26,17 +27,9 @@ public class BaseLauncherSmallCardViewModel extends BaseViewModel<MapLauncherSma
     @Override
     public void onCreate() {
         super.onCreate();
-        checkAgreementIsAgree();
     }
 
-    /***
-     * 检查隐私协议是否已同意
-     */
-    private void checkAgreementIsAgree() {
-
-    }
-
-    public void notifyMapInit() {
-        mView.switchUI(true);
+    public IBaseScreenMapView getMapView(){
+        return mView.getMapView();
     }
 }

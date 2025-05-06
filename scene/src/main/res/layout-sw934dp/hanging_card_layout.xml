@@ -10,6 +10,7 @@
     <com.fy.navi.ui.view.SkinConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingHorizontal="@dimen/dp_29"
         android:orientation="vertical">
 
         <!--第三位的布局，仅仅在空间不足的时候显示-->

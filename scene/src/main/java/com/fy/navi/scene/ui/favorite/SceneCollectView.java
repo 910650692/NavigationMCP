@@ -3,6 +3,7 @@ package com.fy.navi.scene.ui.favorite;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,6 +46,9 @@ public class SceneCollectView extends BaseSceneView<SceneCollectViewBinding, Sce
     //0 普通收藏 1 常用地址 3 收到的点
     private int mCollectionType;
     private int mHomeCompanyType = -1;
+    private List<PoiInfoEntity> mCollectList;
+    private boolean mIsCommonCollect = true;
+    private boolean mIsChargingCollect = false;
 
     public SceneCollectView(@NonNull final Context context) {
         super(context);
@@ -165,6 +169,14 @@ public class SceneCollectView extends BaseSceneView<SceneCollectViewBinding, Sce
                     AutoMapConstant.SourceFragment.MAIN_SEARCH_FRAGMENT,
                     AutoMapConstant.SearchType.SEARCH_KEYWORD, AutoMapConstant.HomeCompanyType.COLLECTION));
         });
+
+        mViewBinding.naviBroadcastStandard.setOnClickListener(view -> {
+
+        });
+
+        mViewBinding.naviBroadcastLarge.setOnClickListener(view -> {
+
+        });
     }
 
     /**
@@ -211,5 +223,10 @@ public class SceneCollectView extends BaseSceneView<SceneCollectViewBinding, Sce
         if (ConvertUtils.equals(sourceFragment, AutoMapConstant.SourceFragment.FRAGMENT_MAIN_ALONG_WAY)) {
             mViewBinding.collectTitleBarView.sclCollectAdd.setVisibility(View.GONE);
         }
+    }
+
+    public void setPowerType(final int powerType){
+        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"powerType: "+powerType);
+        mScreenViewModel.mPowerType.setValue(powerType);
     }
 }

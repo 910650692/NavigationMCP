@@ -27,13 +27,12 @@ import com.fy.navi.service.GBLCacheFilePath;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.adapter.engine.EngineObserver;
 import com.fy.navi.service.adapter.engine.IEngineApi;
+import com.fy.navi.service.define.code.CodeManager;
 import com.fy.navi.service.define.code.UserDataCode;
 import com.fy.navi.service.define.engine.GaodeLogLevel;
 import com.fy.navi.service.define.map.MapType;
-import com.fy.navi.service.define.setting.SettingController;
 import com.fy.navi.service.define.user.account.AccountProfileInfo;
 import com.fy.navi.service.greendao.CommonManager;
-import com.fy.navi.service.greendao.setting.SettingManager;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -43,17 +42,16 @@ import java.util.Locale;
 
 /**
  * TODO说明
+ *
  * @author lvww
  * @version $Revision.2024/11/24$
  */
 public class EngineAdapterImpl implements IEngineApi {
     private static final String TAG = MapDefaultFinalTag.ENGINE_SERVICE_TAG;
     private final List<EngineObserver> mEngineObserverList;
-    private boolean mIsActive = false;
     private static final String ERR_MSG = "Error Massage : ";
     // TODO: 配置父子渠道包，每次更新aar包时都要核实一下
     private final String mChanelName = "C13953968867";
-    private SettingManager mSettingManager;
 
     static {
         Logger.i(TAG, "load gbl xxx.so");
@@ -62,8 +60,6 @@ public class EngineAdapterImpl implements IEngineApi {
 
     public EngineAdapterImpl() {
         mEngineObserverList = new ArrayList<>();
-        mSettingManager = SettingManager.getInstance();
-        mSettingManager.init();
     }
 
     @Override
@@ -72,6 +68,33 @@ public class EngineAdapterImpl implements IEngineApi {
             return;
         }
         mEngineObserverList.add(observer);
+    }
+
+    @Override
+    public void checkSdkLimit() {
+        checkUatMapLimit();
+    }
+
+    @Override
+    public void initBaseLibs() {
+        final int overDue = isOverdue();
+        if (!ConvertUtils.equals(0, overDue)) return;
+        final int initBaseLibsResult = initEngineParam();
+        if (!ConvertUtils.equals(0, initBaseLibsResult)) {
+            onEngineObserver(10004);
+        }else {
+            onEngineObserver(10005);
+        }
+    }
+
+    @Override
+    public void initBL() {
+        final int sdkResultCode = initSDKParam();
+        if (!ConvertUtils.equals(0, sdkResultCode)) {
+            onEngineObserver(10006);
+            return;
+        }
+        onEngineObserver(0);
     }
 
     @Override
@@ -99,11 +122,6 @@ public class EngineAdapterImpl implements IEngineApi {
         /* 场景四：超高频Log */
 //        ServiceMgr.getServiceMgrInstance().switchLog(ALCLogLevel.LogLevelVerbose);
 //        ServiceMgr.getServiceMgrInstance().setGroupMask(ALCGroup.GROUP_MASK_ALL);
-    }
-
-    @Override
-    public boolean engineStatus() {
-        return mIsActive;
     }
 
     @Override
@@ -169,41 +187,14 @@ public class EngineAdapterImpl implements IEngineApi {
         return GBLCacheFilePath.BLS_ASSETS_LAYER_PATH + "style_bl.json";
     }
 
-
     @Override
-    public void initBaseLibs() {
-        Logger.d(TAG, "initBaseLibs :");
-        checkUatMapLimit();
-        if (mIsActive) {
-            return;
-        }
-
-        SdkSoLoadUtils.copyAssetsFiles();
-        final int initBaseLibsResult = initEngineParam();
-        if (!ConvertUtils.equals(0, initBaseLibsResult)) {
-            logResult(10004);
-        }
-    }
-
-    @Override
-    public void initBL() {
-        final int overDue = isOverdue();
-        if (!ConvertUtils.equals(0, overDue)) {
-            logResult(overDue);
-            return;
-        }
-        Logger.d(TAG, "initBL :");
-        final int sdkResultCode = initSDKParam();
-        if (!ConvertUtils.equals(0, sdkResultCode)) {
-            logResult(10005);
-            return;
-        }
-        mIsActive = true;
-        onEngineObserver(0);
+    public String getChanelName() {
+        return mChanelName;
     }
 
     /**
      * 是否过期
+     *
      * @return 错误码
      */
     private int isOverdue() {
@@ -223,6 +214,7 @@ public class EngineAdapterImpl implements IEngineApi {
 
     /**
      * 初始化BaseLib参数
+     *
      * @return 初始化结果
      */
     private int initEngineParam() {
@@ -247,7 +239,6 @@ public class EngineAdapterImpl implements IEngineApi {
         //用户数据目录，保存用户生成数据
         baseInitParam.userDataPath = GBLCacheFilePath.USER_CACHE_PATH;
         baseInitParam.channelName = mChanelName;
-        mSettingManager.insertOrReplace(SettingController.KEY_SETTING_CHANNEL_ID, mChanelName);
         baseInitParam.setIPlatformInterface(PLAT_FORM_INTERFACE);
 
         FileUtils.getInstance().createDir(baseInitParam.logPath);
@@ -259,6 +250,7 @@ public class EngineAdapterImpl implements IEngineApi {
 
     /**
      * 初始化BL参数
+     *
      * @return 初始化结果
      */
     private int initSDKParam() {
@@ -291,34 +283,20 @@ public class EngineAdapterImpl implements IEngineApi {
      * 引擎初始化结果回调.
      *
      * @param code !0 失败/0 成功
+     *             <p>Service只返回错误码，是否弹窗提醒由HMI仲裁
      * @return code
      */
     private int onEngineObserver(final int code) {
         for (EngineObserver observer : mEngineObserverList) {
             if (ConvertUtils.equals(0, code)) {
                 observer.onInitEngineSuccess();
-            } else {
-                observer.onInitEngineFail(code, getEngineMsg(code));
+            } else if(ConvertUtils.equals(10005, code)){
+                observer.onInitBaseLibSuccess();
+            }else {
+                observer.onInitEngineFail(code, CodeManager.getEngineMsg(code));
             }
         }
         return code;
-    }
-
-    /**
-     * 映射错误信息
-     * @param code code
-     * @return msg
-     */
-    private String getEngineMsg(final int code) {
-        return switch (code) {
-            case 10000 -> "引擎初始化成功";
-            case 10001 -> "引擎初始化失败";
-            case 10002 -> "SDK超出有效期";
-            case 10003 -> "SDK无效";
-            case 10004 -> "BaseLibs参数传输错误";
-            case 10005 -> "BlSdk参数传输错误";
-            default -> "未知错误码";
-        };
     }
 
     /**
@@ -395,8 +373,7 @@ public class EngineAdapterImpl implements IEngineApi {
         @Override
         public boolean getAosNetworkParam(final ArrayList<KeyValue> arrayList) {
 
-            @SuppressLint("HardwareIds")
-            final String androidId = Settings.Secure.getString(
+            @SuppressLint("HardwareIds") final String androidId = Settings.Secure.getString(
                     AppContext.getInstance().getMContext().getContentResolver(),
                     Settings.Secure.ANDROID_ID
             );
@@ -436,6 +413,7 @@ public class EngineAdapterImpl implements IEngineApi {
 
     /**
      * 获取uid
+     *
      * @return uid
      */
     public static String getUid() {
@@ -450,15 +428,5 @@ public class EngineAdapterImpl implements IEngineApi {
             uid = info.getUid();
         }
         return uid;
-    }
-
-    /**
-     * 封装错误数据构建
-     *
-     * @param code 错误码
-     */
-    private void logResult(final int code) {
-        Logger.d(TAG, ERR_MSG + "  " + code +" :" + getEngineMsg(code));
-        onEngineObserver(code);
     }
 }

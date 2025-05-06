@@ -34,8 +34,8 @@ public class PositionAdapter {
         mPositionApi = (IPositionApi) AdapterConfig.getObject(Objects.requireNonNull(this.getClass().getPackage()).getName(), "PositionAdapterImpl");
     }
 
-    public void init() {
-        mPositionApi.init();
+    public boolean init() {
+       return mPositionApi.init();
     }
 
     public void registerCallback(IPositionAdapterCallback callback) {

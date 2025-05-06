@@ -34,10 +34,6 @@ public class BaseAccountQRCodeLoginViewModel extends BaseViewModel<AccountQRCode
         closeFragment(true);
     };
 
-    public Action mClickPhoneNumberLogin = () -> {
-        addFragment(new AccountPhoneNumberLoginFragment(), null);
-    };
-
     public Action mRetry = () -> {
         if (mView.getNetworkState()) {
             startAnimation();

@@ -200,6 +200,13 @@ public class BaseSettingOthersViewModel extends BaseViewModel<SettingOthersFragm
     }
 
     /**
+     *重置设置
+     */
+    public void resetSetting() {
+        mModel.resetSetting();
+    }
+
+    /**
      * 删除指定文件夹列表下的所有文件和子文件夹
      */
     public void deleteFilesInDirectories() {
@@ -222,18 +229,33 @@ public class BaseSettingOthersViewModel extends BaseViewModel<SettingOthersFragm
         return mModel.getTotalSizeOfDirectories();
     }
 
-    public void setMemoryDialogShown(boolean isClearMemoryDialogShown){
+    /**
+     * 设置清除内存弹窗状态
+     * @param isClearMemoryDialogShown true:显示，false:隐藏
+     */
+    public void setMemoryDialogShown(final boolean isClearMemoryDialogShown){
         mClearMemoryDialogShown.setValue(isClearMemoryDialogShown);
     }
 
+    /**
+     * @return true:显示，false:隐藏
+     */
     public boolean getIsClearMemoryDialogShown() {
         return Boolean.TRUE.equals(mClearMemoryDialogShown.getValue());
     }
 
-    public void setResetSettingDialogShown(boolean isResetSettingDialogShown) {
+    /**
+     * 设置重置设置弹窗状态
+     * @param isResetSettingDialogShown true:显示，false:隐藏
+     */
+    public void setResetSettingDialogShown(final boolean isResetSettingDialogShown) {
         mResetSettingDialogShown.setValue(isResetSettingDialogShown);
     }
 
+    /**
+     * 设置重置设置弹窗状态
+     * @return true:显示，false:隐藏
+     */
     public boolean getIsResetSettingDialogShown() {
         return Boolean.TRUE.equals(mResetSettingDialogShown.getValue());
     }
@@ -242,7 +264,11 @@ public class BaseSettingOthersViewModel extends BaseViewModel<SettingOthersFragm
         return Boolean.TRUE.equals(mLogoutAccountDialogShown.getValue());
     }
 
-    public void setLogoutAccountDialogShown(boolean isLogoutAccountDialogShown) {
+    /**
+     * 设置退出登录弹窗状态
+     * @param isLogoutAccountDialogShown true:显示，false:隐藏
+     */
+    public void setLogoutAccountDialogShown(final boolean isLogoutAccountDialogShown) {
         mLogoutAccountDialogShown.setValue(isLogoutAccountDialogShown);
     }
 }

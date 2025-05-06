@@ -14,6 +14,10 @@ public class BaseSettingPlateNumberViewModel extends BaseViewModel<SettingPlateN
 
     private MutableLiveData<Boolean> mIsDeletePlateNumberDialog= new MutableLiveData<>(false);
 
+    private String mPlateNumber = "";
+
+    private String mProvince = "";
+
     public BaseSettingPlateNumberViewModel(@NonNull final Application application) {
         super(application);
     }
@@ -78,11 +82,31 @@ public class BaseSettingPlateNumberViewModel extends BaseViewModel<SettingPlateN
         this.mIsFocus.setValue(isFocus);
     }
 
-    public void setIsDeletePlateNumberDialog(boolean isDeletePlateNumberDialog){
+    /**
+     * 是否显示删除车牌的对话框
+     * @param isDeletePlateNumberDialog 对话框
+     */
+    public void setIsDeletePlateNumberDialog(final boolean isDeletePlateNumberDialog){
         mIsDeletePlateNumberDialog.setValue(isDeletePlateNumberDialog);
     }
 
     public boolean getIsDeletePlateNumberDialog(){
         return Boolean.TRUE.equals(mIsDeletePlateNumberDialog.getValue());
+    }
+
+    public String getPlateNumberString() {
+        return mPlateNumber;
+    }
+
+    public void setPlateNumberString(final String plateNumberString) {
+        mPlateNumber = plateNumberString;
+    }
+
+    public String getProvince() {
+        return mProvince;
+    }
+
+    public void setProvince(final String province) {
+        mProvince = province;
     }
 }

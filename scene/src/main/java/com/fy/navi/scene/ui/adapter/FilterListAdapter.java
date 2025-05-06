@@ -2,11 +2,13 @@ package com.fy.navi.scene.ui.adapter;
 
 
 import android.annotation.SuppressLint;
+import android.content.res.ColorStateList;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -86,6 +88,9 @@ public class FilterListAdapter extends RecyclerView.Adapter<FilterListAdapter.Ho
         } else {
             holder.mFilterItemBinding.filterImg.setVisibility(View.GONE);
             holder.mFilterItemBinding.filterText.setSelected(localInfo.getChecked() == 1);
+            final ColorStateList colorStateList = ContextCompat.getColorStateList(holder.mFilterItemBinding.filterText.getContext(),
+                    R.color.custom_filter_item_text_bg_selector_day);
+            holder.mFilterItemBinding.filterText.setTextColor(colorStateList);
             holder.mFilterItemBinding.filterRoot.setSelected(localInfo.getChecked() == 1);
         }
 

@@ -2,11 +2,13 @@ package com.fy.navi.scene.ui.adapter;
 
 
 import android.annotation.SuppressLint;
+import android.content.res.ColorStateList;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -113,6 +115,9 @@ public class FilterChildListAdapter extends RecyclerView.Adapter<FilterChildList
             holder.mfilterItemBinding.filterChildText.setVisibility(View.VISIBLE);
             holder.mfilterItemBinding.filterChildText.setText(localInfo.getName());
             holder.mfilterItemBinding.filterChildText.setSelected(localInfo.getChecked() == 1);
+            final ColorStateList colorStateList = ContextCompat.getColorStateList(holder.mfilterItemBinding.filterChildText.getContext(),
+                    R.color.custom_filter_item_text_bg_selector_day);
+            holder.mfilterItemBinding.filterChildText.setTextColor(colorStateList);
             holder.mfilterItemBinding.filterChildRoot.setSelected(localInfo.getChecked() == 1);
             holder.mfilterItemBinding.getRoot().setOnClickListener(new View.OnClickListener() {
                 @Override

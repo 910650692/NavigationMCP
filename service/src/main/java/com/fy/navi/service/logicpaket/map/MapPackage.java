@@ -2,11 +2,11 @@ package com.fy.navi.service.logicpaket.map;
 
 import android.os.Bundle;
 import android.view.MotionEvent;
+
 import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
 import com.fy.navi.service.MapDefaultFinalTag;
-import com.fy.navi.service.adapter.aos.BlAosAdapter;
 import com.fy.navi.service.adapter.layer.ILayerAdapterCallBack;
 import com.fy.navi.service.adapter.layer.LayerAdapter;
 import com.fy.navi.service.adapter.map.IMapAdapterCallback;
@@ -14,7 +14,6 @@ import com.fy.navi.service.adapter.map.MapAdapter;
 import com.fy.navi.service.adapter.navistatus.INaviStatusCallback;
 import com.fy.navi.service.adapter.navistatus.NavistatusAdapter;
 import com.fy.navi.service.adapter.position.PositionAdapter;
-import com.fy.navi.service.adapter.setting.SettingAdapter;
 import com.fy.navi.service.define.bean.GeoPoint;
 import com.fy.navi.service.define.bean.MapLabelItemBean;
 import com.fy.navi.service.define.bean.PreviewParams;
@@ -23,13 +22,14 @@ import com.fy.navi.service.define.map.MapMode;
 import com.fy.navi.service.define.map.MapStateStyle;
 import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.map.MapViewParams;
-import com.fy.navi.service.define.map.ThemeType;
 import com.fy.navi.service.define.map.MapVisibleAreaDataManager;
 import com.fy.navi.service.define.map.MapVisibleAreaInfo;
 import com.fy.navi.service.define.map.MapVisibleAreaType;
+import com.fy.navi.service.define.map.ThemeType;
 import com.fy.navi.service.define.mfc.MfcController;
 import com.fy.navi.service.define.position.LocInfoBean;
 import com.fy.navi.service.define.search.PoiInfoEntity;
+
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Hashtable;
@@ -64,23 +64,19 @@ public class MapPackage implements IMapAdapterCallback, INaviStatusCallback, ILa
 
     private MapPackage() {
         mMapAdapter = MapAdapter.getInstance();
-        mPositionAdapter = PositionAdapter.getInstance();
         mNavistatusAdapter = NavistatusAdapter.getInstance();
-        blAosAdapter = BlAosAdapter.getInstance();
-        mSettingAdapter = SettingAdapter.getInstance();
         mNavistatusAdapter.registerCallback(this);
-        layerAdapter = LayerAdapter.getInstance();
     }
 
     private MapAdapter mMapAdapter;
     private LayerAdapter layerAdapter;
-    private SettingAdapter mSettingAdapter;
     private PositionAdapter mPositionAdapter;
     private NavistatusAdapter mNavistatusAdapter;
-    private BlAosAdapter blAosAdapter;
     private final Hashtable<MapType, List<IMapPackageCallback>> callbackTables = new Hashtable<>();
 
     public boolean init(MapType mapTypeId) {
+        mPositionAdapter = PositionAdapter.getInstance();
+        layerAdapter = LayerAdapter.getInstance();
         return mMapAdapter.init(mapTypeId);
     }
 
@@ -133,9 +129,9 @@ public class MapPackage implements IMapAdapterCallback, INaviStatusCallback, ILa
         mMapAdapter.setMapCenterInScreen(mapTypeId, x, y);
     }
 
-    public void changMapCenterInScreen(MapType mapTypeId, MapVisibleAreaType mapVisibleAreaType){
+    public void changMapCenterInScreen(MapType mapTypeId, MapVisibleAreaType mapVisibleAreaType) {
         MapVisibleAreaInfo mapVisibleAreaInfo = MapVisibleAreaDataManager.getInstance().getDataByKey(mapVisibleAreaType);
-        if(!ConvertUtils.isEmpty(mapVisibleAreaInfo)){
+        if (!ConvertUtils.isEmpty(mapVisibleAreaInfo)) {
             mMapAdapter.setMapCenterInScreen(mapTypeId, mapVisibleAreaInfo.getMleftscreenoffer(), mapVisibleAreaInfo.getMtopscreenoffer());
         }
     }
@@ -144,16 +140,16 @@ public class MapPackage implements IMapAdapterCallback, INaviStatusCallback, ILa
         mMapAdapter.setMapCenter(mapTypeId, geoPoint);
     }
 
-    public GeoPoint getMapCenter(MapType mapTypeId){
-       return mMapAdapter.getMapCenter(mapTypeId);
+    public GeoPoint getMapCenter(MapType mapTypeId) {
+        return mMapAdapter.getMapCenter(mapTypeId);
     }
 
-    public boolean isCarLocation(MapType mapTypeId,double maxDistance){
+    public boolean isCarLocation(MapType mapTypeId, double maxDistance) {
         GeoPoint mapCenter = getMapCenter(mapTypeId);
         LocInfoBean locInfoBean = mPositionAdapter.getLastCarLocation();
-        if(!ConvertUtils.isEmpty(mapCenter) && !ConvertUtils.isEmpty(locInfoBean)){
-            GeoPoint carLocInfo = new GeoPoint(locInfoBean.getLongitude(),locInfoBean.getLatitude());
-            double distance = layerAdapter.calcStraightDistance(mapCenter,carLocInfo);
+        if (!ConvertUtils.isEmpty(mapCenter) && !ConvertUtils.isEmpty(locInfoBean)) {
+            GeoPoint carLocInfo = new GeoPoint(locInfoBean.getLongitude(), locInfoBean.getLatitude());
+            double distance = layerAdapter.calcStraightDistance(mapCenter, carLocInfo);
             BigDecimal num1 = new BigDecimal(distance);
             BigDecimal num2 = new BigDecimal(maxDistance);
             //判断num1是否大于num2
@@ -192,7 +188,7 @@ public class MapPackage implements IMapAdapterCallback, INaviStatusCallback, ILa
     }
 
     public void mfcMoveMap(MapType mapTypeId, MfcController mfcController, int moveDistance) {
-        mMapAdapter.mfcMoveMap(mapTypeId,mfcController, moveDistance);
+        mMapAdapter.mfcMoveMap(mapTypeId, mfcController, moveDistance);
         if (callbackTables.containsKey(mapTypeId) && callbackTables.get(mapTypeId) != null) {
             List<IMapPackageCallback> callbacks = callbackTables.get(mapTypeId);
             if (ConvertUtils.isEmpty(callbacks)) return;
@@ -422,11 +418,7 @@ public class MapPackage implements IMapAdapterCallback, INaviStatusCallback, ILa
      * @return true means success
      */
     public boolean setTrafficStates(MapType mapTypeId, boolean isOpen) {
-        boolean isOpenTraffic =  mMapAdapter.setTrafficStates(mapTypeId, isOpen);
-        if (isOpenTraffic) {
-            mSettingAdapter.setConfigKeyRoadEvent(isOpen);
-        }
-        return isOpenTraffic;
+        return mMapAdapter.setTrafficStates(mapTypeId, isOpen);
     }
 
     /**

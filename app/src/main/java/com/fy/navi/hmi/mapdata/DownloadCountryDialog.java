@@ -29,7 +29,6 @@ public class DownloadCountryDialog extends BaseFullScreenDialog<DialogDownloadCo
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (!mIsShowCancel) {
-            mViewBinding.dialogLine.setVisibility(View.GONE);
             mViewBinding.dialogCancel.setVisibility(View.GONE);
         }
 

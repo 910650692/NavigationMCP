@@ -16,6 +16,7 @@ import com.android.utils.log.Logger;
 import com.fy.navi.hmi.BR;
 import com.fy.navi.hmi.R;
 import com.fy.navi.hmi.databinding.ActivityStartupBinding;
+import com.fy.navi.hmi.permission.PermissionUtils;
 import com.fy.navi.mapservice.bean.INaviConstant;
 import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.search.PoiInfoEntity;

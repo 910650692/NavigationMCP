@@ -229,9 +229,7 @@ public class SmallCardMapModel extends BaseModel<BaseSmallCardMapViewModel> impl
     }
 
     private void clearRouteLine() {
-        for (MapType mapType: MapType.values()) {
-            mRoutePackage.clearRouteLine(mapType);
-        }
+        mRoutePackage.clearRouteLine(getMapId());
     }
 
     /***

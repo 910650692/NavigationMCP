@@ -15,16 +15,14 @@ import com.fy.navi.mapservice.IBinderPool;
 import com.fy.navi.mapservice.IBinderPoolCallback;
 import com.fy.navi.mapservice.base.BinderType;
 import com.fy.navi.service.AppContext;
+import com.fy.navi.service.StartService;
 import com.fy.navi.service.logicpaket.engine.EnginePackage;
 import com.fy.navi.service.logicpaket.engine.IEngineObserver;
 
 import java.util.HashMap;
 
 public final class BinderPool extends IBinderPool.Stub {
-
     private static final String TAG = BinderPool.class.getSimpleName();
-
-    private IEngineObserver mEngineObserver;
     private final RemoteCallbackList<IBinderPoolCallback> mBinderPoolCallbackList = new RemoteCallbackList<>();
     private final HashMap<String, Binder> mBinderMap = new HashMap<>();
     private boolean mInCallback = false;
@@ -36,55 +34,7 @@ public final class BinderPool extends IBinderPool.Stub {
     }
 
     private BinderPool() {
-        //引擎初始化状态监听
-        mEngineObserver = new IEngineObserver() {
-            @Override
-            public void onInitEngineSuccess() {
-                if (mInCallback) {
-                    return;
-                }
-
-                try {
-                    mInCallback = true;
-                    final int count = mBinderPoolCallbackList.beginBroadcast();
-                    for (int i = 0; i < count; i++) {
-                        final IBinderPoolCallback binderPoolCallback = mBinderPoolCallbackList.getRegisteredCallbackItem(i);
-                        if (null != binderPoolCallback) {
-                            binderPoolCallback.onEngineInitSuccess();
-                        }
-                    }
-                } catch (RemoteException re) {
-                    Logger.e(TAG, "dispatch initEngineSuccess error: " + re.getMessage());
-                } finally {
-                    mBinderPoolCallbackList.finishBroadcast();
-                    mInCallback = false;
-                }
-            }
-
-            @Override
-            public void onInitEngineFail(final int code, final String msg) {
-                if (mInCallback) {
-                    return;
-                }
-
-                try {
-                    mInCallback = true;
-                    final int count = mBinderPoolCallbackList.beginBroadcast();
-                    for (int i = 0; i < count; i++) {
-                        final IBinderPoolCallback binderPoolCallback = mBinderPoolCallbackList.getRegisteredCallbackItem(i);
-                        if (null != binderPoolCallback) {
-                            binderPoolCallback.onEngineInitFailed();
-                        }
-                    }
-                } catch (RemoteException exception) {
-                    Logger.e(TAG, "dispatch onInitEngineFail error: " + exception.getMessage());
-                } finally {
-                    mBinderPoolCallbackList.finishBroadcast();
-                    mInCallback = false;
-                }
-            }
-        };
-        EnginePackage.getInstance().addEngineObserver(TAG, mEngineObserver);
+        StartService.getInstance().registerSdkCallback(sdkCallback);
     }
 
     @Override
@@ -94,7 +44,7 @@ public final class BinderPool extends IBinderPool.Stub {
 
     @Override
     public boolean getEngineInitStatus(final String pckName) {
-        final boolean initStatus = EnginePackage.getInstance().engineStatus();
+        final boolean initStatus = StartService.getInstance().getSdkActivityStatus();
         Logger.d(TAG, pckName + "getEngineInit: " + initStatus);
         return initStatus;
     }
@@ -120,8 +70,7 @@ public final class BinderPool extends IBinderPool.Stub {
      * 根据Binder名称获取对应实现.
      *
      * @param binderCode 名称.
-     * @param packName client包名.
-     *
+     * @param packName   client包名.
      * @return 对应binder实现.
      */
     private synchronized IBinder getBinder(final String binderCode, final String packName) {
@@ -137,6 +86,51 @@ public final class BinderPool extends IBinderPool.Stub {
         return binder;
     }
 
+    private final StartService.ISdkInitCallback sdkCallback = new StartService.ISdkInitCallback() {
+        @Override
+        public void onSdkInitSuccess() {
+            if (mInCallback) {
+                return;
+            }
 
+            try {
+                mInCallback = true;
+                final int count = mBinderPoolCallbackList.beginBroadcast();
+                for (int i = 0; i < count; i++) {
+                    final IBinderPoolCallback binderPoolCallback = mBinderPoolCallbackList.getRegisteredCallbackItem(i);
+                    if (null != binderPoolCallback) {
+                        binderPoolCallback.onEngineInitSuccess();
+                    }
+                }
+            } catch (RemoteException re) {
+                Logger.e(TAG, "dispatch initEngineSuccess error: " + re.getMessage());
+            } finally {
+                mBinderPoolCallbackList.finishBroadcast();
+                mInCallback = false;
+            }
+        }
 
+        @Override
+        public void onSdkInitFail(int initSdkResult, String msg) {
+            if (mInCallback) {
+                return;
+            }
+
+            try {
+                mInCallback = true;
+                final int count = mBinderPoolCallbackList.beginBroadcast();
+                for (int i = 0; i < count; i++) {
+                    final IBinderPoolCallback binderPoolCallback = mBinderPoolCallbackList.getRegisteredCallbackItem(i);
+                    if (null != binderPoolCallback) {
+                        binderPoolCallback.onEngineInitFailed();
+                    }
+                }
+            } catch (RemoteException exception) {
+                Logger.e(TAG, "dispatch onInitEngineFail error: " + exception.getMessage());
+            } finally {
+                mBinderPoolCallbackList.finishBroadcast();
+                mInCallback = false;
+            }
+        }
+    };
 }

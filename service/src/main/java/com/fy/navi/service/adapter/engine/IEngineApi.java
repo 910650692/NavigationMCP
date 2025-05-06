@@ -18,7 +18,12 @@ public interface IEngineApi {
     void addInitEnginObserver(EngineObserver observer);
 
     /**
-     * 初始化BaseLib
+     * 检查是否超期,只有应用内部会在接近超期时进行弹窗提醒，外部启动引擎不做此检查
+     */
+    void checkSdkLimit();
+
+    /**
+     * 始化BaseLib
      */
     void initBaseLibs();
 
@@ -55,12 +60,6 @@ public interface IEngineApi {
     void switchLog(GaodeLogLevel logLevel);
 
     /**
-     * 获取引擎状态
-     * @return 是否激活
-     */
-    boolean engineStatus();
-
-    /**
      * 反初始化引擎
      */
     void unInit();
@@ -83,4 +82,10 @@ public interface IEngineApi {
      * @return 路径字符串
      */
     String styleBlPath(MapType mapTypeId);
+
+    /**
+     * 获取SDK的渠道名
+     * @return Chanel Name
+     */
+    String getChanelName();
 }

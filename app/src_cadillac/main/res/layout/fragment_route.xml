@@ -31,7 +31,8 @@
                 android:focusable="false"
                 android:visibility="@{ViewModel.getTabVisibility() == 2 ? View.VISIBLE : View.GONE}"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
+                app:layout_constraintStart_toStartOf="parent"
+                tools:visibility="gone" />
 
             <com.fy.navi.ui.view.SkinConstraintLayout
                 clickCommand="@{ViewModel.getTabChargingClick()}"
@@ -43,7 +44,7 @@
                 android:visibility="@{ViewModel.getTabVisibility() == 1 ? View.VISIBLE : View.GONE}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                tools:visibility="gone">
+                tools:visibility="visible">
 
                 <com.fy.navi.ui.view.SkinView
                     android:id="@+id/route_right_tab_list_charging_station"
@@ -90,7 +91,7 @@
                 android:visibility="@{ViewModel.getTabVisibility() == 3 ? View.VISIBLE : View.GONE}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                tools:visibility="gone">
+                tools:visibility="visible">
 
                 <com.fy.navi.ui.view.SkinView
                     android:id="@+id/route_right_tab_list_gas_station"
@@ -136,7 +137,7 @@
                 android:visibility="@{ViewModel.getIncludePageVisibility() == 0 ? View.VISIBLE : View.GONE}"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                tools:visibility="gone">
+                tools:visibility="visible">
 
                 <com.fy.navi.ui.view.SkinConstraintLayout
                     android:id="@+id/route_line_info_title"
@@ -551,8 +552,8 @@
                             clickCommand="@{ViewModel.getRestrictionClick()}"
                             android:layout_width="@dimen/dp_820"
                             android:layout_height="@dimen/dp_100"
-                            android:focusable="true"
                             android:background="@drawable/bg_base_mfc_cadillac_bg_selector"
+                            android:focusable="true"
                             android:visibility="@{ViewModel.getRoutePreferenceVisibility() ? View.GONE : View.VISIBLE}"
                             app:layout_constraintTop_toBottomOf="@+id/route_line_info_prefer_line"
                             tools:background="#22FF0000" />
@@ -702,7 +703,7 @@
                 android:clickable="true"
                 android:focusable="false"
                 android:visibility="@{ViewModel.getIncludePageVisibility() == 1 ? View.VISIBLE : View.GONE}"
-                tools:visibility="visible">
+                tools:visibility="gone">
 
                 <com.fy.navi.ui.view.SkinView
                     android:id="@+id/route_detail_info_bg_title"
@@ -916,7 +917,13 @@
                 android:clickable="false"
                 android:focusable="false"
                 android:visibility="@{ViewModel.getIncludePageVisibility() == 3 ? View.VISIBLE : View.GONE}"
-                tools:visibility="gone">
+                tools:visibility="visible">
+
+                <TextView
+                    android:id="@+id/textView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="RouteFragment" />
 
                 <com.fy.navi.scene.ui.route.SceneRouteGasStationChargeServiceView
                     android:id="@+id/route_right_tab_list_charge_scene"
@@ -1384,8 +1391,8 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="@dimen/dp_24"
                             android:layout_marginEnd="@dimen/dp_10"
-                            android:maxLines="2"
                             android:focusable="true"
+                            android:maxLines="2"
                             android:text="@{ViewModel.getRouteSearchTimeAndDistance()}"
                             android:textColor="@color/text_route_detail_title"
                             android:textSize="@dimen/sp_46"
@@ -1409,8 +1416,8 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="@dimen/dp_20"
                             android:layout_marginEnd="@dimen/dp_10"
-                            android:maxLines="1"
                             android:focusable="true"
+                            android:maxLines="1"
                             android:text="@{ViewModel.getRouteSearchElec()}"
                             android:textColor="@color/text_route_detail_title"
                             android:textSize="@dimen/sp_46"
@@ -1480,14 +1487,14 @@
                         android:layout_marginEnd="@dimen/dp_40"
                         android:layout_marginBottom="@dimen/dp_2"
                         android:background="@drawable/bg_details_bottom_go_here"
+                        android:focusable="false"
+                        android:gravity="center"
+                        android:text="@{ViewModel.getRouteSearchDeailsAddRemoveVia()}"
+                        android:textColor="@color/route_white"
+                        android:textSize="@dimen/sp_46"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toStartOf="@+id/stl_function"
                         app:layout_constraintStart_toStartOf="parent"
-                        android:text="@{ViewModel.getRouteSearchDeailsAddRemoveVia()}"
-                        android:focusable="false"
-                        android:gravity="center"
-                        android:textColor="@color/route_white"
-                        android:textSize="@dimen/sp_46"
                         tools:text="添加途经点" />
 
                     <com.fy.navi.ui.view.SkinView

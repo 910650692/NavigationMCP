@@ -9,28 +9,27 @@
     </data>
 
     <com.fy.navi.ui.view.SkinConstraintLayout
-        android:layout_width="@dimen/dp_176"
-        android:layout_height="@dimen/dp_76"
-        android:layout_marginTop="@dimen/dp_16"
-        android:focusable="true"
-        android:background="@drawable/bg_limit_city_button_selector">
+        android:layout_width="@dimen/dp_222"
+        android:layout_height="@dimen/dp_96"
+        android:layout_marginTop="@dimen/dp_24"
+        android:background="@drawable/bg_limit_city_button_selector"
+        android:focusable="true">
 
         <com.fy.navi.ui.view.SkinTextView
             android:id="@+id/tv_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingHorizontal="@dimen/dp_10"
-            android:textColor="@color/main_map_limit_loading"
-            android:textSize="@dimen/sp_30"
-            android:gravity="center"
-            android:maxLines="1"
             android:ellipsize="end"
             android:focusable="false"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            android:gravity="center"
+            android:maxLines="1"
+            android:textColor="@color/main_map_limit_loading"
+            android:textSize="@dimen/sp_38"
             app:layout_constraintBottom_toBottomOf="parent"
-            tools:text="呼和浩特市"/>
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="呼和浩特市" />
 
     </com.fy.navi.ui.view.SkinConstraintLayout>
 

@@ -610,6 +610,7 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
     private Action mOpenCloseViaClick = () -> {
         cancelTimer();
         mRoutePreferenceVisibility.set(false);
+        mRoutePreferenceDrawableVisibility.set(ResourceUtils.Companion.getInstance().getDrawable(R.drawable.img_route_down));
         mViaPoiListAllVisibility.set(Boolean.FALSE.equals(mViaPoiListAllVisibility.get()));
     };
 
@@ -1219,6 +1220,10 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
             }
             mIncludePageVisibility.set(getCurrentPageUI());
             final RouteLineInfo routeLineInfo = mModel.getSelectLineInfo();
+            if (routeLineInfo == null) {
+                Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "routeLineInfo is null");
+                return;
+            }
             mRouteChargeTotalMileage.set(ResourceUtils.Companion.getInstance().getString(R.string.route_total_mileage)
                     + routeLineInfo.getMLength());
             final EvRangeOnRouteInfo evRangeOnRouteInfo = mModel.getRangeOnRouteInfo(mModel.getCurrentIndex());

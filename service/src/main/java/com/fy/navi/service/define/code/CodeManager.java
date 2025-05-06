@@ -20,6 +20,8 @@ public class CodeManager {
     private static final String CODE_TYPE_SETTING = "SettingCode";
     private static final String CODE_TYPE_MAP_DATA = "MapDataCode";
     private static final String CODE_TYPE_FOR_CAST = "ForCast";
+    private static final String CODE_TYPE_POSITION = "position";
+
     private static ErrorCode mErrorCode;
 
     private CodeManager() {
@@ -37,7 +39,7 @@ public class CodeManager {
      * @return msg
      */
     public static String getErrorMsg(int code) {
-        return getMapCodeMsg(CODE_TYPE_ENGINE, code);
+        return getMsg(CODE_TYPE_ENGINE, code);
     }
 
     /**
@@ -68,7 +70,7 @@ public class CodeManager {
      * @return msg
      */
     public static String getEngineMsg(int code) {
-        return getMapCodeMsg(CODE_TYPE_ENGINE, code);
+        return getMsg(CODE_TYPE_ENGINE, code);
     }
 
     /**
@@ -99,7 +101,7 @@ public class CodeManager {
      * @return msg
      */
     public static String getLayerMsg(int code) {
-        return getMapCodeMsg(CODE_TYPE_ENGINE, code);
+        return getMsg(CODE_TYPE_ENGINE, code);
     }
 
     /**
@@ -130,7 +132,7 @@ public class CodeManager {
      * @return msg
      */
     public static String getMapMsg(int code) {
-        return getMapCodeMsg(CODE_TYPE_MAP, code);
+        return getMsg(CODE_TYPE_MAP, code);
     }
 
     /**
@@ -161,7 +163,7 @@ public class CodeManager {
      * @return msg
      */
     public static String getSearchCodeMsg(int code) {
-        return getMapCodeMsg(CODE_TYPE_SEARCH, code);
+        return getMsg(CODE_TYPE_SEARCH, code);
     }
 
     /**
@@ -193,7 +195,7 @@ public class CodeManager {
      * @return msg
      */
     public static String getForCastMsg(int code) {
-        return getMapCodeMsg(CODE_TYPE_FOR_CAST, code);
+        return getMsg(CODE_TYPE_FOR_CAST, code);
     }
 
     /**
@@ -217,6 +219,18 @@ public class CodeManager {
         return putErrorCode(CODE_TYPE_FOR_CAST, code, msg);
     }
 
+    public static String getPositionMsg(int code){
+        return getMsg(CODE_TYPE_POSITION, code);
+    }
+
+    public static int getPositionCode(String msg){
+        return getCode(CODE_TYPE_POSITION, msg);
+    }
+
+    public static int putPositionError(int code, String msg){
+        return putErrorCode(CODE_TYPE_FOR_CAST, code, msg);
+    }
+
 
     private static int putErrorCode(String type, int code, String msg) {
         switch (type) {
@@ -234,7 +248,7 @@ public class CodeManager {
         return code;
     }
 
-    private static String getMapCodeMsg(String type, int code) {
+    private static String getMsg(String type, int code) {
         return switch (type) {
             case CODE_TYPE_ENGINE -> ConvertUtils.containToValue(mErrorCode.getEngineCode(), code);
             case CODE_TYPE_MAP -> ConvertUtils.containToValue(mErrorCode.getMapCode(), code);
@@ -246,7 +260,8 @@ public class CodeManager {
             case CODE_TYPE_MAP_DATA ->
                     ConvertUtils.containToValue(mErrorCode.getMapDataCode(), code);
             case CODE_TYPE_USER -> ConvertUtils.containToValue(mErrorCode.getAccountCode(), code);
-            default -> "";
+            case CODE_TYPE_POSITION -> ConvertUtils.containToValue(mErrorCode.getPositionCode(), code);
+            default -> "未知错误";
         };
     }
 
@@ -261,6 +276,7 @@ public class CodeManager {
             case CODE_TYPE_SETTING -> convertCode(mErrorCode.getSettingCode(), errorMsg);
             case CODE_TYPE_MAP_DATA -> convertCode(mErrorCode.getMapDataCode(), errorMsg);
             case CODE_TYPE_USER -> convertCode(mErrorCode.getAccountCode(), errorMsg);
+            case CODE_TYPE_POSITION -> convertCode(mErrorCode.getPositionCode(), errorMsg);
             default -> Integer.MAX_VALUE;
         };
 

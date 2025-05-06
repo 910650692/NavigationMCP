@@ -92,8 +92,8 @@
 
         <com.fy.navi.scene.ui.route.SceneRouteGasStationChargeServiceView
             android:id="@+id/route_right_tab_list_charge_scene"
-            android:layout_width="@dimen/dp_232"
-            android:layout_height="@dimen/dp_522"
+            android:layout_width="@dimen/dp_204"
+            android:layout_height="@dimen/dp_494"
             android:padding="@dimen/dp_29"
             android:background="@drawable/bg_search_shadow"
             android:clickable="true"

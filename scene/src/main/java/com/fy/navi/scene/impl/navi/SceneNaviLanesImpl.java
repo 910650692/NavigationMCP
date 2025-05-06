@@ -15,6 +15,7 @@ import com.fy.navi.service.define.navi.LaneInfoEntity;
 import com.fy.navi.service.define.navi.SapaInfoEntity;
 import com.fy.navi.service.define.navi.TBTLaneInfo;
 import com.fy.navi.service.define.navistatus.NaviStatus;
+import com.fy.navi.service.logicpaket.map.MapPackage;
 import com.fy.navi.service.logicpaket.navistatus.NaviStatusPackage;
 import com.fy.navi.ui.base.StackManager;
 
@@ -27,6 +28,8 @@ public class SceneNaviLanesImpl extends BaseSceneModel<SceneNaviLanesView> {
 
     public SceneNaviLanesImpl(final SceneNaviLanesView screenView) {
         super(screenView);
+        Logger.d("lvww", "sssssssssssssssssssssssss");
+        MapPackage.getInstance();
     }
 
     /**

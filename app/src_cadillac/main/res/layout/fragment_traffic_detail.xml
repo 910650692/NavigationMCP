@@ -19,40 +19,40 @@
 
     <com.fy.navi.ui.view.SkinConstraintLayout
         clickCommand="@{ViewModel.rootClick}"
-        android:layout_width="@dimen/dp_640"
+        android:layout_width="@dimen/dp_880"
         android:layout_height="wrap_content"
-        android:background="@drawable/bg_search_main_tab"
-        android:minHeight="@dimen/dp_714"
-        android:paddingBottom="@dimen/dp_24">
+        android:background="@drawable/bg_shadow_handcard"
+        android:minHeight="@dimen/dp_1054"
+        android:paddingBottom="@dimen/dp_32">
 
         <com.fy.navi.ui.view.SkinTextView
             android:id="@+id/tv_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_40"
-            android:layout_marginTop="@dimen/dp_40"
+            android:layout_marginStart="@dimen/dp_52"
+            android:layout_marginTop="@dimen/dp_52"
             android:text="交通实况"
             android:textColor="@color/black"
-            android:textSize="@dimen/sp_38"
+            android:textSize="@dimen/sp_52"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <com.fy.navi.ui.view.SkinImageView
             android:id="@+id/iv_close"
             clickCommand="@{ViewModel.closeSelf}"
-            android:layout_width="@dimen/dp_58"
-            android:layout_height="@dimen/dp_58"
-            android:layout_marginTop="@dimen/dp_38"
-            android:layout_marginEnd="@dimen/dp_40"
+            android:layout_width="@dimen/dp_74"
+            android:layout_height="@dimen/dp_74"
+            android:layout_marginEnd="@dimen/dp_36"
             android:src="@drawable/icon_poi_close"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="@id/tv_title"
+            app:layout_constraintBottom_toBottomOf="@id/tv_title" />
 
         <com.fy.navi.ui.view.SkinImageView
             android:id="@+id/iv_icon"
-            android:layout_width="@dimen/dp_58"
-            android:layout_height="@dimen/dp_58"
-            android:layout_marginTop="@dimen/dp_26"
+            android:layout_width="@dimen/dp_74"
+            android:layout_height="@dimen/dp_74"
+            android:layout_marginTop="@dimen/dp_51"
             android:src="@drawable/img_road_closure58"
             app:layout_constraintStart_toStartOf="@id/tv_title"
             app:layout_constraintTop_toBottomOf="@id/tv_title" />
@@ -61,10 +61,10 @@
             android:id="@+id/tv_type"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_16"
+            android:layout_marginStart="@dimen/dp_20"
             android:text="拥堵"
             android:textColor="@color/black"
-            android:textSize="@dimen/sp_34"
+            android:textSize="@dimen/sp_46"
             app:layout_constraintStart_toEndOf="@id/iv_icon"
             app:layout_constraintTop_toTopOf="@id/iv_icon"
             app:layout_constraintBottom_toBottomOf="@id/iv_icon"/>
@@ -73,10 +73,10 @@
             android:id="@+id/tv_distance"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_10"
+            android:layout_marginTop="@dimen/dp_13"
             android:text="事件距离："
             android:textColor="@color/main_map_limit_current_city"
-            android:textSize="@dimen/sp_30"
+            android:textSize="@dimen/sp_38"
             app:layout_constraintStart_toStartOf="@id/tv_title"
             app:layout_constraintTop_toBottomOf="@id/iv_icon" />
 
@@ -86,7 +86,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/main_map_limit_current_city"
-            android:textSize="@dimen/sp_30"
+            android:textSize="@dimen/sp_38"
             android:text="@{ViewModel.straightDis}"
             app:layout_constraintStart_toEndOf="@id/tv_distance"
             app:layout_constraintTop_toTopOf="@id/tv_distance" />
@@ -99,7 +99,7 @@
             tools:text="9小时15分钟"
             android:text="@{ViewModel.timeFromHappenToNow}"
             android:textColor="@color/main_map_limit_current_city"
-            android:textSize="@dimen/sp_30"
+            android:textSize="@dimen/sp_38"
             app:layout_constraintEnd_toEndOf="@id/iv_close"
             app:layout_constraintTop_toTopOf="@id/tv_distance" />
 
@@ -107,17 +107,17 @@
             android:id="@+id/tv_desc"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_20"
             android:textColor="@color/black"
-            android:textSize="@dimen/sp_34"
+            android:textSize="@dimen/sp_46"
             app:layout_constraintStart_toStartOf="@id/tv_title"
             app:layout_constraintTop_toBottomOf="@id/tv_distance" />
 
         <com.fy.navi.ui.view.SkinImageView
             android:id="@+id/iv_pic"
             android:layout_width="@dimen/dp_0"
-            android:layout_height="@dimen/dp_194"
-            android:layout_marginTop="@dimen/dp_30"
+            android:layout_height="@dimen/dp_302"
+            android:layout_marginTop="@dimen/dp_40"
             android:scaleType="fitXY"
             app:layout_constraintEnd_toEndOf="@id/iv_close"
             app:layout_constraintStart_toStartOf="@id/tv_title"
@@ -127,24 +127,26 @@
 
         <com.fy.navi.ui.view.SkinTextView
             android:id="@+id/tv_increase"
-            android:layout_width="@dimen/dp_268"
-            android:layout_height="@dimen/dp_76"
-            android:layout_marginTop="@dimen/dp_30"
+            android:layout_width="@dimen/dp_0"
+            android:layout_height="@dimen/dp_96"
+            android:layout_marginTop="@dimen/dp_40"
             android:background="@drawable/bg_traffic_add"
             android:gravity="center"
             android:text="@{ViewModel.thumbNumber}"
             android:alpha="@{ViewModel.thumbPrimaseEnable ? 1f:0.5f}"
             android:textColor="@color/white"
-            android:textSize="@dimen/sp_34"
+            android:textSize="@dimen/sp_38"
             android:enabled="@{ViewModel.thumbPrimaseEnable}"
             clickCommand="@{ViewModel.uploadTrafficEventThumb}"
             app:layout_constraintStart_toStartOf="@id/tv_title"
+            app:layout_constraintHorizontal_chainStyle="spread"
+            app:layout_constraintEnd_toStartOf="@id/tv_decrease"
             app:layout_constraintTop_toBottomOf="@id/iv_pic" />
 
         <com.fy.navi.ui.view.SkinTextView
             android:id="@+id/tv_decrease"
-            android:layout_width="@dimen/dp_268"
-            android:layout_height="@dimen/dp_76"
+            android:layout_width="@dimen/dp_0"
+            android:layout_height="@dimen/dp_96"
             android:alpha="@{ViewModel.thumbPrimaseEnable ? 1f:0.5f}"
             android:background="@drawable/bg_traffic_increase"
             android:gravity="center"
@@ -152,15 +154,17 @@
             clickCommand="@{ViewModel.uploadTrafficEventUnThumb}"
             android:text="@{ViewModel.unThumbNumber}"
             android:textColor="@color/main_map_limit_current_city"
-            android:textSize="@dimen/sp_34"
+            android:textSize="@dimen/sp_38"
             app:layout_constraintEnd_toEndOf="@id/iv_close"
+            android:layout_marginStart="@dimen/dp_32"
+            app:layout_constraintStart_toEndOf="@id/tv_increase"
             app:layout_constraintTop_toTopOf="@id/tv_increase" />
 
         <com.fy.navi.ui.view.SkinImageView
             android:id="@+id/iv_pre"
-            android:layout_width="@dimen/dp_58"
-            android:layout_height="@dimen/dp_58"
-            android:layout_marginTop="@dimen/dp_18"
+            android:layout_width="@dimen/dp_74"
+            android:layout_height="@dimen/dp_74"
+            android:layout_marginTop="@dimen/dp_28"
             android:src="@drawable/img_basic_ic_back"
             clickCommand="@{ViewModel.toPre}"
             app:layout_constraintStart_toStartOf="@id/tv_title"
@@ -168,8 +172,8 @@
 
         <com.fy.navi.ui.view.SkinImageView
             android:id="@+id/iv_next"
-            android:layout_width="@dimen/dp_58"
-            android:layout_height="@dimen/dp_58"
+            android:layout_width="@dimen/dp_74"
+            android:layout_height="@dimen/dp_74"
             android:src="@drawable/img_right"
             clickCommand="@{ViewModel.toNext}"
             app:layout_constraintEnd_toEndOf="@id/iv_close"
@@ -180,7 +184,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/main_map_limit_current_city"
-            android:textSize="@dimen/sp_30"
+            android:textSize="@dimen/sp_38"
             app:layout_constraintBottom_toBottomOf="@id/iv_pre"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
