@@ -41,7 +41,20 @@ public class TerminalParkingFragment extends BaseFragment<FragmentTerminalParkin
     @Override
     public void onInitData() {
         Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "onInitData");
+    }
+
+    @Override
+    public void onGetFragmentData() {
+        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "onGetFragmentData");
+        super.onGetFragmentData();
         getBundleData();
+    }
+
+    @Override
+    public void onReStoreFragment() {
+        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "onReStoreFragment");
+        super.onReStoreFragment();
+        mViewModel.onReStoreFragment();
     }
 
     /**

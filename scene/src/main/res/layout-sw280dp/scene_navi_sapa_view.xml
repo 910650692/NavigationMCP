@@ -14,8 +14,8 @@
     <com.fy.navi.ui.view.SkinConstraintLayout
         android:id="@+id/scl_sapa"
         clickCommand="@{naviSapa.rootViewClick}"
-        android:layout_width="@dimen/dp_640"
-        android:layout_height="@dimen/dp_157"
+        android:layout_width="@dimen/dp_820"
+        android:layout_height="@dimen/dp_200"
         android:focusable="false"
         tools:ignore="MissingDefaultResource">
 

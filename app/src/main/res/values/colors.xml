@@ -47,10 +47,17 @@
     <color name="permission_quest_dialog_title">#FF181818</color>
     <color name="permission_quest_dialog_content">#B3181818</color>
 
-    <color name="dialog_use_reminder_title">#FF383839</color>
-    <color name="dialog_use_reminder_terms_service_color">#2461EA</color>
-    <color name="dialog_use_reminder_content">#CC383839</color>
+    <color name="dialog_use_reminder_title">#181818</color>
+    <color name="dialog_use_reminder_terms_service_color">#FF4760FF</color>
+    <color name="dialog_use_reminder_content">#B3181818</color>
+    <color name="dialog_use_reminder_positive_color">#ffffff</color>
+    <color name="dialog_use_reminder_negative_color">#B3181818</color>
 
+    <color name="buick_dialog_use_reminder_title">#FF000000</color>
+    <color name="buick_dialog_use_reminder_sub_title">#CC000000</color>
+    <color name="buick_dialog_use_reminder_high_light">#FF3377FF</color>
+    <color name="buick_dialog_use_reminder_negative_color">#FF000000</color>
+    <color name="buick_dialog_use_reminder_positive_color">#FF3377FF</color>
 
     <!-- 主图相关 -->
     <color name="icon_map_home_button">#4B535D</color>

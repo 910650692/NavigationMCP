@@ -952,6 +952,20 @@ public class RouteFragment extends BaseFragment<FragmentRouteBinding, RouteViewM
         }
         if (!ConvertUtils.isEmpty(info.getChargeInfoList()) && !info.getChargeInfoList().isEmpty()) {
             final ChargeInfo chargeInfo = info.getChargeInfoList().get(0);
+            if (chargeInfo.getSlowVolt() == 0 && chargeInfo.getSlowPower() == 0
+                    && chargeInfo.getSlow_free() == 0 && chargeInfo.getSlow_total() == 0) {
+                mBinding.scenePoiDetailsChargingStationView.poiChargeSlowLayout.setVisibility(View.GONE);
+            } else {
+                mBinding.scenePoiDetailsChargingStationView.poiChargeSlowLayout.
+                        setVisibility(View.VISIBLE);
+            }
+            if (chargeInfo.getFastVolt() == 0 && chargeInfo.getFastPower() == 0
+                    && chargeInfo.getFast_free() == 0 && chargeInfo.getFast_total() == 0) {
+                mBinding.scenePoiDetailsChargingStationView.poiChargeFastLayout.setVisibility(View.GONE);
+            } else {
+                mBinding.scenePoiDetailsChargingStationView.poiChargeFastLayout.
+                        setVisibility(View.VISIBLE);
+            }
             mBinding.scenePoiDetailsChargingStationView.poiChargeFastOccupied.setText(chargeInfo.getFast_free() + "");
             mBinding.scenePoiDetailsChargingStationView.poiChargeFastTotal
                     .setText(ResourceUtils.Companion.getInstance().getString(R.string.route_details_jg) + chargeInfo.getFast_free());
@@ -1049,6 +1063,6 @@ public class RouteFragment extends BaseFragment<FragmentRouteBinding, RouteViewM
     }
 
     public View getRootViewForMFC() {
-        return  mBinding.getRoot();
+        return  mBinding.routeLineInfoBgRouteStartNavi;
     }
 }

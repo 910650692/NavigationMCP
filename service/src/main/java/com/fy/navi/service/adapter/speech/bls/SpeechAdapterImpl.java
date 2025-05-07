@@ -7,10 +7,11 @@ import com.autonavi.gbl.speech.SpeechSynthesizeService;
 import com.autonavi.gbl.speech.observer.ISpeechSynthesizeObserver;
 import com.autonavi.gbl.util.model.BinaryStream;
 import com.autonavi.gbl.util.model.SingleServiceID;
-import com.fy.navi.service.GBLCacheFilePath;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.adapter.speech.ISpeechAdapterCallback;
 import com.fy.navi.service.adapter.speech.ISpeechApi;
+import com.fy.navi.service.define.setting.SettingController;
+import com.fy.navi.service.greendao.setting.SettingManager;
 import com.fy.navi.service.tts.NaviAudioPlayer;
 
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -39,8 +40,9 @@ public class SpeechAdapterImpl implements ISpeechSynthesizeObserver, ISpeechApi 
     @Override
     public void init() {
         mInitResult = mSpeechService.init(this);
-        if (mInitResult == 0) {
-            int voiceResult = setVoice(GBLCacheFilePath.VOICE_CONF_PATH);
+        String path = SettingManager.getInstance().getValueByKey(SettingController.KEY_SETTING_VOICE_PATH);
+        if (mInitResult == 0 && path != null && !path.isEmpty()) {
+            int voiceResult = setVoice(path);
             Logger.i(TAG, "mInitResult：" + mInitResult + ",voiceResult：" + voiceResult);
         }
     }

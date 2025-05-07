@@ -2,11 +2,11 @@ package com.fy.navi.mapservice.base;
 
 import android.os.RemoteException;
 
-import com.android.utils.log.Logger;
 import com.fy.navi.mapservice.IBinderPool;
 import com.fy.navi.mapservice.IBinderPoolCallback;
 import com.fy.navi.mapservice.apimanager.IEngineStatusCallback;
 import com.fy.navi.mapservice.common.INaviAutoApiBinder;
+import com.fy.navi.mapservice.util.Logger;
 
 
 import java.util.ArrayList;

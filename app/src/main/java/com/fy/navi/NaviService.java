@@ -103,6 +103,7 @@ public class NaviService extends Service {
         }else {
             Logger.i(TAG, "Sdk已经初始化");
         }
+        stopSelf();
         return super.onStartCommand(intent, flags, startId);
     }
 

@@ -13,6 +13,11 @@
         <item name="android:layout_marginTop">@dimen/dp_5</item>
     </style>
 
+    <style name="style_navi_control_iv2_cadi">
+        <item name="android:layout_width">@dimen/dp_74</item>
+        <item name="android:layout_height">@dimen/dp_74</item>
+    </style>
+
     <style name="style_navi_control_tv_com">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
@@ -20,6 +25,15 @@
         <item name="android:gravity">center</item>
         <item name="android:textColor">@color/common_title_color</item>
         <item name="android:textSize">@dimen/sp_30</item>
+    </style>
+
+    <style name="style_navi_control_tv_cadi">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">@dimen/dp_6</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">@color/common_title_color</item>
+        <item name="android:textSize">@dimen/sp_38</item>
     </style>
 
     <style name="style_navi_control_sv_bg_com">

@@ -602,6 +602,10 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
                     //关闭当前页面
                     closeFragment(true);
                     break;
+                case IVrBridgeConstant.VoiceIntentPage.MOVE_TO_BACK:
+                    //应用退到后台
+                    mViewModel.moveToBack();
+                    break;
                 default:
                     break;
             }

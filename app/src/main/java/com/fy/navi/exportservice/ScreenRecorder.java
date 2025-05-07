@@ -25,7 +25,6 @@ import androidx.annotation.Nullable;
 
 import com.android.utils.log.Logger;
 import com.fy.navi.fsa.R;
-import com.fy.navi.hud.VTBinder;
 import com.fy.navi.service.define.navistatus.NaviStatus;
 import com.fy.navi.service.logicpaket.navistatus.NaviStatusPackage;
 import com.iauto.vtserver.VTDescription;
@@ -53,38 +52,7 @@ public class ScreenRecorder extends Service {
     @Nullable
     @Override
     public IBinder onBind(final Intent intent) {
-        return new VTBinder() {
-            @Override
-            public void init() {
-                ScreenRecorder.this.init();
-            }
-
-            @Override
-            public void start() {
-                ScreenRecorder.this.start();
-            }
-
-            @Override
-            public void stop() {
-                ScreenRecorder.this.stop();
-            }
-
-            @Override
-            public void uninit() {
-                ScreenRecorder.this.uninit();
-            }
-
-
-            @Override
-            public void notifyError() {
-                ScreenRecorder.this.notifyError();
-            }
-
-            @Override
-            public byte[] getCrossImg() {
-                return getmCrossImg();
-            }
-        };
+        return null;
     }
 
     private MediaProjection.Callback mpCallback = new MediaProjection.Callback() {

@@ -16,17 +16,17 @@
         android:layout_width="@dimen/dp_1578"
         android:layout_height="@dimen/dp_1000"
         android:clickable="true"
+        android:focusable="false"
         android:background="@drawable/bg_setting_fragment">
 
         <com.android.car.ui.FocusParkingView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
-        <com.fy.navi.ui.view.SkinLinearLayout
+        <com.fy.navi.ui.view.SkinConstraintLayout
             android:id="@+id/we_chat_title_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
             android:focusable="false"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" >
@@ -36,7 +36,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:nudgeDown="@+id/focus_tab"
-                app:nudgeUp="@+id/focus_tab">
+                app:nudgeUp="@+id/focus_tab"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" >
 
                 <com.fy.navi.ui.view.SkinImageView
                     clickCommand="@{ViewModel.mChatConnectBack}"
@@ -54,13 +56,15 @@
                 android:id="@+id/we_chat_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_499"
                 android:layout_marginTop="@dimen/dp_52"
                 android:text="@string/account_chat_connect"
                 android:textSize="@dimen/sp_46"
                 android:focusable="false"
-                android:textColor="@color/black" />
-        </com.fy.navi.ui.view.SkinLinearLayout>
+                android:textColor="@color/black"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+        </com.fy.navi.ui.view.SkinConstraintLayout>
 
         <com.android.car.ui.FocusArea
             android:layout_width="match_parent"
@@ -71,6 +75,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
+                android:focusable="false"
                 android:visibility="@{ViewModel.mIsBind ? View.GONE : View.VISIBLE}"
                 app:layout_constraintTop_toBottomOf="@+id/we_chat_title_layout">
 

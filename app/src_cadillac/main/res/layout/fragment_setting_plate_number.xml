@@ -12,6 +12,7 @@
     <com.fy.navi.ui.view.SkinConstraintLayout
         android:layout_width="@dimen/dp_1578"
         android:layout_height="@dimen/dp_1000"
+        android:focusable="false"
         android:clickable="true">
 
         <com.android.car.ui.FocusParkingView
@@ -105,11 +106,10 @@
 
                 <com.fy.navi.ui.view.SkinEditText
                     android:id="@+id/setting_plate_number_number"
-                    clickCommand="@{viewModel.mShowPlateNumberKeyboard}"
                     android:layout_width="@dimen/dp_974"
                     android:layout_height="@dimen/dp_120"
                     android:layout_marginStart="@dimen/dp_32"
-                    android:background="@drawable/bg_setting_car_number_selector"
+                    android:background="@drawable/bg_setting_car_number"
                     android:hint="@string/setting_guide_plate_number_input"
                     android:paddingLeft="@dimen/dp_30"
                     android:textSize="@dimen/sp_46"
@@ -117,6 +117,16 @@
                     android:textColor="@color/setting_bg_tab_text_select"
                     app:layout_constraintStart_toEndOf="@+id/setting_plate_number_province"
                     app:layout_constraintTop_toTopOf="@+id/setting_plate_number_province" />
+
+                <com.fy.navi.ui.view.SkinView
+                    clickCommand="@{viewModel.mShowPlateNumberKeyboard}"
+                    android:layout_width="@dimen/dp_974"
+                    android:layout_height="@dimen/dp_120"
+                    android:focusable="true"
+                    android:layout_marginStart="@dimen/dp_32"
+                    android:background="@drawable/bg_base_mfc_cadillac_bg_selector"
+                    app:layout_constraintStart_toEndOf="@+id/setting_plate_number_province"
+                    app:layout_constraintTop_toTopOf="@+id/setting_plate_number_province"/>
 
                 <com.fy.navi.ui.view.SkinImageView
                     android:id="@+id/setting_plate_number_clear"
@@ -197,6 +207,7 @@
                     android:layout_height="wrap_content"
                     android:visibility="gone"
                     app:isDefault="false"
+                    android:focusable="false"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
@@ -206,12 +217,10 @@
                     android:layout_height="wrap_content"
                     android:visibility="gone"
                     app:isDefaultCar="false"
+                    android:focusable="false"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
-
             </com.android.car.ui.FocusArea>
-
-
 
         </com.fy.navi.ui.view.SkinConstraintLayout>
 

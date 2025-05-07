@@ -99,6 +99,7 @@ public interface IVrBridgeConstant {
         int HOME_COMPANY_SET = 9; //设置家-公司地址
         int SELECT_ROUTE = 10; //切换选中的路线
         int CLOSE_CURRENT_PAGE = 11; //关闭当前界面
+        int MOVE_TO_BACK = 12; //应用退到后台
     }
 
     interface VoiceIntentParams {

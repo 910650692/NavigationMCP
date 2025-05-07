@@ -13,6 +13,7 @@
         android:layout_width="@dimen/dp_1578"
         android:layout_height="@dimen/dp_1000"
         android:clickable="true"
+        android:focusable="false"
         android:background="@drawable/bg_setting_fragment">
 
         <com.android.car.ui.FocusParkingView
@@ -23,6 +24,7 @@
             android:id="@+id/car_connect_title_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:focusable="false"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" >
 
@@ -146,6 +148,7 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:focusable="true"
+                    android:focusedByDefault="true"
                     android:background="@drawable/bg_car_connect_function_selector">
 
                     <com.fy.navi.ui.view.SkinTextView
@@ -190,6 +193,7 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:layout_marginStart="@dimen/dp_25"
+                    android:focusable="true"
                     android:background="@drawable/bg_car_connect_function_selector">
 
                     <com.fy.navi.ui.view.SkinTextView
@@ -233,6 +237,7 @@
                     android:layout_width="@dimen/dp_0"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
+                    android:focusable="true"
                     android:layout_marginStart="@dimen/dp_25"
                     android:background="@drawable/bg_car_connect_function_selector">
 
@@ -277,6 +282,7 @@
                     android:layout_width="@dimen/dp_0"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
+                    android:focusable="true"
                     android:layout_marginStart="@dimen/dp_25"
                     android:background="@drawable/bg_car_connect_function_selector">
 
@@ -324,6 +330,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_80"
                 android:gravity="center"
+                android:focusable="true"
                 android:background="@drawable/bg_base_mfc_cadillac_bg_selector">
 
                 <com.fy.navi.ui.view.SkinCheckBox
@@ -331,11 +338,13 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@color/transparent"
+                    android:focusable="false"
                     android:button="@drawable/setting_custom_thumb"/>
 
                 <com.fy.navi.ui.view.SkinTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:focusable="false"
                     android:layout_marginStart="@dimen/dp_32"
                     android:text="@string/car_connect_login_function_last_distance"
                     android:textColor="@color/black"

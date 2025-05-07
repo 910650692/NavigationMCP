@@ -1,7 +1,7 @@
 package com.fy.navi.mapservice.callback;
 
-import com.android.utils.log.Logger;
 import com.fy.navi.mapservice.bean.INaviConstant;
+import com.fy.navi.mapservice.util.Logger;
 
 public interface OnSearchResultListener {
 

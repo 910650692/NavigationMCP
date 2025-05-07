@@ -14,6 +14,7 @@
         android:layout_height="@dimen/dp_1000"
         android:clickable="true"
         android:orientation="vertical"
+        android:focusable="false"
         android:background="@drawable/bg_setting_fragment">
 
         <com.android.car.ui.FocusParkingView
@@ -72,6 +73,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:fillViewport="true"
+            android:focusable="false"
             android:layout_marginTop="@dimen/dp_52"
             android:scrollbars="vertical">
 
@@ -84,7 +86,8 @@
 
                 <com.fy.navi.ui.view.SkinConstraintLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:focusable="false">
 
                     <com.fy.navi.ui.view.SkinConstraintLayout
                         android:id="@+id/current_voice_broadcast_layout"

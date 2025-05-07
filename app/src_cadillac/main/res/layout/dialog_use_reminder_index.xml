@@ -2,15 +2,16 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <com.fy.navi.ui.view.SkinConstraintLayout
         android:id="@+id/reminder_root_index"
-        android:layout_width="@dimen/dp_2000"
-        android:layout_height="@dimen/dp_1000"
-        android:layout_marginStart="@dimen/dp_310"
-        android:layout_marginBottom="@dimen/dp_180"
-        android:background="@drawable/shape_bg_dialog"
-        android:paddingHorizontal="@dimen/dp_100"
-        android:paddingVertical="@dimen/dp_80"
+        android:layout_width="@dimen/dp_2060"
+        android:layout_height="@dimen/dp_1060"
+        android:layout_marginStart="@dimen/dp_280"
+        android:layout_marginBottom="@dimen/dp_150"
+        android:background="@drawable/bg_shadow_handcard"
+        android:paddingHorizontal="@dimen/dp_160"
+        android:paddingVertical="@dimen/dp_140"
+        android:focusable="false"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
@@ -18,6 +19,7 @@
             android:id="@+id/reminder_title"
             android:layout_width="@dimen/dp_1660"
             android:layout_height="@dimen/dp_68"
+            android:focusable="false"
             android:text="@string/reminder_use_agreement"
             android:textColor="@color/dialog_use_reminder_title"
             android:textSize="@dimen/sp_52"
@@ -29,6 +31,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_30"
+            android:focusable="false"
             android:text="@string/reminder_click_to_view"
             android:textColor="@color/dialog_use_reminder_content"
             android:textSize="@dimen/sp_46"
@@ -39,6 +42,7 @@
             android:id="@+id/reminder_terms_service"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:focusable="false"
             android:layout_marginStart="@dimen/dp_6"
             android:layout_marginTop="@dimen/dp_30"
             android:text="@string/reminder_page_service"
@@ -51,6 +55,7 @@
             android:id="@+id/reminder_click_view1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:focusable="false"
             android:layout_marginStart="@dimen/dp_6"
             android:layout_marginTop="@dimen/dp_30"
             android:text="，"
@@ -63,6 +68,7 @@
             android:id="@+id/reminder_page_privacy"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:focusable="false"
             android:layout_marginStart="@dimen/dp_6"
             android:layout_marginTop="@dimen/dp_30"
             android:text="@string/reminder_page_privacy"
@@ -73,14 +79,17 @@
 
         <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_440"
+            android:layout_height="@dimen/dp_372"
             android:layout_marginTop="@dimen/dp_60"
+            android:focusable="false"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/reminder_click_view">
 
             <com.fy.navi.ui.view.SkinTextView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:focusable="false"
+                android:lineSpacingExtra="@dimen/dp_1"
                 android:text="@string/reminder_user_terms_personal_info"
                 android:textColor="@color/dialog_use_reminder_content"
                 android:textSize="@dimen/sp_46" />
@@ -90,10 +99,11 @@
             android:id="@+id/dialog_commit"
             android:layout_width="@dimen/dp_420"
             android:layout_height="@dimen/dp_100"
+            android:focusable="false"
             android:background="@drawable/bg_shape_commit_button"
             android:gravity="center"
             android:text="@string/dialog_commit"
-            android:textColor="@color/dialog_commit_text_white"
+            android:textColor="@color/dialog_use_reminder_positive_color"
             android:textSize="@dimen/sp_42"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
@@ -105,10 +115,11 @@
             android:layout_marginStart="@dimen/dp_40"
             android:background="@drawable/bg_shape_cancel_button"
             android:gravity="center"
+            android:focusable="false"
             android:text="@string/dialog_cancel"
-            android:textColor="@color/dialog_cancel_text_b3181818"
+            android:textColor="@color/dialog_use_reminder_negative_color"
             android:textSize="@dimen/sp_42"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/dialog_commit" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.fy.navi.ui.view.SkinConstraintLayout>
 </layout>

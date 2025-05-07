@@ -2,8 +2,6 @@ package com.fy.navi.mapservice.util;
 
 import android.util.SparseIntArray;
 
-import com.android.utils.log.Logger;
-
 public final class ExportConvertUtil {
 
     private static final String TAG = "ExportConvertUtil";

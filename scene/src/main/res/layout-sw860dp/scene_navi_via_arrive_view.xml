@@ -14,18 +14,20 @@
 
     <com.fy.navi.ui.view.SkinConstraintLayout
         android:id="@+id/scl_root"
-        android:layout_width="@dimen/dp_1140"
-        android:layout_height="@dimen/dp_364"
-        android:background="@mipmap/only_text_small">
+        android:layout_width="@dimen/dp_1136"
+        android:layout_height="@dimen/dp_360"
+        android:paddingHorizontal="@dimen/dp_18"
+        android:paddingTop="@dimen/dp_8"
+        android:paddingBottom="@dimen/dp_28"
+        android:background="@drawable/only_text_small">
 
 
         <com.fy.navi.ui.view.SkinConstraintLayout
-            android:layout_width="@dimen/dp_1100"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:layout_marginTop="@dimen/dp_5"
             tools:color="@color/navi_color_FF595F_100">
 
             <com.fy.navi.ui.view.SkinTextView

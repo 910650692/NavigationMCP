@@ -111,6 +111,7 @@ public final class TexturePoolManager {
                 texture.anchorType = markerInfoBean.getAnchor();
                 texture.xRatio = markerInfoBean.getX_ratio();
                 texture.yRatio = markerInfoBean.getY_ratio();
+                Logger.e(TAG, "采用自定义 markerInfo: " + markerInfoBean.toString());
             } catch (Exception exception) {
                 Logger.e(TAG, "markerInfo 信息出错: " + exception.toString());
             }

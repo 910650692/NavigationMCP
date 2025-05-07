@@ -378,6 +378,17 @@ public class MapPackage implements IMapAdapterCallback, INaviStatusCallback, ILa
 
     }
 
+    @Override
+    public void onEGLScreenshot(MapType mapTypeId, byte[] bytes) {
+        if (callbackTables.containsKey(mapTypeId) && callbackTables.get(mapTypeId) != null) {
+            List<IMapPackageCallback> callbacks = callbackTables.get(mapTypeId);
+            if (ConvertUtils.isEmpty(callbacks)) return;
+            for (IMapPackageCallback callback : callbacks) {
+                callback.onEGLScreenshot(mapTypeId, bytes);
+            }
+        }
+    }
+
     public void updateUiStyle(MapType mapTypeId, ThemeType type) {
         mMapAdapter.updateUiStyle(mapTypeId, type);
         // 通知其它地方UI发生了变化

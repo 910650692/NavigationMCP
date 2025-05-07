@@ -12,53 +12,57 @@
     </data>
 
     <com.fy.navi.ui.view.SkinConstraintLayout
-        android:layout_width="@dimen/dp_640"
-        android:layout_height="@dimen/dp_157"
-        clickCommand="@{()->naviSapa.onClick(1)}"
+        android:layout_width="@dimen/dp_820"
+        android:layout_height="@dimen/dp_200"
+        android:focusable="false"
         android:background="@drawable/bg_navi_toll_station_first">
 
         <com.fy.navi.ui.view.SkinImageView
-            android:layout_width="@dimen/dp_42"
-            android:layout_height="@dimen/dp_42"
+            android:layout_width="@dimen/dp_54"
+            android:layout_height="@dimen/dp_54"
+            android:focusable="false"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             android:background="@drawable/img_toll_station_42"
-            android:layout_marginTop="@dimen/dp_26"
-            android:layout_marginStart="@dimen/dp_24" />
+            android:layout_marginTop="@dimen/dp_32"
+            android:layout_marginStart="@dimen/dp_32" />
 
         <com.fy.navi.ui.view.SkinTextView
             android:id="@+id/stv_first_service_toll_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:focusable="false"
             android:textColor="@color/navi_color_FFFFFF_100"
             android:text="@{naviSapa.mOnlyTollName}"
-            android:textSize="@dimen/sp_34"
+            android:textSize="@dimen/sp_46"
             android:maxLines="1"
             android:maxWidth="@dimen/dp_400"
             android:ellipsize="end"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:layout_marginStart="@dimen/dp_74"
-            android:layout_marginTop="@dimen/dp_24"
+            android:layout_marginStart="@dimen/dp_96"
+            android:layout_marginTop="@dimen/dp_29"
             tools:text="收费站" />
 
         <com.fy.navi.ui.view.SkinTextView
             android:id="@+id/stv_first_service_toll_distance"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/sp_30"
+            android:focusable="false"
+            android:textSize="@dimen/sp_38"
             android:text="@{naviSapa.mOnlyTollDistance}"
             android:textColor="@color/navi_color_FFFFFF_80"
             tools:text="28.8公里"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            android:layout_marginStart="@dimen/dp_30"
-            android:layout_marginBottom="@dimen/dp_26" />
+            android:layout_marginStart="@dimen/dp_40"
+            android:layout_marginBottom="@dimen/dp_36" />
 
         <com.fy.navi.ui.view.SkinLinearLayout
             android:id="@+id/sll_only_toll_services"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:focusable="false"
             app:layout_constraintStart_toEndOf="@+id/stv_first_service_toll_distance"
             app:layout_constraintBottom_toBottomOf="@+id/stv_first_service_toll_distance"
             app:layout_constraintTop_toTopOf="@+id/stv_first_service_toll_distance"
@@ -66,16 +70,18 @@
 
             <com.fy.navi.ui.view.SkinImageView
                 android:id="@+id/siv_first_service_toll_etc"
-                android:layout_width="@dimen/dp_42"
-                android:layout_height="@dimen/dp_42"
+                android:layout_width="@dimen/dp_54"
+                android:layout_height="@dimen/dp_54"
+                android:focusable="false"
                 android:layout_marginEnd="@dimen/dp_2"
                 android:visibility="@{naviSapa.mOnlyTollEtcVisible ? View.VISIBLE : View.GONE}"
                 android:background="@drawable/img_etc_42" />
 
             <com.fy.navi.ui.view.SkinImageView
                 android:id="@+id/siv_first_toll_alipay"
-                android:layout_width="@dimen/dp_42"
-                android:layout_height="@dimen/dp_42"
+                android:layout_width="@dimen/dp_54"
+                android:layout_height="@dimen/dp_54"
+                android:focusable="false"
                 android:visibility="@{naviSapa.mOnlyTollAlipayVisible ? View.VISIBLE : View.GONE}"
                 android:layout_marginEnd="@dimen/dp_2"
                 android:background="@drawable/img_zf_42" />
@@ -87,21 +93,33 @@
             android:id="@+id/siv_only_toll_tag"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:focusable="false"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginTop="@dimen/dp_27"
-            android:layout_marginEnd="@dimen/dp_30"
+            android:layout_marginTop="@dimen/dp_40"
+            android:layout_marginEnd="@dimen/dp_40"
             android:paddingVertical="@dimen/dp_1"
             android:paddingHorizontal="@dimen/dp_5"
             android:maxLines="1"
             android:maxWidth="@dimen/dp_200"
             android:ellipsize="end"
             android:text="@{naviSapa.mOnlyTollTag}"
-            android:textSize="@dimen/sp_26"
+            android:textSize="@dimen/sp_32"
             android:textColor="@{naviSapa.mOnlyTollTagTextColor}"
             android:background="@{naviSapa.mOnlyTollTagBgColor}"
             android:gravity="center"
             tools:text="经" />
+
+        <com.fy.navi.ui.view.SkinView
+            android:layout_width="@dimen/dp_0"
+            android:layout_height="@dimen/dp_0"
+            android:focusable="true"
+            clickCommand="@{()->naviSapa.onClick(1)}"
+            android:background="@drawable/bg_base_mfc_cadillac_bg_selector"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
 
     </com.fy.navi.ui.view.SkinConstraintLayout>
 </layout>

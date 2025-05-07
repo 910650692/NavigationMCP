@@ -9,13 +9,13 @@
     </data>
 
     <com.fy.navi.ui.view.SkinLinearLayout
-        android:layout_width="@dimen/dp_820"
+        android:layout_width="@dimen/dp_698"
         android:layout_height="match_parent"
         android:clickable="true"
         android:orientation="vertical">
         <com.fy.navi.scene.ui.poi.ScenePoiChargingStationReservationView
             android:id="@+id/scene_charge_reservation"
-            android:layout_width="@dimen/dp_820"
+            android:layout_width="@dimen/dp_698"
             android:layout_height="wrap_content">
 
         </com.fy.navi.scene.ui.poi.ScenePoiChargingStationReservationView>

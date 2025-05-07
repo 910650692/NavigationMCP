@@ -13,6 +13,7 @@
         android:layout_width="@dimen/dp_1578"
         android:layout_height="@dimen/dp_1000"
         android:clickable="true"
+        android:focusable="false"
         android:background="@drawable/bg_setting_fragment">
 
         <com.android.car.ui.FocusParkingView

@@ -11,11 +11,13 @@
     </data>
 
     <com.fy.navi.ui.view.SkinConstraintLayout
-        android:layout_width="@dimen/dp_640"
+        android:layout_width="@dimen/dp_698"
         android:layout_height="wrap_content"
-        android:background="@drawable/bg_poi_main_tab"
-        android:maxHeight="@dimen/dp_714"
-        android:paddingBottom="@dimen/dp_40">
+        android:paddingHorizontal="@dimen/dp_29"
+        android:paddingTop="@dimen/dp_29"
+        android:background="@drawable/bg_search_shadow"
+        android:maxHeight="@dimen/dp_772"
+        android:paddingBottom="@dimen/dp_69">
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/start_guideline"

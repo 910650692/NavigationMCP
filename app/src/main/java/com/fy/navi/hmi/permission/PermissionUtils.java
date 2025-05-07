@@ -50,7 +50,6 @@ public class PermissionUtils {
             Manifest.permission.MANAGE_EXTERNAL_STORAGE,
             Manifest.permission.CALL_PHONE,
             Settings.ACTION_MANAGE_OVERLAY_PERMISSION};
-    private boolean isCheckMediaProjectionPermission = false;
 
     public void setPermissionsObserver(PermissionsObserver permissionsObserver) {
         this.permissionsObserver = permissionsObserver;
@@ -159,43 +158,6 @@ public class PermissionUtils {
                         Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
                                 Uri.parse("package:" + AppContext.getInstance().getMContext().getPackageName()));
                         ActivityCompat.startActivityForResult(context, intent, REQUEST_PERMISSION_OVERLAY_CODE, null);
-                    }
-                })
-                .build();
-        permissionDialog.show();
-    }
-
-    public void requestMediaProjection(){
-        if (CalibrationPackage.getInstance().hudFuncEnable() != 1) {
-            Logger.i(TAG, "not hud configuration");
-            return;
-        }
-        if (isCheckMediaProjectionPermission) {
-            return;
-        }
-        isCheckMediaProjectionPermission = true;
-        // 判断so库是否加载成功
-        if (!VTServerBQJni.getInstance().isIsSuccessLoadLibrary()) {
-            return;
-        }
-        Activity mediaContext = StackManager.getInstance().getMainCurrentActivity();
-        PermissionDialog permissionDialog = new PermissionDialog.Build(mediaContext)
-                .setTitle("“屏幕录制”权限申请")
-                .setContent("保障“HUD导航视图”等功能正常使用，应用需要以下权限：\n·屏幕录制")
-                .setDialogObserver(new IBaseDialogClickListener() {
-
-                    @Override
-                    public void onCancelClick() {
-                        deniedPermission.add(Context.MEDIA_PROJECTION_SERVICE);
-                        requestPermission();
-                    }
-
-                    @Override
-                    public void onCommitClick() {
-                        mProjectionManager = (MediaProjectionManager) mediaContext.getSystemService(Context.MEDIA_PROJECTION_SERVICE);
-                        if (mProjectionManager != null) {
-                            mediaContext.startActivityForResult(mProjectionManager.createScreenCaptureIntent(), REQUEST_PERMISSION_MEDIA_PROJECTION);
-                        }
                     }
                 })
                 .build();

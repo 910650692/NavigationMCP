@@ -817,15 +817,15 @@ public final class SettingPackage implements SettingAdapterCallback {
         if (code == 0) {
             switch (mute) {
                 case 0:
-                    mSettingManager.insertOrReplace(SettingController.KEY_SETTING_VOICE_MUTE, SettingController.VALUE_VOICE_MUTE_OFF);
-                    for (SettingChangeCallback callback : mChangeCallbackList.values()) {
-                        callback.onSettingChanged(SettingController.KEY_SETTING_VOICE_MUTE, SettingController.VALUE_VOICE_MUTE_OFF);
-                    }
-                    break;
-                case 1:
                     mSettingManager.insertOrReplace(SettingController.KEY_SETTING_VOICE_MUTE, SettingController.VALUE_VOICE_MUTE_ON);
                     for (SettingChangeCallback callback : mChangeCallbackList.values()) {
                         callback.onSettingChanged(SettingController.KEY_SETTING_VOICE_MUTE, SettingController.VALUE_VOICE_MUTE_ON);
+                    }
+                    break;
+                case 1:
+                    mSettingManager.insertOrReplace(SettingController.KEY_SETTING_VOICE_MUTE, SettingController.VALUE_VOICE_MUTE_OFF);
+                    for (SettingChangeCallback callback : mChangeCallbackList.values()) {
+                        callback.onSettingChanged(SettingController.KEY_SETTING_VOICE_MUTE, SettingController.VALUE_VOICE_MUTE_OFF);
                     }
                     break;
                 default:
@@ -844,9 +844,9 @@ public final class SettingPackage implements SettingAdapterCallback {
         final String data = getValueFromDB(SettingController.KEY_SETTING_VOICE_MUTE);
         if (!TextUtils.isEmpty(data)) {
             switch (data) {
-                case SettingController.VALUE_VOICE_MUTE_OFF:
-                    break;
                 case SettingController.VALUE_VOICE_MUTE_ON:
+                    break;
+                case SettingController.VALUE_VOICE_MUTE_OFF:
                     mute = 1;
                     break;
                 default:
@@ -854,7 +854,7 @@ public final class SettingPackage implements SettingAdapterCallback {
             }
         } else {
             mute = mSettingAdapter.getConfigKeyMute();
-            mSettingManager.insertOrReplace(SettingController.KEY_SETTING_VOICE_MUTE, String.valueOf(mute));
+            setConfigKeyMute(mute);
         }
         return mute;
     }

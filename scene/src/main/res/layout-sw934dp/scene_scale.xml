@@ -17,57 +17,64 @@
         <com.fy.navi.ui.view.SkinImageView
             android:id="@+id/screen_scale_add"
             clickCommand="@{Scene.amplifyLevel}"
-            android:layout_width="@dimen/dp_80"
-            android:layout_height="@dimen/dp_80"
-            android:background="@drawable/bg_scene_scale_tab"
+            android:layout_width="@dimen/dp_138"
+            android:layout_height="@dimen/dp_138"
+            android:background="@drawable/bg_small_shadow"
+            android:paddingHorizontal="@dimen/dp_29"
+            android:paddingVertical="@dimen/dp_29"
             android:src="@drawable/img_basic_ic_add"
             android:scaleType="centerInside"
-            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginStart="@dimen/dp_60"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <com.fy.navi.ui.view.SkinImageView
             android:id="@+id/screen_scale_reduce"
             clickCommand="@{Scene.reduceLevel}"
-            android:layout_width="@dimen/dp_80"
-            android:layout_height="@dimen/dp_80"
-            android:layout_marginTop="@dimen/dp_30"
-            android:background="@drawable/bg_scene_scale_tab"
+            android:layout_width="@dimen/dp_138"
+            android:layout_height="@dimen/dp_138"
+            android:layout_marginTop="@dimen/dp_m_34"
+            android:background="@drawable/bg_small_shadow"
+            android:paddingHorizontal="@dimen/dp_29"
+            android:paddingVertical="@dimen/dp_29"
+            android:layout_marginStart="@dimen/dp_60"
             android:src="@drawable/img_basic_ic_reduce"
             android:scaleType="centerInside"
-            app:layout_constraintEnd_toEndOf="@id/screen_scale_add"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/screen_scale_add" />
 
         <com.fy.navi.ui.view.SkinTextView
             android:id="@+id/screen_scale_size"
-            android:layout_width="wrap_content"
+            android:layout_width="@dimen/dp_170"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_32"
+            android:layout_marginTop="@dimen/dp_m_5"
             android:textSize="@dimen/sp_30"
             android:textColor="@color/common_title_purple_color"
             android:gravity="center"
             android:paddingHorizontal="@dimen/dp_28"
             app:layout_constraintTop_toBottomOf="@id/screen_scale_reduce"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="@id/screen_scale_size_bg"
             tools:text="500公里" />
 
         <com.fy.navi.ui.view.SkinImageView
             android:id="@+id/screen_bg_sample_scale"
-            android:layout_width="@dimen/dp_0"
+            android:layout_width="@dimen/dp_170"
             android:layout_height="wrap_content"
             android:scaleType="fitXY"
             android:src="@drawable/bg_sample_scale"
             app:layout_constraintEnd_toEndOf="@id/screen_scale_size"
-            app:layout_constraintStart_toStartOf="@id/screen_scale_size"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/screen_scale_size" />
 
         <com.fy.navi.ui.view.SkinImageView
             android:id="@+id/screen_scale_size_bg"
-            android:layout_width="@dimen/dp_166"
+            android:layout_width="@dimen/dp_170"
             android:layout_height="@dimen/dp_40"
             android:src="@drawable/bg_scale_size"
             android:layout_marginEnd="@dimen/dp_2"
-            android:scaleType="centerCrop"
-            app:layout_constraintEnd_toEndOf="@id/screen_scale_add"
+            android:scaleType="fitXY"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/screen_bg_sample_scale" />
 
     </com.fy.navi.ui.view.SkinConstraintLayout>

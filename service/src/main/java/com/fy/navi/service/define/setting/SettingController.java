@@ -80,7 +80,9 @@ public interface SettingController {
     String KEY_SETTING_HOME_COMPANY_DISPLAYED = "setting_home_company_displayed";
     // 静音状态
     String KEY_SETTING_VOICE_MUTE = "setting_voice_mute";
+    //声音打开
     String VALUE_VOICE_MUTE_ON = "setting_voice_mute_on";
+    //声音关闭
     String VALUE_VOICE_MUTE_OFF = "setting_voice_mute_off";
     // 是否是电车
     String KEY_SETTING_IS_EV_CAR = "setting_is_ev_car";
@@ -98,6 +100,8 @@ public interface SettingController {
     String KEY_SETTING_VOICE_NAME = "setting_voice_name";
     // 当前选中的语音包
     String KEY_SETTING_VOICE_PACKAGE = "setting_voice_package";
+    // 当前选中的语音包地址
+    String KEY_SETTING_VOICE_PATH = "setting_voice_path";
 
     // 渠道号
     String KEY_SETTING_CHANNEL_ID = "setting_channel_id";

@@ -14,6 +14,7 @@
         android:layout_height="@dimen/dp_1000"
         android:orientation="vertical"
         android:clickable="true"
+        android:focusable="false"
         android:background="@drawable/bg_setting_fragment">
 
         <com.android.car.ui.FocusParkingView
@@ -22,6 +23,7 @@
 
         <com.fy.navi.ui.view.SkinConstraintLayout
             android:id="@+id/help_title"
+            android:focusable="false"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
@@ -76,6 +78,7 @@
 
         <com.fy.navi.ui.view.SkinConstraintLayout
             android:id="@+id/help_content"
+            android:focusable="false"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="@dimen/dp_32">
@@ -121,6 +124,7 @@
                 android:layout_height="match_parent"
                 android:layout_marginStart="@dimen/dp_52"
                 android:layout_marginBottom="@dimen/dp_30"
+                android:focusable="false"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/help_line"
@@ -137,12 +141,14 @@
                         android:id="@+id/remote_navi"
                         android:layout_width="@dimen/dp_1134"
                         android:layout_height="match_parent"
+                        android:focusable="false"
                         android:layout_marginEnd="@dimen/dp_52">
 
                         <com.fy.navi.ui.view.SkinLinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:orientation="vertical"
+                            android:focusable="false"
                             android:visibility="@{viewModel.mSelectPosition == 0 ? View.VISIBLE : View.GONE}">
 
                             <com.fy.navi.ui.view.SkinTextView
@@ -150,6 +156,7 @@
                                 android:layout_height="wrap_content"
                                 android:text="@string/setting_others_help_tab_question_one"
                                 android:textSize="@dimen/sp_32"
+                                android:focusable="false"
                                 android:textColor="@color/setting_bg_tab_text_unselect"/>
 
                             <com.fy.navi.ui.view.SkinTextView
@@ -157,6 +164,7 @@
                                 android:layout_height="wrap_content"
                                 android:text="@string/setting_others_help_tab_question_one_answer"
                                 android:textSize="@dimen/sp_32"
+                                android:focusable="false"
                                 android:textColor="@color/setting_car_logo_text_gray"
                                 android:layout_marginTop="@dimen/dp_16"/>
 
@@ -165,6 +173,7 @@
                                 android:layout_height="wrap_content"
                                 android:text="@string/setting_others_help_tab_question_two"
                                 android:textSize="@dimen/sp_32"
+                                android:focusable="false"
                                 android:textColor="@color/setting_bg_tab_text_unselect"
                                 android:layout_marginTop="@dimen/dp_40"/>
 
@@ -173,6 +182,7 @@
                                 android:layout_height="wrap_content"
                                 android:text="@string/setting_others_help_tab_question_two_answer"
                                 android:textSize="@dimen/sp_32"
+                                android:focusable="false"
                                 android:textColor="@color/setting_car_logo_text_gray"
                                 android:layout_marginTop="@dimen/dp_16"/>
 
@@ -181,6 +191,7 @@
                                 android:layout_height="wrap_content"
                                 android:text="@string/setting_others_help_tab_question_three"
                                 android:textSize="@dimen/sp_32"
+                                android:focusable="false"
                                 android:textColor="@color/setting_bg_tab_text_unselect"
                                 android:layout_marginTop="@dimen/dp_40"/>
 
@@ -189,6 +200,7 @@
                                 android:layout_height="wrap_content"
                                 android:text="@string/setting_others_help_tab_question_three_answer"
                                 android:textSize="@dimen/sp_32"
+                                android:focusable="false"
                                 android:textColor="@color/setting_car_logo_text_gray"
                                 android:layout_marginTop="@dimen/dp_16"/>
 
@@ -197,6 +209,7 @@
                                 android:layout_height="wrap_content"
                                 android:text="@string/setting_others_help_tab_question_four"
                                 android:textSize="@dimen/sp_32"
+                                android:focusable="false"
                                 android:textColor="@color/setting_bg_tab_text_unselect"
                                 android:layout_marginTop="@dimen/dp_40"/>
 
@@ -205,6 +218,7 @@
                                 android:layout_height="wrap_content"
                                 android:text="@string/setting_others_help_tab_question_four_answer"
                                 android:textSize="@dimen/sp_32"
+                                android:focusable="false"
                                 android:textColor="@color/setting_car_logo_text_gray"
                                 android:layout_marginTop="@dimen/dp_16"/>
 
@@ -213,6 +227,7 @@
                                 android:layout_height="wrap_content"
                                 android:text="@string/setting_others_help_tab_question_five"
                                 android:textSize="@dimen/sp_32"
+                                android:focusable="false"
                                 android:textColor="@color/setting_bg_tab_text_unselect"
                                 android:layout_marginTop="@dimen/dp_40"/>
 
@@ -221,6 +236,7 @@
                                 android:layout_height="wrap_content"
                                 android:text="@string/setting_others_help_tab_question_five_answer"
                                 android:textSize="@dimen/sp_32"
+                                android:focusable="false"
                                 android:textColor="@color/setting_car_logo_text_gray"
                                 android:layout_marginTop="@dimen/dp_16"/>
 
@@ -230,6 +246,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:orientation="vertical"
+                            android:focusable="false"
                             android:visibility="@{viewModel.mSelectPosition == 1 ? View.VISIBLE : View.GONE}">
 
                             <com.fy.navi.ui.view.SkinTextView
@@ -237,6 +254,7 @@
                                 android:layout_height="wrap_content"
                                 android:text="@string/setting_others_help_tab_display_one"
                                 android:textSize="@dimen/sp_32"
+                                android:focusable="false"
                                 android:textColor="@color/setting_bg_tab_text_unselect"/>
 
                             <com.fy.navi.ui.view.SkinTextView
@@ -244,6 +262,7 @@
                                 android:layout_height="wrap_content"
                                 android:text="@string/setting_others_help_tab_display_one_answer"
                                 android:textSize="@dimen/sp_32"
+                                android:focusable="false"
                                 android:textColor="@color/setting_car_logo_text_gray"
                                 android:layout_marginTop="@dimen/dp_16"/>
 
@@ -252,6 +271,7 @@
                                 android:layout_height="wrap_content"
                                 android:text="@string/setting_others_help_tab_display_two"
                                 android:textSize="@dimen/sp_32"
+                                android:focusable="false"
                                 android:textColor="@color/setting_bg_tab_text_unselect"
                                 android:layout_marginTop="@dimen/dp_40"/>
 
@@ -260,6 +280,7 @@
                                 android:layout_height="wrap_content"
                                 android:text="@string/setting_others_help_tab_display_two_answer"
                                 android:textSize="@dimen/sp_32"
+                                android:focusable="false"
                                 android:textColor="@color/setting_car_logo_text_gray"
                                 android:layout_marginTop="@dimen/dp_16"/>
 
@@ -268,6 +289,7 @@
                                 android:layout_height="wrap_content"
                                 android:text="@string/setting_others_help_tab_display_three"
                                 android:textSize="@dimen/sp_32"
+                                android:focusable="false"
                                 android:textColor="@color/setting_bg_tab_text_unselect"
                                 android:layout_marginTop="@dimen/dp_40"/>
 
@@ -276,6 +298,7 @@
                                 android:layout_height="wrap_content"
                                 android:text="@string/setting_others_help_tab_display_three_answer"
                                 android:textSize="@dimen/sp_32"
+                                android:focusable="false"
                                 android:textColor="@color/setting_car_logo_text_gray"
                                 android:layout_marginTop="@dimen/dp_16"/>
 
@@ -284,6 +307,7 @@
                                 android:layout_height="wrap_content"
                                 android:text="@string/setting_others_help_tab_display_four"
                                 android:textSize="@dimen/sp_32"
+                                android:focusable="false"
                                 android:textColor="@color/setting_bg_tab_text_unselect"
                                 android:layout_marginTop="@dimen/dp_40"/>
 
@@ -292,6 +316,7 @@
                                 android:layout_height="wrap_content"
                                 android:text="@string/setting_others_help_tab_display_four_answer"
                                 android:textSize="@dimen/sp_32"
+                                android:focusable="false"
                                 android:textColor="@color/setting_car_logo_text_gray"
                                 android:layout_marginTop="@dimen/dp_16"/>
 
@@ -301,6 +326,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:orientation="vertical"
+                            android:focusable="false"
                             android:visibility="@{viewModel.mSelectPosition == 2 ? View.VISIBLE : View.GONE}">
 
                             <com.fy.navi.ui.view.SkinTextView
@@ -308,6 +334,7 @@
                                 android:layout_height="wrap_content"
                                 android:text="@string/setting_others_help_tab_route_one"
                                 android:textSize="@dimen/sp_32"
+                                android:focusable="false"
                                 android:textColor="@color/setting_bg_tab_text_unselect"/>
 
                             <com.fy.navi.ui.view.SkinTextView
@@ -315,6 +342,7 @@
                                 android:layout_height="wrap_content"
                                 android:text="@string/setting_others_help_tab_route_one_answer"
                                 android:textSize="@dimen/sp_32"
+                                android:focusable="false"
                                 android:textColor="@color/setting_car_logo_text_gray"
                                 android:layout_marginTop="@dimen/dp_16"/>
 
@@ -323,6 +351,7 @@
                                 android:layout_height="wrap_content"
                                 android:text="@string/setting_others_help_tab_route_two"
                                 android:textSize="@dimen/sp_32"
+                                android:focusable="false"
                                 android:textColor="@color/setting_bg_tab_text_unselect"
                                 android:layout_marginTop="@dimen/dp_40"/>
 
@@ -331,6 +360,7 @@
                                 android:layout_height="wrap_content"
                                 android:text="@string/setting_others_help_tab_route_two_answer"
                                 android:textSize="@dimen/sp_32"
+                                android:focusable="false"
                                 android:textColor="@color/setting_car_logo_text_gray"
                                 android:layout_marginTop="@dimen/dp_16"/>
 
@@ -339,6 +369,7 @@
                                 android:layout_height="wrap_content"
                                 android:text="@string/setting_others_help_tab_route_three"
                                 android:textSize="@dimen/sp_32"
+                                android:focusable="false"
                                 android:textColor="@color/setting_bg_tab_text_unselect"
                                 android:layout_marginTop="@dimen/dp_40"/>
 
@@ -347,6 +378,7 @@
                                 android:layout_height="wrap_content"
                                 android:text="@string/setting_others_help_tab_route_three_answer"
                                 android:textSize="@dimen/sp_32"
+                                android:focusable="false"
                                 android:textColor="@color/setting_car_logo_text_gray"
                                 android:layout_marginTop="@dimen/dp_16"/>
 
@@ -355,6 +387,7 @@
                                 android:layout_height="wrap_content"
                                 android:text="@string/setting_others_help_tab_route_four"
                                 android:textSize="@dimen/sp_32"
+                                android:focusable="false"
                                 android:textColor="@color/setting_bg_tab_text_unselect"
                                 android:layout_marginTop="@dimen/dp_40"/>
 
@@ -363,6 +396,7 @@
                                 android:layout_height="wrap_content"
                                 android:text="@string/setting_others_help_tab_route_four_answer"
                                 android:textSize="@dimen/sp_32"
+                                android:focusable="false"
                                 android:textColor="@color/setting_car_logo_text_gray"
                                 android:layout_marginTop="@dimen/dp_16"/>
 
@@ -371,6 +405,7 @@
                                 android:layout_height="wrap_content"
                                 android:text="@string/setting_others_help_tab_route_five"
                                 android:textSize="@dimen/sp_32"
+                                android:focusable="false"
                                 android:textColor="@color/setting_bg_tab_text_unselect"
                                 android:layout_marginTop="@dimen/dp_40"/>
 
@@ -379,6 +414,7 @@
                                 android:layout_height="wrap_content"
                                 android:text="@string/setting_others_help_tab_route_five_answer"
                                 android:textSize="@dimen/sp_32"
+                                android:focusable="false"
                                 android:textColor="@color/setting_car_logo_text_gray"
                                 android:layout_marginTop="@dimen/dp_16"/>
 
@@ -388,6 +424,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:orientation="vertical"
+                            android:focusable="false"
                             android:visibility="@{viewModel.mSelectPosition == 3 ? View.VISIBLE : View.GONE}">
 
                             <com.fy.navi.ui.view.SkinTextView
@@ -395,6 +432,7 @@
                                 android:layout_height="wrap_content"
                                 android:text="@string/setting_others_help_tab_search_one"
                                 android:textSize="@dimen/sp_32"
+                                android:focusable="false"
                                 android:textColor="@color/setting_bg_tab_text_unselect"/>
 
                             <com.fy.navi.ui.view.SkinTextView
@@ -402,6 +440,7 @@
                                 android:layout_height="wrap_content"
                                 android:text="@string/setting_others_help_tab_search_one_answer"
                                 android:textSize="@dimen/sp_32"
+                                android:focusable="false"
                                 android:textColor="@color/setting_car_logo_text_gray"
                                 android:layout_marginTop="@dimen/dp_16"/>
 
@@ -410,6 +449,7 @@
                                 android:layout_height="wrap_content"
                                 android:text="@string/setting_others_help_tab_search_two"
                                 android:textSize="@dimen/sp_32"
+                                android:focusable="false"
                                 android:textColor="@color/setting_bg_tab_text_unselect"
                                 android:layout_marginTop="@dimen/dp_40"/>
 
@@ -418,6 +458,7 @@
                                 android:layout_height="wrap_content"
                                 android:text="@string/setting_others_help_tab_search_two_answer"
                                 android:textSize="@dimen/sp_32"
+                                android:focusable="false"
                                 android:textColor="@color/setting_car_logo_text_gray"
                                 android:layout_marginTop="@dimen/dp_16"/>
 
@@ -426,6 +467,7 @@
                                 android:layout_height="wrap_content"
                                 android:text="@string/setting_others_help_tab_search_three"
                                 android:textSize="@dimen/sp_32"
+                                android:focusable="false"
                                 android:textColor="@color/setting_bg_tab_text_unselect"
                                 android:layout_marginTop="@dimen/dp_40"/>
 
@@ -434,6 +476,7 @@
                                 android:layout_height="wrap_content"
                                 android:text="@string/setting_others_help_tab_search_three_answer"
                                 android:textSize="@dimen/sp_32"
+                                android:focusable="false"
                                 android:textColor="@color/setting_car_logo_text_gray"
                                 android:layout_marginTop="@dimen/dp_16"/>
 
@@ -442,6 +485,7 @@
                                 android:layout_height="wrap_content"
                                 android:text="@string/setting_others_help_tab_search_four"
                                 android:textSize="@dimen/sp_32"
+                                android:focusable="false"
                                 android:textColor="@color/setting_bg_tab_text_unselect"
                                 android:layout_marginTop="@dimen/dp_40"/>
 
@@ -450,6 +494,7 @@
                                 android:layout_height="wrap_content"
                                 android:text="@string/setting_others_help_tab_search_four_answer"
                                 android:textSize="@dimen/sp_32"
+                                android:focusable="false"
                                 android:textColor="@color/setting_car_logo_text_gray"
                                 android:layout_marginTop="@dimen/dp_16"/>
 
@@ -458,6 +503,7 @@
                                 android:layout_height="wrap_content"
                                 android:text="@string/setting_others_help_tab_search_five"
                                 android:textSize="@dimen/sp_32"
+                                android:focusable="false"
                                 android:textColor="@color/setting_bg_tab_text_unselect"
                                 android:layout_marginTop="@dimen/dp_40"/>
 
@@ -466,6 +512,7 @@
                                 android:layout_height="wrap_content"
                                 android:text="@string/setting_others_help_tab_search_five_answer"
                                 android:textSize="@dimen/sp_32"
+                                android:focusable="false"
                                 android:textColor="@color/setting_car_logo_text_gray"
                                 android:layout_marginTop="@dimen/dp_16"/>
 
@@ -475,6 +522,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:orientation="vertical"
+                            android:focusable="false"
                             android:visibility="@{viewModel.mSelectPosition == 4 ? View.VISIBLE : View.GONE}">
 
                             <com.fy.navi.ui.view.SkinTextView
@@ -482,6 +530,7 @@
                                 android:layout_height="wrap_content"
                                 android:text="@string/setting_others_help_tab_broadcast_one"
                                 android:textSize="@dimen/sp_32"
+                                android:focusable="false"
                                 android:textColor="@color/setting_bg_tab_text_unselect"/>
 
                             <com.fy.navi.ui.view.SkinTextView
@@ -489,6 +538,7 @@
                                 android:layout_height="wrap_content"
                                 android:text="@string/setting_others_help_tab_broadcast_one_answer"
                                 android:textSize="@dimen/sp_32"
+                                android:focusable="false"
                                 android:textColor="@color/setting_car_logo_text_gray"
                                 android:layout_marginTop="@dimen/dp_16"/>
 
@@ -497,6 +547,7 @@
                                 android:layout_height="wrap_content"
                                 android:text="@string/setting_others_help_tab_broadcast_two"
                                 android:textSize="@dimen/sp_32"
+                                android:focusable="false"
                                 android:textColor="@color/setting_bg_tab_text_unselect"
                                 android:layout_marginTop="@dimen/dp_40"/>
 
@@ -505,6 +556,7 @@
                                 android:layout_height="wrap_content"
                                 android:text="@string/setting_others_help_tab_broadcast_two_answer"
                                 android:textSize="@dimen/sp_32"
+                                android:focusable="false"
                                 android:textColor="@color/setting_car_logo_text_gray"
                                 android:layout_marginTop="@dimen/dp_16"/>
 
@@ -513,6 +565,7 @@
                                 android:layout_height="wrap_content"
                                 android:text="@string/setting_others_help_tab_broadcast_three"
                                 android:textSize="@dimen/sp_32"
+                                android:focusable="false"
                                 android:textColor="@color/setting_bg_tab_text_unselect"
                                 android:layout_marginTop="@dimen/dp_40"/>
 
@@ -521,6 +574,7 @@
                                 android:layout_height="wrap_content"
                                 android:text="@string/setting_others_help_tab_broadcast_three_answer"
                                 android:textSize="@dimen/sp_32"
+                                android:focusable="false"
                                 android:textColor="@color/setting_car_logo_text_gray"
                                 android:layout_marginTop="@dimen/dp_16"/>
 
@@ -529,6 +583,7 @@
                                 android:layout_height="wrap_content"
                                 android:text="@string/setting_others_help_tab_broadcast_four"
                                 android:textSize="@dimen/sp_32"
+                                android:focusable="false"
                                 android:textColor="@color/setting_bg_tab_text_unselect"
                                 android:layout_marginTop="@dimen/dp_40"/>
 
@@ -537,9 +592,9 @@
                                 android:layout_height="wrap_content"
                                 android:text="@string/setting_others_help_tab_broadcast_four_answer"
                                 android:textSize="@dimen/sp_32"
+                                android:focusable="false"
                                 android:textColor="@color/setting_car_logo_text_gray"
                                 android:layout_marginTop="@dimen/dp_16"/>
-
 
                         </com.fy.navi.ui.view.SkinLinearLayout>
 
@@ -547,6 +602,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:orientation="vertical"
+                            android:focusable="false"
                             android:visibility="@{viewModel.mSelectPosition == 5 ? View.VISIBLE : View.GONE}">
 
                             <com.fy.navi.ui.view.SkinTextView
@@ -554,6 +610,7 @@
                                 android:layout_height="wrap_content"
                                 android:text="@string/setting_others_help_tab_data_one"
                                 android:textSize="@dimen/sp_32"
+                                android:focusable="false"
                                 android:textColor="@color/setting_bg_tab_text_unselect"/>
 
                             <com.fy.navi.ui.view.SkinTextView
@@ -561,6 +618,7 @@
                                 android:layout_height="wrap_content"
                                 android:text="@string/setting_others_help_tab_data_one_answer"
                                 android:textSize="@dimen/sp_32"
+                                android:focusable="false"
                                 android:textColor="@color/setting_car_logo_text_gray"
                                 android:layout_marginTop="@dimen/dp_16"/>
 
@@ -569,6 +627,7 @@
                                 android:layout_height="wrap_content"
                                 android:text="@string/setting_others_help_tab_data_two"
                                 android:textSize="@dimen/sp_32"
+                                android:focusable="false"
                                 android:textColor="@color/setting_bg_tab_text_unselect"
                                 android:layout_marginTop="@dimen/dp_40"/>
 
@@ -577,6 +636,7 @@
                                 android:layout_height="wrap_content"
                                 android:text="@string/setting_others_help_tab_data_two_answer"
                                 android:textSize="@dimen/sp_32"
+                                android:focusable="false"
                                 android:textColor="@color/setting_car_logo_text_gray"
                                 android:layout_marginTop="@dimen/dp_16"/>
 
@@ -585,6 +645,7 @@
                                 android:layout_height="wrap_content"
                                 android:text="@string/setting_others_help_tab_data_three"
                                 android:textSize="@dimen/sp_32"
+                                android:focusable="false"
                                 android:textColor="@color/setting_bg_tab_text_unselect"
                                 android:layout_marginTop="@dimen/dp_40"/>
 
@@ -593,6 +654,7 @@
                                 android:layout_height="wrap_content"
                                 android:text="@string/setting_others_help_tab_data_three_answer"
                                 android:textSize="@dimen/sp_32"
+                                android:focusable="false"
                                 android:textColor="@color/setting_car_logo_text_gray"
                                 android:layout_marginTop="@dimen/dp_16"/>
 
@@ -601,6 +663,7 @@
                                 android:layout_height="wrap_content"
                                 android:text="@string/setting_others_help_tab_data_four"
                                 android:textSize="@dimen/sp_32"
+                                android:focusable="false"
                                 android:textColor="@color/setting_bg_tab_text_unselect"
                                 android:layout_marginTop="@dimen/dp_40"/>
 
@@ -609,6 +672,7 @@
                                 android:layout_height="wrap_content"
                                 android:text="@string/setting_others_help_tab_data_four_answer"
                                 android:textSize="@dimen/sp_32"
+                                android:focusable="false"
                                 android:textColor="@color/setting_car_logo_text_gray"
                                 android:layout_marginTop="@dimen/dp_16"/>
 

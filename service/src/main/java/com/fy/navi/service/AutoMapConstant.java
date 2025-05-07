@@ -338,5 +338,11 @@ public interface AutoMapConstant {
         String IDP_USER_ID = "com.patac.hmi.account.idpUserId";
         String NICK_NAME = "com.patac.hmi.account.idpUserId";
         String PHONE = "com.patac.hmi.account.phone";
+        String ACCOUNT= "com.patac.hmi.account";
+    }
+
+    @interface AccountLogin {
+        String ACTION = "com.patac.hmi.user.action.service.overlay";
+        String PACKAGE = "com.patac.hmi.user";
     }
 }

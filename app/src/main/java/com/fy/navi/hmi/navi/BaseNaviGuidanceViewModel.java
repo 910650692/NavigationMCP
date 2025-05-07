@@ -220,7 +220,8 @@ public class BaseNaviGuidanceViewModel extends
                 mNaviSpeedVisibility.set(isVisible);
                 break;
             case NAVI_SCENE_TMC:
-                mNaviTmcVisibility.set(isVisible);
+                Logger.i(TAG, "NAVI_SCENE_TMC isVisible:" + isVisible + " isNetConnected:" + mModel.isNetConnected());
+                mNaviTmcVisibility.set(isVisible && mModel.isNetConnected());
                 mView.updateViewRadius();
                 break;
             case NAVI_SCENE_VIA_DETAIL_INFO:
@@ -548,6 +549,7 @@ public class BaseNaviGuidanceViewModel extends
             mView.updateViaListState(viaList);
         }
     }
+
     public void showDeleteAllTip() {
         new ChargeStationDeletTipDialog(mView.getActivity(), new IBaseDialogClickListener() {
             @Override

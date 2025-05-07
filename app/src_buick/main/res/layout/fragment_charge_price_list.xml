@@ -10,13 +10,13 @@
 
     <com.fy.navi.ui.view.SkinLinearLayout
         clickCommand="@{viewModel.rootClick}"
-        android:layout_width="@dimen/dp_820"
+        android:layout_width="@dimen/dp_698"
         android:layout_height="wrap_content"
         android:clickable="true"
         android:orientation="vertical">
         <com.fy.navi.scene.ui.poi.ScenePoiChargePriceListView
             android:id="@+id/charge_price"
-            android:layout_width="@dimen/dp_820"
+            android:layout_width="@dimen/dp_698"
             android:layout_height="wrap_content">
 
         </com.fy.navi.scene.ui.poi.ScenePoiChargePriceListView>

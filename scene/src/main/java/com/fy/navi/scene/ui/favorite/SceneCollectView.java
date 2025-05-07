@@ -1,7 +1,12 @@
 package com.fy.navi.scene.ui.favorite;
 
 
+import android.content.ActivityNotFoundException;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.net.Uri;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -10,6 +15,7 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
@@ -24,14 +30,18 @@ import com.fy.navi.scene.impl.favorite.SceneCollectViewImpl;
 import com.fy.navi.scene.impl.search.FavoriteManager;
 import com.fy.navi.scene.impl.search.SearchFragmentFactory;
 import com.fy.navi.scene.ui.adapter.CollectResultAdapter;
+import com.fy.navi.scene.ui.search.SearchConfirmDialog;
 import com.fy.navi.service.AutoMapConstant;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.search.PoiInfoEntity;
 import com.fy.navi.service.logicpaket.route.RoutePackage;
 import com.fy.navi.service.logicpaket.search.SearchPackage;
+import com.fy.navi.service.logicpaket.user.account.AccountPackage;
 import com.fy.navi.ui.base.BaseFragment;
+import com.fy.navi.ui.dialog.IBaseDialogClickListener;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -46,9 +56,10 @@ public class SceneCollectView extends BaseSceneView<SceneCollectViewBinding, Sce
     //0 普通收藏 1 常用地址 3 收到的点
     private int mCollectionType;
     private int mHomeCompanyType = -1;
-    private List<PoiInfoEntity> mCollectList;
     private boolean mIsCommonCollect = true;
     private boolean mIsChargingCollect = false;
+    private boolean mIsAsyncData = false;
+    private final static String PATAC_ACTION_LOGIN = "patac.hmi.user.intent.action.LOGIN";
 
     public SceneCollectView(@NonNull final Context context) {
         super(context);
@@ -81,6 +92,7 @@ public class SceneCollectView extends BaseSceneView<SceneCollectViewBinding, Sce
 
     @Override
     protected void initObserver() {
+        registerBroadcast();
         setupRecyclerView();
         setViewClick();
     }
@@ -169,13 +181,42 @@ public class SceneCollectView extends BaseSceneView<SceneCollectViewBinding, Sce
                     AutoMapConstant.SourceFragment.MAIN_SEARCH_FRAGMENT,
                     AutoMapConstant.SearchType.SEARCH_KEYWORD, AutoMapConstant.HomeCompanyType.COLLECTION));
         });
-
+        // 常用收藏夹
         mViewBinding.naviBroadcastStandard.setOnClickListener(view -> {
-
+            hideEmptyView();
+            ArrayList<PoiInfoEntity> list = mScreenViewModel.getFavoriteListAsync();
+            if (ConvertUtils.isEmpty(list)) {
+                mViewBinding.sllNoFavorite.setVisibility(VISIBLE);
+            } else {
+                mAdapter.notifyList(list);
+            }
         });
 
+        // 专属充电站
         mViewBinding.naviBroadcastLarge.setOnClickListener(view -> {
+            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"naviBroadcastLarge click");
+            hideEmptyView();
+            mAdapter.notifyList(new ArrayList<>());
+            // 判断是否已登录
+            if(!mScreenViewModel.isSGMLogin()){
+                mViewBinding.sllNoSgm.setVisibility(VISIBLE);
+                return;
+            }
+            if(mIsAsyncData){
+                // 获取收藏数据
+                Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"naviBroadcastLarge click1");
+            }else{
+                mViewBinding.sllNoCharge.setVisibility(VISIBLE);
+            }
+        });
 
+        // 登陆SGM
+        mViewBinding.sllNoLogin.setOnClickListener(view -> {
+            mScreenViewModel.startSGMLogin();
+        });
+
+        // 获取失败刷新
+        mViewBinding.sllNoRefresh.setOnClickListener(view -> {
         });
     }
 
@@ -186,10 +227,9 @@ public class SceneCollectView extends BaseSceneView<SceneCollectViewBinding, Sce
     public void setAdapterData(final List<PoiInfoEntity> data) {
         mAdapter.notifyList(data);
         if (mViewBinding != null) {
+            hideEmptyView();
             if (ConvertUtils.isEmpty(data)) {
                 mViewBinding.sllNoFavorite.setVisibility(View.VISIBLE);
-            } else {
-                mViewBinding.sllNoFavorite.setVisibility(View.GONE);
             }
         }
     }
@@ -228,5 +268,48 @@ public class SceneCollectView extends BaseSceneView<SceneCollectViewBinding, Sce
     public void setPowerType(final int powerType){
         Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"powerType: "+powerType);
         mScreenViewModel.mPowerType.setValue(powerType);
+    }
+
+    private void hideEmptyView(){
+        mViewBinding.sllNoFavorite.setVisibility(GONE);
+        mViewBinding.sllNoCharge.setVisibility(GONE);
+        mViewBinding.sllNoData.setVisibility(GONE);
+        mViewBinding.sllNoNet.setVisibility(GONE);
+        mViewBinding.sllNoSgm.setVisibility(GONE);
+    }
+
+    BroadcastReceiver mAccountReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"mAccountReceiver onReceive");
+            new SearchConfirmDialog.Build(getContext())
+                    .setDialogObserver(new IBaseDialogClickListener() {
+                        @Override
+                        public void onCommitClick() {
+                            mIsAsyncData = true;
+                            mViewBinding.naviBroadcastLarge.performClick();
+                        }
+                        @Override
+                        public void onCancelClick() {
+                            mIsAsyncData = false;
+                            mViewBinding.naviBroadcastLarge.performClick();
+                        }
+                    })
+                    .setContent(getContext().getString(R.string.search_async_sgm_data))
+                    .setConfirmTitle(getContext().getString(R.string.search_async))
+                    .build().show();
+        }
+    };
+
+    private void registerBroadcast(){
+        final IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(PATAC_ACTION_LOGIN);
+        ContextCompat.registerReceiver(getContext(), mAccountReceiver, intentFilter, ContextCompat.RECEIVER_EXPORTED);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        getContext().unregisterReceiver(mAccountReceiver);
     }
 }

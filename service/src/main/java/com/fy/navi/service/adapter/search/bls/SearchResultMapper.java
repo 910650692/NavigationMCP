@@ -2,6 +2,7 @@ package com.fy.navi.service.adapter.search.bls;
 
 
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
@@ -135,6 +136,7 @@ public final class SearchResultMapper {
         searchResultEntity.setTotal(result.total);
         searchResultEntity.setPoiList(poiList);
         searchResultEntity.setPoiType(result.poiType);//0=离线数据，1=在线数据
+        searchResultEntity.setQueryTypeList(result.lqii.queryTypeList);
         //获取筛选分类数据
         if (result.classify != null) {
             searchResultEntity.setRetain(result.classify.retainState);//筛选搜索需要的信息

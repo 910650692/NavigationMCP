@@ -217,8 +217,12 @@ public class AccountAdapterImpl implements IAccountApi {
     }
 
     @Override
-    public String getIdpUserId(final Account availableAccount, final String key) {
-        return mAdapterImplHelper.getIdpUserId(availableAccount, key);
+    public String getUserData(final Account availableAccount, final String key) {
+        return mAdapterImplHelper.getUserData(availableAccount, key);
     }
 
+    @Override
+    public Account[] getAccounts() {
+        return mAdapterImplHelper.getAccounts();
+    }
 }

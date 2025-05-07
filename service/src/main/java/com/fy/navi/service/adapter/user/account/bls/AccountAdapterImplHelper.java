@@ -502,13 +502,21 @@ public class AccountAdapterImplHelper implements IAccountServiceObserver {
     }
 
     /**
-     * 获取idpUserId
+     * 获取账户信息
      * @param availableAccount 账户对象
-     * @param key 账户信息的key值 ; id 用 AutoMapConstant.AccountInfoKey.IDP_USER_ID
+     * @param key 账户信息的key值 ;  AutoMapConstant.AccountInfoKey
      * @return userId
      */
-    public String getIdpUserId(final Account availableAccount, final String key) {
+    public String getUserData(final Account availableAccount, final String key) {
         return mAccountManager.getUserData(availableAccount, key);
+    }
+
+    /**
+     * 获取账户列表
+     * @return Account[]
+     */
+    public Account[] getAccounts() {
+        return mAccountManager.getAccountsByType(AutoMapConstant.AccountInfoKey.ACCOUNT);
     }
 
 }

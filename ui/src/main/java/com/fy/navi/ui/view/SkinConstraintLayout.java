@@ -64,4 +64,12 @@ public class SkinConstraintLayout extends ConstraintLayout {
         }
         return super.onTouchEvent(event);
     }
+
+    /**
+     * 设置是否点击改变颜色
+     * @param isClickChangeColor 是否点击改变颜色
+     */
+    public void setIsClickChangeColor(boolean isClickChangeColor) {
+        mIsClickChangeColor = isClickChangeColor;
+    }
 }

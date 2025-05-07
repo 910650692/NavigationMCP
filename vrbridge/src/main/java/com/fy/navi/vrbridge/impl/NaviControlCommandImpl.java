@@ -1082,11 +1082,14 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
             final NaviEtaInfo etaInfo = MapStateManager.getInstance().getEtaInfo();
             if (null != etaInfo) {
                 final int remainLightCount = etaInfo.routeRemainLightCount;
+                Logger.d(IVrBridgeConstant.TAG, "trafficLightAsk count000000: " + remainLightCount);
                 response = CallResponse.createSuccessResponse("离目的地剩余" + remainLightCount + "个红绿灯");
             } else {
+                Logger.d(IVrBridgeConstant.TAG, "trafficLightAsk count11111111:");
                 response = CallResponse.createFailResponse("暂无红绿灯信息，请稍后再试");
             }
         } else {
+            Logger.d(IVrBridgeConstant.TAG, "trafficLightAsk count222222222:");
             response = CallResponse.createNotSupportResponse("当前不在导航状态，没有行程相关信息哦 ");
         }
         return response;
@@ -1114,17 +1117,21 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
         switch (arrival) {
             case IVrBridgeConstant.PoiType.DESTINATION:
             case IVrBridgeConstant.PoiType.PASS_BY:
+                Logger.d(IVrBridgeConstant.TAG, "distanceLeftAsk00000");
                 response = getRemainDistance(arrival);
                 break;
             case IVrBridgeConstant.DestType.HOME:
+                Logger.d(IVrBridgeConstant.TAG, "distanceLeftAsk11111");
                 //查询到家的ETA信息
                 response = getHomeEtaInfo(start, respCallback);
                 break;
             case IVrBridgeConstant.DestType.COMPANY:
+                Logger.d(IVrBridgeConstant.TAG, "distanceLeftAsk22222");
                 //查询到公司的ETA信息
                 response = getCompanyEtaInfo(start, respCallback);
                 break;
             default:
+                Logger.d(IVrBridgeConstant.TAG, "distanceLeftAsk3333 start: " + start + ",arrival: " + arrival);
                 response = VoiceSearchManager.getInstance().getTwoPoiEtaInfo(start, arrival, respCallback);
                 break;
         }
@@ -1147,6 +1154,7 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
                     //目的地
                     final int remainDistance = naviEtaInfo.getAllDist();
                     final String formatDistances = VoiceConvertUtil.formatDistance(remainDistance);
+                    Logger.d(IVrBridgeConstant.TAG, "distanceLeftAsk44444, formatDistance: " + formatDistances);
                     response = CallResponse.createSuccessResponse("距目的地还有" + formatDistances);
                 } else {
                     //途径点
@@ -1154,6 +1162,7 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
                         final NaviEtaInfo.NaviTimeAndDist timeAndDist = naviEtaInfo.viaRemain.get(0);
                         final int viaRemainDist = timeAndDist.dist;
                         final String formatDistances = VoiceConvertUtil.formatDistance(viaRemainDist);
+                        Logger.d(IVrBridgeConstant.TAG, "distanceLeftAsk55555, formatDistance: " + formatDistances);
                         response = CallResponse.createSuccessResponse("距第一个途径点还有" + formatDistances);
                     } else {
                         response = CallResponse.createFailResponse("没有查询到相关信息，请稍后重试");
@@ -1292,17 +1301,21 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
         switch (arrival) {
             case IVrBridgeConstant.PoiType.DESTINATION:
             case IVrBridgeConstant.PoiType.PASS_BY:
+                Logger.d(IVrBridgeConstant.TAG, "timeLeftAsk0000000");
                 response = getRemainTime(arrival);
                 break;
             case IVrBridgeConstant.DestType.HOME:
+                Logger.d(IVrBridgeConstant.TAG, "timeLeftAsk1111111");
                 //获取到家的ETA信息
                 response = getHomeEtaInfo(start, respCallback);
                 break;
             case IVrBridgeConstant.DestType.COMPANY:
                 //获取到公司的ETA信息
+                Logger.d(IVrBridgeConstant.TAG, "timeLeftAsk2222222");
                 response = getCompanyEtaInfo(start, respCallback);
                 break;
             default:
+                Logger.d(IVrBridgeConstant.TAG, "timeLeftAsk33333333 start: " + start + ", arrival: " + arrival);
                 response = VoiceSearchManager.getInstance().getTwoPoiEtaInfo(start, arrival, respCallback);
                 break;
         }
@@ -1324,12 +1337,14 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
                 if (IVrBridgeConstant.PoiType.DESTINATION.equals(arrival)) {
                     //目的地
                     final String formatTime = VoiceConvertUtil.formatTime(naviEtaInfo.getAllTime());
+                    Logger.d(IVrBridgeConstant.TAG, "timeLeftAsk4444 formatTime: " + formatTime);
                     response = CallResponse.createSuccessResponse("到目的地大约需要" + formatTime);
                 } else {
                     //第一个途径点
                     if (null != naviEtaInfo.viaRemain && !naviEtaInfo.viaRemain.isEmpty()) {
                         final NaviEtaInfo.NaviTimeAndDist timeAndDist = naviEtaInfo.viaRemain.get(0);
                         final String viaRemainTime = VoiceConvertUtil.formatTime(timeAndDist.time);
+                        Logger.d(IVrBridgeConstant.TAG, "timeLeftAsk555555 formatTime: " + viaRemainTime);
                         response = CallResponse.createSuccessResponse("距第一个途径点大约需要" + viaRemainTime);
                     } else {
                         response = CallResponse.createFailResponse("没有查询到相关新，请稍后重试");
@@ -1965,7 +1980,7 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
         if (MapStateManager.getInstance().isNaviStatus()) {
             stopNavigation();
         }
-        //todo 确定kill progress or turn background
+        VoiceSearchManager.getInstance().sendMoveBack();
     }
 
     /**

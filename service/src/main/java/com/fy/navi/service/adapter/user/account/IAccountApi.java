@@ -105,11 +105,17 @@ public interface IAccountApi {
     String getAccessToken(final AccessTokenParam param);
 
     /**
-     * 获取idpUserId
+     * 获取账户信息
      * @param availableAccount 账户对象
      * @param key 账户信息的key值
      * @return userId
      */
-    String getIdpUserId(final Account availableAccount, final String key);
+    String getUserData(final Account availableAccount, final String key);
+
+    /**
+     * 获取账户列表
+     * @return Account[]
+     */
+    Account[] getAccounts();
 
 }

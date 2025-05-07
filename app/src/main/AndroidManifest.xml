@@ -104,11 +104,6 @@
             android:exported="true"
             android:foregroundServiceType="shortService" />
 
-        <service
-            android:name="com.fy.navi.exportservice.ScreenRecorder"
-            android:enabled="true"
-            android:foregroundServiceType="mediaProjection" />
-
     </application>
 
 </manifest>

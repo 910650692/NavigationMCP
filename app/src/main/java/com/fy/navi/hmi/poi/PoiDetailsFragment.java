@@ -116,6 +116,12 @@ public class PoiDetailsFragment extends BaseFragment<FragmentPoiDetailsBinding, 
             if (!ConvertUtils.isEmpty(mSearchResultEntity)) {
                 mBinding.scenePoiDetailContentView.reloadLastPoiMarker(mSearchResultEntity.getPoiList());
             }
+            final Bundle parsedArgs = getArguments();
+            if (parsedArgs != null) {
+                final PoiInfoEntity poiInfoEntity = parsedArgs.getParcelable(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_OPEN_DETAIL);
+                final int poiType = parsedArgs.getInt(AutoMapConstant.PoiBundleKey.BUNDLE_KEY_START_POI_TYPE, AutoMapConstant.PoiType.POI_KEYWORD);
+                mBinding.scenePoiDetailContentView.refreshPoiView(poiType, poiInfoEntity);
+            }
             mBinding.scenePoiDetailContentView.reloadPoiLabelMarker();
             if(mViewModel.calcDistanceBetweenPoints()){
                 mBinding.scenePoiDetailContentView.showSelfParkingView();

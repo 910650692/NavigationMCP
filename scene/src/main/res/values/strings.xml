@@ -22,6 +22,8 @@
     <string name="favorite_charging_request_fail">数据获取失败，请刷新</string>
     <string name="favorite_charging_offline">无网络链接，请检查网络后重试</string>
     <string name="account_login">登录</string>
+    <string name="search_async_sgm_data">是否同步云端数据</string>
+    <string name="search_async">同步</string>
     <!--引导-->
     <string name="km">公里</string>
     <string name="meter">米</string>
@@ -109,6 +111,7 @@
     <string name="toll">收费站</string>
     <string name="current_newest_path">当前已是最新路线</string>
     <string name="switch_car_angle">已切换至%s视角</string>
+    <string name="navi_car_head_switch_while_overview">路线概览时保持正北朝上</string>
 
     <!--算路相关-->
     <string name="route_search_loading">路线规划中…</string>

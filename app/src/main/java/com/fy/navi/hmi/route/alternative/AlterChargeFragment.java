@@ -184,9 +184,34 @@ public class AlterChargeFragment extends BaseFragment<FragmentAlterChargeBinding
                         break;
                 }
             }
+            if (ConvertUtils.isEmpty(poiInfoEntities.getPhone())) {
+                mBinding.scenePoiDetailsChargingStationView.poiChargeAreaPhone.setVisibility(View.GONE);
+                mBinding.stlPhone.setVisibility(View.GONE);
+            } else {
+                mBinding.scenePoiDetailsChargingStationView.poiChargeAreaPhone.setVisibility(View.VISIBLE);
+                mBinding.stlPhone.setVisibility(View.VISIBLE);
+                mBinding.scenePoiDetailsChargingStationView.poiChargeAreaPhone
+                        .setText(ResourceUtils.Companion.getInstance().getString(R.string.route_poi_details_phone) + poiInfoEntities.getPhone());
+            }
+
             if (!ConvertUtils.isEmpty(poiInfoEntities.getChargeInfoList()) && !poiInfoEntities.getChargeInfoList().isEmpty()) {
                 final ChargeInfo chargeInfo = poiInfoEntities.getChargeInfoList().get(0);
                 mViewModel.getRouteSearchTypeVisibility().set(2);
+                if (chargeInfo.getSlowVolt() == 0 && chargeInfo.getSlowPower() == 0
+                        && chargeInfo.getSlow_free() == 0 && chargeInfo.getSlow_total() == 0) {
+                    mBinding.scenePoiDetailsChargingStationView.poiChargeSlowLayout.setVisibility(View.GONE);
+                } else {
+                    mBinding.scenePoiDetailsChargingStationView.poiChargeSlowLayout.
+                            setVisibility(View.VISIBLE);
+                }
+                if (chargeInfo.getFastVolt() == 0 && chargeInfo.getFastPower() == 0
+                        && chargeInfo.getFast_free() == 0 && chargeInfo.getFast_total() == 0) {
+                    mBinding.scenePoiDetailsChargingStationView.poiChargeFastLayout.setVisibility(View.GONE);
+                } else {
+                    mBinding.scenePoiDetailsChargingStationView.poiChargeFastLayout.
+                            setVisibility(View.VISIBLE);
+                }
+
                 mBinding.scenePoiDetailsChargingStationView.poiChargeFastOccupied.setText(String.valueOf(chargeInfo.getFast_free()));
                 mBinding.scenePoiDetailsChargingStationView.poiChargeFastTotal.setText(ResourceUtils.Companion.getInstance()
                         .getString(R.string.route_details_jg) + chargeInfo.getFast_total());

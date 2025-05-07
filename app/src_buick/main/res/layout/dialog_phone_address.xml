@@ -9,9 +9,9 @@
 
         <com.fy.navi.ui.view.SkinConstraintLayout
             android:id="@+id/dialog_view"
-            android:layout_width="@dimen/dp_600"
+            android:layout_width="@dimen/dp_445"
             android:layout_height="@dimen/dp_140"
-            android:background="@drawable/shape_bg_dialog"
+            android:background="@drawable/dialog_shape_bg_msg_top"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -21,19 +21,30 @@
                 android:id="@+id/address_icon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_30"
-                android:src="@mipmap/setting_reference_recommend_day"
+                android:layout_marginStart="@dimen/dp_50"
+                android:src="@drawable/img_broadcast_car"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
+            <com.fy.navi.ui.view.SkinView
+                android:layout_width="@dimen/dp_1"
+                android:layout_height="match_parent"
+                android:background="@color/message_center_line"
+                android:layout_marginStart="@dimen/dp_158"
+                android:layout_marginTop="@dimen/dp_37"
+                android:layout_marginBottom="@dimen/dp_28"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"/>
+
             <com.fy.navi.ui.view.SkinLinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_50"
+                android:layout_marginStart="@dimen/dp_193"
                 android:orientation="vertical"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="@id/address_icon"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
                 <com.fy.navi.ui.view.SkinTextView
@@ -41,20 +52,16 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:maxLines="1"
-                    android:textColor="@color/permission_quest_dialog_title"
-                    android:textSize="@dimen/sp_32"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/sp_34" />
 
                 <com.fy.navi.ui.view.SkinTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_10"
+                    android:layout_marginTop="@dimen/dp_8"
                     android:text="点击查看路线"
-                    android:textColor="@color/permission_quest_dialog_content"
-                    android:textSize="@dimen/sp_28"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/address_title" />
+                    android:textColor="@color/color_black_70"
+                    android:textSize="@dimen/sp_30" />
             </com.fy.navi.ui.view.SkinLinearLayout>
         </com.fy.navi.ui.view.SkinConstraintLayout>
     </com.fy.navi.ui.view.SkinConstraintLayout>

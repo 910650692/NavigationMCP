@@ -30,6 +30,7 @@ public class ReminderDialog extends BaseFullScreenDialog<DialogUseReminderBindin
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setCancelable(false);
         mViewBinding.reminderIndex.reminderTermsService.setOnClickListener(new View.OnClickListener() {
             @Override
             @HookMethod(eventName = BuryConstant.EventName.AMAP_SERVICEAGREEMENT_CHECK)

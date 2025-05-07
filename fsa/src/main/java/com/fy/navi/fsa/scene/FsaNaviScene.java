@@ -558,24 +558,23 @@ public final class FsaNaviScene {
             Logger.e(FsaConstant.FSA_TAG, "naviImageInfo is null");
             return;
         }
-        ThreadManager.getInstance().asyncDelay(() -> {
-            final EnlargeMap enlargeMap = new EnlargeMap();
-            enlargeMap.setStatus(FsaConstant.SHOW);
-            enlargeMap.setType(1);
-            final JunctionViewInfo junctionViewInfo = new JunctionViewInfo();
-            junctionViewInfo.setRemainDistance((int) naviImageInfo.getDistance());
-            junctionViewInfo.setProgressRatio((int) mDrivePercent);
-            if (mNaviEtaInfo != null) {
-                junctionViewInfo.setNextRoadName(mNaviEtaInfo.getNextRouteName());
-            }
-            junctionViewInfo.setImageMimeType("image/jpeg");
-            junctionViewInfo.setImageBytes(Base64.getEncoder().encodeToString(fsaService.getmCrossImg()));
-            enlargeMap.setJunctionViewInfo(junctionViewInfo);
-            Logger.d(FsaConstant.FSA_TAG, "updateEnlargeMap: " + enlargeMap);
-            fsaService.sendEvent(FsaConstant.FsaFunction.ID_ENLARGE_ICON, GsonUtils.toJson(enlargeMap));
-            fsaService.sendEvent(FsaConstant.FsaFunction.ID_HUD_ENLARGE_MAP, GsonUtils.toJson(enlargeMap));
-        }, 700, TimeUnit.MILLISECONDS);
-
+//        ThreadManager.getInstance().asyncDelay(() -> {
+//            final EnlargeMap enlargeMap = new EnlargeMap();
+//            enlargeMap.setStatus(FsaConstant.SHOW);
+//            enlargeMap.setType(1);
+//            final JunctionViewInfo junctionViewInfo = new JunctionViewInfo();
+//            junctionViewInfo.setRemainDistance((int) naviImageInfo.getDistance());
+//            junctionViewInfo.setProgressRatio((int) mDrivePercent);
+//            if (mNaviEtaInfo != null) {
+//                junctionViewInfo.setNextRoadName(mNaviEtaInfo.getNextRouteName());
+//            }
+//            junctionViewInfo.setImageMimeType("image/jpeg");
+//            junctionViewInfo.setImageBytes(Base64.getEncoder().encodeToString(fsaService.getmCrossImg()));
+//            enlargeMap.setJunctionViewInfo(junctionViewInfo);
+//            Logger.d(FsaConstant.FSA_TAG, "updateEnlargeMap: " + enlargeMap);
+//            fsaService.sendEvent(FsaConstant.FsaFunction.ID_ENLARGE_ICON, GsonUtils.toJson(enlargeMap));
+//            fsaService.sendEvent(FsaConstant.FsaFunction.ID_HUD_ENLARGE_MAP, GsonUtils.toJson(enlargeMap));
+//        }, 700, TimeUnit.MILLISECONDS);
     }
 
     /**

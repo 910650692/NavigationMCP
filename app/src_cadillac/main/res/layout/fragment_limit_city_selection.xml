@@ -18,12 +18,14 @@
         android:layout_width="@dimen/dp_820"
         android:layout_height="match_parent"
         android:layout_marginBottom="@dimen/dp_121"
+        android:focusable="false"
         android:clickable="true">
 
         <com.fy.navi.ui.view.SkinConstraintLayout
             android:id="@+id/layout_input"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_152"
+            android:focusable="false"
             android:background="@drawable/bg_route_result">
 
             <com.fy.navi.ui.view.SkinImageView
@@ -32,6 +34,7 @@
                 android:layout_width="@dimen/dp_74"
                 android:layout_height="@dimen/dp_74"
                 android:src="@drawable/img_limit_back"
+                android:focusable="false"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -63,6 +66,7 @@
             android:layout_height="@dimen/dp_0"
             android:layout_marginTop="@dimen/dp_20"
             android:background="@drawable/bg_route_result"
+            android:focusable="false"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/layout_input">
 
@@ -75,6 +79,7 @@
                 android:text="@string/limit_selected_city"
                 android:textColor="@color/main_map_limit_current_city"
                 android:textSize="@dimen/sp_38"
+                android:focusable="false"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -86,6 +91,7 @@
                 android:layout_marginTop="@dimen/dp_52"
                 android:textColor="@color/main_map_limit_current"
                 android:textSize="@dimen/sp_46"
+                android:focusable="false"
                 app:layout_constraintStart_toEndOf="@+id/tv_current_city"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="上海市" />
@@ -97,6 +103,7 @@
                 android:paddingHorizontal="@dimen/dp_52"
                 android:paddingTop="@dimen/dp_45"
                 android:paddingBottom="@dimen/dp_24"
+                android:focusable="false"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_current_city" />
 

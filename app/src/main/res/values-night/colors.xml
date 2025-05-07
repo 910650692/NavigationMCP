@@ -141,4 +141,17 @@
     <!--巡航-->
     <color name="cruise_bg_color">#66151414</color>
     <color name="cruise_title_color">#B3FFFFFF</color>
+
+    <color name="dialog_use_reminder_title">#CCEBEEF5</color>
+    <color name="dialog_use_reminder_terms_service_color">#FF3644D1</color>
+    <color name="dialog_use_reminder_content">#80FFFFFF</color>
+    <color name="dialog_use_reminder_positive_color">#E6FFFFFF</color>
+    <color name="dialog_use_reminder_negative_color">#99C0C0CC</color>
+
+    <color name="buick_dialog_use_reminder_title">#FFFFFFFF</color>
+    <color name="buick_dialog_use_reminder_sub_title">#FFFFFFFF</color>
+    <color name="buick_dialog_use_reminder_positive_color">#FFFFCD9F</color>
+    <color name="buick_dialog_use_reminder_high_light">#FFFFCD9F</color>
+    <color name="buick_dialog_use_reminder_negative_color">#FFFFFFFF</color>
+
 </resources>

@@ -11,10 +11,10 @@
 
     <com.fy.navi.ui.view.SkinConstraintLayout
         android:id="@+id/poi_child_layout"
-        android:layout_width="@dimen/dp_234"
-        android:layout_height="@dimen/dp_90"
+        android:layout_width="@dimen/dp_300"
+        android:layout_height="@dimen/dp_120"
         android:focusable="true"
-        android:background="@drawable/custom_filter_item_bg_selector_day">
+        android:background="@drawable/custom_filter_item_bg_selector_day_sw280">
 
         <com.fy.navi.ui.view.SkinTextView
             android:id="@+id/child_title"

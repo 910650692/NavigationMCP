@@ -33,30 +33,11 @@ public class RouteViewModel extends BaseRouteViewModel {
             Logger.i(TAG, "RootView is null");
             return;
         }
-        root.setOnKeyListener((view, keyCode, keyEvent) -> {
-            switch (keyCode) {
-                case KeyEvent.KEYCODE_DPAD_CENTER:
-                case KeyEvent.KEYCODE_BACK:
-                case KeyEvent.KEYCODE_DPAD_UP:
-                case KeyEvent.KEYCODE_DPAD_DOWN:
-                case KeyEvent.KEYCODE_DPAD_LEFT:
-                case KeyEvent.KEYCODE_DPAD_RIGHT:
-                    if (isRoutePage()) {
-                        Logger.i(TAG, "MFC操作，取消倒计时");
-                        cancelTimer();
-                    }
-                    return false;
-                default:
-                    return false;
-            }
-        });
-        root.setOnGenericMotionListener(((view, motionEvent) -> {
+        root.setOnFocusChangeListener((view, b) -> {
             if (isRoutePage()) {
-                Logger.i(TAG, "MFC操作，取消倒计时");
                 cancelTimer();
             }
-            return false;
-        }));
+        });
     }
 
     private boolean isRoutePage() {

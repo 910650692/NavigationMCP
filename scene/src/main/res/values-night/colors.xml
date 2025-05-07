@@ -127,6 +127,7 @@
     <color name="navi_color_8E97B9_20">#FF2C2D36</color>
     <color name="navi_color_icon_park">#FFFFFF</color>
     <color name="navi_color_000000_100">#FFFFFFFF</color>
+    <color name="navi_color_3377FF_100">#FFE5B586</color>
 
     <!--悬挂卡-->
     <color name="card_delete_bg_color">#66ffffff</color>
@@ -155,5 +156,7 @@
     <color name="charge_reservation_button_color">#B3FFFFFF</color>
     <color name="bg_charge_price_root_color">#26B2AFC2</color>
     <color name="bg_confirm_dialog_sw280_color">#FF000000</color>
-
+    <color name="charge_card_bg">#802C2F38</color>
+    <color name="parking_recommended_item_15">#802C2F38</color>
+    <color name="parking_recommended_item_42386DF0">#2C2F38</color>
 </resources>

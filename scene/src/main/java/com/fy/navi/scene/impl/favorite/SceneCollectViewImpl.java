@@ -2,10 +2,17 @@ package com.fy.navi.scene.impl.favorite;
 
 import androidx.lifecycle.MutableLiveData;
 
+import com.android.utils.log.Logger;
 import com.fy.navi.scene.BaseSceneModel;
 import com.fy.navi.scene.api.favorite.ISceneCollectView;
 import com.fy.navi.scene.ui.favorite.SceneCollectView;
+import com.fy.navi.service.MapDefaultFinalTag;
+import com.fy.navi.service.define.search.PoiInfoEntity;
+import com.fy.navi.service.logicpaket.user.account.AccountPackage;
+import com.fy.navi.service.logicpaket.user.behavior.BehaviorPackage;
 import com.fy.navi.ui.base.StackManager;
+
+import java.util.ArrayList;
 
 /**
  * @author baipeng0904
@@ -35,5 +42,18 @@ public class SceneCollectViewImpl extends BaseSceneModel<SceneCollectView> imple
         StackManager.getInstance().getCurrentFragment(mMapTypeId.name()).closeFragment(true);
     }
 
+    // 判断SGM是否已登陆
+    public boolean isSGMLogin(){
+        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"isSGMLogin: "+AccountPackage.getInstance().isSGMLogin());
+        return AccountPackage.getInstance().isSGMLogin();
+    }
 
+    public ArrayList<PoiInfoEntity> getFavoriteListAsync() {
+        return BehaviorPackage.getInstance().getFavoritePoiData();
+    }
+
+    public void startSGMLogin(){
+        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"startSGMLogin");
+        AccountPackage.getInstance().sendSGMLoginRequest(mScreenView.getContext());
+    }
 }

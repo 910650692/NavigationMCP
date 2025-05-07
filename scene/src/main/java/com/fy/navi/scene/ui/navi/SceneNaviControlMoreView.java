@@ -20,6 +20,7 @@ import com.fy.navi.scene.ui.navi.manager.NaviSceneId;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.adapter.navi.NaviConstant;
 import com.fy.navi.service.define.map.MapMode;
+import com.fy.navi.service.logicpaket.navi.NaviPackage;
 
 /**
  * 底部控制更多scene
@@ -77,6 +78,9 @@ public class SceneNaviControlMoreView extends NaviSceneBase<SceneNaviControlMore
     @Override
     public void show() {
         super.show();
+        final boolean isFixedOverView = NaviPackage.getInstance().getFixedOverViewStatus();
+        mViewBinding.svCarHead.setAlpha(isFixedOverView ? 0.5f : 1.0f);
+        mViewBinding.svCarHead.setIsClickChangeColor(!isFixedOverView);
     }
 
     /**

@@ -4,7 +4,6 @@ import android.content.Context;
 import android.os.IBinder;
 import android.os.RemoteException;
 
-import com.android.utils.log.Logger;
 import com.fy.navi.mapservice.base.BaseManager;
 import com.fy.navi.mapservice.base.BinderManager;
 import com.fy.navi.mapservice.base.MapSdk;
@@ -22,6 +21,7 @@ import com.fy.navi.mapservice.callback.OnSpeedLimitChangeListener;
 import com.fy.navi.mapservice.callback.OnTurnInfoChangeListener;
 import com.fy.navi.mapservice.common.INaviAutoApiBinder;
 import com.fy.navi.mapservice.common.INaviAutoApiCallback;
+import com.fy.navi.mapservice.util.Logger;
 
 import java.util.ArrayList;
 import java.util.List;

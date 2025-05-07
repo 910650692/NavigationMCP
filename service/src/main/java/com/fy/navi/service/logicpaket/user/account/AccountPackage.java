@@ -1,10 +1,13 @@
 package com.fy.navi.service.logicpaket.user.account;
 
 import android.accounts.Account;
+import android.content.Context;
+import android.content.Intent;
 import android.text.TextUtils;
 
 import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
+import com.fy.navi.service.AutoMapConstant;
 import com.fy.navi.service.adapter.user.account.AccountAdapter;
 import com.fy.navi.service.adapter.user.account.AccountAdapterCallBack;
 import com.fy.navi.service.define.code.UserDataCode;
@@ -231,13 +234,64 @@ public final class AccountPackage implements AccountAdapterCallBack {
     }
 
     /**
-     * 获取idpUserId
-     * @param availableAccount 账户对象
-     * @param key 账户信息的key值 ; id 用 AutoMapConstant.AccountInfoKey.IDP_USER_ID
+     * 获取SGM账户UserId
      * @return userId
      */
-    public String getIdpUserId(final Account availableAccount, final String key) {
-        return mAccountAdapter.getIdpUserId(availableAccount, key);
+    public String getUserId() {
+        Account[] accounts = getAccounts();
+        if (accounts != null && accounts.length > 0) {
+            return mAccountAdapter.getUserData(accounts[0], AutoMapConstant.AccountInfoKey.IDP_USER_ID);
+        }
+        return "";
+    }
+
+    /**
+     *获取SGM账户Nickname
+     * @return nickname
+     */
+    public String getNickname() {
+        Account[] accounts = getAccounts();
+        if (accounts != null && accounts.length > 0) {
+            return mAccountAdapter.getUserData(accounts[0], AutoMapConstant.AccountInfoKey.NICK_NAME);
+        }
+        return "";
+    }
+
+    /**
+     * 获取SGM账户手机号码
+     * @return phone
+     */
+    public String getPhone() {
+        Account[] accounts = getAccounts();
+        if (accounts != null && accounts.length > 0) {
+            return mAccountAdapter.getUserData(accounts[0], AutoMapConstant.AccountInfoKey.PHONE);
+        }
+        return "";
+    }
+
+    /**
+     * 判断SGM账号是否登录
+     * @return 是否登录
+     */
+    public boolean isSGMLogin() {
+        return !TextUtils.isEmpty(getUserId());
+    }
+
+    /**
+     * SGM请求登录
+     */
+    public void sendSGMLoginRequest(Context context) {
+        final Intent intent = new Intent(AutoMapConstant.AccountLogin.ACTION);
+        intent.setPackage(AutoMapConstant.AccountLogin.PACKAGE);
+        context.startService(intent);
+    }
+
+    /**
+     * 获取SGM账户列表
+     * @return Account[]
+     */
+    public Account[] getAccounts() {
+        return mAccountAdapter.getAccounts();
     }
 
     /**

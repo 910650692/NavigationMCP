@@ -11,8 +11,8 @@ import android.os.IBinder;
 import android.os.Message;
 import android.os.RemoteException;
 
-import com.android.utils.log.Logger;
 import com.fy.navi.mapservice.IBinderPool;
+import com.fy.navi.mapservice.util.Logger;
 
 import java.lang.ref.WeakReference;
 import java.util.NoSuchElementException;

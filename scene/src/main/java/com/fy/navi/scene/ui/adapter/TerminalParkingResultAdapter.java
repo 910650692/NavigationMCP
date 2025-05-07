@@ -134,8 +134,8 @@ public class TerminalParkingResultAdapter extends RecyclerView.Adapter<TerminalP
     private SpannableString getColoredParkingInfo(final String totalSpace, final String freeSpace) {
         final String text = totalSpace + " / " + freeSpace;
         final SpannableString spannableString = new SpannableString(text);
-        final int colorDark = ContextCompat.getColor(AppContext.getInstance().getMContext(), R.color.black);
-        final int colorLight = ContextCompat.getColor(AppContext.getInstance().getMContext(), R.color.search_loading_bg_80);
+        final int colorDark = ContextCompat.getColor(AppContext.getInstance().getMContext(), R.color.poi_details_bottom_ff_00);
+        final int colorLight = ContextCompat.getColor(AppContext.getInstance().getMContext(), R.color.search_quick_tab_view_color);
         spannableString.setSpan(new ForegroundColorSpan(colorDark), 0, totalSpace.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         spannableString.setSpan(new ForegroundColorSpan(colorLight), text.length() - freeSpace.length(),
                 text.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);

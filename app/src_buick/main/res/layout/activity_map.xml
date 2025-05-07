@@ -27,18 +27,20 @@
             android:id="@+id/search_main_tab"
             clickCommand="@{ViewModel.intercept}"
             android:layout_width="wrap_content"
-            android:layout_height="@dimen/dp_92"
-            android:layout_marginStart="@dimen/dp_466"
-            android:layout_marginTop="@dimen/dp_70"
-            android:background="@drawable/bg_search_main_tab"
+            android:layout_height="@dimen/dp_150"
+            android:layout_marginStart="@dimen/dp_437"
+            android:layout_marginTop="@dimen/dp_41"
             android:visibility="@{ViewModel.mainBTNVisibility ? View.VISIBLE : View.GONE}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
             <com.fy.navi.ui.view.SkinConstraintLayout
-                android:layout_width="@dimen/dp_484"
-                android:layout_height="@dimen/dp_92"
-                android:background="@drawable/bg_search_main_tab"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/dp_150"
+                android:background="@drawable/bg_small_shadow"
+                android:paddingStart="@dimen/dp_29"
+                android:paddingEnd="@dimen/dp_65"
+                android:paddingVertical="@dimen/dp_29"
                 android:visibility="@{ViewModel.tmcModeVisibility ? View.GONE : View.VISIBLE}"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
@@ -73,14 +75,18 @@
                     android:layout_marginStart="@dimen/dp_68"
                     android:src="@drawable/img_basic_ic_search"
                     app:layout_constraintStart_toEndOf="@+id/sk_iv_basic_bus"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"/>
 
             </com.fy.navi.ui.view.SkinConstraintLayout>
 
             <com.fy.navi.ui.view.SkinConstraintLayout
-                android:layout_width="@dimen/dp_609"
-                android:layout_height="@dimen/dp_92"
-                android:background="@drawable/bg_search_main_tab"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/dp_150"
+                android:background="@drawable/bg_small_shadow"
+                android:paddingStart="@dimen/dp_29"
+                android:paddingEnd="@dimen/dp_65"
+                android:paddingVertical="@dimen/dp_29"
                 app:layout_constraintStart_toStartOf="parent"
                 android:visibility="@{ViewModel.tmcModeVisibility ? View.VISIBLE : View.GONE}"
                 app:layout_constraintTop_toTopOf="parent">
@@ -181,13 +187,13 @@
 
         <com.fy.navi.ui.view.SkinConstraintLayout
             android:id="@+id/root_guide_login"
-            android:layout_width="@dimen/dp_640"
-            android:layout_height="@dimen/dp_319"
-            android:layout_marginTop="@dimen/dp_20"
-            android:background="@drawable/bg_guide_login"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_small_shadow"
             android:visibility="@{ViewModel.mPopGuideLoginShow?View.VISIBLE:View.GONE}"
             app:layout_constraintStart_toStartOf="@id/search_main_tab"
             app:layout_constraintTop_toBottomOf="@id/search_main_tab"
+            android:layout_marginTop="@dimen/dp_m_38"
             tools:visibility="visible">
 
             <com.fy.navi.ui.view.SkinTextView
@@ -195,7 +201,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_40"
-                android:layout_marginTop="@dimen/dp_40"
+                android:layout_marginTop="@dimen/dp_11"
                 android:text="@string/guide_login_title"
                 android:textColor="@color/guide_login_title"
                 android:textSize="@dimen/sp_38"
@@ -206,7 +212,7 @@
                 clickCommand="@{ViewModel.guideLoginClose}"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_38"
+                android:layout_marginTop="@dimen/dp_9"
                 android:layout_marginEnd="@dimen/dp_26"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -218,7 +224,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_30"
                 android:text="@string/guide_login_content"
-                android:textColor="#B3000000"
+                android:textColor="@color/guide_login_title"
                 android:textSize="@dimen/sp_30"
                 app:layout_constraintLeft_toLeftOf="@id/tv_guide_login_title"
                 app:layout_constraintTop_toBottomOf="@id/tv_guide_login_title" />
@@ -230,7 +236,7 @@
                 android:layout_height="@dimen/dp_90"
                 android:layout_marginStart="@dimen/dp_40"
                 android:layout_marginTop="@dimen/dp_30"
-                android:layout_marginBottom="@dimen/dp_40"
+                android:layout_marginBottom="@dimen/dp_11"
                 android:background="@drawable/bg_guide_login_bind"
                 android:text="@string/guide_login_bind"
                 android:textColor="@color/guide_login_bind_text"
@@ -270,11 +276,14 @@
         <com.fy.navi.ui.view.SkinConstraintLayout
             android:id="@+id/search_main_tab_bottom"
             clickCommand="@{ViewModel.intercept}"
-            android:layout_width="@dimen/dp_484"
-            android:layout_height="@dimen/dp_92"
-            android:layout_marginStart="@dimen/dp_466"
-            android:layout_marginBottom="@dimen/dp_150"
-            android:background="@drawable/bg_search_main_tab"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/dp_150"
+            android:layout_marginStart="@dimen/dp_437"
+            android:layout_marginBottom="@dimen/dp_121"
+            android:background="@drawable/bg_small_shadow"
+            android:paddingStart="@dimen/dp_29"
+            android:paddingEnd="@dimen/dp_65"
+            android:paddingVertical="@dimen/dp_29"
             android:visibility="@{ViewModel.bottomNaviVisibility ? View.VISIBLE : View.GONE}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent">
@@ -309,7 +318,6 @@
                 android:layout_width="@dimen/dp_92"
                 android:layout_height="@dimen/dp_92"
                 android:layout_marginStart="@dimen/dp_70"
-                android:layout_marginEnd="@dimen/dp_60"
                 android:src="@drawable/img_basic_ic_settings"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -321,10 +329,12 @@
         <com.fy.navi.ui.view.SkinLinearLayout
             android:id="@+id/parking_main_tab_bottom"
             clickCommand="@{ViewModel.backToSelfParking}"
-            android:layout_width="@dimen/dp_224"
-            android:layout_height="@dimen/dp_92"
-            android:layout_marginBottom="@dimen/dp_150"
-            android:background="@drawable/bg_search_main_tab"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/dp_150"
+            android:layout_marginBottom="@dimen/dp_121"
+            android:background="@drawable/bg_small_shadow"
+            android:paddingHorizontal="@dimen/dp_55"
+            android:paddingVertical="@dimen/dp_29"
             android:gravity="center"
             android:orientation="horizontal"
             android:visibility="@{ViewModel.backToParkingVisibility ? View.VISIBLE : View.GONE}"
@@ -360,7 +370,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_0"
-            android:layout_marginEnd="@dimen/dp_430"
+            android:layout_marginEnd="@dimen/dp_436"
             android:layout_marginBottom="@dimen/dp_150"
             android:visibility="@{ViewModel.mScaleViewVisibility ? View.VISIBLE : View.GONE}"
             app:layout_constraintBottom_toBottomOf="parent"

@@ -73,6 +73,7 @@ public class BaseSettingVoiceBroadcastViewModel extends BaseViewModel<SettingVoi
             SettingManager.getInstance().insertOrReplace(SettingController.KEY_SETTING_VOICE_ICON, "default");
             SettingManager.getInstance().insertOrReplace(SettingController.KEY_SETTING_VOICE_NAME,
                     ResourceUtils.Companion.getInstance().getString(R.string.setting_broadcast_voice_current_name));
+            SettingManager.getInstance().insertOrReplace(SettingController.KEY_SETTING_VOICE_PATH, GBLCacheFilePath.DEFAULT_VOICE_PATH);
             mModel.setVoice(GBLCacheFilePath.DEFAULT_VOICE_PATH);
             mView.setCurrentVoice();
             mView.unSelectAllVoices();
@@ -150,6 +151,7 @@ public class BaseSettingVoiceBroadcastViewModel extends BaseViewModel<SettingVoi
         SettingManager.getInstance().insertOrReplace(SettingController.KEY_SETTING_VOICE_PACKAGE, String.valueOf(voiceInfo.getId()));
         SettingManager.getInstance().insertOrReplace(SettingController.KEY_SETTING_VOICE_ICON, voiceInfo.getImageUrl());
         SettingManager.getInstance().insertOrReplace(SettingController.KEY_SETTING_VOICE_NAME, voiceInfo.getName());
+        SettingManager.getInstance().insertOrReplace(SettingController.KEY_SETTING_VOICE_PATH, voiceInfo.getFilePath());
         mModel.setVoice(voiceInfo.getFilePath());
         mView.setCurrentVoice();
         mView.setSingleChoice(voiceInfo.getId());

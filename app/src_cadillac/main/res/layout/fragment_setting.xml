@@ -12,6 +12,7 @@
         android:layout_width="@dimen/dp_1578"
         android:layout_height="@dimen/dp_1000"
         android:clickable="true"
+        android:focusable="false"
         android:background="@drawable/bg_setting_fragment">
 
         <com.android.car.ui.FocusParkingView
@@ -83,6 +84,7 @@
             <com.fy.navi.ui.view.SkinView
                 android:layout_width="@dimen/dp_1"
                 android:layout_height="match_parent"
+                android:focusable="false"
                 android:background="@color/setting_line"
                 android:layout_marginTop="@dimen/dp_144"
                 android:layout_marginBottom="@dimen/dp_40"
@@ -98,6 +100,7 @@
                 <androidx.viewpager2.widget.ViewPager2
                     android:id="@+id/viewPager"
                     android:layout_width="0dp"
+                    android:focusable="false"
                     android:layout_height="match_parent"
                     android:layout_marginTop="@dimen/dp_52"
                     android:layout_marginBottom="@dimen/dp_52"

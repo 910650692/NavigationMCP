@@ -2,7 +2,6 @@
 package com.fy.navi.service.adapter.map.bls;
 
 import android.content.Context;
-import android.content.res.Configuration;
 import android.os.Looper;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
@@ -15,7 +14,7 @@ import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
 import com.autonavi.gbl.common.model.Coord2DDouble;
 import com.autonavi.gbl.common.model.Coord3DDouble;
-import com.autonavi.gbl.common.model.SizeFloat;
+import com.autonavi.gbl.map.MapDevice;
 import com.autonavi.gbl.map.MapService;
 import com.autonavi.gbl.map.MapView;
 import com.autonavi.gbl.map.OperatorPosture;
@@ -25,6 +24,7 @@ import com.autonavi.gbl.map.layer.model.OpenLayerID;
 import com.autonavi.gbl.map.model.AnmCallbackParam;
 import com.autonavi.gbl.map.model.DeviceAttribute;
 import com.autonavi.gbl.map.model.EGLDeviceWorkMode;
+import com.autonavi.gbl.map.model.EGLSurfaceAttr;
 import com.autonavi.gbl.map.model.InitMapParam;
 import com.autonavi.gbl.map.model.MapBusinessDataType;
 import com.autonavi.gbl.map.model.MapControllerStatesType;
@@ -47,11 +47,15 @@ import com.autonavi.gbl.map.model.MapviewMode;
 import com.autonavi.gbl.map.model.MapviewModeParam;
 import com.autonavi.gbl.map.model.PointD;
 import com.autonavi.gbl.map.model.PreviewParam;
+import com.autonavi.gbl.map.model.ScreenShotCallbackMethod;
+import com.autonavi.gbl.map.model.ScreenShotDataInfo;
+import com.autonavi.gbl.map.model.ScreenShotMode;
 import com.autonavi.gbl.map.observer.IAnimationObserver;
 import com.autonavi.gbl.map.observer.IBLMapBusinessDataObserver;
 import com.autonavi.gbl.map.observer.IBLMapEngineObserver;
 import com.autonavi.gbl.map.observer.IBLMapViewProxy;
 import com.autonavi.gbl.map.observer.IDeviceObserver;
+import com.autonavi.gbl.map.observer.IEGLScreenshotObserver;
 import com.autonavi.gbl.map.observer.IMapGestureObserver;
 import com.autonavi.gbl.map.observer.IMapviewObserver;
 import com.autonavi.gbl.servicemanager.ServiceMgr;
@@ -63,14 +67,15 @@ import com.fy.navi.burypoint.controller.BuryPointController;
 import com.fy.navi.service.AutoMapConstant;
 import com.fy.navi.service.GBLCacheFilePath;
 import com.fy.navi.service.MapDefaultFinalTag;
+import com.fy.navi.service.adapter.calibration.CalibrationAdapter;
 import com.fy.navi.service.adapter.engine.EngineAdapter;
 import com.fy.navi.service.adapter.map.IMapAdapterCallback;
 import com.fy.navi.service.define.bean.GeoPoint;
 import com.fy.navi.service.define.bean.PreviewParams;
 import com.fy.navi.service.define.map.MapMode;
 import com.fy.navi.service.define.map.MapStateStyle;
-import com.fy.navi.service.define.map.MapViewParams;
 import com.fy.navi.service.define.map.MapType;
+import com.fy.navi.service.define.map.MapViewParams;
 import com.fy.navi.service.define.map.ThemeType;
 import com.fy.navi.service.define.mfc.MfcController;
 import com.fy.navi.service.define.search.PoiInfoEntity;
@@ -98,6 +103,7 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver,
     private static float MAP_ZOOM_LEVEL_DEFAULT = 13F;
 
     private static float MAP_DEFAULT_TEXT_SIZE = 1.3F;
+    private MapDevice mMapDevice;
 
     @Getter
     private MapView mapview;
@@ -186,6 +192,32 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver,
         }
     }
 
+    @Override
+    public void onSurfaceChanged(int deviceId, int width, int height, int colorBits) {
+        mMapDevice.setScreenshotRect(0, 0, 328, 172);
+        mMapDevice.setScreenshotCallBackMethod(ScreenShotCallbackMethod.ScreenShotCallbackMethodBuffer);
+        mMapDevice.setScreenshotMode(ScreenShotMode.ScreenShotModeBackGround, new IEGLScreenshotObserver() {
+            /**
+             * @param deviceId	设备id
+             * @param pBitmapBuffer	位图缓存
+             * @param bufferDataParams	该截图数据参数 format-截图颜色位数类型 MapColorFormatRgb565需2个字节，MapColorFormatRgba8888需4个字节 pixelByte-像素字节数 2个字节对应Rgb565,4个字节对应Rgba8888
+             * @param nMethod	截图方法 0 buffer回调 1 bitmap回调 2 文件回调
+             * @param pParamEx	其它参数
+             */
+            @Override
+            public void onEGLScreenshot(int deviceId, byte[] pBitmapBuffer, ScreenShotDataInfo bufferDataParams, int nMethod, long pParamEx) {
+                // 检查字节数组是否为空
+                if (pBitmapBuffer == null || pBitmapBuffer.length == 0) {
+                    Logger.e(TAG, "pBitmapBuffer is null or empty.");
+                    return;
+                }
+                for (IMapAdapterCallback callback : callbacks) {
+                    callback.onEGLScreenshot(mapType, pBitmapBuffer);
+                }
+            }
+        });
+    }
+
     private void createMapDevice() {
         ServiceMgr.getServiceMgrInstance().setUiLooper(0, Looper.getMainLooper());
         DeviceAttribute devAttribute = new DeviceAttribute();
@@ -193,8 +225,18 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver,
         devAttribute.uiTaskDeviceId = EngineAdapter.getInstance().mapDeviceID(mapType);
         devAttribute.deviceWorkMode = EGLDeviceWorkMode.EGLDeviceWorkMode_WithThreadWithEGLContextDrawIn;
         if (!ConvertUtils.isNull(getMapService())) {
-            setDefaultDevice(getMapService().createDevice(EngineAdapter.getInstance().mapDeviceID(mapType),
-                    devAttribute, this));
+            mMapDevice = getMapService().createDevice(EngineAdapter.getInstance().mapDeviceID(mapType),
+                    devAttribute, this);
+            setDefaultDevice(mMapDevice);
+            // hud后台截图
+            if (mapType == MapType.HUD_MAP && CalibrationAdapter.getInstance().hudFuncEnable() == 1) {
+                EGLSurfaceAttr eglSurfaceAttr = new EGLSurfaceAttr();
+                eglSurfaceAttr.nativeWindow = -1;
+                eglSurfaceAttr.isOnlyCreatePBSurface = true;
+                eglSurfaceAttr.width = 328;
+                eglSurfaceAttr.height = 172;
+                mMapDevice.attachSurfaceToDevice(eglSurfaceAttr);
+            }
         } else {
             Logger.e(TAG, "mapService is null");
         }

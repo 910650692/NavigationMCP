@@ -37,4 +37,11 @@ public class BaseTerminalParkingViewModelViewModel extends BaseViewModel<Termina
     public void notifySearchResult(final SearchResultEntity searchResultEntity) {
         mView.notifySearchResult(searchResultEntity);
     }
+
+    /**
+     * 恢复fragment状态
+     */
+    public void onReStoreFragment() {
+        mModel.onReStoreFragment();
+    }
 }

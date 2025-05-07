@@ -194,6 +194,13 @@ public class SceneNaviControlMoreImpl extends BaseSceneModel<SceneNaviControlMor
     @Override
     public void carHead() {
         Logger.i(TAG, "carHead");
+        final boolean isFixedOverView = NaviPackage.getInstance().getFixedOverViewStatus();
+        if (isFixedOverView) {
+            ToastUtils.Companion.getInstance().showCustomToastView(
+                    ResourceUtils.Companion.getInstance().getString(
+                            R.string.navi_car_head_switch_while_overview));
+            return;
+        }
         setImmersiveStatus(ImersiveStatus.TOUCH);
         MapMode currentMapMode = mMapPackage.getCurrentMapMode(mMapTypeId);
         boolean result = mMapPackage.switchMapMode(mMapTypeId);

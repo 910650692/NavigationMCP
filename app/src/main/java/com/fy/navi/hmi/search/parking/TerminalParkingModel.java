@@ -1,6 +1,7 @@
 package com.fy.navi.hmi.search.parking;
 
 
+import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
 import com.fy.navi.service.AutoMapConstant;
@@ -21,6 +22,7 @@ public class TerminalParkingModel extends BaseModel<TerminalParkingViewModel> im
     private static final String TAG = "TerminalParkingModel";
     private final SearchPackage mSearchPackage;
     private final String mCallbackId;
+    private SearchResultEntity mSearchResultEntity;
 
     public TerminalParkingModel() {
         mCallbackId = UUID.randomUUID().toString();
@@ -37,9 +39,21 @@ public class TerminalParkingModel extends BaseModel<TerminalParkingViewModel> im
             }
             final ThreadManager threadManager = ThreadManager.getInstance();
             threadManager.postUi(() -> {
+                mSearchResultEntity = searchResultEntity;
                 mViewModel.notifySearchResult(searchResultEntity);
 
             });
+        }
+    }
+
+    /**
+     * 恢复fragment状态
+     */
+    public void onReStoreFragment() {
+        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "onReStoreFragment: " + mSearchResultEntity);
+        if (!ConvertUtils.isEmpty(mSearchResultEntity)) {
+            final ThreadManager threadManager = ThreadManager.getInstance();
+            threadManager.postUi(() -> mViewModel.notifySearchResult(mSearchResultEntity));
         }
     }
 

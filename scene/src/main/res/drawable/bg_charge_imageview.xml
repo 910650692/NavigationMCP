@@ -15,7 +15,7 @@
     <!-- 主体背景 -->
     <item>
         <shape android:shape="rectangle">
-            <solid android:color="@color/search_main_tab_img_bg" />
+            <solid android:color="@color/charge_card_bg" />
             <corners android:radius="@dimen/dp_12" />
         </shape>
     </item>

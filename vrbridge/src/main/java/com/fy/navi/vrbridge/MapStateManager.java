@@ -91,7 +91,9 @@ public final class MapStateManager {
 
         updateMapMode(MapPackage.getInstance().getCurrentMapMode(MapType.MAIN_SCREEN_MAIN_MAP));
 
-        if (SettingPackage.getInstance().getConfigKeyMute() == 1) {
+        final int muteMode = SettingPackage.getInstance().getConfigKeyMute();
+        Logger.d(IVrBridgeConstant.TAG, "init muteMode: " + muteMode);
+        if (muteMode == 1) {
             mBuilder.setMute(true);
             mBuilder.setBroadcastMode(2);
         } else {

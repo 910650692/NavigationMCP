@@ -177,11 +177,11 @@ public class SceneNaviSapaImpl extends BaseSceneModel<SceneNaviSapaView> impleme
     // 保存当前的sapainfo
     private SapaInfoEntity mSapaInfoEntity;
     public static final String VIA = "经";
-    public static final String UN_BUILDING = "非建设中";
-    public static final String BUILDING = "建设中";
-    public static final String UN_INVESTIGATION = "未调查";
-    public static final String REMODELING = "装修中";
-    public static final String TEMPORARILY_CLOSED = "暂停营业";
+    public static final String UN_BUILDING = "正常";
+    public static final String BUILDING = "维护";
+    public static final String UN_INVESTIGATION = "未知";
+    public static final String REMODELING = "维护";
+    public static final String TEMPORARILY_CLOSED = "关闭";
     private ISceneCallback mSceneCallback;
 
     public SceneNaviSapaImpl(final SceneNaviSapaView screenView) {
@@ -600,31 +600,25 @@ public class SceneNaviSapaImpl extends BaseSceneModel<SceneNaviSapaView> impleme
                            final SapaInfoEntity.SAPAItem sapItem) {
         // 角标显示 途经点>维护/关闭类>其他
         // 判断是否是途经点
-        final List<RouteParam> allPoiParamList = RoutePackage.getInstance().
-                getAllPoiParamList(mMapTypeId);
+        final List<RouteParam> allPoiParamList = RoutePackage.getInstance().getAllPoiParamList(mMapTypeId);
         for (RouteParam routeParam : allPoiParamList) {
             if (Objects.equals(routeParam.getPoiID(), sapItem.getServicePOIID())) {
                 tag.set(VIA);
-                tagTextColor.set(ResourceUtils.Companion.getInstance().
-                        getColor(R.color.navi_color_FFFFFF_100));
-                tagBgColor.set(ResourceUtils.Companion.getInstance().
-                        getDrawable(R.drawable.img_navi_via_item_btn_pass));
+                tagTextColor.set(ResourceUtils.Companion.getInstance().getColor(R.color.navi_color_FFFFFF_100));
+                tagBgColor.set(ResourceUtils.Companion.getInstance().getDrawable(R.drawable.img_navi_via_item_btn_pass));
                 return;
             }
             boolean isCanJudgeGps = null != routeParam.getRealPos() && null != sapItem.getPos();
             if (isCanJudgeGps) {
-                if (routeParam.getRealPos().getLat() == sapItem.getPos().getLat() &&
-                        routeParam.getRealPos().getLon() == sapItem.getPos().getLon()) {
+                if (routeParam.getRealPos().getLat() == sapItem.getPos().getLat() && routeParam.getRealPos().getLon() == sapItem.getPos().getLon()) {
                     tag.set(VIA);
-                    tagTextColor.set(ResourceUtils.Companion.getInstance().
-                            getColor(R.color.navi_color_FFFFFF_100));
-                    tagBgColor.set(ResourceUtils.Companion.getInstance().
-                            getDrawable(R.drawable.img_navi_via_item_btn_pass));
+                    tagTextColor.set(ResourceUtils.Companion.getInstance().getColor(R.color.navi_color_FFFFFF_100));
+                    tagBgColor.set(ResourceUtils.Companion.getInstance().getDrawable(R.drawable.img_navi_via_item_btn_pass));
                     return;
                 }
             }
         }
-        //服务区状态:0 非建设中（默认值），1 建设中，2 未调查 3 装修中 4 暂停营业
+        //服务区状态:0 正常（默认值），1 建设中，2 未调查 3 装修中 4 暂停营业
         final int buildingStatus = sapItem.getBuildingStatus();
         switch (buildingStatus) {
             case 0:
@@ -643,10 +637,8 @@ public class SceneNaviSapaImpl extends BaseSceneModel<SceneNaviSapaView> impleme
                 tag.set(UN_INVESTIGATION);
                 break;
         }
-        tagTextColor.set(ResourceUtils.Companion.getInstance().
-                getColor(R.color.navi_color_000000_100));
-        tagBgColor.set(ResourceUtils.Companion.getInstance().
-                getDrawable(R.drawable.img_navi_via_item_btn_normal));
+        tagTextColor.set(ResourceUtils.Companion.getInstance().getColor(R.color.black_always));
+        tagBgColor.set(ResourceUtils.Companion.getInstance().getDrawable(R.drawable.img_navi_via_item_btn_normal));
     }
 
     /**

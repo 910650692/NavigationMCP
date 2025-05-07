@@ -71,7 +71,6 @@ public class SceneNaviParallelView extends NaviSceneBase<SceneNaviParallelViewBi
     @Override
     public void show() {
         super.show();
-        mScreenViewModel.showMain();
     }
 
     @Override

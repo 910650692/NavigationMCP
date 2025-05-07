@@ -52,14 +52,11 @@ public class SettingPlateNumberFragment extends BaseFragment<FragmentSettingPlat
         mBinding.settingPlateNumberNumber.setOnFocusChangeListener((v, hasFocus) -> {
             if (hasFocus) {
                 showPlateNumberKeyboard();
-                mViewModel.setIsFocus(true);
             }
         });
         mBinding.settingProvinceKeyboard.setOnProvinceSelectedListener(province -> {
             mBinding.settingPlateNumberProvince.setText(province);
             mViewModel.setProvince(province);
-            mBinding.settingPlateNumberNumber.requestFocus();
-            mBinding.settingPlateNumberNumber.setSelection(mBinding.settingPlateNumberNumber.length());
             showPlateNumberKeyboard();
         });
         mBinding.settingPlateNumberKeyboard.setOnKeyPressListener(new PlateNumberKeyboardView.OnKeyPressListener() {
@@ -237,6 +234,10 @@ public class SettingPlateNumberFragment extends BaseFragment<FragmentSettingPlat
      * 显示车牌号码键盘
      */
     public void showPlateNumberKeyboard() {
+        mBinding.settingPlateNumberNumber.setFocusable(true);
+        mBinding.settingPlateNumberNumber.requestFocus();
+        mBinding.settingPlateNumberNumber.setSelection(mBinding.settingPlateNumberNumber.length());
+        mViewModel.setIsFocus(true);
         mBinding.settingProvinceKeyboard.setVisibility(View.GONE);
         mBinding.settingPlateNumberKeyboardLayout.setVisibility(View.VISIBLE);
         mBinding.settingPlateNumberKeyboard.setVisibility(View.VISIBLE);

@@ -10,12 +10,14 @@
     <com.fy.navi.ui.view.SkinScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:focusable="false"
         android:fillViewport="true">
 
         <com.fy.navi.ui.view.SkinConstraintLayout
             android:layout_width="@dimen/dp_820"
             android:layout_height="@dimen/dp_692"
             android:paddingBottom="@dimen/dp_52"
+            android:focusable="false"
             android:background="@drawable/bg_setting_fragment">
 
             <com.android.car.ui.FocusParkingView

@@ -31,10 +31,9 @@
         <!--退出导航-->
         <com.fy.navi.ui.view.SkinConstraintLayout
             android:id="@+id/sv_exit"
-            clickCommand="@{naviControl.closeNavi}"
             android:layout_width="@dimen/dp_200"
             android:layout_height="@dimen/dp_200"
-            android:focusable="true"
+            android:focusable="false"
             android:background="@drawable/bg_navi_control"
             app:click_color_change="true"
             app:layout_constraintStart_toStartOf="parent"
@@ -58,6 +57,17 @@
                 app:layout_constraintStart_toStartOf="@id/sv_exit"
                 app:layout_constraintTop_toBottomOf="@id/siv_exit_navi" />
 
+            <com.fy.navi.ui.view.SkinView
+                android:layout_width="@dimen/dp_0"
+                android:layout_height="@dimen/dp_0"
+                android:focusable="true"
+                clickCommand="@{naviControl.closeNavi}"
+                android:background="@drawable/bg_base_mfc_cadillac_bg_selector"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"/>
+
         </com.fy.navi.ui.view.SkinConstraintLayout>
 
         <com.fy.navi.ui.view.SkinConstraintLayout
@@ -73,10 +83,9 @@
             <!--看全览-->
             <com.fy.navi.ui.view.SkinConstraintLayout
                 android:id="@+id/sv_overview_switch"
-                clickCommand="@{naviControl.switchOverview}"
                 android:layout_width="@dimen/dp_0"
                 android:layout_height="0dp"
-                android:focusable="true"
+                android:focusable="false"
                 android:contentDescription="@string/navi_overview_switch"
                 app:click_color_change="true"
                 app:layout_constraintTop_toTopOf="parent"
@@ -103,14 +112,23 @@
                     app:layout_constraintStart_toStartOf="@id/sv_overview_switch"
                     app:layout_constraintTop_toBottomOf="@id/siv_overview_switch" />
 
+                <com.fy.navi.ui.view.SkinView
+                    android:layout_width="@dimen/dp_0"
+                    android:layout_height="@dimen/dp_0"
+                    android:focusable="true"
+                    clickCommand="@{naviControl.switchOverview}"
+                    android:background="@drawable/bg_base_mfc_cadillac_bg_selector"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"/>
             </com.fy.navi.ui.view.SkinConstraintLayout>
             <!--播报模式切换/固定全览-->
             <com.fy.navi.ui.view.SkinConstraintLayout
                 android:id="@+id/sv_variation"
-                clickCommand="@{naviControl.onVariation}"
                 android:layout_width="@dimen/dp_0"
                 android:layout_height="0dp"
-                android:focusable="true"
+                android:focusable="false"
                 android:contentDescription="@string/navi_mute"
                 app:click_color_change="true"
                 app:layout_constraintEnd_toStartOf="@id/sv_more_setup"
@@ -136,6 +154,16 @@
                     app:layout_constraintStart_toStartOf="@id/sv_variation"
                     app:layout_constraintTop_toBottomOf="@id/siv_variation" />
 
+                <com.fy.navi.ui.view.SkinView
+                    android:layout_width="@dimen/dp_0"
+                    android:layout_height="@dimen/dp_0"
+                    android:focusable="true"
+                    clickCommand="@{naviControl.onVariation}"
+                    android:background="@drawable/bg_base_mfc_cadillac_bg_selector"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"/>
             </com.fy.navi.ui.view.SkinConstraintLayout>
 
             <androidx.constraintlayout.widget.Group
@@ -149,10 +177,9 @@
             <!--更多-->
             <com.fy.navi.ui.view.SkinConstraintLayout
                 android:id="@+id/sv_more_setup"
-                clickCommand="@{naviControl.moreSetup}"
                 android:layout_width="@dimen/dp_0"
                 android:layout_height="0dp"
-                android:focusable="true"
+                android:focusable="false"
                 android:contentDescription="@string/navi_more_setup"
                 app:click_color_change="true"
                 app:layout_constraintStart_toEndOf="@id/sv_variation"
@@ -178,6 +205,16 @@
                     app:layout_constraintStart_toStartOf="@id/sv_more_setup"
                     app:layout_constraintTop_toBottomOf="@id/siv_more_setup" />
 
+                <com.fy.navi.ui.view.SkinView
+                    android:layout_width="@dimen/dp_0"
+                    android:layout_height="@dimen/dp_0"
+                    android:focusable="true"
+                    clickCommand="@{naviControl.moreSetup}"
+                    android:background="@drawable/bg_base_mfc_cadillac_bg_selector"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"/>
             </com.fy.navi.ui.view.SkinConstraintLayout>
         </com.fy.navi.ui.view.SkinConstraintLayout>
 

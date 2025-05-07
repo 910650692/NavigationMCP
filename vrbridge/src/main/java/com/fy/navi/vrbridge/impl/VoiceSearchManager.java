@@ -906,6 +906,15 @@ public final class VoiceSearchManager {
     }
 
     /**
+     * 发送指令，应用退到后台.
+     */
+    public void sendMoveBack() {
+        final Bundle bundle = new Bundle();
+        bundle.putInt(IVrBridgeConstant.VoiceIntentParams.INTENT_PAGE, IVrBridgeConstant.VoiceIntentPage.MOVE_TO_BACK);
+        MapPackage.getInstance().voiceOpenHmiPage(MapType.MAIN_SCREEN_MAIN_MAP, bundle);
+    }
+
+    /**
      * 带条件的目的地检索.
      *
      * @return CallResponse,语音指令回复.

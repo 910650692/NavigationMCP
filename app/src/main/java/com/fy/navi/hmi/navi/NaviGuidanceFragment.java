@@ -18,7 +18,6 @@ import com.android.utils.thread.ThreadManager;
 import com.fy.navi.hmi.BR;
 import com.fy.navi.hmi.R;
 import com.fy.navi.hmi.databinding.FragmentNaviGuidanceBinding;
-import com.fy.navi.hmi.permission.PermissionUtils;
 import com.fy.navi.scene.RoutePath;
 import com.fy.navi.scene.impl.imersive.ImersiveStatus;
 import com.fy.navi.scene.impl.imersive.ImmersiveStatusScene;
@@ -93,7 +92,6 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
 
     @Override
     public void onInitView() {
-        PermissionUtils.getInstance().requestMediaProjection();
         mBinding.sceneNaviControl.setScreenId(MapType.valueOf(mScreenId));
         mBinding.sceneNaviControlMore.setScreenId(MapType.valueOf(mScreenId));
         mBinding.sceneNaviPreference.setScreenId(MapType.valueOf(mScreenId));

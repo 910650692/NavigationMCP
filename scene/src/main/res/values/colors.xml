@@ -3,6 +3,7 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="transparent">#00000000</color>
+    <color name="black_always">#FF000000</color>
 
     <!-- 搜索相关 -->
     <color name="search_tab_bg">#F8F8FA</color>
@@ -130,6 +131,7 @@
     <color name="navi_color_FF8500_100">#FFFF8500</color>
     <color name="navi_color_386DF0_26">#42386DF0</color>
     <color name="navi_color_769FFB_100">#FF769FFB</color>
+    <color name="navi_color_F6F7FB_100">#FFF6F7FB</color>
     <color name="navi_color_4ABA59">#4ABA59</color>
     <color name="navi_color_FF2C2D36">#FF2C2D36</color>
     <color name="navi_color_icon_park">#99383839</color>
@@ -258,4 +260,5 @@
     <color name="charge_reservation_button_color">#FF000000</color>
     <color name="bg_charge_price_root_color">#26B2AFC2</color>
     <color name="bg_confirm_dialog_sw280_color">#FFB2AFC2</color>
+    <color name="charge_card_bg">#FFFFFFFF</color>
 </resources>

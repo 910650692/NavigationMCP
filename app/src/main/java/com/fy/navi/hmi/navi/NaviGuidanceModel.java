@@ -616,6 +616,14 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
 
     }
 
+    /**
+     * 当前网络状态
+     * @return
+     */
+    public boolean isNetConnected(){
+        return mCurrentNetStatus;
+    }
+
     @Override
     public void onNetConnectSuccess() {
         Logger.i(TAG, "onNetConnectSuccess");

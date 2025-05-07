@@ -109,6 +109,7 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
     private int mLocalTaskId = -1;
     private int mListSearchType;
     private int mParkSearchId = -1;
+    private int mEndSearchId = -1;
     private List<RouteRestAreaInfo> mRouteRestAreaInfos;
 
     public RouteModel() {
@@ -621,6 +622,12 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
             mViewModel.setRouteResultListUI(mRouteLineInfos);
         }
         showUIOnlineOffline(requestRouteResult.isMIsOnlineRoute());
+        RouteParam endRouteParam = mRoutePackage.getEndPoint(requestRouteResult.getMMapTypeId());
+        if (endRouteParam == null) {
+            Logger.e(TAG, "error endParam");
+            return;
+        }
+        mEndSearchId = mSearchPackage.poiIdSearch(endRouteParam.getPoiID(), true);
     }
 
     /***
@@ -1049,7 +1056,17 @@ public void onImmersiveStatusChange(final MapType mapTypeId, final ImersiveStatu
         if (mParkSearchId == taskId) {
             if (searchResultEntity.getPoiList() != null && !searchResultEntity.getPoiList().isEmpty()
                     && mRoutePackage.isRouteState()) {
+                PoiInfoEntity endPoiEntity = mRoutePackage.getEndEntity(MapType.MAIN_SCREEN_MAIN_MAP);
+                if (endPoiEntity != null && endPoiEntity.getPointTypeCode() != null && endPoiEntity.getPointTypeCode().startsWith("1509")) {
+                    Logger.d(TAG, "The endpoint is the parking");
+                    return;
+                }
                 showRoutePark(MapType.MAIN_SCREEN_MAIN_MAP);
+            }
+        }
+        if (mEndSearchId == taskId) {
+            if (searchResultEntity.getPoiList() != null && !searchResultEntity.getPoiList().isEmpty()) {
+                mRoutePackage.setEndEntity(MapType.MAIN_SCREEN_MAIN_MAP, searchResultEntity.getPoiList().get(0));
             }
         }
     }

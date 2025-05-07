@@ -1,6 +1,5 @@
 package com.fy.navi.hmi.map;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -16,12 +15,9 @@ import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
 import com.fy.navi.burypoint.anno.HookMethod;
 import com.fy.navi.burypoint.constant.BuryConstant;
-import com.fy.navi.exportservice.ScreenRecorder;
-import com.fy.navi.fsa.MyFsaService;
 import com.fy.navi.hmi.BR;
 import com.fy.navi.hmi.R;
 import com.fy.navi.hmi.databinding.ActivityMapBinding;
-import com.fy.navi.hmi.permission.PermissionUtils;
 import com.fy.navi.hmi.test.TestWindow;
 import com.fy.navi.mapservice.bean.INaviConstant;
 import com.fy.navi.service.define.cruise.CruiseInfoEntity;
@@ -209,20 +205,6 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
         mViewModel.saveLastLocationInfo();
         Logger.i(TAG, "onDestroy");
         super.onDestroy();
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == PermissionUtils.REQUEST_PERMISSION_MEDIA_PROJECTION) {
-            Logger.i(TAG, "The result of the media projection permission request: " + resultCode);
-            if (resultCode == Activity.RESULT_OK) {
-                Intent intent = new Intent(this, ScreenRecorder.class);
-                intent.putExtra("code", resultCode);
-                intent.putExtra("data", data);
-                MyFsaService.getInstance().initHudService(this, intent);
-            }
-        }
     }
 
     private void getIntentExtra(Intent intent) {

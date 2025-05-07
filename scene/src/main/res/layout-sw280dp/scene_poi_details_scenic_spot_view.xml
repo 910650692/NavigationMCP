@@ -22,39 +22,39 @@
             android:layout_width="@dimen/dp_0"
             android:layout_height="wrap_content"
             android:maxLines="1"
+            android:text="¥35"
             android:textColor="@color/poi_details_bottom_ff_00"
             android:textSize="@dimen/sp_52"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="¥35"
-            android:text="¥35"/>
+            tools:text="¥35" />
 
         <com.fy.navi.ui.view.SkinTextView
             android:id="@+id/poi_scenic_spot_mark_value"
             android:layout_width="@dimen/dp_0"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/dp_24"
             android:maxLines="1"
+            android:text="4.7"
             android:textColor="@color/poi_details_bottom_icon"
             android:textSize="@dimen/sp_36"
-            android:layout_marginEnd="@dimen/dp_24"
+            app:layout_constraintBaseline_toBaselineOf="@+id/poi_scenic_spot_price"
             app:layout_constraintEnd_toStartOf="@+id/poi_scenic_spot_mark_layout"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBaseline_toBaselineOf="@+id/poi_scenic_spot_price"
-            tools:text="4.7"
-            android:text="4.7"/>
-        
+            tools:text="4.7" />
+
         <com.fy.navi.ui.view.SkinLinearLayout
             android:id="@+id/poi_scenic_spot_mark_layout"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/dp_48"
             android:background="@drawable/bg_catering_mark"
-            android:orientation="horizontal"
             android:gravity="center_vertical"
-            app:layout_constraintEnd_toEndOf="parent"
+            android:orientation="horizontal"
             android:paddingStart="@dimen/dp_9"
             android:paddingEnd="@dimen/dp_9"
-            app:layout_constraintTop_toTopOf="@id/poi_scenic_spot_price"
-            app:layout_constraintBottom_toBottomOf="@+id/poi_scenic_spot_price">
+            app:layout_constraintBottom_toBottomOf="@+id/poi_scenic_spot_price"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/poi_scenic_spot_price">
 
             <com.fy.navi.ui.view.SkinImageView
                 android:id="@+id/poi_scenic_spot_mark_img1"
@@ -89,19 +89,21 @@
 
         <com.fy.navi.ui.view.SkinRecyclerView
             android:id="@+id/poi_scenic_spot_child_list"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_32"
-            app:layout_constraintTop_toBottomOf="@+id/poi_scenic_spot_price"
-            app:layout_constraintStart_toStartOf="parent"/>
+            android:layout_marginEnd="@dimen/dp_20"
+            app:layout_constraintEnd_toStartOf="@+id/poi_scenic_spot_child_expand_collapse"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/poi_scenic_spot_price" />
 
         <com.fy.navi.ui.view.SkinImageView
             android:id="@+id/poi_scenic_spot_child_expand_collapse"
-            android:layout_width="@dimen/dp_48"
-            android:layout_height="@dimen/dp_48"
+            android:layout_width="@dimen/dp_74"
+            android:layout_height="@dimen/dp_74"
+            android:layout_marginTop="@dimen/dp_83"
             android:src="@drawable/img_under_the_48"
-            app:layout_constraintTop_toTopOf="@+id/poi_scenic_spot_child_list"
-            app:layout_constraintStart_toEndOf="@+id/poi_scenic_spot_child_list"/>
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/poi_scenic_spot_child_list" />
 
         <View
             android:id="@+id/poi_details_sub_line"
@@ -120,11 +122,10 @@
             android:maxLines="1"
             android:textColor="@color/poi_details_bottom_icon"
             android:textSize="@dimen/sp_36"
+            android:visibility="gone"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/poi_details_sub_line"
-            tools:text="营业时间:"
-            android:visibility="gone"
-            />
+            tools:text="营业时间:" />
 
         <com.fy.navi.ui.view.SkinTextView
             android:id="@+id/poi_scenic_spot_hours_content"
@@ -134,18 +135,18 @@
             android:textSize="@dimen/sp_36"
             app:layout_constraintStart_toEndOf="@+id/poi_scenic_spot_hours_title"
             app:layout_constraintTop_toTopOf="@+id/poi_scenic_spot_hours_title"
-            tools:text="营业时间：09:00 -- 21:00"/>
+            tools:text="营业时间：09:00 -- 21:00" />
 
         <com.fy.navi.ui.view.SkinTextView
             android:id="@+id/poi_scenic_spot_phone"
             android:layout_width="@dimen/dp_0"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_16"
             android:textColor="@color/poi_details_bottom_icon"
             android:textSize="@dimen/sp_36"
-            android:layout_marginTop="@dimen/dp_16"
             app:layout_constraintStart_toEndOf="@+id/poi_scenic_spot_hours_title"
             app:layout_constraintTop_toBottomOf="@+id/poi_scenic_spot_hours_content"
-            tools:text="电话： "/>
+            tools:text="电话： " />
 
 
     </com.fy.navi.ui.view.SkinConstraintLayout>

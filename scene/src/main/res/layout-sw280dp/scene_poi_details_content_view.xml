@@ -12,15 +12,14 @@
 
     <com.fy.navi.ui.view.SkinConstraintLayout
         android:layout_width="@dimen/dp_820"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/dp_880"
         android:background="@drawable/bg_poi_main_tab"
-        android:focusable="false"
-        android:maxHeight="@dimen/dp_880">
+        android:focusable="false">
 
         <com.fy.navi.ui.view.SkinConstraintLayout
             android:id="@+id/cs_poi_no_result"
             android:layout_width="match_parent"
-            android:layout_height="500dp"
+            android:layout_height="match_parent"
             android:background="@drawable/bg_poi_main_tab"
             app:layout_constraintTop_toTopOf="parent"
             android:visibility="gone"
@@ -126,8 +125,7 @@
         <com.fy.navi.scene.ui.search.MaxHeightScrollView
             android:id="@+id/poi_details_scroll"
             android:layout_width="@dimen/dp_0"
-            android:layout_height="wrap_content"
-            app:maxHeight="@dimen/dp_526"
+            android:layout_height="0dp"
             android:layout_marginTop="@dimen/dp_20"
             android:layout_marginBottom="@dimen/dp_40"
             android:focusable="false"

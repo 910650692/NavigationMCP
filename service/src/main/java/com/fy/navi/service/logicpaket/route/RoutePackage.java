@@ -91,6 +91,7 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
     private Map<MapType, List<RouteParam>> mSaveViaRouteParams;
     private Map<MapType, RouteParam> mEndRouteParams;
     private Map<MapType, RouteParam> mSaveEndRouteParams;
+    private Map<MapType, PoiInfoEntity> mEndPoiEntity;
     private Map<MapType, RequestRouteResult> mRequestRouteResults;
     private ArrayList<EvRangeOnRouteInfo> mEvRangeOnRouteInfos;
     private RouteAdapter mRouteAdapter;
@@ -133,6 +134,7 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
         mStartRouteParams = new HashMap<>();
         mViaRouteParams = new HashMap<>();
         mEndRouteParams = new HashMap<>();
+        mEndPoiEntity = new HashMap<>();
         mSaveViaRouteParams = new HashMap<>();
         mSaveEndRouteParams = new HashMap<>();
         mSelectRouteIndex = new HashMap<>();
@@ -713,6 +715,10 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
      * @param mapTypeId 屏幕ID
      */
     public void requestRouteRestoration(final RouteMsgPushInfo routeMsgPushInfo, final MapType mapTypeId) {
+        if (ConvertUtils.isEmpty(routeMsgPushInfo) || ConvertUtils.isEmpty(routeMsgPushInfo.getMPoiInfoEntity())) {
+            Logger.e(TAG, "have no push info");
+            return;
+        }
         if (!ConvertUtils.isEmpty(mRouteResultObserverMap)) {
             for (IRouteResultObserver routeResultObserver : mRouteResultObserverMap.values()) {
                 if (ConvertUtils.isEmpty(routeResultObserver)) {
@@ -1068,6 +1074,7 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
      * @param mapTypeId 屏幕ID
      */
     public void showPreview(final MapType mapTypeId) {
+        mLayerAdapter.setFollowMode(mapTypeId, false);
         if (ConvertUtils.isEmpty(mRequestRouteResults.get(mapTypeId))) {
             return;
         }
@@ -1371,6 +1378,7 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
         mStartRouteParams.put(mapTypeId, null);
         mViaRouteParams.put(mapTypeId, new ArrayList<>());
         mEndRouteParams.put(mapTypeId, null);
+        mEndPoiEntity.put(mapTypeId, null);
         mSaveViaRouteParams.put(mapTypeId, new ArrayList<>());
         mSaveEndRouteParams.put(mapTypeId, null);
     }
@@ -1382,6 +1390,24 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
      */
     public RouteParam getEndPoint(final MapType mapTypeId) {
         return mEndRouteParams.get(mapTypeId);
+    }
+
+    /**
+     * 获取终点详情信息
+     * @param mapTypeId 屏幕Id
+     * @return 返回终点信息
+     */
+    public PoiInfoEntity getEndEntity(final MapType mapTypeId) {
+        return mEndPoiEntity.get(mapTypeId);
+    }
+
+    /**
+     * 设置终点详情信息
+     * @param mapTypeId 屏幕Id
+     * @param endPoiEntity 终点信息
+     */
+    public void setEndEntity(final MapType mapTypeId , final PoiInfoEntity endPoiEntity) {
+        mEndPoiEntity.put(mapTypeId, endPoiEntity);
     }
 
     /**

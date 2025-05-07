@@ -3,6 +3,7 @@ package com.fy.navi.service.adapter.user.account;
 import android.accounts.Account;
 
 import com.fy.navi.service.AdapterConfig;
+import com.fy.navi.service.AutoMapConstant;
 import com.fy.navi.service.define.user.account.AccessTokenParam;
 
 import java.util.Objects;
@@ -126,8 +127,16 @@ public final class AccountAdapter {
      * @param key 账户信息的key值 ; id 用 AutoMapConstant.AccountInfoKey.IDP_USER_ID
      * @return userId
      */
-    public String getIdpUserId(final Account availableAccount, final String key) {
-        return mAccountApi.getIdpUserId(availableAccount, key);
+    public String getUserData(final Account availableAccount, final String key) {
+        return mAccountApi.getUserData(availableAccount, key);
+    }
+
+    /**
+     * 获取账户列表
+     * @return Account[]
+     */
+    public Account[] getAccounts() {
+        return mAccountApi.getAccounts();
     }
 
     /**

@@ -932,4 +932,14 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
             dialog.show();
         }
     }
+
+    /**
+     * 应用退到后台.
+     */
+    public void moveToBack() {
+        if (null != mView) {
+            mView.moveTaskToBack(false);
+        }
+    }
+
 }

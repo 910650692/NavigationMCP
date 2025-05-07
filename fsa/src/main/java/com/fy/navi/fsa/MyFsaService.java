@@ -1,18 +1,12 @@
 package com.fy.navi.fsa;
 
 import android.app.ActivityOptions;
-import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
-import android.content.ServiceConnection;
-import android.content.res.Configuration;
+import android.graphics.Bitmap;
+import android.graphics.Matrix;
 import android.hardware.display.DisplayManager;
 import android.os.Build;
-import android.os.IBinder;
-import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.Display;
-import android.view.WindowManager;
 
 import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
@@ -23,7 +17,6 @@ import com.fy.navi.fsa.bean.LaneLineInfo;
 import com.fy.navi.fsa.bean.RemainInfo;
 import com.fy.navi.fsa.bean.TurnInfo;
 import com.fy.navi.fsa.scene.FsaNaviScene;
-import com.fy.navi.hud.VTBinder;
 import com.fy.navi.service.AppContext;
 import com.fy.navi.service.StartService;
 import com.fy.navi.service.adapter.navi.NaviConstant;
@@ -46,8 +39,6 @@ import com.fy.navi.service.define.route.RouteParam;
 import com.fy.navi.service.define.search.SearchResultEntity;
 import com.fy.navi.service.logicpaket.cruise.CruisePackage;
 import com.fy.navi.service.logicpaket.cruise.ICruiseObserver;
-import com.fy.navi.service.logicpaket.engine.EnginePackage;
-import com.fy.navi.service.logicpaket.engine.IEngineObserver;
 import com.fy.navi.service.logicpaket.map.IMapPackageCallback;
 import com.fy.navi.service.logicpaket.map.MapPackage;
 import com.fy.navi.service.logicpaket.navi.IGuidanceObserver;
@@ -63,8 +54,11 @@ import com.fy.navi.service.logicpaket.search.SearchResultCallback;
 import com.fy.navi.service.logicpaket.setting.SettingPackage;
 import com.gm.fsa.service.FSAService;
 import com.gm.fsa.service.catalog.FSACatalog;
+import com.iauto.vtserver.VTDescription;
+import com.iauto.vtserver.VTServerBQJni;
 
 import java.net.InetSocketAddress;
+import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -82,19 +76,10 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
 
     private boolean mIsHudInit = false;
     private boolean mIsHudServiceStart = false;
+    private int mWidth = 328;
+    private int mHeight = 172;
+
     private final Map<Integer, Set<String>> mSubscriberMap = new HashMap<>();
-
-    private VTBinder mBinder;
-    private ServiceConnection mSrvConn = new ServiceConnection() {
-        @Override
-        public void onServiceConnected(final ComponentName componentName, final IBinder binder) {
-            mBinder = (VTBinder) binder;
-        }
-
-        @Override
-        public void onServiceDisconnected(final ComponentName componentName) {
-        }
-    };
 
     public static MyFsaService getInstance() {
         return MyFsaServiceHolder.INSTANCE;
@@ -214,20 +199,6 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
     }
 
     /**
-     * 初始化HUD服务.
-     *
-     * @param context 上下文
-     * @param intent  Intent
-     */
-    public void initHudService(final Context context, final Intent intent) {
-        final WindowManager mWindowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-        final DisplayMetrics metrics = new DisplayMetrics();
-        mWindowManager.getDefaultDisplay().getMetrics(metrics);
-        context.bindService(intent, mSrvConn, Context.BIND_AUTO_CREATE);
-        context.startForegroundService(intent);
-    }
-
-    /**
      * 根据收到的payload不同，发送对应的Event给客户端.
      *
      * @param functionId 客户端主动请求信息的事件ID，当前唯一9201.
@@ -259,25 +230,19 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
                 switchClusterActivity(false);
                 break;
             case FsaConstant.FsaEventPayload.OPEN_HUD_VIDEO:
-                if (mBinder == null) {
-                    return;
-                }
                 if (mIsHudServiceStart) {
                     Logger.e(FsaConstant.FSA_TAG, FsaIdString.event2String(payload) + ": vtserver has been started");
                     return;
                 }
-                mBinder.start();
+                startHud();
                 mIsHudServiceStart = true;
                 break;
             case FsaConstant.FsaEventPayload.CLOSE_HUD_VIDEO:
-                if (mBinder == null) {
-                    return;
-                }
                 if (!mIsHudServiceStart) {
                     Logger.e(FsaConstant.FSA_TAG, FsaIdString.event2String(payload) + ": vtserver has been stopped");
                     return;
                 }
-                mBinder.stop();
+                stopHud();
                 mIsHudServiceStart = false;
                 break;
             case FsaConstant.FsaEventPayload.OPEN_RSTP:
@@ -287,26 +252,20 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
                 //todo 关闭扶手屏
                 break;
             case FsaConstant.FsaEventPayload.HUD_SERVICE_INIT:
-                if (mBinder == null) {
-                    return;
-                }
                 if (mIsHudInit) {
                     Logger.e(FsaConstant.FSA_TAG, FsaIdString.event2String(payload) + ": hud is initialized");
                     return;
                 }
-                mBinder.init();
+                initHud();
                 FsaNaviScene.getInstance().updateHudVideInfo(MyFsaService.this);
                 mIsHudInit = true;
                 break;
             case FsaConstant.FsaEventPayload.HUD_SERVICE_UNINIT:
-                if (mBinder == null) {
-                    return;
-                }
                 if (!mIsHudInit) {
                     Logger.e(FsaConstant.FSA_TAG, FsaIdString.event2String(payload) + ": vtserver has been uninitialized");
                     return;
                 }
-                mBinder.uninit();
+                uninitHud();
                 mIsHudInit = false;
                 break;
             case FsaConstant.FsaEventPayload.THEME_CHANGED:
@@ -625,6 +584,27 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
                 sendEvent(FsaConstant.FsaFunction.ID_THEME_CHANGED, FsaConstant.FsaValue.TRUE);
             }
         }
+
+        @Override
+        public void onEGLScreenshot(MapType mapTypeId, byte[] bytes) {
+            if (!mIsHudServiceStart) {
+                return;
+            }
+            byte[] bytes1 = processPicture(bytes);
+            VTServerBQJni.getInstance().nativeNotifyVideoData(bytes1);
+            // 以下是调试用
+//            Bitmap bitmap = Bitmap.createBitmap(328, 172, Bitmap.Config.ARGB_8888);
+//            bitmap.copyPixelsFromBuffer(ByteBuffer.wrap(bytes1));
+
+//            // 创建文件保存图片
+//            File file = new File(AppContext.getInstance().getMContext().getCacheDir(), "image.png");
+//            try (FileOutputStream fos = new FileOutputStream(file)) {
+//                bitmap.compress(Bitmap.CompressFormat.PNG, 100, fos);
+//                Log.d(TAG, "Image saved successfully: " + file.getAbsolutePath());
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+        }
     };
 
     private IRouteResultObserver mRouteResultObserver = new IRouteResultObserver() {
@@ -801,12 +781,83 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
         }
     }
 
+    private byte[] processPicture(byte[] bytes) {
+        if (!NaviStatus.NaviStatusType.NAVING.equals(NaviStatusPackage.getInstance().getCurrentNaviStatus())) {
+            return new byte[225664];
+        }
+        int width = 328;
+        int height = 172;
+        int pixelSize = 4;
+
+        Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+        bitmap.copyPixelsFromBuffer(ByteBuffer.wrap(bytes));
+        // 翻转图像
+        Matrix matrix = new Matrix();
+        matrix.postScale(1, -1);
+        matrix.postTranslate(bitmap.getWidth(), bitmap.getHeight());
+        Bitmap flippedBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+
+        // 将翻转后的 Bitmap 转换为 byte[]
+        ByteBuffer flippedBuffer = ByteBuffer.allocate(flippedBitmap.getByteCount());
+        flippedBitmap.copyPixelsToBuffer(flippedBuffer);
+        byte[] flippedBytes = flippedBuffer.array();
+
+        // 提取有效数据
+        int rowStride = ((width * pixelSize + 3) / 4) * 4;
+        int validRowBytes = width * pixelSize;
+        byte[] croppedData = new byte[width * height * pixelSize];
+        ByteBuffer buffer = ByteBuffer.wrap(flippedBytes);
+        for (int i = 0; i < height; i++) {
+            int bufferPosition = i * rowStride;
+            int arrayPosition = i * validRowBytes;
+            buffer.position(bufferPosition);
+            buffer.get(croppedData, arrayPosition, validRowBytes);
+        }
+        return croppedData;
+    }
+
     /**
-     * 获取cross图片
-     *
-     * @return byte[]
+     * 初始化
      */
-    public byte[] getmCrossImg() {
-        return mBinder.getCrossImg();
+    public void initHud() {
+        Logger.d(TAG, "service init");
+        if (!VTServerBQJni.getInstance().isIsSuccessLoadLibrary()) {
+            Logger.d(TAG, "the so library failed to load");
+            return;
+        }
+        final int ret = VTServerBQJni.getInstance().nativeInitialize();
+        Logger.d(TAG, "NativeInitialize ret is " + ret);
+        final VTDescription description = new VTDescription();
+        description.width = mWidth;
+        description.height = mHeight;
+        description.videoFormat = 0x901001;  // PixelFormat.RGBA_8888;
+        VTServerBQJni.getInstance().nativeSetVideoDescription(description);
+        Logger.d(TAG, "NativeSetVideoDescription");
+    }
+
+    /**
+     * 开始
+     */
+    public void startHud() {
+        Logger.d(TAG, "service start");
+        final int ret = VTServerBQJni.getInstance().nativeStart();
+        Logger.d(TAG, "service start NativeStart ret is " + ret);
+    }
+
+    /**
+     * 停止
+     */
+    public void stopHud() {
+        Logger.d(TAG, "service stop");
+        final int ret = VTServerBQJni.getInstance().nativeStop();
+        Logger.d(TAG, "service stop NativeStop ret is " + ret);
+    }
+
+    /**
+     * 销毁
+     */
+    public void uninitHud() {
+        Logger.d(TAG, "service uninit");
+        VTServerBQJni.getInstance().nativeUninitialize();
     }
 }

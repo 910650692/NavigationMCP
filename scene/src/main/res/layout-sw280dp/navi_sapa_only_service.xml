@@ -12,66 +12,74 @@
     </data>
 
     <com.fy.navi.ui.view.SkinConstraintLayout
-        android:layout_width="@dimen/dp_640"
-        android:layout_height="@dimen/dp_157"
-        clickCommand="@{()->naviSapa.onClick(0)}"
+        android:layout_width="@dimen/dp_820"
+        android:layout_height="@dimen/dp_200"
+        android:focusable="false"
         android:background="@drawable/bg_navi_highway_service_first">
 
         <com.fy.navi.ui.view.SkinLinearLayout
             android:id="@+id/sll_only_service_services"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_24"
-            android:layout_marginTop="@dimen/dp_26"
+            android:focusable="false"
+            android:layout_marginStart="@dimen/dp_32"
+            android:layout_marginTop="@dimen/dp_32"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
             <com.fy.navi.ui.view.SkinImageView
                 android:id="@+id/siv_only_service_service_gas_station"
-                android:layout_width="@dimen/dp_42"
-                android:layout_height="@dimen/dp_42"
+                android:layout_width="@dimen/dp_54"
+                android:layout_height="@dimen/dp_54"
+                android:focusable="false"
                 android:background="@drawable/img_refuel_42"
                 android:visibility="@{naviSapa.mOnlyServiceGasStationVisible ? View.VISIBLE : View.GONE}" />
 
             <com.fy.navi.ui.view.SkinImageView
                 android:id="@+id/siv_only_service_service_charge_station"
-                android:layout_width="@dimen/dp_42"
-                android:layout_height="@dimen/dp_42"
+                android:layout_width="@dimen/dp_54"
+                android:layout_height="@dimen/dp_54"
+                android:focusable="false"
                 android:background="@drawable/img_lightning_42"
                 android:visibility="@{naviSapa.mOnlyServiceChargeStationVisible ? View.VISIBLE : View.GONE}"/>
 
             <com.fy.navi.ui.view.SkinImageView
                 android:id="@+id/siv_only_service_service_canteen"
-                android:layout_width="@dimen/dp_42"
-                android:layout_height="@dimen/dp_42"
+                android:layout_width="@dimen/dp_54"
+                android:layout_height="@dimen/dp_54"
+                android:focusable="false"
                 android:background="@drawable/img_gourmet_42"
                 android:visibility="@{naviSapa.mOnlyServiceCanteenVisible ? View.VISIBLE : View.GONE}" />
 
             <com.fy.navi.ui.view.SkinImageView
                 android:id="@+id/siv_only_toll_service_lavatory"
-                android:layout_width="@dimen/dp_42"
-                android:layout_height="@dimen/dp_42"
+                android:layout_width="@dimen/dp_54"
+                android:layout_height="@dimen/dp_54"
+                android:focusable="false"
                 android:background="@drawable/img_lavatory_42"
                 android:visibility="@{naviSapa.mOnlyServiceLavatoryVisible ? View.VISIBLE : View.GONE}" />
 
             <com.fy.navi.ui.view.SkinImageView
                 android:id="@+id/siv_only_service_service_maintenance"
-                android:layout_width="@dimen/dp_42"
-                android:layout_height="@dimen/dp_42"
+                android:layout_width="@dimen/dp_54"
+                android:layout_height="@dimen/dp_54"
+                android:focusable="false"
                 android:background="@drawable/img_maintenance_white_42"
                 android:visibility="@{naviSapa.mOnlyServiceMaintenanceVisible ? View.VISIBLE : View.GONE}" />
 
             <com.fy.navi.ui.view.SkinImageView
                 android:id="@+id/siv_only_service_service_buy"
-                android:layout_width="@dimen/dp_42"
-                android:layout_height="@dimen/dp_42"
+                android:layout_width="@dimen/dp_54"
+                android:layout_height="@dimen/dp_54"
+                android:focusable="false"
                 android:background="@drawable/img_buy_42"
                 android:visibility="@{naviSapa.mOnlyServiceBuyVisible ? View.VISIBLE : View.GONE}" />
 
             <com.fy.navi.ui.view.SkinImageView
                 android:id="@+id/siv_only_service_service_hotel"
-                android:layout_width="@dimen/dp_42"
-                android:layout_height="@dimen/dp_42"
+                android:layout_width="@dimen/dp_54"
+                android:layout_height="@dimen/dp_54"
+                android:focusable="false"
                 android:background="@drawable/img_groggery_42"
                 android:visibility="@{naviSapa.mOnlyServiceHotelVisible ? View.VISIBLE : View.GONE}" />
 
@@ -82,14 +90,15 @@
             android:id="@+id/stv_only_service_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_30"
-            android:layout_marginBottom="@dimen/dp_24"
+            android:focusable="false"
+            android:layout_marginStart="@dimen/dp_40"
+            android:layout_marginBottom="@dimen/dp_32"
             android:maxLines="1"
             android:maxWidth="@dimen/dp_400"
             android:ellipsize="end"
             android:text="@{naviSapa.mOnlyServiceName}"
             android:textColor="@color/navi_color_FFFFFF_100"
-            android:textSize="@dimen/sp_34"
+            android:textSize="@dimen/sp_46"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             tools:text="白帽服务区" />
@@ -98,8 +107,9 @@
             android:id="@+id/siv_only_service_tag"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_27"
-            android:layout_marginEnd="@dimen/dp_30"
+            android:focusable="false"
+            android:layout_marginTop="@dimen/dp_40"
+            android:layout_marginEnd="@dimen/dp_40"
             android:maxLines="1"
             android:maxWidth="@dimen/dp_200"
             android:ellipsize="end"
@@ -109,7 +119,7 @@
             android:paddingVertical="@dimen/dp_1"
             android:text="@{naviSapa.mOnlyServiceTag}"
             android:textColor="@{naviSapa.mOnlyServiceTagTextColor}"
-            android:textSize="@dimen/sp_26"
+            android:textSize="@dimen/sp_32"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="经" />
@@ -118,11 +128,12 @@
             android:id="@+id/stv_only_service_distance"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/dp_24"
-            android:layout_marginBottom="@dimen/dp_26"
+            android:focusable="false"
+            android:layout_marginEnd="@dimen/dp_40"
+            android:layout_marginBottom="@dimen/dp_36"
             android:text="@{naviSapa.mOnlyServiceDistance}"
             android:textColor="@color/navi_color_FFFFFF_80"
-            android:textSize="@dimen/sp_30"
+            android:textSize="@dimen/sp_38"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             tools:text="28.8公里" />
@@ -131,6 +142,7 @@
             android:id="@+id/cl_first_service_charge_data"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:focusable="false"
             android:visibility="gone"
             app:layout_constraintTop_toTopOf="@+id/stv_only_service_distance"
             app:layout_constraintBottom_toBottomOf="@+id/stv_only_service_distance"
@@ -141,6 +153,7 @@
                 android:id="@+id/stv_first_service_quick_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:focusable="false"
                 android:textColor="@color/navi_color_FFFFFF_100"
                 android:textSize="@dimen/sp_26"
                 app:layout_constraintStart_toStartOf="parent"
@@ -152,6 +165,7 @@
                 android:id="@+id/stv_first_service_quick_charge_count"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:focusable="false"
                 android:textColor="@color/navi_color_FFFFFF_100"
                 android:textSize="@dimen/sp_26"
                 android:text="@{naviSapa.mOnlyServiceFastFree}"
@@ -165,6 +179,7 @@
                 android:id="@+id/stv_first_service_slow_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:focusable="false"
                 android:textSize="@dimen/sp_26"
                 android:textColor="@color/navi_color_FF8500_100"
                 app:layout_constraintTop_toTopOf="@+id/stv_first_service_quick_charge_count"
@@ -177,6 +192,7 @@
                 android:id="@+id/stv_first_service_slow_charge_count"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:focusable="false"
                 app:layout_constraintTop_toTopOf="@+id/stv_first_service_slow_text"
                 app:layout_constraintBottom_toBottomOf="@+id/stv_first_service_slow_text"
                 app:layout_constraintStart_toEndOf="@+id/stv_first_service_slow_text"
@@ -187,6 +203,17 @@
                 tools:text="77"/>
 
         </com.fy.navi.ui.view.SkinConstraintLayout>
+
+        <com.fy.navi.ui.view.SkinView
+            android:layout_width="@dimen/dp_0"
+            android:layout_height="@dimen/dp_0"
+            android:focusable="true"
+            clickCommand="@{()->naviSapa.onClick(0)}"
+            android:background="@drawable/bg_base_mfc_cadillac_bg_selector"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
 
     </com.fy.navi.ui.view.SkinConstraintLayout>
 </layout>

@@ -7,6 +7,7 @@ import androidx.annotation.NonNull;
 
 import com.fy.navi.service.AutoMapConstant;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import lombok.Data;
@@ -49,6 +50,7 @@ public class SearchResultEntity implements Parcelable {
     //返回的总item数
     private int mTotal;
     private int mPoiType;
+    private ArrayList<String> mQueryTypeList;
 
     public int getSearchType() {
         return mSearchType;
@@ -218,6 +220,16 @@ public class SearchResultEntity implements Parcelable {
         return this;
     }
 
+    public ArrayList<String> getQueryTypeList() {
+        return mQueryTypeList;
+    }
+
+    // 设置用户查询意图
+    public SearchResultEntity setQueryTypeList(final ArrayList<String> list){
+        this.mQueryTypeList = list;
+        return this;
+    }
+
     protected SearchResultEntity(final Parcel in) {
         mSearchType = in.readInt();
         mKeyword = in.readString();
@@ -231,6 +243,7 @@ public class SearchResultEntity implements Parcelable {
         mLocalInfoList = in.createTypedArrayList(SearchCategoryLocalInfo.CREATOR);
         mTotal = in.readInt();
         mPoiType = in.readInt();
+        mQueryTypeList = in.createStringArrayList();
     }
 
     public static final Creator<SearchResultEntity> CREATOR = new Creator<SearchResultEntity>() {
@@ -264,5 +277,6 @@ public class SearchResultEntity implements Parcelable {
         dest.writeTypedList(mLocalInfoList);
         dest.writeInt(mTotal);
         dest.writeInt(mPoiType);
+        dest.writeStringList(mQueryTypeList);
     }
 }

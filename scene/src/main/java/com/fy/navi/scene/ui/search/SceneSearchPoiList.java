@@ -3,7 +3,9 @@ package com.fy.navi.scene.ui.search;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
@@ -586,6 +588,15 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
         if (!ConvertUtils.equals(taskId, mScreenViewModel.getMTaskId()) && mScreenViewModel.getMTaskId() != 0) {
             return;
         }
+        // 处理用户搜索意图
+        if(!ConvertUtils.isEmpty(searchResultEntity.getQueryTypeList())){
+            boolean isChargeQuery = isChargeQuery(searchResultEntity.getQueryTypeList());
+            if(isChargeQuery){
+                // 不使用高德数据，使用sgm自营站接口
+//                notifySearchResultBySGM();
+//                return;
+            }
+        }
         if (searchResultEntity == null || searchResultEntity.getPoiList().isEmpty()) {
             ToastUtils.Companion.getInstance().showCustomToastView("抱歉，未找到结果");
             mSearchLoadingDialog.dismiss();
@@ -647,6 +658,10 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
         if (mIsFilterViewShow) {
             mViewBinding.searchTextBarView.searchBarTextView.setText(getContext().getString(
                     R.string.filter_result, mSearchText, searchResultEntity.getTotal()));
+        }
+        if (TextUtils.isEmpty(mViewBinding.searchTextBarView.searchBarTextView.getText())) {
+            mSearchText = searchResultEntity.getKeyword();
+            mViewBinding.searchTextBarView.searchBarTextView.setText(searchResultEntity.getKeyword());
         }
         mLocalInfoList = searchResultEntity.getLocalInfoList();
         if (!ConvertUtils.isEmpty(mLocalInfoList)) {
@@ -800,10 +815,6 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
     public void clear() {
         mPoiInfoEntity = null;
         mResultEntity = null;
-        if (mLocalInfoList != null) {
-            mLocalInfoList.clear();
-            mLocalInfoList = null;
-        }
     }
 
     @Override
@@ -825,5 +836,24 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
                 .setParams(BuryConstant.ProperType.BURY_KEY_HOME_PREDICTION, Integer.toString(index))
                 .build();
         BuryPointController.getInstance().setBuryProps(buryProperty);
+    }
+
+    // 判断用户搜索意图是否是充电站
+    private boolean isChargeQuery(ArrayList<String> list){
+        final String queryType = com.android.utils.ResourceUtils.Companion.getInstance().getString(R.string.st_quick_search_charge);
+        final double threshold = 0.5;
+        int count = 0;
+        for (int i = 0; i < list.size(); i++) {
+            String type = list.get(i);
+            if(queryType.equals(type.split("=")[0].trim()) && Double.parseDouble(type.split("=")[1].trim()) > threshold){
+                count++;
+            }
+        }
+        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"count: "+count);
+        return count > 0;
+    }
+
+    private void notifySearchResultBySGM(){
+
     }
 }

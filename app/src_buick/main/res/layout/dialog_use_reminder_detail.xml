@@ -2,42 +2,46 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/reminder_root_detail"
-        android:layout_width="@dimen/dp_2000"
-        android:layout_height="@dimen/dp_1000"
-        android:layout_marginStart="@dimen/dp_310"
-        android:layout_marginBottom="@dimen/dp_180"
-        android:background="@drawable/shape_bg_dialog"
-        android:paddingVertical="@dimen/dp_80"
+    <com.fy.navi.ui.view.SkinConstraintLayout
+        android:id="@+id/reminderRootDetail"
+        android:layout_width="@dimen/dp_1300"
+        android:layout_height="@dimen/dp_740"
+        android:background="@drawable/bg_confirm_dialog"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <com.fy.navi.ui.view.SkinImageView
             android:id="@+id/reminder_iv_back"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_80"
+            android:layout_width="@dimen/dp_72"
+            android:layout_height="@dimen/dp_72"
+            android:layout_marginStart="@dimen/dp_31"
+            android:layout_marginTop="@dimen/dp_49"
             android:src="@drawable/img_basic_ic_back"
-            app:layout_constraintBottom_toBottomOf="@id/reminder_title"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@id/reminder_title" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <com.fy.navi.ui.view.SkinTextView
             android:id="@+id/reminder_title"
-            android:layout_width="@dimen/dp_1660"
-            android:layout_height="@dimen/dp_68"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_10"
             android:text="@string/reminder_use_agreement"
-            android:textColor="@color/dialog_use_reminder_title"
-            android:textSize="@dimen/sp_52"
+            android:textColor="@color/buick_dialog_use_reminder_title"
+            android:textSize="@dimen/sp_38"
+            app:layout_constraintBottom_toBottomOf="@id/reminder_iv_back"
             app:layout_constraintStart_toEndOf="@id/reminder_iv_back"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="@id/reminder_iv_back" />
 
         <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_562"
-            android:layout_marginTop="@dimen/dp_30"
-            android:paddingHorizontal="@dimen/dp_100"
+            android:layout_height="@dimen/dp_0"
+            android:layout_marginHorizontal="@dimen/dp_100"
+            android:layout_marginTop="@dimen/dp_21"
+            android:layout_marginBottom="@dimen/dp_60"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/reminder_title">
 
@@ -45,12 +49,13 @@
                 android:id="@+id/reminder_content"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:lineSpacingExtra="@dimen/dp_1"
                 android:text="@string/reminder_user_terms_personal_info"
-                android:textColor="@color/dialog_use_reminder_content"
-                android:textSize="@dimen/sp_46" />
+                android:textColor="@color/buick_dialog_use_reminder_sub_title"
+                android:textSize="@dimen/sp_36" />
 
         </androidx.core.widget.NestedScrollView>
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.fy.navi.ui.view.SkinConstraintLayout>
 
 </layout>

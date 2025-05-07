@@ -90,7 +90,7 @@
                 android:layout_height="match_parent"
                 android:layout_marginTop="@dimen/dp_24"
                 android:gravity="center"
-                android:visibility="@{SceneCollectViewImpl.mTipVisibility ? View.VISIBLE : View.GONE}"
+                android:visibility="gone"
                 app:layout_constraintTop_toBottomOf="@+id/tv_favorite_switch"
                 android:orientation="vertical">
                 <com.fy.navi.ui.view.SkinTextView
@@ -103,11 +103,12 @@
             </com.fy.navi.ui.view.SkinLinearLayout>
 
             <com.fy.navi.ui.view.SkinLinearLayout
+                android:id="@+id/sll_no_sgm"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
                 android:gravity="center"
-                android:visibility="@{SceneCollectViewImpl.mChargingVisibility ? View.VISIBLE : View.GONE}"
+                android:visibility="gone"
                 android:layout_marginTop="@dimen/dp_24"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -117,7 +118,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/favorite_no_charging"
-                    android:textColor="@color/common_delete_text_color"
+                    android:textColor="@color/search_quick_tab_view_color"
                     android:textSize="@dimen/sp_30"
                     android:layout_marginTop="@dimen/dp_20" />
 
@@ -125,11 +126,12 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/favorite_no_charging_tip"
-                    android:textColor="@color/common_delete_text_color"
+                    android:textColor="@color/search_quick_tab_view_color"
                     android:textSize="@dimen/sp_30"
                     android:layout_marginTop="@dimen/dp_10" />
 
                 <com.fy.navi.ui.view.SkinTextView
+                    android:id="@+id/sll_no_login"
                     android:layout_width="@dimen/dp_264"
                     android:layout_height="@dimen/dp_80"
                     android:gravity="center"
@@ -141,11 +143,12 @@
             </com.fy.navi.ui.view.SkinLinearLayout>
 
             <com.fy.navi.ui.view.SkinLinearLayout
+                android:id="@+id/sll_no_charge"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
                 android:gravity="center"
-                android:visibility="@{SceneCollectViewImpl.mChargingNoDataVisibility ? View.VISIBLE : View.GONE}"
+                android:visibility="gone"
                 android:layout_marginTop="@dimen/dp_24"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -155,16 +158,17 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/favorite_no_charging_data"
-                    android:textColor="@color/common_delete_text_color"
+                    android:textColor="@color/search_quick_tab_view_color"
                     android:textSize="@dimen/sp_30"/>
             </com.fy.navi.ui.view.SkinLinearLayout>
 
             <com.fy.navi.ui.view.SkinLinearLayout
+                android:id="@+id/sll_no_data"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
                 android:gravity="center"
-                android:visibility="@{SceneCollectViewImpl.mChargingRequestFailedVisibility ? View.VISIBLE : View.GONE}"
+                android:visibility="gone"
                 android:layout_marginTop="@dimen/dp_24"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -174,11 +178,12 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/favorite_charging_request_fail"
-                    android:textColor="@color/common_delete_text_color"
+                    android:textColor="@color/search_quick_tab_view_color"
                     android:textSize="@dimen/sp_30" />
 
 
                 <com.fy.navi.ui.view.SkinTextView
+                    android:id="@+id/sll_no_refresh"
                     android:layout_width="@dimen/dp_250"
                     android:layout_height="@dimen/dp_83"
                     android:gravity="center"
@@ -190,11 +195,12 @@
             </com.fy.navi.ui.view.SkinLinearLayout>
 
             <com.fy.navi.ui.view.SkinLinearLayout
+                android:id="@+id/sll_no_net"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
                 android:gravity="center"
-                android:visibility="@{SceneCollectViewImpl.mChargingOfflineVisibility ? View.VISIBLE : View.GONE}"
+                android:visibility="gone"
                 android:layout_marginTop="@dimen/dp_24"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -204,7 +210,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/favorite_charging_offline"
-                    android:textColor="@color/common_delete_text_color"
+                    android:textColor="@color/search_quick_tab_view_color"
                     android:textSize="@dimen/sp_30" />
             </com.fy.navi.ui.view.SkinLinearLayout>
 
