@@ -7,6 +7,7 @@ import androidx.core.app.ActivityCompat;
 import com.android.utils.log.Logger;
 import com.fy.navi.NaviService;
 import com.fy.navi.service.AppContext;
+import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.StartService;
 import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.logicpaket.map.IMapPackageCallback;
@@ -24,6 +25,7 @@ public class LauncherSmallCardModel extends BaseModel<BaseLauncherSmallCardViewM
     @Override
     public void onCreate() {
         super.onCreate();
+        Logger.d(MapDefaultFinalTag.INIT_SERVICE_TAG, "start navi Service");
         Intent intent = new Intent(AppContext.getInstance().getMContext(), NaviService.class);
         ActivityCompat.startForegroundService(AppContext.getInstance().getMContext(), intent);
     }

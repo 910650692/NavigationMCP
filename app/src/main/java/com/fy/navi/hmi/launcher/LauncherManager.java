@@ -14,6 +14,7 @@ import com.fy.navi.burypoint.constant.BuryConstant;
 import com.fy.navi.hmi.map.MapActivity;
 import com.fy.navi.mapservice.bean.INaviConstant;
 import com.fy.navi.service.AppContext;
+import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.define.search.PoiInfoEntity;
 
 /**
@@ -39,6 +40,7 @@ public class LauncherManager {
 
     public void startInitService() {
         Logger.i(TAG, "startInitEngine");
+        Logger.d(MapDefaultFinalTag.INIT_SERVICE_TAG, "start navi Service");
         Intent intent = new Intent(AppContext.getInstance().getMContext(), NaviService.class);
         ActivityCompat.startForegroundService(AppContext.getInstance().getMContext(), intent);
     }

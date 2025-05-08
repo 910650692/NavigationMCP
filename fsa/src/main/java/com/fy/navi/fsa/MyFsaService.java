@@ -137,8 +137,8 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
      * 根据service引擎初始化状态添加各个模块的数据监听.
      */
     public void init() {
-        final boolean engineInit = StartService.getInstance().getSdkActivityStatus();
-        if (engineInit) {
+        final int engineInit = StartService.getInstance().getSdkActivation();
+        if (-1 != engineInit) {
             if (initFsaService()) {
                 sendEvent(FsaConstant.FsaFunction.ID_ROAD_NETWORK_MODE, FsaConstant.FsaValue.STRING_ONE);
             }

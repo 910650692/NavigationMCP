@@ -15,9 +15,8 @@ import com.fy.navi.mapservice.IBinderPool;
 import com.fy.navi.mapservice.IBinderPoolCallback;
 import com.fy.navi.mapservice.base.BinderType;
 import com.fy.navi.service.AppContext;
+import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.StartService;
-import com.fy.navi.service.logicpaket.engine.EnginePackage;
-import com.fy.navi.service.logicpaket.engine.IEngineObserver;
 
 import java.util.HashMap;
 
@@ -44,15 +43,16 @@ public final class BinderPool extends IBinderPool.Stub {
 
     @Override
     public boolean getEngineInitStatus(final String pckName) {
-        final boolean initStatus = StartService.getInstance().getSdkActivityStatus();
+        final int initStatus = StartService.getInstance().getSdkActivation();
         Logger.d(TAG, pckName + "getEngineInit: " + initStatus);
-        return initStatus;
+        return -1 != initStatus;
     }
 
     @Override
     public void startInitEngine(final String pkgName) {
         Logger.d(TAG, pkgName + "startInitEngine");
         if (null != AppContext.getInstance().getMContext()) {
+            Logger.d(MapDefaultFinalTag.INIT_SERVICE_TAG, "start navi Service");
             final Intent intent = new Intent(AppContext.getInstance().getMContext(), NaviService.class);
             ActivityCompat.startForegroundService(AppContext.getInstance().getMContext(), intent);
         } else {
@@ -92,7 +92,6 @@ public final class BinderPool extends IBinderPool.Stub {
             if (mInCallback) {
                 return;
             }
-
             try {
                 mInCallback = true;
                 final int count = mBinderPoolCallbackList.beginBroadcast();

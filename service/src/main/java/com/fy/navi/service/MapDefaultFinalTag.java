@@ -2,9 +2,6 @@ package com.fy.navi.service;
 
 public interface MapDefaultFinalTag {
     String DEFAULT_TAG = "NaviApp";
-    /*** NaviApp_StartSdk **/
-    String START_SDK_TAG = DEFAULT_TAG + "_StartSdk";
-
     /*** Service Tag **/
      String SERVICE_TAG = "_Service";
     /*** NaviApp_Init_Service **/

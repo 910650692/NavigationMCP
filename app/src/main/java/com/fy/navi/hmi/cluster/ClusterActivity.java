@@ -5,29 +5,16 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.os.Build;
 import android.os.Bundle;
 
-import androidx.activity.EdgeToEdge;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 import com.android.utils.log.Logger;
-import com.fy.navi.NaviService;
 import com.fy.navi.hmi.BR;
 import com.fy.navi.hmi.R;
 import com.fy.navi.hmi.databinding.ActivityClusterBinding;
-import com.fy.navi.hmi.databinding.ActivityLauncherDeskBinding;
-import com.fy.navi.hmi.launcher.BaseLauncherDeskViewModel;
-import com.fy.navi.hmi.launcher.LauncherManager;
-import com.fy.navi.service.define.cruise.CruiseInfoEntity;
 import com.fy.navi.service.define.map.IBaseScreenMapView;
 import com.fy.navi.service.define.map.MapType;
-import com.fy.navi.service.define.navi.LaneInfoEntity;
-import com.fy.navi.service.define.navi.NaviTmcInfo;
 import com.fy.navi.ui.base.BaseActivity;
 
 public class ClusterActivity extends BaseActivity<ActivityClusterBinding, ClusterViewModel>   {

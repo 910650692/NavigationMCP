@@ -1,8 +1,11 @@
 package com.fy.navi.service;
 
 import com.android.utils.ConvertUtils;
+import com.android.utils.file.ParseJsonUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
+import com.fy.navi.service.define.code.CodeManager;
+import com.fy.navi.service.define.code.ErrorCode;
 import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.setting.SettingController;
 import com.fy.navi.service.greendao.CommonManager;
@@ -35,6 +38,12 @@ import com.fy.navi.service.logicpaket.user.usertrack.UserTrackPackage;
 import com.fy.navi.service.logicpaket.voice.VoicePackage;
 import com.fy.navi.service.tts.NaviAudioPlayer;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
@@ -43,8 +52,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * @date 2025/5/5
  */
 public class StartService {
-    private static final String TAG = MapDefaultFinalTag.START_SDK_TAG;
-    private static boolean engineActive;
+    private static final String TAG = MapDefaultFinalTag.INIT_SERVICE_TAG;
+    private static int engineActive = -1;
     private static CopyOnWriteArrayList<ISdkInitCallback> sdkInitCallbacks; //此处回调必须使用List集合
 
     private StartService() {
@@ -69,29 +78,71 @@ public class StartService {
         startEngine();
     }
 
+    /**
+     * 引擎初始化失败需要重试，这个方法只能在NaviService中调用
+     */
     public void retryEngineInit() {
         startEngine();
     }
 
-    public boolean getSdkActivityStatus() {
+    /**
+     * 获取引擎状态.
+     *
+     * @return -1：引擎没有初始化、0：引擎初始化成功、1、引擎初始化中
+     */
+    public int getSdkActivation() {
         return engineActive;
     }
 
+    /**
+     * 检测引擎状态
+     *
+     * @return true 需要重新初始化/false 不需要初始化
+     */
+    public boolean checkSdkIsNeedInit() {
+        if (-1 == engineActive) {
+            Logger.i(TAG, "Engine not init");
+            return true;
+        } else if (1 == engineActive) {
+            Logger.i(TAG, "Engine init progress......");
+            conformInitializingCallback();
+            return false;
+        } else {
+            Logger.i(TAG, "Engine already init finish");
+            conformSuccessCallback();
+            return false;
+        }
+    }
+
     private void startEngine() {
+        if (1 == engineActive || 0 == engineActive) return;
         ThreadManager.getInstance().execute(() -> {
-            if (checkSdkActivation()) return;
-            Logger.i(TAG, "Start engine in progress.....");
+            conformInitializingCallback();
+            if (!parseErrorCode()) return;
             SettingManager.getInstance().insertOrReplace(SettingController.KEY_SETTING_CHANNEL_ID, EnginePackage.getInstance().getChanelName());
             EnginePackage.getInstance().initBaseLibs();
         });
     }
 
-    public boolean checkSdkActivation() {
-        if (engineActive) {
-            Logger.i(TAG, "Engine already init finish");
-            conformSuccessCallback();
+    private boolean parseErrorCode() {
+        try {
+            Logger.i(TAG, "parse doWork");
+            ErrorCode errorCode = CodeManager.getInstance().getErrorCode();
+            if (!ConvertUtils.isNull(errorCode)) return true;
+            String errCodePath = BuildConfig.MAP_SDK;
+            String jsonPath = errCodePath + "/engine_code.json";
+            String json = ParseJsonUtils.parseJsonFile(jsonPath);
+            JSONObject jsonObject = new JSONObject(json);
+            parseErrorCode(errorCode, jsonObject);
+            if (!ConvertUtils.isEmpty(errorCode)) {
+                Logger.i(TAG, "errorCode parse success");
+                return true;
+            }
+
+        } catch (JSONException e) {
+            Logger.i(TAG, "Exception");
         }
-        return engineActive;
+        return false;
     }
 
     /**
@@ -117,7 +168,6 @@ public class StartService {
             return;
         }
         initOtherService();
-        engineActive = true;
         conformSuccessCallback();
     }
 
@@ -182,8 +232,23 @@ public class StartService {
         ActivatePackage.getInstance().startActivate();
     }
 
+    /**
+     * 整合引擎初始化中的回调
+     */
+    private void conformInitializingCallback() {
+        Logger.i(TAG, "Sdk init progress......");
+        engineActive = 1;
+        for (ISdkInitCallback callback : sdkInitCallbacks) {
+            callback.onSdkInitializing();
+        }
+    }
+
+    /**
+     * 整合初始化成功的回调
+     */
     private void conformSuccessCallback() {
         Logger.i(TAG, "Sdk init success", "sdkInitCallbacks : " + sdkInitCallbacks.size());
+        engineActive = 0;
         ThreadManager.getInstance().postUi(() -> {
             for (ISdkInitCallback callback : sdkInitCallbacks) {
                 callback.onSdkInitSuccess();
@@ -191,13 +256,23 @@ public class StartService {
         });
     }
 
+    /**
+     * 整合初始化失败的回调
+     *
+     * @param initSdkResult ErrorCode
+     * @param msg           Error msg
+     */
     private void conformFailCallback(int initSdkResult, String msg) {
         Logger.i(TAG, "Sdk init fail");
+        engineActive = -1;
         for (ISdkInitCallback callback : sdkInitCallbacks) {
             callback.onSdkInitFail(initSdkResult, msg);
         }
     }
 
+    /**
+     * 反初始化引擎
+     */
     public void unSdkInit() {
         EnginePackage.getInstance().removeEngineObserver(TAG);
         MapPackage.getInstance().unInitMapService();
@@ -207,6 +282,85 @@ public class StartService {
         CruisePackage.getInstance().unInitCruise();
         SearchPackage.getInstance().unInitSearchService();
         EnginePackage.getInstance().unInitEngine();
+        engineActive = -1;
+    }
+
+    private void parseErrorCode(ErrorCode errorCode, JSONObject jsonObject) throws JSONException {
+        String errorCodeJson = jsonObject.getJSONObject("error_code").toString();
+        Map<Integer, String> mErrorCode = formJsonCode(errorCodeJson);
+        errorCode.setErrorCode(mErrorCode);
+        Logger.i(TAG, "Current mErrorCode: " + mErrorCode);
+        String engineCodeJson = jsonObject.getJSONObject("engine_code").toString();
+        Map<Integer, String> engineErrorCode = formJsonCode(engineCodeJson);
+        errorCode.setEngineCode(engineErrorCode);
+        Logger.i(TAG, "Current engineErrorCode: " + engineErrorCode);
+
+        String activationCode = jsonObject.getJSONObject("activation_code").toString();
+        Map<Integer, String> activityErrorCode = formJsonCode(activationCode);
+        errorCode.setMapCode(activityErrorCode);
+        Logger.i(TAG, "Current activityErrorCode: " + activityErrorCode);
+
+        String positionCode = jsonObject.getJSONObject("position_code").toString();
+        Map<Integer, String> positionErrorCode = formJsonCode(positionCode);
+        errorCode.setMapCode(positionErrorCode);
+        Logger.i(TAG, "Current positionErrorCode: " + positionErrorCode);
+
+        String mapCodeJson = jsonObject.getJSONObject("map_code").toString();
+        Map<Integer, String> mapErrorCode = formJsonCode(mapCodeJson);
+        errorCode.setMapCode(mapErrorCode);
+        Logger.i(TAG, "Current mapErrorCode: " + mapErrorCode);
+
+        String layerCodeJson = jsonObject.getJSONObject("layer_code").toString();
+        Map<Integer, String> layerErrorCode = formJsonCode(layerCodeJson);
+        errorCode.setMapCode(layerErrorCode);
+        Logger.i(TAG, "Current layerErrorCode: " + layerErrorCode);
+
+        String searchCodeJson = jsonObject.getJSONObject("search_code").toString();
+        Map<Integer, String> searchErrorCode = formJsonCode(searchCodeJson);
+        errorCode.setSearchCode(searchErrorCode);
+        Logger.i(TAG, "Current searchErrorCode: " + searchErrorCode);
+
+        String routeCodeJson = jsonObject.getJSONObject("route_code").toString();
+        Map<Integer, String> routeErrorCode = formJsonCode(routeCodeJson);
+        errorCode.setRouteCode(routeErrorCode);
+        Logger.i(TAG, "Current routeCodeJson: " + routeCodeJson);
+
+        String naviCodeJson = jsonObject.getJSONObject("navi_code").toString();
+        Map<Integer, String> naviErrorCode = formJsonCode(naviCodeJson);
+        errorCode.setNaviCode(naviErrorCode);
+        Logger.i(TAG, "Current naviErrorCode: " + naviErrorCode);
+
+        String settingCodeJson = jsonObject.getJSONObject("setting_code").toString();
+        Map<Integer, String> settingErrorCode = formJsonCode(settingCodeJson);
+        errorCode.setSettingCode(settingErrorCode);
+        Logger.i(TAG, "Current settingErrorCode: " + settingErrorCode);
+
+        String mapDataCodeJson = jsonObject.getJSONObject("map_data_code").toString();
+        Map<Integer, String> mapDataErrorCode = formJsonCode(mapDataCodeJson);
+        errorCode.setMapDataCode(mapDataErrorCode);
+        Logger.i(TAG, "Current mapDataErrorCode: " + mapDataErrorCode);
+
+        String accountCodeJson = jsonObject.getJSONObject("account_code").toString();
+        Map<Integer, String> accountErrorCode = formJsonCode(accountCodeJson);
+        errorCode.setAccountCode(accountErrorCode);
+        Logger.i(TAG, "Current accountErrorCode: " + accountErrorCode);
+
+        String forCastCodeJson = jsonObject.getJSONObject("for_cast_code").toString();
+        Map<Integer, String> forCastErrorCode = formJsonCode(forCastCodeJson);
+        errorCode.setForCastCode(forCastErrorCode);
+        Logger.i(TAG, "Current forCastErrorCode: " + forCastErrorCode);
+    }
+
+    private Map<Integer, String> formJsonCode(String json) throws JSONException {
+        Map<Integer, String> errorCode = new HashMap<>();
+        JSONObject engineCodeObject = new JSONObject(json);
+        for (Iterator<String> it = engineCodeObject.keys(); it.hasNext(); ) {
+            String key = it.next();
+            Integer keyCode = ConvertUtils.str2Int(key);
+            String keyMsg = engineCodeObject.get(key).toString();
+            errorCode.put(keyCode, keyMsg);
+        }
+        return errorCode;
     }
 
     public static StartService getInstance() {
@@ -258,11 +412,15 @@ public class StartService {
     };
 
     public interface ISdkInitCallback {
+        default void onSdkInitializing() {
+
+        }
+
         default void onSdkInitSuccess() {
 
         }
 
-        default void onSdkInitFail(int initSdkResult, String msg){
+        default void onSdkInitFail(int initSdkResult, String msg) {
 
         }
     }

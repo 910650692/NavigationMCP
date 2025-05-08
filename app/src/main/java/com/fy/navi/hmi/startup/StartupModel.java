@@ -13,6 +13,7 @@ import com.fy.navi.NaviService;
 import com.fy.navi.hmi.R;
 import com.fy.navi.hmi.permission.PermissionUtils;
 import com.fy.navi.service.AppContext;
+import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.StartService;
 import com.fy.navi.service.define.code.UserDataCode;
 import com.fy.navi.service.greendao.CommonManager;
@@ -47,6 +48,7 @@ public class StartupModel extends BaseModel<BaseStartupViewModel>
                 mViewModel.showFailedDialog();
             }
         }
+
         @Override
         public void onActivated() {
             mViewModel.showActivatingView(false);
@@ -110,6 +112,7 @@ public class StartupModel extends BaseModel<BaseStartupViewModel>
     }
 
     public void startInitEngine() {
+        Logger.d(MapDefaultFinalTag.INIT_SERVICE_TAG, "start navi Service");
         Intent intent = new Intent(AppContext.getInstance().getMContext(), NaviService.class);
         ActivityCompat.startForegroundService(AppContext.getInstance().getMContext(), intent);
     }
