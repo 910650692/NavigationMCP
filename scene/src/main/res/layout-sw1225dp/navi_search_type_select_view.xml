@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <import type="android.view.View" />
+
+        <variable
+            name="naviSearch"
+            type="com.fy.navi.scene.impl.navi.search.SceneNaviSearchResultViewImpl" />
+    </data>
+
+    <com.fy.navi.ui.view.SkinConstraintLayout
+        android:layout_width="@dimen/dp_174"
+        android:layout_height="@dimen/dp_504"
+        android:background="@drawable/bg_navi_control">
+
+        <com.fy.navi.ui.view.SkinView
+            android:id="@+id/around"
+            android:layout_width="@dimen/dp_174"
+            android:layout_height="@dimen/dp_168"
+            clickCommand="@{() -> naviSearch.onSearTypeClick(2)}"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            />
+
+        <com.fy.navi.ui.view.SkinTextView
+            android:id="@+id/stv_around"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/route_charge_gas_around"
+            android:textSize="@dimen/sp_30"
+            android:textColor="@color/tab_list_route_tab_list_unselect"
+            android:layout_marginBottom="@dimen/dp_30"
+            app:select_text_color="@color/tab_list_route_tab_list_select"
+            app:layout_constraintEnd_toEndOf="@id/around"
+            app:layout_constraintStart_toStartOf="@id/around"
+            app:layout_constraintBottom_toBottomOf="@id/around"/>
+
+        <com.fy.navi.ui.view.SkinImageView
+            android:id="@+id/siv_around"
+            android:layout_width="@dimen/dp_58"
+            android:layout_height="@dimen/dp_58"
+            android:src="@drawable/selector_route_tab_list_charge_gas_around"
+            app:layout_constraintEnd_toEndOf="@id/around"
+            app:layout_constraintStart_toStartOf="@id/around"
+            app:layout_constraintBottom_toTopOf="@id/stv_around"/>
+
+        <com.fy.navi.ui.view.SkinView
+            android:id="@+id/destination"
+            android:layout_width="@dimen/dp_174"
+            android:layout_height="@dimen/dp_168"
+            clickCommand="@{() -> naviSearch.onSearTypeClick(1)}"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/around"
+            />
+
+        <com.fy.navi.ui.view.SkinTextView
+            android:id="@+id/stv_destination"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/route_charge_gas_end"
+            android:textColor="@color/tab_list_route_tab_list_unselect"
+            android:textSize="@dimen/sp_30"
+            android:layout_marginBottom="@dimen/dp_30"
+            app:select_text_color="@color/tab_list_route_tab_list_select"
+            app:layout_constraintEnd_toEndOf="@id/destination"
+            app:layout_constraintStart_toStartOf="@id/destination"
+            app:layout_constraintBottom_toBottomOf="@id/destination"/>
+
+        <com.fy.navi.ui.view.SkinImageView
+            android:id="@+id/siv_destination"
+            android:layout_width="@dimen/dp_58"
+            android:layout_height="@dimen/dp_58"
+            android:src="@drawable/selector_route_tab_list_charge_gas_end"
+            app:layout_constraintEnd_toEndOf="@id/destination"
+            app:layout_constraintStart_toStartOf="@id/destination"
+            app:layout_constraintBottom_toTopOf="@id/stv_destination"
+            />
+
+        <com.fy.navi.ui.view.SkinView
+            android:id="@+id/along_way"
+            android:layout_width="@dimen/dp_174"
+            android:layout_height="@dimen/dp_168"
+            clickCommand="@{() -> naviSearch.onSearTypeClick(0)}"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/destination"
+            />
+
+        <com.fy.navi.ui.view.SkinTextView
+            android:id="@+id/stv_along_way"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/route_charge_gas_along"
+            android:textColor="@color/tab_list_route_tab_list_unselect"
+            android:textSize="@dimen/sp_30"
+            android:layout_marginBottom="@dimen/dp_30"
+            app:select_text_color="@color/tab_list_route_tab_list_select"
+            app:layout_constraintEnd_toEndOf="@id/along_way"
+            app:layout_constraintStart_toStartOf="@id/along_way"
+            app:layout_constraintBottom_toBottomOf="@id/along_way"/>
+
+        <com.fy.navi.ui.view.SkinImageView
+            android:id="@+id/siv_along_way"
+            android:layout_width="@dimen/dp_58"
+            android:layout_height="@dimen/dp_58"
+            android:src="@drawable/selector_route_tab_list_charge_gas_along"
+            app:layout_constraintEnd_toEndOf="@id/along_way"
+            app:layout_constraintStart_toStartOf="@id/along_way"
+            app:layout_constraintBottom_toTopOf="@id/stv_along_way"/>
+    </com.fy.navi.ui.view.SkinConstraintLayout>
+</layout>

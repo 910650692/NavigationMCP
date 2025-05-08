@@ -12,15 +12,20 @@ import android.view.animation.LinearInterpolator;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
 import com.fy.navi.hmi.BR;
 import com.fy.navi.hmi.R;
+import com.fy.navi.hmi.activity.ManualActivateFragment;
+import com.fy.navi.hmi.activity.NetActivateFailedDialog;
 import com.fy.navi.hmi.databinding.ActivityStartupBinding;
 import com.fy.navi.hmi.permission.PermissionUtils;
 import com.fy.navi.mapservice.bean.INaviConstant;
+import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.search.PoiInfoEntity;
 import com.fy.navi.ui.base.BaseActivity;
+import com.fy.navi.ui.dialog.IBaseDialogClickListener;
 
 /**
  * @Description TODO
@@ -30,6 +35,7 @@ import com.fy.navi.ui.base.BaseActivity;
 public class StartupActivity extends BaseActivity<ActivityStartupBinding, StartupViewModel> {
 
     private Animation mRotateAnim;
+    private NetActivateFailedDialog mFailedDialog;
 
     @Override
     public void onCreateBefore() {
@@ -58,6 +64,21 @@ public class StartupActivity extends BaseActivity<ActivityStartupBinding, Startu
         mRotateAnim.setRepeatCount(Animation.INFINITE);
         mRotateAnim.setInterpolator(new LinearInterpolator());
         mBinding.mainImg.setVisibility(View.VISIBLE);
+
+        mFailedDialog = new NetActivateFailedDialog(this);
+        mFailedDialog.setDialogClickListener(new IBaseDialogClickListener() {
+            @Override
+            public void onCommitClick() {
+                Logger.d(MapDefaultFinalTag.ACTIVATE_SERVICE_TAG, " 重试网络激活");
+                mViewModel.netActivateRetry();
+            }
+
+            @Override
+            public void onCancelClick() {
+                Logger.d(MapDefaultFinalTag.ACTIVATE_SERVICE_TAG, "激活失败，手动退出应用");
+                finish();
+            }
+        });
     }
 
     @Override
@@ -66,6 +87,9 @@ public class StartupActivity extends BaseActivity<ActivityStartupBinding, Startu
             Logger.i("startup onDestroy");
             mRotateAnim.cancel();
             mRotateAnim = null;
+        }
+        if (mFailedDialog.isShowing()) {
+            mFailedDialog.cancel();
         }
         super.onDestroy();
     }
@@ -126,6 +150,7 @@ public class StartupActivity extends BaseActivity<ActivityStartupBinding, Startu
 
     /**
      * 控制激活动画
+     *
      * @param show 是否显示
      */
     public void showActivatingView(final boolean show) {
@@ -143,5 +168,37 @@ public class StartupActivity extends BaseActivity<ActivityStartupBinding, Startu
                 mRotateAnim.reset();
             }
         }
+    }
+
+    /**
+     * 显示网络激活失败弹窗
+     */
+    public void showNetActivateFailedDialog() {
+        if (ConvertUtils.isEmpty(mFailedDialog) || mFailedDialog.isShowing()) {
+            Logger.d(MapDefaultFinalTag.ACTIVATE_SERVICE_TAG, "dialog null or showing");
+            return;
+        }
+        mFailedDialog.show();
+    }
+
+    /**
+     * 显示变更后的弹窗
+     */
+    public void showChangedDialog() {
+        mFailedDialog.setConfirmText();
+        mFailedDialog.setDialogClickListener(new IBaseDialogClickListener() {
+            @Override
+            public void onCommitClick() {
+                Logger.d(MapDefaultFinalTag.ACTIVATE_SERVICE_TAG, "确认跳转手动激活");
+                addFragment(new ManualActivateFragment(), null);
+            }
+
+            @Override
+            public void onCancelClick() {
+                Logger.e(MapDefaultFinalTag.ACTIVATE_SERVICE_TAG, "网络激活失败，手动退出应用");
+                finish();
+            }
+        });
+        mFailedDialog.show();
     }
 }

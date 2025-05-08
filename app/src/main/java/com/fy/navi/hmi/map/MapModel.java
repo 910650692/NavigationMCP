@@ -15,6 +15,7 @@ import androidx.fragment.app.Fragment;
 
 import com.alibaba.android.arouter.launcher.ARouter;
 import com.android.utils.ConvertUtils;
+import com.android.utils.DeviceUtils;
 import com.android.utils.NetWorkUtils;
 import com.android.utils.ResourceUtils;
 import com.android.utils.TimeUtils;
@@ -25,6 +26,8 @@ import com.fy.navi.burypoint.anno.HookMethod;
 import com.fy.navi.burypoint.bean.BuryProperty;
 import com.fy.navi.burypoint.constant.BuryConstant;
 import com.fy.navi.burypoint.controller.BuryPointController;
+import com.fy.navi.fsa.FsaConstant;
+import com.fy.navi.fsa.MyFsaService;
 import com.fy.navi.hmi.R;
 import com.fy.navi.hmi.account.AccountQRCodeLoginFragment;
 import com.fy.navi.hmi.message.MessageCenterHelper;
@@ -111,6 +114,7 @@ import com.fy.navi.ui.base.BaseFragment;
 import com.fy.navi.ui.base.BaseModel;
 import com.fy.navi.ui.base.StackManager;
 import com.fy.navi.ui.dialog.IBaseDialogClickListener;
+import com.fy.navi.utils.ClusterActivityOffOnUtils;
 import com.fy.navi.vrbridge.IVrBridgeConstant;
 
 import java.io.Serializable;
@@ -381,6 +385,8 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         if(NaviStatusPackage.getInstance().isGuidanceActive()){
             sendBuryPointForWakeup();
         }
+
+        openCluterMap(mapTypeId, touchEvent);
     }
 
     @Override
@@ -1333,5 +1339,53 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
                 .setParams(BuryConstant.ProperType.BURY_KEY_HOME_PREDICTION, msg)
                 .build();
         BuryPointController.getInstance().setBuryProps(property);
+    }
+
+
+    private float mStartX;
+    private boolean isOpenClusterFlag = false;
+    private static final int OPEN_TWO = 2;
+    private static final int OPEN_THREE = 3;
+    private void openCluterMap(MapType mapTypeId, MotionEvent touchEvent) {
+        int pointerCount = touchEvent.getPointerCount();
+        if (pointerCount == OPEN_TWO || pointerCount == OPEN_THREE){
+            isOpenClusterFlag = true;
+        }
+        Logger.d(TAG, "onTouchEvent pointerCount = " + pointerCount);
+        switch (touchEvent.getActionMasked()) {
+            case MotionEvent.ACTION_DOWN:
+                Logger.d(TAG, "onTouchEvent ACTION_DOWN");
+                // 记录按下时的坐标
+                mStartX = touchEvent.getX();
+                break;
+            case MotionEvent.ACTION_UP:
+                Logger.d(TAG, "onTouchEvent ACTION_UP");
+                if (isOpenClusterFlag) {
+                    float endX = touchEvent.getX();
+                    float deltaX = endX - mStartX;
+                    final float MIN_DISTANCE = 50; // 最小滑动距离认定为有效滑动
+                    if (Math.abs(deltaX) > MIN_DISTANCE) {
+                        if (deltaX > 0) {
+                            // 右滑
+                            Logger.d(TAG, "Right swipe detected"+DeviceUtils.isCar(AppContext.getInstance().getMContext()));
+                            if (!DeviceUtils.isCar(AppContext.getInstance().getMContext())){
+                                ClusterActivityOffOnUtils.offOnClusterActivity(false);
+                                MyFsaService.getInstance().sendEvent(FsaConstant.FsaFunction.ID_FINGER_FLYING_HUD, "3");
+                            }
+                        } else {
+                            // 左滑
+                            Logger.d(TAG, "Left swipe detected"+DeviceUtils.isCar(AppContext.getInstance().getMContext()));
+                            if (DeviceUtils.isCar(AppContext.getInstance().getMContext())){
+                                ClusterActivityOffOnUtils.offOnClusterActivity(true);
+                                MyFsaService.getInstance().sendEvent(FsaConstant.FsaFunction.ID_FINGER_FLYING_HUD, "2");
+                            }
+                        }
+                    }
+                    // 重置起始坐标
+                    mStartX = 0;
+                    isOpenClusterFlag = false;
+                }
+                break;
+        }
     }
 }

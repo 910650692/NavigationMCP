@@ -92,12 +92,12 @@ public class NaviViaListAdapter extends RecyclerView.Adapter<NaviViaListAdapter.
             holder.itemBinding.stvAddViaIcon.setBackgroundResource(R.drawable.img_navi_via_item_btn_end);
             holder.itemBinding.stvAddViaIcon.setText(R.string.navi_via_item_end);
             holder.itemBinding.llActionContainer.setVisibility(GONE);
-            holder.itemBinding.groupEta.setVisibility(GONE);
+            //holder.itemBinding.groupEta.setVisibility(GONE);
         } else {
             holder.itemBinding.stvAddViaIcon.setBackgroundResource(R.drawable.img_navi_via_item_btn_pass);
             holder.itemBinding.stvAddViaIcon.setText(R.string.navi_via_item_pass);
             holder.itemBinding.llActionContainer.setVisibility(VISIBLE);
-            holder.itemBinding.groupEta.setVisibility(VISIBLE);
+            //holder.itemBinding.groupEta.setVisibility(VISIBLE);
         }
         holder.itemBinding.swipeMenuLayout.setOnClickListener(v -> {
             if (onItemClickListener != null) {

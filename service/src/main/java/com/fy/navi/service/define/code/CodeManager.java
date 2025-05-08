@@ -11,6 +11,7 @@ import java.util.Map;
  */
 public class CodeManager {
     private static final String CODE_TYPE_ENGINE = "engineCode";
+    private static final String CODE_TYPE_ACTIVATE = "activationCode";
     private static final String CODE_TYPE_MAP = "mapCode";
     private static final String CODE_TYPE_SEARCH = "SearchCode";
     private static final String CODE_TYPE_ROUTE = "RouteCode";
@@ -71,6 +72,16 @@ public class CodeManager {
      */
     public static String getEngineMsg(int code) {
         return getMsg(CODE_TYPE_ENGINE, code);
+    }
+
+    /**
+     * 根据初始化错误码返回对应msg
+     *
+     * @param code 错误码
+     * @return msg
+     */
+    public static String getActivateMsg(final int code) {
+        return getMsg(CODE_TYPE_ACTIVATE, code);
     }
 
     /**
@@ -251,6 +262,7 @@ public class CodeManager {
     private static String getMsg(String type, int code) {
         return switch (type) {
             case CODE_TYPE_ENGINE -> ConvertUtils.containToValue(mErrorCode.getEngineCode(), code);
+            case CODE_TYPE_ACTIVATE -> ConvertUtils.containToValue(mErrorCode.getActivateCode(), code);
             case CODE_TYPE_MAP -> ConvertUtils.containToValue(mErrorCode.getMapCode(), code);
             case CODE_TYPE_SEARCH -> ConvertUtils.containToValue(mErrorCode.getSearchCode(), code);
             case CODE_TYPE_ROUTE -> ConvertUtils.containToValue(mErrorCode.getRouteCode(), code);

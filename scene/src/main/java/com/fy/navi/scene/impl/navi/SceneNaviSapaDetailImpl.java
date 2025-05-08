@@ -359,6 +359,8 @@ public class SceneNaviSapaDetailImpl extends BaseSceneModel<SceneNaviSapaDetailV
         updateServiceDetails(sapaItem, mServiceChargeStationVisible, mServiceCanteenVisible,
                 mServiceLavatoryVisible, mServiceMaintenanceVisible, mServiceBuyVisible,
                 mServiceHotelVisible);
+        String areaName = getAreaName();
+        mServiceRouteName.set(areaName);
     }
 
     /**
@@ -385,16 +387,24 @@ public class SceneNaviSapaDetailImpl extends BaseSceneModel<SceneNaviSapaDetailV
         tagUpdate(mTollStatusTag, sapaItem);
         updateDistanceAndRemainTime(sapaItem, mTollDistance, mTollRemainTime);
         updateTollDetail(laneTypes, mTollEtcVisible, mTollAlipayVisible);
+        String areaName = getAreaName();
+        mTollRouteName.set(areaName);
+    }
+
+    /**
+     * @return 返回当前城市的名称
+     */
+    private String getAreaName() {
         final AdminCodeBean adminCode = new AdminCodeBean();
         int cityCode = NaviPackage.getInstance().getCityCode();
         if (cityCode == NumberUtils.NUM_ERROR) {
-            return;
+            return "";
         }
         adminCode.setnAdCode(cityCode);
         final AreaExtraInfoBean areaExtraInfo = MapDataPackage.getInstance().
                 getAreaExtraInfo(adminCode);
         if (areaExtraInfo == null) {
-            return;
+            return "";
         }
         String areaName = "";
         String provName = areaExtraInfo.getProvName();
@@ -405,7 +415,7 @@ public class SceneNaviSapaDetailImpl extends BaseSceneModel<SceneNaviSapaDetailV
         } else {
             areaName = provName + cityName + townName;
         }
-        mTollRouteName.set(areaName);
+        return areaName;
     }
 
     /**

@@ -44,4 +44,12 @@ public class BaseTerminalParkingViewModelViewModel extends BaseViewModel<Termina
     public void onReStoreFragment() {
         mModel.onReStoreFragment();
     }
+
+    /**
+     * 终点停车场扎标点击事件
+     * @param index 点击下标
+     */
+    public void onMarkTerminalParkClickCallBack(final int index) {
+        mView.onMarkTerminalParkClickCallBack(index);
+    }
 }

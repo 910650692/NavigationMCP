@@ -77,8 +77,7 @@ public class EngineAdapterImpl implements IEngineApi {
 
     @Override
     public void initBaseLibs() {
-        final int overDue = isOverdue();
-        if (!ConvertUtils.equals(0, overDue)) return;
+
         final int initBaseLibsResult = initEngineParam();
         if (!ConvertUtils.equals(0, initBaseLibsResult)) {
             onEngineObserver(10004);
@@ -89,6 +88,8 @@ public class EngineAdapterImpl implements IEngineApi {
 
     @Override
     public void initBL() {
+        final int overDue = isOverdue();
+        if (!ConvertUtils.equals(0, overDue)) return;
         final int sdkResultCode = initSDKParam();
         if (!ConvertUtils.equals(0, sdkResultCode)) {
             onEngineObserver(10006);
@@ -141,6 +142,8 @@ public class EngineAdapterImpl implements IEngineApi {
                 return MapEngineID.MapEngineIdEx2;
             case HUD_MAP:
                 return MapEngineID.MapEngineIdEx3;
+            case CLUSTER_MAP:
+                return MapEngineID.MapEngineIdEx4;
             default:
                 break;
         }
@@ -158,6 +161,8 @@ public class EngineAdapterImpl implements IEngineApi {
                 return MapEngineID.MapEngineIdEx2EagleEye;
             case HUD_MAP:
                 return MapEngineID.MapEngineIdEx3EagleEye;
+            case CLUSTER_MAP:
+                return MapEngineID.MapEngineIdEx4EagleEye;
             default:
                 break;
         }
@@ -175,6 +180,8 @@ public class EngineAdapterImpl implements IEngineApi {
                 return EGLDeviceID.EGLDeviceIDExternal2;
             case HUD_MAP:
                 return EGLDeviceID.EGLDeviceIDExternal3;
+            case CLUSTER_MAP:
+                return EGLDeviceID.EGLDeviceIDExternal4;
             default:
                 break;
         }

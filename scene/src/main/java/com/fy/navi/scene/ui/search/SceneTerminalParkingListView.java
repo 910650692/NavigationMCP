@@ -26,6 +26,7 @@ import com.fy.navi.service.define.search.SearchResultEntity;
  */
 public class SceneTerminalParkingListView extends BaseSceneView<TerminalParkingResultViewBinding, SceneTerminalViewImpl> {
     private TerminalParkingResultAdapter mAdapter;
+    private LinearLayoutManager layoutManager;
 
     public SceneTerminalParkingListView(@NonNull final Context context) {
         super(context);
@@ -70,10 +71,21 @@ public class SceneTerminalParkingListView extends BaseSceneView<TerminalParkingR
     }
 
     /**
+     * 终点停车场扎标点击事件
+     * @param index 点击下标
+     */
+    public void onMarkTerminalParkClickCallBack(final int index) {
+        if (mAdapter != null) {
+            mAdapter.updateSelectedPosition(index);
+            layoutManager.scrollToPositionWithOffset(index, 0);
+        }
+    }
+
+    /**
      * 初始化 RecyclerView
      */
     private void setupRecyclerView() {
-        final LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+        layoutManager = new LinearLayoutManager(getContext());
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         mViewBinding.recyclerSearchResult.setLayoutManager(layoutManager);
 
@@ -82,13 +94,11 @@ public class SceneTerminalParkingListView extends BaseSceneView<TerminalParkingR
         mAdapter.setOnItemClickListener(new TerminalParkingResultAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(final int position, final PoiInfoEntity poiInfoEntity) {
-                // TODO 终点停车场事件
-                mScreenViewModel.startRoute(poiInfoEntity);
+                mScreenViewModel.setSelectIndex(poiInfoEntity, position);
             }
 
             @Override
             public void onNaviClick(final int position, final PoiInfoEntity poiInfoEntity) {
-                // TODO 终点停车场事件
                 mScreenViewModel.startRoute(poiInfoEntity);
             }
         });

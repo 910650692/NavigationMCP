@@ -8,6 +8,7 @@ import com.autonavi.gbl.common.path.option.PathInfo;
 import com.autonavi.gbl.map.model.MapviewMode;
 import com.fy.navi.service.R;
 import com.fy.navi.service.define.bean.GeoPoint;
+import com.fy.navi.service.define.layer.refix.DynamicLevelMode;
 import com.fy.navi.service.define.map.MapMode;
 import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.route.RouteParam;
@@ -154,7 +155,7 @@ public final class OpenApiHelper {
         } else if (searchType == 1) {
             final RouteParam endPoint = ROUTE_PACKAGE.getEndPoint(MapType.MAIN_SCREEN_MAIN_MAP);
             taskId = SEARCH_PACKAGE.aroundSearch(1, keyWord,
-                    new GeoPoint(endPoint.getRealPos().getLon(), endPoint.getRealPos().getLat()));
+                    new GeoPoint(endPoint.getRealPos().getLon(), endPoint.getRealPos().getLat()), false);
         } else {
             taskId = SEARCH_PACKAGE.aroundSearch(1, keyWord);
         }
@@ -215,7 +216,8 @@ public final class OpenApiHelper {
         NAVI_PACKAGE.setPreviewStatus(true);
         LAYER_PACKAGE.setFollowMode(mapTypeId, false);
         LAYER_PACKAGE.setPreviewMode(mapTypeId,true);
-        LAYER_PACKAGE.openDynamicLevel(mapTypeId, false);
+        // 关闭自动比例尺
+        NAVI_PACKAGE.closeDynamicLevel(mapTypeId);
         ROUTE_PACKAGE.naviShowPreview(mapTypeId);
     }
 
@@ -237,8 +239,11 @@ public final class OpenApiHelper {
         LAYER_PACKAGE.setPreviewMode(mapTypeId,false);
         // bugID：1023666 导航中缩放地图然后点击继续导航，恢复到导航跟随态的过程时间太长
         setCurrentZoomLevel(mapTypeId);
-        LAYER_PACKAGE.openDynamicLevel(mapTypeId, SettingPackage.getInstance().
-                getAutoScale());
+        final boolean isAutoScale = SettingPackage.getInstance().getAutoScale();
+        // 如果自动比例尺打开了才开启自动比例尺
+        if (isAutoScale) {
+            LAYER_PACKAGE.openDynamicLevel(mapTypeId, DynamicLevelMode.DYNAMIC_LEVEL_GUIDE);
+        }
     }
 
     /**

@@ -1432,10 +1432,10 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
             hasProcessed = true; // 查询A地附近的路况或A道路的路况
             for (RouteParam poi : allPoiParamList) {
                 Logger.d(IVrBridgeConstant.TAG, "routeParam: " + poi);
-                if (strPoi.equals(poi.getName())) {
+                if (poi.getName().contains(strPoi)) {
                     Logger.d(IVrBridgeConstant.TAG, "onTrafficConditionAsk: A地附近情况");
                     conditionResult = NaviPackage.getInstance().getTmcStatus(
-                            strPoi, strStart, strArrival, MapType.MAIN_SCREEN_MAIN_MAP
+                            poi.getName(), strStart, strArrival, MapType.MAIN_SCREEN_MAIN_MAP
                     );
                     isInRoute = true;
                     ttsContent = strPoi + "路况 ";
@@ -1453,7 +1453,7 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
             if (startPoi != null && arrivalPoi != null) {
                 Logger.d(IVrBridgeConstant.TAG, "onTrafficConditionAsk: A到B的情况");
                 conditionResult = NaviPackage.getInstance().getTmcStatus(
-                        strPoi, strStart, strArrival, MapType.MAIN_SCREEN_MAIN_MAP
+                        strPoi, startPoi.getName(), arrivalPoi.getName(), MapType.MAIN_SCREEN_MAIN_MAP
                 );
                 isInRoute = true;
                 ttsContent = strStart + "到" + strArrival + "路况";
@@ -1462,10 +1462,10 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
         if (ConvertUtils.isEmpty(strPoi) && ConvertUtils.isEmpty(strStart) && !ConvertUtils.isEmpty(strArrival)) {
             hasProcessed = true;// 查询到B的路况
             for (RouteParam poi : allPoiParamList) {
-                if (strArrival.equals(poi.getName())) {
+                if (poi.getName().contains(strArrival)) {
                     Logger.d(IVrBridgeConstant.TAG, "onTrafficConditionAsk: 当前位置到B的情况");
                     conditionResult = NaviPackage.getInstance().getTmcStatus(
-                            strPoi, strStart, strArrival, MapType.MAIN_SCREEN_MAIN_MAP
+                            strPoi, strStart, poi.getName(), MapType.MAIN_SCREEN_MAIN_MAP
                     );
                     isInRoute = true;
                     ttsContent = "当前位置到" + strArrival + "路况";

@@ -13,7 +13,7 @@
     </data>
 
     <com.fy.navi.ui.view.SkinConstraintLayout
-        android:layout_width="@dimen/dp_1712"
+        android:layout_width="@dimen/dp_1721"
         android:layout_height="@dimen/dp_772">
         <!--tab list-->
         <com.fy.navi.scene.ui.route.SceneRouteGasStationWeatherServiceView
@@ -363,7 +363,7 @@
                 android:layout_height="@dimen/dp_176"
                 android:paddingHorizontal="@dimen/dp_29"
                 android:paddingVertical="@dimen/dp_29"
-                android:layout_marginStart="@dimen/dp_689"
+                android:layout_marginStart="@dimen/dp_669"
                 android:background="@drawable/bg_route_shadow"
                 android:clickable="true"
                 android:visibility="@{ViewModel.getSecondaryPoiVisibility() == 0 ? View.GONE : View.VISIBLE}"
@@ -656,7 +656,7 @@
                     android:layout_width="@dimen/dp_160"
                     android:layout_height="@dimen/dp_58"
                     android:layout_marginEnd="@dimen/dp_30"
-                    android:background="@{ViewModel.getAvoidBackground()}"
+                    android:background="@{ViewModel.getAvoidBackground() ? @drawable/bg_route_details_avoid_road : @drawable/bg_route_details_defult_label}"
                     android:clickable="@{ViewModel.getAvoidClickable()}"
                     android:gravity="center"
                     android:text="@string/route_avoid"

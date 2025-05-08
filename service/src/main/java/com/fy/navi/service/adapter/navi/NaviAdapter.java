@@ -172,6 +172,7 @@ public final class NaviAdapter {
         mLayerAdapter.updateGuideCarStyle(MapType.MAIN_SCREEN_MAIN_MAP);
         mLayerAdapter.updateGuideCarStyle(MapType.LAUNCHER_WIDGET_MAP);
         mLayerAdapter.updateGuideCarStyle(MapType.LAUNCHER_DESK_MAP);
+        mLayerAdapter.updateGuideCarStyle(MapType.CLUSTER_MAP);
         mRouteAdapter.sendL2Data(MapType.MAIN_SCREEN_MAIN_MAP);
     }
 

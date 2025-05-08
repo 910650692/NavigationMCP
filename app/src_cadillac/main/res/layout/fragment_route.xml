@@ -137,7 +137,7 @@
                 android:visibility="@{ViewModel.getIncludePageVisibility() == 0 ? View.VISIBLE : View.GONE}"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                tools:visibility="visible">
+                tools:visibility="gone">
 
                 <com.fy.navi.ui.view.SkinConstraintLayout
                     android:id="@+id/route_line_info_title"
@@ -630,7 +630,7 @@
                     android:layout_height="@dimen/dp_120"
                     android:layout_marginStart="@dimen/dp_40"
                     android:layout_marginBottom="@dimen/dp_30"
-                    android:background="@drawable/bg_route_start_navigation_button"
+                    android:background="@drawable/bg_base_mfc_cadillac_blue_bg_selector"
                     android:focusable="true"
                     android:focusedByDefault="true"
                     android:visibility="@{ViewModel.getRoutePreferenceVisibility() ? View.GONE : View.VISIBLE}"
@@ -660,7 +660,7 @@
                     android:layout_height="@dimen/dp_120"
                     android:layout_marginStart="@dimen/dp_46"
                     android:layout_marginBottom="@dimen/dp_30"
-                    android:background="@drawable/bg_route_refresh_route_button"
+                    android:background="@drawable/bg_base_mfc_cadillac_gery_bg_selector"
                     android:focusable="true"
                     android:visibility="@{ViewModel.getRoutePreferenceVisibility() ? View.GONE : View.VISIBLE}"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -731,10 +731,12 @@
 
                 <com.fy.navi.ui.view.SkinTextView
                     android:id="@+id/route_detail_info_tv_sim_navi"
+                    clickCommand="@{ViewModel.getStartSimNaviClick()}"
                     android:layout_width="@dimen/dp_240"
                     android:layout_height="@dimen/dp_96"
                     android:layout_marginEnd="@dimen/dp_30"
-                    android:background="@drawable/bg_route_details_defult_label"
+                    android:background="@drawable/bg_base_mfc_cadillac_gery_bg_selector"
+                    android:focusable="true"
                     android:gravity="center"
                     android:text="@string/route_sim_navi"
                     android:textColor="@color/text_route_defult"
@@ -745,25 +747,15 @@
                     app:layout_constraintTop_toTopOf="@id/route_detail_info_bg_title"
                     tools:visibility="visible" />
 
-                <com.fy.navi.ui.view.SkinView
-                    clickCommand="@{ViewModel.getStartSimNaviClick()}"
-                    android:layout_width="@dimen/dp_240"
-                    android:layout_height="@dimen/dp_96"
-                    android:layout_marginEnd="@dimen/dp_30"
-                    android:background="@drawable/bg_base_mfc_cadillac_bg_selector"
-                    android:focusable="true"
-                    android:visibility="@{ViewModel.getRouteDetailsVisibility() ? View.VISIBLE : View.GONE}"
-                    app:layout_constraintBottom_toBottomOf="@id/route_detail_info_bg_title"
-                    app:layout_constraintEnd_toEndOf="@id/route_detail_info_bg_title"
-                    app:layout_constraintTop_toTopOf="@id/route_detail_info_bg_title" />
-
                 <com.fy.navi.ui.view.SkinTextView
                     android:id="@+id/route_detail_info_tv_avoid"
+                    clickCommand="@{ViewModel.getAvoidClick()}"
                     android:layout_width="@dimen/dp_240"
                     android:layout_height="@dimen/dp_96"
                     android:layout_marginEnd="@dimen/dp_30"
-                    android:background="@{ViewModel.getAvoidBackground()}"
+                    android:background="@{ViewModel.getAvoidBackground() ? @drawable/bg_base_mfc_cadillac_blue_bg_selector : @drawable/bg_base_mfc_cadillac_gery_bg_selector}"
                     android:clickable="@{ViewModel.getAvoidClickable()}"
+                    android:focusable="true"
                     android:gravity="center"
                     android:text="@string/route_avoid"
                     android:textColor="@{ViewModel.getAvoidTestColor()}"
@@ -774,41 +766,18 @@
                     app:layout_constraintTop_toTopOf="@id/route_detail_info_bg_title"
                     tools:visibility="gone" />
 
-                <com.fy.navi.ui.view.SkinView
-                    clickCommand="@{ViewModel.getAvoidClick()}"
-                    android:layout_width="@dimen/dp_240"
-                    android:layout_height="@dimen/dp_96"
-                    android:layout_marginEnd="@dimen/dp_30"
-                    android:background="@drawable/bg_base_mfc_cadillac_bg_selector"
-                    android:focusable="true"
-                    android:visibility="@{ViewModel.getRouteDetailsVisibility() ? View.GONE : View.VISIBLE}"
-                    app:layout_constraintBottom_toBottomOf="@id/route_detail_info_bg_title"
-                    app:layout_constraintEnd_toStartOf="@+id/route_detail_info_tv_sim_navi"
-                    app:layout_constraintTop_toTopOf="@id/route_detail_info_bg_title"
-                    tools:visibility="gone" />
-
                 <com.fy.navi.ui.view.SkinTextView
                     android:id="@+id/route_detail_info_tv_avoid_road"
-                    android:layout_width="@dimen/dp_240"
-                    android:layout_height="@dimen/dp_96"
-                    android:layout_marginEnd="@dimen/dp_30"
-                    android:background="@drawable/bg_route_details_avoid_road"
-                    android:gravity="center"
-                    android:text="@string/route_avoid_road"
-                    android:textColor="@color/route_white"
-                    android:textSize="@dimen/sp_38"
-                    android:visibility="@{ViewModel.getRouteDetailsVisibility() ? View.VISIBLE : View.GONE}"
-                    app:layout_constraintBottom_toBottomOf="@id/route_detail_info_bg_title"
-                    app:layout_constraintEnd_toStartOf="@+id/route_detail_info_tv_sim_navi"
-                    app:layout_constraintTop_toTopOf="@id/route_detail_info_bg_title" />
-
-                <com.fy.navi.ui.view.SkinView
                     clickCommand="@{ViewModel.getAvoidRoadClick()}"
                     android:layout_width="@dimen/dp_240"
                     android:layout_height="@dimen/dp_96"
                     android:layout_marginEnd="@dimen/dp_30"
-                    android:background="@drawable/bg_base_mfc_cadillac_bg_selector"
+                    android:background="@drawable/bg_base_mfc_cadillac_blue_bg_selector"
+                    android:gravity="center"
                     android:focusable="true"
+                    android:text="@string/route_avoid_road"
+                    android:textColor="@color/route_white"
+                    android:textSize="@dimen/sp_38"
                     android:visibility="@{ViewModel.getRouteDetailsVisibility() ? View.VISIBLE : View.GONE}"
                     app:layout_constraintBottom_toBottomOf="@id/route_detail_info_bg_title"
                     app:layout_constraintEnd_toStartOf="@+id/route_detail_info_tv_sim_navi"
@@ -917,7 +886,7 @@
                 android:clickable="false"
                 android:focusable="false"
                 android:visibility="@{ViewModel.getIncludePageVisibility() == 3 ? View.VISIBLE : View.GONE}"
-                tools:visibility="visible">
+                tools:visibility="gone">
 
                 <TextView
                     android:id="@+id/textView"
@@ -1119,51 +1088,33 @@
 
                 <com.fy.navi.ui.view.SkinTextView
                     android:id="@+id/route_charge_list_along_way_suer"
-                    android:layout_width="@dimen/dp_342"
-                    android:layout_height="@dimen/dp_120"
-                    android:layout_marginStart="@dimen/dp_52"
-                    android:background="@drawable/bg_route_start_navigation_button"
-                    android:gravity="center"
-                    android:text="@string/route_search_keyword_charge_sure"
-                    android:textColor="@color/text_route_button_title"
-                    android:textSize="@dimen/sp_42"
-                    android:visibility="@{ViewModel.getAlongTabSearchVisibility() ? View.VISIBLE: View.GONE}"
-                    app:layout_constraintBottom_toBottomOf="@+id/route_charge_list_along_way_btn"
-                    app:layout_constraintStart_toStartOf="@+id/route_charge_list_along_way_btn"
-                    app:layout_constraintTop_toTopOf="@+id/route_charge_list_along_way_btn" />
-
-                <com.fy.navi.ui.view.SkinView
                     clickCommand="@{ViewModel.getChargeSureClick()}"
                     android:layout_width="@dimen/dp_342"
                     android:layout_height="@dimen/dp_120"
                     android:layout_marginStart="@dimen/dp_52"
-                    android:background="@drawable/bg_base_mfc_cadillac_bg_selector"
+                    android:background="@drawable/bg_base_mfc_cadillac_blue_bg_selector"
+                    android:gravity="center"
+                    android:text="@string/route_search_keyword_charge_sure"
+                    android:textColor="@color/text_route_button_title"
+                    android:textSize="@dimen/sp_42"
                     android:focusable="true"
+                    android:visibility="@{ViewModel.getAlongTabSearchVisibility() ? View.VISIBLE: View.GONE}"
                     app:layout_constraintBottom_toBottomOf="@+id/route_charge_list_along_way_btn"
                     app:layout_constraintStart_toStartOf="@+id/route_charge_list_along_way_btn"
                     app:layout_constraintTop_toTopOf="@+id/route_charge_list_along_way_btn" />
 
                 <com.fy.navi.ui.view.SkinTextView
-                    android:layout_width="@dimen/dp_342"
-                    android:layout_height="@dimen/dp_120"
-                    android:layout_marginStart="@dimen/dp_32"
-                    android:background="@drawable/bg_route_refresh_route_button"
-                    android:gravity="center"
-                    android:text="@string/route_search_keyword_charge_cancel"
-                    android:textColor="@color/text_route_defult"
-                    android:textSize="@dimen/sp_42"
-                    android:visibility="@{ViewModel.getAlongTabSearchVisibility() ? View.VISIBLE: View.GONE}"
-                    app:layout_constraintBottom_toBottomOf="@+id/route_charge_list_along_way_btn"
-                    app:layout_constraintStart_toEndOf="@+id/route_charge_list_along_way_suer"
-                    app:layout_constraintTop_toTopOf="@+id/route_charge_list_along_way_btn" />
-
-                <com.fy.navi.ui.view.SkinView
                     clickCommand="@{ViewModel.getChargeCancelClick()}"
                     android:layout_width="@dimen/dp_342"
                     android:layout_height="@dimen/dp_120"
                     android:layout_marginStart="@dimen/dp_32"
-                    android:background="@drawable/bg_base_mfc_cadillac_bg_selector"
+                    android:background="@drawable/bg_base_mfc_cadillac_gery_bg_selector"
+                    android:gravity="center"
+                    android:text="@string/route_search_keyword_charge_cancel"
+                    android:textColor="@color/text_route_defult"
+                    android:textSize="@dimen/sp_42"
                     android:focusable="true"
+                    android:visibility="@{ViewModel.getAlongTabSearchVisibility() ? View.VISIBLE: View.GONE}"
                     app:layout_constraintBottom_toBottomOf="@+id/route_charge_list_along_way_btn"
                     app:layout_constraintStart_toEndOf="@+id/route_charge_list_along_way_suer"
                     app:layout_constraintTop_toTopOf="@+id/route_charge_list_along_way_btn" />
@@ -1305,7 +1256,7 @@
                 android:clickable="true"
                 android:focusable="false"
                 android:visibility="@{ViewModel.getIncludePageVisibility() == 5 ? View.VISIBLE : View.GONE}"
-                tools:visibility="gone">
+                tools:visibility="visible">
 
                 <com.fy.navi.ui.view.SkinTextView
                     android:id="@+id/sk_poi_status"
@@ -1482,12 +1433,13 @@
 
                     <com.fy.navi.ui.view.SkinTextView
                         android:id="@+id/stv_start_route"
+                        clickCommand="@{ViewModel.getRouteSearchDetailsAddRemoveClick()}"
                         android:layout_width="@dimen/dp_0"
                         android:layout_height="@dimen/dp_120"
                         android:layout_marginEnd="@dimen/dp_40"
                         android:layout_marginBottom="@dimen/dp_2"
-                        android:background="@drawable/bg_details_bottom_go_here"
-                        android:focusable="false"
+                        android:background="@drawable/bg_base_mfc_cadillac_blue_bg_selector"
+                        android:focusable="true"
                         android:gravity="center"
                         android:text="@{ViewModel.getRouteSearchDeailsAddRemoveVia()}"
                         android:textColor="@color/route_white"
@@ -1497,19 +1449,6 @@
                         app:layout_constraintStart_toStartOf="parent"
                         tools:text="添加途经点" />
 
-                    <com.fy.navi.ui.view.SkinView
-                        android:id="@+id/stl_start_route"
-                        clickCommand="@{ViewModel.getRouteSearchDetailsAddRemoveClick()}"
-                        android:layout_width="@dimen/dp_0"
-                        android:layout_height="@dimen/dp_120"
-                        android:layout_marginEnd="@dimen/dp_40"
-                        android:layout_marginBottom="@dimen/dp_2"
-                        android:background="@drawable/bg_base_mfc_cadillac_bg_selector"
-                        android:focusable="true"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toStartOf="@+id/stl_function"
-                        app:layout_constraintStart_toStartOf="parent" />
-
                     <com.fy.navi.ui.view.SkinConstraintLayout
                         android:id="@+id/stl_function"
                         android:layout_width="wrap_content"
@@ -1517,7 +1456,7 @@
                         android:layout_marginEnd="@dimen/dp_14"
                         android:focusable="false"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toEndOf="@+id/stl_start_route">
+                        app:layout_constraintStart_toEndOf="@+id/stv_start_route">
 
                         <com.fy.navi.ui.view.SkinConstraintLayout
                             android:id="@+id/stl_phone"

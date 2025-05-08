@@ -33,51 +33,6 @@ public class BaseStartupViewModel extends BaseViewModel<StartupActivity, Startup
     private String mKeyword; //搜索关键字
     private PoiInfoEntity mEndPoint; // 路线规划目的地
 
-//    private NetActivateFailedDialog mFailedDialog;
-   /* private IActivateObserver mActObserver = new IActivateObserver() {
-        @Override
-        public void onActivating() {
-            Logger.d(TAG, "onActivating...");
-            showActivatingView(true);
-        }
-
-        @Override
-        public void onNetActivateFailed(final int failedCount) {
-            Logger.d(TAG, "onNetActivateFailed count = " + failedCount);
-            showActivatingView(false);
-            if (failedCount >= 3) {
-                mFailedDialog.setConfirmText();
-                mFailedDialog.setDialogClickListener(new IBaseDialogClickListener() {
-                    @Override
-                    public void onCommitClick() {
-                        Logger.d(TAG, "确认跳转手动激活");
-                        addFragment(new ManualActivateFragment(), null);
-                    }
-
-                    @Override
-                    public void onCancelClick() {
-                        Logger.e(TAG, "网络激活失败，手动退出应用");
-                        finishStartUp();
-                    }
-                });
-            }
-            mFailedDialog.show();
-        }
-
-        @Override
-        public void onActivated() {
-            Logger.d(TAG, "激活成功回调，开始BL初始化");
-            EnginePackage.getInstance().initBL();
-        }
-
-        @Override
-        public void onActivatedError() {
-            Logger.e(TAG, "激活出现错误，退出应用");
-            showActivatingView(false);
-            finishStartUp();
-        }
-    };*/
-
     public BaseStartupViewModel(@NonNull Application application) {
         super(application);
         Logger.d(TAG, "获取是否是第一次打开应用");
@@ -98,21 +53,6 @@ public class BaseStartupViewModel extends BaseViewModel<StartupActivity, Startup
         } else {
             checkPrivacyRights();
         }
-/*        ActivatePackage.getInstance().addActObserver(mActObserver);
-        mFailedDialog = new NetActivateFailedDialog(mView);
-        mFailedDialog.setDialogClickListener(new IBaseDialogClickListener() {
-            @Override
-            public void onCommitClick() {
-                Logger.d(TAG, " 重试网络激活");
-                ActivatePackage.getInstance().netActivateRetry();
-            }
-
-            @Override
-            public void onCancelClick() {
-                Logger.d(TAG, "激活失败，手动退出应用");
-                finishStartUp();
-            }
-        });*/
     }
 
     private void checkPrivacyRights() {
@@ -127,8 +67,6 @@ public class BaseStartupViewModel extends BaseViewModel<StartupActivity, Startup
     public void onDestroy() {
         super.onDestroy();
         Logger.i(TAG, "onDestroy");
-//        mFailedDialog.cancel();
-//        ActivatePackage.getInstance().removeActObserver(mActObserver);
     }
 
     /**
@@ -213,5 +151,26 @@ public class BaseStartupViewModel extends BaseViewModel<StartupActivity, Startup
 
     public PoiInfoEntity getEndPoint() {
         return mEndPoint;
+    }
+
+    /**
+     * 重试网络激活
+     */
+    public void netActivateRetry() {
+        mModel.netActivateRetry();
+    }
+
+    /**
+     * 重试弹窗
+     */
+    public void showFailedDialog() {
+        mView.showNetActivateFailedDialog();
+    }
+
+    /**
+     * 更改重试弹窗
+     */
+    public void showChangedFailedDialog() {
+        mView.showChangedDialog();
     }
 }

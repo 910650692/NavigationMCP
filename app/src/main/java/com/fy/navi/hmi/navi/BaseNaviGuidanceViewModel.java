@@ -417,6 +417,15 @@ public class BaseNaviGuidanceViewModel extends
     }
 
     /**
+     * 显示控制条页面
+     */
+    public void showNaviControlScene() {
+        NaviSceneManager.getInstance().notifySceneStateChange(
+                INaviSceneEvent.SceneStateChangeType.SceneShowState,
+                NaviSceneId.NAVI_SCENE_CONTROL);
+    }
+
+    /**
      * 路由偏好改变回调
      *
      * @param text          text

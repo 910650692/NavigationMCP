@@ -112,7 +112,6 @@ public class BaseSettingBroadcastViewModel extends BaseViewModel<SettingBroadcas
         final boolean value = Boolean.FALSE.equals(mIsCruiseBroadcast.getValue());
         if (value) {
             mIsCruiseBroadcast.setValue(true);
-            mModel.setCruiseBroadcastOpen(true);
             CruisePackage.getInstance().setConfigKeyDriveWarn(Boolean.TRUE.equals(mIsCruiseBroadcastRoadCondition.getValue()));
             CruisePackage.getInstance().setConfigKeySafeBroadcast(Boolean.TRUE.equals(mIsCruiseBroadcastCamera.getValue()));
             CruisePackage.getInstance().setConfigKeyRoadWarn(Boolean.TRUE.equals(mIsCruiseBroadcastSafe.getValue()));
@@ -120,9 +119,12 @@ public class BaseSettingBroadcastViewModel extends BaseViewModel<SettingBroadcas
             mModel.setConfigKeySafeBroadcast(Boolean.TRUE.equals(mIsCruiseBroadcastCamera.getValue()));
             mModel.setConfigKeyDriveWarn(Boolean.TRUE.equals(mIsCruiseBroadcastSafe.getValue()));
             mView.updateCruiseBroadcastEnable(true);
+            mModel.setCruiseBroadcastOpen(true);
         } else {
             mIsCruiseBroadcast.setValue(false);
-            mModel.setCruiseBroadcastOpen(false);
+            mIsCruiseBroadcastRoadCondition.setValue(false);
+            mIsCruiseBroadcastCamera.setValue(false);
+            mIsCruiseBroadcastSafe.setValue(false);
             CruisePackage.getInstance().setConfigKeyDriveWarn(false);
             CruisePackage.getInstance().setConfigKeySafeBroadcast(false);
             CruisePackage.getInstance().setConfigKeyRoadWarn(false);
@@ -130,6 +132,7 @@ public class BaseSettingBroadcastViewModel extends BaseViewModel<SettingBroadcas
             mModel.setConfigKeySafeBroadcast(false);
             mModel.setConfigKeyDriveWarn(false);
             mView.updateCruiseBroadcastEnable(false);
+            mModel.setCruiseBroadcastOpen(false);
 
             sendBuryPointForSettingBroadcast(BuryConstant.BroadcastOption.CRUISE_VOICE, BuryConstant.CruiseVoice.CLOSE);
         }

@@ -14,8 +14,8 @@
 
     <com.fy.navi.ui.view.SkinConstraintLayout
         android:id="@+id/scl_progress"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_119"
+        android:layout_width="@dimen/dp_820"
+        android:layout_height="@dimen/dp_158"
         android:focusable="false"
         tools:background="@color/navi_color_FFFFFF_80"
         tools:layout_width="@dimen/dp_820">
@@ -32,10 +32,10 @@
 
         <com.fy.navi.ui.view.SkinImageView
             android:id="@+id/siv_gps"
-            android:layout_width="@dimen/dp_42"
-            android:layout_height="@dimen/dp_42"
-            android:layout_marginTop="@dimen/dp_16"
-            android:layout_marginEnd="@dimen/dp_26"
+            android:layout_width="@dimen/dp_54"
+            android:layout_height="@dimen/dp_54"
+            android:layout_marginTop="@dimen/dp_21"
+            android:layout_marginEnd="@dimen/dp_34"
             android:focusable="false"
             android:background="@drawable/img_satellite_42"
             app:layout_constraintEnd_toEndOf="parent"
@@ -55,7 +55,7 @@
             android:layout_height="wrap_content"
             android:focusable="false"
             android:orientation="horizontal"
-            app:layout_constraintGuide_end="@dimen/dp_47" />
+            app:layout_constraintGuide_end="@dimen/dp_68" />
         <!--路名基线-->
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/gl_route_name"
@@ -88,9 +88,9 @@
             android:layout_height="@dimen/dp_98"
             android:focusable="false"
             android:layout_marginStart="@dimen/dp_24"
-            app:layout_constraintBottom_toBottomOf="@id/gl_div"
+            app:layout_constraintBottom_toBottomOf="@id/stv_div_distance"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@id/gl_div" />
+            app:layout_constraintTop_toTopOf="@id/stv_div_distance" />
 
         <com.fy.navi.ui.view.SkinImageView
             android:id="@+id/siv_hud_sou33"
@@ -119,14 +119,14 @@
 
         <com.fy.navi.ui.view.SkinImageView
             android:id="@+id/siv_hud_sou3"
-            android:layout_width="@dimen/dp_80"
-            android:layout_height="@dimen/dp_80"
+            android:layout_width="@dimen/dp_104"
+            android:layout_height="@dimen/dp_104"
             android:focusable="false"
             android:layout_marginStart="@dimen/dp_24"
             android:visibility="@{naviTbt.mTurnInfoVisible?View.VISIBLE:View.GONE}"
-            app:layout_constraintBottom_toBottomOf="@id/gl_div_pure"
+            app:layout_constraintBottom_toBottomOf="@id/stv_div_distance"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@id/gl_div_pure"
+            app:layout_constraintTop_toTopOf="@id/stv_div_distance"
             tools:background="@drawable/img_tbt_hud_sou3_day"
             tools:visibility="gone" />
 
@@ -144,14 +144,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:focusable="false"
-            android:layout_marginLeft="@dimen/dp_24"
             android:gravity="bottom"
             android:textColor="@color/common_title_purple_color"
-            android:textSize="@dimen/sp_86"
+            android:textSize="@dimen/sp_112"
             app:layout_constraintBottom_toBottomOf="@id/gl_dis"
-            app:layout_constraintStart_toEndOf="@id/siv_hud_sou3"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@id/gl_dis"
-            app:layout_goneMarginLeft="@dimen/dp_142"
+            android:layout_marginStart="@dimen/dp_136"
             tools:text="493" />
 
         <com.fy.navi.ui.view.SkinTextView
@@ -159,13 +158,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:focusable="false"
-            android:layout_marginLeft="@dimen/dp_17"
+            android:layout_marginLeft="@dimen/dp_8"
             android:gravity="center"
             android:textColor="@color/common_title_purple_color"
-            android:textSize="@dimen/sp_44"
-            app:layout_constraintBottom_toBottomOf="@id/gl_route_name"
+            android:textSize="@dimen/sp_56"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@id/stv_div_distance"
-            app:layout_constraintTop_toTopOf="@id/gl_route_name"
+            android:layout_marginBottom="@dimen/dp_12"
             tools:text="米" />
         <!--道路信息-->
         <com.fy.navi.ui.view.SkinTextView
@@ -173,17 +172,15 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:focusable="false"
-            android:layout_marginLeft="@dimen/dp_26"
             android:ellipsize="end"
-            android:gravity="center_vertical|start"
             android:singleLine="true"
+            android:maxWidth="@dimen/dp_400"
             android:textColor="@color/common_title_purple_color"
-            android:textSize="@dimen/sp_44"
-            app:layout_constraintBottom_toBottomOf="@id/gl_route_name"
+            android:textSize="@dimen/sp_52"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/stv_div_unit"
-            app:layout_constraintTop_toTopOf="@id/gl_route_name"
-            app:layout_goneMarginLeft="@dimen/dp_24"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginEnd="@dimen/dp_40"
+            android:layout_marginBottom="@dimen/dp_12"
             tools:text="西藏中路东二路" />
 
     </com.fy.navi.ui.view.SkinConstraintLayout>

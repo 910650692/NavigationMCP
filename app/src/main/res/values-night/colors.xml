@@ -8,6 +8,7 @@
     <color name="color_black_80">#CCFFFFFF</color>
     <color name="color_black_70">#B3FFFFFF</color>
     <color name="color_black_35">#59FFFFFF</color>
+    <color name="color_authorization_dialog_bg">#191A21</color>
 
     <color name="search_main_tab_img_shape_bg">#4019181D</color>
     <color name="search_main_tab_img_bg">#FF000000</color>
@@ -109,6 +110,9 @@
     <color name="setting_other_car_icon_first">#D2D3D7</color>
     <color name="setting_other_car_icon_second">#2C2F38</color>
     <color name="setting_back_top">#2C2D36</color>
+    <color name="setting_car_number_tip">#B3FFFFFF</color>
+    <color name="bg_setting_car_connected_help_sub_title">#B3FFFFFF</color>
+    <color name="bg_setting_car_number_selector">#FF2C2D36</color>
 
     <color name="offline_hint_text">#FFFFFFFF</color>
     <color name="offline_recommend_download">#80FFFFFF</color>
@@ -141,17 +145,5 @@
     <!--巡航-->
     <color name="cruise_bg_color">#66151414</color>
     <color name="cruise_title_color">#B3FFFFFF</color>
-
-    <color name="dialog_use_reminder_title">#CCEBEEF5</color>
-    <color name="dialog_use_reminder_terms_service_color">#FF3644D1</color>
-    <color name="dialog_use_reminder_content">#80FFFFFF</color>
-    <color name="dialog_use_reminder_positive_color">#E6FFFFFF</color>
-    <color name="dialog_use_reminder_negative_color">#99C0C0CC</color>
-
-    <color name="buick_dialog_use_reminder_title">#FFFFFFFF</color>
-    <color name="buick_dialog_use_reminder_sub_title">#FFFFFFFF</color>
-    <color name="buick_dialog_use_reminder_positive_color">#FFFFCD9F</color>
-    <color name="buick_dialog_use_reminder_high_light">#FFFFCD9F</color>
-    <color name="buick_dialog_use_reminder_negative_color">#FFFFFFFF</color>
 
 </resources>

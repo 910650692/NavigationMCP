@@ -76,6 +76,14 @@ public class SceneNaviControlMoreImpl extends BaseSceneModel<SceneNaviControlMor
     }
 
     @Override
+    public void backControl(){
+        setImmersiveStatus(ImersiveStatus.TOUCH);
+        if(mCallBack != null){
+            mCallBack.skipNaviControlScene();
+        }
+    }
+
+    @Override
     public void switchOverview() {
     }
 

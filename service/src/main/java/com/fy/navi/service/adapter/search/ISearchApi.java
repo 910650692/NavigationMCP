@@ -118,6 +118,8 @@ public interface ISearchApi {
      */
     int queryStationNewResult(SearchRequestParameter searchRequestParameter);
 
+    // 云端查询充电站收藏列表
+    int queryCollectStation(SearchRequestParameter searchRequestParameter);
     /**
      * 取消所有搜索
      */
@@ -141,5 +143,6 @@ public interface ISearchApi {
      * @return CompletableFuture
      */
     CompletableFuture<ETAInfo> getTravelTimeFutureIncludeChargeLeft(SearchRequestParameter searchRequestParameterBuilder);
+
 
 }

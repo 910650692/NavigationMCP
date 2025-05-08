@@ -440,7 +440,9 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
         JsonLog.saveJsonToCache(info, "fsa.json", functionId + "-" + FsaIdString.function2String(functionId));
         if (functionId == FsaConstant.FsaFunction.ID_ENLARGE_ICON || functionId == FsaConstant.FsaFunction.ID_HUD_ENLARGE_MAP) {
             Logger.d(FsaConstant.FSA_TAG, "sendEvent: " + functionId + "-" + FsaIdString.function2String(functionId));
-        } else {
+        } else if (functionId == FsaConstant.FsaFunction.ID_FINGER_FLYING_HUD) {//三指飞屏
+            Logger.d(FsaConstant.FSA_TAG, "sendEvent: " + functionId + "-" + FsaIdString.function2String(functionId));
+        }else {
             Logger.d(FsaConstant.FSA_TAG, "sendEvent: " + functionId + "-" + FsaIdString.function2String(functionId) + ", info = " + info);
         }
         mService.eventHandler.sendEvent(event, FSACatalog.DeviceName.UNKNOWN);
@@ -858,6 +860,10 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
      */
     public void uninitHud() {
         Logger.d(TAG, "service uninit");
+        if (!VTServerBQJni.getInstance().isIsSuccessLoadLibrary()) {
+            Logger.d(TAG, "the so library failed to load");
+            return;
+        }
         VTServerBQJni.getInstance().nativeUninitialize();
     }
 }

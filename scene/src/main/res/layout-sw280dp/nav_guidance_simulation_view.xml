@@ -11,14 +11,14 @@
         android:id="@+id/switch_sim_navi"
         android:layout_width="@dimen/dp_100"
         android:layout_height="@dimen/dp_100"
-        android:focusable="true"
+        android:focusable="false"
         android:background="@drawable/pause_sim_navi" />
 
     <com.fy.navi.ui.view.SkinButton
         android:id="@+id/switch_sim_speed"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:focusable="true"
+        android:focusable="false"
         android:layout_alignTop="@id/switch_sim_navi"
         android:layout_alignBottom="@id/switch_sim_navi"
         android:layout_toRightOf="@id/switch_sim_navi"

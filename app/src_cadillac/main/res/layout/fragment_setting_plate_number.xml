@@ -109,7 +109,7 @@
                     android:layout_width="@dimen/dp_974"
                     android:layout_height="@dimen/dp_120"
                     android:layout_marginStart="@dimen/dp_32"
-                    android:background="@drawable/bg_setting_car_number"
+                    android:background="@color/bg_setting_car_number"
                     android:hint="@string/setting_guide_plate_number_input"
                     android:paddingLeft="@dimen/dp_30"
                     android:textSize="@dimen/sp_46"

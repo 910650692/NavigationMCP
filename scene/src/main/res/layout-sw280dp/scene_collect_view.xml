@@ -31,8 +31,10 @@
                 android:layout_height="@dimen/dp_120"
                 android:gravity="center_horizontal"
                 android:layout_marginTop="@dimen/dp_40"
+                android:visibility="@{(SceneCollectViewImpl.mPowerType == 1 || SceneCollectViewImpl.mPowerType == 2) ? View.VISIBLE : View.GONE}"
                 android:orientation="horizontal"
                 android:background="@drawable/bg_setting_checkbox"
+                app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent">
 
@@ -73,7 +75,7 @@
             <com.fy.navi.ui.view.SkinRecyclerView
                 android:id="@+id/rcv_collect"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 app:layout_constraintTop_toBottomOf="@+id/tv_favorite_switch"
                 android:layout_marginTop="@dimen/dp_20" />
             <com.fy.navi.ui.view.SkinLinearLayout

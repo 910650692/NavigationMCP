@@ -40,10 +40,9 @@ import com.fy.navi.service.define.utils.NumberUtils;
 public class SceneNaviTbtView extends NaviSceneBase<SceneNaviTbtViewBinding, SceneNaviTbtImpl> {
     private static final String TAG = MapDefaultFinalTag.NAVI_HMI_TAG;
     private int mGpsStrength;
-
     private boolean mIsCrossImageShow;
-
     private long mCrossDistance = NumberUtils.NUM_ERROR;
+    private int mLength;
 
     public SceneNaviTbtView(@NonNull final Context context) {
         super(context);
@@ -81,6 +80,10 @@ public class SceneNaviTbtView extends NaviSceneBase<SceneNaviTbtViewBinding, Sce
 
     @Override
     protected void initObserver() {
+        final Context context = getContext();
+        // 动态获取不同车型tbt面板的长度
+        mLength = context.getResources().
+                getDimensionPixelSize(com.fy.navi.ui.R.dimen.navi_tbt_with);
     }
 
     /**
@@ -237,7 +240,7 @@ public class SceneNaviTbtView extends NaviSceneBase<SceneNaviTbtViewBinding, Sce
                     mViewBinding.sivProgress.getLayoutParams();
             params.width = width;
             mViewBinding.sivProgress.setLayoutParams(params);
-            if (width == 640) {
+            if (width == mLength) {
                 mViewBinding.sivProgress.setBackgroundResource(R.drawable.bg_navi_tbt_progress_full);
             } else {
                 mViewBinding.sivProgress.setBackgroundResource(R.drawable.bg_navi_tbt_progress);
@@ -262,7 +265,10 @@ public class SceneNaviTbtView extends NaviSceneBase<SceneNaviTbtViewBinding, Sce
         if (!mIsCrossImageShow) {
             resetProgress();
         } else {
-            updateTbtHeight(101, 4, 35);
+            final Context context = getContext();
+            final int shortHeight = context.getResources().
+                    getDimensionPixelSize(com.fy.navi.ui.R.dimen.navi_tbt_height_short);
+            updateTbtHeight(shortHeight, 4, 35);
         }
     }
 
@@ -275,7 +281,10 @@ public class SceneNaviTbtView extends NaviSceneBase<SceneNaviTbtViewBinding, Sce
                 params.width = 0;
                 mViewBinding.sivProgress.setLayoutParams(params);
                 mViewBinding.sivProgress.requestLayout();
-                updateTbtHeight(119, 16, 30);
+                final Context context = getContext();
+                final int normalHeight = context.getResources().
+                        getDimensionPixelSize(com.fy.navi.ui.R.dimen.navi_tbt_height);
+                updateTbtHeight(normalHeight, 16, 30);
             }
         });
     }
@@ -323,7 +332,7 @@ public class SceneNaviTbtView extends NaviSceneBase<SceneNaviTbtViewBinding, Sce
 
         if (remainingDistance > totalDistance) {
             Logger.i(TAG,"剩余距离不能大于总距离");
-            return 640;
+            return this.getWidth();
         }
 
         // 计算已完成的比例（0.0-1.0）
@@ -332,10 +341,10 @@ public class SceneNaviTbtView extends NaviSceneBase<SceneNaviTbtViewBinding, Sce
         // 确保比例在0-1范围内（处理浮点运算可能的小数误差）
         progressRatio = Math.max(0.0, Math.min(1.0, progressRatio));
 
-        // 计算进度条长度（最大640dp）
-        int progressLength = (int) Math.round(640 * progressRatio);
+        // 计算进度条长度（最大为控件的长度）
+        int progressLength = (int) Math.round(mLength * progressRatio);
 
-        // 确保返回值为0-640之间的整数
-        return Math.max(0, Math.min(640, progressLength));
+        // 确保返回值为0-控件长度之间的整数
+        return Math.max(0, Math.min(mLength, progressLength));
     }
 }

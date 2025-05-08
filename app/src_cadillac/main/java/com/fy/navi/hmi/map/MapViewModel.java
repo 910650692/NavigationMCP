@@ -2,17 +2,21 @@ package com.fy.navi.hmi.map;
 
 import android.annotation.SuppressLint;
 import android.app.Application;
+import android.graphics.drawable.Drawable;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 
 import androidx.annotation.NonNull;
+import androidx.databinding.ObservableField;
 
 import com.android.car.ui.utils.DirectManipulationHelper;
 import com.android.utils.ConvertUtils;
+import com.android.utils.ResourceUtils;
 import com.android.utils.ToastUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
+import com.fy.navi.hmi.R;
 import com.fy.navi.hmi.navi.AuthorizationRequestDialog;
 import com.fy.navi.service.define.map.MainScreenMapView;
 import com.fy.navi.service.define.mfc.MfcController;
@@ -30,8 +34,27 @@ public class MapViewModel extends BaseMapViewModel {
     /** Whether this view is in DM mode. */
     private boolean mInDirectManipulationMode;
     private ScheduledFuture mMapViewScheduledFuture;
+    private ScheduledFuture mImgViewScheduledFuture;
     @SuppressLint("StaticFieldLeak")
     private MainScreenMapView mapView;
+
+    private ObservableField<Drawable> mMFCImgDrawable;
+
+    public ObservableField<Drawable> getMFCImgDrawable() {
+        return mMFCImgDrawable;
+    }
+
+    private ObservableField<Boolean> mMFCImgVisibility;
+
+    public ObservableField<Boolean> getMFCImgVisibility() {
+        return mMFCImgVisibility;
+    }
+
+    private ObservableField<Boolean> mMFCDModeVisibility;
+
+    public ObservableField<Boolean> getMFCDModeVisibility() {
+        return mMFCDModeVisibility;
+    }
 
     public MapViewModel(@NonNull Application application) {
         super(application);
@@ -40,6 +63,9 @@ public class MapViewModel extends BaseMapViewModel {
     @Override
     public void onCreate() {
         super.onCreate();
+        mMFCImgDrawable = new ObservableField<>(ResourceUtils.Companion.getInstance().getDrawable(R.drawable.img_map_mfc_default));
+        mMFCImgVisibility = new ObservableField<>(false);
+        mMFCDModeVisibility = new ObservableField<>(false);
         initMFC();
     }
 
@@ -50,10 +76,10 @@ public class MapViewModel extends BaseMapViewModel {
                 if (Boolean.FALSE.equals(b)) {
                     //地图失去焦点，取消倒计时
                     cancelMapViewTimer();
+                    mMFCImgVisibility.set(false);
                 } else {
                     Logger.i(TAG, "MFC: Map 获取焦点");
-                    //todo 提示用户，点击确定按钮可以操作地图
-                    ToastUtils.Companion.getInstance().showCustomToastView("点击中心旋钮可操作地图");
+                    setDModeMap(false);
                 }
             });
             mapView.setOnKeyListener((view, keyCode, keyEvent) -> {
@@ -76,7 +102,7 @@ public class MapViewModel extends BaseMapViewModel {
                         if (!mInDirectManipulationMode) {
                             return false;
                         }
-                        Logger.i(TAG, "MFC Map Move Up");
+                        Logger.i(TAG, "MFC Map Back");
                         setDModeMap(false);
                         return true;
                     case KeyEvent.KEYCODE_DPAD_UP:
@@ -85,7 +111,10 @@ public class MapViewModel extends BaseMapViewModel {
                         }
                         Logger.i(TAG, "MFC Map Move Up");
                         initMapViewTimer();
-                        //todo 显示用户上移UI
+                        mMFCImgVisibility.set(true);
+                        mMFCDModeVisibility.set(true);
+                        mMFCImgDrawable.set(ResourceUtils.Companion.getInstance().getDrawable(R.drawable.img_map_mfc_up));
+                        initImgViewTimer();
                         mModel.mfcMoveMap(MfcController.UP, 50);
                         return true;
                     case KeyEvent.KEYCODE_DPAD_DOWN:
@@ -94,7 +123,10 @@ public class MapViewModel extends BaseMapViewModel {
                         }
                         Logger.i(TAG, "MFC Map Move Down");
                         initMapViewTimer();
-                        //todo 显示用户下移UI
+                        mMFCImgVisibility.set(true);
+                        mMFCDModeVisibility.set(true);
+                        mMFCImgDrawable.set(ResourceUtils.Companion.getInstance().getDrawable(R.drawable.img_map_mfc_down));
+                        initImgViewTimer();
                         mModel.mfcMoveMap(MfcController.DOWN, 50);
                         return true;
                     case KeyEvent.KEYCODE_DPAD_LEFT:
@@ -103,7 +135,10 @@ public class MapViewModel extends BaseMapViewModel {
                         }
                         Logger.i(TAG, "MFC Map Move Left");
                         initMapViewTimer();
-                        //todo 显示用户左移UI
+                        mMFCImgVisibility.set(true);
+                        mMFCDModeVisibility.set(true);
+                        mMFCImgDrawable.set(ResourceUtils.Companion.getInstance().getDrawable(R.drawable.img_map_mfc_left));
+                        initImgViewTimer();
                         mModel.mfcMoveMap(MfcController.LEFT, 50);
                         return true;
                     case KeyEvent.KEYCODE_DPAD_RIGHT:
@@ -112,7 +147,10 @@ public class MapViewModel extends BaseMapViewModel {
                         }
                         Logger.i(TAG, "MFC Map Move Right");
                         initMapViewTimer();
-                        //todo 显示用户右移UI
+                        mMFCImgVisibility.set(true);
+                        mMFCDModeVisibility.set(true);
+                        mMFCImgDrawable.set(ResourceUtils.Companion.getInstance().getDrawable(R.drawable.img_map_mfc_right));
+                        initImgViewTimer();
                         mModel.mfcMoveMap(MfcController.RIGHT, 50);
                         return true;
                     default:
@@ -127,6 +165,11 @@ public class MapViewModel extends BaseMapViewModel {
                 float scroll = motionEvent.getAxisValue(MotionEvent.AXIS_SCROLL);
                 Logger.i(TAG, scroll > 0 ? "MFC Map 顺时针旋转" : "MFC Map 逆时针旋转");
                 initMapViewTimer();
+                mMFCImgVisibility.set(true);
+                mMFCDModeVisibility.set(true);
+                mMFCImgDrawable.set(ResourceUtils.Companion.getInstance().getDrawable(
+                        scroll > 0 ? R.drawable.img_map_mfc_zoom_in : R.drawable.img_map_mfc_zoom_out));
+                initImgViewTimer();
                 mModel.mfcChangeZoom(scroll > 0);
                 return true;
             }));
@@ -138,7 +181,9 @@ public class MapViewModel extends BaseMapViewModel {
      */
     private void initMapViewTimer() {
         cancelMapViewTimer();
-        mMapViewScheduledFuture = ThreadManager.getInstance().asyncAtFixDelay(() -> setDModeMap(false), 10, 10);
+        mMapViewScheduledFuture = ThreadManager.getInstance().asyncAtFixDelay(() -> {
+            setDModeMap(false);
+        }, 5, 5);
     }
     /***
      * 取消页面倒计时
@@ -150,16 +195,37 @@ public class MapViewModel extends BaseMapViewModel {
         }
     }
 
+    /***
+     * 页面倒计时
+     */
+    private void initImgViewTimer() {
+        cancelImgViewTimer();
+        mImgViewScheduledFuture = ThreadManager.getInstance().asyncAtFixDelay(() -> {
+            mMFCDModeVisibility.set(false);
+            mMFCImgVisibility.set(false);
+        }, 3, 3);
+    }
+    /***
+     * 取消页面倒计时
+     */
+    private void cancelImgViewTimer() {
+        if (!ConvertUtils.isEmpty(mImgViewScheduledFuture)) {
+            ThreadManager.getInstance().cancelDelayRun(mImgViewScheduledFuture);
+            mImgViewScheduledFuture = null;
+        }
+    }
+
     private void setDModeMap(final boolean isDMode) {
-        Logger.i(TAG, isDMode ? "进入DM模式，10s内可以操作地图" : "退出DM模式，用户不可以操作地图");
-        String dModeText = isDMode ? "进入DM模式，10s内可以操作地图" : "已退出DM模式，用户不可以操作地图";
-        ThreadManager.getInstance().postUi(() -> ToastUtils.Companion.getInstance().showCustomToastView(dModeText));
+        Logger.i(TAG, isDMode ? "进入DM模式，5s内可以操作地图" : "退出DM模式，用户不可以操作地图");
         mInDirectManipulationMode = isDMode;
         if (!ConvertUtils.isEmpty(mapView)) {
             DirectManipulationHelper.enableDirectManipulationMode(mapView, isDMode);
         }
         if (Boolean.FALSE.equals(isDMode)) {
             cancelMapViewTimer();
+            mMFCImgVisibility.set(true);
+            mMFCDModeVisibility.set(false);
+            initImgViewTimer();
         }
     }
 

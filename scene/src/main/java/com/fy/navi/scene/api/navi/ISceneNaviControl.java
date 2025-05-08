@@ -21,6 +21,9 @@ public interface ISceneNaviControl {
     //更多设置
     void moreSetup();
 
+    //返回控制条
+    void backControl();
+
     //刷新
     void refreshRoute();
 

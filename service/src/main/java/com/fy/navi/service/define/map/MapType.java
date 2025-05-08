@@ -6,7 +6,8 @@ public enum MapType {
     MAIN_SCREEN_MAIN_MAP(1),
     LAUNCHER_DESK_MAP(3),
     LAUNCHER_WIDGET_MAP(5),
-    HUD_MAP(7);
+    HUD_MAP(7),
+    CLUSTER_MAP(9);
     @Getter
     private int mapType;
 

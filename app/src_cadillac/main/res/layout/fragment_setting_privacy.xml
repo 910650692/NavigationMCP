@@ -13,27 +13,44 @@
         android:layout_width="@dimen/dp_1578"
         android:layout_height="@dimen/dp_1000"
         android:clickable="true"
+        android:focusable="false"
         android:background="@drawable/bg_setting_fragment">
+
+        <com.android.car.ui.FocusParkingView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
 
         <com.fy.navi.ui.view.SkinLinearLayout
             android:id="@+id/setting_others_privacy_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
+            android:focusable="false"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" >
+
+            <com.android.car.ui.FocusArea
+                android:id="@+id/focus_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:nudgeDown="@+id/focus_content"
+                app:nudgeUp="@+id/focus_content">
 
             <com.fy.navi.ui.view.SkinImageView
                 clickCommand="@{viewModel.mFinishPrivacy}"
                 android:layout_width="@dimen/dp_74"
                 android:layout_height="@dimen/dp_74"
+                android:focusable="true"
                 android:layout_marginStart="@dimen/dp_32"
                 android:layout_marginTop="@dimen/dp_48"
                 android:src="@drawable/img_basic_ic_back" />
 
+            </com.android.car.ui.FocusArea>
+
             <com.fy.navi.ui.view.SkinTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:focusable="false"
                 android:layout_marginStart="@dimen/dp_591"
                 android:layout_marginTop="@dimen/dp_52"
                 android:text="@string/setting_others_privacy"
@@ -45,6 +62,7 @@
             android:id="@+id/line_view"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_1"
+            android:focusable="false"
             app:layout_constraintTop_toBottomOf="@+id/setting_others_privacy_layout"
             android:background="@color/transparent"/>
 
@@ -55,6 +73,7 @@
             android:text="@string/setting_others_privacy_location"
             android:textColor="@color/black"
             android:textSize="@dimen/sp_46"
+            android:focusable="false"
             android:layout_marginTop="@dimen/dp_66"
             android:layout_marginStart="@dimen/dp_52"
             app:layout_constraintStart_toStartOf="parent"
@@ -65,6 +84,7 @@
             android:layout_height="wrap_content"
             android:text="@string/setting_others_privacy_location_description"
             android:textColor="@color/setting_bg_tab_text_unselect"
+            android:focusable="false"
             android:textSize="@dimen/sp_38"
             android:layout_marginTop="@dimen/dp_22"
             app:layout_constraintStart_toStartOf="@+id/setting_others_privacy_location"
@@ -74,6 +94,7 @@
             android:id="@+id/setting_others_privacy_switch"
             android:layout_width="@dimen/dp_376"
             android:layout_height="@dimen/dp_120"
+            android:focusable="false"
             android:gravity="center_horizontal"
             android:layout_marginTop="@dimen/dp_72"
             android:layout_marginEnd="@dimen/dp_52"
@@ -85,6 +106,7 @@
             <com.fy.navi.ui.view.SkinRadioGroup
                 android:layout_width="match_parent"
                 android:layout_height="fill_parent"
+                android:focusable="false"
                 android:gravity="center_horizontal"
                 android:orientation="horizontal">
 
@@ -95,6 +117,7 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:button="@null"
+                    android:focusable="true"
                     android:checked="@{viewModel.mIsOneYearPrivacy}"
                     android:background="@drawable/bg_setting_checkbox_selector"
                     android:gravity="center"
@@ -107,6 +130,7 @@
                     android:id="@+id/setting_others_privacy_never"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
+                    android:focusable="true"
                     android:layout_weight="1"
                     android:button="@null"
                     android:checked="@{viewModel.mIsNeverPrivacy}"

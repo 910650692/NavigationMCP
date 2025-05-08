@@ -10,6 +10,7 @@ import com.autonavi.gbl.activation.ActivationModule;
 import com.autonavi.gbl.activation.model.ActivateReturnParam;
 import com.autonavi.gbl.activation.model.ActivationInitParam;
 import com.autonavi.gbl.activation.observer.INetActivateObserver;
+import com.fy.navi.service.AutoMapConstant;
 import com.fy.navi.service.GBLCacheFilePath;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.adapter.activate.cloudpatac.response.AppKeyResponse;
@@ -21,7 +22,17 @@ import com.patac.netlib.exception.ApiException;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.concurrent.CancellationException;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -49,7 +60,7 @@ public final class ActivationManager {
         public void onNetActivateResponse(final int returnCode) {
             //网络激活结果处理
             Logger.i(TAG, "网络激活返回码 = " + returnCode);
-           // mActivateListener.onNetActivated(ConvertUtils.equals(0, returnCode));
+            // mActivateListener.onNetActivated(ConvertUtils.equals(0, returnCode));
         }
     };
 
@@ -76,6 +87,7 @@ public final class ActivationManager {
 
     /**
      * 添加手动激活成功回调
+     *
      * @param listener listener
      */
     public void addManualActivateListener(final IActivateHelper listener) {
@@ -112,7 +124,7 @@ public final class ActivationManager {
 
         final Observable<AppKeyResponse> observable = AppKeyRepository.getInstance().queryAppKey(req);
 
-        Logger.d(TAG ,"1: "+observable.toString());
+        Logger.d(TAG, "1: " + observable.toString());
         observable.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new NetDisposableObserver<AppKeyResponse>() {
@@ -123,11 +135,10 @@ public final class ActivationManager {
 
                     @Override
                     public void onFailed(final ApiException e) {
-                        Logger.d(TAG,"Exception code : " + e.getCode());
-                        Logger.d(TAG,"Exception msg : " + e.getMessage());
+                        Logger.d(TAG, "Exception code : " + e.getCode());
+                        Logger.d(TAG, "Exception msg : " + e.getMessage());
                     }
                 });
-
 
 
 //        OkHttpUtils.Companion.getInstance().postFromBody(
@@ -228,6 +239,7 @@ public final class ActivationManager {
 
     /**
      * 初始化激活服务
+     *
      * @param uuid uuid
      * @return 是否成功
      */
@@ -256,16 +268,21 @@ public final class ActivationManager {
         Logger.i(TAG, "initActivateParam: initResult = " + initResult);
         final boolean initSuccess = ConvertUtils.equals(0, initResult);
         mIsInit = initSuccess;
-        return true;
+        return initSuccess;
     }
 
     /**
      * 检查激活状态
+     *
      * @return 是否成功
      */
     public boolean checkActivationStatus() {
         if (mActivationService == null) {
-            Logger.d(TAG, "mActivationService == null" );
+            Logger.d(TAG, "mActivationService == null");
+            return false;
+        }
+        if (!mIsInit) {
+            Logger.d(TAG, "mActivationService 未初始化");
             return false;
         }
         final int activateStatus = mActivationService.getActivateStatus();
@@ -275,21 +292,112 @@ public final class ActivationManager {
 
     /**
      * 云对云下单
-     * @return 是否成功
      */
-    public boolean createCloudOrder() {
-        Logger.d(TAG, "createCloudOrder" );
+    public void createCloudOrder() {
+        Logger.d(TAG, "createCloudOrder");
+        mActivateListener.onCreateOrder(true);
         // 调用三方下单接口
-        return true;
+    }
+
+
+    /**
+     * 带重试的订单激活状态查询
+     *
+     * @return 返回是否成功
+     */
+    public boolean pollOrderStatusWithRetry() {
+        final ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
+        final CompletableFuture<Boolean> future = new CompletableFuture<>();
+        final AtomicInteger retryCount = new AtomicInteger(0);
+        final int maxRetries = 3;
+        final long[] delays = {
+                AutoMapConstant.DELAY_MINUTE * 2,
+                AutoMapConstant.DELAY_MINUTE * 5,
+                AutoMapConstant.DELAY_MINUTE * 5
+        };
+        final AtomicReference<Runnable> taskRef = new AtomicReference<>();
+
+        final Runnable task = new Runnable() {
+            @Override
+            public void run() {
+                if (future.isDone()) {
+                    return;
+                }
+                try {
+                    final int currentCount = retryCount.incrementAndGet();
+                    Logger.d(TAG, "轮询次数 : " + currentCount);
+                    if (currentCount >= maxRetries) {
+                        future.complete(true);
+                        executor.shutdownNow();
+                    } else {
+                        executor.schedule(taskRef.get(), delays[currentCount], TimeUnit.SECONDS);
+                    }
+                    getInstance().checkOrderStatus(new NetDisposableObserver<AppKeyResponse>() {
+                        @Override
+                        public void onSuccess(final AppKeyResponse appKeyBean) {
+                            Logger.d(TAG, "checkOrderStatus success");
+                            future.complete(true);
+                            executor.shutdownNow();
+                        }
+
+                        @Override
+                        public void onFailed(final ApiException e) {
+                            Logger.d(TAG, "checkOrderStatus failed");
+                            Logger.d(TAG, "Exception code : " + e.getCode());
+                            Logger.d(TAG, "Exception msg : " + e.getMessage());
+
+                            final int currentCount = retryCount.incrementAndGet();
+                            Logger.d(TAG, "轮询次数 : " + currentCount);
+                            if (currentCount > maxRetries) {
+                                future.complete(false);
+                                executor.shutdownNow();
+                            } else {
+                                executor.schedule(taskRef.get(), delays[currentCount], TimeUnit.SECONDS);
+                            }
+                        }
+                    });
+
+                } catch (NullPointerException | IllegalArgumentException e) {
+                    future.completeExceptionally(e);
+                    executor.shutdownNow();
+                }
+            }
+        };
+        taskRef.set(task);
+        executor.schedule(task, retryCount.get(), TimeUnit.SECONDS);
+
+        try {
+            // 总超时 = 所有可能延迟之和 + 缓冲时间（例如15分钟）
+            final long totalTimeout = Arrays.stream(delays).sum() + 1; // 2+5+5 +1=13分钟
+            return future.get(totalTimeout, TimeUnit.SECONDS);
+        } catch (CancellationException e) {
+            executor.shutdownNow();
+            Logger.e(TAG, "CancellationException");
+            return false;
+        } catch (TimeoutException e) {
+            executor.shutdownNow();
+            Logger.e(TAG, "订单状态轮询总超时");
+            return false;
+        } catch (ExecutionException e) {
+            Logger.e(TAG, "轮询异常: " + e.getCause());
+            return false;
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            Logger.e(TAG, "轮询被中断");
+            return false;
+        } finally {
+            executor.shutdown();
+        }
     }
 
     /**
      * 查询订单状态
-     * @return 是否成功
+     *
+     * @param netDisposableObserver 网络结果回调
      */
-    public boolean checkOrderStatus() {
-        Logger.d(TAG, "checkOrderStatus" );
-        return false;
+    public void checkOrderStatus(final NetDisposableObserver<AppKeyResponse> netDisposableObserver) {
+        Logger.d(TAG, "checkOrderStatus");
+
     }
 
     /**
@@ -298,8 +406,8 @@ public final class ActivationManager {
     public void netActivate() {
         ++NET_FAILED_COUNT;
         final String hardWareCode = "0000000000"; // 默认10个0
-        final int netActivateResult = mActivationService.netActivate(hardWareCode);
-        Logger.i(TAG, "netActivateResult = " + netActivateResult);
+        //final int netActivateResult = mActivationService.netActivate(hardWareCode);
+        //Logger.i(TAG, "netActivateResult = " + netActivateResult + "; failed count : " + NET_FAILED_COUNT);
         mActivateListener.onNetActivated(false);
     }
 /*
@@ -312,15 +420,21 @@ public final class ActivationManager {
 
 渠道号:C13953968867
  */
+
     /**
      * 手动激活
-     * @param userCode 序列号
+     *
+     * @param userCode  序列号
      * @param loginCode 激活码
      */
     public void manualActivate(final String userCode, final String loginCode) {
         Logger.d(TAG, "userCode = " + userCode + "; loginCode = " + loginCode);
         if (mActivationService == null) {
             Logger.d(TAG, "mActivationService == null");
+            return;
+        }
+        if (!mIsInit) {
+            Logger.d(TAG, "mActivationService 未初始化");
             return;
         }
         final ActivateReturnParam activateReturnParam = mActivationService.manualActivate(userCode, loginCode);
@@ -345,20 +459,30 @@ public final class ActivationManager {
 
         /**
          * uuid获取后回调
+         *
          * @param uuid uuid
          */
         void onUUIDGet(final String uuid);
 
         /**
          * 手动激活结果回调给impl
+         *
          * @param isSuccess 是否成功
          */
         void onManualActivated(final boolean isSuccess);
 
         /**
          * 网络激活回调impl
+         *
          * @param isSuccess 是否成功
          */
         void onNetActivated(final boolean isSuccess);
+
+        /**
+         * 开始下单回调给impl
+         *
+         * @param isSuccess 是否成功
+         */
+        void onCreateOrder(final boolean isSuccess);
     }
 }

@@ -24,12 +24,11 @@
 
         <com.fy.navi.ui.view.SkinTextView
             android:id="@+id/reminder_title"
+            style="@style/dialog_buick_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_10"
             android:text="@string/reminder_use_agreement"
-            android:textColor="@color/buick_dialog_use_reminder_title"
-            android:textSize="@dimen/sp_38"
             app:layout_constraintBottom_toBottomOf="@id/reminder_iv_back"
             app:layout_constraintStart_toEndOf="@id/reminder_iv_back"
             app:layout_constraintTop_toTopOf="@id/reminder_iv_back" />
@@ -47,12 +46,11 @@
 
             <com.fy.navi.ui.view.SkinTextView
                 android:id="@+id/reminder_content"
+                style="@style/dialog_buick_content"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:lineSpacingExtra="@dimen/dp_1"
-                android:text="@string/reminder_user_terms_personal_info"
-                android:textColor="@color/buick_dialog_use_reminder_sub_title"
-                android:textSize="@dimen/sp_36" />
+                android:text="@string/reminder_user_terms_personal_info" />
 
         </androidx.core.widget.NestedScrollView>
 

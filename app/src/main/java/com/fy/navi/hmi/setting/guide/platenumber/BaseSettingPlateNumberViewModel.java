@@ -60,22 +60,6 @@ public class BaseSettingPlateNumberViewModel extends BaseViewModel<SettingPlateN
     }
 
     /**
-     * 设置车牌号
-     * @param plateNumber 车牌号
-     */
-    public void setPlateNumber(final String plateNumber) {
-        mModel.setPlateNumber(plateNumber);
-    }
-
-    /**
-     * 设置是否限行
-     * @param avoidLimit 是否限行
-     */
-    public void setAvoidLimit(final boolean avoidLimit) {
-        mModel.setAvoidLimit(avoidLimit);
-    }
-
-    /**
      * @param isFocus 是否获取焦点
      */
     public void setIsFocus(final boolean isFocus) {

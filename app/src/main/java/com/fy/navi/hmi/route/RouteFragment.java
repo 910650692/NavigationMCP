@@ -379,7 +379,8 @@ public class RouteFragment extends BaseFragment<FragmentRouteBinding, RouteViewM
 
             //子poi显示
             if (poiInfoEntity.getChildInfoList() != null && !poiInfoEntity.getChildInfoList().isEmpty()) {
-                mRouteSecondaryPoiAdapter.setChildInfoList(poiInfoEntity.getChildInfoList(), poiInfoEntity);
+                mViewModel.setSecondaryPoiInfo(poiInfoEntity);
+                setRouteSecondaryPoiUI(poiInfoEntity);
                 mViewModel.setSecondaryPoi(true);
                 mViewModel.showSecondaryPoi();
             }
@@ -461,6 +462,14 @@ public class RouteFragment extends BaseFragment<FragmentRouteBinding, RouteViewM
         final BuryProperty buryProperty = new BuryProperty.Builder().setParams(BuryConstant.ProperType.BURY_KEY_HOME_PREDICTION,
                 Integer.toString(routeLineInfos.size())).build();
         BuryPointController.getInstance().setBuryProps(buryProperty);
+    }
+
+    /***
+     * 渲染子poi显示界面
+     * @param poiInfoEntity 数据
+     */
+    public void setRouteSecondaryPoiUI(final PoiInfoEntity poiInfoEntity) {
+        mRouteSecondaryPoiAdapter.setChildInfoList(poiInfoEntity.getChildInfoList(), poiInfoEntity);
     }
 
     /***

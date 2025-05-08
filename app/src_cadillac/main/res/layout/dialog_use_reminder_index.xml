@@ -21,7 +21,7 @@
             android:layout_height="@dimen/dp_68"
             android:focusable="false"
             android:text="@string/reminder_use_agreement"
-            android:textColor="@color/dialog_use_reminder_title"
+            android:textColor="@color/dialog_cadi_title_color"
             android:textSize="@dimen/sp_52"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -33,7 +33,7 @@
             android:layout_marginTop="@dimen/dp_30"
             android:focusable="false"
             android:text="@string/reminder_click_to_view"
-            android:textColor="@color/dialog_use_reminder_content"
+            android:textColor="@color/dialog_cadi_content_color"
             android:textSize="@dimen/sp_46"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/reminder_title" />
@@ -46,7 +46,7 @@
             android:layout_marginStart="@dimen/dp_6"
             android:layout_marginTop="@dimen/dp_30"
             android:text="@string/reminder_page_service"
-            android:textColor="@color/dialog_use_reminder_terms_service_color"
+            android:textColor="@color/dialog_cadi_positive_btn_bg_color"
             android:textSize="@dimen/sp_46"
             app:layout_constraintStart_toEndOf="@+id/reminder_click_view"
             app:layout_constraintTop_toBottomOf="@+id/reminder_title" />
@@ -59,7 +59,7 @@
             android:layout_marginStart="@dimen/dp_6"
             android:layout_marginTop="@dimen/dp_30"
             android:text="，"
-            android:textColor="@color/dialog_use_reminder_content"
+            android:textColor="@color/dialog_cadi_content_color"
             android:textSize="@dimen/sp_46"
             app:layout_constraintStart_toEndOf="@+id/reminder_terms_service"
             app:layout_constraintTop_toBottomOf="@+id/reminder_title" />
@@ -72,7 +72,7 @@
             android:layout_marginStart="@dimen/dp_6"
             android:layout_marginTop="@dimen/dp_30"
             android:text="@string/reminder_page_privacy"
-            android:textColor="@color/dialog_use_reminder_terms_service_color"
+            android:textColor="@color/dialog_cadi_positive_btn_bg_color"
             android:textSize="@dimen/sp_46"
             app:layout_constraintStart_toEndOf="@+id/reminder_click_view1"
             app:layout_constraintTop_toBottomOf="@+id/reminder_title" />
@@ -91,7 +91,7 @@
                 android:focusable="false"
                 android:lineSpacingExtra="@dimen/dp_1"
                 android:text="@string/reminder_user_terms_personal_info"
-                android:textColor="@color/dialog_use_reminder_content"
+                android:textColor="@color/dialog_cadi_content_color"
                 android:textSize="@dimen/sp_46" />
         </androidx.core.widget.NestedScrollView>
 
@@ -103,7 +103,7 @@
             android:background="@drawable/bg_shape_commit_button"
             android:gravity="center"
             android:text="@string/dialog_commit"
-            android:textColor="@color/dialog_use_reminder_positive_color"
+            android:textColor="@color/dialog_cadi_positive_btn_text_color"
             android:textSize="@dimen/sp_42"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
@@ -117,7 +117,7 @@
             android:gravity="center"
             android:focusable="false"
             android:text="@string/dialog_cancel"
-            android:textColor="@color/dialog_use_reminder_negative_color"
+            android:textColor="@color/dialog_cadi_negative_btn_text_color"
             android:textSize="@dimen/sp_42"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/dialog_commit" />

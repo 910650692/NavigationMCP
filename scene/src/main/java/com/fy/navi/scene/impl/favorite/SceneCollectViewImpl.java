@@ -8,6 +8,7 @@ import com.fy.navi.scene.api.favorite.ISceneCollectView;
 import com.fy.navi.scene.ui.favorite.SceneCollectView;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.define.search.PoiInfoEntity;
+import com.fy.navi.service.logicpaket.search.SearchPackage;
 import com.fy.navi.service.logicpaket.user.account.AccountPackage;
 import com.fy.navi.service.logicpaket.user.behavior.BehaviorPackage;
 import com.fy.navi.ui.base.StackManager;
@@ -22,19 +23,11 @@ import java.util.ArrayList;
 public class SceneCollectViewImpl extends BaseSceneModel<SceneCollectView> implements ISceneCollectView {
     // 动力类型标定
     public MutableLiveData<Integer> mPowerType = new MutableLiveData<>();
-    public MutableLiveData<Boolean> mChargingVisibility;
-    public MutableLiveData<Boolean> mChargingNoDataVisibility;
-    public MutableLiveData<Boolean> mChargingRequestFailedVisibility;
-    public MutableLiveData<Boolean> mChargingOfflineVisibility;
-    public MutableLiveData<Boolean> mTipVisibility;
+    private final SearchPackage mSearchPackage;
     public SceneCollectViewImpl(final SceneCollectView screenView) {
         super(screenView);
         mPowerType = new MutableLiveData<>(-1);
-        mChargingVisibility = new MutableLiveData<>(false);
-        mChargingNoDataVisibility = new MutableLiveData<>(false);
-        mChargingRequestFailedVisibility = new MutableLiveData<>(false);
-        mChargingOfflineVisibility = new MutableLiveData<>(false);
-        mTipVisibility = new MutableLiveData<>(false);
+        mSearchPackage = SearchPackage.getInstance();
     }
 
     @Override
@@ -55,5 +48,9 @@ public class SceneCollectViewImpl extends BaseSceneModel<SceneCollectView> imple
     public void startSGMLogin(){
         Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"startSGMLogin");
         AccountPackage.getInstance().sendSGMLoginRequest(mScreenView.getContext());
+    }
+
+    public void queryCollectStation(){
+        mSearchPackage.queryCollectStation();
     }
 }

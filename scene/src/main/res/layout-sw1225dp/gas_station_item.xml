@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="android.view.View" />
+        <variable
+            name="model"
+            type="com.fy.navi.service.define.route.RouteParam" />
+
+        <variable
+            name="holder"
+            type="com.fy.navi.scene.adapter.GasStationAdapter.Holder" />
+    </data>
+
+    <com.fy.navi.ui.view.SkinConstraintLayout
+        android:id="@+id/route_item_via_root"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_poi_gas_price_bg"
+
+        >
+        <com.fy.navi.ui.view.SkinTextView
+            android:id="@+id/poi_gas_oil_type"
+            android:layout_width="wrap_content"
+            android:minWidth="@dimen/dp_72"
+            android:layout_height="@dimen/dp_52"
+            android:text="0#车柴"
+            android:paddingStart="@dimen/dp_13"
+            android:paddingEnd="@dimen/dp_13"
+            android:textSize="@dimen/sp_32"
+            android:gravity="center"
+            android:textColor="@color/search_color_ffffff"
+            android:background="@drawable/bg_poi_gas_type_bg"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            />
+
+        <com.fy.navi.ui.view.SkinTextView
+            android:id="@+id/poi_gas_oil_price"
+            android:layout_width="wrap_content"
+            android:minWidth="@dimen/dp_108"
+            android:layout_height="@dimen/dp_52"
+            tools:text="7.6/升"
+            android:textSize="@dimen/sp_32"
+            android:gravity="end|center_vertical"
+            android:paddingStart="@dimen/dp_17"
+            android:paddingEnd="@dimen/dp_17"
+            android:textColor="@color/search_color_ffffff_50"
+            app:layout_constraintStart_toEndOf="@+id/poi_gas_oil_type"
+            app:layout_constraintTop_toTopOf="parent"
+            />
+
+    </com.fy.navi.ui.view.SkinConstraintLayout>
+</layout>

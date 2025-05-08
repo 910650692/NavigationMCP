@@ -14,7 +14,7 @@ public class NetActivateFailedDialog extends BaseDialog<DialogNetActivateFailedB
 
     private final Context mContext;
 
-    protected NetActivateFailedDialog(final Context context) {
+    public NetActivateFailedDialog(final Context context) {
         super(context);
         mContext = context;
     }

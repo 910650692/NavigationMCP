@@ -99,6 +99,7 @@
     <dimen name="sp_97">55.29sp</dimen>
     <dimen name="sp_98">55.86sp</dimen>
     <dimen name="sp_99">56.43sp</dimen>
+    <dimen name="sp_112">63.84sp</dimen>
 
     <dimen name="dp_n_100">-57.14dp</dimen>
     <dimen name="dp_n_99">-56.57dp</dimen>
@@ -4305,4 +4306,8 @@
     <!--动态底部控制栏宽度-->
     <dimen name="control_view_normal_width">@dimen/dp_600</dimen>
     <dimen name="control_view_short_width">@dimen/dp_481</dimen>
+    <!--动态tbt布局-->
+    <dimen name="navi_tbt_height">@dimen/dp_158</dimen>
+    <dimen name="navi_tbt_height_short">@dimen/dp_138</dimen>
+    <dimen name="navi_tbt_with">@dimen/dp_820</dimen>
 </resources>

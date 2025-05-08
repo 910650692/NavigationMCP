@@ -228,6 +228,7 @@ dependencies {
     implementation project(':vrbridge')
     implementation libs.guava
     implementation project(":burypoint")
+    implementation libs.net.basic
     implementation libs.arouter.api
     annotationProcessor libs.arouter.compiler
 }

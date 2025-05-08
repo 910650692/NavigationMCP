@@ -142,6 +142,9 @@ public interface ILayerApi {
     /* 是否打开动态比例尺功能，type区分巡航动态比例尺还是导航动态比例尺 */
     void openDynamicLevel(MapType mapTypeId, DynamicLevelMode dynamicLevelMode);
 
+    /* 关闭动态比例尺 */
+    void closeDynamicLevel(MapType mapTypeId);
+
     /* 设置动态比例尺是否锁住状态，type区分巡航动态比例尺还是导航动态比例尺 */
     void setDynamicLevelLock(MapType mapTypeId, DynamicLevelMode dynamicLevelMode, boolean isLock);
 

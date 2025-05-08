@@ -82,4 +82,12 @@ public class TerminalParkingFragment extends BaseFragment<FragmentTerminalParkin
     public void onDestroy() {
         super.onDestroy();
     }
+
+    /**
+     * 终点停车场扎标点击事件
+     * @param index 点击下标
+     */
+    public void onMarkTerminalParkClickCallBack(final int index) {
+        mBinding.sceneTerminalParkingListView.onMarkTerminalParkClickCallBack(index);
+    }
 }

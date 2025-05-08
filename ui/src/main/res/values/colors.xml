@@ -6,12 +6,30 @@
     <color name="black_transparent_33">#33000000</color>
 
     <!-- 全局默认色值 -->
-    <color  name="default_select_text">#228B22</color >
-    <color  name="default_select_text_off">#000000</color >
+    <color name="default_select_text">#228B22</color>
+    <color name="default_select_text_off">#000000</color>
 
     <!-- 通用组件背景色 -->
     <color name="shape_bg_blue_button_4760ff">#4760FF</color>
     <color name="shape_bg_grey_button_b2afc2">#4DB2AFC2</color>
-    <color  name="dialog_commit_text_white">#FFFFFFFF</color >
-    <color  name="dialog_cancel_text_b3181818">#B3181818</color >
+    <color name="dialog_commit_text_white">#FFFFFFFF</color>
+    <color name="dialog_cancel_text_b3181818">#B3181818</color>
+
+    <!--dialog style color-->
+    <color name="dialog_cadi_title_color">#FF000000</color>
+    <color name="dialog_cadi_content_color">#CC000000</color>
+    <color name="dialog_cadi_positive_btn_bg_color">#FF2461EA</color>
+    <color name="dialog_cadi_negative_btn_bg_color">#338E97B9</color>
+    <color name="dialog_cadi_positive_btn_text_color">#FFFFFFFF</color>
+    <color name="dialog_cadi_negative_btn_text_color">#B3000000</color>
+
+    <color name="dialog_buick_title_color">#FF000000</color>
+    <color name="dialog_buick_content_color">#CC000000</color>
+    <color name="dialog_buick_positive_btn_bg_color">#000000</color>
+    <color name="dialog_buick_negative_btn_bg_color">#000000</color>
+    <color name="dialog_buick_positive_btn_text_color">#FF3377FF</color>
+    <color name="dialog_buick_negative_btn_text_color">#FF000000</color>
+
+    <color name="dialog_buick_bg_start">#FFF0F2F8</color>
+    <color name="dialog_buick_bg_end">#FFE1E5EA</color>
 </resources>

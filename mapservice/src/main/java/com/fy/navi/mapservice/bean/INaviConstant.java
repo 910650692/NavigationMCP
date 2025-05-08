@@ -15,6 +15,7 @@ public interface INaviConstant {
         int LAUNCHER_DESK = 2; //桌面底图
         int LAUNCHER_WIDGET = 3; //桌面卡片
         int HUD_WIDGET = 4; //HUD
+        int CLUSTER_WIDGET = 5; //HUD
     }
 
     //用于定义BaseRouteLine里的type.

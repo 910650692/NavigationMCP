@@ -16,123 +16,145 @@
         android:layout_height="@dimen/dp_1000"
         android:background="@drawable/bg_setting_fragment"
         android:clickable="true"
+        android:focusable="false"
         android:orientation="vertical">
 
-        <!--offline map title-->
-        <com.fy.navi.ui.view.SkinConstraintLayout
-            android:id="@+id/rl_offline_top"
+        <com.android.car.ui.FocusParkingView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <com.android.car.ui.FocusArea
+            android:id="@+id/focus_title"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            app:nudgeDown="@+id/focus_content"
+            app:nudgeUp="@+id/focus_content">
+            <!--offline map title-->
+            <com.fy.navi.ui.view.SkinConstraintLayout
+                android:id="@+id/rl_offline_top"
+                android:focusable="false"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
-            <com.fy.navi.ui.view.SkinImageView
-                android:id="@+id/iv_offline_map_back"
-                clickCommand="@{ViewModel.mBackMapDataView}"
-                android:layout_width="@dimen/dp_74"
-                android:layout_height="@dimen/dp_74"
-                android:src="@drawable/img_setting_back"
-                android:layout_marginTop="@dimen/dp_48"
-                android:layout_marginStart="@dimen/dp_32"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                <com.fy.navi.ui.view.SkinImageView
+                    android:id="@+id/iv_offline_map_back"
+                    clickCommand="@{ViewModel.mBackMapDataView}"
+                    android:layout_width="@dimen/dp_74"
+                    android:layout_height="@dimen/dp_74"
+                    android:layout_marginStart="@dimen/dp_32"
+                    android:layout_marginTop="@dimen/dp_48"
+                    android:focusable="true"
+                    android:src="@drawable/img_setting_back"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
-            <com.fy.navi.ui.view.SkinLinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginStart="@dimen/dp_296"
-                android:layout_marginTop="@dimen/dp_52"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintLeft_toRightOf="@+id/iv_offline_map_back">
-
-                <!--正在下载-->
                 <com.fy.navi.ui.view.SkinLinearLayout
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="fill_parent"
-                    android:gravity="center"
-                    android:orientation="horizontal">
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dp_296"
+                    android:layout_marginTop="@dimen/dp_52"
+                    android:orientation="horizontal"
+                    android:focusable="false"
+                    app:layout_constraintLeft_toRightOf="@+id/iv_offline_map_back"
+                    app:layout_constraintTop_toTopOf="parent">
 
+                    <!--正在下载-->
                     <com.fy.navi.ui.view.SkinLinearLayout
-                        android:id="@+id/all_map_data_tab"
-                        clickCommand="@{ViewModel.mDownloadingDataClickView}"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="0dp"
+                        android:layout_height="fill_parent"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:focusable="false"
+                        android:orientation="horizontal">
+
+                        <com.fy.navi.ui.view.SkinLinearLayout
+                            android:id="@+id/all_map_data_tab"
+                            clickCommand="@{ViewModel.mDownloadingDataClickView}"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:orientation="vertical"
+                            android:focusable="true"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/rl_offline_top">
+
+                            <com.fy.navi.ui.view.SkinTextView
+                                android:id="@+id/tv_offline_all_data"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:button="@null"
+                                android:gravity="center"
+                                android:text="@string/offline_manager_map_downloading"
+                                android:focusable="false"
+                                android:textColor="@color/setting_bg_tab_text_select"
+                                android:textSize="@dimen/sp_46" />
+
+                            <com.fy.navi.ui.view.SkinView
+                                android:id="@+id/offline_all_data_line"
+                                android:layout_width="@dimen/dp_125"
+                                android:layout_height="@dimen/dp_6"
+                                android:layout_marginTop="@dimen/dp_10"
+                                android:focusable="false"
+                                android:background="@color/account_blue_text" />
+
+                        </com.fy.navi.ui.view.SkinLinearLayout>
+
+                        <com.fy.navi.ui.view.SkinTextView
+                            android:layout_width="@dimen/dp_57"
+                            android:layout_height="@dimen/dp_57"
+                            android:layout_gravity="center"
+                            android:layout_marginStart="@dimen/dp_34"
+                            android:background="@drawable/bg_end_point"
+                            android:gravity="center"
+                            android:focusable="false"
+                            android:text="@{String.valueOf(ViewModel.mAllDownloadingDataSize)}"
+                            android:textColor="@color/setting_white"
+                            android:textSize="@dimen/sp_32"
+                            android:visibility="@{ViewModel.mAllDownloadingDataSize > 0 ? View.VISIBLE : View.GONE}" />
+
+                    </com.fy.navi.ui.view.SkinLinearLayout>
+
+                    <!--已下载-->
+                    <com.fy.navi.ui.view.SkinLinearLayout
+                        android:id="@+id/manage_data_tab"
+                        clickCommand="@{ViewModel.mDownloadedClickView}"
+                        android:layout_width="0dp"
+                        android:layout_height="fill_parent"
+                        android:layout_marginStart="@dimen/dp_428"
+                        android:layout_weight="1"
                         android:gravity="center"
                         android:orientation="vertical"
-                        app:layout_constraintStart_toStartOf="parent"
+                        android:focusable="true"
+                        app:layout_constraintLeft_toRightOf="@+id/all_map_data_tab"
                         app:layout_constraintTop_toBottomOf="@+id/rl_offline_top">
 
                         <com.fy.navi.ui.view.SkinTextView
-                            android:id="@+id/tv_offline_all_data"
+                            android:id="@+id/tv_offline_download_administration"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:button="@null"
                             android:gravity="center"
-                            android:text="@string/offline_manager_map_downloading"
+                            android:text="@string/offline_city_downloaded"
+                            android:focusable="false"
                             android:textColor="@color/setting_bg_tab_text_select"
                             android:textSize="@dimen/sp_46" />
 
                         <com.fy.navi.ui.view.SkinView
-                            android:id="@+id/offline_all_data_line"
+                            android:id="@+id/download_administration_line"
                             android:layout_width="@dimen/dp_125"
                             android:layout_height="@dimen/dp_6"
                             android:layout_marginTop="@dimen/dp_10"
-                            android:background="@color/account_blue_text" />
+                            android:focusable="false"
+                            android:background="@color/account_blue_text"
+                            android:visibility="invisible" />
 
                     </com.fy.navi.ui.view.SkinLinearLayout>
 
-                    <com.fy.navi.ui.view.SkinTextView
-                        android:layout_width="@dimen/dp_57"
-                        android:layout_height="@dimen/dp_57"
-                        android:text="@{String.valueOf(ViewModel.mAllDownloadingDataSize)}"
-                        android:layout_gravity="center"
-                        android:gravity="center"
-                        android:visibility="@{ViewModel.mAllDownloadingDataSize > 0 ? View.VISIBLE : View.GONE}"
-                        android:textColor="@color/setting_white"
-                        android:textSize="@dimen/sp_32"
-                        android:layout_marginStart="@dimen/dp_34"
-                        android:background="@drawable/bg_end_point" />
-
                 </com.fy.navi.ui.view.SkinLinearLayout>
 
-                <!--已下载-->
-                <com.fy.navi.ui.view.SkinLinearLayout
-                    android:id="@+id/manage_data_tab"
-                    clickCommand="@{ViewModel.mDownloadedClickView}"
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="fill_parent"
-                    android:gravity="center"
-                    android:orientation="vertical"
-                    android:layout_marginStart="@dimen/dp_428"
-                    app:layout_constraintLeft_toRightOf="@+id/all_map_data_tab"
-                    app:layout_constraintTop_toBottomOf="@+id/rl_offline_top">
-
-                    <com.fy.navi.ui.view.SkinTextView
-                        android:id="@+id/tv_offline_download_administration"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:button="@null"
-                        android:gravity="center"
-                        android:text="@string/offline_city_downloaded"
-                        android:textColor="@color/setting_bg_tab_text_select"
-                        android:textSize="@dimen/sp_46" />
-
-                    <com.fy.navi.ui.view.SkinView
-                        android:id="@+id/download_administration_line"
-                        android:layout_width="@dimen/dp_125"
-                        android:layout_height="@dimen/dp_6"
-                        android:layout_marginTop="@dimen/dp_10"
-                        android:background="@color/account_blue_text"
-                        android:visibility="invisible" />
-
-                </com.fy.navi.ui.view.SkinLinearLayout>
-
-            </com.fy.navi.ui.view.SkinLinearLayout>
-
-        </com.fy.navi.ui.view.SkinConstraintLayout>
-
+            </com.fy.navi.ui.view.SkinConstraintLayout>
+        </com.android.car.ui.FocusArea>
         <com.fy.navi.ui.view.SkinNestedScrollView
             android:layout_width="match_parent"
             android:layout_height="fill_parent"
@@ -143,161 +165,182 @@
             android:scrollbars="none"
             android:fillViewport="true">
 
-            <com.fy.navi.ui.view.SkinConstraintLayout
+            <com.android.car.ui.FocusArea
+                android:id="@+id/focus_content"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/all_map_data_tab">
+                app:nudgeDown="@+id/focus_title"
+                app:nudgeUp="@+id/focus_title">
 
-                <!--下载中界面-->
                 <com.fy.navi.ui.view.SkinConstraintLayout
-                    android:id="@+id/administration_downloading_view"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:visibility="@{ViewModel.mDownloadingDataVisibility ? View.VISIBLE : View.GONE}"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/download_status">
-
-                    <com.fy.navi.ui.view.SkinLinearLayout
-                        android:id="@+id/download_status"
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/dp_120"
-                        android:gravity="center_horizontal"
-                        android:orientation="horizontal"
-                        android:visibility="@{ViewModel.mDownloadingNoDataVisibility ? View.GONE : View.VISIBLE}"
-                        android:background="@drawable/bg_setting_checkbox"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent">
-
-                        <com.fy.navi.ui.view.SkinLinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="fill_parent"
-                            android:gravity="center_horizontal"
-                            android:orientation="horizontal">
-
-                            <com.fy.navi.ui.view.SkinLinearLayout
-                                android:id="@+id/all_data_download"
-                                clickCommand="@{ViewModel.mAllDataDownload}"
-                                android:layout_width="0dp"
-                                android:layout_height="match_parent"
-                                android:layout_weight="1"
-                                android:gravity="center">
-
-                                <com.fy.navi.ui.view.SkinImageView
-                                    android:id="@+id/img_download_all_start"
-                                    android:layout_width="@dimen/dp_74"
-                                    android:layout_height="@dimen/dp_74"
-                                    android:src="@drawable/img_download_all_start"/>
-
-                                <com.fy.navi.ui.view.SkinTextView
-                                    android:id="@+id/tv_download_all_start"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:textSize="@dimen/sp_46"
-                                    android:layout_marginStart="@dimen/dp_14"
-                                    android:textColor="@color/setting_bg_voice_text"
-                                    android:text="@string/offline_all_city_start_download" />
-
-                            </com.fy.navi.ui.view.SkinLinearLayout>
-
-                            <com.fy.navi.ui.view.SkinLinearLayout
-                                android:id="@+id/all_data_suspend"
-                                clickCommand="@{ViewModel.mAllDataSuspend}"
-                                android:layout_width="0dp"
-                                android:layout_height="match_parent"
-                                android:layout_weight="1"
-                                android:gravity="center">
-
-                                <com.fy.navi.ui.view.SkinImageView
-                                    android:id="@+id/img_download_all_suspend"
-                                    android:layout_width="@dimen/dp_74"
-                                    android:layout_height="@dimen/dp_74"
-                                    android:src="@drawable/img_download_all_suspend"/>
-
-                                <com.fy.navi.ui.view.SkinTextView
-                                    android:id="@+id/tv_download_all_suspend"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:textSize="@dimen/sp_46"
-                                    android:layout_marginStart="@dimen/dp_14"
-                                    android:textColor="@color/setting_bg_voice_text"
-                                    android:text="@string/offline_all_city_suspend_download" />
-
-                            </com.fy.navi.ui.view.SkinLinearLayout>
-                        </com.fy.navi.ui.view.SkinLinearLayout>
-                    </com.fy.navi.ui.view.SkinLinearLayout>
-
-                    <!--下载中列表-->
-                    <com.fy.navi.ui.view.SkinRecyclerView
-                        android:id="@+id/rv_downloading_offline"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_marginTop="@dimen/dp_30"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/download_status" />
-
-                </com.fy.navi.ui.view.SkinConstraintLayout>
-
-                <com.fy.navi.ui.view.SkinTextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/offline_manager_map_no_downloading"
-                    android:visibility="@{ViewModel.mDownloadingNoDataVisibility ? View.VISIBLE : View.GONE}"
-                    android:textSize="@dimen/sp_46"
-                    android:textColor="@color/setting_bg_tab_text_select"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"/>
-
-                <!--已下载界面-->
-                <com.fy.navi.ui.view.SkinConstraintLayout
-                    android:id="@+id/administration_downloaded_view"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:visibility="@{ViewModel.mDownloadedDataVisibility ? View.VISIBLE : View.GONE}"
+                    android:focusable="false"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/all_map_data_tab">
 
-                    <com.fy.navi.ui.view.SkinTextView
-                        android:id="@+id/downloaded_offline_layout"
+                    <!--下载中界面-->
+                    <com.fy.navi.ui.view.SkinConstraintLayout
+                        android:id="@+id/administration_downloading_view"
                         android:layout_width="match_parent"
-                        android:layout_height="@dimen/dp_118"
-                        android:gravity="center"
-                        android:layout_marginTop="@dimen/dp_16"
-                        android:text="@{ViewModel.mAllDownloadedDataSize}"
-                        android:textColor="@color/setting_bg_tab_text_unselect"
-                        android:textSize="@dimen/sp_46"
-                        android:visibility="@{ViewModel.mDownloadedNoDataVisibility ? View.GONE : View.VISIBLE}"
-                        android:background="@drawable/shape_bg_map_data"
+                        android:layout_height="wrap_content"
+                        android:focusable="false"
+                        android:visibility="@{ViewModel.mDownloadingDataVisibility ? View.VISIBLE : View.GONE}"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/font_size"/>
+                        app:layout_constraintTop_toBottomOf="@+id/download_status">
 
-                    <!--下载完成列表-->
-                    <com.fy.navi.ui.view.SkinRecyclerView
-                        android:id="@+id/rv_downloaded_offline"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_marginTop="@dimen/dp_40"
+                        <com.fy.navi.ui.view.SkinLinearLayout
+                            android:id="@+id/download_status"
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/dp_120"
+                            android:background="@drawable/bg_setting_checkbox"
+                            android:gravity="center_horizontal"
+                            android:orientation="horizontal"
+                            android:focusable="false"
+                            android:visibility="@{ViewModel.mDownloadingNoDataVisibility ? View.GONE : View.VISIBLE}"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent">
+
+                            <com.fy.navi.ui.view.SkinLinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="fill_parent"
+                                android:focusable="false"
+                                android:gravity="center_horizontal"
+                                android:orientation="horizontal">
+
+                                <com.fy.navi.ui.view.SkinLinearLayout
+                                    android:id="@+id/all_data_download"
+                                    clickCommand="@{ViewModel.mAllDataDownload}"
+                                    android:focusable="true"
+                                    android:layout_width="0dp"
+                                    android:layout_height="match_parent"
+                                    android:layout_weight="1"
+                                    android:gravity="center">
+
+                                    <com.fy.navi.ui.view.SkinImageView
+                                        android:id="@+id/img_download_all_start"
+                                        android:layout_width="@dimen/dp_74"
+                                        android:layout_height="@dimen/dp_74"
+                                        android:focusable="false"
+                                        android:src="@drawable/img_download_all_start" />
+
+                                    <com.fy.navi.ui.view.SkinTextView
+                                        android:id="@+id/tv_download_all_start"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginStart="@dimen/dp_14"
+                                        android:focusable="false"
+                                        android:text="@string/offline_all_city_start_download"
+                                        android:textColor="@color/setting_bg_voice_text"
+                                        android:textSize="@dimen/sp_46" />
+
+                                </com.fy.navi.ui.view.SkinLinearLayout>
+
+                                <com.fy.navi.ui.view.SkinLinearLayout
+                                    android:id="@+id/all_data_suspend"
+                                    clickCommand="@{ViewModel.mAllDataSuspend}"
+                                    android:focusable="true"
+                                    android:layout_width="0dp"
+                                    android:layout_height="match_parent"
+                                    android:layout_weight="1"
+                                    android:gravity="center">
+
+                                    <com.fy.navi.ui.view.SkinImageView
+                                        android:id="@+id/img_download_all_suspend"
+                                        android:layout_width="@dimen/dp_74"
+                                        android:layout_height="@dimen/dp_74"
+                                        android:focusable="false"
+                                        android:src="@drawable/img_download_all_suspend" />
+
+                                    <com.fy.navi.ui.view.SkinTextView
+                                        android:id="@+id/tv_download_all_suspend"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:focusable="false"
+                                        android:layout_marginStart="@dimen/dp_14"
+                                        android:text="@string/offline_all_city_suspend_download"
+                                        android:textColor="@color/setting_bg_voice_text"
+                                        android:textSize="@dimen/sp_46" />
+
+                                </com.fy.navi.ui.view.SkinLinearLayout>
+                            </com.fy.navi.ui.view.SkinLinearLayout>
+                        </com.fy.navi.ui.view.SkinLinearLayout>
+
+                        <!--下载中列表-->
+                        <com.fy.navi.ui.view.SkinRecyclerView
+                            android:id="@+id/rv_downloading_offline"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_marginTop="@dimen/dp_30"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/download_status" />
+
+                    </com.fy.navi.ui.view.SkinConstraintLayout>
+
+                    <com.fy.navi.ui.view.SkinTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/offline_manager_map_no_downloading"
+                        android:textColor="@color/setting_bg_tab_text_select"
+                        android:textSize="@dimen/sp_46"
+                        android:focusable="false"
+                        android:visibility="@{ViewModel.mDownloadingNoDataVisibility ? View.VISIBLE : View.GONE}"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/downloaded_offline_layout" />
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <!--已下载界面-->
+                    <com.fy.navi.ui.view.SkinConstraintLayout
+                        android:id="@+id/administration_downloaded_view"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:focusable="false"
+                        android:visibility="@{ViewModel.mDownloadedDataVisibility ? View.VISIBLE : View.GONE}"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/all_map_data_tab">
+
+                        <com.fy.navi.ui.view.SkinTextView
+                            android:id="@+id/downloaded_offline_layout"
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/dp_118"
+                            android:layout_marginTop="@dimen/dp_16"
+                            android:background="@drawable/shape_bg_map_data"
+                            android:focusable="false"
+                            android:gravity="center"
+                            android:text="@{ViewModel.mAllDownloadedDataSize}"
+                            android:textColor="@color/setting_bg_tab_text_unselect"
+                            android:textSize="@dimen/sp_46"
+                            android:visibility="@{ViewModel.mDownloadedNoDataVisibility ? View.GONE : View.VISIBLE}"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/font_size" />
+
+                        <!--下载完成列表-->
+                        <com.fy.navi.ui.view.SkinRecyclerView
+                            android:id="@+id/rv_downloaded_offline"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_marginTop="@dimen/dp_40"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/downloaded_offline_layout" />
+
+                    </com.fy.navi.ui.view.SkinConstraintLayout>
+
+                    <com.fy.navi.ui.view.SkinTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/offline_manager_map_no_downloaded"
+                        android:focusable="false"
+                        android:textColor="@color/setting_bg_tab_text_select"
+                        android:textSize="@dimen/sp_46"
+                        android:visibility="@{ViewModel.mDownloadedNoDataVisibility ? View.VISIBLE : View.GONE}"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
 
                 </com.fy.navi.ui.view.SkinConstraintLayout>
-
-                <com.fy.navi.ui.view.SkinTextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/offline_manager_map_no_downloaded"
-                    android:visibility="@{ViewModel.mDownloadedNoDataVisibility ? View.VISIBLE : View.GONE}"
-                    android:textSize="@dimen/sp_46"
-                    android:textColor="@color/setting_bg_tab_text_select"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"/>
-
-            </com.fy.navi.ui.view.SkinConstraintLayout>
-
+            </com.android.car.ui.FocusArea>
         </com.fy.navi.ui.view.SkinNestedScrollView>
 
 

@@ -8,6 +8,7 @@ import com.fy.navi.service.define.setting.SettingController;
 import com.fy.navi.service.greendao.CommonManager;
 import com.fy.navi.service.greendao.setting.SettingManager;
 import com.fy.navi.service.logicpaket.activate.ActivatePackage;
+import com.fy.navi.service.logicpaket.activate.IActivateObserver;
 import com.fy.navi.service.logicpaket.aos.AosRestrictedPackage;
 import com.fy.navi.service.logicpaket.cruise.CruisePackage;
 import com.fy.navi.service.logicpaket.engine.EnginePackage;
@@ -50,6 +51,7 @@ public class StartService {
         Logger.i(TAG, "start SDK before......");
         sdkInitCallbacks = new CopyOnWriteArrayList<>();
         EnginePackage.getInstance().addEngineObserver(TAG, engineObserver);
+        ActivatePackage.getInstance().addActObserver(activateObserver);
         SettingManager.getInstance().init();
         CommonManager.getInstance().init();
     }
@@ -135,6 +137,7 @@ public class StartService {
         MapPackage.getInstance().init(MapType.MAIN_SCREEN_MAIN_MAP);
         MapPackage.getInstance().init(MapType.LAUNCHER_DESK_MAP);
         MapPackage.getInstance().init(MapType.LAUNCHER_WIDGET_MAP);
+        MapPackage.getInstance().init(MapType.CLUSTER_MAP);
         MapPackage.getInstance().init(MapType.HUD_MAP);
     }
 
@@ -176,6 +179,7 @@ public class StartService {
      */
     private void startActivation() {
         Logger.i(TAG, "Sdk no activation, Start activation in progress.....");
+        ActivatePackage.getInstance().startActivate();
     }
 
     private void conformSuccessCallback() {
@@ -212,6 +216,26 @@ public class StartService {
     private static final class Helper {
         private final static StartService sts = new StartService();
     }
+
+    private static final IActivateObserver activateObserver = new IActivateObserver() {
+        @Override
+        public void onActivating() {
+        }
+
+        @Override
+        public void onNetActivateFailed(final int failedCount) {
+        }
+
+        @Override
+        public void onActivated() {
+            Logger.d(TAG, "onActivated in startService...");
+            getInstance().checkActivation();
+        }
+
+        @Override
+        public void onActivatedError() {
+        }
+    };
 
     private static final IEngineObserver engineObserver = new IEngineObserver() {
         @Override

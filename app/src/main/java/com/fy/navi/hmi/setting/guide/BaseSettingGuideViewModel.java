@@ -127,7 +127,6 @@ public class BaseSettingGuideViewModel extends BaseViewModel<SettingNaviFragment
     // 自动比例尺
     public Action mAutoScale = () -> {
         final boolean value = Boolean.FALSE.equals(mIsAutoScale.getValue());
-        LayerPackage.getInstance().openDynamicLevel(MapType.MAIN_SCREEN_MAIN_MAP, value);
         mIsAutoScale.setValue(value);
         mModel.setAutoScale(value);
 

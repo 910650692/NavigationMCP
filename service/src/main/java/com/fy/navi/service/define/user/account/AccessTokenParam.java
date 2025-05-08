@@ -5,6 +5,8 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
 
+import java.util.Arrays;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -31,6 +33,20 @@ public class AccessTokenParam {
 
     //可以为null
     private Bundle mAddAccountOption;
+
+    @Override
+    public String toString() {
+        return "AccessTokenParam{" +
+                "mAccountType='" + mAccountType + '\'' +
+                ", mAuthTokenType='" + mAuthTokenType + '\'' +
+                ", mFeatures=" + Arrays.toString(mFeatures) +
+                ", mActivity=" + mActivity +
+                ", mAddAccountOption=" + mAddAccountOption +
+                ", mGetAuthTokenOption=" + mGetAuthTokenOption +
+                ", mCallback=" + mCallback +
+                ", mHandler=" + mHandler +
+                '}';
+    }
 
     //可以为null
     private Bundle mGetAuthTokenOption;

@@ -98,7 +98,6 @@ public class SceneNaviViaInfoView extends NaviSceneBase<SceneNaviViaInfoViewBind
         mViewBinding.stvWay.setText(str);
         mViewBinding.stvWayArrive.setVisibility(VISIBLE);
         mViewBinding.stvViaCount.setVisibility(INVISIBLE);
-        modifyStvWayWidth(WITH_ARRIVED_TAG);
     }
 
     /**
@@ -114,32 +113,9 @@ public class SceneNaviViaInfoView extends NaviSceneBase<SceneNaviViaInfoViewBind
             mViewBinding.stvViaCount.setVisibility(VISIBLE);
             mViewBinding.stvViaCount.setText(String.format(getResources().
                     getString(R.string.navi_via_count), totalSize));
-            modifyStvWayWidth(WITH_COUNT_TAG);
         } else {
             mViewBinding.stvViaCount.setVisibility(INVISIBLE);
-            modifyStvWayWidth(ONLY_NAME);
         }
-    }
-
-    /**
-     * 为了更好的显示效果，这里动态修改途经点到达的显示范围
-     * 显示数量信息的时候最大宽度显示为242
-     * 显示已到达的时候显示为450
-     * 其他情况显示为534
-     * @param type 显示类型
-     */
-    private void modifyStvWayWidth(final int type) {
-        Logger.i(TAG, "modifyStvWayWidth: " + type);
-        final LayoutParams params = (LayoutParams)mViewBinding.
-                stvWay.getLayoutParams();
-        params.matchConstraintMaxWidth = switch (type) {
-            case WITH_ARRIVED_TAG ->
-                    (int) getResources().getDimension(com.fy.navi.ui.R.dimen.dp_450);
-            case WITH_COUNT_TAG -> (int) getResources().getDimension(com.fy.navi.ui.R.dimen.dp_242);
-            default -> (int) getResources().getDimension(com.fy.navi.ui.R.dimen.dp_534);
-        };
-        mViewBinding.stvWay.setLayoutParams(params);
-        invalidate();
     }
 
 

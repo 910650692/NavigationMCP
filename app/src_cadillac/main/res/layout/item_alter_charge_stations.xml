@@ -11,7 +11,8 @@
     <com.fy.navi.ui.view.SkinConstraintLayout
         android:id="@+id/layout_charge_station"
         android:layout_width="@dimen/dp_640"
-        android:layout_height="@dimen/dp_154">
+        android:layout_height="@dimen/dp_154"
+        android:focusable="false">
 
         <com.fy.navi.ui.view.SkinTextView
             android:id="@+id/tv_charge_station_number"
@@ -21,6 +22,7 @@
             android:layout_height="wrap_content"
             android:singleLine="true"
             android:ellipsize="end"
+            android:focusable="false"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -38,6 +40,7 @@
             android:layout_marginTop="@dimen/dp_18"
             android:singleLine="true"
             android:ellipsize="end"
+            android:focusable="false"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             android:text="@string/route_selected_charge_station"/>
@@ -49,6 +52,7 @@
             android:layout_marginTop="@dimen/dp_82"
             android:layout_marginStart="@dimen/dp_72"
             android:background="@color/route_charge_param_color"
+            android:focusable="false"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
@@ -61,6 +65,7 @@
                 android:text="@string/charge_title_fast"
                 android:background="@color/route_charge_param_title_color"
                 android:gravity="center"
+                android:focusable="false"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -72,6 +77,7 @@
                 android:textColor="@color/route_charge_param_total_color"
                 android:textSize="@dimen/sp_26"
                 android:layout_marginTop="@dimen/dp_6"
+                android:focusable="false"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/tv_charge_fast"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -86,6 +92,7 @@
             android:layout_marginTop="@dimen/dp_82"
             android:layout_marginStart="@dimen/dp_16"
             android:background="@color/route_charge_param_color"
+            android:focusable="false"
             app:layout_constraintStart_toEndOf="@+id/ly_charge_fast"
             app:layout_constraintTop_toTopOf="parent">
 
@@ -98,6 +105,7 @@
                 android:text="@string/charge_title_slow"
                 android:background="@color/route_charge_param_title_color"
                 android:gravity="center"
+                android:focusable="false"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -108,6 +116,7 @@
                 android:textColor="@color/route_charge_param_total_color"
                 android:textSize="@dimen/sp_26"
                 android:layout_marginTop="@dimen/dp_6"
+                android:focusable="false"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/tv_charge_slow"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -123,6 +132,7 @@
             android:textSize="@dimen/sp_30"
             android:layout_marginTop="@dimen/dp_86"
             android:layout_marginStart="@dimen/dp_12"
+            android:focusable="false"
             app:layout_goneMarginStart="@dimen/dp_72"
             app:layout_constraintStart_toEndOf="@+id/ly_charge_slow"
             app:layout_constraintTop_toTopOf="parent"
@@ -136,6 +146,7 @@
             android:textSize="@dimen/sp_30"
             android:layout_marginTop="@dimen/dp_24"
             android:layout_marginEnd="@dimen/dp_20"
+            android:focusable="false"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/button_alter"
             tool:text="￥1.65/度"/>
@@ -151,6 +162,7 @@
             android:layout_marginEnd="@dimen/dp_30"
             android:text="@string/route_alter"
             android:background="@drawable/bg_route_replace"
+            android:focusable="false"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 

@@ -12,7 +12,7 @@
     </data>
 
     <com.fy.navi.ui.view.SkinConstraintLayout
-        android:layout_width="@dimen/dp_640"
+        android:layout_width="@dimen/dp_820"
         android:layout_height="wrap_content"
         android:focusable="false"
         android:background="@drawable/bg_navi_control">
@@ -26,11 +26,11 @@
             android:background="@drawable/bg_poi_gas_price_bg"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:layout_marginStart="@dimen/dp_40"
-            android:layout_marginTop="@dimen/dp_42"
-            android:textSize="@dimen/sp_26"
-            android:paddingHorizontal="@dimen/dp_12"
-            android:paddingVertical="@dimen/dp_6"
+            android:layout_marginStart="@dimen/dp_52"
+            android:layout_marginTop="@dimen/dp_58"
+            android:textSize="@dimen/sp_32"
+            android:paddingHorizontal="@dimen/dp_16"
+            android:paddingVertical="@dimen/dp_7"
             android:gravity="center"
             android:textColor="@color/navi_color_2461EA_100"
             tools:text="维护中" />
@@ -47,10 +47,36 @@
             app:layout_constraintTop_toTopOf="@+id/siv_service_details_status_tag"
             app:layout_constraintBottom_toBottomOf="@+id/siv_service_details_status_tag"
             app:layout_constraintStart_toEndOf="@+id/siv_service_details_status_tag"
-            android:layout_marginStart="@dimen/dp_16"
-            android:textSize="@dimen/sp_38"
+            android:layout_marginStart="@dimen/dp_20"
+            android:textSize="@dimen/sp_52"
             android:textColor="@color/navi_color_000000_100"
             tools:text="商城服务区" />
+
+        <com.fy.navi.ui.view.SkinTextView
+            android:id="@+id/siv_service_details_route_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{sapaDetail.mServiceRouteName}"
+            android:textSize="@dimen/sp_38"
+            android:textColor="@color/navi_color_000000_70"
+            android:focusable="false"
+            tools:text="苏州市吴中区"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginStart="@dimen/dp_52"
+            android:layout_marginTop="@dimen/dp_160"/>
+
+        <com.fy.navi.ui.view.SkinImageView
+            android:id="@+id/siv_line"
+            android:layout_width="@dimen/dp_716"
+            android:layout_height="@dimen/dp_1"
+            android:focusable="false"
+            android:background="@color/navi_color_000000_20"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginTop="@dimen/dp_334"/>
+
 
         <com.fy.navi.ui.view.SkinTextView
             android:id="@+id/siv_service_details_distance"
@@ -60,9 +86,9 @@
             android:text="@{sapaDetail.mServiceDistance}"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginStart="@dimen/dp_40"
-            android:layout_marginTop="@dimen/dp_120"
-            android:textSize="@dimen/sp_34"
+            android:layout_marginStart="@dimen/dp_52"
+            android:layout_marginTop="@dimen/dp_234"
+            android:textSize="@dimen/sp_46"
             android:textColor="@color/navi_color_000000_100"
             tools:text="5.2公里" />
 
@@ -75,8 +101,9 @@
             app:layout_constraintStart_toEndOf="@+id/siv_service_details_distance"
             app:layout_constraintTop_toTopOf="@+id/siv_service_details_distance"
             app:layout_constraintBottom_toBottomOf="@+id/siv_service_details_distance"
-            android:layout_marginStart="@dimen/dp_38"
-            android:textSize="@dimen/sp_34"
+            android:layout_marginStart="@dimen/dp_24"
+            android:visibility="gone"
+            android:textSize="@dimen/sp_46"
             android:textColor="@color/navi_color_000000_100"
             tools:text="30分钟" />
 
@@ -87,34 +114,35 @@
             android:focusable="false"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginEnd="@dimen/dp_40"
-            android:layout_marginTop="@dimen/dp_120"
-            android:textSize="@dimen/sp_34"
+            android:layout_marginEnd="@dimen/dp_52"
+            android:layout_marginTop="@dimen/dp_234"
+            android:textSize="@dimen/sp_46"
+            android:visibility="gone"
             android:textColor="@color/navi_color_000000_100"
             android:text="@string/charge_remain_arrive" />
 
         <com.fy.navi.ui.view.SkinImageView
             android:id="@+id/siv_service_remain_charge_icon"
-            android:layout_width="@dimen/dp_37"
-            android:layout_height="@dimen/dp_37"
+            android:layout_width="@dimen/dp_54"
+            android:layout_height="@dimen/dp_54"
             android:focusable="false"
             android:background="@drawable/img_electricity_medium_42"
             app:layout_constraintTop_toTopOf="@+id/siv_service_details_remiancharge"
             app:layout_constraintBottom_toBottomOf="@+id/siv_service_details_remiancharge"
             app:layout_constraintEnd_toStartOf="@+id/siv_service_details_remiancharge"
-            android:layout_marginEnd="@dimen/dp_7" />
+            android:layout_marginEnd="@dimen/dp_8" />
 
         <com.fy.navi.ui.view.SkinImageView
             android:id="@+id/siv_service_exit"
-            android:layout_width="@dimen/dp_50"
-            android:layout_height="@dimen/dp_50"
+            android:layout_width="@dimen/dp_74"
+            android:layout_height="@dimen/dp_74"
             android:focusable="false"
-            android:background="@drawable/img_off58"
+            android:background="@drawable/img_off_74"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             clickCommand="@{sapaDetail.closeScene}"
-            android:layout_marginTop="@dimen/dp_41"
-            android:layout_marginEnd="@dimen/dp_30" />
+            android:layout_marginTop="@dimen/dp_48"
+            android:layout_marginEnd="@dimen/dp_36" />
 
         <com.fy.navi.ui.view.SkinLinearLayout
             android:layout_width="match_parent"
@@ -123,88 +151,76 @@
             android:orientation="vertical"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginTop="@dimen/dp_181">
-
-        <com.fy.navi.ui.view.SkinTextView
-            android:id="@+id/siv_service_details_route_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:focusable="false"
-            android:text="@{sapaDetail.mServiceRouteName}"
-            android:layout_marginStart="@dimen/dp_40"
-            android:textSize="@dimen/sp_30"
-            android:visibility="gone"
-            android:textColor="@color/navi_color_000000_70"
-            tools:text="浦东新区世纪大道1号楼（进华经北路)" />
+            android:layout_marginTop="@dimen/dp_352">
 
         <com.fy.navi.ui.view.SkinLinearLayout
             android:id="@+id/sll_service_Services"
             android:layout_width="wrap_content"
-            android:layout_height="@dimen/dp_52"
+            android:layout_height="@dimen/dp_68"
             android:focusable="false"
             android:visibility="@{sapaDetail.mServicesVisible ? View.VISIBLE : View.GONE}"
             android:gravity="center_vertical"
-            android:paddingEnd="@dimen/dp_4"
+            android:paddingEnd="@dimen/dp_9"
             android:background="@drawable/sapa_service_details_icon_bg"
-            android:layout_marginStart="@dimen/dp_40"
+            android:layout_marginStart="@dimen/dp_52"
             android:layout_marginTop="@dimen/dp_24">
 
             <com.fy.navi.ui.view.SkinImageView
                 android:id="@+id/siv_service_details_service_charge_station"
-                android:layout_width="@dimen/dp_42"
-                android:layout_height="@dimen/dp_42"
-                android:layout_marginEnd="@dimen/dp_7"
-                android:layout_marginStart="@dimen/dp_11"
+                android:layout_width="@dimen/dp_54"
+                android:layout_height="@dimen/dp_54"
+                android:layout_marginEnd="@dimen/dp_8"
+                android:layout_marginStart="@dimen/dp_16"
                 android:focusable="false"
                 android:visibility="@{sapaDetail.mServiceChargeStationVisible ? View.VISIBLE : View.GONE}"
                 android:background="@drawable/img_lightning_black_42" />
 
             <com.fy.navi.ui.view.SkinImageView
                 android:id="@+id/siv_service_details_service_canteen"
-                android:layout_width="@dimen/dp_42"
-                android:layout_height="@dimen/dp_42"
-                android:layout_marginEnd="@dimen/dp_7"
-                android:layout_marginStart="@dimen/dp_11"
+                android:layout_width="@dimen/dp_54"
+                android:layout_height="@dimen/dp_54"
+                android:layout_marginEnd="@dimen/dp_8"
+                android:layout_marginStart="@dimen/dp_16"
                 android:focusable="false"
                 android:visibility="@{sapaDetail.mServiceCanteenVisible ? View.VISIBLE : View.GONE}"
                 android:background="@drawable/img_gourmet_black_42" />
 
             <com.fy.navi.ui.view.SkinImageView
                 android:id="@+id/siv_service_details_service_maintenance"
-                android:layout_width="@dimen/dp_42"
-                android:layout_height="@dimen/dp_42"
-                android:layout_marginEnd="@dimen/dp_7"
-                android:layout_marginStart="@dimen/dp_11"
+                android:layout_width="@dimen/dp_54"
+                android:layout_height="@dimen/dp_54"
+                android:layout_marginEnd="@dimen/dp_8"
+                android:layout_marginStart="@dimen/dp_16"
                 android:focusable="false"
                 android:visibility="@{sapaDetail.mServiceMaintenanceVisible ? View.VISIBLE : View.GONE}"
                 android:background="@drawable/img_maintenance_black_42" />
 
             <com.fy.navi.ui.view.SkinImageView
                 android:id="@+id/siv_service_details_service_lavatory"
-                android:layout_width="@dimen/dp_42"
-                android:layout_height="@dimen/dp_42"
-                android:layout_marginEnd="@dimen/dp_7"
-                android:layout_marginStart="@dimen/dp_11"
+                android:layout_width="@dimen/dp_54"
+                android:layout_height="@dimen/dp_54"
+                android:layout_marginEnd="@dimen/dp_8"
+                android:layout_marginStart="@dimen/dp_16"
                 android:focusable="false"
                 android:visibility="@{sapaDetail.mServiceLavatoryVisible ? View.VISIBLE : View.GONE}"
                 android:background="@drawable/img_lavatory_black_42" />
 
             <com.fy.navi.ui.view.SkinImageView
                 android:id="@+id/siv_service_details_service_buy"
-                android:layout_width="@dimen/dp_42"
-                android:layout_height="@dimen/dp_42"
-                android:layout_marginEnd="@dimen/dp_7"
-                android:layout_marginStart="@dimen/dp_11"
+                android:layout_width="@dimen/dp_54"
+                android:layout_height="@dimen/dp_54"
+                android:layout_marginEnd="@dimen/dp_8"
+                android:layout_marginStart="@dimen/dp_16"
                 android:focusable="false"
                 android:visibility="@{sapaDetail.mServiceBuyVisible ? View.VISIBLE : View.GONE}"
                 android:background="@drawable/img_buy_black_42" />
 
             <com.fy.navi.ui.view.SkinImageView
                 android:id="@+id/siv_service_details_service_hotel"
-                android:layout_width="@dimen/dp_42"
-                android:layout_height="@dimen/dp_42"
-                android:layout_marginEnd="@dimen/dp_7"
-                android:layout_marginStart="@dimen/dp_11"
+                android:layout_width="@dimen/dp_54"
+                android:layout_height="@dimen/dp_54"
+                android:layout_marginEnd="@dimen/dp_8"
+                android:layout_marginStart="@dimen/dp_16"
                 android:focusable="false"
                 android:visibility="@{sapaDetail.mServiceHotelVisible ? View.VISIBLE : View.GONE}"
                 android:background="@drawable/img_groggery_black_42" />
@@ -212,44 +228,34 @@
 
         <com.fy.navi.ui.view.SkinLinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="@dimen/dp_52"
+            android:layout_height="@dimen/dp_68"
             android:focusable="false"
             android:gravity="center_vertical"
             android:visibility="@{sapaDetail.mServiceGasStationVisible ? View.VISIBLE : View.GONE}"
-            android:paddingEnd="@dimen/dp_9"
+            android:paddingEnd="@dimen/dp_28"
             android:background="@drawable/sapa_service_details_icon_bg"
-            android:layout_marginStart="@dimen/dp_40"
+            android:layout_marginStart="@dimen/dp_52"
             android:layout_marginTop="@dimen/dp_24">
 
-            <com.fy.navi.ui.view.SkinConstraintLayout
-                android:id="@+id/siv_service_details_gas_icon_bg"
-                android:layout_width="@dimen/dp_52"
-                android:layout_height="@dimen/dp_52"
+            <com.fy.navi.ui.view.SkinImageView
+                android:id="@+id/siv_service_details_gas_icon"
+                android:layout_width="@dimen/dp_40"
+                android:layout_height="@dimen/dp_40"
                 android:focusable="false"
-                android:background="@color/navi_color_B2AFC2_15">
-
-                <com.fy.navi.ui.view.SkinImageView
-                    android:id="@+id/siv_service_details_gas_icon"
-                    android:layout_width="@dimen/dp_36"
-                    android:layout_height="@dimen/dp_36"
-                    android:focusable="false"
-                    android:background="@mipmap/img_gas_station"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent" />
-            </com.fy.navi.ui.view.SkinConstraintLayout>
-
+                android:background="@mipmap/img_gas_station"
+                android:layout_marginStart="@dimen/dp_28"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"/>
 
             <com.fy.navi.ui.view.SkinTextView
                 android:id="@+id/siv_service_details_gas_type_98"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_18"
-                android:layout_marginEnd="@dimen/dp_9"
+                android:layout_marginStart="@dimen/dp_40"
                 android:focusable="false"
                 android:textColor="@color/navi_color_000000_70"
-                android:textSize="@dimen/sp_30"
+                android:textSize="@dimen/sp_38"
                 tools:text="98#" />
 
             <com.fy.navi.ui.view.SkinTextView
@@ -260,10 +266,9 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/siv_service_details_gas_type_0"
-                android:layout_marginStart="@dimen/dp_18"
-                android:layout_marginEnd="@dimen/dp_9"
+                android:layout_marginStart="@dimen/dp_40"
                 android:textColor="@color/navi_color_000000_70"
-                android:textSize="@dimen/sp_30"
+                android:textSize="@dimen/sp_38"
                 tools:text="95#" />
 
             <com.fy.navi.ui.view.SkinTextView
@@ -274,10 +279,9 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/siv_service_details_gas_type_1"
-                android:layout_marginStart="@dimen/dp_18"
-                android:layout_marginEnd="@dimen/dp_9"
+                android:layout_marginStart="@dimen/dp_40"
                 android:textColor="@color/navi_color_000000_70"
-                android:textSize="@dimen/sp_30"
+                android:textSize="@dimen/sp_38"
                 tools:text="92#" />
 
             <com.fy.navi.ui.view.SkinTextView
@@ -288,10 +292,9 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/siv_service_details_gas_type_2"
-                android:layout_marginStart="@dimen/dp_18"
-                android:layout_marginEnd="@dimen/dp_9"
+                android:layout_marginStart="@dimen/dp_40"
                 android:textColor="@color/navi_color_000000_70"
-                android:textSize="@dimen/sp_30"
+                android:textSize="@dimen/sp_38"
                 tools:text="0#" />
 
         </com.fy.navi.ui.view.SkinLinearLayout>
@@ -333,15 +336,15 @@
         <com.fy.navi.scene.ui.navi.view.ButtonText
             android:id="@+id/bt_service_details_add_via"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_90"
+            android:layout_height="@dimen/dp_120"
             android:focusable="true"
             clickCommand="@{() -> sapaDetail.onAddRemoveViaClick()}"
-            android:layout_marginEnd="@dimen/dp_40"
+            android:layout_marginEnd="@dimen/dp_52"
             android:background="@drawable/sapa_add_via_bg"
             android:layout_marginStart="@dimen/dp_40"
             android:layout_marginTop="@dimen/dp_40"
             android:layout_marginBottom="@dimen/dp_40"
-            android:textSize="@dimen/sp_34"
+            android:textSize="@dimen/sp_46"
             android:gravity="center"
             android:text="@{sapaDetail.mButtonText}"
             tools:text="添加途经点"

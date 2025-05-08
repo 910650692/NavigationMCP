@@ -2,10 +2,15 @@ package com.fy.navi.hmi.favorite;
 
 import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
+import com.fy.navi.service.MapDefaultFinalTag;
+import com.fy.navi.service.adapter.search.cloudByPatac.rep.BaseRep;
 import com.fy.navi.service.define.bean.GeoPoint;
 import com.fy.navi.service.define.search.PoiInfoEntity;
+import com.fy.navi.service.define.search.SearchResultEntity;
 import com.fy.navi.service.define.user.msgpush.MsgPushInfo;
 import com.fy.navi.service.logicpaket.calibration.CalibrationPackage;
+import com.fy.navi.service.logicpaket.search.SearchPackage;
+import com.fy.navi.service.logicpaket.search.SearchResultCallback;
 import com.fy.navi.service.logicpaket.setting.SettingCallback;
 import com.fy.navi.service.logicpaket.setting.SettingPackage;
 import com.fy.navi.service.logicpaket.user.behavior.BehaviorPackage;
@@ -15,19 +20,25 @@ import com.fy.navi.ui.base.BaseModel;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
-public class CollectModel extends BaseModel<CollectViewModel> implements SettingCallback {
+public class CollectModel extends BaseModel<CollectViewModel> implements SettingCallback, SearchResultCallback {
     private final BehaviorPackage mBehaviorPackage;
     private final SettingPackage mSettingPackage;
     private final MsgPushPackage mMsgPushPackage;
+    private final SearchPackage mSearchPackage;
     private final CalibrationPackage mCalibrationPackage;
+    private final String mCallbackId;
     public CollectModel() {
         mBehaviorPackage = BehaviorPackage.getInstance();
         mCalibrationPackage = CalibrationPackage.getInstance();
         mSettingPackage=SettingPackage.getInstance();
+        mSearchPackage = SearchPackage.getInstance();
         mSettingPackage.registerCallBack(CollectModel.class.getSimpleName(),this);
         mMsgPushPackage = MsgPushPackage.getInstance();
+        mCallbackId = UUID.randomUUID().toString();
+        mSearchPackage.registerCallBack(mCallbackId, this);
     }
 
     /**
@@ -36,6 +47,14 @@ public class CollectModel extends BaseModel<CollectViewModel> implements Setting
      */
     public ArrayList<PoiInfoEntity> getFavoriteListAsync() {
         return BehaviorPackage.getInstance().getFavoritePoiData();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (mSearchPackage != null) {
+            mSearchPackage.unRegisterCallBack(mCallbackId);
+        }
     }
 
     @Override
@@ -84,5 +103,18 @@ public class CollectModel extends BaseModel<CollectViewModel> implements Setting
      */
     public int powerType() {
         return mCalibrationPackage.powerType();
+    }
+
+    @Override
+    public void onSearchResult(int taskId, int errorCode, String message, SearchResultEntity searchResultEntity) {
+
+    }
+
+    @Override
+    public void onNetSearchResult(BaseRep result) {
+        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"mCallbackId: "+mCallbackId+"id: "+mSearchPackage.getCurrentCallbackId());
+        if (mCallbackId.equals(mSearchPackage.getCurrentCallbackId())) {
+            mViewModel.notifyNetSearchResult(result);
+        }
     }
 }

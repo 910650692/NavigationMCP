@@ -41,23 +41,12 @@
     <color name="color_20_000000">#33000000</color>
     <color name="color_f8f8fa">#F8F8FA</color>
     <color name="color_25_8c889b">#408C889B</color>
+    <color name="color_authorization_dialog_bg">#F6F7FB</color>
 
 
     <color name="permission_quest_dialog_bg">#1A000000</color>
     <color name="permission_quest_dialog_title">#FF181818</color>
     <color name="permission_quest_dialog_content">#B3181818</color>
-
-    <color name="dialog_use_reminder_title">#181818</color>
-    <color name="dialog_use_reminder_terms_service_color">#FF4760FF</color>
-    <color name="dialog_use_reminder_content">#B3181818</color>
-    <color name="dialog_use_reminder_positive_color">#ffffff</color>
-    <color name="dialog_use_reminder_negative_color">#B3181818</color>
-
-    <color name="buick_dialog_use_reminder_title">#FF000000</color>
-    <color name="buick_dialog_use_reminder_sub_title">#CC000000</color>
-    <color name="buick_dialog_use_reminder_high_light">#FF3377FF</color>
-    <color name="buick_dialog_use_reminder_negative_color">#FF000000</color>
-    <color name="buick_dialog_use_reminder_positive_color">#FF3377FF</color>
 
     <!-- 主图相关 -->
     <color name="icon_map_home_button">#4B535D</color>
@@ -196,6 +185,7 @@
     <color name="setting_voice_size_color">#B3000000</color>
     <color name="setting_button_disable">#802461EA</color>
     <color name="setting_back_top">#E3E5EC</color>
+    <color name="bg_setting_car_number_selector">#338E97B9</color>
 
     <color name="offline_hint_text">#80000000</color>
     <color name="offline_recommend_download">#80000000</color>

@@ -22,8 +22,12 @@
             android:layout_height="wrap_content" />
 
         <com.android.car.ui.FocusArea
+            android:id="@+id/focus_guid_main"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            app:nudgeLeft="@+id/focus_guid_continue"
+            app:nudgeRight="@+id/focus_guid_continue"
+            app:wrapAround="true">
 
         <com.fy.navi.ui.view.SkinConstraintLayout
             android:id="@+id/navi_scene_container"
@@ -214,8 +218,8 @@
                 android:layout_marginStart="@dimen/dp_20"
                 android:focusable="false"
                 android:visibility="@{ViewModel.mNaviSpeedVisibility?View.VISIBLE:View.GONE}"
-                app:layout_constraintStart_toEndOf="@id/scene_navi_tbt"
-                app:layout_constraintTop_toTopOf="@id/scene_navi_tbt"
+                app:layout_constraintStart_toEndOf="@id/scl_top_container"
+                app:layout_constraintTop_toTopOf="@id/scl_top_container"
                 tools:visibility="gone" />
             <!--sapa-->
             <com.fy.navi.scene.ui.navi.SceneNaviSapaView
@@ -254,8 +258,8 @@
                 android:layout_marginStart="@dimen/dp_40"
                 android:focusable="false"
                 android:visibility="@{ViewModel.mNaviLastMileVisibility?View.VISIBLE:View.GONE}"
-                app:layout_constraintStart_toEndOf="@id/scene_navi_tbt"
-                app:layout_constraintTop_toTopOf="@id/scene_navi_tbt"
+                app:layout_constraintStart_toEndOf="@id/scl_top_container"
+                app:layout_constraintTop_toTopOf="@id/scl_top_container"
                 tools:visibility="gone" />
             <!--主辅路/桥上桥下-->
             <com.fy.navi.scene.ui.navi.SceneNaviParallelView
@@ -266,7 +270,7 @@
                 android:focusable="false"
                 android:visibility="@{ViewModel.mNaviParallelVisibility?View.VISIBLE:View.GONE}"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toEndOf="@id/scene_navi_tbt"
+                app:layout_constraintStart_toEndOf="@id/scl_top_container"
                 tools:visibility="gone" />
             <!--途经点到达提示-->
             <com.fy.navi.scene.ui.navi.SceneNaviViaArriveView
@@ -282,7 +286,7 @@
             <com.fy.navi.scene.ui.navi.SceneNaviSapaDetailView
                 android:id="@+id/scene_navi_sapa_detail"
                 android:layout_width="@dimen/dp_820"
-                android:layout_height="@dimen/dp_711"
+                android:layout_height="wrap_content"
                 android:focusable="false"
                 android:visibility="@{ViewModel.mNaviSapaDetailVisibility?View.VISIBLE:View.GONE}"
                 app:layout_constraintStart_toStartOf="parent"
@@ -306,23 +310,32 @@
                 android:layout_marginTop="@dimen/dp_30"
                 android:focusable="false"
                 android:visibility="@{ViewModel.mNaviChargeTipVisibility ? View.VISIBLE : View.GONE}"
-                app:layout_constraintEnd_toEndOf="@id/scene_navi_tbt"
-                app:layout_constraintStart_toStartOf="@id/scene_navi_tbt"
-                app:layout_constraintTop_toBottomOf="@id/barrier"
+                app:layout_constraintEnd_toEndOf="@id/scl_top_container"
+                app:layout_constraintStart_toStartOf="@id/scl_top_container"
+                app:layout_constraintTop_toBottomOf="@id/scl_top_container"
                 tools:visibility="gone" />
         </com.fy.navi.ui.view.SkinConstraintLayout>
         </com.android.car.ui.FocusArea>
 
+        <com.android.car.ui.FocusArea
+            android:id="@+id/focus_guid_continue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:nudgeLeft="@+id/focus_guid_main"
+            app:nudgeRight="@+id/focus_guid_main"
+            app:wrapAround="true"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginStart="@dimen/dp_1431">
         <!--继续导航按钮-->
         <com.fy.navi.scene.ui.navi.SceneNaviContinueView
             android:id="@+id/scene_navi_continue"
             android:layout_width="@dimen/dp_410"
             android:layout_height="@dimen/dp_120"
-            android:layout_marginStart="@dimen/dp_1431"
             android:focusable="false"
             android:visibility="@{ViewModel.mNaviContinueVisibility?View.VISIBLE:View.GONE}"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            />
+        </com.android.car.ui.FocusArea>
 
         <com.fy.navi.scene.ui.navi.GuidanceSimulationView
             android:id="@+id/navi_sim_view"

@@ -5,11 +5,7 @@ import com.patac.netlib.convert.Header;
 
 public class BaseReq extends SuperReq {
     @Header
-    private String client_id = "";
-    @Header
     private String access_token = "";
-    @Header
-    private String IDP_USER_ID = "";
     public BaseReq(String apiVersion) {
         super(apiVersion);
     }
@@ -18,8 +14,11 @@ public class BaseReq extends SuperReq {
         super(apiVersion, idpUserId);
     }
 
-    @Override
-    public boolean isCheckAppKey() {
-        return false;
+    public String getAccess_token() {
+        return access_token;
+    }
+
+    public void setAccess_token(String access_token) {
+        this.access_token = access_token;
     }
 }

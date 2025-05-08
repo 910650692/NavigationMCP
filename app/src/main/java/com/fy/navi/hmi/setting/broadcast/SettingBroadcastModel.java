@@ -73,7 +73,7 @@ public class SettingBroadcastModel extends BaseModel<SettingBroadcastViewModel> 
      * 设置巡航播报安全提醒
      */
     public void setCruiseBroadcastSafeOpen() {
-        final boolean isOpen = mSettingPackage.getConfigKeySafeBroadcast();
+        final boolean isOpen = mSettingPackage.getConfigKeyDriveWarn();
         mViewModel.dualChoiceControl(SettingController.KEY_SETTING_BROADCAST_SAFE_REMINDER,isOpen);
     }
 
@@ -81,7 +81,7 @@ public class SettingBroadcastModel extends BaseModel<SettingBroadcastViewModel> 
      * 设置巡航播报电子眼播报
      */
     public void setCruiseBroadcastCameraOpen() {
-        final boolean isOpen = mSettingPackage.getConfigKeyDriveWarn();
+        final boolean isOpen = mSettingPackage.getConfigKeySafeBroadcast();
         mViewModel.dualChoiceControl(SettingController.KEY_SETTING_BROADCAST_ELECTRONIC_EYE,isOpen);
     }
 

@@ -286,6 +286,11 @@ public class LayerAdapterImpl implements ILayerApi {
         layersPoolManager.get(mapTypeId).getLayerGuideRoute().openDynamicLevel(dynamicLevelMode);
     }
 
+    /* 关闭动态比例尺 */
+    public void closeDynamicLevel(MapType mapTypeId) {
+        layersPoolManager.get(mapTypeId).getLayerGuideRoute().closeDynamicLevel();
+    }
+
     /* 设置动态比例尺是否锁住状态，type区分巡航动态比例尺还是导航动态比例尺 */
     public void setDynamicLevelLock(MapType mapTypeId, DynamicLevelMode dynamicLevelMode, boolean isLock) {
         layersPoolManager.get(mapTypeId).getLayerGuideRoute().setDynamicLevelLock(dynamicLevelMode, isLock);

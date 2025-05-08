@@ -28,6 +28,7 @@ import com.fy.navi.service.GBLCacheFilePath;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.adapter.navi.NaviConstant;
 import com.fy.navi.service.adapter.navi.bls.NaviDataFormatHelper;
+import com.fy.navi.service.define.layer.refix.DynamicLevelMode;
 import com.fy.navi.service.define.layer.refix.LayerItemRoutePointClickResult;
 import com.fy.navi.service.define.layer.refix.LayerPointItemType;
 import com.fy.navi.service.define.map.MapType;
@@ -157,11 +158,23 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
             final int anInt = bundle.getInt(
                     AutoMapConstant.RouteBundleKey.BUNDLE_KEY_START_NAVI_SIM,
                     AutoMapConstant.NaviType.NAVI_GPS);
-            isNaviSuccess = mNaviPackage.startNavigation(
-                    anInt == AutoMapConstant.NaviType.NAVI_SIMULATE);
-            mViewModel.setNaviSimState(anInt == AutoMapConstant.NaviType.NAVI_SIMULATE);
+            final boolean isSimulate = anInt == AutoMapConstant.NaviType.NAVI_SIMULATE;
+            isNaviSuccess = mNaviPackage.startNavigation(isSimulate);
+            mViewModel.setNaviSimState(isSimulate);
+            if (!isSimulate) {
+                final boolean isAutoScale = SettingPackage.getInstance().getAutoScale();
+                if (isAutoScale) {
+                    mLayerPackage.openDynamicLevel(MapType.MAIN_SCREEN_MAIN_MAP,
+                            DynamicLevelMode.DYNAMIC_LEVEL_GUIDE);
+                }
+            }
         } else {
             isNaviSuccess = mNaviPackage.startNavigation(false);
+            final boolean isAutoScale = SettingPackage.getInstance().getAutoScale();
+            if (isAutoScale) {
+                mLayerPackage.openDynamicLevel(MapType.MAIN_SCREEN_MAIN_MAP,
+                        DynamicLevelMode.DYNAMIC_LEVEL_GUIDE);
+            }
         }
         if (isNaviSuccess) {
             Logger.i(TAG, "startNaviSuccess");
@@ -428,6 +441,11 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
     @Override
     public void skipNaviControlMoreScene() {
         mViewModel.showNaviControlMoreScene();
+    }
+
+    @Override
+    public void skipNaviControlScene() {
+        mViewModel.showNaviControlScene();
     }
 
     @Override

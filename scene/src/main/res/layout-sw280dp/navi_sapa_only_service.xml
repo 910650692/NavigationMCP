@@ -134,6 +134,7 @@
             android:text="@{naviSapa.mOnlyServiceDistance}"
             android:textColor="@color/navi_color_FFFFFF_80"
             android:textSize="@dimen/sp_38"
+            android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             tools:text="28.8公里" />
@@ -144,10 +145,24 @@
             android:layout_height="wrap_content"
             android:focusable="false"
             android:visibility="gone"
-            app:layout_constraintTop_toTopOf="@+id/stv_only_service_distance"
-            app:layout_constraintBottom_toBottomOf="@+id/stv_only_service_distance"
-            app:layout_constraintStart_toEndOf="@+id/stv_only_service_distance"
-            android:layout_marginStart="@dimen/dp_123">
+            app:layout_constraintTop_toTopOf="@+id/stv_only_service_name"
+            app:layout_constraintBottom_toBottomOf="@+id/stv_only_service_name"
+            app:layout_constraintStart_toEndOf="@+id/stv_only_service_name"
+            android:layout_marginStart="@dimen/dp_23">
+
+            <com.fy.navi.ui.view.SkinTextView
+                android:id="@+id/stv_only_service_distance_ev"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:focusable="false"
+                android:text="@{naviSapa.mOnlyServiceDistance}"
+                android:textColor="@color/navi_color_FFFFFF_80"
+                android:textSize="@dimen/sp_38"
+                android:visibility="visible"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                tools:text="28.8公里" />
 
             <com.fy.navi.ui.view.SkinTextView
                 android:id="@+id/stv_first_service_quick_text"
@@ -155,10 +170,11 @@
                 android:layout_height="wrap_content"
                 android:focusable="false"
                 android:textColor="@color/navi_color_FFFFFF_100"
-                android:textSize="@dimen/sp_26"
-                app:layout_constraintStart_toStartOf="parent"
+                android:textSize="@dimen/sp_32"
+                app:layout_constraintStart_toEndOf="@+id/stv_only_service_distance_ev"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_marginStart="@dimen/dp_149"
                 android:text="@string/quick_charge"/>
 
             <com.fy.navi.ui.view.SkinTextView
@@ -167,12 +183,12 @@
                 android:layout_height="wrap_content"
                 android:focusable="false"
                 android:textColor="@color/navi_color_FFFFFF_100"
-                android:textSize="@dimen/sp_26"
+                android:textSize="@dimen/sp_32"
                 android:text="@{naviSapa.mOnlyServiceFastFree}"
                 app:layout_constraintTop_toTopOf="@+id/stv_first_service_quick_text"
                 app:layout_constraintBottom_toBottomOf="@+id/stv_first_service_quick_text"
                 app:layout_constraintStart_toEndOf="@+id/stv_first_service_quick_text"
-                android:layout_marginStart="@dimen/dp_8"
+                android:layout_marginStart="@dimen/dp_10"
                 tools:text="66"/>
 
             <com.fy.navi.ui.view.SkinTextView
@@ -180,12 +196,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:focusable="false"
-                android:textSize="@dimen/sp_26"
+                android:textSize="@dimen/sp_32"
                 android:textColor="@color/navi_color_FF8500_100"
                 app:layout_constraintTop_toTopOf="@+id/stv_first_service_quick_charge_count"
                 app:layout_constraintBottom_toBottomOf="@+id/stv_first_service_quick_charge_count"
                 app:layout_constraintStart_toEndOf="@+id/stv_first_service_quick_charge_count"
-                android:layout_marginStart="@dimen/dp_16"
+                android:layout_marginStart="@dimen/dp_24"
                 android:text="@string/slow_charge"/>
 
             <com.fy.navi.ui.view.SkinTextView
@@ -196,9 +212,9 @@
                 app:layout_constraintTop_toTopOf="@+id/stv_first_service_slow_text"
                 app:layout_constraintBottom_toBottomOf="@+id/stv_first_service_slow_text"
                 app:layout_constraintStart_toEndOf="@+id/stv_first_service_slow_text"
-                android:layout_marginStart="@dimen/dp_8"
+                android:layout_marginStart="@dimen/dp_10"
                 android:textColor="@color/navi_color_FFFFFF_100"
-                android:textSize="@dimen/sp_26"
+                android:textSize="@dimen/sp_32"
                 android:text="@{naviSapa.mOnlyServiceSlowFree}"
                 tools:text="77"/>
 

@@ -39,4 +39,15 @@
     <color name="shape_bg_grey_button_b2afc2">#4DB2AFC2</color>
     <color name="navi_color_F0F2F8_100">#FF191A21</color>
     <color name="navi_color_E1E5EA_100">#FF191A21</color>
+    <color name="bg_setting_car_number">#26B2AFC2</color>
+    <color name="bg_setting_car_number_selector">#338E97B9</color>
+
+    <color name="bg_blue_mfc_default">#2461EA</color>
+    <color name="bg_blue_mfc_selected">#6192FF</color>
+    <color name="bg_blue_mfc_pressed">#992461EA</color>
+
+    <color name="bg_gery_mfc_default">#338E97B9</color>
+    <color name="bg_gery_mfc_selected">#33C4C9DB</color>
+    <color name="bg_gery_mfc_pressed">#1E8E97B9</color>
+
 </resources>

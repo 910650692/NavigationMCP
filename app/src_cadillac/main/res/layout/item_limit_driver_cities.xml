@@ -11,7 +11,8 @@
     <com.fy.navi.ui.view.SkinConstraintLayout
         android:layout_width="@dimen/dp_102"
         android:layout_height="@dimen/dp_45"
-        android:layout_marginEnd="@dimen/dp_30">
+        android:layout_marginEnd="@dimen/dp_30"
+        android:focusable="false">
 
         <com.fy.navi.ui.view.SkinTextView
             android:id="@+id/tv_title"
@@ -22,6 +23,7 @@
             android:gravity="center"
             android:maxLines="1"
             android:ellipsize="end"
+            android:focusable="false"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"

@@ -480,7 +480,17 @@ public class AccountAdapterImplHelper implements IAccountServiceObserver {
      * @return accessToken 获取失败返回空串
      */
     public String getAccessToken(final AccessTokenParam param) {
+        Logger.d(TAG, "getAccessToken :");
         String authToken = "";
+        if (ConvertUtils.isEmpty(mAccountManager)) {
+            Logger.d(TAG, "AccountManager 为空");
+            return "";
+        }
+        Account[] accounts = mAccountManager.getAccountsByType(AutoMapConstant.AccountTokenParamType.ACCOUNT_TYPE_PATAC_HMI);
+        Logger.d(TAG, "accounts number :" + accounts.length);
+        if (accounts.length == 0) {
+            Logger.d(TAG, "无可用账户，将触发添加账户界面");
+        }
         try {
             final AccountManagerFuture<Bundle> future =
                     mAccountManager.getAuthTokenByFeatures(
@@ -491,8 +501,11 @@ public class AccountAdapterImplHelper implements IAccountServiceObserver {
                             param.getMAddAccountOption(),
                             param.getMGetAuthTokenOption(),
                             param.getMCallback(),
-                            param.getMHandler());
+                            param.getMHandler()
+                    );
+            Logger.d(TAG, "getAccessToken : future get 1");
             final Bundle bnd = future.getResult();
+            Logger.d(TAG, "getAccessToken : future get 2");
             authToken = bnd.getString(AccountManager.KEY_AUTHTOKEN);
             Logger.i(TAG, "authToken : " + authToken);
         } catch (OperationCanceledException | AuthenticatorException | IOException e) {
@@ -508,6 +521,10 @@ public class AccountAdapterImplHelper implements IAccountServiceObserver {
      * @return userId
      */
     public String getUserData(final Account availableAccount, final String key) {
+        if (ConvertUtils.isEmpty(mAccountManager)) {
+            Logger.d(TAG, "mAccountManager 为空");
+            return "";
+        }
         return mAccountManager.getUserData(availableAccount, key);
     }
 

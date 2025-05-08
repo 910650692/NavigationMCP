@@ -4103,4 +4103,9 @@
     <!--动态底部控制栏宽度-->
     <dimen name="control_view_normal_width">455dp</dimen>
     <dimen name="control_view_short_width">302dp</dimen>
+    <!--动态tbt布局-->
+    <dimen name="navi_tbt_height">@dimen/dp_119</dimen>
+    <dimen name="navi_tbt_height_short">@dimen/dp_101</dimen>
+    <dimen name="navi_tbt_with">@dimen/dp_640</dimen>
+
 </resources>

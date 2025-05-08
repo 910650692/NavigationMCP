@@ -15,6 +15,7 @@ import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.mapdata.CityDataInfo;
 import com.fy.navi.service.define.route.RouteParam;
 import com.fy.navi.service.define.search.PoiInfoEntity;
+import com.fy.navi.service.logicpaket.calibration.CalibrationPackage;
 import com.fy.navi.service.logicpaket.mapdata.MapDataPackage;
 import com.fy.navi.service.logicpaket.route.RoutePackage;
 import com.fy.navi.service.logicpaket.search.SearchPackage;
@@ -30,6 +31,7 @@ public class SceneSearchPoiListImpl extends BaseSceneModel<SceneSearchPoiList> i
     private final SearchPackage mSearchPackage;
     private final MapDataPackage mapDataPackage;
     private final RoutePackage mRoutePackage;
+    private final CalibrationPackage mCalibrationPackage;
     private int mTaskId;
     private int mListSearchType;
     public int getMTaskId() {
@@ -40,6 +42,7 @@ public class SceneSearchPoiListImpl extends BaseSceneModel<SceneSearchPoiList> i
         this.mSearchPackage = SearchPackage.getInstance();
         this.mapDataPackage = MapDataPackage.getInstance();
         this.mRoutePackage = RoutePackage.getInstance();
+        this.mCalibrationPackage = CalibrationPackage.getInstance();
     }
 
     @Override
@@ -116,7 +119,7 @@ public class SceneSearchPoiListImpl extends BaseSceneModel<SceneSearchPoiList> i
             return;
         }
         final GeoPoint geoPoint = new GeoPoint(poiInfoEntity.getPoint().getLon(), poiInfoEntity.getPoint().getLat());
-        mTaskId = mSearchPackage.aroundSearch(pageNum, keyword, geoPoint);
+        mTaskId = mSearchPackage.aroundSearch(pageNum, keyword, geoPoint, false);
     }
 
     /**
@@ -196,8 +199,14 @@ public class SceneSearchPoiListImpl extends BaseSceneModel<SceneSearchPoiList> i
         mSearchPackage.createPoiMarker(poiInfoEntities, index);
     }
 
-    public void setSelectIndex(final PoiInfoEntity poiInfoEntity, int index) {
-        mSearchPackage.setSelectIndex(poiInfoEntity, index);
+    /**
+     * 设置扎标选中并高亮
+     * @param poiInfoEntity 选中的实体类对象
+     * @param index 选中的下标
+     * @param searchType 扎标对应的搜索类型
+     */
+    public void setSelectIndex(final PoiInfoEntity poiInfoEntity, final int index, final int searchType) {
+        mSearchPackage.setSelectIndex(poiInfoEntity, index, searchType);
     }
 
     /**
@@ -211,7 +220,7 @@ public class SceneSearchPoiListImpl extends BaseSceneModel<SceneSearchPoiList> i
             mSearchPackage.enRouteKeywordSearch(keword);
         } else if (tabIndex == 1) {
             final RouteParam endPoint = mRoutePackage.getEndPoint(MapType.MAIN_SCREEN_MAIN_MAP);
-            mSearchPackage.aroundSearch(1, keword, new GeoPoint(endPoint.getRealPos().getLon(), endPoint.getRealPos().getLat()));
+            mSearchPackage.aroundSearch(1, keword, new GeoPoint(endPoint.getRealPos().getLon(), endPoint.getRealPos().getLat()), false);
         } else {
             mSearchPackage.aroundSearch(1, keword);
         }
@@ -240,6 +249,10 @@ public class SceneSearchPoiListImpl extends BaseSceneModel<SceneSearchPoiList> i
      */
     public void clearLabelMarker() {
         mSearchPackage.clearLabelMark();
+    }
+
+    public int powerType(){
+        return mCalibrationPackage.powerType();
     }
 
 }

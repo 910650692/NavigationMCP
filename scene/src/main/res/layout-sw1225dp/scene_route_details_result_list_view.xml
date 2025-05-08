@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="Scene"
+            type="com.fy.navi.scene.api.route.ISceneRouteDetailsResultList" />
+    </data>
+
+    <com.fy.navi.ui.view.SkinConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_610"
+        android:paddingStart="@dimen/dp_51"
+        android:paddingRight="@dimen/dp_40">
+
+        <com.fy.navi.ui.view.SkinView
+            android:id="@+id/route_details_list_bg_header"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_80"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"/>
+
+        <com.fy.navi.ui.view.SkinImageView
+            android:id="@+id/route_details_list_img_header"
+            android:layout_width="@dimen/dp_16"
+            android:layout_height="@dimen/dp_16"
+            android:src="@drawable/circle_dot_green"
+            app:layout_constraintTop_toTopOf="@id/route_details_list_bg_header"
+            app:layout_constraintBottom_toBottomOf="@id/route_details_list_bg_header"/>
+
+        <com.fy.navi.ui.view.SkinTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_15"
+            android:textColor="@color/floating_search_item_night"
+            android:textSize="@dimen/sp_35"
+            android:text="@string/route_details_list_header"
+            android:textStyle="bold"
+            app:layout_constraintStart_toEndOf="@id/route_details_list_img_header"
+            app:layout_constraintTop_toTopOf="@id/route_details_list_bg_header"
+            app:layout_constraintBottom_toBottomOf="@id/route_details_list_bg_header"/>
+
+        <com.fy.navi.ui.view.SkinRecyclerView
+            android:id="@+id/route_detail_result_list"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_430"
+            android:divider="@null"
+            android:groupIndicator="@null"
+            android:scrollbars="none"
+            app:layout_constraintTop_toBottomOf="@id/route_details_list_bg_header" />
+
+        <com.fy.navi.ui.view.SkinView
+            android:id="@+id/route_details_list_bg_footer"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_100"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"/>
+
+        <com.fy.navi.ui.view.SkinImageView
+            android:id="@+id/route_details_list_img_footer"
+            android:layout_width="@dimen/dp_16"
+            android:layout_height="@dimen/dp_16"
+            android:src="@drawable/circle_dot_red"
+            android:layout_marginBottom="@dimen/dp_20"
+            app:layout_constraintTop_toTopOf="@id/route_details_list_bg_footer"
+            app:layout_constraintBottom_toBottomOf="@id/route_details_list_bg_footer"/>
+
+        <com.fy.navi.ui.view.SkinTextView
+            android:id="@+id/route_details_list_tv_footer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_15"
+            android:layout_marginBottom="@dimen/dp_20"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:textColor="@color/floating_search_item_night"
+            android:textSize="@dimen/sp_35"
+            android:textStyle="bold"
+            app:layout_constraintStart_toEndOf="@id/route_details_list_img_footer"
+            app:layout_constraintTop_toTopOf="@id/route_details_list_bg_footer"
+            app:layout_constraintBottom_toBottomOf="@id/route_details_list_bg_footer"
+            tools:text="终点：上海海事大学"/>
+
+    </com.fy.navi.ui.view.SkinConstraintLayout>
+
+
+
+</layout>

@@ -80,7 +80,6 @@ public class SceneNaviSearchViewImpl extends BaseSceneModel<SceneNaviSearchView>
 
     @Override
     public void closeSearchView() {
-        Logger.i("shisong", "closeSearchView");
         mISceneCallback.closeSearchView();
         OpenApiHelper.exitPreview(mMapTypeId);
         OpenApiHelper.clearSearchLabelMark();

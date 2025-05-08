@@ -116,7 +116,7 @@
     <color name="navi_color_F8F8FA_100">#FF1E2027</color>
     <color name="navi_color_000000_50">#80FFFFFF</color>
     <color name="navi_color_2461EA_10">#1AA3C1F6</color>
-    <color name="navi_color_B2AFC2_15">#802C2F38</color>
+    <color name="navi_color_B2AFC2_15">#1E1F26</color>
     <color name="navi_color_F0F2F8_100">#464B60</color>
     <color name="navi_color_E1E5EA_100">#2A2F42</color>
     <color name="navi_color_4B535D_100">#D2D3D7</color>
@@ -128,6 +128,7 @@
     <color name="navi_color_icon_park">#FFFFFF</color>
     <color name="navi_color_000000_100">#FFFFFFFF</color>
     <color name="navi_color_3377FF_100">#FFE5B586</color>
+    <color name="navi_color_313336_94">#33FFFFFF</color>
 
     <!--悬挂卡-->
     <color name="card_delete_bg_color">#66ffffff</color>

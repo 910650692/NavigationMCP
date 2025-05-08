@@ -109,6 +109,9 @@ public class SceneNaviControlImpl extends BaseSceneModel<SceneNaviControlView> i
         }
     }
 
+    @Override
+    public void backControl(){}
+
     /**
      * @param type 0:退出全览 1:切换全览
      */

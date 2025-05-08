@@ -32,7 +32,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_24"
-                android:layout_marginTop="@dimen/dp_26"
+                android:layout_marginTop="@dimen/dp_24"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
@@ -97,6 +97,7 @@
                 android:ellipsize="end"
                 android:maxWidth="@dimen/dp_150"
                 android:maxLines="1"
+                android:visibility="visible"
                 android:text="@{naviSapa.mFirstServiceName}"
                 android:textColor="@color/navi_color_FFFFFF_100"
                 android:textSize="@dimen/sp_34"
@@ -112,6 +113,7 @@
                 android:layout_marginBottom="@dimen/dp_26"
                 android:text="@{naviSapa.mFirstServiceDistance}"
                 android:textColor="@color/navi_color_FFFFFF_80"
+                android:visibility="visible"
                 android:textSize="@dimen/sp_30"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -148,13 +150,25 @@
                 app:layout_constraintTop_toTopOf="parent">
 
                 <com.fy.navi.ui.view.SkinTextView
+                    android:id="@+id/stv_first_service_distance_ev"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@{naviSapa.mFirstServiceDistance}"
+                    android:textColor="@color/navi_color_FFFFFF_80"
+                    android:visibility="visible"
+                    android:textSize="@dimen/sp_30"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:layout_marginTop="@dimen/dp_37"
+                    tools:text="28.8公里" />
+
+                <com.fy.navi.ui.view.SkinTextView
                     android:id="@+id/stv_first_service_quick_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/quick_charge"
                     android:textColor="@color/navi_color_FFFFFF_100"
                     android:textSize="@dimen/sp_26"
-                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 

@@ -1,0 +1,143 @@
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="com.android.utils.ConvertUtils" />
+
+        <import type="android.view.View" />
+
+    </data>
+
+    <com.fy.navi.ui.view.SkinConstraintLayout
+        android:id="@+id/scl_list_item"
+        android:layout_width="@dimen/dp_640"
+        android:layout_height="@dimen/dp_154"
+        tools:background="@android:color/darker_gray">
+
+        <com.fy.navi.ui.view.SkinTextView
+            android:id="@+id/tv_number"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_30"
+            android:textColor="@color/common_title_color"
+            android:textSize="@dimen/sp_30"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="1" />
+
+        <com.fy.navi.ui.view.SkinTextView
+            android:id="@+id/tv_recommend"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_42"
+            android:text="@string/navi_recommend"
+            android:textColor="@color/common_blue"
+            android:textSize="@dimen/sp_26"
+            app:layout_constraintBottom_toBottomOf="@id/tv_title"
+            app:layout_constraintStart_toEndOf="@id/tv_number"
+            app:layout_constraintTop_toTopOf="@id/tv_title" />
+
+        <com.fy.navi.ui.view.SkinTextView
+            android:id="@+id/tv_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_28"
+            android:textColor="@color/common_title_purple_color"
+            android:textSize="@dimen/sp_34"
+            app:layout_constraintBottom_toTopOf="@id/tv_desc"
+            app:layout_constraintStart_toEndOf="@id/tv_recommend"
+            app:layout_constraintEnd_toStartOf="@id/view_navi_now"
+            android:maxLines="1"
+            android:ellipsize="end"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_chainStyle="packed"
+            tools:text="大雨停车场" />
+
+        <com.fy.navi.ui.view.SkinTextView
+            android:id="@+id/tv_space"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/common_title_purple_color"
+            android:textSize="@dimen/sp_26"
+            app:layout_constraintBottom_toBottomOf="@id/tv_desc"
+            app:layout_constraintStart_toEndOf="@id/tv_recommend"
+            app:layout_constraintStart_toStartOf="@id/tv_recommend"
+            app:layout_constraintTop_toTopOf="@id/tv_desc"
+            tools:text="66" />
+
+        <com.fy.navi.ui.view.SkinTextView
+            android:id="@+id/tv_total"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/common_title_color"
+            android:textSize="@dimen/sp_26"
+            app:layout_constraintBottom_toBottomOf="@id/tv_space"
+            app:layout_constraintStart_toEndOf="@id/tv_space"
+            app:layout_constraintTop_toTopOf="@id/tv_space"
+            tools:text="/88" />
+
+        <com.fy.navi.ui.view.SkinTextView
+            android:id="@+id/tv_desc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_28"
+            android:layout_marginTop="@dimen/dp_25"
+            android:textColor="@color/common_title_purple_color"
+            android:textSize="@dimen/sp_26"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@id/tv_total"
+            app:layout_constraintTop_toBottomOf="@id/tv_title"
+            tools:text="紧张" />
+
+        <com.fy.navi.ui.view.SkinTextView
+            android:id="@+id/tv_end"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_28"
+            android:textColor="@color/common_title_purple_color"
+            android:textSize="@dimen/sp_26"
+            app:layout_constraintBottom_toBottomOf="@id/tv_desc"
+            app:layout_constraintStart_toEndOf="@id/tv_desc"
+            app:layout_constraintTop_toTopOf="@id/tv_desc"
+            tools:text="当前终点" />
+
+        <com.fy.navi.ui.view.SkinImageView
+            android:id="@+id/iv_navi_icon"
+            android:layout_width="@dimen/dp_42"
+            android:layout_height="@dimen/dp_42"
+            android:src="@drawable/img_navigation_black_58"
+            app:layout_constraintBottom_toTopOf="@id/tv_distance"
+            app:layout_constraintEnd_toEndOf="@id/tv_distance"
+            app:layout_constraintStart_toStartOf="@id/tv_distance"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_chainStyle="packed" />
+
+        <com.fy.navi.ui.view.SkinTextView
+            android:id="@+id/tv_distance"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_4"
+            android:layout_marginEnd="@dimen/dp_31"
+            android:minWidth="@dimen/dp_88"
+            android:textColor="@color/traffic_sub_title_color"
+            android:textSize="@dimen/sp_26"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/iv_navi_icon"
+            tools:text="7.2公里" />
+
+        <View
+            android:id="@+id/view_navi_now"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="@id/tv_distance"
+            app:layout_constraintEnd_toEndOf="@id/tv_distance"
+            app:layout_constraintStart_toStartOf="@id/tv_distance"
+            app:layout_constraintTop_toTopOf="@id/iv_navi_icon" />
+
+    </com.fy.navi.ui.view.SkinConstraintLayout>
+
+</layout>

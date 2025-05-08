@@ -1331,6 +1331,7 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
                     mViewBinding.scenePoiDetailsBottomView.sivStartRoute.setImageDrawable(
                             ContextCompat.getDrawable(getContext(),
                                     R.drawable.icon_details_bottom_go_here));
+                    mViewBinding.scenePoiDetailsBottomView.stvStartRoute.setAlpha(1.0f);
                     mViewBinding.scenePoiDetailsBottomView.stvStartRoute.setText(R.string.st_go_here);
                     mViewBinding.scenePoiDetailsBottomView.sivStartRoute.setVisibility(VISIBLE);
                     mViewBinding.scenePoiDetailsBottomView.stlAroundSearch.setVisibility(VISIBLE);

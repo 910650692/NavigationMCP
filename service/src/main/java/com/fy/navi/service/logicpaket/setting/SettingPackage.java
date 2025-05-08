@@ -7,6 +7,7 @@ import com.android.utils.ConvertUtils;
 import com.android.utils.ResourceUtils;
 import com.android.utils.ToastUtils;
 import com.fy.navi.service.R;
+import com.fy.navi.service.adapter.layer.LayerAdapter;
 import com.fy.navi.service.adapter.setting.SettingAdapter;
 import com.fy.navi.service.adapter.setting.SettingAdapterCallback;
 import com.fy.navi.service.define.layer.refix.CarModeType;
@@ -30,7 +31,7 @@ public final class SettingPackage implements SettingAdapterCallback {
     private final Hashtable<String, SettingCallback> mCallbackList;
     private final SettingManager mSettingManager;
     private final Hashtable<String, SettingChangeCallback> mChangeCallbackList;
-    private final LayerPackage mLayerPackage;
+    private final LayerAdapter mLayerAdapter;
     private final FavoriteManager mFavoriteManager;
 
     public static SettingPackage getInstance() {
@@ -49,7 +50,7 @@ public final class SettingPackage implements SettingAdapterCallback {
         mSettingManager.init();
         mFavoriteManager = FavoriteManager.getInstance();
         mFavoriteManager.init();
-        mLayerPackage = LayerPackage.getInstance();
+        mLayerAdapter = LayerAdapter.getInstance();
     }
 
     /**
@@ -325,6 +326,9 @@ public final class SettingPackage implements SettingAdapterCallback {
      * @param isOpen true 打开 false 关闭
      */
     public void setAutoScale(final boolean isOpen) {
+        if (!isOpen) {
+            mLayerAdapter.closeDynamicLevel(MapType.MAIN_SCREEN_MAIN_MAP);
+        }
         mSettingManager.insertOrReplace(SettingController.KEY_SETTING_AUTO_SCALE, String.valueOf(isOpen));
         for (SettingChangeCallback callback : mChangeCallbackList.values()) {
             callback.onSettingChanged(SettingController.KEY_SETTING_AUTO_SCALE, String.valueOf(isOpen));
@@ -339,7 +343,6 @@ public final class SettingPackage implements SettingAdapterCallback {
     public boolean getAutoScale() {
         String value = mSettingManager.getValueByKey(SettingController.KEY_SETTING_AUTO_SCALE);
         if (TextUtils.isEmpty(value)) {
-            LayerPackage.getInstance().openDynamicLevel(MapType.MAIN_SCREEN_MAIN_MAP, true);
             value = SettingController.VALUE_GENERIC_TRUE;
             setAutoScale(true);
         }
@@ -501,6 +504,7 @@ public final class SettingPackage implements SettingAdapterCallback {
             }
         } else {
             LayerPackage.getInstance().setCarMode(MapType.MAIN_SCREEN_MAIN_MAP, CarModeType.CAR_MODE_DEFAULT);
+            LayerPackage.getInstance().setCarMode(MapType.CLUSTER_MAP, CarModeType.CAR_MODE_DEFAULT);
             setCarMode(CarModeType.CAR_MODE_DEFAULT);
         }
         return carMode;

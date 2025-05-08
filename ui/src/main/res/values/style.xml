@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <style name="dialog_buick_parent">
+        <item name="android:layout_width">@dimen/dp_1300</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:background">@drawable/bg_buick_dialog</item>
+    </style>
+
+    <style name="dialog_buick_title">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">@dimen/sp_42</item>
+        <item name="android:textColor">@color/dialog_buick_title_color</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="dialog_buick_sub_title">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">@dimen/sp_36</item>
+        <item name="android:textColor">@color/dialog_buick_content_color</item>
+        <item name="android:gravity">center</item>
+    </style>
+
+    <style name="dialog_buick_high_light">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">@dimen/sp_36</item>
+        <item name="android:textColor">@color/dialog_buick_positive_btn_text_color</item>
+        <item name="android:gravity">center</item>
+    </style>
+
+    <style name="dialog_buick_positive_btn">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">@dimen/sp_36</item>
+        <item name="android:textColor">@color/dialog_buick_positive_btn_text_color</item>
+        <item name="android:gravity">center</item>
+    </style>
+
+    <style name="dialog_buick_negative_btn">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">@dimen/sp_36</item>
+        <item name="android:textColor">@color/dialog_buick_negative_btn_text_color</item>
+        <item name="android:gravity">center</item>
+    </style>
+
+    <style name="dialog_buick_content">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">@dimen/sp_36</item>
+        <item name="android:textColor">@color/dialog_buick_content_color</item>
+    </style>
+
+</resources>

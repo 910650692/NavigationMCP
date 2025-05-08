@@ -7,7 +7,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 public class MainScreenMapView extends FullScreenMapView implements IBaseScreenMapView {
-
     public MainScreenMapView(@NonNull Context context) {
         super(context);
     }

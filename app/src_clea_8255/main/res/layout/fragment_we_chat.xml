@@ -91,7 +91,7 @@
                         android:layout_height="wrap_content"
                         android:text="@string/setting_qr_code_loading"
                         android:layout_marginTop="@dimen/dp_24"
-                        android:textColor="@color/setting_text_preference"
+                        android:textColor="@color/setting_bg_tab_text_unselect"
                         android:textSize="@dimen/sp_30"/>
 
                 </com.fy.navi.ui.view.SkinLinearLayout>
@@ -109,7 +109,7 @@
                         android:layout_height="wrap_content"
                         android:text="@string/setting_qr_code_load_failed"
                         android:textSize="@dimen/sp_30"
-                        android:textColor="@color/setting_text_preference"/>
+                        android:textColor="@color/setting_bg_tab_text_unselect"/>
 
                     <com.fy.navi.ui.view.SkinButton
                         clickCommand="@{ViewModel.mRetry}"
@@ -126,23 +126,21 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/chat_connect_login_tip"
-                    android:textColor="@color/black"
+                    android:textColor="@color/setting_bg_tab_text_unselect"
                     android:textSize="@dimen/sp_26"
                     android:layout_marginTop="@dimen/dp_16" />
             </com.fy.navi.ui.view.SkinLinearLayout>
 
             <com.fy.navi.ui.view.SkinConstraintLayout
-                android:layout_width="@dimen/dp_740"
-                android:layout_height="@dimen/dp_495"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_16"
-                android:layout_marginStart="@dimen/dp_104"
-                android:background="@drawable/bg_we_chat">
+                android:layout_marginStart="@dimen/dp_161">
 
                 <com.fy.navi.ui.view.SkinImageView
                     android:id="@+id/chat_content_img_tip"
-                    android:layout_width="@dimen/dp_240"
-                    android:layout_height="@dimen/dp_140"
-                    android:layout_marginTop="@dimen/dp_85"
+                    android:layout_width="@dimen/dp_464"
+                    android:layout_height="@dimen/dp_190"
                     android:src="@mipmap/icon_setting_wechat"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -154,8 +152,8 @@
                     android:layout_height="wrap_content"
                     android:text="@string/chat_connect_send_to_car"
                     android:textSize="@dimen/sp_30"
-                    android:textColor="@color/setting_text_preference"
-                    android:layout_marginTop="@dimen/dp_40"
+                    android:textColor="@color/setting_bg_tab_text_unselect"
+                    android:layout_marginTop="@dimen/dp_31"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/chat_content_img_tip" />

@@ -16,6 +16,8 @@ import com.fy.navi.service.AppContext;
 import com.fy.navi.service.StartService;
 import com.fy.navi.service.define.code.UserDataCode;
 import com.fy.navi.service.greendao.CommonManager;
+import com.fy.navi.service.logicpaket.activate.ActivatePackage;
+import com.fy.navi.service.logicpaket.activate.IActivateObserver;
 import com.fy.navi.ui.base.BaseModel;
 
 /**
@@ -28,35 +30,34 @@ public class StartupModel extends BaseModel<BaseStartupViewModel>
 
     private static final String TAG = "StartupModel";
     private final CommonManager commonManager;
-   /* private IEngineObserver mEngineObserver = new IEngineObserver() {
+    private IActivateObserver mActObserver = new IActivateObserver() {
         @Override
-        public void onInitEngineSuccess() {
-            Logger.d(TAG, "引擎初始化成功，开始其余模块初始化");
-            Intent intent = new Intent(AppContext.getInstance().getMContext(), NaviService.class);
-            intent.putExtra(NaviService.START_APPLICATION_KEY, true);
-            int intentPage = mViewModel.getIntentPage();
-            if (intentPage != INaviConstant.OpenIntentPage.NONE) {
-                intent.putExtra(INaviConstant.PAGE_EXTRA, intentPage);
-                mViewModel.setIntentPage(-1);
-                String searchKeyword = mViewModel.getKeyword();
-                if (!TextUtils.isEmpty(searchKeyword)) {
-                    intent.putExtra(INaviConstant.SEARCH_KEYWORD_EXTRA, searchKeyword);
-                }
-                PoiInfoEntity endPoint = mViewModel.getEndPoint();
-                if (null != endPoint) {
-                    intent.putExtra(INaviConstant.ROUTE_END_POI, endPoint);
-                }
-            }
-            ActivityCompat.startForegroundService(AppContext.getInstance().getMContext(), intent);
+        public void onActivating() {
+            Logger.d(TAG, "onActivating...");
+            mViewModel.showActivatingView(true);
         }
 
         @Override
-        public void onInitEngineFail(final int code, final String msg) {
-            Logger.e(TAG, "引擎初始化失败，Error Code = " + code + "; Error Massage = " + msg);
-            Logger.e(TAG, "关闭应用");
-            mViewModel.finishStartUp();
+        public void onNetActivateFailed(final int failedCount) {
+            Logger.d(TAG, "onNetActivateFailed count = " + failedCount);
+            mViewModel.showActivatingView(false);
+            if (failedCount >= 3) {
+                mViewModel.showChangedFailedDialog();
+            } else {
+                mViewModel.showFailedDialog();
+            }
         }
-    };*/
+        @Override
+        public void onActivated() {
+            mViewModel.showActivatingView(false);
+        }
+
+        @Override
+        public void onActivatedError() {
+            Logger.e(TAG, "激活出现错误");
+            mViewModel.showActivatingView(false);
+        }
+    };
 
     public StartupModel() {
         Logger.d(TAG, "初始化获取缓存地图的数据库");
@@ -70,7 +71,7 @@ public class StartupModel extends BaseModel<BaseStartupViewModel>
         Logger.d(TAG, "绑定监听");
         PermissionUtils.getInstance().setPermissionsObserver(this);
         StartService.getInstance().registerSdkCallback(this);
-        //EnginePackage.getInstance().addEngineObserver(TAG, mEngineObserver);
+        ActivatePackage.getInstance().addActObserver(mActObserver);
     }
 
     @Override
@@ -120,6 +121,13 @@ public class StartupModel extends BaseModel<BaseStartupViewModel>
         commonManager.insertOrReplace(UserDataCode.SETTING_FIRST_LAUNCH, "1");
     }
 
+    /**
+     * 重试网络激活
+     */
+    public void netActivateRetry() {
+        ActivatePackage.getInstance().netActivateRetry();
+    }
+
     @Override
     public void onSdkInitSuccess() {
         mViewModel.startMapActivity();
@@ -127,7 +135,7 @@ public class StartupModel extends BaseModel<BaseStartupViewModel>
 
     @Override
     public void onSdkInitFail(int initSdkResult, String msg) {
-        ToastUtils.Companion.getInstance().showCustomToastView(ResourceUtils.Companion.getInstance().getString(R.string.startup_sdk_init_fail));
+        //ToastUtils.Companion.getInstance().showCustomToastView(ResourceUtils.Companion.getInstance().getString(R.string.startup_sdk_init_fail));
         // TODO: 2025/5/5 重试机制统一在NaviService中完成
     }
 }

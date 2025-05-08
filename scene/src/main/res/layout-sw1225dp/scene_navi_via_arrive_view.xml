@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <import type="android.view.View" />
+
+        <variable
+            name="naviArrive"
+            type="com.fy.navi.scene.impl.navi.SceneNaviViaArriveViewImpl" />
+
+    </data>
+
+    <com.fy.navi.ui.view.SkinConstraintLayout
+        android:id="@+id/scl_root"
+        android:layout_width="@dimen/dp_1136"
+        android:layout_height="@dimen/dp_360"
+        android:paddingHorizontal="@dimen/dp_18"
+        android:paddingTop="@dimen/dp_8"
+        android:paddingBottom="@dimen/dp_28"
+        android:background="@drawable/only_text_small">
+
+
+        <com.fy.navi.ui.view.SkinConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:color="@color/navi_color_FF595F_100">
+
+            <com.fy.navi.ui.view.SkinTextView
+                android:id="@+id/stv_via_info"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/navi_color_000000_100"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:maxWidth="@dimen/dp_900"
+                android:textSize="@dimen/sp_36"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:layout_marginTop="@dimen/dp_70"
+                app:layout_constraintBottom_toTopOf="@+id/siv_horizontal_line"
+                android:layout_marginBottom="@dimen/dp_72"
+                tools:text="是否已抵达？" />
+
+            <com.fy.navi.ui.view.SkinImageView
+                android:id="@+id/siv_horizontal_line"
+                android:layout_width="@dimen/dp_1018"
+                android:layout_height="@dimen/dp_2"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:background="@color/navi_color_818199_30"
+                android:layout_marginBottom="@dimen/dp_126"/>
+
+
+            <com.fy.navi.ui.view.SkinImageView
+                android:id="@+id/siv_vertical_line"
+                android:layout_width="@dimen/dp_2"
+                android:layout_height="@dimen/dp_126"
+                android:background="@color/navi_color_818199_30"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"/>
+
+            <com.fy.navi.scene.ui.navi.view.ButtonText
+                android:id="@+id/stv_confirm"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                clickCommand="@{naviArrive.onUpdateViaPass}"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="@+id/siv_vertical_line"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/siv_horizontal_line"
+                android:textSize="@dimen/sp_36"
+                android:padding="@dimen/dp_24"
+                android:textColor="@color/navi_color_3377FF_100"
+                android:text="@string/confirm"/>
+
+            <com.fy.navi.scene.ui.navi.view.ButtonText
+                android:id="@+id/stv_cancel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/dp_24"
+                clickCommand="@{()-> naviArrive.updateSceneVisible(Boolean.FALSE)}"
+                app:layout_constraintStart_toStartOf="@+id/siv_vertical_line"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/siv_horizontal_line"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:textSize="@dimen/sp_36"
+                android:text="@string/cancel"
+                android:textColor="@color/navi_color_000000_100"/>
+
+
+
+        </com.fy.navi.ui.view.SkinConstraintLayout>
+
+    </com.fy.navi.ui.view.SkinConstraintLayout>
+
+</layout>

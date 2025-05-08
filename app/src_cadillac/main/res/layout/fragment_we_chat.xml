@@ -119,7 +119,7 @@
                             android:text="@string/setting_qr_code_loading"
                             android:focusable="false"
                             android:layout_marginTop="@dimen/dp_32"
-                            android:textColor="@color/setting_text_preference"
+                            android:textColor="@color/setting_bg_tab_text_unselect"
                             android:textSize="@dimen/sp_38"/>
 
                     </com.fy.navi.ui.view.SkinLinearLayout>
@@ -139,7 +139,7 @@
                             android:text="@string/setting_qr_code_load_failed"
                             android:textSize="@dimen/sp_38"
                             android:focusable="false"
-                            android:textColor="@color/setting_text_preference"/>
+                            android:textColor="@color/setting_bg_tab_text_unselect"/>
 
                         <com.fy.navi.ui.view.SkinButton
                             clickCommand="@{ViewModel.mRetry}"
@@ -157,25 +157,23 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/chat_connect_login_tip"
-                        android:textColor="@color/black"
+                        android:textColor="@color/setting_bg_tab_text_unselect"
                         android:textSize="@dimen/sp_32"
                         android:focusable="false"
                         android:layout_marginTop="@dimen/dp_32" />
                 </com.fy.navi.ui.view.SkinLinearLayout>
 
                 <com.fy.navi.ui.view.SkinConstraintLayout
-                    android:layout_width="@dimen/dp_872"
-                    android:layout_height="@dimen/dp_708"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dp_90"
                     android:layout_marginStart="@dimen/dp_171"
-                    android:focusable="false"
-                    android:background="@drawable/bg_we_chat">
+                    android:focusable="false">
 
                     <com.fy.navi.ui.view.SkinImageView
                         android:id="@+id/chat_content_img_tip"
-                        android:layout_width="@dimen/dp_320"
-                        android:layout_height="@dimen/dp_187"
-                        android:layout_marginTop="@dimen/dp_90"
+                        android:layout_width="@dimen/dp_603"
+                        android:layout_height="@dimen/dp_247"
                         android:focusable="false"
                         android:src="@mipmap/icon_setting_wechat"
                         app:layout_constraintStart_toStartOf="parent"
@@ -189,7 +187,7 @@
                         android:text="@string/chat_connect_send_to_car"
                         android:textSize="@dimen/sp_38"
                         android:focusable="false"
-                        android:textColor="@color/setting_text_preference"
+                        android:textColor="@color/setting_bg_tab_text_unselect"
                         android:layout_marginTop="@dimen/dp_40"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"

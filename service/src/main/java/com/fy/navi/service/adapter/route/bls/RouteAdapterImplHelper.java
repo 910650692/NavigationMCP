@@ -1524,7 +1524,6 @@ public class RouteAdapterImplHelper {
                         dto.setMAssistantAction(linkInfo.getAssistantAction());
                         dto.setMHasParallel(linkInfo.hasParallelRoad());
                         dto.setMDirection((int) linkInfo.getRoadDirection());
-                        dto.setMLaneNum((int) linkInfo.getLaneNum());
                         dto.setMPntBegIdx(startIndex);
                         dto.setMPntCnt(linkInfo.getPoints().size());
                         startIndex += linkInfo.getPoints().size() - 1;

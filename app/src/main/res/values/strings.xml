@@ -616,6 +616,7 @@
     <string name="activation_failed_retry">重试</string>
     <string name="activation_finish">稍后激活</string>
     <string name="activation_manual">手动激活</string>
+    <string name="activation_hint">您可选择重试或者稍后激活</string>
 
     <!--周边搜索标签 -->
     <string-array name="around_categories_name">

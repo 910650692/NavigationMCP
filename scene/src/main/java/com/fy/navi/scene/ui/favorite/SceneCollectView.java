@@ -56,7 +56,6 @@ public class SceneCollectView extends BaseSceneView<SceneCollectViewBinding, Sce
     //0 普通收藏 1 常用地址 3 收到的点
     private int mCollectionType;
     private int mHomeCompanyType = -1;
-    private boolean mIsCommonCollect = true;
     private boolean mIsChargingCollect = false;
     private boolean mIsAsyncData = false;
     private final static String PATAC_ACTION_LOGIN = "patac.hmi.user.intent.action.LOGIN";
@@ -183,6 +182,7 @@ public class SceneCollectView extends BaseSceneView<SceneCollectViewBinding, Sce
         });
         // 常用收藏夹
         mViewBinding.naviBroadcastStandard.setOnClickListener(view -> {
+            mIsChargingCollect = false;
             hideEmptyView();
             ArrayList<PoiInfoEntity> list = mScreenViewModel.getFavoriteListAsync();
             if (ConvertUtils.isEmpty(list)) {
@@ -195,8 +195,10 @@ public class SceneCollectView extends BaseSceneView<SceneCollectViewBinding, Sce
         // 专属充电站
         mViewBinding.naviBroadcastLarge.setOnClickListener(view -> {
             Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"naviBroadcastLarge click");
+            mIsChargingCollect = true;
             hideEmptyView();
             mAdapter.notifyList(new ArrayList<>());
+            mScreenViewModel.queryCollectStation();
             // 判断是否已登录
             if(!mScreenViewModel.isSGMLogin()){
                 mViewBinding.sllNoSgm.setVisibility(VISIBLE);

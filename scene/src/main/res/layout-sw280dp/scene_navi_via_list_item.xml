@@ -47,9 +47,9 @@
                 android:text="@string/navi_via_item_pass"
                 android:textColor="@color/navi_color_FFFFFF_100"
                 android:textSize="@dimen/sp_26"
-                app:layout_constraintBottom_toBottomOf="@id/gl_name"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@id/gl_name" />
+                app:layout_constraintTop_toTopOf="parent" />
 
             <com.fy.navi.ui.view.SkinTextView
                 android:id="@+id/stv_add_via_elec"
@@ -97,7 +97,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:focusable="false"
-                android:visibility="gone"
+                android:visibility="visible"
                 app:constraint_referenced_ids="stv_add_via_distance,stv_arrive_default,stv_arrive_time,
                                                stv_arrival_day" />
 

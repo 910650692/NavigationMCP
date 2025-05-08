@@ -53,7 +53,7 @@ public class SceneNaviTmcView extends NaviSceneBase<SceneNaviTmcViewBinding, Sce
     // 途经点和充电站最多显示20个
     private final static int MAX_VIA_NUM = 20;
     // 途经点和充电站显示宽度
-    private final static int VIA_WIDTH = 45;
+    private final static int VIA_WIDTH = 55;
     /**
      * < tmcBar累积的总距离，注意与当前路线长度不同，重算后_totalDistance不是新路线的长度，
      * 而是_distanceHasPassed加上新路线长度，避免重算后tmcBar回到起点

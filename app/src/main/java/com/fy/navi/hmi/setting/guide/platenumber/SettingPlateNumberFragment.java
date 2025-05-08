@@ -196,8 +196,6 @@ public class SettingPlateNumberFragment extends BaseFragment<FragmentSettingPlat
                     public void onCommitClick() {
                         mViewModel.setIsDeletePlateNumberDialog(false);
                         mIsClearPlateNumber = false;
-                        mViewModel.setPlateNumber("");
-                        mViewModel.setAvoidLimit(false);
                         SettingUpdateObservable.getInstance().setPlateNumber("");
                         closeFragment(true);
                     }
@@ -276,8 +274,6 @@ public class SettingPlateNumberFragment extends BaseFragment<FragmentSettingPlat
 
         final String plateNumber = mBinding.settingPlateNumberProvince.getText().toString() + mBinding.settingPlateNumberNumber.getText().toString();
         if (isCar(plateNumber)) {
-            mViewModel.setPlateNumber(plateNumber);
-            mViewModel.setAvoidLimit(true);
             SettingUpdateObservable.getInstance().setPlateNumber(plateNumber);
             closeFragment(true);
         } else if (mIsClearPlateNumber){

@@ -67,7 +67,9 @@ public class TerminalParkingModel extends BaseModel<TerminalParkingViewModel> im
     }
 
     @Override
-    public void onMarkClickCallBack(final PoiInfoEntity poiInfoEntity) {
-        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "onMarkClickCallBack: -----");
+    public void onMarkTerminalParkClickCallBack(final int index) {
+        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "onMarkTerminalParkClickCallBack: " + index);
+        mViewModel.onMarkTerminalParkClickCallBack(index);
+
     }
 }

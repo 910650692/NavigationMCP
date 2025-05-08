@@ -117,6 +117,10 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
     /**
      * 主页面-子poi页
      **/
+    private PoiInfoEntity mSecondaryPoiInfo;
+    public void setSecondaryPoiInfo(PoiInfoEntity poiInfoEntity) {
+        mSecondaryPoiInfo = poiInfoEntity;
+    }
     private ObservableField<Integer> mSecondaryPoiVisibility;
 
     public ObservableField<Integer> getSecondaryPoiVisibility() {
@@ -261,9 +265,9 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
     /**
      * 详情页面-避开按钮背景
      **/
-    private ObservableField<Drawable> mAvoidBackground;
+    private ObservableField<Boolean> mAvoidBackground;
 
-    public ObservableField<Drawable> getAvoidBackground() {
+    public ObservableField<Boolean> getAvoidBackground() {
         return mAvoidBackground;
     }
 
@@ -480,7 +484,7 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
         mRestrictionCarVisibility = new ObservableField<>(false);
         mRestrictionRightBackVisibility = new ObservableField<>(false);
         mParamDes = new ObservableField<>("");
-        mAvoidBackground = new ObservableField<>(ResourceUtils.Companion.getInstance().getDrawable(R.drawable.bg_route_details_defult_label));
+        mAvoidBackground = new ObservableField<>(false);
         mAvoidTestColor = new ObservableField<>(ResourceUtils.Companion.getInstance().getColor(R.color.text_route_defult));
         mAvoidClickable = new ObservableField<>(false);
         mTitle = new ObservableField<>();
@@ -964,7 +968,7 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
                 ? ResourceUtils.Companion.getInstance().getDrawable(R.drawable.img_route_up)
                 : ResourceUtils.Companion.getInstance().getDrawable(R.drawable.img_route_down));
         mRouteDetailsVisibility.set(true);
-        mAvoidBackground.set(ResourceUtils.Companion.getInstance().getDrawable(R.drawable.bg_route_details_defult_label));
+        mAvoidBackground.set(false);
         mAvoidTestColor.set(ResourceUtils.Companion.getInstance().getColor(R.color.text_route_defult));
         mAvoidClickable.set(false);
         mView.setAvoidStatusUI(false);
@@ -1643,8 +1647,7 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
 
     @Override
     public void onRouteDetailsChecked(final boolean checkedLeastOne) {
-        mAvoidBackground.set(checkedLeastOne ? ResourceUtils.Companion.getInstance().getDrawable(R.drawable.bg_route_details_avoid_road)
-                : ResourceUtils.Companion.getInstance().getDrawable(R.drawable.bg_route_details_defult_label));
+        mAvoidBackground.set(checkedLeastOne);
         mAvoidTestColor.set(checkedLeastOne ? ResourceUtils.Companion.getInstance().getColor(R.color.white)
                 : ResourceUtils.Companion.getInstance().getColor(R.color.text_route_defult));
         mAvoidClickable.set(checkedLeastOne);
@@ -1778,5 +1781,8 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
     public void onReStoreFragment() {
         showNomalRouteUI();
         mModel.onReStoreFragment();
+        if (mSecondaryPoiInfo != null) {
+            mView.setRouteSecondaryPoiUI(mSecondaryPoiInfo);
+        }
     }
 }

@@ -47,12 +47,10 @@ class NetWorkUtils private constructor() {
     }
 
     fun checkNetwork(): Boolean? {
-    /*    var networkCapabilities =
+        var networkCapabilities =
             connectivityManager?.getNetworkCapabilities(connectivityManager!!.activeNetwork)
         if (ConvertUtils.isNull(networkCapabilities)) return false
-        return networkCapabilities?.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED)*/
-
-        return true
+        return networkCapabilities?.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED)
     }
 
     @RequiresApi(Build.VERSION_CODES.O)

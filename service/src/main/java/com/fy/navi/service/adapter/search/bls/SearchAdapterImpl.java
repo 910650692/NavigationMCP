@@ -1,6 +1,7 @@
 package com.fy.navi.service.adapter.search.bls;
 
 
+import android.util.Log;
 import android.util.Pair;
 
 import com.android.utils.ConvertUtils;
@@ -37,32 +38,29 @@ import com.fy.navi.service.AppContext;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.adapter.search.ISearchApi;
 import com.fy.navi.service.adapter.search.ISearchResultCallback;
-import com.fy.navi.service.adapter.search.cloud.http.ApiClient;
-import com.fy.navi.service.adapter.search.cloud.http.RxRetrofitClient;
 import com.fy.navi.service.adapter.search.cloudByPatac.api.SearchRepository;
+import com.fy.navi.service.adapter.search.cloudByPatac.rep.BaseRep;
 import com.fy.navi.service.adapter.search.cloudByPatac.req.StationReq;
 import com.fy.navi.service.define.search.ETAInfo;
-import com.fy.navi.service.define.search.PoiInfoEntity;
 import com.fy.navi.service.define.search.SearchRequestParameter;
-import com.fy.navi.service.define.search.TestInfo;
 import com.fy.navi.service.define.utils.BevPowerCarUtils;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
 import com.patac.netlib.callback.NetDisposableObserver;
 import com.patac.netlib.exception.ApiException;
 
-import java.util.HashMap;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.Executor;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 
 import io.reactivex.Observable;
-import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
 
@@ -236,74 +234,6 @@ public class SearchAdapterImpl extends SearchServiceV2Manager implements ISearch
         final KeywordSearchRqbxyParam param = SearchRequestParamV2.getInstance().convertToAroundSearchParam(requestParameterBuilder);
         getSearchServiceV2().keyWordSearchRqbxy(param, mSearchObserversHelper, SearchMode.SEARCH_MODE_ONLINE_ADVANCED, mTaskId.incrementAndGet());
         return mTaskId.get();
-    }
-
-    /**
-     * 云端充电桩搜索
-     *
-     * @param searchRequestParameter {@link SearchRequestParameter}
-     *                               areaCode stationList 必传一个
-     *                               lat lng 必须同时传或者不传
-     *                               filterList 不为空则 areaCode 必填
-     *                               stationList filterList 不能同时存在
-     * @return task id
-     */
-    @Override
-    public int queryStationNewResult(final SearchRequestParameter searchRequestParameter) {
-//        final Map<String, String> parameters = new HashMap<>();
-//        parameters.put("areaCode", ""); // 城市 （stationList为空必传
-//        parameters.put("lat", ""); // 纬度 例:32.489931
-//        parameters.put("lng", ""); // 经度 例:119.862440
-//        parameters.put("keyWords", ""); // 地址/充电站名称 模糊查询
-//        parameters.put("stationList", ""); // 用于用户收藏后查询
-//        parameters.put("operatorId", ""); // 运营商ID
-//        parameters.put("stationIds", ""); // 充电站ID
-//        parameters.put("filterList", ""); // 充电站筛选条
-//        parameters.put("filterAttr", ""); // 筛选属性
-//        parameters.put("filterValue", ""); // 筛选值
-//        parameters.put("stationFlag", ""); // 充电站标识 （A-凯迪拉克专属站,B-奥特能专属站,C类)AB: A&B类站,NAB: 非A/B类站,NA:非A类站
-//        parameters.put("distance", ""); // 距离（默认单位：公里）
-//        parameters.put("stationType", ""); // 不传或0代表所有，1为仅对外开放(公共站)，2为不对外开放
-//        parameters.put("from", ""); // 第N页
-//        parameters.put("size", ""); // 每页记录数
-//        parameters.put("stationStatus", ""); // 站点状态 0: 未知；1 : 建设中；5: 关闭下线：6: 维护中；50: 正常使用
-//        parameters.put("isParkFeeFree", ""); // 停车减免 0：不支持 1：支持
-//        parameters.put("carOwnerFlag", ""); // 是否支持公共充电 1：支持
-//        parameters.put("internalUse", ""); // 是否内部站 1：是 不传或传空 默认不查询内部站
-//        parameters.put("stationTypeFlag", ""); // 场站类型： 商场、写字楼、文体、机场、火车站、景区高速服务区
-//        parameters.put("parkType", ""); // 车位情况：侧桩、后桩、混
-//        final Observable<PoiInfoEntity> poiInfoEntityObservable = RxRetrofitClient.getInstance().
-//                create(ApiClient.class).queryStationNewResult(parameters);
-//        queryStationNewResult(mTaskId.incrementAndGet(), searchRequestParameter, poiInfoEntityObservable);
-        StationReq req = new StationReq("1.0");
-        req.setmAreaCode("");
-        final Observable<TestInfo> poiInfoEntityObservable = SearchRepository.getInstance().queryStationNewResult(req);
-        queryStationNewResult(mTaskId.incrementAndGet(), searchRequestParameter, poiInfoEntityObservable);
-        return mTaskId.get();
-    }
-
-    /**
-     * 查询云端充电桩结果
-     *
-     * @param taskId     任务id
-     * @param source     请求参数
-     * @param observable 回调监听
-     */
-    private void queryStationNewResult(final int taskId, final SearchRequestParameter source, final Observable<TestInfo> observable) {
-        Logger.d("huangli","1: "+observable.toString());
-        observable.subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new NetDisposableObserver<TestInfo>() {
-                    @Override
-                    public void onSuccess(TestInfo data) {
-                        Logger.d("huangli","data: "+data);
-                    }
-
-                    @Override
-                    public void onFailed(ApiException apiException) {
-                        Logger.d("huangli","Exce: "+apiException);
-                    }
-                });
     }
 
     /**
@@ -577,6 +507,10 @@ public class SearchAdapterImpl extends SearchServiceV2Manager implements ISearch
         mSearchNotificationHelper.notifySearchSuccess(taskId, requestParameterBuilder, result);
     }
 
+    private void notifyNetSearchSuccess(BaseRep result){
+        mSearchNotificationHelper.notifyNetCallbacks(result);
+    }
+
     /**
      * 创建一个回调包装器，用于处理搜索结果的成功和失败情况。
      *
@@ -593,4 +527,78 @@ public class SearchAdapterImpl extends SearchServiceV2Manager implements ISearch
         return mSearchNotificationHelper.createCallbackWrapper(resultType, onSuccess, onFailure);
     }
 
+    /**
+     * 云端充电桩搜索
+     * @return task id
+     */
+    @Override
+    public int queryStationNewResult(final SearchRequestParameter searchRequestParameter) {
+        StationReq req = new StationReq("1.0");
+        final Observable<BaseRep> observable = SearchRepository.getInstance().queryStationNewResult(req);
+        observable.subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(new NetDisposableObserver<BaseRep>() {
+                @Override
+                public void onSuccess(BaseRep data) {
+                    Logger.d("huangli","data: "+data);
+                }
+
+                @Override
+                public void onFailed(ApiException apiException) {
+                    Logger.d("huangli","Exce: "+apiException);
+                }
+            });
+        return mTaskId.get();
+    }
+
+    /**
+     * 云端收藏夹搜索
+     * @return task id
+     */
+    @Override
+    public int queryCollectStation(SearchRequestParameter searchRequestParameter) {
+        StationReq req = new StationReq("1.0");
+        final Observable<BaseRep> observable = SearchRepository.getInstance().queryCollectStation(req);
+        observable.subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(new NetDisposableObserver<BaseRep>() {
+                @Override
+                public void onSuccess(BaseRep data) {
+                    Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG,"data: "+data.getDataSet());
+                }
+
+                @Override
+                public void onFailed(ApiException apiException) {
+                    Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG,"Exce: "+apiException);
+                }
+            });
+        String json = "{\n" +
+                "  \"totalPages\": 1,\n" +
+                "  \"totalCount\": 1,\n" +
+                "  \"pageSize\": 10,\n" +
+                "  \"pageNum\": 1,\n" +
+                "  \"items\": [\n" +
+                "    {\n" +
+                "      \"operatorId\": \"A\",\n" +
+                "      \"stationId\": \"D\",\n" +
+                "      \"stationSaved\": false,\n" +
+                "      \"stationLng\": 32.1622,\n" +
+                "      \"stationLat\": 119.5166,\n" +
+                "      \"stationName\": \" 特斯拉超级充电站\",\n" +
+                "      \"address\": \"世纪大道一号\",\n" +
+                "      \"stationFlag\": \"D\",\n" +
+                "      \"fastChargingFree\": \"\",\n" +
+                "      \"fastChargingTotal\": \"\",\n" +
+                "      \"slowChargingFree\": \"\",\n" +
+                "      \"slowChargingTotal\": \"\"\n" +
+                "    }\n" +
+                "  ]\n" +
+                "}";
+        BaseRep rep = new BaseRep();
+        rep.setResultCode("4001");
+        rep.setMessage("获取成功");
+        rep.setDataSet(json);
+        notifyNetSearchSuccess(rep);
+        return mTaskId.get();
+    }
 }

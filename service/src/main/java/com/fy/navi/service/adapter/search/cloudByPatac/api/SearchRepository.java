@@ -3,9 +3,8 @@ package com.fy.navi.service.adapter.search.cloudByPatac.api;
 import com.android.utils.log.Logger;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.adapter.search.cloudByPatac.NetMethodManager;
+import com.fy.navi.service.adapter.search.cloudByPatac.rep.BaseRep;
 import com.fy.navi.service.adapter.search.cloudByPatac.req.StationReq;
-import com.fy.navi.service.define.search.PoiInfoEntity;
-import com.fy.navi.service.define.search.TestInfo;
 
 import io.reactivex.Observable;
 
@@ -22,9 +21,56 @@ public class SearchRepository implements SearchApi{
         return mInstance;
     }
     @Override
-    public Observable<TestInfo> queryStationNewResult(StationReq req) {
-        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"dopost");
-        Observable<TestInfo> observable = NetMethodManager.getInstance().doPost(SearchApiService.CLOUD_QUERY_STATION_NEW,req,TestInfo.class);
+    public Observable<BaseRep> queryStationNewResult(StationReq req) {
+        Observable<BaseRep> observable = NetMethodManager.getInstance().doPost(SearchApiService.CLOUD_QUERY_STATION_NEW,req, BaseRep.class);
+        return observable;
+    }
+
+    @Override
+    public Observable<BaseRep> queryCollectStation(StationReq req) {
+        Observable<BaseRep> observable = NetMethodManager.getInstance().doPost(SearchApiService.CLOUD_QUERY_COLLECT_STATION,req, BaseRep.class);
+        return observable;
+    }
+
+    @Override
+    public Observable<BaseRep> updateReservation(StationReq req) {
+        Observable<BaseRep> observable = NetMethodManager.getInstance().doPost(SearchApiService.UPDATE_RESERVATION,req, BaseRep.class);
+        return observable;
+    }
+
+    @Override
+    public Observable<BaseRep> createReservation(StationReq req) {
+        Observable<BaseRep> observable = NetMethodManager.getInstance().doPost(SearchApiService.CREATE_RESERVATION_STATION,req, BaseRep.class);
+        return observable;
+    }
+
+    @Override
+    public Observable<BaseRep> unLockStation(StationReq req) {
+        Observable<BaseRep> observable = NetMethodManager.getInstance().doPost(SearchApiService.CLOUD_QUERY_UNLOCK,req, BaseRep.class);
+        return observable;
+    }
+
+    @Override
+    public Observable<BaseRep> updateCollectStation(StationReq req) {
+        Observable<BaseRep> observable = NetMethodManager.getInstance().doPost(SearchApiService.UPDATE_COLLECT_STATION,req, BaseRep.class);
+        return observable;
+    }
+
+    @Override
+    public Observable<BaseRep> queryReservation(StationReq req) {
+        Observable<BaseRep> observable = NetMethodManager.getInstance().doPost(SearchApiService.QUERY_RESERVATION_STATION,req, BaseRep.class);
+        return observable;
+    }
+
+    @Override
+    public Observable<BaseRep> queryEquipmentInfo(StationReq req) {
+        Observable<BaseRep> observable = NetMethodManager.getInstance().doPost(SearchApiService.QUERY_EQUIPMENT_INFO,req, BaseRep.class);
+        return observable;
+    }
+
+    @Override
+    public Observable<BaseRep> queryStationInfo(StationReq req) {
+        Observable<BaseRep> observable = NetMethodManager.getInstance().doPost(SearchApiService.QUERY_STATION_INFO,req, BaseRep.class);
         return observable;
     }
 }

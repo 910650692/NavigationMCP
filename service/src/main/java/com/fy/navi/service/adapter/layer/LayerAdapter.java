@@ -103,6 +103,11 @@ public class LayerAdapter {
         mLayerApi.openDynamicLevel(mapTypeId, dynamicLevelMode);
     }
 
+    /* 关闭动态比例尺 */
+    public void closeDynamicLevel(MapType mapTypeId) {
+        mLayerApi.closeDynamicLevel(mapTypeId);
+    }
+
     /* 设置动态比例尺是否锁住状态，type区分巡航动态比例尺还是导航动态比例尺 */
     public void setDynamicLevelLock(MapType mapTypeId, DynamicLevelMode dynamicLevelMode, boolean isLock) {
         mLayerApi.setDynamicLevelLock(mapTypeId, dynamicLevelMode, isLock);

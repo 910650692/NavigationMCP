@@ -20,6 +20,7 @@ import lombok.Setter;
 public class ErrorCode {
     private Map<Integer, String> errorCode = new HashMap<>();
     private Map<Integer, String> engineCode = new HashMap<>();
+    private Map<Integer, String> activateCode = new HashMap<>();
     private Map<Integer, String> activityCode = new HashMap<>();
     private Map<Integer, String> positionCode = new HashMap<>();
     private Map<Integer, String> mapCode = new HashMap<>();

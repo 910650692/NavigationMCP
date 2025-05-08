@@ -1,5 +1,6 @@
 package com.fy.navi.service.adapter.search;
 
+import com.fy.navi.service.adapter.search.cloudByPatac.rep.BaseRep;
 import com.fy.navi.service.define.search.SearchErrorCode;
 import com.fy.navi.service.define.search.SearchRequestParameter;
 import com.fy.navi.service.define.search.SearchResultEntity;
@@ -34,4 +35,6 @@ public interface ISearchResultCallback {
      * @param taskId             任务ID
      */
     void onSilentSearchResult(int taskId, @SearchErrorCode.ErrorCode int errorCode, String message, SearchResultEntity searchResultEntity);
+    // 网络接口回调
+    void onNetSearchResult(BaseRep result);
 }

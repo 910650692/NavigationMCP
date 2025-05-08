@@ -41,7 +41,9 @@ public class MapTypeManager {
             return MapType.LAUNCHER_DESK_MAP;
         } else if (TextUtils.equals(name, MapType.LAUNCHER_WIDGET_MAP.name())) {
             return MapType.LAUNCHER_WIDGET_MAP;
-        } else {
+        }if (TextUtils.equals(name, MapType.CLUSTER_MAP.name())) {
+            return MapType.CLUSTER_MAP;
+        }  else {
             return MapType.MAIN_SCREEN_MAIN_MAP;
         }
     }

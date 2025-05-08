@@ -11,6 +11,7 @@
         android:layout_height="fill_parent"
         android:gravity="center"
         android:orientation="horizontal"
+        android:focusable="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -20,6 +21,7 @@
             android:layout_width="@dimen/dp_54"
             android:layout_height="@dimen/dp_54"
             android:layout_marginEnd="@dimen/dp_10"
+            android:focusable="false"
             android:src="@drawable/img_untop_bwhite_42"/>
 
         <com.fy.navi.ui.view.SkinTextView
@@ -27,6 +29,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/setting_white"
+            android:focusable="false"
             android:text="@string/offline_item_city_status"
             android:textSize="@dimen/sp_38" />
 

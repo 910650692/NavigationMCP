@@ -141,9 +141,11 @@ public final class NaviPackage implements GuidanceObserver {
             mLayerAdapter.setFollowMode(MapType.MAIN_SCREEN_MAIN_MAP, true);
             mLayerAdapter.setFollowMode(MapType.LAUNCHER_WIDGET_MAP, true);
             mLayerAdapter.setFollowMode(MapType.LAUNCHER_DESK_MAP, true);
+            mLayerAdapter.setFollowMode(MapType.CLUSTER_MAP, true);
             mLayerAdapter.setVisibleGuideSignalLight(MapType.MAIN_SCREEN_MAIN_MAP, true);
             mLayerAdapter.setVisibleGuideSignalLight(MapType.LAUNCHER_WIDGET_MAP, true);
             mLayerAdapter.setVisibleGuideSignalLight(MapType.LAUNCHER_DESK_MAP, true);
+            mLayerAdapter.setVisibleGuideSignalLight(MapType.CLUSTER_MAP, true);
             mNavistatusAdapter.setNaviStatus(NaviStatus.NaviStatusType.NAVING);
             PathInfo pathInfo = mRouteAdapter.getCurrentPath(MapType.MAIN_SCREEN_MAIN_MAP) ==
                     null ? null :
@@ -158,6 +160,8 @@ public final class NaviPackage implements GuidanceObserver {
                 mLayerAdapter.updatePathInfo(MapType.LAUNCHER_WIDGET_MAP, list,
                         (int) pathInfo.getPathIndex());
                 mLayerAdapter.updatePathInfo(MapType.LAUNCHER_DESK_MAP, list,
+                        (int) pathInfo.getPathIndex());
+                mLayerAdapter.updatePathInfo(MapType.CLUSTER_MAP, list,
                         (int) pathInfo.getPathIndex());
             }
         } else {
@@ -177,6 +181,7 @@ public final class NaviPackage implements GuidanceObserver {
             mLayerAdapter.setFollowMode(MapType.MAIN_SCREEN_MAIN_MAP, false);
             mLayerAdapter.setFollowMode(MapType.LAUNCHER_WIDGET_MAP, false);
             mLayerAdapter.setFollowMode(MapType.LAUNCHER_DESK_MAP, false);
+            mLayerAdapter.setFollowMode(MapType.CLUSTER_MAP, false);
             mCurrentNaviType = NumberUtils.NUM_ERROR;
         } else {
             Logger.w(TAG, "stopNavigation failed!");
@@ -1012,5 +1017,14 @@ public final class NaviPackage implements GuidanceObserver {
 
     public void setSimulationSpeed(int simulationSpeed) {
         mNaviAdapter.setSimulationSpeed(simulationSpeed);
+    }
+
+    /**
+     * @param mapTypeId 关闭比例尺
+     */
+    public void closeDynamicLevel(MapType mapTypeId) {
+        if (null != mLayerAdapter) {
+            mLayerAdapter.closeDynamicLevel(mapTypeId);
+        }
     }
 }

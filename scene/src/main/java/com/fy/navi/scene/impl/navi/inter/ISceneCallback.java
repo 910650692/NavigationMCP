@@ -38,6 +38,12 @@ public interface ISceneCallback {
     }
 
     /**
+     * 跳转到引导控制条scene
+     */
+    default void skipNaviControlScene() {
+    }
+
+    /**
      * 显示/隐藏场景页面
      *
      * @param sceneType 场景类型

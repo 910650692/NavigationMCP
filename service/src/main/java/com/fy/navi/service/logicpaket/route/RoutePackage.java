@@ -1002,6 +1002,8 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
         routeLineLayerParam.setMEstimatedTimeOfArrival(arrivalTimes);
         mLayerAdapter.drawRouteLine(mapTypeId, mRequestRouteResults.get(mapTypeId));
         mLayerAdapter.drawRouteLine(MapType.LAUNCHER_DESK_MAP, mRequestRouteResults.get(mapTypeId));
+        //绘制路线
+        mLayerAdapter.drawRouteLine(MapType.CLUSTER_MAP, mRequestRouteResults.get(mapTypeId));
     }
 
     /*更新终点扎标数据*/

@@ -243,4 +243,8 @@ final public class SearchAdapter {
         }
         return mSearchApi.getTravelTimeFutureIncludeChargeLeft(searchRequestParameter);
     }
+
+    public int queryCollectStation(final SearchRequestParameter searchRequestParameter){
+        return mSearchApi.queryCollectStation(searchRequestParameter);
+    }
 }

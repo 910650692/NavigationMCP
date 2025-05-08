@@ -23,6 +23,7 @@ import com.fy.navi.service.adapter.position.PositionAdapter;
 import com.fy.navi.service.adapter.route.RouteAdapter;
 import com.fy.navi.service.adapter.search.ISearchResultCallback;
 import com.fy.navi.service.adapter.search.SearchAdapter;
+import com.fy.navi.service.adapter.search.cloudByPatac.rep.BaseRep;
 import com.fy.navi.service.define.bean.GeoPoint;
 import com.fy.navi.service.define.bean.PreviewParams;
 import com.fy.navi.service.define.layer.refix.LayerItemSearchResult;
@@ -136,6 +137,18 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
             mCurrentCallbackId.set(identifier);
             final SearchResultCallback callback = entry.getValue();
             threadManager.postUi(() -> callback.onSilentSearchResult(taskId, errorCode, message, searchResultEntity));
+        }
+    }
+
+    @Override
+    public void onNetSearchResult(BaseRep result) {
+        Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "onNetSearchResult");
+        final ThreadManager threadManager = ThreadManager.getInstance();
+        for (Map.Entry<String, SearchResultCallback> entry : mISearchResultCallbackMap.entrySet()) {
+            final String identifier = entry.getKey();
+            mCurrentCallbackId.set(identifier);
+            final SearchResultCallback callback = entry.getValue();
+            threadManager.postUi(() -> callback.onNetSearchResult(result));
         }
     }
 
@@ -519,9 +532,10 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
      * @param page    页数
      * @param keyword 搜索关键词
      * @param geoPoint 经纬度
+     * @param isTerminal 是否是终点停车场搜索
      * @return taskId
      */
-    public int aroundSearch(final int page, final String keyword, final GeoPoint geoPoint) {
+    public int aroundSearch(final int page, final String keyword, final GeoPoint geoPoint, final boolean isTerminal) {
         if (keyword == null) {
             Logger.e(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "Failed to execute nearby search: searchRequestParameterBuilder is null.");
             return -1;
@@ -535,7 +549,7 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
                 .keyword(keyword)
                 .page(page)
                 .queryType(AutoMapConstant.SearchQueryType.AROUND)
-                .searchType(AutoMapConstant.SearchType.AROUND_SEARCH)
+                .searchType(isTerminal ? AutoMapConstant.SearchType.TERMINAL_PARK_AROUND_SEARCH : AutoMapConstant.SearchType.AROUND_SEARCH)
                 .userLoc(userLoc)
                 .poiLoc(geoPoint)
                 .geoobj(mMapAdapter.getMapBound(MapType.MAIN_SCREEN_MAIN_MAP))
@@ -898,6 +912,10 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
                 createPoiMarker(searchResultEntity.getPoiList(), 0);
                 createCenterPoiMarker(requestParameter);
                 break;
+            case AutoMapConstant.SearchType.TERMINAL_PARK_AROUND_SEARCH:
+                createTerminalParkPoiMarker(searchResultEntity.getPoiList(), 0);
+                createCenterPoiMarker(requestParameter);
+                break;
             case AutoMapConstant.SearchType.GEO_SEARCH:
             case AutoMapConstant.SearchType.POI_SEARCH:
                 createLabelMarker(searchResultEntity);
@@ -951,6 +969,24 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
     }
 
     /**
+     * 搜索结果列表扎标
+     * @param poiList 搜索结果列表
+     * @param index 当前选中下标
+     */
+    public void createTerminalParkPoiMarker(final List<PoiInfoEntity> poiList, final int index) {
+        if (ConvertUtils.isEmpty(poiList)) {
+            return;
+        }
+        final LayerItemSearchResult layerItemSearchResult = new LayerItemSearchResult();
+        layerItemSearchResult.setSearchResultPoints((ArrayList<PoiInfoEntity>) poiList);
+        final LayerPointItemType layerPointItemType = LayerPointItemType.SEARCH_PARENT_PARK;
+        sMarkerInfoMap.put(layerPointItemType, layerItemSearchResult);
+        mLayerAdapter.updateSearchMarker(MapType.MAIN_SCREEN_MAIN_MAP, layerPointItemType,
+                layerItemSearchResult, true);
+        showPreview(poiList);
+    }
+
+    /**
      * 移动主图，将搜索扎标移到主图中心点
      * @param poiList 需要扎标的数据列表
      */
@@ -983,17 +1019,28 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
      * 设置高亮扎标
      * @param poiInfoEntity 需要高亮的poi对象
      * @param index 需要高亮的下标
+     * @param searchType 扎标对应的搜索类型
      */
-    public void setSelectIndex(final PoiInfoEntity poiInfoEntity, final int index) {
+    public void setSelectIndex(final PoiInfoEntity poiInfoEntity, final int index, final int searchType) {
         if (ConvertUtils.isEmpty(poiInfoEntity)) {
             return;
         }
-        if (getPointTypeCode(poiInfoEntity.getPointTypeCode()) == AutoMapConstant.PointTypeCode.CHARGING_STATION) {
-            mLayerAdapter.setSearchSelect(MapType.MAIN_SCREEN_MAIN_MAP, LayerPointItemType.SEARCH_PARENT_CHARGE_STATION
+        Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "setSelectIndex type: " + searchType + " ,index: " + index);
+
+        if (searchType == AutoMapConstant.SearchType.EN_ROUTE_KEYWORD_SEARCH) {
+            mLayerAdapter.setSearchSelect(MapType.MAIN_SCREEN_MAIN_MAP, LayerPointItemType.SEARCH_POI_ALONG_ROUTE
+                    , index);
+        } else if (searchType == AutoMapConstant.SearchType.TERMINAL_PARK_AROUND_SEARCH) {
+            mLayerAdapter.setSearchSelect(MapType.MAIN_SCREEN_MAIN_MAP, LayerPointItemType.SEARCH_PARENT_PARK
                     , index);
         } else {
-            mLayerAdapter.setSearchSelect(MapType.MAIN_SCREEN_MAIN_MAP, LayerPointItemType.SEARCH_PARENT_POINT
-                    , index);
+            if (getPointTypeCode(poiInfoEntity.getPointTypeCode()) == AutoMapConstant.PointTypeCode.CHARGING_STATION) {
+                mLayerAdapter.setSearchSelect(MapType.MAIN_SCREEN_MAIN_MAP, LayerPointItemType.SEARCH_PARENT_CHARGE_STATION
+                        , index);
+            } else {
+                mLayerAdapter.setSearchSelect(MapType.MAIN_SCREEN_MAIN_MAP, LayerPointItemType.SEARCH_PARENT_POINT
+                        , index);
+            }
         }
         final LayerItemSearchResult layerItemSearchResult = new LayerItemSearchResult();
         final ArrayList<PoiInfoEntity> poiList = new ArrayList<>();
@@ -1316,12 +1363,16 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
     public void onSearchItemClick(final MapType mapTypeId, final LayerPointItemType type, final int index) {
         Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "onSearchItemClick type:" + type);
         final ThreadManager threadManager = ThreadManager.getInstance();
-        if (type == LayerPointItemType.SEARCH_CHILD_POINT) {
+        if (type == LayerPointItemType.SEARCH_CHILD_POINT || type == LayerPointItemType.SEARCH_PARENT_PARK) {
             for (Map.Entry<String, SearchResultCallback> entry : mISearchResultCallbackMap.entrySet()) {
                 final String identifier = entry.getKey();
                 mCurrentCallbackId.set(identifier);
                 final SearchResultCallback callback = entry.getValue();
-                threadManager.postUi(() -> callback.onMarkChildClickCallBack(index));
+                if (type == LayerPointItemType.SEARCH_CHILD_POINT) {
+                    threadManager.postUi(() -> callback.onMarkChildClickCallBack(index));
+                } else {
+                    threadManager.postUi(() -> callback.onMarkTerminalParkClickCallBack(index));
+                }
             }
             return;
         }
@@ -1391,6 +1442,15 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
                 .setParams(BuryConstant.ProperType.BURY_KEY_SEARCH_CONTENTS, keywords)
                 .build();
         BuryPointController.getInstance().setBuryProps(buryProperty);
+    }
+
+    /*
+    * 查询充电站收藏列表
+    * */
+    public int queryCollectStation(){
+        final SearchRequestParameter requestParameterBuilder = new SearchRequestParameter.Builder()
+                .build();
+        return mSearchAdapter.queryCollectStation(requestParameterBuilder);
     }
 
 }

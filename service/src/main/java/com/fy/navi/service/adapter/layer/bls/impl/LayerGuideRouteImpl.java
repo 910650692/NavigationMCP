@@ -580,6 +580,13 @@ public class LayerGuideRouteImpl extends BaseLayerImpl<LayerGuideRouteStyleAdapt
         Logger.d(TAG, "openDynamicLevel dynamicLevelMode " + dynamicLevelMode);
     }
 
+    /* 关闭动态比例尺 */
+    public void closeDynamicLevel() {
+        getLayerGuideRouteControl().openDynamicLevel(false, DynamicLevelType.DynamicLevelGuide);
+        getLayerGuideRouteControl().openDynamicLevel(false, DynamicLevelType.DynamicLevelCruise);
+        Logger.d(TAG, "closeDynamicLevel");
+    }
+
     /* 设置动态比例尺是否锁住状态，type区分巡航动态比例尺还是导航动态比例尺 */
     public void setDynamicLevelLock(DynamicLevelMode dynamicLevelMode, boolean isLock) {
         switch (dynamicLevelMode) {

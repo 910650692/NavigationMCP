@@ -12,75 +12,95 @@
 
     <com.fy.navi.ui.view.SkinConstraintLayout
         android:focusable="false"
-        android:layout_width="match_parent"
+        android:layout_width="@dimen/dp_820"
         android:layout_height="wrap_content">
 
         <com.fy.navi.ui.view.SkinView
             android:id="@+id/sv_bottom_view"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_92"
+            android:layout_height="@dimen/dp_118"
             android:layout_marginTop="@dimen/dp_30"
             android:focusable="false"
             android:background="@drawable/bg_navi_tbt_bottom_view" />
 
         <com.fy.navi.ui.view.SkinTextView
             android:id="@+id/siv_way"
-            android:layout_width="@dimen/dp_60"
-            android:layout_height="@dimen/dp_60"
-            android:layout_marginStart="@dimen/dp_60"
+            android:layout_width="@dimen/dp_52"
+            android:layout_height="@dimen/dp_52"
+            android:layout_marginStart="@dimen/dp_40"
             android:focusable="false"
             android:background="@drawable/img_navi_via_item_btn_pass"
             android:gravity="center"
             android:text="@string/navi_via_item_pass"
             android:textColor="@color/navi_color_FFFFFF_100"
-            android:textSize="@dimen/sp_30"
+            android:textSize="@dimen/sp_32"
             app:layout_constraintBottom_toBottomOf="@id/sv_bottom_view"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@id/sv_bottom_view" />
 
-        <com.fy.navi.ui.view.SkinTextView
-            android:id="@+id/stv_way"
-            android:layout_width="wrap_content"
+        <com.fy.navi.ui.view.SkinConstraintLayout
+            android:layout_width="@dimen/dp_660"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_24"
-            android:focusable="false"
-            android:maxWidth="@dimen/dp_242"
-            android:maxLines="1"
-            android:textColor="@color/common_title_purple_color"
-            android:textSize="@dimen/sp_34"
-            android:ellipsize="end"
             app:layout_constraintBottom_toBottomOf="@id/sv_bottom_view"
             app:layout_constraintStart_toEndOf="@id/siv_way"
             app:layout_constraintTop_toTopOf="@id/sv_bottom_view"
-            tools:text="杨高中路地铁站" />
-
-        <com.fy.navi.ui.view.SkinTextView
-            android:id="@+id/stv_way_arrive"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/dp_30"
             android:focusable="false"
-            android:text="@string/navi_arrived"
-            android:textColor="@color/common_title_color"
-            android:textSize="@dimen/sp_34"
-            android:visibility="invisible"
-            app:layout_constraintBottom_toBottomOf="@id/sv_bottom_view"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/sv_bottom_view" />
+            android:layout_marginStart="@dimen/dp_20">
 
-        <com.fy.navi.ui.view.SkinTextView
-            android:id="@+id/stv_via_count"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/dp_30"
-            android:focusable="false"
-            app:layout_constraintBottom_toBottomOf="@id/sv_bottom_view"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/sv_bottom_view"
-            android:textColor="@color/common_title_color"
-            android:textSize="@dimen/sp_34"
-            android:visibility="visible"
-            android:layout_marginStart="@dimen/dp_24"
-            tools:text="等2个途经点"/>
+            <com.fy.navi.ui.view.SkinTextView
+                android:id="@+id/stv_way"
+                android:layout_width="@dimen/dp_0"
+                android:layout_height="wrap_content"
+                android:focusable="false"
+                android:maxLines="1"
+                android:textColor="@color/common_title_purple_color"
+                android:textSize="@dimen/sp_46"
+                android:ellipsize="end"
+                app:layout_constraintHorizontal_chainStyle="packed"
+                app:layout_constraintHorizontal_bias="0"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/sv_tip_container"
+                tools:text="杨高中路地ddddd铁站" />
+
+            <com.fy.navi.ui.view.SkinConstraintLayout
+                android:id="@+id/sv_tip_container"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:focusable="false"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <com.fy.navi.ui.view.SkinTextView
+                    android:id="@+id/stv_way_arrive"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:focusable="false"
+                    android:text="@string/navi_arrived"
+                    android:textColor="@color/common_title_color"
+                    android:textSize="@dimen/sp_46"
+                    android:visibility="visible"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <com.fy.navi.ui.view.SkinTextView
+                    android:id="@+id/stv_via_count"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:focusable="false"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:textColor="@color/common_title_color"
+                    android:textSize="@dimen/sp_46"
+                    android:visibility="invisible"
+                    android:layout_marginStart="@dimen/dp_24"
+                    tools:text="等2个途经点"/>
+            </com.fy.navi.ui.view.SkinConstraintLayout>
+
+        </com.fy.navi.ui.view.SkinConstraintLayout>
     </com.fy.navi.ui.view.SkinConstraintLayout>
 </layout>

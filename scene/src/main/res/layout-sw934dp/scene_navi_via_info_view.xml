@@ -25,7 +25,7 @@
             android:id="@+id/siv_way"
             android:layout_width="@dimen/dp_60"
             android:layout_height="@dimen/dp_60"
-            android:layout_marginStart="@dimen/dp_60"
+            android:layout_marginStart="@dimen/dp_32"
             android:background="@drawable/img_navi_via_item_btn_pass"
             android:gravity="center"
             android:text="@string/navi_via_item_pass"
@@ -34,46 +34,65 @@
             app:layout_constraintBottom_toBottomOf="@id/sv_bottom_view"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@id/sv_bottom_view" />
-
-        <com.fy.navi.ui.view.SkinTextView
-            android:id="@+id/stv_way"
-            android:layout_width="wrap_content"
+        
+        <com.fy.navi.ui.view.SkinConstraintLayout
+            android:layout_width="@dimen/dp_502"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_24"
-            android:maxWidth="@dimen/dp_242"
-            android:maxLines="1"
-            android:textColor="@color/common_title_purple_color"
-            android:textSize="@dimen/sp_34"
-            android:ellipsize="end"
+            android:layout_marginStart="@dimen/dp_32"
             app:layout_constraintBottom_toBottomOf="@id/sv_bottom_view"
             app:layout_constraintStart_toEndOf="@id/siv_way"
-            app:layout_constraintTop_toTopOf="@id/sv_bottom_view"
-            tools:text="杨高中路地铁站" />
+            app:layout_constraintTop_toTopOf="@id/sv_bottom_view">
 
-        <com.fy.navi.ui.view.SkinTextView
-            android:id="@+id/stv_way_arrive"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/dp_30"
-            android:text="@string/navi_arrived"
-            android:textColor="@color/common_title_color"
-            android:textSize="@dimen/sp_34"
-            android:visibility="invisible"
-            app:layout_constraintBottom_toBottomOf="@id/sv_bottom_view"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/sv_bottom_view" />
+            <com.fy.navi.ui.view.SkinTextView
+                android:id="@+id/stv_way"
+                android:layout_width="@dimen/dp_0"
+                android:layout_height="wrap_content"
+                android:maxWidth="@dimen/dp_242"
+                android:maxLines="1"
+                android:textColor="@color/common_title_purple_color"
+                android:textSize="@dimen/sp_34"
+                android:ellipsize="end"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/sv_tip_container"
+                tools:text="杨高中路地ddddd铁站" />
 
-        <com.fy.navi.ui.view.SkinTextView
-            android:id="@+id/stv_via_count"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="@id/sv_bottom_view"
-            app:layout_constraintStart_toEndOf="@id/stv_way"
-            app:layout_constraintTop_toTopOf="@id/sv_bottom_view"
-            android:textColor="@color/common_title_color"
-            android:textSize="@dimen/sp_34"
-            android:visibility="visible"
-            android:layout_marginStart="@dimen/dp_24"
-            tools:text="等2个途经点"/>
+            <com.fy.navi.ui.view.SkinConstraintLayout
+                android:id="@+id/sv_tip_container"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent">
+
+                <com.fy.navi.ui.view.SkinTextView
+                    android:id="@+id/stv_way_arrive"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/navi_arrived"
+                    android:textColor="@color/common_title_color"
+                    android:textSize="@dimen/sp_34"
+                    android:visibility="invisible"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <com.fy.navi.ui.view.SkinTextView
+                    android:id="@+id/stv_via_count"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:textColor="@color/common_title_color"
+                    android:textSize="@dimen/sp_34"
+                    android:visibility="visible"
+                    android:layout_marginStart="@dimen/dp_24"
+                    tools:text="等2个途经点"/>
+
+            </com.fy.navi.ui.view.SkinConstraintLayout>
+        </com.fy.navi.ui.view.SkinConstraintLayout>
+
     </com.fy.navi.ui.view.SkinConstraintLayout>
 </layout>

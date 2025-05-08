@@ -12,7 +12,7 @@
             android:layout_height="@dimen/dp_648"
             android:layout_marginStart="@dimen/dp_310"
             android:layout_marginBottom="@dimen/dp_180"
-            android:background="@drawable/bg_confirm_dialog"
+            android:background="@drawable/bg_dialog_authorization"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent">
 

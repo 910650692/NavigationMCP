@@ -1,5 +1,6 @@
 package com.fy.navi.service.logicpaket.search;
 
+import com.fy.navi.service.adapter.search.cloudByPatac.rep.BaseRep;
 import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.search.PoiInfoEntity;
 import com.fy.navi.service.define.search.SearchResultEntity;
@@ -51,6 +52,14 @@ public interface SearchResultCallback {
 
     }
 
+    /**
+     * 搜索子点/终点停车场扎标点击事件
+     * @param index 下标点击事件
+     */
+    default void onMarkTerminalParkClickCallBack(final int index) {
+
+    }
+
 
     /**
      * 语音触发筛选，通过此接口传递到搜索结果界面.
@@ -59,6 +68,10 @@ public interface SearchResultCallback {
      */
     default void onVoicePoiSort(MapType mapTypeId, String sortValue) {
 
+    }
+
+    // 网络回调
+    default void onNetSearchResult(BaseRep result) {
     }
 }
 

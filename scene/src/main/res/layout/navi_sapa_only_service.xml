@@ -123,6 +123,7 @@
             android:text="@{naviSapa.mOnlyServiceDistance}"
             android:textColor="@color/navi_color_FFFFFF_80"
             android:textSize="@dimen/sp_30"
+            android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             tools:text="28.8公里" />
@@ -132,10 +133,22 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:visibility="gone"
-            app:layout_constraintTop_toTopOf="@+id/stv_only_service_distance"
-            app:layout_constraintBottom_toBottomOf="@+id/stv_only_service_distance"
-            app:layout_constraintStart_toEndOf="@+id/stv_only_service_distance"
-            android:layout_marginStart="@dimen/dp_123">
+            app:layout_constraintTop_toTopOf="@+id/stv_only_service_name"
+            app:layout_constraintBottom_toBottomOf="@+id/stv_only_service_name"
+            app:layout_constraintStart_toEndOf="@+id/stv_only_service_name"
+            android:layout_marginStart="@dimen/dp_23">
+
+            <com.fy.navi.ui.view.SkinTextView
+                android:id="@+id/stv_only_service_distance_ev"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{naviSapa.mOnlyServiceDistance}"
+                android:textColor="@color/navi_color_FFFFFF_80"
+                android:textSize="@dimen/sp_30"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                tools:text="28.8公里" />
 
             <com.fy.navi.ui.view.SkinTextView
                 android:id="@+id/stv_first_service_quick_text"
@@ -143,9 +156,10 @@
                 android:layout_height="wrap_content"
                 android:textColor="@color/navi_color_FFFFFF_100"
                 android:textSize="@dimen/sp_26"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_marginStart="@dimen/dp_123"
+                app:layout_constraintStart_toEndOf="@+id/stv_only_service_distance_ev"
+                app:layout_constraintTop_toTopOf="@+id/stv_only_service_distance_ev"
+                app:layout_constraintBottom_toBottomOf="@+id/stv_only_service_distance_ev"
                 android:text="@string/quick_charge"/>
 
             <com.fy.navi.ui.view.SkinTextView

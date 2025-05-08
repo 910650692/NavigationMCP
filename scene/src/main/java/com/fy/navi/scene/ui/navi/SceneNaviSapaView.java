@@ -93,23 +93,12 @@ public class SceneNaviSapaView extends NaviSceneBase<SceneNaviSapaViewBinding, S
     public void updateOnlyServiceUi() {
         Logger.i(TAG, "updateOnlyServiceUi()");
         if (mViewBinding.naviSapaOnlyService.clFirstServiceChargeData.getVisibility() == GONE) {
+            // 展示充电桩信息
             mViewBinding.naviSapaOnlyService.clFirstServiceChargeData.setVisibility(VISIBLE);
-            ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams)
-                    mViewBinding.naviSapaOnlyService.stvOnlyServiceDistance.getLayoutParams();
-            params.rightMargin = 295;
-            mViewBinding.naviSapaOnlyService.stvOnlyServiceDistance.setLayoutParams(params);
-            mViewBinding.naviSapaOnlyService.stvOnlyServiceName.setMaxWidth(170);
-            mViewBinding.naviSapaOnlyService.stvOnlyServiceDistance.setMaxWidth(125);
-            invalidate();
+            mViewBinding.naviSapaOnlyService.stvOnlyServiceDistance.setVisibility(GONE);
         } else {
             mViewBinding.naviSapaOnlyService.clFirstServiceChargeData.setVisibility(GONE);
-            ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams)
-                    mViewBinding.naviSapaOnlyService.stvOnlyServiceDistance.getLayoutParams();
-            params.rightMargin = 24;
-            mViewBinding.naviSapaOnlyService.stvOnlyServiceDistance.setLayoutParams(params);
-            mViewBinding.naviSapaOnlyService.stvOnlyServiceName.setMaxWidth(400);
-            mViewBinding.naviSapaOnlyService.stvOnlyServiceDistance.setMaxWidth(200);
-            invalidate();
+            mViewBinding.naviSapaOnlyService.stvOnlyServiceDistance.setVisibility(VISIBLE);
         }
     }
 
@@ -118,40 +107,20 @@ public class SceneNaviSapaView extends NaviSceneBase<SceneNaviSapaViewBinding, S
         if (mViewBinding.naviSapaFirstService.clFirstServiceChargeData.getVisibility() == GONE) {
             mViewBinding.naviSapaFirstService.clFirstServiceChargeData.setVisibility(VISIBLE);
             mViewBinding.naviSapaFirstService.stvFirstServiceName.setVisibility(GONE);
-            ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) mViewBinding.
-                    naviSapaFirstService.stvFirstServiceDistance.getLayoutParams();
-            params.leftMargin = 30;
-            params.bottomMargin = 12;
-            mViewBinding.naviSapaFirstService.stvFirstServiceDistance.setLayoutParams(params);
-            invalidate();
+            mViewBinding.naviSapaFirstService.stvFirstServiceDistance.setVisibility(GONE);
         } else {
             mViewBinding.naviSapaFirstService.clFirstServiceChargeData.setVisibility(GONE);
             mViewBinding.naviSapaFirstService.stvFirstServiceName.setVisibility(VISIBLE);
-            ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) mViewBinding.
-                    naviSapaFirstService.stvFirstServiceDistance.getLayoutParams();
-            params.leftMargin = 223;
-            params.bottomMargin = 26;
-            mViewBinding.naviSapaFirstService.stvFirstServiceDistance.setLayoutParams(params);
-            invalidate();
+            mViewBinding.naviSapaFirstService.stvFirstServiceDistance.setVisibility(VISIBLE);
         }
     }
 
     public void resetUi() {
         Logger.i(TAG, "resetUi");
-        mViewBinding.naviSapaOnlyService.clFirstServiceChargeData.setVisibility(GONE);
-        ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams)
-                mViewBinding.naviSapaOnlyService.stvOnlyServiceDistance.getLayoutParams();
-        params.rightMargin = 24;
-        mViewBinding.naviSapaOnlyService.stvOnlyServiceDistance.setLayoutParams(params);
-        mViewBinding.naviSapaOnlyService.stvOnlyServiceName.setMaxWidth(400);
-        mViewBinding.naviSapaOnlyService.stvOnlyServiceDistance.setMaxWidth(200);
         mViewBinding.naviSapaFirstService.clFirstServiceChargeData.setVisibility(GONE);
         mViewBinding.naviSapaFirstService.stvFirstServiceName.setVisibility(VISIBLE);
-        params = (ConstraintLayout.LayoutParams) mViewBinding.
-                naviSapaFirstService.stvFirstServiceDistance.getLayoutParams();
-        params.leftMargin = 223;
-        params.bottomMargin = 26;
-        mViewBinding.naviSapaFirstService.stvFirstServiceDistance.setLayoutParams(params);
-        invalidate();
+        mViewBinding.naviSapaFirstService.stvFirstServiceDistance.setVisibility(VISIBLE);
+        mViewBinding.naviSapaOnlyService.clFirstServiceChargeData.setVisibility(GONE);
+        mViewBinding.naviSapaOnlyService.stvOnlyServiceDistance.setVisibility(VISIBLE);
     }
 }

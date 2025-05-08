@@ -5,6 +5,7 @@ import com.android.utils.log.Logger;
 import com.fy.navi.scene.BaseSceneModel;
 import com.fy.navi.scene.api.search.ISceneTerminalParking;
 import com.fy.navi.scene.ui.search.SceneTerminalParkingListView;
+import com.fy.navi.service.AutoMapConstant;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.define.bean.GeoPoint;
 import com.fy.navi.service.define.map.MapType;
@@ -37,7 +38,7 @@ public class SceneTerminalViewImpl extends BaseSceneModel<SceneTerminalParkingLi
      */
     public void aroundSearch(final String keyword, final GeoPoint geoPoint) {
         Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, " aroundSearch: aroundSearch");
-        mTaskId = mSearchPackage.aroundSearch(1, keyword, geoPoint);
+        mTaskId = mSearchPackage.aroundSearch(1, keyword, geoPoint, true);
     }
 
     /**
@@ -61,5 +62,14 @@ public class SceneTerminalViewImpl extends BaseSceneModel<SceneTerminalParkingLi
      */
     public void startRoute(final PoiInfoEntity poiInfoEntity) {
         mRoutePackage.requestChangeEnd(MapType.MAIN_SCREEN_MAIN_MAP, poiInfoEntity);
+    }
+
+    /**
+     * 设置终点停车场选中下标
+     * @param poiInfoEntity 选中的实体类对象
+     * @param index 选中下标
+     */
+    public void setSelectIndex(final PoiInfoEntity poiInfoEntity, final int index) {
+        mSearchPackage.setSelectIndex(poiInfoEntity, index, AutoMapConstant.SearchType.TERMINAL_PARK_AROUND_SEARCH);
     }
 }

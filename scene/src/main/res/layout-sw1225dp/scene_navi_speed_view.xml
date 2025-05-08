@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="naviSpeedLimit"
+            type="com.fy.navi.scene.impl.navi.SceneNaviSpeedImpl" />
+    </data>
+
+    <com.fy.navi.ui.view.SkinConstraintLayout
+        android:id="@+id/scl"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="true">
+
+        <com.fy.navi.ui.view.SkinView
+            android:id="@+id/sv_overall_speed"
+            android:layout_width="@dimen/dp_122"
+            android:layout_height="@dimen/dp_330"
+            android:background="@drawable/bg_speed_normal" />
+
+        <com.fy.navi.ui.view.SkinView
+            android:id="@+id/sv_current_speed"
+            android:layout_width="@dimen/dp_122"
+            android:layout_height="@dimen/dp_122"
+            android:background="@drawable/guide_car_speed"
+            app:layout_constraintEnd_toEndOf="@id/sv_overall_speed"
+            app:layout_constraintStart_toStartOf="@id/sv_overall_speed"
+            app:layout_constraintTop_toTopOf="@id/sv_overall_speed" />
+
+        <com.fy.navi.ui.view.SkinTextView
+            android:id="@+id/stv_current_speed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_18"
+            android:gravity="center"
+            android:textColor="@color/navi_color_000000_100"
+            android:textSize="@dimen/sp_38"
+            app:layout_constraintEnd_toEndOf="@id/sv_current_speed"
+            app:layout_constraintStart_toStartOf="@id/sv_current_speed"
+            app:layout_constraintTop_toTopOf="@id/sv_current_speed"
+            tools:text="90" />
+
+        <com.fy.navi.ui.view.SkinTextView
+            android:id="@+id/stv_current_speed_key"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="km/h"
+            android:textColor="@color/navi_color_000000_100"
+            android:textSize="@dimen/sp_26"
+            app:layout_constraintEnd_toEndOf="@id/sv_current_speed"
+            app:layout_constraintStart_toStartOf="@id/sv_current_speed"
+            app:layout_constraintTop_toBottomOf="@id/stv_current_speed" />
+
+        <com.fy.navi.ui.view.SkinTextView
+            android:id="@+id/stv_speed_limit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_4"
+            android:singleLine="true"
+            android:textColor="@color/navi_color_FFFFFF_100"
+            android:textSize="@dimen/sp_34"
+            app:layout_constraintEnd_toEndOf="@id/sv_overall_speed"
+            app:layout_constraintStart_toStartOf="@id/sv_overall_speed"
+            app:layout_constraintTop_toBottomOf="@id/sv_current_speed"
+            tools:text="90" />
+
+        <com.fy.navi.ui.view.SkinTextView
+            android:id="@+id/stv_speed_limit_key"
+            android:layout_width="@dimen/dp_122"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:singleLine="true"
+            android:text="@string/navi_speed_overall"
+            android:textColor="@color/navi_color_FFFFFF_80"
+            android:textSize="@dimen/sp_26"
+            app:layout_constraintEnd_toEndOf="@id/sv_overall_speed"
+            app:layout_constraintStart_toStartOf="@id/sv_overall_speed"
+            app:layout_constraintTop_toBottomOf="@id/stv_speed_limit" />
+
+        <com.fy.navi.ui.view.SkinTextView
+            android:id="@+id/stv_distance"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_2"
+            android:singleLine="true"
+            android:textColor="@color/navi_color_FFFFFF_100"
+            android:textSize="@dimen/sp_34"
+            app:layout_constraintEnd_toEndOf="@id/sv_overall_speed"
+            app:layout_constraintStart_toStartOf="@id/sv_overall_speed"
+            app:layout_constraintTop_toBottomOf="@id/stv_speed_limit_key"
+            tools:text="8.5" />
+
+        <com.fy.navi.ui.view.SkinTextView
+            android:id="@+id/stv_distance_key"
+            android:layout_width="@dimen/dp_122"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:text="@string/navi_remaining_distance"
+            android:textColor="@color/navi_color_FFFFFF_80"
+            android:textSize="@dimen/sp_26"
+            app:layout_constraintEnd_toEndOf="@id/sv_overall_speed"
+            app:layout_constraintStart_toStartOf="@id/sv_overall_speed"
+            app:layout_constraintTop_toBottomOf="@id/stv_distance" />
+
+    </com.fy.navi.ui.view.SkinConstraintLayout>
+</layout>
+
+
+
+
+

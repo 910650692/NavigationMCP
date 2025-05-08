@@ -47,8 +47,9 @@ public class SettingVoiceBroadcastModel extends BaseModel<SettingVoiceBroadcastV
      * 设置声音
      * @param irfPath
      */
-    public void setVoice(final String irfPath) {
+    public void setVoice(final String irfPath, final String text) {
         mSpeechPackage.setVoice(irfPath);
+        mSpeechPackage.synthesize(text);
     }
 
     @Override

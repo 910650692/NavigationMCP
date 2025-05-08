@@ -94,6 +94,8 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
     //已下载的城市列表
     private ArrayList<ProvDataInfo> mProvDataInfos;
     private boolean mIsOpenFromNavi;
+    private boolean mIsChargeSelf = false;
+    private SearchResultEntity mSearchResultEntity;
 
 
     public SceneSearchPoiList(@NonNull final Context context) {
@@ -180,7 +182,7 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
                 sendBuryPointForListSelect(position+1, poiInfoEntity.getName());
                 final Fragment fragment = (Fragment) ARouter.getInstance().build(RoutePath.Search.POI_DETAILS_FRAGMENT).navigation();
                 if (!ConvertUtils.isEmpty(mScreenViewModel) && !ConvertUtils.isEmpty(mResultEntity)) {
-                    mScreenViewModel.setSelectIndex(poiInfoEntity, position);
+                    mScreenViewModel.setSelectIndex(poiInfoEntity, position, mSearchType);
                 }
                 final int poiType = getPoiType(mAdapter.getHomeCompanyType());
                 Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "onClick poiType: " + poiType + " homeCompany: " + mAdapter.getHomeCompanyType());
@@ -195,7 +197,7 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
                 sendBuryPointForListSelect(position+1, poiInfoEntity.getName());
                 final Fragment fragment = (Fragment) ARouter.getInstance().build(RoutePath.Search.POI_DETAILS_FRAGMENT).navigation();
                 if (!ConvertUtils.isEmpty(mScreenViewModel) && !ConvertUtils.isEmpty(mResultEntity)) {
-                    mScreenViewModel.setSelectIndex(poiInfoEntity, position);
+                    mScreenViewModel.setSelectIndex(poiInfoEntity, position, mSearchType);
                 }
                 final int poiType = getPoiType(mAdapter.getHomeCompanyType());
                 Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "onClick poiType: " + poiType + " homeCompany: " + mAdapter.getHomeCompanyType());
@@ -289,6 +291,17 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
             }
 
         });
+        mViewBinding.chargeFilter.setOnClickListener(view -> {
+            mIsChargeSelf = !mIsChargeSelf;
+            mViewBinding.chargeFilter.setSelected(mIsChargeSelf);
+            if(mIsChargeSelf){
+                mAdapter.clearList();
+                // 请求SGM自营站数据
+            }else{
+                mAdapter.notifyList(mSearchResultEntity);
+                mViewBinding.recyclerSearchResult.scrollToPosition(0);
+            }
+        });
     }
 
     /**
@@ -314,10 +327,15 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
         });
         mViewBinding.searchTextBarView.csFilter.setOnClickListener(v -> {
             Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "click filter: ");
+            if(mIsChargeSelf){
+                ToastUtils.Companion.getInstance().showCustomToastView(getContext().getString(R.string.search_charge_self_filter));
+                return;
+            }
             if (!mIsFilterViewShow) {
                 mViewBinding.searchFilterView.searchFilterRoot.setVisibility(VISIBLE);
                 mViewBinding.pullRefreshLayout.setVisibility(GONE);
                 mViewBinding.searchResultNoData.setVisibility(GONE);
+                mViewBinding.chargeFilter.setVisibility(GONE);
                 mIsFilterViewShow = true;
                 if (null != mResultEntity) {
                     mViewBinding.searchTextBarView.searchBarTextView.setText(getContext().getString(
@@ -589,13 +607,13 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
             return;
         }
         // 处理用户搜索意图
-        if(!ConvertUtils.isEmpty(searchResultEntity.getQueryTypeList())){
+        if(searchResultEntity != null && !ConvertUtils.isEmpty(searchResultEntity.getQueryTypeList())){
             boolean isChargeQuery = isChargeQuery(searchResultEntity.getQueryTypeList());
-            if(isChargeQuery){
-                // 不使用高德数据，使用sgm自营站接口
-//                notifySearchResultBySGM();
-//                return;
-            }
+            boolean isPowerType = mScreenViewModel.powerType() == 1 || mScreenViewModel.powerType() == 2;
+            boolean isOffline = searchResultEntity.getPoiType() == 0;
+            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"isChargeQuery: "+isChargeQuery+" isPowerType: "+isPowerType+" isOffline: "+isOffline);
+            // 意图为充电站且是电车且非离线才显示自营标签
+            mViewBinding.chargeFilter.setVisibility(isChargeQuery && isPowerType && !isOffline ? VISIBLE : GONE);
         }
         if (searchResultEntity == null || searchResultEntity.getPoiList().isEmpty()) {
             ToastUtils.Companion.getInstance().showCustomToastView("抱歉，未找到结果");
@@ -652,6 +670,7 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
         }
         setMaxPageNum(searchResultEntity.getMaxPageNum());
         if (mAdapter != null) {
+            mSearchResultEntity = searchResultEntity;
             mAdapter.notifyList(searchResultEntity);
             mViewBinding.recyclerSearchResult.scrollToPosition(0);
         }
@@ -851,9 +870,5 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
         }
         Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"count: "+count);
         return count > 0;
-    }
-
-    private void notifySearchResultBySGM(){
-
     }
 }

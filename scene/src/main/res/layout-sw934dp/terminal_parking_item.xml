@@ -87,6 +87,7 @@
             android:layout_width="wrap_content"
             android:layout_height="@dimen/dp_46"
             android:layout_marginStart="@dimen/dp_16"
+            app:layout_goneMarginStart="@dimen/dp_0"
             android:layout_marginTop="@dimen/dp_19"
             android:background="@drawable/bg_parking_recommended"
             android:gravity="center"

@@ -27,8 +27,7 @@ public interface AutoMapConstant {
     int PLUG_TYPE_SLOW = 7;
     int PLUG_TYPE_FAST = 9;
 
-    int TWO_MINUTES_DELAY = 2;
-    int DELAY_MINUTE = 5;
+    int DELAY_MINUTE = 1;
 
 
     /*** ！！！搜索相关,搜索类型,只能添加不能删除！！！*/
@@ -66,7 +65,7 @@ public interface AutoMapConstant {
         int COMMON_TO_COLLECT_SEARCH = 13; // 常用地址to收藏
         int GET_POINT_TO_COLLECT_SEARCH = 14; // 收到的点to收藏
         int POI_DETAIL_SEARCH = 15; // POI详情搜索，仅支持洗车，美食和景点
-
+        int TERMINAL_PARK_AROUND_SEARCH = 16; // 终点停车场周边搜索
     }
 
     /*** ！！！搜索相关,数据传递key,只能添加不能删除！！！ */
@@ -336,7 +335,7 @@ public interface AutoMapConstant {
 
     @interface AccountInfoKey {
         String IDP_USER_ID = "com.patac.hmi.account.idpUserId";
-        String NICK_NAME = "com.patac.hmi.account.idpUserId";
+        String NICK_NAME = "com.patac.hmi.account.nickName";
         String PHONE = "com.patac.hmi.account.phone";
         String ACCOUNT= "com.patac.hmi.account";
     }

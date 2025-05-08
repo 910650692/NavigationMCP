@@ -603,5 +603,58 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:visibility="gone" />
+
+        <com.fy.navi.ui.view.SkinConstraintLayout
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/dp_469"
+            android:background="@drawable/bg_route_shadow"
+            android:paddingVertical="@dimen/dp_29"
+            android:paddingHorizontal="@dimen/dp_29"
+            android:visibility="@{ViewModel.getMFCImgVisibility() ? View.VISIBLE : View.GONE}"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent">
+
+            <com.fy.navi.ui.view.SkinTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/sp_45"
+                android:textColor="@color/black"
+                android:layout_marginStart="@dimen/dp_165"
+                android:text="短按旋钮已进行地图移动或缩放"
+                android:visibility="@{ViewModel.getMFCDModeVisibility() ? View.GONE : View.VISIBLE}"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                tools:visibility="gone"/>
+
+            <com.fy.navi.ui.view.SkinImageView
+                android:layout_width="@dimen/dp_398"
+                android:layout_height="@dimen/dp_310"
+                android:layout_marginEnd="@dimen/dp_157"
+                android:layout_marginStart="@dimen/dp_1065"
+                android:src="@drawable/img_map_mfc_default"
+                android:visibility="@{ViewModel.getMFCDModeVisibility() ? View.GONE : View.VISIBLE}"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                tools:visibility="gone"/>
+
+            <com.fy.navi.ui.view.SkinImageView
+                android:layout_width="@dimen/dp_398"
+                android:layout_height="@dimen/dp_310"
+                android:layout_marginEnd="@dimen/dp_157"
+                android:layout_marginStart="@dimen/dp_157"
+                android:src="@{ViewModel.getMFCImgDrawable()}"
+                android:visibility="@{ViewModel.getMFCDModeVisibility() ? View.VISIBLE : View.GONE}"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                tools:visibility="visible"/>
+
+        </com.fy.navi.ui.view.SkinConstraintLayout>
     </com.fy.navi.ui.view.SkinConstraintLayout>
 </layout>

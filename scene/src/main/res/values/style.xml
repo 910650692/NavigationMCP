@@ -59,6 +59,17 @@
         <item name="android:textSize">@dimen/sp_26</item>
     </style>
 
+    <style name="style_navi_tmc_tv_cadi">
+        <item name="android:layout_width">@dimen/dp_52</item>
+        <item name="android:layout_height">@dimen/dp_52</item>
+        <item name="android:background">@drawable/img_tmc_via</item>
+        <item name="android:text">@string/navi_via_item_pass</item>
+        <item name="android:gravity">center</item>
+        <item name="android:visibility">gone</item>
+        <item name="android:textColor">@color/navi_color_FFFFFF_100</item>
+        <item name="android:textSize">@dimen/sp_32</item>
+    </style>
+
     <declare-styleable name="MaxHeightScrollView">
         <attr name="maxHeight" format="dimension" />
     </declare-styleable>

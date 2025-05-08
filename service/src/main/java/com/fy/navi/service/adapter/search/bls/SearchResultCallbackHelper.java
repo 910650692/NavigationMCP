@@ -14,12 +14,12 @@ import com.autonavi.gbl.search.model.SuggestionSearchResult;
 import com.fy.navi.service.AutoMapConstant;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.adapter.search.ISearchResultCallback;
+import com.fy.navi.service.adapter.search.cloudByPatac.rep.BaseRep;
 import com.fy.navi.service.define.search.SearchRequestParameter;
 import com.fy.navi.service.define.search.SearchResultEntity;
 
 import java.util.List;
 import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 
 /**
  * @author baipeng0904
@@ -52,6 +52,7 @@ public class SearchResultCallbackHelper {
         switch (requestParameterBuilder.getSearchType()) {
             case AutoMapConstant.SearchType.SEARCH_KEYWORD:
             case AutoMapConstant.SearchType.AROUND_SEARCH:
+            case AutoMapConstant.SearchType.TERMINAL_PARK_AROUND_SEARCH:
                 resultList = handleKeywordSearch(requestParameterBuilder, result);
                 break;
             case AutoMapConstant.SearchType.SEARCH_SUGGESTION:
@@ -257,6 +258,16 @@ public class SearchResultCallbackHelper {
             } else {
                 callback.onSearchResult(taskId, code, message, resultList, requestParameterBuilder);
             }
+        }
+    }
+
+    public void notifyNetCallbacks(BaseRep result){
+        if (mSearchResponseCallbackList == null) {
+            Logger.e(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "net Callbacks is null");
+            return;
+        }
+        for (ISearchResultCallback callback : mSearchResponseCallbackList) {
+            callback.onNetSearchResult(result);
         }
     }
 
