@@ -129,6 +129,7 @@
     <color name="navi_color_000000_100">#FFFFFFFF</color>
     <color name="navi_color_3377FF_100">#FFE5B586</color>
     <color name="navi_color_313336_94">#33FFFFFF</color>
+    <color name="navi_color_2461EA_100">#FF005CFF</color>
 
     <!--悬挂卡-->
     <color name="card_delete_bg_color">#66ffffff</color>

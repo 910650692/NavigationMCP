@@ -244,7 +244,13 @@ final public class SearchAdapter {
         return mSearchApi.getTravelTimeFutureIncludeChargeLeft(searchRequestParameter);
     }
 
+    // 查询收藏充电站
     public int queryCollectStation(final SearchRequestParameter searchRequestParameter){
         return mSearchApi.queryCollectStation(searchRequestParameter);
+    }
+
+    // 查询自营站列表
+    public int queryStationNewResult(final SearchRequestParameter searchRequestParameter){
+        return mSearchApi.queryStationNewResult(searchRequestParameter);
     }
 }

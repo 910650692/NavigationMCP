@@ -22,9 +22,18 @@
 
     <declare-styleable name="ProvinceKeyboardView">
         <attr name="isDefault" format="boolean" />
+        <attr name="rowWidth" format="float" />
+        <attr name="rowHeight" format="float" />
+        <attr name="provinceTextSize" format="float" />
     </declare-styleable>
 
     <declare-styleable name="PlateNumberKeyboardView">
         <attr name="isDefaultCar" format="boolean" />
+        <attr name="numberRowHeight" format="float" />
+        <attr name="textSize" format="float" />
+        <attr name="numberRowWidth" format="float" />
+        <attr name="thirdRowWidth" format="float" />
+        <attr name="lastRowWidth" format="float" />
+        <attr name="insertWidth" format="float" />
     </declare-styleable>
 </resources>

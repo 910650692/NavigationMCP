@@ -11,10 +11,14 @@
     </data>
 
     <com.fy.navi.ui.view.SkinConstraintLayout
-        android:layout_width="@dimen/dp_640"
+        android:layout_width="@dimen/dp_698"
         android:layout_height="wrap_content"
-        android:background="@drawable/bg_poi_main_tab"
-        android:maxHeight="@dimen/dp_714">
+        android:paddingStart="@dimen/dp_29"
+        android:paddingEnd="@dimen/dp_29"
+        android:paddingTop="@dimen/dp_29"
+        android:paddingBottom="@dimen/dp_29"
+        android:background="@drawable/bg_search_shadow"
+        android:maxHeight="@dimen/dp_772">
 
         <com.fy.navi.ui.view.SkinConstraintLayout
             android:id="@+id/cs_poi_no_result"
@@ -31,6 +35,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/load_failed"
                 android:textSize="@dimen/sp_36"
+                android:textColor="@color/search_color_ffffff_70"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_chainStyle="packed"
                 app:layout_constraintBottom_toTopOf="@+id/no_result_button"
@@ -39,13 +44,10 @@
 
             <com.fy.navi.ui.view.SkinTextView
                 android:id="@+id/no_result_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="@dimen/dp_264"
+                android:layout_height="@dimen/dp_76"
                 android:text="@string/reload"
-                android:paddingStart="@dimen/dp_12"
-                android:paddingEnd="@dimen/dp_12"
-                android:paddingTop="@dimen/dp_8"
-                android:paddingBottom="@dimen/dp_8"
+                android:gravity="center"
                 android:textColor="@color/white"
                 android:textSize="@dimen/sp_36"
                 android:layout_marginTop="@dimen/dp_16"

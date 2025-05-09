@@ -8,7 +8,7 @@
 
         <variable
             name="ViewModel"
-            type="com.fy.navi.hmi.launcher.BaseSmallCardMapViewModel" />
+            type="com.fy.navi.hmi.launcher.LauncherSmallCardViewModel" />
     </data>
 
     <com.fy.navi.ui.view.SkinConstraintLayout

@@ -75,8 +75,8 @@
     </declare-styleable>
 
     <declare-styleable name="DrawableCenterRadioButton">
-        <attr name="drawableWidth" format="dimension"/>
-        <attr name="drawableHeight" format="dimension"/>
+        <attr name="drawableWidth" format="float"/>
+        <attr name="drawableHeight" format="float"/>
         <attr name="normalTextColor" format="color|reference" />
         <attr name="selectedTextColor" format="color|reference" />
     </declare-styleable>

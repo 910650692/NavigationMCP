@@ -22,13 +22,13 @@
         <com.fy.navi.ui.view.SkinView
             android:id="@+id/item_root_view"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_158"
+            android:layout_height="@dimen/dp_130"
             />
 
         <com.fy.navi.ui.view.SkinView
             android:id="@+id/route_detail_info_item_img_bg"
             android:layout_width="@dimen/dp_48"
-            android:layout_height="@dimen/dp_158"
+            android:layout_height="@dimen/dp_130"
             android:outlineSpotShadowColor="@color/bg_route_shadow_list"
             app:layout_constraintStart_toStartOf="@+id/item_root_view"
             app:layout_constraintTop_toTopOf="@+id/item_root_view"/>
@@ -62,10 +62,10 @@
             android:id="@+id/route_detail_info_item_road_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_22"
-            android:layout_marginStart="@dimen/dp_51"
+            android:layout_marginTop="@dimen/dp_18"
+            android:layout_marginStart="@dimen/dp_29"
             android:textColor="@color/floating_search_item_night"
-            android:textSize="@dimen/sp_35"
+            android:textSize="@dimen/sp_34"
             android:textStyle="bold"
             app:layout_constraintStart_toEndOf="@id/route_detail_info_item_img_bg"
             app:layout_constraintTop_toTopOf="@+id/item_root_view"
@@ -77,8 +77,8 @@
             android:layout_height="wrap_content"
             android:textColor="@color/text_color_route_item_no_select"
             android:textSize="@dimen/sp_30"
-            android:layout_marginBottom="@dimen/dp_22"
-            android:layout_marginStart="@dimen/dp_51"
+            android:layout_marginBottom="@dimen/dp_18"
+            android:layout_marginStart="@dimen/dp_29"
             app:layout_constraintBottom_toBottomOf="@+id/item_root_view"
             app:layout_constraintStart_toEndOf="@id/route_detail_info_item_img_bg"
             tools:text="42米 红绿灯1个" />
@@ -88,7 +88,6 @@
             android:layout_width="@dimen/dp_58"
             android:layout_height="@dimen/dp_58"
             android:src="@drawable/img_route_down"
-            android:layout_marginEnd="@dimen/dp_20"
             app:layout_constraintEnd_toEndOf="@+id/item_root_view"
             app:layout_constraintTop_toTopOf="@id/route_detail_info_item_img_bg"
             app:layout_constraintBottom_toBottomOf="@id/route_detail_info_item_img_bg" />
@@ -99,7 +98,7 @@
             android:layout_height="wrap_content"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:layout_marginTop="@dimen/dp_158"/>
+            android:layout_marginTop="@dimen/dp_130"/>
 
     </com.fy.navi.ui.view.SkinConstraintLayout>
 </layout>

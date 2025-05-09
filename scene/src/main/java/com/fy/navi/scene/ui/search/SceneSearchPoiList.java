@@ -297,6 +297,7 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
             if(mIsChargeSelf){
                 mAdapter.clearList();
                 // 请求SGM自营站数据
+                mScreenViewModel.queryStationNewResult();
             }else{
                 mAdapter.notifyList(mSearchResultEntity);
                 mViewBinding.recyclerSearchResult.scrollToPosition(0);
@@ -610,6 +611,7 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
         if(searchResultEntity != null && !ConvertUtils.isEmpty(searchResultEntity.getQueryTypeList())){
             boolean isChargeQuery = isChargeQuery(searchResultEntity.getQueryTypeList());
             boolean isPowerType = mScreenViewModel.powerType() == 1 || mScreenViewModel.powerType() == 2;
+//            boolean isPowerType = true;
             boolean isOffline = searchResultEntity.getPoiType() == 0;
             Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"isChargeQuery: "+isChargeQuery+" isPowerType: "+isPowerType+" isOffline: "+isOffline);
             // 意图为充电站且是电车且非离线才显示自营标签
@@ -670,7 +672,9 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
         }
         setMaxPageNum(searchResultEntity.getMaxPageNum());
         if (mAdapter != null) {
-            mSearchResultEntity = searchResultEntity;
+            if(!searchResultEntity.getIsNetData()){
+                mSearchResultEntity = searchResultEntity;
+            }
             mAdapter.notifyList(searchResultEntity);
             mViewBinding.recyclerSearchResult.scrollToPosition(0);
         }

@@ -22,15 +22,23 @@
         android:orientation="horizontal">
 
         <com.fy.navi.ui.view.SkinConstraintLayout
-            android:id="@+id/content_layout"
+            android:focusable="false"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
+
+            <com.fy.navi.ui.view.SkinView
+                android:id="@+id/content_layout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/bg_base_mfc_cadillac_bg_selector"
+                android:layout_marginEnd="@dimen/dp_220"/>
 
             <com.fy.navi.ui.view.SkinTextView
                 android:id="@+id/item_favorite_img"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="@dimen/sp_38"
+                android:focusable="false"
                 android:text="@{layoutPosition}"
                 android:layout_marginStart="@dimen/dp_40"
                 android:textColor="@color/color_black_70"
@@ -46,6 +54,7 @@
                 android:orientation="horizontal"
                 android:layout_marginTop="@dimen/dp_36"
                 android:layout_marginStart="@dimen/dp_40"
+                android:focusable="false"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/item_favorite_img">
 
@@ -55,6 +64,7 @@
                     android:text="@{model.name}"
                     android:textSize="@dimen/sp_46"
                     android:ellipsize="end"
+                    android:focusable="false"
                     android:maxLines="1"
                     android:textColor="@color/black"
                     tools:text="@string/favorite_item_name"/>
@@ -64,6 +74,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/dp_16"
+                    android:focusable="false"
                     android:text="@string/favorite_item_top"
                     android:background="@drawable/bg_favorite_top"
                     android:textSize="@dimen/sp_30"
@@ -79,6 +90,7 @@
             <com.fy.navi.ui.view.SkinLinearLayout
                 android:layout_width="@dimen/dp_850"
                 android:layout_height="wrap_content"
+                android:focusable="false"
                 android:layout_marginStart="@dimen/dp_40"
                 android:layout_marginTop="@dimen/dp_22"
                 android:layout_marginEnd="@dimen/dp_29"
@@ -89,6 +101,7 @@
                     android:id="@+id/item_favorite_distance"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:focusable="false"
                     android:textSize="@dimen/sp_38"
                     android:text="@{model.distance}"
                     android:textColor="@color/setting_text_preference"
@@ -101,6 +114,7 @@
                     android:layout_marginStart="@dimen/dp_8"
                     android:layout_marginEnd="@dimen/dp_8"
                     android:layout_gravity="center"
+                    android:focusable="false"
                     android:background="@color/color_black_70" />
 
                 <com.fy.navi.ui.view.SkinTextView
@@ -111,6 +125,7 @@
                     android:textSize="@dimen/sp_38"
                     android:ellipsize="end"
                     android:maxLines="1"
+                    android:focusable="false"
                     android:textColor="@color/color_black_70"
                     app:layout_constraintStart_toEndOf="@+id/item_favorite_line"
                     app:layout_constraintTop_toBottomOf="@+id/item_favorite_name"
@@ -123,6 +138,8 @@
                 android:layout_height="match_parent"
                 android:gravity="center"
                 android:orientation="vertical"
+                android:focusable="true"
+                android:background="@drawable/bg_base_mfc_cadillac_bg_selector"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" >
@@ -130,11 +147,13 @@
                 <com.fy.navi.ui.view.SkinImageView
                     android:layout_width="@dimen/dp_74"
                     android:layout_height="@dimen/dp_74"
+                    android:focusable="false"
                     android:src="@drawable/img_favorite_navigation"/>
 
                 <com.fy.navi.ui.view.SkinTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:focusable="false"
                     android:layout_marginTop="@dimen/dp_6"
                     android:text="@string/favorite_item_navi"
                     android:textColor="@color/color_black_70"

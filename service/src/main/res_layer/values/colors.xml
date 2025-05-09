@@ -13,4 +13,10 @@
     
     <color name="layer_custom_point_bg_fill_color">#FFFFFF</color>
 
+    <color name="layer_search_park_route_title_normal_color">#CC000000</color>
+    <color name="layer_search_park_route_detail_default_normal_color">#80000000</color>
+
+    <color name="layer_search_park_route_title_selected_color">#FFFFFF</color>
+    <color name="layer_search_park_route_detail_default_selected_color">#99FFFFFF</color>
+    <color name="layer_color_white">#FFFFFF</color>
 </resources>

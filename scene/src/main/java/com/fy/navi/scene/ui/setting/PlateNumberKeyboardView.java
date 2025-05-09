@@ -27,8 +27,13 @@ public class PlateNumberKeyboardView extends GridLayout {
     private static final String[] SECOND_ROW = {"Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P"};
     private static final String[] THIRD_ROW = {"A", "S", "D", "F", "G", "H", "J", "K", "L"};
     private static final String[] FOURTH_ROW = {"Z", "X", "C", "V", "B", "N", "M", BUTTON_NAME};
-    private boolean mIsDefaultCar = false;
 
+    private float mRowHeight = 0;
+    private float mNumberRowWidth = 0;
+    private float mThirdRowWidth = 0;
+    private float mLastRowWidth = 0;
+    private float mTextSize = 0;
+    private float mInsertWidth = 0;
     private OnKeyPressListener mListener;
     private SkinCheckBox mLastSelectedButton;
 
@@ -52,7 +57,13 @@ public class PlateNumberKeyboardView extends GridLayout {
      */
     private void init(final Context context, final AttributeSet attrs) {
         final TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.PlateNumberKeyboardView);
-        mIsDefaultCar = a.getBoolean(R.styleable.PlateNumberKeyboardView_isDefaultCar, false);
+        mRowHeight = a.getDimension(R.styleable.PlateNumberKeyboardView_numberRowHeight, 0);
+        mNumberRowWidth = a.getDimension(R.styleable.PlateNumberKeyboardView_numberRowWidth, 0);
+        mThirdRowWidth = a.getDimension(R.styleable.PlateNumberKeyboardView_thirdRowWidth, 0);
+        mLastRowWidth = a.getDimension(R.styleable.PlateNumberKeyboardView_lastRowWidth, 0);
+        mTextSize = a.getFloat(R.styleable.PlateNumberKeyboardView_textSize, 0);
+        mInsertWidth = a.getFloat(R.styleable.PlateNumberKeyboardView_insertWidth, 0);
+        a.recycle();
         setOrientation(VERTICAL);
         // 添加四行按键
         addKeyboardRow(FIRST_ROW, true,false);
@@ -74,32 +85,20 @@ public class PlateNumberKeyboardView extends GridLayout {
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT
         ));
-        int keyWidth = getResources().getDimensionPixelSize(com.fy.navi.ui.R.dimen.dp_136);
-        int keyHeight = getResources().getDimensionPixelSize(com.fy.navi.ui.R.dimen.dp_76);
+        float keyWidth = mLastRowWidth;
+        final float keyHeight = mRowHeight;
         if (isNumberRow) {
-            keyWidth = getResources().getDimensionPixelSize(com.fy.navi.ui.R.dimen.dp_107);
+            keyWidth = mNumberRowWidth;
         }
         if (isThirdRow) {
-            keyWidth = getResources().getDimensionPixelSize(com.fy.navi.ui.R.dimen.dp_120);
+            keyWidth = mThirdRowWidth;
         }
-        if (!mIsDefaultCar) {
-            keyWidth = getResources().getDimensionPixelSize(com.fy.navi.ui.R.dimen.dp_177);
-            keyHeight = getResources().getDimensionPixelSize(com.fy.navi.ui.R.dimen.dp_96);
-            if (isNumberRow) {
-                keyWidth = getResources().getDimensionPixelSize(com.fy.navi.ui.R.dimen.dp_140);
-            }
-            if (isThirdRow) {
-                keyWidth = getResources().getDimensionPixelSize(com.fy.navi.ui.R.dimen.dp_156);
-            }
-        }
+
         for (String key : keys) {
             final SkinCheckBox keyView = new SkinCheckBox(getContext());
             keyView.setText(key);
             keyView.setButtonDrawable(null);
-            keyView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 30);
-            if (!mIsDefaultCar) {
-                keyView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 21.66f);
-            }
+            keyView.setTextSize(TypedValue.COMPLEX_UNIT_SP, mTextSize);
             keyView.setGravity(Gravity.CENTER);
             keyView.setFocusable(true);
             keyView.setTextColor(ResourceUtils.Companion.getInstance().getColor(R.color.setting_preference_text_gray));
@@ -109,19 +108,15 @@ public class PlateNumberKeyboardView extends GridLayout {
                 final Drawable drawable = ResourceUtils.Companion.getInstance().getDrawable(R.drawable.img_plate_number_delete);
                 final LayerDrawable layerDrawable = new LayerDrawable(new Drawable[]{drawable});
                 layerDrawable.setLayerGravity(0, Gravity.CENTER);
-                int inset = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 40, getResources().getDisplayMetrics());
-                layerDrawable.setLayerInset(0, inset, inset, inset, inset);
-                if (!mIsDefaultCar) {
-                    inset = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 35, getResources().getDisplayMetrics());
-                    layerDrawable.setLayerInset(0, inset, 0, 0, 0);
-                }
+                final int inset = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, mInsertWidth, getResources().getDisplayMetrics());
+                layerDrawable.setLayerInset(0, inset, 0, 0, 0);
                 keyView.setPadding(0, 0, 0, 0);
                 keyView.setButtonDrawable(layerDrawable);
 
             }
             final LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                    keyWidth,
-                    keyHeight
+                    (int) keyWidth,
+                    (int) keyHeight
             );
             params.gravity = Gravity.CENTER;
             params.setMargins(0, 0, 8, 0);

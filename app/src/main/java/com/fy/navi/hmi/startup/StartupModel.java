@@ -77,6 +77,12 @@ public class StartupModel extends BaseModel<BaseStartupViewModel>
     }
 
     @Override
+    public void onDestroy() {
+        super.onDestroy();
+        StartService.getInstance().unregisterSdkCallback(this);
+    }
+
+    @Override
     public void onPermissionsSuccess() {
         Logger.d(TAG, "权限都申请成功 开启引擎初始化");
         startInitEngine();
@@ -133,6 +139,7 @@ public class StartupModel extends BaseModel<BaseStartupViewModel>
 
     @Override
     public void onSdkInitSuccess() {
+        Logger.i(TAG, "onSdkInitSuccess");
         mViewModel.startMapActivity();
     }
 

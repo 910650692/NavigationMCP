@@ -7,7 +7,7 @@
         <import type="android.view.View" />
         <variable
             name="ViewModel"
-            type="com.fy.navi.hmi.launcher.SmallCardMapViewModel" />
+            type="com.fy.navi.hmi.launcher.LauncherSmallCardViewModel" />
     </data>
 
     <com.fy.navi.ui.view.SkinLinearLayout

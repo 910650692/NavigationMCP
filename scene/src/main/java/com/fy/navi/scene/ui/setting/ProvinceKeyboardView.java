@@ -41,14 +41,13 @@ public class ProvinceKeyboardView extends GridLayout {
         setRowCount(4);
 
         final TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.ProvinceKeyboardView);
-        final boolean isDefault = a.getBoolean(R.styleable.ProvinceKeyboardView_isDefault, false);
+        final float textSize = a.getFloat(R.styleable.ProvinceKeyboardView_provinceTextSize, 0);
+        final float width = a.getDimension(R.styleable.ProvinceKeyboardView_rowWidth, 0);
+        final float height = a.getDimension(R.styleable.ProvinceKeyboardView_rowHeight, 0);
         for (String province : PROVINCES) {
             final SkinCheckBox tv = new SkinCheckBox(getContext());
             tv.setText(province);
-            tv.setTextSize(TypedValue.COMPLEX_UNIT_SP, 30);
-            if (!isDefault) {
-                tv.setTextSize(TypedValue.COMPLEX_UNIT_SP, 21.66f);
-            }
+            tv.setTextSize(TypedValue.COMPLEX_UNIT_SP, textSize);
             tv.setTextColor(ResourceUtils.Companion.getInstance().getColor(R.color.setting_preference_text_gray));
             tv.setGravity(Gravity.CENTER);
             tv.setButtonDrawable(null);
@@ -75,12 +74,8 @@ public class ProvinceKeyboardView extends GridLayout {
             });
 
             final LayoutParams params = new LayoutParams();
-            params.width = getResources().getDimensionPixelSize(com.fy.navi.ui.R.dimen.dp_136);
-            params.height = getResources().getDimensionPixelSize(com.fy.navi.ui.R.dimen.dp_76);
-            if (!isDefault) {
-                params.width = getResources().getDimensionPixelSize(com.fy.navi.ui.R.dimen.dp_177);
-                params.height = getResources().getDimensionPixelSize(com.fy.navi.ui.R.dimen.dp_96);
-            }
+            params.width = (int)width;
+            params.height = (int)height;
             params.setMargins(0, 0, 8, 8);
             addView(tv, params);
         }

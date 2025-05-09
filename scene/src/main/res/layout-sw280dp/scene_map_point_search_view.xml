@@ -14,6 +14,46 @@
         android:layout_height="@dimen/dp_443"
         android:background="@drawable/bg_search_main_tab">
 
+        <com.fy.navi.ui.view.SkinConstraintLayout
+            android:id="@+id/cs_poi_no_result"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/bg_poi_main_tab"
+            app:layout_constraintTop_toTopOf="parent"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="parent">
+
+            <com.fy.navi.ui.view.SkinTextView
+                android:id="@+id/no_result_hint"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/load_failed"
+                android:textSize="@dimen/sp_36"
+                android:textColor="@color/search_color_ffffff_70"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_chainStyle="packed"
+                app:layout_constraintBottom_toTopOf="@+id/no_result_button"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
+
+            <com.fy.navi.ui.view.SkinTextView
+                android:id="@+id/no_result_button"
+                android:layout_width="@dimen/dp_264"
+                android:layout_height="@dimen/dp_76"
+                android:text="@string/reload"
+                android:gravity="center"
+                android:textColor="@color/white"
+                android:textSize="@dimen/sp_36"
+                android:layout_marginTop="@dimen/dp_16"
+                android:background="@drawable/bg_setting_confirm"
+                app:layout_constraintTop_toBottomOf="@+id/no_result_hint"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
+
+        </com.fy.navi.ui.view.SkinConstraintLayout>
+
+
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/start_guideline"
             android:layout_width="wrap_content"
@@ -60,6 +100,7 @@
             android:layout_marginTop="@dimen/dp_40"
             android:layout_marginEnd="@dimen/dp_10"
             android:maxLines="2"
+            android:ellipsize="end"
             android:textColor="@color/search_color_ffffff_70"
             android:textSize="@dimen/sp_36"
             app:layout_constraintStart_toStartOf="@+id/start_guideline"

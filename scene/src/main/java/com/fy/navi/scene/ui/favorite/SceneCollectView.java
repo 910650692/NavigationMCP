@@ -198,7 +198,6 @@ public class SceneCollectView extends BaseSceneView<SceneCollectViewBinding, Sce
             mIsChargingCollect = true;
             hideEmptyView();
             mAdapter.notifyList(new ArrayList<>());
-            mScreenViewModel.queryCollectStation();
             // 判断是否已登录
             if(!mScreenViewModel.isSGMLogin()){
                 mViewBinding.sllNoSgm.setVisibility(VISIBLE);
@@ -206,7 +205,7 @@ public class SceneCollectView extends BaseSceneView<SceneCollectViewBinding, Sce
             }
             if(mIsAsyncData){
                 // 获取收藏数据
-                Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"naviBroadcastLarge click1");
+                mScreenViewModel.queryCollectStation();
             }else{
                 mViewBinding.sllNoCharge.setVisibility(VISIBLE);
             }

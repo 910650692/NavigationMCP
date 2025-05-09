@@ -28,6 +28,7 @@ import com.fy.navi.service.define.navi.NaviEtaInfo;
 import com.fy.navi.service.define.navi.NaviManeuverInfo;
 import com.fy.navi.service.define.search.PoiInfoEntity;
 import com.fy.navi.scene.impl.navi.common.NaviUiUtil;
+import com.fy.navi.service.logicpaket.layer.LayerPackage;
 import com.fy.navi.service.logicpaket.map.MapPackage;
 import com.fy.navi.service.logicpaket.mapdata.MapDataPackage;
 import com.fy.navi.service.logicpaket.navi.NaviPackage;
@@ -43,7 +44,7 @@ public class SceneNaviTbtImpl extends BaseSceneModel<SceneNaviTbtView> implement
     private final MapDataPackage mMapDataPackage;
     private final BehaviorPackage mBehaviorPackage;
     private final MapPackage mMapPackage;
-    private LayerAdapter mLayerAdapter;
+    private LayerPackage mLayerPackage;
     // 转向图标信息
     private NaviManeuverInfo mManeuverInfo;
     // 出口信息
@@ -80,7 +81,7 @@ public class SceneNaviTbtImpl extends BaseSceneModel<SceneNaviTbtView> implement
         mNaviPackage = NaviPackage.getInstance();
         mBehaviorPackage = BehaviorPackage.getInstance();
         mMapPackage = MapPackage.getInstance();
-        mLayerAdapter = LayerAdapter.getInstance();
+        mLayerPackage = LayerPackage.getInstance();
         mPositionPackage = PositionPackage.getInstance();
         mGroupDivVisible = new ObservableField(true);
         mTurnInfoVisible = new ObservableField(true);
@@ -236,7 +237,7 @@ public class SceneNaviTbtImpl extends BaseSceneModel<SceneNaviTbtView> implement
      * @param naviType 导航类型
      */
     public void onNaviArrive(final long traceId, final int naviType) {
-        mLayerAdapter.clearRouteLine(MapType.MAIN_SCREEN_MAIN_MAP);
+        mLayerPackage.clearRouteLine(MapType.MAIN_SCREEN_MAIN_MAP);
         mNaviPackage.stopNavigation();
 //        StackManager.getInstance().getCurrentFragment(mMapTypeId.name()).closeFragment(true);
     }

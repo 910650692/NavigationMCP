@@ -9,7 +9,6 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
 import com.fy.navi.scene.R;
 import com.fy.navi.scene.databinding.SceneNaviControlMoreViewBinding;
@@ -95,6 +94,13 @@ public class SceneNaviControlMoreView extends NaviSceneBase<SceneNaviControlMore
         if (mScreenViewModel != null) {
             mScreenViewModel.onImmersiveStatusChange(currentImersiveStatus);
         }
+    }
+
+    /**
+     * 更新广播模式
+     */
+    public void updateBroadcast() {
+        updateBroadcast(mScreenViewModel.getBroadcastMode());
     }
 
     /**

@@ -4,6 +4,7 @@ package com.fy.navi.scene.ui.favorite;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
@@ -13,6 +14,7 @@ import com.android.utils.ConvertUtils;
 import com.android.utils.ToastUtils;
 import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
+import com.android.utils.thread.ThreadManager;
 import com.fy.navi.scene.BaseSceneView;
 import com.fy.navi.scene.R;
 import com.fy.navi.scene.api.search.ISceneTerminalParking;
@@ -101,6 +103,7 @@ public class SceneMapPointSearchView extends BaseSceneView<SceneMapPointSearchVi
         if (null != mSearchLoadingDialog) {
             mSearchLoadingDialog.hide();
         }
+        ThreadManager.getInstance().removeHandleTask(mTimeoutTask);
         if (null == searchResultEntity || searchResultEntity.getPoiList().isEmpty()) {
             ToastUtils.Companion.getInstance().showCustomToastView("暂无数据");
             return;
@@ -121,11 +124,42 @@ public class SceneMapPointSearchView extends BaseSceneView<SceneMapPointSearchVi
      * @param poiInfo poiInfo
      */
     public void doSearch(final PoiInfoEntity poiInfo) {
-        if (null != mSearchLoadingDialog) {
+        if (null != mSearchLoadingDialog && mSearchLoadingDialog.isShowing()) {
+            Logger.e(MapDefaultFinalTag.SEARCH_HMI_TAG, "mSearchLoadingDialog is showing");
+        } else {
+            mSearchLoadingDialog = new SearchLoadingDialog(getContext());
             mSearchLoadingDialog.show();
         }
+        mPoiInfoEntity = poiInfo;
         mScreenViewModel.doSearch(poiInfo);
+        ThreadManager.getInstance().removeHandleTask(mTimeoutTask);
+        ThreadManager.getInstance().postDelay(mTimeoutTask, 6000);
     }
+
+    private final Runnable mTimeoutTask = new Runnable() {
+        @Override
+        public void run() {
+            if (null != mSearchLoadingDialog) {
+                mSearchLoadingDialog.dismiss();
+                if (!ConvertUtils.isEmpty(mViewBinding) && !ConvertUtils.isEmpty(mViewBinding.csPoiNoResult)) {
+                    mViewBinding.csPoiNoResult.setVisibility(View.VISIBLE);
+                    mViewBinding.skPoiName.setVisibility(View.GONE);
+                    mViewBinding.poiSecondAddress.setVisibility(View.GONE);
+                    mViewBinding.stlSetting.setVisibility(View.GONE);
+                    mViewBinding.poiTypeIcon.setVisibility(View.GONE);
+
+                    mViewBinding.noResultButton.setOnClickListener((view) -> {
+                        doSearch(mPoiInfoEntity);
+                        mViewBinding.csPoiNoResult.setVisibility(View.GONE);
+                        mViewBinding.skPoiName.setVisibility(View.VISIBLE);
+                        mViewBinding.poiSecondAddress.setVisibility(View.VISIBLE);
+                        mViewBinding.stlSetting.setVisibility(View.VISIBLE);
+                        mViewBinding.poiTypeIcon.setVisibility(View.VISIBLE);
+                    });
+                }
+            }
+        }
+    };
 
     /**
      * 刷新poi视图
@@ -224,5 +258,11 @@ public class SceneMapPointSearchView extends BaseSceneView<SceneMapPointSearchVi
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        ThreadManager.getInstance().removeHandleTask(mTimeoutTask);
     }
 }

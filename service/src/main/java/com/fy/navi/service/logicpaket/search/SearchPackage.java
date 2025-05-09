@@ -143,12 +143,11 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
     @Override
     public void onNetSearchResult(BaseRep result) {
         Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "onNetSearchResult");
-        final ThreadManager threadManager = ThreadManager.getInstance();
         for (Map.Entry<String, SearchResultCallback> entry : mISearchResultCallbackMap.entrySet()) {
             final String identifier = entry.getKey();
             mCurrentCallbackId.set(identifier);
             final SearchResultCallback callback = entry.getValue();
-            threadManager.postUi(() -> callback.onNetSearchResult(result));
+            callback.onNetSearchResult(result);
         }
     }
 
@@ -1451,6 +1450,15 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
         final SearchRequestParameter requestParameterBuilder = new SearchRequestParameter.Builder()
                 .build();
         return mSearchAdapter.queryCollectStation(requestParameterBuilder);
+    }
+
+    /*
+    * 查询自营站列表
+    * */
+    public int queryStationNewResult(){
+        final SearchRequestParameter requestParameterBuilder = new SearchRequestParameter.Builder()
+                .build();
+        return mSearchAdapter.queryStationNewResult(requestParameterBuilder);
     }
 
 }

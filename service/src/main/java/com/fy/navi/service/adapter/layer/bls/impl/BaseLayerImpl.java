@@ -210,13 +210,13 @@ public class BaseLayerImpl<S extends BaseStyleAdapter> extends PrepareLayerStyle
             styleJson = TextureStylePoolManager.get().getLayerStyle(getMapType(), item, getStyleAdapter());
             if (!TextUtils.isEmpty(styleJson)) {
                 Logger.d(TAG, getClass().getSimpleName() + " mapType = " + mapType + " 图层 :" + layer.getName() + " ;图元业务类型 :" + item.getBusinessType() + " ; 图元 ：" + item.getItemType() + " ; 是否可见 :" + item.getVisible()
-                        + "\n 使用 自定义 样式配置 : \n " + styleJson);
+                        + " 图元id " + item.getID() + " 选中态 " + item.getFocus() + "\n 使用 自定义 样式配置 : \n " + styleJson);
             }
         }
         if (TextUtils.isEmpty(styleJson)) {
             styleJson = super.getLayerStyle(layer, item, forJava);
             Logger.d(TAG, getClass().getSimpleName() + " mapType = " + mapType + " 图层 :" + layer.getName() + " ;图元业务类型 :" + item.getBusinessType() + " ; 图元 ：" + item.getItemType() + " ; 是否可见 :" + item.getVisible()
-                    + "\n 使用 默认 样式配置 : \n" + styleJson);
+                    + " 图元id " + item.getID() + " 选中态 " + item.getFocus() + "\n 使用 默认 样式配置 : \n" + styleJson);
         }
         if (getStyleAdapter().isNeedRefreshJsonValue(item)) {
             styleJson = getStyleAdapter().refreshOldJsonValue(item, styleJson);
@@ -230,6 +230,7 @@ public class BaseLayerImpl<S extends BaseStyleAdapter> extends PrepareLayerStyle
     @Override
     public int getMarkerId(BaseLayer layer, LayerItem item, ItemStyleInfo styleInfo) {
         int markerId = super.getMarkerId(layer, item, styleInfo);
+        Logger.d(TAG, "getMarkerId styleInfo " + styleInfo.markerGroup);
         boolean isAddSuccess = false;
         LayerTexture texture = layer.getMapView().getLayerTexture(markerId);
         if (getStyleAdapter() != null && ConvertUtils.isNull(texture)) {
@@ -240,6 +241,7 @@ public class BaseLayerImpl<S extends BaseStyleAdapter> extends PrepareLayerStyle
             }
         }
 
+        Logger.d(TAG, "getMarkerId  图元id " + item.getID() + " 选中态 " + item.getFocus());
         Logger.d(TAG, getClass().getSimpleName() + " mapType = " + mapType + " 图层 :" + layer.getName() + " ;图元业务类型 :" + item.getBusinessType() + " ; 图元 :" + item.getItemType() + " ; 是否可见 :" + item.getVisible()
                 + "\n" + (isAddSuccess ? "使用 自定义 " : " 使用 默认 ") + " 纹理信息 :{ markerRes = " + styleInfo.markerId + " ; resID = " + texture.resID + " ; markerId = " + markerId + " }");
         return markerId;

@@ -51,6 +51,7 @@ public class SearchResultEntity implements Parcelable {
     private int mTotal;
     private int mPoiType;
     private ArrayList<String> mQueryTypeList;
+    private boolean mIsNetData = false;
 
     public int getSearchType() {
         return mSearchType;
@@ -230,6 +231,15 @@ public class SearchResultEntity implements Parcelable {
         return this;
     }
 
+    public boolean getIsNetData(){
+        return mIsNetData;
+    }
+
+    public SearchResultEntity setIsNetData(final boolean isNetData){
+        this.mIsNetData = isNetData;
+        return this;
+    }
+
     protected SearchResultEntity(final Parcel in) {
         mSearchType = in.readInt();
         mKeyword = in.readString();
@@ -244,6 +254,7 @@ public class SearchResultEntity implements Parcelable {
         mTotal = in.readInt();
         mPoiType = in.readInt();
         mQueryTypeList = in.createStringArrayList();
+        mIsNetData = in.readBoolean();
     }
 
     public static final Creator<SearchResultEntity> CREATOR = new Creator<SearchResultEntity>() {
@@ -278,5 +289,6 @@ public class SearchResultEntity implements Parcelable {
         dest.writeInt(mTotal);
         dest.writeInt(mPoiType);
         dest.writeStringList(mQueryTypeList);
+        dest.writeBoolean(mIsNetData);
     }
 }

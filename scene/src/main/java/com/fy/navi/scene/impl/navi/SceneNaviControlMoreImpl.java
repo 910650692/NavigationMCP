@@ -334,4 +334,11 @@ public class SceneNaviControlMoreImpl extends BaseSceneModel<SceneNaviControlMor
             mImmersiveStatusScene.setImmersiveStatus(mMapTypeId, immersiveStatus);
         }
     }
+
+    /**
+     * 获取广播模式
+     */
+    public int getBroadcastMode(){
+        return mSettingPackage.getConfigKeyBroadcastMode();
+    }
 }

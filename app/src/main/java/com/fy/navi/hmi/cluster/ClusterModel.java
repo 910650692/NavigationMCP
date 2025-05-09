@@ -2,11 +2,7 @@ package com.fy.navi.hmi.cluster;
 
 import android.view.MotionEvent;
 
-import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
-import com.fy.navi.hmi.launcher.BaseLauncherDeskViewModel;
-import com.fy.navi.hmi.launcher.LauncherManager;
-import com.fy.navi.mapservice.bean.INaviConstant;
 import com.fy.navi.scene.impl.navi.inter.ISceneCallback;
 import com.fy.navi.service.adapter.navistatus.INaviStatusCallback;
 import com.fy.navi.service.adapter.navistatus.NavistatusAdapter;
@@ -14,7 +10,6 @@ import com.fy.navi.service.define.bean.GeoPoint;
 import com.fy.navi.service.define.bean.MapLabelItemBean;
 import com.fy.navi.service.define.cruise.CruiseInfoEntity;
 import com.fy.navi.service.define.layer.RouteLineLayerParam;
-import com.fy.navi.service.define.map.MapMode;
 import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.map.MapTypeManager;
 import com.fy.navi.service.define.navi.LaneInfoEntity;
@@ -22,7 +17,6 @@ import com.fy.navi.service.define.navi.NaviEtaInfo;
 import com.fy.navi.service.define.navi.NaviTmcInfo;
 import com.fy.navi.service.define.navistatus.NaviStatus;
 import com.fy.navi.service.define.search.PoiInfoEntity;
-import com.fy.navi.service.define.setting.SettingController;
 import com.fy.navi.service.greendao.CommonManager;
 import com.fy.navi.service.logicpaket.cruise.CruisePackage;
 import com.fy.navi.service.logicpaket.cruise.ICruiseObserver;
@@ -172,7 +166,7 @@ IRouteResultObserver, INaviStatusCallback, ISceneCallback, IGuidanceObserver, IC
     public void onMapClickPoi(final MapType mapTypeId, final PoiInfoEntity poiInfo) {
         Logger.d(TAG, "onMapClickPoi");
         if (mapTypeId == getMapId()) {
-            LauncherManager.getInstance().startMapActivity(INaviConstant.OpenIntentPage.POI_DETAIL_PAGE, poiInfo);
+//            LauncherManager.getInstance().startMapActivity(INaviConstant.OpenIntentPage.POI_DETAIL_PAGE, poiInfo);
         }
     }
 
@@ -180,7 +174,7 @@ IRouteResultObserver, INaviStatusCallback, ISceneCallback, IGuidanceObserver, IC
     public void onReversePoiClick(final MapType mapTypeId, final PoiInfoEntity poiInfo) {
         Logger.d(TAG, "onReversePoiClick");
         if (mapTypeId == getMapId()) {
-            LauncherManager.getInstance().startMapActivity(INaviConstant.OpenIntentPage.POI_DETAIL_PAGE, poiInfo);
+//            LauncherManager.getInstance().startMapActivity(INaviConstant.OpenIntentPage.POI_DETAIL_PAGE, poiInfo);
         }
     }
 

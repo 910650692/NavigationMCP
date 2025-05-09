@@ -112,7 +112,6 @@ public class CollectModel extends BaseModel<CollectViewModel> implements Setting
 
     @Override
     public void onNetSearchResult(BaseRep result) {
-        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"mCallbackId: "+mCallbackId+"id: "+mSearchPackage.getCurrentCallbackId());
         if (mCallbackId.equals(mSearchPackage.getCurrentCallbackId())) {
             mViewModel.notifyNetSearchResult(result);
         }

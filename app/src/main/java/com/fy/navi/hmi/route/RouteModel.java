@@ -845,6 +845,11 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
     @Override
     public void onRouteAllRoutePoiInfo(final RequestRouteResult requestRouteResult) {
         mRouteParams = requestRouteResult.getMRouteParams();
+        if (mRouteParams == null || mRouteParams.isEmpty()) {
+            Logger.e(TAG, "routeParams is null");
+            return;
+        }
+        mViewModel.getEndName().set(mRouteParams.get(mRouteParams.size() - NumberUtils.NUM_1).getName());
         if (mRouteParams.size() >= NumberUtils.NUM_2) {
             mRouteParams.remove(mRouteParams.size() - NumberUtils.NUM_1);
             mRouteParams.remove(NumberUtils.NUM_0);

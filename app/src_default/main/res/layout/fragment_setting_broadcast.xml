@@ -172,15 +172,13 @@
                 android:orientation="horizontal"
                 android:layout_marginTop="@dimen/dp_60">
 
-                <com.fy.navi.ui.view.SkinCheckBox
+                <com.fy.navi.ui.view.SkinTextView
                     clickCommand="@{viewModel.mSwitchCruiseBroadcastClick}"
                     android:id="@+id/switch_eagle_eye_map"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:checked="@{viewModel.mIsCruiseBroadcast}"
-                    android:background="@android:color/transparent"
-                    android:button="@drawable/custom_thumb" />
+                    android:background="@{viewModel.mIsCruiseBroadcast ? @drawable/img_setting_switch_on : @drawable/img_setting_switch_off}" />
 
                 <com.fy.navi.ui.view.SkinTextView
                     android:id="@+id/cruise_broadcast_title"

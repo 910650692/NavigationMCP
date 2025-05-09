@@ -202,9 +202,9 @@ public class StartService {
     }
 
     private void initOtherService() {
-        SettingPackage.getInstance().init();
         SearchPackage.getInstance().initSearchService();
         NaviPackage.getInstance().initNaviService();
+        SettingPackage.getInstance().init();
         RoutePackage.getInstance().initRouteService();
         CruisePackage.getInstance().initCruise();
         MapDataPackage.getInstance().initMapDataService();

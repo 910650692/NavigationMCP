@@ -126,6 +126,7 @@
             android:layout_width="@dimen/dp_54"
             android:layout_height="@dimen/dp_54"
             android:focusable="false"
+            android:visibility="gone"
             android:background="@drawable/img_electricity_medium_42"
             app:layout_constraintTop_toTopOf="@+id/siv_service_details_remiancharge"
             app:layout_constraintBottom_toBottomOf="@+id/siv_service_details_remiancharge"

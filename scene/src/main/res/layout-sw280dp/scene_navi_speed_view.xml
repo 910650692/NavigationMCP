@@ -21,15 +21,15 @@
 
         <com.fy.navi.ui.view.SkinView
             android:id="@+id/sv_overall_speed"
-            android:layout_width="@dimen/dp_122"
-            android:layout_height="@dimen/dp_330"
+            android:layout_width="@dimen/dp_158"
+            android:layout_height="@dimen/dp_424"
             android:focusable="false"
             android:background="@drawable/bg_speed_normal" />
 
         <com.fy.navi.ui.view.SkinView
             android:id="@+id/sv_current_speed"
-            android:layout_width="@dimen/dp_122"
-            android:layout_height="@dimen/dp_122"
+            android:layout_width="@dimen/dp_158"
+            android:layout_height="@dimen/dp_158"
             android:focusable="false"
             android:background="@drawable/guide_car_speed"
             app:layout_constraintEnd_toEndOf="@id/sv_overall_speed"
@@ -44,7 +44,7 @@
             android:focusable="false"
             android:gravity="center"
             android:textColor="@color/navi_color_000000_100"
-            android:textSize="@dimen/sp_38"
+            android:textSize="@dimen/sp_52"
             app:layout_constraintEnd_toEndOf="@id/sv_current_speed"
             app:layout_constraintStart_toStartOf="@id/sv_current_speed"
             app:layout_constraintTop_toTopOf="@id/sv_current_speed"
@@ -58,7 +58,7 @@
             android:gravity="center"
             android:text="km/h"
             android:textColor="@color/navi_color_000000_100"
-            android:textSize="@dimen/sp_26"
+            android:textSize="@dimen/sp_32"
             app:layout_constraintEnd_toEndOf="@id/sv_current_speed"
             app:layout_constraintStart_toStartOf="@id/sv_current_speed"
             app:layout_constraintTop_toBottomOf="@id/stv_current_speed" />
@@ -67,11 +67,11 @@
             android:id="@+id/stv_speed_limit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_4"
+            android:layout_marginTop="@dimen/dp_0"
             android:focusable="false"
             android:singleLine="true"
             android:textColor="@color/navi_color_FFFFFF_100"
-            android:textSize="@dimen/sp_34"
+            android:textSize="@dimen/sp_46"
             app:layout_constraintEnd_toEndOf="@id/sv_overall_speed"
             app:layout_constraintStart_toStartOf="@id/sv_overall_speed"
             app:layout_constraintTop_toBottomOf="@id/sv_current_speed"
@@ -79,7 +79,7 @@
 
         <com.fy.navi.ui.view.SkinTextView
             android:id="@+id/stv_speed_limit_key"
-            android:layout_width="@dimen/dp_122"
+            android:layout_width="@dimen/dp_158"
             android:layout_height="wrap_content"
             android:focusable="false"
             android:ellipsize="end"
@@ -87,7 +87,7 @@
             android:singleLine="true"
             android:text="@string/navi_speed_overall"
             android:textColor="@color/navi_color_FFFFFF_80"
-            android:textSize="@dimen/sp_26"
+            android:textSize="@dimen/sp_32"
             app:layout_constraintEnd_toEndOf="@id/sv_overall_speed"
             app:layout_constraintStart_toStartOf="@id/sv_overall_speed"
             app:layout_constraintTop_toBottomOf="@id/stv_speed_limit" />
@@ -96,11 +96,11 @@
             android:id="@+id/stv_distance"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_2"
+            android:layout_marginTop="@dimen/dp_18"
             android:focusable="false"
             android:singleLine="true"
             android:textColor="@color/navi_color_FFFFFF_100"
-            android:textSize="@dimen/sp_34"
+            android:textSize="@dimen/sp_46"
             app:layout_constraintEnd_toEndOf="@id/sv_overall_speed"
             app:layout_constraintStart_toStartOf="@id/sv_overall_speed"
             app:layout_constraintTop_toBottomOf="@id/stv_speed_limit_key"
@@ -108,14 +108,14 @@
 
         <com.fy.navi.ui.view.SkinTextView
             android:id="@+id/stv_distance_key"
-            android:layout_width="@dimen/dp_122"
+            android:layout_width="@dimen/dp_158"
             android:layout_height="wrap_content"
             android:focusable="false"
             android:ellipsize="end"
             android:gravity="center"
             android:text="@string/navi_remaining_distance"
             android:textColor="@color/navi_color_FFFFFF_80"
-            android:textSize="@dimen/sp_26"
+            android:textSize="@dimen/sp_32"
             app:layout_constraintEnd_toEndOf="@id/sv_overall_speed"
             app:layout_constraintStart_toStartOf="@id/sv_overall_speed"
             app:layout_constraintTop_toBottomOf="@id/stv_distance" />

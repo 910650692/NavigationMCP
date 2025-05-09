@@ -17,6 +17,7 @@ import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.search.PoiInfoEntity;
 import com.fy.navi.ui.base.BaseFragment;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Route(path = RoutePath.Search.COLLECT_FRAGMENT)
@@ -110,5 +111,9 @@ public class CollectFragment extends BaseFragment<FragmentCollectBinding, Collec
             final List<PoiInfoEntity> poiInfoEntityList = mViewModel.getFavoriteListAsync();
             mBinding.collectView.setAdapterData(poiInfoEntityList);
         });
+    }
+
+    public void setAdapterDataByNet(ArrayList<PoiInfoEntity> poiInfoEntity){
+        mBinding.collectView.setAdapterData(poiInfoEntity);
     }
 }

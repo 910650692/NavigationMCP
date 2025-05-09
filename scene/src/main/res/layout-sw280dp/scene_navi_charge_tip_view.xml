@@ -15,23 +15,23 @@
 
     <com.fy.navi.ui.view.SkinConstraintLayout
         android:id="@+id/scl_root"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/dp_820"
+        android:layout_height="@dimen/dp_168"
         android:focusable="false"
         android:background="@drawable/bg_scene_charge_tip"
-        android:minHeight="@dimen/dp_100">
+        >
 
         <com.fy.navi.ui.view.SkinTextView
             android:id="@+id/tv_title"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:focusable="false"
-            android:layout_marginStart="@dimen/dp_20"
+            android:layout_marginStart="@dimen/dp_40"
             android:layout_marginEnd="@dimen/dp_30"
             android:ellipsize="end"
             android:maxLines="1"
             android:textColor="@color/search_color_ffffff"
-            android:textSize="@dimen/dp_22"
+            android:textSize="@dimen/sp_46"
             app:layout_constraintEnd_toStartOf="@id/tv_action"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -46,8 +46,8 @@
             android:focusable="false"
             android:ellipsize="end"
             android:maxLines="1"
-            android:textColor="@color/search_color_ffffff"
-            android:textSize="@dimen/dp_22"
+            android:textColor="@color/search_color_ffffff_70"
+            android:textSize="@dimen/sp_38"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@id/tv_title"
             app:layout_constraintStart_toStartOf="@id/tv_title"
@@ -56,19 +56,18 @@
 
         <com.fy.navi.ui.view.SkinTextView
             android:id="@+id/tv_action"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="@dimen/dp_192"
+            android:layout_height="@dimen/dp_96"
             android:focusable="true"
-            android:layout_marginEnd="@dimen/dp_20"
-            android:background="@color/search_color_ffffff"
+            android:layout_marginEnd="@dimen/dp_40"
+            android:background="@drawable/bg_navi_go_charge"
             android:gravity="center"
-            android:padding="@dimen/dp_10"
-            android:textColor="@color/white"
-            android:textSize="@dimen/dp_22"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/sp_38"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_goneMarginEnd="@dimen/dp_20"
+            app:layout_goneMarginEnd="@dimen/dp_40"
             tools:text="去充电" />
 
     </com.fy.navi.ui.view.SkinConstraintLayout>

@@ -12,7 +12,12 @@
     <com.fy.navi.ui.view.SkinConstraintLayout
         android:layout_width="@dimen/dp_1104"
         android:layout_height="match_parent"
+        android:focusable="false"
         android:orientation="vertical">
+
+        <com.android.car.ui.FocusParkingView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
 
         <com.fy.navi.ui.view.SkinLinearLayout
             android:id="@+id/favorite_title_layout"
@@ -20,6 +25,7 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:visibility="gone"
+            android:focusable="false"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
@@ -31,6 +37,7 @@
                 android:text="@string/favorite_sync_tip"
                 android:textColor="@color/setting_text_preference"
                 android:textSize="@dimen/sp_30"
+                android:focusable="false"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -40,6 +47,7 @@
                 android:layout_height="wrap_content"
                 android:textColor="@color/setting_text_preference"
                 android:textSize="@dimen/sp_30"
+                android:focusable="false"
                 android:text="@{ViewModel.mSyncTime}"
                 app:layout_constraintStart_toEndOf="@+id/favorite_title"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -55,6 +63,7 @@
                 android:textSize="@dimen/sp_30"
                 android:visibility="gone"
                 android:text="@string/favorite_sync"
+                android:focusable="false"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
         </com.fy.navi.ui.view.SkinLinearLayout>
@@ -63,444 +72,513 @@
             android:id="@+id/favorite_scroll"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:focusable="false"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/favorite_title_layout">
 
-            <com.fy.navi.ui.view.SkinConstraintLayout
-                android:id="@+id/favorite_layout"
-                android:layout_width="@dimen/dp_1104"
-                android:layout_height="wrap_content">
+            <com.android.car.ui.FocusArea
+                android:id="@+id/focus_content"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:nudgeDown="@+id/focus_button"
+                app:nudgeUp="@+id/focus_button">
 
-                <!--设置家-->
-                <com.fy.navi.ui.view.SkinRelativeLayout
-                    android:id="@+id/rl_favorite_home"
-                    clickCommand="@{ViewModel.mGoSettingHome}"
-                    android:layout_width="@dimen/dp_536"
-                    android:layout_height="@dimen/dp_168"
-                    android:background="@drawable/bg_setting_voice"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/favorite_title">
+                <com.fy.navi.ui.view.SkinConstraintLayout
+                    android:id="@+id/favorite_layout"
+                    android:focusable="false"
+                    android:layout_width="@dimen/dp_1104"
+                    android:layout_height="wrap_content">
 
-                    <com.fy.navi.ui.view.SkinImageView
-                        android:layout_width="@dimen/dp_74"
-                        android:layout_height="@dimen/dp_74"
-                        android:layout_centerVertical="true"
-                        android:layout_marginStart="@dimen/dp_24"
-                        android:src="@drawable/img_favorite_home" />
+                    <!--设置家-->
+                    <com.fy.navi.ui.view.SkinRelativeLayout
+                        android:id="@+id/rl_favorite_home"
+                        android:layout_width="@dimen/dp_536"
+                        android:layout_height="@dimen/dp_168"
+                        android:focusable="false"
+                        android:background="@drawable/bg_setting_voice"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/favorite_title">
 
-                    <com.fy.navi.ui.view.SkinTextView
-                        android:id="@+id/favorite_home"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/dp_120"
-                        android:layout_marginTop="@dimen/dp_26"
-                        android:text="@string/favorite_home"
-                        android:textColor="@color/black"
-                        android:textSize="@dimen/sp_46" />
-
-                    <com.fy.navi.ui.view.SkinTextView
-                        android:id="@+id/favorite_home_name"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/favorite_home"
-                        android:layout_marginTop="@dimen/dp_4"
-                        android:layout_marginStart="@dimen/dp_120"
-                        android:text="@string/favorite_setting"
-                        android:textColor="@color/color_black_70"
-                        android:textSize="@dimen/sp_32" />
-
-                    <com.fy.navi.ui.view.SkinImageView
-                        clickCommand="@{ViewModel.mMoreHome}"
-                        android:id="@+id/more_Home"
-                        android:layout_width="@dimen/dp_74"
-                        android:layout_height="@dimen/dp_74"
-                        android:layout_marginEnd="@dimen/dp_24"
-                        android:layout_centerVertical="true"
-                        android:layout_alignParentRight="true"
-                        android:src="@drawable/img_favorite_more" />
-                </com.fy.navi.ui.view.SkinRelativeLayout>
-
-                <!--设置公司-->
-                <com.fy.navi.ui.view.SkinRelativeLayout
-                    android:id="@+id/rl_favorite_company"
-                    clickCommand="@{ViewModel.mGoSettingCompany}"
-                    android:layout_width="@dimen/dp_536"
-                    android:layout_height="@dimen/dp_168"
-                    android:background="@drawable/bg_setting_voice"
-                    android:layout_marginStart="@dimen/dp_32"
-                    app:layout_constraintLeft_toRightOf="@+id/rl_favorite_home"
-                    app:layout_constraintTop_toBottomOf="@+id/favorite_title">
-
-                    <com.fy.navi.ui.view.SkinImageView
-                        android:layout_width="@dimen/dp_74"
-                        android:layout_height="@dimen/dp_74"
-                        android:layout_centerVertical="true"
-                        android:layout_marginStart="@dimen/dp_24"
-                        android:src="@drawable/img_favorite_company" />
-
-                    <com.fy.navi.ui.view.SkinTextView
-                        android:id="@+id/favorite_company"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/dp_120"
-                        android:layout_marginTop="@dimen/dp_26"
-                        android:text="@string/favorite_company"
-                        android:textColor="@color/black"
-                        android:textSize="@dimen/sp_46" />
-
-                    <com.fy.navi.ui.view.SkinTextView
-                        android:id="@+id/favorite_company_name"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/favorite_company"
-                        android:layout_marginStart="@dimen/dp_120"
-                        android:layout_marginTop="@dimen/dp_4"
-                        android:text="@string/favorite_setting"
-                        android:textColor="@color/color_black_70"
-                        android:textSize="@dimen/sp_32" />
-
-                    <com.fy.navi.ui.view.SkinImageView
-                        clickCommand="@{ViewModel.mMoreCompany}"
-                        android:id="@+id/more_company"
-                        android:layout_width="@dimen/dp_74"
-                        android:layout_height="@dimen/dp_74"
-                        android:layout_marginEnd="@dimen/dp_24"
-                        android:layout_centerVertical="true"
-                        android:layout_alignParentRight="true"
-                        android:src="@drawable/img_favorite_more" />
-                </com.fy.navi.ui.view.SkinRelativeLayout>
-
-                <com.fy.navi.ui.view.SkinCheckBox
-                    clickCommand="@{ViewModel.mShowHomeCompanyDisplayed}"
-                    android:id="@+id/switch_favorite"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:checked="@{ViewModel.mIsHomeCompanyDisplayed}"
-                    android:layout_marginTop="@dimen/dp_40"
-                    android:background="@android:color/transparent"
-                    android:button="@drawable/setting_custom_thumb"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/rl_favorite_home" />
-
-                <com.fy.navi.ui.view.SkinTextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/favorite_favorite_switch"
-                    android:textColor="@color/color_black_70"
-                    android:textSize="@dimen/sp_38"
-                    android:layout_marginStart="@dimen/dp_32"
-                    app:layout_constraintStart_toEndOf="@+id/switch_favorite"
-                    app:layout_constraintTop_toTopOf="@+id/switch_favorite" />
-
-                <!--常去地址-->
-                <com.fy.navi.ui.view.SkinTextView
-                    android:id="@+id/favorite_frequent_address"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/favorite_frequent_address"
-                    android:textColor="@color/black"
-                    android:textSize="@dimen/sp_46"
-                    android:layout_marginTop="@dimen/dp_40"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/switch_favorite" />
-
-                <com.fy.navi.ui.view.SkinGridLayout
-                    android:id="@+id/frequent_address_container"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:columnCount="2"
-                    android:rowCount="2"
-                    android:layout_marginTop="@dimen/dp_20"
-                    android:useDefaultMargins="true"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/favorite_frequent_address"/>
-                <!--常去地址列表-->
-                <com.fy.navi.ui.view.SkinRecyclerView
-                    android:id="@+id/rv_frequent_address_list"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginTop="@dimen/dp_20"
-                    android:visibility="gone"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/favorite_frequent_address" />
-
-                <!--收藏夹-->
-                <com.fy.navi.ui.view.SkinTextView
-                    android:id="@+id/tv_favorite_title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/favorite_title"
-                    android:textColor="@color/black"
-                    android:textSize="@dimen/sp_46"
-                    android:layout_marginTop="@dimen/dp_80"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/frequent_address_container" />
-
-                <com.fy.navi.ui.view.SkinLinearLayout
-                    clickCommand="@{ViewModel.mAddFavorite}"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:visibility="@{ViewModel.mAddVisibility ? View.VISIBLE : View.GONE}"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="@+id/tv_favorite_title" >
-
-                    <com.fy.navi.ui.view.SkinImageView
-                        android:layout_width="@dimen/dp_54"
-                        android:layout_height="@dimen/dp_54"
-                        android:layout_gravity="center"
-                        android:src="@drawable/img_favorite_add" />
-
-                    <com.fy.navi.ui.view.SkinTextView
-                        android:id="@+id/item_favorite_add"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:text="@string/favorite_add"
-                        android:layout_marginStart="@dimen/dp_8"
-                        android:textColor="@color/setting_text_preference"
-                        android:textSize="@dimen/sp_38" />
-                </com.fy.navi.ui.view.SkinLinearLayout>
-
-                <com.fy.navi.ui.view.SkinLinearLayout
-                    android:id="@+id/tv_favorite_switch"
-                    android:layout_width="@dimen/dp_744"
-                    android:layout_height="@dimen/dp_120"
-                    android:gravity="center_horizontal"
-                    android:layout_marginTop="@dimen/dp_40"
-                    android:orientation="horizontal"
-                    android:visibility="@{ViewModel.mIsEVCar ? View.VISIBLE : View.GONE}"
-                    android:background="@drawable/bg_setting_checkbox"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/tv_favorite_title">
-
-                    <com.fy.navi.ui.view.SkinRadioGroup
-                        android:id="@+id/navi_broadcast"
-                        android:layout_width="match_parent"
-                        android:layout_height="fill_parent"
-                        android:gravity="center_horizontal"
-                        android:orientation="horizontal">
-
-                        <com.fy.navi.ui.view.SkinRadioButton
-                            clickCommand="@{ViewModel.mFavoriteInfoClick}"
-                            android:id="@+id/navi_broadcast_standard"
-                            android:layout_width="0dp"
+                        <com.fy.navi.ui.view.SkinView
+                            clickCommand="@{ViewModel.mGoSettingHome}"
+                            android:layout_width="@dimen/dp_414"
                             android:layout_height="match_parent"
-                            android:layout_weight="1"
-                            android:button="@null"
-                            android:checked="true"
-                            android:background="@drawable/bg_setting_checkbox_selector"
-                            android:gravity="center"
-                            android:textSize="@dimen/sp_46"
-                            android:textColor="@color/white"
-                            android:text="@string/favorite_switch_common" />
+                            android:focusable="true"
+                            android:background="@drawable/bg_base_mfc_cadillac_bg_selector"/>
 
-                        <com.fy.navi.ui.view.SkinRadioButton
-                            clickCommand="@{ViewModel.mChargingInfoClick}"
-                            android:id="@+id/navi_broadcast_large"
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1"
-                            android:button="@null"
-                            android:background="@drawable/bg_setting_checkbox_selector"
-                            android:gravity="center"
-                            android:textSize="@dimen/sp_46"
+                        <com.fy.navi.ui.view.SkinImageView
+                            android:layout_width="@dimen/dp_74"
+                            android:layout_height="@dimen/dp_74"
+                            android:focusable="false"
+                            android:layout_centerVertical="true"
+                            android:layout_marginStart="@dimen/dp_24"
+                            android:src="@drawable/img_favorite_home" />
+
+                        <com.fy.navi.ui.view.SkinTextView
+                            android:id="@+id/favorite_home"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:focusable="false"
+                            android:layout_marginStart="@dimen/dp_120"
+                            android:layout_marginTop="@dimen/dp_26"
+                            android:text="@string/favorite_home"
+                            android:textColor="@color/black"
+                            android:textSize="@dimen/sp_46" />
+
+                        <com.fy.navi.ui.view.SkinTextView
+                            android:id="@+id/favorite_home_name"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/favorite_home"
+                            android:focusable="false"
+                            android:layout_marginStart="@dimen/dp_120"
+                            android:layout_marginTop="@dimen/dp_4"
+                            android:text="@string/favorite_setting"
                             android:textColor="@color/color_black_70"
-                            android:text="@string/favorite_switch_charge" />
-                    </com.fy.navi.ui.view.SkinRadioGroup>
+                            android:textSize="@dimen/sp_32" />
 
-                </com.fy.navi.ui.view.SkinLinearLayout>
+                        <com.fy.navi.ui.view.SkinImageView
+                            android:id="@+id/more_Home"
+                            clickCommand="@{ViewModel.mMoreHome}"
+                            android:layout_width="@dimen/dp_74"
+                            android:layout_height="@dimen/dp_74"
+                            android:focusable="true"
+                            android:layout_alignParentEnd="true"
+                            android:layout_centerVertical="true"
+                            android:layout_marginEnd="@dimen/dp_24"
+                            android:src="@drawable/img_favorite_more" />
+                    </com.fy.navi.ui.view.SkinRelativeLayout>
 
-                <!--收藏列表-->
-                <com.fy.navi.ui.view.SkinRecyclerView
-                    android:id="@+id/rv_favorite_list"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:visibility="@{ViewModel.mDataVisibility ? View.VISIBLE : View.GONE}"
-                    android:layout_marginTop="@dimen/dp_24"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/tv_favorite_switch" />
+                    <!--设置公司-->
+                    <com.fy.navi.ui.view.SkinRelativeLayout
+                        android:id="@+id/rl_favorite_company"
+                        android:layout_width="@dimen/dp_536"
+                        android:layout_height="@dimen/dp_168"
+                        android:layout_marginStart="@dimen/dp_32"
+                        android:focusable="false"
+                        android:background="@drawable/bg_setting_voice"
+                        app:layout_constraintLeft_toRightOf="@+id/rl_favorite_home"
+                        app:layout_constraintTop_toBottomOf="@+id/favorite_title">
 
-                <!--无收藏数据提示-->
-                <com.fy.navi.ui.view.SkinLinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:gravity="center"
-                    android:layout_marginTop="@dimen/dp_194"
-                    android:visibility="@{ViewModel.mTipVisibility ? View.VISIBLE : View.GONE}"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/tv_favorite_title"  >
+                        <com.fy.navi.ui.view.SkinView
+                            clickCommand="@{ViewModel.mGoSettingCompany}"
+                            android:layout_width="@dimen/dp_414"
+                            android:layout_height="match_parent"
+                            android:focusable="true"
+                            android:background="@drawable/bg_base_mfc_cadillac_bg_selector"/>
+
+                        <com.fy.navi.ui.view.SkinImageView
+                            android:layout_width="@dimen/dp_74"
+                            android:layout_height="@dimen/dp_74"
+                            android:layout_centerVertical="true"
+                            android:layout_marginStart="@dimen/dp_24"
+                            android:focusable="false"
+                            android:src="@drawable/img_favorite_company" />
+
+                        <com.fy.navi.ui.view.SkinTextView
+                            android:id="@+id/favorite_company"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:focusable="false"
+                            android:layout_marginStart="@dimen/dp_120"
+                            android:layout_marginTop="@dimen/dp_26"
+                            android:text="@string/favorite_company"
+                            android:textColor="@color/black"
+                            android:textSize="@dimen/sp_46" />
+
+                        <com.fy.navi.ui.view.SkinTextView
+                            android:id="@+id/favorite_company_name"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:focusable="false"
+                            android:layout_below="@+id/favorite_company"
+                            android:layout_marginStart="@dimen/dp_120"
+                            android:layout_marginTop="@dimen/dp_4"
+                            android:text="@string/favorite_setting"
+                            android:textColor="@color/color_black_70"
+                            android:textSize="@dimen/sp_32" />
+
+                        <com.fy.navi.ui.view.SkinImageView
+                            android:id="@+id/more_company"
+                            clickCommand="@{ViewModel.mMoreCompany}"
+                            android:layout_width="@dimen/dp_74"
+                            android:layout_height="@dimen/dp_74"
+                            android:focusable="true"
+                            android:layout_alignParentEnd="true"
+                            android:layout_centerVertical="true"
+                            android:layout_marginEnd="@dimen/dp_24"
+                            android:src="@drawable/img_favorite_more" />
+                    </com.fy.navi.ui.view.SkinRelativeLayout>
+
+                    <com.fy.navi.ui.view.SkinCheckBox
+                        android:id="@+id/switch_favorite"
+                        clickCommand="@{ViewModel.mShowHomeCompanyDisplayed}"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:focusable="true"
+                        android:layout_marginTop="@dimen/dp_40"
+                        android:background="@android:color/transparent"
+                        android:button="@drawable/setting_custom_thumb"
+                        android:checked="@{ViewModel.mIsHomeCompanyDisplayed}"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/rl_favorite_home" />
 
                     <com.fy.navi.ui.view.SkinTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/favorite_tip"
+                        android:layout_marginStart="@dimen/dp_32"
+                        android:focusable="false"
+                        android:text="@string/favorite_favorite_switch"
                         android:textColor="@color/color_black_70"
-                        android:textSize="@dimen/sp_38"/>
+                        android:textSize="@dimen/sp_38"
+                        app:layout_constraintStart_toEndOf="@+id/switch_favorite"
+                        app:layout_constraintTop_toTopOf="@+id/switch_favorite"
+                        app:layout_constraintBottom_toBottomOf="@+id/switch_favorite"/>
 
+                    <!--常去地址-->
                     <com.fy.navi.ui.view.SkinTextView
+                        android:id="@+id/favorite_frequent_address"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/dp_40"
+                        android:text="@string/favorite_frequent_address"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/sp_46"
+                        android:focusable="false"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/switch_favorite" />
+
+                    <com.fy.navi.ui.view.SkinGridLayout
+                        android:id="@+id/frequent_address_container"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/dp_20"
+                        android:columnCount="2"
+                        android:rowCount="2"
+                        android:useDefaultMargins="true"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/favorite_frequent_address" />
+                    <!--常去地址列表-->
+                    <com.fy.navi.ui.view.SkinRecyclerView
+                        android:id="@+id/rv_frequent_address_list"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginTop="@dimen/dp_20"
+                        android:visibility="gone"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/favorite_frequent_address" />
+
+                    <!--收藏夹-->
+                    <com.fy.navi.ui.view.SkinTextView
+                        android:id="@+id/tv_favorite_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/dp_80"
+                        android:text="@string/favorite_title"
+                        android:textColor="@color/black"
+                        android:focusable="false"
+                        android:textSize="@dimen/sp_46"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/frequent_address_container" />
+
+                    <com.fy.navi.ui.view.SkinLinearLayout
                         clickCommand="@{ViewModel.mAddFavorite}"
-                        android:layout_width="@dimen/dp_340"
-                        android:layout_height="@dimen/dp_96"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:focusable="true"
+                        android:visibility="@{ViewModel.mAddVisibility ? View.VISIBLE : View.GONE}"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="@+id/tv_favorite_title">
+
+                        <com.fy.navi.ui.view.SkinImageView
+                            android:layout_width="@dimen/dp_54"
+                            android:layout_height="@dimen/dp_54"
+                            android:layout_gravity="center"
+                            android:focusable="false"
+                            android:src="@drawable/img_favorite_add" />
+
+                        <com.fy.navi.ui.view.SkinTextView
+                            android:id="@+id/item_favorite_add"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/dp_8"
+                            android:focusable="false"
+                            android:gravity="center"
+                            android:text="@string/favorite_add"
+                            android:textColor="@color/setting_text_preference"
+                            android:textSize="@dimen/sp_38" />
+                    </com.fy.navi.ui.view.SkinLinearLayout>
+
+                    <com.fy.navi.ui.view.SkinLinearLayout
+                        android:id="@+id/tv_favorite_switch"
+                        android:layout_width="@dimen/dp_744"
+                        android:layout_height="@dimen/dp_120"
+                        android:layout_marginTop="@dimen/dp_40"
+                        android:background="@drawable/bg_setting_checkbox"
+                        android:gravity="center_horizontal"
+                        android:orientation="horizontal"
+                        android:focusable="false"
+                        android:visibility="@{ViewModel.mIsEVCar ? View.VISIBLE : View.GONE}"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/tv_favorite_title">
+
+                        <com.fy.navi.ui.view.SkinRadioGroup
+                            android:id="@+id/navi_broadcast"
+                            android:layout_width="match_parent"
+                            android:layout_height="fill_parent"
+                            android:gravity="center_horizontal"
+                            android:focusable="false"
+                            android:orientation="horizontal">
+
+                            <com.fy.navi.ui.view.SkinRadioButton
+                                android:id="@+id/navi_broadcast_standard"
+                                clickCommand="@{ViewModel.mFavoriteInfoClick}"
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1"
+                                android:focusable="true"
+                                android:background="@drawable/bg_setting_checkbox_selector"
+                                android:button="@null"
+                                android:checked="true"
+                                android:gravity="center"
+                                android:text="@string/favorite_switch_common"
+                                android:textColor="@color/white"
+                                android:textSize="@dimen/sp_46" />
+
+                            <com.fy.navi.ui.view.SkinRadioButton
+                                android:id="@+id/navi_broadcast_large"
+                                clickCommand="@{ViewModel.mChargingInfoClick}"
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:focusable="true"
+                                android:layout_weight="1"
+                                android:background="@drawable/bg_setting_checkbox_selector"
+                                android:button="@null"
+                                android:gravity="center"
+                                android:text="@string/favorite_switch_charge"
+                                android:textColor="@color/color_black_70"
+                                android:textSize="@dimen/sp_46" />
+                        </com.fy.navi.ui.view.SkinRadioGroup>
+
+                    </com.fy.navi.ui.view.SkinLinearLayout>
+
+                    <!--收藏列表-->
+                    <com.fy.navi.ui.view.SkinRecyclerView
+                        android:id="@+id/rv_favorite_list"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginTop="@dimen/dp_24"
+                        android:layout_marginBottom="@dimen/dp_120"
+                        android:visibility="@{ViewModel.mDataVisibility ? View.VISIBLE : View.GONE}"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/tv_favorite_switch" />
+
+                    <!--无收藏数据提示-->
+                    <com.fy.navi.ui.view.SkinLinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/dp_194"
                         android:gravity="center"
-                        android:text="@string/favorite_add"
-                        android:textSize="@dimen/sp_38"
-                        android:textColor="@color/white"
-                        android:layout_marginTop="@dimen/dp_28"
-                        android:background="@drawable/bg_setting_preference_select"/>
-                </com.fy.navi.ui.view.SkinLinearLayout>
+                        android:focusable="false"
+                        android:orientation="vertical"
+                        android:visibility="@{ViewModel.mTipVisibility ? View.VISIBLE : View.GONE}"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/tv_favorite_title">
 
-                <com.fy.navi.ui.view.SkinLinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:gravity="center"
-                    android:visibility="@{ViewModel.mChargingVisibility ? View.VISIBLE : View.GONE}"
-                    android:layout_marginTop="@dimen/dp_180"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/tv_favorite_title"  >
+                        <com.fy.navi.ui.view.SkinTextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:focusable="false"
+                            android:text="@string/favorite_tip"
+                            android:textColor="@color/color_black_70"
+                            android:textSize="@dimen/sp_38" />
 
-                    <com.fy.navi.ui.view.SkinTextView
+                        <com.fy.navi.ui.view.SkinTextView
+                            clickCommand="@{ViewModel.mAddFavorite}"
+                            android:layout_width="@dimen/dp_340"
+                            android:layout_height="@dimen/dp_96"
+                            android:layout_marginTop="@dimen/dp_28"
+                            android:focusable="true"
+                            android:background="@drawable/bg_setting_preference_select"
+                            android:gravity="center"
+                            android:text="@string/favorite_add"
+                            android:textColor="@color/white"
+                            android:textSize="@dimen/sp_38" />
+                    </com.fy.navi.ui.view.SkinLinearLayout>
+
+                    <com.fy.navi.ui.view.SkinLinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/favorite_no_charging"
-                        android:textColor="@color/color_black_70"
-                        android:textSize="@dimen/sp_38"
-                        android:layout_marginTop="@dimen/dp_20" />
-
-                    <com.fy.navi.ui.view.SkinTextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/favorite_no_charging_tip"
-                        android:textColor="@color/color_black_70"
-                        android:textSize="@dimen/sp_38"
-                        android:layout_marginTop="@dimen/dp_10" />
-
-                    <com.fy.navi.ui.view.SkinTextView
-                        android:layout_width="@dimen/dp_340"
-                        android:layout_height="@dimen/dp_96"
+                        android:layout_marginTop="@dimen/dp_180"
                         android:gravity="center"
-                        android:text="@string/account_login"
-                        android:textSize="@dimen/sp_38"
-                        android:textColor="@color/white"
-                        android:layout_marginTop="@dimen/dp_30"
-                        android:background="@drawable/bg_setting_preference_select"/>
-                </com.fy.navi.ui.view.SkinLinearLayout>
+                        android:focusable="false"
+                        android:orientation="vertical"
+                        android:visibility="@{ViewModel.mChargingVisibility ? View.VISIBLE : View.GONE}"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/tv_favorite_title">
 
-                <com.fy.navi.ui.view.SkinLinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:gravity="center"
-                    android:visibility="@{ViewModel.mChargingNoDataVisibility ? View.VISIBLE : View.GONE}"
-                    android:layout_marginTop="@dimen/dp_250"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/tv_favorite_title"  >
+                        <com.fy.navi.ui.view.SkinTextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/dp_20"
+                            android:focusable="false"
+                            android:text="@string/favorite_no_charging"
+                            android:textColor="@color/color_black_70"
+                            android:textSize="@dimen/sp_38" />
 
-                    <com.fy.navi.ui.view.SkinTextView
+                        <com.fy.navi.ui.view.SkinTextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/dp_10"
+                            android:focusable="false"
+                            android:text="@string/favorite_no_charging_tip"
+                            android:textColor="@color/color_black_70"
+                            android:textSize="@dimen/sp_38" />
+
+                        <com.fy.navi.ui.view.SkinTextView
+                            android:layout_width="@dimen/dp_340"
+                            android:layout_height="@dimen/dp_96"
+                            android:layout_marginTop="@dimen/dp_30"
+                            android:focusable="true"
+                            android:background="@drawable/bg_setting_preference_select"
+                            android:gravity="center"
+                            android:text="@string/account_login"
+                            android:textColor="@color/white"
+                            android:textSize="@dimen/sp_38" />
+                    </com.fy.navi.ui.view.SkinLinearLayout>
+
+                    <com.fy.navi.ui.view.SkinLinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/favorite_no_charging_data"
-                        android:textColor="@color/color_black_70"
-                        android:layout_marginBottom="@dimen/dp_200"
-                        android:textSize="@dimen/sp_38"/>
-                </com.fy.navi.ui.view.SkinLinearLayout>
-
-                <com.fy.navi.ui.view.SkinLinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:gravity="center"
-                    android:visibility="@{ViewModel.mChargingRequestFailedVisibility ? View.VISIBLE : View.GONE}"
-                    android:layout_marginTop="@dimen/dp_180"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/tv_favorite_title"  >
-
-                    <com.fy.navi.ui.view.SkinTextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/favorite_charging_request_fail"
-                        android:textColor="@color/color_black_70"
-                        android:textSize="@dimen/sp_38"/>
-
-
-                    <com.fy.navi.ui.view.SkinTextView
-                        android:layout_width="@dimen/dp_340"
-                        android:layout_height="@dimen/dp_96"
+                        android:layout_marginTop="@dimen/dp_250"
+                        android:focusable="false"
                         android:gravity="center"
-                        android:text="@string/route_refresh"
-                        android:textSize="@dimen/sp_38"
-                        android:textColor="@color/white"
-                        android:layout_marginTop="@dimen/dp_28"
-                        android:background="@drawable/bg_setting_preference_select"/>
-                </com.fy.navi.ui.view.SkinLinearLayout>
+                        android:orientation="vertical"
+                        android:visibility="@{ViewModel.mChargingNoDataVisibility ? View.VISIBLE : View.GONE}"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/tv_favorite_title">
 
-                <com.fy.navi.ui.view.SkinLinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:gravity="center"
-                    android:visibility="@{ViewModel.mChargingOfflineVisibility ? View.VISIBLE : View.GONE}"
-                    android:layout_marginTop="@dimen/dp_250"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/tv_favorite_title"  >
+                        <com.fy.navi.ui.view.SkinTextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/dp_200"
+                            android:focusable="false"
+                            android:text="@string/favorite_no_charging_data"
+                            android:textColor="@color/color_black_70"
+                            android:textSize="@dimen/sp_38" />
+                    </com.fy.navi.ui.view.SkinLinearLayout>
 
-                    <com.fy.navi.ui.view.SkinTextView
+                    <com.fy.navi.ui.view.SkinLinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/favorite_charging_offline"
-                        android:textColor="@color/color_black_70"
-                        android:textSize="@dimen/sp_30"
-                        android:layout_marginBottom="@dimen/dp_200"/>
-                </com.fy.navi.ui.view.SkinLinearLayout>
+                        android:layout_marginTop="@dimen/dp_180"
+                        android:focusable="false"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        android:visibility="@{ViewModel.mChargingRequestFailedVisibility ? View.VISIBLE : View.GONE}"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/tv_favorite_title">
 
-            </com.fy.navi.ui.view.SkinConstraintLayout>
+                        <com.fy.navi.ui.view.SkinTextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:focusable="false"
+                            android:text="@string/favorite_charging_request_fail"
+                            android:textColor="@color/color_black_70"
+                            android:textSize="@dimen/sp_38" />
 
+
+                        <com.fy.navi.ui.view.SkinTextView
+                            android:layout_width="@dimen/dp_340"
+                            android:layout_height="@dimen/dp_96"
+                            android:layout_marginTop="@dimen/dp_28"
+                            android:background="@drawable/bg_setting_preference_select"
+                            android:focusable="true"
+                            android:gravity="center"
+                            android:text="@string/route_refresh"
+                            android:textColor="@color/white"
+                            android:textSize="@dimen/sp_38" />
+                    </com.fy.navi.ui.view.SkinLinearLayout>
+
+                    <com.fy.navi.ui.view.SkinLinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/dp_250"
+                        android:gravity="center"
+                        android:focusable="false"
+                        android:orientation="vertical"
+                        android:visibility="@{ViewModel.mChargingOfflineVisibility ? View.VISIBLE : View.GONE}"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/tv_favorite_title">
+
+                        <com.fy.navi.ui.view.SkinTextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/dp_200"
+                            android:focusable="false"
+                            android:text="@string/favorite_charging_offline"
+                            android:textColor="@color/color_black_70"
+                            android:textSize="@dimen/sp_30" />
+                    </com.fy.navi.ui.view.SkinLinearLayout>
+
+                </com.fy.navi.ui.view.SkinConstraintLayout>
+            </com.android.car.ui.FocusArea>
         </com.fy.navi.ui.view.SkinScrollView>
 
-        <com.fy.navi.ui.view.SkinConstraintLayout
-            android:id="@+id/layout_top"
-            android:layout_width="@dimen/dp_432"
-            android:layout_height="@dimen/dp_120"
-            android:orientation="horizontal"
-            android:layout_gravity="center"
-            android:visibility="gone"
-            android:layout_marginEnd="@dimen/dp_40"
-            android:background="@drawable/bg_setting_top"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent">
+        <com.android.car.ui.FocusArea
+            android:id="@+id/focus_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:nudgeDown="@+id/focus_content"
+            app:nudgeUp="@+id/focus_content">
 
-            <com.fy.navi.ui.view.SkinImageView
-                android:layout_width="@dimen/dp_74"
-                android:layout_height="@dimen/dp_74"
-                android:src="@drawable/img_favorite_top"
-                android:layout_marginStart="@dimen/dp_80"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"/>
+            <com.fy.navi.ui.view.SkinConstraintLayout
+                android:id="@+id/layout_top"
+                android:layout_width="@dimen/dp_432"
+                android:layout_height="@dimen/dp_120"
+                android:layout_gravity="center"
+                android:layout_marginEnd="@dimen/dp_40"
+                android:background="@drawable/bg_setting_top"
+                android:orientation="horizontal"
+                android:visibility="gone"
+                android:focusable="true"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent">
 
-            <com.fy.navi.ui.view.SkinTextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/favorite_top"
-                android:layout_marginStart="@dimen/dp_168"
-                android:textColor="@color/setting_text_preference"
-                android:textSize="@dimen/sp_46"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"/>
-        </com.fy.navi.ui.view.SkinConstraintLayout>
+                <com.fy.navi.ui.view.SkinImageView
+                    android:layout_width="@dimen/dp_74"
+                    android:layout_height="@dimen/dp_74"
+                    android:layout_marginStart="@dimen/dp_80"
+                    android:focusable="false"
+                    android:src="@drawable/img_favorite_top"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
+                <com.fy.navi.ui.view.SkinTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dp_168"
+                    android:text="@string/favorite_top"
+                    android:focusable="false"
+                    android:textColor="@color/setting_text_preference"
+                    android:textSize="@dimen/sp_46"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </com.fy.navi.ui.view.SkinConstraintLayout>
+        </com.android.car.ui.FocusArea>
     </com.fy.navi.ui.view.SkinConstraintLayout>
 
 </layout>

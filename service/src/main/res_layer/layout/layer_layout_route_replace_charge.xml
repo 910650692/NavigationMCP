@@ -2,7 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:background="@drawable/layer_image_search_replace_charge_bg"
+    android:background="@mipmap/layer_image_search_replace_charge_bg"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
 
@@ -13,7 +13,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         tools:text="123"
         android:gravity="center"
-        android:textColor="@color/white"
+        android:textColor="@color/layer_color_white"
         android:background="@drawable/layer_image_route_via_charge_position_bg"
         android:textSize="@dimen/sp_32"
         android:layout_width="wrap_content"
@@ -21,7 +21,7 @@
 
     <LinearLayout
         android:id="@+id/search_replace_charge_whole_linear"
-        android:visibility="gone"
+        android:visibility="visible"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
@@ -32,7 +32,7 @@
 
         <LinearLayout
             android:id="@+id/search_replace_charge_count_linear"
-            android:visibility="gone"
+            android:visibility="visible"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal">

@@ -251,8 +251,14 @@ public class SceneSearchPoiListImpl extends BaseSceneModel<SceneSearchPoiList> i
         mSearchPackage.clearLabelMark();
     }
 
+    // 动力类型
     public int powerType(){
         return mCalibrationPackage.powerType();
+    }
+
+    // 查询自营站列表
+    public int queryStationNewResult(){
+        return mSearchPackage.queryStationNewResult();
     }
 
 }

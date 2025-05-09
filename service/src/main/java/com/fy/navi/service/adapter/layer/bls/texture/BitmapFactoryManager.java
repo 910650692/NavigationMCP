@@ -118,7 +118,7 @@ public final class BitmapFactoryManager {
                 if (null != rootView) {
                     Logger.d(TAG, "通过 布局 创建纹理； 如果存在同名布局和图片 会采用布局 ：" + markerRes);
                     if (processor != null) {
-                        Logger.d(TAG, "获取布局处理工具自定义布局样式 ：" + markerRes);
+                        Logger.d(TAG, "获取布局处理工具自定义布局样式 ：" + markerRes + " isFocus " + isFocus);
                         if (isFocus) {
                             processor.onFocusProcess(rootView, data);
                         } else {

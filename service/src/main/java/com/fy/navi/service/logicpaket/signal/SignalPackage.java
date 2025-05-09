@@ -35,7 +35,7 @@ public final class SignalPackage implements SignalAdapterCallback {
      * @param context
      */
     public void init(final Context context) {
-        mSignalAdapter.initSignal(context);
+        ThreadManager.getInstance().postUi(() -> mSignalAdapter.initSignal(context));
         mSignalAdapter.registerCallback(TAG, this);
     }
 

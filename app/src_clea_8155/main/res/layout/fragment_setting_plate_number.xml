@@ -163,7 +163,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:visibility="gone"
-                app:isDefault="true"
+                app:rowWidth="@dimen/dp_136"
+                app:rowHeight="@dimen/dp_76"
+                app:provinceTextSize="30"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -172,13 +174,17 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:visibility="gone"
-                app:isDefaultCar="true"
+                app:numberRowHeight="@dimen/dp_76"
+                app:numberRowWidth="@dimen/dp_107"
+                app:thirdRowWidth="@dimen/dp_120"
+                app:lastRowWidth="@dimen/dp_136"
+                app:textSize="30"
+                app:insertWidth="40"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
         </com.fy.navi.ui.view.SkinConstraintLayout>
 
     </com.fy.navi.ui.view.SkinConstraintLayout>
-
 
 </layout>

@@ -60,6 +60,11 @@ public class PoiInfoEntity implements Parcelable {
     private int mSortPrice;      // 价格，语音使用
 
     //-----------
+
+    // -------- SGM接口使用--------
+    private String mOperatorId;
+    private String mStationId;
+    // --------------
     private CityInfo mCityInfo;
     // 收藏相关
     private FavoriteInfo mFavoriteInfo;
@@ -575,6 +580,24 @@ public class PoiInfoEntity implements Parcelable {
         return this;
     }
 
+    public String getOperatorId() {
+        return mOperatorId;
+    }
+
+    public PoiInfoEntity setOperatorId(String mOperatorId) {
+        this.mOperatorId = mOperatorId;
+        return this;
+    }
+
+    public String getStationId() {
+        return mStationId;
+    }
+
+    public PoiInfoEntity setStationId(String stationId) {
+        this.mStationId = stationId;
+        return this;
+    }
+
     protected PoiInfoEntity(final Parcel in) {
         mPoiType = in.readInt();
         mPid = in.readString();
@@ -602,6 +625,8 @@ public class PoiInfoEntity implements Parcelable {
         mSortDistance = in.readInt();
         mSortRate = in.readInt();
         mSortPrice = in.readInt();
+        mStationId = in.readString();
+        mOperatorId = in.readString();
         mCityInfo = in.readParcelable(CityInfo.class.getClassLoader());
         mFavoriteInfo = in.readParcelable(FavoriteInfo.class.getClassLoader());
         mRetainParam = in.readParcelable(SearchRetainParamInfo.class.getClassLoader());
@@ -679,6 +704,8 @@ public class PoiInfoEntity implements Parcelable {
         parcel.writeParcelable(mPoint, i);
         parcel.writeString(mPointTypeCode);
         parcel.writeString(mIndustry);
+        parcel.writeString(mOperatorId);
+        parcel.writeString(mStationId);
         parcel.writeInt(mSortDistance);
         parcel.writeInt(mSortRate);
         parcel.writeInt(mSortPrice);

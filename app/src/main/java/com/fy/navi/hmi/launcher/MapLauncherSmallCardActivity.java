@@ -4,8 +4,12 @@ import com.android.utils.log.Logger;
 import com.fy.navi.hmi.BR;
 import com.fy.navi.hmi.R;
 import com.fy.navi.hmi.databinding.ActivityLauncherSmallCardBinding;
+import com.fy.navi.service.define.cruise.CruiseInfoEntity;
 import com.fy.navi.service.define.map.IBaseScreenMapView;
 import com.fy.navi.service.define.map.MapType;
+import com.fy.navi.service.define.navi.LaneInfoEntity;
+import com.fy.navi.service.define.navi.NaviEtaInfo;
+import com.fy.navi.service.define.navi.NaviTmcInfo;
 import com.fy.navi.ui.base.BaseActivity;
 
 /**
@@ -33,7 +37,7 @@ public class MapLauncherSmallCardActivity extends BaseActivity<ActivityLauncherS
 
     @Override
     public void onInitView() {
-
+        mBinding.naviBottom.setViewModel(mViewModel);
     }
 
     @Override
@@ -41,7 +45,37 @@ public class MapLauncherSmallCardActivity extends BaseActivity<ActivityLauncherS
         Logger.i(TAG, "onInitData");
     }
 
-    public IBaseScreenMapView getMapView(){
+    public IBaseScreenMapView getMapView() {
         return mBinding.mapScreenView;
+    }
+
+    public void onNaviInfo(NaviEtaInfo naviEtaInfo) {
+        mBinding.sceneNaviEta.onNaviInfo(naviEtaInfo);
+        mBinding.sceneNaviTmc.onNaviInfo(naviEtaInfo);
+        mBinding.sceneNaviTbt.onNaviInfo(naviEtaInfo);
+    }
+
+    public void onUpdateTMCLightBar(NaviTmcInfo naviTmcInfo) {
+        mBinding.sceneNaviTmc.onUpdateTMCLightBar(naviTmcInfo);
+    }
+
+    public void updateRouteName(String routeName) {
+//        mBinding.stvNaviRouteName.setText(routeName);
+    }
+
+    public void updateCruiseCameraInfo(CruiseInfoEntity cruiseInfoEntity) {
+        if (cruiseInfoEntity == null) return;
+        // cruiseInfoEntity.distance 单位是米，需求：数字最多3位(不含小数点)， 如999米， 12.5公里
+        if (cruiseInfoEntity.distance >= 1000) {
+            mBinding.cruiseLayout.tvDistance.setText(String.format(getString(R.string.format_one_point_num), cruiseInfoEntity.distance / 1000f));
+            mBinding.cruiseLayout.tvDesc.setText(R.string.kilometer);
+        } else {
+            mBinding.cruiseLayout.tvDistance.setText(String.valueOf(cruiseInfoEntity.distance));
+            mBinding.cruiseLayout.tvDesc.setText(R.string.meter);
+        }
+    }
+
+    public void updateCruiseLanInfo(final boolean isShowLane, LaneInfoEntity laneInfoEntity) {
+        mBinding.cruiseLayout.sceneLanesView.onLaneInfo(isShowLane, laneInfoEntity);
     }
 }

@@ -430,9 +430,6 @@ public class FavoriteFragment extends BaseFragment<FragmentFavoriteBinding, Favo
         mFavoriteList = list;
         Logger.i(TAG, "setFavoriteData -> " + GsonUtils.toJson(mFavoriteList));
         mFavoriteDataAdapter.setData(mFavoriteList);
-        final ViewGroup.LayoutParams params = mBinding.rvFavoriteList.getLayoutParams();
-        params.height = ResourceUtils.Companion.getInstance().getDimensionPixelSize(com.fy.navi.ui.R.dimen.dp_150) * mFavoriteList.size();
-        mBinding.rvFavoriteList.setLayoutParams(params);
     }
 
     /**

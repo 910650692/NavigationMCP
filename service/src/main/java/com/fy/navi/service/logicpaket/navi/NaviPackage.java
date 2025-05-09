@@ -93,13 +93,6 @@ public final class NaviPackage implements GuidanceObserver {
 
     private NaviPackage() {
         mGuidanceObservers = new Hashtable<>();
-        mSpeechAdapter = SpeechAdapter.getInstance();
-        mNaviAdapter = NaviAdapter.getInstance();
-        mNavistatusAdapter = NavistatusAdapter.getInstance();
-        mLayerAdapter = LayerAdapter.getInstance();
-        mRouteAdapter = RouteAdapter.getInstance();
-        mSettingAdapter = SettingAdapter.getInstance();
-        mUserTrackAdapter = UserTrackAdapter.getInstance();
         mManager = HistoryManager.getInstance();
         mManager.init();
         addIsInForegroundCallback();
@@ -109,6 +102,13 @@ public final class NaviPackage implements GuidanceObserver {
      * init引导服务
      */
     public void initNaviService() {
+        mSpeechAdapter = SpeechAdapter.getInstance();
+        mNaviAdapter = NaviAdapter.getInstance();
+        mNavistatusAdapter = NavistatusAdapter.getInstance();
+        mLayerAdapter = LayerAdapter.getInstance();
+        mRouteAdapter = RouteAdapter.getInstance();
+        mSettingAdapter = SettingAdapter.getInstance();
+        mUserTrackAdapter = UserTrackAdapter.getInstance();
         mNaviAdapter.initNaviService();
         mNaviAdapter.registerObserver("NaviPackage", this);
     }

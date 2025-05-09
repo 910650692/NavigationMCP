@@ -39,24 +39,21 @@ import java.util.List;
 
 final public class BehaviorPackage implements BehaviorAdapterCallBack {
     public static final String TAG = BehaviorPackage.class.getName();
-    private final BehaviorAdapter mBehaviorAdapter;
+    private BehaviorAdapter mBehaviorAdapter;
     private final List<BehaviorCallBack> mCallBacks = new ArrayList<>();
     private final FavoriteManager mManager;
     private final CommonManager mCommonManager;
-    private final MapAdapter mapAdapter;
-    private final LayerAdapter mLayerAdapter;
+    private MapAdapter mapAdapter;
+    private LayerAdapter mLayerAdapter;
     private final List<FavoriteStatusCallback> mFavoriteStatusCallbacks = new ArrayList<>();
     private final SettingManager mSettingManager;
     private boolean mIsFavoriteDataUpdated = true;      //设置开关关闭时是否有收藏信息变更；
 
     private BehaviorPackage() {
-        mBehaviorAdapter = BehaviorAdapter.getInstance();
         mManager = FavoriteManager.getInstance();
         mManager.init();
         mCommonManager = CommonManager.getInstance();
         mCommonManager.init();
-        mapAdapter = MapAdapter.getInstance();
-        mLayerAdapter = LayerAdapter.getInstance();
         mSettingManager = new SettingManager();
         mSettingManager.init();
     }
@@ -65,6 +62,9 @@ final public class BehaviorPackage implements BehaviorAdapterCallBack {
      * initBehaviorService
      */
     public void initBehaviorService() {
+        mBehaviorAdapter = BehaviorAdapter.getInstance();
+        mapAdapter = MapAdapter.getInstance();
+        mLayerAdapter = LayerAdapter.getInstance();
         mBehaviorAdapter.initBehaviorService();
         mBehaviorAdapter.registerCallBack("BehaviorPackage", this);
     }

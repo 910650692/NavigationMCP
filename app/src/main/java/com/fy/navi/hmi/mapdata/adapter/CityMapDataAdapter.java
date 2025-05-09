@@ -133,6 +133,7 @@ public class CityMapDataAdapter extends RecyclerView.Adapter<CityMapDataAdapter.
         });
 
         holder.mCityDataBinding.itemDrivingDelete.setOnClickListener(v -> {
+            holder.mCityDataBinding.swipeMenuLayout.smoothClose();
             if (mItemClickListener != null) {
                 mItemClickListener.deleteAllTask(cityAdcodes);
             }

@@ -80,7 +80,7 @@ public final class TexturePoolManager {
 
     public synchronized LayerTexture createLayerTexture(Context context, LayerItem item, ItemStyleInfo styleInfo, BaseStyleAdapter styleAdapter) {
         LayerTexture texture = new LayerTexture();
-        TextureInfo textureInfo = BitmapFactoryManager.get().createBitmap(context, styleInfo.markerId, item.getFocus(),
+        TextureInfo textureInfo = BitmapFactoryManager.get().createBitmap(context, styleInfo.markerId, (item.getFocus() || styleInfo.markerGroup.equals("focus_style")),
                 styleAdapter.provideUpdateBitmapViewProcessor(item), styleAdapter.provideLayerItemData(item));
         Bitmap bitmap = textureInfo.getBitmap();
         if (bitmap == null) {

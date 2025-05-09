@@ -27,9 +27,6 @@ import com.fy.navi.service.define.navi.NaviEtaInfo;
  */
 public class SceneNaviViaInfoView extends NaviSceneBase<SceneNaviViaInfoViewBinding, SceneNaviViaInfoImpl> {
     private static final String TAG = MapDefaultFinalTag.NAVI_HMI_TAG;
-    public static final int ONLY_NAME = 0;
-    public static final int WITH_ARRIVED_TAG = 1;
-    public static final int WITH_COUNT_TAG = 2;
 
     public SceneNaviViaInfoView(@NonNull final Context context) {
         super(context);
@@ -97,7 +94,7 @@ public class SceneNaviViaInfoView extends NaviSceneBase<SceneNaviViaInfoViewBind
         Logger.i(TAG, "onArriveVia: " + str);
         mViewBinding.stvWay.setText(str);
         mViewBinding.stvWayArrive.setVisibility(VISIBLE);
-        mViewBinding.stvViaCount.setVisibility(INVISIBLE);
+        mViewBinding.stvViaCount.setVisibility(GONE);
     }
 
     /**
@@ -107,14 +104,14 @@ public class SceneNaviViaInfoView extends NaviSceneBase<SceneNaviViaInfoViewBind
      */
     public void updateViaInfo(final String viaName, final int totalSize) {
         Logger.i(TAG, "updateViaInfo: " + viaName);
-        mViewBinding.stvWayArrive.setVisibility(INVISIBLE);
+        mViewBinding.stvWayArrive.setVisibility(GONE);
         mViewBinding.stvWay.setText(viaName);
         if (totalSize > 1) {
             mViewBinding.stvViaCount.setVisibility(VISIBLE);
             mViewBinding.stvViaCount.setText(String.format(getResources().
                     getString(R.string.navi_via_count), totalSize));
         } else {
-            mViewBinding.stvViaCount.setVisibility(INVISIBLE);
+            mViewBinding.stvViaCount.setVisibility(GONE);
         }
     }
 

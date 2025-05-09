@@ -548,6 +548,68 @@ public class SearchAdapterImpl extends SearchServiceV2Manager implements ISearch
                     Logger.d("huangli","Exce: "+apiException);
                 }
             });
+        String json = "{\n" +
+                "\"total\": 514, \"from\": 1,\n" +
+                "\"size\": 2,\n" +
+                "\"resultList\": [\n" +
+                "{\n" +
+                "\"parkFee\": \"限时：1.5；超出标准：每半小时4月\", \"stationType\": 1,\n" +
+                "\"siteGuide\": \"\",\n" +
+                "\"serviceTel\": \"4008280768\",\n" +
+                "\"countryCode\": \"CN\", \"stationStatus\": 50,\n" +
+                "\"construction\": 255,\n" +
+                "\"stationName\": \"中建大厦星星充电站\", \"payment\": \"\",\n" +
+                "\"operatorId\": \"313744932\", \"stationId\": \"33221517\",\n" +
+                "\"address\": \"上海市浦东新区世纪大道1568号地下一层\", \"stationTel\": \"4008280768\",\n" +
+                "\"busineHours\": \"00:00-15:00\", \n" +
+                "\"stationLat\": 31.641289,\n" +
+                "\"stationLng\": 119.927441,\n" +
+                "\"parkInfo\": \"\",\n" +
+                "\"distance\": 0.057521118924291674,\n" +
+                "\"statStatus\": \"对外开放\", \n" +
+                "\"areaCode\": \"310100\", \n" +
+                "\"lowPrice\": \"1.0000\",\n" +
+                "\"statType\": \"自营\",\n" +
+                "\"fastChargingFree\": 0,\n" +
+                "\"slowChargingFree\": 2,  \"fastChargingTotal\": 0,  \"slowChargingTotal\": 2, \"stationFlag\": null,\n" +
+                "\"sort\": null,\n" +
+                "\"bespeakCharge\": null, \"bespeakPark\": null,\n" +
+                "\"parkFeeFree\": \"0\",\n" +
+                "\"articleTitle\": null,\n" +
+                "\"carOwnerFlag\": null,\n" +
+                "\"operationWay\": \"2\"\n" +
+                "}, \n" +
+                "{\n" +
+                "\"parkFee\": \"限时免停2小时\", \n" +
+                "\"stationType\": 1,\n" +
+                "\"siteGuide\": \"\",\n" +
+                "\"serviceTel\": \"4008280768\",\n" +
+                "\"countryCode\": \"CN\",\n" +
+                "\"stationStatus\": 50,\n" +
+                "\"construction\": 255,\n" +
+                "\"stationName\": \"青浦区 中鼎集团\", \n" +
+                "\"payment\": \"\",\n" +
+                "\"operatorId\": \"313744932\", \"stationId\": \"331784\",\n" +
+                "\"address\": \"青浦区香花桥街道漕盈路3777号地面停车场\",\n" +
+                "\"stationTel\": \"4008280768\",\n" +
+                "\"busineHours\": \"00:00-24:00\", \"stationLat\": 31.1969,\n" +
+                "\"stationLng\": 121.092644, \"parkInfo\": \"\",\n" +
+                "\"distance\": 121.1378608457462,\n" +
+                "\"statStatus\": \"对外开放\", \"areaCode\": \"310100\",   \"lowPrice\": \"1.0000\",\n" +
+                "\"statType\": \"自营\",\n" +
+                "\"fastChargingFree\": 5,\n" +
+                "\"slowChargingFree\": 4,  \"fastChargingTotal\": 6,  \"slowChargingTotal\": 5, \"stationFlag\": null,\n" +
+                "\"sort\": null,\n" +
+                "\"bespeakCharge\": null, \"bespeakPark\": null,\n" +
+                "\"parkFeeFree\": \"0\", \"articleTitle\": null,\n" +
+                "\"carOwnerFlag\": null, \"operationWay\": \"2\"\n" +
+                "} ]\n" +
+                "}";
+        BaseRep rep = new BaseRep();
+        rep.setResultCode("0000");
+        rep.setMessage("获取成功");
+        rep.setDataSet(json);
+        notifyNetSearchSuccess(rep);
         return mTaskId.get();
     }
 
@@ -581,7 +643,7 @@ public class SearchAdapterImpl extends SearchServiceV2Manager implements ISearch
                 "    {\n" +
                 "      \"operatorId\": \"A\",\n" +
                 "      \"stationId\": \"D\",\n" +
-                "      \"stationSaved\": false,\n" +
+                "      \"stationSaved\": true,\n" +
                 "      \"stationLng\": 32.1622,\n" +
                 "      \"stationLat\": 119.5166,\n" +
                 "      \"stationName\": \" 特斯拉超级充电站\",\n" +

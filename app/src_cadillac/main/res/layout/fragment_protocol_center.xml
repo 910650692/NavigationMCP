@@ -14,7 +14,12 @@
         android:layout_width="@dimen/dp_1578"
         android:layout_height="@dimen/dp_1000"
         android:clickable="true"
+        android:focusable="false"
         android:orientation="vertical">
+
+        <com.android.car.ui.FocusParkingView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
 
         <com.fy.navi.ui.view.SkinLinearLayout
             android:id="@+id/ll_protocol_center"
@@ -22,17 +27,31 @@
             android:layout_height="match_parent"
             android:clickable="true"
             android:visibility="gone"
+            android:focusable="false"
             android:background="@drawable/bg_setting_fragment"
             android:orientation="vertical">
 
+            <com.android.car.ui.FocusArea
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
             <com.fy.navi.ui.view.SkinConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="@dimen/dp_152"
+                android:clickable="false">
+
+                <com.fy.navi.ui.view.SkinView
+                    clickCommand="@{viewModel.mProtocolCenterBack}"
+                    android:layout_width="@dimen/dp_138"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/bg_base_mfc_cadillac_bg_selector"
+                    android:clickable="true" />
 
                 <com.fy.navi.ui.view.SkinImageView
-                    clickCommand="@{viewModel.mProtocolCenterBack}"
                     android:layout_width="@dimen/dp_74"
                     android:layout_height="@dimen/dp_74"
+                    android:focusable="false"
                     android:src="@drawable/img_setting_back"
                     android:layout_marginStart="@dimen/dp_32"
                     android:layout_marginTop="@dimen/dp_48"
@@ -44,6 +63,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/setting_others_privacy_protocol_center"
                     android:textSize="@dimen/sp_46"
+                    android:focusable="false"
                     android:textColor="@color/black"
                     android:layout_marginTop="@dimen/dp_52"
                     android:layout_marginStart="@dimen/dp_697"
@@ -54,6 +74,7 @@
 
             <com.fy.navi.ui.view.SkinConstraintLayout
                 clickCommand="@{viewModel.mOpenProtocolCenterTerm}"
+                android:focusable="true"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_152">
 
@@ -62,6 +83,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/setting_others_privacy_term"
                     android:textSize="@dimen/sp_46"
+                    android:focusable="false"
                     android:textColor="@color/black"
                     android:layout_marginStart="@dimen/dp_52"
                     app:layout_constraintTop_toTopOf="parent"
@@ -71,6 +93,7 @@
                 <com.fy.navi.ui.view.SkinImageView
                     android:layout_width="@dimen/dp_54"
                     android:layout_height="@dimen/dp_54"
+                    android:focusable="false"
                     android:src="@drawable/img_right"
                     android:layout_marginEnd="@dimen/dp_52"
                     app:layout_constraintTop_toTopOf="parent"
@@ -82,6 +105,7 @@
             <com.fy.navi.ui.view.SkinView
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_2"
+                android:focusable="false"
                 android:layout_marginStart="@dimen/dp_52"
                 android:layout_marginEnd="@dimen/dp_52"
                 android:background="@color/setting_line"/>
@@ -89,6 +113,7 @@
             <com.fy.navi.ui.view.SkinConstraintLayout
                 clickCommand="@{viewModel.mOpenProtocolCenterPrivacy}"
                 android:layout_width="match_parent"
+                android:focusable="true"
                 android:layout_height="@dimen/dp_152"
                 android:layout_marginTop="@dimen/dp_24">
 
@@ -97,6 +122,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/setting_others_privacy_policy"
                     android:textSize="@dimen/sp_46"
+                    android:focusable="false"
                     android:textColor="@color/black"
                     android:layout_marginStart="@dimen/dp_52"
                     app:layout_constraintTop_toTopOf="parent"
@@ -106,6 +132,7 @@
                 <com.fy.navi.ui.view.SkinImageView
                     android:layout_width="@dimen/dp_54"
                     android:layout_height="@dimen/dp_54"
+                    android:focusable="false"
                     android:src="@drawable/img_right"
                     android:layout_marginEnd="@dimen/dp_52"
                     app:layout_constraintTop_toTopOf="parent"
@@ -117,10 +144,11 @@
             <com.fy.navi.ui.view.SkinView
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_2"
+                android:focusable="false"
                 android:layout_marginStart="@dimen/dp_52"
                 android:layout_marginEnd="@dimen/dp_52"
                 android:background="@color/setting_line"/>
-
+            </com.android.car.ui.FocusArea>
         </com.fy.navi.ui.view.SkinLinearLayout>
 
         <com.fy.navi.ui.view.SkinLinearLayout
@@ -130,19 +158,37 @@
             android:background="@drawable/bg_setting_fragment"
             android:visibility="visible"
             android:clickable="true"
+            android:focusable="false"
             android:orientation="vertical">
 
             <com.fy.navi.ui.view.SkinConstraintLayout
                 android:id="@+id/protocol_center_title_layout"
+                android:focusable="false"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="@dimen/dp_178">
+
+                <com.android.car.ui.FocusArea
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent">
+
+                    <com.fy.navi.ui.view.SkinView
+                        clickCommand="@{viewModel.mCloseProtocolCenter}"
+                        android:layout_width="@dimen/dp_80"
+                        android:layout_height="@dimen/dp_80"
+                        android:clickable="true"
+                        android:layout_marginStart="@dimen/dp_81"
+                        android:layout_marginTop="@dimen/dp_74"/>
+
+                </com.android.car.ui.FocusArea>
 
                 <com.fy.navi.ui.view.SkinImageView
-                    clickCommand="@{viewModel.mCloseProtocolCenter}"
                     android:id="@+id/protocol_center_back"
                     android:layout_width="@dimen/dp_80"
                     android:layout_height="@dimen/dp_80"
                     android:src="@drawable/img_back"
+                    android:focusable="false"
                     android:layout_marginStart="@dimen/dp_81"
                     android:layout_marginTop="@dimen/dp_74"
                     app:layout_constraintTop_toTopOf="parent"
@@ -155,10 +201,11 @@
                     android:layout_height="wrap_content"
                     android:text="@string/reminder_page_service_title"
                     android:textSize="@dimen/sp_52"
-                    android:layout_marginTop="@dimen/dp_80"
+                    android:focusable="false"
                     android:textColor="@color/color_black_90"
                     android:layout_marginStart="@dimen/dp_201"
-                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/protocol_center_back"
+                    app:layout_constraintBottom_toBottomOf="@+id/protocol_center_back"
                     app:layout_constraintStart_toStartOf="parent" />
 
             </com.fy.navi.ui.view.SkinConstraintLayout>
@@ -167,7 +214,7 @@
                 android:id="@+id/protocol_center_container"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:paddingTop="@dimen/dp_24"
+                android:focusable="false"
                 android:paddingBottom="@dimen/dp_80">
 
                 <com.fy.navi.ui.view.SkinTextView

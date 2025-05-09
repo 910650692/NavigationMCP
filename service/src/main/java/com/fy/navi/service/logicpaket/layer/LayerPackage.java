@@ -34,6 +34,10 @@ public class LayerPackage implements ILayerAdapterCallBack {
 
     private final Hashtable<MapType, List<ILayerPackageCallBack>> callbacks = new Hashtable<>();
 
+    public void clearRouteLine(MapType mapType) {
+        mLayerAdapter.clearRouteLine(mapType);
+    }
+
     private static final class Helper {
         private static final LayerPackage lPackage = new LayerPackage();
     }

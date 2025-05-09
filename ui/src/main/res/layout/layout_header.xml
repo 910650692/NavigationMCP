@@ -30,7 +30,7 @@
         android:layout_centerInParent="true"
         android:layout_gravity="center"
         android:text="@string/st_pull_down_refresh"
-        android:textColor="@color/default_select_text_off"
+        android:textColor="@color/dialog_buick_title_color"
         android:textSize="@dimen/sp_20" />
 
 </com.fy.navi.ui.view.SkinRelativeLayout>

@@ -149,4 +149,8 @@ public class SearchResultFragment extends BaseFragment<FragmentSearchResultBindi
         super.onDestroy();
         mBinding.scenePoiList.clear();
     }
+
+    public void notifySearchResultByNet(final SearchResultEntity searchResultEntity){
+        mBinding.scenePoiList.notifySearchResult(mTaskId, searchResultEntity);
+    }
 }

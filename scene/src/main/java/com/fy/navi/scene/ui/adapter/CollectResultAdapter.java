@@ -107,6 +107,12 @@ public class CollectResultAdapter extends RecyclerView.Adapter<CollectResultAdap
             holder.mResultItemBinding.stvTop.setText(ResourceUtils.Companion.getInstance().getString(R.string.favorite_item_top));
             holder.mResultItemBinding.imgTop.setImageResource(R.drawable.img_top_pinned);
         }
+        // 专属充电站无需置顶
+        if(!ConvertUtils.isEmpty(mPoiEntities.get(position).getOperatorId())){
+            holder.mResultItemBinding.sllTop.setVisibility(View.INVISIBLE);
+        }else{
+            holder.mResultItemBinding.sllTop.setVisibility(View.VISIBLE);
+        }
         //根据UE，收藏点不需要显示距离数据
         holder.mResultItemBinding.itemFavoriteDistance.setVisibility(View.GONE);
         holder.mResultItemBinding.itemFavoriteLine.setVisibility(View.GONE);
@@ -129,8 +135,7 @@ public class CollectResultAdapter extends RecyclerView.Adapter<CollectResultAdap
         }
 
         holder.mResultItemBinding.crlPoiDes.setOnClickListener(v -> {
-            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "poi click 详情" + mPoiEntities.get(position).getPid()
-                    + " itemId: " + mPoiEntities.get(position).getFavoriteInfo().getItemId());
+            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "poi click 详情" + mPoiEntities.get(position).getPid());
             final String input = mPoiEntities.get(position).getPid();
             if (!ConvertUtils.isEmpty(input) && input.contains(".")) {
                 // 找到第二个小数点的位置

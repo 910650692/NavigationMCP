@@ -10,6 +10,7 @@ import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
 import com.fy.navi.service.AutoMapConstant;
 import com.fy.navi.service.MapDefaultFinalTag;
+import com.fy.navi.service.adapter.search.cloudByPatac.rep.BaseRep;
 import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.map.MapTypeManager;
 import com.fy.navi.service.define.search.PoiInfoEntity;
@@ -61,6 +62,7 @@ public class SearchResultModel extends BaseModel<SearchResultViewModel> implemen
 
     @Override
     public void onSearchResult(final int taskId, final int errorCode, final String message, final SearchResultEntity searchResultEntity) {
+        Logger.d("huangli: ","CurrentCallbackId: "+mSearchPackage.getCurrentCallbackId());
         if (mCallbackId.equals(mSearchPackage.getCurrentCallbackId())) {
             if (searchResultEntity.getSearchType() == AutoMapConstant.SearchType.POI_SEARCH
                     || searchResultEntity.getSearchType() == AutoMapConstant.SearchType.GEO_SEARCH) {
@@ -158,5 +160,12 @@ public class SearchResultModel extends BaseModel<SearchResultViewModel> implemen
             mapTypeId = MapType.MAIN_SCREEN_MAIN_MAP;
         }
         return mapTypeId;
+    }
+
+    @Override
+    public void onNetSearchResult(BaseRep result) {
+        if (mCallbackId.equals(mSearchPackage.getCurrentCallbackId())) {
+            mViewModel.notifyNetSearchResult(result);
+        }
     }
 }

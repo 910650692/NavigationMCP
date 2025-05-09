@@ -539,6 +539,8 @@ public class LayerSearchImpl extends BaseLayerImpl<LayerSearchStyleAdapter> {
             return false;
         }
         getLayerSearchControl().setVisible(BizSearchType.BizSearchTypePoiParkRoute, true);
+        //开启碰撞
+        getLayerSearchControl().getSearchLayer(BizSearchType.BizSearchTypePoiParkRoute).enableCollision(true);
 
         //画停车场
         ArrayList<BizPointBusinessInfo> parkPoints = new ArrayList<>();
@@ -551,6 +553,7 @@ public class LayerSearchImpl extends BaseLayerImpl<LayerSearchStyleAdapter> {
             park.mPos3D.lon = poiLoc.lon;
             parkPoints.add(park);
         }
+        getStyleAdapter().updateSearchResult(parkingInfoList);
         boolean result = getLayerSearchControl().updateSearchParkPoi(parkPoints);
         Logger.d(TAG, "updateSearchParkPoi result " + result + " parkPoints " + parkPoints.size());
         return result;

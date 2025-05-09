@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 
 import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
+import com.fy.navi.service.define.bean.GeoPoint;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.adapter.search.cloudByPatac.rep.BaseRep;
 import com.fy.navi.service.define.search.PoiInfoEntity;
@@ -59,21 +60,34 @@ public class BaseCollectViewModel extends BaseViewModel<CollectFragment, Collect
     }
 
     public void notifyNetSearchResult(BaseRep result){
-        if(!ConvertUtils.isEmpty(result)){
-            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"result");
+        if(!ConvertUtils.isNull(result)){
+            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"result"+result.getDataSet());
+            ArrayList<PoiInfoEntity> list = new ArrayList<>();
             // 回调出的数据转换List
-//            try {
-//                JSONObject jsonObject = new JSONObject(String.valueOf(result.getDataSet()));
-//                JSONArray jsonArray = jsonObject.getJSONArray("items");
-//                if(jsonArray.length() > 0){
-//                    for (int i = 0; i < jsonArray.length(); i++) {
-//                        JSONObject object = new JSONObject(String.valueOf(jsonArray.get(i)));
-//                    }
-//                }
-//
-//            } catch (JSONException e) {
-//                throw new RuntimeException("转换JSONObject失败", e);
-//            }
+            try {
+                JSONObject jsonObject = new JSONObject(String.valueOf(result.getDataSet()));
+                JSONArray jsonArray = jsonObject.getJSONArray("items");
+                if(jsonArray.length() > 0){
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        JSONObject object = new JSONObject(String.valueOf(jsonArray.get(i)));
+                        if(object.getBoolean("stationSaved")){
+                            GeoPoint point = new GeoPoint();
+                            point.setLat(ConvertUtils.str2Double(object.getString("stationLat")));
+                            point.setLon(ConvertUtils.str2Double(object.getString("stationLng")));
+                            PoiInfoEntity entity = new PoiInfoEntity()
+                                    .setName(object.getString("stationName"))
+                                    .setAddress(object.getString("address"))
+                                    .setOperatorId(object.getString("operatorId"))
+                                    .setStationId(object.getString("stationId"))
+                                    .setPoint(point);
+                            list.add(entity);
+                        }
+                    }
+                }
+                mView.setAdapterDataByNet(list);
+            } catch (JSONException e) {
+                throw new RuntimeException("转换JSONObject失败", e);
+            }
         }
     }
 }

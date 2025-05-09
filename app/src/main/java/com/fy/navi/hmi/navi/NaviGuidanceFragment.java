@@ -532,6 +532,7 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
         if (!hidden) {
             if (null != mViewModel) {
                 mViewModel.isRequestRouteForPlateNumberAndAvoidLimitChange();
+                mBinding.sceneNaviControlMore.updateBroadcast();
             } else {
                 Logger.i(TAG, "onHiddenChanged mViewModel is null");
             }

@@ -12,8 +12,8 @@ import com.fy.navi.ui.view.SkinRadioButton;
 
 public class DrawableCenterRadioButton extends SkinRadioButton {
 
-    private int mDrawableWidth = 80; // 默认80dp
-    private int mDrawableHeight = 80; // 默认80dp
+    private float mDrawableWidth = 80; // 默认80dp
+    private float mDrawableHeight = 80; // 默认80dp
     private int mTextColor; // 颜色字段
     private int mSelectedColor; // 新增选中颜色
     private int mNormalColor;  // 新增默认颜色
@@ -36,8 +36,8 @@ public class DrawableCenterRadioButton extends SkinRadioButton {
      */
     private void initAttributes(final Context context, final AttributeSet attrs) {
         final TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.DrawableCenterRadioButton);
-        mDrawableWidth = ta.getDimensionPixelSize(R.styleable.DrawableCenterRadioButton_drawableWidth, 80);
-        mDrawableHeight = ta.getDimensionPixelSize(R.styleable.DrawableCenterRadioButton_drawableHeight, 80);
+        mDrawableWidth = ta.getFloat(R.styleable.DrawableCenterRadioButton_drawableWidth, 80);
+        mDrawableHeight = ta.getFloat(R.styleable.DrawableCenterRadioButton_drawableHeight, 80);
         mNormalColor = ta.getColor(R.styleable.DrawableCenterRadioButton_normalTextColor, getCurrentTextColor());
         mSelectedColor = ta.getColor(R.styleable.DrawableCenterRadioButton_selectedTextColor, getCurrentTextColor());
         mTextColor = isChecked() ? mSelectedColor : mNormalColor; // 初始化当前颜色
@@ -58,8 +58,8 @@ public class DrawableCenterRadioButton extends SkinRadioButton {
         if (drawableStart != null) {
             // 获取实际设置的padding值
             final int paddingStart = getPaddingStart();
-            final int drawableWidth = dpToPx(mDrawableWidth);
-            final int drawableHeight = dpToPx(mDrawableHeight);
+            final int drawableWidth = (int)mDrawableWidth;
+            final int drawableHeight = (int)mDrawableHeight;
 
             // 设置drawable边界
             drawableStart.setBounds(0, 0, drawableWidth, drawableHeight);
@@ -85,12 +85,4 @@ public class DrawableCenterRadioButton extends SkinRadioButton {
         }
     }
 
-    /**
-     * 转换
-     * @param dp dp值
-     * @return px值
-     */
-    private int dpToPx(final int dp) {
-        return (int) (dp * getResources().getDisplayMetrics().density);
-    }
 }
