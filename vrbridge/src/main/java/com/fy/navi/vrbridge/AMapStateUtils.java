@@ -44,6 +44,7 @@ final public class AMapStateUtils {
 
         final HashMap<String, Object> map = new HashMap<>();
         map.put(NaviStateCons.KEY_CURRENT_MAP_TYPE, "A_MAP");
+        saveMapStateBoolean(map, data);
         if (data.has("mCurrMapMode")) {
             map.put(NaviStateCons.KEY_PERSPECTIVE_MODE, data.optInt("mCurrMapMode"));
         }
@@ -58,7 +59,6 @@ final public class AMapStateUtils {
             map.put(NaviStateCons.KEY_BROADCAST_MODE, isMute ? 2
                     : data.optInt("mBroadcastMode"));
         }
-        saveMapStateBoolean(map, data);
         if (data.has("mPathCount")) {
             map.put(NaviStateCons.KEY_PLANE_ROUTE_NUM, data.optInt("mPathCount"));
         }

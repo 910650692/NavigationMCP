@@ -15,6 +15,7 @@
         android:id="@+id/search_main_tab"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:focusable="false"
         android:paddingBottom="@dimen/dp_30"
         android:visibility="@{ViewModel.naviBarVisibility ? View.VISIBLE : View.GONE}">
 
@@ -23,6 +24,7 @@
             clickCommand="@{ViewModel.goHome}"
             android:layout_width="@dimen/dp_92"
             android:layout_height="@dimen/dp_92"
+            android:focusable="false"
             android:layout_marginStart="@dimen/dp_124"
             android:src="@drawable/img_basic_ic_home"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -36,6 +38,7 @@
             clickCommand="@{ViewModel.goCompany}"
             android:layout_width="@dimen/dp_92"
             android:layout_height="@dimen/dp_92"
+            android:focusable="false"
             android:src="@drawable/img_basic_ic_bus"
             app:layout_constraintBottom_toBottomOf="@id/sk_iv_basic_home"
             app:layout_constraintEnd_toStartOf="@id/sk_iv_basic_search"
@@ -48,6 +51,7 @@
             android:layout_width="@dimen/dp_92"
             android:layout_height="@dimen/dp_92"
             android:layout_marginEnd="@dimen/dp_124"
+            android:focusable="false"
             android:src="@drawable/img_basic_ic_search"
             app:layout_constraintBottom_toBottomOf="@id/sk_iv_basic_home"
             app:layout_constraintEnd_toEndOf="parent"

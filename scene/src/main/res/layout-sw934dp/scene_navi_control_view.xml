@@ -33,15 +33,14 @@
             android:layout_height="wrap_content"
             android:paddingVertical="@dimen/dp_29"
             android:paddingHorizontal="@dimen/dp_29"
-            android:background="@drawable/bg_small_transparent">
+            android:background="@drawable/bg_shadow_navi_buick">
 
             <com.fy.navi.ui.view.SkinConstraintLayout
                 android:id="@+id/sv_exit"
                 clickCommand="@{naviControl.closeNavi}"
                 android:layout_width="@dimen/dp_165"
                 android:layout_height="@dimen/dp_148"
-                app:click_color_change="true"
-                android:background="@drawable/bg_navi_control">
+                app:click_color_change="true">
 
                 <com.fy.navi.ui.view.SkinImageView
                     android:id="@+id/siv_exit_navi"
@@ -69,7 +68,7 @@
             android:paddingHorizontal="@dimen/dp_29"
             android:paddingVertical="@dimen/dp_29"
             android:layout_marginStart="-38dp"
-            android:background="@drawable/bg_small_transparent"
+            android:background="@drawable/bg_shadow_navi_buick"
             app:layout_constraintBottom_toBottomOf="@id/sv_exit_container"
             app:layout_constraintStart_toEndOf="@id/sv_exit_container"
             app:layout_constraintTop_toTopOf="@id/sv_exit_container">
@@ -78,7 +77,6 @@
                 android:id="@+id/scl_settings"
                 android:layout_width="@dimen/dp_455"
                 android:layout_height="@dimen/dp_148"
-                android:background="@drawable/bg_navi_control"
                 tools:background="@color/navi_color_FF595F_100">
                 <!--看全览-->
                 <com.fy.navi.ui.view.SkinConstraintLayout

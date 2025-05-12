@@ -122,9 +122,6 @@ public class BaseSettingBroadcastViewModel extends BaseViewModel<SettingBroadcas
             mModel.setCruiseBroadcastOpen(true);
         } else {
             mIsCruiseBroadcast.setValue(false);
-            mIsCruiseBroadcastRoadCondition.setValue(false);
-            mIsCruiseBroadcastCamera.setValue(false);
-            mIsCruiseBroadcastSafe.setValue(false);
             CruisePackage.getInstance().setConfigKeyDriveWarn(false);
             CruisePackage.getInstance().setConfigKeySafeBroadcast(false);
             CruisePackage.getInstance().setConfigKeyRoadWarn(false);

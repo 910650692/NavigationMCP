@@ -6,6 +6,7 @@ import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
 import com.fy.navi.service.AutoMapConstant;
 import com.fy.navi.service.MapDefaultFinalTag;
+import com.fy.navi.service.adapter.search.cloudByPatac.rep.BaseRep;
 import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.search.SearchResultEntity;
 import com.fy.navi.service.logicpaket.calibration.CalibrationPackage;
@@ -97,5 +98,13 @@ public class PoiDetailsModel extends BaseModel<PoiDetailsViewModel> implements S
      */
     public boolean calcStraightDistance(){
         return mapPackage.isCarLocation(MapType.MAIN_SCREEN_MAIN_MAP,maxDistance);
+    }
+
+    @Override
+    public void onNetSearchResult(final int taskId,BaseRep result) {
+        if (mCallbackId.equals(mSearchPackage.getCurrentCallbackId())) {
+            mTaskId = taskId;
+            mViewModel.notifyNetSearchResult(taskId,result);
+        }
     }
 }

@@ -62,7 +62,7 @@ public class SceneCircleImageView extends SkinImageView {
     protected void onDraw(final Canvas canvas) {
         Bitmap bitmap = drawable2Bitmap(getDrawable());
         if(bitmap == null){
-            bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.default_user_icon);
+            bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.img_default_user_icon);
         }
 
         mShader = new BitmapShader(bitmap, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);

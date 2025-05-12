@@ -68,7 +68,7 @@ public class CarConnectFragment extends BaseFragment<FragmentCarConnectBinding, 
     public void clearUserInfo() {
         mBinding.tvUserName.setText(ResourceUtils.Companion.getInstance().getText(R.string.car_connect_login_user_name));
         mBinding.tvConnectTip.setText(ResourceUtils.Companion.getInstance().getText(R.string.car_connect_login_not_connected));
-        mBinding.ivUserIcon.setImageDrawable(ResourceUtils.Companion.getInstance().getDrawable(R.mipmap.default_user_icon));
+        mBinding.ivUserIcon.setImageDrawable(ResourceUtils.Companion.getInstance().getDrawable(R.drawable.img_default_user_icon));
     }
 
     /**
@@ -80,7 +80,7 @@ public class CarConnectFragment extends BaseFragment<FragmentCarConnectBinding, 
             mBinding.tvUserName.setText(bundle.getString("userName"));
             mBinding.tvConnectTip.setText(ResourceUtils.Companion.getInstance().getText(R.string.car_connect_login_already_connected));
             ViewAdapterKt.loadImageUrl(mBinding.ivUserIcon, Objects.requireNonNull(bundle.getString("userIcon")),
-                R.mipmap.default_user_icon, R.mipmap.default_user_icon);
+                R.drawable.img_default_user_icon, R.drawable.img_default_user_icon);
         } else {
             Logger.e("bundle is null");
         }

@@ -88,14 +88,15 @@ public final class ActivatePackage implements ActivateObserver {
     }
 
     /**
-     * 重试网络激活
+     * 重试网络激活（无需调用）
      */
     public void netActivateRetry() {
         mActivateAdapter.netActivateRetry();
     }
 
     /**
-     * 手动激活
+     * 手动激活（无需调用）
+     *
      * @param loginCode 激活码
      * @param userCode 序列号
      */

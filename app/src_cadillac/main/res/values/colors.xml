@@ -49,5 +49,8 @@
     <color name="bg_gery_mfc_default">#338E97B9</color>
     <color name="bg_gery_mfc_selected">#33C4C9DB</color>
     <color name="bg_gery_mfc_pressed">#1E8E97B9</color>
+    <color name="toast_bg_base">#FFFFFF</color>
+    <color name="toast_text">#FF000000</color>
+    <color name="setting_other_about_bg_btn">#26B2AFC2</color>
 
 </resources>

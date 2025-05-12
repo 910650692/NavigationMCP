@@ -139,6 +139,13 @@ public class MapAdapter {
         return mIMapApi.setMapMode(mapTypeId, mapMode);
     }
 
+    public boolean switchMapModeByHud(MapType mapTypeId, MapMode mapMode,boolean needSave) {
+        if(needSave){
+            switchMapMode(mapMode);
+        }
+        return mIMapApi.setMapMode(mapTypeId, mapMode);
+    }
+
     public void setMapStateStyle(MapType mapTypeId, MapStateStyle mapStateStyle) {
         mIMapApi.setMapStateStyle(mapTypeId, mapStateStyle);
     }

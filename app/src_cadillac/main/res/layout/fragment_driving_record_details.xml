@@ -14,11 +14,13 @@
         android:fillViewport="true">
 
         <com.fy.navi.ui.view.SkinConstraintLayout
-            android:layout_width="@dimen/dp_820"
-            android:layout_height="@dimen/dp_692"
-            android:paddingBottom="@dimen/dp_52"
+            android:layout_width="@dimen/dp_922"
+            android:layout_height="@dimen/dp_794"
+            android:paddingHorizontal="@dimen/dp_51"
+            android:paddingTop="@dimen/dp_251"
+            android:paddingBottom="@dimen/dp_103"
             android:focusable="false"
-            android:background="@drawable/bg_setting_fragment">
+            android:background="@drawable/bg_shadow_navi_cadillac">
 
             <com.android.car.ui.FocusParkingView
                 android:layout_width="wrap_content"

@@ -21,7 +21,7 @@
 
     <LinearLayout
         android:id="@+id/search_replace_charge_whole_linear"
-        android:visibility="visible"
+        android:visibility="gone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
@@ -32,7 +32,7 @@
 
         <LinearLayout
             android:id="@+id/search_replace_charge_count_linear"
-            android:visibility="visible"
+            android:visibility="gone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal">

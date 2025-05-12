@@ -193,6 +193,9 @@ public class MapDataAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         void bind(ProvDataInfo parent, CityDataInfo child) {
 
             final CityDownLoadInfo downloadItem = child.getDownLoadInfo();
+            if (downloadItem == null) {
+                return;
+            }
             // 非已下载状态，禁止侧滑删除
             if (downloadItem.getTaskState() == UserDataCode.TASK_STATUS_CODE_SUCCESS) {
                 swipeMenuLayout.setSwipeEnabled(true);

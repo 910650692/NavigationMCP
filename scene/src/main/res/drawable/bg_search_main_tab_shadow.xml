@@ -2,7 +2,7 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
 <item>
     <bitmap
-        android:src="@drawable/bg_shadow"
+        android:src="@drawable/bg_shadow_navi_buick"
         android:gravity="fill" />
 </item>
 </layer-list>

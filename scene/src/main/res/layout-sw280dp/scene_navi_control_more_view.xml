@@ -13,8 +13,11 @@
     </data>
 
     <com.fy.navi.ui.view.SkinConstraintLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/dp_922"
+        android:layout_height="@dimen/dp_514"
+        android:paddingVertical="@dimen/dp_51"
+        android:paddingHorizontal="@dimen/dp_51"
+        android:background="@drawable/bg_shadow_navi_cadillac"
         android:focusable="false"
         android:clickable="true">
 
@@ -23,8 +26,7 @@
             android:id="@+id/sv_tools"
             android:layout_width="@dimen/dp_820"
             android:layout_height="@dimen/dp_412"
-            android:focusable="false"
-            android:background="@drawable/bg_navi_control" />
+            android:focusable="false" />
 
         <com.fy.navi.ui.view.SkinView
             android:id="@+id/sv_bar"

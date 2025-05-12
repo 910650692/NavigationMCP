@@ -14,7 +14,7 @@
         android:layout_width="@dimen/dp_1282"
         android:layout_height="@dimen/dp_772"
         android:padding="@dimen/dp_29"
-        android:background="@drawable/bg_shadow"
+        android:background="@drawable/bg_shadow_navi_buick"
         android:clickable="true"
         android:orientation="vertical">
 

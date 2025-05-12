@@ -10,6 +10,7 @@ import android.text.SpannableString;
 import android.text.TextUtils;
 import android.text.style.LeadingMarginSpan;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -1234,7 +1235,11 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
         ThreadManager.getInstance().removeHandleTask(mTimeoutTask);
         ThreadManager.getInstance().postDelay(mTimeoutTask, 6000);
         mPoiInfoEntity = poiInfo;
-        mScreenViewModel.doSearch(poiInfo);
+        if(ConvertUtils.isEmpty(poiInfo.getOperatorId())){
+            mScreenViewModel.doSearch(poiInfo);
+        }else{
+            mScreenViewModel.doSearchByNet(poiInfo);
+        }
         if (mPoiType == AutoMapConstant.PoiType.POI_MAP_CAR_CLICK && mViewBinding != null) {
             mViewBinding.poiDistanceTime.setVisibility(View.GONE);
             mViewBinding.poiArrivalCapacity.setVisibility(View.GONE);

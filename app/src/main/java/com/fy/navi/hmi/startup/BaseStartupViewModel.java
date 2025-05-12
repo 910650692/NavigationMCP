@@ -152,25 +152,4 @@ public class BaseStartupViewModel extends BaseViewModel<StartupActivity, Startup
     public PoiInfoEntity getEndPoint() {
         return mEndPoint;
     }
-
-    /**
-     * 重试网络激活
-     */
-    public void netActivateRetry() {
-        mModel.netActivateRetry();
-    }
-
-    /**
-     * 重试弹窗
-     */
-    public void showFailedDialog() {
-        mView.showNetActivateFailedDialog();
-    }
-
-    /**
-     * 更改重试弹窗
-     */
-    public void showChangedFailedDialog() {
-        mView.showChangedDialog();
-    }
 }

@@ -175,6 +175,10 @@ public class MapPackage implements IMapAdapterCallback, INaviStatusCallback, ILa
         return mMapAdapter.switchMapMode(mapTypeId, mapMode);
     }
 
+    public boolean switchMapModeByHud(MapType mapTypeId, MapMode mapMode,boolean needSave) {
+        return mMapAdapter.switchMapModeByHud(mapTypeId, mapMode,needSave);
+    }
+
     public void setMapStateStyle(MapType mapTypeId, MapStateStyle mapStateStyle) {
         mMapAdapter.setMapStateStyle(mapTypeId, mapStateStyle);
     }

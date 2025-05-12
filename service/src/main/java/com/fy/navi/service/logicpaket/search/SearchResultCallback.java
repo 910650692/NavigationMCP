@@ -71,7 +71,15 @@ public interface SearchResultCallback {
     }
 
     // 网络回调
-    default void onNetSearchResult(BaseRep result) {
+    default void onNetSearchResult(int taskId,BaseRep result) {
+    }
+
+    /**
+     * 搜索结果列表页面可变状态变化回调
+     * @param isShow 是否可见
+     */
+    default void onShowStateChanged(boolean isShow) {
+
     }
 }
 

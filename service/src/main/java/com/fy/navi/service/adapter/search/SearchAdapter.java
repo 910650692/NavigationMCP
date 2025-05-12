@@ -253,4 +253,9 @@ final public class SearchAdapter {
     public int queryStationNewResult(final SearchRequestParameter searchRequestParameter){
         return mSearchApi.queryStationNewResult(searchRequestParameter);
     }
+
+    // 查询自营站信息
+    public int queryStationInfo(final SearchRequestParameter searchRequestParameter){
+        return mSearchApi.queryStationInfo(searchRequestParameter);
+    }
 }

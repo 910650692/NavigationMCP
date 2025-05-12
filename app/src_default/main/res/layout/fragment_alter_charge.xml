@@ -14,9 +14,11 @@
 
     <com.fy.navi.ui.view.SkinConstraintLayout
         clickCommand="@{viewModel.rootClick}"
-        android:background="@drawable/bg_route_result"
-        android:layout_width="@dimen/dp_640"
-        android:layout_height="@dimen/dp_714">
+        android:background="@drawable/bg_shadow_navi_buick"
+        android:layout_width="@dimen/dp_698"
+        android:layout_height="@dimen/dp_772"
+        android:paddingVertical="@dimen/dp_29"
+        android:paddingHorizontal="@dimen/dp_29">
 
         <com.fy.navi.ui.view.SkinConstraintLayout
             android:id="@+id/layout_alter_charge_station"

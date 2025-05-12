@@ -14,7 +14,7 @@
         android:layout_height="@dimen/dp_772"
         android:clickable="true"
         android:padding="@dimen/dp_29"
-        android:background="@drawable/bg_shadow">
+        android:background="@drawable/bg_shadow_navi_buick">
 
         <com.fy.navi.ui.view.SkinConstraintLayout
             android:id="@+id/car_connect_title_layout"
@@ -74,7 +74,7 @@
                     android:id="@+id/iv_user_icon"
                     android:layout_width="@dimen/dp_96"
                     android:layout_height="@dimen/dp_96"
-                    android:src="@mipmap/default_user_icon" />
+                    android:src="@drawable/img_default_user_icon" />
 
                 <com.fy.navi.ui.view.SkinLinearLayout
                     android:layout_width="wrap_content"
@@ -142,7 +142,7 @@
                     <com.fy.navi.ui.view.SkinImageView
                         android:layout_width="@dimen/dp_72"
                         android:layout_height="@dimen/dp_72"
-                        android:src="@drawable/remote_navi"
+                        android:src="@drawable/img_remote_navi"
                         android:layout_marginEnd="@dimen/dp_16"
                         android:layout_marginBottom="@dimen/dp_16"
                         app:layout_constraintBottom_toBottomOf="parent"
@@ -183,7 +183,7 @@
                     <com.fy.navi.ui.view.SkinImageView
                         android:layout_width="@dimen/dp_72"
                         android:layout_height="@dimen/dp_72"
-                        android:src="@drawable/no_sense_connnect"
+                        android:src="@drawable/img_no_sense_connnect"
                         android:layout_marginEnd="@dimen/dp_16"
                         android:layout_marginBottom="@dimen/dp_16"
                         app:layout_constraintBottom_toBottomOf="parent"
@@ -224,7 +224,7 @@
                     <com.fy.navi.ui.view.SkinImageView
                         android:layout_width="@dimen/dp_72"
                         android:layout_height="@dimen/dp_72"
-                        android:src="@drawable/find_car"
+                        android:src="@drawable/img_find_car"
                         android:layout_marginEnd="@dimen/dp_16"
                         android:layout_marginBottom="@dimen/dp_16"
                         app:layout_constraintBottom_toBottomOf="parent"
@@ -265,7 +265,7 @@
                     <com.fy.navi.ui.view.SkinImageView
                         android:layout_width="@dimen/dp_72"
                         android:layout_height="@dimen/dp_72"
-                        android:src="@drawable/data_sync"
+                        android:src="@drawable/img_data_sync"
                         android:layout_marginEnd="@dimen/dp_16"
                         android:layout_marginBottom="@dimen/dp_16"
                         app:layout_constraintBottom_toBottomOf="parent"

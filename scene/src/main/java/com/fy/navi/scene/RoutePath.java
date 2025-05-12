@@ -28,8 +28,4 @@ public class RoutePath {
         public static final String ROUTE_FRAGMENT = "/app/src/main/java/com/fy/navi/hmi/route/RouteFragment";
         public static final String ALTER_CHARGE_FRAGMENT = "/app/src/main/java/com/fy/navi/hmi/route/alternative/AlterChargeFragment";
     }
-
-    public static class Activate {
-        public static final String MANUAL_ACTIVATE_FRAGMENT = "/app/src/main/java/com/fy/navi/hmi/startup/ManualActivateFragment";
-    }
 }

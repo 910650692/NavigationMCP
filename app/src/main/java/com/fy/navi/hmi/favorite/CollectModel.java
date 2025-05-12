@@ -111,9 +111,9 @@ public class CollectModel extends BaseModel<CollectViewModel> implements Setting
     }
 
     @Override
-    public void onNetSearchResult(BaseRep result) {
+    public void onNetSearchResult(int taskId,BaseRep result) {
         if (mCallbackId.equals(mSearchPackage.getCurrentCallbackId())) {
-            mViewModel.notifyNetSearchResult(result);
+            mViewModel.notifyNetSearchResult(taskId,result);
         }
     }
 }

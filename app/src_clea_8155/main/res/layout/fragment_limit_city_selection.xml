@@ -26,7 +26,7 @@
             android:layout_height="@dimen/dp_170"
             android:paddingVertical="@dimen/dp_29"
             android:paddingHorizontal="@dimen/dp_29"
-            android:background="@drawable/bg_route_shadow">
+            android:background="@drawable/bg_shadow_navi_ndlc_8155">
 
             <com.fy.navi.ui.view.SkinImageView
                 android:id="@+id/iv_back"
@@ -61,7 +61,7 @@
         <com.fy.navi.ui.view.SkinConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_0"
-            android:background="@drawable/bg_route_shadow"
+            android:background="@drawable/bg_shadow_navi_ndlc_8155"
             android:layout_marginTop="@dimen/dp_m_9"
             android:paddingVertical="@dimen/dp_29"
             android:paddingHorizontal="@dimen/dp_29"

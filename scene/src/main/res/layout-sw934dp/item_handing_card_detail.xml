@@ -6,7 +6,7 @@
     </data>
 
     <com.fy.navi.ui.view.SkinFrameLayout
-        android:layout_width="@dimen/dp_640"
+        android:layout_width="match_parent"
         android:layout_height="@dimen/dp_216"
         android:orientation="vertical">
 

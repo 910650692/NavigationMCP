@@ -2,47 +2,125 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:focusable="false">
 
-        <View
-            android:id="@+id/view_bg"
-            android:layout_width="@dimen/dp_484"
-            android:layout_height="@dimen/dp_92"
-            android:background="@drawable/bg_search_main_tab"
+        <com.fy.navi.ui.view.SkinCardView
+            android:id="@+id/card_navi_view"
+            android:layout_width="@dimen/dp_600"
+            android:layout_height="@dimen/dp_152"
+            android:focusable="false"
+            android:outlineSpotShadowColor="@color/common_bg_shadow_color"
+            app:cardBackgroundColor="@color/common_bg_color"
+            app:cardCornerRadius="@dimen/dp_18"
+            app:cardElevation="@dimen/dp_30"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent">
 
-        <com.fy.navi.ui.view.SkinImageView
-            android:id="@+id/sk_iv_basic_home"
-            android:layout_width="@dimen/dp_92"
-            android:layout_height="@dimen/dp_92"
-            android:src="@drawable/img_basic_ic_home"
-            app:layout_constraintBottom_toBottomOf="@id/view_bg"
-            app:layout_constraintEnd_toStartOf="@id/sk_iv_basic_bus"
-            app:layout_constraintHorizontal_chainStyle="spread"
-            app:layout_constraintStart_toStartOf="@id/view_bg"
-            app:layout_constraintTop_toTopOf="@id/view_bg" />
+            <com.fy.navi.ui.view.SkinConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:focusable="false">
 
-        <com.fy.navi.ui.view.SkinImageView
-            android:id="@+id/sk_iv_basic_bus"
-            android:layout_width="@dimen/dp_92"
-            android:layout_height="@dimen/dp_92"
-            android:src="@drawable/img_basic_ic_bus"
-            app:layout_constraintBottom_toBottomOf="@id/sk_iv_basic_home"
-            app:layout_constraintEnd_toStartOf="@id/sk_iv_basic_search"
-            app:layout_constraintStart_toEndOf="@id/sk_iv_basic_home"
-            app:layout_constraintTop_toTopOf="@id/sk_iv_basic_home" />
+                <com.fy.navi.ui.view.SkinImageView
+                    android:id="@+id/sk_iv_basic_home"
+                    android:layout_width="@dimen/dp_92"
+                    android:layout_height="@dimen/dp_92"
+                    android:focusable="false"
+                    android:src="@drawable/img_basic_ic_home"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/sk_iv_basic_bus"
+                    app:layout_constraintHorizontal_chainStyle="spread"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
-        <com.fy.navi.ui.view.SkinImageView
-            android:id="@+id/sk_iv_basic_search"
-            android:layout_width="@dimen/dp_92"
-            android:layout_height="@dimen/dp_92"
-            android:src="@drawable/img_basic_ic_search"
-            app:layout_constraintEnd_toEndOf="@id/view_bg"
-            app:layout_constraintStart_toEndOf="@+id/sk_iv_basic_bus"
-            app:layout_constraintTop_toTopOf="@id/sk_iv_basic_home" />
+                <com.fy.navi.ui.view.SkinImageView
+                    android:id="@+id/sk_iv_basic_bus"
+                    android:layout_width="@dimen/dp_92"
+                    android:layout_height="@dimen/dp_92"
+                    android:src="@drawable/img_basic_ic_bus"
+                    android:focusable="false"
+                    app:layout_constraintBottom_toBottomOf="@id/sk_iv_basic_home"
+                    app:layout_constraintEnd_toStartOf="@id/sk_iv_basic_search"
+                    app:layout_constraintStart_toEndOf="@id/sk_iv_basic_home"
+                    app:layout_constraintTop_toTopOf="@id/sk_iv_basic_home" />
+
+                <com.fy.navi.ui.view.SkinImageView
+                    android:id="@+id/sk_iv_basic_search"
+                    android:layout_width="@dimen/dp_92"
+                    android:layout_height="@dimen/dp_92"
+                    android:focusable="false"
+                    android:src="@drawable/img_basic_ic_search"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/sk_iv_basic_bus"
+                    app:layout_constraintTop_toTopOf="@id/sk_iv_basic_home" />
+            </com.fy.navi.ui.view.SkinConstraintLayout>
+
+        </com.fy.navi.ui.view.SkinCardView>
+
+        <com.fy.navi.ui.view.SkinCardView
+            android:id="@+id/card_tbt_view"
+            android:layout_width="@dimen/dp_820"
+            android:layout_height="wrap_content"
+            android:outlineSpotShadowColor="@color/common_bg_shadow_color"
+            android:visibility="gone"
+            app:cardBackgroundColor="@color/common_bg_color"
+            app:cardCornerRadius="@dimen/dp_18"
+            app:cardElevation="@dimen/dp_30"
+            android:focusable="false"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <com.fy.navi.ui.view.SkinConstraintLayout
+                android:id="@+id/scl_top_container"
+                android:layout_width="match_parent"
+                android:focusable="false"
+                android:layout_height="wrap_content">
+
+                <com.fy.navi.scene.ui.navi.SceneNaviTbtView
+                    android:id="@+id/scene_navi_tbt"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:focusable="false"
+                    android:background="@drawable/bg_navi_tbt_top"
+                    android:minHeight="@dimen/dp_1"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <com.fy.navi.scene.ui.navi.SceneNaviEtaView
+                    android:id="@+id/scene_navi_eta"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:focusable="false"
+                    android:background="@drawable/bg_navi_tbt_middle"
+                    app:layout_constraintStart_toStartOf="@id/scene_navi_tbt"
+                    app:layout_constraintTop_toBottomOf="@id/scene_navi_tbt" />
+
+                <com.fy.navi.scene.ui.navi.SceneNaviTmcView
+                    android:id="@+id/scene_navi_tmc"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_navi_tbt_middle"
+                    android:paddingHorizontal="@dimen/dp_30"
+                    android:focusable="false"
+                    app:layout_constraintStart_toStartOf="@id/scene_navi_tbt"
+                    app:layout_constraintTop_toBottomOf="@id/scene_navi_eta" />
+
+                <com.fy.navi.scene.ui.navi.SceneNaviLanesView
+                    android:id="@+id/scene_navi_lanes"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:focusable="false"
+                    android:background="@drawable/bg_navi_tbt_middle"
+                    android:paddingBottom="@dimen/dp_30"
+                    app:layout_constraintStart_toStartOf="@id/scene_navi_tbt"
+                    app:layout_constraintTop_toBottomOf="@id/scene_navi_tmc" />
+            </com.fy.navi.ui.view.SkinConstraintLayout>
+        </com.fy.navi.ui.view.SkinCardView>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </layout>

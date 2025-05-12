@@ -12,7 +12,7 @@
         android:layout_width="@dimen/dp_1282"
         android:layout_height="@dimen/dp_772"
         android:padding="@dimen/dp_29"
-        android:background="@drawable/bg_shadow">
+        android:background="@drawable/bg_shadow_navi_buick">
 
         <com.fy.navi.ui.view.SkinLinearLayout
             android:id="@+id/near_offline_map_title"
@@ -51,9 +51,10 @@
         <com.fy.navi.ui.view.SkinRecyclerView
             android:id="@+id/rv_near_offline"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
+            android:layout_height="@dimen/dp_0"
             android:layout_marginStart="@dimen/dp_40"
             android:layout_marginEnd="@dimen/dp_40"
+            android:layout_marginBottom="@dimen/dp_40"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/near_offline_map_title" />

@@ -22,7 +22,7 @@
             android:layout_width="wrap_content"
             android:layout_height="@dimen/dp_47"
             android:maxLines="1"
-            android:textColor="#FF000000"
+            android:textColor="@color/toast_text"
             android:textSize="@dimen/sp_36"
             tools:text="登录高德账号才能使用手车互联服务登录高德账号才能使用手车互联服务" />
     </LinearLayout>

@@ -40,13 +40,6 @@ public class StartupModel extends BaseModel<BaseStartupViewModel>
 
         @Override
         public void onNetActivateFailed(final int failedCount) {
-            Logger.d(TAG, "onNetActivateFailed count = " + failedCount);
-            mViewModel.showActivatingView(false);
-            if (failedCount >= 3) {
-                mViewModel.showChangedFailedDialog();
-            } else {
-                mViewModel.showFailedDialog();
-            }
         }
 
         @Override
@@ -128,13 +121,6 @@ public class StartupModel extends BaseModel<BaseStartupViewModel>
      */
     public void updateFirstLauncherFlag() {
         commonManager.insertOrReplace(UserDataCode.SETTING_FIRST_LAUNCH, "1");
-    }
-
-    /**
-     * 重试网络激活
-     */
-    public void netActivateRetry() {
-        ActivatePackage.getInstance().netActivateRetry();
     }
 
     @Override

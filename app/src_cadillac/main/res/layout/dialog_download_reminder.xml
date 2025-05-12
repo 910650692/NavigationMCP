@@ -8,9 +8,11 @@
         android:layout_height="wrap_content">
 
         <com.fy.navi.ui.view.SkinConstraintLayout
-            android:layout_width="@dimen/dp_1100"
-            android:layout_height="@dimen/dp_324"
-            android:background="@drawable/bg_setting_dialog"
+            android:layout_width="@dimen/dp_1194"
+            android:layout_height="@dimen/dp_402"
+            android:paddingHorizontal="@dimen/dp_47"
+            android:paddingVertical="@dimen/dp_39"
+            android:background="@drawable/bg_shadow_system_cadillac"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

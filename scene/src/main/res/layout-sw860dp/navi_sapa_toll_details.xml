@@ -14,14 +14,13 @@
     <com.fy.navi.ui.view.SkinConstraintLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingVertical="@dimen/dp_24"
-        android:paddingHorizontal="@dimen/dp_24"
-        android:background="@drawable/bg_transparent_shadow">
+        android:paddingVertical="@dimen/dp_29"
+        android:paddingHorizontal="@dimen/dp_29"
+        android:background="@drawable/bg_shadow_navi_buick">
 
         <com.fy.navi.ui.view.SkinConstraintLayout
             android:layout_width="@dimen/dp_640"
-            android:layout_height="wrap_content"
-            android:background="@drawable/bg_navi_control">
+            android:layout_height="wrap_content">
 
             <com.fy.navi.ui.view.SkinTextView
                 android:id="@+id/siv_toll_details_status_tag"

@@ -6,7 +6,7 @@
         android:id="@+id/reminderRootDetail"
         android:layout_width="@dimen/dp_1300"
         android:layout_height="@dimen/dp_740"
-        android:background="@drawable/bg_confirm_dialog"
+        android:background="@drawable/bg_shadow_system_buick_avenir"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

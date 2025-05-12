@@ -17,12 +17,11 @@
         android:layout_height="wrap_content"
         android:paddingVertical="@dimen/dp_29"
         android:paddingHorizontal="@dimen/dp_29"
-        android:background="@drawable/bg_mid_transparent">
+        android:background="@drawable/bg_shadow_navi_buick">
 
         <com.fy.navi.ui.view.SkinConstraintLayout
             android:layout_width="@dimen/dp_948"
             android:layout_height="@dimen/dp_140"
-            android:background="@drawable/bg_navi_com"
             android:clickable="true"
             tools:background="@color/navi_color_FF595F_100"
             tools:layout_height="@dimen/dp_160"

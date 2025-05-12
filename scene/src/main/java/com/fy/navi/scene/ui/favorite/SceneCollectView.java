@@ -268,7 +268,8 @@ public class SceneCollectView extends BaseSceneView<SceneCollectViewBinding, Sce
 
     public void setPowerType(final int powerType){
         Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"powerType: "+powerType);
-        mScreenViewModel.mPowerType.setValue(powerType);
+        //todo 功能未开发完成，隐藏入口
+        mScreenViewModel.mPowerType.setValue(-1);
     }
 
     private void hideEmptyView(){

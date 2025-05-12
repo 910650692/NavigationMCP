@@ -67,13 +67,13 @@ public class NaviCommandImpl implements NaviCommandListener {
         if (!MapStateManager.getInstance().isNaviStatus()) {
             //非导航态不支持沿途搜
             Logger.w(IVrBridgeConstant.TAG, "alongSearch in no navigation");
-            return CallResponse.createNotSupportResponse("需要发起导航，才能帮你规划沿途的路线，试试说：导航回家");
+            return CallResponse.createFailResponse("需要发起导航，才能帮你规划沿途的路线，试试说：导航回家");
         }
         final RouteCurrentPathParam pathParam = RoutePackage.getInstance().getCurrentPathInfo(MapType.MAIN_SCREEN_MAIN_MAP);
         if (null != pathParam && pathParam.isMIsOnlineRoute()) {
             //离线算路不支持沿途搜
             Logger.w(IVrBridgeConstant.TAG, "alongSearch in offline road");
-            return CallResponse.createNotSupportResponse("当前使用离线算路，不支持该功能");
+            return CallResponse.createFailResponse("当前使用离线算路，不支持该功能");
         }
 
         VoiceSearchManager.getInstance().handlePassBy(sessionId, passBy, poiType, poiCallback);

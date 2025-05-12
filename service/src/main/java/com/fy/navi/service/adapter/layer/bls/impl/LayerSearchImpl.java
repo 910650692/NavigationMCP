@@ -157,6 +157,7 @@ public class LayerSearchImpl extends BaseLayerImpl<LayerSearchStyleAdapter> {
                 result = updateSearchPolygon(mPoiAoiBounds);
             }
             case SEARCH_PARENT_POINT -> {
+                updateSearchResult(searchResult);
                 result = updateSearchParentPoi(searchResult);
             }
             case SEARCH_CHILD_POINT -> {
@@ -173,12 +174,14 @@ public class LayerSearchImpl extends BaseLayerImpl<LayerSearchStyleAdapter> {
                 updateSearchAlongRoutePoiPop(searchResult);
             }
             case SEARCH_PARENT_PARK -> {
+                updateSearchResult(searchResult);
                 result = updateSearchParkPoi(searchResult);
             }
             case SEARCH_POI_LABEL -> {
                 result = updateSearchPoiLabel(searchResult);
             }
             case SEARCH_PARENT_CHARGE_STATION -> {
+                updateSearchResult(searchResult);
                 result = updateSearchChargeStation(searchResult);
             }
         }
@@ -553,7 +556,6 @@ public class LayerSearchImpl extends BaseLayerImpl<LayerSearchStyleAdapter> {
             park.mPos3D.lon = poiLoc.lon;
             parkPoints.add(park);
         }
-        getStyleAdapter().updateSearchResult(parkingInfoList);
         boolean result = getLayerSearchControl().updateSearchParkPoi(parkPoints);
         Logger.d(TAG, "updateSearchParkPoi result " + result + " parkPoints " + parkPoints.size());
         return result;
@@ -609,12 +611,41 @@ public class LayerSearchImpl extends BaseLayerImpl<LayerSearchStyleAdapter> {
             poiLoc.lon = poiInfoEntity.getMPoint().getLon();
             chargeStation.mPos3D.lat = poiLoc.lat;
             chargeStation.mPos3D.lon = poiLoc.lon;
+            List<ChargeInfo> chargeInfoList = poiInfoEntity.getChargeInfoList();
+            if (!ConvertUtils.isEmpty(chargeInfoList) && !ConvertUtils.isEmpty(chargeInfoList.get(NumberUtils.NUM_0))) {
+                ChargeInfo chargeInfo = chargeInfoList.get(NumberUtils.NUM_0);
+                chargeStation.chargeStationInfo.fastTotal = chargeInfo.getMFastTotal();
+                chargeStation.chargeStationInfo.fastFree = chargeInfo.getMFastFree();
+                chargeStation.chargeStationInfo.slowTotal = chargeInfo.getMSlowTotal();
+                chargeStation.chargeStationInfo.slowFree = chargeInfo.getMSlowFree();
+                chargeStation.chargeStationInfo.brandDesc = chargeInfo.getMBrand();
+            }
             chargeStationInfos.add(chargeStation);
         }
         boolean result = getLayerSearchControl().updateSearchChargeStation(chargeStationInfos);
         Logger.d(TAG, "updateSearchChargeStation result " + result +
                 " chargeStationInfos " + chargeStationInfos.size());
         return result;
+    }
+
+    /* 更新搜索结果数据 */
+    private void updateSearchResult(LayerItemSearchResult result) {
+        if (ConvertUtils.isEmpty(result)) {
+            Logger.e(TAG, "updateSearchResult result == null");
+            return;
+        }
+        Logger.d(TAG, "updateSearchResult");
+        getStyleAdapter().updateSearchResult(result.getSearchResultPoints());
+    }
+
+    /* 更新列表可视扎标数据 */
+    public void updateSearchResult(LayerPointItemType type, LayerItemSearchResult result) {
+        if (ConvertUtils.isEmpty(result)) {
+            Logger.e(TAG, "updateSearchResult result == null");
+            return;
+        }
+        Logger.d(TAG, "updateSearchResult type " + type);
+        getStyleAdapter().updateSearchResult(type, result.getSearchResultPoints());
     }
 
     /* 清除所有搜索扎标*/

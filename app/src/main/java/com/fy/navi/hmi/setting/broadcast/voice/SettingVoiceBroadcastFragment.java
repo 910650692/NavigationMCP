@@ -151,7 +151,7 @@ public class SettingVoiceBroadcastFragment extends BaseFragment<FragmentVoiceBro
                 }
                 if (icon != null && !icon.isEmpty()){
                     Logger.d("SettingVoiceBroadcastModel", "setCurrentVoice icon: " + icon);
-                    ViewAdapterKt.loadImageUrl(mBinding.currentVoiceBroadcastHeader, icon, R.mipmap.default_user_icon, R.mipmap.default_user_icon);
+                    ViewAdapterKt.loadImageUrl(mBinding.currentVoiceBroadcastHeader, icon, R.drawable.img_default_user_icon, R.drawable.img_default_user_icon);
                 }
             }
         }

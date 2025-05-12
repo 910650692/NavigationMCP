@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <LinearLayout
+        android:id="@+id/search_charge_detail_linear"
+        android:background="@drawable/shape_search_end_bg"
+        android:layout_marginStart="@dimen/dp_30"
+        android:paddingEnd="@dimen/dp_20"
+        android:layout_marginTop="@dimen/dp_4"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/search_charge_detail_fast"
+            tools:text="快6/6"
+            android:textColor="@color/layer_route_replace_charge_fast_text_color"
+            android:textSize="@dimen/sp_28"
+            android:layout_marginEnd="@dimen/dp_10"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <TextView
+            android:id="@+id/search_charge_detail_slow"
+            tools:text="慢2/6"
+            android:textColor="@color/layer_route_replace_charge_slow_text_color"
+            android:textSize="@dimen/sp_28"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/search_charge_focused"
+        android:src="@drawable/layer_icon_search_poi_index_1"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

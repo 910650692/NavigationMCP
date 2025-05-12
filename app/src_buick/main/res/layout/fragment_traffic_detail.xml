@@ -19,11 +19,13 @@
 
     <com.fy.navi.ui.view.SkinConstraintLayout
         clickCommand="@{ViewModel.rootClick}"
-        android:layout_width="@dimen/dp_700"
+        android:layout_width="@dimen/dp_698"
         android:layout_height="wrap_content"
-        android:background="@drawable/bg_shadow_handcard"
-        android:minHeight="@dimen/dp_768"
-        android:paddingBottom="@dimen/dp_24">
+        android:minHeight="@dimen/dp_772"
+        android:paddingHorizontal="@dimen/dp_29"
+        android:paddingTop="@dimen/dp_29"
+        android:background="@drawable/bg_shadow_navi_buick"
+        android:paddingBottom="@dimen/dp_53">
 
         <com.fy.navi.ui.view.SkinTextView
             android:id="@+id/tv_title"

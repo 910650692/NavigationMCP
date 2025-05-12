@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <array name="layer_icon_search_list_poi_array">
+        <item>@drawable/layer_icon_search_poi_index_1</item>
+        <item>@drawable/layer_icon_search_poi_index_2</item>
+        <item>@drawable/layer_icon_search_poi_index_3</item>
+        <item>@drawable/layer_icon_search_poi_index_4</item>
+        <item>@drawable/layer_icon_search_poi_index_5</item>
+        <item>@drawable/layer_icon_search_poi_index_6</item>
+        <item>@drawable/layer_icon_search_poi_index_7</item>
+        <item>@drawable/layer_icon_search_poi_index_8</item>
+        <item>@drawable/layer_icon_search_poi_index_9</item>
+        <item>@drawable/layer_icon_search_poi_index_10</item>
+    </array>
+
+    <array name="layer_icon_search_brand_normal_array">
+        <item>@drawable/layer_icon_search_charge_brand_guojiadianwang_normal</item>
+        <item>@drawable/layer_icon_search_charge_brand_putian_normal</item>
+        <item>@drawable/layer_icon_search_charge_brand_xingxing_normal</item>
+        <item>@drawable/layer_icon_search_charge_brand_telaidian_normal</item>
+    </array>
+
+    <array name="layer_icon_search_brand_normal_focused">
+        <item>@drawable/layer_icon_search_charge_brand_guojiadianwang_focused</item>
+        <item>@drawable/layer_icon_search_charge_brand_putian_focused</item>
+        <item>@drawable/layer_icon_search_charge_brand_xingxing_focused</item>
+        <item>@drawable/layer_icon_search_charge_brand_telaidian_focused</item>
+    </array>
+</resources>

@@ -302,6 +302,39 @@ public final class AccountPackage implements AccountAdapterCallBack {
         return mAccountAdapter.accountLogoutRequest();
     }
 
+
+    /**
+     * 存储UUID
+     * @param uuid
+     */
+    public void saveUuid(String uuid) {
+        mCommonManager.insertOrReplace(UserDataCode.SETTING_ACCOUNT_UUID, uuid);
+    }
+
+    /**
+     * 获取UUID
+     * @return uuid
+     */
+    public String getUuid() {
+        return mCommonManager.getValueByKey(UserDataCode.SETTING_ACCOUNT_UUID);
+    }
+
+    /**
+     * 存储app key
+     * @param key
+     */
+    public void saveAppKey(String key) {
+        mCommonManager.insertOrReplace(UserDataCode.SETTING_ACCOUNT_APP_KEY, key);
+    }
+
+    /**
+     * 获取app key
+     * @return
+     */
+    public String getAppKey() {
+        return mCommonManager.getValueByKey(UserDataCode.SETTING_ACCOUNT_APP_KEY);
+    }
+
     public static AccountPackage getInstance() {
         return Helper.EP;
     }

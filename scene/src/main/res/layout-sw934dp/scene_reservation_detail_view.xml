@@ -15,7 +15,7 @@
         android:layout_height="wrap_content"
         android:paddingHorizontal="@dimen/dp_29"
         android:paddingTop="@dimen/dp_29"
-        android:background="@drawable/bg_search_shadow"
+        android:background="@drawable/bg_shadow_navi_buick"
         android:maxHeight="@dimen/dp_772"
         android:paddingBottom="@dimen/dp_69">
 

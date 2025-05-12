@@ -116,6 +116,11 @@ public class ScenePoiDetailContentViewImpl extends BaseSceneModel<ScenePoiDetail
         }
     }
 
+    // 云端自营站查询详情
+    public void doSearchByNet(final PoiInfoEntity poiInfoEntity){
+        mTaskId = mSearchPackage.queryStationInfo(poiInfoEntity);
+    }
+
     public GeoPoint getCurrentLocation() {
         return mSearchPackage.getCurrentLocation();
     }

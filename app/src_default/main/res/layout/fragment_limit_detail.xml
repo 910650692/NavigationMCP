@@ -15,10 +15,12 @@
 
     <com.fy.navi.ui.view.SkinConstraintLayout
         clickCommand="@{ViewModel.rootClick}"
-        android:layout_width="@dimen/dp_640"
-        android:layout_height="match_parent"
-        android:layout_marginBottom="@dimen/dp_150"
-        android:background="@drawable/bg_limit"
+        android:layout_width="@dimen/dp_698"
+        android:layout_height="@dimen/dp_772"
+        android:layout_marginBottom="@dimen/dp_121"
+        android:paddingHorizontal="@dimen/dp_29"
+        android:paddingVertical="@dimen/dp_29"
+        android:background="@drawable/bg_shadow_navi_buick"
         android:clickable="true">
 
         <com.fy.navi.ui.view.SkinTextView

@@ -5,7 +5,6 @@ import android.content.Context;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
@@ -246,6 +245,63 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
                 }
             }
         });
+
+        mViewBinding.recyclerSearchResult.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(@NonNull final RecyclerView recyclerView, final int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                if (newState == RecyclerView.SCROLL_STATE_IDLE && mSearchType != AutoMapConstant.SearchType.EN_ROUTE_KEYWORD_SEARCH) {
+                    updatePoiMarkerVisibleState();
+                }
+            }
+        });
+    }
+
+    /**
+     * 更新列表后，更新列表item的选中状态
+     */
+    private void updatePoiMarkerVisibleState() {
+        //滑动结束后，高亮对应item
+        final RecyclerView.LayoutManager layoutManager = mViewBinding.recyclerSearchResult.getLayoutManager();
+        final LinearLayoutManager linearLayoutManager = (LinearLayoutManager) layoutManager;
+        // 获取第一个可见item的位置
+        if (linearLayoutManager != null) {
+            final int firstVisiblePosition = linearLayoutManager.findFirstVisibleItemPosition();
+            // 获取最后一个可见item的位置
+            final int lastVisiblePosition = linearLayoutManager.findLastVisibleItemPosition();
+
+            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "第一个可见位置: " + firstVisiblePosition);
+            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "最后一个可见位置: " + lastVisiblePosition);
+            if (mAdapter == null) {
+                return;
+            }
+            final List<PoiInfoEntity> poiInfoEntities = mResultEntity.getPoiList();
+            if (firstVisiblePosition < 0 || firstVisiblePosition >= mAdapter.getItemCount()
+                    || lastVisiblePosition < 0 || lastVisiblePosition >= mAdapter.getItemCount()
+                    || firstVisiblePosition >= lastVisiblePosition) {
+                if (!ConvertUtils.isEmpty(poiInfoEntities)) {
+                    //首次进入可见位置均是-1，默认选中下标0-2的item
+                    final int size = Math.min(3, poiInfoEntities.size());
+                    for (int i = 0; i < poiInfoEntities.size(); i++) {
+                        final PoiInfoEntity poiInfoEntity = poiInfoEntities.get(i);
+                        poiInfoEntity.setMIsVisible(i <= size - 1);
+                    }
+                    mScreenViewModel.updatePoiMarker(poiInfoEntities, 0);
+                }
+                return;
+            }
+            if (!ConvertUtils.isEmpty(poiInfoEntities)) {
+                // 遍历所有可见的item
+                for (int i = 0; i < poiInfoEntities.size(); i++) {
+                    if (!ConvertUtils.isEmpty(poiInfoEntities)) {
+                        final PoiInfoEntity poiInfoEntity = poiInfoEntities.get(i);
+                        poiInfoEntity.setMIsVisible(i >= firstVisiblePosition && i <= lastVisiblePosition);
+                    }
+                }
+                mScreenViewModel.updatePoiMarker(poiInfoEntities, 0);
+            }
+        }
+
     }
 
     /**
@@ -300,6 +356,7 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
                 mScreenViewModel.queryStationNewResult();
             }else{
                 mAdapter.notifyList(mSearchResultEntity);
+                updatePoiMarkerVisibleState();
                 mViewBinding.recyclerSearchResult.scrollToPosition(0);
             }
         });
@@ -610,8 +667,9 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
         // 处理用户搜索意图
         if(searchResultEntity != null && !ConvertUtils.isEmpty(searchResultEntity.getQueryTypeList())){
             boolean isChargeQuery = isChargeQuery(searchResultEntity.getQueryTypeList());
-            boolean isPowerType = mScreenViewModel.powerType() == 1 || mScreenViewModel.powerType() == 2;
-//            boolean isPowerType = true;
+//            boolean isPowerType = mScreenViewModel.powerType() == 1 || mScreenViewModel.powerType() == 2;
+            //todo 功能未开发完成，隐藏入口
+            boolean isPowerType = false;
             boolean isOffline = searchResultEntity.getPoiType() == 0;
             Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"isChargeQuery: "+isChargeQuery+" isPowerType: "+isPowerType+" isOffline: "+isOffline);
             // 意图为充电站且是电车且非离线才显示自营标签
@@ -676,6 +734,7 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
                 mSearchResultEntity = searchResultEntity;
             }
             mAdapter.notifyList(searchResultEntity);
+            updatePoiMarkerVisibleState();
             mViewBinding.recyclerSearchResult.scrollToPosition(0);
         }
         if (mIsFilterViewShow) {

@@ -14,7 +14,7 @@
         android:layout_width="@dimen/dp_698"
         android:layout_height="@dimen/dp_320"
         android:padding="@dimen/dp_29"
-        android:background="@drawable/bg_search_shadow"
+        android:background="@drawable/bg_shadow_navi_buick"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 

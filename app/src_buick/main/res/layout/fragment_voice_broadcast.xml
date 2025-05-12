@@ -15,7 +15,7 @@
         android:clickable="true"
         android:padding="@dimen/dp_29"
         android:orientation="vertical"
-        android:background="@drawable/bg_shadow">
+        android:background="@drawable/bg_shadow_navi_buick">
 
         <com.fy.navi.ui.view.SkinConstraintLayout
             android:id="@+id/voice_broadcast_head"

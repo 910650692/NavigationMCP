@@ -242,4 +242,9 @@
     <!--巡航-->
     <color name="cruise_bg_color">#408C889B</color>
     <color name="cruise_title_color">#B3000000</color>
+
+    <color name="toast_bg_base">#FFFFFF</color>
+    <color name="toast_text">#FF000000</color>
+    <color name="setting_offline_no_search_hint">#FF000000</color>
+    <color name="setting_other_about_bg_btn">#26B2AFC2</color>
 </resources>

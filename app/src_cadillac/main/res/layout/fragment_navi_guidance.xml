@@ -14,7 +14,7 @@
 
     <com.fy.navi.ui.view.SkinConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_1000"
+        android:layout_height="@dimen/dp_1102"
         android:focusable="false">
 
         <com.android.car.ui.FocusParkingView
@@ -22,19 +22,19 @@
             android:layout_height="wrap_content" />
 
         <com.android.car.ui.FocusArea
-            android:id="@+id/focus_guid_main"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+        <com.fy.navi.ui.view.SkinConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:nudgeLeft="@+id/focus_guid_continue"
-            app:nudgeRight="@+id/focus_guid_continue"
-            app:wrapAround="true">
+            android:focusable="false">
 
         <com.fy.navi.ui.view.SkinConstraintLayout
             android:id="@+id/navi_scene_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:focusable="false"
-            android:maxHeight="@dimen/dp_1000">
+            android:maxHeight="@dimen/dp_1102">
 
             <!--上部分的父布局-->
             <com.fy.navi.ui.view.SkinConstraintLayout
@@ -42,6 +42,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:focusable="false"
+                android:paddingHorizontal="@dimen/dp_51"
+                android:paddingVertical="@dimen/dp_51"
+                android:background="@drawable/bg_shadow_navi_cadillac_transparent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
@@ -164,18 +167,21 @@
                 android:id="@+id/scene_handing_card"
                 android:layout_width="@dimen/dp_820"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_20"
+                android:layout_marginStart="@dimen/dp_51"
+                android:layout_marginTop="@dimen/dp_m_31"
                 android:focusable="false"
+                app:layout_constraintStart_toStartOf="parent"
                 android:visibility="@{ViewModel.mHandingCardVisibility?View.VISIBLE:View.GONE}"
                 app:layout_constraintTop_toBottomOf="@id/scl_top_container" />
 
             <!--悬挂卡详情-->
             <com.fy.navi.scene.ui.navi.hangingcard.NaviSceneHandingCardDetail
                 android:id="@+id/scene_navi_card_detail"
-                android:layout_width="@dimen/dp_820"
-                android:layout_height="@dimen/dp_568"
-                android:layout_marginTop="@dimen/dp_20"
-                android:background="@drawable/bg_navi_btn_common"
+                android:layout_width="@dimen/dp_922"
+                android:layout_height="@dimen/dp_670"
+                android:layout_marginTop="@dimen/dp_m_81"
+                android:padding="@dimen/dp_51"
+                android:background="@drawable/bg_shadow_navi_cadillac"
                 android:focusable="false"
                 android:visibility="@{ViewModel.mHandingCardDetailVisibility?View.VISIBLE:View.GONE}"
                 app:layout_constraintTop_toBottomOf="@id/scl_top_container" />
@@ -183,7 +189,7 @@
             <!--控制tools-->
             <com.fy.navi.scene.ui.navi.SceneNaviControlView
                 android:id="@+id/scene_navi_control"
-                android:layout_width="@dimen/dp_820"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:focusable="false"
                 android:visibility="@{ViewModel.mNaviControlVisibility?View.VISIBLE:View.GONE}"
@@ -193,7 +199,7 @@
             <!--控制tools more-->
             <com.fy.navi.scene.ui.navi.SceneNaviControlMoreView
                 android:id="@+id/scene_navi_control_more"
-                android:layout_width="@dimen/dp_820"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:focusable="false"
                 android:visibility="@{ViewModel.mNaviControlVisibilityMore?View.VISIBLE:View.GONE}"
@@ -203,9 +209,8 @@
             <!--导航路线偏好-->
             <com.fy.navi.scene.ui.navi.SceneNaviPreferenceView
                 android:id="@+id/scene_navi_preference"
-                android:layout_width="@dimen/dp_820"
-                android:layout_height="@dimen/dp_568"
-                android:background="@drawable/bg_navi_btn_common"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/dp_670"
                 android:focusable="false"
                 android:visibility="@{ViewModel.mNaviPreferenceVisibility?View.VISIBLE:View.GONE}"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -227,7 +232,8 @@
                 android:id="@+id/scene_navi_sapa"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_33"
+                android:layout_marginTop="@dimen/dp_m_18"
+                android:layout_marginStart="@dimen/dp_51"
                 android:focusable="false"
                 android:visibility="@{ViewModel.mNaviSapaVisibility?View.VISIBLE:View.GONE}"
                 app:layout_constraintStart_toStartOf="parent"
@@ -237,12 +243,13 @@
             <com.fy.navi.scene.ui.navi.view.ButtonText
                 android:id="@+id/stv_navi_route_name"
                 android:layout_width="wrap_content"
-                android:layout_height="@dimen/dp_120"
-                android:layout_marginStart="@dimen/dp_684"
-                android:background="@drawable/bg_navi_control"
+                android:layout_height="@dimen/dp_222"
+                android:layout_marginStart="@dimen/dp_633"
+                android:background="@drawable/bg_shadow_navi_cadillac"
                 android:clickable="false"
                 android:gravity="center"
-                android:paddingHorizontal="@dimen/dp_40"
+                android:paddingVertical="@dimen/dp_51"
+                android:paddingHorizontal="@dimen/dp_91"
                 android:textColor="@color/common_title_purple_color"
                 android:textSize="@dimen/sp_46"
                 android:focusable="false"
@@ -256,7 +263,7 @@
                 android:id="@+id/scene_navi_last_mile"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_40"
+                android:layout_marginStart="@dimen/dp_m_62"
                 android:focusable="false"
                 android:visibility="@{ViewModel.mNaviLastMileVisibility?View.VISIBLE:View.GONE}"
                 app:layout_constraintStart_toEndOf="@id/scl_top_container"
@@ -267,7 +274,7 @@
                 android:id="@+id/scene_navi_parallel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_20"
+                android:layout_marginStart="@dimen/dp_m_82"
                 android:focusable="false"
                 android:visibility="@{ViewModel.mNaviParallelVisibility?View.VISIBLE:View.GONE}"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -286,7 +293,7 @@
             <!--SAPA详情-->
             <com.fy.navi.scene.ui.navi.SceneNaviSapaDetailView
                 android:id="@+id/scene_navi_sapa_detail"
-                android:layout_width="@dimen/dp_820"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:focusable="false"
                 android:visibility="@{ViewModel.mNaviSapaDetailVisibility?View.VISIBLE:View.GONE}"
@@ -316,18 +323,7 @@
                 app:layout_constraintTop_toBottomOf="@id/scl_top_container"
                 tools:visibility="gone" />
         </com.fy.navi.ui.view.SkinConstraintLayout>
-        </com.android.car.ui.FocusArea>
 
-        <com.android.car.ui.FocusArea
-            android:id="@+id/focus_guid_continue"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:nudgeLeft="@+id/focus_guid_main"
-            app:nudgeRight="@+id/focus_guid_main"
-            app:wrapAround="true"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginStart="@dimen/dp_1431">
         <!--继续导航按钮-->
         <com.fy.navi.scene.ui.navi.SceneNaviContinueView
             android:id="@+id/scene_navi_continue"
@@ -335,8 +331,11 @@
             android:layout_height="@dimen/dp_120"
             android:focusable="false"
             android:visibility="@{ViewModel.mNaviContinueVisibility?View.VISIBLE:View.GONE}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginBottom="@dimen/dp_51"
+            android:layout_marginStart="@dimen/dp_1482"
             />
-        </com.android.car.ui.FocusArea>
 
         <com.fy.navi.scene.ui.navi.GuidanceSimulationView
             android:id="@+id/navi_sim_view"
@@ -347,8 +346,8 @@
             android:visibility="@{ViewModel.mNaviSim?View.VISIBLE:View.GONE}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
-
+        </com.fy.navi.ui.view.SkinConstraintLayout>
+        </com.android.car.ui.FocusArea>
     </com.fy.navi.ui.view.SkinConstraintLayout>
-
 
 </layout>

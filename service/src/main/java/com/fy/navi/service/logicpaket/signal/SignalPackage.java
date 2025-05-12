@@ -176,7 +176,7 @@ public final class SignalPackage implements SignalAdapterCallback {
      * @return 单位kWh
      */
     public float getMaxBatteryEnergy() {
-        return mSignalAdapter.getMaxBatteryEnergy();
+        return mSignalAdapter.getMaxBatteryEnergy() / 1000;
     }
 
     /**

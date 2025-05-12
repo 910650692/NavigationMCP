@@ -8,6 +8,9 @@ import android.text.TextUtils;
 import androidx.annotation.NonNull;
 
 import com.android.utils.log.Logger;
+import com.google.gson.annotations.SerializedName;
+
+import java.util.ArrayList;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -22,9 +25,13 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 public class ChargeInfo implements Parcelable {
     private int mChildType = 0;
+    @SerializedName("slowChargingFree")
     private int mSlowFree = 0;
+    @SerializedName("slowChargingTotal")
     private int mSlowTotal = 0;
+    @SerializedName("fastChargingFree")
     private int mFastFree = 0;
+    @SerializedName("fastChargingTotal")
     private int mFastTotal = 0;
     private int mSuperFree = -1;
     private int mSuperTotal = -1;
@@ -36,11 +43,13 @@ public class ChargeInfo implements Parcelable {
     private float mFMax;
     private float mFMin;
     private String mCurrentElePrice;
+    @SerializedName("parkFee")
     private String mCurrentServicePrice;
     private int maxPower;
     private int minPower;
     private int mQueryType;
     private String mPoiId;
+
     private String mName;
     private String mTypeCode;
     private int mSlowVolt;
@@ -50,6 +59,10 @@ public class ChargeInfo implements Parcelable {
     private String mOperatorId; // 运营商id
     private String mStationId; // 充电站id
     private String mBrand; // 品牌
+    @SerializedName("costItem")
+    private ArrayList<CostTime> mCostItem;
+    private ArrayList<EquipmentInfo> mEquipmentInfo;
+    private boolean mIsAppointment;  //是否预约
 
     public int getChildType() {
         return mChildType;
@@ -454,6 +467,24 @@ public class ChargeInfo implements Parcelable {
         return this;
     }
 
+    public ArrayList<CostTime> getCostItem() {
+        return mCostItem;
+    }
+
+    public ChargeInfo setCostItem(ArrayList<CostTime> mCostItem) {
+        this.mCostItem = mCostItem;
+        return this;
+    }
+
+    public ArrayList<EquipmentInfo> getEquipmentInfo() {
+        return mEquipmentInfo;
+    }
+
+    public ChargeInfo setEquipmentInfo(ArrayList<EquipmentInfo> mEquipmentInfo) {
+        this.mEquipmentInfo = mEquipmentInfo;
+        return this;
+    }
+
     protected ChargeInfo(final Parcel in) {
         mChildType = in.readInt();
         mSlowFree = in.readInt();
@@ -484,6 +515,9 @@ public class ChargeInfo implements Parcelable {
         mOperatorId = in.readString();
         mStationId = in.readString();
         mBrand = in.readString();
+        mCostItem = in.createTypedArrayList(CostTime.CREATOR);
+        mEquipmentInfo = in.createTypedArrayList(EquipmentInfo.CREATOR);
+        mIsAppointment = in.readBoolean();
     }
 
     public static final Creator<ChargeInfo> CREATOR = new Creator<ChargeInfo>() {
@@ -534,5 +568,8 @@ public class ChargeInfo implements Parcelable {
         parcel.writeString(mOperatorId);
         parcel.writeString(mStationId);
         parcel.writeString(mBrand);
+        parcel.writeTypedList(mCostItem);
+        parcel.writeTypedList(mEquipmentInfo);
+        parcel.writeBoolean(mIsAppointment);
     }
 }

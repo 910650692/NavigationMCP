@@ -60,9 +60,16 @@ public class SearchResultModel extends BaseModel<SearchResultViewModel> implemen
         }
     }
 
+    /**
+     * 搜索结果列表页面可变状态变化回调
+     * @param isShow 是否可见
+     */
+    public void updateShowState(final boolean isShow) {
+        mSearchPackage.updateShowState(isShow);
+    }
+
     @Override
     public void onSearchResult(final int taskId, final int errorCode, final String message, final SearchResultEntity searchResultEntity) {
-        Logger.d("huangli: ","CurrentCallbackId: "+mSearchPackage.getCurrentCallbackId());
         if (mCallbackId.equals(mSearchPackage.getCurrentCallbackId())) {
             if (searchResultEntity.getSearchType() == AutoMapConstant.SearchType.POI_SEARCH
                     || searchResultEntity.getSearchType() == AutoMapConstant.SearchType.GEO_SEARCH) {
@@ -163,9 +170,10 @@ public class SearchResultModel extends BaseModel<SearchResultViewModel> implemen
     }
 
     @Override
-    public void onNetSearchResult(BaseRep result) {
+    public void onNetSearchResult(final int taskId,BaseRep result) {
         if (mCallbackId.equals(mSearchPackage.getCurrentCallbackId())) {
-            mViewModel.notifyNetSearchResult(result);
+            mTaskId = taskId;
+            mViewModel.notifyNetSearchResult(taskId,result);
         }
     }
 }

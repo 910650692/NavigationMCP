@@ -24,6 +24,7 @@ public class SearchResultFragment extends BaseFragment<FragmentSearchResultBindi
     private int mTaskId;
     private SearchResultEntity mSearchResultEntity;
     private int mHomeCompany;
+
     @Override
     public int onLayoutId() {
         Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "onLayoutId");
@@ -116,7 +117,10 @@ public class SearchResultFragment extends BaseFragment<FragmentSearchResultBindi
     public void onHiddenChanged(boolean hidden) {
         super.onHiddenChanged(hidden);
         if (!hidden) {
+            updateShowState(true);
             mBinding.scenePoiList.reloadPoiMarker();
+        } else {
+            updateShowState(false);
         }
     }
 
@@ -147,10 +151,31 @@ public class SearchResultFragment extends BaseFragment<FragmentSearchResultBindi
     @Override
     public void onDestroy() {
         super.onDestroy();
+        updateShowState(false);
         mBinding.scenePoiList.clear();
     }
 
-    public void notifySearchResultByNet(final SearchResultEntity searchResultEntity){
-        mBinding.scenePoiList.notifySearchResult(mTaskId, searchResultEntity);
+    public void notifySearchResultByNet(final int taskId,final SearchResultEntity searchResultEntity){
+        mBinding.scenePoiList.notifySearchResult(taskId, searchResultEntity);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        updateShowState(true);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        updateShowState(false);
+    }
+
+    /**
+     * 搜索结果列表页面可变状态变化回调
+     * @param isShow 是否可见
+     */
+    private void updateShowState(final boolean isShow) {
+        mViewModel.updateShowState(isShow);
     }
 }

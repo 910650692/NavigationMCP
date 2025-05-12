@@ -8,11 +8,13 @@
         android:layout_height="wrap_content">
 
         <com.fy.navi.ui.view.SkinConstraintLayout
-            android:layout_width="@dimen/dp_1600"
-            android:layout_height="@dimen/dp_648"
-            android:layout_marginStart="@dimen/dp_310"
-            android:layout_marginBottom="@dimen/dp_180"
-            android:background="@drawable/bg_dialog_authorization"
+            android:layout_width="@dimen/dp_1694"
+            android:layout_height="@dimen/dp_726"
+            android:paddingHorizontal="@dimen/dp_47"
+            android:paddingVertical="@dimen/dp_39"
+            android:layout_marginStart="@dimen/dp_263"
+            android:layout_marginBottom="@dimen/dp_141"
+            android:background="@drawable/bg_shadow_system_cadillac"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent">
 

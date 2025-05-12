@@ -69,7 +69,7 @@ public abstract class BaseFragment<V extends ViewDataBinding, VM extends BaseVie
         onInitObserver();
         onInitData();
         if (ConvertUtils.isEmpty(savedInstanceState)
-                || Boolean.FALSE.equals(Objects.requireNonNull(savedInstanceState).getBoolean(KEY_CHANGE_SAVE_INSTANCE))){
+                || Boolean.FALSE.equals(Objects.requireNonNull(savedInstanceState).getBoolean(KEY_CHANGE_SAVE_INSTANCE))) {
             //todo 请在此方法里面请求数据，并将数据保存
             onGetFragmentData();
         } else {
@@ -82,7 +82,7 @@ public abstract class BaseFragment<V extends ViewDataBinding, VM extends BaseVie
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putBoolean(KEY_CHANGE_SAVE_INSTANCE,true);
+        outState.putBoolean(KEY_CHANGE_SAVE_INSTANCE, true);
     }
 
     @Override
@@ -129,47 +129,73 @@ public abstract class BaseFragment<V extends ViewDataBinding, VM extends BaseVie
 
     @Override
     public void addFragment(final BaseFragment fragment, final Bundle bundle) {
+        if (mActivity == null) {
+            return;
+        }
         mActivity.addFragment(fragment, bundle);
     }
 
     @Override
     public void addFragment(BaseFragment fragment, Bundle bundle, boolean isHideCurFragment) {
+        if (mActivity == null) {
+            return;
+        }
         mActivity.addFragment(fragment, bundle, isHideCurFragment);
     }
 
     @Override
     public void addPoiDetailsFragment(BaseFragment fragment, Bundle bundle) {
+        if (mActivity == null) {
+            return;
+        }
         mActivity.addPoiDetailsFragment(fragment, bundle);
     }
 
     @Override
     public void closeFragment(final boolean nextShow) {
+        if (mActivity == null) {
+            return;
+        }
         mActivity.closeFragment(nextShow);
-
     }
 
     @Override
     public void closeFragment(Bundle bundle) {
+        if (mActivity == null) {
+            return;
+        }
         mActivity.closeFragment(bundle);
     }
 
     @Override
     public void closeAllFragment() {
+        if (mActivity == null) {
+            return;
+        }
         mActivity.closeAllFragment();
     }
 
     @Override
     public void closeAllFragmentUpRoute() {
+        if (mActivity == null) {
+            return;
+        }
         mActivity.closeAllFragmentUpRoute();
     }
 
     @Override
     public void closeAllFragmentUpNavi() {
+        if (mActivity == null) {
+            return;
+        }
         mActivity.closeAllFragmentUpNavi();
     }
 
     @Override
     public void closeAllFragmentsUntilTargetFragment(final String targetFragmentClassName) {
+        if (mActivity == null) {
+            return;
+        }
         mActivity.closeAllFragmentsUntilTargetFragment(targetFragmentClassName);
     }
 
@@ -179,6 +205,9 @@ public abstract class BaseFragment<V extends ViewDataBinding, VM extends BaseVie
 
     @Override
     public void showCurrentFragment() {
+        if (mActivity == null) {
+            return;
+        }
         mActivity.showCurrentFragment();
     }
 

@@ -5,6 +5,7 @@ import android.app.Application;
 import androidx.annotation.NonNull;
 
 import com.android.utils.ConvertUtils;
+import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
 import com.fy.navi.service.define.bean.GeoPoint;
 import com.fy.navi.service.MapDefaultFinalTag;
@@ -59,9 +60,9 @@ public class BaseCollectViewModel extends BaseViewModel<CollectFragment, Collect
         return mModel.powerType();
     }
 
-    public void notifyNetSearchResult(BaseRep result){
+    public void notifyNetSearchResult(int taskId,BaseRep result){
         if(!ConvertUtils.isNull(result)){
-            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"result"+result.getDataSet());
+            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"code"+result.getResultCode());
             ArrayList<PoiInfoEntity> list = new ArrayList<>();
             // 回调出的数据转换List
             try {
@@ -71,15 +72,11 @@ public class BaseCollectViewModel extends BaseViewModel<CollectFragment, Collect
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject object = new JSONObject(String.valueOf(jsonArray.get(i)));
                         if(object.getBoolean("stationSaved")){
+                            PoiInfoEntity entity = GsonUtils.fromJson(jsonArray.getString(i),PoiInfoEntity.class);
                             GeoPoint point = new GeoPoint();
                             point.setLat(ConvertUtils.str2Double(object.getString("stationLat")));
                             point.setLon(ConvertUtils.str2Double(object.getString("stationLng")));
-                            PoiInfoEntity entity = new PoiInfoEntity()
-                                    .setName(object.getString("stationName"))
-                                    .setAddress(object.getString("address"))
-                                    .setOperatorId(object.getString("operatorId"))
-                                    .setStationId(object.getString("stationId"))
-                                    .setPoint(point);
+                            entity.setPoint(point);
                             list.add(entity);
                         }
                     }

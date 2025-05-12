@@ -52,6 +52,8 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import lombok.Getter;
+
 
 final public class SearchPackage implements ISearchResultCallback, ILayerAdapterCallBack {
     private static final String TAG = "SearchPackage";
@@ -67,6 +69,8 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
     private final ConcurrentHashMap<String, SearchResultCallback> mISearchResultCallbackMap = new ConcurrentHashMap<>();
     private final AtomicReference<String> mCurrentCallbackId = new AtomicReference<>();
     private static final Map<LayerPointItemType, LayerItemSearchResult> sMarkerInfoMap = new ConcurrentHashMap<>();
+    @Getter
+    private boolean mIsShow;
 
     private SearchPackage() {
         mManager = HistoryManager.getInstance();
@@ -141,13 +145,13 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
     }
 
     @Override
-    public void onNetSearchResult(BaseRep result) {
+    public void onNetSearchResult(final int taskId,BaseRep result) {
         Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "onNetSearchResult");
         for (Map.Entry<String, SearchResultCallback> entry : mISearchResultCallbackMap.entrySet()) {
             final String identifier = entry.getKey();
             mCurrentCallbackId.set(identifier);
             final SearchResultCallback callback = entry.getValue();
-            callback.onNetSearchResult(result);
+            callback.onNetSearchResult(taskId,result);
         }
     }
 
@@ -972,6 +976,29 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
      * @param poiList 搜索结果列表
      * @param index 当前选中下标
      */
+    public void updatePoiMarker(final List<PoiInfoEntity> poiList, final int index) {
+        if (ConvertUtils.isEmpty(poiList)) {
+            return;
+        }
+        final PoiInfoEntity poiInfoEntity = poiList.get(0);
+        final int type = getPointTypeCode(poiInfoEntity.getPointTypeCode());
+        final LayerItemSearchResult layerItemSearchResult = new LayerItemSearchResult();
+        layerItemSearchResult.setSearchResultPoints((ArrayList<PoiInfoEntity>) poiList);
+        //todo 等待图层添加更新扎标对应type，目前先用原type占位
+        final LayerPointItemType layerPointItemType = type == AutoMapConstant.PointTypeCode.CHARGING_STATION ?
+                LayerPointItemType.SEARCH_PARENT_CHARGE_STATION :
+                LayerPointItemType.SEARCH_PARENT_POINT;
+        sMarkerInfoMap.put(layerPointItemType, layerItemSearchResult);
+        mLayerAdapter.updateSearchMarker(MapType.MAIN_SCREEN_MAIN_MAP, layerPointItemType,
+                layerItemSearchResult, true);
+        showPreview(poiList);
+    }
+
+    /**
+     * 搜索结果列表扎标
+     * @param poiList 搜索结果列表
+     * @param index 当前选中下标
+     */
     public void createTerminalParkPoiMarker(final List<PoiInfoEntity> poiList, final int index) {
         if (ConvertUtils.isEmpty(poiList)) {
             return;
@@ -1459,6 +1486,30 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
         final SearchRequestParameter requestParameterBuilder = new SearchRequestParameter.Builder()
                 .build();
         return mSearchAdapter.queryStationNewResult(requestParameterBuilder);
+    }
+
+    /*
+     * 查询自营站信息
+     * */
+    public int queryStationInfo(PoiInfoEntity poiInfo){
+        final SearchRequestParameter requestParameterBuilder = new SearchRequestParameter.Builder()
+                .build();
+        return mSearchAdapter.queryStationInfo(requestParameterBuilder);
+    }
+
+    /**
+     * 搜索结果列表页面可变状态变化回调
+     * @param isShow 是否可见
+     */
+    public void updateShowState(final boolean isShow) {
+        Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "updateShowState : " + isShow);
+        mIsShow = isShow;
+        for (Map.Entry<String, SearchResultCallback> entry : mISearchResultCallbackMap.entrySet()) {
+            final String identifier = entry.getKey();
+            mCurrentCallbackId.set(identifier);
+            final SearchResultCallback callback = entry.getValue();
+            callback.onShowStateChanged(isShow);
+        }
     }
 
 }

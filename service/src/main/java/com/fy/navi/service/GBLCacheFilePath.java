@@ -72,5 +72,6 @@ public interface GBLCacheFilePath extends AutoMapConstant {
     String BEHAVIOR_WSTR_DB_FILE_DIR = GBL_MAP + "wstrDb" + File.separator;
 
     /***  暂定 激活文件保存路径  **/
+    //sdcard/Android/data/your_package/files/AutoMap/Gbl/activate/
     String ACTIVATE_USER_DATA = GBL_MAP + "activate/";
 }

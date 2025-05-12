@@ -16,10 +16,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:focusable="false"
-        android:paddingVertical="@dimen/dp_7"
+        android:paddingVertical="@dimen/dp_10"
         android:paddingHorizontal="@dimen/dp_30"
         tools:background="@drawable/bg_navi_tbt_middle"
-        tools:layout_height="@dimen/dp_475"
         tools:layout_width="@dimen/dp_820">
 
         <androidx.constraintlayout.widget.Guideline
@@ -28,7 +27,7 @@
             android:layout_height="wrap_content"
             android:focusable="false"
             android:orientation="horizontal"
-            app:layout_constraintGuide_begin="@dimen/dp_20" />
+            app:layout_constraintGuide_begin="@dimen/dp_32" />
 
         <androidx.constraintlayout.widget.Group
             android:id="@+id/group_next"

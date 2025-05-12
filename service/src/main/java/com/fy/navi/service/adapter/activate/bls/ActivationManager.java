@@ -1,5 +1,7 @@
 package com.fy.navi.service.adapter.activate.bls;
 
+import android.os.SystemProperties;
+
 import androidx.annotation.NonNull;
 
 import com.android.utils.ConvertUtils;
@@ -14,10 +16,13 @@ import com.fy.navi.service.AutoMapConstant;
 import com.fy.navi.service.GBLCacheFilePath;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.adapter.activate.cloudpatac.response.AppKeyResponse;
-import com.fy.navi.service.adapter.activate.cloudpatac.api.AppKeyRepository;
+import com.fy.navi.service.adapter.activate.cloudpatac.api.NetQueryRepository;
 import com.fy.navi.service.adapter.activate.cloudpatac.request.AppKeyReq;
+import com.fy.navi.service.adapter.activate.cloudpatac.response.CheckOrderResponse;
+import com.fy.navi.service.logicpaket.user.account.AccountPackage;
 import com.patac.netlib.callback.NetDisposableObserver;
 import com.patac.netlib.exception.ApiException;
+import com.patac.netlib.factory.NetPkiFactory;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -43,16 +48,18 @@ public final class ActivationManager {
 
     private static final String TEST_URL = "https://test-ninfo-securitygateway.sgmlink.com:667/info4gw/";
     private static final String TEST_APP_ID = "SELF_DEVELOPED_MAP";
+    private final static String RELEASE_STATUS = "ro.patac.production";
     private static String DEVICES_ID = "";
     private static String SYS_VERSION = "";
     private static String APP_KEY = "";
     private static String AUTH_CODE = "";
-    private static String VIN = "";
+    private static String UUID = "";
+
+    private boolean mFlagForTest = false;
 
     private IActivateHelper mActivateListener;
     private final ActivationModule mActivationService;
     private boolean mIsInit = false;
-    private static int NET_FAILED_COUNT = 0;
 
 
     private final INetActivateObserver mNetActivateObserver = new INetActivateObserver() {
@@ -70,6 +77,10 @@ public final class ActivationManager {
         SYS_VERSION = "1.0";
         Logger.d(TAG, "ActivationManager: devicesId = " + DEVICES_ID);
         Logger.d(TAG, "                  sysVersion = " + SYS_VERSION);
+
+        final int releaseStatus = SystemProperties.getInt(RELEASE_STATUS, 0);
+        Logger.d(TAG, "当前车机环境 : "
+                + releaseStatus + " : " + (releaseStatus == 1 ? "生产环境" : "测试环境"));
     }
 
     /**
@@ -117,12 +128,29 @@ public final class ActivationManager {
     private void genAppKey() {
         Logger.d(TAG, "genAppKey: ");
 
+        if (!ConvertUtils.isEmpty(APP_KEY)) {
+            Logger.d(TAG, "APP_KEY静态变量不为空 = " + APP_KEY);
+            NetPkiFactory.getInstance().saveAppSecurity(APP_KEY);
+            mFlagForTest = true;
+            postUUID();
+            return;
+        }
+
+        if (!ConvertUtils.isEmpty(AccountPackage.getInstance().getAppKey())) {
+            APP_KEY = AccountPackage.getInstance().getAppKey();
+            Logger.d(TAG, "APP_KEY静态变量为空，数据库存有APP_KEY = " + APP_KEY);
+            NetPkiFactory.getInstance().saveAppSecurity(APP_KEY);
+            mFlagForTest = true;
+            postUUID();
+            return;
+        }
+
         final AppKeyReq req = new AppKeyReq("1.0");
         req.setCheckAppKey(false);
         req.setHeaderJson(true);
         req.setAddContentType(true);
 
-        final Observable<AppKeyResponse> observable = AppKeyRepository.getInstance().queryAppKey(req);
+        final Observable<AppKeyResponse> observable = NetQueryRepository.getInstance().queryAppKey(req);
 
         Logger.d(TAG, "1: " + observable.toString());
         observable.subscribeOn(Schedulers.io())
@@ -131,6 +159,7 @@ public final class ActivationManager {
                     @Override
                     public void onSuccess(final AppKeyResponse appKeyBean) {
                         Logger.d(TAG, appKeyBean.toString());
+                        mFlagForTest = true;
                     }
 
                     @Override
@@ -174,19 +203,24 @@ public final class ActivationManager {
     }
 
     /**
-     * 获取authCode
-     */
-    private void genAuthCode() {
-        //AUTH_CODE =         TOTPUtil.getInstance().generateMyTOTP(APP_KEY);
-        Logger.d(TAG, "genAuthCode: " + AUTH_CODE);
-        postUUID();
-    }
-
-    /**
      * 网络请求uuid
      */
     private void postUUID() {
         Logger.d(TAG, "postUUID: ");
+
+        if (!ConvertUtils.isEmpty(UUID)) {
+            Logger.d(TAG, "UUID静态变量不为空 = " + UUID);
+            mActivateListener.onUUIDGet(UUID);
+            return;
+        }
+
+        if (!ConvertUtils.isEmpty(AccountPackage.getInstance().getUuid())) {
+            UUID = AccountPackage.getInstance().getUuid();
+            Logger.d(TAG, "UUID静态变量为空，数据库存有UUID = " + UUID);
+            mActivateListener.onUUIDGet(UUID);
+            return;
+        }
+
         final HashMap<String, String> header = new HashMap<>();
         header.put("Content-Type", "application/json;charset=UTF-8");
         header.put("appId", TEST_APP_ID);
@@ -227,11 +261,11 @@ public final class ActivationManager {
                         try {
                             final JSONObject jsonObject = new JSONObject(result);
                             final JSONObject dataSet = new JSONObject(jsonObject.getString("dataSet"));
-                            VIN = dataSet.getString("vin");
+                            UUID = dataSet.getString("vin");
                         } catch (JSONException e) {
                             Logger.e(TAG, "JSONException : " + e);
                         }
-                        mActivateListener.onUUIDGet(VIN);
+                        mActivateListener.onUUIDGet(UUID);
                     }
                 }
         );
@@ -245,7 +279,6 @@ public final class ActivationManager {
      */
     public boolean initActivationService(final String uuid) {
         Logger.d(TAG, "initActivationService: ");
-        mActivationService.setNetActivateObserver(mNetActivateObserver);
 
         final ActivationInitParam actInitParam = new ActivationInitParam();
 
@@ -287,7 +320,8 @@ public final class ActivationManager {
         }
         final int activateStatus = mActivationService.getActivateStatus();
         Logger.d(TAG, "激活状态码 = " + activateStatus);
-        return ConvertUtils.equals(0, activateStatus);
+        //return ConvertUtils.equals(0, activateStatus);
+        return mFlagForTest;
     }
 
     /**
@@ -295,7 +329,7 @@ public final class ActivationManager {
      */
     public void createCloudOrder() {
         Logger.d(TAG, "createCloudOrder");
-        mActivateListener.onCreateOrder(true);
+        mActivateListener.onOrderCreated(true);
         // 调用三方下单接口
     }
 
@@ -332,10 +366,12 @@ public final class ActivationManager {
                     } else {
                         executor.schedule(taskRef.get(), delays[currentCount], TimeUnit.SECONDS);
                     }
-                    getInstance().checkOrderStatus(new NetDisposableObserver<AppKeyResponse>() {
+
+                    getInstance().checkOrderStatus(new NetDisposableObserver<CheckOrderResponse>() {
                         @Override
-                        public void onSuccess(final AppKeyResponse appKeyBean) {
+                        public void onSuccess(final CheckOrderResponse appKeyBean) {
                             Logger.d(TAG, "checkOrderStatus success");
+                            manualActivate("", "");
                             future.complete(true);
                             executor.shutdownNow();
                         }
@@ -364,7 +400,7 @@ public final class ActivationManager {
             }
         };
         taskRef.set(task);
-        executor.schedule(task, retryCount.get(), TimeUnit.SECONDS);
+        executor.schedule(task, delays[0], TimeUnit.SECONDS);
 
         try {
             // 总超时 = 所有可能延迟之和 + 缓冲时间（例如15分钟）
@@ -395,7 +431,7 @@ public final class ActivationManager {
      *
      * @param netDisposableObserver 网络结果回调
      */
-    public void checkOrderStatus(final NetDisposableObserver<AppKeyResponse> netDisposableObserver) {
+    public void checkOrderStatus(final NetDisposableObserver<CheckOrderResponse> netDisposableObserver) {
         Logger.d(TAG, "checkOrderStatus");
 
     }
@@ -404,8 +440,8 @@ public final class ActivationManager {
      * 网络激活
      */
     public void netActivate() {
-        ++NET_FAILED_COUNT;
-        final String hardWareCode = "0000000000"; // 默认10个0
+        //++NET_FAILED_COUNT;
+        //final String hardWareCode = "0000000000"; // 默认10个0
         //final int netActivateResult = mActivationService.netActivate(hardWareCode);
         //Logger.i(TAG, "netActivateResult = " + netActivateResult + "; failed count : " + NET_FAILED_COUNT);
         mActivateListener.onNetActivated(false);
@@ -446,15 +482,6 @@ public final class ActivationManager {
         mActivateListener.onManualActivated(ConvertUtils.equals(0, activateReturnParam.iErrorCode));
     }
 
-    public static int getNetFailedCount() {
-        return NET_FAILED_COUNT;
-    }
-
-    public static void setNetFailedCount(final int netFailedCount) {
-        NET_FAILED_COUNT = netFailedCount;
-    }
-
-
     public interface IActivateHelper {
 
         /**
@@ -483,6 +510,6 @@ public final class ActivationManager {
          *
          * @param isSuccess 是否成功
          */
-        void onCreateOrder(final boolean isSuccess);
+        void onOrderCreated(final boolean isSuccess);
     }
 }

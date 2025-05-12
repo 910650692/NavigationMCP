@@ -110,6 +110,8 @@
             android:defaultToDeviceProtectedStorage="true"
             android:exported="true"
             android:foregroundServiceType="shortService" />
+        <service android:name=".launcher.LauncherWindowService"
+            android:exported="true" />
     </application>
 
 </manifest>

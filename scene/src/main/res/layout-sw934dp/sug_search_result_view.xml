@@ -28,7 +28,7 @@
             android:paddingEnd="@dimen/dp_29"
             android:paddingTop="@dimen/dp_29"
             android:paddingBottom="@dimen/dp_29"
-            android:background="@drawable/bg_search_shadow">
+            android:background="@drawable/bg_shadow_navi_buick">
 
             <com.fy.navi.ui.view.SkinRecyclerView
                 android:id="@+id/recycler_search_result"

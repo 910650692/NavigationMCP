@@ -23,7 +23,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_437"
-            android:background="@drawable/bg_small_shadow"
+            android:background="@drawable/bg_shadow_navi_buick"
             android:clickable="true"
             android:focusable="false"
             android:minWidth="@dimen/dp_455"
@@ -40,7 +40,7 @@
             android:layout_width="@dimen/dp_223"
             android:layout_height="@dimen/dp_206"
             android:layout_marginTop="@dimen/dp_304"
-            android:background="@drawable/bg_small_shadow"
+            android:background="@drawable/bg_shadow_navi_buick"
             android:focusable="true"
             app:layout_constraintStart_toStartOf="@id/cruise_lanes_view"
             app:layout_constraintTop_toBottomOf="@id/cruise_lanes_view" />

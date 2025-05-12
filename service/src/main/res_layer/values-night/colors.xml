@@ -18,4 +18,6 @@
 
     <color name="layer_custom_point_bg_fill_color">#FF293854</color>
     <color name="layer_color_white">#FFFFFF</color>
+    <color name="layer_search_charge_icon_stroke_color">#00000000</color>
+    <color name="layer_search_charge_icon_inside_fill_color">#000000</color>
 </resources>

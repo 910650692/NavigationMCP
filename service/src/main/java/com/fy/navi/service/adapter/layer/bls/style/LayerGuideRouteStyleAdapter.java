@@ -48,6 +48,10 @@ public class LayerGuideRouteStyleAdapter extends BaseStyleAdapter {
     private static final String KEY_ROAD_RASTER_CROSS = "road_raster_cross";
     private static final String KEY_ROAD_VECTOR_CROSS = "road_vector_cross";
     private static final String KEY_ROAD_REAL_CROSS = "road_real_cross";
+    //起点
+    private static final String KEY_ROAD_START_DEFAULT = "road_start_default";
+    //终点
+    private static final String KEY_ROAD_END_DEFAULT = "road_end_default";
     //终点-剩余续航
     private static final String KEY_ROAD_END_SURPLUS_POWER_POINT = "road_end_surplus_power_point";
     //终点-营业时间
@@ -94,6 +98,10 @@ public class LayerGuideRouteStyleAdapter extends BaseStyleAdapter {
                 Logger.d(TAG, "3D精品大图图层");
                 return KEY_ROAD_REAL_CROSS;
             }
+            case BizRouteType.BizRouteTypeStartPoint -> {
+                Logger.d(TAG, "起点扎标-默认扎标");
+                return KEY_ROAD_START_DEFAULT;
+            }
             case BizRouteType.BizRouteTypeEndPoint -> {
                 if (item instanceof RoutePathPointItem) {
                     if (ConvertUtils.isEmpty(mRouteResult) ||
@@ -103,7 +111,7 @@ public class LayerGuideRouteStyleAdapter extends BaseStyleAdapter {
                             ConvertUtils.isEmpty(mRouteResult.getMLayerItemRouteEndPoint()
                                     .get(mRouteControl.getSelectedPathIndex()).getRestNum() == NumberUtils.NUM_ERROR)) {
                         Logger.d(TAG, "终点扎标-默认扎标");
-                        return super.provideLayerItemStyleJson(item);
+                        return KEY_ROAD_END_DEFAULT;
                     } else {
                         LayerItemRouteEndPoint layerItemRouteEndPoint = mRouteResult.getMLayerItemRouteEndPoint()
                                 .get(mRouteControl.getSelectedPathIndex());

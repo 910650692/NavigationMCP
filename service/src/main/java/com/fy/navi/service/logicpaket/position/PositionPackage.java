@@ -38,12 +38,12 @@ public class PositionPackage implements IPositionAdapterCallback, SignalAdapterC
     }
 
     private PositionPackage() {
-        mPositionAdapter = PositionAdapter.getInstance();
-        mPositionAdapter.registerCallback(this);
-        mSignalAdapter = SignalAdapter.getInstance();
     }
 
     public boolean init() {
+        mPositionAdapter = PositionAdapter.getInstance();
+        mPositionAdapter.registerCallback(this);
+        mSignalAdapter = SignalAdapter.getInstance();
         Logger.i(TAG, "init：" + atomicBoolean.get());
         boolean initResult = false;
         if (!atomicBoolean.get()) {

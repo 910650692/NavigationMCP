@@ -18,7 +18,7 @@
     <color name="bg_route_detail_color">#26B2AFC2</color>
     <color name="bg_setting_car_connected_help_sub_title">#B3FFFFFF</color>
     <color name="setting_bg_to_login_text">#FF005CFF</color>
-    <color name="setting_bg_others">#26B2AFC2</color>
+    <color name="setting_bg_others">#FF1E1F26</color>
     <color name="setting_text_preference">#FFFFFFFF</color>
     <color name="setting_car_number_tip">#B3FFFFFF</color>
     <color name="permission_quest_dialog_title">#FFFFFFFF</color>
@@ -33,4 +33,7 @@
     <color name="bg_setting_car_number">#FF1E1F26</color>
     <color name="bg_setting_car_number_selector">#FF2C2D36</color>
     <color name="shape_bg_round">#FFFFFF</color>
+    <color name="toast_bg_base">#FF191A21</color>
+    <color name="toast_text">#FFFFFFFF</color>
+    <color name="setting_other_about_bg_btn">#FF1E1F26</color>
 </resources>

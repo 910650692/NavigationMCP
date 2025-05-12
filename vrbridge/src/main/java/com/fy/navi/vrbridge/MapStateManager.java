@@ -67,22 +67,19 @@ public final class MapStateManager {
         mRouteList = new ArrayList<>();
     }
 
-    // 待对应模块添加接口 回调
-    private boolean mIsSetHome; //是否设置家的地址，boolean值 - true:是 - false:否（默认）
-    private boolean mIsSetCompany; //是否设置工作的地址，boolean值 - true:是 - false:否（默认）
-
     /**
      * 初始化.
      */
     public void init() {
-        Logger.d(IVrBridgeConstant.TAG, "MapStateInit");
         final boolean foreground = NaviPackage.getInstance().getIsAppInForeground();
+        Logger.d(IVrBridgeConstant.TAG, "MapStateInit, foreground: " + foreground);
+        mBuilder.setHasPrivacyPermission(true);
         mBuilder.setOpenStatus(foreground);
         mBuilder.setFront(foreground);
         mBuilder.setMaxZoomLevel(19);
         mBuilder.setMinZoomLevel(3);
-        mBuilder.setHasPrivacyPermission(true);
         mBuilder.setViaPointsMaxCount(5);
+        mBuilder.setListPage(false);
 
         mBuilder.setCurrZoomLevel((int) MapPackage.getInstance().getZoomLevel(MapType.MAIN_SCREEN_MAIN_MAP));
 
@@ -571,6 +568,17 @@ public final class MapStateManager {
             mBuilder.setSwitchParallelBridge(false);
         }
     }
+
+    /**
+     * 更新搜索结果列表页面展示状态.
+     *
+     * @param opened  true:打开  false:关闭
+     */
+    public void updateListPageState(final boolean opened) {
+        mBuilder.setListPage(opened);
+        AMapStateUtils.saveMapState(mBuilder.build());
+    }
+
 
     /**
      * 获取TBT信息，用于返回当前行程信息查询信息.

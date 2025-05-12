@@ -2,10 +2,13 @@ package com.fy.navi.hmi.search.searchresult;
 
 
 import android.app.Application;
+import android.os.Bundle;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 
 import com.android.utils.ConvertUtils;
+import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.adapter.search.cloudByPatac.rep.BaseRep;
@@ -14,11 +17,17 @@ import com.fy.navi.service.define.search.PoiInfoEntity;
 import com.fy.navi.service.define.search.SearchResultEntity;
 import com.fy.navi.ui.action.Action;
 import com.fy.navi.ui.base.BaseViewModel;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonSerializer;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 
 
@@ -80,7 +89,16 @@ public class BaseSearchResultViewModel extends BaseViewModel<SearchResultFragmen
         mModel.onReStoreFragment();
     }
 
-    public void notifyNetSearchResult(BaseRep result){
+
+    /**
+     * 搜索结果列表页面可变状态变化回调
+     * @param isShow 是否可见
+     */
+    public void updateShowState(final boolean isShow) {
+        mModel.updateShowState(isShow);
+    }
+
+    public void notifyNetSearchResult(int taskId,BaseRep result){
         if(!ConvertUtils.isNull(result)){
             Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"code: "+result.getResultCode());
             ArrayList<PoiInfoEntity> list = new ArrayList<>();
@@ -89,24 +107,23 @@ public class BaseSearchResultViewModel extends BaseViewModel<SearchResultFragmen
                 JSONArray jsonArray = jsonObject.getJSONArray("resultList");
                 if(jsonArray.length() > 0){
                     for (int i = 0; i < jsonArray.length(); i++) {
+                        PoiInfoEntity entity = GsonUtils.fromJson(jsonArray.getString(i),PoiInfoEntity.class);
                         JSONObject object = new JSONObject(String.valueOf(jsonArray.get(i)));
                         GeoPoint point = new GeoPoint();
                         point.setLat(ConvertUtils.str2Double(object.getString("stationLat")));
                         point.setLon(ConvertUtils.str2Double(object.getString("stationLng")));
-                        PoiInfoEntity entity = new PoiInfoEntity()
-                                .setName(object.getString("stationName"))
-                                .setAddress(object.getString("address"))
-                                .setOperatorId(object.getString("operatorId"))
-                                .setStationId(object.getString("stationId"))
-                                .setPoint(point);
+                        entity.setPoint(point);
                         list.add(entity);
                     }
+                }else{
+                    Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"resultList is empty");
+                    return;
                 }
                 SearchResultEntity searchResultEntity = new SearchResultEntity()
                         .setIsNetData(true)
                         .setPoiList(list)
                         .setPoiType(1);
-                mView.notifySearchResultByNet(searchResultEntity);
+                mView.notifySearchResultByNet(taskId,searchResultEntity);
             }catch (JSONException e){
                 Logger.e(MapDefaultFinalTag.SEARCH_HMI_TAG,"error: "+e);
             }

@@ -200,6 +200,15 @@ public class SceneSearchPoiListImpl extends BaseSceneModel<SceneSearchPoiList> i
     }
 
     /**
+     * 更新poi标记
+     * @param poiInfoEntities 搜索结果列表
+     * @param index 选中下标
+     */
+    public void updatePoiMarker(final List<PoiInfoEntity> poiInfoEntities, final int index) {
+        mSearchPackage.updatePoiMarker(poiInfoEntities, index);
+    }
+
+    /**
      * 设置扎标选中并高亮
      * @param poiInfoEntity 选中的实体类对象
      * @param index 选中的下标
@@ -258,7 +267,9 @@ public class SceneSearchPoiListImpl extends BaseSceneModel<SceneSearchPoiList> i
 
     // 查询自营站列表
     public int queryStationNewResult(){
-        return mSearchPackage.queryStationNewResult();
+        mTaskId = mSearchPackage.queryStationNewResult();
+        Logger.d("huangli","mTaskId from: "+mTaskId);
+        return mTaskId;
     }
 
 }

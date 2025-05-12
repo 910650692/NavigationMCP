@@ -10,6 +10,7 @@ import com.fy.navi.service.define.bean.GeoPoint;
 import com.fy.navi.service.define.bean.MapLabelItemBean;
 import com.fy.navi.service.define.cruise.CruiseInfoEntity;
 import com.fy.navi.service.define.layer.RouteLineLayerParam;
+import com.fy.navi.service.define.map.MapMode;
 import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.map.MapTypeManager;
 import com.fy.navi.service.define.navi.LaneInfoEntity;
@@ -39,7 +40,7 @@ import java.util.ArrayList;
  * @date 2025/2/18
  */
 public class ClusterModel extends BaseModel<BaseClusterViewModel> implements IMapPackageCallback,
-IRouteResultObserver, INaviStatusCallback, ISceneCallback, IGuidanceObserver, ICruiseObserver {
+IRouteResultObserver, INaviStatusCallback, ISceneCallback, IGuidanceObserver, ICruiseObserver, SettingPackage.SettingChangeCallback {
     private static final String TAG = "ClusterModel";
     private MapPackage mapPackage;
     private LayerPackage mLayerPackage;
@@ -149,11 +150,13 @@ IRouteResultObserver, INaviStatusCallback, ISceneCallback, IGuidanceObserver, IC
             mapPackage.setMapCenter(mapTypeId, new GeoPoint(mPositionPackage.getLastCarLocation().getLongitude(),
                     mPositionPackage.getLastCarLocation().getLatitude()));
             mapPackage.goToCarPosition(mapTypeId);
-            // ·位置：中心点位于底部往上三分之一处，见上图示意。1.1-18 TODO 具体高度还有待调整
-            mapPackage.setMapCenterInScreen(mapTypeId, width / 2, height);
-            // 根据主屏的车标模式设置小卡车标模式
-            mLayerPackage.setDefaultCarMode(mapTypeId);
+            // 根据主屏的车标模式设置车标模式
+            mLayerPackage.setCarMode(mapTypeId, mLayerPackage.getCarModeType(MapType.MAIN_SCREEN_MAIN_MAP));
+            mSettingPackage.setSettingChangeCallback(mapTypeId.name(), this);
             mMapIsAttachedWindow = true;
+            //mapPackage.switchMapModeCluster(MapType.CLUSTER_MAP, MapMode.UP_3D);
+            MapPackage.getInstance().setMapViewTextSize(MapType.CLUSTER_MAP, 1f);
+            mLayerPackage.setCarMode(MapType.CLUSTER_MAP, mLayerPackage.getCarModeType(MapType.MAIN_SCREEN_MAIN_MAP));
         }
     }
 
@@ -165,17 +168,11 @@ IRouteResultObserver, INaviStatusCallback, ISceneCallback, IGuidanceObserver, IC
     @Override
     public void onMapClickPoi(final MapType mapTypeId, final PoiInfoEntity poiInfo) {
         Logger.d(TAG, "onMapClickPoi");
-        if (mapTypeId == getMapId()) {
-//            LauncherManager.getInstance().startMapActivity(INaviConstant.OpenIntentPage.POI_DETAIL_PAGE, poiInfo);
-        }
     }
 
     @Override
     public void onReversePoiClick(final MapType mapTypeId, final PoiInfoEntity poiInfo) {
         Logger.d(TAG, "onReversePoiClick");
-        if (mapTypeId == getMapId()) {
-//            LauncherManager.getInstance().startMapActivity(INaviConstant.OpenIntentPage.POI_DETAIL_PAGE, poiInfo);
-        }
     }
 
     @Override
@@ -253,5 +250,17 @@ IRouteResultObserver, INaviStatusCallback, ISceneCallback, IGuidanceObserver, IC
     @Override
     public void onUpdateTMCLightBar(final NaviTmcInfo naviTmcInfo) {
         IGuidanceObserver.super.onUpdateTMCLightBar(naviTmcInfo);
+    }
+    @Override
+    public void onSettingChanged(String key, String value) {
+        SettingPackage.SettingChangeCallback.super.onSettingChanged(key, value);
+        Logger.d(TAG, "onSettingChanged:" + key + ":" + value);
+        boolean mapViewTextSize = mSettingPackage.getMapViewTextSize();
+        if (mapViewTextSize){
+            MapPackage.getInstance().setMapViewTextSize(MapType.CLUSTER_MAP, 1f);
+        }else {
+            MapPackage.getInstance().setMapViewTextSize(MapType.CLUSTER_MAP, 1.8f);
+        }
+        mLayerPackage.setCarMode(MapType.CLUSTER_MAP, mLayerPackage.getCarModeType(MapType.MAIN_SCREEN_MAIN_MAP));
     }
 }

@@ -4,7 +4,6 @@
     <style name="dialog_buick_parent">
         <item name="android:layout_width">@dimen/dp_1300</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:background">@drawable/bg_buick_dialog</item>
     </style>
 
     <style name="dialog_buick_title">

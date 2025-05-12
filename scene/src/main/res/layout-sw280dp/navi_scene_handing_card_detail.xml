@@ -6,10 +6,9 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:focusable="false"
         android:clickable="true"
-        android:paddingBottom="@dimen/dp_24"
-        android:background="@drawable/bg_common_with_corner">
+        android:focusable="false"
+        android:paddingBottom="@dimen/dp_24">
 
         <com.fy.navi.ui.view.SkinImageView
             android:id="@+id/iv_close"

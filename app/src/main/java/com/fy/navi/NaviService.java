@@ -111,6 +111,7 @@ public class NaviService extends Service {
 
         public FsaInitWorker(@NonNull Context context, @NonNull WorkerParameters workerParams) {
             super(context, workerParams);
+            Logger.i(TAG, "FsaInitWorker constructor");
         }
 
         @NonNull
@@ -130,6 +131,7 @@ public class NaviService extends Service {
 
         public VrBridgeInitWorker(@NonNull Context context, @NonNull WorkerParameters workerParams) {
             super(context, workerParams);
+            Logger.i(TAG, "VrBridgeInitWorker constructor");
         }
 
         @NonNull

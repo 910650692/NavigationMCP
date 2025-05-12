@@ -12,7 +12,7 @@
         android:layout_width="@dimen/dp_698"
         android:layout_height="match_parent"
         android:padding="@dimen/dp_29"
-        android:background="@drawable/bg_search_shadow"
+        android:background="@drawable/bg_shadow_navi_buick"
         android:orientation="vertical">
 
         <com.fy.navi.ui.view.SkinConstraintLayout

@@ -120,6 +120,9 @@ public interface ISearchApi {
 
     // 云端查询充电站收藏列表
     int queryCollectStation(SearchRequestParameter searchRequestParameter);
+
+    // 云端查询充电站信息
+    int queryStationInfo(SearchRequestParameter searchRequestParameter);
     /**
      * 取消所有搜索
      */

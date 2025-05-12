@@ -6,7 +6,10 @@ import com.android.utils.thread.ThreadManager;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.adapter.activate.ActivateObserver;
 import com.fy.navi.service.adapter.activate.IActivateApi;
+import com.fy.navi.service.adapter.activate.cloudpatac.response.CheckOrderResponse;
 import com.fy.navi.service.define.code.CodeManager;
+import com.patac.netlib.callback.NetDisposableObserver;
+import com.patac.netlib.exception.ApiException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,17 +48,10 @@ public class ActivateAdapterImpl implements IActivateApi {
 
             @Override
             public void onNetActivated(final boolean isSuccess) {
-                if (!isSuccess) {
-                    onNetActivateFailed();
-                    logResult(20004);
-                    return;
-                }
-                Logger.d(TAG, "网络激活成功，开始BL初始化");
-                onActivated();
             }
 
             @Override
-            public void onCreateOrder(final boolean isSuccess) {
+            public void onOrderCreated(final boolean isSuccess) {
                 if (!isSuccess) {
                     logResult(20006);
                     onActivatedError();
@@ -96,8 +92,9 @@ public class ActivateAdapterImpl implements IActivateApi {
      */
     public void startActivate() {
         Logger.d(TAG, "startActivate : ");
-        //ActivationManager.getInstance().getThirdPartyUUID();
-        beginInitActivateService("123");
+        onActivating();
+        ActivationManager.getInstance().getThirdPartyUUID();
+        //beginInitActivateService("123");
     }
 
     /**
@@ -105,8 +102,6 @@ public class ActivateAdapterImpl implements IActivateApi {
      */
     @Override
     public void netActivateRetry() {
-        onActivating();
-        ActivationManager.getInstance().netActivate();
     }
 
 
@@ -124,11 +119,26 @@ public class ActivateAdapterImpl implements IActivateApi {
             return;
         }
         //查询激活状态
+        //自动检查激活文件是否存在，如果有会自动激活
         if (!ActivationManager.getInstance().checkActivationStatus()) {
-            onActivating();
-            Logger.d(TAG, "未激活，开始下单");
-            //下单
-            ActivationManager.getInstance().createCloudOrder();
+            Logger.d(TAG, "无激活文件，或uuid不正确");
+            //先查询订单
+            ActivationManager.getInstance().checkOrderStatus(new NetDisposableObserver<CheckOrderResponse>() {
+                @Override
+                public void onSuccess(final CheckOrderResponse appKeyResponse) {
+                    Logger.d(TAG, "firstCheckOrderStatus success");
+                    manualActivate("", "");
+                }
+
+                @Override
+                public void onFailed(final ApiException e) {
+                    Logger.d(TAG, "firstCheckOrderStatus failed");
+                    Logger.d(TAG, "Exception code : " + e.getCode());
+                    Logger.d(TAG, "Exception msg : " + e.getMessage());
+                    //首次查询没有订单后下单
+                    ActivationManager.getInstance().createCloudOrder();
+                }
+            });
         } else {
             onActivated();
         }
@@ -149,7 +159,7 @@ public class ActivateAdapterImpl implements IActivateApi {
             logResult(20007);
             return;
         }
-        ActivationManager.getInstance().netActivate();
+        onActivated();
     }
 
     /**
@@ -161,20 +171,6 @@ public class ActivateAdapterImpl implements IActivateApi {
                 @Override
                 public void run() {
                     observer.onActivating();
-                }
-            });
-        }
-    }
-
-    /**
-     * 网络激活失败通知
-     */
-    private void onNetActivateFailed() {
-        for (ActivateObserver observer : mActObserverList) {
-            ThreadManager.getInstance().postUi(new Runnable() {
-                @Override
-                public void run() {
-                    observer.onNetActivateFailed(ActivationManager.getNetFailedCount());
                 }
             });
         }

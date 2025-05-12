@@ -13,9 +13,11 @@
 
     <com.fy.navi.ui.view.SkinConstraintLayout
         android:id="@+id/home_skin_constrain"
-        android:layout_width="@dimen/dp_820"
+        android:layout_width="@dimen/dp_878"
         android:layout_height="wrap_content"
-        android:background="@drawable/bg_search_main_tab"
+        android:paddingHorizontal="@dimen/dp_29"
+        android:paddingVertical="@dimen/dp_29"
+        android:background="@drawable/bg_shadow_navi_buick"
         android:padding="@dimen/dp_40">
 
         <com.fy.navi.ui.view.SkinTextView

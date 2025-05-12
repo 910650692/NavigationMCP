@@ -111,6 +111,7 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
 
     @Override
     public void onInitData() {
+        mBinding.sceneNaviControlMore.updateBroadcast();
     }
 
     @Override

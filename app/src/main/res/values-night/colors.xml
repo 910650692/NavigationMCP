@@ -103,8 +103,8 @@
     <color name="setting_voice_has_update_color">#B3FFFFFF</color>
     <color name="setting_favorite_icon_color">#D2D3D7</color>
     <color name="setting_favorite_popup_bg">#25282F</color>
-    <color name="setting_bg_dialog_start">#FF464B60</color>
-    <color name="setting_bg_dialog_end">#FF2A2F42</color>
+    <color name="setting_bg_dialog_start">#FF191A21</color>
+    <color name="setting_bg_dialog_end">#FF191A21</color>
     <color name="setting_bg_dialog_line">#4D818199</color>
     <color name="setting_dialog_confirm">#FFE5B586</color>
     <color name="setting_other_car_icon_first">#D2D3D7</color>
@@ -114,7 +114,7 @@
     <color name="bg_setting_car_connected_help_sub_title">#B3FFFFFF</color>
     <color name="bg_setting_car_number_selector">#FF2C2D36</color>
 
-    <color name="offline_hint_text">#FFFFFFFF</color>
+    <color name="offline_hint_text">#80FFFFFF</color>
     <color name="offline_recommend_download">#80FFFFFF</color>
     <color name="offline_pause_all">#B3000000</color>
     <color name="offline_bg_gray">#338E97B9</color>
@@ -146,4 +146,8 @@
     <color name="cruise_bg_color">#66151414</color>
     <color name="cruise_title_color">#B3FFFFFF</color>
 
+    <color name="toast_bg_base">#FF191A21</color>
+    <color name="toast_text">#FFFFFFFF</color>
+    <color name="setting_offline_no_search_hint">#FFFFFFFF</color>
+    <color name="setting_other_about_bg_btn">#26B2AFC2</color>
 </resources>

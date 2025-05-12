@@ -155,16 +155,46 @@ public class L2Adapter {
         }
 
         @Override
+        public void onLaneInfoReceived(LaneInfoEntity laneInfoEntity) {
+            if (laneInfoEntity == null || laneInfoEntity.getBackLane() == null) {
+                Logger.i(TAG, "lane null");
+                L2NaviBean.CrossInfoDataBean crossInfoDataBean = l2NaviBean.getCrossInfoData();
+                crossInfoDataBean.setLaneNum(0);
+                crossInfoDataBean.setLaneTypes(new ArrayList<>()); // 下个路口所有车道通行方向
+
+                List<L2NaviBean.AheadIntersectionsBean> aheadIntersections = l2NaviBean.getAheadIntersections();
+                if (aheadIntersections.isEmpty()) {
+                    aheadIntersections.add(new L2NaviBean.AheadIntersectionsBean());
+                }
+                L2NaviBean.AheadIntersectionsBean aheadIntersection = aheadIntersections.get(0);
+                aheadIntersection.setLaneNum(0); // 下个路口车道数
+                aheadIntersection.setLaneTypes(new ArrayList<>());
+                return;
+            }
+            Logger.i(TAG, "车道信息", laneInfoEntity);
+            ArrayList<Integer> backLanes = laneInfoEntity.getBackLane();
+            L2NaviBean.CrossInfoDataBean crossInfoDataBean = l2NaviBean.getCrossInfoData();
+            crossInfoDataBean.setLaneNum(backLanes.size());
+            crossInfoDataBean.setLaneTypes(backLanes); // 下个路口所有车道通行方向
+
+            List<L2NaviBean.AheadIntersectionsBean> aheadIntersections = l2NaviBean.getAheadIntersections();
+            if (aheadIntersections.isEmpty()) {
+                aheadIntersections.add(new L2NaviBean.AheadIntersectionsBean());
+            }
+            L2NaviBean.AheadIntersectionsBean aheadIntersection = aheadIntersections.get(0);
+            aheadIntersection.setLaneNum(backLanes.size()); // 下个路口车道数
+            aheadIntersection.setLaneTypes(laneInfoEntity.getBackLane()); // 下个路口所有车道通行方向
+        }
+
+        @Override
         public void onLaneInfo(boolean isShowLane, LaneInfoEntity laneInfoEntity) {
             L2NaviBean.CrossInfoDataBean crossInfoDataBean = l2NaviBean.getCrossInfoData();
             if (!isShowLane) {
                 Logger.i(TAG, "lane hide");
-                crossInfoDataBean.setLaneNum(0);
                 crossInfoDataBean.setHighLightLanes(new ArrayList<>());
                 crossInfoDataBean.setHighLightLaneTypes(new ArrayList<>());
                 crossInfoDataBean.setBackLaneType(new ArrayList<>());
                 crossInfoDataBean.setFrontLaneType(new ArrayList<>());
-                crossInfoDataBean.setLaneTypes(new ArrayList<>());
                 crossInfoDataBean.setSegmentIndex(-1);
                 crossInfoDataBean.setLinkIndex(-1);
                 crossInfoDataBean.setTimestamp(System.currentTimeMillis());
@@ -183,7 +213,7 @@ public class L2Adapter {
             List<Integer> highLightLanes = new ArrayList<>();
             List<Integer> highLightLaneTypes = new ArrayList<>();
             for (int i = 0; i < LaneNum; i++) {
-                int recommend = laneInfoEntity.getOptimalLane().get(i) != NaviConstant.LaneAction.LANE_ACTION_NULL ? 1 : 0;
+                int recommend = laneInfoEntity.getFrontLane().get(i) != NaviConstant.LaneAction.LANE_ACTION_NULL ? 1 : 0;
                 highLightLanes.add(recommend);
                 if (NaviConstant.LANE_TYPE_TIDAL == laneInfoEntity.getBackLaneType().get(i)) {
                     hasTidalLane = true;
@@ -201,30 +231,31 @@ public class L2Adapter {
             } else {
                 l2NaviBean.setHasTidalLane(0); // 没有潮汐车道
             }
-            crossInfoDataBean.setLaneNum(LaneNum); // 下个路口车道数
             crossInfoDataBean.setHighLightLanes(highLightLanes); // 设置推荐车道
             crossInfoDataBean.setHighLightLaneTypes(highLightLaneTypes); // 设置表达的是每个车道可以通行的方向，比如自车直行过路口的时候，直行加右转车道对应的就是直行
             crossInfoDataBean.setBackLaneType(laneInfoEntity.getBackLaneType()); // 引导点处所有车道的类型信息
             crossInfoDataBean.setFrontLaneType(laneInfoEntity.getFrontLaneType()); // 引导点处可通行车道的类型信息
-            crossInfoDataBean.setLaneTypes(backLanes); // 下个路口所有车道通行方向
             crossInfoDataBean.setSegmentIndex(laneInfoEntity.getSegmentIdx()); // 与link_index结合使用，用于映射到导航路径上
             crossInfoDataBean.setLinkIndex(laneInfoEntity.getLinkIdx()); // 与segment_index结合使用，用于映射到导航路径上
             crossInfoDataBean.setTimestamp(System.currentTimeMillis());
             // 前方推荐车道信息列表
-            List<L2NaviBean.AheadIntersectionsBean> aheadIntersections = new ArrayList<>();
-            L2NaviBean.AheadIntersectionsBean aheadIntersection = new L2NaviBean.AheadIntersectionsBean();
-            aheadIntersection.setLaneNum(highLightLanes.size()); // 下个路口车道数
+            List<L2NaviBean.AheadIntersectionsBean> aheadIntersections = l2NaviBean.getAheadIntersections();
+            if (aheadIntersections.isEmpty()) {
+                aheadIntersections.add(new L2NaviBean.AheadIntersectionsBean());
+            }
+            L2NaviBean.AheadIntersectionsBean aheadIntersection = aheadIntersections.get(0);
             aheadIntersection.setLinkIndex(laneInfoEntity.getLinkIdx()); // 与segment_index结合使用，用于映射到导航路径上
             aheadIntersection.setSegmentIndex(laneInfoEntity.getSegmentIdx()); // 与link_index结合使用，用于映射到导航路径上
-            aheadIntersection.setLaneTypes(backLanes); // 下个路口所有车道通行方向
             aheadIntersection.setHighLightLaneTypes(highLightLaneTypes); // 表达的是每个车道可以通行的方向，比如自车直行过路口的时候，直行加右转车道对应的就是直行
             aheadIntersection.setFrontLaneType(laneInfoEntity.getFrontLaneType()); // 引导点处可通行车道的类型信息
             aheadIntersection.setBackLaneType(laneInfoEntity.getBackLaneType()); // 引导点处所有车道的类型信息
             aheadIntersection.setTimestamp(System.currentTimeMillis());
-            aheadIntersections.add(aheadIntersection);
-            l2NaviBean.setAheadIntersections(aheadIntersections);
+//            aheadIntersections.add(aheadIntersection);
+
+
             Logger.i(TAG, "车道线1", l2NaviBean.getHasTidalLane(), l2NaviBean.getCrossInfoData());
             Logger.i(TAG, "车道线2", l2NaviBean.getAheadIntersections());
+            Logger.i(TAG, "车道线3", l2NaviBean.getCrossInfoData().getHighLightLanes());
         }
 
         @Override

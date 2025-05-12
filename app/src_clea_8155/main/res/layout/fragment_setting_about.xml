@@ -10,11 +10,11 @@
     </data>
 
     <com.fy.navi.ui.view.SkinConstraintLayout
-        android:layout_width="@dimen/dp_1282"
-        android:layout_height="@dimen/dp_772"
+        android:layout_width="@dimen/dp_1292"
+        android:layout_height="@dimen/dp_1255"
         android:clickable="true"
-        android:padding="@dimen/dp_29"
-        android:background="@drawable/bg_shadow">
+        android:padding="@dimen/dp_34"
+        android:background="@drawable/bg_shadow_navi_ndlc_8155">
 
         <com.fy.navi.ui.view.SkinLinearLayout
             android:id="@+id/setting_others_about_layout"

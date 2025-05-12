@@ -29,7 +29,7 @@
             android:paddingTop="@dimen/dp_29"
             android:paddingBottom="@dimen/dp_29"
             android:layout_marginTop="@dimen/dp_m_38"
-            android:background="@drawable/bg_search_shadow">
+            android:background="@drawable/bg_shadow_navi_buick">
             <com.fy.navi.ui.view.SkinLinearLayout
                 android:id="@+id/tv_favorite_switch"
                 android:layout_width="@dimen/dp_578"

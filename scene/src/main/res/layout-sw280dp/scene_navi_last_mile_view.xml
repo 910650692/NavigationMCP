@@ -13,76 +13,86 @@
     </data>
 
     <com.fy.navi.ui.view.SkinConstraintLayout
-        android:layout_width="@dimen/dp_1192"
-        android:layout_height="@dimen/dp_180"
-        android:focusable="false"
-        android:background="@drawable/bg_navi_com"
-        android:clickable="true"
-        tools:layout_height="@dimen/dp_180"
-        tools:layout_width="@dimen/dp_1192"
-        tools:visibility="visible">
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="@dimen/dp_51"
+        android:paddingVertical="@dimen/dp_51"
+        android:background="@drawable/bg_shadow_navi_cadillac">
 
-        <com.fy.navi.scene.ui.navi.view.ButtonText
-            android:id="@+id/stv_send_phone"
-            clickCommand="@{naviLastMile.onSend}"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:focusable="true"
-            android:padding="@dimen/dp_52"
-            android:text="@string/navi_send"
-            android:textColor="@color/navi_color_000000_100"
-            android:textSize="@dimen/sp_52"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <com.fy.navi.ui.view.SkinView
-            android:id="@+id/sv_line"
-            android:layout_width="@dimen/dp_1"
-            android:layout_height="@dimen/dp_120"
+        <com.fy.navi.ui.view.SkinConstraintLayout
+            android:layout_width="@dimen/dp_1192"
+            android:layout_height="@dimen/dp_180"
             android:focusable="false"
-            android:layout_centerVertical="true"
-            android:background="@color/navi_color_4B535D_70"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@id/stv_send_phone"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:clickable="true"
+            tools:layout_height="@dimen/dp_180"
+            tools:layout_width="@dimen/dp_1192"
+            tools:visibility="visible">
 
-        <com.fy.navi.scene.ui.navi.view.ButtonImageView
-            android:id="@+id/siv_close"
-            clickCommand="@{naviLastMile.onClose}"
-            android:layout_width="@dimen/dp_74"
-            android:layout_height="@dimen/dp_74"
-            android:layout_marginEnd="@dimen/dp_40"
-            android:focusable="false"
-            android:background="@drawable/img_off58"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            <com.fy.navi.scene.ui.navi.view.ButtonText
+                android:id="@+id/stv_send_phone"
+                clickCommand="@{naviLastMile.onSend}"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:focusable="true"
+                android:padding="@dimen/dp_52"
+                android:text="@string/navi_send"
+                android:textColor="@color/navi_color_000000_100"
+                android:textSize="@dimen/sp_52"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-        <com.fy.navi.ui.view.SkinTextView
-            android:id="@+id/stv_send_request_info"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_45"
-            android:layout_marginTop="@dimen/dp_25"
-            android:focusable="false"
-            android:singleLine="true"
-            android:text="@string/navi_send_request_info"
-            android:textColor="@color/navi_color_000000_100"
-            android:textSize="@dimen/sp_46"
-            app:layout_constraintStart_toEndOf="@id/sv_line"
-            app:layout_constraintTop_toTopOf="parent" />
+            <com.fy.navi.ui.view.SkinView
+                android:id="@+id/sv_line"
+                android:layout_width="@dimen/dp_1"
+                android:layout_height="@dimen/dp_120"
+                android:focusable="false"
+                android:layout_centerVertical="true"
+                android:background="@color/navi_color_4B535D_70"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@id/stv_send_phone"
+                app:layout_constraintTop_toTopOf="parent" />
 
-        <com.fy.navi.ui.view.SkinTextView
-            android:id="@+id/stv_way_arrive"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/dp_25"
-            android:focusable="false"
-            android:text="@string/navi_arrive_destination"
-            android:textColor="@color/navi_color_000000_70"
-            android:textSize="@dimen/sp_46"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="@id/stv_send_request_info" />
+            <com.fy.navi.scene.ui.navi.view.ButtonImageView
+                android:id="@+id/siv_close"
+                clickCommand="@{naviLastMile.onClose}"
+                android:layout_width="@dimen/dp_74"
+                android:layout_height="@dimen/dp_74"
+                android:layout_marginEnd="@dimen/dp_40"
+                android:focusable="false"
+                android:background="@drawable/img_off58"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.fy.navi.ui.view.SkinTextView
+                android:id="@+id/stv_send_request_info"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_45"
+                android:layout_marginTop="@dimen/dp_25"
+                android:focusable="false"
+                android:singleLine="true"
+                android:text="@string/navi_send_request_info"
+                android:textColor="@color/navi_color_000000_100"
+                android:textSize="@dimen/sp_46"
+                app:layout_constraintStart_toEndOf="@id/sv_line"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.fy.navi.ui.view.SkinTextView
+                android:id="@+id/stv_way_arrive"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/dp_25"
+                android:focusable="false"
+                android:text="@string/navi_arrive_destination"
+                android:textColor="@color/navi_color_000000_70"
+                android:textSize="@dimen/sp_46"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="@id/stv_send_request_info" />
+        </com.fy.navi.ui.view.SkinConstraintLayout>
+
     </com.fy.navi.ui.view.SkinConstraintLayout>
+
+
 </layout>

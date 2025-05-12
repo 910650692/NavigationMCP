@@ -16,12 +16,12 @@
     <color name="dialog_cancel_text_b3181818">#B3181818</color>
 
     <!--dialog style color-->
-    <color name="dialog_cadi_title_color">#FF000000</color>
-    <color name="dialog_cadi_content_color">#CC000000</color>
-    <color name="dialog_cadi_positive_btn_bg_color">#FF2461EA</color>
-    <color name="dialog_cadi_negative_btn_bg_color">#338E97B9</color>
+    <color name="dialog_cadi_title_color">#181818</color>
+    <color name="dialog_cadi_content_color">#B3181818</color>
+    <color name="dialog_cadi_positive_btn_bg_color">#FF4760FF</color>
+    <color name="dialog_cadi_negative_btn_bg_color">#4DB2AFC2</color>
     <color name="dialog_cadi_positive_btn_text_color">#FFFFFFFF</color>
-    <color name="dialog_cadi_negative_btn_text_color">#B3000000</color>
+    <color name="dialog_cadi_negative_btn_text_color">#B3181818</color>
 
     <color name="dialog_buick_title_color">#FF000000</color>
     <color name="dialog_buick_content_color">#CC000000</color>

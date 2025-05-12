@@ -79,7 +79,7 @@ public class SettingOthersFragment extends BaseFragment<FragmentSettingOthersBin
                 this.mUrl = "";
                 mBinding.accountName.setText(ResourceUtils.Companion.getInstance().getText(R.string.setting_others_account));
                 mBinding.accountDetail.setText(ResourceUtils.Companion.getInstance().getText(R.string.setting_others_account_detail));
-                mBinding.accountImg.setImageDrawable(ResourceUtils.Companion.getInstance().getDrawable(R.mipmap.default_user_icon));
+                mBinding.accountImg.setImageDrawable(ResourceUtils.Companion.getInstance().getDrawable(R.drawable.img_default_user_icon));
                 setCarConnectStatus(false);
                 setWeChatStatus(false);
             } else {
@@ -87,9 +87,9 @@ public class SettingOthersFragment extends BaseFragment<FragmentSettingOthersBin
                 mBinding.accountDetail.setText(ResourceUtils.Companion.getInstance().getText(R.string.account_login_out));
                 this.mUrl = url;
                 if (TextUtils.isEmpty(url)) {
-                    mBinding.accountImg.setImageDrawable(ResourceUtils.Companion.getInstance().getDrawable(R.mipmap.default_user_icon));
+                    mBinding.accountImg.setImageDrawable(ResourceUtils.Companion.getInstance().getDrawable(R.drawable.img_default_user_icon));
                 } else {
-                    ViewAdapterKt.loadImageUrl(mBinding.accountImg, url, R.mipmap.default_user_icon, R.mipmap.default_user_icon);
+                    ViewAdapterKt.loadImageUrl(mBinding.accountImg, url, R.drawable.img_default_user_icon, R.drawable.img_default_user_icon);
                 }
                 setCarConnectStatus(true);
                 setWeChatStatus(mViewModel.getWechatStatus());
@@ -104,7 +104,7 @@ public class SettingOthersFragment extends BaseFragment<FragmentSettingOthersBin
         ThreadManager.getInstance().postUi(() -> {
             mBinding.accountName.setText(ResourceUtils.Companion.getInstance().getText(R.string.setting_others_account));
             mBinding.accountDetail.setText(ResourceUtils.Companion.getInstance().getText(R.string.setting_others_account_detail));
-            mBinding.accountImg.setImageDrawable(ResourceUtils.Companion.getInstance().getDrawable(R.mipmap.default_user_icon));
+            mBinding.accountImg.setImageDrawable(ResourceUtils.Companion.getInstance().getDrawable(R.drawable.img_default_user_icon));
             setWeChatStatus(false);
             setCarConnectStatus(false);
         });

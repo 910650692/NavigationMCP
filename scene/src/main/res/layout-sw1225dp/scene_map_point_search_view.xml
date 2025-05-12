@@ -13,7 +13,7 @@
         android:layout_width="@dimen/dp_698"
         android:layout_height="@dimen/dp_501"
         android:padding="@dimen/dp_29"
-        android:background="@drawable/bg_search_shadow">
+        android:background="@drawable/bg_shadow_navi_ndlc_8155">
 
         <com.fy.navi.ui.view.SkinConstraintLayout
             android:id="@+id/cs_poi_no_result"

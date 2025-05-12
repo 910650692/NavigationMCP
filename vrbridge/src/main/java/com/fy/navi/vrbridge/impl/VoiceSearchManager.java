@@ -52,10 +52,11 @@ public final class VoiceSearchManager {
     private String mSessionId; //多轮对话标识
     private ArrivalBean mDestInfo; //搜索/导航意图条件集合
     private PoiCallback mPoiCallback; //给语音的搜索结果回调
+    private RespCallback mRespCallback; //语音结果回调
     private int mSearchType; //语音内部使用，当前语音搜索/导航指令类型，用于多轮
     private int mSearchTaskId; //搜索指令返回的task值
-    private String mKeyword;
-    private String mRouteType;
+    private String mKeyword; //搜索关键字
+    private String mRouteType; //路线偏好
     private List<PoiInfoEntity> mSearchResultList; //多轮选择保存的搜索结果
 
     private List<String> mGenericsList; //DestType为泛型的集合，用来判断途径点和目的地是不是泛型
@@ -67,17 +68,14 @@ public final class VoiceSearchManager {
     private String mPoiType; //地址类型，用于设置家、公司、普通点
 
     private VoiceSearchConditions mSearchCondition; //深度-筛选搜索项
-    private String mSortValue;
+    private String mSortValue; //搜索结果列表排序规则
 
     private boolean mAlongToAround = false; //是否为沿途搜转周边搜，在沿途搜结果为空时触发
-
     //起点到终点的ETA信息，保存搜索起终点名称和对应的poi信息
     private List<String> mEtaNameList; //起终点名称，如果只有一个，当前位置为起点
     private List<GeoPoint> mEtaPointList; //起终点经纬度信息
 
-    //语音结果回调
-    private RespCallback mRespCallback;
-
+    private boolean mListPageOpened;
 
 
     public static VoiceSearchManager getInstance() {
@@ -95,6 +93,7 @@ public final class VoiceSearchManager {
         mSearchResultList = new ArrayList<>();
 
         mGenericsList = new ArrayList<>();
+        //当前语义确认的泛型类型为以下
         mGenericsList.add(IVrBridgeConstant.DestType.TOILET);
         mGenericsList.add(IVrBridgeConstant.DestType.ATM);
         mGenericsList.add(IVrBridgeConstant.DestType.BANK);
@@ -103,6 +102,7 @@ public final class VoiceSearchManager {
         mGenericsList.add(IVrBridgeConstant.DestType.CHARGING_STATION);
         mGenericsList.add(IVrBridgeConstant.DestType.RESTAURANT);
         mGenericsList.add(IVrBridgeConstant.DestType.SERVICE_STATION);
+
         mNormalDestList = new SparseArray<>();
         mGenericsDestList = new SparseArray<>();
         mMultiplePoiArray = new SparseArray<>();
@@ -110,6 +110,7 @@ public final class VoiceSearchManager {
         mEtaNameList = new ArrayList<>();
         mEtaPointList = new ArrayList<>();
 
+        mListPageOpened = SearchPackage.getInstance().isMIsShow();
         SearchPackage.getInstance().registerCallBack(IVrBridgeConstant.TAG, mSearchCallback);
     }
 
@@ -187,14 +188,13 @@ public final class VoiceSearchManager {
                     }
                     break;
                 case IVrBridgeConstant.VoiceSearchType.ADD_FAVORITE:
-                    //收藏当前位置
                     if (searchSuccess) {
                         if (taskEqual) {
-                            //当前位置
+                            //task匹配，代表收藏当前位置
                             final PoiInfoEntity poiInfoEntity = mSearchResultList.get(0);
                             addCommonFavorite(poiInfoEntity);
                         } else {
-                            //关键字
+                            //关键字匹配，收藏指定poi
                             dealAddFavoriteResult();
                         }
                     } else {
@@ -203,7 +203,7 @@ public final class VoiceSearchManager {
                                 mRespCallback.onResponse(CallResponse.createFailResponse("未查询到定位信息，无法收藏"));
                             }
                         } else {
-                            responseSearchEmptyWithKeyword();
+                            responseSearchEmpty();
                         }
                     }
                     break;
@@ -272,6 +272,17 @@ public final class VoiceSearchManager {
                     break;
             }
         }
+
+        @Override
+        public void onShowStateChanged(final boolean isShow) {
+            Logger.d(IVrBridgeConstant.TAG, "searchResultStatus: " + isShow);
+            if (mListPageOpened == isShow) {
+                return;
+            }
+
+            mListPageOpened = isShow;
+            MapStateManager.getInstance().updateListPageState(mListPageOpened);
+        }
     };
 
     /**
@@ -331,11 +342,11 @@ public final class VoiceSearchManager {
                 //多目的地
                 return disposeMultipleDest();
             case IVrBridgeConstant.VoiceSearchType.WITH_CONDITION:
-                //深度Poi多轮
-            return disposeConditionSearch();
+                //多条件搜索，eg附近的xxx、xxx附近的xxx、xxx附近xxx的xxx
+                return disposeConditionSearch();
             default:
                 Logger.w(IVrBridgeConstant.TAG, "unHandle searchType: " + mSearchType);
-                return CallResponse.createNotSupportResponse("不支持的搜索/导航意图");
+                return CallResponse.createFailResponse("不支持的搜索/导航意图");
         }
     }
 
@@ -380,12 +391,11 @@ public final class VoiceSearchManager {
      * @return PoiInfoEntity.
      */
     private PoiInfoEntity getHomeCompanyPoiInfo(final int type) {
-        final List<Favorite> favoriteList = FavoriteManager.getInstance().getValueByCommonName(type);
-        if (null == favoriteList || favoriteList.isEmpty()) {
-            return null;
-        }
-        final Favorite favoriteItem = favoriteList.get(0);
-        return VoiceConvertUtil.getPoiInfoByFavorite(favoriteItem);
+        return switch (type) {
+            case 1 -> BehaviorPackage.getInstance().getHomeFavoriteInfo();
+            case 2 -> BehaviorPackage.getInstance().getCompanyFavoriteInfo();
+            default -> null;
+        };
     }
 
     /**
@@ -452,10 +462,10 @@ public final class VoiceSearchManager {
             try {
                 final List<PoiBean> poiBeanList = VoiceConvertUtil.convertSearchResult(mSearchResultList);
                 final int size = poiBeanList.size();
-                Logger.d(IVrBridgeConstant.TAG, "response poiBeanListSize : " + size);
+                Logger.d(IVrBridgeConstant.TAG, "responseToVoice, totalSearchSize: " + size);
                 mPoiCallback.onPoiSearch(mSessionId, poiBeanList, size);
             } catch (NullPointerException npe) {
-                Logger.w(IVrBridgeConstant.TAG, "responseSearchPoi error: " + npe.getMessage());
+                Logger.w(IVrBridgeConstant.TAG, " error: " + npe.getMessage());
             }
         }
     }
@@ -465,7 +475,9 @@ public final class VoiceSearchManager {
      */
     private void responseSearchEmpty() {
         if (null != mPoiCallback) {
-            mPoiCallback.onResponse(CallResponse.createFailResponse("未找到相关结果，试试别的吧"));
+            final CallResponse response = CallResponse.createFailResponse("未找到相关结果，试试别的吧");
+            response.setNeedPlayMessage(true);
+            mPoiCallback.onResponse(response);
         }
     }
 
@@ -474,7 +486,9 @@ public final class VoiceSearchManager {
      */
     private void responseSearchEmptyWithKeyword() {
         if (null != mPoiCallback) {
-            mPoiCallback.onResponse(CallResponse.createFailResponse("搜索" + mKeyword + "结果为空，试试别的吧"));
+            final CallResponse response = CallResponse.createFailResponse("搜索" + mKeyword + "结果为空，试试别的吧");
+            response.setNeedPlayMessage(true);
+            mPoiCallback.onResponse(response);
         }
     }
 
@@ -520,7 +534,7 @@ public final class VoiceSearchManager {
         //解析途径点和目的地信息
         final SparseArray<PoiBean> passByPoi = mDestInfo.getPassbyPoi();
         if (null == passByPoi || passByPoi.size() == 0) {
-            Logger.w(IVrBridgeConstant.TAG, "passBy is empty");
+            Logger.w(IVrBridgeConstant.TAG, "多目的意图，途径点为空");
             return CallResponse.createFailResponse("多目的地导航途径点信息为空");
         }
 
@@ -557,6 +571,7 @@ public final class VoiceSearchManager {
         }
 
         //添加目的地信息，并判断是否包含家、公司、泛型POI
+        //家和公司需要先判断是否已经设置，泛型POI需要依次展示搜索结果
         final SingleDestInfo singleDestInfo = new SingleDestInfo();
         final String destName = mDestInfo.getDest();
         final String destType = mDestInfo.getDestType();
@@ -641,9 +656,10 @@ public final class VoiceSearchManager {
         } else if (null != mNormalDestList && mNormalDestList.size() > 0) {
             //静默搜索普通poi
             mProcessDestIndex = mNormalDestList.keyAt(0);
-            final SingleDestInfo normalDest = mNormalDestList.get(mProcessDestIndex);
             mNormalDestList.remove(mProcessDestIndex);
-            mSearchTaskId = SearchPackage.getInstance().silentKeywordSearch(1, normalDest.getDestName());
+            final SingleDestInfo normalDest = mNormalDestList.get(mProcessDestIndex);
+            mKeyword = normalDest.getDestName();
+            mSearchTaskId = SearchPackage.getInstance().silentKeywordSearch(1, mKeyword);
         } else if (null != mMultiplePoiArray && mMultiplePoiArray.size() > 0) {
             //全部获取完毕，开始路线规划
             int size = mMultiplePoiArray.size();
@@ -685,7 +701,9 @@ public final class VoiceSearchManager {
             }
         } else {
             if (null != respCallback) {
-                respCallback.onResponse(CallResponse.createFailResponse("超出选择范围"));
+                final CallResponse callResponse = CallResponse.createFailResponse("超出选择范围");
+                callResponse.setNeedPlayMessage(true);
+                respCallback.onResponse(callResponse);
             }
         }
     }
@@ -698,7 +716,9 @@ public final class VoiceSearchManager {
     private void responsePreviousSearchEmpty(final RespCallback respCallback) {
         Logger.e(IVrBridgeConstant.TAG, "last searchResult is empty or index overview");
         if (null != respCallback) {
-            respCallback.onResponse(CallResponse.createFailResponse("上一轮搜索结果为空"));
+            final CallResponse callResponse = CallResponse.createFailResponse("上一轮搜索结果为空");
+            callResponse.setNeedPlayMessage(true);
+            respCallback.onResponse(callResponse);
         }
     }
 
@@ -863,9 +883,6 @@ public final class VoiceSearchManager {
      * @param respCallback 语音响应回调.
      */
     private void disposeSelectedPoi(final PoiInfoEntity poiInfo, final RespCallback respCallback) {
-        if (null != respCallback) {
-            respCallback.onResponse(CallResponse.createSuccessResponse());
-        }
         mSearchResultList.clear();
 
         switch (mSearchType) {
@@ -938,9 +955,9 @@ public final class VoiceSearchManager {
             mKeyword = mDestInfo.getDest();
         }
 
-        final String distance = mSearchCondition.getDistance();
-        final String price = mSearchCondition.getPrice();
-        final String rate = mSearchCondition.getRate();
+        final String distance = mSearchCondition.getDistance(); //距离
+        final String price = mSearchCondition.getPrice(); //价格
+        final String rate = mSearchCondition.getRate(); //评分
         if (IVrBridgeConstant.DistanceValue.NEAREST.equals(distance)) {
             //带有距离优先筛选
             mSortValue = IVrBridgeConstant.PoiSortValue.PRIORITY_DISTANCE;
@@ -952,26 +969,27 @@ public final class VoiceSearchManager {
             mSortValue = "";
         }
 
-        final String center = mSearchCondition.getCenter();
-        if (TextUtils.isEmpty(center) && !VoiceConvertUtil.isNumber(distance)) {
-            //执行关键字搜索
-            mSearchType = IVrBridgeConstant.VoiceSearchType.CONDITION_IN_PAGE;
-            final Bundle bundle = new Bundle();
-            bundle.putInt(IVrBridgeConstant.VoiceIntentParams.INTENT_PAGE, IVrBridgeConstant.VoiceIntentPage.KEYWORD_SEARCH);
-            bundle.putString(IVrBridgeConstant.VoiceIntentParams.KEYWORD, mKeyword);
-            MapPackage.getInstance().voiceOpenHmiPage(MapType.MAIN_SCREEN_MAIN_MAP, bundle);
+        final String center = mSearchCondition.getCenter(); //中心点，没有则为当前位置
+        if (!TextUtils.isEmpty(center)) {
+            //先搜索中心点
+            mSearchTaskId = SearchPackage.getInstance().silentKeywordSearch(1, center);
         } else {
-            //触发周边搜
-            if (TextUtils.isEmpty(center)) {
+            if (!(VoiceConvertUtil.isNumber(distance))) {
+                //执行关键字搜索
+                mSearchType = IVrBridgeConstant.VoiceSearchType.CONDITION_IN_PAGE;
+                final Bundle bundle = new Bundle();
+                bundle.putInt(IVrBridgeConstant.VoiceIntentParams.INTENT_PAGE, IVrBridgeConstant.VoiceIntentPage.KEYWORD_SEARCH);
+                bundle.putString(IVrBridgeConstant.VoiceIntentParams.KEYWORD, mKeyword);
+                MapPackage.getInstance().voiceOpenHmiPage(MapType.MAIN_SCREEN_MAIN_MAP, bundle);
+            } else {
                 //没有中心点，当前位置的周边搜
                 final LocInfoBean curLocation = PositionPackage.getInstance().getLastCarLocation();
                 if (null != curLocation) {
                     final GeoPoint geoPoint = new GeoPoint(curLocation.getLongitude(), curLocation.getLatitude());
                     dealAfterConditionCenter(geoPoint);
+                } else {
+                    return CallResponse.createFailResponse("无法获取当前定位信息，请稍后重试");
                 }
-            } else {
-                //先搜索中心点
-                mSearchTaskId = SearchPackage.getInstance().silentKeywordSearch(1, center);
             }
         }
 
@@ -986,7 +1004,8 @@ public final class VoiceSearchManager {
     private void dealConditionCenterResult(final boolean success, final PoiInfoEntity centerInfo) {
         if (!success && null == centerInfo || null == centerInfo.getPoint()) {
             Logger.e(IVrBridgeConstant.TAG, "searchAround center is empty");
-            responseSearchEmpty();
+            mKeyword = mSearchCondition.getCenter();
+            responseSearchEmptyWithKeyword();
             return;
         }
 
@@ -1070,7 +1089,7 @@ public final class VoiceSearchManager {
                 responseSearchEmpty();
             } else {
                 mAlongToAround = true;
-                Logger.d(IVrBridgeConstant.TAG, "AlongSearch " + mKeyword + "result is empty, turnAround");
+                Logger.d(IVrBridgeConstant.TAG, "AlongSearch " + mKeyword + "result is empty, turnAroundSearch");
                 final LocInfoBean locInfo = PositionPackage.getInstance().getLastCarLocation();
                 if (null != locInfo) {
                     final GeoPoint geoPoint = new GeoPoint(locInfo.getLongitude(), locInfo.getLatitude());
@@ -1130,7 +1149,7 @@ public final class VoiceSearchManager {
                 bundle.putInt(IVrBridgeConstant.VoiceIntentParams.HOME_COMPANY_TYPE, type);
                 MapPackage.getInstance().voiceOpenHmiPage(MapType.MAIN_SCREEN_MAIN_MAP, bundle);
             } else if (null != mPoiCallback) {
-                return CallResponse.createNotSupportResponse("不支持的设置类型");
+                return CallResponse.createFailResponse("不支持的设置类型");
             }
         }
 
@@ -1172,20 +1191,20 @@ public final class VoiceSearchManager {
         Logger.w(IVrBridgeConstant.TAG, "setHomeCompany poiName: " + poiInfo.getName());
         final FavoriteInfo favoriteInfo = new FavoriteInfo();
         final int type;
+        final String tts;
         if (IVrBridgeConstant.DestType.HOME.equals(mPoiType)) {
             //家
             type = 1;
-            if (null != mPoiCallback) {
-                mPoiCallback.onResponse(CallResponse.createFailResponse("已设置家的地址"));
-            }
+            tts = "已设置家的地址";
         } else {
             //公司
             type = 2;
-            if (null != mPoiCallback) {
-                mPoiCallback.onResponse(CallResponse.createFailResponse("已设置公司的地址"));
-            }
+            tts = "已设置公司的地址";
         }
 
+        if (null != mPoiCallback) {
+            mPoiCallback.onResponse(CallResponse.createSuccessResponse(tts));
+        }
         favoriteInfo.setCommonName(type);
         poiInfo.setFavoriteInfo(favoriteInfo);
         BehaviorPackage.getInstance().addFavorite(poiInfo, type);
@@ -1214,7 +1233,9 @@ public final class VoiceSearchManager {
         if (null != poiInfo) {
             final String address = poiInfo.getAddress();
             if (null != mRespCallback) {
-                mRespCallback.onResponse(CallResponse.createSuccessResponse("当前定位" + address + "附近"));
+                final CallResponse locationResponse = CallResponse.createSuccessResponse("当前定位" + address + "附近");
+                locationResponse.setNeedPlayMessage(true);
+                mRespCallback.onResponse(locationResponse);
             }
 
             final String curState = NaviStatusPackage.getInstance().getCurrentNaviStatus();
@@ -1285,7 +1306,7 @@ public final class VoiceSearchManager {
     }
 
     /**
-     * 根据搜索获取的结果计算与终点的ETA信息.
+     * 搜索起点位置，默认选择第一个，计算到家/公司的TimeAndDist信息.
      *
      * @param searchType 语音搜索目的
      * @param poiType 终点类型, HOME-家  COMPANY-公司.
@@ -1351,7 +1372,9 @@ public final class VoiceSearchManager {
                 final String homeCompanyEta = response.toString();
                 Logger.d(IVrBridgeConstant.TAG, "homeCompanyEta: " + homeCompanyEta);
                 if (null != mRespCallback) {
-                    mRespCallback.onResponse(CallResponse.createSuccessResponse(homeCompanyEta));
+                    final CallResponse homeCompanyEtaResponse = CallResponse.createSuccessResponse(homeCompanyEta);
+                    homeCompanyEtaResponse.setNeedPlayMessage(true);
+                    mRespCallback.onResponse(homeCompanyEtaResponse);
                 }
             }).exceptionally(throwable -> {
                 responseHaveNoInfo();
@@ -1365,14 +1388,16 @@ public final class VoiceSearchManager {
      */
     private void responseHaveNoInfo() {
         if (null != mRespCallback) {
-            mRespCallback.onResponse(CallResponse.createFailResponse("暂未查询到相应信息，请稍后再试"));
+            final CallResponse noneMsgResponse = CallResponse.createFailResponse("暂未查询到相应信息，请稍后再试");
+            noneMsgResponse.setNeedPlayMessage(true);
+            mRespCallback.onResponse(noneMsgResponse);
         }
     }
 
     /**
      * 获取起点到终点的预计耗时和距离.
      *
-     * @param start 起点，可以为null.
+     * @param start 起点，可以为null，意为当前位置.
      * @param arrival 终点，不可为empty.
      * @param respCallback 语音执行结果异步回调.
      *
@@ -1423,7 +1448,9 @@ public final class VoiceSearchManager {
                 final String twoPointEta = response.toString();
                 Logger.d(IVrBridgeConstant.TAG, "twoPoiEtaInfo: " + twoPointEta);
                 if (null != mRespCallback) {
-                    mRespCallback.onResponse(CallResponse.createSuccessResponse(twoPointEta));
+                    final CallResponse etaResponse = CallResponse.createSuccessResponse(twoPointEta);
+                    etaResponse.setNeedPlayMessage(true);
+                    mRespCallback.onResponse(etaResponse);
                 }
             }).exceptionally(throwable -> {
                 responseHaveNoInfo();
@@ -1436,7 +1463,6 @@ public final class VoiceSearchManager {
         }
     }
 
-
     /**
      * Poi排序.
      *
@@ -1447,13 +1473,10 @@ public final class VoiceSearchManager {
      */
     public void sortPoi(final String sessionId, final String type, final String rule, final RespCallback respCallback) {
         Logger.d(IVrBridgeConstant.TAG, "poiSort rule: " + rule);
-        if (null == sessionId || !sessionId.equals(mSessionId)) {
-            Logger.d(IVrBridgeConstant.TAG, "not same sessionId");
-            responseNotMatchId(respCallback);
-            return;
-        }
         if (null == mSearchResultList || mSearchResultList.isEmpty()) {
+            responsePreviousSearchEmpty(respCallback);
             Logger.d(IVrBridgeConstant.TAG, "poiSort searchResult is empty");
+            return;
         }
 
         mSortValue = "";
@@ -1499,7 +1522,9 @@ public final class VoiceSearchManager {
      */
     private void responseUnSupportSortRule(final RespCallback respCallback) {
         if (null != respCallback) {
-            respCallback.onResponse(CallResponse.createNotSupportResponse("不支持该排序，请继续选择"));
+            final CallResponse callResponse = CallResponse.createNotSupportResponse("不支持该排序，请继续选择");
+            callResponse.setNeedPlayMessage(true);
+            respCallback.onResponse(callResponse);
         }
     }
 
@@ -1510,7 +1535,9 @@ public final class VoiceSearchManager {
         if (null == mSearchResultList || mSearchResultList.isEmpty()) {
             Logger.d(IVrBridgeConstant.TAG, "poiSort type: " + mSortValue + " search result empty");
             if (null != mRespCallback) {
-                mRespCallback.onResponse(CallResponse.createFailResponse("排序搜索结果为空"));
+                final CallResponse sortResponse = CallResponse.createFailResponse("排序搜索结果为空");
+                sortResponse.setNeedPlayMessage(true);
+                mRespCallback.onResponse(sortResponse);
             }
             return;
         }
@@ -1552,11 +1579,14 @@ public final class VoiceSearchManager {
 
         if (null != mRespCallback) {
             final String hintMsg = builder.toString();
+            final CallResponse sortResultResponse;
             if (TextUtils.isEmpty(hintMsg)) {
-                mRespCallback.onResponse(CallResponse.createFailResponse("不支持的排序类型"));
+                sortResultResponse = CallResponse.createFailResponse("不支持的排序类型");
             } else {
-                mRespCallback.onResponse(CallResponse.createSuccessResponse(hintMsg));
+                sortResultResponse = CallResponse.createSuccessResponse(hintMsg);
             }
+            sortResultResponse.setNeedPlayMessage(true);
+            mRespCallback.onResponse(sortResultResponse);
         }
     }
 

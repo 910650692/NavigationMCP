@@ -49,6 +49,7 @@ public class PermissionUtils {
             Manifest.permission.ACCESS_FINE_LOCATION,
             Manifest.permission.MANAGE_EXTERNAL_STORAGE,
             Manifest.permission.CALL_PHONE,
+            Manifest.permission.GET_ACCOUNTS,
             Settings.ACTION_MANAGE_OVERLAY_PERMISSION};
 
     public void setPermissionsObserver(PermissionsObserver permissionsObserver) {

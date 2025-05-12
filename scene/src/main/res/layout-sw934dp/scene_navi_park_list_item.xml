@@ -12,7 +12,7 @@
 
     <com.fy.navi.ui.view.SkinConstraintLayout
         android:id="@+id/scl_list_item"
-        android:layout_width="@dimen/dp_640"
+        android:layout_width="match_parent"
         android:layout_height="@dimen/dp_154"
         tools:background="@android:color/darker_gray">
 

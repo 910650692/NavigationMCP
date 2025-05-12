@@ -10,10 +10,11 @@ import com.fy.navi.burypoint.BuryManager;
 import com.fy.navi.flavor.BaseTestCarType;
 import com.fy.navi.flavor.TestCarType;
 import com.fy.navi.hmi.BuildConfig;
+import com.fy.navi.hmi.launcher.LauncherWindowService;
 import com.fy.navi.service.AppContext;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.StartService;
-import com.fy.navi.service.adapter.search.cloudByPatac.PatacNetClient;
+import com.fy.navi.service.adapter.activate.cloudpatac.PatacNetClient;
 import com.fy.navi.ui.BaseApplication;
 
 /**
@@ -46,6 +47,7 @@ public class NaviApplication extends BaseApplication {
         super.onTerminate();
         Logger.i(TAG, "onTerminate");
         StartService.getInstance().unSdkInit();
+        LauncherWindowService.stopService();
     }
 
     private void initARouter() {

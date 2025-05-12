@@ -6,18 +6,21 @@
         android:focusable="false"
         android:clickable="true"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="@dimen/dp_47"
+        android:paddingTop="@dimen/dp_39"
+        android:paddingBottom="@dimen/dp_56">
 
         <com.fy.navi.ui.view.SkinConstraintLayout
-            android:layout_width="@dimen/dp_1600"
+            android:layout_width="@dimen/dp_1694"
             android:layout_height="wrap_content"
             android:elevation="@dimen/dp_15"
             android:focusable="false"
-            android:background="@drawable/bg_setting_fragment"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toTopOf="parent"
+            android:background="@drawable/bg_shadow_system_buick_avenir">
 
             <com.android.car.ui.FocusParkingView
                 android:layout_width="wrap_content"

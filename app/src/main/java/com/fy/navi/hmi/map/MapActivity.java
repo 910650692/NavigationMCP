@@ -18,6 +18,8 @@ import com.fy.navi.burypoint.constant.BuryConstant;
 import com.fy.navi.hmi.BR;
 import com.fy.navi.hmi.R;
 import com.fy.navi.hmi.databinding.ActivityMapBinding;
+import com.fy.navi.hmi.launcher.FloatViewManager;
+import com.fy.navi.hmi.launcher.LauncherWindowService;
 import com.fy.navi.hmi.test.TestWindow;
 import com.fy.navi.mapservice.bean.INaviConstant;
 import com.fy.navi.service.define.cruise.CruiseInfoEntity;
@@ -57,6 +59,7 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
         WindowCompat.setDecorFitsSystemWindows(getWindow(),false);
         getWindow().setNavigationBarColor(getResources().getColor(R.color.route_charge_param_color));
         FragmentIntent.syncFragmentList(mScreenId, getSupportFragmentManager());
+        LauncherWindowService.startService();
     }
 
     @Override
@@ -189,6 +192,7 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
     protected void onResume() {
         super.onResume();
         mViewModel.getCurrentCityLimit();
+        FloatViewManager.getInstance().showOrHideFloatView(false);
     }
 
     @Override
@@ -196,6 +200,7 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
     protected void onStop() {
         Logger.i(TAG, "onStop");
         super.onStop();
+        FloatViewManager.getInstance().showOrHideFloatView(true);
     }
 
     @Override

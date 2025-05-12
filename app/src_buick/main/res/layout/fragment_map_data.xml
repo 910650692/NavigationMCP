@@ -17,7 +17,7 @@
         android:orientation="vertical"
         android:clickable="true"
         android:padding="@dimen/dp_29"
-        android:background="@drawable/bg_shadow">
+        android:background="@drawable/bg_shadow_navi_buick">
 
         <!--离线搜索标题-->
         <com.fy.navi.ui.view.SkinLinearLayout

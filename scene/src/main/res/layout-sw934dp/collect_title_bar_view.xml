@@ -7,7 +7,7 @@
         android:layout_width="@dimen/dp_698"
         android:layout_height="@dimen/dp_170"
         android:padding="@dimen/dp_29"
-        android:background="@drawable/bg_search_shadow">
+        android:background="@drawable/bg_shadow_navi_buick">
 
         <com.fy.navi.ui.view.SkinImageView
             android:layout_marginStart="@dimen/dp_14"

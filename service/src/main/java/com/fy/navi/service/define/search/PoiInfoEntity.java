@@ -8,6 +8,7 @@ import androidx.annotation.NonNull;
 
 import com.android.utils.ConvertUtils;
 import com.fy.navi.service.define.bean.GeoPoint;
+import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,8 +33,11 @@ import lombok.experimental.Accessors;
 public class PoiInfoEntity implements Parcelable {
     private int mPoiType;           // poi 类型
     private String mPid;            // 父POI的Id
+    @SerializedName("stationName")
     private String mName;           // 名称
+    @SerializedName("stationTel")
     private String mPhone;          // 电话
+    @SerializedName("address")
     private String mAddress;        // 地址
     private String mCategory;       // 分类，筛选使用
     private int mAdCode;            // 市区县详细代码
@@ -42,6 +46,7 @@ public class PoiInfoEntity implements Parcelable {
     private String mTypeCode;       // POI搜索类型
     private String mPoiTag;         // POI标签
     private String mShortName;      // 简称
+    @SerializedName("busineHours")
     private String mBusinessTime;    // 营业时间
     private double mRatio;          // 选择率
     private String mOpenStatus;     // 营业状态
@@ -53,6 +58,7 @@ public class PoiInfoEntity implements Parcelable {
     private GeoPoint mPoint;        // 经纬度
     private String mPointTypeCode;  // POI类型（扎标专用）
     private String mIndustry;       // 行业类型
+    private boolean mIsVisible;      //是否可见，搜索结果列表页面添加选中效果
 
     // -----------语音排序使用------------
     private int mSortDistance;     // 距离，语音使用
@@ -62,7 +68,9 @@ public class PoiInfoEntity implements Parcelable {
     //-----------
 
     // -------- SGM接口使用--------
+    @SerializedName("operatorId")
     private String mOperatorId;
+    @SerializedName("stationId")
     private String mStationId;
     // --------------
     private CityInfo mCityInfo;
@@ -627,6 +635,7 @@ public class PoiInfoEntity implements Parcelable {
         mSortPrice = in.readInt();
         mStationId = in.readString();
         mOperatorId = in.readString();
+        mIsVisible = in.readBoolean();
         mCityInfo = in.readParcelable(CityInfo.class.getClassLoader());
         mFavoriteInfo = in.readParcelable(FavoriteInfo.class.getClassLoader());
         mRetainParam = in.readParcelable(SearchRetainParamInfo.class.getClassLoader());
@@ -709,6 +718,7 @@ public class PoiInfoEntity implements Parcelable {
         parcel.writeInt(mSortDistance);
         parcel.writeInt(mSortRate);
         parcel.writeInt(mSortPrice);
+        parcel.writeBoolean(mIsVisible);
         parcel.writeParcelable(mCityInfo, i);
         parcel.writeParcelable(mFavoriteInfo, i);
         parcel.writeParcelable(mRetainParam, i);

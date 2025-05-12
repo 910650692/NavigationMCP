@@ -317,9 +317,7 @@
 
                 </com.fy.navi.ui.view.SkinLinearLayout>
 
-                <!--收藏列表-->
-                <com.fy.navi.ui.view.SkinRecyclerView
-                    android:id="@+id/rv_favorite_list"
+                <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:visibility="@{ViewModel.mDataVisibility ? View.VISIBLE : View.GONE}"
@@ -328,7 +326,13 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/tv_favorite_switch" />
+                    app:layout_constraintTop_toBottomOf="@+id/tv_favorite_switch">
+                    <!--收藏列表-->
+                    <com.fy.navi.ui.view.SkinRecyclerView
+                        android:id="@+id/rv_favorite_list"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
+                </RelativeLayout>
 
                 <!--无收藏数据提示-->
                 <com.fy.navi.ui.view.SkinLinearLayout

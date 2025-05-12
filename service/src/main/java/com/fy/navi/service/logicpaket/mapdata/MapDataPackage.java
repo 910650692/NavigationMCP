@@ -19,13 +19,13 @@ public final class MapDataPackage implements MapDataAdapterCallBack {
     private final Hashtable<String, MapDataCallBack> mCallBacks;
     private MapDataPackage() {
         mCallBacks = new Hashtable<>();
-        mMapDataAdapter = MapDataAdapter.getInstance();
     }
 
     /**
      * 离线数据功能初始化
      */
     public void initMapDataService() {
+        mMapDataAdapter = MapDataAdapter.getInstance();
         mMapDataAdapter.initMapDataService();
         mMapDataAdapter.registerCallBack("MapDataPackage", this);
     }

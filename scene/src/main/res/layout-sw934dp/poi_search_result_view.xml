@@ -34,7 +34,7 @@
                 android:paddingTop="@dimen/dp_29"
                 android:paddingBottom="@dimen/dp_29"
                 android:layout_marginTop="@dimen/dp_m_38"
-                android:background="@drawable/bg_search_shadow">
+                android:background="@drawable/bg_shadow_navi_buick">
 
                 <include
                     android:id="@+id/search_filter_view"
@@ -107,7 +107,7 @@
             android:layout_width="@dimen/dp_204"
             android:layout_height="@dimen/dp_494"
             android:padding="@dimen/dp_29"
-            android:background="@drawable/bg_search_shadow"
+            android:background="@drawable/bg_shadow_navi_buick"
             android:clickable="true"
             android:visibility="gone"
             android:layout_marginStart="@dimen/dp_m_9"

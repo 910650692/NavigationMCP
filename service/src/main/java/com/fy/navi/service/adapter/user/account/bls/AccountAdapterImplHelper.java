@@ -2,6 +2,7 @@ package com.fy.navi.service.adapter.user.account.bls;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
+import android.accounts.AccountManagerCallback;
 import android.accounts.AccountManagerFuture;
 import android.accounts.AuthenticatorException;
 import android.accounts.OperationCanceledException;
@@ -493,15 +494,23 @@ public class AccountAdapterImplHelper implements IAccountServiceObserver {
         }
         try {
             final AccountManagerFuture<Bundle> future =
-                    mAccountManager.getAuthTokenByFeatures(
-                            param.getMAccountType(),
+//                    mAccountManager.getAuthTokenByFeatures(
+//                            param.getMAccountType(),
+//                            param.getMAuthTokenType(),
+//                            param.getMFeatures(),
+//                            param.getMActivity(),
+//                            param.getMAddAccountOption(),
+//                            param.getMGetAuthTokenOption(),
+//                            param.getMCallback(),
+//                            param.getMHandler()
+//                    );
+                    mAccountManager.getAuthToken(
+                            accounts[0],
                             param.getMAuthTokenType(),
-                            param.getMFeatures(),
+                            null,
                             param.getMActivity(),
-                            param.getMAddAccountOption(),
-                            param.getMGetAuthTokenOption(),
-                            param.getMCallback(),
-                            param.getMHandler()
+                            null,
+                            null
                     );
             Logger.d(TAG, "getAccessToken : future get 1");
             final Bundle bnd = future.getResult();

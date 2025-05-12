@@ -28,6 +28,12 @@ public final class UserDataCode {
     //判断数据库里是否有离线数据 有数据返回“1”，没有返回“0”或空
     public static final String SETTING_DOWNLOAD_LIST = "setting_download_list";
 
+    //uuid
+    public static final String SETTING_ACCOUNT_UUID = "setting_account_uuid";
+
+    //app key
+    public static final String SETTING_ACCOUNT_APP_KEY = "setting_account_app_key";
+
     // 离线地图数据下载状态
     public static final int TASK_STATUS_CODE_READY = 0;
     public static final int TASK_STATUS_CODE_WAITING = 1; //

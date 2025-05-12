@@ -10,12 +10,13 @@
     </data>
 
     <com.fy.navi.ui.view.SkinLinearLayout
-        android:layout_width="@dimen/dp_1578"
-        android:layout_height="@dimen/dp_1000"
+        android:layout_width="@dimen/dp_1680"
+        android:layout_height="@dimen/dp_1102"
         android:orientation="vertical"
         android:clickable="true"
         android:focusable="false"
-        android:background="@drawable/bg_setting_fragment">
+        android:padding="@dimen/dp_51"
+        android:background="@drawable/bg_shadow_navi_cadillac">
 
         <com.android.car.ui.FocusParkingView
             android:layout_width="wrap_content"
@@ -157,7 +158,7 @@
                                 android:text="@string/setting_others_help_tab_question_one"
                                 android:textSize="@dimen/sp_32"
                                 android:focusable="false"
-                                android:textColor="@color/setting_bg_tab_text_unselect"/>
+                                android:textColor="@color/setting_bg_tab_text_select"/>
 
                             <com.fy.navi.ui.view.SkinTextView
                                 android:layout_width="wrap_content"
@@ -174,7 +175,7 @@
                                 android:text="@string/setting_others_help_tab_question_two"
                                 android:textSize="@dimen/sp_32"
                                 android:focusable="false"
-                                android:textColor="@color/setting_bg_tab_text_unselect"
+                                android:textColor="@color/setting_bg_tab_text_select"
                                 android:layout_marginTop="@dimen/dp_40"/>
 
                             <com.fy.navi.ui.view.SkinTextView
@@ -192,7 +193,7 @@
                                 android:text="@string/setting_others_help_tab_question_three"
                                 android:textSize="@dimen/sp_32"
                                 android:focusable="false"
-                                android:textColor="@color/setting_bg_tab_text_unselect"
+                                android:textColor="@color/setting_bg_tab_text_select"
                                 android:layout_marginTop="@dimen/dp_40"/>
 
                             <com.fy.navi.ui.view.SkinTextView
@@ -210,7 +211,7 @@
                                 android:text="@string/setting_others_help_tab_question_four"
                                 android:textSize="@dimen/sp_32"
                                 android:focusable="false"
-                                android:textColor="@color/setting_bg_tab_text_unselect"
+                                android:textColor="@color/setting_bg_tab_text_select"
                                 android:layout_marginTop="@dimen/dp_40"/>
 
                             <com.fy.navi.ui.view.SkinTextView
@@ -228,7 +229,7 @@
                                 android:text="@string/setting_others_help_tab_question_five"
                                 android:textSize="@dimen/sp_32"
                                 android:focusable="false"
-                                android:textColor="@color/setting_bg_tab_text_unselect"
+                                android:textColor="@color/setting_bg_tab_text_select"
                                 android:layout_marginTop="@dimen/dp_40"/>
 
                             <com.fy.navi.ui.view.SkinTextView
@@ -255,7 +256,7 @@
                                 android:text="@string/setting_others_help_tab_display_one"
                                 android:textSize="@dimen/sp_32"
                                 android:focusable="false"
-                                android:textColor="@color/setting_bg_tab_text_unselect"/>
+                                android:textColor="@color/setting_bg_tab_text_select"/>
 
                             <com.fy.navi.ui.view.SkinTextView
                                 android:layout_width="wrap_content"
@@ -272,7 +273,7 @@
                                 android:text="@string/setting_others_help_tab_display_two"
                                 android:textSize="@dimen/sp_32"
                                 android:focusable="false"
-                                android:textColor="@color/setting_bg_tab_text_unselect"
+                                android:textColor="@color/setting_bg_tab_text_select"
                                 android:layout_marginTop="@dimen/dp_40"/>
 
                             <com.fy.navi.ui.view.SkinTextView
@@ -290,7 +291,7 @@
                                 android:text="@string/setting_others_help_tab_display_three"
                                 android:textSize="@dimen/sp_32"
                                 android:focusable="false"
-                                android:textColor="@color/setting_bg_tab_text_unselect"
+                                android:textColor="@color/setting_bg_tab_text_select"
                                 android:layout_marginTop="@dimen/dp_40"/>
 
                             <com.fy.navi.ui.view.SkinTextView
@@ -308,7 +309,7 @@
                                 android:text="@string/setting_others_help_tab_display_four"
                                 android:textSize="@dimen/sp_32"
                                 android:focusable="false"
-                                android:textColor="@color/setting_bg_tab_text_unselect"
+                                android:textColor="@color/setting_bg_tab_text_select"
                                 android:layout_marginTop="@dimen/dp_40"/>
 
                             <com.fy.navi.ui.view.SkinTextView
@@ -335,7 +336,7 @@
                                 android:text="@string/setting_others_help_tab_route_one"
                                 android:textSize="@dimen/sp_32"
                                 android:focusable="false"
-                                android:textColor="@color/setting_bg_tab_text_unselect"/>
+                                android:textColor="@color/setting_bg_tab_text_select"/>
 
                             <com.fy.navi.ui.view.SkinTextView
                                 android:layout_width="wrap_content"
@@ -352,7 +353,7 @@
                                 android:text="@string/setting_others_help_tab_route_two"
                                 android:textSize="@dimen/sp_32"
                                 android:focusable="false"
-                                android:textColor="@color/setting_bg_tab_text_unselect"
+                                android:textColor="@color/setting_bg_tab_text_select"
                                 android:layout_marginTop="@dimen/dp_40"/>
 
                             <com.fy.navi.ui.view.SkinTextView
@@ -370,7 +371,7 @@
                                 android:text="@string/setting_others_help_tab_route_three"
                                 android:textSize="@dimen/sp_32"
                                 android:focusable="false"
-                                android:textColor="@color/setting_bg_tab_text_unselect"
+                                android:textColor="@color/setting_bg_tab_text_select"
                                 android:layout_marginTop="@dimen/dp_40"/>
 
                             <com.fy.navi.ui.view.SkinTextView
@@ -388,7 +389,7 @@
                                 android:text="@string/setting_others_help_tab_route_four"
                                 android:textSize="@dimen/sp_32"
                                 android:focusable="false"
-                                android:textColor="@color/setting_bg_tab_text_unselect"
+                                android:textColor="@color/setting_bg_tab_text_select"
                                 android:layout_marginTop="@dimen/dp_40"/>
 
                             <com.fy.navi.ui.view.SkinTextView
@@ -406,7 +407,7 @@
                                 android:text="@string/setting_others_help_tab_route_five"
                                 android:textSize="@dimen/sp_32"
                                 android:focusable="false"
-                                android:textColor="@color/setting_bg_tab_text_unselect"
+                                android:textColor="@color/setting_bg_tab_text_select"
                                 android:layout_marginTop="@dimen/dp_40"/>
 
                             <com.fy.navi.ui.view.SkinTextView
@@ -433,7 +434,7 @@
                                 android:text="@string/setting_others_help_tab_search_one"
                                 android:textSize="@dimen/sp_32"
                                 android:focusable="false"
-                                android:textColor="@color/setting_bg_tab_text_unselect"/>
+                                android:textColor="@color/setting_bg_tab_text_select"/>
 
                             <com.fy.navi.ui.view.SkinTextView
                                 android:layout_width="wrap_content"
@@ -450,7 +451,7 @@
                                 android:text="@string/setting_others_help_tab_search_two"
                                 android:textSize="@dimen/sp_32"
                                 android:focusable="false"
-                                android:textColor="@color/setting_bg_tab_text_unselect"
+                                android:textColor="@color/setting_bg_tab_text_select"
                                 android:layout_marginTop="@dimen/dp_40"/>
 
                             <com.fy.navi.ui.view.SkinTextView
@@ -468,7 +469,7 @@
                                 android:text="@string/setting_others_help_tab_search_three"
                                 android:textSize="@dimen/sp_32"
                                 android:focusable="false"
-                                android:textColor="@color/setting_bg_tab_text_unselect"
+                                android:textColor="@color/setting_bg_tab_text_select"
                                 android:layout_marginTop="@dimen/dp_40"/>
 
                             <com.fy.navi.ui.view.SkinTextView
@@ -486,7 +487,7 @@
                                 android:text="@string/setting_others_help_tab_search_four"
                                 android:textSize="@dimen/sp_32"
                                 android:focusable="false"
-                                android:textColor="@color/setting_bg_tab_text_unselect"
+                                android:textColor="@color/setting_bg_tab_text_select"
                                 android:layout_marginTop="@dimen/dp_40"/>
 
                             <com.fy.navi.ui.view.SkinTextView
@@ -504,7 +505,7 @@
                                 android:text="@string/setting_others_help_tab_search_five"
                                 android:textSize="@dimen/sp_32"
                                 android:focusable="false"
-                                android:textColor="@color/setting_bg_tab_text_unselect"
+                                android:textColor="@color/setting_bg_tab_text_select"
                                 android:layout_marginTop="@dimen/dp_40"/>
 
                             <com.fy.navi.ui.view.SkinTextView
@@ -531,7 +532,7 @@
                                 android:text="@string/setting_others_help_tab_broadcast_one"
                                 android:textSize="@dimen/sp_32"
                                 android:focusable="false"
-                                android:textColor="@color/setting_bg_tab_text_unselect"/>
+                                android:textColor="@color/setting_bg_tab_text_select"/>
 
                             <com.fy.navi.ui.view.SkinTextView
                                 android:layout_width="wrap_content"
@@ -548,7 +549,7 @@
                                 android:text="@string/setting_others_help_tab_broadcast_two"
                                 android:textSize="@dimen/sp_32"
                                 android:focusable="false"
-                                android:textColor="@color/setting_bg_tab_text_unselect"
+                                android:textColor="@color/setting_bg_tab_text_select"
                                 android:layout_marginTop="@dimen/dp_40"/>
 
                             <com.fy.navi.ui.view.SkinTextView
@@ -566,7 +567,7 @@
                                 android:text="@string/setting_others_help_tab_broadcast_three"
                                 android:textSize="@dimen/sp_32"
                                 android:focusable="false"
-                                android:textColor="@color/setting_bg_tab_text_unselect"
+                                android:textColor="@color/setting_bg_tab_text_select"
                                 android:layout_marginTop="@dimen/dp_40"/>
 
                             <com.fy.navi.ui.view.SkinTextView
@@ -584,7 +585,7 @@
                                 android:text="@string/setting_others_help_tab_broadcast_four"
                                 android:textSize="@dimen/sp_32"
                                 android:focusable="false"
-                                android:textColor="@color/setting_bg_tab_text_unselect"
+                                android:textColor="@color/setting_bg_tab_text_select"
                                 android:layout_marginTop="@dimen/dp_40"/>
 
                             <com.fy.navi.ui.view.SkinTextView
@@ -611,7 +612,7 @@
                                 android:text="@string/setting_others_help_tab_data_one"
                                 android:textSize="@dimen/sp_32"
                                 android:focusable="false"
-                                android:textColor="@color/setting_bg_tab_text_unselect"/>
+                                android:textColor="@color/setting_bg_tab_text_select"/>
 
                             <com.fy.navi.ui.view.SkinTextView
                                 android:layout_width="wrap_content"
@@ -628,7 +629,7 @@
                                 android:text="@string/setting_others_help_tab_data_two"
                                 android:textSize="@dimen/sp_32"
                                 android:focusable="false"
-                                android:textColor="@color/setting_bg_tab_text_unselect"
+                                android:textColor="@color/setting_bg_tab_text_select"
                                 android:layout_marginTop="@dimen/dp_40"/>
 
                             <com.fy.navi.ui.view.SkinTextView
@@ -646,7 +647,7 @@
                                 android:text="@string/setting_others_help_tab_data_three"
                                 android:textSize="@dimen/sp_32"
                                 android:focusable="false"
-                                android:textColor="@color/setting_bg_tab_text_unselect"
+                                android:textColor="@color/setting_bg_tab_text_select"
                                 android:layout_marginTop="@dimen/dp_40"/>
 
                             <com.fy.navi.ui.view.SkinTextView
@@ -664,7 +665,7 @@
                                 android:text="@string/setting_others_help_tab_data_four"
                                 android:textSize="@dimen/sp_32"
                                 android:focusable="false"
-                                android:textColor="@color/setting_bg_tab_text_unselect"
+                                android:textColor="@color/setting_bg_tab_text_select"
                                 android:layout_marginTop="@dimen/dp_40"/>
 
                             <com.fy.navi.ui.view.SkinTextView

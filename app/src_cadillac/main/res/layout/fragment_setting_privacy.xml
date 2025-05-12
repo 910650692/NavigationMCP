@@ -10,11 +10,12 @@
     </data>
 
     <com.fy.navi.ui.view.SkinConstraintLayout
-        android:layout_width="@dimen/dp_1578"
-        android:layout_height="@dimen/dp_1000"
+        android:layout_width="@dimen/dp_1680"
+        android:layout_height="@dimen/dp_1102"
         android:clickable="true"
         android:focusable="false"
-        android:background="@drawable/bg_setting_fragment">
+        android:padding="@dimen/dp_51"
+        android:background="@drawable/bg_shadow_navi_cadillac">
 
         <com.android.car.ui.FocusParkingView
             android:layout_width="wrap_content"

@@ -20,24 +20,26 @@ import com.fy.navi.service.adapter.user.behavior.BehaviorAdapterCallBack;
 import com.fy.navi.service.define.bean.GeoPoint;
 import com.fy.navi.service.define.code.UserDataCode;
 import com.fy.navi.service.define.layer.refix.LayerItemUserFavorite;
-import com.fy.navi.service.define.map.GmBizUserFavoritePoint;
 import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.search.FavoriteInfo;
 import com.fy.navi.service.define.search.PoiInfoEntity;
 import com.fy.navi.service.define.setting.SettingController;
 import com.fy.navi.service.define.user.account.AccountProfileInfo;
+import com.fy.navi.service.define.user.account.AccountUserInfo;
 import com.fy.navi.service.greendao.CommonManager;
 import com.fy.navi.service.greendao.favorite.Favorite;
 import com.fy.navi.service.greendao.favorite.FavoriteManager;
 import com.fy.navi.service.greendao.setting.SettingManager;
 import com.fy.navi.service.logicpaket.layer.LayerPackage;
+import com.fy.navi.service.logicpaket.user.account.AccountCallBack;
+import com.fy.navi.service.logicpaket.user.account.AccountPackage;
 
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
-final public class BehaviorPackage implements BehaviorAdapterCallBack {
+final public class BehaviorPackage implements BehaviorAdapterCallBack, AccountCallBack {
     public static final String TAG = BehaviorPackage.class.getName();
     private BehaviorAdapter mBehaviorAdapter;
     private final List<BehaviorCallBack> mCallBacks = new ArrayList<>();
@@ -67,6 +69,7 @@ final public class BehaviorPackage implements BehaviorAdapterCallBack {
         mLayerAdapter = LayerAdapter.getInstance();
         mBehaviorAdapter.initBehaviorService();
         mBehaviorAdapter.registerCallBack("BehaviorPackage", this);
+        AccountPackage.getInstance().registerCallBack("BehaviorPackage", this);
     }
 
     /**
@@ -310,14 +313,14 @@ final public class BehaviorPackage implements BehaviorAdapterCallBack {
     @HookMethod
     private void sendBuryPointForRemovingOldFavorite(final PoiInfoEntity poiInfo) {
         if (poiInfo != null && poiInfo.getFavoriteInfo() != null) {
-            String eventName = switch (poiInfo.getFavoriteInfo().getCommonName()){
+            final String eventName = switch (poiInfo.getFavoriteInfo().getCommonName()){
                 case 0 -> BuryConstant.EventName.AMAP_FAVORITE_UNSAVE;
                 case 1 -> BuryConstant.EventName.AMAP_HOME_UNSAVE;
                 case 2 -> BuryConstant.EventName.AMAP_WORK_UNSAVE;
                 default -> BuryConstant.EventName.AMAP_UNKNOWN;
             };
             BuryPointController.getInstance().setEventName(eventName);
-            BuryProperty buryProperty = new BuryProperty.Builder()
+            final BuryProperty buryProperty = new BuryProperty.Builder()
                     .setParams(BuryConstant.ProperType.BURY_KEY_HOME_PREDICTION, poiInfo.getName())
                     .build();
             BuryPointController.getInstance().setBuryProps(buryProperty);
@@ -600,6 +603,38 @@ final public class BehaviorPackage implements BehaviorAdapterCallBack {
         return Helper.EP;
     }
 
+    @Override
+    public void notifyAccountLogout(final int errCode, final int taskId, final AccountUserInfo result) {
+        loginStatusChanged();
+    }
+
+    @Override
+    public void notifyQRCodeLoginConfirm(final int errCode, final int taskId, final AccountUserInfo result) {
+        loginStatusChanged();
+    }
+
+
+    /**
+     * 登录状态发生改变时需要更新扎点
+     */
+    private void loginStatusChanged() {
+        final String isFavoritePointStr = mSettingManager.getValueByKey(SettingController.KEY_SETTING_FAVORITE_POINT);
+        mIsFavoriteDataUpdated =  !TextUtils.equals(isFavoritePointStr, "true");
+        //清除旧扎点
+        LayerPackage.getInstance().clearFavoriteMain(MapType.MAIN_SCREEN_MAIN_MAP);
+        //显示家
+        updateFavoriteMain(getHomeFavoriteInfo(), true);
+        //显示公司
+        updateFavoriteMain(getCompanyFavoriteInfo(), true);
+        //显示收藏列表
+        final ArrayList<PoiInfoEntity> poiInfoList = getFavoritePoiData();
+        if (!ConvertUtils.isEmpty(poiInfoList)) {
+            final LayerItemUserFavorite layerItemUserFavorite = new LayerItemUserFavorite();
+            layerItemUserFavorite.setMSimpleFavoriteList(poiInfoList);
+            LayerPackage.getInstance().addLayerItemOfFavorite(MapType.MAIN_SCREEN_MAIN_MAP, layerItemUserFavorite);
+        }
+    }
+
     private static final class Helper {
         private static final BehaviorPackage EP = new BehaviorPackage();
     }
@@ -610,7 +645,7 @@ final public class BehaviorPackage implements BehaviorAdapterCallBack {
      * @param isAddFavorite
      */
 
-    private void updateFavoriteMain(PoiInfoEntity poiInfoEntity, boolean isAddFavorite) {
+    private void updateFavoriteMain(final PoiInfoEntity poiInfoEntity, final boolean isAddFavorite) {
         if (poiInfoEntity == null) {
             Logger.e(TAG, "the poi is null");
             return;
@@ -623,7 +658,7 @@ final public class BehaviorPackage implements BehaviorAdapterCallBack {
         // 通知主图更新收藏点
         ThreadManager.getInstance().postDelay(() -> {
             if (isAddFavorite) {
-                LayerItemUserFavorite layerItemUserFavorite = new LayerItemUserFavorite();
+                final LayerItemUserFavorite layerItemUserFavorite = new LayerItemUserFavorite();
                 final ArrayList<PoiInfoEntity> poiInfoEntities = new ArrayList<>();
                 poiInfoEntities.add(poiInfoEntity);
                 layerItemUserFavorite.setMSimpleFavoriteList(poiInfoEntities);

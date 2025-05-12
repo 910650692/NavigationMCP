@@ -31,6 +31,9 @@ public class History {
     @Property(nameInDb = "endPoint")
     private String mEndPoint;
 
+    @Property(nameInDb = "midPoint")
+    private String mMidPoint;
+
     @Property(nameInDb = "startPoiName")
     private String mStartPoiName;
 
@@ -80,7 +83,7 @@ public class History {
 
     @Keep
     public History(final Long id, final String keyWord, final String poiId, final String naviHistoryId, final String startPoint,
-                   final String endPoint, final String startPoiName, final String endPoiName, final int type,
+                   final String endPoint, final String startPoiName, final String endPoiName, final String midPoint, final int type,
                    final Date updateTime, final boolean isCompleted, final int rideRunType, final int timeInterval,
                    final int runDistance, final int maxSpeed, final String endTime, final String startName,
                    final int averageSpeed, final String trackFileName, final String filePath) {
@@ -92,6 +95,7 @@ public class History {
         this.mEndPoint = endPoint;
         this.mStartPoiName = startPoiName;
         this.mEndPoiName = endPoiName;
+        this.mMidPoint = midPoint;
         this.mType = type;
         this.mUpdateTime = updateTime;
         this.mIsCompleted = isCompleted;
@@ -264,5 +268,13 @@ public class History {
 
     public void setMNaviHistoryId(final String naviHistoryId) {
         this.mNaviHistoryId = naviHistoryId;
+    }
+
+    public String getMMidPoint() {
+        return this.mMidPoint;
+    }
+
+    public void setMMidPoint(final String midPoint) {
+        this.mMidPoint = midPoint;
     }
 }

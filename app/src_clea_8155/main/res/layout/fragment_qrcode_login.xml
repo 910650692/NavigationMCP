@@ -12,11 +12,11 @@
     </data>
 
     <com.fy.navi.ui.view.SkinConstraintLayout
-        android:layout_width="@dimen/dp_1282"
-        android:layout_height="@dimen/dp_772"
+        android:layout_width="@dimen/dp_1292"
+        android:layout_height="@dimen/dp_1255"
         android:clickable="true"
-        android:padding="@dimen/dp_29"
-        android:background="@drawable/bg_shadow">
+        android:padding="@dimen/dp_34"
+        android:background="@drawable/bg_shadow_navi_ndlc_8155">
 
         <com.fy.navi.ui.view.SkinLinearLayout
             android:id="@+id/phone_qrcode_login_title"
@@ -56,7 +56,7 @@
             <com.fy.navi.ui.view.SkinLinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_16"
+                android:layout_marginTop="@dimen/dp_102"
                 android:layout_marginStart="@dimen/dp_80"
                 android:gravity="center"
                 android:orientation="vertical">
@@ -134,8 +134,8 @@
                 android:layout_width="@dimen/dp_634"
                 android:layout_height="@dimen/dp_473"
                 android:orientation="vertical"
-                android:layout_marginStart="@dimen/dp_119"
-                android:layout_marginTop="@dimen/dp_16"
+                android:layout_marginStart="@dimen/dp_122"
+                android:layout_marginTop="@dimen/dp_102"
                 android:gravity="center">
 
                 <androidx.viewpager2.widget.ViewPager2

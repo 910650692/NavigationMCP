@@ -7,9 +7,10 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:clickable="true"
-        android:paddingBottom="@dimen/dp_24"
-        android:paddingVertical="@dimen/dp_32"
-        android:background="@drawable/bg_shadow_handcard">
+        android:paddingTop="@dimen/dp_29"
+        android:paddingBottom="@dimen/dp_53"
+        android:paddingHorizontal="@dimen/dp_29"
+        android:background="@drawable/bg_shadow_navi_buick">
 
         <com.fy.navi.ui.view.SkinImageView
             android:id="@+id/iv_close"

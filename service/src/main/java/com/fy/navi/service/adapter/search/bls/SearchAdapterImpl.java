@@ -54,6 +54,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -507,8 +508,8 @@ public class SearchAdapterImpl extends SearchServiceV2Manager implements ISearch
         mSearchNotificationHelper.notifySearchSuccess(taskId, requestParameterBuilder, result);
     }
 
-    private void notifyNetSearchSuccess(BaseRep result){
-        mSearchNotificationHelper.notifyNetCallbacks(result);
+    private void notifyNetSearchSuccess(final int taskId,BaseRep result){
+        mSearchNotificationHelper.notifyNetCallbacks(taskId,result);
     }
 
     /**
@@ -609,7 +610,7 @@ public class SearchAdapterImpl extends SearchServiceV2Manager implements ISearch
         rep.setResultCode("0000");
         rep.setMessage("获取成功");
         rep.setDataSet(json);
-        notifyNetSearchSuccess(rep);
+        notifyNetSearchSuccess(mTaskId.get(),rep);
         return mTaskId.get();
     }
 
@@ -660,7 +661,109 @@ public class SearchAdapterImpl extends SearchServiceV2Manager implements ISearch
         rep.setResultCode("4001");
         rep.setMessage("获取成功");
         rep.setDataSet(json);
-        notifyNetSearchSuccess(rep);
+        notifyNetSearchSuccess(mTaskId.get(),rep);
+        return mTaskId.get();
+    }
+
+    @Override
+    public int queryStationInfo(SearchRequestParameter searchRequestParameter) {
+        StationReq req = new StationReq("1.0");
+        final Observable<BaseRep> observable = SearchRepository.getInstance().queryStationInfo(req);
+        observable.subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(new NetDisposableObserver<BaseRep>() {
+                @Override
+                public void onSuccess(BaseRep data) {
+                    Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG,"data: "+data.getDataSet());
+                }
+
+                @Override
+                public void onFailed(ApiException apiException) {
+                    Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG,"Exce: "+apiException);
+                }
+            });
+        String json = "{\n" +
+        "\"address\": \"红梅街道永宁北路18号（地下停车场E区04-E17）\", \"distance\": null,\n" +
+        "\"parkFee\": \"为配合机场防疫政策，虹桥机场免费停车权益暂不开放，带来不便敬请谅解！充电满28元，出示充电订单，可免费停车3小时，如超过3 小时，收取5元\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\/\",\n" +
+        "\"statType\": \"自营\",\n" +
+        "\"fastChargingFree\": \"0\",\n" +
+        "\"stationTel\": \"4008280768\",\n" +
+        "\"stationType\": 1,\n" +
+        "\"busineHours\": \"00:00-24:00\", \"fastChargingTotal\": \"2\",\n" +
+        "\"stationLat\": \"31.792885\",\n" +
+        "\"stationLng\": \"119.973957\", \"statStatus\": \"对外开放\",\n" +
+        "\"serviceTel\": \"4008280768\",\n" +
+        "\"parkInfo\": \"地下停车场E区E04-E17\", \"stationStatus\": 50,\n" +
+        "\"slowChargingFree\": \"16\",\n" +
+        "\"stationName\": \"天宁区永宁欧尚超市（交流）\", \"slowChargingTotal\": \"24\",\n" +
+        "\"operatorId\": \"313744932\",\n" +
+        "\"stationId\": \"444\", \"stationFlag\": \"A\", \"sort\": 2,\n" +
+        "\"bespeakCharge\": \"1\", \"bespeakPark\": \"1\",\n" +
+        "\"costItem\": [\n" +
+        "{\n" +
+        "\"serviceFee\": \"0.3000\",\n" +
+        "\"time\": \"00:00~11:30\",     \"electricityFee\": \"1.0000\"\n" +
+        "}, {\n" +
+        "\"serviceFee\": \"0.0000\",\n" +
+        "\"time\": \"11:30~13:30\",     \"electricityFee\": \"1.0000\"\n" +
+        "}, {\n" +
+        "\"serviceFee\": \"0.0000\",\n" +
+        "\"time\": \"13:30~18:00\",     \"electricityFee\": \"1.0000\"\n" +
+        "}, {\n" +
+        "\"serviceFee\": \"0.0000\",\n" +
+        "\"time\": \"18:00~23:59\",     \"electricityFee\": \"1.0000\"\n" +
+        "} ],\n" +
+        "\"pictures\": [\n" +
+        "\"https://open-cdn.starcharge.com/e3995ce9-f9c2-4790-a6bd-35a4bee7b219.JPG\",  \"https://open-cdn.starcharge.com/b12798a5-eec5-4a15-b5b9-b5aee3c79b3d.JPG\", \"https://open-cdn.starcharge.com/547e4b5f-1179-40e7-a06d-6f28eb245034.PNG\"\n" +
+        "],\n" +
+        "\"equipmentInfoItem\": [ {\n" +
+        "\"equipmentName\": \"充电设备10000757\", \"power\": \"7.0\",\n" +
+        "\"equipmentId\": \"11000000000000010000757\",\n" +
+        "\"connectorInfoItem\": [ {\n" +
+        "\"voltageUpperLimits\": \"253\", \"ratedCurrent\": \"32\",\n" +
+        "\"connectorId\": \"11000000000000010000757000\", \"chargeType\": \"0\",\n" +
+        "\"connectorName\": \"充电桩10000757\", \"power\": \"7.0\",\n" +
+        "\"nationalStandard\": \"1\",\n" +
+        "\"voltageLowerLimits\": \"187\", \"status\": \"0\",\n" +
+        "\"parkNo\": \"\",\n" +
+        "\"parkingLockFlag\": 0, \"lockStatus\": 50,\n" +
+        "\"idpUserId\": null, \"preFlag\": null\n" +
+        "}\n" +
+        "] },    {\n" +
+        "\"equipmentName\": \"充电设备10401097\", \"power\": \"120.0\",\n" +
+        "\"equipmentId\": \"11000000000000010401097\", \"connectorInfoItem\": [\n" +
+        "{\n" +
+        "\"voltageUpperLimits\": \"600\", \"ratedCurrent\": \"0\",\n" +
+        "\"connectorId\": \"11000000000000010401097000\", \"chargeType\": \"1\",\n" +
+        "\"connectorName\": \"充电桩10401097\", \"power\": \"120.0\",\n" +
+        "\"nationalStandard\": \"2\",\n" +
+        "\"voltageLowerLimits\": \"380\", \"status\": \"2\",\n" +
+        "\"parkNo\": \"\",\n" +
+        "\"parkingLockFlag\": 0, \"lockStatus\": 50,\n" +
+        "\"idpUserId\": null, \"preFlag\": null\n" +
+        "} ]\n" +
+        "},\n" +
+        "{\n" +
+        "\"equipmentName\": \"充电设备10001302\", \"power\": \"7.0\",\n" +
+        "\"equipmentId\": \"11000000000000010001302\",\n" +
+        "\"connectorInfoItem\": [ {\n" +
+        "\"voltageUpperLimits\": \"253\", \"ratedCurrent\": \"32\",\n" +
+        "\"connectorId\": \"11000000000000010001302000\", \"chargeType\": \"0\",\n" +
+        "\"connectorName\": \"充电桩10001302\", \"power\": \"7.0\",\n" +
+        "\"nationalStandard\": \"1\",\n" +
+        "\"voltageLowerLimits\": \"187\", \"status\": \"1\",\n" +
+        "\"parkNo\": \"\",\n" +
+        "\"parkingLockFlag\": 0, \"lockStatus\": 0,\n" +
+        "\"idpUserId\": null, \"preFlag\": null\n" +
+        "} ]\n" +
+        "}\n" +
+        "]\n" +
+        "}";
+        BaseRep rep = new BaseRep();
+        rep.setResultCode("0000");
+        rep.setMessage("获取成功");
+        rep.setDataSet(json);
+        notifyNetSearchSuccess(mTaskId.get(),rep);
         return mTaskId.get();
     }
 }

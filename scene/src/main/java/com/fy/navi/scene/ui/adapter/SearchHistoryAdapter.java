@@ -150,29 +150,36 @@ public class SearchHistoryAdapter extends RecyclerView.Adapter<SearchHistoryAdap
                 mItemClickListener.onNaviClick(position, mPoiEntities.get(position));
             }
         });
-        final PoiInfoEntity poiInfo = getFavoriteInfo(mPoiEntities.get(position));
-        final boolean isFavorite = poiInfo != null;
-        if (isFavorite) {
-            holder.resultItemBinding.ivCollect.setImageDrawable(ResourceUtils.Companion.getInstance().getDrawable(R.drawable.img_basic_ic_star));
-            holder.resultItemBinding.stvCollect.setText(R.string.sha_cancel);
-        } else {
-            holder.resultItemBinding.ivCollect.setImageDrawable(ResourceUtils.Companion.getInstance().getDrawable(R.drawable.icon_basic_ic_star_default));
-            holder.resultItemBinding.stvCollect.setText(R.string.sha_favorite);
-        }
-        holder.resultItemBinding.sllCollect.setOnClickListener(v -> {
-            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "poi click 收藏");
-            if (isFavorite) {
-                // 取消收藏
-//                mBehaviorPackage.deleteFavoriteData(poiInfo.getFavoriteInfo().getItemId());
-                mBehaviorPackage.removeFavorite(poiInfo);
-                ToastUtils.Companion.getInstance().showCustomToastView(ResourceUtils.Companion.getInstance().getString(R.string.sha_cancel_favorite));
-            } else {
-                addFavoriteInfo(mPoiEntities.get(position));
-                ToastUtils.Companion.getInstance().showCustomToastView(ResourceUtils.Companion.getInstance().getString(R.string.sha_has_favorite));
+        if (AutoMapConstant.SearchKeywordRecordKey.SEARCH_NAVI_RECORD_KEY == mPoiEntities.get(position).getMType()) {
+            final PoiInfoEntity poiInfo = new PoiInfoEntity().setPid(mPoiEntities.get(position).getMPoiId());
+            if (!ConvertUtils.isEmpty(mPoiEntities.get(position).getMEndPoint())) {
+                final GeoPoint historyPoint = parseGeoPoint(mPoiEntities.get(position).getMEndPoint());
+                poiInfo.setPoint(historyPoint);
             }
-            notifyItemChanged(position);
-            holder.resultItemBinding.swipeMenuLayout.smoothClose();
-        });
+            poiInfo.setName(mPoiEntities.get(position).getMEndPoiName());
+            final boolean isFavorite = !ConvertUtils.isEmpty(mBehaviorPackage.isFavorite(poiInfo));
+            if (isFavorite) {
+                holder.resultItemBinding.ivCollect.setImageDrawable(ResourceUtils.Companion.getInstance().getDrawable(R.drawable.img_basic_ic_star));
+                holder.resultItemBinding.stvCollect.setText(R.string.sha_cancel);
+            } else {
+                holder.resultItemBinding.ivCollect.setImageDrawable(ResourceUtils.Companion.getInstance().getDrawable(R.drawable.icon_basic_ic_star_default));
+                holder.resultItemBinding.stvCollect.setText(R.string.sha_favorite);
+            }
+            holder.resultItemBinding.sllCollect.setOnClickListener(v -> {
+                Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "poi click 收藏");
+                if (isFavorite) {
+                    //取消收藏： 仅当点击时，再从高德云端获取收藏数据，减少主线程刷新压力
+                    final PoiInfoEntity favInfo = getFavoriteInfo(mPoiEntities.get(position));
+                    mBehaviorPackage.removeFavorite(favInfo);
+                    ToastUtils.Companion.getInstance().showCustomToastView(ResourceUtils.Companion.getInstance().getString(R.string.sha_cancel_favorite));
+                } else {
+                    addFavoriteInfo(mPoiEntities.get(position));
+                    ToastUtils.Companion.getInstance().showCustomToastView(ResourceUtils.Companion.getInstance().getString(R.string.sha_has_favorite));
+                }
+                notifyItemChanged(position);
+                holder.resultItemBinding.swipeMenuLayout.smoothClose();
+            });
+        }
         holder.resultItemBinding.sllDelete.setOnClickListener(v -> {
             holder.resultItemBinding.swipeMenuLayout.smoothClose();
             Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "poi click 删除");

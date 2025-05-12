@@ -6,7 +6,7 @@
         android:id="@+id/scl_list_item"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:focusable="true"
+        android:focusable="false"
         android:minHeight="@dimen/dp_264"
         tools:background="@android:color/darker_gray">
 

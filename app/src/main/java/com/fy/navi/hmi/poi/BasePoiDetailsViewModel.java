@@ -1,12 +1,31 @@
 package com.fy.navi.hmi.poi;
 
 import android.app.Application;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import com.android.utils.ConvertUtils;
+import com.android.utils.gson.GsonUtils;
+import com.android.utils.log.Logger;
+import com.fy.navi.service.MapDefaultFinalTag;
+import com.fy.navi.service.adapter.search.cloudByPatac.rep.BaseRep;
+import com.fy.navi.service.define.bean.GeoPoint;
+import com.fy.navi.service.define.search.ChargeInfo;
+import com.fy.navi.service.define.search.CostTime;
+import com.fy.navi.service.define.search.PoiInfoEntity;
 import com.fy.navi.service.define.search.SearchResultEntity;
 import com.fy.navi.ui.action.Action;
 import com.fy.navi.ui.base.BaseViewModel;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
 
 /**
  * @author lvww
@@ -72,6 +91,80 @@ public class BasePoiDetailsViewModel extends BaseViewModel<PoiDetailsFragment, P
      */
     public void onReStoreFragment() {
         mModel.onReStoreFragment();
+    }
+
+    public void notifyNetSearchResult(int taskId,BaseRep result){
+        if(!ConvertUtils.isNull(result)) {
+            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "code" + result.getResultCode());
+            JSONObject jsonObject = null;
+            try {
+                jsonObject = new JSONObject(String.valueOf(result.getDataSet()));
+                // 处理经纬度
+                GeoPoint point = new GeoPoint();
+                point.setLat(ConvertUtils.str2Double(jsonObject.getString("stationLat")));
+                point.setLon(ConvertUtils.str2Double(jsonObject.getString("stationLng")));
+                JSONArray jsonArray = jsonObject.getJSONArray("pictures");
+                ArrayList<ChargeInfo> chargeList = new ArrayList<>();
+                ArrayList<PoiInfoEntity> poiInfoEntityList = new ArrayList<>();
+                ChargeInfo chargeInfo = GsonUtils.fromJson(String.valueOf(result.getDataSet()),ChargeInfo.class);
+                CostTime currentTime = getCurrentElePrice(chargeInfo.getCostItem());
+                Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"currentTime: "+currentTime.getTime());
+                chargeInfo.setCurrentElePrice(currentTime.getmElectricityFee());
+                chargeList.add(chargeInfo);
+                PoiInfoEntity poiInfoEntity = GsonUtils.fromJson(String.valueOf(result.getDataSet()),PoiInfoEntity.class);
+                poiInfoEntity.setChargeInfoList(chargeList)
+                        .setImageUrl(jsonArray.getString(0))
+                        .setPoint(point)
+                        .setPointTypeCode("011100");
+                poiInfoEntityList.add(poiInfoEntity);
+                SearchResultEntity searchResultEntity = new SearchResultEntity()
+                        .setPoiList(poiInfoEntityList)
+                        .setPoiType(1);
+                mView.onSearchResult(taskId,searchResultEntity);
+            } catch (JSONException e) {
+                Logger.e(MapDefaultFinalTag.SEARCH_HMI_TAG,"JSONException: "+e);
+            }
+        }
+    }
+
+    private CostTime getCurrentElePrice(ArrayList<CostTime> costTimes){
+        CostTime currentCostTime = new CostTime();
+        if(!ConvertUtils.isEmpty(costTimes)){
+            for (int i = 0; i < costTimes.size(); i++) {
+                if(isCurrentTimeInRange(costTimes.get(i).getTime())){
+                    currentCostTime = costTimes.get(i);
+                }
+            }
+        }
+        return currentCostTime;
+    }
+
+    private boolean isCurrentTimeInRange(String timeRange) {
+        try {
+            // 分割时间范围字符串
+            String[] times = timeRange.split("~");
+            if (times.length != 2) {
+                return false;
+            }
+            // 创建时间格式化器
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+            // 解析开始和结束时间
+            LocalTime startTime = LocalTime.parse(times[0], formatter);
+            LocalTime endTime = LocalTime.parse(times[1], formatter);
+            // 获取当前时间
+            LocalTime currentTime = LocalTime.now();
+            // 判断当前时间是否在范围内
+            if (endTime.isAfter(startTime)) {
+                // 正常时间范围（不跨午夜）
+                return !currentTime.isBefore(startTime) && !currentTime.isAfter(endTime);
+            } else {
+                // 跨午夜的时间范围（如22:00~02:00）
+                return !currentTime.isBefore(startTime) || !currentTime.isAfter(endTime);
+            }
+        } catch (DateTimeParseException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
 }

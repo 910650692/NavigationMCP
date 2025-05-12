@@ -7,13 +7,16 @@
         android:layout_height="wrap_content">
 
         <com.fy.navi.ui.view.SkinConstraintLayout
-            android:layout_width="@dimen/dp_1100"
-            android:layout_height="@dimen/dp_324"
+            android:layout_width="@dimen/dp_1136"
+            android:layout_height="@dimen/dp_360"
+            android:paddingHorizontal="@dimen/dp_18"
+            android:paddingTop="@dimen/dp_3"
+            android:paddingBottom="@dimen/dp_33"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:background="@drawable/bg_setting_dialog">
+            android:background="@drawable/bg_shadow_system_buick_vcs">
 
             <com.fy.navi.ui.view.SkinTextView
                 android:id="@+id/dialog_message"
