@@ -93,10 +93,6 @@ public class PoiInfoEntity implements Parcelable {
     // 道路边界点列表
     private ArrayList<ArrayList<GeoPoint>> mRoadPolygonBounds;
 
-    private List<ChargePriceInfo> mChargePriceInfoList;
-
-    private List<ChargeEquipmentInfo> mChargeEquipmentInfoList;
-
     public int getPoiType() {
         return mPoiType;
     }
@@ -570,24 +566,6 @@ public class PoiInfoEntity implements Parcelable {
         return this;
     }
 
-    public PoiInfoEntity setmChargePriceInfoList(List<ChargePriceInfo> mChargePriceInfoList) {
-        this.mChargePriceInfoList = mChargePriceInfoList;
-        return this;
-    }
-
-    public List<ChargePriceInfo> getmChargePriceInfoList() {
-        return mChargePriceInfoList;
-    }
-
-    public List<ChargeEquipmentInfo> getmChargeEquipmentInfoList() {
-        return mChargeEquipmentInfoList;
-    }
-
-    public PoiInfoEntity setmChargeEquipmentInfoList(List<ChargeEquipmentInfo> mChargeEquipmentInfoList) {
-        this.mChargeEquipmentInfoList = mChargeEquipmentInfoList;
-        return this;
-    }
-
     public String getOperatorId() {
         return mOperatorId;
     }
@@ -644,8 +622,6 @@ public class PoiInfoEntity implements Parcelable {
         mChargeInfoList = in.createTypedArrayList(ChargeInfo.CREATOR);
         mStationList = in.createTypedArrayList(GasStationInfo.CREATOR);
         mChildInfoList = in.createTypedArrayList(ChildInfo.CREATOR);
-        mChargePriceInfoList = in.createTypedArrayList(ChargePriceInfo.CREATOR);
-        mChargeEquipmentInfoList = in.createTypedArrayList(ChargeEquipmentInfo.CREATOR);
         // 新增字段 mPoiAoiBounds 的反序列化
         // 读取外层列表的大小
         final int outerSize = in.readInt();
@@ -727,8 +703,6 @@ public class PoiInfoEntity implements Parcelable {
         parcel.writeTypedList(mChargeInfoList);
         parcel.writeTypedList(mStationList);
         parcel.writeTypedList(mChildInfoList);
-        parcel.writeTypedList(mChargePriceInfoList);
-        parcel.writeTypedList(mChargeEquipmentInfoList);
         if(ConvertUtils.isEmpty(mPoiAoiBounds)) {
             return;
         }

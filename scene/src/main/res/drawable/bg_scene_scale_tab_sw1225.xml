@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- 外阴影 -->
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="@color/search_main_tab_img_shape_bg" /> >
+            <corners android:radius="@dimen/dp_10" />
+            <padding
+                android:bottom="@dimen/dp_1"
+                android:left="@dimen/dp_1"
+                android:right="@dimen/dp_1"
+                android:top="@dimen/dp_1" />
+        </shape>
+    </item>
+    <!-- 主体背景 -->
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="@color/bg_route_root_bg" />
+            <corners android:radius="@dimen/dp_10" />
+        </shape>
+    </item>
+</layer-list>

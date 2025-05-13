@@ -27,10 +27,13 @@ import com.fy.navi.scene.ui.search.SearchConfirmDialog;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.define.search.ChargeEquipmentInfo;
 import com.fy.navi.service.define.search.ChargePriceInfo;
+import com.fy.navi.service.define.search.ConnectorInfoItem;
+import com.fy.navi.service.define.search.EquipmentInfo;
 import com.fy.navi.service.define.search.PoiInfoEntity;
 import com.fy.navi.ui.dialog.IBaseDialogClickListener;
 
 import java.sql.Time;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -38,6 +41,7 @@ import java.util.TimerTask;
 public class ScenePoiChargingStationReservationListView extends BaseSceneView<ScenePoiDetailsReservationChargeDetailViewBinding, ScenePoiChargingStationReservationListViewImpl> {
     private static final String TAG = ScenePoiChargingStationReservationListView.class.getSimpleName();
     private ChargeEquipmentListAdapter mAdapter;
+    private ArrayList<EquipmentInfo> mEquipmentList;
     private final int mSpanCount = 2;
 
     public ScenePoiChargingStationReservationListView(@NonNull Context context) {
@@ -83,6 +87,12 @@ public class ScenePoiChargingStationReservationListView extends BaseSceneView<Sc
             }
         });
         mAdapter = new ChargeEquipmentListAdapter(getContext());
+        mAdapter.setmItemClickListener(new ChargeEquipmentListAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(ConnectorInfoItem info) {
+                mScreenViewModel.createReversion();
+            }
+        });
         mViewBinding.poiChargeStationList.setAdapter(mAdapter);
     }
 
@@ -95,9 +105,8 @@ public class ScenePoiChargingStationReservationListView extends BaseSceneView<Sc
         }else {
             Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "poiInfoEntity.getChargeInfoList is null");
         }
-        final List<ChargeEquipmentInfo> list = poiInfoEntity.getmChargeEquipmentInfoList();
-        List<ChargeEquipmentInfo> handleList = handleEquipmentList(list);
-        mAdapter.notifyList(handleList);
+        mEquipmentList = poiInfoEntity.getChargeInfoList().get(0).getEquipmentInfo();
+        mAdapter.notifyList(mEquipmentList);
     }
 
     // 关闭当前页面
@@ -105,12 +114,23 @@ public class ScenePoiChargingStationReservationListView extends BaseSceneView<Sc
         closeCurrentFragment();
     }
 
-    public List<ChargeEquipmentInfo> handleEquipmentList(List<ChargeEquipmentInfo> list){
-        return list;
-    }
-
     // 打开qccode弹窗
     public void openChargeQrCodeDialog(){
         new ChargeQrCodeDialog.Build(getContext()).build().show();
+    }
+
+    public void notifyCreateReservationSuccess(){
+        mScreenViewModel.queryEquipmentInfo();
+    }
+
+    public void notifyEquipmentResult(EquipmentInfo info){
+        if(!ConvertUtils.isEmpty(mEquipmentList)){
+            for (int i = 0; i < mEquipmentList.size(); i++) {
+                if(info.getmEquipmentId().equals(mEquipmentList.get(i).getmEquipmentId())){
+                    mEquipmentList.set(i,info);
+                }
+            }
+        }
+        mAdapter.notifyList(mEquipmentList);
     }
 }

@@ -35,6 +35,7 @@ import com.autonavi.gbl.search.model.SearchSuggestionParam;
 import com.autonavi.gbl.search.model.SuggestionSearchResult;
 import com.autonavi.gbl.util.model.TaskResult;
 import com.fy.navi.service.AppContext;
+import com.fy.navi.service.AutoMapConstant;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.adapter.search.ISearchApi;
 import com.fy.navi.service.adapter.search.ISearchResultCallback;
@@ -508,8 +509,8 @@ public class SearchAdapterImpl extends SearchServiceV2Manager implements ISearch
         mSearchNotificationHelper.notifySearchSuccess(taskId, requestParameterBuilder, result);
     }
 
-    private void notifyNetSearchSuccess(final int taskId,BaseRep result){
-        mSearchNotificationHelper.notifyNetCallbacks(taskId,result);
+    private void notifyNetSearchSuccess(final int taskId,String searchKey,BaseRep result){
+        mSearchNotificationHelper.notifyNetCallbacks(taskId,searchKey,result);
     }
 
     /**
@@ -610,7 +611,7 @@ public class SearchAdapterImpl extends SearchServiceV2Manager implements ISearch
         rep.setResultCode("0000");
         rep.setMessage("获取成功");
         rep.setDataSet(json);
-        notifyNetSearchSuccess(mTaskId.get(),rep);
+        notifyNetSearchSuccess(mTaskId.get(), AutoMapConstant.NetSearchKey.QUERY_STATION_LIST, rep);
         return mTaskId.get();
     }
 
@@ -661,7 +662,7 @@ public class SearchAdapterImpl extends SearchServiceV2Manager implements ISearch
         rep.setResultCode("4001");
         rep.setMessage("获取成功");
         rep.setDataSet(json);
-        notifyNetSearchSuccess(mTaskId.get(),rep);
+        notifyNetSearchSuccess(mTaskId.get(),AutoMapConstant.NetSearchKey.QUERY_COLLECT_LIST,rep);
         return mTaskId.get();
     }
 
@@ -763,7 +764,55 @@ public class SearchAdapterImpl extends SearchServiceV2Manager implements ISearch
         rep.setResultCode("0000");
         rep.setMessage("获取成功");
         rep.setDataSet(json);
-        notifyNetSearchSuccess(mTaskId.get(),rep);
+        notifyNetSearchSuccess(mTaskId.get(),AutoMapConstant.NetSearchKey.QUERY_STATION_INFO,rep);
+        return mTaskId.get();
+    }
+
+    @Override
+    public int queryEquipmentInfo(SearchRequestParameter searchRequestParameter) {
+        StationReq req = new StationReq("1.0");
+        final Observable<BaseRep> observable = SearchRepository.getInstance().queryStationInfo(req);
+        observable.subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(new NetDisposableObserver<BaseRep>() {
+                @Override
+                public void onSuccess(BaseRep data) {
+                    Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG,"data: "+data.getDataSet());
+                }
+
+                @Override
+                public void onFailed(ApiException apiException) {
+                    Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG,"Exce: "+apiException);
+                }
+            });
+        String json = "{\n" +
+                "\"equipmentName\": \"充电设备10401097\", \"power\": \"120.0\",\n" +
+                "\"equipmentId\": \"11000000000000010401097\", \"connectorInfoItem\": [\n" +
+                "{\n" +
+                "\"voltageUpperLimits\": \"600\", \"ratedCurrent\": \"0\",\n" +
+                "\"connectorId\": \"11000000000000010401097000\", \"chargeType\": \"1\",\n" +
+                "\"connectorName\": \"充电桩10401097\", \"power\": \"120.0\",\n" +
+                "\"nationalStandard\": \"2\",\n" +
+                "\"voltageLowerLimits\": \"380\", \"status\": \"4\",\n" +
+                "\"parkNo\": \"\",\n" +
+                "\"parkingLockFlag\": 0, \"lockStatus\": 50,\n" +
+                "\"idpUserId\": null, \"preFlag\": null\n" +
+                "} ]\n" +
+                "}";
+        BaseRep rep = new BaseRep();
+        rep.setResultCode("0000");
+        rep.setMessage("获取成功");
+        rep.setDataSet(json);
+        notifyNetSearchSuccess(mTaskId.get(),AutoMapConstant.NetSearchKey.QUERY_EQUIPMENT_INFO,rep);
+        return mTaskId.get();
+    }
+
+    @Override
+    public int createReservation(SearchRequestParameter searchRequestParameter) {
+        BaseRep rep = new BaseRep();
+        rep.setResultCode("0000");
+        rep.setMessage("获取成功");
+        notifyNetSearchSuccess(mTaskId.get(),AutoMapConstant.NetSearchKey.CREATE_RESERVATION,rep);
         return mTaskId.get();
     }
 }

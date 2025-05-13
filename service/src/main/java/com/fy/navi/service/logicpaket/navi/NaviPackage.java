@@ -42,6 +42,7 @@ import com.fy.navi.service.define.search.ETAInfo;
 import com.fy.navi.service.define.search.PoiInfoEntity;
 import com.fy.navi.service.define.user.usertrack.HistoryPoiItemBean;
 import com.fy.navi.service.define.user.usertrack.HistoryRouteItemBean;
+import com.fy.navi.service.define.utils.NaviStatusMonitorUtil;
 import com.fy.navi.service.define.utils.NumberUtils;
 import com.fy.navi.service.greendao.history.History;
 import com.fy.navi.service.greendao.history.HistoryManager;
@@ -164,6 +165,8 @@ public final class NaviPackage implements GuidanceObserver {
                 mLayerAdapter.updatePathInfo(MapType.CLUSTER_MAP, list,
                         (int) pathInfo.getPathIndex());
             }
+            //通知导航开始
+            NaviStatusMonitorUtil.getInstance().notifyNavigationStarted();
         } else {
             mCurrentNaviType = NumberUtils.NUM_ERROR;
         }
@@ -183,6 +186,8 @@ public final class NaviPackage implements GuidanceObserver {
             mLayerAdapter.setFollowMode(MapType.LAUNCHER_DESK_MAP, false);
             mLayerAdapter.setFollowMode(MapType.CLUSTER_MAP, false);
             mCurrentNaviType = NumberUtils.NUM_ERROR;
+            //通知导航结束  手动停止导航
+            NaviStatusMonitorUtil.getInstance().notifyNavigationStopped();
         } else {
             Logger.w(TAG, "stopNavigation failed!");
         }
@@ -401,6 +406,8 @@ public final class NaviPackage implements GuidanceObserver {
                     }
                 }
             }
+            //到达终点 停止导航
+            NaviStatusMonitorUtil.getInstance().notifyNavigationStopped();
         });
     }
 

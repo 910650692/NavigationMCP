@@ -90,11 +90,13 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
     private int mCurrentSelectedIndex3 = -1;
     private int mHomeCompanyType;
     private int mRange = 5000;
+    private int mCityCode = 0;
     //已下载的城市列表
     private ArrayList<ProvDataInfo> mProvDataInfos;
     private boolean mIsOpenFromNavi;
     private boolean mIsChargeSelf = false;
     private SearchResultEntity mSearchResultEntity;
+    private int mTaskId;
 
 
     public SceneSearchPoiList(@NonNull final Context context) {
@@ -588,7 +590,11 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
         }
         switch (mSearchType) {
             case AutoMapConstant.SearchType.SEARCH_KEYWORD:
-                mScreenViewModel.keywordSearch(pageNum, keyword);
+                if (mCityCode != 0) {
+                    mScreenViewModel.keywordSearch(pageNum, keyword, mCityCode, false);
+                } else {
+                    mScreenViewModel.keywordSearch(pageNum, keyword);
+                }
                 break;
             case AutoMapConstant.SearchType.AROUND_SEARCH:
                 mScreenViewModel.aroundSearch(pageNum, keyword, mPoiInfoEntity, String.valueOf(mRange));
@@ -629,6 +635,14 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
     }
 
     /**
+     * 设置cityCode
+     * @param cityCode 城市代码
+     */
+    public void setCityCode(final int cityCode) {
+        this.mCityCode = cityCode;
+    }
+
+    /**
      * 设置家的公司 参数
      *
      * @param homeCompanyState 家和公司参数
@@ -646,7 +660,7 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
      */
     public void reloadPoiMarker() {
         if (!ConvertUtils.isEmpty(mScreenViewModel) && !ConvertUtils.isEmpty(mResultEntity)) {
-            mScreenViewModel.addPoiMarker(mResultEntity.getPoiList(), 0);
+            mScreenViewModel.updatePoiMarker(mResultEntity.getPoiList(), 0);
         }
     }
 
@@ -664,6 +678,7 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
         if (!ConvertUtils.equals(taskId, mScreenViewModel.getMTaskId()) && mScreenViewModel.getMTaskId() != 0) {
             return;
         }
+        mTaskId = mScreenViewModel.getMTaskId();
         // 处理用户搜索意图
         if(searchResultEntity != null && !ConvertUtils.isEmpty(searchResultEntity.getQueryTypeList())){
             boolean isChargeQuery = isChargeQuery(searchResultEntity.getQueryTypeList());
@@ -681,7 +696,7 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
             if (null != mAdapter) {
                 mAdapter.clearList();
             }
-            if (searchResultEntity.getPoiType() == 0) {
+            if (searchResultEntity != null && searchResultEntity.getPoiType() == 0) {
                 //离线搜索无数据时，跳转城市列表搜索界面
                 final Fragment fragment = (Fragment) ARouter.getInstance()
                         .build(RoutePath.Search.OFFLINE_SEARCH_FRAGMENT)
@@ -709,7 +724,13 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
         }
 
         if (searchResultEntity.getPoiType() == 0) {
-            final CityDataInfo cityDataInfo = mScreenViewModel.getCityInfo(mScreenViewModel.getAcCode());
+            final CityDataInfo cityDataInfo;
+            if(!ConvertUtils.isEmpty(searchResultEntity.getPoiList())) {
+                final PoiInfoEntity poiInfoEntity = searchResultEntity.getPoiList().get(0);
+                cityDataInfo = mScreenViewModel.getCityInfo(poiInfoEntity.getAdCode());
+            } else {
+                cityDataInfo = mScreenViewModel.getCityInfo(mScreenViewModel.getAcCode());
+            }
             if (cityDataInfo != null) {
                 Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "城市数据信息: " + cityDataInfo.getName() + "，城市编码: " + mScreenViewModel.getAcCode());
                 mViewBinding.searchOfflineHint.setVisibility(VISIBLE);
@@ -897,6 +918,14 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
     public void clear() {
         mPoiInfoEntity = null;
         mResultEntity = null;
+    }
+
+    public int getTaskId() {
+        return mTaskId;
+    }
+
+    public SearchResultEntity getResultEntity() {
+        return mResultEntity;
     }
 
     @Override

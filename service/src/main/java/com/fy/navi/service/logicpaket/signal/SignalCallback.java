@@ -30,6 +30,8 @@ public interface SignalCallback {
      * RUN = 2
      * CRANK(START) = 3
      * SLEEP = 4
+     * PROPULSION = 5
+     * 除2和5外都是熄火状态
      */
     default void onSystemStateChanged(int state) {
 
@@ -56,6 +58,14 @@ public interface SignalCallback {
      * @param state 状态
      */
     default void onLaneCenteringWarningIndicationRequestIdcmAChanged(int state) {
+
+    }
+
+    /**
+     * L2++ NOP播报状态变化
+     * @param state 状态
+     */
+    default void onNaviOnADASStateChanged(int state) {
 
     }
 }

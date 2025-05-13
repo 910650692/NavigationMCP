@@ -3,12 +3,15 @@ package com.fy.navi.hmi.navi;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.provider.Settings;
 
 import androidx.fragment.app.Fragment;
 
 import com.android.utils.ConvertUtils;
 import com.android.utils.NetWorkUtils;
+import com.android.utils.ResourceUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
 import com.fy.navi.burypoint.anno.HookMethod;
@@ -29,6 +32,8 @@ import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.adapter.navi.NaviConstant;
 import com.fy.navi.service.adapter.navi.bls.NaviDataFormatHelper;
 import com.fy.navi.service.define.layer.refix.DynamicLevelMode;
+import com.fy.navi.service.define.layer.refix.LayerItemRouteEndPoint;
+import com.fy.navi.service.define.layer.refix.LayerItemRoutePoint;
 import com.fy.navi.service.define.layer.refix.LayerItemRoutePointClickResult;
 import com.fy.navi.service.define.layer.refix.LayerPointItemType;
 import com.fy.navi.service.define.map.MapType;
@@ -54,9 +59,11 @@ import com.fy.navi.service.define.route.RoutePriorityType;
 import com.fy.navi.service.define.route.RouteRequestParam;
 import com.fy.navi.service.define.route.RouteWayID;
 import com.fy.navi.service.define.route.RouteWeatherInfo;
+import com.fy.navi.service.define.search.ChargeInfo;
 import com.fy.navi.service.define.search.PoiInfoEntity;
 import com.fy.navi.service.define.setting.SettingController;
 import com.fy.navi.service.define.search.SearchResultEntity;
+import com.fy.navi.service.define.utils.NumberUtils;
 import com.fy.navi.service.greendao.setting.SettingManager;
 import com.fy.navi.service.logicpaket.layer.ILayerPackageCallBack;
 import com.fy.navi.service.logicpaket.layer.LayerPackage;
@@ -82,7 +89,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implements
         IGuidanceObserver, ImmersiveStatusScene.IImmersiveStatusCallBack, ISceneCallback,
-        IRouteResultObserver, NetWorkUtils.NetworkObserver, ILayerPackageCallBack {
+        IRouteResultObserver, NetWorkUtils.NetworkObserver, ILayerPackageCallBack,
+        SearchResultCallback {
     private static final String TAG = MapDefaultFinalTag.NAVI_HMI_TAG;
     private final NaviPackage mNaviPackage;
     private final RoutePackage mRoutePackage;
@@ -92,6 +100,10 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
     private ImersiveStatus mCurrentStatus = ImersiveStatus.IMERSIVE;
     private List<NaviViaEntity> mViaList = new ArrayList<>();
     private NaviEtaInfo mNaviEtaInfo;
+
+    private Handler mHandler;
+    private Runnable mRunnable;
+    private int mEndSearchId;
 
     public static final int BRIDGE_SWITCH = 1;
     public static final int ROAD_SWITCH = 0;
@@ -125,6 +137,15 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
         mModelHelp = new NaviGuidanceHelp();
     }
 
+    /**
+     * 终点搜，为了引导的终点扎标，显示营业时间/充电站信息
+     */
+    private void endPoiSearch() {
+        RouteParam endRouteParam = mRoutePackage.getEndPoint(MapType.MAIN_SCREEN_MAIN_MAP);
+        mEndSearchId = mSearchPackage.poiIdSearch(endRouteParam.getPoiID(), true);
+        Logger.i(TAG, "mEndSearchId = " + mEndSearchId);
+    }
+
     public boolean getIsShowAutoAdd() {
         return mIsShowAutoAdd;
     }
@@ -140,6 +161,23 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
         mNetWorkUtils.registerNetworkObserver(this);
         mCurrentNetStatus = mNetWorkUtils.checkNetwork();
         mLayerPackage.registerCallBack(MapType.MAIN_SCREEN_MAIN_MAP, this);
+        mSearchPackage.registerCallBack(NaviConstant.KEY_NAVI_MODEL, this);
+        mHandler = new Handler(Looper.getMainLooper());
+        mRunnable = new Runnable() {
+            @Override
+            public void run() {
+                endPoiSearch();
+                mHandler.removeCallbacks(mRunnable);
+                mHandler.postDelayed(this,
+                        NumberUtils.NUM_3 * NumberUtils.NUM_60 * NumberUtils.NUM_1000);
+            }
+        };
+        // 因为生命周期是和HMI绑定的，如果页面重启并且是在导航台进入三分钟一次的终点POI查询
+        if (NaviStatus.NaviStatusType.NAVING.equals(
+                NaviStatusPackage.getInstance().getCurrentNaviStatus())) {
+            mHandler.removeCallbacks(mRunnable);
+            mHandler.post(mRunnable);
+        }
     }
 
     @Override
@@ -160,23 +198,21 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
                     AutoMapConstant.NaviType.NAVI_GPS);
             final boolean isSimulate = anInt == AutoMapConstant.NaviType.NAVI_SIMULATE;
             isNaviSuccess = mNaviPackage.startNavigation(isSimulate);
-            mViewModel.setNaviSimState(isSimulate);
-            if (!isSimulate) {
-                final boolean isAutoScale = SettingPackage.getInstance().getAutoScale();
-                if (isAutoScale) {
-                    mLayerPackage.openDynamicLevel(MapType.MAIN_SCREEN_MAIN_MAP,
-                            DynamicLevelMode.DYNAMIC_LEVEL_GUIDE);
-                }
-            }
         } else {
             isNaviSuccess = mNaviPackage.startNavigation(false);
+        }
+        if (isNaviSuccess) {
             final boolean isAutoScale = SettingPackage.getInstance().getAutoScale();
             if (isAutoScale) {
                 mLayerPackage.openDynamicLevel(MapType.MAIN_SCREEN_MAIN_MAP,
                         DynamicLevelMode.DYNAMIC_LEVEL_GUIDE);
             }
-        }
-        if (isNaviSuccess) {
+            drawEndPoint(mRoutePackage.getEndEntity(MapType.MAIN_SCREEN_MAIN_MAP));
+            // 开始三分钟查询一次终点POI信息
+            if (null != mHandler) {
+                mHandler.removeCallbacks(mRunnable);
+                mHandler.post(mRunnable);
+            }
             Logger.i(TAG, "startNaviSuccess");
             String isOpen = SettingPackage.getInstance().getValueFromDB(SettingController.KEY_SETTING_IS_AUTO_RECORD);
             Logger.i(TAG, "isOpen:" + isOpen);
@@ -199,6 +235,33 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
             // TODO 测试代码
 //            mModelHelp.mockTestChargeTipMsg(mTipManager);
 //            mModelHelp.mockTestNotifyElectLow(mPowerMonitorService);
+        }
+    }
+
+    /**
+     * 引导终点扎标绘制
+     */
+    private void drawEndPoint(PoiInfoEntity poiInfoEntity) {
+        if (null != poiInfoEntity) {
+            LayerItemRouteEndPoint endPoint = new LayerItemRouteEndPoint();
+            endPoint.setEndPointType(LayerPointItemType.ROUTE_POINT_END_BUSINESS_HOURS);
+            ChargeInfo chargeInfo = poiInfoEntity.getChargeInfoList().get(0);
+            String businessTime = poiInfoEntity.getBusinessTime();
+            if (!ConvertUtils.isEmpty(chargeInfo)) {
+                int slowTotal = chargeInfo.getMSlowTotal();
+                int slowFree = chargeInfo.getMSlowFree();
+                int fastTotal = chargeInfo.getMFastTotal();
+                int fastFree = chargeInfo.getMFastFree();
+                String chargeInfoStr = String.format(
+                        ResourceUtils.Companion.getInstance().
+                                getString(R.string.navi_end_charge_info),
+                        fastFree, fastTotal, slowFree, slowTotal);
+                endPoint.setBusinessHours(chargeInfoStr);
+                mRoutePackage.updateRouteEndPoint(MapType.MAIN_SCREEN_MAIN_MAP, endPoint);
+            } else if (null != businessTime) {
+                endPoint.setBusinessHours(businessTime);
+                mRoutePackage.updateRouteEndPoint(MapType.MAIN_SCREEN_MAIN_MAP, endPoint);
+            }
         }
     }
 
@@ -330,6 +393,9 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
         if (mTipManager != null) {
             mTipManager.unInit();
         }
+        mHandler.removeCallbacks(mRunnable);
+        mHandler = null;
+        mRunnable = null;
     }
 
     /**
@@ -585,6 +651,23 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
         Boolean isNetConnected = mNetWorkUtils.checkNetwork();
         Logger.i(TAG, "getNetStatus isNetConnected:" + isNetConnected);
         return Boolean.TRUE.equals(isNetConnected);
+    }
+
+    @Override
+    public void onSearchResult(int taskId, int errorCode, String message, SearchResultEntity searchResultEntity) {
+
+    }
+
+    @Override
+    public void onSilentSearchResult(int taskId, int errorCode, String message,
+                                     SearchResultEntity searchResultEntity) {
+        Logger.i(TAG, "onSilentSearchResult taskId = " + taskId);
+        if (mEndSearchId == taskId) {
+            if (null != searchResultEntity &&
+                    !ConvertUtils.isEmpty(searchResultEntity.getPoiList())) {
+                drawEndPoint(searchResultEntity.getPoiList().get(0));
+            }
+        }
     }
 
     public interface OnNetStatusChangeListener {

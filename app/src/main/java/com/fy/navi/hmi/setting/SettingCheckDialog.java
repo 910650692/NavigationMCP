@@ -62,8 +62,11 @@ public class SettingCheckDialog extends BaseFullScreenDialog<DialogSettingCheckB
     @Override
     public void show() {
         super.show();
+        final Window window = getWindow();
+        if(TextUtils.equals("clea_local_8155", BuildConfig.FLAVOR)){
+            if(window != null) window.setDimAmount(0.3f);
+        }
         if(TextUtils.equals("cadi", BuildConfig.FLAVOR)){
-            final Window window = getWindow();
             if (null == window) {
                 return;
             }

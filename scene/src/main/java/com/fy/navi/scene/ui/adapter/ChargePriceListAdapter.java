@@ -12,12 +12,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.fy.navi.scene.R;
 import com.fy.navi.scene.databinding.ChargePriceItemBinding;
 import com.fy.navi.service.define.search.ChargePriceInfo;
+import com.fy.navi.service.define.search.CostTime;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class ChargePriceListAdapter extends RecyclerView.Adapter<ChargePriceListAdapter.priceHolder>{
-    private List<ChargePriceInfo> mChargePriceList = new ArrayList<>();
+    private ArrayList<CostTime> mChargePriceList = new ArrayList<>();
     @NonNull
     @Override
     public priceHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -27,11 +28,11 @@ public class ChargePriceListAdapter extends RecyclerView.Adapter<ChargePriceList
 
     @Override
     public void onBindViewHolder(@NonNull priceHolder holder, int position) {
-        holder.chargePriceItemBinding.setChargePriceInfo(mChargePriceList.get(position));
+        holder.chargePriceItemBinding.setCostTime(mChargePriceList.get(position));
     }
 
     // 更新列表
-    public void notifyList(List<ChargePriceInfo> list){
+    public void notifyList(ArrayList<CostTime> list){
         mChargePriceList.addAll(list);
         notifyDataSetChanged();
     }

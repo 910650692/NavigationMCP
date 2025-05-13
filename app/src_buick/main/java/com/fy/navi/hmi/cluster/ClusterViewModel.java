@@ -4,7 +4,9 @@ import android.app.Application;
 
 import androidx.annotation.NonNull;
 
-public class ClusterViewModel extends BaseClusterViewModel{
+import com.fy.navi.hmi.cluster.cluster_map.BaseClusterViewModel;
+
+public class ClusterViewModel extends BaseClusterViewModel {
     public ClusterViewModel(@NonNull Application application) {
         super(application);
     }

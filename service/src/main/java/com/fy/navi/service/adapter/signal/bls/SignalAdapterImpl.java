@@ -12,6 +12,7 @@ import com.android.utils.log.Logger;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.adapter.signal.SignalAdapterCallback;
 import com.fy.navi.service.adapter.signal.SignalApi;
+import com.fy.navi.service.define.signal.SignalConst;
 import com.patac.vehicle.DriveAssistController;
 import com.patac.vehicle.HvacController;
 import com.patac.vehicle.PowertainController;
@@ -85,20 +86,125 @@ public class SignalAdapterImpl implements SignalApi {
             }
             return 0;
         });
-        try {
-            DriveAssistController.getInstance().registerLaneCenteringWarningIndicationRequestIdcmAListener(
-                    new DriveAssistController.LaneCenteringWarningIndicationRequestIdcmAListener() {
-                        @Override
-                        public void onLaneCenteringWarningIndicationRequestIdcmAChanged(final int state) {
-                            Logger.d(TAG, "onLaneCenteringWarningIndicationRequestIdcmAChanged: " + state);
+        if (!VehicleController.isCleaArch()) {
+            Logger.i(TAG, "is not CleaArch");
+            return;
+        }
+        DriveAssistController.getInstance().registerNaviOnAdasCloseToNoaAreaListener(
+                new DriveAssistController.NaviOnAdasCloseToNoaAreaListener() {
+                    @Override
+                    public void onNaviOnAdasCloseToNoaAreaChanged(Boolean aBoolean) {
+                        Logger.d(TAG, aBoolean);
+                        if (aBoolean) {
                             for (SignalAdapterCallback callback : mCallbacks) {
-                                callback.onLaneCenteringWarningIndicationRequestIdcmAChanged(state);
+                                callback.onNaviOnADASStateChanged(SignalConst.L2_NOP.CLOSE_TO_NOA_AREA_TRUE);
                             }
                         }
-                    });
-        } catch (UnsupportedOperationException e) {
-            Logger.e(TAG, "initCallback: " + Log.getStackTraceString(e));
-        }
+                    }
+                });
+        DriveAssistController.getInstance().registerNaviOnAdasMergeIntoMainRoadListener(
+                new DriveAssistController.NaviOnAdasMergeIntoMainRoadListener() {
+                    @Override
+                    public void onNaviOnAdasMergeIntoMainRoadChanged(Boolean aBoolean) {
+                        Logger.d(TAG, aBoolean);
+                        if (aBoolean) {
+                            for (SignalAdapterCallback callback : mCallbacks) {
+                                callback.onNaviOnADASStateChanged(SignalConst.L2_NOP.MERGE_INTO_MAIN_ROAD_TRUE);
+                            }
+                        }
+                    }
+                });
+        DriveAssistController.getInstance().registerNaviOnAdasLaneChangingToFollowRouteListener(
+                new DriveAssistController.NaviOnAdasLaneChangingToFollowRouteListener() {
+                    @Override
+                    public void onNaviOnAdasLaneChangingToFollowRouteChanged(int value) {
+                        Logger.d(TAG, value);
+                        if (value == 1) {
+                            value = SignalConst.L2_NOP.LANE_CHANGING_TO_FOLLOW_ROUTE_LEFT;
+                        } else if (value == 2) {
+                            value = SignalConst.L2_NOP.LANE_CHANGING_TO_FOLLOW_ROUTE_RIGHT;
+                        }
+                        for (SignalAdapterCallback callback : mCallbacks) {
+                            callback.onNaviOnADASStateChanged(value);
+                        }
+                    }
+                });
+        DriveAssistController.getInstance().registerNaviOnAdasTextToSpeechLaneChangeAbortListener(
+                new DriveAssistController.NaviOnAdasTextToSpeechLaneChangeAbortListener() {
+                    @Override
+                    public void onNaviOnAdasTextToSpeechLaneChangeAbortChanged(Boolean aBoolean) {
+                        Logger.d(TAG, aBoolean);
+                        if (aBoolean) {
+                            for (SignalAdapterCallback callback : mCallbacks) {
+                                callback.onNaviOnADASStateChanged(SignalConst.L2_NOP.TEXT_TO_SPEECH_LANE_CHANGE_ABORT_TRUE);
+                            }
+                        }
+                    }
+                });
+        DriveAssistController.getInstance().registerNaviOnAdasChangingToFastLaneListener(
+                new DriveAssistController.NaviOnAdasChangingToFastLaneListener() {
+                    @Override
+                    public void onNaviOnAdasChangingToFastLaneChanged(int value) {
+                        Logger.d(TAG, value);
+                        if (value == 1) {
+                            value = SignalConst.L2_NOP.CHANGING_TO_FAST_LANE_LEFT;
+                        } else if (value == 2) {
+                            value = SignalConst.L2_NOP.CHANGING_TO_FAST_LANE_RIGHT;
+                        }
+                        for (SignalAdapterCallback callback : mCallbacks) {
+                            callback.onNaviOnADASStateChanged(value);
+                        }
+                    }
+                });
+        DriveAssistController.getInstance().registerNaviOnAdasConfirmChangeToFastLaneRequestListener(
+                new DriveAssistController.NaviOnAdasConfirmChangeToFastLaneRequestListener() {
+                    @Override
+                    public void onNaviOnAdasConfirmChangeToFastLaneRequestChanged(int value) {
+                        Logger.d(TAG, value);
+                        if (value == 1) {
+                            value = SignalConst.L2_NOP.CONFIRM_CHANGE_TO_FAST_LANE_LEFT;
+                        } else if (value == 2) {
+                            value = SignalConst.L2_NOP.CONFIRM_CHANGE_TO_FAST_LANE_RIGHT;
+                        }
+                        for (SignalAdapterCallback callback : mCallbacks) {
+                            callback.onNaviOnADASStateChanged(value);
+                        }
+                    }
+                });
+        DriveAssistController.getInstance().registerNaviOnAdasTextToSpeechLaneChangeAbortListener(
+                new DriveAssistController.NaviOnAdasTextToSpeechLaneChangeAbortListener() {
+                    @Override
+                    public void onNaviOnAdasTextToSpeechLaneChangeAbortChanged(Boolean aBoolean) {
+                        Logger.d(TAG, aBoolean);
+                        if (aBoolean) {
+                            for (SignalAdapterCallback callback : mCallbacks) {
+                                callback.onNaviOnADASStateChanged(SignalConst.L2_NOP.TEXT_TO_SPEECH_LANE_CHANGE_ABORT_TRUE);
+                            }
+                        }
+                    }
+                });
+        DriveAssistController.getInstance().registerNaviOnAdasExitRampToNonLimitedAccessRoadListener(
+                new DriveAssistController.NaviOnAdasExitRampToNonLimitedAccessRoadListener() {
+                    @Override
+                    public void onNaviOnAdasExitRampToNonLimitedAccessRoadChanged(Boolean aBoolean) {
+                        Logger.d(TAG, aBoolean);
+                        if (aBoolean) {
+                            for (SignalAdapterCallback callback : mCallbacks) {
+                                callback.onNaviOnADASStateChanged(SignalConst.L2_NOP.EXIT_RAMP_TO_NON_LIMITED_ACCESS_ROAD_TRUE);
+                            }
+                        }
+                    }
+                });
+        DriveAssistController.getInstance().registerLaneCenteringWarningIndicationRequestIdcmAListener(
+                new DriveAssistController.LaneCenteringWarningIndicationRequestIdcmAListener() {
+                    @Override
+                    public void onLaneCenteringWarningIndicationRequestIdcmAChanged(final int state) {
+                        Logger.d(TAG, state);
+                        for (SignalAdapterCallback callback : mCallbacks) {
+                            callback.onLaneCenteringWarningIndicationRequestIdcmAChanged(state);
+                        }
+                    }
+                });
     }
 
     private Car.CarServiceLifecycleListener mCarServiceLifecycleListener = new Car.CarServiceLifecycleListener() {
@@ -367,6 +473,8 @@ public class SignalAdapterImpl implements SignalApi {
                 return 3;
             case PowerModeManager.STATE_SLEEP: // SLEEP
                 return 4;
+            case PowerModeManager.STATE_PROPULSION: // SLEEP
+                return 5;
             default:
                 return -1;
         }

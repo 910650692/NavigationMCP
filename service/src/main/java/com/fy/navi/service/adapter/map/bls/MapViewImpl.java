@@ -8,6 +8,7 @@ import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 
 import com.android.utils.ConvertUtils;
+import com.android.utils.ScreenUtils;
 import com.android.utils.ThemeUtils;
 import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
@@ -194,7 +195,13 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver,
 
     @Override
     public void onSurfaceChanged(int deviceId, int width, int height, int colorBits) {
-        mMapDevice.setScreenshotRect(0, 0, 328, 172);
+        if (deviceId == MapType.MAIN_SCREEN_MAIN_MAP.getMapType()){
+            mMapDevice.setScreenshotRect(600, 170, 500, 300);
+        }else if (deviceId == MapType.HUD_MAP.getMapType()){
+            mMapDevice.setScreenshotRect(ScreenUtils.Companion.getInstance().getScreenWidth()/2 - 164, ScreenUtils.Companion.getInstance().getScreenHeight()/2 - 86 , 328, 172);
+
+        }
+
         mMapDevice.setScreenshotCallBackMethod(ScreenShotCallbackMethod.ScreenShotCallbackMethodBuffer);
         mMapDevice.setScreenshotMode(ScreenShotMode.ScreenShotModeBackGround, new IEGLScreenshotObserver() {
             /**
@@ -229,12 +236,14 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver,
                     devAttribute, this);
             setDefaultDevice(mMapDevice);
             // hud后台截图
-            if (mapType == MapType.HUD_MAP && CalibrationAdapter.getInstance().hudFuncEnable() == 1) {
+            if ((mapType == MapType.HUD_MAP || mapType == MapType.MAIN_SCREEN_MAIN_MAP) && CalibrationAdapter.getInstance().hudFuncEnable() == 1) {
                 EGLSurfaceAttr eglSurfaceAttr = new EGLSurfaceAttr();
                 eglSurfaceAttr.nativeWindow = -1;
                 eglSurfaceAttr.isOnlyCreatePBSurface = true;
-                eglSurfaceAttr.width = 328;
-                eglSurfaceAttr.height = 172;
+//                eglSurfaceAttr.width = 328;
+                eglSurfaceAttr.width = 3082;
+//                eglSurfaceAttr.height = 172;
+                eglSurfaceAttr.height = 934;
                 mMapDevice.attachSurfaceToDevice(eglSurfaceAttr);
             }
         } else {

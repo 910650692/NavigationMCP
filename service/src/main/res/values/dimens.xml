@@ -1204,4 +1204,6 @@
     <dimen name="dp_m_98">-98dp</dimen>
     <dimen name="dp_m_99">-99dp</dimen>
     <dimen name="dp_m_100">-100dp</dimen>
+    <dimen name="dp_m_101">-101dp</dimen>
+    <dimen name="dp_m_102">-102dp</dimen>
 </resources>

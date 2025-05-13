@@ -83,6 +83,9 @@ public class SceneNaviViaListView extends NaviSceneBase<SceneNaviViaListViewBind
     @Override
     public void show() {
         super.show();
+        if (null != mScreenViewModel) {
+            mScreenViewModel.initTimer();
+        }
         OpenApiHelper.enterPreview(mMapTypeId);
         ImmersiveStatusScene.getInstance().setImmersiveStatus(mMapTypeId, ImersiveStatus.TOUCH);
     }
@@ -223,9 +226,6 @@ public class SceneNaviViaListView extends NaviSceneBase<SceneNaviViaListViewBind
         mNaviViaEntityList.clear();
         mNaviViaEntityList.addAll(list);
         addBatteryLeftData();
-        if (this.getVisibility() == VISIBLE) {
-            mScreenViewModel.initTimer();
-        }
         Logger.i(TAG, "SceneNaviListImpl list：" + list.size());
         if (!ConvertUtils.isEmpty(mNaviViaEntityList)) {
             mNaviViaListAdapter.notifyList(mNaviViaEntityList);

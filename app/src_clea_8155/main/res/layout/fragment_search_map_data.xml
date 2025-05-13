@@ -12,9 +12,10 @@
     </data>
 
     <com.fy.navi.ui.view.SkinLinearLayout
-        android:layout_width="@dimen/dp_1224"
-        android:layout_height="@dimen/dp_714"
-        android:background="@drawable/bg_setting_fragment"
+        android:layout_width="@dimen/dp_1292"
+        android:layout_height="@dimen/dp_1255"
+        android:padding="@dimen/dp_34"
+        android:background="@drawable/bg_shadow_navi_ndlc_8155"
         android:orientation="vertical">
 
         <com.fy.navi.ui.view.SkinRelativeLayout
@@ -32,6 +33,7 @@
                 clickCommand="@{ViewModel.mCloseSearchMapDataView}"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_14"
                 android:layout_centerVertical="true"
                 android:src="@drawable/img_setting_back" />
 
@@ -40,7 +42,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_112"
                 android:layout_marginStart="@dimen/dp_76"
-                android:layout_marginEnd="@dimen/dp_10"
+                android:layout_marginEnd="@dimen/dp_100"
                 android:background="@null"
                 android:clickable="true"
                 android:focusable="true"
@@ -63,9 +65,9 @@
                 clickCommand="@{ViewModel.mClearEdit}"
                 android:layout_width="@dimen/dp_42"
                 android:layout_height="@dimen/dp_42"
-                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
-                android:layout_marginEnd="@dimen/dp_40"
+                android:layout_marginEnd="@dimen/dp_26"
                 android:src="@drawable/img_plate_number_clear"
                 android:visibility="visible" />
 
@@ -73,13 +75,15 @@
 
         <com.fy.navi.ui.view.SkinScrollView
             android:layout_width="match_parent"
-            android:layout_height="fill_parent"
+            android:layout_height="match_parent"
             android:fillViewport="true">
 
             <com.fy.navi.ui.view.SkinConstraintLayout
-                android:layout_width="@dimen/dp_1224"
-                android:layout_height="@dimen/dp_602"
-                android:padding="@dimen/dp_40">
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingHorizontal="@dimen/dp_40"
+                android:paddingTop="@dimen/dp_30"
+                android:paddingBottom="@dimen/dp_45">
 
                 <!--全部城市地图数据-->
                 <com.fy.navi.ui.view.SkinRecyclerView

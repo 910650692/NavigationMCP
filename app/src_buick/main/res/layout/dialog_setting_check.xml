@@ -10,7 +10,7 @@
        android:paddingBottom="@dimen/dp_33">
 
        <com.fy.navi.ui.view.SkinConstraintLayout
-           android:layout_width="@dimen/dp_1100"
+           android:layout_width="@dimen/dp_1132"
            android:layout_height="wrap_content"
            android:elevation="@dimen/dp_15"
            android:background="@drawable/bg_shadow_system_buick_avenir"

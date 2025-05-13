@@ -277,19 +277,15 @@ final public class BehaviorPackage implements BehaviorAdapterCallBack, AccountCa
      */
     public String removeFavorite(final PoiInfoEntity poiInfo) {
         String itemId = "";
-        if (poiInfo == null) {
-            Logger.e(TAG, "poi info is null");
+        if (poiInfo == null || poiInfo.getFavoriteInfo() == null) {
+            Logger.e(TAG, "poi info or favorite info is null");
             return itemId;
         }
         //For Bury Point
         sendBuryPointForRemovingOldFavorite(poiInfo);
-        if (isLogin()) {
+        if (isLogin() && poiInfo.getFavoriteInfo().getCommonName() != 3) {
             itemId =  mBehaviorAdapter.removeFavorite(poiInfo);
         } else {
-            if (poiInfo.getFavoriteInfo() == null) {
-                Logger.e(TAG, "the favorite info is null");
-                return itemId;
-            }
             itemId = poiInfo.getFavoriteInfo().getItemId();
             deleteFavoriteData(itemId);
         }

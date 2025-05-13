@@ -34,10 +34,11 @@ public class OfflineSearchPoiListImpl extends BaseSceneModel<OfflineSearchPoiLis
      * @param pageNum 页数
      * @param keyword 关键字
      * @param adCode 城市编码
+     * @param isSilent 是否静默搜
      */
-    public void keywordSearch(final int pageNum, final String keyword, final int adCode) {
+    public void keywordSearch(final int pageNum, final String keyword, final int adCode, final boolean isSilent) {
         Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "keywordSearch", keyword);
-        mSearchPackage.keywordSearch(pageNum, keyword, adCode);
+        mSearchPackage.keywordSearch(pageNum, keyword, adCode, isSilent);
     }
 
     /**

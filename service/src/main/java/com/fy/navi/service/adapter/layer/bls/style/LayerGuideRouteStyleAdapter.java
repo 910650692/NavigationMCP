@@ -108,8 +108,8 @@ public class LayerGuideRouteStyleAdapter extends BaseStyleAdapter {
                             ConvertUtils.isEmpty(mRouteResult.getMLayerItemRouteEndPoint()) ||
                             ConvertUtils.isEmpty(mRouteResult.getMLayerItemRouteEndPoint()
                                     .get(mRouteControl.getSelectedPathIndex())) ||
-                            ConvertUtils.isEmpty(mRouteResult.getMLayerItemRouteEndPoint()
-                                    .get(mRouteControl.getSelectedPathIndex()).getRestNum() == NumberUtils.NUM_ERROR)) {
+                            mRouteResult.getMLayerItemRouteEndPoint()
+                                    .get(mRouteControl.getSelectedPathIndex()).getRestNum() == NumberUtils.NUM_ERROR) {
                         Logger.d(TAG, "终点扎标-默认扎标");
                         return KEY_ROAD_END_DEFAULT;
                     } else {
@@ -123,6 +123,9 @@ public class LayerGuideRouteStyleAdapter extends BaseStyleAdapter {
                         } else if (endPointType == LayerPointItemType.ROUTE_POINT_END_BUSINESS_HOURS) {
                             Logger.d(TAG, "终点扎标-营业时间");
                             return KEY_ROAD_END_BUSINESS_HOURS_POINT;
+                        } else if (endPointType == LayerPointItemType.ROUTE_POINT_END) {
+                            Logger.d(TAG, "终点扎标-默认扎标");
+                            return KEY_ROAD_END_DEFAULT;
                         }
                     }
                 }
@@ -379,8 +382,9 @@ public class LayerGuideRouteStyleAdapter extends BaseStyleAdapter {
 
     //转换终点扎标数据
     private void getRouteEndPoint() {
-        Logger.d(TAG, "getRouteEndPoint");
         mRouteEndPoint = mRouteResult.getMLayerItemRouteEndPoint().get(mRouteControl.getSelectedPathIndex());
+        Logger.d(TAG, "getRouteEndPoint type " + mRouteEndPoint.getEndPointType() + " num " +
+                mRouteEndPoint.getRestNum() + " string " + mRouteEndPoint.getBusinessHours());
     }
 
     //转换补能规划数据

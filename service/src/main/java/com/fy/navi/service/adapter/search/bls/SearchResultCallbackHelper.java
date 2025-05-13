@@ -261,13 +261,13 @@ public class SearchResultCallbackHelper {
         }
     }
 
-    public void notifyNetCallbacks(final int taskId,BaseRep result){
+    public void notifyNetCallbacks(final int taskId,String searchKey,BaseRep result){
         if (mSearchResponseCallbackList == null) {
             Logger.e(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "net Callbacks is null");
             return;
         }
         for (ISearchResultCallback callback : mSearchResponseCallbackList) {
-            callback.onNetSearchResult(taskId,result);
+            callback.onNetSearchResult(taskId,searchKey,result);
         }
     }
 

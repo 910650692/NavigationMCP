@@ -103,7 +103,8 @@ public class ScenePoiDetailContentViewImpl extends BaseSceneModel<ScenePoiDetail
             return;
         }
         // 这里只有两种搜索类型：POI搜索和Geo搜索,带”."的是逆地理搜索自行拼接的pid，不可用于逆地理搜索
-        if (!TextUtils.isEmpty(poiInfoEntity.getPid()) && !poiInfoEntity.getPid().contains(".")) {
+        if (!TextUtils.isEmpty(poiInfoEntity.getPid()) && !poiInfoEntity.getPid().contains(".")
+                && poiInfoEntity.getPid().startsWith("B")) {
             if (!ConvertUtils.isEmpty(poiInfoEntity.getPoint())) {
                 mTaskId = mSearchPackage.poiIdSearch(poiInfoEntity.getPid(), poiInfoEntity.getPoint());
             } else {

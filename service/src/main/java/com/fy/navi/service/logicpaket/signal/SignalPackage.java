@@ -134,6 +134,19 @@ public final class SignalPackage implements SignalAdapterCallback {
         });
     }
 
+    @Override
+    public void onNaviOnADASStateChanged(int state) {
+        ThreadManager.getInstance().postUi(() -> {
+            if (!ConvertUtils.isEmpty(mSignalCallbacks)) {
+                for (SignalCallback signalCallback : mSignalCallbacks.values()) {
+                    if (signalCallback != null) {
+                        signalCallback.onNaviOnADASStateChanged(state);
+                    }
+                }
+            }
+        });
+    }
+
     /**
      * 车外温度
      *
@@ -173,7 +186,7 @@ public final class SignalPackage implements SignalAdapterCallback {
     /**
      * 电池最大电量
      *
-     * @return 单位kWh
+     * @return 单位wh
      */
     public float getMaxBatteryEnergy() {
         return mSignalAdapter.getMaxBatteryEnergy() / 1000;

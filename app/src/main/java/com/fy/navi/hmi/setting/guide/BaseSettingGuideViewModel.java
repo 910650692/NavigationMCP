@@ -22,6 +22,7 @@ import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.setting.SettingController;
 import com.fy.navi.service.logicpaket.layer.LayerPackage;
 import com.fy.navi.service.logicpaket.map.MapPackage;
+import com.fy.navi.service.logicpaket.navi.OpenApiHelper;
 import com.fy.navi.service.logicpaket.setting.SettingUpdateObservable;
 import com.fy.navi.ui.action.Action;
 import com.fy.navi.ui.base.BaseViewModel;
@@ -225,17 +226,17 @@ public class BaseSettingGuideViewModel extends BaseViewModel<SettingNaviFragment
 
     // 3D车头向上
     public Action mSwitchMapModel3DUpClick = () -> {
-        MapPackage.getInstance().switchMapMode(MapType.MAIN_SCREEN_MAIN_MAP, MapMode.UP_3D);
+        OpenApiHelper.switchMapMode(MapType.MAIN_SCREEN_MAIN_MAP, MapMode.UP_3D);
     };
 
     // 2D北向上
     public Action mSwitchMapModel2DNorthClick = () -> {
-        MapPackage.getInstance().switchMapMode(MapType.MAIN_SCREEN_MAIN_MAP, MapMode.NORTH_2D);
+        OpenApiHelper.switchMapMode(MapType.MAIN_SCREEN_MAIN_MAP, MapMode.NORTH_2D);
     };
 
     // 2D车头向上
     public Action mSwitchMapModel2DUpClick = () -> {
-        MapPackage.getInstance().switchMapMode(MapType.MAIN_SCREEN_MAIN_MAP, MapMode.UP_2D);
+        OpenApiHelper.switchMapMode(MapType.MAIN_SCREEN_MAIN_MAP, MapMode.UP_2D);
     };
 
     // 默认车标

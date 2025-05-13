@@ -101,9 +101,8 @@ public class PoiDetailsModel extends BaseModel<PoiDetailsViewModel> implements S
     }
 
     @Override
-    public void onNetSearchResult(final int taskId,BaseRep result) {
-        if (mCallbackId.equals(mSearchPackage.getCurrentCallbackId())) {
-            mTaskId = taskId;
+    public void onNetSearchResult(final int taskId,String searchKey,BaseRep result) {
+        if(AutoMapConstant.NetSearchKey.QUERY_STATION_INFO.equals(searchKey)){
             mViewModel.notifyNetSearchResult(taskId,result);
         }
     }

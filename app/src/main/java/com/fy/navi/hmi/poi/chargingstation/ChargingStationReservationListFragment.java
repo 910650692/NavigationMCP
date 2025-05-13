@@ -3,6 +3,7 @@ package com.fy.navi.hmi.poi.chargingstation;
 import android.os.Bundle;
 
 import com.alibaba.android.arouter.facade.annotation.Route;
+import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
 import com.fy.navi.hmi.BR;
 import com.fy.navi.hmi.R;
@@ -13,6 +14,7 @@ import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.search.ChargeEquipmentInfo;
 import com.fy.navi.service.define.search.ChargePriceInfo;
+import com.fy.navi.service.define.search.EquipmentInfo;
 import com.fy.navi.service.define.search.PoiInfoEntity;
 import com.fy.navi.ui.base.BaseFragment;
 
@@ -66,5 +68,13 @@ public class ChargingStationReservationListFragment extends BaseFragment<Fragmen
         final int type = parsedArgs.getInt(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_CHARGE_EQUIPMENT_TYPE);
         final PoiInfoEntity poiInfoEntity = parsedArgs.getParcelable(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_CHARGE_PRICE_LIST);
         mBinding.sceneChargeReservationList.notifyEquipmentInfo(type,poiInfoEntity);
+    }
+
+    public void notifyCreateReservationSuccess(){
+        mBinding.sceneChargeReservationList.notifyCreateReservationSuccess();
+    }
+
+    public void notifyEquipmentResult(EquipmentInfo info){
+        mBinding.sceneChargeReservationList.notifyEquipmentResult(info);
     }
 }

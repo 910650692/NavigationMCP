@@ -54,6 +54,9 @@ public class LayerAdapter {
     public void setDefaultCarMode(MapType mapTypeId) {
         mLayerApi.setDefaultCarMode(mapTypeId);
     }
+    public void setCarPosition(MapType mapTypeId,GeoPoint geoPoint) {
+        mLayerApi.setCarPosition(mapTypeId,geoPoint);
+    }
 
     public void setCarMode(MapType mapTypeId, CarModeType carMode) {
         mLayerApi.setCarMode(mapTypeId, carMode);
@@ -254,56 +257,17 @@ public class LayerAdapter {
         return mLayerApi.updateSearchMarker(mapTypeId, type, searchResult, clearOtherLayerItem);
     }
 
-    /**
-     * 搜索POI 父点+子点+中心点
-     *
-     * @param mapTypeId
-     * @param searchResult
-     * @param clearOtherLayerItem
-     * @return
-     */
-    public boolean addLayerItemOfSearchResult(MapType mapTypeId, LayerItemSearchResult searchResult, boolean clearOtherLayerItem) {
-        return mLayerApi.addLayerItemOfSearchResult(mapTypeId, searchResult, clearOtherLayerItem);
+    /* 更新列表可视扎标数据 */
+    public void updateSearchResult(MapType mapTypeId, LayerPointItemType type, LayerItemSearchResult result) {
+        mLayerApi.updateSearchResult(mapTypeId, type, result);
     }
 
-    /**
-     * 搜索中心点
-     *
-     * @param mapTypeId
-     * @param searchResult
-     * @param clearOtherLayerItem
-     * @return
-     */
-    public boolean addLayerItemOfSearchCentralPoi(MapType mapTypeId, LayerItemSearchResult searchResult, boolean clearOtherLayerItem) {
-        return mLayerApi.addLayerItemOfSearchCentralPoi(mapTypeId, searchResult, clearOtherLayerItem);
-    }
-
-    /**
-     * 搜索 POI扎标
-     *
-     * @param mapTypeId
-     * @param searchResult
-     * @param clearOtherLayerItem
-     * @return
-     */
-    public boolean addLayerItemOfSearchLabel(MapType mapTypeId, LayerItemSearchResult searchResult, boolean clearOtherLayerItem) {
-        return mLayerApi.addLayerItemOfSearchLabel(mapTypeId, searchResult, clearOtherLayerItem);
-    }
-
-    /**
-     * 清除所有搜索扎标
-     *
-     * @param mapTypeId
-     */
+    /* 清除所有搜索扎标 */
     public void clearAllSearchLayerItems(MapType mapTypeId) {
         mLayerApi.clearAllSearchLayerItems(mapTypeId);
     }
 
-    /**
-     * 清除搜索POI扎标
-     *
-     * @param mapTypeId
-     */
+    /* 清除搜索POI扎标 */
     public void clearSearchPOILayerItems(MapType mapTypeId, LayerPointItemType searchItemType) {
         mLayerApi.clearSearchPOILayerItems(mapTypeId, searchItemType);
     }

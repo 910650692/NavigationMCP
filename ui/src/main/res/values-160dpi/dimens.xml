@@ -4302,6 +4302,8 @@
     <dimen name="dp_m_98">-98dp</dimen>
     <dimen name="dp_m_99">-99dp</dimen>
     <dimen name="dp_m_100">-1E-2dp</dimen>
+    <dimen name="dp_m_101">-101dp</dimen>
+    <dimen name="dp_m_102">-102dp</dimen>
 
     <!--动态底部控制栏宽度-->
     <dimen name="control_view_normal_width">455dp</dimen>

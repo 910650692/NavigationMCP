@@ -3,6 +3,7 @@ package com.fy.navi.hmi.poi.chargingstation;
 import android.os.Bundle;
 
 import com.alibaba.android.arouter.facade.annotation.Route;
+import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
 import com.fy.navi.hmi.BR;
 import com.fy.navi.hmi.R;
@@ -12,9 +13,11 @@ import com.fy.navi.service.AutoMapConstant;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.search.ChargePriceInfo;
+import com.fy.navi.service.define.search.CostTime;
 import com.fy.navi.service.define.search.PoiInfoEntity;
 import com.fy.navi.ui.base.BaseFragment;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Route(path = RoutePath.Search.POI_CHARGE_PRICE_ALL_DAY_FRAGMENT)
@@ -57,7 +60,13 @@ public class ChargePriceListFragment extends BaseFragment<FragmentChargePriceLis
             return;
         }
         final PoiInfoEntity poiInfoEntity = parsedArgs.getParcelable(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_CHARGE_PRICE_LIST);
-        List<ChargePriceInfo> list = poiInfoEntity.getmChargePriceInfoList();
-        mBinding.chargePrice.notifyChargePriceList(list);
+        if(!ConvertUtils.isNull(poiInfoEntity)
+                && !ConvertUtils.isEmpty(poiInfoEntity.getChargeInfoList())
+                && !ConvertUtils.isEmpty(poiInfoEntity.getChargeInfoList().get(0))){
+            ArrayList<CostTime> costTimes = mViewModel.getCostTimes(poiInfoEntity.getChargeInfoList().get(0).getCostItem());
+            mBinding.chargePrice.notifyChargePriceList(costTimes);
+        }else{
+            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"costItem is empty");
+        }
     }
 }

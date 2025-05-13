@@ -31,6 +31,7 @@ import com.fy.navi.service.define.utils.NumberUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class LayerSearchStyleAdapter extends BaseStyleAdapter {
 
@@ -50,7 +51,7 @@ public class LayerSearchStyleAdapter extends BaseStyleAdapter {
     //充电站-列表可见数字扎标
     private static final String KEY_SEARCH_CHARGE_LIST_INDEX_FOCUSED = "search_charge_list_index_focused";
 
-    private static List<PoiInfoEntity> mPoiInfoList = new ArrayList<>();
+    private final AtomicReference<List<PoiInfoEntity>> mPoiInfoList = new AtomicReference(new ArrayList<>());
 
     public LayerSearchStyleAdapter(int engineID, BizSearchControl bizSearchControl) {
         super(engineID);
@@ -62,22 +63,11 @@ public class LayerSearchStyleAdapter extends BaseStyleAdapter {
         switch (item.getBusinessType()) {
             case BizSearchType.BizSearchTypePoiParentPoint -> {
                 int index = getLayerItemIndex(item);
-                if (ConvertUtils.isEmpty(mPoiInfoList)) {
-                    Logger.d(TAG, "搜索列表默认扎标-mPoiInfoList is Empty");
-                    return KEY_SEARCH_LIST_INDEX_NORMAL;
-                } else {
-                    if (index >= NumberUtils.NUM_0 && index < mPoiInfoList.size()) {
-                        PoiInfoEntity poiInfoEntity = mPoiInfoList.get(index);
-                        if (ConvertUtils.isEmpty(poiInfoEntity) || !poiInfoEntity.isMIsVisible()) {
-                            Logger.d(TAG, "搜索列表默认扎标-非list可见图元");
-                            return KEY_SEARCH_LIST_INDEX_NORMAL;
-                        } else {
-                            Logger.d(TAG, "搜索列表可见数字扎标-index " + index);
-                            return KEY_SEARCH_LIST_INDEX_FOCUSED;
-                        }
-                    } else {
-                        Logger.d(TAG, "搜索列表默认扎标-下标越界");
-                        return KEY_SEARCH_LIST_INDEX_NORMAL;
+                if (!ConvertUtils.isEmpty(mPoiInfoList.get()) && index >= NumberUtils.NUM_0 && index < mPoiInfoList.get().size()) {
+                    PoiInfoEntity poiInfoEntity = mPoiInfoList.get().get(index);
+                    if (!ConvertUtils.isEmpty(poiInfoEntity) && poiInfoEntity.isMIsVisible()) {
+                        Logger.d(TAG, "搜索列表可见数字扎标-index " + index);
+                        return KEY_SEARCH_LIST_INDEX_FOCUSED;
                     }
                 }
             }
@@ -94,22 +84,22 @@ public class LayerSearchStyleAdapter extends BaseStyleAdapter {
                 }
             }
             case BizSearchType.BizSearchTypePoiParkRoute -> {
-                Logger.d(TAG, "自定义终点停车场扎标 isNightMode " + isNightMode());
+                Logger.d(TAG, "自定义终点停车场扎标");
                 return KEY_SEARCH_PARK_ROUTE;
             }
             case BizSearchType.BizSearchTypeChargeStation -> {
                 int index = getLayerItemIndex(item);
-                if (ConvertUtils.isEmpty(mPoiInfoList)) {
-                    Logger.d(TAG, "充电站-自定义扎标-mPoiInfoList is Empty");
+                if (ConvertUtils.isEmpty(mPoiInfoList.get())) {
+                    Logger.d(TAG, "充电站-自定义扎标-Default mPoiInfoList is Empty");
                     return KEY_SEARCH_CHARGE_POINT;
                 } else {
-                    if (index >= NumberUtils.NUM_0 && index < mPoiInfoList.size()) {
-                        PoiInfoEntity poiInfoEntity = mPoiInfoList.get(index);
+                    if (index >= NumberUtils.NUM_0 && index < mPoiInfoList.get().size()) {
+                        PoiInfoEntity poiInfoEntity = mPoiInfoList.get().get(index);
                         if (ConvertUtils.isEmpty(poiInfoEntity) || !poiInfoEntity.isMIsVisible()) {
                             List<ChargeInfo> chargeInfoList = poiInfoEntity.getChargeInfoList();
                             if (ConvertUtils.isEmpty(chargeInfoList) || ConvertUtils.isEmpty(chargeInfoList.get(0)) ||
                                     !chargeInfoList.get(0).isMIsAppointment()) {
-                                Logger.d(TAG, "充电站-自定义扎标-非list可见图元-非预约");
+                                Logger.d(TAG, "充电站-自定义扎标-Default");
                                 return KEY_SEARCH_CHARGE_POINT;
                             } else {
                                 Logger.d(TAG, "充电站-已预约扎标");
@@ -120,7 +110,7 @@ public class LayerSearchStyleAdapter extends BaseStyleAdapter {
                             return KEY_SEARCH_CHARGE_LIST_INDEX_FOCUSED;
                         }
                     } else {
-                        Logger.d(TAG, "充电站-自定义扎标-下标越界");
+                        Logger.d(TAG, "充电站-自定义扎标-下标越界-Default");
                         return KEY_SEARCH_CHARGE_POINT;
                     }
                 }
@@ -273,11 +263,15 @@ public class LayerSearchStyleAdapter extends BaseStyleAdapter {
             return new IUpdateBitmapViewProcessor() {
                 @Override
                 public void onNormalProcess(View rootView, LayerItemData data) {
-                    if (index >= NumberUtils.NUM_0 && index < mPoiInfoList.size()) {
-                        PoiInfoEntity poiInfoEntity = mPoiInfoList.get(index);
+                    if (index >= NumberUtils.NUM_0 && index < mPoiInfoList.get().size()) {
+                        PoiInfoEntity poiInfoEntity = mPoiInfoList.get().get(index);
                         if (!ConvertUtils.isEmpty(poiInfoEntity) && poiInfoEntity.isMIsVisible()) {
                             Logger.d(TAG, "搜索列表可见数字扎标-index " + index);
                             ImageView imageView = rootView.findViewById(R.id.search_charge_list_focused);
+                            if (ConvertUtils.isEmpty(imageView)) {
+                                Logger.e(TAG, "搜索列表可见数字扎标 imageView == null");
+                                return;
+                            }
                             TypedArray imageArray = rootView.getContext().getResources().obtainTypedArray(R.array.layer_icon_search_list_poi_array);
                             try {
                                 int resourceId = imageArray.getResourceId(index, 0);
@@ -302,26 +296,38 @@ public class LayerSearchStyleAdapter extends BaseStyleAdapter {
                     int slowTotal = info.getMChargeStationInfo().slowTotal;
 
                     if (fastFree == NumberUtils.NUM_0 && fastTotal == NumberUtils.NUM_0) {
-                        fastText.setVisibility(GONE);
+                        if (!ConvertUtils.isEmpty(fastText)) {
+                            fastText.setVisibility(GONE);
+                        }
                     }
                     Context context = rootView.getContext();
                     String fastString = context.getString(R.string.layer_search_along_way_charge_fast, fastFree, fastTotal);
-                    fastText.setText(fastString);
+                    if (!ConvertUtils.isEmpty(fastText)) {
+                        fastText.setText(fastString);
+                    }
 
                     if (slowFree == NumberUtils.NUM_0 && slowTotal == NumberUtils.NUM_0) {
-                        slowText.setVisibility(GONE);
+                        if (!ConvertUtils.isEmpty(slowText)) {
+                            slowText.setVisibility(GONE);
+                        }
                     }
                     String slowString = context.getString(R.string.layer_search_along_way_charge_slow, slowFree, slowTotal);
-                    slowText.setText(slowString);
+                    if (!ConvertUtils.isEmpty(slowText)) {
+                        slowText.setText(slowString);
+                    }
 
-                    if (index >= NumberUtils.NUM_0 && index < mPoiInfoList.size()) {
-                        PoiInfoEntity poiInfoEntity = mPoiInfoList.get(index);
+                    if (index >= NumberUtils.NUM_0 && index < mPoiInfoList.get().size()) {
+                        PoiInfoEntity poiInfoEntity = mPoiInfoList.get().get(index);
                         if (ConvertUtils.isEmpty(poiInfoEntity) || !poiInfoEntity.isMIsVisible()) {
                             List<ChargeInfo> chargeInfoList = poiInfoEntity.getChargeInfoList();
                             if (ConvertUtils.isEmpty(chargeInfoList) || ConvertUtils.isEmpty(chargeInfoList.get(0)) ||
                                     !chargeInfoList.get(0).isMIsAppointment()) {
                                 Logger.d(TAG, "充电站-自定义扎标-Focus-非list可见图元-非预约");
                                 ImageView imageView = rootView.findViewById(R.id.search_charge_focused);
+                                if (ConvertUtils.isEmpty(imageView)) {
+                                    Logger.e(TAG, "充电站-自定义扎标-Focus imageView == null");
+                                    return;
+                                }
                                 String brand = chargeInfoList.get(0).getMBrand();
                                 int brandIndex = getSearchChargeBrandIndex(brand);
                                 if (brandIndex == NumberUtils.NUM_ERROR) {
@@ -338,9 +344,14 @@ public class LayerSearchStyleAdapter extends BaseStyleAdapter {
                         } else {
                             Logger.d(TAG, "充电站-列表可见数字扎标-index " + index);
                             ImageView imageView = rootView.findViewById(R.id.search_charge_focused);
+                            if (ConvertUtils.isEmpty(imageView)) {
+                                Logger.e(TAG, "充电站-列表可见数字扎标-Focused imageView == null");
+                                return;
+                            }
                             TypedArray imageArray = rootView.getContext().getResources().obtainTypedArray(R.array.layer_icon_search_list_poi_array);
                             try {
                                 int resourceId = imageArray.getResourceId(index, 0);
+                                Logger.e(TAG, "充电站-列表可见数字扎标-Focused index " + index);
                                 imageView.setImageResource(resourceId);
                             } finally {
                                 imageArray.recycle();
@@ -351,17 +362,51 @@ public class LayerSearchStyleAdapter extends BaseStyleAdapter {
 
                 @Override
                 public void onNormalProcess(View rootView, LayerItemData data) {
-                    if (index >= NumberUtils.NUM_0 && index < mPoiInfoList.size()) {
-                        PoiInfoEntity poiInfoEntity = mPoiInfoList.get(index);
+                    SearchChargeStationLayerItem info = (SearchChargeStationLayerItem) item;
+                    TextView fastText = rootView.findViewById(R.id.search_charge_detail_fast);
+                    TextView slowText = rootView.findViewById(R.id.search_charge_detail_slow);
+                    int fastFree = info.getMChargeStationInfo().fastFree;
+                    int fastTotal = info.getMChargeStationInfo().fastTotal;
+                    int slowFree = info.getMChargeStationInfo().slowFree;
+                    int slowTotal = info.getMChargeStationInfo().slowTotal;
+
+                    if (fastFree == NumberUtils.NUM_0 && fastTotal == NumberUtils.NUM_0) {
+                        if (!ConvertUtils.isEmpty(fastText)) {
+                            fastText.setVisibility(GONE);
+                        }
+                    }
+                    Context context = rootView.getContext();
+                    String fastString = context.getString(R.string.layer_search_along_way_charge_fast, fastFree, fastTotal);
+                    if (!ConvertUtils.isEmpty(fastText)) {
+                        fastText.setText(fastString);
+                    }
+
+                    if (slowFree == NumberUtils.NUM_0 && slowTotal == NumberUtils.NUM_0) {
+                        if (!ConvertUtils.isEmpty(slowText)) {
+                            slowText.setVisibility(GONE);
+                        }
+                    }
+                    String slowString = context.getString(R.string.layer_search_along_way_charge_slow, slowFree, slowTotal);
+                    if (!ConvertUtils.isEmpty(slowText)) {
+                        slowText.setText(slowString);
+                    }
+
+                    if (index >= NumberUtils.NUM_0 && index < mPoiInfoList.get().size()) {
+                        PoiInfoEntity poiInfoEntity = mPoiInfoList.get().get(index);
                         if (ConvertUtils.isEmpty(poiInfoEntity) || !poiInfoEntity.isMIsVisible()) {
                             List<ChargeInfo> chargeInfoList = poiInfoEntity.getChargeInfoList();
                             if (ConvertUtils.isEmpty(chargeInfoList) || ConvertUtils.isEmpty(chargeInfoList.get(0)) ||
                                     !chargeInfoList.get(0).isMIsAppointment()) {
                                 Logger.d(TAG, "充电站-自定义扎标-Normal-非list可见图元-非预约");
-                                ImageView imageView = rootView.findViewById(R.id.search_charge_normal);
+                                ImageView imageView = rootView.findViewById(R.id.search_charge_focused);
+                                if (ConvertUtils.isEmpty(imageView)) {
+                                    Logger.e(TAG, "充电站-自定义扎标-Normal imageView == null");
+                                    return;
+                                }
                                 String brand = chargeInfoList.get(0).getMBrand();
                                 int brandIndex = getSearchChargeBrandIndex(brand);
                                 if (brandIndex == NumberUtils.NUM_ERROR) {
+                                    Logger.d(TAG, "充电站-自定义扎标-Normal-Default扎标");
                                     return;
                                 }
                                 TypedArray imageArray = rootView.getContext().getResources().obtainTypedArray(R.array.layer_icon_search_brand_normal_array);
@@ -371,6 +416,21 @@ public class LayerSearchStyleAdapter extends BaseStyleAdapter {
                                 } finally {
                                     imageArray.recycle();
                                 }
+                            }
+                        } else {
+                            Logger.d(TAG, "充电站-列表可见数字扎标-index " + index);
+                            ImageView imageView = rootView.findViewById(R.id.search_charge_focused);
+                            if (ConvertUtils.isEmpty(imageView)) {
+                                Logger.e(TAG, "充电站-列表可见数字扎标-Normal imageView == null");
+                                return;
+                            }
+                            TypedArray imageArray = rootView.getContext().getResources().obtainTypedArray(R.array.layer_icon_search_list_poi_array);
+                            try {
+                                int resourceId = imageArray.getResourceId(index, 0);
+                                Logger.d(TAG, "充电站-列表可见数字扎标-Normal index " + index);
+                                imageView.setImageResource(resourceId);
+                            } finally {
+                                imageArray.recycle();
                             }
                         }
                     }
@@ -387,7 +447,8 @@ public class LayerSearchStyleAdapter extends BaseStyleAdapter {
             return;
         }
         Logger.d(TAG, "updateSearchResult");
-        mPoiInfoList = poiInfoEntityList;
+        mPoiInfoList.get().clear();
+        mPoiInfoList.get().addAll(poiInfoEntityList);
     }
 
     /* 更新列表可视扎标数据 */
@@ -397,7 +458,8 @@ public class LayerSearchStyleAdapter extends BaseStyleAdapter {
             return;
         }
         Logger.d(TAG, "updateSearchResult type " + type);
-        mPoiInfoList = poiInfoEntityList;
+        mPoiInfoList.get().clear();
+        mPoiInfoList.get().addAll(poiInfoEntityList);
         switch (type) {
             case SEARCH_PARENT_POINT -> {
                 mSearchControl.updateStyle(BizSearchType.BizSearchTypePoiParentPoint);
@@ -411,8 +473,8 @@ public class LayerSearchStyleAdapter extends BaseStyleAdapter {
     private LayerItemSearchPoint getSearchParkRoutePoint(LayerItem item) {
         LayerItemSearchPoint searchPark = new LayerItemSearchPoint();
         int index = getLayerItemIndex(item);
-        if (index >= NumberUtils.NUM_0 && index < mPoiInfoList.size()) {
-            PoiInfoEntity poiInfoEntity = mPoiInfoList.get(index);
+        if (index >= NumberUtils.NUM_0 && index < mPoiInfoList.get().size()) {
+            PoiInfoEntity poiInfoEntity = mPoiInfoList.get().get(index);
             searchPark.setPoiInfo(poiInfoEntity);
         }
         Logger.d(TAG, "getSearchParkRoutePoint index " + index + " searchPark " + searchPark.toString());

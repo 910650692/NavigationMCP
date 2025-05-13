@@ -5,7 +5,9 @@ import android.text.format.DateFormat;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
@@ -952,6 +954,34 @@ public class TimeUtils {
         long differenceInDays = diffTime / (24 * 60 * 60 * 1000);
 
         return differenceInDays > 7;
+    }
+
+    public static boolean isCurrentTimeInRange(String timeRange) {
+        try {
+            // 分割时间范围字符串
+            String[] times = timeRange.split("~");
+            if (times.length != 2) {
+                return false;
+            }
+            // 创建时间格式化器
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+            // 解析开始和结束时间
+            LocalTime startTime = LocalTime.parse(times[0], formatter);
+            LocalTime endTime = LocalTime.parse(times[1], formatter);
+            // 获取当前时间
+            LocalTime currentTime = LocalTime.now();
+            // 判断当前时间是否在范围内
+            if (endTime.isAfter(startTime)) {
+                // 正常时间范围（不跨午夜）
+                return !currentTime.isBefore(startTime) && !currentTime.isAfter(endTime);
+            } else {
+                // 跨午夜的时间范围（如22:00~02:00）
+                return !currentTime.isBefore(startTime) || !currentTime.isAfter(endTime);
+            }
+        } catch (DateTimeParseException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     public static TimeUtils getInstance() {

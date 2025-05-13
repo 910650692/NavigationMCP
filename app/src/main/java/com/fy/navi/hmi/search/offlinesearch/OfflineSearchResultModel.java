@@ -22,20 +22,37 @@ public class OfflineSearchResultModel extends BaseModel<OfflineSearchViewModel> 
     public OfflineSearchResultModel() {
         mCallbackId = UUID.randomUUID().toString();
         mSearchPackage = SearchPackage.getInstance();
+    }
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
         mSearchPackage.registerCallBack(mCallbackId, this);
     }
 
     @Override
     public void onSearchResult(final int taskId, final int errorCode, final String message, final SearchResultEntity searchResultEntity) {
+//        if (mCallbackId.equals(mSearchPackage.getCurrentCallbackId())) {
+////            if (searchResultEntity.getSearchType() == AutoMapConstant.SearchType.SEARCH_SUGGESTION) {
+//            final ThreadManager threadManager = ThreadManager.getInstance();
+//            threadManager.postUi(() -> {
+//                mViewModel.notifySearchResult(searchResultEntity);
+//            });
+////            }
+//        } else {
+//            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "Ignoring callback for ID: " + mCallbackId);
+//        }
+    }
+
+    @Override
+    public void onSilentSearchResult(int taskId, int errorCode, String message, SearchResultEntity searchResultEntity) {
         if (mCallbackId.equals(mSearchPackage.getCurrentCallbackId())) {
-//            if (searchResultEntity.getSearchType() == AutoMapConstant.SearchType.SEARCH_SUGGESTION) {
             final ThreadManager threadManager = ThreadManager.getInstance();
             threadManager.postUi(() -> {
                 mViewModel.notifySearchResult(searchResultEntity);
             });
-//            }
         } else {
-            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "Ignoring callback for ID: " + mCallbackId);
+            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "Ignoring callback for ID: " + mCallbackId + " ,111: " + mSearchPackage.getCurrentCallbackId());
         }
     }
 

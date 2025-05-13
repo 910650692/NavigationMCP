@@ -24,16 +24,17 @@ public class ClusterActivityOffOnUtils {
             }
         }
         if (isOpen) {
+            Logger.d(FsaConstant.FSA_TAG, "open ClusterActivity");
             final ActivityOptions options = ActivityOptions.makeBasic();
             options.setLaunchDisplayId(secondeDid);
             final Intent intent = new Intent();
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            intent.setAction("com.fy.navi.hmi.cluster.ClusterActivity");
-            intent.putExtra("isOpen", isOpen);
+            intent.setAction("com.fy.navi.hmi.cluster_map.ClusterActivity");
+            intent.putExtra("isOpen", true);
             AppContext.getInstance().getMContext().startActivity(intent, options.toBundle());
         } else {
             Logger.d(FsaConstant.FSA_TAG, "close ClusterActivity");
-            Intent closeIntent = new Intent("com.fy.navi.hmi.cluster.ClusterActivity");
+            Intent closeIntent = new Intent("com.fy.navi.hmi.cluster_map.ClusterActivity");
             AppContext.getInstance().getMContext().sendBroadcast(closeIntent);
         }
     }

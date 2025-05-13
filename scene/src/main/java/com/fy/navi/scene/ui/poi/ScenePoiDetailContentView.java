@@ -344,7 +344,13 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
         }
         Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "poiType: " + searchResultEntity.getPoiType());
         if (searchResultEntity.getPoiType() == 0) {
-            final CityDataInfo cityDataInfo = mScreenViewModel.getCityInfo(mScreenViewModel.getAcCode());
+            final CityDataInfo cityDataInfo;
+            if(!ConvertUtils.isEmpty(searchResultEntity.getPoiList())) {
+                final PoiInfoEntity poiInfoEntity = searchResultEntity.getPoiList().get(0);
+                cityDataInfo = mScreenViewModel.getCityInfo(poiInfoEntity.getAdCode());
+            } else {
+                cityDataInfo = mScreenViewModel.getCityInfo(mScreenViewModel.getAcCode());
+            }
             if (cityDataInfo != null) {
                 Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "城市数据信息: " + cityDataInfo.getName() +"，城市编码: "
                         + mScreenViewModel.getAcCode());
@@ -352,6 +358,11 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
                 mViewBinding.poiOfflineHint.setText(
                         getContext().getString(R.string.search_offline_hint, cityDataInfo.getName()));
             }
+            mViewBinding.poiDetailsScroll.setMaxHeight(316);
+            mViewBinding.sivArrivalCapacity.setVisibility(View.GONE);
+            mViewBinding.poiDistanceTime.setVisibility(View.GONE);
+            mViewBinding.poiArrivalCapacity.setVisibility(View.GONE);
+
         }
         mSearchResultEntity = searchResultEntity;
         this.mPoiInfoEntity = searchResultEntity.getPoiList().get(0);
@@ -695,6 +706,13 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
             mViewBinding.scenePoiDetailsChargingStationView.poiChargeParkPrice.setText(
                     getContext().getString(
                             R.string.charge_park_price, chargeInfo.getCurrentServicePrice()));
+            if(mSearchResultEntity.getIsNetData()){
+                mViewBinding.scenePoiDetailsChargingStationView.poiChargePriceAllday.setVisibility(VISIBLE);
+                mViewBinding.scenePoiDetailsChargingStationView.poiChargeAppointment.setVisibility(VISIBLE);
+            }else{
+                mViewBinding.scenePoiDetailsChargingStationView.poiChargePriceAllday.setVisibility(GONE);
+                mViewBinding.scenePoiDetailsChargingStationView.poiChargeAppointment.setVisibility(GONE);
+            }
         }
         mViewBinding.scenePoiDetailsChargingStationView.poiCharegBusinessHours.setText(
                 getContext().getString(R.string.business_hour, mPoiInfoEntity.getBusinessTime()));
@@ -719,27 +737,18 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
             public void onClick(View view) {
                 final Fragment fragment = (Fragment) ARouter.getInstance().build(
                         RoutePath.Search.POI_CHARGE_PRICE_ALL_DAY_FRAGMENT).navigation();
-                //todo mock后续这边跳转会传入云端充电站详情数据中的 价格信息列表字段
-                List<ChargePriceInfo> list = new ArrayList<>();
-                ChargePriceInfo info = new ChargePriceInfo()
-                                .setmTime("00:00-07:00")
-                                .setmServiceFee(2.00F)
-                                .setmServiceFee(3.00F);
-                list.add(info);
-                list.add(info);
-                mPoiInfoEntity.setmChargePriceInfoList(list);
                 addFragment((BaseFragment) fragment, SearchFragmentFactory.createChargePriceFragment(mPoiInfoEntity));
             }
         });
-//        mViewBinding.scenePoiDetailsChargingStationView.poiChargeFastLayout.setOnClickListener(v ->{
-//            toReservationListView(AutoMapConstant.EquipmentType.FAST);
-//        });
-//        mViewBinding.scenePoiDetailsChargingStationView.poiChargeSlowLayout.setOnClickListener(v ->{
-//            toReservationListView(AutoMapConstant.EquipmentType.SLOW);
-//        });
-//        mViewBinding.scenePoiDetailsChargingStationView.poiChargeAppointment.setOnClickListener(v -> {
-//            toReservationDetailView();
-//        });
+        mViewBinding.scenePoiDetailsChargingStationView.poiChargeFastLayout.setOnClickListener(v ->{
+            toReservationListView(AutoMapConstant.EquipmentType.FAST);
+        });
+        mViewBinding.scenePoiDetailsChargingStationView.poiChargeSlowLayout.setOnClickListener(v ->{
+            toReservationListView(AutoMapConstant.EquipmentType.SLOW);
+        });
+        mViewBinding.scenePoiDetailsChargingStationView.poiChargeAppointment.setOnClickListener(v -> {
+            toReservationDetailView();
+        });
         final String imageUrl = mPoiInfoEntity.getImageUrl();
         ViewAdapterKt.loadImageUrl(mViewBinding.scenePoiDetailsChargingStationView.poiChargeImg,
                 imageUrl, R.drawable.test_pic, R.drawable.test_pic);
@@ -1290,7 +1299,11 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
         }
         this.mPoiType = poiType;
         Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "poiType: " + poiType);
-        refreshNormalView();
+        final int pointTypeCode = mScreenViewModel.getPointTypeCode(poiInfoEntity.getPointTypeCode());
+        Logger.d("huangli","pointTypeCode: "+poiInfoEntity.getOperatorId());
+        if(ConvertUtils.isEmpty(poiInfoEntity.getOperatorId())){
+            refreshNormalView();
+        }
         //刷新View
         switch (poiType) {
             case AutoMapConstant.PoiType.POI_SUGGESTION:
@@ -1498,35 +1511,11 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
     }
 
     public void toReservationListView(int type){
+        if(!mSearchResultEntity.getIsNetData()){
+            return;
+        }
         final Fragment fragment = (Fragment) ARouter.getInstance().build(
                 RoutePath.Search.POI_CHARGE_RESERVATION_LIST_FRAGMENT).navigation();
-        //todo mock后续这边跳转会传入云端充电站详情数据中的 设备信息列表字段
-        final List<ChargeEquipmentInfo> list = new ArrayList<>();
-        final ChargeEquipmentInfo info = new ChargeEquipmentInfo()
-                .setChargeType(0)
-                .setEquipmentId("123123123")
-                .setNationalStandard("国标111")
-                .setParkNo("A47")
-                .setPower("150kw")
-                .setStatus(1);
-        list.add(info);
-        final ChargeEquipmentInfo info1 = new ChargeEquipmentInfo()
-                .setChargeType(1)
-                .setEquipmentId("123123123")
-                .setNationalStandard("国标111")
-                .setParkNo("A47")
-                .setPower("150kw")
-                .setStatus(1);
-        list.add(info1);
-        final ChargeEquipmentInfo info2 = new ChargeEquipmentInfo()
-                .setChargeType(0)
-                .setEquipmentId("123123123")
-                .setNationalStandard("国标111")
-                .setParkNo("A47")
-                .setPower("150kw")
-                .setStatus(3);
-        list.add(info2);
-        mPoiInfoEntity.setmChargeEquipmentInfoList(list);
         addFragment((BaseFragment) fragment, SearchFragmentFactory.createEquipmentListFragment(type,mPoiInfoEntity));
     }
 

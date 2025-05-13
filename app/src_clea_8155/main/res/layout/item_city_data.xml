@@ -44,7 +44,7 @@
                     android:id="@+id/item_city_name"
                     android:layout_width="wrap_content"
                     android:layout_height="fill_parent"
-                    android:layout_marginStart="@dimen/dp_20"
+                    android:layout_marginStart="@dimen/dp_30"
                     android:gravity="center"
                     android:text="@string/offline_item_city_title"
                     android:textColor="@color/setting_bg_tab_text_select"
@@ -54,18 +54,16 @@
 
                 <com.fy.navi.ui.view.SkinTextView
                     android:id="@+id/item_city_new_label"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_40"
-                    android:paddingLeft="@dimen/dp_5"
-                    android:paddingEnd="@dimen/dp_5"
+                    android:layout_width="@dimen/dp_42"
+                    android:layout_height="@dimen/dp_42"
                     android:text="@string/offline_item_city_tip"
                     android:textColor="@color/setting_white"
-                    android:textSize="@dimen/sp_20"
+                    android:textSize="@dimen/sp_26"
                     android:visibility="gone"
                     android:background="@drawable/bg_end_point"
                     app:layout_constraintLeft_toRightOf="@+id/item_city_name"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="@+id/item_city_name"
+                    app:layout_constraintBottom_toBottomOf="@+id/item_city_name"/>
 
                 <!--下载/全部开始/全部暂停等按钮下载状态 -->
                 <com.fy.navi.ui.view.SkinLinearLayout
@@ -83,7 +81,7 @@
                         android:id="@+id/item_city_data"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginEnd="@dimen/dp_16"
+                        android:layout_marginEnd="@dimen/dp_24"
                         android:gravity="center"
                         android:text="@string/offline_item_city_data"
                         android:textColor="@color/setting_bg_tab_text_unselect"
@@ -137,10 +135,11 @@
 
             <com.fy.navi.ui.view.SkinTextView
                 android:id="@+id/item_driving_delete"
-                android:layout_width="@dimen/dp_170"
-                android:layout_height="@dimen/dp_158"
+                android:layout_width="@dimen/dp_160"
+                android:layout_height="@dimen/dp_140"
                 android:drawableTop="@drawable/img_delete_58"
                 android:background="@drawable/bg_driving_item_delete"
+                android:paddingVertical="@dimen/dp_20"
                 android:text="@string/driving_item_delete"
                 android:textSize="@dimen/sp_30"
                 android:textColor="@color/color_80_ffffff"

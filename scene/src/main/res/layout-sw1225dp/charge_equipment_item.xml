@@ -4,9 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+        <import type="android.view.View" />
         <variable
-            name="equipmentInfo"
-            type="com.fy.navi.service.define.search.ChargeEquipmentInfo" />
+            name="connectorInfoItem"
+            type="com.fy.navi.service.define.search.ConnectorInfoItem" />
     </data>
 
     <com.fy.navi.ui.view.SkinConstraintLayout
@@ -20,7 +21,7 @@
             android:layout_height="@dimen/dp_45"
             android:gravity="center"
             android:textSize="@dimen/sp_34"
-            android:text="@{@string/charge_equipment_pack_no(equipmentInfo.getParkNo)}"/>
+            android:text="@{@string/charge_equipment_pack_no(connectorInfoItem.getmParkNo)}"/>
         <com.fy.navi.ui.view.SkinLinearLayout
             android:id="@+id/equipment_status"
             android:layout_marginTop="@dimen/dp_16"
@@ -31,7 +32,7 @@
             <com.fy.navi.ui.view.SkinTextView
                 android:layout_width="@dimen/dp_46"
                 android:background="@color/common_item_block_bg_color"
-                android:text="@{equipmentInfo.getChargeType == 0 ? @string/charge_title_fast : @string/charge_title_slow}"
+                android:text="@{`0`.equals(connectorInfoItem.getmChargeType) ? @string/charge_title_fast : @string/charge_title_slow}"
                 android:gravity="center"
                 android:textSize="@dimen/sp_26"
                 android:textColor="@color/card_quick_color"
@@ -47,8 +48,36 @@
                 android:text="@string/charge_equipment_status"
                 android:layout_height="@dimen/dp_45"/>
         </com.fy.navi.ui.view.SkinLinearLayout>
+        <com.fy.navi.ui.view.SkinConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_52"
+            android:visibility="@{`4`.equals(connectorInfoItem.getmStatus) ? View.VISIBLE : View.GONE}"
+            app:layout_constraintBottom_toBottomOf="parent">
+            <com.fy.navi.ui.view.SkinButton
+                android:id="@+id/equipment_unlock"
+                android:layout_width="@dimen/dp_124"
+                android:layout_height="match_parent"
+                android:textSize="@dimen/sp_30"
+                android:gravity="center"
+                android:background="@drawable/bg_equipment_left"
+                android:textColor="@color/white"
+                android:text="@string/charge_unlock">
+
+            </com.fy.navi.ui.view.SkinButton>
+            <com.fy.navi.ui.view.SkinButton
+                android:layout_width="@dimen/dp_148"
+                android:layout_height="match_parent"
+                android:textSize="@dimen/sp_30"
+                android:gravity="center"
+                android:background="@drawable/bg_equipment_right"
+                app:layout_constraintStart_toEndOf="@+id/equipment_unlock"
+                android:text="@string/charge_cancel_appointment">
+
+            </com.fy.navi.ui.view.SkinButton>
+        </com.fy.navi.ui.view.SkinConstraintLayout>
         <com.fy.navi.ui.view.SkinButton
             android:id="@+id/charge_reservation_button"
+            android:visibility="@{!`4`.equals(connectorInfoItem.getmStatus) ? View.VISIBLE : View.GONE}"
             app:layout_constraintBottom_toBottomOf="parent"
             android:layout_width="match_parent"
             android:background="@drawable/bg_equipment_item"

@@ -14,8 +14,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="@{ViewModel.messageCenterVisible ? View.VISIBLE : View.GONE}"
-        android:paddingStart="@dimen/dp_40"
-        android:paddingEnd="@dimen/dp_44"
+        android:paddingStart="@dimen/dp_50"
+        android:paddingEnd="@dimen/dp_36"
         android:orientation="horizontal"
         android:gravity="center_vertical"
         android:background="@drawable/bg_search_main_tab">
@@ -52,8 +52,6 @@
             android:layout_height="@dimen/dp_62"
             android:background="@color/message_center_line"
             android:layout_marginStart="@dimen/dp_42"
-            android:layout_marginTop="@dimen/dp_15"
-            android:layout_marginBottom="@dimen/dp_15"
             android:visibility="@{ViewModel.messageLineVisibility ? View.VISIBLE : View.GONE}"
             />
 
@@ -62,9 +60,7 @@
             android:layout_width="@dimen/dp_1"
             android:layout_height="@dimen/dp_75"
             android:background="@color/message_center_line"
-            android:layout_marginStart="@dimen/dp_42"
-            android:layout_marginTop="@dimen/dp_37"
-            android:layout_marginBottom="28dp"
+            android:layout_marginStart="@dimen/dp_50"
             android:visibility="@{ViewModel.messageLineHeightVisibility ? View.VISIBLE : View.GONE}"
             />
 
@@ -89,6 +85,7 @@
                 app:layout_constraintVertical_bias="0.5"
                 android:textSize="@dimen/sp_34"
                 android:textColor="@color/message_center_title"
+                android:layout_marginTop="@dimen/dp_24"
                 />
 
             <com.fy.navi.ui.view.SkinTextView
@@ -100,6 +97,7 @@
                 android:maxLines="1"
                 android:ellipsize="end"
                 android:layout_marginTop="@dimen/dp_8"
+                android:layout_marginBottom="@dimen/dp_24"
                 android:textColor="@color/message_center_content"
                 android:visibility="@{ViewModel.messageCenterContentVisibility ? View.VISIBLE : View.GONE}"
                 android:textSize="@dimen/sp_30"/>
@@ -113,7 +111,7 @@
             android:src="@drawable/img__message_center_close"
             clickCommand="@{ViewModel.messageCenterGone}"
             android:layout_marginStart="@dimen/dp_36"
-            android:layout_marginTop="@dimen/dp_5"
+            android:layout_marginEnd="@dimen/dp_36"
             android:visibility="@{ViewModel.messageCloseVisibility ? View.VISIBLE : View.GONE}"
 
             />

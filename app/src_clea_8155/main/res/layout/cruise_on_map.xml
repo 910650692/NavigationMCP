@@ -21,14 +21,14 @@
         <com.fy.navi.scene.ui.navi.SceneNaviLanesView
             android:id="@+id/cruise_lanes_view"
             android:layout_width="wrap_content"
-            android:layout_height="@dimen/dp_92"
-            android:layout_marginStart="@dimen/dp_466"
-            android:minWidth="@dimen/dp_484"
+            android:layout_height="@dimen/dp_102"
+            android:layout_marginStart="@dimen/dp_40"
+            android:minWidth="@dimen/dp_430"
             app:layout_constraintStart_toStartOf="parent"
             android:background="@drawable/bg_common_with_corner"
             android:clickable="true"
             android:focusable="false"
-            android:minHeight="@dimen/dp_92"
+            android:minHeight="@dimen/dp_102"
             android:visibility="@{ViewModel.cruiseLanesVisibility ? View.VISIBLE : View.INVISIBLE}" />
 
 
@@ -37,11 +37,12 @@
             clickCommand="@{ViewModel.muteOrUnMute}"
             android:layout_width="@dimen/dp_165"
             android:layout_height="@dimen/dp_148"
-            android:layout_marginTop="@dimen/dp_362"
             android:background="@drawable/bg_common_with_corner"
             android:focusable="true"
-            app:layout_constraintStart_toStartOf="@id/cruise_lanes_view"
-            app:layout_constraintTop_toBottomOf="@id/cruise_lanes_view" />
+            android:layout_marginStart="@dimen/dp_40"
+            android:layout_marginBottom="@dimen/dp_153"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
 
         <com.fy.navi.ui.view.SkinImageView
             android:id="@+id/iv_voice"
@@ -79,9 +80,10 @@
             android:textSize="@dimen/sp_34"
             android:paddingHorizontal="@dimen/dp_26"
             android:textColor="@color/common_title_purple_color"
-            app:layout_constraintBottom_toBottomOf="@id/view_bg"
-            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginStart="@dimen/dp_1466"
+            android:layout_marginBottom="@dimen/dp_153"
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
             tools:text="当前道路" />
 
     </com.fy.navi.ui.view.SkinConstraintLayout>

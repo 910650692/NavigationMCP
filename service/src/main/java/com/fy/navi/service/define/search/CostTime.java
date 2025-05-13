@@ -21,11 +21,13 @@ public class CostTime implements Parcelable {
     private String mTime;
     @SerializedName("electricityFee")
     private String mElectricityFee;
+    private boolean mIsCurrentTime;
 
     protected CostTime(Parcel in) {
         mServiceFee = in.readString();
         mTime = in.readString();
         mElectricityFee = in.readString();
+        mIsCurrentTime = in.readBoolean();
     }
 
     public static final Creator<CostTime> CREATOR = new Creator<CostTime>() {
@@ -50,6 +52,7 @@ public class CostTime implements Parcelable {
         parcel.writeString(mServiceFee);
         parcel.writeString(mTime);
         parcel.writeString(mElectricityFee);
+        parcel.writeBoolean(mIsCurrentTime);
     }
 
     public String getmServiceFee() {
@@ -76,6 +79,15 @@ public class CostTime implements Parcelable {
 
     public CostTime setElectricityFee(String mElectricityFee) {
         this.mElectricityFee = mElectricityFee;
+        return this;
+    }
+
+    public Boolean getmIsCurrentTime(){
+        return mIsCurrentTime;
+    }
+
+    public CostTime setmIsCurrentTime(Boolean mIsCurrentTime){
+        this.mIsCurrentTime = mIsCurrentTime;
         return this;
     }
 }

@@ -203,6 +203,25 @@ public class PositionPackage implements IPositionAdapterCallback, SignalAdapterC
     public void onSpeedChanged(float speed) {
     }
 
+    /**
+     * 系统状态
+     * @param state 系统状态
+     * OFF = 0
+     * ACC = 1
+     * RUN = 2
+     * CRANK(START) = 3
+     * SLEEP = 4
+     *
+     *acc就是on  其他应该就是off
+     */
+    @Override
+    public void onSystemStateChanged(int state) {
+        if(state == 0){
+            mPositionAdapter.saveLocStorage();
+            Logger.d("onSystemStateChanged1",state);
+        }
+    }
+
     @Override
     public void onGearChanged(int gear) {
         mPositionAdapter.onGearChanged(gear);

@@ -1,5 +1,7 @@
 package com.fy.navi.hmi.poi;
 
+import static com.android.utils.TimeUtils.isCurrentTimeInRange;
+
 import android.app.Application;
 import android.util.Log;
 
@@ -8,6 +10,7 @@ import androidx.annotation.NonNull;
 import com.android.utils.ConvertUtils;
 import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
+import com.android.utils.thread.ThreadManager;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.adapter.search.cloudByPatac.rep.BaseRep;
 import com.fy.navi.service.define.bean.GeoPoint;
@@ -118,53 +121,29 @@ public class BasePoiDetailsViewModel extends BaseViewModel<PoiDetailsFragment, P
                         .setPointTypeCode("011100");
                 poiInfoEntityList.add(poiInfoEntity);
                 SearchResultEntity searchResultEntity = new SearchResultEntity()
+                        .setIsNetData(true)
                         .setPoiList(poiInfoEntityList)
                         .setPoiType(1);
-                mView.onSearchResult(taskId,searchResultEntity);
+                final ThreadManager threadManager = ThreadManager.getInstance();
+                threadManager.postUi(() -> {
+                    mView.onSearchResult(taskId,searchResultEntity);
+                });
             } catch (JSONException e) {
                 Logger.e(MapDefaultFinalTag.SEARCH_HMI_TAG,"JSONException: "+e);
             }
         }
     }
 
-    private CostTime getCurrentElePrice(ArrayList<CostTime> costTimes){
+    private CostTime getCurrentElePrice(ArrayList<CostTime> costTimes) {
         CostTime currentCostTime = new CostTime();
-        if(!ConvertUtils.isEmpty(costTimes)){
+        if (!ConvertUtils.isEmpty(costTimes)) {
             for (int i = 0; i < costTimes.size(); i++) {
-                if(isCurrentTimeInRange(costTimes.get(i).getTime())){
+                if (isCurrentTimeInRange(costTimes.get(i).getTime())) {
                     currentCostTime = costTimes.get(i);
                 }
             }
         }
         return currentCostTime;
-    }
-
-    private boolean isCurrentTimeInRange(String timeRange) {
-        try {
-            // 分割时间范围字符串
-            String[] times = timeRange.split("~");
-            if (times.length != 2) {
-                return false;
-            }
-            // 创建时间格式化器
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
-            // 解析开始和结束时间
-            LocalTime startTime = LocalTime.parse(times[0], formatter);
-            LocalTime endTime = LocalTime.parse(times[1], formatter);
-            // 获取当前时间
-            LocalTime currentTime = LocalTime.now();
-            // 判断当前时间是否在范围内
-            if (endTime.isAfter(startTime)) {
-                // 正常时间范围（不跨午夜）
-                return !currentTime.isBefore(startTime) && !currentTime.isAfter(endTime);
-            } else {
-                // 跨午夜的时间范围（如22:00~02:00）
-                return !currentTime.isBefore(startTime) || !currentTime.isAfter(endTime);
-            }
-        } catch (DateTimeParseException e) {
-            e.printStackTrace();
-            return false;
-        }
     }
 
 }

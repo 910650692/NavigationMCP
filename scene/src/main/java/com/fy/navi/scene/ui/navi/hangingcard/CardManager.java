@@ -1,6 +1,8 @@
 package com.fy.navi.scene.ui.navi.hangingcard;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.text.TextUtils;
 
 import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
@@ -9,13 +11,15 @@ import com.fy.navi.scene.ui.navi.manager.NaviSceneId;
 import com.fy.navi.scene.ui.navi.manager.NaviSceneManager;
 import com.fy.navi.scene.util.HandCardType;
 import com.fy.navi.service.AppContext;
+import com.fy.navi.service.AutoMapConstant;
 import com.fy.navi.service.define.search.ChargeInfo;
 import com.fy.navi.service.define.search.ParkingInfo;
 import com.fy.navi.service.define.search.PoiInfoEntity;
 import com.fy.navi.service.define.search.SearchResultEntity;
+import com.fy.navi.service.logicpaket.user.behavior.BehaviorPackage;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * @author: QiuYaWei
@@ -24,7 +28,60 @@ import java.util.List;
  * Description: [悬挂卡帮助类]
  */
 public class CardManager {
+    private static final String TAG = "CardManager";
     private CardManager() {
+    }
+
+    /***
+     * 判断目的地是否是常去地址
+     * @param endPoiInfoEntity
+     * @return true 代表常去地址
+     */
+    public boolean judgeDestinationIsOftenGo(final PoiInfoEntity endPoiInfoEntity) {
+        AtomicBoolean flag = new AtomicBoolean(false);
+        ArrayList<PoiInfoEntity> poiInfoEntityList = BehaviorPackage.getInstance().getFavoriteAddressInfo();
+        PoiInfoEntity homePoiInfo = getFavoritePoiInfo(AutoMapConstant.PoiType.POI_HOME);
+        PoiInfoEntity companyPoiInfo = getFavoritePoiInfo(AutoMapConstant.PoiType.POI_COMPANY);
+
+        if (!ConvertUtils.isNull(homePoiInfo)) {
+            poiInfoEntityList.add(homePoiInfo);
+        }
+        if (!ConvertUtils.isNull(companyPoiInfo)) {
+            poiInfoEntityList.add(companyPoiInfo);
+        }
+        poiInfoEntityList.forEach(poiInfo -> {
+            if (!ConvertUtils.isNull(poiInfo) && TextUtils.equals(poiInfo.getPid(), endPoiInfoEntity.getPid())) {
+                flag.set(true);
+            }
+        });
+        Logger.i(TAG, "judgeDestinationIsHomeOrCompany:" + flag);
+        return flag.get();
+    }
+
+    /**
+     * 获取收藏点（家、公司、常用地址、收藏）
+     *
+     * @param poiType
+     * @return
+     */
+    @SuppressLint("SwitchIntDef")
+    private PoiInfoEntity getFavoritePoiInfo(@AutoMapConstant.PoiType int poiType) {
+        return switch (poiType) {
+            case AutoMapConstant.PoiType.POI_HOME ->
+                    BehaviorPackage.getInstance().getHomeFavoriteInfo(); //暂时取的都是本地的
+            case AutoMapConstant.PoiType.POI_COMPANY ->
+                    BehaviorPackage.getInstance().getCompanyFavoriteInfo();
+            default -> null;
+        };
+    }
+
+    /***
+     * 判断终点是否是加油或者充电站
+     * @return true 代表终点是加油站或者终点站
+     */
+    public boolean judgeDestinationIsGasOrChargeStation(final PoiInfoEntity poiInfo) {
+        if (ConvertUtils.isNull(poiInfo) || ConvertUtils.isEmpty(poiInfo.getPoiTag())) return false;
+        return poiInfo.getPoiTag().contains("充电站") || poiInfo.getPoiTag().contains("加油站");
     }
 
     private static final class InstanceHolder {

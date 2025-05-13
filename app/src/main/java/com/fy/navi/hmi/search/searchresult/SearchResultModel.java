@@ -43,6 +43,16 @@ public class SearchResultModel extends BaseModel<SearchResultViewModel> implemen
         mLayerPackage = LayerPackage.getInstance();
     }
 
+    /**
+     * 日夜模式切换保存数据到model
+     * @param taskId 请求数据的taskId
+     * @param searchResultEntity SearchResultEntity对象
+     */
+    public void saveData(final int taskId, final SearchResultEntity searchResultEntity) {
+        this.mTaskId = taskId;
+        this.mSearchResultEntity = searchResultEntity;
+    }
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -53,11 +63,9 @@ public class SearchResultModel extends BaseModel<SearchResultViewModel> implemen
      * 恢复fragment状态
      */
     public void onReStoreFragment() {
-        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "onReStoreFragment: " + mSearchResultEntity);
-        if (!ConvertUtils.isEmpty(mSearchResultEntity)) {
-            final ThreadManager threadManager = ThreadManager.getInstance();
-            threadManager.postUi(() -> mViewModel.notifySearchResult(mTaskId, mSearchResultEntity));
-        }
+        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "onReStoreFragment: " + mViewModel + " ,taskId: " + mTaskId);
+        final ThreadManager threadManager = ThreadManager.getInstance();
+        threadManager.postUi(() -> mViewModel.notifySearchResult(mTaskId, mSearchResultEntity));
     }
 
     /**
@@ -170,9 +178,8 @@ public class SearchResultModel extends BaseModel<SearchResultViewModel> implemen
     }
 
     @Override
-    public void onNetSearchResult(final int taskId,BaseRep result) {
-        if (mCallbackId.equals(mSearchPackage.getCurrentCallbackId())) {
-            mTaskId = taskId;
+    public void onNetSearchResult(final int taskId,String searchKey,BaseRep result) {
+        if(AutoMapConstant.NetSearchKey.QUERY_STATION_LIST.equals(searchKey)){
             mViewModel.notifyNetSearchResult(taskId,result);
         }
     }

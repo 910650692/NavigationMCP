@@ -26,6 +26,6 @@
             android:id="@+id/scene_nested_scroll_view"
             android:layout_width="@dimen/dp_640"
             android:layout_height="match_parent"
-            android:layout_marginTop="@dimen/dp_24" />
+            android:layout_marginTop="@dimen/dp_20" />
     </com.fy.navi.ui.view.SkinLinearLayout>
 </layout>

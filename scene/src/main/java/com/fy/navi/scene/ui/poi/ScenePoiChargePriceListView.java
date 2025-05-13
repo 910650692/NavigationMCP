@@ -19,7 +19,9 @@ import com.fy.navi.scene.databinding.ChargePriceListViewBinding;
 import com.fy.navi.scene.impl.poi.ScenePoiChargePriceListViewImpl;
 import com.fy.navi.scene.ui.adapter.ChargePriceListAdapter;
 import com.fy.navi.service.define.search.ChargePriceInfo;
+import com.fy.navi.service.define.search.CostTime;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ScenePoiChargePriceListView extends BaseSceneView<ChargePriceListViewBinding, ScenePoiChargePriceListViewImpl> {
@@ -75,7 +77,7 @@ public class ScenePoiChargePriceListView extends BaseSceneView<ChargePriceListVi
     }
 
     // 通知全价格列表
-    public void notifyChargePriceList(List<ChargePriceInfo> list){
+    public void notifyChargePriceList(ArrayList<CostTime> list){
         mAdapter.notifyList(list);
     }
 

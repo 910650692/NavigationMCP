@@ -26,6 +26,7 @@
     <string name="search_async">同步</string>
     <string name="search_charge_self">自营</string>
     <string name="search_charge_self_filter">自营站数据不支持筛选</string>
+    <string name="search_charge_current_time">当前</string>
     <!--引导-->
     <string name="km">公里</string>
     <string name="meter">米</string>

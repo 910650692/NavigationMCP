@@ -37,6 +37,15 @@ public class MaxHeightScrollView extends SkinScrollView {
         typedArray.recycle();
     }
 
+    /**
+     * 动态设置ScrollerView的最大高度
+     * @param maxHeight 最大高度
+     */
+    public void setMaxHeight(final int maxHeight) {
+        this.maxHeight = maxHeight;
+        invalidate();
+    }
+
     @Override
     protected void onMeasure(final int widthMeasureSpec, final int heightMeasureSpec) {
         int mode = MeasureSpec.getMode(heightMeasureSpec);

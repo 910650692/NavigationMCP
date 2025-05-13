@@ -93,7 +93,7 @@
             android:id="@+id/sk_poi_name"
             android:layout_width="@dimen/dp_0"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_40"
+            android:layout_marginTop="@dimen/dp_24"
             android:ellipsize="end"
             android:maxLines="1"
             android:textColor="@color/poi_details_bottom_ff_00"
@@ -109,10 +109,10 @@
             clickCommand="@{ScenePoiDetailContentView.closeFragment}"
             android:layout_width="@dimen/dp_68"
             android:layout_height="@dimen/dp_68"
-            android:layout_marginTop="@dimen/dp_22"
             android:src="@drawable/icon_poi_details_close"
             app:layout_constraintEnd_toEndOf="@+id/end_guideline"
-            app:layout_constraintTop_toBottomOf="@+id/poi_offline_hint"
+            app:layout_constraintTop_toTopOf="@+id/sk_poi_name"
+            app:layout_constraintBottom_toBottomOf="@+id/sk_poi_name"
             app:layout_goneMarginTop="@dimen/dp_40" />
 
         <com.fy.navi.scene.ui.search.MaxHeightScrollView

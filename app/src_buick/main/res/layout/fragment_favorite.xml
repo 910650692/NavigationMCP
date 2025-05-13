@@ -59,7 +59,7 @@
                 app:layout_constraintTop_toTopOf="parent" />
         </com.fy.navi.ui.view.SkinLinearLayout>
 
-        <com.fy.navi.ui.view.SkinScrollView
+        <com.fy.navi.ui.view.SkinNestedScrollView
             android:id="@+id/favorite_scroll"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -316,23 +316,18 @@
                     </com.fy.navi.ui.view.SkinRadioGroup>
 
                 </com.fy.navi.ui.view.SkinLinearLayout>
-
-                <RelativeLayout
+                <!--收藏列表-->
+                <com.fy.navi.ui.view.SkinRecyclerView
+                    android:id="@+id/rv_favorite_list"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:visibility="@{ViewModel.mDataVisibility ? View.VISIBLE : View.GONE}"
                     android:layout_marginTop="@dimen/dp_24"
-                    android:layout_marginBottom="@dimen/dp_90"
+                    android:layout_marginBottom="@dimen/dp_110"
+                    android:visibility="@{ViewModel.mDataVisibility ? View.VISIBLE : View.GONE}"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/tv_favorite_switch">
-                    <!--收藏列表-->
-                    <com.fy.navi.ui.view.SkinRecyclerView
-                        android:id="@+id/rv_favorite_list"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent" />
-                </RelativeLayout>
+                    app:layout_constraintTop_toBottomOf="@+id/tv_favorite_switch" />
 
                 <!--无收藏数据提示-->
                 <com.fy.navi.ui.view.SkinLinearLayout
@@ -475,7 +470,7 @@
 
             </com.fy.navi.ui.view.SkinConstraintLayout>
 
-        </com.fy.navi.ui.view.SkinScrollView>
+        </com.fy.navi.ui.view.SkinNestedScrollView>
 
         <com.fy.navi.ui.view.SkinConstraintLayout
             android:id="@+id/layout_top"

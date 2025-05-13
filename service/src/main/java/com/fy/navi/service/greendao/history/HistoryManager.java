@@ -59,11 +59,7 @@ public class HistoryManager {
      */
     public void insertValue(final History info) {
         Logger.d(TAG, "insertOrReplace");
-        if (isInsert()) { //  达到限制，不允许插入新数据，只允许更新数据
-            insertOrReplace(info);
-        } else {
-            ToastUtils.Companion.getInstance().showCustomToastView("无法插入新数据: 数量已达上限！");
-        }
+        insertOrReplace(info);
     }
 
     /**
@@ -220,21 +216,6 @@ public class HistoryManager {
      */
     public List<History> loadAll() {
         return mSearchHistoryDao.loadAll();
-    }
-
-    /**
-     * 检查当前搜索历史数是否已达到限制
-     * @return boolean
-     */
-    public boolean isInsert() {
-        final long currentSearchCount = mSearchHistoryDao.count();
-        if (currentSearchCount >= MAX_USERS) {
-            // 达到限制，不允许插入新数据
-            Logger.e(TAG, "Cannot insert history: Maximum history limit reached.");
-            return false;
-        }
-        // 可插入新搜索记录
-        return true;
     }
 
     /**

@@ -165,14 +165,8 @@ public interface ILayerApi {
     /* 搜索图层扎标接口 */
     boolean updateSearchMarker(MapType mapTypeId, LayerPointItemType type, LayerItemSearchResult searchResult, boolean clearOtherLayerItem);
 
-    /*父点+子点+中心点+出入口*/
-    boolean addLayerItemOfSearchResult(MapType mapTypeId, LayerItemSearchResult searchResult, boolean clearOtherLayerItem);
-
-    /*搜索中心点*/
-    boolean addLayerItemOfSearchCentralPoi(MapType mapTypeId, LayerItemSearchResult searchResult, boolean clearOtherLayerItem);
-
-    /*搜索POI扎标*/
-    boolean addLayerItemOfSearchLabel(MapType mapTypeId, LayerItemSearchResult searchResult, boolean clearOtherLayerItem);
+    /* 更新列表可视扎标数据 */
+    void updateSearchResult(MapType mapTypeId, LayerPointItemType type, LayerItemSearchResult result);
 
     /*清除所有搜索扎标*/
     void clearAllSearchLayerItems(MapType mapTypeId);

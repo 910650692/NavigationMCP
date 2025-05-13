@@ -2,6 +2,7 @@ package com.fy.navi.hmi.favorite;
 
 import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
+import com.fy.navi.service.AutoMapConstant;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.adapter.search.cloudByPatac.rep.BaseRep;
 import com.fy.navi.service.define.bean.GeoPoint;
@@ -111,8 +112,8 @@ public class CollectModel extends BaseModel<CollectViewModel> implements Setting
     }
 
     @Override
-    public void onNetSearchResult(int taskId,BaseRep result) {
-        if (mCallbackId.equals(mSearchPackage.getCurrentCallbackId())) {
+    public void onNetSearchResult(int taskId,String searchKey,BaseRep result) {
+        if(AutoMapConstant.NetSearchKey.QUERY_COLLECT_LIST.equals(searchKey)){
             mViewModel.notifyNetSearchResult(taskId,result);
         }
     }

@@ -229,7 +229,11 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
      */
     private void callBackToSpeech(final MapType mapTypeId) {
         final int size = mViaRouteParams.get(mapTypeId).size();
-        String cityName = "上海市";
+        String cityName = "";
+        String endName = "";
+        if (!ConvertUtils.isEmpty(getEndPoint(mapTypeId)) &&  getEndPoint(mapTypeId).getName()!=null) {
+            endName = getEndPoint(mapTypeId).getName();
+        }
         if (!ConvertUtils.isEmpty(getEndPoint(mapTypeId))
                 && getEndPoint(mapTypeId).getAdCode() != 0
                 && !ConvertUtils.isEmpty(MapDataPackage.getInstance().getCityInfo(getEndPoint(mapTypeId).getAdCode()))) {
@@ -243,7 +247,7 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
                 continue;
             }
             routeResultObserver.onSpeechViaNum(size);
-            routeResultObserver.onSpeechEndCityName(cityName);
+            routeResultObserver.onSpeechEndCityName(cityName, endName);
         }
     }
 

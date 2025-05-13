@@ -208,6 +208,23 @@ public final class OpenApiHelper {
         SEARCH_PACKAGE.unRegisterCallBack(callBackId);
     }
 
+    private static MapType mMapType;
+    private static MapMode mMapMode;
+    /**
+     * 切换视角
+     * @param mapTypeId 屏幕id
+     * @param mapMode 视角类型
+     */
+    public static void switchMapMode(MapType mapTypeId, MapMode mapMode) {
+        mMapType = mapTypeId;
+        mMapMode = mapMode;
+        if (!NAVI_PACKAGE.getPreviewStatus()) {
+            MAP_PACKAGE.switchMapMode(mapTypeId, mapMode);
+        } else {
+            Logger.i(TAG, "switchMapMode: getPreviewStatus true");
+        }
+    }
+
     /**
      * 进入全览
      * @param mapTypeId 屏幕id
@@ -243,6 +260,11 @@ public final class OpenApiHelper {
         // 如果自动比例尺打开了才开启自动比例尺
         if (isAutoScale) {
             LAYER_PACKAGE.openDynamicLevel(mapTypeId, DynamicLevelMode.DYNAMIC_LEVEL_GUIDE);
+        }
+        // 如果全览时，视角和按键设置的有，需要设置一下视角
+        if (mMapType != null && mMapMode != null &
+                MAP_PACKAGE.getCurrentMapMode(mMapType) != mMapMode) {
+            MAP_PACKAGE.switchMapMode(mMapType, mMapMode);
         }
     }
 

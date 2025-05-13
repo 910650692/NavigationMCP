@@ -164,8 +164,9 @@ public interface IRouteResultObserver {
     /**
      * 终点城市名提供给语音
      * @param cityName 城市名
+     * @param endName 终点名称
      */
-    default void onSpeechEndCityName(String cityName) {
+    default void onSpeechEndCityName(String cityName, String endName) {
 
     }
 

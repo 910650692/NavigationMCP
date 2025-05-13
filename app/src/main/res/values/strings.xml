@@ -587,6 +587,7 @@
     <string name="forecast_set_home">设置家成功</string>
     <string name="forecast_set_company">设置公司成功</string>
     <!--引导相关-->
+    <string name="navi_end_charge_info">快%d/%d 慢%d/%d</string>
 
     <!--主图消息中心相关-->
     <string name="message_center_check">查看</string>

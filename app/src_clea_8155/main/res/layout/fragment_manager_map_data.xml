@@ -12,9 +12,10 @@
     </data>
 
     <com.fy.navi.ui.view.SkinLinearLayout
-        android:layout_width="@dimen/dp_1224"
-        android:layout_height="@dimen/dp_714"
-        android:background="@drawable/bg_setting_fragment"
+        android:layout_width="@dimen/dp_1292"
+        android:layout_height="@dimen/dp_1255"
+        android:padding="@dimen/dp_34"
+        android:background="@drawable/bg_shadow_navi_ndlc_8155"
         android:clickable="true"
         android:orientation="vertical">
 
@@ -22,7 +23,7 @@
         <com.fy.navi.ui.view.SkinConstraintLayout
             android:id="@+id/rl_offline_top"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_134"
+            android:layout_height="@dimen/dp_138"
             android:layout_marginStart="@dimen/dp_26">
 
             <com.fy.navi.ui.view.SkinImageView
@@ -75,8 +76,8 @@
                         <com.fy.navi.ui.view.SkinView
                             android:id="@+id/offline_all_data_line"
                             android:layout_width="@dimen/dp_78"
-                            android:layout_height="@dimen/dp_5"
-                            android:layout_marginTop="@dimen/dp_9"
+                            android:layout_height="@dimen/dp_4"
+                            android:layout_marginTop="@dimen/dp_5"
                             android:background="@color/account_blue_text" />
 
                     </com.fy.navi.ui.view.SkinLinearLayout>
@@ -120,8 +121,8 @@
                     <com.fy.navi.ui.view.SkinView
                         android:id="@+id/download_administration_line"
                         android:layout_width="@dimen/dp_78"
-                        android:layout_height="@dimen/dp_5"
-                        android:layout_marginTop="@dimen/dp_9"
+                        android:layout_height="@dimen/dp_4"
+                        android:layout_marginTop="@dimen/dp_5"
                         android:background="@color/account_blue_text"
                         android:visibility="invisible" />
 
@@ -137,7 +138,6 @@
             android:layout_marginBottom="@dimen/dp_40"
             android:layout_marginEnd="@dimen/dp_40"
             android:layout_marginStart="@dimen/dp_40"
-            android:layout_marginTop="@dimen/dp_30"
             android:scrollbars="none"
             android:fillViewport="true">
 
@@ -153,7 +153,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:visibility="@{ViewModel.mDownloadingDataVisibility ? View.VISIBLE : View.GONE}"
-                    android:layout_marginTop="@dimen/dp_30"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/download_status">
 
@@ -162,7 +161,6 @@
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/dp_90"
                         android:gravity="center_horizontal"
-                        android:layout_marginTop="@dimen/dp_16"
                         android:orientation="horizontal"
                         android:visibility="@{ViewModel.mDownloadingNoDataVisibility ? View.GONE : View.VISIBLE}"
                         android:background="@drawable/bg_setting_checkbox"
@@ -185,8 +183,8 @@
 
                                 <com.fy.navi.ui.view.SkinImageView
                                     android:id="@+id/img_download_all_start"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
+                                    android:layout_width="@dimen/dp_42"
+                                    android:layout_height="@dimen/dp_42"
                                     android:src="@drawable/img_download_all_start"/>
 
                                 <com.fy.navi.ui.view.SkinTextView
@@ -194,7 +192,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:textSize="@dimen/sp_34"
-                                    android:layout_marginStart="@dimen/dp_16"
+                                    android:layout_marginStart="@dimen/dp_8"
                                     android:textColor="@color/setting_bg_voice_text"
                                     android:text="@string/offline_all_city_start_download" />
 
@@ -210,8 +208,8 @@
 
                                 <com.fy.navi.ui.view.SkinImageView
                                     android:id="@+id/img_download_all_suspend"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
+                                    android:layout_width="@dimen/dp_42"
+                                    android:layout_height="@dimen/dp_42"
                                     android:src="@drawable/img_download_all_suspend"/>
 
                                 <com.fy.navi.ui.view.SkinTextView
@@ -219,7 +217,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:textSize="@dimen/sp_34"
-                                    android:layout_marginStart="@dimen/dp_16"
+                                    android:layout_marginStart="@dimen/dp_8"
                                     android:textColor="@color/setting_bg_voice_text"
                                     android:text="@string/offline_all_city_suspend_download" />
 
@@ -232,7 +230,6 @@
                         android:id="@+id/rv_downloading_offline"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_marginTop="@dimen/dp_30"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/download_status" />
 
@@ -264,7 +261,6 @@
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/dp_71"
                         android:gravity="center"
-                        android:layout_marginTop="@dimen/dp_16"
                         android:text="@{ViewModel.mAllDownloadedDataSize}"
                         android:textColor="@color/setting_bg_tab_text_unselect"
                         android:textSize="@dimen/sp_30"
@@ -278,7 +274,6 @@
                         android:id="@+id/rv_downloaded_offline"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_marginTop="@dimen/dp_40"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/downloaded_offline_layout" />
 

@@ -15,7 +15,8 @@
         android:layout_height="@dimen/dp_828"
         android:focusable="false"
         android:paddingStart="@dimen/dp_56"
-        android:paddingRight="@dimen/dp_40">
+        android:paddingRight="@dimen/dp_40"
+        android:paddingBottom="@dimen/dp_30">
 
         <com.fy.navi.ui.view.SkinView
             android:id="@+id/route_details_list_bg_header"
@@ -78,6 +79,7 @@
             android:id="@+id/route_details_list_tv_footer"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:maxWidth="@dimen/dp_650"
             android:layout_marginStart="@dimen/dp_24"
             android:ellipsize="end"
             android:focusable="false"
@@ -88,7 +90,7 @@
             app:layout_constraintBottom_toBottomOf="@id/route_details_list_bg_footer"
             app:layout_constraintStart_toEndOf="@id/route_details_list_img_footer"
             app:layout_constraintTop_toTopOf="@id/route_details_list_bg_footer"
-            tools:text="终点：上海海事大学" />
+            tools:text="终点：上海海事大学上海海事大学上海海事大学" />
 
     </com.fy.navi.ui.view.SkinConstraintLayout>
 

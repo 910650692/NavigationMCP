@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
 
@@ -31,12 +32,22 @@
             android:paddingHorizontal="@dimen/dp_40"
             android:paddingBottom="@dimen/dp_40">
 
-            <com.fy.navi.ui.view.SkinRecyclerView
-                android:id="@+id/srv_add_via"
-                android:focusable="false"
+            <com.fy.navi.ui.view.SkinConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1" />
+                android:focusable="false"
+                android:layout_height="wrap_content">
+
+                <com.fy.navi.ui.view.SkinRecyclerView
+                    android:id="@+id/srv_add_via"
+                    android:focusable="false"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintHeight_max="@dimen/dp_618"
+                    android:overScrollMode="never"/>
+
+            </com.fy.navi.ui.view.SkinConstraintLayout>
 
             <com.fy.navi.scene.ui.navi.view.ButtonLinearLayout
                 android:id="@+id/sll_add_via"

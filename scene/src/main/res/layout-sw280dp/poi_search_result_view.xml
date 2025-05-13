@@ -78,7 +78,7 @@
                     android:visibility="gone"
                     android:background="@drawable/custom_filter_item_bg_selector_day"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/search_offline_hint"
                     android:text="@string/search_charge_self"/>
                 <com.fy.navi.ui.view.PullToRefreshLayout
                     android:id="@+id/pull_refresh_layout"

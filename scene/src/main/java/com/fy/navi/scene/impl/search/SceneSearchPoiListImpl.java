@@ -94,6 +94,18 @@ public class SceneSearchPoiListImpl extends BaseSceneModel<SceneSearchPoiList> i
     }
 
     /**
+     * 关键字搜索
+     * @param pageNum 页数
+     * @param keyword 关键字
+     * @param adCode 城市编码
+     * @param isSilent 是否静默搜
+     */
+    public void keywordSearch(final int pageNum, final String keyword, final int adCode, final boolean isSilent) {
+        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "keywordSearch", keyword);
+        mTaskId = mSearchPackage.keywordSearch(pageNum, keyword, adCode, isSilent);
+    }
+
+    /**
      * 关键字搜索2.0
      *
      * @param keyword      关键字

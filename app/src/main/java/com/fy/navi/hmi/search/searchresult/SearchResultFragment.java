@@ -80,11 +80,13 @@ public class SearchResultFragment extends BaseFragment<FragmentSearchResultBindi
         final PoiInfoEntity entity = parsedArgs.getParcelable(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_POI_LIST);
         final int range= parsedArgs.getInt(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_RANGE, 5000);
         final int isOpenFromNavi = parsedArgs.getInt(NaviConstant.NAVI_CONTROL, 0);
+        final int cityCode = parsedArgs.getInt("cityCode", 0);
         if (isOpenFromNavi == 1) {
             mBinding.scenePoiList.setNaviControl(true);
         }
         mBinding.scenePoiList.setPoiInfoEntity(entity);
         mBinding.scenePoiList.setRange(range);
+        mBinding.scenePoiList.setCityCode(cityCode);
         mBinding.scenePoiList.setEditText(searchType, keyword);
         Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "sourceFragmentTag : " + mSourceFragmentTag);
     }
@@ -155,7 +157,13 @@ public class SearchResultFragment extends BaseFragment<FragmentSearchResultBindi
         mBinding.scenePoiList.clear();
     }
 
-    public void notifySearchResultByNet(final int taskId,final SearchResultEntity searchResultEntity){
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        mViewModel.saveData(mBinding.scenePoiList.getTaskId(), mBinding.scenePoiList.getResultEntity());
+    }
+
+    public void notifySearchResultByNet(final int taskId, final SearchResultEntity searchResultEntity){
         mBinding.scenePoiList.notifySearchResult(taskId, searchResultEntity);
     }
 

@@ -157,7 +157,6 @@ public class LayerSearchImpl extends BaseLayerImpl<LayerSearchStyleAdapter> {
                 result = updateSearchPolygon(mPoiAoiBounds);
             }
             case SEARCH_PARENT_POINT -> {
-                updateSearchResult(searchResult);
                 result = updateSearchParentPoi(searchResult);
             }
             case SEARCH_CHILD_POINT -> {
@@ -181,7 +180,6 @@ public class LayerSearchImpl extends BaseLayerImpl<LayerSearchStyleAdapter> {
                 result = updateSearchPoiLabel(searchResult);
             }
             case SEARCH_PARENT_CHARGE_STATION -> {
-                updateSearchResult(searchResult);
                 result = updateSearchChargeStation(searchResult);
             }
         }
@@ -287,6 +285,7 @@ public class LayerSearchImpl extends BaseLayerImpl<LayerSearchStyleAdapter> {
         }
         boolean updateSearchParentPoi = getLayerSearchControl().updateSearchParentPoi(parentPoints);
         Logger.d(TAG, "updateSearchParentPoi " + updateSearchParentPoi + " parentPoints " + parentPoints.size());
+        updateSearchResult(searchResult);
         return updateSearchParentPoi;
     }
 
@@ -625,6 +624,7 @@ public class LayerSearchImpl extends BaseLayerImpl<LayerSearchStyleAdapter> {
         boolean result = getLayerSearchControl().updateSearchChargeStation(chargeStationInfos);
         Logger.d(TAG, "updateSearchChargeStation result " + result +
                 " chargeStationInfos " + chargeStationInfos.size());
+        updateSearchResult(searchResult);
         return result;
     }
 
@@ -644,7 +644,7 @@ public class LayerSearchImpl extends BaseLayerImpl<LayerSearchStyleAdapter> {
             Logger.e(TAG, "updateSearchResult result == null");
             return;
         }
-        Logger.d(TAG, "updateSearchResult type " + type);
+        Logger.d(TAG, "updateSearchResult type " + type + " searchResultPoints " + result.getSearchResultPoints().size());
         getStyleAdapter().updateSearchResult(type, result.getSearchResultPoints());
     }
 

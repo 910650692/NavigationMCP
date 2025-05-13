@@ -102,6 +102,14 @@ public interface AutoMapConstant {
         String BUNDLE_KEY_CHARGE_EQUIPMENT_TYPE = "bundle_key_charge_equipment_type";
     }
 
+    @interface NetSearchKey {
+        String QUERY_STATION_LIST = "query_station_list";
+        String QUERY_COLLECT_LIST = "query_collect_list";
+        String QUERY_STATION_INFO = "query_station_info";
+        String CREATE_RESERVATION = "create_reservation";
+        String QUERY_EQUIPMENT_INFO = "query_equipment_info";
+    }
+
     @interface TrafficEventBundleKey {
         String BUNDLE_KEY_ENTITY = "bundle_key_entity";
     }
@@ -290,6 +298,7 @@ public interface AutoMapConstant {
             SourceFragment.FRAGMENT_AROUND,
             SourceFragment.FRAGMENT_MAIN_ALONG_WAY,
             SourceFragment.FRAGMENT_ALONG_WAY,
+            SourceFragment.FRAGMENT_OFFLINE,
     })
     @interface SourceFragment {
         String MAIN_SEARCH_FRAGMENT = "scene_main_search_fragment";
@@ -304,6 +313,7 @@ public interface AutoMapConstant {
         String FRAGMENT_HOME = "scene_fragment_home";
         String FRAGMENT_COMPANY = "scene_fragment_company";
         String FRAGMENT_COMMON = "scene_fragment_common";
+        String FRAGMENT_OFFLINE = "scene_fragment_offline";
     }
 
     @interface VoiceKeyWord {

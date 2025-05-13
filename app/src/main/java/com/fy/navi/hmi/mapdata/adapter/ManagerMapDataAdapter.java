@@ -131,35 +131,18 @@ public class ManagerMapDataAdapter extends RecyclerView.Adapter<RecyclerView.Vie
      */
     class ParentViewHolder extends RecyclerView.ViewHolder {
         private SkinTextView title;
-        private SkinConstraintLayout provinceView;
 
         ParentViewHolder(View itemView) {
             super(itemView);
             title = itemView.findViewById(R.id.item_manager_province_name);
-            provinceView = itemView.findViewById(R.id.item_manager_province_view);
         }
 
         void bind(ProvDataInfo parent) {
             title.setText(parent.getName()); //省份名称
             if (parent.getName().equals("基础功能包")) {
-                provinceView.setVisibility(View.GONE);
-                // 获取参考视图的高度
-                provinceView.post(() -> {
-                    int referenceHeight = ResourceUtils.Companion.getInstance().getDimensionPixelSize(com.fy.navi.ui.R.dimen.dp_140);
-                    // 设置为参考视图高度的0.3倍
-                    RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) provinceView.getLayoutParams();
-                    params.height = (int) (referenceHeight * 0.3);
-                    provinceView.setLayoutParams(params);
-                });
+                title.setVisibility(View.GONE);
             } else {
-                provinceView.setVisibility(View.VISIBLE);
-                provinceView.post(() -> {
-                    int referenceHeight = ResourceUtils.Companion.getInstance().getDimensionPixelSize(com.fy.navi.ui.R.dimen.dp_140);
-                    // 设置为参考视图高度的0.3倍
-                    RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) provinceView.getLayoutParams();
-                    params.height = (int) (referenceHeight * 1.0);
-                    provinceView.setLayoutParams(params);
-                });
+                title.setVisibility(View.VISIBLE);
             }
         }
     }

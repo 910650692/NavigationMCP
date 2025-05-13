@@ -221,6 +221,14 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
         final boolean isRealNeedShow = isShowImage && isNavi;
         Logger.i("crossImageDebug",
                 "isRealNeedShow:" + isRealNeedShow);
+        // 如果途经点列表/底部控制栏更多/路线偏好/sapa详情页页面显示，不能执行路口大图的显示逻辑
+        boolean isCanShowCrossImage = mBinding.sceneNaviViaList.getVisibility() != VISIBLE &&
+                mBinding.sceneNaviControlMore.getVisibility() != VISIBLE &&
+                mBinding.sceneNaviPreference.getVisibility() != VISIBLE &&
+                mBinding.sceneNaviSapaDetail.getVisibility() != VISIBLE;
+        if (!isCanShowCrossImage) {
+            return;
+        }
         mBinding.sceneNaviCrossImage.onCrossImageInfo(isRealNeedShow, naviImageInfo);
         mBinding.sceneNaviTbt.onCrossImageInfo(isRealNeedShow, naviImageInfo);
     }

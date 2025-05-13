@@ -66,6 +66,10 @@ public class SceneNaviTmcView extends NaviSceneBase<SceneNaviTmcViewBinding, Sce
     private boolean mIsHorizontal = true;
     private boolean mOffline;
     private int mViaWidth;
+    //光柱图充电站扎点防抖缓存
+    private long[] mViaChargeArr;
+    //光柱图途经点扎点防抖缓存
+    private long[] mViaRemainArr;
 
     public SceneNaviTmcView(@NonNull final Context context) {
         super(context);
@@ -225,6 +229,9 @@ public class SceneNaviTmcView extends NaviSceneBase<SceneNaviTmcViewBinding, Sce
                 } else {
                     via = Math.round((mTotalDistance - hasPassedDistance - mDistanceHasPassed - viaItem.dist) * rateDistanceToView);
                 }
+                logBuilder.append(" ").append(mViaShowIndex + i).append(".via:").append(via);
+                via = getChargeCheckedVia(i, via);
+                logBuilder.append(".checkVia:").append(via);
                 boolean isShow = false;
                 if ((via - preVia > VIA_WIDTH || preVia == 0) && (width - via > VIA_WIDTH)) {
                     isShow = true;
@@ -243,7 +250,7 @@ public class SceneNaviTmcView extends NaviSceneBase<SceneNaviTmcViewBinding, Sce
                         showViaIcon(i, SceneCommonStruct.TmcViaPointType.ViaChargeType, via);
                     }
                 }
-                logBuilder.append(" ").append(i).append(":via:").append(via).append(".show:").append(isShow);
+                logBuilder.append(".show:").append(isShow);
             }
             Logger.d(TAG, "mViaShowIndex:" + mViaShowIndex + logBuilder);
         } else {
@@ -267,6 +274,9 @@ public class SceneNaviTmcView extends NaviSceneBase<SceneNaviTmcViewBinding, Sce
                 } else {
                     via = Math.round((mTotalDistance - hasPassedDistance - mDistanceHasPassed - viaItem.dist) * rateDistanceToView);
                 }
+                logBuilder.append(" ").append(mViaShowIndex + i).append(".via:").append(via);
+                via = getRemainCheckedVia(i, via);
+                logBuilder.append(".checkVia:").append(via);
                 if ((via - preVia > VIA_WIDTH || preVia == 0) && (width - via > VIA_WIDTH)) {
                     boolean isOverlapping = false;
                     for (Integer item : chargeShowList) {
@@ -296,7 +306,7 @@ public class SceneNaviTmcView extends NaviSceneBase<SceneNaviTmcViewBinding, Sce
                         showViaIcon(mViaShowIndex + i, SceneCommonStruct.TmcViaPointType.ViaPointType, via);
                     }
                 }
-                logBuilder.append(" ").append(mViaShowIndex + i).append(":via:").append(via).append(".show:").append(isShow);
+                logBuilder.append(".show:").append(isShow);
             }
             Logger.d(TAG, "ViaRemain mViaShowIndex:" + mViaShowIndex + " size:" + mViaRemain.size() + logBuilder);
         } else {
@@ -305,6 +315,46 @@ public class SceneNaviTmcView extends NaviSceneBase<SceneNaviTmcViewBinding, Sce
                 hideViaIcon(i);
             }
         }
+    }
+
+    /**
+     * 获取光柱图充电站扎点抖动修正后的Via值
+     * @param index
+     * @param via
+     * @return
+     */
+    private int getChargeCheckedVia(int index, int via) {
+        if (mViaChargeArr == null || mViaChargeArr[0] != mTotalDistance || mViaChargeArr[1] != mChargeStationRemain.size()) {
+            mViaChargeArr = new long[2 + mChargeStationRemain.size()];
+            mViaChargeArr[0] = mTotalDistance;
+            mViaChargeArr[1] = mChargeStationRemain.size();
+            mViaChargeArr[2 + index] = via;
+            return via;
+        } else if(mViaChargeArr[2 + index] == 0){
+            mViaChargeArr[2 + index] = via;
+            return via;
+        }
+        return (int) mViaChargeArr[2 + index];
+    }
+
+    /**
+     * 获取光柱图途经点扎点抖动修正后的Via值
+     * @param index
+     * @param via
+     * @return
+     */
+    private int getRemainCheckedVia(int index, int via) {
+        if (mViaRemainArr == null || mViaRemainArr[0] != mTotalDistance || mViaRemainArr[1] != mViaRemain.size()) {
+            mViaRemainArr = new long[2 + mViaRemain.size()];
+            mViaRemainArr[0] = mTotalDistance;
+            mViaRemainArr[1] = mViaRemain.size();
+            mViaRemainArr[2 + index] = via;
+            return via;
+        } else if(mViaRemainArr[2 + index] == 0){
+            mViaRemainArr[2 + index] = via;
+            return via;
+        }
+        return (int) mViaRemainArr[2 + index];
     }
 
     /**

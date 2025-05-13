@@ -61,6 +61,7 @@ public class ChargeInfo implements Parcelable {
     private String mBrand; // 品牌
     @SerializedName("costItem")
     private ArrayList<CostTime> mCostItem;
+    @SerializedName("equipmentInfoItem")
     private ArrayList<EquipmentInfo> mEquipmentInfo;
     private boolean mIsAppointment;  //是否预约
 

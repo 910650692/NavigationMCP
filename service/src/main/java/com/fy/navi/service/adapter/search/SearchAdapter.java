@@ -258,4 +258,13 @@ final public class SearchAdapter {
     public int queryStationInfo(final SearchRequestParameter searchRequestParameter){
         return mSearchApi.queryStationInfo(searchRequestParameter);
     }
+
+    public int queryEquipmentInfo(final SearchRequestParameter searchRequestParameter){
+        return mSearchApi.queryEquipmentInfo(searchRequestParameter);
+    }
+
+    //
+    public int createReservation(final SearchRequestParameter searchRequestParameter){
+        return mSearchApi.createReservation(searchRequestParameter);
+    }
 }

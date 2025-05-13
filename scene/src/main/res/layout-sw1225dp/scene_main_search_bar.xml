@@ -82,9 +82,8 @@
             <com.fy.navi.ui.view.SkinConstraintLayout
                 android:id="@+id/scl_gas_station"
                 clickCommand="@{() -> MainSearchView.onClickQuickSearch(0)}"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:minWidth="90dp">
+                android:layout_width="@dimen/dp_90"
+                android:layout_height="wrap_content">
 
                 <com.fy.navi.ui.view.SkinImageView
                     android:id="@+id/iv_gas_station"
@@ -111,10 +110,9 @@
             <com.fy.navi.ui.view.SkinConstraintLayout
                 android:id="@+id/scl_pull_up"
                 clickCommand="@{() -> MainSearchView.onClickQuickSearch(1)}"
-                android:layout_width="wrap_content"
+                android:layout_width="@dimen/dp_90"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_30"
-                android:minWidth="90dp"
                 app:layout_constraintLeft_toRightOf="@+id/scl_gas_station"
                 app:layout_constraintTop_toBottomOf="@+id/sub_line_view">
 
@@ -143,10 +141,9 @@
             <com.fy.navi.ui.view.SkinConstraintLayout
                 android:id="@+id/scl_gourmet"
                 clickCommand="@{() -> MainSearchView.onClickQuickSearch(2)}"
-                android:layout_width="wrap_content"
+                android:layout_width="@dimen/dp_90"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_30"
-                android:minWidth="90dp"
                 app:layout_constraintLeft_toRightOf="@+id/scl_pull_up"
                 app:layout_constraintTop_toBottomOf="@+id/sub_line_view">
 
@@ -175,10 +172,9 @@
             <com.fy.navi.ui.view.SkinConstraintLayout
                 android:id="@+id/scl_car_washing"
                 clickCommand="@{() -> MainSearchView.onClickQuickSearch(3)}"
-                android:layout_width="wrap_content"
+                android:layout_width="@dimen/dp_90"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_30"
-                android:minWidth="90dp"
                 app:layout_constraintLeft_toRightOf="@+id/scl_gourmet"
                 app:layout_constraintTop_toBottomOf="@+id/sub_line_view">
 
@@ -207,10 +203,9 @@
             <com.fy.navi.ui.view.SkinConstraintLayout
                 android:id="@+id/scl_more"
                 clickCommand="@{() -> MainSearchView.onClickQuickSearch(4)}"
-                android:layout_width="wrap_content"
+                android:layout_width="@dimen/dp_90"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_30"
-                android:minWidth="90dp"
                 app:layout_constraintLeft_toRightOf="@+id/scl_car_washing"
                 app:layout_constraintTop_toBottomOf="@+id/sub_line_view">
 

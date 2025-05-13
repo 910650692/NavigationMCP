@@ -98,6 +98,15 @@ public class BaseSearchResultViewModel extends BaseViewModel<SearchResultFragmen
         mModel.updateShowState(isShow);
     }
 
+    /**
+     * 日夜模式切换保存数据到model
+     * @param taskId 请求数据的taskId
+     * @param searchResultEntity SearchResultEntity对象
+     */
+    public void saveData(final int taskId, final SearchResultEntity searchResultEntity) {
+        mModel.saveData(taskId, searchResultEntity);
+    }
+
     public void notifyNetSearchResult(int taskId,BaseRep result){
         if(!ConvertUtils.isNull(result)){
             Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"code: "+result.getResultCode());

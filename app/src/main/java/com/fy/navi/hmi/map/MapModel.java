@@ -1368,7 +1368,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
                         if (deltaX > 0) {
                             // 右滑
                             Logger.d(TAG, "Right swipe detected"+DeviceUtils.isCar(AppContext.getInstance().getMContext()));
-                            if (!DeviceUtils.isCar(AppContext.getInstance().getMContext())){
+                            if (DeviceUtils.isCar(AppContext.getInstance().getMContext())){
                                 ClusterActivityOffOnUtils.offOnClusterActivity(false);
                                 MyFsaService.getInstance().sendEvent(FsaConstant.FsaFunction.ID_FINGER_FLYING_HUD, "3");
                             }

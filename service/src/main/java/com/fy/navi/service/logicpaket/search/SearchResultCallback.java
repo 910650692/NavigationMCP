@@ -71,7 +71,7 @@ public interface SearchResultCallback {
     }
 
     // 网络回调
-    default void onNetSearchResult(int taskId,BaseRep result) {
+    default void onNetSearchResult(int taskId,String searchKey,BaseRep result) {
     }
 
     /**

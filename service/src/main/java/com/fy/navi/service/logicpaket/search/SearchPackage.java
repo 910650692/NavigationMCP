@@ -137,21 +137,25 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
         Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "onSilentSearchResult=> errorCode: {}, message: {}", errorCode, message);
         final ThreadManager threadManager = ThreadManager.getInstance();
         for (Map.Entry<String, SearchResultCallback> entry : mISearchResultCallbackMap.entrySet()) {
-            final String identifier = entry.getKey();
-            mCurrentCallbackId.set(identifier);
-            final SearchResultCallback callback = entry.getValue();
-            threadManager.postUi(() -> callback.onSilentSearchResult(taskId, errorCode, message, searchResultEntity));
+            threadManager.postUi(() -> {
+                final String identifier = entry.getKey();
+                mCurrentCallbackId.set(identifier);
+                final SearchResultCallback callback = entry.getValue();
+                Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "onSearchResult=> key: " + identifier + " ,value: " + callback.getClass().getSimpleName());
+                callback.onSilentSearchResult(taskId, errorCode, message, searchResultEntity);
+            });
         }
     }
 
     @Override
-    public void onNetSearchResult(final int taskId,BaseRep result) {
+    public void onNetSearchResult(int taskId, String searchKey, BaseRep result) {
         Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "onNetSearchResult");
+        final ThreadManager threadManager = ThreadManager.getInstance();
         for (Map.Entry<String, SearchResultCallback> entry : mISearchResultCallbackMap.entrySet()) {
             final String identifier = entry.getKey();
             mCurrentCallbackId.set(identifier);
             final SearchResultCallback callback = entry.getValue();
-            callback.onNetSearchResult(taskId,result);
+            callback.onNetSearchResult(taskId,searchKey,result);
         }
     }
 
@@ -232,9 +236,10 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
      * @param keyword 关键字
      * @param page    搜索页数
      * @param adCode 地理编码
+     * @param isSilent 是否静默搜
      * @return taskId
      */
-    public int keywordSearch(final int page, final String keyword, final int adCode) {
+    public int keywordSearch(final int page, final String keyword, final int adCode, final boolean isSilent) {
         if (keyword == null) {
             Logger.e(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "keyword is null");
             return -1;
@@ -243,7 +248,7 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
         userLoc.setLon(mPositionAdapter.getLastCarLocation().getLongitude());
         userLoc.setLat(mPositionAdapter.getLastCarLocation().getLatitude());
         final SearchRequestParameter requestParameterBuilder = new SearchRequestParameter.Builder()
-                .isSilentSearch(false)
+                .isSilentSearch(isSilent)
                 .keyword(keyword)
                 .page(page)
                 .queryType(AutoMapConstant.SearchQueryType.NORMAL)
@@ -989,8 +994,8 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
                 LayerPointItemType.SEARCH_PARENT_CHARGE_STATION :
                 LayerPointItemType.SEARCH_PARENT_POINT;
         sMarkerInfoMap.put(layerPointItemType, layerItemSearchResult);
-        mLayerAdapter.updateSearchMarker(MapType.MAIN_SCREEN_MAIN_MAP, layerPointItemType,
-                layerItemSearchResult, true);
+        mLayerAdapter.updateSearchResult(MapType.MAIN_SCREEN_MAIN_MAP, layerPointItemType,
+                layerItemSearchResult);
         showPreview(poiList);
     }
 
@@ -1497,6 +1502,15 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
         return mSearchAdapter.queryStationInfo(requestParameterBuilder);
     }
 
+    /*
+     * 查询充电桩信息
+     * */
+    public int queryEquipmentInfo(){
+        final SearchRequestParameter requestParameterBuilder = new SearchRequestParameter.Builder()
+                .build();
+        return mSearchAdapter.queryEquipmentInfo(requestParameterBuilder);
+    }
+
     /**
      * 搜索结果列表页面可变状态变化回调
      * @param isShow 是否可见
@@ -1510,6 +1524,15 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
             final SearchResultCallback callback = entry.getValue();
             callback.onShowStateChanged(isShow);
         }
+    }
+
+    /*
+     * 创建公桩预约
+     * */
+    public int createReservation(){
+        final SearchRequestParameter requestParameterBuilder = new SearchRequestParameter.Builder()
+                .build();
+        return mSearchAdapter.createReservation(requestParameterBuilder);
     }
 
 }

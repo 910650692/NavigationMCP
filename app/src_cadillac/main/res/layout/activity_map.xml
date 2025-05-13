@@ -98,9 +98,9 @@
 
                         <com.fy.navi.ui.view.SkinImageView
                             android:id="@+id/sk_iv_basic_home"
+                            clickCommand="@{ViewModel.openHomeFragment}"
                             android:layout_width="@dimen/dp_106"
                             android:layout_height="@dimen/dp_106"
-                            clickCommand="@{ViewModel.openHomeFragment}"
                             android:focusable="false"
                             android:src="@drawable/img_basic_ic_home"
                             app:layout_constraintBottom_toBottomOf="@+id/sk_iv_basic_home_mfc_bg"
@@ -121,9 +121,9 @@
 
                         <com.fy.navi.ui.view.SkinImageView
                             android:id="@+id/sk_iv_basic_bus"
+                            clickCommand="@{ViewModel.openCompanyFragment}"
                             android:layout_width="@dimen/dp_106"
                             android:layout_height="@dimen/dp_106"
-                            clickCommand="@{ViewModel.openCompanyFragment}"
                             android:focusable="false"
                             android:src="@drawable/img_basic_ic_bus"
                             app:layout_constraintBottom_toBottomOf="@+id/sk_iv_basic_bus_mfc_bg"
@@ -144,9 +144,9 @@
 
                         <com.fy.navi.ui.view.SkinImageView
                             android:id="@+id/sk_iv_basic_search"
+                            clickCommand="@{ViewModel.openSearchFragment}"
                             android:layout_width="@dimen/dp_106"
                             android:layout_height="@dimen/dp_106"
-                            clickCommand="@{ViewModel.openSearchFragment}"
                             android:focusable="false"
                             android:src="@drawable/img_basic_ic_search"
                             app:layout_constraintBottom_toBottomOf="@+id/sk_iv_basic_search_mfc_bg"
@@ -301,91 +301,7 @@
                     </com.fy.navi.ui.view.SkinConstraintLayout>
                 </com.fy.navi.ui.view.SkinConstraintLayout>
 
-                <com.fy.navi.ui.view.SkinConstraintLayout
-                    android:id="@+id/root_guide_login"
-                    android:layout_width="@dimen/dp_820"
-                    android:layout_height="@dimen/dp_422"
-                    android:layout_marginTop="@dimen/dp_20"
-                    android:background="@drawable/bg_guide_login"
-                    android:clickable="true"
-                    android:focusable="false"
-                    android:visibility="@{ViewModel.mPopGuideLoginShow?View.VISIBLE:View.GONE}"
-                    app:layout_constraintStart_toStartOf="@id/search_main_tab"
-                    app:layout_constraintTop_toBottomOf="@id/search_main_tab"
-                    tools:visibility="visible">
 
-                    <com.fy.navi.ui.view.SkinTextView
-                        android:id="@+id/tv_guide_login_title"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/dp_52"
-                        android:layout_marginTop="@dimen/dp_52"
-                        android:focusable="false"
-                        android:text="@string/guide_login_title"
-                        android:textColor="@color/guide_login_title"
-                        android:textSize="@dimen/sp_52"
-                        app:layout_constraintLeft_toLeftOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                    <com.fy.navi.ui.view.SkinImageView
-                        clickCommand="@{ViewModel.guideLoginClose}"
-                        android:layout_width="@dimen/dp_74"
-                        android:layout_height="@dimen/dp_74"
-                        android:layout_marginTop="@dimen/dp_48"
-                        android:layout_marginEnd="@dimen/dp_36"
-                        android:background="@drawable/bg_base_mfc_cadillac_bg_selector"
-                        android:focusable="true"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:srcCompat="@drawable/guide_login_close" />
-
-                    <com.fy.navi.ui.view.SkinTextView
-                        android:id="@+id/tv_guide_login_content"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/dp_40"
-                        android:focusable="false"
-                        android:text="@string/guide_login_content"
-                        android:textColor="@color/guide_login_content"
-                        android:textSize="@dimen/sp_38"
-                        app:layout_constraintLeft_toLeftOf="@id/tv_guide_login_title"
-                        app:layout_constraintTop_toBottomOf="@id/tv_guide_login_title" />
-
-                    <com.fy.navi.ui.view.SkinButton
-                        android:id="@+id/btn_guide_login_bind"
-                        clickCommand="@{ViewModel.guideLoginBind}"
-                        android:layout_width="@dimen/dp_342"
-                        android:layout_height="@dimen/dp_120"
-                        android:layout_marginStart="@dimen/dp_52"
-                        android:layout_marginTop="@dimen/dp_40"
-                        android:layout_marginBottom="@dimen/dp_52"
-                        android:background="@drawable/bg_guide_login_bind"
-                        android:focusable="true"
-                        android:text="@string/guide_login_bind"
-                        android:textColor="@color/guide_login_bind_text"
-                        android:textSize="@dimen/sp_34"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toStartOf="@id/btn_guide_login_cancel"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/tv_guide_login_content" />
-
-                    <com.fy.navi.ui.view.SkinButton
-                        android:id="@+id/btn_guide_login_cancel"
-                        clickCommand="@{ViewModel.guideLoginCancel}"
-                        android:layout_width="@dimen/dp_342"
-                        android:layout_height="@dimen/dp_120"
-                        android:layout_marginStart="@dimen/dp_32"
-                        android:layout_marginEnd="@dimen/dp_52"
-                        android:background="@drawable/bg_guide_login_cancel"
-                        android:text="@string/guide_login_cancel"
-                        android:textColor="@color/guide_login_cancel_text"
-                        android:textSize="@dimen/sp_34"
-                        app:layout_constraintBottom_toBottomOf="@id/btn_guide_login_bind"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toEndOf="@id/btn_guide_login_bind"
-                        app:layout_constraintTop_toTopOf="@id/btn_guide_login_bind" />
-
-                </com.fy.navi.ui.view.SkinConstraintLayout>
                 <!--推送服务，导航回家-->
                 <com.fy.navi.scene.ui.map.SceneNaviHomeView
                     android:id="@+id/scene_navi_home"
@@ -579,6 +495,92 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/search_main_tab"
                     tools:visibility="gone" />
+
+                <com.fy.navi.ui.view.SkinConstraintLayout
+                    android:id="@+id/root_guide_login"
+                    android:layout_width="@dimen/dp_820"
+                    android:layout_height="@dimen/dp_422"
+                    android:layout_marginTop="@dimen/dp_20"
+                    android:background="@drawable/bg_guide_login"
+                    android:clickable="true"
+                    android:focusable="false"
+                    android:visibility="@{ViewModel.mPopGuideLoginShow?View.VISIBLE:View.GONE}"
+                    app:layout_constraintStart_toStartOf="@id/search_main_tab"
+                    app:layout_constraintTop_toBottomOf="@id/search_main_tab"
+                    tools:visibility="visible">
+
+                    <com.fy.navi.ui.view.SkinTextView
+                        android:id="@+id/tv_guide_login_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/dp_52"
+                        android:layout_marginTop="@dimen/dp_52"
+                        android:focusable="false"
+                        android:text="@string/guide_login_title"
+                        android:textColor="@color/guide_login_title"
+                        android:textSize="@dimen/sp_52"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <com.fy.navi.ui.view.SkinImageView
+                        clickCommand="@{ViewModel.guideLoginClose}"
+                        android:layout_width="@dimen/dp_74"
+                        android:layout_height="@dimen/dp_74"
+                        android:layout_marginTop="@dimen/dp_48"
+                        android:layout_marginEnd="@dimen/dp_36"
+                        android:background="@drawable/bg_base_mfc_cadillac_bg_selector"
+                        android:focusable="true"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:srcCompat="@drawable/guide_login_close" />
+
+                    <com.fy.navi.ui.view.SkinTextView
+                        android:id="@+id/tv_guide_login_content"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/dp_40"
+                        android:focusable="false"
+                        android:text="@string/guide_login_content"
+                        android:textColor="@color/guide_login_content"
+                        android:textSize="@dimen/sp_38"
+                        app:layout_constraintLeft_toLeftOf="@id/tv_guide_login_title"
+                        app:layout_constraintTop_toBottomOf="@id/tv_guide_login_title" />
+
+                    <com.fy.navi.ui.view.SkinButton
+                        android:id="@+id/btn_guide_login_bind"
+                        clickCommand="@{ViewModel.guideLoginBind}"
+                        android:layout_width="@dimen/dp_342"
+                        android:layout_height="@dimen/dp_120"
+                        android:layout_marginStart="@dimen/dp_52"
+                        android:layout_marginTop="@dimen/dp_40"
+                        android:layout_marginBottom="@dimen/dp_52"
+                        android:background="@drawable/bg_guide_login_bind"
+                        android:focusable="true"
+                        android:text="@string/guide_login_bind"
+                        android:textColor="@color/guide_login_bind_text"
+                        android:textSize="@dimen/sp_34"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@id/btn_guide_login_cancel"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/tv_guide_login_content" />
+
+                    <com.fy.navi.ui.view.SkinButton
+                        android:id="@+id/btn_guide_login_cancel"
+                        clickCommand="@{ViewModel.guideLoginCancel}"
+                        android:layout_width="@dimen/dp_342"
+                        android:layout_height="@dimen/dp_120"
+                        android:layout_marginStart="@dimen/dp_32"
+                        android:layout_marginEnd="@dimen/dp_52"
+                        android:background="@drawable/bg_guide_login_cancel"
+                        android:text="@string/guide_login_cancel"
+                        android:textColor="@color/guide_login_cancel_text"
+                        android:textSize="@dimen/sp_34"
+                        app:layout_constraintBottom_toBottomOf="@id/btn_guide_login_bind"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/btn_guide_login_bind"
+                        app:layout_constraintTop_toTopOf="@id/btn_guide_login_bind" />
+
+                </com.fy.navi.ui.view.SkinConstraintLayout>
             </com.fy.navi.ui.view.SkinConstraintLayout>
         </com.android.car.ui.FocusArea>
 
@@ -611,52 +613,52 @@
             android:layout_width="wrap_content"
             android:layout_height="@dimen/dp_469"
             android:background="@drawable/bg_shadow_navi_buick"
-            android:paddingVertical="@dimen/dp_29"
             android:paddingHorizontal="@dimen/dp_29"
+            android:paddingVertical="@dimen/dp_29"
             android:visibility="@{ViewModel.getMFCImgVisibility() ? View.VISIBLE : View.GONE}"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent">
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
             <com.fy.navi.ui.view.SkinTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="@dimen/sp_45"
-                android:textColor="@color/black"
                 android:layout_marginStart="@dimen/dp_165"
                 android:text="短按旋钮已进行地图移动或缩放"
+                android:textColor="@color/black"
+                android:textSize="@dimen/sp_45"
                 android:visibility="@{ViewModel.getMFCDModeVisibility() ? View.GONE : View.VISIBLE}"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                tools:visibility="gone"/>
+                tools:visibility="gone" />
 
             <com.fy.navi.ui.view.SkinImageView
                 android:layout_width="@dimen/dp_398"
                 android:layout_height="@dimen/dp_310"
-                android:layout_marginEnd="@dimen/dp_157"
                 android:layout_marginStart="@dimen/dp_1065"
+                android:layout_marginEnd="@dimen/dp_157"
                 android:src="@drawable/img_map_mfc_default"
                 android:visibility="@{ViewModel.getMFCDModeVisibility() ? View.GONE : View.VISIBLE}"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
-                tools:visibility="gone"/>
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:visibility="gone" />
 
             <com.fy.navi.ui.view.SkinImageView
                 android:layout_width="@dimen/dp_398"
                 android:layout_height="@dimen/dp_310"
-                android:layout_marginEnd="@dimen/dp_157"
                 android:layout_marginStart="@dimen/dp_157"
+                android:layout_marginEnd="@dimen/dp_157"
                 android:src="@{ViewModel.getMFCImgDrawable()}"
                 android:visibility="@{ViewModel.getMFCDModeVisibility() ? View.VISIBLE : View.GONE}"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
-                tools:visibility="visible"/>
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:visibility="visible" />
 
         </com.fy.navi.ui.view.SkinConstraintLayout>
     </com.fy.navi.ui.view.SkinConstraintLayout>

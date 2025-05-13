@@ -2,6 +2,7 @@ package com.fy.navi.scene.ui.search;
 
 
 import android.content.Context;
+import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
@@ -12,26 +13,32 @@ import android.view.inputmethod.InputMethodManager;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.alibaba.android.arouter.launcher.ARouter;
 import com.android.utils.ConvertUtils;
 import com.android.utils.ResourceUtils;
 import com.android.utils.ToastUtils;
 import com.android.utils.log.Logger;
 import com.fy.navi.scene.BaseSceneView;
 import com.fy.navi.scene.R;
+import com.fy.navi.scene.RoutePath;
 import com.fy.navi.scene.adapter.GridSpacingItemDecoration;
 import com.fy.navi.scene.databinding.OfflineSearchResultViewBinding;
 import com.fy.navi.scene.impl.search.OfflineSearchPoiListImpl;
+import com.fy.navi.scene.impl.search.SearchFragmentFactory;
 import com.fy.navi.scene.ui.adapter.OfflineCitiesAdapter;
 import com.fy.navi.scene.ui.adapter.OfflineProvincesAdapter;
 import com.fy.navi.scene.ui.adapter.OfflineSearchResultAdapter;
+import com.fy.navi.service.AutoMapConstant;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.define.mapdata.CityDataInfo;
 import com.fy.navi.service.define.mapdata.ProvDataInfo;
 import com.fy.navi.service.define.search.SearchResultEntity;
 import com.fy.navi.service.logicpaket.mapdata.MapDataPackage;
+import com.fy.navi.ui.base.BaseFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,6 +56,7 @@ public class OfflineSearchPoiList extends BaseSceneView<OfflineSearchResultViewB
     private String mSearchText;
     private final int mSpanCount = 3;
     private final int mSpacing = 24;
+    private int mCityCode;
     private List<CityDataInfo> mSearchResultList = new ArrayList<>();
 
     public OfflineSearchPoiList(@NonNull final Context context) {
@@ -108,7 +116,8 @@ public class OfflineSearchPoiList extends BaseSceneView<OfflineSearchResultViewB
         mAdapter.setListener(new OfflineCitiesAdapter.ItemClickListener() {
             @Override
             public void onClick(final int cityCode) {
-                mScreenViewModel.keywordSearch(1, mSearchText, cityCode);
+                mCityCode = cityCode;
+                mScreenViewModel.keywordSearch(1, mSearchText, cityCode, true);
             }
         });
 
@@ -122,7 +131,8 @@ public class OfflineSearchPoiList extends BaseSceneView<OfflineSearchResultViewB
         mSearchAdapter.setListener(new OfflineSearchResultAdapter.ItemClickListener() {
             @Override
             public void onClick(final int cityCode) {
-                mScreenViewModel.keywordSearch(1, mSearchText, cityCode);
+                mCityCode = cityCode;
+                mScreenViewModel.keywordSearch(1, mSearchText, cityCode, true);
             }
         });
         mViewBinding.offlineRecyclerSearchKeywordResult.setVisibility(View.GONE);
@@ -238,8 +248,16 @@ public class OfflineSearchPoiList extends BaseSceneView<OfflineSearchResultViewB
             ToastUtils.Companion.getInstance().showCustomToastView("抱歉，未找到结果");
             return;
         }
-        //否则回到搜索页面展示搜索结果
-        closeAllFragmentsUntilTargetFragment("OfflineSearchFragment");
+        //否则跳转搜索结果页面展示数据
+        final Fragment fragment = (Fragment) ARouter.getInstance()
+                .build(RoutePath.Search.SEARCH_RESULT_FRAGMENT)
+                .navigation();
+        final String sourceFragment = AutoMapConstant.SourceFragment.FRAGMENT_OFFLINE;
+        final Bundle bundle = SearchFragmentFactory.createKeywordFragment(
+                sourceFragment, AutoMapConstant.SearchType.SEARCH_KEYWORD, searchResultEntity.getKeyword(), null);
+        bundle.putInt("cityCode", mCityCode);
+        addFragment((BaseFragment) fragment, bundle);
+
     }
 
     /**

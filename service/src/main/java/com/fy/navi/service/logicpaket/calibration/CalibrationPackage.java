@@ -1,6 +1,7 @@
 package com.fy.navi.service.logicpaket.calibration;
 
 import com.fy.navi.service.adapter.calibration.CalibrationAdapter;
+import com.fy.navi.service.define.calibration.CalibConst;
 
 import java.util.Map;
 
@@ -38,7 +39,7 @@ public final class CalibrationPackage {
      * 1 Buick
      * 2 Cadillac
      * 3 Chevrolet
-     * @return int
+     * @return {@link CalibConst.Brand}
      */
     public int brand() {
         return mCalibrationAdapter.brand();
@@ -59,9 +60,31 @@ public final class CalibrationPackage {
 
     /**
      * 车型标定
-     * 11 L234
-     * 27 B233
-     * @return int
+     * 10 -> L233 // CADI
+     * 11 -> L234 // CADI
+     * 28 -> A2LL // CADI
+     * 29, 71 -> C1UL // CADI
+     * 30 -> E2QL // CADI
+     * 31 -> E2UL // CADI
+     * 32, 76 -> O1SL // CADI
+     * 9 -> L232 // CADI
+     * 20 -> U458 // BUICK
+     * 55 -> U458_HEV // BUICK
+     * 27 -> B233 // BUICK
+     * 15 -> B223 // BUICK
+     * 54 -> B234 // BUICK
+     * 19 -> E2LB // BUICK
+     * 13 -> E2UB // BUICK
+     * 14 -> E2YB // BUICK
+     * 18 -> C1YB // BUICK
+     * 21 -> U358 // BUICK
+     * 63, 59 -> U358_2 // BUICK
+     * 57 -> NDLB // BUICK
+     * 22 -> C1YC // CHEVY
+     * 16 -> C223 // CHEVY
+     * 24 -> D2UC_ICE // CHEVY
+     * 25 -> D2UC_PHEV // CHEVY
+     * @return {@link CalibConst.Model}
      */
     public int model() {
         return mCalibrationAdapter.model();
@@ -73,8 +96,30 @@ public final class CalibrationPackage {
      */
     public String modelName() {
         return switch (model()) {
-            case 11 -> "L234";
-            case 27 -> "B233";
+            case 10 -> CalibConst.Model.L233; // CADI
+            case 11 -> CalibConst.Model.L234; // CADI
+            case 28 -> CalibConst.Model.A2LL; // CADI
+            case 29, 71 -> CalibConst.Model.C1UL; // CADI
+            case 30 -> CalibConst.Model.E2QL; // CADI
+            case 31 -> CalibConst.Model.E2UL; // CADI
+            case 32, 76 -> CalibConst.Model.O1SL; // CADI
+            case 9 -> CalibConst.Model.L232; // CADI
+            case 20 -> CalibConst.Model.U458; // BUICK
+            case 55 -> CalibConst.Model.U458_HEV; // BUICK
+            case 27 -> CalibConst.Model.B233; // BUICK
+            case 15 -> CalibConst.Model.B223; // BUICK
+            case 54 -> CalibConst.Model.B234; // BUICK
+            case 19 -> CalibConst.Model.E2LB; // BUICK
+            case 13 -> CalibConst.Model.E2UB; // BUICK
+            case 14 -> CalibConst.Model.E2YB; // BUICK
+            case 18 -> CalibConst.Model.C1YB; // BUICK
+            case 21 -> CalibConst.Model.U358; // BUICK
+            case 63, 59 -> CalibConst.Model.U358_2; // BUICK
+            case 57 -> CalibConst.Model.NDLB; // BUICK
+            case 22 -> CalibConst.Model.C1YC; // CHEVY
+            case 16 -> CalibConst.Model.C223; // CHEVY
+            case 24 -> CalibConst.Model.D2UC_ICE; // CHEVY
+            case 25 -> CalibConst.Model.D2UC_PHEV; // CHEVY
             default -> "";
         };
     }

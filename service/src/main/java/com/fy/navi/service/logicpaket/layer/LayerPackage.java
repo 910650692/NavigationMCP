@@ -82,7 +82,9 @@ public class LayerPackage implements ILayerAdapterCallBack {
     public void setDefaultCarMode(MapType mapTypeId) {
         mLayerAdapter.setDefaultCarMode(mapTypeId);
     }
-
+    public void setCarPosition(MapType mapTypeId,GeoPoint geoPoint) {
+        mLayerAdapter.setCarPosition(mapTypeId,geoPoint);
+    }
     public void setCarMode(MapType mapTypeId, CarModeType carMode) {
         mLayerAdapter.setCarMode(mapTypeId, carMode);
     }

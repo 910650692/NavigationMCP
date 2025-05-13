@@ -36,5 +36,5 @@ public interface ISearchResultCallback {
      */
     void onSilentSearchResult(int taskId, @SearchErrorCode.ErrorCode int errorCode, String message, SearchResultEntity searchResultEntity);
     // 网络接口回调
-    void onNetSearchResult(int taskId,BaseRep result);
+    void onNetSearchResult(int taskId,String searchKey,BaseRep result);
 }

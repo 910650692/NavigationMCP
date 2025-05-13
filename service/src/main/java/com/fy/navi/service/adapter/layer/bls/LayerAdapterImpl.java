@@ -353,64 +353,9 @@ public class LayerAdapterImpl implements ILayerApi {
         return searchMarker;
     }
 
-    /**
-     * 搜索结果 父点+子点+中心点+出入口
-     *
-     * @param mapTypeId
-     * @param searchResult
-     * @param clearOtherLayerItem
-     * @return
-     */
-    @Override
-    public boolean addLayerItemOfSearchResult(MapType mapTypeId, LayerItemSearchResult searchResult, boolean clearOtherLayerItem) {
-        if (clearOtherLayerItem) {
-            layersPoolManager.get(mapTypeId).getLayerSearch().clearAllItems();
-        }
-        boolean searchParentPoi = layersPoolManager.get(mapTypeId).getLayerSearch().updateSearchParentPoi(searchResult);
-        boolean searchChildPoi = layersPoolManager.get(mapTypeId).getLayerSearch().updateSearchChildPoi(searchResult);
-        boolean searchCentralPoi = layersPoolManager.get(mapTypeId).getLayerSearch().updateSearchCentralPoi(searchResult);
-        boolean searchExitEntrancePoi = layersPoolManager.get(mapTypeId).getLayerSearch().updateSearchExitEntrancePoi(searchResult);
-        Logger.d(TAG, "addLayerItemOfSearchResult searchParentPoi:" + searchParentPoi +
-                " searchChildPoi:" + searchChildPoi +
-                " searchCentralPoi:" + searchCentralPoi +
-                " searchExitEntrancePoi:" + searchExitEntrancePoi);
-        return true;
-    }
-
-    /**
-     * 搜索中心点
-     *
-     * @param mapTypeId
-     * @param searchResult
-     * @param clearOtherLayerItem
-     * @return
-     */
-    @Override
-    public boolean addLayerItemOfSearchCentralPoi(MapType mapTypeId, LayerItemSearchResult searchResult, boolean clearOtherLayerItem) {
-        if (clearOtherLayerItem) {
-            layersPoolManager.get(mapTypeId).getLayerSearch().clearAllItems();
-        }
-        boolean searchCentralPoi = layersPoolManager.get(mapTypeId).getLayerSearch().updateSearchCentralPoi(searchResult);
-        Logger.d(TAG, "addLayerItemOfSearchCentralPoi searchCentralPoi:" + searchCentralPoi);
-        return searchCentralPoi;
-    }
-
-    /**
-     * POI扎标
-     *
-     * @param mapTypeId
-     * @param searchResult
-     * @param clearOtherLayerItem
-     * @return
-     */
-    @Override
-    public boolean addLayerItemOfSearchLabel(MapType mapTypeId, LayerItemSearchResult searchResult, boolean clearOtherLayerItem) {
-        if (clearOtherLayerItem) {
-            layersPoolManager.get(mapTypeId).getLayerSearch().clearAllItems();
-        }
-        boolean searchPoiLabel = layersPoolManager.get(mapTypeId).getLayerSearch().updateSearchPoiLabel(searchResult);
-        Logger.d(TAG, "addLayerItemOfSearchLabel searchPoiLabel:" + searchPoiLabel);
-        return searchPoiLabel;
+    /* 更新列表可视扎标数据 */
+    public void updateSearchResult(MapType mapTypeId, LayerPointItemType type, LayerItemSearchResult result) {
+        layersPoolManager.get(mapTypeId).getLayerSearch().updateSearchResult(type, result);
     }
 
     /**

@@ -47,6 +47,7 @@ import com.fy.navi.service.logicpaket.search.SearchResultCallback;
 import com.fy.navi.ui.base.BaseActivity;
 import com.fy.navi.ui.base.StackManager;
 
+import java.util.Arrays;
 import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -224,6 +225,7 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub {
 
     /**
      * 初始化Map状态回调.
+     * onNaviStatusChange
      */
     private void initNaviStatusCallback() {
         mNaviStatusCallback = naviStatus -> {
@@ -259,6 +261,8 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub {
                         }
                     }
                 }
+            } catch (IllegalStateException e) {
+                Logger.e(e.getMessage() + Arrays.toString(e.getStackTrace()));
             } finally {
                 mNaviAutoCallbackList.finishBroadcast();
                 mInCallback = false;
@@ -297,6 +301,8 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub {
                             }
                         }
                     }
+                } catch (IllegalStateException e) {
+                    Logger.e(e.getMessage() + Arrays.toString(e.getStackTrace()));
                 } finally {
                     mNaviAutoCallbackList.finishBroadcast();
                     mInCallback = false;
@@ -324,6 +330,8 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub {
                             }
                         }
                     }
+                } catch (IllegalStateException e) {
+                    Logger.e(e.getMessage() + Arrays.toString(e.getStackTrace()));
                 } finally {
                     mNaviAutoCallbackList.finishBroadcast();
                     mInCallback = false;
@@ -368,6 +376,8 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub {
                             }
                         }
                     }
+                } catch (IllegalStateException e) {
+                    Logger.e(e.getMessage() + Arrays.toString(e.getStackTrace()));
                 } finally {
                     mNaviAutoCallbackList.finishBroadcast();
                     mInCallback = false;
@@ -407,6 +417,8 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub {
                             }
                         }
                     }
+                } catch (IllegalStateException e) {
+                    Logger.e(e.getMessage() + Arrays.toString(e.getStackTrace()));
                 } finally {
                     mNaviAutoCallbackList.finishBroadcast();
                     mInCallback = false;
@@ -493,6 +505,8 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub {
                     }
                 }
             }
+        } catch (IllegalStateException e) {
+            Logger.e(e.getMessage() + Arrays.toString(e.getStackTrace()));
         } finally {
             mNaviAutoCallbackList.finishBroadcast();
             mInCallback = false;
@@ -528,6 +542,8 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub {
                     }
                 }
             }
+        } catch (IllegalStateException e) {
+            Logger.e(e.getMessage() + Arrays.toString(e.getStackTrace()));
         } finally {
             mNaviAutoCallbackList.finishBroadcast();
             mInCallback = false;
@@ -593,6 +609,8 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub {
                     }
                 }
             }
+        } catch (IllegalStateException e) {
+            Logger.e(e.getMessage() + Arrays.toString(e.getStackTrace()));
         } finally {
             mNaviAutoCallbackList.finishBroadcast();
             mInCallback = false;
@@ -628,6 +646,8 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub {
                     }
                 }
             }
+        } catch (IllegalStateException e) {
+            Logger.e(e.getMessage() + Arrays.toString(e.getStackTrace()));
         } finally {
             mNaviAutoCallbackList.finishBroadcast();
             mInCallback = false;
@@ -672,6 +692,8 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub {
                     }
                 }
             }
+        } catch (IllegalStateException e) {
+            Logger.e(e.getMessage() + Arrays.toString(e.getStackTrace()));
         } finally {
             mNaviAutoCallbackList.finishBroadcast();
             mInCallback = false;

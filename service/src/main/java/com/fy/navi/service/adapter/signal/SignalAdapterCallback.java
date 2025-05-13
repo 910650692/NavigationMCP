@@ -48,4 +48,12 @@ public interface SignalAdapterCallback {
     default void onLaneCenteringWarningIndicationRequestIdcmAChanged(int state) {
 
     }
+
+    /**
+     * L2++ NOP播报状态变化
+     * @param state 状态
+     */
+    default void onNaviOnADASStateChanged(int state) {
+
+    }
 }

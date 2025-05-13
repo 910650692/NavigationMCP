@@ -165,7 +165,11 @@ public class SceneNaviHangingCardImpl extends BaseSceneModel<NaviSceneHangingCar
     }
 
     /***
-     * 获取停车场列表
+     * 获取停车场列表-触发条件
+     * a.目的地非家与公司
+     * b.非常去目的地
+     * c.非加油站，充电站
+     * d.目的地为非停车场，或者目的地是停车场但停车位紧张
      */
     private void getParkList() {
         // 是否小于3000m
@@ -177,9 +181,19 @@ public class SceneNaviHangingCardImpl extends BaseSceneModel<NaviSceneHangingCar
             Logger.d(TAG, "getParkList failed，终点信息不存在！");
             return;
         }
+        // a.目的地非家与公司或者常去地址
+        if (CardManager.getInstance().judgeDestinationIsOftenGo(mEndPoiInfoEntity)) {
+            Logger.d(TAG, "目的地是常去地址，无需显示停车场悬挂卡");
+            return;
+        }
+        // 非加油站，充电站
+        if (CardManager.getInstance().judgeDestinationIsGasOrChargeStation(mEndPoiInfoEntity)) {
+            Logger.d(TAG, "目的地是加油站或者充电站，无需显示停车场悬挂卡");
+            return;
+        }
         // 终点停车位是否紧张，只有紧张才会获取并显示
         if (CardManager.getInstance().endIsParking(mEndPoiInfoEntity) && !CardManager.getInstance().parkIsCrowed(mEndPoiInfoEntity)) {
-            Logger.i(TAG, "终点是停车场，但是车位充足，无需显示停车场悬挂卡！");
+            Logger.d(TAG, "终点是停车场，但是车位充足，无需显示停车场悬挂卡！");
             return;
         }
         if (ConvertUtils.isEmpty(mParkList)) {
@@ -207,7 +221,7 @@ public class SceneNaviHangingCardImpl extends BaseSceneModel<NaviSceneHangingCar
     }
 
     public synchronized void updateUi(HandCardType type, List<PoiInfoEntity> data, CardStatus cardStatus) {
-        Logger.i(TAG, "updateUi", "type:" + type.name(), "cardStatus:" + cardStatus.name());
+        Logger.d(TAG, "updateUi", "type:" + type.name(), "cardStatus:" + cardStatus.name());
         if (!ConvertUtils.isEmpty(data) && cardStatus != CardStatus.ON_SHOWING) {
             uiList.add(type);
             switch (type) {
