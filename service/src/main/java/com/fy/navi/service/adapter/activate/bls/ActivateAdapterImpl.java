@@ -125,7 +125,7 @@ public class ActivateAdapterImpl implements IActivateApi {
             //先查询订单
             ActivationManager.getInstance().checkOrderStatus(new NetDisposableObserver<CheckOrderResponse>() {
                 @Override
-                public void onSuccess(final CheckOrderResponse appKeyResponse) {
+                public void onSuccess(final CheckOrderResponse orderBean) {
                     Logger.d(TAG, "firstCheckOrderStatus success");
                     manualActivate("", "");
                 }

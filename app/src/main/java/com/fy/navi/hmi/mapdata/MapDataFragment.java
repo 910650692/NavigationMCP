@@ -49,21 +49,13 @@ public class MapDataFragment extends BaseFragment<FragmentMapDataBinding, MapDat
     @Override
     public void onInitData() {
         final Bundle bundle = getArguments();
-        if(bundle != null){
+        if (bundle != null) {
             mIsCheck = bundle.getBoolean("isCheck", false);
         } else {
             Logger.e("bundle is null");
         }
         if (mViewModel != null) {
             mViewModel.getAllProvinceData(mIsCheck);
-        }
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (mViewModel != null) {
-            mViewModel.updateManagerDownloadView();
         }
     }
 
@@ -76,7 +68,7 @@ public class MapDataFragment extends BaseFragment<FragmentMapDataBinding, MapDat
         mBinding.rvOffline.setAdapter(mapDataAdapter);
 
         //以下是对布局进行控制，让省份占一行，城市占两列，效果相当于一个listView嵌套gridView的效果
-        manager = new GridLayoutManager(getActivity(),1);
+        manager = new GridLayoutManager(getActivity(), 1);
         manager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override
             public int getSpanSize(final int position) {
@@ -136,6 +128,7 @@ public class MapDataFragment extends BaseFragment<FragmentMapDataBinding, MapDat
 
     /**
      * 显示全部省份+城市信息
+     *
      * @param provDataInfos
      */
     public void updateMapDataView(final List<ProvDataInfo> provDataInfos) {
@@ -146,6 +139,7 @@ public class MapDataFragment extends BaseFragment<FragmentMapDataBinding, MapDat
 
     /**
      * 更新数据列表下载进度&状态
+     *
      * @param info
      */
     public void notifyMapDataChangeView(final CityDataInfo info) {
@@ -154,35 +148,35 @@ public class MapDataFragment extends BaseFragment<FragmentMapDataBinding, MapDat
 
     /**
      * 显示当前城市信息
+     *
      * @param info
      */
     @SuppressLint("SetTextI18n")
     public void updateCurrentCityView(final CityDataInfo info) {
-        ThreadManager.getInstance().postUi(() -> {
-            if (info != null && info.getDownLoadInfo() != null) {
-                final String sizeString = StringUtils.formatSize(info.getDownLoadInfo().getFullZipSize().longValue());
-                mBinding.currentCityData.setText(info.getName() + "   " + sizeString);
-                mBinding.downloadView.parseDownloadStatusInfo(info.getDownLoadInfo());
-            }
-        });
+        if (info != null && info.getDownLoadInfo() != null) {
+            final String sizeString = StringUtils.formatSize(info.getDownLoadInfo().getFullZipSize().longValue());
+            mBinding.currentCityData.setText(info.getName() + "   " + sizeString);
+            mBinding.downloadView.parseDownloadStatusInfo(info.getDownLoadInfo());
+        }
     }
 
     /**
      * 更新当前城市下载按钮状态
+     *
      * @param cityDataInfo
      */
     public void notifyCurrentCityView(final CityDataInfo cityDataInfo) {
         final CityDataInfo currentInfo = mViewModel.getCurrentCityInfo();
         if (cityDataInfo.getAdcode() == currentInfo.getAdcode() && cityDataInfo.getDownLoadInfo() != null) {
             mBinding.downloadView.parseDownloadStatusInfo(cityDataInfo.getDownLoadInfo());
-            final boolean isShowDownloadProgress = cityDataInfo.getDownLoadInfo().getTaskState()  == UserDataCode.TASK_STATUS_CODE_DOING
-                    || cityDataInfo.getDownLoadInfo().getTaskState() == UserDataCode.TASK_STATUS_CODE_DONE
-                    || cityDataInfo.getDownLoadInfo().getTaskState() == UserDataCode.TASK_STATUS_CODE_UNZIPPING
-                    || cityDataInfo.getDownLoadInfo().getTaskState() == UserDataCode.TASK_STATUS_CODE_PAUSE;
+            final boolean isShowDownloadProgress = cityDataInfo.getDownLoadInfo().getTaskState() == UserDataCode.TASK_STATUS_CODE_DOING
+                || cityDataInfo.getDownLoadInfo().getTaskState() == UserDataCode.TASK_STATUS_CODE_DONE
+                || cityDataInfo.getDownLoadInfo().getTaskState() == UserDataCode.TASK_STATUS_CODE_UNZIPPING
+                || cityDataInfo.getDownLoadInfo().getTaskState() == UserDataCode.TASK_STATUS_CODE_PAUSE;
             if (isShowDownloadProgress) {
                 mBinding.currentDownloadProgress.setProgress((int) Math.floor(cityDataInfo.getDownLoadInfo().getPercent()));
                 mBinding.currentDownloadProgress.setVisibility(View.VISIBLE);
-            }else{
+            } else {
                 mBinding.currentDownloadProgress.setVisibility(View.GONE);
             }
         }
@@ -190,6 +184,7 @@ public class MapDataFragment extends BaseFragment<FragmentMapDataBinding, MapDat
 
     /**
      * 显示基础功能包信息
+     *
      * @param info
      */
     public void updateCountryDataView(final CityDataInfo info) {
@@ -211,14 +206,14 @@ public class MapDataFragment extends BaseFragment<FragmentMapDataBinding, MapDat
                 mBinding.countryDataCount.setText(sizeString);
                 // 下载按钮状态
                 mBinding.countryDownloadView.parseDownloadStatusInfo(info.getDownLoadInfo());
-                final boolean isShowDownloadProgress = info.getDownLoadInfo().getTaskState()  == UserDataCode.TASK_STATUS_CODE_DOING
+                final boolean isShowDownloadProgress = info.getDownLoadInfo().getTaskState() == UserDataCode.TASK_STATUS_CODE_DOING
                     || info.getDownLoadInfo().getTaskState() == UserDataCode.TASK_STATUS_CODE_DONE
                     || info.getDownLoadInfo().getTaskState() == UserDataCode.TASK_STATUS_CODE_UNZIPPING
                     || info.getDownLoadInfo().getTaskState() == UserDataCode.TASK_STATUS_CODE_PAUSE;
                 if (isShowDownloadProgress) {
                     mBinding.dataDownloadProgress.setProgress((int) Math.floor(info.getDownLoadInfo().getPercent()));
                     mBinding.dataDownloadProgress.setVisibility(View.VISIBLE);
-                }else{
+                } else {
                     mBinding.dataDownloadProgress.setVisibility(View.GONE);
                 }
             }
@@ -231,30 +226,31 @@ public class MapDataFragment extends BaseFragment<FragmentMapDataBinding, MapDat
      */
     public void showCountryMapDataDialog() {
         mDownloadCountryDialog = new DownloadCountryDialog.Build(getContext())
-                .setDialogObserver(new IBaseDialogClickListener() {
-                    @Override
-                    public void onCommitClick() {
-                        // 下载基础包
-                        ThreadManager.getInstance().postDelay(() -> {
-                            final ArrayList<Integer> adCodeList = new ArrayList<>();
-                            adCodeList.add(0);
-                            if (mViewModel != null) {
-                                mViewModel.startAllTask(adCodeList);
-                            }
-                        }, 0);
-                    }
+            .setDialogObserver(new IBaseDialogClickListener() {
+                @Override
+                public void onCommitClick() {
+                    // 下载基础包
+                    ThreadManager.getInstance().postDelay(() -> {
+                        final ArrayList<Integer> adCodeList = new ArrayList<>();
+                        adCodeList.add(0);
+                        if (mViewModel != null) {
+                            mViewModel.startAllTask(adCodeList);
+                        }
+                    }, 0);
+                }
 
-                    @Override
-                    public void onCancelClick() {
+                @Override
+                public void onCancelClick() {
 
-                    }
-                }).build();
+                }
+            }).build();
         clearBackground(mDownloadCountryDialog.getWindow());
         mDownloadCountryDialog.show();
     }
 
     /**
      * 清除弹窗背景
+     *
      * @param window
      */
     private void clearBackground(final Window window) {

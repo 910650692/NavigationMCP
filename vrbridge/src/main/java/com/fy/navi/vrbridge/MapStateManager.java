@@ -172,8 +172,19 @@ public final class MapStateManager {
 
         @Override
         public void onSpeechEndCityName(final String cityName, final String endName) {
-            mBuilder.setEndPoiCity(cityName);
-            AMapStateUtils.saveMapState(mBuilder.build());
+            boolean updated = false;
+            if (!TextUtils.isEmpty(cityName)) {
+                mBuilder.setEndPoiCity(cityName);
+                updated = true;
+            }
+            if (!TextUtils.isEmpty(endName)) {
+                mBuilder.setEndPoiName(endName);
+                updated = true;
+            }
+
+            if (updated) {
+                AMapStateUtils.saveMapState(mBuilder.build());
+            }
         }
     };
 

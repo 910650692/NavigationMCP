@@ -319,6 +319,9 @@ public class GuidanceCallback implements INaviObserver, ISoundPlayObserver {
         }
     }
 
+    /**
+     * 区间测速回调，车辆必须经过完整的区间测速路段，并且该路段内有实际限速才会触发
+     */
     @Override
     public void onUpdateIntervalCameraDynamicInfo(
             final ArrayList<NaviIntervalCameraDynamicInfo> cameraDynamicList) {
@@ -332,6 +335,9 @@ public class GuidanceCallback implements INaviObserver, ISoundPlayObserver {
         }
     }
 
+    /**
+     * 绿波车速信息回调，传出绿波车速信息。红绿灯为绿波颜色时，自车位可顺利通过的绿灯的建议车速区间值
+     */
     @Override
     public void onUpdateGreenWaveCarSpeed(final ArrayList<NaviGreenWaveCarSpeed> list) {
         if (!ConvertUtils.isEmpty(mGuidanceObservers)) {

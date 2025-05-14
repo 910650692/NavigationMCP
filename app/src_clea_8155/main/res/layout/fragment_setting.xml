@@ -36,13 +36,14 @@
             <com.fy.navi.scene.ui.setting.SceneVerticalTabLayout
                 android:id="@+id/tabLayout"
                 android:layout_width="@dimen/dp_223"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_marginTop="@dimen/dp_101"
                 android:layout_marginStart="@dimen/dp_40"
                 android:background="@null"
                 app:tabBackground="@drawable/bg_setting_tab"
                 app:tabGravity="fill"
                 app:tabMode="fixed"
+                style="@style/CustomTabLayout"
                 app:tabIndicatorHeight="0dp"
                 app:tabRippleColor="@null" />
 

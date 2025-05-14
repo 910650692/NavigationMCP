@@ -11,9 +11,10 @@
     </data>
 
     <com.fy.navi.ui.view.SkinConstraintLayout
-        android:layout_width="@dimen/dp_820"
-        android:layout_height="@dimen/dp_880"
-        android:background="@drawable/bg_poi_main_tab"
+        android:layout_width="@dimen/dp_922"
+        android:layout_height="@dimen/dp_982"
+        android:padding="@dimen/dp_51"
+        android:background="@drawable/bg_shadow_navi_cadillac"
         android:focusable="false">
 
         <com.fy.navi.ui.view.SkinConstraintLayout

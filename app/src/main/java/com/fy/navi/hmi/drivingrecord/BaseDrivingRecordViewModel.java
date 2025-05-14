@@ -162,10 +162,11 @@ public class BaseDrivingRecordViewModel extends BaseViewModel<DrivingRecordFragm
 
     /**
      * 通过数据type删除其对应info
-     * @param fileName 数据文件名
+     * @param id 数据id
+     * @param runType 数据类型
      */
-    public void deleteValueByFileName(final String fileName) {
-        mModel.deleteValueByFileName(fileName);
+    public void deleteValueByFileName(final String id, final int runType) {
+        mModel.deleteValueByFileName(id, runType);
     }
 
     /**

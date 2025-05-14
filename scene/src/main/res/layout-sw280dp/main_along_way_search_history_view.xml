@@ -10,20 +10,21 @@
     </data>
 
     <com.fy.navi.ui.view.SkinConstraintLayout
-        android:layout_width="@dimen/dp_820"
+        android:layout_width="@dimen/dp_922"
         android:layout_height="match_parent"
-        android:background="@drawable/bg_search_main_tab"
+        android:background="@drawable/bg_shadow_navi_cadillac"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:focusable="false"
-        android:paddingTop="@dimen/dp_32"
-        android:paddingBottom="@dimen/dp_32">
+        android:paddingHorizontal="@dimen/dp_51"
+        android:paddingTop="@dimen/dp_83"
+        android:paddingBottom="@dimen/dp_83">
 
         <com.fy.navi.ui.view.SkinRecyclerView
             android:id="@+id/rcy_record_along"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_0"
-            app:layout_constraintBottom_toTopOf="@id/scl_delete_record"
+            app:layout_constraintBottom_toTopOf="@id/scl_delete_record_along"
             app:layout_constraintEnd_toEndOf="parent"
             android:focusable="false"
             app:layout_constraintStart_toStartOf="parent"
@@ -49,7 +50,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_0"
             android:focusable="false"
-            app:layout_constraintBottom_toTopOf="@id/scl_delete_record"
+            app:layout_constraintBottom_toTopOf="@id/scl_delete_record_along"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"

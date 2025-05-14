@@ -31,7 +31,7 @@ public class DrivingRecordFragment  extends BaseFragment<FragmentDrivingRecordBi
     private RecordLoadingDialog mRecordLoadingDialog;
     private int mCurrentIndex = 0;
 
-    String selectedText = "";
+    String selectedText = "导航历史";
     private ArrayList<DrivingRecordDataBean> mDataList = new ArrayList<>();
 
     @Override
@@ -200,7 +200,8 @@ public class DrivingRecordFragment  extends BaseFragment<FragmentDrivingRecordBi
                         if (AccountPackage.getInstance().isLogin()) {
                             mViewModel.delBehaviorData(mDataList.get(mCurrentIndex).getId());
                         }
-                        mViewModel.deleteValueByFileName(mDataList.get(mCurrentIndex).getTrackFileName());
+                        mViewModel.deleteValueByFileName(mDataList.get(mCurrentIndex).getId(),
+                                mDataList.get(mCurrentIndex).getRideRunType());
                         mDataList.remove(mCurrentIndex);
                         mViewModel.updateDrivingRecordData(mDataList);
                         ThreadManager.getInstance().postUi(() -> {

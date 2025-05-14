@@ -11,19 +11,19 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:fillViewport="true">
+
         <com.fy.navi.ui.view.SkinConstraintLayout
-            android:layout_width="@dimen/dp_698"
-            android:layout_height="@dimen/dp_588"
-            android:paddingTop="@dimen/dp_61"
-            android:paddingBottom="@dimen/dp_69"
-            android:paddingHorizontal="@dimen/dp_29"
-            android:background="@drawable/bg_shadow_navi_buick">
+            android:layout_width="@dimen/dp_708"
+            android:layout_height="@dimen/dp_598"
+            android:padding="@dimen/dp_34"
+            android:background="@drawable/bg_shadow_navi_ndlc_8155">
             <!--标题-->
             <com.fy.navi.ui.view.SkinImageView
                 clickCommand="@{ViewModel.mDrivingRecordDetailsBack}"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/img_setting_back"
+                android:layout_marginTop="@dimen/dp_32"
                 android:layout_marginStart="@dimen/dp_24"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -32,6 +32,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/driving_record_title"
+                android:layout_marginTop="@dimen/dp_44"
                 android:textColor="@color/setting_bg_tab_text_select"
                 android:textSize="@dimen/sp_34"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -44,18 +45,18 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/dp_24"
+                android:layout_marginTop="@dimen/dp_32"
                 android:src="@drawable/img_driving_record_delete"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
-            <!--分割线-->
-            <com.fy.navi.ui.view.SkinView
-                android:id="@+id/details_view"
-                android:layout_width="wrap_content"
-                android:layout_height="@dimen/dp_1"
-                android:layout_marginTop="@dimen/dp_30"
-                android:background="@color/transparent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/driving_record_title" />
+
+            <com.fy.navi.ui.view.SkinLinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_130"
+                app:layout_constraintTop_toTopOf="parent"
+                android:orientation="horizontal">
+
             <!--起点-->
             <com.fy.navi.ui.view.SkinView
                 android:id="@+id/item_driving_start_img"
@@ -65,7 +66,8 @@
                 android:layout_marginStart="@dimen/dp_40"
                 android:background="@drawable/bg_start_point"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/details_view" />
+                app:layout_constraintTop_toTopOf="parent"/>
+
             <com.fy.navi.ui.view.SkinTextView
                 android:id="@+id/details_start"
                 android:layout_width="wrap_content"
@@ -88,6 +90,7 @@
                 android:textSize="@dimen/sp_26"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/details_view" />
+            </com.fy.navi.ui.view.SkinLinearLayout>
             <!--终点-->
             <com.fy.navi.ui.view.SkinView
                 android:id="@+id/item_driving_end_img"

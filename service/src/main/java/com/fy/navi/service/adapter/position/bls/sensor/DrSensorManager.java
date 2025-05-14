@@ -138,8 +138,7 @@ public class DrSensorManager implements SensorEventListener {
         mCustomTimer = new Runnable() {
             @Override
             public void run() {
-//                Logger.i(TAG, "startTimerTask :" + mIsGyroReady.get() + ",mIsAccReady.get()：" + mIsAccReady.get());
-                checkValid();
+//                Logger.i(TAG, "DrSensorManager startTimerTask :" + mIsGyroReady.get() + ",mIsAccReady.get()：" + mIsAccReady.get() + ",mCarSpeed " + mCarSpeed);
                 if (mIsGyroReady.get() == 1) {
                     setLocGyroInfo(false);
                 }
@@ -147,6 +146,7 @@ public class DrSensorManager implements SensorEventListener {
                     setLocAcce3DInfo(false);
                 }
                 setLocPulseInfo(false);
+//                checkValid();
             }
         };
         mScheduledFuture = ThreadManager.getInstance().asyncAtFixDelay(mCustomTimer, 0, 100, TimeUnit.MILLISECONDS);
@@ -221,7 +221,7 @@ public class DrSensorManager implements SensorEventListener {
         sensorData.valueY = mGyroYValue;
         sensorData.valueZ = mGyroZValue;
         sensorData.temperature = mTemperature;
-        Logger.d("mTemperature",mTemperature);
+        Logger.d(TAG, mTemperature);
         sensorData.tickTime = BigInteger.valueOf(tickTime);
         sensorData.interval = (int) gyroTime;
         sensorData.dataType = LocDataType.LocDataGyro;
@@ -295,7 +295,6 @@ public class DrSensorManager implements SensorEventListener {
         locPulse.dataType = LocDataType.LocDataPulse;
         locPulse.value = mCarSpeed;
         mListener.onLocPulseInfo(mLocSignData, isRaw);
-        Logger.i(TAG, " mCarSpeed " + mCarSpeed);
     }
 
     public void setRecordRaw(boolean recordRaw) {

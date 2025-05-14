@@ -188,4 +188,11 @@ public interface ISceneCallback {
     default void hideNaviContent() {
 
     }
+
+    /**
+     * 停止语音播放
+     */
+    default void stopSpeech() {
+
+    }
 }

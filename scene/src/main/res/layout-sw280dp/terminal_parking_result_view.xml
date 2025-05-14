@@ -9,15 +9,14 @@
     </data>
 
     <com.fy.navi.ui.view.SkinLinearLayout
-        android:layout_width="@dimen/dp_640"
+        android:layout_width="@dimen/dp_698"
         android:layout_height="match_parent"
-        android:focusable="false"
-        android:background="@drawable/bg_search_main_tab"
+        android:padding="@dimen/dp_29"
+        android:background="@drawable/bg_shadow_navi_buick"
         android:orientation="vertical">
 
         <com.fy.navi.ui.view.SkinConstraintLayout
             android:layout_width="match_parent"
-            android:focusable="false"
             android:layout_height="@dimen/dp_104">
 
             <com.fy.navi.ui.view.SkinTextView
@@ -27,7 +26,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_30"
                 android:text="建议提前选择以下到达点"
-                android:focusable="false"
                 android:textColor="@color/search_color_ffffff"
                 android:textSize="@dimen/sp_38"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -39,8 +37,6 @@
                 android:layout_width="@dimen/dp_58"
                 android:layout_height="@dimen/dp_58"
                 android:layout_marginEnd="@dimen/dp_20"
-                android:focusable="true"
-                android:background="@drawable/bg_base_mfc_cadillac_bg_selector"
                 android:src="@drawable/icon_poi_details_close"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -50,9 +46,9 @@
 
         <com.fy.navi.ui.view.SkinRecyclerView
             android:id="@+id/recycler_search_result"
-            android:focusable="false"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:layout_marginBottom="@dimen/dp_24"/>
 
     </com.fy.navi.ui.view.SkinLinearLayout>
 

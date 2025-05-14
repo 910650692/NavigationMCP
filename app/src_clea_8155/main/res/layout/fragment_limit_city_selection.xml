@@ -60,12 +60,12 @@
 
         <com.fy.navi.ui.view.SkinConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_0"
+            android:layout_height="@dimen/dp_640"
             android:background="@drawable/bg_shadow_navi_ndlc_8155"
-            android:layout_marginTop="@dimen/dp_m_9"
+            android:layout_marginTop="@dimen/dp_161"
             android:paddingVertical="@dimen/dp_29"
             android:paddingHorizontal="@dimen/dp_29"
-            app:layout_constraintTop_toBottomOf="@+id/layout_input"
+            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent">
 
             <com.fy.navi.ui.view.SkinTextView

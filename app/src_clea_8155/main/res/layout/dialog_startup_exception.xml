@@ -21,10 +21,10 @@
                 android:id="@+id/tv_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_70"
+                android:layout_marginTop="@dimen/dp_66"
                 android:text="@string/startup_exception_title"
                 android:textColor="@color/dialog_startup_exception_title"
-                android:textSize="@dimen/sp_42"
+                android:textSize="@dimen/sp_38"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -33,35 +33,27 @@
                 android:id="@+id/tv_content"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_50"
+                android:layout_marginTop="@dimen/dp_66"
                 android:text="@string/startup_exception_content"
                 android:textColor="@color/dialog_startup_exception_content"
-                android:textSize="@dimen/sp_36"
+                android:textSize="@dimen/sp_34"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/tv_title" />
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_2"
-                android:layout_marginLeft="@dimen/dp_41"
-                android:layout_marginRight="@dimen/dp_41"
-                android:background="@color/dialog_startup_exception_line"
-                app:layout_constraintBottom_toTopOf="@id/tv_exit"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
-
             <TextView
                 android:id="@+id/tv_exit"
-                android:layout_width="@dimen/dp_1100"
-                android:layout_height="@dimen/dp_128"
+                android:layout_width="@dimen/dp_558"
+                android:layout_height="@dimen/dp_94"
                 android:gravity="center"
                 android:text="@string/startup_exception_exit"
-                android:textColor="@color/dialog_startup_exception_exit"
+                android:textColor="@color/dialog_startup_exception_button_text"
                 android:textSize="@dimen/sp_36"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
+                android:background="@drawable/dialog_startup_exception_button_bg"
+                android:layout_marginTop="@dimen/dp_57"
+                app:layout_constraintTop_toBottomOf="@id/tv_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
         </androidx.constraintlayout.widget.ConstraintLayout>
 
 

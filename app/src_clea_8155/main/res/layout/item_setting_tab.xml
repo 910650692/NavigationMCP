@@ -1,27 +1,26 @@
 <com.fy.navi.ui.view.SkinLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_width="@dimen/dp_223"
+    android:layout_height="@dimen/dp_102"
     android:orientation="horizontal"
-    android:gravity="center">
+    android:gravity="center_vertical">
 
     <com.fy.navi.ui.view.SkinImageView
         android:id="@+id/tabIcon"
         android:visibility="gone"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_22"
+        android:layout_width="@dimen/dp_58"
+        android:layout_height="@dimen/dp_58"
+        android:layout_marginStart="@dimen/dp_43"
         android:src="@drawable/img_setting_guide" />
 
     <com.fy.navi.ui.view.SkinTextView
         android:id="@+id/tabText"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/dp_102"
         android:layout_marginStart="@dimen/dp_12"
-        android:paddingTop="@dimen/dp_22"
-        android:paddingBottom="@dimen/dp_22"
-        android:layout_marginEnd="@dimen/dp_22"
+        android:layout_marginEnd="@dimen/dp_42"
         android:text="@string/setting_tab_guide"
         android:textSize="@dimen/sp_34"
+        android:gravity="center_vertical"
         android:textColor="@color/setting_bg_tab_text_unselect"/>
 
 </com.fy.navi.ui.view.SkinLinearLayout>

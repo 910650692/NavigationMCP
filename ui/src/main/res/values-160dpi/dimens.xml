@@ -231,7 +231,7 @@
     <dimen name="dp_27">27dp</dimen>
     <dimen name="dp_28">28dp</dimen>
     <dimen name="dp_29">29dp</dimen>
-    <dimen name="dp_30">3E+1dp</dimen>
+    <dimen name="dp_30">30dp</dimen>
     <dimen name="dp_31">31dp</dimen>
     <dimen name="dp_32">32dp</dimen>
     <dimen name="dp_33">33dp</dimen>
@@ -241,7 +241,7 @@
     <dimen name="dp_37">37dp</dimen>
     <dimen name="dp_38">38dp</dimen>
     <dimen name="dp_39">39dp</dimen>
-    <dimen name="dp_40">4E+1dp</dimen>
+    <dimen name="dp_40">40dp</dimen>
     <dimen name="dp_41">41dp</dimen>
     <dimen name="dp_42">42dp</dimen>
     <dimen name="dp_43">43dp</dimen>
@@ -331,7 +331,7 @@
     <dimen name="dp_127">127dp</dimen>
     <dimen name="dp_128">128dp</dimen>
     <dimen name="dp_129">129dp</dimen>
-    <dimen name="dp_130">1.3E+2dp</dimen>
+    <dimen name="dp_130">130dp</dimen>
     <dimen name="dp_131">131dp</dimen>
     <dimen name="dp_132">132dp</dimen>
     <dimen name="dp_133">133dp</dimen>
@@ -841,7 +841,7 @@
     <dimen name="dp_637">637dp</dimen>
     <dimen name="dp_638">638dp</dimen>
     <dimen name="dp_639">639dp</dimen>
-    <dimen name="dp_640">6.4E+2dp</dimen>
+    <dimen name="dp_640">640dp</dimen>
     <dimen name="dp_641">641dp</dimen>
     <dimen name="dp_642">642dp</dimen>
     <dimen name="dp_643">643dp</dimen>
@@ -1201,7 +1201,7 @@
     <dimen name="dp_997">997dp</dimen>
     <dimen name="dp_998">998dp</dimen>
     <dimen name="dp_999">999dp</dimen>
-    <dimen name="dp_1000">1E+3dp</dimen>
+    <dimen name="dp_1000">1000dp</dimen>
     <dimen name="dp_1001">1001dp</dimen>
     <dimen name="dp_1002">1002dp</dimen>
     <dimen name="dp_1003">1003dp</dimen>
@@ -1651,7 +1651,7 @@
     <dimen name="dp_1447">1447dp</dimen>
     <dimen name="dp_1448">1448dp</dimen>
     <dimen name="dp_1449">1449dp</dimen>
-    <dimen name="dp_1450">1.45E+3dp</dimen>
+    <dimen name="dp_1450">1450dp</dimen>
     <dimen name="dp_1451">1451dp</dimen>
     <dimen name="dp_1452">1452dp</dimen>
     <dimen name="dp_1453">1453dp</dimen>

@@ -80,7 +80,7 @@
         <activity
             android:name=".map.MapActivity"
             android:configChanges="uiMode|mcc|mnc|keyboardHidden|keyboard|fontScale|screenLayout|screenSize|smallestScreenSize|locale|colorMode|layoutDirection"
-            android:exported="false"
+            android:exported="true"
             android:launchMode="singleTask"
             android:screenOrientation="landscape"
             android:windowSoftInputMode="adjustPan"

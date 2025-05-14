@@ -11,10 +11,11 @@
     </data>
     <!--MFC-->
     <com.fy.navi.ui.view.SkinConstraintLayout
-        android:layout_width="@dimen/dp_820"
+        android:layout_width="@dimen/dp_922"
         android:layout_height="wrap_content"
-        android:background="@drawable/bg_search_main_tab"
+        android:background="@drawable/bg_shadow_navi_cadillac"
         android:focusable="false"
+        android:padding="@dimen/dp_51"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 

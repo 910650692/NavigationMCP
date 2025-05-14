@@ -1100,7 +1100,7 @@
     <dimen name="dp_997">997dp</dimen>
     <dimen name="dp_998">998dp</dimen>
     <dimen name="dp_999">999dp</dimen>
-    <dimen name="dp_1000">1E+3dp</dimen>
+    <dimen name="dp_1000">1000dp</dimen>
     <dimen name="dp_1001">1001dp</dimen>
     <dimen name="dp_1002">1002dp</dimen>
     <dimen name="dp_1003">1003dp</dimen>
@@ -1550,7 +1550,7 @@
     <dimen name="dp_1447">1447dp</dimen>
     <dimen name="dp_1448">1448dp</dimen>
     <dimen name="dp_1449">1449dp</dimen>
-    <dimen name="dp_1450">1.45E+3dp</dimen>
+    <dimen name="dp_1450">1450dp</dimen>
     <dimen name="dp_1451">1451dp</dimen>
     <dimen name="dp_1452">1452dp</dimen>
     <dimen name="dp_1453">1453dp</dimen>

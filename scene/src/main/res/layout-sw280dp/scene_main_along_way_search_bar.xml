@@ -10,9 +10,10 @@
     </data>
 
     <com.fy.navi.ui.view.SkinConstraintLayout
-        android:layout_width="@dimen/dp_820"
-        android:layout_height="@dimen/dp_354"
-        android:background="@drawable/bg_search_main_tab"
+        android:layout_width="@dimen/dp_922"
+        android:layout_height="@dimen/dp_456"
+        android:padding="@dimen/dp_51"
+        android:background="@drawable/bg_shadow_navi_cadillac"
         app:layout_constraintStart_toStartOf="parent"
         android:focusable="false"
         app:layout_constraintTop_toTopOf="parent">

@@ -15,11 +15,12 @@
         android:id="@+id/message_center_parent"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/dp_120"
-        android:background="@drawable/bg_search_main_tab"
+        android:background="@drawable/bg_shadow_navi_cadillac"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:paddingStart="@dimen/dp_52"
-        android:paddingEnd="@dimen/dp_40"
+        android:paddingStart="@dimen/dp_103"
+        android:paddingEnd="@dimen/dp_91"
+        android:paddingVertical="@dimen/dp_52"
         android:focusable="false"
         android:visibility="@{ViewModel.messageCenterVisible ? View.VISIBLE : View.GONE}">
 

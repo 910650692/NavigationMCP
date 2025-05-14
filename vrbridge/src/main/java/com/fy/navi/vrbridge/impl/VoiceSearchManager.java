@@ -249,7 +249,9 @@ public final class VoiceSearchManager {
                                 + ", lat: " + firstPoi.getPoint().getLat());
                         showPoiDetail(firstPoi);
                     } else if (null != mRespCallback) {
-                        mRespCallback.onResponse(CallResponse.createFailResponse("不好意思，我定位不到你在哪里"));
+                        final CallResponse poiDetailResponse = CallResponse.createFailResponse("不好意思，我定位不到你在哪里");
+                        poiDetailResponse.setNeedPlayMessage(true);
+                        mRespCallback.onResponse(poiDetailResponse);
                     }
                     break;
                 case IVrBridgeConstant.VoiceSearchType.ADD_FAVORITE:
@@ -257,7 +259,9 @@ public final class VoiceSearchManager {
                     if (searchSuccess) {
                         addCommonFavorite(firstPoi);
                     } else if (null != mRespCallback) {
-                        mRespCallback.onResponse(CallResponse.createFailResponse("未查询到定位信息，无法收藏"));
+                        final CallResponse favoriteResponse = CallResponse.createFailResponse("未查询到定位信息，无法收藏");
+                        favoriteResponse.setNeedPlayMessage(true);
+                        mRespCallback.onResponse(favoriteResponse);
                     }
                     break;
                 case IVrBridgeConstant.VoiceSearchType.SET_HOME_COMPANY:
@@ -272,7 +276,7 @@ public final class VoiceSearchManager {
 
         @Override
         public void onShowStateChanged(final boolean isShow) {
-            Logger.d(IVrBridgeConstant.TAG, "searchResultStatus: " + isShow);
+            Logger.d(IVrBridgeConstant.TAG, "showSearchListPage: " + isShow);
             if (mListPageOpened == isShow) {
                 return;
             }
@@ -731,7 +735,9 @@ public final class VoiceSearchManager {
     private void responseNotMatchId(final RespCallback respCallback) {
         Logger.e(IVrBridgeConstant.TAG, "last sessionId is empty or not matching");
         if (null != respCallback) {
-            respCallback.onResponse(CallResponse.createFailResponse("sessionId不匹配"));
+            final CallResponse response = CallResponse.createFailResponse("sessionId不匹配");
+            response.setNeedPlayMessage(true);
+            respCallback.onResponse(response);
         }
     }
 
@@ -1204,7 +1210,9 @@ public final class VoiceSearchManager {
         }
 
         if (null != mPoiCallback) {
-            mPoiCallback.onResponse(CallResponse.createSuccessResponse(tts));
+            final CallResponse homeCompanyResponse = CallResponse.createSuccessResponse(tts);
+            homeCompanyResponse.setNeedPlayMessage(true);
+            mPoiCallback.onResponse(homeCompanyResponse);
         }
         favoriteInfo.setCommonName(type);
         poiInfo.setFavoriteInfo(favoriteInfo);
@@ -1262,7 +1270,9 @@ public final class VoiceSearchManager {
                     + ",lon: " + poiInfo.getPoint().getLon()
                     + ", lat: " + poiInfo.getPoint().getLat());
             if (null != mRespCallback) {
-                mRespCallback.onResponse(CallResponse.createSuccessResponse("已为你收藏" + poiInfo.getName()));
+                final CallResponse favoriteResponse = CallResponse.createSuccessResponse("已为你收藏" + poiInfo.getName());
+                favoriteResponse.setNeedPlayMessage(true);
+                mRespCallback.onResponse(favoriteResponse);
             }
             final FavoriteInfo favoriteInfo = new FavoriteInfo();
             favoriteInfo.setCommonName(0);
@@ -1336,7 +1346,9 @@ public final class VoiceSearchManager {
         if (!success || null == poiInfo || null == poiInfo.getPoint()) {
             Logger.w(IVrBridgeConstant.TAG, "searchForEta empty result");
             if (null != mRespCallback) {
-                mRespCallback.onResponse(CallResponse.createFailResponse("未找到" + mKeyword + "，试试别的吧"));
+                final CallResponse etaResponse = CallResponse.createFailResponse("未找到" + mKeyword + "，试试别的吧");
+                etaResponse.setNeedPlayMessage(true);
+                mRespCallback.onResponse(etaResponse);
             }
             return;
         }

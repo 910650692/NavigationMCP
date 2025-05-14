@@ -47,7 +47,8 @@
         <com.fy.navi.ui.view.SkinRecyclerView
             android:id="@+id/recycler_search_result"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:layout_marginBottom="@dimen/dp_24"/>
 
     </com.fy.navi.ui.view.SkinLinearLayout>
 

@@ -1,5 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="setting_dialog_confirm">#FF000000</color>
-    <color name="setting_bg_tab_text_select">#B3000000</color>
+    <color name="setting_dialog_cancel">#FF000000</color>
+    <color name="setting_dialog_title_text">#FF000000</color>
+    <color name="setting_dialog_content_text">#BF000000</color>
+    <color name="dialog_startup_exception_content">#B3000000</color>
+    <color name="dialog_startup_exception_button">#FFFFFF</color>
+    <color name="dialog_startup_exception_button_text">#FF000000</color>
+    <color name="dialog_title_color">#0C0C0C</color>
+    <color name="authorization_request_content">#99000000</color>
+    <color name="authorization_agree_color">#2461EA</color>
+    <color name="authorization_disagree_color">#33787880</color>
+    <color name="use_reminder_color">#245FEA</color>
+
 </resources>

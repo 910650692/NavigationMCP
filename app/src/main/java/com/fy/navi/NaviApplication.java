@@ -40,6 +40,7 @@ public class NaviApplication extends BaseApplication {
         if (!DeviceUtils.isCar(this)) {
             Thread.setDefaultUncaughtExceptionHandler(new AppCrashRecord(this));
         }
+        LauncherWindowService.startService();
     }
 
     @Override

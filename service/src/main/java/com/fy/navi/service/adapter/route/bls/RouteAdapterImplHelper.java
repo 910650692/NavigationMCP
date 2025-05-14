@@ -1526,6 +1526,7 @@ public class RouteAdapterImplHelper {
                         dto.setMDirection((int) linkInfo.getRoadDirection());
                         dto.setMPntBegIdx(startIndex);
                         dto.setMPntCnt(linkInfo.getPoints().size());
+                        dto.setMLaneNum((int) linkInfo.getLaneNum());
                         startIndex += linkInfo.getPoints().size() - 1;
                         linksDTOS.add(dto);
                         final ArrayList<Coord2DInt32> points = linkInfo.getPoints();

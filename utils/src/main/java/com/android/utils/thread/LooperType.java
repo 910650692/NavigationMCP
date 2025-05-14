@@ -3,6 +3,7 @@ package com.android.utils.thread;
 public enum LooperType {
     //nmea报文解析,定位专用线程
     GNSS("GNSS_HandlerThread"),
+    GSV("GSV_HandlerThread"),
     //传感器 gyr,acc，传感器专用线程
     SENSOR("SENSOR_HandlerThread"),
     //高德定位回调专用线程

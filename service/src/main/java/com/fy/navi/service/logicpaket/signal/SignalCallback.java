@@ -2,8 +2,8 @@ package com.fy.navi.service.logicpaket.signal;
 
 public interface SignalCallback {
     /**
-     * 车速变化(频率500ms)
-     * @param speed 单位m/s
+     * 仪表车速变化
+     * @param speed 单位km/h
      */
     default void onSpeedChanged(float speed) {
 

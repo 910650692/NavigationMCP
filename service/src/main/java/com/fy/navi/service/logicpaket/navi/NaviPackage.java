@@ -4,6 +4,7 @@ package com.fy.navi.service.logicpaket.navi;
 import android.graphics.Rect;
 
 import com.android.utils.ConvertUtils;
+import com.android.utils.NetWorkUtils;
 import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
@@ -241,6 +242,7 @@ public final class NaviPackage implements GuidanceObserver {
             history.setMIsCompleted(isCompleted);
             Date date = new Date();
             history.setMUpdateTime(date);
+            Logger.i(TAG, "addNaviRecord history name:"+history.getMEndPoiName());
             if (isCompleted) {
                 mManager.insertOrReplace(history);
             } else {
@@ -467,15 +469,25 @@ public final class NaviPackage implements GuidanceObserver {
     @Override
     public void onNaviSpeedOverallInfo(final SpeedOverallEntity speedEntity) {
         Logger.i(TAG, "onNaviSpeedOverallInfo");
-        ThreadManager.getInstance().postUi(() -> {
-            if (!ConvertUtils.isEmpty(mGuidanceObservers)) {
-                for (IGuidanceObserver guidanceObserver : mGuidanceObservers.values()) {
-                    if (guidanceObserver != null) {
-                        guidanceObserver.onNaviSpeedOverallInfo(speedEntity);
-                    }
+        if (!ConvertUtils.isEmpty(speedEntity)) {
+            if (speedEntity.getSpeedType() == NaviConstant.SpeedType.SPEED_GREEN_WAVE) {
+                boolean netStatus = Boolean.TRUE.equals(
+                        NetWorkUtils.Companion.getInstance().checkNetwork());
+                // 1036953 模拟导航和离线状态不支持绿波车速
+                if (mCurrentNaviType == NumberUtils.NUM_1 || !netStatus) {
+                    return;
                 }
             }
-        });
+            ThreadManager.getInstance().postUi(() -> {
+                if (!ConvertUtils.isEmpty(mGuidanceObservers)) {
+                    for (IGuidanceObserver guidanceObserver : mGuidanceObservers.values()) {
+                        if (guidanceObserver != null) {
+                            guidanceObserver.onNaviSpeedOverallInfo(speedEntity);
+                        }
+                    }
+                }
+            });
+        }
     }
 
     @Override
@@ -1032,6 +1044,15 @@ public final class NaviPackage implements GuidanceObserver {
     public void closeDynamicLevel(MapType mapTypeId) {
         if (null != mLayerAdapter) {
             mLayerAdapter.closeDynamicLevel(mapTypeId);
+        }
+    }
+
+    /**
+     * 停止语音播放
+     */
+    public void stopSpeech() {
+        if (null != mSpeechAdapter) {
+            mSpeechAdapter.stop();
         }
     }
 }

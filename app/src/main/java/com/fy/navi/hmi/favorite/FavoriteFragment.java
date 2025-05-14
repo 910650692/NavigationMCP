@@ -103,16 +103,6 @@ public class FavoriteFragment extends BaseFragment<FragmentFavoriteBinding, Favo
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-        mViewModel.getSimpleFavoriteList();
-        mViewModel.getHomeFavoriteInfo();
-        mViewModel.getCompanyFavoriteInfo();
-        initFrequentAddressList();
-    }
-
-
-    @Override
     public void onInitObserver() {
         super.onInitObserver();
     }

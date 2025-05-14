@@ -24,6 +24,7 @@ import com.fy.navi.service.define.navi.NaviViaEntity;
 import com.fy.navi.service.logicpaket.navi.OpenApiHelper;
 import com.fy.navi.ui.view.SkinImageView;
 import com.fy.navi.ui.view.SkinTextView;
+import com.fy.navi.ui.view.SwipeMenuLayout;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -99,7 +100,7 @@ public class NaviViaListAdapter extends RecyclerView.Adapter<NaviViaListAdapter.
             holder.itemBinding.llActionContainer.setVisibility(VISIBLE);
             //holder.itemBinding.groupEta.setVisibility(VISIBLE);
         }
-        holder.itemBinding.swipeMenuLayout.setOnClickListener(v -> {
+        holder.itemBinding.clContent.setOnClickListener(v -> {
             if (onItemClickListener != null) {
                 if (!ConvertUtils.isEmpty(mList)) {
                     Logger.d(TAG, "NaviAddViaAdapter item click " + position + ",mList：" + mList.size());

@@ -24,15 +24,15 @@
                 android:layout_height="@dimen/dp_96"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
-                android:layout_marginTop="@dimen/dp_29"
+                android:layout_marginTop="@dimen/dp_30"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
                 <com.fy.navi.scene.ui.setting.SceneCircleImageView
                     clickCommand="@{viewModel.mOpenAccount}"
                     android:id="@+id/account_img"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="@dimen/dp_96"
+                    android:layout_height="@dimen/dp_96"
                     android:src="@drawable/img_account_default" />
 
                 <com.fy.navi.ui.view.SkinLinearLayout
@@ -119,13 +119,11 @@
                     android:layout_marginTop="@dimen/dp_8"/>
             </com.fy.navi.ui.view.SkinLinearLayout>
 
-            <com.fy.navi.ui.view.SkinLinearLayout
+            <com.fy.navi.ui.view.SkinConstraintLayout
                 clickCommand="@{viewModel.mOpenDivingRecord}"
                 android:id="@+id/setting_others_track_history"
-                android:layout_width="@dimen/dp_417"
+                android:layout_width="@dimen/dp_418"
                 android:layout_height="@dimen/dp_130"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
                 android:layout_marginTop="@dimen/dp_79"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/setting_others_account"
@@ -136,25 +134,28 @@
                     android:layout_height="wrap_content"
                     android:text="@string/setting_others_track_history"
                     android:textColor="@color/setting_bg_tab_text_select"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
                     android:textSize="@dimen/sp_34"
-                    android:layout_marginStart="@dimen/dp_29"/>
+                    android:layout_marginStart="@dimen/dp_30"/>
 
                 <com.fy.navi.ui.view.SkinImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/dp_184"
-                    android:layout_marginTop="@dimen/dp_26"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_marginBottom="@dimen/dp_10"
+                    android:layout_marginEnd="@dimen/dp_10"
                     android:src="@drawable/img_setting_corner"/>
-            </com.fy.navi.ui.view.SkinLinearLayout>
+            </com.fy.navi.ui.view.SkinConstraintLayout>
 
 
-            <com.fy.navi.ui.view.SkinLinearLayout
+            <com.fy.navi.ui.view.SkinConstraintLayout
                 clickCommand="@{viewModel.mOpenPrivacy}"
                 android:id="@+id/setting_others_privacy_permission"
-                android:layout_width="@dimen/dp_417"
+                android:layout_width="@dimen/dp_418"
                 android:layout_height="@dimen/dp_130"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
                 android:layout_marginStart="@dimen/dp_24"
                 app:layout_constraintStart_toEndOf="@+id/setting_others_track_history"
                 app:layout_constraintTop_toTopOf="@id/setting_others_track_history"
@@ -164,6 +165,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
                     android:gravity="center_vertical"
                     android:layout_marginStart="@dimen/dp_30">
 
@@ -188,18 +192,18 @@
                 <com.fy.navi.ui.view.SkinImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/dp_184"
-                    android:layout_marginTop="@dimen/dp_26"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_marginBottom="@dimen/dp_10"
+                    android:layout_marginEnd="@dimen/dp_10"
                     android:src="@drawable/img_setting_corner"/>
-            </com.fy.navi.ui.view.SkinLinearLayout>
+            </com.fy.navi.ui.view.SkinConstraintLayout>
 
-            <com.fy.navi.ui.view.SkinLinearLayout
+            <com.fy.navi.ui.view.SkinConstraintLayout
                 clickCommand="@{viewModel.mResetSetting}"
                 android:id="@+id/setting_others_reset_setting"
-                android:layout_width="@dimen/dp_417"
+                android:layout_width="@dimen/dp_418"
                 android:layout_height="@dimen/dp_130"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
                 android:layout_marginTop="@dimen/dp_24"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/setting_others_track_history"
@@ -209,24 +213,28 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/setting_others_reset_setting"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
                     android:textColor="@color/setting_bg_tab_text_select"
                     android:textSize="@dimen/sp_34"
-                    android:layout_marginStart="@dimen/dp_29"/>
+                    android:layout_marginStart="@dimen/dp_30"/>
 
                 <com.fy.navi.ui.view.SkinImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/dp_116"
-                    android:layout_marginTop="@dimen/dp_26"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_marginBottom="@dimen/dp_10"
+                    android:layout_marginEnd="@dimen/dp_10"
                     android:src="@drawable/img_setting_corner"/>
-            </com.fy.navi.ui.view.SkinLinearLayout>
+            </com.fy.navi.ui.view.SkinConstraintLayout>
 
             <com.fy.navi.ui.view.SkinConstraintLayout
                 clickCommand="@{viewModel.mOpenAbout}"
                 android:id="@+id/setting_others_about"
-                android:layout_width="@dimen/dp_417"
+                android:layout_width="@dimen/dp_418"
                 android:layout_height="@dimen/dp_130"
-                android:orientation="horizontal"
                 android:layout_marginStart="@dimen/dp_24"
                 app:layout_constraintStart_toEndOf="@+id/setting_others_reset_setting"
                 app:layout_constraintTop_toTopOf="@id/setting_others_reset_setting"
@@ -278,7 +286,7 @@
             <com.fy.navi.ui.view.SkinConstraintLayout
                 clickCommand="@{viewModel.mClearMemory}"
                 android:id="@+id/setting_others_clear_memory"
-                android:layout_width="@dimen/dp_417"
+                android:layout_width="@dimen/dp_418"
                 android:layout_height="@dimen/dp_130"
                 android:orientation="horizontal"
                 android:layout_marginTop="@dimen/dp_24"

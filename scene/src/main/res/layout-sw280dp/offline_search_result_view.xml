@@ -18,14 +18,14 @@
         <include
             android:id="@+id/offline_search_top_view"
             layout="@layout/search_edit_bar_view"
-            android:layout_width="@dimen/dp_878"
-            android:layout_height="@dimen/dp_210" />
+            android:layout_width="@dimen/dp_922"
+            android:layout_height="@dimen/dp_254" />
 
         <com.fy.navi.ui.view.SkinConstraintLayout
-            android:layout_width="@dimen/dp_878"
-            android:layout_height="@dimen/dp_668"
-            android:layout_marginTop="@dimen/dp_m_9"
-            android:padding="@dimen/dp_29"
+            android:layout_width="@dimen/dp_922"
+            android:layout_height="@dimen/dp_930"
+            android:layout_marginTop="@dimen/dp_m_81"
+            android:padding="@dimen/dp_51"
             android:background="@drawable/bg_shadow_navi_buick">
 
             <com.fy.navi.ui.view.SkinRecyclerView

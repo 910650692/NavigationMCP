@@ -121,11 +121,10 @@
         <com.fy.navi.ui.view.SkinConstraintLayout
             android:id="@+id/route_line_info_root"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
+            android:layout_marginTop="@dimen/dp_m_34"
+            android:layout_height="@dimen/dp_1046"
             android:clickable="false"
-            android:layout_marginBottom="@dimen/dp_530"
             android:visibility="@{ViewModel.getIncludePageVisibility() == 0 ? View.VISIBLE : View.GONE}"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:visibility="visible">

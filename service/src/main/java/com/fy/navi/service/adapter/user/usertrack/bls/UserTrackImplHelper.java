@@ -380,6 +380,7 @@ public class UserTrackImplHelper implements IUserTrackObserver, IGpsInfoGetter {
                 history.setMStartPoint(dataBean.getStartLocation());
                 history.setMEndPoint(dataBean.getEndLocation());
                 history.setMRunDistance(dataBean.getRunDistance());// 该行程行驶距离
+                history.setMMidPoint(dataBean.getStartPoiName());
                 history.setMStartTime(dataBean.getStartTime());
                 history.setMEndTime(dataBean.getEndTime()); // 该行程完成时间
                 history.setMRideRunType(dataBean.getRideRunType()); // 行程类型（导航/巡航）

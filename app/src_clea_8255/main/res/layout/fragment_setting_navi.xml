@@ -91,7 +91,9 @@
 
                 <com.fy.navi.ui.view.SkinTextView
                     android:id="@+id/navi_car_number"
-                    android:layout_width="@dimen/dp_238"
+                    android:layout_width="wrap_content"
+                    android:paddingStart="@dimen/dp_44"
+                    android:paddingEnd="@dimen/dp_44"
                     android:layout_height="@dimen/dp_62"
                     android:textSize="@dimen/sp_30"
                     android:textColor="@color/setting_bg_tab_text_select"

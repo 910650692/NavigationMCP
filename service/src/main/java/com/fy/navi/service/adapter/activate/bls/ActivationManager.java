@@ -15,14 +15,17 @@ import com.autonavi.gbl.activation.observer.INetActivateObserver;
 import com.fy.navi.service.AutoMapConstant;
 import com.fy.navi.service.GBLCacheFilePath;
 import com.fy.navi.service.MapDefaultFinalTag;
+import com.fy.navi.service.adapter.activate.cloudpatac.request.UuidReq;
 import com.fy.navi.service.adapter.activate.cloudpatac.response.AppKeyResponse;
 import com.fy.navi.service.adapter.activate.cloudpatac.api.NetQueryRepository;
 import com.fy.navi.service.adapter.activate.cloudpatac.request.AppKeyReq;
 import com.fy.navi.service.adapter.activate.cloudpatac.response.CheckOrderResponse;
+import com.fy.navi.service.adapter.activate.cloudpatac.response.UuidResponse;
 import com.fy.navi.service.logicpaket.user.account.AccountPackage;
 import com.patac.netlib.callback.NetDisposableObserver;
 import com.patac.netlib.exception.ApiException;
 import com.patac.netlib.factory.NetPkiFactory;
+import com.patac.netlib.utils.NetConfigUtils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -46,11 +49,11 @@ import io.reactivex.schedulers.Schedulers;
 public final class ActivationManager {
     private static final String TAG = MapDefaultFinalTag.ACTIVATE_SERVICE_TAG;
 
-    private static final String TEST_URL = "https://test-ninfo-securitygateway.sgmlink.com:667/info4gw/";
     private static final String TEST_APP_ID = "SELF_DEVELOPED_MAP";
     private final static String RELEASE_STATUS = "ro.patac.production";
     private static String DEVICES_ID = "";
     private static String SYS_VERSION = "";
+    private static String API_VERSION = "";
     private static String APP_KEY = "";
     private static String AUTH_CODE = "";
     private static String UUID = "";
@@ -75,6 +78,7 @@ public final class ActivationManager {
         mActivationService = ActivationModule.getInstance();
         DEVICES_ID = DevicesIdUtil.getInstance().getDeviceId();
         SYS_VERSION = "1.0";
+        API_VERSION = "1.0";
         Logger.d(TAG, "ActivationManager: devicesId = " + DEVICES_ID);
         Logger.d(TAG, "                  sysVersion = " + SYS_VERSION);
 
@@ -145,20 +149,19 @@ public final class ActivationManager {
             return;
         }
 
-        final AppKeyReq req = new AppKeyReq("1.0");
-        req.setCheckAppKey(false);
-        req.setHeaderJson(true);
-        req.setAddContentType(true);
+        final AppKeyReq req = new AppKeyReq(API_VERSION);
 
         final Observable<AppKeyResponse> observable = NetQueryRepository.getInstance().queryAppKey(req);
 
-        Logger.d(TAG, "1: " + observable.toString());
         observable.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new NetDisposableObserver<AppKeyResponse>() {
                     @Override
                     public void onSuccess(final AppKeyResponse appKeyBean) {
                         Logger.d(TAG, appKeyBean.toString());
+                        APP_KEY = appKeyBean.getAppKey();
+                        //AccountPackage.getInstance().saveAppKey(appKeyBean.getAppKey());
+                        //postUUID();
                         mFlagForTest = true;
                     }
 
@@ -170,36 +173,6 @@ public final class ActivationManager {
                 });
 
 
-//        OkHttpUtils.Companion.getInstance().postFromBody(
-//                body,
-//                header,
-//                TEST_URL + TEST_APP_ID,
-//                new OkHttpUtils.OkHttpCallback<String>() {
-//                    @Override
-//                    public void onProgress(final int progress) {
-//                        Logger.d(TAG, "genAppKey onProgress...");
-//                    }
-//
-//                    @Override
-//                    public void onFail(@NonNull final String error) {
-//                        Logger.d(TAG, "genAppKey onFail : " + error);
-//                    }
-//
-//                    @Override
-//                    public void onSuccess(final String result) {
-//                        Logger.d(TAG, "genAppKey onSuccess : " + result);
-//                        try {
-//                            final JSONObject jsonObject = new JSONObject(result);
-//                            final JSONObject dataSet = new JSONObject(jsonObject.getString("dataSet"));
-//                            APP_KEY = dataSet.getString("appKey");
-//                        } catch (JSONException e) {
-//                            Logger.e(TAG, "JSONException : " + e);
-//                        }
-//                        Logger.d(TAG, "APP_KEY : " + APP_KEY);
-//                        genAuthCode();
-//                    }
-//                }
-//        );
     }
 
     /**
@@ -221,54 +194,27 @@ public final class ActivationManager {
             return;
         }
 
-        final HashMap<String, String> header = new HashMap<>();
-        header.put("Content-Type", "application/json;charset=UTF-8");
-        header.put("appId", TEST_APP_ID);
-        SYS_VERSION = "1.0";
-        header.put("sysVersion", SYS_VERSION);
-        header.put("timeStamp", String.valueOf(System.currentTimeMillis()));
-        header.put("apiVersion", "1.0");
-        header.put("authCode", AUTH_CODE);
-        header.put("deviceId", DEVICES_ID);
+        final UuidReq uuidReq = new UuidReq(API_VERSION, TEST_APP_ID, SYS_VERSION, DEVICES_ID);
+        NetConfigUtils.getInstance().setDeviceId(DEVICES_ID);
+        Logger.d(TAG, "uuid req : " + uuidReq.toString());
+        final Observable<UuidResponse> observable = NetQueryRepository.getInstance().queryUuid(uuidReq);
 
-        final HashMap<String, String> body = new HashMap<>();
-        body.put("deviceId", DEVICES_ID);
-
-        Logger.d(TAG, "       appId = " + TEST_APP_ID);
-        Logger.d(TAG, "  sysVersion = " + SYS_VERSION);
-        Logger.d(TAG, "  apiVersion = " + "1.0");
-        Logger.d(TAG, "    authCode = " + AUTH_CODE);
-        Logger.d(TAG, "    deviceId = " + DEVICES_ID);
-
-        OkHttpUtils.Companion.getInstance().postFromBody(
-                body,
-                header,
-                TEST_URL,
-                new OkHttpUtils.OkHttpCallback<String>() {
+        observable.subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new NetDisposableObserver<UuidResponse>() {
                     @Override
-                    public void onProgress(final int progress) {
-                        Logger.d(TAG, "postUUID onProgress...");
+                    public void onSuccess(final UuidResponse uuidBean) {
+                        Logger.d(TAG, uuidBean.toString());
+                        UUID = uuidBean.getUuid();
+                        mActivateListener.onUUIDGet(uuidBean.getUuid());
                     }
 
                     @Override
-                    public void onFail(@NonNull final String error) {
-                        Logger.d(TAG, "postUUID onFail : " + error);
+                    public void onFailed(final ApiException e) {
+                        Logger.d(TAG, "Exception code : " + e.getCode());
+                        Logger.d(TAG, "Exception msg : " + e.getMessage());
                     }
-
-                    @Override
-                    public void onSuccess(final String result) {
-                        Logger.d(TAG, "postUUID onSuccess : " + result);
-                        try {
-                            final JSONObject jsonObject = new JSONObject(result);
-                            final JSONObject dataSet = new JSONObject(jsonObject.getString("dataSet"));
-                            UUID = dataSet.getString("vin");
-                        } catch (JSONException e) {
-                            Logger.e(TAG, "JSONException : " + e);
-                        }
-                        mActivateListener.onUUIDGet(UUID);
-                    }
-                }
-        );
+                });
     }
 
     /**

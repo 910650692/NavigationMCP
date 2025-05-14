@@ -10,10 +10,11 @@
     </data>
 
     <com.fy.navi.ui.view.SkinConstraintLayout
-        android:layout_width="@dimen/dp_1224"
-        android:layout_height="@dimen/dp_714"
-        android:clickable="true"
-        android:background="@drawable/bg_setting_fragment">
+        android:layout_width="@dimen/dp_1292"
+        android:layout_height="@dimen/dp_1255"
+        android:padding="@dimen/dp_34"
+        android:background="@drawable/bg_shadow_navi_ndlc_8155"
+        android:clickable="true">
 
             <com.fy.navi.ui.view.SkinImageView
                 clickCommand="@{viewModel.mFinishPrivacy}"
@@ -45,7 +46,7 @@
             android:textColor="@color/black"
             android:textSize="@dimen/sp_34"
             android:layout_marginTop="@dimen/dp_154"
-            android:layout_marginStart="@dimen/dp_39"
+            android:layout_marginStart="@dimen/dp_40"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 

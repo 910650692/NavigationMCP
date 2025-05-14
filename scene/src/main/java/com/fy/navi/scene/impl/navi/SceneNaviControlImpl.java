@@ -92,6 +92,9 @@ public class SceneNaviControlImpl extends BaseSceneModel<SceneNaviControlView> i
         mNaviPackage.stopNavigation();
         cancelTimer();
         mNaviPackage.setPreviewStatus(false);
+        if (null != mCallBack) {
+            mCallBack.stopSpeech();
+        }
     }
 
     @Override

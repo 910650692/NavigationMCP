@@ -261,11 +261,6 @@ final public class BehaviorPackage implements BehaviorAdapterCallBack, AccountCa
         if (type != 3 && !TextUtils.isEmpty(itemId)) {
             updateFavoriteMain(poiInfo, true);
         }
-
-        //收藏列表添加成功，弹出Toast
-        if (type == 0 && !TextUtils.isEmpty(itemId)) {
-            ToastUtils.Companion.getInstance().showCustomToastView("收藏成功");
-        }
         return itemId;
     }
 
@@ -602,6 +597,10 @@ final public class BehaviorPackage implements BehaviorAdapterCallBack, AccountCa
     @Override
     public void notifyAccountLogout(final int errCode, final int taskId, final AccountUserInfo result) {
         loginStatusChanged();
+        for (BehaviorCallBack observer : mCallBacks) {
+            //目前只需要登出状态
+            observer.notifyLoginStatusChanged();
+        }
     }
 
     @Override

@@ -912,4 +912,11 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
     public String getEnergy() {
         return SettingManager.getInstance().getValueByKey(SettingController.KEY_SETTING_GUIDE_CHARGING_PLAN);
     }
+
+    @Override
+    public void stopSpeech() {
+        if (null != mNaviPackage) {
+            mNaviPackage.stopSpeech();
+        }
+    }
 }

@@ -4,14 +4,19 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
         <com.fy.navi.ui.view.SkinConstraintLayout
-            android:layout_width="@dimen/dp_1424"
-            android:layout_height="@dimen/dp_500"
-            android:background="@drawable/bg_forecast_address_dialog"
+            android:layout_width="@dimen/dp_1518"
+            android:layout_height="@dimen/dp_595"
+            android:layout_marginTop="@dimen/dp_601"
+            android:layout_marginStart="@dimen/dp_263"
+            android:background="@drawable/bg_shadow_system_cadillac"
             android:elevation="@dimen/dp_20"
+            android:paddingHorizontal="@dimen/dp_47"
+            android:paddingTop="@dimen/dp_39"
+            android:paddingBottom="@dimen/dp_56"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"

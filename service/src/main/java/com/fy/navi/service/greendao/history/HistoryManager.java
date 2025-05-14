@@ -67,6 +67,7 @@ public class HistoryManager {
      * @param info save info
      */
     public void insertOrReplace(final History info) {
+        Logger.d(TAG, "insertOrReplace name:"+(info != null?info.getMEndPoiName() : "info==null"));
         final History history = GsonUtils.convertToT(info, History.class);
         history.setMUpdateTime(new Date());
         mSearchHistoryDao.insertOrReplace(history);
@@ -183,11 +184,13 @@ public class HistoryManager {
 
     /**
      * 通过数据type删除其对应info
-     * @param fileName 数据文件名
+     * @param id 数据id
+     * @param runType 数据类型
      */
-    public void deleteValueByFileName(final String fileName) {
+    public void deleteValueByFileName(final String id, final int runType) {
         mSearchHistoryDao.queryBuilder()
-                .where(HistoryDao.Properties.MTrackFileName.eq(fileName))
+                .where(HistoryDao.Properties.MPoiId.eq(id),
+                        HistoryDao.Properties.MRideRunType.eq(runType))
                 .buildDelete()
                 .executeDeleteWithoutDetachingEntities();
     }

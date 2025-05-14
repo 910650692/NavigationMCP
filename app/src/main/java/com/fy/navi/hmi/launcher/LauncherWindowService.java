@@ -17,6 +17,7 @@ import androidx.annotation.Nullable;
 
 import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
+import com.android.utils.thread.ThreadManager;
 import com.fy.navi.burypoint.anno.HookMethod;
 import com.fy.navi.burypoint.constant.BuryConstant;
 import com.fy.navi.hmi.BuildConfig;
@@ -211,8 +212,13 @@ public class LauncherWindowService extends Service implements IGuidanceObserver 
 
     public void showOrHideFloatView(boolean isShow) {
         Logger.i(TAG, "showOrHideFloatView:" + isShow);
-        if (!ConvertUtils.isNull(mView)) {
-            mView.setVisibility(isShow ? View.VISIBLE : View.GONE);
-        }
+        ThreadManager.getInstance().postUi(new Runnable() {
+            @Override
+            public void run() {
+                if (!ConvertUtils.isNull(mView)) {
+                    mView.setVisibility(isShow ? View.VISIBLE : View.GONE);
+                }
+            }
+        });
     }
 }

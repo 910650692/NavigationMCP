@@ -20,12 +20,13 @@
         android:id="@+id/swipe_menu_layout"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_158"
-        android:focusable="true"
-        android:background="@drawable/bg_base_mfc_cadillac_bg_selector"
+        android:focusable="false"
         android:orientation="horizontal">
 
         <com.fy.navi.ui.view.SkinConstraintLayout
-            android:focusable="false"
+            android:id="@+id/cl_content"
+            android:focusable="true"
+            android:background="@drawable/bg_base_mfc_cadillac_bg_selector"
             android:layout_width="@dimen/dp_742"
             android:layout_height="match_parent">
 

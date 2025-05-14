@@ -32,7 +32,7 @@ public final class PatacNetClient {
     }
 
     /**
-     * init
+     * init port:测试环境667 生产668
      */
     public void init() {
         // 设置网络断开时间
@@ -41,8 +41,9 @@ public final class PatacNetClient {
         if (DeviceUtils.isCar(AppContext.getInstance().getMApplication())) {
             NetPkiFactory.getInstance().init(
                     AppContext.getInstance().getMApplication(),
-                    new HeaderBean("SELF_DEVELOPED_MAP", "1.0", 0),
-                    "https://test-ninfo-securitygateway.sgmlink.com:667/info4gw/",
+                    new HeaderBean("SELF_DEVELOPED_MAP", "1.0", 667),
+                    "test-ninfo-securitygateway.sgmlink.com",
+                    //"ninfo.vapps-qa.sgmlink.com",
                     true
             );
         }

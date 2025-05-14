@@ -46,6 +46,9 @@ public class FavoriteModel extends BaseModel<FavoriteViewModel> implements Behav
      * 获取精简收藏点列表（普通poi）
      */
     public void getSimpleFavoriteList() {
+        if (mViewModel == null) {
+            return;
+        }
         mViewModel.updateFavoriteView(mBehaviorPackage.getFavoritePoiData());
     }
 
@@ -53,6 +56,9 @@ public class FavoriteModel extends BaseModel<FavoriteViewModel> implements Behav
      * getHomeInfo
      */
     public void getHomeFavoriteInfo() {
+        if (mViewModel == null) {
+            return;
+        }
         mViewModel.updateHomeView(mBehaviorPackage.getHomeFavoriteInfo());
     }
 
@@ -60,6 +66,9 @@ public class FavoriteModel extends BaseModel<FavoriteViewModel> implements Behav
      * getCompanyInfo
      */
     public void getCompanyFavoriteInfo() {
+        if (mViewModel == null) {
+            return;
+        }
         mViewModel.updateCompanyView(mBehaviorPackage.getCompanyFavoriteInfo());
     }
 
@@ -156,6 +165,14 @@ public class FavoriteModel extends BaseModel<FavoriteViewModel> implements Behav
     @Override
     public void notifyFavoriteAsync(final int type, final ArrayList<PoiInfoEntity> data, final boolean sorted) {
         mViewModel.updateFavoriteView(data);
+    }
+
+    @Override
+    public void notifyLoginStatusChanged() {
+        //登出时需要更新信息
+        getHomeFavoriteInfo();
+        getCompanyFavoriteInfo();
+        getSimpleFavoriteList();
     }
 
     /**

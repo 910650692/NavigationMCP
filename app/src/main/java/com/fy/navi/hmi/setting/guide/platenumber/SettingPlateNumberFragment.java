@@ -223,6 +223,7 @@ public class SettingPlateNumberFragment extends BaseFragment<FragmentSettingPlat
      * 显示省份键盘
      */
     public void showProvinceKeyboard(){
+        mBinding.settingPlateNumberNumber.clearFocus();
         mBinding.settingPlateNumberKeyboard.setVisibility(View.GONE);
         mBinding.settingPlateNumberKeyboardLayout.setVisibility(View.VISIBLE);
         mBinding.settingProvinceKeyboard.setVisibility(View.VISIBLE);

@@ -528,6 +528,7 @@ public class ClsLinkManager {
 
     private void createTopic(String uri) {
         if (mUSubscription == null) {
+            Logger.d(TAG, "mUSubscription == null");
             return;
         }
         CreateTopicRequest createTopicRequest = CreateTopicRequest.newBuilder()
@@ -536,7 +537,7 @@ public class ClsLinkManager {
         CompletableFuture<Status> status = mUSubscription.createTopic(createTopicRequest).whenComplete(new BiConsumer<>() {
             @Override
             public void accept(Status status, Throwable throwable) {
-                Logger.d(TAG, "accept: " + status + ", " + uri);
+                Logger.d(TAG, "accept: " + status.getCode() + ", " + uri);
                 if (TBT_URI.equals(uri) && status.getCode() == 0) {
                     tbtTopic = true;
                 }
@@ -544,6 +545,7 @@ public class ClsLinkManager {
                     routeTopic = true;
                 }
                 if (tbtTopic && routeTopic) {
+                    Logger.d(TAG, "sendBroadcast");
                     Intent intent = new Intent("com.fy.navi.hmi.topic.release");
                     AppContext.getInstance().getMContext().sendBroadcast(intent);
                 }

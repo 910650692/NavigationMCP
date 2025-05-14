@@ -113,9 +113,9 @@ public class L2NaviBean {
         @SerializedName("timestamp")
         private long mTimestamp;
         @SerializedName("segmentIndex")
-        private int mSegmentIndex;
+        private int mSegmentIndex = -1;
         @SerializedName("linkIndex")
-        private int mLinkIndex;
+        private int mLinkIndex = -1;
         @SerializedName("highLightLaneTypes")
         private List<Integer> mHighLightLaneTypes;
         @SerializedName("highLightLanes")

@@ -12,7 +12,7 @@
 
     <com.fy.navi.ui.view.SkinLinearLayout
         android:id="@+id/scl_search_top_view"
-        android:layout_width="@dimen/dp_820"
+        android:layout_width="@dimen/dp_922"
         android:layout_height="match_parent"
         android:orientation="vertical">
 
@@ -21,10 +21,11 @@
             layout="@layout/collect_title_bar_view"/>
 
         <com.fy.navi.ui.view.SkinConstraintLayout
-            android:layout_width="@dimen/dp_820"
-            android:layout_height="@dimen/dp_610"
-            android:layout_marginTop="@dimen/dp_20"
-            android:background="@drawable/bg_search_main_tab">
+            android:layout_width="@dimen/dp_922"
+            android:layout_height="@dimen/dp_930"
+            android:layout_marginTop="@dimen/dp_m_81"
+            android:padding="@dimen/dp_51"
+            android:background="@drawable/bg_shadow_navi_cadillac">
             <com.fy.navi.ui.view.SkinLinearLayout
                 android:id="@+id/tv_favorite_switch"
                 android:layout_width="@dimen/dp_740"

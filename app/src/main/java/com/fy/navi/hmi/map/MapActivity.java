@@ -1,12 +1,15 @@
 package com.fy.navi.hmi.map;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.core.view.WindowCompat;
 
 import com.android.utils.ConvertUtils;
@@ -22,6 +25,8 @@ import com.fy.navi.hmi.launcher.FloatViewManager;
 import com.fy.navi.hmi.launcher.LauncherWindowService;
 import com.fy.navi.hmi.test.TestWindow;
 import com.fy.navi.mapservice.bean.INaviConstant;
+import com.fy.navi.service.AutoMapConstant;
+import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.define.cruise.CruiseInfoEntity;
 import com.fy.navi.service.define.map.IBaseScreenMapView;
 import com.fy.navi.service.define.map.MainScreenMapView;
@@ -30,6 +35,8 @@ import com.fy.navi.service.define.map.ThemeType;
 import com.fy.navi.service.define.navi.LaneInfoEntity;
 import com.fy.navi.service.define.route.RouteLightBarItem;
 import com.fy.navi.service.define.search.PoiInfoEntity;
+import com.fy.navi.service.define.user.account.AccessTokenParam;
+import com.fy.navi.service.logicpaket.user.account.AccountPackage;
 import com.fy.navi.ui.base.BaseActivity;
 import com.fy.navi.ui.base.FragmentIntent;
 
@@ -47,6 +54,16 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
     private static final String KEY_CHANGE_SAVE_INSTANCE = "key_change_save_instance";
     private MainScreenMapView mapView;
 
+    AccessTokenParam param = new AccessTokenParam(
+            AutoMapConstant.AccountTokenParamType.ACCOUNT_TYPE_PATAC_HMI,
+            AutoMapConstant.AccountTokenParamType.AUTH_TOKEN_TYPE_READ_ONLY,
+            null,
+            this,
+            null,
+            null,
+            null,
+            null);
+
     @Override
     @HookMethod(eventName = BuryConstant.EventName.AMAP_OPEN)
     public void onCreateBefore() {
@@ -60,6 +77,25 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
         getWindow().setNavigationBarColor(getResources().getColor(R.color.route_charge_param_color));
         FragmentIntent.syncFragmentList(mScreenId, getSupportFragmentManager());
         LauncherWindowService.startService();
+
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.GET_ACCOUNTS)
+                != PackageManager.PERMISSION_GRANTED){
+            Logger.d(MapDefaultFinalTag.ACCOUNT_SERVICE_TAG,"没有账号权限");
+        } else {
+            Logger.d(MapDefaultFinalTag.ACCOUNT_SERVICE_TAG,"有账号权限 ");
+        }
+        ThreadManager.getInstance().runAsync(() -> {
+            Logger.d(MapDefaultFinalTag.ACCOUNT_SERVICE_TAG,
+                    "                 AccessToken = " + AccountPackage.getInstance().getAccessToken(param));
+        });
+
+        Logger.d(MapDefaultFinalTag.ACCOUNT_SERVICE_TAG,
+                "                 useridp = " +
+                        AccountPackage.getInstance().getUserId());
+
+        Logger.d(MapDefaultFinalTag.ACCOUNT_SERVICE_TAG,
+                "                 userPhone = " +
+                        AccountPackage.getInstance().getPhone());
     }
 
     @Override
@@ -192,7 +228,6 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
     protected void onResume() {
         super.onResume();
         mViewModel.getCurrentCityLimit();
-        FloatViewManager.getInstance().showOrHideFloatView(false);
     }
 
     @Override
@@ -200,7 +235,6 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
     protected void onStop() {
         Logger.i(TAG, "onStop");
         super.onStop();
-        FloatViewManager.getInstance().showOrHideFloatView(true);
     }
 
     @Override

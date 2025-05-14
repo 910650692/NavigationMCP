@@ -20,4 +20,9 @@ public interface BehaviorCallBack {
      * @param sorted
      */
     void notifyFavoriteAsync(int type, ArrayList<PoiInfoEntity> data, boolean sorted);
+
+    /**
+     * 帐号登录状态改变时的回调
+     */
+    default void notifyLoginStatusChanged() {}
 }

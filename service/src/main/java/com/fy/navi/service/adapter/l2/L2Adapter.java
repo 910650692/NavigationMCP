@@ -191,10 +191,10 @@ public class L2Adapter {
             L2NaviBean.CrossInfoDataBean crossInfoDataBean = l2NaviBean.getCrossInfoData();
             if (!isShowLane) {
                 Logger.i(TAG, "lane hide");
-                crossInfoDataBean.setHighLightLanes(new ArrayList<>());
-                crossInfoDataBean.setHighLightLaneTypes(new ArrayList<>());
-                crossInfoDataBean.setBackLaneType(new ArrayList<>());
-                crossInfoDataBean.setFrontLaneType(new ArrayList<>());
+                crossInfoDataBean.setHighLightLanes(null);
+                crossInfoDataBean.setHighLightLaneTypes(null);
+                crossInfoDataBean.setBackLaneType(null);
+                crossInfoDataBean.setFrontLaneType(null);
                 crossInfoDataBean.setSegmentIndex(-1);
                 crossInfoDataBean.setLinkIndex(-1);
                 crossInfoDataBean.setTimestamp(System.currentTimeMillis());

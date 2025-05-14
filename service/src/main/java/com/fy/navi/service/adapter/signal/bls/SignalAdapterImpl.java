@@ -1,8 +1,10 @@
 package com.fy.navi.service.adapter.signal.bls;
 
 import android.car.Car;
+import android.car.hardware.CarPropertyValue;
 import android.car.hardware.property.CarPropertyManager;
 import android.content.Context;
+import android.hardware.automotive.vehicle.V2_0.VehicleArea;
 import android.os.Build;
 import android.os.Handler;
 import android.os.HandlerThread;
@@ -19,6 +21,7 @@ import com.patac.vehicle.PowertainController;
 import com.patac.vehicle.VehicleController;
 import com.patac.vehicle.VehicleStatusController;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -42,15 +45,6 @@ public class SignalAdapterImpl implements SignalApi {
      * 初始化回调函数
      */
     private void initCallback() {
-        PowertainController.getInstance().registerSpeedOfVehicleListener(new PowertainController.SpeedOfVehicleListener() {
-            @Override
-            public void onSpeedOfVehicleSignalChanged(final Float speed) {
-                Logger.d(TAG, "onSpeedOfVehicleSignalChanged: " + speed);
-                for (SignalAdapterCallback callback : mCallbacks) {
-                    callback.onSpeedChanged(speed);
-                }
-            }
-        });
         PowertainController.getInstance().registerVehicleMotionMovementStateListener(new PowertainController.VehicleMotionMovementStateListener() {
             @Override
             public void onVehicleMotionMovementStateChanged(final Integer gear) {
@@ -254,9 +248,45 @@ public class SignalAdapterImpl implements SignalApi {
         if (this.mPropertyManager == null) {
             Logger.d(TAG, "init CarPropertyManager");
             this.mPropertyManager = (CarPropertyManager) this.mCar.getCarManager("property");
+            try {
+                registerDYN(190, 1);
+            } catch (Exception e) {
+                Logger.e(TAG, "registerDYN: ", e);
+            }
         } else {
-            Logger.i(TAG, "mPropertyManager in VehicleService had been inited");
+            Logger.i(TAG, "mPropertyManager initialized");
         }
+    }
+
+    private void registerDYN(int var1, int var2) {
+        Logger.i(TAG, "registerDYN: ", var1, var2);
+        mPropertyManager.registerCallback(new CarPropertyManager.CarPropertyEventCallback() {
+            @Override
+            public void onChangeEvent(CarPropertyValue carPropertyValue) {
+                if (carPropertyValue == null) {
+                    Logger.i(TAG, "carPropertyValue == null");
+                    return;
+                }
+                if (!(carPropertyValue.getValue() instanceof Integer[])) {
+                    Logger.i(TAG, "value not Integer[]");
+                    return;
+                }
+                Integer[] value = (Integer[]) carPropertyValue.getValue();
+                Logger.i(TAG, "Arrays: " + Arrays.toString(value));
+                if (value.length >= 3 && value[0] == var1 && value[1] == var2) {
+                    Logger.i(TAG, "meterSpeed: " + value[2]);
+                    for (SignalAdapterCallback callback : mCallbacks) {
+                        callback.onSpeedChanged((float) value[2] / 1000);
+                    }
+                }
+            }
+
+            @Override
+            public void onErrorEvent(int i, int i1) {
+                Logger.i(TAG, "onErrorEvent: " + i + ", " + i1);
+            }
+        }, VendorProperty.ODI_DYNDATA, 0);
+        mPropertyManager.setProperty(Integer[].class, VendorProperty.ODI_SUBSCRIBE, VehicleArea.GLOBAL, new Integer[]{var1, var2});
     }
 
     /**

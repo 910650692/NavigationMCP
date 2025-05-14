@@ -26,9 +26,9 @@
 
             <com.fy.navi.ui.view.SkinConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_828"
-                android:layout_marginTop="@dimen/dp_20"
-                android:background="@drawable/bg_search_main_tab">
+                android:layout_height="@dimen/dp_930"
+                android:layout_marginTop="@dimen/dp_m_82"
+                android:background="@drawable/bg_shadow_navi_cadillac">
 
                 <include
                     android:id="@+id/search_filter_view"
@@ -97,14 +97,15 @@
 
         <com.fy.navi.scene.ui.route.SceneRouteGasStationChargeServiceView
             android:id="@+id/route_right_tab_list_charge_scene"
-            android:layout_width="@dimen/dp_174"
-            android:layout_height="@dimen/dp_464"
-            android:background="@drawable/bg_route_result"
+            android:layout_width="@dimen/dp_302"
+            android:layout_height="@dimen/dp_702"
+            android:layout_marginStart="@dimen/dp_840"
+            android:background="@drawable/bg_shadow_navi_cadillac"
+            android:padding="@dimen/dp_51"
             android:clickable="true"
-            android:visibility="gone"
-            android:layout_marginStart="@dimen/dp_20"
+            android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="@id/root_view"
-            app:layout_constraintStart_toEndOf="@+id/root_view" />
+            app:layout_constraintStart_toStartOf="parent" />
     </com.fy.navi.ui.view.SkinConstraintLayout>
 
 </layout>

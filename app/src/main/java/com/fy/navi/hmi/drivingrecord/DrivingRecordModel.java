@@ -196,9 +196,10 @@ public class DrivingRecordModel extends BaseModel<DrivingRecordViewModel> implem
     }
     /**
      * 通过数据type删除其对应info
-     * @param fileName 数据文件名
+     * @param id 数据id
+     * @param runType 数据类型
      */
-    public void deleteValueByFileName(final String fileName) {
-        mHistoryManager.deleteValueByFileName(fileName);
+    public void deleteValueByFileName(final String id, final int runType) {
+        mHistoryManager.deleteValueByFileName(id, runType);
     }
 }

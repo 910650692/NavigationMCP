@@ -142,7 +142,8 @@ public class DrivingRecordDetailsFragment extends BaseFragment<FragmentDrivingRe
                             if (AccountPackage.getInstance().isLogin()) {
                                 mViewModel.delBehaviorData(mDrivingRecordDataBean.getId());
                             }
-                            mViewModel.deleteValueByFileName(mDrivingRecordDataBean.getTrackFileName());
+                            mViewModel.deleteValueByFileName(mDrivingRecordDataBean.getId(),
+                                    mDrivingRecordDataBean.getRideRunType());
                             LayerPackage.getInstance().addLayerItemOfUserTrackDepth(MapType.MAIN_SCREEN_MAIN_MAP, null, false);
                             ThreadManager.getInstance().postUi(() -> {
                                 closeFragment(true);

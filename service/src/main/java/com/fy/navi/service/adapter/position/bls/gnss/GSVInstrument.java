@@ -88,6 +88,9 @@ public class GSVInstrument extends GnssStatus.Callback {
             locGpgsvGPS.tickTime = BigInteger.valueOf(realtime);
             wrapper.attributes.averageSnr = totalSnr / n;
             mListener.onGSVInfo(wrapper);
+//            Logger.d(TAG, "setGSVData:");
+        } else {
+            Logger.e(TAG, "n：" + n + ",realtime：" + realtime);
         }
     }
 }

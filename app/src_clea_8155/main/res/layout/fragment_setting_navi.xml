@@ -64,7 +64,7 @@
                 <com.fy.navi.ui.view.SkinTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/dp_35"
+                    android:layout_marginStart="@dimen/dp_24"
                     android:text="@string/setting_guide_avoid_limit"
                     android:textColor="@color/setting_bg_tab_text_select"
                     android:textSize="@dimen/sp_34" />
@@ -91,8 +91,10 @@
 
                 <com.fy.navi.ui.view.SkinTextView
                     android:id="@+id/navi_car_number"
-                    android:layout_width="@dimen/dp_238"
+                    android:layout_width="wrap_content"
                     android:layout_height="@dimen/dp_62"
+                    android:paddingStart="@dimen/dp_44"
+                    android:paddingEnd="@dimen/dp_44"
                     android:textSize="@dimen/sp_30"
                     android:textColor="@color/setting_bg_tab_text_select"
                     android:gravity="center"
@@ -107,7 +109,7 @@
                     android:src="@drawable/img_setting_corner"
                     android:layout_marginEnd="@dimen/dp_4"
                     android:layout_marginBottom="@dimen/dp_4"
-                    app:layout_constraintTop_toTopOf="@+id/navi_car_number"
+                    app:layout_constraintBottom_toBottomOf="@+id/navi_car_number"
                     app:layout_constraintEnd_toEndOf="@+id/navi_car_number"/>
 
 
@@ -143,7 +145,7 @@
                 <com.fy.navi.ui.view.SkinLinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/dp_35"
+                    android:layout_marginStart="@dimen/dp_24"
                     android:layout_weight="1"
                     android:orientation="vertical">
 
@@ -258,7 +260,7 @@
                     android:visibility="@{viewModel.mIsEVCar || viewModel.mIsPHEVCar ? View.VISIBLE : View.GONE}"
                     android:background="@drawable/bg_setting_broadcast"
                     android:gravity="center"
-                    android:layout_marginEnd="@dimen/dp_34"
+                    android:layout_marginEnd="@dimen/dp_24"
                     android:text="@string/setting_guide_charging_station"
                     android:textColor="@color/setting_bg_tab_text_unselect"
                     android:textSize="@dimen/sp_34" />
@@ -287,7 +289,7 @@
                     android:checked="@{viewModel.mIsFavoritePoint}"
                     android:background="@drawable/bg_setting_broadcast"
                     android:gravity="center"
-                    android:layout_marginStart="@dimen/dp_34"
+                    android:layout_marginStart="@dimen/dp_24"
                     android:text="@string/setting_guide_favorite_point"
                     android:textColor="@color/setting_bg_tab_text_unselect"
                     android:textSize="@dimen/sp_34" />
@@ -299,7 +301,7 @@
                 android:layout_height="@dimen/dp_1"
                 android:visibility="gone"
                 android:background="@color/setting_line"
-                android:layout_marginTop="@dimen/dp_29"
+                android:layout_marginTop="@dimen/dp_30"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/map_display" />
 
@@ -366,7 +368,7 @@
             <com.fy.navi.ui.view.SkinView
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_1"
-                android:layout_marginTop="@dimen/dp_29"
+                android:layout_marginTop="@dimen/dp_30"
                 android:background="@color/setting_line"
                 android:visibility="gone"
                 app:layout_constraintStart_toStartOf="parent"
@@ -419,7 +421,7 @@
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
-                        android:layout_marginStart="@dimen/dp_35"
+                        android:layout_marginStart="@dimen/dp_24"
                         android:button="@null"
                         android:checked="@{viewModel.mIsMapModelNorthUp}"
                         android:background="@drawable/bg_setting_logo_selector"
@@ -433,7 +435,7 @@
                         android:id="@+id/navi_3D_HeadUp"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:layout_marginStart="@dimen/dp_35"
+                        android:layout_marginStart="@dimen/dp_24"
                         android:layout_weight="1"
                         android:button="@null"
                         android:checked="@{viewModel.mIsMapModel3DUp}"
@@ -449,7 +451,7 @@
             <com.fy.navi.ui.view.SkinView
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_1"
-                android:layout_marginTop="@dimen/dp_29"
+                android:layout_marginTop="@dimen/dp_30"
                 android:background="@color/setting_line"
                 android:visibility="gone"
                 app:layout_constraintStart_toStartOf="parent"
@@ -507,7 +509,7 @@
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:drawableStart="@mipmap/icon_setting_car_logo_brand"
-                        android:layout_marginStart="@dimen/dp_25"
+                        android:layout_marginStart="@dimen/dp_24"
                         android:button="@null"
                         app:drawableWidth="80"
                         app:drawableHeight="80"
@@ -528,7 +530,7 @@
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:drawableStart="@mipmap/icon_setting_car_logo_speed"
-                        android:layout_marginStart="@dimen/dp_25"
+                        android:layout_marginStart="@dimen/dp_24"
                         android:button="@null"
                         android:checked="@{viewModel.mIsCarLogoSpeed}"
                         android:drawablePadding="@dimen/dp_31"
@@ -567,7 +569,7 @@
                 <com.fy.navi.ui.view.SkinLinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/dp_35"
+                    android:layout_marginStart="@dimen/dp_24"
                     android:layout_weight="1"
                     android:orientation="vertical">
 
@@ -607,14 +609,12 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/setting_guide_auto_scale" />
 
-            <com.fy.navi.ui.view.SkinLinearLayout
+            <com.fy.navi.ui.view.SkinConstraintLayout
                 clickCommand="@{viewModel.mOpenOfflineData}"
                 android:id="@+id/setting_guide_offline_map_detail"
                 android:layout_width="@dimen/dp_418"
-                android:layout_height="@dimen/dp_148"
+                android:layout_height="@dimen/dp_130"
                 android:layout_marginTop="@dimen/dp_16"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/setting_guide_offline_map"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -626,16 +626,21 @@
                     android:gravity="center"
                     android:text="@string/setting_guide_offline_map_detail"
                     android:layout_marginStart="@dimen/dp_32"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     android:textSize="@dimen/sp_34"
                     android:textColor="@color/setting_bg_tab_text_select" />
 
                 <com.fy.navi.ui.view.SkinImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/dp_114"
-                    android:layout_marginTop="@dimen/dp_35"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    android:layout_marginEnd="@dimen/dp_10"
+                    android:layout_marginBottom="@dimen/dp_10"
                     android:src="@drawable/img_setting_corner"/>
-            </com.fy.navi.ui.view.SkinLinearLayout>
+            </com.fy.navi.ui.view.SkinConstraintLayout>
 
         </com.fy.navi.ui.view.SkinConstraintLayout>
 

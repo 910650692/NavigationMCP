@@ -106,6 +106,7 @@ public class SceneMapPointSearchView extends BaseSceneView<SceneMapPointSearchVi
         ThreadManager.getInstance().removeHandleTask(mTimeoutTask);
         if (null == searchResultEntity || searchResultEntity.getPoiList().isEmpty()) {
             ToastUtils.Companion.getInstance().showCustomToastView("暂无数据");
+            ThreadManager.getInstance().postUi(mTimeoutTask);
             return;
         }
         this.mPoiInfoEntity = searchResultEntity.getPoiList().get(0);
@@ -143,10 +144,10 @@ public class SceneMapPointSearchView extends BaseSceneView<SceneMapPointSearchVi
                 mSearchLoadingDialog.dismiss();
                 if (!ConvertUtils.isEmpty(mViewBinding) && !ConvertUtils.isEmpty(mViewBinding.csPoiNoResult)) {
                     mViewBinding.csPoiNoResult.setVisibility(View.VISIBLE);
+                    mViewBinding.poiTypeIcon.setVisibility(View.VISIBLE);
                     mViewBinding.skPoiName.setVisibility(View.GONE);
                     mViewBinding.poiSecondAddress.setVisibility(View.GONE);
                     mViewBinding.stlSetting.setVisibility(View.GONE);
-                    mViewBinding.poiTypeIcon.setVisibility(View.GONE);
 
                     mViewBinding.noResultButton.setOnClickListener((view) -> {
                         doSearch(mPoiInfoEntity);

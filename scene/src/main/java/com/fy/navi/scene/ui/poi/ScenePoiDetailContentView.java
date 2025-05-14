@@ -296,6 +296,7 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
                         + mPoiInfoEntity.getPoint().getLon() + " " + mPoiInfoEntity.getPoint().getLat()
                         + " ID: " + mPoiInfoEntity.getPid() + " ,name: " + mPoiInfoEntity.getName());
 //                mScreenViewModel.addFavoriteData(mPoiInfoEntity, 0);
+                ToastUtils.Companion.getInstance().showCustomToastView("收藏成功");
             }
         }
     }
@@ -431,7 +432,9 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
                     mChildList.get(i).setChecked(-1);
                 }
             }
-            mScenicChildAdapter.setChildInfoList(mChildList);
+            if (mScenicChildAdapter != null) {
+                mScenicChildAdapter.setChildInfoList(mChildList);
+            }
         }
     }
 

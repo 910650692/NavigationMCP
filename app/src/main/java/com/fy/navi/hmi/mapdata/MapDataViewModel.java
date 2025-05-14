@@ -41,17 +41,20 @@ public class MapDataViewModel extends BaseViewModel<MapDataFragment, MapDataMode
      * @param isCheck
      */
     public void getAllProvinceData(final boolean isCheck) {
-                mAllDownloadingDataSize.setValue(String.valueOf(mModel.getWorkingQueueSize()));
-                //获取全部地图初始化数据
-                mView.updateMapDataView(mModel.getMapDataList());
-                // 获取当前城市数据
-                mView.updateCurrentCityView(mModel.getCurrentCityInfo());
-                // 获取基础功能包数据
-                mView.updateCountryDataView(mModel.getCountryData());
-                // 获取附近推荐城市信息
-                updateNearDataView();
-                // 发起云端数据列表检测
-                mModel.requestDataListCheck(isCheck);
+        //下载 管理界面
+        updateManagerDownloadView();
+        //正在下载数量
+        mAllDownloadingDataSize.setValue(String.valueOf(mModel.getWorkingQueueSize()));
+        //获取全部地图初始化数据
+        mView.updateMapDataView(mModel.getMapDataList());
+        // 获取当前城市数据
+        mView.updateCurrentCityView(mModel.getCurrentCityInfo());
+        // 获取基础功能包数据
+        mView.updateCountryDataView(mModel.getCountryData());
+        // 获取附近推荐城市信息
+        updateNearDataView();
+        // 发起云端数据列表检测
+        mModel.requestDataListCheck(isCheck);
     }
 
     public Action mFinishMapDataView = () -> closeFragment(true);
@@ -221,7 +224,7 @@ public class MapDataViewModel extends BaseViewModel<MapDataFragment, MapDataMode
     /**
      * 更新下载管理界面状态
      */
-    public void updateManagerDownloadView() {
+    private void updateManagerDownloadView() {
         final ArrayList<ProvDataInfo> workingList = mModel.getWorkingList();
         if (!ConvertUtils.isEmpty(workingList)) {
             mManagerDownloadVisibility.setValue(true);

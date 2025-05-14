@@ -206,6 +206,9 @@ public class SceneSearchHistoryView extends BaseSceneView<MainAlongWaySearchHist
                         || mHomeCompanyType == 2
                         || mHomeCompanyType == 3
                         || mHomeCompanyType == 0) {
+                    if (mHomeCompanyType == 0) {
+                        ToastUtils.Companion.getInstance().showCustomToastView("收藏成功");
+                    }
                     SettingUpdateObservable.getInstance().onUpdateSyncTime();
                     closeAllFragmentsUntilTargetFragment("HomeCompanyFragment");
                     showCurrentFragment();
