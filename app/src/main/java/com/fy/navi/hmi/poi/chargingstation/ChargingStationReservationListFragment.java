@@ -11,6 +11,7 @@ import com.fy.navi.hmi.databinding.FragmentChargingStationReservationListBinding
 import com.fy.navi.scene.RoutePath;
 import com.fy.navi.service.AutoMapConstant;
 import com.fy.navi.service.MapDefaultFinalTag;
+import com.fy.navi.service.adapter.search.cloudByPatac.rep.BaseRep;
 import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.search.ChargeEquipmentInfo;
 import com.fy.navi.service.define.search.ChargePriceInfo;
@@ -76,5 +77,9 @@ public class ChargingStationReservationListFragment extends BaseFragment<Fragmen
 
     public void notifyEquipmentResult(EquipmentInfo info){
         mBinding.sceneChargeReservationList.notifyEquipmentResult(info);
+    }
+
+    public void notifyUnLockResult(String code){
+        mBinding.sceneChargeReservationList.notifyUnLockResult(code);
     }
 }

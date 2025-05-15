@@ -135,12 +135,7 @@ public class MapAdapter {
     }
 
     public boolean switchMapMode(MapType mapTypeId, MapMode mapMode) {
-        switchMapMode(mapMode);
-        return mIMapApi.setMapMode(mapTypeId, mapMode);
-    }
-
-    public boolean switchMapModeByHud(MapType mapTypeId, MapMode mapMode,boolean needSave) {
-        if(needSave){
+        if(mapTypeId != MapType.CLUSTER_MAP){
             switchMapMode(mapMode);
         }
         return mIMapApi.setMapMode(mapTypeId, mapMode);

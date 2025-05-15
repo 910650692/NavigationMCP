@@ -146,7 +146,7 @@ public class SceneNaviEtaView extends NaviSceneBase<SceneNaviEtaViewBinding, Sce
      * @param iconAction iconAction
      */
     public void setBackgroundNaviOfflineNextTurnIcon(
-            final SceneCommonStruct.TbtIconAction iconAction) {
+            final SceneCommonStruct.TbtExitIconAction iconAction) {
         Logger.d(TAG, "GuidanceTbtView setBackgroundNaviOfflineNextTurnIcon：" + iconAction.name());
         mViewBinding.sivHudSou31.setBackgroundResource(SceneEnumRes.getDrawableEnumName(iconAction).getDayDrawableId());
     }

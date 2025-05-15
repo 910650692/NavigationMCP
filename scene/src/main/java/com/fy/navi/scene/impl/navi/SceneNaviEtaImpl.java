@@ -162,7 +162,7 @@ public class SceneNaviEtaImpl extends BaseSceneModel<SceneNaviEtaView> {
         final int resId = NaviUiUtil.getOfflineManeuverIconId(mCurNaviInfo.nextCrossInfo.get(0).
                 maneuverID, mCurNaviInfo.nextCrossInfo.get(0).outCnt);
         Logger.i(TAG, " showOfflineNextTurnIcon resId:" + resId);
-        mScreenView.setBackgroundNaviOfflineNextTurnIcon(SceneCommonStruct.TbtIconAction.get(resId));
+        mScreenView.setBackgroundNaviOfflineNextTurnIcon(SceneCommonStruct.TbtExitIconAction.get(resId));
     }
 
     /**

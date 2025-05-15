@@ -134,6 +134,10 @@ public class BasePoiDetailsViewModel extends BaseViewModel<PoiDetailsFragment, P
         }
     }
 
+    public void notifyCollectStatus(BaseRep result){
+        mView.onNotifyCollectStatus(result);
+    }
+
     private CostTime getCurrentElePrice(ArrayList<CostTime> costTimes) {
         CostTime currentCostTime = new CostTime();
         if (!ConvertUtils.isEmpty(costTimes)) {

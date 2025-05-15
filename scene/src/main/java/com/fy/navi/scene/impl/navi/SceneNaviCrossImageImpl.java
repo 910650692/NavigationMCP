@@ -108,7 +108,7 @@ public class SceneNaviCrossImageImpl extends BaseSceneModel<SceneNaviCrossImageV
      * @param routeRemainDist 剩余长度
      */
     public void updateCrossProgress(final long routeRemainDist) {
-        Logger.i(TAG, "updateCrossProgress:" + routeRemainDist, "mIsShowCrossImage:" + mIsShowCrossImage);
+        Logger.i(TAG, "2D routeRemainDist :" + routeRemainDist, "mIsShowCrossImage:" + mIsShowCrossImage);
         // 当显示路口大图时刷新进度条
         if (mIsShowCrossImage) {
             for (CrossProgressInfo progressInfo : mCrossProgressInfos) {
@@ -144,7 +144,7 @@ public class SceneNaviCrossImageImpl extends BaseSceneModel<SceneNaviCrossImageV
             // 显示路口大图
             setRoadCrossVisible(true);
         } else {
-            Logger.d(TAG, "SceneNaviCrossImageImpl onHideCrossImage: type = " + naviImageInfo.getType());
+            Logger.d(TAG, "SceneNaviCrossImageImpl onHideCrossImage: type = " + (naviImageInfo == null? "null" : naviImageInfo.getType()));
             mIsShowCrossImage = false;
             notifySceneStateChange(false);
             mScreenView.setProgress2DRoadCross(0);
@@ -192,7 +192,7 @@ public class SceneNaviCrossImageImpl extends BaseSceneModel<SceneNaviCrossImageV
      * 显示图层中的路口大图
      */
     public void showLayerCross() {
-        Logger.i(TAG, "showLayerCross()");
+        Logger.i(TAG, "mRoadCrossInfo:"+mRoadCrossInfo + " mMapTypeId:"+mMapTypeId);
         LayerItemCrossEntity layerItemCrossEntity = new LayerItemCrossEntity();
         layerItemCrossEntity.setCrossImageEntity(mRoadCrossInfo);
         if (!mLayerPackage.showCross(mMapTypeId, layerItemCrossEntity)) {

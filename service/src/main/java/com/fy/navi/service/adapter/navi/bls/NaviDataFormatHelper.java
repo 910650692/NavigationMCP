@@ -435,8 +435,8 @@ public final class NaviDataFormatHelper {
      * @return CrossImageEntity
      */
     public static CrossImageEntity forMatImageInfo(final CrossImageInfo info) {
-        final CrossImageEntity naviImageInfo = new CrossImageEntity();
         if (info != null) {
+            final CrossImageEntity naviImageInfo = new CrossImageEntity();
             naviImageInfo.setType(info.type);
             naviImageInfo.setVectorType(info.vectorType);
             naviImageInfo.setDataBuf(info.dataBuf);
@@ -444,8 +444,9 @@ public final class NaviDataFormatHelper {
             naviImageInfo.setOnlyVector(info.isOnlyVector);
             naviImageInfo.setDistance(info.distance);
             naviImageInfo.setCrossImageID(info.crossImageID);
+            return naviImageInfo;
         }
-        return naviImageInfo;
+        return null;
     }
 
     /**

@@ -14,6 +14,7 @@ import com.fy.navi.service.AppContext;
 import com.fy.navi.service.AutoMapConstant;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.adapter.navi.NaviConstant;
+import com.fy.navi.service.adapter.search.cloudByPatac.rep.BaseRep;
 import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.search.PoiInfoEntity;
 import com.fy.navi.service.define.search.SearchResultEntity;
@@ -136,6 +137,10 @@ public class PoiDetailsFragment extends BaseFragment<FragmentPoiDetailsBinding, 
      */
     public void onSearchResult(final int taskId, final SearchResultEntity searchResultEntity) {
         mBinding.scenePoiDetailContentView.onSearchResult(taskId, searchResultEntity);
+    }
+
+    public void onNotifyCollectStatus(BaseRep result){
+        mBinding.scenePoiDetailContentView.onCollectUpdate(result.getResultCode());
     }
 
     /**

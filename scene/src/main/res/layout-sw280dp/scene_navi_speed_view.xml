@@ -43,6 +43,7 @@
             android:layout_marginTop="@dimen/dp_18"
             android:focusable="false"
             android:gravity="center"
+            android:text="@{naviSpeedLimit.mCurrentSpeed}"
             android:textColor="@color/navi_color_000000_100"
             android:textSize="@dimen/sp_52"
             app:layout_constraintEnd_toEndOf="@id/sv_current_speed"

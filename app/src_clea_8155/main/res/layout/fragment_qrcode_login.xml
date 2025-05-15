@@ -18,11 +18,12 @@
         android:padding="@dimen/dp_34"
         android:background="@drawable/bg_shadow_navi_ndlc_8155">
 
-        <com.fy.navi.ui.view.SkinLinearLayout
+        <com.fy.navi.ui.view.SkinConstraintLayout
             android:id="@+id/phone_qrcode_login_title"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_138"
+            android:layout_height="wrap_content"
             android:orientation="horizontal"
+            android:layout_marginTop="@dimen/dp_38"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" >
 
@@ -30,7 +31,9 @@
                 clickCommand="@{ViewModel.mAccountBack}"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
                 android:layout_marginStart="@dimen/dp_26"
                 android:src="@drawable/img_setting_back" />
 
@@ -38,12 +41,14 @@
                 android:id="@+id/account_qrcode_login"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginStart="@dimen/dp_414"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
                 android:text="@string/setting_others_account"
-                android:textSize="@dimen/sp_38"
+                android:textSize="@dimen/sp_34"
                 android:textColor="@color/setting_bg_tab_text_select" />
-        </com.fy.navi.ui.view.SkinLinearLayout>
+        </com.fy.navi.ui.view.SkinConstraintLayout>
 
 
         <com.fy.navi.ui.view.SkinLinearLayout
@@ -56,15 +61,15 @@
             <com.fy.navi.ui.view.SkinLinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_102"
+                android:layout_marginTop="@dimen/dp_155"
                 android:layout_marginStart="@dimen/dp_80"
                 android:gravity="center"
                 android:orientation="vertical">
 
                 <com.fy.navi.ui.view.SkinImageView
                     android:id="@+id/account_qrcode_content_img"
-                    android:layout_width="@dimen/dp_234"
-                    android:layout_height="@dimen/dp_234"
+                    android:layout_width="@dimen/dp_260"
+                    android:layout_height="@dimen/dp_260"
                     android:background="@drawable/bg_we_chat"
                     android:padding="@dimen/dp_13"
                     tools:visibility="gone"
@@ -123,7 +128,7 @@
                     android:id="@+id/account_qrcode_content_tip"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_24"
+                    android:layout_marginTop="@dimen/dp_30"
                     android:gravity="center"
                     android:text="@string/account_QRCode_login_tip"
                     android:textSize="@dimen/sp_26"
@@ -135,7 +140,7 @@
                 android:layout_height="@dimen/dp_473"
                 android:orientation="vertical"
                 android:layout_marginStart="@dimen/dp_122"
-                android:layout_marginTop="@dimen/dp_102"
+                android:layout_marginTop="@dimen/dp_155"
                 android:gravity="center">
 
                 <androidx.viewpager2.widget.ViewPager2

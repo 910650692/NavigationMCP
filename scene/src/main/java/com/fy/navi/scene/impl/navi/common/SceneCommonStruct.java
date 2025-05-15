@@ -746,7 +746,7 @@ public class SceneCommonStruct {
     /**
      * TODO：这边和TbtExitIconAction感觉没什么区别需要逻辑梳理
      */
-    public enum TbtIconAction {
+    /*public enum TbtIconAction {
         ManeuverIconTurnLeft(2),
         ManeuverIconTurnRight(3),
         //轻微左转图标
@@ -812,10 +812,10 @@ public class SceneCommonStruct {
             this.mValue = value;
         }
 
-        /**
+        *//**
          * @param value value
          * @return TbtIconAction
-         */
+         *//*
         public static TbtIconAction get(final Object value) {
             for (TbtIconAction obj : values()) {
                 if (obj.mValue.equals(value)) {
@@ -824,7 +824,7 @@ public class SceneCommonStruct {
             }
             return values()[0];
         }
-    }
+    }*/
 
     public enum ViaPointType {
         Normal(0),

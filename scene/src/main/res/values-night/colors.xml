@@ -90,6 +90,7 @@
     <color name="traffic_positive_bg_color">#1D59C3</color>
     <color name="traffic_negative_bg_color">#2C2D36</color>
     <color name="traffic_positive_text_color">#ffffff</color>
+    <color name="traffic_negative_text_color">#ffffff</color>
     <color name="traffic_bg_bg_pic_size_color">#E06A05</color>
     <!--Launcher-Widget-->
     <color name="widget_egle_bg_color">#1E2027</color>
@@ -161,4 +162,5 @@
     <color name="charge_card_bg">#802C2F38</color>
     <color name="parking_recommended_item_15">#802C2F38</color>
     <color name="parking_recommended_item_42386DF0">#2C2F38</color>
+    <color name="search_loading_bg_80">#FFFFFF</color>
 </resources>

@@ -8,6 +8,9 @@
         <variable
             name="connectorInfoItem"
             type="com.fy.navi.service.define.search.ConnectorInfoItem" />
+        <variable
+            name="handler"
+            type="com.fy.navi.scene.ui.adapter.ChargeEquipmentListAdapter.MyEventHandle" />
     </data>
 
     <com.fy.navi.ui.view.SkinConstraintLayout
@@ -57,6 +60,7 @@
                 android:id="@+id/equipment_unlock"
                 android:layout_width="@dimen/dp_124"
                 android:layout_height="match_parent"
+                android:onClick="@{() -> handler.unLock(connectorInfoItem)}"
                 android:textSize="@dimen/sp_30"
                 android:background="@drawable/bg_equipment_left"
                 android:gravity="center"
@@ -68,6 +72,7 @@
                 android:layout_width="@dimen/dp_148"
                 android:layout_height="match_parent"
                 android:textSize="@dimen/sp_30"
+                android:onClick="@{() -> handler.cancelReservation(connectorInfoItem)}"
                 android:gravity="center"
                 android:background="@drawable/bg_equipment_right"
                 app:layout_constraintStart_toEndOf="@+id/equipment_unlock"

@@ -815,4 +815,20 @@ public class SearchAdapterImpl extends SearchServiceV2Manager implements ISearch
         notifyNetSearchSuccess(mTaskId.get(),AutoMapConstant.NetSearchKey.CREATE_RESERVATION,rep);
         return mTaskId.get();
     }
+
+    public int unGroundLock(SearchRequestParameter searchRequestParameter) {
+        BaseRep rep = new BaseRep();
+        rep.setResultCode("0000");
+        rep.setMessage("获取成功");
+        notifyNetSearchSuccess(mTaskId.get(),AutoMapConstant.NetSearchKey.UNLOCK_GROUND,rep);
+        return mTaskId.get();
+    }
+
+    public int updateCollectStatus(SearchRequestParameter searchRequestParameter){
+        BaseRep rep = new BaseRep();
+        rep.setResultCode("0000");
+        rep.setMessage("获取成功");
+        notifyNetSearchSuccess(mTaskId.get(),AutoMapConstant.NetSearchKey.UPDATE_COLLECT,rep);
+        return mTaskId.get();
+    }
 }

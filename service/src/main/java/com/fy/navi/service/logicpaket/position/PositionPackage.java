@@ -216,7 +216,7 @@ public class PositionPackage implements IPositionAdapterCallback, SignalAdapterC
      */
     @Override
     public void onSystemStateChanged(int state) {
-        if(state == 0){
+        if(state == 4){
             mPositionAdapter.saveLocStorage();
             Logger.d("onSystemStateChanged1",state);
         }

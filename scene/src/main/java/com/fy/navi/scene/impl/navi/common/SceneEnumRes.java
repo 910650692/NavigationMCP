@@ -12,7 +12,7 @@ public final class SceneEnumRes {
      * @param value value
      * @return AutoUIDrawable
      */
-    public static AutoUIDrawable getDrawableEnumName(final SceneCommonStruct.TbtIconAction value) {
+    /*public static AutoUIDrawable getDrawableEnumName(final SceneCommonStruct.TbtIconAction value) {
         return switch (value) {
             case ManeuverIconTurnLeft -> new AutoUIDrawable(R.drawable.img_tbt_hud_sou2_day);
             case ManeuverIconTurnRight -> new AutoUIDrawable(R.drawable.img_tbt_hud_sou3_day);
@@ -71,7 +71,7 @@ public final class SceneEnumRes {
             case ManeuverIconMergeRight -> new AutoUIDrawable(R.drawable.img_tbt_hud_sou70_day);
             default -> new AutoUIDrawable(0, 0, 0, 0);
         };
-    }
+    }*/
 
     /**
      * @param value value

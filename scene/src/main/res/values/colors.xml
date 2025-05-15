@@ -215,6 +215,7 @@
     <color name="traffic_positive_bg_color">#2461EA</color>
     <color name="traffic_negative_bg_color">#338E97B9</color>
     <color name="traffic_positive_text_color">#ffffff</color>
+    <color name="traffic_negative_text_color">#000000</color>
     <color name="traffic_bg_bg_pic_size_color">#FF8500</color>
     <!--Launcher-Widget-->
     <color name="widget_egle_bg_color">#FFF8F8FA</color>

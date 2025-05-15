@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.utils.ConvertUtils;
 import com.android.utils.ResourceUtils;
+import com.android.utils.ToastUtils;
 import com.android.utils.log.Logger;
 import com.fy.navi.scene.BaseSceneView;
 import com.fy.navi.scene.R;
@@ -25,6 +26,7 @@ import com.fy.navi.scene.ui.adapter.ChargeEquipmentListAdapter;
 import com.fy.navi.scene.ui.search.ChargeQrCodeDialog;
 import com.fy.navi.scene.ui.search.SearchConfirmDialog;
 import com.fy.navi.service.MapDefaultFinalTag;
+import com.fy.navi.service.adapter.search.cloudByPatac.rep.BaseRep;
 import com.fy.navi.service.define.search.ChargeEquipmentInfo;
 import com.fy.navi.service.define.search.ChargePriceInfo;
 import com.fy.navi.service.define.search.ConnectorInfoItem;
@@ -42,6 +44,7 @@ public class ScenePoiChargingStationReservationListView extends BaseSceneView<Sc
     private static final String TAG = ScenePoiChargingStationReservationListView.class.getSimpleName();
     private ChargeEquipmentListAdapter mAdapter;
     private ArrayList<EquipmentInfo> mEquipmentList;
+    private ConnectorInfoItem mCurrentConnector;
     private final int mSpanCount = 2;
 
     public ScenePoiChargingStationReservationListView(@NonNull Context context) {
@@ -92,6 +95,17 @@ public class ScenePoiChargingStationReservationListView extends BaseSceneView<Sc
             public void onItemClick(ConnectorInfoItem info) {
                 mScreenViewModel.createReversion();
             }
+
+            @Override
+            public void onUnLockClick(ConnectorInfoItem info) {
+                mCurrentConnector = info;
+                mScreenViewModel.unGroundLock();
+            }
+
+            @Override
+            public void onCancelReservation(ConnectorInfoItem info) {
+
+            }
         });
         mViewBinding.poiChargeStationList.setAdapter(mAdapter);
     }
@@ -132,5 +146,13 @@ public class ScenePoiChargingStationReservationListView extends BaseSceneView<Sc
             }
         }
         mAdapter.notifyList(mEquipmentList);
+    }
+
+    public void notifyUnLockResult(String code){
+        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"code: "+code);
+        if("0000".equals(code)){
+
+        }
+//        ToastUtils.Companion.getInstance().showCustomToastView(getContext().getString( ? R.string.unlock_tip_success : R.string.unlock_tip_fail));
     }
 }

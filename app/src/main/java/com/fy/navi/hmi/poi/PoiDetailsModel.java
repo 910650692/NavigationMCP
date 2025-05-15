@@ -102,8 +102,12 @@ public class PoiDetailsModel extends BaseModel<PoiDetailsViewModel> implements S
 
     @Override
     public void onNetSearchResult(final int taskId,String searchKey,BaseRep result) {
-        if(AutoMapConstant.NetSearchKey.QUERY_STATION_INFO.equals(searchKey)){
-            mViewModel.notifyNetSearchResult(taskId,result);
+        switch (searchKey){
+            case AutoMapConstant.NetSearchKey.QUERY_STATION_INFO:
+                mViewModel.notifyNetSearchResult(taskId,result);
+                break;
+            case AutoMapConstant.NetSearchKey.UPDATE_COLLECT:
+                mViewModel.notifyCollectStatus(result);
         }
     }
 }

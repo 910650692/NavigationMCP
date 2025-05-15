@@ -124,9 +124,16 @@ public interface ISearchApi {
     // 云端查询充电站信息
     int queryStationInfo(SearchRequestParameter searchRequestParameter);
 
+    // 云端查询充电桩信息
     int queryEquipmentInfo(SearchRequestParameter searchRequestParameter);
 
+    // 云端创建预约
     int createReservation(SearchRequestParameter searchRequestParameter);
+
+    // 云端解开地锁
+    int unGroundLock(SearchRequestParameter searchRequestParameter);
+
+    int updateCollectStatus(SearchRequestParameter searchRequestParameter);
     /**
      * 取消所有搜索
      */

@@ -84,7 +84,6 @@
                 android:focusable="false"
                 android:paddingEnd="@dimen/dp_5"
                 android:singleLine="true"
-                android:text="@{viaBean.name}"
                 android:textColor="@color/common_title_purple_color"
                 android:textSize="@dimen/sp_46"
                 app:layout_constraintBottom_toBottomOf="@id/gl_name"

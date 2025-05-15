@@ -5,6 +5,7 @@ import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
 import android.annotation.SuppressLint;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -88,6 +89,9 @@ public class NaviViaListAdapter extends RecyclerView.Adapter<NaviViaListAdapter.
             setChargeUi(mList.get(position).getArriveBatteryLeft(),
                     holder.itemBinding.sivAddViaElec, holder.itemBinding.stvAddViaElec);
         }
+        String name = TextUtils.isEmpty(mList.get(position).getName()) ?
+                holder.itemBinding.getRoot().getContext().getString(R.string.navi_unknown_address) : mList.get(position).getName();
+        holder.itemBinding.stvAddViaName.setText(name);
         holder.itemBinding.setViaBean(mList.get(position));
         if (position == mList.size() - 1) {
             holder.itemBinding.stvAddViaIcon.setBackgroundResource(R.drawable.img_navi_via_item_btn_end);

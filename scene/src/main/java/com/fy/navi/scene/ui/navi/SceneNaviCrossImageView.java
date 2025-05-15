@@ -60,6 +60,8 @@ public class SceneNaviCrossImageView extends NaviSceneBase<SceneNaviCrossImageVi
 
     @Override
     protected void initObserver() {
+        // 预防底图穿透
+        setClickable(true);
     }
 
     @Override
@@ -107,9 +109,10 @@ public class SceneNaviCrossImageView extends NaviSceneBase<SceneNaviCrossImageVi
      * @param routeRemainDist 剩余距离
      */
     public void updateCrossProgress(final long routeRemainDist) {
-        Logger.i(TAG, "updateCrossProgress");
         if (mScreenViewModel != null) {
             mScreenViewModel.updateCrossProgress(routeRemainDist);
+        } else {
+            Logger.e(TAG, "mScreenViewModel == null routeRemainDist:"+routeRemainDist);
         }
     }
 

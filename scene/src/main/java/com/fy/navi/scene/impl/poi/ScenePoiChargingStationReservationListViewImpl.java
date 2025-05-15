@@ -35,4 +35,8 @@ public class ScenePoiChargingStationReservationListViewImpl extends BaseSceneMod
     public void createReversion(){
         mSearchPackage.createReservation();
     }
+
+    public void unGroundLock(){
+        mSearchPackage.unGroundLock();
+    }
 }

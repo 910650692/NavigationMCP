@@ -108,6 +108,8 @@ public interface AutoMapConstant {
         String QUERY_STATION_INFO = "query_station_info";
         String CREATE_RESERVATION = "create_reservation";
         String QUERY_EQUIPMENT_INFO = "query_equipment_info";
+        String UNLOCK_GROUND = "unlock_ground";
+        String UPDATE_COLLECT = "update_collect";
     }
 
     @interface TrafficEventBundleKey {

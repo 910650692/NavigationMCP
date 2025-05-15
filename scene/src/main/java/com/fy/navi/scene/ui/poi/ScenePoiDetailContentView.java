@@ -47,6 +47,7 @@ import com.fy.navi.scene.ui.search.SearchLoadingDialog;
 import com.fy.navi.service.AppContext;
 import com.fy.navi.service.AutoMapConstant;
 import com.fy.navi.service.MapDefaultFinalTag;
+import com.fy.navi.service.adapter.search.cloudByPatac.rep.BaseRep;
 import com.fy.navi.service.define.bean.GeoPoint;
 import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.mapdata.CityDataInfo;
@@ -100,6 +101,7 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
     private SearchResultEntity mSearchResultEntity;
     private boolean mIsOpenFromNavi;
     private int mChildSelectIndex = -1;
+    private boolean mIsCollectStatus = false;
 
     public ScenePoiDetailContentView(final @NonNull Context context) {
         super(context);
@@ -140,8 +142,15 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
                 handleRouteClick());
         mViewBinding.scenePoiDetailsBottomView.stlAroundSearch.setOnClickListener(v ->
                 handleAroundSearchClick());
-        mViewBinding.scenePoiDetailsBottomView.stlPoiFavorites.setOnClickListener(v ->
-                handleFavoriteClick());
+        mViewBinding.scenePoiDetailsBottomView.stlPoiFavorites.setOnClickListener(v ->{
+                if(!ConvertUtils.isEmpty(mPoiInfoEntity.getOperatorId())){
+                    handleNetFavoriteClick();
+                }else{
+                    handleFavoriteClick();
+                }
+
+            }
+        );
 
         updateRouteButton();
     }
@@ -301,6 +310,11 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
         }
     }
 
+    private void handleNetFavoriteClick(){
+        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "点击自营站收藏");
+        mScreenViewModel.updateCollectStatus(mPoiInfoEntity);
+    }
+
     /**
      * 添加途径点按钮点击事件
      */
@@ -405,6 +419,17 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
             mViewBinding.poiArrivalCapacity.setVisibility(View.GONE);
             mViewBinding.sivArrivalCapacity.setVisibility(View.GONE);
             mViewBinding.poiContentLayout.setVisibility(View.GONE);
+        }
+    }
+
+    public void onCollectUpdate(String code){
+        if("0000".equals(code)){
+            mIsCollectStatus = !mIsCollectStatus;
+            final int favoriteIcon = !mIsCollectStatus ? R.drawable.icon_basic_ic_star_default :
+                    R.drawable.icon_basic_ic_star_fav;
+            mViewBinding.scenePoiDetailsBottomView.sivPoiFavorites.setImageDrawable(
+                    ContextCompat.getDrawable(getContext(), favoriteIcon));
+            ToastUtils.Companion.getInstance().showCustomToastView(mIsCollectStatus ? getContext().getString(R.string.sha_has_favorite) : getContext().getString(R.string.sha_cancel_favorite));
         }
     }
 

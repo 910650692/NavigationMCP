@@ -67,6 +67,15 @@ public class SceneScaleView extends BaseSceneView<SceneScaleBinding, SceneScaleI
         }
         ThreadManager.getInstance().postUi(() -> {
             mViewBinding.screenScaleSize.setText(scale);
+
+            if (scale.equals("1000公里")) {
+                mViewBinding.screenScaleReduce.setAlpha(0.5f);
+            } else if (scale.equals("10米")) {
+                mViewBinding.screenScaleAdd.setAlpha(0.5f);
+            } else {
+                mViewBinding.screenScaleAdd.setAlpha(1.0f);
+                mViewBinding.screenScaleReduce.setAlpha(1.0f);
+            }
         });
     }
 }

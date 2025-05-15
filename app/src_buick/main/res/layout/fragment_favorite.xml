@@ -172,16 +172,14 @@
                         android:src="@drawable/img_favorite_more" />
                 </com.fy.navi.ui.view.SkinRelativeLayout>
 
-                <com.fy.navi.ui.view.SkinCheckBox
+                <com.fy.navi.ui.view.SkinTextView
                     clickCommand="@{ViewModel.mShowHomeCompanyDisplayed}"
                     android:id="@+id/switch_favorite"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:checked="@{ViewModel.mIsHomeCompanyDisplayed}"
                     android:layout_marginTop="@dimen/dp_41"
-                    android:background="@android:color/transparent"
-                    android:button="@drawable/custom_thumb"
+                    android:background="@{ViewModel.mIsHomeCompanyDisplayed ? @drawable/img_setting_switch_on : @drawable/img_setting_switch_off}"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/rl_favorite_home" />
 

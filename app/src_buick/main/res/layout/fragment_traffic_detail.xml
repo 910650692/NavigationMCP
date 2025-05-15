@@ -140,7 +140,7 @@
             android:gravity="center"
             android:text="@{ViewModel.thumbNumber}"
             android:alpha="@{ViewModel.thumbPrimaseEnable ? 1f:0.5f}"
-            android:textColor="@color/white"
+            android:textColor="@color/traffic_positive_text_color"
             android:textSize="@dimen/sp_34"
             android:enabled="@{ViewModel.thumbPrimaseEnable}"
             clickCommand="@{ViewModel.uploadTrafficEventThumb}"
@@ -157,7 +157,7 @@
             android:enabled="@{ViewModel.thumbPrimaseEnable}"
             clickCommand="@{ViewModel.uploadTrafficEventUnThumb}"
             android:text="@{ViewModel.unThumbNumber}"
-            android:textColor="@color/main_map_limit_current_city"
+            android:textColor="@color/traffic_negative_text_color"
             android:textSize="@dimen/sp_34"
             app:layout_constraintEnd_toEndOf="@id/iv_close"
             app:layout_constraintTop_toTopOf="@id/tv_increase" />

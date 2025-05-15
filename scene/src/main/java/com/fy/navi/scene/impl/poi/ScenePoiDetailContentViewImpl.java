@@ -245,4 +245,8 @@ public class ScenePoiDetailContentViewImpl extends BaseSceneModel<ScenePoiDetail
     public int getViaCount() {
         return mRoutePackage.getViaPointsCount(MapType.MAIN_SCREEN_MAIN_MAP);
     }
+
+    public int updateCollectStatus(PoiInfoEntity poiInfo) {
+        return mSearchPackage.updateCollectStatus();
+    }
 }

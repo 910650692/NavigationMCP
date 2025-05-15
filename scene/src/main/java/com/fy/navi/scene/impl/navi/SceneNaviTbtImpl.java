@@ -318,7 +318,7 @@ public class SceneNaviTbtImpl extends BaseSceneModel<SceneNaviTbtView> implement
                     mCurNaviInfo.NaviInfoData.get(mCurNaviInfo.NaviInfoFlag).maneuverID,
                     mCurNaviInfo.getRingOutCnt());
             Logger.i(TAG, "SceneNaviTbtImpl showOfflineTurnIcon resId:" + resId);
-            mScreenView.setBackgroundNaviOfflineCommonTurnIcon(SceneCommonStruct.TbtIconAction.get(resId));
+            mScreenView.setBackgroundNaviOfflineCommonTurnIcon(SceneCommonStruct.TbtExitIconAction.get(resId));
             mScreenView.setBackgroundNaviOfflineExitTurnIcon(SceneCommonStruct.TbtExitIconAction.get(resId));
         } else {
             Logger.i(TAG, "showOfflineTurnIcon mCurNaviInfo/NaviInfoData null:");

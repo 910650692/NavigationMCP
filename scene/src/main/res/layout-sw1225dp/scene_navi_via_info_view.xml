@@ -11,7 +11,7 @@
     </data>
 
     <com.fy.navi.ui.view.SkinConstraintLayout
-        android:layout_width="@dimen/dp_640"
+        android:layout_width="@dimen/dp_708"
         android:layout_height="wrap_content">
 
         <com.fy.navi.ui.view.SkinView
@@ -23,9 +23,9 @@
 
         <com.fy.navi.ui.view.SkinTextView
             android:id="@+id/siv_way"
-            android:layout_width="@dimen/dp_60"
-            android:layout_height="@dimen/dp_60"
-            android:layout_marginStart="@dimen/dp_60"
+            android:layout_width="@dimen/dp_44"
+            android:layout_height="@dimen/dp_44"
+            android:layout_marginStart="@dimen/dp_32"
             android:background="@drawable/img_navi_via_item_btn_pass"
             android:gravity="center"
             android:text="@string/navi_via_item_pass"
@@ -39,12 +39,12 @@
             android:id="@+id/stv_way"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_24"
+            android:layout_marginStart="@dimen/dp_32"
+            android:ellipsize="end"
             android:maxWidth="@dimen/dp_242"
             android:maxLines="1"
             android:textColor="@color/common_title_purple_color"
             android:textSize="@dimen/sp_34"
-            android:ellipsize="end"
             app:layout_constraintBottom_toBottomOf="@id/sv_bottom_view"
             app:layout_constraintStart_toEndOf="@id/siv_way"
             app:layout_constraintTop_toTopOf="@id/sv_bottom_view"
@@ -67,13 +67,14 @@
             android:id="@+id/stv_via_count"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="@id/sv_bottom_view"
-            app:layout_constraintStart_toEndOf="@id/stv_way"
-            app:layout_constraintTop_toTopOf="@id/sv_bottom_view"
+            android:layout_marginStart="@dimen/dp_24"
+            android:layout_marginEnd="@dimen/dp_30"
             android:textColor="@color/common_title_color"
             android:textSize="@dimen/sp_34"
             android:visibility="visible"
-            android:layout_marginStart="@dimen/dp_24"
-            tools:text="等2个途经点"/>
+            app:layout_constraintBottom_toBottomOf="@id/sv_bottom_view"
+            app:layout_constraintEnd_toEndOf="@+id/sv_bottom_view"
+            app:layout_constraintTop_toTopOf="@id/sv_bottom_view"
+            tools:text="等2个途经点" />
     </com.fy.navi.ui.view.SkinConstraintLayout>
 </layout>

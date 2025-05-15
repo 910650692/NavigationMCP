@@ -162,10 +162,11 @@ public class GuidanceCallback implements INaviObserver, ISoundPlayObserver {
     @Override
     public void onShowCrossImage(final CrossImageInfo info) {
         final CrossImageEntity naviImageInfo = NaviDataFormatHelper.forMatImageInfo(info);
+        Logger.i(TAG, "onShowCrossImage naviImageInfo:" +  (naviImageInfo == null ? "null" : naviImageInfo.getDistance()));
         if (!ConvertUtils.isEmpty(mGuidanceObservers)) {
             for (GuidanceObserver guidanceObserver : mGuidanceObservers.values()) {
                 if (guidanceObserver != null) {
-                    guidanceObserver.onCrossImageInfo(naviImageInfo != null, naviImageInfo);
+                    guidanceObserver.onCrossImageInfo(naviImageInfo != null && naviImageInfo.getDistance() > 0, naviImageInfo);
                 }
             }
         }
@@ -173,6 +174,7 @@ public class GuidanceCallback implements INaviObserver, ISoundPlayObserver {
 
     @Override
     public void onHideCrossImage(final int type) {
+        Logger.i(TAG, "onHideCrossImage type:" + type);
         if (!ConvertUtils.isEmpty(mGuidanceObservers)) {
             for (GuidanceObserver guidanceObserver : mGuidanceObservers.values()) {
                 if (guidanceObserver != null) {

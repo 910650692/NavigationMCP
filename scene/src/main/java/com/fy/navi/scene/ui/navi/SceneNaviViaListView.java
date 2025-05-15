@@ -171,10 +171,9 @@ public class SceneNaviViaListView extends NaviSceneBase<SceneNaviViaListViewBind
 
             @Override
             public void onDelClick(final int position, final NaviViaEntity entity) {
-                Logger.i(TAG, "onDelClick", "position:" + position, "callBack is null :" +
-                        (mISceneCallback == null));
+                Logger.i(TAG, "onDelClick", "position:" + position, "callBack is null :" + (mISceneCallback == null));
                 if (mISceneCallback != null) {
-                    Logger.i(TAG, "onDelClick:" + position);
+                    Logger.i(TAG, "entity:" + (entity == null? "null":entity.getPid()+":"+entity.getName()));
                     mISceneCallback.deleteViaPoint(entity);
                     resetTimer();
                 }
@@ -237,7 +236,11 @@ public class SceneNaviViaListView extends NaviSceneBase<SceneNaviViaListViewBind
      * @param entity entity
      */
     public void notifyDeleteViaPointResult(final boolean result, final NaviViaEntity entity) {
-        Logger.i(TAG, "notifyDeleteViaPointResult:" + result);
+        if(entity == null){
+            Logger.i(TAG, "result:" + result +" entity == null");
+            return;
+        }
+        Logger.i(TAG, "result:" + result +" pid:" + entity.getPid() +" name:" + entity.getName() + " address:" + entity.getAddress());
         if (result) {
             mNaviViaListAdapter.removeData(entity);
         }

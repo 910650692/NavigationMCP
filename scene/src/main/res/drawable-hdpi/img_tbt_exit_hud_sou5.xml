@@ -1,13 +1,35 @@
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
-    android:width="@dimen/dp_140"
-    android:height="@dimen/dp_140"
-    android:viewportWidth="140"
-    android:viewportHeight="140">
+    android:width="@dimen/dp_80"
+    android:height="@dimen/dp_80"
+    android:viewportWidth="80"
+    android:viewportHeight="80">
   <path
-      android:pathData="M55.096,28.253C53.484,27.023 54.054,24.471 56.035,24.042L95.255,15.556C96.95,15.189 98.454,16.704 98.076,18.396L89.362,57.381C88.921,59.354 86.374,59.91 85.151,58.3L77.225,47.872L68.145,56.976C62.462,62.929 59.03,72.144 58.928,81L58.921,123.333C58.921,125.082 57.502,126.5 55.753,126.5L44.668,126.5C42.918,126.5 41.5,125.082 41.5,123.332L41.5,80.722C41.505,67.124 47.111,53.857 55.779,44.708L64.74,35.722L64.802,35.66L55.096,28.253Z"
+      android:pathData="M80,0l-80,0l-0,80l80,0z"
       android:strokeWidth="1"
       android:fillColor="@color/route_tbt_color_2"
-      android:fillAlpha="1"
+      android:fillAlpha="0"
       android:fillType="evenOdd"
       android:strokeColor="#00000000"/>
+  <group>
+    <clip-path
+        android:pathData="M80,0l-80,0l-0,80l80,0z"/>
+    <path
+        android:pathData="M57.573,3.482L26.125,11.095C25.512,11.244 25.135,11.862 25.283,12.475C25.349,12.747 25.512,12.985 25.742,13.144L41.118,23.84L41.118,23.84L53.842,37.571C54.271,38.034 54.994,38.062 55.457,37.633C55.662,37.443 55.79,37.184 55.817,36.906L58.979,4.705C59.041,4.077 58.582,3.517 57.954,3.456C57.826,3.443 57.698,3.452 57.573,3.482Z"
+        android:strokeWidth="1"
+        android:fillColor="@color/route_tbt_color_2"
+        android:fillType="evenOdd"
+        android:strokeColor="#00000000"/>
+    <path
+        android:pathData="M41.648,22.74L31.196,34.703C27.649,38.763 25.693,43.973 25.693,49.365L25.693,74.935L25.693,74.935"
+        android:strokeWidth="13"
+        android:fillColor="#00000000"
+        android:strokeColor="@color/route_tbt_color_2"
+        android:fillType="evenOdd"/>
+    <path
+        android:pathData="M31.048,69L20.334,69A1.143,1.143 0,0 0,19.191 70.143L19.191,75.857A1.143,1.143 0,0 0,20.334 77L31.048,77A1.143,1.143 0,0 0,32.191 75.857L32.191,70.143A1.143,1.143 0,0 0,31.048 69z"
+        android:strokeWidth="1"
+        android:fillColor="@color/route_tbt_color_2"
+        android:fillType="evenOdd"
+        android:strokeColor="#00000000"/>
+  </group>
 </vector>

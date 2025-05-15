@@ -188,7 +188,7 @@ public class SceneNaviTbtView extends NaviSceneBase<SceneNaviTbtViewBinding, Sce
      * @param iconAction iconAction
      */
     public void setBackgroundNaviOfflineCommonTurnIcon(
-            final SceneCommonStruct.TbtIconAction iconAction) {
+            final SceneCommonStruct.TbtExitIconAction iconAction) {
         Logger.d(TAG, "GuidanceTbtView setBackgroundNaviOfflineCommonTurnIcon：" +
                 iconAction.name());
         mViewBinding.sivHudSou3.setBackgroundResource(SceneEnumRes.getDrawableEnumName(iconAction).
@@ -251,8 +251,7 @@ public class SceneNaviTbtView extends NaviSceneBase<SceneNaviTbtViewBinding, Sce
 
     public void onCrossImageInfo(boolean isRealNeedShow, CrossImageEntity naviImageInfo) {
         Logger.i(TAG, "onCrossImageInfo isRealNeedShow:" + isRealNeedShow +
-                " mCrossDistance:" + mCrossDistance + " naviImageInfo:" +
-                (naviImageInfo == null ? 0 : naviImageInfo.getDistance()));
+                " mCrossDistance:" + mCrossDistance + " naviImageInfo:" + (naviImageInfo == null ? 0 : naviImageInfo.getDistance()));
         mIsCrossImageShow = isRealNeedShow;
         if (!mIsCrossImageShow) {
             resetProgress();

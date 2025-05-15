@@ -48,6 +48,7 @@ public class ChargeEquipmentListAdapter extends RecyclerView.Adapter<ChargeEquip
             return;
         }
         holder.mBinding.setConnectorInfoItem(info.getmConnectorInfoItem().get(0));
+        holder.mBinding.setHandler(new MyEventHandle());
         holder.mBinding.chargeReservationButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -86,6 +87,20 @@ public class ChargeEquipmentListAdapter extends RecyclerView.Adapter<ChargeEquip
         .build().show();
     }
 
+    // 打开降地锁弹框
+    public void openUnLockDialog(ConnectorInfoItem info){
+        new ChargeStationConfirmDialog.Build(mContext).setDialogObserver(new IBaseDialogClickListener() {
+            @Override
+            public void onCommitClick() {
+                mItemClickListener.onUnLockClick(info);
+            }
+        })
+        .setTitle(ResourceUtils.Companion.getInstance().getString(R.string.sure_unlock))
+        .setTip(ResourceUtils.Companion.getInstance().getString(R.string.sure_unlock_detail))
+        .setConfirmTitle(ResourceUtils.Companion.getInstance().getString(R.string.dsc_confirm))
+        .build().show();
+    }
+
     public void setmItemClickListener(final OnItemClickListener itemClickListener) {
         this.mItemClickListener = itemClickListener;
     }
@@ -100,5 +115,16 @@ public class ChargeEquipmentListAdapter extends RecyclerView.Adapter<ChargeEquip
 
     public interface OnItemClickListener {
         void onItemClick(ConnectorInfoItem info);
+        void onUnLockClick(ConnectorInfoItem info);
+        void onCancelReservation(ConnectorInfoItem info);
+    }
+
+    public class MyEventHandle {
+        public void unLock(ConnectorInfoItem item){
+            openUnLockDialog(item);
+        }
+        public void cancelReservation(ConnectorInfoItem item){
+            mItemClickListener.onCancelReservation(item);
+        }
     }
 }

@@ -248,6 +248,11 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
      * @param routeRemainDist 路口大图进度
      */
     public void updateCrossProgress(final long routeRemainDist) {
+        Logger.i(TAG, "updateCrossProgress", "routeRemainDist:" + routeRemainDist);
+        /*if (routeRemainDist <= 0) {
+            mBinding.sceneNaviCrossImage.onCrossImageInfo(false, null);
+            mBinding.sceneNaviTbt.onCrossImageInfo(false, null);
+        }*/
         mBinding.sceneNaviCrossImage.updateCrossProgress(routeRemainDist);
         ThreadManager.getInstance().postUi(new Runnable() {
             @Override

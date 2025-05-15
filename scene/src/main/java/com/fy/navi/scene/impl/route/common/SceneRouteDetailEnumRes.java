@@ -15,25 +15,25 @@ public interface SceneRouteDetailEnumRes {
         switch (value) {
             case MainActionTurnLeft:
                 return new AutoUIDrawable(
-                        R.drawable.img_tbt_hud_sou2_day);
+                        R.drawable.img_tbt_exit_hud_sou2);
             case MainActionTurnRight:
                 return new AutoUIDrawable(
-                        R.drawable.img_tbt_hud_sou3_day);
+                        R.drawable.img_tbt_exit_hud_sou3);
             case MainActionSlightLeft:
                 return new AutoUIDrawable(
-                        R.drawable.img_tbt_hud_sou4_day);
+                        R.drawable.img_tbt_exit_hud_sou4);
             case MainActionSlightRight:
                 return new AutoUIDrawable(
-                        R.drawable.img_tbt_hud_sou5_day);
+                        R.drawable.img_tbt_exit_hud_sou5);
             case MainActionTurnHardLeft:
                 return new AutoUIDrawable(
-                        R.drawable.img_tbt_hud_sou6_day);
+                        R.drawable.img_tbt_exit_hud_sou6);
             case MainActionTurnHardRight:
                 return new AutoUIDrawable(
-                        R.drawable.img_tbt_hud_sou7_day);
+                        R.drawable.img_tbt_exit_hud_sou7);
             case MainActionUTurn:
                 return new AutoUIDrawable(
-                        R.drawable.img_tbt_hud_sou8_day);
+                        R.drawable.img_tbt_exit_hud_sou8);
             case MainActionContinue:
             case MainActionSlow:
             case MainActionPlugContinue:
@@ -44,19 +44,19 @@ public interface SceneRouteDetailEnumRes {
             case MainActionByEscalator:
             case MainActionCount:
                 return new AutoUIDrawable(
-                        R.drawable.img_tbt_hud_sou9_day);
+                        R.drawable.img_tbt_exit_hud_sou9);
             case MainActionMergeLeft:
                 return new AutoUIDrawable(
-                        R.drawable.img_tbt_hud_sou71_day);
+                        R.drawable.img_tbt_exit_hud_sou71);
             case MainActionMergeRight:
                 return new AutoUIDrawable(
-                        R.drawable.img_tbt_hud_sou70_day);
+                        R.drawable.img_tbt_exit_hud_sou70);
             case MainActionEntryRing:
                 return new AutoUIDrawable(
-                        R.drawable.img_tbt_hud_sou11_day);
+                        R.drawable.img_tbt_exit_hud_sou11);
             case MainActionLeaveRing:
                 return new AutoUIDrawable(
-                        R.drawable.img_tbt_hud_sou12_day);
+                        R.drawable.img_tbt_exit_hud_sou12);
             default:
                 return new AutoUIDrawable(0, 0, 0, 0);
         }

@@ -259,12 +259,22 @@ final public class SearchAdapter {
         return mSearchApi.queryStationInfo(searchRequestParameter);
     }
 
+    // 查询充电桩信息
     public int queryEquipmentInfo(final SearchRequestParameter searchRequestParameter){
         return mSearchApi.queryEquipmentInfo(searchRequestParameter);
     }
 
-    //
+    // 创建预约
     public int createReservation(final SearchRequestParameter searchRequestParameter){
         return mSearchApi.createReservation(searchRequestParameter);
+    }
+
+    // 解开地锁
+    public int unGroundLock(final SearchRequestParameter searchRequestParameter){
+        return mSearchApi.unGroundLock(searchRequestParameter);
+    }
+
+    public int updateCollectStatus(final SearchRequestParameter searchRequestParameter){
+        return mSearchApi.updateCollectStatus(searchRequestParameter);
     }
 }

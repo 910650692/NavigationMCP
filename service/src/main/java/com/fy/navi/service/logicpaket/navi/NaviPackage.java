@@ -370,7 +370,7 @@ public final class NaviPackage implements GuidanceObserver {
 
     @Override
     public void onCrossImageInfo(final boolean isShowImage, final CrossImageEntity naviImageInfo) {
-        Logger.i(TAG, "onCrossImageInfo: ");
+        Logger.i(TAG, "onCrossImageInfo isShowImage:" + isShowImage + " naviImageInfo:" + naviImageInfo);
         ThreadManager.getInstance().postUi(() -> {
             if (!ConvertUtils.isEmpty(mGuidanceObservers)) {
                 for (IGuidanceObserver guidanceObserver : mGuidanceObservers.values()) {

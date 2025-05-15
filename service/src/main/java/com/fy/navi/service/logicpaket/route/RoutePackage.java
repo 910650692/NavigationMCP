@@ -695,6 +695,7 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
                 Logger.i(TAG, "have no this point");
                 return false;
             }
+            Logger.i(TAG, "index:" + index + " Name:"+poiInfoEntity.getName());
             routeParams.remove(index);
             mViaRouteParams.put(mapTypeId, routeParams);
             if (isRequestRoute) {

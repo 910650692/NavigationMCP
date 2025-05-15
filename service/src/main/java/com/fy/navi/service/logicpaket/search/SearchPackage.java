@@ -1535,4 +1535,15 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
         return mSearchAdapter.createReservation(requestParameterBuilder);
     }
 
+    public int unGroundLock(){
+        final SearchRequestParameter requestParameterBuilder = new SearchRequestParameter.Builder()
+                .build();
+        return mSearchAdapter.unGroundLock(requestParameterBuilder);
+    }
+
+    public int updateCollectStatus(){
+        final SearchRequestParameter requestParameterBuilder = new SearchRequestParameter.Builder()
+                .build();
+        return mSearchAdapter.updateCollectStatus(requestParameterBuilder);
+    }
 }

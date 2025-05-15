@@ -25,6 +25,8 @@ public class BaseChargingStationReservationListViewModel extends BaseViewModel<C
         Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"getResultCode"+result.getResultCode());
         if("0000".equals(result.getResultCode())){
             mView.notifyCreateReservationSuccess();
+        }else{
+            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"getError"+result.getMessage());
         }
     }
 
@@ -33,6 +35,13 @@ public class BaseChargingStationReservationListViewModel extends BaseViewModel<C
         if("0000".equals(result.getResultCode())){
             EquipmentInfo equipmentInfo = GsonUtils.fromJson(String.valueOf(result.getDataSet()), EquipmentInfo.class);
             mView.notifyEquipmentResult(equipmentInfo);
+        }else{
+            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"getError"+result.getMessage());
         }
+    }
+
+    public void onUnLockResult(BaseRep result){
+        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"getResultCode"+result.getResultCode());
+        mView.notifyUnLockResult(result.getResultCode());
     }
 }

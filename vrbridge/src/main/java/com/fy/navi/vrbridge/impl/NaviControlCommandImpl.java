@@ -2029,7 +2029,7 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
                 openMap();
                 break;
             case IVrBridgeConstant.MapToggleAction.CLOSE:
-                closeMap();
+                closeMap(respCallback);
                 break;
             default:
                 return CallResponse.createFailResponse("不支持的操作类型");
@@ -2069,12 +2069,19 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
 
     /**
      * 关闭地图
+     *
+     * @param respCallback 执行结果回调.
      */
-    private void closeMap() {
+    private void closeMap(final RespCallback respCallback) {
         if (MapStateManager.getInstance().isNaviStatus()) {
             stopNavigation();
         }
         VoiceSearchManager.getInstance().sendMoveBack();
+        if (null != respCallback) {
+            final CallResponse response = CallResponse.createSuccessResponse("已为你关闭地图");
+            response.setNeedPlayMessage(true);
+            respCallback.onResponse(response);
+        }
     }
 
     /**

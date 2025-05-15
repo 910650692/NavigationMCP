@@ -42,6 +42,9 @@ public class ChargingStationReservationListModel extends BaseModel<BaseChargingS
             case AutoMapConstant.NetSearchKey.QUERY_EQUIPMENT_INFO:
                 mViewModel.onQueryEquipmentResult(result);
                 break;
+            case AutoMapConstant.NetSearchKey.UNLOCK_GROUND:
+                mViewModel.onUnLockResult(result);
+                break;
         }
     }
 }

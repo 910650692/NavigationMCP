@@ -10,7 +10,6 @@ import android.view.ViewGroup;
 import com.fy.navi.scene.R;
 import com.fy.navi.scene.databinding.SceneNaviSpeedViewBinding;
 import com.fy.navi.scene.impl.navi.SceneNaviSpeedImpl;
-import com.fy.navi.scene.impl.navi.inter.ISceneCallback;
 import com.fy.navi.scene.ui.navi.manager.NaviSceneBase;
 import com.fy.navi.scene.ui.navi.manager.NaviSceneId;
 import com.fy.navi.service.MapDefaultFinalTag;
@@ -79,9 +78,8 @@ public class SceneNaviSpeedView extends NaviSceneBase<SceneNaviSpeedViewBinding,
      * @param averageSpeed 平均速度
      * @param remain 剩余距离
      */
-    @SuppressLint("UseCompatLoadingForDrawables")
+    @SuppressLint({"UseCompatLoadingForDrawables", "SetTextI18n"})
     public void updateOverallInfo(final int speedLimit, final int averageSpeed, final int remain) {
-        mViewBinding.stvCurrentSpeed.setText(String.valueOf(averageSpeed));
         mViewBinding.stvSpeedLimit.setText(String.valueOf(speedLimit));
         mViewBinding.stvSpeedLimitKey.setText(getContext().getText(R.string.navi_speed_overall));
         // 超速时更换背景
@@ -97,23 +95,23 @@ public class SceneNaviSpeedView extends NaviSceneBase<SceneNaviSpeedViewBinding,
         if (remainDistance > 1000) {
             float remainKm = remainDistance / 100f;
             remainKm = Math.round(remainKm) / (float) 10;
-            mViewBinding.stvDistance.setText(String.valueOf(remainKm));
+            mViewBinding.stvDistance.setText(String.valueOf(remainKm) +
+                    getContext().getString(R.string.kilometre));
         } else {
             if (remainDistance < 0) {
                 remainDistance = 0;
             }
-            mViewBinding.stvDistance.setText(String.valueOf(remainDistance));
+            mViewBinding.stvDistance.setText(String.valueOf(remainDistance) +
+                    getContext().getString(R.string.m));
             mViewBinding.stvDistanceKey.setText(getContext().getText(R.string.navi_remaining_distance));
         }
     }
 
     /**
      * @param entity entity
-     * @param currentSpeed 当前的车速
      */
     @SuppressLint("SetTextI18n")
-    public void updateGreenWaveInfo(final SpeedOverallEntity entity, final int currentSpeed) {
-        mViewBinding.stvCurrentSpeed.setText(String.valueOf(currentSpeed));
+    public void updateGreenWaveInfo(final SpeedOverallEntity entity) {
         mViewBinding.stvSpeedLimit.setText(entity.getMinSpeed() + "-" + entity.getMaxSpeed());
         mViewBinding.stvSpeedLimitKey.setText(getContext().getText(R.string.navi_speed_suggest));
         mViewBinding.stvDistance.setText(String.valueOf(entity.getLightCount()));

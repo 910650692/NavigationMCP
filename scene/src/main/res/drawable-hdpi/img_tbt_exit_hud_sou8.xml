@@ -1,13 +1,31 @@
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
-    android:width="@dimen/dp_140"
-    android:height="@dimen/dp_140"
-    android:viewportWidth="140"
-    android:viewportHeight="140">
+    android:width="@dimen/dp_80"
+    android:height="@dimen/dp_80"
+    android:viewportWidth="80"
+    android:viewportHeight="80">
   <path
-      android:pathData="M41.356,52.151C41.349,51.927 41.35,51.851 41.353,51.741C41.354,51.671 41.356,51.588 41.356,51.444C41.356,31.316 57.42,15 77.548,15C97.676,15 113.992,31.316 113.992,51.444C113.992,51.814 113.987,52.182 113.976,52.549L113.923,52.549L113.923,122.089C113.923,123.838 112.505,125.257 110.755,125.257L99.667,125.257C97.917,125.257 96.499,123.838 96.499,122.089L96.499,52.549L96.29,52.549C96.312,52.183 96.322,51.815 96.322,51.444C96.322,41.076 87.917,32.67 77.548,32.67C67.179,32.67 58.825,41.031 58.825,51.399L58.825,52.984L58.809,52.984L58.809,84.839L71.202,83.174C73.211,82.904 74.613,85.112 73.516,86.816L51.784,120.549C50.844,122.007 48.71,122 47.78,120.535L26.376,86.807C25.293,85.101 26.7,82.907 28.703,83.18L41.38,84.909L41.38,52.984L41.356,52.984L41.356,52.151Z"
+      android:pathData="M0,0h80v80h-80z"
       android:strokeWidth="1"
       android:fillColor="@color/route_tbt_color_2"
-      android:fillAlpha="1"
+      android:fillAlpha="0"
+      android:fillType="evenOdd"
+      android:strokeColor="#00000000"/>
+  <path
+      android:pathData="M26.497,75.744L7.756,49.35C7.391,48.836 7.512,48.122 8.027,47.757C8.254,47.595 8.534,47.522 8.811,47.553L27.434,49.57L27.434,49.57L46.046,47.553C46.673,47.485 47.237,47.938 47.305,48.566C47.335,48.844 47.262,49.123 47.101,49.351L28.36,75.744C27.995,76.259 27.282,76.38 26.767,76.014C26.662,75.94 26.571,75.849 26.497,75.744Z"
+      android:strokeWidth="1"
+      android:fillColor="@color/route_tbt_color_2"
+      android:fillType="evenOdd"
+      android:strokeColor="#00000000"/>
+  <path
+      android:pathData="M27.429,51.17L27.429,28.421C27.429,17.458 36.315,8.571 47.278,8.571C58.241,8.571 67.129,17.457 67.132,28.421L67.143,75.339L67.143,75.339"
+      android:strokeWidth="13"
+      android:fillColor="#00000000"
+      android:strokeColor="@color/route_tbt_color_2"
+      android:fillType="evenOdd"/>
+  <path
+      android:pathData="M61.781,68.467L72.492,68.467A1.143,1.143 0,0 1,73.635 69.61L73.635,75.341A1.143,1.143 0,0 1,72.492 76.484L61.781,76.484A1.143,1.143 0,0 1,60.638 75.341L60.638,69.61A1.143,1.143 0,0 1,61.781 68.467z"
+      android:strokeWidth="1"
+      android:fillColor="@color/route_tbt_color_2"
       android:fillType="evenOdd"
       android:strokeColor="#00000000"/>
 </vector>

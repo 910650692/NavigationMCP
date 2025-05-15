@@ -97,7 +97,7 @@ IRouteResultObserver, INaviStatusCallback, ISceneCallback, IGuidanceObserver, IC
             Logger.d(TAG, "onMapLoadSuccess:LayerPackage.getInstance().getCarModeType(MapType.MAIN_SCREEN_MAIN_MAP):"+LayerPackage.getInstance().getCarModeType(MapType.MAIN_SCREEN_MAIN_MAP));
             LayerPackage.getInstance().setFollowMode(mMapTypeId, true);
             //设置地图模式 为3D模式  并不保存地图模式(不影响主图地图模式)
-            MapPackage.getInstance().switchMapModeByHud(MapType.CLUSTER_MAP, MapMode.UP_3D,false);
+            MapPackage.getInstance().switchMapMode(MapType.CLUSTER_MAP, MapMode.UP_3D);
             //仪表地图永为3D模式  比例尺保持17的样子
             MapPackage.getInstance().setZoomLevel(mMapTypeId, 17);
             //监听设置包变化

@@ -29,6 +29,8 @@
     <string name="search_charge_current_time">当前</string>
     <!--引导-->
     <string name="km">公里</string>
+    <string name="kilometre">km</string>
+    <string name="m">m</string>
     <string name="meter">米</string>
     <item name="highway_type" type="id" />
     <string name="rg_sg_after_meters"><Data><![CDATA[%1$s]]></Data></string>
@@ -115,6 +117,7 @@
     <string name="current_newest_path">当前已是最新路线</string>
     <string name="switch_car_angle">已切换至%s视角</string>
     <string name="navi_car_head_switch_while_overview">路线概览时保持正北朝上</string>
+    <string name="navi_unknown_address">未知地址</string>
 
     <!--算路相关-->
     <string name="route_search_loading">路线规划中…</string>
@@ -266,7 +269,11 @@
     <string name="charge_equipment_status">空闲</string>
     <string name="reservation_title">确定预约后该充电桩将为您保留30分钟</string>
     <string name="reservation_tip">请在30分钟内到达充电车位进行充电</string>
+    <string name="sure_unlock">确定降地锁?</string>
+    <string name="sure_unlock_detail">请确保您已到达充电位，已防充电桩被占用</string>
     <string name="reservation_tip_confirm">保留</string>
+    <string name="unlock_tip_success">地锁已成功下降</string>
+    <string name="unlock_tip_fail">地锁下降失败，请重试</string>
 
     <!--搜索主页快捷搜-->
     <string-array name="main_search_categories_name">

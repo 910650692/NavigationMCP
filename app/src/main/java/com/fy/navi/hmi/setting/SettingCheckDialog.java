@@ -52,6 +52,7 @@ public class SettingCheckDialog extends BaseFullScreenDialog<DialogSettingCheckB
             mViewBinding.clearContent.setText(mContent);
         }
         if (!mIsShowCancel) {
+            mViewBinding.dialogLine.setVisibility(View.GONE);
             mViewBinding.dialogCancel.setVisibility(View.GONE);
         }
         mViewBinding.dialogCommit.setText(mConfirmText);

@@ -35,7 +35,6 @@ android {
 dependencies {
 
     implementation libs.appcompat
-    implementation libs.calibration
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation project(':engine:vrbridge')
     implementation project(':engine:vrbridgeprotocol')
