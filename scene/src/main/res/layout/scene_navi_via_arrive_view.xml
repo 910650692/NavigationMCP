@@ -69,8 +69,9 @@
 
             <com.fy.navi.scene.ui.navi.view.ButtonText
                 android:id="@+id/stv_confirm"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="@dimen/dp_0"
+                android:layout_height="@dimen/dp_0"
+                android:gravity="center"
                 clickCommand="@{naviArrive.onUpdateViaPass}"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="@+id/siv_vertical_line"
@@ -83,8 +84,9 @@
 
             <com.fy.navi.scene.ui.navi.view.ButtonText
                 android:id="@+id/stv_cancel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="@dimen/dp_0"
+                android:layout_height="@dimen/dp_0"
+                android:gravity="center"
                 android:padding="@dimen/dp_24"
                 clickCommand="@{()-> naviArrive.updateSceneVisible(Boolean.FALSE)}"
                 app:layout_constraintStart_toStartOf="@+id/siv_vertical_line"

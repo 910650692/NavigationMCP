@@ -1,5 +1,6 @@
 package com.fy.navi.service.define.route;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 import lombok.Getter;
@@ -7,7 +8,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class RouteRestrictionInfo {
+public class RouteRestrictionInfo implements Serializable {
     private String mTitle;
     private String mDesc;
     private String mTips;

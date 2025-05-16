@@ -9,7 +9,6 @@ import android.text.TextUtils;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.android.utils.ConvertUtils;
 import com.android.utils.NetWorkUtils;
 import com.android.utils.log.Logger;
 import com.baidu.oneos.protocol.bean.CallResponse;
@@ -53,7 +52,6 @@ import com.fy.navi.vrbridge.VoiceConvertUtil;
 import com.fy.navi.vrbridge.bean.MapState;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -385,7 +383,7 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
     /**
      * 走某道路
      *
-     * @param road String，选定的道路名称
+     * @param road         String，选定的道路名称
      * @param respCallback RespCallback，语音结果回调.
      * @return CallResponse.
      */
@@ -444,7 +442,7 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
     /**
      * 选择某条路.
      *
-     * @param roadName 选定道路名称.
+     * @param roadName     选定道路名称.
      * @param respCallback RespCallback,语音异步回调.
      */
     private void chooseRoadWhenSelect(final String roadName, final RespCallback respCallback) {
@@ -485,7 +483,7 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
         if (hasMatched) {
             try {
                 responseSpecialRoad(true, roadName, routeLineList.get(chooseIndex), respCallback);
-                final Map<MapType, Integer> indexMap =  RoutePackage.getInstance().getSelectRouteIndex();
+                final Map<MapType, Integer> indexMap = RoutePackage.getInstance().getSelectRouteIndex();
                 final Integer curSelectValue = indexMap.getOrDefault(MapType.MAIN_SCREEN_MAIN_MAP, -1);
                 final int mainIndex = null != curSelectValue ? curSelectValue : 0;
                 Logger.d(IVrBridgeConstant.TAG, "assignRoad curSelect: " + mainIndex);
@@ -515,7 +513,7 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
     /**
      * 引导态指定走某条道路.
      *
-     * @param road String，指定道路名称.
+     * @param road         String，指定道路名称.
      * @param respCallback 执行结果回调.
      */
     private void chooseRoadWhenNavigation(final String road, final RespCallback respCallback) {
@@ -566,10 +564,10 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
     /**
      * 统一回复语音个性化道路.
      *
-     * @param assign 指令类型，true-走某条路  false-不走某条路.
-     * @param road String，指定道路名称.
+     * @param assign        指令类型，true-走某条路  false-不走某条路.
+     * @param road          String，指定道路名称.
      * @param routeLineInfo RouteLineInfo 匹配路线信息.
-     * @param respCallback RespCallback,语音结果回调.
+     * @param respCallback  RespCallback,语音结果回调.
      */
     private void responseSpecialRoad(final boolean assign, final String road,
                                      final RouteLineInfo routeLineInfo, final RespCallback respCallback) {
@@ -590,7 +588,7 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
     /**
      * 不走某道路
      *
-     * @param road String, 避开道路名称
+     * @param road         String, 避开道路名称
      * @param respCallback RespCallback.
      * @return CallResponse.
      */
@@ -625,7 +623,7 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
     /**
      * 获取当前选路结果，匹配不走执行road的路线.
      *
-     * @param road String,指定道路名称
+     * @param road         String,指定道路名称
      * @param respCallback RespCallback，语音结果回调.
      */
     private void avoidRoadWhenSelect(final String road, final RespCallback respCallback) {
@@ -651,7 +649,7 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
                 matchedStatusList.add(matched);
             }
 
-            final Map<MapType, Integer> indexMap =  RoutePackage.getInstance().getSelectRouteIndex();
+            final Map<MapType, Integer> indexMap = RoutePackage.getInstance().getSelectRouteIndex();
             final Integer curSelectValue = indexMap.getOrDefault(MapType.MAIN_SCREEN_MAIN_MAP, -1);
             final int curIndex = null != curSelectValue ? curSelectValue : 0;
             Logger.d(IVrBridgeConstant.TAG, "afterProcess matchStatusSize: " + matchedStatusList.size()
@@ -697,7 +695,7 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
     /**
      * 引导态避开指定道路.
      *
-     * @param road String，指定道路名称.
+     * @param road         String，指定道路名称.
      * @param respCallback RespCallback，执行结果回调.
      */
     private void avoidRoadWhenNavigation(final String road, final RespCallback respCallback) {
@@ -760,7 +758,7 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
             param.setMRouteWay(RouteWayID.ROUTE_WAY_REFRESH);
             param.setMRoutePriorityType(RoutePriorityType.ROUTE_TYPE_MANUAL_REFRESH);
             RoutePackage.getInstance().requestRoute(param);
-            final CallResponse response =CallResponse.createSuccessResponse("已为你更新路线");
+            final CallResponse response = CallResponse.createSuccessResponse("已为你更新路线");
             response.setNeedPlayMessage(true);
             respTts(response, respCallback);
         } else {
@@ -799,11 +797,12 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
                 targetId = RoutePreferenceID.PREFERENCE_FIRSTHIGHWAY;
                 break;
             case PREFERENCE_FIRSTHIGHWAY:
+                targetId = RoutePreferenceID.PREFERENCE_FIRSTMAINROAD;
+                break;
+            case PREFERENCE_FIRSTMAINROAD:
+            default:
                 targetId = RoutePreferenceID.PREFERENCE_RECOMMEND;
                 break;
-            default:
-                Logger.d(IVrBridgeConstant.TAG, "Go default case, no preference match currently");
-                return CallResponse.createFailResponse("不支持的偏好类型");
         }
 
         SettingPackage.getInstance().setRoutePreferenceByVoice(targetId);
@@ -860,6 +859,10 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
                 routeId = RoutePreferenceID.PREFERENCE_FIRSTHIGHWAY;
                 tts = "高速优先";
                 break;
+            case "CHOOSE_MAINROAD_ROUTE":
+                routeId = RoutePreferenceID.PREFERENCE_FIRSTMAINROAD;
+                tts = "大路优先";
+                break;
             default:
                 Logger.d(IVrBridgeConstant.TAG, "Go default case, no preference match currently, return !");
                 return CallResponse.createFailResponse("不支持的偏好类型");
@@ -883,9 +886,8 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
     /**
      * 选择路线
      *
-     * @param index int，路线索引值.
+     * @param index        int，路线索引值.
      * @param respCallback RespCallback,执行结果回调.
-     *
      * @return CallResponse.
      */
     @Override
@@ -1092,7 +1094,7 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
     public CallResponse onForwardAsk(final RespCallback respCallback) {
         Logger.d(IVrBridgeConstant.TAG, "onForwardAsk:");
         final boolean isInNavi = Objects.equals(NaviStatusPackage.getInstance().getCurrentNaviStatus(), NaviStatus.NaviStatusType.NAVING);
-        return handleForwardAsk(isInNavi, respCallback);
+        return VoiceSearchManager.getInstance().handleForwardAsk(isInNavi, respCallback);
     }
 
     /**
@@ -1197,9 +1199,9 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
 
     /**
      * 获取目的地或途径点的剩余距离
-     * @param arrival 目的地
-     * @param respCallback 结果异步回调.
      *
+     * @param arrival      目的地
+     * @param respCallback 结果异步回调.
      * @return CallResponse，执行结果回复.
      */
     private CallResponse getRemainDistance(final String arrival, final RespCallback respCallback) {
@@ -1248,9 +1250,9 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
 
     /**
      * 获取到家的信息
-     * @param start 起始点
-     * @param respCallback respCallback.
      *
+     * @param start        起始点
+     * @param respCallback respCallback.
      * @return CallResponse，执行回复.
      */
     private CallResponse getHomeEtaInfo(final String start, final RespCallback respCallback) {
@@ -1283,9 +1285,9 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
 
     /**
      * 获取到公司的ETA信息
-     * @param start 起始点
-     * @param respCallback respCallback
      *
+     * @param start        起始点
+     * @param respCallback respCallback
      * @return CallResponse.
      */
     private CallResponse getCompanyEtaInfo(final String start, final RespCallback respCallback) {
@@ -1319,9 +1321,10 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
 
     /**
      * .
-     * @param start start
-     * @param end end
-     * @param builder builder
+     *
+     * @param start        start
+     * @param end          end
+     * @param builder      builder
      * @param respCallback respCallback
      */
     private void processHomeCompanyEta(final GeoPoint start, final GeoPoint end, final StringBuilder builder, final RespCallback respCallback) {
@@ -1389,9 +1392,9 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
 
     /**
      * 查询到目的地或途径点的剩余时间
-     * @param arrival 目的地
-     * @param respCallback 执行结果异步回调.
      *
+     * @param arrival      目的地
+     * @param respCallback 执行结果异步回调.
      * @return CallResponse，直接结果回复.
      */
     private CallResponse getRemainTime(final String arrival, final RespCallback respCallback) {
@@ -1429,38 +1432,6 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
     }
 
     /**
-     * 处理路况询问
-     * @param isInNavi 是否导航
-     * @param respCallback 结果异步回调.
-     *
-     * @return CallResponse，指令回复.
-     */
-    private CallResponse handleForwardAsk(final boolean isInNavi, final RespCallback respCallback) {
-        Logger.d(IVrBridgeConstant.TAG, "onTrafficConditionAsk: 转为查询前方路况");
-        final CallResponse callResponse;
-        if (isInNavi) {
-            Logger.d(IVrBridgeConstant.TAG, "onForwardAsk: navi state");
-            final RouteCurrentPathParam curPath
-                    = RoutePackage.getInstance().getCurrentPathInfo(MapType.MAIN_SCREEN_MAIN_MAP);
-            if (null != curPath && !curPath.isMIsOnlineRoute()) {
-                return CallResponse.createFailResponse("离线导航，路况查询不可用");
-            }
-            final  String tmcStatus = NaviPackage.getInstance().getFrontTmcStatus();
-            if (ConvertUtils.isEmpty(tmcStatus)) {
-                callResponse = CallResponse.createSuccessResponse("暂无路况信息，请稍后再试");
-            } else {
-                callResponse = CallResponse.createSuccessResponse(tmcStatus);
-            }
-        } else {
-            callResponse = CallResponse.createSuccessResponse("当前不在导航状态，没有行程相关信息哦");
-        }
-        callResponse.setNeedPlayMessage(true);
-        respTts(callResponse, respCallback);
-
-        return CallResponse.createSuccessResponse();
-    }
-
-    /**
      * 路况查询（前方/道路/地点）
      *
      * @param trafficAskBean private String poi : 查询的地点、道路
@@ -1472,111 +1443,7 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
     @Override
     public CallResponse onTrafficConditionAsk(final TrafficAskBean trafficAskBean, final RespCallback respCallback) {
         Logger.d(IVrBridgeConstant.TAG, "onTrafficConditionAsk: trafficAskBean = " + trafficAskBean);
-        int conditionResult = -2;//-1：无数据 0:未知状态 1:通畅 2:缓慢 3:拥堵 4:严重拥堵 5:极度通畅
-        boolean isInRoute = false;//判断点位是否是导航线路上的
-        boolean hasProcessed = false;//判断有没有处理
-        String ttsContent = "";//回复内容
-        if (trafficAskBean == null) {
-            return CallResponse.createFailResponse("地点信息异常，请重试");
-        }
-        final boolean isInNavi = Objects.equals(NaviStatusPackage.getInstance().getCurrentNaviStatus(), NaviStatus.NaviStatusType.NAVING);
-        String strPoi = trafficAskBean.getPoi();
-        final String strStart = trafficAskBean.getStart();
-        final String strArrival = trafficAskBean.getArrival();
-        if (ConvertUtils.isEmpty(strArrival) && ConvertUtils.isEmpty(strPoi) && ConvertUtils.isEmpty(strStart)) {
-            //trafficAskBean的成员变量全是空
-            return handleForwardAsk(isInNavi, respCallback);
-        }
-        /*以下为有地点信息的查询*/
-        if (!isInNavi) {
-            Logger.d(IVrBridgeConstant.TAG, "onTrafficConditionAsk: 非导航模式");
-            return CallResponse.createFailResponse("仅支持导航路线上的路况信息查询哦");
-        }
-        final List<RouteParam> allPoiParamList = RoutePackage.getInstance().getAllPoiParamList(MapType.MAIN_SCREEN_MAIN_MAP);
-        if (allPoiParamList.isEmpty()) {
-            return CallResponse.createFailResponse("缺少线路信息，请重试");
-        }
-        if (ConvertUtils.equals(strPoi, IVrBridgeConstant.PoiType.DESTINATION)) {
-            strPoi = allPoiParamList.get(allPoiParamList.size() - 1).getName();
-            Logger.d(IVrBridgeConstant.TAG, "DESTINATION -> " + strPoi);
-        }
-        if (!ConvertUtils.isEmpty(strPoi) && ConvertUtils.isEmpty(strStart) && ConvertUtils.isEmpty(strArrival)) {
-            hasProcessed = true; // 查询A地附近的路况或A道路的路况
-            for (RouteParam poi : allPoiParamList) {
-                Logger.d(IVrBridgeConstant.TAG, "routeParam name: " + poi.getName());
-                if (poi.getName().contains(strPoi)) {
-                    Logger.d(IVrBridgeConstant.TAG, "onTrafficConditionAsk: A地附近情况");
-                    conditionResult = NaviPackage.getInstance().getTmcStatus(
-                            poi.getName(), strStart, strArrival, MapType.MAIN_SCREEN_MAIN_MAP
-                    );
-                    isInRoute = true;
-                    ttsContent = strPoi + "路况 ";
-                }
-            }
-        }
-        if (ConvertUtils.isEmpty(strPoi) && !ConvertUtils.isEmpty(strStart) && !ConvertUtils.isEmpty(strArrival)) {
-            hasProcessed = true;// 查询A点-B点的路况
-            final HashMap<String, RouteParam> poiMap = new HashMap<>();
-            for (RouteParam poi : allPoiParamList) {
-                poiMap.put(poi.getName(), poi);
-            }
-            final RouteParam startPoi = poiMap.get(strStart);
-            final RouteParam arrivalPoi = poiMap.get(strArrival);
-            if (startPoi != null && arrivalPoi != null) {
-                Logger.d(IVrBridgeConstant.TAG, "onTrafficConditionAsk: A到B的情况");
-                Logger.d(IVrBridgeConstant.TAG, "startPoi name: " + startPoi.getName() + "; arrivalPoi name: " + arrivalPoi.getName());
-                conditionResult = NaviPackage.getInstance().getTmcStatus(
-                        strPoi, startPoi.getName(), arrivalPoi.getName(), MapType.MAIN_SCREEN_MAIN_MAP
-                );
-                isInRoute = true;
-                ttsContent = strStart + "到" + strArrival + "路况";
-            }
-        }
-        if (ConvertUtils.isEmpty(strPoi) && ConvertUtils.isEmpty(strStart) && !ConvertUtils.isEmpty(strArrival)) {
-            hasProcessed = true;// 查询到B的路况
-            for (RouteParam poi : allPoiParamList) {
-                Logger.d(IVrBridgeConstant.TAG, "routeParam name: " + poi.getName());
-                if (poi.getName().contains(strArrival)) {
-                    Logger.d(IVrBridgeConstant.TAG, "onTrafficConditionAsk: 当前位置到B的情况");
-                    conditionResult = NaviPackage.getInstance().getTmcStatus(
-                            strPoi, strStart, poi.getName(), MapType.MAIN_SCREEN_MAIN_MAP
-                    );
-                    isInRoute = true;
-                    ttsContent = "当前位置到" + strArrival + "路况";
-                }
-            }
-        }
-        Logger.d(IVrBridgeConstant.TAG, "onTrafficConditionAsk: conditionResult = " + conditionResult);
-        ttsContent = mapTtsContent(ttsContent, conditionResult);
-        if (!isInRoute && hasProcessed) {
-            return CallResponse.createFailResponse("仅支持导航路线上的路况信息查询哦");
-        } else {
-            Logger.d(IVrBridgeConstant.TAG, "onTrafficConditionAsk: ttsContent = " + ttsContent);
-            final CallResponse callResponse = CallResponse.createSuccessResponse(ttsContent);
-            callResponse.setNeedPlayMessage(true);
-            respTts(callResponse, respCallback);
-        }
-
-        return CallResponse.createSuccessResponse();
-    }
-
-    /**
-     * 映射tts内容
-     * @param orgTtsContent 原tts
-     * @param conditionResult 路况结果
-     * @return 映射后的tts
-     */
-    private String mapTtsContent(final String orgTtsContent, final int conditionResult) {
-        return switch (conditionResult) {
-            case 1 -> orgTtsContent + "畅通";
-            case 2 -> orgTtsContent + "缓行";
-            case 3 -> orgTtsContent + "拥堵";
-            case 4 -> orgTtsContent + "严重拥堵";
-            case 5 -> orgTtsContent + "极度通畅";
-            case -1 -> "暂未查询到相应路况信息，请稍后再试";
-            case 0 -> "未知状态，请稍后再试";
-            default -> "未知查询条件，请稍后再试";
-        };
+        return VoiceSearchManager.getInstance().handleTrafficConditionAsk(trafficAskBean, respCallback);
     }
 
     /**
@@ -1701,7 +1568,6 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
      *                     DEFAULT：根据当前模式切换
      * @param tts          xx模式
      * @param respCallback respCallback
-     *
      * @return CallResponse，结果回复.
      */
     @Override
@@ -1828,6 +1694,7 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
 
     /**
      * getPoiInfoEntity
+     *
      * @param routeParam routeParam
      * @return PoiInfoEntity
      */
@@ -2209,7 +2076,7 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
     }
 
     @Override
-    public CallResponse onVolumeAdjust(final NaviControlParam naviControlParam,final RespCallback callback) {
+    public CallResponse onVolumeAdjust(final NaviControlParam naviControlParam, final RespCallback callback) {
         return CallResponse.createFailResponse("地图不支持此功能");
     }
 

@@ -31,6 +31,7 @@ import com.fy.navi.scene.impl.search.FavoriteManager;
 import com.fy.navi.scene.impl.search.SearchFragmentFactory;
 import com.fy.navi.scene.ui.adapter.CollectResultAdapter;
 import com.fy.navi.scene.ui.search.SearchConfirmDialog;
+import com.fy.navi.service.AppContext;
 import com.fy.navi.service.AutoMapConstant;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.define.map.MapType;
@@ -161,6 +162,11 @@ public class SceneCollectView extends BaseSceneView<SceneCollectViewBinding, Sce
             @Override
             public void onListCleared() {
                 mViewBinding.sllNoFavorite.setVisibility(View.VISIBLE);
+                if (mCollectionType == AutoMapConstant.CollectionType.GET_POINT) {
+                    mViewBinding.tvNoFavorite.setText(AppContext.getInstance().getMContext().getString(R.string.scv_not_have_receive));
+                } else {
+                    mViewBinding.tvNoFavorite.setText(AppContext.getInstance().getMContext().getString(R.string.scv_not_have_favorite));
+                }
             }
         });
     }
@@ -184,9 +190,14 @@ public class SceneCollectView extends BaseSceneView<SceneCollectViewBinding, Sce
         mViewBinding.naviBroadcastStandard.setOnClickListener(view -> {
             mIsChargingCollect = false;
             hideEmptyView();
-            ArrayList<PoiInfoEntity> list = mScreenViewModel.getFavoriteListAsync();
+            final ArrayList<PoiInfoEntity> list = mScreenViewModel.getFavoriteListAsync();
             if (ConvertUtils.isEmpty(list)) {
                 mViewBinding.sllNoFavorite.setVisibility(VISIBLE);
+                if (mCollectionType == AutoMapConstant.CollectionType.GET_POINT) {
+                    mViewBinding.tvNoFavorite.setText(AppContext.getInstance().getMContext().getString(R.string.scv_not_have_receive));
+                } else {
+                    mViewBinding.tvNoFavorite.setText(AppContext.getInstance().getMContext().getString(R.string.scv_not_have_favorite));
+                }
             } else {
                 mAdapter.notifyList(list);
             }
@@ -231,6 +242,11 @@ public class SceneCollectView extends BaseSceneView<SceneCollectViewBinding, Sce
             hideEmptyView();
             if (ConvertUtils.isEmpty(data)) {
                 mViewBinding.sllNoFavorite.setVisibility(View.VISIBLE);
+                if (mCollectionType == AutoMapConstant.CollectionType.GET_POINT) {
+                    mViewBinding.tvNoFavorite.setText(AppContext.getInstance().getMContext().getString(R.string.scv_not_have_receive));
+                } else {
+                    mViewBinding.tvNoFavorite.setText(AppContext.getInstance().getMContext().getString(R.string.scv_not_have_favorite));
+                }
             }
         }
     }

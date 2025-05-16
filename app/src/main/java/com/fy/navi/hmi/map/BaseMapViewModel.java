@@ -293,6 +293,12 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
     public Action messageCenterGone = () -> {
         messageCenterVisible.set(false);
         mModel.deleteMessage();
+        MessageCenterInfo messageCenterInfo = messageCenterEntity.get();
+        if (messageCenterInfo != null) {
+            if (messageCenterInfo.getMsgType() == MessageCenterType.CONTINUE_NAVI) {
+                mModel.onCancelContinueNaviClick();
+            }
+        }
     };
 
     public Action openLimitDetailFragment = new Action() {
@@ -310,14 +316,16 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
     public Action messageCenterOperateClick = () -> {
         messageCenterGone.call();
         final MessageCenterInfo messageCenterInfo = messageCenterEntity.get();
-        if(messageCenterInfo!=null){
-            if(messageCenterInfo.getMsgType() == MessageCenterType.ROAD_LIMIT){
+        if (messageCenterInfo != null) {
+            if (messageCenterInfo.getMsgType() == MessageCenterType.ROAD_LIMIT) {
                 openLimitDetailFragment.call();
-            }else if(messageCenterInfo.getMsgType() == MessageCenterType.MAP_UPDATE_15 ||
-                    messageCenterInfo.getMsgType() == MessageCenterType.MAP_UPDATE_45){
+            } else if (messageCenterInfo.getMsgType() == MessageCenterType.MAP_UPDATE_15 ||
+                    messageCenterInfo.getMsgType() == MessageCenterType.MAP_UPDATE_45) {
                 final Bundle bundle = new Bundle();
-                bundle.putBoolean("isCheck",true);
+                bundle.putBoolean("isCheck", true);
                 addFragment(new MapDataFragment(), bundle);
+            } else if (messageCenterInfo.getMsgType() == MessageCenterType.CONTINUE_NAVI) {
+                mModel.onContinueNaviClick();
             }
         }
     };
@@ -330,7 +338,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         return false;
     }
 
-    public void toHomeFragment(){
+    public void toHomeFragment() {
         //判断是否存在预测数据
         Bundle bundle = new Bundle();
         bundle.putInt(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_TYPE, AutoMapConstant.SearchType.SEARCH_KEYWORD);
@@ -339,7 +347,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         mModel.stopCruise();
     }
 
-    public void toCompanyFragment(){
+    public void toCompanyFragment() {
         Bundle bundle = new Bundle();
         bundle.putInt(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_TYPE, AutoMapConstant.SearchType.SEARCH_KEYWORD);
         bundle.putInt(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_OPEN_HOME_COMPANY, AutoMapConstant.HomeCompanyType.COMPANY);
@@ -348,20 +356,20 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
 
     }
 
-    public void showForecastDialog(int type,OftenArrivedItemInfo oftenArrivedItemInfo){
+    public void showForecastDialog(int type, OftenArrivedItemInfo oftenArrivedItemInfo) {
         ThreadManager.getInstance().postUi(() -> {
             new ForecastAddressDialog(mView, type, oftenArrivedItemInfo, new IForecastAddressCallBack() {
                 @Override
                 public void AddForecastInfo(OftenArrivedItemInfo oftenArrivedItemInfo) {
-                    mModel.addHomeOrCompanyInfoToSetting(type,oftenArrivedItemInfo);
+                    mModel.addHomeOrCompanyInfoToSetting(type, oftenArrivedItemInfo);
                     initTimer();
                 }
 
                 @Override
                 public void addressClick() {
-                    if(AutoMapConstant.HomeCompanyType.HOME == type){
+                    if (AutoMapConstant.HomeCompanyType.HOME == type) {
                         toHomeFragment();
-                    }else {
+                    } else {
                         toCompanyFragment();
                     }
                 }
@@ -374,7 +382,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         mModel.loadMapView(mapSurfaceView);
     }
 
-    public void startListenMsg(){
+    public void startListenMsg() {
         mModel.startListenMsg();
     }
 
@@ -427,7 +435,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         initTimer();
     }
 
-    public void showParkingView(){
+    public void showParkingView() {
         mModel.showParkingView();
     }
 
@@ -444,7 +452,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
             companyTime.set(ResourceUtils.Companion.getInstance().getString(R.string.map_go_setting));
             mView.setTMCView(0, null);
             mView.setTMCView(1, null);
-        } else if(!ConvertUtils.isEmpty(homePoi) && !ConvertUtils.isEmpty(companyPoi)){
+        } else if (!ConvertUtils.isEmpty(homePoi) && !ConvertUtils.isEmpty(companyPoi)) {
             mModel.refreshHomeOfficeTMC(true);
         } else if (!ConvertUtils.isEmpty(homePoi) && ConvertUtils.isEmpty(companyPoi)) {
             mModel.refreshHomeOfficeTMC(true);
@@ -464,6 +472,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         cancelTimer();
         mScheduledFuture = ThreadManager.getInstance().asyncAtFixDelay(this::checkHomeOfficeShow, NumberUtils.NUM_0, mTimer);
     }
+
     /***
      * 取消页面倒计时
      */
@@ -478,7 +487,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         backToCcPVisibility.set(isTouchStatus);
     }
 
-    public void showOrHideSelfParkingView(boolean visible){
+    public void showOrHideSelfParkingView(boolean visible) {
         backToParkingVisibility.set(visible);
     }
 
@@ -518,7 +527,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
     }
 
     @HookMethod(eventName = BuryConstant.EventName.AMAP_MAP_DESTINATION_CHOOSE)
-    private void openPoiDetailFragment(PoiInfoEntity entity){
+    private void openPoiDetailFragment(PoiInfoEntity entity) {
         Bundle bundle = new Bundle();
         bundle.putParcelable(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_OPEN_DETAIL, entity);
         bundle.putInt(AutoMapConstant.PoiBundleKey.BUNDLE_KEY_START_POI_TYPE, PoiType.POI_MAP_CLICK);
@@ -561,7 +570,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         Bundle bundle = new Bundle();
         bundle.putParcelable(AutoMapConstant.TrafficEventBundleKey.BUNDLE_KEY_ENTITY, entity);
         TrafficEventFragment trafficEventFragment;
-        BaseFragment fragment =  StackManager.getInstance().getCurrentFragment(mScreenId);
+        BaseFragment fragment = StackManager.getInstance().getCurrentFragment(mScreenId);
         if (fragment != null && fragment instanceof TrafficEventFragment) {
             trafficEventFragment = (TrafficEventFragment) fragment;
             trafficEventFragment.setArguments(bundle);
@@ -575,7 +584,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
     /**
      * 跳转到设置公司-家界面.
      *
-     * @param type int，1-HOME，2-COMPANY.
+     * @param type    int，1-HOME，2-COMPANY.
      * @param keyword 搜索关键字.
      */
     public void toHomeCompanyFragment(int type, String keyword) {
@@ -646,15 +655,15 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         }
         limitDriverVisibility.set(restrictedArea != null && statusVis);
 
-        if(restrictedArea != null && statusVis){
+        if (restrictedArea != null && statusVis) {
             //首页消息的显示逻辑  发送package消息
             final boolean showSameDayLimit = mModel.showSameDayLimit();
-            if(showSameDayLimit){
-                Logger.i("showSameDayLimit","showSameDayLimit"+statusVis);
+            if (showSameDayLimit) {
+                Logger.i("showSameDayLimit", "showSameDayLimit" + statusVis);
                 mModel.managerMessage(new MessageCenterInfo(MessageCenterType.ROAD_LIMIT,
-                        ResourceUtils.Companion.getInstance().getString(R.string.message_center_check),0,
+                        ResourceUtils.Companion.getInstance().getString(R.string.message_center_check), 0,
                         ResourceUtils.Companion.getInstance().getString(R.string.message_center_limit),
-                        "",new Date(),0));
+                        "", new Date(), 0));
             }
         }
     }
@@ -662,32 +671,43 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
     /**
      * 离线地图是否15天未更新
      */
-    public void offlineMap15Day(){
-        if(mModel.offlineMap15Day()){
+    public void offlineMap15Day() {
+        if (mModel.offlineMap15Day()) {
             mModel.managerMessage(new MessageCenterInfo(MessageCenterType.MAP_UPDATE_15,
-                    ResourceUtils.Companion.getInstance().getString(R.string.message_center_update),0,
+                    ResourceUtils.Companion.getInstance().getString(R.string.message_center_update), 0,
                     ResourceUtils.Companion.getInstance().getString(R.string.message_center_need_update),
-                    "",new Date(),0));
+                    "", new Date(), 0));
         }
     }
 
     /**
      * 离线地图是否45天未更新
      */
-    public void offlineMap45Day(){
-        if(mModel.offlineMap45Day()){
+    public void offlineMap45Day() {
+        if (mModel.offlineMap45Day()) {
             mModel.managerMessage(new MessageCenterInfo(MessageCenterType.MAP_UPDATE_45,
-                    ResourceUtils.Companion.getInstance().getString(R.string.message_center_update),0,
+                    ResourceUtils.Companion.getInstance().getString(R.string.message_center_update), 0,
                     ResourceUtils.Companion.getInstance().getString(R.string.message_center_netless),
                     ResourceUtils.Companion.getInstance().getString(R.string.message_center_recommend_update),
-                    new Date(),0));
+                    new Date(), 0));
         }
+    }
+
+    /**
+     * 继续导航
+     */
+    public void continueNavi(String content) {
+        mModel.managerMessage(new MessageCenterInfo(MessageCenterType.CONTINUE_NAVI,
+                ResourceUtils.Companion.getInstance().getString(R.string.message_center_continue_navi), 0,
+                content,
+                "",
+                new Date(), 0));
     }
 
     /**
      * @param messageCenterInfo 数据
      */
-    public void onMessageInfoNotifyCallback(final MessageCenterInfo messageCenterInfo){
+    public void onMessageInfoNotifyCallback(final MessageCenterInfo messageCenterInfo) {
         //数据  点击事件需要使用
         messageCenterEntity.set(messageCenterInfo);
         //显示整个view
@@ -703,26 +723,26 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         //关闭显示
         messageCloseVisibility.set(true);
         //2行显示长的竖线
-        if(ConvertUtils.isEmpty(messageCenterInfo.getMsgContent())){
+        if (ConvertUtils.isEmpty(messageCenterInfo.getMsgContent())) {
             messageLineVisibility.set(true);
             messageLineHeightVisibility.set(false);
-        }else {
+        } else {
             messageLineVisibility.set(false);
             messageLineHeightVisibility.set(true);
         }
 
-        if(messageCenterInfo.getMsgType() == MessageCenterType.ROAD_LIMIT){
+        if (messageCenterInfo.getMsgType() == MessageCenterType.ROAD_LIMIT) {
             messageCenterContentVisibility.set(false);
-        }else if(messageCenterInfo.getMsgType() == MessageCenterType.MAP_UPDATE_15){
+        } else if (messageCenterInfo.getMsgType() == MessageCenterType.MAP_UPDATE_15) {
             messageCenterContentVisibility.set(false);
-        }else if(messageCenterInfo.getMsgType() == MessageCenterType.MAP_UPDATE_45){
+        } else if (messageCenterInfo.getMsgType() == MessageCenterType.MAP_UPDATE_45) {
             messageCenterContentVisibility.set(true);
-        }else if(messageCenterInfo.getMsgType() == MessageCenterType.WEATHER){
+        } else if (messageCenterInfo.getMsgType() == MessageCenterType.WEATHER) {
             messageCenterOperate.set("");
             messageCenterContentVisibility.set(true);
             messageCenterImgVisibility.set(true);
             mView.setMessageImg(messageCenterInfo.getSrcImg());
-        }else if(messageCenterInfo.getMsgType() == MessageCenterType.PHONE_MESSAGE){
+        } else if (messageCenterInfo.getMsgType() == MessageCenterType.PHONE_MESSAGE) {
             //线和X图片隐藏
             messageCenterOperate.set("");
             messageCenterContentVisibility.set(true);
@@ -737,7 +757,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
     /**
      * 移除消息
      */
-    public void onMessageInfoRemoveCallback(){
+    public void onMessageInfoRemoveCallback() {
         messageCenterVisible.set(false);
     }
 
@@ -773,8 +793,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         return switch (poiType) {
             case PoiType.POI_HOME ->
                     BehaviorPackage.getInstance().getHomeFavoriteInfo(); //暂时取的都是本地的
-            case PoiType.POI_COMPANY ->
-                    BehaviorPackage.getInstance().getCompanyFavoriteInfo();
+            case PoiType.POI_COMPANY -> BehaviorPackage.getInstance().getCompanyFavoriteInfo();
             default -> null;
         };
     }
@@ -860,6 +879,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
      * 0 汽油车
      * 1 纯电动车
      * 2 插电式混动汽车
+     *
      * @return 动力类型
      */
     public int powerType() {
@@ -925,6 +945,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
 
     /**
      * 显示隐私授权弹框
+     *
      * @param dialog
      */
     public void showAuthorizationRequestDialog(final AuthorizationRequestDialog dialog) {

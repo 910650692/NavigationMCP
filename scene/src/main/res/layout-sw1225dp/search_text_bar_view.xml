@@ -5,14 +5,14 @@
 
     <com.fy.navi.ui.view.SkinConstraintLayout
         android:id="@+id/scl_search_top_view"
-        android:layout_width="@dimen/dp_640"
-        android:layout_height="@dimen/dp_112"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_95"
         android:background="@drawable/bg_search_main_tab">
 
         <com.fy.navi.ui.view.SkinImageView
             android:id="@+id/iv_close"
-            android:layout_width="@dimen/dp_58"
-            android:layout_height="@dimen/dp_58"
+            android:layout_width="@dimen/dp_49"
+            android:layout_height="@dimen/dp_49"
             android:layout_marginStart="@dimen/dp_14"
             android:src="@drawable/img_basic_ic_back"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -31,7 +31,7 @@
             android:maxLines="1"
             android:textColor="@color/search_deep_text_day"
             android:textColorHint="@color/search_shallow_text_day"
-            android:textSize="@dimen/sp_34"
+            android:textSize="@dimen/sp_29"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/iv_search"
             app:layout_constraintStart_toEndOf="@+id/iv_close"
@@ -39,8 +39,8 @@
 
         <com.fy.navi.ui.view.SkinImageView
             android:id="@+id/iv_search"
-            android:layout_width="@dimen/dp_58"
-            android:layout_height="@dimen/dp_58"
+            android:layout_width="@dimen/dp_49"
+            android:layout_height="@dimen/dp_49"
             android:layout_marginEnd="@dimen/dp_20"
             android:src="@mipmap/icon_search40"
             android:visibility="invisible"
@@ -59,8 +59,8 @@
 
             <com.fy.navi.ui.view.SkinImageView
                 android:id="@+id/iv_filter"
-                android:layout_width="@dimen/dp_42"
-                android:layout_height="@dimen/dp_42"
+                android:layout_width="@dimen/dp_36"
+                android:layout_height="@dimen/dp_36"
                 android:layout_marginEnd="@dimen/dp_8"
                 android:src="@drawable/img_screen_42"
                 tools:visibility="visible"
@@ -74,7 +74,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/dp_30"
                 android:src="@drawable/img_screen_42"
-                android:textSize="@dimen/sp_30"
+                android:textSize="@dimen/sp_26"
                 android:text="@string/filter_text"
                 android:textColor="@color/search_quick_tab_view_color"
                 tools:visibility="visible"

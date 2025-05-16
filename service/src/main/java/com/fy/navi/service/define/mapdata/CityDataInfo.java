@@ -25,6 +25,24 @@ public class CityDataInfo {
     private double mCityX;
     // 城市纬度
     private double mCityY;
+    //是否新下载
+    private boolean isNew;
+
+    /**
+     * is new
+     * @return isNew
+     */
+    public boolean isNew() {
+        return isNew;
+    }
+
+    /**
+     * set new
+     * @param aNew
+     */
+    public void setNew(boolean aNew) {
+        isNew = aNew;
+    }
 
     public int getAdcode() {
         return mAdCode;

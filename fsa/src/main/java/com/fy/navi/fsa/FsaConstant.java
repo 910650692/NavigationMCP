@@ -172,6 +172,8 @@ public interface FsaConstant {
         int ID_PARKING_LOT_POI = 9283;
         //高速服务区POI透出（最近5个）
         int ID_SERVICE_POI = 9284;
+        //挖洞
+        int ID_SERVICE_HOLE = 9290;
     }
 
     interface FsaValue {

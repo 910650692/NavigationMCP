@@ -593,6 +593,7 @@
     <string name="message_center_check">查看</string>
     <string name="message_center_limit">部分道路限行中</string>
 
+    <string name="message_center_continue_navi">继续导航</string>
     <string name="message_center_update">更新</string>
     <string name="message_center_need_update">地图数据更新</string>
     <string name="message_center_netless">45天未联网</string>

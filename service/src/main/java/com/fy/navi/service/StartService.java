@@ -163,7 +163,7 @@ public class StartService {
     private void initSdkService() {
         initPositionService();
         initMapView();
-        if (!initLayerService()) {
+        if (!initLayerService() || !initClusterLayerService()) {
             conformFailCallback(40001, "图层服务初始化失败");
             return;
         }
@@ -199,6 +199,17 @@ public class StartService {
             Logger.i(TAG, "Layer service init fail");
         }
         return initLayerResult;
+    }
+
+    /* 初始化仪表屏 */
+    private boolean initClusterLayerService() {
+        boolean initLayerService = LayerPackage.getInstance().initLayerService(MapType.CLUSTER_MAP);
+        if (initLayerService) {
+            Logger.i(TAG, "Cluster layer service init success");
+        } else {
+            Logger.i(TAG, "Cluster layer service init fail");
+        }
+        return initLayerService;
     }
 
     private void initOtherService() {
@@ -282,6 +293,7 @@ public class StartService {
         CruisePackage.getInstance().unInitCruise();
         SearchPackage.getInstance().unInitSearchService();
         EnginePackage.getInstance().unInitEngine();
+        ActivatePackage.getInstance().unInit();
         engineActive = -1;
     }
 

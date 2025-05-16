@@ -1,20 +1,27 @@
 package com.fy.navi.hmi.mapdata.manager;
 
+import android.text.TextUtils;
+
 import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
 import com.fy.navi.service.MapDefaultFinalTag;
+import com.fy.navi.service.define.code.UserDataCode;
 import com.fy.navi.service.define.mapdata.CityDataInfo;
 import com.fy.navi.service.define.mapdata.MergedStatusBean;
 import com.fy.navi.service.define.mapdata.ProvDataInfo;
+import com.fy.navi.service.greendao.CommonManager;
 import com.fy.navi.service.logicpaket.mapdata.MapDataCallBack;
 import com.fy.navi.service.logicpaket.mapdata.MapDataPackage;
 import com.fy.navi.ui.base.BaseModel;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class ManagerMapDataModel extends BaseModel<ManagerMapDataViewModel> implements MapDataCallBack {
     private final MapDataPackage mMapDataPackage;
+    private CommonManager mCommonManager;
 
     public ManagerMapDataModel() {
         mMapDataPackage = MapDataPackage.getInstance();
@@ -24,6 +31,7 @@ public class ManagerMapDataModel extends BaseModel<ManagerMapDataViewModel> impl
     public void onCreate() {
         super.onCreate();
         mMapDataPackage.registerCallBack("ManagerMapDataModel",this);
+        mCommonManager = CommonManager.getInstance();
     }
 
     /**
@@ -127,6 +135,28 @@ public class ManagerMapDataModel extends BaseModel<ManagerMapDataViewModel> impl
     @Override
     public void onRequestCheckSuccess(final int downLoadMode, final int dataType, final int opCode) {
 
+    }
+
+    /**
+     * 保存已下载城市code
+     * @param value
+     */
+    public void saveCachedCityList(String value) {
+        mCommonManager.insertOrReplace(UserDataCode.MAP_DATA_DOWNLOADED_CITY_LIST, value);
+    }
+
+    /**
+     * 获取已下载城市code列表
+     * @return list
+     */
+    public List<String> getCachedCityList() {
+        List<String> list = new ArrayList<>() ;
+        String value = mCommonManager.getValueByKey(UserDataCode.MAP_DATA_DOWNLOADED_CITY_LIST);
+        if (!TextUtils.isEmpty(value) && value.contains(",")) {
+            String[] split = value.split(",");
+            list = Arrays.asList(split);
+        }
+        return list;
     }
 
 }

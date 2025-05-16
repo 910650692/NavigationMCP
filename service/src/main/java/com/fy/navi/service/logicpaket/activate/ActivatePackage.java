@@ -44,6 +44,13 @@ public final class ActivatePackage implements ActivateObserver {
     }
 
     /**
+     * 反初始化
+     */
+    public void unInit() {
+        mActivateAdapter.unInit();
+    }
+
+    /**
      * 移除激活观察者
      * @param actObserver actObserver
      */

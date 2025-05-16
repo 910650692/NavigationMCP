@@ -25,13 +25,9 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 public class ChargeInfo implements Parcelable {
     private int mChildType = 0;
-    @SerializedName("slowChargingFree")
     private int mSlowFree = 0;
-    @SerializedName("slowChargingTotal")
     private int mSlowTotal = 0;
-    @SerializedName("fastChargingFree")
     private int mFastFree = 0;
-    @SerializedName("fastChargingTotal")
     private int mFastTotal = 0;
     private int mSuperFree = -1;
     private int mSuperTotal = -1;
@@ -43,19 +39,20 @@ public class ChargeInfo implements Parcelable {
     private float mFMax;
     private float mFMin;
     private String mCurrentElePrice;
-    @SerializedName("parkFee")
     private String mCurrentServicePrice;
     private int maxPower;
     private int minPower;
     private int mQueryType;
     private String mPoiId;
-
     private String mName;
     private String mTypeCode;
     private int mSlowVolt;
     private int mSlowPower;
     private int mFastVolt;
     private int mFastPower;
+    private boolean mIsAppointment;  //是否预约
+
+    /** SGM 自营站字段 **/
     private String mOperatorId; // 运营商id
     private String mStationId; // 充电站id
     private String mBrand; // 品牌
@@ -63,7 +60,16 @@ public class ChargeInfo implements Parcelable {
     private ArrayList<CostTime> mCostItem;
     @SerializedName("equipmentInfoItem")
     private ArrayList<EquipmentInfo> mEquipmentInfo;
-    private boolean mIsAppointment;  //是否预约
+    @SerializedName("slowChargingFree")
+    private int mSlowChargingFree;
+    @SerializedName("slowChargingTotal")
+    private int mSlowChargingTotal;
+    @SerializedName("fastChargingFree")
+    private int mFastChargingFree;
+    @SerializedName("fastChargingTotal")
+    private int mFastChargingTotal;
+    @SerializedName("parkFee")
+    private String mParkFee;
 
     public int getChildType() {
         return mChildType;
@@ -452,7 +458,11 @@ public class ChargeInfo implements Parcelable {
         return mOperatorId;
     }
 
-    // 设置运营商id
+    /**
+     * 运营商id
+     * @param operatorId 充电站运营时间
+     * @return PoiInfoEntity
+     */
     public ChargeInfo setOperatorId(String operatorId) {
         this.mOperatorId = operatorId;
         return this;
@@ -462,7 +472,11 @@ public class ChargeInfo implements Parcelable {
         return mStationId;
     }
 
-    // 设置充电站id
+    /**
+     * 充电站id
+     * @param stationId 充电站id
+     * @return PoiInfoEntity
+     */
     public ChargeInfo setStationId(String stationId) {
         this.mStationId = stationId;
         return this;
@@ -472,6 +486,11 @@ public class ChargeInfo implements Parcelable {
         return mCostItem;
     }
 
+    /**
+     * 获取全时段费用列表
+     * @param mCostItem 全时段费用列表
+     * @return PoiInfoEntity
+     */
     public ChargeInfo setCostItem(ArrayList<CostTime> mCostItem) {
         this.mCostItem = mCostItem;
         return this;
@@ -481,8 +500,82 @@ public class ChargeInfo implements Parcelable {
         return mEquipmentInfo;
     }
 
+    /**
+     * 充电桩信息
+     * @param mEquipmentInfo 全时段费用列表
+     * @return PoiInfoEntity
+     */
     public ChargeInfo setEquipmentInfo(ArrayList<EquipmentInfo> mEquipmentInfo) {
         this.mEquipmentInfo = mEquipmentInfo;
+        return this;
+    }
+
+    public int getSlowChargingFree() {
+        return mSlowChargingFree;
+    }
+
+    /**
+     * 剩余慢充
+     * @param slowChargingFree 剩余慢充
+     * @return PoiInfoEntity
+     */
+    public ChargeInfo setSlowChargingFree(int slowChargingFree) {
+        this.mSlowChargingFree = slowChargingFree;
+        return this;
+    }
+
+    public int getSlowChargingTotal() {
+        return mSlowChargingTotal;
+    }
+
+    /**
+     * 慢充数量
+     * @param slowChargingTotal 慢充数量
+     * @return PoiInfoEntity
+     */
+    public ChargeInfo setSlowChargingTotal(int slowChargingTotal) {
+        this.mSlowChargingTotal = slowChargingTotal;
+        return this;
+    }
+
+    public int getFastChargingFree() {
+        return mFastChargingFree;
+    }
+
+    /**
+     * 剩余快充
+     * @param fastChargingFree 剩余快充
+     * @return PoiInfoEntity
+     */
+    public ChargeInfo setFastChargingFree(int fastChargingFree) {
+        this.mFastChargingFree = fastChargingFree;
+        return this;
+    }
+    public int getFastChargingTotal() {
+        return mFastChargingTotal;
+    }
+
+    /**
+     * 快充数量
+     * @param fastChargingTotal 快充数量
+     * @return PoiInfoEntity
+     */
+    public ChargeInfo setFastChargingTotal(int fastChargingTotal) {
+        this.mFastChargingTotal = fastChargingTotal;
+        return this;
+    }
+
+    public String getParkFee() {
+        return mParkFee;
+    }
+
+    /**
+     * 充电价格
+     * @param parkFee 充电价格
+     * @return PoiInfoEntity
+     */
+    public ChargeInfo setParkFee(String parkFee) {
+        this.mParkFee = parkFee;
         return this;
     }
 
@@ -516,6 +609,11 @@ public class ChargeInfo implements Parcelable {
         mOperatorId = in.readString();
         mStationId = in.readString();
         mBrand = in.readString();
+        mSlowChargingFree = in.readInt();
+        mSlowChargingTotal = in.readInt();
+        mFastChargingFree = in.readInt();
+        mFastChargingTotal = in.readInt();
+        mParkFee = in.readString();
         mCostItem = in.createTypedArrayList(CostTime.CREATOR);
         mEquipmentInfo = in.createTypedArrayList(EquipmentInfo.CREATOR);
         mIsAppointment = in.readBoolean();
@@ -572,5 +670,10 @@ public class ChargeInfo implements Parcelable {
         parcel.writeTypedList(mCostItem);
         parcel.writeTypedList(mEquipmentInfo);
         parcel.writeBoolean(mIsAppointment);
+        parcel.writeInt(mSlowChargingFree);
+        parcel.writeInt(mSlowChargingTotal);
+        parcel.writeInt(mFastChargingFree);
+        parcel.writeInt(mFastChargingTotal);
+        parcel.writeString(mParkFee);
     }
 }

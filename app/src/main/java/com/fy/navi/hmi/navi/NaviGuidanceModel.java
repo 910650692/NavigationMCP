@@ -125,6 +125,10 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
     private final SearchPackage mSearchPackage;
     private ChargeTipManager mTipManager;
     private String mFilename = "";
+    // 路口大图是否显示
+    private boolean mIsShowCrossImage;
+    // 记录路口大图出现时的起始距离
+    private int mMoveStartDistance;
 
     public NaviGuidanceModel() {
         mMapPackage = MapPackage.getInstance();
@@ -154,7 +158,6 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
     public void onCreate() {
         super.onCreate();
         NaviSceneManager.getInstance().onCreateSceneView();
-        Logger.i(TAG, "model 建立");
         ImmersiveStatusScene.getInstance().registerCallback("NaviGuidanceModel", this);
         mNaviPackage.registerObserver(NaviConstant.KEY_NAVI_MODEL, this);
         mRoutePackage.registerRouteObserver(NaviConstant.KEY_NAVI_MODEL, this);
@@ -229,12 +232,9 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
             mIsShowAutoAdd = true;
             final MapType mapTypeId = MapTypeManager.getInstance().
                     getMapTypeIdByName(mViewModel.mScreenId);
-            mNaviPackage.addNaviRecord(false);
+            mNaviPackage.addNaviRecord(true);
             mMapPackage.goToCarPosition(mapTypeId);
             mLayerPackage.setFollowMode(mapTypeId, true);
-            // TODO 测试代码
-//            mModelHelp.mockTestChargeTipMsg(mTipManager);
-//            mModelHelp.mockTestNotifyElectLow(mPowerMonitorService);
         }
     }
 
@@ -280,8 +280,13 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
         if (mTipManager != null) {
             mTipManager.setNextViaChargeStation(naviInfoBean);
         }
-        int dist = naviInfoBean.NaviInfoData.get(naviInfoBean.NaviInfoFlag).segmentRemain.dist;
-        mViewModel.onCrossProgress(dist);
+        if (mIsShowCrossImage) {
+            // 获得行驶过的距离
+            int moveDistance = mMoveStartDistance - naviInfoBean.getAllDist();
+            mViewModel.onCrossProgress(moveDistance);
+        } else {
+            mMoveStartDistance = naviInfoBean.getAllDist();
+        }
     }
 
     @Override
@@ -291,7 +296,6 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
         mViewModel.onNaviStop();
         mRoutePackage.removeAllRouteInfo(MapTypeManager.getInstance().getMapTypeIdByName(mViewModel.mScreenId));
         mLayerPackage.setVisibleGuideSignalLight(MapTypeManager.getInstance().getMapTypeIdByName(mViewModel.mScreenId), false);
-        mNaviPackage.addNaviRecord(true);
         mRoutePackage.clearRouteLine(MapTypeManager.getInstance().getMapTypeIdByName(mViewModel.mScreenId));
     }
 
@@ -314,6 +318,18 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
 
     @Override
     public void onCrossImageInfo(final boolean isShowImage, final CrossImageEntity naviImageInfo) {
+        mIsShowCrossImage = isShowImage;
+        if (!isShowImage) {
+            mViewModel.onCrossProgress(NumberUtils.NUM_ERROR);
+            // 为了显示进度条铺满的过程，延迟200ms隐藏路口大图
+            ThreadManager.getInstance().postDelay(new Runnable() {
+                @Override
+                public void run() {
+                    mViewModel.onCrossImageInfo(isShowImage, naviImageInfo);
+                }
+            }, NumberUtils.NUM_200);
+            return;
+        }
         mViewModel.onCrossImageInfo(isShowImage, naviImageInfo);
     }
 
@@ -714,14 +730,14 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
                 }
             }
         }, ONE_SECOND);
-
     }
 
     /**
      * 当前网络状态
+     *
      * @return
      */
-    public boolean isNetConnected(){
+    public boolean isNetConnected() {
         return mCurrentNetStatus;
     }
 
@@ -854,7 +870,7 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
 
     @Override
     public void onRouteItemClick(MapType mapTypeId, LayerPointItemType type, LayerItemRoutePointClickResult result) {
-        Logger.i(TAG, "onRouteItemClick result = " + result.toString());
+        Logger.i(TAG, "onRouteItemClick result = " + result.toString() + " type = " + type);
         if (type == LayerPointItemType.ROUTE_PATH) {
             int currentNaviType = mNaviPackage.getCurrentNaviType();
             if (currentNaviType != 0) {

@@ -91,6 +91,7 @@ public class CollectModel extends BaseModel<CollectViewModel> implements Setting
         point.setLon(ConvertUtils.transCityLatAndLon(msgPushInfo.getLon()));
         entity.setPoint(point);
         entity.setPid(msgPushInfo.getPoiId());
+        entity.setDistance(mSearchPackage.calcStraightDistance(point));
         return entity;
     }
 

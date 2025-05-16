@@ -17,6 +17,22 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
+        <com.fy.navi.ui.view.SkinRecyclerView
+            android:id="@+id/poi_child_list"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_30"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"/>
+
+        <com.fy.navi.ui.view.SkinImageView
+            android:id="@+id/poi_child_expand_collapse"
+            android:layout_width="@dimen/dp_48"
+            android:layout_height="@dimen/dp_48"
+            android:src="@drawable/img_under_the_48"
+            app:layout_constraintTop_toTopOf="@+id/poi_child_list"
+            app:layout_constraintStart_toEndOf="@+id/poi_child_list"/>
+
         <com.fy.navi.ui.view.SkinTextView
             android:id="@+id/poi_business_hours"
             android:layout_width="@dimen/dp_0"
@@ -26,7 +42,7 @@
             android:textColor="@color/poi_details_bottom_icon"
             android:textSize="@dimen/sp_36"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/poi_child_list"
             tools:text="营业时间: 09:00 -- 21:00" />
 
         <com.fy.navi.ui.view.SkinTextView
@@ -43,20 +59,6 @@
             app:layout_constraintTop_toBottomOf="@+id/poi_business_hours"
             tools:text="电        话: 021-888888" />
 
-        <com.fy.navi.ui.view.SkinRecyclerView
-            android:id="@+id/poi_child_list"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_32"
-            app:layout_constraintTop_toBottomOf="@+id/poi_phone"
-            app:layout_constraintStart_toStartOf="parent"/>
 
-        <com.fy.navi.ui.view.SkinImageView
-            android:id="@+id/poi_child_expand_collapse"
-            android:layout_width="@dimen/dp_48"
-            android:layout_height="@dimen/dp_48"
-            android:src="@drawable/img_under_the_48"
-            app:layout_constraintTop_toTopOf="@+id/poi_child_list"
-            app:layout_constraintStart_toEndOf="@+id/poi_child_list"/>
     </com.fy.navi.ui.view.SkinConstraintLayout>
 </layout>

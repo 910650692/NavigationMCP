@@ -15,11 +15,12 @@
 
     <com.fy.navi.ui.view.SkinConstraintLayout
         clickCommand="@{ViewModel.rootClick}"
-        android:layout_width="@dimen/dp_698"
-        android:layout_height="@dimen/dp_772"
-        android:layout_marginBottom="@dimen/dp_121"
-        android:paddingHorizontal="@dimen/dp_29"
-        android:paddingVertical="@dimen/dp_29"
+        android:layout_width="@dimen/dp_708"
+        android:layout_height="@dimen/dp_782"
+        android:paddingHorizontal="@dimen/dp_34"
+        android:paddingVertical="@dimen/dp_34"
+        android:layout_marginTop="@dimen/dp_m_34"
+        android:layout_marginStart="@dimen/dp_m_34"
         android:background="@drawable/bg_shadow_navi_ndlc_8155"
         android:clickable="true">
 
@@ -41,8 +42,7 @@
             android:layout_width="@dimen/dp_58"
             android:layout_height="@dimen/dp_58"
             android:layout_marginEnd="@dimen/dp_26"
-            android:layout_marginTop="@dimen/dp_38"
-            android:padding="@dimen/dp_10"
+            android:layout_marginTop="@dimen/dp_36"
             android:src="@drawable/icon_poi_close"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -70,8 +70,8 @@
                 android:textSize="@dimen/sp_30"
                 android:text="@string/limit_loading"
                 android:gravity="center"
-                android:layout_marginBottom="@dimen/dp_38"
-                app:layout_goneMarginBottom="@dimen/dp_261"
+                android:layout_marginBottom="@dimen/dp_24"
+                app:layout_goneMarginBottom="@dimen/dp_265"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintBottom_toTopOf="@+id/tv_retry" />
@@ -85,7 +85,7 @@
                 android:text="@string/limit_retry"
                 android:background="@drawable/bg_item_limit_retry"
                 android:gravity="center"
-                android:layout_marginBottom="@dimen/dp_201"
+                android:layout_marginBottom="@dimen/dp_287"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent" />
@@ -97,12 +97,12 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:visibility="invisible">
-            
+
             <com.fy.navi.ui.view.SkinConstraintLayout
                 android:id="@+id/layout_multi_city"
-                android:layout_width="@dimen/dp_362"
+                android:layout_width="@dimen/dp_460"
                 android:layout_height="@dimen/dp_58"
-                android:layout_marginStart="@dimen/dp_25"
+                android:layout_marginStart="@dimen/dp_26"
                 android:layout_marginTop="@dimen/dp_132"
                 android:visibility="visible"
                 app:layout_constraintTop_toTopOf="parent"
@@ -143,9 +143,9 @@
                 android:id="@+id/tv_city"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_132"
+                android:layout_marginTop="@dimen/dp_139"
                 android:layout_marginStart="@dimen/dp_40"
-                android:textColor="@color/main_map_limit_current_city_color"
+                android:textColor="@color/authorization_agree_color"
                 android:textSize="@dimen/sp_34"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"

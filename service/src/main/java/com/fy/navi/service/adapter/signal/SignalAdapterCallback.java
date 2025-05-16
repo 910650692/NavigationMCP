@@ -56,4 +56,12 @@ public interface SignalAdapterCallback {
     default void onNaviOnADASStateChanged(int state) {
 
     }
+
+    /**
+     * 导航音量变化
+     * @param volume 0-63
+     */
+    default void onNaviVolumeChanged(int volume) {
+
+    }
 }

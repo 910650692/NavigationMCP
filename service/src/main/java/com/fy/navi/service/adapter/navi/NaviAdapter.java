@@ -571,29 +571,10 @@ public final class NaviAdapter {
     public boolean updatePathInfo(MapType mapTypeId, ArrayList<?> pathInfoList, int selectIndex) {
         Logger.i(TAG, "updatePathInfo pathInfoList.size = " +
                 (!ConvertUtils.isEmpty(pathInfoList) ? pathInfoList.size() : 0) +
-                " selectIndex = " + selectIndex);
+                " selectIndex = " + selectIndex + " mapTypeId = " + mapTypeId);
         if (null != mLayerAdapter) {
             return mLayerAdapter.updatePathInfo(mapTypeId, pathInfoList, selectIndex);
         }
         return false;
     }
-
-
-    // 路况获取测试
-//    public void test() {
-//        final PathInfo pathInfo = (PathInfo) Objects.requireNonNull
-//                (mRouteAdapter.getCurrentPath(MapTypeId.MAIN_SCREEN_MAIN_MAP)).getMPathInfo();
-//        final List<ViaPointInfo> viaPointInfoList =  pathInfo.getViaPointInfo();
-//        if (!ConvertUtils.isEmpty(viaPointInfoList)) {
-//            for (ViaPointInfo viaPointInfo : viaPointInfoList) {
-//                Logger.i("shisong", "viaPointInfo:" + viaPointInfo.poiName);
-//            }
-//        }
-//        final List<RouteParam> allPoiParamList = RoutePackage.getInstance().
-//                getAllPoiParamList(MapTypeId.MAIN_SCREEN_MAIN_MAP);
-//        if (!ConvertUtils.isEmpty(allPoiParamList)) {
-//            String endName = allPoiParamList.get(allPoiParamList.size() - 1).getName();
-//            Logger.i("shisong", "endName:" + endName);
-//        }
-//    }
 }

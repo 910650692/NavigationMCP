@@ -1,5 +1,6 @@
 package com.fy.navi.service.define.bean;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,7 +9,7 @@ import java.util.List;
  * @Author lvww
  * @date 2024/12/24
  */
-public class PreviewParams {
+public class PreviewParams implements Serializable {
     private List<PointD> points = new ArrayList<>();
     private RectDouble mapBound = new RectDouble();
     private boolean bUseRect = true;
@@ -131,7 +132,7 @@ public class PreviewParams {
                 '}';
     }
 
-    public static class RectDouble {
+    public static class RectDouble implements Serializable {
         public double left = 0.0;
         public double right = 0.0;
         public double top = 0.0;
@@ -158,7 +159,7 @@ public class PreviewParams {
         }
     }
 
-    public static class PointD {
+    public static class PointD implements Serializable {
         public double x;
         public double y;
 

@@ -31,9 +31,6 @@ public class History {
     @Property(nameInDb = "endPoint")
     private String mEndPoint;
 
-    @Property(nameInDb = "midPoint")
-    private String mMidPoint;
-
     @Property(nameInDb = "startPoiName")
     private String mStartPoiName;
 
@@ -61,8 +58,8 @@ public class History {
     @Property(nameInDb = "maxSpeed")
     private int mMaxSpeed; // 最快速度  单位:公里/小时
 
-    @Property(nameInDb = "endTime")
-    private String mEndTime; // 该行程完成时间
+    @Property(nameInDb = "viaPoint")
+    private String mViaPoint; //存储的是RouteSpeechRequestParam信息
 
     @Property(nameInDb = "startTime")
     private String mStartTime;
@@ -83,9 +80,9 @@ public class History {
 
     @Keep
     public History(final Long id, final String keyWord, final String poiId, final String naviHistoryId, final String startPoint,
-                   final String endPoint, final String startPoiName, final String endPoiName, final String midPoint, final int type,
+                   final String endPoint, final String startPoiName, final String endPoiName, final int type,
                    final Date updateTime, final boolean isCompleted, final int rideRunType, final int timeInterval,
-                   final int runDistance, final int maxSpeed, final String endTime, final String startName,
+                   final int runDistance, final int maxSpeed, final String viaPoint, final String startName,
                    final int averageSpeed, final String trackFileName, final String filePath) {
         this.mId = id;
         this.mKeyWord = keyWord;
@@ -95,7 +92,6 @@ public class History {
         this.mEndPoint = endPoint;
         this.mStartPoiName = startPoiName;
         this.mEndPoiName = endPoiName;
-        this.mMidPoint = midPoint;
         this.mType = type;
         this.mUpdateTime = updateTime;
         this.mIsCompleted = isCompleted;
@@ -103,7 +99,7 @@ public class History {
         this.mTimeInterval = timeInterval;
         this.mRunDistance = runDistance;
         this.mMaxSpeed = maxSpeed;
-        this.mEndTime = endTime;
+        this.mViaPoint = viaPoint;
         this.mStartTime = startName;
         this.mAverageSpeed = averageSpeed;
         this.mTrackFileName = trackFileName;
@@ -222,14 +218,6 @@ public class History {
         this.mMaxSpeed = maxSpeed;
     }
 
-    public String getMEndTime() {
-        return this.mEndTime;
-    }
-
-    public void setMEndTime(final String endTime) {
-        this.mEndTime = endTime;
-    }
-
     public String getMStartTime() {
         return this.mStartTime;
     }
@@ -270,11 +258,12 @@ public class History {
         this.mNaviHistoryId = naviHistoryId;
     }
 
-    public String getMMidPoint() {
-        return this.mMidPoint;
+    public String getMViaPoint() {
+        return this.mViaPoint;
     }
 
-    public void setMMidPoint(final String midPoint) {
-        this.mMidPoint = midPoint;
+    public void setMViaPoint(String viaPoint) {
+        this.mViaPoint = viaPoint;
     }
+    
 }

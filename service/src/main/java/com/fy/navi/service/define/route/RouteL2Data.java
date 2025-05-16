@@ -26,7 +26,7 @@ public class RouteL2Data {
     @SerializedName("links")
     private List<LinksDTO> mLinks;
     @SerializedName("pathID")
-    private Integer mPathID;
+    private Long mPathID;
     @SerializedName("pntCnt")
     private Integer mPntCnt;
     @SerializedName("pnts")

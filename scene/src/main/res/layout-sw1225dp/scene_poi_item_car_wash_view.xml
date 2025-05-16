@@ -19,8 +19,8 @@
         
         <com.fy.navi.ui.view.SkinImageView
             android:id="@id/poi_car_wash_price_icon"
-            android:layout_width="@dimen/dp_37"
-            android:layout_height="@dimen/dp_37"
+            android:layout_width="@dimen/dp_31"
+            android:layout_height="@dimen/dp_31"
             android:src="@drawable/img_money_select_42"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"/>
@@ -33,7 +33,7 @@
             android:maxLines="1"
             android:text=""
             android:textColor="@color/search_color_ffffff"
-            android:textSize="@dimen/sp_30"
+            android:textSize="@dimen/dp_26"
             app:layout_constraintTop_toTopOf="@+id/poi_car_wash_price_icon"
             app:layout_constraintBottom_toBottomOf="@+id/poi_car_wash_price_icon"
             app:layout_constraintStart_toEndOf="@+id/poi_car_wash_price_icon"

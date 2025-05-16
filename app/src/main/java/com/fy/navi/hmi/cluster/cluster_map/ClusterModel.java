@@ -1,32 +1,22 @@
 package com.fy.navi.hmi.cluster.cluster_map;
 
-import android.graphics.Rect;
-import android.view.MotionEvent;
+import android.text.TextUtils;
 
+import com.android.utils.ToastUtils;
 import com.android.utils.log.Logger;
+import com.fy.navi.fsa.MyFsaService;
 import com.fy.navi.scene.impl.navi.inter.ISceneCallback;
-import com.fy.navi.service.adapter.layer.LayerAdapter;
 import com.fy.navi.service.adapter.map.MapAdapter;
 import com.fy.navi.service.adapter.navistatus.INaviStatusCallback;
 import com.fy.navi.service.adapter.navistatus.NavistatusAdapter;
 import com.fy.navi.service.define.bean.GeoPoint;
-import com.fy.navi.service.define.bean.MapLabelItemBean;
-import com.fy.navi.service.define.cruise.CruiseInfoEntity;
 import com.fy.navi.service.define.layer.RouteLineLayerParam;
-import com.fy.navi.service.define.layer.refix.CarModeType;
 import com.fy.navi.service.define.map.MapMode;
 import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.map.MapTypeManager;
 import com.fy.navi.service.define.map.ThemeType;
-import com.fy.navi.service.define.navi.CrossImageEntity;
-import com.fy.navi.service.define.navi.LaneInfoEntity;
 import com.fy.navi.service.define.navi.NaviEtaInfo;
-import com.fy.navi.service.define.navi.NaviTmcInfo;
 import com.fy.navi.service.define.navistatus.NaviStatus;
-import com.fy.navi.service.define.search.PoiInfoEntity;
-import com.fy.navi.service.define.setting.SettingController;
-import com.fy.navi.service.greendao.CommonManager;
-import com.fy.navi.service.greendao.setting.SettingManager;
 import com.fy.navi.service.logicpaket.cruise.CruisePackage;
 import com.fy.navi.service.logicpaket.cruise.ICruiseObserver;
 import com.fy.navi.service.logicpaket.layer.LayerPackage;
@@ -34,26 +24,18 @@ import com.fy.navi.service.logicpaket.map.IMapPackageCallback;
 import com.fy.navi.service.logicpaket.map.MapPackage;
 import com.fy.navi.service.logicpaket.navi.IGuidanceObserver;
 import com.fy.navi.service.logicpaket.navi.NaviPackage;
+import com.fy.navi.service.logicpaket.navi.OpenApiHelper;
 import com.fy.navi.service.logicpaket.position.PositionPackage;
 import com.fy.navi.service.logicpaket.route.IRouteResultObserver;
 import com.fy.navi.service.logicpaket.route.RoutePackage;
 import com.fy.navi.service.logicpaket.setting.SettingPackage;
 import com.fy.navi.ui.base.BaseModel;
 
-import java.util.ArrayList;
-
-/**
- * @Description
- * @Author yaWei
- * @date 2025/2/18
- */
 public class ClusterModel extends BaseModel<BaseClusterViewModel> implements IMapPackageCallback,
 IRouteResultObserver, INaviStatusCallback, ISceneCallback, IGuidanceObserver, ICruiseObserver, SettingPackage.SettingChangeCallback {
     private static final String TAG = "ClusterModel";
     private boolean mLoadMapSuccess = true;  //只加载一次
-    public ClusterModel() {
-
-    }
+    public ClusterModel() {}
     @Override
     public void onDestroy() {
         super.onDestroy();
@@ -63,6 +45,7 @@ IRouteResultObserver, INaviStatusCallback, ISceneCallback, IGuidanceObserver, IC
             MapPackage.getInstance().unBindMapView(mViewModel.getMapView());
             RoutePackage.getInstance().unRegisterRouteObserver(getMapId().name());
             CruisePackage.getInstance().unregisterObserver(getMapId().name());
+            NavistatusAdapter.getInstance().unRegisterCallback(this);
         }
     }
     /***
@@ -74,6 +57,7 @@ IRouteResultObserver, INaviStatusCallback, ISceneCallback, IGuidanceObserver, IC
         RoutePackage.getInstance().registerRouteObserver(getMapId().name(), this);
         NaviPackage.getInstance().registerObserver(getMapId().name(), this);
         CruisePackage.getInstance().registerObserver(getMapId().name(), this);
+        NavistatusAdapter.getInstance().registerCallback(this);
         //设置走过的路线是否为灰色
         LayerPackage.getInstance().setPassGray(getMapId(), true);
         MapPackage.getInstance().initMapView(mViewModel.getMapView());
@@ -112,10 +96,43 @@ IRouteResultObserver, INaviStatusCallback, ISceneCallback, IGuidanceObserver, IC
         }
     }
 
+    @Override
+    public void onNaviInfo(NaviEtaInfo naviETAInfo) {
+        IGuidanceObserver.super.onNaviInfo(naviETAInfo);
+        if (mViewModel != null){
+            mViewModel.updateEta(naviETAInfo);
+            if (!TextUtils.isEmpty(naviETAInfo.getCurRouteName())) {
+                mViewModel.updateRouteName(naviETAInfo.getCurRouteName());
+            }
+        }
+    }
 
     @Override
     public void onNaviStatusChange(final String naviStatus) {
         IMapPackageCallback.super.onNaviStatusChange(naviStatus);
+        Logger.d(TAG, "onNaviStatusChange:" + naviStatus);
+        if (naviStatus.equals(NaviStatus.NaviStatusType.CRUISE)){//巡航状态
+            //主图模式与巡航模式下，默认⽐例尺为50ｍ（TBD根据实车联调）；
+            LayerPackage.getInstance().openDynamicLevel(MapType.CLUSTER_MAP, false);
+            MapPackage.getInstance().setZoomLevel(MapType.CLUSTER_MAP, 50);
+        }else if (naviStatus.equals(NaviStatus.NaviStatusType.NAVING)){//导航状态
+            if (Boolean.TRUE.equals(MyFsaService.getIsClusterMapOpen().getValue())){
+                //导航态下，仪表切换为地图模式后，中控地图导航模式切换为“路线全览模式。
+                OpenApiHelper.enterPreview(MapType.MAIN_SCREEN_MAIN_MAP);
+                //toast提示（MsgType: 3s Timeout+AnyKey):
+                ToastUtils.Companion.getInstance().showCustomToastView("仪表导航已开启，地图默认显示全程路线",  3000);
+            }
+            LayerPackage.getInstance().openDynamicLevel(MapType.CLUSTER_MAP, true);
+        }else if (naviStatus.equals(NaviStatus.NaviStatusType.NO_STATUS)){//不知
+            LayerPackage.getInstance().openDynamicLevel(MapType.CLUSTER_MAP, false);
+            //主图模式与巡航模式下，默认⽐例尺为50ｍ（TBD根据实车联调）；
+            MapPackage.getInstance().setZoomLevel(MapType.CLUSTER_MAP, 50);
+        }else{
+            LayerPackage.getInstance().openDynamicLevel(MapType.CLUSTER_MAP, false);
+            //主图模式与巡航模式下，默认⽐例尺为50ｍ（TBD根据实车联调）；
+            MapPackage.getInstance().setZoomLevel(MapType.CLUSTER_MAP, 50);
+        }
+        mViewModel.updateNaviStatus(naviStatus);
     }
 
     @Override

@@ -32,8 +32,6 @@ public class ManagerMapDataAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     private Context mContext;
     private List<ProvDataInfo> parentItems = new ArrayList<>();
     private OnChildClickListener onChildClickListener;
-    private boolean mIsChange;
-    private boolean mIsDelete;
 
     public ManagerMapDataAdapter(final Context context) {
         this.mContext = context;
@@ -43,9 +41,7 @@ public class ManagerMapDataAdapter extends RecyclerView.Adapter<RecyclerView.Vie
      * 设置数据
      * @param parentItems
      */
-    public void setData(List<ProvDataInfo> parentItems, boolean isDelete, boolean isChange) {
-        mIsChange = isChange;
-        mIsDelete = isDelete;
+    public void setData(List<ProvDataInfo> parentItems) {
         this.parentItems = parentItems;
         notifyDataSetChanged();
     }
@@ -180,16 +176,12 @@ public class ManagerMapDataAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                 swipeMenuLayout.smoothClose();
             }
             //是否显示“新”标签
-            if (mIsChange) {
-                //删除已下载包，不需要显示标签
-                if (mIsDelete){ //删除已下载包，不需要显示标签
-                    cityNewLabel.setVisibility(View.GONE);
-                } else {
-                    cityNewLabel.setVisibility(View.VISIBLE);
-                }
+            if (child.isNew()) {
+                cityNewLabel.setVisibility(View.VISIBLE);
             } else {
                 cityNewLabel.setVisibility(View.GONE);
             }
+
             // 城市名称
             cityName.setText(child.getName());
             // 城市数据包大小

@@ -88,6 +88,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/tv_favorite_switch"
                 android:orientation="vertical">
                 <com.fy.navi.ui.view.SkinTextView
+                    android:id="@+id/tv_no_favorite"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/search_quick_tab_view_color"

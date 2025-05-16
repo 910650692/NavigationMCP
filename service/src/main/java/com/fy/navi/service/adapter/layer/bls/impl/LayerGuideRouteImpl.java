@@ -166,17 +166,16 @@ public class LayerGuideRouteImpl extends BaseLayerImpl<LayerGuideRouteStyleAdapt
         }
     }
 
-    /**
-     * 全览参数句柄转换
-     *
-     * @param pathResult
-     * @return
-     */
+    /*全览转换 */
     public PreviewParams getPathResultBound(ArrayList<?> pathResult) {
+        PreviewParams previewParams = new PreviewParams();
+        if (ConvertUtils.isEmpty(pathResult)) {
+            Logger.e(TAG, "getPathResultBound pathResult is Empty");
+            return previewParams;
+        }
         ArrayList<PathInfo> pathInfos = (ArrayList<PathInfo>) pathResult;
         RectDouble rectDouble = BizGuideRouteControl.getPathResultBound(pathInfos);
         Logger.d(TAG, "path info 转换为预览巨型区域参数：", rectDouble);
-        PreviewParams previewParams = new PreviewParams();
         previewParams.setRouteLine(true);
         previewParams.setbUseRect(true);
         if (!ConvertUtils.isEmpty(rectDouble)) {
@@ -301,6 +300,10 @@ public class LayerGuideRouteImpl extends BaseLayerImpl<LayerGuideRouteStyleAdapt
     //转换替换补能扎标数据
     private RoutePoints getRouteViaReplaceChargePoints(ArrayList<RouteAlterChargeStationInfo> info) {
         RoutePoints infos = new RoutePoints();
+        if (ConvertUtils.isEmpty(info)) {
+            Logger.e(TAG, "getRouteViaReplaceChargePoints info is Empty");
+            return infos;
+        }
         ArrayList<RoutePoint> via = new ArrayList<>();
         for (int t = 0; t < info.size(); t++) {
             RoutePoint point = new RoutePoint();
@@ -672,6 +675,10 @@ public class LayerGuideRouteImpl extends BaseLayerImpl<LayerGuideRouteStyleAdapt
      * @param selectIndex
      */
     public void setPathInfos(ArrayList<?> pathInfoList, int selectIndex) {
+        if (ConvertUtils.isEmpty(pathInfoList)) {
+            Logger.e(TAG, "setPathInfos pathInfoList is Empty");
+            return;
+        }
         getLayerGuideRouteControl().clearPaths();
         long pathCount = pathInfoList == null ? 0 : pathInfoList.size();
         ArrayList<BizPathInfoAttrs> bizPathInfoAttrs = new ArrayList<>();
@@ -735,6 +742,7 @@ public class LayerGuideRouteImpl extends BaseLayerImpl<LayerGuideRouteStyleAdapt
         ArrayList<BizRouteRestAreaInfo> restAreaInfos = new ArrayList<>();
         if (ConvertUtils.isEmpty(pathInfoList)) {
             getLayerGuideRouteControl().updateRouteRestAreaInfo(restAreaInfos);
+            Logger.e(TAG, "showRestArea pathInfoList is Empty");
             return;
         }
         Logger.d(TAG, "showRestArea pathInfoList" + pathInfoList + " index" + index);
@@ -756,6 +764,7 @@ public class LayerGuideRouteImpl extends BaseLayerImpl<LayerGuideRouteStyleAdapt
         ArrayList<BizRouteWeatherInfo> weatherInfos = new ArrayList<>();
         if (ConvertUtils.isEmpty(weatherLabelItem)) {
             getLayerGuideRouteControl().updateRouteWeatherInfo(weatherInfos);
+            Logger.e(TAG, "showWeatherView weatherLabelItem is Empty");
             return;
         }
         Logger.d(TAG, "showWeatherView weatherLabelItem" + weatherLabelItem.size());
@@ -805,6 +814,10 @@ public class LayerGuideRouteImpl extends BaseLayerImpl<LayerGuideRouteStyleAdapt
     }
 
     public boolean showCross(CrossImageEntity crossInfo) {
+        if (ConvertUtils.isEmpty(crossInfo)) {
+            Logger.e(TAG, "showCross crossInfo == null");
+            return false;
+        }
         boolean ret = false;
         if (crossInfo.getType() == NaviConstant.CrossType.CROSS_TYPE_VECTOR || crossInfo.getType() == NaviConstant.CrossType.CROSS_TYPE_3_D) {
             //矢量图或者三维图
@@ -827,6 +840,10 @@ public class LayerGuideRouteImpl extends BaseLayerImpl<LayerGuideRouteStyleAdapt
 
     /* 动态更新路口大图显示区域 */
     public void updateRoadCrossRect(Rect rect) {
+        if (ConvertUtils.isEmpty(rect)) {
+            Logger.e(TAG, "updateRoadCrossRect rect == null");
+            return;
+        }
         Logger.d(TAG, "updateRoadCrossRect");
         getStyleAdapter().updateRoadCrossRect(rect);
     }

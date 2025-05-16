@@ -14,6 +14,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.alibaba.android.arouter.launcher.ARouter;
+import com.android.utils.ConvertUtils;
 import com.android.utils.ResourceUtils;
 import com.android.utils.ToastUtils;
 import com.android.utils.log.Logger;
@@ -99,11 +100,26 @@ public class SceneMainSearchBottomPartView extends BaseSceneView<SearchHistoryVi
         final int count = Math.min(commonList.size(), 3);
         for (int i = 0; i < count; i++) {
             if (i == 0) {
-                setCommon(mViewBinding.searchHistoryMiddleView.ivAdd0, mViewBinding.searchHistoryMiddleView.tvAdd0, commonList.get(i).getName());
+                if (!ConvertUtils.isEmpty(commonList.get(i).getFavoriteInfo().getCustom_name())) {
+                    setCommon(mViewBinding.searchHistoryMiddleView.ivAdd0, mViewBinding.searchHistoryMiddleView.tvAdd0,
+                            commonList.get(i).getFavoriteInfo().getCustom_name());
+                } else {
+                    setCommon(mViewBinding.searchHistoryMiddleView.ivAdd0, mViewBinding.searchHistoryMiddleView.tvAdd0, commonList.get(i).getName());
+                }
             } else if (i == 1) {
-                setCommon(mViewBinding.searchHistoryMiddleView.ivAdd1, mViewBinding.searchHistoryMiddleView.tvAdd1, commonList.get(i).getName());
+                if (!ConvertUtils.isEmpty(commonList.get(i).getFavoriteInfo().getCustom_name())) {
+                    setCommon(mViewBinding.searchHistoryMiddleView.ivAdd1, mViewBinding.searchHistoryMiddleView.tvAdd1,
+                            commonList.get(i).getFavoriteInfo().getCustom_name());
+                } else {
+                    setCommon(mViewBinding.searchHistoryMiddleView.ivAdd1, mViewBinding.searchHistoryMiddleView.tvAdd1, commonList.get(i).getName());
+                }
             } else {
-                setCommon(mViewBinding.searchHistoryMiddleView.ivAdd2, mViewBinding.searchHistoryMiddleView.tvAdd2, commonList.get(i).getName());
+                if (!ConvertUtils.isEmpty(commonList.get(i).getFavoriteInfo().getCustom_name())) {
+                    setCommon(mViewBinding.searchHistoryMiddleView.ivAdd2, mViewBinding.searchHistoryMiddleView.tvAdd2,
+                            commonList.get(i).getFavoriteInfo().getCustom_name());
+                } else {
+                    setCommon(mViewBinding.searchHistoryMiddleView.ivAdd2, mViewBinding.searchHistoryMiddleView.tvAdd2, commonList.get(i).getName());
+                }
             }
         }
     }

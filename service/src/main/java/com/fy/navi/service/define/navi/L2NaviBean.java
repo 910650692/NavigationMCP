@@ -52,9 +52,9 @@ public class L2NaviBean {
     private LimitCameraDataBean mLimitCameraData;
 
     @SerializedName("rampDist")
-    private int mRampDist;
+    private int mRampDist = 0xFFFF;
     @SerializedName("tollStationDist")
-    private int mTollStationDist; // 与前方收费站剩余距离
+    private int mTollStationDist = 0xFFFF; // 与前方收费站剩余距离
     @SerializedName("tunnelInfo")
     private TunnelInfoBean mTunnelInfo;
     @SerializedName("vehiclePosition")
@@ -81,10 +81,10 @@ public class L2NaviBean {
 //        mEndParkingInfo = new EndParkingInfo();
         mAheadIntersections.clear();
         mMixForks.clear();
-        mTollStationDist = 0;
+        mTollStationDist = 0xFFFF;
         mHasTidalLane = 0;
         mIsServiceAreaRoad = 0;
-        mRampDist = 0;
+        mRampDist = 0xFFFF;
     }
 
     @Setter
@@ -421,7 +421,7 @@ public class L2NaviBean {
          * linkType : 1
          */
         @SerializedName("CurPathID")
-        private int mCurPathID;
+        private long mCurPathID;
         @SerializedName("currentSpeedLimit")
         private int mCurrentSpeedLimit;
         @SerializedName("distToDestination")
@@ -449,11 +449,11 @@ public class L2NaviBean {
         @SerializedName("linkType")
         private int mLinkType;
 
-        public int getCurPathID() {
+        public long getCurPathID() {
             return mCurPathID;
         }
 
-        public void setCurPathID(final int curPathID) {
+        public void setCurPathID(final long curPathID) {
             this.mCurPathID = curPathID;
         }
 

@@ -116,15 +116,6 @@ public interface ILayerApi {
     /*移除图层注册监听*/
     void unRegisterLayerClickObserver(MapType mapTypeId, ILayerAdapterCallBack observer);
 
-    /***停车场扎标***/
-    void updateSearchParkPoi(MapType mapTypeId, ArrayList<NaviParkingEntity> parkList);
-
-    /***清除停车场扎标***/
-    void clearSearchParkPoi(MapType mapTypeId);
-
-    /***设置停车场扎标是否选中***/
-    void setParkFocus(MapType mapTypeId, String strID, boolean bFocus);
-
     /***更新车标***/
     void updateGuideCarStyle(MapType mapTypeId);
 

@@ -1,10 +1,12 @@
 package com.fy.navi.hmi.mapdata.manager;
 
 import android.app.Application;
+import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 
+import com.android.utils.ConvertUtils;
 import com.android.utils.ResourceUtils;
 import com.android.utils.thread.ThreadManager;
 import com.fy.navi.hmi.R;
@@ -48,6 +50,9 @@ public class ManagerMapDataViewModel extends BaseViewModel<ManagerMapDataFragmen
      * 正在下载tab
      */
     public Action mDownloadingDataClickView = () -> {
+        if (!mIsDownloadedPage) {
+            return;
+        }
         mIsDownloadedPage = false;
         mView.setDownloadingTitleStatus(true);
         mView.setDownloadedTitleStatus(false);
@@ -61,13 +66,16 @@ public class ManagerMapDataViewModel extends BaseViewModel<ManagerMapDataFragmen
      * 已下载tab
      */
     public Action mDownloadedClickView = () -> {
+        if (mIsDownloadedPage) {
+            return;
+        }
         mIsDownloadedPage = true;
         mView.setDownloadingTitleStatus(false);
         mView.setDownloadedTitleStatus(true);
         mDownloadedDataVisibility.setValue(true);
         mDownloadingDataVisibility.setValue(false);
         mDownloadingNoDataVisibility.setValue(false);
-        setDownloadedView(mModel.getWorkedList(), false);
+        setDownloadedView(getDownloadedList());
     };
 
     public Action mAllDataSuspend = () -> {
@@ -142,11 +150,50 @@ public class ManagerMapDataViewModel extends BaseViewModel<ManagerMapDataFragmen
     }
 
     /**
+     * 检查是否是新下载的城市
+     */
+    private ArrayList<ProvDataInfo> getDownloadedList() {
+        final ArrayList<ProvDataInfo> workedList = mModel.getWorkedList();
+        if (ConvertUtils.isEmpty(workedList)) {
+            return workedList;
+        }
+        final List<String> list = new ArrayList<>();
+        for (ProvDataInfo provDataInfo : workedList) {
+            ArrayList<CityDataInfo> cityInfoList = provDataInfo.getCityInfoList();
+            for (CityDataInfo cityDataInfo : cityInfoList) {
+                cityDataInfo.setNew(!isExistInCachedList(cityDataInfo));
+                list.add(String.valueOf(cityDataInfo.getAdcode()));
+            }
+        }
+        mModel.saveCachedCityList(String.join(",", list));
+        return workedList;
+    }
+
+    /**
+     * 缓存的集合里是否有当前数据，没有就是新下载
+     * @return false: mean new
+     */
+    private boolean isExistInCachedList(final CityDataInfo cityDataInfo) {
+        List<String> list = mModel.getCachedCityList();
+        if (list.isEmpty()) {
+            return false;
+        }
+
+        for (String code : list) {
+            if (TextUtils.equals(String.valueOf(cityDataInfo.getAdcode()), code)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
      * 更新下载中数据view
      * @param provDataInfos
      */
     public void setDownloadingView(final ArrayList<ProvDataInfo> provDataInfos) {
         downloadingInfos = provDataInfos;
+
         if (mIsDownloadedPage) {
             return;
         }
@@ -166,7 +213,7 @@ public class ManagerMapDataViewModel extends BaseViewModel<ManagerMapDataFragmen
      * 更新已下载数据view
      * @param provDataInfos
      */
-    public void setDownloadedView(final ArrayList<ProvDataInfo> provDataInfos, boolean isChange) {
+    public void setDownloadedView(final ArrayList<ProvDataInfo> provDataInfos) {
         int size = 0;
         if (provDataInfos != null && !provDataInfos.isEmpty()) {
             for (int i = 0; i < provDataInfos.size(); i++) {
@@ -176,7 +223,7 @@ public class ManagerMapDataViewModel extends BaseViewModel<ManagerMapDataFragmen
         }
 
         mDownloadedNoDataVisibility.setValue(size == 0);
-        mView.updateDownloadedView(provDataInfos, isChange);
+        mView.updateDownloadedView(provDataInfos);
         mAllDownloadedDataSize.setValue(ResourceUtils.Companion.getInstance().getString(R.string.offline_manager_map_downloading_size_start)
             + size + ResourceUtils.Companion.getInstance().getString(R.string.offline_manager_map_downloading_size_end));
 
@@ -195,7 +242,7 @@ public class ManagerMapDataViewModel extends BaseViewModel<ManagerMapDataFragmen
                 setDownloadingView(mModel.getWorkingList());
                 //当前处于已下载tab页，实时删除数据包，会动态刷新当前数据
                 if (mIsDownloadedPage) {
-                    setDownloadedView(mModel.getWorkedList(), true);
+                    setDownloadedView(mModel.getWorkedList());
                 }
             } else {
                 //实时更新列表item

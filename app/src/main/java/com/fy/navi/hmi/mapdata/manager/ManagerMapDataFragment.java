@@ -120,7 +120,7 @@ public class ManagerMapDataFragment extends BaseFragment<FragmentManagerMapDataB
      */
     public void updateDownloadingView(final ArrayList<ProvDataInfo> provDataInfos) {
         ThreadManager.getInstance().postUi(() -> {
-            mDownloadingMapDataAdapter.setData(provDataInfos,mIsDelete,false);
+            mDownloadingMapDataAdapter.setData(provDataInfos);
             if (!ConvertUtils.isEmpty(provDataInfos)) {
                 mAllDownloadingList.clear();
                 for (ProvDataInfo provDataInfo : provDataInfos) {
@@ -153,8 +153,8 @@ public class ManagerMapDataFragment extends BaseFragment<FragmentManagerMapDataB
      * @param provDataInfos
      * @param isChange
      */
-    public void updateDownloadedView(final ArrayList<ProvDataInfo> provDataInfos, final boolean isChange) {
-        mDownloadedMapDataAdapter.setData(provDataInfos, mIsDelete, isChange);
+    public void updateDownloadedView(final ArrayList<ProvDataInfo> provDataInfos) {
+        mDownloadedMapDataAdapter.setData(provDataInfos);
     }
 
     /**

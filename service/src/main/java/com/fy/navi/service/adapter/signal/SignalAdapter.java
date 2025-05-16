@@ -90,4 +90,8 @@ public final class SignalAdapter {
     public int getNavigationOnAdasTextToSpeachStatus() {
         return mSignalApi.getNavigationOnAdasTextToSpeachStatus();
     }
+
+    public void setNaviVolume(int volume) {
+        mSignalApi.setNaviVolume(volume);
+    }
 }

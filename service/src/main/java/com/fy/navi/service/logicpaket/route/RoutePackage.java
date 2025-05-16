@@ -3,7 +3,6 @@ package com.fy.navi.service.logicpaket.route;
 import android.util.Pair;
 
 import com.android.utils.ConvertUtils;
-import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.adapter.aos.BlAosAdapter;
@@ -685,9 +684,9 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
         if (routeParams.size() > 0) {
             int index = -1;
             for (int t = NumberUtils.NUM_0; t < routeParams.size(); t++) {
-                if (poiInfoEntity.getPid() == routeParams.get(t).getPoiID()
-                        || (poiInfoEntity.getPoint().getLon() == routeParams.get(t).getRealPos().getLon()
-                        && poiInfoEntity.getPoint().getLat() == routeParams.get(t).getRealPos().getLat())) {
+                if ((!ConvertUtils.isEmpty(routeParams.get(t).getPoiID()) && routeParams.get(t).getPoiID() == poiInfoEntity.getPid())
+                        || (poiInfoEntity.getPoint().getLon() == routeParams.get(t).getMRealPos().getLon()
+                        && poiInfoEntity.getPoint().getLat() == routeParams.get(t).getMRealPos().getLat())) {
                     index = t;
                 }
             }

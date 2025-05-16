@@ -23,13 +23,13 @@
     <com.fy.navi.ui.view.SkinConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:minHeight="@dimen/dp_158">
+        android:minHeight="@dimen/dp_134">
 
         <com.fy.navi.ui.view.SkinConstraintLayout
             android:id="@+id/crl_poi_item"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_30"
+            android:layout_marginStart="@dimen/dp_25"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent">
@@ -37,12 +37,11 @@
             <com.fy.navi.ui.view.SkinTextView
                 android:id="@+id/poi_num"
                 android:layout_width="wrap_content"
-                android:layout_height="@dimen/dp_52"
+                android:layout_height="wrap_content"
                 android:gravity="center"
-                android:minWidth="@dimen/dp_30"
                 android:text="@{layoutPosition}"
                 android:textColor="@color/search_quick_tab_view_color"
-                android:textSize="@dimen/sp_38"
+                android:textSize="@dimen/sp_26"
                 android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="@+id/crl_poi_item"
                 app:layout_constraintStart_toStartOf="parent"
@@ -51,8 +50,8 @@
 
             <com.fy.navi.ui.view.SkinImageView
                 android:id="@+id/poi_icon"
-                android:layout_width="@dimen/dp_68"
-                android:layout_height="@dimen/dp_68"
+                android:layout_width="@dimen/dp_49"
+                android:layout_height="@dimen/dp_49"
                 android:gravity="center"
                 android:minWidth="@dimen/dp_30"
                 android:src="@drawable/img_basic_ic_orientation"
@@ -77,14 +76,14 @@
             <com.fy.navi.ui.view.SkinTextView
                 android:id="@+id/poi_name"
                 android:layout_width="match_parent"
-                android:maxWidth="@dimen/dp_438"
+                android:maxWidth="@dimen/dp_373"
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:singleLine="true"
                 android:text="@{poiBean.name}"
                 android:textColor="@color/search_color_ffffff"
-                android:textSize="@dimen/sp_34"
+                android:textSize="@dimen/sp_29"
                 app:layout_constraintBottom_toTopOf="@+id/poi_address"
                 app:layout_constraintStart_toEndOf="@+id/crl_poi_item"
                 app:layout_constraintTop_toTopOf="parent"
@@ -95,10 +94,10 @@
                 android:id="@+id/poi_distance"
                 android:layout_width="@dimen/dp_0"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_16"
+                android:layout_marginTop="@dimen/dp_9"
                 android:text="@{poiBean.distance}"
                 android:textColor="@color/search_quick_tab_view_color"
-                android:textSize="@dimen/sp_30"
+                android:textSize="@dimen/sp_26"
                 app:layout_constraintEnd_toStartOf="@+id/poi_to_navi"
                 app:layout_constraintTop_toBottomOf="@+id/poi_name"
                 tools:text="100Km" />
@@ -106,8 +105,8 @@
             <View
                 android:id="@+id/sub_line_view"
                 android:layout_width="@dimen/dp_1"
-                android:layout_height="@dimen/dp_40"
-                android:layout_marginStart="@dimen/dp_8"
+                android:layout_height="@dimen/dp_19"
+                android:layout_marginStart="@dimen/dp_7"
                 android:background="@color/search_quick_tab_view_color"
                 app:layout_constraintBottom_toBottomOf="@+id/poi_address"
                 app:layout_constraintStart_toEndOf="@+id/poi_distance"
@@ -117,14 +116,14 @@
                 android:id="@+id/poi_address"
                 android:layout_width="@dimen/dp_0"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_8"
-                android:layout_marginTop="@dimen/dp_16"
+                android:layout_marginStart="@dimen/dp_7"
+                android:layout_marginTop="@dimen/dp_9"
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:singleLine="true"
                 android:text="@{poiBean.address}"
                 android:textColor="@color/search_quick_tab_view_color"
-                android:textSize="@dimen/sp_30"
+                android:textSize="@dimen/sp_26"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/sub_line_view"
                 app:layout_constraintTop_toBottomOf="@+id/poi_name"
@@ -143,8 +142,8 @@
 
             <com.fy.navi.ui.view.SkinImageView
                 android:id="@+id/iv_navi_icon"
-                android:layout_width="@dimen/dp_58"
-                android:layout_height="@dimen/dp_58"
+                android:layout_width="@dimen/dp_49"
+                android:layout_height="@dimen/dp_49"
                 android:src="@drawable/img_basic_ic_navi"
                 app:layout_constraintEnd_toEndOf="@id/text_navi"
                 app:layout_constraintStart_toStartOf="@+id/text_navi"
@@ -157,7 +156,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/st_go_here"
                 android:textColor="@color/search_quick_tab_view_color"
-                android:textSize="@dimen/sp_30"
+                android:textSize="@dimen/sp_26"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/iv_navi_icon" />

@@ -147,6 +147,19 @@ public final class SignalPackage implements SignalAdapterCallback {
         });
     }
 
+    @Override
+    public void onNaviVolumeChanged(int volume) {
+        ThreadManager.getInstance().postUi(() -> {
+            if (!ConvertUtils.isEmpty(mSignalCallbacks)) {
+                for (SignalCallback signalCallback : mSignalCallbacks.values()) {
+                    if (signalCallback != null) {
+                        signalCallback.onNaviVolumeChanged(volume);
+                    }
+                }
+            }
+        });
+    }
+
     /**
      * 车外温度
      *
@@ -277,5 +290,14 @@ public final class SignalPackage implements SignalAdapterCallback {
      */
     public int getNavigationOnAdasTextToSpeachStatus() {
         return mSignalAdapter.getNavigationOnAdasTextToSpeachStatus();
+    }
+
+    /**
+     * 设置导航音量
+     *
+     * @param volume 0-63
+     */
+    public void setNaviVolume(int volume) {
+        mSignalAdapter.setNaviVolume(volume);
     }
 }

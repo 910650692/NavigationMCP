@@ -1192,9 +1192,11 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
             scenicChildAdapter.setChildInfoList(childInfoList);
             mViewBinding.scenePoiDetailsNormalView.poiChildList.setLayoutManager(
                     new GridLayoutManager(getContext(), mSpanCount));
-            mViewBinding.scenePoiDetailsNormalView.poiChildList.addItemDecoration(
-                    new GridSpacingItemDecoration(getContext(), mSpanCount, mChildSpacing,
-                            mChildSpacing, false));
+            if (mViewBinding.scenePoiDetailsNormalView.poiChildList.getItemDecorationCount() == 0) {
+                mViewBinding.scenePoiDetailsNormalView.poiChildList.addItemDecoration(
+                        new GridSpacingItemDecoration(getContext(), mSpanCount, mChildSpacing,
+                                mChildSpacing, false));
+            }
             mViewBinding.scenePoiDetailsNormalView.poiChildList.setAdapter(scenicChildAdapter);
             if (childInfoList.size() > 2) {
                 mViewBinding.scenePoiDetailsNormalView.poiChildExpandCollapse.

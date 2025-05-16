@@ -22,8 +22,9 @@
 
         <com.fy.navi.ui.view.SkinConstraintLayout
             android:layout_width="@dimen/dp_640"
-            android:layout_height="@dimen/dp_610"
-            android:layout_marginTop="@dimen/dp_24"
+            android:layout_height="@dimen/dp_1055"
+            android:layout_marginTop="@dimen/dp_20"
+            android:paddingVertical="@dimen/dp_24"
             android:background="@drawable/bg_search_main_tab">
 
             <com.fy.navi.ui.view.SkinRecyclerView
@@ -45,6 +46,7 @@
                 android:textColor="@color/search_color_ffffff_70"
                 android:textSize="@dimen/sp_30"
                 android:visibility="gone"
+                android:paddingHorizontal="@dimen/dp_40"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"

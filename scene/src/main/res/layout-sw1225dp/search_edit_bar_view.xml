@@ -49,7 +49,7 @@
             android:id="@+id/iv_edit_clear"
             android:layout_width="@dimen/dp_42"
             android:layout_height="@dimen/dp_42"
-            android:layout_marginEnd="@dimen/dp_20"
+            android:layout_marginEnd="@dimen/dp_26"
             android:src="@drawable/img_poi_edit_delete"
             android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="parent"

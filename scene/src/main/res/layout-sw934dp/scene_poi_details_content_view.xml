@@ -176,7 +176,6 @@
                     android:layout_width="@dimen/dp_0"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dp_16"
-                    android:layout_marginEnd="@dimen/dp_10"
                     android:maxLines="1"
                     android:visibility="@{(ScenePoiDetailContentView.mPowerType == 0) ? View.GONE : View.VISIBLE}"
                     android:textColor="@color/poi_details_bottom_ff_00"

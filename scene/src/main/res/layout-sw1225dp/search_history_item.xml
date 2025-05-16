@@ -163,8 +163,8 @@
 
                 <com.fy.navi.ui.view.SkinImageView
                     android:id="@+id/iv_collect"
-                    android:layout_width="@dimen/dp_68"
-                    android:layout_height="@dimen/dp_68"
+                    android:layout_width="@dimen/dp_58"
+                    android:layout_height="@dimen/dp_58"
                     android:src="@drawable/icon_basic_ic_star_default" />
 
                 <com.fy.navi.ui.view.SkinTextView
@@ -175,7 +175,7 @@
                     android:gravity="center"
                     android:text="收藏"
                     android:textColor="@color/search_quick_tab_view_color"
-                    android:textSize="@dimen/sp_36" />
+                    android:textSize="@dimen/sp_30" />
 
             </com.fy.navi.ui.view.SkinLinearLayout>
 
@@ -188,8 +188,8 @@
                 android:orientation="vertical">
 
                 <com.fy.navi.ui.view.SkinImageView
-                    android:layout_width="@dimen/dp_68"
-                    android:layout_height="@dimen/dp_68"
+                    android:layout_width="@dimen/dp_58"
+                    android:layout_height="@dimen/dp_58"
                     android:src="@drawable/img_basic_ic_delete_white" />
 
                 <com.fy.navi.ui.view.SkinTextView
@@ -199,7 +199,7 @@
                     android:gravity="center"
                     android:text="删除"
                     android:textColor="@color/search_color_delete_text"
-                    android:textSize="@dimen/sp_36" />
+                    android:textSize="@dimen/sp_30" />
 
             </com.fy.navi.ui.view.SkinLinearLayout>
         </com.fy.navi.ui.view.SkinLinearLayout>

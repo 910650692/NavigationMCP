@@ -826,6 +826,13 @@ public class TimeUtils {
         return builder.toString();
     }
 
+    public static String getRemainingMileage(Context context, int distance) {
+        StringBuilder builder = new StringBuilder();
+        String[] etaDistance = ConvertUtils.formatDistanceArray(context, distance);
+        builder.append(etaDistance[0]).append(etaDistance[1]);
+        return builder.toString();
+    }
+
     public static String getArriveDay(int time) {
         String arriveDay = "";
         // 到达天数

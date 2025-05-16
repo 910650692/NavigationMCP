@@ -3,6 +3,7 @@ package com.fy.navi.service.adapter.signal.bls;
 import android.car.Car;
 import android.car.hardware.CarPropertyValue;
 import android.car.hardware.property.CarPropertyManager;
+import android.car.media.CarAudioManager;
 import android.content.Context;
 import android.hardware.automotive.vehicle.V2_0.VehicleArea;
 import android.os.Build;
@@ -28,6 +29,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import gm.powermode.PowerModeManager;
 import vendor.gm.vehicle.V1_0.VendorProperty;
+import vendor.patac.vehicle.V1_0.PatacProperty;
 
 public class SignalAdapterImpl implements SignalApi {
     private static final String TAG = MapDefaultFinalTag.SIGNAL_SERVICE_TAG;
@@ -37,6 +39,7 @@ public class SignalAdapterImpl implements SignalApi {
     private final List<SignalAdapterCallback> mCallbacks = new CopyOnWriteArrayList<>();
     private Car mCar;
     private CarPropertyManager mPropertyManager;
+    private CarAudioManager mCarAudioManager;
 
     public SignalAdapterImpl() {
     }
@@ -248,14 +251,121 @@ public class SignalAdapterImpl implements SignalApi {
         if (this.mPropertyManager == null) {
             Logger.d(TAG, "init CarPropertyManager");
             this.mPropertyManager = (CarPropertyManager) this.mCar.getCarManager("property");
+            mCarAudioManager = (CarAudioManager) car.getCarManager(Car.AUDIO_SERVICE);
+            initVolumeCallback();
             try {
                 registerDYN(190, 1);
             } catch (Exception e) {
                 Logger.e(TAG, "registerDYN: ", e);
             }
+            patacPropertyRegister(PatacProperty.NAVIGATION_ON_ADAS_STATUS_ACTIVE_INDICATION_ON,
+                    SignalConst.L2_NOP.STATUS_ACTIVE_INDICATION_ON_TRUE);
+            patacPropertyRegister(PatacProperty.NAVIGATION_ON_ADAS_STATUS_NORMAL_TO_OVERRIDE_INDICATION_ON,
+                    SignalConst.L2_NOP.STATUS_NORMAL_TO_OVERRIDE_INDICATION_ON_TRUE);
+            patacPropertyRegister(PatacProperty.NAVIGATION_ON_ADAS_STATUS_OVERRIDE_TO_NORMAL_INDICATION_ON,
+                    SignalConst.L2_NOP.STATUS_OVERRIDE_TO_NORMAL_INDICATION_ON_TRUE);
+            patacPropertyRegister(PatacProperty.NAVIGATION_ON_ADAS_CLOSE_TO_TIGHT_CURVE_INDICATION_ON,
+                    SignalConst.L2_NOP.CLOSE_TO_TIGHT_CURVE_INDICATION_ON_TRUE);
+            patacPropertyRegister(PatacProperty.NAVIGATION_ON_ADAS_INTO_TIGHT_CURVE_INDICATION_ON,
+                    SignalConst.L2_NOP.INTO_TIGHT_CURVE_INDICATION_ON_TRUE);
+            patacPropertyRegister(PatacProperty.NAVIGATION_ON_ADAS_TAKE_STEERING_INDICATION_ON,
+                    SignalConst.L2_NOP.TAKE_STEERING_INDICATION_ON_TRUE);
+            patacPropertyRegister(PatacProperty.NAVIGATION_ON_ADAS_DISTANCE_TO_RAMP_2000_M_INDICATION_ON,
+                    SignalConst.L2_NOP.DISTANCE_TO_RAMP_2000M_INDICATION_ON_TRUE);
+            patacPropertyRegister(PatacProperty.NAVIGATION_ON_ADAS_DISTANCE_TO_RAMP_500_M_INDICATION_ON,
+                    SignalConst.L2_NOP.DISTANCE_TO_RAMP_500M_INDICATION_ON_TRUE);
+            patacPropertyRegister(PatacProperty.NAVIGATION_ON_ADAS_COMPLICATED_ROAD_CONDITION_LANE_CHANGE_FAILED,
+                    SignalConst.L2_NOP.COMPLICATED_ROAD_CONDITION_LANE_CHANGE_FAILED_TRUE);
+            patacPropertyRegister(PatacProperty.NAVIGATION_ON_ADAS_DISTANCE_TO_END_500_M_INDICATION_ON,
+                    SignalConst.L2_NOP.DISTANCE_TO_END_500M_INDICATION_ON_TRUE);
+            patacPropertyRegister(PatacProperty.NAVIGATION_ON_ADAS_FINISHED_INDICATION_ON,
+                    SignalConst.L2_NOP.FINISHED_INDICATION_ON_TRUE);
+            patacPropertyRegister(PatacProperty.NAVIGATION_ON_ADAS_TAKE_VEHICLE_CONTROL_INDICATION_ON,
+                    SignalConst.L2_NOP.TAKE_VEHICLE_CONTROL_INDICATION_ON_TRUE);
+            mPropertyManager.registerCallback(new CarPropertyManager.CarPropertyEventCallback() {
+                @Override
+                public void onChangeEvent(CarPropertyValue carPropertyValue) {
+                    if (carPropertyValue == null) {
+                        Logger.i(TAG, "carPropertyValue == null");
+                        return;
+                    }
+                    Integer value = (Integer) carPropertyValue.getValue();
+                    Logger.i(TAG, "value", value);
+                    int ttsValue = -1;
+                    switch (value) {
+                        case 0x3:
+                            ttsValue = SignalConst.L2_NOP.DEACTIVATION_REASON_CONSTRUCTION;
+                            break;
+                        case 0x4:
+                            ttsValue = SignalConst.L2_NOP.DEACTIVATION_REASON_MAP_UNAVAILABLE;
+                            break;
+                        case 0x5:
+                            ttsValue = SignalConst.L2_NOP.DEACTIVATION_REASON_GPS_UNAVAILABLE;
+                            break;
+                        case 0x6:
+                            ttsValue = SignalConst.L2_NOP.DEACTIVATION_REASON_TRAFFIC_JAM;
+                            break;
+                        case 0x9:
+                            ttsValue = SignalConst.L2_NOP.DEACTIVATION_REASON_TIGHTCURVE;
+                            break;
+                        case 0xA:
+                            ttsValue = SignalConst.L2_NOP.DEACTIVATION_REASON_SPEEDOUTLIMIT;
+                            break;
+                        case 0xC:
+                            ttsValue = SignalConst.L2_NOP.DEACTIVATION_REASON_COMPLICATED_ROAD_CONDITION;
+                            break;
+                        case 0xE:
+                            ttsValue = SignalConst.L2_NOP.DEACTIVATION_REASON_UNAVAILABLE;
+                            break;
+                        case 0xF:
+                            ttsValue = SignalConst.L2_NOP.DEACTIVATION_REASON_TUNNEL;
+                            break;
+                        case 0x13:
+                            ttsValue = SignalConst.L2_NOP.DEACTIVATION_REASON_SERVICE_NAVIGATION_ON_ADAS_SYSTEM;
+                            break;
+                        case 0x12:
+                            ttsValue = SignalConst.L2_NOP.DEACTIVATION_REASON_DRIVER_ACTION;
+                            break;
+                    }
+                    if (ttsValue != -1) {
+                        for (SignalAdapterCallback callback : mCallbacks) {
+                            callback.onNaviOnADASStateChanged(ttsValue);
+                        }
+                    }
+                }
+
+                @Override
+                public void onErrorEvent(int i, int i1) {
+                    Logger.i(TAG, i, i1);
+                }
+            }, PatacProperty.NAVIGATION_ON_ADAS_DEACTIVATION_REASON, 0);
         } else {
             Logger.i(TAG, "mPropertyManager initialized");
         }
+    }
+
+    private void patacPropertyRegister(int patacProperty, int ttsValue) {
+        mPropertyManager.registerCallback(new CarPropertyManager.CarPropertyEventCallback() {
+            @Override
+            public void onChangeEvent(CarPropertyValue carPropertyValue) {
+                if (carPropertyValue == null) {
+                    Logger.i(TAG, "carPropertyValue == null: " + ttsValue);
+                    return;
+                }
+                Boolean value = (Boolean) carPropertyValue.getValue();
+                Logger.i(TAG, ttsValue + " value: " + value);
+                if (value) {
+                    for (SignalAdapterCallback callback : mCallbacks) {
+                        callback.onNaviOnADASStateChanged(ttsValue);
+                    }
+                }
+            }
+
+            @Override
+            public void onErrorEvent(int i, int i1) {
+                Logger.i(TAG, ttsValue, i, i1);
+            }
+        }, patacProperty, 0);
     }
 
     private void registerDYN(int var1, int var2) {
@@ -276,7 +386,7 @@ public class SignalAdapterImpl implements SignalApi {
                 if (value.length >= 3 && value[0] == var1 && value[1] == var2) {
                     Logger.i(TAG, "meterSpeed: " + value[2]);
                     for (SignalAdapterCallback callback : mCallbacks) {
-                        callback.onSpeedChanged((float) value[2] / 1000);
+                        callback.onSpeedChanged((float) value[2] / 1024);
                     }
                 }
             }
@@ -469,6 +579,35 @@ public class SignalAdapterImpl implements SignalApi {
         final Integer value = result.getValue(-1);
         Logger.d(TAG, "getNavigationOnAdasTextToSpeachStatus: " + value);
         return value;
+    }
+
+    public void initVolumeCallback() {
+        mCarAudioManager.registerCarVolumeCallback(new CarAudioManager.CarVolumeCallback() {
+            @Override
+            public void onGroupVolumeChanged(int zoneId, int groupId, int flags) {
+                Logger.d(TAG,  zoneId, groupId, flags);
+                if (zoneId == CarAudioManager.PRIMARY_AUDIO_ZONE && groupId == 1) {
+                    int volume = mCarAudioManager.getGroupVolume(CarAudioManager.PRIMARY_AUDIO_ZONE, 1);
+                    Logger.d(TAG, volume);
+                    for (SignalAdapterCallback callback : mCallbacks) {
+                        callback.onNaviVolumeChanged(volume);
+                    }
+                }
+            }
+
+            @Override
+            public void onMasterMuteChanged(int zoneId, int flags) {
+            }
+            @Override
+            public void onGroupMuteChanged(int zoneId, int groupId, int flags) {
+            }
+        });
+    }
+
+    @Override
+    public void setNaviVolume(int volume) {
+        Logger.d(TAG, volume);
+        mCarAudioManager.setGroupVolume(CarAudioManager.PRIMARY_AUDIO_ZONE, 1, volume, 0);
     }
 
     /**

@@ -380,9 +380,7 @@ public class UserTrackImplHelper implements IUserTrackObserver, IGpsInfoGetter {
                 history.setMStartPoint(dataBean.getStartLocation());
                 history.setMEndPoint(dataBean.getEndLocation());
                 history.setMRunDistance(dataBean.getRunDistance());// 该行程行驶距离
-                history.setMMidPoint(dataBean.getStartPoiName());
                 history.setMStartTime(dataBean.getStartTime());
-                history.setMEndTime(dataBean.getEndTime()); // 该行程完成时间
                 history.setMRideRunType(dataBean.getRideRunType()); // 行程类型（导航/巡航）
                 history.setMTimeInterval(Math.abs(dataBean.getTimeInterval())); // 驾驶时长
                 history.setMAverageSpeed(getAverageSpeed(dataBean)); // 平均速度
@@ -475,7 +473,6 @@ public class UserTrackImplHelper implements IUserTrackObserver, IGpsInfoGetter {
                 dataBean.setEndLocation(history.getMEndPoint()); // 数据ID
                 dataBean.setRunDistance(history.getMRunDistance()); // 该行程行驶距离
                 dataBean.setStartTime(history.getMStartTime());
-                dataBean.setEndTime(history.getMEndTime()); // 该行程完成时间
                 dataBean.setRideRunType(history.getMRideRunType()); // 行程类型（导航/巡航）
                 dataBean.setTimeInterval(history.getMTimeInterval()); // 驾驶时长
                 dataBean.setAverageSpeed(history.getMAverageSpeed()); // 平均速度
@@ -509,7 +506,6 @@ public class UserTrackImplHelper implements IUserTrackObserver, IGpsInfoGetter {
                 dataBean.setEndLocation(history.getMEndPoint()); // 数据ID
                 dataBean.setRunDistance(history.getMRunDistance()); // 该行程行驶距离
                 dataBean.setStartTime(history.getMStartTime());
-                dataBean.setEndTime(history.getMEndTime()); // 该行程完成时间
                 dataBean.setRideRunType(history.getMRideRunType()); // 行程类型（导航/巡航）
                 dataBean.setTimeInterval(history.getMTimeInterval()); // 驾驶时长
                 dataBean.setAverageSpeed(history.getMAverageSpeed()); // 平均速度

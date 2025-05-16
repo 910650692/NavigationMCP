@@ -321,7 +321,7 @@
                     android:layout_height="@dimen/dp_48"
                     android:layout_marginTop="@dimen/dp_30"
                     android:ellipsize="end"
-                    android:maxWidth="@dimen/dp_616"
+                    android:maxWidth="@dimen/dp_532"
                     android:maxLines="1"
                     android:text="@{ViewModel.getEndName()}"
                     android:textColor="@color/text_route_detail_title"

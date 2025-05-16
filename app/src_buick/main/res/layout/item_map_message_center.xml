@@ -3,7 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
+
         <import type="android.view.View" />
+
         <variable
             name="ViewModel"
             type="com.fy.navi.hmi.map.MapViewModel" />
@@ -13,13 +15,13 @@
         android:id="@+id/message_center_parent"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:visibility="@{ViewModel.messageCenterVisible ? View.VISIBLE : View.GONE}"
-        android:orientation="horizontal"
+        android:background="@drawable/bg_shadow_navi_buick"
         android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingVertical="29dp"
         android:paddingStart="@dimen/dp_69"
         android:paddingEnd="@dimen/dp_73"
-        android:paddingVertical="29dp"
-        android:background="@drawable/bg_shadow_navi_buick">
+        android:visibility="@{ViewModel.messageCenterVisible ? View.VISIBLE : View.GONE}">
 
         <com.fy.navi.ui.view.SkinRelativeLayout
             android:id="@+id/base_map_message_left_container"
@@ -28,22 +30,20 @@
 
             <com.fy.navi.ui.view.SkinTextView
                 android:id="@+id/base_map_message_center_operate"
+                clickCommand="@{ViewModel.messageCenterOperateClick}"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@{ViewModel.messageCenterOperate}"
-                clickCommand="@{ViewModel.messageCenterOperateClick}"
                 android:includeFontPadding="false"
+                android:text="@{ViewModel.messageCenterOperate}"
                 android:textColor="@color/message_center_operate"
-                android:textSize="@dimen/sp_38"
-                />
+                android:textSize="@dimen/sp_38" />
 
             <com.fy.navi.ui.view.SkinImageView
                 android:id="@+id/base_map_message_center_img"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:visibility="@{ViewModel.messageCenterImgVisibility ? View.VISIBLE : View.GONE}"
                 android:src="@drawable/img_message_center_weather"
-                />
+                android:visibility="@{ViewModel.messageCenterImgVisibility ? View.VISIBLE : View.GONE}" />
 
         </com.fy.navi.ui.view.SkinRelativeLayout>
 
@@ -51,70 +51,67 @@
             android:id="@+id/base_map_message_center_line"
             android:layout_width="@dimen/dp_1"
             android:layout_height="@dimen/dp_62"
-            android:background="@color/message_center_line"
             android:layout_marginStart="@dimen/dp_42"
             android:layout_marginTop="@dimen/dp_15"
             android:layout_marginBottom="@dimen/dp_15"
-            android:visibility="@{ViewModel.messageLineVisibility ? View.VISIBLE : View.GONE}"
-            />
+            android:background="@color/message_center_line"
+            android:visibility="@{ViewModel.messageLineVisibility ? View.VISIBLE : View.GONE}" />
 
         <com.fy.navi.ui.view.SkinView
             android:id="@+id/base_map_message_center_line_height"
             android:layout_width="@dimen/dp_1"
             android:layout_height="@dimen/dp_75"
-            android:background="@color/message_center_line"
             android:layout_marginStart="@dimen/dp_42"
             android:layout_marginTop="@dimen/dp_37"
             android:layout_marginBottom="28dp"
-            android:visibility="@{ViewModel.messageLineHeightVisibility ? View.VISIBLE : View.GONE}"
-            />
+            android:background="@color/message_center_line"
+            android:visibility="@{ViewModel.messageLineHeightVisibility ? View.VISIBLE : View.GONE}" />
 
         <com.fy.navi.ui.view.SkinLinearLayout
             android:id="@+id/base_map_message_center_view"
-            android:layout_marginStart="@dimen/dp_34"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginStart="@dimen/dp_34"
+            android:maxWidth="@dimen/dp_506"
             android:orientation="vertical"
-            android:maxWidth="@dimen/dp_506">
+            app:layout_constraintTop_toTopOf="parent">
 
             <com.fy.navi.ui.view.SkinTextView
                 android:id="@+id/base_map_message_center_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@{ViewModel.messageCenterTitle}"
-                app:layout_constraintTop_toTopOf="parent"
-                android:maxLines="1"
                 android:ellipsize="end"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintVertical_bias="0.5"
-                android:textSize="@dimen/sp_34"
+                android:maxLines="1"
+                android:text="@{ViewModel.messageCenterTitle}"
                 android:textColor="@color/message_center_title"
-                />
+                android:textSize="@dimen/sp_34"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.5" />
 
             <com.fy.navi.ui.view.SkinTextView
                 android:id="@+id/base_map_message_center_content"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:maxWidth="@dimen/dp_506"
-                android:text="@{ViewModel.messageCenterContent}"
-                android:maxLines="1"
-                android:ellipsize="end"
                 android:layout_marginTop="@dimen/dp_8"
+                android:ellipsize="end"
+                android:maxWidth="@dimen/dp_506"
+                android:maxLines="1"
+                android:text="@{ViewModel.messageCenterContent}"
                 android:textColor="@color/message_center_content"
-                android:visibility="@{ViewModel.messageCenterContentVisibility ? View.VISIBLE : View.GONE}"
-                android:textSize="@dimen/sp_30"/>
+                android:textSize="@dimen/sp_30"
+                android:visibility="@{ViewModel.messageCenterContentVisibility ? View.VISIBLE : View.GONE}" />
 
         </com.fy.navi.ui.view.SkinLinearLayout>
 
         <com.fy.navi.ui.view.SkinImageView
             android:id="@+id/message_center_close"
+            clickCommand="@{ViewModel.messageCenterGone}"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/img__message_center_close"
-            clickCommand="@{ViewModel.messageCenterGone}"
             android:layout_marginStart="@dimen/dp_36"
             android:layout_marginTop="@dimen/dp_5"
+            android:src="@drawable/img__message_center_close"
             android:visibility="@{ViewModel.messageCloseVisibility ? View.VISIBLE : View.GONE}"
 
             />

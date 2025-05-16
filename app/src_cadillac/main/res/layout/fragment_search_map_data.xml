@@ -122,10 +122,10 @@
                         android:textSize="@dimen/sp_46"
                         android:visibility="gone"
                         android:clickable="false"
+                        android:layout_marginBottom="@dimen/dp_412"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        app:layout_constraintStart_toStartOf="parent"/>
 
                 </com.fy.navi.ui.view.SkinConstraintLayout>
             </com.android.car.ui.FocusArea>

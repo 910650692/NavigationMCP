@@ -13,7 +13,7 @@
     <com.fy.navi.ui.view.SkinConstraintLayout
         android:id="@+id/poi_catering_root"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/dp_34"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
@@ -25,19 +25,21 @@
             android:maxLines="1"
             android:text=""
             android:textColor="@color/poi_details_bottom_icon"
-            android:textSize="@dimen/sp_30"
-            app:layout_constraintTop_toTopOf="@+id/poi_car_catering_price_icon"
-            app:layout_constraintBottom_toBottomOf="@+id/poi_car_catering_price_icon"
+            android:textSize="@dimen/sp_26"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             tools:text="人均" />
-        
+
         <com.fy.navi.ui.view.SkinImageView
             android:id="@id/poi_car_catering_price_icon"
-            android:layout_width="@dimen/dp_37"
-            android:layout_height="@dimen/dp_37"
+            android:layout_width="@dimen/dp_31"
+            android:layout_height="@dimen/dp_31"
             android:src="@drawable/img_money_select_42"
+            android:layout_marginTop="@dimen/dp_3"
             app:layout_constraintStart_toEndOf="@+id/poi_catering_avg_price"
-            app:layout_constraintTop_toTopOf="parent"/>
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
 
         <com.fy.navi.ui.view.SkinTextView
             android:id="@+id/poi_catering_price"
@@ -47,9 +49,9 @@
             android:maxLines="1"
             android:text=""
             android:textColor="@color/search_color_ffffff"
-            android:textSize="@dimen/sp_30"
-            app:layout_constraintTop_toTopOf="@+id/poi_car_catering_price_icon"
-            app:layout_constraintBottom_toBottomOf="@+id/poi_car_catering_price_icon"
+            android:textSize="@dimen/sp_26"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/poi_car_catering_price_icon"
             tools:text="35" />
     </com.fy.navi.ui.view.SkinConstraintLayout>

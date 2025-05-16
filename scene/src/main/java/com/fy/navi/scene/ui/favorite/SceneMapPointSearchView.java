@@ -185,17 +185,17 @@ public class SceneMapPointSearchView extends BaseSceneView<SceneMapPointSearchVi
                 break;
             case HomeCompanyType.COLLECTION:
                 mViewBinding.stvSetting.setText(R.string.mps_set_add);
-                mHintText = getContext().getString(R.string.smp_set_success);
+                mHintText = getContext().getString(R.string.smp_set_add);
                 mCommonName = HomeCompanyType.COLLECTION;
                 break;
             case HomeCompanyType.COMMON:
                 mViewBinding.stvSetting.setText(R.string.mps_set_add);
-                mHintText = getContext().getString(R.string.smp_set_success);
+                mHintText = getContext().getString(R.string.smp_set_add);
                 mCommonName = HomeCompanyType.COMMON;
                 break;
             case HomeCompanyType.ALONG_WAY:
                 mViewBinding.stvSetting.setText(R.string.route_service_details_add_via);
-                mHintText = getContext().getString(R.string.route_service_details_add_via_success);
+                mHintText = null;
                 mCommonName = HomeCompanyType.ALONG_WAY;
                 break;
             default:
@@ -219,7 +219,9 @@ public class SceneMapPointSearchView extends BaseSceneView<SceneMapPointSearchVi
      * 注册点击事件
      */
     public void clickSetting() {
-        ToastUtils.Companion.getInstance().showCustomToastView(mHintText);
+        if (mHintText != null) {
+            ToastUtils.Companion.getInstance().showCustomToastView(mHintText);
+        }
         Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "clickSetting: " + mCommonName
                 + " mPoiInfoEntity: " + mPoiInfoEntity);
         if (ConvertUtils.isEmpty(mPoiInfoEntity)) {

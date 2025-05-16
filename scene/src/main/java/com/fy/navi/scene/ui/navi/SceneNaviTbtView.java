@@ -318,6 +318,10 @@ public class SceneNaviTbtView extends NaviSceneBase<SceneNaviTbtViewBinding, Sce
      * @return 进度条长度（int类型，范围0-640）
      */
     private int calculateProgressBarLength(long totalDistance, long remainingDistance) {
+        // 行驶距离计算有一些出入，如果是路口大图即将要消失，直接进度拉满
+        if (remainingDistance == NumberUtils.NUM_ERROR) {
+            return this.getWidth();
+        }
         // 参数校验
         if (totalDistance <= 0) {
             Logger.i(TAG,"总距离必须大于0");
@@ -335,7 +339,7 @@ public class SceneNaviTbtView extends NaviSceneBase<SceneNaviTbtViewBinding, Sce
         }
 
         // 计算已完成的比例（0.0-1.0）
-        double progressRatio = 1.0 - ((double) remainingDistance / totalDistance);
+        double progressRatio = ((double) remainingDistance / totalDistance);
 
         // 确保比例在0-1范围内（处理浮点运算可能的小数误差）
         progressRatio = Math.max(0.0, Math.min(1.0, progressRatio));

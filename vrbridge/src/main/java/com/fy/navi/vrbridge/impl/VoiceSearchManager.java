@@ -4,17 +4,22 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.SparseArray;
 
+import com.android.utils.ConvertUtils;
 import com.android.utils.NetWorkUtils;
 import com.android.utils.log.Logger;
 import com.baidu.oneos.protocol.bean.ArrivalBean;
 import com.baidu.oneos.protocol.bean.CallResponse;
 import com.baidu.oneos.protocol.bean.PoiBean;
+import com.baidu.oneos.protocol.bean.TrafficAskBean;
 import com.baidu.oneos.protocol.callback.PoiCallback;
 import com.baidu.oneos.protocol.callback.RespCallback;
+import com.fy.navi.service.AutoMapConstant;
 import com.fy.navi.service.define.bean.GeoPoint;
 import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.navistatus.NaviStatus;
 import com.fy.navi.service.define.position.LocInfoBean;
+import com.fy.navi.service.define.route.RouteCurrentPathParam;
+import com.fy.navi.service.define.route.RouteParam;
 import com.fy.navi.service.define.route.RoutePreferenceID;
 import com.fy.navi.service.define.route.RouteSpeechRequestParam;
 import com.fy.navi.service.define.search.FavoriteInfo;
@@ -36,12 +41,14 @@ import com.fy.navi.vrbridge.bean.SingleDestInfo;
 import com.fy.navi.vrbridge.bean.VoiceSearchConditions;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
 /**
  * 语音搜索处理类，用于多轮交互
+ *
  * @author tssh.
  * @version $Revision.1.0.0$
  */
@@ -56,6 +63,7 @@ public final class VoiceSearchManager {
     private String mKeyword; //搜索关键字
     private String mRouteType; //路线偏好
     private List<PoiInfoEntity> mSearchResultList; //多轮选择保存的搜索结果
+    private boolean mWaitPoiSearch = false; //搜索结果只有一个，需要poi详情搜结果返回后再执行算路
 
     private List<String> mGenericsList; //DestType为泛型的集合，用来判断途径点和目的地是不是泛型
     private SparseArray<SingleDestInfo> mNormalDestList; //多目的地普通点集合
@@ -74,6 +82,14 @@ public final class VoiceSearchManager {
     private List<GeoPoint> mEtaPointList; //起终点经纬度信息
 
     private boolean mListPageOpened;
+
+    //用于路况查询
+    private int mTrafficConditionResult = -2;//-1：无数据 0:未知状态 1:通畅 2:缓慢 3:拥堵 4:严重拥堵 5:极度通畅
+    private boolean mIsInRoute = false;//判断点位是否是导航线路上的
+    private boolean mHasProcessed = false;//判断有没有处理
+    private String mTtsContentForCondition = "";//回复内容
+    private List<RouteParam> mAllPoiParamList;
+    private Map<RouteParam, String> mNameMap;
 
 
     public static VoiceSearchManager getInstance() {
@@ -121,6 +137,8 @@ public final class VoiceSearchManager {
         mSearchType = -1;
         mRouteType = null;
         mSearchResultList.clear();
+        mWaitPoiSearch = false;
+        mAlongToAround = false;
 
         mNormalDestList.clear();
         mGenericsDestList.clear();
@@ -131,17 +149,32 @@ public final class VoiceSearchManager {
     private final SearchResultCallback mSearchCallback = new SearchResultCallback() {
 
         @Override
-        public void onSearchResult(final int taskId, final  int errorCode,final  String message,final  SearchResultEntity searchResultEntity) {
+        public void onSearchResult(final int taskId, final int errorCode, final String message, final SearchResultEntity searchResultEntity) {
+            if (mWaitPoiSearch) {
+                mWaitPoiSearch = false;
+                if (null != searchResultEntity && AutoMapConstant.SearchType.POI_DETAIL_SEARCH == searchResultEntity.getMSearchType()
+                        && null != searchResultEntity.getPoiList() && !searchResultEntity.getPoiList().isEmpty()) {
+                    //收到poi详情搜结果，发起路线规划、
+                    final PoiInfoEntity endPoi = searchResultEntity.getMPoiList().get(0);
+                    planRoute(endPoi, null);
+                }
+
+                return;
+            }
+
+            //获取本次搜索关键字
             String keyword = "";
-            if (null == searchResultEntity || TextUtils.isEmpty(searchResultEntity.getKeyword()) ) {
+            if (null == searchResultEntity || TextUtils.isEmpty(searchResultEntity.getKeyword())) {
                 Logger.d(IVrBridgeConstant.TAG, "search or keyword empty");
             } else {
                 keyword = searchResultEntity.getKeyword();
             }
 
+            //关键字和taskId是否匹配
             final boolean taskEqual = mSearchTaskId == taskId;
             final boolean keywordEqual = Objects.equals(mKeyword, keyword);
             Logger.d(IVrBridgeConstant.TAG, "taskEqual: " + taskEqual + ", keywordEqual: " + keywordEqual);
+            //两个条件都不匹配，不继续执行
             if (!(taskEqual || keywordEqual)) {
                 return;
             }
@@ -198,7 +231,7 @@ public final class VoiceSearchManager {
         }
 
         @Override
-        public void onSilentSearchResult(final int taskId, final  int errorCode, final String message, final SearchResultEntity searchResultEntity) {
+        public void onSilentSearchResult(final int taskId, final int errorCode, final String message, final SearchResultEntity searchResultEntity) {
             //静默搜索结果回调，根据内部SearchType执行后续处理
             if (mSearchTaskId != taskId) {
                 return;
@@ -289,13 +322,12 @@ public final class VoiceSearchManager {
     /**
      * 处理NaviCommandImpl.onRouteNavi.
      *
-     * @param sessionId 多轮同步id.
+     * @param sessionId   多轮同步id.
      * @param arrivalBean 搜索/导航目的地条件集合.
      * @param poiCallback 搜索结果回调.
-     *
-     * @return CallResponse,语音直接结果回调.
+     * @return CallResponse, 语音直接结果回调.
      */
-    public CallResponse handleCommonSearch(final  String sessionId, final ArrivalBean arrivalBean, final PoiCallback poiCallback) {
+    public CallResponse handleCommonSearch(final String sessionId, final ArrivalBean arrivalBean, final PoiCallback poiCallback) {
         if (null == poiCallback) {
             return CallResponse.createFailResponse("空的搜索结果回调");
         }
@@ -355,8 +387,7 @@ public final class VoiceSearchManager {
      * 处理单目的地（带偏好）的搜索/导航意图.
      *
      * @param dest String，目的地类型或关键字.
-     *
-     * @return CallResponse,语音执行结果.
+     * @return CallResponse, 语音执行结果.
      */
     private CallResponse disposeSingleDest(final String dest) {
         final int type = switch (dest) {
@@ -388,6 +419,7 @@ public final class VoiceSearchManager {
 
     /**
      * 获取保存的家或公司信息.
+     *
      * @param type 1-家  2-公司
      * @return PoiInfoEntity.
      */
@@ -401,6 +433,7 @@ public final class VoiceSearchManager {
 
     /**
      * 根据输入的关键字跳转到搜索结果页.
+     *
      * @param keyword String，搜索关键字.
      */
     private void jumpToSearchPage(final String keyword) {
@@ -428,9 +461,8 @@ public final class VoiceSearchManager {
 
         final int count = mSearchResultList.size();
         if (count == 1) {
-            //关键字搜结果只有一个，直接选择结果作为目的地发起算路
-            final PoiInfoEntity endPoi = mSearchResultList.get(0);
-            planRoute(endPoi, null);
+            //关键字搜结果只有一个，需要poi详情搜结果返回后再发起算路
+            mWaitPoiSearch = true;
         } else {
             //搜索结果为多个，回调给语音，列表多轮选择
             responseSearchWithResult();
@@ -440,7 +472,7 @@ public final class VoiceSearchManager {
     /**
      * 创建未设置家地址的回复.
      *
-     * @return CallResponse,语音指令回复.
+     * @return CallResponse, 语音指令回复.
      */
     private CallResponse havaNoHomeAddress() {
         return CallResponse.createFailResponse("未找到家的地址，先去添加吧，试试说：设置家的地址");
@@ -449,7 +481,7 @@ public final class VoiceSearchManager {
     /**
      * 创建未设置公司地址的回复.
      *
-     * @return CallResponse,语音指令回复.
+     * @return CallResponse, 语音指令回复.
      */
     private CallResponse havaNoCompanyAddress() {
         return CallResponse.createFailResponse("未找到公司的地址，先去添加吧，试试说：设置公司的地址");
@@ -496,7 +528,7 @@ public final class VoiceSearchManager {
     /**
      * 根据选中目的地发起算路.
      *
-     * @param endPoi 目的地Poi信息
+     * @param endPoi  目的地Poi信息
      * @param viaList 途径点列表.
      */
     private void planRoute(final PoiInfoEntity endPoi, final List<PoiInfoEntity> viaList) {
@@ -533,7 +565,7 @@ public final class VoiceSearchManager {
     /**
      * 处理多目的地导航.
      *
-     * @return CallResponse,语音指令回复.
+     * @return CallResponse, 语音指令回复.
      */
     private CallResponse disposeMultipleDest() {
         //解析途径点和目的地信息
@@ -561,7 +593,7 @@ public final class VoiceSearchManager {
             singleDestInfo.setDestName(name);
             singleDestInfo.setDestType(type);
 
-            if(IVrBridgeConstant.DestType.HOME.equals(name)) {
+            if (IVrBridgeConstant.DestType.HOME.equals(name)) {
                 containHome = true;
                 mNormalDestList.put(i, singleDestInfo);
             } else if (IVrBridgeConstant.DestType.COMPANY.equals(name)) {
@@ -582,7 +614,7 @@ public final class VoiceSearchManager {
         final String destType = mDestInfo.getDestType();
         singleDestInfo.setDestName(destName);
         singleDestInfo.setDestType(destType);
-        if(IVrBridgeConstant.DestType.HOME.equals(destName)) {
+        if (IVrBridgeConstant.DestType.HOME.equals(destName)) {
             containHome = true;
             mNormalDestList.put(size, singleDestInfo);
         } else if (IVrBridgeConstant.DestType.COMPANY.equals(destName)) {
@@ -618,7 +650,7 @@ public final class VoiceSearchManager {
     /**
      * 根据搜索结果执行多目的地下一步.
      *
-     * @param success 是否搜索成功.
+     * @param success     是否搜索成功.
      * @param genericsPoi 是否为泛型搜索结果. true-将结果回调给语音供用户选择  false-默认选取第一个搜索结果.
      */
     private void dealMultipleDestResult(final boolean success, final boolean genericsPoi) {
@@ -688,8 +720,8 @@ public final class VoiceSearchManager {
     /**
      * Poi多轮根据index选定Poi点.
      *
-     * @param sessionId 语音多轮唯一标识.
-     * @param index 搜索结果下标.
+     * @param sessionId    语音多轮唯一标识.
+     * @param index        搜索结果下标.
      * @param respCallback RespCallback，语音响应回调.
      */
     public void handlePoiSelectIndex(final String sessionId, final int index, final RespCallback respCallback) {
@@ -744,8 +776,8 @@ public final class VoiceSearchManager {
     /**
      * 根据条件选择搜索结果列表某一项.
      *
-     * @param sessionId 语音多轮唯一标识.
-     * @param rule 1-最近的  2-评分最高的  3-价格最低  4-价格最高.
+     * @param sessionId    语音多轮唯一标识.
+     * @param rule         1-最近的  2-评分最高的  3-价格最低  4-价格最高.
      * @param respCallback 语音传入的结果回调接口.
      */
     public void handlePoiSelectRule(final String sessionId, final int rule, final RespCallback respCallback) {
@@ -886,7 +918,7 @@ public final class VoiceSearchManager {
     /**
      * 处理最后选中的Poi.
      *
-     * @param poiInfo PoiInfoEntity，选定的Poi信息
+     * @param poiInfo      PoiInfoEntity，选定的Poi信息
      * @param respCallback 语音响应回调.
      */
     private void disposeSelectedPoi(final PoiInfoEntity poiInfo, final RespCallback respCallback) {
@@ -941,7 +973,7 @@ public final class VoiceSearchManager {
     /**
      * 带条件的目的地检索.
      *
-     * @return CallResponse,语音指令回复.
+     * @return CallResponse, 语音指令回复.
      */
     private CallResponse disposeConditionSearch() {
         final Map<String, String> conditionMap = mDestInfo.getConditions();
@@ -1005,7 +1037,8 @@ public final class VoiceSearchManager {
 
     /**
      * 处理多条件搜索中心点搜索结果.
-     * @param success 是否搜索成功
+     *
+     * @param success    是否搜索成功
      * @param centerInfo 搜索中心点Poi信息.
      */
     private void dealConditionCenterResult(final boolean success, final PoiInfoEntity centerInfo) {
@@ -1066,9 +1099,9 @@ public final class VoiceSearchManager {
     /**
      * 处理沿途搜索逻辑.
      *
-     * @param sessionId 语音多轮唯一标识.
-     * @param passBy 关键字.
-     * @param poiType 沿途点类型.
+     * @param sessionId   语音多轮唯一标识.
+     * @param passBy      关键字.
+     * @param poiType     沿途点类型.
      * @param poiCallback 执行结果回调.
      */
     public void handlePassBy(final String sessionId, final String passBy, final String poiType, final PoiCallback poiCallback) {
@@ -1119,12 +1152,11 @@ public final class VoiceSearchManager {
     /**
      * 设置公司/家的地址.
      *
-     * @param sessionId String，多轮对话保持一致性
-     * @param poiType String，HOME-家，COMPANY-公司
-     * @param poi String，CURRENT_LOCATION-当前地址 or poi名称
+     * @param sessionId   String，多轮对话保持一致性
+     * @param poiType     String，HOME-家，COMPANY-公司
+     * @param poi         String，CURRENT_LOCATION-当前地址 or poi名称
      * @param poiCallback PoiCallback，搜索结果回调.
-     *
-     * @return CallResponse,语音指令回复.
+     * @return CallResponse, 语音指令回复.
      */
     public CallResponse setHomeCompany(final String sessionId, final String poiType, final String poi, final PoiCallback poiCallback) {
         mSessionId = sessionId;
@@ -1222,8 +1254,8 @@ public final class VoiceSearchManager {
     /**
      * 通过逆地理搜索查询当前位置详细信息.
      *
-     * @param searchType 查询当前位置的目的
-     * @param geoPoint 当前定位信息
+     * @param searchType   查询当前位置的目的
+     * @param geoPoint     当前定位信息
      * @param respCallback 语音响应回调.
      */
     public void queryCurrentLocationDetail(final int searchType, final GeoPoint geoPoint, final RespCallback respCallback) {
@@ -1261,6 +1293,7 @@ public final class VoiceSearchManager {
 
     /**
      * 收藏普通点.
+     *
      * @param poiInfo PoiInfoEntity，POI信息.
      */
     private void addCommonFavorite(final PoiInfoEntity poiInfo) {
@@ -1284,10 +1317,9 @@ public final class VoiceSearchManager {
     /**
      * 搜索关键字信息.
      *
-     * @param searchType 搜索目的.
-     * @param keyword 关键字.
+     * @param searchType  搜索目的.
+     * @param keyword     关键字.
      * @param poiCallback 语音搜索结果响应.
-     *
      * @return CallResponse 语音指令执行结果.
      */
     public CallResponse searchPoiInfo(final int searchType, final String keyword, final PoiCallback poiCallback) {
@@ -1304,7 +1336,6 @@ public final class VoiceSearchManager {
 
     /**
      * 根据搜索结果处理收藏流程.
-     *
      */
     private void dealAddFavoriteResult() {
         final int size = mSearchResultList.size();
@@ -1320,9 +1351,9 @@ public final class VoiceSearchManager {
     /**
      * 搜索起点位置，默认选择第一个，计算到家/公司的TimeAndDist信息.
      *
-     * @param searchType 语音搜索目的
-     * @param poiType 终点类型, HOME-家  COMPANY-公司.
-     * @param keyword 关键字.
+     * @param searchType   语音搜索目的
+     * @param poiType      终点类型, HOME-家  COMPANY-公司.
+     * @param keyword      关键字.
      * @param respCallback 语音响应回调.
      */
     public void searchPoiInfo(final int searchType, final String poiType, final String keyword, final RespCallback respCallback) {
@@ -1411,11 +1442,10 @@ public final class VoiceSearchManager {
     /**
      * 获取起点到终点的预计耗时和距离.
      *
-     * @param start 起点，可以为null，意为当前位置.
-     * @param arrival 终点，不可为empty.
+     * @param start        起点，可以为null，意为当前位置.
+     * @param arrival      终点，不可为empty.
      * @param respCallback 语音执行结果异步回调.
-     *
-     * @return CallResponse,语音执行结果同步返回.
+     * @return CallResponse, 语音执行结果同步返回.
      */
     public CallResponse getTwoPoiEtaInfo(final String start, final String arrival, final RespCallback respCallback) {
         final boolean networkStatus = Boolean.TRUE.equals(NetWorkUtils.Companion.getInstance().checkNetwork());
@@ -1480,9 +1510,9 @@ public final class VoiceSearchManager {
     /**
      * Poi排序.
      *
-     * @param sessionId String，语音多轮对话保持一致性.
-     * @param type 排序类别.
-     * @param rule 排序方式.
+     * @param sessionId    String，语音多轮对话保持一致性.
+     * @param type         排序类别.
+     * @param rule         排序方式.
      * @param respCallback RespCallback，执行结果回调.
      */
     public void sortPoi(final String sessionId, final String type, final String rule, final RespCallback respCallback) {
@@ -1497,7 +1527,7 @@ public final class VoiceSearchManager {
         switch (type) {
             case IVrBridgeConstant.PoiSortType.DISTANCE:
                 //距离，从近到远
-                if(IVrBridgeConstant.PoiSortRule.ASCENDING.equals(rule)) {
+                if (IVrBridgeConstant.PoiSortRule.ASCENDING.equals(rule)) {
                     mSortValue = IVrBridgeConstant.PoiSortValue.PRIORITY_DISTANCE;
                 }
                 break;
@@ -1523,9 +1553,9 @@ public final class VoiceSearchManager {
         if (TextUtils.isEmpty(mSortValue)) {
             responseUnSupportSortRule(respCallback);
         } else {
-           mSearchType = IVrBridgeConstant.VoiceSearchType.POI_SORT;
-           mRespCallback = respCallback;
-           SearchPackage.getInstance().voiceSortPoi(MapType.MAIN_SCREEN_MAIN_MAP, mSortValue);
+            mSearchType = IVrBridgeConstant.VoiceSearchType.POI_SORT;
+            mRespCallback = respCallback;
+            SearchPackage.getInstance().voiceSortPoi(MapType.MAIN_SCREEN_MAIN_MAP, mSortValue);
         }
     }
 
@@ -1604,5 +1634,207 @@ public final class VoiceSearchManager {
         }
     }
 
+    /**
+     * 处理路况询问
+     *
+     * @param isInNavi     是否导航
+     * @param respCallback 结果异步回调.
+     * @return CallResponse，指令回复.
+     */
+    public CallResponse handleForwardAsk(final boolean isInNavi, final RespCallback respCallback) {
+        Logger.d(IVrBridgeConstant.TAG, "onTrafficConditionAsk: 转为查询前方路况");
+        final CallResponse callResponse;
+        if (isInNavi) {
+            Logger.d(IVrBridgeConstant.TAG, "onForwardAsk: navi state");
+            final RouteCurrentPathParam curPath
+                    = RoutePackage.getInstance().getCurrentPathInfo(MapType.MAIN_SCREEN_MAIN_MAP);
+            if (null != curPath && !curPath.isMIsOnlineRoute()) {
+                return CallResponse.createFailResponse("离线导航，路况查询不可用");
+            }
+            final String tmcStatus = NaviPackage.getInstance().getFrontTmcStatus();
+            if (ConvertUtils.isEmpty(tmcStatus)) {
+                callResponse = CallResponse.createSuccessResponse("暂无路况信息，请稍后再试");
+            } else {
+                callResponse = CallResponse.createSuccessResponse(tmcStatus);
+            }
+        } else {
+            callResponse = CallResponse.createSuccessResponse("当前不在导航状态，没有行程相关信息哦");
+        }
+        callResponse.setNeedPlayMessage(true);
+        if (null != respCallback) {
+            respCallback.onResponse(callResponse);
+        }
+        return CallResponse.createSuccessResponse();
+    }
+
+    /**
+     * 处理路况查询
+     *
+     * @param trafficAskBean trafficAskBean
+     * @param respCallback   respCallback
+     * @return CallResponse
+     */
+    public CallResponse handleTrafficConditionAsk(final TrafficAskBean trafficAskBean, final RespCallback respCallback) {
+        mTrafficConditionResult = -2;//重置变量
+        mIsInRoute = false;
+        mHasProcessed = false;
+        mTtsContentForCondition = "";
+        mAllPoiParamList = null;
+        mNameMap = new HashMap<>();
+        if (trafficAskBean == null) {
+            return CallResponse.createFailResponse("地点信息异常，请重试");
+        }
+        final boolean isInNavi = Objects.equals(NaviStatusPackage.getInstance().getCurrentNaviStatus(), NaviStatus.NaviStatusType.NAVING);
+        String strPoi = trafficAskBean.getPoi();
+        String strStart = trafficAskBean.getStart();
+        String strArrival = trafficAskBean.getArrival();
+        if (ConvertUtils.isEmpty(strArrival) && ConvertUtils.isEmpty(strPoi) && ConvertUtils.isEmpty(strStart)) {
+            //trafficAskBean的成员变量全是空
+            return handleForwardAsk(isInNavi, respCallback);
+        }
+        /*以下为有地点信息的查询*/
+        if (!isInNavi) {
+            Logger.d(IVrBridgeConstant.TAG, "onTrafficConditionAsk: 非导航模式");
+            return CallResponse.createFailResponse("仅支持导航路线上的路况信息查询哦");
+        }
+        mAllPoiParamList = RoutePackage.getInstance().getAllPoiParamList(MapType.MAIN_SCREEN_MAIN_MAP);
+        if (mAllPoiParamList.isEmpty()) {
+            return CallResponse.createFailResponse("缺少线路信息，请重试");
+        }
+        mAllPoiParamList.remove(0);
+        Logger.d(IVrBridgeConstant.TAG, "poiListSize -> " + mAllPoiParamList.size());
+        for (RouteParam poi : mAllPoiParamList) {
+            final String name = poi.getName();
+            if (!ConvertUtils.isEmpty(poi.getName())) {
+                mNameMap.put(poi, name.replace("(", "").replace(")", ""));
+            }
+            Logger.d(IVrBridgeConstant.TAG, poi.getName() + " -> " + mNameMap.get(poi));
+        }
+
+        if (ConvertUtils.equals(strPoi, IVrBridgeConstant.PoiType.DESTINATION)) {
+            strPoi = mNameMap.get(mAllPoiParamList.get(mAllPoiParamList.size() - 1));
+            Logger.d(IVrBridgeConstant.TAG, "POI DESTINATION -> " + strPoi);
+        } else if (ConvertUtils.equals(strPoi, IVrBridgeConstant.PoiType.PASS_BY)) {
+            strPoi = mNameMap.get(mAllPoiParamList.get(0));
+            Logger.d(IVrBridgeConstant.TAG, "POI PASSBY -> " + strPoi);
+        }
+
+        if (ConvertUtils.equals(strStart, "我的位置") && ConvertUtils.equals(strArrival, IVrBridgeConstant.PoiType.DESTINATION)) {
+            strArrival = mNameMap.get(mAllPoiParamList.get(mAllPoiParamList.size() - 1));
+            strStart = null;
+            Logger.d(IVrBridgeConstant.TAG, "我的位置 -> null; ARRIVAL DESTINATION -> " + strArrival);
+        }
+
+        handlePOI(strPoi, strStart, strArrival);
+
+        if (ConvertUtils.equals(mTrafficConditionResult, -2)) {
+            handlePath(strPoi, strStart, strArrival);
+        }
+
+        Logger.d(IVrBridgeConstant.TAG, "onTrafficConditionAsk: conditionResult = " + mTrafficConditionResult);
+        mTtsContentForCondition = mapTtsContent(mTtsContentForCondition, mTrafficConditionResult);
+        if (!mIsInRoute && mHasProcessed) {
+            return CallResponse.createFailResponse("仅支持导航路线上的路况信息查询哦");
+        } else {
+            Logger.d(IVrBridgeConstant.TAG, "onTrafficConditionAsk: ttsContent = " + mTtsContentForCondition);
+            final CallResponse callResponse = CallResponse.createSuccessResponse(mTtsContentForCondition);
+            callResponse.setNeedPlayMessage(true);
+            if (null != respCallback) {
+                respCallback.onResponse(callResponse);
+            }
+        }
+        return CallResponse.createSuccessResponse();
+    }
+
+    /**
+     * 处理线路上的道路信息
+     *
+     * @param strPoi     strPoi
+     * @param strStart   strStart
+     * @param strArrival strArrival
+     */
+    private void handlePath(final String strPoi, final String strStart, final String strArrival) {
+
+    }
+
+    /**
+     * 处理线路上的地点
+     *
+     * @param strPoi     strPoi
+     * @param strStart   strStart
+     * @param strArrival strArrival
+     */
+    private void handlePOI(final String strPoi, final String strStart, final String strArrival) {
+        if (!ConvertUtils.isEmpty(strPoi) && ConvertUtils.isEmpty(strStart) && ConvertUtils.isEmpty(strArrival)) {
+            mHasProcessed = true; // 查询A地附近的路况或A道路的路况
+            for (RouteParam poi : mAllPoiParamList) {
+                if (!ConvertUtils.isEmpty(poi.getName()) && mNameMap.get(poi).contains(strPoi)) {
+                    Logger.d(IVrBridgeConstant.TAG, "onTrafficConditionAsk: A地附近情况");
+                    mTrafficConditionResult = NaviPackage.getInstance().getTmcStatus(
+                            poi.getName(), strStart, strArrival, MapType.MAIN_SCREEN_MAIN_MAP
+                    );
+                    mIsInRoute = true;
+                    mTtsContentForCondition = strPoi + "路况 ";
+                }
+            }
+        }
+        if (ConvertUtils.isEmpty(strPoi) && !ConvertUtils.isEmpty(strStart) && !ConvertUtils.isEmpty(strArrival)) {
+            mHasProcessed = true;// 查询A点-B点的路况
+            RouteParam startPoi = null;
+            RouteParam arrivalPoi = null;
+            for (RouteParam poi : mAllPoiParamList) {
+                if (!ConvertUtils.isEmpty(poi.getName()) && mNameMap.get(poi).contains(strStart)) {
+                    Logger.d(IVrBridgeConstant.TAG, "allPoiParamList: 找到起始点");
+                    startPoi = poi;
+                }
+                if (!ConvertUtils.isEmpty(poi.getName()) && mNameMap.get(poi).contains(strArrival)) {
+                    Logger.d(IVrBridgeConstant.TAG, "allPoiParamList: 找到终点");
+                    arrivalPoi = poi;
+                }
+            }
+            if (startPoi != null && arrivalPoi != null) {
+                Logger.d(IVrBridgeConstant.TAG, "onTrafficConditionAsk: A到B的情况");
+                Logger.d(IVrBridgeConstant.TAG, "startPoi name: " + startPoi.getName() + "; arrivalPoi name: " + arrivalPoi.getName());
+                mTrafficConditionResult = NaviPackage.getInstance().getTmcStatus(
+                        strPoi, startPoi.getName(), arrivalPoi.getName(), MapType.MAIN_SCREEN_MAIN_MAP
+                );
+                mIsInRoute = true;
+                mTtsContentForCondition = strStart + "到" + strArrival + "路况";
+            }
+        }
+        if (ConvertUtils.isEmpty(strPoi) && ConvertUtils.isEmpty(strStart) && !ConvertUtils.isEmpty(strArrival)) {
+            mHasProcessed = true;// 查询到B的路况
+            for (RouteParam poi : mAllPoiParamList) {
+                if (!ConvertUtils.isEmpty(poi.getName()) && mNameMap.get(poi).contains(strArrival)) {
+                    Logger.d(IVrBridgeConstant.TAG, "onTrafficConditionAsk: 当前位置到B的情况");
+                    mTrafficConditionResult = NaviPackage.getInstance().getTmcStatus(
+                            strPoi, strStart, poi.getName(), MapType.MAIN_SCREEN_MAIN_MAP
+                    );
+                    mIsInRoute = true;
+                    mTtsContentForCondition = "当前位置到" + strArrival + "路况";
+                }
+            }
+        }
+    }
+
+    /**
+     * 映射tts内容
+     *
+     * @param orgTtsContent   原tts
+     * @param conditionResult 路况结果
+     * @return 映射后的tts
+     */
+    private String mapTtsContent(final String orgTtsContent, final int conditionResult) {
+        return switch (conditionResult) {
+            case 1 -> orgTtsContent + "畅通";
+            case 2 -> orgTtsContent + "缓行";
+            case 3 -> orgTtsContent + "拥堵";
+            case 4 -> orgTtsContent + "严重拥堵";
+            case 5 -> orgTtsContent + "极度通畅";
+            case -1 -> "暂未查询到相应路况信息，请稍后再试";
+            case 0 -> "未知状态，请稍后再试";
+            default -> "未知查询条件，请稍后再试";
+        };
+    }
 
 }

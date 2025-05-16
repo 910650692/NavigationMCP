@@ -34,6 +34,9 @@ public final class UserDataCode {
     //app key
     public static final String SETTING_ACCOUNT_APP_KEY = "setting_account_app_key";
 
+    //已经下载城市
+    public static final String MAP_DATA_DOWNLOADED_CITY_LIST = "map_data_downloaded_city_list";
+
     // 离线地图数据下载状态
     public static final int TASK_STATUS_CODE_READY = 0;
     public static final int TASK_STATUS_CODE_WAITING = 1; //

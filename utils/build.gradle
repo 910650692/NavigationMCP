@@ -30,6 +30,10 @@ dependencies {
     implementation libs.bundles.module.library
     implementation libs.gson
     implementation libs.okhttp
-    implementation libs.signal
+    if (IS_PAD_RUN.toBoolean()) {
+        implementation libs.signal
+    } else {
+        compileOnly libs.signal
+    }
     implementation project(":burypoint")
 }

@@ -14,9 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import lombok.Data;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import lombok.experimental.Accessors;
 
 /**
@@ -33,11 +31,8 @@ import lombok.experimental.Accessors;
 public class PoiInfoEntity implements Parcelable {
     private int mPoiType;           // poi 类型
     private String mPid;            // 父POI的Id
-    @SerializedName("stationName")
     private String mName;           // 名称
-    @SerializedName("stationTel")
     private String mPhone;          // 电话
-    @SerializedName("address")
     private String mAddress;        // 地址
     private String mCategory;       // 分类，筛选使用
     private int mAdCode;            // 市区县详细代码
@@ -46,7 +41,6 @@ public class PoiInfoEntity implements Parcelable {
     private String mTypeCode;       // POI搜索类型
     private String mPoiTag;         // POI标签
     private String mShortName;      // 简称
-    @SerializedName("busineHours")
     private String mBusinessTime;    // 营业时间
     private double mRatio;          // 选择率
     private String mOpenStatus;     // 营业状态
@@ -72,6 +66,14 @@ public class PoiInfoEntity implements Parcelable {
     private String mOperatorId;
     @SerializedName("stationId")
     private String mStationId;
+    @SerializedName("stationName")
+    private String mStationName;
+    @SerializedName("stationTel")
+    private String mStationTel;
+    @SerializedName("address")
+    private String mStationAddress;
+    @SerializedName("busineHours")
+    private String mStationBusinessTime;
     // --------------
     private CityInfo mCityInfo;
     // 收藏相关
@@ -570,8 +572,13 @@ public class PoiInfoEntity implements Parcelable {
         return mOperatorId;
     }
 
-    public PoiInfoEntity setOperatorId(String mOperatorId) {
-        this.mOperatorId = mOperatorId;
+    /**
+     * 运营商id
+     * @param operatorId 运营商id
+     * @return PoiInfoEntity
+     */
+    public PoiInfoEntity setOperatorId(String operatorId) {
+        this.mOperatorId = operatorId;
         return this;
     }
 
@@ -579,8 +586,69 @@ public class PoiInfoEntity implements Parcelable {
         return mStationId;
     }
 
+    /**
+     * 充电站id
+     * @param stationId 充电站id
+     * @return PoiInfoEntity
+     */
     public PoiInfoEntity setStationId(String stationId) {
         this.mStationId = stationId;
+        return this;
+    }
+
+    public String getStationName() {
+        return mStationName;
+    }
+
+    /**
+     * 充电站名称
+     * @param mStationName 充电站名称
+     * @return PoiInfoEntity
+     */
+    public PoiInfoEntity setStationName(String mStationName) {
+        this.mStationName = mStationName;
+        return this;
+    }
+
+    public String getStationTel() {
+        return mStationTel;
+    }
+
+    /**
+     * 充电站电话
+     * @param mStationTel 充电站电话
+     * @return PoiInfoEntity
+     */
+    public PoiInfoEntity setStationTel(String mStationTel) {
+        this.mStationTel = mStationTel;
+        return this;
+    }
+
+    public String getStationAddress() {
+        return mStationAddress;
+    }
+
+    /**
+     * 充电站地址
+     * @param mStationAddress 充电站地址
+     * @return PoiInfoEntity
+     */
+    public PoiInfoEntity setStationAddress(String mStationAddress) {
+        this.mStationAddress = mStationAddress;
+        return this;
+    }
+
+    public String getStationBusinessTime() {
+        return mStationBusinessTime;
+    }
+
+    /**
+     * 充电站运营时间
+     * @param mStationBusinessTime 充电站运营时间
+     * @return PoiInfoEntity
+     */
+    public PoiInfoEntity setStationBusinessTime(String mStationBusinessTime) {
+        this.mStationBusinessTime = mStationBusinessTime;
         return this;
     }
 
@@ -614,6 +682,12 @@ public class PoiInfoEntity implements Parcelable {
         mStationId = in.readString();
         mOperatorId = in.readString();
         mIsVisible = in.readBoolean();
+        mOperatorId = in.readString();
+        mStationId = in.readString();
+        mStationName = in.readString();
+        mStationTel = in.readString();
+        mStationAddress = in.readString();
+        mStationBusinessTime = in.readString();
         mCityInfo = in.readParcelable(CityInfo.class.getClassLoader());
         mFavoriteInfo = in.readParcelable(FavoriteInfo.class.getClassLoader());
         mRetainParam = in.readParcelable(SearchRetainParamInfo.class.getClassLoader());
@@ -703,6 +777,12 @@ public class PoiInfoEntity implements Parcelable {
         parcel.writeTypedList(mChargeInfoList);
         parcel.writeTypedList(mStationList);
         parcel.writeTypedList(mChildInfoList);
+        parcel.writeString(mOperatorId);
+        parcel.writeString(mStationId);
+        parcel.writeString(mStationName);
+        parcel.writeString(mStationTel);
+        parcel.writeString(mStationAddress);
+        parcel.writeString(mStationBusinessTime);
         if(ConvertUtils.isEmpty(mPoiAoiBounds)) {
             return;
         }

@@ -183,18 +183,6 @@ public class LayerPackage implements ILayerAdapterCallBack {
         });
     }
 
-    public void updateSearchParkPoi(MapType mapTypeId, ArrayList<NaviParkingEntity> parkList) {
-        mLayerAdapter.updateSearchParkPoi(mapTypeId, parkList);
-    }
-
-    public void clearSearchParkPoi(MapType mapTypeId) {
-        mLayerAdapter.clearSearchParkPoi(mapTypeId);
-    }
-
-    public void setParkFocus(MapType mapTypeId, String strID, boolean bFocus) {
-        mLayerAdapter.setParkFocus(mapTypeId, strID, bFocus);
-    }
-
     /**
      * 计算两点之间的直线距离.
      *

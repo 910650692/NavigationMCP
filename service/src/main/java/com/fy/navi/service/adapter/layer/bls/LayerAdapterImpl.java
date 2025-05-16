@@ -120,21 +120,25 @@ public class LayerAdapterImpl implements ILayerApi {
     @Override
     public void drawRouteLine(MapType mapTypeId, RequestRouteResult routeResult) {
         layersPoolManager.get(mapTypeId).getLayerGuideRoute().drawRouteLine(routeResult);
+        layersPoolManager.get(MapType.CLUSTER_MAP).getLayerGuideRoute().drawRouteLine(routeResult);
     }
 
     /* 路线替换补能扎标 */
     public void updateRouteReplaceChargePoints(MapType mapTypeId, ArrayList<RouteAlterChargeStationInfo> chargeStationInfos) {
         layersPoolManager.get(mapTypeId).getLayerGuideRoute().updateRouteReplaceChargePoints(chargeStationInfos);
+        layersPoolManager.get(MapType.CLUSTER_MAP).getLayerGuideRoute().updateRouteReplaceChargePoints(chargeStationInfos);
     }
 
     /* 更新终点扎标数据 */
     public void updateRouteEndPoint(MapType mapTypeId, LayerItemRouteEndPoint endPoint) {
         layersPoolManager.get(mapTypeId).getLayerGuideRoute().updateRouteEndPoint(endPoint);
+        layersPoolManager.get(MapType.CLUSTER_MAP).getLayerGuideRoute().updateRouteEndPoint(endPoint);
     }
 
     /* 更新Odd信息 */
     public void updateOddInfo(MapType mapTypeId, ArrayList<LayerItemRouteOdd> oddInfoList, long pathId) {
         layersPoolManager.get(mapTypeId).getLayerGuideRoute().updateOddInfo(oddInfoList, pathId);
+        layersPoolManager.get(MapType.CLUSTER_MAP).getLayerGuideRoute().updateOddInfo(oddInfoList, pathId);
     }
 
     /**
@@ -143,6 +147,7 @@ public class LayerAdapterImpl implements ILayerApi {
      * @param selectIndex 选中下标
      */
     public boolean updatePathInfo(MapType mapTypeId, ArrayList<?> pathInfoList, int selectIndex) {
+        layersPoolManager.get(MapType.CLUSTER_MAP).getLayerGuideRoute().updatePathInfo(pathInfoList, selectIndex);
         return layersPoolManager.get(mapTypeId).getLayerGuideRoute().updatePathInfo(pathInfoList, selectIndex);
     }
 
@@ -152,6 +157,7 @@ public class LayerAdapterImpl implements ILayerApi {
      */
     public void removeViaPoint(MapType mapTypeId, String pid) {
         layersPoolManager.get(mapTypeId).getLayerGuideRoute().removeViaPoint(pid);
+        layersPoolManager.get(MapType.CLUSTER_MAP).getLayerGuideRoute().removeViaPoint(pid);
     }
 
     /**
@@ -162,6 +168,7 @@ public class LayerAdapterImpl implements ILayerApi {
      */
     public void setPathStyle(MapType mapTypeId, boolean isStartNavi, boolean isOffLine, boolean isMultipleMode) {
         layersPoolManager.get(mapTypeId).getLayerGuideRoute().setPathStyle(isStartNavi, isOffLine, isMultipleMode);
+        layersPoolManager.get(MapType.CLUSTER_MAP).getLayerGuideRoute().setPathStyle(isStartNavi, isOffLine, isMultipleMode);
     }
 
     /**
@@ -171,6 +178,7 @@ public class LayerAdapterImpl implements ILayerApi {
      * @param isVisible 路线是否显示 -> 隐藏需传入false
      */
     public boolean setPathVisible(MapType mapTypeId, int index, boolean isVisible) {
+        layersPoolManager.get(MapType.CLUSTER_MAP).getLayerGuideRoute().setPathVisible(index, isVisible);
         return layersPoolManager.get(mapTypeId).getLayerGuideRoute().setPathVisible(index, isVisible);
     }
 
@@ -183,6 +191,7 @@ public class LayerAdapterImpl implements ILayerApi {
     @Override
     public void setSelectedPathIndex(MapType mapTypeId, int routeIndex) {
         layersPoolManager.get(mapTypeId).getLayerGuideRoute().setSelectedPathIndex(routeIndex);
+        layersPoolManager.get(MapType.CLUSTER_MAP).getLayerGuideRoute().setSelectedPathIndex(routeIndex);
     }
 
     /**
@@ -193,12 +202,14 @@ public class LayerAdapterImpl implements ILayerApi {
     @Override
     public void clearRouteLine(MapType mapTypeId) {
         layersPoolManager.get(mapTypeId).getLayerGuideRoute().clearPaths();
+        layersPoolManager.get(MapType.CLUSTER_MAP).getLayerGuideRoute().clearPaths();
     }
 
     /**
      * 设置行前拥堵气泡是否显示
      */
     public boolean setRouteJamBubblesVisible(MapType mapTypeId, boolean isShow) {
+        layersPoolManager.get(MapType.CLUSTER_MAP).getLayerGuideRoute().setRouteJamBubblesVisible(isShow);
         return layersPoolManager.get(mapTypeId).getLayerGuideRoute().setRouteJamBubblesVisible(isShow);
     }
 
@@ -214,6 +225,7 @@ public class LayerAdapterImpl implements ILayerApi {
 
         //多屏处理
         layersPoolManager.get(mapTypeId).getLayerGuideRoute().showRestArea(pathInfoList, index);
+        layersPoolManager.get(MapType.CLUSTER_MAP).getLayerGuideRoute().showRestArea(pathInfoList, index);
     }
 
     /**
@@ -225,6 +237,7 @@ public class LayerAdapterImpl implements ILayerApi {
     @Override
     public void showWeatherView(MapType mapTypeId, ArrayList<?> weatherLabelItem) {
         layersPoolManager.get(mapTypeId).getLayerGuideRoute().showWeatherView(weatherLabelItem);
+        layersPoolManager.get(MapType.CLUSTER_MAP).getLayerGuideRoute().showWeatherView(weatherLabelItem);
     }
 
     /**
@@ -237,6 +250,7 @@ public class LayerAdapterImpl implements ILayerApi {
     @Override
     public void showRestrictionView(MapType mapTypeId, Object object, int position) {
         layersPoolManager.get(mapTypeId).getLayerArea().showRestrictionView(object, position);
+        layersPoolManager.get(MapType.CLUSTER_MAP).getLayerArea().showRestrictionView(object, position);
     }
 
     /**
@@ -248,6 +262,7 @@ public class LayerAdapterImpl implements ILayerApi {
      */
     @Override
     public boolean switchSelectedPath(MapType mapTypeId, int index) {
+        layersPoolManager.get(MapType.CLUSTER_MAP).getLayerGuideRoute().switchSelectedPath(index);
         return layersPoolManager.get(mapTypeId).getLayerGuideRoute().switchSelectedPath(index);
     }
 
@@ -259,6 +274,7 @@ public class LayerAdapterImpl implements ILayerApi {
     @Override
     public void updatePathArrow(MapType mapTypeId) {
         layersPoolManager.get(mapTypeId).getLayerGuideRoute().updatePathArrow();
+        layersPoolManager.get(MapType.CLUSTER_MAP).getLayerGuideRoute().updatePathArrow();
     }
 
     /**
@@ -270,6 +286,7 @@ public class LayerAdapterImpl implements ILayerApi {
     @Override
     public void setPathArrowSegment(MapType mapTypeId, ArrayList<Long> segmentsIndexs) {
         layersPoolManager.get(mapTypeId).getLayerGuideRoute().setPathArrowSegment(segmentsIndexs);
+        layersPoolManager.get(MapType.CLUSTER_MAP).getLayerGuideRoute().setPathArrowSegment(segmentsIndexs);
     }
 
     /**
@@ -279,43 +296,37 @@ public class LayerAdapterImpl implements ILayerApi {
     @Override
     public void openDynamicLevel(MapType mapTypeId, boolean isOpen) {
         layersPoolManager.get(mapTypeId).getLayerGuideRoute().openDynamicLevel(isOpen);
+        layersPoolManager.get(MapType.CLUSTER_MAP).getLayerGuideRoute().openDynamicLevel(isOpen);
     }
 
     /* 是否打开动态比例尺功能，type区分巡航动态比例尺还是导航动态比例尺 */
     public void openDynamicLevel(MapType mapTypeId, DynamicLevelMode dynamicLevelMode) {
         layersPoolManager.get(mapTypeId).getLayerGuideRoute().openDynamicLevel(dynamicLevelMode);
+        layersPoolManager.get(MapType.CLUSTER_MAP).getLayerGuideRoute().openDynamicLevel(dynamicLevelMode);
     }
 
     /* 关闭动态比例尺 */
     public void closeDynamicLevel(MapType mapTypeId) {
         layersPoolManager.get(mapTypeId).getLayerGuideRoute().closeDynamicLevel();
+        layersPoolManager.get(MapType.CLUSTER_MAP).getLayerGuideRoute().closeDynamicLevel();
     }
 
     /* 设置动态比例尺是否锁住状态，type区分巡航动态比例尺还是导航动态比例尺 */
     public void setDynamicLevelLock(MapType mapTypeId, DynamicLevelMode dynamicLevelMode, boolean isLock) {
         layersPoolManager.get(mapTypeId).getLayerGuideRoute().setDynamicLevelLock(dynamicLevelMode, isLock);
+        layersPoolManager.get(MapType.CLUSTER_MAP).getLayerGuideRoute().setDynamicLevelLock(dynamicLevelMode, isLock);
     }
 
     /* 设置自动比例尺是否主动调整地图中心 */
     public void openDynamicCenter(MapType mapTypeId, boolean isDynaCenterLock) {
         layersPoolManager.get(mapTypeId).getLayerGuideRoute().openDynamicCenter(isDynaCenterLock);
-    }
-
-    @Override
-    public void updateSearchParkPoi(MapType mapTypeId, ArrayList<NaviParkingEntity> parkList) {
-    }
-
-    @Override
-    public void clearSearchParkPoi(MapType mapTypeId) {
-    }
-
-    @Override
-    public void setParkFocus(MapType mapTypeId, String strID, boolean bFocus) {
+        layersPoolManager.get(MapType.CLUSTER_MAP).getLayerGuideRoute().openDynamicCenter(isDynaCenterLock);
     }
 
     @Override
     public void updateGuideCarStyle(MapType mapTypeId) {
         layersPoolManager.get(mapTypeId).getLayerCar().updateGuideCarStyle();
+        layersPoolManager.get(MapType.CLUSTER_MAP).getLayerCar().updateGuideCarStyle();
     }
 
     @Override
@@ -336,19 +347,23 @@ public class LayerAdapterImpl implements ILayerApi {
     @Override
     public void selectSearchPoi(MapType mapTypeId, LayerPointItemType type, int index) {
         layersPoolManager.get(mapTypeId).getLayerSearch().setSelect(type, index);
+        layersPoolManager.get(MapType.CLUSTER_MAP).getLayerSearch().setSelect(type, index);
     }
 
     @Override
     public void clearFavoriteMain(MapType mapTypeId) {
         layersPoolManager.get(mapTypeId).getLayerUser().clearFavoriteMain();
+        layersPoolManager.get(MapType.CLUSTER_MAP).getLayerUser().clearFavoriteMain();
     }
 
     /* 搜索图层扎标接口 */
     public boolean updateSearchMarker(MapType mapTypeId, LayerPointItemType type, LayerItemSearchResult searchResult, boolean clearOtherLayerItem) {
         if (clearOtherLayerItem) {
             layersPoolManager.get(mapTypeId).getLayerSearch().clearAllItems();
+            layersPoolManager.get(MapType.CLUSTER_MAP).getLayerSearch().clearAllItems();
         }
         boolean searchMarker = layersPoolManager.get(mapTypeId).getLayerSearch().updateSearchMarker(type, searchResult);
+        layersPoolManager.get(MapType.CLUSTER_MAP).getLayerSearch().updateSearchMarker(type, searchResult);
         Logger.d(TAG, "updateSearchMarker " + searchMarker);
         return searchMarker;
     }
@@ -356,6 +371,7 @@ public class LayerAdapterImpl implements ILayerApi {
     /* 更新列表可视扎标数据 */
     public void updateSearchResult(MapType mapTypeId, LayerPointItemType type, LayerItemSearchResult result) {
         layersPoolManager.get(mapTypeId).getLayerSearch().updateSearchResult(type, result);
+        layersPoolManager.get(MapType.CLUSTER_MAP).getLayerSearch().updateSearchResult(type, result);
     }
 
     /**
@@ -365,6 +381,7 @@ public class LayerAdapterImpl implements ILayerApi {
      */
     public void clearAllSearchLayerItems(MapType mapTypeId) {
         layersPoolManager.get(mapTypeId).getLayerSearch().clearAllItems();
+        layersPoolManager.get(MapType.CLUSTER_MAP).getLayerSearch().clearAllItems();
     }
 
     /**
@@ -374,6 +391,7 @@ public class LayerAdapterImpl implements ILayerApi {
      */
     public void clearSearchPOILayerItems(MapType mapTypeId, LayerPointItemType searchItemType) {
         layersPoolManager.get(mapTypeId).getLayerSearch().clearSearchItemByType(searchItemType);
+        layersPoolManager.get(MapType.CLUSTER_MAP).getLayerSearch().clearSearchItemByType(searchItemType);
     }
 
     /*========================================= 路口大图 =========================================*/
@@ -406,45 +424,54 @@ public class LayerAdapterImpl implements ILayerApi {
     public void addLayerItemOfUserTrackDepth(MapType mapTypeId, LayerItemUserTrackDepth userTrackDepth, boolean clearOtherLayerItem) {
         if (clearOtherLayerItem) {
             layersPoolManager.get(mapTypeId).getLayerUser().clearAllItems();
+            layersPoolManager.get(MapType.CLUSTER_MAP).getLayerUser().clearAllItems();
         }
         layersPoolManager.get(mapTypeId).getLayerUser().updateGpsTrack(userTrackDepth);
+        layersPoolManager.get(MapType.CLUSTER_MAP).getLayerUser().updateGpsTrack(userTrackDepth);
     }
 
     @Override
     public void addLayerItemOfFavorite(MapType mapTypeId, LayerItemUserFavorite favorites) {
         layersPoolManager.get(mapTypeId).getLayerUser().updateFavoriteMain(favorites);
+        layersPoolManager.get(MapType.CLUSTER_MAP).getLayerUser().updateFavoriteMain(favorites);
     }
 
     @Override
     public void removeFavoriteMain(MapType mapTypeId, PoiInfoEntity poiInfoEntity) {
         layersPoolManager.get(mapTypeId).getLayerUser().removeFavoriteMain(poiInfoEntity);
+        layersPoolManager.get(MapType.CLUSTER_MAP).getLayerUser().removeFavoriteMain(poiInfoEntity);
     }
 
     @Override
     public void setFavoriteVisible(MapType mapTypeId, boolean visible) {
         layersPoolManager.get(mapTypeId).getLayerUser().setFavoriteVisible(visible);
+        layersPoolManager.get(MapType.CLUSTER_MAP).getLayerUser().setFavoriteVisible(visible);
     }
 
     @Override
     public void openFlyLine(MapType mapTypeId, boolean visible) {
         layersPoolManager.get(mapTypeId).getLayerFlyLine().openFlyLine(visible);
+        layersPoolManager.get(MapType.CLUSTER_MAP).getLayerFlyLine().openFlyLine(visible);
     }
 
     /*=========================================↓ 扎标图层 ↓=========================================*/
 
     /*显示终点区域弹出框图层*/
     public boolean updatePopSearchPointInfo(MapType mapTypeId, LayerItemLabelResult labelResult) {
+        layersPoolManager.get(MapType.CLUSTER_MAP).getLayerLabel().updatePopSearchPointInfo(labelResult);
         return layersPoolManager.get(mapTypeId).getLayerLabel().updatePopSearchPointInfo(labelResult);
     }
 
     /*清除扎标*/
     public void clearLabelItem(MapType mapTypeId) {
         layersPoolManager.get(mapTypeId).getLayerLabel().clearLabelItem();
+        layersPoolManager.get(MapType.CLUSTER_MAP).getLayerLabel().clearLabelItem();
     }
 
     @Override
     public void setPassGray(MapType mapTypeId, boolean isSetGray) {
         layersPoolManager.get(mapTypeId).getLayerGuideRoute().setPassGreyMode(isSetGray);
+        layersPoolManager.get(MapType.CLUSTER_MAP).getLayerGuideRoute().setPassGreyMode(isSetGray);
     }
 
     /*=========================================↑ 扎标图层 ↑=========================================*/

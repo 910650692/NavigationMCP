@@ -13,16 +13,16 @@
     </data>
 
     <com.fy.navi.ui.view.SkinConstraintLayout
-        android:layout_width="@dimen/dp_174"
-        android:layout_height="@dimen/dp_464">
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_124">
 
         <com.fy.navi.ui.view.SkinView
             android:id="@+id/route_right_tab_list_service"
             clickCommand="@{Scene.clickAround}"
-            android:layout_width="@dimen/dp_174"
-            android:layout_height="@dimen/dp_154"
+            android:layout_width="@dimen/dp_180"
+            android:layout_height="match_parent"
+            android:layout_marginStart="@dimen/dp_360"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
             />
 
         <com.fy.navi.ui.view.SkinTextView
@@ -30,30 +30,31 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/route_charge_gas_around"
-            android:textSize="@dimen/sp_30"
+            android:textSize="@dimen/sp_26"
             android:textColor="@color/tab_list_route_tab_list_unselect"
-            android:layout_marginBottom="@dimen/dp_30"
             app:select_text_color="@color/tab_list_route_tab_list_select"
-            app:layout_constraintEnd_toEndOf="@id/route_right_tab_list_service"
-            app:layout_constraintStart_toStartOf="@id/route_right_tab_list_service"
-            app:layout_constraintBottom_toBottomOf="@id/route_right_tab_list_service"/>
+            android:layout_marginTop="@dimen/dp_69"
+            android:layout_marginStart="@dimen/dp_420"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"/>
 
         <com.fy.navi.ui.view.SkinImageView
             android:id="@+id/route_right_tab_list_iv_service"
-            android:layout_width="@dimen/dp_58"
-            android:layout_height="@dimen/dp_58"
+            android:layout_width="@dimen/dp_49"
+            android:layout_height="@dimen/dp_49"
             android:src="@drawable/selector_route_tab_list_charge_gas_around"
-            app:layout_constraintEnd_toEndOf="@id/route_right_tab_list_service"
-            app:layout_constraintStart_toStartOf="@id/route_right_tab_list_service"
-            app:layout_constraintBottom_toTopOf="@id/route_right_tab_list_tv_service"/>
+            android:layout_marginTop="@dimen/dp_16"
+            android:layout_marginStart="@dimen/dp_421"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"/>
 
         <com.fy.navi.ui.view.SkinView
             android:id="@+id/route_right_tab_list_weather"
             clickCommand="@{Scene.clickEnd}"
-            android:layout_width="@dimen/dp_174"
-            android:layout_height="@dimen/dp_154"
+            android:layout_width="@dimen/dp_180"
+            android:layout_height="match_parent"
+            android:layout_marginStart="@dimen/dp_180"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintBottom_toTopOf="@+id/route_right_tab_list_service"
             />
 
         <com.fy.navi.ui.view.SkinTextView
@@ -62,30 +63,29 @@
             android:layout_height="wrap_content"
             android:text="@string/route_charge_gas_end"
             android:textColor="@color/tab_list_route_tab_list_unselect"
-            android:textSize="@dimen/sp_30"
-            android:layout_marginBottom="@dimen/dp_30"
-            app:select_text_color="@color/tab_list_route_tab_list_select"
-            app:layout_constraintEnd_toEndOf="@id/route_right_tab_list_weather"
-            app:layout_constraintStart_toStartOf="@id/route_right_tab_list_weather"
-            app:layout_constraintBottom_toBottomOf="@id/route_right_tab_list_weather"/>
+            android:textSize="@dimen/sp_26"
+            android:layout_marginTop="@dimen/dp_69"
+            android:layout_marginStart="@dimen/dp_247"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"/>
 
         <com.fy.navi.ui.view.SkinImageView
             android:id="@+id/route_right_tab_list_iv_weather"
-            android:layout_width="@dimen/dp_58"
-            android:layout_height="@dimen/dp_58"
+            android:layout_width="@dimen/dp_49"
+            android:layout_height="@dimen/dp_49"
             android:src="@drawable/selector_route_tab_list_charge_gas_end"
-            app:layout_constraintEnd_toEndOf="@id/route_right_tab_list_weather"
-            app:layout_constraintStart_toStartOf="@id/route_right_tab_list_weather"
-            app:layout_constraintBottom_toTopOf="@id/route_right_tab_list_tv_weather"
+            android:layout_marginTop="@dimen/dp_16"
+            android:layout_marginStart="@dimen/dp_248"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             />
 
         <com.fy.navi.ui.view.SkinView
             clickCommand="@{Scene.clickAlone}"
             android:id="@+id/route_right_tab_list_gas_station"
-            android:layout_width="@dimen/dp_174"
-            android:layout_height="@dimen/dp_154"
+            android:layout_width="@dimen/dp_180"
+            android:layout_height="match_parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintBottom_toTopOf="@+id/route_right_tab_list_weather"
             />
 
         <com.fy.navi.ui.view.SkinTextView
@@ -94,21 +94,22 @@
             android:layout_height="wrap_content"
             android:text="@string/route_charge_gas_along"
             android:textColor="@color/tab_list_route_tab_list_unselect"
-            android:textSize="@dimen/sp_30"
-            android:layout_marginBottom="@dimen/dp_30"
+            android:textSize="@dimen/sp_26"
             app:select_text_color="@color/tab_list_route_tab_list_select"
-            app:layout_constraintEnd_toEndOf="@id/route_right_tab_list_gas_station"
-            app:layout_constraintStart_toStartOf="@id/route_right_tab_list_gas_station"
-            app:layout_constraintBottom_toBottomOf="@id/route_right_tab_list_gas_station"/>
+            android:layout_marginTop="@dimen/dp_69"
+            android:layout_marginStart="@dimen/dp_74"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"/>
 
         <com.fy.navi.ui.view.SkinImageView
             android:id="@+id/route_right_tab_list_iv_gas_station"
-            android:layout_width="@dimen/dp_58"
-            android:layout_height="@dimen/dp_58"
+            android:layout_width="@dimen/dp_49"
+            android:layout_height="@dimen/dp_49"
             android:src="@drawable/selector_route_tab_list_charge_gas_along"
-            app:layout_constraintEnd_toEndOf="@id/route_right_tab_list_gas_station"
-            app:layout_constraintStart_toStartOf="@id/route_right_tab_list_gas_station"
-            app:layout_constraintBottom_toTopOf="@id/route_right_tab_list_tv_gas_station"/>
+            android:layout_marginTop="@dimen/dp_16"
+            android:layout_marginStart="@dimen/dp_75"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"/>
     </com.fy.navi.ui.view.SkinConstraintLayout>
 
 </layout>

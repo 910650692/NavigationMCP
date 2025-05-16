@@ -2,6 +2,7 @@ package com.fy.navi.hmi.account;
 
 import android.app.Application;
 import android.graphics.Bitmap;
+import android.os.CountDownTimer;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
@@ -19,6 +20,19 @@ public class BaseAccountQRCodeLoginViewModel extends BaseViewModel<AccountQRCode
     public MutableLiveData<Boolean> mQRCodeLoadingVisible = new MutableLiveData<>(true);
     public MutableLiveData<Boolean> mQRCodeLoadFailedVisible = new MutableLiveData<>(false);
     public MutableLiveData<Boolean> mQRCodeVisible = new MutableLiveData<>(false);
+    private boolean isLoading;
+    private CountDownTimer mCountDownTimer = new CountDownTimer(10000, 1000) {
+        public void onTick(long millisUntilFinished) {
+
+        }
+
+        public void onFinish() {
+            if (isLoading) {
+                updateLoadingVisible(false, true, false);
+                isLoading = false;
+            }
+        }
+    }.start();
 
     public BaseAccountQRCodeLoginViewModel(@NonNull final Application application) {
         super(application);
@@ -58,6 +72,8 @@ public class BaseAccountQRCodeLoginViewModel extends BaseViewModel<AccountQRCode
      */
     public void qrCodeLoginRequest(final int qrType){
         mModel.qrCodeLoginRequest(qrType);
+        mCountDownTimer.start();
+        isLoading = true;
     }
 
     /**
@@ -72,6 +88,10 @@ public class BaseAccountQRCodeLoginViewModel extends BaseViewModel<AccountQRCode
             mQRCodeLoadFailedVisible.setValue(isVisibleFailed);
             mQRCodeVisible.setValue(isVisibleQRCode);
         });
+        if (isVisibleFailed || isVisibleQRCode) {
+            mCountDownTimer.cancel();
+            isLoading = false;
+        }
     }
 
     /**

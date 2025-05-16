@@ -357,6 +357,7 @@ public class SceneHomeCompanyView extends BaseSceneView<SceneHomeCompanyViewBind
     private void clickMapPoint(){
         if (null != mClickListener) {
             mClickListener.setHomeCompanyType(mHomeCompanyType);
+            hideInput();
             mScreenViewModel.flyLineVisible(MapType.MAIN_SCREEN_MAIN_MAP, true);
         }
 //        closeAllFragmentAndSearchView();
@@ -374,6 +375,7 @@ public class SceneHomeCompanyView extends BaseSceneView<SceneHomeCompanyViewBind
     @Override
     public void onDestroy() {
         super.onDestroy();
+        hideInput();
         mIsClickMyPos = false;
     }
 

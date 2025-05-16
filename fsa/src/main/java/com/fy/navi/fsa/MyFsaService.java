@@ -1,13 +1,19 @@
 package com.fy.navi.fsa;
 
 import android.app.ActivityOptions;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.hardware.display.DisplayManager;
 import android.os.Build;
 import android.view.Display;
 
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
+import com.android.utils.ToastUtils;
 import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
 import com.fy.navi.adas.JsonLog;
@@ -20,6 +26,7 @@ import com.fy.navi.fsa.scene.FsaNaviScene;
 import com.fy.navi.service.AppContext;
 import com.fy.navi.service.StartService;
 import com.fy.navi.service.adapter.navi.NaviConstant;
+import com.fy.navi.service.adapter.navistatus.NavistatusAdapter;
 import com.fy.navi.service.define.cruise.CruiseInfoEntity;
 import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.map.ThemeType;
@@ -43,6 +50,7 @@ import com.fy.navi.service.logicpaket.map.IMapPackageCallback;
 import com.fy.navi.service.logicpaket.map.MapPackage;
 import com.fy.navi.service.logicpaket.navi.IGuidanceObserver;
 import com.fy.navi.service.logicpaket.navi.NaviPackage;
+import com.fy.navi.service.logicpaket.navi.OpenApiHelper;
 import com.fy.navi.service.logicpaket.navistatus.NaviStatusCallback;
 import com.fy.navi.service.logicpaket.navistatus.NaviStatusPackage;
 import com.fy.navi.service.logicpaket.position.IPositionPackageCallback;
@@ -216,6 +224,12 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
         }
     }
 
+
+    private static final MutableLiveData<Boolean> isClusterMapOpen = new MutableLiveData<>(false);
+
+    public static LiveData<Boolean> getIsClusterMapOpen() {
+        return isClusterMapOpen;
+    }
     /**
      * 根据收到的payload不同，发送对应的Event给客户端.
      *
@@ -224,9 +238,21 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
     private void handlePayload1(final String payload) {
         switch (payload) {
             case FsaConstant.FsaEventPayload.OPEN_HUD_MAP:
+                isClusterMapOpen.postValue(true);
+                if (NavistatusAdapter.getInstance().getCurrentNaviStatus().equals(NaviStatus.NaviStatusType.NAVING)){
+                    //导航态下，仪表切换为地图模式后，中控地图导航模式切换为“路线全览模式。
+                    OpenApiHelper.enterPreview(MapType.MAIN_SCREEN_MAIN_MAP);
+                    //toast提示（MsgType: 3s Timeout +Anykey)：
+                    ToastUtils.Companion.getInstance().showCustomToastView("仪表导航已开启，地图默认显示全程路线",  3000);
+                }
                 switchClusterActivity(true);
                 break;
             case FsaConstant.FsaEventPayload.CLOSE_HUD_MAP:
+                //导航态下，仪表切换为地图模式后，中控地图导航模式切换为“路线全览模式。
+                if (NavistatusAdapter.getInstance().getCurrentNaviStatus().equals(NaviStatus.NaviStatusType.NAVING)){
+                    OpenApiHelper.exitPreview(MapType.MAIN_SCREEN_MAIN_MAP);
+                }
+                isClusterMapOpen.postValue(false);
                 switchClusterActivity(false);
                 break;
             case FsaConstant.FsaEventPayload.OPEN_HUD_VIDEO:

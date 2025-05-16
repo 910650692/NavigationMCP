@@ -1,12 +1,16 @@
 package com.fy.navi.service.adapter.l2;
 
+import android.util.Log;
+
 import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
+import com.autonavi.gbl.common.model.Coord2DDouble;
 import com.autonavi.gbl.common.path.model.LinkType;
 import com.autonavi.gbl.common.path.option.LinkInfo;
 import com.autonavi.gbl.common.path.option.PathInfo;
 import com.autonavi.gbl.common.path.option.SegmentInfo;
 import com.autonavi.gbl.guide.model.ManeuverIconID;
+import com.autonavi.gbl.layer.model.BizLayerUtil;
 import com.fy.navi.service.adapter.cruise.CruiseAdapter;
 import com.fy.navi.service.adapter.cruise.CruiseObserver;
 import com.fy.navi.service.adapter.navi.GuidanceObserver;
@@ -32,6 +36,7 @@ import com.fy.navi.service.define.navi.SpeedOverallEntity;
 import com.fy.navi.service.define.navistatus.NaviStatus;
 import com.fy.navi.service.define.position.LocParallelInfoEntity;
 import com.fy.navi.service.define.route.RouteCurrentPathParam;
+import com.fy.navi.service.logicpaket.position.PositionPackage;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -107,7 +112,7 @@ public class L2Adapter {
             }
             L2NaviBean.VehiclePositionBean vehiclePosition = l2NaviBean.getVehiclePosition();
 
-            vehiclePosition.setCurPathID((int) naviEtaInfo.pathID); // 当前选择得路线下标
+            vehiclePosition.setCurPathID(naviEtaInfo.pathID); // 当前选择得路线下标
             vehiclePosition.setDistToDestination(naviEtaInfo.getAllDist()); // 当前位置到目的地距离
             vehiclePosition.setLocationLinkIndex(naviEtaInfo.curLinkIdx); //自车当前位置的link索引，跟全局路线中的link索引对应
 
@@ -117,6 +122,9 @@ public class L2Adapter {
             L2NaviBean.GuidePointInfoBean guidePointInfo = l2NaviBean.getGuidePointInfo();
             guidePointInfo.setNextGuideDist(naviEtaInfo.getNextDist()); // 到下一个引导点的剩余距离（导航：2000米以内发出）
             int maneuverId = naviEtaInfo.getNextManeuverID();
+            if (maneuverId == -1) {
+                maneuverId = 0;
+            }
             guidePointInfo.setNextGuideType(maneuverId); // 引导点动作高德原始接口（导航：2000米以内发出）.
 
             L2NaviBean.TunnelInfoBean tunnelInfoBean = l2NaviBean.getTunnelInfo();
@@ -134,12 +142,13 @@ public class L2Adapter {
                 tunnelInfoBean.setTunnelLength(0);
             }
 
-            L2NaviBean.CrossInfoDataBean crossInfoDataBean = l2NaviBean.getCrossInfoData();
-            crossInfoDataBean.setTrafficLightPosition(naviEtaInfo.getNextDist());
+//            L2NaviBean.CrossInfoDataBean crossInfoDataBean = l2NaviBean.getCrossInfoData();
+//            crossInfoDataBean.setTrafficLightPosition(naviEtaInfo.getNextDist());
 
             ArrayList<NaviEtaInfo.NaviCrossNaviInfo> naviCrossNaviInfos = naviEtaInfo.nextCrossInfo;
             if (!ConvertUtils.isEmpty(naviCrossNaviInfos)) {
                 NaviEtaInfo.NaviCrossNaviInfo nextNaviInfo = naviCrossNaviInfos.get(0);
+                Logger.i(TAG, "交叉路口信息", nextNaviInfo);
                 /*** 发起下个路口的车道线信息得请求{@link L2Adapter#onLaneInfoReceived} **/
                 NaviAdapter.getInstance().queryAppointLanesInfo(nextNaviInfo.segmentIndex, nextNaviInfo.linkIndex);
             }
@@ -171,7 +180,7 @@ public class L2Adapter {
                 aheadIntersection.setLaneTypes(new ArrayList<>());
                 return;
             }
-            Logger.i(TAG, "车道信息", laneInfoEntity);
+            Logger.i(TAG, "下一个路口车道信息", laneInfoEntity);
             ArrayList<Integer> backLanes = laneInfoEntity.getBackLane();
             L2NaviBean.CrossInfoDataBean crossInfoDataBean = l2NaviBean.getCrossInfoData();
             crossInfoDataBean.setLaneNum(backLanes.size());
@@ -261,6 +270,14 @@ public class L2Adapter {
         @Override
         public void onUpdateTrafficLightCountdown(int isHaveTrafficLight, GeoPoint geoPoint) {
             l2NaviBean.getCrossInfoData().setHasTrafficLight(isHaveTrafficLight == 0 ? 0 : 1); // 路口是否有红绿灯
+            if (isHaveTrafficLight == 0) {
+                l2NaviBean.getCrossInfoData().setTrafficLightPosition(0);
+            } else {
+                GeoPoint currentGeo = PositionPackage.getInstance().currentGeo;
+                double distance = BizLayerUtil.calcDistanceBetweenPoints(new Coord2DDouble(currentGeo.getLon(), currentGeo.getLat()), new Coord2DDouble(geoPoint.getLon(), geoPoint.getLat()));
+                l2NaviBean.getCrossInfoData().setTrafficLightPosition((int) distance);
+            }
+
             Logger.i(TAG, "红绿灯", isHaveTrafficLight);
         }
 
@@ -303,6 +320,12 @@ public class L2Adapter {
             }
             if (cameraInfo.getDistance() > 2000) { // 超过2km无需返回
                 Logger.i(TAG, "over 2km");
+                limitCameraData.setSpdLmtEleEyeDist(0);
+                limitCameraData.setSpdLmtEleEyeSpeedValue(0xFF);
+                return;
+            }
+            if (cameraInfo.getSpeed() == 0) {
+                Logger.i(TAG, "speed 0");
                 limitCameraData.setSpdLmtEleEyeDist(0);
                 limitCameraData.setSpdLmtEleEyeSpeedValue(0xFF);
                 return;
@@ -388,7 +411,9 @@ public class L2Adapter {
                 l2NaviBean.setRampDist(0xFFFF);
             } else {
                 int disToCurrentPos = respData.getDisToCurrentPos();
-                if (disToCurrentPos < 2000) {
+                if (disToCurrentPos == 0) {
+                    l2NaviBean.setRampDist(0xFFFF);
+                } else if (disToCurrentPos < 2000) {
                     l2NaviBean.setRampDist(disToCurrentPos); // 到前方匝道口距离
                 } else {
                     l2NaviBean.setRampDist(0xFFFF);

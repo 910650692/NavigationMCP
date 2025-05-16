@@ -234,7 +234,9 @@
     <string name="sha_deleted">已删除</string>
     <string name="ssh_cleared_history_record">已清空历史记录</string>
     <string name="smp_set_success">设置成功</string>
+    <string name="smp_set_add">添加成功</string>
     <string name="scv_not_have_favorite">暂无收藏地址</string>
+    <string name="scv_not_have_receive">暂无收到的点</string>
     <string name="dialog_content_clear_record">确定清空历史记录？</string>
     <string name="dialog_title_tip">提示</string>
     <string name="catering_avg_price">(人均)</string>

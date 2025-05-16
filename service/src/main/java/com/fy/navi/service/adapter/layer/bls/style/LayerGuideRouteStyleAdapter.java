@@ -128,6 +128,9 @@ public class LayerGuideRouteStyleAdapter extends BaseStyleAdapter {
                             return KEY_ROAD_END_DEFAULT;
                         }
                     }
+                } else {
+                    Logger.d(TAG, "终点扎标-默认扎标");
+                    return KEY_ROAD_END_DEFAULT;
                 }
             }
             case BizRouteType.BizRouteTypeEnergyEmptyPoint -> {

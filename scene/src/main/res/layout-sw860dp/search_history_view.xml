@@ -79,7 +79,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/dp_9"
                     android:text="@string/shv_clear_record"
-                    android:textColor="@color/search_color_ffffff_40"
+                    android:textColor="@color/search_color_ffffff_70"
                     android:textSize="@dimen/sp_32"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintLeft_toRightOf="@id/iv_delete"

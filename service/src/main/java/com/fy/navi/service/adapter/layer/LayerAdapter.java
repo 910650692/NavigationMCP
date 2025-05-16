@@ -213,18 +213,6 @@ public class LayerAdapter {
         mLayerApi.openDynamicLevel(mapTypeId, isOpen);
     }
 
-    public void updateSearchParkPoi(MapType mapTypeId, ArrayList<NaviParkingEntity> parkList) {
-        mLayerApi.updateSearchParkPoi(mapTypeId, parkList);
-    }
-
-    public void clearSearchParkPoi(MapType mapTypeId) {
-        mLayerApi.clearSearchParkPoi(mapTypeId);
-    }
-
-    public void setParkFocus(MapType mapTypeId, String strID, boolean bFocus) {
-        mLayerApi.setParkFocus(mapTypeId, strID, bFocus);
-    }
-
     public void updateGuideCarStyle(MapType mapTypeId) {
         mLayerApi.updateGuideCarStyle(mapTypeId);
     }

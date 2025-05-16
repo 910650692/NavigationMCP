@@ -1490,7 +1490,7 @@ public class RouteAdapterImplHelper {
         final RouteL2Data data = new RouteL2Data();
         data.setMEngineVersion(BevPowerCarUtils.getInstance().engineVersion);
         data.setMSdkVersion(BevPowerCarUtils.getInstance().sdkVersion);
-        data.setMPathID((int) pathInfo.getPathID());
+        data.setMPathID(pathInfo.getPathID());
         final long segmentCount = pathInfo.getSegmentCount();
         int linkCnt = 0;
         int forCnt = 0;
@@ -1571,6 +1571,7 @@ public class RouteAdapterImplHelper {
     private List<RouteL2Data.GuideGroupsDTO> getGuideGroupsDTO(final PathInfo pathInfo, final int firstIcon) {
         final List<RouteL2Data.GuideGroupsDTO> guideGroupsDTOS = new ArrayList<>();
         final int groupSegmentCount = (int) pathInfo.getGroupSegmentCount();
+        int linkIndex = 0;
         if (groupSegmentCount > 0) {
             for (int groupIndex = 0; groupIndex < groupSegmentCount; groupIndex++) {
                 final GroupSegment groupSegment = pathInfo.getGroupSegment(groupIndex);
@@ -1595,7 +1596,8 @@ public class RouteAdapterImplHelper {
                         lightSize += segmentInfo.getTrafficLightNum();
                         final RouteL2Data.GuideGroupsDTO.SegmentsDTO dto = new RouteL2Data.GuideGroupsDTO.SegmentsDTO();
                         dto.setMCrntSegmLinkCnt((int) segmentInfo.getLinkCount());
-                        dto.setMLinkBegIdx(segmentInfo.getSegmentIndex());
+                        dto.setMLinkBegIdx(linkIndex);
+                        linkIndex = linkIndex + (int)segmentInfo.getLinkCount();
                         dto.setMDescription("行驶" + TimeUtils.getInstance().getDistanceString(segmentInfo.getLength())
                                 + iconId2String(segmentInfo) + "进入" + segmentInfo.getLinkInfo(0).getRoadName());
                         dto.setMIsArriveWayPoint(groupSegment.isViaPoint);
@@ -1759,23 +1761,41 @@ public class RouteAdapterImplHelper {
                         for (SearchParkInOutInfo searchParkInOutInfo : info.getSearchParkInOutInfos()) {
                             final RouteL2Data.EndPoiDTO.EntranceListDTO dto = new RouteL2Data.EndPoiDTO.EntranceListDTO();
                             final RouteL2Data.EndPoiDTO.ExitListDTO exitListDTO = new RouteL2Data.EndPoiDTO.ExitListDTO();
-                            dto.setMX(searchParkInOutInfo.getX());
-                            dto.setMY(searchParkInOutInfo.getY());
-                            exitListDTO.setMX(searchParkInOutInfo.getX());
-                            exitListDTO.setMY(searchParkInOutInfo.getY());
-                            entranceListDTOS.add(dto);
-                            exitListDTOS.add(exitListDTO);
-
+                            if (searchParkInOutInfo.getEntExitId().equals("出口")) {
+                                exitListDTO.setMX(searchParkInOutInfo.getX());
+                                exitListDTO.setMY(searchParkInOutInfo.getY());
+                                exitListDTOS.add(exitListDTO);
+                            } else if (searchParkInOutInfo.getEntExitId().equals("入口")){
+                                dto.setMX(searchParkInOutInfo.getX());
+                                dto.setMY(searchParkInOutInfo.getY());
+                                entranceListDTOS.add(dto);
+                            } else {
+                                dto.setMX(searchParkInOutInfo.getX());
+                                dto.setMY(searchParkInOutInfo.getY());
+                                exitListDTO.setMX(searchParkInOutInfo.getX());
+                                exitListDTO.setMY(searchParkInOutInfo.getY());
+                                entranceListDTOS.add(dto);
+                                exitListDTOS.add(exitListDTO);
+                            }
                             final RouteL2Data.EndPoiDTO.ParkingInfoListDTO.EntranceListDTO entranceListDTO
                                     = new RouteL2Data.EndPoiDTO.ParkingInfoListDTO.EntranceListDTO();
                             final RouteL2Data.EndPoiDTO.ParkingInfoListDTO.ExitListDTO exitListDTOBean
                                     = new RouteL2Data.EndPoiDTO.ParkingInfoListDTO.ExitListDTO();
-                            entranceListDTO.setMX(searchParkInOutInfo.getX());
-                            entranceListDTO.setMY(searchParkInOutInfo.getY());
-                            exitListDTOBean.setMX(searchParkInOutInfo.getX());
-                            exitListDTOBean.setMY(searchParkInOutInfo.getY());
-                            entranceListDTOArrayList.add(entranceListDTO);
-                            exitListDTOArrayList.add(exitListDTOBean);
+                            if (searchParkInOutInfo.getEntExitId().equals("出口")) {
+                                exitListDTOBean.setMX(searchParkInOutInfo.getX());
+                                exitListDTOBean.setMY(searchParkInOutInfo.getY());
+                                exitListDTOArrayList.add(exitListDTOBean);
+                            } else if (searchParkInOutInfo.getEntExitId().equals("入口")){
+                                entranceListDTO.setMX(searchParkInOutInfo.getX());
+                                entranceListDTO.setMY(searchParkInOutInfo.getY());
+                            } else {
+                                entranceListDTO.setMX(searchParkInOutInfo.getX());
+                                entranceListDTO.setMY(searchParkInOutInfo.getY());
+                                exitListDTOBean.setMX(searchParkInOutInfo.getX());
+                                exitListDTOBean.setMY(searchParkInOutInfo.getY());
+                                entranceListDTOArrayList.add(entranceListDTO);
+                                exitListDTOArrayList.add(exitListDTOBean);
+                            }
                         }
                     }
                     parkingInfoListDTO.setMEntranceList(entranceListDTOArrayList);

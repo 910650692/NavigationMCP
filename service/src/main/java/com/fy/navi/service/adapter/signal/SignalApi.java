@@ -117,4 +117,11 @@ public interface SignalApi {
      * @return 0:关闭 1:开启
      */
     int getNavigationOnAdasTextToSpeachStatus();
+
+    /**
+     * 设置导航音量
+     *
+     * @param volume 0-63
+     */
+    void setNaviVolume(int volume);
 }

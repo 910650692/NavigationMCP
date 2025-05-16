@@ -2,6 +2,7 @@ package com.fy.navi.hmi.drivingrecord.recordlogin;
 
 import android.app.Application;
 import android.graphics.Bitmap;
+import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.Looper;
 
@@ -28,6 +29,19 @@ public class BaseDrivingRecordLoginViewModel extends BaseViewModel<DrivingRecord
     public MutableLiveData<Boolean> mQRCodeVisible = new MutableLiveData<>(false);
     public MutableLiveData<Boolean> mLoginVisible = new MutableLiveData<>(false);
     private MutableLiveData<Boolean> mIsMergeDivingRecordDialog = new MutableLiveData<>(false);
+    private boolean isLoading;
+    private CountDownTimer mCountDownTimer = new CountDownTimer(10000, 1000) {
+        public void onTick(long millisUntilFinished) {
+
+        }
+
+        public void onFinish() {
+            if (isLoading) {
+                updateLoadingVisible(false, true, false);
+                isLoading = false;
+            }
+        }
+    }.start();
 
     public BaseDrivingRecordLoginViewModel(@NonNull final Application application) {
         super(application);
@@ -84,6 +98,8 @@ public class BaseDrivingRecordLoginViewModel extends BaseViewModel<DrivingRecord
      */
     public void qrCodeLoginRequest(final int qrType){
         mModel.qrCodeLoginRequest(qrType);
+        mCountDownTimer.start();
+        isLoading = true;
     }
 
     /**
@@ -115,6 +131,10 @@ public class BaseDrivingRecordLoginViewModel extends BaseViewModel<DrivingRecord
             mQRCodeLoadFailedVisible.setValue(isVisibleFailed);
             mQRCodeVisible.setValue(isVisibleQRCode);
         });
+        if (isVisibleFailed || isVisibleQRCode) {
+            mCountDownTimer.cancel();
+            isLoading = false;
+        }
     }
 
     /**

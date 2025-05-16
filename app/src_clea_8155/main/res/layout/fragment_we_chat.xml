@@ -22,7 +22,8 @@
         <com.fy.navi.ui.view.SkinConstraintLayout
             android:id="@+id/we_chat_title_layout"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_138"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_38"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" >
 
@@ -58,16 +59,16 @@
 
             <com.fy.navi.ui.view.SkinLinearLayout
                 android:layout_width="@dimen/dp_260"
-                android:layout_height="@dimen/dp_310"
-                android:layout_marginTop="@dimen/dp_115"
+                android:layout_height="@dimen/dp_324"
+                android:layout_marginTop="@dimen/dp_155"
                 android:layout_marginStart="@dimen/dp_80"
                 android:gravity="center"
                 android:orientation="vertical">
 
                 <com.fy.navi.ui.view.SkinImageView
                     android:id="@+id/chat_content_img"
-                    android:layout_width="@dimen/dp_237"
-                    android:layout_height="@dimen/dp_237"
+                    android:layout_width="@dimen/dp_260"
+                    android:layout_height="@dimen/dp_260"
                     android:background="@drawable/bg_we_chat"
                     android:padding="@dimen/dp_11"
                     tools:visibility="gone"
@@ -134,8 +135,8 @@
             <com.fy.navi.ui.view.SkinConstraintLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_115"
-                android:layout_marginStart="@dimen/dp_161">
+                android:layout_marginTop="@dimen/dp_155"
+                android:layout_marginStart="@dimen/dp_64">
 
                 <com.fy.navi.ui.view.SkinImageView
                     android:id="@+id/chat_content_img_tip"
@@ -153,7 +154,7 @@
                     android:text="@string/chat_connect_send_to_car"
                     android:textSize="@dimen/sp_30"
                     android:textColor="@color/setting_bg_tab_text_unselect"
-                    android:layout_marginTop="@dimen/dp_31"
+                    android:layout_marginTop="@dimen/dp_40"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/chat_content_img_tip" />
@@ -182,13 +183,14 @@
             <com.fy.navi.ui.view.SkinLinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_115"
+                android:layout_marginStart="@dimen/dp_80"
+                android:layout_marginTop="@dimen/dp_155"
+                android:gravity="center"
                 android:orientation="vertical">
 
                 <com.fy.navi.ui.view.SkinImageView
                     android:layout_width="@dimen/dp_96"
                     android:layout_height="@dimen/dp_96"
-                    android:layout_marginStart="@dimen/dp_118"
                     android:src="@drawable/img_user_default"/>
 
                 <com.fy.navi.ui.view.SkinTextView
@@ -197,8 +199,8 @@
                     android:textSize="@dimen/sp_34"
                     android:textColor="@color/black"
                     android:drawableStart="@drawable/img_wechat_unbind"
-                    android:layout_marginTop="@dimen/dp_14"
-                    android:layout_marginStart="@dimen/dp_60"
+                    android:layout_marginTop="@dimen/dp_4"
+                    android:drawablePadding="@dimen/dp_4"
                     android:text="@string/chat_connect_bind"/>
 
                 <com.fy.navi.ui.view.SkinTextView
@@ -206,9 +208,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="@dimen/sp_34"
+                    android:layout_marginStart="@dimen/dp_34"
                     android:textColor="@color/setting_bg_tab_text_unselect"
-                    android:layout_marginTop="@dimen/dp_8"
-                    android:layout_marginStart="@dimen/dp_122"
                     android:text="@string/chat_connect_no_bind"/>
 
             </com.fy.navi.ui.view.SkinLinearLayout>
@@ -216,8 +217,8 @@
             <com.fy.navi.ui.view.SkinImageView
                 android:layout_width="@dimen/dp_750"
                 android:layout_height="@dimen/dp_477"
-                android:layout_marginTop="@dimen/dp_115"
-                android:layout_marginStart="@dimen/dp_122"
+                android:layout_marginTop="@dimen/dp_155"
+                android:layout_marginStart="@dimen/dp_90"
                 android:src="@mipmap/icon_wechat_bind"/>
         </com.fy.navi.ui.view.SkinLinearLayout>
 

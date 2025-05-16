@@ -513,7 +513,6 @@ public final class UserTrackPackage implements UserTrackAdapterCallBack, SearchR
                 dataBean.setEndLocation(history.getMEndPoint()); // 数据ID
                 dataBean.setRunDistance(history.getMRunDistance()); // 该行程行驶距离
                 dataBean.setStartTime(history.getMStartTime());
-                dataBean.setEndTime(history.getMEndTime()); // 该行程完成时间
                 dataBean.setRideRunType(history.getMRideRunType()); // 行程类型（导航/巡航）
                 dataBean.setTimeInterval(history.getMTimeInterval()); // 驾驶时长
                 dataBean.setAverageSpeed(history.getMAverageSpeed()); // 平均速度
@@ -718,9 +717,7 @@ public final class UserTrackPackage implements UserTrackAdapterCallBack, SearchR
             mHistory.setMRunDistance((int)depInfo.getDistance());// 该行程行驶距离
             final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
             final String startTime = dateFormat.format(points.get(0).getN64TickTime());
-            final String endTime = dateFormat.format(points.get(points.size() - 1).getN64TickTime());
             mHistory.setMStartTime(startTime); // 该行程开始时间
-            mHistory.setMEndTime(endTime); // 该行程完成时间
             mHistory.setMRideRunType(Integer.parseInt(rideRunType)); // 行程类型（导航/巡航）
             mHistory.setMTimeInterval((int)depInfo.getDuration()); // 驾驶时长
             mHistory.setMAverageSpeed((int)depInfo.getAverageSpeed()); // 平均速度
