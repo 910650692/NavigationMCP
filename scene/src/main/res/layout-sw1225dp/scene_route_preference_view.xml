@@ -17,128 +17,124 @@
         android:layout_height="match_parent">
         <!--算路偏好-->
         <com.fy.navi.ui.view.SkinConstraintLayout
-            android:layout_width="@dimen/dp_640"
-            android:layout_height="match_parent"
-            >
+            android:layout_width="@dimen/dp_545"
+            android:layout_height="match_parent">
+
             <com.fy.navi.ui.view.SkinTextView
                 android:id="@+id/preference_recommend"
                 clickCommand="@{() -> Scene.preferenceRecommend(1)}"
-                android:layout_width="@dimen/dp_560"
+                android:layout_width="@dimen/dp_477"
                 android:layout_height="@dimen/dp_90"
                 android:layout_marginStart="@dimen/dp_40"
                 android:layout_marginTop="@dimen/dp_20"
+                android:background="@drawable/selector_route_preference_nol"
                 android:gravity="center"
                 android:text="@string/route_preference_recommend"
                 android:textColor="@color/text_route_defult"
-                android:textSize="@dimen/sp_34"
+                android:textSize="@dimen/sp_29"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                android:background="@drawable/selector_route_preference_nol"
-                app:select_text_color="@color/white"
-                app:select_background_color="@drawable/selector_route_preference"/>
+                app:select_background_color="@drawable/selector_route_preference"
+                app:select_text_color="@color/white" />
 
 
             <com.fy.navi.ui.view.SkinTextView
                 android:id="@+id/preference_avoid_congestion"
                 clickCommand="@{() -> Scene.preferenceAvoidCongestion(1)}"
-                android:layout_width="@dimen/dp_268"
-                android:layout_height="@dimen/dp_90"
-                android:layout_marginTop="@dimen/dp_24"
+                android:layout_width="@dimen/dp_228"
+                android:layout_height="@dimen/dp_77"
+                android:layout_marginTop="@dimen/dp_20"
+                android:background="@drawable/selector_route_preference_nol"
                 android:gravity="center"
                 android:text="@string/route_preference_avoiding_congestion"
                 android:textColor="@color/text_route_defult"
-                android:textSize="@dimen/sp_34"
-                app:layout_constraintTop_toBottomOf="@+id/preference_recommend"
+                android:textSize="@dimen/sp_29"
                 app:layout_constraintStart_toStartOf="@+id/preference_recommend"
-                android:background="@drawable/selector_route_preference_nol"
-                app:select_text_color="@color/white"
+                app:layout_constraintTop_toBottomOf="@+id/preference_recommend"
                 app:select_background_color="@drawable/selector_route_preference"
-                />
+                app:select_text_color="@color/white" />
 
             <com.fy.navi.ui.view.SkinTextView
                 android:id="@+id/preference_first_main_road"
                 clickCommand="@{() -> Scene.preferenceFirstMainRoad(1)}"
-                android:layout_width="@dimen/dp_268"
-                android:layout_height="@dimen/dp_90"
-                android:layout_marginStart="@dimen/dp_24"
-                android:layout_marginTop="@dimen/dp_24"
+                android:layout_width="@dimen/dp_228"
+                android:layout_height="@dimen/dp_77"
+                android:layout_marginTop="@dimen/dp_20"
+                android:background="@drawable/selector_route_preference_nol"
                 android:gravity="center"
                 android:text="@string/route_preference_first_main_road"
                 android:textColor="@color/text_route_defult"
-                android:textSize="@dimen/sp_34"
-                app:layout_constraintStart_toEndOf="@+id/preference_avoid_congestion"
+                android:textSize="@dimen/sp_29"
+                app:layout_constraintEnd_toEndOf="@+id/preference_recommend"
                 app:layout_constraintTop_toBottomOf="@+id/preference_recommend"
-                android:background="@drawable/selector_route_preference_nol"
-                app:select_text_color="@color/white"
-                app:select_background_color="@drawable/selector_route_preference"/>
+                app:select_background_color="@drawable/selector_route_preference"
+                app:select_text_color="@color/white" />
 
             <com.fy.navi.ui.view.SkinTextView
                 android:id="@+id/preference_first_highway"
                 clickCommand="@{() -> Scene.preferenceFirstHighway(1)}"
-                android:layout_width="@dimen/dp_268"
-                android:layout_height="@dimen/dp_90"
-                android:layout_marginTop="@dimen/dp_24"
+                android:layout_width="@dimen/dp_228"
+                android:layout_height="@dimen/dp_77"
+                android:layout_marginTop="@dimen/dp_20"
+                android:background="@drawable/selector_route_preference_nol"
                 android:gravity="center"
                 android:text="@string/route_preference_first_highway"
                 android:textColor="@color/text_route_defult"
-                android:textSize="@dimen/sp_34"
+                android:textSize="@dimen/sp_29"
                 app:layout_constraintStart_toStartOf="@+id/preference_avoid_congestion"
                 app:layout_constraintTop_toBottomOf="@+id/preference_avoid_congestion"
-                android:background="@drawable/selector_route_preference_nol"
-                app:select_text_color="@color/white"
-                app:select_background_color="@drawable/selector_route_preference"/>
+                app:select_background_color="@drawable/selector_route_preference"
+                app:select_text_color="@color/white" />
 
             <com.fy.navi.ui.view.SkinTextView
                 android:id="@+id/preference_not_highway"
                 clickCommand="@{() -> Scene.preferenceNotHighway(1)}"
-                android:layout_width="@dimen/dp_268"
-                android:layout_height="@dimen/dp_90"
-                android:layout_marginStart="@dimen/dp_24"
-                android:layout_marginTop="@dimen/dp_24"
+                android:layout_width="@dimen/dp_228"
+                android:layout_height="@dimen/dp_77"
+                android:layout_marginTop="@dimen/dp_20"
+                android:background="@drawable/selector_route_preference_nol"
                 android:gravity="center"
                 android:text="@string/route_preference_not_highway"
                 android:textColor="@color/text_route_defult"
-                android:textSize="@dimen/sp_34"
-                app:layout_constraintStart_toEndOf="@+id/preference_first_highway"
+                android:textSize="@dimen/sp_29"
+                app:layout_constraintEnd_toEndOf="@+id/preference_recommend"
                 app:layout_constraintTop_toBottomOf="@+id/preference_avoid_congestion"
-                android:background="@drawable/selector_route_preference_nol"
-                app:select_text_color="@color/white"
-                app:select_background_color="@drawable/selector_route_preference"/>
+                app:select_background_color="@drawable/selector_route_preference"
+                app:select_text_color="@color/white" />
 
             <com.fy.navi.ui.view.SkinTextView
                 android:id="@+id/preference_less_charge"
                 clickCommand="@{() -> Scene.preferenceLessCharge(1)}"
-                android:layout_width="@dimen/dp_268"
-                android:layout_height="@dimen/dp_90"
-                android:layout_marginTop="@dimen/dp_24"
+                android:layout_width="@dimen/dp_228"
+                android:layout_height="@dimen/dp_77"
+                android:layout_marginTop="@dimen/dp_20"
+                android:background="@drawable/selector_route_preference_nol"
                 android:gravity="center"
                 android:text="@string/route_preference_less_charge"
                 android:textColor="@color/text_route_defult"
-                android:textSize="@dimen/sp_34"
+                android:textSize="@dimen/sp_29"
                 app:layout_constraintStart_toStartOf="@+id/preference_first_highway"
                 app:layout_constraintTop_toBottomOf="@+id/preference_first_highway"
-                android:background="@drawable/selector_route_preference_nol"
-                app:select_text_color="@color/white"
-                app:select_background_color="@drawable/selector_route_preference"/>
+                app:select_background_color="@drawable/selector_route_preference"
+                app:select_text_color="@color/white" />
 
             <com.fy.navi.ui.view.SkinTextView
                 android:id="@+id/preference_fastest_speed"
                 clickCommand="@{() -> Scene.preferenceFastestSpeed(1)}"
-                android:layout_width="@dimen/dp_268"
-                android:layout_height="@dimen/dp_90"
-                android:layout_marginStart="@dimen/dp_24"
-                android:layout_marginTop="@dimen/dp_24"
+                android:layout_width="@dimen/dp_228"
+                android:layout_height="@dimen/dp_77"
+                android:layout_marginTop="@dimen/dp_20"
+                android:layout_marginBottom="@dimen/dp_20"
+                android:background="@drawable/selector_route_preference_nol"
                 android:gravity="center"
                 android:text="@string/route_preference_fastest_speed"
                 android:textColor="@color/text_route_defult"
-                android:textSize="@dimen/sp_34"
-                app:layout_constraintStart_toEndOf="@+id/preference_less_charge"
-                app:layout_constraintTop_toBottomOf="@+id/preference_first_highway"
+                android:textSize="@dimen/sp_29"
                 app:layout_constraintBottom_toBottomOf="parent"
-                android:layout_marginBottom="@dimen/dp_20"
-                android:background="@drawable/selector_route_preference_nol"
-                app:select_text_color="@color/white"
-                app:select_background_color="@drawable/selector_route_preference"/>
+                app:layout_constraintEnd_toEndOf="@+id/preference_recommend"
+                app:layout_constraintTop_toBottomOf="@+id/preference_first_highway"
+                app:select_background_color="@drawable/selector_route_preference"
+                app:select_text_color="@color/white" />
 
         </com.fy.navi.ui.view.SkinConstraintLayout>
 

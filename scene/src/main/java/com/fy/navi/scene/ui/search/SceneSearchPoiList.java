@@ -354,8 +354,14 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
             mViewBinding.chargeFilter.setSelected(mIsChargeSelf);
             if(mIsChargeSelf){
                 mAdapter.clearList();
+                if (null != mSearchLoadingDialog && mSearchLoadingDialog.isShowing()) {
+                    Logger.e(MapDefaultFinalTag.SEARCH_HMI_TAG, "mSearchLoadingDialog is showing");
+                } else {
+                    mSearchLoadingDialog = new SearchLoadingDialog(getContext());
+                    mSearchLoadingDialog.show();
+                }
                 // 请求SGM自营站数据
-                mScreenViewModel.queryStationNewResult();
+                mScreenViewModel.queryStationNewResult(mResultEntity);
             }else{
                 mAdapter.notifyList(mSearchResultEntity);
                 updatePoiMarkerVisibleState();
@@ -772,6 +778,12 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
             mViewBinding.searchTextBarView.ivSearch.setVisibility(GONE);
         } else {
             mViewBinding.searchTextBarView.csFilter.setVisibility(GONE);
+        }
+    }
+
+    public void notifySearchResultNetError(String code){
+        if (!ConvertUtils.isEmpty(mSearchLoadingDialog)) {
+            mSearchLoadingDialog.dismiss();
         }
     }
 

@@ -6,6 +6,7 @@ import android.util.Pair;
 
 import com.android.utils.ConvertUtils;
 import com.android.utils.TimeUtils;
+import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
 import com.autonavi.gbl.aosclient.BLAosService;
 import com.autonavi.gbl.aosclient.model.GNavigationEtaqueryReqStartPoints;
@@ -45,7 +46,9 @@ import com.fy.navi.service.adapter.search.cloudByPatac.req.StationReq;
 import com.fy.navi.service.define.search.ETAInfo;
 import com.fy.navi.service.define.search.SearchRequestParameter;
 import com.fy.navi.service.define.utils.BevPowerCarUtils;
+import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.patac.netlib.callback.NetDisposableObserver;
 import com.patac.netlib.exception.ApiException;
@@ -54,6 +57,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
@@ -535,83 +539,31 @@ public class SearchAdapterImpl extends SearchServiceV2Manager implements ISearch
      */
     @Override
     public int queryStationNewResult(final SearchRequestParameter searchRequestParameter) {
-        StationReq req = new StationReq("1.0");
-        final Observable<BaseRep> observable = SearchRepository.getInstance().queryStationNewResult(req);
+        StationReq req = new StationReq("1.0")
+            .setFrom(String.valueOf(searchRequestParameter.getPage()))
+            .setSize(String.valueOf(searchRequestParameter.getSize()))
+            .setAreaCode(String.valueOf(searchRequestParameter.getAdCode()))
+            .setKeyWords(searchRequestParameter.getKeyword())
+            .setLat(String.valueOf(searchRequestParameter.getPoiLoc().getLat()))
+            .setLng(String.valueOf(searchRequestParameter.getPoiLoc().getLon()))
+            .setTimestamp(System.currentTimeMillis());
+        final Observable<String> observable = SearchRepository.getInstance().queryStationNewResult(req);
         observable.subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(new NetDisposableObserver<BaseRep>() {
+            .subscribe(new NetDisposableObserver<String>() {
                 @Override
-                public void onSuccess(BaseRep data) {
-                    Logger.d("huangli","data: "+data);
+                public void onSuccess(String data) {
+                    Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG,"success");
+                    BaseRep rep = GsonUtils.fromJson(String.valueOf(data),BaseRep.class);
+                    Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG,"data: "+rep.getResultCode());
+                    notifyNetSearchSuccess(mTaskId.get(), AutoMapConstant.NetSearchKey.QUERY_STATION_LIST, rep);
                 }
 
                 @Override
                 public void onFailed(ApiException apiException) {
-                    Logger.d("huangli","Exce: "+apiException);
+                    Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG,"Exce: "+apiException);
                 }
             });
-        String json = "{\n" +
-                "\"total\": 514, \"from\": 1,\n" +
-                "\"size\": 2,\n" +
-                "\"resultList\": [\n" +
-                "{\n" +
-                "\"parkFee\": \"限时：1.5；超出标准：每半小时4月\", \"stationType\": 1,\n" +
-                "\"siteGuide\": \"\",\n" +
-                "\"serviceTel\": \"4008280768\",\n" +
-                "\"countryCode\": \"CN\", \"stationStatus\": 50,\n" +
-                "\"construction\": 255,\n" +
-                "\"stationName\": \"中建大厦星星充电站\", \"payment\": \"\",\n" +
-                "\"operatorId\": \"313744932\", \"stationId\": \"33221517\",\n" +
-                "\"address\": \"上海市浦东新区世纪大道1568号地下一层\", \"stationTel\": \"4008280768\",\n" +
-                "\"busineHours\": \"00:00-15:00\", \n" +
-                "\"stationLat\": 31.641289,\n" +
-                "\"stationLng\": 119.927441,\n" +
-                "\"parkInfo\": \"\",\n" +
-                "\"distance\": 0.057521118924291674,\n" +
-                "\"statStatus\": \"对外开放\", \n" +
-                "\"areaCode\": \"310100\", \n" +
-                "\"lowPrice\": \"1.0000\",\n" +
-                "\"statType\": \"自营\",\n" +
-                "\"fastChargingFree\": 0,\n" +
-                "\"slowChargingFree\": 2,  \"fastChargingTotal\": 0,  \"slowChargingTotal\": 2, \"stationFlag\": null,\n" +
-                "\"sort\": null,\n" +
-                "\"bespeakCharge\": null, \"bespeakPark\": null,\n" +
-                "\"parkFeeFree\": \"0\",\n" +
-                "\"articleTitle\": null,\n" +
-                "\"carOwnerFlag\": null,\n" +
-                "\"operationWay\": \"2\"\n" +
-                "}, \n" +
-                "{\n" +
-                "\"parkFee\": \"限时免停2小时\", \n" +
-                "\"stationType\": 1,\n" +
-                "\"siteGuide\": \"\",\n" +
-                "\"serviceTel\": \"4008280768\",\n" +
-                "\"countryCode\": \"CN\",\n" +
-                "\"stationStatus\": 50,\n" +
-                "\"construction\": 255,\n" +
-                "\"stationName\": \"青浦区 中鼎集团\", \n" +
-                "\"payment\": \"\",\n" +
-                "\"operatorId\": \"313744932\", \"stationId\": \"331784\",\n" +
-                "\"address\": \"青浦区香花桥街道漕盈路3777号地面停车场\",\n" +
-                "\"stationTel\": \"4008280768\",\n" +
-                "\"busineHours\": \"00:00-24:00\", \"stationLat\": 31.1969,\n" +
-                "\"stationLng\": 121.092644, \"parkInfo\": \"\",\n" +
-                "\"distance\": 121.1378608457462,\n" +
-                "\"statStatus\": \"对外开放\", \"areaCode\": \"310100\",   \"lowPrice\": \"1.0000\",\n" +
-                "\"statType\": \"自营\",\n" +
-                "\"fastChargingFree\": 5,\n" +
-                "\"slowChargingFree\": 4,  \"fastChargingTotal\": 6,  \"slowChargingTotal\": 5, \"stationFlag\": null,\n" +
-                "\"sort\": null,\n" +
-                "\"bespeakCharge\": null, \"bespeakPark\": null,\n" +
-                "\"parkFeeFree\": \"0\", \"articleTitle\": null,\n" +
-                "\"carOwnerFlag\": null, \"operationWay\": \"2\"\n" +
-                "} ]\n" +
-                "}";
-        BaseRep rep = new BaseRep();
-        rep.setResultCode("0000");
-        rep.setMessage("获取成功");
-        rep.setDataSet(json);
-        notifyNetSearchSuccess(mTaskId.get(), AutoMapConstant.NetSearchKey.QUERY_STATION_LIST, rep);
         return mTaskId.get();
     }
 
@@ -621,14 +573,21 @@ public class SearchAdapterImpl extends SearchServiceV2Manager implements ISearch
      */
     @Override
     public int queryCollectStation(SearchRequestParameter searchRequestParameter) {
-        StationReq req = new StationReq("1.0");
-        final Observable<BaseRep> observable = SearchRepository.getInstance().queryCollectStation(req);
+        StationReq req = new StationReq("1.0",searchRequestParameter.getIdpUserId())
+                .setPageSize(searchRequestParameter.getSize())
+                .setPageNum(searchRequestParameter.getPage())
+                .setVehicleBrand(searchRequestParameter.getVehicleBrand());
+        req.setAccessToken(searchRequestParameter.getAccessToken());
+        final Observable<String> observable = SearchRepository.getInstance().queryCollectStation(req);
         observable.subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(new NetDisposableObserver<BaseRep>() {
+            .subscribe(new NetDisposableObserver<String>() {
                 @Override
-                public void onSuccess(BaseRep data) {
-                    Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG,"data: "+data.getDataSet());
+                public void onSuccess(String data) {
+                    Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG,"success");
+                    BaseRep rep = GsonUtils.fromJson(String.valueOf(data),BaseRep.class);
+                    Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG,"data: "+rep.getResultCode());
+                    notifyNetSearchSuccess(mTaskId.get(),AutoMapConstant.NetSearchKey.QUERY_COLLECT_LIST,rep);
                 }
 
                 @Override
@@ -636,46 +595,26 @@ public class SearchAdapterImpl extends SearchServiceV2Manager implements ISearch
                     Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG,"Exce: "+apiException);
                 }
             });
-        String json = "{\n" +
-                "  \"totalPages\": 1,\n" +
-                "  \"totalCount\": 1,\n" +
-                "  \"pageSize\": 10,\n" +
-                "  \"pageNum\": 1,\n" +
-                "  \"items\": [\n" +
-                "    {\n" +
-                "      \"operatorId\": \"A\",\n" +
-                "      \"stationId\": \"D\",\n" +
-                "      \"stationSaved\": true,\n" +
-                "      \"stationLng\": 32.1622,\n" +
-                "      \"stationLat\": 119.5166,\n" +
-                "      \"stationName\": \" 特斯拉超级充电站\",\n" +
-                "      \"address\": \"世纪大道一号\",\n" +
-                "      \"stationFlag\": \"D\",\n" +
-                "      \"fastChargingFree\": \"\",\n" +
-                "      \"fastChargingTotal\": \"\",\n" +
-                "      \"slowChargingFree\": \"\",\n" +
-                "      \"slowChargingTotal\": \"\"\n" +
-                "    }\n" +
-                "  ]\n" +
-                "}";
-        BaseRep rep = new BaseRep();
-        rep.setResultCode("4001");
-        rep.setMessage("获取成功");
-        rep.setDataSet(json);
-        notifyNetSearchSuccess(mTaskId.get(),AutoMapConstant.NetSearchKey.QUERY_COLLECT_LIST,rep);
         return mTaskId.get();
     }
 
     @Override
     public int queryStationInfo(SearchRequestParameter searchRequestParameter) {
-        StationReq req = new StationReq("1.0");
-        final Observable<BaseRep> observable = SearchRepository.getInstance().queryStationInfo(req);
+        StationReq req = new StationReq("1.0")
+                .setLng(String.valueOf(searchRequestParameter.getPoiLoc().getLon()))
+                .setLat(String.valueOf(searchRequestParameter.getPoiLoc().getLat()))
+                .setStationId(searchRequestParameter.getStationId())
+                .setOperatorId(searchRequestParameter.getOperatorId());
+        final Observable<String> observable = SearchRepository.getInstance().queryStationInfo(req);
         observable.subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(new NetDisposableObserver<BaseRep>() {
+            .subscribe(new NetDisposableObserver<String>() {
                 @Override
-                public void onSuccess(BaseRep data) {
-                    Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG,"data: "+data.getDataSet());
+                public void onSuccess(String data) {
+                    Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG,"success");
+                    BaseRep rep = GsonUtils.fromJson(String.valueOf(data),BaseRep.class);
+                    Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG,"data: "+rep.getResultCode());
+                    notifyNetSearchSuccess(mTaskId.get(),AutoMapConstant.NetSearchKey.QUERY_STATION_INFO,rep);
                 }
 
                 @Override
@@ -683,95 +622,14 @@ public class SearchAdapterImpl extends SearchServiceV2Manager implements ISearch
                     Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG,"Exce: "+apiException);
                 }
             });
-        String json = "{\n" +
-        "\"address\": \"红梅街道永宁北路18号（地下停车场E区04-E17）\", \"distance\": null,\n" +
-        "\"parkFee\": \"为配合机场防疫政策，虹桥机场免费停车权益暂不开放，带来不便敬请谅解！充电满28元，出示充电订单，可免费停车3小时，如超过3 小时，收取5元\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\/\",\n" +
-        "\"statType\": \"自营\",\n" +
-        "\"fastChargingFree\": \"0\",\n" +
-        "\"stationTel\": \"4008280768\",\n" +
-        "\"stationType\": 1,\n" +
-        "\"busineHours\": \"00:00-24:00\", \"fastChargingTotal\": \"2\",\n" +
-        "\"stationLat\": \"31.792885\",\n" +
-        "\"stationLng\": \"119.973957\", \"statStatus\": \"对外开放\",\n" +
-        "\"serviceTel\": \"4008280768\",\n" +
-        "\"parkInfo\": \"地下停车场E区E04-E17\", \"stationStatus\": 50,\n" +
-        "\"slowChargingFree\": \"16\",\n" +
-        "\"stationName\": \"天宁区永宁欧尚超市（交流）\", \"slowChargingTotal\": \"24\",\n" +
-        "\"operatorId\": \"313744932\",\n" +
-        "\"stationId\": \"444\", \"stationFlag\": \"A\", \"sort\": 2,\n" +
-        "\"bespeakCharge\": \"1\", \"bespeakPark\": \"1\",\n" +
-        "\"costItem\": [\n" +
-        "{\n" +
-        "\"serviceFee\": \"0.3000\",\n" +
-        "\"time\": \"00:00~11:30\",     \"electricityFee\": \"1.0000\"\n" +
-        "}, {\n" +
-        "\"serviceFee\": \"0.0000\",\n" +
-        "\"time\": \"11:30~13:30\",     \"electricityFee\": \"1.0000\"\n" +
-        "}, {\n" +
-        "\"serviceFee\": \"0.0000\",\n" +
-        "\"time\": \"13:30~18:00\",     \"electricityFee\": \"1.0000\"\n" +
-        "}, {\n" +
-        "\"serviceFee\": \"0.0000\",\n" +
-        "\"time\": \"18:00~23:59\",     \"electricityFee\": \"1.0000\"\n" +
-        "} ],\n" +
-        "\"pictures\": [\n" +
-        "\"https://open-cdn.starcharge.com/e3995ce9-f9c2-4790-a6bd-35a4bee7b219.JPG\",  \"https://open-cdn.starcharge.com/b12798a5-eec5-4a15-b5b9-b5aee3c79b3d.JPG\", \"https://open-cdn.starcharge.com/547e4b5f-1179-40e7-a06d-6f28eb245034.PNG\"\n" +
-        "],\n" +
-        "\"equipmentInfoItem\": [ {\n" +
-        "\"equipmentName\": \"充电设备10000757\", \"power\": \"7.0\",\n" +
-        "\"equipmentId\": \"11000000000000010000757\",\n" +
-        "\"connectorInfoItem\": [ {\n" +
-        "\"voltageUpperLimits\": \"253\", \"ratedCurrent\": \"32\",\n" +
-        "\"connectorId\": \"11000000000000010000757000\", \"chargeType\": \"0\",\n" +
-        "\"connectorName\": \"充电桩10000757\", \"power\": \"7.0\",\n" +
-        "\"nationalStandard\": \"1\",\n" +
-        "\"voltageLowerLimits\": \"187\", \"status\": \"0\",\n" +
-        "\"parkNo\": \"\",\n" +
-        "\"parkingLockFlag\": 0, \"lockStatus\": 50,\n" +
-        "\"idpUserId\": null, \"preFlag\": null\n" +
-        "}\n" +
-        "] },    {\n" +
-        "\"equipmentName\": \"充电设备10401097\", \"power\": \"120.0\",\n" +
-        "\"equipmentId\": \"11000000000000010401097\", \"connectorInfoItem\": [\n" +
-        "{\n" +
-        "\"voltageUpperLimits\": \"600\", \"ratedCurrent\": \"0\",\n" +
-        "\"connectorId\": \"11000000000000010401097000\", \"chargeType\": \"1\",\n" +
-        "\"connectorName\": \"充电桩10401097\", \"power\": \"120.0\",\n" +
-        "\"nationalStandard\": \"2\",\n" +
-        "\"voltageLowerLimits\": \"380\", \"status\": \"2\",\n" +
-        "\"parkNo\": \"\",\n" +
-        "\"parkingLockFlag\": 0, \"lockStatus\": 50,\n" +
-        "\"idpUserId\": null, \"preFlag\": null\n" +
-        "} ]\n" +
-        "},\n" +
-        "{\n" +
-        "\"equipmentName\": \"充电设备10001302\", \"power\": \"7.0\",\n" +
-        "\"equipmentId\": \"11000000000000010001302\",\n" +
-        "\"connectorInfoItem\": [ {\n" +
-        "\"voltageUpperLimits\": \"253\", \"ratedCurrent\": \"32\",\n" +
-        "\"connectorId\": \"11000000000000010001302000\", \"chargeType\": \"0\",\n" +
-        "\"connectorName\": \"充电桩10001302\", \"power\": \"7.0\",\n" +
-        "\"nationalStandard\": \"1\",\n" +
-        "\"voltageLowerLimits\": \"187\", \"status\": \"1\",\n" +
-        "\"parkNo\": \"\",\n" +
-        "\"parkingLockFlag\": 0, \"lockStatus\": 0,\n" +
-        "\"idpUserId\": null, \"preFlag\": null\n" +
-        "} ]\n" +
-        "}\n" +
-        "]\n" +
-        "}";
-        BaseRep rep = new BaseRep();
-        rep.setResultCode("0000");
-        rep.setMessage("获取成功");
-        rep.setDataSet(json);
-        notifyNetSearchSuccess(mTaskId.get(),AutoMapConstant.NetSearchKey.QUERY_STATION_INFO,rep);
+
         return mTaskId.get();
     }
 
     @Override
     public int queryEquipmentInfo(SearchRequestParameter searchRequestParameter) {
         StationReq req = new StationReq("1.0");
-        final Observable<BaseRep> observable = SearchRepository.getInstance().queryStationInfo(req);
+        final Observable<BaseRep> observable = SearchRepository.getInstance().queryEquipmentInfo(req);
         observable.subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(new NetDisposableObserver<BaseRep>() {
@@ -825,10 +683,32 @@ public class SearchAdapterImpl extends SearchServiceV2Manager implements ISearch
     }
 
     public int updateCollectStatus(SearchRequestParameter searchRequestParameter){
-        BaseRep rep = new BaseRep();
-        rep.setResultCode("0000");
-        rep.setMessage("获取成功");
-        notifyNetSearchSuccess(mTaskId.get(),AutoMapConstant.NetSearchKey.UPDATE_COLLECT,rep);
+        Gson gson = new GsonBuilder().disableHtmlEscaping().create();
+        HashMap<String, Object> map = new HashMap();
+        map.put("savedStations",searchRequestParameter.getSavedStationsJson());
+        map.put("updateType","FULL");
+        map.put("channel",searchRequestParameter.getChannel());
+        map.put("vehicleBrand",searchRequestParameter.getVehicleBrand());
+        String json = gson.toJson(map);
+        StationReq req = new StationReq("1.0",searchRequestParameter.getIdpUserId());
+        req.setAccessToken(searchRequestParameter.getAccessToken());
+        final Observable<String> observable = SearchRepository.getInstance().updateCollectStation(req,json);
+        observable.subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new NetDisposableObserver<String>() {
+                    @Override
+                    public void onSuccess(String data) {
+                        Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG,"success");
+                        BaseRep rep = GsonUtils.fromJson(String.valueOf(data),BaseRep.class);
+                        Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG,"data: "+rep.getResultCode());
+                        notifyNetSearchSuccess(mTaskId.get(),AutoMapConstant.NetSearchKey.UPDATE_COLLECT,rep);
+                    }
+
+                    @Override
+                    public void onFailed(ApiException apiException) {
+                        Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG,"Exce: "+apiException);
+                    }
+                });
         return mTaskId.get();
     }
 }

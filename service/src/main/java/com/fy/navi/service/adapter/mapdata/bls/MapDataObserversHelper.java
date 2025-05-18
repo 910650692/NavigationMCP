@@ -162,33 +162,19 @@ public class MapDataObserversHelper implements IDataInitObserver, IDownloadObser
         cityDataInfo.setVecNearAdcodeList(null);
         cityDataInfo.setVecLowerAdcodeList(null);
 
-        int mTaskState = UserDataCode.TASK_STATUS_CODE_READY;
+        final Map<Integer, Integer> map = new HashMap<>();
         BigInteger sum = BigInteger.ZERO;
         if (cityBeanList != null && !cityBeanList.isEmpty()) {
-            final int count = cityBeanList.size();
-            int downloadedCount = 0;
             for (CityDataInfo info : cityBeanList) {
                 //获取附近城市数据包大小总和
                 sum =  sum.add(info.getDownLoadInfo().getFullZipSize());
-                //获取附近城市未下载数量
-                if (info.getDownLoadInfo().getTaskState() == UserDataCode.TASK_STATUS_CODE_READY ||
-                        info.getDownLoadInfo().getTaskState() == UserDataCode.TASK_STATUS_CODE_PAUSE ) {
-                    downloadedCount = downloadedCount + 1;
-                }
-            }
-            if (downloadedCount == count) {
-                // 全部未下载状态
-                mTaskState = UserDataCode.TASK_STATUS_CODE_READY;
-            } else {
-                // 部分未下载状态
-                mTaskState = UserDataCode.TASK_STATUS_CODE_DOING;
+                map.put(info.getAdcode(), info.getDownLoadInfo().getTaskState());
             }
         }
         final CityDownLoadInfo cityDownLoadBean = new CityDownLoadInfo();
         cityDownLoadBean.setAdcode(provAdcode);
-        cityDownLoadBean.setTaskState(mTaskState);
+        cityDownLoadBean.setAllCityTaskStateMap(map);
         cityDownLoadBean.setFullZipSize(sum);
-
         cityDataInfo.setDownLoadInfo(cityDownLoadBean);
 
         return cityDataInfo;
@@ -301,13 +287,13 @@ public class MapDataObserversHelper implements IDataInitObserver, IDownloadObser
                     provDataInfo.setPinYin(info.provPinyin);
                     final ArrayList<CityDataInfo> cityDataInfos = new ArrayList<>();
                     for (int j = 0; j < info.cityInfoList.size(); j++) {
-                        final Integer cityAdcode = info.cityInfoList.get(j).cityAdcode;
+                        final int cityAdcode = info.cityInfoList.get(j).cityAdcode;
                         final Area cityArea = mMapDataService.getArea(DownLoadMode.DOWNLOAD_MODE_NET, cityAdcode);
                         cityDataInfos.add(convertCityData(cityArea));
                     }
                     provDataInfo.setCityInfoList(cityDataInfos);
 
-//                    cityBeanList.add(0, convertAllCityData(cityBeanList, provDataInfo.getAdcode())); // 增加“全省地图”item
+                    cityDataInfos.add(0, convertAllCityData(cityDataInfos, provDataInfo.getAdcode())); // 增加“全省地图”item
                     provinceBeanList.add(provDataInfo);
                 }
             }

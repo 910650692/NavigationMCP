@@ -14,6 +14,7 @@ import com.fy.navi.service.adapter.search.cloudByPatac.rep.BaseRep;
 import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.map.MapTypeManager;
 import com.fy.navi.service.define.search.PoiInfoEntity;
+import com.fy.navi.service.define.search.SearchRequestParameter;
 import com.fy.navi.service.define.search.SearchResultEntity;
 import com.fy.navi.service.logicpaket.layer.ILayerPackageCallBack;
 import com.fy.navi.service.logicpaket.layer.LayerPackage;
@@ -182,5 +183,10 @@ public class SearchResultModel extends BaseModel<SearchResultViewModel> implemen
         if(AutoMapConstant.NetSearchKey.QUERY_STATION_LIST.equals(searchKey)){
             mViewModel.notifyNetSearchResult(taskId,result);
         }
+    }
+
+    public void addPoiMarker(SearchResultEntity searchResultEntity){
+        mSearchPackage.clearLabelMark();
+        mSearchPackage.createPoiMarker(searchResultEntity.getPoiList(),0);
     }
 }

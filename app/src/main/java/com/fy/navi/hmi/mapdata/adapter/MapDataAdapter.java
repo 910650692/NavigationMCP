@@ -8,7 +8,6 @@ import android.widget.ProgressBar;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.android.utils.ResourceUtils;
 import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
 import com.fy.navi.hmi.R;
@@ -25,6 +24,7 @@ import com.fy.navi.ui.view.SkinTextView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class MapDataAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private static final int TYPE_PARENT = 0;
@@ -32,8 +32,6 @@ public class MapDataAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     private Context mContext;
     private List<ProvDataInfo> parentItems = new ArrayList<>();
     private OnChildClickListener onChildClickListener;
-    private boolean isClickAllStart = true;
-    private boolean isClickAllPause = false;
 
     public MapDataAdapter(final Context context) {
         this.mContext = context;
@@ -50,7 +48,6 @@ public class MapDataAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     @Override
     public int getItemViewType(int position) {
-        int parentIndex = 0;
         int itemCount = 0;
 
         for (ProvDataInfo parent : parentItems) {
@@ -83,7 +80,6 @@ public class MapDataAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        int parentIndex = 0;
         int itemCount = 0;
 
         for (ProvDataInfo parent : parentItems) {
@@ -178,7 +174,7 @@ public class MapDataAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         private SkinTextView deleteCity;
         private ProgressBar downloadProgress;
 
-        ChildViewHolder(View itemView) {
+        ChildViewHolder(final View itemView) {
             super(itemView);
             cityName = itemView.findViewById(R.id.item_city_name);
             cityData = itemView.findViewById(R.id.item_city_data);
@@ -190,7 +186,7 @@ public class MapDataAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             downloadProgress = itemView.findViewById(R.id.download_progress);
         }
 
-        void bind(ProvDataInfo parent, CityDataInfo child) {
+        void bind(final ProvDataInfo parent, final CityDataInfo child) {
 
             final CityDownLoadInfo downloadItem = child.getDownLoadInfo();
             if (downloadItem == null) {
@@ -213,17 +209,25 @@ public class MapDataAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 mDownloadBtnView.setVisibility(View.GONE);
                 allDownload.setVisibility(View.VISIBLE);
                 allPause.setVisibility(View.VISIBLE);
-                List<CityDataInfo> cityDataInfos = parent.getCityInfoList();
-                final ArrayList<Integer> cityAdCodes = new ArrayList<>();
-                for (CityDataInfo info : cityDataInfos) {
-                    if (info.getDownLoadInfo().getTaskState() == UserDataCode.TASK_STATUS_CODE_SUCCESS) {
-                        cityAdCodes.add(info.getAdcode());
+                final Map<Integer, Integer> allCityTaskStateMap = downloadItem.getAllCityTaskStateMap();
+                boolean isAllDownloadEnable = false;
+                boolean isAllPauseEnable = false;
+                if (allCityTaskStateMap != null) {
+                    if (allCityTaskStateMap.containsValue(UserDataCode.TASK_STATUS_CODE_PAUSE)
+                        || allCityTaskStateMap.containsValue(UserDataCode.TASK_STATUS_CODE_ERR)
+                        || allCityTaskStateMap.containsValue(UserDataCode.TASK_STATUS_CODE_READY)) {
+                        isAllDownloadEnable = true;
+                    }
+
+                    if (allCityTaskStateMap.containsValue(UserDataCode.TASK_STATUS_CODE_DOING)
+                        || allCityTaskStateMap.containsValue(UserDataCode.TASK_STATUS_CODE_DONE)
+                        || allCityTaskStateMap.containsValue(UserDataCode.TASK_STATUS_CODE_WAITING)) {
+                        isAllPauseEnable = true;
                     }
                 }
-                if (cityDataInfos.size() == cityAdCodes.size()) { // 该省份下所有城市均已下载
-                    isClickAllStart = false;
-                }
-                setAllStartAndPauseStatus(allDownload, allPause, isClickAllStart, isClickAllPause);
+                allDownload.setEnabled(isAllDownloadEnable);
+                allPause.setEnabled(isAllPauseEnable);
+
             } else {
                 mDownloadBtnView.setVisibility(View.VISIBLE);
                 allDownload.setVisibility(View.GONE);
@@ -277,8 +281,7 @@ public class MapDataAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             // 全部开始下载
             allDownload.setOnClickListener(view -> {
                 Logger.d( "parent: " + GsonUtils.toJson(parent) + " child: " + GsonUtils.toJson(child));
-                setAllStartAndPauseStatus(allDownload, allPause,false, true);
-                List<CityDataInfo> cityDataInfos = parent.getCityInfoList();
+                final List<CityDataInfo> cityDataInfos = parent.getCityInfoList();
                 final ArrayList<Integer> cityAdCodes = new ArrayList<>();
                 for (CityDataInfo info : cityDataInfos) {
                     if (info.getDownLoadInfo().getTaskState() == UserDataCode.TASK_STATUS_CODE_PAUSE ||
@@ -295,8 +298,7 @@ public class MapDataAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             // 全部暂停下载
             allPause.setOnClickListener(view -> {
                 Logger.d( "parent: " + GsonUtils.toJson(parent) + " child: " + GsonUtils.toJson(child));
-                setAllStartAndPauseStatus(allDownload, allPause,false, true);
-                List<CityDataInfo> cityDataInfos = parent.getCityInfoList();
+                final List<CityDataInfo> cityDataInfos = parent.getCityInfoList();
                 final ArrayList<Integer> cityAdCodes = new ArrayList<>();
                 for (CityDataInfo info : cityDataInfos) {
                     if (info.getDownLoadInfo().getTaskState() == UserDataCode.TASK_STATUS_CODE_DOING ||
@@ -313,50 +315,29 @@ public class MapDataAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     }
 
     /**
-     * 设置全部开始/全部暂停按钮状态
-     * @param isStart 全部开始按钮是否可点击，默认可点击
-     * @param isPause 全部暂停按钮是否可点击，默认不可点击
-     */
-    private void setAllStartAndPauseStatus(SkinButton allDownload, SkinButton allPause, final boolean isStart, final boolean isPause) {
-        isClickAllStart = isStart;
-        isClickAllPause = isPause;
-        if (isClickAllStart) {
-            allDownload.setTextColor(ResourceUtils.Companion.getInstance().getColor(R.color.white));
-            allDownload.setBackgroundResource(R.drawable.shape_bg_download_data);
-            allDownload.setEnabled(true);
-            allDownload.setAlpha(1.0f);
-        } else {
-            allDownload.setTextColor(ResourceUtils.Companion.getInstance().getColor(R.color.color_70_000000));
-            allDownload.setBackgroundResource(R.drawable.shape_bg_map_item_data);
-            allDownload.setEnabled(false);
-            allDownload.setAlpha(0.7f);
-        }
-
-        if (isClickAllPause) {
-            allPause.setTextColor(ResourceUtils.Companion.getInstance().getColor(R.color.white));
-            allPause.setBackgroundResource(R.drawable.shape_bg_download_data);
-            allPause.setEnabled(true);
-            allPause.setAlpha(1.0f);
-        } else {
-            allPause.setTextColor(ResourceUtils.Companion.getInstance().getColor(R.color.color_70_000000));
-            allPause.setBackgroundResource(R.drawable.shape_bg_map_item_data);
-            allPause.setEnabled(false);
-            allPause.setAlpha(0.7f);
-        }
-    }
-
-    /**
      * 更新子项数据
      * @param parentId
      * @param childId
      * @param newValue
      */
-    public void updateChild(int parentId, int childId, CityDownLoadInfo newValue) {
-        int childPosition = getChildPosition(parentId, childId);
+    public void updateChild(final int parentId, final int childId, final CityDownLoadInfo newValue) {
+        final int childPosition = getChildPosition(parentId, childId);
+        //获取全省下载条目位置
+        final int allDownloadPosition = getChildPosition(parentId, parentId);
         for (ProvDataInfo parent : parentItems) {
             if (parent.getAdcode() == parentId) {
                 for (CityDataInfo child : parent.getCityInfoList()) {
-                    if (child.getAdcode() == childId) {
+                    //全省下载条目
+                    if (child.getAdcode() == parentId && allDownloadPosition != RecyclerView.NO_POSITION) {
+                        final CityDownLoadInfo downLoadInfo = child.getDownLoadInfo();
+                        final Map<Integer, Integer> allCityTaskStateMap = downLoadInfo.getAllCityTaskStateMap();
+                        if (allCityTaskStateMap != null) {
+                            allCityTaskStateMap.put(childId, newValue.getTaskState());
+                            notifyItemChanged(allDownloadPosition);
+                        }
+                    }
+
+                    if (child.getAdcode() == childId && childPosition != RecyclerView.NO_POSITION) {
                         child.setDownLoadInfo(newValue);
                         notifyItemChanged(childPosition);
                         return;
@@ -369,9 +350,9 @@ public class MapDataAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     /**
      * 获取父项在原始列表中的位置（不考虑子项）
      * @param adapterPosition
-     * @return
+     * @return parent position
      */
-    private int getParentPosition(int adapterPosition) {
+    private int getParentPosition(final int adapterPosition) {
         int parentPos = 0;
         int currentPos = 0;
 
@@ -393,17 +374,14 @@ public class MapDataAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         return -1;
     }
 
-
-
     /**
      * 新增方法：根据父项和子项ID获取子项的绝对位置
      * @param parentId
      * @param childId
-     * @return
+     * @return child position
      */
-    public int getChildPosition(int parentId, int childId) {
+    private int getChildPosition(final int parentId, final int childId) {
         int position = 0;
-
         for (ProvDataInfo parent : parentItems) {
             position++; // 父项位置
 
@@ -423,7 +401,7 @@ public class MapDataAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 position += parent.getCityInfoList().size();
             }
         }
-        return -1; // 未找到
+        return RecyclerView.NO_POSITION; // 未找到
     }
 
     public interface OnChildClickListener {

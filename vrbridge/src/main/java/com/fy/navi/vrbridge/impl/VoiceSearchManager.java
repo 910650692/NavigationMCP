@@ -151,14 +151,15 @@ public final class VoiceSearchManager {
         @Override
         public void onSearchResult(final int taskId, final int errorCode, final String message, final SearchResultEntity searchResultEntity) {
             if (mWaitPoiSearch) {
+                //详情搜结果返回，继续处理
                 mWaitPoiSearch = false;
-                if (null != searchResultEntity && AutoMapConstant.SearchType.POI_DETAIL_SEARCH == searchResultEntity.getMSearchType()
+                PoiInfoEntity poiDetailInfo = null;
+                if (null != searchResultEntity && AutoMapConstant.SearchType.POI_SEARCH == searchResultEntity.getMSearchType()
                         && null != searchResultEntity.getPoiList() && !searchResultEntity.getPoiList().isEmpty()) {
-                    //收到poi详情搜结果，发起路线规划、
-                    final PoiInfoEntity endPoi = searchResultEntity.getMPoiList().get(0);
-                    planRoute(endPoi, null);
+                    //收到poi详情搜结果，发起路线规划
+                    poiDetailInfo = searchResultEntity.getMPoiList().get(0);
                 }
-
+                dealPoiDetailResult(poiDetailInfo);
                 return;
             }
 
@@ -203,7 +204,7 @@ public final class VoiceSearchManager {
                     break;
                 case IVrBridgeConstant.VoiceSearchType.SET_HOME_COMPANY:
                     //设置公司或家地址:关键字搜索结果
-                    dealHomeCompanyResult(searchSuccess);
+                    dealHomeCompanyResult(searchSuccess, false);
                     break;
                 case IVrBridgeConstant.VoiceSearchType.ADD_FAVORITE:
                     //收藏指定poi
@@ -299,7 +300,7 @@ public final class VoiceSearchManager {
                     break;
                 case IVrBridgeConstant.VoiceSearchType.SET_HOME_COMPANY:
                     //设置家/公司为当前地址
-                    dealHomeCompanyResult(searchSuccess);
+                    dealHomeCompanyResult(searchSuccess, true);
                     break;
                 default:
                     Logger.w(IVrBridgeConstant.TAG, "unHandle silent search: " + mSearchType);
@@ -468,6 +469,34 @@ public final class VoiceSearchManager {
             responseSearchWithResult();
         }
     }
+
+    /**
+     * 搜结果唯一时触发poi详情搜后的处理.
+     *
+     * @param poiInfo PoiInfoEntity，poi详情信息.
+     */
+    private void dealPoiDetailResult(final PoiInfoEntity poiInfo) {
+        if (null == poiInfo) {
+            Logger.w(IVrBridgeConstant.TAG, "poiDetailSearch result is empty");
+            if (null != mPoiCallback) {
+                CallResponse poiDetailResponse = CallResponse.createFailResponse("详情搜无返回结果");
+                poiDetailResponse.setNeedPlayMessage(true);
+                mPoiCallback.onResponse(poiDetailResponse);
+            }
+            return;
+        }
+
+        switch (mSearchType) {
+            case IVrBridgeConstant.VoiceSearchType.SET_HOME_COMPANY:
+                updateHomeCompany(poiInfo);
+                sendClosePage();
+                break;
+            default:
+                planRoute(poiInfo, null);
+                break;
+        }
+    }
+
 
     /**
      * 创建未设置家地址的回复.
@@ -1199,8 +1228,10 @@ public final class VoiceSearchManager {
      * 根据搜索结果设置家/公司地址.
      *
      * @param searchSuccess 是否搜索成功.
+     * @param geoSearch 是否为逆地理搜索  true：逆地理当前位置,静默搜不展示界面
+     *                                 false：关键字搜索会展示搜索结果，结果只有一个会跳转到poi详情
      */
-    private void dealHomeCompanyResult(final boolean searchSuccess) {
+    private void dealHomeCompanyResult(final boolean searchSuccess, final boolean geoSearch) {
         if (!searchSuccess) {
             Logger.w(IVrBridgeConstant.TAG, "setHomeCompany, searchResult is empty");
             responseSearchEmpty();
@@ -1208,10 +1239,14 @@ public final class VoiceSearchManager {
         }
 
         final int size = mSearchResultList.size();
-        Logger.w(IVrBridgeConstant.TAG, "setHomeCompany searchResultSize: " + size);
+        Logger.w(IVrBridgeConstant.TAG, "setHomeCompany searchResultSize:" + size + ", geoSearch:" + geoSearch);
         if (size == 1) {
-            updateHomeCompany(mSearchResultList.get(0));
-            sendClosePage();
+            if (geoSearch) {
+                updateHomeCompany(mSearchResultList.get(0));
+            } else {
+                // 非逆地理搜结果只有一个，需要等待poi详情搜结果返回再处理
+                mWaitPoiSearch = true;
+            }
         } else {
             responseSearchWithResult();
         }
@@ -1723,6 +1758,10 @@ public final class VoiceSearchManager {
             strArrival = mNameMap.get(mAllPoiParamList.get(mAllPoiParamList.size() - 1));
             strStart = null;
             Logger.d(IVrBridgeConstant.TAG, "我的位置 -> null; ARRIVAL DESTINATION -> " + strArrival);
+        } else if (ConvertUtils.equals(strStart, "我的位置") && ConvertUtils.equals(strArrival, IVrBridgeConstant.PoiType.PASS_BY)) {
+            strArrival = mNameMap.get(mAllPoiParamList.get(0));
+            strStart = null;
+            Logger.d(IVrBridgeConstant.TAG, "我的位置 -> null; ARRIVAL PASSBY -> " + strArrival);
         }
 
         handlePOI(strPoi, strStart, strArrival);

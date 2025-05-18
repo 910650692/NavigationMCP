@@ -15,6 +15,7 @@ import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.mapdata.CityDataInfo;
 import com.fy.navi.service.define.route.RouteParam;
 import com.fy.navi.service.define.search.PoiInfoEntity;
+import com.fy.navi.service.define.search.SearchResultEntity;
 import com.fy.navi.service.logicpaket.calibration.CalibrationPackage;
 import com.fy.navi.service.logicpaket.mapdata.MapDataPackage;
 import com.fy.navi.service.logicpaket.route.RoutePackage;
@@ -278,9 +279,8 @@ public class SceneSearchPoiListImpl extends BaseSceneModel<SceneSearchPoiList> i
     }
 
     // 查询自营站列表
-    public int queryStationNewResult(){
-        mTaskId = mSearchPackage.queryStationNewResult();
-        Logger.d("huangli","mTaskId from: "+mTaskId);
+    public int queryStationNewResult(SearchResultEntity searchResultEntity){
+        mTaskId = mSearchPackage.queryStationNewResult(searchResultEntity);
         return mTaskId;
     }
 

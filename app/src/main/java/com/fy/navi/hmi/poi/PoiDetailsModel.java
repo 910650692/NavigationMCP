@@ -1,6 +1,8 @@
 package com.fy.navi.hmi.poi;
 
 
+import android.app.Activity;
+
 import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
@@ -9,10 +11,12 @@ import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.adapter.search.cloudByPatac.rep.BaseRep;
 import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.search.SearchResultEntity;
+import com.fy.navi.service.define.user.account.AccessTokenParam;
 import com.fy.navi.service.logicpaket.calibration.CalibrationPackage;
 import com.fy.navi.service.logicpaket.map.MapPackage;
 import com.fy.navi.service.logicpaket.search.SearchPackage;
 import com.fy.navi.service.logicpaket.search.SearchResultCallback;
+import com.fy.navi.service.logicpaket.user.account.AccountPackage;
 import com.fy.navi.ui.base.BaseModel;
 
 import java.util.UUID;
@@ -108,6 +112,34 @@ public class PoiDetailsModel extends BaseModel<PoiDetailsViewModel> implements S
                 break;
             case AutoMapConstant.NetSearchKey.UPDATE_COLLECT:
                 mViewModel.notifyCollectStatus(result);
+                break;
+            case AutoMapConstant.NetSearchKey.QUERY_COLLECT_LIST:
+                mViewModel.notifyCollectList(result);
+                break;
         }
+    }
+
+    public void searchCollectList(Activity activity){
+        AccessTokenParam param = new AccessTokenParam(
+                AutoMapConstant.AccountTokenParamType.ACCOUNT_TYPE_PATAC_HMI,
+                AutoMapConstant.AccountTokenParamType.AUTH_TOKEN_TYPE_READ_ONLY,
+                null,
+                activity,
+                null,
+                null,
+                null,
+                null);
+
+        ThreadManager.getInstance().runAsync(() -> {
+            String idpUserId = AccountPackage.getInstance().getUserId();
+            String accessToken = AccountPackage.getInstance().getAccessToken(param);
+            String vehicleBrand = "BUICK";
+            mSearchPackage.queryCollectStation(idpUserId,accessToken,vehicleBrand);
+        });
+    }
+
+    public boolean isSGMLogin(){
+        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"isSGMLogin: "+ AccountPackage.getInstance().isSGMLogin());
+        return AccountPackage.getInstance().isSGMLogin();
     }
 }

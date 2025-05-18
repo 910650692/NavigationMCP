@@ -1,7 +1,6 @@
 package com.fy.navi.service.adapter.navi.bls;
 
 import com.android.utils.ConvertUtils;
-import com.android.utils.ToastUtils;
 import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
@@ -25,6 +24,7 @@ import com.autonavi.gbl.guide.model.NaviFacility;
 import com.autonavi.gbl.guide.model.NaviGreenWaveCarSpeed;
 import com.autonavi.gbl.guide.model.NaviInfo;
 import com.autonavi.gbl.guide.model.NaviIntervalCameraDynamicInfo;
+import com.autonavi.gbl.guide.model.NaviRoadFacility;
 import com.autonavi.gbl.guide.model.NaviWeatherInfo;
 import com.autonavi.gbl.guide.model.PathTrafficEventInfo;
 import com.autonavi.gbl.guide.model.SAPAInquireResponseData;
@@ -47,6 +47,7 @@ import com.fy.navi.service.define.navi.LaneInfoEntity;
 import com.fy.navi.service.define.navi.NaviDriveReportEntity;
 import com.fy.navi.service.define.navi.NaviEtaInfo;
 import com.fy.navi.service.define.navi.NaviMixForkInfo;
+import com.fy.navi.service.define.navi.NaviRoadFacilityEntity;
 import com.fy.navi.service.define.navi.SoundInfoEntity;
 import com.fy.navi.service.define.navi.SuggestChangePathReasonEntity;
 import com.fy.navi.service.define.route.FyRouteOption;
@@ -68,6 +69,7 @@ public class GuidanceCallback implements INaviObserver, ISoundPlayObserver {
     private Hashtable<String, GuidanceObserver> mGuidanceObservers;
     private NaviApiImplHelper mHelper;
     private ScheduledFuture mScheduledFuture;
+
     public GuidanceCallback(final Hashtable<String, GuidanceObserver> guidanceObservers, final NaviApiImplHelper helper) {
         this.mGuidanceObservers = guidanceObservers;
         this.mHelper = helper;
@@ -85,6 +87,7 @@ public class GuidanceCallback implements INaviObserver, ISoundPlayObserver {
             }
         }, 0, 10);
     }
+
     /***
      * 取消页面倒计时
      */
@@ -162,7 +165,7 @@ public class GuidanceCallback implements INaviObserver, ISoundPlayObserver {
     @Override
     public void onShowCrossImage(final CrossImageInfo info) {
         final CrossImageEntity naviImageInfo = NaviDataFormatHelper.forMatImageInfo(info);
-        Logger.i(TAG, "onShowCrossImage naviImageInfo:" +  (naviImageInfo == null ? "null" : naviImageInfo.getDistance()));
+        Logger.i(TAG, "onShowCrossImage naviImageInfo:" + (naviImageInfo == null ? "null" : naviImageInfo.getDistance()));
         if (!ConvertUtils.isEmpty(mGuidanceObservers)) {
             for (GuidanceObserver guidanceObserver : mGuidanceObservers.values()) {
                 if (guidanceObserver != null) {
@@ -420,7 +423,7 @@ public class GuidanceCallback implements INaviObserver, ISoundPlayObserver {
 
     @Override
     public void onPlayTTS(final SoundInfo info) {
-        Logger.d(TAG, "onPlayTTS : " + (info==null ? "null" : info.text));
+        Logger.d(TAG, "onPlayTTS : " + (info == null ? "null" : info.text));
         if (!ConvertUtils.isEmpty(mGuidanceObservers)) {
             for (GuidanceObserver guidanceObserver : mGuidanceObservers.values()) {
                 if (guidanceObserver != null) {
@@ -626,6 +629,22 @@ public class GuidanceCallback implements INaviObserver, ISoundPlayObserver {
                     // 暂留，交通事件回调
 //                    guidanceObserver.onUpdateTREvent(pathsTrafficEventInfo, pathCount);
                 }
+            }
+        }
+    }
+
+    @Override
+    public void onShowNaviFacility(ArrayList<NaviRoadFacility> list) {
+        Logger.i(TAG, "onShowNaviFacility: " + "引导道路设施回调");
+        ArrayList<NaviRoadFacilityEntity> naviRoadFacilityEntities = NaviDataFormatHelper.
+                formatRoadFacilityList(list);
+        if (ConvertUtils.isEmpty(naviRoadFacilityEntities)) {
+            Logger.i(TAG, "onShowNaviFacility: " + "道路设施列表为空");
+            return;
+        }
+        for (GuidanceObserver guidanceObserver : mGuidanceObservers.values()) {
+            if (guidanceObserver != null) {
+                guidanceObserver.onShowNaviFacility(naviRoadFacilityEntities);
             }
         }
     }

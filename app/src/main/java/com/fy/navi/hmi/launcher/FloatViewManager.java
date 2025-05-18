@@ -4,6 +4,8 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.graphics.Bitmap;
+import android.graphics.Matrix;
 import android.os.IBinder;
 import android.os.RemoteException;
 import android.util.Log;
@@ -17,9 +19,12 @@ import com.patac.launcher.ILauncherCallback;
 import com.patac.launcher.ILauncherModeManager;
 import com.patac.launcher.PatacLauncherModeConfig;
 
+import java.nio.ByteBuffer;
+
 public class FloatViewManager {
     private static final String TAG = "FloatViewManager";
     private boolean isServiceConnect = false;
+    private int startX, startY;
     private ILauncherModeManager mLauncherModeManager;
     /* 回调监听左上角 导航小卡窗口是否显示*/
     private static ILauncherCallback mLauncherCallback = new ILauncherCallback.Stub() {
@@ -95,7 +100,7 @@ public class FloatViewManager {
         this.mWindowService = null;
     }
 
-    private static void showOrHideFloatView(boolean isShow) {
+    public static void showOrHideFloatView(boolean isShow) {
         if (!ConvertUtils.isNull(mWindowService)) {
             mWindowService.showOrHideFloatView(isShow);
         }
@@ -110,5 +115,34 @@ public class FloatViewManager {
         intent.setPackage("com.patac.launcher");
         isServiceConnect = AppContext.getInstance().getMContext().bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
         Logger.i(TAG, "bindLauncherService", "bindResult:" + isServiceConnect);
+    }
+
+    public Bitmap processPicture(byte[] bytes) {
+        Bitmap orginBitmap = null;
+        Bitmap flippedBitmap = null;
+        Bitmap cropBitmap;
+        try {
+            // 注意：这个宽高要和API里面设置的裁剪区域大小一致
+            int width = 3950;
+            int height = 1320;
+            orginBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+            orginBitmap.copyPixelsFromBuffer(ByteBuffer.wrap(bytes));
+            // 翻转图像
+            Matrix matrix = new Matrix();
+            matrix.postScale(1, -1);
+            matrix.postTranslate(orginBitmap.getWidth(), orginBitmap.getHeight());
+            flippedBitmap = Bitmap.createBitmap(orginBitmap, 0, 0, orginBitmap.getWidth(), orginBitmap.getHeight(), matrix, true);
+            cropBitmap = Bitmap.createBitmap(flippedBitmap, 320, 320, 800, 450);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        } finally {
+            if (!ConvertUtils.isNull(orginBitmap)) {
+                orginBitmap.recycle();
+            }
+            if (!ConvertUtils.isNull(flippedBitmap)) {
+                flippedBitmap.recycle();
+            }
+        }
+        return cropBitmap;
     }
 }

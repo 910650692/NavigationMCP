@@ -65,7 +65,7 @@
             app:layout_constraintBaseline_toBaselineOf="@+id/charge_price_time"
             app:layout_constraintStart_toEndOf="@+id/charge_price_time"
             app:layout_constraintTop_toTopOf="parent"
-            android:text="¥100/度" />
+            android:text="@{@string/charge_price_all(costTime.getPrice())}" />
 
         <com.fy.navi.ui.view.SkinTextView
             android:id="@+id/charge_price_electric"
@@ -74,7 +74,7 @@
             android:layout_marginTop="@dimen/dp_10"
             android:layout_marginBottom="@dimen/dp_22"
             android:gravity="center"
-            android:text="@{costTime.getTime()}"
+            android:text="@{@string/charge_price_ele(costTime.getmElectricityFee())}"
             android:textColor="@color/text_route_defult"
             android:textSize="@dimen/sp_30"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -99,7 +99,7 @@
             android:layout_marginStart="@dimen/dp_14"
             android:layout_marginTop="@dimen/dp_18"
             android:gravity="center"
-            android:text="@{@string/charge_price_ser(costTime.getmElectricityFee())}"
+            android:text="@{@string/charge_price_ser(costTime.getmServiceFee())}"
             android:textColor="@color/text_route_defult"
             android:textSize="@dimen/sp_30"
             app:layout_constraintBaseline_toBaselineOf="@+id/charge_price_electric"

@@ -17,7 +17,10 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".startup.StartupActivity">
-
+        <com.fy.navi.service.define.map.HUDMapView
+            android:id="@+id/hud_mapview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
         <!--MFC___FocusParkingView-->
         <com.android.car.ui.FocusParkingView
             android:layout_width="wrap_content"
@@ -32,7 +35,6 @@
             android:layout_height="wrap_content"
             app:nudgeLeft="@+id/focuse_main_tab"
             app:nudgeRight="@+id/focuse_main_tab">
-
             <com.fy.navi.service.define.map.MainScreenMapView
                 android:id="@+id/main_mapview"
                 android:layout_width="match_parent"

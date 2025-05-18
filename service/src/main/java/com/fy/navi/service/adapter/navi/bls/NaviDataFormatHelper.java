@@ -27,6 +27,7 @@ import com.autonavi.gbl.guide.model.NaviGreenWaveCarSpeed;
 import com.autonavi.gbl.guide.model.NaviInfo;
 import com.autonavi.gbl.guide.model.NaviInfoPanel;
 import com.autonavi.gbl.guide.model.NaviIntervalCameraDynamicInfo;
+import com.autonavi.gbl.guide.model.NaviRoadFacility;
 import com.autonavi.gbl.guide.model.NaviStatisticsInfo;
 import com.autonavi.gbl.guide.model.NaviSubCameraExt;
 import com.autonavi.gbl.guide.model.SAPAInquireResponseData;
@@ -45,6 +46,7 @@ import com.fy.navi.service.define.navi.CrossImageEntity;
 import com.fy.navi.service.define.navi.NaviInfoEntity;
 import com.fy.navi.service.define.navi.NaviMixForkInfo;
 import com.fy.navi.service.define.navi.NaviParkingEntity;
+import com.fy.navi.service.define.navi.NaviRoadFacilityEntity;
 import com.fy.navi.service.define.navi.NaviViaEntity;
 import com.fy.navi.service.define.navi.NaviManeuverInfo;
 import com.fy.navi.service.define.navi.SpeedOverallEntity;
@@ -901,5 +903,33 @@ public final class NaviDataFormatHelper {
                 naviStatisticsInfo.arrSpeedClass);
         naviDriveReportEntity.setNaviStatisticsInfoEntity(naviStatisticsInfoEntity);
         return naviDriveReportEntity;
+    }
+
+    /**
+     * 引导中的道路设施数据转化
+     * @param list list
+     * @return 转化后的数据
+     */
+    public static ArrayList<NaviRoadFacilityEntity> formatRoadFacilityList(
+            ArrayList<NaviRoadFacility> list) {
+        ArrayList<NaviRoadFacilityEntity> listEntity = new ArrayList<>();
+        if (!ConvertUtils.isEmpty(list)) {
+            for (NaviRoadFacility facility : list) {
+                if (facility == null) {
+                    continue;
+                }
+                NaviRoadFacilityEntity entity = new NaviRoadFacilityEntity();
+                entity.setDistance(facility.distance);
+                entity.setType(facility.type);
+                if (facility.coord2D != null) {
+                    GeoPoint point = new GeoPoint();
+                    point.setLat(facility.coord2D.lat);
+                    point.setLon(facility.coord2D.lon);
+                    entity.setGeoPoint(point);
+                }
+                listEntity.add(entity);
+            }
+        }
+        return listEntity;
     }
 }

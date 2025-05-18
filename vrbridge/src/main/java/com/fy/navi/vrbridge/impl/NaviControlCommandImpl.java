@@ -1908,7 +1908,9 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
      * 当HMI处于后台，切换到前台
      */
     private void openMapWhenBackground() {
-        if (!NaviPackage.getInstance().getIsAppInForeground()) {
+        final boolean foreground = NaviPackage.getInstance().getIsAppInForeground();
+        Logger.w(IVrBridgeConstant.TAG, "openMap foreground: " + foreground);
+        if (!foreground) {
             openMap();
         }
     }

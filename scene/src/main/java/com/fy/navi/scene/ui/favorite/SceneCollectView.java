@@ -1,6 +1,7 @@
 package com.fy.navi.scene.ui.favorite;
 
 
+import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -58,7 +59,7 @@ public class SceneCollectView extends BaseSceneView<SceneCollectViewBinding, Sce
     private int mCollectionType;
     private int mHomeCompanyType = -1;
     private boolean mIsChargingCollect = false;
-    private boolean mIsAsyncData = false;
+    private boolean mIsAsyncData = true;
     private final static String PATAC_ACTION_LOGIN = "patac.hmi.user.intent.action.LOGIN";
 
     public SceneCollectView(@NonNull final Context context) {
@@ -216,7 +217,7 @@ public class SceneCollectView extends BaseSceneView<SceneCollectViewBinding, Sce
             }
             if(mIsAsyncData){
                 // 获取收藏数据
-                mScreenViewModel.queryCollectStation();
+                mScreenViewModel.queryCollectStation((Activity) getContext());
             }else{
                 mViewBinding.sllNoCharge.setVisibility(VISIBLE);
             }

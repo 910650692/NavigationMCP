@@ -21,14 +21,14 @@ public class SearchRepository implements SearchApi{
         return mInstance;
     }
     @Override
-    public Observable<BaseRep> queryStationNewResult(StationReq req) {
-        Observable<BaseRep> observable = NetMethodManager.getInstance().doPost(SearchApiService.CLOUD_QUERY_STATION_NEW,req, BaseRep.class);
+    public Observable<String> queryStationNewResult(StationReq req) {
+        Observable<String> observable = NetMethodManager.getInstance().doPostReturnAllJson(SearchApiService.CLOUD_QUERY_STATION_NEW,req);
         return observable;
     }
 
     @Override
-    public Observable<BaseRep> queryCollectStation(StationReq req) {
-        Observable<BaseRep> observable = NetMethodManager.getInstance().doPost(SearchApiService.CLOUD_QUERY_COLLECT_STATION,req, BaseRep.class);
+    public Observable<String> queryCollectStation(StationReq req) {
+        Observable<String> observable = NetMethodManager.getInstance().doPostReturnAllJson(SearchApiService.CLOUD_QUERY_COLLECT_STATION,req);
         return observable;
     }
 
@@ -51,8 +51,8 @@ public class SearchRepository implements SearchApi{
     }
 
     @Override
-    public Observable<BaseRep> updateCollectStation(StationReq req) {
-        Observable<BaseRep> observable = NetMethodManager.getInstance().doPost(SearchApiService.UPDATE_COLLECT_STATION,req, BaseRep.class);
+    public Observable<String> updateCollectStation(StationReq req,String json) {
+        Observable<String> observable = NetMethodManager.getInstance().doPostReturnAllJson(SearchApiService.UPDATE_COLLECT_STATION,req,json);
         return observable;
     }
 
@@ -69,8 +69,8 @@ public class SearchRepository implements SearchApi{
     }
 
     @Override
-    public Observable<BaseRep> queryStationInfo(StationReq req) {
-        Observable<BaseRep> observable = NetMethodManager.getInstance().doPost(SearchApiService.QUERY_STATION_INFO,req, BaseRep.class);
+    public Observable<String> queryStationInfo(StationReq req) {
+        Observable<String> observable = NetMethodManager.getInstance().doPostReturnAllJson(SearchApiService.QUERY_STATION_INFO,req);
         return observable;
     }
 }

@@ -36,6 +36,7 @@ import com.fy.navi.service.define.navi.LaneInfoEntity;
 import com.fy.navi.service.define.route.RouteLightBarItem;
 import com.fy.navi.service.define.search.PoiInfoEntity;
 import com.fy.navi.service.define.user.account.AccessTokenParam;
+import com.fy.navi.hmi.hud.HudMapManager;
 import com.fy.navi.service.logicpaket.user.account.AccountPackage;
 import com.fy.navi.ui.base.BaseActivity;
 import com.fy.navi.ui.base.FragmentIntent;
@@ -114,8 +115,9 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
     }
 
     @Override
-    public void onInitView() {
+    public void onInitView() {//,mBinding.hudMapview
         mViewModel.loadMapView(mBinding.mainMapview);
+        HudMapManager.getInstance().init(mBinding.hudMapview);
         // 给限行设置点击事件
         mBinding.includeLimit.setViewModel(mViewModel);
         mBinding.cruiseLayout.setViewModel(mViewModel);
@@ -228,6 +230,7 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
     protected void onResume() {
         super.onResume();
         mViewModel.getCurrentCityLimit();
+        FloatViewManager.showOrHideFloatView(false);
     }
 
     @Override
@@ -235,6 +238,7 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
     protected void onStop() {
         Logger.i(TAG, "onStop");
         super.onStop();
+        FloatViewManager.showOrHideFloatView(true);
     }
 
     @Override
@@ -243,6 +247,7 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
         // 退出的时候主动保存一下最后的定位信息
         mViewModel.saveLastLocationInfo();
         Logger.i(TAG, "onDestroy");
+        HudMapManager.getInstance().destroyMap();
         super.onDestroy();
     }
 

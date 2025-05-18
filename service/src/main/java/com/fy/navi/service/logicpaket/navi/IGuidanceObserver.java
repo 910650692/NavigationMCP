@@ -8,6 +8,7 @@ import com.fy.navi.service.define.navi.LaneInfoEntity;
 import com.fy.navi.service.define.navi.NaviDriveReportEntity;
 import com.fy.navi.service.define.navi.NaviEtaInfo;
 import com.fy.navi.service.define.navi.NaviManeuverInfo;
+import com.fy.navi.service.define.navi.NaviRoadFacilityEntity;
 import com.fy.navi.service.define.navi.NaviTmcInfo;
 import com.fy.navi.service.define.navi.SapaInfoEntity;
 import com.fy.navi.service.define.navi.SpeedOverallEntity;
@@ -15,6 +16,7 @@ import com.fy.navi.service.define.navi.SuggestChangePathReasonEntity;
 import com.fy.navi.service.define.route.FyRouteOption;
 import com.fy.navi.service.define.route.RouteWeatherInfo;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -186,8 +188,22 @@ public interface IGuidanceObserver {
     default void onShowNaviWeather(final RouteWeatherInfo info) {
     }
 
+    /**
+     * 更优路线回调
+     * @param newPathID 新道路id
+     * @param oldPathID 旧道路id
+     * @param reason 原因
+     */
     default void onSuggestChangePath(long newPathID, long oldPathID,
                                      SuggestChangePathReasonEntity reason) {
+
+    }
+
+    /**
+     * 导航设施信息回调
+     * @param naviRoadFacilityEntity 导航设施信息
+     */
+    default void onShowNaviFacility(ArrayList<NaviRoadFacilityEntity> naviRoadFacilityEntity) {
 
     }
 }

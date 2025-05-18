@@ -115,6 +115,7 @@
 
     <!--引导-->
     <color name="navi_color_F8F8FA_100">#FF1E2027</color>
+    <color name="navi_color_000000_40">#33FFFFFF</color>
     <color name="navi_color_000000_50">#80FFFFFF</color>
     <color name="navi_color_2461EA_10">#1AA3C1F6</color>
     <color name="navi_color_B2AFC2_15">#1E1F26</color>

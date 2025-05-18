@@ -1,6 +1,7 @@
 
 package com.fy.navi.scene.ui.poi;
 
+import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
@@ -144,7 +145,11 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
                 handleAroundSearchClick());
         mViewBinding.scenePoiDetailsBottomView.stlPoiFavorites.setOnClickListener(v ->{
                 if(!ConvertUtils.isEmpty(mPoiInfoEntity.getOperatorId())){
-                    handleNetFavoriteClick();
+                    if(!mScreenViewModel.isSGMLogin()){
+                        mScreenViewModel.startSGMLogin();
+                    }else{
+                        handleNetFavoriteClick();
+                    }
                 }else{
                     handleFavoriteClick();
                 }
@@ -312,7 +317,7 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
 
     private void handleNetFavoriteClick(){
         Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "点击自营站收藏");
-        mScreenViewModel.updateCollectStatus(mPoiInfoEntity);
+        mScreenViewModel.updateCollectStatus((Activity) getContext(),mPoiInfoEntity);
     }
 
     /**
@@ -423,6 +428,7 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
     }
 
     public void onCollectUpdate(String code){
+        Logger.d("huangli","code: "+code);
         if("0000".equals(code)){
             mIsCollectStatus = !mIsCollectStatus;
             final int favoriteIcon = !mIsCollectStatus ? R.drawable.icon_basic_ic_star_default :
@@ -612,7 +618,9 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
             }
             final String itemId = mScreenViewModel.isFavorite(mPoiInfoEntity);
             mPoiInfoEntity.setFavoriteInfo(favoriteInfo);
-            if (!itemId.isEmpty()) {
+            if (!itemId.isEmpty() || mPoiInfoEntity.getIsCollect()) {
+                Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"IsCollect");
+                mIsCollectStatus = true;
                 mPoiInfoEntity.getFavoriteInfo().setItemId(itemId);
                 mViewBinding.scenePoiDetailsBottomView.sivPoiFavorites.setImageDrawable(
                         ContextCompat.getDrawable(getContext(), R.drawable.icon_basic_ic_star_fav));
@@ -622,6 +630,8 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
                     mViewBinding.scenePoiDetailsBottomView.stvStartRoute.setText(R.string.sha_has_favorite);
                 }
             } else {
+                Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"IsNoCollect");
+                mIsCollectStatus = false;
                 mViewBinding.scenePoiDetailsBottomView.sivPoiFavorites.setImageDrawable(
                         ContextCompat.getDrawable(getContext(),
                                 R.drawable.icon_basic_ic_star_default));
@@ -778,8 +788,13 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
             toReservationDetailView();
         });
         final String imageUrl = mPoiInfoEntity.getImageUrl();
-        ViewAdapterKt.loadImageUrl(mViewBinding.scenePoiDetailsChargingStationView.poiChargeImg,
-                imageUrl, R.drawable.test_pic, R.drawable.test_pic);
+        if(ConvertUtils.isNull(imageUrl)){
+            mViewBinding.scenePoiDetailsChargingStationView.poiChargeImgLayout.setVisibility(GONE);
+        }else{
+            mViewBinding.scenePoiDetailsChargingStationView.poiChargeImgLayout.setVisibility(VISIBLE);
+            ViewAdapterKt.loadImageUrl(mViewBinding.scenePoiDetailsChargingStationView.poiChargeImg,
+                    imageUrl, R.drawable.test_pic, R.drawable.test_pic);
+        }
         mViewBinding.scenePoiDetailsGasStationView.poiGasRoot.setVisibility(GONE);
         mViewBinding.scenePoiDetailsChargingStationView.poiChargeRoot.setVisibility(VISIBLE);
         mViewBinding.scenePoiDetailsWashCarView.poiWashCarRoot.setVisibility(GONE);

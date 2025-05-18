@@ -73,6 +73,7 @@ public class MapPackage implements IMapAdapterCallback, INaviStatusCallback, ILa
     private PositionAdapter mPositionAdapter;
     private NavistatusAdapter mNavistatusAdapter;
     private final Hashtable<MapType, List<IMapPackageCallback>> callbackTables = new Hashtable<>();
+    private final CopyOnWriteArrayList<IEglScreenshotCallBack> onEGLScreenshotCallBacks = new CopyOnWriteArrayList<>();
 
     public boolean init(MapType mapTypeId) {
         mPositionAdapter = PositionAdapter.getInstance();
@@ -103,6 +104,18 @@ public class MapPackage implements IMapAdapterCallback, INaviStatusCallback, ILa
         if (callbackTables.get(mapTypeId) != null) {
             callbackTables.get(mapTypeId).remove(observer);
         }
+    }
+
+    public void registerEGLScreenshotCallBack(String tag, IEglScreenshotCallBack callback) {
+        if (!ConvertUtils.isNull(callback) && !onEGLScreenshotCallBacks.contains(callback)) {
+            onEGLScreenshotCallBacks.add(callback);
+            Logger.i(TAG, "registerEGLScreenshotCallBack-success:" + tag);
+        }
+    }
+
+    public void unregisterEGLScreenshotCallBack(String tag , IEglScreenshotCallBack callback) {
+        onEGLScreenshotCallBacks.remove(callback);
+        Logger.i(TAG, "unregisterEGLScreenshotCallBack-success:" + tag);
     }
 
     public void unInitMapService() {
@@ -380,13 +393,10 @@ public class MapPackage implements IMapAdapterCallback, INaviStatusCallback, ILa
 
     @Override
     public void onEGLScreenshot(MapType mapTypeId, byte[] bytes) {
-        if (callbackTables.containsKey(mapTypeId) && callbackTables.get(mapTypeId) != null) {
-            List<IMapPackageCallback> callbacks = callbackTables.get(mapTypeId);
-            if (ConvertUtils.isEmpty(callbacks)) return;
-            for (IMapPackageCallback callback : callbacks) {
-                callback.onEGLScreenshot(mapTypeId, bytes);
-            }
-        }
+        onEGLScreenshotCallBacks.forEach(iEglScreenshotCallBack -> {
+            Logger.i(TAG, "----onEGLScreenshot--------");
+            iEglScreenshotCallBack.onEGLScreenshot(mapTypeId, bytes);
+        });
     }
 
     public void updateUiStyle(MapType mapTypeId, ThemeType type) {

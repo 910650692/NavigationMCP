@@ -2,6 +2,7 @@ package com.fy.navi.service.define.search;
 
 import com.autonavi.gbl.search.model.SearchRoadId;
 import com.fy.navi.service.AutoMapConstant;
+import com.fy.navi.service.adapter.search.cloudByPatac.bean.SavedStations;
 import com.fy.navi.service.define.bean.GeoPoint;
 
 import java.util.ArrayList;
@@ -89,6 +90,13 @@ public final class SearchRequestParameter {
     private SearchRetainParamInfo mRetainParam;
     //搜索半径
     private String mRange;
+    private String mIdpUserId;
+    private String mAccessToken;
+    private String mVehicleBrand;
+    private String mOperatorId;
+    private String mStationId;
+    private String mChannel;
+    private ArrayList<SavedStations> mSavedStationsJson;
 
     public boolean isSilentSearch() {
         return mIsSilentSearch;
@@ -256,6 +264,76 @@ public final class SearchRequestParameter {
         this.mPoiIdList = builder.mPoiIdList;
         this.mRetainParam = builder.mRetainParam;
         this.mRange = builder.mRange;
+        this.mIdpUserId = builder.mIdpUserId;
+        this.mAccessToken = builder.mAccessToken;
+        this.mVehicleBrand = builder.mVehicleBrand;
+        this.mOperatorId = builder.mOperatorId;
+        this.mStationId = builder.mStationId;
+        this.mChannel = builder.mChannel;
+        this.mSavedStationsJson = builder.mSavedStationsJson;
+    }
+
+    public String getIdpUserId() {
+        return mIdpUserId;
+    }
+
+    public SearchRequestParameter setIdpUserId(String mIdpUserId) {
+        this.mIdpUserId = mIdpUserId;
+        return this;
+    }
+
+    public String getAccessToken() {
+        return mAccessToken;
+    }
+
+    public SearchRequestParameter setAccessToken(String mAccessToken) {
+        this.mAccessToken = mAccessToken;
+        return this;
+    }
+
+    public String getVehicleBrand() {
+        return mVehicleBrand;
+    }
+
+    public String getOperatorId() {
+        return mOperatorId;
+    }
+
+    public SearchRequestParameter setOperatorId(String mOperatorId) {
+        this.mOperatorId = mOperatorId;
+        return this;
+    }
+
+    public String getStationId() {
+        return mStationId;
+    }
+
+    public SearchRequestParameter setStationId(String mStationId) {
+        this.mStationId = mStationId;
+        return this;
+    }
+
+    public SearchRequestParameter setVehicleBrand(String mVehicleBrand) {
+        this.mVehicleBrand = mVehicleBrand;
+        return this;
+    }
+
+    public String getChannel() {
+        return mChannel;
+    }
+
+    public SearchRequestParameter setChannel(String mChannel) {
+        this.mChannel = mChannel;
+        return this;
+    }
+
+    public ArrayList<SavedStations> getSavedStationsJson() {
+        return mSavedStationsJson;
+    }
+
+    public SearchRequestParameter setSavedStationsJson(ArrayList<SavedStations> mSavedStationsJson) {
+        this.mSavedStationsJson = mSavedStationsJson;
+        return this;
     }
 
     public static class Builder {
@@ -292,6 +370,13 @@ public final class SearchRequestParameter {
         private List<String> mPoiIdList;
         private SearchRetainParamInfo mRetainParam;
         private String mRange;
+        private String mIdpUserId;
+        private String mAccessToken;
+        private String mVehicleBrand;
+        private String mOperatorId;
+        private String mStationId;
+        private String mChannel;
+        private ArrayList<SavedStations> mSavedStationsJson;
 
         /**
          * 是否静默搜索
@@ -620,6 +705,41 @@ public final class SearchRequestParameter {
          */
         public Builder range(final String range) {
             this.mRange = range;
+            return this;
+        }
+
+        public Builder idpUserId(final String idpUserId){
+            this.mIdpUserId = idpUserId;
+            return this;
+        }
+
+        public Builder accessToken(final String accessToken){
+            this.mAccessToken = accessToken;
+            return this;
+        }
+
+        public Builder vehicleBrand(final String vehicleBrand){
+            this.mVehicleBrand = vehicleBrand;
+            return this;
+        }
+
+        public Builder operatorId(final String operatorId){
+            this.mOperatorId = operatorId;
+            return this;
+        }
+
+        public Builder stationId(final String stationId){
+            this.mStationId = stationId;
+            return this;
+        }
+
+        public Builder channel(final String channel){
+            this.mChannel = channel;
+            return this;
+        }
+
+        public Builder savedStationsJson(final ArrayList<SavedStations> savedStationsJson){
+            this.mSavedStationsJson = savedStationsJson;
             return this;
         }
 

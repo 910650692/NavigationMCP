@@ -66,7 +66,7 @@ public class BaseCollectViewModel extends BaseViewModel<CollectFragment, Collect
             ArrayList<PoiInfoEntity> list = new ArrayList<>();
             // 回调出的数据转换List
             try {
-                JSONObject jsonObject = new JSONObject(String.valueOf(result.getDataSet()));
+                JSONObject jsonObject = new JSONObject(GsonUtils.toJson(result.getDataSet()));
                 JSONArray jsonArray = jsonObject.getJSONArray("items");
                 if(jsonArray.length() > 0){
                     for (int i = 0; i < jsonArray.length(); i++) {
@@ -76,7 +76,9 @@ public class BaseCollectViewModel extends BaseViewModel<CollectFragment, Collect
                             GeoPoint point = new GeoPoint();
                             point.setLat(ConvertUtils.str2Double(object.getString("stationLat")));
                             point.setLon(ConvertUtils.str2Double(object.getString("stationLng")));
-                            entity.setPoint(point);
+                            entity.setPoint(point)
+                                  .setName(entity.getStationName())
+                                  .setAddress(entity.getStationAddress());
                             list.add(entity);
                         }
                     }

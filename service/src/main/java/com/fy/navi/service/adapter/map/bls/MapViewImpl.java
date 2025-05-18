@@ -95,7 +95,7 @@ import lombok.Getter;
  * @date 2024/12/3
  */
 public class MapViewImpl extends MapSurfaceView implements IMapviewObserver,
-        IMapGestureObserver, IDeviceObserver, IBLMapViewProxy, IBLMapEngineObserver, IAnimationObserver, IBLMapBusinessDataObserver {
+        IMapGestureObserver, IDeviceObserver, IBLMapViewProxy, IBLMapEngineObserver, IAnimationObserver, IBLMapBusinessDataObserver ,  IEGLScreenshotObserver{
 
     private static final String TAG = MapDefaultFinalTag.MAP_SERVICE_TAG;
 
@@ -136,7 +136,7 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver,
         this.mapType = mapType;
         this.mapViewParams = mapViewParams;
         createMapService();
-        createMapDevice();
+        createMapDevice(mapViewParams);
         createMapView();
         initTheme();
         initOperatorPosture();
@@ -195,37 +195,10 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver,
 
     @Override
     public void onSurfaceChanged(int deviceId, int width, int height, int colorBits) {
-        if (deviceId == MapType.MAIN_SCREEN_MAIN_MAP.getMapType()){
-            mMapDevice.setScreenshotRect(600, 170, 500, 300);
-        }else if (deviceId == MapType.HUD_MAP.getMapType()){
-            mMapDevice.setScreenshotRect(ScreenUtils.Companion.getInstance().getScreenWidth()/2 - 164, ScreenUtils.Companion.getInstance().getScreenHeight()/2 - 86 , 328, 172);
-
-        }
-
-        mMapDevice.setScreenshotCallBackMethod(ScreenShotCallbackMethod.ScreenShotCallbackMethodBuffer);
-        mMapDevice.setScreenshotMode(ScreenShotMode.ScreenShotModeBackGround, new IEGLScreenshotObserver() {
-            /**
-             * @param deviceId	设备id
-             * @param pBitmapBuffer	位图缓存
-             * @param bufferDataParams	该截图数据参数 format-截图颜色位数类型 MapColorFormatRgb565需2个字节，MapColorFormatRgba8888需4个字节 pixelByte-像素字节数 2个字节对应Rgb565,4个字节对应Rgba8888
-             * @param nMethod	截图方法 0 buffer回调 1 bitmap回调 2 文件回调
-             * @param pParamEx	其它参数
-             */
-            @Override
-            public void onEGLScreenshot(int deviceId, byte[] pBitmapBuffer, ScreenShotDataInfo bufferDataParams, int nMethod, long pParamEx) {
-                // 检查字节数组是否为空
-                if (pBitmapBuffer == null || pBitmapBuffer.length == 0) {
-                    Logger.e(TAG, "pBitmapBuffer is null or empty.");
-                    return;
-                }
-                for (IMapAdapterCallback callback : callbacks) {
-                    callback.onEGLScreenshot(mapType, pBitmapBuffer);
-                }
-            }
-        });
+        startScreenshot(mapType,mMapDevice,width,height,deviceId);
     }
 
-    private void createMapDevice() {
+    private void createMapDevice(MapViewParams params) {
         ServiceMgr.getServiceMgrInstance().setUiLooper(0, Looper.getMainLooper());
         DeviceAttribute devAttribute = new DeviceAttribute();
         devAttribute.renderVendorType = MapRenderVendor.OpenGL3;
@@ -235,16 +208,15 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver,
             mMapDevice = getMapService().createDevice(EngineAdapter.getInstance().mapDeviceID(mapType),
                     devAttribute, this);
             setDefaultDevice(mMapDevice);
-            // hud后台截图
-            if ((mapType == MapType.HUD_MAP || mapType == MapType.MAIN_SCREEN_MAIN_MAP) && CalibrationAdapter.getInstance().hudFuncEnable() == 1) {
+            if (mapType == MapType.MAIN_SCREEN_MAIN_MAP) {
                 EGLSurfaceAttr eglSurfaceAttr = new EGLSurfaceAttr();
                 eglSurfaceAttr.nativeWindow = -1;
                 eglSurfaceAttr.isOnlyCreatePBSurface = true;
-//                eglSurfaceAttr.width = 328;
-                eglSurfaceAttr.width = 3082;
-//                eglSurfaceAttr.height = 172;
-                eglSurfaceAttr.height = 934;
+                eglSurfaceAttr.width = (int) params.getScreenWidth();
+                eglSurfaceAttr.height = (int) params.getScreenHeight();
                 mMapDevice.attachSurfaceToDevice(eglSurfaceAttr);
+            } else if (mapType == MapType.HUD_MAP){
+                initScreenshotParams(mMapDevice);
             }
         } else {
             Logger.e(TAG, "mapService is null");
@@ -805,5 +777,49 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver,
         long screenHeight = mapViewParams.getScreenHeight(); //屏幕高
         MapViewPortParam mapViewPortParam = new MapViewPortParam(x, y, width, height, screenWidth, screenHeight);
         getMapview().setMapviewPort(mapViewPortParam);
+    }
+    /**
+     * 开始截图
+     * @param mapDevice 地图设备对象
+     */
+    public void initScreenshotParams(MapDevice mapDevice) {
+        Logger.d(TAG, "takeMapScreenshot");
+        if (mapDevice == null) {
+            return;
+        }
+        Logger.d(TAG, "attachSurfaceToDevice"+mapType);
+        // 设置 EGL Surface 属性
+        EGLSurfaceAttr eglSurfaceAttr = new EGLSurfaceAttr();
+        //eglSurfaceAttr.nativeWindow = -1;
+        eglSurfaceAttr.isOnlyCreatePBSurface = true;
+        eglSurfaceAttr.width = 328;
+        eglSurfaceAttr.height = 172;
+        mapDevice.attachSurfaceToDevice(eglSurfaceAttr);
+    }
+    public void startScreenshot(MapType mapType, MapDevice mapDevice,int width, int height,int deviceId){
+        if (mapType == MapType.MAIN_SCREEN_MAIN_MAP){
+            // 这里裁剪的区域不要随意改变，现在是整个屏幕，如果需要某一部分，需要在回调后自己再次裁剪
+            mapDevice.setScreenshotRect(0, 0, width, height);
+        }else if (mapType == MapType.HUD_MAP && deviceId == EngineAdapter.getInstance().mapDeviceID(MapType.HUD_MAP)){
+            mapDevice.setScreenshotRect(ScreenUtils.Companion.getInstance().getScreenWidth()/2 - 328, ScreenUtils.Companion.getInstance().getScreenHeight()/2 - 172 , 328, 172);
+        }
+        mapDevice.setScreenshotCallBackMethod(ScreenShotCallbackMethod.ScreenShotCallbackMethodBuffer);
+        //截图模式
+        mapDevice.setScreenshotMode(ScreenShotMode.ScreenShotModeBackGround,this);
+        Logger.d(TAG, "takeMapScreenshot mode");
+
+    }
+
+    @Override
+    public void onEGLScreenshot(int i, byte[] pBitmapBuffer, ScreenShotDataInfo screenShotDataInfo, int i1, long l) {
+        Logger.d(TAG, "onEGLScreenshot");
+        if (pBitmapBuffer == null) {
+            return;
+        }
+        Logger.d(TAG, "onEGLScreenshot"+pBitmapBuffer.length);
+        for (IMapAdapterCallback callback : callbacks) {
+            Logger.d(TAG, "onEGLScreenshot"+mapType);
+            callback.onEGLScreenshot(mapType,pBitmapBuffer);
+        }
     }
 }

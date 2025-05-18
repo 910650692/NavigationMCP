@@ -70,6 +70,8 @@ public class ChargeInfo implements Parcelable {
     private int mFastChargingTotal;
     @SerializedName("parkFee")
     private String mParkFee;
+    @SerializedName("lowPrice")
+    private String mLowPrice;
 
     public int getChildType() {
         return mChildType;
@@ -570,13 +572,26 @@ public class ChargeInfo implements Parcelable {
     }
 
     /**
-     * 充电价格
-     * @param parkFee 充电价格
+     * 停车场价格
+     * @param parkFee 停车场价格
      * @return PoiInfoEntity
      */
     public ChargeInfo setParkFee(String parkFee) {
         this.mParkFee = parkFee;
         return this;
+    }
+
+    public String getLowPrice() {
+        return mLowPrice;
+    }
+
+    /**
+     * 充电价格
+     * @param lowPrice 充电价格
+     * @return PoiInfoEntity
+     */
+    public void setLowPrice(String lowPrice) {
+        this.mLowPrice = lowPrice;
     }
 
     protected ChargeInfo(final Parcel in) {
@@ -614,6 +629,7 @@ public class ChargeInfo implements Parcelable {
         mFastChargingFree = in.readInt();
         mFastChargingTotal = in.readInt();
         mParkFee = in.readString();
+        mLowPrice = in.readString();
         mCostItem = in.createTypedArrayList(CostTime.CREATOR);
         mEquipmentInfo = in.createTypedArrayList(EquipmentInfo.CREATOR);
         mIsAppointment = in.readBoolean();
@@ -675,5 +691,6 @@ public class ChargeInfo implements Parcelable {
         parcel.writeInt(mFastChargingFree);
         parcel.writeInt(mFastChargingTotal);
         parcel.writeString(mParkFee);
+        parcel.writeString(mLowPrice);
     }
 }

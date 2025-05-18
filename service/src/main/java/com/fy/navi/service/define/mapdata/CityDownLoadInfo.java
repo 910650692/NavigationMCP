@@ -1,6 +1,8 @@
 package com.fy.navi.service.define.mapdata;
 
 import java.math.BigInteger;
+import java.util.HashMap;
+import java.util.Map;
 
 public class CityDownLoadInfo {
     private int mAdCode;
@@ -27,6 +29,25 @@ public class CityDownLoadInfo {
     private BigInteger mFullZipSize;
     // 增量zip包大小，单位Byte
     private BigInteger mZipSize;
+    //同一个省份下所有城市的下载状态
+    private Map<Integer, Integer> mAllCityTaskStateMap;
+
+
+    /**
+     * getAllCityTaskStateMap
+     * @return map
+     */
+    public Map<Integer, Integer> getAllCityTaskStateMap() {
+        return mAllCityTaskStateMap;
+    }
+
+    /**
+     * setAllCityTaskStateMap
+     * @param allCityTaskStateMap
+     */
+    public void setAllCityTaskStateMap(Map<Integer, Integer> allCityTaskStateMap) {
+        mAllCityTaskStateMap = allCityTaskStateMap;
+    }
 
     /**
      * 获取参数

@@ -10,9 +10,11 @@ import androidx.annotation.NonNull;
 import com.android.utils.ConvertUtils;
 import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
+import com.fy.navi.service.AutoMapConstant;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.adapter.search.cloudByPatac.rep.BaseRep;
 import com.fy.navi.service.define.bean.GeoPoint;
+import com.fy.navi.service.define.search.ChargeInfo;
 import com.fy.navi.service.define.search.PoiInfoEntity;
 import com.fy.navi.service.define.search.SearchResultEntity;
 import com.fy.navi.ui.action.Action;
@@ -29,6 +31,7 @@ import org.json.JSONObject;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.List;
 
 
 public class BaseSearchResultViewModel extends BaseViewModel<SearchResultFragment, SearchResultModel> {
@@ -110,9 +113,13 @@ public class BaseSearchResultViewModel extends BaseViewModel<SearchResultFragmen
     public void notifyNetSearchResult(int taskId,BaseRep result){
         if(!ConvertUtils.isNull(result)){
             Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"code: "+result.getResultCode());
+            if(!AutoMapConstant.NetSearchKey.SUCCESS_CODE.equals(result.getResultCode())){
+                mView.notifySearchResultByNetError(result.getResultCode());
+                return;
+            }
             ArrayList<PoiInfoEntity> list = new ArrayList<>();
             try {
-                JSONObject jsonObject = new JSONObject(String.valueOf(result.getDataSet()));
+                JSONObject jsonObject = new JSONObject(GsonUtils.toJson(result.getDataSet()));
                 JSONArray jsonArray = jsonObject.getJSONArray("resultList");
                 if(jsonArray.length() > 0){
                     for (int i = 0; i < jsonArray.length(); i++) {
@@ -122,19 +129,38 @@ public class BaseSearchResultViewModel extends BaseViewModel<SearchResultFragmen
                         point.setLat(ConvertUtils.str2Double(object.getString("stationLat")));
                         point.setLon(ConvertUtils.str2Double(object.getString("stationLng")));
                         entity.setPoint(point);
+                        if(!ConvertUtils.isEmpty(object.getDouble("distance"))){
+                            int distance = ConvertUtils.double2int(object.getDouble("distance") * 1000);
+                            final String[] distanceArray = ConvertUtils.formatDistanceArray(getApplication().getBaseContext(),distance);
+                            entity.setDistance(distanceArray[0]+distanceArray[1]);
+                        }
+                        ChargeInfo chargeInfo = GsonUtils.fromJson(jsonArray.getString(i),ChargeInfo.class);
+                        chargeInfo.setCurrentElePrice(chargeInfo.getLowPrice())
+                                .setFast_free(chargeInfo.getFastChargingFree())
+                                .setFast_total(chargeInfo.getFastChargingTotal())
+                                .setSlow_free(chargeInfo.getSlowChargingFree())
+                                .setSlow_total(chargeInfo.getSlowChargingTotal());
+                        List<ChargeInfo> chargeList = new ArrayList<>();
+
+                        chargeList.add(chargeInfo);
+                        entity.setChargeInfoList(chargeList)
+                                .setName(entity.getStationName())
+                                .setAddress(entity.getStationAddress())
+                                .setPhone(entity.getStationTel())
+                                .setPointTypeCode("011100")
+                                .setBusinessTime(entity.getStationBusinessTime());
                         list.add(entity);
                     }
-                }else{
-                    Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"resultList is empty");
-                    return;
                 }
                 SearchResultEntity searchResultEntity = new SearchResultEntity()
                         .setIsNetData(true)
                         .setPoiList(list)
                         .setPoiType(1);
+                mModel.addPoiMarker(searchResultEntity);
                 mView.notifySearchResultByNet(taskId,searchResultEntity);
             }catch (JSONException e){
                 Logger.e(MapDefaultFinalTag.SEARCH_HMI_TAG,"error: "+e);
+                mView.notifySearchResultByNetError("idle");
             }
         }
     }

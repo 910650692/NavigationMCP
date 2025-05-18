@@ -4,9 +4,11 @@ import android.annotation.SuppressLint;
 import android.app.Service;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.graphics.Bitmap;
 import android.graphics.PixelFormat;
 import android.os.Build;
 import android.os.IBinder;
+import android.provider.Settings;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -26,11 +28,15 @@ import com.fy.navi.hmi.map.MapActivity;
 import com.fy.navi.mapservice.bean.INaviConstant;
 import com.fy.navi.service.AppContext;
 import com.fy.navi.service.adapter.navistatus.NavistatusAdapter;
+import com.fy.navi.service.define.map.MapType;
+import com.fy.navi.service.define.navi.CrossImageEntity;
 import com.fy.navi.service.define.navi.LaneInfoEntity;
 import com.fy.navi.service.define.navi.NaviEtaInfo;
 import com.fy.navi.service.define.navi.NaviTmcInfo;
 import com.fy.navi.service.define.navistatus.NaviStatus;
-import com.fy.navi.service.define.search.PoiInfoEntity;
+import com.fy.navi.service.logicpaket.map.IEglScreenshotCallBack;
+import com.fy.navi.service.logicpaket.map.IMapPackageCallback;
+import com.fy.navi.service.logicpaket.map.MapPackage;
 import com.fy.navi.service.logicpaket.navi.IGuidanceObserver;
 import com.fy.navi.service.logicpaket.navi.NaviPackage;
 
@@ -40,17 +46,20 @@ import com.fy.navi.service.logicpaket.navi.NaviPackage;
  * Date: 2025/4/24
  * Description: [在这里描述文件功能]
  */
-public class LauncherWindowService extends Service implements IGuidanceObserver {
+public class LauncherWindowService extends Service implements IGuidanceObserver, IMapPackageCallback, IEglScreenshotCallBack {
     private static final String TAG = "LauncherWindowService";
     private WindowManager mWindowManager;
     private View mView;
-    private WindowManager.LayoutParams mLayoutParams;
     private FloatingWindowLayoutBinding mBinding;
     private NaviEtaInfo mNaviEtaInfo;
     private NaviPackage mNaviPackage;
+    private MapPackage mMapPackage;
     private NavistatusAdapter mNaviStatusAdapter;
     private LaneInfoEntity mLastLanInfo;
-
+    private final String KEY = "LauncherWindowService";
+    private final MapType MAP_TYPE = MapType.MAIN_SCREEN_MAIN_MAP;
+    private FloatViewManager mFloatManager;
+    private boolean mIsOnShowing = false;
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
@@ -61,13 +70,38 @@ public class LauncherWindowService extends Service implements IGuidanceObserver 
     @Override
     public void onCreate() {
         super.onCreate();
+        Logger.i(TAG, "onCreate");
+        initParameters();
+        initCallBacks();
+        initView();
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        Logger.i(TAG, "onStartCommand");
+        return super.onStartCommand(intent, flags, startId);
+    }
+
+    private void initParameters() {
+        mMapPackage = MapPackage.getInstance();
         mNaviPackage = NaviPackage.getInstance();
-        mNaviPackage.registerObserver(TAG, this);
         mNaviStatusAdapter = NavistatusAdapter.getInstance();
         mWindowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
-        initView();
-        FloatViewManager.getInstance().bindWindowService(this);
-        showOrHideFloatView(false);
+        mFloatManager = FloatViewManager.getInstance();
+    }
+
+    private void initCallBacks() {
+        mNaviPackage.registerObserver(KEY, this);
+        mMapPackage.registerCallback(MAP_TYPE, this);
+        mMapPackage.registerEGLScreenshotCallBack(KEY, this);
+        mFloatManager.bindWindowService(this);
+    }
+
+    private void unInitCallBacks() {
+        mNaviPackage.unregisterObserver(KEY);
+        mMapPackage.unRegisterCallback(MAP_TYPE, this);
+        mMapPackage.unregisterEGLScreenshotCallBack(KEY, this);
+        mFloatManager.unBindWindowService();
     }
 
     private void initClickListener() {
@@ -89,48 +123,85 @@ public class LauncherWindowService extends Service implements IGuidanceObserver 
     @Override
     public void onNaviInfo(NaviEtaInfo naviInfoBean) {
         IGuidanceObserver.super.onNaviInfo(naviInfoBean);
-        if (!ConvertUtils.isNull(mBinding)) {
-            mBinding.cardNaviView.setVisibility(View.GONE);
-            mBinding.cardTbtView.setVisibility(View.VISIBLE);
-            if (ConvertUtils.isEmpty(naviInfoBean)) return;
-            mNaviEtaInfo = naviInfoBean;
-            updateTbT();
+        ThreadManager.getInstance().postUi(() -> {
+            if (!ConvertUtils.isNull(mBinding)) {
+                mBinding.cardNaviView.setVisibility(View.GONE);
+                mBinding.cardTbtView.setVisibility(View.VISIBLE);
+                if (ConvertUtils.isEmpty(naviInfoBean)) return;
+                mNaviEtaInfo = naviInfoBean;
+                updateTbT();
+            }
+        });
+    }
+
+    @Override
+    public void onCrossImageInfo(boolean isShowImage, CrossImageEntity naviImageInfo) {
+        IGuidanceObserver.super.onCrossImageInfo(isShowImage, naviImageInfo);
+        ThreadManager.getInstance().postUi(() -> {
+            if (!ConvertUtils.isNull(mBinding)) {
+                mBinding.ivCross.setVisibility(isShowImage ? View.VISIBLE : View.GONE);
+            }
+        });
+    }
+
+    @Override
+    public void onEGLScreenshot(MapType mapType, byte[] bytes) {
+        IEglScreenshotCallBack.super.onEGLScreenshot(mapType, bytes);
+        if (mapType == MapType.MAIN_SCREEN_MAIN_MAP && !ConvertUtils.isNull(mView) && !ConvertUtils.isEmpty(bytes)) {
+            ThreadManager.getInstance().postUi(() -> {
+                Bitmap bitmap = FloatViewManager.getInstance().processPicture(bytes);
+                if (!ConvertUtils.isNull(bitmap)) {
+                    mBinding.ivCross.setImageBitmap(bitmap);
+                }
+            });
         }
     }
 
     @Override
     public void onLaneInfo(final boolean isShowLane, final LaneInfoEntity laneInfo) {
-        if (!ConvertUtils.isNull(mBinding)) {
-            mLastLanInfo = laneInfo;
-            mBinding.sceneNaviLanes.onLaneInfo(isShowLane, laneInfo);
-        }
+        ThreadManager.getInstance().postUi(() -> {
+            if (!ConvertUtils.isNull(mBinding)) {
+                mLastLanInfo = laneInfo;
+                mBinding.sceneNaviLanes.setVisibility(isShowLane ? View.VISIBLE : View.GONE);
+                mBinding.sceneNaviLanes.onLaneInfo(isShowLane, laneInfo);
+            }
+        });
     }
 
     @Override
     public void onNaviStop() {
         IGuidanceObserver.super.onNaviStop();
-        if (!ConvertUtils.isNull(mBinding)) {
-            mBinding.cardNaviView.setVisibility(View.VISIBLE);
-            mBinding.cardTbtView.setVisibility(View.GONE);
-        }
+        ThreadManager.getInstance().postUi(() -> {
+            if (!ConvertUtils.isNull(mBinding)) {
+                mBinding.cardNaviView.setVisibility(View.VISIBLE);
+                mBinding.cardTbtView.setVisibility(View.GONE);
+            }
+        });
     }
 
     @Override
     public void onUpdateTMCLightBar(final NaviTmcInfo naviTmcInfo) {
-        if (!ConvertUtils.isNull(mBinding)) {
-            mBinding.sceneNaviTmc.setIsShowAutoAdd(false);
-            mBinding.sceneNaviTmc.onUpdateTMCLightBar(naviTmcInfo);
-        }
+        ThreadManager.getInstance().postUi(() -> {
+            if (!ConvertUtils.isNull(mBinding)) {
+                mBinding.sceneNaviTmc.setIsShowAutoAdd(false);
+                mBinding.sceneNaviTmc.onUpdateTMCLightBar(naviTmcInfo);
+            }
+        });
     }
 
     private void initView() {
+        Logger.i(TAG, "initView");
+        if (!checkHasOverLay()) {
+            Logger.e(TAG, "悬浮窗权限未开启，请开启悬浮窗权限！");
+            return;
+        }
         if (mView != null && mWindowManager != null) {
             mWindowManager.removeView(mView);
         }
         mBinding = FloatingWindowLayoutBinding.inflate(LayoutInflater.from(this), null);
         mView = mBinding.getRoot();
 
-        mLayoutParams = new WindowManager.LayoutParams(
+        final WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams(
                 WindowManager.LayoutParams.WRAP_CONTENT,
                 WindowManager.LayoutParams.WRAP_CONTENT,
                 Build.VERSION.SDK_INT >= Build.VERSION_CODES.O ?
@@ -140,10 +211,10 @@ public class LauncherWindowService extends Service implements IGuidanceObserver 
                 PixelFormat.TRANSLUCENT
         );
 
-        mLayoutParams.gravity = Gravity.START | Gravity.TOP;
-        mLayoutParams.x = 300;
-        mLayoutParams.y = 0;
-        mWindowManager.addView(mView, mLayoutParams);
+        layoutParams.gravity = Gravity.START | Gravity.TOP;
+        layoutParams.x = 300;
+        layoutParams.y = 0;
+        mWindowManager.addView(mView, layoutParams);
         initClickListener();
         mBinding.cardTbtView.setVisibility(
                 TextUtils.equals(mNaviStatusAdapter.getCurrentNaviStatus(), NaviStatus.NaviStatusType.NAVING) ? View.VISIBLE : View.GONE
@@ -155,6 +226,7 @@ public class LauncherWindowService extends Service implements IGuidanceObserver 
             mBinding.sceneNaviLanes.onLaneInfo(true, mLastLanInfo);
             updateTbT();
         }
+        showOrHideFloatView(mIsOnShowing);
     }
 
     @Override
@@ -167,13 +239,7 @@ public class LauncherWindowService extends Service implements IGuidanceObserver 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        FloatViewManager.getInstance().unBindWindowService();
-        if (!ConvertUtils.isNull(mNaviPackage)) {
-            mNaviPackage.unregisterObserver(TAG);
-        }
-        if (mWindowManager != null && mView != null) {
-            mWindowManager.removeView(mView);
-        }
+        unInitCallBacks();
     }
 
     private void updateTbT() {
@@ -212,13 +278,22 @@ public class LauncherWindowService extends Service implements IGuidanceObserver 
 
     public void showOrHideFloatView(boolean isShow) {
         Logger.i(TAG, "showOrHideFloatView:" + isShow);
-        ThreadManager.getInstance().postUi(new Runnable() {
-            @Override
-            public void run() {
-                if (!ConvertUtils.isNull(mView)) {
-                    mView.setVisibility(isShow ? View.VISIBLE : View.GONE);
-                }
+        ThreadManager.getInstance().postUi(() -> {
+            mIsOnShowing = isShow;
+            if (!ConvertUtils.isNull(mView)) {
+                mView.setVisibility(isShow ? View.VISIBLE : View.GONE);
+                mView.setFocusable(isShow ? true : false);
+            } else {
+                initView();
             }
         });
+    }
+
+    /***
+     * 检查悬浮窗权限释放开启
+     * @return
+     */
+    private boolean checkHasOverLay() {
+        return Settings.canDrawOverlays(AppContext.getInstance().getMContext());
     }
 }

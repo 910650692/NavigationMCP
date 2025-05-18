@@ -73,7 +73,7 @@
                 <com.fy.navi.ui.view.SkinLinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="@dimen/dp_140"
-                    android:layout_marginEnd="@dimen/dp_30"
+                    android:layout_marginEnd="@dimen/dp_40"
                     android:orientation="horizontal"
                     android:gravity="center_vertical"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -85,7 +85,7 @@
                         android:id="@+id/item_city_data"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginEnd="@dimen/dp_16"
+                        android:layout_marginEnd="@dimen/dp_24"
                         android:gravity="center"
                         android:text="@string/offline_item_city_data"
                         android:textColor="@color/setting_bg_tab_text_unselect"
@@ -104,9 +104,9 @@
                         android:layout_height="@dimen/dp_76"
                         android:visibility="gone"
                         android:gravity="center"
-                        android:background="@drawable/shape_bg_download_data"
+                        android:background="@drawable/bg_download_button_selector"
                         android:text="@string/offline_all_city_start_download"
-                        android:textColor="@color/setting_white"
+                        android:textColor="@drawable/color_download_button_selector"
                         android:textSize="@dimen/sp_30"/>
 
                     <!--全部暂停-->
@@ -117,9 +117,9 @@
                         android:layout_marginStart="@dimen/dp_24"
                         android:visibility="gone"
                         android:gravity="center"
-                        android:background="@drawable/shape_bg_map_item_data"
+                        android:background="@drawable/bg_download_button_selector"
                         android:text="@string/offline_all_city_suspend_download"
-                        android:textColor="@color/setting_bg_tab_text_unselect"
+                        android:textColor="@drawable/color_download_button_selector"
                         android:textSize="@dimen/sp_30"/>
 
                 </com.fy.navi.ui.view.SkinLinearLayout>
@@ -130,6 +130,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/dp_4"
                     android:max="100"
+                    android:visibility="gone"
                     android:progressDrawable="@drawable/progress_bar_style"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"

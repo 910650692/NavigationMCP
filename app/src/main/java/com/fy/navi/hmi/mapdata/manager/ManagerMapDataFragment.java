@@ -151,7 +151,6 @@ public class ManagerMapDataFragment extends BaseFragment<FragmentManagerMapDataB
     /**
      * 更新已下载view
      * @param provDataInfos
-     * @param isChange
      */
     public void updateDownloadedView(final ArrayList<ProvDataInfo> provDataInfos) {
         mDownloadedMapDataAdapter.setData(provDataInfos);

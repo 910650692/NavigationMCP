@@ -10,6 +10,7 @@ import com.fy.navi.service.define.navi.NaviDriveReportEntity;
 import com.fy.navi.service.define.navi.NaviEtaInfo;
 import com.fy.navi.service.define.navi.NaviManeuverInfo;
 import com.fy.navi.service.define.navi.NaviMixForkInfo;
+import com.fy.navi.service.define.navi.NaviRoadFacilityEntity;
 import com.fy.navi.service.define.navi.NaviTmcInfo;
 import com.fy.navi.service.define.navi.SapaInfoEntity;
 import com.fy.navi.service.define.navi.SpeedOverallEntity;
@@ -224,6 +225,10 @@ public interface GuidanceObserver extends BaseNaviObserver {
      */
     default void onSuggestChangePath(long newPathID, long oldPathID,
                                      SuggestChangePathReasonEntity reason) {
+
+    }
+
+    default void onShowNaviFacility(ArrayList<NaviRoadFacilityEntity> naviRoadFacilityEntity) {
 
     }
 

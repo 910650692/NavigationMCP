@@ -23,6 +23,7 @@ import com.fy.navi.service.adapter.position.PositionAdapter;
 import com.fy.navi.service.adapter.route.RouteAdapter;
 import com.fy.navi.service.adapter.search.ISearchResultCallback;
 import com.fy.navi.service.adapter.search.SearchAdapter;
+import com.fy.navi.service.adapter.search.cloudByPatac.bean.SavedStations;
 import com.fy.navi.service.adapter.search.cloudByPatac.rep.BaseRep;
 import com.fy.navi.service.define.bean.GeoPoint;
 import com.fy.navi.service.define.bean.PreviewParams;
@@ -38,6 +39,11 @@ import com.fy.navi.service.define.search.SearchResultEntity;
 import com.fy.navi.service.define.search.SearchRetainParamInfo;
 import com.fy.navi.service.greendao.history.History;
 import com.fy.navi.service.greendao.history.HistoryManager;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -1478,8 +1484,11 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
     /*
     * 查询充电站收藏列表
     * */
-    public int queryCollectStation(){
+    public int queryCollectStation(String idpUserId,String accessToken,String vehicleBrand){
         final SearchRequestParameter requestParameterBuilder = new SearchRequestParameter.Builder()
+                .idpUserId(idpUserId)
+                .accessToken(accessToken)
+                .vehicleBrand(vehicleBrand)
                 .build();
         return mSearchAdapter.queryCollectStation(requestParameterBuilder);
     }
@@ -1487,8 +1496,15 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
     /*
     * 查询自营站列表
     * */
-    public int queryStationNewResult(){
+    public int queryStationNewResult(SearchResultEntity entity){
+        final GeoPoint point = new GeoPoint();
+        point.setLon(mPositionAdapter.getLastCarLocation().getLongitude());
+        point.setLat(mPositionAdapter.getLastCarLocation().getLatitude());
+
         final SearchRequestParameter requestParameterBuilder = new SearchRequestParameter.Builder()
+                .keyword(entity.getKeyword())
+                .poiLoc(point)
+                .adCode(getAcCode())
                 .build();
         return mSearchAdapter.queryStationNewResult(requestParameterBuilder);
     }
@@ -1497,7 +1513,13 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
      * 查询自营站信息
      * */
     public int queryStationInfo(PoiInfoEntity poiInfo){
+        final GeoPoint point = new GeoPoint();
+        point.setLon(poiInfo.getPoint().getLon());
+        point.setLat(poiInfo.getPoint().getLat());
         final SearchRequestParameter requestParameterBuilder = new SearchRequestParameter.Builder()
+                .poiLoc(point)
+                .operatorId(poiInfo.getOperatorId())
+                .stationId(poiInfo.getStationId())
                 .build();
         return mSearchAdapter.queryStationInfo(requestParameterBuilder);
     }
@@ -1541,8 +1563,20 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
         return mSearchAdapter.unGroundLock(requestParameterBuilder);
     }
 
-    public int updateCollectStatus(){
+    public int updateCollectStatus(String idpUserId,String accessToken,String vehicleBrand,PoiInfoEntity poiInfo){
+        ArrayList<SavedStations> list = new ArrayList<>();
+        SavedStations savedStations = new SavedStations()
+                .setmStationSaved(!poiInfo.getIsCollect())
+                .setmLastUpdateTime(System.currentTimeMillis())
+                .setmStationId(poiInfo.getStationId())
+                .setmOperatorId(poiInfo.getOperatorId());
+        list.add(savedStations);
         final SearchRequestParameter requestParameterBuilder = new SearchRequestParameter.Builder()
+                .idpUserId(idpUserId)
+                .accessToken(accessToken)
+                .vehicleBrand(vehicleBrand)
+                .channel("CSM")
+                .savedStationsJson(list)
                 .build();
         return mSearchAdapter.updateCollectStatus(requestParameterBuilder);
     }

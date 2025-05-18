@@ -74,6 +74,9 @@ public class PoiInfoEntity implements Parcelable {
     private String mStationAddress;
     @SerializedName("busineHours")
     private String mStationBusinessTime;
+    @SerializedName("pictures")
+    private ArrayList<String> mPictures;
+    private boolean mIsCollect;
     // --------------
     private CityInfo mCityInfo;
     // 收藏相关
@@ -652,6 +655,34 @@ public class PoiInfoEntity implements Parcelable {
         return this;
     }
 
+    public ArrayList<String> getPictures() {
+        return mPictures;
+    }
+    /**
+     * 充电站门店图片
+     * @param mPictures 充电站门店图片
+     * @return PoiInfoEntity
+     */
+    public PoiInfoEntity setPictures(ArrayList<String> mPictures) {
+        this.mPictures = mPictures;
+        return this;
+    }
+
+
+    public boolean getIsCollect() {
+        return mIsCollect;
+    }
+
+    /**
+     * 充电站是否已收藏
+     * @param mIsCollect 充电站门店图片
+     * @return PoiInfoEntity
+     */
+    public PoiInfoEntity setIsCollect(boolean mIsCollect) {
+        this.mIsCollect = mIsCollect;
+        return this;
+    }
+
     protected PoiInfoEntity(final Parcel in) {
         mPoiType = in.readInt();
         mPid = in.readString();
@@ -688,6 +719,8 @@ public class PoiInfoEntity implements Parcelable {
         mStationTel = in.readString();
         mStationAddress = in.readString();
         mStationBusinessTime = in.readString();
+        mPictures = in.createStringArrayList();
+        mIsCollect = in.readBoolean();
         mCityInfo = in.readParcelable(CityInfo.class.getClassLoader());
         mFavoriteInfo = in.readParcelable(FavoriteInfo.class.getClassLoader());
         mRetainParam = in.readParcelable(SearchRetainParamInfo.class.getClassLoader());
@@ -783,6 +816,8 @@ public class PoiInfoEntity implements Parcelable {
         parcel.writeString(mStationTel);
         parcel.writeString(mStationAddress);
         parcel.writeString(mStationBusinessTime);
+        parcel.writeStringList(mPictures);
+        parcel.writeBoolean(mIsCollect);
         if(ConvertUtils.isEmpty(mPoiAoiBounds)) {
             return;
         }

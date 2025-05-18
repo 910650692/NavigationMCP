@@ -17,7 +17,10 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".startup.StartupActivity">
-
+        <com.fy.navi.service.define.map.HUDMapView
+            android:id="@+id/hud_mapview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
         <com.fy.navi.service.define.map.MainScreenMapView
             android:id="@+id/main_mapview"
             android:layout_width="match_parent"

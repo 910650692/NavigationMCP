@@ -5,6 +5,7 @@ import android.os.Parcelable;
 
 import androidx.annotation.NonNull;
 
+import com.android.utils.ConvertUtils;
 import com.google.gson.annotations.SerializedName;
 
 import lombok.Data;
@@ -89,5 +90,10 @@ public class CostTime implements Parcelable {
     public CostTime setmIsCurrentTime(Boolean mIsCurrentTime){
         this.mIsCurrentTime = mIsCurrentTime;
         return this;
+    }
+
+    public String getPrice(){
+        double price = ConvertUtils.str2Double(getmServiceFee()) + ConvertUtils.str2Double(getmElectricityFee());
+        return  String.valueOf(price);
     }
 }

@@ -143,6 +143,10 @@ public class PoiDetailsFragment extends BaseFragment<FragmentPoiDetailsBinding, 
         mBinding.scenePoiDetailContentView.onCollectUpdate(result.getResultCode());
     }
 
+    public void onNetSearchResult(final SearchResultEntity searchResultEntity) {
+        mViewModel.searchCollectList(getActivity());
+    }
+
     /**
      * 搜索图层子点点击事件
      * @param index 点击下标

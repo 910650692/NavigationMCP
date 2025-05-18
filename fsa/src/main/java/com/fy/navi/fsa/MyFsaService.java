@@ -46,6 +46,7 @@ import com.fy.navi.service.define.route.RouteParam;
 import com.fy.navi.service.define.search.SearchResultEntity;
 import com.fy.navi.service.logicpaket.cruise.CruisePackage;
 import com.fy.navi.service.logicpaket.cruise.ICruiseObserver;
+import com.fy.navi.service.logicpaket.map.IEglScreenshotCallBack;
 import com.fy.navi.service.logicpaket.map.IMapPackageCallback;
 import com.fy.navi.service.logicpaket.map.MapPackage;
 import com.fy.navi.service.logicpaket.navi.IGuidanceObserver;
@@ -435,6 +436,7 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
         NaviPackage.getInstance().registerObserver(FsaConstant.FSA_TAG, mGuidanceObserver);
         CruisePackage.getInstance().registerObserver(FsaConstant.FSA_TAG, mCruiseObserver);
         MapPackage.getInstance().registerCallback(MapType.MAIN_SCREEN_MAIN_MAP, mIMapPackageCallback);
+        MapPackage.getInstance().registerEGLScreenshotCallBack(FsaConstant.FSA_TAG, mEglShotCallBack);
         RoutePackage.getInstance().registerRouteObserver(FsaConstant.FSA_TAG, mRouteResultObserver);
         SearchPackage.getInstance().registerCallBack(FsaConstant.FSA_TAG, mSearchResultCallback);
     }
@@ -632,6 +634,18 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
 //            } catch (IOException e) {
 //                e.printStackTrace();
 //            }
+        }
+    };
+
+    private IEglScreenshotCallBack mEglShotCallBack = new IEglScreenshotCallBack() {
+        @Override
+        public void onEGLScreenshot(MapType mapType, byte[] bytes) {
+            IEglScreenshotCallBack.super.onEGLScreenshot(mapType, bytes);
+            if (!mIsHudServiceStart) {
+                return;
+            }
+            byte[] bytes1 = processPicture(bytes);
+            VTServerBQJni.getInstance().nativeNotifyVideoData(bytes1);
         }
     };
 

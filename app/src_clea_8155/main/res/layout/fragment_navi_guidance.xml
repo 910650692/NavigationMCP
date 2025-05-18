@@ -173,7 +173,7 @@
                 android:id="@+id/scene_navi_speed"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_m_9"
+                android:layout_marginStart="@dimen/dp_m_14"
                 android:layout_marginTop="@dimen/dp_29"
                 android:visibility="@{ViewModel.mNaviSpeedVisibility?View.VISIBLE:View.GONE}"
                 app:layout_constraintStart_toEndOf="@id/scl_top_container"

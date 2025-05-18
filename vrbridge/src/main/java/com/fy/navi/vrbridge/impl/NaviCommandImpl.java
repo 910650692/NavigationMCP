@@ -70,7 +70,7 @@ public class NaviCommandImpl implements NaviCommandListener {
             return CallResponse.createFailResponse("需要发起导航，才能帮你规划沿途的路线，试试说：导航回家");
         }
         final RouteCurrentPathParam pathParam = RoutePackage.getInstance().getCurrentPathInfo(MapType.MAIN_SCREEN_MAIN_MAP);
-        if (null != pathParam && pathParam.isMIsOnlineRoute()) {
+        if (null != pathParam && !pathParam.isMIsOnlineRoute()) {
             //离线算路不支持沿途搜
             Logger.w(IVrBridgeConstant.TAG, "alongSearch in offline road");
             return CallResponse.createFailResponse("当前使用离线算路，不支持该功能");

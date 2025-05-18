@@ -1,6 +1,7 @@
 package com.fy.navi.scene.impl.poi;
 
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.text.TextUtils;
 
@@ -8,9 +9,11 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
+import com.android.utils.thread.ThreadManager;
 import com.fy.navi.scene.BaseSceneModel;
 import com.fy.navi.scene.api.poi.IScenePoiDetailContentView;
 import com.fy.navi.scene.ui.poi.ScenePoiDetailContentView;
+import com.fy.navi.service.AutoMapConstant;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.adapter.navi.NaviConstant;
 import com.fy.navi.service.define.bean.GeoPoint;
@@ -19,9 +22,11 @@ import com.fy.navi.service.define.mapdata.CityDataInfo;
 import com.fy.navi.service.define.search.ETAInfo;
 import com.fy.navi.service.define.search.PoiInfoEntity;
 import com.fy.navi.service.define.search.SearchResultEntity;
+import com.fy.navi.service.define.user.account.AccessTokenParam;
 import com.fy.navi.service.logicpaket.mapdata.MapDataPackage;
 import com.fy.navi.service.logicpaket.route.RoutePackage;
 import com.fy.navi.service.logicpaket.search.SearchPackage;
+import com.fy.navi.service.logicpaket.user.account.AccountPackage;
 import com.fy.navi.service.logicpaket.user.behavior.BehaviorPackage;
 import com.fy.navi.ui.base.StackManager;
 
@@ -246,7 +251,33 @@ public class ScenePoiDetailContentViewImpl extends BaseSceneModel<ScenePoiDetail
         return mRoutePackage.getViaPointsCount(MapType.MAIN_SCREEN_MAIN_MAP);
     }
 
-    public int updateCollectStatus(PoiInfoEntity poiInfo) {
-        return mSearchPackage.updateCollectStatus();
+    public void updateCollectStatus(Activity activity,PoiInfoEntity poiInfo) {
+        AccessTokenParam param = new AccessTokenParam(
+                AutoMapConstant.AccountTokenParamType.ACCOUNT_TYPE_PATAC_HMI,
+                AutoMapConstant.AccountTokenParamType.AUTH_TOKEN_TYPE_READ_ONLY,
+                null,
+                activity,
+                null,
+                null,
+                null,
+                null);
+
+        ThreadManager.getInstance().runAsync(() -> {
+            String idpUserId = AccountPackage.getInstance().getUserId();
+            String accessToken = AccountPackage.getInstance().getAccessToken(param);
+            String vehicleBrand = "BUICK";
+            mSearchPackage.updateCollectStatus(idpUserId,accessToken,vehicleBrand,poiInfo);
+        });
+    }
+
+    // 判断SGM是否已登陆
+    public boolean isSGMLogin(){
+        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"isSGMLogin: "+ AccountPackage.getInstance().isSGMLogin());
+        return AccountPackage.getInstance().isSGMLogin();
+    }
+
+    public void startSGMLogin(){
+        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"startSGMLogin");
+        AccountPackage.getInstance().sendSGMLoginRequest(mScreenView.getContext());
     }
 }

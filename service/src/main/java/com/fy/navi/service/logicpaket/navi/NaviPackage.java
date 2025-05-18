@@ -32,6 +32,7 @@ import com.fy.navi.service.define.navi.NaviDriveReportEntity;
 import com.fy.navi.service.define.navi.NaviEtaInfo;
 import com.fy.navi.service.define.navi.NaviExchangeEntity;
 import com.fy.navi.service.define.navi.NaviManeuverInfo;
+import com.fy.navi.service.define.navi.NaviRoadFacilityEntity;
 import com.fy.navi.service.define.navi.NaviStartType;
 import com.fy.navi.service.define.navi.NaviTmcInfo;
 import com.fy.navi.service.define.navi.NaviViaEntity;
@@ -151,10 +152,12 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
             mLayerAdapter.setFollowMode(MapType.LAUNCHER_WIDGET_MAP, true);
             mLayerAdapter.setFollowMode(MapType.LAUNCHER_DESK_MAP, true);
             mLayerAdapter.setFollowMode(MapType.CLUSTER_MAP, true);
+            mLayerAdapter.setFollowMode(MapType.HUD_MAP, true);
             mLayerAdapter.setVisibleGuideSignalLight(MapType.MAIN_SCREEN_MAIN_MAP, true);
             mLayerAdapter.setVisibleGuideSignalLight(MapType.LAUNCHER_WIDGET_MAP, true);
             mLayerAdapter.setVisibleGuideSignalLight(MapType.LAUNCHER_DESK_MAP, true);
             mLayerAdapter.setVisibleGuideSignalLight(MapType.CLUSTER_MAP, true);
+            mLayerAdapter.setVisibleGuideSignalLight(MapType.HUD_MAP, true);
             mNavistatusAdapter.setNaviStatus(NaviStatus.NaviStatusType.NAVING);
             PathInfo pathInfo = mRouteAdapter.getCurrentPath(MapType.MAIN_SCREEN_MAIN_MAP) ==
                     null ? null :
@@ -171,6 +174,8 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
                 mNaviAdapter.updatePathInfo(MapType.LAUNCHER_DESK_MAP, list,
                         (int) pathInfo.getPathIndex());
                 mNaviAdapter.updatePathInfo(MapType.CLUSTER_MAP, list,
+                        (int) pathInfo.getPathIndex());
+                mNaviAdapter.updatePathInfo(MapType.HUD_MAP, list,
                         (int) pathInfo.getPathIndex());
             }
             //通知导航开始
@@ -192,6 +197,7 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
             mLayerAdapter.setFollowMode(MapType.LAUNCHER_WIDGET_MAP, false);
             mLayerAdapter.setFollowMode(MapType.LAUNCHER_DESK_MAP, false);
             mLayerAdapter.setFollowMode(MapType.CLUSTER_MAP, false);
+            mLayerAdapter.setFollowMode(MapType.HUD_MAP, false);
             mCurrentNaviType = NumberUtils.NUM_ERROR;
             //通知导航结束  手动停止导航
             NaviStatusMonitorUtil.getInstance().notifyNavigationStopped();
@@ -720,6 +726,19 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
                 for (IGuidanceObserver guidanceObserver : mGuidanceObservers.values()) {
                     if (guidanceObserver != null) {
                         guidanceObserver.onSuggestChangePath(newPathID, oldPathID, reason);
+                    }
+                }
+            }
+        });
+    }
+
+    @Override
+    public void onShowNaviFacility(ArrayList<NaviRoadFacilityEntity> naviRoadFacilityEntity) {
+        ThreadManager.getInstance().postUi(() -> {
+            if (!ConvertUtils.isEmpty(mGuidanceObservers)) {
+                for (IGuidanceObserver guidanceObserver : mGuidanceObservers.values()) {
+                    if (guidanceObserver != null) {
+                        guidanceObserver.onShowNaviFacility(naviRoadFacilityEntity);
                     }
                 }
             }

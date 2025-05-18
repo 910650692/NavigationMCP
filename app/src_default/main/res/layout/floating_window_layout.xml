@@ -81,19 +81,28 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
+                <com.fy.navi.ui.view.SkinImageView
+                    android:id="@+id/iv_cross"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp_460"
+                    android:minHeight="@dimen/dp_460"
+                    android:scaleType="fitXY"
+                    android:visibility="gone"
+                    app:layout_constraintStart_toStartOf="@id/scene_navi_tbt"
+                    app:layout_constraintTop_toBottomOf="@id/scene_navi_tbt" />
+
                 <com.fy.navi.scene.ui.navi.SceneNaviEtaView
                     android:id="@+id/scene_navi_eta"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/bg_navi_tbt_middle"
+                    android:layout_marginTop="@dimen/dp_10"
                     app:layout_constraintStart_toStartOf="@id/scene_navi_tbt"
-                    app:layout_constraintTop_toBottomOf="@id/scene_navi_tbt" />
+                    app:layout_constraintTop_toBottomOf="@id/iv_cross" />
 
                 <com.fy.navi.scene.ui.navi.SceneNaviTmcView
                     android:id="@+id/scene_navi_tmc"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/bg_navi_tbt_middle"
                     android:paddingHorizontal="@dimen/dp_30"
                     app:layout_constraintStart_toStartOf="@id/scene_navi_tbt"
                     app:layout_constraintTop_toBottomOf="@id/scene_navi_eta" />
@@ -103,10 +112,16 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:background="@drawable/bg_navi_tbt_middle"
-                    android:paddingBottom="@dimen/dp_30"
+                    android:visibility="gone"
                     app:layout_constraintStart_toStartOf="@id/scene_navi_tbt"
                     app:layout_constraintTop_toBottomOf="@id/scene_navi_tmc" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp_30"
+                    app:layout_constraintStart_toStartOf="@id/scene_navi_tbt"
+                    app:layout_constraintTop_toBottomOf="@id/scene_navi_lanes" />
+
             </com.fy.navi.ui.view.SkinConstraintLayout>
         </com.fy.navi.ui.view.SkinCardView>
     </androidx.constraintlayout.widget.ConstraintLayout>

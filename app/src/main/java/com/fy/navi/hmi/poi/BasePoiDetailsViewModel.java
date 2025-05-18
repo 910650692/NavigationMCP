@@ -2,6 +2,7 @@ package com.fy.navi.hmi.poi;
 
 import static com.android.utils.TimeUtils.isCurrentTimeInRange;
 
+import android.app.Activity;
 import android.app.Application;
 import android.util.Log;
 
@@ -35,6 +36,8 @@ import java.util.ArrayList;
  * @version \$Revision1.0\$
  */
 public class BasePoiDetailsViewModel extends BaseViewModel<PoiDetailsFragment, PoiDetailsModel> {
+    private SearchResultEntity mSearchResultEntity;
+    private int mTaskId;
     public BasePoiDetailsViewModel(@NonNull final Application application) {
         super(application);
     }
@@ -101,7 +104,7 @@ public class BasePoiDetailsViewModel extends BaseViewModel<PoiDetailsFragment, P
             Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "code" + result.getResultCode());
             JSONObject jsonObject = null;
             try {
-                jsonObject = new JSONObject(String.valueOf(result.getDataSet()));
+                jsonObject = new JSONObject(GsonUtils.toJson(result.getDataSet()));
                 // 处理经纬度
                 GeoPoint point = new GeoPoint();
                 point.setLat(ConvertUtils.str2Double(jsonObject.getString("stationLat")));
@@ -109,24 +112,41 @@ public class BasePoiDetailsViewModel extends BaseViewModel<PoiDetailsFragment, P
                 JSONArray jsonArray = jsonObject.getJSONArray("pictures");
                 ArrayList<ChargeInfo> chargeList = new ArrayList<>();
                 ArrayList<PoiInfoEntity> poiInfoEntityList = new ArrayList<>();
-                ChargeInfo chargeInfo = GsonUtils.fromJson(String.valueOf(result.getDataSet()),ChargeInfo.class);
+                ChargeInfo chargeInfo = GsonUtils.fromJson(GsonUtils.toJson(result.getDataSet()),ChargeInfo.class);
+                chargeInfo.setSlow_total(chargeInfo.getSlowChargingTotal())
+                        .setSlow_free(chargeInfo.getSlowChargingFree())
+                        .setFast_total(chargeInfo.getFastChargingTotal())
+                        .setFast_free(chargeInfo.getFastChargingFree())
+                        .setCurrentServicePrice(chargeInfo.getParkFee());
                 CostTime currentTime = getCurrentElePrice(chargeInfo.getCostItem());
                 Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"currentTime: "+currentTime.getTime());
                 chargeInfo.setCurrentElePrice(currentTime.getmElectricityFee());
                 chargeList.add(chargeInfo);
-                PoiInfoEntity poiInfoEntity = GsonUtils.fromJson(String.valueOf(result.getDataSet()),PoiInfoEntity.class);
+                PoiInfoEntity poiInfoEntity = GsonUtils.fromJson(GsonUtils.toJson(result.getDataSet()),PoiInfoEntity.class);
                 poiInfoEntity.setChargeInfoList(chargeList)
-                        .setImageUrl(jsonArray.getString(0))
                         .setPoint(point)
+                        .setName(poiInfoEntity.getStationName())
+                        .setAddress(poiInfoEntity.getStationAddress())
+                        .setPhone(poiInfoEntity.getStationTel())
+                        .setBusinessTime(poiInfoEntity.getStationBusinessTime())
                         .setPointTypeCode("011100");
+                if(!ConvertUtils.isEmpty(poiInfoEntity.getPictures())){
+                    poiInfoEntity.setImageUrl(poiInfoEntity.getPictures().get(0));
+                }
                 poiInfoEntityList.add(poiInfoEntity);
                 SearchResultEntity searchResultEntity = new SearchResultEntity()
                         .setIsNetData(true)
                         .setPoiList(poiInfoEntityList)
                         .setPoiType(1);
+                mSearchResultEntity = searchResultEntity;
+                mTaskId = taskId;
                 final ThreadManager threadManager = ThreadManager.getInstance();
                 threadManager.postUi(() -> {
-                    mView.onSearchResult(taskId,searchResultEntity);
+                    if(mModel.isSGMLogin()){
+                        mView.onNetSearchResult(searchResultEntity);
+                    }else{
+                        mView.onSearchResult(taskId,searchResultEntity);
+                    }
                 });
             } catch (JSONException e) {
                 Logger.e(MapDefaultFinalTag.SEARCH_HMI_TAG,"JSONException: "+e);
@@ -136,6 +156,39 @@ public class BasePoiDetailsViewModel extends BaseViewModel<PoiDetailsFragment, P
 
     public void notifyCollectStatus(BaseRep result){
         mView.onNotifyCollectStatus(result);
+    }
+
+    public void notifyCollectList(BaseRep result){
+        if(!ConvertUtils.isNull(result)){
+            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"code"+result.getResultCode());
+            ArrayList<PoiInfoEntity> list = new ArrayList<>();
+            // 回调出的数据转换List
+            try {
+                JSONObject jsonObject = new JSONObject(GsonUtils.toJson(result.getDataSet()));
+                JSONArray jsonArray = jsonObject.getJSONArray("items");
+                if(jsonArray.length() > 0){
+                    for (int j = 0; j < mSearchResultEntity.getPoiList().size(); j++) {
+                        for (int i = 0; i < jsonArray.length(); i++) {
+                            JSONObject object = new JSONObject(String.valueOf(jsonArray.get(i)));
+                            if(object.getBoolean("stationSaved") && !ConvertUtils.isNull(mSearchResultEntity)){
+                                if(object.getString("operatorId").equals(mSearchResultEntity.getPoiList().get(j).getOperatorId())){
+                                    Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"operatorId: "+mSearchResultEntity.getPoiList().get(j).getOperatorId());
+                                    mSearchResultEntity.getPoiList().get(j).setIsCollect(true);
+                                }else{
+                                    mSearchResultEntity.getPoiList().get(j).setIsCollect(false);
+                                }
+                            }
+                        }
+                    }
+                }
+                final ThreadManager threadManager = ThreadManager.getInstance();
+                threadManager.postUi(() -> {
+                    mView.onSearchResult(mTaskId,mSearchResultEntity);
+                });
+            } catch (JSONException e) {
+                Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"JSONException: "+e);
+            }
+        }
     }
 
     private CostTime getCurrentElePrice(ArrayList<CostTime> costTimes) {
@@ -150,4 +203,7 @@ public class BasePoiDetailsViewModel extends BaseViewModel<PoiDetailsFragment, P
         return currentCostTime;
     }
 
+    public void searchCollectList(Activity activity){
+        mModel.searchCollectList(activity);
+    }
 }

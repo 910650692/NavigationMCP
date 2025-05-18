@@ -6,9 +6,9 @@ import io.reactivex.Observable;
 
 public interface SearchApi {
     // 充电站列表查询
-    Observable<BaseRep> queryStationNewResult(StationReq req);
+    Observable<String> queryStationNewResult(StationReq req);
     // 获取用户收藏充电站
-    Observable<BaseRep> queryCollectStation(StationReq req);
+    Observable<String> queryCollectStation(StationReq req);
     // 修改预约
     Observable<BaseRep> updateReservation(StationReq req);
     // 创建公桩预约
@@ -16,11 +16,11 @@ public interface SearchApi {
     // 开启地锁
     Observable<BaseRep> unLockStation(StationReq req);
     // 更新用户收藏充电站
-    Observable<BaseRep> updateCollectStation(StationReq req);
+    Observable<String> updateCollectStation(StationReq req,String json);
     // 查询公桩预约
     Observable<BaseRep> queryReservation(StationReq req);
     // 获取充电桩信息
     Observable<BaseRep> queryEquipmentInfo(StationReq req);
     // 获取充电站详情
-    Observable<BaseRep> queryStationInfo(StationReq req);
+    Observable<String> queryStationInfo(StationReq req);
 }

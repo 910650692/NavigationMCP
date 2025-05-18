@@ -2,13 +2,16 @@ package com.fy.navi.service.adapter.activate.bls;
 
 import android.os.SystemProperties;
 
+import androidx.annotation.NonNull;
 
 import com.android.utils.ConvertUtils;
 import com.android.utils.DevicesIdUtil;
+import com.android.utils.OkHttpUtils;
 import com.android.utils.log.Logger;
 import com.autonavi.gbl.activation.ActivationModule;
 import com.autonavi.gbl.activation.model.ActivateReturnParam;
 import com.autonavi.gbl.activation.model.ActivationInitParam;
+import com.autonavi.gbl.activation.observer.INetActivateObserver;
 import com.fy.navi.service.AutoMapConstant;
 import com.fy.navi.service.GBLCacheFilePath;
 import com.fy.navi.service.MapDefaultFinalTag;
@@ -24,7 +27,11 @@ import com.patac.netlib.exception.ApiException;
 import com.patac.netlib.factory.NetPkiFactory;
 import com.patac.netlib.utils.NetConfigUtils;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -36,6 +43,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
 import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
 public final class ActivationManager {
@@ -56,38 +64,15 @@ public final class ActivationManager {
     private final ActivationModule mActivationService;
     private boolean mIsInit = false;
 
-    private final NetDisposableObserver<AppKeyResponse> mAppKeyObserver = new NetDisposableObserver<AppKeyResponse>() {
-        @Override
-        public void onSuccess(final AppKeyResponse appKeyBean) {
-            Logger.d(TAG, appKeyBean.toString());
-            APP_KEY = appKeyBean.getAppKey();
-            //AccountPackage.getInstance().saveAppKey(appKeyBean.getAppKey());
-            //postUUID();
-            mFlagForTest = true;
-        }
 
+    private final INetActivateObserver mNetActivateObserver = new INetActivateObserver() {
         @Override
-        public void onFailed(final ApiException e) {
-            Logger.d(TAG, "Exception code : " + e.getCode());
-            Logger.d(TAG, "Exception msg : " + e.getMessage());
+        public void onNetActivateResponse(final int returnCode) {
+            //网络激活结果处理
+            Logger.i(TAG, "网络激活返回码 = " + returnCode);
+            // mActivateListener.onNetActivated(ConvertUtils.equals(0, returnCode));
         }
     };
-
-    private final NetDisposableObserver<UuidResponse> mUuidObserver = new NetDisposableObserver<UuidResponse>() {
-        @Override
-        public void onSuccess(final UuidResponse uuidBean) {
-            Logger.d(TAG, uuidBean.toString());
-            UUID = uuidBean.getUuid();
-            mActivateListener.onUUIDGet(uuidBean.getUuid());
-        }
-
-        @Override
-        public void onFailed(final ApiException e) {
-            Logger.d(TAG, "Exception code : " + e.getCode());
-            Logger.d(TAG, "Exception msg : " + e.getMessage());
-        }
-    };
-
 
     private ActivationManager() {
         mActivationService = ActivationModule.getInstance();
@@ -113,12 +98,6 @@ public final class ActivationManager {
         mActivationService.setNetActivateObserver(null);
         mActivationService.unInit();
         mActivateListener = null;
-        if (!mAppKeyObserver.isDisposed()) {
-            mAppKeyObserver.dispose();
-        }
-        if (!mUuidObserver.isDisposed()) {
-            mUuidObserver.dispose();
-        }
     }
 
     /**
@@ -173,9 +152,28 @@ public final class ActivationManager {
         final AppKeyReq req = new AppKeyReq(API_VERSION);
 
         final Observable<AppKeyResponse> observable = NetQueryRepository.getInstance().queryAppKey(req);
+
         observable.subscribeOn(Schedulers.io())
-                .observeOn(Schedulers.io())
-                .subscribe(mAppKeyObserver);
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new NetDisposableObserver<AppKeyResponse>() {
+                    @Override
+                    public void onSuccess(final AppKeyResponse appKeyBean) {
+                        Logger.d(TAG, appKeyBean.getAppKey());
+                        APP_KEY = appKeyBean.getAppKey();
+                        NetPkiFactory.getInstance().saveAppSecurity(APP_KEY);
+                        //AccountPackage.getInstance().saveAppKey(appKeyBean.getAppKey());
+                        //postUUID();
+                        mFlagForTest = true;
+                    }
+
+                    @Override
+                    public void onFailed(final ApiException e) {
+                        Logger.d(TAG, "Exception code : " + e.getCode());
+                        Logger.d(TAG, "Exception msg : " + e.getMessage());
+                    }
+                });
+
+
     }
 
     /**
@@ -203,8 +201,21 @@ public final class ActivationManager {
         final Observable<UuidResponse> observable = NetQueryRepository.getInstance().queryUuid(uuidReq);
 
         observable.subscribeOn(Schedulers.io())
-                .observeOn(Schedulers.io())
-                .subscribe(mUuidObserver);
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new NetDisposableObserver<UuidResponse>() {
+                    @Override
+                    public void onSuccess(final UuidResponse uuidBean) {
+                        Logger.d(TAG, uuidBean.toString());
+                        UUID = uuidBean.getUuid();
+                        mActivateListener.onUUIDGet(uuidBean.getUuid());
+                    }
+
+                    @Override
+                    public void onFailed(final ApiException e) {
+                        Logger.d(TAG, "Exception code : " + e.getCode());
+                        Logger.d(TAG, "Exception msg : " + e.getMessage());
+                    }
+                });
     }
 
     /**
@@ -303,14 +314,11 @@ public final class ActivationManager {
                         executor.schedule(taskRef.get(), delays[currentCount], TimeUnit.SECONDS);
                     }
 
-                    final NetDisposableObserver<CheckOrderResponse> checkOrderObserver = new NetDisposableObserver<CheckOrderResponse>() {
+                    getInstance().checkOrderStatus(new NetDisposableObserver<CheckOrderResponse>() {
                         @Override
                         public void onSuccess(final CheckOrderResponse appKeyBean) {
                             Logger.d(TAG, "checkOrderStatus success");
                             manualActivate("", "");
-                            if (!this.isDisposed()) {
-                                this.dispose();
-                            }
                             future.complete(true);
                             executor.shutdownNow();
                         }
@@ -326,15 +334,11 @@ public final class ActivationManager {
                             if (currentCount > maxRetries) {
                                 future.complete(false);
                                 executor.shutdownNow();
-                                if (!this.isDisposed()) {
-                                    this.dispose();
-                                }
                             } else {
                                 executor.schedule(taskRef.get(), delays[currentCount], TimeUnit.SECONDS);
                             }
                         }
-                    };
-                    getInstance().checkOrderStatus(checkOrderObserver);
+                    });
 
                 } catch (NullPointerException | IllegalArgumentException e) {
                     future.completeExceptionally(e);

@@ -103,6 +103,7 @@ public interface AutoMapConstant {
     }
 
     @interface NetSearchKey {
+        String SUCCESS_CODE = "0000";
         String QUERY_STATION_LIST = "query_station_list";
         String QUERY_COLLECT_LIST = "query_collect_list";
         String QUERY_STATION_INFO = "query_station_info";

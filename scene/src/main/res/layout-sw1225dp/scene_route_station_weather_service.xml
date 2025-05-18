@@ -12,14 +12,15 @@
     </data>
 
     <com.fy.navi.ui.view.SkinConstraintLayout
-        android:layout_width="@dimen/dp_640"
+        android:layout_width="@dimen/dp_545"
         android:layout_height="wrap_content">
 
         <com.fy.navi.ui.view.SkinView
             android:id="@+id/route_right_tab_list_service"
             clickCommand="@{Scene.clickService}"
-            android:layout_width="@dimen/dp_146"
-            android:layout_height="@dimen/dp_146"
+            android:layout_width="@dimen/dp_77"
+            android:layout_height="@dimen/dp_90"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/route_right_tab_list_weather"
             app:layout_constraintTop_toTopOf="parent" />
@@ -28,7 +29,6 @@
             android:id="@+id/route_right_tab_list_tv_service"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/dp_28"
             android:text="@string/route_along_service"
             android:textColor="@color/tab_list_route_tab_list_unselect"
             android:textSize="@dimen/sp_30"
@@ -39,19 +39,21 @@
 
         <com.fy.navi.ui.view.SkinImageView
             android:id="@+id/route_right_tab_list_iv_service"
-            android:layout_width="@dimen/dp_58"
-            android:layout_height="@dimen/dp_58"
-            android:layout_marginBottom="@dimen/dp_4"
+            android:layout_width="@dimen/dp_49"
+            android:layout_height="@dimen/dp_49"
+            android:layout_marginTop="@dimen/dp_16"
+            android:layout_marginBottom="@dimen/dp_3"
             android:src="@drawable/selector_route_tab_list_service"
             app:layout_constraintBottom_toTopOf="@id/route_right_tab_list_tv_service"
             app:layout_constraintEnd_toEndOf="@id/route_right_tab_list_service"
-            app:layout_constraintStart_toStartOf="@id/route_right_tab_list_service" />
+            app:layout_constraintStart_toStartOf="@id/route_right_tab_list_service"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <com.fy.navi.ui.view.SkinView
             android:id="@+id/route_right_tab_list_weather"
             clickCommand="@{Scene.clickWeather}"
-            android:layout_width="@dimen/dp_146"
-            android:layout_height="@dimen/dp_146"
+            android:layout_width="@dimen/dp_77"
+            android:layout_height="@dimen/dp_90"
             app:layout_constraintEnd_toStartOf="@+id/route_right_tab_list_service"
             app:layout_constraintStart_toEndOf="@+id/route_right_tab_list_charging_station"
             app:layout_constraintTop_toTopOf="@+id/route_right_tab_list_service" />
@@ -60,7 +62,6 @@
             android:id="@+id/route_right_tab_list_tv_weather"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/dp_28"
             android:text="@string/route_weather"
             android:textColor="@color/tab_list_route_tab_list_unselect"
             android:textSize="@dimen/sp_30"
@@ -71,9 +72,9 @@
 
         <com.fy.navi.ui.view.SkinImageView
             android:id="@+id/route_right_tab_list_iv_weather"
-            android:layout_width="@dimen/dp_58"
-            android:layout_height="@dimen/dp_58"
-            android:layout_marginBottom="@dimen/dp_4"
+            android:layout_width="@dimen/dp_49"
+            android:layout_height="@dimen/dp_49"
+            android:layout_marginBottom="@dimen/dp_3"
             android:src="@drawable/selector_route_tab_list_weather"
             app:layout_constraintBottom_toTopOf="@id/route_right_tab_list_tv_weather"
             app:layout_constraintEnd_toEndOf="@id/route_right_tab_list_weather"
@@ -82,8 +83,8 @@
         <com.fy.navi.ui.view.SkinConstraintLayout
             android:id="@+id/route_right_tab_list_charging_station"
             clickCommand="@{Scene.clickChargingStation}"
-            android:layout_width="@dimen/dp_146"
-            android:layout_height="@dimen/dp_146"
+            android:layout_width="@dimen/dp_77"
+            android:layout_height="@dimen/dp_90"
             app:layout_constraintEnd_toStartOf="@id/route_right_tab_list_weather"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/route_right_tab_list_weather">
@@ -92,7 +93,6 @@
                 android:id="@+id/route_right_tab_list_tv_charging_station"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/dp_28"
                 android:text="@string/route_charging_station"
                 android:textColor="@color/tab_list_route_tab_list_unselect"
                 android:textSize="@dimen/sp_30"
@@ -103,9 +103,9 @@
 
             <com.fy.navi.ui.view.SkinImageView
                 android:id="@+id/route_right_tab_list_iv_charging_station"
-                android:layout_width="@dimen/dp_58"
-                android:layout_height="@dimen/dp_58"
-                android:layout_marginBottom="@dimen/dp_4"
+                android:layout_width="@dimen/dp_49"
+                android:layout_height="@dimen/dp_49"
+                android:layout_marginBottom="@dimen/dp_3"
                 android:src="@drawable/selector_route_tab_list_charge_station"
                 app:layout_constraintBottom_toTopOf="@id/route_right_tab_list_tv_charging_station"
                 app:layout_constraintEnd_toEndOf="@id/route_right_tab_list_charging_station"
@@ -116,8 +116,8 @@
         <com.fy.navi.ui.view.SkinConstraintLayout
             android:id="@+id/route_right_tab_list_gas_station"
             clickCommand="@{Scene.clickGasStation}"
-            android:layout_width="@dimen/dp_146"
-            android:layout_height="@dimen/dp_146"
+            android:layout_width="@dimen/dp_77"
+            android:layout_height="@dimen/dp_90"
             app:layout_constraintEnd_toStartOf="@id/route_right_tab_list_weather"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/route_right_tab_list_weather">
@@ -126,7 +126,6 @@
                 android:id="@+id/route_right_tab_list_tv_gas_station"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/dp_28"
                 android:text="@string/route_gas_station"
                 android:textColor="@color/tab_list_route_tab_list_unselect"
                 android:textSize="@dimen/sp_30"
@@ -137,9 +136,9 @@
 
             <com.fy.navi.ui.view.SkinImageView
                 android:id="@+id/route_right_tab_list_iv_gas_station"
-                android:layout_width="@dimen/dp_58"
-                android:layout_height="@dimen/dp_58"
-                android:layout_marginBottom="@dimen/dp_4"
+                android:layout_width="@dimen/dp_49"
+                android:layout_height="@dimen/dp_49"
+                android:layout_marginBottom="@dimen/dp_3"
                 android:src="@drawable/selector_route_tab_list_gas_station"
                 app:layout_constraintBottom_toTopOf="@id/route_right_tab_list_tv_gas_station"
                 app:layout_constraintEnd_toEndOf="@id/route_right_tab_list_gas_station"

@@ -332,6 +332,7 @@ public final class MapStateManager {
     private final NaviPackage.IsInForegroundCallback mForeGroundCallback = new NaviPackage.IsInForegroundCallback() {
         @Override
         public void onAppInForeground(final boolean isInForeground) {
+            Logger.w(IVrBridgeConstant.TAG, "appInForeground: " + isInForeground);
             mBuilder.setFront(isInForeground);
             AMapStateUtils.saveMapState(mBuilder.build());
         }
