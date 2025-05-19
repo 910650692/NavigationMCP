@@ -121,6 +121,7 @@
 
     <!--算路相关-->
     <string name="route_search_loading">路线规划中…</string>
+    <string name="route_offline_loading">离线路线规划中…</string>
     <string name="route_along_search">沿途搜索</string>
     <string name="route_change_preference">偏好设置</string>
     <string name="route_preference">路线偏好</string>

@@ -265,7 +265,7 @@ public class BaseSettingGuideViewModel extends BaseViewModel<SettingNaviFragment
 
     // 标准字号
     public Action mNaviTextSizeStandardClick = () -> {
-        MapPackage.getInstance().setMapViewTextSize(MapType.MAIN_SCREEN_MAIN_MAP, 1f);
+        MapPackage.getInstance().setMapViewTextSize(MapType.MAIN_SCREEN_MAIN_MAP, 1.3f);
         mModel.setMapViewTextSize(true);
 
         sendBuryPointForSettingGuide(BuryConstant.GuideOption.MAP_WORD_SIZE, BuryConstant.MapFontSize.DEFAULT);
@@ -273,7 +273,7 @@ public class BaseSettingGuideViewModel extends BaseViewModel<SettingNaviFragment
 
     // 大字号
     public Action mNaviTextSizeLargeClick = () -> {
-        MapPackage.getInstance().setMapViewTextSize(MapType.MAIN_SCREEN_MAIN_MAP, 1.8f);
+        MapPackage.getInstance().setMapViewTextSize(MapType.MAIN_SCREEN_MAIN_MAP, 1.5f);
         mModel.setMapViewTextSize(false);
 
         sendBuryPointForSettingGuide(BuryConstant.GuideOption.MAP_WORD_SIZE, BuryConstant.MapFontSize.BIG);

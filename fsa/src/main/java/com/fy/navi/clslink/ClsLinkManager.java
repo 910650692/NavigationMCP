@@ -104,7 +104,7 @@ public class ClsLinkManager {
             locationCoordinates.setLongitudeX(l2NaviBean.getVehiclePosition().getLocationLongitude());
             locationCoordinates.setLatitudeY(l2NaviBean.getVehiclePosition().getLocationLatitude());
             mpilotEgoVehicleInfo.setLocationCoordinates(locationCoordinates);
-            mpilotEgoVehicleInfo.setLocationLinkIndex(l2NaviBean.getVehiclePosition().getLocationLinkIndex());
+            mpilotEgoVehicleInfo.setLocationLinkIndex((int)l2NaviBean.getVehiclePosition().getLocationLinkIndex());
             mpilotEgoVehicleInfo.setLocationLinkOffset(l2NaviBean.getVehiclePosition().getLocationLinkOffset());
             mpilotEgoVehicleInfo.setMainSideRots(l2NaviBean.getVehiclePosition().getMainSideRots());
             mpilotEgoVehicleInfo.setNaviStatus(l2NaviBean.getVehiclePosition().getNaviStatus());
@@ -211,7 +211,10 @@ public class ClsLinkManager {
 
             MpilotSDRouteEndPoi.Builder mpilotSdRouteEndPoi = MpilotSDRouteEndPoi.newBuilder();
             mpilotSdRouteEndPoi.setEndPoiId(routeL2Data.getMEndPoi().getMId());
-            mpilotSdRouteEndPoi.setEndPoiName(routeL2Data.getMEndPoi().getMName());
+            String mName = routeL2Data.getMEndPoi().getMName();
+            if (mName == null) {
+                mpilotSdRouteEndPoi.setEndPoiName(mName);
+            }
             mpilotSdRouteEndPoi.setEndPoiType(routeL2Data.getMEndPoi().getMType());
             List<RouteL2Data.EndPoiDTO.EntranceListDTO> entranceList = routeL2Data.getMEndPoi().getMEntranceList();
             if (entranceList != null) {

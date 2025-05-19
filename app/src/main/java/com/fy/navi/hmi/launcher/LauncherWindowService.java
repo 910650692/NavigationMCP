@@ -46,7 +46,7 @@ import com.fy.navi.service.logicpaket.navi.NaviPackage;
  * Date: 2025/4/24
  * Description: [在这里描述文件功能]
  */
-public class LauncherWindowService extends Service implements IGuidanceObserver, IMapPackageCallback, IEglScreenshotCallBack {
+public class LauncherWindowService extends Service implements IGuidanceObserver, IMapPackageCallback, IEglScreenshotCallBack , FloatViewManager.OnImageLoadCallBack{
     private static final String TAG = "LauncherWindowService";
     private WindowManager mWindowManager;
     private View mView;
@@ -135,24 +135,11 @@ public class LauncherWindowService extends Service implements IGuidanceObserver,
     }
 
     @Override
-    public void onCrossImageInfo(boolean isShowImage, CrossImageEntity naviImageInfo) {
-        IGuidanceObserver.super.onCrossImageInfo(isShowImage, naviImageInfo);
-        ThreadManager.getInstance().postUi(() -> {
-            if (!ConvertUtils.isNull(mBinding)) {
-                mBinding.ivCross.setVisibility(isShowImage ? View.VISIBLE : View.GONE);
-            }
-        });
-    }
-
-    @Override
     public void onEGLScreenshot(MapType mapType, byte[] bytes) {
         IEglScreenshotCallBack.super.onEGLScreenshot(mapType, bytes);
         if (mapType == MapType.MAIN_SCREEN_MAIN_MAP && !ConvertUtils.isNull(mView) && !ConvertUtils.isEmpty(bytes)) {
-            ThreadManager.getInstance().postUi(() -> {
-                Bitmap bitmap = FloatViewManager.getInstance().processPicture(bytes);
-                if (!ConvertUtils.isNull(bitmap)) {
-                    mBinding.ivCross.setImageBitmap(bitmap);
-                }
+            ThreadManager.getInstance().execute(() -> {
+                mFloatManager.processPicture(bytes);
             });
         }
     }
@@ -211,7 +198,7 @@ public class LauncherWindowService extends Service implements IGuidanceObserver,
                 PixelFormat.TRANSLUCENT
         );
 
-        layoutParams.gravity = Gravity.START | Gravity.TOP;
+        layoutParams.gravity = Gravity.LEFT | Gravity.TOP;
         layoutParams.x = 300;
         layoutParams.y = 0;
         mWindowManager.addView(mView, layoutParams);
@@ -295,5 +282,21 @@ public class LauncherWindowService extends Service implements IGuidanceObserver,
      */
     private boolean checkHasOverLay() {
         return Settings.canDrawOverlays(AppContext.getInstance().getMContext());
+    }
+
+    @Override
+    public void onImageReady(@Nullable Bitmap bitmap) {
+        ThreadManager.getInstance().postUi(() -> {
+            if (!ConvertUtils.isNull(bitmap)) {
+                mBinding.ivCross.setImageBitmap(bitmap);
+            }
+        });
+    }
+
+    public void changeCrossVisible(boolean isVisible) {
+        Logger.i(TAG, "changeCrossVisible:" + isVisible);
+        if (!ConvertUtils.isNull(mBinding)) {
+            mBinding.ivCross.setVisibility(isVisible ? View.VISIBLE : View.GONE);
+        }
     }
 }

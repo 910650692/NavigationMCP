@@ -880,6 +880,18 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
     }
 
     @Override
+    public void onRouteOffline(final MapType mapTypeId, final String errorMsg) {
+        if (!ConvertUtils.isEmpty(errorMsg)) {
+            ThreadManager.getInstance().postUi(() -> {
+                ToastUtils.Companion.getInstance().showCustomToastView(errorMsg);
+            });
+        }
+        if (!ConvertUtils.isEmpty(mViewModel)) {
+            mViewModel.showOfflineProgressUI();
+        }
+    }
+
+    @Override
     public void onRouteRequest() {
         mSearchPackage.clearLabelMark();
         clearWeatherView();

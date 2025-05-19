@@ -66,14 +66,10 @@ dependencies {
     implementation project(":burypoint")
 
     implementation libs.androidcar
-    if (IS_PAD_RUN.toBoolean()) {
-        implementation libs.signal
-        implementation libs.calibration
-    } else {
-        compileOnly libs.signal
-        compileOnly libs.calibration
-    }
-
+    debugImplementation libs.signal
+    debugImplementation libs.calibration
+    releaseCompileOnly libs.signal
+    releaseCompileOnly libs.calibration
 
     implementation libs.adapter.rxjava
     implementation libs.converter.gson

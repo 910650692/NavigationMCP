@@ -13,9 +13,12 @@ import android.view.Display;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+
+import com.android.utils.ResourceUtils;
 import com.android.utils.ToastUtils;
 import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
+import com.android.utils.thread.ThreadManager;
 import com.fy.navi.adas.JsonLog;
 import com.fy.navi.fsa.bean.DestInfo;
 import com.fy.navi.fsa.bean.GeoPoint;
@@ -244,7 +247,8 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
                     //导航态下，仪表切换为地图模式后，中控地图导航模式切换为“路线全览模式。
                     OpenApiHelper.enterPreview(MapType.MAIN_SCREEN_MAIN_MAP);
                     //toast提示（MsgType: 3s Timeout +Anykey)：
-                    ToastUtils.Companion.getInstance().showCustomToastView("仪表导航已开启，地图默认显示全程路线",  3000);
+                    ThreadManager.getInstance().postUi(() ->
+                            ToastUtils.Companion.getInstance().showCustomToastView(ResourceUtils.Companion.getInstance().getString(R.string.open_cluster_map_toast),  3000));
                 }
                 switchClusterActivity(true);
                 break;
@@ -613,27 +617,6 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
             } else {
                 sendEvent(FsaConstant.FsaFunction.ID_THEME_CHANGED, FsaConstant.FsaValue.TRUE);
             }
-        }
-
-        @Override
-        public void onEGLScreenshot(MapType mapTypeId, byte[] bytes) {
-            if (!mIsHudServiceStart) {
-                return;
-            }
-            byte[] bytes1 = processPicture(bytes);
-            VTServerBQJni.getInstance().nativeNotifyVideoData(bytes1);
-            // 以下是调试用
-//            Bitmap bitmap = Bitmap.createBitmap(328, 172, Bitmap.Config.ARGB_8888);
-//            bitmap.copyPixelsFromBuffer(ByteBuffer.wrap(bytes1));
-
-//            // 创建文件保存图片
-//            File file = new File(AppContext.getInstance().getMContext().getCacheDir(), "image.png");
-//            try (FileOutputStream fos = new FileOutputStream(file)) {
-//                bitmap.compress(Bitmap.CompressFormat.PNG, 100, fos);
-//                Log.d(TAG, "Image saved successfully: " + file.getAbsolutePath());
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
         }
     };
 

@@ -201,6 +201,7 @@ public class PositionPackage implements IPositionAdapterCallback, SignalAdapterC
 
     @Override
     public void onSpeedChanged(float speed) {
+        mPositionAdapter.onSpeedChanged(speed);
     }
 
     /**

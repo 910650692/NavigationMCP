@@ -61,16 +61,16 @@ public class SceneScaleView extends BaseSceneView<SceneScaleBinding, SceneScaleI
      */
     public void updateOnMapLevelChanged(String scale) {
         Logger.d("updateOnMapLevelChanged", "scale:" + scale);
-        if (ConvertUtils.isNull(mViewBinding) || ConvertUtils.isNull(mViewBinding.screenScaleSize)) {
-            Logger.e("updateOnMapLevelChanged", "binding is null:" + (mViewBinding == null), "view is null:" + (mViewBinding.screenScaleSize == null));
-            return;
-        }
         ThreadManager.getInstance().postUi(() -> {
+            if (ConvertUtils.isNull(mViewBinding) || ConvertUtils.isNull(mViewBinding.screenScaleSize)) {
+                Logger.e("updateOnMapLevelChanged", "binding is null:" + (mViewBinding == null));
+                return;
+            }
             mViewBinding.screenScaleSize.setText(scale);
 
             if (scale.equals("1000公里")) {
                 mViewBinding.screenScaleReduce.setAlpha(0.5f);
-            } else if (scale.equals("10米")) {
+            } else if (scale.equals("5米")) {
                 mViewBinding.screenScaleAdd.setAlpha(0.5f);
             } else {
                 mViewBinding.screenScaleAdd.setAlpha(1.0f);

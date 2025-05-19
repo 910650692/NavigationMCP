@@ -144,9 +144,9 @@ public interface GuidanceObserver extends BaseNaviObserver {
     /**
      * 下一条道路的车道线信息.
      *
-     * @param laneInfoEntity 车道线实体
+     * @param laneInfoList 车道线实体
      */
-    default void onLaneInfoReceived(LaneInfoEntity laneInfoEntity) {
+    default void onLaneInfoReceived(ArrayList<LaneInfoEntity> laneInfoList) {
     }
 
     /**

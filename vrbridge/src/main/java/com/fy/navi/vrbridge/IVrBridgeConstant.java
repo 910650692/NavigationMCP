@@ -35,6 +35,8 @@ public interface IVrBridgeConstant {
         String TOILET = "TOILET"; //卫生间/厕所/洗手间/WC
         String BEAUTY = "BEAUTY"; //丽人/美发/美容/美甲/美体
         String POI_COLLECT = "poiCollect";
+        String NAVI_TO_HOME = "NAVI_TO_HOME"; //导航回家地址未设置
+        String NAVI_TO_COMPANY = "NAVI_TO_COMPANY";//导航去公司地址未设置
     }
 
     //导航去目的地的路线偏好
@@ -82,6 +84,7 @@ public interface IVrBridgeConstant {
         int CONDITION_IN_PAGE = 9; //多条件搜索跳转到搜索页面
         int POI_SORT = 10; //POI排序
         int START_ARRIVAL_INFO = 11; //两点之前的时长和距离，与到家/公司分开处理
+        int NAVI_TO_HOME_COMPANY = 12; //导航回家/去公司，先设置地址
     }
 
     String CURRENT_LOCATION = "CURRENT_LOCATION";

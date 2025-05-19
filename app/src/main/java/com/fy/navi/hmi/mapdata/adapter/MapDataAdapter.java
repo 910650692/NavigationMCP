@@ -209,6 +209,7 @@ public class MapDataAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 mDownloadBtnView.setVisibility(View.GONE);
                 allDownload.setVisibility(View.VISIBLE);
                 allPause.setVisibility(View.VISIBLE);
+                downloadProgress.setVisibility(View.GONE);
                 final Map<Integer, Integer> allCityTaskStateMap = downloadItem.getAllCityTaskStateMap();
                 boolean isAllDownloadEnable = false;
                 boolean isAllPauseEnable = false;
@@ -227,7 +228,6 @@ public class MapDataAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 }
                 allDownload.setEnabled(isAllDownloadEnable);
                 allPause.setEnabled(isAllPauseEnable);
-
             } else {
                 mDownloadBtnView.setVisibility(View.VISIBLE);
                 allDownload.setVisibility(View.GONE);
@@ -328,18 +328,21 @@ public class MapDataAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             if (parent.getAdcode() == parentId) {
                 for (CityDataInfo child : parent.getCityInfoList()) {
                     //全省下载条目
-                    if (child.getAdcode() == parentId && allDownloadPosition != RecyclerView.NO_POSITION) {
+                    if (child.getAdcode() == parentId) {
                         final CityDownLoadInfo downLoadInfo = child.getDownLoadInfo();
                         final Map<Integer, Integer> allCityTaskStateMap = downLoadInfo.getAllCityTaskStateMap();
                         if (allCityTaskStateMap != null) {
                             allCityTaskStateMap.put(childId, newValue.getTaskState());
-                            notifyItemChanged(allDownloadPosition);
+                            if (allDownloadPosition != RecyclerView.NO_POSITION) {
+                                notifyItemChanged(allDownloadPosition);
+                            }
                         }
                     }
-
-                    if (child.getAdcode() == childId && childPosition != RecyclerView.NO_POSITION) {
+                    if (child.getAdcode() == childId ) {
                         child.setDownLoadInfo(newValue);
-                        notifyItemChanged(childPosition);
+                        if (childPosition != RecyclerView.NO_POSITION) {
+                            notifyItemChanged(childPosition);
+                        }
                         return;
                     }
                 }

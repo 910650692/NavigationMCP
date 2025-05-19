@@ -17,6 +17,7 @@ import com.android.utils.thread.ThreadManager;
 import com.fy.navi.burypoint.anno.HookMethod;
 import com.fy.navi.burypoint.constant.BuryConstant;
 import com.fy.navi.hmi.R;
+import com.fy.navi.hmi.launcher.FloatViewManager;
 import com.fy.navi.hmi.search.alongway.MainAlongWaySearchFragment;
 import com.fy.navi.hmi.search.searchresult.SearchResultFragment;
 import com.fy.navi.hmi.setting.SettingFragment;
@@ -508,6 +509,9 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
     @Override
     public void updateSceneVisible(final NaviSceneId sceneType, final boolean isVisible) {
         mViewModel.updateSceneVisible(sceneType, isVisible);
+        if (sceneType == NaviSceneId.NAVI_SCENE_2D_CROSS || sceneType == NaviSceneId.NAVI_SCENE_3D_CROSS) {
+            FloatViewManager.getInstance().notifyCrossImageView(isVisible);
+        }
     }
 
     @Override

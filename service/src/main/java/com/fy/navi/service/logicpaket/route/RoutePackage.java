@@ -3,6 +3,7 @@ package com.fy.navi.service.logicpaket.route;
 import android.util.Pair;
 
 import com.android.utils.ConvertUtils;
+import com.android.utils.NetWorkUtils;
 import com.android.utils.log.Logger;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.adapter.aos.BlAosAdapter;
@@ -71,6 +72,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import lombok.Getter;
 
@@ -112,6 +116,11 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
      * @return 返回是否
      */
     public boolean isNeedAutoOfflineRoute(final int errorCode) {
+        if (Boolean.TRUE.equals(NetWorkUtils.Companion.getInstance().checkNetwork())) {
+            // 当前有网，不进行离线算路
+            Logger.d(TAG, "Currently online");
+            return false;
+        }
         for (int t = 0; t < mOfflineRouteErrorCode.length; t++) {
             if (errorCode == mOfflineRouteErrorCode[t]) {
                 return true;
@@ -410,12 +419,20 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
             return;
         }
         if (isNeedAutoOfflineRoute(errorCode) && requestRouteResult.isMIsOnlineRoute()) {
-            final RouteRequestParam param = new RouteRequestParam();
-            param.setMMapTypeId(requestRouteResult.getMMapTypeId());
-            param.setMFastNavi(requestRouteResult.isMFastNavi());
-            param.setMRouteWay(requestRouteResult.getMRouteWay());
-            param.setMIsOnline(false);
-            requestRoute(param);
+            callBackOfflineRouting(requestRouteResult.getMMapTypeId(), errorMsg);
+            //延迟3秒等待无网络toast显示完成，自动发起离线算路
+            final ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
+            executorService.schedule(new Runnable() {
+                @Override
+                public void run() {
+                    final RouteRequestParam param = new RouteRequestParam();
+                    param.setMMapTypeId(requestRouteResult.getMMapTypeId());
+                    param.setMFastNavi(requestRouteResult.isMFastNavi());
+                    param.setMRouteWay(requestRouteResult.getMRouteWay());
+                    param.setMIsOnline(false);
+                    requestRoute(param);
+                }
+            }, 3, TimeUnit.SECONDS);
             return;
         }
         reGetParamList(requestRouteResult.getMMapTypeId());
@@ -790,6 +807,24 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
                 continue;
             }
             routeResultObserver.onRouteFail(mapTypeId, errorText);
+        }
+    }
+
+    /**
+     * 回调离线算路信息
+     *
+     * @param mapTypeId 屏幕ID
+     * @param errorText 错误信息
+     */
+    public void callBackOfflineRouting(final MapType mapTypeId, final String errorText) {
+        if (ConvertUtils.isEmpty(mRouteResultObserverMap)) {
+            return;
+        }
+        for (IRouteResultObserver routeResultObserver : mRouteResultObserverMap.values()) {
+            if (ConvertUtils.isEmpty(routeResultObserver)) {
+                continue;
+            }
+            routeResultObserver.onRouteOffline(mapTypeId, errorText);
         }
     }
 

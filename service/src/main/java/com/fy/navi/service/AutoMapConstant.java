@@ -357,4 +357,9 @@ public interface AutoMapConstant {
         String ACTION = "com.patac.hmi.user.action.service.overlay";
         String PACKAGE = "com.patac.hmi.user";
     }
+
+    @interface ActivateOrderTAG {
+        String SD_ORDER_ID = "sd_order_id";
+        String HQ_ORDER_ID = "hq_order_id";
+    }
 }

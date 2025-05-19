@@ -99,7 +99,7 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver,
 
     private static final String TAG = MapDefaultFinalTag.MAP_SERVICE_TAG;
 
-    private static float MAP_ZOOM_LEVEL_MAX = 19F;
+    private static float MAP_ZOOM_LEVEL_MAX = 20F;
     private static float MAP_ZOOM_LEVEL_MIN = 3F;
     private static float MAP_ZOOM_LEVEL_DEFAULT = 13F;
 

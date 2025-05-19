@@ -25,6 +25,7 @@ import com.fy.navi.ui.view.SkinTextView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class SearchMapDataAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     public static final String TAG = SearchMapDataAdapter.class.getName();
@@ -229,17 +230,25 @@ public class SearchMapDataAdapter extends RecyclerView.Adapter<RecyclerView.View
                 mDownloadBtnView.setVisibility(View.GONE);
                 mAllDownload.setVisibility(View.VISIBLE);
                 mAllPause.setVisibility(View.VISIBLE);
-                final List<CityDataInfo> cityDataInfos = parent.getCityInfoList();
-                final ArrayList<Integer> cityAdCodes = new ArrayList<>();
-                for (CityDataInfo info : cityDataInfos) {
-                    if (info.getDownLoadInfo().getTaskState() == UserDataCode.TASK_STATUS_CODE_SUCCESS) {
-                        cityAdCodes.add(info.getAdcode());
+                mDownloadProgress.setVisibility(View.GONE);
+                final Map<Integer, Integer> allCityTaskStateMap = downloadItem.getAllCityTaskStateMap();
+                boolean isAllDownloadEnable = false;
+                boolean isAllPauseEnable = false;
+                if (allCityTaskStateMap != null) {
+                    if (allCityTaskStateMap.containsValue(UserDataCode.TASK_STATUS_CODE_PAUSE)
+                        || allCityTaskStateMap.containsValue(UserDataCode.TASK_STATUS_CODE_ERR)
+                        || allCityTaskStateMap.containsValue(UserDataCode.TASK_STATUS_CODE_READY)) {
+                        isAllDownloadEnable = true;
+                    }
+
+                    if (allCityTaskStateMap.containsValue(UserDataCode.TASK_STATUS_CODE_DOING)
+                        || allCityTaskStateMap.containsValue(UserDataCode.TASK_STATUS_CODE_DONE)
+                        || allCityTaskStateMap.containsValue(UserDataCode.TASK_STATUS_CODE_WAITING)) {
+                        isAllPauseEnable = true;
                     }
                 }
-                if (cityDataInfos.size() == cityAdCodes.size()) { // 该省份下所有城市均已下载
-                    mIsClickAllStart = false;
-                }
-                setAllStartAndPauseStatus(mAllDownload, mAllPause, mIsClickAllStart, mIsClickAllPause);
+                mAllDownload.setEnabled(isAllDownloadEnable);
+                mAllPause.setEnabled(isAllPauseEnable);
             }
 
             // 下载 or 暂停下载
@@ -275,7 +284,6 @@ public class SearchMapDataAdapter extends RecyclerView.Adapter<RecyclerView.View
             });
             // 全部开始下载
             mAllDownload.setOnClickListener(view -> {
-                setAllStartAndPauseStatus(mAllDownload, mAllPause,false, true);
                 final List<CityDataInfo> cityDataInfos = parent.getCityInfoList();
                 final ArrayList<Integer> cityAdCodes = new ArrayList<>();
                 for (CityDataInfo info : cityDataInfos) {
@@ -292,7 +300,6 @@ public class SearchMapDataAdapter extends RecyclerView.Adapter<RecyclerView.View
             });
             // 全部暂停下载
             mAllPause.setOnClickListener(view -> {
-                setAllStartAndPauseStatus(mAllDownload, mAllPause,false, true);
                 final List<CityDataInfo> cityDataInfos = parent.getCityInfoList();
                 final ArrayList<Integer> cityAdCodes = new ArrayList<>();
                 for (CityDataInfo info : cityDataInfos) {
@@ -310,41 +317,6 @@ public class SearchMapDataAdapter extends RecyclerView.Adapter<RecyclerView.View
     }
 
     /**
-     * 设置全部开始/全部暂停按钮状态
-     * @param allDownload
-     * @param allPause
-     * @param isStart
-     * @param isPause
-     */
-    private void setAllStartAndPauseStatus(final SkinButton allDownload, final SkinButton allPause, final boolean isStart, final boolean isPause) {
-        mIsClickAllStart = isStart;
-        mIsClickAllPause = isPause;
-        if (mIsClickAllStart) {
-            allDownload.setTextColor(ResourceUtils.Companion.getInstance().getColor(R.color.white));
-            allDownload.setBackgroundResource(R.drawable.shape_bg_download_data);
-            allDownload.setEnabled(true);
-            allDownload.setAlpha(1.0f);
-        } else {
-            allDownload.setTextColor(ResourceUtils.Companion.getInstance().getColor(R.color.color_70_000000));
-            allDownload.setBackgroundResource(R.drawable.shape_bg_map_item_data);
-            allDownload.setEnabled(false);
-            allDownload.setAlpha(0.7f);
-        }
-
-        if (mIsClickAllPause) {
-            allPause.setTextColor(ResourceUtils.Companion.getInstance().getColor(R.color.white));
-            allPause.setBackgroundResource(R.drawable.shape_bg_download_data);
-            allPause.setEnabled(true);
-            allPause.setAlpha(1.0f);
-        } else {
-            allPause.setTextColor(ResourceUtils.Companion.getInstance().getColor(R.color.color_70_000000));
-            allPause.setBackgroundResource(R.drawable.shape_bg_map_item_data);
-            allPause.setEnabled(false);
-            allPause.setAlpha(0.7f);
-        }
-    }
-
-    /**
      * 更新子项数据
      * @param parentId
      * @param childId
@@ -352,13 +324,27 @@ public class SearchMapDataAdapter extends RecyclerView.Adapter<RecyclerView.View
      */
     public void updateChild(final int parentId, final int childId, final CityDownLoadInfo newValue) {
         final int childPosition = getChildPosition(parentId, childId);
+        Logger.d(TAG, "child position is " + childPosition);
+        final int allDownloadPosition = getChildPosition(parentId, parentId);
+        Logger.d(TAG, "all download position is " + allDownloadPosition);
         for (ProvDataInfo parent : mProvinceList) {
             if (parent.getAdcode() == parentId) {
                 for (CityDataInfo child : parent.getCityInfoList()) {
+                    //全省下载条目
+                    if (child.getAdcode() == parentId) {
+                        final CityDownLoadInfo downLoadInfo = child.getDownLoadInfo();
+                        final Map<Integer, Integer> allCityTaskStateMap = downLoadInfo.getAllCityTaskStateMap();
+                        if (allCityTaskStateMap != null) {
+                            allCityTaskStateMap.put(childId, newValue.getTaskState());
+                            if (allDownloadPosition != RecyclerView.NO_POSITION) {
+                                notifyItemChanged(allDownloadPosition);
+                            }
+                        }
+                    }
+
                     if (child.getAdcode() == childId) {
                         child.setDownLoadInfo(newValue);
                         if (childPosition != -1) {
-                            Logger.d(TAG, "child position is " + childPosition);
                             notifyItemChanged(childPosition);
                             return;
                         }

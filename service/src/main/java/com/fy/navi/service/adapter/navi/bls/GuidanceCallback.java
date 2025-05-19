@@ -503,16 +503,20 @@ public class GuidanceCallback implements INaviObserver, ISoundPlayObserver {
         if (ConvertUtils.isEmpty(mGuidanceObservers)) {
             return;
         }
-        final LaneInfo laneInfo1 = laneInfo.get(0);
-        if (ConvertUtils.isEmpty(laneInfo1)) {
-            return;
+        ArrayList<LaneInfoEntity> laneInfoList = new ArrayList<>();
+        for (int i = 0; i < laneInfo.size(); i++) {
+            LaneInfo info =  laneInfo.get(i);
+            if (ConvertUtils.isEmpty(info)) {
+                continue;
+            }
+            final LaneInfoEntity laneInfoEntity = NaviDataFormatHelper.forMatLaneInfo(info);
+            laneInfoList.add(laneInfoEntity);
         }
-        final LaneInfoEntity laneInfoEntity = NaviDataFormatHelper.forMatLaneInfo(laneInfo1);
         for (GuidanceObserver guidanceObserver : mGuidanceObservers.values()) {
             if (guidanceObserver == null) {
                 continue;
             }
-            guidanceObserver.onLaneInfoReceived(laneInfoEntity);
+            guidanceObserver.onLaneInfoReceived(laneInfoList);
         }
     }
 

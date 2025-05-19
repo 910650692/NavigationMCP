@@ -245,6 +245,10 @@ public class NaviAudioPlayer {
                 AudioManager.AUDIO_SESSION_ID_GENERATE);
         //使用map为了处理多个音频输出
         mAudioTrackMap.put(reqId, audioTrack);
+        if(audioTrack.getState() == 0){
+            Logger.e(TAG, "createAudioTrack State ：" + audioTrack.getState());
+            return null;
+        }
         mVolumeShaper = audioTrack.createVolumeShaper(configurationFadeFast);
         audioTrack.play();
         return audioTrack;

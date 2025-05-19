@@ -526,6 +526,15 @@ public class RouteFragment extends BaseFragment<FragmentRouteBinding, RouteViewM
         }
     }
 
+    /**
+     * 显示离线算路文言
+     */
+    public void showOfflineProgressUI() {
+        if (!ConvertUtils.isEmpty(mRouteRequestLoadingDialog) && mRouteRequestLoadingDialog.isShowing()) {
+            mRouteRequestLoadingDialog.showOfflineRouting();
+        }
+    }
+
     /***
      * 算路请求弹框关闭
      */

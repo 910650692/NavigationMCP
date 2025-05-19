@@ -36,6 +36,13 @@ public class RouteRequestLoadingDialog extends BaseFullScreenDialog<LayoutSearch
         this.mListener = listener;
     }
 
+    /**
+     * 显示离线算路文言
+     */
+    public void showOfflineRouting() {
+        mViewBinding.tvMessage.setText(ResourceUtils.Companion.getInstance().getText(R.string.route_offline_loading));
+    }
+
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

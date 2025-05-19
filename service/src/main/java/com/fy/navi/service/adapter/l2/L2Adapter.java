@@ -1,7 +1,5 @@
 package com.fy.navi.service.adapter.l2;
 
-import android.util.Log;
-
 import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
 import com.autonavi.gbl.common.model.Coord2DDouble;
@@ -30,13 +28,19 @@ import com.fy.navi.service.define.navi.LaneInfoEntity;
 import com.fy.navi.service.define.navi.NaviEtaInfo;
 import com.fy.navi.service.define.navi.NaviManeuverInfo;
 import com.fy.navi.service.define.navi.NaviMixForkInfo;
+import com.fy.navi.service.define.navi.NaviRoadFacilityEntity;
 import com.fy.navi.service.define.navi.SapaInfoEntity;
 import com.fy.navi.service.define.navi.SoundInfoEntity;
 import com.fy.navi.service.define.navi.SpeedOverallEntity;
 import com.fy.navi.service.define.navistatus.NaviStatus;
 import com.fy.navi.service.define.position.LocParallelInfoEntity;
 import com.fy.navi.service.define.route.RouteCurrentPathParam;
+import com.fy.navi.service.define.route.RouteParam;
+import com.fy.navi.service.define.search.ParkingInfo;
+import com.fy.navi.service.define.search.PoiInfoEntity;
+import com.fy.navi.service.define.search.SearchParkInOutInfo;
 import com.fy.navi.service.logicpaket.position.PositionPackage;
+import com.fy.navi.service.logicpaket.route.RoutePackage;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,6 +61,7 @@ public class L2Adapter {
     private String mNaviStatus;
     private ScheduledExecutorService mScheduler;
     private NaviEtaInfo mNaviEtaInfo;
+    private int mTaskId;
 
     private L2Adapter() {
         l2NaviBean = new L2NaviBean();
@@ -114,9 +119,10 @@ public class L2Adapter {
 
             vehiclePosition.setCurPathID(naviEtaInfo.pathID); // 当前选择得路线下标
             vehiclePosition.setDistToDestination(naviEtaInfo.getAllDist()); // 当前位置到目的地距离
-            vehiclePosition.setLocationLinkIndex(naviEtaInfo.curLinkIdx); //自车当前位置的link索引，跟全局路线中的link索引对应
+            vehiclePosition.setLocationLinkIndex(getLocationLinkIndex(naviEtaInfo.curSegIdx, naviEtaInfo.curLinkIdx)); //自车当前位置的link索引，跟全局路线中的link索引对应
+            int locationLinkOffset = getLinkLength(naviEtaInfo.curSegIdx, naviEtaInfo.curLinkIdx) - naviEtaInfo.linkRemainDist;
+            vehiclePosition.setLocationLinkOffset(Math.max(locationLinkOffset, 0));
 
-            //vehiclePosition.setCurrentSpeedLimit(naviEtaInfo.curLinkSpeed); // 当前自车所在道路限速
             vehiclePosition.setRoadClass(naviEtaInfo.curRoadClass); // 当前自车所在道路等级
 
             L2NaviBean.GuidePointInfoBean guidePointInfo = l2NaviBean.getGuidePointInfo();
@@ -141,18 +147,36 @@ public class L2Adapter {
                 tunnelInfoBean.setTunnelDist(0xFFFF);
                 tunnelInfoBean.setTunnelLength(0);
             }
-
-//            L2NaviBean.CrossInfoDataBean crossInfoDataBean = l2NaviBean.getCrossInfoData();
-//            crossInfoDataBean.setTrafficLightPosition(naviEtaInfo.getNextDist());
-
-            ArrayList<NaviEtaInfo.NaviCrossNaviInfo> naviCrossNaviInfos = naviEtaInfo.nextCrossInfo;
-            if (!ConvertUtils.isEmpty(naviCrossNaviInfos)) {
-                NaviEtaInfo.NaviCrossNaviInfo nextNaviInfo = naviCrossNaviInfos.get(0);
-                Logger.i(TAG, "交叉路口信息", nextNaviInfo);
-                /*** 发起下个路口的车道线信息得请求{@link L2Adapter#onLaneInfoReceived} **/
-                NaviAdapter.getInstance().queryAppointLanesInfo(nextNaviInfo.segmentIndex, nextNaviInfo.linkIndex);
-            }
             Logger.i(TAG, "引导信息", naviEtaInfo.getNextDist(), guidePointInfo, tunnelInfoBean, vehiclePosition);
+            if (naviEtaInfo.getAllDist() <= 2000) {
+                RouteParam endPoint = RoutePackage.getInstance().getEndPoint(MapType.MAIN_SCREEN_MAIN_MAP);
+                if (endPoint != null) {
+                    PoiInfoEntity mPoiInfoEntity = endPoint.getMPoiInfoEntity();
+                    if (mPoiInfoEntity == null) {
+                        return;
+                    }
+                    ParkingInfo parkingInfo = mPoiInfoEntity.getParkingInfoList().get(0);
+                    if (parkingInfo == null) {
+                        return;
+                    }
+                    List<SearchParkInOutInfo> mSearchParkInOutInfos = parkingInfo.getMSearchParkInOutInfos();
+                    if (mSearchParkInOutInfos == null) {
+                        return;
+                    }
+                    L2NaviBean.EndParkingInfo endParkingInfo = l2NaviBean.getEndParkingInfo();
+                    for (int i = 0; i < mSearchParkInOutInfos.size(); i++) {
+                        SearchParkInOutInfo searchParkInOutInfo = mSearchParkInOutInfos.get(i);
+                        if (searchParkInOutInfo == null) {
+                            continue;
+                        }
+                        if ("出口".equals(searchParkInOutInfo.getKeytype())) {
+                            endParkingInfo.setMParkingExit(searchParkInOutInfo.getX(), searchParkInOutInfo.getY());
+                        } else if ("入口".equals(searchParkInOutInfo.getKeytype())) {
+                            endParkingInfo.setMParkingEnter(searchParkInOutInfo.getX(), searchParkInOutInfo.getY());
+                        }
+                    }
+                }
+            }
         }
 
         @Override
@@ -164,35 +188,30 @@ public class L2Adapter {
         }
 
         @Override
-        public void onLaneInfoReceived(LaneInfoEntity laneInfoEntity) {
-            if (laneInfoEntity == null || laneInfoEntity.getBackLane() == null) {
+        public void onLaneInfoReceived(ArrayList<LaneInfoEntity> laneInfoList) {
+            if (laneInfoList == null || laneInfoList.isEmpty()) {
                 Logger.i(TAG, "lane null");
-                L2NaviBean.CrossInfoDataBean crossInfoDataBean = l2NaviBean.getCrossInfoData();
-                crossInfoDataBean.setLaneNum(0);
-                crossInfoDataBean.setLaneTypes(new ArrayList<>()); // 下个路口所有车道通行方向
-
                 List<L2NaviBean.AheadIntersectionsBean> aheadIntersections = l2NaviBean.getAheadIntersections();
-                if (aheadIntersections.isEmpty()) {
-                    aheadIntersections.add(new L2NaviBean.AheadIntersectionsBean());
-                }
-                L2NaviBean.AheadIntersectionsBean aheadIntersection = aheadIntersections.get(0);
-                aheadIntersection.setLaneNum(0); // 下个路口车道数
-                aheadIntersection.setLaneTypes(new ArrayList<>());
+                aheadIntersections.clear();
                 return;
             }
-            Logger.i(TAG, "下一个路口车道信息", laneInfoEntity);
-            ArrayList<Integer> backLanes = laneInfoEntity.getBackLane();
-            L2NaviBean.CrossInfoDataBean crossInfoDataBean = l2NaviBean.getCrossInfoData();
-            crossInfoDataBean.setLaneNum(backLanes.size());
-            crossInfoDataBean.setLaneTypes(backLanes); // 下个路口所有车道通行方向
-
             List<L2NaviBean.AheadIntersectionsBean> aheadIntersections = l2NaviBean.getAheadIntersections();
-            if (aheadIntersections.isEmpty()) {
-                aheadIntersections.add(new L2NaviBean.AheadIntersectionsBean());
+            aheadIntersections.clear();
+            for (int i = 0; i < laneInfoList.size(); i++) {
+                LaneInfoEntity laneInfoEntity = laneInfoList.get(i);
+                L2NaviBean.AheadIntersectionsBean aheadIntersectionsBean = new L2NaviBean.AheadIntersectionsBean();
+                aheadIntersectionsBean.setLaneNum(laneInfoEntity.getBackLane().size()); // 下个路口车道数
+                aheadIntersectionsBean.setSegmentIndex(laneInfoEntity.getSegmentIdx()); // 与link_index结合使用，用于映射到导航路径上
+                aheadIntersectionsBean.setLinkIndex(laneInfoEntity.getLinkIdx()); // 与segment_index结合使用，用于映射到导航路径上
+                aheadIntersectionsBean.setTimestamp(System.currentTimeMillis());
+                aheadIntersectionsBean.setLaneTypes(laneInfoEntity.getBackLane()); // 下个路口所有车道通行方向
+                aheadIntersectionsBean.setHighLightLaneTypes(laneInfoEntity.getFrontLane()); // 表达的是每个车道可以通行的方向，比如自车直行过路口的时候，直行加右转车道对应的就是直行
+                aheadIntersectionsBean.setFrontLaneType(laneInfoEntity.getFrontLaneType()); // 引导点处可通行车道的类型信息
+                aheadIntersectionsBean.setBackLaneType(laneInfoEntity.getBackLaneType()); // 引导点处所有车道的类型信息
+                aheadIntersections.add(aheadIntersectionsBean);
+                break; // 暂时仅显示一个路口
             }
-            L2NaviBean.AheadIntersectionsBean aheadIntersection = aheadIntersections.get(0);
-            aheadIntersection.setLaneNum(backLanes.size()); // 下个路口车道数
-            aheadIntersection.setLaneTypes(laneInfoEntity.getBackLane()); // 下个路口所有车道通行方向
+            Logger.i(TAG, "下一个路口车道信息", laneInfoList);
         }
 
         @Override
@@ -207,6 +226,8 @@ public class L2Adapter {
                 crossInfoDataBean.setSegmentIndex(-1);
                 crossInfoDataBean.setLinkIndex(-1);
                 crossInfoDataBean.setTimestamp(System.currentTimeMillis());
+                crossInfoDataBean.setLaneNum(0);
+                crossInfoDataBean.setLaneTypes(null);
                 l2NaviBean.setHasTidalLane(0);
                 l2NaviBean.setAheadIntersections(new ArrayList<>());
                 return;
@@ -220,19 +241,11 @@ public class L2Adapter {
             if (ConvertUtils.isEmpty(backLanes)) return;
             int LaneNum = laneInfoEntity.getBackLane().size();
             List<Integer> highLightLanes = new ArrayList<>();
-            List<Integer> highLightLaneTypes = new ArrayList<>();
             for (int i = 0; i < LaneNum; i++) {
                 int recommend = laneInfoEntity.getFrontLane().get(i) != NaviConstant.LaneAction.LANE_ACTION_NULL ? 1 : 0;
                 highLightLanes.add(recommend);
                 if (NaviConstant.LANE_TYPE_TIDAL == laneInfoEntity.getBackLaneType().get(i)) {
                     hasTidalLane = true;
-                }
-                for (int k = 0; k < NaviConstant.LaneActionConstants.NAVI_LANE_MAP.length; k++) {
-                    if (NaviConstant.LaneActionConstants.NAVI_LANE_MAP[k][0] != laneInfoEntity.getBackLane().get(i))
-                        continue;
-                    if (NaviConstant.LaneActionConstants.NAVI_LANE_MAP[k][1] != laneInfoEntity.getFrontLane().get(i))
-                        continue;
-                    highLightLaneTypes.add(NaviConstant.LaneActionConstants.NAVI_LANE_MAP[k][2]);
                 }
             }
             if (hasTidalLane) {
@@ -240,31 +253,17 @@ public class L2Adapter {
             } else {
                 l2NaviBean.setHasTidalLane(0); // 没有潮汐车道
             }
+            crossInfoDataBean.setLaneNum(laneInfoEntity.getBackLane().size());
+            crossInfoDataBean.setLaneTypes(laneInfoEntity.getBackLane());
             crossInfoDataBean.setHighLightLanes(highLightLanes); // 设置推荐车道
-            crossInfoDataBean.setHighLightLaneTypes(highLightLaneTypes); // 设置表达的是每个车道可以通行的方向，比如自车直行过路口的时候，直行加右转车道对应的就是直行
+            crossInfoDataBean.setHighLightLaneTypes(laneInfoEntity.getFrontLane()); // 设置表达的是每个车道可以通行的方向，比如自车直行过路口的时候，直行加右转车道对应的就是直行
             crossInfoDataBean.setBackLaneType(laneInfoEntity.getBackLaneType()); // 引导点处所有车道的类型信息
             crossInfoDataBean.setFrontLaneType(laneInfoEntity.getFrontLaneType()); // 引导点处可通行车道的类型信息
             crossInfoDataBean.setSegmentIndex(laneInfoEntity.getSegmentIdx()); // 与link_index结合使用，用于映射到导航路径上
             crossInfoDataBean.setLinkIndex(laneInfoEntity.getLinkIdx()); // 与segment_index结合使用，用于映射到导航路径上
             crossInfoDataBean.setTimestamp(System.currentTimeMillis());
-            // 前方推荐车道信息列表
-            List<L2NaviBean.AheadIntersectionsBean> aheadIntersections = l2NaviBean.getAheadIntersections();
-            if (aheadIntersections.isEmpty()) {
-                aheadIntersections.add(new L2NaviBean.AheadIntersectionsBean());
-            }
-            L2NaviBean.AheadIntersectionsBean aheadIntersection = aheadIntersections.get(0);
-            aheadIntersection.setLinkIndex(laneInfoEntity.getLinkIdx()); // 与segment_index结合使用，用于映射到导航路径上
-            aheadIntersection.setSegmentIndex(laneInfoEntity.getSegmentIdx()); // 与link_index结合使用，用于映射到导航路径上
-            aheadIntersection.setHighLightLaneTypes(highLightLaneTypes); // 表达的是每个车道可以通行的方向，比如自车直行过路口的时候，直行加右转车道对应的就是直行
-            aheadIntersection.setFrontLaneType(laneInfoEntity.getFrontLaneType()); // 引导点处可通行车道的类型信息
-            aheadIntersection.setBackLaneType(laneInfoEntity.getBackLaneType()); // 引导点处所有车道的类型信息
-            aheadIntersection.setTimestamp(System.currentTimeMillis());
-//            aheadIntersections.add(aheadIntersection);
 
-
-            Logger.i(TAG, "车道线1", l2NaviBean.getHasTidalLane(), l2NaviBean.getCrossInfoData());
-            Logger.i(TAG, "车道线2", l2NaviBean.getAheadIntersections());
-            Logger.i(TAG, "车道线3", l2NaviBean.getCrossInfoData().getHighLightLanes());
+            Logger.i(TAG, "当前车道线", l2NaviBean.getHasTidalLane(), l2NaviBean.getCrossInfoData());
         }
 
         @Override
@@ -426,6 +425,21 @@ public class L2Adapter {
         public void onNaviStop() {
 
         }
+
+        @Override
+        public void onShowNaviFacility(ArrayList<NaviRoadFacilityEntity> naviRoadFacilityEntitys) {
+            L2NaviBean.WarningFacilityBean warningFacility = l2NaviBean.getWarningFacility();
+            if (naviRoadFacilityEntitys == null || naviRoadFacilityEntitys.isEmpty()) {
+                Logger.i(TAG, "道路设施", "null");
+                warningFacility.setBoardSignType(0);
+                warningFacility.setBoardSignDist(0);
+                return;
+            }
+            NaviRoadFacilityEntity naviRoadFacilityEntity = naviRoadFacilityEntitys.get(0);
+            warningFacility.setBoardSignType(naviRoadFacilityEntity.getType());
+            warningFacility.setBoardSignDist(naviRoadFacilityEntity.getDistance());
+            Logger.i(TAG, "道路设施", naviRoadFacilityEntity);
+        }
     };
 
     private final INaviStatusCallback mINaviStatusCallback = new INaviStatusCallback() {
@@ -443,6 +457,8 @@ public class L2Adapter {
                 }
             }
             l2NaviBean.clear();
+            mTaskId = 0;
+            mNaviEtaInfo = null;
             L2NaviBean.VehiclePositionBean vehiclePosition = l2NaviBean.getVehiclePosition();
             switch (naviStatus) {
                 case NaviStatus.NaviStatusType.NO_STATUS:
@@ -562,25 +578,10 @@ public class L2Adapter {
     /*** 道路属性 **/
     public void graspRouteResult(L2NaviBean.VehiclePositionBean value) {
         L2NaviBean.VehiclePositionBean vpb = l2NaviBean.getVehiclePosition();
-        vpb.setLocationLinkOffset(value.getLocationLinkOffset()); // 自车绑路后的link上offset，距离link起点的距离
         vpb.setLocationLongitude(value.getLocationLongitude()); // 自车经度坐标（在sd route上的）
         vpb.setLocationLatitude(value.getLocationLatitude()); // 自车纬度坐标（在sd route上的
         vpb.setRoadOwnership(value.getRoadOwnership()); // 自车所在道路所有权
         Logger.i(TAG, "道路属性", vpb.getLocationLinkOffset(), vpb.getLocationLongitude(), vpb.getLocationLatitude(), vpb.getRoadOwnership());
-    }
-
-    /**
-     * 设置停车场信息.
-     *
-     * @param enterX 停车场入口的坐标X
-     * @param enterY 停车场入口的坐标Y
-     * @param exitX  停车场出口的坐标X
-     * @param exitY  停车场出口的坐标Y
-     */
-    public void setEndParkInfo(double enterX, double enterY, double exitX, double exitY) {
-        L2NaviBean.EndParkingInfo endParkingInfo = new L2NaviBean.EndParkingInfo(enterX, enterY, exitX, exitY);
-//        l2NaviBean.setEndParkingInfo(endParkingInfo);
-        Logger.i(TAG, "设置停车场信息", endParkingInfo);
     }
 
     private final Runnable mTask = new Runnable() {
@@ -609,6 +610,10 @@ public class L2Adapter {
         if (ConvertUtils.isEmpty(l2DriveObserver)) {
             Logger.v(TAG, "l2++回调接口未注册");
         } else {
+            if (mNaviEtaInfo != null) {
+                NaviAdapter.getInstance().queryAppointLanesInfo(mNaviEtaInfo.curSegIdx, mNaviEtaInfo.curLinkIdx);
+            }
+
             LinkInfo linkInfo = getCurLinkInfo();
             if (linkInfo != null) {
                 L2NaviBean.VehiclePositionBean vpb = l2NaviBean.getVehiclePosition();
@@ -639,5 +644,39 @@ public class L2Adapter {
             }
         }
         return null;
+    }
+
+    private long getLocationLinkIndex(int curSegIdx, int curLinkIdx) {
+        long locationLinkIndex = 0;
+        RouteCurrentPathParam currentPath = RouteAdapter.getInstance().getCurrentPath(MapType.MAIN_SCREEN_MAIN_MAP);
+        if (currentPath != null) {
+            PathInfo pathInfo = (PathInfo) currentPath.getMPathInfo();
+            if (pathInfo != null) {
+                for (int i = 0; i < curSegIdx; i++) {
+                    SegmentInfo segmentInfo = pathInfo.getSegmentInfo(i);
+                    long linkCount = segmentInfo.getLinkCount();
+                    locationLinkIndex += linkCount;
+                }
+            }
+        }
+        locationLinkIndex += curLinkIdx;
+        return locationLinkIndex;
+    }
+
+    private int getLinkLength(int curSegIdx, int curLinkIdx) {
+        RouteCurrentPathParam currentPath = RouteAdapter.getInstance().getCurrentPath(MapType.MAIN_SCREEN_MAIN_MAP);
+        if (currentPath != null) {
+            PathInfo pathInfo = (PathInfo) currentPath.getMPathInfo();
+            if (pathInfo != null) {
+                SegmentInfo segmentInfo = pathInfo.getSegmentInfo(curSegIdx);
+                if (segmentInfo != null) {
+                    LinkInfo linkInfo = segmentInfo.getLinkInfo(curLinkIdx);
+                    if (linkInfo != null) {
+                        return linkInfo.getLength();
+                    }
+                }
+            }
+        }
+        return 0;
     }
 }

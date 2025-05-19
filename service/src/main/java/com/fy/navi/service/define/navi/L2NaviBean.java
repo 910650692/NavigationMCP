@@ -65,7 +65,8 @@ public class L2NaviBean {
     private List<AheadIntersectionsBean> mAheadIntersections;
     @SerializedName("mixForks")
     private List<MixForksBean> mMixForks = new ArrayList<>();
-//    private EndParkingInfo mEndParkingInfo = new EndParkingInfo();
+    @SerializedName("ParkingInfo")
+    private EndParkingInfo mEndParkingInfo = new EndParkingInfo();
 
     /**
      * 清空所有数据
@@ -78,7 +79,7 @@ public class L2NaviBean {
         mTunnelInfo = new TunnelInfoBean();
         mVehiclePosition = new VehiclePositionBean();
         mWarningFacility = new WarningFacilityBean();
-//        mEndParkingInfo = new EndParkingInfo();
+        mEndParkingInfo = new EndParkingInfo();
         mAheadIntersections.clear();
         mMixForks.clear();
         mTollStationDist = 0xFFFF;
@@ -429,7 +430,7 @@ public class L2NaviBean {
         @SerializedName("locationLatitude")
         private double mLocationLatitude;
         @SerializedName("locationLinkIndex")
-        private int mLocationLinkIndex;
+        private long mLocationLinkIndex;
         @SerializedName("locationLinkOffset")
         private int mLocationLinkOffset;
         @SerializedName("locationLongitude")
@@ -481,11 +482,11 @@ public class L2NaviBean {
             this.mLocationLatitude = locationLatitude;
         }
 
-        public int getLocationLinkIndex() {
+        public long getLocationLinkIndex() {
             return mLocationLinkIndex;
         }
 
-        public void setLocationLinkIndex(final int locationLinkIndex) {
+        public void setLocationLinkIndex(final long locationLinkIndex) {
             this.mLocationLinkIndex = locationLinkIndex;
         }
 
@@ -850,7 +851,9 @@ public class L2NaviBean {
     @Setter
     @Getter
     public static class EndParkingInfo {
+        @SerializedName("ParkingEnter")
         private PositionBean mParkingEnter = new PositionBean();
+        @SerializedName("ParkingExit")
         private PositionBean mParkingExit = new PositionBean();
 
         public EndParkingInfo() {
@@ -992,13 +995,13 @@ public class L2NaviBean {
         this.mMixForks = mixForks;
     }
 
-//    public EndParkingInfo getEndParkingInfo() {
-//        return mEndParkingInfo;
-//    }
-//
-//    public void setEndParkingInfo(final EndParkingInfo endParkingInfo) {
-//        this.mEndParkingInfo = endParkingInfo;
-//    }
+    public EndParkingInfo getEndParkingInfo() {
+        return mEndParkingInfo;
+    }
+
+    public void setEndParkingInfo(final EndParkingInfo endParkingInfo) {
+        this.mEndParkingInfo = endParkingInfo;
+    }
 
     @NonNull
     @Override
@@ -1017,7 +1020,7 @@ public class L2NaviBean {
                 ", mWarningFacility=" + mWarningFacility +
                 ", mAheadIntersections=" + mAheadIntersections +
                 ", mMixForks=" + mMixForks +
-//                ", mEndParkingInfo=" + mEndParkingInfo +
+                ", mEndParkingInfo=" + mEndParkingInfo +
                 '}';
     }
 }

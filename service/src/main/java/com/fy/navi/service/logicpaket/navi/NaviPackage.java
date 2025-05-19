@@ -460,6 +460,9 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
     @Override
     public void onPlayTTS(final SoundInfoEntity info) {
         Logger.i(TAG, "onPlayTTS: " + (info == null ? "" : info.getText()));
+        if(info == null){
+            return;
+        }
         ThreadManager.getInstance().postUi(() -> {
             try {
                 if (NaviAdapter.getInstance().getMCountDownLatch() != null) {
@@ -475,7 +478,7 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
                 //如果NOP打开并且是不播报的类型则不播报
                 if (SignalPackage.getInstance().getNavigationOnAdasTextToSpeachStatus() == 1 && !TTSPlayHelper.allowToPlayWithNopOpen(info.getSoundType()))
                     return;
-                mSpeechAdapter.synthesize(info.getText());
+                mSpeechAdapter.synthesize(!info.isHighPriority(), info.getText());
             } catch (Exception e) {
                 Logger.e(TAG, "playTTs exception:" + e.getMessage());
             }

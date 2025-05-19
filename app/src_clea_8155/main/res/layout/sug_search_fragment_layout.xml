@@ -22,6 +22,7 @@
             android:id="@+id/scene_sug_poi_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginBottom="@dimen/dp_130"
             app:layoutType="scene_sug_search_fragment" />
     </com.fy.navi.ui.view.SkinLinearLayout>
 

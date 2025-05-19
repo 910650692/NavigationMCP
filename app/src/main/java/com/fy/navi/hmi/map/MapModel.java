@@ -393,7 +393,10 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
             sendBuryPointForWakeup();
         }
 
-        openCluterMap(mapTypeId, touchEvent);
+        //多指左滑打开仪表地图   多指右滑打开仪表地图
+        if(touchEvent != null){
+            openCluterMap(touchEvent);
+        }
     }
 
     @Override
@@ -880,10 +883,11 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
     @Override
     public void notifyAimPoiPushMessage(final MsgPushInfo msg) {
         if (msg == null) {
+            Logger.e(TAG, "notifyAimPoiPushMessage is null");
             return;
         }
         ThreadManager.getInstance().postUi(() -> {
-            Logger.i(TAG, "notifyAimPoiPushMessage " + msg.getName());
+            Logger.i(TAG, "notifyAimPoiPushMessage " + GsonUtils.toJson(msg));
             final PhoneAddressDialog phoneAddressDialog = new PhoneAddressDialog(
                     StackManager.getInstance().getCurrentActivity(MapType.MAIN_SCREEN_MAIN_MAP.name()));
             phoneAddressDialog.setTitle(msg.getName());
@@ -1046,8 +1050,8 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         poiInfoEntity.setPoiType(RoutePoiType.ROUTE_POI_TYPE_END);
         poiInfoEntity.setPid(msg.getPoiId());
         GeoPoint geoPoint = new GeoPoint();
-        geoPoint.setLon(msg.getLon());
-        geoPoint.setLat(msg.getLat());
+        geoPoint.setLon(ConvertUtils.transCityLatAndLon(msg.getLon()));
+        geoPoint.setLat(ConvertUtils.transCityLatAndLon(msg.getLat()));
         poiInfoEntity.setPoint(geoPoint);
         return poiInfoEntity;
     }
@@ -1360,7 +1364,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
     private static final int OPEN_TWO = 2;
     private static final int OPEN_THREE = 3;
 
-    private void openCluterMap(MapType mapTypeId, MotionEvent touchEvent) {
+    private void openCluterMap(MotionEvent touchEvent) {
         int pointerCount = touchEvent.getPointerCount();
         if (pointerCount == OPEN_TWO || pointerCount == OPEN_THREE) {
             isOpenClusterFlag = true;

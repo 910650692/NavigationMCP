@@ -10,7 +10,7 @@
     </data>
 
     <com.fy.navi.ui.view.SkinConstraintLayout
-        android:layout_width="@dimen/dp_640"
+        android:layout_width="@dimen/dp_545"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -19,14 +19,14 @@
             android:id="@+id/scl_add0"
             clickCommand="@{()-> SceneSearchHistoryImpl.commonAdd(0)}"
             android:layout_width="wrap_content"
-            android:layout_height="@dimen/dp_149"
+            android:layout_height="@dimen/dp_128"
             app:layout_constraintEnd_toStartOf="@id/scl_add1"
             app:layout_constraintStart_toStartOf="parent">
 
             <com.fy.navi.ui.view.SkinImageView
                 android:id="@+id/iv_add0"
-                android:layout_width="@dimen/dp_58"
-                android:layout_height="@dimen/dp_58"
+                android:layout_width="@dimen/dp_49"
+                android:layout_height="@dimen/dp_49"
                 android:layout_marginTop="@dimen/dp_20"
                 android:src="@drawable/img_basic_ic_add"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -42,7 +42,7 @@
                 android:maxLines="1"
                 android:text="@string/shv_common_address"
                 android:textColor="@color/search_quick_tab_view_color"
-                android:textSize="@dimen/sp_30"
+                android:textSize="@dimen/sp_26"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/iv_add0" />
@@ -58,8 +58,8 @@
 
             <com.fy.navi.ui.view.SkinImageView
                 android:id="@+id/iv_add1"
-                android:layout_width="@dimen/dp_58"
-                android:layout_height="@dimen/dp_58"
+                android:layout_width="@dimen/dp_49"
+                android:layout_height="@dimen/dp_49"
                 android:layout_marginTop="@dimen/dp_20"
                 android:src="@drawable/img_basic_ic_add"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -75,7 +75,7 @@
                 android:maxLines="1"
                 android:text="@string/shv_common_address"
                 android:textColor="@color/search_quick_tab_view_color"
-                android:textSize="@dimen/sp_30"
+                android:textSize="@dimen/sp_26"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/iv_add1" />
@@ -91,8 +91,8 @@
 
             <com.fy.navi.ui.view.SkinImageView
                 android:id="@+id/iv_add2"
-                android:layout_width="@dimen/dp_58"
-                android:layout_height="@dimen/dp_58"
+                android:layout_width="@dimen/dp_49"
+                android:layout_height="@dimen/dp_49"
                 android:layout_marginTop="@dimen/dp_20"
                 android:src="@drawable/img_basic_ic_add"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -108,7 +108,7 @@
                 android:maxLines="1"
                 android:text="@string/shv_common_address"
                 android:textColor="@color/search_quick_tab_view_color"
-                android:textSize="@dimen/sp_30"
+                android:textSize="@dimen/sp_26"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/iv_add2" />
@@ -124,8 +124,8 @@
 
             <com.fy.navi.ui.view.SkinImageView
                 android:id="@+id/iv_star"
-                android:layout_width="@dimen/dp_58"
-                android:layout_height="@dimen/dp_58"
+                android:layout_width="@dimen/dp_49"
+                android:layout_height="@dimen/dp_49"
                 android:layout_marginTop="@dimen/dp_20"
                 android:src="@drawable/img_basic_ic_star"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -141,7 +141,7 @@
                 android:maxLines="1"
                 android:text="@string/st_collect"
                 android:textColor="@color/search_quick_tab_view_color"
-                android:textSize="@dimen/sp_30"
+                android:textSize="@dimen/sp_26"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/iv_star" />

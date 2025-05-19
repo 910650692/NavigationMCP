@@ -17,14 +17,15 @@
         <include
             android:id="@+id/scl_search_top_view"
             layout="@layout/search_edit_bar_view"
-            android:layout_width="@dimen/dp_640"
-            android:layout_height="@dimen/dp_102" />
+            android:layout_width="@dimen/dp_545"
+            android:layout_height="@dimen/dp_95" />
 
         <com.fy.navi.ui.view.SkinConstraintLayout
-            android:layout_width="@dimen/dp_640"
-            android:layout_height="@dimen/dp_1055"
+            android:layout_width="@dimen/dp_545"
+            android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_20"
             android:paddingVertical="@dimen/dp_24"
+            android:minHeight="@dimen/dp_499"
             android:background="@drawable/bg_search_main_tab">
 
             <com.fy.navi.ui.view.SkinRecyclerView
@@ -32,19 +33,19 @@
                 android:scrollbars="vertical"
                 android:visibility="gone"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="wrap_content" />
             <com.fy.navi.ui.view.SkinRecyclerView
                 android:id="@+id/recycler_search_history"
                 android:scrollbars="vertical"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="wrap_content" />
             <com.fy.navi.ui.view.SkinTextView
                 android:id="@+id/recycler_no_hint"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/shv_record_null"
                 android:textColor="@color/search_color_ffffff_70"
-                android:textSize="@dimen/sp_30"
+                android:textSize="@dimen/sp_26"
                 android:visibility="gone"
                 android:paddingHorizontal="@dimen/dp_40"
                 app:layout_constraintBottom_toBottomOf="parent"

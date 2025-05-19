@@ -3,11 +3,13 @@ package com.fy.navi.service.adapter.activate.bls;
 import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
+import com.fy.navi.service.AutoMapConstant;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.adapter.activate.ActivateObserver;
 import com.fy.navi.service.adapter.activate.IActivateApi;
 import com.fy.navi.service.adapter.activate.cloudpatac.response.CheckOrderResponse;
 import com.fy.navi.service.define.code.CodeManager;
+import com.fy.navi.service.greendao.CommonManager;
 import com.patac.netlib.callback.NetDisposableObserver;
 import com.patac.netlib.exception.ApiException;
 
@@ -53,8 +55,12 @@ public class ActivateAdapterImpl implements IActivateApi {
             @Override
             public void onOrderCreated(final boolean isSuccess) {
                 if (!isSuccess) {
-                    logResult(20006);
-                    onActivatedError();
+                    if (ActivationManager.getQueryOrderNum() < 3) {
+                        ActivationManager.getInstance().createCloudOrder();
+                    } else {
+                        logResult(20006);
+                        onActivatedError();
+                    }
                     return;
                 }
                 startCheckOrder();
@@ -123,22 +129,28 @@ public class ActivateAdapterImpl implements IActivateApi {
         if (!ActivationManager.getInstance().checkActivationStatus()) {
             Logger.d(TAG, "无激活文件，或uuid不正确");
             //先查询订单
-            ActivationManager.getInstance().checkOrderStatus(new NetDisposableObserver<CheckOrderResponse>() {
-                @Override
-                public void onSuccess(final CheckOrderResponse orderBean) {
-                    Logger.d(TAG, "firstCheckOrderStatus success");
-                    manualActivate("", "");
-                }
+            if (!ConvertUtils.isEmpty(CommonManager.getInstance().getValueByKey(AutoMapConstant.ActivateOrderTAG.SD_ORDER_ID))) {
+                Logger.d(TAG, "有订单号记录，直接查询订单");
+                ActivationManager.getInstance().checkOrderStatus(new NetDisposableObserver<CheckOrderResponse>() {
+                    @Override
+                    public void onSuccess(final CheckOrderResponse statusBean) {
+                        Logger.d(TAG, "firstCheckOrderStatus success");
+                        Logger.d(TAG, statusBean.toString());
+                        manualActivate(statusBean.getSerialNumber(), statusBean.getActiveCode());
+                    }
 
-                @Override
-                public void onFailed(final ApiException e) {
-                    Logger.d(TAG, "firstCheckOrderStatus failed");
-                    Logger.d(TAG, "Exception code : " + e.getCode());
-                    Logger.d(TAG, "Exception msg : " + e.getMessage());
-                    //首次查询没有订单后下单
-                    ActivationManager.getInstance().createCloudOrder();
-                }
-            });
+                    @Override
+                    public void onFailed(final ApiException e) {
+                        Logger.d(TAG, "firstCheckOrderStatus failed");
+                        Logger.d(TAG, "Exception code : " + e.getCode());
+                        Logger.d(TAG, "Exception msg : " + e.getMessage());
+                        //首次查询没有订单后下单
+                        ActivationManager.getInstance().createCloudOrder();
+                    }
+                });
+            } else {
+                ActivationManager.getInstance().createCloudOrder();
+            }
         } else {
             onActivated();
         }
@@ -159,7 +171,6 @@ public class ActivateAdapterImpl implements IActivateApi {
             logResult(20007);
             return;
         }
-        onActivated();
     }
 
     /**

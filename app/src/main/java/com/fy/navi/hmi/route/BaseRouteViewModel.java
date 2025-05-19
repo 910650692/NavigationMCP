@@ -997,6 +997,15 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
     }
 
     /***
+     * 展示离线算路中弹框
+     */
+    public void showOfflineProgressUI() {
+        ThreadManager.getInstance().postUi(() -> {
+            mView.showOfflineProgressUI();
+        });
+    }
+
+    /***
      * 隐藏算路弹框
      * @param success 算路成功
      */

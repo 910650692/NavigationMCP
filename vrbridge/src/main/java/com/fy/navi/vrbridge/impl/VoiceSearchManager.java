@@ -81,7 +81,9 @@ public final class VoiceSearchManager {
     private List<String> mEtaNameList; //起终点名称，如果只有一个，当前位置为起点
     private List<GeoPoint> mEtaPointList; //起终点经纬度信息
 
-    private boolean mListPageOpened;
+    private boolean mListPageOpened; //搜索结果页面是否展示
+
+    private boolean mShouldPlayRouteMsg; //是否应该播报路线规划结果
 
     //用于路况查询
     private int mTrafficConditionResult = -2;//-1：无数据 0:未知状态 1:通畅 2:缓慢 3:拥堵 4:严重拥堵 5:极度通畅
@@ -226,6 +228,10 @@ public final class VoiceSearchManager {
                     //多目的地泛型poi点
                     dealMultipleDestResult(searchSuccess, true);
                     break;
+                case IVrBridgeConstant.VoiceSearchType.NAVI_TO_HOME_COMPANY:
+                    //导航回家/去公司，先设置地址
+                    dealNaviToHomeCompanyResult(searchSuccess, false);
+                    break;
                 default:
                     break;
             }
@@ -301,6 +307,9 @@ public final class VoiceSearchManager {
                 case IVrBridgeConstant.VoiceSearchType.SET_HOME_COMPANY:
                     //设置家/公司为当前地址
                     dealHomeCompanyResult(searchSuccess, true);
+                    break;
+                case IVrBridgeConstant.VoiceSearchType.NAVI_TO_HOME_COMPANY:
+                    dealNaviToHomeCompanyResult(searchSuccess, true);
                     break;
                 default:
                     Logger.w(IVrBridgeConstant.TAG, "unHandle silent search: " + mSearchType);
@@ -403,6 +412,10 @@ public final class VoiceSearchManager {
             }
             final PoiInfoEntity homeCompanyInfo = getHomeCompanyPoiInfo(type);
             if (null != homeCompanyInfo) {
+                if (!inNaviStatus()) {
+                    //单目的地涉及家和公司，需要播报路线规划结果
+                    mShouldPlayRouteMsg = true;
+                }
                 planRoute(homeCompanyInfo, null);
             } else {
                 if (type == 1) {
@@ -479,7 +492,7 @@ public final class VoiceSearchManager {
         if (null == poiInfo) {
             Logger.w(IVrBridgeConstant.TAG, "poiDetailSearch result is empty");
             if (null != mPoiCallback) {
-                CallResponse poiDetailResponse = CallResponse.createFailResponse("详情搜无返回结果");
+                final CallResponse poiDetailResponse = CallResponse.createFailResponse("详情搜无返回结果");
                 poiDetailResponse.setNeedPlayMessage(true);
                 mPoiCallback.onResponse(poiDetailResponse);
             }
@@ -491,9 +504,35 @@ public final class VoiceSearchManager {
                 updateHomeCompany(poiInfo);
                 sendClosePage();
                 break;
+            case IVrBridgeConstant.VoiceSearchType.NAVI_TO_HOME_COMPANY:
+                saveAndNaviToHomeCompany(poiInfo);
+                break;
             default:
                 planRoute(poiInfo, null);
                 break;
+        }
+    }
+
+    /**
+     * 根据路线结果数目回复提示信息.
+     *
+     * @param size int 算路结果数， 0:算路失败  >=1:算路成功
+     */
+    public void playRouteResult(final int size) {
+        if (mShouldPlayRouteMsg) {
+            mShouldPlayRouteMsg = false;
+            final CallResponse routeResultResponse;
+            if (null != mPoiCallback) {
+                if (size >= 2) {
+                    routeResultResponse = CallResponse.createSuccessResponse("为你找到以下导航路线，你要选择第几个");
+                } else if (size == 1) {
+                    routeResultResponse = CallResponse.createSuccessResponse("只有如下一条可选路线，选择这条可以吗");
+                } else {
+                    routeResultResponse = CallResponse.createSuccessResponse("路线规划失败，请稍后重试");
+                }
+                routeResultResponse.setNeedPlayMessage(true);
+                mPoiCallback.onResponse(routeResultResponse);
+            }
         }
     }
 
@@ -578,8 +617,7 @@ public final class VoiceSearchManager {
             mRouteType = null;
         }
 
-        final String curStatus = NaviStatusPackage.getInstance().getCurrentNaviStatus();
-        if (NaviStatus.NaviStatusType.NAVING.equals(curStatus) || NaviStatus.NaviStatusType.LIGHT_NAVING.equals(curStatus)) {
+        if (inNaviStatus()) {
             //当前为导航态，更换目的地直接发起快速导航
             RoutePackage.getInstance().requestRouteFromSpeech(requestParam);
         } else {
@@ -589,6 +627,17 @@ public final class VoiceSearchManager {
             bundle.putSerializable(IVrBridgeConstant.VoiceIntentParams.ROUTE_REQUEST, requestParam);
             MapPackage.getInstance().voiceOpenHmiPage(MapType.MAIN_SCREEN_MAIN_MAP, bundle);
         }
+    }
+
+    /**
+     * 判断当前是否处理引导态.
+     *
+     * @return  true:引导态   false:非引导态.
+     */
+    private boolean inNaviStatus() {
+        final String curStatus = NaviStatusPackage.getInstance().getCurrentNaviStatus();
+        return NaviStatus.NaviStatusType.NAVING.equals(curStatus)
+                || NaviStatus.NaviStatusType.LIGHT_NAVING.equals(curStatus);
     }
 
     /**
@@ -637,7 +686,6 @@ public final class VoiceSearchManager {
         }
 
         //添加目的地信息，并判断是否包含家、公司、泛型POI
-        //家和公司需要先判断是否已经设置，泛型POI需要依次展示搜索结果
         final SingleDestInfo singleDestInfo = new SingleDestInfo();
         final String destName = mDestInfo.getDest();
         final String destType = mDestInfo.getDestType();
@@ -656,11 +704,15 @@ public final class VoiceSearchManager {
             mNormalDestList.put(size, singleDestInfo);
         }
 
+        //家和公司需要先判断是否已经设置，泛型POI需要依次展示搜索结果
         if (containHome) {
             final PoiInfoEntity homeInfo = getHomeCompanyPoiInfo(1);
             if (null == homeInfo) {
                 Logger.w(IVrBridgeConstant.TAG, "MultipleDest contain home but info is empty");
                 return havaNoHomeAddress();
+            } else if (!inNaviStatus()) {
+                //多目的地涉及家和公司，需要播报路线规划结果
+                mShouldPlayRouteMsg = true;
             }
         }
         if (containCompany) {
@@ -668,6 +720,9 @@ public final class VoiceSearchManager {
             if (null == companyInfo) {
                 Logger.w(IVrBridgeConstant.TAG, "MultipleDest contain company but info is empty");
                 return havaNoCompanyAddress();
+            } else if (!inNaviStatus()) {
+                //多目的地涉及家和公司，需要播报路线规划结果
+                mShouldPlayRouteMsg = true;
             }
         }
 
@@ -973,6 +1028,9 @@ public final class VoiceSearchManager {
                 addCommonFavorite(poiInfo);
                 sendClosePage();
                 break;
+            case IVrBridgeConstant.VoiceSearchType.NAVI_TO_HOME_COMPANY:
+                saveAndNaviToHomeCompany(poiInfo);
+                break;
             default:
                 //所选poi作为目的地发起算路
                 planRoute(poiInfo, null);
@@ -1225,6 +1283,52 @@ public final class VoiceSearchManager {
     }
 
     /**
+     * 导航回家/去公司，地址未设置.
+     *
+     * @param sessionId String，多轮对话保持一致性.
+     * @param poiType 导航意图 NAVI_TO_HOME:回家
+     *                       NAVI_TO_COMPANY:去公司
+     * @param poi  需要设置的目的地名称.
+     * @param poiCallback 语音指令回复.
+     */
+    public CallResponse naviToHomeCompany(final String sessionId, final String poiType, final String poi, final PoiCallback poiCallback) {
+        mSessionId = sessionId;
+        mPoiType = poiType;
+        mPoiCallback = poiCallback;
+        mSearchType = IVrBridgeConstant.VoiceSearchType.NAVI_TO_HOME_COMPANY;
+        if (IVrBridgeConstant.CURRENT_LOCATION.equals(poi)) {
+            //当前地址，逆地理搜索
+            final LocInfoBean locInfoBean = PositionPackage.getInstance().getLastCarLocation();
+            if (null != locInfoBean) {
+                final GeoPoint geoPoint = new GeoPoint(locInfoBean.getLongitude(), locInfoBean.getLatitude());
+                mSearchTaskId = SearchPackage.getInstance().geoSearch(geoPoint, true);
+            } else {
+                return CallResponse.createFailResponse("无法获取当前位置，请稍后重试");
+            }
+        } else {
+            //打开设置公司/家的页面，并传入关键字发起搜索
+            final int type = switch (mPoiType) {
+                case IVrBridgeConstant.DestType.NAVI_TO_HOME -> 1;
+                case IVrBridgeConstant.DestType.NAVI_TO_COMPANY -> 2;
+                default -> 0;
+            };
+
+            if (type > 0) {
+                mKeyword = poi;
+                final Bundle bundle = new Bundle();
+                bundle.putInt(IVrBridgeConstant.VoiceIntentParams.INTENT_PAGE, IVrBridgeConstant.VoiceIntentPage.HOME_COMPANY_SET);
+                bundle.putString(IVrBridgeConstant.VoiceIntentParams.KEYWORD, poi);
+                bundle.putInt(IVrBridgeConstant.VoiceIntentParams.HOME_COMPANY_TYPE, type);
+                MapPackage.getInstance().voiceOpenHmiPage(MapType.MAIN_SCREEN_MAIN_MAP, bundle);
+            } else {
+                return CallResponse.createFailResponse("不支持的设置类型");
+            }
+        }
+
+        return CallResponse.createSuccessResponse();
+    }
+
+    /**
      * 根据搜索结果设置家/公司地址.
      *
      * @param searchSuccess 是否搜索成功.
@@ -1263,7 +1367,6 @@ public final class VoiceSearchManager {
         }
 
         Logger.w(IVrBridgeConstant.TAG, "setHomeCompany poiName: " + poiInfo.getName());
-        final FavoriteInfo favoriteInfo = new FavoriteInfo();
         final int type;
         final String tts;
         if (IVrBridgeConstant.DestType.HOME.equals(mPoiType)) {
@@ -1281,9 +1384,68 @@ public final class VoiceSearchManager {
             homeCompanyResponse.setNeedPlayMessage(true);
             mPoiCallback.onResponse(homeCompanyResponse);
         }
+
+        saveHomeCompany(poiInfo, type);
+    }
+
+    /**
+     * 保存家/公司信息.
+     *
+     * @param poiInfo 地址信息.
+     * @param type 类型  1:家  2:公司.
+     */
+    private void saveHomeCompany(final PoiInfoEntity poiInfo, final int type) {
+        final FavoriteInfo favoriteInfo = new FavoriteInfo();
         favoriteInfo.setCommonName(type);
         poiInfo.setFavoriteInfo(favoriteInfo);
         BehaviorPackage.getInstance().addFavorite(poiInfo, type);
+    }
+
+    /**
+     * 根据搜索结果处理导航到家/公司.
+     *
+     * @param searchSuccess  true:搜索成功   false:搜索无结果.
+     * @param geoSearch  true:逆地理搜索，当前位置  false:关键字搜索.
+     */
+    private void dealNaviToHomeCompanyResult(final boolean searchSuccess, final boolean geoSearch) {
+        if (!searchSuccess) {
+            Logger.w(IVrBridgeConstant.TAG, "naviToHomeCompany, searchResult is empty");
+            responseSearchEmpty();
+            return;
+        }
+
+        final int size = mSearchResultList.size();
+        Logger.w(IVrBridgeConstant.TAG, "naviToHomeCompany searchResultSize:" + size + ", geoSearch:" + geoSearch);
+        if (size == 1) {
+            if (geoSearch) {
+                saveAndNaviToHomeCompany(mSearchResultList.get(0));
+            } else {
+                // 非逆地理搜结果只有一个，需要等待poi详情搜结果返回再处理
+                mWaitPoiSearch = true;
+            }
+        } else {
+            responseSearchWithResult();
+        }
+    }
+
+    /**
+     * 保存家/公司信息并导航到此地址.
+     *
+     * @param poiInfo 搜索结果信息.
+     */
+    private void saveAndNaviToHomeCompany(final PoiInfoEntity poiInfo) {
+        final int type;
+        if (IVrBridgeConstant.DestType.NAVI_TO_HOME.equals(mPoiType)) {
+            type = 1;
+        } else {
+            type = 2;
+        }
+        saveHomeCompany(poiInfo, type);
+        if (!inNaviStatus()) {
+            //单目的地涉及家和公司，需要播报路线规划结果
+            mShouldPlayRouteMsg = true;
+        }
+        planRoute(poiInfo, null);
     }
 
     /**

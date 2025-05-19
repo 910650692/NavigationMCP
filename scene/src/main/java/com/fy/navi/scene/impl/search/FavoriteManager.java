@@ -40,6 +40,9 @@ final public class FavoriteManager {
         if (poiInfoEntity == null || poiInfoEntity.getPoint() == null) {
             return;
         }
+        if (BehaviorPackage.getInstance().isFavorite(poiInfoEntity.getPid()+type)) {
+            return;
+        }
         final FavoriteInfo favoriteInfo = new FavoriteInfo();
         favoriteInfo.setCommonName(type);
         poiInfoEntity.setFavoriteInfo(favoriteInfo);

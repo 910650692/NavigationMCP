@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.android.utils.ConvertUtils;
 import com.android.utils.DeviceUtils;
+import com.android.utils.NetWorkUtils;
 import com.android.utils.TimeUtils;
 import com.autonavi.gbl.common.model.Coord2DDouble;
 import com.autonavi.gbl.common.model.Coord2DInt32;
@@ -720,7 +721,7 @@ public class RouteAdapterImplHelper {
         private String getMsgs(final RouteWayID routeWay, final boolean isError) {
             switch (routeWay) {
                 case ROUTE_WAY_DEFAULT:
-                    return isError ? "算路失败" : "";
+                    return isError ? "算路请求失败" : "";
                 case ROUTE_WAY_REFRESH:
                     return isError ? "路线刷新失败" : "路线刷新成功";
                 case ROUTE_WAY_AVOID:
@@ -734,20 +735,39 @@ public class RouteAdapterImplHelper {
                 case ROUTE_WAY_CHANGE_END:
                     return isError ? "终点更换失败" : "终点更换成功";
                 default:
-                    return isError ? "算路失败" : "";
+                    return isError ? "算路请求失败" : "";
             }
         }
 
         private String getErrorMsgsDetails(final int errorCode) {
             switch (errorCode) {
+                case 822083597:
                 case 822083601:
                 case 822083607:
                 case 822083608:
-                    return "：该城市无离线数据";
+                    return "，无本地离线数据";
                 case 822083598:
-                    return "：用户取消算路";
+                    return "，用户取消算路";
+                case 822083586:
+                    return "，起点不在支持范围内";
+                case 822083589:
+                    return "，终点不在支持范围内";
+                case 822083604:
+                    return "，途径点不在支持范围内";
+                case 822083646:
+                case 822083653:
+                    return "，起终点位置过近";
+                case 822083585:
+                    if (Boolean.TRUE.equals(NetWorkUtils.Companion.getInstance().checkNetwork())) {
+                        return "，网络连接出错，请重试";
+                    } else {
+                        return "，无网络连接，正在为您进行离线路线规划";
+                    }
+                case 822083587:
+                case 822083596:
+                case 822083595:
                 default:
-                    return "";
+                    return "，请重试";
             }
         }
     };

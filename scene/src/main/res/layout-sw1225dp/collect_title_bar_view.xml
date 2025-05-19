@@ -4,16 +4,17 @@
 
     <com.fy.navi.ui.view.SkinConstraintLayout
         android:id="@+id/scl_search_top_view"
-        android:layout_width="@dimen/dp_640"
-        android:layout_height="@dimen/dp_102"
-        android:background="@drawable/bg_search_main_tab">
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="@dimen/dp_34"
+        android:background="@drawable/bg_shadow_navi_ndlc_8155">
 
         <com.fy.navi.ui.view.SkinImageView
-            android:layout_marginStart="@dimen/dp_14"
             android:id="@+id/iv_close"
-            android:layout_width="@dimen/dp_58"
-            android:layout_height="@dimen/dp_58"
+            android:layout_width="@dimen/dp_49"
+            android:layout_height="@dimen/dp_49"
             android:src="@drawable/img_basic_ic_back"
+            android:layout_marginStart="@dimen/dp_12"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -22,10 +23,10 @@
             android:id="@+id/collect_bar_text_view"
             android:layout_width="@dimen/dp_0"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_14"
+            android:layout_marginStart="@dimen/dp_4"
             android:text="@string/st_collect"
-            android:textColor="@color/search_quick_tab_view_color"
-            android:textSize="@dimen/sp_42"
+            android:textColor="@color/search_color_ffffff_50"
+            android:textSize="@dimen/sp_29"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/iv_search"
             app:layout_constraintStart_toEndOf="@+id/iv_close"
@@ -41,8 +42,8 @@
 
             <com.fy.navi.ui.view.SkinImageView
                 android:id="@+id/iv_search"
-                android:layout_width="@dimen/dp_48"
-                android:layout_height="@dimen/dp_48"
+                android:layout_width="@dimen/dp_36"
+                android:layout_height="@dimen/dp_36"
                 android:alpha="0.5"
                 android:src="@drawable/img_basic_ic_add"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -53,10 +54,10 @@
                 android:id="@+id/collect_bar_text_add"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/dp_40"
+                android:layout_marginEnd="@dimen/dp_26"
                 android:text="@string/st_collect_add"
                 android:textColor="@color/search_quick_tab_view_color"
-                android:textSize="@dimen/sp_36"
+                android:textSize="@dimen/sp_26"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />

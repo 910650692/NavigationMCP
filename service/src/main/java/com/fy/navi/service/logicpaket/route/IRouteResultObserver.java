@@ -125,6 +125,14 @@ public interface IRouteResultObserver {
     }
 
     /**
+     * 开始离线算路回调
+     * @param mapTypeId 屏幕id
+     * @param errorMsg 失败信息
+     */
+    default void onRouteOffline(MapType mapTypeId, String errorMsg) {
+    }
+
+    /**
      * 续航里程信息
      * @param evRangeOnRouteInfos 能量耗尽点信息集合
      */

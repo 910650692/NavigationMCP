@@ -13,7 +13,7 @@ import lombok.experimental.Accessors;
 public class PositionConfig {
     private int hasAcc = 3;// 加速度计轴数 {0|1|3}， 0 表示没有 后端融合项目可选
     private int hasGyro = 3; // 陀螺仪轴数 {0|1|3} ， 0 表示没有 后端融合项目必须有
-    private int hasTemp = 0;// 有无陀螺温度传感器  0无 1有 后端融合项目必须有
+    private int hasTemp = 1;// 有无陀螺温度传感器  0无 1有 后端融合项目必须有
     private int hasPressure = 0;// 有无气压计  0无 1有， 一般可不配置
     private int hasMag = 0;// 有无磁力计  0无 1有， 一般可不配置
     private int hasW4m = 0;// 有无四轮速传感器  0无 1有 未使用，可不配置

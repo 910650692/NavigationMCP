@@ -79,7 +79,8 @@ public class MapAdapterImpl implements IMapApi {
     }
 
     @Override
-    public void setZoomLevel(MapType mapTypeId, float level) {
+    public void setZoomLevel(MapType mapTypeId, float levelValue) {
+        float level = (float) Math.floor(levelValue);
         if (AutoMapConstant.MAP_ZOOM_LEVEL_MIN > level || level > AutoMapConstant.MAP_ZOOM_LEVEL_MAX)
             return;
         mapViewPoolManager.get(mapTypeId).setZoomLevel(level);

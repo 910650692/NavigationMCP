@@ -53,4 +53,6 @@ public interface IPositionApi {
     void setCustomPOI(double lon, double lat);
 
     void locationLogSwitch(boolean isOpen);
+
+    void onSpeedChanged(float speed);
 }

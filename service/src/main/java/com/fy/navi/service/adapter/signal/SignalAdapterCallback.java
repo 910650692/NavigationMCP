@@ -2,7 +2,7 @@ package com.fy.navi.service.adapter.signal;
 
 public interface SignalAdapterCallback {
     /**
-     * 车速变化
+     * 车速变化 km/h
      * @param speed
      */
     default void onSpeedChanged(float speed) {

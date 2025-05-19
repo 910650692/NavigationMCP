@@ -6,6 +6,7 @@ public enum LooperType {
     GSV("GSV_HandlerThread"),
     //传感器 gyr,acc，传感器专用线程
     SENSOR("SENSOR_HandlerThread"),
+    TEMPERATURE("TEMPERATURE_HandlerThread"),
     //高德定位回调专用线程
     LocInfoUpdate("LocInfoUpdate_HandlerThread"),
     /**

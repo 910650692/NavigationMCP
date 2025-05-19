@@ -21,7 +21,6 @@ public class PositionAdapter {
 
     private IPositionApi mPositionApi;
 
-
     private static class PositionAdapterHolder {
         private static final PositionAdapter mInstance = new PositionAdapter();
     }
@@ -35,14 +34,14 @@ public class PositionAdapter {
     }
 
     public boolean init() {
-       return mPositionApi.init();
+        return mPositionApi.init();
     }
 
     public void registerCallback(IPositionAdapterCallback callback) {
         mPositionApi.registerCallback(callback);
     }
 
-    public void unregisterCallback(IPositionAdapterCallback callback){
+    public void unregisterCallback(IPositionAdapterCallback callback) {
         mPositionApi.unregisterCallback(callback);
     }
 
@@ -80,6 +79,10 @@ public class PositionAdapter {
      */
     public void onGearChanged(int gear) {
         mPositionApi.onGearChanged(gear);
+    }
+
+    public void onSpeedChanged(float speed) {
+        mPositionApi.onSpeedChanged(speed);
     }
 
     public void setDrEnable(boolean enable) {

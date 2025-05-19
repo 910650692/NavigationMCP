@@ -11,24 +11,23 @@
 
     <com.fy.navi.ui.view.SkinLinearLayout
         android:id="@+id/scl_search_top_view"
-        android:layout_width="@dimen/dp_698"
+        android:layout_width="@dimen/dp_613"
         android:layout_height="match_parent"
         android:orientation="vertical">
 
         <include
             android:id="@+id/collect_title_bar_view"
             layout="@layout/collect_title_bar_view"
-            android:layout_width="@dimen/dp_698"
-            android:layout_height="@dimen/dp_170" />
+            android:layout_width="@dimen/dp_613"
+            android:layout_height="@dimen/dp_168" />
 
         <com.fy.navi.ui.view.SkinConstraintLayout
-            android:layout_width="@dimen/dp_698"
+            android:layout_width="@dimen/dp_613"
             android:layout_height="@dimen/dp_640"
-            android:paddingStart="@dimen/dp_29"
-            android:paddingEnd="@dimen/dp_29"
-            android:paddingTop="@dimen/dp_29"
-            android:paddingBottom="@dimen/dp_29"
-            android:layout_marginTop="@dimen/dp_m_38"
+            android:layout_marginBottom="@dimen/dp_280"
+            android:minHeight="@dimen/dp_640"
+            android:padding="@dimen/dp_34"
+            android:layout_marginTop="@dimen/dp_m_51"
             android:background="@drawable/bg_shadow_navi_ndlc_8155">
             <com.fy.navi.ui.view.SkinLinearLayout
                 android:id="@+id/tv_favorite_switch"
@@ -58,7 +57,7 @@
                         android:button="@null"
                         android:checked="true"
                         android:gravity="center"
-                        android:textSize="@dimen/sp_34"
+                        android:textSize="@dimen/sp_29"
                         android:background="@drawable/bg_setting_checkbox_selector"
                         android:textColor="@drawable/color_setting_checkbox_selector"
                         android:text="@string/favorite_switch_common" />
@@ -70,7 +69,7 @@
                         android:layout_weight="1"
                         android:button="@null"
                         android:gravity="center"
-                        android:textSize="@dimen/sp_34"
+                        android:textSize="@dimen/sp_29"
                         android:background="@drawable/bg_setting_checkbox_selector"
                         android:textColor="@drawable/color_setting_checkbox_selector"
                         android:text="@string/favorite_switch_charge" />
@@ -81,8 +80,10 @@
                 android:id="@+id/rcv_collect"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_favorite_switch"
-                android:layout_marginTop="@dimen/dp_20" />
+                android:layout_marginTop="@dimen/dp_20"
+                android:layout_marginBottom="@dimen/dp_34" />
 
             <com.fy.navi.ui.view.SkinLinearLayout
                 android:id="@+id/sll_no_favorite"
@@ -120,7 +121,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/favorite_no_charging"
                     android:textColor="@color/search_quick_tab_view_color"
-                    android:textSize="@dimen/sp_30"
+                    android:textSize="@dimen/sp_26"
                     android:layout_marginTop="@dimen/dp_20" />
 
                 <com.fy.navi.ui.view.SkinTextView
@@ -128,7 +129,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/favorite_no_charging_tip"
                     android:textColor="@color/search_quick_tab_view_color"
-                    android:textSize="@dimen/sp_30"
+                    android:textSize="@dimen/sp_26"
                     android:layout_marginTop="@dimen/dp_10" />
 
                 <com.fy.navi.ui.view.SkinTextView
@@ -137,7 +138,7 @@
                     android:layout_height="@dimen/dp_80"
                     android:gravity="center"
                     android:text="@string/account_login"
-                    android:textSize="@dimen/sp_30"
+                    android:textSize="@dimen/sp_26"
                     android:textColor="@color/white"
                     android:layout_marginTop="@dimen/dp_28"
                     android:background="@drawable/bg_setting_preference_select"/>
@@ -160,7 +161,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/favorite_no_charging_data"
                     android:textColor="@color/search_quick_tab_view_color"
-                    android:textSize="@dimen/sp_30"/>
+                    android:textSize="@dimen/sp_26"/>
             </com.fy.navi.ui.view.SkinLinearLayout>
 
             <com.fy.navi.ui.view.SkinLinearLayout
@@ -180,7 +181,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/favorite_charging_request_fail"
                     android:textColor="@color/search_quick_tab_view_color"
-                    android:textSize="@dimen/sp_30" />
+                    android:textSize="@dimen/sp_26" />
 
 
                 <com.fy.navi.ui.view.SkinTextView
@@ -189,7 +190,7 @@
                     android:layout_height="@dimen/dp_83"
                     android:gravity="center"
                     android:text="@string/navi_refresh"
-                    android:textSize="@dimen/sp_30"
+                    android:textSize="@dimen/sp_26"
                     android:textColor="@color/white"
                     android:layout_marginTop="@dimen/dp_28"
                     android:background="@drawable/bg_setting_preference_select"/>
@@ -212,7 +213,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/favorite_charging_offline"
                     android:textColor="@color/search_quick_tab_view_color"
-                    android:textSize="@dimen/sp_30" />
+                    android:textSize="@dimen/sp_26" />
             </com.fy.navi.ui.view.SkinLinearLayout>
 
         </com.fy.navi.ui.view.SkinConstraintLayout>

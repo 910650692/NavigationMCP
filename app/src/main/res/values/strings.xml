@@ -62,6 +62,7 @@
     <!-- 主图 -->
     <string name="map_go_setting">去设置</string>
     <string name="map_in_around">在附近</string>
+    <string name="map_mfc_text">短按旋钮以进行地图移动或缩放</string>
 
 
     <!-- 搜索相关 -->
@@ -155,7 +156,7 @@
     <string name="route_poi_details_phone">电        话:</string>
     <string name="route_poi_details_bussTime">营业时间:</string>
     <string name="route_no_function">暂未添加</string>
-    <string name="route_refresh_fast">当前算路结果和之前一致，请稍后再试。</string>
+    <string name="route_refresh_fast">重算路线与当前一致，请稍后再试。</string>
     <string name="route_error_add_start_end">无法移除起点和终点</string>
     <string name="route_error_no_service_data">无服务区数据</string>
     <string name="route_error_no_request_data">数据异常，无法进行路线规划</string>

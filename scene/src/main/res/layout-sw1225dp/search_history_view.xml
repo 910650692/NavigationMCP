@@ -10,13 +10,14 @@
             type="com.fy.navi.scene.impl.search.SceneSearchHistoryImpl" />
     </data>
     <com.fy.navi.ui.view.SkinFrameLayout
-        android:layout_width="@dimen/dp_640"
-        android:layout_height="@dimen/dp_532"
+        android:layout_width="@dimen/dp_545"
+        android:layout_height="@dimen/dp_499"
         android:clipToOutline="true"
         android:background="@drawable/bg_search_main_tab"
-        android:layerType="hardware">
+        android:layerType="hardware"
+        android:paddingVertical="@dimen/dp_20">
     <com.fy.navi.scene.ui.search.MaxheightNestedScrollView
-        android:layout_width="@dimen/dp_640"
+        android:layout_width="@dimen/dp_545"
         android:fillViewport="true"
         android:padding="@dimen/dp_1"
         android:scrollbars="vertical"
@@ -49,7 +50,7 @@
                 android:layout_height="@dimen/dp_283"
                 android:text="@string/shv_record_null"
                 android:textColor="@color/search_color_ffffff_70"
-                android:textSize="@dimen/sp_30"
+                android:textSize="@dimen/sp_26"
                 android:visibility="gone"
                 android:gravity="center"
                 app:layout_constraintTop_toBottomOf="@+id/search_history_middle_view"/>
@@ -57,15 +58,15 @@
             <com.fy.navi.ui.view.SkinConstraintLayout
                 android:id="@+id/scl_delete_record"
                 android:layout_width="wrap_content"
-                android:layout_height="@dimen/dp_67"
+                android:layout_height="@dimen/dp_49"
                 app:layout_constraintTop_toBottomOf="@+id/rcy_record"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent">
 
                 <com.fy.navi.ui.view.SkinImageView
                     android:id="@+id/iv_delete"
-                    android:layout_width="@dimen/dp_60"
-                    android:layout_height="@dimen/dp_60"
+                    android:layout_width="@dimen/dp_49"
+                    android:layout_height="@dimen/dp_49"
                     android:src="@drawable/img_basic_ic_delete"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintRight_toLeftOf="@+id/tv_delete"
@@ -78,7 +79,7 @@
                     android:layout_marginLeft="@dimen/dp_9"
                     android:text="@string/shv_clear_record"
                     android:textColor="@color/search_color_ffffff_70"
-                    android:textSize="@dimen/sp_30"
+                    android:textSize="@dimen/sp_26"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintLeft_toRightOf="@id/iv_delete"
                     app:layout_constraintTop_toTopOf="parent" />

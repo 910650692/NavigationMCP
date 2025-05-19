@@ -167,8 +167,10 @@ public class MapDataObserversHelper implements IDataInitObserver, IDownloadObser
         if (cityBeanList != null && !cityBeanList.isEmpty()) {
             for (CityDataInfo info : cityBeanList) {
                 //获取附近城市数据包大小总和
-                sum =  sum.add(info.getDownLoadInfo().getFullZipSize());
-                map.put(info.getAdcode(), info.getDownLoadInfo().getTaskState());
+                if (info != null && info.getDownLoadInfo() != null) {
+                    sum =  sum.add(info.getDownLoadInfo().getFullZipSize());
+                    map.put(info.getAdcode(), info.getDownLoadInfo().getTaskState());
+                }
             }
         }
         final CityDownLoadInfo cityDownLoadBean = new CityDownLoadInfo();
@@ -694,9 +696,10 @@ public class MapDataObserversHelper implements IDataInitObserver, IDownloadObser
                             }
                         }
 
-//                        cityBeanList.add(0, convertAllCityData(cityBeanList, provDataInfo.getAdcode())); // 增加“全省地图”item
-                        provDataInfo.setCityInfoList(cityBeanList); // 省份下所有城市列表
-
+                        if (provDataInfo.getAreaType() == 1) {
+                            cityBeanList.add(0, convertAllCityData(cityBeanList, provDataInfo.getAdcode())); // 增加“全省地图”item
+                            provDataInfo.setCityInfoList(cityBeanList); // 省份下所有城市列表
+                        }
                         provinceBeanList.add(provDataInfo);
                     }
 

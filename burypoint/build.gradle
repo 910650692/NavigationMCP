@@ -36,10 +36,7 @@ dependencies {
     implementation libs.android.aop.core
     implementation libs.appcompat
     annotationProcessor libs.android.aop
-    if (IS_PAD_RUN.toBoolean()) {
-        implementation libs.signal
-    } else {
-        compileOnly libs.signal
-    }
+    debugImplementation libs.signal
+    releaseCompileOnly libs.signal
 
 }

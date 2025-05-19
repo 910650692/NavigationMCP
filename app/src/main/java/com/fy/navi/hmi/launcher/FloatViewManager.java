@@ -11,8 +11,10 @@ import android.os.RemoteException;
 import android.util.Log;
 
 import androidx.annotation.Nullable;
+import androidx.annotation.WorkerThread;
 
 import com.android.utils.ConvertUtils;
+import com.android.utils.ScreenUtils;
 import com.android.utils.log.Logger;
 import com.fy.navi.service.AppContext;
 import com.patac.launcher.ILauncherCallback;
@@ -78,6 +80,12 @@ public class FloatViewManager {
 
     }
 
+    public void notifyCrossImageView(boolean isVisible) {
+        if (!ConvertUtils.isNull(mWindowService)) {
+            mWindowService.changeCrossVisible(isVisible);
+        }
+    }
+
     private static final class Holder {
         private static final FloatViewManager instance = new FloatViewManager();
     }
@@ -117,14 +125,15 @@ public class FloatViewManager {
         Logger.i(TAG, "bindLauncherService", "bindResult:" + isServiceConnect);
     }
 
-    public Bitmap processPicture(byte[] bytes) {
+    @WorkerThread
+    public void processPicture(byte[] bytes) {
         Bitmap orginBitmap = null;
         Bitmap flippedBitmap = null;
         Bitmap cropBitmap;
         try {
             // 注意：这个宽高要和API里面设置的裁剪区域大小一致
-            int width = 3950;
-            int height = 1320;
+            int width = ScreenUtils.Companion.getInstance().getScreenWidth();
+            int height = ScreenUtils.Companion.getInstance().getScreenHeight();
             orginBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
             orginBitmap.copyPixelsFromBuffer(ByteBuffer.wrap(bytes));
             // 翻转图像
@@ -132,7 +141,7 @@ public class FloatViewManager {
             matrix.postScale(1, -1);
             matrix.postTranslate(orginBitmap.getWidth(), orginBitmap.getHeight());
             flippedBitmap = Bitmap.createBitmap(orginBitmap, 0, 0, orginBitmap.getWidth(), orginBitmap.getHeight(), matrix, true);
-            cropBitmap = Bitmap.createBitmap(flippedBitmap, 320, 320, 800, 450);
+            cropBitmap = Bitmap.createBitmap(flippedBitmap, 310, 195, 750, 400);// 数值来自UI（1.12-11）
         } catch (Exception e) {
             throw new RuntimeException(e);
         } finally {
@@ -143,6 +152,12 @@ public class FloatViewManager {
                 flippedBitmap.recycle();
             }
         }
-        return cropBitmap;
+        if (!ConvertUtils.isNull(mWindowService)) {
+            mWindowService.onImageReady(cropBitmap);
+        }
+    }
+
+    interface OnImageLoadCallBack {
+        void onImageReady(@Nullable Bitmap bitmap);
     }
 }

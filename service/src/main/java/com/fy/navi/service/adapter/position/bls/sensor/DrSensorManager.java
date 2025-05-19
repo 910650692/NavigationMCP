@@ -4,11 +4,16 @@ import static android.content.Context.SENSOR_SERVICE;
 
 import android.content.Context;
 import android.hardware.Sensor;
+import android.hardware.SensorDirectChannel;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Handler;
+import android.os.MemoryFile;
+import android.os.Message;
 import android.os.SystemClock;
+
+import androidx.annotation.NonNull;
 
 import com.android.utils.log.Logger;
 import com.android.utils.thread.LooperType;
@@ -26,13 +31,15 @@ import com.fy.navi.service.adapter.position.bls.listener.IDrSensorListener;
 import com.fy.navi.service.adapter.position.bls.listener.ILossRateAnalysisInterface;
 
 import java.math.BigInteger;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /***Sensor数据（陀螺仪、加速度计）管理类***/
-public class DrSensorManager implements SensorEventListener {
+public class DrSensorManager implements SensorEventListener, Handler.Callback {
     private static final String TAG = MapDefaultFinalTag.POSITION_SERVICE_TAG;
     private final SensorManager mSensorManager;
     // 加速度计单位（系统给的是m/s^2，需要转换成定位需要的g）
@@ -40,6 +47,7 @@ public class DrSensorManager implements SensorEventListener {
     // 陀螺仪单位（系统给的是red/s，需要转成度/s)
     private static final double GYR_UNIT = 180 / 3.1415926;
     private static final long MAX_TIME_MILLS = 20 * 1000;
+    private boolean mIsSupported;
     private float mTemperature = 0;
     private float mAccXValue;
     private float mAccYValue;
@@ -71,9 +79,14 @@ public class DrSensorManager implements SensorEventListener {
     private long mLastAccTimeMills;
     private long mLastPluseTimeMills;
     private Handler mHandler;
+    private Handler mTemperatureHandler;
     private final LocSignData mLocSignData;
     private ScheduledFuture mScheduledFuture;
     private final ILossRateAnalysisInterface mLossRateAnalysisInterface;
+    private Sensor mAccelerometer;
+    private static final int MSG_SEND_TEMPERATURE = 1;
+    private SensorDirectChannel mDirectChannel;
+    private MemoryFile mMemoryFile;
 
     public DrSensorManager(Context context, IDrSensorListener listener, ILossRateAnalysisInterface lossRateAnalysisInterface) {
         mSensorManager = (android.hardware.SensorManager) context.getSystemService(SENSOR_SERVICE);
@@ -82,10 +95,30 @@ public class DrSensorManager implements SensorEventListener {
         mIsGyroReady = new AtomicInteger(0);
         mIsAccReady = new AtomicInteger(0);
         mAngleInfo = MountAngleManager.getInstance().getMountAngleInfo();
-        Logger.i(TAG, "init DrSensorManager " + mAngleInfo);
         mIsStarted = new AtomicBoolean();
         mHandler = new Handler(ThreadManager.getInstance().getLooper(LooperType.SENSOR));
+        mTemperatureHandler = new Handler(ThreadManager.getInstance().getLooper(LooperType.TEMPERATURE), this);
         mLocSignData = new LocSignData();
+        initializeTemperature();
+        Logger.i(TAG, "init DrSensorManager " + mAngleInfo);
+    }
+
+    private void initializeTemperature() {
+        try {
+            mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_DEVICE_PRIVATE_BASE);
+            mMemoryFile = new MemoryFile("GyroTemp", 1024);
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                mIsSupported = mAccelerometer.isDirectChannelTypeSupported(
+                        SensorDirectChannel.TYPE_HARDWARE_BUFFER);
+                mDirectChannel = mSensorManager.createDirectChannel(mMemoryFile);
+                if (mDirectChannel != null) {
+                    mDirectChannel.configure(mAccelerometer, SensorDirectChannel.RATE_NORMAL);
+                }
+            }
+            Logger.i(TAG, ",mIsSupported：" + mIsSupported);
+        } catch (Exception e) {
+            Logger.e(TAG, "Exception：" + e.toString());
+        }
     }
 
     public synchronized void setEnable(boolean isEnable) {
@@ -113,7 +146,7 @@ public class DrSensorManager implements SensorEventListener {
             Logger.i(TAG, "mSensorManager registerListener");
             mSensorManager.registerListener(this, mSensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE), 1000 * 100, mHandler);//陀螺仪传感器
             mSensorManager.registerListener(this, mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER), 1000 * 100, mHandler);//加速度传感器
-            mSensorManager.registerListener(this, mSensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE), 1000 * 100, mHandler);//环境温度传感器
+            mTemperatureHandler.sendEmptyMessage(MSG_SEND_TEMPERATURE);
             mLastAccTimeMills = SystemClock.elapsedRealtime();
             mLastGyrTimeMills = SystemClock.elapsedRealtime();
             mLastPluseTimeMills = SystemClock.elapsedRealtime();
@@ -128,7 +161,15 @@ public class DrSensorManager implements SensorEventListener {
             stopTimerTask();
             mSensorManager.unregisterListener(this, mSensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE));
             mSensorManager.unregisterListener(this, mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER));
-            mSensorManager.unregisterListener(this, mSensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE));
+            mTemperatureHandler.removeCallbacksAndMessages(null);
+            if (mDirectChannel != null) {
+                mDirectChannel.close();
+            }
+            if (mMemoryFile != null) {
+                mMemoryFile.close();
+            }
+            mMemoryFile = null;
+            mDirectChannel = null;
         }
     }
 
@@ -312,7 +353,6 @@ public class DrSensorManager implements SensorEventListener {
 
     @Override
     public void onSensorChanged(SensorEvent event) {
-
         handleGyroAndAccData(event);
     }
 
@@ -373,12 +413,6 @@ public class DrSensorManager implements SensorEventListener {
             } else {
                 Logger.e(TAG, "values == null");
             }
-
-        } else if (sensorType == Sensor.TYPE_AMBIENT_TEMPERATURE) {
-            float[] values = event.values;
-            if (values != null && values.length >= 1) {
-                mTemperature = values[0];
-            }
         }
     }
 
@@ -412,5 +446,39 @@ public class DrSensorManager implements SensorEventListener {
     public void onGearChanged(int gear) {
         mGear = gear;
         Logger.d(TAG, " onGearChanged gear=" + gear);
+    }
+
+    @Override
+    public boolean handleMessage(@NonNull Message msg) {
+        if (msg.what == MSG_SEND_TEMPERATURE) {
+            parseTemperature();
+            mTemperatureHandler.removeMessages(MSG_SEND_TEMPERATURE);
+            mTemperatureHandler.sendEmptyMessageDelayed(MSG_SEND_TEMPERATURE, 100);
+        }
+        return false;
+    }
+
+    private void parseTemperature() {
+        try {
+            if (mMemoryFile != null) {
+                byte[] buffer = new byte[1024];
+                int bytesRead = mMemoryFile.readBytes(buffer, 0, 0, 1024);
+                if (bytesRead >= 4) {
+                    // Log raw buffer for debugging
+                    StringBuilder hex = new StringBuilder();
+                    for (byte b : buffer) {
+                        hex.append(String.format("%02X ", b));
+                    }
+//                    Logger.d(TAG, "Raw buffer: " + hex.toString());
+                    ByteBuffer byteBuffer = ByteBuffer.wrap(buffer).order(ByteOrder.LITTLE_ENDIAN);
+                    mTemperature = byteBuffer.getFloat(24); // Adjust offset if needed
+                    Logger.d(TAG, "Parsed temperature: " + mTemperature + "°C");
+                } else {
+                    Logger.d(TAG, "Waiting for data...");
+                }
+            }
+        } catch (Exception e) {
+            Logger.e(TAG, "Failed to parse temperature: " + e.getMessage());
+        }
     }
 }

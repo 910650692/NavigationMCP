@@ -33,6 +33,7 @@ import com.fy.navi.service.logicpaket.user.behavior.BehaviorPackage;
 import com.fy.navi.service.logicpaket.user.behavior.FavoriteStatusCallback;
 import com.fy.navi.vrbridge.bean.MapLocation;
 import com.fy.navi.vrbridge.bean.MapState;
+import com.fy.navi.vrbridge.impl.VoiceSearchManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -145,6 +146,7 @@ public final class MapStateManager {
         @Override
         public void onRouteFail(final MapType mapTypeId, final String errorMsg) {
             mRouteList.clear();
+            VoiceSearchManager.getInstance().playRouteResult(0);
         }
 
         @Override
@@ -152,15 +154,14 @@ public final class MapStateManager {
             if (null != requestRouteResult && null != requestRouteResult.getMRouteLineInfos()
                     && !requestRouteResult.getMRouteLineInfos().isEmpty()) {
                 final List<RouteLineInfo> routeLineInfos = requestRouteResult.getMRouteLineInfos();
+                final int size = routeLineInfos.size();
                 mRouteList.addAll(routeLineInfos);
-                mBuilder.setPathCount(routeLineInfos.size());
-                final RouteParam endPoint = RoutePackage.getInstance().getEndPoint(MapType.MAIN_SCREEN_MAIN_MAP);
-                if (endPoint != null) {
-                    mBuilder.setEndPoiName(endPoint.getName());
-                }
+                mBuilder.setPathCount(size);
                 AMapStateUtils.saveMapState(mBuilder.build());
+                VoiceSearchManager.getInstance().playRouteResult(size);
             } else {
                 mRouteList.clear();
+                VoiceSearchManager.getInstance().playRouteResult(0);
             }
         }
 

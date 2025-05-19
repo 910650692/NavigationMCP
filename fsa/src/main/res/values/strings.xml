@@ -91,5 +91,5 @@
     <string name="deactivation_reason_tunnel">经过长隧道，领航辅助退出</string>
     <string name="deactivation_reason_service_navigation_on_adas_system">系统故障，领航辅助退出</string>
     <string name="deactivation_reason_driver_action">领航辅助退出，请小心驾驶</string>
-
+    <string name="open_cluster_map_toast">仪表导航已开启，地图默认显示全程路线</string>
 </resources>
