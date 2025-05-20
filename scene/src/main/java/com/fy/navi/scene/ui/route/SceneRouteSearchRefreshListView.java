@@ -91,6 +91,15 @@ public class SceneRouteSearchRefreshListView extends BaseSceneView<SceneRouteSea
             public void onItermAddClick(final PoiInfoEntity poiInfoEntity) {
                 mScreenViewModel.onItermAddClick(poiInfoEntity);
             }
+
+            /***
+             * 点击删除按钮
+             * @param poiInfoEntity 点信息
+             */
+            @Override
+            public void onItermRemoveClick(final PoiInfoEntity poiInfoEntity) {
+                mScreenViewModel.onItermRemoveClick(poiInfoEntity);
+            }
         });
         mViewBinding.routeResult.setAdapter(mAdapter);
     }

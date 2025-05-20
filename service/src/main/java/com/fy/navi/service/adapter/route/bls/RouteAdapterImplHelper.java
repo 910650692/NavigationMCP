@@ -147,27 +147,10 @@ public class RouteAdapterImplHelper {
     }
 
     protected void initRouteService() {
-        initTbtComm();
         mRouteService.init(getRouteServiceParam());
         mRouteService.addRouteResultObserver(mRouteResultObserver);
         mRouteService.addRouteWeatherObserver(mRouteWeatherObserver);
         mRouteService.addRerouteObserver(mRerouteObserver);
-    }
-
-    /**
-     * 初始化公共控制类
-     */
-    private void initTbtComm() {
-        final String cache = GBLCacheFilePath.TBT_COMMON_CACHE_PATH;
-        final String navi = GBLCacheFilePath.OFFLINE_DOWNLOAD_DIR;
-        final WorkPath workPath = new WorkPath();
-        workPath.cache = cache;
-        workPath.navi = navi;
-        final UserConfig userConfig = new UserConfig();
-        userConfig.deviceID = DeviceUtils.getDeviceId();
-        userConfig.userBatch = "0";
-        final TbtCommonControl tbtCommonControl = TbtCommonControl.getInstance();
-        tbtCommonControl.init(workPath, userConfig);
     }
 
     /**

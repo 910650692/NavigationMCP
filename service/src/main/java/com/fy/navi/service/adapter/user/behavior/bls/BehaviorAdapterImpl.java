@@ -128,7 +128,7 @@ public class BehaviorAdapterImpl implements IBehaviorApi {
                     .setTop_time(item.top_time);
 
             final PoiInfoEntity simpleFavoriteInfo = new PoiInfoEntity()
-                    .setPid(String.valueOf(item.id))
+//                    .setPid(String.valueOf(item.id))
                     .setAdCode(ConvertUtils.str2Int(item.city_code))
                     .setAddress(item.address)
                     .setPhone(item.phone_numbers)

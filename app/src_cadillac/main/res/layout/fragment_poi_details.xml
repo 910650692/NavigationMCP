@@ -14,7 +14,7 @@
         android:clickable="true"
         clickCommand="@{viewModel.rootClick}"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical">
         <!--MFC___FocusParkingView-->
         <com.android.car.ui.FocusParkingView
@@ -30,7 +30,7 @@
             <com.fy.navi.scene.ui.poi.ScenePoiDetailContentView
                 android:id="@+id/scene_poi_detail_content_view"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
         </com.android.car.ui.FocusArea>

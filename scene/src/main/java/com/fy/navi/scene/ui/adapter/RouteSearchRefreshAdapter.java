@@ -87,7 +87,11 @@ public class RouteSearchRefreshAdapter extends RecyclerView.Adapter<RouteSearchR
 
         holder.mRouteSearchRefreshListItemBinding.routeItemServiceAddBg.setOnClickListener(v -> {
             if (mItemClickListener != null) {
-                mItemClickListener.onItermAddClick(getPoiEntry(mRouteBeanList.get(position)));
+                if (belongRouteParam) {
+                    mItemClickListener.onItermRemoveClick(getPoiEntry(mRouteBeanList.get(position)));
+                } else {
+                    mItemClickListener.onItermAddClick(getPoiEntry(mRouteBeanList.get(position)));
+                }
             }
         });
     }
@@ -131,5 +135,11 @@ public class RouteSearchRefreshAdapter extends RecyclerView.Adapter<RouteSearchR
          * @param poiInfoEntity 点信息
          */
         void onItermAddClick(PoiInfoEntity poiInfoEntity);
+
+        /***
+         * 点击删除按钮
+         * @param poiInfoEntity 点信息
+         */
+        void onItermRemoveClick(PoiInfoEntity poiInfoEntity);
     }
 }

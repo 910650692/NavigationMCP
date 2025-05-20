@@ -16,16 +16,23 @@ public class MapVisibleAreaDataManager {
 
     private MapVisibleAreaDataManager() {
         mMapDataManager = MapVisibleAreaDataManager.getInstance();
-        loadData();
     }
 
     private void loadData() {
-        String jsonPath = BuildConfig.MAP_SDK + "/maparea.json";
+        String jsonPath = BuildConfig.MAP_SDK + "/buick_maparea.json";
         String json = ParseJsonUtils.parseJsonFile(jsonPath);
         MapVisibleAreaPoint point = GsonUtils.fromJson(json, MapVisibleAreaPoint.class);
         dataMap.put(MapVisibleAreaType.MAIN_AREA_CAR,point.getMap_main_car());
         dataMap.put(MapVisibleAreaType.MAIN_AREA_NAVING,point.getMap_main_naving());
-        mapAdapter = MapAdapter.getInstance();
+    }
+
+
+    public void loadData(String mJsonpath) {
+        String jsonPath = mJsonpath;
+        String json = ParseJsonUtils.parseJsonFile(jsonPath);
+        MapVisibleAreaPoint point = GsonUtils.fromJson(json, MapVisibleAreaPoint.class);
+        dataMap.put(MapVisibleAreaType.MAIN_AREA_CAR,point.getMap_main_car());
+        dataMap.put(MapVisibleAreaType.MAIN_AREA_NAVING,point.getMap_main_naving());
     }
 
     public static MapVisibleAreaDataManager getInstance() {
@@ -44,6 +51,7 @@ public class MapVisibleAreaDataManager {
             }
         }
 
+        mapAdapter = MapAdapter.getInstance();
         MapViewParams mapSurfaceViewSizeParams = mapAdapter.getMapSurfaceParam(MapType.MAIN_SCREEN_MAIN_MAP);
         int surfaceWidth = ConvertUtils.ln2int(mapSurfaceViewSizeParams.getWidth());
         int surfaceHeight = ConvertUtils.ln2int(mapSurfaceViewSizeParams.getHeight());

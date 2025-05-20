@@ -7,6 +7,7 @@ import com.fy.navi.service.define.map.MapMode;
 import com.fy.navi.service.define.map.MapStateStyle;
 import com.fy.navi.service.define.map.MapViewParams;
 import com.fy.navi.service.define.map.MapType;
+import com.fy.navi.service.define.map.PointDataInfo;
 import com.fy.navi.service.define.map.ThemeType;
 import com.fy.navi.service.define.mfc.MfcController;
 
@@ -110,6 +111,8 @@ public interface IMapApi {
     void mfcMoveMap(MapType mapTypeId, MfcController mfcController, int moveDistance);
 
     GeoPoint mapToLonLat(MapType mapTypeId, double mapX, double mapY);
+
+    PointDataInfo lonLatToScreen(MapType mapTypeId,double lon, double lat, double z);
 
     MapViewParams getMapSurfaceParam(MapType mapTypeId);
 

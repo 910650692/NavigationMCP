@@ -61,9 +61,6 @@ public class SceneNaviContinueImpl extends BaseSceneModel<SceneNaviContinueView>
     public void onImmersiveStatusChange(final ImersiveStatus currentImersiveStatus) {
         Logger.i(TAG, "onImmersiveStatusChange-currentImersiveStatus：" + currentImersiveStatus + " mImersiveStatus:" + mImersiveStatus
                 + " mIsFixedOverView:" + NaviPackage.getInstance().getFixedOverViewStatus());
-        if (currentImersiveStatus == ImersiveStatus.TOUCH && NaviPackage.getInstance().getFixedOverViewStatus()) {
-            return;
-        }
         if (mImersiveStatus != currentImersiveStatus) {
             mImersiveStatus = currentImersiveStatus;
         } else {
@@ -133,6 +130,8 @@ public class SceneNaviContinueImpl extends BaseSceneModel<SceneNaviContinueView>
         Logger.i(TAG, "naviContinue");
         if (!mNaviPackage.getFixedOverViewStatus()) {
             OpenApiHelper.exitPreview(mMapTypeId);
+        } else {
+            mMapPackage.goToCarPosition(mMapTypeId, false, false);
         }
         mSearchPackage.clearLabelMark();
         ImmersiveStatusScene.getInstance().setImmersiveStatus(mMapTypeId, ImersiveStatus.IMERSIVE);

@@ -1,17 +1,37 @@
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
-    android:width="@dimen/dp_36"
-    android:height="@dimen/dp_48"
-    android:viewportWidth="36"
-    android:viewportHeight="48">
+    android:width="@dimen/dp_60"
+    android:height="@dimen/dp_60"
+    android:viewportWidth="60"
+    android:viewportHeight="60">
   <path
-      android:pathData="M35.323,12.332C35.419,12.423 35.419,12.576 35.323,12.667L26.889,20.632C26.742,20.771 26.5,20.667 26.5,20.465L26.5,4.535C26.5,4.332 26.742,4.228 26.889,4.367L35.323,12.332ZM26.5,10H21.5H20.5C18.291,10 16.5,11.791 16.5,14V15V43C16.5,43.552 16.948,44 17.5,44H20.5C21.052,44 21.5,43.552 21.5,43V17C21.5,15.895 22.395,15 23.5,15H26.5V10Z"
-      android:fillColor="#5187FF"
-      android:fillAlpha="1"
+      android:pathData="M0,0h60v60h-60z"
+      android:strokeWidth="1"
+      android:fillColor="#D8D8D8"
+      android:fillAlpha="0"
+      android:fillType="evenOdd"
+      android:strokeColor="#00000000"/>
+  <path
+      android:pathData="M15,48.131L15,38.5C15,33.806 18.806,30 23.5,30C28.194,30 32,33.806 32,38.5L32,58L32,58"
+      android:strokeWidth="9"
+      android:fillColor="#00000000"
+      android:strokeColor="@color/route_tbt_color_gray"
       android:fillType="evenOdd"/>
   <path
-      android:pathData="M16.5,23L9,23C6.791,23 5,24.791 5,27V35L0.231,35C0.029,35 -0.075,35.242 0.063,35.389L8.028,43.822C8.119,43.919 8.273,43.919 8.364,43.822L16.329,35.389C16.468,35.242 16.363,35 16.161,35L10,35V30C10,28.896 10.895,28 12,28L14.5,28C15.604,28 16.5,28.895 16.5,30V43C16.5,43.552 16.948,44 17.5,44H20.5C21.052,44 21.5,43.552 21.5,43V28V27C21.5,24.791 19.709,23 17.5,23H16.5Z"
-      android:strokeAlpha="0.3"
-      android:fillColor="#5187FF"
-      android:fillAlpha="0.3"
+      android:pathData="M14.59,57.556L3.954,46.034C3.745,45.807 3.759,45.454 3.986,45.245C4.099,45.141 4.25,45.087 4.404,45.098L14.961,45.837C14.987,45.838 15.013,45.838 15.039,45.837L25.596,45.098C25.904,45.077 26.171,45.309 26.192,45.616C26.203,45.77 26.15,45.921 26.046,46.034L15.41,57.556C15.201,57.782 14.848,57.796 14.621,57.587C14.61,57.577 14.6,57.566 14.59,57.556Z"
+      android:strokeWidth="1"
+      android:fillColor="@color/route_tbt_color_gray"
+      android:fillType="evenOdd"
+      android:strokeColor="#00000000"/>
+  <path
+      android:pathData="M53,14L40.933,14C36,14 32,18 32,22.933L32,58L32,58"
+      android:strokeWidth="9"
+      android:fillColor="#00000000"
+      android:strokeColor="@color/route_tbt_color_2"
       android:fillType="evenOdd"/>
+  <path
+      android:pathData="M57.556,13.59L46.034,2.954C45.807,2.745 45.454,2.759 45.245,2.986C45.141,3.099 45.087,3.25 45.098,3.404L45.837,13.961C45.838,13.987 45.838,14.013 45.837,14.039L45.098,24.596C45.077,24.904 45.309,25.171 45.616,25.192C45.77,25.203 45.921,25.15 46.034,25.046L57.556,14.41C57.782,14.201 57.796,13.848 57.587,13.621C57.577,13.61 57.566,13.6 57.556,13.59Z"
+      android:strokeWidth="1"
+      android:fillColor="@color/route_tbt_color_2"
+      android:fillType="evenOdd"
+      android:strokeColor="#00000000"/>
 </vector>

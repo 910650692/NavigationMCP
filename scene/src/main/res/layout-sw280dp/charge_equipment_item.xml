@@ -50,7 +50,7 @@
                 android:paddingVertical="@dimen/dp_7"
                 android:paddingHorizontal="@dimen/dp_12"
                 android:gravity="center"
-                android:text="@{`0`.equals(connectorInfoItem.getmChargeType) ? @string/charge_title_fast : @string/charge_title_slow}"
+                android:text="@{`1`.equals(connectorInfoItem.getmChargeType) ? @string/charge_title_fast : @string/charge_title_slow}"
                 android:textColor="@color/card_quick_color"
                 android:textSize="@dimen/sp_32"
                 tools:text="快" />
@@ -65,7 +65,7 @@
                 android:gravity="center"
                 android:paddingLeft="@dimen/dp_12"
                 android:paddingRight="@dimen/dp_12"
-                android:text="@string/charge_equipment_status"
+                android:text="@{connectorInfoItem.getStatusName(connectorInfoItem.getmStatus)}"
                 android:textSize="@dimen/sp_32" />
         </com.fy.navi.ui.view.SkinLinearLayout>
         <com.fy.navi.ui.view.SkinConstraintLayout

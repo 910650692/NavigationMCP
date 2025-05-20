@@ -77,6 +77,7 @@ public class PoiInfoEntity implements Parcelable {
     @SerializedName("pictures")
     private ArrayList<String> mPictures;
     private boolean mIsCollect;
+    private ReservationInfo mReservationInfo;
     // --------------
     private CityInfo mCityInfo;
     // 收藏相关
@@ -683,6 +684,15 @@ public class PoiInfoEntity implements Parcelable {
         return this;
     }
 
+    public ReservationInfo getReservationInfo() {
+        return mReservationInfo;
+    }
+
+    public PoiInfoEntity setReservationInfo(ReservationInfo mReservationInfo) {
+        this.mReservationInfo = mReservationInfo;
+        return this;
+    }
+
     protected PoiInfoEntity(final Parcel in) {
         mPoiType = in.readInt();
         mPid = in.readString();
@@ -729,6 +739,7 @@ public class PoiInfoEntity implements Parcelable {
         mChargeInfoList = in.createTypedArrayList(ChargeInfo.CREATOR);
         mStationList = in.createTypedArrayList(GasStationInfo.CREATOR);
         mChildInfoList = in.createTypedArrayList(ChildInfo.CREATOR);
+        mReservationInfo = in.readParcelable(ReservationInfo.class.getClassLoader());
         // 新增字段 mPoiAoiBounds 的反序列化
         // 读取外层列表的大小
         final int outerSize = in.readInt();
@@ -818,6 +829,7 @@ public class PoiInfoEntity implements Parcelable {
         parcel.writeString(mStationBusinessTime);
         parcel.writeStringList(mPictures);
         parcel.writeBoolean(mIsCollect);
+        parcel.writeParcelable(mReservationInfo,i);
         if(ConvertUtils.isEmpty(mPoiAoiBounds)) {
             return;
         }

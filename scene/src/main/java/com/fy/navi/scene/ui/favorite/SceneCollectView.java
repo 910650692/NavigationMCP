@@ -169,6 +169,11 @@ public class SceneCollectView extends BaseSceneView<SceneCollectViewBinding, Sce
                     mViewBinding.tvNoFavorite.setText(AppContext.getInstance().getMContext().getString(R.string.scv_not_have_favorite));
                 }
             }
+
+            @Override
+            public void updateCollectStatus(PoiInfoEntity poiInfoEntity) {
+                mScreenViewModel.updateCollectStatus((Activity) getContext(),poiInfoEntity);
+            }
         });
     }
 

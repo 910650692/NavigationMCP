@@ -95,6 +95,7 @@ public class LayerAdapterImpl implements ILayerApi {
 
     @Override
     public int setFollowMode(MapType mapTypeId, boolean bFollow) {
+        Logger.e(TAG,"setFollowMode ");
         layersPoolManager.get(mapTypeId).getLayerCar().setFollowMode(bFollow);
         return 1;
     }

@@ -116,6 +116,8 @@ public class PoiDetailsModel extends BaseModel<PoiDetailsViewModel> implements S
             case AutoMapConstant.NetSearchKey.QUERY_COLLECT_LIST:
                 mViewModel.notifyCollectList(result);
                 break;
+            case AutoMapConstant.NetSearchKey.QUERY_RESERVATION:
+                mViewModel.notifyReservationList(result);
         }
     }
 
@@ -141,5 +143,11 @@ public class PoiDetailsModel extends BaseModel<PoiDetailsViewModel> implements S
     public boolean isSGMLogin(){
         Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"isSGMLogin: "+ AccountPackage.getInstance().isSGMLogin());
         return AccountPackage.getInstance().isSGMLogin();
+    }
+
+    public void queryReservation(SearchResultEntity searchResultEntity){
+        String vehicleBrand = "1";
+        int status = 1;
+        mSearchPackage.queryReservation(searchResultEntity,vehicleBrand,status);
     }
 }

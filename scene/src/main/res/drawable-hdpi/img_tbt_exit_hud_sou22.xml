@@ -29,10 +29,10 @@
       android:fillType="evenOdd"
       android:strokeColor="#00000000"/>
   <path
-      android:pathData="M28.857,31.143m20.857,0a20.857,20.857 0,1 0,-41.714 0a20.857,20.857 0,1 0,41.714 0"
-      android:strokeAlpha="0.2"
-      android:strokeWidth="7"
+      android:pathData="M28.857,6.786C15.405,6.786 4.5,17.691 4.5,31.143C4.5,44.595 15.405,55.5 28.857,55.5C42.309,55.5 53.214,44.595 53.214,31.143C53.214,17.691 42.309,6.786 28.857,6.786ZM28.857,13.786C38.443,13.786 46.214,21.557 46.214,31.143C46.214,40.729 38.443,48.5 28.857,48.5C19.271,48.5 11.5,40.729 11.5,31.143C11.5,21.557 19.271,13.786 28.857,13.786Z"
+      android:strokeWidth="1"
       android:fillColor="@color/route_tbt_color_2"
-      android:strokeColor="#D2D3D7"
-      android:fillType="evenOdd"/>
+      android:fillAlpha="0.2"
+      android:fillType="nonZero"
+      android:strokeColor="#00000000"/>
 </vector>

@@ -52,6 +52,7 @@ import com.fy.navi.service.define.navi.SoundInfoEntity;
 import com.fy.navi.service.define.navi.SuggestChangePathReasonEntity;
 import com.fy.navi.service.define.route.FyRouteOption;
 import com.fy.navi.service.define.route.RouteWeatherInfo;
+import com.fy.navi.service.tts.NaviAudioPlayer;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
@@ -492,7 +493,7 @@ public class GuidanceCallback implements INaviObserver, ISoundPlayObserver {
 
     @Override
     public boolean isPlaying() {
-        return false;
+        return NaviAudioPlayer.getInstance().isTTSPlaying();
     }
 
     @Override

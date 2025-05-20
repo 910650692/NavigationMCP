@@ -18,7 +18,9 @@ import com.fy.navi.service.define.bean.GeoPoint;
 import com.fy.navi.service.define.search.ChargeInfo;
 import com.fy.navi.service.define.search.CostTime;
 import com.fy.navi.service.define.search.PoiInfoEntity;
+import com.fy.navi.service.define.search.ReservationInfo;
 import com.fy.navi.service.define.search.SearchResultEntity;
+import com.fy.navi.service.logicpaket.user.account.AccountPackage;
 import com.fy.navi.ui.action.Action;
 import com.fy.navi.ui.base.BaseViewModel;
 
@@ -140,14 +142,11 @@ public class BasePoiDetailsViewModel extends BaseViewModel<PoiDetailsFragment, P
                         .setPoiType(1);
                 mSearchResultEntity = searchResultEntity;
                 mTaskId = taskId;
-                final ThreadManager threadManager = ThreadManager.getInstance();
-                threadManager.postUi(() -> {
-                    if(mModel.isSGMLogin()){
-                        mView.onNetSearchResult(searchResultEntity);
-                    }else{
-                        mView.onSearchResult(taskId,searchResultEntity);
-                    }
-                });
+                if(mModel.isSGMLogin()){
+                    mView.onNetSearchResult(searchResultEntity);
+                }else{
+                    mView.onSearchResult(taskId,searchResultEntity);
+                }
             } catch (JSONException e) {
                 Logger.e(MapDefaultFinalTag.SEARCH_HMI_TAG,"JSONException: "+e);
             }
@@ -170,15 +169,38 @@ public class BasePoiDetailsViewModel extends BaseViewModel<PoiDetailsFragment, P
                     for (int j = 0; j < mSearchResultEntity.getPoiList().size(); j++) {
                         for (int i = 0; i < jsonArray.length(); i++) {
                             JSONObject object = new JSONObject(String.valueOf(jsonArray.get(i)));
+                            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"operatorId: "+mSearchResultEntity.getPoiList().get(j).getOperatorId());
+                            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"operatorId string: "+object.getString("operatorId"));
                             if(object.getBoolean("stationSaved") && !ConvertUtils.isNull(mSearchResultEntity)){
                                 if(object.getString("operatorId").equals(mSearchResultEntity.getPoiList().get(j).getOperatorId())){
-                                    Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"operatorId: "+mSearchResultEntity.getPoiList().get(j).getOperatorId());
                                     mSearchResultEntity.getPoiList().get(j).setIsCollect(true);
                                 }else{
                                     mSearchResultEntity.getPoiList().get(j).setIsCollect(false);
                                 }
                             }
                         }
+                    }
+                }
+                searchReservation(mSearchResultEntity);
+            } catch (JSONException e) {
+                Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"JSONException: "+e);
+            }
+        }
+    }
+
+    public void notifyReservationList(BaseRep result){
+        if(!ConvertUtils.isNull(result)){
+            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"code"+result.getResultCode());
+            ArrayList<PoiInfoEntity> list = new ArrayList<>();
+            // 回调出的数据转换List
+            try {
+                JSONObject jsonObject = new JSONObject(GsonUtils.toJson(result.getDataSet()));
+                JSONArray jsonArray = jsonObject.getJSONArray("resultList");
+                String userId = AccountPackage.getInstance().getUserId();
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    ReservationInfo reservationInfo = GsonUtils.fromJson(GsonUtils.toJson(jsonArray.get(i)),ReservationInfo.class);
+                    if(reservationInfo.getmUserId().equals(userId) && reservationInfo.getmStatus() == 1){
+                        mSearchResultEntity.getPoiList().get(0).setReservationInfo(reservationInfo);
                     }
                 }
                 final ThreadManager threadManager = ThreadManager.getInstance();
@@ -205,5 +227,9 @@ public class BasePoiDetailsViewModel extends BaseViewModel<PoiDetailsFragment, P
 
     public void searchCollectList(Activity activity){
         mModel.searchCollectList(activity);
+    }
+
+    private void searchReservation(SearchResultEntity searchResultEntity){
+        mModel.queryReservation(searchResultEntity);
     }
 }

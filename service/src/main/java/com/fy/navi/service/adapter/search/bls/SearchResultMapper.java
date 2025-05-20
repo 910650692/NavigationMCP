@@ -2,7 +2,6 @@ package com.fy.navi.service.adapter.search.bls;
 
 
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
@@ -25,12 +24,15 @@ import com.autonavi.gbl.search.model.SearchAlongWayResult;
 import com.autonavi.gbl.search.model.SearchCategoryInfo;
 import com.autonavi.gbl.search.model.SearchChildCategoryInfo;
 import com.autonavi.gbl.search.model.SearchDeepInfoResult;
+import com.autonavi.gbl.search.model.SearchDistrict;
 import com.autonavi.gbl.search.model.SearchEnroutePoiInfo;
 import com.autonavi.gbl.search.model.SearchEnrouteResult;
 import com.autonavi.gbl.search.model.SearchLineDeepInfoResult;
 import com.autonavi.gbl.search.model.SearchNearestResult;
 import com.autonavi.gbl.search.model.SearchPoiChildInfo;
 import com.autonavi.gbl.search.model.SearchPoiInfo;
+import com.autonavi.gbl.search.model.SearchPolygonBound;
+import com.autonavi.gbl.search.model.SearchSuggestionPoiChildTip;
 import com.autonavi.gbl.search.model.SearchSuggestionPoiTip;
 import com.autonavi.gbl.search.model.SearchTipsCityInfo;
 import com.autonavi.gbl.search.model.SuggestionSearchResult;
@@ -97,6 +99,14 @@ public final class SearchResultMapper {
                 .map(this::mapSuggestionPoiTip)
                 .collect(Collectors.toList());
         searchResultEntity.setPoiList(poiList);
+        if (ConvertUtils.isEmpty(poiList) && !ConvertUtils.isEmpty(result.cityList)) {
+            final List<PoiInfoEntity> cityList = Optional.ofNullable(result.cityList.get(0).tipList)
+                    .orElse(new ArrayList<>())
+                    .stream()
+                    .map(this::mapSuggestionPoiTip)
+                    .collect(Collectors.toList());
+            searchResultEntity.setPoiList(cityList);
+        }
         return searchResultEntity;
     }
 
@@ -109,13 +119,36 @@ public final class SearchResultMapper {
         final GeoPoint point = new GeoPoint();
         point.setLat(suggestionPoiTip.basicInfo.location.lat);
         point.setLon(suggestionPoiTip.basicInfo.location.lon);
+        //子节点信息
+        final List<ChildInfo> childInfoList = Optional.ofNullable(suggestionPoiTip.basicInfo.childInfoList)
+                .orElse(new ArrayList<>())
+                .stream()
+                .map(this::mapSearchSuggestionPoiChildTip)
+                .collect(Collectors.toList());
+        Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "mapSuggestionPoiTip childList: " + suggestionPoiTip.basicInfo.childInfoList);
         return new PoiInfoEntity()
                 .setPid(suggestionPoiTip.basicInfo.poiId)
                 .setName(suggestionPoiTip.basicInfo.name)
                 .setAddress(suggestionPoiTip.basicInfo.address)
                 .setDistance(formatDistanceArrayInternal(ConvertUtils.double2int(suggestionPoiTip.basicInfo.distance)))
                 .setSort_distance(ConvertUtils.double2int(suggestionPoiTip.basicInfo.distance))
+                .setChildInfoList(childInfoList)
                 .setPoint(point);
+    }
+
+    /**
+     * 映射 SearchPoiChildInfo 到 ChildInfo
+     * @param searchPoiChildInfo SearchPoiChildInfo
+     * @return ChildInfo
+     */
+    private ChildInfo mapSearchSuggestionPoiChildTip(final SearchSuggestionPoiChildTip searchPoiChildInfo) {
+        return new ChildInfo()
+                .setName(searchPoiChildInfo.name)
+                .setShortName(searchPoiChildInfo.shortName)
+                .setRatio(searchPoiChildInfo.ratio)
+                .setPoiId(searchPoiChildInfo.poiId)
+                .setLocation(new GeoPoint(searchPoiChildInfo.location.lon, searchPoiChildInfo.location.lat))
+                .setAddress(searchPoiChildInfo.address);
     }
 
     /**
@@ -139,6 +172,15 @@ public final class SearchResultMapper {
         if(!ConvertUtils.isNull(result.lqii)){
             searchResultEntity.setQueryTypeList(result.lqii.queryTypeList);
         }
+        if (ConvertUtils.isEmpty(poiList)) {
+            final List<PoiInfoEntity> cityList = Optional.ofNullable(result.poiLocres.citylist)
+                    .orElse(new ArrayList<>())
+                    .stream()
+                    .map(this::mapSearchDistrictPoiInfo)
+                    .collect(Collectors.toList());
+            searchResultEntity.setPoiList(cityList);
+        }
+
         //获取筛选分类数据
         if (result.classify != null) {
             searchResultEntity.setRetain(result.classify.retainState);//筛选搜索需要的信息
@@ -317,6 +359,34 @@ public final class SearchResultMapper {
     }
 
     /**
+     * 映射 SearchDistrict 到 PoiInfoEntity
+     * @param searchDistrict SearchDistrict
+     * @return PoiInfoEntity
+     */
+    private PoiInfoEntity mapSearchDistrictPoiInfo(final SearchDistrict searchDistrict) {
+        final GeoPoint point = new GeoPoint();
+        point.setLat(searchDistrict.poi_loc.lat);
+        point.setLon(searchDistrict.poi_loc.lon);
+        //区域边界点信息
+        final ArrayList<ArrayList<GeoPoint>> poiAoiBounds = new ArrayList<>();
+        for (SearchPolygonBound coord2DDouble : searchDistrict.polygonBounds) {
+            final ArrayList<GeoPoint> points = new ArrayList<>();
+            for (Coord2DDouble coord2D : coord2DDouble.points) {
+                final GeoPoint geoPoint = new GeoPoint(coord2D.lon, coord2D.lat);
+                points.add(geoPoint);
+            }
+            poiAoiBounds.add(points);
+        }
+        return new PoiInfoEntity()
+                .setPid(point.getLon() + point.getLat() + "")
+                .setName(searchDistrict.name)
+                .setAddress(searchDistrict.address)
+                .setPoint(point)
+                .setAdCode(searchDistrict.adcode)
+                .setMPoiAoiBounds(poiAoiBounds);
+    }
+
+    /**
      * 映射 SearchPoiInfo 到 PoiInfoEntity
      * @param searchPoiInfo SearchPoiInfo
      * @return PoiInfoEntity
@@ -380,7 +450,6 @@ public final class SearchResultMapper {
             }
             poiAoiBounds.add(points);
         }
-        Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "poiAoiBounds is: " + poiAoiBounds);
         //道路边界点信息
         final ArrayList<ArrayList<GeoPoint>> roadBounds = new ArrayList<>();
         for (ArrayList<Coord2DDouble> coord2DDouble : searchPoiInfo.basicInfo.roadPolygonBounds) {
@@ -391,7 +460,6 @@ public final class SearchResultMapper {
             }
             roadBounds.add(points);
         }
-        Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "roadBounds is: " + roadBounds);
         Logger.e(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "typeCode is: " + searchPoiInfo.basicInfo.typeCode
                 + " ;name is: " + searchPoiInfo.basicInfo.name + " ;searchPoiInfo.basicInfo.pid:" + searchPoiInfo.basicInfo.poiId
                 + " :cityCode is: " + searchPoiInfo.basicInfo.cityCode + " ;adcode is: " + searchPoiInfo.basicInfo.adcode);

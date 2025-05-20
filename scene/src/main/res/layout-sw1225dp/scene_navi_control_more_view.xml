@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
 
@@ -15,56 +14,62 @@
     <com.fy.navi.ui.view.SkinConstraintLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingHorizontal="@dimen/dp_29"
-        android:paddingVertical="@dimen/dp_29"
-        android:background="@drawable/bg_shadow_navi_buick">
+        android:background="@drawable/bg_shadow_navi_buick"
+        android:paddingHorizontal="@dimen/dp_34"
+        android:paddingVertical="@dimen/dp_34">
 
         <com.fy.navi.ui.view.SkinConstraintLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:clickable="true">
+            android:layout_width="@dimen/dp_545"
+            android:layout_height="@dimen/dp_272"
+            android:clickable="true"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
             <com.fy.navi.ui.view.SkinView
                 android:id="@+id/sv_tools"
-                android:layout_width="@dimen/dp_640"
-                android:layout_height="@dimen/dp_320"
-                tools:background="@color/navi_color_FF595F_100" />
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
 
             <com.fy.navi.ui.view.SkinView
                 android:id="@+id/sv_bar"
                 android:layout_width="@dimen/dp_146"
                 android:layout_height="@dimen/dp_8"
+                android:layout_marginTop="@dimen/dp_9"
                 android:background="@drawable/bg_navi_control_bar"
-                android:layout_marginTop="@dimen/dp_10"
-                app:layout_constraintEnd_toEndOf="@+id/sv_tools"
-                app:layout_constraintStart_toStartOf="@+id/sv_tools"
-                app:layout_constraintTop_toTopOf="@+id/sv_tools"/>
+                app:layout_constraintEnd_toEndOf="@id/sv_tools"
+                app:layout_constraintStart_toStartOf="@id/sv_tools"
+                app:layout_constraintTop_toTopOf="@id/sv_tools" />
 
             <com.fy.navi.ui.view.SkinView
                 android:id="@+id/sv_bar_area"
+                clickCommand="@{naviControl.backControl}"
                 android:layout_width="@dimen/dp_166"
                 android:layout_height="@dimen/dp_30"
-                clickCommand="@{naviControl.backControl}"
-                app:layout_constraintEnd_toEndOf="@+id/sv_tools"
-                app:layout_constraintStart_toStartOf="@+id/sv_tools"
-                app:layout_constraintTop_toTopOf="@+id/sv_tools"/>
+                android:layout_marginTop="@dimen/dp_9"
+                app:layout_constraintEnd_toEndOf="@id/sv_tools"
+                app:layout_constraintStart_toStartOf="@id/sv_tools"
+                app:layout_constraintTop_toTopOf="@id/sv_tools" />
 
             <!--刷新-->
             <com.fy.navi.ui.view.SkinConstraintLayout
                 android:id="@+id/sv_refresh"
                 clickCommand="@{naviControl.refreshRoute}"
-                android:layout_width="@dimen/dp_90"
-                android:layout_height="@dimen/dp_106"
-                android:layout_marginStart="@dimen/dp_15"
-                android:layout_marginTop="@dimen/dp_30"
+                android:layout_width="@dimen/dp_105"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_10"
                 android:contentDescription="@string/navi_refresh"
                 app:click_color_change="true"
-                app:layout_constraintStart_toStartOf="@id/sv_tools"
-                app:layout_constraintTop_toTopOf="@id/sv_tools">
+                app:layout_constraintEnd_toStartOf="@+id/sv_broadcast"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/sv_bar">
 
                 <com.fy.navi.ui.view.SkinImageView
                     android:id="@+id/siv_refresh"
                     style="@style/style_navi_control_iv2_com"
+                    android:layout_width="@dimen/dp_49"
+                    android:layout_height="@dimen/dp_49"
                     android:background="@drawable/img_refresh_58"
                     app:layout_constraintEnd_toEndOf="@id/sv_refresh"
                     app:layout_constraintStart_toStartOf="@id/sv_refresh"
@@ -74,6 +79,7 @@
                     android:id="@+id/stv_refresh"
                     style="@style/style_navi_control_tv_com"
                     android:text="@string/navi_refresh"
+                    android:textSize="@dimen/sp_26"
                     app:layout_constraintEnd_toEndOf="@id/sv_refresh"
                     app:layout_constraintStart_toStartOf="@id/sv_refresh"
                     app:layout_constraintTop_toBottomOf="@id/siv_refresh" />
@@ -84,18 +90,19 @@
             <com.fy.navi.ui.view.SkinConstraintLayout
                 android:id="@+id/sv_broadcast"
                 clickCommand="@{naviControl.naviBroadcast}"
-                android:layout_width="@dimen/dp_120"
-                android:layout_height="@dimen/dp_106"
-                android:layout_marginStart="@dimen/dp_23"
+                android:layout_width="@dimen/dp_105"
+                android:layout_height="wrap_content"
                 android:contentDescription="@string/navi_broadcast_concise"
                 app:click_color_change="true"
-                app:layout_constraintBottom_toBottomOf="@id/sv_refresh"
+                app:layout_constraintEnd_toStartOf="@+id/sv_preference"
                 app:layout_constraintStart_toEndOf="@id/sv_refresh"
-                app:layout_constraintTop_toTopOf="@id/sv_refresh" >
+                app:layout_constraintTop_toTopOf="@+id/sv_refresh">
 
                 <com.fy.navi.ui.view.SkinImageView
                     android:id="@+id/siv_broadcast"
                     style="@style/style_navi_control_iv2_com"
+                    android:layout_width="@dimen/dp_49"
+                    android:layout_height="@dimen/dp_49"
                     android:background="@drawable/img_broadcast_brief_58"
                     app:layout_constraintEnd_toEndOf="@id/sv_broadcast"
                     app:layout_constraintStart_toStartOf="@id/sv_broadcast"
@@ -105,6 +112,7 @@
                     android:id="@+id/stv_broadcast"
                     style="@style/style_navi_control_tv_com"
                     android:text="@string/navi_broadcast_minimalism"
+                    android:textSize="@dimen/sp_26"
                     app:layout_constraintEnd_toEndOf="@id/sv_broadcast"
                     app:layout_constraintStart_toStartOf="@id/sv_broadcast"
                     app:layout_constraintTop_toBottomOf="@id/siv_broadcast" />
@@ -114,18 +122,19 @@
             <com.fy.navi.ui.view.SkinConstraintLayout
                 android:id="@+id/sv_preference"
                 clickCommand="@{naviControl.routePreference}"
-                android:layout_width="@dimen/dp_120"
-                android:layout_height="@dimen/dp_106"
-                android:layout_marginStart="@dimen/dp_22"
+                android:layout_width="@dimen/dp_105"
+                android:layout_height="wrap_content"
                 android:contentDescription="@string/route_preference"
                 app:click_color_change="true"
-                app:layout_constraintBottom_toBottomOf="@id/sv_broadcast"
+                app:layout_constraintEnd_toStartOf="@+id/sv_car_head"
                 app:layout_constraintStart_toEndOf="@id/sv_broadcast"
-                app:layout_constraintTop_toTopOf="@id/sv_broadcast" >
+                app:layout_constraintTop_toTopOf="@+id/sv_refresh">
 
                 <com.fy.navi.ui.view.SkinImageView
                     android:id="@+id/siv_preference"
                     style="@style/style_navi_control_iv2_com"
+                    android:layout_width="@dimen/dp_49"
+                    android:layout_height="@dimen/dp_49"
                     android:background="@drawable/img_preference_58"
                     app:layout_constraintEnd_toEndOf="@id/sv_preference"
                     app:layout_constraintStart_toStartOf="@id/sv_preference"
@@ -135,6 +144,7 @@
                     android:id="@+id/stv_preference"
                     style="@style/style_navi_control_tv_com"
                     android:text="@string/route_preference"
+                    android:textSize="@dimen/sp_26"
                     app:layout_constraintEnd_toEndOf="@id/sv_preference"
                     app:layout_constraintStart_toStartOf="@id/sv_preference"
                     app:layout_constraintTop_toBottomOf="@id/siv_preference" />
@@ -144,18 +154,19 @@
             <com.fy.navi.ui.view.SkinConstraintLayout
                 android:id="@+id/sv_car_head"
                 clickCommand="@{naviControl.carHead}"
-                android:layout_width="@dimen/dp_100"
-                android:layout_height="@dimen/dp_106"
-                android:layout_marginStart="@dimen/dp_23"
+                android:layout_width="@dimen/dp_105"
+                android:layout_height="wrap_content"
                 android:contentDescription="@string/navi_up_2d"
                 app:click_color_change="true"
-                app:layout_constraintBottom_toBottomOf="@id/sv_refresh"
+                app:layout_constraintEnd_toStartOf="@+id/sv_navi_setting"
                 app:layout_constraintStart_toEndOf="@id/sv_preference"
-                app:layout_constraintTop_toTopOf="@id/sv_refresh" >
+                app:layout_constraintTop_toTopOf="@id/sv_refresh">
 
                 <com.fy.navi.ui.view.SkinImageView
                     android:id="@+id/siv_car_head"
                     style="@style/style_navi_control_iv2_com"
+                    android:layout_width="@dimen/dp_49"
+                    android:layout_height="@dimen/dp_49"
                     android:background="@drawable/img_navigation_2d_58"
                     app:layout_constraintEnd_toEndOf="@id/sv_car_head"
                     app:layout_constraintStart_toStartOf="@id/sv_car_head"
@@ -165,6 +176,7 @@
                     android:id="@+id/stv_car_head"
                     style="@style/style_navi_control_tv_com"
                     android:text="@string/navi_up_2d"
+                    android:textSize="@dimen/sp_26"
                     app:layout_constraintEnd_toEndOf="@id/sv_car_head"
                     app:layout_constraintStart_toStartOf="@id/sv_car_head"
                     app:layout_constraintTop_toBottomOf="@id/siv_car_head" />
@@ -174,18 +186,19 @@
             <com.fy.navi.ui.view.SkinConstraintLayout
                 android:id="@+id/sv_navi_setting"
                 clickCommand="@{naviControl.naviSetting}"
-                android:layout_width="@dimen/dp_90"
-                android:layout_height="@dimen/dp_106"
-                android:layout_marginStart="@dimen/dp_22"
+                android:layout_width="@dimen/dp_105"
+                android:layout_height="wrap_content"
                 android:contentDescription="@string/navi_setting"
                 app:click_color_change="true"
-                app:layout_constraintBottom_toBottomOf="@id/sv_refresh"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/sv_car_head"
-                app:layout_constraintTop_toTopOf="@id/sv_refresh" >
+                app:layout_constraintTop_toTopOf="@+id/sv_refresh">
 
                 <com.fy.navi.ui.view.SkinImageView
                     android:id="@+id/siv_navi_setting"
                     style="@style/style_navi_control_iv2_com"
+                    android:layout_width="@dimen/dp_49"
+                    android:layout_height="@dimen/dp_49"
                     android:background="@drawable/img_settings_58"
                     app:layout_constraintEnd_toEndOf="@id/sv_navi_setting"
                     app:layout_constraintStart_toStartOf="@id/sv_navi_setting"
@@ -195,6 +208,7 @@
                     android:id="@+id/stv_navi_setting"
                     style="@style/style_navi_control_tv_com"
                     android:text="@string/navi_setting"
+                    android:textSize="@dimen/sp_26"
                     app:layout_constraintEnd_toEndOf="@id/sv_navi_setting"
                     app:layout_constraintStart_toStartOf="@id/sv_navi_setting"
                     app:layout_constraintTop_toBottomOf="@id/siv_navi_setting" />
@@ -205,18 +219,20 @@
             <com.fy.navi.ui.view.SkinConstraintLayout
                 android:id="@+id/sv_oil"
                 clickCommand="@{() -> naviControl.alongSearch(0)}"
-                android:layout_width="@dimen/dp_90"
-                android:layout_height="@dimen/dp_106"
-                android:layout_marginBottom="@dimen/dp_30"
-                android:layout_marginStart="@dimen/dp_15"
+                android:layout_width="@dimen/dp_105"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_14"
                 android:contentDescription="@string/st_quick_search_station"
                 app:click_color_change="true"
-                app:layout_constraintBottom_toBottomOf="@id/sv_tools"
-                app:layout_constraintStart_toStartOf="parent" >
+                app:layout_constraintEnd_toStartOf="@+id/sv_charge"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/sv_line">
 
                 <com.fy.navi.ui.view.SkinImageView
                     android:id="@+id/siv_oil"
                     style="@style/style_navi_control_iv2_com"
+                    android:layout_width="@dimen/dp_49"
+                    android:layout_height="@dimen/dp_49"
                     android:background="@drawable/img_refuel_58"
                     app:layout_constraintEnd_toEndOf="@id/sv_oil"
                     app:layout_constraintStart_toStartOf="@id/sv_oil"
@@ -226,6 +242,7 @@
                     android:id="@+id/stv_oil"
                     style="@style/style_navi_control_tv_com"
                     android:text="@string/st_quick_search_station"
+                    android:textSize="@dimen/sp_26"
                     app:layout_constraintEnd_toEndOf="@id/sv_oil"
                     app:layout_constraintStart_toStartOf="@id/sv_oil"
                     app:layout_constraintTop_toBottomOf="@id/siv_oil" />
@@ -236,18 +253,19 @@
             <com.fy.navi.ui.view.SkinConstraintLayout
                 android:id="@+id/sv_charge"
                 clickCommand="@{() -> naviControl.alongSearch(1)}"
-                android:layout_width="@dimen/dp_90"
-                android:layout_height="@dimen/dp_106"
-                android:layout_marginStart="@dimen/dp_38"
+                android:layout_width="@dimen/dp_105"
+                android:layout_height="wrap_content"
                 android:contentDescription="@string/st_quick_search_charge"
                 app:click_color_change="true"
-                app:layout_constraintBottom_toBottomOf="@id/sv_oil"
+                app:layout_constraintEnd_toStartOf="@+id/sv_lavatory"
                 app:layout_constraintStart_toEndOf="@id/sv_oil"
-                app:layout_constraintTop_toTopOf="@id/sv_oil" >
+                app:layout_constraintTop_toTopOf="@+id/sv_oil">
 
                 <com.fy.navi.ui.view.SkinImageView
                     android:id="@+id/siv_charge"
                     style="@style/style_navi_control_iv2_com"
+                    android:layout_width="@dimen/dp_49"
+                    android:layout_height="@dimen/dp_49"
                     android:background="@drawable/img_lightning_58"
                     app:layout_constraintEnd_toEndOf="@id/sv_charge"
                     app:layout_constraintStart_toStartOf="@id/sv_charge"
@@ -257,6 +275,7 @@
                     android:id="@+id/stv_charge"
                     style="@style/style_navi_control_tv_com"
                     android:text="@string/st_quick_search_charge"
+                    android:textSize="@dimen/sp_26"
                     app:layout_constraintEnd_toEndOf="@id/sv_charge"
                     app:layout_constraintStart_toStartOf="@id/sv_charge"
                     app:layout_constraintTop_toBottomOf="@id/siv_charge" />
@@ -266,18 +285,19 @@
             <com.fy.navi.ui.view.SkinConstraintLayout
                 android:id="@+id/sv_lavatory"
                 clickCommand="@{() -> naviControl.alongSearch(2)}"
-                android:layout_width="@dimen/dp_90"
-                android:layout_height="@dimen/dp_106"
-                android:layout_marginStart="@dimen/dp_52"
+                android:layout_width="@dimen/dp_105"
+                android:layout_height="wrap_content"
                 android:contentDescription="@string/st_quick_search_lavatory"
                 app:click_color_change="true"
-                app:layout_constraintBottom_toBottomOf="@id/sv_oil"
+                app:layout_constraintEnd_toStartOf="@+id/sv_service"
                 app:layout_constraintStart_toEndOf="@id/sv_charge"
-                app:layout_constraintTop_toTopOf="@id/sv_oil" >
+                app:layout_constraintTop_toTopOf="@+id/sv_oil">
 
                 <com.fy.navi.ui.view.SkinImageView
                     android:id="@+id/siv_lavatory"
                     style="@style/style_navi_control_iv2_com"
+                    android:layout_width="@dimen/dp_49"
+                    android:layout_height="@dimen/dp_49"
                     android:background="@drawable/img_lavatory_58"
                     app:layout_constraintEnd_toEndOf="@id/sv_lavatory"
                     app:layout_constraintStart_toStartOf="@id/sv_lavatory"
@@ -287,6 +307,7 @@
                     android:id="@+id/stv_lavatory"
                     style="@style/style_navi_control_tv_com"
                     android:text="@string/st_quick_search_lavatory"
+                    android:textSize="@dimen/sp_26"
                     app:layout_constraintEnd_toEndOf="@id/sv_lavatory"
                     app:layout_constraintStart_toStartOf="@id/sv_lavatory"
                     app:layout_constraintTop_toBottomOf="@id/siv_lavatory" />
@@ -296,18 +317,19 @@
             <com.fy.navi.ui.view.SkinConstraintLayout
                 android:id="@+id/sv_service"
                 clickCommand="@{() -> naviControl.alongSearch(3)}"
-                android:layout_width="@dimen/dp_90"
-                android:layout_height="@dimen/dp_106"
-                android:layout_marginStart="@dimen/dp_43"
+                android:layout_width="@dimen/dp_105"
+                android:layout_height="wrap_content"
                 android:contentDescription="@string/navi_along_parking"
                 app:click_color_change="true"
-                app:layout_constraintBottom_toBottomOf="@id/sv_oil"
+                app:layout_constraintEnd_toStartOf="@+id/sv_along_search"
                 app:layout_constraintStart_toEndOf="@id/sv_lavatory"
-                app:layout_constraintTop_toTopOf="@id/sv_oil" >
+                app:layout_constraintTop_toTopOf="@+id/sv_oil">
 
                 <com.fy.navi.ui.view.SkinImageView
                     android:id="@+id/siv_service"
                     style="@style/style_navi_control_iv2_com"
+                    android:layout_width="@dimen/dp_49"
+                    android:layout_height="@dimen/dp_49"
                     android:background="@drawable/img_end_point_58"
                     app:layout_constraintEnd_toEndOf="@id/sv_service"
                     app:layout_constraintStart_toStartOf="@id/sv_service"
@@ -317,6 +339,7 @@
                     android:id="@+id/stv_service"
                     style="@style/style_navi_control_tv_com"
                     android:text="@string/navi_along_parking"
+                    android:textSize="@dimen/sp_26"
                     app:layout_constraintEnd_toEndOf="@id/sv_service"
                     app:layout_constraintStart_toStartOf="@id/sv_service"
                     app:layout_constraintTop_toBottomOf="@id/siv_service" />
@@ -326,18 +349,19 @@
             <com.fy.navi.ui.view.SkinConstraintLayout
                 android:id="@+id/sv_along_search"
                 clickCommand="@{() -> naviControl.alongSearch(4)}"
-                android:layout_width="@dimen/dp_90"
-                android:layout_height="@dimen/dp_106"
-                android:layout_marginStart="@dimen/dp_27"
+                android:layout_width="@dimen/dp_105"
+                android:layout_height="wrap_content"
                 android:contentDescription="@string/navi_along_search"
                 app:click_color_change="true"
-                app:layout_constraintBottom_toBottomOf="@id/sv_oil"
+                app:layout_constraintEnd_toEndOf="@+id/sv_tools"
                 app:layout_constraintStart_toEndOf="@id/sv_service"
-                app:layout_constraintTop_toTopOf="@id/sv_oil" >
+                app:layout_constraintTop_toTopOf="@+id/sv_oil">
 
                 <com.fy.navi.ui.view.SkinImageView
                     android:id="@+id/siv_along_search"
                     style="@style/style_navi_control_iv2_com"
+                    android:layout_width="@dimen/dp_49"
+                    android:layout_height="@dimen/dp_49"
                     android:background="@drawable/img_search58"
                     app:layout_constraintEnd_toEndOf="@id/sv_along_search"
                     app:layout_constraintStart_toStartOf="@id/sv_along_search"
@@ -347,6 +371,7 @@
                     android:id="@+id/stv_along_search"
                     style="@style/style_navi_control_tv_com"
                     android:text="@string/navi_along_search"
+                    android:textSize="@dimen/sp_26"
                     app:layout_constraintEnd_toEndOf="@id/sv_along_search"
                     app:layout_constraintStart_toStartOf="@id/sv_along_search"
                     app:layout_constraintTop_toBottomOf="@id/siv_along_search" />
@@ -355,14 +380,13 @@
 
             <com.fy.navi.ui.view.SkinView
                 android:id="@+id/sv_line"
-                android:layout_width="@dimen/dp_0"
+                android:layout_width="0dp"
                 android:layout_height="@dimen/dp_1"
-                android:layout_marginTop="@dimen/dp_166"
-                android:layout_marginHorizontal="@dimen/dp_30"
+                android:layout_marginTop="@dimen/dp_26"
                 android:background="@color/navi_color_000000_40"
-                app:layout_constraintEnd_toEndOf="@id/sv_tools"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@id/sv_tools" />
+                app:layout_constraintEnd_toEndOf="@+id/sv_navi_setting"
+                app:layout_constraintStart_toStartOf="@+id/sv_refresh"
+                app:layout_constraintTop_toBottomOf="@id/sv_refresh" />
 
         </com.fy.navi.ui.view.SkinConstraintLayout>
 

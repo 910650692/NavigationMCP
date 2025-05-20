@@ -10,5 +10,8 @@
     <color name="dialog_title_color">#FFFFFF</color>
     <color name="authorization_request_content">#99FFFFFF</color>
     <color name="authorization_agree_color">#0E58FF</color>
+    <color name="authorization_disagree_color">#33787880</color>
     <color name="use_reminder_color">#2461EA</color>
+
+    <color name="setting_bg_line">#33FFFFFF</color>
 </resources>

@@ -10,6 +10,7 @@ import com.fy.navi.service.define.map.MapMode;
 import com.fy.navi.service.define.map.MapStateStyle;
 import com.fy.navi.service.define.map.MapViewParams;
 import com.fy.navi.service.define.map.MapType;
+import com.fy.navi.service.define.map.PointDataInfo;
 import com.fy.navi.service.define.map.ThemeType;
 import com.fy.navi.service.define.mfc.MfcController;
 
@@ -155,6 +156,10 @@ public class MapAdapter {
 
     public GeoPoint mapToLonLat(MapType mapTypeId, double mapX, double mapY) {
         return mIMapApi.mapToLonLat(mapTypeId, mapX, mapY);
+    }
+
+    public PointDataInfo lonLatToScreen(MapType mapTypeId,double lon, double lat, double z) {
+        return mIMapApi.lonLatToScreen(mapTypeId, lon, lat,z);
     }
 
     public MapViewParams getMapSurfaceParam(MapType mapTypeId) {

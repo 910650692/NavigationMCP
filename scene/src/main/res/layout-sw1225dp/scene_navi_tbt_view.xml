@@ -14,10 +14,9 @@
 
     <com.fy.navi.ui.view.SkinConstraintLayout
         android:id="@+id/scl_progress"
-        android:layout_width="match_parent"
+        android:layout_width="@dimen/dp_640"
         android:layout_height="@dimen/dp_119"
-        tools:background="@color/navi_color_FFFFFF_80"
-        tools:layout_width="@dimen/dp_820">
+        tools:background="@color/navi_color_FFFFFF_80">
 
         <com.fy.navi.ui.view.SkinImageView
             android:id="@+id/siv_progress"
@@ -158,6 +157,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dp_26"
+            android:layout_marginEnd="@dimen/dp_10"
             android:ellipsize="end"
             android:gravity="center_vertical|start"
             android:singleLine="true"

@@ -13,6 +13,8 @@ import com.fy.navi.hmi.BR;
 import com.fy.navi.hmi.R;
 import com.fy.navi.hmi.databinding.FragmentSettingOthersBinding;
 import com.fy.navi.hmi.setting.SettingCheckDialog;
+import com.fy.navi.service.define.code.UserDataCode;
+import com.fy.navi.service.greendao.CommonManager;
 import com.fy.navi.ui.action.ViewAdapterKt;
 import com.fy.navi.ui.base.BaseFragment;
 import com.fy.navi.ui.dialog.IBaseDialogClickListener;
@@ -202,6 +204,7 @@ public class SettingOthersFragment extends BaseFragment<FragmentSettingOthersBin
                         mViewModel.clearAll();
                         mViewModel.resetSetting();
                         mViewModel.setResetSettingDialogShown(false);
+                        CommonManager.getInstance().insertOrReplace(UserDataCode.GUIDE_LOGIN_LAST_TIME, "");
                         restartApp();
                     }
 

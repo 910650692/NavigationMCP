@@ -226,6 +226,7 @@ final public class BehaviorPackage implements BehaviorAdapterCallBack, AccountCa
             Logger.e(TAG, "the poi info is null");
             return itemId;
         }
+        Logger.d(TAG, "add favorite " + GsonUtils.toJson(poiInfo));
         PoiInfoEntity savedPoiInfo = null;
         if (type == 1) {
             savedPoiInfo = getHomeFavoriteInfo();
@@ -346,6 +347,29 @@ final public class BehaviorPackage implements BehaviorAdapterCallBack, AccountCa
             itemId = isFavorite(itemId) ? itemId : "";
         }
         return itemId;
+    }
+
+    /**
+     * 判断是否是常去地址
+     * @param info PoiInfoEntity
+     * @return  boolean
+     */
+    public boolean isFrequentAddress(final PoiInfoEntity info) {
+        if (info == null) {
+            Logger.e(TAG, "info is null");
+            return false;
+        }
+        final ArrayList<PoiInfoEntity> list = getFavoriteAddressInfo();
+        if (list.isEmpty()) {
+            return false;
+        }
+
+        for (PoiInfoEntity poiInfo : list) {
+            if (TextUtils.equals(poiInfo.getPid(), info.getPid())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**

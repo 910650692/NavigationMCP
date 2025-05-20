@@ -1,13 +1,12 @@
 package com.fy.navi.hmi.launcher;
 
-import android.annotation.SuppressLint;
-import android.app.Service;
+import static android.content.Context.WINDOW_SERVICE;
+import android.content.ComponentCallbacks;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.PixelFormat;
 import android.os.Build;
-import android.os.IBinder;
 import android.provider.Settings;
 import android.text.TextUtils;
 import android.view.Gravity;
@@ -15,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.android.utils.ConvertUtils;
@@ -29,7 +29,6 @@ import com.fy.navi.mapservice.bean.INaviConstant;
 import com.fy.navi.service.AppContext;
 import com.fy.navi.service.adapter.navistatus.NavistatusAdapter;
 import com.fy.navi.service.define.map.MapType;
-import com.fy.navi.service.define.navi.CrossImageEntity;
 import com.fy.navi.service.define.navi.LaneInfoEntity;
 import com.fy.navi.service.define.navi.NaviEtaInfo;
 import com.fy.navi.service.define.navi.NaviTmcInfo;
@@ -46,7 +45,7 @@ import com.fy.navi.service.logicpaket.navi.NaviPackage;
  * Date: 2025/4/24
  * Description: [在这里描述文件功能]
  */
-public class LauncherWindowService extends Service implements IGuidanceObserver, IMapPackageCallback, IEglScreenshotCallBack , FloatViewManager.OnImageLoadCallBack{
+public class LauncherWindowService implements IGuidanceObserver, IMapPackageCallback, IEglScreenshotCallBack, FloatViewManager.OnImageLoadCallBack, ComponentCallbacks {
     private static final String TAG = "LauncherWindowService";
     private WindowManager mWindowManager;
     private View mView;
@@ -60,33 +59,26 @@ public class LauncherWindowService extends Service implements IGuidanceObserver,
     private final MapType MAP_TYPE = MapType.MAIN_SCREEN_MAIN_MAP;
     private FloatViewManager mFloatManager;
     private boolean mIsOnShowing = false;
-    @Nullable
-    @Override
-    public IBinder onBind(Intent intent) {
-        return null;
+    private LauncherWindowService() {
+
     }
 
-    @SuppressLint("NewApi")
-    @Override
-    public void onCreate() {
-        super.onCreate();
-        Logger.i(TAG, "onCreate");
+    private void init() {
+        Logger.i(TAG, "init");
         initParameters();
         initCallBacks();
         initView();
     }
 
-    @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-        Logger.i(TAG, "onStartCommand");
-        return super.onStartCommand(intent, flags, startId);
+    public void unInit() {
+        unInitCallBacks();
     }
 
     private void initParameters() {
         mMapPackage = MapPackage.getInstance();
         mNaviPackage = NaviPackage.getInstance();
         mNaviStatusAdapter = NavistatusAdapter.getInstance();
-        mWindowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
+        mWindowManager = (WindowManager) AppContext.getInstance().getMContext().getSystemService(WINDOW_SERVICE);
         mFloatManager = FloatViewManager.getInstance();
     }
 
@@ -95,9 +87,12 @@ public class LauncherWindowService extends Service implements IGuidanceObserver,
         mMapPackage.registerCallback(MAP_TYPE, this);
         mMapPackage.registerEGLScreenshotCallBack(KEY, this);
         mFloatManager.bindWindowService(this);
+        AppContext.getInstance().getMContext().registerComponentCallbacks(this);
     }
 
     private void unInitCallBacks() {
+        Logger.i(TAG, "unInitCallBacks");
+        AppContext.getInstance().getMContext().unregisterComponentCallbacks(this);
         mNaviPackage.unregisterObserver(KEY);
         mMapPackage.unRegisterCallback(MAP_TYPE, this);
         mMapPackage.unregisterEGLScreenshotCallBack(KEY, this);
@@ -185,7 +180,7 @@ public class LauncherWindowService extends Service implements IGuidanceObserver,
         if (mView != null && mWindowManager != null) {
             mWindowManager.removeView(mView);
         }
-        mBinding = FloatingWindowLayoutBinding.inflate(LayoutInflater.from(this), null);
+        mBinding = FloatingWindowLayoutBinding.inflate(LayoutInflater.from(AppContext.getInstance().getMContext()), null);
         mView = mBinding.getRoot();
 
         final WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams(
@@ -216,19 +211,6 @@ public class LauncherWindowService extends Service implements IGuidanceObserver,
         showOrHideFloatView(mIsOnShowing);
     }
 
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        Logger.i(TAG, "onConfigurationChanged");
-        initView();
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        unInitCallBacks();
-    }
-
     private void updateTbT() {
         if (ConvertUtils.isNull(mNaviEtaInfo)) return;
         mBinding.sceneNaviTbt.onNaviInfo(mNaviEtaInfo);
@@ -251,16 +233,12 @@ public class LauncherWindowService extends Service implements IGuidanceObserver,
     public static void startService() {
         if (!TextUtils.equals("cadi", BuildConfig.FLAVOR)) return;
         Logger.i(TAG, "凯迪车型显示悬浮窗口！");
-        AppContext.getInstance().getMContext().startService(
-                new Intent(AppContext.getInstance().getMContext(), LauncherWindowService.class)
-        );
+        InstanceHolder.instance.init();
     }
 
     public static void stopService() {
         Logger.i(TAG, "凯迪车型关闭悬浮窗口！");
-        AppContext.getInstance().getMContext().stopService(
-                new Intent(AppContext.getInstance().getMContext(), LauncherWindowService.class)
-        );
+        InstanceHolder.instance.unInit();
     }
 
     public void showOrHideFloatView(boolean isShow) {
@@ -268,7 +246,7 @@ public class LauncherWindowService extends Service implements IGuidanceObserver,
         ThreadManager.getInstance().postUi(() -> {
             mIsOnShowing = isShow;
             if (!ConvertUtils.isNull(mView)) {
-                mView.setVisibility(isShow ? View.VISIBLE : View.GONE);
+                mView.setVisibility(isShow ? View.VISIBLE : View.INVISIBLE);
                 mView.setFocusable(isShow ? true : false);
             } else {
                 initView();
@@ -298,5 +276,20 @@ public class LauncherWindowService extends Service implements IGuidanceObserver,
         if (!ConvertUtils.isNull(mBinding)) {
             mBinding.ivCross.setVisibility(isVisible ? View.VISIBLE : View.GONE);
         }
+    }
+
+    @Override
+    public void onConfigurationChanged(@NonNull Configuration newConfig) {
+        Logger.i(TAG, "onConfigurationChanged");
+        initView();
+    }
+
+    @Override
+    public void onLowMemory() {
+        Logger.i(TAG, "onLowMemory");
+    }
+
+    private static final class InstanceHolder {
+        private static final LauncherWindowService instance = new LauncherWindowService();
     }
 }

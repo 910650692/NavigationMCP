@@ -32,7 +32,9 @@ import com.fy.navi.service.define.layer.refix.LayerPointItemType;
 import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.navistatus.NaviStatus;
 import com.fy.navi.service.define.route.RouteParam;
+import com.fy.navi.service.define.search.ConnectorInfoItem;
 import com.fy.navi.service.define.search.ETAInfo;
+import com.fy.navi.service.define.search.EquipmentInfo;
 import com.fy.navi.service.define.search.PoiInfoEntity;
 import com.fy.navi.service.define.search.SearchRequestParameter;
 import com.fy.navi.service.define.search.SearchResultEntity;
@@ -1527,8 +1529,11 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
     /*
      * 查询充电桩信息
      * */
-    public int queryEquipmentInfo(){
+    public int queryEquipmentInfo(EquipmentInfo info, PoiInfoEntity poiInfo){
         final SearchRequestParameter requestParameterBuilder = new SearchRequestParameter.Builder()
+                .operatorId(poiInfo.getOperatorId())
+                .stationId(poiInfo.getStationId())
+                .equipmentId(info.getmEquipmentId())
                 .build();
         return mSearchAdapter.queryEquipmentInfo(requestParameterBuilder);
     }
@@ -1551,14 +1556,27 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
     /*
      * 创建公桩预约
      * */
-    public int createReservation(){
+    public int createReservation(ConnectorInfoItem item, PoiInfoEntity poiInfo,String idpUserId,String accessToken,String vehicleBrand){
         final SearchRequestParameter requestParameterBuilder = new SearchRequestParameter.Builder()
+                .operatorId(poiInfo.getOperatorId())
+                .stationId(poiInfo.getStationId())
+                .connectorId(item.getmConnectorId())
+                .source("CARAPP")
+                .vehicleBrand(vehicleBrand)
+                .idpUserId(idpUserId)
+                .accessToken(accessToken)
                 .build();
         return mSearchAdapter.createReservation(requestParameterBuilder);
     }
 
-    public int unGroundLock(){
+    public int unGroundLock(ConnectorInfoItem item, PoiInfoEntity poiInfo,String idpUserId,String accessToken,String vehicleBrand){
         final SearchRequestParameter requestParameterBuilder = new SearchRequestParameter.Builder()
+                .accessToken(accessToken)
+                .operatorId(poiInfo.getOperatorId())
+                .vehicleBrand(vehicleBrand)
+                .idpUserId(idpUserId)
+                .connectorId(item.getmConnectorId())
+                .source("CARAPP")
                 .build();
         return mSearchAdapter.unGroundLock(requestParameterBuilder);
     }
@@ -1579,5 +1597,15 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
                 .savedStationsJson(list)
                 .build();
         return mSearchAdapter.updateCollectStatus(requestParameterBuilder);
+    }
+
+    public int queryReservation(SearchResultEntity searchResultEntity,String brandId,int status){
+        PoiInfoEntity poiInfoEntity = searchResultEntity.getPoiList().get(0);
+        final SearchRequestParameter requestParameterBuilder = new SearchRequestParameter.Builder()
+                .vehicleBrand(brandId)
+                .operatorId(poiInfoEntity.getOperatorId())
+                .type(status)
+                .build();
+        return mSearchAdapter.queryReservation(requestParameterBuilder);
     }
 }

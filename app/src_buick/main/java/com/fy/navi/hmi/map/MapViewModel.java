@@ -4,6 +4,9 @@ import android.app.Application;
 
 import androidx.annotation.NonNull;
 
+import com.android.utils.log.Logger;
+import com.fy.navi.hmi.BuildConfig;
+
 /**
  * @Description TODO
  * @Author lvww
@@ -11,7 +14,19 @@ import androidx.annotation.NonNull;
  */
 public class MapViewModel extends BaseMapViewModel {
 
+    private String jsonPath = BuildConfig.MAP_SDK + "/buick_maparea.json";
+
     public MapViewModel(@NonNull Application application) {
         super(application);
+    }
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+    }
+
+
+    public void initVisibleAreaPoint(){
+        mModel.loadVisibleAreaJson(jsonPath);
     }
 }

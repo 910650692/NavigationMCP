@@ -10,75 +10,83 @@
     </data>
 
     <com.fy.navi.ui.view.SkinConstraintLayout
-        android:layout_width="@dimen/dp_1292"
-        android:layout_height="@dimen/dp_1255"
+        android:layout_width="@dimen/dp_1110"
+        android:layout_height="@dimen/dp_1078"
+        android:background="@drawable/bg_shadow_navi_ndlc_8155"
         android:clickable="true"
         android:padding="@dimen/dp_34"
-        android:background="@drawable/bg_shadow_navi_ndlc_8155">
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent">
 
-        <com.fy.navi.ui.view.SkinLinearLayout
+        <com.fy.navi.ui.view.SkinConstraintLayout
             android:id="@+id/setting_others_about_layout"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_138"
-            android:orientation="horizontal"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_32"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" >
+            app:layout_constraintTop_toTopOf="parent">
 
             <com.fy.navi.ui.view.SkinImageView
                 clickCommand="@{viewModel.mFinishAbout}"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginStart="@dimen/dp_26"
-                android:src="@drawable/img_setting_back" />
+                android:layout_marginStart="@dimen/dp_22"
+                android:src="@drawable/img_setting_back"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <com.fy.navi.ui.view.SkinTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginStart="@dimen/dp_409"
                 android:text="@string/setting_others_about_title"
-                android:textSize="@dimen/sp_34"
-                android:textColor="@color/setting_bg_tab_text_select" />
-        </com.fy.navi.ui.view.SkinLinearLayout>
+                android:textColor="@color/setting_bg_tab_text_select"
+                android:textSize="@dimen/sp_29"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+        </com.fy.navi.ui.view.SkinConstraintLayout>
 
         <com.fy.navi.ui.view.SkinLinearLayout
             android:id="@+id/setting_others_about_image_layout"
-            android:layout_width="@dimen/dp_500"
+            android:layout_width="@dimen/dp_217"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
+            android:layout_marginStart="@dimen/dp_141"
+            android:layout_marginTop="@dimen/dp_35"
             android:gravity="center"
-            android:layout_marginTop="@dimen/dp_16"
+            android:orientation="vertical"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/setting_others_about_layout">
 
             <com.fy.navi.ui.view.SkinImageView
                 android:id="@+id/setting_others_about_image"
-                android:layout_width="@dimen/dp_255"
-                android:layout_height="@dimen/dp_188"
+                android:layout_width="@dimen/dp_218"
+                android:layout_height="@dimen/dp_160"
                 android:src="@mipmap/icon_setting_about" />
 
             <com.fy.navi.ui.view.SkinTextView
                 android:id="@+id/setting_others_about_version"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_27"
                 android:text="@{viewModel.mSdkVersion}"
                 android:textColor="@color/setting_bg_tab_text_unselect"
-                android:textSize="@dimen/sp_30"
-                android:layout_marginTop="@dimen/dp_32"
-                app:layout_constraintTop_toBottomOf="@+id/setting_others_about_image"
-                app:layout_constraintStart_toStartOf="@+id/setting_others_about_image"/>
+                android:textSize="@dimen/sp_26" />
         </com.fy.navi.ui.view.SkinLinearLayout>
 
 
         <com.fy.navi.ui.view.SkinLinearLayout
-            android:layout_width="@dimen/dp_337"
-            android:layout_height="@dimen/dp_136"
+            android:layout_width="@dimen/dp_392"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_34"
+            android:layout_marginTop="@dimen/dp_382"
             android:orientation="vertical"
-            android:layout_marginStart="@dimen/dp_40"
-            android:layout_marginTop="@dimen/dp_149"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/setting_others_about_image_layout">
+            app:layout_constraintTop_toBottomOf="@+id/setting_others_about_layout">
 
             <com.fy.navi.ui.view.SkinLinearLayout
                 android:layout_width="wrap_content"
@@ -91,39 +99,37 @@
                     android:layout_height="wrap_content"
                     android:text="@string/setting_others_about_channel"
                     android:textColor="@color/setting_bg_tab_text_unselect"
-                    android:textSize="@dimen/sp_26" />
+                    android:textSize="@dimen/sp_22" />
 
                 <com.fy.navi.ui.view.SkinTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@{viewModel.mChannelID}"
                     android:textColor="@color/setting_bg_tab_text_unselect"
-                    android:textSize="@dimen/sp_26"
-                    android:layout_marginStart="@dimen/dp_10"/>
+                    android:textSize="@dimen/sp_22" />
             </com.fy.navi.ui.view.SkinLinearLayout>
 
-           <com.fy.navi.ui.view.SkinLinearLayout
-               android:layout_width="wrap_content"
-               android:layout_height="wrap_content"
-               android:orientation="horizontal">
+            <com.fy.navi.ui.view.SkinLinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
 
-               <com.fy.navi.ui.view.SkinTextView
-                   android:id="@+id/setting_others_about_data_version"
-                   android:layout_width="wrap_content"
-                   android:layout_height="wrap_content"
-                   android:text="@string/setting_others_about_data_version"
-                   android:textColor="@color/setting_bg_tab_text_unselect"
-                   android:textSize="@dimen/sp_26" />
+                <com.fy.navi.ui.view.SkinTextView
+                    android:id="@+id/setting_others_about_data_version"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/setting_others_about_data_version"
+                    android:textColor="@color/setting_bg_tab_text_unselect"
+                    android:textSize="@dimen/sp_22" />
 
-               <com.fy.navi.ui.view.SkinTextView
-                   android:layout_width="wrap_content"
-                   android:layout_height="wrap_content"
-                   android:text="@{viewModel.mMapDataVersion}"
-                   android:textColor="@color/setting_bg_tab_text_unselect"
-                   android:textSize="@dimen/sp_26"
-                   android:layout_marginStart="@dimen/dp_10" />
+                <com.fy.navi.ui.view.SkinTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@{viewModel.mMapDataVersion}"
+                    android:textColor="@color/setting_bg_tab_text_unselect"
+                    android:textSize="@dimen/sp_22" />
 
-           </com.fy.navi.ui.view.SkinLinearLayout>
+            </com.fy.navi.ui.view.SkinLinearLayout>
 
             <com.fy.navi.ui.view.SkinTextView
                 android:id="@+id/setting_others_about_draw"
@@ -131,256 +137,257 @@
                 android:layout_height="wrap_content"
                 android:text="@{viewModel.mVersion}"
                 android:textColor="@color/setting_bg_tab_text_unselect"
-                android:textSize="@dimen/sp_26"
-                app:layout_constraintStart_toStartOf="@+id/setting_others_about_data_version"
-                app:layout_constraintTop_toBottomOf="@+id/setting_others_about_data_version"/>
+                android:textSize="@dimen/sp_22" />
         </com.fy.navi.ui.view.SkinLinearLayout>
 
-        <com.fy.navi.ui.view.SkinView
-            android:id="@+id/line_view_vertical"
-            android:layout_width="@dimen/dp_1"
-            android:layout_height="@dimen/dp_920"
-            android:layout_marginStart="@dimen/dp_587"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/setting_others_about_layout" />
-
-        <com.fy.navi.ui.view.SkinConstraintLayout
-            clickCommand="@{viewModel.mOpenProtocolCenter}"
-            android:id="@+id/setting_others_about_protocol_center"
-            android:layout_width="@dimen/dp_597"
-            android:layout_height="@dimen/dp_90"
-            android:background="@drawable/bg_setting_about"
-            app:layout_constraintStart_toEndOf="@id/line_view_vertical"
+        <com.fy.navi.ui.view.SkinLinearLayout
+            android:id="@+id/setting_others_layout"
+            android:layout_width="@dimen/dp_508"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_33"
+            android:layout_marginEnd="@dimen/dp_34"
+            android:orientation="vertical"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/setting_others_about_layout">
 
-            <com.fy.navi.ui.view.SkinTextView
-                android:id="@+id/setting_others_about_protocol_center_text"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:text="@string/setting_others_privacy_protocol_center"
-                android:layout_marginStart="@dimen/dp_40"
-                android:textSize="@dimen/sp_30"
-                android:textColor="@color/setting_bg_tab_text_unselect"
-                android:gravity="center"
-                app:layout_constraintStart_toStartOf="parent"/>
+            <com.fy.navi.ui.view.SkinConstraintLayout
+                android:id="@+id/setting_others_about_protocol_center"
+                clickCommand="@{viewModel.mOpenProtocolCenter}"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_77"
+                android:background="@drawable/bg_setting_about">
 
-            <com.fy.navi.ui.view.SkinImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/img_setting_corner"
-                android:gravity="center"
-                android:layout_marginEnd="@dimen/dp_10"
-                android:layout_marginBottom="@dimen/dp_10"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"/>
+                <com.fy.navi.ui.view.SkinTextView
+                    android:id="@+id/setting_others_about_protocol_center_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="@dimen/dp_34"
+                    android:gravity="center"
+                    android:text="@string/setting_others_privacy_protocol_center"
+                    android:textColor="@color/setting_bg_tab_text_unselect"
+                    android:textSize="@dimen/sp_26"
+                    app:layout_constraintStart_toStartOf="parent" />
 
-        </com.fy.navi.ui.view.SkinConstraintLayout>
+                <com.fy.navi.ui.view.SkinImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/dp_9"
+                    android:layout_marginBottom="@dimen/dp_9"
+                    android:gravity="center"
+                    android:src="@drawable/img_setting_corner"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent" />
 
-
-        <com.fy.navi.ui.view.SkinConstraintLayout
-            clickCommand="@{viewModel.mOpenLicensesInfo}"
-            android:id="@+id/setting_others_about_licenses_info"
-            android:layout_width="@dimen/dp_597"
-            android:layout_height="@dimen/dp_90"
-            android:layout_marginTop="@dimen/dp_16"
-            android:background="@drawable/bg_setting_about"
-            app:layout_constraintStart_toEndOf="@id/line_view_vertical"
-            app:layout_constraintTop_toBottomOf="@id/setting_others_about_protocol_center">
-
-            <com.fy.navi.ui.view.SkinTextView
-                android:id="@+id/setting_others_about_licenses_info_title"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:text="@string/setting_others_about_licenses_info"
-                android:layout_marginStart="@dimen/dp_40"
-                android:textSize="@dimen/sp_30"
-                android:textColor="@color/setting_bg_tab_text_unselect"
-                android:gravity="center"
-                app:layout_constraintStart_toStartOf="parent"/>
-
-            <com.fy.navi.ui.view.SkinImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/img_setting_corner"
-                android:gravity="center"
-                android:layout_marginEnd="@dimen/dp_10"
-                android:layout_marginBottom="@dimen/dp_10"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"/>
-
-        </com.fy.navi.ui.view.SkinConstraintLayout>
+            </com.fy.navi.ui.view.SkinConstraintLayout>
 
 
-        <com.fy.navi.ui.view.SkinConstraintLayout
-            clickCommand="@{viewModel.mOpenHelp}"
-            android:id="@+id/setting_others_about_help"
-            android:layout_width="@dimen/dp_597"
-            android:layout_height="@dimen/dp_90"
-            android:layout_marginTop="@dimen/dp_16"
-            android:background="@drawable/bg_setting_about"
-            app:layout_constraintStart_toEndOf="@id/line_view_vertical"
-            app:layout_constraintTop_toBottomOf="@id/setting_others_about_licenses_info">
+            <com.fy.navi.ui.view.SkinConstraintLayout
+                android:id="@+id/setting_others_about_licenses_info"
+                clickCommand="@{viewModel.mOpenLicensesInfo}"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_77"
+                android:layout_marginTop="@dimen/dp_14"
+                android:background="@drawable/bg_setting_about">
 
-            <com.fy.navi.ui.view.SkinTextView
-                android:id="@+id/setting_others_about_help_title"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:text="@string/setting_others_about_help"
-                android:layout_marginStart="@dimen/dp_40"
-                android:textSize="@dimen/sp_30"
-                android:textColor="@color/setting_bg_tab_text_unselect"
-                android:gravity="center"
-                app:layout_constraintStart_toStartOf="parent"/>
+                <com.fy.navi.ui.view.SkinTextView
+                    android:id="@+id/setting_others_about_licenses_info_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="@dimen/dp_34"
+                    android:gravity="center"
+                    android:text="@string/setting_others_about_licenses_info"
+                    android:textColor="@color/setting_bg_tab_text_unselect"
+                    android:textSize="@dimen/sp_26"
+                    app:layout_constraintStart_toStartOf="parent" />
 
-            <com.fy.navi.ui.view.SkinImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/img_setting_corner"
-                android:gravity="center"
-                android:layout_marginEnd="@dimen/dp_10"
-                android:layout_marginBottom="@dimen/dp_10"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"/>
+                <com.fy.navi.ui.view.SkinImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/dp_9"
+                    android:layout_marginBottom="@dimen/dp_9"
+                    android:gravity="center"
+                    android:src="@drawable/img_setting_corner"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent" />
 
-        </com.fy.navi.ui.view.SkinConstraintLayout>
+            </com.fy.navi.ui.view.SkinConstraintLayout>
 
+
+            <com.fy.navi.ui.view.SkinConstraintLayout
+                android:id="@+id/setting_others_about_help"
+                clickCommand="@{viewModel.mOpenHelp}"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_77"
+                android:layout_marginTop="@dimen/dp_14"
+                android:background="@drawable/bg_setting_about">
+
+                <com.fy.navi.ui.view.SkinTextView
+                    android:id="@+id/setting_others_about_help_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="@dimen/dp_34"
+                    android:gravity="center"
+                    android:text="@string/setting_others_about_help"
+                    android:textColor="@color/setting_bg_tab_text_unselect"
+                    android:textSize="@dimen/sp_26"
+                    app:layout_constraintStart_toStartOf="parent" />
+
+                <com.fy.navi.ui.view.SkinImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/dp_9"
+                    android:layout_marginBottom="@dimen/dp_9"
+                    android:gravity="center"
+                    android:src="@drawable/img_setting_corner"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent" />
+
+            </com.fy.navi.ui.view.SkinConstraintLayout>
+
+        </com.fy.navi.ui.view.SkinLinearLayout>
 
         <com.fy.navi.ui.view.SkinTextView
             android:id="@+id/setting_others_about_contact_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_34"
             android:text="@string/setting_others_about_contact"
-            android:layout_marginTop="@dimen/dp_40"
-            android:textSize="@dimen/sp_26"
             android:textColor="@color/setting_bg_tab_text_unselect"
-            app:layout_constraintStart_toEndOf="@id/line_view_vertical"
-            app:layout_constraintTop_toBottomOf="@id/setting_others_about_help"/>
+            android:textSize="@dimen/sp_22"
+            app:layout_constraintStart_toStartOf="@id/setting_others_layout"
+            app:layout_constraintTop_toBottomOf="@id/setting_others_layout" />
 
         <com.fy.navi.ui.view.SkinLinearLayout
             android:id="@+id/setting_others_about_web"
-            android:layout_width="@dimen/dp_300"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
+            android:layout_marginTop="@dimen/dp_18"
             android:gravity="center"
-            android:layout_marginTop="@dimen/dp_21"
-            app:layout_constraintStart_toEndOf="@id/line_view_vertical"
+            android:orientation="vertical"
+            app:layout_constraintEnd_toEndOf="@id/line_center"
+            app:layout_constraintStart_toStartOf="@id/setting_others_about_contact_title"
             app:layout_constraintTop_toBottomOf="@id/setting_others_about_contact_title">
 
             <com.fy.navi.ui.view.SkinTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/setting_others_about_web"
-                android:textSize="@dimen/sp_26"
-                android:textColor="@color/setting_bg_tab_text_unselect" />
+                android:textColor="@color/setting_bg_tab_text_unselect"
+                android:textSize="@dimen/sp_22" />
 
             <com.fy.navi.ui.view.SkinTextView
                 android:id="@+id/setting_others_about_url"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/setting_others_about_url"
-                android:textSize="@dimen/sp_26"
                 android:textColor="@color/setting_bg_tab_text_unselect"
-                app:layout_constraintStart_toEndOf="@id/line_view_vertical"
-                app:layout_constraintTop_toBottomOf="@id/setting_others_about_web"/>
+                android:textSize="@dimen/sp_22" />
 
         </com.fy.navi.ui.view.SkinLinearLayout>
 
         <com.fy.navi.ui.view.SkinView
-            android:layout_width="@dimen/dp_597"
+            android:layout_width="@dimen/dp_508"
             android:layout_height="@dimen/dp_1"
-            android:layout_marginTop="@dimen/dp_17"
-            app:layout_constraintStart_toStartOf="@id/setting_others_about_web"
-            app:layout_constraintTop_toBottomOf="@+id/setting_others_about_web"
-            android:background="@color/setting_bg_line"/>
+            android:layout_marginTop="@dimen/dp_14"
+            android:background="@color/setting_bg_line"
+            app:layout_constraintEnd_toEndOf="@id/setting_others_layout"
+            app:layout_constraintStart_toStartOf="@id/setting_others_layout"
+            app:layout_constraintTop_toBottomOf="@+id/setting_others_about_web" />
 
         <com.fy.navi.ui.view.SkinView
+            android:id="@+id/line_center"
             android:layout_width="@dimen/dp_1"
             android:layout_height="@dimen/dp_60"
-            app:layout_constraintStart_toEndOf="@id/setting_others_about_web"
-            app:layout_constraintTop_toTopOf="@+id/setting_others_about_web"
-            android:background="@color/setting_bg_line"/>
+            android:background="@color/setting_bg_line"
+            app:layout_constraintEnd_toEndOf="@id/setting_others_layout"
+            app:layout_constraintStart_toStartOf="@id/setting_others_layout"
+            app:layout_constraintTop_toTopOf="@+id/setting_others_about_web" />
 
         <com.fy.navi.ui.view.SkinLinearLayout
             android:id="@+id/setting_others_about_wechat"
-            android:layout_width="@dimen/dp_300"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
+            android:layout_marginTop="@dimen/dp_21"
             android:gravity="center"
-            android:layout_marginTop="@dimen/dp_31"
-            app:layout_constraintStart_toStartOf="@id/line_view_vertical"
+            android:orientation="vertical"
+            app:layout_constraintEnd_toEndOf="@id/line_center"
+            app:layout_constraintStart_toStartOf="@id/setting_others_layout"
             app:layout_constraintTop_toBottomOf="@id/setting_others_about_web">
 
             <com.fy.navi.ui.view.SkinTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/setting_others_about_wechat"
-                android:textSize="@dimen/sp_26"
-                android:textColor="@color/setting_bg_tab_text_unselect" />
+                android:textColor="@color/setting_bg_tab_text_unselect"
+                android:textSize="@dimen/sp_22" />
 
             <com.fy.navi.ui.view.SkinTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/setting_others_about_title"
-                android:textSize="@dimen/sp_26"
-                android:textColor="@color/setting_bg_tab_text_unselect" />
+                android:textColor="@color/setting_bg_tab_text_unselect"
+                android:textSize="@dimen/sp_22" />
 
         </com.fy.navi.ui.view.SkinLinearLayout>
 
         <com.fy.navi.ui.view.SkinView
             android:layout_width="@dimen/dp_1"
             android:layout_height="@dimen/dp_60"
-            android:layout_marginTop="@dimen/dp_16"
-            app:layout_constraintStart_toEndOf="@id/setting_others_about_wechat"
-            app:layout_constraintTop_toTopOf="@+id/setting_others_about_wechat"
-            android:background="@color/setting_bg_line"/>
+            android:layout_marginTop="@dimen/dp_13"
+            android:background="@color/setting_bg_line"
+            app:layout_constraintEnd_toEndOf="@id/setting_others_layout"
+            app:layout_constraintStart_toStartOf="@id/setting_others_layout"
+            app:layout_constraintTop_toTopOf="@+id/setting_others_about_wechat" />
 
         <com.fy.navi.ui.view.SkinLinearLayout
             android:id="@+id/setting_others_about_tel"
-            android:layout_width="@dimen/dp_300"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
             android:gravity="center"
-            app:layout_constraintStart_toEndOf="@id/setting_others_about_web"
+            android:orientation="vertical"
+            app:layout_constraintEnd_toEndOf="@id/setting_others_layout"
+            app:layout_constraintStart_toStartOf="@id/line_center"
             app:layout_constraintTop_toTopOf="@id/setting_others_about_web">
 
             <com.fy.navi.ui.view.SkinTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/setting_others_about_tel"
-                android:textSize="@dimen/sp_26"
-                android:textColor="@color/setting_bg_tab_text_unselect" />
+                android:textColor="@color/setting_bg_tab_text_unselect"
+                android:textSize="@dimen/sp_22" />
 
             <com.fy.navi.ui.view.SkinTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/setting_others_about_tel_number"
-                android:textSize="@dimen/sp_26"
-                android:textColor="@color/setting_bg_tab_text_unselect" />
+                android:textColor="@color/setting_bg_tab_text_unselect"
+                android:textSize="@dimen/sp_22" />
 
         </com.fy.navi.ui.view.SkinLinearLayout>
 
         <com.fy.navi.ui.view.SkinLinearLayout
             android:id="@+id/setting_others_about_qq"
-            android:layout_width="@dimen/dp_300"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
             android:gravity="center"
-            app:layout_constraintStart_toStartOf="@+id/setting_others_about_tel"
+            android:orientation="vertical"
+            app:layout_constraintEnd_toEndOf="@id/setting_others_layout"
+            app:layout_constraintStart_toStartOf="@id/line_center"
             app:layout_constraintTop_toTopOf="@id/setting_others_about_wechat">
 
             <com.fy.navi.ui.view.SkinTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/setting_others_about_qq"
-                android:textSize="@dimen/sp_26"
-                android:textColor="@color/setting_bg_tab_text_unselect" />
+                android:textColor="@color/setting_bg_tab_text_unselect"
+                android:textSize="@dimen/sp_22" />
 
             <com.fy.navi.ui.view.SkinTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/setting_others_about_qq_number"
-                android:textSize="@dimen/sp_26"
-                android:textColor="@color/setting_bg_tab_text_unselect" />
+                android:textColor="@color/setting_bg_tab_text_unselect"
+                android:textSize="@dimen/sp_22" />
 
         </com.fy.navi.ui.view.SkinLinearLayout>
 

@@ -23,7 +23,7 @@
 
         <com.fy.navi.ui.view.SkinConstraintLayout
             android:layout_width="@dimen/dp_613"
-            android:layout_height="@dimen/dp_640"
+            android:layout_height="@dimen/dp_781"
             android:layout_marginBottom="@dimen/dp_280"
             android:minHeight="@dimen/dp_640"
             android:padding="@dimen/dp_34"
@@ -80,7 +80,6 @@
                 android:id="@+id/rcv_collect"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_favorite_switch"
                 android:layout_marginTop="@dimen/dp_20"
                 android:layout_marginBottom="@dimen/dp_34" />
@@ -100,7 +99,7 @@
                     android:layout_height="wrap_content"
                     android:textColor="@color/search_quick_tab_view_color"
                     android:layout_marginTop="@dimen/dp_10"
-                    android:textSize="@dimen/sp_36"
+                    android:textSize="@dimen/sp_29"
                     android:text="@string/scv_not_have_favorite"/>
             </com.fy.navi.ui.view.SkinLinearLayout>
 

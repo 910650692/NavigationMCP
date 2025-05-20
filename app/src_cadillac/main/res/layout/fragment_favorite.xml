@@ -68,7 +68,7 @@
                 app:layout_constraintTop_toTopOf="parent" />
         </com.fy.navi.ui.view.SkinLinearLayout>
 
-        <com.fy.navi.ui.view.SkinScrollView
+        <com.fy.navi.ui.view.SkinNestedScrollView
             android:id="@+id/favorite_scroll"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -370,7 +370,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_marginTop="@dimen/dp_24"
-                        android:layout_marginBottom="@dimen/dp_120"
+                        android:layout_marginBottom="@dimen/dp_130"
                         android:visibility="@{ViewModel.mDataVisibility ? View.VISIBLE : View.GONE}"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
@@ -532,14 +532,16 @@
 
                 </com.fy.navi.ui.view.SkinConstraintLayout>
             </com.android.car.ui.FocusArea>
-        </com.fy.navi.ui.view.SkinScrollView>
+        </com.fy.navi.ui.view.SkinNestedScrollView>
 
         <com.android.car.ui.FocusArea
             android:id="@+id/focus_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:nudgeDown="@+id/focus_content"
-            app:nudgeUp="@+id/focus_content">
+            app:nudgeUp="@+id/focus_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
 
             <com.fy.navi.ui.view.SkinConstraintLayout
                 android:id="@+id/layout_top"
@@ -550,9 +552,7 @@
                 android:background="@drawable/bg_setting_top"
                 android:orientation="horizontal"
                 android:visibility="gone"
-                android:focusable="true"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent">
+                android:focusable="true">
 
                 <com.fy.navi.ui.view.SkinImageView
                     android:layout_width="@dimen/dp_74"

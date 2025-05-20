@@ -245,7 +245,7 @@ public class NaviAudioPlayer {
                 AudioManager.AUDIO_SESSION_ID_GENERATE);
         //使用map为了处理多个音频输出
         mAudioTrackMap.put(reqId, audioTrack);
-        if(audioTrack.getState() == 0){
+        if (audioTrack.getState() == 0) {
             Logger.e(TAG, "createAudioTrack State ：" + audioTrack.getState());
             return null;
         }
@@ -291,6 +291,10 @@ public class NaviAudioPlayer {
         mAudioTrackMap.remove(reqId);
         mISSDKTTSPlaying.postValue(false);
         abandomNaviTTSFocus();
+    }
+
+    public boolean isTTSPlaying() {
+        return mISSDKTTSPlaying.getValue();
     }
 
     private static class SingletonHolder {

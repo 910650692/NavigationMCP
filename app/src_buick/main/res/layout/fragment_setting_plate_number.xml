@@ -105,10 +105,10 @@
                 clickCommand="@{viewModel.mClearPlateNumber}"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_17"
-                android:layout_marginEnd="@dimen/dp_24"
-                android:src="@drawable/img_plate_number_clear"
+                android:layout_marginEnd="@dimen/dp_12"
+                android:src="@drawable/img_setting_close"
                 app:layout_constraintEnd_toEndOf="@+id/setting_plate_number_number"
+                app:layout_constraintBottom_toBottomOf="@+id/setting_plate_number_number"
                 app:layout_constraintTop_toTopOf="@+id/setting_plate_number_number" />
 
             <com.fy.navi.ui.view.SkinTextView

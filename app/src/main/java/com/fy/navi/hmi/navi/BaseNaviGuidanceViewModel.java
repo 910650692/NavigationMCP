@@ -245,7 +245,7 @@ public class BaseNaviGuidanceViewModel extends
                 break;
             case NAVI_CONTINUE:
                 Logger.i(TAG, "NAVI_CONTINUE固定全览：" + NaviPackage.getInstance().getFixedOverViewStatus() + " isVisible:" + isVisible);
-                mNaviContinueVisibility.set(!NaviPackage.getInstance().getFixedOverViewStatus() && isVisible);
+                mNaviContinueVisibility.set(isVisible);
                 break;
             case NAVI_SUSPEND_CARD:
                 mHandingCardVisibility.set(isVisible);
@@ -387,13 +387,9 @@ public class BaseNaviGuidanceViewModel extends
      * @param currentImersiveStatus current immersive status
      */
     public void onImmersiveStatusChange(final ImersiveStatus currentImersiveStatus) {
-        Logger.i(TAG, "onImmersiveStatusChange固定全览：" +
-                NaviPackage.getInstance().getFixedOverViewStatus() +
-                " currentImersiveStatus:" + currentImersiveStatus);
+        Logger.i(TAG, "onImmersiveStatusChange固定全览：" + NaviPackage.getInstance().getFixedOverViewStatus() + " currentImersiveStatus:" + currentImersiveStatus);
         // 1036921 继续导航显示的时候不显示当前道路名称
-        mNaviRouteNameVisibility.set((NaviPackage.getInstance().getFixedOverViewStatus() ||
-                currentImersiveStatus == ImersiveStatus.IMERSIVE) &&
-                Boolean.FALSE.equals(mNaviContinueVisibility.get()));
+        mNaviRouteNameVisibility.set((currentImersiveStatus == ImersiveStatus.IMERSIVE) && Boolean.FALSE.equals(mNaviContinueVisibility.get()));
         mView.onImmersiveStatusChange(currentImersiveStatus);
     }
 

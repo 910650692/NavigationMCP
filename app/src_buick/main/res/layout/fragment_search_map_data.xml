@@ -62,12 +62,12 @@
             <com.fy.navi.ui.view.SkinImageView
                 android:id="@+id/edit_clear"
                 clickCommand="@{ViewModel.mClearEdit}"
-                android:layout_width="@dimen/dp_42"
-                android:layout_height="@dimen/dp_42"
-                android:layout_alignParentRight="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
-                android:layout_marginEnd="@dimen/dp_40"
-                android:src="@drawable/img_plate_number_clear"
+                android:layout_marginEnd="@dimen/dp_12"
+                android:src="@drawable/img_setting_close"
                 android:visibility="visible" />
 
         </com.fy.navi.ui.view.SkinRelativeLayout>

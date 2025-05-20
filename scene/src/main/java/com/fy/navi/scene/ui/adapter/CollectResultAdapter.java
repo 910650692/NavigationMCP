@@ -190,10 +190,13 @@ public class CollectResultAdapter extends RecyclerView.Adapter<CollectResultAdap
             if (position >= 0 && position < mPoiEntities.size()) {
                 final PoiInfoEntity info = mPoiEntities.get(position);
 //                BehaviorPackage.getInstance().deleteFavoriteData(info.getFavoriteInfo().getItemId());
-                BehaviorPackage.getInstance().removeFavorite(info);
+                if(ConvertUtils.isNull(info.getOperatorId())){
+                    BehaviorPackage.getInstance().removeFavorite(info);
+                }else{
+                    mOnItemClickListener.updateCollectStatus(mPoiEntities.get(position));
+                }
                 mPoiEntities.remove(position);
                 notifyItemRemoved(position);
-                notifyDataSetChanged();
                 // 删除成功后的toast弹框
                 ToastUtils.Companion.getInstance().showCustomToastView(ResourceUtils.Companion.getInstance().getString(R.string.sha_deleted));
             }
@@ -242,5 +245,7 @@ public class CollectResultAdapter extends RecyclerView.Adapter<CollectResultAdap
          * 列表清空事件 当删除所有列表项之后调用
          */
         void onListCleared();
+
+        void updateCollectStatus(PoiInfoEntity poiInfoEntity);
     }
 }

@@ -133,7 +133,11 @@ public interface ISearchApi {
     // 云端解开地锁
     int unGroundLock(SearchRequestParameter searchRequestParameter);
 
+    // 云端更新收藏
     int updateCollectStatus(SearchRequestParameter searchRequestParameter);
+
+    // 云端查询预约
+    int queryReservation(SearchRequestParameter searchRequestParameter);
     /**
      * 取消所有搜索
      */

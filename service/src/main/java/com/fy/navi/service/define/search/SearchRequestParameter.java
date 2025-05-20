@@ -97,6 +97,9 @@ public final class SearchRequestParameter {
     private String mStationId;
     private String mChannel;
     private ArrayList<SavedStations> mSavedStationsJson;
+    private String mConnectorId;
+    private String mSource;
+    private String mEquipmentId;
 
     public boolean isSilentSearch() {
         return mIsSilentSearch;
@@ -271,6 +274,9 @@ public final class SearchRequestParameter {
         this.mStationId = builder.mStationId;
         this.mChannel = builder.mChannel;
         this.mSavedStationsJson = builder.mSavedStationsJson;
+        this.mSource = builder.mSource;
+        this.mConnectorId = builder.mConnectorId;
+        this.mEquipmentId = builder.mEquipmentId;
     }
 
     public String getIdpUserId() {
@@ -336,6 +342,33 @@ public final class SearchRequestParameter {
         return this;
     }
 
+    public String getConnectorId() {
+        return mConnectorId;
+    }
+
+    public SearchRequestParameter setConnectorId(String mConnectorId) {
+        this.mConnectorId = mConnectorId;
+        return this;
+    }
+
+    public String getSource() {
+        return mSource;
+    }
+
+    public SearchRequestParameter setSource(String mSource) {
+        this.mSource = mSource;
+        return this;
+    }
+
+    public String getEquipmentId() {
+        return mEquipmentId;
+    }
+
+    public SearchRequestParameter setEquipmentId(String mEquipmentId) {
+        this.mEquipmentId = mEquipmentId;
+        return this;
+    }
+
     public static class Builder {
         private boolean mIsSilentSearch = false;
         private String mKeyword;
@@ -377,6 +410,9 @@ public final class SearchRequestParameter {
         private String mStationId;
         private String mChannel;
         private ArrayList<SavedStations> mSavedStationsJson;
+        private String mConnectorId;
+        private String mSource;
+        private String mEquipmentId;
 
         /**
          * 是否静默搜索
@@ -740,6 +776,21 @@ public final class SearchRequestParameter {
 
         public Builder savedStationsJson(final ArrayList<SavedStations> savedStationsJson){
             this.mSavedStationsJson = savedStationsJson;
+            return this;
+        }
+
+        public Builder connectorId(final String connectorId){
+            this.mConnectorId = connectorId;
+            return this;
+        }
+
+        public Builder source(final String source){
+            this.mSource = source;
+            return this;
+        }
+
+        public Builder equipmentId(final String equipmentId){
+            this.mEquipmentId = equipmentId;
             return this;
         }
 

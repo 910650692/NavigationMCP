@@ -10,4 +10,9 @@
     <string name="avoid_limit_open_success">限行开启成功</string>
     <string name="avoid_limit_open_failed">限行开启失败</string>
     <string name="navi_parking_list">停车场</string>
+    <string name="charge_equipment_empty">空闲</string>
+    <string name="charge_equipment_offline">离网</string>
+    <string name="charge_equipment_use">占用</string>
+    <string name="charge_equipment_reversion">已约</string>
+    <string name="charge_equipment_error">故障</string>
 </resources>

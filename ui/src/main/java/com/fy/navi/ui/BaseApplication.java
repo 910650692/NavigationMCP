@@ -24,6 +24,8 @@ public class BaseApplication extends Application {
     private static List<IsAppInForegroundCallback> FOREGROUND_CALLBACK_LIST =
             new CopyOnWriteArrayList<>();
 
+    private static boolean mIsAppInForeground = false;
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -92,20 +94,12 @@ public class BaseApplication extends Application {
             public void onStop(final @NonNull LifecycleOwner owner) {
                 Logger.i(TAG, "onStop");
                 DefaultLifecycleObserver.super.onStop(owner);
-                if (ConvertUtils.isEmpty(FOREGROUND_CALLBACK_LIST)) {
-                    return;
-                }
-                updateIsAppInForeground(false);
             }
 
             @Override
             public void onResume(final @NonNull LifecycleOwner owner) {
                 Logger.i(TAG, "onResume");
                 DefaultLifecycleObserver.super.onResume(owner);
-                if (ConvertUtils.isEmpty(FOREGROUND_CALLBACK_LIST)) {
-                    return;
-                }
-                updateIsAppInForeground(true);
             }
         });
     }
@@ -137,8 +131,9 @@ public class BaseApplication extends Application {
      *
      * @param isAppInForeground true/false
      */
-    private static void updateIsAppInForeground(final boolean isAppInForeground) {
+    public static void updateIsAppInForeground(final boolean isAppInForeground) {
         Logger.i(TAG, "updateIsAppInForeground isAppInForeground = " + isAppInForeground);
+        mIsAppInForeground = isAppInForeground;
         if (ConvertUtils.isEmpty(FOREGROUND_CALLBACK_LIST)) {
             return;
         }
@@ -162,6 +157,6 @@ public class BaseApplication extends Application {
      * @return true/false
      */
     public static boolean isAppInForeground() {
-        return ProcessLifecycleOwner.get().getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.STARTED);
+        return mIsAppInForeground;
     }
 }

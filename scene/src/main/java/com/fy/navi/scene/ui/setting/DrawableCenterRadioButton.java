@@ -12,8 +12,8 @@ import com.fy.navi.ui.view.SkinRadioButton;
 
 public class DrawableCenterRadioButton extends SkinRadioButton {
 
-    private float mDrawableWidth = 80; // 默认80dp
-    private float mDrawableHeight = 80; // 默认80dp
+    private float mDrawableWidth = 100; // 默认100dp
+    private float mDrawableHeight = 100; // 默认100dp
     private int mTextColor; // 颜色字段
     private int mSelectedColor; // 新增选中颜色
     private int mNormalColor;  // 新增默认颜色

@@ -79,7 +79,7 @@ public class ChargingStationReservationListFragment extends BaseFragment<Fragmen
         mBinding.sceneChargeReservationList.notifyEquipmentResult(info);
     }
 
-    public void notifyUnLockResult(String code){
-        mBinding.sceneChargeReservationList.notifyUnLockResult(code);
+    public void notifyUnLockResult(){
+        mBinding.sceneChargeReservationList.notifyUnLockResult();
     }
 }

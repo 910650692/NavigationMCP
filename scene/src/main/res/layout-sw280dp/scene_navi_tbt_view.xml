@@ -174,7 +174,7 @@
             android:focusable="false"
             android:ellipsize="end"
             android:singleLine="true"
-            android:maxWidth="@dimen/dp_400"
+            android:maxWidth="@dimen/dp_300"
             android:textColor="@color/common_title_purple_color"
             android:textSize="@dimen/sp_52"
             app:layout_constraintEnd_toEndOf="parent"

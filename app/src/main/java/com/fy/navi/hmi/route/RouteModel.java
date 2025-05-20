@@ -107,6 +107,7 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
     private List<RouteParam> mGasChargeAlongList = new ArrayList<>();
 
     private int mLocalTaskId = -1;
+    //0:充电沿途 1：充电终点 2：充电周边 3：服务区
     private int mListSearchType;
     private int mParkSearchId = -1;
     private int mEndSearchId = -1;
@@ -226,6 +227,7 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
      * 获取服务区列表
      * */
     public void getSearchListAndShow() {
+        mListSearchType = 3;
         clearSearchLabel();
         if (!ConvertUtils.isEmpty(mViewModel)) {
             mViewModel.showSearchProgressUI();
@@ -353,7 +355,7 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
                 mViewModel.updateChareList(mGasChargeAlongList, mListSearchType);
             }
         } else {
-            mRoutePackage.removeVia(MapType.MAIN_SCREEN_MAIN_MAP, poiInfoEntity, false);
+            mRoutePackage.removeVia(MapType.MAIN_SCREEN_MAIN_MAP, poiInfoEntity, true);
         }
     }
 

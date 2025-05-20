@@ -392,7 +392,7 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
         Logger.d(IVrBridgeConstant.TAG, "onRoadAssigned: road = " + road);
         if (TextUtils.isEmpty(road)) {
             Logger.w(IVrBridgeConstant.TAG, "specialRoad empty");
-            return CallResponse.createFailResponse("不支持的参数");
+            return CallResponse.createFailResponse("指定道路名称为空");
         }
 
         final String curNaviStatus = NaviStatusPackage.getInstance().getCurrentNaviStatus();
@@ -644,6 +644,7 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
                 for (RouteLineSegmentInfo segmentInfo : segmentList) {
                     if (segmentInfo.getMLoadName().contains(road)) {
                         matched = true;
+                        break;
                     }
                 }
                 matchedStatusList.add(matched);

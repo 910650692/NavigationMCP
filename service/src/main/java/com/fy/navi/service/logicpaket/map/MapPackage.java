@@ -25,6 +25,7 @@ import com.fy.navi.service.define.map.MapViewParams;
 import com.fy.navi.service.define.map.MapVisibleAreaDataManager;
 import com.fy.navi.service.define.map.MapVisibleAreaInfo;
 import com.fy.navi.service.define.map.MapVisibleAreaType;
+import com.fy.navi.service.define.map.PointDataInfo;
 import com.fy.navi.service.define.map.ThemeType;
 import com.fy.navi.service.define.mfc.MfcController;
 import com.fy.navi.service.define.position.LocInfoBean;
@@ -144,6 +145,7 @@ public class MapPackage implements IMapAdapterCallback, INaviStatusCallback, ILa
 
     public void changMapCenterInScreen(MapType mapTypeId, MapVisibleAreaType mapVisibleAreaType) {
         MapVisibleAreaInfo mapVisibleAreaInfo = MapVisibleAreaDataManager.getInstance().getDataByKey(mapVisibleAreaType);
+        Logger.d("MapViewModelonCreate4"+  mapVisibleAreaInfo.getMleftscreenoffer()+"--"+mapVisibleAreaInfo.getMtopscreenoffer());
         if (!ConvertUtils.isEmpty(mapVisibleAreaInfo)) {
             mMapAdapter.setMapCenterInScreen(mapTypeId, mapVisibleAreaInfo.getMleftscreenoffer(), mapVisibleAreaInfo.getMtopscreenoffer());
         }
@@ -213,6 +215,10 @@ public class MapPackage implements IMapAdapterCallback, INaviStatusCallback, ILa
 
     public GeoPoint mapToLonLat(MapType mapTypeId, double mapX, double mapY) {
         return mMapAdapter.mapToLonLat(mapTypeId, mapX, mapY);
+    }
+
+    public PointDataInfo lonLatToScreen(MapType mapTypeId, double lon, double lat, double z) {
+        return mMapAdapter.lonLatToScreen(mapTypeId, lon, lat,z);
     }
 
     public MapViewParams getMapSurfaceParam(MapType mapTypeId) {

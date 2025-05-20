@@ -1,15 +1,27 @@
 package com.fy.navi.scene.impl.poi;
 
+import android.app.Activity;
+
 import androidx.lifecycle.MutableLiveData;
 
+import com.android.utils.ConvertUtils;
+import com.android.utils.thread.ThreadManager;
 import com.fy.navi.scene.BaseSceneModel;
 import com.fy.navi.scene.api.poi.IScenePoiChargingStationReservationListView;
 import com.fy.navi.scene.ui.poi.ScenePoiChargingStationReservationListView;
+import com.fy.navi.service.AutoMapConstant;
 import com.fy.navi.service.define.search.ChargeEquipmentInfo;
 import com.fy.navi.service.define.search.ChargeInfo;
+import com.fy.navi.service.define.search.ConnectorInfoItem;
+import com.fy.navi.service.define.search.EquipmentInfo;
 import com.fy.navi.service.define.search.PoiInfoEntity;
+import com.fy.navi.service.define.user.account.AccessTokenParam;
 import com.fy.navi.service.logicpaket.search.SearchPackage;
+import com.fy.navi.service.logicpaket.user.account.AccountPackage;
 import com.fy.navi.ui.base.StackManager;
+
+import java.util.ArrayList;
+import java.util.Objects;
 
 public class ScenePoiChargingStationReservationListViewImpl extends BaseSceneModel<ScenePoiChargingStationReservationListView> implements IScenePoiChargingStationReservationListView {
     public MutableLiveData<Integer> searchType = new MutableLiveData<>();
@@ -18,25 +30,66 @@ public class ScenePoiChargingStationReservationListViewImpl extends BaseSceneMod
     private final SearchPackage mSearchPackage;
     public ScenePoiChargingStationReservationListViewImpl(ScenePoiChargingStationReservationListView mScreenView) {
         super(mScreenView);
+        searchType = new MutableLiveData<>(1);
         mSearchPackage = SearchPackage.getInstance();
     }
     public void closeFragment(){
         mScreenView.closeFragment();
     }
 
-    public void openChargeQrCodeDialog(){
-        mScreenView.openChargeQrCodeDialog();
+    public void queryEquipmentInfo(EquipmentInfo info,PoiInfoEntity poiInfo){
+        mSearchPackage.queryEquipmentInfo(info,poiInfo);
     }
 
-    public void queryEquipmentInfo(){
-        mSearchPackage.queryEquipmentInfo();
+    public void createReversion(ConnectorInfoItem item, PoiInfoEntity poiInfo, Activity activity){
+        AccessTokenParam param = new AccessTokenParam(
+                AutoMapConstant.AccountTokenParamType.ACCOUNT_TYPE_PATAC_HMI,
+                AutoMapConstant.AccountTokenParamType.AUTH_TOKEN_TYPE_READ_ONLY,
+                null,
+                activity,
+                null,
+                null,
+                null,
+                null);
+        ThreadManager.getInstance().runAsync(() -> {
+            String idpUserId = AccountPackage.getInstance().getUserId();
+            String accessToken = AccountPackage.getInstance().getAccessToken(param);
+            String vehicleBrand = "1";
+            mSearchPackage.createReservation(item, poiInfo,idpUserId,accessToken,vehicleBrand);
+        });
+
     }
 
-    public void createReversion(){
-        mSearchPackage.createReservation();
+    public void unGroundLock(ConnectorInfoItem item, PoiInfoEntity poiInfo, Activity activity){
+        AccessTokenParam param = new AccessTokenParam(
+                AutoMapConstant.AccountTokenParamType.ACCOUNT_TYPE_PATAC_HMI,
+                AutoMapConstant.AccountTokenParamType.AUTH_TOKEN_TYPE_READ_ONLY,
+                null,
+                activity,
+                null,
+                null,
+                null,
+                null);
+        ThreadManager.getInstance().runAsync(() -> {
+            String idpUserId = AccountPackage.getInstance().getUserId();
+            String accessToken = AccountPackage.getInstance().getAccessToken(param);
+            String vehicleBrand = "1";
+            mSearchPackage.unGroundLock(item, poiInfo,idpUserId,accessToken,vehicleBrand);
+        });
     }
 
-    public void unGroundLock(){
-        mSearchPackage.unGroundLock();
+    public boolean isHideCanReversion(){
+        boolean isHideCanReversion = false;
+        ArrayList<ConnectorInfoItem> list = new ArrayList<>();
+        if(!ConvertUtils.isNull(mChargeInfo.getValue())){
+            for (int i = 0; i < mChargeInfo.getValue().getEquipmentInfo().size(); i++) {
+                ConnectorInfoItem item = mChargeInfo.getValue().getEquipmentInfo().get(i).getmConnectorInfoItem().get(0);
+                if("1".equals(item.getmStatus()) && item.getmParkingLockFlag() == 1){
+                    list.add(item);
+                }
+            }
+            isHideCanReversion = list.isEmpty();
+        }
+        return isHideCanReversion;
     }
 }

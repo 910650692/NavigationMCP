@@ -53,10 +53,11 @@ import com.fy.navi.service.define.layer.refix.LayerItemUserFavorite;
 import com.fy.navi.service.define.map.IBaseScreenMapView;
 import com.fy.navi.service.define.map.MapMode;
 import com.fy.navi.service.define.map.MapType;
+import com.fy.navi.service.define.map.MapVisibleAreaDataManager;
+import com.fy.navi.service.define.map.MapVisibleAreaInfo;
 import com.fy.navi.service.define.map.MapVisibleAreaType;
 import com.fy.navi.service.define.map.ThemeType;
 import com.fy.navi.service.define.message.MessageCenterInfo;
-import com.fy.navi.service.define.message.MessageCenterType;
 import com.fy.navi.service.define.mfc.MfcController;
 import com.fy.navi.service.define.navi.LaneInfoEntity;
 import com.fy.navi.service.define.navi.NaviEtaInfo;
@@ -180,6 +181,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
     // 24小时对应的毫秒数：24 * 60 * 60 * 1000 = 86,400,000
     private final long MILLIS_IN_24_HOURS = 86400000;
     private History mUncompletedNavi;
+    private MapVisibleAreaDataManager mapVisibleAreaDataManager;
 
     public MapModel() {
         mCallbackId = UUID.randomUUID().toString();
@@ -218,11 +220,14 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         searchPackage.registerCallBack(mCallbackId, this);
         mAccountPackage = AccountPackage.getInstance();
         mNaviStatusPackage = NaviStatusPackage.getInstance();
+        mapVisibleAreaDataManager = MapVisibleAreaDataManager.getInstance();
     }
 
     @Override
     public void onCreate() {
         super.onCreate();
+        mViewModel.initVisibleAreaPoint();
+        Logger.d("MapViewModelonCreate1");
     }
 
     @Override
@@ -232,6 +237,15 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         speedMonitor.unInit();
         mapModelHelp.unInit();
         cruisePackage.unregisterObserver(mViewModel.mScreenId);
+    }
+
+
+    public void loadVisibleAreaJson(String jsonPath){
+        mapVisibleAreaDataManager.loadData(jsonPath);
+    }
+
+    public MapVisibleAreaInfo getVisibleArea(MapVisibleAreaType mapVisibleAreaType){
+        return mapVisibleAreaDataManager.getDataByKey(mapVisibleAreaType);
     }
 
     public void loadMapView(IBaseScreenMapView mapSurfaceView) {
@@ -303,7 +317,8 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
      */
     public void setMapCenterInScreen(int frameLayoutWidth) {
         Logger.i(TAG, "setMapCenterInScreen: " + frameLayoutWidth);
-        mapPackage.changMapCenterInScreen(MapType.MAIN_SCREEN_MAIN_MAP, MapVisibleAreaType.MAIN_AREA_NAVING);
+        MapVisibleAreaInfo mapVisibleAreaInfo= getVisibleArea(MapVisibleAreaType.MAIN_AREA_NAVING);
+        mapPackage.setMapCenterInScreen(MapType.MAIN_SCREEN_MAIN_MAP,mapVisibleAreaInfo.getMleftscreenoffer(),mapVisibleAreaInfo.getMtopscreenoffer());
     }
 
     /**
@@ -311,8 +326,9 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
      */
     public void resetMapCenterInScreen() {
         Logger.i(TAG, "resetMapCenterInScreen");
-        goToCarPosition();
-        mapPackage.changMapCenterInScreen(MapType.MAIN_SCREEN_MAIN_MAP, MapVisibleAreaType.MAIN_AREA_CAR);
+//        goToCarPosition();
+//        MapVisibleAreaInfo mapVisibleAreaInfo= getVisibleArea(MapVisibleAreaType.MAIN_AREA_CAR);
+//        mapPackage.setMapCenterInScreen(MapType.MAIN_SCREEN_MAIN_MAP,mapVisibleAreaInfo.getMleftscreenoffer(),mapVisibleAreaInfo.getMtopscreenoffer());
         mViewModel.showOrHideSelfParkingView(false);
         stopCruise();
     }
@@ -368,7 +384,9 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
                     positionPackage.getLastCarLocation().getLatitude()));
             signalPackage.registerObserver(mapTypeId.name(), this);
             mapPackage.goToCarPosition(mapTypeId);
-            mapPackage.changMapCenterInScreen(MapType.MAIN_SCREEN_MAIN_MAP, MapVisibleAreaType.MAIN_AREA_CAR);
+            Logger.d("MapViewModelonCreate3"+getVisibleArea(MapVisibleAreaType.MAIN_AREA_CAR).getMleftscreenoffer()+"--"+getVisibleArea(MapVisibleAreaType.MAIN_AREA_CAR).getMtopscreenoffer());
+            MapVisibleAreaInfo mapVisibleAreaInfo= getVisibleArea(MapVisibleAreaType.MAIN_AREA_CAR);
+            mapPackage.setMapCenterInScreen(MapType.MAIN_SCREEN_MAIN_MAP, mapVisibleAreaInfo.getMleftscreenoffer(),mapVisibleAreaInfo.getMtopscreenoffer());
             naviPackage.registerObserver(mViewModel.mScreenId, this);
             // 注册监听
             cruisePackage.registerObserver(mViewModel.mScreenId, this);
@@ -439,7 +457,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
             } else if (currentImersiveStatus == ImersiveStatus.IMERSIVE) {
                 mViewModel.showOrHideSelfParkingView(false);
                 goToCarPosition();
-            }
+                Logger.i(TAG, "---"+"goToCarPosition");            }
         }
 
         if (getNaviStatus() == NaviStatus.NaviStatusType.NAVING && settingPackage.getAutoScale()) {
@@ -479,6 +497,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
                 cancelSelfParkingTimer();
                 if (parkingViewExist()) {
                     ImmersiveStatusScene.getInstance().setImmersiveStatus(MapType.MAIN_SCREEN_MAIN_MAP, ImersiveStatus.IMERSIVE);
+                    Logger.d("onFinish-startSelfParkingTimer-true");
                 }
                 Logger.d("onFinish-startSelfParkingTimer");
             }, 15, 15);

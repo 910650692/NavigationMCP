@@ -1,11 +1,17 @@
 package com.fy.navi.hmi.cluster.cluster_map;
 
+import android.content.Intent;
 import android.text.TextUtils;
+
+import androidx.core.app.ActivityCompat;
 
 import com.android.utils.ToastUtils;
 import com.android.utils.log.Logger;
+import com.fy.navi.NaviService;
 import com.fy.navi.fsa.MyFsaService;
 import com.fy.navi.scene.impl.navi.inter.ISceneCallback;
+import com.fy.navi.service.AppContext;
+import com.fy.navi.service.StartService;
 import com.fy.navi.service.adapter.map.MapAdapter;
 import com.fy.navi.service.adapter.navistatus.INaviStatusCallback;
 import com.fy.navi.service.adapter.navistatus.NavistatusAdapter;
@@ -32,10 +38,22 @@ import com.fy.navi.service.logicpaket.setting.SettingPackage;
 import com.fy.navi.ui.base.BaseModel;
 
 public class ClusterModel extends BaseModel<BaseClusterViewModel> implements IMapPackageCallback,
-IRouteResultObserver, INaviStatusCallback, ISceneCallback, IGuidanceObserver, ICruiseObserver, SettingPackage.SettingChangeCallback {
+IRouteResultObserver, INaviStatusCallback, ISceneCallback, IGuidanceObserver, ICruiseObserver, SettingPackage.SettingChangeCallback
+, StartService.ISdkInitCallback {
     private static final String TAG = "ClusterModel";
     private boolean mLoadMapSuccess = true;  //只加载一次
-    public ClusterModel() {}
+    public ClusterModel() {
+        StartService.getInstance().registerSdkCallback(this);
+    }
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        Logger.d(TAG, "start navi Service");
+        Intent intent = new Intent(AppContext.getInstance().getMContext(), NaviService.class);
+        ActivityCompat.startForegroundService(AppContext.getInstance().getMContext(), intent);
+    }
+
     @Override
     public void onDestroy() {
         super.onDestroy();
@@ -46,6 +64,7 @@ IRouteResultObserver, INaviStatusCallback, ISceneCallback, IGuidanceObserver, IC
             RoutePackage.getInstance().unRegisterRouteObserver(getMapId().name());
             CruisePackage.getInstance().unregisterObserver(getMapId().name());
             NavistatusAdapter.getInstance().unRegisterCallback(this);
+            StartService.getInstance().unregisterSdkCallback(this);
         }
     }
     /***
@@ -62,6 +81,20 @@ IRouteResultObserver, INaviStatusCallback, ISceneCallback, IGuidanceObserver, IC
         LayerPackage.getInstance().setPassGray(getMapId(), true);
         MapPackage.getInstance().initMapView(mViewModel.getMapView());
     }
+
+    @Override
+    public void onSdkInitSuccess() {
+        StartService.ISdkInitCallback.super.onSdkInitSuccess();
+        Logger.d(TAG, "Sdk init success");
+        loadMapView();
+    }
+
+    @Override
+    public void onSdkInitFail(int initSdkResult, String msg) {
+        StartService.ISdkInitCallback.super.onSdkInitFail(initSdkResult, msg);
+        Logger.d(TAG, "Sdk init fail");
+    }
+
     @Override
     public void onMapLoadSuccess(final MapType mMapTypeId) {
         Logger.d(TAG, "onMapLoadSuccess:" + mMapTypeId.name(), "mLoadMapSuccess:"+mLoadMapSuccess);

@@ -12,6 +12,7 @@ import com.fy.navi.service.define.map.MapMode;
 import com.fy.navi.service.define.map.MapStateStyle;
 import com.fy.navi.service.define.map.MapViewParams;
 import com.fy.navi.service.define.map.MapType;
+import com.fy.navi.service.define.map.PointDataInfo;
 import com.fy.navi.service.define.map.ThemeType;
 import com.fy.navi.service.define.mfc.MfcController;
 
@@ -145,6 +146,11 @@ public class MapAdapterImpl implements IMapApi {
     @Override
     public GeoPoint mapToLonLat(MapType mapTypeId, double mapX, double mapY) {
         return mapViewPoolManager.get(mapTypeId).mapToLonLat(mapX, mapY);
+    }
+
+    @Override
+    public PointDataInfo lonLatToScreen(MapType mapTypeId, double lon, double lat, double z) {
+        return mapViewPoolManager.get(mapTypeId).lonLatToScreen(lon,lat,z);
     }
 
     @Override

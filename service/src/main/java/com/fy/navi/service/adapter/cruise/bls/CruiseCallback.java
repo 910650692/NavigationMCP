@@ -20,7 +20,7 @@ import java.util.Hashtable;
  * @Author lvww
  * @date 2024/12/5
  */
-public class CruiseCallback implements ICruiseObserver, ISoundPlayObserver{
+public class CruiseCallback implements ICruiseObserver{
     private static final String TAG = MapDefaultFinalTag.NAVI_SERVICE_TAG;
     private Hashtable<String, CruiseObserver> mCruiseObservers;
 
@@ -84,10 +84,5 @@ public class CruiseCallback implements ICruiseObserver, ISoundPlayObserver{
                 }
             }
         }
-    }
-
-    @Override
-    public boolean isPlaying() {
-        return false;
     }
 }

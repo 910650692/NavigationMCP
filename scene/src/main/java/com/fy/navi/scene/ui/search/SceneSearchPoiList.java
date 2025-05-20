@@ -363,6 +363,8 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
                 // 请求SGM自营站数据
                 mScreenViewModel.queryStationNewResult(mResultEntity);
             }else{
+                mScreenViewModel.clearLabelMarker();
+                mScreenViewModel.addPoiMarker(mSearchResultEntity.getPoiList(),0);
                 mAdapter.notifyList(mSearchResultEntity);
                 updatePoiMarkerVisibleState();
                 mViewBinding.recyclerSearchResult.scrollToPosition(0);
@@ -751,6 +753,7 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
             //只有一个搜索结果时，直接跳转结果界面
             final Fragment fragment = (Fragment) ARouter.getInstance().build(RoutePath.Search.POI_DETAILS_FRAGMENT).navigation();
             final int poiType = getPoiType(mHomeCompanyType);
+            closeCurrentFragment();
             addFragment((BaseFragment) fragment, SearchFragmentFactory.createPoiDetailsFragment(
                     AutoMapConstant.SourceFragment.SEARCH_RESULT_FRAGMENT, poiType, searchResultEntity.getPoiList().get(0)));
             return;

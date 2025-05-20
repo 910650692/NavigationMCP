@@ -74,4 +74,24 @@ public class SceneCollectViewImpl extends BaseSceneModel<SceneCollectView> imple
             mSearchPackage.queryCollectStation(idpUserId,accessToken,vehicleBrand);
         });
     }
+
+    public void updateCollectStatus(Activity context,PoiInfoEntity poiInfoEntity){
+        AccessTokenParam param = new AccessTokenParam(
+                AutoMapConstant.AccountTokenParamType.ACCOUNT_TYPE_PATAC_HMI,
+                AutoMapConstant.AccountTokenParamType.AUTH_TOKEN_TYPE_READ_ONLY,
+                null,
+                context,
+                null,
+                null,
+                null,
+                null);
+
+        ThreadManager.getInstance().runAsync(() -> {
+            String idpUserId = AccountPackage.getInstance().getUserId();
+            String accessToken = AccountPackage.getInstance().getAccessToken(param);
+            String vehicleBrand = "BUICK";
+            poiInfoEntity.setIsCollect(true);
+            mSearchPackage.updateCollectStatus(idpUserId,accessToken,vehicleBrand,poiInfoEntity);
+        });
+    }
 }

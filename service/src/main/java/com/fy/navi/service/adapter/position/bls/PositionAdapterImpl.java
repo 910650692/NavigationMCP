@@ -1,7 +1,12 @@
 package com.fy.navi.service.adapter.position.bls;
 
+import com.android.utils.DeviceUtils;
 import com.android.utils.log.Logger;
+import com.autonavi.gbl.common.model.TbtCommonControl;
+import com.autonavi.gbl.common.model.UserConfig;
+import com.autonavi.gbl.common.model.WorkPath;
 import com.fy.navi.service.AppContext;
+import com.fy.navi.service.GBLCacheFilePath;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.adapter.position.IPositionAdapterCallback;
 import com.fy.navi.service.adapter.position.IPositionApi;
@@ -54,7 +59,24 @@ public class PositionAdapterImpl implements IPositionApi {
         mLocMode = PositionConstant.isDrBack ? LocMode.DrBack : LocMode.GNSS;
         boolean initResult = positionStrategy.initLocEngine(mLocMode, new PositionConfig());
         Logger.i(TAG, "initLocEngine: " + initResult + ",mLocMode：" + mLocMode);
+        initTbtComm();
         return initResult;
+    }
+
+    /**
+     * 初始化公共控制类
+     */
+    private void initTbtComm() {
+        final String cache = GBLCacheFilePath.TBT_COMMON_CACHE_PATH;
+        final String navi = GBLCacheFilePath.OFFLINE_DOWNLOAD_DIR;
+        final WorkPath workPath = new WorkPath();
+        workPath.cache = cache;
+        workPath.navi = navi;
+        final UserConfig userConfig = new UserConfig();
+        userConfig.deviceID = DeviceUtils.getDeviceId();
+        userConfig.userBatch = "0";
+        final TbtCommonControl tbtCommonControl = TbtCommonControl.getInstance();
+        tbtCommonControl.init(workPath, userConfig);
     }
 
     @Override

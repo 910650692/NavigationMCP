@@ -8,4 +8,10 @@ public interface ISceneRouteSearchRefreshList {
      * @param poiInfoEntity   poi信息
      * */
     void onItermAddClick(PoiInfoEntity poiInfoEntity);
+
+    /**
+     * 删除途经点
+     * @param poiInfoEntity   poi信息
+     * */
+    void onItermRemoveClick(PoiInfoEntity poiInfoEntity);
 }

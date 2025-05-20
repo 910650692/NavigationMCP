@@ -39,14 +39,14 @@ public class SearchRepository implements SearchApi{
     }
 
     @Override
-    public Observable<BaseRep> createReservation(StationReq req) {
-        Observable<BaseRep> observable = NetMethodManager.getInstance().doPost(SearchApiService.CREATE_RESERVATION_STATION,req, BaseRep.class);
+    public Observable<String> createReservation(StationReq req) {
+        Observable<String> observable = NetMethodManager.getInstance().doPostReturnAllJson(SearchApiService.CREATE_RESERVATION_STATION,req);
         return observable;
     }
 
     @Override
-    public Observable<BaseRep> unLockStation(StationReq req) {
-        Observable<BaseRep> observable = NetMethodManager.getInstance().doPost(SearchApiService.CLOUD_QUERY_UNLOCK,req, BaseRep.class);
+    public Observable<String> unLockStation(StationReq req) {
+        Observable<String> observable = NetMethodManager.getInstance().doPostReturnAllJson(SearchApiService.CLOUD_QUERY_UNLOCK,req);
         return observable;
     }
 
@@ -57,14 +57,14 @@ public class SearchRepository implements SearchApi{
     }
 
     @Override
-    public Observable<BaseRep> queryReservation(StationReq req) {
-        Observable<BaseRep> observable = NetMethodManager.getInstance().doPost(SearchApiService.QUERY_RESERVATION_STATION,req, BaseRep.class);
+    public Observable<String> queryReservation(StationReq req) {
+        Observable<String> observable = NetMethodManager.getInstance().doPostReturnAllJson(SearchApiService.QUERY_RESERVATION_STATION,req);
         return observable;
     }
 
     @Override
-    public Observable<BaseRep> queryEquipmentInfo(StationReq req) {
-        Observable<BaseRep> observable = NetMethodManager.getInstance().doPost(SearchApiService.QUERY_EQUIPMENT_INFO,req, BaseRep.class);
+    public Observable<String> queryEquipmentInfo(StationReq req) {
+        Observable<String> observable = NetMethodManager.getInstance().doPostReturnAllJson(SearchApiService.QUERY_EQUIPMENT_INFO,req);
         return observable;
     }
 

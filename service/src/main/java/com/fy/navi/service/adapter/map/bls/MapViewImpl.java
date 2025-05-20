@@ -77,6 +77,7 @@ import com.fy.navi.service.define.map.MapMode;
 import com.fy.navi.service.define.map.MapStateStyle;
 import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.map.MapViewParams;
+import com.fy.navi.service.define.map.PointDataInfo;
 import com.fy.navi.service.define.map.ThemeType;
 import com.fy.navi.service.define.mfc.MfcController;
 import com.fy.navi.service.define.search.PoiInfoEntity;
@@ -280,6 +281,10 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver,
     private void initOperatorGesture(){
         // 开启惯性滑动
         getMapview().getOperatorGesture().enableSliding(true);
+        //3D模式下 移动地图 不隐藏poi
+        getMapview().getOperatorGesture().hidePoiOn3DMoving(false);
+        //3D模式下 惯性滑动 不隐藏poi
+        getMapview().getOperatorGesture().hidePoiOn3DSliding(false);
     }
 
     /***
@@ -294,7 +299,6 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver,
     private void initSkyBox() {
         SkyBoxManager.getInstance().initSkyBox(getMapview(), ThemeUtils.INSTANCE.isNightModeEnabled(getContext()));
     }
-
 
     @Override
     protected void onAttachedToWindow() {
@@ -439,6 +443,7 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver,
             case UP_3D:
                 mapviewModeParam.mode = MapviewMode.MapviewMode3D;
                 mapviewModeParam.mapZoomLevel = 17;
+                mapviewModeParam.pitchAngle = 40f;
                 break;
             case NORTH_2D:
                 mapviewModeParam.mode = MapviewMode.MapviewModeNorth;
@@ -739,6 +744,17 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver,
     public GeoPoint mapToLonLat(double mapX, double mapY) {
         Coord2DDouble coord2DDouble = getMapview().getOperatorPosture().mapToLonLat(mapX, mapY);
         return new GeoPoint(coord2DDouble.lon, coord2DDouble.lat, 0);
+    }
+
+    public PointDataInfo lonLatToScreen(double lon, double lat, double z){
+        PointD pointD = getMapview().getOperatorPosture().lonLatToScreen(lon,lat,z);
+        if(ConvertUtils.isEmpty(pointD)){
+            return null;
+        }
+        PointDataInfo pointDataInfo = new PointDataInfo();
+        pointDataInfo.setMleftscreen(pointD.x);
+        pointDataInfo.setMtopscreen(pointD.y);
+        return pointDataInfo;
     }
 
     @HookMethod

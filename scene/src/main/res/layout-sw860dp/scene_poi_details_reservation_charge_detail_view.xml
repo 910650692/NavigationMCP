@@ -4,10 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
+        <import type="android.view.View" />
         <variable
             name="ScenePoiChargingStationReservationListView"
             type="com.fy.navi.scene.impl.poi.ScenePoiChargingStationReservationListViewImpl" />
+        <variable
+            name="EventHandle"
+            type="com.fy.navi.scene.ui.poi.ScenePoiChargingStationReservationListView.MyEventHandle" />
     </data>
 
     <com.fy.navi.ui.view.SkinConstraintLayout
@@ -81,7 +84,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/dp_52"
                 android:layout_marginTop="@dimen/dp_26"
+                clickCommand="@{() -> EventHandle.filterEquipment(1)}"
                 android:background="@{ScenePoiChargingStationReservationListView.searchType == 1 ? @drawable/bg_info_select : @drawable/bg_info_normal}"
+                android:visibility="@{`0`.equals(String.valueOf(ScenePoiChargingStationReservationListView.mChargeInfo.getFast_total)) ? View.GONE : View.VISIBLE}"
                 android:gravity="center"
                 android:paddingStart="@dimen/dp_20"
                 android:paddingEnd="@dimen/dp_20"
@@ -97,7 +102,8 @@
                 android:layout_height="@dimen/dp_52"
                 android:layout_marginStart="@dimen/dp_16"
                 android:layout_marginTop="@dimen/dp_26"
-                android:background="@{ScenePoiChargingStationReservationListView.searchType == 2 ? @drawable/bg_info_select : @drawable/bg_info_normal}"
+                clickCommand="@{() -> EventHandle.filterEquipment(0)}"
+                android:background="@{ScenePoiChargingStationReservationListView.searchType == 0 ? @drawable/bg_info_select : @drawable/bg_info_normal}"
                 android:gravity="center"
                 android:paddingStart="@dimen/dp_20"
                 android:paddingEnd="@dimen/dp_20"
@@ -105,6 +111,7 @@
                 android:text="@{@string/charge_title_slow + ScenePoiChargingStationReservationListView.mChargeInfo.getSlow_free + '/' +ScenePoiChargingStationReservationListView.mChargeInfo.getSlow_total}"
                 app:layout_constraintStart_toEndOf="@+id/poi_fast_info"
                 app:layout_constraintTop_toBottomOf="@+id/poi_type_icon"
+                android:visibility="@{`0`.equals(String.valueOf(ScenePoiChargingStationReservationListView.mChargeInfo.getSlow_total)) ? View.GONE : View.VISIBLE}"
                 tools:text="慢2/6" />
 
             <com.fy.navi.ui.view.SkinTextView
@@ -113,7 +120,8 @@
                 android:layout_height="@dimen/dp_52"
                 android:layout_marginStart="@dimen/dp_16"
                 android:layout_marginTop="@dimen/dp_26"
-                android:background="@{ScenePoiChargingStationReservationListView.searchType == 3 ? @drawable/bg_info_select : @drawable/bg_info_normal}"
+                clickCommand="@{() -> EventHandle.filterEquipment(2)}"
+                android:background="@{ScenePoiChargingStationReservationListView.searchType == 2 ? @drawable/bg_info_select : @drawable/bg_info_normal}"
                 android:gravity="center"
                 android:paddingStart="@dimen/dp_20"
                 android:paddingEnd="@dimen/dp_20"
@@ -121,11 +129,12 @@
                 android:textColor="@color/text_route_defult"
                 app:layout_constraintStart_toEndOf="@+id/poi_slow_info"
                 app:layout_constraintTop_toBottomOf="@+id/poi_type_icon"
+                android:visibility="@{ScenePoiChargingStationReservationListView.isHideCanReversion() ? View.INVISIBLE : View.VISIBLE}"
                 tools:text="@string/only_check_reservation" />
 
             <com.fy.navi.ui.view.SkinConstraintLayout
                 android:id="@+id/poi_app_guide_layout"
-                clickCommand="@{ScenePoiChargingStationReservationListView.openChargeQrCodeDialog}"
+                clickCommand="@{EventHandle.openChargeQrCodeDialog}"
                 android:layout_width="@dimen/dp_0"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_16"

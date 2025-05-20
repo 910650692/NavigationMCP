@@ -1349,7 +1349,6 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
             if (requestPoiInfoEntity.getPoiTag().equals(ResourceUtils.Companion.getInstance().getString(R.string.route_search_keyword_service))
                     || pointType == AutoMapConstant.PointTypeCode.SERVICE_AREA) {
                 mRouteSearchTypeVisibility.set(3);
-                mSeartype = 3;
                 mView.showServiceDetailsUI(resultPoiInfoEntity);
             } else if (requestPoiInfoEntity.getPoiTag().equals(ResourceUtils.Companion.getInstance().getString(R.string.route_search_keyword_charge))
                     || pointType == AutoMapConstant.PointTypeCode.CHARGING_STATION) {

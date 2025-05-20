@@ -11,6 +11,7 @@ import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.utils.ResourceUtils;
+import com.android.utils.ToastUtils;
 import com.android.utils.log.Logger;
 import com.fy.navi.scene.R;
 import com.fy.navi.scene.databinding.ChargeEquipmentItemBinding;
@@ -29,6 +30,8 @@ public class ChargeEquipmentListAdapter extends RecyclerView.Adapter<ChargeEquip
     private ArrayList<EquipmentInfo> equipmentInfoList = new ArrayList<>();
     private Context mContext;
     private OnItemClickListener mItemClickListener;
+    private EquipmentInfo mEquipmentInfo;
+    private ConnectorInfoItem mConnectorInfoItem;
 
     public ChargeEquipmentListAdapter(final Context context){
         this.mContext = context;
@@ -47,12 +50,26 @@ public class ChargeEquipmentListAdapter extends RecyclerView.Adapter<ChargeEquip
             Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "ChargeEquipmentInfo is null");
             return;
         }
+        mEquipmentInfo = info;
         holder.mBinding.setConnectorInfoItem(info.getmConnectorInfoItem().get(0));
         holder.mBinding.setHandler(new MyEventHandle());
+
+        mConnectorInfoItem = info.getmConnectorInfoItem().get(0);
+        if(info.getmConnectorInfoItem().get(0).getmParkingLockFlag() == 0 || !"1".equals(info.getmConnectorInfoItem().get(0).getmStatus())){
+            holder.mBinding.chargeReservationButton.setEnabled(false);
+            holder.mBinding.chargeReservationButton.setAlpha(0.5F);
+        }else{
+            holder.mBinding.chargeReservationButton.setEnabled(true);
+            holder.mBinding.chargeReservationButton.setAlpha(1F);
+        }
+        holder.mBinding.equipmentUnlock.setText(mConnectorInfoItem.getmLockStatus() == 10 ? mContext.getString(R.string.charge_lock) : mContext.getString(R.string.charge_unlock));
         holder.mBinding.chargeReservationButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                openReservationDialog(info.getmConnectorInfoItem().get(0));
+                if(mConnectorInfoItem.getmParkingLockFlag() == 0 || !"1".equals(mConnectorInfoItem.getmStatus())){
+                    return;
+                }
+                openReservationDialog(mConnectorInfoItem,info);
             }
         });
     }
@@ -73,12 +90,25 @@ public class ChargeEquipmentListAdapter extends RecyclerView.Adapter<ChargeEquip
     }
 
     // 打开预约确认弹窗
-    public void openReservationDialog(ConnectorInfoItem info){
+    public void openReservationDialog(ConnectorInfoItem info,EquipmentInfo equipmentInfo){
+        if(info.getmParkingLockFlag() == 0){
+            ToastUtils.Companion.getInstance().showCustomToastView(mContext.getString(R.string.reservation_no_lock));
+            return;
+        }
+        switch (info.getmStatus()){
+            case "2":
+            case "3":
+                ToastUtils.Companion.getInstance().showCustomToastView(mContext.getString(R.string.equipment_use));
+                return;
+            case "5":
+                ToastUtils.Companion.getInstance().showCustomToastView(mContext.getString(R.string.equipment_error));
+                return;
+        }
         new ChargeStationConfirmDialog.Build(mContext).setDialogObserver(new IBaseDialogClickListener() {
             @Override
             public void onCommitClick() {
                 // 预约行为
-                mItemClickListener.onItemClick(info);
+                mItemClickListener.onItemClick(info,equipmentInfo);
             }
         })
         .setTitle(ResourceUtils.Companion.getInstance().getString(R.string.reservation_title))
@@ -92,7 +122,7 @@ public class ChargeEquipmentListAdapter extends RecyclerView.Adapter<ChargeEquip
         new ChargeStationConfirmDialog.Build(mContext).setDialogObserver(new IBaseDialogClickListener() {
             @Override
             public void onCommitClick() {
-                mItemClickListener.onUnLockClick(info);
+                mItemClickListener.onUnLockClick(info,mEquipmentInfo);
             }
         })
         .setTitle(ResourceUtils.Companion.getInstance().getString(R.string.sure_unlock))
@@ -114,8 +144,8 @@ public class ChargeEquipmentListAdapter extends RecyclerView.Adapter<ChargeEquip
     }
 
     public interface OnItemClickListener {
-        void onItemClick(ConnectorInfoItem info);
-        void onUnLockClick(ConnectorInfoItem info);
+        void onItemClick(ConnectorInfoItem info,EquipmentInfo equipmentInfo);
+        void onUnLockClick(ConnectorInfoItem info,EquipmentInfo equipmentInfo);
         void onCancelReservation(ConnectorInfoItem info);
     }
 

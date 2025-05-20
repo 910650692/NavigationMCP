@@ -111,6 +111,7 @@ public interface AutoMapConstant {
         String QUERY_EQUIPMENT_INFO = "query_equipment_info";
         String UNLOCK_GROUND = "unlock_ground";
         String UPDATE_COLLECT = "update_collect";
+        String QUERY_RESERVATION = "query_reservation";
     }
 
     @interface TrafficEventBundleKey {
@@ -329,9 +330,10 @@ public interface AutoMapConstant {
             EquipmentType.SLOW,
     })
     @interface EquipmentType {
-        int IDLE = 0;// idle
+        int IDLE = -1;// idle
         int FAST = 1;// 慢充
-        int SLOW = 2;// 快充
+        int SLOW = 0;// 快充
+        int RESERVATION = 2; // 可预约
     }
 
     @interface ChildIndex {

@@ -1,36 +1,49 @@
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
-    android:width="60dp"
-    android:height="60dp"
+    android:width="@dimen/dp_60"
+    android:height="@dimen/dp_60"
     android:viewportWidth="60"
     android:viewportHeight="60">
   <path
-      android:pathData="M29.917,31.5C37.925,31.5 44.417,37.857 44.417,45.698L44.417,54.01C44.417,54.287 44.193,54.51 43.917,54.51L37.917,54.51C37.641,54.51 37.417,54.287 37.417,54.01L37.417,45.698C37.417,41.642 34.059,38.354 29.917,38.354C26.613,38.354 23.808,40.446 22.808,43.352L26.296,43.085C26.419,43.076 26.542,43.113 26.64,43.188C26.858,43.357 26.898,43.671 26.729,43.89L19.708,52.976C19.656,53.043 19.596,53.104 19.528,53.156C19.091,53.494 18.463,53.413 18.126,52.976L11.104,43.89C11.029,43.792 10.992,43.669 11.001,43.546C11.022,43.271 11.263,43.064 11.538,43.085L15.607,43.396C16.73,36.649 22.709,31.5 29.917,31.5Z"
+      android:pathData="M0,0h60v60h-60z"
       android:strokeWidth="1"
-      android:fillColor="@color/navi_color_C9CBCE_100"
+      android:fillColor="#D8D8D8"
+      android:fillAlpha="0"
       android:fillType="evenOdd"
-      android:strokeColor="@color/navi_color_000000_0"/>
+      android:strokeColor="#00000000"/>
   <path
-      android:pathData="M37.417,15.618L40.917,15.354L44.417,15.618L44.417,54.5C44.417,54.776 44.193,55 43.917,55L37.917,55C37.641,55 37.417,54.776 37.417,54.5L37.417,15.618L37.417,15.618Z"
+      android:pathData="M41,58L41,12"
+      android:strokeWidth="9"
+      android:fillColor="#00000000"
+      android:strokeColor="@color/route_tbt_color_gray"
+      android:fillType="evenOdd"/>
+  <path
+      android:pathData="M41.41,2.444L52.046,13.966C52.255,14.193 52.241,14.546 52.014,14.755C51.901,14.859 51.75,14.913 51.596,14.902L41.039,14.163C41.013,14.162 40.987,14.162 40.961,14.163L30.404,14.902C30.096,14.923 29.829,14.691 29.808,14.384C29.797,14.23 29.85,14.079 29.954,13.966L40.59,2.444C40.799,2.218 41.152,2.204 41.379,2.413C41.39,2.423 41.4,2.434 41.41,2.444Z"
       android:strokeWidth="1"
-      android:fillColor="@color/navi_color_C9CBCE_100"
+      android:fillColor="@color/route_tbt_color_gray"
       android:fillType="evenOdd"
-      android:strokeColor="@color/navi_color_000000_0"/>
+      android:strokeColor="#00000000"/>
   <path
-      android:pathData="M41.708,6.024L48.729,15.11C48.898,15.329 48.858,15.643 48.64,15.812C48.542,15.887 48.419,15.924 48.296,15.915L40.955,15.356C40.93,15.354 40.904,15.354 40.879,15.356L33.538,15.915C33.263,15.936 33.022,15.729 33.001,15.454C32.992,15.331 33.029,15.208 33.104,15.11L40.126,6.024C40.463,5.587 41.091,5.506 41.528,5.844C41.596,5.896 41.656,5.957 41.708,6.024Z"
+      android:pathData="M25,50.246L25,44C25,39.582 28.582,36 33,36C37.418,36 41,39.582 41,44L41,58L41,58"
+      android:strokeWidth="9"
+      android:fillColor="#00000000"
+      android:strokeColor="@color/route_tbt_color_gray"
+      android:fillType="evenOdd"/>
+  <path
+      android:pathData="M24.59,57.556L13.954,46.034C13.745,45.807 13.759,45.454 13.986,45.245C14.099,45.141 14.25,45.087 14.404,45.098L24.961,45.837C24.987,45.838 25.013,45.838 25.039,45.837L35.596,45.098C35.904,45.077 36.171,45.309 36.192,45.616C36.203,45.77 36.15,45.921 36.046,46.034L25.41,57.556C25.201,57.782 24.848,57.796 24.621,57.587C24.61,57.577 24.6,57.566 24.59,57.556Z"
       android:strokeWidth="1"
-      android:fillColor="@color/navi_color_C9CBCE_100"
+      android:fillColor="@color/route_tbt_color_gray"
       android:fillType="evenOdd"
-      android:strokeColor="@color/navi_color_000000_0"/>
+      android:strokeColor="#00000000"/>
   <path
-      android:pathData="M21.871,15.585C21.748,15.575 21.625,15.612 21.527,15.687L12.441,22.709C12.004,23.046 11.923,23.674 12.261,24.111C12.313,24.179 12.374,24.239 12.441,24.291L21.527,31.313C21.746,31.481 22.06,31.441 22.229,31.223C22.304,31.125 22.341,31.002 22.332,30.879L22.037,26.999L33.417,27L33.417,20L22.037,19.999L22.332,16.121C22.353,15.846 22.146,15.605 21.871,15.585Z"
+      android:pathData="M18,24L34.3,24C38,24 41,27 41,30.7L41,58L41,58"
+      android:strokeWidth="9"
+      android:fillColor="#00000000"
+      android:strokeColor="@color/route_tbt_color_2"
+      android:fillType="evenOdd"/>
+  <path
+      android:pathData="M8.444,23.59L19.966,12.954C20.193,12.745 20.546,12.759 20.755,12.986C20.859,13.099 20.913,13.25 20.902,13.404L20.163,23.961C20.162,23.987 20.162,24.013 20.163,24.039L20.902,34.596C20.923,34.904 20.691,35.171 20.384,35.192C20.23,35.203 20.079,35.15 19.966,35.046L8.444,24.41C8.218,24.201 8.204,23.848 8.413,23.621C8.423,23.61 8.434,23.6 8.444,23.59Z"
       android:strokeWidth="1"
-      android:fillColor="@color/navi_color_4B535D_100"
+      android:fillColor="@color/route_tbt_color_2"
       android:fillType="evenOdd"
-      android:strokeColor="@color/navi_color_000000_0"/>
-  <path
-      android:pathData="M39.919,20C42.404,20 44.419,22.015 44.419,24.5L44.419,54.524C44.419,54.8 44.195,55.024 43.919,55.024L37.919,55.024C37.642,55.024 37.419,54.8 37.419,54.524L37.418,27L37.418,27L32.417,27L32.417,20L39.919,20Z"
-      android:strokeWidth="1"
-      android:fillColor="@color/navi_color_4B535D_100"
-      android:fillType="nonZero"
-      android:strokeColor="@color/navi_color_000000_0"/>
+      android:strokeColor="#00000000"/>
 </vector>

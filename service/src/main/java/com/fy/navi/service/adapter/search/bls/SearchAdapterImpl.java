@@ -628,14 +628,20 @@ public class SearchAdapterImpl extends SearchServiceV2Manager implements ISearch
 
     @Override
     public int queryEquipmentInfo(SearchRequestParameter searchRequestParameter) {
-        StationReq req = new StationReq("1.0");
-        final Observable<BaseRep> observable = SearchRepository.getInstance().queryEquipmentInfo(req);
+        StationReq req = new StationReq("1.0")
+                .setOperatorId(searchRequestParameter.getOperatorId())
+                .setStationId(searchRequestParameter.getStationId())
+                .setEquipmentId(searchRequestParameter.getEquipmentId());
+        final Observable<String> observable = SearchRepository.getInstance().queryEquipmentInfo(req);
         observable.subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(new NetDisposableObserver<BaseRep>() {
+            .subscribe(new NetDisposableObserver<String>() {
                 @Override
-                public void onSuccess(BaseRep data) {
-                    Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG,"data: "+data.getDataSet());
+                public void onSuccess(String data) {
+                    Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG,"success");
+                    BaseRep rep = GsonUtils.fromJson(String.valueOf(data),BaseRep.class);
+                    Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG,"data: "+rep.getResultCode());
+                    notifyNetSearchSuccess(mTaskId.get(),AutoMapConstant.NetSearchKey.QUERY_EQUIPMENT_INFO,rep);
                 }
 
                 @Override
@@ -643,42 +649,64 @@ public class SearchAdapterImpl extends SearchServiceV2Manager implements ISearch
                     Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG,"Exce: "+apiException);
                 }
             });
-        String json = "{\n" +
-                "\"equipmentName\": \"充电设备10401097\", \"power\": \"120.0\",\n" +
-                "\"equipmentId\": \"11000000000000010401097\", \"connectorInfoItem\": [\n" +
-                "{\n" +
-                "\"voltageUpperLimits\": \"600\", \"ratedCurrent\": \"0\",\n" +
-                "\"connectorId\": \"11000000000000010401097000\", \"chargeType\": \"1\",\n" +
-                "\"connectorName\": \"充电桩10401097\", \"power\": \"120.0\",\n" +
-                "\"nationalStandard\": \"2\",\n" +
-                "\"voltageLowerLimits\": \"380\", \"status\": \"4\",\n" +
-                "\"parkNo\": \"\",\n" +
-                "\"parkingLockFlag\": 0, \"lockStatus\": 50,\n" +
-                "\"idpUserId\": null, \"preFlag\": null\n" +
-                "} ]\n" +
-                "}";
-        BaseRep rep = new BaseRep();
-        rep.setResultCode("0000");
-        rep.setMessage("获取成功");
-        rep.setDataSet(json);
-        notifyNetSearchSuccess(mTaskId.get(),AutoMapConstant.NetSearchKey.QUERY_EQUIPMENT_INFO,rep);
         return mTaskId.get();
     }
 
     @Override
     public int createReservation(SearchRequestParameter searchRequestParameter) {
-        BaseRep rep = new BaseRep();
-        rep.setResultCode("0000");
-        rep.setMessage("获取成功");
-        notifyNetSearchSuccess(mTaskId.get(),AutoMapConstant.NetSearchKey.CREATE_RESERVATION,rep);
+        StationReq req = new StationReq("1.0",searchRequestParameter.getIdpUserId())
+                .setOperatorId(searchRequestParameter.getOperatorId())
+                .setStationId(searchRequestParameter.getStationId())
+                .setBrandId(searchRequestParameter.getVehicleBrand())
+                .setSource(searchRequestParameter.getSource())
+                .setConnectorId(searchRequestParameter.getConnectorId());
+        req.setAccessToken(searchRequestParameter.getAccessToken());
+        final Observable<String> observable = SearchRepository.getInstance().createReservation(req);
+        observable.subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new NetDisposableObserver<String>() {
+                    @Override
+                    public void onSuccess(String data) {
+                        Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG,"success");
+                        BaseRep rep = GsonUtils.fromJson(String.valueOf(data),BaseRep.class);
+                        Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG,"data: "+rep.getResultCode());
+                        notifyNetSearchSuccess(mTaskId.get(),AutoMapConstant.NetSearchKey.CREATE_RESERVATION,rep);
+                    }
+
+                    @Override
+                    public void onFailed(ApiException apiException) {
+                        Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG,"Exce: "+apiException);
+                    }
+                });
+
         return mTaskId.get();
     }
 
     public int unGroundLock(SearchRequestParameter searchRequestParameter) {
-        BaseRep rep = new BaseRep();
-        rep.setResultCode("0000");
-        rep.setMessage("获取成功");
-        notifyNetSearchSuccess(mTaskId.get(),AutoMapConstant.NetSearchKey.UNLOCK_GROUND,rep);
+        StationReq req = new StationReq("1.0",searchRequestParameter.getIdpUserId())
+                .setOperatorId(searchRequestParameter.getOperatorId())
+                .setBrandId(searchRequestParameter.getVehicleBrand())
+                .setSource(searchRequestParameter.getSource())
+                .setConnectorId(searchRequestParameter.getConnectorId());
+        req.setAccessToken(searchRequestParameter.getAccessToken());
+        final Observable<String> observable = SearchRepository.getInstance().unLockStation(req);
+        observable.subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new NetDisposableObserver<String>() {
+                    @Override
+                    public void onSuccess(String data) {
+                        Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG,"success");
+                        BaseRep rep = GsonUtils.fromJson(String.valueOf(data),BaseRep.class);
+                        Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG,"data: "+rep.getResultCode());
+                        notifyNetSearchSuccess(mTaskId.get(),AutoMapConstant.NetSearchKey.UNLOCK_GROUND,rep);
+                    }
+
+                    @Override
+                    public void onFailed(ApiException apiException) {
+                        Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG,"Exce: "+apiException);
+                    }
+                });
+
         return mTaskId.get();
     }
 
@@ -709,6 +737,32 @@ public class SearchAdapterImpl extends SearchServiceV2Manager implements ISearch
                         Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG,"Exce: "+apiException);
                     }
                 });
+        return mTaskId.get();
+    }
+
+    public int queryReservation(SearchRequestParameter searchRequestParameter){
+        StationReq req = new StationReq("1.0")
+                .setOperatorId(searchRequestParameter.getOperatorId())
+                .setStatus(searchRequestParameter.getType())
+                .setBrandId(searchRequestParameter.getVehicleBrand());
+        final Observable<String> observable = SearchRepository.getInstance().queryReservation(req);
+        observable.subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new NetDisposableObserver<String>() {
+                    @Override
+                    public void onSuccess(String data) {
+                        Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG,"success");
+                        BaseRep rep = GsonUtils.fromJson(String.valueOf(data),BaseRep.class);
+                        Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG,"data: "+rep.getResultCode());
+                        notifyNetSearchSuccess(mTaskId.get(),AutoMapConstant.NetSearchKey.QUERY_RESERVATION,rep);
+                    }
+
+                    @Override
+                    public void onFailed(ApiException apiException) {
+                        Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG,"Exce: "+apiException);
+                    }
+                });
+
         return mTaskId.get();
     }
 }

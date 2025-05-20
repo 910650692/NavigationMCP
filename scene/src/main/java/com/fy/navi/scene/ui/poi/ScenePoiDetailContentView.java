@@ -784,8 +784,17 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
         mViewBinding.scenePoiDetailsChargingStationView.poiChargeSlowLayout.setOnClickListener(v ->{
             toReservationListView(AutoMapConstant.EquipmentType.SLOW);
         });
+        if(!ConvertUtils.isNull(mPoiInfoEntity.getReservationInfo())){
+            mViewBinding.scenePoiDetailsChargingStationView.poiChargeAppointment.setText(R.string.charge_appointment_look);
+        }else{
+            mViewBinding.scenePoiDetailsChargingStationView.poiChargeAppointment.setText(R.string.charge_appointment);
+        }
         mViewBinding.scenePoiDetailsChargingStationView.poiChargeAppointment.setOnClickListener(v -> {
-            toReservationDetailView();
+            if(!ConvertUtils.isNull(mPoiInfoEntity.getReservationInfo())){
+                toReservationDetailView();
+            }else{
+                toReservationListView(-1);
+            }
         });
         final String imageUrl = mPoiInfoEntity.getImageUrl();
         if(ConvertUtils.isNull(imageUrl)){
@@ -1557,6 +1566,10 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
 
     public void toReservationListView(int type){
         if(!mSearchResultEntity.getIsNetData()){
+            return;
+        }
+        if(!mScreenViewModel.isSGMLogin()){
+            mScreenViewModel.startSGMLogin();
             return;
         }
         final Fragment fragment = (Fragment) ARouter.getInstance().build(

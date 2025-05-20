@@ -14,6 +14,7 @@ import com.fy.navi.mapservice.bean.common.BaseCityInfo;
 import com.fy.navi.mapservice.bean.common.BaseDistrictInfo;
 import com.fy.navi.mapservice.bean.common.BaseGeoPoint;
 import com.fy.navi.mapservice.bean.common.BaseLocationInfo;
+import com.fy.navi.mapservice.bean.common.BaseRouteLine;
 import com.fy.navi.mapservice.bean.common.BaseRouteResult;
 import com.fy.navi.mapservice.bean.common.BaseSearchPoi;
 import com.fy.navi.mapservice.bean.common.BaseSearchResult;
@@ -30,6 +31,7 @@ import com.fy.navi.service.define.position.DrBean;
 import com.fy.navi.service.define.position.LocInfoBean;
 import com.fy.navi.service.define.position.LocStatus;
 import com.fy.navi.service.define.route.RequestRouteResult;
+import com.fy.navi.service.define.route.RouteLineInfo;
 import com.fy.navi.service.define.route.RoutePoiType;
 import com.fy.navi.service.define.search.CityInfo;
 import com.fy.navi.service.define.search.PoiInfoEntity;
@@ -47,6 +49,7 @@ import com.fy.navi.service.logicpaket.search.SearchResultCallback;
 import com.fy.navi.ui.base.BaseActivity;
 import com.fy.navi.ui.base.StackManager;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.Timer;
@@ -287,9 +290,10 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub {
                     mInCallback = true;
                     Logger.d(TAG, "onRouteResult inCallback");
                     final int count = mNaviAutoCallbackList.beginBroadcast();
-                    final BaseRouteResult baseRouteResult = GsonUtils.convertToT(requestRouteResult, BaseRouteResult.class);
-                    final int mapType = getOutMapType(requestRouteResult.getMMapTypeId());
-                    baseRouteResult.setMapId(mapType);
+                    final BaseRouteResult baseRouteResult = convertToBaseResult(requestRouteResult);
+                    if (null == baseRouteResult) {
+                        return;
+                    }
                     final String routeResultStr = GsonUtils.toJson(baseRouteResult);
                     for (int i = 0; i < count; i++) {
                         final INaviAutoApiCallback naviAutoApiCallback = mNaviAutoCallbackList.getRegisteredCallbackItem(i);
@@ -339,6 +343,52 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub {
             }
 
         };
+    }
+
+    /**
+     * 转换路线规划结果.
+     *
+     * @param routeResult RequestRouteResult Package返回的路线规划结果.
+     *
+     * @return BaseRouteResult export对外传递的数据.
+     */
+    private BaseRouteResult convertToBaseResult(final RequestRouteResult routeResult) {
+        if (null == routeResult || null == routeResult.getMRouteLineInfos()
+                || routeResult.getMRouteLineInfos().isEmpty()) {
+            return null;
+        }
+
+        final BaseRouteResult baseRouteResult = new BaseRouteResult();
+        baseRouteResult.setOnlineRoute(routeResult.isMIsOnlineRoute());
+        final int mapType = getOutMapType(routeResult.getMMapTypeId());
+        baseRouteResult.setMapId(mapType);
+        baseRouteResult.setFastNavi(routeResult.isMFastNavi());
+        baseRouteResult.setRequestId(routeResult.getMRequestId());
+        final ArrayList<BaseRouteLine> routeLineList = new ArrayList<>();
+        final int pathSize = routeResult.getMRouteLineInfos().size();
+        for (int i = 0; i < pathSize; i++) {
+            final RouteLineInfo routePath = routeResult.getMRouteLineInfos().get(i);
+            if (null == routePath) {
+                continue;
+            }
+            final BaseRouteLine baseRouteLine = new BaseRouteLine();
+            baseRouteLine.setPathID(routePath.getMPathID());
+            baseRouteLine.setType(routePath.getMType());
+            baseRouteLine.setLabel(routePath.getMLabel());
+            baseRouteLine.setDistance(routePath.getMDistance());
+            baseRouteLine.setLength(routePath.getMLength());
+            baseRouteLine.setTravelTime(routePath.getMTravelTime());
+            baseRouteLine.setStaticTravelTime(routePath.getMStaticTravelTime());
+            baseRouteLine.setTollCost(routePath.getMTollCost());
+            baseRouteLine.setNaviID(routePath.getMNaviID());
+            baseRouteLine.setElecRouteBool(routePath.isMElecRouteBool());
+            baseRouteLine.setIsOnline(routePath.isMIsOnline());
+            baseRouteLine.setCanBeArrive(routePath.isMCanBeArrive());
+            routeLineList.add(baseRouteLine);
+        }
+        baseRouteResult.setRouteLineInfos(routeLineList);
+
+        return baseRouteResult;
     }
 
     /**

@@ -27,7 +27,7 @@ public class StationReq extends BaseReq{
     private String operatorId; // 运营商Id
     private String stationId; // 充电站Id
     private String connectorId; // 充电设备接口编码
-    private Integer brandId; // 1.别克 2.凯迪 3.雪佛兰 4.奥特能 5.泛亚
+    private String brandId; // 1.别克 2.凯迪 3.雪佛兰 4.奥特能 5.泛亚
     private String remark; // 备注
     private String source; // 来源手机应用：APP微信小程序：WEAPP 车机端：CARAPP
     // 更新用户收藏充电站
@@ -181,6 +181,51 @@ public class StationReq extends BaseReq{
 
     public StationReq setUpdateType(String updateType) {
         this.updateType = updateType;
+        return this;
+    }
+
+    public String getBrandId() {
+        return brandId;
+    }
+
+    public StationReq setBrandId(String brandId) {
+        this.brandId = brandId;
+        return this;
+    }
+
+    public String getSource() {
+        return source;
+    }
+
+    public StationReq setSource(String source) {
+        this.source = source;
+        return this;
+    }
+
+    public String getConnectorId() {
+        return connectorId;
+    }
+
+    public StationReq setConnectorId(String connectorId) {
+        this.connectorId = connectorId;
+        return this;
+    }
+
+    public String getEquipmentId() {
+        return equipmentId;
+    }
+
+    public StationReq setEquipmentId(String equipmentId) {
+        this.equipmentId = equipmentId;
+        return this;
+    }
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public StationReq setStatus(Integer status) {
+        this.status = status;
         return this;
     }
 }

@@ -13,4 +13,5 @@
     <color name="authorization_disagree_color">#33787880</color>
     <color name="use_reminder_color">#245FEA</color>
 
+    <color name="setting_bg_line">#B3000000</color>
 </resources>

@@ -209,7 +209,7 @@ public final class VoiceSearchManager {
                     dealHomeCompanyResult(searchSuccess, false);
                     break;
                 case IVrBridgeConstant.VoiceSearchType.ADD_FAVORITE:
-                    //收藏指定poi
+                    //收藏指定poi关键字搜索结果
                     if (searchSuccess) {
                         dealAddFavoriteResult();
                     } else {
@@ -297,7 +297,7 @@ public final class VoiceSearchManager {
                 case IVrBridgeConstant.VoiceSearchType.ADD_FAVORITE:
                     //收藏当前位置
                     if (searchSuccess) {
-                        addCommonFavorite(firstPoi);
+                        addCommonFavorite(firstPoi, true);
                     } else if (null != mRespCallback) {
                         final CallResponse favoriteResponse = CallResponse.createFailResponse("未查询到定位信息，无法收藏");
                         favoriteResponse.setNeedPlayMessage(true);
@@ -506,6 +506,9 @@ public final class VoiceSearchManager {
                 break;
             case IVrBridgeConstant.VoiceSearchType.NAVI_TO_HOME_COMPANY:
                 saveAndNaviToHomeCompany(poiInfo);
+                break;
+            case IVrBridgeConstant.VoiceSearchType.ADD_FAVORITE:
+                addCommonFavorite(poiInfo, false);
                 break;
             default:
                 planRoute(poiInfo, null);
@@ -728,7 +731,11 @@ public final class VoiceSearchManager {
 
         Logger.d(IVrBridgeConstant.TAG, "multipleDest normal size: " + mNormalDestList.size() + ", generics size: " + mGenericsDestList.size());
         dealNextMultipleDest(null);
-        return CallResponse.createSuccessResponse();
+        Logger.i(IVrBridgeConstant.TAG, "multiple return success response");
+        final CallResponse response = CallResponse.createSuccessResponse("正在顺序执行多目的处理");
+        response.setNeedPlayMessage(false);
+        response.setCallResult(1);
+        return response;
     }
 
     /**
@@ -767,9 +774,11 @@ public final class VoiceSearchManager {
         if (null != mGenericsDestList && mGenericsDestList.size() > 0) {
             //继续澄清下一个泛型
             mProcessDestIndex = mGenericsDestList.keyAt(0);
+            Logger.d(IVrBridgeConstant.TAG, "genericsDestIndex: " + mProcessDestIndex);
             final SingleDestInfo genericsDest = mGenericsDestList.get(mProcessDestIndex);
-            mGenericsDestList.remove(mProcessDestIndex);
             mKeyword = genericsDest.getDestName();
+            Logger.d(IVrBridgeConstant.TAG, "genericsDestName: " + mKeyword);
+            mGenericsDestList.remove(mProcessDestIndex);
             final Bundle bundle = new Bundle();
             bundle.putInt(IVrBridgeConstant.VoiceIntentParams.INTENT_PAGE, IVrBridgeConstant.VoiceIntentPage.KEYWORD_SEARCH);
             bundle.putString(IVrBridgeConstant.VoiceIntentParams.KEYWORD, mKeyword);
@@ -777,9 +786,11 @@ public final class VoiceSearchManager {
         } else if (null != mNormalDestList && mNormalDestList.size() > 0) {
             //静默搜索普通poi
             mProcessDestIndex = mNormalDestList.keyAt(0);
-            mNormalDestList.remove(mProcessDestIndex);
+            Logger.d(IVrBridgeConstant.TAG, "normalDestIndex: " + mProcessDestIndex);
             final SingleDestInfo normalDest = mNormalDestList.get(mProcessDestIndex);
             mKeyword = normalDest.getDestName();
+            Logger.d(IVrBridgeConstant.TAG, "normalDestName: " + mKeyword);
+            mNormalDestList.remove(mProcessDestIndex);
             mSearchTaskId = SearchPackage.getInstance().silentKeywordSearch(1, mKeyword);
         } else if (null != mMultiplePoiArray && mMultiplePoiArray.size() > 0) {
             //全部获取完毕，开始路线规划
@@ -795,7 +806,7 @@ public final class VoiceSearchManager {
             for (int i = 0; i < size; i++) {
                 viaList.add(mMultiplePoiArray.valueAt(i));
             }
-            Logger.d(IVrBridgeConstant.TAG, "via size: " + size);
+            Logger.d(IVrBridgeConstant.TAG, "multipleDest viaSize:" + size);
             //规划路线
             planRoute(endPoi, viaList);
         }
@@ -1025,7 +1036,7 @@ public final class VoiceSearchManager {
                 sendClosePage();
                 break;
             case IVrBridgeConstant.VoiceSearchType.ADD_FAVORITE:
-                addCommonFavorite(poiInfo);
+                addCommonFavorite(poiInfo, false);
                 sendClosePage();
                 break;
             case IVrBridgeConstant.VoiceSearchType.NAVI_TO_HOME_COMPANY:
@@ -1492,18 +1503,24 @@ public final class VoiceSearchManager {
      * 收藏普通点.
      *
      * @param poiInfo PoiInfoEntity，POI信息.
+     * @param geoSearch  true:逆地理搜索，收藏当前位置
+     *                   false:关键字搜索，收藏指定poi
      */
-    private void addCommonFavorite(final PoiInfoEntity poiInfo) {
+    private void addCommonFavorite(final PoiInfoEntity poiInfo, final boolean geoSearch) {
         if (null != poiInfo) {
             Logger.d(IVrBridgeConstant.TAG, "current name: " + poiInfo.getName()
                     + ", address: " + poiInfo.getAddress()
                     + ",lon: " + poiInfo.getPoint().getLon()
                     + ", lat: " + poiInfo.getPoint().getLat());
-            if (null != mRespCallback) {
-                final CallResponse favoriteResponse = CallResponse.createSuccessResponse("已为你收藏" + poiInfo.getName());
-                favoriteResponse.setNeedPlayMessage(true);
+
+            final CallResponse favoriteResponse = CallResponse.createSuccessResponse("已为你收藏" + poiInfo.getName());
+            favoriteResponse.setNeedPlayMessage(true);
+            if (geoSearch && null != mRespCallback) {
                 mRespCallback.onResponse(favoriteResponse);
+            } else if (null != mPoiCallback) {
+                mPoiCallback.onResponse(favoriteResponse);
             }
+
             final FavoriteInfo favoriteInfo = new FavoriteInfo();
             favoriteInfo.setCommonName(0);
             poiInfo.setFavoriteInfo(favoriteInfo);
@@ -1532,14 +1549,13 @@ public final class VoiceSearchManager {
     }
 
     /**
-     * 根据搜索结果处理收藏流程.
+     * 处理收藏关键字结果搜索.
      */
     private void dealAddFavoriteResult() {
         final int size = mSearchResultList.size();
         if (size == 1) {
-            //关键字搜索只有一个结果，直接收藏
-            final PoiInfoEntity poiInfoEntity = mSearchResultList.get(0);
-            addCommonFavorite(poiInfoEntity);
+            //关键字搜索只有一个结果，等待详情搜结果展示
+            mWaitPoiSearch = true;
         } else {
             responseSearchWithResult();
         }

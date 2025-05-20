@@ -14,4 +14,14 @@ public class SceneRouteSeachChargeRefreshListImpl extends BaseSceneModel<SceneRo
     public void onItermAddClick(final PoiInfoEntity poiInfoEntity) {
 
     }
+
+    /**
+     * 删除途经点
+     *
+     * @param poiInfoEntity poi信息
+     */
+    @Override
+    public void onItermRemoveClick(final PoiInfoEntity poiInfoEntity) {
+
+    }
 }

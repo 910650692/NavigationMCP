@@ -16,6 +16,7 @@ import com.android.utils.ResourceUtils;
 import com.android.utils.ToastUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
+import com.fy.navi.hmi.BuildConfig;
 import com.fy.navi.hmi.R;
 import com.fy.navi.hmi.navi.AuthorizationRequestDialog;
 import com.fy.navi.service.define.map.MainScreenMapView;
@@ -31,6 +32,7 @@ import java.util.concurrent.ScheduledFuture;
 public class MapViewModel extends BaseMapViewModel {
 
     private static final String TAG = "Cadillac MapViewModel";
+    private String jsonPath = BuildConfig.MAP_SDK + "/cadillac_maparea.json";
     /** Whether this view is in DM mode. */
     private boolean mInDirectManipulationMode;
     private ScheduledFuture mMapViewScheduledFuture;
@@ -67,6 +69,10 @@ public class MapViewModel extends BaseMapViewModel {
         mMFCImgVisibility = new ObservableField<>(false);
         mMFCDModeVisibility = new ObservableField<>(false);
         initMFC();
+    }
+
+    public void initVisibleAreaPoint(){
+        mModel.loadVisibleAreaJson(jsonPath);
     }
 
     private void initMFC() {

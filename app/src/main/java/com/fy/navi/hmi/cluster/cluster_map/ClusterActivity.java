@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -86,7 +87,7 @@ public class ClusterActivity extends BaseActivity<ActivityClusterBinding, Cluste
     @Override
     public void onInitView() {
         Logger.d(TAG, "onInitView");
-        mViewModel.loadMapView();
+        //mViewModel.loadMapView();
     }
 
     @Override
@@ -131,8 +132,13 @@ public class ClusterActivity extends BaseActivity<ActivityClusterBinding, Cluste
                 }
             }
         };
-        registerReceiver(mBroadcastReceiver, new IntentFilter("com.fy.navi.hmi.cluster_map.ClusterActivity"));
-
+        //registerReceiver(mBroadcastReceiver, new IntentFilter("com.fy.navi.hmi.cluster_map.ClusterActivity"));
+        //防止不安全的广播暴露行为
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            registerReceiver(mBroadcastReceiver, new IntentFilter("com.fy.navi.hmi.cluster_map.ClusterActivity"), Context.RECEIVER_NOT_EXPORTED);
+        }else {
+            registerReceiver(mBroadcastReceiver, new IntentFilter("com.fy.navi.hmi.cluster_map.ClusterActivity"));
+        }
     }
 
     //  到达时间
@@ -221,4 +227,3 @@ public class ClusterActivity extends BaseActivity<ActivityClusterBinding, Cluste
         }
     }
 }
-

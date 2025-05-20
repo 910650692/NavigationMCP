@@ -37,7 +37,7 @@
                 <com.fy.navi.scene.ui.navi.SceneNaviTbtView
                     android:id="@+id/scene_navi_tbt"
                     clickCommand="@{ViewModel.mNaviAddVia}"
-                    android:layout_width="@dimen/dp_708"
+                    android:layout_width="@dimen/dp_545"
                     android:layout_height="wrap_content"
                     android:background="@drawable/bg_navi_tbt_top"
                     android:minHeight="@dimen/dp_1"
@@ -48,7 +48,7 @@
                 <!--路口大图区域 -->
                 <com.fy.navi.scene.ui.navi.SceneNaviCrossImageView
                     android:id="@+id/scene_navi_cross_image"
-                    android:layout_width="@dimen/dp_708"
+                    android:layout_width="@dimen/dp_545"
                     android:layout_height="@dimen/dp_306"
                     android:visibility="@{ViewModel.mNaviCrossImageVisibility?View.VISIBLE:View.GONE}"
                     app:layout_constraintStart_toStartOf="@id/scene_navi_tbt"
@@ -58,7 +58,7 @@
                 <com.fy.navi.scene.ui.navi.SceneNaviEtaView
                     android:id="@+id/scene_navi_eta"
                     clickCommand="@{ViewModel.mNaviAddVia}"
-                    android:layout_width="@dimen/dp_708"
+                    android:layout_width="@dimen/dp_545"
                     android:layout_height="wrap_content"
                     android:background="@drawable/bg_navi_tbt_middle"
                     android:visibility="@{ViewModel.mNaviEtaVisibility?View.VISIBLE:View.GONE}"
@@ -68,7 +68,7 @@
                 <com.fy.navi.scene.ui.navi.SceneNaviTmcView
                     android:id="@+id/scene_navi_tmc"
                     clickCommand="@{ViewModel.mNaviAddVia}"
-                    android:layout_width="@dimen/dp_708"
+                    android:layout_width="@dimen/dp_545"
                     android:layout_height="wrap_content"
                     android:background="@drawable/bg_navi_tbt_middle"
                     android:paddingStart="@dimen/dp_31"
@@ -79,7 +79,7 @@
                 <!--添加途径点列表-->
                 <com.fy.navi.scene.ui.navi.SceneNaviViaListView
                     android:id="@+id/scene_navi_via_list"
-                    android:layout_width="@dimen/dp_708"
+                    android:layout_width="@dimen/dp_545"
                     android:layout_height="wrap_content"
                     android:background="@drawable/bg_navi_tbt_bottom"
                     android:paddingTop="@dimen/dp_40"
@@ -90,7 +90,7 @@
                 <com.fy.navi.scene.ui.navi.SceneNaviLanesView
                     android:id="@+id/scene_navi_lanes"
                     clickCommand="@{ViewModel.mNaviAddVia}"
-                    android:layout_width="@dimen/dp_708"
+                    android:layout_width="@dimen/dp_545"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:background="@drawable/bg_navi_tbt_middle"
@@ -102,7 +102,7 @@
                 <com.fy.navi.scene.ui.navi.SceneNaviViaInfoView
                     android:id="@+id/scene_navi_via_info"
                     clickCommand="@{ViewModel.mNaviAddVia}"
-                    android:layout_width="@dimen/dp_708"
+                    android:layout_width="@dimen/dp_545"
                     android:layout_height="wrap_content"
                     android:background="@drawable/bg_navi_tbt_bottom"
                     android:visibility="@{ViewModel.mNaviViaInfoVisibility?View.VISIBLE:View.GONE}"
@@ -253,7 +253,7 @@
             <!--驾驶报告-->
             <com.fy.navi.scene.ui.navi.SceneNaviDriveReportView
                 android:id="@+id/scene_drive_report"
-                android:layout_width="@dimen/dp_708"
+                android:layout_width="@dimen/dp_545"
                 android:layout_height="@dimen/dp_700"
                 android:visibility="@{ViewModel.mNaviDriveReportVisibility?View.VISIBLE:View.GONE}"
                 app:layout_constraintStart_toStartOf="parent"

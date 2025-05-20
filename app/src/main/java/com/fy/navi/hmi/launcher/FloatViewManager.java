@@ -34,13 +34,13 @@ public class FloatViewManager {
         public void onNavigationCardVisible(boolean b) throws RemoteException {
             // b - true 显示； false 隐藏
             showOrHideFloatView(b);
-            Logger.d(TAG, "onNavigationCardVisible b = " + b);
+            Logger.i(TAG, "onNavigationCardVisible b = " + b);
         }
 
         @Override
         public void onLauncherStateChanged(int i) throws RemoteException {
             // Nothing to do , reserved.
-            Logger.d(TAG, "onLauncherStateChanged i = " + i);
+            Logger.i(TAG, "onLauncherStateChanged i = " + i);
         }
     };
     private IBinder.DeathRecipient mDeathRecipient = () -> {
@@ -116,7 +116,7 @@ public class FloatViewManager {
 
     private void bindLauncherService() {
         if (isServiceConnect) {
-            Logger.d(TAG, "bindLauncherService", "service had connected!");
+            Logger.i(TAG, "bindLauncherService", "service had connected!");
             return;
         }
         Intent intent = new Intent(PatacLauncherModeConfig.ACTION);

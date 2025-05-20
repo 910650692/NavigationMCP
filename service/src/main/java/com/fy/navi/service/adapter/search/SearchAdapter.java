@@ -277,4 +277,8 @@ final public class SearchAdapter {
     public int updateCollectStatus(final SearchRequestParameter searchRequestParameter){
         return mSearchApi.updateCollectStatus(searchRequestParameter);
     }
+
+    public int queryReservation(final SearchRequestParameter searchRequestParameter){
+        return mSearchApi.queryReservation(searchRequestParameter);
+    }
 }

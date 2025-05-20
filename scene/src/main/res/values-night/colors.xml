@@ -42,7 +42,7 @@
     <color name="floating_search_item_night">#FFFFFFFF</color>
     <color name="route_tbt_color_1">#323232</color>
     <color name="route_tbt_color_2">#D2D3D7</color>
-
+    <color name="route_tbt_color_gray">#777B84</color>
 
 
 
@@ -132,6 +132,9 @@
     <color name="navi_color_3377FF_100">#FFE5B586</color>
     <color name="navi_color_313336_94">#33FFFFFF</color>
     <color name="navi_color_2461EA_100">#FF005CFF</color>
+    <color name="navi_color_4062D4_100">#FF4062D4</color>
+    <color name="navi_color_5880E0_100">#FF5880E0</color>
+    <color name="navi_color_FFFFFF_100">#FF303555</color>
 
     <!--悬挂卡-->
     <color name="card_delete_bg_color">#66ffffff</color>

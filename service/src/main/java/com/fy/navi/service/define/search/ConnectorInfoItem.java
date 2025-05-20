@@ -3,6 +3,9 @@ package com.fy.navi.service.define.search;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.android.utils.ResourceUtils;
+import com.fy.navi.service.AutoMapConstant;
+import com.fy.navi.service.R;
 import com.google.gson.annotations.SerializedName;
 
 import lombok.Data;
@@ -32,9 +35,9 @@ public class ConnectorInfoItem implements Parcelable {
     @SerializedName("status")
     private String mStatus;
     @SerializedName("parkingLockFlag")
-    private int mParkingLockFlag;
+    private Object mParkingLockFlag;
     @SerializedName("lockStatus")
-    private int mLockStatus;
+    private Object mLockStatus;
     @SerializedName("parkNo")
     private String mParkNo;
 
@@ -64,8 +67,8 @@ public class ConnectorInfoItem implements Parcelable {
         dest.writeString(mPower);
         dest.writeString(mNationalStandard);
         dest.writeString(mStatus);
-        dest.writeInt(mParkingLockFlag);
-        dest.writeInt(mLockStatus);
+        dest.writeInt((int)mParkingLockFlag);
+        dest.writeInt((int)mLockStatus);
         dest.writeString(mParkNo);
     }
 
@@ -159,7 +162,16 @@ public class ConnectorInfoItem implements Parcelable {
     }
 
     public int getmParkingLockFlag() {
-        return mParkingLockFlag;
+        if (mParkingLockFlag instanceof Integer) {
+            return (Integer) mParkingLockFlag;
+        } else if (mParkingLockFlag instanceof String) {
+            try {
+                return Integer.parseInt((String) mParkingLockFlag);
+            } catch (NumberFormatException e) {
+                return 0;
+            }
+        }
+        return 0;
     }
 
     public void setmParkingLockFlag(int mParkingLockFlag) {
@@ -167,7 +179,16 @@ public class ConnectorInfoItem implements Parcelable {
     }
 
     public int getmLockStatus() {
-        return mLockStatus;
+        if (mLockStatus instanceof Integer) {
+            return (Integer) mLockStatus;
+        } else if (mLockStatus instanceof String) {
+            try {
+                return Integer.parseInt((String) mLockStatus);
+            } catch (NumberFormatException e) {
+                return 0;
+            }
+        }
+        return 0;
     }
 
     public void setmLockStatus(int mLockStatus) {
@@ -180,5 +201,20 @@ public class ConnectorInfoItem implements Parcelable {
 
     public void setmParkNo(String mParkNo) {
         this.mParkNo = mParkNo;
+    }
+    public String getStatusName(String mStatus){
+        return switch (mStatus) {
+            case "0" ->
+                    ResourceUtils.Companion.getInstance().getString(R.string.charge_equipment_offline);
+            case "1" ->
+                    ResourceUtils.Companion.getInstance().getString(R.string.charge_equipment_empty);
+            case "2", "3" ->
+                    ResourceUtils.Companion.getInstance().getString(R.string.charge_equipment_use);
+            case "4" ->
+                    ResourceUtils.Companion.getInstance().getString(R.string.charge_equipment_reversion);
+            case "255" ->
+                    ResourceUtils.Companion.getInstance().getString(R.string.charge_equipment_error);
+            default -> "";
+        };
     }
 }

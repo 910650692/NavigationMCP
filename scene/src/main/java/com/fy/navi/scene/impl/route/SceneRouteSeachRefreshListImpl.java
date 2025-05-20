@@ -18,4 +18,16 @@ public class SceneRouteSeachRefreshListImpl extends BaseSceneModel<SceneRouteSea
             mRoutePackage.addViaPoint(mMapTypeId, poiInfoEntity);
         }
     }
+
+    /**
+     * 删除途经点
+     *
+     * @param poiInfoEntity poi信息
+     */
+    @Override
+    public void onItermRemoveClick(final PoiInfoEntity poiInfoEntity) {
+        if (mRoutePackage.isBelongRouteParam(mMapTypeId, poiInfoEntity)) {
+            mRoutePackage.removeVia(mMapTypeId, poiInfoEntity, true);
+        }
+    }
 }

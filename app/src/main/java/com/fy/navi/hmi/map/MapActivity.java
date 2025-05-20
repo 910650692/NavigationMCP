@@ -230,7 +230,6 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
     protected void onResume() {
         super.onResume();
         mViewModel.getCurrentCityLimit();
-        FloatViewManager.showOrHideFloatView(false);
     }
 
     @Override
@@ -238,7 +237,6 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
     protected void onStop() {
         Logger.i(TAG, "onStop");
         super.onStop();
-        FloatViewManager.showOrHideFloatView(true);
     }
 
     @Override

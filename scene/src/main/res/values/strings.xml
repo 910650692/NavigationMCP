@@ -212,6 +212,7 @@
     <string name="charge_appointment_look">查看预约</string>
     <string name="charge_cancel_appointment">取消预约</string>
     <string name="charge_unlock">降地锁</string>
+    <string name="charge_lock">已降</string>
     <string name="charge_img">看图找站</string>
     <string name="charge_img_confirm">点击查看</string>
     <string name="shv_clear_record">清空记录</string>
@@ -277,6 +278,9 @@
     <string name="reservation_tip_confirm">保留</string>
     <string name="unlock_tip_success">地锁已成功下降</string>
     <string name="unlock_tip_fail">地锁下降失败，请重试</string>
+    <string name="reservation_no_lock">无地锁，不支持预约</string>
+    <string name="equipment_use">该充电桩已被占用</string>
+    <string name="equipment_error">该充电桩存在故障</string>
 
     <!--搜索主页快捷搜-->
     <string-array name="main_search_categories_name">

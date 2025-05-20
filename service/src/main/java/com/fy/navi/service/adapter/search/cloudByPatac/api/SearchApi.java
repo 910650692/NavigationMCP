@@ -12,15 +12,15 @@ public interface SearchApi {
     // 修改预约
     Observable<BaseRep> updateReservation(StationReq req);
     // 创建公桩预约
-    Observable<BaseRep> createReservation(StationReq req);
+    Observable<String> createReservation(StationReq req);
     // 开启地锁
-    Observable<BaseRep> unLockStation(StationReq req);
+    Observable<String> unLockStation(StationReq req);
     // 更新用户收藏充电站
     Observable<String> updateCollectStation(StationReq req,String json);
     // 查询公桩预约
-    Observable<BaseRep> queryReservation(StationReq req);
+    Observable<String> queryReservation(StationReq req);
     // 获取充电桩信息
-    Observable<BaseRep> queryEquipmentInfo(StationReq req);
+    Observable<String> queryEquipmentInfo(StationReq req);
     // 获取充电站详情
     Observable<String> queryStationInfo(StationReq req);
 }

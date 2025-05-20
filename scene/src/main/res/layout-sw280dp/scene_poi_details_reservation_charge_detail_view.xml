@@ -8,6 +8,10 @@
         <variable
             name="ScenePoiChargingStationReservationListView"
             type="com.fy.navi.scene.impl.poi.ScenePoiChargingStationReservationListViewImpl" />
+        <variable
+            name="EventHandle"
+            type="com.fy.navi.scene.ui.poi.ScenePoiChargingStationReservationListView.MyEventHandle" />
+        <import type="android.view.View" />
     </data>
 
     <com.fy.navi.ui.view.SkinConstraintLayout
@@ -85,6 +89,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_32"
+                clickCommand="@{() -> EventHandle.filterEquipment(1)}"
                 android:background="@{ScenePoiChargingStationReservationListView.searchType == 1 ? @drawable/bg_info_select : @drawable/bg_info_normal}"
                 android:gravity="center"
                 android:paddingHorizontal="@dimen/dp_28"
@@ -92,6 +97,7 @@
                 android:paddingStart="@dimen/dp_20"
                 android:paddingEnd="@dimen/dp_20"
                 android:text="@{@string/charge_title_fast + ScenePoiChargingStationReservationListView.mChargeInfo.getFast_free + '/' +ScenePoiChargingStationReservationListView.mChargeInfo.getFast_total}"
+                android:visibility="@{`0`.equals(String.valueOf(ScenePoiChargingStationReservationListView.mChargeInfo.getFast_total)) ? View.GONE : View.VISIBLE}"
                 android:textColor="@color/navi_color_2461EA_100"
                 android:textSize="@dimen/sp_38"
                 app:layout_constraintStart_toStartOf="parent"
@@ -104,7 +110,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_16"
-                android:background="@{ScenePoiChargingStationReservationListView.searchType == 2 ? @drawable/bg_info_select : @drawable/bg_info_normal}"
+                clickCommand="@{() -> EventHandle.filterEquipment(0)}"
+                android:background="@{ScenePoiChargingStationReservationListView.searchType == 0 ? @drawable/bg_info_select : @drawable/bg_info_normal}"
                 android:gravity="center"
                 android:paddingHorizontal="@dimen/dp_28"
                 android:paddingVertical="@dimen/dp_9"
@@ -116,6 +123,7 @@
                 app:layout_constraintStart_toEndOf="@+id/poi_fast_info"
                 app:layout_constraintTop_toTopOf="@+id/poi_fast_info"
                 tools:background="@drawable/bg_info_normal"
+                android:visibility="@{`0`.equals(String.valueOf(ScenePoiChargingStationReservationListView.mChargeInfo.getSlow_total)) ? View.GONE : View.VISIBLE}"
                 tools:text="慢2/6" />
 
             <com.fy.navi.ui.view.SkinTextView
@@ -123,7 +131,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_16"
-                android:background="@{ScenePoiChargingStationReservationListView.searchType == 3 ? @drawable/bg_info_select : @drawable/bg_info_normal}"
+                clickCommand="@{() -> EventHandle.filterEquipment(2)}"
+                android:background="@{ScenePoiChargingStationReservationListView.searchType == 2 ? @drawable/bg_info_select : @drawable/bg_info_normal}"
                 android:gravity="center"
                 android:paddingHorizontal="@dimen/dp_28"
                 android:paddingVertical="@dimen/dp_9"
@@ -135,11 +144,12 @@
                 app:layout_constraintStart_toEndOf="@+id/poi_slow_info"
                 app:layout_constraintTop_toTopOf="@+id/poi_fast_info"
                 tools:background="@drawable/bg_info_normal"
+                android:visibility="@{ScenePoiChargingStationReservationListView.isHideCanReversion() ? View.INVISIBLE : View.VISIBLE}"
                 tools:text="@string/only_check_reservation" />
 
             <com.fy.navi.ui.view.SkinConstraintLayout
                 android:id="@+id/poi_app_guide_layout"
-                clickCommand="@{ScenePoiChargingStationReservationListView.openChargeQrCodeDialog}"
+                clickCommand="@{EventHandle.openChargeQrCodeDialog}"
                 android:layout_width="@dimen/dp_0"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_32"
