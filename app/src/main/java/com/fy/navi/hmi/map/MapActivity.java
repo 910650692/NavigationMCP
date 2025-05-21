@@ -117,7 +117,7 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
     @Override
     public void onInitView() {//,mBinding.hudMapview
         mViewModel.loadMapView(mBinding.mainMapview);
-        HudMapManager.getInstance().init(mBinding.hudMapview);
+//        HudMapManager.getInstance().init(mBinding.hudMapview);
         // 给限行设置点击事件
         mBinding.includeLimit.setViewModel(mViewModel);
         mBinding.cruiseLayout.setViewModel(mViewModel);

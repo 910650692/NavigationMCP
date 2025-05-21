@@ -153,9 +153,8 @@
             android:focusable="true"
             android:background="@drawable/bg_base_mfc_cadillac_bg_selector"
             android:minWidth="@dimen/dp_90"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toTopOf="@+id/crl_poi_des"
+            app:layout_constraintEnd_toEndOf="parent">
 
             <com.fy.navi.ui.view.SkinImageView
                 android:id="@+id/iv_navi_icon"

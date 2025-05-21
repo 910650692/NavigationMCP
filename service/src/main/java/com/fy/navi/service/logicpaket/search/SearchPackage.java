@@ -827,6 +827,15 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
     }
 
     /**
+     * @return 导航记录
+     */
+    public List<History> getNaviRecord() {
+        final List<History> historyList = mManager.getValueByType(AutoMapConstant.SearchKeywordRecordKey.SEARCH_NAVI_RECORD_KEY);
+        Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "value:" + GsonUtils.toJson(historyList));
+        return historyList;
+    }
+
+    /**
      * @param id 记录id
      * 清除单个历史记录
      */
@@ -1055,6 +1064,26 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
     }
 
     /**
+     * 移动主图，确保poi边界范围能够被全览
+     * @param poiList poi边界点的经纬度列表
+     */
+    private void showBoundsPreview(final List<GeoPoint> poiList) {
+        if (ConvertUtils.isEmpty(poiList)) {
+            return;
+        }
+        final PreviewParams previewParams = new PreviewParams();
+        final List<PreviewParams.PointD> points = poiList.stream()
+                .map(poiInfo -> new PreviewParams.PointD(poiInfo.getLon(), poiInfo.getLat()))
+                .collect(Collectors.toList());
+        previewParams.setPoints(points);
+        previewParams.setbUseRect(false);
+        if (!ConvertUtils.isEmpty(poiList) && poiList.size() > 1) {
+            Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "showPointSPreview");
+            mMapAdapter.showPreview(MapType.MAIN_SCREEN_MAIN_MAP, previewParams);
+        }
+    }
+
+    /**
      * 设置高亮扎标
      * @param poiInfoEntity 需要高亮的poi对象
      * @param index 需要高亮的下标
@@ -1210,6 +1239,36 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
         sMarkerInfoMap.put(LayerPointItemType.SEARCH_POI_LABEL, searchResult);
         final boolean addResult = mLayerAdapter.updateSearchMarker(MapType.MAIN_SCREEN_MAIN_MAP,
                 LayerPointItemType.SEARCH_POI_LABEL, searchResult, false);
+        //被选中的poi对象需要添加子点，区域，道路的扎标
+        if (!ConvertUtils.isEmpty(firstElement.getMRoadPolygonBounds())) {
+            mLayerAdapter.updateSearchMarker(MapType.MAIN_SCREEN_MAIN_MAP, LayerPointItemType.SEARCH_PARENT_Line_Road,
+                    searchResult, false);
+            final List<GeoPoint> totalList = new ArrayList<>();
+            for (List<GeoPoint> tempList : firstElement.getMRoadPolygonBounds()) {
+                totalList.addAll(tempList);
+            }
+            showBoundsPreview(totalList);
+        }
+        if (!ConvertUtils.isEmpty(firstElement.getMPoiAoiBounds())) {
+            mLayerAdapter.updateSearchMarker(MapType.MAIN_SCREEN_MAIN_MAP, LayerPointItemType.SEARCH_PARENT_AREA,
+                    searchResult, false);
+            final List<GeoPoint> totalList = new ArrayList<>();
+            for (List<GeoPoint> tempList : firstElement.getMPoiAoiBounds()) {
+                totalList.addAll(tempList);
+            }
+            showBoundsPreview(totalList);
+        }
+        if (!ConvertUtils.isEmpty(firstElement.getChildInfoList())) {
+            sMarkerInfoMap.put(LayerPointItemType.SEARCH_CHILD_POINT, searchResult);
+            mLayerAdapter.updateSearchMarker(MapType.MAIN_SCREEN_MAIN_MAP, LayerPointItemType.SEARCH_CHILD_POINT,
+                    searchResult, false);
+        }
+        if (ConvertUtils.isEmpty(firstElement.getMRoadPolygonBounds()) &&
+                ConvertUtils.isEmpty(firstElement.getMPoiAoiBounds()) &&
+                ConvertUtils.isEmpty(firstElement.getChildInfoList())) {
+            //如果没有子点，边界点，道路点，直接以poi点为中心进行展示
+            showPreview(searchResultEntity.getPoiList());
+        }
         Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "createLabelMarker result:" + addResult);
     }
 
@@ -1228,6 +1287,15 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
     public void clearPoiLabelMark() {
         Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "clearPoiLabelMark");
         mLayerAdapter.clearSearchPOILayerItems(MapType.MAIN_SCREEN_MAIN_MAP, LayerPointItemType.SEARCH_POI_LABEL);
+    }
+
+    /**
+     * 清除指定类型的扎标
+     * @param type 扎标类型
+     */
+    public void clearTypeMark(final LayerPointItemType type) {
+        Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "clearTypeMark");
+        mLayerAdapter.clearSearchPOILayerItems(MapType.MAIN_SCREEN_MAIN_MAP, type);
     }
 
     /**

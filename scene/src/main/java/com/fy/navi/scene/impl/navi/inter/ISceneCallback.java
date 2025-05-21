@@ -1,10 +1,13 @@
 package com.fy.navi.scene.impl.navi.inter;
 
 
+import android.graphics.drawable.BitmapDrawable;
+
 import com.fy.navi.scene.ui.navi.manager.NaviSceneId;
 import com.fy.navi.scene.util.HandCardType;
 import com.fy.navi.service.define.navi.NaviParkingEntity;
 import com.fy.navi.service.define.navi.NaviViaEntity;
+import com.fy.navi.service.define.navi.NextManeuverEntity;
 import com.fy.navi.service.define.navi.SapaInfoEntity;
 import com.fy.navi.service.define.search.PoiInfoEntity;
 import com.fy.navi.service.define.search.SearchResultEntity;
@@ -193,6 +196,35 @@ public interface ISceneCallback {
      * 停止语音播放
      */
     default void stopSpeech() {
+
+    }
+
+    /**
+     * 更新接近动作图标
+     * @param resource resource
+     * @param drawable drawable
+     */
+    default void updateNextIcon(int resource, BitmapDrawable drawable) {
+
+    }
+
+    /**
+     * 更新接近动作状态
+     * @param isVisible 是否可显示
+     * @param isOffLine 是否是离线
+     */
+    default void updateNextStatus(boolean isVisible, boolean isOffLine) {
+
+    }
+
+    /**
+     * @return 返回下一个动作实体
+     */
+    default NextManeuverEntity getNextManeuverEntity() {
+        return null;
+    }
+
+    default void updateNextText(String text) {
 
     }
 }

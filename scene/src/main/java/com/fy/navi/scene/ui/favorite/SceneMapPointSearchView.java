@@ -172,6 +172,7 @@ public class SceneMapPointSearchView extends BaseSceneView<SceneMapPointSearchVi
         //根据入口场景刷新poi视图,// 1:家 2:公司 3:常用地址 0:收藏夹
         Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "poiType: " + poiType);
         this.mPoiType = poiType;
+        isFavoriteOrViaPoint();
         switch (poiType) {
             case AutoMapConstant.HomeCompanyType.HOME:
                 mViewBinding.stvSetting.setText(R.string.mps_set_home);
@@ -204,6 +205,22 @@ public class SceneMapPointSearchView extends BaseSceneView<SceneMapPointSearchVi
 
         }
         mScreenViewModel.setCommonName(mCommonName);
+    }
+
+    /**
+     * 判断数据是否已收藏或是否是途经点
+     */
+    private void isFavoriteOrViaPoint() {
+        final boolean mIsFavoriteOrViaPoint;
+        if (mPoiType == AutoMapConstant.HomeCompanyType.ALONG_WAY) {
+            mIsFavoriteOrViaPoint = RoutePackage.getInstance().isBelongRouteParam(MapType.MAIN_SCREEN_MAIN_MAP, mPoiInfoEntity);
+        } else {
+            mIsFavoriteOrViaPoint = !BehaviorPackage.getInstance().isFavorite(mPoiInfoEntity).isEmpty();
+        }
+        if (mIsFavoriteOrViaPoint) {
+            mViewBinding.stvSetting.setEnabled(false);
+            mViewBinding.stvSetting.setAlpha(0.5f);
+        }
     }
 
     /**

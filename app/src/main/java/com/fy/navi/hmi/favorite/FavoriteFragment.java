@@ -265,7 +265,7 @@ public class FavoriteFragment extends BaseFragment<FragmentFavoriteBinding, Favo
             });
             tvName.setOnClickListener(v -> {
                 if (mViewModel != null) {
-                    final PoiInfoEntity poiInfoEntity = mFrequentAddressList.get(mIndex);
+                    final PoiInfoEntity poiInfoEntity = mFrequentAddressList.get(finalI);
                     mViewModel.startRoute(poiInfoEntity);
                 }
             });

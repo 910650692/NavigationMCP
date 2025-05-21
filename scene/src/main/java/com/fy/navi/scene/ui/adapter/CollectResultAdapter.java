@@ -23,6 +23,7 @@ import com.fy.navi.service.define.bean.GeoPoint;
 import com.fy.navi.service.define.search.PoiInfoEntity;
 import com.fy.navi.service.logicpaket.search.SearchPackage;
 import com.fy.navi.service.logicpaket.setting.SettingUpdateObservable;
+import com.fy.navi.service.logicpaket.user.account.AccountPackage;
 import com.fy.navi.service.logicpaket.user.behavior.BehaviorPackage;
 
 import java.util.ArrayList;
@@ -197,6 +198,9 @@ public class CollectResultAdapter extends RecyclerView.Adapter<CollectResultAdap
                 }
                 mPoiEntities.remove(position);
                 notifyItemRemoved(position);
+                if (!AccountPackage.getInstance().isLogin()) {
+                    notifyDataSetChanged();
+                }
                 // 删除成功后的toast弹框
                 ToastUtils.Companion.getInstance().showCustomToastView(ResourceUtils.Companion.getInstance().getString(R.string.sha_deleted));
             }

@@ -24,7 +24,7 @@ import com.fy.navi.burypoint.anno.HookMethod;
 import com.fy.navi.burypoint.constant.BuryConstant;
 import com.fy.navi.hmi.BuildConfig;
 import com.fy.navi.hmi.databinding.FloatingWindowLayoutBinding;
-import com.fy.navi.hmi.map.MapActivity;
+import com.fy.navi.hmi.startup.StartupActivity;
 import com.fy.navi.mapservice.bean.INaviConstant;
 import com.fy.navi.service.AppContext;
 import com.fy.navi.service.adapter.navistatus.NavistatusAdapter;
@@ -102,16 +102,16 @@ public class LauncherWindowService implements IGuidanceObserver, IMapPackageCall
     private void initClickListener() {
         if (ConvertUtils.isNull(mBinding)) return;
         mBinding.skIvBasicBus.setOnClickListener(v -> {
-            startMapActivity(INaviConstant.OpenIntentPage.GO_COMPANY);
+            openSelf(INaviConstant.OpenIntentPage.GO_COMPANY);
         });
         mBinding.skIvBasicHome.setOnClickListener(v -> {
-            startMapActivity(INaviConstant.OpenIntentPage.GO_HOME);
+            openSelf(INaviConstant.OpenIntentPage.GO_HOME);
         });
         mBinding.skIvBasicSearch.setOnClickListener(v -> {
-            startMapActivity(INaviConstant.OpenIntentPage.SEARCH_PAGE);
+            openSelf(INaviConstant.OpenIntentPage.SEARCH_PAGE);
         });
         mBinding.cardTbtView.setOnClickListener(v -> {
-            startMapActivity(INaviConstant.OpenIntentPage.NONE);
+            openSelf(INaviConstant.OpenIntentPage.NONE);
         });
     }
 
@@ -222,9 +222,9 @@ public class LauncherWindowService implements IGuidanceObserver, IMapPackageCall
      * 启动Navi_App
      */
     @HookMethod(eventName = BuryConstant.EventName.AMAP_WIDGET_ENTERAPP)
-    public void startMapActivity(int pageCode) {
-        Logger.i(TAG, "startMapActivity:" + pageCode);
-        Intent intent = new Intent(AppContext.getInstance().getMContext(), MapActivity.class);
+    public void openSelf(int pageCode) {
+        Logger.i(TAG, "openSelf:" + pageCode);
+        Intent intent = new Intent(AppContext.getInstance().getMContext(), StartupActivity.class);
         intent.putExtra(INaviConstant.PAGE_EXTRA, pageCode);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         AppContext.getInstance().getMContext().startActivity(intent);

@@ -574,7 +574,6 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
         cancelTimer();
         switch (mRestrictionStatus) {
             case RouteRestirctionID.REATIRCTION_LIMITTIPSTYPENOPLATE:
-                addFragment(new SettingFragment(), null);
                 addFragment(new SettingPlateNumberFragment(), null);
                 break;
             case RouteRestirctionID.REATIRCTION_LIMITTIPSTYPENOTOPEN:

@@ -36,6 +36,7 @@ import com.fy.navi.service.define.route.RouteRequestParam;
 import com.fy.navi.service.define.utils.NumberUtils;
 import com.fy.navi.service.logicpaket.navi.NaviPackage;
 import com.fy.navi.service.logicpaket.route.RoutePackage;
+import com.fy.navi.ui.BuildConfig;
 import com.fy.navi.ui.action.Action;
 import com.fy.navi.ui.base.BaseViewModel;
 import com.fy.navi.ui.dialog.IBaseDialogClickListener;
@@ -624,7 +625,7 @@ public class BaseNaviGuidanceViewModel extends
     }
 
     public void setNaviSimState(boolean isSim) {
-        mNaviSim.set(isSim);
+        mNaviSim.set(isSim && BuildConfig.DEBUG);
     }
 
     public void hideNaviContent() {

@@ -13,9 +13,12 @@ import android.view.View;
 import androidx.annotation.Nullable;
 
 import com.android.utils.ConvertUtils;
+import com.android.utils.ResourceUtils;
 import com.android.utils.TimeUtils;
+import com.android.utils.ToastUtils;
 import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
+import com.android.utils.thread.ThreadManager;
 import com.fy.navi.fsa.FsaConstant;
 import com.fy.navi.fsa.MyFsaService;
 import com.fy.navi.hmi.BR;
@@ -23,9 +26,11 @@ import com.fy.navi.hmi.R;
 import com.fy.navi.hmi.cluster.ClusterViewModel;
 import com.fy.navi.hmi.databinding.ActivityClusterBinding;
 import com.fy.navi.scene.impl.navi.common.AutoUIString;
+import com.fy.navi.service.adapter.navistatus.NavistatusAdapter;
 import com.fy.navi.service.define.map.IBaseScreenMapView;
 import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.navistatus.NaviStatus;
+import com.fy.navi.service.logicpaket.navi.OpenApiHelper;
 import com.fy.navi.service.logicpaket.navistatus.NaviStatusPackage;
 import com.fy.navi.ui.base.BaseActivity;
 
@@ -77,6 +82,14 @@ public class ClusterActivity extends BaseActivity<ActivityClusterBinding, Cluste
         Logger.i(TAG, "onStart: "+json);
         MyFsaService.getInstance().sendEvent(FsaConstant.FsaFunction.ID_SERVICE_HOLE,json);
         setVS(NaviStatusPackage.getInstance().getCurrentNaviStatus());
+        //toast提示（MsgType: 3s Timeout +Anykey):
+        if (NavistatusAdapter.getInstance().getCurrentNaviStatus().equals(NaviStatus.NaviStatusType.NAVING)){
+            //导航态下，仪表切换为地图模式后，中控地图导航模式切换为“路线全览模式。
+            OpenApiHelper.enterPreview(MapType.MAIN_SCREEN_MAIN_MAP);
+            ThreadManager.getInstance().postUi(() ->
+                    ToastUtils.Companion.getInstance().showCustomToastView(ResourceUtils.Companion.getInstance().getString(com.fy.navi.fsa.R.string.open_cluster_map_toast),  3000));
+        }
+
     }
 
     @Override
@@ -88,6 +101,7 @@ public class ClusterActivity extends BaseActivity<ActivityClusterBinding, Cluste
     public void onInitView() {
         Logger.d(TAG, "onInitView");
         //mViewModel.loadMapView();
+        mViewModel.loadMapView();
     }
 
     @Override

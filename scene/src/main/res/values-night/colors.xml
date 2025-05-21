@@ -73,7 +73,7 @@
 
     <color name="poi_details_bottom_ff_00">#FFFFFF</color>
     <color name="poi_details_bottom_icon">#B3FFFFFF</color>
-    <color name="poi_details_spot_bg">#422C2F38</color>
+    <color name="poi_details_spot_bg">#2C2F38</color>
     <color name="poi_gas_type_bg_color">#802C2F38</color>
     <color name="child_sub_title_color">#B3FFFFFF</color>
     <color name="setting_text_gray">#33FFFFFF</color>
@@ -81,6 +81,7 @@
     <color name="search_shallow_text_day">#80FFFFFF</color>
     <color name="search_main_tab_img_shape_bg">#66151414</color>
     <color name="search_collect_pin_text">#007BFF</color>
+    <color name="search_icon_color">#D2D3D7</color>
 
     <!--交通事件-->
     <color name="traffic_bg_color">#1E2027</color>

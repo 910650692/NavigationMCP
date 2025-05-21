@@ -36,12 +36,13 @@
     <color name="search_loading_bg_80">#80000000</color>
     <color name="poi_details_bottom_icon">#B3000000</color>
     <color name="poi_details_bottom_ff_00">#FF000000</color>
-    <color name="poi_details_spot_bg">#42386DF0</color>
+    <color name="poi_details_spot_bg">#EEF0FC</color>
     <color name="setting_text_gray">#66000000</color>
     <color name="parking_recommended_item_15">#26B2AFC2</color>
     <color name="parking_recommended_item_42386DF0">#42386DF0</color>
     <color name="search_poi_detail_fast">#26B2AFC2</color>
     <color name="search_collect_pin_text">#2461EA</color>
+    <color name="search_icon_color">#4B535D</color>
 
     <!--算路相关-->
     <color name="bg_route_root_bg">#F8F8FA</color>

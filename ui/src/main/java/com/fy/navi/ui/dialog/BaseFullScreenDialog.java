@@ -2,6 +2,7 @@ package com.fy.navi.ui.dialog;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
@@ -39,7 +40,7 @@ public abstract class BaseFullScreenDialog<V extends ViewDataBinding> extends Al
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Objects.requireNonNull(getWindow()).setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        Objects.requireNonNull(getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 //        setView(mViewBinding.getRoot());
         setContentView(mViewBinding.getRoot());
     }
@@ -89,6 +90,9 @@ public abstract class BaseFullScreenDialog<V extends ViewDataBinding> extends Al
                 window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
                 window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
             }
+            WindowManager.LayoutParams params = window.getAttributes();
+            params.dimAmount = 0.0f;
+            window.setAttributes(params);
             // 将 Dialog 的宽度和高度设置为全屏
             window.setLayout(WindowManager.LayoutParams.MATCH_PARENT,
                     WindowManager.LayoutParams.MATCH_PARENT);

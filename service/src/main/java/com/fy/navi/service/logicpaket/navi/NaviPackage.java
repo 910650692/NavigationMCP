@@ -167,16 +167,11 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
             ArrayList<PathInfo> list = new ArrayList<>();
             list.add(pathInfo);
             if (!ConvertUtils.isEmpty(list) && null != pathInfo) {
-                mNaviAdapter.updatePathInfo(MapType.MAIN_SCREEN_MAIN_MAP, list,
-                        (int) pathInfo.getPathIndex());
-                mNaviAdapter.updatePathInfo(MapType.LAUNCHER_WIDGET_MAP, list,
-                        (int) pathInfo.getPathIndex());
-                mNaviAdapter.updatePathInfo(MapType.LAUNCHER_DESK_MAP, list,
-                        (int) pathInfo.getPathIndex());
-                mNaviAdapter.updatePathInfo(MapType.CLUSTER_MAP, list,
-                        (int) pathInfo.getPathIndex());
-                mNaviAdapter.updatePathInfo(MapType.HUD_MAP, list,
-                        (int) pathInfo.getPathIndex());
+                updatePathInfo(MapType.MAIN_SCREEN_MAIN_MAP, list, 0);
+                updatePathInfo(MapType.LAUNCHER_WIDGET_MAP, list, 0);
+                updatePathInfo(MapType.LAUNCHER_DESK_MAP, list, 0);
+                updatePathInfo(MapType.CLUSTER_MAP, list, 0);
+                updatePathInfo(MapType.HUD_MAP, list, 0);
             }
             //通知导航开始
             NaviStatusMonitorUtil.getInstance().notifyNavigationStarted();
@@ -221,7 +216,8 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
     public void onSystemStateChanged(int state) {
         Logger.i(TAG, "state：" + state);
         if (state == 4) {//4是熄火状态
-            if (mCurrentNaviEtaInfo.getAllDist() < 1000) {//添加未完成导航(车辆熄火前的CVP距离目的地的距离 ≥ 1 km)
+            if (null != mCurrentNaviEtaInfo &&
+                    mCurrentNaviEtaInfo.getAllDist() < 1000) {//添加未完成导航(车辆熄火前的CVP距离目的地的距离 ≥ 1 km)
                 Logger.i(TAG, "isCompleted= ");
                 return;
             }
@@ -649,6 +645,9 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
     @Override
     public void updateBroadcastParam(final int broadcastType, final boolean isDay) {
         Logger.i(TAG, "updateBroadcastParam");
+        if (mNaviAdapter == null) {
+            mNaviAdapter = NaviAdapter.getInstance();
+        }
         mNaviAdapter.updateBroadcastParam(broadcastType, isDay);
     }
 
@@ -720,6 +719,15 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
     @Override
     public void onChangeNaviPath(long oldPathId, long pathID) {
         Logger.i(TAG, "onChangeNaviPath oldPathId = " + oldPathId + " pathID = " + pathID);
+        ThreadManager.getInstance().postUi(() -> {
+            if (!ConvertUtils.isEmpty(mGuidanceObservers)) {
+                for (IGuidanceObserver guidanceObserver : mGuidanceObservers.values()) {
+                    if (guidanceObserver != null) {
+                        guidanceObserver.onChangeNaviPath(oldPathId, pathID);
+                    }
+                }
+            }
+        });
     }
 
     @Override
@@ -1016,6 +1024,13 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
     }
 
     /**
+     * @return 返回Eta信息
+     */
+    public NaviEtaInfo getCurrentNaviEtaInfo() {
+        return mCurrentNaviEtaInfo;
+    }
+
+    /**
      * 当前导航类型 -1:未知 0:GPS导航 1:模拟导航
      *
      * @return 返回当前的导航类型
@@ -1037,7 +1052,13 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
      */
     public boolean updatePathInfo(final MapType mapTypeId, final ArrayList<?> pathInfoList,
                                   final int selectIndex) {
-        return mLayerAdapter.updatePathInfo(mapTypeId, pathInfoList, selectIndex);
+        Logger.i(TAG, "updatePathInfo pathInfoList.size = " +
+                (!ConvertUtils.isEmpty(pathInfoList) ? pathInfoList.size() : 0) +
+                " selectIndex = " + selectIndex + " mapTypeId = " + mapTypeId);
+        if (null != mLayerAdapter) {
+            mLayerAdapter.updatePathInfo(mapTypeId, pathInfoList, selectIndex);
+        }
+        return false;
     }
 
     /**
@@ -1052,7 +1073,19 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
         }
         ArrayList<PathInfo> pathInfoList = new ArrayList<>();
         pathInfoList.add(pathInfo);
-        updatePathInfo(MapType.MAIN_SCREEN_MAIN_MAP, pathInfoList, (int) pathInfo.getPathIndex());
+        updatePathInfo(MapType.MAIN_SCREEN_MAIN_MAP, pathInfoList, 0);
+    }
+
+    public void showSelectPatch(final long newPathId) {
+        Logger.i(TAG, "showSelectPatch");
+        PathInfo selectPathInfo = OpenApiHelper.getPathInfo(
+                MapType.MAIN_SCREEN_MAIN_MAP, newPathId);
+        ArrayList<PathInfo> pathInfos = new ArrayList<>();
+        pathInfos.add(selectPathInfo);
+        if (!ConvertUtils.isEmpty(pathInfos) && null != selectPathInfo) {
+            updatePathInfo(MapType.MAIN_SCREEN_MAIN_MAP, pathInfos,
+                    0);
+        }
     }
 
     /**
@@ -1070,8 +1103,7 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
         pathInfos.add(currentPathInfo);
         pathInfos.add(suggestPathInfo);
         if (!ConvertUtils.isEmpty(pathInfos) && null != suggestPathInfo) {
-            updatePathInfo(MapType.MAIN_SCREEN_MAIN_MAP, pathInfos,
-                    (int) suggestPathInfo.getPathIndex());
+            updatePathInfo(MapType.MAIN_SCREEN_MAIN_MAP, pathInfos, 0);
         }
     }
 

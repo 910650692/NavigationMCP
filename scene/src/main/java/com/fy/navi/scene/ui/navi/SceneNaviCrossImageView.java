@@ -1,6 +1,7 @@
 package com.fy.navi.scene.ui.navi;
 
 import android.content.Context;
+import android.graphics.drawable.BitmapDrawable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
@@ -176,5 +177,17 @@ public class SceneNaviCrossImageView extends NaviSceneBase<SceneNaviCrossImageVi
         if (mScreenViewModel != null) {
             mScreenViewModel.onImmersiveStatusChange(currentImersiveStatus);
         }
+    }
+
+    public void setNextIconBackground(BitmapDrawable drawable) {
+        mViewBinding.sivHudSou31.setBackground(drawable);
+    }
+
+    public void setNextIconResource(int resource) {
+        mViewBinding.sivHudSou31.setBackgroundResource(resource);
+    }
+
+    public void setNextText(String text) {
+        mViewBinding.stvTextNext.setText(text);
     }
 }

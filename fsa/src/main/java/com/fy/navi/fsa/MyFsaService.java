@@ -240,16 +240,10 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
      * @param payload 客户端事件所带的参数，区分请求内容.
      */
     private void handlePayload1(final String payload) {
+        Logger.d(FsaConstant.FSA_TAG, "handlePayload1"+ThreadManager.getInstance().isMainThread());
         switch (payload) {
             case FsaConstant.FsaEventPayload.OPEN_HUD_MAP:
                 isClusterMapOpen.postValue(true);
-                if (NavistatusAdapter.getInstance().getCurrentNaviStatus().equals(NaviStatus.NaviStatusType.NAVING)){
-                    //导航态下，仪表切换为地图模式后，中控地图导航模式切换为“路线全览模式。
-                    OpenApiHelper.enterPreview(MapType.MAIN_SCREEN_MAIN_MAP);
-                    //toast提示（MsgType: 3s Timeout +Anykey)：
-                    ThreadManager.getInstance().postUi(() ->
-                            ToastUtils.Companion.getInstance().showCustomToastView(ResourceUtils.Companion.getInstance().getString(R.string.open_cluster_map_toast),  3000));
-                }
                 switchClusterActivity(true);
                 break;
             case FsaConstant.FsaEventPayload.CLOSE_HUD_MAP:
@@ -440,6 +434,7 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
         NaviPackage.getInstance().registerObserver(FsaConstant.FSA_TAG, mGuidanceObserver);
         CruisePackage.getInstance().registerObserver(FsaConstant.FSA_TAG, mCruiseObserver);
         MapPackage.getInstance().registerCallback(MapType.MAIN_SCREEN_MAIN_MAP, mIMapPackageCallback);
+        MapPackage.getInstance().initCallback(MapType.HUD_MAP);
         MapPackage.getInstance().registerEGLScreenshotCallBack(FsaConstant.FSA_TAG, mEglShotCallBack);
         RoutePackage.getInstance().registerRouteObserver(FsaConstant.FSA_TAG, mRouteResultObserver);
         SearchPackage.getInstance().registerCallBack(FsaConstant.FSA_TAG, mSearchResultCallback);
@@ -623,7 +618,9 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
     private IEglScreenshotCallBack mEglShotCallBack = new IEglScreenshotCallBack() {
         @Override
         public void onEGLScreenshot(MapType mapType, byte[] bytes) {
-            IEglScreenshotCallBack.super.onEGLScreenshot(mapType, bytes);
+            if (mapType != MapType.HUD_MAP) {
+                return;
+            }
             if (!mIsHudServiceStart) {
                 return;
             }

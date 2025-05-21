@@ -63,6 +63,7 @@
             android:exported="true"
             android:screenOrientation="landscape"
             android:taskAffinity=""
+            android:launchMode="singleInstance"
             android:excludeFromRecents="true">
             <intent-filter>
                 <action android:name="com.fy.navi.hmi.cluster_map.ClusterActivity" />

@@ -17,6 +17,7 @@ import com.fy.navi.service.AutoMapConstant;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.adapter.navi.NaviConstant;
 import com.fy.navi.service.define.bean.GeoPoint;
+import com.fy.navi.service.define.layer.refix.LayerPointItemType;
 import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.mapdata.CityDataInfo;
 import com.fy.navi.service.define.search.ETAInfo;
@@ -77,6 +78,18 @@ public class ScenePoiDetailContentViewImpl extends BaseSceneModel<ScenePoiDetail
         }
         // 清除扎标的点
         mSearchPackage.clearPoiLabelMark();
+        mSearchPackage.clearTypeMark(LayerPointItemType.SEARCH_CHILD_POINT);
+        mSearchPackage.clearTypeMark(LayerPointItemType.SEARCH_PARENT_Line_Road);
+        mSearchPackage.clearTypeMark(LayerPointItemType.SEARCH_PARENT_AREA);
+
+    }
+
+    /**
+     * 清除指定类型的扎标
+     * @param type 扎标类型
+     */
+    public void clearTypeMark(final LayerPointItemType type) {
+        mSearchPackage.clearTypeMark(type);
     }
 
     /**

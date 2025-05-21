@@ -5,6 +5,7 @@ import android.text.TextUtils;
 
 import androidx.core.app.ActivityCompat;
 
+import com.android.utils.ThemeUtils;
 import com.android.utils.ToastUtils;
 import com.android.utils.log.Logger;
 import com.fy.navi.NaviService;
@@ -119,6 +120,10 @@ IRouteResultObserver, INaviStatusCallback, ISceneCallback, IGuidanceObserver, IC
             MapPackage.getInstance().setZoomLevel(mMapTypeId, 17);
             //监听设置包变化
             SettingPackage.getInstance().setSettingChangeCallback(mMapTypeId.name(), this);
+            boolean nightModeEnabled = ThemeUtils.INSTANCE.isNightModeEnabled(AppContext.getInstance().getMContext());
+            Logger.d(TAG, "onMapLoadSuccess:nightModeEnabled:"+nightModeEnabled);
+            MapAdapter.getInstance().updateUiStyle(MapType.CLUSTER_MAP, ThemeUtils.INSTANCE.isNightModeEnabled(AppContext.getInstance().getMContext()) ? ThemeType.NIGHT : ThemeType.DAY);
+
             //设置地图文字大小
             boolean mapViewTextSize = SettingPackage.getInstance().getMapViewTextSize();
             if (mapViewTextSize){
@@ -205,10 +210,10 @@ IRouteResultObserver, INaviStatusCallback, ISceneCallback, IGuidanceObserver, IC
         LayerPackage.getInstance().setCarMode(MapType.CLUSTER_MAP, LayerPackage.getInstance().getCarModeType(MapType.MAIN_SCREEN_MAIN_MAP));
     }
 
-    //地图日夜切换
     @Override
     public void onUiModeChanged(ThemeType uiMode) {
         IMapPackageCallback.super.onUiModeChanged(uiMode);
+        Logger.d(TAG, "onMapLoadSuccess:nightModeEnabled: onUiModeChanged:" + uiMode);
         MapAdapter.getInstance().updateUiStyle(MapType.CLUSTER_MAP, uiMode);
     }
 }

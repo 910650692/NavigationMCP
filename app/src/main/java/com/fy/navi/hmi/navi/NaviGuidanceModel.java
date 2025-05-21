@@ -2,6 +2,7 @@ package com.fy.navi.hmi.navi;
 
 
 import android.annotation.SuppressLint;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -34,7 +35,6 @@ import com.fy.navi.service.adapter.navi.NaviConstant;
 import com.fy.navi.service.adapter.navi.bls.NaviDataFormatHelper;
 import com.fy.navi.service.define.layer.refix.DynamicLevelMode;
 import com.fy.navi.service.define.layer.refix.LayerItemRouteEndPoint;
-import com.fy.navi.service.define.layer.refix.LayerItemRoutePoint;
 import com.fy.navi.service.define.layer.refix.LayerItemRoutePointClickResult;
 import com.fy.navi.service.define.layer.refix.LayerPointItemType;
 import com.fy.navi.service.define.map.MapType;
@@ -47,9 +47,9 @@ import com.fy.navi.service.define.navi.LaneInfoEntity;
 import com.fy.navi.service.define.navi.NaviDriveReportEntity;
 import com.fy.navi.service.define.navi.NaviEtaInfo;
 import com.fy.navi.service.define.navi.NaviManeuverInfo;
-import com.fy.navi.service.define.navi.NaviParkingEntity;
 import com.fy.navi.service.define.navi.NaviTmcInfo;
 import com.fy.navi.service.define.navi.NaviViaEntity;
+import com.fy.navi.service.define.navi.NextManeuverEntity;
 import com.fy.navi.service.define.navi.SapaInfoEntity;
 import com.fy.navi.service.define.navi.SpeedOverallEntity;
 import com.fy.navi.service.define.navi.SuggestChangePathReasonEntity;
@@ -130,6 +130,7 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
     private boolean mIsShowCrossImage;
     // 记录路口大图出现时的起始距离
     private int mMoveStartDistance;
+    private NextManeuverEntity mNextManeuverEntity;
 
     public NaviGuidanceModel() {
         mMapPackage = MapPackage.getInstance();
@@ -182,6 +183,7 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
             mHandler.removeCallbacks(mRunnable);
             mHandler.post(mRunnable);
         }
+        mNextManeuverEntity = new NextManeuverEntity();
     }
 
     @Override
@@ -202,6 +204,7 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
                     AutoMapConstant.NaviType.NAVI_GPS);
             final boolean isSimulate = anInt == AutoMapConstant.NaviType.NAVI_SIMULATE;
             isNaviSuccess = mNaviPackage.startNavigation(isSimulate);
+            mViewModel.setNaviSimState(isSimulate);
         } else {
             isNaviSuccess = mNaviPackage.startNavigation(false);
         }
@@ -532,6 +535,11 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
     @Override
     public void skipNaviControlScene() {
         mViewModel.showNaviControlScene();
+    }
+
+    @Override
+    public void onChangeNaviPath(long oldPathId, long pathID) {
+        mNaviPackage.showSelectPatch(pathID);
     }
 
     @Override
@@ -937,6 +945,34 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
     public void stopSpeech() {
         if (null != mNaviPackage) {
             mNaviPackage.stopSpeech();
+        }
+    }
+
+    @Override
+    public void updateNextIcon(int resource, BitmapDrawable drawable) {
+        if (null != mNextManeuverEntity) {
+            mNextManeuverEntity.setNextIconResource(resource);
+            mNextManeuverEntity.setNextIconDrawable(drawable);
+        }
+    }
+
+    @Override
+    public void updateNextStatus(boolean isVisible, boolean isOffLine) {
+        if (null != mNextManeuverEntity) {
+            mNextManeuverEntity.setNextManeuverVisible(isVisible);
+            mNextManeuverEntity.setNextManeuverOffLine(isOffLine);
+        }
+    }
+
+    @Override
+    public NextManeuverEntity getNextManeuverEntity() {
+        return mNextManeuverEntity;
+    }
+
+    @Override
+    public void updateNextText(String text) {
+        if (null != mNextManeuverEntity) {
+            mNextManeuverEntity.setNextText(text);
         }
     }
 }

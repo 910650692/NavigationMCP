@@ -7,6 +7,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.Matrix;
 import android.graphics.PixelFormat;
 import android.net.Uri;
 import android.provider.Settings;
@@ -18,21 +20,29 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 
 import com.android.utils.log.Logger;
+import com.android.utils.thread.ThreadManager;
+import com.fy.navi.adas.L2PPManager;
 import com.fy.navi.fsa.MyFsaService;
 import com.fy.navi.hmi.BuildConfig;
 import com.fy.navi.hmi.databinding.LayoutTestBinding;
 import com.fy.navi.service.AppContext;
 import com.fy.navi.service.define.engine.GaodeLogLevel;
+import com.fy.navi.service.define.map.MapType;
+import com.fy.navi.service.define.navistatus.NaviStatus;
 import com.fy.navi.service.define.setting.SettingConstant;
 import com.fy.navi.service.greendao.setting.SettingManager;
 import com.fy.navi.service.logicpaket.calibration.CalibrationPackage;
 import com.fy.navi.service.logicpaket.engine.EnginePackage;
+import com.fy.navi.service.logicpaket.map.IEglScreenshotCallBack;
+import com.fy.navi.service.logicpaket.map.MapPackage;
 import com.fy.navi.service.logicpaket.mapdata.MapDataPackage;
 import com.fy.navi.service.logicpaket.navi.NaviPackage;
+import com.fy.navi.service.logicpaket.navistatus.NaviStatusPackage;
 import com.fy.navi.service.logicpaket.position.PositionPackage;
 import com.fy.navi.service.logicpaket.signal.SignalPackage;
 
 import java.lang.ref.WeakReference;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -96,7 +106,28 @@ public class TestWindow {
         }
         mBinding.testNaiLogLevel.setAdapter(createNaiAdapter());
         mBinding.testGaodeLogLevel.setAdapter(createNaiAdapter());
+
+        MapPackage.getInstance().initCallback(MapType.HUD_MAP);
+        MapPackage.getInstance().registerEGLScreenshotCallBack(TAG, mIEglScreenshotCallBack);
     }
+
+    private final IEglScreenshotCallBack mIEglScreenshotCallBack = new IEglScreenshotCallBack() {
+        @Override
+        public void onEGLScreenshot(MapType mapType, byte[] bytes) {
+            ThreadManager.getInstance().postUi(new Runnable() {
+                @Override
+                public void run() {
+                    if (mapType != MapType.HUD_MAP) {
+                        return;
+                    }
+                    byte[] bytearry = processPicture(bytes);
+                    Bitmap bitmap = Bitmap.createBitmap(328, 172, Bitmap.Config.ARGB_8888);
+                    bitmap.copyPixelsFromBuffer(ByteBuffer.wrap(bytearry));
+                    mBinding.testHud.setImageBitmap(bitmap);
+                }
+            });
+        }
+    };
 
     private boolean checkOverlayPermission(Context context) {
         return Settings.canDrawOverlays(context);
@@ -234,6 +265,8 @@ public class TestWindow {
         mBinding.testSelectTextBg1.setOnClickListener(v -> toggleSelection(mBinding.testSelectTextBg1));
         mBinding.testForegroundText.setOnClickListener(v -> toggleSelection(mBinding.testForegroundText));
 
+        mBinding.testL2pp.setOnClickListener(v -> L2PPManager.getInstance().testInit());
+
 
         mBinding.testNavLog.setOnCheckedChangeListener((buttonView, checked) -> {
             if(buttonView.isPressed()){
@@ -307,5 +340,40 @@ public class TestWindow {
         // 创建一个 ArrayAdapter 来为 Spinner 提供数据
         return new ArrayAdapter<>(mActivityRef.get(),
                 android.R.layout.simple_spinner_item, options);
+    }
+
+    private byte[] processPicture(byte[] bytes) {
+        if (!NaviStatus.NaviStatusType.NAVING.equals(NaviStatusPackage.getInstance().getCurrentNaviStatus())) {
+            return new byte[225664];
+        }
+        int width = 328;
+        int height = 172;
+        int pixelSize = 4;
+
+        Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+        bitmap.copyPixelsFromBuffer(ByteBuffer.wrap(bytes));
+        // 翻转图像
+        Matrix matrix = new Matrix();
+        matrix.postScale(1, -1);
+        matrix.postTranslate(bitmap.getWidth(), bitmap.getHeight());
+        Bitmap flippedBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+
+        // 将翻转后的 Bitmap 转换为 byte[]
+        ByteBuffer flippedBuffer = ByteBuffer.allocate(flippedBitmap.getByteCount());
+        flippedBitmap.copyPixelsToBuffer(flippedBuffer);
+        byte[] flippedBytes = flippedBuffer.array();
+
+        // 提取有效数据
+        int rowStride = ((width * pixelSize + 3) / 4) * 4;
+        int validRowBytes = width * pixelSize;
+        byte[] croppedData = new byte[width * height * pixelSize];
+        ByteBuffer buffer = ByteBuffer.wrap(flippedBytes);
+        for (int i = 0; i < height; i++) {
+            int bufferPosition = i * rowStride;
+            int arrayPosition = i * validRowBytes;
+            buffer.position(bufferPosition);
+            buffer.get(croppedData, arrayPosition, validRowBytes);
+        }
+        return croppedData;
     }
 }

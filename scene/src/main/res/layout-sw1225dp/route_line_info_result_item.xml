@@ -36,7 +36,6 @@
             android:text="0"
             android:textColor="@color/text_color_route_item_no_select"
             android:textSize="@dimen/sp_26"
-            android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 

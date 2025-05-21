@@ -62,7 +62,7 @@
                 android:id="@+id/route_item_via_long_img"
                 android:layout_width="@dimen/dp_36"
                 android:layout_height="@dimen/dp_36"
-                android:src="@drawable/img_route_via_long_press"
+                android:src="@drawable/img_route_via_long_press_sw1225"
                 app:layout_constraintStart_toEndOf="@+id/line_bg"
                 app:layout_constraintTop_toTopOf="@id/route_item_via_img"
                 app:layout_constraintBottom_toBottomOf="@id/route_item_via_img"/>
@@ -96,7 +96,7 @@
                 android:layout_width="@dimen/dp_36"
                 android:layout_height="@dimen/dp_36"
                 android:layout_marginEnd="@dimen/dp_26"
-                android:src="@drawable/img_route_via_remove_via"
+                android:src="@drawable/img_route_via_remove_via_sw1225"
                 app:layout_constraintBottom_toBottomOf="@+id/route_item_via_long_img"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/route_item_via_long_img" />

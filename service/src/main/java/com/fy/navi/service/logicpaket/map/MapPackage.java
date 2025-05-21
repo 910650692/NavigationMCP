@@ -88,6 +88,10 @@ public class MapPackage implements IMapAdapterCallback, INaviStatusCallback, ILa
         mMapAdapter.registerCallback(mapSurfaceView.provideMapTypeId(), this);
     }
 
+    public void initCallback(MapType mapType) {
+        mMapAdapter.registerCallback(mapType, this);
+    }
+
     public void unBindMapView(IBaseScreenMapView mapSurfaceView) {
         mMapAdapter.unBindMapView(mapSurfaceView);
     }

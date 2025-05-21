@@ -1,28 +1,28 @@
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
-    android:width="@dimen/dp_96"
-    android:height="@dimen/dp_96"
-    android:viewportWidth="96"
-    android:viewportHeight="96">
+    android:width="@dimen/dp_58"
+    android:height="@dimen/dp_58"
+    android:viewportWidth="58"
+    android:viewportHeight="58">
   <path
-      android:pathData="M44.415,36.05L44.415,55.17"
+      android:pathData="M26.015,20.471L26.015,34.118"
       android:strokeLineJoin="round"
-      android:strokeWidth="5"
+      android:strokeWidth="3.41176471"
       android:fillColor="#00000000"
-      android:strokeColor="@color/navi_color_383839_100"
+      android:strokeColor="@color/search_icon_color"
       android:fillType="evenOdd"
       android:strokeLineCap="round"/>
   <path
-      android:pathData="M44.415,36.05L51.585,36.05C54.225,36.05 56.365,38.19 56.365,40.83C56.365,43.47 54.225,45.61 51.585,45.61L44.415,45.61L44.415,36.05Z"
+      android:pathData="M26.441,20.471L31.559,20.471C33.443,20.471 34.971,21.998 34.971,23.882C34.971,25.767 33.443,27.294 31.559,27.294L26.441,27.294L26.441,20.471Z"
       android:strokeLineJoin="round"
-      android:strokeWidth="5"
+      android:strokeWidth="4.26470588"
       android:fillColor="#00000000"
-      android:strokeColor="@color/navi_color_383839_100"
+      android:strokeColor="@color/search_icon_color"
       android:fillType="evenOdd"/>
   <path
-      android:pathData="M48.442,71.94C48.442,71.94 69.692,58.785 69.692,43.576C69.692,32.731 60.178,23.94 48.442,23.94C36.705,23.94 27.192,32.731 27.192,43.576C27.192,58.785 48.442,71.94 48.442,71.94Z"
+      android:pathData="M29.853,46.059C29.853,46.059 45.206,36.708 45.206,25.898C45.206,18.19 38.332,11.941 29.853,11.941C21.374,11.941 14.5,18.19 14.5,25.898C14.5,36.708 29.853,46.059 29.853,46.059Z"
       android:strokeLineJoin="round"
-      android:strokeWidth="5"
+      android:strokeWidth="3.41176471"
       android:fillColor="#00000000"
-      android:strokeColor="@color/navi_color_383839_100"
+      android:strokeColor="@color/search_icon_color"
       android:fillType="evenOdd"/>
 </vector>

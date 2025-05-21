@@ -170,6 +170,7 @@ public class SceneSugSearchPoiList extends BaseSceneView<SugSearchResultViewBind
             mViewBinding.recyclerSearchHistory.setVisibility(VISIBLE);
             mViewBinding.recyclerNoHint.setVisibility(GONE);
             mSearchHistoryAdapter.notifyList(list);
+            mSearchHistoryAdapter.setMIsShowIndex(false);
         }
         mViewBinding.recyclerSearchHistory.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -287,6 +288,7 @@ public class SceneSugSearchPoiList extends BaseSceneView<SugSearchResultViewBind
                         mViewBinding.recyclerSearchHistory.setVisibility(VISIBLE);
                         mViewBinding.recyclerNoHint.setVisibility(GONE);
                         mSearchHistoryAdapter.notifyList(list);
+                        mSearchHistoryAdapter.setMIsShowIndex(false);
                     }
                 }
             }

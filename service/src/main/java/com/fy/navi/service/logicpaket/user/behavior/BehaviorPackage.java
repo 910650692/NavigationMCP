@@ -262,6 +262,7 @@ final public class BehaviorPackage implements BehaviorAdapterCallBack, AccountCa
         if (type != 3 && !TextUtils.isEmpty(itemId)) {
             updateFavoriteMain(poiInfo, true);
         }
+        Logger.d(TAG, "add favorite success " + itemId);
         return itemId;
     }
 
@@ -346,6 +347,7 @@ final public class BehaviorPackage implements BehaviorAdapterCallBack, AccountCa
             //普通收藏点
             itemId = isFavorite(itemId) ? itemId : "";
         }
+        Logger.d(TAG, "is favorite " + itemId);
         return itemId;
     }
 

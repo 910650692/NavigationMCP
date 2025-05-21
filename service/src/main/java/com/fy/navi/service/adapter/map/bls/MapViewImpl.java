@@ -817,7 +817,7 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver,
             // 这里裁剪的区域不要随意改变，现在是整个屏幕，如果需要某一部分，需要在回调后自己再次裁剪
             mapDevice.setScreenshotRect(0, 0, width, height);
         }else if (mapType == MapType.HUD_MAP && deviceId == EngineAdapter.getInstance().mapDeviceID(MapType.HUD_MAP)){
-            mapDevice.setScreenshotRect(ScreenUtils.Companion.getInstance().getScreenWidth()/2 - 328, ScreenUtils.Companion.getInstance().getScreenHeight()/2 - 172 , 328, 172);
+            mapDevice.setScreenshotRect(0, 0, 328, 172);
         }
         mapDevice.setScreenshotCallBackMethod(ScreenShotCallbackMethod.ScreenShotCallbackMethodBuffer);
         //截图模式

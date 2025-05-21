@@ -23,7 +23,7 @@
     <com.fy.navi.ui.view.SkinConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:minHeight="@dimen/dp_158">
+        android:minHeight="@dimen/dp_131">
 
         <com.fy.navi.ui.view.SkinConstraintLayout
             android:id="@+id/crl_poi_item"
@@ -42,7 +42,7 @@
                 android:minWidth="@dimen/dp_30"
                 android:text="@{layoutPosition}"
                 android:textColor="@color/search_quick_tab_view_color"
-                android:textSize="@dimen/sp_38"
+                android:textSize="@dimen/sp_30"
                 android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="@+id/crl_poi_item"
                 app:layout_constraintStart_toStartOf="parent"
@@ -51,10 +51,9 @@
 
             <com.fy.navi.ui.view.SkinImageView
                 android:id="@+id/poi_icon"
-                android:layout_width="@dimen/dp_68"
-                android:layout_height="@dimen/dp_68"
+                android:layout_width="@dimen/dp_58"
+                android:layout_height="@dimen/dp_58"
                 android:gravity="center"
-                android:minWidth="@dimen/dp_30"
                 android:src="@drawable/img_basic_ic_orientation"
                 app:layout_constraintBottom_toBottomOf="@+id/crl_poi_item"
                 app:layout_constraintStart_toStartOf="parent"
@@ -68,6 +67,7 @@
             android:layout_marginStart="@dimen/dp_30"
             android:layout_marginEnd="@dimen/dp_10"
             android:layout_marginTop="@dimen/dp_18"
+            android:layout_marginBottom="@dimen/dp_18"
             app:layout_goneMarginBottom="@dimen/dp_18"
             app:layout_constraintEnd_toStartOf="@+id/poi_to_navi"
             app:layout_constraintStart_toEndOf="@+id/crl_poi_item"
@@ -95,7 +95,7 @@
                 android:id="@+id/poi_distance"
                 android:layout_width="@dimen/dp_0"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_16"
+                android:layout_marginTop="@dimen/dp_10"
                 android:text="@{poiBean.distance}"
                 android:textColor="@color/search_quick_tab_view_color"
                 android:textSize="@dimen/sp_30"
@@ -106,7 +106,7 @@
             <View
                 android:id="@+id/sub_line_view"
                 android:layout_width="@dimen/dp_1"
-                android:layout_height="@dimen/dp_40"
+                android:layout_height="@dimen/dp_22"
                 android:layout_marginStart="@dimen/dp_8"
                 android:background="@color/search_quick_tab_view_color"
                 app:layout_constraintBottom_toBottomOf="@+id/poi_address"
@@ -118,7 +118,6 @@
                 android:layout_width="@dimen/dp_0"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_8"
-                android:layout_marginTop="@dimen/dp_16"
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:singleLine="true"
@@ -127,7 +126,7 @@
                 android:textSize="@dimen/sp_30"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/sub_line_view"
-                app:layout_constraintTop_toBottomOf="@+id/poi_name"
+                app:layout_constraintBaseline_toBaselineOf="@+id/poi_distance"
                 tools:text="德国慕尼黑啤酒节柏林节柏林披萨慕尼" />
 
         </com.fy.navi.ui.view.SkinConstraintLayout>
@@ -167,8 +166,8 @@
             android:id="@+id/crl_poi_detail"
             android:layout_width="@dimen/dp_0"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_18"
             android:layout_marginBottom="@dimen/dp_18"
+            tools:visibility="gone"
             app:layout_constraintTop_toBottomOf="@+id/crl_poi_des"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="@+id/crl_poi_des">

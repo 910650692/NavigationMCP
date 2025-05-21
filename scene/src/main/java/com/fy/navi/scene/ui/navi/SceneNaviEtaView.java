@@ -21,6 +21,7 @@ import com.fy.navi.scene.impl.navi.inter.ISceneCallback;
 import com.fy.navi.scene.ui.navi.manager.NaviSceneBase;
 import com.fy.navi.scene.ui.navi.manager.NaviSceneId;
 import com.fy.navi.service.MapDefaultFinalTag;
+import com.fy.navi.service.define.navi.CrossImageEntity;
 import com.fy.navi.service.define.navi.NaviEtaInfo;
 import com.fy.navi.service.define.navi.NaviManeuverInfo;
 
@@ -129,7 +130,11 @@ public class SceneNaviEtaView extends NaviSceneBase<SceneNaviEtaViewBinding, Sce
     public void setTextNaviNextTurn(final AutoUIString textContent) {
         Logger.d(TAG, "GuidanceTbtView setTextNaviNextTurn：" +
                 textContent.getString(getContext()));
-        mViewBinding.stvTextNext.setText(textContent.getString(getContext()));
+        String text = textContent.getString(getContext());
+        mViewBinding.stvTextNext.setText(text);
+        if (null != mISceneCallback) {
+            mISceneCallback.updateNextText(text);
+        }
     }
 
     /**
@@ -137,8 +142,12 @@ public class SceneNaviEtaView extends NaviSceneBase<SceneNaviEtaViewBinding, Sce
      */
     public void setBackgroundNaviNextTurnIcon(final AutoUIDrawable drawableValue) {
         Logger.d(TAG, "GuidanceTbtView setBackgroundNaviNextTurnIcon：");
-        mViewBinding.sivHudSou31.setBackground(
-                new BitmapDrawable(getResources(), drawableValue.getBitmap()));
+        BitmapDrawable bitmapDrawable = new BitmapDrawable(getResources(),
+                drawableValue.getBitmap());
+        mViewBinding.sivHudSou31.setBackground(bitmapDrawable);
+        if (null != mISceneCallback) {
+            mISceneCallback.updateNextIcon(-1, bitmapDrawable);
+        }
     }
 
     /**
@@ -148,7 +157,17 @@ public class SceneNaviEtaView extends NaviSceneBase<SceneNaviEtaViewBinding, Sce
     public void setBackgroundNaviOfflineNextTurnIcon(
             final SceneCommonStruct.TbtExitIconAction iconAction) {
         Logger.d(TAG, "GuidanceTbtView setBackgroundNaviOfflineNextTurnIcon：" + iconAction.name());
-        mViewBinding.sivHudSou31.setBackgroundResource(SceneEnumRes.getDrawableEnumName(iconAction).getDayDrawableId());
+        int resource = SceneEnumRes.getDrawableEnumName(iconAction).getDayDrawableId();
+        mViewBinding.sivHudSou31.setBackgroundResource(resource);
+        if (null != mISceneCallback) {
+            mISceneCallback.updateNextIcon(resource, null);
+        }
     }
 
+    public void onCrossImageShow(boolean isRealNeedShow) {
+        Logger.i(TAG, "GuidanceTbtView onCrossImageInfo：" + isRealNeedShow);
+        if (null != mScreenViewModel) {
+            mScreenViewModel.onCrossImageShow(isRealNeedShow);
+        }
+    }
 }

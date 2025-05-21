@@ -107,10 +107,11 @@
         <com.fy.navi.ui.view.SkinImageView
             android:id="@+id/poi_type_icon"
             clickCommand="@{ScenePoiDetailContentView.closeFragment}"
-            android:layout_width="@dimen/dp_68"
-            android:layout_height="@dimen/dp_68"
+            android:layout_width="@dimen/dp_58"
+            android:layout_height="@dimen/dp_58"
+            android:layout_marginEnd="@dimen/dp_26"
             android:src="@drawable/icon_poi_details_close"
-            app:layout_constraintEnd_toEndOf="@+id/end_guideline"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/sk_poi_name"
             app:layout_constraintBottom_toBottomOf="@+id/sk_poi_name"
             app:layout_goneMarginTop="@dimen/dp_40" />
@@ -121,7 +122,7 @@
             android:layout_height="wrap_content"
             app:maxHeight="@dimen/dp_420"
             android:layout_marginTop="@dimen/dp_30"
-            android:layout_marginBottom="@dimen/dp_40"
+            android:layout_marginBottom="@dimen/dp_26"
             app:layout_constraintEnd_toEndOf="@+id/end_guideline"
             app:layout_constraintStart_toStartOf="@+id/start_guideline"
             app:layout_constraintTop_toBottomOf="@+id/sk_poi_name"
@@ -188,6 +189,7 @@
                     android:id="@+id/poi_details_sub_line"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/dp_1"
+                    tools:visibility="gone"
                     android:layout_marginTop="@dimen/dp_20"
                     app:layout_constraintTop_toBottomOf="@+id/poi_distance_time" />
 
@@ -195,6 +197,7 @@
                     android:id="@+id/poi_content_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    tools:visibility="visible"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/poi_details_sub_line">
 

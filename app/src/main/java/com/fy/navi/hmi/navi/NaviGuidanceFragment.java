@@ -229,6 +229,7 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
         if (!isCanShowCrossImage) {
             return;
         }
+        mBinding.sceneNaviEta.onCrossImageShow(isRealNeedShow);
         mBinding.sceneNaviTbt.onCrossImageInfo(isRealNeedShow, naviImageInfo);
         mBinding.sceneNaviCrossImage.onCrossImageInfo(isRealNeedShow, naviImageInfo);
     }

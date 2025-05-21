@@ -30,6 +30,7 @@
             android:layout_width="@dimen/dp_48"
             android:layout_height="@dimen/dp_48"
             android:src="@drawable/img_under_the_48"
+            android:layout_marginStart="@dimen/dp_24"
             app:layout_constraintTop_toTopOf="@+id/poi_child_list"
             app:layout_constraintStart_toEndOf="@+id/poi_child_list"/>
 

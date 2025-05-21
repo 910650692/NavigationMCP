@@ -4,7 +4,7 @@
     android:viewportWidth="58"
     android:viewportHeight="58">
   <path
-      android:pathData="M28.592,11.088L28.555,46.912"
+      android:pathData="M29.5,15L29.5,43"
       android:strokeLineJoin="round"
       android:strokeWidth="3.41176471"
       android:fillColor="@color/navi_color_000000_0"
@@ -12,7 +12,7 @@
       android:fillType="evenOdd"
       android:strokeLineCap="round"/>
   <path
-      android:pathData="M47.353,15.353L47.325,42.647"
+      android:pathData="M19.5,21L19.5,37"
       android:strokeLineJoin="round"
       android:strokeWidth="3.41176471"
       android:fillColor="@color/navi_color_000000_0"
@@ -20,7 +20,7 @@
       android:fillType="evenOdd"
       android:strokeLineCap="round"/>
   <path
-      android:pathData="M10.677,15.353L10.649,42.647"
+      android:pathData="M39.5,21L39.5,37"
       android:strokeLineJoin="round"
       android:strokeWidth="3.41176471"
       android:fillColor="@color/navi_color_000000_0"

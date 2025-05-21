@@ -426,6 +426,18 @@ public final class L2PPManager {
         mInitialized = true;
     }
 
+    public void testInit() {
+        if (mInitialized) {
+            Logger.i(TAG, "initialized");
+            return;
+        }
+        mAdasManager = AdasManager.getInstance(AppContext.getInstance().getMContext());
+        RoutePackage.getInstance().registerRouteObserver(TAG, mIRouteResultObserver);
+        L2Package.getInstance().registerCallback(TAG, mL2InfoCallback);
+        SignalPackage.getInstance().registerObserver(TAG, mSignalCallback);
+        mInitialized = true;
+    }
+
     /**
      * 销毁
      */

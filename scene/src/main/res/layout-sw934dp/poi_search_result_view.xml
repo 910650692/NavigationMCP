@@ -96,7 +96,9 @@
                     <com.fy.navi.ui.view.SkinRecyclerView
                         android:id="@+id/recycler_search_result"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent" />
+                        android:layout_height="match_parent"
+                        android:layout_marginTop="@dimen/dp_24"
+                        android:layout_marginBottom="@dimen/dp_34"/>
                 </com.fy.navi.ui.view.PullToRefreshLayout>
             </com.fy.navi.ui.view.SkinConstraintLayout>
 

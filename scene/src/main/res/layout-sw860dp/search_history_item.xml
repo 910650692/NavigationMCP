@@ -46,14 +46,31 @@
                 android:visibility="gone"
                 tools:text="1" />
 
-            <com.fy.navi.ui.view.SkinImageView
-                android:id="@+id/poi_icon"
-                android:layout_width="@dimen/dp_42"
-                android:layout_height="@dimen/dp_42"
-                android:src="@drawable/search_poi_icon"
+            <com.fy.navi.ui.view.SkinConstraintLayout
+                android:id="@+id/sk_icon_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent">
+
+                <com.fy.navi.ui.view.SkinImageView
+                    android:id="@+id/search_icon"
+                    android:layout_width="@dimen/dp_42"
+                    android:layout_height="@dimen/dp_42"
+                    android:src="@drawable/search_poi_icon"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <com.fy.navi.ui.view.SkinImageView
+                    android:id="@+id/poi_icon"
+                    android:layout_width="@dimen/dp_58"
+                    android:layout_height="@dimen/dp_58"
+                    android:src="@drawable/search_poi_icon"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            </com.fy.navi.ui.view.SkinConstraintLayout>
 
             <com.fy.navi.ui.view.SkinLinearLayout
                 android:id="@+id/crl_poi_des"
@@ -63,7 +80,7 @@
                 android:orientation="vertical"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/poi_to_navi"
-                app:layout_constraintStart_toEndOf="@id/poi_icon"
+                app:layout_constraintStart_toEndOf="@id/sk_icon_layout"
                 app:layout_constraintTop_toTopOf="parent">
 
                 <com.fy.navi.ui.view.SkinTextView

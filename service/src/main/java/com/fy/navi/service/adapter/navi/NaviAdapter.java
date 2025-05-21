@@ -160,7 +160,7 @@ public final class NaviAdapter {
                 && routeIndex < routeLineLayerParam.getMPathInfoList().size()) {
             ArrayList<Object> pathInfos = new ArrayList<>();
             pathInfos.add(routeLineLayerParam.getMPathInfoList().get(routeIndex));
-            updatePathInfo(MapType.MAIN_SCREEN_MAIN_MAP, pathInfos, routeIndex);
+            updatePathInfo(MapType.MAIN_SCREEN_MAIN_MAP, pathInfos, 0);
         }
 
         mNavistatusAdapter.setNaviStatus(NaviStatus.NaviStatusType.NAVING);

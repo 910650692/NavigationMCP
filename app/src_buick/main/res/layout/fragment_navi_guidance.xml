@@ -49,7 +49,7 @@
                 <com.fy.navi.scene.ui.navi.SceneNaviCrossImageView
                     android:id="@+id/scene_navi_cross_image"
                     android:layout_width="@dimen/dp_640"
-                    android:layout_height="@dimen/dp_306"
+                    android:layout_height="@dimen/dp_384"
                     android:visibility="@{ViewModel.mNaviCrossImageVisibility?View.VISIBLE:View.GONE}"
                     app:layout_constraintStart_toStartOf="@id/scene_navi_tbt"
                     app:layout_constraintTop_toBottomOf="@id/scene_navi_tbt"

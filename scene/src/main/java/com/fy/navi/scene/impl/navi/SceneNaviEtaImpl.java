@@ -56,6 +56,8 @@ public class SceneNaviEtaImpl extends BaseSceneModel<SceneNaviEtaView> {
     private String mLastRemainInfo = "";
     public ObservableField<Boolean> mDistanceTimeVisible;
     public ObservableField<Boolean> mGroupNextVisible;
+    private boolean mIsCrossImageShow;
+    private boolean mIsNextManeuverShow;
 
     public SceneNaviEtaImpl(final SceneNaviEtaView screenView) {
         super(screenView);
@@ -374,6 +376,12 @@ public class SceneNaviEtaImpl extends BaseSceneModel<SceneNaviEtaView> {
     //设置近接动作可见
     private void setVisibleNaviNext(final boolean isVisible) {
         Logger.d(TAG, "setVisibleNaviNext：isVisible：" + isVisible);
+        mIsNextManeuverShow = isVisible;
+        mCallBack.updateNextStatus(isVisible, mOfflineManeuverIcon);
+        // 路口大图显示的时候eta要显示距离时间信息
+        if (mIsCrossImageShow) {
+            return;
+        }
         mGroupNextVisible.set(isVisible);
         mDistanceTimeVisible.set(!isVisible);
     }
@@ -387,5 +395,16 @@ public class SceneNaviEtaImpl extends BaseSceneModel<SceneNaviEtaView> {
         mScreenView.getNaviSceneEvent().notifySceneStateChange((isVisible ?
                 INaviSceneEvent.SceneStateChangeType.SceneShowState :
                 INaviSceneEvent.SceneStateChangeType.SceneCloseState), NaviSceneId.NAVI_SCENE_ETA);
+    }
+
+    public void onCrossImageShow(boolean isRealNeedShow) {
+        mIsCrossImageShow = isRealNeedShow;
+        // 路口大图显示的时候需要显示eta距离时间信息
+        if (isRealNeedShow) {
+            mGroupNextVisible.set(false);
+            mDistanceTimeVisible.set(true);
+        } else {
+            setVisibleNaviNext(mIsNextManeuverShow);
+        }
     }
 }

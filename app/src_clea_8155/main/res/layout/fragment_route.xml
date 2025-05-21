@@ -146,7 +146,7 @@
                     android:layout_marginStart="@dimen/dp_12"
                     android:layout_marginTop="@dimen/dp_23"
                     android:layout_marginBottom="@dimen/dp_23"
-                    android:src="@drawable/img_route_back"
+                    android:src="@drawable/img_route_back_sw1225"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
@@ -173,7 +173,7 @@
                     android:layout_marginTop="@dimen/dp_30"
                     android:layout_marginEnd="@dimen/dp_7"
                     android:layout_marginBottom="@dimen/dp_30"
-                    android:src="@drawable/img_route_add_point"
+                    android:src="@drawable/img_route_add_point_sw1225"
                     app:layout_constraintEnd_toStartOf="@id/route_line_info_tv_search_waypoint"
                     app:layout_constraintTop_toTopOf="parent" />
 
@@ -586,7 +586,7 @@
                 <com.fy.navi.ui.view.SkinTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:drawableStart="@drawable/img_route_refresh"
+                    android:drawableStart="@drawable/img_route_refresh_sw1225"
                     android:drawablePadding="@dimen/dp_7"
                     android:gravity="center"
                     android:text="@string/route_refresh"
@@ -641,7 +641,7 @@
                     android:layout_height="@dimen/dp_58"
                     android:layout_marginStart="@dimen/dp_18"
                     android:layout_marginTop="@dimen/dp_27"
-                    android:src="@drawable/img_route_back"
+                    android:src="@drawable/img_route_back_sw1225"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
@@ -734,7 +734,7 @@
                     android:layout_width="@dimen/dp_58"
                     android:layout_height="@dimen/dp_58"
                     android:layout_marginStart="@dimen/dp_14"
-                    android:src="@drawable/img_route_back"
+                    android:src="@drawable/img_route_back_sw1225"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -828,7 +828,7 @@
                     android:layout_height="@dimen/dp_58"
                     android:layout_marginStart="@dimen/dp_14"
                     android:layout_marginTop="@dimen/dp_27"
-                    android:src="@drawable/img_route_back"
+                    android:src="@drawable/img_route_back_sw1225"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 

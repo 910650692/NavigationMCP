@@ -17,10 +17,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".startup.StartupActivity">
-        <com.fy.navi.service.define.map.HUDMapView
-            android:id="@+id/hud_mapview"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
         <!--MFC___FocusParkingView-->
         <com.android.car.ui.FocusParkingView
             android:layout_width="wrap_content"
@@ -485,8 +481,8 @@
                     layout="@layout/item_limit_tip"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_80"
-                    android:layout_marginEnd="@dimen/dp_430"
+                    android:layout_marginTop="@dimen/dp_70"
+                    android:layout_marginEnd="@dimen/dp_436"
                     android:focusable="false"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />

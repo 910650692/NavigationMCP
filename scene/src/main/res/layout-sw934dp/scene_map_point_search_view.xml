@@ -60,7 +60,7 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            app:layout_constraintGuide_begin="@dimen/dp_69" />
+            app:layout_constraintGuide_begin="@dimen/dp_40" />
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/end_guideline"
@@ -68,7 +68,7 @@
             android:layout_height="match_parent"
             android:orientation="vertical"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintGuide_end="@dimen/dp_69" />
+            app:layout_constraintGuide_end="@dimen/dp_40" />
 
         <com.fy.navi.ui.view.SkinTextView
             android:id="@+id/sk_poi_name"
@@ -89,10 +89,11 @@
             clickCommand="@{SceneMapPointSearchView.closeFragment}"
             android:layout_width="@dimen/dp_58"
             android:layout_height="@dimen/dp_58"
-            android:layout_marginTop="@dimen/dp_38"
+            android:layout_marginTop="@dimen/dp_34"
             tools:visibility="visible"
             android:src="@drawable/icon_poi_details_close"
-            app:layout_constraintEnd_toEndOf="@+id/end_guideline"
+            android:layout_marginEnd="@dimen/dp_26"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"/>
 
         <com.fy.navi.ui.view.SkinTextView

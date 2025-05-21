@@ -9,8 +9,8 @@
             type="com.fy.navi.hmi.drivingrecord.recordlogin.DrivingRecordLoginViewModel" />
     </data>
     <com.fy.navi.ui.view.SkinLinearLayout
-        android:layout_width="@dimen/dp_1292"
-        android:layout_height="@dimen/dp_1255"
+        android:layout_width="@dimen/dp_1110"
+        android:layout_height="@dimen/dp_1078"
         android:clickable="true"
         android:padding="@dimen/dp_34"
         android:background="@drawable/bg_shadow_navi_ndlc_8155"
@@ -59,7 +59,7 @@
             android:visibility="@{ViewModel.mLoginVisible? View.VISIBLE : View.GONE}"
             android:layout_width="match_parent"
             android:layout_height="fill_parent"
-            android:layout_marginTop="@dimen/dp_131"
+            android:layout_marginTop="@dimen/dp_123"
             android:orientation="vertical">
 
             <!--登录二维码-->
@@ -133,7 +133,7 @@
             android:layout_width="match_parent"
             android:layout_height="fill_parent"
             android:orientation="vertical"
-            android:layout_marginTop="@dimen/dp_131"
+            android:layout_marginTop="@dimen/dp_123"
             android:visibility="@{ViewModel.mLoginVisible? View.GONE : View.VISIBLE}"
             tools:visibility="visible">
 

@@ -2,6 +2,8 @@ package com.fy.navi.scene.impl.navi;
 
 import android.view.View;
 
+import androidx.databinding.ObservableField;
+
 import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
 import com.fy.navi.scene.BaseSceneModel;
@@ -14,6 +16,7 @@ import com.fy.navi.scene.ui.navi.manager.NaviSceneId;
 import com.fy.navi.service.adapter.navi.NaviConstant;
 import com.fy.navi.service.define.layer.refix.LayerItemCrossEntity;
 import com.fy.navi.service.define.navi.CrossImageEntity;
+import com.fy.navi.service.define.navi.NextManeuverEntity;
 import com.fy.navi.service.logicpaket.layer.LayerPackage;
 import com.fy.navi.service.logicpaket.navi.NaviPackage;
 
@@ -38,12 +41,14 @@ public class SceneNaviCrossImageImpl extends BaseSceneModel<SceneNaviCrossImageV
      * 路口大图数据缓存
      */
     private CrossImageEntity mRoadCrossInfo;
+    public ObservableField<Boolean> mNextManeuverVisible;
 
     public SceneNaviCrossImageImpl(final SceneNaviCrossImageView screenView) {
         super(screenView);
         mNaviPackage = NaviPackage.getInstance();
         mLayerPackage = LayerPackage.getInstance();
         init();
+        mNextManeuverVisible = new ObservableField<>(false);
     }
 
     /**
@@ -147,8 +152,8 @@ public class SceneNaviCrossImageImpl extends BaseSceneModel<SceneNaviCrossImageV
             Logger.d(TAG, "SceneNaviCrossImageImpl onHideCrossImage: type = " + (naviImageInfo == null? "null" : naviImageInfo.getType()));
             mIsShowCrossImage = false;
             notifySceneStateChange(false);
-            mScreenView.setProgress2DRoadCross(0);
             hideCross();
+            mScreenView.setProgress2DRoadCross(0);
             mRoadCrossInfo = null;
         }
     }
@@ -198,6 +203,41 @@ public class SceneNaviCrossImageImpl extends BaseSceneModel<SceneNaviCrossImageV
         if (!mLayerPackage.showCross(mMapTypeId, layerItemCrossEntity)) {
             if (mRoadCrossInfo != null) {
                 onCrossImageInfo(false, mRoadCrossInfo);
+            }
+        } else {
+            if (null != mCallBack) {
+                NextManeuverEntity nextManeuverEntity = mCallBack.getNextManeuverEntity();
+                if (nextManeuverEntity == null) {
+                    return;
+                }
+                Logger.i("shisong", "下一个转向信息：" + nextManeuverEntity.toString());
+                if (nextManeuverEntity.isNextManeuverVisible()) {
+                    if (nextManeuverEntity.isNextManeuverOffLine() &&
+                            nextManeuverEntity.getNextIconResource() != -1) {
+                        if (null != mScreenView) {
+                            mScreenView.setNextIconResource(
+                                    nextManeuverEntity.getNextIconResource());
+                            mScreenView.setNextText(nextManeuverEntity.getNextText());
+                        }
+                        if (null != mNextManeuverVisible) {
+                            mNextManeuverVisible.set(true);
+                        }
+                    } else if (!nextManeuverEntity.isNextManeuverOffLine() &&
+                            nextManeuverEntity.getNextIconDrawable() != null) {
+                        if (null != mScreenView) {
+                            mScreenView.setNextIconBackground(
+                                    nextManeuverEntity.getNextIconDrawable());
+                            mScreenView.setNextText(nextManeuverEntity.getNextText());
+                        }
+                        if (null != mNextManeuverVisible) {
+                            mNextManeuverVisible.set(true);
+                        }
+                    }
+                } else {
+                    if (null != mNextManeuverVisible) {
+                        mNextManeuverVisible.set(false);
+                    }
+                }
             }
         }
     }

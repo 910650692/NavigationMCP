@@ -291,6 +291,21 @@
         app:layout_constraintTop_toBottomOf="@+id/test_select_text_bg1" />
 
     <com.fy.navi.ui.view.SkinTextView
+        android:id="@+id/test_l2pp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:layout_marginStart="@dimen/dp_20"
+        android:paddingHorizontal="10dp"
+        android:paddingVertical="@dimen/dp_5"
+        android:text="开启L2++"
+        android:textColor="@color/black"
+        android:textSize="@dimen/sp_20"
+        app:layout_constraintBottom_toBottomOf="@+id/test_foreground_text"
+        app:layout_constraintStart_toEndOf="@+id/test_foreground_text"
+        app:layout_constraintTop_toTopOf="@+id/test_foreground_text" />
+
+    <com.fy.navi.ui.view.SkinTextView
         android:id="@+id/test_text_marquee"
         android:layout_width="@dimen/dp_250"
         android:layout_height="@dimen/dp_40"
@@ -422,5 +437,12 @@
         app:layout_constraintTop_toTopOf="@+id/test_gaode_log"
         android:layout_marginStart="@dimen/dp_20"
         app:layout_constraintBottom_toBottomOf="@+id/test_gaode_log"/>
+
+    <ImageView
+        android:id="@+id/test_hud"
+        android:layout_width="328px"
+        android:layout_height="172px"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/test_gaode_log" />
     
 </com.fy.navi.ui.view.SkinConstraintLayout>

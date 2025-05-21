@@ -183,6 +183,7 @@ public class RouteAdapterImplHelper {
      */
     public void registerRouteObserver(final String key, final RouteResultObserver routeResultObserver) {
         mRouteResultObserverHashtable.put(key, routeResultObserver);
+        Logger.d(TAG, "registerRouteObserver : " + mRouteResultObserverHashtable.size());
     }
 
     /**
@@ -319,6 +320,7 @@ public class RouteAdapterImplHelper {
             routeOption.setUserAvoidInfo(mUserAvoidInfo);
             int constrainCode = mRouteConstrainCode;
             if (BevPowerCarUtils.getInstance().isElecPlanRoute) {
+                Logger.d(TAG, "RouteElecContinue");
                 // 1.打开电动车接续算路（主路线上有充电桩）
                 constrainCode |= RouteConstrainCode.RouteElecContinue;
                 // 2.打开电动车接续多备选算路（所有路线上有充电桩）
@@ -346,6 +348,7 @@ public class RouteAdapterImplHelper {
      */
     public void removeRouteObserver(final String key) {
         mRouteResultObserverHashtable.remove(key);
+        Logger.d(TAG, "removeRouteObserver : " + mRouteResultObserverHashtable.size());
     }
 
 
@@ -354,6 +357,7 @@ public class RouteAdapterImplHelper {
      */
     public void removeAllObserver() {
         mRouteResultObserverHashtable.clear();
+        Logger.d(TAG, "removeAllObserver : " + mRouteResultObserverHashtable.size());
     }
 
     /**
@@ -684,6 +688,7 @@ public class RouteAdapterImplHelper {
                 final String errorMsgDetail = getErrorMsgsDetails(pathResultData.errorCode);
                 for (RouteResultObserver resultObserver : mRouteResultObserverHashtable.values()) {
                     if (resultObserver == null) {
+                        Logger.d(TAG, "resultObserver is null ");
                         continue;
                     }
                     resultObserver.onRouteFail(requestRouteResult, pathResultData.errorCode, errorMsg + errorMsgDetail);
@@ -766,6 +771,7 @@ public class RouteAdapterImplHelper {
             if (resultObserver != null) {
                 resultObserver.onRouteSuccess(successMsg);
             } else {
+                Logger.d(TAG, "resultObserver is null ");
                 mRouteResultObserverHashtable.remove(key);
             }
         }

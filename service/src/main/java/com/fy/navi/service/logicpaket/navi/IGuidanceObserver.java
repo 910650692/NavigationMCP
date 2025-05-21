@@ -189,6 +189,15 @@ public interface IGuidanceObserver {
     }
 
     /**
+     * 路线切换
+     * @param oldPathId 旧路线
+     * @param pathID 新路线
+     */
+    default void onChangeNaviPath(long oldPathId, long pathID) {
+
+    }
+
+    /**
      * 更优路线回调
      * @param newPathID 新道路id
      * @param oldPathID 旧道路id

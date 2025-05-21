@@ -172,7 +172,7 @@ public final class SearchResultMapper {
         if(!ConvertUtils.isNull(result.lqii)){
             searchResultEntity.setQueryTypeList(result.lqii.queryTypeList);
         }
-        if (ConvertUtils.isEmpty(poiList)) {
+        if (ConvertUtils.isEmpty(poiList) && !ConvertUtils.isEmpty(result.poiLocres)) {
             final List<PoiInfoEntity> cityList = Optional.ofNullable(result.poiLocres.citylist)
                     .orElse(new ArrayList<>())
                     .stream()

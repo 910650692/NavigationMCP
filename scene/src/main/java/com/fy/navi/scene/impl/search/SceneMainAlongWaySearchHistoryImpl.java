@@ -24,7 +24,7 @@ public class SceneMainAlongWaySearchHistoryImpl extends BaseSceneModel<SceneSear
 
     @Override
     public void getSearchKeywordRecord() {
-        final List<History> historyList = mSearchPackage.getSearchKeywordRecord();
+        final List<History> historyList = mSearchPackage.getNaviRecord();
         mScreenView.notifyKeywordRecord(historyList);
     }
 

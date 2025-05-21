@@ -17,10 +17,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".startup.StartupActivity">
-        <com.fy.navi.service.define.map.HUDMapView
-            android:id="@+id/hud_mapview"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
         <com.fy.navi.service.define.map.MainScreenMapView
             android:id="@+id/main_mapview"
             android:layout_width="match_parent"
@@ -335,8 +331,8 @@
             layout="@layout/item_limit_tip"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_80"
-            android:layout_marginEnd="@dimen/dp_430"
+            android:layout_marginTop="@dimen/dp_70"
+            android:layout_marginEnd="@dimen/dp_436"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 

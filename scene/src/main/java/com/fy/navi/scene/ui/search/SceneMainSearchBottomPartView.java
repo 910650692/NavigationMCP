@@ -253,6 +253,7 @@ public class SceneMainSearchBottomPartView extends BaseSceneView<SearchHistoryVi
     public void notifyKeywordRecord(final List<History> historyList) {
         if (!historyList.isEmpty()) {
             mSearchHistoryAdapter.notifyList(historyList);
+            mSearchHistoryAdapter.setMIsShowIndex(false);
             mViewBinding.rcyRecord.setVisibility(VISIBLE);
             mViewBinding.tvRecordNull.setVisibility(GONE);
         } else {

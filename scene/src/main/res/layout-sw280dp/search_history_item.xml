@@ -49,16 +49,36 @@
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="1" />
 
-            <com.fy.navi.ui.view.SkinImageView
-                android:id="@+id/poi_icon"
-                android:layout_width="@dimen/dp_54"
-                android:layout_height="@dimen/dp_54"
+
+            <com.fy.navi.ui.view.SkinConstraintLayout
+                android:id="@+id/sk_icon_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:focusable="false"
-                android:src="@drawable/search_poi_icon"
-                android:visibility="visible"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent">
+
+                <com.fy.navi.ui.view.SkinImageView
+                    android:id="@+id/search_icon"
+                    android:layout_width="@dimen/dp_54"
+                    android:layout_height="@dimen/dp_54"
+                    android:focusable="false"
+                    android:src="@drawable/search_poi_icon"
+                    android:visibility="visible"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <com.fy.navi.ui.view.SkinImageView
+                    android:id="@+id/poi_icon"
+                    android:layout_width="@dimen/dp_74"
+                    android:layout_height="@dimen/dp_74"
+                    android:src="@drawable/search_poi_icon"
+                    android:focusable="false"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            </com.fy.navi.ui.view.SkinConstraintLayout>
 
             <com.fy.navi.ui.view.SkinLinearLayout
                 android:id="@+id/crl_poi_des"
@@ -70,7 +90,7 @@
                 android:orientation="vertical"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/poi_to_navi"
-                app:layout_constraintStart_toEndOf="@id/poi_icon"
+                app:layout_constraintStart_toEndOf="@id/sk_icon_layout"
                 app:layout_constraintTop_toTopOf="parent">
 
                 <com.fy.navi.ui.view.SkinTextView

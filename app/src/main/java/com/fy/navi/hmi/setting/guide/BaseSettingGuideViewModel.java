@@ -285,20 +285,14 @@ public class BaseSettingGuideViewModel extends BaseViewModel<SettingNaviFragment
      */
     public void onPlateNumberChanged(final String plateNumber) {
         final boolean isPlateNumberEmpty = Objects.equals(plateNumber, "");
-        if (!isPlateNumberEmpty)  {
-            if (mModel.setConfigKeyAvoidLimit(true) == 0) {
-                mIsAvoidLimit.setValue(true);
-                mView.onPlateNumberChanged(plateNumber);
-                mIsPlateNumber.setValue(true);
-                mModel.setConfigKeyPlateNumber(plateNumber);
-            }
+        if (!isPlateNumberEmpty) {
+            mIsAvoidLimit.setValue(true);
+            mView.onPlateNumberChanged(plateNumber);
+            mIsPlateNumber.setValue(true);
         } else {
-            if (mModel.setConfigKeyAvoidLimit(false) == 0) {
-                mIsAvoidLimit.setValue(false);
-                setPlateNumber(plateNumber);
-                mIsPlateNumber.setValue(false);
-                mModel.setConfigKeyPlateNumber("");
-            }
+            mIsAvoidLimit.setValue(false);
+            setPlateNumber(plateNumber);
+            mIsPlateNumber.setValue(false);
         }
     }
 

@@ -155,7 +155,11 @@ public class L2Adapter {
                     if (mPoiInfoEntity == null) {
                         return;
                     }
-                    ParkingInfo parkingInfo = mPoiInfoEntity.getParkingInfoList().get(0);
+                    List<ParkingInfo> parkingInfoList = mPoiInfoEntity.getParkingInfoList();
+                    if (parkingInfoList == null || parkingInfoList.isEmpty()) {
+                        return;
+                    }
+                    ParkingInfo parkingInfo = parkingInfoList.get(0);
                     if (parkingInfo == null) {
                         return;
                     }
@@ -271,13 +275,16 @@ public class L2Adapter {
             l2NaviBean.getCrossInfoData().setHasTrafficLight(isHaveTrafficLight == 0 ? 0 : 1); // 路口是否有红绿灯
             if (isHaveTrafficLight == 0) {
                 l2NaviBean.getCrossInfoData().setTrafficLightPosition(0);
+                Logger.i(TAG, "红绿灯", isHaveTrafficLight);
             } else {
                 GeoPoint currentGeo = PositionPackage.getInstance().currentGeo;
+                if (currentGeo == null) {
+                    return;
+                }
                 double distance = BizLayerUtil.calcDistanceBetweenPoints(new Coord2DDouble(currentGeo.getLon(), currentGeo.getLat()), new Coord2DDouble(geoPoint.getLon(), geoPoint.getLat()));
                 l2NaviBean.getCrossInfoData().setTrafficLightPosition((int) distance);
+                Logger.i(TAG, "红绿灯", isHaveTrafficLight, distance);
             }
-
-            Logger.i(TAG, "红绿灯", isHaveTrafficLight);
         }
 
         @Override
@@ -368,10 +375,6 @@ public class L2Adapter {
         public void onCurrentRoadSpeed(int speed) {
             L2NaviBean.VehiclePositionBean vehiclePosition = l2NaviBean.getVehiclePosition();
             vehiclePosition.setCurrentSpeedLimit(speed);
-            L2NaviBean.WarningFacilityBean warningFacilityBean = l2NaviBean.getWarningFacility();
-            warningFacilityBean.setLimitSpeed(speed); // 警示牌限速值
-            warningFacilityBean.setBoardSignType(10);
-//            warningFacilityBean.setBoardSignDist();
             Logger.i(TAG, "当前限速", speed);
         }
 
@@ -580,7 +583,6 @@ public class L2Adapter {
         L2NaviBean.VehiclePositionBean vpb = l2NaviBean.getVehiclePosition();
         vpb.setLocationLongitude(value.getLocationLongitude()); // 自车经度坐标（在sd route上的）
         vpb.setLocationLatitude(value.getLocationLatitude()); // 自车纬度坐标（在sd route上的
-        vpb.setRoadOwnership(value.getRoadOwnership()); // 自车所在道路所有权
         Logger.i(TAG, "道路属性", vpb.getLocationLinkOffset(), vpb.getLocationLongitude(), vpb.getLocationLatitude(), vpb.getRoadOwnership());
     }
 
@@ -619,6 +621,7 @@ public class L2Adapter {
                 L2NaviBean.VehiclePositionBean vpb = l2NaviBean.getVehiclePosition();
                 vpb.setFormWay(linkInfo.getFormway());
                 vpb.setLinkType(linkInfo.getLinkType());
+                vpb.setRoadOwnership(linkInfo.getOwnership());
                 l2NaviBean.setIsServiceAreaRoad(linkInfo.isAtService() ? 1 : 0);
             }
             // 为防止并发问题，发送消息时暂停接口回调，防止修改l2NaviBean对象

@@ -46,7 +46,7 @@
             android:paddingTop="@dimen/dp_60"
             android:paddingBottom="@dimen/dp_60"
             android:visibility="gone"
-            android:background="@drawable/bg_search_main_tab_shadow"
+            android:background="@drawable/bg_shadow_navi_buick"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />

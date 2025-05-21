@@ -11,7 +11,6 @@ import android.text.SpannableString;
 import android.text.TextUtils;
 import android.text.style.LeadingMarginSpan;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,14 +47,12 @@ import com.fy.navi.scene.ui.search.SearchLoadingDialog;
 import com.fy.navi.service.AppContext;
 import com.fy.navi.service.AutoMapConstant;
 import com.fy.navi.service.MapDefaultFinalTag;
-import com.fy.navi.service.adapter.search.cloudByPatac.rep.BaseRep;
 import com.fy.navi.service.define.bean.GeoPoint;
+import com.fy.navi.service.define.layer.refix.LayerPointItemType;
 import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.mapdata.CityDataInfo;
 import com.fy.navi.service.define.route.RoutePoiType;
-import com.fy.navi.service.define.search.ChargeEquipmentInfo;
 import com.fy.navi.service.define.search.ChargeInfo;
-import com.fy.navi.service.define.search.ChargePriceInfo;
 import com.fy.navi.service.define.search.ChildInfo;
 import com.fy.navi.service.define.search.FavoriteInfo;
 import com.fy.navi.service.define.search.GasStationInfo;
@@ -424,6 +421,13 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
             mViewBinding.poiArrivalCapacity.setVisibility(View.GONE);
             mViewBinding.sivArrivalCapacity.setVisibility(View.GONE);
             mViewBinding.poiContentLayout.setVisibility(View.GONE);
+            mViewBinding.poiDetailsSubLine.setVisibility(View.GONE);
+        }
+        if (mPoiType == AutoMapConstant.PoiType.POI_MAP_CLICK) {
+            //点击地图弹出的poi详情页不需要展示子点扎标
+            if (null != mScreenViewModel) {
+                ThreadManager.getInstance().postDelay(() -> mScreenViewModel.clearTypeMark(LayerPointItemType.SEARCH_CHILD_POINT), 400);
+            }
         }
     }
 
@@ -1412,6 +1416,7 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
                 if (poiType == AutoMapConstant.PoiType.POI_MAP_CLICK) {
                     //地图选点不需要展示电话和营业时间界面
                     mViewBinding.poiContentLayout.setVisibility(View.GONE);
+                    mViewBinding.poiDetailsSubLine.setVisibility(View.GONE);
                 }
                 break;
             case AutoMapConstant.PoiType.POI_HOME:

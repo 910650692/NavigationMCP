@@ -5,11 +5,16 @@ import android.app.Application;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 
+import com.android.utils.log.Logger;
+import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.ui.action.Action;
 import com.fy.navi.ui.base.BaseViewModel;
 
+import java.util.Objects;
+
 public class BaseSettingPlateNumberViewModel extends BaseViewModel<SettingPlateNumberFragment, SettingPlateNumberModel> {
 
+    private static final String TAG = MapDefaultFinalTag.SETTING_HMI_TAG;
     public MutableLiveData<Boolean> mIsFocus = new MutableLiveData<>(false);
 
     private MutableLiveData<Boolean> mIsDeletePlateNumberDialog= new MutableLiveData<>(false);
@@ -92,5 +97,23 @@ public class BaseSettingPlateNumberViewModel extends BaseViewModel<SettingPlateN
 
     public void setProvince(final String province) {
         mProvince = province;
+    }
+
+    /**
+     * 更新车牌号
+     * @param plateNumber 车牌号
+     */
+    public void onPlateNumberChanged(final String plateNumber) {
+        Logger.d(TAG, "onPlateNumberChanged: plateNumber");
+        final boolean isPlateNumberEmpty = Objects.equals(plateNumber, "");
+        if (!isPlateNumberEmpty)  {
+            if (mModel.setConfigKeyAvoidLimit(true) == 0) {
+                mModel.setConfigKeyPlateNumber(plateNumber);
+            }
+        } else {
+            if (mModel.setConfigKeyAvoidLimit(false) == 0) {
+                mModel.setConfigKeyPlateNumber("");
+            }
+        }
     }
 }

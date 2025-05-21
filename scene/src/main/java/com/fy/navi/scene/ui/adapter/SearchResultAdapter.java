@@ -147,6 +147,9 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
             holder.mResultItemBinding.poiNum.setVisibility(View.GONE);
             holder.mResultItemBinding.poiIcon.setVisibility(View.VISIBLE);
         }
+        if (mPoiInfoEntity != null && ConvertUtils.isEmpty(mPoiInfoEntity.getAddress())) {
+            holder.mResultItemBinding.subLineView.setVisibility(View.GONE);
+        }
         //预搜索高亮搜索文本
         if (mSearchResultEntity.getSearchType() == AutoMapConstant.SearchType.SEARCH_SUGGESTION) {
             holder.mResultItemBinding.poiName.setText(matcherSearchTitle(AppContext.getInstance().
@@ -222,11 +225,9 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
                     refreshServiceAreaView(holder);
                     break;
                 case AutoMapConstant.PointTypeCode.SCENIC_SPOT:
-                    refreshScenicSpotView(holder);
-                    break;
                 case AutoMapConstant.PointTypeCode.OTHERS:
                 default:
-                    refreshNormalView(holder);
+                    refreshScenicSpotView(holder);
                     break;
             }
         }
@@ -278,6 +279,8 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
         resultHolder.mResultItemBinding.scenePoiItemScenicSpotView.poiScenicSpotPrice.setVisibility(View.VISIBLE);
         resultHolder.mResultItemBinding.scenePoiItemScenicSpotView.poiScenicSpotPriceIcon.setVisibility(View.VISIBLE);
         resultHolder.mResultItemBinding.scenePoiItemScenicSpotView.getRoot().setVisibility(View.VISIBLE);
+        resultHolder.mResultItemBinding.scenePoiItemScenicSpotView.poiScenicSpotChildList.setVisibility(View.GONE);
+        resultHolder.mResultItemBinding.scenePoiItemScenicSpotView.poiScenicSpotChildList.setAdapter(null);
         if (mPoiInfoEntity.getAverageCost() == -1 || mPoiInfoEntity.getAverageCost() == 0) {
             resultHolder.mResultItemBinding.scenePoiItemScenicSpotView.poiScenicSpotPrice.setVisibility(View.GONE);
             resultHolder.mResultItemBinding.scenePoiItemScenicSpotView.poiScenicSpotPriceIcon.setVisibility(View.GONE);
@@ -289,6 +292,7 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
         final PoiDetailsScenicChildAdapter scenicChildAdapter = new PoiDetailsScenicChildAdapter();
         if (childInfoList != null && !childInfoList.isEmpty()) {
             scenicChildAdapter.setChildInfoList(childInfoList);
+            resultHolder.mResultItemBinding.scenePoiItemScenicSpotView.poiScenicSpotChildList.setVisibility(View.VISIBLE);
             resultHolder.mResultItemBinding.scenePoiItemScenicSpotView.poiScenicSpotChildList.setLayoutManager(
                     new GridLayoutManager(resultHolder.mResultItemBinding.getRoot().getContext(), mSpanCount));
             if (resultHolder.mResultItemBinding.scenePoiItemScenicSpotView.poiScenicSpotChildList.getItemDecorationCount() == 0) {

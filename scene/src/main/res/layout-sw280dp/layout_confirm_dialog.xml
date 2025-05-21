@@ -6,16 +6,23 @@
     <com.fy.navi.ui.view.SkinConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/search_loading_bg_80">
+        android:focusable="false">
 
         <com.fy.navi.ui.view.SkinConstraintLayout
-            android:layout_width="@dimen/dp_1100"
-            android:layout_height="@dimen/dp_324"
-            android:background="@drawable/bg_confirm_dialog"
+            android:layout_width="@dimen/dp_1694"
+            android:layout_height="@dimen/dp_495"
+            android:layout_marginTop="@dimen/dp_701"
+            android:layout_marginStart="@dimen/dp_263"
+            android:paddingHorizontal="@dimen/dp_47"
+            android:paddingTop="@dimen/dp_39"
+            android:paddingBottom="@dimen/dp_56"
+            android:background="@drawable/bg_shadow_system_cadillac"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0">
 
             <com.fy.navi.ui.view.SkinTextView
                 android:id="@+id/tv_content"
@@ -23,11 +30,11 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:maxWidth="@dimen/dp_900"
-                android:layout_marginTop="@dimen/dp_70"
+                android:layout_marginTop="@dimen/dp_80"
+                android:layout_marginStart="@dimen/dp_100"
                 tools:text="是否拨打电话021-6288888"
                 android:textColor="@color/search_color_ffffff"
-                android:textSize="@dimen/sp_36"
-                app:layout_constraintEnd_toEndOf="parent"
+                android:textSize="@dimen/sp_46"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -36,7 +43,8 @@
                 android:layout_width="@dimen/dp_1018"
                 android:layout_height="@dimen/dp_2"
                 android:layout_marginTop="@dimen/dp_196"
-                android:background="@color/divider_color"
+                android:background="@color/transparent"
+                android:visibility="gone"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -46,7 +54,8 @@
                 android:id="@+id/divider_vertical"
                 android:layout_width="@dimen/dp_2"
                 android:layout_height="@dimen/dp_126"
-                android:background="@color/divider_color"
+                android:background="@color/transparent"
+                android:visibility="gone"
                 app:layout_constraintTop_toBottomOf="@+id/divider"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -54,31 +63,33 @@
 
             <com.fy.navi.ui.view.SkinTextView
                 android:id="@+id/tv_confirm"
-                android:layout_width="@dimen/dp_0"
-                android:layout_height="@dimen/dp_0"
+                android:layout_width="@dimen/dp_432"
+                android:layout_height="@dimen/dp_100"
                 android:gravity="center"
                 android:maxWidth="@dimen/dp_900"
                 android:text="@string/text_dial"
-                android:textColor="@color/confirm_color"
-                android:textSize="@dimen/sp_36"
-                app:layout_constraintEnd_toEndOf="@id/divider_vertical"
+                android:textColor="@color/setting_white"
+                android:textSize="@dimen/sp_38"
+                android:layout_marginStart="@dimen/dp_100"
+                android:layout_marginTop="@dimen/dp_80"
+                android:background="@drawable/bg_search_dialog_confirm"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/divider" />
+                app:layout_constraintTop_toBottomOf="@+id/tv_content" />
 
             <com.fy.navi.ui.view.SkinTextView
                 android:id="@+id/tv_cancel"
-                android:layout_width="@dimen/dp_0"
-                android:layout_height="@dimen/dp_0"
+                android:layout_width="@dimen/dp_432"
+                android:layout_height="@dimen/dp_100"
                 android:gravity="center"
                 android:maxWidth="@dimen/dp_900"
                 android:text="@string/dsc_cancel"
-                android:textColor="@color/search_color_ffffff"
-                android:textSize="@dimen/sp_36"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/divider_vertical"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/divider" />
+                android:textColor="@color/setting_bg_tab_text_unselect"
+                android:textSize="@dimen/sp_38"
+                android:background="@drawable/bg_search_dialog_cancel"
+                android:layout_marginStart="@dimen/dp_40"
+                android:layout_marginTop="@dimen/dp_80"
+                app:layout_constraintStart_toEndOf="@+id/tv_confirm"
+                app:layout_constraintTop_toBottomOf="@+id/tv_content" />
         </com.fy.navi.ui.view.SkinConstraintLayout>
     </com.fy.navi.ui.view.SkinConstraintLayout>
 

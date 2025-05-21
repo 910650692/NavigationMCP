@@ -8,8 +8,8 @@
             type="com.fy.navi.hmi.drivingrecord.DrivingRecordViewModel" />
     </data>
     <com.fy.navi.ui.view.SkinLinearLayout
-        android:layout_width="@dimen/dp_1292"
-        android:layout_height="@dimen/dp_1255"
+        android:layout_width="@dimen/dp_1110"
+        android:layout_height="@dimen/dp_1078"
         android:clickable="true"
         android:padding="@dimen/dp_34"
         android:background="@drawable/bg_shadow_navi_ndlc_8155"
@@ -54,31 +54,31 @@
         <com.fy.navi.ui.view.SkinConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_60"
-            android:layout_marginTop="@dimen/dp_24"
+            android:layout_marginTop="@dimen/dp_25"
             android:visibility="@{ViewModel.mLoginTipVisibility ? View.VISIBLE : View.GONE}"
             android:background="@color/setting_bg_to_login">
             <com.fy.navi.ui.view.SkinTextView
                 android:id="@+id/driving_record_login_tip"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_25"
+                android:layout_marginStart="@dimen/dp_26"
                 android:text="@string/driving_record_login_tip"
                 android:textColor="@color/setting_bg_tab_text_unselect"
-                android:textSize="@dimen/sp_25"
+                android:textSize="@dimen/sp_26"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"/>
             <com.fy.navi.ui.view.SkinButton
                 android:id="@+id/dr_content_btn"
                 clickCommand="@{ViewModel.mToLogin}"
-                android:layout_width="@dimen/dp_110"
+                android:layout_width="@dimen/dp_111"
                 android:layout_height="@dimen/dp_44"
                 app:layout_constraintLeft_toRightOf="@+id/driving_record_login_tip"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 android:background="@drawable/shape_button_bg"
                 android:gravity="center"
-                android:layout_marginStart="@dimen/dp_13"
+                android:layout_marginStart="@dimen/dp_14"
                 android:text="@string/driving_record_login"
                 android:textColor="@color/setting_bg_to_login_text"
                 android:textSize="@dimen/sp_25" />
@@ -125,7 +125,7 @@
             android:visibility="@{ViewModel.mRecordListViewVisibility ? View.VISIBLE : View.GONE}"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_27"
+            android:layout_marginTop="@dimen/dp_20"
             android:layout_marginBottom="@dimen/dp_40" />
         <com.fy.navi.ui.view.SkinTextView
             android:id="@+id/empty_view"
@@ -135,6 +135,6 @@
             android:gravity="center"
             android:text="@string/driving_record_no_history"
             android:textColor="@color/setting_bg_tab_text_select"
-            android:textSize="@dimen/sp_30" />
+            android:textSize="@dimen/sp_29" />
     </com.fy.navi.ui.view.SkinLinearLayout>
 </layout>

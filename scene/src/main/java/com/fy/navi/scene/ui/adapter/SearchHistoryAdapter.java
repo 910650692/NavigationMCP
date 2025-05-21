@@ -38,6 +38,7 @@ public class SearchHistoryAdapter extends RecyclerView.Adapter<SearchHistoryAdap
     private ItemClickListener mItemClickListener;
     private int mHomeCompanyType = -1;// 1:家 2:公司 3:常用地址 0:收藏夹 -1:都不是
     private boolean mShowActionContainer = true;
+    private boolean mIsShowIndex = false;//显示icon还是序号,默认显示icon
 
     public int getHomeCompanyType() {
         return mHomeCompanyType;
@@ -97,10 +98,18 @@ public class SearchHistoryAdapter extends RecyclerView.Adapter<SearchHistoryAdap
             holder.resultItemBinding.poiToNavi.setVisibility(View.GONE);
             holder.resultItemBinding.llActionContainer.setVisibility(mShowActionContainer ? View.VISIBLE : View.GONE);
             holder.resultItemBinding.sllCollect.setVisibility(View.INVISIBLE);
-            holder.resultItemBinding.poiIcon.setVisibility(View.VISIBLE);
-            holder.resultItemBinding.poiIcon.setImageDrawable(ResourceUtils.Companion.getInstance().getDrawable(R.drawable.search_poi_icon));
+            holder.resultItemBinding.searchIcon.setVisibility(View.VISIBLE);
+            holder.resultItemBinding.poiIcon.setVisibility(View.GONE);
+            holder.resultItemBinding.searchIcon.setImageDrawable(ResourceUtils.Companion.getInstance().getDrawable(R.drawable.search_poi_icon));
         } else {
-            holder.resultItemBinding.poiIcon.setVisibility(View.VISIBLE);
+            if (mIsShowIndex) {
+                holder.resultItemBinding.poiNum.setVisibility(View.VISIBLE);
+                holder.resultItemBinding.poiIcon.setVisibility(View.GONE);
+                holder.resultItemBinding.searchIcon.setVisibility(View.GONE);
+            } else {
+                holder.resultItemBinding.poiIcon.setVisibility(View.VISIBLE);
+                holder.resultItemBinding.searchIcon.setVisibility(View.GONE);
+            }
             holder.resultItemBinding.poiIcon.setImageDrawable(ResourceUtils.Companion.getInstance().getDrawable(R.drawable.img_basic_ic_orientation));
             holder.resultItemBinding.skInfoLayout.setVisibility(View.VISIBLE);
             holder.resultItemBinding.poiToNavi.setVisibility(View.VISIBLE);
@@ -110,10 +119,12 @@ public class SearchHistoryAdapter extends RecyclerView.Adapter<SearchHistoryAdap
                         parseGeoPoint(mPoiEntities.get(position).getMEndPoint())));
             }
         }
-
+        if (mPoiEntities.get(position) != null && ConvertUtils.isEmpty(mPoiEntities.get(position).getMEndPoiName())) {
+            holder.resultItemBinding.subLineView.setVisibility(View.GONE);
+        }
         if (mSearchPackage.isAlongWaySearch()) {
             holder.resultItemBinding.textNavi.setText(R.string.st_along_way_point);
-            holder.resultItemBinding.ivNaviIcon.setImageDrawable(ResourceUtils.Companion.getInstance().getDrawable(R.drawable.img_basic_ic_add));
+            holder.resultItemBinding.ivNaviIcon.setImageDrawable(ResourceUtils.Companion.getInstance().getDrawable(R.drawable.img_addq_58));
 
         } else {
             holder.resultItemBinding.textNavi.setText(R.string.st_go_here);
@@ -270,5 +281,8 @@ public class SearchHistoryAdapter extends RecyclerView.Adapter<SearchHistoryAdap
 
     public void setNoShowActionContainer(){
         mShowActionContainer = false;
+    }
+    public void setMIsShowIndex(final boolean isShowIndex){
+        mIsShowIndex = isShowIndex;
     }
 }
