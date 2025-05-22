@@ -7,6 +7,6 @@
         </layer-list>
     </item>
     <item android:state_pressed="true" android:drawable="@color/transparent" />
-    <item android:state_selected="true" android:drawable="@color/parking_recommended_item_42386DF0" />
+    <item android:state_selected="true" android:drawable="@color/bg_route_item_select" />
     <item android:drawable="@android:color/transparent" />
 </selector>

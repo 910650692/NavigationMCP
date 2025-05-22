@@ -1033,7 +1033,6 @@ public final class VoiceSearchManager {
                 //选中poi作为途径点
                 mAlongToAround = false;
                 RoutePackage.getInstance().addViaPoint(MapType.MAIN_SCREEN_MAIN_MAP, poiInfo);
-                sendClosePage();
                 break;
             case IVrBridgeConstant.VoiceSearchType.ADD_FAVORITE:
                 addCommonFavorite(poiInfo, false);

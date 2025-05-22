@@ -377,7 +377,9 @@ public class SceneNaviEtaImpl extends BaseSceneModel<SceneNaviEtaView> {
     private void setVisibleNaviNext(final boolean isVisible) {
         Logger.d(TAG, "setVisibleNaviNext：isVisible：" + isVisible);
         mIsNextManeuverShow = isVisible;
-        mCallBack.updateNextStatus(isVisible, mOfflineManeuverIcon);
+        if (null != mCallBack) {
+            mCallBack.updateNextStatus(isVisible, mOfflineManeuverIcon);
+        }
         // 路口大图显示的时候eta要显示距离时间信息
         if (mIsCrossImageShow) {
             return;

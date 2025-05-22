@@ -18,10 +18,10 @@ import com.fy.navi.flavor.TestCarType;
 import com.fy.navi.hmi.BuildConfig;
 import com.fy.navi.hmi.launcher.LauncherWindowService;
 import com.fy.navi.hmi.map.MapActivity;
+import com.fy.navi.patacnetlib.PatacNetClient;
 import com.fy.navi.service.AppContext;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.StartService;
-import com.fy.navi.service.adapter.activate.cloudpatac.PatacNetClient;
 import com.fy.navi.ui.BaseApplication;
 
 /**
@@ -42,7 +42,7 @@ public class NaviApplication extends BaseApplication implements Application.Acti
         initARouter();
         initDataTrack(); // 初始化SDK
         BaseTestCarType testCarType = new TestCarType();
-        PatacNetClient.getInstance().init(); // 初始化网络适配器
+        PatacNetClient.getInstance().init(this); // 初始化网络适配器
 
         if (!DeviceUtils.isCar(this)) {
             Thread.setDefaultUncaughtExceptionHandler(new AppCrashRecord(this));

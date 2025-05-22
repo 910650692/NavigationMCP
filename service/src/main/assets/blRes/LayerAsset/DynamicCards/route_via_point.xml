@@ -1,0 +1,6 @@
+<div id='route_via_point' style='display:flex;flex-direction:row;align-items:right;justify-content:space-around;'>
+  <div style='padding-top:20px;padding-right:20px'>
+      <image id='via_image_dynamic' style='' src='global_image_bubble_midd_day_night' />
+  </div>
+  <image id='click_delete' style='position:absolute;top:0px;right:0px' src='global_image_bubble_delete_day_night' />
+</div>

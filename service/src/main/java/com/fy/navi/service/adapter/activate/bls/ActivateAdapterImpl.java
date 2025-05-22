@@ -3,15 +3,14 @@ package com.fy.navi.service.adapter.activate.bls;
 import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
+import com.fy.navi.patacnetlib.NetQueryManager;
+import com.fy.navi.patacnetlib.response.activate.QueryOrderResponse;
 import com.fy.navi.service.AutoMapConstant;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.adapter.activate.ActivateObserver;
 import com.fy.navi.service.adapter.activate.IActivateApi;
-import com.fy.navi.service.adapter.activate.cloudpatac.response.CheckOrderResponse;
 import com.fy.navi.service.define.code.CodeManager;
 import com.fy.navi.service.greendao.CommonManager;
-import com.patac.netlib.callback.NetDisposableObserver;
-import com.patac.netlib.exception.ApiException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -131,19 +130,17 @@ public class ActivateAdapterImpl implements IActivateApi {
             //先查询订单
             if (!ConvertUtils.isEmpty(CommonManager.getInstance().getValueByKey(AutoMapConstant.ActivateOrderTAG.SD_ORDER_ID))) {
                 Logger.d(TAG, "有订单号记录，直接查询订单");
-                ActivationManager.getInstance().checkOrderStatus(new NetDisposableObserver<CheckOrderResponse>() {
+                ActivationManager.getInstance().queryOrderStatus(new NetQueryManager.INetResultCallBack<QueryOrderResponse>() {
                     @Override
-                    public void onSuccess(final CheckOrderResponse statusBean) {
+                    public void onSuccess(final QueryOrderResponse statusBean) {
                         Logger.d(TAG, "firstCheckOrderStatus success");
                         Logger.d(TAG, statusBean.toString());
                         manualActivate(statusBean.getSerialNumber(), statusBean.getActiveCode());
                     }
 
                     @Override
-                    public void onFailed(final ApiException e) {
+                    public void onFailed() {
                         Logger.d(TAG, "firstCheckOrderStatus failed");
-                        Logger.d(TAG, "Exception code : " + e.getCode());
-                        Logger.d(TAG, "Exception msg : " + e.getMessage());
                         //首次查询没有订单后下单
                         ActivationManager.getInstance().createCloudOrder();
                     }

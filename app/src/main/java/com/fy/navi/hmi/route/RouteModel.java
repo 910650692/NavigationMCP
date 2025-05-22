@@ -583,6 +583,15 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
         return mRoutePackage.isBelongRouteParam(MapType.MAIN_SCREEN_MAIN_MAP, poiInfoEntity);
     }
 
+    /***
+     * 是否是启终点
+     * @param poiInfoEntity poi数据
+     * @return 是否在路径上
+     */
+    public boolean isStartOrEndRouteParam(final PoiInfoEntity poiInfoEntity) {
+        return mRoutePackage.isStartOrEndRouteParam(MapType.MAIN_SCREEN_MAIN_MAP, poiInfoEntity);
+    }
+
     /**
      * 获取选中的路线信息
      * @return 路线信息

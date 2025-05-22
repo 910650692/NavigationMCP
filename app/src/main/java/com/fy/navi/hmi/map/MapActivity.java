@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.view.View;
 
@@ -14,6 +15,7 @@ import androidx.core.view.WindowCompat;
 
 import com.android.utils.ConvertUtils;
 import com.android.utils.ThemeUtils;
+import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
 import com.fy.navi.burypoint.anno.HookMethod;
@@ -21,7 +23,6 @@ import com.fy.navi.burypoint.constant.BuryConstant;
 import com.fy.navi.hmi.BR;
 import com.fy.navi.hmi.R;
 import com.fy.navi.hmi.databinding.ActivityMapBinding;
-import com.fy.navi.hmi.launcher.FloatViewManager;
 import com.fy.navi.hmi.launcher.LauncherWindowService;
 import com.fy.navi.hmi.test.TestWindow;
 import com.fy.navi.mapservice.bean.INaviConstant;
@@ -198,9 +199,17 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
     @Override
     public void onConfigurationChanged(@NonNull Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        Logger.i(TAG, "current nightMode: " + newConfig.uiMode);
+        Logger.i(TAG, GsonUtils.toJson(newConfig));
         mViewModel.updateUiStyle(MapType.MAIN_SCREEN_MAIN_MAP, ThemeUtils.INSTANCE.isNightModeEnabled(this) ? ThemeType.NIGHT : ThemeType.DAY);
         recreate();
+        mViewModel.setScreenType(newConfig.screenWidthDp);
+    }
+
+    @Override
+    public void onMultiWindowModeChanged(boolean isInMultiWindowMode, Configuration newConfig) {
+        super.onMultiWindowModeChanged(isInMultiWindowMode, newConfig);
+        //监听分屏模式
+        Logger.i(TAG, isInMultiWindowMode, GsonUtils.toJson(newConfig));
     }
 
     @Override

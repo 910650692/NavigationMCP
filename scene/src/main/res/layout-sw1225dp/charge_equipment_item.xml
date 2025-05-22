@@ -6,6 +6,9 @@
     <data>
         <import type="android.view.View" />
         <variable
+            name="equipmentInfo"
+            type="com.fy.navi.service.define.search.EquipmentInfo" />
+        <variable
             name="connectorInfoItem"
             type="com.fy.navi.service.define.search.ConnectorInfoItem" />
         <variable
@@ -60,7 +63,7 @@
                 android:id="@+id/equipment_unlock"
                 android:layout_width="@dimen/dp_124"
                 android:layout_height="match_parent"
-                android:onClick="@{() -> handler.unLock(connectorInfoItem)}"
+                android:onClick="@{() -> handler.unLock(connectorInfoItem,equipmentInfo)}"
                 android:textSize="@dimen/sp_30"
                 android:gravity="center"
                 android:background="@drawable/bg_equipment_left"
@@ -89,6 +92,7 @@
             android:text="@string/charge_appointment"
             android:textSize="@dimen/sp_30"
             android:textColor="@color/white"
+            android:onClick="@{() -> handler.openReservation(connectorInfoItem,equipmentInfo)}"
             android:gravity="center"
             android:layout_height="@dimen/dp_52"/>
     </com.fy.navi.ui.view.SkinConstraintLayout>

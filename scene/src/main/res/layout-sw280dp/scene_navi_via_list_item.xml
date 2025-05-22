@@ -27,8 +27,9 @@
             android:id="@+id/cl_content"
             android:focusable="true"
             android:background="@drawable/bg_base_mfc_cadillac_bg_selector"
-            android:layout_width="@dimen/dp_742"
-            android:layout_height="match_parent">
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingHorizontal="@dimen/dp_40">
 
             <androidx.constraintlayout.widget.Guideline
                 android:id="@+id/gl_name"

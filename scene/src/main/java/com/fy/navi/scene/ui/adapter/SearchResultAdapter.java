@@ -318,12 +318,16 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
                         notifyItemChanged(mLastParentSelectIndex);
                     }
                 }
-                final ChildInfo childInfo = childInfoList.get(index);
-                mChildSelectInfo = new PoiInfoEntity()
-                        .setName(childInfo.getName())
-                        .setAddress(childInfo.getAddress())
-                        .setPid(childInfo.getPoiId())
-                        .setPoint(childInfo.getLocation());
+                if (isSelectIndex) {
+                    final ChildInfo childInfo = childInfoList.get(index);
+                    mChildSelectInfo = new PoiInfoEntity()
+                            .setName(childInfo.getName())
+                            .setAddress(childInfo.getAddress())
+                            .setPid(childInfo.getPoiId())
+                            .setPoint(childInfo.getLocation());
+                } else {
+                    mChildSelectInfo = null;
+                }
                 mLastParentSelectIndex = resultHolder.getAdapterPosition();
             });
         }

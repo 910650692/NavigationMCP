@@ -1,0 +1,12 @@
+<div id="guide_label_pop" style="display:flex;flex-direction:column;justify-content:center;align-items:flex-start;width:auto;height:auto;background-image:global_image_road_info_bg_small_left_day_night;">
+  <div id="road_name_code_div" style="display:flex;flex-direction:row;justify-content:flex-start;align-items:center;margin-right:12px;margin-left:12px;padding-top:2px;width:auto;height:44px;">
+    <div id="road_code_div" style="display:flex;flex-direction:row;justify-content:center;align-items:center;margin-right:6px;width:auto;height:28px;background-image:global_image_road_info_bg_provincial_day_night">
+       <label id="road_code_text" style="margin-right:9px;margin-left:9px;font-size:20px;color:#ffffff;font-family:font_cn;" lines="1">G3</label>
+    </div>
+    <label id="via_name_text" style="margin-top:2px;font-size:22px;color:#191919;font-family:font_cn;" lines="1">京台高速</label>
+  </div>
+  <div id="div2_ignore" style="display:flex;flex-direction:row;justify-content:flex-start;align-items:center;margin-right:12px;margin-bottom:6px;margin-left:12px;width:auto;height:auto;">
+    <label id="via_lane_text" style="font-size:18px;color:#99000000;font-family:font_cn;white-space:nowrap;" lines="1">2-4车道</label>
+    <label id="via_speed_text" style="margin-left:4px;font-size:18px;color:#99000000;font-family:font_cn;white-space:nowrap;" lines="1">110km/h</label>
+  </div>
+</div>

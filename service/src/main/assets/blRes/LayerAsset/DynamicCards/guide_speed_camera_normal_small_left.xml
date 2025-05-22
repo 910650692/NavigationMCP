@@ -1,0 +1,6 @@
+<div id="div_direction_bg" style="display:flex;flex-direction:row;justify-content:center;align-items:center;width:44px;height:43px;background-image:global_image_guide_camera_speed_small_left_day_night;">
+  <div style="display:flex;flex-direction:row;justify-content:center;align-items:center;width:36px;height:36px;position:absolute;top:1px;left:1px;">
+    <label id="speed_text2" style="font-size:16px;color:#000000;font-family:AmapNumber-Bold;" lines="1">80</label>
+    <label id="speed_text3" style="font-size:14px;color:#000000;font-family:AmapNumber-Bold;" lines="1">120</label>
+  </div>
+</div>

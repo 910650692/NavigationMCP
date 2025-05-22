@@ -281,4 +281,8 @@ final public class SearchAdapter {
     public int queryReservation(final SearchRequestParameter searchRequestParameter){
         return mSearchApi.queryReservation(searchRequestParameter);
     }
+
+    public int cancelReservation(final SearchRequestParameter searchRequestParameter){
+        return mSearchApi.cancelReservation(searchRequestParameter);
+    }
 }

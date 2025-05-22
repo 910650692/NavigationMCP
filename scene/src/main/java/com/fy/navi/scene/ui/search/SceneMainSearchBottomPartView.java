@@ -18,6 +18,7 @@ import com.android.utils.ConvertUtils;
 import com.android.utils.ResourceUtils;
 import com.android.utils.ToastUtils;
 import com.android.utils.log.Logger;
+import com.android.utils.thread.ThreadManager;
 import com.fy.navi.scene.BaseSceneView;
 import com.fy.navi.scene.R;
 import com.fy.navi.scene.RoutePath;
@@ -232,6 +233,17 @@ public class SceneMainSearchBottomPartView extends BaseSceneView<SearchHistoryVi
                             .build(RoutePath.Route.ROUTE_FRAGMENT)
                             .navigation();
                     addFragment((BaseFragment) fragment, SearchFragmentFactory.createRouteFragment(poiInfoEntity));
+                }
+            }
+
+            @Override
+            public void onDeleteClick(List<History> poiInfoEntitys) {
+                if (poiInfoEntitys == null || poiInfoEntitys.isEmpty()) {
+                    ThreadManager.getInstance().postUi(() -> {
+                        mViewBinding.tvRecordNull.setVisibility(VISIBLE);
+                        mViewBinding.rcyRecord.setVisibility(GONE);
+                        showDeleteRecord();
+                    });
                 }
             }
         });

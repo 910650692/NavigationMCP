@@ -1,0 +1,37 @@
+plugins {
+    alias(libs.plugins.android.library)
+}
+
+android {
+    namespace 'com.fy.navi.patacnetlib'
+    compileSdk Integer.parseInt(libs.versions.compileSdk.get())
+    buildToolsVersion libs.versions.buildSdk.get()
+
+    defaultConfig {
+        minSdk IS_PAD_RUN.toBoolean() ? Integer.parseInt(libs.versions.padminSdk.get()) :Integer.parseInt(libs.versions.minSdk.get())
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles "consumer-rules.pro"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+    packagingOptions {
+        pickFirst 'META-INF/DEPENDENCIES'
+    }
+}
+
+dependencies {
+    implementation libs.net.basic
+    implementation project(":utils")
+    implementation libs.lombok
+    annotationProcessor libs.lombok
+}

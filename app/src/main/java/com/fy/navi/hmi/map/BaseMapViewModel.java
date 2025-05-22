@@ -523,7 +523,18 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
             addPoiDetailsFragment(new MapPointSearchFragment(), MapPointSearchFragment.getBundle(FavoriteHelper.getInstance().getHomeCompanyType(), entity));
             return;
         }
+        // 移除交通事件Fragment
+        removeTrafficEventFragment();
         openPoiDetailFragment(entity);
+    }
+
+    private void removeTrafficEventFragment() {
+        Logger.i(TAG, "removeTrafficEventFragment-start!");
+        BaseFragment baseFragment = StackManager.getInstance().getCurrentFragment(MapType.MAIN_SCREEN_MAIN_MAP.name());
+        if (!ConvertUtils.isNull(baseFragment) && baseFragment instanceof TrafficEventFragment) {
+            closeFragment(true);
+            Logger.i(TAG, "removeTrafficEventFragment-Success!");
+        }
     }
 
     @HookMethod(eventName = BuryConstant.EventName.AMAP_MAP_DESTINATION_CHOOSE)
@@ -896,10 +907,16 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
 
         if (Boolean.FALSE.equals(param.isMIsShort()) && 0 == param.getMKey()) {
             homeTime.set(param.getMTime());
+            if("计算中...".equals(param.getMTime())){
+                homeTime.set(ResourceUtils.Companion.getInstance().getString(R.string.map_in_around));
+            }
             mView.setTMCView(param.getMKey(), param.getMRouteLightBarItem());
         }
         if (Boolean.FALSE.equals(param.isMIsShort()) && 1 == param.getMKey()) {
             companyTime.set(param.getMTime());
+            if("计算中...".equals(param.getMTime())){
+                companyTime.set(ResourceUtils.Companion.getInstance().getString(R.string.map_in_around));
+            }
             mView.setTMCView(param.getMKey(), param.getMRouteLightBarItem());
         }
 
@@ -963,4 +980,5 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         }
     }
 
+    void setScreenType(int right){}
 }

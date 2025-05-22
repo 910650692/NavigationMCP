@@ -17,6 +17,7 @@ import com.fy.navi.service.define.search.ChargeEquipmentInfo;
 import com.fy.navi.service.define.search.ChargePriceInfo;
 import com.fy.navi.service.define.search.EquipmentInfo;
 import com.fy.navi.service.define.search.PoiInfoEntity;
+import com.fy.navi.service.define.search.ReservationInfo;
 import com.fy.navi.ui.base.BaseFragment;
 
 import java.util.ArrayList;
@@ -81,5 +82,9 @@ public class ChargingStationReservationListFragment extends BaseFragment<Fragmen
 
     public void notifyUnLockResult(){
         mBinding.sceneChargeReservationList.notifyUnLockResult();
+    }
+
+    public void notifyCancelReservation(ArrayList<ReservationInfo> list){
+        mBinding.sceneChargeReservationList.notifyCancelReservation(list);
     }
 }

@@ -57,6 +57,16 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"/>
 
+            <com.fy.navi.ui.view.SkinImageView
+                clickCommand="@{ScenePoiDetailContentView.closeFragment}"
+                android:layout_width="@dimen/dp_58"
+                android:layout_height="@dimen/dp_58"
+                android:layout_marginEnd="@dimen/dp_26"
+                android:layout_marginTop="@dimen/dp_38"
+                android:src="@drawable/icon_poi_details_close"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
         </com.fy.navi.ui.view.SkinConstraintLayout>
 
         <androidx.constraintlayout.widget.Guideline
@@ -109,7 +119,7 @@
             clickCommand="@{ScenePoiDetailContentView.closeFragment}"
             android:layout_width="@dimen/dp_58"
             android:layout_height="@dimen/dp_58"
-            android:layout_marginEnd="@dimen/dp_26"
+            android:layout_marginEnd="@dimen/dp_30"
             android:src="@drawable/icon_poi_details_close"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/sk_poi_name"

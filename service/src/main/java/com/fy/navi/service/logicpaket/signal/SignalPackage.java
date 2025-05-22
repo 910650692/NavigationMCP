@@ -160,6 +160,19 @@ public final class SignalPackage implements SignalAdapterCallback {
         });
     }
 
+    @Override
+    public void onFuelLevelPercentSignalChanged(Float value) {
+        ThreadManager.getInstance().postUi(() -> {
+            if (!ConvertUtils.isEmpty(mSignalCallbacks)) {
+                for (SignalCallback signalCallback : mSignalCallbacks.values()) {
+                    if (signalCallback != null) {
+                        signalCallback.onFuelLevelPercentSignalChanged(value);
+                    }
+                }
+            }
+        });
+    }
+
     /**
      * 车外温度
      *

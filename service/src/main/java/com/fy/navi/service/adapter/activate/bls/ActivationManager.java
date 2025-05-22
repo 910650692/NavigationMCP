@@ -9,24 +9,20 @@ import com.android.utils.log.Logger;
 import com.autonavi.gbl.activation.ActivationModule;
 import com.autonavi.gbl.activation.model.ActivateReturnParam;
 import com.autonavi.gbl.activation.model.ActivationInitParam;
+import com.fy.navi.patacnetlib.NetQueryManager;
+import com.fy.navi.patacnetlib.request.navibean.activate.AppKeyRequest;
+import com.fy.navi.patacnetlib.request.navibean.activate.CreateOrderRequest;
+import com.fy.navi.patacnetlib.request.navibean.activate.QueryOrderRequest;
+import com.fy.navi.patacnetlib.request.navibean.activate.UuidRequest;
+import com.fy.navi.patacnetlib.response.activate.AppKeyResponse;
+import com.fy.navi.patacnetlib.response.activate.CreateOrderResponse;
+import com.fy.navi.patacnetlib.response.activate.QueryOrderResponse;
+import com.fy.navi.patacnetlib.response.activate.UuidResponse;
 import com.fy.navi.service.AutoMapConstant;
 import com.fy.navi.service.GBLCacheFilePath;
 import com.fy.navi.service.MapDefaultFinalTag;
-import com.fy.navi.service.adapter.activate.cloudpatac.request.CheckOrderReq;
-import com.fy.navi.service.adapter.activate.cloudpatac.request.QueryOrderReq;
-import com.fy.navi.service.adapter.activate.cloudpatac.request.UuidReq;
-import com.fy.navi.service.adapter.activate.cloudpatac.response.AppKeyResponse;
-import com.fy.navi.service.adapter.activate.cloudpatac.api.NetQueryRepository;
-import com.fy.navi.service.adapter.activate.cloudpatac.request.AppKeyReq;
-import com.fy.navi.service.adapter.activate.cloudpatac.response.CheckOrderResponse;
-import com.fy.navi.service.adapter.activate.cloudpatac.response.QueryOrderResponse;
-import com.fy.navi.service.adapter.activate.cloudpatac.response.UuidResponse;
 import com.fy.navi.service.greendao.CommonManager;
 import com.fy.navi.service.logicpaket.user.account.AccountPackage;
-import com.patac.netlib.callback.NetDisposableObserver;
-import com.patac.netlib.exception.ApiException;
-import com.patac.netlib.factory.NetPkiFactory;
-import com.patac.netlib.utils.NetConfigUtils;
 
 import java.util.Arrays;
 import java.util.concurrent.CancellationException;
@@ -38,9 +34,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
-
-import io.reactivex.Observable;
-import io.reactivex.schedulers.Schedulers;
 
 public final class ActivationManager {
     private static final String TAG = MapDefaultFinalTag.ACTIVATE_SERVICE_TAG;
@@ -65,62 +58,10 @@ public final class ActivationManager {
     private final ActivationModule mActivationService;
     private boolean mIsInit = false;
 
-
-    private final NetDisposableObserver<AppKeyResponse> mAppKeyObserver = new NetDisposableObserver<AppKeyResponse>() {
-        @Override
-        public void onSuccess(final AppKeyResponse appKeyBean) {
-            Logger.d(TAG, appKeyBean.toString());
-            APP_KEY = appKeyBean.getAppKey();
-            //AccountPackage.getInstance().saveAppKey(appKeyBean.getAppKey());
-            //postUUID();
-            mFlagForTest = true;
-        }
-
-        @Override
-        public void onFailed(final ApiException e) {
-            Logger.d(TAG, EXCEPTION_CODE + e.getCode());
-            Logger.d(TAG, EXCEPTION_MSG + e.getMessage());
-        }
-    };
-
-    private final NetDisposableObserver<UuidResponse> mUuidObserver = new NetDisposableObserver<UuidResponse>() {
-        @Override
-        public void onSuccess(final UuidResponse uuidBean) {
-            Logger.d(TAG, uuidBean.toString());
-            UUID = uuidBean.getUuid();
-            mActivateListener.onUUIDGet(uuidBean.getUuid());
-        }
-
-        @Override
-        public void onFailed(final ApiException e) {
-            Logger.d(TAG, EXCEPTION_CODE + e.getCode());
-            Logger.d(TAG, EXCEPTION_MSG + e.getMessage());
-        }
-    };
-
-    private final NetDisposableObserver<QueryOrderResponse> mCheckOrderObserver = new NetDisposableObserver<QueryOrderResponse>() {
-        @Override
-        public void onSuccess(final QueryOrderResponse statusBean) {
-            Logger.d(TAG, statusBean.toString());
-            ORDER_ID = statusBean.getCusOrderId();
-            CommonManager.getInstance().insertOrReplace(AutoMapConstant.ActivateOrderTAG.SD_ORDER_ID, statusBean.getCusOrderId());
-            mActivateListener.onOrderCreated(true);
-        }
-
-        @Override
-        public void onFailed(final ApiException e) {
-            Logger.d(TAG, EXCEPTION_CODE + e.getCode());
-            Logger.d(TAG, EXCEPTION_MSG + e.getMessage());
-            ++QUERY_ORDER_NUM;
-            Logger.e(TAG, "下单失败" + QUERY_ORDER_NUM + "次");
-            mActivateListener.onOrderCreated(false);
-        }
-    };
-
     private ActivationManager() {
+        resetVar();
         mActivationService = ActivationModule.getInstance();
         DEVICES_ID = DevicesIdUtil.getInstance().getDeviceId();
-        resetVar();
         Logger.d(TAG, "ActivationManager: devicesId = " + DEVICES_ID);
         Logger.d(TAG, "                  sysVersion = " + SYS_VERSION);
 
@@ -153,15 +94,6 @@ public final class ActivationManager {
         mActivationService.setNetActivateObserver(null);
         mActivationService.unInit();
         mActivateListener = null;
-        if (!mAppKeyObserver.isDisposed()) {
-            mAppKeyObserver.dispose();
-        }
-        if (!mUuidObserver.isDisposed()) {
-            mUuidObserver.dispose();
-        }
-        if (!mCheckOrderObserver.isDisposed()) {
-            mCheckOrderObserver.dispose();
-        }
     }
 
     /**
@@ -198,7 +130,7 @@ public final class ActivationManager {
 
         if (!ConvertUtils.isEmpty(APP_KEY)) {
             Logger.d(TAG, "APP_KEY静态变量不为空 = " + APP_KEY);
-            NetPkiFactory.getInstance().saveAppSecurity(APP_KEY);
+            NetQueryManager.getInstance().saveAppSecurity(APP_KEY);
             mFlagForTest = true;
             postUUID();
             return;
@@ -207,19 +139,28 @@ public final class ActivationManager {
         if (!ConvertUtils.isEmpty(AccountPackage.getInstance().getAppKey())) {
             APP_KEY = AccountPackage.getInstance().getAppKey();
             Logger.d(TAG, "APP_KEY静态变量为空，数据库存有APP_KEY = " + APP_KEY);
-            NetPkiFactory.getInstance().saveAppSecurity(APP_KEY);
+            NetQueryManager.getInstance().saveAppSecurity(APP_KEY);
             mFlagForTest = true;
             postUUID();
             return;
         }
 
-        final AppKeyReq req = new AppKeyReq(API_VERSION);
+        final AppKeyRequest req = new AppKeyRequest(API_VERSION);
+        NetQueryManager.getInstance().queryAppKey(req, new NetQueryManager.INetResultCallBack<AppKeyResponse>() {
+            @Override
+            public void onSuccess(final AppKeyResponse response) {
+                Logger.d(TAG, response.toString());
+                APP_KEY = response.getAppKey();
+                //AccountPackage.getInstance().saveAppKey(appKeyBean.getAppKey());
+                //postUUID();
+                mFlagForTest = true;
+            }
 
-        final Observable<AppKeyResponse> observable = NetQueryRepository.getInstance().queryAppKey(req);
-
-        observable.subscribeOn(Schedulers.io())
-                .observeOn(Schedulers.io())
-                .subscribe(mAppKeyObserver);
+            @Override
+            public void onFailed() {
+                Logger.d(TAG, "AppKey请求失败");
+            }
+        });
     }
 
     /**
@@ -241,14 +182,23 @@ public final class ActivationManager {
             return;
         }
 
-        final UuidReq uuidReq = new UuidReq(API_VERSION, TEST_APP_ID, SYS_VERSION, DEVICES_ID);
-        NetConfigUtils.getInstance().setDeviceId(DEVICES_ID);
-        Logger.d(TAG, "uuid req : " + uuidReq.toString());
-        final Observable<UuidResponse> observable = NetQueryRepository.getInstance().queryUuid(uuidReq);
+        final UuidRequest uuidRequest = new UuidRequest(API_VERSION, TEST_APP_ID, SYS_VERSION, DEVICES_ID);
+        Logger.d(TAG, "uuid req : " + uuidRequest.toString());
 
-        observable.subscribeOn(Schedulers.io())
-                .observeOn(Schedulers.io())
-                .subscribe(mUuidObserver);
+        NetQueryManager.getInstance().queryUuid(uuidRequest, new NetQueryManager.INetResultCallBack<UuidResponse>() {
+            @Override
+            public void onSuccess(final UuidResponse response) {
+                Logger.d(TAG, response.toString());
+                UUID = response.getUuid();
+                mActivateListener.onUUIDGet(response.getUuid());
+            }
+
+            @Override
+            public void onFailed() {
+                Logger.d(TAG, "Uuid请求失败");
+            }
+        });
+
     }
 
     /**
@@ -320,12 +270,24 @@ public final class ActivationManager {
             UUID = uuid;
         }
         Logger.e(TAG, "UUID = " + UUID);
-        final QueryOrderReq queryOrderReq = new QueryOrderReq(API_VERSION, TEST_APP_ID, UUID, SD);
+        final CreateOrderRequest createOrderReq = new CreateOrderRequest(API_VERSION, TEST_APP_ID, UUID, SD);
+        NetQueryManager.getInstance().createOrder(createOrderReq, new NetQueryManager.INetResultCallBack<CreateOrderResponse>() {
+            @Override
+            public void onSuccess(final CreateOrderResponse response) {
+                Logger.d(TAG, response.toString());
+                ORDER_ID = response.getCusOrderId();
+                CommonManager.getInstance().insertOrReplace(AutoMapConstant.ActivateOrderTAG.SD_ORDER_ID, response.getCusOrderId());
+                mActivateListener.onOrderCreated(true);
+            }
 
-        final Observable<QueryOrderResponse> observable = NetQueryRepository.getInstance().queryOrder(queryOrderReq);
-        observable.subscribeOn(Schedulers.io())
-                .observeOn(Schedulers.io())
-                .subscribe(mCheckOrderObserver);
+            @Override
+            public void onFailed() {
+                ++QUERY_ORDER_NUM;
+                Logger.e(TAG, "下单失败" + QUERY_ORDER_NUM + "次");
+                mActivateListener.onOrderCreated(false);
+            }
+        });
+
     }
 
 
@@ -353,39 +315,32 @@ public final class ActivationManager {
                     return;
                 }
                 try {
-                    final NetDisposableObserver<CheckOrderResponse> checkOrderObserver = new NetDisposableObserver<CheckOrderResponse>() {
+                    final NetQueryManager.INetResultCallBack<QueryOrderResponse> callBack = new NetQueryManager.INetResultCallBack<QueryOrderResponse>() {
                         @Override
-                        public void onSuccess(final CheckOrderResponse checkBean) {
+                        public void onSuccess(final QueryOrderResponse checkBean) {
                             Logger.d(TAG, "checkOrderStatus success");
                             Logger.d(TAG, checkBean.toString());
                             manualActivate(checkBean.getSerialNumber(), checkBean.getActiveCode());
-                            if (!this.isDisposed()) {
-                                this.dispose();
-                            }
+
                             future.complete(true);
                             executor.shutdownNow();
                         }
 
                         @Override
-                        public void onFailed(final ApiException e) {
-                            Logger.d(TAG, "checkOrderStatus failed");
-                            Logger.d(TAG, EXCEPTION_CODE + e.getCode());
-                            Logger.d(TAG, EXCEPTION_MSG + e.getMessage());
+                        public void onFailed() {
+                            Logger.d(TAG, "查询订单失败");
 
                             final int currentCount = retryCount.incrementAndGet();
                             Logger.d(TAG, "轮询次数 : " + currentCount);
                             if (currentCount > maxRetries) {
                                 future.complete(false);
                                 executor.shutdownNow();
-                                if (!this.isDisposed()) {
-                                    this.dispose();
-                                }
                             } else {
                                 executor.schedule(taskRef.get(), delays[currentCount], TimeUnit.SECONDS);
                             }
                         }
                     };
-                    getInstance().checkOrderStatus(checkOrderObserver);
+                    getInstance().queryOrderStatus(callBack);
 
                 } catch (NullPointerException | IllegalArgumentException e) {
                     future.completeExceptionally(e);
@@ -423,9 +378,9 @@ public final class ActivationManager {
     /**
      * 查询订单状态
      *
-     * @param checkOrderObserver 网络结果回调
+     * @param callBack 网络结果回调
      */
-    public void checkOrderStatus(final NetDisposableObserver<CheckOrderResponse> checkOrderObserver) {
+    public void queryOrderStatus(final NetQueryManager.INetResultCallBack<QueryOrderResponse> callBack) {
         Logger.d(TAG, "checkOrderStatus");
         final String orderId = CommonManager.getInstance().getValueByKey(AutoMapConstant.ActivateOrderTAG.SD_ORDER_ID);
 
@@ -439,13 +394,10 @@ public final class ActivationManager {
             ORDER_ID = orderId;
         }
         Logger.e(TAG, "ORDER_ID = " + ORDER_ID);
-        final CheckOrderReq req = new CheckOrderReq(SYS_VERSION, TEST_APP_ID, UUID, ORDER_ID);
+        final QueryOrderRequest req = new QueryOrderRequest(SYS_VERSION, TEST_APP_ID, UUID, ORDER_ID);
 
-        final Observable<CheckOrderResponse> observable = NetQueryRepository.getInstance().checkOrder(req);
+        NetQueryManager.getInstance().queryOrder(req, callBack);
 
-        observable.subscribeOn(Schedulers.io())
-                .observeOn(Schedulers.io())
-                .subscribe(checkOrderObserver);
     }
 
     /**

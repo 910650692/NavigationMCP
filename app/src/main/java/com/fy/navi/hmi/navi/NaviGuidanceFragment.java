@@ -38,6 +38,7 @@ import com.fy.navi.service.define.navi.NaviTmcInfo;
 import com.fy.navi.service.define.navi.NaviViaEntity;
 import com.fy.navi.service.define.navi.SapaInfoEntity;
 import com.fy.navi.service.define.navi.SpeedOverallEntity;
+import com.fy.navi.service.logicpaket.navi.OpenApiHelper;
 import com.fy.navi.ui.base.BaseFragment;
 import com.fy.navi.ui.base.StackManager;
 
@@ -548,6 +549,7 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
             if (null != mViewModel) {
                 mViewModel.isRequestRouteForPlateNumberAndAvoidLimitChange();
                 mBinding.sceneNaviControlMore.updateBroadcast();
+                OpenApiHelper.exitPreview(MapType.MAIN_SCREEN_MAIN_MAP);
             } else {
                 Logger.i(TAG, "onHiddenChanged mViewModel is null");
             }

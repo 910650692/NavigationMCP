@@ -1,5 +1,6 @@
 package com.fy.navi.service.logicpaket.navi;
 
+import com.fy.navi.service.define.bean.GeoPoint;
 import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.navi.CameraInfoEntity;
 import com.fy.navi.service.define.navi.CrossImageEntity;
@@ -170,6 +171,10 @@ public interface IGuidanceObserver {
      * @param infos
      */
     default void onUpdateElectVehicleETAInfo(List<FyElecVehicleETAInfo> infos) {
+
+    }
+
+    default void onUpdateTrafficLightCountdown(int isHaveTrafficLight, GeoPoint geoPoint) {
 
     }
 

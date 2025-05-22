@@ -1,0 +1,30 @@
+<div style="display:flex;flex-direction:column;justify-content:center;align-items:center;width:auto;height:auto;">
+  <div id="parent_text_div" style="margin-top:10px;margin-right:38px;margin-bottom:2px;margin-left:38px;width:auto;">
+    <label id="parent_text" style="display:flex;justify-content:flex-start;font-weight:bold;font-size:20px;color:#000000;font-family:font_cn;line-clamp:2;text-stroke:3px #ffffff;text-overflow:ellipsis;letter-spacing:3px;max-width:200px;" lines="1">凯德MALL（望京店）</label>
+  </div>
+  <div id="end_area_all" style="display:flex;flex-direction:column;justify-content:center;margin-right:24px;margin-left:24px;width:auto;height:auto;background-image:global_image_route_info_day_night;">
+    <div style="margin-top:2px;margin-right:8px;margin-bottom:2px;margin-left:8px;">
+      <div id="end_area_eta" style="display:flex;flex-direction:row;justify-content:flex-start;align-items:center;width:auto;height:24px;">
+        <label id="eta_text" style="font-size:18px;color:#ffffff;font-family:font_cn;" lines="1">预计17:12到达</label>
+        <image id="weather_sunny" style="margin-left:4px;width:20px;height:20px;" src="global_image_navi_icon_weather_sunny_volvo" />
+        <image id="weather_rain" style="margin-left:4px;width:20px;height:20px;" src="global_image_navi_icon_weather_rain_volvo" />
+        <image id="weather_snow" style="margin-left:4px;width:20px;height:20px;" src="global_image_navi_icon_weather_snow_volvo" />
+        <image id="weather_cloudy" style="margin-left:4px;width:20px;height:20px;" src="global_image_navi_icon_weather_cloudy_volvo" />
+      </div>
+      <div id="end_area_energy" style="display:flex;flex-direction:row;justify-content:flex-start;align-items:center;width:auto;height:24px;">
+        <image id="energy_low" style="margin-right:2px;width:24px;height:24px;" src="global_image_odd_power_icon_low_day_night" />
+        <image id="energy_mid" style="margin-right:2px;width:24px;height:24px;" src="global_image_odd_power_icon_mid_day_night" />
+        <image id="energy_high" style="margin-right:2px;width:24px;height:24px;" src="global_image_odd_power_icon_high_day_night" />
+        <div style="display:flex;flex-direction:row;justify-content:flex-start;align-items:baseline;">
+          <label id="energy_text_desc" style="font-size:18px;color:#ffffff;font-family:font_cn;white-space:nowrap;" lines="1">剩余电量</label>
+          <label id="energy_text" style="margin-left:4px;font-size:18px;color:#ffffff;font-family:font_cn;" lines="1">60%</label>
+          <label id="energy_text_low" style="margin-left:4px;font-size:18px;color:#ffbaba;font-family:font_cn;" lines="1">19%</label>
+        </div>
+      </div>
+      <div id="end_area_odd" style="display:flex;flex-direction:row;justify-content:flex-start;align-items:center;width:auto;height:24px;">
+        <image id="odd_wheel_icon" style="margin-right:4px;width:24px;height:24px;" src="global_image_odd_wheel_icon1_day_night" />
+        <label id="odd_text" style="font-size:18px;color:#ffffff;font-family:font_cn;" lines="1">5个 3.3公里</label>
+      </div>
+    </div>
+  </div>
+</div>

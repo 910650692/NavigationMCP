@@ -45,7 +45,7 @@
                 android:clickable="true"
                 android:focusable="true"
                 android:focusableInTouchMode="true"
-                android:hint="@string/main_search_hint"
+                android:hint="@string/frequent_search_hint"
                 android:imeOptions="actionSearch"
                 android:inputType="text"
                 android:maxLines="1"

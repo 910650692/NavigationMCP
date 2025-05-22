@@ -1,0 +1,83 @@
+{
+    "abstract" : {
+        "brief" : "会车预警动画图层",
+        "name" : "car_meeting_warn_animation_layer",
+        "biz_type" : 1506
+    },
+    "data" : {
+        "brief" : "测试点图层",
+        "type" : "adaptor_lottie_animation",
+        "value" : [
+            {
+                "item_data" : {
+                    "position" : {
+                        "lon" : 116.354451,
+                        "lat" : 39.945687
+                    },
+                    "id": 0
+                },
+                "biz_data": {
+                    "angle": 0.0
+                }
+            }
+        ],
+        "rule":[
+            {
+                "type": "data_duplicate",
+                "brief": "数据去重",
+                "value": [
+                  "$item_data.id"
+                ]
+          }
+      ]
+    },
+    "biz" : [
+        {
+            "brief" : "设置图层优先级",
+            "type" : "biz_set_priority",
+            "value" : {
+                "draw_priority" : 140,
+                "sub_priority" : 3810
+            }
+        },
+        {
+            "brief": "设置图元旋转角",
+            "type": "biz_set_angle",
+            "value": "$biz_data.angle"
+        },
+        {
+          "brief": "设置显示比例尺范围",
+          "type": "biz_set_display_scale",
+          "value": {
+            "min_scale": 15,
+            "max_scale": 19
+          }
+        },
+        {
+            "brief": "设置天空盒裁剪开关",
+            "type": "biz_set_clip_sky",
+            "value" : false
+        }
+    ],
+    "style" : {
+        "marker_info": {
+
+        },
+        "style_info": {
+            "point_lottie": {
+                "point_lottie_layer_item_style": {
+                    "anchor": 6,
+                    "x_ratio": 0.0,
+                    "y_ratio": 0.0
+                }
+            }
+        },
+        "style_name" : {
+            "prefix_name" : "point_lottie",
+            "lottie_resource": {
+                "day_resource":  "car_meeting_day.zip",
+                "night_resource": "car_meeting_night.zip"
+            }
+        }
+    }
+}

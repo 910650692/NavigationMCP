@@ -14,8 +14,6 @@ import android.view.Display;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import com.android.utils.ResourceUtils;
-import com.android.utils.ToastUtils;
 import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
@@ -29,7 +27,6 @@ import com.fy.navi.fsa.scene.FsaNaviScene;
 import com.fy.navi.service.AppContext;
 import com.fy.navi.service.StartService;
 import com.fy.navi.service.adapter.navi.NaviConstant;
-import com.fy.navi.service.adapter.navistatus.NavistatusAdapter;
 import com.fy.navi.service.define.cruise.CruiseInfoEntity;
 import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.map.ThemeType;
@@ -54,7 +51,6 @@ import com.fy.navi.service.logicpaket.map.IMapPackageCallback;
 import com.fy.navi.service.logicpaket.map.MapPackage;
 import com.fy.navi.service.logicpaket.navi.IGuidanceObserver;
 import com.fy.navi.service.logicpaket.navi.NaviPackage;
-import com.fy.navi.service.logicpaket.navi.OpenApiHelper;
 import com.fy.navi.service.logicpaket.navistatus.NaviStatusCallback;
 import com.fy.navi.service.logicpaket.navistatus.NaviStatusPackage;
 import com.fy.navi.service.logicpaket.position.IPositionPackageCallback;
@@ -64,6 +60,8 @@ import com.fy.navi.service.logicpaket.route.RoutePackage;
 import com.fy.navi.service.logicpaket.search.SearchPackage;
 import com.fy.navi.service.logicpaket.search.SearchResultCallback;
 import com.fy.navi.service.logicpaket.setting.SettingPackage;
+import com.fy.navi.service.logicpaket.signal.SignalCallback;
+import com.fy.navi.service.logicpaket.signal.SignalPackage;
 import com.gm.fsa.service.FSAService;
 import com.gm.fsa.service.catalog.FSACatalog;
 import com.iauto.vtserver.VTDescription;
@@ -78,13 +76,21 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 
 public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListener {
     private static final String TAG = "MyFsaService";
 
     private FSAService mService;
     private boolean mServiceInitSuccess;
-    private int mTaskId;
+    private int mChargeStationTaskId;
+    private int mParkingLotTaskId;
+    private int mGasStationTaskId;
+    private ScheduledFuture mChargeStationSF;
+    private ScheduledFuture mParkingLotSF;
+    private ScheduledFuture mServiceSF;
+    private ScheduledFuture mGasStationSF;
 
     private boolean mIsHudInit = false;
     private boolean mIsHudServiceStart = false;
@@ -243,16 +249,10 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
         Logger.d(FsaConstant.FSA_TAG, "handlePayload1"+ThreadManager.getInstance().isMainThread());
         switch (payload) {
             case FsaConstant.FsaEventPayload.OPEN_HUD_MAP:
-                isClusterMapOpen.postValue(true);
-                switchClusterActivity(true);
+                updateMapDisplayStatus(true);
                 break;
             case FsaConstant.FsaEventPayload.CLOSE_HUD_MAP:
-                //导航态下，仪表切换为地图模式后，中控地图导航模式切换为“路线全览模式。
-                if (NavistatusAdapter.getInstance().getCurrentNaviStatus().equals(NaviStatus.NaviStatusType.NAVING)){
-                    OpenApiHelper.exitPreview(MapType.MAIN_SCREEN_MAIN_MAP);
-                }
-                isClusterMapOpen.postValue(false);
-                switchClusterActivity(false);
+                updateMapDisplayStatus(false);
                 break;
             case FsaConstant.FsaEventPayload.OPEN_HUD_VIDEO:
                 if (mIsHudServiceStart) {
@@ -317,7 +317,42 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
             case FsaConstant.FsaEventPayload.NOP_NEXT_ROAD:
                 sendEventToMapCheckState(FsaConstant.FsaFunction.ID_NOP_NEXT_ROAD, NaviStatus.NaviStatusType.NAVING, "");
                 break;
+            case FsaConstant.FsaEventPayload.HUD_GONE:
+                break;
+            case FsaConstant.FsaEventPayload.HUD_LARGE:
+                break;
+            case FsaConstant.FsaEventPayload.HUD_BOTTOM_LEFT:
+                break;
+            case FsaConstant.FsaEventPayload.HUD_BOTTOM_RIGHT:
+                break;
+            case FsaConstant.FsaEventPayload.HUD_HINT:
+                break;
+            case FsaConstant.FsaEventPayload.HUD_FULL:
+                break;
+            case FsaConstant.FsaEventPayload.HUD_LEFT_HALF:
+                break;
+            case FsaConstant.FsaEventPayload.HUD_RIGHT_HALF:
+                break;
             default:
+        }
+    }
+    private static final String MAP_DISPLAYING_TRUE = "{\"isMapDisplaying\":true}";
+    private static final String MAP_DISPLAYING_FALSE = "{\"isMapDisplaying\":false}";
+    private String buildMapDisplayJson(boolean isOpen) {
+        return isOpen ? MAP_DISPLAYING_TRUE : MAP_DISPLAYING_FALSE;
+    }
+    private void updateMapDisplayStatus(boolean isOpen) {
+        Logger.d(TAG, "updateMapDisplayStatus: " + isOpen);
+        isClusterMapOpen.postValue(isOpen);
+        String json = buildMapDisplayJson(isOpen);
+        Logger.d(TAG, "Map display status changed: " + json);
+        // 发送挖洞事件
+        MyFsaService.getInstance().sendEvent(FsaConstant.FsaFunction.ID_SERVICE_HOLE, json);
+        try {
+            Logger.d(TAG, "switchClusterActivity(isOpen);");
+            switchClusterActivity(isOpen);
+        } catch (Exception e) {
+            Logger.e(TAG, "Failed to switch ClusterActivity state", e);
         }
     }
 
@@ -438,6 +473,7 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
         MapPackage.getInstance().registerEGLScreenshotCallBack(FsaConstant.FSA_TAG, mEglShotCallBack);
         RoutePackage.getInstance().registerRouteObserver(FsaConstant.FSA_TAG, mRouteResultObserver);
         SearchPackage.getInstance().registerCallBack(FsaConstant.FSA_TAG, mSearchResultCallback);
+        SignalPackage.getInstance().registerObserver(FsaConstant.FSA_TAG, mSignalCallback);
     }
 
     /**
@@ -516,6 +552,15 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
     private final NaviStatusCallback mNaviStatusCallback = new NaviStatusCallback() {
         @Override
         public void onNaviStatusChange(final String naviStatus) {
+            if (mChargeStationSF != null) {
+                mChargeStationSF.cancel(true);
+            }
+            if (mParkingLotSF != null) {
+                mParkingLotSF.cancel(true);
+            }
+            if (mServiceSF != null) {
+                mServiceSF.cancel(true);
+            }
             judgeMapCurStatus(FsaConstant.FsaFunction.ID_IN_NAVIGATION, NaviStatus.NaviStatusType.NAVING);
             judgeMapCurStatus(FsaConstant.FsaFunction.ID_IN_LIGHT_NAVIGATION, NaviStatus.NaviStatusType.LIGHT_NAVING);
             judgeMapCurStatus(FsaConstant.FsaFunction.ID_IN_CRUISE, NaviStatus.NaviStatusType.CRUISE);
@@ -529,14 +574,42 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
         }
     };
 
+    private final SignalCallback mSignalCallback = new SignalCallback() {
+        @Override
+        public void onFuelLevelPercentSignalChanged(float value) {
+            if (value <= 15) {
+                mGasStationSF = ThreadManager.getInstance().asyncWithFixDelay(new Runnable() {
+                    @Override
+                    public void run() {
+                        mGasStationTaskId = SearchPackage.getInstance().aroundSearch(1, "加油站",
+                                PositionPackage.getInstance().currentGeo, "2000",  true);
+                    }
+                }, 0, 15, TimeUnit.SECONDS);
+            } else {
+                if (mGasStationSF != null) {
+                    mGasStationSF.cancel(true);
+                }
+            }
+        }
+    };
+
     /**
      * 搜索结果回调.
      */
     private final SearchResultCallback mSearchResultCallback = new SearchResultCallback() {
         @Override
         public void onSearchResult(final int taskId, final int errorCode, final String message, final SearchResultEntity searchResultEntity) {
-            if (mTaskId == taskId && searchResultEntity != null) {
+            if (searchResultEntity == null) {
+                return;
+            }
+            if (mChargeStationTaskId == taskId) {
                 FsaNaviScene.getInstance().updateChargingStationInfo(MyFsaService.this, searchResultEntity);
+            }
+            if (mParkingLotTaskId == taskId) {
+                FsaNaviScene.getInstance().updateParkingLotInfo(MyFsaService.this, searchResultEntity);
+            }
+            if (mGasStationTaskId == taskId) {
+                FsaNaviScene.getInstance().updateGasStation(MyFsaService.this, searchResultEntity);
             }
         }
     };
@@ -546,6 +619,18 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
         @Override
         public void onNaviInfo(final NaviEtaInfo naviETAInfo) {
             FsaNaviScene.getInstance().updateTbtInfo(MyFsaService.this, naviETAInfo);
+            if (naviETAInfo != null && naviETAInfo.getAllDist() <= 2000) {
+                mParkingLotSF = ThreadManager.getInstance().asyncWithFixDelay(new Runnable() {
+                    @Override
+                    public void run() {
+                        RouteParam endPoint = RoutePackage.getInstance().getEndPoint(MapType.MAIN_SCREEN_MAIN_MAP);
+                        if (endPoint != null) {
+                            mParkingLotTaskId = SearchPackage.getInstance().aroundSearch(1, "停车场",
+                                    endPoint.getRealPos(), "2000",  true);
+                        }
+                    }
+                }, 0, 15, TimeUnit.SECONDS);
+            }
         }
 
         @Override
@@ -586,7 +671,16 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
 
         @Override
         public void onNaviSAPAInfo(final SapaInfoEntity sapaInfoEntity) {
-            FsaNaviScene.getInstance().updateHighwayService(MyFsaService.this, sapaInfoEntity);
+            if (sapaInfoEntity == null) {
+                mServiceSF.cancel(true);
+            } else {
+                mServiceSF = ThreadManager.getInstance().asyncWithFixDelay(new Runnable() {
+                    @Override
+                    public void run() {
+                        FsaNaviScene.getInstance().updateHighwayService(MyFsaService.this, sapaInfoEntity);
+                    }
+                }, 0, 15, TimeUnit.SECONDS);
+            }
         }
 
         @Override
@@ -633,16 +727,21 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
         @Override
         public void onRouteResult(final RequestRouteResult requestRouteResult) {
             FsaNaviScene.getInstance().updateDestInfo(MyFsaService.this, requestRouteResult);
-
-            if (null != requestRouteResult && null != requestRouteResult.getMRouteLineInfos()
-                    && !requestRouteResult.getMRouteLineInfos().isEmpty()
-                    && requestRouteResult.getMRouteLineInfos().get(0) != null) {
+            try {
                 final String elecRouteLabel = requestRouteResult.getMRouteLineInfos().get(0).getMElecRouteLabel();
                 if ("不可达".equals(elecRouteLabel)) {
                     if (Objects.equals(NaviStatusPackage.getInstance().getCurrentNaviStatus(), NaviStatus.NaviStatusType.NAVING)) {
-                        mTaskId = SearchPackage.getInstance().aroundSearch(1, "充电站");
+                        mChargeStationSF = ThreadManager.getInstance().asyncWithFixDelay(new Runnable() {
+                            @Override
+                            public void run() {
+                                mChargeStationTaskId = SearchPackage.getInstance().aroundSearch(1, "充电站",
+                                        PositionPackage.getInstance().currentGeo, "2000",  true);
+                            }
+                        }, 0, 15, TimeUnit.SECONDS);
                     }
                 }
+            } catch (NullPointerException e) {
+                Logger.e(TAG, e);
             }
         }
 
@@ -789,6 +888,7 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
                 }
             }
         }
+        Logger.d(FsaConstant.FSA_TAG, "switchClusterActivity: " + isOpen+secondeDid);
         if (isOpen) {
             Logger.d(FsaConstant.FSA_TAG, "open ClusterActivity");
             final ActivityOptions options = ActivityOptions.makeBasic();

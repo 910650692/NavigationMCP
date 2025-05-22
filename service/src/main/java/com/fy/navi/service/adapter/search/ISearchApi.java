@@ -138,6 +138,9 @@ public interface ISearchApi {
 
     // 云端查询预约
     int queryReservation(SearchRequestParameter searchRequestParameter);
+
+    // 云端更新预约
+    int cancelReservation(SearchRequestParameter searchRequestParameter);
     /**
      * 取消所有搜索
      */

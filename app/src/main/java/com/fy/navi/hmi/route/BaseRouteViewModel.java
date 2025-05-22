@@ -1321,7 +1321,7 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
         mSeartype = searchType;
         mGasChargeAlongList = gasChargeAlongList;
         if (mSeartype == 0) {
-            if (isBelongSamePoi(gasChargeAlongList, requestPoiInfoEntity)) {
+            if (isBelongSamePoi(gasChargeAlongList, requestPoiInfoEntity) || mModel.isStartOrEndRouteParam(requestPoiInfoEntity)) {
                 mRouteSearchDeailsAddRemoveVia.set(ResourceUtils.Companion.getInstance().getString(R.string.route_service_details_remove_via));
             } else {
                 mRouteSearchDeailsAddRemoveVia.set(ResourceUtils.Companion.getInstance().getString(R.string.route_service_details_add_via));
@@ -1333,6 +1333,7 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
                 mRouteSearchDeailsAddRemoveVia.set(ResourceUtils.Companion.getInstance().getString(R.string.route_service_details_add_via));
             }
         }
+        mView.showPOIButton(mModel.isStartOrEndRouteParam(requestPoiInfoEntity));
         if (!ConvertUtils.isEmpty(requestPoiInfoEntity.getServiceAreaInfoList()) && requestPoiInfoEntity.getServiceAreaInfoList().size() > 0
                 && !ConvertUtils.isEmpty(requestPoiInfoEntity.getServiceAreaInfoList().get(0))) {
             final ServiceAreaInfo info = requestPoiInfoEntity.getServiceAreaInfoList().get(0);

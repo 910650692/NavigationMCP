@@ -1,0 +1,36 @@
+<div id="along_route_pop_label" style="display:flex;flex-direction:column;justify-content:center;align-items:flex-start;width:auto;height:auto;">
+  <div id="bg_div" style="display:flex;flex-direction:column;justify-content:center;align-items:flex-start;width:auto;height:auto;background-image:global_image_along_bubble_left_top_day_night;">
+    <div style="display:flex;flex-direction:column;justify-content:center;align-items:flex-start;margin-top:4px;margin-right:8px;margin-bottom:4px;margin-left:8px;">
+      <div id="label_div" style="display:flex;flex-direction:row;justify-content:flex-start;align-items:center;margin-top:4px;margin-right:4px;margin-bottom:2px;margin-left:4px;">
+        <div id="nearest_label_div" style="display:flex;flex-direction:row;justify-content:center;align-items:center;width:auto;background-image:global_image_along_bubble_nearest_day_night;min-height:28px;">
+          <label id="text_nearest" style="margin-right:6px;margin-left:6px;font-size:18px;color:#ffffff;font-family:font_cn;" lines="1">距离最近</label>
+        </div>
+        <div id="bestway_label_div" style="display:flex;flex-direction:row;justify-content:center;align-items:center;width:auto;background-image:global_image_along_bubble_best_way_day_night;min-height:28px;">
+          <label id="text_bestway" style="margin-right:6px;margin-left:6px;font-size:18px;color:#ffffff;font-family:font_cn;" lines="1">最顺路</label>
+        </div>
+      </div>
+      <label id="name_text_center" style="margin-top:4px;margin-right:4px;margin-bottom:4px;margin-left:4px;font-size:18px;color:#000000;font-family:font_cn;" lines="1">中国石油加油钟</label>
+      <div id="eta_div_bestway" style="display:flex;flex-direction:row;justify-content:flex-start;align-items:baseline;margin-top:2px;margin-right:4px;margin-bottom:2px;margin-left:4px;">
+        <label id="more_text_bestway" style="font-size:18px;color:#028947;font-family:font_cn;" lines="1">多</label>
+        <label id="distance_diff_text_bestway" style="margin-right:2px;margin-left:2px;font-size:18px;color:#028947;font-family:font_cn;" lines="1">349</label>
+        <label id="distance_unit_text_bestway" style="margin-right:4px;font-size:18px;color:#028947;font-family:font_cn;" lines="1">米</label>
+        <label id="time_diff_text_bestway" style="font-size:18px;color:#028947;font-family:font_cn;" lines="1">9</label>
+        <label id="time_unit_text_bestway" style="font-size:18px;color:#028947;font-family:font_cn;" lines="1">分钟</label>
+      </div>
+      <div id="eta_div_nearest" style="display:flex;flex-direction:row;justify-content:flex-start;align-items:baseline;margin-top:2px;margin-right:4px;margin-bottom:2px;margin-left:4px;">
+        <label id="more_text_nearest" style="font-size:18px;color:#457ce9;font-family:font_cn;" lines="1">多</label>
+        <label id="distance_diff_text_nearest" style="margin-right:2px;margin-left:2px;font-size:18px;color:#457ce9;font-family:font_cn;" lines="1">349</label>
+        <label id="distance_unit_text_nearest" style="margin-right:4px;font-size:18px;color:#457ce9;font-family:font_cn;" lines="1">米</label>
+        <label id="time_diff_text_nearest" style="margin-right:2px;margin-left:2px;font-size:18px;color:#457ce9;font-family:font_cn;" lines="1">9</label>
+        <label id="time_unit_text_nearest" style="font-size:18px;color:#457ce9;font-family:font_cn;" lines="1">分钟</label>
+      </div>
+      <div id="eta_div_center" style="display:flex;flex-direction:row;justify-content:flex-start;align-items:baseline;margin-top:2px;margin-right:4px;margin-bottom:2px;margin-left:4px;">
+        <label id="more_text_center" style="font-size:18px;color:#000000;font-family:font_cn;" lines="1">多</label>
+        <label id="distance_diff_text_center" style="margin-right:2px;margin-left:2px;font-size:18px;color:#000000;font-family:font_cn;" lines="1">349</label>
+        <label id="distance_unit_text_center" style="margin-right:4px;font-size:18px;color:#000000;font-family:font_cn;" lines="1">米</label>
+        <label id="time_diff_text_center" style="margin-right:2px;margin-left:2px;font-size:18px;color:#000000;font-family:font_cn;" lines="1">9</label>
+        <label id="time_unit_text_center" style="font-size:18px;color:#000000;font-family:font_cn;" lines="1">分钟</label>
+      </div>
+    </div>
+  </div>
+</div>

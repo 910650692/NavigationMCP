@@ -690,6 +690,19 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
     }
 
     @Override
+    public void onUpdateTrafficLightCountdown(int isHaveTrafficLight, GeoPoint geoPoint) {
+        Logger.i(TAG, "onUpdateTrafficLightCountdown: isHaveTrafficLight = " +
+                isHaveTrafficLight);
+        if (!ConvertUtils.isEmpty(mGuidanceObservers)) {
+            for (IGuidanceObserver guidanceObserver : mGuidanceObservers.values()) {
+                if (guidanceObserver != null) {
+                    guidanceObserver.onUpdateTrafficLightCountdown(isHaveTrafficLight, geoPoint);
+                }
+            }
+        }
+    }
+
+    @Override
     public void onDriveReport(final NaviDriveReportEntity report) {
         Logger.i(TAG, "onDriveReport = " + report.toString());
         Logger.i(TAG, "onNaviSAPAInfo");

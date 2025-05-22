@@ -33,8 +33,8 @@ public class SearchRepository implements SearchApi{
     }
 
     @Override
-    public Observable<BaseRep> updateReservation(StationReq req) {
-        Observable<BaseRep> observable = NetMethodManager.getInstance().doPost(SearchApiService.UPDATE_RESERVATION,req, BaseRep.class);
+    public Observable<String> updateReservation(StationReq req) {
+        Observable<String> observable = NetMethodManager.getInstance().doPostReturnAllJson(SearchApiService.UPDATE_RESERVATION,req);
         return observable;
     }
 
@@ -73,4 +73,6 @@ public class SearchRepository implements SearchApi{
         Observable<String> observable = NetMethodManager.getInstance().doPostReturnAllJson(SearchApiService.QUERY_STATION_INFO,req);
         return observable;
     }
+
+
 }

@@ -228,4 +228,13 @@ public class StationReq extends BaseReq{
         this.status = status;
         return this;
     }
+
+    public String getPreNum() {
+        return preNum;
+    }
+
+    public StationReq setPreNum(String preNum) {
+        this.preNum = preNum;
+        return this;
+    }
 }

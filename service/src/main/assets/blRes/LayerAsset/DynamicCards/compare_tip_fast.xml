@@ -1,0 +1,8 @@
+<div id="guide_label_background_image" style="display:flex;flex-direction:row;justify-content:flex-start;align-items:center;width:auto;height:94px;background-image:global_image_navi_bg_route_label_left_up1_2_day_night;">
+  <div id="div1_ignore" style="display:flex;flex-direction:row;justify-content:flex-start;align-items:center;margin-right:10px;margin-left:10px;height:52px;">
+    <div id="div_label" style="display:flex;flex-direction:row;justify-content:center;align-items:center;width:auto;height:32px;background-image:global_image_navi_bg_route_textlabel_day_night;">
+      <label id="label_text" style="margin-right:6px;margin-left:6px;font-size:23px;color:#ffffff;font-family:font_cn;" lines="1">大路多</label>
+    </div>
+    <label id="time_diff_text" style="margin-left:8px;font-size:24px;color:#1a66ff;font-family:font_cn;" lines="1">快7分钟</label>
+  </div>
+</div>

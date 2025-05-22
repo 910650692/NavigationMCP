@@ -10,7 +10,7 @@ public interface SearchApi {
     // 获取用户收藏充电站
     Observable<String> queryCollectStation(StationReq req);
     // 修改预约
-    Observable<BaseRep> updateReservation(StationReq req);
+    Observable<String> updateReservation(StationReq req);
     // 创建公桩预约
     Observable<String> createReservation(StationReq req);
     // 开启地锁

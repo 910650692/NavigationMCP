@@ -59,24 +59,7 @@ public class PositionAdapterImpl implements IPositionApi {
         mLocMode = PositionConstant.isDrBack ? LocMode.DrBack : LocMode.GNSS;
         boolean initResult = positionStrategy.initLocEngine(mLocMode, new PositionConfig());
         Logger.i(TAG, "initLocEngine: " + initResult + ",mLocMode：" + mLocMode);
-        initTbtComm();
         return initResult;
-    }
-
-    /**
-     * 初始化公共控制类
-     */
-    private void initTbtComm() {
-        final String cache = GBLCacheFilePath.TBT_COMMON_CACHE_PATH;
-        final String navi = GBLCacheFilePath.OFFLINE_DOWNLOAD_DIR;
-        final WorkPath workPath = new WorkPath();
-        workPath.cache = cache;
-        workPath.navi = navi;
-        final UserConfig userConfig = new UserConfig();
-        userConfig.deviceID = DeviceUtils.getDeviceId();
-        userConfig.userBatch = "0";
-        final TbtCommonControl tbtCommonControl = TbtCommonControl.getInstance();
-        tbtCommonControl.init(workPath, userConfig);
     }
 
     @Override

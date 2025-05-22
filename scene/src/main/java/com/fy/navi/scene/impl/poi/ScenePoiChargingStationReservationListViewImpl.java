@@ -78,6 +78,24 @@ public class ScenePoiChargingStationReservationListViewImpl extends BaseSceneMod
         });
     }
 
+    public void queryReservation(PoiInfoEntity poiInfo,Activity activity){
+        AccessTokenParam param = new AccessTokenParam(
+                AutoMapConstant.AccountTokenParamType.ACCOUNT_TYPE_PATAC_HMI,
+                AutoMapConstant.AccountTokenParamType.AUTH_TOKEN_TYPE_READ_ONLY,
+                null,
+                activity,
+                null,
+                null,
+                null,
+                null);
+        ThreadManager.getInstance().runAsync(() -> {
+            String idpUserId = AccountPackage.getInstance().getUserId();
+            String accessToken = AccountPackage.getInstance().getAccessToken(param);
+            String vehicleBrand = "2";
+            mSearchPackage.queryReservation(poiInfo,vehicleBrand,3,idpUserId,accessToken);
+        });
+    }
+
     public boolean isHideCanReversion(){
         boolean isHideCanReversion = false;
         ArrayList<ConnectorInfoItem> list = new ArrayList<>();

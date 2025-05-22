@@ -101,6 +101,22 @@ public interface FsaConstant {
         String WHOLE_SPEED_LIMIT = "33";
         //获取NOP导航下个路段和下下个路段
         String NOP_NEXT_ROAD = "34";
+        //发送关于HUD位置的信息：不显示
+        String HUD_GONE = "35";
+        //发送关于HUD位置的信息：⼤尺⼨路⼝放⼤图
+        String HUD_LARGE = "36";
+        //发送关于HUD位置的信息：左下⻆⼩尺⼨路⼝放⼤图
+        String HUD_BOTTOM_LEFT = "37";
+        //发送关于HUD位置的信息：右下⻆⼩尺⼨路⼝放⼤图
+        String HUD_BOTTOM_RIGHT = "38";
+        //隐藏hud map
+        String HUD_HINT = "39";
+        //显示full screen hud map
+        String HUD_FULL = "40";
+        //显示 left half screen hud map
+        String HUD_LEFT_HALF = "41";
+        //显示 right half screen hud map
+        String HUD_RIGHT_HALF = "42";
     }
 
     interface FsaFunction {
@@ -172,6 +188,10 @@ public interface FsaConstant {
         int ID_PARKING_LOT_POI = 9283;
         //高速服务区POI透出（最近5个）
         int ID_SERVICE_POI = 9284;
+        //路口放大图显隐
+        int ID_VISIBLE_ENLARGE = 9285;
+        //低油量，加油站poi数据
+        int ID_GAS_STATION_POI = 9286;
         //挖洞
         int ID_SERVICE_HOLE = 9290;
     }

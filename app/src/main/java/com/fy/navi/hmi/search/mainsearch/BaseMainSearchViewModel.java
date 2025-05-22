@@ -4,6 +4,7 @@ import android.app.Application;
 
 import androidx.annotation.NonNull;
 
+import com.fy.navi.service.adapter.activate.bls.ActivationManager;
 import com.fy.navi.ui.action.Action;
 import com.fy.navi.ui.base.BaseViewModel;
 
@@ -38,6 +39,7 @@ public class BaseMainSearchViewModel extends BaseViewModel<MainSearchFragment, M
      * @return 动力类型
      */
     public int powerType() {
+        ActivationManager.getInstance().getThirdPartyUUID();
         return mModel.powerType();
     }
 }

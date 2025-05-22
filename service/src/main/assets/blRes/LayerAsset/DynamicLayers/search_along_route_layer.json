@@ -1,0 +1,1769 @@
+{
+  "data": {
+    "type": "adaptor_point",
+    "value": [],
+    "rule": [
+      {
+        "brief": "是否是最顺标签类型",
+        "type": "data_user_if",
+        "value": {
+          "biz_data": "isBestWayLabelType",
+          "condition": {
+            "fact": "$biz_data.labelType",
+            "operator": "equal",
+            "value": 1
+          },
+          "case": {
+            "true": true,
+            "false": false
+          }
+        }
+      },
+      {
+        "brief": "是否是最快标签类型",
+        "type": "data_user_if",
+        "value": {
+          "biz_data": "IsFastWayLabelType",
+          "condition": {
+            "fact": "$biz_data.labelType",
+            "operator": "equal",
+            "value": 2
+          },
+          "case": {
+            "true": true,
+            "false": false
+          }
+        }
+      },
+      {
+        "brief": "是否是etra ETA标签类型",
+        "type": "data_user_if",
+        "value": {
+          "biz_data": "IsExtraETALabelType",
+          "condition": {
+            "all": [
+              {
+                "fact": "$biz_data.labelType",
+                "operator": "unequal",
+                "value": 1
+              },
+              {
+                "fact": "$biz_data.labelType",
+                "operator": "unequal",
+                "value": 2
+              },
+              {
+                "fact": "$biz_data.mExtraData.extraTime",
+                "operator": "unequal",
+                "value": 2147483647
+              }
+            ]
+          },
+          "case": {
+            "true": true,
+            "false": false
+          }
+        }
+      },
+      {
+        "brief": "选择最顺标签",
+        "type": "data_user_func",
+        "value": {
+          "biz_data": "newLabelType",
+          "func": {
+            "name": "SelectMinItemData",
+            "param": {
+              "convar": "$biz_data.isBestWayLabelType",
+              "var": "$biz_data.travelTime",
+              "defaultretvalue": 1
+            }
+          }
+        }
+      },
+      {
+        "brief": "选择最快标签类型",
+        "type": "data_user_func",
+        "value": {
+          "biz_data": "newLabelType",
+          "func": {
+            "name": "SelectLastItemData",
+            "param": {
+              "convar": "$biz_data.IsFastWayLabelType",
+              "defaultretvalue": 2
+            }
+          }
+        }
+      },
+      {
+        "brief": "排序后选择至多3个eta标签",
+        "type": "data_user_func",
+        "value": {
+          "biz_data": "newLabelType",
+          "func": {
+            "name": "IncreaseSort",
+            "param": {
+              "convar": "$biz_data.IsExtraETALabelType",
+              "var": "$biz_data.mExtraData.extraTime",
+              "defaultretvalue": 3
+            }
+          }
+        }
+      },
+      {
+        "brief": "限制标签数量",
+        "type": "data_user_func",
+        "value": {
+          "biz_data": "LimitLabelCount",
+          "func": {
+            "name": "DivideGroups",
+            "param": {
+              "var": "$biz_data.newLabelType",
+              "varvalue": 3,
+              "maxcount": 3,
+              "defaultretvalue": 0
+            }
+          }
+        }
+      },
+      {
+        "brief": "优先级配置",
+        "type": "data_priority_if",
+        "value": {
+          "condition": {
+            "fact": "$biz_data.hasPriority",
+            "operator": "equal",
+            "value": 1
+          },
+          "case": {
+            "true": "$biz_data.priority",
+            "false": {
+              "if": {
+                "condition": {
+                  "fact": "$biz_data.newLabelType",
+                  "operator": "equal",
+                  "value": 1
+                },
+                "case": {
+                  "true": 900,
+                  "false": {
+                    "if": {
+                      "condition": {
+                        "fact": "$biz_data.newLabelType",
+                        "operator": "equal",
+                        "value": 2
+                      },
+                      "case": {
+                        "true": 800,
+                        "false": {
+                          "if": {
+                            "condition": {
+                              "fact": "$biz_data.newLabelType",
+                              "operator": "equal",
+                              "value": 3
+                            },
+                            "case": {
+                              "true": 700,
+                              "false": 0
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "brief": "是否有优先级数据",
+        "type": "data_user_if",
+        "value": {
+          "biz_data": "hasPriorityValue",
+          "condition": {
+            "fact": "$biz_data.priority",
+            "operator": "ge",
+            "value": 0
+          },
+          "case": {
+            "true": true,
+            "false": false
+          }
+        }
+      },
+      {
+        "brief": "是否存在任一优先级",
+        "type": "data_user_func",
+        "value": {
+          "biz_data": "hasPriority",
+          "func": {
+            "name": "SelectLastItemData",
+            "param": {
+              "convar": "$biz_data.hasPriorityValue",
+              "defaultretvalue": 1
+            }
+          }
+        }
+      },
+      {
+        "brief": "剩余电量子字符串",
+        "type": "data_user_func",
+        "value": {
+          "biz_data": "user_retainEnergy_substr",
+          "func": {
+            "name": "SubString",
+            "param": {
+              "value": "$biz_data.mExtraData.retainEnergy",
+              "split": "%",
+              "index": 0
+            }
+          }
+        }
+      },
+      {
+        "brief": "剩余电量子字符串整型",
+        "type": "data_user_func",
+        "value": {
+          "biz_data": "user_retainEnergy_substr_int",
+          "func": {
+            "name": "String2Int",
+            "param": {
+              "value": "$biz_data.user_retainEnergy_substr"
+            }
+          }
+        }
+      },
+      {
+        "brief": "用户填充空格",
+        "type": "data_user_if",
+        "value": {
+          "biz_data": "user_padding",
+          "condition": {
+            "func": {
+              "name": "StringLength",
+              "param": {
+                "value": "$biz_data.mExtraData.retainEnergy"
+              }
+            },
+            "operator": "gt",
+            "value": 1
+          },
+          "case": {
+            "true": {
+              "if": {
+                "condition": {
+                  "fact": "$biz_data.user_retainEnergy_substr_int",
+                  "operator": "lt",
+                  "value": 10
+                },
+                "case": {
+                  "true": "  ",
+                  "false": {
+                    "if": {
+                      "condition": {
+                        "fact": "$biz_data.user_retainEnergy_substr_int",
+                        "operator": "lt",
+                        "value": 100
+                      },
+                      "case": {
+                        "true": " "
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "brief": "电量+填充",
+        "type": "data_user_func",
+        "value": {
+          "biz_data": "user_padding_retainEnergy",
+          "func": {
+            "name": "DataAdd",
+            "param": {
+              "addValue": "$biz_data.user_padding",
+              "augValue": "$biz_data.mExtraData.retainEnergy"
+            }
+          }
+        }
+      },
+      {
+        "brief": "用户数据：绕行分钟整型",
+        "type": "data_user_func",
+        "value": {
+          "biz_data": "user_extraTime_minute_int",
+          "func": {
+            "name": "DataDiv",
+            "param": {
+              "dividendValue": "$biz_data.mExtraData.extraTime",
+              "divisorValue": 60
+            }
+          }
+        }
+      },
+      {
+        "brief": "用户数据：绕行分钟字符串",
+        "type": "data_user_func",
+        "value": {
+          "biz_data": "user_extraTime_minute_str",
+          "func": {
+            "name": "Int2String",
+            "param": {
+              "value": "$biz_data.user_extraTime_minute_int"
+            }
+          }
+        }
+      },
+      {
+        "brief": "用户数据：绕行分钟字符串以分钟结束",
+        "type": "data_user_func",
+        "value": {
+          "biz_data": "user_extraTime_minute_str_minute",
+          "func": {
+            "name": "DataAdd",
+            "param": {
+              "addValue": "$biz_data.user_extraTime_minute_str",
+              "augValue": "分钟"
+            }
+          }
+        }
+      },
+      {
+        "brief": "多X分钟",
+        "type": "data_user_func",
+        "value": {
+          "biz_data": "user_extraTime_minute_str_more_minute",
+          "func": {
+            "name": "DataAdd",
+            "param": {
+              "addValue": "多",
+              "augValue": "$biz_data.user_extraTime_minute_str_minute"
+            }
+          }
+        }
+      },
+      {
+        "brief": "设定不可碰撞消失mode",
+        "type": "data_collision_mode_if",
+        "value": {
+          "condition": {
+            "fact": "$biz_data.isCollidedDisplay",
+            "operator": "equal",
+            "value": true
+          },
+          "case": {
+            "true": 2,
+            "false": 0
+          }
+        }
+      },
+      {
+        "brief": "设定不可碰撞消失area",
+        "type": "data_area_collision_if",
+        "value": {
+          "condition": {
+            "fact": "$biz_data.isCollidedDisplay",
+            "operator": "equal",
+            "value": true
+          },
+          "case": {
+            "true": false,
+            "false": true
+          }
+        }
+      }
+    ]
+  },
+  "biz": [
+    {
+      "brief": "清除所有图元",
+      "type": "biz_clear_all_items"
+    },
+    {
+      "brief": "设置图层优先级",
+      "type": "biz_set_priority",
+      "value": {
+        "draw_priority": 140,
+        "sub_priority": 3708
+      }
+    },
+    {
+      "brief": "设置是否图层内碰撞",
+      "type": "biz_is_collision",
+      "value": true
+    },
+    {
+      "brief": "设置图元优先级是否升序",
+      "type": "biz_item_priority_asc",
+      "value": false
+    }
+  ],
+  "style": {
+    "style_name": {
+      "prefix_name": "",
+      "rule": [
+        {
+          "brief": "获取样式文件",
+          "type": "style_if",
+          "value": {
+            "condition": {
+              "fact": "$biz_data.searchType",
+              "operator": "equal",
+              "value": 0
+            },
+            "case": {
+              "true": {
+                "if": {
+                  "condition": {
+                    "any": [
+                      {
+                        "fact": "$biz_data.mExtraData.extraTime",
+                        "operator": "le",
+                        "value": 0
+                      },
+                      {
+                        "fact": "$biz_data.mExtraData.extraTime",
+                        "operator": "equal",
+                        "value": 2147483647
+                      }
+                    ]
+                  },
+                  "case": {
+                    "true": {
+                      "if": {
+                        "condition": {
+                          "any": [
+                            {
+                              "func": {
+                                "name": "StringLength",
+                                "param": {
+                                  "value": "$biz_data.labelName"
+                                }
+                              },
+                              "operator": "gt",
+                              "value": 0
+                            },
+                            {
+                              "fact": "$biz_data.labelType",
+                              "operator": "equal",
+                              "value": 1
+                            },
+                            {
+                              "fact": "$biz_data.labelType",
+                              "operator": "equal",
+                              "value": 2
+                            }
+                          ]
+                        },
+                        "case": {
+                          "true": "point_search_alongroute_normal",
+                          "false": "point_search_alongroute_normal_simple"
+                        }
+                      }
+                    },
+                    "false": {
+                      "if": {
+                        "condition": {
+                          "any": [
+                            {
+                              "func": {
+                                "name": "StringLength",
+                                "param": {
+                                  "value": "$biz_data.labelName"
+                                }
+                              },
+                              "operator": "gt",
+                              "value": 0
+                            },
+                            {
+                              "fact": "$biz_data.labelType",
+                              "operator": "equal",
+                              "value": 1
+                            },
+                            {
+                              "fact": "$biz_data.labelType",
+                              "operator": "equal",
+                              "value": 2
+                            }
+                          ]
+                        },
+                        "case": {
+                          "true": "point_search_alongroute_normal_bestway",
+                          "false": "point_search_alongroute_normal"
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "false": {
+                "if": {
+                  "condition": {
+                    "fact": "$biz_data.searchType",
+                    "operator": "equal",
+                    "value": 1
+                  },
+                  "case": {
+                    "true": {
+                      "if": {
+                        "condition": {
+                          "func": {
+                            "name": "StringLength",
+                            "param": {
+                              "value": "$biz_data.mExtraData.retainEnergy"
+                            }
+                          },
+                          "operator": "gt",
+                          "value": 0
+                        },
+                        "case": {
+                          "true": {
+                            "if": {
+                              "condition": {
+                                "fact": "$biz_data.user_retainEnergy_substr_int",
+                                "operator": "lt",
+                                "value": 20
+                              },
+                              "case": {
+                                "true": {
+                                  "switch": {
+                                    "condition": "$biz_data.typeCode",
+                                    "case": {
+                                      "1": "point_search_alongroute_charge_guojiadianwang_energy_lower",
+                                      "2": "point_search_alongroute_charge_telaidian_energy_lower",
+                                      "3": "point_search_alongroute_charge_xingxing_energy_lower",
+                                      "4": "point_search_alongroute_charge_putian_energy_lower",
+                                      "default": "point_search_alongroute_charge_normal_energy_lower"
+                                    }
+                                  }
+                                },
+                                "false": {
+                                  "switch": {
+                                    "condition": "$biz_data.typeCode",
+                                    "case": {
+                                      "1": "point_search_alongroute_charge_guojiadianwang_energy",
+                                      "2": "point_search_alongroute_charge_telaidian_energy",
+                                      "3": "point_search_alongroute_charge_xingxing_energy",
+                                      "4": "point_search_alongroute_charge_putian_energy",
+                                      "default": "point_search_alongroute_charge_normal_energy"
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          },
+                          "false": {
+                            "if": {
+                              "condition": {
+                                "any": [
+                                  {
+                                    "fact": "$biz_data.mExtraData.extraTime",
+                                    "operator": "le",
+                                    "value": 0
+                                  },
+                                  {
+                                    "fact": "$biz_data.mExtraData.extraTime",
+                                    "operator": "equal",
+                                    "value": 2147483647
+                                  }
+                                ]
+                              },
+                              "case": {
+                                "true": {
+                                  "if": {
+                                    "condition": {
+                                      "any": [
+                                        {
+                                          "func": {
+                                            "name": "StringLength",
+                                            "param": {
+                                              "value": "$biz_data.labelName"
+                                            }
+                                          },
+                                          "operator": "gt",
+                                          "value": 0
+                                        },
+                                        {
+                                          "fact": "$biz_data.labelType",
+                                          "operator": "equal",
+                                          "value": 1
+                                        },
+                                        {
+                                          "fact": "$biz_data.labelType",
+                                          "operator": "equal",
+                                          "value": 2
+                                        }
+                                      ]
+                                    },
+                                    "case": {
+                                      "true": "point_search_alongroute_normal",
+                                      "false": "point_search_alongroute_normal_simple"
+                                    }
+                                  }
+                                },
+                                "false": {
+                                  "if": {
+                                    "condition": {
+                                      "any": [
+                                        {
+                                          "func": {
+                                            "name": "StringLength",
+                                            "param": {
+                                              "value": "$biz_data.labelName"
+                                            }
+                                          },
+                                          "operator": "gt",
+                                          "value": 0
+                                        },
+                                        {
+                                          "fact": "$biz_data.labelType",
+                                          "operator": "equal",
+                                          "value": 1
+                                        },
+                                        {
+                                          "fact": "$biz_data.labelType",
+                                          "operator": "equal",
+                                          "value": 2
+                                        }
+                                      ]
+                                    },
+                                    "case": {
+                                      "true": "point_search_alongroute_normal_bestway",
+                                      "false": "point_search_alongroute_normal"
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "false": {
+                      "if": {
+                        "condition": {
+                          "any": [
+                            {
+                              "fact": "$biz_data.mExtraData.extraTime",
+                              "operator": "le",
+                              "value": 0
+                            },
+                            {
+                              "fact": "$biz_data.mExtraData.extraTime",
+                              "operator": "equal",
+                              "value": 2147483647
+                            }
+                          ]
+                        },
+                        "case": {
+                          "true": {
+                            "if": {
+                              "condition": {
+                                "any": [
+                                  {
+                                    "func": {
+                                      "name": "StringLength",
+                                      "param": {
+                                        "value": "$biz_data.labelName"
+                                      }
+                                    },
+                                    "operator": "gt",
+                                    "value": 0
+                                  },
+                                  {
+                                    "fact": "$biz_data.labelType",
+                                    "operator": "equal",
+                                    "value": 1
+                                  },
+                                  {
+                                    "fact": "$biz_data.labelType",
+                                    "operator": "equal",
+                                    "value": 2
+                                  }
+                                ]
+                              },
+                              "case": {
+                                "true": "point_search_alongroute_normal",
+                                "false": "point_search_alongroute_normal_simple"
+                              }
+                            }
+                          },
+                          "false": {
+                            "if": {
+                              "condition": {
+                                "any": [
+                                  {
+                                    "func": {
+                                      "name": "StringLength",
+                                      "param": {
+                                        "value": "$biz_data.labelName"
+                                      }
+                                    },
+                                    "operator": "gt",
+                                    "value": 0
+                                  },
+                                  {
+                                    "fact": "$biz_data.labelType",
+                                    "operator": "equal",
+                                    "value": 1
+                                  },
+                                  {
+                                    "fact": "$biz_data.labelType",
+                                    "operator": "equal",
+                                    "value": 2
+                                  }
+                                ]
+                              },
+                              "case": {
+                                "true": "point_search_alongroute_normal_bestway",
+                                "false": "point_search_alongroute_normal"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "dynamic_marker": {
+      "rule": [
+        {
+          "brief": "更新样式内容",
+          "type": "marker_if",
+          "value": {
+            "condition": {
+              "all": [
+                {
+                  "fact": "$biz_data.searchType",
+                  "operator": "equal",
+                  "value": 1
+                },
+                {
+                  "func": {
+                    "name": "StringLength",
+                    "param": {
+                      "value": "$biz_data.mExtraData.retainEnergy"
+                    }
+                  },
+                  "operator": "gt",
+                  "value": 0
+                }
+              ]
+            },
+            "case": {
+              "true": {
+                "id": "type_name",
+                "nodeName": "label",
+                "display": true,
+                "value": "$biz_data.user_padding_retainEnergy"
+              },
+              "false": [
+                {
+                  "id": "search_alongroute_name",
+                  "nodeName": "div",
+                  "display": true
+                },
+                {
+                  "id": "name_text",
+                  "nodeName": "label",
+                  "display": true,
+                  "value": "$biz_data.name"
+                },
+                {
+                  "if": {
+                    "condition": {
+                      "any": [
+                        {
+                          "fact": "$biz_data.mExtraData.extraTime",
+                          "operator": "le",
+                          "value": 0
+                        },
+                        {
+                          "fact": "$biz_data.mExtraData.extraTime",
+                          "operator": "equal",
+                          "value": 2147483647
+                        }
+                      ]
+                    },
+                    "case": {
+                      "true": {
+                        "if": {
+                          "condition": {
+                            "func": {
+                              "name": "StringLength",
+                              "param": {
+                                "value": "$biz_data.labelName"
+                              }
+                            },
+                            "operator": "gt",
+                            "value": 0
+                          },
+                          "case": {
+                            "true": {
+                              "id": "text_time",
+                              "nodeName": "label",
+                              "display": true,
+                              "value": "$biz_data.labelName"
+                            },
+                            "false": {
+                              "if": {
+                                "condition": {
+                                  "fact": "$biz_data.labelType",
+                                  "operator": "equal",
+                                  "value": 1
+                                },
+                                "case": {
+                                  "true": {
+                                    "id": "text_time",
+                                    "nodeName": "label",
+                                    "display": true,
+                                    "value": "最顺路"
+                                  },
+                                  "false": {
+                                    "if": {
+                                      "condition": {
+                                        "fact": "$biz_data.labelType",
+                                        "operator": "equal",
+                                        "value": 2
+                                      },
+                                      "case": {
+                                        "true": {
+                                          "id": "text_time",
+                                          "nodeName": "label",
+                                          "display": true,
+                                          "value": "最近"
+                                        },
+                                        "false": {
+                                          "id": "guide_label_background_image",
+                                          "nodeName": "div",
+                                          "display": false
+                                        }
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      },
+                      "false": [
+                        {
+                          "if": {
+                            "condition": {
+                              "func": {
+                                "name": "StringLength",
+                                "param": {
+                                  "value": "$biz_data.labelName"
+                                }
+                              },
+                              "operator": "gt",
+                              "value": 0
+                            },
+                            "case": {
+                              "true": {
+                                "id": "type_name",
+                                "nodeName": "label",
+                                "display": true,
+                                "value": "$biz_data.labelName"
+                              },
+                              "false": {
+                                "if": {
+                                  "condition": {
+                                    "fact": "$biz_data.labelType",
+                                    "operator": "equal",
+                                    "value": 1
+                                  },
+                                  "case": {
+                                    "true": {
+                                      "id": "type_name",
+                                      "nodeName": "label",
+                                      "display": true,
+                                      "value": "最顺路"
+                                    },
+                                    "false": {
+                                      "if": {
+                                        "condition": {
+                                          "fact": "$biz_data.labelType",
+                                          "operator": "equal",
+                                          "value": 2
+                                        },
+                                        "case": {
+                                          "true": {
+                                            "id": "type_name",
+                                            "nodeName": "label",
+                                            "display": true,
+                                            "value": "最近"
+                                          }
+                                        }
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        },
+                        {
+                          "id": "text_time",
+                          "nodeName": "label",
+                          "display": true,
+                          "value": "$biz_data.user_extraTime_minute_str_more_minute"
+                        }
+                      ]
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        },
+        {
+          "brief": "image_key_normal",
+          "type": "marker_switch",
+          "value": {
+            "marker_id": "along_route_normal.xml",
+            "condition": "$biz_data.searchType",
+            "case": {
+              "0": {
+                "switch": {
+                  "condition": "$biz_data.typeCode",
+                  "case": {
+                    "10101": {
+                      "id": "brand_image",
+                      "nodeName": "image",
+                      "display": true,
+                      "value": "global_image_navi_along_search_sinopec_station_icon_day_night"
+                    },
+                    "10102": {
+                      "id": "brand_image",
+                      "nodeName": "image",
+                      "display": true,
+                      "value": "global_image_navi_along_search_petrochina_station_icon_day_night"
+                    },
+                    "10103": {
+                      "id": "brand_image",
+                      "nodeName": "image",
+                      "display": true,
+                      "value": "global_image_navi_along_search_shell_station_icon_day_night"
+                    },
+                    "default": {
+                      "id": "brand_image",
+                      "nodeName": "image",
+                      "display": true,
+                      "value": "global_image_navi_along_search_gas_station_icon_day_night"
+                    }
+                  }
+                }
+              },
+              "1": {
+                "switch": {
+                  "condition": "$biz_data.typeCode",
+                  "case": {
+                    "1": {
+                      "id": "brand_image",
+                      "nodeName": "image",
+                      "display": true,
+                      "value": "global_image_navi_along_search_guojiadianwang_station_icon_day_night"
+                    },
+                    "2": {
+                      "id": "brand_image",
+                      "nodeName": "image",
+                      "display": true,
+                      "value": "global_image_navi_along_search_telaidian_station_icon_day_night"
+                    },
+                    "3": {
+                      "id": "brand_image",
+                      "nodeName": "image",
+                      "display": true,
+                      "value": "global_image_navi_along_search_xingxing_station_icon_day_night"
+                    },
+                    "4": {
+                      "id": "brand_image",
+                      "nodeName": "image",
+                      "display": true,
+                      "value": "global_image_navi_along_search_putian_station_icon_day_night"
+                    },
+                    "default": {
+                      "id": "brand_image",
+                      "nodeName": "image",
+                      "display": true,
+                      "value": "global_image_navi_along_search_charge_icon_day_night"
+                    }
+                  }
+                }
+              },
+              "2": {
+                "id": "brand_image",
+                "nodeName": "image",
+                "display": true,
+                "value": "global_image_navi_along_search_atm_icon_day_night"
+              },
+              "3": {
+                "id": "brand_image",
+                "nodeName": "image",
+                "display": true,
+                "value": "global_image_navi_along_search_wc_icon_day_night"
+              },
+              "4": {
+                "id": "brand_image",
+                "nodeName": "image",
+                "display": true,
+                "value": "global_image_navi_along_search_repair_icon_day_night"
+              },
+              "5": {
+                "id": "brand_image",
+                "nodeName": "image",
+                "display": true,
+                "value": "global_image_navi_along_search_fwq_station_icon_day_night"
+              },
+              "6": {
+                "id": "brand_image",
+                "nodeName": "image",
+                "display": true,
+                "value": "global_image_navi_along_search_cng_icon_day_night"
+              },
+              "7": {
+                "id": "brand_image",
+                "nodeName": "image",
+                "display": true,
+                "value": "global_image_navi_along_search_restaurant_icon_day_night"
+              },
+              "9": {
+                "id": "brand_image",
+                "nodeName": "image",
+                "display": true,
+                "value": "global_image_navi_along_search_carwash_icon_day_night"
+              },
+              "10": {
+                "id": "brand_image",
+                "nodeName": "image",
+                "display": true,
+                "value": "global_image_navi_along_search_scenic_icon_day_night"
+              },
+              "11": {
+                "id": "brand_image",
+                "nodeName": "image",
+                "display": true,
+                "value": "global_image_navi_along_search_hotel_icon_day_night"
+              },
+              "default": {
+                "id": "brand_image",
+                "nodeName": "image",
+                "display": true,
+                "value": "global_image_b_child_poi_hl_day_night"
+              }
+            }
+          }
+        },
+        {
+          "brief": "image_key_bestway",
+          "type": "marker_switch",
+          "value": {
+            "marker_id": "along_route_normal_bestway.xml",
+            "condition": "$biz_data.searchType",
+            "case": {
+              "0": {
+                "switch": {
+                  "condition": "$biz_data.typeCode",
+                  "case": {
+                    "10101": {
+                      "id": "brand_image",
+                      "nodeName": "image",
+                      "display": true,
+                      "value": "global_image_navi_along_search_sinopec_station_icon_day_night"
+                    },
+                    "10102": {
+                      "id": "brand_image",
+                      "nodeName": "image",
+                      "display": true,
+                      "value": "global_image_navi_along_search_petrochina_station_icon_day_night"
+                    },
+                    "10103": {
+                      "id": "brand_image",
+                      "nodeName": "image",
+                      "display": true,
+                      "value": "global_image_navi_along_search_shell_station_icon_day_night"
+                    },
+                    "default": {
+                      "id": "brand_image",
+                      "nodeName": "image",
+                      "display": true,
+                      "value": "global_image_navi_along_search_gas_station_icon_day_night"
+                    }
+                  }
+                }
+              },
+              "1": {
+                "switch": {
+                  "condition": "$biz_data.typeCode",
+                  "case": {
+                    "1": {
+                      "id": "brand_image",
+                      "nodeName": "image",
+                      "display": true,
+                      "value": "global_image_navi_along_search_guojiadianwang_station_icon_day_night"
+                    },
+                    "2": {
+                      "id": "brand_image",
+                      "nodeName": "image",
+                      "display": true,
+                      "value": "global_image_navi_along_search_telaidian_station_icon_day_night"
+                    },
+                    "3": {
+                      "id": "brand_image",
+                      "nodeName": "image",
+                      "display": true,
+                      "value": "global_image_navi_along_search_xingxing_station_icon_day_night"
+                    },
+                    "4": {
+                      "id": "brand_image",
+                      "nodeName": "image",
+                      "display": true,
+                      "value": "global_image_navi_along_search_putian_station_icon_day_night"
+                    },
+                    "default": {
+                      "id": "brand_image",
+                      "nodeName": "image",
+                      "display": true,
+                      "value": "global_image_navi_along_search_charge_icon_day_night"
+                    }
+                  }
+                }
+              },
+              "2": {
+                "id": "brand_image",
+                "nodeName": "image",
+                "display": true,
+                "value": "global_image_navi_along_search_atm_icon_day_night"
+              },
+              "3": {
+                "id": "brand_image",
+                "nodeName": "image",
+                "display": true,
+                "value": "global_image_navi_along_search_wc_icon_day_night"
+              },
+              "4": {
+                "id": "brand_image",
+                "nodeName": "image",
+                "display": true,
+                "value": "global_image_navi_along_search_repair_icon_day_night"
+              },
+              "5": {
+                "id": "brand_image",
+                "nodeName": "image",
+                "display": true,
+                "value": "global_image_navi_along_search_fwq_station_icon_day_night"
+              },
+              "6": {
+                "id": "brand_image",
+                "nodeName": "image",
+                "display": true,
+                "value": "global_image_navi_along_search_cng_icon_day_night"
+              },
+              "7": {
+                "id": "brand_image",
+                "nodeName": "image",
+                "display": true,
+                "value": "global_image_navi_along_search_restaurant_icon_day_night"
+              },
+              "9": {
+                "id": "brand_image",
+                "nodeName": "image",
+                "display": true,
+                "value": "global_image_navi_along_search_carwash_icon_day_night"
+              },
+              "10": {
+                "id": "brand_image",
+                "nodeName": "image",
+                "display": true,
+                "value": "global_image_navi_along_search_scenic_icon_day_night"
+              },
+              "11": {
+                "id": "brand_image",
+                "nodeName": "image",
+                "display": true,
+                "value": "global_image_navi_along_search_hotel_icon_day_night"
+              },
+              "default": {
+                "id": "brand_image",
+                "nodeName": "image",
+                "display": true,
+                "value": "global_image_b_child_poi_hl_day_night"
+              }
+            }
+          }
+        },
+        {
+          "brief": "image_key_normal_focus",
+          "type": "marker_switch",
+          "value": {
+            "marker_id": "along_route_normal_focus.xml",
+            "condition": "$biz_data.searchType",
+            "case": {
+              "0": {
+                "switch": {
+                  "condition": "$biz_data.typeCode",
+                  "case": {
+                    "10101": {
+                      "id": "brand_image",
+                      "nodeName": "image",
+                      "display": true,
+                      "value": "global_image_navi_along_search_sinopec_station_big_icon_day_night"
+                    },
+                    "10102": {
+                      "id": "brand_image",
+                      "nodeName": "image",
+                      "display": true,
+                      "value": "global_image_navi_along_search_petrochina_station_big_icon_day_night"
+                    },
+                    "10103": {
+                      "id": "brand_image",
+                      "nodeName": "image",
+                      "display": true,
+                      "value": "global_image_navi_along_search_shell_station_big_icon_day_night"
+                    },
+                    "default": {
+                      "id": "brand_image",
+                      "nodeName": "image",
+                      "display": true,
+                      "value": "global_image_navi_along_search_gas_station_big_icon_day_night"
+                    }
+                  }
+                }
+              },
+              "1": {
+                "switch": {
+                  "condition": "$biz_data.typeCode",
+                  "case": {
+                    "1": {
+                      "id": "brand_image",
+                      "nodeName": "image",
+                      "display": true,
+                      "value": "global_image_navi_along_search_guojiadianwang_station_big_icon_day_night"
+                    },
+                    "2": {
+                      "id": "brand_image",
+                      "nodeName": "image",
+                      "display": true,
+                      "value": "global_image_navi_along_search_telaidian_station_big_icon_day_night"
+                    },
+                    "3": {
+                      "id": "brand_image",
+                      "nodeName": "image",
+                      "display": true,
+                      "value": "global_image_navi_along_search_xingxing_station_big_icon_day_night"
+                    },
+                    "4": {
+                      "id": "brand_image",
+                      "nodeName": "image",
+                      "display": true,
+                      "value": "global_image_navi_along_search_putian_station_big_icon_day_night"
+                    },
+                    "default": {
+                      "id": "brand_image",
+                      "nodeName": "image",
+                      "display": true,
+                      "value": "global_image_navi_along_search_charge_big_icon_day_night"
+                    }
+                  }
+                }
+              },
+              "2": {
+                "id": "brand_image",
+                "nodeName": "image",
+                "display": true,
+                "value": "global_image_navi_along_search_atm_big_icon_day_night"
+              },
+              "3": {
+                "id": "brand_image",
+                "nodeName": "image",
+                "display": true,
+                "value": "global_image_navi_along_search_wc_big_icon_day_night"
+              },
+              "4": {
+                "id": "brand_image",
+                "nodeName": "image",
+                "display": true,
+                "value": "global_image_navi_along_search_repair_big_icon_day_night"
+              },
+              "5": {
+                "id": "brand_image",
+                "nodeName": "image",
+                "display": true,
+                "value": "global_image_navi_along_search_fwq_station_big_icon_day_night"
+              },
+              "6": {
+                "id": "brand_image",
+                "nodeName": "image",
+                "display": true,
+                "value": "global_image_navi_along_search_cng_big_icon_day_night"
+              },
+              "7": {
+                "id": "brand_image",
+                "nodeName": "image",
+                "display": true,
+                "value": "global_image_navi_along_search_restaurant_big_icon_day_night"
+              },
+              "9": {
+                "id": "brand_image",
+                "nodeName": "image",
+                "display": true,
+                "value": "global_image_navi_along_search_carwash_big_icon_day_night"
+              },
+              "10": {
+                "id": "brand_image",
+                "nodeName": "image",
+                "display": true,
+                "value": "global_image_navi_along_search_scenic_big_icon_day_night"
+              },
+              "11": {
+                "id": "brand_image",
+                "nodeName": "image",
+                "display": true,
+                "value": "global_image_navi_along_search_hotel_big_icon_day_night"
+              },
+              "default": {
+                "id": "brand_image",
+                "nodeName": "image",
+                "display": true,
+                "value": "global_image_bubble_child_day_night"
+              }
+            }
+          }
+        },
+        {
+          "brief": "image_key_bestway_focus",
+          "type": "marker_switch",
+          "value": {
+            "marker_id": "along_route_normal_bestway_focus.xml",
+            "condition": "$biz_data.searchType",
+            "case": {
+              "0": {
+                "switch": {
+                  "condition": "$biz_data.typeCode",
+                  "case": {
+                    "10101": {
+                      "id": "brand_image",
+                      "nodeName": "image",
+                      "display": true,
+                      "value": "global_image_navi_along_search_sinopec_station_big_icon_day_night"
+                    },
+                    "10102": {
+                      "id": "brand_image",
+                      "nodeName": "image",
+                      "display": true,
+                      "value": "global_image_navi_along_search_petrochina_station_big_icon_day_night"
+                    },
+                    "10103": {
+                      "id": "brand_image",
+                      "nodeName": "image",
+                      "display": true,
+                      "value": "global_image_navi_along_search_shell_station_big_icon_day_night"
+                    },
+                    "default": {
+                      "id": "brand_image",
+                      "nodeName": "image",
+                      "display": true,
+                      "value": "global_image_navi_along_search_gas_station_big_icon_day_night"
+                    }
+                  }
+                }
+              },
+              "1": {
+                "switch": {
+                  "condition": "$biz_data.typeCode",
+                  "case": {
+                    "1": {
+                      "id": "brand_image",
+                      "nodeName": "image",
+                      "display": true,
+                      "value": "global_image_navi_along_search_guojiadianwang_station_big_icon_day_night"
+                    },
+                    "2": {
+                      "id": "brand_image",
+                      "nodeName": "image",
+                      "display": true,
+                      "value": "global_image_navi_along_search_telaidian_station_big_icon_day_night"
+                    },
+                    "3": {
+                      "id": "brand_image",
+                      "nodeName": "image",
+                      "display": true,
+                      "value": "global_image_navi_along_search_xingxing_station_big_icon_day_night"
+                    },
+                    "4": {
+                      "id": "brand_image",
+                      "nodeName": "image",
+                      "display": true,
+                      "value": "global_image_navi_along_search_putian_station_big_icon_day_night"
+                    },
+                    "default": {
+                      "id": "brand_image",
+                      "nodeName": "image",
+                      "display": true,
+                      "value": "global_image_navi_along_search_charge_big_icon_day_night"
+                    }
+                  }
+                }
+              },
+              "2": {
+                "id": "brand_image",
+                "nodeName": "image",
+                "display": true,
+                "value": "global_image_navi_along_search_atm_big_icon_day_night"
+              },
+              "3": {
+                "id": "brand_image",
+                "nodeName": "image",
+                "display": true,
+                "value": "global_image_navi_along_search_wc_big_icon_day_night"
+              },
+              "4": {
+                "id": "brand_image",
+                "nodeName": "image",
+                "display": true,
+                "value": "global_image_navi_along_search_repair_big_icon_day_night"
+              },
+              "5": {
+                "id": "brand_image",
+                "nodeName": "image",
+                "display": true,
+                "value": "global_image_navi_along_search_fwq_station_big_icon_day_night"
+              },
+              "6": {
+                "id": "brand_image",
+                "nodeName": "image",
+                "display": true,
+                "value": "global_image_navi_along_search_cng_big_icon_day_night"
+              },
+              "7": {
+                "id": "brand_image",
+                "nodeName": "image",
+                "display": true,
+                "value": "global_image_navi_along_search_restaurant_big_icon_day_night"
+              },
+              "9": {
+                "id": "brand_image",
+                "nodeName": "image",
+                "display": true,
+                "value": "global_image_navi_along_search_carwash_big_icon_day_night"
+              },
+              "10": {
+                "id": "brand_image",
+                "nodeName": "image",
+                "display": true,
+                "value": "global_image_navi_along_search_scenic_big_icon_day_night"
+              },
+              "11": {
+                "id": "brand_image",
+                "nodeName": "image",
+                "display": true,
+                "value": "global_image_navi_along_search_hotel_big_icon_day_night"
+              },
+              "default": {
+                "id": "brand_image",
+                "nodeName": "image",
+                "display": true,
+                "value": "global_image_bubble_child_day_night"
+              }
+            }
+          }
+        },
+        {
+          "brief": "image_key_normal_simple",
+          "type": "marker_switch",
+          "value": {
+            "marker_id": "along_route_normal_simple.xml",
+            "condition": "$biz_data.searchType",
+            "case": {
+              "0": {
+                "switch": {
+                  "condition": "$biz_data.typeCode",
+                  "case": {
+                    "10101": {
+                      "id": "brand_image",
+                      "nodeName": "image",
+                      "display": true,
+                      "value": "global_image_navi_along_search_sinopec_station_icon_day_night"
+                    },
+                    "10102": {
+                      "id": "brand_image",
+                      "nodeName": "image",
+                      "display": true,
+                      "value": "global_image_navi_along_search_petrochina_station_icon_day_night"
+                    },
+                    "10103": {
+                      "id": "brand_image",
+                      "nodeName": "image",
+                      "display": true,
+                      "value": "global_image_navi_along_search_shell_station_icon_day_night"
+                    },
+                    "default": {
+                      "id": "brand_image",
+                      "nodeName": "image",
+                      "display": true,
+                      "value": "global_image_navi_along_search_gas_station_icon_day_night"
+                    }
+                  }
+                }
+              },
+              "1": {
+                "switch": {
+                  "condition": "$biz_data.typeCode",
+                  "case": {
+                    "1": {
+                      "id": "brand_image",
+                      "nodeName": "image",
+                      "display": true,
+                      "value": "global_image_navi_along_search_guojiadianwang_station_icon_day_night"
+                    },
+                    "2": {
+                      "id": "brand_image",
+                      "nodeName": "image",
+                      "display": true,
+                      "value": "global_image_navi_along_search_telaidian_station_icon_day_night"
+                    },
+                    "3": {
+                      "id": "brand_image",
+                      "nodeName": "image",
+                      "display": true,
+                      "value": "global_image_navi_along_search_xingxing_station_icon_day_night"
+                    },
+                    "4": {
+                      "id": "brand_image",
+                      "nodeName": "image",
+                      "display": true,
+                      "value": "global_image_navi_along_search_putian_station_icon_day_night"
+                    },
+                    "default": {
+                      "id": "brand_image",
+                      "nodeName": "image",
+                      "display": true,
+                      "value": "global_image_navi_along_search_charge_icon_day_night"
+                    }
+                  }
+                }
+              },
+              "2": {
+                "id": "brand_image",
+                "nodeName": "image",
+                "display": true,
+                "value": "global_image_navi_along_search_atm_icon_day_night"
+              },
+              "3": {
+                "id": "brand_image",
+                "nodeName": "image",
+                "display": true,
+                "value": "global_image_navi_along_search_wc_icon_day_night"
+              },
+              "4": {
+                "id": "brand_image",
+                "nodeName": "image",
+                "display": true,
+                "value": "global_image_navi_along_search_repair_icon_day_night"
+              },
+              "5": {
+                "id": "brand_image",
+                "nodeName": "image",
+                "display": true,
+                "value": "global_image_navi_along_search_fwq_station_icon_day_night"
+              },
+              "6": {
+                "id": "brand_image",
+                "nodeName": "image",
+                "display": true,
+                "value": "global_image_navi_along_search_cng_icon_day_night"
+              },
+              "7": {
+                "id": "brand_image",
+                "nodeName": "image",
+                "display": true,
+                "value": "global_image_navi_along_search_restaurant_icon_day_night"
+              },
+              "9": {
+                "id": "brand_image",
+                "nodeName": "image",
+                "display": true,
+                "value": "global_image_navi_along_search_carwash_icon_day_night"
+              },
+              "10": {
+                "id": "brand_image",
+                "nodeName": "image",
+                "display": true,
+                "value": "global_image_navi_along_search_scenic_icon_day_night"
+              },
+              "11": {
+                "id": "brand_image",
+                "nodeName": "image",
+                "display": true,
+                "value": "global_image_navi_along_search_hotel_icon_day_night"
+              },
+              "default": {
+                "id": "brand_image",
+                "nodeName": "image",
+                "display": true,
+                "value": "global_image_b_child_poi_hl_day_night"
+              }
+            }
+          }
+        },
+        {
+          "brief": "image_key_normal_simple_focus",
+          "type": "marker_switch",
+          "value": {
+            "marker_id": "along_route_normal_simple_focus.xml",
+            "condition": "$biz_data.searchType",
+            "case": {
+              "0": {
+                "switch": {
+                  "condition": "$biz_data.typeCode",
+                  "case": {
+                    "10101": {
+                      "id": "brand_image",
+                      "nodeName": "image",
+                      "display": true,
+                      "value": "global_image_navi_along_search_sinopec_station_big_icon_day_night"
+                    },
+                    "10102": {
+                      "id": "brand_image",
+                      "nodeName": "image",
+                      "display": true,
+                      "value": "global_image_navi_along_search_petrochina_station_big_icon_day_night"
+                    },
+                    "10103": {
+                      "id": "brand_image",
+                      "nodeName": "image",
+                      "display": true,
+                      "value": "global_image_navi_along_search_shell_station_big_icon_day_night"
+                    },
+                    "default": {
+                      "id": "brand_image",
+                      "nodeName": "image",
+                      "display": true,
+                      "value": "global_image_navi_along_search_gas_station_big_icon_day_night"
+                    }
+                  }
+                }
+              },
+              "1": {
+                "switch": {
+                  "condition": "$biz_data.typeCode",
+                  "case": {
+                    "1": {
+                      "id": "brand_image",
+                      "nodeName": "image",
+                      "display": true,
+                      "value": "global_image_navi_along_search_guojiadianwang_station_big_icon_day_night"
+                    },
+                    "2": {
+                      "id": "brand_image",
+                      "nodeName": "image",
+                      "display": true,
+                      "value": "global_image_navi_along_search_telaidian_station_big_icon_day_night"
+                    },
+                    "3": {
+                      "id": "brand_image",
+                      "nodeName": "image",
+                      "display": true,
+                      "value": "global_image_navi_along_search_xingxing_station_big_icon_day_night"
+                    },
+                    "4": {
+                      "id": "brand_image",
+                      "nodeName": "image",
+                      "display": true,
+                      "value": "global_image_navi_along_search_putian_station_big_icon_day_night"
+                    },
+                    "default": {
+                      "id": "brand_image",
+                      "nodeName": "image",
+                      "display": true,
+                      "value": "global_image_navi_along_search_charge_big_icon_day_night"
+                    }
+                  }
+                }
+              },
+              "2": {
+                "id": "brand_image",
+                "nodeName": "image",
+                "display": true,
+                "value": "global_image_navi_along_search_atm_big_icon_day_night"
+              },
+              "3": {
+                "id": "brand_image",
+                "nodeName": "image",
+                "display": true,
+                "value": "global_image_navi_along_search_wc_big_icon_day_night"
+              },
+              "4": {
+                "id": "brand_image",
+                "nodeName": "image",
+                "display": true,
+                "value": "global_image_navi_along_search_repair_big_icon_day_night"
+              },
+              "5": {
+                "id": "brand_image",
+                "nodeName": "image",
+                "display": true,
+                "value": "global_image_navi_along_search_fwq_station_big_icon_day_night"
+              },
+              "6": {
+                "id": "brand_image",
+                "nodeName": "image",
+                "display": true,
+                "value": "global_image_navi_along_search_cng_big_icon_day_night"
+              },
+              "7": {
+                "id": "brand_image",
+                "nodeName": "image",
+                "display": true,
+                "value": "global_image_navi_along_search_restaurant_big_icon_day_night"
+              },
+              "9": {
+                "id": "brand_image",
+                "nodeName": "image",
+                "display": true,
+                "value": "global_image_navi_along_search_carwash_big_icon_day_night"
+              },
+              "10": {
+                "id": "brand_image",
+                "nodeName": "image",
+                "display": true,
+                "value": "global_image_navi_along_search_scenic_big_icon_day_night"
+              },
+              "11": {
+                "id": "brand_image",
+                "nodeName": "image",
+                "display": true,
+                "value": "global_image_navi_along_search_hotel_big_icon_day_night"
+              },
+              "default": {
+                "id": "brand_image",
+                "nodeName": "image",
+                "display": true,
+                "value": "global_image_bubble_child_day_night"
+              }
+            }
+          }
+        }
+      ]
+    }
+  },
+  "abstract": {
+    "brief": "沿途搜点图层",
+    "name": "search_along_route_layer",
+    "biz_type": 7009,
+    "update_card": false
+  },
+  "dataSource": "[{\"item_data\":{\"id\":\"\",\"position\":{\"lon\":116.356796,\"lat\":39.939559,\"z\":0}},\"biz_data\":{\"searchType\":2,\"labelType\":2,\"typeCode\":0,\"travelTime\":66,\"name\":\"ATM取款机_1\",\"mExtraData\":{\"isOnlineSearch\":true,\"extraTime\":576,\"extraDistance\":5001,\"alongRouteMode\":0,\"retainEnergy\":\"\",\"chargeStationInfo\":{\"isQualityStation\":false,\"fastTotal\":0,\"fastFree\":0,\"slowTotal\":0,\"slowFree\":-1,\"brandDesc\":\"\"}},\"labelName\":\"_1\",\"priority\":-1,\"isCollidedDisplay\":true}},{\"item_data\":{\"id\":\"\",\"position\":{\"lon\":116.35779600000001,\"lat\":39.940559,\"z\":0}},\"biz_data\":{\"searchType\":3,\"labelType\":1,\"typeCode\":0,\"travelTime\":76,\"name\":\"公共厕所_2\",\"mExtraData\":{\"isOnlineSearch\":true,\"extraTime\":676,\"extraDistance\":6001,\"alongRouteMode\":0,\"retainEnergy\":\"\",\"chargeStationInfo\":{\"isQualityStation\":false,\"fastTotal\":0,\"fastFree\":0,\"slowTotal\":0,\"slowFree\":-1,\"brandDesc\":\"\"}},\"labelName\":\"_2\",\"priority\":-1,\"isCollidedDisplay\":true}},{\"item_data\":{\"id\":\"\",\"position\":{\"lon\":116.358796,\"lat\":39.941559000000005,\"z\":0}},\"biz_data\":{\"searchType\":4,\"labelType\":3,\"typeCode\":0,\"travelTime\":86,\"name\":\"维修站_3\",\"mExtraData\":{\"isOnlineSearch\":true,\"extraTime\":776,\"extraDistance\":7001,\"alongRouteMode\":0,\"retainEnergy\":\"\",\"chargeStationInfo\":{\"isQualityStation\":false,\"fastTotal\":0,\"fastFree\":0,\"slowTotal\":0,\"slowFree\":-1,\"brandDesc\":\"\"}},\"labelName\":\"_3\",\"priority\":-1,\"isCollidedDisplay\":false}}]"
+}

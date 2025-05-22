@@ -1,0 +1,11 @@
+<div style="">
+  <div id="div_direction_bg" style="display:flex;flex-direction:row;justify-content:flex-start;align-items:center;width:auto;height:auto;background-image:global_image_traffic_left_up_day_night;">
+    <div style="display:flex;flex-direction:row;justify-content:center;align-items:center;margin-right:12px;margin-left:8px;height:48px;">
+      <image id="event_image" style="width:40px;height:40px;" src="event_breakdown_thumbnail" />
+      <label id="event_name" style="margin-right:2px;margin-left:4px;font-size:24px;color:#e6ff5148;font-family:font_cn;" lines="1">实景</label>
+      <image id="point_image" style="width:10px;height:10px;" src="global_image_auto_ic_navi_eta_2d_point_day_night" />
+      <label id="lane_name" style="margin-left:2px;font-size:24px;color:#e6ff5148;font-family:font_cn;" lines="1">第二车道</label>
+    </div>
+  </div>
+  <image id="message_image" style="width:48px;height:52px;position:absolute;top:0px;" src="global_image_message_day_night" />
+</div>

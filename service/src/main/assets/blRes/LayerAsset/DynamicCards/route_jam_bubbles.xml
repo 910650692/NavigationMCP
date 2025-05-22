@@ -1,0 +1,55 @@
+<div id="jam_bubbles" style="display:flex;flex-direction:row;justify-content:flex-start;align-items:center;width:auto;height:auto;background-image:global_image_bubble_left_top_day_night;">
+  <div id="detail_style" style="display:flex;flex-direction:row;justify-content:center;align-items:center;margin-left:8px;">
+    <image id="pic_image" style="display:flex;flex-direction:row;justify-content:center;align-items:center;margin-top:8px;margin-right:8px;margin-bottom:8px;width:52px;height:52px;border-radius:8px;" src="event_road_work_thumbnail" />
+    <div id="travel_information_div" style="display:flex;flex-direction:column;justify-content:center;">
+      <div id="traffic_div_smooth" style="display:flex;flex-direction:row;justify-content:flex-start;align-items:center;">
+        <image id="icon_image_smooth" style="margin-right:4px;width:32px;height:32px;" src="global_image_prediction_green_day_night" />
+        <div id="text_line_smooth" style="display:flex;flex-direction:column;justify-content:center;align-items:flex-start;margin-top:8px;margin-right:12px;margin-bottom:8px;margin-left:4px;">
+          <div id="text_time_dist_smooth" style="display:flex;flex-direction:row;justify-content:flex-start;align-items:center;width:auto;height:32px;">
+            <label id="main_title_smooth" style="font-size:24px;color:#00804e;font-family:font_cn;" lines="1">即将加剧</label>
+            <image id="line_image_smooth" style="margin-right:8px;margin-left:8px;width:2px;height:28px;" src="global_image_vertical_line_day_night" />
+            <label id="time_col_smooth" style="font-size:24px;color:#00804e;font-family:font_cn;" lines="1">7分钟</label>
+          </div>
+          <label id="sub_title_smooth" style="margin-bottom:3px;font-size:20px;color:#000000;font-family:font_cn;" lines="1">好几辆车追尾</label>
+          <label id="time_row_smooth" style="font-size:24px;color:#00804e;font-family:font_cn;" lines="1">42分钟</label>
+        </div>
+      </div>
+      <div id="traffic_div_slow" style="display:flex;flex-direction:row;justify-content:flex-start;align-items:center;">
+        <image id="icon_image_slow" style="margin-right:4px;width:32px;height:32px;" src="global_image_prediction_red_day_night" />
+        <div id="text_line_slow" style="display:flex;flex-direction:column;justify-content:center;align-items:flex-start;margin-top:8px;margin-right:12px;margin-bottom:8px;margin-left:4px;">
+          <div id="text_time_dist_slow" style="display:flex;flex-direction:row;justify-content:flex-start;align-items:center;width:auto;height:32px;">
+            <label id="main_title_slow" style="font-size:24px;color:#ed390d;font-family:font_cn;" lines="1">即将加剧</label>
+            <image id="line_image_slow" style="margin-right:8px;margin-left:8px;width:2px;height:28px;" src="global_image_vertical_line_day_night" />
+            <label id="time_col_slow" style="font-size:24px;color:#ed390d;font-family:font_cn;" lines="1">7分钟</label>
+          </div>
+          <label id="sub_title_slow" style="margin-bottom:3px;font-size:20px;color:#000000;font-family:font_cn;" lines="1">好几辆车追尾</label>
+          <label id="time_row_slow" style="font-size:24px;color:#ed390d;font-family:font_cn;" lines="1">42分钟</label>
+        </div>
+      </div>
+      <div id="traffic_div_congested" style="display:flex;flex-direction:row;justify-content:flex-start;align-items:center;">
+        <image id="icon_image_congested" style="margin-right:4px;width:32px;height:32px;" src="global_image_prediction_red2_day_night" />
+        <div id="text_line_congested" style="display:flex;flex-direction:column;justify-content:center;align-items:flex-start;margin-top:8px;margin-right:12px;margin-bottom:8px;margin-left:4px;">
+          <div id="text_time_dist_congested" style="display:flex;flex-direction:row;justify-content:flex-start;align-items:center;width:auto;height:32px;">
+            <label id="main_title_congested" style="font-size:24px;color:#930506;font-family:font_cn;" lines="1">即将加剧</label>
+            <image id="line_image_congested" style="margin-right:8px;margin-left:8px;width:2px;height:28px;" src="global_image_vertical_line_day_night" />
+            <label id="time_col_congested" style="font-size:24px;color:#930506;font-family:font_cn;" lines="1">7分钟</label>
+          </div>
+          <label id="sub_title_congested" style="margin-bottom:3px;font-size:20px;color:#000000;font-family:font_cn;" lines="1">好几辆车追尾</label>
+          <label id="time_row_congested" style="font-size:24px;color:#930506;font-family:font_cn;" lines="1">42分钟</label>
+        </div>
+      </div>
+      <div id="traffic_div_default" style="display:flex;flex-direction:row;justify-content:flex-start;align-items:center;">
+        <div id="text_line_default" style="display:flex;flex-direction:column;justify-content:center;align-items:flex-start;margin-top:8px;margin-right:12px;margin-bottom:8px;margin-left:4px;">
+          <div id="text_time_dist_default" style="display:flex;flex-direction:row;justify-content:flex-start;align-items:center;width:auto;height:32px;">
+            <label id="main_title_default" style="font-size:24px;color:#e6000000;font-family:font_cn;" lines="1">即将加剧</label>
+            <image id="line_image_default" style="margin-right:8px;margin-left:8px;width:2px;height:28px;" src="global_image_vertical_line_day_night" />
+            <label id="time_col_default" style="font-size:24px;color:#e6000000;font-family:font_cn;" lines="1">7分钟</label>
+          </div>
+          <label id="sub_title_default" style="margin-bottom:3px;font-size:20px;color:#000000;font-family:font_cn;" lines="1">好几辆车追尾</label>
+          <label id="time_row_default" style="font-size:24px;color:#e6000000;font-family:font_cn;" lines="1">42分钟</label>
+        </div>
+      </div>
+    </div>
+  </div>
+  <image id="jam_style" style="margin-top:7px;margin-right:7px;margin-bottom:7px;margin-left:7px;width:34px;height:34px;" src="global_image_bubble_block_day_night" />
+</div>

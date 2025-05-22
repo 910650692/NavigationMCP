@@ -17,7 +17,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:clickable="true"
-        android:paddingHorizontal="@dimen/dp_30"
         android:maxHeight="@dimen/dp_595">
 
         <com.fy.navi.ui.view.SkinConstraintLayout
@@ -46,6 +45,7 @@
             android:background="@drawable/bg_navi_btn_add_via"
             android:gravity="center"
             android:layout_marginBottom="@dimen/dp_20"
+            android:layout_marginHorizontal="@dimen/dp_30"
             android:orientation="horizontal"
             app:layout_constraintBottom_toBottomOf="parent">
 

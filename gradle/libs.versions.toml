@@ -44,7 +44,7 @@ lombok = "1.18.30"
 carUiLib = "2.6.0"
 vehicleapi = "0.0.15"
 basic = "0.3.1"
-protobean = "0.5.15"
+protobean = "0.5.19"
 
 [libraries]
 adapter-rxjava = { module = "com.squareup.retrofit2:adapter-rxjava", version.ref = "adapterRxjava" }

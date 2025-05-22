@@ -279,13 +279,13 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
 
             final boolean isFavorite = !mScreenViewModel.isFavorite(mPoiInfoEntity).isEmpty();
 
-            final int favoriteIcon = isFavorite ? R.drawable.icon_basic_ic_star_default :
-                    R.drawable.icon_basic_ic_star_fav;
+            final int favoriteIcon = isFavorite ? R.drawable.img_star58 :
+                    R.drawable.img_star_filling58;
             mViewBinding.scenePoiDetailsBottomView.sivPoiFavorites.setImageDrawable(
                     ContextCompat.getDrawable(getContext(), favoriteIcon));
             if (mPoiType == AutoMapConstant.PoiType.POI_MAP_CAR_CLICK) {
                 final int favIcon = isFavorite ? R.drawable.img_star_white58 :
-                        R.drawable.icon_basic_ic_star_fav;
+                        R.drawable.img_star_filling58;
                 mViewBinding.scenePoiDetailsBottomView.sivStartRoute.setImageDrawable(
                         ContextCompat.getDrawable(getContext(), favIcon));
                 mViewBinding.scenePoiDetailsBottomView.stvStartRoute.setText(isFavorite ? R.string.sha_favorite : R.string.sha_has_favorite);
@@ -435,7 +435,7 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
         Logger.d("huangli","code: "+code);
         if("0000".equals(code)){
             mIsCollectStatus = !mIsCollectStatus;
-            final int favoriteIcon = !mIsCollectStatus ? R.drawable.icon_basic_ic_star_default :
+            final int favoriteIcon = !mIsCollectStatus ? R.drawable.img_star58 :
                     R.drawable.icon_basic_ic_star_fav;
             mViewBinding.scenePoiDetailsBottomView.sivPoiFavorites.setImageDrawable(
                     ContextCompat.getDrawable(getContext(), favoriteIcon));
@@ -638,7 +638,7 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
                 mIsCollectStatus = false;
                 mViewBinding.scenePoiDetailsBottomView.sivPoiFavorites.setImageDrawable(
                         ContextCompat.getDrawable(getContext(),
-                                R.drawable.icon_basic_ic_star_default));
+                                R.drawable.img_star58));
                 if (mPoiType == AutoMapConstant.PoiType.POI_MAP_CAR_CLICK) {
                     mViewBinding.scenePoiDetailsBottomView.sivStartRoute.setImageDrawable(
                             ContextCompat.getDrawable(getContext(), R.drawable.img_star_white58));
@@ -1072,13 +1072,17 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
                         setVisibility(GONE);
             }
             mScenicChildAdapter.setItemClickListener((index, isSelectIndex) -> {
-                final ChildInfo childInfo = childInfoList.get(index);
-                mChildSelectInfo = new PoiInfoEntity()
-                        .setName(childInfo.getName())
-                        .setAddress(childInfo.getAddress())
-                        .setPid(childInfo.getPoiId())
-                        .setPoint(childInfo.getLocation());
-                mScreenViewModel.setChildIndex(index);
+                if (isSelectIndex) {
+                    final ChildInfo childInfo = childInfoList.get(index);
+                    mChildSelectInfo = new PoiInfoEntity()
+                            .setName(childInfo.getName())
+                            .setAddress(childInfo.getAddress())
+                            .setPid(childInfo.getPoiId())
+                            .setPoint(childInfo.getLocation());
+                    mScreenViewModel.setChildIndex(index);
+                } else {
+                    mChildSelectInfo = null;
+                }
             });
         } else {
             mViewBinding.scenePoiDetailsScenicSpotView.poiScenicSpotChildList.setVisibility(View.GONE);
@@ -1171,9 +1175,12 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
             avgCost = getContext().getString(R.string.catering_price, mPoiInfoEntity.getAverageCost());
             mViewBinding.scenePoiDetailsScenicSpotView.poiScenicSpotPrice.setText(avgCost);
         }
-
-        mViewBinding.scenePoiDetailsScenicSpotView.poiScenicSpotHoursContent.setText(
-                getContext().getString(R.string.business_hour, mPoiInfoEntity.getBusinessTime()));
+        if (ConvertUtils.isEmpty(mPoiInfoEntity.getBusinessTime())) {
+            mViewBinding.scenePoiDetailsScenicSpotView.poiScenicSpotHoursContent.setVisibility(View.GONE);
+        } else {
+            mViewBinding.scenePoiDetailsScenicSpotView.poiScenicSpotHoursContent.setText(
+                    getContext().getString(R.string.business_hour, mPoiInfoEntity.getBusinessTime()));
+        }
         if (ConvertUtils.isEmpty(mPoiInfoEntity.getPhone())) {
             mViewBinding.scenePoiDetailsScenicSpotView.poiScenicSpotPhone.setVisibility(View.GONE);
         }
@@ -1233,13 +1240,17 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
                 mViewBinding.scenePoiDetailsNormalView.poiChildExpandCollapse.setVisibility(GONE);
             }
             scenicChildAdapter.setItemClickListener((index, isSelectIndex) -> {
-                final ChildInfo childInfo = childInfoList.get(index);
-                mChildSelectInfo = new PoiInfoEntity()
-                        .setName(childInfo.getName())
-                        .setAddress(childInfo.getAddress())
-                        .setPid(childInfo.getPoiId())
-                        .setPoint(childInfo.getLocation());
-                mScreenViewModel.setChildIndex(index);
+                if (isSelectIndex) {
+                    final ChildInfo childInfo = childInfoList.get(index);
+                    mChildSelectInfo = new PoiInfoEntity()
+                            .setName(childInfo.getName())
+                            .setAddress(childInfo.getAddress())
+                            .setPid(childInfo.getPoiId())
+                            .setPoint(childInfo.getLocation());
+                    mScreenViewModel.setChildIndex(index);
+                } else {
+                    mChildSelectInfo = null;
+                }
             });
         } else {
             mViewBinding.scenePoiDetailsNormalView.poiChildExpandCollapse.setVisibility(GONE);
@@ -1274,6 +1285,7 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
                     mViewBinding.csPoiNoResult.setVisibility(View.VISIBLE);
                     mViewBinding.skPoiName.setVisibility(View.GONE);
                     mViewBinding.poiDetailsScroll.setVisibility(View.GONE);
+                    mViewBinding.poiTypeIcon.setVisibility(View.GONE);
                     mViewBinding.scenePoiDetailsBottomView.getRoot().setVisibility(View.GONE);
 
                     mViewBinding.noResultButton.setOnClickListener((view) -> {
@@ -1281,6 +1293,7 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
                         mViewBinding.csPoiNoResult.setVisibility(View.GONE);
                         mViewBinding.skPoiName.setVisibility(View.VISIBLE);
                         mViewBinding.poiDetailsScroll.setVisibility(View.VISIBLE);
+                        mViewBinding.poiTypeIcon.setVisibility(View.VISIBLE);
                         mViewBinding.scenePoiDetailsBottomView.getRoot().setVisibility(View.VISIBLE);
                     });
                 }

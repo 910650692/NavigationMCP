@@ -1,0 +1,7 @@
+<div id="div_direction_bg" style="display:flex;flex-direction:row;justify-content:center;align-items:center;width:auto;height:auto;background-image:global_image_autonavi_roadstatu_normal_simple_left_up_day_night;">
+  <div style="display:flex;flex-direction:row;justify-content:center;align-items:center;margin-right:12px;margin-left:12px;height:40px;">
+    <label id="congestion_distance" style="margin-right:8px;font-size:24px;color:#ffffff;font-family:font_cn;" lines="1">803米</label>
+    <image style="width:2px;height:28px;" src="global_image_autonavi_roadstatu_line_day_night" />
+    <label id="congestion_time" style="margin-left:8px;font-size:24px;color:#ffffff;font-family:font_cn;" lines="1">20分钟</label>
+  </div>
+</div>

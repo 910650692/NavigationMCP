@@ -23,7 +23,7 @@
             android:layout_height="wrap_content"
             android:maxLines="1"
             android:textColor="@color/search_color_ffffff"
-            android:textSize="@dimen/sp_34"
+            android:textSize="@dimen/sp_29"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="¥35" />
@@ -47,8 +47,8 @@
             android:layout_height="wrap_content"
             android:maxLines="1"
             android:textColor="@color/poi_details_bottom_icon"
-            android:textSize="@dimen/sp_36"
-            android:layout_marginEnd="@dimen/dp_24"
+            android:textSize="@dimen/sp_26"
+            android:layout_marginEnd="@dimen/dp_14"
             app:layout_constraintEnd_toStartOf="@+id/poi_catering_mark_layout"
             app:layout_constraintTop_toTopOf="@id/poi_catering_price"
             app:layout_constraintBottom_toBottomOf="@+id/poi_catering_price"
@@ -58,44 +58,44 @@
         <com.fy.navi.ui.view.SkinLinearLayout
             android:id="@+id/poi_catering_mark_layout"
             android:layout_width="wrap_content"
-            android:layout_height="@dimen/dp_48"
+            android:layout_height="@dimen/dp_41"
             android:background="@drawable/bg_catering_mark"
             android:orientation="horizontal"
             android:gravity="center_vertical"
             app:layout_constraintEnd_toEndOf="parent"
-            android:paddingStart="@dimen/dp_9"
-            android:paddingEnd="@dimen/dp_9"
+            android:paddingStart="@dimen/dp_8"
+            android:paddingEnd="@dimen/dp_8"
             app:layout_constraintTop_toTopOf="@id/poi_catering_price"
             app:layout_constraintBottom_toBottomOf="@+id/poi_catering_price">
 
             <com.fy.navi.ui.view.SkinImageView
                 android:id="@+id/poi_catering_mark_img1"
-                android:layout_width="@dimen/dp_42"
-                android:layout_height="@dimen/dp_42"
+                android:layout_width="@dimen/dp_36"
+                android:layout_height="@dimen/dp_36"
                 android:src="@drawable/img_collect_48" />
 
             <com.fy.navi.ui.view.SkinImageView
                 android:id="@+id/poi_catering_mark_img2"
-                android:layout_width="@dimen/dp_42"
-                android:layout_height="@dimen/dp_42"
+                android:layout_width="@dimen/dp_36"
+                android:layout_height="@dimen/dp_36"
                 android:src="@drawable/img_collect_48" />
 
             <com.fy.navi.ui.view.SkinImageView
                 android:id="@+id/poi_catering_mark_img3"
-                android:layout_width="@dimen/dp_42"
-                android:layout_height="@dimen/dp_42"
+                android:layout_width="@dimen/dp_36"
+                android:layout_height="@dimen/dp_36"
                 android:src="@drawable/img_collect_48" />
 
             <com.fy.navi.ui.view.SkinImageView
                 android:id="@+id/poi_catering_mark_img4"
-                android:layout_width="@dimen/dp_42"
-                android:layout_height="@dimen/dp_42"
+                android:layout_width="@dimen/dp_36"
+                android:layout_height="@dimen/dp_36"
                 android:src="@drawable/img_collect_48" />
 
             <com.fy.navi.ui.view.SkinImageView
                 android:id="@+id/poi_catering_mark_img5"
-                android:layout_width="@dimen/dp_42"
-                android:layout_height="@dimen/dp_42"
+                android:layout_width="@dimen/dp_36"
+                android:layout_height="@dimen/dp_36"
                 android:src="@drawable/img_collect2_48" />
         </com.fy.navi.ui.view.SkinLinearLayout>
 
@@ -112,10 +112,10 @@
             android:id="@+id/poi_catering_hours"
             android:layout_width="@dimen/dp_0"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_30"
+            android:layout_marginTop="@dimen/dp_26"
             android:layout_marginEnd="@dimen/dp_10"
             android:textColor="@color/poi_details_bottom_icon"
-            android:textSize="@dimen/sp_36"
+            android:textSize="@dimen/sp_26"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/poi_details_sub_line"
             tools:text="营业时间: 09:00 -- 21:00"
@@ -126,11 +126,10 @@
             android:layout_width="@dimen/dp_0"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_14"
-            android:layout_marginBottom="@dimen/dp_30"
             android:layout_marginEnd="@dimen/dp_10"
             android:text="电        话: 021-888888"
             android:textColor="@color/poi_details_bottom_icon"
-            android:textSize="@dimen/sp_36"
+            android:textSize="@dimen/sp_26"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/poi_catering_hours"
             tools:text="电        话: 021-888888" />

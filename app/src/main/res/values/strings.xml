@@ -542,8 +542,8 @@
     <string name="setting_others_about_wechat">官方微信</string>
     <string name="setting_others_about_qq">官方QQ群</string>
     <string name="setting_others_about_qq_number">974623252</string>
-    <string name="setting_others_about_licenses_icp">ICP备案号：京ICP备07017245号-17A</string>
-    <string name="setting_others_about_licenses_company">公司名称：高德软件有限公司</string>
+    <string name="setting_others_about_licenses_icp">ICP备案/许可证号：沪ICP备05015204号</string>
+    <string name="setting_others_about_licenses_company">主办单位名称：上汽通用汽车有限公司</string>
     <string name="setting_others_about_licenses_qr">手机扫码前往工业和信息化部政务服务平台查询</string>
     <string name="setting_others_about_licenses_qr_desc">(http://beian.miit.gov.cn/)</string>
     <string name="setting_others_about_licenses_safe">请在确保驾驶安全的情况下使用</string>

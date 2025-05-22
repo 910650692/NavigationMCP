@@ -1,0 +1,36 @@
+<div style="display:flex;flex-direction:row;justify-content:flex-start;align-items:center;width:auto;height:103px;background-image:global_image_traffic_signal_light_bubble_topright_day_night;">
+  <div id="group_left" style="display:flex;flex-direction:row;justify-content:flex-start;align-items:center;width:auto;height:60px;">
+    <div style="display:flex;flex-direction:row;justify-content:center;align-items:center;width:60px;height:60px;position:relative;">
+      <image id="light_left" style="width:60px;height:60px;position:absolute;top:0px;left:0px;bottom:0px;right:0px;" src="global_image_traffic_signal_light_green_day_night" />
+      <image id="arrow_left" style="width:42px;height:36px;position:relative;" src="global_image_arrow_white_left" />
+    </div>
+    <div id="content_left" style="display:flex;flex-direction:row;justify-content:flex-start;align-items:center;width:auto;height:60px;position:relative;padding-top:6px;min-width:34px;">
+      <label id="red_num_left" style="font-weight:400;font-size:28px;color:#ed3a3a;position:relative;white-space:nowrap;" lines="1">36</label>
+      <label id="green_num_left" style="font-weight:400;font-size:28px;color:#00902d;position:relative;white-space:nowrap;" lines="1">36</label>
+      <label id="text_left" style="font-weight:400;font-size:20px;color:#00902d;line-height:24px;position:relative;white-space:nowrap;" lines="1">通行</label>
+    </div>
+  </div>
+  <div id="group_straight" style="display:flex;flex-direction:row;justify-content:flex-start;align-items:center;width:auto;height:60px;">
+    <div style="display:flex;flex-direction:row;justify-content:center;align-items:center;width:60px;height:60px;position:relative;">
+      <image id="light_straight" style="width:60px;height:60px;position:absolute;top:0px;left:0px;bottom:0px;right:0px;" src="global_image_traffic_signal_light_green_day_night" />
+      <image id="arrow_straight" style="width:42px;height:36px;position:relative;" src="global_image_arrow_white_straight" />
+    </div>
+    <div id="content_straight" style="display:flex;flex-direction:row;justify-content:flex-start;align-items:center;width:auto;height:60px;position:relative;padding-top:6px;min-width:34px;">
+      <label id="red_num_straight" style="font-weight:400;font-size:28px;color:#ed3a3a;position:relative;white-space:nowrap;" lines="1">36</label>
+      <label id="green_num_straight" style="font-weight:400;font-size:28px;color:#00902d;position:relative;white-space:nowrap;" lines="1">36</label>
+      <label id="text_straight" style="font-weight:400;font-size:20px;color:#00902d;line-height:24px;position:relative;white-space:nowrap;" lines="1">通行</label>
+    </div>
+  </div>
+  <div id="group_right" style="display:flex;flex-direction:row;justify-content:flex-start;align-items:center;width:auto;height:60px;" >
+    <div style="display:flex;flex-direction:row;justify-content:center;align-items:center;width:60px;height:60px;position:relative;">
+      <image id="light_right" style="width:60px;height:60px;position:absolute;top:0px;left:0px;bottom:0px;right:0px;" src="global_image_traffic_signal_light_green_day_night" />
+      <image id="arrow_right" style="width:42px;height:36px;position:relative;" src="global_image_arrow_white_right" />
+    </div>
+    <div id="content_right" style="display:flex;flex-direction:row;justify-content:flex-start;align-items:center;width:auto;height:60px;position:relative;padding-top:6px;min-width:34px;">
+      <label id="red_num_right" style="font-weight:400;font-size:28px;color:#ed3a3a;position:relative;white-space:nowrap;" lines="1" >36</label>
+      <label id="green_num_right" style="font-weight:400;font-size:28px;color:#00902d;position:relative;white-space:nowrap;" lines="1">36</label>
+      <label id="text_right" style="font-weight:400;font-size:20px;color:#00902d;line-height:24px;position:relative;white-space:nowrap;" lines="1">通行</label>
+    </div>
+  </div>
+  <label id="placeholder" style="display:flex;width:16px;height:60px;" lines="1"></label>
+</div>

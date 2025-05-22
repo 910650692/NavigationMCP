@@ -36,6 +36,7 @@ import com.fy.navi.service.define.search.ConnectorInfoItem;
 import com.fy.navi.service.define.search.ETAInfo;
 import com.fy.navi.service.define.search.EquipmentInfo;
 import com.fy.navi.service.define.search.PoiInfoEntity;
+import com.fy.navi.service.define.search.ReservationInfo;
 import com.fy.navi.service.define.search.SearchRequestParameter;
 import com.fy.navi.service.define.search.SearchResultEntity;
 import com.fy.navi.service.define.search.SearchRetainParamInfo;
@@ -1049,9 +1050,14 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
                 .collect(Collectors.toList());
         previewParams.setPoints(points);
         previewParams.setbUseRect(false);
-//        final int screenWidth = ScreenUtils.Companion.getInstance().getScreenWidth();
-//        final int screenHeight = ScreenUtils.Companion.getInstance().getScreenHeight();
-//        previewParams.setMapBound(new PreviewParams.RectDouble(0, screenWidth, 0, screenHeight));
+        if (ConvertUtils.isEmpty(previewParams)) {
+            Logger.e(TAG, "previewParams is null");
+            return;
+        }
+        previewParams.setScreenLeft(1350);
+        previewParams.setScreenRight(600);
+        previewParams.setScreenTop(210);
+        previewParams.setScreenBottom(140);
         if (!ConvertUtils.isEmpty(poiList) && poiList.size() > 1) {
             Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "showPointSPreview");
             mMapAdapter.showPreview(MapType.MAIN_SCREEN_MAIN_MAP, previewParams);
@@ -1077,6 +1083,14 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
                 .collect(Collectors.toList());
         previewParams.setPoints(points);
         previewParams.setbUseRect(false);
+        if (ConvertUtils.isEmpty(previewParams)) {
+            Logger.e(TAG, "previewParams is null");
+            return;
+        }
+        previewParams.setScreenLeft(1350);
+        previewParams.setScreenRight(600);
+        previewParams.setScreenTop(210);
+        previewParams.setScreenBottom(140);
         if (!ConvertUtils.isEmpty(poiList) && poiList.size() > 1) {
             Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "showPointSPreview");
             mMapAdapter.showPreview(MapType.MAIN_SCREEN_MAIN_MAP, previewParams);
@@ -1606,6 +1620,15 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
         return mSearchAdapter.queryEquipmentInfo(requestParameterBuilder);
     }
 
+    public int queryEquipmentInfo(ReservationInfo info){
+        final SearchRequestParameter requestParameterBuilder = new SearchRequestParameter.Builder()
+                .operatorId(info.getmOperatorId())
+                .stationId(info.getmStationId())
+                .equipmentId(info.getmEquipmentId())
+                .build();
+        return mSearchAdapter.queryEquipmentInfo(requestParameterBuilder);
+    }
+
     /**
      * 搜索结果列表页面可变状态变化回调
      * @param isShow 是否可见
@@ -1667,13 +1690,24 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
         return mSearchAdapter.updateCollectStatus(requestParameterBuilder);
     }
 
-    public int queryReservation(SearchResultEntity searchResultEntity,String brandId,int status){
-        PoiInfoEntity poiInfoEntity = searchResultEntity.getPoiList().get(0);
+    public int queryReservation(PoiInfoEntity poiInfoEntity,String brandId,int status,String idpUserId,String accessToken){
         final SearchRequestParameter requestParameterBuilder = new SearchRequestParameter.Builder()
                 .vehicleBrand(brandId)
                 .operatorId(poiInfoEntity.getOperatorId())
                 .type(status)
+                .idpUserId(idpUserId)
+                .accessToken(accessToken)
                 .build();
         return mSearchAdapter.queryReservation(requestParameterBuilder);
+    }
+
+    public int cancelReservation(ReservationInfo reservationInfo,String idpUserId,String accessToken){
+        final SearchRequestParameter requestParameterBuilder = new SearchRequestParameter.Builder()
+                .preNum(reservationInfo.getmPreNum())
+                .idpUserId(idpUserId)
+                .accessToken(accessToken)
+                .build();
+        return mSearchAdapter.cancelReservation(requestParameterBuilder);
+
     }
 }

@@ -170,10 +170,10 @@ public class SearchHistoryAdapter extends RecyclerView.Adapter<SearchHistoryAdap
             poiInfo.setName(mPoiEntities.get(position).getMEndPoiName());
             final boolean isFavorite = !ConvertUtils.isEmpty(mBehaviorPackage.isFavorite(poiInfo));
             if (isFavorite) {
-                holder.resultItemBinding.ivCollect.setImageDrawable(ResourceUtils.Companion.getInstance().getDrawable(R.drawable.img_basic_ic_star));
+                holder.resultItemBinding.ivCollect.setImageDrawable(ResourceUtils.Companion.getInstance().getDrawable(R.drawable.img_star_filling58));
                 holder.resultItemBinding.stvCollect.setText(R.string.sha_cancel);
             } else {
-                holder.resultItemBinding.ivCollect.setImageDrawable(ResourceUtils.Companion.getInstance().getDrawable(R.drawable.icon_basic_ic_star_default));
+                holder.resultItemBinding.ivCollect.setImageDrawable(ResourceUtils.Companion.getInstance().getDrawable(R.drawable.img_star58));
                 holder.resultItemBinding.stvCollect.setText(R.string.sha_favorite);
             }
             holder.resultItemBinding.sllCollect.setOnClickListener(v -> {
@@ -198,6 +198,9 @@ public class SearchHistoryAdapter extends RecyclerView.Adapter<SearchHistoryAdap
             if (position >= 0 && position < mPoiEntities.size()) {
                 mPoiEntities.remove(position);
                 notifyItemRemoved(position);
+                if (mItemClickListener!= null) {
+                    mItemClickListener.onDeleteClick(mPoiEntities);
+                }
             }
             final List<History> historyList = mSearchPackage.getSearchKeywordRecord();
             ThreadManager.getInstance().postUi(() -> {
@@ -277,6 +280,7 @@ public class SearchHistoryAdapter extends RecyclerView.Adapter<SearchHistoryAdap
         void onItemClick(int position, History poiInfoEntity);
 
         void onNaviClick(int position, History poiInfoEntity);
+        default void onDeleteClick(List<History> poiInfoEntitys){}
     }
 
     public void setNoShowActionContainer(){

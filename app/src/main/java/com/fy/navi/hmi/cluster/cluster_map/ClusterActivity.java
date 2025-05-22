@@ -16,11 +16,8 @@ import com.android.utils.ConvertUtils;
 import com.android.utils.ResourceUtils;
 import com.android.utils.TimeUtils;
 import com.android.utils.ToastUtils;
-import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
-import com.fy.navi.fsa.FsaConstant;
-import com.fy.navi.fsa.MyFsaService;
 import com.fy.navi.hmi.BR;
 import com.fy.navi.hmi.R;
 import com.fy.navi.hmi.cluster.ClusterViewModel;
@@ -45,7 +42,6 @@ public class ClusterActivity extends BaseActivity<ActivityClusterBinding, Cluste
      * 通过广播关闭Activity
      */
     private BroadcastReceiver mBroadcastReceiver;
-    private MapDisplayingBean mapDisplayingBean;
 
     @Override
     public int onLayoutId() {
@@ -65,7 +61,6 @@ public class ClusterActivity extends BaseActivity<ActivityClusterBinding, Cluste
         registerBroadcastReceiver();
         //添加 ClusterNaviInfoFragment 导航信息Fragment
         //addNaviInfoFragment();
-        mapDisplayingBean = new MapDisplayingBean();
     }
 
     @Override
@@ -77,10 +72,6 @@ public class ClusterActivity extends BaseActivity<ActivityClusterBinding, Cluste
     @Override
     protected void onResume() {
         super.onResume();
-        mapDisplayingBean.setMapDisplaying(true);
-        String json = GsonUtils.toJson(mapDisplayingBean);
-        Logger.i(TAG, "onStart: "+json);
-        MyFsaService.getInstance().sendEvent(FsaConstant.FsaFunction.ID_SERVICE_HOLE,json);
         setVS(NaviStatusPackage.getInstance().getCurrentNaviStatus());
         //toast提示（MsgType: 3s Timeout +Anykey):
         if (NavistatusAdapter.getInstance().getCurrentNaviStatus().equals(NaviStatus.NaviStatusType.NAVING)){
@@ -105,12 +96,19 @@ public class ClusterActivity extends BaseActivity<ActivityClusterBinding, Cluste
     }
 
     @Override
+    protected void onPause() {
+        super.onPause();
+        Logger.d(TAG,"pause");
+    }
+
+
+    @Override
     protected void onStop() {
         super.onStop();
-        mapDisplayingBean.setMapDisplaying(false);
-        String json = GsonUtils.toJson(mapDisplayingBean);
-        Logger.i(TAG, "onStop: "+json);
-        MyFsaService.getInstance().sendEvent(FsaConstant.FsaFunction.ID_SERVICE_HOLE,json);
+        //导航态下，仪表切换为地图模式后，中控地图导航模式切换为“路线全览模式。
+        if (NavistatusAdapter.getInstance().getCurrentNaviStatus().equals(NaviStatus.NaviStatusType.NAVING)){
+            OpenApiHelper.exitPreview(MapType.MAIN_SCREEN_MAIN_MAP);
+        }
     }
 
     @Override
@@ -140,6 +138,7 @@ public class ClusterActivity extends BaseActivity<ActivityClusterBinding, Cluste
             @Override
             public void onReceive(Context context, Intent intent) {
                 Logger.d(TAG, "onReceive: " + intent.getAction());
+                //com.fy.navi.hmi.cluster_map.ClusterActivity
                 if ("com.fy.navi.hmi.cluster_map.ClusterActivity".equals(intent.getAction())) {
                     Logger.d(TAG, "onReceive: com.fy.navi.hmi.cluster.ClusterActivity");
                     ClusterActivity.this.finish(); // 关闭当前 Activity

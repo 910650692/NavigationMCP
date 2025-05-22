@@ -1,6 +1,7 @@
 package com.fy.navi.service.adapter.search.bls;
 
 
+import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
 import com.autonavi.gbl.search.model.AggregateSearchResult;
 import com.autonavi.gbl.search.model.KeywordSearchResultV2;
@@ -15,8 +16,11 @@ import com.fy.navi.service.AutoMapConstant;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.adapter.search.ISearchResultCallback;
 import com.fy.navi.service.adapter.search.cloudByPatac.rep.BaseRep;
+import com.fy.navi.service.define.patacnet.ResponseEntity;
 import com.fy.navi.service.define.search.SearchRequestParameter;
 import com.fy.navi.service.define.search.SearchResultEntity;
+
+import org.json.JSONObject;
 
 import java.util.List;
 import java.util.function.BiConsumer;
@@ -266,6 +270,10 @@ public class SearchResultCallbackHelper {
             Logger.e(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "net Callbacks is null");
             return;
         }
+        //todo result转成ResponseEntity类型
+        //ResponseEntity entity = GsonUtils.convertToT(result, ResponseEntity.class);
+        //或者用别的转换的方法
+        //将entity透出到别的模块那边使用
         for (ISearchResultCallback callback : mSearchResponseCallbackList) {
             callback.onNetSearchResult(taskId,searchKey,result);
         }

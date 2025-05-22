@@ -26,7 +26,7 @@
             android:layout_marginStart="@dimen/dp_14"
             android:text="@string/st_collect"
             android:textColor="@color/search_quick_tab_view_color"
-            android:textSize="@dimen/sp_42"
+            android:textSize="@dimen/sp_34"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/iv_search"
             app:layout_constraintStart_toEndOf="@+id/iv_close"

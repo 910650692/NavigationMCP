@@ -145,9 +145,23 @@ public class PoiDetailsModel extends BaseModel<PoiDetailsViewModel> implements S
         return AccountPackage.getInstance().isSGMLogin();
     }
 
-    public void queryReservation(SearchResultEntity searchResultEntity){
-        String vehicleBrand = "1";
-        int status = 1;
-        mSearchPackage.queryReservation(searchResultEntity,vehicleBrand,status);
+    public void queryReservation(SearchResultEntity searchResultEntity,Activity activity){
+        AccessTokenParam param = new AccessTokenParam(
+                AutoMapConstant.AccountTokenParamType.ACCOUNT_TYPE_PATAC_HMI,
+                AutoMapConstant.AccountTokenParamType.AUTH_TOKEN_TYPE_READ_ONLY,
+                null,
+                activity,
+                null,
+                null,
+                null,
+                null);
+
+        ThreadManager.getInstance().runAsync(() -> {
+            String idpUserId = AccountPackage.getInstance().getUserId();
+            String accessToken = AccountPackage.getInstance().getAccessToken(param);
+            String vehicleBrand = "2";
+            int status = 1;
+            mSearchPackage.queryReservation(searchResultEntity.getPoiList().get(0),vehicleBrand,status,idpUserId,accessToken);
+        });
     }
 }

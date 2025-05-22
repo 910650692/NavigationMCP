@@ -937,6 +937,7 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
             case IVrBridgeConstant.DestType.HOME:
             case IVrBridgeConstant.DestType.COMPANY:
                 //设置家/公司地址
+                openMapWhenBackground();
                 return VoiceSearchManager.getInstance().setHomeCompany(sessionId, poiType, poi, poiCallback);
             case IVrBridgeConstant.DestType.NAVI_TO_HOME:
             case IVrBridgeConstant.DestType.NAVI_TO_COMPANY:

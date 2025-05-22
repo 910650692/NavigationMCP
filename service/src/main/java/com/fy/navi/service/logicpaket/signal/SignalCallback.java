@@ -76,4 +76,12 @@ public interface SignalCallback {
     default void onNaviVolumeChanged(int volume) {
 
     }
+
+    /**
+     * 油量百分比变化
+     * @param value
+     */
+    default void onFuelLevelPercentSignalChanged(float value) {
+
+    }
 }

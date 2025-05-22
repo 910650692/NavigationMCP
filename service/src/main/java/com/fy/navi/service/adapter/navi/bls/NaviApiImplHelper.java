@@ -5,6 +5,7 @@ import static com.autonavi.gbl.guide.model.guidecontrol.Type.GuideParamEmulator;
 import android.annotation.SuppressLint;
 
 import com.android.utils.ConvertUtils;
+import com.android.utils.DeviceUtils;
 import com.android.utils.TimeUtils;
 import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
@@ -13,6 +14,9 @@ import com.autonavi.gbl.common.model.ElecCostList;
 import com.autonavi.gbl.common.model.ElecInfoConfig;
 import com.autonavi.gbl.common.model.ElecSpeedCostList;
 import com.autonavi.gbl.common.model.PowertrainLoss;
+import com.autonavi.gbl.common.model.TbtCommonControl;
+import com.autonavi.gbl.common.model.UserConfig;
+import com.autonavi.gbl.common.model.WorkPath;
 import com.autonavi.gbl.common.path.model.ChargeStationInfo;
 import com.autonavi.gbl.common.path.option.POIForRequest;
 import com.autonavi.gbl.common.path.option.PathInfo;
@@ -31,6 +35,7 @@ import com.autonavi.gbl.guide.observer.INaviObserver;
 import com.autonavi.gbl.guide.observer.ISoundPlayObserver;
 import com.autonavi.gbl.util.model.ServiceInitStatus;
 import com.fy.navi.service.AppContext;
+import com.fy.navi.service.GBLCacheFilePath;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.adapter.navi.GuidanceObserver;
 import com.fy.navi.service.adapter.navi.NaviConstant;
@@ -74,10 +79,26 @@ public class NaviApiImplHelper {
     }
 
     protected void initNaviService() {
+        initTbtComm();
         mGuideService.init();
         mGuideService.addNaviObserver(mNaviObserver);
         mGuideService.addSoundPlayObserver(mSoundPlayObserver);
+    }
 
+    /**
+     * 初始化公共控制类
+     */
+    private void initTbtComm() {
+        final String cache = GBLCacheFilePath.TBT_COMMON_CACHE_PATH;
+        final String navi = GBLCacheFilePath.OFFLINE_DOWNLOAD_DIR;
+        final WorkPath workPath = new WorkPath();
+        workPath.cache = cache;
+        workPath.navi = navi;
+        final UserConfig userConfig = new UserConfig();
+        userConfig.deviceID = DeviceUtils.getDeviceId();
+        userConfig.userBatch = "0";
+        final TbtCommonControl tbtCommonControl = TbtCommonControl.getInstance();
+        tbtCommonControl.init(workPath, userConfig);
     }
 
     protected void playTRManualExt(final int requestId) {

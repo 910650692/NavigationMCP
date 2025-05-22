@@ -11,6 +11,7 @@ import com.fy.navi.fsa.bean.CurrentCarLocation;
 import com.fy.navi.fsa.bean.DestInfo;
 import com.fy.navi.fsa.bean.EnlargeMap;
 import com.fy.navi.fsa.bean.ForwardCameraInfo;
+import com.fy.navi.fsa.bean.GasStationInfo;
 import com.fy.navi.fsa.bean.GeoPoint;
 import com.fy.navi.fsa.bean.HighWayEntranceInfo;
 import com.fy.navi.fsa.bean.HighWayExitInfo;
@@ -27,6 +28,7 @@ import com.fy.navi.fsa.bean.LaneItem;
 import com.fy.navi.fsa.bean.LaneLineInfo;
 import com.fy.navi.fsa.bean.LaneTypeInfo;
 import com.fy.navi.fsa.bean.NaviIntervalSpeedInfo;
+import com.fy.navi.fsa.bean.ParkInfo;
 import com.fy.navi.fsa.bean.RemainInfo;
 import com.fy.navi.fsa.bean.RoadCondition;
 import com.fy.navi.fsa.bean.ServiceAreaInfo;
@@ -546,18 +548,15 @@ public final class FsaNaviScene {
      */
     public void updateEnlargeMap(final MyFsaService fsaService, final boolean isShowImage, final CrossImageEntity naviImageInfo) {
         Logger.d(FsaConstant.FSA_TAG, "updateEnlargeMap: isShowImage = " + isShowImage);
-        if (!isShowImage) {
+        if (!isShowImage || null == naviImageInfo) {
             final EnlargeMap enlargeMap = new EnlargeMap();
             enlargeMap.setStatus(FsaConstant.HIDE);
             fsaService.sendEvent(FsaConstant.FsaFunction.ID_ENLARGE_ICON, GsonUtils.toJson(enlargeMap));
             fsaService.sendEvent(FsaConstant.FsaFunction.ID_HUD_ENLARGE_MAP, GsonUtils.toJson(enlargeMap));
+            fsaService.sendEvent(FsaConstant.FsaFunction.ID_VISIBLE_ENLARGE, GsonUtils.toJson("2"));
             return;
         }
-
-        if (null == naviImageInfo) {
-            Logger.e(FsaConstant.FSA_TAG, "naviImageInfo is null");
-            return;
-        }
+        fsaService.sendEvent(FsaConstant.FsaFunction.ID_VISIBLE_ENLARGE, GsonUtils.toJson("1"));
 //        ThreadManager.getInstance().asyncDelay(() -> {
 //            final EnlargeMap enlargeMap = new EnlargeMap();
 //            enlargeMap.setStatus(FsaConstant.SHOW);
@@ -595,8 +594,8 @@ public final class FsaNaviScene {
         if (list != null) {
             for (int i = 0; i < sapaInfoEntity.getList().size(); i++) {
                 final SapaInfoEntity.SAPAItem sapaItem = sapaInfoEntity.getList().get(i);
-                if (i == 5) {
-                    return;
+                if (serviceAreaInfos.size() == 5) {
+                    break;
                 }
                 if (sapaItem.getType() == 0) { // 服务区
                     final ServiceAreaInfo serviceAreaInfo = new ServiceAreaInfo();
@@ -786,8 +785,8 @@ public final class FsaNaviScene {
         if (poiList != null) {
             final ArrayList<ChargingStationInfo> chargingStationInfos = new ArrayList<>();
             for (int i = 0; i < poiList.size(); i++) {
-                if (i == 5) {
-                    return;
+                if (chargingStationInfos.size() == 5) {
+                    break;
                 }
                 final PoiInfoEntity poiInfoEntity = poiList.get(i);
                 final ChargingStationInfo chargingStationInfo = new ChargingStationInfo();
@@ -796,6 +795,42 @@ public final class FsaNaviScene {
                 chargingStationInfos.add(chargingStationInfo);
             }
             fsaService.sendEvent(FsaConstant.FsaFunction.ID_CHARGING_STATIONS_POI, GsonUtils.toJson(chargingStationInfos));
+        }
+    }
+
+    public void updateParkingLotInfo(final MyFsaService fsaService, final SearchResultEntity searchResultEntity) {
+        final List<PoiInfoEntity> poiList = searchResultEntity.getPoiList();
+        if (poiList != null) {
+            final ArrayList<ParkInfo> parkInfos = new ArrayList<>();
+            for (int i = 0; i < poiList.size(); i++) {
+                if (parkInfos.size() == 5) {
+                    break;
+                }
+                final PoiInfoEntity poiInfoEntity = poiList.get(i);
+                final ParkInfo parkInfo = new ParkInfo();
+                parkInfo.setLocation(new GeoPoint(poiInfoEntity.getPoint().getLon(), poiInfoEntity.getPoint().getLat()));
+                parkInfo.setName(poiInfoEntity.getName());
+                parkInfos.add(parkInfo);
+            }
+            fsaService.sendEvent(FsaConstant.FsaFunction.ID_PARKING_LOT_POI, GsonUtils.toJson(parkInfos));
+        }
+    }
+
+    public void updateGasStation(MyFsaService fsaService, SearchResultEntity searchResultEntity) {
+        final List<PoiInfoEntity> poiList = searchResultEntity.getPoiList();
+        if (poiList != null) {
+            final ArrayList<GasStationInfo> gasStationInfos = new ArrayList<>();
+            for (int i = 0; i < poiList.size(); i++) {
+                if (gasStationInfos.size() == 5) {
+                    break;
+                }
+                final PoiInfoEntity poiInfoEntity = poiList.get(i);
+                final GasStationInfo gasStationInfo = new GasStationInfo();
+                gasStationInfo.setLocation(new GeoPoint(poiInfoEntity.getPoint().getLon(), poiInfoEntity.getPoint().getLat()));
+                gasStationInfo.setName(poiInfoEntity.getName());
+                gasStationInfos.add(gasStationInfo);
+            }
+            fsaService.sendEvent(FsaConstant.FsaFunction.ID_GAS_STATION_POI, GsonUtils.toJson(gasStationInfos));
         }
     }
 

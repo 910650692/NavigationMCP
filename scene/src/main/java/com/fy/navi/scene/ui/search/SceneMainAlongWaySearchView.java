@@ -66,7 +66,7 @@ public class SceneMainAlongWaySearchView extends BaseSceneView<SceneMainAlongWay
     @Override
     protected void initObserver() {
         setSkinTextViews();
-        mViewBinding.ivGasStation.setImageResource(R.drawable.icon_basic_ic_star_default);
+        mViewBinding.ivGasStation.setImageResource(R.drawable.img_star58);
         mViewBinding.ivPullUp.setImageResource(R.drawable.img_broadcast_black_58);
         mViewBinding.ivGourmet.setImageResource(R.drawable.img_basic_ic_map_point_selection);
         mViewBinding.ivCarWashing.setImageResource(R.drawable.img_search58);

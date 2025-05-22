@@ -57,7 +57,7 @@
             android:layout_marginEnd="@dimen/dp_10"
             android:maxLines="1"
             android:textColor="@color/text_route_defult"
-            android:textSize="@dimen/sp_30"
+            android:textSize="@dimen/sp_26"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/poi_service_area_oil"
             android:text="营业时间: 09:00 -- 21:00"/>
@@ -67,10 +67,9 @@
             android:layout_width="@dimen/dp_0"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_14"
-            android:layout_marginBottom="@dimen/dp_30"
             android:layout_marginEnd="@dimen/dp_10"
             android:textColor="@color/text_route_defult"
-            android:textSize="@dimen/sp_30"
+            android:textSize="@dimen/sp_26"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/poi_service_area_hours"
             tools:text="电        话: 021-888888" />

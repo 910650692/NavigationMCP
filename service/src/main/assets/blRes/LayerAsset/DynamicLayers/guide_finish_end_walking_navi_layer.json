@@ -1,0 +1,76 @@
+{
+    "abstract" : {
+        "brief" : "导航结束页终点步导线",
+        "name" : "guide_finish_end_waking_navi_layer",
+        "biz_type" : 1505
+    },
+    "data" : {
+        "brief" : "导航结束页终点步导线，value是测试数据",
+        "type" : "adaptor_line",
+        "value" : [
+            {
+                "item_data" : {
+                    "position" : [{
+                        "lon" : 116.358045,
+                        "lat" : 39.942081
+                    },{
+                        "lon" : 116.353195,
+                        "lat" : 39.941686
+                    },{
+                        "lon" : 116.352959,
+                        "lat" : 39.939548
+                    },{
+                        "lon" : 116.356864,
+                        "lat" : 39.939317
+                    },{
+                        "lon" : 116.358045,
+                        "lat" : 39.942081
+                    }]
+                }
+            }
+        ]
+    },
+    "biz" : [
+        {
+            "brief" : "清除所有图元",
+            "type" : "biz_clear_all_items"
+        },
+        {
+            "brief" : "是否可点击",
+            "type" : "biz_set_clickable",
+            "value" : false
+        },
+        {
+            "brief" : "设置图层优先级",
+            "type" : "biz_set_priority",
+            "value" : {
+                "draw_priority" : 100,
+                "sub_priority" : 1500
+            }
+        }
+    ],
+    "style" : {
+        "style_name" : {
+            "prefix_name" : "polyline_guide_finish_end_walking_navi",
+            "rule" : [
+                {
+                    "brief" : "图层样式if动态规则",
+                    "type" : "style_if",
+                    "value" : {
+                        "condition" : {
+                            "func" : {
+                                "name" : "IsNightMode"
+                            },
+                            "operator" : "equal",
+                            "value" : true
+                        },
+                        "case" : {
+                            "true" : "_night",
+                            "false" : ""
+                        }
+                    }
+                }
+            ]
+        }
+    }
+}

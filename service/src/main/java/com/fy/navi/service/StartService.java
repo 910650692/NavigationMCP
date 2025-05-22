@@ -82,6 +82,7 @@ public class StartService {
      * 引擎初始化失败需要重试，这个方法只能在NaviService中调用
      */
     public void retryEngineInit() {
+        Logger.i(TAG, "retryEngineInit");
         startEngine();
     }
 
@@ -100,6 +101,7 @@ public class StartService {
      * @return true 需要重新初始化/false 不需要初始化
      */
     public boolean checkSdkIsNeedInit() {
+        Logger.i(TAG, "checkSdkIsNeedInit engineActive " + getSdkActivation());
         if (-1 == engineActive) {
             Logger.i(TAG, "Engine not init");
             return true;
@@ -115,10 +117,15 @@ public class StartService {
     }
 
     private void startEngine() {
+        Logger.i(TAG, "startEngine engineActive " + getSdkActivation());
         if (1 == engineActive || 0 == engineActive) return;
         ThreadManager.getInstance().execute(() -> {
             conformInitializingCallback();
-            if (!parseErrorCode()) return;
+            if (!parseErrorCode()) {
+                engineActive = -1;
+                Logger.e(TAG, "startEngine parseErrorCode failed engineActive = -1");
+                return;
+            }
             SettingManager.getInstance().insertOrReplace(SettingController.KEY_SETTING_CHANNEL_ID, EnginePackage.getInstance().getChanelName());
             EnginePackage.getInstance().initBaseLibs();
         });
@@ -139,8 +146,9 @@ public class StartService {
                 return true;
             }
 
-        } catch (JSONException e) {
+        } catch (Exception e) {
             Logger.i(TAG, "Exception");
+            return false;
         }
         return false;
     }
@@ -161,6 +169,7 @@ public class StartService {
      * 初始化SDK，注意时序不能变
      */
     private void initSdkService() {
+        Logger.i(TAG, "initSdkService");
         initPositionService();
         initMapView();
         if (!initLayerService() || !initClusterLayerService()) {
@@ -213,9 +222,10 @@ public class StartService {
     }
 
     private void initOtherService() {
+        Logger.i(TAG, "initOtherService start");
         SearchPackage.getInstance().initSearchService();
-        SettingPackage.getInstance().init();
         NaviPackage.getInstance().initNaviService();
+        SettingPackage.getInstance().init();
         RoutePackage.getInstance().initRouteService();
         CruisePackage.getInstance().initCruise();
         MapDataPackage.getInstance().initMapDataService();
@@ -233,6 +243,7 @@ public class StartService {
         SpeechPackage.getInstance().init();
         NaviAudioPlayer.getInstance().init();
         HotUpdatePackage.getInstance().initService();
+        Logger.i(TAG, "initOtherService end");
     }
 
     /**

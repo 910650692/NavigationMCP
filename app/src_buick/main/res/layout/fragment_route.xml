@@ -1311,29 +1311,21 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent">
 
-                <com.fy.navi.ui.view.SkinView
-                    android:id="@+id/stl_start_route"
+                <com.fy.navi.ui.view.SkinTextView
+                    android:id="@+id/stv_start_route"
                     clickCommand="@{ViewModel.getRouteSearchDetailsAddRemoveClick()}"
                     android:layout_width="@dimen/dp_0"
                     android:layout_height="@dimen/dp_90"
                     android:layout_marginBottom="@dimen/dp_2"
                     android:background="@drawable/bg_details_bottom_go_here"
-                    app:layout_constraintEnd_toStartOf="@+id/stl_function"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"/>
-
-                <com.fy.navi.ui.view.SkinTextView
-                    android:id="@+id/stv_start_route"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:gravity="center"
                     android:text="@{ViewModel.getRouteSearchDeailsAddRemoveVia()}"
                     android:textColor="@color/route_white"
                     android:textSize="@dimen/sp_34"
-                    app:layout_constraintBottom_toBottomOf="@+id/stl_start_route"
-                    app:layout_constraintEnd_toEndOf="@+id/stl_start_route"
-                    app:layout_constraintStart_toStartOf="@+id/stl_start_route"
-                    app:layout_constraintTop_toTopOf="@+id/stl_start_route"
-                    tools:text="添加途经点" />
+                    tools:text="添加途经点"
+                    app:layout_constraintEnd_toStartOf="@+id/stl_function"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"/>
 
 
                 <com.fy.navi.ui.view.SkinConstraintLayout
@@ -1343,7 +1335,7 @@
                     android:layout_marginStart="@dimen/dp_16"
                     android:layout_marginEnd="@dimen/dp_14"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/stl_start_route">
+                    app:layout_constraintStart_toEndOf="@+id/stv_start_route">
 
                     <com.fy.navi.ui.view.SkinConstraintLayout
                         android:id="@+id/stl_phone"
@@ -1421,7 +1413,7 @@
                             android:id="@+id/siv_poi_favorites"
                             android:layout_width="@dimen/dp_68"
                             android:layout_height="@dimen/dp_68"
-                            android:src="@drawable/icon_basic_ic_star_default"
+                            android:src="@drawable/img_star58"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />

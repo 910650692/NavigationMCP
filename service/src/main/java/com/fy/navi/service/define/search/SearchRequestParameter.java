@@ -100,6 +100,7 @@ public final class SearchRequestParameter {
     private String mConnectorId;
     private String mSource;
     private String mEquipmentId;
+    private String mPreNum;
 
     public boolean isSilentSearch() {
         return mIsSilentSearch;
@@ -277,6 +278,7 @@ public final class SearchRequestParameter {
         this.mSource = builder.mSource;
         this.mConnectorId = builder.mConnectorId;
         this.mEquipmentId = builder.mEquipmentId;
+        this.mPreNum = builder.mPreNum;
     }
 
     public String getIdpUserId() {
@@ -369,6 +371,15 @@ public final class SearchRequestParameter {
         return this;
     }
 
+    public String getPreNum() {
+        return mPreNum;
+    }
+
+    public SearchRequestParameter setPreNum(String mPreNum) {
+        this.mPreNum = mPreNum;
+        return this;
+    }
+
     public static class Builder {
         private boolean mIsSilentSearch = false;
         private String mKeyword;
@@ -413,6 +424,7 @@ public final class SearchRequestParameter {
         private String mConnectorId;
         private String mSource;
         private String mEquipmentId;
+        private String mPreNum;
 
         /**
          * 是否静默搜索
@@ -791,6 +803,11 @@ public final class SearchRequestParameter {
 
         public Builder equipmentId(final String equipmentId){
             this.mEquipmentId = equipmentId;
+            return this;
+        }
+
+        public Builder preNum(final String mPreNum){
+            this.mPreNum = mPreNum;
             return this;
         }
 

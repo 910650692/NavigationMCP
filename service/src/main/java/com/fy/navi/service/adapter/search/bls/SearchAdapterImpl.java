@@ -543,7 +543,7 @@ public class SearchAdapterImpl extends SearchServiceV2Manager implements ISearch
             .setFrom(String.valueOf(searchRequestParameter.getPage()))
             .setSize(String.valueOf(searchRequestParameter.getSize()))
             .setAreaCode(String.valueOf(searchRequestParameter.getAdCode()))
-            .setKeyWords(searchRequestParameter.getKeyword())
+            .setKeyWords("花园坊")
             .setLat(String.valueOf(searchRequestParameter.getPoiLoc().getLat()))
             .setLng(String.valueOf(searchRequestParameter.getPoiLoc().getLon()))
             .setTimestamp(System.currentTimeMillis());
@@ -741,10 +741,11 @@ public class SearchAdapterImpl extends SearchServiceV2Manager implements ISearch
     }
 
     public int queryReservation(SearchRequestParameter searchRequestParameter){
-        StationReq req = new StationReq("1.0")
+        StationReq req = new StationReq("1.0",searchRequestParameter.getIdpUserId())
                 .setOperatorId(searchRequestParameter.getOperatorId())
                 .setStatus(searchRequestParameter.getType())
                 .setBrandId(searchRequestParameter.getVehicleBrand());
+        req.setAccessToken(searchRequestParameter.getAccessToken());
         final Observable<String> observable = SearchRepository.getInstance().queryReservation(req);
         observable.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -755,6 +756,32 @@ public class SearchAdapterImpl extends SearchServiceV2Manager implements ISearch
                         BaseRep rep = GsonUtils.fromJson(String.valueOf(data),BaseRep.class);
                         Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG,"data: "+rep.getResultCode());
                         notifyNetSearchSuccess(mTaskId.get(),AutoMapConstant.NetSearchKey.QUERY_RESERVATION,rep);
+                    }
+
+                    @Override
+                    public void onFailed(ApiException apiException) {
+                        Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG,"Exce: "+apiException);
+                    }
+                });
+
+        return mTaskId.get();
+    }
+
+    public int cancelReservation(SearchRequestParameter searchRequestParameter){
+        StationReq req = new StationReq("1.0",searchRequestParameter.getIdpUserId())
+                .setPreNum(searchRequestParameter.getPreNum())
+                .setStatus(3);
+        req.setAccessToken(searchRequestParameter.getAccessToken());
+        final Observable<String> observable = SearchRepository.getInstance().updateReservation(req);
+        observable.subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new NetDisposableObserver<String>() {
+                    @Override
+                    public void onSuccess(String data) {
+                        Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG,"success");
+                        BaseRep rep = GsonUtils.fromJson(String.valueOf(data),BaseRep.class);
+                        Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG,"data: "+rep.getResultCode());
+                        notifyNetSearchSuccess(mTaskId.get(),AutoMapConstant.NetSearchKey.UPDATE_RESERVATION,rep);
                     }
 
                     @Override

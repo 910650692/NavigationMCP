@@ -80,9 +80,13 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub {
 
     //当前搜索taskId
     private int mCommonSearchId = -1;
+    //逆地理搜索taskId
+    private int mGeoSearchId = -1;
+    //关键字 匹配关键字搜索结果返回
+    private String mSearchKeyword = "";
     //收到搜索结果后是否发起算路，对应searchAndNavi接口的需求，
     private boolean mRouteRequestAfterSearch = false;
-    private String mSearchKeyword = ""; //关键字
+
 
     //当前引导面板状态
     private int mGuidePanelStatus;
@@ -146,43 +150,17 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub {
             @Override
             public void onSearchResult(final int taskId, final int errorCode, final String message,
                                        final SearchResultEntity searchResultEntity) {
-                final boolean searchSuccess = null != searchResultEntity && null != searchResultEntity.getPoiList()
-                        && !searchResultEntity.getPoiList().isEmpty();
-                Logger.i(TAG, "onSearchResult " + searchSuccess);
-
-                PoiInfoEntity firstResult = null;
-                if (searchSuccess) {
-                    firstResult = searchResultEntity.getPoiList().get(0);
-                }
-                //逆地理解析获取行政区域信息，不对外分发
-                if (mDistrictSearchId == taskId) {
-                    Logger.d(TAG, "onSearchResult, mDistrictSearchId == taskId, success: " + searchSuccess);
-                    mDistrictSearchId = -1;
-                    if (searchSuccess && null != firstResult) {
-                        updateDistrictAndLocation(firstResult);
-                    }
-                    return;
-                }
 
                 String keyword = null;
                 if (null != searchResultEntity) {
                     keyword = searchResultEntity.getKeyword();
                 }
-                if (taskId == mCommonSearchId) {
-                    Logger.d(TAG, "onSearchResult: taskId == mCommonSearchId");
-                    if (searchSuccess) {
-                        String poiMsg = "empty poi";
-                        if (null != firstResult) {
-                            poiMsg = (firstResult.getName() + " ,address: " + firstResult.getAddress() + " ,pId: " + firstResult.getPid());
-                        }
-                        Logger.d(TAG, "reverseSearchResult: " + poiMsg);
-                        dispatchReverseSearch(mCommonSearchId, firstResult);
-                    } else {
-                        dispatchSearchFailed(false, errorCode);
-                    }
-                    mCommonSearchId = -1;
-                } else if (Objects.equals(keyword, mSearchKeyword)) {
+                if (Objects.equals(keyword, mSearchKeyword)) {
+                    //jumpToSearchPage 结果通过keyword匹配
                     mSearchKeyword = "";
+                    final boolean searchSuccess = null != searchResultEntity && null != searchResultEntity.getPoiList()
+                            && !searchResultEntity.getPoiList().isEmpty();
+                    Logger.i(TAG, "onSearchResult " + searchSuccess);
                     if (searchSuccess) {
                         dispatchSearchSuccess(false, searchResultEntity);
                     } else {
@@ -194,32 +172,69 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub {
             @Override
             public void onSilentSearchResult(final int  taskId, final int errorCode, final String message,
                                              final SearchResultEntity searchResultEntity) {
+
+                final boolean requestDistrict = mDistrictSearchId == taskId;
+                final boolean geoSearch = mGeoSearchId == taskId;
+                final boolean nearbySearch = mCommonSearchId == taskId;
+                if (!(requestDistrict || geoSearch || nearbySearch || mRouteRequestAfterSearch)) {
+                    Logger.w(TAG, "not binder search request");
+                    return;
+                }
+
                 final boolean success = null != searchResultEntity && null != searchResultEntity.getPoiList()
                         && !searchResultEntity.getPoiList().isEmpty();
                 Logger.d(TAG, "onSilentSearchResult success: " + success);
-                boolean processFailed = false;
-                if (mRouteRequestAfterSearch) {
+                PoiInfoEntity firstPoi = null;
+                if (success) {
+                    firstPoi = searchResultEntity.getMPoiList().get(0);
+                }
+
+                //逆地理解析获取行政区域信息，不对外分发
+                if (mDistrictSearchId == taskId) {
+                    Logger.d(TAG, "onSearchSilentResult, mDistrictSearchId == taskId, success: " + success);
+                    mDistrictSearchId = -1;
+                    if (success && null != firstPoi) {
+                        updateDistrictAndLocation(firstPoi);
+                    }
+                    return;
+                }
+
+                boolean hasProcess = true;
+                if (taskId == mGeoSearchId) {
+                    //requestReverseGeoSearch结果
+                    Logger.d(TAG, "onSilentSearch: taskId == mGeoSearchId");
+                    if (success) {
+                        String poiMsg = "empty poi";
+                        if (null != firstPoi) {
+                            poiMsg = (firstPoi.getName() + " ,address: " + firstPoi.getAddress() + " ,pId: " + firstPoi.getPid());
+                        }
+                        Logger.d(TAG, "reverseSearchResult: " + poiMsg);
+                        dispatchReverseSearch(mGeoSearchId, firstPoi);
+                    } else {
+                        hasProcess = false;
+                    }
+                    mGeoSearchId = -1;
+                } else if (mRouteRequestAfterSearch) {
+                    //静默搜索结果发起路线规划
                     Logger.d(TAG, "onSilentSearchResult: mRouteRequestAfterSearch = true");
                     mRouteRequestAfterSearch = false;
-                    if (success) {
-                        final PoiInfoEntity poiInfo = searchResultEntity.getPoiList().get(0);
-                        if (null != poiInfo) {
-                            Logger.d(TAG, "onSilentSearchResult: null != poiInfo");
-                            processJumpPage(INaviConstant.OpenIntentPage.ROUTE_PAGE, "", poiInfo);
-                        }
+                    if (success && null != firstPoi) {
+                        Logger.d(TAG, "onSilentSearchResult: null != poiInfo");
+                        processJumpPage(INaviConstant.OpenIntentPage.ROUTE_PAGE, "", firstPoi);
                     } else {
-                        processFailed = true;
+                        hasProcess = false;
                     }
                 } else if (mCommonSearchId == taskId) {
+                    //nearbySearch
                     mCommonSearchId = -1;
                     if (success) {
                         dispatchSearchSuccess(true, searchResultEntity);
                     } else {
-                        processFailed = true;
+                        hasProcess = false;
                     }
                 }
 
-                if (processFailed) {
+                if (!hasProcess) {
                     dispatchSearchFailed(true, errorCode);
                 }
             }
@@ -267,8 +282,7 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub {
             } catch (IllegalStateException e) {
                 Logger.e(e.getMessage() + Arrays.toString(e.getStackTrace()));
             } finally {
-                mNaviAutoCallbackList.finishBroadcast();
-                mInCallback = false;
+                closeCallbackList();
             }
         };
     }
@@ -308,8 +322,7 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub {
                 } catch (IllegalStateException e) {
                     Logger.e(e.getMessage() + Arrays.toString(e.getStackTrace()));
                 } finally {
-                    mNaviAutoCallbackList.finishBroadcast();
-                    mInCallback = false;
+                    closeCallbackList();
                 }
             }
 
@@ -337,8 +350,7 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub {
                 } catch (IllegalStateException e) {
                     Logger.e(e.getMessage() + Arrays.toString(e.getStackTrace()));
                 } finally {
-                    mNaviAutoCallbackList.finishBroadcast();
-                    mInCallback = false;
+                    closeCallbackList();
                 }
             }
 
@@ -429,8 +441,7 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub {
                 } catch (IllegalStateException e) {
                     Logger.e(e.getMessage() + Arrays.toString(e.getStackTrace()));
                 } finally {
-                    mNaviAutoCallbackList.finishBroadcast();
-                    mInCallback = false;
+                    closeCallbackList();
                 }
             }
 
@@ -470,8 +481,7 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub {
                 } catch (IllegalStateException e) {
                     Logger.e(e.getMessage() + Arrays.toString(e.getStackTrace()));
                 } finally {
-                    mNaviAutoCallbackList.finishBroadcast();
-                    mInCallback = false;
+                    closeCallbackList();
                 }
             }
 
@@ -503,7 +513,7 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub {
             mCountDownTimer = new Timer();
             mGeoIntervalTask = new GeoSearchIntervalTask();
             mCountDownTimer.schedule(mGeoIntervalTask, 1000, 1000);
-            mDistrictSearchId = searchPackage.geoSearch(geoPoint);
+            mDistrictSearchId = searchPackage.geoSearch(geoPoint, true);
         }
     }
 
@@ -558,8 +568,7 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub {
         } catch (IllegalStateException e) {
             Logger.e(e.getMessage() + Arrays.toString(e.getStackTrace()));
         } finally {
-            mNaviAutoCallbackList.finishBroadcast();
-            mInCallback = false;
+            closeCallbackList();
         }
     }
 
@@ -595,8 +604,7 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub {
         } catch (IllegalStateException e) {
             Logger.e(e.getMessage() + Arrays.toString(e.getStackTrace()));
         } finally {
-            mNaviAutoCallbackList.finishBroadcast();
-            mInCallback = false;
+            closeCallbackList();
         }
     }
 
@@ -662,8 +670,7 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub {
         } catch (IllegalStateException e) {
             Logger.e(e.getMessage() + Arrays.toString(e.getStackTrace()));
         } finally {
-            mNaviAutoCallbackList.finishBroadcast();
-            mInCallback = false;
+            closeCallbackList();
         }
     }
 
@@ -699,8 +706,7 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub {
         } catch (IllegalStateException e) {
             Logger.e(e.getMessage() + Arrays.toString(e.getStackTrace()));
         } finally {
-            mNaviAutoCallbackList.finishBroadcast();
-            mInCallback = false;
+            closeCallbackList();
         }
     }
 
@@ -745,8 +751,7 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub {
         } catch (IllegalStateException e) {
             Logger.e(e.getMessage() + Arrays.toString(e.getStackTrace()));
         } finally {
-            mNaviAutoCallbackList.finishBroadcast();
-            mInCallback = false;
+            closeCallbackList();
         }
     }
 
@@ -840,6 +845,7 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub {
             return;
         }
 
+        //保存keyword匹配搜索结果回调
         processJumpPage(INaviConstant.OpenIntentPage.SEARCH_PAGE, keyword, null);
     }
 
@@ -852,8 +858,8 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub {
         Logger.i(TAG, clientPkg + " reverseGeoSearch: " + baseGeoPoint);
 
         final GeoPoint geoPoint = new GeoPoint(baseGeoPoint.getLon(), baseGeoPoint.getLat());
-        mCommonSearchId = SearchPackage.getInstance().geoSearch(geoPoint);
-        return mCommonSearchId;
+        mGeoSearchId = SearchPackage.getInstance().geoSearch(geoPoint, true);
+        return mGeoSearchId;
     }
 
     @Override
@@ -1024,6 +1030,20 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub {
             }
         }
         return naviType;
+    }
+
+    /**
+     * 统一结束远程Callback回调.
+     */
+    private void closeCallbackList() {
+        if (null != mNaviAutoCallbackList) {
+            try {
+                mInCallback = false;
+                mNaviAutoCallbackList.finishBroadcast();
+            } catch (IllegalStateException illegalStateException) {
+                Logger.e(TAG, "finishBroadcast error: " + illegalStateException.getMessage());
+            }
+        }
     }
 
 }

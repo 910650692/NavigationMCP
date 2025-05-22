@@ -12,6 +12,7 @@ import com.android.utils.ConvertUtils;
 import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
+import com.fy.navi.service.AutoMapConstant;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.adapter.search.cloudByPatac.rep.BaseRep;
 import com.fy.navi.service.define.bean.GeoPoint;
@@ -102,7 +103,7 @@ public class BasePoiDetailsViewModel extends BaseViewModel<PoiDetailsFragment, P
     }
 
     public void notifyNetSearchResult(int taskId,BaseRep result){
-        if(!ConvertUtils.isNull(result)) {
+        if(AutoMapConstant.NetSearchKey.SUCCESS_CODE.equals(result.getResultCode())) {
             Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "code" + result.getResultCode());
             JSONObject jsonObject = null;
             try {
@@ -158,7 +159,7 @@ public class BasePoiDetailsViewModel extends BaseViewModel<PoiDetailsFragment, P
     }
 
     public void notifyCollectList(BaseRep result){
-        if(!ConvertUtils.isNull(result)){
+        if(AutoMapConstant.NetSearchKey.SUCCESS_CODE.equals(result.getResultCode())) {
             Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"code"+result.getResultCode());
             ArrayList<PoiInfoEntity> list = new ArrayList<>();
             // 回调出的数据转换List
@@ -181,7 +182,7 @@ public class BasePoiDetailsViewModel extends BaseViewModel<PoiDetailsFragment, P
                         }
                     }
                 }
-                searchReservation(mSearchResultEntity);
+                mView.searchReservation();
             } catch (JSONException e) {
                 Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"JSONException: "+e);
             }
@@ -189,7 +190,7 @@ public class BasePoiDetailsViewModel extends BaseViewModel<PoiDetailsFragment, P
     }
 
     public void notifyReservationList(BaseRep result){
-        if(!ConvertUtils.isNull(result)){
+        if(AutoMapConstant.NetSearchKey.SUCCESS_CODE.equals(result.getResultCode())) {
             Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"code"+result.getResultCode());
             ArrayList<PoiInfoEntity> list = new ArrayList<>();
             // 回调出的数据转换List
@@ -198,7 +199,7 @@ public class BasePoiDetailsViewModel extends BaseViewModel<PoiDetailsFragment, P
                 JSONArray jsonArray = jsonObject.getJSONArray("resultList");
                 String userId = AccountPackage.getInstance().getUserId();
                 for (int i = 0; i < jsonArray.length(); i++) {
-                    ReservationInfo reservationInfo = GsonUtils.fromJson(GsonUtils.toJson(jsonArray.get(i)),ReservationInfo.class);
+                    ReservationInfo reservationInfo = GsonUtils.fromJson(String.valueOf(jsonArray.get(i)),ReservationInfo.class);
                     if(reservationInfo.getmUserId().equals(userId) && reservationInfo.getmStatus() == 1){
                         mSearchResultEntity.getPoiList().get(0).setReservationInfo(reservationInfo);
                     }
@@ -229,7 +230,7 @@ public class BasePoiDetailsViewModel extends BaseViewModel<PoiDetailsFragment, P
         mModel.searchCollectList(activity);
     }
 
-    private void searchReservation(SearchResultEntity searchResultEntity){
-        mModel.queryReservation(searchResultEntity);
+    public void searchReservation(Activity activity){
+        mModel.queryReservation(mSearchResultEntity,activity);
     }
 }

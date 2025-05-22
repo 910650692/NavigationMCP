@@ -1,0 +1,13 @@
+<div style="">
+  <div style="display:flex;flex-direction:row;justify-content:flex-start;align-items:center;width:auto;height:96px;background-image:global_image_bubble_bg_day_night;">
+    <div style="display:flex;flex-direction:row;align-items:baseline;margin-left:2px;width:auto;height:auto;">
+      <label id="id_currency" style="font-size:14px;color:#e6000000;font-family:font_cn;" lines="1">¥</label>
+      <label id="id_price" style="font-size:20px;color:#e6000000;font-family:font_cn;" lines="1">7.53</label>
+      <label id="id_unit" style="margin-right:10px;font-size:14px;color:#e6000000;font-family:font_cn;" lines="1">/L</label>
+    </div>
+  </div>
+  <div id="div_discount" style="display:flex;flex-direction:row;justify-content:center;align-items:center;width:auto;height:22px;position:absolute;top:21px;right:21px;background-image:global_image_bubble_sale_day_night;">
+    <label id="id_discount" style="margin-right:3px;margin-left:4px;font-size:12px;color:#ffffff;font-family:font_cn;" lines="1">优惠</label>
+  </div>
+  <image id="brand_image" style="width:44px;height:52px;position:absolute;top:24px;left:8px;" src="global_image_navi_along_search_gas_station_icon_day_night" />
+</div>

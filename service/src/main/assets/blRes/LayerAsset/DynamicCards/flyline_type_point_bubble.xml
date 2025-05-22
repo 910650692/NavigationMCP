@@ -1,0 +1,6 @@
+<div id='flyline_type_point_bubble' style='display:flex;flex-direction:row;align-items:left;justify-content:space-around'>
+  <image id='background_type_dynamic' src='global_image_blue_poi_day_night' />
+  <div style='position:absolute;top:11px;left:13px'>
+    <image id='poi_type_dynamic' style='' src='global_image_poi_common_day_night' />
+  </div>
+</div>

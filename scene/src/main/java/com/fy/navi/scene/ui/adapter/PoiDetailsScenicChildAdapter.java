@@ -100,14 +100,23 @@ public class PoiDetailsScenicChildAdapter extends RecyclerView.Adapter<PoiDetail
             @Override
             public void onClick(final View view) {
                 if (mItemClickListener != null) {
+                    boolean isSelect = false;
                     for (int i = 0; i < mChildList.size(); i++) {
                         if (i == position) {
-                            mChildList.get(i).setChecked(1);
+                            final ChildInfo tempInfo = mChildList.get(i);
+                            if (tempInfo.getChecked() == 1) {
+                                mChildList.get(i).setChecked(-1);
+                                isSelect = false;
+                            } else {
+                                mChildList.get(i).setChecked(1);
+                                isSelect = true;
+                            }
                         } else {
                             mChildList.get(i).setChecked(-1);
                         }
                     }
-                    mItemClickListener.onItemClick(position, true);
+                    //isSelect判断是选中还是非选中，非选中则取消子点高亮
+                    mItemClickListener.onItemClick(position, isSelect);
                 }
                 notifyDataSetChanged();
             }

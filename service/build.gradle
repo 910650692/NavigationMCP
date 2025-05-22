@@ -62,6 +62,7 @@ dependencies {
     annotationProcessor libs.lombok
     implementation project(":engine:bls")
     implementation project(":utils")
+    implementation project(":patacnetlib")
     implementation project(":ui")
     implementation project(":burypoint")
 

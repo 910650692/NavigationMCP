@@ -112,6 +112,7 @@ public interface AutoMapConstant {
         String UNLOCK_GROUND = "unlock_ground";
         String UPDATE_COLLECT = "update_collect";
         String QUERY_RESERVATION = "query_reservation";
+        String UPDATE_RESERVATION = "update_reservation";
     }
 
     @interface TrafficEventBundleKey {

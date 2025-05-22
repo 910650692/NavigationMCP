@@ -1,0 +1,7 @@
+<div id='route_energy_remain_point' style='display:flex;width:auto;height:auto;flex-direction:row;justify-content:flex-start;align-items:flex-start;'>
+  <div id='bg_div' style='display:flex;width:auto;height:auto;flex-direction:row;justify-content:center;align-items:flex-start;background-image:route_energy_left_night;'>
+    <label id='remain_text' style='color:#40393d;font-size:24px;margin-top:8px;justify-content:flex-start;max-height:27px;' text='电量剩余'/>
+    <label id='value_text' style='color:#40393d;font-size:24px;margin-left:5px;margin-top:8px;justify-content:flex-start;max-height:27px;' text='50%'/>
+    <label id='lower_text' style='color:#ff4545;font-size:24px;margin-left:5px;margin-top:8px;justify-content:flex-start;max-height:27px;' text='5%'/>
+  </div>
+</div>

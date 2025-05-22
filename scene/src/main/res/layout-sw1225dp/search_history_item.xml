@@ -183,7 +183,7 @@
                     android:id="@+id/iv_collect"
                     android:layout_width="@dimen/dp_49"
                     android:layout_height="@dimen/dp_49"
-                    android:src="@drawable/icon_basic_ic_star_default" />
+                    android:src="@drawable/img_star58" />
 
                 <com.fy.navi.ui.view.SkinTextView
                     android:id="@+id/stv_collect"
@@ -208,7 +208,7 @@
                 <com.fy.navi.ui.view.SkinImageView
                     android:layout_width="@dimen/dp_49"
                     android:layout_height="@dimen/dp_49"
-                    android:src="@drawable/img_basic_ic_delete_white" />
+                    android:src="@drawable/img_basic_ic_delete_white_sw1225" />
 
                 <com.fy.navi.ui.view.SkinTextView
                     android:id="@+id/stv_delete"

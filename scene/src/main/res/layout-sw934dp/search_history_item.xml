@@ -184,9 +184,10 @@
 
                 <com.fy.navi.ui.view.SkinImageView
                     android:id="@+id/iv_collect"
-                    android:layout_width="@dimen/dp_68"
-                    android:layout_height="@dimen/dp_68"
-                    android:src="@drawable/icon_basic_ic_star_default" />
+                    android:layout_width="@dimen/dp_58"
+                    android:layout_height="@dimen/dp_58"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/img_star58" />
 
                 <com.fy.navi.ui.view.SkinTextView
                     android:id="@+id/stv_collect"

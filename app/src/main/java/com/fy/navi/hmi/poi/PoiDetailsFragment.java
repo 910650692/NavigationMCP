@@ -147,6 +147,10 @@ public class PoiDetailsFragment extends BaseFragment<FragmentPoiDetailsBinding, 
         mViewModel.searchCollectList(getActivity());
     }
 
+    public void searchReservation(){
+        mViewModel.searchReservation(getActivity());
+    }
+
     /**
      * 搜索图层子点点击事件
      * @param index 点击下标

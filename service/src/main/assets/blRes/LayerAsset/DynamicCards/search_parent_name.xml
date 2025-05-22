@@ -1,0 +1,3 @@
+<div id='search_parent_name' style='display:flex;width:140px;margin-top:10px'>
+  <label id='name_text' style='display:flex;max-width:140px;text-align:center;line-clamp:2;letter-spacing:3px;color:#131313;font-size:20px;font-weight:bold;text-stroke:2px #ffffff;' text='凯德MALL(望京店)' />
+</div>

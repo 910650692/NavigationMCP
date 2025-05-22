@@ -225,6 +225,7 @@ dependencies {
     implementation project(":utils")
     implementation project(":mapservice")
     implementation project(":fsa")
+    implementation project(":patacnetlib")
     implementation project(":engine:vtserver")
     implementation project(':vrbridge')
     implementation libs.guava

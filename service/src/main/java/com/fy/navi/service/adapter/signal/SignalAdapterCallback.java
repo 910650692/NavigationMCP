@@ -59,9 +59,14 @@ public interface SignalAdapterCallback {
 
     /**
      * 导航音量变化
+     *
      * @param volume 0-63
      */
     default void onNaviVolumeChanged(int volume) {
+
+    }
+
+    default void onFuelLevelPercentSignalChanged(Float value) {
 
     }
 }

@@ -117,7 +117,9 @@ public class SceneNaviControlView extends NaviSceneBase<SceneNaviControlViewBind
      * @param isShowMoreSet 是否显示更多设置
      */
     public void changeOverViewControlLength(final boolean isShowMoreSet) {
-        Logger.i(TAG, "changeOverViewControlLength", "isShowMoreSet:" + isShowMoreSet, "vis:" + mScreenViewModel.getGroupMoreSetupField().get());
+        Logger.i(TAG, "changeOverViewControlLength", "isShowMoreSet:" + isShowMoreSet +
+                "vis:" + (mScreenViewModel != null &&
+                Boolean.TRUE.equals(mScreenViewModel.getGroupMoreSetupField().get())));
         final Context context = getContext();
         final int dpPixels;
         if (mViewBinding.sclSettings == null) {

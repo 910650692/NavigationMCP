@@ -25,7 +25,8 @@
         <com.fy.navi.ui.view.SkinConstraintLayout
             android:id="@+id/cl_content"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:paddingHorizontal="@dimen/dp_30">
 
             <androidx.constraintlayout.widget.Guideline
                 android:id="@+id/gl_name"

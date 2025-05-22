@@ -80,7 +80,7 @@
 
                 <com.fy.navi.ui.view.SkinTextView
                     android:id="@+id/poi_name"
-                    android:layout_width="@dimen/dp_240"
+                    android:layout_width="@dimen/dp_0"
                     android:layout_height="wrap_content"
                     android:ellipsize="end"
                     android:maxLines="1"
@@ -89,9 +89,9 @@
                     android:textColor="@color/search_color_ffffff"
                     android:textSize="@dimen/sp_34"
                     app:layout_constraintBottom_toTopOf="@+id/poi_address"
-                    app:layout_constraintStart_toEndOf="@+id/poi_icon"
+                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    tools:text="德国慕尼黑" />
+                    tools:text="德国慕尼黑德国慕尼黑德国慕尼黑德国慕尼黑德国慕尼黑" />
 
                 <com.fy.navi.ui.view.SkinTextView
                     android:id="@+id/item_favorite_top_tag"
@@ -104,6 +104,7 @@
                     android:paddingRight="@dimen/dp_12"
                     android:paddingBottom="@dimen/dp_6"
                     android:text="@string/favorite_item_top"
+                    android:visibility="gone"
                     android:textColor="@color/navi_color_2461EA_100"
                     android:textSize="@dimen/sp_26"
                     app:layout_constraintStart_toEndOf="@+id/poi_name"

@@ -3,7 +3,9 @@ package com.fy.navi.service.define.search;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.android.utils.ConvertUtils;
 import com.android.utils.ResourceUtils;
+import com.android.utils.log.Logger;
 import com.fy.navi.service.AutoMapConstant;
 import com.fy.navi.service.R;
 import com.google.gson.annotations.SerializedName;
@@ -40,6 +42,10 @@ public class ConnectorInfoItem implements Parcelable {
     private Object mLockStatus;
     @SerializedName("parkNo")
     private String mParkNo;
+    @SerializedName("idpUserId")
+    private String mIdpUserId;
+    @SerializedName("preFlag")
+    private Integer mPreFlag;
 
     protected ConnectorInfoItem(Parcel in) {
         mConnectorId = in.readString();
@@ -54,6 +60,8 @@ public class ConnectorInfoItem implements Parcelable {
         mParkingLockFlag = in.readInt();
         mLockStatus = in.readInt();
         mParkNo = in.readString();
+        mIdpUserId = in.readString();
+        mPreFlag = in.readInt();
     }
 
     @Override
@@ -70,6 +78,8 @@ public class ConnectorInfoItem implements Parcelable {
         dest.writeInt((int)mParkingLockFlag);
         dest.writeInt((int)mLockStatus);
         dest.writeString(mParkNo);
+        dest.writeString(mIdpUserId);
+        dest.writeInt(mPreFlag);
     }
 
     @Override
@@ -164,7 +174,9 @@ public class ConnectorInfoItem implements Parcelable {
     public int getmParkingLockFlag() {
         if (mParkingLockFlag instanceof Integer) {
             return (Integer) mParkingLockFlag;
-        } else if (mParkingLockFlag instanceof String) {
+        }else if(mParkingLockFlag instanceof Double){
+            return ConvertUtils.double2int((Double)mParkingLockFlag);
+        }else if (mParkingLockFlag instanceof String) {
             try {
                 return Integer.parseInt((String) mParkingLockFlag);
             } catch (NumberFormatException e) {
@@ -181,6 +193,8 @@ public class ConnectorInfoItem implements Parcelable {
     public int getmLockStatus() {
         if (mLockStatus instanceof Integer) {
             return (Integer) mLockStatus;
+        }else if(mLockStatus instanceof Double){
+            return ConvertUtils.double2int((Double)mLockStatus);
         } else if (mLockStatus instanceof String) {
             try {
                 return Integer.parseInt((String) mLockStatus);
@@ -216,5 +230,21 @@ public class ConnectorInfoItem implements Parcelable {
                     ResourceUtils.Companion.getInstance().getString(R.string.charge_equipment_error);
             default -> "";
         };
+    }
+
+    public String getmIdpUserId() {
+        return mIdpUserId;
+    }
+
+    public void setmIdpUserId(String mIdpUserId) {
+        this.mIdpUserId = mIdpUserId;
+    }
+
+    public Integer getmPreFlag() {
+        return mPreFlag;
+    }
+
+    public void setmPreFlag(Integer mPreFlag) {
+        this.mPreFlag = mPreFlag;
     }
 }

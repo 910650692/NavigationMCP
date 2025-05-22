@@ -67,5 +67,6 @@ dependencies {
     }
     implementation project(":service")
     implementation project(":utils")
+    implementation project(":patacnetlib")
     implementation project(":engine:vtserver")
 }

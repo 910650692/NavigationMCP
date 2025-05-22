@@ -101,9 +101,12 @@ public class RouteSearchChargeRefreshAdapter extends RecyclerView.Adapter<RouteS
         holder.mRouteSearchChargeRefreshListItemBinding.routeItemChargeName.setText(mRouteBeanList.get(position).getName());
         holder.mRouteSearchChargeRefreshListItemBinding.routeItemChargeDescription.setText(
                 mRouteBeanList.get(position).getDistance() + " | " + mRouteBeanList.get(position).getAddress());
-        final boolean belongRouteParam;
+        boolean belongRouteParam;
         if (mSearchType == 0) {
             belongRouteParam = isBelongSamePoi(mLoaclSaveEntity, mRouteBeanList.get(position));
+            if (RoutePackage.getInstance().isStartOrEndRouteParam(MapType.MAIN_SCREEN_MAIN_MAP, mRouteBeanList.get(position))) {
+                belongRouteParam = true;
+            }
         } else {
             belongRouteParam = RoutePackage.getInstance().isBelongRouteParam(MapType.MAIN_SCREEN_MAIN_MAP, mRouteBeanList.get(position));
         }

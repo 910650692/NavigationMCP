@@ -2,6 +2,10 @@ package com.fy.navi.service.adapter.activate;
 
 public interface IActivateApi {
 
+    /**
+     * 检测激活状态
+     * @return 是否激活
+     */
     boolean checkActivation();
 
     /**

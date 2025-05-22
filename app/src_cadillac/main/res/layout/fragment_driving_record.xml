@@ -85,7 +85,6 @@
                 android:layout_marginEnd="@dimen/dp_32"
                 android:layout_marginTop="@dimen/dp_48"
                 android:focusable="false"
-                android:background="@drawable/bg_base_mfc_cadillac_bg_selector"
                 android:src="@drawable/img_setting_others_selected"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />

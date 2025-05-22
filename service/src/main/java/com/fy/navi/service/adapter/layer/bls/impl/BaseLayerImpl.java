@@ -83,7 +83,7 @@ public class BaseLayerImpl<S extends BaseStyleAdapter> extends PrepareLayerStyle
         textureLoaderInitParam.strPkgName = "LayerImages.cmb";
         //cmb资源为merge资源
         textureLoaderInitParam.isMergeRes = true;
-        textureLoaderInitParam.vecResPath.add("[BaseInitParam.assetPath]/LayerAsset");
+        textureLoaderInitParam.vecResPath.add("/assets/blRes/LayerAsset/");
         return textureLoaderInitParam;
     }
 

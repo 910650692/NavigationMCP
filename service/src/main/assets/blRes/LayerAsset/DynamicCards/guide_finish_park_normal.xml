@@ -1,0 +1,9 @@
+<div style='display:flex;'>
+	<div id='type_bar' style='margin-left:12;width:auto;height:52px;flex-direction:row;align-items:center;background-image:global_image_quick_route_search_along_des_bg_day_night1;'>
+		<label id='park_type' style='margin-left:12px;color:#ff000000;font-size:18px;max-height:21px;' text='路边'/>
+		<label id='charge_type' style='margin-left:12px;margin-right:2px;color:#e5000000;font-size:18px;max-height:21px;' text='快充'/>
+		<label id='fast_free' style='color:#fff95000;font-size:18px;max-height:21px;' text='2'/>
+		<label id='fast_total' style='color:#7ff95000;font-size:18px;max-height:21px;' text='/7'/>
+	</div>
+	<image id='park_image' src='global_image_autonavi_car_parking_1_day_night' />
+</div>

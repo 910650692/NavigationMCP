@@ -1,0 +1,10 @@
+<div style="padding-left:18px;">
+  <div style="display:flex;flex-direction:row;justify-content:center;align-items:center;width:auto;height:96px;background-image:global_image_bubble_bg_day_night;">
+    <div style="display:flex;flex-direction:row;justify-content:center;align-items:baseline;">
+      <label id="id_currency" style="font-size:20px;color:#cc000000;font-family:font_cn;" lines="1">¥</label>
+      <label id="id_price" style="font-size:20px;color:#cc000000;font-family:font_cn;" lines="1">48</label>
+      <label id="id_less" style="margin-right:10px;font-size:20px;color:#cc000000;font-family:font_cn;" lines="1">起</label>
+    </div>
+  </div>
+  <image id="carwash_image" style="width:70px;height:79px;position:absolute;left:0px;bottom:0px;" src="global_image_navi_along_search_wash_big_icon_day_night" />
+</div>

@@ -49,7 +49,7 @@
                 <com.fy.navi.scene.ui.navi.SceneNaviCrossImageView
                     android:id="@+id/scene_navi_cross_image"
                     android:layout_width="@dimen/dp_640"
-                    android:layout_height="@dimen/dp_306"
+                    android:layout_height="@dimen/dp_384"
                     android:visibility="@{ViewModel.mNaviCrossImageVisibility?View.VISIBLE:View.GONE}"
                     app:layout_constraintStart_toStartOf="@id/scene_navi_tbt"
                     app:layout_constraintTop_toBottomOf="@id/scene_navi_tbt"
@@ -187,6 +187,16 @@
                 android:visibility="@{ViewModel.mNaviSapaVisibility?View.VISIBLE:View.GONE}"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/scl_top_container" />
+            <!--当前路名居中的基线-->
+            <com.fy.navi.ui.view.SkinImageView
+                android:id="@+id/gl_navi"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/scl_top_container"
+                android:layout_marginStart="@dimen/dp_701"/>
             <!--当前路名-->
             <com.fy.navi.ui.view.SkinConstraintLayout
                 android:layout_width="wrap_content"
@@ -194,9 +204,9 @@
                 android:paddingHorizontal="@dimen/dp_29"
                 android:paddingVertical="@dimen/dp_29"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toEndOf="@id/scl_top_container"
+                app:layout_constraintStart_toStartOf="@+id/gl_navi"
+                app:layout_constraintEnd_toEndOf="@+id/gl_navi"
                 android:background="@drawable/bg_shadow_navi_buick"
-                android:layout_marginStart="@dimen/dp_607"
                 android:visibility="@{ViewModel.mNaviRouteNameVisibility?View.VISIBLE:View.GONE}">
                 <com.fy.navi.scene.ui.navi.view.ButtonText
                     android:id="@+id/stv_navi_route_name"

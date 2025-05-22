@@ -203,7 +203,7 @@
                     android:layout_width="@dimen/dp_74"
                     android:layout_height="@dimen/dp_74"
                     android:focusable="false"
-                    android:src="@drawable/icon_basic_ic_star_default" />
+                    android:src="@drawable/img_star58" />
 
                 <com.fy.navi.ui.view.SkinTextView
                     android:id="@+id/stv_collect"

@@ -263,16 +263,16 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
     public void onRouteDrawLine(final RouteLineLayerParam routeLineLayerParam) {
         Logger.i(TAG, "onRouteDrawLine");
         final RequestRouteResult requestRouteResult = mRequestRouteResults.get(routeLineLayerParam.getMMapTypeId());
-        if (!ConvertUtils.isEmpty(requestRouteResult)) {
-            if (mNaviStatusAdapter.isGuidanceActive()) {
-                mNaviAdapter.updateNaviPath(NumberUtils.NUM_0, requestRouteResult.getMLineLayerParam());
-            }
-        }
         for (IRouteResultObserver routeResultObserver : mRouteResultObserverMap.values()) {
             if (ConvertUtils.isEmpty(routeResultObserver)) {
                 continue;
             }
             routeResultObserver.onRouteDrawLine(routeLineLayerParam);
+        }
+        if (!ConvertUtils.isEmpty(requestRouteResult)) {
+            if (mNaviStatusAdapter.isGuidanceActive()) {
+                mNaviAdapter.updateNaviPath(NumberUtils.NUM_0, requestRouteResult.getMLineLayerParam());
+            }
         }
     }
 

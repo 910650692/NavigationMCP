@@ -1,0 +1,3 @@
+<div id='route_via_point_exscreen' style='display:flex;flex-direction:row;align-items:right;justify-content:space-around;'>
+  <image id='via_image_dynamic' style='' src='global_image_bubble_midd_day_night' />
+</div>

@@ -24,6 +24,7 @@
             android:visibility="@{naviCrossImage.mNextManeuverVisible ? View.VISIBLE : View.GONE}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
+            android:paddingVertical="@dimen/dp_11"
             android:layout_marginStart="@dimen/dp_12"
             android:layout_marginTop="@dimen/dp_12">
 

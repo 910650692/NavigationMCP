@@ -48,6 +48,15 @@ public class SignalAdapterImpl implements SignalApi {
      * 初始化回调函数
      */
     private void initCallback() {
+        PowertainController.getInstance().registerFuelLevelPercentListener(new PowertainController.FuelLevelPercentListener() {
+            @Override
+            public void onFuelLevelPercentSignalChanged(Float value) {
+                Logger.d(TAG, "onFuelLevelPercentSignalChanged: " + value);
+                for (SignalAdapterCallback callback : mCallbacks) {
+                    callback.onFuelLevelPercentSignalChanged(value);
+                }
+            }
+        });
         PowertainController.getInstance().registerVehicleMotionMovementStateListener(new PowertainController.VehicleMotionMovementStateListener() {
             @Override
             public void onVehicleMotionMovementStateChanged(final Integer gear) {

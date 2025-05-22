@@ -210,7 +210,7 @@ public class SceneNaviCrossImageImpl extends BaseSceneModel<SceneNaviCrossImageV
                 if (nextManeuverEntity == null) {
                     return;
                 }
-                Logger.i("shisong", "下一个转向信息：" + nextManeuverEntity.toString());
+                Logger.i(TAG, "下一个转向信息：" + nextManeuverEntity.toString());
                 if (nextManeuverEntity.isNextManeuverVisible()) {
                     if (nextManeuverEntity.isNextManeuverOffLine() &&
                             nextManeuverEntity.getNextIconResource() != -1) {

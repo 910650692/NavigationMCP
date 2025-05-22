@@ -1080,6 +1080,20 @@ public class RouteFragment extends BaseFragment<FragmentRouteBinding, RouteViewM
         mBinding.scenePoiDetailsGasStationView.poiGasOilList.setAdapter(gasStationAdapter);
     }
 
+    /***
+     * 展示POI详情的按钮状态
+     * @param isStartOrEnd 是否是起终点
+     */
+    public void showPOIButton(final boolean isStartOrEnd) {
+        if (isStartOrEnd) {
+            mBinding.stvStartRoute.setAlpha(0.5f);
+            mBinding.stvStartRoute.setClickable(false);
+        } else {
+            mBinding.stvStartRoute.setAlpha(1);
+            mBinding.stvStartRoute.setClickable(true);
+        }
+    }
+
     public View getRootViewForMFC() {
         return  mBinding.routeLineInfoBgRouteStartNavi;
     }

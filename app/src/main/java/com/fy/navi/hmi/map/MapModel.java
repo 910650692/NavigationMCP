@@ -182,6 +182,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
     private final long MILLIS_IN_24_HOURS = 86400000;
     private History mUncompletedNavi;
     private MapVisibleAreaDataManager mapVisibleAreaDataManager;
+    private AuthorizationRequestDialog authorizationRequestDialog = null;
 
     public MapModel() {
         mCallbackId = UUID.randomUUID().toString();
@@ -454,9 +455,11 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         if (parkingViewExist()) {
             if (currentImersiveStatus == ImersiveStatus.TOUCH) {
                 mViewModel.showOrHideSelfParkingView(true);
+                layerPackage.setFollowMode(MapType.MAIN_SCREEN_MAIN_MAP, false);
             } else if (currentImersiveStatus == ImersiveStatus.IMERSIVE) {
                 mViewModel.showOrHideSelfParkingView(false);
                 goToCarPosition();
+                layerPackage.setFollowMode(MapType.MAIN_SCREEN_MAIN_MAP, true);
                 Logger.i(TAG, "---"+"goToCarPosition");            }
         }
 
@@ -1231,7 +1234,10 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
     }
 
     public boolean getHomeCompanyDisplay() {
-        final String value = settingManager.getValueByKey(SettingController.KEY_SETTING_HOME_COMPANY_DISPLAYED);
+        String value = settingManager.getValueByKey(SettingController.KEY_SETTING_HOME_COMPANY_DISPLAYED);
+        if(TextUtils.isEmpty(value)){
+            value = "true";
+        }
         return Boolean.parseBoolean(value);
     }
 
@@ -1256,6 +1262,9 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
      * 检查高德地图权限是否申请或过期
      */
     public void checkAuthorizationExpired() {
+        if(authorizationRequestDialog !=null && authorizationRequestDialog.isShowing()){
+            return;
+        }
         final String endDate = mSettingPackage.getEndDate();
         boolean isShowDialog = false;
         if (!TextUtils.isEmpty(endDate)) {
@@ -1274,7 +1283,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         if (!isShowDialog) {
             return;
         }
-        final AuthorizationRequestDialog authorizationRequestDialog = new AuthorizationRequestDialog(
+        authorizationRequestDialog = new AuthorizationRequestDialog(
                 StackManager.getInstance().getCurrentActivity(MapType.MAIN_SCREEN_MAIN_MAP.name()));
         authorizationRequestDialog.setEndDate(endDate);
         authorizationRequestDialog.setDialogClickListener(new IBaseDialogClickListener() {

@@ -35,6 +35,7 @@ import com.fy.navi.service.define.search.ChargePriceInfo;
 import com.fy.navi.service.define.search.ConnectorInfoItem;
 import com.fy.navi.service.define.search.EquipmentInfo;
 import com.fy.navi.service.define.search.PoiInfoEntity;
+import com.fy.navi.service.define.search.ReservationInfo;
 import com.fy.navi.ui.dialog.IBaseDialogClickListener;
 
 import java.sql.Time;
@@ -52,6 +53,8 @@ public class ScenePoiChargingStationReservationListView extends BaseSceneView<Sc
     private EquipmentInfo mCurrentEquipmentInfo;
     private ConnectorInfoItem mCurrentConnector;
     private final int mSpanCount = 2;
+    private Integer mCancelNumber = 0;
+    private static final Integer MAX_CANCEL = 3;
 
     public ScenePoiChargingStationReservationListView(@NonNull Context context) {
         super(context);
@@ -112,7 +115,18 @@ public class ScenePoiChargingStationReservationListView extends BaseSceneView<Sc
 
             @Override
             public void onCancelReservation(ConnectorInfoItem info) {
-
+                new ChargeStationConfirmDialog.Build(getContext()).setDialogObserver(new IBaseDialogClickListener() {
+                    @Override
+                    public void onCommitClick() {
+                        if(mCancelNumber >= MAX_CANCEL){
+                            return;
+                        }
+//                        mScreenViewModel.cancelReservation(mReservationInfo,(Activity) getContext());
+                    }
+                })
+                .setTitle(getContext().getString(R.string.cancel_num_tip,mCancelNumber.toString()))
+                .setConfirmTitle(ResourceUtils.Companion.getInstance().getString(R.string.dsc_confirm))
+                .build().show();
             }
         });
         mViewBinding.poiChargeStationList.setAdapter(mAdapter);
@@ -120,7 +134,9 @@ public class ScenePoiChargingStationReservationListView extends BaseSceneView<Sc
 
     public void notifyEquipmentInfo(int type, PoiInfoEntity poiInfoEntity){
         Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"notifyEquipmentInfo type: "+type);
+
         mScreenViewModel.mPoiInfo.setValue(poiInfoEntity);
+        mScreenViewModel.searchType.setValue(type);
         if(!ConvertUtils.isEmpty(poiInfoEntity.getChargeInfoList()) && !poiInfoEntity.getChargeInfoList().isEmpty()){
             mScreenViewModel.mChargeInfo.setValue(poiInfoEntity.getChargeInfoList().get(0));
         }else {
@@ -130,6 +146,7 @@ public class ScenePoiChargingStationReservationListView extends BaseSceneView<Sc
         mEquipmentList = poiInfoEntity.getChargeInfoList().get(0).getEquipmentInfo();
         ArrayList<EquipmentInfo> filterEquipmentInfo = filterEquipmentList(type);
         mAdapter.notifyList(filterEquipmentInfo);
+        mScreenViewModel.queryReservation(mPoiInfoEntity,(Activity) getContext());
     }
 
     // 关闭当前页面
@@ -154,6 +171,10 @@ public class ScenePoiChargingStationReservationListView extends BaseSceneView<Sc
 
     public void notifyUnLockResult(){
         mScreenViewModel.queryEquipmentInfo(mCurrentEquipmentInfo,mPoiInfoEntity);
+    }
+
+    public void notifyCancelReservation(ArrayList<ReservationInfo> list){
+        mCancelNumber = list.size();
     }
 
     private ArrayList<EquipmentInfo> filterEquipmentList(int type){
