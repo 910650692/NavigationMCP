@@ -4,11 +4,13 @@ package com.fy.navi.service.adapter.search.bls;
 import android.text.TextUtils;
 
 import com.android.utils.ConvertUtils;
+import com.android.utils.NetWorkUtils;
 import com.android.utils.log.Logger;
 import com.autonavi.gbl.common.model.Coord2DDouble;
 import com.autonavi.gbl.search.model.AggregateSearchResult;
 import com.autonavi.gbl.search.model.AlongWayPoi;
 import com.autonavi.gbl.search.model.ChargingPlugInfo;
+import com.autonavi.gbl.search.model.ChildChargingStationInfo;
 import com.autonavi.gbl.search.model.KeywordSearchResultV2;
 import com.autonavi.gbl.search.model.LineDeepQueryType;
 import com.autonavi.gbl.search.model.LinePoiChargeInfo;
@@ -152,6 +154,20 @@ public final class SearchResultMapper {
     }
 
     /**
+     * 限制列表的最大size
+     * @param list 源数据
+     * @param maxSize 支持的最大size
+     * @param <T> list变量
+     */
+    public <T> void limitListToSize(final List<T> list, final int maxSize) {
+        if (list.size() > maxSize) {
+            final List<T> subList = new ArrayList<>(list.subList(0, maxSize));
+            list.clear();
+            list.addAll(subList);
+        }
+    }
+
+    /**
      * 将关键字搜索结果 KeywordSearchResultV2 转换为 SearchResultEntity
      *
      * @param requestParameterBuilder 请求参数构建器
@@ -165,6 +181,10 @@ public final class SearchResultMapper {
                 .stream()
                 .map(this::mapSearchPoiInfo)
                 .collect(Collectors.toList());
+        if (requestParameterBuilder.getSearchType() == AutoMapConstant.SearchType.TERMINAL_PARK_AROUND_SEARCH) {
+            //终点停车场列表最多提供8个
+            limitListToSize(poiList, 8);
+        }
         searchResultEntity.setMaxPageNum(result.total / 10 + 1);
         searchResultEntity.setTotal(result.total);
         searchResultEntity.setPoiList(poiList);
@@ -340,7 +360,14 @@ public final class SearchResultMapper {
                         .setX(inoutInfo.x)
                         .setY(inoutInfo.y))
                 .collect(Collectors.toList());
-
+        Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "free is: " + searchPoiInfo.parkingInfo.dynamicParking.spaceFree
+                    + " ,total: " + searchPoiInfo.parkingInfo.dynamicParking.spaceTotal);
+        Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "free1 is: " + searchPoiInfo.parkingInfo.space
+                + " ,total1: " + searchPoiInfo.parkingInfo.spaceFree);
+        for (ChildChargingStationInfo chargingStationInfo : searchPoiInfo.parkingInfo.chargingStationList) {
+            Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "free2 is: " + chargingStationInfo.numSlow
+                    + " ,total2: " + chargingStationInfo.numFast + " name: " + chargingStationInfo.name);
+        }
         final ParkingInfo parkingInfo = new ParkingInfo()
                 .setSpaceTotal(searchPoiInfo.parkingInfo.dynamicParking.spaceTotal)
                 .setSpaceFree(searchPoiInfo.parkingInfo.dynamicParking.spaceFree)
@@ -855,7 +882,7 @@ public final class SearchResultMapper {
                 .sorted(Comparator.comparingInt(PoiInfoEntity::getSort_distance))
                 .collect(Collectors.toList());
         searchResultEntity.setPoiList(poiList);
-        searchResultEntity.setPoiType(1);//0=离线数据，1=在线数据
+        searchResultEntity.setPoiType(Boolean.TRUE.equals(NetWorkUtils.Companion.getInstance().checkNetwork()) ? 1 : 0);//0=离线数据，1=在线数据
         return searchResultEntity;
     }
 

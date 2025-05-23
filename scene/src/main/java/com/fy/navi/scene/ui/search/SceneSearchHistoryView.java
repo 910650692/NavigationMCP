@@ -201,6 +201,10 @@ public class SceneSearchHistoryView extends BaseSceneView<MainAlongWaySearchHist
                 favoriteInfo.setCommonName(commonName)
                         .setUpdateTime(new Date().getTime());
                 poiInfoEntity.setFavoriteInfo(favoriteInfo);
+                if (!mScreenViewModel.isFavorite(poiInfoEntity).isEmpty()) {
+                    Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "current poi isFav,just return");
+                    return;
+                }
                 BehaviorPackage.getInstance().addFavorite(poiInfoEntity, commonName);
                 if (mHomeCompanyType == 1
                         || mHomeCompanyType == 2

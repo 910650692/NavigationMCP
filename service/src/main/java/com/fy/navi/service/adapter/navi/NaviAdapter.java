@@ -1,6 +1,5 @@
 package com.fy.navi.service.adapter.navi;
 
-import android.graphics.Rect;
 import android.text.TextUtils;
 
 import com.android.utils.ConvertUtils;
@@ -30,9 +29,7 @@ import com.fy.navi.service.logicpaket.navi.OpenApiHelper;
 import com.fy.navi.service.logicpaket.route.RoutePackage;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
@@ -252,6 +249,10 @@ public final class NaviAdapter {
         mNaviTmcInfo = naviTmcInfo;
     }
 
+    public NaviTmcInfo getTmcData() {
+        return mNaviTmcInfo;
+    }
+
     /**
      * 设置导航数据数据
      *
@@ -375,7 +376,7 @@ public final class NaviAdapter {
      * @param pathInfo             路径信息
      * @return 路径上的路况信息
      */
-    private NaviTmcInfo.NaviLightBarInfo getCurrentLightBarInfo(
+    public NaviTmcInfo.NaviLightBarInfo getCurrentLightBarInfo(
             final ArrayList<NaviTmcInfo.NaviLightBarInfo> naviLightBarInfoList,
             final PathInfo pathInfo) {
         for (NaviTmcInfo.NaviLightBarInfo naviLightBarInfo : naviLightBarInfoList) {

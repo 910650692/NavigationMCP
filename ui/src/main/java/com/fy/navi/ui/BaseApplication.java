@@ -24,7 +24,7 @@ public class BaseApplication extends Application {
     private static List<IsAppInForegroundCallback> FOREGROUND_CALLBACK_LIST =
             new CopyOnWriteArrayList<>();
 
-    private static boolean mIsAppInForeground = false;
+    private static int mIsAppInForeground = 0;
 
     @Override
     public void onCreate() {
@@ -129,9 +129,9 @@ public class BaseApplication extends Application {
     /**
      * 更新应用前后台状态
      *
-     * @param isAppInForeground true/false
+     * @param isAppInForeground 见AutoMapConstant.AppRunStatus
      */
-    public static void updateIsAppInForeground(final boolean isAppInForeground) {
+    public static void updateIsAppInForeground(final int isAppInForeground) {
         Logger.i(TAG, "updateIsAppInForeground isAppInForeground = " + isAppInForeground);
         mIsAppInForeground = isAppInForeground;
         if (ConvertUtils.isEmpty(FOREGROUND_CALLBACK_LIST)) {
@@ -145,7 +145,7 @@ public class BaseApplication extends Application {
     }
 
     /**
-     * 判断应用是否在前台
+     * 判断应用运行状态.
      * 用户操作预期结果
      * 打开应用isForeground = true
      * 从最近任务切换回应用isForeground = true
@@ -154,9 +154,9 @@ public class BaseApplication extends Application {
      * 启动另一个应用isForeground = false
      * 锁屏isForeground = false
      *
-     * @return true/false
+     * @return 见AutoMapConstant.AppRunStatus.
      */
-    public static boolean isAppInForeground() {
+    public static int isAppInForeground() {
         return mIsAppInForeground;
     }
 }

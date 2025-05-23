@@ -18,6 +18,7 @@ import com.fy.navi.vrbridge.impl.NaviControlCommandImpl;
 public class VrBridgeManager {
 
     private boolean mBridgeInit = false;
+    private NaviControlCommandImpl mControlCommandImpl;
 
     public static VrBridgeManager getInstance() {
         return VrBridgeManagerHolder.INSTANCE;
@@ -39,7 +40,8 @@ public class VrBridgeManager {
                 Logger.d(IVrBridgeConstant.TAG, "BridgeSdk connected");
                 mBridgeInit = true;
                 BridgeSdk.getInstance().addCapability(NaviCommandListener.class, new NaviCommandImpl());
-                BridgeSdk.getInstance().addCapability(NaviControlCommandListener.class, new NaviControlCommandImpl());
+                mControlCommandImpl = new NaviControlCommandImpl();
+                BridgeSdk.getInstance().addCapability(NaviControlCommandListener.class, mControlCommandImpl);
                 MapStateManager.getInstance().init();
             }
 
@@ -47,9 +49,20 @@ public class VrBridgeManager {
             public void onDisconnected() {
                 Logger.d(IVrBridgeConstant.TAG, "BridgeSdk disconnected");
                 mBridgeInit = false;
+                mControlCommandImpl = null;
                 BridgeSdk.getInstance().removeCapability(NaviCommandListener.class);
                 BridgeSdk.getInstance().removeCapability(NaviControlCommandListener.class);
             }
         });
     }
+
+    /**
+     * 底图加载成功后继续执行语音指令.
+     */
+    public void processCommandWhenLoaded() {
+        if (null != mControlCommandImpl) {
+            mControlCommandImpl.processNextCommand();
+        }
+    }
+
 }

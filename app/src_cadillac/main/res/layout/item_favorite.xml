@@ -103,7 +103,6 @@
                     android:layout_height="wrap_content"
                     android:focusable="false"
                     android:textSize="@dimen/sp_38"
-                    android:text="@{model.distance}"
                     android:textColor="@color/setting_text_preference"
                     tools:text="198km"/>
 

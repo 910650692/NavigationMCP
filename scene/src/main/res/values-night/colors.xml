@@ -168,4 +168,5 @@
     <color name="parking_recommended_item_15">#802C2F38</color>
     <color name="parking_recommended_item_42386DF0">#2C2F38</color>
     <color name="search_loading_bg_80">#FFFFFF</color>
+    <color name="scene_route_preference_txt_color">#FFFFFF</color>
 </resources>

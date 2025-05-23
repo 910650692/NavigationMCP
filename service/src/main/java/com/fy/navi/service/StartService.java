@@ -320,12 +320,12 @@ public class StartService {
 
         String activationCode = jsonObject.getJSONObject("activation_code").toString();
         Map<Integer, String> activityErrorCode = formJsonCode(activationCode);
-        errorCode.setMapCode(activityErrorCode);
+        errorCode.setActivityCode(activityErrorCode);
         Logger.i(TAG, "Current activityErrorCode: " + activityErrorCode);
 
         String positionCode = jsonObject.getJSONObject("position_code").toString();
         Map<Integer, String> positionErrorCode = formJsonCode(positionCode);
-        errorCode.setMapCode(positionErrorCode);
+        errorCode.setPositionCode(positionErrorCode);
         Logger.i(TAG, "Current positionErrorCode: " + positionErrorCode);
 
         String mapCodeJson = jsonObject.getJSONObject("map_code").toString();
@@ -335,7 +335,7 @@ public class StartService {
 
         String layerCodeJson = jsonObject.getJSONObject("layer_code").toString();
         Map<Integer, String> layerErrorCode = formJsonCode(layerCodeJson);
-        errorCode.setMapCode(layerErrorCode);
+        errorCode.setLayerCode(layerErrorCode);
         Logger.i(TAG, "Current layerErrorCode: " + layerErrorCode);
 
         String searchCodeJson = jsonObject.getJSONObject("search_code").toString();

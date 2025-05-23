@@ -100,44 +100,47 @@
 
             <com.fy.navi.ui.view.SkinTextView
                 android:id="@+id/siv_service_details_remaintime"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_24"
+                android:ellipsize="end"
+                android:maxLines="1"
                 android:focusable="false"
                 android:text="@{sapaDetail.mServiceRemainTime}"
+                android:textColor="@color/navi_color_000000_100"
+                android:textSize="@dimen/sp_46"
+                android:visibility="visible"
+                app:layout_constraintBottom_toBottomOf="@+id/siv_service_details_distance"
+                app:layout_constraintEnd_toStartOf="@+id/siv_service_remain_charge_icon"
                 app:layout_constraintStart_toEndOf="@+id/siv_service_details_distance"
                 app:layout_constraintTop_toTopOf="@+id/siv_service_details_distance"
-                app:layout_constraintBottom_toBottomOf="@+id/siv_service_details_distance"
-                android:layout_marginStart="@dimen/dp_24"
-                android:visibility="gone"
-                android:textSize="@dimen/sp_46"
-                android:textColor="@color/navi_color_000000_100"
                 tools:text="30分钟" />
 
             <com.fy.navi.ui.view.SkinTextView
                 android:id="@+id/siv_service_details_remiancharge"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:focusable="false"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                android:layout_marginEnd="@dimen/dp_52"
                 android:layout_marginTop="@dimen/dp_234"
-                android:textSize="@dimen/sp_46"
-                android:visibility="gone"
+                android:layout_marginEnd="@dimen/dp_52"
+                android:focusable="false"
+                android:text="@string/charge_remain_arrive"
                 android:textColor="@color/navi_color_000000_100"
-                android:text="@string/charge_remain_arrive" />
+                android:textSize="@dimen/sp_46"
+                android:visibility="visible"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <com.fy.navi.ui.view.SkinImageView
                 android:id="@+id/siv_service_remain_charge_icon"
                 android:layout_width="@dimen/dp_54"
                 android:layout_height="@dimen/dp_54"
-                android:focusable="false"
-                android:visibility="gone"
+                android:layout_marginEnd="@dimen/dp_8"
                 android:background="@drawable/img_electricity_medium_42"
-                app:layout_constraintTop_toTopOf="@+id/siv_service_details_remiancharge"
+                android:focusable="false"
+                android:visibility="visible"
                 app:layout_constraintBottom_toBottomOf="@+id/siv_service_details_remiancharge"
                 app:layout_constraintEnd_toStartOf="@+id/siv_service_details_remiancharge"
-                android:layout_marginEnd="@dimen/dp_8" />
+                app:layout_constraintTop_toTopOf="@+id/siv_service_details_remiancharge" />
 
             <com.fy.navi.ui.view.SkinImageView
                 android:id="@+id/siv_service_exit"

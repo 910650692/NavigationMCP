@@ -6,5 +6,5 @@ public interface IsAppInForegroundCallback {
      *
      * @param isInForeground boolean
      */
-    void isAppInForeground(boolean isInForeground);
+    void isAppInForeground(int isInForeground);
 }

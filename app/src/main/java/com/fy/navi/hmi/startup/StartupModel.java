@@ -9,6 +9,7 @@ import com.android.utils.NetWorkUtils;
 import com.android.utils.ResourceUtils;
 import com.android.utils.ToastUtils;
 import com.android.utils.log.Logger;
+import com.android.utils.thread.ThreadManager;
 import com.fy.navi.NaviService;
 import com.fy.navi.hmi.R;
 import com.fy.navi.hmi.permission.PermissionUtils;
@@ -35,7 +36,12 @@ public class StartupModel extends BaseModel<BaseStartupViewModel>
         @Override
         public void onActivating() {
             Logger.d(TAG, "onActivating...");
-            mViewModel.showActivatingView(true);
+            ThreadManager.getInstance().postUi(new Runnable() {
+                @Override
+                public void run() {
+                    mViewModel.showActivatingView(true);
+                }
+            });
         }
 
         @Override
@@ -44,7 +50,12 @@ public class StartupModel extends BaseModel<BaseStartupViewModel>
 
         @Override
         public void onActivated() {
-            mViewModel.showActivatingView(false);
+            ThreadManager.getInstance().postUi(new Runnable() {
+                @Override
+                public void run() {
+                    mViewModel.showActivatingView(false);
+                }
+            });
         }
 
         @Override

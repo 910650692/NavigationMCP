@@ -7,9 +7,7 @@
         android:id="@+id/search_filter_root"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingStart="@dimen/dp_52"
         android:paddingTop="@dimen/dp_52"
-        android:paddingEnd="@dimen/dp_52"
         android:visibility="gone"
         tools:visibility="visible">
 
@@ -23,6 +21,8 @@
             <com.fy.navi.ui.view.SkinConstraintLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:paddingEnd="@dimen/dp_52"
+                android:paddingStart="@dimen/dp_52"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent">
 

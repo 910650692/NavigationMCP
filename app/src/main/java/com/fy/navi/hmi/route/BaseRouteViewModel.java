@@ -55,6 +55,7 @@ import com.fy.navi.service.define.route.RouteWayID;
 import com.fy.navi.service.define.route.RouteWeatherID;
 import com.fy.navi.service.define.route.RouteWeatherInfo;
 import com.fy.navi.service.define.search.PoiInfoEntity;
+import com.fy.navi.service.define.search.SearchResultEntity;
 import com.fy.navi.service.define.search.ServiceAreaInfo;
 import com.fy.navi.service.define.utils.BevPowerCarUtils;
 import com.fy.navi.service.define.utils.NumberUtils;
@@ -103,6 +104,18 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
 
     public ObservableField<Boolean> getAlongTabSearchVisibility() {
         return mAlongTabSearchVisibility;
+    }
+
+    private ObservableField<Boolean> mSearchNoDataVisibility;
+
+    public ObservableField<Boolean> getSearchNoDateVisibility() {
+        return mSearchNoDataVisibility;
+    }
+
+    private ObservableField<String> mSearchNoDataText;
+
+    public ObservableField<String> getSearchNoDateText() {
+        return mSearchNoDataText;
     }
 
     /**
@@ -471,7 +484,9 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
         mTabVisibility = new ObservableField<>(0);
         mBatterCheckBoxVisibility = new ObservableField<>(false);
         mAlongTabSearchVisibility = new ObservableField<>(true);
+        mSearchNoDataVisibility = new ObservableField<>(false);
         mRoutePreferenceVisibility = new ObservableField<>(false);
+        mSearchNoDataText =  new ObservableField<>("");
         mRoutePreferenceDrawableVisibility = new ObservableField<>(ResourceUtils.Companion.getInstance().getDrawable(R.drawable.img_route_down));
         mCountDownHint = new ObservableField<>(ResourceUtils.Companion.getInstance().getString(R.string.route_start_navi)
                 + "(" + NumberUtils.NUM_9 + "s)");
@@ -1202,6 +1217,11 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
     public void showRouteSearchListUI(final List<RouteRestAreaDetailsInfo> poiInfoEntities) {
         mCurrentPageHistory.add("2");
         mIncludePageVisibility.set(getCurrentPageUI());
+        if (ConvertUtils.isEmpty(poiInfoEntities)) {
+            mSearchNoDataVisibility.set(true);
+        } else {
+            mSearchNoDataVisibility.set(false);
+        }
         mView.showRouteSearchListUI(poiInfoEntities);
     }
 
@@ -1215,13 +1235,13 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
 
     /***
      * 展示列表
-     * @param poiInfoEntities 列表数据
+     * @param searchResultEntity 搜索结果数据
      * @param gasChargeAlongList 已添加的数据
      * @param listSearchType 搜索方式
      * @param type 列表类别 0:充电站 1：加油站
      */
-    public void showRouteSearchChargeListUI(final List<PoiInfoEntity> poiInfoEntities, final List<RouteParam> gasChargeAlongList
-            , final int listSearchType,final int type) {
+    public void showRouteSearchChargeListUI(final  SearchResultEntity searchResultEntity, final List<RouteParam> gasChargeAlongList
+            , final int listSearchType, final int type) {
         if (getCurrentPageUI() != 3) {
             mCurrentPageHistory.add("3");
             mSearchListType = type;
@@ -1259,7 +1279,19 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
         clearRouteChargePoiUi();
         mChargePoiDistanceList.clear();
         mRouteProgressChargeVisibility.set(mView.getEnergyChecked() && listSearchType == 0);
-        mAlongTabSearchVisibility.set(listSearchType == 0);
+        final List<PoiInfoEntity> poiInfoEntities = searchResultEntity.getPoiList();
+        if (poiInfoEntities == null || poiInfoEntities.isEmpty()) {
+            if (searchResultEntity.getPoiType() == 0) {
+                mSearchNoDataText.set(ResourceUtils.Companion.getInstance().getString(R.string.route_search_offline_warn));
+            } else {
+                mSearchNoDataText.set(ResourceUtils.Companion.getInstance().getString(R.string.route_search_online_warn));
+            }
+            mSearchNoDataVisibility.set(true);
+            mAlongTabSearchVisibility.set(false);
+        } else {
+            mSearchNoDataVisibility.set(false);
+            mAlongTabSearchVisibility.set(listSearchType == 0);
+        }
         mView.showRouteSearchChargeListUI(poiInfoEntities, gasChargeAlongList, listSearchType, type);
         if (type == 1) {
             return;

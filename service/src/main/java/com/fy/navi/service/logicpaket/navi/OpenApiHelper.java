@@ -21,7 +21,6 @@ import com.fy.navi.service.logicpaket.search.SearchPackage;
 import com.fy.navi.service.logicpaket.search.SearchResultCallback;
 import com.fy.navi.service.logicpaket.setting.SettingPackage;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -230,6 +229,7 @@ public final class OpenApiHelper {
      * @param mapTypeId 屏幕id
      */
     public static void enterPreview(final MapType mapTypeId) {
+        Logger.i(TAG, "enterPreview");
         NAVI_PACKAGE.setPreviewStatus(true);
         LAYER_PACKAGE.setFollowMode(mapTypeId, false);
         LAYER_PACKAGE.setPreviewMode(mapTypeId,true);
@@ -247,6 +247,7 @@ public final class OpenApiHelper {
             Logger.i(TAG, "exitPreview: 固定全览状态，不能退出全览");
             return;
         }
+        Logger.i(TAG, "exitPreview");
         NAVI_PACKAGE.setPreviewStatus(false);
         // 退出全览
         MAP_PACKAGE.exitPreview(mapTypeId);

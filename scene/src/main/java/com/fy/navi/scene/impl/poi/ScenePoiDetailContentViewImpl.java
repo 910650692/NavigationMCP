@@ -155,6 +155,16 @@ public class ScenePoiDetailContentViewImpl extends BaseSceneModel<ScenePoiDetail
     }
 
     /**
+     * 是否常去地址
+     *
+     * @param poiInfo PoiInfoEntity
+     * @return 是否已经收藏
+     */
+    public boolean isFrequentAddress(final PoiInfoEntity poiInfo) {
+        return mBehaviorPackage.isFrequentAddress(poiInfo);
+    }
+
+    /**
      * 添加POI收藏点
      *
      * @param poiInfo PoiInfoEntity

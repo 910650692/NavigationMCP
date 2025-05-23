@@ -135,7 +135,7 @@ public class ActivateAdapterImpl implements IActivateApi {
                     public void onSuccess(final QueryOrderResponse statusBean) {
                         Logger.d(TAG, "firstCheckOrderStatus success");
                         Logger.d(TAG, statusBean.toString());
-                        manualActivate(statusBean.getSerialNumber(), statusBean.getActiveCode());
+                        manualActivate(statusBean.getMSerialNumber(), statusBean.getMActiveCode());
                     }
 
                     @Override
@@ -149,6 +149,7 @@ public class ActivateAdapterImpl implements IActivateApi {
                 ActivationManager.getInstance().createCloudOrder();
             }
         } else {
+            Logger.d(TAG, "已经激活了");
             onActivated();
         }
 
@@ -175,12 +176,7 @@ public class ActivateAdapterImpl implements IActivateApi {
      */
     private void onActivating() {
         for (ActivateObserver observer : mActObserverList) {
-            ThreadManager.getInstance().postUi(new Runnable() {
-                @Override
-                public void run() {
-                    observer.onActivating();
-                }
-            });
+            observer.onActivating();
         }
     }
 
@@ -189,12 +185,7 @@ public class ActivateAdapterImpl implements IActivateApi {
      */
     public void onActivated() {
         for (ActivateObserver observer : mActObserverList) {
-            ThreadManager.getInstance().postUi(new Runnable() {
-                @Override
-                public void run() {
-                    observer.onActivated();
-                }
-            });
+            observer.onActivated();
         }
     }
 

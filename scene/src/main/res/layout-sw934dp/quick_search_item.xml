@@ -17,7 +17,7 @@
     <com.fy.navi.ui.view.SkinConstraintLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_46"
+        android:layout_marginStart="@dimen/dp_40"
         android:layout_marginTop="@dimen/dp_40">
 
         <com.fy.navi.ui.view.SkinImageView

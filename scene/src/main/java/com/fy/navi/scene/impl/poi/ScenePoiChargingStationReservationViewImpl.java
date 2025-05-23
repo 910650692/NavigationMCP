@@ -13,6 +13,7 @@ import com.fy.navi.service.define.search.ETAInfo;
 import com.fy.navi.service.define.search.PoiInfoEntity;
 import com.fy.navi.service.define.search.ReservationInfo;
 import com.fy.navi.service.define.user.account.AccessTokenParam;
+import com.fy.navi.service.logicpaket.calibration.CalibrationPackage;
 import com.fy.navi.service.logicpaket.search.SearchPackage;
 import com.fy.navi.service.logicpaket.user.account.AccountPackage;
 
@@ -20,9 +21,11 @@ import java.util.concurrent.CompletableFuture;
 
 public class ScenePoiChargingStationReservationViewImpl extends BaseSceneModel<ScenePoiChargingStationReservationView> implements IScenePoiChargingStationReservationView {
     private final SearchPackage mSearchPackage;
+    private final CalibrationPackage mCalibrationPackage;
     public ScenePoiChargingStationReservationViewImpl(ScenePoiChargingStationReservationView mScreenView) {
         super(mScreenView);
         mSearchPackage = SearchPackage.getInstance();
+        mCalibrationPackage = CalibrationPackage.getInstance();
     }
 
     public void closeFragment(){
@@ -68,7 +71,7 @@ public class ScenePoiChargingStationReservationViewImpl extends BaseSceneModel<S
         ThreadManager.getInstance().runAsync(() -> {
             String idpUserId = AccountPackage.getInstance().getUserId();
             String accessToken = AccountPackage.getInstance().getAccessToken(param);
-            String vehicleBrand = "1";
+            String vehicleBrand = String.valueOf(mCalibrationPackage.brand());
             mSearchPackage.unGroundLock(item, poiInfo,idpUserId,accessToken,vehicleBrand);
         });
     }
@@ -86,7 +89,6 @@ public class ScenePoiChargingStationReservationViewImpl extends BaseSceneModel<S
         ThreadManager.getInstance().runAsync(() -> {
             String idpUserId = AccountPackage.getInstance().getUserId();
             String accessToken = AccountPackage.getInstance().getAccessToken(param);
-            String vehicleBrand = "1";
             mSearchPackage.cancelReservation(reservationInfo,idpUserId,accessToken);
         });
     }

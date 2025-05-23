@@ -3,6 +3,7 @@ package com.fy.navi.vrbridge;
 import android.text.TextUtils;
 
 import com.android.utils.log.Logger;
+import com.fy.navi.service.AutoMapConstant;
 import com.fy.navi.service.define.map.MapMode;
 import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.navi.NaviEtaInfo;
@@ -11,7 +12,6 @@ import com.fy.navi.service.define.position.LocInfoBean;
 import com.fy.navi.service.define.position.LocParallelInfoEntity;
 import com.fy.navi.service.define.route.RequestRouteResult;
 import com.fy.navi.service.define.route.RouteLineInfo;
-import com.fy.navi.service.define.route.RouteParam;
 import com.fy.navi.service.define.route.RoutePreferenceID;
 import com.fy.navi.service.define.setting.SettingController;
 import com.fy.navi.service.define.user.account.AccountProfileInfo;
@@ -72,11 +72,10 @@ public final class MapStateManager {
      * 初始化.
      */
     public void init() {
-        final boolean foreground = NaviPackage.getInstance().getIsAppInForeground();
-        Logger.d(IVrBridgeConstant.TAG, "MapStateInit, foreground: " + foreground);
+        final int foregroundStatus = NaviPackage.getInstance().getIsAppInForeground();
+        Logger.d(IVrBridgeConstant.TAG, "MapStateInit, foreground: " + foregroundStatus);
+        updateForegroundStatus(foregroundStatus);
         mBuilder.setHasPrivacyPermission(true);
-        mBuilder.setOpenStatus(foreground);
-        mBuilder.setFront(foreground);
         mBuilder.setMaxZoomLevel(19);
         mBuilder.setMinZoomLevel(3);
         mBuilder.setViaPointsMaxCount(5);
@@ -138,6 +137,14 @@ public final class MapStateManager {
         public void onMapModeChange(final MapType mapTypeId, final MapMode mapMode) {
             updateMapMode(mapMode);
             AMapStateUtils.saveMapState(mBuilder.build());
+        }
+
+        @Override
+        public void onMapLoadSuccess(final MapType mapTypeId) {
+            Logger.d(IVrBridgeConstant.TAG, "onMapLoad: " + mapTypeId.name());
+            if (MapType.MAIN_SCREEN_MAIN_MAP == mapTypeId) {
+                VrBridgeManager.getInstance().processCommandWhenLoaded();
+            }
         }
     };
 
@@ -332,12 +339,33 @@ public final class MapStateManager {
 
     private final NaviPackage.IsInForegroundCallback mForeGroundCallback = new NaviPackage.IsInForegroundCallback() {
         @Override
-        public void onAppInForeground(final boolean isInForeground) {
-            Logger.w(IVrBridgeConstant.TAG, "appInForeground: " + isInForeground);
-            mBuilder.setFront(isInForeground);
+        public void onAppInForeground(final int foregroundStatus) {
+            Logger.w(IVrBridgeConstant.TAG, "appInForeground:" + foregroundStatus);
+            updateForegroundStatus(foregroundStatus);
             AMapStateUtils.saveMapState(mBuilder.build());
         }
     };
+
+    /**
+     * 根据Activity状态更新应用前后台状态.
+     *
+     * @param foregroundStatus activity运行状态.
+     */
+    private void updateForegroundStatus(final int foregroundStatus) {
+        switch (foregroundStatus) {
+            case AutoMapConstant.AppRunStatus.RESUMED:
+                mBuilder.setOpenStatus(true);
+                mBuilder.setFront(true);
+                break;
+            case AutoMapConstant.AppRunStatus.STOPPED:
+            case AutoMapConstant.AppRunStatus.DESTROYED:
+                mBuilder.setOpenStatus(false);
+                mBuilder.setFront(false);
+                break;
+            default:
+                Logger.w(IVrBridgeConstant.TAG, "unHandle appRunStatus: " + foregroundStatus);
+        }
+    }
 
     private final FavoriteStatusCallback mFavoriteStatusCallback = new FavoriteStatusCallback() {
         @Override
@@ -357,7 +385,7 @@ public final class MapStateManager {
      * 注册回调
      */
     private void registerCallback() {
-        NaviStatusPackage.getInstance().registerObserver(TAG, mNaviStatusCallback);
+
         MapPackage.getInstance().registerCallback(MapType.MAIN_SCREEN_MAIN_MAP, mIMapPackageCallback);
         RoutePackage.getInstance().registerRouteObserver(TAG, mIRouteResultObserver);
         SettingPackage.getInstance().setSettingChangeCallback(TAG, mSettingChangeCallback);
@@ -366,6 +394,7 @@ public final class MapStateManager {
         NaviPackage.getInstance().registerObserver(TAG, mGuidanceObserver);
         NaviPackage.getInstance().addIsAppInForegroundCallback(mForeGroundCallback);
         NaviPackage.getInstance().addOnPreviewStatusChangeListener(mPreViewStatusChangeListener);
+        NaviStatusPackage.getInstance().registerObserver(TAG, mNaviStatusCallback);
         BehaviorPackage.getInstance().registerFavoriteStatusCallback(mFavoriteStatusCallback);
     }
 

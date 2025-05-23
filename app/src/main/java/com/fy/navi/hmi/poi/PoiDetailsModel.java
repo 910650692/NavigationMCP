@@ -135,7 +135,7 @@ public class PoiDetailsModel extends BaseModel<PoiDetailsViewModel> implements S
         ThreadManager.getInstance().runAsync(() -> {
             String idpUserId = AccountPackage.getInstance().getUserId();
             String accessToken = AccountPackage.getInstance().getAccessToken(param);
-            String vehicleBrand = "BUICK";
+            String vehicleBrand = mCalibrationPackage.brandName();
             mSearchPackage.queryCollectStation(idpUserId,accessToken,vehicleBrand);
         });
     }
@@ -159,9 +159,9 @@ public class PoiDetailsModel extends BaseModel<PoiDetailsViewModel> implements S
         ThreadManager.getInstance().runAsync(() -> {
             String idpUserId = AccountPackage.getInstance().getUserId();
             String accessToken = AccountPackage.getInstance().getAccessToken(param);
-            String vehicleBrand = "2";
+            String brandId = mSearchPackage.getBrandId(mCalibrationPackage.brand());
             int status = 1;
-            mSearchPackage.queryReservation(searchResultEntity.getPoiList().get(0),vehicleBrand,status,idpUserId,accessToken);
+            mSearchPackage.queryReservation(searchResultEntity.getPoiList().get(0),brandId,status,idpUserId,accessToken);
         });
     }
 }

@@ -35,6 +35,7 @@ public class UuidReq extends SuperReq {
         this.appId = appId;
         this.sysVersion = sysVersion;
         this.deviceId = deviceId;
+        setCheckAppKey(true);
         setHeaderJson(true);
         setAddContentType(true);
     }
@@ -44,6 +45,7 @@ public class UuidReq extends SuperReq {
         this.appId = appId;
         this.sysVersion = sysVersion;
         this.deviceId = deviceId;
+        setCheckAppKey(true);
         setHeaderJson(true);
         setAddContentType(true);
     }

@@ -103,8 +103,8 @@ public class BasePoiDetailsViewModel extends BaseViewModel<PoiDetailsFragment, P
     }
 
     public void notifyNetSearchResult(int taskId,BaseRep result){
+        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "code" + result.getResultCode());
         if(AutoMapConstant.NetSearchKey.SUCCESS_CODE.equals(result.getResultCode())) {
-            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "code" + result.getResultCode());
             JSONObject jsonObject = null;
             try {
                 jsonObject = new JSONObject(GsonUtils.toJson(result.getDataSet()));
@@ -144,7 +144,7 @@ public class BasePoiDetailsViewModel extends BaseViewModel<PoiDetailsFragment, P
                 mSearchResultEntity = searchResultEntity;
                 mTaskId = taskId;
                 if(mModel.isSGMLogin()){
-                    mView.onNetSearchResult(searchResultEntity);
+                    mView.onNetSearchResult();
                 }else{
                     mView.onSearchResult(taskId,searchResultEntity);
                 }
@@ -159,26 +159,22 @@ public class BasePoiDetailsViewModel extends BaseViewModel<PoiDetailsFragment, P
     }
 
     public void notifyCollectList(BaseRep result){
+        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"code"+result.getResultCode());
         if(AutoMapConstant.NetSearchKey.SUCCESS_CODE.equals(result.getResultCode())) {
-            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"code"+result.getResultCode());
             ArrayList<PoiInfoEntity> list = new ArrayList<>();
             // 回调出的数据转换List
             try {
                 JSONObject jsonObject = new JSONObject(GsonUtils.toJson(result.getDataSet()));
                 JSONArray jsonArray = jsonObject.getJSONArray("items");
-                if(jsonArray.length() > 0){
+                if(jsonArray.length() > 0 && ConvertUtils.isNull(mSearchResultEntity)){
                     for (int j = 0; j < mSearchResultEntity.getPoiList().size(); j++) {
                         for (int i = 0; i < jsonArray.length(); i++) {
                             JSONObject object = new JSONObject(String.valueOf(jsonArray.get(i)));
-                            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"operatorId: "+mSearchResultEntity.getPoiList().get(j).getOperatorId());
-                            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"operatorId string: "+object.getString("operatorId"));
-                            if(object.getBoolean("stationSaved") && !ConvertUtils.isNull(mSearchResultEntity)){
-                                if(object.getString("operatorId").equals(mSearchResultEntity.getPoiList().get(j).getOperatorId())){
-                                    mSearchResultEntity.getPoiList().get(j).setIsCollect(true);
-                                }else{
-                                    mSearchResultEntity.getPoiList().get(j).setIsCollect(false);
-                                }
-                            }
+                            String searchPoiId = mSearchResultEntity.getPoiList().get(j).getOperatorId();
+                            String collectPoiId = object.getString("operatorId");
+                            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"operatorId: "+searchPoiId);
+                            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"operatorId string: "+collectPoiId);
+                            mSearchResultEntity.getPoiList().get(j).setIsCollect(collectPoiId.equals(searchPoiId));
                         }
                     }
                 }
@@ -190,9 +186,8 @@ public class BasePoiDetailsViewModel extends BaseViewModel<PoiDetailsFragment, P
     }
 
     public void notifyReservationList(BaseRep result){
+        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"code"+result.getResultCode());
         if(AutoMapConstant.NetSearchKey.SUCCESS_CODE.equals(result.getResultCode())) {
-            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"code"+result.getResultCode());
-            ArrayList<PoiInfoEntity> list = new ArrayList<>();
             // 回调出的数据转换List
             try {
                 JSONObject jsonObject = new JSONObject(GsonUtils.toJson(result.getDataSet()));

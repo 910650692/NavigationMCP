@@ -9,6 +9,7 @@ import com.android.utils.ConvertUtils;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Stack;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public final class StackManager {
     private Map<String, Stack<BaseActivity>> mBaseActivityStack;
@@ -137,6 +138,24 @@ public final class StackManager {
     public BaseActivity getCurrentActivity(final String screenId) {
         final Stack<BaseActivity> activities = ConvertUtils.containToValue(mBaseActivityStack, screenId);
         return ConvertUtils.peek(activities);
+    }
+
+    /**
+     * 判断Activity是否存在
+     *
+     * @param screenId 屏幕UD
+     * @param cls Activity 类名
+     * @return Activity是否存在
+     */
+    public Boolean isActivityExist(final String screenId,final Class cls) {
+        final Stack<BaseActivity> activities = ConvertUtils.containToValue(mBaseActivityStack, screenId);
+        AtomicBoolean isExist = new AtomicBoolean(false);
+        activities.forEach(baseActivity -> {
+            if (ConvertUtils.equals(baseActivity.getClass().getSimpleName(),cls.getSimpleName())) {
+                isExist.set(true);
+            }
+        });
+        return isExist.get();
     }
 
     /**

@@ -78,7 +78,6 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
         WindowCompat.setDecorFitsSystemWindows(getWindow(),false);
         getWindow().setNavigationBarColor(getResources().getColor(R.color.route_charge_param_color));
         FragmentIntent.syncFragmentList(mScreenId, getSupportFragmentManager());
-        LauncherWindowService.startService();
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.GET_ACCOUNTS)
                 != PackageManager.PERMISSION_GRANTED){

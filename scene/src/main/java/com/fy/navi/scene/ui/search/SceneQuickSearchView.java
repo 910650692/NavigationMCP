@@ -236,6 +236,9 @@ public class SceneQuickSearchView extends BaseSceneView<SceneQuickSearchListBind
      */
     public void setPoiInfoEntity(final PoiInfoEntity poiInfoEntity) {
         this.mPoiInfoEntity = poiInfoEntity;
+        if(!ConvertUtils.isEmpty(poiInfoEntity)){
+            mScreenViewModel.createPoiMarker(poiInfoEntity);
+        }
     }
 
     /**
@@ -409,4 +412,6 @@ public class SceneQuickSearchView extends BaseSceneView<SceneQuickSearchListBind
                 .build();
         BuryPointController.getInstance().setBuryProps(buryProperty);
     }
+
+
 }

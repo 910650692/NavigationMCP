@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment;
 import com.alibaba.android.arouter.launcher.ARouter;
 import com.android.utils.ConvertUtils;
 import com.android.utils.ResourceUtils;
+import com.android.utils.ToastUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
 import com.fy.navi.burypoint.anno.HookMethod;
@@ -165,8 +166,14 @@ public class ScenePoiChargingStationReservationView extends BaseSceneView<SceneR
         ConnectorInfoItem connectorInfoItem = mEquipmentInfo.getmConnectorInfoItem().get(0);
         mViewBinding.chargeStationType.setText("0".equals(connectorInfoItem.getmChargeType()) ? R.string.charge_title_slow : R.string.charge_title_fast);
         mViewBinding.chargeStationStatus.setText(connectorInfoItem.getStatusName(connectorInfoItem.getmStatus()));
-        mViewBinding.chargeStationDeviceName.setText(mPoiInfoEntity.getName());
-        mViewBinding.chargeStationDeviceNumber.setText(getContext().getString(R.string.charge_equipment_number,connectorInfoItem.getmConnectorId()));
+        if(ConvertUtils.isEmpty(connectorInfoItem.getmParkNo())){
+            mViewBinding.chargeStationDeviceName.setText(getContext().getString(R.string.charge_equipment_number,connectorInfoItem.getmConnectorId()));
+            mViewBinding.chargeStationDeviceNumber.setVisibility(GONE);
+        }else{
+            mViewBinding.chargeStationDeviceName.setText(getContext().getString(R.string.charge_equipment_pack_no,connectorInfoItem.getmParkNo()));
+            mViewBinding.chargeStationDeviceNumber.setVisibility(VISIBLE);
+            mViewBinding.chargeStationDeviceNumber.setText(getContext().getString(R.string.charge_equipment_number,connectorInfoItem.getmConnectorId()));
+        }
         mViewBinding.poiChargeUnlock.setText(connectorInfoItem.getmLockStatus() == 10 ? R.string.charge_lock : R.string.charge_unlock);
         mViewBinding.skPoiName.setText(mPoiInfoEntity.getName());
         mViewBinding.poiSecondAddress.setText(mPoiInfoEntity.getAddress());
@@ -227,10 +234,11 @@ public class ScenePoiChargingStationReservationView extends BaseSceneView<SceneR
         new ChargeStationConfirmDialog.Build(getContext()).setDialogObserver(new IBaseDialogClickListener() {
             @Override
             public void onCommitClick() {
-                if(mCancelNumber >= MAX_CANCEL){
-                    return;
-                }
-                mScreenViewModel.cancelReservation(mReservationInfo,(Activity) getContext());
+            if(mCancelNumber >= MAX_CANCEL){
+                ToastUtils.Companion.getInstance().showCustomToastView(getContext().getString(R.string.reservation_max_time));
+                return;
+            }
+            mScreenViewModel.cancelReservation(mReservationInfo,(Activity) getContext());
             }
         })
         .setTitle(getContext().getString(R.string.cancel_num_tip,mCancelNumber.toString()))

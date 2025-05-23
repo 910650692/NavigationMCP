@@ -482,8 +482,17 @@ public class LayerSearchStyleAdapter extends BaseStyleAdapter {
     }
 
     private int getLayerItemIndex(LayerItem item) {
+        if(item == null){
+            Logger.e(TAG, "getLayerItemIndex item == null");
+            return 0;
+        }
         String id = item.getID();
-        return Integer.parseInt(id);
+        try {
+            return Integer.parseInt(id);
+        } catch (Exception e) {
+            Logger.e(TAG, "getLayerItemIndex ID format: " + id);
+            return 0;
+        }
     }
 
     //判断停车位资源是否充足

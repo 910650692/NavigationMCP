@@ -17,6 +17,7 @@ import com.fy.navi.scene.R;
 import com.fy.navi.scene.databinding.ChargeEquipmentItemBinding;
 import com.fy.navi.scene.ui.poi.ChargeStationConfirmDialog;
 import com.fy.navi.service.MapDefaultFinalTag;
+import com.fy.navi.service.define.map.MainScreenMapView;
 import com.fy.navi.service.define.search.ChargeEquipmentInfo;
 import com.fy.navi.service.define.search.ChargePriceInfo;
 import com.fy.navi.service.define.search.ConnectorInfoItem;
@@ -54,7 +55,6 @@ public class ChargeEquipmentListAdapter extends RecyclerView.Adapter<ChargeEquip
         holder.mBinding.setConnectorInfoItem(info.getmConnectorInfoItem().get(0));
         holder.mBinding.setHandler(new MyEventHandle());
 
-        Logger.d("huangli","getmStatus1: "+info.getmConnectorInfoItem().get(0).getmStatus());
         if(info.getmConnectorInfoItem().get(0).getmParkingLockFlag() == 0 || !"1".equals(info.getmConnectorInfoItem().get(0).getmStatus())){
             holder.mBinding.chargeReservationButton.setEnabled(false);
             holder.mBinding.chargeReservationButton.setAlpha(0.5F);
@@ -82,6 +82,7 @@ public class ChargeEquipmentListAdapter extends RecyclerView.Adapter<ChargeEquip
 
     // 打开预约确认弹窗
     public void openReservationDialog(ConnectorInfoItem info,EquipmentInfo equipmentInfo){
+        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"info: "+info.getmParkingLockFlag()+"--- status: "+info.getmStatus());
         if(info.getmParkingLockFlag() == 0){
             ToastUtils.Companion.getInstance().showCustomToastView(mContext.getString(R.string.reservation_no_lock));
             return;
@@ -95,17 +96,7 @@ public class ChargeEquipmentListAdapter extends RecyclerView.Adapter<ChargeEquip
                 ToastUtils.Companion.getInstance().showCustomToastView(mContext.getString(R.string.equipment_error));
                 return;
         }
-        new ChargeStationConfirmDialog.Build(mContext).setDialogObserver(new IBaseDialogClickListener() {
-            @Override
-            public void onCommitClick() {
-                // 预约行为
-                mItemClickListener.onItemClick(info,equipmentInfo);
-            }
-        })
-        .setTitle(ResourceUtils.Companion.getInstance().getString(R.string.reservation_title))
-        .setTip(ResourceUtils.Companion.getInstance().getString(R.string.reservation_tip))
-        .setConfirmTitle(ResourceUtils.Companion.getInstance().getString(R.string.reservation_tip_confirm))
-        .build().show();
+        mItemClickListener.onItemClick(info,equipmentInfo);
     }
 
     // 打开降地锁弹框
@@ -146,9 +137,6 @@ public class ChargeEquipmentListAdapter extends RecyclerView.Adapter<ChargeEquip
         }
 
         public void openReservation(ConnectorInfoItem item,EquipmentInfo equipmentInfo){
-            if(item.getmParkingLockFlag() == 0 || !"1".equals(item.getmStatus())){
-                return;
-            }
             openReservationDialog(item,equipmentInfo);
         }
         public void cancelReservation(ConnectorInfoItem item){

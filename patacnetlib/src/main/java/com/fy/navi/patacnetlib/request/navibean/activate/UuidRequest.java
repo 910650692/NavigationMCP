@@ -3,9 +3,11 @@ package com.fy.navi.patacnetlib.request.navibean.activate;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 @Getter
 @Setter
+@ToString
 public class UuidRequest {
     private String mApiVersion;
     private String mAppId;

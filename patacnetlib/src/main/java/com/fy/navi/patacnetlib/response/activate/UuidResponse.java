@@ -2,27 +2,14 @@ package com.fy.navi.patacnetlib.response.activate;
 
 import androidx.annotation.NonNull;
 
-import com.android.utils.log.Logger;
-import com.fy.navi.patacnetlib.api.NetApiHelper;
+import com.google.gson.annotations.SerializedName;
 
-import org.json.JSONException;
+import lombok.Getter;
 
-
+@Getter
 public class UuidResponse extends BaseResponse {
-
-    /**
-     * 获取uuid
-     * @return uuid
-     */
-    public String getUuid() {
-        String uuid = "";
-        try {
-            uuid = getMDataSet().getString("vin");
-        } catch (JSONException e) {
-            Logger.e(NetApiHelper.ACTIVATE_TAG, e.toString());
-        }
-        return uuid;
-    }
+    @SerializedName("vin")
+    private String mVin;
 
     @NonNull
     @Override
@@ -30,7 +17,7 @@ public class UuidResponse extends BaseResponse {
         return "UuidResponse{" +
                 "resultCode='" + getMResultCode() + '\'' +
                 ", message='" + getMMessage() + '\'' +
-                ", uuid = '" + getUuid() + '\'' +
+                ", uuid = '" + getMVin() + '\'' +
                 '}';
     }
 }

@@ -63,6 +63,7 @@ public class BaseChargingStationReservationViewModel extends BaseViewModel<Charg
     public void onLockGround(BaseRep result){
         if(AutoMapConstant.NetSearchKey.SUCCESS_CODE.equals(result.getResultCode())){
             mView.notifyLockGround();
+            ToastUtils.Companion.getInstance().showCustomToastView(ResourceUtils.Companion.getInstance().getString(R.string.unlock_success));
         }else{
             ToastUtils.Companion.getInstance().showCustomToastView(ResourceUtils.Companion.getInstance().getString(R.string.unlock_error));
             Logger.e(MapDefaultFinalTag.SEARCH_HMI_TAG,"onQueryEquipmentResult error");

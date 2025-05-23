@@ -2,12 +2,17 @@ package com.fy.navi.patacnetlib.response.activate;
 
 import androidx.annotation.NonNull;
 
-import com.android.utils.log.Logger;
-import com.fy.navi.patacnetlib.api.NetApiHelper;
+import com.google.gson.annotations.SerializedName;
 
-import org.json.JSONException;
+import lombok.Getter;
 
+
+@Getter
 public class AppKeyResponse extends BaseResponse {
+    @SerializedName("appKey")
+    private String mAppKey;
+    @SerializedName("expirationMinutes")
+    private int mExpirationMinutes;
 
     @NonNull
     @Override
@@ -15,22 +20,9 @@ public class AppKeyResponse extends BaseResponse {
         return "AppKeyResponse{" +
                 "resultCode='" + getMResultCode() + '\'' +
                 ", message='" + getMMessage() + '\'' +
-                ", appKey = '" + getAppKey() + '\'' +
+                ", appKey = '" + getMAppKey() + '\'' +
+                ", expirationMinutes = '" + getMExpirationMinutes() + '\'' +
                 '}';
     }
-    /**
-     * 获取appKey
-     * @return appKey
-     */
-    public String getAppKey() {
-        String appKey = "";
-        try{
-            appKey = getMDataSet().getString("appKey");
-        } catch (JSONException e) {
-            Logger.e(NetApiHelper.ACTIVATE_TAG, e.toString());
-        }
-        return appKey;
-    }
-
 
 }

@@ -239,12 +239,12 @@ public class SceneSearchPoiListImpl extends BaseSceneModel<SceneSearchPoiList> i
     public void onTabListGasChargeClick(final String keword, final int tabIndex) {
         mListSearchType = tabIndex;
         if (tabIndex == 0) {
-            mSearchPackage.enRouteKeywordSearch(keword);
+            mTaskId = mSearchPackage.enRouteKeywordSearch(keword);
         } else if (tabIndex == 1) {
             final RouteParam endPoint = mRoutePackage.getEndPoint(MapType.MAIN_SCREEN_MAIN_MAP);
-            mSearchPackage.aroundSearch(1, keword, new GeoPoint(endPoint.getRealPos().getLon(), endPoint.getRealPos().getLat()), false);
+            mTaskId = mSearchPackage.aroundSearch(1, keword, new GeoPoint(endPoint.getRealPos().getLon(), endPoint.getRealPos().getLat()), false);
         } else {
-            mSearchPackage.aroundSearch(1, keword);
+            mTaskId = mSearchPackage.aroundSearch(1, keword);
         }
     }
 

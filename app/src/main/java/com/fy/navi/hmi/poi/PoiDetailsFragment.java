@@ -143,7 +143,7 @@ public class PoiDetailsFragment extends BaseFragment<FragmentPoiDetailsBinding, 
         mBinding.scenePoiDetailContentView.onCollectUpdate(result.getResultCode());
     }
 
-    public void onNetSearchResult(final SearchResultEntity searchResultEntity) {
+    public void onNetSearchResult() {
         mViewModel.searchCollectList(getActivity());
     }
 

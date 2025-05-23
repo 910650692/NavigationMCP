@@ -796,7 +796,7 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
     @Override
     public void onUpdateElectVehicleETAInfo(List<FyElecVehicleETAInfo> infos) {
         IGuidanceObserver.super.onUpdateElectVehicleETAInfo(infos);
-        Logger.i(TAG, "onUpdateElecVehicleETAInfo");
+        Logger.i(TAG, "onUpdateElectVehicleETAInfo");
         if (mTipManager != null) {
             mTipManager.onUpdateElectVehicleETAInfo(infos);
         }

@@ -111,8 +111,8 @@ public class BaseSearchResultViewModel extends BaseViewModel<SearchResultFragmen
     }
 
     public void notifyNetSearchResult(int taskId,BaseRep result){
-        if(!ConvertUtils.isNull(result)){
-            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"code: "+result.getResultCode());
+        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"code: "+result.getResultCode());
+        if(AutoMapConstant.NetSearchKey.SUCCESS_CODE.equals(result.getResultCode())) {
             if(!AutoMapConstant.NetSearchKey.SUCCESS_CODE.equals(result.getResultCode())){
                 mView.notifySearchResultByNetError(result.getResultCode());
                 return;
@@ -162,6 +162,8 @@ public class BaseSearchResultViewModel extends BaseViewModel<SearchResultFragmen
                 Logger.e(MapDefaultFinalTag.SEARCH_HMI_TAG,"error: "+e);
                 mView.notifySearchResultByNetError("idle");
             }
+        }else{
+            mView.notifySearchResultByNetError("idle");
         }
     }
 }

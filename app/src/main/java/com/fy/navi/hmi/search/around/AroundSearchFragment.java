@@ -88,6 +88,13 @@ public class AroundSearchFragment extends BaseFragment<FragmentAroundBinding, Ar
         mBinding.sceneQuickSearchView.setTextView(title);
     }
 
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        if(!hidden){
+            defaultDataProcessing();
+        }
+    }
 
     @Override
     public void onDestroy() {

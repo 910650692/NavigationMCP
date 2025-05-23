@@ -1132,7 +1132,7 @@ public void onSearchResult(final int taskId, final int errorCode, final String m
             }
             mGasChargeAlongList.addAll(allPoiParamList);
             if (!ConvertUtils.isEmpty(mViewModel)) {
-                mViewModel.showRouteSearchChargeListUI(searchResultEntity.getPoiList(), mGasChargeAlongList, mListSearchType, 0);
+                mViewModel.showRouteSearchChargeListUI(searchResultEntity, mGasChargeAlongList, mListSearchType, 0);
             }
         }
         if (searchResultEntity.getKeyword().equals(ResourceUtils.Companion.getInstance().getString(R.string.route_search_keyword_gas))) {
@@ -1144,7 +1144,7 @@ public void onSearchResult(final int taskId, final int errorCode, final String m
             }
             mGasChargeAlongList.addAll(allPoiParamList);
             if (!ConvertUtils.isEmpty(mViewModel)) {
-                mViewModel.showRouteSearchChargeListUI(searchResultEntity.getPoiList(), mGasChargeAlongList, mListSearchType, 1);
+                mViewModel.showRouteSearchChargeListUI(searchResultEntity, mGasChargeAlongList, mListSearchType, 1);
             }
         }
     } else if (searchResultEntity.getSearchType() == AutoMapConstant.SearchType.LINE_DEEP_INFO_SEARCH

@@ -20,6 +20,7 @@ import com.fy.navi.scene.databinding.SearchHistoryItemBinding;
 import com.fy.navi.service.AutoMapConstant;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.define.bean.GeoPoint;
+import com.fy.navi.service.define.route.RoutePoiType;
 import com.fy.navi.service.define.search.FavoriteInfo;
 import com.fy.navi.service.define.search.PoiInfoEntity;
 import com.fy.navi.service.greendao.history.History;
@@ -27,6 +28,7 @@ import com.fy.navi.service.logicpaket.search.SearchPackage;
 import com.fy.navi.service.logicpaket.user.behavior.BehaviorPackage;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -39,6 +41,7 @@ public class SearchHistoryAdapter extends RecyclerView.Adapter<SearchHistoryAdap
     private int mHomeCompanyType = -1;// 1:家 2:公司 3:常用地址 0:收藏夹 -1:都不是
     private boolean mShowActionContainer = true;
     private boolean mIsShowIndex = false;//显示icon还是序号,默认显示icon
+    private History mHistory;
 
     public int getHomeCompanyType() {
         return mHomeCompanyType;
@@ -92,7 +95,9 @@ public class SearchHistoryAdapter extends RecyclerView.Adapter<SearchHistoryAdap
     @Override
     public void onBindViewHolder(@NonNull final ResultHolder holder, final int position) {
         holder.resultItemBinding.setPoiBean(mPoiEntities.get(position));
+        mHistory = mPoiEntities.get(position);
         holder.resultItemBinding.setLayoutPosition(String.valueOf(position + 1));
+        holder.resultItemBinding.sllCollect.setVisibility(View.VISIBLE);
         if (AutoMapConstant.SearchKeywordRecordKey.SEARCH_KEYWORD_RECORD_KEY == mPoiEntities.get(position).getMType()) {
             holder.resultItemBinding.skInfoLayout.setVisibility(View.GONE);
             holder.resultItemBinding.poiToNavi.setVisibility(View.GONE);
@@ -133,11 +138,38 @@ public class SearchHistoryAdapter extends RecyclerView.Adapter<SearchHistoryAdap
         }
 
         if (mHomeCompanyType != -1) {
+            // 1:家 2:公司 3:常用地址 0:收藏夹
             holder.resultItemBinding.ivNaviIcon.setImageResource(R.drawable.img_addq_58);
             switch (mHomeCompanyType) {
-                case 0:
                 case 3:
-                    holder.resultItemBinding.textNavi.setText(R.string.st_collect_add);
+                    final PoiInfoEntity poiInfoEntity = new PoiInfoEntity();
+                    poiInfoEntity.setPid(mHistory.getMPoiId());
+                    if (BehaviorPackage.getInstance().isFrequentAddress(poiInfoEntity)) {
+                        holder.resultItemBinding.textNavi.setText(R.string.route_service_list_item_added);
+                        holder.resultItemBinding.ivNaviIcon.setImageResource(R.drawable.img_route_search_added);
+                    } else {
+                        holder.resultItemBinding.textNavi.setText(R.string.st_collect_add);
+                        holder.resultItemBinding.ivNaviIcon.setImageResource(R.drawable.img_addq_58);
+                    }
+                    break;
+                case 0:
+                    final PoiInfoEntity favInfo = new PoiInfoEntity();
+                    favInfo.setName(mHistory.getMEndPoiName());
+                    favInfo.setAddress(mHistory.getMEndPoiName());
+                    favInfo.setPoiType(RoutePoiType.ROUTE_POI_TYPE_END);
+                    favInfo.setPid(mHistory.getMPoiId());
+                    final GeoPoint historyPoint = parseGeoPoint(mHistory.getMEndPoint());
+                    final GeoPoint geoPoint = new GeoPoint();
+                    geoPoint.setLon(historyPoint.getLon());
+                    geoPoint.setLat(historyPoint.getLat());
+                    favInfo.setPoint(geoPoint);
+                    if (!BehaviorPackage.getInstance().isFavorite(favInfo).isEmpty()) {
+                        holder.resultItemBinding.textNavi.setText(R.string.route_service_list_item_added);
+                        holder.resultItemBinding.ivNaviIcon.setImageResource(R.drawable.img_route_search_added);
+                    } else {
+                        holder.resultItemBinding.textNavi.setText(R.string.st_collect_add);
+                        holder.resultItemBinding.ivNaviIcon.setImageResource(R.drawable.img_addq_58);
+                    }
                     break;
                 case 1:
                     holder.resultItemBinding.textNavi.setText(R.string.st_home);
@@ -187,7 +219,7 @@ public class SearchHistoryAdapter extends RecyclerView.Adapter<SearchHistoryAdap
                     addFavoriteInfo(mPoiEntities.get(position));
                     ToastUtils.Companion.getInstance().showCustomToastView(ResourceUtils.Companion.getInstance().getString(R.string.sha_has_favorite));
                 }
-                notifyItemChanged(position);
+                notifyDataSetChanged();
                 holder.resultItemBinding.swipeMenuLayout.smoothClose();
             });
         }

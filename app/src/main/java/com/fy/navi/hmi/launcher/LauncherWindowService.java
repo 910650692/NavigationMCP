@@ -24,6 +24,7 @@ import com.fy.navi.burypoint.anno.HookMethod;
 import com.fy.navi.burypoint.constant.BuryConstant;
 import com.fy.navi.hmi.BuildConfig;
 import com.fy.navi.hmi.databinding.FloatingWindowLayoutBinding;
+import com.fy.navi.hmi.map.MapActivity;
 import com.fy.navi.hmi.startup.StartupActivity;
 import com.fy.navi.mapservice.bean.INaviConstant;
 import com.fy.navi.service.AppContext;
@@ -38,6 +39,7 @@ import com.fy.navi.service.logicpaket.map.IMapPackageCallback;
 import com.fy.navi.service.logicpaket.map.MapPackage;
 import com.fy.navi.service.logicpaket.navi.IGuidanceObserver;
 import com.fy.navi.service.logicpaket.navi.NaviPackage;
+import com.fy.navi.ui.base.StackManager;
 
 /**
  * @author: QiuYaWei
@@ -59,15 +61,21 @@ public class LauncherWindowService implements IGuidanceObserver, IMapPackageCall
     private final MapType MAP_TYPE = MapType.MAIN_SCREEN_MAIN_MAP;
     private FloatViewManager mFloatManager;
     private boolean mIsOnShowing = false;
+    private int currentUiMode = Configuration.UI_MODE_NIGHT_YES;
+    private boolean isInited = false;
+
     private LauncherWindowService() {
 
     }
 
     private void init() {
-        Logger.i(TAG, "init");
-        initParameters();
-        initCallBacks();
-        initView();
+        Logger.i(TAG, "init:" + isInited);
+        if (!isInited) {
+            initParameters();
+            initCallBacks();
+            initView();
+            isInited = true;
+        }
     }
 
     public void unInit() {
@@ -80,6 +88,7 @@ public class LauncherWindowService implements IGuidanceObserver, IMapPackageCall
         mNaviStatusAdapter = NavistatusAdapter.getInstance();
         mWindowManager = (WindowManager) AppContext.getInstance().getMContext().getSystemService(WINDOW_SERVICE);
         mFloatManager = FloatViewManager.getInstance();
+        currentUiMode = AppContext.getInstance().getMContext().getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
     }
 
     private void initCallBacks() {
@@ -224,7 +233,13 @@ public class LauncherWindowService implements IGuidanceObserver, IMapPackageCall
     @HookMethod(eventName = BuryConstant.EventName.AMAP_WIDGET_ENTERAPP)
     public void openSelf(int pageCode) {
         Logger.i(TAG, "openSelf:" + pageCode);
-        Intent intent = new Intent(AppContext.getInstance().getMContext(), StartupActivity.class);
+        Class startCls = StartupActivity.class;
+        boolean isActivityExist = StackManager.getInstance().isActivityExist(MAP_TYPE.name(), MapActivity.class);
+        if (isActivityExist) {
+            startCls = MapActivity.class;
+        }
+        Logger.i(TAG, "isActivityExist:" + isActivityExist);
+        Intent intent = new Intent(AppContext.getInstance().getMContext(), startCls);
         intent.putExtra(INaviConstant.PAGE_EXTRA, pageCode);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         AppContext.getInstance().getMContext().startActivity(intent);
@@ -281,7 +296,13 @@ public class LauncherWindowService implements IGuidanceObserver, IMapPackageCall
     @Override
     public void onConfigurationChanged(@NonNull Configuration newConfig) {
         Logger.i(TAG, "onConfigurationChanged");
-        initView();
+        // 检查深色模式变更
+        int uiMode = newConfig.uiMode & Configuration.UI_MODE_NIGHT_MASK;
+        if (uiMode != currentUiMode && !ConvertUtils.isNull(mBinding)) {
+            Logger.i(TAG, "刷新UI");
+            initView();
+        }
+        currentUiMode = uiMode;
     }
 
     @Override

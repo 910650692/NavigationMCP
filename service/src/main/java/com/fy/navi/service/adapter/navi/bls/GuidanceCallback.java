@@ -483,9 +483,7 @@ public class GuidanceCallback implements INaviObserver, ISoundPlayObserver {
                 if (guidanceObserver != null) {
                     final List<FyElecVehicleETAInfo> desObj = GsonUtils.fromJson2List(elecVehicleETAInfo, FyElecVehicleETAInfo.class);
                     Logger.i(TAG, "onUpdateElectVehicleETAInfo:" + ((desObj == null) ? "desObj is null" : "size_" + desObj.size()));
-                    guidanceObserver.onUpdateElectVehicleETAInfo(
-                            desObj
-                    );
+                    guidanceObserver.onUpdateElectVehicleETAInfo(desObj);
                 }
             }
         }

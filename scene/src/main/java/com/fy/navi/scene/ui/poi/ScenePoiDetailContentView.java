@@ -661,8 +661,13 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
         }
         final GasStationAdapter gasStationAdapter = new GasStationAdapter();
         gasStationAdapter.setGasStationList(gasStationInfos);
-        mViewBinding.scenePoiDetailsGasStationView.poiGasBusinessHours.
-                setText(getContext().getString(R.string.business_hour, mPoiInfoEntity.getBusinessTime()));
+        if (ConvertUtils.isEmpty(mPoiInfoEntity.getBusinessTime())) {
+            mViewBinding.scenePoiDetailsGasStationView.poiGasBusinessHours.setVisibility(View.GONE);
+        } else {
+            mViewBinding.scenePoiDetailsGasStationView.poiGasBusinessHours.
+                    setText(getContext().getString(R.string.business_hour, mPoiInfoEntity.getBusinessTime()));
+        }
+
         if (ConvertUtils.isEmpty(mPoiInfoEntity.getPhone())) {
             mViewBinding.scenePoiDetailsGasStationView.poiGasPhone.setVisibility(View.GONE);
         }
@@ -756,8 +761,12 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
                 mViewBinding.scenePoiDetailsChargingStationView.poiChargeAppointment.setVisibility(GONE);
             }
         }
-        mViewBinding.scenePoiDetailsChargingStationView.poiCharegBusinessHours.setText(
-                getContext().getString(R.string.business_hour, mPoiInfoEntity.getBusinessTime()));
+        if (ConvertUtils.isEmpty(mPoiInfoEntity.getBusinessTime())) {
+            mViewBinding.scenePoiDetailsChargingStationView.poiCharegBusinessHours.setVisibility(View.GONE);
+        } else {
+            mViewBinding.scenePoiDetailsChargingStationView.poiCharegBusinessHours.
+                    setText(getContext().getString(R.string.business_hour, mPoiInfoEntity.getBusinessTime()));
+        }
         if (ConvertUtils.isEmpty(mPoiInfoEntity.getPhone())) {
             mViewBinding.scenePoiDetailsChargingStationView.poiChargeAreaPhone.
                     setVisibility(View.GONE);
@@ -903,8 +912,12 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
             mViewBinding.scenePoiDetailsCateringView.poiCateringPricePerPerson.
                     setVisibility(VISIBLE);
         }
-        mViewBinding.scenePoiDetailsCateringView.poiCateringHours.setText(
-                getContext().getString(R.string.business_hour, mPoiInfoEntity.getBusinessTime()));
+        if (ConvertUtils.isEmpty(mPoiInfoEntity.getBusinessTime())) {
+            mViewBinding.scenePoiDetailsCateringView.poiCateringHours.setVisibility(View.GONE);
+        } else {
+            mViewBinding.scenePoiDetailsCateringView.poiCateringHours.
+                    setText(getContext().getString(R.string.business_hour, mPoiInfoEntity.getBusinessTime()));
+        }
         if (ConvertUtils.isEmpty(mPoiInfoEntity.getPhone())) {
             mViewBinding.scenePoiDetailsCateringView.poiCateringPhone.setVisibility(View.GONE);
         }
@@ -956,8 +969,12 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
             mViewBinding.scenePoiDetailsParkingLotView.poiParkingLotOccupied.setText(parkString);
         }
         mViewBinding.scenePoiDetailsParkingLotView.poiParkingLotOccupied.setText(parkString);
-        mViewBinding.scenePoiDetailsParkingLotView.poiParkingLotHours.setText(
-                getContext().getString(R.string.business_hour, mPoiInfoEntity.getBusinessTime()));
+        if (ConvertUtils.isEmpty(mPoiInfoEntity.getBusinessTime())) {
+            mViewBinding.scenePoiDetailsParkingLotView.poiParkingLotHours.setVisibility(View.GONE);
+        } else {
+            mViewBinding.scenePoiDetailsParkingLotView.poiParkingLotHours.
+                    setText(getContext().getString(R.string.business_hour, mPoiInfoEntity.getBusinessTime()));
+        }
         if (ConvertUtils.isEmpty(mPoiInfoEntity.getPhone())) {
             mViewBinding.scenePoiDetailsParkingLotView.poiParkingLotPhone.setVisibility(View.GONE);
         }
@@ -1371,7 +1388,7 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
         this.mPoiType = poiType;
         Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "poiType: " + poiType);
         final int pointTypeCode = mScreenViewModel.getPointTypeCode(poiInfoEntity.getPointTypeCode());
-        Logger.d("huangli","pointTypeCode: "+poiInfoEntity.getOperatorId());
+        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"operatorId: "+poiInfoEntity.getOperatorId());
         if(ConvertUtils.isEmpty(poiInfoEntity.getOperatorId())){
             refreshNormalView();
         }
@@ -1453,6 +1470,9 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
                 mViewBinding.scenePoiDetailsBottomView.sivStartRoute.setImageDrawable(
                         ContextCompat.getDrawable(getContext(),
                                 R.drawable.icon_details_bottom_go_here));
+                mViewBinding.scenePoiDetailsBottomView.stlStartRoute.setClickable(mScreenViewModel.isFavorite(mPoiInfoEntity).isEmpty());
+                mViewBinding.scenePoiDetailsBottomView.stlStartRoute.setAlpha(mScreenViewModel.isFavorite(mPoiInfoEntity).isEmpty() ? 1.0f : 0.5f);
+                mViewBinding.scenePoiDetailsBottomView.stlStartRoute.setIsClickChangeColor(false);
                 mViewBinding.scenePoiDetailsBottomView.stvStartRoute.setText(R.string.st_collect_add);
                 mViewBinding.scenePoiDetailsBottomView.sivStartRoute.setVisibility(View.VISIBLE);
                 mViewBinding.scenePoiDetailsBottomView.stlAroundSearch.setVisibility(GONE);
@@ -1460,6 +1480,9 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
                 break;
             case AutoMapConstant.PoiType.POI_COMMON:
                 Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "添加");
+                mViewBinding.scenePoiDetailsBottomView.stlStartRoute.setClickable(!mScreenViewModel.isFrequentAddress(mPoiInfoEntity));
+                mViewBinding.scenePoiDetailsBottomView.stlStartRoute.setAlpha(mScreenViewModel.isFrequentAddress(mPoiInfoEntity) ? 0.5f : 1.0f);
+                mViewBinding.scenePoiDetailsBottomView.stlStartRoute.setIsClickChangeColor(false);
                 mViewBinding.scenePoiDetailsBottomView.sivStartRoute.setImageDrawable(null);
                 mViewBinding.scenePoiDetailsBottomView.stvStartRoute.setText(R.string.st_collect_add);
                 mViewBinding.scenePoiDetailsBottomView.sivStartRoute.setVisibility(View.GONE);
@@ -1517,17 +1540,28 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
                             }
                             case AutoMapConstant.PoiType.POI_COMMON -> {
                                 commonName = 3;
-                                closeAllFragmentsUntilTargetFragment(HOME_COMPANY_FRAGMENT);
-                                showCurrentFragment();
-                                yield "添加成功";
+                                if (mScreenViewModel.isFrequentAddress(mPoiInfoEntity)) {
+                                    yield "";
+                                } else {
+                                    closeAllFragmentsUntilTargetFragment(HOME_COMPANY_FRAGMENT);
+                                    showCurrentFragment();
+                                    yield "添加成功";
+                                }
                             }
                             default -> {
                                 commonName = 0;
-                                closeAllFragmentsUntilTargetFragment(HOME_COMPANY_FRAGMENT);
-                                showCurrentFragment();
-                                yield "添加成功";
+                                if (!mScreenViewModel.isFavorite(mPoiInfoEntity).isEmpty()) {
+                                    yield "";
+                                } else {
+                                    closeAllFragmentsUntilTargetFragment(HOME_COMPANY_FRAGMENT);
+                                    showCurrentFragment();
+                                    yield "添加成功";
+                                }
                             }
                         };
+                        if (ConvertUtils.isEmpty(resultText)) {
+                            return;
+                        }
                         final FavoriteInfo favoriteInfo = new FavoriteInfo();
                         favoriteInfo.setCommonName(commonName)
                                 .setUpdateTime(new Date().getTime());

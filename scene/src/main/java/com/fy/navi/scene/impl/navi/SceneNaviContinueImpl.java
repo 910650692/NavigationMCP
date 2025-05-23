@@ -109,7 +109,12 @@ public class SceneNaviContinueImpl extends BaseSceneModel<SceneNaviContinueView>
             if (!currentIsNavi || isNeedPreViewShowList) {
                 initTimer();
             } else {
-                naviContinue();
+                // 加入判断条件，只有在继续按钮显示的情况下才进行导航
+                if (null != mScreenView) {
+                    if (mScreenView.isVisible()) {
+                        naviContinue();
+                    }
+                }
             }
         }
     }
@@ -128,15 +133,22 @@ public class SceneNaviContinueImpl extends BaseSceneModel<SceneNaviContinueView>
 
     public void naviContinue() {
         Logger.i(TAG, "naviContinue");
-        if (!mNaviPackage.getFixedOverViewStatus()) {
-            OpenApiHelper.exitPreview(mMapTypeId);
-        } else {
-            mMapPackage.goToCarPosition(mMapTypeId, false, false);
+        // 加入防抖
+        if (TimerHelper.isCanDo()) {
+            if (!mNaviPackage.getFixedOverViewStatus() && mNaviPackage.getPreviewStatus()) {
+                OpenApiHelper.exitPreview(mMapTypeId);
+            } else {
+                mMapPackage.goToCarPosition(mMapTypeId, false, false);
+                mLayerPackage.setFollowMode(MapType.MAIN_SCREEN_MAIN_MAP, true);
+                // bugID：1023666 导航中缩放地图然后点击继续导航，恢复到导航跟随态的过程时间太长
+                OpenApiHelper.setCurrentZoomLevel(mMapTypeId);
+            }
+            mSearchPackage.clearLabelMark();
+            ImmersiveStatusScene.getInstance().setImmersiveStatus(mMapTypeId,
+                    ImersiveStatus.IMERSIVE);
+            // 隐藏继续当行按钮
+            notifySceneStateChange(false);
         }
-        mSearchPackage.clearLabelMark();
-        ImmersiveStatusScene.getInstance().setImmersiveStatus(mMapTypeId, ImersiveStatus.IMERSIVE);
-        // 隐藏继续当行按钮
-        notifySceneStateChange(false);
     }
 
     /**

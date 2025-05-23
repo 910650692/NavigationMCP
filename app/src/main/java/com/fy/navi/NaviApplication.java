@@ -20,6 +20,7 @@ import com.fy.navi.hmi.launcher.LauncherWindowService;
 import com.fy.navi.hmi.map.MapActivity;
 import com.fy.navi.patacnetlib.PatacNetClient;
 import com.fy.navi.service.AppContext;
+import com.fy.navi.service.AutoMapConstant;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.StartService;
 import com.fy.navi.ui.BaseApplication;
@@ -73,30 +74,36 @@ public class NaviApplication extends BaseApplication implements Application.Acti
 
     @Override
     public void onActivityCreated(@NonNull Activity activity, @Nullable Bundle bundle) {
-
+        if (activity instanceof MapActivity) {
+            updateIsAppInForeground(AutoMapConstant.AppRunStatus.CREATED);
+        }
     }
 
     @Override
     public void onActivityStarted(@NonNull Activity activity) {
-
+        if (activity instanceof MapActivity) {
+            updateIsAppInForeground(AutoMapConstant.AppRunStatus.STARTED);
+        }
     }
 
     @Override
     public void onActivityResumed(@NonNull Activity activity) {
         if (activity instanceof MapActivity) {
-            updateIsAppInForeground(true);
+            updateIsAppInForeground(AutoMapConstant.AppRunStatus.RESUMED);
         }
     }
 
     @Override
     public void onActivityPaused(@NonNull Activity activity) {
-
+        if (activity instanceof MapActivity) {
+            updateIsAppInForeground(AutoMapConstant.AppRunStatus.PAUSED);
+        }
     }
 
     @Override
     public void onActivityStopped(@NonNull Activity activity) {
         if (activity instanceof MapActivity) {
-            updateIsAppInForeground(false);
+            updateIsAppInForeground(AutoMapConstant.AppRunStatus.STOPPED);
         }
     }
 
@@ -107,6 +114,9 @@ public class NaviApplication extends BaseApplication implements Application.Acti
 
     @Override
     public void onActivityDestroyed(@NonNull Activity activity) {
-
+        if (activity instanceof MapActivity) {
+            updateIsAppInForeground(AutoMapConstant.AppRunStatus.DESTROYED);
+        }
     }
+
 }

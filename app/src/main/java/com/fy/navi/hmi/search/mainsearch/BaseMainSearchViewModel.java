@@ -39,7 +39,6 @@ public class BaseMainSearchViewModel extends BaseViewModel<MainSearchFragment, M
      * @return 动力类型
      */
     public int powerType() {
-        ActivationManager.getInstance().getThirdPartyUUID();
         return mModel.powerType();
     }
 }

@@ -16,6 +16,7 @@ import com.fy.navi.service.define.search.ConnectorInfoItem;
 import com.fy.navi.service.define.search.EquipmentInfo;
 import com.fy.navi.service.define.search.PoiInfoEntity;
 import com.fy.navi.service.define.user.account.AccessTokenParam;
+import com.fy.navi.service.logicpaket.calibration.CalibrationPackage;
 import com.fy.navi.service.logicpaket.search.SearchPackage;
 import com.fy.navi.service.logicpaket.user.account.AccountPackage;
 import com.fy.navi.ui.base.StackManager;
@@ -28,10 +29,12 @@ public class ScenePoiChargingStationReservationListViewImpl extends BaseSceneMod
     public MutableLiveData<ChargeInfo> mChargeInfo = new MutableLiveData<>();
     public MutableLiveData<PoiInfoEntity> mPoiInfo = new MutableLiveData<>();
     private final SearchPackage mSearchPackage;
+    private final CalibrationPackage mCalibrationPackage;
     public ScenePoiChargingStationReservationListViewImpl(ScenePoiChargingStationReservationListView mScreenView) {
         super(mScreenView);
         searchType = new MutableLiveData<>(1);
         mSearchPackage = SearchPackage.getInstance();
+        mCalibrationPackage = CalibrationPackage.getInstance();
     }
     public void closeFragment(){
         mScreenView.closeFragment();
@@ -54,7 +57,7 @@ public class ScenePoiChargingStationReservationListViewImpl extends BaseSceneMod
         ThreadManager.getInstance().runAsync(() -> {
             String idpUserId = AccountPackage.getInstance().getUserId();
             String accessToken = AccountPackage.getInstance().getAccessToken(param);
-            String vehicleBrand = "1";
+            String vehicleBrand = mSearchPackage.getBrandId(mCalibrationPackage.brand());
             mSearchPackage.createReservation(item, poiInfo,idpUserId,accessToken,vehicleBrand);
         });
 
@@ -73,7 +76,7 @@ public class ScenePoiChargingStationReservationListViewImpl extends BaseSceneMod
         ThreadManager.getInstance().runAsync(() -> {
             String idpUserId = AccountPackage.getInstance().getUserId();
             String accessToken = AccountPackage.getInstance().getAccessToken(param);
-            String vehicleBrand = "1";
+            String vehicleBrand = String.valueOf(mCalibrationPackage.brand());
             mSearchPackage.unGroundLock(item, poiInfo,idpUserId,accessToken,vehicleBrand);
         });
     }

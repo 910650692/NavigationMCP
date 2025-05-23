@@ -150,7 +150,11 @@ public class SceneCollectView extends BaseSceneView<SceneCollectViewBinding, Sce
                     }
                 } else {
                     if (SearchPackage.getInstance().isAlongWaySearch()) {
-                        RoutePackage.getInstance().addViaPoint(MapType.MAIN_SCREEN_MAIN_MAP, poiInfoEntity);
+                        if (RoutePackage.getInstance().isBelongRouteParam(MapType.MAIN_SCREEN_MAIN_MAP, poiInfoEntity)) {
+                            RoutePackage.getInstance().removeVia(MapType.MAIN_SCREEN_MAIN_MAP, poiInfoEntity, true);
+                        } else {
+                            RoutePackage.getInstance().addViaPoint(MapType.MAIN_SCREEN_MAIN_MAP, poiInfoEntity);
+                        }
                     } else {
                         final Fragment fragment = (Fragment) ARouter.getInstance()
                                 .build(RoutePath.Route.ROUTE_FRAGMENT)

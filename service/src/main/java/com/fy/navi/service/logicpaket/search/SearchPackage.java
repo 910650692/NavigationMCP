@@ -1710,4 +1710,14 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
         return mSearchAdapter.cancelReservation(requestParameterBuilder);
 
     }
+
+    // 映射云端侧对应的brandId
+    public String getBrandId(int brandId){
+        return switch (brandId){
+            case 1 -> "2";
+            case 2 -> "1";
+            case 3 -> "3";
+            default -> "4";
+        };
+    }
 }

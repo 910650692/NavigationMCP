@@ -187,4 +187,11 @@ public interface IVrBridgeConstant {
         String MINIMALIST = "MINIMALIST"; //极简
     }
 
+    //地图未打开，语音输入指令，等打开加载完成后需要继续执行的动作
+    interface VoiceCommandAction {
+        String OPEN_FAVORITE = "open_favorite"; //打开收藏界面
+        String OPEN_HISTORY = "open_history"; //打开历史记录
+        String COLLECT_COMMON = "collect_poi"; //收藏指定poi
+    }
+
 }

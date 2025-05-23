@@ -38,7 +38,6 @@ import com.fy.navi.service.define.route.RouteRequestParam;
 import com.fy.navi.service.define.route.RouteWayID;
 import com.fy.navi.service.define.search.FavoriteInfo;
 import com.fy.navi.service.define.search.PoiInfoEntity;
-import com.fy.navi.service.logicpaket.cruise.CruisePackage;
 import com.fy.navi.service.logicpaket.map.MapPackage;
 import com.fy.navi.service.logicpaket.navi.NaviPackage;
 import com.fy.navi.service.logicpaket.navistatus.NaviStatusPackage;
@@ -50,6 +49,7 @@ import com.fy.navi.vrbridge.IVrBridgeConstant;
 import com.fy.navi.vrbridge.MapStateManager;
 import com.fy.navi.vrbridge.VoiceConvertUtil;
 import com.fy.navi.vrbridge.bean.MapState;
+import com.fy.navi.vrbridge.bean.SingleCommandInfo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,9 +58,14 @@ import java.util.Objects;
 
 public class NaviControlCommandImpl implements NaviControlCommandListener {
 
-    /*---------------------------------------保存个性化道路上一轮找到的路线信息 start-----------------*/
-    private NaviExchangeEntity.NewRoute mNewRoute = null; //引导态返回的路线信息
-    /*---------------------------------------保存个性化道路上一轮找到的路线信息 end--------------------*/
+    //保存个性化道路上一轮找到的路线信息 start
+    private NaviExchangeEntity.NewRoute mNewRoute = null;
+    //保存下一轮指令的列表，需要在Map从未打开到底图加载完成后继续执行
+    private List<String> mCommandList = new ArrayList<>();
+    //保存下一轮指令对应的参数
+    private List<SingleCommandInfo> mCommandParamList = new ArrayList<>();
+
+
 
 
     /**
@@ -329,27 +334,7 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
     @Override
     public CallResponse onEDogModeToggle(final boolean open, final RespCallback respCallback) {
         Logger.d(IVrBridgeConstant.TAG, "onEDogModeToggle: open = " + open);
-        openMapWhenBackground();
-
-        final CallResponse response;
-        if (open) {
-            response = CallResponse.createNotSupportResponse("不支持直接打开巡航");
-        } else {
-            final boolean inCruise = MapStateManager.getInstance().inCruiseStatus();
-            if (inCruise) {
-                if (CruisePackage.getInstance().stopCruise()) {
-                    response = CallResponse.createSuccessResponse("巡航已关闭");
-                } else {
-                    response = CallResponse.createFailResponse("巡航关闭失败");
-                }
-            } else {
-                response = CallResponse.createNotSupportResponse("当前不处于巡航态");
-            }
-        }
-
-        response.setNeedPlayMessage(true);
-        respTts(response, respCallback);
-        return CallResponse.createSuccessResponse();
+        return CallResponse.createFailResponse("该功能暂不支持语音控制");
     }
 
     /**
@@ -933,7 +918,18 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
         switch (poiType) {
             case IVrBridgeConstant.DestType.POI_COLLECT:
                 // 收藏指定poi
-                return VoiceSearchManager.getInstance().searchPoiInfo(IVrBridgeConstant.VoiceSearchType.ADD_FAVORITE, poi, poiCallback);
+                final boolean saveCommand = openMapWhenBackground();
+                if (saveCommand) {
+                    mCommandList.add(IVrBridgeConstant.VoiceCommandAction.COLLECT_COMMON);
+                    final SingleCommandInfo singleCommandInfo = new SingleCommandInfo();
+                    singleCommandInfo.setPoiCallback(poiCallback);
+                    singleCommandInfo.setPoiName(poi);
+                    singleCommandInfo.setPoiType(poiType);
+                    mCommandParamList.add(singleCommandInfo);
+                    return CallResponse.createSuccessResponse();
+                } else {
+                    return VoiceSearchManager.getInstance().searchPoiInfo(IVrBridgeConstant.VoiceSearchType.ADD_FAVORITE, poi, poiCallback);
+                }
             case IVrBridgeConstant.DestType.HOME:
             case IVrBridgeConstant.DestType.COMPANY:
                 //设置家/公司地址
@@ -941,6 +937,7 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
                 return VoiceSearchManager.getInstance().setHomeCompany(sessionId, poiType, poi, poiCallback);
             case IVrBridgeConstant.DestType.NAVI_TO_HOME:
             case IVrBridgeConstant.DestType.NAVI_TO_COMPANY:
+                //导航回家/去公司，未设置地址
                 return VoiceSearchManager.getInstance().naviToHomeCompany(sessionId, poiType, poi, poiCallback);
             default:
                 return CallResponse.createFailResponse("不支持的设置类型");
@@ -1727,21 +1724,40 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
      */
     @Override
     public CallResponse onFavoriteOpen(final RespCallback respCallback) {
-        Logger.d(IVrBridgeConstant.TAG, "onFavoriteOpen:");
-        openMapWhenBackground();
         final boolean inNavigation = MapStateManager.getInstance().isNaviStatus();
+        final boolean saveCommand = openMapWhenBackground();
+        Logger.d(IVrBridgeConstant.TAG, "onFavoriteOpen, inNavigation:" + inNavigation + ", saveCommand:" + saveCommand);
+        final boolean success;
         if (inNavigation) {
-            return CallResponse.createFailResponse("导航中无法打开收藏地址");
+            success = false;
         } else {
-            final Bundle bundle = new Bundle();
-            bundle.putInt(IVrBridgeConstant.VoiceIntentParams.INTENT_PAGE, IVrBridgeConstant.VoiceIntentPage.FAVORITE_PAGE);
-            MapPackage.getInstance().voiceOpenHmiPage(MapType.MAIN_SCREEN_MAIN_MAP, bundle);
+            success = true;
+            if (saveCommand) {
+                mCommandList.add(IVrBridgeConstant.VoiceCommandAction.OPEN_FAVORITE);
+            } else {
+                openFavoritePage();
+            }
+        }
+
+        if (success) {
             final CallResponse callResponse = CallResponse.createSuccessResponse("已打开收藏地址");
             callResponse.setNeedPlayMessage(true);
             respTts(callResponse, respCallback);
             return CallResponse.createSuccessResponse();
+        } else {
+            return CallResponse.createFailResponse("导航中无法打开收藏地址");
         }
     }
+
+    /**
+     * 真正打开收藏夹.
+     */
+    private void openFavoritePage() {
+        final Bundle bundle = new Bundle();
+        bundle.putInt(IVrBridgeConstant.VoiceIntentParams.INTENT_PAGE, IVrBridgeConstant.VoiceIntentPage.FAVORITE_PAGE);
+        MapPackage.getInstance().voiceOpenHmiPage(MapType.MAIN_SCREEN_MAIN_MAP, bundle);
+    }
+
 
     /**
      * 打开导航搜索记录
@@ -1751,21 +1767,39 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
      */
     @Override
     public CallResponse onSearchListOpen(final RespCallback respCallback) {
-        Logger.d(IVrBridgeConstant.TAG, "onSearchListOpen:");
-        openMapWhenBackground();
 
         final boolean inNavigation = MapStateManager.getInstance().isNaviStatus();
+        final boolean saveCommand = openMapWhenBackground();
+        Logger.d(IVrBridgeConstant.TAG, "onSearchListOpen, inNavigation:" + inNavigation + ", saveCommand:" + saveCommand);
+        final boolean success;
         if (inNavigation) {
-            return CallResponse.createFailResponse("导航中无法打开历史记录");
+            success = false;
         } else {
-            final Bundle bundle = new Bundle();
-            bundle.putInt(IVrBridgeConstant.VoiceIntentParams.INTENT_PAGE, IVrBridgeConstant.VoiceIntentPage.SEARCH_HISTORY);
-            MapPackage.getInstance().voiceOpenHmiPage(MapType.MAIN_SCREEN_MAIN_MAP, bundle);
+            success = true;
+            if (saveCommand) {
+                mCommandList.add(IVrBridgeConstant.VoiceCommandAction.OPEN_HISTORY);
+            } else {
+                openHistoryPage();
+            }
+        }
+
+        if (success) {
             final CallResponse callResponse = CallResponse.createSuccessResponse("已打开历史记录");
             callResponse.setNeedPlayMessage(true);
             respTts(callResponse, respCallback);
             return CallResponse.createSuccessResponse();
+        } else {
+            return CallResponse.createFailResponse("导航中无法打开历史记录");
         }
+    }
+
+    /**
+     * 执行打开搜索导航历史记录页面.
+     */
+    private void openHistoryPage() {
+        final Bundle bundle = new Bundle();
+        bundle.putInt(IVrBridgeConstant.VoiceIntentParams.INTENT_PAGE, IVrBridgeConstant.VoiceIntentPage.SEARCH_HISTORY);
+        MapPackage.getInstance().voiceOpenHmiPage(MapType.MAIN_SCREEN_MAIN_MAP, bundle);
     }
 
     /**
@@ -1911,13 +1945,24 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
 
     /**
      * 当HMI处于后台，切换到前台
+     *
+     * @return  是否需要保存当前指令， true:保存，当底图加载完成再继续执行指令
+     *                             false:不保存，只执行打开应用操作
      */
-    private void openMapWhenBackground() {
-        final boolean foreground = NaviPackage.getInstance().getIsAppInForeground();
-        Logger.w(IVrBridgeConstant.TAG, "openMap foreground: " + foreground);
-        if (!foreground) {
+    private boolean openMapWhenBackground() {
+        final int foregroundStatus = NaviPackage.getInstance().getIsAppInForeground();
+        boolean saveCommand = false;
+        Logger.w(IVrBridgeConstant.TAG, "currentAppRunStatus: " + foregroundStatus);
+        if (AutoMapConstant.AppRunStatus.DESTROYED == foregroundStatus
+                || AutoMapConstant.AppRunStatus.PAUSED == foregroundStatus
+                || AutoMapConstant.AppRunStatus.STOPPED == foregroundStatus) {
             openMap();
+            if (AutoMapConstant.AppRunStatus.DESTROYED == foregroundStatus) {
+                saveCommand = true;
+            }
         }
+
+        return saveCommand;
     }
 
     /**
@@ -2044,7 +2089,7 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
     @Override
     public CallResponse onNaviTeamJoin(final String code, final RespCallback respCallback) {
         Logger.d(IVrBridgeConstant.TAG, "onNaviTeamJoin: code = " + code);
-        return CallResponse.createFailResponse("not support team function");
+        return CallResponse.createFailResponse("不支持组队相关功能");
     }
 
     /**
@@ -2096,6 +2141,37 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
     private void respTts(final CallResponse callResponse, final RespCallback respCallback) {
         if (null != respCallback) {
             respCallback.onResponse(callResponse);
+        }
+    }
+
+    /**
+     * 底图加载完成后执行之前保存的指令.
+     */
+    public void processNextCommand() {
+        if (null == mCommandList || mCommandList.isEmpty()) {
+            return;
+        }
+
+        final String nextCommand = mCommandList.remove(0);
+        switch (nextCommand) {
+            case IVrBridgeConstant.VoiceCommandAction.OPEN_FAVORITE:
+                openFavoritePage();
+                break;
+            case IVrBridgeConstant.VoiceCommandAction.OPEN_HISTORY:
+                openHistoryPage();
+                break;
+            case IVrBridgeConstant.VoiceCommandAction.COLLECT_COMMON:
+                if (null == mCommandParamList || mCommandParamList.isEmpty()) {
+                    return;
+                }
+                final SingleCommandInfo singleCommandInfo = mCommandParamList.remove(0);
+                if (null != singleCommandInfo) {
+                    VoiceSearchManager.getInstance().searchPoiInfo(IVrBridgeConstant.VoiceSearchType.ADD_FAVORITE,
+                            singleCommandInfo.getPoiName(), singleCommandInfo.getPoiCallback());
+                }
+                break;
+            default:
+                break;
         }
     }
 }

@@ -20,7 +20,9 @@ import com.fy.navi.scene.databinding.CollectResultItemBinding;
 import com.fy.navi.service.AutoMapConstant;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.define.bean.GeoPoint;
+import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.search.PoiInfoEntity;
+import com.fy.navi.service.logicpaket.route.RoutePackage;
 import com.fy.navi.service.logicpaket.search.SearchPackage;
 import com.fy.navi.service.logicpaket.setting.SettingUpdateObservable;
 import com.fy.navi.service.logicpaket.user.account.AccountPackage;
@@ -118,9 +120,15 @@ public class CollectResultAdapter extends RecyclerView.Adapter<CollectResultAdap
         holder.mResultItemBinding.itemFavoriteDistance.setVisibility(View.GONE);
         holder.mResultItemBinding.itemFavoriteLine.setVisibility(View.GONE);
         if (mSearchPackage.isAlongWaySearch()) {
-            holder.mResultItemBinding.textNavi.setText(R.string.st_along_way_point);
-            holder.mResultItemBinding.ivNaviIcon.setImageDrawable(ResourceUtils.Companion.getInstance()
-                    .getDrawable(R.drawable.img_addq_58));
+            if (RoutePackage.getInstance().isBelongRouteParam(MapType.MAIN_SCREEN_MAIN_MAP, mPoiEntities.get(position))) {
+                holder.mResultItemBinding.textNavi.setText(R.string.route_service_list_item_added);
+                holder.mResultItemBinding.ivNaviIcon.setImageDrawable(ResourceUtils.Companion.getInstance()
+                        .getDrawable(R.drawable.img_route_search_added));
+            } else {
+                holder.mResultItemBinding.textNavi.setText(R.string.st_along_way_point);
+                holder.mResultItemBinding.ivNaviIcon.setImageDrawable(ResourceUtils.Companion.getInstance()
+                        .getDrawable(R.drawable.img_addq_58));
+            }
 
         } else {
             holder.mResultItemBinding.textNavi.setText(R.string.st_go_here);
@@ -163,6 +171,7 @@ public class CollectResultAdapter extends RecyclerView.Adapter<CollectResultAdap
         holder.mResultItemBinding.poiToNavi.setOnClickListener(v -> {
             Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "poi click 算路/添加常用地址/添加收到的点");
             if (mOnItemClickListener != null) {
+                Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "poi click1 算路/添加常用地址/添加收到的点");
                 mOnItemClickListener.onNaviClick(position, mPoiEntities.get(position));
             }
         });

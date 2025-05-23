@@ -42,31 +42,31 @@
 
         <com.fy.navi.ui.view.SkinImageView
             android:id="@+id/route_detail_info_item_img"
-            android:layout_width="@dimen/dp_48"
-            android:layout_height="@dimen/dp_48"
+            android:layout_width="@dimen/dp_40"
+            android:layout_height="@dimen/dp_40"
             android:src="@drawable/img_tbt_exit_hud_sou2"
-            app:layout_constraintTop_toTopOf="@id/route_detail_info_item_img_bg"
-            app:layout_constraintBottom_toBottomOf="@id/route_detail_info_item_img_bg" />
+            app:layout_constraintBottom_toBottomOf="@id/route_detail_info_item_img_bg"
+            app:layout_constraintTop_toTopOf="@id/route_detail_info_item_img_bg" />
 
         <CheckBox
             android:id="@+id/route_detail_info_item_cbx"
-            android:layout_width="@dimen/dp_48"
-            android:layout_height="@dimen/dp_48"
+            android:layout_width="@dimen/dp_40"
+            android:layout_height="@dimen/dp_40"
             android:background="@drawable/route_details_selector"
             android:button="@null"
-            app:layout_constraintStart_toStartOf="@id/route_detail_info_item_img_bg"
+            app:layout_constraintBottom_toBottomOf="@id/route_detail_info_item_img_bg"
             app:layout_constraintEnd_toEndOf="@id/route_detail_info_item_img_bg"
-            app:layout_constraintTop_toTopOf="@id/route_detail_info_item_img_bg"
-            app:layout_constraintBottom_toBottomOf="@id/route_detail_info_item_img_bg" />
+            app:layout_constraintStart_toStartOf="@id/route_detail_info_item_img_bg"
+            app:layout_constraintTop_toTopOf="@id/route_detail_info_item_img_bg" />
 
         <com.fy.navi.ui.view.SkinTextView
             android:id="@+id/route_detail_info_item_road_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_18"
             android:layout_marginStart="@dimen/dp_29"
+            android:layout_marginTop="@dimen/dp_18"
             android:textColor="@color/floating_search_item_night"
-            android:textSize="@dimen/sp_34"
+            android:textSize="@dimen/sp_29"
             android:textStyle="bold"
             app:layout_constraintStart_toEndOf="@id/route_detail_info_item_img_bg"
             app:layout_constraintTop_toTopOf="@+id/item_root_view"
@@ -76,22 +76,22 @@
             android:id="@+id/route_detail_info_item_description"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/text_color_route_item_no_select"
-            android:textSize="@dimen/sp_30"
-            android:layout_marginBottom="@dimen/dp_18"
             android:layout_marginStart="@dimen/dp_29"
+            android:layout_marginBottom="@dimen/dp_18"
+            android:textColor="@color/text_color_route_item_no_select"
+            android:textSize="@dimen/sp_26"
             app:layout_constraintBottom_toBottomOf="@+id/item_root_view"
             app:layout_constraintStart_toEndOf="@id/route_detail_info_item_img_bg"
             tools:text="42米 红绿灯1个" />
 
         <com.fy.navi.ui.view.SkinImageView
             android:id="@+id/route_detail_info_item_img_updown"
-            android:layout_width="@dimen/dp_58"
-            android:layout_height="@dimen/dp_58"
+            android:layout_width="@dimen/dp_49"
+            android:layout_height="@dimen/dp_49"
             android:src="@drawable/img_route_down"
+            app:layout_constraintBottom_toBottomOf="@id/route_detail_info_item_img_bg"
             app:layout_constraintEnd_toEndOf="@+id/item_root_view"
-            app:layout_constraintTop_toTopOf="@id/route_detail_info_item_img_bg"
-            app:layout_constraintBottom_toBottomOf="@id/route_detail_info_item_img_bg" />
+            app:layout_constraintTop_toTopOf="@id/route_detail_info_item_img_bg" />
 
         <com.fy.navi.ui.view.SkinRecyclerView
             android:id="@+id/route_detail_info_item_recyclerView"

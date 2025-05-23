@@ -9,34 +9,34 @@
     </data>
 
     <com.fy.navi.ui.view.SkinLinearLayout
-        android:layout_width="@dimen/dp_698"
-        android:layout_height="match_parent"
-        android:padding="@dimen/dp_29"
-        android:background="@drawable/bg_shadow_navi_buick"
+        android:layout_width="@dimen/dp_922"
+        android:layout_height="@dimen/dp_1102"
+        android:padding="@dimen/dp_51"
+        android:background="@drawable/bg_shadow_navi_cadillac"
         android:orientation="vertical">
 
         <com.fy.navi.ui.view.SkinConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_104">
+            android:layout_height="@dimen/dp_140">
 
             <com.fy.navi.ui.view.SkinTextView
                 android:gravity="center_vertical"
                 android:id="@+id/sk_tv_terminal_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_30"
+                android:layout_marginStart="@dimen/dp_40"
                 android:text="建议提前选择以下到达点"
                 android:textColor="@color/search_color_ffffff"
-                android:textSize="@dimen/sp_38"
+                android:textSize="@dimen/sp_52"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <com.fy.navi.ui.view.SkinImageView
                 android:id="@+id/sk_iv_terminal_close"
-                android:layout_width="@dimen/dp_58"
-                android:layout_height="@dimen/dp_58"
-                android:layout_marginEnd="@dimen/dp_20"
+                android:layout_width="@dimen/dp_74"
+                android:layout_height="@dimen/dp_74"
+                android:layout_marginEnd="@dimen/dp_24"
                 android:src="@drawable/icon_poi_details_close"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -48,7 +48,7 @@
             android:id="@+id/recycler_search_result"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginBottom="@dimen/dp_24"/>
+            android:layout_marginBottom="@dimen/dp_32"/>
 
     </com.fy.navi.ui.view.SkinLinearLayout>
 

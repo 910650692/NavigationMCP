@@ -138,7 +138,7 @@ public interface GuidanceObserver extends BaseNaviObserver {
      * 透出电动车ETA信息，仅在线支持。一分钟回调一次
      * @param infos infos
      */
-    default void onUpdateElecVehicleETAInfo(List<FyElecVehicleETAInfo> infos) {
+    default void onUpdateElectVehicleETAInfo(List<FyElecVehicleETAInfo> infos) {
     }
 
     /**
@@ -192,13 +192,6 @@ public interface GuidanceObserver extends BaseNaviObserver {
      * @param viaIndex
      */
     default void onUpdateChargeStationPass(final long viaIndex){
-    }
-
-    /***
-     * eta透出信息
-     * @param desObj
-     */
-    default void onUpdateElectVehicleETAInfo(final List<FyElecVehicleETAInfo> desObj) {
     }
 
     /***

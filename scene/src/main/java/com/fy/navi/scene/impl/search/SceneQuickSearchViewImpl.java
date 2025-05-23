@@ -9,8 +9,12 @@ import com.fy.navi.scene.ui.search.SceneQuickSearchView;
 import com.fy.navi.service.AutoMapConstant;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.adapter.navi.NaviConstant;
+import com.fy.navi.service.define.search.PoiInfoEntity;
+import com.fy.navi.service.define.search.SearchResultEntity;
 import com.fy.navi.service.logicpaket.search.SearchPackage;
 import com.fy.navi.ui.base.StackManager;
+
+import java.util.ArrayList;
 
 /**
  * @author baipeng0904
@@ -49,5 +53,14 @@ public class SceneQuickSearchViewImpl extends BaseSceneModel<SceneQuickSearchVie
     public void suggestionSearch(final String key) {
         Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "suggestionSearch  key:" + key);
         mSearchPackage.suggestionSearch(key);
+    }
+
+    public void createPoiMarker(PoiInfoEntity poiInfo){
+        mSearchPackage.clearLabelMark();
+        ArrayList<PoiInfoEntity> arrayList = new ArrayList<>();
+        arrayList.add(poiInfo);
+        SearchResultEntity searchResultEntity = new SearchResultEntity().setPoiList(arrayList);
+        Logger.d("huangli","createLabelMarker: ");
+        mSearchPackage.createLabelMarker(searchResultEntity);
     }
 }

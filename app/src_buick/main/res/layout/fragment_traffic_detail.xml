@@ -208,7 +208,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:visibility="@{(ViewModel.uiState == TrafficEventUiState.SUCCESS) ? View.VISIBLE: View.GONE}"
-            app:constraint_referenced_ids="tv_decrease,tv_desc,tv_distance,tv_distance_content,tv_increase,tv_time,tv_title,tv_type,iv_icon,iv_pic" />
+            app:constraint_referenced_ids="tv_decrease,tv_desc,tv_distance,tv_distance_content,tv_increase,tv_time,tv_type,iv_icon,iv_pic" />
 
         <include
             android:id="@+id/loading_layout"

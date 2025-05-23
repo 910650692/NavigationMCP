@@ -133,8 +133,8 @@
             app:maxHeight="@dimen/dp_420"
             android:layout_marginTop="@dimen/dp_30"
             android:layout_marginBottom="@dimen/dp_26"
-            app:layout_constraintEnd_toEndOf="@+id/end_guideline"
-            app:layout_constraintStart_toStartOf="@+id/start_guideline"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/sk_poi_name"
             app:layout_constraintBottom_toTopOf="@+id/scene_poi_details_bottom_view">
 
@@ -142,6 +142,7 @@
                 android:id="@+id/poi_base_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:paddingHorizontal="@dimen/dp_40"
                 >
 
                 <com.fy.navi.ui.view.SkinTextView

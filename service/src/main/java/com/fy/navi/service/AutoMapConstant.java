@@ -365,4 +365,14 @@ public interface AutoMapConstant {
         String SD_ORDER_ID = "sd_order_id";
         String HQ_ORDER_ID = "hq_order_id";
     }
+
+    @interface AppRunStatus {
+        int DESTROYED = 0;
+        int CREATED = 1;
+        int STARTED = 2;
+        int RESUMED = 3;
+        int PAUSED = 4;
+        int STOPPED = 5;
+    }
+
 }
