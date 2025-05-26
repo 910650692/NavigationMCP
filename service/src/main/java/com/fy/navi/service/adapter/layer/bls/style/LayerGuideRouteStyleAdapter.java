@@ -158,6 +158,10 @@ public class LayerGuideRouteStyleAdapter extends BaseStyleAdapter {
                     return super.provideLayerItemStyleJson(item);
                 }
             }
+            case BizRouteType.BizRouteTypeGuideLabel -> {
+                Logger.i(TAG, "多备选路线标签 BizRouteTypeGuideLabel");
+                return super.provideLayerItemStyleJson(item);
+            }
         }
         return super.provideLayerItemStyleJson(item);
     }
@@ -295,23 +299,33 @@ public class LayerGuideRouteStyleAdapter extends BaseStyleAdapter {
                     Logger.d(TAG, "替换补能充电站扎标 index " + index);
                     positionView.setText(String.valueOf(index + 1));
                     RouteAlterChargeStationInfo info = data.getInfo();
-                    String fastNumber = info.getMFastPlugInfo().getMTotalNumber();
-                    String slowNumber = info.getMSlowPlugInfo().getMTotalNumber();
-                    String priceValue = info.getMPriceInfo().getMLowestPriceValue();
-                    String priceUnit = info.getMPriceInfo().getMLowestPriceUnit();
-                    if (!ConvertUtils.isEmpty(fastNumber)) {
-                        String fastString = context.getString(R.string.layer_route_replace_charge_fast, fastNumber);
-                        fastTextView.setText(fastString);
-                        fastVisible = true;
+                    if (ConvertUtils.isEmpty(info)) {
+                        Logger.e(TAG, "替换补能充电站扎标 info == null");
+                        return;
                     }
-                    if (!ConvertUtils.isEmpty(slowNumber)) {
-                        String slowString = context.getString(R.string.layer_route_replace_charge_slow, slowNumber);
-                        slowTextView.setText(slowString);
-                        slowVisible = true;
+                    if (!ConvertUtils.isEmpty(info.getMFastPlugInfo())) {
+                        String fastNumber = info.getMFastPlugInfo().getMTotalNumber();
+                        if (!ConvertUtils.isEmpty(fastNumber)) {
+                            String fastString = context.getString(R.string.layer_route_replace_charge_fast, fastNumber);
+                            fastTextView.setText(fastString);
+                            fastVisible = true;
+                        }
                     }
-                    if (!ConvertUtils.isEmpty(priceValue) && !ConvertUtils.isEmpty(priceUnit)) {
-                        priceTextView.setText(context.getString(R.string.layer_route_replace_charge_price, priceValue, priceUnit));
-                        priceVisible = true;
+                    if (!ConvertUtils.isEmpty(info.getMSlowPlugInfo())) {
+                        String slowNumber = info.getMSlowPlugInfo().getMTotalNumber();
+                        if (!ConvertUtils.isEmpty(slowNumber)) {
+                            String slowString = context.getString(R.string.layer_route_replace_charge_slow, slowNumber);
+                            slowTextView.setText(slowString);
+                            slowVisible = true;
+                        }
+                    }
+                    if (!ConvertUtils.isEmpty(info.getMPriceInfo())) {
+                        String priceValue = info.getMPriceInfo().getMLowestPriceValue();
+                        String priceUnit = info.getMPriceInfo().getMLowestPriceUnit();
+                        if (!ConvertUtils.isEmpty(priceValue) && !ConvertUtils.isEmpty(priceUnit)) {
+                            priceTextView.setText(context.getString(R.string.layer_route_replace_charge_price, priceValue, priceUnit));
+                            priceVisible = true;
+                        }
                     }
                     if (fastVisible || slowVisible || priceVisible) {
                         wholeLinearLayout.setVisibility(VISIBLE);

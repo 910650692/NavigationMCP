@@ -95,6 +95,11 @@ public class LayerAdapter {
         mLayerApi.updateRouteEndPoint(mapTypeId, endPoint);
     }
 
+    /*清除指定路线类型扎标*/
+    public void clearRouteItemByType(MapType mapTypeId, LayerPointItemType type) {
+        mLayerApi.clearRouteItemByType(mapTypeId, type);
+    }
+
     /* 更新Odd信息 */
     public void updateOddInfo(MapType mapTypeId, ArrayList<LayerItemRouteOdd> oddInfoList, long pathId) {
         mLayerApi.updateOddInfo(mapTypeId, oddInfoList, pathId);

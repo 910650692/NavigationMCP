@@ -1,7 +1,11 @@
 package com.fy.navi.service.adapter.layer.bls.style;
 
+import com.android.utils.log.Logger;
 import com.autonavi.gbl.layer.observer.PrepareLayerParamInner;
+import com.autonavi.gbl.map.layer.BaseLayer;
 import com.autonavi.gbl.map.layer.LayerItem;
+import com.autonavi.gbl.map.layer.model.CustomTextureParam;
+import com.autonavi.gbl.map.layer.model.ItemStyleInfo;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.define.layer.refix.LayerItemData;
 
@@ -25,6 +29,7 @@ public class BaseStyleAdapter extends PrepareLayerParamInner {
 
     /**
      * 是否需要重新组织json字符串
+     *
      * @param item
      * @return
      */
@@ -62,4 +67,10 @@ public class BaseStyleAdapter extends PrepareLayerParamInner {
         return null;
     }
 
+    @Override
+    public boolean updateCardContent(BaseLayer layer, LayerItem item, ItemStyleInfo styleInfo, CustomTextureParam customTextureParam) {
+        boolean result = super.updateCardContent(layer, item, styleInfo, customTextureParam);
+        Logger.e(TAG, getClass().getSimpleName() + " 图层 :" + layer.getName() + " ;图元业务类型 :" + item.getBusinessType() + " ; 图元 ：" + item.getItemType() + " ; 是否可见 :" + item.getVisible() + ";result =" + result);
+        return result;
+    }
 }

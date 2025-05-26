@@ -79,7 +79,7 @@
                     android:id="@+id/stv_refresh"
                     style="@style/style_navi_control_tv_com"
                     android:text="@string/navi_refresh"
-                    android:textSize="@dimen/sp_26"
+                    android:textSize="@dimen/sp_25"
                     app:layout_constraintEnd_toEndOf="@id/sv_refresh"
                     app:layout_constraintStart_toStartOf="@id/sv_refresh"
                     app:layout_constraintTop_toBottomOf="@id/siv_refresh" />
@@ -112,7 +112,7 @@
                     android:id="@+id/stv_broadcast"
                     style="@style/style_navi_control_tv_com"
                     android:text="@string/navi_broadcast_minimalism"
-                    android:textSize="@dimen/sp_26"
+                    android:textSize="@dimen/sp_25"
                     app:layout_constraintEnd_toEndOf="@id/sv_broadcast"
                     app:layout_constraintStart_toStartOf="@id/sv_broadcast"
                     app:layout_constraintTop_toBottomOf="@id/siv_broadcast" />
@@ -144,7 +144,7 @@
                     android:id="@+id/stv_preference"
                     style="@style/style_navi_control_tv_com"
                     android:text="@string/route_preference"
-                    android:textSize="@dimen/sp_26"
+                    android:textSize="@dimen/sp_25"
                     app:layout_constraintEnd_toEndOf="@id/sv_preference"
                     app:layout_constraintStart_toStartOf="@id/sv_preference"
                     app:layout_constraintTop_toBottomOf="@id/siv_preference" />
@@ -176,7 +176,7 @@
                     android:id="@+id/stv_car_head"
                     style="@style/style_navi_control_tv_com"
                     android:text="@string/navi_up_2d"
-                    android:textSize="@dimen/sp_26"
+                    android:textSize="@dimen/sp_25"
                     app:layout_constraintEnd_toEndOf="@id/sv_car_head"
                     app:layout_constraintStart_toStartOf="@id/sv_car_head"
                     app:layout_constraintTop_toBottomOf="@id/siv_car_head" />
@@ -208,7 +208,7 @@
                     android:id="@+id/stv_navi_setting"
                     style="@style/style_navi_control_tv_com"
                     android:text="@string/navi_setting"
-                    android:textSize="@dimen/sp_26"
+                    android:textSize="@dimen/sp_25"
                     app:layout_constraintEnd_toEndOf="@id/sv_navi_setting"
                     app:layout_constraintStart_toStartOf="@id/sv_navi_setting"
                     app:layout_constraintTop_toBottomOf="@id/siv_navi_setting" />
@@ -242,7 +242,7 @@
                     android:id="@+id/stv_oil"
                     style="@style/style_navi_control_tv_com"
                     android:text="@string/st_quick_search_station"
-                    android:textSize="@dimen/sp_26"
+                    android:textSize="@dimen/sp_25"
                     app:layout_constraintEnd_toEndOf="@id/sv_oil"
                     app:layout_constraintStart_toStartOf="@id/sv_oil"
                     app:layout_constraintTop_toBottomOf="@id/siv_oil" />
@@ -275,7 +275,7 @@
                     android:id="@+id/stv_charge"
                     style="@style/style_navi_control_tv_com"
                     android:text="@string/st_quick_search_charge"
-                    android:textSize="@dimen/sp_26"
+                    android:textSize="@dimen/sp_25"
                     app:layout_constraintEnd_toEndOf="@id/sv_charge"
                     app:layout_constraintStart_toStartOf="@id/sv_charge"
                     app:layout_constraintTop_toBottomOf="@id/siv_charge" />
@@ -307,7 +307,7 @@
                     android:id="@+id/stv_lavatory"
                     style="@style/style_navi_control_tv_com"
                     android:text="@string/st_quick_search_lavatory"
-                    android:textSize="@dimen/sp_26"
+                    android:textSize="@dimen/sp_25"
                     app:layout_constraintEnd_toEndOf="@id/sv_lavatory"
                     app:layout_constraintStart_toStartOf="@id/sv_lavatory"
                     app:layout_constraintTop_toBottomOf="@id/siv_lavatory" />
@@ -339,7 +339,7 @@
                     android:id="@+id/stv_service"
                     style="@style/style_navi_control_tv_com"
                     android:text="@string/navi_along_parking"
-                    android:textSize="@dimen/sp_26"
+                    android:textSize="@dimen/sp_25"
                     app:layout_constraintEnd_toEndOf="@id/sv_service"
                     app:layout_constraintStart_toStartOf="@id/sv_service"
                     app:layout_constraintTop_toBottomOf="@id/siv_service" />
@@ -371,7 +371,7 @@
                     android:id="@+id/stv_along_search"
                     style="@style/style_navi_control_tv_com"
                     android:text="@string/navi_along_search"
-                    android:textSize="@dimen/sp_26"
+                    android:textSize="@dimen/sp_25"
                     app:layout_constraintEnd_toEndOf="@id/sv_along_search"
                     app:layout_constraintStart_toStartOf="@id/sv_along_search"
                     app:layout_constraintTop_toBottomOf="@id/siv_along_search" />

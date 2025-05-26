@@ -36,6 +36,7 @@ import com.fy.navi.service.define.search.ConnectorInfoItem;
 import com.fy.navi.service.define.search.EquipmentInfo;
 import com.fy.navi.service.define.search.PoiInfoEntity;
 import com.fy.navi.service.define.search.ReservationInfo;
+import com.fy.navi.service.logicpaket.user.account.AccountPackage;
 import com.fy.navi.ui.dialog.IBaseDialogClickListener;
 
 import java.sql.Time;
@@ -134,10 +135,7 @@ public class ScenePoiChargingStationReservationListView extends BaseSceneView<Sc
                 new ChargeStationConfirmDialog.Build(getContext()).setDialogObserver(new IBaseDialogClickListener() {
                     @Override
                     public void onCommitClick() {
-                        if(mCancelNumber >= MAX_CANCEL){
-                            return;
-                        }
-//                        mScreenViewModel.cancelReservation(mReservationInfo,(Activity) getContext());
+                        mScreenViewModel.queryReservation(mPoiInfoEntity,(Activity) getContext(),1);
                     }
                 })
                 .setTitle(getContext().getString(R.string.cancel_num_tip,mCancelNumber.toString()))
@@ -163,7 +161,7 @@ public class ScenePoiChargingStationReservationListView extends BaseSceneView<Sc
         mEquipmentList = poiInfoEntity.getChargeInfoList().get(0).getEquipmentInfo();
         ArrayList<EquipmentInfo> filterEquipmentInfo = filterEquipmentList(type);
         mAdapter.notifyList(filterEquipmentInfo);
-        mScreenViewModel.queryReservation(mPoiInfoEntity,(Activity) getContext());
+        mScreenViewModel.queryReservation(mPoiInfoEntity,(Activity) getContext(),3);
     }
 
     // 关闭当前页面
@@ -191,8 +189,24 @@ public class ScenePoiChargingStationReservationListView extends BaseSceneView<Sc
         mScreenViewModel.queryEquipmentInfo(mCurrentEquipmentInfo,mPoiInfoEntity);
     }
 
+    public void notifyCancelSuccess(){
+        mScreenViewModel.queryEquipmentInfo(mCurrentEquipmentInfo,mPoiInfoEntity);
+    }
+
     public void notifyCancelReservation(ArrayList<ReservationInfo> list){
         mCancelNumber = list.size();
+    }
+
+    public void notifyReadyReservation(ArrayList<ReservationInfo> list){
+        if(!ConvertUtils.isEmpty(list)){
+            String id = AccountPackage.getInstance().getUserId();
+            for (int i = 0; i < list.size(); i++) {
+                if(id.equals(list.get(i).getmUserId()) && 1 == list.get(i).getmStatus()){
+                    Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"Cancel Pre");
+                    mScreenViewModel.cancelReservation(list.get(i),(Activity) getContext());
+                }
+            }
+        }
     }
 
     private ArrayList<EquipmentInfo> filterEquipmentList(int type){

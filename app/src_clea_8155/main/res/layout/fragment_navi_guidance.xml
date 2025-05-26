@@ -49,7 +49,7 @@
                 <com.fy.navi.scene.ui.navi.SceneNaviCrossImageView
                     android:id="@+id/scene_navi_cross_image"
                     android:layout_width="@dimen/dp_545"
-                    android:layout_height="@dimen/dp_306"
+                    android:layout_height="@dimen/dp_334"
                     android:visibility="@{ViewModel.mNaviCrossImageVisibility?View.VISIBLE:View.GONE}"
                     app:layout_constraintStart_toStartOf="@id/scene_navi_tbt"
                     app:layout_constraintTop_toBottomOf="@id/scene_navi_tbt"
@@ -76,16 +76,6 @@
                     android:visibility="@{ViewModel.mNaviTmcVisibility?View.VISIBLE:View.GONE}"
                     app:layout_constraintStart_toStartOf="@id/scene_navi_tbt"
                     app:layout_constraintTop_toBottomOf="@id/scene_navi_eta" />
-                <!--添加途径点列表-->
-                <com.fy.navi.scene.ui.navi.SceneNaviViaListView
-                    android:id="@+id/scene_navi_via_list"
-                    android:layout_width="@dimen/dp_545"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/bg_navi_tbt_bottom"
-                    android:paddingTop="@dimen/dp_40"
-                    android:visibility="@{ViewModel.mNaviViaListVisibility?View.VISIBLE:View.GONE}"
-                    app:layout_constraintStart_toStartOf="@id/scene_navi_tbt"
-                    app:layout_constraintTop_toBottomOf="@id/scene_navi_tmc" />
                 <!--车道线-->
                 <com.fy.navi.scene.ui.navi.SceneNaviLanesView
                     android:id="@+id/scene_navi_lanes"
@@ -97,7 +87,7 @@
                     android:paddingBottom="@dimen/dp_30"
                     android:visibility="@{ViewModel.mNaviLanesVisibility?View.VISIBLE:View.GONE}"
                     app:layout_constraintStart_toStartOf="@id/scene_navi_tbt"
-                    app:layout_constraintTop_toBottomOf="@id/scene_navi_via_list" />
+                    app:layout_constraintTop_toBottomOf="@id/scene_navi_tmc" />
                 <!--显示经过途经点信息-->
                 <com.fy.navi.scene.ui.navi.SceneNaviViaInfoView
                     android:id="@+id/scene_navi_via_info"
@@ -107,8 +97,17 @@
                     android:background="@drawable/bg_navi_tbt_bottom"
                     android:visibility="@{ViewModel.mNaviViaInfoVisibility?View.VISIBLE:View.GONE}"
                     app:layout_constraintStart_toStartOf="@id/scene_navi_tbt"
-                    app:layout_constraintTop_toBottomOf="@id/scene_navi_lanes" />
-
+                    app:layout_constraintTop_toBottomOf="@id/scene_navi_tbt" />
+                <!--添加途径点列表-->
+                <com.fy.navi.scene.ui.navi.SceneNaviViaListView
+                    android:id="@+id/scene_navi_via_list"
+                    android:layout_width="@dimen/dp_545"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_navi_tbt_bottom"
+                    android:paddingTop="@dimen/dp_40"
+                    android:visibility="@{ViewModel.mNaviViaListVisibility?View.VISIBLE:View.GONE}"
+                    app:layout_constraintStart_toStartOf="@id/scene_navi_tbt"
+                    app:layout_constraintTop_toBottomOf="@id/scene_navi_tbt" />
             </com.fy.navi.ui.view.SkinConstraintLayout>
 
             <androidx.constraintlayout.widget.Barrier
@@ -165,6 +164,7 @@
                 android:id="@+id/scene_navi_preference"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/dp_80"
                 android:visibility="@{ViewModel.mNaviPreferenceVisibility?View.VISIBLE:View.GONE}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />

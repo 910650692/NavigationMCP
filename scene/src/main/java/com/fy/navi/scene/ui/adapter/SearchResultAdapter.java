@@ -50,6 +50,7 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
     private final RoutePackage mRoutePackage;
     private PoiInfoEntity mPoiInfoEntity;
     private int mHomeCompanyType = -1;// 1:家 2:公司 3:常用地址 0:收藏夹 -1:都不是
+    private boolean mIsEnd = false;
     private final int mSpanCount = 2;
     private final int mSpacing = 16;
     private final int mHorizontalSpacing = 16;
@@ -68,6 +69,10 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
 
     public void setHomeCompanyType(final int homeCompanyType) {
         this.mHomeCompanyType = homeCompanyType;
+    }
+
+    public void setIsEnd(final boolean isEnd) {
+        this.mIsEnd = isEnd;
     }
 
     public SearchResultAdapter() {
@@ -156,7 +161,7 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
                     getMContext().getResources().getColor(R.color.navi_color_006CFF_100),
                     mPoiEntities.get(position).getName(), mSearchResultEntity.getKeyword()));
         }
-        if (mSearchPackage.isAlongWaySearch()) {
+        if (mSearchPackage.isAlongWaySearch() && !mIsEnd) {
             holder.mResultItemBinding.textNavi.setText(R.string.st_along_way_point);
             holder.mResultItemBinding.ivNaviIcon.setImageDrawable(
                     ResourceUtils.Companion.getInstance().getDrawable(R.drawable.img_basic_ic_add));

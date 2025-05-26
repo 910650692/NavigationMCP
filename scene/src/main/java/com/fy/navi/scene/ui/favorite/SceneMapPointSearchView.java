@@ -259,7 +259,7 @@ public class SceneMapPointSearchView extends BaseSceneView<SceneMapPointSearchVi
             mPoiInfoEntity.setFavoriteInfo(favoriteInfo);
             if (ConvertUtils.isEmpty(mPoiInfoEntity.getPid())) {
                 //逆地理搜索出的点无poiId，需自己拼接
-                mPoiInfoEntity.setPid(mPoiInfoEntity.getPoint().getLon() + ""
+                mPoiInfoEntity.setPid(mPoiInfoEntity.getPoint().getLon() + "_"
                         + mPoiInfoEntity.getPoint().getLat());
             }
             BehaviorPackage.getInstance().addFavorite(mPoiInfoEntity, mCommonName);

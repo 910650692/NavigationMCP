@@ -31,49 +31,49 @@
                 android:id="@+id/siv_only_service_service_gas_station"
                 android:layout_width="@dimen/dp_36"
                 android:layout_height="@dimen/dp_36"
-                android:background="@drawable/img_refuel_42"
+                android:background="@drawable/img_refuel_42_sw1225"
                 android:visibility="@{naviSapa.mOnlyServiceGasStationVisible ? View.VISIBLE : View.GONE}" />
 
             <com.fy.navi.ui.view.SkinImageView
                 android:id="@+id/siv_only_service_service_charge_station"
                 android:layout_width="@dimen/dp_36"
                 android:layout_height="@dimen/dp_36"
-                android:background="@drawable/img_lightning_42"
+                android:background="@drawable/img_lightning_42_sw1225"
                 android:visibility="@{naviSapa.mOnlyServiceChargeStationVisible ? View.VISIBLE : View.GONE}" />
 
             <com.fy.navi.ui.view.SkinImageView
                 android:id="@+id/siv_only_service_service_canteen"
                 android:layout_width="@dimen/dp_36"
                 android:layout_height="@dimen/dp_36"
-                android:background="@drawable/img_gourmet_42"
+                android:background="@drawable/img_gourmet_42_sw1225"
                 android:visibility="@{naviSapa.mOnlyServiceCanteenVisible ? View.VISIBLE : View.GONE}" />
 
             <com.fy.navi.ui.view.SkinImageView
                 android:id="@+id/siv_only_toll_service_lavatory"
                 android:layout_width="@dimen/dp_36"
                 android:layout_height="@dimen/dp_36"
-                android:background="@drawable/img_lavatory_42"
+                android:background="@drawable/img_lavatory_42_sw1225"
                 android:visibility="@{naviSapa.mOnlyServiceLavatoryVisible ? View.VISIBLE : View.GONE}" />
 
             <com.fy.navi.ui.view.SkinImageView
                 android:id="@+id/siv_only_service_service_maintenance"
                 android:layout_width="@dimen/dp_36"
                 android:layout_height="@dimen/dp_36"
-                android:background="@drawable/img_maintenance_white_42"
+                android:background="@drawable/img_maintenance_white_42_sw1225"
                 android:visibility="@{naviSapa.mOnlyServiceMaintenanceVisible ? View.VISIBLE : View.GONE}" />
 
             <com.fy.navi.ui.view.SkinImageView
                 android:id="@+id/siv_only_service_service_buy"
                 android:layout_width="@dimen/dp_36"
                 android:layout_height="@dimen/dp_36"
-                android:background="@drawable/img_buy_42"
+                android:background="@drawable/img_buy_42_sw1225"
                 android:visibility="@{naviSapa.mOnlyServiceBuyVisible ? View.VISIBLE : View.GONE}" />
 
             <com.fy.navi.ui.view.SkinImageView
                 android:id="@+id/siv_only_service_service_hotel"
                 android:layout_width="@dimen/dp_36"
                 android:layout_height="@dimen/dp_36"
-                android:background="@drawable/img_groggery_42"
+                android:background="@drawable/img_groggery_42_sw1225"
                 android:visibility="@{naviSapa.mOnlyServiceHotelVisible ? View.VISIBLE : View.GONE}" />
 
 
@@ -88,7 +88,7 @@
             android:maxWidth="@dimen/dp_400"
             android:maxLines="1"
             android:text="@{naviSapa.mOnlyServiceName}"
-            android:textColor="@color/navi_color_FFFFFF_100"
+            android:textColor="@color/navi_color_FFFFFF_80"
             android:textSize="@dimen/sp_26"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="@+id/sll_only_service_services"
@@ -156,7 +156,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_123"
                 android:text="@string/quick_charge"
-                android:textColor="@color/navi_color_FFFFFF_100"
+                android:textColor="@color/navi_color_FFFFFF_80"
                 android:textSize="@dimen/sp_26"
                 app:layout_constraintBottom_toBottomOf="@+id/stv_only_service_distance_ev"
                 app:layout_constraintStart_toEndOf="@+id/stv_only_service_distance_ev"
@@ -168,7 +168,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_8"
                 android:text="@{naviSapa.mOnlyServiceFastFree}"
-                android:textColor="@color/navi_color_FFFFFF_100"
+                android:textColor="@color/navi_color_FFFFFF_80"
                 android:textSize="@dimen/sp_26"
                 app:layout_constraintBottom_toBottomOf="@+id/stv_first_service_quick_text"
                 app:layout_constraintStart_toEndOf="@+id/stv_first_service_quick_text"
@@ -193,7 +193,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_8"
                 android:text="@{naviSapa.mOnlyServiceSlowFree}"
-                android:textColor="@color/navi_color_FFFFFF_100"
+                android:textColor="@color/navi_color_FFFFFF_80"
                 android:textSize="@dimen/sp_26"
                 app:layout_constraintBottom_toBottomOf="@+id/stv_first_service_slow_text"
                 app:layout_constraintStart_toEndOf="@+id/stv_first_service_slow_text"

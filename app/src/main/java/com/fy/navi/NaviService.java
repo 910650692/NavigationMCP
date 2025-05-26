@@ -117,6 +117,7 @@ public class NaviService extends Service {
         @NonNull
         @Override
         public Result doWork() {
+            Logger.d(TAG, "FsaInitWorker doWork");
             MyFsaService.getInstance().init();
             AdasClient.getInstance().start(AppContext.getInstance().getMContext());
             ClsLinkManager.getInstance().init();

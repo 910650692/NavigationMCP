@@ -27,7 +27,6 @@ import com.fy.navi.service.adapter.navistatus.NavistatusAdapter;
 import com.fy.navi.service.define.map.IBaseScreenMapView;
 import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.navistatus.NaviStatus;
-import com.fy.navi.service.logicpaket.navi.OpenApiHelper;
 import com.fy.navi.service.logicpaket.navistatus.NaviStatusPackage;
 import com.fy.navi.ui.base.BaseActivity;
 
@@ -76,7 +75,7 @@ public class ClusterActivity extends BaseActivity<ActivityClusterBinding, Cluste
         //toast提示（MsgType: 3s Timeout +Anykey):
         if (NavistatusAdapter.getInstance().getCurrentNaviStatus().equals(NaviStatus.NaviStatusType.NAVING)){
             //导航态下，仪表切换为地图模式后，中控地图导航模式切换为“路线全览模式。
-            OpenApiHelper.enterPreview(MapType.MAIN_SCREEN_MAIN_MAP);
+            //OpenApiHelper.enterPreview(MapType.MAIN_SCREEN_MAIN_MAP);
             ThreadManager.getInstance().postUi(() ->
                     ToastUtils.Companion.getInstance().showCustomToastView(ResourceUtils.Companion.getInstance().getString(com.fy.navi.fsa.R.string.open_cluster_map_toast),  3000));
         }
@@ -107,7 +106,7 @@ public class ClusterActivity extends BaseActivity<ActivityClusterBinding, Cluste
         super.onStop();
         //导航态下，仪表切换为地图模式后，中控地图导航模式切换为“路线全览模式。
         if (NavistatusAdapter.getInstance().getCurrentNaviStatus().equals(NaviStatus.NaviStatusType.NAVING)){
-            OpenApiHelper.exitPreview(MapType.MAIN_SCREEN_MAIN_MAP);
+            //OpenApiHelper.exitPreview(MapType.MAIN_SCREEN_MAIN_MAP);
         }
     }
 

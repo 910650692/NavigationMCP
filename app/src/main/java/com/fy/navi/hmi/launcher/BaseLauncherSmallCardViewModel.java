@@ -1,5 +1,6 @@
 package com.fy.navi.hmi.launcher;
 
+import android.app.ActivityOptions;
 import android.app.Application;
 import android.content.Intent;
 import android.os.Bundle;
@@ -104,20 +105,7 @@ public class BaseLauncherSmallCardViewModel extends BaseViewModel<MapLauncherSma
         }
     }
 
-    public Action stopNavi = new Action() {
-        @Override
-        @HookMethod(eventName = BuryConstant.EventName.AMAP_NAVI_END_MANUAL)
-        public void call() {
-            mModel.stopNavi();
-
-            BuryProperty buryProperty = new BuryProperty.Builder()
-                    .setParams(BuryConstant.ProperType.BURY_KEY_REMAINING_TIME, TimeUtils.getArriveTime(mApplication.getApplicationContext(), mNaviEtaInfo.getAllTime()))
-                    .setParams(BuryConstant.ProperType.BURY_KEY_TRIP_DISTANCE, TimeUtils.getRemainInfo(mApplication.getApplicationContext(), mNaviEtaInfo.getAllDist(), mNaviEtaInfo.getAllTime()))
-                    .build();
-            BuryPointController.getInstance().setBuryProps(buryProperty);
-            mNaviEtaInfo = new NaviEtaInfo();
-        }
-    };
+    public Action stopNavi = () -> mModel.stopNavi();
 
     public void naviArriveOrStop() {
         naviUiVisibility.set(false);
@@ -155,7 +143,9 @@ public class BaseLauncherSmallCardViewModel extends BaseViewModel<MapLauncherSma
         }
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.putExtras(bundle);
-        AppContext.getInstance().getMContext().startActivity(intent);
+        ActivityOptions options = ActivityOptions.makeBasic();
+        options.setLaunchDisplayId(0);
+        AppContext.getInstance().getMContext().startActivity(intent, options.toBundle());
     }
 
     /***
@@ -167,6 +157,8 @@ public class BaseLauncherSmallCardViewModel extends BaseViewModel<MapLauncherSma
         Intent intent = new Intent(AppContext.getInstance().getMContext(), MapActivity.class);
         intent.putExtra(INaviConstant.PAGE_EXTRA, pageCode);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        AppContext.getInstance().getMContext().startActivity(intent);
+        ActivityOptions options = ActivityOptions.makeBasic();
+        options.setLaunchDisplayId(0);
+        AppContext.getInstance().getMContext().startActivity(intent, options.toBundle());
     }
 }

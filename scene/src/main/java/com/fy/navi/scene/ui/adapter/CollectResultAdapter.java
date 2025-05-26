@@ -137,6 +137,10 @@ public class CollectResultAdapter extends RecyclerView.Adapter<CollectResultAdap
         }
         //若是常用地址或者收到的点，设置为加图标
         if (mCollectionType == AutoMapConstant.CollectionType.COMMON || mCollectionType == AutoMapConstant.CollectionType.GET_POINT) {
+            if (mPoiEntities.get(position).getAddress().isEmpty()) {
+                holder.mResultItemBinding.crlPoiDes.setVisibility(View.GONE);
+                holder.mResultItemBinding.crlPoiName.setVisibility(View.VISIBLE);
+            }
             holder.mResultItemBinding.ivNaviIcon.setImageDrawable(ResourceUtils.Companion.getInstance().
                     getDrawable(R.drawable.img_addq_58));
             holder.mResultItemBinding.textNavi.setText(R.string.mps_set_add);

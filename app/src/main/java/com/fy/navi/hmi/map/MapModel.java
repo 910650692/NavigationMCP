@@ -1,6 +1,8 @@
 package com.fy.navi.hmi.map;
 
 
+import static com.fy.navi.hmi.utils.AiWaysGestureManager.*;
+import com.fy.navi.hmi.utils.AiWaysGestureManager;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
@@ -15,7 +17,6 @@ import androidx.fragment.app.Fragment;
 
 import com.alibaba.android.arouter.launcher.ARouter;
 import com.android.utils.ConvertUtils;
-import com.android.utils.DeviceUtils;
 import com.android.utils.NetWorkUtils;
 import com.android.utils.ResourceUtils;
 import com.android.utils.TimeUtils;
@@ -117,9 +118,7 @@ import com.fy.navi.ui.base.BaseFragment;
 import com.fy.navi.ui.base.BaseModel;
 import com.fy.navi.ui.base.StackManager;
 import com.fy.navi.ui.dialog.IBaseDialogClickListener;
-import com.fy.navi.utils.ClusterActivityOffOnUtils;
 import com.fy.navi.vrbridge.IVrBridgeConstant;
-import com.fy.navi.vrbridge.impl.VoiceSearchManager;
 
 import java.io.Serializable;
 import java.text.ParseException;
@@ -148,6 +147,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
     private final MapDataPackage mapDataPackage;
     private final HistoryManager mHistoryManager;
     private final AosRestrictedPackage restrictedPackage;
+    private AiWaysGestureManager aiwaysGestureManager;
     private CommonManager commonManager;
     private static final String TAG = "MapModel";
     private long limitQueryTaskId;
@@ -222,8 +222,9 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         mAccountPackage = AccountPackage.getInstance();
         mNaviStatusPackage = NaviStatusPackage.getInstance();
         mapVisibleAreaDataManager = MapVisibleAreaDataManager.getInstance();
-    }
 
+        addGestureListening();//添加收拾监听
+    }
     @Override
     public void onCreate() {
         super.onCreate();
@@ -412,9 +413,9 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
             sendBuryPointForWakeup();
         }
 
-        //多指左滑打开仪表地图   多指右滑打开仪表地图
-        if(touchEvent != null){
-            openCluterMap(touchEvent);
+        //多指左滑打开仪表地图   多指右滑关闭仪表地图
+        if (touchEvent != null && aiwaysGestureManager != null ){
+            aiwaysGestureManager.onTouchEvent(touchEvent);
         }
     }
 
@@ -570,7 +571,8 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
                     if (null == keyword || keyword.isEmpty()) {
                         return;
                     }
-                    mViewModel.toSearchResultFragment(keyword);
+                    final boolean isEnd = bundle.getBoolean(IVrBridgeConstant.VoiceIntentParams.IS_END, false);
+                    mViewModel.toSearchResultFragment(keyword, isEnd);
                     break;
                 case IVrBridgeConstant.VoiceIntentPage.AROUND_SEARCH:
                     //周边搜
@@ -619,7 +621,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
                     final int type = bundle.getInt(IVrBridgeConstant.VoiceIntentParams.HOME_COMPANY_TYPE);
                     final String homeCompanyKeyword = bundle.getString(IVrBridgeConstant.VoiceIntentParams.KEYWORD);
                     if (!TextUtils.isEmpty(homeCompanyKeyword)) {
-                        mViewModel.toHomeCompanyFragment(type, homeCompanyKeyword);
+                        mViewModel.toFavoriteFragment(type, homeCompanyKeyword);
                     }
                     break;
                 case IVrBridgeConstant.VoiceIntentPage.SELECT_ROUTE:
@@ -643,6 +645,14 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
                 case IVrBridgeConstant.VoiceIntentPage.MOVE_TO_BACK:
                     //应用退到后台
                     mViewModel.moveToBack();
+                    break;
+                case IVrBridgeConstant.VoiceIntentPage.COLLECT_COMMON:
+                    //收藏普通poi
+                    final String favoritePoi = bundle.getString(IVrBridgeConstant.VoiceIntentParams.KEYWORD, "");
+                    if (null == favoritePoi || favoritePoi.isEmpty()) {
+                        return;
+                    }
+                    mViewModel.toFavoriteFragment(0, favoritePoi);
                     break;
                 default:
                     break;
@@ -1078,8 +1088,25 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         return poiInfoEntity;
     }
 
-    public void switchMapMode() {
-        mapPackage.switchMapMode(mapModelHelp.getMapTypeId());
+    public boolean switchMapMode() {
+        return mapPackage.switchMapMode(mapModelHelp.getMapTypeId());
+    }
+
+    public String getCurrentMapModelText(){
+        MapMode mode = mapPackage.getCurrentMapMode(MapType.MAIN_SCREEN_MAIN_MAP);
+        String carModel = "";
+        switch (mode) {
+            case NORTH_2D:
+                carModel = ResourceUtils.Companion.getInstance().getString(com.fy.navi.scene.R.string.navi_north_2d);
+                break;
+            case UP_2D:
+                carModel = ResourceUtils.Companion.getInstance().getString(com.fy.navi.scene.R.string.navi_up_2d);
+                break;
+            case UP_3D:
+                carModel = ResourceUtils.Companion.getInstance().getString(com.fy.navi.scene.R.string.navi_up_3d);
+                break;
+        }
+        return carModel;
     }
 
 
@@ -1386,52 +1413,21 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         BuryPointController.getInstance().setBuryProps(property);
     }
 
-
-    private float mStartX;
-    private boolean isOpenClusterFlag = false;
-    private static final int OPEN_TWO = 2;
-    private static final int OPEN_THREE = 3;
-
-    private void openCluterMap(MotionEvent touchEvent) {
-        int pointerCount = touchEvent.getPointerCount();
-        if (pointerCount == OPEN_TWO || pointerCount == OPEN_THREE) {
-            isOpenClusterFlag = true;
-        }
-//        Logger.d(TAG, "onTouchEvent pointerCount = " + pointerCount);
-        switch (touchEvent.getActionMasked()) {
-            case MotionEvent.ACTION_DOWN:
-                Logger.d(TAG, "onTouchEvent ACTION_DOWN");
-                // 记录按下时的坐标
-                mStartX = touchEvent.getX();
-                break;
-            case MotionEvent.ACTION_UP:
-                Logger.d(TAG, "onTouchEvent ACTION_UP");
-                if (isOpenClusterFlag) {
-                    float endX = touchEvent.getX();
-                    float deltaX = endX - mStartX;
-                    final float MIN_DISTANCE = 50; // 最小滑动距离认定为有效滑动
-                    if (Math.abs(deltaX) > MIN_DISTANCE) {
-                        if (deltaX > 0) {
-                            // 右滑
-                            Logger.d(TAG, "Right swipe detected" + DeviceUtils.isCar(AppContext.getInstance().getMContext()));
-                            if (DeviceUtils.isCar(AppContext.getInstance().getMContext())) {
-                                ClusterActivityOffOnUtils.offOnClusterActivity(false);
-                                MyFsaService.getInstance().sendEvent(FsaConstant.FsaFunction.ID_FINGER_FLYING_HUD, "3");
-                            }
-                        } else {
-                            // 左滑
-                            Logger.d(TAG, "Left swipe detected" + DeviceUtils.isCar(AppContext.getInstance().getMContext()));
-                            if (DeviceUtils.isCar(AppContext.getInstance().getMContext())) {
-                                ClusterActivityOffOnUtils.offOnClusterActivity(true);
-                                MyFsaService.getInstance().sendEvent(FsaConstant.FsaFunction.ID_FINGER_FLYING_HUD, "2");
-                            }
-                        }
-                    }
-                    // 重置起始坐标
-                    mStartX = 0;
-                    isOpenClusterFlag = false;
+    public void addGestureListening(){
+        aiwaysGestureManager = new AiWaysGestureManager(AppContext.getInstance().getMContext(), new AiwaysGestureListener() {
+            @Override
+            public boolean mutiFingerSlipAction(GestureEvent gestureEvent, float startX, float startY, float endX, float endY, float velocityX, float velocityY) {
+                if ((gestureEvent == GestureEvent.THREE_GINGER_LEFT_SLIP) || (gestureEvent == GestureEvent.DOUBLE_GINGER_LEFT_SLIP)) {
+                    Logger.d(TAG, "三指左滑或者双指左滑=====||||");
+                    MyFsaService.getInstance().sendEvent(FsaConstant.FsaFunction.ID_FINGER_FLYING_HUD, "2");
+                    return true;
+                } else if ((gestureEvent == GestureEvent.THREE_GINGER_RIGHT_SLIP) || (gestureEvent == GestureEvent.DOUBLE_GINGER_RIGHT_SLIP)) {
+                    Logger.d(TAG, "三指右滑或者双指右滑=====||||");
+                    MyFsaService.getInstance().sendEvent(FsaConstant.FsaFunction.ID_FINGER_FLYING_HUD, "3");
+                    return true;
                 }
-                break;
-        }
+                return false;
+            }
+        });
     }
 }

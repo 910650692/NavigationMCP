@@ -5,10 +5,16 @@ import android.graphics.Rect;
 
 import com.android.utils.ConvertUtils;
 import com.android.utils.NetWorkUtils;
+import com.android.utils.TimeUtils;
 import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
 import com.autonavi.gbl.common.path.option.PathInfo;
+import com.fy.navi.burypoint.anno.HookMethod;
+import com.fy.navi.burypoint.bean.BuryProperty;
+import com.fy.navi.burypoint.constant.BuryConstant;
+import com.fy.navi.burypoint.controller.BuryPointController;
+import com.fy.navi.service.AppContext;
 import com.fy.navi.service.AutoMapConstant;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.adapter.layer.LayerAdapter;
@@ -49,7 +55,6 @@ import com.fy.navi.service.define.search.ETAInfo;
 import com.fy.navi.service.define.search.PoiInfoEntity;
 import com.fy.navi.service.define.user.usertrack.HistoryPoiItemBean;
 import com.fy.navi.service.define.user.usertrack.HistoryRouteItemBean;
-import com.fy.navi.service.define.utils.NaviStatusMonitorUtil;
 import com.fy.navi.service.define.utils.NumberUtils;
 import com.fy.navi.service.greendao.history.History;
 import com.fy.navi.service.greendao.history.HistoryManager;
@@ -181,8 +186,6 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
                 updatePathInfo(MapType.CLUSTER_MAP, list, 0);
                 updatePathInfo(MapType.HUD_MAP, list, 0);
             }
-            //通知导航开始
-            NaviStatusMonitorUtil.getInstance().notifyNavigationStarted();
         } else {
             mCurrentNaviType = NumberUtils.NUM_ERROR;
         }
@@ -206,12 +209,25 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
             mLayerAdapter.setFollowMode(MapType.CLUSTER_MAP, false);
             mLayerAdapter.setFollowMode(MapType.HUD_MAP, false);
             mCurrentNaviType = NumberUtils.NUM_ERROR;
-            //通知导航结束  手动停止导航
-            NaviStatusMonitorUtil.getInstance().notifyNavigationStopped();
+            sendBuryPointForCloseNavi();
         } else {
             Logger.w(TAG, "stopNavigation failed!");
         }
         return result;
+    }
+
+    @HookMethod(eventName = BuryConstant.EventName.AMAP_NAVI_END_MANUAL)
+    private void sendBuryPointForCloseNavi(){
+        NaviEtaInfo mNaviEtaInfo = getCurrentNaviEtaInfo();
+        if(mNaviEtaInfo == null){
+            Logger.e(MapDefaultFinalTag.NAVI_BURY_POINT, "eventName-" + BuryConstant.EventName.AMAP_NAVI_END_MANUAL + ": mNaviEtaInfo is null");
+            return;
+        }
+        BuryProperty buryProperty = new BuryProperty.Builder()
+                .setParams(BuryConstant.ProperType.BURY_KEY_REMAINING_TIME, TimeUtils.getArriveTime(AppContext.getInstance().getMContext(), mNaviEtaInfo.getAllTime()))
+                .setParams(BuryConstant.ProperType.BURY_KEY_TRIP_DISTANCE, TimeUtils.getRemainInfo(AppContext.getInstance().getMContext(), mNaviEtaInfo.getAllDist(), mNaviEtaInfo.getAllTime()))
+                .build();
+        BuryPointController.getInstance().setBuryProps(buryProperty);
     }
 
     /**
@@ -304,7 +320,7 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
             // 如果登陆了话就将数据传给高德
             if (mUserTrackAdapter.isLogin()) {
                 HistoryRouteItemBean historyRouteItemBean = new HistoryRouteItemBean();
-                historyRouteItemBean.setId(key);
+//                historyRouteItemBean.setId(key);
                 historyRouteItemBean.setStartLoc(startPoint);
                 historyRouteItemBean.setEndLoc(endPoint);
                 historyRouteItemBean.setIsCompleted(isCompleted);
@@ -318,6 +334,7 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
                 HistoryPoiItemBean endPoiItemBean = new HistoryPoiItemBean();
                 endPoiItemBean.setPoiId(endPoiId);
                 endPoiItemBean.setName(endName);
+                historyRouteItemBean.setToPoi(endPoiItemBean);
                 mUserTrackAdapter.addHistoryRoute(historyRouteItemBean);
             }
         }
@@ -464,8 +481,6 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
                     }
                 }
             }
-            //到达终点 停止导航
-            NaviStatusMonitorUtil.getInstance().notifyNavigationStopped();
         });
     }
 

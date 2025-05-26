@@ -12,8 +12,8 @@
     </data>
 
     <com.fy.navi.ui.view.SkinLinearLayout
-        android:layout_width="@dimen/dp_1292"
-        android:layout_height="@dimen/dp_1255"
+        android:layout_width="@dimen/dp_1110"
+        android:layout_height="@dimen/dp_1078"
         android:orientation="vertical"
         android:clickable="true"
         android:padding="@dimen/dp_34"
@@ -23,31 +23,31 @@
         <com.fy.navi.ui.view.SkinLinearLayout
             android:id="@+id/rl_offline_top"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_112"
-            android:layout_marginStart="@dimen/dp_40"
-            android:layout_marginEnd="@dimen/dp_40"
-            android:layout_marginTop="@dimen/dp_40"
+            android:layout_height="@dimen/dp_95"
+            android:layout_marginStart="@dimen/dp_34"
+            android:layout_marginEnd="@dimen/dp_34"
+            android:layout_marginTop="@dimen/dp_34"
             android:gravity="center_vertical"
             android:background="@drawable/shape_bg_map_data">
 
             <com.fy.navi.ui.view.SkinImageView
                 android:id="@+id/iv_offline_map_back"
                 clickCommand="@{ViewModel.mFinishMapDataView}"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="@dimen/dp_49"
+                android:layout_height="@dimen/dp_49"
                 android:layout_centerVertical="true"
-                android:layout_marginStart="@dimen/dp_14"
+                android:layout_marginStart="@dimen/dp_12"
                 android:src="@drawable/img_setting_back" />
 
             <com.fy.navi.ui.view.SkinTextView
                 clickCommand="@{ViewModel.mSearchMapDataView}"
                 android:layout_width="match_parent"
                 android:layout_height="fill_parent"
-                android:layout_marginStart="@dimen/dp_4"
+                android:layout_marginStart="@dimen/dp_3"
                 android:gravity="center_vertical"
                 android:text="@string/offline_search_tip"
                 android:textColor="@color/color_black_70"
-                android:textSize="@dimen/sp_34" />
+                android:textSize="@dimen/sp_29" />
 
         </com.fy.navi.ui.view.SkinLinearLayout>
 
@@ -55,7 +55,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:scrollbars="vertical"
-            android:layout_marginBottom="@dimen/dp_40"
+            android:layout_marginBottom="@dimen/dp_34"
             android:fillViewport="true">
 
             <com.fy.navi.ui.view.SkinConstraintLayout
@@ -69,10 +69,10 @@
                     clickCommand="@{ViewModel.mToManagerMapDataView}"
                     android:layout_width="match_parent"
                     android:visibility="@{ViewModel.mManagerDownloadVisibility ? View.VISIBLE : View.GONE}"
-                    android:layout_height="@dimen/dp_144"
-                    android:layout_marginTop="@dimen/dp_24"
-                    android:layout_marginStart="@dimen/dp_40"
-                    android:layout_marginEnd="@dimen/dp_40"
+                    android:layout_height="@dimen/dp_119"
+                    android:layout_marginTop="@dimen/dp_34"
+                    android:layout_marginStart="@dimen/dp_34"
+                    android:layout_marginEnd="@dimen/dp_34"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     android:background="@drawable/shape_bg_map_data">
@@ -83,7 +83,7 @@
                         android:layout_marginStart="@dimen/dp_30"
                         android:text="@string/offline_manager_map_title"
                         android:textColor="@color/setting_bg_tab_text_select"
-                        android:textSize="@dimen/sp_34"
+                        android:textSize="@dimen/sp_29"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
@@ -93,7 +93,7 @@
                         android:layout_height="wrap_content"
                         android:text="@{ViewModel.mAllDownloadingDataSize}"
                         android:textColor="@color/setting_bg_tab_text_unselect"
-                        android:textSize="@dimen/sp_30"
+                        android:textSize="@dimen/sp_26"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toStartOf="@+id/manager_city_view"
                         app:layout_constraintTop_toTopOf="parent"/>
@@ -104,23 +104,23 @@
                         android:layout_height="fill_parent"
                         android:gravity="center_vertical"
                         android:drawableEnd="@drawable/img_right"
-                        android:layout_marginEnd="@dimen/dp_40"
+                        android:layout_marginEnd="@dimen/dp_34"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
                         android:text="@string/offline_manager_map_content"
                         android:textColor="@color/setting_bg_tab_text_unselect"
-                        android:textSize="@dimen/sp_30" />
+                        android:textSize="@dimen/sp_26" />
 
                 </com.fy.navi.ui.view.SkinConstraintLayout>
 
                 <!--当前城市包-->
                 <com.fy.navi.ui.view.SkinConstraintLayout
                     android:id="@+id/view_current_data"
-                    android:layout_width="@dimen/dp_552"
-                    android:layout_height="@dimen/dp_144"
-                    android:layout_marginTop="@dimen/dp_24"
-                    android:layout_marginStart="@dimen/dp_40"
+                    android:layout_width="@dimen/dp_470"
+                    android:layout_height="@dimen/dp_123"
+                    android:layout_marginTop="@dimen/dp_34"
+                    android:layout_marginStart="@dimen/dp_34"
                     app:layout_constraintTop_toBottomOf="@+id/manager_data_view"
                     app:layout_constraintStart_toStartOf="parent"
                     android:background="@drawable/shape_bg_map_data">
@@ -129,11 +129,11 @@
                         android:id="@+id/current_city_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/dp_30"
-                        android:layout_marginTop="@dimen/dp_26"
+                        android:layout_marginStart="@dimen/dp_26"
+                        android:layout_marginTop="@dimen/dp_22"
                         android:text="@string/offline_current_map_title"
                         android:textColor="@color/setting_bg_tab_text_select"
-                        android:textSize="@dimen/sp_34"
+                        android:textSize="@dimen/sp_29"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
@@ -141,11 +141,11 @@
                         android:id="@+id/current_city_data"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/dp_8"
-                        android:layout_marginStart="@dimen/dp_30"
+                        android:layout_marginTop="@dimen/dp_7"
+                        android:layout_marginStart="@dimen/dp_26"
                         android:text="@string/offline_current_map_tip"
                         android:textColor="@color/setting_bg_tab_text_unselect"
-                        android:textSize="@dimen/sp_30"
+                        android:textSize="@dimen/sp_26"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/current_city_name" />
 
@@ -153,9 +153,9 @@
                     <com.fy.navi.scene.ui.setting.DownloadBtnView
                         android:id="@+id/download_view"
                         clickCommand="@{ViewModel.mToDownloadCurrentCity}"
-                        android:layout_width="@dimen/dp_193"
-                        android:layout_height="@dimen/dp_76"
-                        android:layout_marginEnd="@dimen/dp_16"
+                        android:layout_width="@dimen/dp_164"
+                        android:layout_height="@dimen/dp_65"
+                        android:layout_marginEnd="@dimen/dp_14"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
@@ -177,11 +177,11 @@
                 <!--附近推荐城市-->
                 <com.fy.navi.ui.view.SkinConstraintLayout
                     android:id="@+id/view_near_data"
-                    android:layout_width="@dimen/dp_552"
-                    android:layout_height="@dimen/dp_144"
-                    android:layout_marginTop="@dimen/dp_24"
-                    android:layout_marginStart="@dimen/dp_40"
-                    android:layout_marginEnd="@dimen/dp_40"
+                    android:layout_width="@dimen/dp_470"
+                    android:layout_height="@dimen/dp_123"
+                    android:layout_marginTop="@dimen/dp_34"
+                    android:layout_marginStart="@dimen/dp_34"
+                    android:layout_marginEnd="@dimen/dp_34"
                     app:layout_constraintTop_toBottomOf="@+id/manager_data_view"
                     app:layout_constraintLeft_toRightOf="@+id/view_current_data"
                     android:background="@drawable/shape_bg_map_data">
@@ -192,12 +192,12 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:gravity="center_vertical"
-                        android:layout_marginStart="@dimen/dp_30"
-                        android:layout_marginTop="@dimen/dp_26"
+                        android:layout_marginStart="@dimen/dp_26"
+                        android:layout_marginTop="@dimen/dp_22"
                         android:drawableEnd="@drawable/img_right"
                         android:text="@string/offline_near_offline_data"
                         android:textColor="@color/setting_bg_tab_text_select"
-                        android:textSize="@dimen/sp_34"
+                        android:textSize="@dimen/sp_29"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
@@ -205,12 +205,12 @@
                         android:id="@+id/tv_near_data_count"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/dp_30"
-                        android:layout_marginTop="@dimen/dp_8"
+                        android:layout_marginStart="@dimen/dp_26"
+                        android:layout_marginTop="@dimen/dp_2"
                         android:gravity="center"
                         android:text="@{ViewModel.mNearCityDataSize}"
                         android:textColor="@color/setting_bg_tab_text_unselect"
-                        android:textSize="@dimen/sp_30"
+                        android:textSize="@dimen/sp_26"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/tv_near_offline_data" />
 
@@ -218,14 +218,14 @@
                         android:id="@+id/btn_download_near_data"
                         clickCommand="@{ViewModel.mToDownloadNearData}"
                         android:visibility="@{ViewModel.mNearDownloadBtnVisibility ? View.VISIBLE : View.GONE}"
-                        android:layout_width="@dimen/dp_193"
-                        android:layout_height="@dimen/dp_76"
-                        android:layout_marginEnd="@dimen/dp_16"
+                        android:layout_width="@dimen/dp_164"
+                        android:layout_height="@dimen/dp_65"
+                        android:layout_marginEnd="@dimen/dp_14"
                         android:gravity="center"
                         android:background="@drawable/shape_bg_download_data"
                         android:text="@string/offline_all_net_city_start_download"
                         android:textColor="@color/setting_white"
-                        android:textSize="@dimen/sp_30"
+                        android:textSize="@dimen/sp_26"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
@@ -237,11 +237,11 @@
                     android:id="@+id/tv_offline_data_tip"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_30"
-                    android:layout_marginStart="@dimen/dp_40"
+                    android:layout_marginTop="@dimen/dp_26"
+                    android:layout_marginStart="@dimen/dp_34"
                     android:text="@string/offline_text_all_data"
                     android:textColor="@color/setting_bg_tab_text_select"
-                    android:textSize="@dimen/sp_34"
+                    android:textSize="@dimen/sp_29"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/view_current_data" />
 
@@ -250,9 +250,9 @@
                     android:id="@+id/view_country_data"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/dp_40"
-                    android:layout_marginTop="@dimen/dp_24"
-                    android:layout_marginEnd="@dimen/dp_40"
+                    android:layout_marginStart="@dimen/dp_34"
+                    android:layout_marginTop="@dimen/dp_20"
+                    android:layout_marginEnd="@dimen/dp_34"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/tv_offline_data_tip">
 
@@ -266,7 +266,7 @@
 
                         <com.fy.navi.ui.view.SkinConstraintLayout
                             android:layout_width="match_parent"
-                            android:layout_height="@dimen/dp_140"
+                            android:layout_height="@dimen/dp_119"
                             android:clickable="true"
                             android:background="@drawable/shape_bg_map_data">
 
@@ -274,25 +274,25 @@
                                 android:id="@+id/country_city_name"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginStart="@dimen/dp_30"
-                                android:layout_marginTop="@dimen/dp_25"
+                                android:layout_marginStart="@dimen/dp_26"
+                                android:layout_marginTop="@dimen/dp_21"
                                 android:gravity="center"
                                 android:text="@string/offline_item_city_title"
                                 android:textColor="@color/setting_bg_tab_text_select"
-                                android:textSize="@dimen/sp_34"
+                                android:textSize="@dimen/sp_29"
                                 app:layout_constraintStart_toStartOf="parent"
                                 app:layout_constraintTop_toTopOf="parent" />
 
                             <com.fy.navi.ui.view.SkinTextView
-                                android:layout_width="@dimen/dp_128"
-                                android:layout_height="@dimen/dp_46"
-                                android:layout_marginStart="@dimen/dp_16"
+                                android:layout_width="@dimen/dp_109"
+                                android:layout_height="@dimen/dp_39"
+                                android:layout_marginStart="@dimen/dp_14"
                                 android:gravity="center"
                                 android:background="@drawable/shape_bg_map_data"
                                 android:src="@drawable/img_setting_download_white"
                                 android:text="@string/offline_recommend_map"
                                 android:textColor="@color/offline_recommend_download"
-                                android:textSize="@dimen/sp_26"
+                                android:textSize="@dimen/sp_22"
                                 app:layout_constraintStart_toEndOf="@+id/country_city_name"
                                 app:layout_constraintTop_toTopOf="@+id/country_city_name"
                                 app:layout_constraintBottom_toBottomOf="@+id/country_city_name"/>
@@ -300,21 +300,21 @@
                             <com.fy.navi.ui.view.SkinTextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginStart="@dimen/dp_30"
-                                android:layout_marginTop="@dimen/dp_8"
+                                android:layout_marginStart="@dimen/dp_26"
+                                android:layout_marginTop="@dimen/dp_6"
                                 android:gravity="center"
                                 android:text="@string/offline_base_map_tip"
                                 android:textColor="@color/setting_bg_tab_text_unselect"
-                                android:textSize="@dimen/sp_30"
+                                android:textSize="@dimen/sp_26"
                                 app:layout_constraintStart_toStartOf="parent"
                                 app:layout_constraintTop_toBottomOf="@+id/country_city_name" />
 
                             <com.fy.navi.scene.ui.setting.DownloadBtnView
                                 android:id="@+id/country_download_view"
                                 clickCommand="@{ViewModel.mStartDownload}"
-                                android:layout_width="@dimen/dp_180"
-                                android:layout_height="@dimen/dp_76"
-                                android:layout_marginEnd="@dimen/dp_40"
+                                android:layout_width="@dimen/dp_153"
+                                android:layout_height="@dimen/dp_65"
+                                android:layout_marginEnd="@dimen/dp_34"
                                 app:layout_constraintBottom_toBottomOf="parent"
                                 app:layout_constraintEnd_toEndOf="parent"
                                 app:layout_constraintTop_toTopOf="parent" />
@@ -324,10 +324,10 @@
                                 android:id="@+id/country_data_count"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginEnd="@dimen/dp_24"
+                                android:layout_marginEnd="@dimen/dp_20"
                                 android:gravity="center"
                                 android:textColor="@color/setting_bg_tab_text_unselect"
-                                android:textSize="@dimen/sp_26"
+                                android:textSize="@dimen/sp_22"
                                 app:layout_constraintTop_toTopOf="parent"
                                 app:layout_constraintRight_toLeftOf="@+id/country_download_view"
                                 app:layout_constraintBottom_toBottomOf="parent" />
@@ -350,12 +350,12 @@
                             android:id="@+id/country_delete"
                             clickCommand="@{ViewModel.mToDeleteCountryCity}"
                             android:layout_width="@dimen/dp_160"
-                            android:layout_height="@dimen/dp_140"
+                            android:layout_height="@dimen/dp_119"
                             android:drawableTop="@drawable/img_delete_58"
                             android:background="@drawable/bg_driving_item_delete"
                             android:paddingVertical="@dimen/dp_20"
                             android:text="@string/driving_item_delete"
-                            android:textSize="@dimen/sp_30"
+                            android:textSize="@dimen/sp_26"
                             android:textColor="@color/color_80_ffffff"
                             android:gravity="center" />
 
@@ -368,10 +368,10 @@
                     android:id="@+id/rv_offline"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/dp_40"
-                    android:layout_marginTop="@dimen/dp_24"
-                    android:layout_marginEnd="@dimen/dp_40"
-                    android:layout_marginBottom="@dimen/dp_40"
+                    android:layout_marginStart="@dimen/dp_34"
+                    android:layout_marginTop="@dimen/dp_20"
+                    android:layout_marginEnd="@dimen/dp_34"
+                    android:layout_marginBottom="@dimen/dp_34"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"

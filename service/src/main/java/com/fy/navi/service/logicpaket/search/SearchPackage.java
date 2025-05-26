@@ -1,6 +1,7 @@
 package com.fy.navi.service.logicpaket.search;
 
 
+import android.text.TextUtils;
 import android.util.Pair;
 
 import com.android.utils.ConvertUtils;
@@ -23,10 +24,12 @@ import com.fy.navi.service.adapter.position.PositionAdapter;
 import com.fy.navi.service.adapter.route.RouteAdapter;
 import com.fy.navi.service.adapter.search.ISearchResultCallback;
 import com.fy.navi.service.adapter.search.SearchAdapter;
+import com.fy.navi.service.adapter.user.usertrack.UserTrackAdapter;
 import com.fy.navi.service.adapter.search.cloudByPatac.bean.SavedStations;
 import com.fy.navi.service.adapter.search.cloudByPatac.rep.BaseRep;
 import com.fy.navi.service.define.bean.GeoPoint;
 import com.fy.navi.service.define.bean.PreviewParams;
+import com.fy.navi.service.define.code.UserDataCode;
 import com.fy.navi.service.define.layer.refix.LayerItemSearchResult;
 import com.fy.navi.service.define.layer.refix.LayerPointItemType;
 import com.fy.navi.service.define.map.MapType;
@@ -40,6 +43,10 @@ import com.fy.navi.service.define.search.ReservationInfo;
 import com.fy.navi.service.define.search.SearchRequestParameter;
 import com.fy.navi.service.define.search.SearchResultEntity;
 import com.fy.navi.service.define.search.SearchRetainParamInfo;
+import com.fy.navi.service.define.user.account.AccountProfileInfo;
+import com.fy.navi.service.define.user.usertrack.HistoryRouteItemBean;
+import com.fy.navi.service.define.user.usertrack.SearchHistoryItemBean;
+import com.fy.navi.service.greendao.CommonManager;
 import com.fy.navi.service.greendao.history.History;
 import com.fy.navi.service.greendao.history.HistoryManager;
 import com.google.gson.Gson;
@@ -50,16 +57,20 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import lombok.Getter;
 
@@ -75,6 +86,8 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
     private final MapAdapter mMapAdapter;
     private final RouteAdapter mRouteAdapter;
     private final NavistatusAdapter mNavistatusAdapter;
+    private final UserTrackAdapter mUserTrackAdapter;
+    private CommonManager mCommonManager;
     private final ConcurrentHashMap<String, SearchResultCallback> mISearchResultCallbackMap = new ConcurrentHashMap<>();
     private final AtomicReference<String> mCurrentCallbackId = new AtomicReference<>();
     private static final Map<LayerPointItemType, LayerItemSearchResult> sMarkerInfoMap = new ConcurrentHashMap<>();
@@ -91,6 +104,9 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
         mLayerAdapter = LayerAdapter.getInstance();
         mRouteAdapter = RouteAdapter.getInstance();
         mNavistatusAdapter = NavistatusAdapter.getInstance();
+        mUserTrackAdapter = UserTrackAdapter.getInstance();
+        mCommonManager = CommonManager.getInstance();
+        mCommonManager.init();
         mLayerAdapter.registerLayerClickObserver(MapType.MAIN_SCREEN_MAIN_MAP,  this);
     }
 
@@ -812,19 +828,44 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
      * @param keyword 关键字
      */
     public void addSearchKeywordRecord(final String keyword) {
-        final History history = new History();
-        history.setMKeyWord(keyword);
-        history.setMType(AutoMapConstant.SearchKeywordRecordKey.SEARCH_KEYWORD_RECORD_KEY);
-        mManager.insertValue(history);
+//        final History history = new History();
+//        history.setMKeyWord(keyword);
+//        history.setMType(AutoMapConstant.SearchKeywordRecordKey.SEARCH_KEYWORD_RECORD_KEY);
+//        mManager.insertValue(history);
     }
 
     /**
      * @return 所有搜索记录
      */
     public List<History> getSearchKeywordRecord() {
-        final List<History> historyList = mManager.loadHistoryByPage(1, 100);
-        Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "value:" + GsonUtils.toJson(historyList));
-        return historyList;
+        if (isLogin()) {
+            final ArrayList<SearchHistoryItemBean> searchHistoryItemBeans = mUserTrackAdapter.getSearchHistory();
+            final List<History> searchHistoryList = Optional.ofNullable(searchHistoryItemBeans)
+                    .orElse(new ArrayList<>())
+                    .stream()
+                    .map(this::convertSearchHistoryItemBeanToHistory)
+                    .collect(Collectors.toList());
+
+            final ArrayList<HistoryRouteItemBean> historyRouteItemBeans = mUserTrackAdapter.getHistoryRoute();
+            final List<History> historyList = Optional.ofNullable(historyRouteItemBeans)
+                    .orElse(new ArrayList<>())
+                    .stream()
+                    .map(this::convertHistoryRouteItemBeanToHistory)
+                    .collect(Collectors.toList());
+
+            final List<History> combinedList = new ArrayList<>(searchHistoryList);
+            combinedList.addAll(historyList);
+            if (!ConvertUtils.isEmpty(combinedList)) {
+                combinedList.sort(Comparator.comparing(History::getMUpdateTime).reversed());
+            }
+            Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "value:" + GsonUtils.toJson(combinedList));
+            return combinedList;
+
+        } else {
+            final List<History> historyList = mManager.loadHistoryByPage(1, 100);
+            Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "value:" + GsonUtils.toJson(historyList));
+            return historyList;
+        }
     }
 
     /**
@@ -834,6 +875,29 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
         final List<History> historyList = mManager.getValueByType(AutoMapConstant.SearchKeywordRecordKey.SEARCH_NAVI_RECORD_KEY);
         Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "value:" + GsonUtils.toJson(historyList));
         return historyList;
+    }
+
+    private History convertSearchHistoryItemBeanToHistory(final SearchHistoryItemBean searchHistoryItemBean) {
+        final History history = new History();
+        history.setMKeyWord(searchHistoryItemBean.getName());
+        history.setMType(AutoMapConstant.SearchKeywordRecordKey.SEARCH_KEYWORD_RECORD_KEY);
+        history.setMUpdateTime(new Date(searchHistoryItemBean.getUpdateTime()));
+        return history;
+    }
+
+    private History convertHistoryRouteItemBeanToHistory(final HistoryRouteItemBean item) {
+        final History history = new History();
+        history.setMType(AutoMapConstant.SearchKeywordRecordKey.SEARCH_NAVI_RECORD_KEY);
+        history.setMPoiId(item.getToPoi().getPoiId());
+        history.setMNaviHistoryId(item.getId());
+        history.setMStartPoint(item.getStartLoc().toString());
+        history.setMEndPoint(item.getEndLoc().toString());
+        history.setMStartPoiName(item.getFromPoi().getName());
+        history.setMEndPoiName(item.getToPoi().getName());
+        history.setMKeyWord(item.getToPoi().getName());
+        history.setMIsCompleted(item.getIsCompleted());
+        history.setMUpdateTime(item.getTime() == null ? new Date() : item.getTime());
+        return history;
     }
 
     /**
@@ -1719,5 +1783,30 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
             case 3 -> "3";
             default -> "4";
         };
+    }
+
+    // 映射云端侧对应的brandName
+    public String getBrandName(int brandId){
+        return switch (brandId){
+            case 1 -> "BUICK";
+            case 2 -> "CADILLAC";
+            case 3 -> "CHEVY";
+            default -> "";
+        };
+    }
+    /**
+     * 判断是否登录
+     * @return 是否登录
+     */
+    public boolean isLogin() {
+        final AccountProfileInfo info;
+        final String valueJson = mCommonManager.getValueByKey(UserDataCode.SETTING_GET_USERINFO);
+        if (!TextUtils.isEmpty(valueJson)) {
+            info = GsonUtils.fromJson(valueJson, AccountProfileInfo.class);
+            if (info != null) {
+                return !TextUtils.isEmpty(info.getUid());
+            }
+        }
+        return false;
     }
 }

@@ -718,4 +718,5 @@
     <string name="guide_login_close_toast">您也可以在【设置-其他】内完成绑定</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="zhi_jia">切智驾</string>
 </resources>

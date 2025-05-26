@@ -1,4 +1,0 @@
-<div style="display:flex;flex-direction:row;justify-content:flex-start;align-items:center;width:auto;height:38px;">
-  <image id="event_image" style="width:38px;height:38px;" src="global_image_auto_ic_navi_traffic_event_accident_day_night" />
-  <label id="event_name" style="margin-left:4px;font-size:24px;color:#000000;font-family:font_cn;" lines="1">车祸</label>
-</div>

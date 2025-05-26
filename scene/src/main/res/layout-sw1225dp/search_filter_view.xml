@@ -12,28 +12,27 @@
 
         <com.fy.navi.ui.view.SkinScrollView
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_412"
+            android:layout_height="@dimen/dp_550"
+            android:layout_marginTop="@dimen/dp_34"
+            android:layout_marginBottom="@dimen/dp_134"
+            android:paddingHorizontal="@dimen/dp_34"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent">
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent">
 
             <com.fy.navi.ui.view.SkinConstraintLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingStart="@dimen/dp_40"
-                android:paddingEnd="@dimen/dp_40"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent">
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
                 <com.fy.navi.ui.view.SkinTextView
                     android:id="@+id/search_filter_title1"
                     android:layout_width="@dimen/dp_0"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_40"
                     android:maxLines="1"
                     android:textColor="@color/search_color_ffffff"
-                    android:textSize="@dimen/sp_34"
+                    android:textSize="@dimen/sp_29"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/poi_gas_oil_list"
+                    app:layout_constraintTop_toTopOf="parent"
                     tools:text="位置距离" />
 
                 <com.fy.navi.ui.view.SkinRecyclerView
@@ -58,10 +57,10 @@
                     android:id="@+id/search_filter_title2"
                     android:layout_width="@dimen/dp_0"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_30"
+                    android:layout_marginTop="@dimen/dp_26"
                     android:maxLines="1"
                     android:textColor="@color/search_color_ffffff"
-                    android:textSize="@dimen/sp_36"
+                    android:textSize="@dimen/sp_29"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/search_filter_list1_child"
                     tools:text="全部分类" />
@@ -87,10 +86,10 @@
                     android:id="@+id/search_filter_title3"
                     android:layout_width="@dimen/dp_0"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_30"
+                    android:layout_marginTop="@dimen/dp_26"
                     android:maxLines="1"
                     android:textColor="@color/search_color_ffffff"
-                    android:textSize="@dimen/sp_36"
+                    android:textSize="@dimen/sp_29"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/search_filter_list2_child"
                     tools:text="推荐排序" />
@@ -117,30 +116,32 @@
 
         <com.fy.navi.ui.view.SkinTextView
             android:id="@+id/search_filter_confirm"
-            android:layout_width="@dimen/dp_268"
-            android:layout_height="@dimen/dp_90"
+            android:layout_width="@dimen/dp_228"
+            android:layout_height="@dimen/dp_77"
             android:gravity="center"
             android:background="@drawable/bg_confirm"
             android:text="@string/dsc_confirm"
-            android:layout_marginStart="@dimen/dp_40"
-            android:layout_marginBottom="@dimen/dp_40"
+            android:layout_marginStart="@dimen/dp_34"
+            android:layout_marginBottom="@dimen/dp_34"
+            android:layout_marginTop="@dimen/dp_26"
             android:textColor="@color/search_main_tab_bg_fff"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            android:textSize="@dimen/sp_34"/>
+            android:textSize="@dimen/sp_29"/>
 
         <com.fy.navi.ui.view.SkinTextView
             android:id="@+id/search_filter_cancel"
-            android:layout_width="@dimen/dp_268"
-            android:layout_height="@dimen/dp_90"
+            android:layout_width="@dimen/dp_228"
+            android:layout_height="@dimen/dp_77"
             android:gravity="center"
             android:background="@drawable/bg_cancel"
             android:text="@string/dsc_reset"
-            android:layout_marginBottom="@dimen/dp_40"
-            android:layout_marginEnd="@dimen/dp_40"
+            android:layout_marginTop="@dimen/dp_26"
+            android:layout_marginBottom="@dimen/dp_34"
+            android:layout_marginEnd="@dimen/dp_34"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            android:textSize="@dimen/sp_34"/>
+            android:textSize="@dimen/sp_29"/>
 
     </com.fy.navi.ui.view.SkinConstraintLayout>
 </layout>

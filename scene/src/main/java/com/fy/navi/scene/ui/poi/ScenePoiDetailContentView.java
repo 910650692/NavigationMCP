@@ -100,6 +100,7 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
     private boolean mIsOpenFromNavi;
     private int mChildSelectIndex = -1;
     private boolean mIsCollectStatus = false;
+    private boolean mIsEnd = false;
 
     public ScenePoiDetailContentView(final @NonNull Context context) {
         super(context);
@@ -163,14 +164,19 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
     private void handleRouteClick() {
         Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "点击去这里");
         if (mChildSelectInfo != null) {
-            if (SearchPackage.getInstance().isAlongWaySearch() && !RoutePackage.getInstance().isMaxRouteParam(MapType.MAIN_SCREEN_MAIN_MAP)) {
+            if (SearchPackage.getInstance().isAlongWaySearch() && !mIsEnd
+                    && !RoutePackage.getInstance().isMaxRouteParam(MapType.MAIN_SCREEN_MAIN_MAP)) {
                 RoutePackage.getInstance().addViaPoint(MapType.MAIN_SCREEN_MAIN_MAP,
                         mChildSelectInfo);
             } else {
-                openRouteFragment(mChildSelectInfo);
+                if (mIsEnd) {
+                    RoutePackage.getInstance().requestChangeEnd(mMapTypeId, mChildSelectInfo);
+                } else {
+                    openRouteFragment(mChildSelectInfo);
+                }
             }
         }else {
-            if (SearchPackage.getInstance().isAlongWaySearch()) {
+            if (SearchPackage.getInstance().isAlongWaySearch() && !mIsEnd) {
                 if (mViaAddType) {
                     if(RoutePackage.getInstance().isMaxRouteParam(MapType.MAIN_SCREEN_MAIN_MAP)){
                         Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "handleRouteClick isMaxRouteParam");
@@ -186,7 +192,11 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
             } else {
                 Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "end point1: " + mPoiInfoEntity.getPoint().getLon()
                             + " ,lat" + mPoiInfoEntity.getPoint().getLat());
-                openRouteFragment(mPoiInfoEntity);
+                if (mIsEnd) {
+                    RoutePackage.getInstance().requestChangeEnd(mMapTypeId, mPoiInfoEntity);
+                } else {
+                    openRouteFragment(mPoiInfoEntity);
+                }
             }
         }
 
@@ -298,7 +308,7 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
             } else {
                 if (ConvertUtils.isEmpty(mPoiInfoEntity.getPid())) {
                     //逆地理搜索出的点无poiId，需自己拼接
-                    mPoiInfoEntity.setPid(mPoiInfoEntity.getPoint().getLon() + ""
+                    mPoiInfoEntity.setPid(mPoiInfoEntity.getPoint().getLon() + "_"
                             + mPoiInfoEntity.getPoint().getLat());
                 }
                 mScreenViewModel.addFavorite(mPoiInfoEntity, 0);
@@ -321,7 +331,7 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
      * 添加途径点按钮点击事件
      */
     private void updateRouteButton() {
-        final boolean isAlongWaySearch = mScreenViewModel.isAlongWaySearch();
+        final boolean isAlongWaySearch = mScreenViewModel.isAlongWaySearch() && !mIsEnd;
         Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, isAlongWaySearch ? "添加途径点" : "去这里");
 
         final int routeIcon = isAlongWaySearch ? R.drawable.img_basic_ic_add :
@@ -345,6 +355,7 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
      * 搜索结果回调
      * @param taskId 请求Id
      * @param searchResultEntity 数据实体类
+     * @noinspection checkstyle:LeftCurly
      */
     public void onSearchResult(final int taskId, final SearchResultEntity searchResultEntity) {
         if (null == searchResultEntity || searchResultEntity.getPoiList().isEmpty() || ConvertUtils.isEmpty(mScreenViewModel)) {
@@ -426,7 +437,11 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
         if (mPoiType == AutoMapConstant.PoiType.POI_MAP_CLICK) {
             //点击地图弹出的poi详情页不需要展示子点扎标
             if (null != mScreenViewModel) {
-                ThreadManager.getInstance().postDelay(() -> mScreenViewModel.clearTypeMark(LayerPointItemType.SEARCH_CHILD_POINT), 400);
+                ThreadManager.getInstance().postDelay(() -> {
+                    if (mScreenViewModel != null) {
+                        mScreenViewModel.clearTypeMark(LayerPointItemType.SEARCH_CHILD_POINT);
+                    }
+                }, 400);
             }
         }
     }
@@ -617,7 +632,7 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
                     .setUpdateTime(new Date().getTime());
             if (ConvertUtils.isEmpty(mPoiInfoEntity.getPid())) {
                 //逆地理搜索出的点无poiId，需自己拼接
-                mPoiInfoEntity.setPid(mPoiInfoEntity.getPoint().getLon() + ""
+                mPoiInfoEntity.setPid(mPoiInfoEntity.getPoint().getLon() + "_"
                         + mPoiInfoEntity.getPoint().getLat());
             }
             final String itemId = mScreenViewModel.isFavorite(mPoiInfoEntity);
@@ -1398,7 +1413,7 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
             case AutoMapConstant.PoiType.POI_KEYWORD:
             case AutoMapConstant.PoiType.POI_MAP_CLICK:
             case AutoMapConstant.PoiType.POI_AROUND:
-                if (mScreenViewModel.isAlongWaySearch()) {
+                if (mScreenViewModel.isAlongWaySearch() && !mIsEnd) {
                     Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "添加途径点");
                     mViewBinding.scenePoiDetailsBottomView.sivStartRoute.setImageDrawable(null);
                     if (RoutePackage.getInstance().isBelongRouteParam(MapType.MAIN_SCREEN_MAIN_MAP, poiInfoEntity)) {
@@ -1567,7 +1582,7 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
                                 .setUpdateTime(new Date().getTime());
                         if (ConvertUtils.isEmpty(mPoiInfoEntity.getPid())) {
                             //逆地理搜索出的点无poiId，需自己拼接
-                            mPoiInfoEntity.setPid(mPoiInfoEntity.getPoint().getLon() + ""
+                            mPoiInfoEntity.setPid(mPoiInfoEntity.getPoint().getLon() + "_"
                                     + mPoiInfoEntity.getPoint().getLat());
                         }
                         mPoiInfoEntity.setFavoriteInfo(favoriteInfo);
@@ -1643,11 +1658,16 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
     /**
      * @param b 是否从导航进入的搜索页面
      */
-    public void setNaviControl(boolean b) {
+    public void setNaviControl(final boolean b) {
         mIsOpenFromNavi = b;
     }
 
     public boolean getIsOpenFromNavi() {
         return mIsOpenFromNavi;
     }
+
+    public void setIsEnd(final boolean isEnd) {
+        this.mIsEnd = isEnd;
+    }
+
 }

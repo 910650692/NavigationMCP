@@ -28,7 +28,6 @@
         <com.fy.navi.ui.view.SkinConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:paddingStart="@dimen/dp_6"
             android:paddingEnd= "@dimen/dp_25">
 
             <com.fy.navi.ui.view.SkinTextView
@@ -40,7 +39,7 @@
                 android:text="@{layoutPosition}"
                 android:textColor="@color/search_quick_tab_view_color"
                 android:textSize="@dimen/sp_26"
-                android:layout_marginStart="@dimen/dp_10"
+                android:layout_marginStart="@dimen/dp_25"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -51,6 +50,7 @@
                 android:id="@+id/sk_icon_layout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_6"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
@@ -59,15 +59,15 @@
                     android:id="@+id/search_icon"
                     android:layout_width="@dimen/dp_49"
                     android:layout_height="@dimen/dp_49"
-                    android:src="@drawable/search_poi_icon"
+                    android:src="@drawable/search_poi_icon_sw1225"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <com.fy.navi.ui.view.SkinImageView
                     android:id="@+id/poi_icon"
-                    android:layout_width="@dimen/dp_58"
-                    android:layout_height="@dimen/dp_58"
-                    android:src="@drawable/search_poi_icon"
+                    android:layout_width="@dimen/dp_49"
+                    android:layout_height="@dimen/dp_49"
+                    android:src="@drawable/search_poi_icon_sw1225"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
@@ -77,11 +77,11 @@
                 android:id="@+id/crl_poi_des"
                 android:layout_width="@dimen/dp_0"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_6"
+                android:layout_marginStart="@dimen/dp_61"
                 android:orientation="vertical"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/poi_to_navi"
-                app:layout_constraintStart_toEndOf="@id/sk_icon_layout"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
                 <com.fy.navi.ui.view.SkinTextView
@@ -110,7 +110,7 @@
                         android:maxLines="1"
                         android:text="100m"
                         android:textColor="@color/search_quick_tab_view_color"
-                        android:textSize="@dimen/sp_30"
+                        android:textSize="@dimen/sp_26"
                         tools:text="100Km" />
 
                     <View

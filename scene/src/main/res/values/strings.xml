@@ -7,6 +7,9 @@
     <string name="gas_95">95#</string>
     <string name="gas_92">92#</string>
 
+    <!-- 主图相关 -->
+    <string name="main_level_scale">200米</string>
+
     <!-- 搜索相关 -->
     <string name="main_search_hint">搜索目的地</string>
     <string name="frequent_search_hint">请输入简体中文，拼音和字母</string>
@@ -282,9 +285,10 @@
     <string name="unlock_tip_success">地锁已成功下降</string>
     <string name="unlock_tip_fail">地锁下降失败，请重试</string>
     <string name="reservation_no_lock">无地锁，不支持预约</string>
+    <string name="equipment_offline">该充电桩离网</string>
     <string name="equipment_use">该充电桩已被占用</string>
     <string name="equipment_error">该充电桩存在故障</string>
-    <string name="cancel_num_tip">您已取消%s次，超过3次不可取消</string>
+    <string name="cancel_num_tip">您已取消%s次，超过3次不可预约</string>
 
     <!--搜索主页快捷搜-->
     <string-array name="main_search_categories_name">

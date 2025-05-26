@@ -66,8 +66,6 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
     private List<SingleCommandInfo> mCommandParamList = new ArrayList<>();
 
 
-
-
     /**
      * 放大/缩小地图
      *
@@ -928,7 +926,7 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
                     mCommandParamList.add(singleCommandInfo);
                     return CallResponse.createSuccessResponse();
                 } else {
-                    return VoiceSearchManager.getInstance().searchPoiInfo(IVrBridgeConstant.VoiceSearchType.ADD_FAVORITE, poi, poiCallback);
+                    return VoiceSearchManager.getInstance().searchForFavorite(poi, poiCallback);
                 }
             case IVrBridgeConstant.DestType.HOME:
             case IVrBridgeConstant.DestType.COMPANY:
@@ -1946,8 +1944,8 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
     /**
      * 当HMI处于后台，切换到前台
      *
-     * @return  是否需要保存当前指令， true:保存，当底图加载完成再继续执行指令
-     *                             false:不保存，只执行打开应用操作
+     * @return 是否需要保存当前指令， true:保存，当底图加载完成再继续执行指令
+     * false:不保存，只执行打开应用操作
      */
     private boolean openMapWhenBackground() {
         final int foregroundStatus = NaviPackage.getInstance().getIsAppInForeground();
@@ -2166,7 +2164,7 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
                 }
                 final SingleCommandInfo singleCommandInfo = mCommandParamList.remove(0);
                 if (null != singleCommandInfo) {
-                    VoiceSearchManager.getInstance().searchPoiInfo(IVrBridgeConstant.VoiceSearchType.ADD_FAVORITE,
+                    VoiceSearchManager.getInstance().searchForFavorite(
                             singleCommandInfo.getPoiName(), singleCommandInfo.getPoiCallback());
                 }
                 break;

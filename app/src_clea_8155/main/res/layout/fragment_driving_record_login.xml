@@ -59,7 +59,6 @@
             android:visibility="@{ViewModel.mLoginVisible? View.VISIBLE : View.GONE}"
             android:layout_width="match_parent"
             android:layout_height="fill_parent"
-            android:layout_marginTop="@dimen/dp_123"
             android:orientation="vertical">
 
             <!--登录二维码-->
@@ -67,6 +66,7 @@
                 android:id="@+id/code_img"
                 android:layout_width="@dimen/dp_221"
                 android:layout_height="@dimen/dp_221"
+                android:layout_marginTop="@dimen/dp_123"
                 android:layout_gravity="center"
                 android:padding="@dimen/dp_15"
                 android:background="@drawable/bg_we_chat"
@@ -78,6 +78,7 @@
                 android:orientation="vertical"
                 android:layout_gravity="center"
                 android:gravity="center"
+                android:layout_marginTop="@dimen/dp_123"
                 tools:visibility="gone"
                 android:visibility="@{ViewModel.mQRCodeLoadingVisible ? View.VISIBLE : View.GONE}">
                 <com.fy.navi.ui.view.SkinImageView
@@ -100,6 +101,7 @@
                 android:gravity="center"
                 android:layout_gravity="center"
                 tools:visibility="visible"
+                android:layout_marginTop="@dimen/dp_123"
                 android:visibility="@{ViewModel.mQRCodeLoadFailedVisible ? View.VISIBLE : View.GONE}">
                 <com.fy.navi.ui.view.SkinTextView
                     android:layout_width="wrap_content"
@@ -133,7 +135,6 @@
             android:layout_width="match_parent"
             android:layout_height="fill_parent"
             android:orientation="vertical"
-            android:layout_marginTop="@dimen/dp_123"
             android:visibility="@{ViewModel.mLoginVisible? View.GONE : View.VISIBLE}"
             tools:visibility="visible">
 
@@ -156,7 +157,7 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/view_line"
                     android:layout_marginStart="@dimen/dp_68"
-                    android:layout_marginTop="@dimen/dp_122"
+                    android:layout_marginTop="@dimen/dp_123"
                     android:gravity="center"
                     android:orientation="vertical">
                     <com.fy.navi.ui.view.SkinImageView

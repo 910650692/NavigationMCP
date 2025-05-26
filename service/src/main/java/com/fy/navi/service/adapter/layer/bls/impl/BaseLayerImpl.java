@@ -83,7 +83,7 @@ public class BaseLayerImpl<S extends BaseStyleAdapter> extends PrepareLayerStyle
         textureLoaderInitParam.strPkgName = "LayerImages.cmb";
         //cmb资源为merge资源
         textureLoaderInitParam.isMergeRes = true;
-        textureLoaderInitParam.vecResPath.add("/assets/blRes/LayerAsset/");
+        textureLoaderInitParam.vecResPath.add(GBLCacheFilePath.BLS_ASSETS_LAYER_PATH);
         return textureLoaderInitParam;
     }
 
@@ -94,8 +94,8 @@ public class BaseLayerImpl<S extends BaseStyleAdapter> extends PrepareLayerStyle
         this.context = context;
         this.mapType = mapType;
         this.styleAdapter = createStyleAdapter();
-        this.mapView.addTextureLoader(textureLoaderInitParam());
-        setParam(styleAdapter);
+//        this.mapView.addTextureLoader(textureLoaderInitParam());
+//        setParam(styleAdapter);
     }
 
     public int getEngineId() {
@@ -193,14 +193,16 @@ public class BaseLayerImpl<S extends BaseStyleAdapter> extends PrepareLayerStyle
 
     @Override
     public boolean getCustomTexture(BaseLayer layer, LayerItem item, ItemStyleInfo styleInfo, CustomTextureParam customTexture) {
-        Logger.e(TAG, getClass().getSimpleName() + " mapType = " + mapType + " 图层 :" + layer.getName() + " ;图元业务类型 :" + item.getBusinessType() + " ; 图元 ：" + item.getItemType() + " ; 是否可见 :" + item.getVisible());
-        return super.getCustomTexture(layer, item, styleInfo, customTexture);
+        boolean result = super.getCustomTexture(layer, item, styleInfo, customTexture);
+        Logger.e(TAG, getClass().getSimpleName() + " mapType = " + mapType + " 图层 :" + layer.getName() + " ;图元业务类型 :" + item.getBusinessType() + " ; 图元 ：" + item.getItemType() + " ; 是否可见 :" + item.getVisible() + ";result =" + result);
+        return result;
     }
 
     @Override
     public boolean updateCustomTexture(BaseLayer layer, LayerItem item, ItemStyleInfo styleInfo, CustomUpdateParam updateParam) {
-        Logger.e(TAG, getClass().getSimpleName() + " mapType = " + mapType + " 图层 :" + layer.getName() + " ;图元业务类型 :" + item.getBusinessType() + " ; 图元 ：" + item.getItemType() + " ; 是否可见 :" + item.getVisible());
-        return super.updateCustomTexture(layer, item, styleInfo, updateParam);
+        boolean result = super.updateCustomTexture(layer, item, styleInfo, updateParam);
+        Logger.e(TAG, getClass().getSimpleName() + " mapType = " + mapType + " 图层 :" + layer.getName() + " ;图元业务类型 :" + item.getBusinessType() + " ; 图元 ：" + item.getItemType() + " ; 是否可见 :" + item.getVisible() + ";result =" + result);
+        return result;
     }
 
     @Override
@@ -230,7 +232,6 @@ public class BaseLayerImpl<S extends BaseStyleAdapter> extends PrepareLayerStyle
     @Override
     public int getMarkerId(BaseLayer layer, LayerItem item, ItemStyleInfo styleInfo) {
         int markerId = super.getMarkerId(layer, item, styleInfo);
-        Logger.d(TAG, "getMarkerId styleInfo " + styleInfo.markerGroup);
         boolean isAddSuccess = false;
         LayerTexture texture = layer.getMapView().getLayerTexture(markerId);
         if (getStyleAdapter() != null && ConvertUtils.isNull(texture)) {
@@ -240,8 +241,6 @@ public class BaseLayerImpl<S extends BaseStyleAdapter> extends PrepareLayerStyle
                 markerId = texture.resID;
             }
         }
-
-        Logger.d(TAG, "getMarkerId  图元id " + item.getID() + " 选中态 " + item.getFocus());
         Logger.d(TAG, getClass().getSimpleName() + " mapType = " + mapType + " 图层 :" + layer.getName() + " ;图元业务类型 :" + item.getBusinessType() + " ; 图元 :" + item.getItemType() + " ; 是否可见 :" + item.getVisible()
                 + "\n" + (isAddSuccess ? "使用 自定义 " : " 使用 默认 ") + " 纹理信息 :{ markerRes = " + styleInfo.markerId + " ; resID = " + texture.resID + " ; markerId = " + markerId + " }");
         return markerId;

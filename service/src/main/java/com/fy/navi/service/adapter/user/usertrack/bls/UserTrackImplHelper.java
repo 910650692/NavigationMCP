@@ -235,7 +235,7 @@ public class UserTrackImplHelper implements IUserTrackObserver, IGpsInfoGetter {
         final HistoryRouteItem item = new HistoryRouteItem();
         if (!ConvertUtils.isEmpty(poi)) {
             item.id = poi.getId();
-            item.type = poi.getType();
+            item.type = 302;//据高德反馈，在线时type固定为302
             item.updateTime = poi.getUpdateTime();
             item.startLoc = new Coord2DDouble(poi.getStartLoc().getLon(), poi.getStartLoc().getLat());
             item.endLoc = new Coord2DDouble(poi.getEndLoc().getLon(), poi.getEndLoc().getLat());

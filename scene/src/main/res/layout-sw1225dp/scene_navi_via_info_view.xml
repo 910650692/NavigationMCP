@@ -11,26 +11,25 @@
     </data>
 
     <com.fy.navi.ui.view.SkinConstraintLayout
-        android:layout_width="@dimen/dp_708"
+        android:layout_width="@dimen/dp_545"
         android:layout_height="wrap_content">
 
         <com.fy.navi.ui.view.SkinView
             android:id="@+id/sv_bottom_view"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_92"
-            android:layout_marginTop="@dimen/dp_30"
+            android:layout_height="@dimen/dp_78"
             android:background="@drawable/bg_navi_tbt_bottom_view" />
 
         <com.fy.navi.ui.view.SkinTextView
             android:id="@+id/siv_way"
-            android:layout_width="@dimen/dp_44"
-            android:layout_height="@dimen/dp_44"
+            android:layout_width="@dimen/dp_37"
+            android:layout_height="@dimen/dp_37"
             android:layout_marginStart="@dimen/dp_32"
             android:background="@drawable/img_navi_via_item_btn_pass"
             android:gravity="center"
             android:text="@string/navi_via_item_pass"
             android:textColor="@color/navi_color_FFFFFF_100"
-            android:textSize="@dimen/sp_30"
+            android:textSize="@dimen/sp_22"
             app:layout_constraintBottom_toBottomOf="@id/sv_bottom_view"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@id/sv_bottom_view" />
@@ -39,12 +38,12 @@
             android:id="@+id/stv_way"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_32"
+            android:layout_marginStart="@dimen/dp_27"
             android:ellipsize="end"
             android:maxWidth="@dimen/dp_242"
             android:maxLines="1"
             android:textColor="@color/common_title_purple_color"
-            android:textSize="@dimen/sp_34"
+            android:textSize="@dimen/sp_29"
             app:layout_constraintBottom_toBottomOf="@id/sv_bottom_view"
             app:layout_constraintStart_toEndOf="@id/siv_way"
             app:layout_constraintTop_toTopOf="@id/sv_bottom_view"
@@ -54,10 +53,10 @@
             android:id="@+id/stv_way_arrive"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/dp_30"
+            android:layout_marginEnd="@dimen/dp_26"
             android:text="@string/navi_arrived"
             android:textColor="@color/common_title_color"
-            android:textSize="@dimen/sp_34"
+            android:textSize="@dimen/sp_29"
             android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="@id/sv_bottom_view"
             app:layout_constraintEnd_toEndOf="parent"
@@ -67,10 +66,9 @@
             android:id="@+id/stv_via_count"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_24"
-            android:layout_marginEnd="@dimen/dp_30"
+            android:layout_marginEnd="@dimen/dp_26"
             android:textColor="@color/common_title_color"
-            android:textSize="@dimen/sp_34"
+            android:textSize="@dimen/sp_29"
             android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="@id/sv_bottom_view"
             app:layout_constraintEnd_toEndOf="@+id/sv_bottom_view"

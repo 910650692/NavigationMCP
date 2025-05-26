@@ -56,10 +56,8 @@ public class ChargeEquipmentListAdapter extends RecyclerView.Adapter<ChargeEquip
         holder.mBinding.setHandler(new MyEventHandle());
 
         if(info.getmConnectorInfoItem().get(0).getmParkingLockFlag() == 0 || !"1".equals(info.getmConnectorInfoItem().get(0).getmStatus())){
-            holder.mBinding.chargeReservationButton.setEnabled(false);
             holder.mBinding.chargeReservationButton.setAlpha(0.5F);
         }else{
-            holder.mBinding.chargeReservationButton.setEnabled(true);
             holder.mBinding.chargeReservationButton.setAlpha(1F);
         }
         holder.mBinding.equipmentUnlock.setText(info.getmConnectorInfoItem().get(0).getmLockStatus() == 10 ? mContext.getString(R.string.charge_lock) : mContext.getString(R.string.charge_unlock));
@@ -88,6 +86,9 @@ public class ChargeEquipmentListAdapter extends RecyclerView.Adapter<ChargeEquip
             return;
         }
         switch (info.getmStatus()){
+            case "0":
+                ToastUtils.Companion.getInstance().showCustomToastView(mContext.getString(R.string.equipment_offline));
+                return;
             case "2":
             case "3":
                 ToastUtils.Companion.getInstance().showCustomToastView(mContext.getString(R.string.equipment_use));

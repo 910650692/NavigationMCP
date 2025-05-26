@@ -27,7 +27,7 @@
             android:layout_marginBottom="@dimen/dp_280"
             android:minHeight="@dimen/dp_640"
             android:padding="@dimen/dp_34"
-            android:layout_marginTop="@dimen/dp_m_51"
+            android:layout_marginTop="@dimen/dp_m_40"
             android:background="@drawable/bg_shadow_navi_ndlc_8155">
             <com.fy.navi.ui.view.SkinLinearLayout
                 android:id="@+id/tv_favorite_switch"

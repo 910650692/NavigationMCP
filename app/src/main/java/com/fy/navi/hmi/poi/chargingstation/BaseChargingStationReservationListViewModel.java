@@ -4,6 +4,7 @@ import android.app.Application;
 
 import androidx.annotation.NonNull;
 
+import com.android.utils.ConvertUtils;
 import com.android.utils.ResourceUtils;
 import com.android.utils.ToastUtils;
 import com.android.utils.gson.GsonUtils;
@@ -74,7 +75,8 @@ public class BaseChargingStationReservationListViewModel extends BaseViewModel<C
     public void onQueryReservation(BaseRep result){
         if(AutoMapConstant.NetSearchKey.SUCCESS_CODE.equals(result.getResultCode())) {
             Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "code" + result.getResultCode());
-            ArrayList<ReservationInfo> list = new ArrayList<>();
+            ArrayList<ReservationInfo> cancelList = new ArrayList<>();
+            ArrayList<ReservationInfo> PreList = new ArrayList<>();
             // 回调出的数据转换List
             try {
                 JSONObject jsonObject = new JSONObject(GsonUtils.toJson(result.getDataSet()));
@@ -83,14 +85,31 @@ public class BaseChargingStationReservationListViewModel extends BaseViewModel<C
                 for (int i = 0; i < jsonArray.length(); i++) {
                     ReservationInfo reservationInfo = GsonUtils.fromJson(String.valueOf(jsonArray.get(i)), ReservationInfo.class);
                     if (reservationInfo.getmUserId().equals(userId) && reservationInfo.getmStatus() == 3) {
-                        list.add(reservationInfo);
+                        cancelList.add(reservationInfo);
+                    }
+                    if (reservationInfo.getmUserId().equals(userId) && reservationInfo.getmStatus() == 1) {
+                        PreList.add(reservationInfo);
                     }
                 }
-                mView.notifyCancelReservation(list);
+                if(!ConvertUtils.isEmpty(cancelList)){
+                    mView.notifyCancelReservation(cancelList);
+                }else if(!ConvertUtils.isEmpty(PreList)){
+                    mView.notifyReadyReservation(PreList);
+                }
+
             } catch (JSONException e) {
                 throw new RuntimeException(e);
             }
         }else{
+            Logger.e(MapDefaultFinalTag.SEARCH_HMI_TAG,"onQueryEquipmentResult error");
+        }
+    }
+
+    public void onCancelReservation(BaseRep result){
+        if(AutoMapConstant.NetSearchKey.SUCCESS_CODE.equals(result.getResultCode())){
+            mView.notifyCancelSuccess();
+        }else{
+            ToastUtils.Companion.getInstance().showCustomToastView(ResourceUtils.Companion.getInstance().getString(R.string.query_error));
             Logger.e(MapDefaultFinalTag.SEARCH_HMI_TAG,"onQueryEquipmentResult error");
         }
     }

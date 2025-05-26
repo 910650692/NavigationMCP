@@ -339,12 +339,7 @@ public final class UserTrackPackage implements UserTrackAdapterCallBack, SearchR
         if (bean == null) {
             return -1;
         }
-        final List<History> history = mHistoryManager.getByStartEndPoiAndTime(
-                bean.getFromPoi().getName(), bean.getToPoi().getName(), bean.getTime());
-        if (history != null) {
-            mHistoryManager.deleteByStartEndPoiAndTime(
-                    bean.getFromPoi().getName(), bean.getToPoi().getName(), bean.getTime());
-        }
+        mHistoryManager.deleteValue(Long.parseLong(bean.getId()));
         return 0;
     }
 
@@ -353,6 +348,7 @@ public final class UserTrackPackage implements UserTrackAdapterCallBack, SearchR
      * @return 删除结果
      */
     public int clearHistoryRoute() {
+        Logger.d(TAG, "clearHistoryRoute ");
         if (isLogin()) {
             return mUserTrackAdapter.clearHistoryRoute();
         } else {

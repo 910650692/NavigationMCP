@@ -70,6 +70,7 @@ import com.fy.navi.ui.action.Action;
 import com.fy.navi.ui.base.BaseFragment;
 import com.fy.navi.ui.base.BaseViewModel;
 import com.fy.navi.ui.base.StackManager;
+import com.fy.navi.vrbridge.IVrBridgeConstant;
 
 import java.util.Date;
 import java.util.concurrent.ScheduledFuture;
@@ -286,8 +287,17 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
     };
 
     public Action carHeader = () -> {
-        mModel.switchMapMode();
         showOrHideSelfParkingView(false);
+        boolean result = mModel.switchMapMode();
+        String modeText = mModel.getCurrentMapModelText();
+        if(!result){
+            ToastUtils.Companion.getInstance().showCustomToastView(String.
+                    format(ResourceUtils.Companion.getInstance().getString(com.fy.navi.scene.R.string.navi_map_mode_switch_fail), modeText));
+            return;
+        }
+        ToastUtils.Companion.getInstance().showCustomToastView(String.
+                format(ResourceUtils.Companion.getInstance().getString(
+                        com.fy.navi.scene.R.string.switch_car_angle), modeText));
     };
 
     public Action messageCenterGone = () -> {
@@ -552,12 +562,13 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         BuryPointController.getInstance().setBuryProps(properties);
     }
 
-    public void toSearchResultFragment(String keyword) {
-        Bundle args = new Bundle();
+    public void toSearchResultFragment(final String keyword, final boolean isEnd) {
+        final Bundle args = new Bundle();
         args.putString(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SOURCE_FRAGMENT, AutoMapConstant.SourceFragment.MAIN_SEARCH_FRAGMENT);
         args.putInt(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_TYPE, AutoMapConstant.SearchType.SEARCH_KEYWORD);
         args.putString(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_KEYWORD, keyword);
         args.putParcelable(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_POI_LIST, null);
+        args.putBoolean(IVrBridgeConstant.VoiceIntentParams.IS_END, isEnd);
         addFragment(new SearchResultFragment(), args);
     }
 
@@ -595,18 +606,34 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
     /**
      * 跳转到设置公司-家界面.
      *
-     * @param type    int，1-HOME，2-COMPANY.
+     * @param type    int，0--Common 1-HOME 2-COMPANY.
      * @param keyword 搜索关键字.
      */
-    public void toHomeCompanyFragment(int type, String keyword) {
-        Bundle args = new Bundle();
-        args.putString(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SOURCE_FRAGMENT,
-                AutoMapConstant.SourceFragment.MAIN_SEARCH_FRAGMENT);
+    public void toFavoriteFragment(final int type, final String keyword) {
+        String sourceFragment = null;
+        switch (type) {
+            case 0:
+                sourceFragment = AutoMapConstant.SourceFragment.FRAGMENT_COMMON;
+                break;
+            case 1:
+                sourceFragment = AutoMapConstant.SourceFragment.FRAGMENT_HOME;
+                break;
+            case 2:
+                sourceFragment = AutoMapConstant.SourceFragment.FRAGMENT_COMPANY;
+                break;
+            default:
+                break;
+        }
+        if (null == sourceFragment) {
+            return;
+        }
+
+        final Bundle args = new Bundle();
+        args.putString(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SOURCE_FRAGMENT, sourceFragment);
         args.putInt(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_TYPE,
                 AutoMapConstant.SearchType.SEARCH_KEYWORD);
-        args.putString(AutoMapConstant.VoiceKeyWord.BUNDLE_VOICE_KEY_WORD, keyword);
-        args.putInt(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_OPEN_HOME_COMPANY, type);
-        addFragment(new HomeCompanyFragment(), args);
+        args.putString(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_KEYWORD, keyword);
+        addFragment(new SearchResultFragment(), args);
     }
 
     /**

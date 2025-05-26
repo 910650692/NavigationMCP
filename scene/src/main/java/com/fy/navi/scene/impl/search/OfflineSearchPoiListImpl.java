@@ -6,7 +6,9 @@ import com.fy.navi.scene.BaseSceneModel;
 import com.fy.navi.scene.api.search.ISceneSearchPoiList;
 import com.fy.navi.scene.ui.search.OfflineSearchPoiList;
 import com.fy.navi.service.MapDefaultFinalTag;
+import com.fy.navi.service.define.user.usertrack.SearchHistoryItemBean;
 import com.fy.navi.service.logicpaket.search.SearchPackage;
+import com.fy.navi.service.logicpaket.user.usertrack.UserTrackPackage;
 import com.fy.navi.ui.base.StackManager;
 
 /**
@@ -17,10 +19,12 @@ import com.fy.navi.ui.base.StackManager;
  */
 public class OfflineSearchPoiListImpl extends BaseSceneModel<OfflineSearchPoiList> implements ISceneSearchPoiList {
     private final SearchPackage mSearchPackage;
+    private UserTrackPackage mUserTrackPackage;
 
     public OfflineSearchPoiListImpl(final OfflineSearchPoiList scrollView) {
         super(scrollView);
         mSearchPackage = SearchPackage.getInstance();
+        mUserTrackPackage = UserTrackPackage.getInstance();
     }
 
     @Override
@@ -39,6 +43,10 @@ public class OfflineSearchPoiListImpl extends BaseSceneModel<OfflineSearchPoiLis
     public void keywordSearch(final int pageNum, final String keyword, final int adCode, final boolean isSilent) {
         Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "keywordSearch", keyword);
         mSearchPackage.keywordSearch(pageNum, keyword, adCode, isSilent);
+        SearchHistoryItemBean item = new SearchHistoryItemBean();
+        item.setName(keyword);
+        item.setUpdateTime(System.currentTimeMillis());
+        mUserTrackPackage.addSearchHistory(item);
     }
 
     /**

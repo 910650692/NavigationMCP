@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.alibaba.android.arouter.launcher.ARouter;
 import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
+import com.android.utils.thread.ThreadManager;
 import com.fy.navi.scene.RoutePath;
 import com.fy.navi.scene.api.navi.INaviViaItemClickListener;
 import com.fy.navi.scene.databinding.SceneNaviViaListViewBinding;
@@ -103,14 +104,16 @@ public class SceneNaviViaListView extends NaviSceneBase<SceneNaviViaListViewBind
 
     @Override
     public void close() {
-        super.close();
-        OpenApiHelper.exitPreview(mMapTypeId);
-        mScreenViewModel.updateSceneVisible(false);
-        // taskId：1015285 途经点收起后需要关闭继续导航按钮
-        NaviSceneManager.getInstance().notifySceneStateChange(INaviSceneEvent.SceneStateChangeType.
-                SceneCloseState, NaviSceneId.NAVI_CONTINUE);
-        ImmersiveStatusScene.getInstance().setImmersiveStatus(MapType.MAIN_SCREEN_MAIN_MAP,
-                ImersiveStatus.IMERSIVE);
+        ThreadManager.getInstance().postUi(() -> {
+            super.close();
+            OpenApiHelper.exitPreview(mMapTypeId);
+            mScreenViewModel.updateSceneVisible(false);
+            // taskId：1015285 途经点收起后需要关闭继续导航按钮
+            NaviSceneManager.getInstance().notifySceneStateChange(INaviSceneEvent.SceneStateChangeType.
+                    SceneCloseState, NaviSceneId.NAVI_CONTINUE);
+            ImmersiveStatusScene.getInstance().setImmersiveStatus(MapType.MAIN_SCREEN_MAIN_MAP,
+                    ImersiveStatus.IMERSIVE);
+        });
     }
 
     @Override

@@ -40,49 +40,49 @@
                     android:id="@+id/siv_only_service_service_gas_station"
                     android:layout_width="@dimen/dp_36"
                     android:layout_height="@dimen/dp_36"
-                    android:background="@drawable/img_refuel_42"
+                    android:background="@drawable/img_refuel_42_sw1225"
                     android:visibility="@{naviSapa.mFirstServiceGasStationVisible ? View.VISIBLE : View.GONE}" />
 
                 <com.fy.navi.ui.view.SkinImageView
                     android:id="@+id/siv_only_service_service_charge_station"
                     android:layout_width="@dimen/dp_36"
                     android:layout_height="@dimen/dp_36"
-                    android:background="@drawable/img_lightning_42"
+                    android:background="@drawable/img_lightning_42_sw1225"
                     android:visibility="@{naviSapa.mFirstServiceChargeStationVisible ? View.VISIBLE : View.GONE}" />
 
                 <com.fy.navi.ui.view.SkinImageView
                     android:id="@+id/siv_only_service_service_canteen"
                     android:layout_width="@dimen/dp_36"
                     android:layout_height="@dimen/dp_36"
-                    android:background="@drawable/img_gourmet_42"
+                    android:background="@drawable/img_gourmet_42_sw1225"
                     android:visibility="@{naviSapa.mFirstServiceCanteenVisible ? View.VISIBLE : View.GONE}" />
 
                 <com.fy.navi.ui.view.SkinImageView
                     android:id="@+id/siv_only_service_service_lavatory"
                     android:layout_width="@dimen/dp_36"
                     android:layout_height="@dimen/dp_36"
-                    android:background="@drawable/img_lavatory_42"
+                    android:background="@drawable/img_lavatory_42_sw1225"
                     android:visibility="@{naviSapa.mFirstServiceLavatoryVisible ? View.VISIBLE : View.GONE}" />
 
                 <com.fy.navi.ui.view.SkinImageView
                     android:id="@+id/siv_only_toll_service_maintenance"
                     android:layout_width="@dimen/dp_36"
                     android:layout_height="@dimen/dp_36"
-                    android:background="@drawable/img_maintenance_white_42"
+                    android:background="@drawable/img_maintenance_white_42_sw1225"
                     android:visibility="@{naviSapa.mFirstServiceMaintenanceVisible ? View.VISIBLE : View.GONE}" />
 
                 <com.fy.navi.ui.view.SkinImageView
                     android:id="@+id/siv_only_service_service_buy"
                     android:layout_width="@dimen/dp_36"
                     android:layout_height="@dimen/dp_36"
-                    android:background="@drawable/img_buy_42"
+                    android:background="@drawable/img_buy_42_sw1225"
                     android:visibility="@{naviSapa.mFirstServiceBuyVisible ? View.VISIBLE : View.GONE}" />
 
                 <com.fy.navi.ui.view.SkinImageView
                     android:id="@+id/siv_only_service_service_hotel"
                     android:layout_width="@dimen/dp_36"
                     android:layout_height="@dimen/dp_36"
-                    android:background="@drawable/img_groggery_42"
+                    android:background="@drawable/img_groggery_42_sw1225"
                     android:visibility="@{naviSapa.mFirstServiceHotelVisible ? View.VISIBLE : View.GONE}" />
 
             </com.fy.navi.ui.view.SkinLinearLayout>
@@ -97,7 +97,7 @@
                 android:maxWidth="@dimen/dp_150"
                 android:maxLines="1"
                 android:text="@{naviSapa.mFirstServiceName}"
-                android:textColor="@color/navi_color_FFFFFF_100"
+                android:textColor="@color/navi_color_FFFFFF_80"
                 android:textSize="@dimen/sp_29"
                 android:visibility="visible"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -165,7 +165,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/quick_charge"
-                    android:textColor="@color/navi_color_FFFFFF_100"
+                    android:textColor="@color/navi_color_FFFFFF_80"
                     android:textSize="@dimen/sp_26"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -176,7 +176,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/dp_8"
                     android:text="@{naviSapa.mFirstServiceFastFree}"
-                    android:textColor="@color/navi_color_FFFFFF_100"
+                    android:textColor="@color/navi_color_FFFFFF_80"
                     android:textSize="@dimen/sp_26"
                     app:layout_constraintBottom_toBottomOf="@+id/stv_first_service_quick_text"
                     app:layout_constraintStart_toEndOf="@+id/stv_first_service_quick_text"
@@ -213,7 +213,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/dp_8"
                     android:text="@{naviSapa.mFirstServiceSlowFree}"
-                    android:textColor="@color/navi_color_FFFFFF_100"
+                    android:textColor="@color/navi_color_FFFFFF_80"
                     android:textSize="@dimen/sp_26"
                     app:layout_constraintBottom_toBottomOf="@+id/stv_first_service_slow_text"
                     app:layout_constraintStart_toEndOf="@+id/stv_first_service_slow_text"
@@ -248,7 +248,7 @@
             android:layout_height="@dimen/dp_36"
             android:layout_marginStart="@dimen/dp_20"
             android:layout_marginTop="@dimen/dp_22"
-            android:background="@drawable/img_toll_station_42"
+            android:background="@drawable/img_toll_station_42_sw1225"
             app:layout_constraintStart_toEndOf="@+id/sapa_first_service_bg"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -261,7 +261,7 @@
             android:maxWidth="@dimen/dp_90"
             android:maxLines="1"
             android:text="@{naviSapa.mFirstServiceTollName}"
-            android:textColor="@color/navi_color_FFFFFF_100"
+            android:textColor="@color/navi_color_FFFFFF_80"
             android:textSize="@dimen/sp_29"
             app:layout_constraintBottom_toBottomOf="@+id/siv_first_service_toll_icon"
             app:layout_constraintStart_toEndOf="@+id/siv_first_service_toll_icon"

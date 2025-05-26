@@ -32,7 +32,7 @@
             android:layout_height="wrap_content"
             android:text="@string/shv_record_null"
             android:textColor="@color/search_color_ffffff_70"
-            android:textSize="@dimen/sp_30"
+            android:textSize="@dimen/sp_26"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

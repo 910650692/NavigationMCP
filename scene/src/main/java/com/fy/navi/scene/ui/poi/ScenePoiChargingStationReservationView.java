@@ -177,9 +177,9 @@ public class ScenePoiChargingStationReservationView extends BaseSceneView<SceneR
         mViewBinding.poiChargeUnlock.setText(connectorInfoItem.getmLockStatus() == 10 ? R.string.charge_lock : R.string.charge_unlock);
         mViewBinding.skPoiName.setText(mPoiInfoEntity.getName());
         mViewBinding.poiSecondAddress.setText(mPoiInfoEntity.getAddress());
-        mViewBinding.poiCancelText.setVisibility(connectorInfoItem.getmPreFlag() == 2 ? VISIBLE : GONE);
+        mViewBinding.poiCancelReservation.setVisibility(connectorInfoItem.getmPreFlag() == 2 ? VISIBLE : GONE);
         mViewBinding.poiChargeUnlock.setOnClickListener(v -> {
-            if(connectorInfoItem.getmLockStatus() != 10){
+            if(connectorInfoItem.getmLockStatus() == 50){
                 return;
             }
             openUnLockDialog();
@@ -187,7 +187,7 @@ public class ScenePoiChargingStationReservationView extends BaseSceneView<SceneR
         mViewBinding.poiGoHere.setOnClickListener(v -> {
             openRouteFragment(mPoiInfoEntity);
         });
-        mViewBinding.poiCancelText.setOnClickListener(v -> {
+        mViewBinding.poiCancelReservation.setOnClickListener(v -> {
             cancelReservation();
         });
     }
@@ -235,7 +235,6 @@ public class ScenePoiChargingStationReservationView extends BaseSceneView<SceneR
             @Override
             public void onCommitClick() {
             if(mCancelNumber >= MAX_CANCEL){
-                ToastUtils.Companion.getInstance().showCustomToastView(getContext().getString(R.string.reservation_max_time));
                 return;
             }
             mScreenViewModel.cancelReservation(mReservationInfo,(Activity) getContext());

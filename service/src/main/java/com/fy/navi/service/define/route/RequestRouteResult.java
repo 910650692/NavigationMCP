@@ -50,4 +50,6 @@ public class RequestRouteResult {
     private List<LayerItemRouteEndPoint> mLayerItemRouteEndPoint;
     /*** 是否快速导航 **/
     private boolean mFastNavi = false;
+    /*** 是否算路还原 **/
+    private boolean mRestoration = false;
 }

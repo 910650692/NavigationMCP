@@ -10,24 +10,25 @@
 
     <com.fy.navi.ui.view.SkinConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/dp_30">
+        android:layout_height="wrap_content">
 
         <com.fy.navi.ui.view.SkinTextView
             android:id="@+id/tv_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/main_map_limit_title_color"
-            android:textSize="@dimen/sp_34"
+            android:textSize="@dimen/sp_29"
+            android:layout_marginStart="@dimen/dp_34"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="周边城市"/>
 
         <com.fy.navi.ui.view.SkinImageView
             android:id="@+id/iv_contract"
-            android:layout_width="@dimen/dp_58"
-            android:layout_height="@dimen/dp_58"
+            android:layout_width="@dimen/dp_49"
+            android:layout_height="@dimen/dp_49"
             android:src="@drawable/img_limit_up"
+            android:layout_marginEnd="@dimen/dp_31"
             app:layout_constraintBottom_toBottomOf="@id/tv_title"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/tv_title" />
@@ -37,6 +38,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:numColumns="3"
+            android:paddingHorizontal="@dimen/dp_27"
             app:layout_constraintTop_toBottomOf="@+id/tv_title" />
 
     </com.fy.navi.ui.view.SkinConstraintLayout>

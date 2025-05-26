@@ -1,6 +1,0 @@
-<div id="route_pop_end_area" style="width:auto;height:auto;">
-  <div id="bg_div" style="display:flex;flex-direction:row;justify-content:center;align-items:center;width:auto;height:89px;background-image:global_image_route_end_area_point_tip_gohere_short_day_night;">
-    <image style="margin-left:18px;width:40px;height:40px;" src="global_image_route_end_area_point_tip_gohere_short_icon_day_night" />
-    <label id="name_text" style="margin-right:20px;margin-left:6px;font-size:24px;color:#000000;font-family:font_cn;max-width:192px;text-overflow:ellipsis;line-clamp:1;" lines="1">清华大学</label>
-  </div>
-</div>

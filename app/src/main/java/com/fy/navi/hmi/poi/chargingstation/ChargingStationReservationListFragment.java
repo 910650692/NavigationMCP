@@ -87,4 +87,12 @@ public class ChargingStationReservationListFragment extends BaseFragment<Fragmen
     public void notifyCancelReservation(ArrayList<ReservationInfo> list){
         mBinding.sceneChargeReservationList.notifyCancelReservation(list);
     }
+
+    public void notifyCancelSuccess(){
+        mBinding.sceneChargeReservationList.notifyCancelSuccess();
+    }
+
+    public void notifyReadyReservation(ArrayList<ReservationInfo> list){
+        mBinding.sceneChargeReservationList.notifyReadyReservation(list);
+    }
 }

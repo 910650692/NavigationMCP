@@ -88,6 +88,7 @@ public class UserTrackImpl implements IUserTrackApi {
         if (mUserTrackService == null) {
             return -1;
         }
+        Logger.d(TAG, "clearSearchHistory ");
         return mUserTrackService.clearSearchHistory(SyncMode.SyncModeNow);
     }
 
@@ -120,6 +121,7 @@ public class UserTrackImpl implements IUserTrackApi {
         if (mUserTrackService == null) {
             return -1;
         }
+        Logger.d(TAG, "clearHistoryRoute ");
         return mAdapterImplHelper.clearHistoryRoute();
     }
 

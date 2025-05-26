@@ -971,7 +971,7 @@ public class TimeUtils {
                 return false;
             }
             // 创建时间格式化器
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
             // 解析开始和结束时间
             LocalTime startTime = LocalTime.parse(times[0], formatter);
             LocalTime endTime = LocalTime.parse(times[1], formatter);

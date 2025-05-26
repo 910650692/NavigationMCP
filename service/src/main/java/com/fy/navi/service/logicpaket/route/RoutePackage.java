@@ -23,6 +23,7 @@ import com.fy.navi.service.define.bean.GeoPoint;
 import com.fy.navi.service.define.bean.PreviewParams;
 import com.fy.navi.service.define.layer.RouteLineLayerParam;
 import com.fy.navi.service.define.layer.refix.LayerItemRouteEndPoint;
+import com.fy.navi.service.define.layer.refix.LayerPointItemType;
 import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.navistatus.NaviStatus;
 import com.fy.navi.service.define.position.LocInfoBean;
@@ -178,6 +179,11 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
      */
     public void registerRouteObserver(final String key, final IRouteResultObserver observer) {
         mRouteResultObserverMap.put(key, observer);
+    }
+
+    /*清除指定路线类型扎标*/
+    public void clearRouteItemByType(MapType mapTypeId, LayerPointItemType type) {
+        mLayerAdapter.clearRouteItemByType(mapTypeId, type);
     }
 
     /**

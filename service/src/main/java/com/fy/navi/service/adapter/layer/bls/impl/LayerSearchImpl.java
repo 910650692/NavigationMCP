@@ -667,7 +667,9 @@ public class LayerSearchImpl extends BaseLayerImpl<LayerSearchStyleAdapter> {
             }
             case SEARCH_PARENT_AREA -> {
                 getLayerSearchControl().clearAllItems(BizSearchType.BizSearchTypePoiEndAreaPolygon);
+                getLayerSearchControl().clearAllItems(BizSearchType.BizSearchTypePoiEndAreaPolyline);
                 getLayerSearchControl().setVisible(BizSearchType.BizSearchTypePoiEndAreaPolygon, false);
+                getLayerSearchControl().setVisible(BizSearchType.BizSearchTypePoiEndAreaPolyline, false);
             }
             case SEARCH_PARENT_POINT -> {
                 getLayerSearchControl().clearAllItems(BizSearchType.BizSearchTypePoiParentPoint);

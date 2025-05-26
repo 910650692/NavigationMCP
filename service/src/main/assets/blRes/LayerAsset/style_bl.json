@@ -249,7 +249,7 @@
       },
       "route_end_point_layer": {
         "draw_priority": 140,
-        "sub_priority": 3500
+        "sub_priority": 3720
       },
       "route_via_point_layer": {
         "draw_priority": 140,

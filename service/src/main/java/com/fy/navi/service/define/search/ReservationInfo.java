@@ -15,7 +15,7 @@ import lombok.experimental.Accessors;
 @NoArgsConstructor
 @Accessors(chain = true)
 public class ReservationInfo implements Parcelable {
-    @SerializedName("connectorId")
+    @SerializedName("preNum")
     private String mPreNum;
     @SerializedName("status")
     private Integer mStatus;

@@ -1,6 +1,6 @@
 package com.fy.navi.ui.dialog;
 
-import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -14,7 +14,7 @@ import androidx.databinding.ViewDataBinding;
 
 import java.util.Objects;
 
-public abstract class BaseDialog<V extends ViewDataBinding> extends AlertDialog {
+public abstract class BaseDialog<V extends ViewDataBinding> extends Dialog {
     private static final String TAG = BaseDialog.class.getSimpleName();
     protected IBaseDialogClickListener mDialogClickListener;
     protected V mViewBinding;

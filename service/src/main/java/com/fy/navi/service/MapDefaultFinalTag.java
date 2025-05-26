@@ -86,4 +86,7 @@ public interface MapDefaultFinalTag {
     String NAVI_SCENE_SAP = DEFAULT_TAG + "_Navi" + SCENE_TAG + "_Sap";
     /*** NaviApp_Navi_Scene_Cross **/
     String NAVI_SCENE_CROSS = DEFAULT_TAG + "_Navi" + SCENE_TAG + "_Cross";
+
+    /*** NaviApp_Navi_Bury_Point **/
+    String NAVI_BURY_POINT = DEFAULT_TAG + "_Navi" + "Bury_Point";
 }

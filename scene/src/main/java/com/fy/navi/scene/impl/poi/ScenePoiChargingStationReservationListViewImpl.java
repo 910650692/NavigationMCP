@@ -15,6 +15,7 @@ import com.fy.navi.service.define.search.ChargeInfo;
 import com.fy.navi.service.define.search.ConnectorInfoItem;
 import com.fy.navi.service.define.search.EquipmentInfo;
 import com.fy.navi.service.define.search.PoiInfoEntity;
+import com.fy.navi.service.define.search.ReservationInfo;
 import com.fy.navi.service.define.user.account.AccessTokenParam;
 import com.fy.navi.service.logicpaket.calibration.CalibrationPackage;
 import com.fy.navi.service.logicpaket.search.SearchPackage;
@@ -81,7 +82,7 @@ public class ScenePoiChargingStationReservationListViewImpl extends BaseSceneMod
         });
     }
 
-    public void queryReservation(PoiInfoEntity poiInfo,Activity activity){
+    public void queryReservation(PoiInfoEntity poiInfo,Activity activity,Integer status){
         AccessTokenParam param = new AccessTokenParam(
                 AutoMapConstant.AccountTokenParamType.ACCOUNT_TYPE_PATAC_HMI,
                 AutoMapConstant.AccountTokenParamType.AUTH_TOKEN_TYPE_READ_ONLY,
@@ -95,7 +96,24 @@ public class ScenePoiChargingStationReservationListViewImpl extends BaseSceneMod
             String idpUserId = AccountPackage.getInstance().getUserId();
             String accessToken = AccountPackage.getInstance().getAccessToken(param);
             String vehicleBrand = "2";
-            mSearchPackage.queryReservation(poiInfo,vehicleBrand,3,idpUserId,accessToken);
+            mSearchPackage.queryReservation(poiInfo,vehicleBrand,status,idpUserId,accessToken);
+        });
+    }
+
+    public void cancelReservation(ReservationInfo reservationInfo, Activity activity){
+        AccessTokenParam param = new AccessTokenParam(
+                AutoMapConstant.AccountTokenParamType.ACCOUNT_TYPE_PATAC_HMI,
+                AutoMapConstant.AccountTokenParamType.AUTH_TOKEN_TYPE_READ_ONLY,
+                null,
+                activity,
+                null,
+                null,
+                null,
+                null);
+        ThreadManager.getInstance().runAsync(() -> {
+            String idpUserId = AccountPackage.getInstance().getUserId();
+            String accessToken = AccountPackage.getInstance().getAccessToken(param);
+            mSearchPackage.cancelReservation(reservationInfo,idpUserId,accessToken);
         });
     }
 

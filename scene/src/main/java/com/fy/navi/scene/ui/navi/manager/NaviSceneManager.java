@@ -127,8 +127,8 @@ public class NaviSceneManager implements INaviSceneEvent {
                                         logHideAndShow.append("旧卡隐藏，开始显示新卡，新卡显示结束继续显示旧卡 旧卡:");
                                     }
                                     logHideAndShow.append("id>").append(oldSceneView.getSceneId().ordinal()).append(":").append(oldSceneView.getSceneName()).append(" ");
-                                    hideScene(oldSceneView);
                                     showScene(newSceneBase);
+                                    hideScene(oldSceneView);
                                 }
                                 case NaviSceneRule.SCENE_CLOSE_AND_SHOW -> {
                                     //Logger.i(TAG, "旧卡关闭，开始显示新卡", "oldSceneView:" + oldSceneView.getSceneName() + " oldId:" + oldSceneView.getSceneId().ordinal();
@@ -138,8 +138,8 @@ public class NaviSceneManager implements INaviSceneEvent {
                                     }
                                     logCloseAndShow.append("id>").append(oldSceneView.getSceneId().ordinal()).append(":").append(oldSceneView.getSceneName())
                                             .append(">state:").append(oldSceneView.getSceneState()).append(" ");
-                                    closeScene(oldSceneView);
                                     showScene(newSceneBase);
+                                    closeScene(oldSceneView);
                                 }
                                 default -> {
                                     //Logger.i(TAG, "不做任何处理", "oldSceneView:" + oldSceneView.getSceneName() + " oldId:" + oldSceneView.getSceneId().ordinal());
@@ -333,12 +333,18 @@ public class NaviSceneManager implements INaviSceneEvent {
             for (NaviSceneBase newScene : hideSceneList) {
                 logBuilder.append(" ").append(newScene.getSceneName()).append(":").append(newScene.getSceneId().ordinal());
             }
-            Logger.i(TAG, "isShowControl:" + isShowControl + logBuilder);
-            ThreadManager.getInstance().postUi(() -> {
+            if(ThreadManager.getInstance().isMainThread()){
                 for (NaviSceneBase newScene : hideSceneList) {
                     onShowScene(newScene.getSceneId());
                 }
-            });
+            } else {
+                ThreadManager.getInstance().postUi(() -> {
+                    for (NaviSceneBase newScene : hideSceneList) {
+                        onShowScene(newScene.getSceneId());
+                    }
+                });
+            }
+            Logger.i(TAG, ThreadManager.getInstance().getCurrentThreadName()+" isShowControl:" + isShowControl + logBuilder);
         }
     }
 

@@ -200,6 +200,7 @@ public class SceneCollectView extends BaseSceneView<SceneCollectViewBinding, Sce
         mViewBinding.naviBroadcastStandard.setOnClickListener(view -> {
             mIsChargingCollect = false;
             hideEmptyView();
+            mAdapter.notifyList(new ArrayList<>());
             final ArrayList<PoiInfoEntity> list = mScreenViewModel.getFavoriteListAsync();
             if (ConvertUtils.isEmpty(list)) {
                 mViewBinding.sllNoFavorite.setVisibility(VISIBLE);
@@ -289,6 +290,13 @@ public class SceneCollectView extends BaseSceneView<SceneCollectViewBinding, Sce
     public void setSourceFragment(final String sourceFragment) {
         if (ConvertUtils.equals(sourceFragment, AutoMapConstant.SourceFragment.FRAGMENT_MAIN_ALONG_WAY)) {
             mViewBinding.collectTitleBarView.sclCollectAdd.setVisibility(View.GONE);
+        }
+    }
+
+    public void setChargeType(){
+        if(mScreenViewModel.mPowerType.getValue() == 1 || mScreenViewModel.mPowerType.getValue() == 2){
+            mIsChargingCollect = false;
+            mViewBinding.naviBroadcastStandard.setChecked(true);
         }
     }
 

@@ -23,8 +23,8 @@
         <com.fy.navi.ui.view.SkinConstraintLayout
             android:layout_width="@dimen/dp_545"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_20"
-            android:paddingVertical="@dimen/dp_24"
+            android:layout_marginTop="@dimen/dp_17"
+            android:paddingVertical="@dimen/dp_17"
             android:minHeight="@dimen/dp_499"
             android:background="@drawable/bg_search_main_tab">
 

@@ -30,34 +30,33 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:focusable="false"
-            android:paddingStart="@dimen/dp_52"
-            android:paddingEnd="@dimen/dp_46">
-
-            <com.fy.navi.ui.view.SkinTextView
-                android:id="@+id/poi_num"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:minWidth="@dimen/dp_30"
-                android:text="@{layoutPosition}"
-                android:focusable="false"
-                android:visibility="gone"
-                android:textColor="@color/search_quick_tab_view_color"
-                android:textSize="@dimen/sp_38"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:text="1" />
+            android:paddingEnd="@dimen/dp_40">
 
 
             <com.fy.navi.ui.view.SkinConstraintLayout
                 android:id="@+id/sk_icon_layout"
-                android:layout_width="wrap_content"
+                android:layout_width="@dimen/dp_96"
                 android:layout_height="wrap_content"
                 android:focusable="false"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
+
+                <com.fy.navi.ui.view.SkinTextView
+                    android:id="@+id/poi_num"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:minWidth="@dimen/dp_30"
+                    android:text="@{layoutPosition}"
+                    android:textColor="@color/search_quick_tab_view_color"
+                    android:textSize="@dimen/sp_38"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:visibility="gone"
+                    tools:text="1" />
 
                 <com.fy.navi.ui.view.SkinImageView
                     android:id="@+id/search_icon"
@@ -66,8 +65,10 @@
                     android:focusable="false"
                     android:src="@drawable/search_poi_icon"
                     android:visibility="visible"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"/>
 
                 <com.fy.navi.ui.view.SkinImageView
                     android:id="@+id/poi_icon"
@@ -75,7 +76,9 @@
                     android:layout_height="@dimen/dp_74"
                     android:src="@drawable/search_poi_icon"
                     android:focusable="false"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
             </com.fy.navi.ui.view.SkinConstraintLayout>
@@ -86,7 +89,6 @@
                 android:layout_height="wrap_content"
                 android:focusable="true"
                 android:background="@drawable/bg_base_mfc_cadillac_bg_selector"
-                android:layout_marginStart="@dimen/dp_20"
                 android:orientation="vertical"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/poi_to_navi"
@@ -110,6 +112,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:focusable="false"
+                    android:layout_marginTop="@dimen/dp_14"
                     android:orientation="horizontal">
 
                     <com.fy.navi.ui.view.SkinTextView
@@ -117,7 +120,6 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:ellipsize="end"
-                        android:maxWidth="@dimen/dp_120"
                         android:maxLines="1"
                         android:text="100m"
                         android:focusable="false"
@@ -130,8 +132,8 @@
                         android:layout_width="@dimen/dp_1"
                         android:layout_height="@dimen/dp_40"
                         android:layout_gravity="center_vertical"
-                        android:layout_marginStart="@dimen/dp_10"
-                        android:layout_marginEnd="@dimen/dp_10"
+                        android:layout_marginStart="@dimen/dp_14"
+                        android:layout_marginEnd="@dimen/dp_14"
                         android:focusable="false"
                         android:background="@color/search_quick_tab_view_color" />
 
@@ -175,6 +177,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/st_go_here"
                     android:focusable="false"
+                    android:layout_marginTop="@dimen/dp_6"
                     android:textColor="@color/search_quick_tab_view_color"
                     android:textSize="@dimen/sp_38" />
             </com.fy.navi.ui.view.SkinLinearLayout>
@@ -209,7 +212,7 @@
                     android:id="@+id/stv_collect"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_3"
+                    android:layout_marginTop="@dimen/dp_6"
                     android:gravity="center"
                     android:text="收藏"
                     android:focusable="false"
@@ -240,6 +243,7 @@
                     android:gravity="center"
                     android:text="删除"
                     android:focusable="false"
+                    android:layout_marginTop="@dimen/dp_6"
                     android:textColor="@color/search_color_delete_text"
                     android:textSize="@dimen/sp_38" />
 

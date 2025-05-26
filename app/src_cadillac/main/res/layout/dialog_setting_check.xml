@@ -9,7 +9,8 @@
         android:layout_height="wrap_content"
         android:paddingHorizontal="@dimen/dp_47"
         android:paddingTop="@dimen/dp_39"
-        android:paddingBottom="@dimen/dp_56">
+        android:paddingBottom="@dimen/dp_56"
+        android:background="@drawable/bg_shadow_system_cadillac">
 
         <com.fy.navi.ui.view.SkinConstraintLayout
             android:layout_width="@dimen/dp_1694"
@@ -19,8 +20,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:background="@drawable/bg_shadow_system_buick_avenir">
+            app:layout_constraintTop_toTopOf="parent">
 
             <com.android.car.ui.FocusParkingView
                 android:layout_width="wrap_content"

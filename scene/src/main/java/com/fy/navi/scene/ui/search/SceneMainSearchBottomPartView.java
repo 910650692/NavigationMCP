@@ -36,6 +36,7 @@ import com.fy.navi.service.greendao.history.History;
 import com.fy.navi.service.logicpaket.route.RoutePackage;
 import com.fy.navi.service.logicpaket.search.SearchPackage;
 import com.fy.navi.service.logicpaket.user.behavior.BehaviorPackage;
+import com.fy.navi.service.logicpaket.user.usertrack.UserTrackPackage;
 import com.fy.navi.ui.base.BaseFragment;
 import com.fy.navi.ui.dialog.IBaseDialogClickListener;
 
@@ -156,7 +157,8 @@ public class SceneMainSearchBottomPartView extends BaseSceneView<SearchHistoryVi
                         @Override
                         public void onCommitClick() {
                             //清空历史记录
-                            SearchPackage.getInstance().clearSearchKeywordRecord();
+                            UserTrackPackage.getInstance().clearSearchHistory();
+                            UserTrackPackage.getInstance().clearHistoryRoute();
                             mSearchHistoryAdapter.notifyList(new ArrayList<>());
                             mViewBinding.rcyRecord.setVisibility(GONE);
                             mViewBinding.tvRecordNull.setVisibility(VISIBLE);

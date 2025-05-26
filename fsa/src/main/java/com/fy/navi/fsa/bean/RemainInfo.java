@@ -33,6 +33,25 @@ public class RemainInfo {
      */
     private int[] auxTollInfo;
 
+    private String arrivalTime;//预计到达时间
+    private int arrivalDay;//预计到达天数
+
+    public String getArrivalTime() {
+        return arrivalTime;
+    }
+
+    public void setArrivalTime(String arrivalTime) {
+        this.arrivalTime = arrivalTime;
+    }
+
+    public int getArrivalDay() {
+        return arrivalDay;
+    }
+
+    public void setArrivalDay(int arrivalDay) {
+        this.arrivalDay = arrivalDay;
+    }
+
     public int getRemainDistance() {
         return remainDistance;
     }

@@ -10,6 +10,10 @@ import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.utils.ConvertUtils;
+import com.fy.navi.burypoint.anno.HookMethod;
+import com.fy.navi.burypoint.bean.BuryProperty;
+import com.fy.navi.burypoint.constant.BuryConstant;
+import com.fy.navi.burypoint.controller.BuryPointController;
 import com.fy.navi.scene.R;
 import com.fy.navi.scene.databinding.ItemHandingCardDetailBinding;
 import com.fy.navi.scene.ui.navi.hangingcard.CardManager;
@@ -185,6 +189,9 @@ public class HandingCardDetailAdapter extends RecyclerView.Adapter<HandingCardDe
                 mSelectIndex = position;
                 notifyItemChanged(tIndex);
                 notifyItemChanged(mSelectIndex);
+
+                // for bury point
+                sendBuryPointForSelectingParkingPot(position);
             }
         });
         binding.clPark.viewNaviNow.setOnClickListener(v -> {
@@ -223,5 +230,14 @@ public class HandingCardDetailAdapter extends RecyclerView.Adapter<HandingCardDe
             super(itemBinding.getRoot());
             this.binding = itemBinding;
         }
+    }
+
+    @HookMethod(eventName = BuryConstant.EventName.AMAP_DESTINATION_PARKING_SELECT)
+    private void sendBuryPointForSelectingParkingPot(int position) {
+        String props = "第" + (position + 1) + "个";
+        BuryProperty buryProperty = new BuryProperty.Builder()
+                .setParams(BuryConstant.ProperType.BURY_KEY_HOME_PREDICTION, props)
+                .build();
+        BuryPointController.getInstance().setBuryProps(buryProperty);
     }
 }

@@ -4,8 +4,8 @@
 
     <com.fy.navi.ui.view.SkinConstraintLayout
         android:id="@+id/reminderRootDetail"
-        android:layout_width="@dimen/dp_2068"
-        android:layout_height="@dimen/dp_940"
+        android:layout_width="@dimen/dp_1760"
+        android:layout_height="@dimen/dp_800"
         android:background="@drawable/bg_confirm_dialog"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -14,10 +14,10 @@
 
         <com.fy.navi.ui.view.SkinImageView
             android:id="@+id/reminder_iv_back"
-            android:layout_width="@dimen/dp_58"
-            android:layout_height="@dimen/dp_58"
-            android:layout_marginStart="@dimen/dp_66"
-            android:layout_marginTop="@dimen/dp_66"
+            android:layout_width="@dimen/dp_49"
+            android:layout_height="@dimen/dp_49"
+            android:layout_marginStart="@dimen/dp_56"
+            android:layout_marginTop="@dimen/dp_56"
             android:src="@drawable/img_dialog_back"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -26,21 +26,21 @@
             android:id="@+id/reminder_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_188"
-            android:layout_marginTop="@dimen/dp_56"
+            android:layout_marginStart="@dimen/dp_160"
+            android:layout_marginTop="@dimen/dp_48"
             android:text="@string/reminder_use_agreement"
             android:textColor="@color/dialog_title_color"
             android:textStyle="bold"
-            android:textSize="@dimen/sp_55"
+            android:textSize="@dimen/sp_46"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"/>
 
         <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_691"
-            android:layout_marginHorizontal="@dimen/dp_188"
-            android:layout_marginTop="@dimen/dp_193"
-            android:layout_marginBottom="@dimen/dp_60"
+            android:layout_height="@dimen/dp_588"
+            android:layout_marginHorizontal="@dimen/dp_160"
+            android:layout_marginTop="@dimen/dp_164"
+            android:layout_marginBottom="@dimen/dp_48"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent">
 
@@ -51,7 +51,7 @@
                 android:lineSpacingExtra="@dimen/dp_1"
                 android:text="@string/reminder_user_terms_personal_info"
                 android:textColor="@color/authorization_request_content"
-                android:textSize="@dimen/sp_38"
+                android:textSize="@dimen/sp_32"
                 />
 
         </androidx.core.widget.NestedScrollView>

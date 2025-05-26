@@ -38,7 +38,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:select_background_color="@drawable/selector_route_preference"
-                app:select_text_color="@color/white" />
+                app:select_text_color="@color/route_white" />
 
             <com.fy.navi.ui.view.SkinView
                 clickCommand="@{() -> Scene.preferenceRecommend(1)}"
@@ -66,7 +66,7 @@
                 app:layout_constraintStart_toStartOf="@+id/preference_recommend"
                 app:layout_constraintTop_toBottomOf="@+id/preference_recommend"
                 app:select_background_color="@drawable/selector_route_preference"
-                app:select_text_color="@color/white" />
+                app:select_text_color="@color/route_white" />
 
             <com.fy.navi.ui.view.SkinView
                 clickCommand="@{() -> Scene.preferenceAvoidCongestion(1)}"
@@ -93,7 +93,7 @@
                 app:layout_constraintStart_toEndOf="@+id/preference_avoid_congestion"
                 app:layout_constraintTop_toBottomOf="@+id/preference_recommend"
                 app:select_background_color="@drawable/selector_route_preference"
-                app:select_text_color="@color/white" />
+                app:select_text_color="@color/route_white" />
 
             <com.fy.navi.ui.view.SkinView
                 clickCommand="@{() -> Scene.preferenceFirstMainRoad(1)}"
@@ -120,7 +120,7 @@
                 app:layout_constraintStart_toStartOf="@+id/preference_avoid_congestion"
                 app:layout_constraintTop_toBottomOf="@+id/preference_avoid_congestion"
                 app:select_background_color="@drawable/selector_route_preference"
-                app:select_text_color="@color/white" />
+                app:select_text_color="@color/route_white" />
 
             <com.fy.navi.ui.view.SkinView
                 clickCommand="@{() -> Scene.preferenceFirstHighway(1)}"
@@ -147,7 +147,7 @@
                 app:layout_constraintStart_toEndOf="@+id/preference_first_highway"
                 app:layout_constraintTop_toBottomOf="@+id/preference_avoid_congestion"
                 app:select_background_color="@drawable/selector_route_preference"
-                app:select_text_color="@color/white" />
+                app:select_text_color="@color/route_white" />
 
             <com.fy.navi.ui.view.SkinView
                 clickCommand="@{() -> Scene.preferenceNotHighway(1)}"
@@ -174,7 +174,7 @@
                 app:layout_constraintStart_toStartOf="@+id/preference_first_highway"
                 app:layout_constraintTop_toBottomOf="@+id/preference_first_highway"
                 app:select_background_color="@drawable/selector_route_preference"
-                app:select_text_color="@color/white" />
+                app:select_text_color="@color/route_white" />
 
             <com.fy.navi.ui.view.SkinView
                 clickCommand="@{() -> Scene.preferenceLessCharge(1)}"
@@ -202,7 +202,7 @@
                 app:layout_constraintStart_toEndOf="@+id/preference_less_charge"
                 app:layout_constraintTop_toBottomOf="@+id/preference_first_highway"
                 app:select_background_color="@drawable/selector_route_preference"
-                app:select_text_color="@color/white" />
+                app:select_text_color="@color/route_white" />
 
             <com.fy.navi.ui.view.SkinView
                 clickCommand="@{() -> Scene.preferenceFastestSpeed(1)}"

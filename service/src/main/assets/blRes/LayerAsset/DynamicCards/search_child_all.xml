@@ -1,4 +1,0 @@
-<div style="display:flex;flex-direction:row;justify-content:flex-start;align-items:center;width:auto;height:36px;">
-  <image id="child_type" style="width:30px;height:36px;" src="global_image_child_fly_day_night" />
-  <label id="child_name" style="margin-bottom:1px;padding-right:4px;padding-left:4px;font-size:18px;color:#000000;font-family:font_cn;text-stroke:2px #ffffff;" lines="1">出发楼</label>
-</div>

@@ -43,6 +43,8 @@
     <color name="route_tbt_color_1">#323232</color>
     <color name="route_tbt_color_2">#D2D3D7</color>
     <color name="route_tbt_color_gray">#777B84</color>
+    <color name="route_vai_remove_color">#D2D3D7</color>
+    <color name="route_white">#FFFFFFFF</color>
 
 
 
@@ -169,4 +171,6 @@
     <color name="parking_recommended_item_42386DF0">#2C2F38</color>
     <color name="search_loading_bg_80">#FFFFFF</color>
     <color name="scene_route_preference_txt_color">#FFFFFF</color>
+
+    <color name="navi_one_third_screen_icon_color">#ffffff</color>
 </resources>

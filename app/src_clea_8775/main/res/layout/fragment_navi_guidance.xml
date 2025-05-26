@@ -76,16 +76,6 @@
                     android:visibility="@{ViewModel.mNaviTmcVisibility?View.VISIBLE:View.GONE}"
                     app:layout_constraintStart_toStartOf="@id/scene_navi_tbt"
                     app:layout_constraintTop_toBottomOf="@id/scene_navi_eta" />
-                <!--添加途径点列表-->
-                <com.fy.navi.scene.ui.navi.SceneNaviViaListView
-                    android:id="@+id/scene_navi_via_list"
-                    android:layout_width="@dimen/dp_640"
-                    android:layout_height="wrap_content"
-                    android:paddingTop="@dimen/dp_40"
-                    android:background="@drawable/bg_navi_tbt_bottom"
-                    android:visibility="@{ViewModel.mNaviViaListVisibility?View.VISIBLE:View.GONE}"
-                    app:layout_constraintStart_toStartOf="@id/scene_navi_tbt"
-                    app:layout_constraintTop_toBottomOf="@id/scene_navi_tmc" />
                 <!--车道线-->
                 <com.fy.navi.scene.ui.navi.SceneNaviLanesView
                     android:id="@+id/scene_navi_lanes"
@@ -97,7 +87,7 @@
                     android:background="@drawable/bg_navi_tbt_middle"
                     android:visibility="@{ViewModel.mNaviLanesVisibility?View.VISIBLE:View.GONE}"
                     app:layout_constraintStart_toStartOf="@id/scene_navi_tbt"
-                    app:layout_constraintTop_toBottomOf="@id/scene_navi_via_list" />
+                    app:layout_constraintTop_toBottomOf="@id/scene_navi_tmc" />
                 <!--显示经过途经点信息-->
                 <com.fy.navi.scene.ui.navi.SceneNaviViaInfoView
                     android:id="@+id/scene_navi_via_info"
@@ -108,7 +98,16 @@
                     android:visibility="@{ViewModel.mNaviViaInfoVisibility?View.VISIBLE:View.GONE}"
                     app:layout_constraintStart_toStartOf="@id/scene_navi_tbt"
                     app:layout_constraintTop_toBottomOf="@id/scene_navi_lanes" />
-
+                <!--添加途径点列表-->
+                <com.fy.navi.scene.ui.navi.SceneNaviViaListView
+                    android:id="@+id/scene_navi_via_list"
+                    android:layout_width="@dimen/dp_640"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="@dimen/dp_40"
+                    android:background="@drawable/bg_navi_tbt_bottom"
+                    android:visibility="@{ViewModel.mNaviViaListVisibility?View.VISIBLE:View.GONE}"
+                    app:layout_constraintStart_toStartOf="@id/scene_navi_tbt"
+                    app:layout_constraintTop_toBottomOf="@id/scene_navi_tbt" />
             </com.fy.navi.ui.view.SkinConstraintLayout>
 
             <androidx.constraintlayout.widget.Barrier

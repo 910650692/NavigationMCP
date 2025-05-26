@@ -1,13 +1,16 @@
 package com.android.utils.file;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
 import android.os.Environment;
 import android.text.TextUtils;
 import android.util.Log;
 
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 
 import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
@@ -558,7 +561,29 @@ public class FileUtils {
      * @return 外部沙箱位置：sdcard/Android/data/your_package/files
      */
     private void getEmulatedPhonePath() {
+        boolean isAvailable = isExternalStorageAvailable();
+        boolean hasPermission = checkExternalStoragePermission(mContext);
+        Logger.i(TAG, "isAvailable:" + isAvailable + " hasPermission:" + hasPermission);
         SD_APP_PATH = mContext.getExternalFilesDir(null) + File.separator;
+    }
+
+    /**
+     * @return 是否有外部存储 true:有 false:没有
+     */
+    private boolean isExternalStorageAvailable() {
+        String state = Environment.getExternalStorageState();
+        return Environment.MEDIA_MOUNTED.equals(state);
+    }
+
+    /**
+     * @param context context
+     * @return 是否有权限访问外部存储
+     */
+    private boolean checkExternalStoragePermission(Context context) {
+        int externalStoragePermissionCheck = ContextCompat.checkSelfPermission(context,
+                Manifest.permission.MANAGE_EXTERNAL_STORAGE);
+        Logger.i(TAG, "externalStoragePermissionCheck:" + externalStoragePermissionCheck);
+        return externalStoragePermissionCheck == PackageManager.PERMISSION_GRANTED;
     }
 
     /**

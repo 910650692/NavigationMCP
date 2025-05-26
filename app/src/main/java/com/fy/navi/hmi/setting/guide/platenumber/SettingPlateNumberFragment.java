@@ -3,6 +3,7 @@ package com.fy.navi.hmi.setting.guide.platenumber;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.Window;
+import android.view.WindowManager;
 
 import com.android.utils.ResourceUtils;
 import com.android.utils.ToastUtils;
@@ -39,6 +40,12 @@ public class SettingPlateNumberFragment extends BaseFragment<FragmentSettingPlat
     @Override
     public int onInitVariableId() {
         return BR.viewModel;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        hideSoftKeyboard();
     }
 
     @Override
@@ -127,6 +134,16 @@ public class SettingPlateNumberFragment extends BaseFragment<FragmentSettingPlat
             mBinding.settingCarTypeDetail.setText(ResourceUtils.Companion.getInstance().getString(R.string.setting_guide_plate_number_car_type_ev));
         }
         initDialog();
+    }
+
+    /**
+     * 隐藏系统键盘
+     */
+    private void hideSoftKeyboard() {
+        if (getActivity() == null || getActivity().getWindow() == null) {
+            return;
+        }
+        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
     }
 
     /**

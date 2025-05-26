@@ -159,6 +159,7 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
         if (-1 != engineInit) {
             if (initFsaService()) {
                 sendEvent(FsaConstant.FsaFunction.ID_ROAD_NETWORK_MODE, FsaConstant.FsaValue.STRING_ONE);
+                activelySendNavigationStatus();
             }
             addPackageListener();
         } else {
@@ -184,6 +185,8 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
             initFsaService();
             addPackageListener();
             sendEvent(FsaConstant.FsaFunction.ID_ROAD_NETWORK_MODE, FsaConstant.FsaValue.STRING_ONE);
+            //发送导航状态
+            activelySendNavigationStatus();
         }
 
         @Override
@@ -192,7 +195,13 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
             sendEvent(FsaConstant.FsaFunction.ID_ROAD_NETWORK_MODE, FsaConstant.FsaValue.STRING_ZERO);
         }
     };
-
+    public void activelySendNavigationStatus(){
+        //发送导航状态
+        judgeMapCurStatus(FsaConstant.FsaFunction.ID_IN_NAVIGATION, NaviStatus.NaviStatusType.NAVING);
+        judgeMapCurStatus(FsaConstant.FsaFunction.ID_IN_LIGHT_NAVIGATION, NaviStatus.NaviStatusType.LIGHT_NAVING);
+        judgeMapCurStatus(FsaConstant.FsaFunction.ID_IN_CRUISE, NaviStatus.NaviStatusType.CRUISE);
+        sendCurrentNaviStatus(NaviStatusPackage.getInstance().getCurrentNaviStatus());
+    }
 
     /**
      * 初始化FSA服务端.
@@ -224,6 +233,7 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
      */
     @Override
     public void onReceiveRequest(final int functionId, final String payload) {
+        Logger.i(FsaConstant.FSA_TAG, "onReceiveRequest payload==" +  FsaIdString.event2String(payload) + " - functionId=="+functionId );
         if (FsaConstant.FsaMethod.ID_REQUEST_MSG == functionId) {
             Logger.i(FsaConstant.FSA_TAG, "received method request: payload = " + payload + " - " + FsaIdString.event2String(payload));
             // checkStyle 方法太长故进行分割
@@ -532,6 +542,7 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
      * @param defaultValue 默认数据.
      */
     public void sendEventToMapCheckState(final int functionId, final String naviState, final String defaultValue) {
+        Logger.d(FsaConstant.FSA_TAG, "sendEventToMapCheckState: " + functionId + "-" + FsaIdString.function2String(functionId) + ", naviState = " + naviState);
         if (naviState.equals(NaviStatusPackage.getInstance().getCurrentNaviStatus())) {
             sendEventToMap(functionId, defaultValue);
         } else {

@@ -74,7 +74,7 @@
             android:layout_height="match_parent"
             android:focusable="false"
             android:orientation="vertical"
-            app:layout_constraintGuide_begin="@dimen/dp_40" />
+            app:layout_constraintGuide_begin="@dimen/dp_52" />
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/end_guideline"
@@ -83,7 +83,7 @@
             android:orientation="vertical"
             android:focusable="false"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintGuide_end="@dimen/dp_40" />
+            app:layout_constraintGuide_end="@dimen/dp_52" />
 
         <com.fy.navi.ui.view.SkinTextView
             android:id="@+id/poi_offline_hint"
@@ -146,7 +146,7 @@
                 android:id="@+id/poi_base_layout"
                 android:layout_width="match_parent"
                 android:focusable="false"
-                android:paddingHorizontal="@dimen/dp_40"
+                android:paddingHorizontal="@dimen/dp_52"
                 android:layout_height="wrap_content"
                 >
 
@@ -169,21 +169,22 @@
                     android:id="@+id/poi_distance_time"
                     android:layout_width="@dimen/dp_0"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_16"
-                    android:layout_marginEnd="@dimen/dp_10"
-                    android:maxLines="2"
+                    android:layout_marginTop="@dimen/dp_24"
+                    android:layout_marginEnd="@dimen/dp_24"
+                    android:maxLines="1"
+                    android:ellipsize="end"
                     android:focusable="false"
-                    android:text="5.2公里   30分钟"
                     android:textColor="@color/poi_details_bottom_ff_00"
                     android:textSize="@dimen/sp_46"
+                    app:layout_constraintEnd_toStartOf="@+id/siv_arrival_capacity"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/poi_second_address"
                     tools:text="5.2公里   30分钟" />
 
                 <com.fy.navi.ui.view.SkinImageView
                     android:id="@+id/siv_arrival_capacity"
-                    android:layout_width="@dimen/dp_42"
-                    android:layout_height="@dimen/dp_42"
+                    android:layout_width="@dimen/dp_54"
+                    android:layout_height="@dimen/dp_54"
                     android:focusable="false"
                     android:src="@drawable/img_electricity_medium_42"
                     android:visibility="@{(ScenePoiDetailContentView.mPowerType == 1 || ScenePoiDetailContentView.mPowerType == 2) ? View.VISIBLE : View.GONE}"
@@ -196,8 +197,7 @@
                     android:id="@+id/poi_arrival_capacity"
                     android:layout_width="@dimen/dp_0"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_16"
-                    android:layout_marginEnd="@dimen/dp_10"
+                    android:layout_marginTop="@dimen/dp_24"
                     android:maxLines="1"
                     android:text="15%到达"
                     android:focusable="false"

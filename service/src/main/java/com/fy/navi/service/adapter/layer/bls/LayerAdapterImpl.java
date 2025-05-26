@@ -161,6 +161,12 @@ public class LayerAdapterImpl implements ILayerApi {
         layersPoolManager.get(MapType.CLUSTER_MAP).getLayerGuideRoute().removeViaPoint(pid);
     }
 
+    /*清除指定路线类型扎标*/
+    public void clearRouteItemByType(MapType mapTypeId, LayerPointItemType type) {
+        layersPoolManager.get(mapTypeId).getLayerGuideRoute().clearRouteItemByType(type);
+        layersPoolManager.get(MapType.CLUSTER_MAP).getLayerGuideRoute().clearRouteItemByType(type);
+    }
+
     /**
      * 设置路线样式风格
      * @param isStartNavi 是否开始导航

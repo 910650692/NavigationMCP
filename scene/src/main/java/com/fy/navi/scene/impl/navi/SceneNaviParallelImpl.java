@@ -289,7 +289,8 @@ public class SceneNaviParallelImpl extends BaseSceneModel<SceneNaviParallelView>
                     mPreviousParallelRoadInfo.toString());
             // 如果主辅路和桥上下没有变化，直接返回
             if (mPreviousParallelRoadInfo.getFlag() == mCurrentParallelRoadInfo.getFlag() &&
-                    mPreviousParallelRoadInfo.getHwFlag() == mCurrentParallelRoadInfo.getHwFlag()) {
+                    mPreviousParallelRoadInfo.getHwFlag() == mCurrentParallelRoadInfo.getHwFlag() &&
+                    mPreviousParallelRoadInfo.getStatus() == mCurrentParallelRoadInfo.getStatus()) {
                 return;
             }
         }

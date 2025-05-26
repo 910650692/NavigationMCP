@@ -110,6 +110,11 @@
             android:screenOrientation="landscape"
             tools:ignore="DiscouragedApi" />
 
+        <activity android:name=".splitscreen.OneThirdScreenMapActivity"
+            android:launchMode="singleTop"
+            android:screenOrientation="landscape"
+            tools:ignore="DiscouragedApi" />
+
         <service
             android:name="com.fy.navi.exportservice.MapService"
             android:defaultToDeviceProtectedStorage="true"

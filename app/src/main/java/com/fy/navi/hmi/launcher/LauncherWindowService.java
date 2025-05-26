@@ -1,6 +1,8 @@
 package com.fy.navi.hmi.launcher;
 
 import static android.content.Context.WINDOW_SERVICE;
+
+import android.app.ActivityOptions;
 import android.content.ComponentCallbacks;
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -240,9 +242,11 @@ public class LauncherWindowService implements IGuidanceObserver, IMapPackageCall
         }
         Logger.i(TAG, "isActivityExist:" + isActivityExist);
         Intent intent = new Intent(AppContext.getInstance().getMContext(), startCls);
+        final ActivityOptions options = ActivityOptions.makeBasic();
+        options.setLaunchDisplayId(0);
         intent.putExtra(INaviConstant.PAGE_EXTRA, pageCode);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        AppContext.getInstance().getMContext().startActivity(intent);
+        AppContext.getInstance().getMContext().startActivity(intent, options.toBundle());
     }
 
     public static void startService() {

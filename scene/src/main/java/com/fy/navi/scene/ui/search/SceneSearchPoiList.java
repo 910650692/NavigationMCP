@@ -97,6 +97,7 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
     private boolean mIsChargeSelf = false;
     private SearchResultEntity mSearchResultEntity;
     private int mTaskId;
+    private boolean mIsEnd = false;
 
 
     public SceneSearchPoiList(@NonNull final Context context) {
@@ -190,6 +191,7 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
                 final Bundle bundle = SearchFragmentFactory.createPoiDetailsFragment(
                         AutoMapConstant.SourceFragment.SEARCH_RESULT_FRAGMENT, poiType, poiInfoEntity);
                 bundle.putParcelable(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_SOURCE_DATA, mResultEntity);
+                bundle.putBoolean("IS_END", mIsEnd);
                 addPoiDetailsFragment((BaseFragment) fragment, bundle);
             }
 
@@ -206,6 +208,7 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
                         AutoMapConstant.SourceFragment.SEARCH_RESULT_FRAGMENT, poiType, poiInfoEntity);
                 bundle.putParcelable(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_SOURCE_DATA, mResultEntity);
                 bundle.putInt(AutoMapConstant.ChildIndex.BUNDLE_CHILD_INDEX, childPosition);
+                bundle.putBoolean("IS_END", mIsEnd);
                 addPoiDetailsFragment((BaseFragment) fragment, bundle);
             }
 
@@ -230,7 +233,7 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
                     showCurrentFragment();
                     mScreenViewModel.clearLabelMarker();
                 } else {
-                    if (SearchPackage.getInstance().isAlongWaySearch()) {
+                    if (SearchPackage.getInstance().isAlongWaySearch() && !mIsEnd) {
                         if (RoutePackage.getInstance().isBelongRouteParam(MapType.MAIN_SCREEN_MAIN_MAP, poiInfoEntity)) {
                             RoutePackage.getInstance().removeVia(MapType.MAIN_SCREEN_MAIN_MAP, poiInfoEntity, true);
                         } else {
@@ -238,11 +241,15 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
                         }
 
                     } else {
-                        SearchPackage.getInstance().clearLabelMark();
-                        final Fragment fragment = (Fragment) ARouter.getInstance()
-                                .build(RoutePath.Route.ROUTE_FRAGMENT)
-                                .navigation();
-                        addFragment((BaseFragment) fragment, SearchFragmentFactory.createRouteFragment(poiInfoEntity));
+                        if (mIsEnd) {
+                            RoutePackage.getInstance().requestChangeEnd(mMapTypeId, poiInfoEntity);
+                        } else {
+                            SearchPackage.getInstance().clearLabelMark();
+                            final Fragment fragment = (Fragment) ARouter.getInstance()
+                                    .build(RoutePath.Route.ROUTE_FRAGMENT)
+                                    .navigation();
+                            addFragment((BaseFragment) fragment, SearchFragmentFactory.createRouteFragment(poiInfoEntity));
+                        }
                     }
                 }
             }
@@ -941,6 +948,14 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
 
     public SearchResultEntity getResultEntity() {
         return mResultEntity;
+    }
+
+    public void setMIsEnd(final boolean isEnd) {
+        this.mIsEnd = isEnd;
+        if (mAdapter != null) {
+            mAdapter.setIsEnd(isEnd);
+        }
+
     }
 
     @Override

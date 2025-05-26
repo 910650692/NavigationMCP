@@ -387,6 +387,7 @@ public class StartService {
     }
 
     public static StartService getInstance() {
+        Logger.i(TAG, "StartService getInstance... intance = " + Helper.sts);
         return Helper.sts;
     }
 

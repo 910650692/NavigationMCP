@@ -57,7 +57,7 @@
         <com.fy.navi.ui.view.SkinConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_52"
-            android:visibility="@{`4`.equals(connectorInfoItem.getmStatus) ? View.VISIBLE : View.GONE}"
+            android:visibility="@{connectorInfoItem.isReservation() ? View.VISIBLE : View.GONE}"
             app:layout_constraintBottom_toBottomOf="parent">
 
             <com.fy.navi.ui.view.SkinButton
@@ -83,7 +83,7 @@
         </com.fy.navi.ui.view.SkinConstraintLayout>
         <com.fy.navi.ui.view.SkinButton
             android:id="@+id/charge_reservation_button"
-            android:visibility="@{!`4`.equals(connectorInfoItem.getmStatus) ? View.VISIBLE : View.GONE}"
+            android:visibility="@{!connectorInfoItem.isReservation() ? View.VISIBLE : View.GONE}"
             app:layout_constraintBottom_toBottomOf="parent"
             android:layout_width="match_parent"
             android:background="@drawable/bg_equipment_item"

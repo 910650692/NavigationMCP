@@ -343,6 +343,13 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
     }
 
     @Override
+    public void onCurrentRoadSpeed(int speed) {
+        if (null != mViewModel) {
+            mViewModel.onCurrentRoadSpeed(speed);
+        }
+    }
+
+    @Override
     public void onNaviSAPAInfo(final SapaInfoEntity sapaInfoEntity) {
         mViewModel.onNaviSAPAInfo(sapaInfoEntity);
     }

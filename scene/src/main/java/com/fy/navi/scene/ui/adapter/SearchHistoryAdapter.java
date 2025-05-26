@@ -2,6 +2,7 @@
 package com.fy.navi.scene.ui.adapter;
 
 
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.android.utils.ConvertUtils;
 import com.android.utils.ResourceUtils;
 import com.android.utils.ToastUtils;
+import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
 import com.fy.navi.scene.R;
@@ -20,12 +22,17 @@ import com.fy.navi.scene.databinding.SearchHistoryItemBinding;
 import com.fy.navi.service.AutoMapConstant;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.define.bean.GeoPoint;
+import com.fy.navi.service.define.code.UserDataCode;
 import com.fy.navi.service.define.route.RoutePoiType;
 import com.fy.navi.service.define.search.FavoriteInfo;
 import com.fy.navi.service.define.search.PoiInfoEntity;
+import com.fy.navi.service.define.user.account.AccountProfileInfo;
+import com.fy.navi.service.define.user.usertrack.HistoryRouteItemBean;
+import com.fy.navi.service.greendao.CommonManager;
 import com.fy.navi.service.greendao.history.History;
 import com.fy.navi.service.logicpaket.search.SearchPackage;
 import com.fy.navi.service.logicpaket.user.behavior.BehaviorPackage;
+import com.fy.navi.service.logicpaket.user.usertrack.UserTrackPackage;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -226,7 +233,22 @@ public class SearchHistoryAdapter extends RecyclerView.Adapter<SearchHistoryAdap
         holder.resultItemBinding.sllDelete.setOnClickListener(v -> {
             holder.resultItemBinding.swipeMenuLayout.smoothClose();
             Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "poi click 删除");
-            mSearchPackage.clearSearchKeywordRecord(mPoiEntities.get(position).getMId());
+            if (AutoMapConstant.SearchKeywordRecordKey.SEARCH_KEYWORD_RECORD_KEY == mPoiEntities.get(position).getMType()) {
+                UserTrackPackage.getInstance().delSearchHistory(mPoiEntities.get(position).getMKeyWord());
+            } else {
+                final HistoryRouteItemBean itemBean = new HistoryRouteItemBean();
+                if (mSearchPackage.isLogin()) {
+                    itemBean.setId(mPoiEntities.get(position).getMNaviHistoryId());
+                    itemBean.setStartLoc(parseGeoPoint(mPoiEntities.get(position).getMStartPoint()));
+                    itemBean.setEndLoc(parseGeoPoint(mPoiEntities.get(position).getMEndPoint()));
+                    itemBean.setIsCompleted(mPoiEntities.get(position).getMIsCompleted());
+                    itemBean.setUpdateTime(mPoiEntities.get(position).getMUpdateTime().getTime());
+                } else {
+                    itemBean.setId(mPoiEntities.get(position).getMId().toString());
+                }
+                UserTrackPackage.getInstance().delHistoryRoute(itemBean);
+//                mSearchPackage.clearSearchKeywordRecord(mPoiEntities.get(position).getMId());
+            }
             if (position >= 0 && position < mPoiEntities.size()) {
                 mPoiEntities.remove(position);
                 notifyItemRemoved(position);
@@ -270,6 +292,22 @@ public class SearchHistoryAdapter extends RecyclerView.Adapter<SearchHistoryAdap
         poiInfoEntity.setFavoriteInfo(info);
         mBehaviorPackage.addFavorite(poiInfoEntity, 0);
 //        behaviorPackage.addFavoriteData(poiInfoEntity, 0);
+    }
+
+    /**
+     * 判断是否登录
+     * @return 是否登录
+     */
+    private boolean isLogin() {
+        final AccountProfileInfo info;
+        final String valueJson = CommonManager.getInstance().getValueByKey(UserDataCode.SETTING_GET_USERINFO);
+        if (!TextUtils.isEmpty(valueJson)) {
+            info = GsonUtils.fromJson(valueJson, AccountProfileInfo.class);
+            if (info != null) {
+                return !TextUtils.isEmpty(info.getUid());
+            }
+        }
+        return false;
     }
 
     private GeoPoint parseGeoPoint(String geoPointString) {

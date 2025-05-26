@@ -46,9 +46,10 @@
             android:textColor="@color/common_title_purple_color"
             android:gravity="center"
             android:paddingHorizontal="@dimen/dp_28"
+            android:text="@string/main_level_scale"
             app:layout_constraintTop_toBottomOf="@id/screen_scale_reduce"
             app:layout_constraintEnd_toEndOf="@id/screen_scale_size_bg"
-            tools:text="500公里" />
+            tools:text="500公里"/>
 
         <com.fy.navi.ui.view.SkinImageView
             android:id="@+id/screen_bg_sample_scale"

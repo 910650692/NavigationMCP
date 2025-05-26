@@ -15,6 +15,8 @@
         android:layout_width="@dimen/dp_545"
         android:layout_height="match_parent"
         android:clickable="true"
+        android:layout_marginStart="@dimen/dp_34"
+        android:layout_marginTop="@dimen/dp_34"
         android:orientation="vertical">
 
         <com.fy.navi.scene.ui.search.SceneMainSearchTopPartView
@@ -26,6 +28,6 @@
             android:id="@+id/scene_nested_scroll_view"
             android:layout_width="@dimen/dp_545"
             android:layout_height="match_parent"
-            android:layout_marginTop="@dimen/dp_20" />
+            android:layout_marginTop="@dimen/dp_17" />
     </com.fy.navi.ui.view.SkinLinearLayout>
 </layout>

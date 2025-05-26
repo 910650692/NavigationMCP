@@ -8,6 +8,7 @@ import com.android.utils.ResourceUtils;
 import com.android.utils.log.Logger;
 import com.fy.navi.service.AutoMapConstant;
 import com.fy.navi.service.R;
+import com.fy.navi.service.logicpaket.user.account.AccountPackage;
 import com.google.gson.annotations.SerializedName;
 
 import lombok.Data;
@@ -246,5 +247,10 @@ public class ConnectorInfoItem implements Parcelable {
 
     public void setmPreFlag(Integer mPreFlag) {
         this.mPreFlag = mPreFlag;
+    }
+
+    public Boolean isReservation(){
+        String userId = AccountPackage.getInstance().getUserId();
+        return userId.equals(getmIdpUserId()) && getmPreFlag() == 2;
     }
 }

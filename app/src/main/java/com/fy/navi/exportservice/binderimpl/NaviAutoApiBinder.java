@@ -1,5 +1,6 @@
 package com.fy.navi.exportservice.binderimpl;
 
+import android.app.ActivityOptions;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -791,7 +792,9 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub {
                 final Intent launcherIntent = packageManager.getLaunchIntentForPackage(appPkgName);
                 if (null != launcherIntent) {
                     launcherIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    AppContext.getInstance().getMContext().startActivity(launcherIntent);
+                    ActivityOptions options = ActivityOptions.makeBasic();
+                    options.setLaunchDisplayId(0);
+                    AppContext.getInstance().getMContext().startActivity(launcherIntent, options.toBundle());
                 } else {
                     Logger.e(TAG, "can't find map hmi");
                 }
@@ -972,7 +975,9 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub {
                             break;
                     }
                     if (null != targetIntent) {
-                        AppContext.getInstance().getMContext().startActivity(targetIntent);
+                        ActivityOptions options = ActivityOptions.makeBasic();
+                        options.setLaunchDisplayId(0);
+                        AppContext.getInstance().getMContext().startActivity(targetIntent, options.toBundle());
                     }
                 }
             } catch (NullPointerException exception) {

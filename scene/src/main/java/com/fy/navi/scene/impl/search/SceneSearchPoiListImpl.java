@@ -15,11 +15,13 @@ import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.mapdata.CityDataInfo;
 import com.fy.navi.service.define.route.RouteParam;
 import com.fy.navi.service.define.search.PoiInfoEntity;
+import com.fy.navi.service.define.user.usertrack.SearchHistoryItemBean;
 import com.fy.navi.service.define.search.SearchResultEntity;
 import com.fy.navi.service.logicpaket.calibration.CalibrationPackage;
 import com.fy.navi.service.logicpaket.mapdata.MapDataPackage;
 import com.fy.navi.service.logicpaket.route.RoutePackage;
 import com.fy.navi.service.logicpaket.search.SearchPackage;
+import com.fy.navi.service.logicpaket.user.usertrack.UserTrackPackage;
 import com.fy.navi.ui.base.StackManager;
 
 import java.util.List;
@@ -32,6 +34,7 @@ public class SceneSearchPoiListImpl extends BaseSceneModel<SceneSearchPoiList> i
     private final SearchPackage mSearchPackage;
     private final MapDataPackage mapDataPackage;
     private final RoutePackage mRoutePackage;
+    private final UserTrackPackage mUserTrackPackage;
     private final CalibrationPackage mCalibrationPackage;
     private int mTaskId;
     private int mListSearchType;
@@ -43,6 +46,7 @@ public class SceneSearchPoiListImpl extends BaseSceneModel<SceneSearchPoiList> i
         this.mSearchPackage = SearchPackage.getInstance();
         this.mapDataPackage = MapDataPackage.getInstance();
         this.mRoutePackage = RoutePackage.getInstance();
+        this.mUserTrackPackage = UserTrackPackage.getInstance();
         this.mCalibrationPackage = CalibrationPackage.getInstance();
     }
 
@@ -92,6 +96,10 @@ public class SceneSearchPoiListImpl extends BaseSceneModel<SceneSearchPoiList> i
     public void keywordSearch(final int pageNum, final String keyword) {
         logSearch("keywordSearch", keyword);
         mTaskId = mSearchPackage.keywordSearch(pageNum, keyword, false);
+        SearchHistoryItemBean item = new SearchHistoryItemBean();
+        item.setName(keyword);
+        item.setUpdateTime(System.currentTimeMillis());
+        mUserTrackPackage.addSearchHistory(item);
     }
 
     /**
@@ -104,6 +112,10 @@ public class SceneSearchPoiListImpl extends BaseSceneModel<SceneSearchPoiList> i
     public void keywordSearch(final int pageNum, final String keyword, final int adCode, final boolean isSilent) {
         Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "keywordSearch", keyword);
         mTaskId = mSearchPackage.keywordSearch(pageNum, keyword, adCode, isSilent);
+        SearchHistoryItemBean item = new SearchHistoryItemBean();
+        item.setName(keyword);
+        item.setUpdateTime(System.currentTimeMillis());
+        mUserTrackPackage.addSearchHistory(item);
     }
 
     /**
@@ -118,6 +130,10 @@ public class SceneSearchPoiListImpl extends BaseSceneModel<SceneSearchPoiList> i
     public void keywordSearch(final int pageNum, final String keyword, final String retain, final String classifyData, final boolean isSilentSearch) {
         logSearch("keywordSearch classifyData: ", classifyData);
         mTaskId = mSearchPackage.keywordSearch(pageNum, keyword, retain, classifyData, isSilentSearch);
+        SearchHistoryItemBean item = new SearchHistoryItemBean();
+        item.setName(keyword);
+        item.setUpdateTime(System.currentTimeMillis());
+        mUserTrackPackage.addSearchHistory(item);
     }
 
     /**

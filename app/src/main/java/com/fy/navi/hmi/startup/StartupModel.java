@@ -114,6 +114,7 @@ public class StartupModel extends BaseModel<BaseStartupViewModel>
     }
 
     public void checkPermission() {
+        Logger.i(TAG, "checkPermission");
         if (PermissionUtils.getInstance().checkoutPermission()) {
             startInitEngine();
         } else {

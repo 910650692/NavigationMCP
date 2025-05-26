@@ -344,7 +344,7 @@
                                 android:checked="true"
                                 android:gravity="center"
                                 android:text="@string/favorite_switch_common"
-                                android:textColor="@color/white"
+                                android:textColor="@drawable/color_setting_checkbox_selector"
                                 android:textSize="@dimen/sp_46" />
 
                             <com.fy.navi.ui.view.SkinRadioButton
@@ -358,7 +358,7 @@
                                 android:button="@null"
                                 android:gravity="center"
                                 android:text="@string/favorite_switch_charge"
-                                android:textColor="@color/color_black_70"
+                                android:textColor="@drawable/color_setting_checkbox_selector"
                                 android:textSize="@dimen/sp_46" />
                         </com.fy.navi.ui.view.SkinRadioGroup>
 

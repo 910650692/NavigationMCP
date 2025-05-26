@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.ViewGroup;
 
+import com.android.utils.log.Logger;
 import com.fy.navi.scene.R;
 import com.fy.navi.scene.databinding.SceneNaviSpeedViewBinding;
 import com.fy.navi.scene.impl.navi.SceneNaviSpeedImpl;
@@ -23,6 +24,8 @@ import com.fy.navi.service.define.navi.SpeedOverallEntity;
 public class SceneNaviSpeedView extends NaviSceneBase<SceneNaviSpeedViewBinding,
         SceneNaviSpeedImpl> {
     private static final String TAG = MapDefaultFinalTag.NAVI_HMI_TAG;
+
+    private int mCurrentRoadLimitSpeed;
 
     public SceneNaviSpeedView(final Context context) {
         super(context);
@@ -79,18 +82,24 @@ public class SceneNaviSpeedView extends NaviSceneBase<SceneNaviSpeedViewBinding,
      * @param remain 剩余距离
      */
     @SuppressLint({"UseCompatLoadingForDrawables", "SetTextI18n"})
-    public void updateOverallInfo(final int speedLimit, final int averageSpeed, final int remain) {
+    public void updateOverallInfo(final int speedLimit, final int averageSpeed,
+                                  final int currentSpeed, final int remain) {
+        Logger.i(TAG, "updateOverallInfo speedLimit:" + speedLimit +
+                " averageSpeed:" + averageSpeed + " currentSpeed:" +
+                currentSpeed + " remain:" + remain);
         mViewBinding.stvSpeedLimit.setText(String.valueOf(speedLimit));
         mViewBinding.stvSpeedLimitKey.setText(getContext().getText(R.string.navi_speed_overall));
         // 超速时更换背景
-        mViewBinding.stvCurrentSpeed.setTextColor(getContext().getColor(averageSpeed > speedLimit ?
+        mViewBinding.stvCurrentSpeed.setTextColor(getContext().getColor(currentSpeed > speedLimit ?
                 R.color.navi_color_C73333_100 : R.color.navi_color_2461EA_100));
         mViewBinding.stvCurrentSpeedKey.setTextColor(
-                getContext().getColor(averageSpeed > speedLimit ? R.color.navi_color_C73333_100 :
+                getContext().getColor(currentSpeed > speedLimit ? R.color.navi_color_C73333_100 :
                         R.color.navi_color_2461EA_100));
         mViewBinding.svCurrentSpeed.setBackground(
-                getContext().getDrawable(averageSpeed > speedLimit ?
+                getContext().getDrawable(currentSpeed > speedLimit ?
                         R.drawable.guide_car_speed_stroke : R.drawable.guide_car_speed));
+        mViewBinding.svOverallSpeed.setBackground(getContext().getDrawable(averageSpeed >
+                speedLimit ? R.drawable.bg_speed_overall : R.drawable.bg_speed_normal));
         int remainDistance = remain;
         if (remainDistance > 1000) {
             float remainKm = remainDistance / 100f;
@@ -110,8 +119,13 @@ public class SceneNaviSpeedView extends NaviSceneBase<SceneNaviSpeedViewBinding,
     /**
      * @param entity entity
      */
-    @SuppressLint("SetTextI18n")
-    public void updateGreenWaveInfo(final SpeedOverallEntity entity) {
+    @SuppressLint({"SetTextI18n", "UseCompatLoadingForDrawables"})
+    public void updateGreenWaveInfo(final SpeedOverallEntity entity, int currentSpeed) {
+        Logger.i(TAG, "updateGreenWaveInfo mCurrentRoadLimitSpeed:" +
+                mCurrentRoadLimitSpeed + " currentSpeed:" + currentSpeed);
+        mViewBinding.svCurrentSpeed.setBackground(
+                getContext().getDrawable(currentSpeed > mCurrentRoadLimitSpeed ?
+                        R.drawable.guide_car_speed_stroke : R.drawable.guide_car_speed));
         mViewBinding.stvSpeedLimit.setText(entity.getMinSpeed() + "-" + entity.getMaxSpeed());
         mViewBinding.stvSpeedLimitKey.setText(getContext().getText(R.string.navi_speed_suggest));
         mViewBinding.stvDistance.setText(String.valueOf(entity.getLightCount()));
@@ -125,5 +139,10 @@ public class SceneNaviSpeedView extends NaviSceneBase<SceneNaviSpeedViewBinding,
         if (mScreenViewModel != null) {
             mScreenViewModel.onNaviSpeedCameraInfo(speedCameraInfo);
         }
+    }
+
+    public void onCurrentRoadSpeed(int speed) {
+        Logger.i(TAG, "onCurrentRoadSpeed speed:" + speed);
+        mCurrentRoadLimitSpeed = speed;
     }
 }

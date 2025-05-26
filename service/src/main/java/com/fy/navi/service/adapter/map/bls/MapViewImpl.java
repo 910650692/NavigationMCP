@@ -102,7 +102,9 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver,
 
     private static float MAP_ZOOM_LEVEL_MAX = 20F;
     private static float MAP_ZOOM_LEVEL_MIN = 3F;
-    private static float MAP_ZOOM_LEVEL_DEFAULT = 13F;
+    private static float MAP_ZOOM_LEVEL_DEFAULT = 15F;
+    private static float MAP_ZOOM_LEVEL_DEFAULT_3D = 17F;
+    private static float MAP_ZOOM_LEVEL_DEFAULT_3D_PATCHANGLE = 40F;
 
     private static float MAP_DEFAULT_TEXT_SIZE = 1.3F;
     private MapDevice mMapDevice;
@@ -438,16 +440,16 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver,
         switch (mapMode) {
             case UP_2D:
                 mapviewModeParam.mode = MapviewMode.MapviewModeCar;
-                mapviewModeParam.mapZoomLevel = 14;
+                mapviewModeParam.mapZoomLevel = MAP_ZOOM_LEVEL_DEFAULT;
                 break;
             case UP_3D:
                 mapviewModeParam.mode = MapviewMode.MapviewMode3D;
-                mapviewModeParam.mapZoomLevel = 17;
-                mapviewModeParam.pitchAngle = 40f;
+                mapviewModeParam.mapZoomLevel = MAP_ZOOM_LEVEL_DEFAULT_3D;
+                mapviewModeParam.pitchAngle = MAP_ZOOM_LEVEL_DEFAULT_3D_PATCHANGLE;
                 break;
             case NORTH_2D:
                 mapviewModeParam.mode = MapviewMode.MapviewModeNorth;
-                mapviewModeParam.mapZoomLevel = 14;
+                mapviewModeParam.mapZoomLevel = MAP_ZOOM_LEVEL_DEFAULT;
                 break;
         }
         int mapModel = getMapview().setMapMode(mapviewModeParam, true);

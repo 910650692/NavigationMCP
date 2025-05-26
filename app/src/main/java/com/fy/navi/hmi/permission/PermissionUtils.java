@@ -68,13 +68,17 @@ public class PermissionUtils {
         }else {
             Logger.i(TAG, "current device type is pad");
         }
+        Logger.i(TAG, "permissionList size-> " + permissionList.size());
         return ConvertUtils.isEmpty(permissionList);
     }
 
     public boolean checkoutPermission(String permission) {
+        Logger.i(TAG, "checkoutPermission permission-> " + permission);
         if (ConvertUtils.isEmpty(permission)) return true;
         if (ConvertUtils.equals(permission, Manifest.permission.MANAGE_EXTERNAL_STORAGE)) {
-            return Environment.isExternalStorageManager();
+            boolean isExternalStorageManager = Environment.isExternalStorageManager();
+            Logger.i(TAG, "isExternalStorageManager-> " + isExternalStorageManager);
+            return isExternalStorageManager;
         }
         if (ConvertUtils.equals(permission, Settings.ACTION_MANAGE_OVERLAY_PERMISSION)) {
             return Settings.canDrawOverlays(AppContext.getInstance().getMContext());
@@ -84,6 +88,7 @@ public class PermissionUtils {
     }
 
     public void requestPermission() {
+        Logger.i(TAG, "requestPermission permissionList size-> " + permissionList.size());
         if (ConvertUtils.isEmpty(permissionList)) requestDeniedPermission();
         else requestPermission(permissionList.get(0));
     }
@@ -121,6 +126,7 @@ public class PermissionUtils {
     }
 
     public void requestManageExternal(){
+        Logger.i(TAG, "requestManageExternal");
         PermissionDialog permissionDialog = new PermissionDialog.Build(context)
                 .setTitle("申请文件读写权限")
                 .setContent("地图导航中所需权限，如果没有该权限将可能会造成地图的无法使用，点击确定跳转到权限申请界面，点击取消可能会造成地图无法使用")

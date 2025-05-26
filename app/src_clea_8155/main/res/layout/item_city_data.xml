@@ -14,7 +14,7 @@
 
     <com.fy.navi.ui.view.SkinConstraintLayout
         android:layout_width="match_parent"
-        android:layout_marginBottom="@dimen/dp_24"
+        android:layout_marginBottom="@dimen/dp_20"
         android:layout_height="wrap_content">
 
         <com.fy.navi.ui.view.CustomSwipeMenuLayout
@@ -27,7 +27,7 @@
 
             <com.fy.navi.ui.view.SkinConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_140"
+                android:layout_height="@dimen/dp_119"
                 android:clickable="true"
                 android:background="@drawable/shape_bg_map_data">
 
@@ -44,11 +44,11 @@
                     android:id="@+id/item_city_name"
                     android:layout_width="wrap_content"
                     android:layout_height="fill_parent"
-                    android:layout_marginStart="@dimen/dp_30"
+                    android:layout_marginStart="@dimen/dp_26"
                     android:gravity="center"
                     android:text="@string/offline_item_city_title"
                     android:textColor="@color/setting_bg_tab_text_select"
-                    android:textSize="@dimen/sp_34"
+                    android:textSize="@dimen/sp_29"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
@@ -59,6 +59,7 @@
                     android:text="@string/offline_item_city_tip"
                     android:textColor="@color/setting_white"
                     android:textSize="@dimen/sp_26"
+                    android:gravity="center"
                     android:visibility="gone"
                     android:background="@drawable/bg_end_point"
                     app:layout_constraintLeft_toRightOf="@+id/item_city_name"
@@ -68,8 +69,8 @@
                 <!--下载/全部开始/全部暂停等按钮下载状态 -->
                 <com.fy.navi.ui.view.SkinLinearLayout
                     android:layout_width="wrap_content"
-                    android:layout_height="@dimen/dp_140"
-                    android:layout_marginEnd="@dimen/dp_30"
+                    android:layout_height="@dimen/dp_119"
+                    android:layout_marginEnd="@dimen/dp_26"
                     android:orientation="horizontal"
                     android:gravity="center_vertical"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -81,11 +82,11 @@
                         android:id="@+id/item_city_data"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginEnd="@dimen/dp_24"
+                        android:layout_marginEnd="@dimen/dp_20"
                         android:gravity="center"
                         android:text="@string/offline_item_city_data"
                         android:textColor="@color/setting_bg_tab_text_unselect"
-                        android:textSize="@dimen/sp_26" />
+                        android:textSize="@dimen/sp_22" />
 
                     <!--按钮下载状态-->
                     <com.fy.navi.scene.ui.setting.DownloadBtnView
@@ -96,27 +97,27 @@
                     <!--全部开始-->
                     <com.fy.navi.ui.view.SkinButton
                         android:id="@+id/item_all_download"
-                        android:layout_width="@dimen/dp_180"
-                        android:layout_height="@dimen/dp_76"
+                        android:layout_width="@dimen/dp_164"
+                        android:layout_height="@dimen/dp_65"
                         android:visibility="gone"
                         android:gravity="center"
                         android:background="@drawable/shape_bg_download_data"
                         android:text="@string/offline_all_city_start_download"
                         android:textColor="@color/setting_white"
-                        android:textSize="@dimen/sp_30"/>
+                        android:textSize="@dimen/sp_26"/>
 
                     <!--全部暂停-->
                     <com.fy.navi.ui.view.SkinButton
                         android:id="@+id/item_all_pause"
-                        android:layout_width="@dimen/dp_180"
-                        android:layout_height="@dimen/dp_76"
+                        android:layout_width="@dimen/dp_164"
+                        android:layout_height="@dimen/dp_65"
                         android:layout_marginStart="@dimen/dp_24"
                         android:visibility="gone"
                         android:gravity="center"
                         android:background="@drawable/shape_bg_map_item_data"
                         android:text="@string/offline_all_city_suspend_download"
                         android:textColor="@color/setting_bg_tab_text_unselect"
-                        android:textSize="@dimen/sp_30"/>
+                        android:textSize="@dimen/sp_26"/>
 
                 </com.fy.navi.ui.view.SkinLinearLayout>
 
@@ -136,12 +137,12 @@
             <com.fy.navi.ui.view.SkinTextView
                 android:id="@+id/item_driving_delete"
                 android:layout_width="@dimen/dp_160"
-                android:layout_height="@dimen/dp_140"
+                android:layout_height="@dimen/dp_119"
                 android:drawableTop="@drawable/img_delete_58"
                 android:background="@drawable/bg_driving_item_delete"
                 android:paddingVertical="@dimen/dp_20"
                 android:text="@string/driving_item_delete"
-                android:textSize="@dimen/sp_30"
+                android:textSize="@dimen/sp_26"
                 android:textColor="@color/color_80_ffffff"
                 android:gravity="center" />
 

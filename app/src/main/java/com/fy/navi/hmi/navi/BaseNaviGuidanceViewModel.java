@@ -1,7 +1,6 @@
 package com.fy.navi.hmi.navi;
 
 import android.app.Application;
-import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 
@@ -11,7 +10,6 @@ import androidx.databinding.ObservableField;
 import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
-import com.fy.navi.hmi.cluster.utils.DeleteChargeStationEventMonitor;
 import com.fy.navi.scene.api.route.ISceneRoutePreferenceCallBack;
 import com.fy.navi.scene.impl.imersive.ImersiveStatus;
 import com.fy.navi.scene.impl.navi.inter.ISceneCallback;
@@ -19,7 +17,6 @@ import com.fy.navi.scene.ui.navi.ChargeTipEntity;
 import com.fy.navi.scene.ui.navi.manager.INaviSceneEvent;
 import com.fy.navi.scene.ui.navi.manager.NaviSceneId;
 import com.fy.navi.scene.ui.navi.manager.NaviSceneManager;
-import com.fy.navi.service.AppContext;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.navi.CrossImageEntity;
@@ -571,8 +568,6 @@ public class BaseNaviGuidanceViewModel extends
                 IBaseDialogClickListener.super.onCommitClick();
                 Logger.i(TAG, "确定删除！");
                 mModel.deleteAutoAddChargeStation();
-                // 通知所有监听器：用户确认删除了充电站
-                DeleteChargeStationEventMonitor.getInstance().notifyDeleteConfirmed();
             }
         }).show();
     }
@@ -692,6 +687,12 @@ public class BaseNaviGuidanceViewModel extends
         }
         if (null != mView) {
             mView.updateViewRadius();
+        }
+    }
+
+    public void onCurrentRoadSpeed(int speed) {
+        if (null != mView) {
+            mView.onCurrentRoadSpeed(speed);
         }
     }
 }

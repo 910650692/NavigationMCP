@@ -150,6 +150,9 @@ public final class StackManager {
     public Boolean isActivityExist(final String screenId,final Class cls) {
         final Stack<BaseActivity> activities = ConvertUtils.containToValue(mBaseActivityStack, screenId);
         AtomicBoolean isExist = new AtomicBoolean(false);
+        if (ConvertUtils.isEmpty(activities)) {
+            return isExist.get();
+        }
         activities.forEach(baseActivity -> {
             if (ConvertUtils.equals(baseActivity.getClass().getSimpleName(),cls.getSimpleName())) {
                 isExist.set(true);

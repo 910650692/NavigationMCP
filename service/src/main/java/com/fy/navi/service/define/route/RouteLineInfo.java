@@ -25,6 +25,7 @@ public class RouteLineInfo {
 
     private List<RouteLineSegmentInfo> mRouteLineSegmentInfos;
     private boolean mCanBeArrive = true;
+    private boolean mRestoration = false;
 
     private int mRemainPercent = -1;
 

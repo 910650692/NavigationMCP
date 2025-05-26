@@ -404,7 +404,7 @@ public class SceneHomeCompanyView extends BaseSceneView<SceneHomeCompanyViewBind
             mUserPoiInfoEntity.setFavoriteInfo(favoriteInfo);
             if (ConvertUtils.isEmpty(mUserPoiInfoEntity.getPid())) {
                 //逆地理搜索出的点无poiId，需自己拼接
-                mUserPoiInfoEntity.setPid(mUserPoiInfoEntity.getPoint().getLon() + ""
+                mUserPoiInfoEntity.setPid(mUserPoiInfoEntity.getPoint().getLon() + "_"
                         + mUserPoiInfoEntity.getPoint().getLat());
             }
             BehaviorPackage.getInstance().addFavorite(mUserPoiInfoEntity, commonName);

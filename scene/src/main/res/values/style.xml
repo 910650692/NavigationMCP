@@ -75,9 +75,21 @@
     </declare-styleable>
 
     <declare-styleable name="DrawableCenterRadioButton">
-        <attr name="drawableWidth" format="float"/>
-        <attr name="drawableHeight" format="float"/>
+        <attr name="drawableWidth" format="float" />
+        <attr name="drawableHeight" format="float" />
         <attr name="normalTextColor" format="color|reference" />
         <attr name="selectedTextColor" format="color|reference" />
     </declare-styleable>
+
+    <style name="style_one_third_navi_action_img">
+        <item name="android:layout_width">@dimen/dp_50</item>
+        <item name="android:layout_height">@dimen/dp_50</item>
+    </style>
+
+    <style name="style_one_third_navi_action_text">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/common_title_color</item>
+        <item name="android:textSize">@dimen/sp_26</item>
+    </style>
 </resources>

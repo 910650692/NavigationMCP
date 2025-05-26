@@ -115,6 +115,7 @@ public class RouteAdapterImpl implements IRouteApi {
         requestRouteResult.setMIsOnlineRoute(param.isMIsOnline());
         requestRouteResult.setMRouteType(param.getMRoutePriorityType());
         requestRouteResult.setMRouteRequestCallBackType(param.getRouteRequestCallBackType());
+        requestRouteResult.setMRestoration(false);
         final RouteOption routeOption = mAdapterImplHelper.getRequestParam(requestRouteResult, paramList);
         mLastRouteOption = routeOption;
         mLastRequestRouteResult = requestRouteResult;
@@ -190,7 +191,7 @@ public class RouteAdapterImpl implements IRouteApi {
 
         mRouteService.control(RouteControlKey.RouteControlConfigSetTipsInfo, NUM_ONE);
         mRouteService.control(RouteControlKey.RouteControlKeyPrivacy, NUM_ONE);
-
+        mRouteService.control(RouteControlKey.RouteControlKeySetMutilRoute, "1");
 
         mRouteService.control(RouteControlKey.RouteControlKeyVehicleType, BevPowerCarUtils.getInstance().carType);
         mRouteService.control(RouteControlKey.RouteControlKeepChargingStation, BevPowerCarUtils.getInstance().bevCarElicOpen ? NUM_ONE : "0");
@@ -244,6 +245,7 @@ public class RouteAdapterImpl implements IRouteApi {
         requestRouteResult.setMFastNavi(false);
         requestRouteResult.setMIsOnlineRoute(true);
         requestRouteResult.setMRouteWay(RouteWayID.ROUTE_WAY_DEFAULT);
+        requestRouteResult.setMRestoration(true);
         final RouteLineLayerParam routeLineLayerParam = new RouteLineLayerParam();
         routeLineLayerParam.getMRouteLinePoints().getMEndPoints().add(routeMsgPushInfo.getMEndPoint());
         routeLineLayerParam.getMRouteLinePoints().getMStartPoints().add(routeMsgPushInfo.getMStartPoint());

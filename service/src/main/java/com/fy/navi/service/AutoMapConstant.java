@@ -20,7 +20,7 @@ public interface AutoMapConstant {
     float MAP_ZOOM_LEVEL_MAX = 20F;
     float MAP_ZOOM_LEVEL_MIN = 3F;
     float MAP_ZOOM_LEVEL_CHANGE_FLAG = 1F;
-    float MAP_ZOOM_LEVEL_DEFAULT = 13F;
+    float MAP_ZOOM_LEVEL_DEFAULT = 15F;
 
     float MAP_DEFAULT_TEXT_SIZE = 1.3F;
 

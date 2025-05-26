@@ -16,6 +16,7 @@ import com.android.utils.thread.ThreadManager;
 public class UtilsManager {
     public static final void init(Context context) {
         Logger.initLogUtils(true, 3, "NaviApplication");
+        Logger.i("UtilsManager", "init");
         ThreadManager.getInstance().initThreadPool(context);
         FileUtils.getInstance().initFile(context);
         NetWorkUtils.Companion.getInstance().init(context);

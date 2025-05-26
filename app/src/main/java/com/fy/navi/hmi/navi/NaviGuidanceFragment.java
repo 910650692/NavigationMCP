@@ -610,4 +610,8 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
                     com.fy.navi.scene.R.drawable.bg_navi_tbt_bottom);
         }
     }
+
+    public void onCurrentRoadSpeed(int speed) {
+        mBinding.sceneNaviSpeed.onCurrentRoadSpeed(speed);
+    }
 }

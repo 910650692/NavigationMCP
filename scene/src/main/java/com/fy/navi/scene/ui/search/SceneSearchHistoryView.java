@@ -41,6 +41,7 @@ import com.fy.navi.service.logicpaket.route.RoutePackage;
 import com.fy.navi.service.logicpaket.search.SearchPackage;
 import com.fy.navi.service.logicpaket.setting.SettingUpdateObservable;
 import com.fy.navi.service.logicpaket.user.behavior.BehaviorPackage;
+import com.fy.navi.service.logicpaket.user.usertrack.UserTrackPackage;
 import com.fy.navi.ui.base.BaseFragment;
 import com.fy.navi.ui.dialog.IBaseDialogClickListener;
 
@@ -135,7 +136,8 @@ public class SceneSearchHistoryView extends BaseSceneView<MainAlongWaySearchHist
                         @Override
                         public void onCommitClick() {
                             //清空历史记录
-                            SearchPackage.getInstance().clearSearchKeywordRecord();
+                            UserTrackPackage.getInstance().clearSearchHistory();
+                            UserTrackPackage.getInstance().clearHistoryRoute();
                             mSearchHistoryAdapter.notifyList(new ArrayList<>());
                             ToastUtils.Companion.getInstance().showCustomToastView("已清空历史记录");
                             mViewBinding.sclDeleteRecordAlong.setVisibility(GONE);
@@ -201,16 +203,16 @@ public class SceneSearchHistoryView extends BaseSceneView<MainAlongWaySearchHist
                 favoriteInfo.setCommonName(commonName)
                         .setUpdateTime(new Date().getTime());
                 poiInfoEntity.setFavoriteInfo(favoriteInfo);
-                if (!mScreenViewModel.isFavorite(poiInfoEntity).isEmpty()) {
-                    Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "current poi isFav,just return");
-                    return;
-                }
-                BehaviorPackage.getInstance().addFavorite(poiInfoEntity, commonName);
                 if (mHomeCompanyType == 1
                         || mHomeCompanyType == 2
                         || mHomeCompanyType == 3
                         || mHomeCompanyType == 0) {
                     if (mHomeCompanyType == 0) {
+                        if (!mScreenViewModel.isFavorite(poiInfoEntity).isEmpty()) {
+                            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "current poi isFav,just return");
+                            return;
+                        }
+                        BehaviorPackage.getInstance().addFavorite(poiInfoEntity, commonName);
                         ToastUtils.Companion.getInstance().showCustomToastView("收藏成功");
                     }
                     SettingUpdateObservable.getInstance().onUpdateSyncTime();
@@ -219,10 +221,6 @@ public class SceneSearchHistoryView extends BaseSceneView<MainAlongWaySearchHist
                     sendBuryPointForAddFavorite(poiInfoEntity, commonName);
                 } else {
                     if (SearchPackage.getInstance().isAlongWaySearch()) {
-                        if (!RoutePackage.getInstance().isBelongRouteParam(MapType.MAIN_SCREEN_MAIN_MAP, poiInfoEntity)) {
-                            ToastUtils.Companion.getInstance().showCustomToastView(ResourceUtils.
-                                    Companion.getInstance().getString(R.string.smp_set_success), 0);
-                        }
                         RoutePackage.getInstance().addViaPoint(MapType.MAIN_SCREEN_MAIN_MAP, poiInfoEntity);
                     } else {
                         SearchPackage.getInstance().clearLabelMark();
@@ -250,7 +248,7 @@ public class SceneSearchHistoryView extends BaseSceneView<MainAlongWaySearchHist
 
             @Override
             public void onNaviClick(final int position, final PoiInfoEntity poiInfoEntity) {
-                ToastUtils.Companion.getInstance().showCustomToastView(ResourceUtils.Companion.getInstance().getString(R.string.smp_set_success), 0);
+//                ToastUtils.Companion.getInstance().showCustomToastView(ResourceUtils.Companion.getInstance().getString(R.string.smp_set_success), 0);
                 final int commonName = mSearchResultAdapter.getHomeCompanyType();
                 final FavoriteInfo favoriteInfo = new FavoriteInfo();
                 favoriteInfo.setCommonName(commonName)

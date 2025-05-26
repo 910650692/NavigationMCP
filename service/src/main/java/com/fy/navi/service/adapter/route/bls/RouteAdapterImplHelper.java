@@ -454,10 +454,12 @@ public class RouteAdapterImplHelper {
      *
      * @param pathInfoList 算路参数
      * @param onlineRoute  是否在线算路
+     * @param restoration  是否算路还原
      * @return 算路信息
      */
-    private List<RouteLineInfo> convertPathInfo2RouteResult(final ArrayList<PathInfo> pathInfoList, final boolean onlineRoute) {
-        return getRouteLineInfoList(pathInfoList, onlineRoute);
+    private List<RouteLineInfo> convertPathInfo2RouteResult(final ArrayList<PathInfo> pathInfoList, final boolean onlineRoute,
+                                                            final boolean restoration) {
+        return getRouteLineInfoList(pathInfoList, onlineRoute, restoration);
     }
 
     /**
@@ -465,9 +467,10 @@ public class RouteAdapterImplHelper {
      *
      * @param pathInfoList 算路参数
      * @param onlineRoute  是否在线算路
+     * @param restoration  是否算路还原
      * @return 算路信息
      **/
-    private List<RouteLineInfo> getRouteLineInfoList(final ArrayList<PathInfo> pathInfoList, final boolean onlineRoute) {
+    private List<RouteLineInfo> getRouteLineInfoList(final ArrayList<PathInfo> pathInfoList, final boolean onlineRoute, final boolean restoration) {
         final List<RouteLineInfo> routeResults = new ArrayList<>();
         if (!ConvertUtils.isEmpty(pathInfoList)) {
             for (PathInfo info : pathInfoList) {
@@ -510,6 +513,11 @@ public class RouteAdapterImplHelper {
                         && !info.getChargeStationInfo().isEmpty());
                 routeResult.setMElecRouteLabel(elecRouteLabel);
                 routeResult.setMCanBeArrive(canBeArrive);
+                // 算路还原无法设置电车参数所以电量显示为--，可达
+                if (restoration) {
+                    routeResult.setMElecRouteLabel("--");
+                    routeResult.setMRestoration(true);
+                }
                 String label = "默认";
                 if (info.getLabelInfoCount() > NumberUtils.NUM_0 && !ConvertUtils.isEmpty(info.getLabelInfo((short) NumberUtils.NUM_0).content)) {
                     label = info.getLabelInfo((short) NumberUtils.NUM_0).content;
@@ -784,7 +792,8 @@ public class RouteAdapterImplHelper {
      * @param pathInfoList       路线信息
      */
     private void handlerRouteResult(final RequestRouteResult requestRouteResult, final ArrayList<PathInfo> pathInfoList) {
-        final List<RouteLineInfo> routeResults = convertPathInfo2RouteResult(pathInfoList, requestRouteResult.isMIsOnlineRoute());
+        final List<RouteLineInfo> routeResults = convertPathInfo2RouteResult(pathInfoList, requestRouteResult.isMIsOnlineRoute(),
+                requestRouteResult.isMRestoration());
         requestRouteResult.setMRouteLineInfos(routeResults);
         Logger.i(TAG, "请求结果获取透传给HMI的信息 " + routeResults);
         for (RouteResultObserver resultObserver : mRouteResultObserverHashtable.values()) {

@@ -15,14 +15,16 @@
     <com.fy.navi.ui.view.SkinConstraintLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingVertical="@dimen/dp_29"
-        android:paddingHorizontal="@dimen/dp_29"
-        android:background="@drawable/bg_shadow_navi_buick">
+        android:background="@drawable/bg_shadow_navi_buick"
+        android:paddingHorizontal="@dimen/dp_34"
+        android:paddingVertical="@dimen/dp_34">
 
         <com.fy.navi.ui.view.SkinScrollView
-            android:layout_width="@dimen/dp_640"
-            android:layout_height="@dimen/dp_376"
-            android:scrollbars="none">
+            android:layout_width="@dimen/dp_545"
+            android:layout_height="@dimen/dp_520"
+            android:scrollbars="none"
+            tools:layout_editor_absoluteX="29dp"
+            tools:layout_editor_absoluteY="29dp">
             <!--算路偏好-->
             <com.fy.navi.ui.view.SkinConstraintLayout
                 android:layout_width="match_parent"
@@ -34,29 +36,29 @@
                     android:id="@+id/stv_route_preference_selected"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
                     android:layout_marginStart="@dimen/dp_40"
                     android:textColor="@color/navi_color_000000_70"
                     android:textSize="@dimen/sp_30"
-                    tools:text="不走高速+躲避拥堵"/>
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:text="不走高速+躲避拥堵" />
 
                 <com.fy.navi.ui.view.SkinImageView
                     android:id="@+id/siv_preference_close"
+                    clickCommand="@{() -> Scene.closeScene()}"
                     android:layout_width="@dimen/dp_48"
                     android:layout_height="@dimen/dp_48"
-                    app:layout_constraintTop_toTopOf="@+id/stv_route_preference_selected"
+                    android:layout_marginStart="@dimen/dp_10"
+                    android:background="@drawable/img_up_42"
                     app:layout_constraintBottom_toBottomOf="@+id/stv_route_preference_selected"
                     app:layout_constraintStart_toEndOf="@+id/stv_route_preference_selected"
-                    android:layout_marginStart="@dimen/dp_10"
-                    clickCommand="@{() -> Scene.closeScene()}"
-                    android:background="@drawable/img_up_42"/>
+                    app:layout_constraintTop_toTopOf="@+id/stv_route_preference_selected" />
 
                 <com.fy.navi.ui.view.SkinTextView
                     android:id="@+id/preference_recommend"
                     clickCommand="@{() -> Scene.preferenceRecommend(1)}"
-                    android:layout_width="@dimen/dp_560"
-                    android:layout_height="@dimen/dp_90"
+                    android:layout_width="@dimen/dp_477"
+                    android:layout_height="@dimen/dp_77"
                     android:layout_marginTop="@dimen/dp_66"
                     android:background="@drawable/navi_selector_preference_nol"
                     android:gravity="center"
@@ -67,13 +69,13 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:select_background_color="@drawable/navi_selector_preference"
-                    app:select_text_color="@color/navi_color_FFFFFF_100" />
+                    app:select_text_color="@color/scene_route_preference_txt_color" />
 
                 <com.fy.navi.ui.view.SkinTextView
                     android:id="@+id/preference_avoid_congestion"
                     clickCommand="@{() -> Scene.preferenceAvoidCongestion(1)}"
-                    android:layout_width="@dimen/dp_268"
-                    android:layout_height="@dimen/dp_90"
+                    android:layout_width="@dimen/dp_228"
+                    android:layout_height="@dimen/dp_77"
                     android:layout_marginTop="@dimen/dp_24"
                     android:background="@drawable/navi_selector_preference_nol"
                     android:gravity="center"
@@ -83,13 +85,13 @@
                     app:layout_constraintStart_toStartOf="@+id/preference_recommend"
                     app:layout_constraintTop_toBottomOf="@+id/preference_recommend"
                     app:select_background_color="@drawable/navi_selector_preference"
-                    app:select_text_color="@color/navi_color_FFFFFF_100" />
+                    app:select_text_color="@color/scene_route_preference_txt_color" />
 
                 <com.fy.navi.ui.view.SkinTextView
                     android:id="@+id/preference_first_main_road"
                     clickCommand="@{() -> Scene.preferenceFirstMainRoad(1)}"
-                    android:layout_width="@dimen/dp_268"
-                    android:layout_height="@dimen/dp_90"
+                    android:layout_width="@dimen/dp_228"
+                    android:layout_height="@dimen/dp_77"
                     android:layout_marginStart="@dimen/dp_24"
                     android:background="@drawable/navi_selector_preference_nol"
                     android:gravity="center"
@@ -100,13 +102,13 @@
                     app:layout_constraintTop_toBottomOf="@+id/preference_recommend"
                     app:layout_constraintTop_toTopOf="@id/preference_avoid_congestion"
                     app:select_background_color="@drawable/navi_selector_preference"
-                    app:select_text_color="@color/navi_color_FFFFFF_100" />
+                    app:select_text_color="@color/scene_route_preference_txt_color" />
 
                 <com.fy.navi.ui.view.SkinTextView
                     android:id="@+id/preference_first_highway"
                     clickCommand="@{() -> Scene.preferenceFirstHighway(1)}"
-                    android:layout_width="@dimen/dp_268"
-                    android:layout_height="@dimen/dp_90"
+                    android:layout_width="@dimen/dp_228"
+                    android:layout_height="@dimen/dp_77"
                     android:layout_marginTop="@dimen/dp_24"
                     android:background="@drawable/navi_selector_preference_nol"
                     android:gravity="center"
@@ -116,13 +118,13 @@
                     app:layout_constraintStart_toStartOf="@+id/preference_avoid_congestion"
                     app:layout_constraintTop_toBottomOf="@+id/preference_avoid_congestion"
                     app:select_background_color="@drawable/navi_selector_preference"
-                    app:select_text_color="@color/navi_color_FFFFFF_100" />
+                    app:select_text_color="@color/scene_route_preference_txt_color" />
 
                 <com.fy.navi.ui.view.SkinTextView
                     android:id="@+id/preference_not_highway"
                     clickCommand="@{() -> Scene.preferenceNotHighway(1)}"
-                    android:layout_width="@dimen/dp_268"
-                    android:layout_height="@dimen/dp_90"
+                    android:layout_width="@dimen/dp_228"
+                    android:layout_height="@dimen/dp_77"
                     android:layout_marginStart="@dimen/dp_24"
                     android:background="@drawable/navi_selector_preference_nol"
                     android:gravity="center"
@@ -133,13 +135,13 @@
                     app:layout_constraintTop_toBottomOf="@+id/preference_avoid_congestion"
                     app:layout_constraintTop_toTopOf="@id/preference_first_highway"
                     app:select_background_color="@drawable/navi_selector_preference"
-                    app:select_text_color="@color/navi_color_FFFFFF_100" />
+                    app:select_text_color="@color/scene_route_preference_txt_color" />
 
                 <com.fy.navi.ui.view.SkinTextView
                     android:id="@+id/preference_less_charge"
                     clickCommand="@{() -> Scene.preferenceLessCharge(1)}"
-                    android:layout_width="@dimen/dp_268"
-                    android:layout_height="@dimen/dp_90"
+                    android:layout_width="@dimen/dp_228"
+                    android:layout_height="@dimen/dp_77"
                     android:layout_marginTop="@dimen/dp_24"
                     android:background="@drawable/navi_selector_preference_nol"
                     android:gravity="center"
@@ -149,13 +151,13 @@
                     app:layout_constraintStart_toStartOf="@+id/preference_first_highway"
                     app:layout_constraintTop_toBottomOf="@+id/preference_first_highway"
                     app:select_background_color="@drawable/navi_selector_preference"
-                    app:select_text_color="@color/navi_color_FFFFFF_100" />
+                    app:select_text_color="@color/scene_route_preference_txt_color" />
 
                 <com.fy.navi.ui.view.SkinTextView
                     android:id="@+id/preference_fastest_speed"
                     clickCommand="@{() -> Scene.preferenceFastestSpeed(1)}"
-                    android:layout_width="@dimen/dp_268"
-                    android:layout_height="@dimen/dp_90"
+                    android:layout_width="@dimen/dp_228"
+                    android:layout_height="@dimen/dp_77"
                     android:layout_marginStart="@dimen/dp_24"
                     android:background="@drawable/navi_selector_preference_nol"
                     android:gravity="center"
@@ -166,7 +168,7 @@
                     app:layout_constraintTop_toBottomOf="@+id/preference_first_highway"
                     app:layout_constraintTop_toTopOf="@id/preference_less_charge"
                     app:select_background_color="@drawable/navi_selector_preference"
-                    app:select_text_color="@color/navi_color_FFFFFF_100" />
+                    app:select_text_color="@color/scene_route_preference_txt_color" />
 
             </com.fy.navi.ui.view.SkinConstraintLayout>
         </com.fy.navi.ui.view.SkinScrollView>

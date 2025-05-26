@@ -1,5 +1,6 @@
 package com.fy.navi.hmi.startup;
 
+import android.app.ActivityOptions;
 import android.app.Application;
 import android.content.Intent;
 import android.text.TextUtils;
@@ -56,6 +57,7 @@ public class BaseStartupViewModel extends BaseViewModel<StartupActivity, Startup
     }
 
     private void checkPrivacyRights() {
+        Logger.i(TAG, "checkPrivacyRights");
         if (isFirstLauncher) {
             popAgreementDialog();
         } else {
@@ -124,7 +126,9 @@ public class BaseStartupViewModel extends BaseViewModel<StartupActivity, Startup
                 intent.putExtra(INaviConstant.ROUTE_END_POI, mEndPoint);
             }
         }
-        AppContext.getInstance().getMContext().startActivity(intent);
+        ActivityOptions options = ActivityOptions.makeBasic();
+        options.setLaunchDisplayId(0);
+        AppContext.getInstance().getMContext().startActivity(intent, options.toBundle());
         mView.finish();
     }
 

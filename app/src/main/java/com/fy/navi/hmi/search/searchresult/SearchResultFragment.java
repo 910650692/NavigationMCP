@@ -21,6 +21,7 @@ import com.fy.navi.ui.base.BaseFragment;
 @Route(path = RoutePath.Search.SEARCH_RESULT_FRAGMENT)
 public class SearchResultFragment extends BaseFragment<FragmentSearchResultBinding, SearchResultViewModel> {
     private String mSourceFragmentTag;
+    private boolean mIsEnd;
     private int mTaskId;
     private SearchResultEntity mSearchResultEntity;
     private int mHomeCompany;
@@ -81,6 +82,7 @@ public class SearchResultFragment extends BaseFragment<FragmentSearchResultBindi
         final int range= parsedArgs.getInt(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_RANGE, 5000);
         final int isOpenFromNavi = parsedArgs.getInt(NaviConstant.NAVI_CONTROL, 0);
         final int cityCode = parsedArgs.getInt("cityCode", 0);
+        mIsEnd = parsedArgs.getBoolean("IS_END" , false);//是否是语音设置终点，如果是的话，即使在导航态也需要显示去这里
         if (isOpenFromNavi == 1) {
             mBinding.scenePoiList.setNaviControl(true);
         }
@@ -104,12 +106,14 @@ public class SearchResultFragment extends BaseFragment<FragmentSearchResultBindi
             mHomeCompany = AutoMapConstant.HomeCompanyType.COMPANY;
         } else if (ConvertUtils.equals(mSourceFragmentTag, AutoMapConstant.SourceFragment.FRAGMENT_COLLECTION)) {
             mHomeCompany = AutoMapConstant.HomeCompanyType.COLLECTION;
-        } else if (ConvertUtils.equals(mSourceFragmentTag, AutoMapConstant.SourceFragment.FRAGMENT_COMMON)) {
+        } else if (ConvertUtils.equals(mSourceFragmentTag, AutoMapConstant
+                .SourceFragment.FRAGMENT_COMMON)) {
             mHomeCompany = AutoMapConstant.HomeCompanyType.COMMON;
         }
         mTaskId = taskId;
         mSearchResultEntity = searchResultEntity;
         mBinding.scenePoiList.setHomeCompanyState(mHomeCompany);
+        mBinding.scenePoiList.setMIsEnd(mIsEnd);
         mBinding.scenePoiList.notifySearchResult(mTaskId, mSearchResultEntity);
         Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "notifySearchResult " + mSearchResultEntity);
 

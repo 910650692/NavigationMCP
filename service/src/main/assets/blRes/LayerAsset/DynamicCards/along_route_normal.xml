@@ -1,6 +1,0 @@
-<div style="display:flex;flex-direction:row;justify-content:flex-start;align-items:center;padding-left:6px;height:auto;">
-  <div id="guide_label_background_image" style="display:flex;flex-direction:row;justify-content:center;align-items:center;width:auto;height:88px;background-image:global_image_quick_route_search_along_des_bg_day_night;">
-    <label id="text_time" style="margin-right:13px;margin-left:13px;font-size:20px;color:#2d68f4;font-family:font_cn;" lines="1">多12分钟</label>
-  </div>
-  <image id="brand_image" style="width:44px;height:52px;position:absolute;left:0px;bottom:15px;" src="global_image_navi_along_search_charge_icon_day_night" />
-</div>

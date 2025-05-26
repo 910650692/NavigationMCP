@@ -135,7 +135,7 @@ public class PoiDetailsModel extends BaseModel<PoiDetailsViewModel> implements S
         ThreadManager.getInstance().runAsync(() -> {
             String idpUserId = AccountPackage.getInstance().getUserId();
             String accessToken = AccountPackage.getInstance().getAccessToken(param);
-            String vehicleBrand = mCalibrationPackage.brandName();
+            String vehicleBrand = mSearchPackage.getBrandName(mCalibrationPackage.brand());
             mSearchPackage.queryCollectStation(idpUserId,accessToken,vehicleBrand);
         });
     }

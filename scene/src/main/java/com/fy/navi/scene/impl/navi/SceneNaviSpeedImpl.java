@@ -27,7 +27,10 @@ public class SceneNaviSpeedImpl extends BaseSceneModel<SceneNaviSpeedView> imple
     private int mAverageSpeed = 0; // 当前区间平均车速
     private int mRemainDistance = 0; // 区间路段剩余距离
 
-    public ObservableField<String> mCurrentSpeed;
+    public ObservableField<String> mCurrentSpeedTxt;
+    private int mCurrentSpeed;
+    // bug:1044165 区间测速和绿波路段来回回调导致闪烁，加入区间测速的显示标识，如果正在显示区间测速，不隐藏整个页面
+    private boolean mIsSpeedOverShow;
 
     @Override
     protected void onCreate() {
@@ -49,7 +52,7 @@ public class SceneNaviSpeedImpl extends BaseSceneModel<SceneNaviSpeedView> imple
 
     public SceneNaviSpeedImpl(final SceneNaviSpeedView screenView) {
         super(screenView);
-        mCurrentSpeed = new ObservableField<>("0");
+        mCurrentSpeedTxt = new ObservableField<>("0");
     }
 
     /**
@@ -63,6 +66,7 @@ public class SceneNaviSpeedImpl extends BaseSceneModel<SceneNaviSpeedView> imple
         }
         if (speedCameraInfo == null) {
             updateSceneVisible(false);
+            mIsSpeedOverShow = false;
             return;
         }
         final int speedType = speedCameraInfo.getSpeedType();
@@ -84,19 +88,23 @@ public class SceneNaviSpeedImpl extends BaseSceneModel<SceneNaviSpeedView> imple
             if (mLimitSpeed == 0 || mAverageSpeed == 0) {
                 Logger.i(TAG, "区间测速 限速不显示");
                 updateSceneVisible(false);
+                mIsSpeedOverShow = false;
                 return;
             }
             updateSceneVisible(true);
-            mScreenView.updateOverallInfo(mLimitSpeed, mAverageSpeed, mRemainDistance);
+            mIsSpeedOverShow = true;
+            mScreenView.updateOverallInfo(mLimitSpeed, mAverageSpeed, mCurrentSpeed, mRemainDistance);
         } else if (speedType == NaviConstant.SpeedType.SPEED_GREEN_WAVE) {
             if (speedCameraInfo.getMinSpeed() == 0 || speedCameraInfo.getMaxSpeed() == 0) {
                 Logger.i(TAG, "绿波路段 限速不显示");
-                updateSceneVisible(false);
+                if (!mIsSpeedOverShow) {
+                    updateSceneVisible(false);
+                }
                 return;
             }
             updateSceneVisible(true);
             Logger.i(TAG, "显示限速信息");
-            mScreenView.updateGreenWaveInfo(speedCameraInfo);
+            mScreenView.updateGreenWaveInfo(speedCameraInfo, mCurrentSpeed);
         }
     }
 
@@ -156,8 +164,9 @@ public class SceneNaviSpeedImpl extends BaseSceneModel<SceneNaviSpeedView> imple
                 if (speed > 0) {
                     currentSpeed = Math.round(speed);
                 }
-                if (null != mCurrentSpeed) {
-                    mCurrentSpeed.set(currentSpeed + "");
+                mCurrentSpeed = currentSpeed;
+                if (null != mCurrentSpeedTxt) {
+                    mCurrentSpeedTxt.set(currentSpeed + "");
                 }
             }
         });

@@ -57,7 +57,10 @@ public class CostTime implements Parcelable {
     }
 
     public String getmServiceFee() {
-        return mServiceFee;
+        if(!ConvertUtils.isNull(mServiceFee)){
+            return ConvertUtils.stringFormatTwo(mServiceFee);
+        }
+        return "";
     }
 
     public CostTime setServiceFee(String mServiceFee) {
@@ -75,7 +78,10 @@ public class CostTime implements Parcelable {
     }
 
     public String getmElectricityFee() {
-        return mElectricityFee;
+        if(!ConvertUtils.isNull(mElectricityFee)){
+            return ConvertUtils.stringFormatTwo(mElectricityFee);
+        }
+        return "";
     }
 
     public CostTime setElectricityFee(String mElectricityFee) {
@@ -94,6 +100,6 @@ public class CostTime implements Parcelable {
 
     public String getPrice(){
         double price = ConvertUtils.str2Double(getmServiceFee()) + ConvertUtils.str2Double(getmElectricityFee());
-        return  String.valueOf(price);
+        return  ConvertUtils.stringFormatTwo(String.valueOf(price));
     }
 }

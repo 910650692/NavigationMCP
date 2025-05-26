@@ -13,7 +13,7 @@
     <com.fy.navi.ui.view.SkinConstraintLayout
         android:id="@+id/poi_charge_root"
         android:layout_width="wrap_content"
-        android:layout_height="@dimen/dp_46"
+        android:layout_height="@dimen/dp_39"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
@@ -25,11 +25,9 @@
 
             <com.fy.navi.ui.view.SkinTextView
                 android:id="@+id/poi_charge_fast_title"
-                android:layout_width="@dimen/sp_38"
+                android:layout_width="@dimen/sp_39"
                 android:layout_height="@dimen/dp_39"
                 android:text="快"
-                android:paddingStart="@dimen/dp_8"
-                android:paddingEnd="@dimen/dp_5"
                 android:textSize="@dimen/sp_22"
                 android:gravity="center"
                 android:textColor="@color/route_cricle_dot_gerrn_color"
@@ -76,7 +74,7 @@
             android:id="@+id/poi_charge_slow_root"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_16"
+            android:layout_marginStart="@dimen/dp_14"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_goneMarginStart="@dimen/dp_0"
             app:layout_constraintStart_toEndOf="@+id/poi_charge_fast_root"
@@ -84,11 +82,9 @@
 
             <com.fy.navi.ui.view.SkinTextView
                 android:id="@+id/poi_charge_slow_title"
-                android:layout_width="@dimen/sp_38"
+                android:layout_width="@dimen/sp_39"
                 android:layout_height="@dimen/dp_39"
                 android:text="慢"
-                android:paddingStart="@dimen/dp_8"
-                android:paddingEnd="@dimen/dp_5"
                 android:textSize="@dimen/sp_22"
                 android:gravity="center"
                 android:textColor="@color/route_cricle_dot_orange_color"

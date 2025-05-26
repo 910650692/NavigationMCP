@@ -9,25 +9,26 @@
     </data>
 
     <com.fy.navi.ui.view.SkinConstraintLayout
-        android:layout_width="@dimen/dp_1292"
-        android:layout_height="@dimen/dp_1255"
+        android:layout_width="@dimen/dp_1110"
+        android:layout_height="@dimen/dp_1078"
         android:padding="@dimen/dp_34"
         android:background="@drawable/bg_shadow_navi_ndlc_8155">
 
         <com.fy.navi.ui.view.SkinRelativeLayout
             android:id="@+id/near_offline_map_title"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_125"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_32"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
             <com.fy.navi.ui.view.SkinImageView
                 android:id="@+id/iv_offline_map_back"
                 clickCommand="@{ViewModel.mCloseNearMapDataView}"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="@dimen/dp_49"
+                android:layout_height="@dimen/dp_49"
                 android:layout_centerVertical="true"
-                android:layout_marginStart="@dimen/dp_26"
+                android:layout_marginStart="@dimen/dp_22"
                 android:src="@drawable/img_setting_back"/>
 
             <com.fy.navi.ui.view.SkinTextView
@@ -37,7 +38,7 @@
                 android:text="@string/offline_near_offline_data"
                 android:layout_centerInParent="true"
                 android:textColor="@color/setting_bg_tab_text_select"
-                android:textSize="@dimen/sp_34"/>
+                android:textSize="@dimen/sp_29"/>
         </com.fy.navi.ui.view.SkinRelativeLayout>
 
         <!--附件城市地图数据-->
@@ -45,9 +46,10 @@
             android:id="@+id/rv_near_offline"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_marginStart="@dimen/dp_40"
-            android:layout_marginEnd="@dimen/dp_40"
-            android:layout_marginBottom="@dimen/dp_40"
+            android:layout_marginTop="@dimen/dp_25"
+            android:layout_marginStart="@dimen/dp_34"
+            android:layout_marginEnd="@dimen/dp_34"
+            android:layout_marginBottom="@dimen/dp_34"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/near_offline_map_title" />

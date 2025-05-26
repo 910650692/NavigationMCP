@@ -1,4 +1,0 @@
-<div id='global_image_route_indoor_park_end' style='width:auto;height:auto;background-image:global_image_route_info_day_night;display:flex;flex-direction:row;justify-content:center;align-items:center;'>
-	<label id='showtip' style='color:#f0000000;font-size:20px;justify-content:flex-start;max-height:23px;' text='目的地在'/>
-	<label id='floor' style='color:#f0000000;font-size:20px;justify-content:flex-start;max-height:23px;' text='1'/>
-</div>

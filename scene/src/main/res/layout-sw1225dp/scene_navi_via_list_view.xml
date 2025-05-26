@@ -28,12 +28,12 @@
 
             <com.fy.navi.ui.view.SkinRecyclerView
                 android:id="@+id/srv_add_via"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:layout_constraintHeight_max="@dimen/dp_425"
-                android:overScrollMode="never"/>
+                android:overScrollMode="never"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintHeight_max="@dimen/dp_373"
+                app:layout_constraintTop_toTopOf="parent" />
 
         </com.fy.navi.ui.view.SkinConstraintLayout>
 

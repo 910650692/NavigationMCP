@@ -36,7 +36,7 @@
             <com.fy.navi.scene.ui.setting.SceneVerticalTabLayout
                 android:id="@+id/tabLayout"
                 android:layout_width="@dimen/dp_190"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_86"
                 android:layout_marginStart="@dimen/dp_34"
                 android:background="@null"

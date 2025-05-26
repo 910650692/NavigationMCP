@@ -1,5 +1,6 @@
 package com.fy.navi.fsa.scene;
 
+import com.android.utils.TimeUtils;
 import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
@@ -36,6 +37,7 @@ import com.fy.navi.fsa.bean.SpeedLimitCruiseInfo;
 import com.fy.navi.fsa.bean.SpeedLimitSignData;
 import com.fy.navi.fsa.bean.TollStation;
 import com.fy.navi.fsa.bean.TurnInfo;
+import com.fy.navi.service.AppContext;
 import com.fy.navi.service.define.cruise.CruiseInfoEntity;
 import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.navi.CameraInfoEntity;
@@ -128,13 +130,40 @@ public final class FsaNaviScene {
         laneInfoList.add(turnInfo);
         fsaService.sendEvent(FsaConstant.FsaFunction.ID_TBT_INFO, GsonUtils.toJson(laneInfoList));
 
-        //剩余时间和距离
+        //剩余时间和距离  天数int   String
         final RemainInfo remainInfo = new RemainInfo();
+        remainInfo.setArrivalTime(getArrivalTime(naviETAInfo.getAllTime()));
+        remainInfo.setArrivalDay(getArrivalDay(naviETAInfo.getAllTime()));
         remainInfo.setRemainTime(naviETAInfo.getAllTime());
         remainInfo.setRemainDistance(naviETAInfo.getAllDist());
         fsaService.sendEvent(FsaConstant.FsaFunction.ID_REMAIN_TIME_DISTANCE, GsonUtils.toJson(remainInfo));
     }
 
+    public int getArrivalDay(final int time) {
+        if (time <= 0) {return 0;}
+        //天数
+        String arriveDay = TimeUtils.getArriveDay(time);
+        int mArriveDay = 0;
+        if (arriveDay != null && !arriveDay.isEmpty()) {
+            try {
+                mArriveDay = Integer.parseInt(arriveDay);
+            } catch (NumberFormatException | NullPointerException e) {
+                // 处理非法数字格式的情况
+                mArriveDay = 0;
+            }
+        } else {
+            // 处理空字符串的情况
+            mArriveDay = 0;
+        }
+        return mArriveDay;
+    }
+    public String getArrivalTime(final int time) {
+        if (time <= 0) {return "";}
+        //时间
+        String arriveTime = TimeUtils.getArriveTime(AppContext.getInstance().getMContext(), time);
+        Logger.d(FsaConstant.FSA_TAG,arriveTime+"新增时间");
+        return arriveTime;
+    }
     /**
      * TBT类型转换.
      *

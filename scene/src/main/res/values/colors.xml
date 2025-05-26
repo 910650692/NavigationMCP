@@ -60,6 +60,8 @@
     <color name="route_tbt_color_1">#323232</color>
     <color name="route_tbt_color_2">#4B535D</color>
     <color name="route_tbt_color_gray">#C9CBCE</color>
+    <color name="route_vai_remove_color">#4B535D</color>
+    <color name="route_white">#FFFFFFFF</color>
 
     <color name="text_route_defult">#B3000000</color>
     <color name="text_route_title">#66000000</color>
@@ -265,4 +267,6 @@
     <color name="bg_confirm_dialog_sw280_color">#FFB2AFC2</color>
     <color name="charge_card_bg">#FFFFFFFF</color>
     <color name="scene_route_preference_txt_color">#000000</color>
+
+    <color name="navi_one_third_screen_icon_color">#ffffff</color>
 </resources>

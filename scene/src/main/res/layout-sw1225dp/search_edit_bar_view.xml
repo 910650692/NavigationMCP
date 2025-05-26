@@ -47,9 +47,9 @@
 
         <com.fy.navi.ui.view.SkinImageView
             android:id="@+id/iv_edit_clear"
-            android:layout_width="@dimen/dp_36"
-            android:layout_height="@dimen/dp_36"
-            android:layout_marginEnd="@dimen/dp_20"
+            android:layout_width="@dimen/dp_49"
+            android:layout_height="@dimen/dp_49"
+            android:layout_marginEnd="@dimen/dp_22"
             android:src="@drawable/img_poi_edit_delete"
             android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="parent"

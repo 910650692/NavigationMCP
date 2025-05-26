@@ -18,10 +18,10 @@
     <com.fy.navi.ui.view.SkinConstraintLayout
         android:id="@+id/filter_root"
         android:layout_width="wrap_content"
-        android:minWidth="@dimen/dp_176"
+        android:minWidth="@dimen/dp_150"
         android:paddingLeft="@dimen/dp_20"
         android:paddingRight="@dimen/dp_20"
-        android:layout_height="@dimen/dp_76"
+        android:layout_height="@dimen/dp_65"
         android:background="@drawable/custom_filter_item_bg_selector_day"
         >
         <com.fy.navi.ui.view.SkinTextView
@@ -29,7 +29,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             tools:text="快充"
-            android:textSize="@dimen/sp_30"
+            android:textSize="@dimen/sp_26"
             android:gravity="center"
             android:textColor="@drawable/custom_filter_item_text_bg_selector_day"
             app:layout_constraintEnd_toStartOf="@+id/filter_img"

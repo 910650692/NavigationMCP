@@ -23,7 +23,7 @@
             android:layout_height="@dimen/dp_36"
             android:layout_marginStart="@dimen/dp_20"
             android:layout_marginTop="@dimen/dp_22"
-            android:background="@drawable/img_toll_station_42"
+            android:background="@drawable/img_toll_station_42_sw1225"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -36,7 +36,7 @@
             android:maxWidth="@dimen/dp_400"
             android:maxLines="1"
             android:text="@{naviSapa.mOnlyTollName}"
-            android:textColor="@color/navi_color_FFFFFF_100"
+            android:textColor="@color/navi_color_FFFFFF_80"
             android:textSize="@dimen/sp_29"
             app:layout_constraintBottom_toBottomOf="@+id/skinImageView3"
             app:layout_constraintStart_toStartOf="parent"
@@ -69,7 +69,7 @@
                 android:layout_width="@dimen/dp_36"
                 android:layout_height="@dimen/dp_36"
                 android:layout_marginEnd="@dimen/dp_2"
-                android:background="@drawable/img_etc_42"
+                android:background="@drawable/img_etc_42_sw1225"
                 android:visibility="@{naviSapa.mOnlyTollEtcVisible ? View.VISIBLE : View.GONE}" />
 
             <com.fy.navi.ui.view.SkinImageView
@@ -77,7 +77,7 @@
                 android:layout_width="@dimen/dp_36"
                 android:layout_height="@dimen/dp_36"
                 android:layout_marginEnd="@dimen/dp_2"
-                android:background="@drawable/img_zf_42"
+                android:background="@drawable/img_zf_42_sw1225"
                 android:visibility="@{naviSapa.mOnlyTollAlipayVisible ? View.VISIBLE : View.GONE}" />
 
         </com.fy.navi.ui.view.SkinLinearLayout>

@@ -58,6 +58,9 @@ public interface ILayerApi {
     /* 清除路线 */
     void clearRouteLine(MapType mapTypeId);
 
+    /*清除指定路线类型扎标*/
+    void clearRouteItemByType(MapType mapTypeId, LayerPointItemType type);
+
     /* 展示路线的服务区 */
     void showRestArea(MapType mapTypeId, ArrayList<?> pathInfoList, int index);
 

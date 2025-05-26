@@ -16,6 +16,7 @@ import com.baidu.oneos.protocol.callback.RespCallback;
 import com.fy.navi.service.AutoMapConstant;
 import com.fy.navi.service.define.bean.GeoPoint;
 import com.fy.navi.service.define.map.MapType;
+import com.fy.navi.service.define.navi.NaviEtaInfo;
 import com.fy.navi.service.define.navistatus.NaviStatus;
 import com.fy.navi.service.define.position.LocInfoBean;
 import com.fy.navi.service.define.route.RouteCurrentPathParam;
@@ -425,7 +426,17 @@ public final class VoiceSearchManager {
                 }
             }
         } else {
-            jumpToSearchPage(dest);
+            mKeyword = dest;
+            final Bundle bundle = new Bundle();
+            bundle.putInt(IVrBridgeConstant.VoiceIntentParams.INTENT_PAGE, IVrBridgeConstant.VoiceIntentPage.KEYWORD_SEARCH);
+            final String curStatus = NaviStatusPackage.getInstance().getCurrentNaviStatus();
+            if (NaviStatus.NaviStatusType.NAVING.equals(curStatus)
+                    || NaviStatus.NaviStatusType.LIGHT_NAVING.equals(curStatus)
+                    || NaviStatus.NaviStatusType.SELECT_ROUTE.equals(curStatus)) {
+                bundle.putBoolean("IS_END", true);
+            }
+            bundle.putString(IVrBridgeConstant.VoiceIntentParams.KEYWORD, dest);
+            MapPackage.getInstance().voiceOpenHmiPage(MapType.MAIN_SCREEN_MAIN_MAP, bundle);
         }
 
         return CallResponse.createSuccessResponse();
@@ -635,7 +646,7 @@ public final class VoiceSearchManager {
     /**
      * 判断当前是否处理引导态.
      *
-     * @return  true:引导态   false:非引导态.
+     * @return true:引导态   false:非引导态.
      */
     private boolean inNaviStatus() {
         final String curStatus = NaviStatusPackage.getInstance().getCurrentNaviStatus();
@@ -1295,10 +1306,10 @@ public final class VoiceSearchManager {
     /**
      * 导航回家/去公司，地址未设置.
      *
-     * @param sessionId String，多轮对话保持一致性.
-     * @param poiType 导航意图 NAVI_TO_HOME:回家
-     *                       NAVI_TO_COMPANY:去公司
-     * @param poi  需要设置的目的地名称.
+     * @param sessionId   String，多轮对话保持一致性.
+     * @param poiType     导航意图 NAVI_TO_HOME:回家
+     *                    NAVI_TO_COMPANY:去公司
+     * @param poi         需要设置的目的地名称.
      * @param poiCallback 语音指令回复.
      */
     public CallResponse naviToHomeCompany(final String sessionId, final String poiType, final String poi, final PoiCallback poiCallback) {
@@ -1342,8 +1353,8 @@ public final class VoiceSearchManager {
      * 根据搜索结果设置家/公司地址.
      *
      * @param searchSuccess 是否搜索成功.
-     * @param geoSearch 是否为逆地理搜索  true：逆地理当前位置,静默搜不展示界面
-     *                                 false：关键字搜索会展示搜索结果，结果只有一个会跳转到poi详情
+     * @param geoSearch     是否为逆地理搜索  true：逆地理当前位置,静默搜不展示界面
+     *                      false：关键字搜索会展示搜索结果，结果只有一个会跳转到poi详情
      */
     private void dealHomeCompanyResult(final boolean searchSuccess, final boolean geoSearch) {
         if (!searchSuccess) {
@@ -1402,7 +1413,7 @@ public final class VoiceSearchManager {
      * 保存家/公司信息.
      *
      * @param poiInfo 地址信息.
-     * @param type 类型  1:家  2:公司.
+     * @param type    类型  1:家  2:公司.
      */
     private void saveHomeCompany(final PoiInfoEntity poiInfo, final int type) {
         final FavoriteInfo favoriteInfo = new FavoriteInfo();
@@ -1414,8 +1425,8 @@ public final class VoiceSearchManager {
     /**
      * 根据搜索结果处理导航到家/公司.
      *
-     * @param searchSuccess  true:搜索成功   false:搜索无结果.
-     * @param geoSearch  true:逆地理搜索，当前位置  false:关键字搜索.
+     * @param searchSuccess true:搜索成功   false:搜索无结果.
+     * @param geoSearch     true:逆地理搜索，当前位置  false:关键字搜索.
      */
     private void dealNaviToHomeCompanyResult(final boolean searchSuccess, final boolean geoSearch) {
         if (!searchSuccess) {
@@ -1501,9 +1512,9 @@ public final class VoiceSearchManager {
     /**
      * 收藏普通点.
      *
-     * @param poiInfo PoiInfoEntity，POI信息.
-     * @param geoSearch  true:逆地理搜索，收藏当前位置
-     *                   false:关键字搜索，收藏指定poi
+     * @param poiInfo   PoiInfoEntity，POI信息.
+     * @param geoSearch true:逆地理搜索，收藏当前位置
+     *                  false:关键字搜索，收藏指定poi
      */
     private void addCommonFavorite(final PoiInfoEntity poiInfo, final boolean geoSearch) {
         if (null != poiInfo) {
@@ -1528,22 +1539,25 @@ public final class VoiceSearchManager {
     }
 
     /**
-     * 搜索关键字信息.
+     * 关键字搜索对应收藏.
      *
-     * @param searchType  搜索目的.
      * @param keyword     关键字.
      * @param poiCallback 语音搜索结果响应.
      * @return CallResponse 语音指令执行结果.
      */
-    public CallResponse searchPoiInfo(final int searchType, final String keyword, final PoiCallback poiCallback) {
+    public CallResponse searchForFavorite(final String keyword, final PoiCallback poiCallback) {
         if (TextUtils.isEmpty(keyword)) {
             return CallResponse.createFailResponse("空的poi名称，无法收藏");
         }
-        mSearchType = searchType;
+        mSearchType = IVrBridgeConstant.VoiceSearchType.ADD_FAVORITE;
         mPoiCallback = poiCallback;
         mKeyword = keyword;
         mSearchTaskId = -1;
-        jumpToSearchPage(keyword);
+        //跳转收藏，不同目的对应不同参数，分开实现
+        final Bundle bundle = new Bundle();
+        bundle.putInt(IVrBridgeConstant.VoiceIntentParams.INTENT_PAGE, IVrBridgeConstant.VoiceIntentPage.COLLECT_COMMON);
+        bundle.putString(IVrBridgeConstant.VoiceIntentParams.KEYWORD, keyword);
+        MapPackage.getInstance().voiceOpenHmiPage(MapType.MAIN_SCREEN_MAIN_MAP, bundle);
         return CallResponse.createSuccessResponse();
     }
 
@@ -1847,13 +1861,93 @@ public final class VoiceSearchManager {
     }
 
     /**
-     * 处理路况询问
+     * 处理前方如何走
+     *
+     * @param isNavi       是否导航
+     * @param respCallBack respCallBack
+     * @return CallResponse
+     */
+    public CallResponse handleForwardAsk(final boolean isNavi, final RespCallback respCallBack) {
+
+        if (!isNavi) {
+            Logger.d(IVrBridgeConstant.TAG, "onTrafficConditionAsk: 非导航模式");
+            return CallResponse.createFailResponse("当前不在导航状态，没有行程相关信息哦");
+        }
+
+        final NaviEtaInfo etaInfo = NaviPackage.getInstance().getCurrentNaviEtaInfo();
+        String ttsContent = "";
+        final int id = etaInfo.getCurManeuverID();
+        Logger.d(IVrBridgeConstant.TAG, "转向id = " + id);
+        ttsContent = switch (id) {
+            case 2 -> "下一个路口需要左转";
+            case 3 -> "下一个路口需要右转";
+            case 4 -> "下一个路口向左前方行驶";
+            case 5 -> "下一个路口向右前方行驶";
+            case 6 -> "下一个路口向左后方行驶";
+            case 7 -> "下一个路口向右后方行驶";
+            case 8 -> "下一个路口左转掉头";
+            case 9 -> "下一个路口直行";
+            case 10 -> "前方到达途径点";
+            case 11 -> "下一个路口右拐驶入环岛";
+            case 12 -> "下一个路口右拐驶出环岛";
+            case 13 -> "前方到达服务区";
+            case 14 -> "前方到达收费站";
+            case 15 -> "前方到达目的地";
+            case 16 -> "前方进入隧道";
+            case 17 -> "下一个路口左拐驶入环岛";
+            case 18 -> "下一个路口左拐驶出环岛";
+            case 19 -> "下一个路口右转掉头";
+            case 20 -> "前方顺行路段，无需转向";
+            case 21 -> "前方右转驶入环岛后，需左转驶出环岛";
+            case 22 -> "前方右转驶入环岛后，需右转驶出环岛";
+            case 23 -> "前方右转驶入环岛后，需直行驶出环岛";
+            case 24 -> "前方右转驶入环岛后，需掉头驶出环岛";
+            case 25 -> "前方左转驶入环岛后，需左转驶出环岛";
+            case 26 -> "前方左转驶入环岛后，需右转驶出环岛";
+            case 27 -> "前方左转驶入环岛后，需直行驶出环岛";
+            case 28 -> "前方左转驶入环岛后，需掉头驶出环岛";
+            case 68 -> "驶入环岛入口1";
+            case 69 -> "驶入环岛入口2";
+            case 70 -> "驶入环岛入口3";
+            case 71 -> "驶入环岛入口4";
+            case 72 -> "驶入环岛入口5";
+            case 73 -> "驶入环岛入口6";
+            case 74 -> "驶入环岛入口7";
+            case 75 -> "驶入环岛入口8";
+            case 76 -> "驶入环岛入口9";
+            case 77 -> "驶入环岛入口10";
+            case 79 -> "驶出环岛出口1";
+            case 80 -> "驶出环岛出口2";
+            case 81 -> "驶出环岛出口3";
+            case 82 -> "驶出环岛出口4";
+            case 83 -> "驶出环岛出口5";
+            case 84 -> "驶出环岛出口6";
+            case 85 -> "驶出环岛出口7";
+            case 86 -> "驶出环岛出口8";
+            case 87 -> "驶出环岛出口9";
+            case 88 -> "驶出环岛出口10";
+            case 65 -> "前方需靠左行驶";
+            case 66 -> "前方需靠右行驶";
+            default -> "未知道路信息，请稍后再试";
+        };
+
+        if (!ConvertUtils.isEmpty(respCallBack)) {
+            Logger.d(IVrBridgeConstant.TAG, "转向ttsContent = " + ttsContent);
+            final CallResponse response = CallResponse.createSuccessResponse(ttsContent);
+            response.setNeedPlayMessage(true);
+            respCallBack.onResponse(response);
+        }
+        return CallResponse.createSuccessResponse();
+    }
+
+    /**
+     * 处理前方路况询问
      *
      * @param isInNavi     是否导航
      * @param respCallback 结果异步回调.
      * @return CallResponse，指令回复.
      */
-    public CallResponse handleForwardAsk(final boolean isInNavi, final RespCallback respCallback) {
+    public CallResponse handleForwardCondition(final boolean isInNavi, final RespCallback respCallback) {
         Logger.d(IVrBridgeConstant.TAG, "onTrafficConditionAsk: 转为查询前方路况");
         final CallResponse callResponse;
         if (isInNavi) {
@@ -1902,7 +1996,7 @@ public final class VoiceSearchManager {
         String strArrival = trafficAskBean.getArrival();
         if (ConvertUtils.isEmpty(strArrival) && ConvertUtils.isEmpty(strPoi) && ConvertUtils.isEmpty(strStart)) {
             //trafficAskBean的成员变量全是空
-            return handleForwardAsk(isInNavi, respCallback);
+            return handleForwardCondition(isInNavi, respCallback);
         }
         /*以下为有地点信息的查询*/
         if (!isInNavi) {

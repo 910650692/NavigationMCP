@@ -7,6 +7,7 @@ import androidx.annotation.NonNull;
 import com.android.utils.ConvertUtils;
 import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
+import com.fy.navi.service.AutoMapConstant;
 import com.fy.navi.service.define.bean.GeoPoint;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.adapter.search.cloudByPatac.rep.BaseRep;
@@ -61,8 +62,8 @@ public class BaseCollectViewModel extends BaseViewModel<CollectFragment, Collect
     }
 
     public void notifyNetSearchResult(int taskId,BaseRep result){
-        if(!ConvertUtils.isNull(result)){
-            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"code"+result.getResultCode());
+        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"code"+result.getResultCode());
+        if(AutoMapConstant.NetSearchKey.SUCCESS_CODE.equals(result.getResultCode())){
             ArrayList<PoiInfoEntity> list = new ArrayList<>();
             // 回调出的数据转换List
             try {
