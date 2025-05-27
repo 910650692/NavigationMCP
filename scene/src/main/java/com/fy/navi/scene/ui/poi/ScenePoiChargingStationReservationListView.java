@@ -23,6 +23,7 @@ import com.android.utils.log.Logger;
 import com.fy.navi.scene.BaseSceneView;
 import com.fy.navi.scene.R;
 import com.fy.navi.scene.databinding.ScenePoiDetailsReservationChargeDetailViewBinding;
+import com.fy.navi.scene.dialog.MsgTopDialog;
 import com.fy.navi.scene.impl.poi.ScenePoiChargingStationReservationListViewImpl;
 import com.fy.navi.scene.ui.adapter.ChargeEquipmentListAdapter;
 import com.fy.navi.scene.ui.search.ChargeQrCodeDialog;
@@ -30,6 +31,8 @@ import com.fy.navi.scene.ui.search.SearchConfirmDialog;
 import com.fy.navi.service.AutoMapConstant;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.adapter.search.cloudByPatac.rep.BaseRep;
+import com.fy.navi.service.define.bean.GeoPoint;
+import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.search.ChargeEquipmentInfo;
 import com.fy.navi.service.define.search.ChargePriceInfo;
 import com.fy.navi.service.define.search.ConnectorInfoItem;
@@ -37,6 +40,8 @@ import com.fy.navi.service.define.search.EquipmentInfo;
 import com.fy.navi.service.define.search.PoiInfoEntity;
 import com.fy.navi.service.define.search.ReservationInfo;
 import com.fy.navi.service.logicpaket.user.account.AccountPackage;
+import com.fy.navi.ui.base.StackManager;
+import com.fy.navi.ui.define.TripID;
 import com.fy.navi.ui.dialog.IBaseDialogClickListener;
 
 import java.sql.Time;
@@ -171,6 +176,11 @@ public class ScenePoiChargingStationReservationListView extends BaseSceneView<Sc
 
     public void notifyCreateReservationSuccess(){
         mScreenViewModel.queryEquipmentInfo(mCurrentEquipmentInfo,mPoiInfoEntity);
+        // 开启预约倒计时
+        GeoPoint point = new GeoPoint();
+        point.setLon(mPoiInfoEntity.getPoint().getLon());
+        point.setLat(mPoiInfoEntity.getPoint().getLat());
+        mScreenViewModel.createTimeTick(point);
     }
 
     public void notifyEquipmentResult(EquipmentInfo info){

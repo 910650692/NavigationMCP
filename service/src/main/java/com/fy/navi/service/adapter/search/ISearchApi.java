@@ -2,6 +2,7 @@ package com.fy.navi.service.adapter.search;
 
 import android.util.Pair;
 
+import com.fy.navi.service.define.bean.GeoPoint;
 import com.fy.navi.service.define.search.ETAInfo;
 import com.fy.navi.service.define.search.SearchRequestParameter;
 
@@ -165,5 +166,5 @@ public interface ISearchApi {
      */
     CompletableFuture<ETAInfo> getTravelTimeFutureIncludeChargeLeft(SearchRequestParameter searchRequestParameterBuilder);
 
-
+    void calcTip(Long lastTime, Long travelTime);
 }

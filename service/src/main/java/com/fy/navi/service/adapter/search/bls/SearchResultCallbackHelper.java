@@ -279,6 +279,16 @@ public class SearchResultCallbackHelper {
         }
     }
 
+    public void notifyTipDialog(String status){
+        if (mSearchResponseCallbackList == null) {
+            Logger.e(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "net Callbacks is null");
+            return;
+        }
+        for (ISearchResultCallback callback : mSearchResponseCallbackList) {
+            callback.onTipDialog(status);
+        }
+    }
+
     /**
      * 通用方法：创建 SearchCallbackWrapper
      *

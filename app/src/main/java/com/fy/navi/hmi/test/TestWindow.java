@@ -24,6 +24,7 @@ import com.android.utils.thread.ThreadManager;
 import com.fy.navi.adas.L2PPManager;
 import com.fy.navi.fsa.MyFsaService;
 import com.fy.navi.hmi.BuildConfig;
+import com.fy.navi.hmi.R;
 import com.fy.navi.hmi.databinding.LayoutTestBinding;
 import com.fy.navi.service.AppContext;
 import com.fy.navi.service.define.engine.GaodeLogLevel;
@@ -39,6 +40,7 @@ import com.fy.navi.service.logicpaket.mapdata.MapDataPackage;
 import com.fy.navi.service.logicpaket.navi.NaviPackage;
 import com.fy.navi.service.logicpaket.navistatus.NaviStatusPackage;
 import com.fy.navi.service.logicpaket.position.PositionPackage;
+import com.fy.navi.service.logicpaket.recorder.RecorderPackage;
 import com.fy.navi.service.logicpaket.signal.SignalPackage;
 
 import java.lang.ref.WeakReference;
@@ -269,7 +271,7 @@ public class TestWindow {
 
 
         mBinding.testNavLog.setOnCheckedChangeListener((buttonView, checked) -> {
-            if(buttonView.isPressed()){
+            if (buttonView.isPressed()) {
                 Logger.switchLog(checked);
             }
         });
@@ -277,7 +279,7 @@ public class TestWindow {
         mBinding.testNaiLogLevel.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                Logger.setLogLevel(position+2);
+                Logger.setLogLevel(position + 2);
             }
 
             @Override
@@ -288,10 +290,10 @@ public class TestWindow {
 
 
         mBinding.testGaodeLog.setOnCheckedChangeListener((buttonView, checked) -> {
-            if(buttonView.isPressed()){
-                if(checked){
+            if (buttonView.isPressed()) {
+                if (checked) {
                     EnginePackage.getInstance().switchLog(GaodeLogLevel.LOG_VERBOSE);
-                }else {
+                } else {
                     EnginePackage.getInstance().switchLog(GaodeLogLevel.LOG_NONE);
                 }
             }
@@ -300,15 +302,15 @@ public class TestWindow {
         mBinding.testGaodeLogLevel.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if(position == 0){
+                if (position == 0) {
                     EnginePackage.getInstance().switchLog(GaodeLogLevel.LOG_VERBOSE);
-                }else if(position == 1){
+                } else if (position == 1) {
                     EnginePackage.getInstance().switchLog(GaodeLogLevel.LOG_DEBUG);
-                }else if(position == 2){
+                } else if (position == 2) {
                     EnginePackage.getInstance().switchLog(GaodeLogLevel.LOG_INFO);
-                }else if(position == 3){
+                } else if (position == 3) {
                     EnginePackage.getInstance().switchLog(GaodeLogLevel.LOG_WARN);
-                }else if(position == 4){
+                } else if (position == 4) {
                     EnginePackage.getInstance().switchLog(GaodeLogLevel.LOG_ERROR);
                 }
             }
@@ -316,6 +318,41 @@ public class TestWindow {
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
 
+            }
+        });
+
+        mBinding.naviRecord.setChecked(RecorderPackage.getInstance().isRecording());
+        mBinding.recordPlay.setChecked(RecorderPackage.getInstance().isPlaying());
+        mBinding.naviRecord.setOnCheckedChangeListener((buttonView, checked) -> {
+            if (buttonView.isPressed()) {
+                Activity activity = mActivityRef.get();
+                if (checked) {
+                    if(RecorderPackage.getInstance().isPlaying()){
+                        RecorderPackage.getInstance().stopPlayback();
+                        mBinding.recordPlay.setChecked(false);
+                    }
+                    mBinding.naviRecord.setText(activity.getString(R.string.test_stop_record));
+                    RecorderPackage.getInstance().startRecorder();
+                } else {
+                    mBinding.naviRecord.setText(activity.getString(R.string.test_start_record));
+                    RecorderPackage.getInstance().stopRecorder();
+                }
+            }
+        });
+        mBinding.recordPlay.setOnCheckedChangeListener((buttonView, checked) -> {
+            if (buttonView.isPressed()) {
+                Activity activity = mActivityRef.get();
+                if (checked) {
+                    if(RecorderPackage.getInstance().isRecording()){
+                        RecorderPackage.getInstance().stopRecorder();
+                        mBinding.naviRecord.setChecked(false);
+                    }
+                    mBinding.recordPlay.setText(activity.getString(R.string.test_record_stop));
+                    RecorderPackage.getInstance().startPlayback();
+                } else {
+                    mBinding.recordPlay.setText(activity.getString(R.string.test_record_play));
+                    RecorderPackage.getInstance().stopPlayback();
+                }
             }
         });
     }
@@ -329,7 +366,7 @@ public class TestWindow {
         view.setSelected(!view.isSelected());
     }
 
-    private ArrayAdapter<String> createNaiAdapter(){
+    private ArrayAdapter<String> createNaiAdapter() {
         // 创建一个包含选项的列表
         List<String> options = new ArrayList<>();
         options.add("VERBOSE");

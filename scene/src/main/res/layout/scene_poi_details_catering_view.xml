@@ -108,18 +108,33 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/poi_catering_mark_layout" />
 
-        <com.fy.navi.ui.view.SkinTextView
-            android:id="@+id/poi_catering_hours"
+        <com.fy.navi.ui.view.SkinLinearLayout
+            android:id="@+id/poi_catering_hours_layout"
             android:layout_width="@dimen/dp_0"
             android:layout_height="wrap_content"
+            android:orientation="horizontal"
             android:layout_marginTop="@dimen/dp_30"
             android:layout_marginEnd="@dimen/dp_10"
-            android:textColor="@color/poi_details_bottom_icon"
-            android:textSize="@dimen/sp_36"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/poi_details_sub_line"
-            tools:text="营业时间: 09:00 -- 21:00"
-            android:text="营业时间: 09:00 -- 21:00"/>
+            app:layout_constraintTop_toBottomOf="@+id/poi_details_sub_line">
+
+            <com.fy.navi.ui.view.SkinTextView
+                android:id="@+id/poi_catering_hours"
+                android:layout_width="@dimen/dp_0"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textColor="@color/poi_details_bottom_icon"
+                android:textSize="@dimen/sp_36"
+                tools:text="营业时间: 09:00 -- 21:00"
+                android:text="营业时间: 09:00 -- 21:00"/>
+
+            <com.fy.navi.ui.view.SkinImageView
+                android:id="@+id/poi_business_icon"
+                android:layout_width="@dimen/dp_54"
+                android:layout_height="@dimen/dp_54"
+                android:src="@drawable/img_under_the_48" />
+
+        </com.fy.navi.ui.view.SkinLinearLayout>
 
         <com.fy.navi.ui.view.SkinTextView
             android:id="@+id/poi_catering_phone"
@@ -132,7 +147,15 @@
             android:textColor="@color/poi_details_bottom_icon"
             android:textSize="@dimen/sp_36"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/poi_catering_hours"
+            app:layout_constraintTop_toBottomOf="@+id/poi_catering_hours_layout"
             tools:text="电        话: 021-888888" />
+
+        <com.fy.navi.ui.view.SkinImageView
+            android:id="@+id/poi_phone_icon"
+            android:layout_width="@dimen/dp_54"
+            android:layout_height="@dimen/dp_54"
+            android:src="@drawable/img_under_the_48"
+            app:layout_constraintStart_toEndOf="@+id/poi_catering_phone"
+            app:layout_constraintTop_toTopOf="@+id/poi_catering_phone"/>
     </com.fy.navi.ui.view.SkinConstraintLayout>
 </layout>

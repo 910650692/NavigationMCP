@@ -33,7 +33,9 @@ import com.fy.navi.service.define.engine.GaodeLogLevel;
 import com.fy.navi.service.define.map.MapType;
 import com.fy.navi.service.define.user.account.AccountProfileInfo;
 import com.fy.navi.service.greendao.CommonManager;
+import com.fy.navi.ui.BaseApplication;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -227,6 +229,13 @@ public class EngineAdapterImpl implements IEngineApi {
     private int initEngineParam() {
         final BaseInitParam baseInitParam = new BaseInitParam();
         baseInitParam.logFileName = "amap.android.";
+        if (null == FileUtils.SD_APP_PATH) {
+            Logger.i(TAG, "SD_APP_PATH is null");
+            FileUtils.SD_PATH = AppContext.getInstance().getMContext().
+                    getExternalFilesDir(null) + File.separator;
+            Logger.i(TAG, "FileUtils.SD_PATH = " + FileUtils.SD_PATH + " myPid = " +
+                    BaseApplication.getMyPid());
+        }
         baseInitParam.logPath = GBLCacheFilePath.BLS_LOG;
         baseInitParam.logLevel = ALCLogLevel.LogLevelDebug;
         /* 日志掩码 */

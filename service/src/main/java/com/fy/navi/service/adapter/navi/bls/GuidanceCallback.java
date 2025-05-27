@@ -50,6 +50,7 @@ import com.fy.navi.service.define.navi.NaviMixForkInfo;
 import com.fy.navi.service.define.navi.NaviRoadFacilityEntity;
 import com.fy.navi.service.define.navi.SoundInfoEntity;
 import com.fy.navi.service.define.navi.SuggestChangePathReasonEntity;
+import com.fy.navi.service.define.navi.TrafficLightCountdownEntity;
 import com.fy.navi.service.define.route.FyRouteOption;
 import com.fy.navi.service.define.route.RouteWeatherInfo;
 import com.fy.navi.service.tts.NaviAudioPlayer;
@@ -106,6 +107,8 @@ public class GuidanceCallback implements INaviObserver, ISoundPlayObserver {
      */
     @Override
     public void onUpdateNaviInfo(final ArrayList<NaviInfo> naviInfoList) {
+        Logger.i(TAG, "onUpdateNaviInfo naviInfoList size:" +
+                (ConvertUtils.isEmpty(naviInfoList) ? 0 : naviInfoList.size()));
         mHelper.mNaviInfo = ConvertUtils.isEmpty(naviInfoList) ? null : naviInfoList.get(0);
         NaviAdapter.getInstance().setNaviInfoList(NaviDataFormatHelper.
                 forMatNaviInfoEntity(naviInfoList));
@@ -391,22 +394,19 @@ public class GuidanceCallback implements INaviObserver, ISoundPlayObserver {
         if (ConvertUtils.isEmpty(mGuidanceObservers)) {
             return;
         }
-        int num = 0;
+        ArrayList<TrafficLightCountdownEntity> trafficLightCountdownEntities = new ArrayList<>();
         if (!ConvertUtils.isEmpty(list)) {
-            num = list.size();
-        }
-        final GeoPoint geoPoint = new GeoPoint();
-        if (!ConvertUtils.isEmpty(list)) {
-            final TrafficLightCountdown lightCountdown = list.get(0);
-            final Coord2DDouble coord2DDouble = lightCountdown.position;
-            geoPoint.setLat(coord2DDouble.lat);
-            geoPoint.setLon(coord2DDouble.lon);
+            for (TrafficLightCountdown trafficLightCountdown : list) {
+                TrafficLightCountdownEntity entity = NaviDataFormatHelper.
+                        formatTrafficLightCountdown(trafficLightCountdown);
+                trafficLightCountdownEntities.add(entity);
+            }
         }
         for (GuidanceObserver guidanceObserver : mGuidanceObservers.values()) {
             if (guidanceObserver == null) {
                 return;
             }
-            guidanceObserver.onUpdateTrafficLightCountdown(num, geoPoint);
+            guidanceObserver.onUpdateTrafficLightCountdown(trafficLightCountdownEntities);
         }
     }
 

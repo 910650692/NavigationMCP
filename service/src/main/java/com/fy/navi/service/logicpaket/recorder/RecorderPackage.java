@@ -43,6 +43,13 @@ public class RecorderPackage implements RecorderAdapterCallback {
     }
 
     /**
+     * 是否正在录制
+     */
+    public boolean isRecording() {
+        return mRecorderAdapter.isRecording();
+    }
+
+    /**
      * 开始回放
      */
     public void startPlayback() {
@@ -54,6 +61,13 @@ public class RecorderPackage implements RecorderAdapterCallback {
      */
     public void stopPlayback() {
         mRecorderAdapter.stopPlayback();
+    }
+
+    /**
+     * 是否正在播放
+     */
+    public boolean isPlaying() {
+        return mRecorderAdapter.isPlaying();
     }
 
     /**

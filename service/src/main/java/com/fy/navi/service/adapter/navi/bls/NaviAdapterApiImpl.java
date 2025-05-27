@@ -158,8 +158,8 @@ public class NaviAdapterApiImpl extends BaseGuideAdapterApiImpl implements INavi
     }
 
     @Override
-    public List<NaviViaEntity> getAllViaPoints() {
-        return mNaviApiImplHelper.getAllViaPoints();
+    public List<NaviViaEntity> getAllViaPoints(PathInfo pathInfo) {
+        return mNaviApiImplHelper.getAllViaPoints(pathInfo);
     }
 
     @Override

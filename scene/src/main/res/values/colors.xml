@@ -101,6 +101,7 @@
     <color name="navi_color_FFFFFF_60">#99FFFFFF</color>
     <color name="navi_color_FFFFFF_80">#CCFFFFFF</color>
     <color name="navi_color_FFFFFF_100">#FFFFFFFF</color>
+    <color name="navi_color_FFFFFF_100_change">#FFFFFFFF</color>
     <color name="navi_color_50AEFC_100">#FF50AEFC</color>
     <color name="navi_color_FF595F_100">#FFFF595F</color>
     <color name="navi_color_006CFF_100">#FF006CFF</color>
@@ -139,6 +140,7 @@
     <color name="navi_color_4ABA59">#4ABA59</color>
     <color name="navi_color_FF2C2D36">#FF2C2D36</color>
     <color name="navi_color_icon_park">#99383839</color>
+    <color name="navi_delete_icon_color">#FFFFFF</color>
 
     <!--柱状图-->
     <color name="auto_color_727577">#727476</color>

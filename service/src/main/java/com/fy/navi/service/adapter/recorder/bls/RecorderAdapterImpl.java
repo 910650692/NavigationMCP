@@ -4,10 +4,12 @@ import com.android.utils.log.Logger;
 import com.autonavi.gbl.recorder.Player;
 import com.autonavi.gbl.recorder.Recorder;
 import com.autonavi.gbl.recorder.RecorderService;
+import com.autonavi.gbl.recorder.model.PlayParam;
 import com.autonavi.gbl.recorder.model.PlayProgress;
 import com.autonavi.gbl.recorder.observer.IPlayerObserver;
 import com.autonavi.gbl.servicemanager.ServiceMgr;
 import com.autonavi.gbl.util.model.SingleServiceID;
+import com.fy.navi.service.GBLCacheFilePath;
 import com.fy.navi.service.adapter.recorder.IRecorderApi;
 import com.fy.navi.service.adapter.recorder.RecorderAdapterCallback;
 import com.fy.navi.service.define.recorder.PlayProgressInfo;
@@ -15,13 +17,15 @@ import com.fy.navi.service.define.recorder.PlayProgressInfo;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RecorderAdapterImpl implements IRecorderApi ,IPlayerObserver{
-
+public class RecorderAdapterImpl implements IRecorderApi, IPlayerObserver {
+    private static final String TAG = RecorderAdapterImpl.class.getSimpleName();
     private RecorderService mRecorderSrv;
     private Recorder mRecorder;
     private Player mPlayer;
     private PlayProgressInfo mPlayProgressInfo;
     private final List<RecorderAdapterCallback> mCallBacks = new ArrayList<>();
+    private boolean mIsRecording;
+    private boolean mIsPlaying;
 
     @Override
     public void initService() {
@@ -34,7 +38,8 @@ public class RecorderAdapterImpl implements IRecorderApi ,IPlayerObserver{
         mPlayer = mRecorderSrv.getPlayer();
 
         mPlayProgressInfo = new PlayProgressInfo();
-        Logger.d("Recording init success.");
+        initPlayRecord();
+        Logger.d(TAG,"Recording init success.");
     }
 
     /**
@@ -43,10 +48,11 @@ public class RecorderAdapterImpl implements IRecorderApi ,IPlayerObserver{
     @Override
     public void startRecorder() {
         if (mRecorder != null) {
+            mIsRecording = true;
             mRecorder.start();
-            Logger.d("Recording started.");
+            Logger.d(TAG,"Recording started.");
         } else {
-            Logger.d("Recorder is not initialized.");
+            Logger.d(TAG,"Recorder is not initialized.");
         }
     }
 
@@ -56,10 +62,31 @@ public class RecorderAdapterImpl implements IRecorderApi ,IPlayerObserver{
     @Override
     public void stopRecorder() {
         if (mRecorder != null) {
+            mIsRecording = false;
             mRecorder.stop();
-            Logger.d("Recording stopped.");
+            Logger.d(TAG,"Recording stopped.");
         } else {
-            Logger.d("Recorder is not initialized.");
+            Logger.d(TAG,"Recorder is not initialized.");
+        }
+    }
+
+    @Override
+    public boolean isRecording() {
+        return mIsRecording;
+    }
+
+    /**
+     * 初始化回放
+     */
+    public void initPlayRecord() {
+        if (mPlayer != null) {
+            PlayParam param = new PlayParam();
+            param.isLooping = true;
+            param.playPath = GBLCacheFilePath.MAP_RECORD_PATH;
+            mPlayer.setParam(param);
+            Logger.d(TAG,"Player set PlayParam.");
+        } else {
+            Logger.d(TAG,"Player is not initialized.");
         }
     }
 
@@ -69,10 +96,11 @@ public class RecorderAdapterImpl implements IRecorderApi ,IPlayerObserver{
     @Override
     public void startPlayback() {
         if (mPlayer != null) {
+            mIsPlaying = true;
             mPlayer.start();
-            Logger.d("Playback started.");
+            Logger.d(TAG,"Playback started.");
         } else {
-            Logger.d("Recorder service is not initialized.");
+            Logger.d(TAG,"Recorder service is not initialized.");
         }
     }
 
@@ -82,12 +110,18 @@ public class RecorderAdapterImpl implements IRecorderApi ,IPlayerObserver{
     @Override
     public void stopPlayback() {
         if (mPlayer != null) {
+            mIsPlaying = false;
             mPlayer.stop();
             mPlayer.removeObserver(this);
-            Logger.d("Playback stopped.");
+            Logger.d(TAG,"Playback stopped.");
         } else {
-            Logger.d("Recorder service is not initialized.");
+            Logger.d(TAG,"Recorder service is not initialized.");
         }
+    }
+
+    @Override
+    public boolean isPlaying() {
+        return mIsPlaying;
     }
 
     @Override
@@ -97,6 +131,7 @@ public class RecorderAdapterImpl implements IRecorderApi ,IPlayerObserver{
 
     /**
      * 回放进度通知
+     *
      * @param playProgress 进知通知信息
      */
     @Override
@@ -104,7 +139,7 @@ public class RecorderAdapterImpl implements IRecorderApi ,IPlayerObserver{
 
         setPlayProgressInfo(playProgress);
 
-        Logger.d("Playback progress: " + playProgress.currentMessageIndex + "/" + playProgress.totalMessageCount);
+        Logger.d(TAG,"Playback progress: " + playProgress.currentMessageIndex + "/" + playProgress.totalMessageCount);
 
         for (RecorderAdapterCallback observer : mCallBacks) {
             observer.notifyPlayProgress(mPlayProgressInfo);
@@ -113,6 +148,7 @@ public class RecorderAdapterImpl implements IRecorderApi ,IPlayerObserver{
 
     /**
      * 设置回放进度信息
+     *
      * @param playProgress 回放进度信息
      */
     private void setPlayProgressInfo(final PlayProgress playProgress) {

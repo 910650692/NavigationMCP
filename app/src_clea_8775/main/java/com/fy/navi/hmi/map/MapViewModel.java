@@ -21,4 +21,8 @@ public class MapViewModel extends BaseMapViewModel {
     public void initVisibleAreaPoint(){
         mModel.loadVisibleAreaJson(jsonPath);
     }
+
+    public boolean showNdGoHomeView(){
+        return false;
+    }
 }

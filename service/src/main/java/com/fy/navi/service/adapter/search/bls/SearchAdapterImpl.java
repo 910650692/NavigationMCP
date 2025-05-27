@@ -5,9 +5,11 @@ import android.util.Log;
 import android.util.Pair;
 
 import com.android.utils.ConvertUtils;
+import com.android.utils.ResourceUtils;
 import com.android.utils.TimeUtils;
 import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
+import com.android.utils.thread.ThreadManager;
 import com.autonavi.gbl.aosclient.BLAosService;
 import com.autonavi.gbl.aosclient.model.GNavigationEtaqueryReqStartPoints;
 import com.autonavi.gbl.aosclient.model.GNavigationEtaqueryRequestParam;
@@ -43,6 +45,7 @@ import com.fy.navi.service.adapter.search.ISearchResultCallback;
 import com.fy.navi.service.adapter.search.cloudByPatac.api.SearchRepository;
 import com.fy.navi.service.adapter.search.cloudByPatac.rep.BaseRep;
 import com.fy.navi.service.adapter.search.cloudByPatac.req.StationReq;
+import com.fy.navi.service.define.bean.GeoPoint;
 import com.fy.navi.service.define.search.ETAInfo;
 import com.fy.navi.service.define.search.SearchRequestParameter;
 import com.fy.navi.service.define.utils.BevPowerCarUtils;
@@ -62,6 +65,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiConsumer;
 
@@ -92,6 +96,8 @@ public class SearchAdapterImpl extends SearchServiceV2Manager implements ISearch
     private SearchResultCallbackHelper mSearchNotificationHelper;
 
     private BLAosService mBLAosService;
+    private static final Long MAXTIMEOUT = 30L;
+    private static final Long TIPTIME = 5L;
 
     /**
      * 初始化搜索服务。
@@ -517,6 +523,10 @@ public class SearchAdapterImpl extends SearchServiceV2Manager implements ISearch
         mSearchNotificationHelper.notifyNetCallbacks(taskId,searchKey,result);
     }
 
+    private void notifyTipDialog(String status){
+        mSearchNotificationHelper.notifyTipDialog(status);
+    }
+
     /**
      * 创建一个回调包装器，用于处理搜索结果的成功和失败情况。
      *
@@ -543,7 +553,7 @@ public class SearchAdapterImpl extends SearchServiceV2Manager implements ISearch
             .setFrom(String.valueOf(searchRequestParameter.getPage()))
             .setSize(String.valueOf(searchRequestParameter.getSize()))
             .setAreaCode(String.valueOf(searchRequestParameter.getAdCode()))
-            .setKeyWords("花园坊")
+            .setKeyWords(searchRequestParameter.getKeyword())
             .setLat(String.valueOf(searchRequestParameter.getPoiLoc().getLat()))
             .setLng(String.valueOf(searchRequestParameter.getPoiLoc().getLon()))
             .setTimestamp(System.currentTimeMillis());
@@ -554,9 +564,13 @@ public class SearchAdapterImpl extends SearchServiceV2Manager implements ISearch
                 @Override
                 public void onSuccess(String data) {
                     Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG,"success");
-                    BaseRep rep = GsonUtils.fromJson(String.valueOf(data),BaseRep.class);
-                    Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG,"data: "+rep.getResultCode());
-                    notifyNetSearchSuccess(mTaskId.get(), AutoMapConstant.NetSearchKey.QUERY_STATION_LIST, rep);
+                    try{
+                        BaseRep rep = GsonUtils.fromJson(String.valueOf(data),BaseRep.class);
+                        Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG,"data: "+rep.getResultCode());
+                        notifyNetSearchSuccess(mTaskId.get(), AutoMapConstant.NetSearchKey.QUERY_STATION_LIST, rep);
+                    }catch (Exception e){
+                        Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "Exce: "+e);
+                    }
                 }
 
                 @Override
@@ -585,9 +599,13 @@ public class SearchAdapterImpl extends SearchServiceV2Manager implements ISearch
                 @Override
                 public void onSuccess(String data) {
                     Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG,"success");
-                    BaseRep rep = GsonUtils.fromJson(String.valueOf(data),BaseRep.class);
-                    Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG,"data: "+rep.getResultCode());
-                    notifyNetSearchSuccess(mTaskId.get(),AutoMapConstant.NetSearchKey.QUERY_COLLECT_LIST,rep);
+                    try{
+                        BaseRep rep = GsonUtils.fromJson(String.valueOf(data),BaseRep.class);
+                        Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG,"data: "+rep.getResultCode());
+                        notifyNetSearchSuccess(mTaskId.get(), AutoMapConstant.NetSearchKey.QUERY_COLLECT_LIST, rep);
+                    }catch (Exception e){
+                        Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "Exce: "+e);
+                    }
                 }
 
                 @Override
@@ -612,9 +630,13 @@ public class SearchAdapterImpl extends SearchServiceV2Manager implements ISearch
                 @Override
                 public void onSuccess(String data) {
                     Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG,"success");
-                    BaseRep rep = GsonUtils.fromJson(String.valueOf(data),BaseRep.class);
-                    Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG,"data: "+rep.getResultCode());
-                    notifyNetSearchSuccess(mTaskId.get(),AutoMapConstant.NetSearchKey.QUERY_STATION_INFO,rep);
+                    try{
+                        BaseRep rep = GsonUtils.fromJson(String.valueOf(data),BaseRep.class);
+                        Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG,"data: "+rep.getResultCode());
+                        notifyNetSearchSuccess(mTaskId.get(), AutoMapConstant.NetSearchKey.QUERY_STATION_INFO, rep);
+                    }catch (Exception e){
+                        Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "Exce: "+e);
+                    }
                 }
 
                 @Override
@@ -639,9 +661,13 @@ public class SearchAdapterImpl extends SearchServiceV2Manager implements ISearch
                 @Override
                 public void onSuccess(String data) {
                     Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG,"success");
-                    BaseRep rep = GsonUtils.fromJson(String.valueOf(data),BaseRep.class);
-                    Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG,"data: "+rep.getResultCode());
-                    notifyNetSearchSuccess(mTaskId.get(),AutoMapConstant.NetSearchKey.QUERY_EQUIPMENT_INFO,rep);
+                    try{
+                        BaseRep rep = GsonUtils.fromJson(String.valueOf(data),BaseRep.class);
+                        Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG,"data: "+rep.getResultCode());
+                        notifyNetSearchSuccess(mTaskId.get(), AutoMapConstant.NetSearchKey.QUERY_EQUIPMENT_INFO, rep);
+                    }catch (Exception e){
+                        Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "Exce: "+e);
+                    }
                 }
 
                 @Override
@@ -668,9 +694,13 @@ public class SearchAdapterImpl extends SearchServiceV2Manager implements ISearch
                     @Override
                     public void onSuccess(String data) {
                         Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG,"success");
-                        BaseRep rep = GsonUtils.fromJson(String.valueOf(data),BaseRep.class);
-                        Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG,"data: "+rep.getResultCode());
-                        notifyNetSearchSuccess(mTaskId.get(),AutoMapConstant.NetSearchKey.CREATE_RESERVATION,rep);
+                        try{
+                            BaseRep rep = GsonUtils.fromJson(String.valueOf(data),BaseRep.class);
+                            Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG,"data: "+rep.getResultCode());
+                            notifyNetSearchSuccess(mTaskId.get(), AutoMapConstant.NetSearchKey.CREATE_RESERVATION, rep);
+                        }catch (Exception e){
+                            Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "Exce: "+e);
+                        }
                     }
 
                     @Override
@@ -696,9 +726,13 @@ public class SearchAdapterImpl extends SearchServiceV2Manager implements ISearch
                     @Override
                     public void onSuccess(String data) {
                         Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG,"success");
-                        BaseRep rep = GsonUtils.fromJson(String.valueOf(data),BaseRep.class);
-                        Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG,"data: "+rep.getResultCode());
-                        notifyNetSearchSuccess(mTaskId.get(),AutoMapConstant.NetSearchKey.UNLOCK_GROUND,rep);
+                        try{
+                            BaseRep rep = GsonUtils.fromJson(String.valueOf(data),BaseRep.class);
+                            Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG,"data: "+rep.getResultCode());
+                            notifyNetSearchSuccess(mTaskId.get(), AutoMapConstant.NetSearchKey.UNLOCK_GROUND, rep);
+                        }catch (Exception e){
+                            Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "Exce: "+e);
+                        }
                     }
 
                     @Override
@@ -727,9 +761,13 @@ public class SearchAdapterImpl extends SearchServiceV2Manager implements ISearch
                     @Override
                     public void onSuccess(String data) {
                         Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG,"success");
-                        BaseRep rep = GsonUtils.fromJson(String.valueOf(data),BaseRep.class);
-                        Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG,"data: "+rep.getResultCode());
-                        notifyNetSearchSuccess(mTaskId.get(),AutoMapConstant.NetSearchKey.UPDATE_COLLECT,rep);
+                        try{
+                            BaseRep rep = GsonUtils.fromJson(String.valueOf(data),BaseRep.class);
+                            Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG,"data: "+rep.getResultCode());
+                            notifyNetSearchSuccess(mTaskId.get(), AutoMapConstant.NetSearchKey.UPDATE_COLLECT, rep);
+                        }catch (Exception e){
+                            Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "Exce: "+e);
+                        }
                     }
 
                     @Override
@@ -753,9 +791,13 @@ public class SearchAdapterImpl extends SearchServiceV2Manager implements ISearch
                     @Override
                     public void onSuccess(String data) {
                         Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG,"success");
-                        BaseRep rep = GsonUtils.fromJson(String.valueOf(data),BaseRep.class);
-                        Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG,"data: "+rep.getResultCode());
-                        notifyNetSearchSuccess(mTaskId.get(),AutoMapConstant.NetSearchKey.QUERY_RESERVATION,rep);
+                        try{
+                            BaseRep rep = GsonUtils.fromJson(String.valueOf(data),BaseRep.class);
+                            Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG,"data: "+rep.getResultCode());
+                            notifyNetSearchSuccess(mTaskId.get(), AutoMapConstant.NetSearchKey.QUERY_RESERVATION, rep);
+                        }catch (Exception e){
+                            Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "Exce: "+e);
+                        }
                     }
 
                     @Override
@@ -779,9 +821,13 @@ public class SearchAdapterImpl extends SearchServiceV2Manager implements ISearch
                     @Override
                     public void onSuccess(String data) {
                         Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG,"success");
-                        BaseRep rep = GsonUtils.fromJson(String.valueOf(data),BaseRep.class);
-                        Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG,"data: "+rep.getResultCode());
-                        notifyNetSearchSuccess(mTaskId.get(),AutoMapConstant.NetSearchKey.UPDATE_RESERVATION,rep);
+                        try{
+                            BaseRep rep = GsonUtils.fromJson(String.valueOf(data),BaseRep.class);
+                            Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG,"data: "+rep.getResultCode());
+                            notifyNetSearchSuccess(mTaskId.get(), AutoMapConstant.NetSearchKey.UPDATE_RESERVATION, rep);
+                        }catch (Exception e){
+                            Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "Exce: "+e);
+                        }
                     }
 
                     @Override
@@ -791,5 +837,23 @@ public class SearchAdapterImpl extends SearchServiceV2Manager implements ISearch
                 });
 
         return mTaskId.get();
+    }
+
+    // travelTime 单位：分钟
+    public void calcTip(Long lastTime, Long travelTime){
+        Long currentTime = TimeUtils.getInstance().getCurrentMillSeconds();
+        Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG,"lastTime: "+lastTime);
+        Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG,"currentTime: "+currentTime);
+        Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG,"travelTime: "+travelTime);
+        Long time = TimeUtils.getInstance().convert2Minutes(currentTime - lastTime, TimeUnit.MILLISECONDS);
+        // 预约剩余时间-到达时间 < 5 min
+        if(MAXTIMEOUT - time > 0 && (MAXTIMEOUT - time) - travelTime < TIPTIME){
+            notifyTipDialog("timeQuick");
+            return;
+        }
+        // 超过最大预约时间
+        if(time > MAXTIMEOUT){
+            notifyTipDialog("timeOut");
+        }
     }
 }

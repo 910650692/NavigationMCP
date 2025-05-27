@@ -21,8 +21,21 @@
             android:layout_height="match_parent"
             android:background="@drawable/bg_poi_main_tab"
             app:layout_constraintTop_toTopOf="parent"
-            android:visibility="gone"
+            android:visibility="visible"
             app:layout_constraintStart_toStartOf="parent">
+
+            <com.fy.navi.ui.view.SkinImageView
+                android:id="@+id/iv_loading"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/icon_limit_loading"
+                android:layout_marginBottom="@dimen/dp_24"
+                tools:visibility="gone"
+                app:layout_constraintVertical_chainStyle="packed"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/no_result_hint" />
 
             <com.fy.navi.ui.view.SkinTextView
                 android:id="@+id/no_result_hint"
@@ -31,8 +44,7 @@
                 android:text="@string/load_failed"
                 android:textSize="@dimen/sp_36"
                 android:textColor="@color/search_color_ffffff_70"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_chainStyle="packed"
+                app:layout_constraintTop_toBottomOf="@+id/iv_loading"
                 app:layout_constraintBottom_toTopOf="@+id/no_result_button"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"/>
@@ -44,6 +56,7 @@
                 android:text="@string/reload"
                 android:gravity="center"
                 android:textColor="@color/white"
+                tools:visibility="visible"
                 android:textSize="@dimen/sp_36"
                 android:layout_marginTop="@dimen/dp_16"
                 android:background="@drawable/bg_setting_confirm"

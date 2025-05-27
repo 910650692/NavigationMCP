@@ -44,6 +44,13 @@ public final class RecorderAdapter {
     }
 
     /**
+     * 是否正在录制
+     */
+    public boolean isRecording() {
+        return mRecorderApi.isRecording();
+    }
+
+    /**
      * 开始回放
      */
     public void startPlayback() {
@@ -56,6 +63,14 @@ public final class RecorderAdapter {
     public void stopPlayback() {
         mRecorderApi.stopPlayback();
     }
+
+    /**
+     * 是否正在播放
+     */
+    public boolean isPlaying() {
+       return mRecorderApi.isPlaying();
+    }
+
 
     public static RecorderAdapter getInstance() {
         return RecorderAdapter.Helper.RA;

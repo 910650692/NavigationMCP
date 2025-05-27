@@ -18,9 +18,9 @@
         <com.fy.navi.ui.view.SkinView
             android:id="@+id/route_details_list_bg_header"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_112"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"/>
+            android:layout_height="@dimen/dp_95"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <com.fy.navi.ui.view.SkinImageView
             android:id="@+id/route_details_list_img_header"
@@ -45,7 +45,7 @@
         <com.fy.navi.ui.view.SkinRecyclerView
             android:id="@+id/route_detail_result_list"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_438"
+            android:layout_height="@dimen/dp_373"
             android:divider="@null"
             android:groupIndicator="@null"
             android:scrollbars="none"
@@ -55,7 +55,7 @@
         <com.fy.navi.ui.view.SkinView
             android:id="@+id/route_details_list_bg_footer"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_112"
+            android:layout_height="@dimen/dp_95"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/route_detail_result_list" />

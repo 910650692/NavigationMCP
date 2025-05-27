@@ -8,12 +8,14 @@ import androidx.core.app.ActivityCompat;
 import com.android.utils.NetWorkUtils;
 import com.android.utils.ResourceUtils;
 import com.android.utils.ToastUtils;
+import com.android.utils.file.FileUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
 import com.fy.navi.NaviService;
 import com.fy.navi.hmi.R;
 import com.fy.navi.hmi.permission.PermissionUtils;
 import com.fy.navi.service.AppContext;
+import com.fy.navi.service.GBLCacheFilePath;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.StartService;
 import com.fy.navi.service.define.code.UserDataCode;
@@ -21,6 +23,8 @@ import com.fy.navi.service.greendao.CommonManager;
 import com.fy.navi.service.logicpaket.activate.ActivatePackage;
 import com.fy.navi.service.logicpaket.activate.IActivateObserver;
 import com.fy.navi.ui.base.BaseModel;
+
+import java.io.File;
 
 /**
  * @Description TODO
@@ -101,8 +105,18 @@ public class StartupModel extends BaseModel<BaseStartupViewModel>
     public boolean isShowStartupException() {
         boolean isNetConnect = Boolean.TRUE.equals(NetWorkUtils.Companion.getInstance().checkNetwork());
         boolean isOfflineData = "1".equals(commonManager.getValueByKey(UserDataCode.SETTING_DOWNLOAD_LIST));
-        boolean isCache = false;//TODO 调用地图缓存接口
+        boolean isCache = isCached();
+        Logger.d(TAG, "is net connect: " + isNetConnect + ", is offline data: " + isOfflineData + ", is cached: " + isCache);
         return !(isNetConnect || isOfflineData || isCache);
+    }
+
+    private boolean isCached() {
+        final String[] dirPaths = {GBLCacheFilePath.BLS_LOG};
+        final File[] dirs = new File[dirPaths.length];
+        for (int i = 0; i < dirPaths.length; i++) {
+            dirs[i] = new File(dirPaths[i]);
+        }
+        return FileUtils.getTotalSizeOfDirectories(dirs) > 0;
     }
 
     public boolean isFirstLauncher() {

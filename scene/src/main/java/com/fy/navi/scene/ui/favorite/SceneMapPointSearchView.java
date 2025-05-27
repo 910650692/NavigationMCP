@@ -1,11 +1,13 @@
 package com.fy.navi.scene.ui.favorite;
 
 
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.LinearInterpolator;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -47,11 +49,12 @@ public class SceneMapPointSearchView extends BaseSceneView<SceneMapPointSearchVi
     @PoiType
     private int mPoiType;
     private String mHintText = "";
-    private SearchLoadingDialog mSearchLoadingDialog;
     private PoiInfoEntity mPoiInfoEntity;
     //common_name：1，家  2，公司 3.常用地址  0，普通收藏点
     private int mCommonName;
     private ISceneTerminalParking mClickListener;
+    private ValueAnimator mAnimator;
+    private float mAngelTemp = 0;
     public void setClickListener(final ISceneTerminalParking clickListener) {
         this.mClickListener = clickListener;
     }
@@ -86,13 +89,56 @@ public class SceneMapPointSearchView extends BaseSceneView<SceneMapPointSearchVi
     @Override
     protected void initObserver() {
         intSearchLoadingDialog();
+        initLoadAnim(mViewBinding.ivLoading);
     }
 
     /**
      * 初始化加载弹窗
      */
     private void intSearchLoadingDialog() {
-        mSearchLoadingDialog = new SearchLoadingDialog(getContext());
+    }
+
+    /**
+     * 初始化加载动画
+     * @param sivLoading 加载动画视图
+     */
+    private void initLoadAnim(final View sivLoading) {
+        // 如果动画已存在并正在运行，则取消并清理
+        if (mAnimator != null) {
+            if (mAnimator.isRunning()) {
+                mAnimator.cancel();
+            }
+            mAnimator = null;
+        }
+
+        // 创建属性动画，从 0 到 360 度循环旋转
+        mAnimator = ValueAnimator.ofFloat(0f, 360f);
+        mAnimator.setDuration(2000); // 动画持续时间
+        mAnimator.setRepeatCount(ValueAnimator.INFINITE); // 无限重复
+        mAnimator.setInterpolator(new LinearInterpolator()); // 线性插值器
+        // 添加动画更新监听器
+        mAnimator.addUpdateListener(animation -> {
+            final float angle = (float) animation.getAnimatedValue();
+            if (shouldSkipUpdate(angle)) {
+                return;
+            }
+            sivLoading.setRotation(angle);
+        });
+    }
+
+    /**
+     *用于控制角度变化频率的辅助方法
+     *@param angle 当前角度
+     *@return 是否跳过更新
+     */
+    private boolean shouldSkipUpdate(final float angle) {
+        final float changeAngle = angle - mAngelTemp;
+        final float angleStep = 10;
+        if (changeAngle > 0f && changeAngle <= angleStep) {
+            return true; // 跳过更新，避免高频调用浪费资源
+        }
+        mAngelTemp = angle; // 更新临时角度值
+        return false;
     }
 
     /**
@@ -100,15 +146,13 @@ public class SceneMapPointSearchView extends BaseSceneView<SceneMapPointSearchVi
      * @param searchResultEntity searchResultEntity
      */
     public void onSearchResult(final SearchResultEntity searchResultEntity) {
-        if (null != mSearchLoadingDialog) {
-            mSearchLoadingDialog.hide();
-        }
         ThreadManager.getInstance().removeHandleTask(mTimeoutTask);
         if (null == searchResultEntity || searchResultEntity.getPoiList().isEmpty()) {
             ToastUtils.Companion.getInstance().showCustomToastView("暂无数据");
             ThreadManager.getInstance().postUi(mTimeoutTask);
             return;
         }
+        showLoading(false);
         this.mPoiInfoEntity = searchResultEntity.getPoiList().get(0);
         if (mViewBinding != null) {
             mViewBinding.skPoiName.setText(searchResultEntity.getPoiList().get(0).getName());
@@ -125,14 +169,10 @@ public class SceneMapPointSearchView extends BaseSceneView<SceneMapPointSearchVi
      * @param poiInfo poiInfo
      */
     public void doSearch(final PoiInfoEntity poiInfo) {
-        if (null != mSearchLoadingDialog && mSearchLoadingDialog.isShowing()) {
-            Logger.e(MapDefaultFinalTag.SEARCH_HMI_TAG, "mSearchLoadingDialog is showing");
-        } else {
-            mSearchLoadingDialog = new SearchLoadingDialog(getContext());
-            mSearchLoadingDialog.show();
-        }
+        Logger.e(MapDefaultFinalTag.SEARCH_HMI_TAG, "doSearch ");
         mPoiInfoEntity = poiInfo;
         mScreenViewModel.doSearch(poiInfo);
+        showLoading(true);
         ThreadManager.getInstance().removeHandleTask(mTimeoutTask);
         ThreadManager.getInstance().postDelay(mTimeoutTask, 6000);
     }
@@ -140,27 +180,49 @@ public class SceneMapPointSearchView extends BaseSceneView<SceneMapPointSearchVi
     private final Runnable mTimeoutTask = new Runnable() {
         @Override
         public void run() {
-            if (null != mSearchLoadingDialog) {
-                mSearchLoadingDialog.dismiss();
-                if (!ConvertUtils.isEmpty(mViewBinding) && !ConvertUtils.isEmpty(mViewBinding.csPoiNoResult)) {
-                    mViewBinding.csPoiNoResult.setVisibility(View.VISIBLE);
-                    mViewBinding.poiTypeIcon.setVisibility(View.VISIBLE);
-                    mViewBinding.skPoiName.setVisibility(View.GONE);
-                    mViewBinding.poiSecondAddress.setVisibility(View.GONE);
-                    mViewBinding.stlSetting.setVisibility(View.GONE);
-
-                    mViewBinding.noResultButton.setOnClickListener((view) -> {
-                        doSearch(mPoiInfoEntity);
-                        mViewBinding.csPoiNoResult.setVisibility(View.GONE);
-                        mViewBinding.skPoiName.setVisibility(View.VISIBLE);
-                        mViewBinding.poiSecondAddress.setVisibility(View.VISIBLE);
-                        mViewBinding.stlSetting.setVisibility(View.VISIBLE);
-                        mViewBinding.poiTypeIcon.setVisibility(View.VISIBLE);
-                    });
+            if (!ConvertUtils.isEmpty(mViewBinding) && !ConvertUtils.isEmpty(mViewBinding.csPoiNoResult)) {
+                mViewBinding.csPoiNoResult.setVisibility(View.VISIBLE);
+                mViewBinding.noResultButton.setVisibility(View.VISIBLE);
+                mViewBinding.noResultHint.setText(getContext().getString(R.string.load_failed));
+                mViewBinding.skPoiName.setVisibility(View.GONE);
+                mViewBinding.poiSecondAddress.setVisibility(View.GONE);
+                mViewBinding.stlSetting.setVisibility(View.GONE);
+                mViewBinding.ivLoading.setVisibility(View.GONE);
+                if (mAnimator != null) {
+                    mAnimator.cancel();
                 }
+                mScreenViewModel.flyLineVisible(true);
+                mViewBinding.noResultButton.setOnClickListener((view) -> {
+                    doSearch(mPoiInfoEntity);
+                    if (mAnimator != null) {
+                        mAnimator.start();
+                    }
+                });
             }
         }
     };
+
+    /**
+     * 展示加载动画
+     * @param isShow 是否需要显示
+     */
+    private void showLoading(final boolean isShow) {
+        mScreenViewModel.flyLineVisible(!isShow);
+        mViewBinding.csPoiNoResult.setVisibility(isShow ? View.VISIBLE : View.GONE);
+        mViewBinding.noResultHint.setText(getContext().getString(R.string.address_loading));
+        mViewBinding.ivLoading.setVisibility(isShow ? View.VISIBLE : View.GONE);
+        mViewBinding.noResultButton.setVisibility(View.GONE);
+        if (mAnimator != null) {
+            if (isShow) {
+                mAnimator.start();
+            } else {
+                mAnimator.cancel();
+            }
+        }
+        mViewBinding.skPoiName.setVisibility(isShow ? View.GONE : View.VISIBLE);
+        mViewBinding.poiSecondAddress.setVisibility(isShow ? View.GONE : View.VISIBLE);
+        mViewBinding.stlSetting.setVisibility(isShow ? View.GONE : View.VISIBLE);
+    }
 
     /**
      * 刷新poi视图
@@ -283,6 +345,7 @@ public class SceneMapPointSearchView extends BaseSceneView<SceneMapPointSearchVi
     @Override
     public void onDestroy() {
         super.onDestroy();
+        mAnimator.cancel();
         ThreadManager.getInstance().removeHandleTask(mTimeoutTask);
     }
 }

@@ -36,7 +36,7 @@
   <path
       android:pathData="M60,60m-60,0a60,60 0,1 1,120 0a60,60 0,1 1,-120 0"
       android:strokeWidth="1"
-      android:fillColor="@color/navi_color_FFFFFF_100"
+      android:fillColor="@color/navi_color_FFFFFF_100_change"
       android:fillType="evenOdd"
       android:strokeColor="@color/navi_color_000000_0"/>
   <path

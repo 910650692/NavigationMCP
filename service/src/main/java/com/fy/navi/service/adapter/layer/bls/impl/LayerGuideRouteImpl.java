@@ -294,23 +294,27 @@ public class LayerGuideRouteImpl extends BaseLayerImpl<LayerGuideRouteStyleAdapt
             Logger.e(TAG, "updateRouteReplaceChargePoints chargeStationInfos is Empty");
             return;
         }
-        Logger.d(TAG, "updateRouteReplaceChargePoints chargeStationInfos " + chargeStationInfos.size());
-        RoutePoints routePoints = getRouteViaReplaceChargePoints(chargeStationInfos);
+        ArrayList<RouteAlterChargeStationInfo> chargeStationInfoList = new ArrayList<>(chargeStationInfos);
+        Logger.d(TAG, "updateRouteReplaceChargePoints chargeStationInfos " + chargeStationInfoList.size());
+        RoutePoints routePoints = getRouteViaReplaceChargePoints(chargeStationInfoList);
+        //途经点数量
+        int viaCount = 0;
         //填充途经点空数据
-        if (routePoints.mViaPoints.size() != chargeStationInfos.size()) {
+        if (routePoints.mViaPoints.size() != chargeStationInfoList.size()) {
             Logger.d(TAG, "updateRouteReplaceChargePoints mViaPoints " + routePoints.mViaPoints.size());
             ArrayList<RoutePoint> mViaPoints = routePoints.mViaPoints;
             for (int index = 0; index < mViaPoints.size(); index++) {
                 RoutePoint routePoint = mViaPoints.get(index);
-                if (routePoint.mPathId == LayerPointItemType.ROUTE_POINT_VIA_REPLACE_CHARGE.ordinal()) {
+                if (routePoint.mPathId != LayerPointItemType.ROUTE_POINT_VIA_REPLACE_CHARGE.ordinal()) {
                     RouteAlterChargeStationInfo info = new RouteAlterChargeStationInfo();
-                    chargeStationInfos.add(index, info);
+                    chargeStationInfoList.add(index, info);
+                    viaCount++;
                 }
             }
         }
         int points = getLayerGuideRouteControl().setPathPoints(routePoints);
-        Logger.d(TAG, "updateRouteReplaceChargePoints points " + points + " chargeStationInfos.size " + chargeStationInfos.size());
-        getStyleAdapter().updateRouteReplaceChargeInfo(chargeStationInfos);
+        Logger.d(TAG, "updateRouteReplaceChargePoints points " + points + " chargeStationInfoList.size " + chargeStationInfoList.size());
+        getStyleAdapter().updateRouteReplaceChargeInfo(chargeStationInfoList, viaCount);
         getLayerGuideRouteControl().updatePaths();
     }
 

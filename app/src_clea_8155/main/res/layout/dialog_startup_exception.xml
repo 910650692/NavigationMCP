@@ -10,7 +10,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="@dimen/dp_936"
             android:layout_height="@dimen/dp_369"
-            android:background="@drawable/startup_exception_bg_dialog"
+            android:background="@drawable/startup_exception_bg_dialog_8155"
             android:elevation="10dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -33,7 +33,7 @@
                 android:id="@+id/tv_content"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_56"
+                android:layout_marginTop="@dimen/dp_46"
                 android:text="@string/startup_exception_content"
                 android:textColor="@color/dialog_startup_exception_content"
                 android:textSize="@dimen/sp_29"

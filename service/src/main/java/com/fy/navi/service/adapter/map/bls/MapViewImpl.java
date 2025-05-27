@@ -29,6 +29,7 @@ import com.autonavi.gbl.map.model.EGLSurfaceAttr;
 import com.autonavi.gbl.map.model.InitMapParam;
 import com.autonavi.gbl.map.model.MapBusinessDataType;
 import com.autonavi.gbl.map.model.MapControllerStatesType;
+import com.autonavi.gbl.map.model.MapFontInfo;
 import com.autonavi.gbl.map.model.MapLabelItem;
 import com.autonavi.gbl.map.model.MapLabelType;
 import com.autonavi.gbl.map.model.MapModelDtoConstants;
@@ -157,6 +158,26 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver,
         initMapParam.basePath = GBLCacheFilePath.MAP_BASE_PATH;
         /*** 配置引擎样式文件MapAssert的绝对地址 **/
         initMapParam.assetPath = GBLCacheFilePath.MAP_ASSET_DIR;
+        //设置字体font_cn路径
+        MapFontInfo mapFontInfo = new MapFontInfo();
+        mapFontInfo.fontName = "font_cn";
+        mapFontInfo.fontPath = GBLCacheFilePath.COPY_ASSETS_DIR + "font/font_cn.ttf";
+        initMapParam.fontParam.overlayFontInfoList.add(mapFontInfo);
+        //设置AmapNumber-Bold路径
+        MapFontInfo mapFontInfo2 = new MapFontInfo();
+        mapFontInfo2.fontName = "AmapNumber-Bold";
+        mapFontInfo2.fontPath = GBLCacheFilePath.COPY_ASSETS_DIR + "font/AmapNumber-Bold.ttf";
+        initMapParam.fontParam.overlayFontInfoList.add(mapFontInfo2);
+        //设置Oswald-Regular路径
+        MapFontInfo mapFontInfo3 = new MapFontInfo();
+        mapFontInfo3.fontName = "Oswald-Regular";
+        mapFontInfo3.fontPath = GBLCacheFilePath.COPY_ASSETS_DIR + "font/Oswald-Regular.ttf";
+        initMapParam.fontParam.overlayFontInfoList.add(mapFontInfo3);
+        //设置Roboto-Bold路径
+        MapFontInfo mapFontInfo4 = new MapFontInfo();
+        mapFontInfo4.fontName = "Roboto-Bold";
+        mapFontInfo4.fontPath = GBLCacheFilePath.COPY_ASSETS_DIR + "font/Roboto-Bold.ttf";
+        initMapParam.fontParam.overlayFontInfoList.add(mapFontInfo4);
         if (!ConvertUtils.isNull(mapService)) {
             setMapService(mapService);
             mapService.initMap(initMapParam);

@@ -1,6 +1,7 @@
 
 package com.fy.navi.scene.ui.poi;
 
+import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
@@ -14,6 +15,7 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.LinearInterpolator;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -43,7 +45,6 @@ import com.fy.navi.scene.impl.search.SearchFragmentFactory;
 import com.fy.navi.scene.ui.adapter.PoiDetailsScenicChildAdapter;
 import com.fy.navi.scene.ui.adapter.RoutePOIGasStationAdapter;
 import com.fy.navi.scene.ui.search.SearchConfirmDialog;
-import com.fy.navi.scene.ui.search.SearchLoadingDialog;
 import com.fy.navi.service.AppContext;
 import com.fy.navi.service.AutoMapConstant;
 import com.fy.navi.service.MapDefaultFinalTag;
@@ -54,6 +55,7 @@ import com.fy.navi.service.define.mapdata.CityDataInfo;
 import com.fy.navi.service.define.route.RoutePoiType;
 import com.fy.navi.service.define.search.ChargeInfo;
 import com.fy.navi.service.define.search.ChildInfo;
+import com.fy.navi.service.define.search.ETAInfo;
 import com.fy.navi.service.define.search.FavoriteInfo;
 import com.fy.navi.service.define.search.GasStationInfo;
 import com.fy.navi.service.define.search.ParkingInfo;
@@ -65,6 +67,8 @@ import com.fy.navi.service.logicpaket.setting.SettingUpdateObservable;
 import com.fy.navi.ui.action.ViewAdapterKt;
 import com.fy.navi.ui.base.BaseFragment;
 import com.fy.navi.ui.dialog.IBaseDialogClickListener;
+import com.fy.navi.ui.view.SkinImageView;
+import com.fy.navi.ui.view.SkinTextView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -87,7 +91,6 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
     private static final String DEFATULE_STRING = "--";
     private static final String DIVIDER = "_";
     private PoiInfoEntity mPoiInfoEntity;
-    private SearchLoadingDialog mSearchLoadingDialog;
     private final int mSpacing = 24; // 上下间距
     private final int mHorizontalSpacing = 32; // 左右间距
     private final int mChildSpacing = 24;//子POI info item间距
@@ -101,6 +104,9 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
     private int mChildSelectIndex = -1;
     private boolean mIsCollectStatus = false;
     private boolean mIsEnd = false;
+    private ETAInfo mEtaInfo;
+    private ValueAnimator mAnimator;
+    private float mAngelTemp = 0;
 
     public ScenePoiDetailContentView(final @NonNull Context context) {
         super(context);
@@ -135,7 +141,6 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
 
     @Override
     protected void initObserver() {
-        intSearchLoadingDialog();
 
         mViewBinding.scenePoiDetailsBottomView.stlStartRoute.setOnClickListener(v ->
                 handleRouteClick());
@@ -154,7 +159,7 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
 
             }
         );
-
+        initLoadAnim(mViewBinding.ivLoading);
         updateRouteButton();
     }
 
@@ -163,40 +168,27 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
      */
     private void handleRouteClick() {
         Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "点击去这里");
-        if (mChildSelectInfo != null) {
-            if (SearchPackage.getInstance().isAlongWaySearch() && !mIsEnd
-                    && !RoutePackage.getInstance().isMaxRouteParam(MapType.MAIN_SCREEN_MAIN_MAP)) {
+        PoiInfoEntity poiInfo = ConvertUtils.isNull(mChildSelectInfo) ? mPoiInfoEntity : mChildSelectInfo;
+        if (SearchPackage.getInstance().isAlongWaySearch() && !mIsEnd) {
+            if (mViaAddType) {
+                if(RoutePackage.getInstance().isMaxRouteParam(MapType.MAIN_SCREEN_MAIN_MAP)){
+                    Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "handleRouteClick isMaxRouteParam");
+                    return;
+                }
                 RoutePackage.getInstance().addViaPoint(MapType.MAIN_SCREEN_MAIN_MAP,
-                        mChildSelectInfo);
+                        poiInfo);
             } else {
-                if (mIsEnd) {
-                    RoutePackage.getInstance().requestChangeEnd(mMapTypeId, mChildSelectInfo);
-                } else {
-                    openRouteFragment(mChildSelectInfo);
-                }
+                RoutePackage.getInstance().removeVia(MapType.MAIN_SCREEN_MAIN_MAP,
+                        poiInfo, true);
             }
-        }else {
-            if (SearchPackage.getInstance().isAlongWaySearch() && !mIsEnd) {
-                if (mViaAddType) {
-                    if(RoutePackage.getInstance().isMaxRouteParam(MapType.MAIN_SCREEN_MAIN_MAP)){
-                        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "handleRouteClick isMaxRouteParam");
-                        return;
-                    }
-                    RoutePackage.getInstance().addViaPoint(MapType.MAIN_SCREEN_MAIN_MAP,
-                            mPoiInfoEntity);
-                } else {
-                    RoutePackage.getInstance().removeVia(MapType.MAIN_SCREEN_MAIN_MAP,
-                            mPoiInfoEntity, true);
-                }
 
+        } else {
+            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "end point1: " + poiInfo.getPoint().getLon()
+                    + " ,lat" + poiInfo.getPoint().getLat());
+            if (mIsEnd) {
+                RoutePackage.getInstance().requestChangeEnd(mMapTypeId, poiInfo);
             } else {
-                Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "end point1: " + mPoiInfoEntity.getPoint().getLon()
-                            + " ,lat" + mPoiInfoEntity.getPoint().getLat());
-                if (mIsEnd) {
-                    RoutePackage.getInstance().requestChangeEnd(mMapTypeId, mPoiInfoEntity);
-                } else {
-                    openRouteFragment(mPoiInfoEntity);
-                }
+                openRouteFragment(poiInfo);
             }
         }
 
@@ -248,7 +240,7 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
     private void sendBuryPointForAddFavorite(final String name, final int type) {
         String eventName = "";
         String key = BuryConstant.ProperType.BURY_KEY_HOME_PREDICTION;
-        switch (type){
+        switch (type) {
             case 0:
                 eventName = BuryConstant.EventName.AMAP_SETTING_FAVORITE_ADD;
                 key = BuryConstant.ProperType.BURY_KEY_SEARCH_CONTENTS;
@@ -344,11 +336,48 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
     }
 
 
+
     /**
-     * 初始化加载弹窗
+     * 初始化加载动画
+     * @param sivLoading 加载动画视图
      */
-    private void intSearchLoadingDialog() {
-        mSearchLoadingDialog = new SearchLoadingDialog(getContext());
+    private void initLoadAnim(final View sivLoading) {
+        // 如果动画已存在并正在运行，则取消并清理
+        if (mAnimator != null) {
+            if (mAnimator.isRunning()) {
+                mAnimator.cancel();
+            }
+            mAnimator = null;
+        }
+
+        // 创建属性动画，从 0 到 360 度循环旋转
+        mAnimator = ValueAnimator.ofFloat(0f, 360f);
+        mAnimator.setDuration(2000); // 动画持续时间
+        mAnimator.setRepeatCount(ValueAnimator.INFINITE); // 无限重复
+        mAnimator.setInterpolator(new LinearInterpolator()); // 线性插值器
+        // 添加动画更新监听器
+        mAnimator.addUpdateListener(animation -> {
+            final float angle = (float) animation.getAnimatedValue();
+            if (shouldSkipUpdate(angle)) {
+                return;
+            }
+            sivLoading.setRotation(angle);
+        });
+    }
+
+    /**
+     *用于控制角度变化频率的辅助方法
+     *@param angle 当前角度
+     *@return 是否跳过更新
+     */
+    private boolean shouldSkipUpdate(final float angle) {
+        final float changeAngle = angle - mAngelTemp;
+        final float angleStep = 10;
+        if (changeAngle > 0f && changeAngle <= angleStep) {
+            return true; // 跳过更新，避免高频调用浪费资源
+        }
+        mAngelTemp = angle; // 更新临时角度值
+        return false;
     }
 
     /**
@@ -367,9 +396,7 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
         if (!ConvertUtils.equals(taskId, mScreenViewModel.getMTaskId()) && mScreenViewModel.getMTaskId() != 0) {
             return;
         }
-        if (null != mSearchLoadingDialog) {
-            mSearchLoadingDialog.dismiss();
-        }
+        showLoading(false);
         Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "poiType: " + searchResultEntity.getPoiType());
         if (searchResultEntity.getPoiType() == 0) {
             final CityDataInfo cityDataInfo;
@@ -447,7 +474,6 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
     }
 
     public void onCollectUpdate(String code){
-        Logger.d("huangli","code: "+code);
         if("0000".equals(code)){
             mIsCollectStatus = !mIsCollectStatus;
             final int favoriteIcon = !mIsCollectStatus ? R.drawable.img_star58 :
@@ -502,6 +528,7 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
                                     && !ConvertUtils.isEmpty(mViewBinding.poiDistanceTime)) {
                                 final String distance = formatDistanceArrayInternal(
                                         etaInfo.getDistance());
+                                mEtaInfo = etaInfo;
                                 mViewBinding.poiDistanceTime.setText(MessageFormat.format("{0} {1}",
                                         distance, etaInfo.getTravelTime()));
                                 final int leftCharge = Math.max(-99, etaInfo.getLeftCharge());
@@ -540,6 +567,72 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
                 });
     }
 
+    private boolean mIsPhoneExpanded = false;
+
+    /**
+     * 初始化电话下拉按钮
+     * @param phoneIconView 下拉按钮
+     * @param phone 电话
+     * @param hasMultiple 是否有多个电话
+     * @param phones 电话数组
+     */
+    private void initPoiPhoneIconObserver(final SkinImageView phoneIconView, final SkinTextView phone,
+                                          final boolean hasMultiple, final String[] phones) {
+
+        // 添加下拉按钮逻辑
+        phoneIconView.setVisibility(hasMultiple ? View.VISIBLE : View.GONE);
+        phoneIconView.setOnClickListener(v -> {
+            mIsPhoneExpanded = !mIsPhoneExpanded;
+            final String newText = getContext().getString(R.string.poi_phone,
+                    mIsPhoneExpanded ? mPoiInfoEntity.getPhone() : phones[0]).replace(";","\n");
+
+            // 计算前缀文字宽度
+            final String prefix = getContext().getString(R.string.poi_phone, "").replace("%s", "");
+            final float prefixWidth = phone.getPaint().measureText(prefix);
+            final SpannableString spannable = new SpannableString(newText);
+            final int newLinePos = newText.indexOf("\n");
+            if (newLinePos >= 0) {
+                spannable.setSpan(
+                        new LeadingMarginSpan.Standard((int) prefixWidth, 0),
+                        newLinePos + 1,
+                        newText.length(),
+                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                );
+            }
+
+            phone.setText(spannable);
+            phoneIconView.setImageResource(
+                    mIsPhoneExpanded ? R.drawable.img_up_48 : R.drawable.img_under_the_48);
+        });
+    }
+
+    private boolean mIsBusinessTimeExpanded = false;
+
+
+    /**
+     * 初始化营业时间下拉按钮
+     * @param businessTimeIconView 下拉按钮
+     * @param businessTime 营业时间
+     * @param hasMultiple 是否有多个营业时间
+     * @param businessTimes 营业时间数组
+     */
+    private void initPoiBusinessTimeIconObserver(final SkinImageView businessTimeIconView, final SkinTextView businessTime,
+                                          final boolean hasMultiple, final String[] businessTimes) {
+
+        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "initPoiBusinessTimeIconObserver hasMultiple: " + hasMultiple);
+        // 添加下拉按钮逻辑
+        businessTimeIconView.setVisibility(hasMultiple ? View.VISIBLE : View.GONE);
+        businessTimeIconView.setOnClickListener(v -> {
+            mIsBusinessTimeExpanded = !mIsBusinessTimeExpanded;
+            final String newText = getContext().getString(R.string.business_hour,
+                    mIsBusinessTimeExpanded ? mPoiInfoEntity.getBusinessTime() : businessTimes[0]).replace("；","\n");
+
+            businessTime.setText(newText);
+            businessTimeIconView.setImageResource(
+                    mIsBusinessTimeExpanded ? R.drawable.img_up_48 : R.drawable.img_under_the_48);
+        });
+    }
+
     /**
      * 刷新通用视图
      */
@@ -548,27 +641,25 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
             mViewBinding.skPoiName.setText(mPoiInfoEntity.getName());
             mViewBinding.poiSecondAddress.setText(mPoiInfoEntity.getAddress());
             if (ConvertUtils.isEmpty(mPoiInfoEntity.getBusinessTime())) {
-                mViewBinding.scenePoiDetailsNormalView.poiBusinessHours.setVisibility(View.GONE);
+                mViewBinding.scenePoiDetailsNormalView.poiBusinessHoursLayout.setVisibility(View.GONE);
             } else {
-                mViewBinding.scenePoiDetailsNormalView.poiBusinessHours.setText(
-                        getContext().getString(R.string.business_hour, mPoiInfoEntity.getBusinessTime()));
+                final String[] businessTimes = mPoiInfoEntity.getBusinessTime().split("；");
+                final String text = getContext().getString(R.string.business_hour, businessTimes[0]);
+
+                initPoiBusinessTimeIconObserver(mViewBinding.scenePoiDetailsNormalView.poiBusinessIcon,
+                        mViewBinding.scenePoiDetailsNormalView.poiBusinessHours, businessTimes.length > 1, businessTimes);
+                mViewBinding.scenePoiDetailsNormalView.poiBusinessHours.setText(text);
             }
             if (ConvertUtils.isEmpty(mPoiInfoEntity.getPhone())) {
                 mViewBinding.scenePoiDetailsNormalView.poiPhone.setVisibility(View.GONE);
                 mViewBinding.scenePoiDetailsBottomView.stlPhone.setVisibility(View.GONE);
             }
-            String text = getContext().getString(R.string.poi_phone, mPoiInfoEntity.getPhone()).replace(";",";\n");
-            SpannableString spannable = new SpannableString(text);
-            int newLinePos = text.indexOf("\n");
-            if (newLinePos >= 0) {
-                spannable.setSpan(
-                        new LeadingMarginSpan.Standard((int) ResourceUtils.Companion.getInstance().getDimension(com.fy.navi.ui.R.dimen.dp_90), 0),
-                        newLinePos + 1,
-                        text.length(),
-                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-                );
-            }
-            mViewBinding.scenePoiDetailsNormalView.poiPhone.setText(spannable);
+            final String[] phones = mPoiInfoEntity.getPhone().split(";");
+            final String text = getContext().getString(R.string.poi_phone, phones[0]);
+            initPoiPhoneIconObserver(mViewBinding.scenePoiDetailsNormalView.poiPhoneIcon,
+                    mViewBinding.scenePoiDetailsNormalView.poiPhone,
+                    phones.length > 1, phones);
+            mViewBinding.scenePoiDetailsNormalView.poiPhone.setText(text);
             mViewBinding.scenePoiDetailsBottomView.stlPhone.setOnClickListener(new OnClickListener() {
                 @Override
                 @HookMethod(eventName = BuryConstant.EventName.AMAP_DESTINATION_PHONE)
@@ -677,27 +768,26 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
         final GasStationAdapter gasStationAdapter = new GasStationAdapter();
         gasStationAdapter.setGasStationList(gasStationInfos);
         if (ConvertUtils.isEmpty(mPoiInfoEntity.getBusinessTime())) {
-            mViewBinding.scenePoiDetailsGasStationView.poiGasBusinessHours.setVisibility(View.GONE);
+            mViewBinding.scenePoiDetailsGasStationView.poiGasOilLayout.setVisibility(View.GONE);
         } else {
-            mViewBinding.scenePoiDetailsGasStationView.poiGasBusinessHours.
-                    setText(getContext().getString(R.string.business_hour, mPoiInfoEntity.getBusinessTime()));
+            final String[] businessTimes = mPoiInfoEntity.getBusinessTime().split("；");
+            final String text = getContext().getString(R.string.business_hour, businessTimes[0]);
+
+            initPoiBusinessTimeIconObserver(mViewBinding.scenePoiDetailsGasStationView.poiBusinessIcon,
+                    mViewBinding.scenePoiDetailsGasStationView.poiGasBusinessHours, businessTimes.length > 1, businessTimes);
+            mViewBinding.scenePoiDetailsGasStationView.poiGasBusinessHours.setText(text);
         }
 
         if (ConvertUtils.isEmpty(mPoiInfoEntity.getPhone())) {
             mViewBinding.scenePoiDetailsGasStationView.poiGasPhone.setVisibility(View.GONE);
         }
-        String text = getContext().getString(R.string.poi_phone, mPoiInfoEntity.getPhone()).replace(";",";\n");
-        SpannableString spannable = new SpannableString(text);
-        int newLinePos = text.indexOf("\n");
-        if (newLinePos >= 0) {
-            spannable.setSpan(
-                    new LeadingMarginSpan.Standard((int) ResourceUtils.Companion.getInstance().getDimension(com.fy.navi.ui.R.dimen.dp_90), 0),
-                    newLinePos + 1,
-                    text.length(),
-                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-            );
-        }
-        mViewBinding.scenePoiDetailsGasStationView.poiGasPhone.setText(spannable);
+
+        final String[] phones = mPoiInfoEntity.getPhone().split(";");
+        final String text = getContext().getString(R.string.poi_phone, phones[0]);
+        initPoiPhoneIconObserver(mViewBinding.scenePoiDetailsGasStationView.poiPhoneIcon,
+                mViewBinding.scenePoiDetailsGasStationView.poiGasPhone,
+                phones.length > 1, phones);
+        mViewBinding.scenePoiDetailsGasStationView.poiGasPhone.setText(text);
         mViewBinding.scenePoiDetailsGasStationView.poiGasOilList.setLayoutManager(
                 new GridLayoutManager(getContext(), mSpanCount));
         mViewBinding.scenePoiDetailsGasStationView.poiGasOilList.addItemDecoration(
@@ -777,27 +867,25 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
             }
         }
         if (ConvertUtils.isEmpty(mPoiInfoEntity.getBusinessTime())) {
-            mViewBinding.scenePoiDetailsChargingStationView.poiCharegBusinessHours.setVisibility(View.GONE);
+            mViewBinding.scenePoiDetailsChargingStationView.poiChargeBusinessLayout.setVisibility(View.GONE);
         } else {
-            mViewBinding.scenePoiDetailsChargingStationView.poiCharegBusinessHours.
-                    setText(getContext().getString(R.string.business_hour, mPoiInfoEntity.getBusinessTime()));
+            final String[] businessTimes = mPoiInfoEntity.getBusinessTime().split("；");
+            final String text = getContext().getString(R.string.business_hour, businessTimes[0]);
+
+            initPoiBusinessTimeIconObserver(mViewBinding.scenePoiDetailsChargingStationView.poiBusinessIcon,
+                    mViewBinding.scenePoiDetailsChargingStationView.poiCharegBusinessHours, businessTimes.length > 1, businessTimes);
+            mViewBinding.scenePoiDetailsChargingStationView.poiCharegBusinessHours.setText(text);
         }
         if (ConvertUtils.isEmpty(mPoiInfoEntity.getPhone())) {
             mViewBinding.scenePoiDetailsChargingStationView.poiChargeAreaPhone.
                     setVisibility(View.GONE);
         }
-        String text = getContext().getString(R.string.poi_phone, mPoiInfoEntity.getPhone()).replace(";",";\n");
-        SpannableString spannable = new SpannableString(text);
-        int newLinePos = text.indexOf("\n");
-        if (newLinePos >= 0) {
-            spannable.setSpan(
-                    new LeadingMarginSpan.Standard((int) ResourceUtils.Companion.getInstance().getDimension(com.fy.navi.ui.R.dimen.dp_80), 0),
-                    newLinePos + 1,
-                    text.length(),
-                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-            );
-        }
-        mViewBinding.scenePoiDetailsChargingStationView.poiChargeAreaPhone.setText(spannable);
+        final String[] phones = mPoiInfoEntity.getPhone().split(";");
+        final String text = getContext().getString(R.string.poi_phone, phones[0]);
+        initPoiPhoneIconObserver(mViewBinding.scenePoiDetailsChargingStationView.poiPhoneIcon,
+                mViewBinding.scenePoiDetailsChargingStationView.poiChargeAreaPhone,
+                phones.length > 1, phones);
+        mViewBinding.scenePoiDetailsChargingStationView.poiChargeAreaPhone.setText(text);
         mViewBinding.scenePoiDetailsChargingStationView.poiChargePriceAllday.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -928,26 +1016,25 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
                     setVisibility(VISIBLE);
         }
         if (ConvertUtils.isEmpty(mPoiInfoEntity.getBusinessTime())) {
-            mViewBinding.scenePoiDetailsCateringView.poiCateringHours.setVisibility(View.GONE);
+            mViewBinding.scenePoiDetailsCateringView.poiCateringHoursLayout.setVisibility(View.GONE);
         } else {
-            mViewBinding.scenePoiDetailsCateringView.poiCateringHours.
-                    setText(getContext().getString(R.string.business_hour, mPoiInfoEntity.getBusinessTime()));
+            final String[] businessTimes = mPoiInfoEntity.getBusinessTime().split("；");
+            final String text = getContext().getString(R.string.business_hour, businessTimes[0]);
+
+            initPoiBusinessTimeIconObserver(mViewBinding.scenePoiDetailsCateringView.poiBusinessIcon,
+                    mViewBinding.scenePoiDetailsCateringView.poiCateringHours, businessTimes.length > 1, businessTimes);
+            mViewBinding.scenePoiDetailsCateringView.poiCateringHours.setText(text);
         }
         if (ConvertUtils.isEmpty(mPoiInfoEntity.getPhone())) {
             mViewBinding.scenePoiDetailsCateringView.poiCateringPhone.setVisibility(View.GONE);
         }
-        String text = getContext().getString(R.string.poi_phone, mPoiInfoEntity.getPhone()).replace(";",";\n");
-        SpannableString spannable = new SpannableString(text);
-        int newLinePos = text.indexOf("\n");
-        if (newLinePos >= 0) {
-            spannable.setSpan(
-                    new LeadingMarginSpan.Standard((int) ResourceUtils.Companion.getInstance().getDimension(com.fy.navi.ui.R.dimen.dp_90), 0),
-                    newLinePos + 1,
-                    text.length(),
-                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-            );
-        }
-        mViewBinding.scenePoiDetailsCateringView.poiCateringPhone.setText(spannable);
+
+        final String[] phones = mPoiInfoEntity.getPhone().split(";");
+        final String text = getContext().getString(R.string.poi_phone, phones[0]);
+        initPoiPhoneIconObserver(mViewBinding.scenePoiDetailsCateringView.poiPhoneIcon,
+                mViewBinding.scenePoiDetailsCateringView.poiCateringPhone,
+                phones.length > 1, phones);
+        mViewBinding.scenePoiDetailsCateringView.poiCateringPhone.setText(text);
         mViewBinding.scenePoiDetailsCateringView.poiCateringPrice.setText(avgCost);
         mViewBinding.scenePoiDetailsGasStationView.poiGasRoot.setVisibility(GONE);
         mViewBinding.scenePoiDetailsChargingStationView.poiChargeRoot.setVisibility(GONE);
@@ -985,26 +1072,24 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
         }
         mViewBinding.scenePoiDetailsParkingLotView.poiParkingLotOccupied.setText(parkString);
         if (ConvertUtils.isEmpty(mPoiInfoEntity.getBusinessTime())) {
-            mViewBinding.scenePoiDetailsParkingLotView.poiParkingLotHours.setVisibility(View.GONE);
+            mViewBinding.scenePoiDetailsParkingLotView.poiParkingLotHoursLayout.setVisibility(View.GONE);
         } else {
-            mViewBinding.scenePoiDetailsParkingLotView.poiParkingLotHours.
-                    setText(getContext().getString(R.string.business_hour, mPoiInfoEntity.getBusinessTime()));
+            final String[] businessTimes = mPoiInfoEntity.getBusinessTime().split("；");
+            final String text = getContext().getString(R.string.business_hour, businessTimes[0]);
+
+            initPoiBusinessTimeIconObserver(mViewBinding.scenePoiDetailsParkingLotView.poiBusinessIcon,
+                    mViewBinding.scenePoiDetailsParkingLotView.poiParkingLotHours, businessTimes.length > 1, businessTimes);
+            mViewBinding.scenePoiDetailsParkingLotView.poiParkingLotHours.setText(text);
         }
         if (ConvertUtils.isEmpty(mPoiInfoEntity.getPhone())) {
             mViewBinding.scenePoiDetailsParkingLotView.poiParkingLotPhone.setVisibility(View.GONE);
         }
-        String text = getContext().getString(R.string.poi_phone, mPoiInfoEntity.getPhone()).replace(";",";\n");
-        SpannableString spannable = new SpannableString(text);
-        int newLinePos = text.indexOf("\n");
-        if (newLinePos >= 0) {
-            spannable.setSpan(
-                    new LeadingMarginSpan.Standard((int) ResourceUtils.Companion.getInstance().getDimension(com.fy.navi.ui.R.dimen.dp_90), 0),
-                    newLinePos + 1,
-                    text.length(),
-                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-            );
-        }
-        mViewBinding.scenePoiDetailsParkingLotView.poiParkingLotPhone.setText(spannable);
+        final String[] phones = mPoiInfoEntity.getPhone().split(";");
+        final String text = getContext().getString(R.string.poi_phone, phones[0]);
+        initPoiPhoneIconObserver(mViewBinding.scenePoiDetailsParkingLotView.poiPhoneIcon,
+                mViewBinding.scenePoiDetailsParkingLotView.poiParkingLotPhone,
+                phones.length > 1, phones);
+        mViewBinding.scenePoiDetailsParkingLotView.poiParkingLotPhone.setText(text);
         mViewBinding.scenePoiDetailsGasStationView.poiGasRoot.setVisibility(GONE);
         mViewBinding.scenePoiDetailsChargingStationView.poiChargeRoot.setVisibility(GONE);
         mViewBinding.scenePoiDetailsWashCarView.poiWashCarRoot.setVisibility(GONE);
@@ -1040,27 +1125,26 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
             serviceGasAdapter.setRouteBeanList(gasString);
         }
         if (ConvertUtils.isEmpty(mPoiInfoEntity.getBusinessTime())) {
-            mViewBinding.scenePoiDetailsServiceAreaView.poiServiceAreaHours.setVisibility(View.GONE);
+            mViewBinding.scenePoiDetailsServiceAreaView.poiServiceAreaHoursLayout.setVisibility(View.GONE);
         } else {
-            mViewBinding.scenePoiDetailsServiceAreaView.poiServiceAreaHours.setText(
-                    getContext().getString(R.string.business_hour, mPoiInfoEntity.getBusinessTime()));
+            final String[] businessTimes = mPoiInfoEntity.getBusinessTime().split("；");
+            final String text = getContext().getString(R.string.business_hour, businessTimes[0]);
+
+            initPoiBusinessTimeIconObserver(mViewBinding.scenePoiDetailsServiceAreaView.poiBusinessIcon,
+                    mViewBinding.scenePoiDetailsServiceAreaView.poiServiceAreaHours, businessTimes.length > 1, businessTimes);
+            mViewBinding.scenePoiDetailsServiceAreaView.poiServiceAreaHours.setText(text);
         }
         if (ConvertUtils.isEmpty(mPoiInfoEntity.getPhone())) {
             mViewBinding.scenePoiDetailsServiceAreaView.poiServiceAreaPhone.
                     setVisibility(View.GONE);
         }
-        String text = getContext().getString(R.string.poi_phone, mPoiInfoEntity.getPhone()).replace(";",";\n");
-        SpannableString spannable = new SpannableString(text);
-        int newLinePos = text.indexOf("\n");
-        if (newLinePos >= 0) {
-            spannable.setSpan(
-                    new LeadingMarginSpan.Standard((int) ResourceUtils.Companion.getInstance().getDimension(com.fy.navi.ui.R.dimen.dp_90), 0),
-                    newLinePos + 1,
-                    text.length(),
-                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-            );
-        }
-        mViewBinding.scenePoiDetailsServiceAreaView.poiServiceAreaPhone.setText(spannable);
+
+        final String[] phones = mPoiInfoEntity.getPhone().split(";");
+        final String text = getContext().getString(R.string.poi_phone, phones[0]);
+        initPoiPhoneIconObserver(mViewBinding.scenePoiDetailsServiceAreaView.poiPhoneIcon,
+                mViewBinding.scenePoiDetailsServiceAreaView.poiServiceAreaPhone,
+                phones.length > 1, phones);
+        mViewBinding.scenePoiDetailsServiceAreaView.poiServiceAreaPhone.setText(text);
         mViewBinding.scenePoiDetailsGasStationView.poiGasRoot.setVisibility(GONE);
         mViewBinding.scenePoiDetailsChargingStationView.poiChargeRoot.setVisibility(GONE);
         mViewBinding.scenePoiDetailsWashCarView.poiWashCarRoot.setVisibility(GONE);
@@ -1115,6 +1199,7 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
                 } else {
                     mChildSelectInfo = null;
                 }
+                refreshPoiView(mPoiType,mPoiInfoEntity);
             });
         } else {
             mViewBinding.scenePoiDetailsScenicSpotView.poiScenicSpotChildList.setVisibility(View.GONE);
@@ -1208,26 +1293,25 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
             mViewBinding.scenePoiDetailsScenicSpotView.poiScenicSpotPrice.setText(avgCost);
         }
         if (ConvertUtils.isEmpty(mPoiInfoEntity.getBusinessTime())) {
-            mViewBinding.scenePoiDetailsScenicSpotView.poiScenicSpotHoursContent.setVisibility(View.GONE);
+            mViewBinding.scenePoiDetailsScenicSpotView.poiScenicSpotHoursLayout.setVisibility(View.GONE);
         } else {
-            mViewBinding.scenePoiDetailsScenicSpotView.poiScenicSpotHoursContent.setText(
-                    getContext().getString(R.string.business_hour, mPoiInfoEntity.getBusinessTime()));
+            final String[] businessTimes = mPoiInfoEntity.getBusinessTime().split("；");
+            final String text = getContext().getString(R.string.business_hour, businessTimes[0]);
+            initPoiBusinessTimeIconObserver(mViewBinding.scenePoiDetailsScenicSpotView.poiBusinessIcon,
+                    mViewBinding.scenePoiDetailsScenicSpotView.poiScenicSpotHoursContent, businessTimes.length > 1, businessTimes);
+            mViewBinding.scenePoiDetailsScenicSpotView.poiScenicSpotHoursContent.setText(text);
         }
         if (ConvertUtils.isEmpty(mPoiInfoEntity.getPhone())) {
             mViewBinding.scenePoiDetailsScenicSpotView.poiScenicSpotPhone.setVisibility(View.GONE);
         }
-        String text = getContext().getString(R.string.poi_phone, mPoiInfoEntity.getPhone()).replace(";",";\n");
-        SpannableString spannable = new SpannableString(text);
-        int newLinePos = text.indexOf("\n");
-        if (newLinePos >= 0) {
-            spannable.setSpan(
-                    new LeadingMarginSpan.Standard((int) ResourceUtils.Companion.getInstance().getDimension(com.fy.navi.ui.R.dimen.dp_90), 0),
-                    newLinePos + 1,
-                    text.length(),
-                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-            );
-        }
-        mViewBinding.scenePoiDetailsScenicSpotView.poiScenicSpotPhone.setText(spannable);
+
+        final String[] phones = mPoiInfoEntity.getPhone().split(";");
+        final String text = getContext().getString(R.string.poi_phone, phones[0]);
+        initPoiPhoneIconObserver(mViewBinding.scenePoiDetailsScenicSpotView.poiPhoneIcon,
+                mViewBinding.scenePoiDetailsScenicSpotView.poiScenicSpotPhone,
+                phones.length > 1, phones);
+        mViewBinding.scenePoiDetailsScenicSpotView.poiScenicSpotPhone.setText(text);
+
         mViewBinding.scenePoiDetailsGasStationView.poiGasRoot.setVisibility(GONE);
         mViewBinding.scenePoiDetailsChargingStationView.poiChargeRoot.setVisibility(GONE);
         mViewBinding.scenePoiDetailsWashCarView.poiWashCarRoot.setVisibility(GONE);
@@ -1283,6 +1367,7 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
                 } else {
                     mChildSelectInfo = null;
                 }
+                refreshPoiView(mPoiType,mPoiInfoEntity);
             });
         } else {
             mViewBinding.scenePoiDetailsNormalView.poiChildExpandCollapse.setVisibility(GONE);
@@ -1303,6 +1388,9 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
     @Override
     public void onDestroy() {
         super.onDestroy();
+        if (mAnimator != null) {
+            mAnimator.cancel();
+        }
         mChildSelectInfo = null;
         Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "onDestroy");
         ThreadManager.getInstance().removeHandleTask(mTimeoutTask);
@@ -1311,39 +1399,59 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
     private final Runnable mTimeoutTask = new Runnable() {
         @Override
         public void run() {
-            if (null != mSearchLoadingDialog) {
-                mSearchLoadingDialog.dismiss();
-                if (!ConvertUtils.isEmpty(mViewBinding)) {
-                    mViewBinding.csPoiNoResult.setVisibility(View.VISIBLE);
-                    mViewBinding.skPoiName.setVisibility(View.GONE);
-                    mViewBinding.poiDetailsScroll.setVisibility(View.GONE);
-                    mViewBinding.poiTypeIcon.setVisibility(View.GONE);
-                    mViewBinding.scenePoiDetailsBottomView.getRoot().setVisibility(View.GONE);
-
-                    mViewBinding.noResultButton.setOnClickListener((view) -> {
-                        doSearch(mPoiInfoEntity);
-                        mViewBinding.csPoiNoResult.setVisibility(View.GONE);
-                        mViewBinding.skPoiName.setVisibility(View.VISIBLE);
-                        mViewBinding.poiDetailsScroll.setVisibility(View.VISIBLE);
-                        mViewBinding.poiTypeIcon.setVisibility(View.VISIBLE);
-                        mViewBinding.scenePoiDetailsBottomView.getRoot().setVisibility(View.VISIBLE);
-                    });
+            if (!ConvertUtils.isEmpty(mViewBinding)) {
+                mViewBinding.csPoiNoResult.setVisibility(View.VISIBLE);
+                mViewBinding.noResultButton.setVisibility(View.VISIBLE);
+                mViewBinding.noResultHint.setText(getContext().getString(R.string.load_failed));
+                mViewBinding.ivLoading.setVisibility(View.GONE);
+                mViewBinding.skPoiName.setVisibility(View.GONE);
+                mViewBinding.poiDetailsScroll.setVisibility(View.GONE);
+                mViewBinding.poiTypeIcon.setVisibility(View.GONE);
+                mViewBinding.scenePoiDetailsBottomView.getRoot().setVisibility(View.GONE);
+                if (mAnimator != null) {
+                    mAnimator.cancel();
                 }
+                mViewBinding.noResultButton.setOnClickListener((view) -> {
+                    doSearch(mPoiInfoEntity);
+//                    mViewBinding.csPoiNoResult.setVisibility(View.GONE);
+//                    mViewBinding.skPoiName.setVisibility(View.VISIBLE);
+//                    mViewBinding.poiDetailsScroll.setVisibility(View.VISIBLE);
+//                    mViewBinding.poiTypeIcon.setVisibility(View.VISIBLE);
+//                    mViewBinding.scenePoiDetailsBottomView.getRoot().setVisibility(View.VISIBLE);
+                });
             }
         }
     };
+
+    /**
+     * 是否显示加载动画
+     * @param isShow 是否显示
+     */
+    private void showLoading(final boolean isShow) {
+        mViewBinding.csPoiNoResult.setVisibility(isShow ? View.VISIBLE : View.GONE);
+        mViewBinding.ivLoading.setVisibility(isShow ? View.VISIBLE : View.GONE);
+        mViewBinding.noResultHint.setText(getContext().getString(R.string.address_loading));
+        mViewBinding.noResultButton.setVisibility(View.GONE);
+        if (mAnimator != null) {
+            if (isShow) {
+                mAnimator.start();
+            } else {
+                mAnimator.cancel();
+            }
+        }
+        mViewBinding.skPoiName.setVisibility(isShow ? View.GONE : View.VISIBLE);
+        mViewBinding.poiDetailsScroll.setVisibility(isShow ? View.GONE : View.VISIBLE);
+        mViewBinding.poiTypeIcon.setVisibility(isShow ? View.GONE : View.VISIBLE);
+        mViewBinding.scenePoiDetailsBottomView.getRoot().setVisibility(isShow ? View.GONE : View.VISIBLE);
+    }
 
     /**
      * 执行搜索操作
      * @param poiInfo 搜索对象实体类
      */
     public void doSearch(final PoiInfoEntity poiInfo) {
-        if (null != mSearchLoadingDialog && mSearchLoadingDialog.isShowing()) {
-            Logger.e(MapDefaultFinalTag.SEARCH_HMI_TAG, "mSearchLoadingDialog is showing");
-        } else {
-            mSearchLoadingDialog = new SearchLoadingDialog(getContext());
-            mSearchLoadingDialog.show();
-        }
+        Logger.e(MapDefaultFinalTag.SEARCH_HMI_TAG, "doSearch ");
+        showLoading(true);
         ThreadManager.getInstance().removeHandleTask(mTimeoutTask);
         ThreadManager.getInstance().postDelay(mTimeoutTask, 6000);
         mPoiInfoEntity = poiInfo;
@@ -1416,9 +1524,10 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
                 if (mScreenViewModel.isAlongWaySearch() && !mIsEnd) {
                     Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "添加途径点");
                     mViewBinding.scenePoiDetailsBottomView.sivStartRoute.setImageDrawable(null);
-                    if (RoutePackage.getInstance().isBelongRouteParam(MapType.MAIN_SCREEN_MAIN_MAP, poiInfoEntity)) {
+                    PoiInfoEntity poiInfo = ConvertUtils.isNull(mChildSelectInfo) ? poiInfoEntity : mChildSelectInfo;
+                    if (RoutePackage.getInstance().isBelongRouteParam(MapType.MAIN_SCREEN_MAIN_MAP, poiInfo)) {
                         mViaAddType = false;
-                        if (RoutePackage.getInstance().isStartOrEndRouteParam(MapType.MAIN_SCREEN_MAIN_MAP, poiInfoEntity)) {
+                        if (RoutePackage.getInstance().isStartOrEndRouteParam(MapType.MAIN_SCREEN_MAIN_MAP, poiInfo)) {
                             mViewBinding.scenePoiDetailsBottomView.stvStartRoute.setAlpha(0.5f);
                             mViewBinding.scenePoiDetailsBottomView.stvStartRoute.setClickable(false);
                         } else {
@@ -1431,10 +1540,10 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
                         mViewBinding.scenePoiDetailsBottomView.stvStartRoute.setText(R.string.st_along_way_point_add);
                         // 达到最大途径点禁止点击并置灰
                         if(RoutePackage.getInstance().isMaxRouteParam(MapType.MAIN_SCREEN_MAIN_MAP)){
-                            mViewBinding.scenePoiDetailsBottomView.stlStartRoute.setAlpha(0.5f);
+                            mViewBinding.scenePoiDetailsBottomView.stvStartRoute.setAlpha(0.5f);
                             mViewBinding.scenePoiDetailsBottomView.stlGoFirst.setAlpha(0.5f);
                         }else{
-                            mViewBinding.scenePoiDetailsBottomView.stlStartRoute.setAlpha(1);
+                            mViewBinding.scenePoiDetailsBottomView.stvStartRoute.setAlpha(1);
                             mViewBinding.scenePoiDetailsBottomView.stlGoFirst.setAlpha(1);
                         }
                     }
@@ -1446,6 +1555,7 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
                         mViewBinding.scenePoiDetailsBottomView.stlGoFirst.setVisibility(VISIBLE);
                     } else {
                         mViewBinding.scenePoiDetailsBottomView.stlPoiFavorites.setVisibility(VISIBLE);
+                        mViewBinding.scenePoiDetailsBottomView.stlGoFirst.setVisibility(GONE);
                     }
                 } else {
                     Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "去这里");
@@ -1638,6 +1748,13 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
         if(!mScreenViewModel.isSGMLogin()){
             mScreenViewModel.startSGMLogin();
             return;
+        }
+        if(!ConvertUtils.isEmpty(mEtaInfo)){
+            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"getTime: "+mEtaInfo.getTime());
+           if(mEtaInfo.getTime() > 30){
+               ToastUtils.Companion.getInstance().showCustomToastView(getContext().getString(R.string.travel_max_time));
+               return;
+           }
         }
         final Fragment fragment = (Fragment) ARouter.getInstance().build(
                 RoutePath.Search.POI_CHARGE_RESERVATION_LIST_FRAGMENT).navigation();

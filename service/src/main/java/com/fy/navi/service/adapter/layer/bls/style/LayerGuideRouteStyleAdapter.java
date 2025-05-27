@@ -24,6 +24,7 @@ import com.autonavi.gbl.layer.ViaChargeStationLayerItem;
 import com.autonavi.gbl.layer.model.BizRoadCrossType;
 import com.autonavi.gbl.layer.model.BizRouteType;
 import com.autonavi.gbl.map.layer.LayerItem;
+import com.autonavi.gbl.map.layer.model.CustomUpdatePair;
 import com.fy.navi.service.R;
 import com.fy.navi.service.adapter.layer.bls.bean.RasterImageBean;
 import com.fy.navi.service.adapter.layer.bls.bean.VectorCrossBean;
@@ -40,6 +41,7 @@ import com.fy.navi.service.define.utils.NumberUtils;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class LayerGuideRouteStyleAdapter extends BaseStyleAdapter {
@@ -72,6 +74,7 @@ public class LayerGuideRouteStyleAdapter extends BaseStyleAdapter {
     private LayerItemRouteEndPoint mRouteEndPoint = new LayerItemRouteEndPoint();
     //替换补能点数据
     private ArrayList<RouteAlterChargeStationInfo> mReplaceChargeInfos = new ArrayList<>();
+    private int mViaCount = 0;
     //路线图层总数据
     private static RequestRouteResult mRouteResult = new RequestRouteResult();
 
@@ -84,7 +87,6 @@ public class LayerGuideRouteStyleAdapter extends BaseStyleAdapter {
 
     @Override
     public String provideLayerItemStyleJson(LayerItem item) {
-        Logger.d(TAG, "provideLayerItemStyleJson BusinessType" + item.getBusinessType());
         switch (item.getBusinessType()) {
             case BizRoadCrossType.BizRoadCrossTypeVector -> {
                 Logger.d(TAG, "2D矢量路口大图图层");
@@ -191,7 +193,14 @@ public class LayerGuideRouteStyleAdapter extends BaseStyleAdapter {
             }
             case BizRouteType.BizRouteTypeViaPoint -> {
                 //替换补能点数据
-                return getRouteReplaceChargePoint(item);
+                if (item instanceof RoutePathPointItem viaPoint) {
+                    long pathId = viaPoint.getPathId();
+                    if (pathId == LayerPointItemType.ROUTE_POINT_VIA_REPLACE_CHARGE.ordinal()) {
+                        return getRouteReplaceChargePoint(item);
+                    } else {
+                        return super.provideLayerItemData(item);
+                    }
+                }
             }
         }
         return super.provideLayerItemData(item);
@@ -340,14 +349,15 @@ public class LayerGuideRouteStyleAdapter extends BaseStyleAdapter {
     }
 
     // 更新路线补能替换点扎标数据
-    public void updateRouteReplaceChargeInfo(ArrayList<RouteAlterChargeStationInfo> chargeStationInfos) {
+    public void updateRouteReplaceChargeInfo(ArrayList<RouteAlterChargeStationInfo> chargeStationInfos, int viaCount) {
         if (ConvertUtils.isEmpty(chargeStationInfos)) {
             Logger.e(TAG, "updateRouteReplaceChargeInfo chargeStationInfos is Empty");
             return;
         }
-        Logger.d(TAG, "updateRouteReplaceChargeInfo chargeStationInfos " + chargeStationInfos.size());
+        Logger.d(TAG, "updateRouteReplaceChargeInfo chargeStationInfos " + chargeStationInfos.size() + " viaCount " + viaCount);
         mReplaceChargeInfos.clear();
         mReplaceChargeInfos = chargeStationInfos;
+        mViaCount = viaCount;
     }
 
     // 更新路线图层数据
@@ -387,13 +397,16 @@ public class LayerGuideRouteStyleAdapter extends BaseStyleAdapter {
         LayerItemRouteReplaceChargePoint chargePoint = new LayerItemRouteReplaceChargePoint();
         String id = item.getID();
         int index = Integer.parseInt(id);
+        int replaceChargeIndex = index - mViaCount;
         if (index >= 0 && index < mReplaceChargeInfos.size()) {
             RouteAlterChargeStationInfo chargeStationInfo = mReplaceChargeInfos.get(index);
             chargePoint.setInfo(chargeStationInfo);
-            chargePoint.setIndex(index);
         }
+        chargePoint.setIndex(replaceChargeIndex);
         Logger.d(TAG, "getRouteReplaceChargePoint index " + index +
-                " mReplaceChargeInfos.size " + mReplaceChargeInfos.size());
+                " mReplaceChargeInfos.size " + mReplaceChargeInfos.size() +
+                " replaceChargeIndex " + replaceChargeIndex +
+                " mViaCount " + mViaCount);
         return chargePoint;
     }
 
@@ -544,5 +557,18 @@ public class LayerGuideRouteStyleAdapter extends BaseStyleAdapter {
         updateJson = mGson.toJson(mRasterImageBean);
         Logger.d(TAG, "updateRasterCross rect: " + mRect);
         return updateJson;
+    }
+
+    @Override
+    public List<CustomUpdatePair> createUpdatePair(LayerItem item) {
+
+        switch (item.getBusinessType()) {
+            case BizRouteType.BizRouteTypeGuideLabel:
+                List<CustomUpdatePair> guideLabelPairs = new ArrayList<>();
+                //TODO 构建内容
+
+                return guideLabelPairs;
+        }
+        return super.createUpdatePair(item);
     }
 }

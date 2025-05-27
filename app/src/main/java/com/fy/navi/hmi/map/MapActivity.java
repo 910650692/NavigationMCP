@@ -26,6 +26,7 @@ import com.fy.navi.hmi.databinding.ActivityMapBinding;
 import com.fy.navi.hmi.launcher.LauncherWindowService;
 import com.fy.navi.hmi.test.TestWindow;
 import com.fy.navi.mapservice.bean.INaviConstant;
+import com.fy.navi.scene.dialog.MsgTopDialog;
 import com.fy.navi.service.AutoMapConstant;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.define.cruise.CruiseInfoEntity;
@@ -41,6 +42,9 @@ import com.fy.navi.hmi.hud.HudMapManager;
 import com.fy.navi.service.logicpaket.user.account.AccountPackage;
 import com.fy.navi.ui.base.BaseActivity;
 import com.fy.navi.ui.base.FragmentIntent;
+import com.fy.navi.ui.base.StackManager;
+import com.fy.navi.ui.define.TripID;
+import com.fy.navi.ui.dialog.IBaseDialogClickListener;
 
 import java.util.List;
 
@@ -55,6 +59,7 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
     private int testClickNum = 0;
     private static final String KEY_CHANGE_SAVE_INSTANCE = "key_change_save_instance";
     private MainScreenMapView mapView;
+    private MsgTopDialog mMsgTopDialog;
 
     AccessTokenParam param = new AccessTokenParam(
             AutoMapConstant.AccountTokenParamType.ACCOUNT_TYPE_PATAC_HMI,
@@ -351,4 +356,20 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
                 }
         );
     }
-}
+
+    public void showTripDialog(String title,String content){
+        if(!ConvertUtils.isEmpty(mMsgTopDialog) && mMsgTopDialog.isShowing()){
+            return;
+        }
+        mMsgTopDialog = new MsgTopDialog(
+                StackManager.getInstance().getCurrentActivity(MapType.MAIN_SCREEN_MAIN_MAP.name()), TripID.ROUTE_LOW_BATTER);
+        mMsgTopDialog.setTitle(title);
+        mMsgTopDialog.setContent(content);
+        mMsgTopDialog.setDialogClickListener(new IBaseDialogClickListener() {
+            @Override
+            public void onCommitClick(final TripID tripID) {
+                mMsgTopDialog.hide();
+            }
+        });
+        mMsgTopDialog.showDialog();
+    }}

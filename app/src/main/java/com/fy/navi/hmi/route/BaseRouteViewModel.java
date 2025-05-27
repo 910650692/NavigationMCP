@@ -669,8 +669,6 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
         param.setMRouteWay(RouteWayID.ROUTE_WAY_REFRESH);
         param.setMRoutePriorityType(RoutePriorityType.ROUTE_TYPE_MANUAL_REFRESH);
         requestRoute(param);
-        mRefreshable = false;
-        ThreadManager.getInstance().postDelay(mRefreshTimer, REFRESH_TIME);
         showSecondaryPoi();
     };
 
@@ -1024,11 +1022,16 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
      * @param success 算路成功
      */
     public void hideProgressUI(final boolean success) {
+        if (success) {
+            mRefreshable = false;
+            ThreadManager.getInstance().postDelay(mRefreshTimer, REFRESH_TIME);
+        }
         ThreadManager.getInstance().postUi(() -> {
             mView.hideProgressUI();
             if (success) {
                 cancelTimer();
                 initTimer();
+                mModel.showSuccessMsg();
             }
         });
     }

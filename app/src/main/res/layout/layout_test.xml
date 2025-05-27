@@ -438,6 +438,36 @@
         android:layout_marginStart="@dimen/dp_20"
         app:layout_constraintBottom_toBottomOf="@+id/test_gaode_log"/>
 
+    <com.fy.navi.ui.view.SkinCheckBox
+        android:id="@+id/navi_record"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/dp_54"
+        android:layout_marginStart="@dimen/dp_10"
+        android:layout_marginTop="@dimen/dp_10"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/test_gaode_log"
+        android:button="@null"
+        android:textSize="@dimen/sp_25"
+        android:checked="false"
+        android:gravity="top"
+        android:drawableStart="@drawable/switch_route_button"
+        android:text="@string/test_start_record"/>
+
+    <com.fy.navi.ui.view.SkinCheckBox
+        android:id="@+id/record_play"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/dp_54"
+        android:layout_marginStart="@dimen/dp_10"
+        android:layout_marginTop="@dimen/dp_10"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/navi_record"
+        android:button="@null"
+        android:textSize="@dimen/sp_25"
+        android:checked="false"
+        android:gravity="top"
+        android:drawableStart="@drawable/switch_route_button"
+        android:text="开始播放回放" />
+
     <ImageView
         android:id="@+id/test_hud"
         android:layout_width="328px"

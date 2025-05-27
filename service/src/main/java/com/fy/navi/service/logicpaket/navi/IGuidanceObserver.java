@@ -14,6 +14,7 @@ import com.fy.navi.service.define.navi.NaviTmcInfo;
 import com.fy.navi.service.define.navi.SapaInfoEntity;
 import com.fy.navi.service.define.navi.SpeedOverallEntity;
 import com.fy.navi.service.define.navi.SuggestChangePathReasonEntity;
+import com.fy.navi.service.define.navi.TrafficLightCountdownEntity;
 import com.fy.navi.service.define.route.FyRouteOption;
 import com.fy.navi.service.define.route.RouteWeatherInfo;
 
@@ -174,7 +175,7 @@ public interface IGuidanceObserver {
 
     }
 
-    default void onUpdateTrafficLightCountdown(int isHaveTrafficLight, GeoPoint geoPoint) {
+    default void onUpdateTrafficLightCountdown(final ArrayList<TrafficLightCountdownEntity> list) {
 
     }
 

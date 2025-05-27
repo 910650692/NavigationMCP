@@ -213,14 +213,14 @@
 
         <com.fy.navi.ui.view.SkinLinearLayout
             android:id="@+id/ll_action_container"
-            android:layout_width="@dimen/dp_252"
+            android:layout_width="@dimen/dp_214"
             android:layout_height="match_parent"
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
             <com.fy.navi.ui.view.SkinLinearLayout
                 android:id="@+id/sll_top"
-                android:layout_width="@dimen/dp_126"
+                android:layout_width="@dimen/dp_107"
                 android:layout_height="match_parent"
                 android:background="@color/bg_route_big_window_unselect"
                 android:gravity="center"
@@ -236,25 +236,24 @@
                     android:id="@+id/stv_top"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_3"
                     android:gravity="center"
                     android:text="置顶"
                     android:textColor="@color/search_quick_tab_view_color"
-                    android:textSize="@dimen/sp_29" />
+                    android:textSize="@dimen/sp_26" />
 
             </com.fy.navi.ui.view.SkinLinearLayout>
 
             <com.fy.navi.ui.view.SkinLinearLayout
                 android:id="@+id/sll_delete"
-                android:layout_width="@dimen/dp_126"
+                android:layout_width="@dimen/dp_107"
                 android:layout_height="match_parent"
                 android:background="@color/search_color_delete_bg"
                 android:gravity="center"
                 android:orientation="vertical">
 
                 <com.fy.navi.ui.view.SkinImageView
-                    android:layout_width="@dimen/dp_68"
-                    android:layout_height="@dimen/dp_68"
+                    android:layout_width="@dimen/dp_49"
+                    android:layout_height="@dimen/dp_49"
                     android:src="@drawable/img_basic_ic_delete_white" />
 
                 <com.fy.navi.ui.view.SkinTextView
@@ -264,7 +263,7 @@
                     android:gravity="center"
                     android:text="删除"
                     android:textColor="@color/common_delete_text_color"
-                    android:textSize="@dimen/sp_29" />
+                    android:textSize="@dimen/sp_26" />
 
             </com.fy.navi.ui.view.SkinLinearLayout>
         </com.fy.navi.ui.view.SkinLinearLayout>

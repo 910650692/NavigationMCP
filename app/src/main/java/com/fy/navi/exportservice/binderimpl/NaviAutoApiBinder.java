@@ -1051,4 +1051,30 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub {
         }
     }
 
+    /**
+     * 打开/关闭SR TBT面板.
+     *
+     * @param pkgName  client package name.
+     * @param open true:打开  false:关闭.
+     */
+    @Override
+    public void openSrTbt(final String pkgName, final boolean open) {
+
+    }
+
+    /**
+     * 停止导航.
+     * @param pkgName client package name.
+     *
+     * @return  true:执行成功   false:执行失败.
+     */
+    @Override
+    public boolean stopNavi(final String pkgName) {
+        boolean result = false;
+        if (isNaviStatus("default")) {
+            result = NaviPackage.getInstance().stopNavigation();
+        }
+        return result;
+    }
+
 }

@@ -53,7 +53,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="60%"
-                android:textColor="@color/common_title_color"
+                android:textColor="@color/navi_color_000000_100"
                 android:textSize="@dimen/sp_30"
                 app:layout_constraintBottom_toBottomOf="@id/gl_name"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -77,7 +77,7 @@
                 android:gravity="center_vertical"
                 android:paddingEnd="@dimen/dp_5"
                 android:singleLine="true"
-                android:textColor="@color/common_title_purple_color"
+                android:textColor="@color/navi_color_000000_100"
                 android:textSize="@dimen/sp_34"
                 app:layout_constraintBottom_toBottomOf="@id/gl_name"
                 app:layout_constraintEnd_toStartOf="@id/siv_add_via_elec"
@@ -102,7 +102,7 @@
                 android:gravity="center"
                 android:maxLines="1"
                 android:text="@{viaBean.distance}"
-                android:textColor="@color/common_sub_title_color"
+                android:textColor="@color/navi_color_000000_70"
                 android:textSize="@dimen/sp_36"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="@id/stv_add_via_name"
@@ -113,7 +113,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:textColor="@color/navi_color_000000_60"
+                android:textColor="@color/navi_color_000000_70"
                 android:textSize="@dimen/sp_36"
                 android:text="@string/rg_arrive_word"
                 app:layout_constraintBottom_toBottomOf="@id/stv_add_via_distance"
@@ -127,7 +127,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:text="@{viaBean.arriveTime}"
-                android:textColor="@color/common_sub_title_color"
+                android:textColor="@color/navi_color_000000_70"
                 android:textSize="@dimen/sp_36"
                 app:layout_constraintBottom_toBottomOf="@id/stv_add_via_distance"
                 app:layout_constraintEnd_toStartOf="@id/stv_arrive_default"
@@ -141,7 +141,7 @@
                 android:gravity="center"
                 android:lineSpacingExtra="@dimen/sp_1"
                 android:text="@{viaBean.arriveDay}"
-                android:textColor="@color/common_sub_title_color"
+                android:textColor="@color/navi_color_000000_70"
                 android:textSize="@dimen/sp_20"
                 android:translationY="@dimen/dp_10"
                 app:layout_constraintBottom_toTopOf="@id/stv_arrive_time"
@@ -161,7 +161,7 @@
             <com.fy.navi.ui.view.SkinImageView
                 android:layout_width="@dimen/dp_68"
                 android:layout_height="@dimen/dp_68"
-                android:background="@drawable/img_delete_68" />
+                android:background="@drawable/img_delete_58" />
 
             <com.fy.navi.ui.view.SkinTextView
                 android:id="@+id/stv_delete"
@@ -169,7 +169,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:text="@string/navi_del"
-                android:textColor="@color/navi_color_FFFFFF_80"
+                android:textColor="@color/navi_color_000000_70"
                 android:textSize="@dimen/sp_36" />
         </com.fy.navi.ui.view.SkinLinearLayout>
     </com.fy.navi.ui.view.SwipeMenuLayout>

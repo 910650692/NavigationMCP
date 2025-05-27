@@ -1222,7 +1222,7 @@ public class ConvertUtils {
     }
 
     /**
-     * 抖音坐标转换
+     * 坐标转换
      * @param input 信息输入
      * @return 返回转换后信息
      */

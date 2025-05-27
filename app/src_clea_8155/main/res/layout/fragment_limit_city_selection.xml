@@ -41,7 +41,7 @@
             <com.fy.navi.ui.view.SkinEditText
                 android:id="@+id/edit_text_id"
                 android:hint="@string/limit_city_selection"
-                android:layout_width="@dimen/dp_340"
+                android:layout_width="@dimen/dp_420"
                 android:layout_height="wrap_content"
                 android:textSize="@dimen/sp_29"
                 android:textColor="@color/black"

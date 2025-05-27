@@ -1285,6 +1285,17 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         return mCalibrationPackage.powerType();
     }
 
+    @Override
+    public void onTipDialog(String status) {
+        Logger.d(MapDefaultFinalTag.DEFAULT_TAG,"status: "+status);
+        if(ConvertUtils.isNull(mViewModel)) return;
+        mViewModel.chargePreTipDialog(status);
+    }
+
+    public void cancelTimeTick(){
+        searchPackage.cancelTimeTick();
+    }
+
     /**
      * 检查高德地图权限是否申请或过期
      */

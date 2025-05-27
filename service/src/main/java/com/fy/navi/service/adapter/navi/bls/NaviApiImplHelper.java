@@ -67,7 +67,6 @@ public class NaviApiImplHelper {
     private final ISoundPlayObserver mSoundPlayObserver;
     private final Hashtable<String, GuidanceObserver> mGuidanceObservers;
     private boolean mIsSimpleNavigation = false;
-    private PathInfo mCurrentPathInfo;
     // 当前导航信息
     protected NaviInfo mNaviInfo;
 
@@ -160,7 +159,6 @@ public class NaviApiImplHelper {
         naviPath.type = mRouteLineLayerParam.getMRouteType(); // 设置算路类型
         naviPath.point = (POIForRequest) mRouteLineLayerParam.getMPoiForRequest(); // 用于GuideService偏航时组织行程点信息, 不影响路线绘制
         naviPath.strategy = mRouteLineLayerParam.getMStrategy(); // 设置算路策略
-        mCurrentPathInfo = naviPath.vecPaths.get((int) naviPath.mainIdx);
         return naviPath;
     }
 
@@ -332,12 +330,12 @@ public class NaviApiImplHelper {
      * 此接口属于动态获取
      * @return 获取开启补能规划后自动添加的途径点
      */
-    public List<NaviViaEntity> getAllViaPoints() {
-        if (mCurrentPathInfo == null || mNaviInfo == null) {
+    public List<NaviViaEntity> getAllViaPoints(PathInfo pathInfo) {
+        if (pathInfo == null || mNaviInfo == null) {
             return new ArrayList<>();
         }
         final ArrayList<NaviViaEntity> naviViaEntities = new ArrayList<>();
-        final ArrayList<ChargeStationInfo> chargeStationInfos = mCurrentPathInfo.getChargeStationInfo();
+        final ArrayList<ChargeStationInfo> chargeStationInfos = pathInfo.getChargeStationInfo();
         final ArrayList<TimeAndDist> remainList = mNaviInfo.ChargeStationRemain;
         if (ConvertUtils.isEmpty(chargeStationInfos) || ConvertUtils.isEmpty(remainList)) {
             return new ArrayList<>();

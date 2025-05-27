@@ -100,7 +100,11 @@ public class SceneMapPointSearchViewImpl extends BaseSceneModel<SceneMapPointSea
     }
 
 
-    public void flyLineVisible(boolean visible){
+    /**
+     * 隐藏/显示移图选点
+     * @param visible   是否显示
+     */
+    public void flyLineVisible(final boolean visible){
         mLayerPackage.openFlyLine(mMapTypeId, visible);
     }
 }

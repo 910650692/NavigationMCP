@@ -23,6 +23,8 @@ public interface GBLCacheFilePath extends AutoMapConstant {
     public static final String MAP_ASSET_DIR = BLS_ASSETS_PATH + "MapAsset/";
     /*** AutoSDK图层默认资源文件目录 **/
     public static final String BLS_ASSETS_LAYER_PATH = BLS_ASSETS_PATH + "LayerAsset/";
+
+    public static final String BLS_ASSETS_LAYER_CARDS_PATH = "blRes/LayerAsset/DynamicCards/";
     /*** 自定义图层默认资源文件目录 **/
     public static final String BLS_ASSETS_CUSTOM_STYLE_PATH = "blRes/customRes/style";
 
@@ -74,4 +76,9 @@ public interface GBLCacheFilePath extends AutoMapConstant {
     /***  暂定 激活文件保存路径  **/
     //sdcard/Android/data/your_package/files/AutoMap/Gbl/activate/
     String ACTIVATE_USER_DATA = GBL_MAP + "activate/";
+
+    String CMB_FILE_NAME = "libcmb_LayerImages.so";
+
+    /*** Auto Map record path **/
+    public static final String MAP_RECORD_PATH = GBL_MAP + "record";
 }

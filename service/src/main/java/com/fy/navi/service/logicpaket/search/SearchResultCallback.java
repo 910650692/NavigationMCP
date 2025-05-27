@@ -81,5 +81,9 @@ public interface SearchResultCallback {
     default void onShowStateChanged(boolean isShow) {
 
     }
+
+    default void onTipDialog(String status){
+
+    }
 }
 

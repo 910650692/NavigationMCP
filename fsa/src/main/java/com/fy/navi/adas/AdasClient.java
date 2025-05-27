@@ -5,6 +5,7 @@ import android.content.Context;
 import androidx.annotation.NonNull;
 
 import com.android.utils.log.Logger;
+import com.fy.navi.activatehq.ActivateHQ;
 import com.gm.cn.adassdk.AdasManager;
 import com.gm.cn.adassdk.AdasServiceConnectListener;
 
@@ -64,6 +65,7 @@ public final class AdasClient {
             if (serviceReady) {
                 SuperCruiseManager.getInstance().init(mAdasManager);
                 L2PPManager.getInstance().init(mAdasManager);
+                ActivateHQ.getInstance().init(mAdasManager);
             } else {
                 SuperCruiseManager.getInstance().uninit();
                 L2PPManager.getInstance().uninit();

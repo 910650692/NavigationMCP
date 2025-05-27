@@ -1,5 +1,6 @@
 package com.fy.navi.service.adapter.navi;
 
+import com.autonavi.gbl.common.path.option.PathInfo;
 import com.fy.navi.service.define.cruise.CruiseParamEntity;
 import com.fy.navi.service.define.layer.RouteLineLayerParam;
 import com.fy.navi.service.define.navi.NaviParamEntity;
@@ -129,7 +130,7 @@ public interface INaviApi {
      * 此接口属于动态获取
      * @return 获取途径点信息
      */
-    List<NaviViaEntity> getAllViaPoints();
+    List<NaviViaEntity> getAllViaPoints(PathInfo pathInfo);
 
     /**
      * 暂停

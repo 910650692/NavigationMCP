@@ -5,11 +5,16 @@ import android.app.Activity;
 import androidx.lifecycle.MutableLiveData;
 
 import com.android.utils.ConvertUtils;
+import com.android.utils.ResourceUtils;
+import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
 import com.fy.navi.scene.BaseSceneModel;
+import com.fy.navi.scene.R;
 import com.fy.navi.scene.api.poi.IScenePoiChargingStationReservationListView;
 import com.fy.navi.scene.ui.poi.ScenePoiChargingStationReservationListView;
 import com.fy.navi.service.AutoMapConstant;
+import com.fy.navi.service.MapDefaultFinalTag;
+import com.fy.navi.service.define.bean.GeoPoint;
 import com.fy.navi.service.define.search.ChargeEquipmentInfo;
 import com.fy.navi.service.define.search.ChargeInfo;
 import com.fy.navi.service.define.search.ConnectorInfoItem;
@@ -130,5 +135,9 @@ public class ScenePoiChargingStationReservationListViewImpl extends BaseSceneMod
             isHideCanReversion = list.isEmpty();
         }
         return isHideCanReversion;
+    }
+
+    public void createTimeTick(GeoPoint destPoint){
+        mSearchPackage.createTimeTick(destPoint);
     }
 }

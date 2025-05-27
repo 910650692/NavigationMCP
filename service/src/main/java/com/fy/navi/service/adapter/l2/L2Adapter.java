@@ -8,6 +8,7 @@ import com.autonavi.gbl.common.path.option.LinkInfo;
 import com.autonavi.gbl.common.path.option.PathInfo;
 import com.autonavi.gbl.common.path.option.SegmentInfo;
 import com.autonavi.gbl.guide.model.ManeuverIconID;
+import com.autonavi.gbl.guide.model.TrafficLightCountdown;
 import com.autonavi.gbl.layer.model.BizLayerUtil;
 import com.fy.navi.service.adapter.cruise.CruiseAdapter;
 import com.fy.navi.service.adapter.cruise.CruiseObserver;
@@ -32,6 +33,7 @@ import com.fy.navi.service.define.navi.NaviRoadFacilityEntity;
 import com.fy.navi.service.define.navi.SapaInfoEntity;
 import com.fy.navi.service.define.navi.SoundInfoEntity;
 import com.fy.navi.service.define.navi.SpeedOverallEntity;
+import com.fy.navi.service.define.navi.TrafficLightCountdownEntity;
 import com.fy.navi.service.define.navistatus.NaviStatus;
 import com.fy.navi.service.define.position.LocParallelInfoEntity;
 import com.fy.navi.service.define.route.RouteCurrentPathParam;
@@ -271,7 +273,16 @@ public class L2Adapter {
         }
 
         @Override
-        public void onUpdateTrafficLightCountdown(int isHaveTrafficLight, GeoPoint geoPoint) {
+        public void onUpdateTrafficLightCountdown(final ArrayList<TrafficLightCountdownEntity> list) {
+            int isHaveTrafficLight = 0;
+            if (!ConvertUtils.isEmpty(list)) {
+                isHaveTrafficLight = list.size();
+            }
+            GeoPoint geoPoint = new GeoPoint();
+            if (!ConvertUtils.isEmpty(list)) {
+                final TrafficLightCountdownEntity lightCountdown = list.get(0);
+                geoPoint = lightCountdown.getMPosition();
+            }
             l2NaviBean.getCrossInfoData().setHasTrafficLight(isHaveTrafficLight == 0 ? 0 : 1); // 路口是否有红绿灯
             if (isHaveTrafficLight == 0) {
                 l2NaviBean.getCrossInfoData().setTrafficLightPosition(0);

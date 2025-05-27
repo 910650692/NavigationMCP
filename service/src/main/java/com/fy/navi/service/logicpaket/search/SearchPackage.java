@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import android.util.Pair;
 
 import com.android.utils.ConvertUtils;
+import com.android.utils.TimeUtils;
 import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
@@ -65,6 +66,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicReference;
@@ -93,6 +96,7 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
     private static final Map<LayerPointItemType, LayerItemSearchResult> sMarkerInfoMap = new ConcurrentHashMap<>();
     @Getter
     private boolean mIsShow;
+    private Timer timer;
 
     private SearchPackage() {
         mManager = HistoryManager.getInstance();
@@ -147,6 +151,17 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
         if (searchResultEntity != null) {
             addPoiMarker(searchResultEntity, requestParameter);
             sentBuryPointForSearch(searchResultEntity.getKeyword());
+        }
+    }
+
+    @Override
+    public void onTipDialog(String status) {
+        Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "onTipDialog");
+        for (Map.Entry<String, SearchResultCallback> entry : mISearchResultCallbackMap.entrySet()) {
+            final String identifier = entry.getKey();
+            mCurrentCallbackId.set(identifier);
+            final SearchResultCallback callback = entry.getValue();
+            callback.onTipDialog(status);
         }
     }
 
@@ -774,7 +789,7 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
      * @return taskId
      */
     public int enRouteKeywordSearch(final String keyword) {
-        if (keyword == null) {
+        if (keyword == null || null == mRouteAdapter.getCurrentPath(MapType.MAIN_SCREEN_MAIN_MAP)) {
             Logger.e(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "Failed to execute en route keyword search: searchRequestParameterBuilder is null.");
             return -1;
         }
@@ -802,7 +817,7 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
      * @return taskId
      */
     public int enRouteKeywordSearch(final String keyword, final boolean isSilentSearch) {
-        if (keyword == null) {
+        if (keyword == null || null == mRouteAdapter.getCurrentPath(MapType.MAIN_SCREEN_MAIN_MAP)) {
             Logger.e(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "Failed to execute en route keyword search: searchRequestParameterBuilder is null.");
             return -1;
         }
@@ -1808,5 +1823,35 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
             }
         }
         return false;
+    }
+
+    public void createTimeTick(GeoPoint destPoint){
+        if(!ConvertUtils.isNull(timer)) {
+            timer.cancel();
+        }
+        timer = new Timer();
+        Long lastTime = TimeUtils.getInstance().getCurrentMillSeconds();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                final GeoPoint currentPoint = new GeoPoint();
+                currentPoint.setLon(mPositionAdapter.getLastCarLocation().getLongitude());
+                currentPoint.setLat(mPositionAdapter.getLastCarLocation().getLatitude());
+                getTravelTimeFutureIncludeChargeLeft(destPoint,currentPoint).thenAccept(etaInfo -> {
+                    mSearchAdapter.calcTip(lastTime,etaInfo.getTime());
+                }).exceptionally(throwable -> {
+                    Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG,"query travel time error");
+                    return null;
+                });
+
+            }
+        },0,1000 * 60);
+    }
+
+    public void cancelTimeTick(){
+        if(!ConvertUtils.isNull(timer)){
+            timer.cancel();
+            timer = null;
+        }
     }
 }

@@ -23,7 +23,6 @@ import com.fy.navi.service.AutoMapConstant;
 import com.fy.navi.service.GBLCacheFilePath;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.greendao.CommonManager;
-import com.fy.navi.service.logicpaket.user.account.AccountPackage;
 
 import java.util.Arrays;
 import java.util.concurrent.CancellationException;
@@ -57,6 +56,8 @@ public final class ActivationManager {
     private IActivateHelper mActivateListener;
     private final ActivationModule mActivationService;
     private boolean mIsInit = false;
+
+    public boolean testFlag = false;
 
     private ActivationManager() {
         resetVar();
@@ -130,15 +131,18 @@ public final class ActivationManager {
         if (!ConvertUtils.isEmpty(APP_KEY)) {
             Logger.d(TAG, "APP_KEY静态变量不为空 = " + APP_KEY);
             NetQueryManager.getInstance().saveAppSecurity(APP_KEY);
+            testFlag = true;
+            //mActivateListener.onNetActivated(true);
             postUUID();
             return;
         }
 
-        if (!ConvertUtils.isEmpty(AccountPackage.getInstance().getAppKey())) {
-            APP_KEY = AccountPackage.getInstance().getAppKey();
+        if (!ConvertUtils.isEmpty(CommonManager.getInstance().getValueByKey(AutoMapConstant.ActivateOrderTAG.APP_KEY))) {
+            APP_KEY = CommonManager.getInstance().getValueByKey(AutoMapConstant.ActivateOrderTAG.APP_KEY);
             Logger.d(TAG, "APP_KEY静态变量为空，数据库存有APP_KEY = " + APP_KEY);
             NetQueryManager.getInstance().saveAppSecurity(APP_KEY);
-            mActivateListener.onUUIDGet("1");
+            testFlag = true;
+            //mActivateListener.onNetActivated(true);
             postUUID();
             return;
         }
@@ -149,9 +153,10 @@ public final class ActivationManager {
             public void onSuccess(final AppKeyResponse response) {
                 Logger.d(TAG, response.toString());
                 APP_KEY = response.getMAppKey();
-                AccountPackage.getInstance().saveAppKey(APP_KEY);
+                CommonManager.getInstance().insertOrReplace(AutoMapConstant.ActivateOrderTAG.APP_KEY, APP_KEY);
                 NetQueryManager.getInstance().saveAppSecurity(APP_KEY);
-                mActivateListener.onUUIDGet("1");
+                testFlag = true;
+                //mActivateListener.onNetActivated(true);
                 postUUID();
             }
 
@@ -174,8 +179,8 @@ public final class ActivationManager {
             return;
         }
 
-        if (!ConvertUtils.isEmpty(AccountPackage.getInstance().getUuid())) {
-            UUID = AccountPackage.getInstance().getUuid();
+        if (!ConvertUtils.isEmpty(CommonManager.getInstance().getValueByKey(AutoMapConstant.ActivateOrderTAG.UUID_KEY))) {
+            UUID = CommonManager.getInstance().getValueByKey(AutoMapConstant.ActivateOrderTAG.UUID_KEY);
             Logger.d(TAG, "UUID静态变量为空，数据库存有UUID = " + UUID);
             mActivateListener.onUUIDGet(UUID);
             return;
@@ -189,6 +194,7 @@ public final class ActivationManager {
             public void onSuccess(final UuidResponse response) {
                 Logger.d(TAG, response.toString());
                 UUID = response.getMVin();
+                CommonManager.getInstance().insertOrReplace(AutoMapConstant.ActivateOrderTAG.UUID_KEY, UUID);
                 mActivateListener.onUUIDGet(response.getMVin());
             }
 
@@ -268,9 +274,10 @@ public final class ActivationManager {
      */
     public void createCloudOrder() {
         Logger.d(TAG, "createCloudOrder");
-        final String uuid = AccountPackage.getInstance().getUuid();
+        final String uuid = CommonManager.getInstance().getValueByKey(AutoMapConstant.ActivateOrderTAG.UUID_KEY);
         if (ConvertUtils.isEmpty(UUID) && ConvertUtils.isEmpty(uuid)) {
             Logger.e(TAG, "uuid信息缺失");
+            postUUID();
             return;
         }
 

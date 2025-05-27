@@ -21,16 +21,16 @@ public class MsgTopDialog extends BaseDialog<DialogMsgTopBinding> {
     public MsgTopDialog(final Context context, final TripID tripID) {
         super(context);
         mTripId = tripID;
-        left = getContext().getResources().getDimensionPixelOffset(com.fy.navi.ui.R.dimen.dp_1117);   //1146  dp_1117
-        top = getContext().getResources().getDimensionPixelOffset(com.fy.navi.ui.R.dimen.dp_16);      //70     dp_41
+        left = getContext().getResources().getDimensionPixelOffset(com.fy.navi.ui.R.dimen.dp_1097);   //1146  dp_1117
+        top = getContext().getResources().getDimensionPixelOffset(com.fy.navi.ui.R.dimen.dp_41);      //70     dp_41
     }
 
     public MsgTopDialog(final Context context, final TripID tripID, final IBaseDialogClickListener dialogClickListener) {
         super(context);
         mTripId = tripID;
         setDialogClickListener(dialogClickListener);
-        left = getContext().getResources().getDimensionPixelOffset(com.fy.navi.ui.R.dimen.dp_1146);
-        top = getContext().getResources().getDimensionPixelOffset(com.fy.navi.ui.R.dimen.dp_12);
+        left = getContext().getResources().getDimensionPixelOffset(com.fy.navi.ui.R.dimen.dp_1097);
+        top = getContext().getResources().getDimensionPixelOffset(com.fy.navi.ui.R.dimen.dp_41);
     }
 
     @Override

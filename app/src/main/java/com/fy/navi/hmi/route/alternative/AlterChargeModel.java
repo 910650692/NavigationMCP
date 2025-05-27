@@ -126,6 +126,13 @@ public class AlterChargeModel extends BaseModel<AlterChargeViewModel> implements
         mViewModel.getClosePage().call();
     }
 
+    /**
+     * 清除图层备选充电站扎标
+     */
+    public void clearLayerItem() {
+        mRoutePackage.clearRouteItemByType(MapType.MAIN_SCREEN_MAIN_MAP, LayerPointItemType.ROUTE_POINT_VIA_REPLACE_CHARGE);
+    }
+
     @Override
     public void onRouteAlterChargeStationInfo(final RouteAlterChargeStationParam routeAlterChargeStationParam) {
         if (mAlterChargeStationTaskId == routeAlterChargeStationParam.getMRequestId()) {
@@ -161,6 +168,9 @@ public class AlterChargeModel extends BaseModel<AlterChargeViewModel> implements
         } else if (mCurrentTaskId == taskId) {
             if (searchResultEntity.getSearchType() == AutoMapConstant.SearchType.LINE_DEEP_INFO_SEARCH ||
                     searchResultEntity.getSearchType() == AutoMapConstant.SearchType.POI_SEARCH) {
+                if (ConvertUtils.isEmpty(searchResultEntity.getPoiList())) {
+                    return;
+                }
                 final PoiInfoEntity poiInfoEntity = searchResultEntity.getPoiList().get(0);
                 if (!ConvertUtils.isEmpty(poiInfoEntity)) {
                     mViewModel.showCurrentChargeStation(poiInfoEntity);
@@ -170,7 +180,7 @@ public class AlterChargeModel extends BaseModel<AlterChargeViewModel> implements
     }
 
     @Override
-    public void onRouteItemClick(MapType mapTypeId, LayerPointItemType type, LayerItemRoutePointClickResult result) {
+    public void onRouteItemClick(final MapType mapTypeId, final LayerPointItemType type, final LayerItemRoutePointClickResult result) {
         Logger.d(TAG, "onRouteItemClick");
         if (ConvertUtils.isEmpty(result) || ConvertUtils.isEmpty(type)) {
             return;
@@ -182,6 +192,10 @@ public class AlterChargeModel extends BaseModel<AlterChargeViewModel> implements
         switch (type) {
             case ROUTE_POINT_VIA_REPLACE_CHARGE:
                 mViewModel.getSearchDetailsMode((int) result.getIndex());
+                break;
+            case ROUTE_POINT_WEATHER:
+            case ROUTE_POINT_REST_AREA:
+                mViewModel.getClosePage().call();
                 break;
             default:
                 break;

@@ -49,6 +49,7 @@ public class ActivateAdapterImpl implements IActivateApi {
 
             @Override
             public void onNetActivated(final boolean isSuccess) {
+                //onActivated();
             }
 
             @Override
@@ -81,6 +82,7 @@ public class ActivateAdapterImpl implements IActivateApi {
     @Override
     public boolean checkActivation() {
         return true;
+        //return ActivationManager.getInstance().testFlag;
         //return ActivationManager.getInstance().checkActivationStatus();
     }
 

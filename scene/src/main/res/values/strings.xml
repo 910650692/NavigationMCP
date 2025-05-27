@@ -289,6 +289,8 @@
     <string name="equipment_use">该充电桩已被占用</string>
     <string name="equipment_error">该充电桩存在故障</string>
     <string name="cancel_num_tip">您已取消%s次，超过3次不可预约</string>
+    <string name="travel_max_time">预计到达时间大于30分钟不支持预约</string>
+    <string name="address_loading">地址获取中</string>
 
     <!--搜索主页快捷搜-->
     <string-array name="main_search_categories_name">

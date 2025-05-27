@@ -364,6 +364,8 @@ public interface AutoMapConstant {
     @interface ActivateOrderTAG {
         String SD_ORDER_ID = "sd_order_id";
         String HQ_ORDER_ID = "hq_order_id";
+        String APP_KEY = "app_key";
+        String UUID_KEY = "uuid";
     }
 
     @interface AppRunStatus {

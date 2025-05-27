@@ -28,6 +28,11 @@ public class MapViewModel extends BaseMapViewModel {
         mModel.loadVisibleAreaJson(jsonPath);
     }
 
+    public boolean showNdGoHomeView(){
+        return true;
+    }
+
+
     @Override
     void setScreenType(int right) {
         super.setScreenType(right);

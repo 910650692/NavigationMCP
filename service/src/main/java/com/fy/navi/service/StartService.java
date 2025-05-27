@@ -37,6 +37,7 @@ import com.fy.navi.service.logicpaket.user.msgpush.MsgPushPackage;
 import com.fy.navi.service.logicpaket.user.usertrack.UserTrackPackage;
 import com.fy.navi.service.logicpaket.voice.VoicePackage;
 import com.fy.navi.service.tts.NaviAudioPlayer;
+import com.fy.navi.ui.BaseApplication;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -92,6 +93,8 @@ public class StartService {
      * @return -1：引擎没有初始化、0：引擎初始化成功、1、引擎初始化中
      */
     public int getSdkActivation() {
+        Logger.i(TAG, "getSdkActivation engineActive " + engineActive + " myPid = " +
+                BaseApplication.getMyPid());
         return engineActive;
     }
 
@@ -387,7 +390,8 @@ public class StartService {
     }
 
     public static StartService getInstance() {
-        Logger.i(TAG, "StartService getInstance... intance = " + Helper.sts);
+        Logger.i(TAG, "StartService getInstance... intance = " + Helper.sts + " myPid = " +
+                BaseApplication.getMyPid());
         return Helper.sts;
     }
 

@@ -5,9 +5,13 @@ import com.autonavi.gbl.layer.observer.PrepareLayerParamInner;
 import com.autonavi.gbl.map.layer.BaseLayer;
 import com.autonavi.gbl.map.layer.LayerItem;
 import com.autonavi.gbl.map.layer.model.CustomTextureParam;
+import com.autonavi.gbl.map.layer.model.CustomUpdatePair;
 import com.autonavi.gbl.map.layer.model.ItemStyleInfo;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.define.layer.refix.LayerItemData;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class BaseStyleAdapter extends PrepareLayerParamInner {
 
@@ -24,6 +28,10 @@ public class BaseStyleAdapter extends PrepareLayerParamInner {
      * @return
      */
     public String provideLayerItemStyleJson(LayerItem item) {
+        return null;
+    }
+
+    public String provideLayerItemStyleHtml(LayerItem item) {
         return null;
     }
 
@@ -72,5 +80,31 @@ public class BaseStyleAdapter extends PrepareLayerParamInner {
         boolean result = super.updateCardContent(layer, item, styleInfo, customTextureParam);
         Logger.e(TAG, getClass().getSimpleName() + " 图层 :" + layer.getName() + " ;图元业务类型 :" + item.getBusinessType() + " ; 图元 ：" + item.getItemType() + " ; 是否可见 :" + item.getVisible() + ";result =" + result);
         return result;
+    }
+
+    public List<CustomUpdatePair> createUpdatePair(LayerItem item) {
+        return new ArrayList<>();
+    }
+
+    protected CustomUpdatePair createUpdateStylePair(String id, String style) {
+        CustomUpdatePair updatePair = new CustomUpdatePair();
+        updatePair.idStr = id;
+        updatePair.newStyle = style;
+        return updatePair;
+    }
+
+    protected CustomUpdatePair createUpdatePair(String id, String value) {
+        CustomUpdatePair updatePair = new CustomUpdatePair();
+        updatePair.idStr = id;
+        updatePair.newValue = value;
+        return updatePair;
+    }
+
+    protected CustomUpdatePair createUpdatePair(String id, String value, String style) {
+        CustomUpdatePair updatePair = new CustomUpdatePair();
+        updatePair.idStr = id;
+        updatePair.newValue = value;
+        updatePair.newStyle = style;
+        return updatePair;
     }
 }

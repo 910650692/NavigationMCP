@@ -5,7 +5,6 @@ import android.os.UserManager;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.DefaultLifecycleObserver;
-import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.ProcessLifecycleOwner;
 
@@ -15,6 +14,7 @@ import com.android.utils.UtilsManager;
 import com.android.utils.log.Logger;
 
 import java.util.List;
+import java.util.Random;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class BaseApplication extends Application {
@@ -26,6 +26,9 @@ public class BaseApplication extends Application {
 
     private static int mIsAppInForeground = 0;
 
+    // bugId:1046245 做测试用，验证完毕删除
+    private static int MY_PID = 0;
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -34,6 +37,9 @@ public class BaseApplication extends Application {
             System.exit(0);
         }
         UtilsManager.init(this);
+        Random random = new Random();
+        MY_PID = random.nextInt(1000);
+        Logger.i(TAG, "onCreate, MY_PID = " + MY_PID);
         addLifeCycleObserver();
     }
 
@@ -158,5 +164,9 @@ public class BaseApplication extends Application {
      */
     public static int isAppInForeground() {
         return mIsAppInForeground;
+    }
+
+    public static int getMyPid() {
+        return MY_PID;
     }
 }

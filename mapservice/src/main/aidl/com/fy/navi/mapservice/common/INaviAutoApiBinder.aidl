@@ -39,5 +39,9 @@ interface INaviAutoApiBinder {
 
     String getNaviType(String pkgName);
 
+    void openSrTbt(String pkgName, boolean open);
+
+    boolean stopNavi(String pkgName);
+
 
 }

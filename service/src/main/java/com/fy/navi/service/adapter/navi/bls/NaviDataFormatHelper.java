@@ -17,6 +17,8 @@ import com.autonavi.gbl.guide.model.ExitDirectionInfo;
 import com.autonavi.gbl.guide.model.LaneInfo;
 import com.autonavi.gbl.guide.model.LightBarDetail;
 import com.autonavi.gbl.guide.model.LightBarInfo;
+import com.autonavi.gbl.guide.model.LightInfo;
+import com.autonavi.gbl.guide.model.LightState;
 import com.autonavi.gbl.guide.model.ManeuverIconResponseData;
 import com.autonavi.gbl.guide.model.ManeuverInfo;
 import com.autonavi.gbl.guide.model.MixForkInfo;
@@ -34,12 +36,14 @@ import com.autonavi.gbl.guide.model.SAPAInquireResponseData;
 import com.autonavi.gbl.guide.model.SoundInfo;
 import com.autonavi.gbl.guide.model.TimeAndDist;
 import com.autonavi.gbl.guide.model.TmcInfoData;
+import com.autonavi.gbl.guide.model.TrafficLightCountdown;
 import com.autonavi.gbl.guide.model.VectorCrossImageType;
 import com.fy.navi.service.AppContext;
 import com.fy.navi.service.adapter.navi.NaviConstant;
 import com.fy.navi.service.define.bean.GeoPoint;
 import com.fy.navi.service.define.navi.LaneInfoEntity;
 import com.fy.navi.service.define.navi.CameraInfoEntity;
+import com.fy.navi.service.define.navi.LightInfoEntity;
 import com.fy.navi.service.define.navi.NaviDriveReportEntity;
 import com.fy.navi.service.define.navi.NaviEtaInfo;
 import com.fy.navi.service.define.navi.CrossImageEntity;
@@ -54,6 +58,7 @@ import com.fy.navi.service.define.navi.NaviTmcInfo;
 import com.fy.navi.service.define.navi.SapaInfoEntity;
 import com.fy.navi.service.define.cruise.CruiseInfoEntity;
 import com.fy.navi.service.define.navi.SoundInfoEntity;
+import com.fy.navi.service.define.navi.TrafficLightCountdownEntity;
 import com.fy.navi.service.define.route.RouteParam;
 import com.fy.navi.service.define.search.ParkingInfo;
 import com.fy.navi.service.define.search.PoiInfoEntity;
@@ -931,5 +936,49 @@ public final class NaviDataFormatHelper {
             }
         }
         return listEntity;
+    }
+
+    public static TrafficLightCountdownEntity formatTrafficLightCountdown(
+            TrafficLightCountdown trafficLightCountdown) {
+        TrafficLightCountdownEntity entity = new TrafficLightCountdownEntity();
+        if (null != trafficLightCountdown) {
+            LightInfoEntity lightInfoEntity = new LightInfoEntity();
+            LightInfo lightInfo = trafficLightCountdown.lightInfo;
+            if (null != lightInfo) {
+                ArrayList<LightInfoEntity.LightStateEntity> lightStateEntities = new ArrayList<>();
+                ArrayList<LightState> lightStates = lightInfo.lightStates;
+                if (!ConvertUtils.isEmpty(lightStates)) {
+                    for (LightState lightState : lightStates) {
+                        LightInfoEntity.LightStateEntity lightStateEntity =
+                                new LightInfoEntity.LightStateEntity();
+                        lightStateEntity.setMLightType(lightState.lightType);
+                        lightStateEntity.setMStime(lightState.stime);
+                        lightStateEntity.setMEtime(lightState.etime);
+                        lightStateEntity.setMLastSeconds(lightState.lastSeconds);
+                        lightStateEntities.add(lightStateEntity);
+                    }
+                }
+                lightInfoEntity.setMLightStates(lightStateEntities);
+                lightInfoEntity.setMDesc(lightInfo.desc);
+                lightInfoEntity.setMDir(lightInfo.dir);
+                lightInfoEntity.setMPhase(lightInfo.phase);
+                lightInfoEntity.setMShowType(lightInfo.showType);
+                lightInfoEntity.setMStandardType(lightInfo.standardType);
+                lightInfoEntity.setMWaitNum(lightInfo.waitNum);
+            }
+            entity.setMLightInfo(lightInfoEntity);
+            entity.setMLinkIndex(trafficLightCountdown.linkIndex);
+            entity.setMLinkID(trafficLightCountdown.linkID);
+            GeoPoint geoPoint = new GeoPoint();
+            if (null != trafficLightCountdown.position) {
+                geoPoint.setLon(trafficLightCountdown.position.lon);
+                geoPoint.setLat(trafficLightCountdown.position.lat);
+            }
+            entity.setMPosition(geoPoint);
+            entity.setMStatus(trafficLightCountdown.status);
+            entity.setMPathID(trafficLightCountdown.pathID);
+            entity.setMSegmentIndex(trafficLightCountdown.segmentIndex);
+        }
+        return entity;
     }
 }

@@ -5,6 +5,7 @@ import android.util.Pair;
 import com.android.utils.ConvertUtils;
 import com.android.utils.NetWorkUtils;
 import com.android.utils.log.Logger;
+import com.autonavi.gbl.common.path.option.PathInfo;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.adapter.aos.BlAosAdapter;
 import com.fy.navi.service.adapter.aos.QueryRestrictedObserver;
@@ -60,6 +61,7 @@ import com.fy.navi.service.greendao.setting.SettingManager;
 import com.fy.navi.service.logicpaket.calibration.CalibrationPackage;
 import com.fy.navi.service.logicpaket.mapdata.MapDataPackage;
 import com.fy.navi.service.define.layer.refix.LayerItemLabelResult;
+import com.fy.navi.service.logicpaket.navi.OpenApiHelper;
 import com.fy.navi.service.logicpaket.setting.SettingPackage;
 import com.fy.navi.service.logicpaket.signal.SignalPackage;
 import com.fy.navi.service.logicpaket.user.behavior.BehaviorPackage;
@@ -277,7 +279,12 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
         }
         if (!ConvertUtils.isEmpty(requestRouteResult)) {
             if (mNaviStatusAdapter.isGuidanceActive()) {
-                mNaviAdapter.updateNaviPath(NumberUtils.NUM_0, requestRouteResult.getMLineLayerParam());
+                RouteLineLayerParam param = requestRouteResult.getMLineLayerParam();
+                mNaviAdapter.updateNaviPath(NumberUtils.NUM_0, param);
+                if (!ConvertUtils.isEmpty(param)
+                        && !ConvertUtils.isEmpty(param.getMPathInfoList())) {
+                    OpenApiHelper.setCurrentPathInfo((PathInfo) param.getMPathInfoList().get(0));
+                }
             }
         }
     }
@@ -1168,6 +1175,8 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
      * @param routeIndex 路线id
      */
     public void selectRoute(final MapType mapTypeId, final int routeIndex) {
+        Logger.i(TAG, "selectRoute mapTypeId = " + mapTypeId +
+                " routeIndex = " + routeIndex);
         Logger.i(TAG, mapTypeId.getMapType());
         if (ConvertUtils.isEmpty(mRequestRouteResults)) {
             return;

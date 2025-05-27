@@ -2,7 +2,11 @@ package com.fy.navi.service.adapter.search;
 
 import android.util.Pair;
 
+import com.android.utils.ConvertUtils;
+import com.android.utils.TimeUtils;
+import com.android.utils.log.Logger;
 import com.fy.navi.service.AdapterConfig;
+import com.fy.navi.service.define.bean.GeoPoint;
 import com.fy.navi.service.define.search.ETAInfo;
 import com.fy.navi.service.define.search.SearchRequestParameter;
 import com.fy.navi.service.define.utils.BevPowerCarUtils;
@@ -10,6 +14,8 @@ import com.fy.navi.service.logicpaket.calibration.CalibrationPackage;
 import com.fy.navi.service.logicpaket.signal.SignalPackage;
 
 import java.util.Objects;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.CompletableFuture;
 
 /**
@@ -284,5 +290,9 @@ final public class SearchAdapter {
 
     public int cancelReservation(final SearchRequestParameter searchRequestParameter){
         return mSearchApi.cancelReservation(searchRequestParameter);
+    }
+
+    public void calcTip(Long lastTime,Long travelTime){
+        mSearchApi.calcTip(lastTime,travelTime);
     }
 }

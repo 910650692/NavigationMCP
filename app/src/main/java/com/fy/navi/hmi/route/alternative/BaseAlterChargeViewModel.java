@@ -310,6 +310,7 @@ public class BaseAlterChargeViewModel extends BaseViewModel<AlterChargeFragment,
 
     private final Action mClosePage = () -> {
         StackManager.getInstance().getCurrentFragment(MapType.MAIN_SCREEN_MAIN_MAP.name()).closeFragment(true);
+        mModel.clearLayerItem();
     };
 
     public Action getClosePage() {

@@ -14,6 +14,7 @@ import androidx.databinding.ObservableBoolean;
 import androidx.databinding.ObservableField;
 import androidx.databinding.ObservableInt;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Lifecycle;
 
 import com.android.utils.ConvertUtils;
 import com.android.utils.ResourceUtils;
@@ -112,6 +113,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
     public ObservableField<Boolean> cruiseLanesVisibility;
     public ObservableField<Boolean> muteVisibility;
     public ObservableField<Boolean> mPopGuideLoginShow;
+    public ObservableField<Boolean> mGoHomeVisible;
 
     private ScheduledFuture mScheduledFuture;
     private final int mTimer = 300;
@@ -145,6 +147,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         messageCloseVisibility = new ObservableBoolean(false);
         mPopGuideLoginShow = new ObservableField<>(false);
         cruiseLanesVisibility = new ObservableField<>(false);
+        mGoHomeVisible = new ObservableField<>(false);
     }
 
     @Override
@@ -593,13 +596,17 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         bundle.putParcelable(AutoMapConstant.TrafficEventBundleKey.BUNDLE_KEY_ENTITY, entity);
         TrafficEventFragment trafficEventFragment;
         BaseFragment fragment = StackManager.getInstance().getCurrentFragment(mScreenId);
-        if (fragment != null && fragment instanceof TrafficEventFragment) {
-            trafficEventFragment = (TrafficEventFragment) fragment;
-            trafficEventFragment.setArguments(bundle);
-            trafficEventFragment.onInitData();
-        } else {
-            trafficEventFragment = new TrafficEventFragment();
-            addFragment(trafficEventFragment, bundle);
+        final Lifecycle.State currentState = mView.getLifecycle().getCurrentState();
+        Logger.i(TAG, "openTrafficDetailFragment", "currentState:" + currentState.name());
+        if (currentState == Lifecycle.State.RESUMED) {
+            if (fragment != null && fragment instanceof TrafficEventFragment) {
+                trafficEventFragment = (TrafficEventFragment) fragment;
+                trafficEventFragment.setArguments(bundle);
+                trafficEventFragment.onInitData();
+            } else {
+                trafficEventFragment = new TrafficEventFragment();
+                addFragment(trafficEventFragment, bundle);
+            }
         }
     }
 
@@ -1008,4 +1015,27 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
     }
 
     void setScreenType(int right){}
+
+    public void chargePreTipDialog(String status){
+        if(ConvertUtils.isNull(mModel) || ConvertUtils.isNull(mView)) return;
+        String title = "";
+        String content = "";
+        switch (status){
+            case "timeQuick":
+                title = ResourceUtils.Companion.getInstance().getString(R.string.quick_charge_pre);
+                content = ResourceUtils.Companion.getInstance().getString(R.string.quick_charge_pre_content);
+                break;
+            case "timeOut":
+                title = ResourceUtils.Companion.getInstance().getString(R.string.timeout_charge_pre);
+                content = ResourceUtils.Companion.getInstance().getString(R.string.timeout_charge_pre_content);
+                mModel.cancelTimeTick();
+                break;
+            default:
+                mModel.cancelTimeTick();
+                break;
+        }
+        String finalTitle = title;
+        String finalContent = content;
+        ThreadManager.getInstance().postUi(() -> mView.showTripDialog(finalTitle, finalContent));
+    }
 }

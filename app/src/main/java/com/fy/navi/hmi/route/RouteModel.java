@@ -102,6 +102,7 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
     private RequestRouteResult mRequestRouteResults;
     private GasCarTipManager mGasCarTipManager = new GasCarTipManager();
     private boolean mIsFirstRequest = true;
+    private String mSuccessMsg = "";
     private int mCarType = -1;
 
     private List<RouteParam> mGasChargeAlongList = new ArrayList<>();
@@ -542,9 +543,16 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
         mRouteWeatherInfos = null;
         mRouteRestrictionInfo = null;
         mIsFirstRequest = false;
-        if (!ConvertUtils.isEmpty(successMsg)) {
+        mSuccessMsg = successMsg;
+    }
+
+    /***
+     * 显示成功toast
+     */
+    public void showSuccessMsg() {
+        if (!ConvertUtils.isEmpty(mSuccessMsg)) {
             ThreadManager.getInstance().postUi(() -> {
-                ToastUtils.Companion.getInstance().showCustomToastView(successMsg);
+                ToastUtils.Companion.getInstance().showCustomToastView(mSuccessMsg);
             });
         }
     }

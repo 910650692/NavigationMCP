@@ -18,6 +18,11 @@ public interface IRecorderApi {
     void stopRecorder();
 
     /**
+     * 是否正在录制
+     */
+    boolean isRecording();
+
+    /**
      * 开始回放
      */
     void startPlayback();
@@ -26,6 +31,12 @@ public interface IRecorderApi {
      * 停止回放
      */
     void stopPlayback();
+
+    /**
+     * 是否正在播放
+     */
+    boolean isPlaying();
+
 
     /**
      * 注册回调

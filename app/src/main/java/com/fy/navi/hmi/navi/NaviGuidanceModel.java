@@ -2,6 +2,7 @@ package com.fy.navi.hmi.navi;
 
 
 import android.annotation.SuppressLint;
+import android.graphics.Path;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.os.Handler;
@@ -50,6 +51,7 @@ import com.fy.navi.service.define.navi.NaviManeuverInfo;
 import com.fy.navi.service.define.navi.NaviTmcInfo;
 import com.fy.navi.service.define.navi.NaviViaEntity;
 import com.fy.navi.service.define.navi.NextManeuverEntity;
+import com.fy.navi.service.define.navi.PathsTrafficEventInfoEntity;
 import com.fy.navi.service.define.navi.SapaInfoEntity;
 import com.fy.navi.service.define.navi.SpeedOverallEntity;
 import com.fy.navi.service.define.navi.SuggestChangePathReasonEntity;

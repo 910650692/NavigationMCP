@@ -39,6 +39,8 @@ public final class TextureStylePoolManager {
 
     private final ConcurrentHashMap<String, String> allStyleJson = new ConcurrentHashMap<>();
 
+    private final ConcurrentHashMap<String, String> allStyleHtml = new ConcurrentHashMap<>();
+
     public String getLayerStyle(MapType mapType, LayerItem item, BaseStyleAdapter styleAdapter) {
         String styleJson = null;
         String jsonPathName = styleAdapter.provideLayerItemStyleJson(item);
@@ -74,33 +76,45 @@ public final class TextureStylePoolManager {
         return styleJson;
     }
 
-    public String getLayerHtmlStyle(MapType mapType, LayerItem item, BaseStyleAdapter styleAdapter) {
+    public String getHtml(MapType mapType, String defaultHtmPathName, LayerItem item, BaseStyleAdapter styleAdapter) {
         String styleHtml = null;
-        String jsonPathName = styleAdapter.provideLayerItemStyleJson(item);
-        if (!TextUtils.isEmpty(jsonPathName)) {
-            if (!jsonPathName.endsWith(HTML)) {
-                jsonPathName = jsonPathName + HTML;
+        String htmlPathName = styleAdapter.provideLayerItemStyleHtml(item);
+        if (!TextUtils.isEmpty(htmlPathName)) {
+            if (!htmlPathName.endsWith(HTML)) {
+                htmlPathName = htmlPathName + HTML;
             }
-            styleHtml = allStyleJson.get(jsonPathName);
+            styleHtml = allStyleHtml.get(htmlPathName);
             if (TextUtils.isEmpty(styleHtml)) {
-                String jsonFilePath = new StringBuffer(GBLCacheFilePath.BLS_ASSETS_CUSTOM_STYLE_PATH)
+                String htmlFilePath = new StringBuffer(GBLCacheFilePath.BLS_ASSETS_CUSTOM_STYLE_PATH)
                         .append(mapType.getMapType())
                         .append(File.separator)
-                        .append(jsonPathName).toString();
-                styleHtml = ParseJsonUtils.parseJsonFile(jsonFilePath);
+                        .append(htmlPathName).toString();
+                styleHtml = ParseJsonUtils.parseHtmlFile(htmlFilePath);
                 if (TextUtils.isEmpty(styleHtml)) {
-                    jsonFilePath = new StringBuffer(GBLCacheFilePath.BLS_ASSETS_CUSTOM_STYLE_PATH)
+                    htmlFilePath = new StringBuffer(GBLCacheFilePath.BLS_ASSETS_CUSTOM_STYLE_PATH)
                             .append(MapType.MAIN_SCREEN_MAIN_MAP.getMapType())
                             .append(File.separator)
-                            .append(jsonPathName).toString();
-                    styleHtml = ParseJsonUtils.parseJsonFile(jsonFilePath);
-                    Logger.e(TAG, "未配置样式, 采用主屏默认样式 :");
+                            .append(htmlPathName).toString();
+                    styleHtml = ParseJsonUtils.parseHtmlFile(htmlFilePath);
+                    Logger.e(TAG, "未配置HTM样式, 采用主屏默认的HTM样式 :");
                 }
                 if (!TextUtils.isEmpty(styleHtml)) {
-                    allStyleJson.put(jsonPathName, styleHtml);
+                    allStyleJson.put(htmlPathName, styleHtml);
                 }
                 Logger.d(TAG, " ;图元业务类型 :" + item.getBusinessType() + " ; 图元 ：" + item.getItemType()
-                        + "\n 使用自定义的样式配置文件 : " + jsonFilePath);
+                        + "\n 使用自定义的HTM样式 : " + htmlPathName);
+            }
+        } else {
+            styleHtml = allStyleJson.get(defaultHtmPathName);
+            if (TextUtils.isEmpty(styleHtml)) {
+                String jsonFilePath = new StringBuffer(GBLCacheFilePath.BLS_ASSETS_LAYER_CARDS_PATH)
+                        .append(defaultHtmPathName).toString();
+                styleHtml = ParseJsonUtils.parseHtmlFile(jsonFilePath);
+                if (!TextUtils.isEmpty(styleHtml)) {
+                    allStyleJson.put(defaultHtmPathName, styleHtml);
+                }
+                Logger.d(TAG, " ;图元业务类型 :" + item.getBusinessType() + " ; 图元 ：" + item.getItemType()
+                        + "\n 使用默认的HTM样式 : " + jsonFilePath);
             }
         }
         return styleHtml;

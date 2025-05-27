@@ -23,7 +23,6 @@ public class LayerLabelStyleAdapter extends BaseStyleAdapter {
 
     @Override
     public String provideLayerItemStyleJson(LayerItem item) {
-        Logger.d(TAG, "provideLayerItemStyleJson BusinessType" + item.getBusinessType());
         switch (item.getBusinessType()) {
             case BizLabelType.BizLabelTypeRoutePopSearchPoint -> {
                 Logger.d(TAG,"终点停车场图层使用自定义扎标");

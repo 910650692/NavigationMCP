@@ -1,6 +1,7 @@
 package com.fy.navi.service.logicpaket.navi;
 
 
+import android.graphics.Path;
 import android.graphics.Rect;
 
 import com.android.utils.ConvertUtils;
@@ -10,6 +11,7 @@ import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
 import com.autonavi.gbl.common.path.option.PathInfo;
+import com.autonavi.gbl.guide.model.NaviInfo;
 import com.fy.navi.burypoint.anno.HookMethod;
 import com.fy.navi.burypoint.bean.BuryProperty;
 import com.fy.navi.burypoint.constant.BuryConstant;
@@ -47,6 +49,7 @@ import com.fy.navi.service.define.navi.SapaInfoEntity;
 import com.fy.navi.service.define.navi.SoundInfoEntity;
 import com.fy.navi.service.define.navi.SpeedOverallEntity;
 import com.fy.navi.service.define.navi.SuggestChangePathReasonEntity;
+import com.fy.navi.service.define.navi.TrafficLightCountdownEntity;
 import com.fy.navi.service.define.navistatus.NaviStatus;
 import com.fy.navi.service.define.route.RouteParam;
 import com.fy.navi.service.define.route.RoutePoiType;
@@ -197,6 +200,7 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
      * @return 是否停止导航成功
      */
     public boolean stopNavigation() {
+        Logger.i(TAG, "stopNavigation");
         if(mNaviAdapter == null) {
             Logger.e(TAG, "stopNavigation", "mNaviAdapter == null");
             return false;
@@ -721,13 +725,12 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
     }
 
     @Override
-    public void onUpdateTrafficLightCountdown(int isHaveTrafficLight, GeoPoint geoPoint) {
-        Logger.i(TAG, "onUpdateTrafficLightCountdown: isHaveTrafficLight = " +
-                isHaveTrafficLight);
+    public void onUpdateTrafficLightCountdown(final ArrayList<TrafficLightCountdownEntity> list) {
+        Logger.i(TAG, "onUpdateTrafficLightCountdown: size = " + list.size());
         if (!ConvertUtils.isEmpty(mGuidanceObservers)) {
             for (IGuidanceObserver guidanceObserver : mGuidanceObservers.values()) {
                 if (guidanceObserver != null) {
-                    guidanceObserver.onUpdateTrafficLightCountdown(isHaveTrafficLight, geoPoint);
+                    guidanceObserver.onUpdateTrafficLightCountdown(list);
                 }
             }
         }
@@ -763,6 +766,8 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
     @Override
     public void onChangeNaviPath(long oldPathId, long pathID) {
         Logger.i(TAG, "onChangeNaviPath oldPathId = " + oldPathId + " pathID = " + pathID);
+        PathInfo pathInfo = OpenApiHelper.getPathInfo(MapType.MAIN_SCREEN_MAIN_MAP, pathID);
+        OpenApiHelper.setCurrentPathInfo(pathInfo);
         ThreadManager.getInstance().postUi(() -> {
             if (!ConvertUtils.isEmpty(mGuidanceObservers)) {
                 for (IGuidanceObserver guidanceObserver : mGuidanceObservers.values()) {
@@ -1100,7 +1105,8 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
         if(mNaviAdapter == null) {
             return null;
         }
-        return mNaviAdapter.getAllViaPoints();
+        PathInfo pathInfo = OpenApiHelper.getCurrentPathInfo(MapType.MAIN_SCREEN_MAIN_MAP);
+        return mNaviAdapter.getAllViaPoints(pathInfo);
     }
 
     /**

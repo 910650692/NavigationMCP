@@ -775,7 +775,7 @@ public final class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
     /**
      * 获取导航类型.
      *
-     * @return String，当前底图状态值.
+     * @return String，当前Map状态值，见见INaviConstant.NaviStatusType.
      */
     public String getNaviType() {
         String type = INaviConstant.NaviStatusType.NO_STATUS;
@@ -807,6 +807,38 @@ public final class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
         }
 
         return tbtInfo;
+    }
+
+    /**
+     * 对SR TBT面板执行显示/隐藏.
+     *
+     * @param open 执行工作 true:显示  false:隐藏.
+     */
+    public void openSrTbt(final boolean open) {
+        if (mInitStatus && checkBinder()) {
+            try {
+                mBinder.openSrTbt(mPkgName, open);
+            } catch (RemoteException remoteException) {
+                Logger.w(TAG, mPkgName + "openSrTbt error: " + remoteException.getMessage());
+            }
+        }
+    }
+
+    /**
+     * 停止导航.
+     *
+     * @return 停止导航执行结果  true:执行成功  false:执行失败.
+     */
+    public boolean stopNavigation() {
+        boolean result = false;
+        if (mInitStatus && checkBinder()) {
+            try {
+                result = mBinder.stopNavi(mPkgName);
+            } catch (RemoteException exception) {
+                Logger.w(TAG, mPkgName + "stopNavigation error:" + exception.getMessage());
+            }
+        }
+        return result;
     }
 
 

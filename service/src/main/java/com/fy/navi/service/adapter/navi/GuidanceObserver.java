@@ -1,6 +1,7 @@
 package com.fy.navi.service.adapter.navi;
 
 import com.autonavi.gbl.guide.model.SuggestChangePathReason;
+import com.autonavi.gbl.guide.model.TrafficLightCountdown;
 import com.fy.navi.service.define.bean.GeoPoint;
 import com.fy.navi.service.define.navi.CameraInfoEntity;
 import com.fy.navi.service.define.navi.CrossImageEntity;
@@ -15,6 +16,7 @@ import com.fy.navi.service.define.navi.NaviTmcInfo;
 import com.fy.navi.service.define.navi.SapaInfoEntity;
 import com.fy.navi.service.define.navi.SpeedOverallEntity;
 import com.fy.navi.service.define.navi.SuggestChangePathReasonEntity;
+import com.fy.navi.service.define.navi.TrafficLightCountdownEntity;
 import com.fy.navi.service.define.route.FyRouteOption;
 import com.fy.navi.service.define.route.RouteWeatherInfo;
 
@@ -155,7 +157,7 @@ public interface GuidanceObserver extends BaseNaviObserver {
      * @param isHaveTrafficLight 红绿灯实体
      * @param geoPoint           红绿灯的位置
      */
-    default void onUpdateTrafficLightCountdown(int isHaveTrafficLight, GeoPoint geoPoint) {
+    default void onUpdateTrafficLightCountdown(final ArrayList<TrafficLightCountdownEntity> list) {
     }
 
     /**

@@ -91,7 +91,7 @@
                 clickCommand="@{() -> SceneHomeCompanyView.onClickQuickSearch(0)}"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:minWidth="@dimen/dp_90"
+                android:minWidth="@dimen/dp_153"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/scl_pull_up">
 
@@ -123,7 +123,7 @@
                 clickCommand="@{() -> SceneHomeCompanyView.onClickQuickSearch(1)}"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:minWidth="@dimen/dp_90"
+                android:minWidth="@dimen/dp_153"
                 app:layout_constraintStart_toEndOf="@id/scl_gas_station"
                 app:layout_constraintEnd_toStartOf="@id/scl_gourmet">
 
@@ -155,7 +155,7 @@
                 clickCommand="@{() -> SceneHomeCompanyView.onClickQuickSearch(2)}"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:minWidth="@dimen/dp_90"
+                android:minWidth="@dimen/dp_153"
                 app:layout_constraintStart_toEndOf="@id/scl_pull_up"
                 app:layout_constraintEnd_toStartOf="@id/scl_car_washing">
 
@@ -187,7 +187,7 @@
                 clickCommand="@{() -> SceneHomeCompanyView.onClickQuickSearch(3)}"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:minWidth="@dimen/dp_90"
+                android:minWidth="@dimen/dp_153"
                 app:layout_constraintStart_toEndOf="@id/scl_gourmet"
                 app:layout_constraintEnd_toEndOf="parent">
 

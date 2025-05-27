@@ -14,7 +14,6 @@ import com.fy.navi.patacnetlib.response.activate.UuidResponse;
 import com.fy.navi.service.AutoMapConstant;
 import com.fy.navi.service.MapDefaultFinalTag;
 import com.fy.navi.service.greendao.CommonManager;
-import com.fy.navi.service.logicpaket.user.account.AccountPackage;
 import com.gm.cn.adassdk.AdasManager;
 import com.gm.cn.adassdk.UuidSubStatus;
 
@@ -37,7 +36,7 @@ public final class ActivateHQ {
     private static String API_VERSION;
     private static String UUID = "";
     private static String ORDER_ID;
-    private final static String HD = "HD";
+    private final static String HQ = "HQ";
     private static int QUERY_ORDER_NUM = 0;
 
     private AdasManager mAdasManager;
@@ -88,8 +87,8 @@ public final class ActivateHQ {
      */
     private void postUUID() {
         Logger.d(TAG, "postUUID: ");
-        if (!ConvertUtils.isEmpty(AccountPackage.getInstance().getUuid())) {
-            UUID = AccountPackage.getInstance().getUuid();
+        if (!ConvertUtils.isEmpty(CommonManager.getInstance().getValueByKey(AutoMapConstant.ActivateOrderTAG.UUID_KEY))) {
+            UUID = CommonManager.getInstance().getValueByKey(AutoMapConstant.ActivateOrderTAG.UUID_KEY);
             Logger.d(TAG, "UUID静态变量为空，数据库存有UUID = " + UUID);
             mAdasManager.setUUID(UUID, UuidSubStatus.Unknown);
             readyCreateOrder();
@@ -103,6 +102,7 @@ public final class ActivateHQ {
             public void onSuccess(final UuidResponse response) {
                 Logger.d(TAG, response.toString());
                 UUID = response.getMVin();
+                CommonManager.getInstance().insertOrReplace(AutoMapConstant.ActivateOrderTAG.UUID_KEY, UUID);
                 mAdasManager.setUUID(UUID, UuidSubStatus.Unknown);
                 readyCreateOrder();
             }
@@ -119,8 +119,9 @@ public final class ActivateHQ {
      * 准备下单
      */
     public void readyCreateOrder() {
-        if (!ConvertUtils.isEmpty(CommonManager.getInstance().getValueByKey(AutoMapConstant.ActivateOrderTAG.HQ_ORDER_ID))) {
-            Logger.d(TAG, "有订单号记录，直接查询订单");
+        final String orderId = CommonManager.getInstance().getValueByKey(AutoMapConstant.ActivateOrderTAG.HQ_ORDER_ID);
+        if (!ConvertUtils.isEmpty(orderId)) {
+            Logger.d(TAG, "有订单号记录，直接查询订单 : " + orderId);
             getInstance().queryOrderStatus(new NetQueryManager.INetResultCallBack<QueryOrderResponse>() {
                 @Override
                 public void onSuccess(final QueryOrderResponse statusBean) {
@@ -147,9 +148,10 @@ public final class ActivateHQ {
      */
     public void createCloudOrder() {
         Logger.d(TAG, "createCloudOrder");
-        final String uuid = AccountPackage.getInstance().getUuid();
+        final String uuid = CommonManager.getInstance().getValueByKey(AutoMapConstant.ActivateOrderTAG.UUID_KEY);
         if (ConvertUtils.isEmpty(UUID) && ConvertUtils.isEmpty(uuid)) {
             Logger.e(TAG, "uuid信息缺失");
+            postUUID();
             return;
         }
 
@@ -158,7 +160,7 @@ public final class ActivateHQ {
             UUID = uuid;
         }
         Logger.i(TAG, "UUID = " + UUID);
-        final CreateOrderRequest createOrderReq = new CreateOrderRequest(API_VERSION, TEST_APP_ID, UUID, HD);
+        final CreateOrderRequest createOrderReq = new CreateOrderRequest(API_VERSION, TEST_APP_ID, UUID, HQ);
         Logger.d(TAG, "createOrderReq  : " + createOrderReq);
         NetQueryManager.getInstance().createOrder(createOrderReq, new NetQueryManager.INetResultCallBack<CreateOrderResponse>() {
             @Override

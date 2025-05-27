@@ -231,8 +231,8 @@ public final class NaviAdapter {
      * 此接口属于动态获取
      * @return 获取途径点信息
      */
-    public List<NaviViaEntity> getAllViaPoints() {
-        return mNaviApi.getAllViaPoints();
+    public List<NaviViaEntity> getAllViaPoints(PathInfo pathInfo) {
+        return mNaviApi.getAllViaPoints(pathInfo);
     }
 
     private static final class Helper {
